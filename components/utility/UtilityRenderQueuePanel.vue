@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, shallowRef } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   AlertCircle,
@@ -31,30 +31,28 @@ import BootSequence from "~/components/match/BootSequence.vue";
 import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
 import UtilityPreviewDialog from "~/components/utility/UtilityPreviewDialog.vue";
 import DeleteRenderDialog from "~/components/utility/DeleteRenderDialog.vue";
+import UtilityRenderCoverage from "~/components/utility/UtilityRenderCoverage.vue";
+import UtilityRenderVersion from "~/components/utility/UtilityRenderVersion.vue";
+import UtilityRenderWarn from "~/components/utility/UtilityRenderWarn.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Spinner } from "~/components/ui/spinner";
 import { useBootStages } from "~/composables/useBootStages";
+import { useUtilityRenderCoverage } from "~/composables/useUtilityRenderCoverage";
 import { useAuthStore } from "~/stores/AuthStore";
 import cleanMapName from "~/utilities/cleanMapName";
 import { utilityLineupRoute } from "~/utilities/utilityDisplay";
 import {
   liveUtilityRenderIds,
   utilityLineupsRendering,
+  utilityRenderFilmedAt,
+  utilityRenderQueueView,
+  type UtilityRenderQueueRow,
 } from "~/utilities/utilityRenderQueue";
 import { toast } from "~/components/ui/toast";
 import type { UtilityLineupRender } from "~/types/utility";
 
 const FINISHED_LIMIT = 200;
-
-// A render that has said nothing for this long is not progressing, whatever its
-// status column still claims. The pod posts on every segment poll, so silence
-// well past that is the signal -- not a status that never got overwritten.
-const STALE_AFTER_MS = 90_000;
-
-// Same recency the highlights queue uses: a boot tick older than this means the
-// pod stopped talking, and the stepper comes down rather than spinning forever.
-const BOOT_RECENCY_MS = 5 * 60 * 1000;
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
@@ -75,6 +73,30 @@ const ticker = import.meta.client
     }, 1000)
   : null;
 
+const {
+  coverage,
+  failed: coverageFailed,
+  map: coverageMap,
+  refresh: refreshCoverage,
+  refreshSoon: refreshCoverageSoon,
+} = useUtilityRenderCoverage();
+
+onMounted(() => void refreshCoverage());
+
+// A render joining or leaving either list changes what the library is
+// missing; one moving on within its list does not.
+function sameRenders(a: UtilityLineupRender[], b: UtilityLineupRender[]) {
+  return (
+    a.length === b.length &&
+    a.every((render, index) => render.id === b[index].id)
+  );
+}
+
+// The latest the pod was seen filming, kept because the row that showed it
+// leaves the list the moment it is done.
+const seenFilmingAt = ref(0);
+let finishedHeard = false;
+
 let inFlightSub: { unsubscribe: () => void } | null = null;
 let finishedSub: { unsubscribe: () => void } | null = null;
 
@@ -92,7 +114,15 @@ inFlightSub = getGraphqlClient()
   })
   .subscribe({
     next: ({ data }: any) => {
-      inFlight.value = data?.utility_lineup_renders ?? [];
+      const rows: UtilityLineupRender[] = data?.utility_lineup_renders ?? [];
+      if (!loading.value && !sameRenders(inFlight.value, rows)) {
+        refreshCoverageSoon();
+      }
+      inFlight.value = rows;
+      seenFilmingAt.value = Math.max(
+        seenFilmingAt.value,
+        utilityRenderFilmedAt(rows),
+      );
       loading.value = false;
     },
     error: (error: any) => {
@@ -112,7 +142,12 @@ finishedSub = getGraphqlClient()
   })
   .subscribe({
     next: ({ data }: any) => {
-      finished.value = data?.utility_lineup_renders ?? [];
+      const rows: UtilityLineupRender[] = data?.utility_lineup_renders ?? [];
+      if (finishedHeard && !sameRenders(finished.value, rows)) {
+        refreshCoverageSoon();
+      }
+      finished.value = rows;
+      finishedHeard = true;
     },
     error: (error: any) => {
       console.error("[utility-render-queue] finished subscription:", error);
@@ -122,113 +157,48 @@ finishedSub = getGraphqlClient()
 onBeforeUnmount(() => {
   inFlightSub?.unsubscribe();
   finishedSub?.unsubscribe();
-  if (ticker !== null) window.clearInterval(ticker);
-});
-
-type BootInfo = {
-  stage: string;
-  // "server_starting:WaitingForPing" -> the api's readout of the practice
-  // server pod, folded in as a substage the way highlights folds
-  // "downloading_cs2:Validating".
-  stageSub: string | null;
-  progress: number | null;
-};
-
-type Batch = {
-  mapName: string;
-  renders: UtilityLineupRender[];
-  active: UtilityLineupRender | null;
-  dispatched: boolean;
-  progress: number;
-  // Where the pod is in its boot, read off every row's history the way the
-  // highlights queue reads its batch -- the pod boots once but each queued
-  // row carries its own copy of the ticks.
-  bootInfo: BootInfo | null;
-  // The row whose snapshot to show: whichever is filming, else the head of
-  // the queue (it is the one the pod will film first).
-  sample: UtilityLineupRender | null;
-};
-
-// One pod films one map, so the map IS the batch — the same grouping the
-// dispatcher uses on the other side.
-const batches = computed<Batch[]>(() => {
-  const byMap = new Map<string, UtilityLineupRender[]>();
-  for (const render of inFlight.value) {
-    const list = byMap.get(render.map_name) ?? [];
-    list.push(render);
-    byMap.set(render.map_name, list);
+  if (ticker !== null) {
+    window.clearInterval(ticker);
   }
-  return [...byMap.entries()].map(([mapName, renders]) => {
-    const active = renders.find((render) => render.status !== "queued") ?? null;
-    return {
-      mapName,
-      renders,
-      active,
-      // A batch with no pod name anywhere is a batch nothing was dispatched for.
-      // That is the difference between "waiting its turn" and "silently dropped",
-      // and it is the one thing the status column cannot say.
-      dispatched: renders.some((render) => Boolean(render.k8s_job_name)),
-      progress:
-        renders.reduce(
-          (total, render) =>
-            total +
-            (render.status === "queued" ? 0 : Number(render.progress ?? 0)),
-          0,
-        ) / Math.max(1, renders.length),
-      bootInfo: active ? null : bootInfoFor(renders),
-      sample: active ?? renders[0] ?? null,
-    };
-  });
 });
-
-// The latest boot tick across the batch, as long as the pod is still talking.
-// Staleness is judged on last_status_at (bumped every tick), not the history
-// `at` (frozen at stage start) -- else a long shader compile would read dead.
-function bootInfoFor(renders: UtilityLineupRender[]): BootInfo | null {
-  let latest:
-    | { stage: string; stageSub: string | null; progress: number | null; at: number }
-    | null = null;
-  let freshest = 0;
-
-  for (const render of renders) {
-    const heard = Date.parse(render.last_status_at ?? render.created_at ?? "");
-    if (Number.isFinite(heard) && heard > freshest) freshest = heard;
-
-    for (const entry of render.status_history ?? []) {
-      if (entry?.status !== "booting" || !entry.boot_stage) continue;
-      const at = Date.parse(entry.at);
-      if (!Number.isFinite(at)) continue;
-      if (!latest || at > latest.at) {
-        const [stage, stageSub = null] = entry.boot_stage.split(":");
-        latest = {
-          stage,
-          stageSub: stageSub && stageSub.length > 0 ? stageSub : null,
-          progress:
-            typeof entry.boot_progress === "number"
-              ? Math.max(0, Math.min(1, entry.boot_progress))
-              : null,
-          at,
-        };
-      }
-    }
-  }
-
-  if (!latest || now.value - freshest > BOOT_RECENCY_MS) return null;
-  return {
-    stage: latest.stage,
-    stageSub: latest.stageSub,
-    progress: latest.progress,
-  };
-}
 
 const { stagesFor } = useBootStages();
-const bootStageLabels = computed(() => {
+const nadeStages = computed(() => stagesFor("nades"));
+
+const stageLabels = computed(() => {
   const labels = new Map<string, string>();
-  for (const stage of stagesFor("nades")) {
-    if (stage.label) labels.set(stage.key, stage.label);
+  for (const stage of nadeStages.value) {
+    if (stage.label) {
+      labels.set(stage.key, stage.label);
+    }
   }
   return labels;
 });
+
+const stageKinds = computed(() => {
+  const boot = new Set<string>();
+  const wait = new Set<string>();
+  for (const stage of nadeStages.value) {
+    (stage.meta === "wait" ? wait : boot).add(stage.key);
+  }
+  return { boot, wait };
+});
+
+const filmedAt = computed(() =>
+  Math.max(seenFilmingAt.value, utilityRenderFilmedAt(finished.value)),
+);
+
+// One pod films the whole queue, map after map, so there is one queue here
+// and not a card per map.
+const queue = computed(() =>
+  utilityRenderQueueView(inFlight.value, {
+    now: now.value,
+    filmedAt: filmedAt.value,
+    stages: stageKinds.value,
+  }),
+);
+
+type QueueRow = UtilityRenderQueueRow<UtilityLineupRender>;
 
 const STATUS_TONE: Record<string, string> = {
   queued: "text-muted-foreground",
@@ -268,19 +238,24 @@ function statusLabel(status: string) {
   return t(`pages.utility.render_queue.statuses.${status}`);
 }
 
-// Every row reads "queued" for the whole boot -- the api leaves row.status
-// alone for boot ticks so the batch job can still find it. Say what the pod is
-// actually doing instead, the way the highlights queue does.
-function rowStatusLabel(batch: Batch, render: UtilityLineupRender): string {
-  if (render.status !== "queued" || !batch.bootInfo) {
-    return statusLabel(render.status);
+// A row reads "queued" from the moment it is asked for until it is filmed:
+// the api leaves row.status alone for everything before that. Its own latest
+// stage is what says which of those minutes it is in.
+function rowStatusLabel(row: QueueRow): string {
+  const stage = row.stage;
+  const label = stage ? stageLabels.value.get(stage.key) : undefined;
+  if (row.render.status !== "queued" || !stage || !label) {
+    return statusLabel(row.render.status);
   }
-  const label = bootStageLabels.value.get(batch.bootInfo.stage);
-  if (!label) return statusLabel(render.status);
-  const sub = batch.bootInfo.stageSub ? ` · ${batch.bootInfo.stageSub}` : "";
-  return batch.bootInfo.progress === null
+  if (stage.key === "changing_map") {
+    return stage.sub
+      ? t("live_stages.changing_map_to", { map: cleanMapName(stage.sub) })
+      : label;
+  }
+  const sub = stage.sub ? ` · ${stage.sub}` : "";
+  return stage.progress === null
     ? `${label}${sub}`
-    : `${label}${sub} ${Math.round(batch.bootInfo.progress * 100)}%`;
+    : `${label}${sub} ${Math.round(stage.progress * 100)}%`;
 }
 
 function progressPct(render: UtilityLineupRender) {
@@ -289,49 +264,52 @@ function progressPct(render: UtilityLineupRender) {
 
 // Compact and mono so it sits in a column of numbers: 45S, 6M, 1H04.
 function since(iso: string | null | undefined): string {
-  if (!iso) return "";
+  if (!iso) {
+    return "";
+  }
   const started = Date.parse(iso);
-  if (!Number.isFinite(started)) return "";
+  if (!Number.isFinite(started)) {
+    return "";
+  }
 
   const seconds = Math.max(0, Math.round((now.value - started) / 1000));
-  if (seconds < 60) return `${seconds}s`;
+  if (seconds < 60) {
+    return `${seconds}s`;
+  }
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return `${minutes}m`;
+  if (minutes < 60) {
+    return `${minutes}m`;
+  }
   return `${Math.floor(minutes / 60)}h${String(minutes % 60).padStart(2, "0")}`;
 }
 
-function lastHeardMs(render: UtilityLineupRender): number {
-  const at = Date.parse(render.last_status_at ?? render.created_at ?? "");
-  return Number.isFinite(at) ? now.value - at : 0;
-}
-
-// Queued rows are legitimately silent — nothing is filming them yet. Only a row
-// that claims to be working earns a stale flag.
-function isStale(render: UtilityLineupRender): boolean {
-  return render.status !== "queued" && lastHeardMs(render) > STALE_AFTER_MS;
-}
-
 /**
- * The status column says where a render is; this says how it got there and how
- * long each leg took. Boot ticks are folded into one "booting" leg -- the
- * stepper above already shows them stage by stage.
+ * The status column says where a render is; this says how it got there and
+ * how long each leg took. The pod's boot is folded into one leg -- the
+ * stepper above shows it stage by stage -- but a row's own waits are legs of
+ * their own: ten minutes waiting for a map is not ten minutes of booting.
  */
 function timeline(
   render: UtilityLineupRender,
-): Array<{ status: string; held: string }> {
+): Array<{ leg: string; held: string }> {
   const history = Array.isArray(render.status_history)
     ? render.status_history
     : [];
 
   const stamped = history
-    .map((entry) => ({
-      status: String(entry?.status ?? ""),
-      at: Date.parse(String(entry?.at ?? "")),
-    }))
-    .filter((entry) => entry.status && Number.isFinite(entry.at))
+    .map((entry) => {
+      const stage = String(entry?.boot_stage ?? "").split(":")[0];
+      return {
+        leg:
+          entry?.status === "booting" && stageKinds.value.wait.has(stage)
+            ? stage
+            : String(entry?.status ?? ""),
+        at: Date.parse(String(entry?.at ?? "")),
+      };
+    })
+    .filter((entry) => entry.leg && Number.isFinite(entry.at))
     .filter(
-      (entry, index, all) =>
-        index === 0 || entry.status !== all[index - 1].status,
+      (entry, index, all) => index === 0 || entry.leg !== all[index - 1].leg,
     );
 
   return stamped.map((entry, index) => {
@@ -339,16 +317,17 @@ function timeline(
     const until = stamped[index + 1]?.at ?? now.value;
     const seconds = Math.max(0, Math.round((until - entry.at) / 1000));
     return {
-      status: entry.status,
+      leg: entry.leg,
       held: seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m`,
     };
   });
 }
 
-function legLabel(status: string): string {
-  return status === "booting"
-    ? t("pages.utility.render_queue.render_pod_booting")
-    : statusLabel(status);
+function legLabel(leg: string): string {
+  if (leg === "booting") {
+    return t("pages.utility.render_queue.render_pod_booting");
+  }
+  return stageLabels.value.get(leg) ?? statusLabel(leg);
 }
 
 async function rerender(render: UtilityLineupRender) {
@@ -374,6 +353,7 @@ async function rerender(render: UtilityLineupRender) {
     });
   } finally {
     busy.value = { ...busy.value, [render.id]: false };
+    void refreshCoverage();
   }
 }
 
@@ -476,20 +456,12 @@ async function clearFinished() {
 
 <template>
   <section>
-    <header
-      v-if="isAdmin && finished.length"
-      class="flex items-center justify-end gap-2"
-    >
-      <Button
-        size="sm"
-        variant="ghost"
-        class="h-7 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
-        :loading="clearing"
-        @click="clearFinished()"
-      >
-        {{ $t("pages.utility.render_queue.clear_finished") }}
-      </Button>
-    </header>
+    <UtilityRenderCoverage
+      v-model:map="coverageMap"
+      :coverage="coverage"
+      :failed="coverageFailed"
+      @enqueued="refreshCoverage()"
+    />
 
     <div v-if="loading" class="mt-3 space-y-2">
       <Skeleton class="h-16 w-full" />
@@ -497,22 +469,22 @@ async function clearFinished() {
     </div>
 
     <p
-      v-else-if="!batches.length && !finished.length"
+      v-else-if="!queue.count && !finished.length"
       class="mt-3 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
     >
       {{ $t("pages.utility.render_queue.empty") }}
     </p>
 
     <div
-      v-for="batch of batches"
-      :key="batch.mapName"
+      v-if="queue.count"
+      data-render-queue
       class="relative mt-3 overflow-hidden rounded-md border border-border bg-card/40"
     >
-      <!-- The sweep is what says a pod is on this map right now -- filming or
-           booting. A batch with neither holds still, so it reads as waiting
-           rather than as running slowly. -->
+      <!-- The sweep is what says the pod is at work right now -- filming or
+           booting. With neither it holds still, so the queue reads as
+           waiting rather than as running slowly. -->
       <span
-        v-if="batch.active || batch.bootInfo"
+        v-if="queue.active || queue.booting"
         aria-hidden="true"
         class="pointer-events-none absolute left-0 right-0 top-0 h-[2px] overflow-hidden"
       >
@@ -521,52 +493,36 @@ async function clearFinished() {
         ></span>
       </span>
 
-      <div class="p-3">
-        <div class="flex items-baseline justify-between gap-2">
-          <span
-            class="font-mono text-[0.72rem] uppercase tracking-[0.18em] text-foreground"
-          >
-            {{ cleanMapName(batch.mapName) }}
-          </span>
-          <span
-            class="font-mono text-[0.62rem] uppercase tabular-nums tracking-[0.14em] text-muted-foreground"
-          >
-            {{
-              $t("pages.utility.render_queue.lineups", {
-                count: batch.renders.length,
-              })
-            }}
-            <span aria-hidden="true" class="mx-1 text-border">/</span>
-            <span class="text-[hsl(var(--tac-amber))]">
-              {{ Math.round(batch.progress * 100) }}%
-            </span>
-          </span>
-        </div>
-
-        <div class="mt-2 h-[2px] overflow-hidden bg-muted">
-          <div
-            class="h-full bg-[hsl(var(--tac-amber))] transition-[width] [transition-duration:240ms]"
-            :style="{ width: `${Math.round(batch.progress * 100)}%` }"
-          />
-        </div>
-
-        <!-- A batch nobody dispatched looks exactly like a batch waiting its
-             turn until you say so. Only while nothing is booting either --
-             the api's own booking phases stamp boot ticks before a pod exists,
-             and those are the answer to "what is it doing". -->
-        <p
-          v-if="!batch.dispatched && !batch.bootInfo"
-          class="mt-2 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-warning"
+      <div class="flex items-center justify-between gap-2 p-3">
+        <span
+          class="flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.18em] text-foreground"
         >
-          {{ $t("pages.utility.render_queue.no_pod") }}
-        </p>
+          {{ $t("pages.utility.render_queue.pod") }}
+          <!-- Queued rows nobody is working on look exactly like rows waiting
+               their turn until something says so. -->
+          <UtilityRenderWarn
+            v-if="queue.unclaimed"
+            data-queue-unclaimed
+            :title="$t('pages.utility.render_queue.no_pod')"
+            :note="$t('pages.utility.render_queue.no_pod_hint')"
+          />
+        </span>
+        <span
+          class="font-mono text-[0.62rem] uppercase tabular-nums tracking-[0.14em] text-muted-foreground"
+        >
+          {{ $t("pages.utility.render_queue.lineups", { count: queue.count }) }}
+          <span aria-hidden="true" class="mx-1 text-border">/</span>
+          {{
+            $t("pages.utility.render_queue.maps", { count: queue.maps.length })
+          }}
+        </span>
       </div>
 
       <!-- The pod's boot, stage by stage, beside what its screen shows. Same
            BootSequence the highlights queue mounts; the "nades" mode adds the
            three api-side phases that happen before any pod exists. -->
       <div
-        v-if="batch.bootInfo || batch.active"
+        v-if="queue.booting || queue.active"
         class="border-t border-border/40 bg-primary/[0.03] px-3 py-3"
       >
         <div class="mb-2 flex items-center gap-2">
@@ -579,7 +535,7 @@ async function clearFinished() {
             class="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-foreground"
           >
             {{
-              batch.active
+              queue.active
                 ? $t("pages.utility.render_queue.statuses.rendering")
                 : $t("pages.utility.render_queue.render_pod_booting")
             }}
@@ -587,111 +543,172 @@ async function clearFinished() {
         </div>
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
           <BootSequence
-            v-if="batch.bootInfo"
+            v-if="queue.booting"
             mode="nades"
-            :histories="batch.renders.map((render) => render.status_history)"
+            :histories="inFlight.map((render) => render.status_history)"
             :card="false"
             class="flex-1"
           />
           <div
-            v-if="batch.sample"
+            v-if="queue.sample"
             class="w-full shrink-0 overflow-hidden rounded-md border border-border/50 sm:w-64 lg:w-80"
           >
-            <SnapshotQuickView kind="nades" :id="batch.sample.id" />
+            <SnapshotQuickView kind="nades" :id="queue.sample.id" />
           </div>
         </div>
       </div>
 
-      <ul class="divide-y divide-border/40 border-t border-border/40 px-3">
-        <li v-for="render of batch.renders" :key="render.id" class="py-1.5">
-          <div class="flex items-center gap-2">
-            <component
-              :is="statusIcon(render.status)"
-              class="h-3.5 w-3.5 shrink-0"
-              :class="[
-                STATUS_TONE[render.status],
-                render.status === 'rendering' ? 'animate-spin' : '',
-              ]"
-            />
-            <span class="min-w-0 flex-1 truncate text-xs">
-              {{ render.lineup?.name ?? render.utility_lineup_id }}
-            </span>
-            <span
-              class="shrink-0 font-mono text-[0.6rem] uppercase tabular-nums tracking-[0.14em]"
-              :class="STATUS_TONE[render.status]"
-            >
-              {{ rowStatusLabel(batch, render) }}
-              <template v-if="render.status !== 'queued'">
-                <span aria-hidden="true" class="mx-1 text-border">/</span>
-                {{ progressPct(render) }}%
-              </template>
-              <span aria-hidden="true" class="mx-1 text-border">/</span>
-              <span class="text-muted-foreground">
-                {{ since(render.created_at) }}
-              </span>
-            </span>
-            <Button
-              size="sm"
-              variant="ghost"
-              class="h-6 shrink-0 px-1.5"
-              :loading="busy[render.id]"
-              :title="$t('pages.utility.render_queue.cancel')"
-              @click="cancel(render)"
-            >
-              <X class="h-3.5 w-3.5" />
-            </Button>
-          </div>
-
-          <!-- Second line: how it got here, where it is running, and whether it
-               is still talking. All of it is already on the row. -->
-          <div
-            class="mt-0.5 flex flex-wrap items-center gap-x-1.5 pl-[1.375rem] font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground/80"
+      <!-- In the order the pod films them: the map it is on, then each map
+           it will change the server to. -->
+      <template v-for="map of queue.maps" :key="map.mapName">
+        <div
+          data-queue-map
+          class="flex items-center justify-between gap-2 border-t border-border/40 bg-muted/20 px-3 py-1.5"
+        >
+          <span
+            class="flex items-center gap-1.5 font-mono text-[0.66rem] uppercase tracking-[0.18em]"
+            :class="map.here ? 'text-foreground' : 'text-muted-foreground'"
           >
-            <template v-for="(leg, index) of timeline(render)" :key="index">
-              <span v-if="index > 0" aria-hidden="true" class="text-border">
-                →
+            <span
+              v-if="map.here"
+              data-queue-here
+              role="img"
+              class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+              :title="$t('pages.utility.render_queue.pod_here')"
+              :aria-label="$t('pages.utility.render_queue.pod_here')"
+            />
+            {{ cleanMapName(map.mapName) }}
+          </span>
+          <span
+            class="font-mono text-[0.6rem] uppercase tabular-nums tracking-[0.14em] text-muted-foreground"
+          >
+            {{
+              $t("pages.utility.render_queue.lineups", {
+                count: map.rows.length,
+              })
+            }}
+          </span>
+        </div>
+
+        <ul class="divide-y divide-border/40 border-t border-border/40 px-3">
+          <li
+            v-for="row of map.rows"
+            :key="row.render.id"
+            data-queue-row
+            class="py-1.5"
+          >
+            <div class="flex items-center gap-2">
+              <component
+                :is="statusIcon(row.render.status)"
+                class="h-3.5 w-3.5 shrink-0"
+                :class="[
+                  STATUS_TONE[row.render.status],
+                  row.render.status === 'rendering' ? 'animate-spin' : '',
+                ]"
+              />
+              <span class="min-w-0 flex-1 truncate text-xs">
+                {{ row.render.lineup?.name ?? row.render.utility_lineup_id }}
               </span>
-              <span>
-                {{ legLabel(leg.status) }}
-                <span class="tabular-nums text-muted-foreground/60">
-                  {{ leg.held }}
+              <!-- Said to have stopped only where silence means it: a row
+                   waiting its turn has nothing to say. -->
+              <UtilityRenderWarn
+                v-if="row.stale"
+                data-queue-stale
+                :title="
+                  $t('pages.utility.render_queue.stale', {
+                    since: since(row.render.last_status_at),
+                  })
+                "
+              />
+              <span
+                class="shrink-0 font-mono text-[0.6rem] uppercase tabular-nums tracking-[0.14em]"
+                :class="STATUS_TONE[row.render.status]"
+              >
+                <span data-queue-status>{{ rowStatusLabel(row) }}</span>
+                <template v-if="row.render.status !== 'queued'">
+                  <span aria-hidden="true" class="mx-1 text-border">/</span>
+                  {{ progressPct(row.render) }}%
+                </template>
+                <span aria-hidden="true" class="mx-1 text-border">/</span>
+                <span class="text-muted-foreground">
+                  {{ since(row.render.created_at) }}
                 </span>
               </span>
-            </template>
+              <Button
+                size="sm"
+                variant="ghost"
+                class="h-6 shrink-0 px-1.5"
+                :loading="busy[row.render.id]"
+                :title="$t('pages.utility.render_queue.cancel')"
+                :aria-label="$t('pages.utility.render_queue.cancel')"
+                @click="cancel(row.render)"
+              >
+                <X class="h-3.5 w-3.5" />
+              </Button>
+            </div>
 
-            <template v-if="render.k8s_job_name">
-              <span aria-hidden="true" class="text-border">/</span>
-              <span class="truncate normal-case tracking-normal">
-                {{ render.k8s_job_name }}
-              </span>
-            </template>
+            <!-- Second line: how it got here and where it is running. All of
+                 it is already on the row. -->
+            <div
+              class="mt-0.5 flex flex-wrap items-center gap-x-1.5 pl-[1.375rem] font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground/80"
+            >
+              <template
+                v-for="(leg, index) of timeline(row.render)"
+                :key="index"
+              >
+                <span v-if="index > 0" aria-hidden="true" class="text-border">
+                  →
+                </span>
+                <span>
+                  {{ legLabel(leg.leg) }}
+                  <span class="tabular-nums text-muted-foreground/60">
+                    {{ leg.held }}
+                  </span>
+                </span>
+              </template>
 
-            <template v-if="isStale(render)">
-              <span aria-hidden="true" class="text-border">/</span>
-              <span class="text-warning">
-                {{
-                  $t("pages.utility.render_queue.stale", {
-                    since: since(render.last_status_at),
-                  })
-                }}
-              </span>
-            </template>
-          </div>
+              <template v-if="row.render.k8s_job_name">
+                <span aria-hidden="true" class="text-border">/</span>
+                <span class="truncate normal-case tracking-normal">
+                  {{ row.render.k8s_job_name }}
+                </span>
+              </template>
+            </div>
 
-          <!-- The pod's own words while the render is still queued: the batch
-               job captures the log of a silent boot two minutes in. This is
-               the line that replaces guessing. -->
-          <p
-            v-if="render.error_message"
-            class="mt-0.5 break-words pl-[1.375rem] font-mono text-[0.6rem] text-warning"
-          >
-            {{ render.error_message }}
-          </p>
-        </li>
-      </ul>
+            <!-- The pod's own words while the render is still queued: the
+                 batch job captures the log of a silent boot two minutes in.
+                 This is the line that replaces guessing. -->
+            <p
+              v-if="row.render.error_message"
+              class="mt-0.5 break-words pl-[1.375rem] font-mono text-[0.6rem] text-[hsl(var(--tac-amber))]"
+            >
+              {{ row.render.error_message }}
+            </p>
+          </li>
+        </ul>
+      </template>
     </div>
 
-    <div v-if="finished.length" class="mt-3 rounded-md border border-border">
+    <header
+      v-if="isAdmin && finished.length"
+      class="mt-3 flex items-center justify-end gap-2"
+    >
+      <Button
+        size="sm"
+        variant="ghost"
+        class="h-7 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
+        :loading="clearing"
+        @click="clearFinished()"
+      >
+        {{ $t("pages.utility.render_queue.clear_finished") }}
+      </Button>
+    </header>
+
+    <div
+      v-if="finished.length"
+      class="rounded-md border border-border"
+      :class="isAdmin ? 'mt-1' : 'mt-3'"
+    >
       <ul class="divide-y divide-border">
         <li
           v-for="render of finished"
@@ -729,6 +746,13 @@ async function clearFinished() {
                 <template v-if="render.duration_ms">
                   <span aria-hidden="true" class="mx-1 text-border">/</span>
                   {{ Math.round(Number(render.duration_ms) / 1000) }}s
+                </template>
+                <template v-if="render.status === 'done'">
+                  <span aria-hidden="true" class="mx-1 text-border">/</span>
+                  <UtilityRenderVersion
+                    :version="render.render_version"
+                    :expected="coverage?.version"
+                  />
                 </template>
               </span>
             </div>

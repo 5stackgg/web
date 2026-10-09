@@ -17958,6 +17958,9 @@ export const AllTypesProps: Record<string,any> = {
 		renderUtilityLineupPreview:{
 			utility_lineup_id:"uuid"
 		},
+		renderUtilityLineupPreviews:{
+
+		},
 		reorder_league_divisions:{
 			args:"reorder_league_divisions_args",
 			distinct_on:"league_divisions_select_column",
@@ -31348,6 +31351,9 @@ export const AllTypesProps: Record<string,any> = {
 		utilityLineupMissPattern:{
 			utility_lineup_id:"uuid"
 		},
+		utilityLineupRenderCoverage:{
+
+		},
 		utilityMatchUtilityReport:{
 			match_id:"uuid"
 		},
@@ -44287,6 +44293,7 @@ export const AllTypesProps: Record<string,any> = {
 	utility_lineup_renders_avg_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
@@ -44307,6 +44314,7 @@ export const AllTypesProps: Record<string,any> = {
 		paused:"Boolean_comparison_exp",
 		practice_session:"utility_practice_sessions_bool_exp",
 		progress:"numeric_comparison_exp",
+		render_version:"Int_comparison_exp",
 		requested_by:"players_bool_exp",
 		requested_by_steam_id:"bigint_comparison_exp",
 		session_token:"String_comparison_exp",
@@ -44357,6 +44365,7 @@ export const AllTypesProps: Record<string,any> = {
 		last_status_at:"order_by",
 		map_name:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		session_token:"order_by",
 		skip_reason:"order_by",
@@ -44375,6 +44384,7 @@ export const AllTypesProps: Record<string,any> = {
 		last_status_at:"order_by",
 		map_name:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		session_token:"order_by",
 		skip_reason:"order_by",
@@ -44402,6 +44412,7 @@ export const AllTypesProps: Record<string,any> = {
 		paused:"order_by",
 		practice_session:"utility_practice_sessions_order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by:"players_order_by",
 		requested_by_steam_id:"order_by",
 		session_token:"order_by",
@@ -44437,18 +44448,21 @@ export const AllTypesProps: Record<string,any> = {
 	utility_lineup_renders_stddev_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
 	utility_lineup_renders_stddev_pop_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
 	utility_lineup_renders_stddev_samp_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
@@ -44470,6 +44484,7 @@ export const AllTypesProps: Record<string,any> = {
 	utility_lineup_renders_sum_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
@@ -44487,18 +44502,21 @@ export const AllTypesProps: Record<string,any> = {
 	utility_lineup_renders_var_pop_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
 	utility_lineup_renders_var_samp_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
 	utility_lineup_renders_variance_order_by:{
 		duration_ms:"order_by",
 		progress:"order_by",
+		render_version:"order_by",
 		requested_by_steam_id:"order_by",
 		sort_index:"order_by"
 	},
@@ -45096,6 +45114,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -45162,6 +45181,7 @@ export const AllTypesProps: Record<string,any> = {
 		preview_thumbnail:"String_comparison_exp",
 		preview_thumbnail_url:"String_comparison_exp",
 		preview_url:"String_comparison_exp",
+		preview_version:"Int_comparison_exp",
 		progress:"utility_lineup_progress_bool_exp",
 		progress_aggregate:"utility_lineup_progress_aggregate_bool_exp",
 		public_requested_at:"timestamptz_comparison_exp",
@@ -45322,6 +45342,7 @@ export const AllTypesProps: Record<string,any> = {
 		preview_file:"order_by",
 		preview_rendered_at:"order_by",
 		preview_thumbnail:"order_by",
+		preview_version:"order_by",
 		public_requested_at:"order_by",
 		public_review_note:"order_by",
 		public_reviewed_at:"order_by",
@@ -45379,6 +45400,7 @@ export const AllTypesProps: Record<string,any> = {
 		preview_file:"order_by",
 		preview_rendered_at:"order_by",
 		preview_thumbnail:"order_by",
+		preview_version:"order_by",
 		public_requested_at:"order_by",
 		public_review_note:"order_by",
 		public_reviewed_at:"order_by",
@@ -45461,6 +45483,7 @@ export const AllTypesProps: Record<string,any> = {
 		preview_thumbnail:"order_by",
 		preview_thumbnail_url:"order_by",
 		preview_url:"order_by",
+		preview_version:"order_by",
 		progress_aggregate:"utility_lineup_progress_aggregate_order_by",
 		public_requested_at:"order_by",
 		public_review_note:"order_by",
@@ -45580,6 +45603,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -45612,6 +45636,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -45644,6 +45669,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -45723,6 +45749,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -45766,6 +45793,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -45798,6 +45826,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -45830,6 +45859,7 @@ export const AllTypesProps: Record<string,any> = {
 		practice_players:"order_by",
 		practice_successes:"order_by",
 		preview_duration_ms:"order_by",
+		preview_version:"order_by",
 		public_reviewed_by:"order_by",
 		source_grenade_id:"order_by",
 		trajectory_size:"order_by",
@@ -46482,6 +46512,8 @@ export const AllTypesProps: Record<string,any> = {
 		playbook:"utility_playbooks_bool_exp",
 		playbook_id:"uuid_comparison_exp",
 		region:"String_comparison_exp",
+		render_job_name:"String_comparison_exp",
+		render_seen_at:"timestamptz_comparison_exp",
 		status:"e_utility_practice_statuses_enum_comparison_exp",
 		team:"teams_bool_exp",
 		team_id:"uuid_comparison_exp",
@@ -46510,6 +46542,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		playbook:"utility_playbooks_obj_rel_insert_input",
 		playbook_id:"uuid",
+		render_seen_at:"timestamptz",
 		status:"e_utility_practice_statuses_enum",
 		team:"teams_obj_rel_insert_input",
 		team_id:"uuid",
@@ -46531,6 +46564,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		playbook_id:"order_by",
 		region:"order_by",
+		render_job_name:"order_by",
+		render_seen_at:"order_by",
 		team_id:"order_by",
 		updated_at:"order_by"
 	},
@@ -46550,6 +46585,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		playbook_id:"order_by",
 		region:"order_by",
+		render_job_name:"order_by",
+		render_seen_at:"order_by",
 		team_id:"order_by",
 		updated_at:"order_by"
 	},
@@ -46593,6 +46630,8 @@ export const AllTypesProps: Record<string,any> = {
 		playbook:"utility_playbooks_order_by",
 		playbook_id:"order_by",
 		region:"order_by",
+		render_job_name:"order_by",
+		render_seen_at:"order_by",
 		status:"order_by",
 		team:"teams_order_by",
 		team_id:"order_by",
@@ -46617,6 +46656,7 @@ export const AllTypesProps: Record<string,any> = {
 		map_changing_at:"timestamptz",
 		match_id:"uuid",
 		playbook_id:"uuid",
+		render_seen_at:"timestamptz",
 		status:"e_utility_practice_statuses_enum",
 		team_id:"uuid",
 		updated_at:"timestamptz"
@@ -46647,6 +46687,7 @@ export const AllTypesProps: Record<string,any> = {
 		map_changing_at:"timestamptz",
 		match_id:"uuid",
 		playbook_id:"uuid",
+		render_seen_at:"timestamptz",
 		status:"e_utility_practice_statuses_enum",
 		team_id:"uuid",
 		updated_at:"timestamptz"
@@ -51572,8 +51613,32 @@ export const ReturnTypes: Record<string,any> = {
 		done:"Boolean",
 		throws:"Int"
 	},
+	UtilityRenderBulkOutput:{
+		queued:"Int",
+		skipped:"Int"
+	},
 	UtilityRenderClearOutput:{
 		cleared:"Int"
+	},
+	UtilityRenderCoverageOutput:{
+		current:"Int",
+		lineups:"UtilityRenderGap",
+		missing:"Int",
+		outdated:"Int",
+		pipeline_version:"Int",
+		queued:"Int",
+		total:"Int",
+		unrenderable:"Int",
+		version:"Int"
+	},
+	UtilityRenderGap:{
+		id:"uuid",
+		map_name:"String",
+		name:"String",
+		preview_version:"Int",
+		reason:"String",
+		state:"String",
+		utility_type:"String"
 	},
 	UtilityRenderQueueOutput:{
 		reason:"String",
@@ -60140,6 +60205,7 @@ export const ReturnTypes: Record<string,any> = {
 		remove_league_team_from_season:"league_team_seasons",
 		renameServerItem:"SuccessOutput",
 		renderUtilityLineupPreview:"UtilityRenderQueueOutput",
+		renderUtilityLineupPreviews:"UtilityRenderBulkOutput",
 		reorder_league_divisions:"league_divisions",
 		repairUtilityLineup:"UtilitySolveOutput",
 		reparseAllDemos:"ReparseAllStartedOutput",
@@ -67739,6 +67805,7 @@ export const ReturnTypes: Record<string,any> = {
 		tournaments_aggregate:"tournaments_aggregate",
 		tournaments_by_pk:"tournaments",
 		utilityLineupMissPattern:"UtilityMissPatternOutput",
+		utilityLineupRenderCoverage:"UtilityRenderCoverageOutput",
 		utilityMatchUtilityReport:"UtilityUtilityReportOutput",
 		utilityPracticePlan:"UtilityPracticePlanOutput",
 		utilityPracticeServers:"UtilityPracticeServersOutput",
@@ -73510,6 +73577,7 @@ export const ReturnTypes: Record<string,any> = {
 		paused:"Boolean",
 		practice_session:"utility_practice_sessions",
 		progress:"numeric",
+		render_version:"Int",
 		requested_by:"players",
 		requested_by_steam_id:"bigint",
 		session_token:"String",
@@ -73541,6 +73609,7 @@ export const ReturnTypes: Record<string,any> = {
 	utility_lineup_renders_avg_fields:{
 		duration_ms:"Float",
 		progress:"Float",
+		render_version:"Float",
 		requested_by_steam_id:"Float",
 		sort_index:"Float"
 	},
@@ -73554,6 +73623,7 @@ export const ReturnTypes: Record<string,any> = {
 		last_status_at:"timestamptz",
 		map_name:"String",
 		progress:"numeric",
+		render_version:"Int",
 		requested_by_steam_id:"bigint",
 		session_token:"String",
 		skip_reason:"String",
@@ -73572,6 +73642,7 @@ export const ReturnTypes: Record<string,any> = {
 		last_status_at:"timestamptz",
 		map_name:"String",
 		progress:"numeric",
+		render_version:"Int",
 		requested_by_steam_id:"bigint",
 		session_token:"String",
 		skip_reason:"String",
@@ -73587,42 +73658,49 @@ export const ReturnTypes: Record<string,any> = {
 	utility_lineup_renders_stddev_fields:{
 		duration_ms:"Float",
 		progress:"Float",
+		render_version:"Float",
 		requested_by_steam_id:"Float",
 		sort_index:"Float"
 	},
 	utility_lineup_renders_stddev_pop_fields:{
 		duration_ms:"Float",
 		progress:"Float",
+		render_version:"Float",
 		requested_by_steam_id:"Float",
 		sort_index:"Float"
 	},
 	utility_lineup_renders_stddev_samp_fields:{
 		duration_ms:"Float",
 		progress:"Float",
+		render_version:"Float",
 		requested_by_steam_id:"Float",
 		sort_index:"Float"
 	},
 	utility_lineup_renders_sum_fields:{
 		duration_ms:"Int",
 		progress:"numeric",
+		render_version:"Int",
 		requested_by_steam_id:"bigint",
 		sort_index:"Int"
 	},
 	utility_lineup_renders_var_pop_fields:{
 		duration_ms:"Float",
 		progress:"Float",
+		render_version:"Float",
 		requested_by_steam_id:"Float",
 		sort_index:"Float"
 	},
 	utility_lineup_renders_var_samp_fields:{
 		duration_ms:"Float",
 		progress:"Float",
+		render_version:"Float",
 		requested_by_steam_id:"Float",
 		sort_index:"Float"
 	},
 	utility_lineup_renders_variance_fields:{
 		duration_ms:"Float",
 		progress:"Float",
+		render_version:"Float",
 		requested_by_steam_id:"Float",
 		sort_index:"Float"
 	},
@@ -73850,6 +73928,7 @@ export const ReturnTypes: Record<string,any> = {
 		preview_thumbnail:"String",
 		preview_thumbnail_url:"String",
 		preview_url:"String",
+		preview_version:"Int",
 		progress:"utility_lineup_progress",
 		progress_aggregate:"utility_lineup_progress_aggregate",
 		public_requested_at:"timestamptz",
@@ -73929,6 +74008,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Float",
 		practice_successes:"Float",
 		preview_duration_ms:"Float",
+		preview_version:"Float",
 		public_reviewed_by:"Float",
 		source_grenade_id:"Float",
 		trajectory_size:"Float",
@@ -73978,6 +74058,7 @@ export const ReturnTypes: Record<string,any> = {
 		preview_thumbnail:"String",
 		preview_thumbnail_url:"String",
 		preview_url:"String",
+		preview_version:"Int",
 		public_requested_at:"timestamptz",
 		public_review_note:"String",
 		public_reviewed_at:"timestamptz",
@@ -74039,6 +74120,7 @@ export const ReturnTypes: Record<string,any> = {
 		preview_thumbnail:"String",
 		preview_thumbnail_url:"String",
 		preview_url:"String",
+		preview_version:"Int",
 		public_requested_at:"timestamptz",
 		public_review_note:"String",
 		public_reviewed_at:"timestamptz",
@@ -74088,6 +74170,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Float",
 		practice_successes:"Float",
 		preview_duration_ms:"Float",
+		preview_version:"Float",
 		public_reviewed_by:"Float",
 		source_grenade_id:"Float",
 		trajectory_size:"Float",
@@ -74121,6 +74204,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Float",
 		practice_successes:"Float",
 		preview_duration_ms:"Float",
+		preview_version:"Float",
 		public_reviewed_by:"Float",
 		source_grenade_id:"Float",
 		trajectory_size:"Float",
@@ -74154,6 +74238,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Float",
 		practice_successes:"Float",
 		preview_duration_ms:"Float",
+		preview_version:"Float",
 		public_reviewed_by:"Float",
 		source_grenade_id:"Float",
 		trajectory_size:"Float",
@@ -74187,6 +74272,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Int",
 		practice_successes:"Int",
 		preview_duration_ms:"Int",
+		preview_version:"Int",
 		public_reviewed_by:"bigint",
 		source_grenade_id:"Int",
 		trajectory_size:"Int",
@@ -74220,6 +74306,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Float",
 		practice_successes:"Float",
 		preview_duration_ms:"Float",
+		preview_version:"Float",
 		public_reviewed_by:"Float",
 		source_grenade_id:"Float",
 		trajectory_size:"Float",
@@ -74253,6 +74340,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Float",
 		practice_successes:"Float",
 		preview_duration_ms:"Float",
+		preview_version:"Float",
 		public_reviewed_by:"Float",
 		source_grenade_id:"Float",
 		trajectory_size:"Float",
@@ -74286,6 +74374,7 @@ export const ReturnTypes: Record<string,any> = {
 		practice_players:"Float",
 		practice_successes:"Float",
 		preview_duration_ms:"Float",
+		preview_version:"Float",
 		public_reviewed_by:"Float",
 		source_grenade_id:"Float",
 		trajectory_size:"Float",
@@ -74774,6 +74863,8 @@ export const ReturnTypes: Record<string,any> = {
 		playbook:"utility_playbooks",
 		playbook_id:"uuid",
 		region:"String",
+		render_job_name:"String",
+		render_seen_at:"timestamptz",
 		status:"e_utility_practice_statuses_enum",
 		team:"teams",
 		team_id:"uuid",
@@ -74817,6 +74908,8 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		playbook_id:"uuid",
 		region:"String",
+		render_job_name:"String",
+		render_seen_at:"timestamptz",
 		team_id:"uuid",
 		updated_at:"timestamptz"
 	},
@@ -74838,6 +74931,8 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		playbook_id:"uuid",
 		region:"String",
+		render_job_name:"String",
+		render_seen_at:"timestamptz",
 		team_id:"uuid",
 		updated_at:"timestamptz"
 	},

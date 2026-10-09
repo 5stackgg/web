@@ -54,7 +54,8 @@ import {
   stepOutOf,
   useBackDismiss,
 } from "~/composables/useBackDismiss";
-import { addressOpenMode } from "~/utilities/backDismiss";
+import { addressOpenMode, addressWrites } from "~/utilities/backDismiss";
+import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
 import {
   arriveUtilityPage,
   leaveUtilityPage,
@@ -166,9 +167,8 @@ function readList(key: string): string[] {
 let queryPatch: Record<string, string | null> | null = null;
 let queryMode: "push" | "replace" = "replace";
 
-// What is open because the address says so, and that Back closes: the entry
-// that opens one notes where it is, so the page's own Back can step to just
-// before it however much has been opened over it since.
+// The entry that opens one of these notes where it is, so the page's own
+// Back can step to just before it however much has been opened since.
 const OPENED_BY_ADDRESS = ["lineup", "spot"];
 
 function writeQuery(
@@ -186,44 +186,38 @@ function writeQuery(
   }
 }
 
+// One at a time: each starts from the address the one before it left.
+let writing: Promise<unknown> = Promise.resolve();
+
 function flushQuery() {
   const patch = queryPatch ?? {};
   const mode = queryMode;
   queryPatch = null;
-  const query = { ...route.query } as Record<string, unknown>;
-  let changed = false;
-  for (const [key, value] of Object.entries(patch)) {
-    if ((query[key] ?? null) === (value || null)) {
-      continue;
-    }
-    changed = true;
-    if (value) {
-      query[key] = value;
-    } else {
-      delete query[key];
-    }
-  }
-  if (!changed) {
-    return;
-  }
-  const to = { path: route.path, query: query as any, hash: route.hash };
-  if (mode === "push") {
-    const opening = OPENED_BY_ADDRESS.filter(
-      (key) => patch[key] && !route.query[key],
-    );
-    void router.push({
-      ...to,
-      state: Object.assign({}, ...opening.map(openedHere)),
+  writing = writing.then(() => applyQuery(patch, mode));
+}
+
+async function applyQuery(
+  patch: Record<string, string | null>,
+  mode: "push" | "replace",
+) {
+  const writes = addressWrites(route.query, patch, mode, OPENED_BY_ADDRESS);
+  const at = { path: route.path, hash: route.hash };
+  if (writes.replace) {
+    // Taken out of an entry by hand, that entry has to stop claiming it was
+    // opened there.
+    await router.replace({
+      ...at,
+      query: writes.replace as any,
+      state: Object.assign({}, ...writes.removed.map(notOpenedHere)),
     });
-    return;
   }
-  // Taken out of an entry by hand, that entry has to stop claiming it was
-  // opened there.
-  const removed = OPENED_BY_ADDRESS.filter((key) => patch[key] === null);
-  void router.replace({
-    ...to,
-    state: Object.assign({}, ...removed.map(notOpenedHere)),
-  });
+  if (writes.push) {
+    await router.push({
+      ...at,
+      query: writes.push as any,
+      state: Object.assign({}, ...writes.opening.map(openedHere)),
+    });
+  }
 }
 
 const filters = computed<UtilityFilterState>({
@@ -1440,9 +1434,8 @@ function setDetailId(id: string | null, mode: "push" | "replace") {
   writeQuery({ lineup: id }, mode);
 }
 
-// The page's own Back is the browser's Back when the lineup was opened here;
-// by link there is nothing of ours to step back to, and the lineup comes out
-// of the address.
+// Arrived at by link there is no entry of ours to step back to, and the
+// lineup comes out of the address instead.
 function closeDetail() {
   stepOutOf(router, "lineup", () => setDetailId(null, "replace"));
 }
@@ -1479,17 +1472,17 @@ function skipFromDetail(id: string) {
 // Reviewing, restoring and deleting all take the row out of the list you were
 // reading, so the lineup closes first instead of turning into a fetched orphan.
 function reviewFromDetail(id: string, approve: boolean) {
-  setDetailId(null, "replace");
+  closeDetail();
   void reviewPublic(id, approve);
 }
 
 function restoreFromDetail(id: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   void restoreLineup(id);
 }
 
 function deleteFromDetail(id: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   startDelete(id);
 }
 
@@ -1522,13 +1515,7 @@ const covered = computed(
 watch(covered, (on, was) => {
   if (on && !was) {
     listScrollTop = listScroller.value?.scrollTop ?? 0;
-    if (isMobile.value) {
-      sheet.value?.hold();
-    }
   } else if (!on && was) {
-    if (isMobile.value) {
-      sheet.value?.release();
-    }
     nextTick(() => {
       if (listScroller.value) {
         listScroller.value.scrollTop = listScrollTop;
@@ -1536,6 +1523,21 @@ watch(covered, (on, was) => {
     });
   }
 });
+
+// Watched, not read once on mount: on a hard load the media query reports
+// after the first paint, and a link straight to a lineup would find a desktop
+// column where there is about to be a sheet.
+watch(
+  [() => covered.value && isMobile.value, sheet],
+  ([held, instance]) => {
+    if (held) {
+      instance?.hold();
+    } else {
+      instance?.release();
+    }
+  },
+  { flush: "post", immediate: true },
+);
 
 // Picking a tab means you want to see it, and the lineup, the spot and the
 // server all sit over whatever the tab is showing -- so a tab switch put the
@@ -1689,13 +1691,13 @@ function togglePractice() {
 // Fork and archive are asked for from inside the dialog; both open a dialog of
 // their own, so the detail has to get out of the way first.
 function forkFromDetail(id: string, name: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   forkLineup.value = { id, name };
   forkOpen.value = true;
 }
 
 function archiveFromDetail(id: string, name: string) {
-  setDetailId(null, "replace");
+  closeDetail();
   archiveLineup.value = { id, name };
   archiveOpen.value = true;
 }
@@ -1871,7 +1873,7 @@ function onArchived(id: string) {
 // picked, then the selected lineup, then the spot popover it was picked from. Dialogs handle
 // their own Escape, and a key pressed while typing belongs to the field.
 function closeTopLayer(event: KeyboardEvent) {
-  if (event.key !== "Escape" || event.defaultPrevented) {
+  if (event.key !== "Escape" || escapeTaken(event)) {
     return;
   }
   const target = event.target instanceof Element ? event.target : null;
@@ -1883,7 +1885,7 @@ function closeTopLayer(event: KeyboardEvent) {
     )
   ) {
     practiceOpen.value = false;
-    event.preventDefault();
+    takeEscape(event);
     return;
   }
   if (
@@ -1898,7 +1900,7 @@ function closeTopLayer(event: KeyboardEvent) {
     return;
   }
   selectedId.value = null;
-  event.preventDefault();
+  takeEscape(event);
 }
 
 onMounted(() => {
@@ -1909,11 +1911,6 @@ onMounted(() => {
     window.setTimeout(() => (arriving.value = false), 600);
   }
   window.addEventListener("keydown", closeTopLayer);
-  // A link straight to a lineup or a spot, on a phone: the sheet was not
-  // there to raise when the route was first read.
-  if (covered.value && isMobile.value) {
-    sheet.value?.hold();
-  }
 });
 onBeforeUnmount(() => window.removeEventListener("keydown", closeTopLayer));
 
@@ -2148,10 +2145,6 @@ function selectLineup(id: string | null) {
         :class="arriving ? 'utility-arrive' : ''"
         class="utility-card flex min-h-0 flex-col overflow-hidden md:sticky md:top-4 md:h-[calc(100dvh-var(--header-height,4rem)-2rem)] md:self-start md:rounded-2xl md:border md:border-white/[0.08] md:bg-sidebar md:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.85)]"
       >
-        <!-- All the sheet leaves on screen at its lowest, on a phone: the
-             map has the rest, and what it draws can still be narrowed from
-             here. Where the types do not apply, the strip only says which
-             tab is under it. -->
         <template #peek>
           <div
             v-if="typeFilterApplies"
@@ -2596,6 +2589,7 @@ function selectLineup(id: string | null) {
                     type="button"
                     class="group sticky top-0 z-10 -mx-4 flex h-7 w-[calc(100%+2rem)] cursor-grab touch-none items-center justify-center rounded-t-xl bg-sidebar focus-visible:outline-none active:cursor-grabbing"
                     :aria-label="$t('common.close')"
+                    data-no-sheet-drag
                     @pointerdown="onDrawerGrab"
                     @pointermove="onDrawerPull"
                     @pointerup="onDrawerRelease"

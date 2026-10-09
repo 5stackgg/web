@@ -31,6 +31,7 @@ import type {
 } from "~/utilities/utilityDisplay";
 import type { UtilityLineup } from "~/types/utility";
 import {
+  DOUBLE_TAP_MS,
   TAP_MAX_MS,
   TAP_SLOP_PX,
   dragZoom,
@@ -47,8 +48,10 @@ import {
   hitRadius,
   markInk,
   maxZoomFor,
-  nearestMark,
+  tapTarget,
+  type TapTarget,
 } from "~/utilities/boardMarks";
+import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
 
 // The zoom stack is pinned to the shell, not to the square, so a class from
 // the call site still has to land on the square -- that is where the frame is.
@@ -702,8 +705,8 @@ function onMetaClick(marker: MetaMarker) {
 // both listeners sit on window. The board mounts first so it hears the key
 // first; marking the event handled stops one press closing two layers.
 function onKeydown(event: KeyboardEvent) {
-  if (event.key === "Escape" && !event.defaultPrevented && openCluster.value) {
-    event.preventDefault();
+  if (event.key === "Escape" && !escapeTaken(event) && openCluster.value) {
+    takeEscape(event);
     beginFan(null);
   }
 }
@@ -783,7 +786,6 @@ const panY = ref(0);
 const viewportRef = ref<HTMLElement | null>(null);
 const { width: frameWidth } = useElementSize(viewportRef);
 
-// How far in is worth going depends on the picture: see maxZoomFor.
 const radarWidth = ref(0);
 const maxZoom = computed(() =>
   maxZoomFor(radarWidth.value, frameWidth.value, ZOOM_CEILING),
@@ -848,15 +850,12 @@ let captured = false;
 // to pan the map and then register a pick at the end of it.
 const DRAG_SLOP = 3;
 
-// The zoom the board is LAID OUT at, as opposed to the one it is drawn at.
-// At rest they are the same and the board really is that many times the
-// frame's size, so the radar and everything on it are painted at the size
-// they are seen at. A scale transform alone leaves that to the browser, and
-// one that keeps the board on a layer of its own paints it once at 1x and
-// stretches the bitmap: a soft map, and marks that were sub-pixel when
-// painted turning up as faint smudges. While something is moving the
-// difference rides the transform instead, which costs no layout, and the
-// board is laid out again where it comes to rest.
+// The zoom the board is LAID OUT at, as opposed to the one it is drawn at. A
+// scale transform on a layer of its own is painted once at 1x and stretched:
+// a soft map, and marks that were sub-pixel when painted turning up as faint
+// smudges. So at rest the board really is that many times the frame's size,
+// and only while something moves does the difference ride the transform,
+// which costs no layout.
 const laidZoom = ref(1);
 
 const boardStyle = computed(() => {
@@ -869,9 +868,8 @@ const boardStyle = computed(() => {
     top: `${(1 - laid) * 50}%`,
     transform: `translate(${panX.value}px, ${panY.value}px) scale(${zoom.value / laid})`,
     transformOrigin: "center center",
-    // will-change pins the layer's raster at the scale it was promoted at.
-    // It buys smoothness during a drag and costs sharpness the rest of the
-    // time, so it is only on while something is actually moving.
+    // will-change pins the layer's raster at the scale it was promoted at:
+    // smooth during a drag, soft the rest of the time.
     willChange: moving ? "transform" : "auto",
     transition: easing.value
       ? `transform ${ZOOM_EASE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`
@@ -879,19 +877,10 @@ const boardStyle = computed(() => {
   };
 });
 
-// The whole board is magnified as one, which is right for the map and wrong
-// for everything drawn on it: at 4x a 2px ring stroke is 8px of ink and a
-// 14px count is 56px of type sitting across half a bombsite. Anything that is
-// ink rather than distance is multiplied by this, so it holds its size on
-// screen at every zoom -- and on every board: the svg is stretched to the
-// frame, so on a phone the same numbers used to come out a third the size.
-// Radii do NOT -- a meta ring's radius is how far apart the throws in that
-// cluster actually landed, which is a distance on the map and has to scale
-// with it.
-//
-// A finger covers what it points at, so under one the marks are drawn
-// larger. Whatever is drawn, what is hit has a size of its own that it never
-// goes under: 44px for a finger, 24px for a mouse.
+// Anything that is ink rather than distance is multiplied by this, so it
+// holds its size on screen at every zoom and on every board. Radii are NOT:
+// a meta ring's radius is how far apart the throws in that cluster landed,
+// which is a distance on the map and has to scale with it.
 const coarse = useMediaQuery("(pointer: coarse)");
 const ink = computed(() =>
   markInk(zoom.value, frameWidth.value, CANVAS, coarse.value),
@@ -998,17 +987,24 @@ const WHEEL_DELTA_CAP = 60;
 // Time constant of the glide; frame-rate independent, so 120Hz is not faster.
 const WHEEL_GLIDE_MS = 50;
 
+const WHEEL_REST_MS = 140;
+
 let wheelTarget = 1;
 let wheelX = 0;
 let wheelY = 0;
 let wheelFrame = 0;
 let wheelLast = 0;
+let wheelRest: ReturnType<typeof setTimeout> | null = null;
 const wheeling = ref(false);
 
 function stopWheel() {
   cancelAnimationFrame(wheelFrame);
   wheelFrame = 0;
   wheelLast = 0;
+  if (wheelRest) {
+    clearTimeout(wheelRest);
+    wheelRest = null;
+  }
   wheeling.value = false;
 }
 
@@ -1048,7 +1044,12 @@ function onWheel(event: WheelEvent) {
   wheelX = event.clientX;
   wheelY = event.clientY;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    wheeling.value = true;
     zoomAt(wheelTarget, wheelX, wheelY);
+    if (wheelRest) {
+      clearTimeout(wheelRest);
+    }
+    wheelRest = setTimeout(stopWheel, WHEEL_REST_MS);
     return;
   }
   if (!wheelFrame) {
@@ -1057,11 +1058,6 @@ function onWheel(event: WheelEvent) {
   }
 }
 
-// One path for mouse, pen and fingers. What a press turns out to be is decided
-// as it goes: it stays a tap until it wanders or lingers, becomes a pan when
-// it moves, a pinch when a second finger lands, and a one-finger zoom when it
-// is the second tap of a double tap that drags instead of lifting.
-//
 // Capture is deliberately NOT taken on the press. While a pointer capture is
 // set, the compatibility click is dispatched at the capturing element instead
 // of the element under the pointer -- so capturing the viewport on press meant
@@ -1089,7 +1085,6 @@ let pinch: {
   t: number;
   still: boolean;
 } | null = null;
-// A second finger was down at some point, so nothing in this gesture is a tap.
 let pinched = false;
 let lastTap: MapSample | null = null;
 let tapZoom: { zoom: number; y: number; x: number } | null = null;
@@ -1231,6 +1226,9 @@ function onPointerDown(event: PointerEvent) {
     event.pointerType !== "mouse" && isDoubleTap(lastTap, tap)
       ? { zoom: zoom.value, x: tap.x, y: tap.y }
       : null;
+  if (tapZoom) {
+    forget();
+  }
 }
 
 function onPointerMove(event: PointerEvent) {
@@ -1294,6 +1292,7 @@ function onPointerMove(event: PointerEvent) {
   }
 
   if (tapZoom) {
+    panning.value = true;
     zoomAt(
       dragZoom(tapZoom.zoom, at.y - tapZoom.y),
       tapZoom.x,
@@ -1314,7 +1313,6 @@ function onPointerMove(event: PointerEvent) {
   }
 }
 
-// Back inside the limits after a pinch that pulled past one.
 function settleZoom(clientX: number, clientY: number) {
   if (zoom.value < MIN_ZOOM || zoom.value > maxZoom.value) {
     easeZoom(() => zoomAt(zoom.value, clientX, clientY));
@@ -1358,7 +1356,6 @@ function onPointerUp(event: PointerEvent) {
     target.releasePointerCapture?.(event.pointerId);
   }
 
-  // A finger left on the map after a pinch carries on as a pan.
   if (pointers.size === 1 && pinched) {
     const [[id, at]] = [...pointers.entries()];
     press = {
@@ -1507,24 +1504,106 @@ function worldAt(clientX: number, clientY: number) {
   );
 }
 
-// With a finger the targets are a fingertip wide and overlap wherever two
-// marks are close, so the one that takes the tap is only the one drawn last.
-// The tap goes to whichever is nearest instead.
-function onMarkerClick(id: string, event: MouseEvent) {
-  const rect = svgRef.value?.getBoundingClientRect();
-  if (!coarse.value || !rect?.width || !rect.height) {
+function activate(key: string) {
+  const split = key.indexOf(":");
+  const kind = key.slice(0, split);
+  const id = key.slice(split + 1);
+  if (kind === "lineup") {
     emit("select", id);
+  } else if (kind === "badge") {
+    beginFan(id);
+  } else {
+    const ring = metaMarkers.value.find((marker) => marker.key === id);
+    if (ring) {
+      onMetaClick(ring);
+    }
+  }
+}
+
+function tapTargets(): TapTarget[] {
+  const reach = touchReach.value;
+  const drawn = 9 * ink.value;
+  const targets: TapTarget[] = markers.value.flatMap((marker) =>
+    [marker.origin, marker.landing].flatMap((point) =>
+      point
+        ? [{ key: `lineup:${marker.id}`, ...point, within: reach * 1.25, drawn }]
+        : [],
+    ),
+  );
+  if (!props.metaInteractive || props.picking) {
+    return targets;
+  }
+  for (const marker of metaMarkers.value) {
+    if (!metaStacked(marker)) {
+      targets.push({
+        key: `ring:${marker.key}`,
+        ...metaTarget(marker),
+        within: Math.max(marker.radius, reach),
+        drawn,
+      });
+    }
+  }
+  for (const cluster of metaClusters.value) {
+    if (openCluster.value !== cluster.cluster) {
+      targets.push({
+        key: `badge:${cluster.cluster}`,
+        x: cluster.anchor.x + cluster.radius * 0.72,
+        y: cluster.anchor.y - cluster.radius * 0.72,
+        within: reach,
+        drawn,
+      });
+    }
+  }
+  return targets;
+}
+
+let waiting: { timer: ReturnType<typeof setTimeout>; key: string } | null =
+  null;
+
+function forget() {
+  if (!waiting) {
     return;
   }
-  const at = {
+  clearTimeout(waiting.timer);
+  if (waiting.key.startsWith("lineup:")) {
+    emit("hover", null);
+  }
+  waiting = null;
+}
+
+onBeforeUnmount(forget);
+
+// `hit` is what the browser found under the press, which is all a mouse
+// needs. Under a finger the nearest thing is the one meant. A tap on the mark
+// as drawn opens it at once; one in the 44px of room round it waits out the
+// double-tap window, or every double tap to zoom on a busy map would open
+// whatever was nearest its first tap.
+function onTap(hit: string, event: MouseEvent) {
+  const rect = svgRef.value?.getBoundingClientRect();
+  if (!coarse.value || !rect?.width || !rect.height) {
+    activate(hit);
+    return;
+  }
+  const target = tapTarget(tapTargets(), {
     x: ((event.clientX - rect.left) / rect.width) * CANVAS,
     y: ((event.clientY - rect.top) / rect.height) * CANVAS,
+  });
+  const key = target?.key ?? hit;
+  forget();
+  if (target?.direct) {
+    activate(key);
+    return;
+  }
+  if (key.startsWith("lineup:")) {
+    emit("hover", key.slice("lineup:".length));
+  }
+  waiting = {
+    key,
+    timer: setTimeout(() => {
+      waiting = null;
+      activate(key);
+    }, DOUBLE_TAP_MS),
   };
-  const points = markers.value.flatMap((marker) => [
-    { id: marker.id, ...marker.origin },
-    ...(marker.landing ? [{ id: marker.id, ...marker.landing }] : []),
-  ]);
-  emit("select", nearestMark(points, at, touchReach.value * 1.25) ?? id);
 }
 
 function onBoardClick(event: MouseEvent) {
@@ -1844,7 +1923,7 @@ function trailPath(marker: Marker) {
                   metaStacked(meta) ? 'meta-marker--stacked' : '',
                   metaMuted(meta) ? 'meta-marker--muted' : '',
                 ]"
-                @click.stop="onMetaClick(meta)"
+                @click.stop="onTap(`ring:${meta.key}`, $event)"
                 @mouseenter="onMetaHover(meta.key)"
                 @mouseleave="onMetaHover(null)"
               >
@@ -1915,7 +1994,7 @@ function trailPath(marker: Marker) {
                 v-if="openCluster !== cluster.cluster"
                 class="meta-badge cursor-pointer"
                 :class="metaMuted(cluster) ? 'meta-marker--muted' : ''"
-                @click.stop="beginFan(cluster.cluster)"
+                @click.stop="onTap(`badge:${cluster.cluster}`, $event)"
               >
                 <circle
                   v-if="coarse"
@@ -1962,7 +2041,7 @@ function trailPath(marker: Marker) {
               :ref="(el) => trackMarker(marker.id, el)"
               :data-peek-line="marker.id"
               :class="picking ? 'pointer-events-none' : 'cursor-pointer'"
-              @click.stop="onMarkerClick(marker.id, $event)"
+              @click.stop="onTap(`lineup:${marker.id}`, $event)"
               @mouseenter="emit('hover', marker.id)"
               @mouseleave="emit('hover', null)"
             >

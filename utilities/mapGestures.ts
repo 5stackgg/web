@@ -1,7 +1,6 @@
-// The arithmetic behind the radar's touch handling, kept free of the DOM so it
-// can be checked without a phone. Points are in frame pixels measured from the
-// frame's centre, which is where the board's transform has its origin: a map
-// point `c` is drawn at `pan + c * zoom`.
+// Points are in frame pixels measured from the frame's centre, which is where
+// the board's transform has its origin: a map point `c` is drawn at
+// `pan + c * zoom`.
 
 export type MapPoint = { x: number; y: number };
 export type MapView = { zoom: number; x: number; y: number };
@@ -24,11 +23,8 @@ function middle(a: MapPoint, b: MapPoint): MapPoint {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 }
 
-/**
- * A zoom limit that gives a little before it stops: past either end the zoom
- * keeps following the fingers, less and less, and never gets further than
- * `give` (in log units) beyond it. Inside the range it is the zoom itself.
- */
+// Past either limit the zoom keeps following the fingers, less and less, and
+// never gets further than `give` (in log units) beyond it.
 export function resistZoom(
   zoom: number,
   min: number,
@@ -58,12 +54,9 @@ export function clampMapPan(view: MapView, frame: MapFrame): MapView {
   };
 }
 
-/**
- * Two fingers on the map. Worked from where the pinch STARTED rather than
- * from the last frame, so the resistance at the limits does not compound and
- * the map point that was between the fingers stays between them: it zooms
- * about their midpoint and pans with it in one move.
- */
+// Worked from where the pinch STARTED rather than from the last frame, so the
+// resistance at the limits does not compound and the map point that was
+// between the fingers stays between them.
 export function pinchView(
   start: MapView,
   from: [MapPoint, MapPoint],
@@ -115,11 +108,8 @@ export function dragZoom(startZoom: number, dragY: number, rate = 0.01) {
 
 export type MapSample = { t: number; x: number; y: number };
 
-/**
- * How fast the finger was going when it left, in px/ms, from the samples of
- * the last `windowMs`. A finger that stopped before lifting has no recent
- * samples to speak of and so no fling.
- */
+// px/ms over the last `windowMs`: a finger that stopped before lifting has
+// no recent samples and so no fling.
 export function releaseVelocity(
   samples: MapSample[],
   now: number,
@@ -143,11 +133,8 @@ export function releaseVelocity(
 
 export const MOMENTUM_STOP = 0.02;
 
-/**
- * One frame of the glide after a fling: the speed decays exponentially, so
- * the map slows the whole way rather than stopping dead, and the step is
- * exact for any frame length (a 120Hz screen does not glide further).
- */
+// Exponential decay, exact for any frame length: a 120Hz screen does not
+// glide further.
 export function momentumStep(
   velocity: MapPoint,
   dtMs: number,

@@ -4,6 +4,11 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useRouter } from "#app";
 import UtilityMapPage from "~/pages/utility/[map].vue";
 import metadata from "~/public/radars/metadata.json";
+import { useAuthStore } from "~/stores/AuthStore";
+import { pageKeyWithoutTabQuery, utilityOutletKey } from "~/utilities/pageKey";
+import { keepForwardEntriesOnReplace } from "../../helpers/browserHistory";
+
+keepForwardEntriesOnReplace();
 
 const lineup = {
   id: "11111111-1111-4111-8111-111111111111",
@@ -53,13 +58,18 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
   }),
 }));
 
-const layout = vi.hoisted(() => ({ mobile: false }));
+// Which layout the page is in. One ref, so a test can change it under a
+// mounted page the way a media query does when it first reports.
+const layout = vi.hoisted(() => ({
+  isMobile: null as unknown as { value: boolean },
+}));
 
 vi.mock("~/components/ui/sidebar/utils", async (original) => {
   const { ref } = await import("vue");
+  layout.isMobile = ref(false);
   return {
     ...(await original<Record<string, unknown>>()),
-    useSidebar: () => ({ isMobile: ref(layout.mobile) }),
+    useSidebar: () => ({ isMobile: layout.isMobile }),
   };
 });
 
@@ -75,7 +85,7 @@ let wrapper: Wrapper | undefined;
 beforeEach(() => {
   graphql.lists.length = 0;
   graphql.all = 0;
-  layout.mobile = false;
+  layout.isMobile.value = false;
   vi.stubGlobal(
     "fetch",
     vi.fn(async () => new Response(JSON.stringify(metadata))),
@@ -90,17 +100,44 @@ afterEach(() => {
 });
 
 // The lineup's 3D view wants a WebGL context, which there is none of here.
-async function mountPage() {
+// `route` false mounts the page on wherever the router already is.
+async function mountPage(
+  route: string | false = "/utility/de_mirage",
+  stubs: Record<string, boolean> = {},
+) {
   const mounted = await mountSuspended(UtilityMapPage, {
-    route: "/utility/de_mirage",
+    route,
     attachTo: document.body,
-    global: { stubs: { UtilityLineupViewer3D: true, ClipPlayer: true } },
+    global: {
+      stubs: { UtilityLineupViewer3D: true, ClipPlayer: true, ...stubs },
+    },
   });
   await settle();
   return mounted;
 }
 
 const position = () => Number(window.history.state.position);
+
+async function rowsListed() {
+  await vi.waitFor(
+    () => expect(document.querySelector("[role='button']")).not.toBeNull(),
+    { timeout: 3000 },
+  );
+  await settle();
+}
+
+// The page is one page for as long as these two say so: the app keys its
+// outlet on the first and the utility shell keys its own on the second, and a
+// change in either is the page torn down and built again.
+function pageKeys() {
+  const route = useRouter().currentRoute.value;
+  return [pageKeyWithoutTabQuery(route), utilityOutletKey(route)];
+}
+
+const detailBack = () =>
+  Array.from(document.querySelectorAll("button")).find(
+    (button) => button.textContent?.trim() === "Back",
+  ) as HTMLButtonElement;
 
 describe("the utility map page and the browser's history", () => {
   it("stays the same page through open a lineup, Back, Forward", async () => {
@@ -122,19 +159,25 @@ describe("the utility map page and the browser's history", () => {
     const asked = graphql.all;
     expect(listed).toBeGreaterThan(0);
 
+    const keys = pageKeys();
+    expect(keys).toEqual(["/utility", "/utility/:map"]);
+
     await row.trigger("click");
     await settle();
     expect(router.currentRoute.value.query.lineup).toBe(lineup.id);
     expect(Number(window.history.state.position)).toBe(start + 1);
+    expect(pageKeys()).toEqual(keys);
 
     router.back();
     await settle();
     expect(router.currentRoute.value.query.lineup).toBeUndefined();
     expect(Number(window.history.state.position)).toBe(start);
+    expect(pageKeys()).toEqual(keys);
 
     router.forward();
     await settle();
     expect(router.currentRoute.value.query.lineup).toBe(lineup.id);
+    expect(pageKeys()).toEqual(keys);
 
     router.back();
     await settle();
@@ -180,9 +223,130 @@ describe("the utility map page and the browser's history", () => {
   });
 });
 
+describe("the page's own Back on a lineup", () => {
+  it("keeps what was written to the address while the lineup was open", async () => {
+    wrapper = await mountPage();
+    const router = useRouter();
+    await rowsListed();
+    const start = position();
+
+    (document.querySelector("[role='button']") as HTMLElement).click();
+    await settle();
+    expect(position()).toBe(start + 1);
+
+    // The meta overlay switched on in the board's header, say.
+    await router.replace({
+      path: router.currentRoute.value.path,
+      query: { ...router.currentRoute.value.query, meta: "1" },
+    });
+    await settle();
+
+    detailBack().click();
+    await settle();
+    expect(position()).toBe(start);
+    expect(router.currentRoute.value.query).toEqual({ meta: "1" });
+
+    await router.replace({ path: router.currentRoute.value.path, query: {} });
+    await settle();
+  });
+
+  it("lands on the list after a lineup saved from the Create tab", async () => {
+    const auth = useAuthStore();
+    auth.me = { steam_id: "76561198000000001", teams: [] } as any;
+    auth.hasCheckedSession = true;
+    wrapper = await mountPage("/utility/de_mirage?tab=create", {
+      UtilityCreatePanel: true,
+    });
+    const router = useRouter();
+    const start = position();
+    expect(router.currentRoute.value.query.tab).toBe("create");
+
+    // Saving files the lineup under Lineups and opens it, in one go.
+    wrapper.findComponent({ name: "UtilityCreatePanel" }).vm.$emit(
+      "created",
+      lineup.id,
+    );
+    await settle();
+    await settle();
+    expect(router.currentRoute.value.query).toEqual({ lineup: lineup.id });
+    expect(position()).toBe(start + 1);
+    expect(window.history.state.back).toBe("/utility/de_mirage");
+
+    router.back();
+    await settle();
+    expect(position()).toBe(start);
+    expect(router.currentRoute.value.query).toEqual({});
+
+    auth.me = undefined;
+  });
+
+  it("steps out of the entry when the lineup is closed for a dialog, too", async () => {
+    wrapper = await mountPage();
+    const router = useRouter();
+    await rowsListed();
+    const start = position();
+
+    (document.querySelector("[role='button']") as HTMLElement).click();
+    await settle();
+    expect(position()).toBe(start + 1);
+
+    wrapper.findComponent({ name: "UtilityLineupDetail" }).vm.$emit(
+      "archive",
+      lineup.id,
+      lineup.name,
+    );
+    await settle();
+    // The entry the lineup was opened on is gone with it: Back from here
+    // leaves the list rather than doing nothing.
+    expect(position()).toBe(start);
+    expect(router.currentRoute.value.query.lineup).toBeUndefined();
+  });
+});
+
+describe("a lineup arrived at by link", () => {
+  it("is left by the browser's Back for wherever the link was followed from", async () => {
+    const router = useRouter();
+    await router.push("/faq");
+    await router.push(`/utility/de_mirage?lineup=${lineup.id}`);
+    await settle();
+    const linked = position();
+
+    wrapper = await mountPage(false);
+    await rowsListed();
+    // Nothing of the page's own sits between the visitor and where they
+    // came from.
+    expect(position()).toBe(linked);
+
+    router.back();
+    await settle();
+    expect(router.currentRoute.value.path).toBe("/faq");
+  });
+
+  it("is taken out of the address by the page's Back, on the same entry", async () => {
+    const router = useRouter();
+    await router.push("/faq");
+    await router.push(`/utility/de_mirage?lineup=${lineup.id}`);
+    await settle();
+    const linked = position();
+
+    wrapper = await mountPage(false);
+    await rowsListed();
+    detailBack().click();
+    await settle();
+
+    expect(position()).toBe(linked);
+    expect(router.currentRoute.value.path).toBe("/utility/de_mirage");
+    expect(router.currentRoute.value.query.lineup).toBeUndefined();
+
+    router.back();
+    await settle();
+    expect(router.currentRoute.value.path).toBe("/faq");
+  });
+});
+
 describe("the utility map page on a phone", () => {
   beforeEach(() => {
-    layout.mobile = true;
+    layout.isMobile.value = true;
     Object.defineProperty(window, "innerHeight", {
       value: 800,
       configurable: true,
@@ -281,5 +445,43 @@ describe("the utility map page on a phone", () => {
     expect(graphql.lists.length).toBe(listed);
     router.back();
     await settled();
+  });
+
+  it("closes a lineup on Escape, with the sheet there", async () => {
+    wrapper = await mountPage();
+    const router = useRouter();
+    await rowsListed();
+    await settled();
+    const start = position();
+
+    (document.querySelector("[role='button']") as HTMLElement).click();
+    await settled();
+    expect(position()).toBe(start + 1);
+
+    // The sheet is a drawer that cannot be dismissed, and a drawer answers
+    // Escape by cancelling it for everyone else.
+    window.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await settled();
+    expect(router.currentRoute.value.query.lineup).toBeUndefined();
+    expect(position()).toBe(start);
+    expect(sheet().getAttribute("data-state")).toBe("open");
+  });
+
+  it("raises the sheet for a linked lineup once the layout turns out to be a phone's", async () => {
+    // The first paint of a hard load has not heard from the media query yet.
+    layout.isMobile.value = false;
+    wrapper = await mountPage(`/utility/de_mirage?lineup=${lineup.id}`);
+    await settle();
+
+    layout.isMobile.value = true;
+    await settled();
+    expect(sheet()).not.toBeNull();
+    expect(offset()).toBe(0);
   });
 });

@@ -1,12 +1,7 @@
-// Where the map's bottom sheet rests. The sheet itself is the shared Drawer
-// (vaul): it follows the finger, decides which resting place a release goes
-// to, and animates there. What is here is the arithmetic between the page's
-// three named places and the snap points vaul is given.
-//
-// An offset is how far the sheet is pushed down from fully open, in px.
+// The arithmetic between the three places the map's bottom sheet rests and
+// the snap points vaul is given. An offset is how far the sheet is pushed
+// down from fully open, in px.
 
-// Open over the map, sharing the screen with it, or down to a strip along
-// the bottom edge that leaves the map the rest.
 export type SheetSnap = "full" | "half" | "peek";
 
 export type SheetDetents = Partial<Record<SheetSnap, number>> & {
@@ -14,10 +9,7 @@ export type SheetDetents = Partial<Record<SheetSnap, number>> & {
   half: number;
 };
 
-/**
- * Each resting place as an offset, from how tall the sheet is at it. A sheet
- * with nothing to show in a strip (`peek` null) has no peek to rest at.
- */
+// `peek` null is a sheet with nothing to show in a strip: it has no peek.
 export function sheetDetents(
   full: number,
   half: number,
@@ -30,7 +22,6 @@ export function sheetDetents(
   return detents;
 }
 
-/** Which resting place an offset is, or is nearest to. */
 export function sheetSnapAt(offset: number, detents: SheetDetents): SheetSnap {
   let nearest: SheetSnap = "full";
   for (const snap of ["half", "peek"] as const) {
@@ -48,11 +39,10 @@ export function sheetSnapAt(offset: number, detents: SheetDetents): SheetSnap {
 export type SheetPoint = { snap: SheetSnap; point: string };
 
 /**
- * The resting places as vaul wants them: lowest first, each a px height
- * measured up from the bottom of the window, which it turns back into an
- * offset by taking it from the window's height. Fully open is the whole
- * window by that measure, so the sheet has nothing left to travel there --
- * vaul only lets a list inside scroll once the sheet is at zero.
+ * As vaul wants them: lowest first, each a px height measured up from the
+ * bottom of the window, which it turns back into an offset. Fully open is the
+ * whole window by that measure, so the sheet has nothing left to travel
+ * there -- vaul only lets a list inside scroll once the sheet is at zero.
  */
 export function sheetSnapPoints(
   detents: SheetDetents,
@@ -66,21 +56,17 @@ export function sheetSnapPoints(
     }));
 }
 
-/**
- * The page's name for a snap point vaul reports. Null for anything that is
- * not one of ours: let go at the lowest one with a flick downwards, a sheet
- * that cannot be dismissed reports no snap point at all.
- */
+// Null for anything that is not one of ours: let go at the lowest snap with a
+// flick downwards, a drawer that cannot be dismissed reports none at all.
 export function sheetSnapOf(point: unknown, points: SheetPoint[]) {
   return points.find((entry) => entry.point === point)?.snap ?? null;
 }
 
 /**
- * Where a release ends up, given where the drawer wants to send it. One
- * place at a time: a flick goes to the next place the way it was thrown, and
- * further only past places the sheet had already been dragged beyond. The
- * drawer sends every upward flick to its top snap point and every hard fling
- * down to its bottom one, which from the peek skips the list.
+ * vaul sends every upward flick to its top snap point and every hard fling
+ * down to its bottom one, which from the peek skips the list. One place at a
+ * time instead: further only past places the sheet was already dragged
+ * beyond.
  */
 export function sheetReleaseTarget(
   from: SheetSnap,
@@ -109,11 +95,7 @@ export function sheetReleaseTarget(
   return places[reached + step];
 }
 
-/**
- * How much of the strip shows: none at half and above, all of it at the
- * peek, and in step with the sheet in between so one fades into the other
- * under the finger.
- */
+// How much of the peek's strip shows: none at half, all of it at the peek.
 export function sheetPeekShare(offset: number, detents: SheetDetents) {
   if (detents.peek === undefined || detents.peek <= detents.half) {
     return 0;
@@ -122,19 +104,16 @@ export function sheetPeekShare(offset: number, detents: SheetDetents) {
   return Math.min(1, Math.max(0, share));
 }
 
-/**
- * Where a tap on the handle sends the sheet: up out of the peek to where the
- * list is, and otherwise between that and fully open.
- */
+// A tap on the handle comes up out of the peek to half, never straight to
+// full.
 export function sheetTapTarget(snap: SheetSnap): SheetSnap {
   return snap === "half" ? "full" : "half";
 }
 
 /**
- * Whose a drag inside the sheet is, once it has moved far enough to tell.
- * Sideways it is whatever was under the finger. Below fully open nothing
- * inside scrolls, so up or down moves the sheet; fully open, the list scrolls
- * first and only a pull down from its top moves the sheet.
+ * Whether a drag inside the sheet moves the sheet. Below fully open nothing
+ * inside scrolls, so up or down does; fully open, the list scrolls first and
+ * only a pull down from its top does.
  */
 export function sheetTakesDrag(drag: {
   dx: number;
@@ -143,6 +122,7 @@ export function sheetTakesDrag(drag: {
   onHandle: boolean;
   refused: boolean;
   scrolledAway: boolean;
+  byMouse?: boolean;
 }) {
   if (Math.abs(drag.dx) > Math.abs(drag.dy)) {
     return false;
@@ -150,7 +130,8 @@ export function sheetTakesDrag(drag: {
   if (drag.onHandle) {
     return true;
   }
-  if (drag.refused) {
+  // A mouse dragged across the card is selecting what it says.
+  if (drag.refused || drag.byMouse) {
     return false;
   }
   if (drag.snap !== "full") {

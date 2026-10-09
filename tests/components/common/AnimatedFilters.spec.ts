@@ -14,24 +14,27 @@ type Played = { element: Element; keyframes: Keyframe[] };
 
 const played: Played[] = [];
 const observed: Element[] = [];
+let resized: () => void = () => {};
 let reduced = false;
+let tabWidth = 80;
 let wrapper: Wrapper | undefined;
 
-// Nothing is laid out here, so the strip is given one: tabs 80 wide, 90
-// apart, starting 4 in.
+// Nothing is laid out here, so the strip is given one: tabs 80 wide with 10
+// between them, starting 4 in.
 const tabs = (element: Element) =>
   Array.from(element.parentElement?.querySelectorAll("button") ?? []);
 const leftOf = (element: Element) =>
-  4 + tabs(element).indexOf(element as HTMLButtonElement) * 90;
+  4 + tabs(element).indexOf(element as HTMLButtonElement) * (tabWidth + 10);
 
 beforeEach(() => {
   played.length = 0;
   observed.length = 0;
   reduced = false;
+  tabWidth = 80;
   const isTab = (element: Element) => element.tagName === "BUTTON";
   vi.spyOn(HTMLElement.prototype, "offsetWidth", "get").mockImplementation(
     function (this: HTMLElement) {
-      return isTab(this) ? 80 : 0;
+      return isTab(this) ? tabWidth : 0;
     },
   );
   vi.spyOn(HTMLElement.prototype, "offsetHeight", "get").mockImplementation(
@@ -59,7 +62,7 @@ beforeEach(() => {
         ? 4
         : Number.parseFloat(element.style.top) || 0;
       const width = isTab(element)
-        ? 80
+        ? tabWidth
         : Number.parseFloat(element.style.width) || 0;
       const height = isTab(element)
         ? 22
@@ -89,6 +92,9 @@ beforeEach(() => {
   vi.stubGlobal(
     "ResizeObserver",
     class {
+      constructor(report: () => void) {
+        resized = report;
+      }
       observe(element: Element) {
         observed.push(element);
       }
@@ -141,9 +147,7 @@ describe("AnimatedFilters", () => {
     await mounted.setProps({ modelValue: "plan" });
     await flushPromises();
 
-    // Where it belongs, at once.
     expect(indicator(mounted).style.left).toBe("184px");
-    // And how it got there, as a transform alone.
     expect(played).toHaveLength(1);
     expect(played[0].element).toBe(indicator(mounted));
     expect(properties(played[0].keyframes)).toEqual(["transform"]);
@@ -178,16 +182,23 @@ describe("AnimatedFilters", () => {
     expect(played).toHaveLength(0);
   });
 
-  it("measures again when the strip or a tab changes size, not on a timer", async () => {
-    const mounted = await mountFilters();
+  it("is put back on its tab when the strip or a tab changes size", async () => {
+    const mounted = await mountFilters({ modelValue: "plan" });
+    expect(indicator(mounted).style.left).toBe("184px");
+    expect(indicator(mounted).style.width).toBe("80px");
 
+    // A count gains a digit, the window narrows: every tab is 60 wide now.
+    tabWidth = 60;
+    resized();
+
+    expect(indicator(mounted).style.left).toBe("144px");
+    expect(indicator(mounted).style.width).toBe("60px");
+    // Placed, not animated: nothing asked for the tab to change.
+    expect(played).toHaveLength(0);
+    // It hears of the strip's size and of each tab's, which is what a count
+    // changing width inside a full-width strip takes.
     expect(observed).toHaveLength(4);
     expect(observed[0]).toBe(mounted.element);
-    expect(observed.slice(1).map((element) => element.tagName)).toEqual([
-      "BUTTON",
-      "BUTTON",
-      "BUTTON",
-    ]);
   });
 
   it("keeps the square variant's box, and its API", async () => {

@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
+  addressCarried,
   addressCloseDelta,
   addressOpenMode,
-  carriesAddress,
+  addressRaised,
+  addressWrites,
   layerClosed,
   layerNavigated,
   layerOpened,
@@ -114,26 +116,166 @@ describe("a layer over the page", () => {
 });
 
 describe("the address under a layer", () => {
-  const onLayer = { position: 5, layer: true };
+  const onLayer = { position: 5, layer: true, opened: {} };
 
-  it("goes down with one step off the layer's entry", () => {
-    expect(carriesAddress(onLayer, 4, true, false)).toBe(true);
-  });
-
-  it("is left alone when nothing was written while the layer was open", () => {
-    expect(carriesAddress(onLayer, 4, true, true)).toBe(false);
+  it("goes down whole with one step off the layer's entry", () => {
+    expect(addressCarried(onLayer, 4, true)).toEqual([]);
   });
 
   it("is not carried by any other step", () => {
-    expect(carriesAddress({ position: 5, layer: false }, 4, true, false)).toBe(
-      false,
-    );
-    expect(carriesAddress(onLayer, 3, true, false)).toBe(false);
-    expect(carriesAddress(onLayer, 6, true, false)).toBe(false);
-    expect(carriesAddress(onLayer, 5, true, false)).toBe(false);
+    expect(
+      addressCarried({ position: 5, layer: false, opened: {} }, 4, true),
+    ).toBeNull();
+    expect(addressCarried(onLayer, 3, true)).toBeNull();
+    expect(addressCarried(onLayer, 6, true)).toBeNull();
+    expect(addressCarried(onLayer, 5, true)).toBeNull();
   });
 
   it("never follows the visitor to another page", () => {
-    expect(carriesAddress(onLayer, 4, false, false)).toBe(false);
+    expect(addressCarried(onLayer, 4, false)).toBeNull();
+  });
+});
+
+describe("the address under what was opened by address", () => {
+  const onLineup = { position: 5, layer: false, opened: { lineup: 5 } };
+
+  it("goes down with the step out of it, less the thing it opened", () => {
+    expect(addressCarried(onLineup, 4, true)).toEqual(["lineup"]);
+  });
+
+  it("goes down past a layer over it, too", () => {
+    const layerOverLineup = {
+      position: 6,
+      layer: true,
+      opened: { lineup: 5 },
+    };
+    // One step closes the layer and leaves the lineup: everything is kept.
+    expect(addressCarried(layerOverLineup, 5, true)).toEqual([]);
+    // Two close both.
+    expect(addressCarried(layerOverLineup, 4, true)).toEqual(["lineup"]);
+  });
+
+  it("closes only what was opened above where the step lands", () => {
+    const lineupInSpot = {
+      position: 7,
+      layer: true,
+      opened: { spot: 5, lineup: 6 },
+    };
+    expect(addressCarried(lineupInSpot, 5, true)).toEqual(["lineup"]);
+    expect(addressCarried(lineupInSpot, 4, true)?.sort()).toEqual([
+      "lineup",
+      "spot",
+    ]);
+  });
+
+  it("is left to Back on a jump that lands anywhere else", () => {
+    expect(addressCarried(onLineup, 3, true)).toBeNull();
+    expect(addressCarried(onLineup, 6, true)).toBeNull();
+    expect(addressCarried(onLineup, 4, false)).toBeNull();
+  });
+});
+
+describe("the address on the way up", () => {
+  const under = { position: 4, layer: false, opened: {} };
+
+  it("goes up whole onto a layer's entry", () => {
+    expect(
+      addressRaised(under, { position: 5, layer: true, opened: {} }, true),
+    ).toEqual([]);
+  });
+
+  it("goes up onto the entry that opened something, which adds that back", () => {
+    expect(
+      addressRaised(
+        under,
+        { position: 5, layer: false, opened: { lineup: 5 } },
+        true,
+      ),
+    ).toEqual(["lineup"]);
+  });
+
+  it("is left to Forward everywhere else", () => {
+    const plain = { position: 5, layer: false, opened: {} };
+    expect(addressRaised(under, plain, true)).toBeNull();
+    expect(
+      addressRaised(under, { position: 6, layer: true, opened: {} }, true),
+    ).toBeNull();
+    expect(
+      addressRaised(under, { position: 5, layer: true, opened: {} }, false),
+    ).toBeNull();
+    // What was opened further down is not this entry's to add.
+    expect(
+      addressRaised(
+        under,
+        { position: 5, layer: false, opened: { lineup: 3 } },
+        true,
+      ),
+    ).toBeNull();
+  });
+});
+
+describe("a batch of writes to the address", () => {
+  const OPENED = ["lineup", "spot"];
+
+  it("is one replace when nothing is being opened", () => {
+    expect(
+      addressWrites({ tab: "meta" }, { type: "Smoke" }, "replace", OPENED),
+    ).toEqual({
+      replace: { tab: "meta", type: "Smoke" },
+      push: null,
+      opening: [],
+      removed: [],
+    });
+  });
+
+  it("is nothing when the address already says it", () => {
+    const writes = addressWrites({ tab: "meta" }, { tab: "meta" }, "replace", OPENED);
+    expect(writes.replace).toBeNull();
+    expect(writes.push).toBeNull();
+  });
+
+  it("pushes what it opens and nothing else", () => {
+    expect(addressWrites({ type: "Smoke" }, { lineup: "a" }, "push", OPENED)).toEqual({
+      replace: null,
+      push: { type: "Smoke", lineup: "a" },
+      opening: ["lineup"],
+      removed: [],
+    });
+  });
+
+  // A lineup saved from the Create tab is filed under Lineups and opened in
+  // one go. Pushed as one entry, stepping out of the lineup landed back on
+  // the empty form.
+  it("writes the rest onto the entry underneath before it pushes", () => {
+    expect(
+      addressWrites({ tab: "create" }, { tab: null, lineup: "a" }, "push", OPENED),
+    ).toEqual({
+      replace: {},
+      push: { lineup: "a" },
+      opening: ["lineup"],
+      removed: [],
+    });
+  });
+
+  it("swaps one open lineup for another in place", () => {
+    expect(
+      addressWrites({ lineup: "a" }, { lineup: "b" }, "replace", OPENED),
+    ).toEqual({
+      replace: { lineup: "b" },
+      push: null,
+      opening: [],
+      removed: [],
+    });
+  });
+
+  it("says what it took out by hand", () => {
+    const writes = addressWrites(
+      { lineup: "a", tab: "meta" },
+      { lineup: null, tab: null },
+      "replace",
+      OPENED,
+    );
+    expect(writes.replace).toEqual({});
+    expect(writes.removed).toEqual(["lineup"]);
   });
 });

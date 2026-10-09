@@ -1,25 +1,18 @@
-// What the Back button undoes on a page with things open over it. Everything
-// here is decided from one number: the router's position counter for a
-// history entry, which goes up by one on a push and back down on Back.
+// What the Back button undoes on a page with things open over it, decided
+// from the router's position counter for a history entry.
 //
-// A layer (the raised sheet, a view over the card, a menu) that opens pushes
-// an entry of its own and remembers that entry's position. Back then lands
-// below it, which is the signal to close; closing it by hand takes the entry
-// back out, so entries never pile up behind a layer that is already gone.
+// A layer (the raised sheet, a view over the card, a menu) pushes an entry of
+// its own and remembers its position: Back landing below it is the signal to
+// close, and closing it by hand takes the entry back out.
 //
 // What is open because the address says so (a lineup, a meta spot, a
-// collection, an execute) is the other kind: the push that opened it already
-// is its entry, so it takes no second one and only notes where that entry is.
+// collection, an execute) already has the entry that opened it; it takes no
+// second one and only notes where that entry is.
 
 export type LayerEntry = number | null;
 
-/**
- * Something opened. One that was already open when the page arrived -- a deep
- * link -- never gets here, so it never puts an entry between the visitor and
- * wherever they came from. `onSpare` is standing on a layer's entry that no
- * open layer is using (one a tap elsewhere left behind, or that Forward
- * returned to): that one is taken instead of making another.
- */
+// `onSpare` is standing on a layer's entry that no open layer is using: that
+// one is taken instead of making another.
 export function layerOpened(
   entry: LayerEntry,
   enabled: boolean,
@@ -31,65 +24,143 @@ export function layerOpened(
   return onSpare ? ("take" as const) : ("push" as const);
 }
 
-/**
- * Something was closed from inside the page. Its entry comes out with a step
- * back only while it is the entry on top; under another one it is left where
- * it is, because stepping back would close the wrong thing.
- */
+// Closed by hand, its entry comes out with a step back only while it is the
+// entry on top: under another one, stepping back would close the wrong thing.
 export function layerClosed(entry: LayerEntry, position: number) {
   return entry !== null && position === entry
     ? ("back" as const)
     : ("none" as const);
 }
 
-/**
- * The history moved. Below the layer's entry means Back passed it, so it
- * closes; at or above it (something was opened over it, or Back returned to
- * it from there) it stays.
- */
 export function layerNavigated(entry: LayerEntry, position: number) {
   return entry !== null && position < entry
     ? ("dismiss" as const)
     : ("keep" as const);
 }
 
+// `opened`: what was opened by address at or under this entry, and where.
+export type RestedEntry = {
+  position: number;
+  layer: boolean;
+  opened: Record<string, number>;
+};
+
 /**
- * Whether a step down the history takes the address with it. A layer's entry
- * starts at the address of the one under it, but the page goes on rewriting
- * the address while the layer is open -- a filter, a tab, the next lineup --
- * and only the entry on top hears of it. One step down off a layer's entry,
- * by Back or because the layer was closed, would put the old address back
- * and undo all of that; so the address goes down with it. Any other step is
- * Back doing what Back does.
+ * What a step down the history closes, when the address is to go down with
+ * it; null when the step is just Back.
+ *
+ * The page goes on rewriting the address on the entry on top -- a filter, a
+ * tab, the next lineup -- and only that entry hears of it. Stepping down off
+ * a layer's entry, or to just under the entry that opened a lineup, would
+ * put the old address back and undo all of that. So the address goes down
+ * with the step, less what the step closes.
  */
-export function carriesAddress(
-  from: { position: number; layer: boolean },
+export function addressCarried(
+  from: RestedEntry,
   toPosition: number,
   samePage: boolean,
-  sameAddress: boolean,
-) {
-  return (
-    from.layer &&
-    toPosition === from.position - 1 &&
-    samePage &&
-    !sameAddress
+): string[] | null {
+  if (!samePage || toPosition >= from.position) {
+    return null;
+  }
+  const closed = Object.keys(from.opened).filter(
+    (name) =>
+      from.opened[name] > toPosition && from.opened[name] <= from.position,
   );
+  if (closed.length === 0) {
+    return from.layer && toPosition === from.position - 1 ? [] : null;
+  }
+  const lowest = Math.min(...closed.map((name) => from.opened[name]));
+  return toPosition === lowest - 1 ? closed : null;
 }
 
-// Opening something that lives in the address is a step Back can undo;
-// swapping it for another of its kind is not a second step, or ten lineups
+/**
+ * The same going up: Forward by one onto a layer's entry, or onto the entry
+ * that opened something, whose own address is older than anything written
+ * under it since. Returns the names to take from that entry itself; null
+ * when the step is just Forward.
+ */
+export function addressRaised(
+  from: RestedEntry,
+  to: RestedEntry,
+  samePage: boolean,
+): string[] | null {
+  if (!samePage || to.position !== from.position + 1) {
+    return null;
+  }
+  const opens = Object.keys(to.opened).filter(
+    (name) => to.opened[name] === to.position,
+  );
+  if (opens.length === 0) {
+    return to.layer ? [] : null;
+  }
+  return opens;
+}
+
+export type AddressQuery = Record<string, unknown>;
+
+/**
+ * Opening something by address is a push, and the page's Back steps out of
+ * that push -- so anything else written with it (the tab a saved lineup is
+ * filed under, say) goes onto the entry underneath first, as a replace.
+ */
+export function addressWrites(
+  current: AddressQuery,
+  patch: Record<string, string | null>,
+  mode: "push" | "replace",
+  openedByAddress: string[],
+) {
+  const apply = (query: AddressQuery, keys: string[]) => {
+    const next = { ...query };
+    for (const key of keys) {
+      if (patch[key]) {
+        next[key] = patch[key];
+      } else {
+        delete next[key];
+      }
+    }
+    return next;
+  };
+  const differs = (a: AddressQuery, b: AddressQuery) =>
+    Object.keys({ ...a, ...b }).some(
+      (key) => String(a[key] ?? "") !== String(b[key] ?? ""),
+    );
+
+  const opening =
+    mode === "push"
+      ? openedByAddress.filter((key) => patch[key] && !current[key])
+      : [];
+  const rest = Object.keys(patch).filter((key) => !opening.includes(key));
+  const base = apply(current, rest);
+  const opened = apply(base, opening);
+  const removed = openedByAddress.filter((key) => patch[key] === null);
+
+  if (opening.length > 0) {
+    return {
+      replace: differs(current, base) ? base : null,
+      push: opened,
+      opening,
+      removed,
+    };
+  }
+  if (!differs(current, base)) {
+    return { replace: null, push: null, opening, removed };
+  }
+  return mode === "push"
+    ? { replace: null, push: base, opening, removed }
+    : { replace: base, push: null, opening, removed };
+}
+
+// Swapping one open lineup for another is not a second step, or ten lineups
 // would be ten Backs.
 export function addressOpenMode(alreadyOpen: boolean) {
   return alreadyOpen ? ("replace" as const) : ("push" as const);
 }
 
 /**
- * The page's own Back on something that lives in the address. `openedAt` is
- * the position of the entry that opened it, noted in the history state of
- * that entry and of any layer's entry over it -- so the answer is how many
- * steps back lands just before it, which is more than one when a layer sits
- * on top. Arrived at by link there is no such entry (null): stepping back
- * would leave the site, so it is taken out of the address instead.
+ * How many steps back land just before the entry that opened something,
+ * which is more than one when a layer sits on top. Null when it was arrived
+ * at by link: stepping back would leave the site.
  */
 export function addressCloseDelta(openedAt: number | null, position: number) {
   if (openedAt === null || !Number.isFinite(openedAt) || openedAt > position) {

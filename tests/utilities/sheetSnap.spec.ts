@@ -117,6 +117,12 @@ describe("whose a drag inside the sheet is", () => {
     expect(sheetTakesDrag(drag)).toBe(true);
   });
 
+  it("is the sheet's with a mouse only from the handle, which leaves text to select", () => {
+    const mouse = { ...drag, snap: "half" as const, byMouse: true };
+    expect(sheetTakesDrag(mouse)).toBe(false);
+    expect(sheetTakesDrag({ ...mouse, onHandle: true })).toBe(true);
+  });
+
   it("is never the sheet's sideways, or over something dragged for itself", () => {
     expect(sheetTakesDrag({ ...drag, dx: 30, dy: 10, snap: "half" })).toBe(
       false,

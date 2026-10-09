@@ -127,15 +127,12 @@ const columns = computed(() => ({
   gridTemplateColumns: `repeat(${items.value.length}, minmax(0, 1fr))`,
 }));
 
-// A thin rail whose names are tooltips is something to point at. Under a
-// finger there is no hover to read a name from and 6px is nothing to hit, so
-// there the stills are named buttons, and a swipe across the picture steps
-// through them.
+// Under a finger there is no hover to read a name from and a 6px rail is
+// nothing to hit: there the stills are named buttons.
 const coarse = useMediaQuery("(pointer: coarse)");
 const byTouch = computed(() => coarse.value && !props.compact);
 
-// Three across at most, so a name has room to be read in full: six stills
-// are two rows of three, four are two of two.
+// Three across at most, so a name has room to be read in full.
 const touchColumns = computed(() => {
   const count = items.value.length;
   const across = count <= 3 ? count : count === 4 ? 2 : 3;
@@ -222,9 +219,6 @@ const STEPPER =
         />
       </FadeSwap>
 
-      <!-- Not under a finger: the still's name is on its button there, and
-           a phone's still is small enough that a caption across its foot is
-           a seventh of the picture. -->
       <div
         v-if="!byTouch"
         class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] flex items-end justify-between gap-2 bg-gradient-to-t from-black/80 to-transparent px-2.5 pb-1.5 pt-5"

@@ -21,9 +21,8 @@ const props = withDefaults(
     downloadLabel?: string | null;
     sizeLabel?: string | null;
     contentClass?: string | null;
-    // On a page that gives Back to what is open over it, Back closes this
-    // menu first. Off where the page runs its own history, as the highlight
-    // modal does.
+    // Back closes this menu first. Off where the page runs its own history,
+    // as the highlight modal does.
     dismissOnBack?: boolean;
   }>(),
   {
@@ -39,10 +38,12 @@ const props = withDefaults(
 
 const open = defineModel<boolean>("open", { default: false });
 
+const backCloses = () => props.dismissOnBack && backClosesMenus();
+
 useBackDismiss(
   () => open.value,
   () => (open.value = false),
-  { enabled: () => props.dismissOnBack && backClosesMenus() },
+  { enabled: backCloses },
 );
 
 const emit = defineEmits<{ (e: "copy"): void }>();
@@ -61,10 +62,12 @@ function onCopy(event: Event) {
   emit("copy");
 }
 
-// Closing on Download would, where Back closes this menu, step back in the
-// history while the download is still starting -- which can cancel it.
-function keepOpen(event: Event) {
-  event.preventDefault();
+// Where Back closes this menu, closing it is a step back in the history,
+// and one taken while a download is still starting can cancel it.
+function onDownload(event: Event) {
+  if (backCloses()) {
+    event.preventDefault();
+  }
 }
 </script>
 
@@ -106,7 +109,7 @@ function keepOpen(event: Event) {
               : (copyLabel ?? $t("clips.share_menu.copy_link"))
         }}
       </DropdownMenuItem>
-      <DropdownMenuItem v-if="downloadHref" as-child @select="keepOpen">
+      <DropdownMenuItem v-if="downloadHref" as-child @select="onDownload">
         <a :href="downloadHref" :download="downloadName ?? ''">
           <Download />
           {{ downloadLabel ?? $t("common.download") }}

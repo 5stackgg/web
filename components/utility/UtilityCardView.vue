@@ -11,6 +11,7 @@ import { useElementSize } from "@vueuse/core";
 import { ChevronLeft } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { useBackDismiss } from "~/composables/useBackDismiss";
+import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
 import { useUtilityCardViews } from "~/composables/useUtilityCardViews";
 
 /**
@@ -65,7 +66,7 @@ function leave() {
 function onKey(event: KeyboardEvent) {
   if (
     event.key !== "Escape" ||
-    event.defaultPrevented ||
+    escapeTaken(event) ||
     openViews[openViews.length - 1] !== id
   ) {
     return;
@@ -81,7 +82,7 @@ function onKey(event: KeyboardEvent) {
   ) {
     return;
   }
-  event.preventDefault();
+  takeEscape(event);
   emit("back");
 }
 
@@ -106,7 +107,6 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKey);
 });
 
-// The browser's Back is this view's Back before it is the page's.
 useBackDismiss(
   () => props.open,
   () => emit("back"),

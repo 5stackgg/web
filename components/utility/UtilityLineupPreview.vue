@@ -105,7 +105,11 @@ watch(
       </template>
     </ClipPlayer>
 
-    <UtilityLineupViewer3D v-else-if="hasMesh" :lineup="lineup" />
+    <UtilityLineupViewer3D
+      v-else-if="hasMesh"
+      :lineup="lineup"
+      data-no-sheet-drag
+    />
 
     <template v-else>
       <UtilityRadarBoard

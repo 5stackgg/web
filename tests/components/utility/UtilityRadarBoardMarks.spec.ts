@@ -193,4 +193,74 @@ describe("UtilityRadarBoard marks", () => {
     expect(layer.style.left).toBe("-50%");
     expect(layer.style.transform).toContain("scale(1)");
   });
+
+  // Laying the board out again is a layout of everything on it. One per
+  // event of a gesture is a layout per frame.
+  it("rides the transform through a double-tap drag, too", async () => {
+    const wrapper = await mountBoard(390, true);
+    const layer = wrapper.find("[data-board-layer]").element as HTMLElement;
+    const map = wrapper.find(".aspect-square").element;
+    const finger = (type: string, y: number) =>
+      map.dispatchEvent(
+        new PointerEvent(type, {
+          pointerId: 1,
+          pointerType: "touch",
+          isPrimary: true,
+          clientX: 100,
+          clientY: y,
+          bubbles: true,
+        }),
+      );
+
+    finger("pointerdown", 100);
+    finger("pointerup", 100);
+    finger("pointerdown", 100);
+    finger("pointermove", 130);
+    finger("pointermove", 160);
+    await flushPromises();
+    expect(board(wrapper).zoom).toBeCloseTo(Math.exp(0.6), 2);
+    expect(layer.style.width).toBe("100%");
+    expect(layer.style.willChange).toBe("transform");
+
+    finger("pointerup", 160);
+    await flushPromises();
+    expect(layer.style.width).not.toBe("100%");
+    expect(layer.style.transform).toContain("scale(1)");
+  });
+
+  it("rides it through a wheel with no glide, and lays out when the wheel rests", async () => {
+    const wrapper = await mountBoard(888, false);
+    vi.stubGlobal(
+      "matchMedia",
+      (query: string) =>
+        ({
+          matches: query.includes("reduced-motion"),
+          media: query,
+          addEventListener() {},
+          removeEventListener() {},
+        }) as unknown as MediaQueryList,
+    );
+    const layer = wrapper.find("[data-board-layer]").element as HTMLElement;
+    const map = wrapper.find(".aspect-square").element;
+    const wheel = () =>
+      map.dispatchEvent(
+        new WheelEvent("wheel", {
+          deltaY: -60,
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
+
+    wheel();
+    wheel();
+    wheel();
+    await flushPromises();
+    expect(board(wrapper).zoom).toBeGreaterThan(1.3);
+    expect(layer.style.width).toBe("100%");
+
+    await new Promise((resolve) => setTimeout(resolve, 220));
+    await flushPromises();
+    expect(layer.style.width).not.toBe("100%");
+    expect(layer.style.transform).toContain("scale(1)");
+  });
 });

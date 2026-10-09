@@ -94,9 +94,8 @@ function buttonState(opt: FilterOption) {
 const containerRef = ref<HTMLElement | null>(null);
 const indicatorRef = ref<HTMLElement | null>(null);
 const ghostRef = ref<HTMLElement | null>(null);
-// Not reactive, and neither is where the indicator sits: it is written
-// straight onto the element. Kept in state, every move of the pill re-rendered
-// the whole strip -- every tab and its tooltip -- to change four numbers.
+// Not reactive, and neither is where the indicator sits: kept in state, every
+// move of the pill re-rendered the whole strip to change four numbers.
 const btns = new Map<string, HTMLElement>();
 
 function setBtn(el: Element | null, key: string) {
@@ -109,7 +108,6 @@ function setBtn(el: Element | null, key: string) {
 
 type Rect = { left: number; top: number; width: number; height: number };
 
-// Where the indicator is laid out, or null while there is nothing to sit on.
 let placed: Rect | null = null;
 
 function place(rect: Rect | null) {
@@ -142,8 +140,7 @@ function tabRect(): Rect | null {
   };
 }
 
-// Where the indicator is on screen this instant, mid-flight included, in the
-// strip's own coordinates.
+// Mid-flight included, in the strip's own coordinates.
 function drawnRect(): Rect | null {
   const el = indicatorRef.value;
   const strip = containerRef.value;
@@ -164,10 +161,9 @@ function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// Every move is played as a transform over a layout that has already landed:
-// the compositor runs it, so it keeps its rate while the tab it just picked
-// is mounting its content on the main thread. Animating left and width
-// instead laid the strip out, and repainted the pill's glow, on every frame.
+// Every move is a transform over a layout that has already landed, so the
+// compositor runs it while the picked tab mounts its content on the main
+// thread. Animating left and width laid the strip out on every frame.
 const running = new Set<Animation>();
 
 function play(
@@ -195,7 +191,6 @@ function stop() {
 const GLIDE_MS = 240;
 const GLIDE_EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
 
-// The pill slides from the tab it was on to the one that was picked.
 function glide(from: Rect, to: Rect) {
   if (
     to.width === 0 ||
@@ -317,8 +312,6 @@ function swap(first: Record<string, Box>, key: string) {
   );
 }
 
-// The picked tab changed, with the DOM already patched for it: the indicator
-// goes straight to where it belongs, and how it got there is played after.
 function follow() {
   const first = before;
   before = null;
@@ -340,9 +333,7 @@ function follow() {
   }
 }
 
-// The strip or one of its tabs changed size -- a window resize, a count
-// gaining a digit -- so the indicator is put back on its tab. Measured once
-// per change, never per frame.
+// Measured once per change of size, never per frame.
 let ro: ResizeObserver | null = null;
 
 function observe() {

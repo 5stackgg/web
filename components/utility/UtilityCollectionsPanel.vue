@@ -146,9 +146,8 @@ function setOpen(id: string | null, mode: "push" | "replace") {
     delete query.collection;
   }
   const to = { path: route.path, query: query as any, hash: route.hash };
-  // The entry that opens one notes where it is, which is what lets the
-  // view's own Back step out of it; taken out by hand, the entry stops
-  // claiming it.
+  // The entry that opens one notes where it is, for the view's own Back to
+  // step out of; taken out by hand, the entry stops claiming it.
   if (mode === "push") {
     return router.push({ ...to, state: openedHere("collection") });
   }
@@ -161,8 +160,6 @@ function openCollection(id: string) {
   void setOpen(id, openId.value ? "replace" : "push");
 }
 
-// The view's Back is the browser's when the collection was opened from the
-// list; arrived at by link, it comes out of the address instead.
 function closeCollection() {
   stepOutOf(router, "collection", () => void setOpen(null, "replace"));
 }

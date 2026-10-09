@@ -13,10 +13,9 @@ const props = withDefaults(
     // anyone presses one -- and a type with none steps back.
     counts?: Partial<Record<UtilityType, number>> | null;
     // Fill the row instead of sitting at their natural width: the strip under
-    // a card's tabs is exactly as wide as the card. Each grows from its own
-    // width, so the long names get the room the short ones do not need. A
-    // name is never cut short to fit: the counts go first, and past that the
-    // row is expected to scroll.
+    // a card's tabs is exactly as wide as the card. A name is never cut short
+    // to fit: the counts go first, and past that the row is expected to
+    // scroll.
     fill?: boolean;
   }>(),
   {
@@ -69,7 +68,8 @@ function toggle(type: UtilityType) {
          drops to a second line that is not shown, so the chip can give up
          the count but never a letter of the name. -->
     <span
-      class="flex min-w-0 flex-wrap justify-center gap-x-1.5 overflow-hidden"
+      data-type-line
+      class="flex flex-wrap justify-center gap-x-1.5 overflow-hidden"
       :class="fill ? 'h-[1.4em] leading-[1.4]' : ''"
     >
       <span data-type-name class="shrink-0 whitespace-nowrap">

@@ -3,15 +3,24 @@ import { h } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import UtilityMobileSheet from "~/components/utility/UtilityMobileSheet.vue";
+import { escapeTaken } from "~/utilities/escapeKey";
 
 const back = vi.hoisted(() => ({
   isOpen: (() => false) as () => boolean,
   close: (() => {}) as () => void,
+  id: undefined as string | undefined,
+  reopen: (() => {}) as () => void,
 }));
 vi.mock("~/composables/useBackDismiss", () => ({
-  useBackDismiss: (isOpen: () => boolean, close: () => void) => {
+  useBackDismiss: (
+    isOpen: () => boolean,
+    close: () => void,
+    options: { id?: string; reopen?: () => void },
+  ) => {
     back.isOpen = isOpen;
     back.close = close;
+    back.id = options.id;
+    back.reopen = options.reopen ?? (() => {});
   },
 }));
 
@@ -68,6 +77,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  pointerType = "touch";
   mounted.splice(0).forEach((wrapper) => wrapper.unmount());
   vi.useRealTimers();
   vi.restoreAllMocks();
@@ -125,11 +135,13 @@ function offsetOf() {
   return match ? Number(match[1]) : null;
 }
 
+let pointerType = "touch";
+
 function pointer(target: Element, type: string, y: number, x = 100, id = 1) {
   target.dispatchEvent(
     new PointerEvent(type, {
       pointerId: id,
-      pointerType: "touch",
+      pointerType,
       isPrimary: id === 1,
       clientX: x,
       clientY: y,
@@ -226,9 +238,7 @@ describe("UtilityMobileSheet on the shared drawer", () => {
     await flushPromises();
 
     expect(offsetOf()).toBe(HALF - 100);
-    // The browser's own scroll is refused for a drag that is the sheet's.
     expect(refused.defaultPrevented).toBe(true);
-    // The card is as tall as it gets while it moves.
     expect(card().style.height).toBe(`${728 - 28}px`);
   });
 
@@ -388,6 +398,148 @@ describe("UtilityMobileSheet on the shared drawer", () => {
   });
 });
 
+describe("UtilityMobileSheet and the keyboard", () => {
+  // A drawer that cannot be dismissed cancels every Escape it hears, and it
+  // hears it before anything on the page.
+  it("leaves Escape free for whatever is open on the page", async () => {
+    await mountSheet();
+    const heard: KeyboardEvent[] = [];
+    const later = (event: KeyboardEvent) => heard.push(event);
+    window.addEventListener("keydown", later);
+
+    window.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    window.removeEventListener("keydown", later);
+
+    expect(heard).toHaveLength(1);
+    expect(escapeTaken(heard[0])).toBe(false);
+    expect(sheet().getAttribute("data-state")).toBe("open");
+  });
+
+  // A dialog's focus scope wraps Tab round its own edges. The sheet is a
+  // region of the page, and Tab has to be able to walk out of it.
+  it("lets Tab and Shift+Tab walk out of the sheet", async () => {
+    await mountSheet();
+    const press = (target: HTMLElement, shiftKey: boolean) => {
+      target.focus();
+      const event = new KeyboardEvent("keydown", {
+        key: "Tab",
+        shiftKey,
+        bubbles: true,
+        cancelable: true,
+      });
+      target.dispatchEvent(event);
+      return event;
+    };
+    const row = document.querySelector(".row") as HTMLElement;
+    row.tabIndex = 0;
+
+    expect(press(handle(), true).defaultPrevented).toBe(false);
+    expect(press(row, false).defaultPrevented).toBe(false);
+  });
+
+  it("leaves the card's text to be selected", async () => {
+    await mountSheet();
+
+    expect(card().classList.contains("select-text")).toBe(true);
+  });
+
+  it("is dragged by a mouse from the handle, and not by one selecting text", async () => {
+    await mountSheet();
+    pointerType = "mouse";
+    const row = document.querySelector(".row")!;
+
+    pointer(row, "pointerdown", 600);
+    pointer(row, "pointermove", 590);
+    pointer(row, "pointermove", 500);
+    expect(offsetOf()).toBe(HALF);
+    pointer(row, "pointerup", 500);
+
+    pointer(handle(), "pointerdown", 500);
+    pointer(handle(), "pointermove", 490);
+    pointer(handle(), "pointermove", 400);
+    expect(offsetOf()).toBe(HALF - 100);
+    pointer(handle(), "pointerup", 400);
+    await settled();
+  });
+});
+
+describe("UtilityMobileSheet and a list at its top", () => {
+  async function fullWithList() {
+    const wrapper = await mountSheet();
+    api(wrapper).hold();
+    await settled();
+    const list = document.querySelector(".list") as HTMLElement;
+    Object.defineProperty(list, "scrollHeight", { value: 2000 });
+    Object.defineProperty(list, "clientHeight", { value: 600 });
+    return document.querySelector(".row")!;
+  }
+
+  // A browser commits to a scroll on the first move it is not refused. Six
+  // px later is too late: the press is taken away and the sheet snaps back.
+  it("takes a pull down on the very first move, before the browser scrolls", async () => {
+    const row = await fullWithList();
+
+    pointer(row, "pointerdown", 300);
+    const first = touchMove(row, 302);
+
+    expect(first.defaultPrevented).toBe(true);
+    pointer(row, "pointerup", 302);
+    await settled();
+  });
+
+  it("still waits to see which way a sideways or upward first move is going", async () => {
+    const row = await fullWithList();
+
+    pointer(row, "pointerdown", 300);
+    expect(touchMove(row, 298).defaultPrevented).toBe(false);
+    pointer(row, "pointerup", 298);
+
+    pointer(row, "pointerdown", 300);
+    expect(touchMove(row, 301, 104).defaultPrevented).toBe(false);
+    pointer(row, "pointerup", 301, 104);
+    await settled();
+  });
+
+  it("does not take a press that shook by a pixel for a drag", async () => {
+    const row = await fullWithList();
+    const pressed = vi.fn();
+    row.addEventListener("click", pressed);
+
+    pointer(row, "pointerdown", 300);
+    touchMove(row, 302);
+    pointer(row, "pointermove", 302);
+    pointer(row, "pointerup", 302);
+    row.dispatchEvent(
+      new MouseEvent("click", { bubbles: true, cancelable: true }),
+    );
+
+    expect(pressed).toHaveBeenCalledTimes(1);
+    await settled();
+  });
+});
+
+describe("UtilityMobileSheet and Forward", () => {
+  it("can be put back at full by the history it made a step in", async () => {
+    const wrapper = await mountSheet();
+    expect(back.id).toBe("utility-sheet");
+
+    back.reopen();
+    await settled();
+    expect(api(wrapper).snap()).toBe("full");
+    expect(back.isOpen()).toBe(true);
+
+    back.close();
+    await settled();
+    expect(api(wrapper).snap()).toBe("half");
+  });
+});
+
 describe("UtilityMobileSheet at the peek", () => {
   it("goes down to a strip on a swipe down from half, and no further", async () => {
     const wrapper = await mountSheet();
@@ -398,7 +550,6 @@ describe("UtilityMobileSheet at the peek", () => {
     expect(card().style.height).toBe(`${88 - 28}px`);
     expect(back.isOpen()).toBe(false);
 
-    // Pulled down again it does not move, however it is let go.
     pointer(handle(), "pointerdown", 730);
     pointer(handle(), "pointermove", 740);
     pointer(handle(), "pointermove", 790);
@@ -415,7 +566,6 @@ describe("UtilityMobileSheet at the peek", () => {
     const pressed = vi.fn();
     strip().querySelector(".type")!.addEventListener("click", pressed);
 
-    // At half the strip is not there to see or to press.
     expect(strip().style.opacity).toBe("0");
     expect(strip().hasAttribute("inert")).toBe(true);
     expect(card().hasAttribute("inert")).toBe(false);
@@ -471,7 +621,6 @@ describe("UtilityMobileSheet at the peek", () => {
     pressLater(handle());
     await settled();
     expect(api(wrapper).snap()).toBe("half");
-    // Neither the peek nor half is a step Back undoes.
     expect(back.isOpen()).toBe(false);
   });
 

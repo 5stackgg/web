@@ -71,11 +71,8 @@ export function stillIsPastNative(
   );
 }
 
-/**
- * A finger drawn across a still: which way to step through the set, if it
- * was a swipe at all. Sideways, far enough to be meant and quick enough not
- * to be a drag that changed its mind. Left goes on to the next one.
- */
+// Which way a finger drawn across a still steps through the set, 0 if it
+// was not a swipe. Left goes on to the next one.
 export function stillSwipeStep(dx: number, dy: number, ms: number) {
   if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5 || ms > 800) {
     return 0;

@@ -8,7 +8,7 @@ import {
   markInk,
   markScale,
   maxZoomFor,
-  nearestMark,
+  tapTarget,
   unitsPerPx,
 } from "~/utilities/boardMarks";
 
@@ -102,19 +102,43 @@ describe("what a finger can hit", () => {
     }
   });
 
-  it("goes to the mark nearest the tap, not the one drawn last", () => {
-    const marks = [
-      { id: "near", x: 100, y: 100 },
-      { id: "last", x: 130, y: 100 },
-    ];
-    expect(nearestMark(marks, { x: 108, y: 100 }, 58)).toBe("near");
-    expect(nearestMark(marks, { x: 124, y: 100 }, 58)).toBe("last");
+  const mark = (key: string, x: number) => ({
+    key,
+    x,
+    y: 100,
+    within: 58,
+    drawn: 24,
   });
 
-  it("is nothing at all when the tap is out of reach of every mark", () => {
-    const marks = [{ id: "a", x: 0, y: 0 }];
-    expect(nearestMark(marks, { x: 80, y: 0 }, 58)).toBeNull();
-    expect(nearestMark([], { x: 0, y: 0 }, 58)).toBeNull();
+  it("goes to the thing nearest the tap, not the one drawn last", () => {
+    const marks = [mark("near", 100), mark("last", 130)];
+    expect(tapTarget(marks, { x: 108, y: 100 })?.key).toBe("near");
+    expect(tapTarget(marks, { x: 124, y: 100 })?.key).toBe("last");
+  });
+
+  it("gives each thing its own reach", () => {
+    const ring = { key: "ring", x: 100, y: 100, within: 120, drawn: 24 };
+    const marks = [ring, mark("mark", 260)];
+    // Out of the mark's reach, inside the ring's own.
+    expect(tapTarget(marks, { x: 190, y: 100 })?.key).toBe("ring");
+    expect(tapTarget(marks, { x: 230, y: 100 })?.key).toBe("mark");
+  });
+
+  it("knows a tap on the thing itself from one in the room round it", () => {
+    const marks = [mark("a", 100)];
+    expect(tapTarget(marks, { x: 110, y: 100 })).toEqual({
+      key: "a",
+      direct: true,
+    });
+    expect(tapTarget(marks, { x: 140, y: 100 })).toEqual({
+      key: "a",
+      direct: false,
+    });
+  });
+
+  it("is nothing at all when the tap is out of reach of everything", () => {
+    expect(tapTarget([mark("a", 0)], { x: 80, y: 100 })).toBeNull();
+    expect(tapTarget([], { x: 0, y: 0 })).toBeNull();
   });
 });
 

@@ -7,6 +7,19 @@
 export const BOT_UA =
   /(discordbot|twitterbot|facebookexternalhit|facebot|slackbot|slack-imgproxy|telegrambot|whatsapp|linkedinbot|redditbot|embedly|quora link preview|pinterest|vkshare|skypeuripreview|iframely|googlebot|bingbot|applebot|mastodon|nuzzel|w3c_validator|valve\/steam|steamchaturl|steam)/i;
 
+// What a URL that answers a crawler and a person differently sends with the
+// crawler's card. Private: a shared cache that kept the card would hand it to
+// people, and anyone can ask with a crawler's user-agent, which makes that a
+// way to poison it. Vary says the same to a cache that ignores private.
+export function unfurlCacheHeaders(
+  maxAgeSeconds: number,
+): Record<string, string> {
+  return {
+    "Cache-Control": `private, max-age=${maxAgeSeconds}`,
+    Vary: "User-Agent",
+  };
+}
+
 export function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")

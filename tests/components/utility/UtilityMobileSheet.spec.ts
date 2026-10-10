@@ -29,6 +29,7 @@ type SheetApi = {
   hold: () => void;
   release: () => void;
   snap: () => "full" | "half" | "peek";
+  top: () => number | null;
 };
 
 // An 800px window: full is 728 and half is 320, so half sits 408 down; the
@@ -703,6 +704,24 @@ describe("UtilityMobileSheet at the peek", () => {
     back.close();
     await settled();
     expect(api(wrapper).snap()).toBe("peek");
+  });
+
+  it("says how far down the window its top edge rests, at each place", async () => {
+    const wrapper = await mountSheet();
+    expect(api(wrapper).top()).toBe(800 - 320);
+
+    await drag(handle(), 500, 200, SLOW);
+    expect(api(wrapper).snap()).toBe("peek");
+    expect(api(wrapper).top()).toBe(800 - 88);
+
+    // Where it is going, said before it has got there.
+    api(wrapper).hold();
+    expect(api(wrapper).top()).toBe(72);
+    await settled();
+    expect(api(wrapper).top()).toBe(72);
+
+    await wrapper.setProps({ enabled: false });
+    expect(api(wrapper).top()).toBeNull();
   });
 
   it("has only half and full when there is nothing to show in a strip", async () => {

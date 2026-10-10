@@ -617,7 +617,17 @@ function release() {
   moveTo(heldFrom);
 }
 
-defineExpose({ hold, release, snap: () => snap.value });
+// Where the sheet's top edge rests at this snap, down the window -- where
+// it is going, not where a move has got to. It is laid along the window's
+// bottom edge at its full height and pushed down from there.
+function top(): number | null {
+  if (!props.enabled) {
+    return null;
+  }
+  return viewportHeight.value - full.value + offsetFor(snap.value);
+}
+
+defineExpose({ hold, release, snap: () => snap.value, top });
 </script>
 
 <template>

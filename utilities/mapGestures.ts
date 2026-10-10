@@ -5,6 +5,27 @@
 export type MapPoint = { x: number; y: number };
 export type MapView = { zoom: number; x: number; y: number };
 export type MapFrame = { width: number; height: number };
+// How much of each side of the frame cannot be seen, in px: under a sheet
+// drawn over it, or scrolled out of sight.
+export type MapInsets = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+};
+export type MapBox = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+};
+
+export const NO_MAP_INSETS: MapInsets = Object.freeze({
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+});
 
 export const TAP_SLOP_PX = 8;
 export const TAP_MAX_MS = 250;
@@ -42,16 +63,126 @@ export function resistZoom(
   return zoom;
 }
 
-// Panning past the edge would show what is behind the map, so the offset is
-// held to whatever the zoom overflows the frame by -- nothing at 1x or under.
-export function clampMapPan(view: MapView, frame: MapFrame): MapView {
-  const slackX = Math.max(0, (frame.width * (view.zoom - 1)) / 2);
-  const slackY = Math.max(0, (frame.height * (view.zoom - 1)) / 2);
+/**
+ * What of the frame is hidden, from where the frame is and the box nothing
+ * covers. A frame wholly out of sight is all inset, and no more than that.
+ */
+export function mapCover(frame: MapBox, visible: MapBox): MapInsets {
+  const width = Math.max(0, frame.right - frame.left);
+  const height = Math.max(0, frame.bottom - frame.top);
+  const left = clamp(visible.left - frame.left, 0, width);
+  const top = clamp(visible.top - frame.top, 0, height);
+  return {
+    top,
+    left,
+    right: clamp(frame.right - visible.right, 0, width - left),
+    bottom: clamp(frame.bottom - visible.bottom, 0, height - top),
+  };
+}
+
+export type MapPanLimits = {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+};
+
+/**
+ * How far the map may be moved. Its edge never comes inside the part of the
+ * frame that can be seen -- that would show what is behind the map -- and
+ * every edge can be brought right up to it. So zoom gives the overflow to
+ * move through, and a covered side gives exactly its own depth more: at 1x
+ * under a sheet the map moves up until its bottom edge meets the sheet's
+ * top, and with nothing covered it does not move at all.
+ */
+export function mapPanLimits(
+  zoom: number,
+  frame: MapFrame,
+  insets: MapInsets = NO_MAP_INSETS,
+): MapPanLimits {
+  const slackX = Math.max(0, (frame.width * (zoom - 1)) / 2);
+  const slackY = Math.max(0, (frame.height * (zoom - 1)) / 2);
+  return {
+    minX: -slackX - insets.right + 0,
+    maxX: slackX + insets.left,
+    minY: -slackY - insets.bottom + 0,
+    maxY: slackY + insets.top,
+  };
+}
+
+export function mapCanPan(
+  zoom: number,
+  frame: MapFrame,
+  insets: MapInsets = NO_MAP_INSETS,
+): boolean {
+  const limits = mapPanLimits(zoom, frame, insets);
+  return limits.maxX - limits.minX >= 1 || limits.maxY - limits.minY >= 1;
+}
+
+export function clampMapPan(
+  view: MapView,
+  frame: MapFrame,
+  insets: MapInsets = NO_MAP_INSETS,
+): MapView {
+  const limits = mapPanLimits(view.zoom, frame, insets);
   return {
     zoom: view.zoom,
-    x: clamp(view.x, -slackX, slackX) + 0,
-    y: clamp(view.y, -slackY, slackY) + 0,
+    x: clamp(view.x, limits.minX, limits.maxX) + 0,
+    y: clamp(view.y, limits.minY, limits.maxY) + 0,
   };
+}
+
+// Too little of the frame showing for anything to be brought into it.
+export function mapRoomToShow(
+  frame: MapFrame,
+  insets: MapInsets,
+  margin: number,
+): boolean {
+  return (
+    frame.width - insets.left - insets.right > margin * 2 &&
+    frame.height - insets.top - insets.bottom > margin * 2
+  );
+}
+
+/**
+ * The pan that brings `points` inside what can be seen, `margin` clear of
+ * its edges, moving the map no further than that takes and never past its
+ * limits. They are map points as the frame draws them at 1x, measured from
+ * its centre, most important first: when they do not all fit, the first is
+ * the one that shows, with as much of the way to the others as there is room
+ * for.
+ */
+export function mapPanToShow(
+  view: MapView,
+  points: MapPoint[],
+  frame: MapFrame,
+  insets: MapInsets = NO_MAP_INSETS,
+  margin = 0,
+): MapView {
+  const along = (
+    pan: number,
+    size: number,
+    before: number,
+    after: number,
+    axis: "x" | "y",
+  ) => {
+    const low = -size / 2 + before + margin;
+    const high = size / 2 - after - margin;
+    // Held last, so the first point is the one the others give way to.
+    return [...points].reverse().reduce((at, point) => {
+      const drawn = point[axis] * view.zoom;
+      return clamp(at, low - drawn, high - drawn);
+    }, pan);
+  };
+  return clampMapPan(
+    {
+      zoom: view.zoom,
+      x: along(view.x, frame.width, insets.left, insets.right, "x"),
+      y: along(view.y, frame.height, insets.top, insets.bottom, "y"),
+    },
+    frame,
+    insets,
+  );
 }
 
 // Worked from where the pinch STARTED rather than from the last frame, so the
@@ -63,6 +194,7 @@ export function pinchView(
   to: [MapPoint, MapPoint],
   limits: { min: number; max: number },
   frame: MapFrame,
+  insets: MapInsets = NO_MAP_INSETS,
 ): MapView {
   const spread = Math.max(1, distance(from[0], from[1]));
   const zoom = resistZoom(
@@ -80,6 +212,7 @@ export function pinchView(
       y: now.y - (held.y - start.y) * ratio,
     },
     frame,
+    insets,
   );
 }
 
@@ -89,6 +222,7 @@ export function zoomViewAt(
   zoom: number,
   at: MapPoint,
   frame: MapFrame,
+  insets: MapInsets = NO_MAP_INSETS,
 ): MapView {
   const ratio = zoom / view.zoom;
   return clampMapPan(
@@ -98,6 +232,7 @@ export function zoomViewAt(
       y: at.y - (at.y - view.y) * ratio,
     },
     frame,
+    insets,
   );
 }
 

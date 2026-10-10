@@ -32,14 +32,21 @@ import type {
 import type { UtilityLineup } from "~/types/utility";
 import {
   DOUBLE_TAP_MS,
+  NO_MAP_INSETS,
   TAP_MAX_MS,
   TAP_SLOP_PX,
+  clampMapPan,
   dragZoom,
   isDoubleTap,
   isTap,
+  mapCanPan,
+  mapPanToShow,
+  mapRoomToShow,
   momentumStep,
   pinchView,
   releaseVelocity,
+  type MapFrame,
+  type MapInsets,
   type MapPoint,
   type MapSample,
   type MapView,
@@ -88,6 +95,9 @@ const props = withDefaults(
     // Off for a board that is one picture in a column that scrolls: with it
     // on, a finger on the map moves the map and never the page under it.
     touch?: boolean;
+    // How much of each side of the square something is drawn over -- the
+    // sheet, on a phone. The map can be moved out from under it.
+    cover?: MapInsets;
   }>(),
   {
     selectedId: null,
@@ -104,6 +114,7 @@ const props = withDefaults(
     controls: true,
     peek: false,
     touch: true,
+    cover: () => NO_MAP_INSETS,
   },
 );
 
@@ -908,17 +919,39 @@ watch([zoom, () => props.metaSpots], () => {
   }
 });
 
-// Panning past the edge would reveal the background behind the map, so the
-// offset is clamped to whatever the current zoom actually overflows by.
+// Only a board that takes the finger is moved out from under anything.
+const cover = computed(() => (props.touch ? props.cover : NO_MAP_INSETS));
+const isCovered = computed(() => {
+  const { top, right, bottom, left } = cover.value;
+  return top + right + bottom + left > 0;
+});
+
+function currentView(): MapView {
+  return { zoom: zoom.value, x: panX.value, y: panY.value };
+}
+
+// See mapPanLimits: to the edge of what can be seen, and no further.
 function clampPan() {
-  const rect = viewportRef.value?.getBoundingClientRect();
-  if (!rect) {
+  if (!viewportRef.value) {
     return;
   }
-  const slackX = (rect.width * (zoom.value - 1)) / 2;
-  const slackY = (rect.height * (zoom.value - 1)) / 2;
-  panX.value = Math.min(slackX, Math.max(-slackX, panX.value));
-  panY.value = Math.min(slackY, Math.max(-slackY, panY.value));
+  const held = clampMapPan(currentView(), frameSize(), cover.value);
+  panX.value = held.x;
+  panY.value = held.y;
+}
+
+// Zoomed in, there is more map than can be seen at once; so there is with
+// part of it under something. Out from under is a finger's to pull, though,
+// not a mouse's: a mouse at 1x is aiming a click, and has a wheel to scroll
+// the page with.
+function canPan(pointerType: string) {
+  if (zoom.value > MIN_ZOOM) {
+    return true;
+  }
+  return (
+    pointerType !== "mouse" &&
+    mapCanPan(zoom.value, frameSize(), cover.value)
+  );
 }
 
 // Zooming toward the pointer rather than the centre: the thing under the
@@ -966,7 +999,7 @@ function zoomAt(next: number, clientX?: number, clientY?: number) {
     panY.value = originY - (originY - panY.value) * ratio;
   }
   zoom.value = target;
-  if (target === MIN_ZOOM) {
+  if (target === MIN_ZOOM && !isCovered.value) {
     panX.value = 0;
     panY.value = 0;
   }
@@ -1263,6 +1296,7 @@ function onPointerMove(event: PointerEvent) {
       to,
       { min: MIN_ZOOM, max: maxZoom.value },
       frameSize(),
+      cover.value,
     );
     zoom.value = view.zoom;
     panX.value = view.x;
@@ -1300,7 +1334,7 @@ function onPointerMove(event: PointerEvent) {
     );
     return;
   }
-  if (zoom.value <= MIN_ZOOM) {
+  if (!canPan(press.type)) {
     return;
   }
   panning.value = true;
@@ -1347,6 +1381,15 @@ function onPointerUp(event: PointerEvent) {
   if (!pointers.has(event.pointerId)) {
     return;
   }
+  liftPointer(event);
+  // The limits can have moved while a finger held the map; with the last
+  // one up it is brought inside them.
+  if (pointers.size === 0 && !gliding.value && !easing.value) {
+    settle(false);
+  }
+}
+
+function liftPointer(event: PointerEvent) {
   const target = event.currentTarget as HTMLElement;
   if (pinch?.ids.includes(event.pointerId)) {
     endPinch(event);
@@ -1412,7 +1455,7 @@ function onPointerUp(event: PointerEvent) {
   tapZoom = null;
   lastTap = null;
 
-  if (dragged && !pinched && zoom.value > MIN_ZOOM) {
+  if (dragged && !pinched && canPan(ended.type)) {
     const velocity = releaseVelocity(samples, event.timeStamp);
     if (Math.hypot(velocity.x, velocity.y) > FLING_MIN) {
       glideVelocity = velocity;
@@ -1455,6 +1498,76 @@ function resetView() {
   panY.value = 0;
 }
 
+// Clear of the edge of what can be seen by a mark and a little air.
+const SHOW_MARGIN_PX = 28;
+
+// The open lineup's two ends as the frame draws them at 1x. Where it lands
+// comes first: that is the end to keep when both will not fit.
+function selectedPoints(frame: MapFrame): MapPoint[] {
+  const marker = markers.value.find((entry) => entry.id === props.selectedId);
+  if (!marker) {
+    return [];
+  }
+  return [marker.landing, marker.origin]
+    .filter((point): point is { x: number; y: number } => point !== null)
+    .map((point) => ({
+      x: (point.x / CANVAS - 0.5) * frame.width,
+      y: (point.y / CANVAS - 0.5) * frame.height,
+    }));
+}
+
+/**
+ * Brings the map to where what covers it lets it rest and, with `show`, the
+ * open lineup out from under the cover. Eased, and never under a finger: a
+ * gesture is held to the limits by its own moves, and a map that slid away
+ * from the hand moving it would be fighting it.
+ */
+function settle(show: boolean) {
+  if (pointers.size > 0 || !viewportRef.value) {
+    return;
+  }
+  const frame = frameSize();
+  if (!frame.width || !frame.height) {
+    return;
+  }
+  const from = currentView();
+  const points =
+    show &&
+    isCovered.value &&
+    mapRoomToShow(frame, cover.value, SHOW_MARGIN_PX)
+      ? selectedPoints(frame)
+      : [];
+  const to = points.length
+    ? mapPanToShow(from, points, frame, cover.value, SHOW_MARGIN_PX)
+    : clampMapPan(from, frame, cover.value);
+  if (Math.abs(to.x - from.x) < 0.5 && Math.abs(to.y - from.y) < 0.5) {
+    return;
+  }
+  stopGlide();
+  easeZoom(() => {
+    panX.value = to.x;
+    panY.value = to.y;
+  });
+}
+
+watch(cover, () => settle(false), { flush: "post" });
+
+watch(frameWidth, () => {
+  if (isCovered.value) {
+    settle(false);
+  }
+});
+
+watch(
+  () => props.selectedId,
+  (id) => {
+    if (id) {
+      settle(true);
+    }
+  },
+  { flush: "post" },
+);
+
 const zoomIn = () => easeZoom(() => zoomAt(zoom.value * 1.4));
 const zoomOut = () => easeZoom(() => zoomAt(zoom.value / 1.4));
 const resetZoom = () => easeZoom(() => resetView());
@@ -1473,6 +1586,9 @@ defineExpose({
   canZoomOut: computed(() => zoom.value > MIN_ZOOM),
   hasCallouts,
   showCallouts,
+  // For when what covers the map has come to rest somewhere new: the open
+  // lineup is brought out from under it.
+  showSelected: () => settle(true),
 });
 
 // A new map is a new view; keeping the old pan would open it somewhere random.

@@ -4,6 +4,11 @@ import {
   dragZoom,
   isDoubleTap,
   isTap,
+  mapCanPan,
+  mapCover,
+  mapPanLimits,
+  mapPanToShow,
+  mapRoomToShow,
   momentumStep,
   pinchView,
   releaseVelocity,
@@ -144,6 +149,168 @@ describe("clampMapPan and zoomViewAt", () => {
     expect(view.zoom).toBe(2);
     expect(after.x).toBeCloseTo(before.x);
     expect(after.y).toBeCloseTo(before.y);
+  });
+});
+
+// A sheet drawn over the bottom 100px of the frame.
+const sheet = { top: 0, right: 0, bottom: 100, left: 0 };
+
+// Where a map point is drawn in the frame, measured from its centre.
+function drawnAt(view: MapView, point: MapPoint): MapPoint {
+  return { x: view.x + point.x * view.zoom, y: view.y + point.y * view.zoom };
+}
+
+describe("mapCover", () => {
+  const board = { left: 0, top: 170, right: 390, bottom: 560 };
+
+  it("is how far the sheet's top edge comes up the frame", () => {
+    expect(
+      mapCover(board, { left: 0, top: 60, right: 390, bottom: 480 }),
+    ).toEqual({ top: 0, right: 0, bottom: 80, left: 0 });
+  });
+
+  it("is nothing while the sheet rests below the frame", () => {
+    expect(
+      mapCover(board, { left: 0, top: 60, right: 390, bottom: 712 }),
+    ).toEqual({ top: 0, right: 0, bottom: 0, left: 0 });
+  });
+
+  it("counts what has scrolled out under the top edge too", () => {
+    expect(
+      mapCover(
+        { left: 0, top: 20, right: 390, bottom: 410 },
+        { left: 0, top: 60, right: 390, bottom: 380 },
+      ),
+    ).toEqual({ top: 40, right: 0, bottom: 30, left: 0 });
+  });
+
+  it("is the whole frame and no more when all of it is covered", () => {
+    expect(
+      mapCover(board, { left: 0, top: 60, right: 390, bottom: 72 }),
+    ).toEqual({ top: 0, right: 0, bottom: 390, left: 0 });
+  });
+});
+
+describe("pan limits under a cover", () => {
+  it("lets the map up at 1x by exactly what the sheet covers", () => {
+    expect(mapPanLimits(1, frame, sheet)).toEqual({
+      minX: 0,
+      maxX: 0,
+      minY: -100,
+      maxY: 0,
+    });
+    expect(clampMapPan({ zoom: 1, x: 40, y: -260 }, frame, sheet)).toEqual({
+      zoom: 1,
+      x: 0,
+      y: -100,
+    });
+    expect(clampMapPan({ zoom: 1, x: 0, y: 30 }, frame, sheet)).toEqual(fit);
+  });
+
+  it("brings the map's bottom edge to the sheet's top, and no further", () => {
+    const view = clampMapPan({ zoom: 1, x: 0, y: -999 }, frame, sheet);
+    const bottomEdge = drawnAt(view, { x: 0, y: frame.height / 2 });
+
+    expect(bottomEdge.y).toBe(frame.height / 2 - sheet.bottom);
+  });
+
+  it("adds the cover to what the zoom overflows by", () => {
+    expect(mapPanLimits(2, frame, sheet)).toEqual({
+      minX: -200,
+      maxX: 200,
+      minY: -300,
+      maxY: 200,
+    });
+  });
+
+  it("does not move a map that fits what can be seen", () => {
+    expect(mapCanPan(1, frame)).toBe(false);
+    expect(mapCanPan(1, frame, sheet)).toBe(true);
+    expect(mapCanPan(1.5, frame)).toBe(true);
+  });
+
+  it("holds a pinch and a tap zoom to the same limits", () => {
+    const start: MapView = { zoom: 1, x: 0, y: -100 };
+    const still: [MapPoint, MapPoint] = [
+      { x: -50, y: 0 },
+      { x: 50, y: 0 },
+    ];
+    expect(pinchView(start, still, still, limits, frame, sheet)).toEqual(start);
+    expect(pinchView(start, still, still, limits, frame)).toEqual(fit);
+
+    const zoomed = zoomViewAt(fit, 2, { x: 0, y: -200 }, frame, sheet);
+    expect(zoomed).toEqual({ zoom: 2, x: 0, y: 200 });
+    expect(
+      zoomViewAt({ zoom: 2, x: 0, y: -300 }, 1, { x: 0, y: 0 }, frame, sheet),
+    ).toEqual({ zoom: 1, x: 0, y: -100 });
+  });
+});
+
+describe("mapPanToShow", () => {
+  const margin = 20;
+  // What can be seen runs from the frame's top to 100 above its bottom:
+  // -200 to 100 from the centre, 20 clear of each edge.
+  const low = -200 + margin;
+  const high = 100 - margin;
+
+  it("leaves the map alone when everything is already in view", () => {
+    const view = mapPanToShow(
+      fit,
+      [
+        { x: 0, y: 0 },
+        { x: 50, y: -100 },
+      ],
+      frame,
+      sheet,
+      margin,
+    );
+
+    expect(view).toEqual(fit);
+  });
+
+  it("lifts a point from under the sheet to just clear of it", () => {
+    const landing = { x: 30, y: 150 };
+    const view = mapPanToShow(fit, [landing], frame, sheet, margin);
+
+    expect(view.zoom).toBe(1);
+    expect(view.x).toBe(0);
+    expect(drawnAt(view, landing).y).toBe(high);
+  });
+
+  it("shows both ends of a throw when both fit", () => {
+    const landing = { x: 0, y: 150 };
+    const stance = { x: 0, y: -100 };
+    const view = mapPanToShow(fit, [landing, stance], frame, sheet, margin);
+
+    expect(drawnAt(view, landing).y).toBeLessThanOrEqual(high);
+    expect(drawnAt(view, stance).y).toBeGreaterThanOrEqual(low);
+  });
+
+  it("keeps the landing when both ends cannot fit, with the line toward the stance", () => {
+    const zoomed: MapView = { zoom: 3, x: 0, y: 0 };
+    const landing = { x: 0, y: 100 };
+    const stance = { x: 0, y: -100 };
+    const view = mapPanToShow(zoomed, [landing, stance], frame, sheet, margin);
+
+    expect(view.zoom).toBe(3);
+    // As far down as it can sit, which leaves the most of the way up to
+    // where it was thrown from.
+    expect(drawnAt(view, landing).y).toBe(high);
+    expect(drawnAt(view, stance).y).toBeLessThan(low);
+  });
+
+  it("never moves the map past its limits to do it", () => {
+    const corner = { x: 0, y: 200 };
+    const view = mapPanToShow(fit, [corner], frame, sheet, margin);
+
+    expect(view.y).toBe(-100);
+  });
+
+  it("has nowhere to show anything once too little of the frame is left", () => {
+    expect(mapRoomToShow(frame, sheet, margin)).toBe(true);
+    expect(
+      mapRoomToShow(frame, { top: 0, right: 0, bottom: 380, left: 0 }, margin),
+    ).toBe(false);
   });
 });
 

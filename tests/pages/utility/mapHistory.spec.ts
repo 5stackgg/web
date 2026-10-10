@@ -473,6 +473,57 @@ describe("the utility map page on a phone", () => {
     expect(sheet().getAttribute("data-state")).toBe("open");
   });
 
+  it("lets the map out from under the sheet, as far as the sheet's top edge", async () => {
+    wrapper = await mountPage();
+    await rowsListed();
+    await settled();
+    // Nothing is laid out here, so the board is given a phone's box: a 390px
+    // square from 170 down the window. At half the sheet's top edge is 480
+    // down it, which is 80 up the map.
+    const frame = wrapper.find(".aspect-square").element as HTMLElement;
+    frame.getBoundingClientRect = () =>
+      ({
+        left: 0,
+        top: 170,
+        width: 390,
+        height: 390,
+        right: 390,
+        bottom: 560,
+        x: 0,
+        y: 170,
+      }) as DOMRect;
+    window.dispatchEvent(new Event("resize"));
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await settle();
+
+    const layer = frame.querySelector("[data-board-layer]") as HTMLElement;
+    const finger = (type: string, y: number) =>
+      frame.dispatchEvent(
+        new PointerEvent(type, {
+          pointerId: 1,
+          pointerType: "touch",
+          isPrimary: true,
+          clientX: 200,
+          clientY: y,
+          button: 0,
+          bubbles: true,
+        }),
+      );
+    expect(layer.style.transform).toContain("translate(0px, 0px)");
+
+    finger("pointerdown", 450);
+    finger("pointermove", 430);
+    finger("pointermove", 150);
+    finger("pointerup", 150);
+    await settled();
+    expect(layer.style.transform).toContain("translate(0px, -80px)");
+
+    // Beside the map, as on a desktop, nothing is over it: it goes back.
+    layout.isMobile.value = false;
+    await settled();
+    expect(layer.style.transform).toContain("translate(0px, 0px)");
+  });
+
   it("raises the sheet for a linked lineup once the layout turns out to be a phone's", async () => {
     // The first paint of a hard load has not heard from the media query yet.
     layout.isMobile.value = false;

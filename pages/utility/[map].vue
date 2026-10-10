@@ -64,6 +64,7 @@ import {
 } from "~/composables/useUtilityMapHandoff";
 import { provideUtilityCardViews } from "~/composables/useUtilityCardViews";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
+import { useMapCover } from "~/composables/useMapCover";
 import { getQueryString, useRouteTab } from "~/composables/useRouteTab";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import cleanMapName from "~/utilities/cleanMapName";
@@ -1524,6 +1525,28 @@ watch(covered, (on, was) => {
   }
 });
 
+// On a phone the sheet lies over the bottom of the map, so the board is told
+// how much of it is under there and lets the map be moved out. Beside the
+// map, as on a desktop, nothing is over it and nothing is measured.
+const { cover: boardCover } = useMapCover({
+  frame: () => board.value?.viewport,
+  coveredFrom: () => (isMobile.value ? sheet.value?.top() : null),
+});
+
+// The sheet coming to rest somewhere new is when the open lineup is brought
+// back into sight -- not a scroll or a resize, which the map only gives way
+// to. A tick later, so the board has the new cover to clear.
+watch(
+  () => (isMobile.value ? sheet.value?.snap() : null),
+  async (snap, was) => {
+    if (snap && was && snap !== was) {
+      await nextTick();
+      board.value?.showSelected();
+    }
+  },
+  { flush: "post" },
+);
+
 // Watched, not read once on mount: on a hard load the media query reports
 // after the first paint, and a link straight to a lineup would find a desktop
 // column where there is about to be a sheet.
@@ -2099,6 +2122,7 @@ function selectLineup(id: string | null) {
           class="!rounded-none !border-0 !bg-transparent"
           :controls="false"
           peek
+          :cover="boardCover"
           :seed-src="arrival?.src"
           :map-name="mapName"
           :lineups="panelBoard?.lineups ?? lineups"

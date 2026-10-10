@@ -49,7 +49,15 @@ describe("playerBlockErrorKey", () => {
       "You can't do that with this player.",
     );
 
-    for (const file of fs.readdirSync(LOCALES)) {
+    // Only the locales: whatever else the OS leaves in the folder (a
+    // .DS_Store) is not one, and parsing it fails the test for no reason.
+    const locales = fs
+      .readdirSync(LOCALES)
+      .filter((file) => file.endsWith(".json"));
+
+    expect(locales.length).toBeGreaterThan(1);
+
+    for (const file of locales) {
       const errors = locale(file).player_blocks.errors;
 
       for (const text of Object.values(errors) as string[]) {

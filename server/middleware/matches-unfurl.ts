@@ -164,7 +164,7 @@ export default defineEventHandler(async (event) => {
   }
 
   setResponseHeader(event, "Content-Type", "text/html; charset=utf-8");
-  setResponseHeader(event, "Cache-Control", "public, max-age=120");
+  setResponseHeaders(event, unfurlCacheHeaders(120));
 
   return renderUnfurl({
     title,

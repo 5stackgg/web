@@ -12,6 +12,7 @@ import {
   Plus,
   Rows3,
   Tags,
+  Telescope,
   X,
 } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -34,6 +35,7 @@ import UtilityMetaSpotView from "~/components/utility/UtilityMetaSpotView.vue";
 import UtilityPracticePlanPanel from "~/components/utility/UtilityPracticePlanPanel.vue";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import UtilityCollectionsPanel from "~/components/utility/UtilityCollectionsPanel.vue";
+import UtilityDiscoverPanel from "~/components/utility/UtilityDiscoverPanel.vue";
 import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityTypeChips from "~/components/utility/UtilityTypeChips.vue";
 import UtilityTypeHeader from "~/components/utility/UtilityTypeHeader.vue";
@@ -302,6 +304,7 @@ const archiveLineup = ref<LineupRef | null>(null);
 const deleteOpen = ref(false);
 const deleteLineup = ref<LineupRef | null>(null);
 
+const DISCOVER_TAB = "discover";
 const LIST_TAB = "lineups";
 const META_TAB = "meta";
 const CREATE_TAB = "create";
@@ -324,6 +327,7 @@ const ALL_TABS = [
   PLAN_TAB,
   BLOCK_TAB,
   CREATE_TAB,
+  DISCOVER_TAB,
 ];
 // Read through useRouteTab, written through the page's own writer, so picking
 // a tab can share a navigation with whatever else that click changes.
@@ -612,6 +616,15 @@ const listTabs = computed(() => {
       icon: ClipboardCheck,
     });
   }
+  if (mySteamId.value) {
+    tabs.push({
+      key: DISCOVER_TAB,
+      label: t("pages.utility.discover.tab"),
+      title: t("pages.utility.discover.tab"),
+      desc: t("pages.utility.discover.hint"),
+      icon: Telescope,
+    });
+  }
   // Authoring is an action, not a view. It never joins the strip — a tab that
   // appears on click makes the whole bar jump. AnimatedFilters drops its
   // indicator when nothing matches, which is the honest state: you are not in
@@ -766,7 +779,9 @@ const secondaryAction = computed(() => {
 // the board on the filtered lineups, so hiding the chips there only took the
 // control away -- the filter was still doing its work. The author panel drives
 // the board itself, so it is the one view that keeps them off.
-const boardFiltersApply = computed(() => listTab.value !== CREATE_TAB);
+const boardFiltersApply = computed(
+  () => listTab.value !== CREATE_TAB && listTab.value !== DISCOVER_TAB,
+);
 
 // A tab that stops driving the board must hand it back, or its markers outlive
 // the panel that drew them.
@@ -2137,7 +2152,7 @@ function selectLineup(id: string | null) {
           ref="board"
           class="!rounded-none !border-0 !bg-transparent"
           :controls="false"
-          peek
+          :peek="panelBoard?.peek ?? true"
           :cover="boardCover"
           :seed-src="arrival?.src"
           :map-name="mapName"
@@ -2152,6 +2167,7 @@ function selectLineup(id: string | null) {
           :pick-z="panelBoard?.pickZ ?? 0"
           :markers="panelBoard?.markers ?? []"
           :segments="panelBoard?.segments ?? []"
+          :shapes="panelBoard?.shapes ?? []"
           :selected-segment-key="panelBoard?.selectedSegmentKey ?? null"
           :show-all-lines="!!panelBoard?.showAllLines"
           @select="
@@ -2378,6 +2394,17 @@ function selectLineup(id: string | null) {
                 :sides="filters.sides"
                 @board="(state) => (panelBoard = state)"
                 @open="openLineup"
+              />
+
+              <!-- Keyed on the map like the author panel: it holds points
+                   picked off this map's board. -->
+              <UtilityDiscoverPanel
+                v-else-if="listTab === DISCOVER_TAB && mySteamId"
+                :key="`discover-${mapName}`"
+                :map-name="mapName"
+                :can-practice="!isMobile"
+                @board="(state) => (panelBoard = state)"
+                @open-lineup="openLineup"
               />
 
               <!-- Keyed on the map, unlike its neighbours. Every other panel takes

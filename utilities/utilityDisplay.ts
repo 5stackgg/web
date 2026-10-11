@@ -709,6 +709,19 @@ export type UtilityBoardSegment = {
 };
 
 /**
+ * An outline the board draws under its marks, in world units: an area to
+ * throw from, the footprint of a smoke. Several rings fill even-odd, so a
+ * ring inside another is a hole.
+ */
+export type UtilityBoardShape = {
+  key: string;
+  rings: UtilityTrajectoryPoint[][];
+  color?: string;
+  fillOpacity?: number;
+  dashed?: boolean;
+};
+
+/**
  * What a panel asks the page's board to draw. The board belongs to the page and
  * outlives every tab, so a panel that needs a map publishes this instead of
  * mounting a second one beside the first.
@@ -718,8 +731,14 @@ export type UtilityPanelBoard = {
   pickZ?: number;
   markers?: UtilityBoardMarker[];
   segments?: UtilityBoardSegment[];
+  shapes?: UtilityBoardShape[];
   selectedSegmentKey?: string | null;
   lineups?: UtilityLineup[];
+  /**
+   * Off for a panel whose `lineups` are not saved lineups -- a search's
+   * results -- which the hover card has nothing to show for.
+   */
+  peek?: boolean;
   selectedId?: string | null;
   hoveredId?: string | null;
   showAllLines?: boolean;

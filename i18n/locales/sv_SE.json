@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} har bjudits in att anmäla sig till en turnering"
     },
     "roles": {
+      "admin": "Admin",
       "captain": "Lagkapten",
+      "invite": "Bjuda in",
+      "member": "Medlem",
       "owner": "Ägare"
     },
     "leave": "Lämna laget",
@@ -8140,7 +8143,7 @@
       "captain": "Lagkapten",
       "admin": "Admin",
       "ineligible_short": "Låst",
-      "tournament_join_requires_owner_or_captain": "Du kan bara gå med med lag där du är ägare, lagkapten eller admin.",
+      "tournament_join_requires_owner_or_captain": "Du kan bara delta med lag där du är ägare, lagkapten eller admin.",
       "not_enough_players": "Kräver minst {count} spelare för att utmana.",
       "selected": "Vald",
       "loading_more": "Läser in fler…",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Din lobby är redan i kön.",
-      "player_in_match": "{name} är redan i en match."
+      "player_in_match": "{name} är redan i en match.",
+      "matchmaking_disabled": "Matchmaking är avstängt.",
+      "queue_disabled": "Matchmaking är inte tillåtet.",
+      "role_required": "Du har inte behörighet att gå med i den här kön.",
+      "queue_busy": "Din lobby håller fortfarande på att gå med i kön, försök igen."
     }
   },
   "game_server": {

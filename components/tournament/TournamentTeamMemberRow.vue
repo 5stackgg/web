@@ -68,7 +68,7 @@ import Separator from "../ui/separator/Separator.vue";
               class="h-8 hover:z-10 focus:z-10"
               :class="hasMenuActions && '-mr-px !rounded-r-none'"
             >
-              {{ member.role }}
+              {{ roleLabel(member.role) }}
               <ChevronDownIcon class="ml-2 h-3.5 w-3.5 text-muted-foreground" />
             </Button>
           </PopoverTrigger>
@@ -86,7 +86,7 @@ import Separator from "../ui/separator/Separator.vue";
                     :value="role.value"
                     class="flex flex-col items-start px-4 py-2 cursor-pointer"
                   >
-                    <p>{{ role.value }}</p>
+                    <p>{{ roleLabel(role.value) }}</p>
                     <p class="text-sm text-muted-foreground">
                       {{ role.description }}
                     </p>
@@ -100,7 +100,7 @@ import Separator from "../ui/separator/Separator.vue";
           v-else
           class="inline-flex h-8 items-center border border-border bg-muted/30 px-3 font-mono text-[0.7rem] tracking-[0.18em] uppercase text-muted-foreground rounded-l-md rounded-r-none -mr-px"
         >
-          {{ member.role }}
+          {{ roleLabel(member.role) }}
         </span>
 
         <DropdownMenu v-if="hasMenuActions">
@@ -154,7 +154,7 @@ import Separator from "../ui/separator/Separator.vue";
         v-else
         class="font-mono text-[0.7rem] tracking-[0.18em] uppercase text-muted-foreground"
       >
-        {{ member.role }}
+        {{ roleLabel(member.role) }}
       </span>
     </div>
 
@@ -192,6 +192,7 @@ import {
   e_player_roles_enum,
   e_tournament_status_enum,
 } from "~/generated/zeus";
+import { teamRoleLabel } from "~/utilities/teamRoleLabel";
 
 export default {
   emits: ["leave"],
@@ -304,6 +305,9 @@ export default {
     },
   },
   methods: {
+    roleLabel(role: string) {
+      return teamRoleLabel(role, (key) => this.$t(key));
+    },
     async publishRole() {
       if (!this.canUpdateRole) return;
 

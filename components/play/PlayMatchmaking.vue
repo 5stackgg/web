@@ -31,6 +31,7 @@ import { TOURNAMENT_COOLDOWN_SUBSCRIPTION } from "~/graphql/tournamentCooldown";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, type e_match_types_enum } from "~/generated/zeus";
 import { dateLocale } from "~/utilities/dateLocale";
+import mapLabel from "~/utilities/mapLabel";
 import { loginLinks } from "~/utilities/loginLinks";
 import { EXPECTED_PLAYERS } from "~/utilities/matchmakingPartySize";
 import {
@@ -920,7 +921,7 @@ const linkClasses =
                   · {{ modeTitle(searchType) }}
                 </template>
                 <template v-if="currentMap">
-                  · {{ currentMap.map?.label || currentMap.map?.name }}
+                  · {{ mapLabel(currentMap.map) }}
                 </template>
               </span>
             </div>

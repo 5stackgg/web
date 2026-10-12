@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} 受邀報名參加賽事"
     },
     "roles": {
+      "admin": "管理員",
       "captain": "隊長",
+      "invite": "邀請",
+      "member": "成員",
       "owner": "擁有者"
     },
     "leave": "離開隊伍",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "你的大廳已在佇列中。",
-      "player_in_match": "{name} 已在比賽中。"
+      "player_in_match": "{name} 已在比賽中。",
+      "matchmaking_disabled": "配對已關閉。",
+      "queue_disabled": "不允許配對。",
+      "role_required": "你沒有加入此佇列的權限。",
+      "queue_busy": "你的大廳仍在加入佇列，請重試。"
     }
   },
   "game_server": {

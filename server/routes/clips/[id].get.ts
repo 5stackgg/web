@@ -5,6 +5,8 @@
 // browsers get the same HTML but a meta-refresh + JS redirect lands the
 // user on /highlights?clip=<id> where the existing modal flow takes over.
 
+import mapLabel from "~/utilities/mapLabel";
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, "&amp;")
@@ -77,8 +79,7 @@ export default defineEventHandler(async (event) => {
   const videoUrl: string = clip.download_url;
   const thumbUrl: string | null = clip.thumbnail_download_url ?? null;
   const targetName: string = clip.target?.name ?? "Player";
-  const mapName: string | null =
-    clip.match_map?.map?.label ?? clip.match_map?.map?.name ?? null;
+  const mapName: string | null = mapLabel(clip.match_map?.map) || null;
   const lineup1: string | null = clip.match_map?.match?.lineup_1?.name ?? null;
   const lineup2: string | null = clip.match_map?.match?.lineup_2?.name ?? null;
   const matchup =

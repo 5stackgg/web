@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} がトーナメントへの参加登録に招待されました"
     },
     "roles": {
+      "admin": "管理者",
       "captain": "キャプテン",
+      "invite": "招待",
+      "member": "メンバー",
       "owner": "オーナー"
     },
     "leave": "チームを脱退",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "ロビーはすでにキューに入っています。",
-      "player_in_match": "{name} はすでに試合中です。"
+      "player_in_match": "{name} はすでに試合中です。",
+      "matchmaking_disabled": "マッチメイキングは無効になっています。",
+      "queue_disabled": "マッチメイキングは許可されていません。",
+      "role_required": "このキューに参加する権限がありません。",
+      "queue_busy": "ロビーはまだキューに参加中です。もう一度お試しください。"
     }
   },
   "game_server": {

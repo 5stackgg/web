@@ -444,6 +444,7 @@ import { useSound } from "~/composables/useSound";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
 import { chatRoomTakesAttachments } from "~/utilities/chatAttachments";
+import mapLabel from "~/utilities/mapLabel";
 
 const { rightSidebarOpen } = useRightSidebar();
 const { playNotificationSound } = useSound();
@@ -830,7 +831,7 @@ export default {
       }
       const current = match.match_maps.find((mm: any) => mm.is_current_map);
       const first = current || match.match_maps[0];
-      return first?.map?.name || "";
+      return mapLabel(first?.map);
     },
     matchMetaText() {
       const parts: string[] = [];

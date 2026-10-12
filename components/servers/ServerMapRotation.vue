@@ -18,6 +18,7 @@ import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import { toast } from "@/components/ui/toast";
+import mapLabel from "~/utilities/mapLabel";
 
 type RotationMap = {
   id: string;
@@ -115,7 +116,6 @@ const filter = ref("");
 const brokenPosters = ref(new Set<string>());
 
 const mapKey = (map: RotationMap) => map.workshop_map_id || map.name;
-const mapLabel = (map: RotationMap) => map.label || map.name;
 
 const changes = computed<Array<{ text: string; restart: boolean }>>(() => {
   const before = baseline.value.ids;

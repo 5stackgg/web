@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} ha recibido una invitación para inscribirse en un torneo"
     },
     "roles": {
+      "admin": "Admin",
       "captain": "Capitán",
+      "invite": "Invitar",
+      "member": "Miembro",
       "owner": "Propietario"
     },
     "leave": "Salir del equipo",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Tu lobby ya está en cola.",
-      "player_in_match": "{name} ya está en una partida."
+      "player_in_match": "{name} ya está en una partida.",
+      "matchmaking_disabled": "El emparejamiento está desactivado.",
+      "queue_disabled": "El emparejamiento no está permitido.",
+      "role_required": "No tienes permiso para unirte a esta cola.",
+      "queue_busy": "Tu lobby todavía se está uniendo a la cola, inténtalo de nuevo."
     }
   },
   "game_server": {

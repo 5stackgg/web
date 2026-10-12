@@ -58,6 +58,47 @@ describe("Socket matchmaking:error", () => {
     expect(description()).toBe("kairo is already in a match.");
   });
 
+  it.each([
+    [
+      "matchmaking_disabled",
+      "Matchmaking is disabled",
+      "Matchmaking ist deaktiviert.",
+    ],
+    [
+      "queue_disabled",
+      "Matchmaking is not allowed",
+      "Matchmaking ist nicht erlaubt.",
+    ],
+    [
+      "role_required",
+      "You do not have permission to join this queue",
+      "Du hast keine Berechtigung, dieser Queue beizutreten.",
+    ],
+    [
+      "queue_busy",
+      "Your lobby is still joining the queue, try again",
+      "Deine Lobby tritt der Queue noch bei, versuch es erneut.",
+    ],
+  ])(
+    "says %s in the viewer's language",
+    async (code, message, translated) => {
+      await i18n().setLocale("de");
+
+      socket.emit("matchmaking:error", { code, message });
+
+      expect(description()).toBe(translated);
+    },
+  );
+
+  it("says matchmaking is disabled in English", () => {
+    socket.emit("matchmaking:error", {
+      code: "matchmaking_disabled",
+      message: "Matchmaking is disabled",
+    });
+
+    expect(description()).toBe("Matchmaking is disabled.");
+  });
+
   it("shows the api's own words for a code it does not know", async () => {
     await i18n().setLocale("de");
 

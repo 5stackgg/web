@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} foi convidada para se inscrever em um torneio"
     },
     "roles": {
+      "admin": "Admin",
       "captain": "Capitão",
+      "invite": "Convidar",
+      "member": "Membro",
       "owner": "Dono"
     },
     "leave": "Sair da Equipe",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Sua lobby já está na fila.",
-      "player_in_match": "{name} já está em uma partida."
+      "player_in_match": "{name} já está em uma partida.",
+      "matchmaking_disabled": "O matchmaking está desativado.",
+      "queue_disabled": "O matchmaking não é permitido.",
+      "role_required": "Você não tem permissão para entrar nesta fila.",
+      "queue_busy": "Sua lobby ainda está entrando na fila, tente novamente."
     }
   },
   "game_server": {

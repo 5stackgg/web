@@ -300,6 +300,24 @@ describe("schedule rows", () => {
     expect(row.meta).toBe("Competitive · Best of 1 · Nuke · US East");
   });
 
+  it("names an official map by its label, never its de_ name", () => {
+    const row = scheduleMatchRow(
+      {
+        id: "m1",
+        status: "Scheduled",
+        scheduled_at: at(21, 30),
+        options: { best_of: 1, type: "Competitive" },
+        lineup_1: lineup("a", "A"),
+        lineup_2: lineup("b", "B"),
+        match_maps: [{ map: { name: "de_ancient", label: null } }],
+        region: null,
+        tournament_brackets: [],
+      },
+      ctx,
+    );
+    expect(row.meta).toBe("Competitive · Best of 1 · Ancient");
+  });
+
   it("drops the check-in action once I'm checked in", () => {
     const row = scheduleMatchRow(
       {

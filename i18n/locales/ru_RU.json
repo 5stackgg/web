@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "Команду {team} пригласили зарегистрироваться на турнир"
     },
     "roles": {
+      "admin": "Админ",
       "captain": "Капитан",
+      "invite": "Приглашение",
+      "member": "Участник",
       "owner": "Владелец"
     },
     "leave": "Покинуть команду",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Ваше лобби уже в очереди.",
-      "player_in_match": "{name} уже в матче."
+      "player_in_match": "{name} уже в матче.",
+      "matchmaking_disabled": "Подбор матчей отключён.",
+      "queue_disabled": "Подбор матчей запрещён.",
+      "role_required": "У вас нет прав, чтобы присоединиться к этой очереди.",
+      "queue_busy": "Ваше лобби ещё встаёт в очередь, попробуйте снова."
     }
   },
   "game_server": {

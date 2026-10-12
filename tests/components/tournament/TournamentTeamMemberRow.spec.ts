@@ -216,3 +216,50 @@ describe("TournamentTeamMemberRow Remove Member", () => {
     });
   }
 });
+
+describe("TournamentTeamMemberRow role label in the viewer's language", () => {
+  const i18n = () => (useNuxtApp() as any).$i18n;
+
+  afterEach(async () => {
+    await i18n().setLocale("en");
+  });
+
+  it.each([
+    ["a viewer", { status: "Live" }],
+    ["a team manager", { status: "RegistrationOpen", canManage: true }],
+    [
+      "an organizer",
+      {
+        status: "RegistrationOpen",
+        isOrganizer: true,
+        platformRole: e_player_roles_enum.tournament_organizer,
+      },
+    ],
+  ])("names the role for %s", async (_, options) => {
+    await i18n().setLocale("de");
+    const wrapper = await mountRow(options);
+
+    expect(wrapper.text()).toContain("Mitglied");
+    expect(wrapper.text()).not.toContain("Member");
+  });
+
+  it("names the roles an organizer can pick", async () => {
+    await i18n().setLocale("de");
+    const wrapper = await mountRow({
+      status: "RegistrationOpen",
+      isOrganizer: true,
+      platformRole: e_player_roles_enum.tournament_organizer,
+    });
+
+    const roleButton = wrapper
+      .findAll("button")
+      .find((button) => button.text().includes("Mitglied"));
+    await roleButton!.trigger("click");
+    await flushPromises();
+
+    const names = Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="option"]'),
+    ).map((option) => option.firstElementChild?.textContent?.trim());
+    expect(names).toEqual(["Mitglied"]);
+  });
+});

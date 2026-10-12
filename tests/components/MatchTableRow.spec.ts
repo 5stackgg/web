@@ -108,3 +108,42 @@ describe("MatchTableRow stream gate", () => {
     setGlobalStream.mockRestore();
   });
 });
+
+describe("MatchTableRow map names", () => {
+  const ancient = {
+    id: "mm-1",
+    is_current_map: true,
+    lineup_1_score: 7,
+    lineup_2_score: 5,
+    winning_lineup_id: null,
+    map: { name: "de_ancient", label: null, patch: null, poster: null },
+  };
+
+  it.each([true, false])(
+    "names an official map by its label, never its de_ name (compact: %s)",
+    async (compact) => {
+      const wrapper = await mountSuspended(MatchTableRow, {
+        props: {
+          match: {
+            ...finishedMatch(),
+            status: "Live",
+            e_match_status: { description: "Live" },
+            winning_lineup_id: null,
+            match_maps: [ancient],
+          },
+          compact,
+          alwaysShow: true,
+        },
+      });
+
+      const titles = wrapper
+        .findAll("[title]")
+        .map((element) => element.attributes("title"));
+      expect(titles.some((title) => title?.includes("Ancient"))).toBe(true);
+      expect(titles.filter((title) => title?.includes("de_ancient"))).toEqual(
+        [],
+      );
+      expect(wrapper.text()).not.toContain("de_ancient");
+    },
+  );
+});

@@ -3,6 +3,7 @@ import type { Component, MaybeRefOrGetter } from "vue";
 import { toValue } from "vue";
 import { Gamepad2, Swords, Users } from "lucide-vue-next";
 import { isInCs2 } from "~/utilities/cs2Presence";
+import mapLabel from "~/utilities/mapLabel";
 
 export type FriendStatusKey =
   | "offline"
@@ -76,7 +77,7 @@ export function useFriendStatus(
       hasLiveStream: (match.streams?.length ?? 0) > 0,
       bestOf,
       isSeries: bestOf > 1,
-      mapName: currentMap?.map?.label ?? currentMap?.map?.name ?? null,
+      mapName: mapLabel(currentMap?.map) || null,
       mapNumber: currentMap?.order ?? null,
       friendScore: currentMap
         ? (isLineup1 ? currentMap.lineup_1_score : currentMap.lineup_2_score) ??

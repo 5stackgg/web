@@ -3,6 +3,7 @@ import {
   formatStartTime,
   teamMonogram,
 } from "~/components/watch/watchTicker";
+import mapLabel from "~/utilities/mapLabel";
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
 
@@ -83,7 +84,7 @@ function matchMeta(match: any, t: Translate): string {
   const parts = [
     bracket?.stage?.tournament?.name ?? match?.options?.type ?? null,
     bestOfLabel(match?.options?.best_of, t),
-    maps.length === 1 ? maps[0]?.map?.label || maps[0]?.map?.name : null,
+    maps.length === 1 ? mapLabel(maps[0]?.map) : null,
     match?.region ?? null,
   ];
   return parts.filter(Boolean).join(" · ");

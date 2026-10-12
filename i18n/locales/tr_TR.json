@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} bir turnuvaya kaydolmak için davet edildi"
     },
     "roles": {
+      "admin": "Yönetici",
       "captain": "Kaptan",
+      "invite": "Davet",
+      "member": "Üye",
       "owner": "Sahip"
     },
     "leave": "Takımdan ayrıl",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Lobiniz zaten sırada.",
-      "player_in_match": "{name} zaten bir maçta."
+      "player_in_match": "{name} zaten bir maçta.",
+      "matchmaking_disabled": "Eşleştirme devre dışı.",
+      "queue_disabled": "Eşleştirmeye izin verilmiyor.",
+      "role_required": "Bu sıraya katılma izniniz yok.",
+      "queue_busy": "Lobiniz hâlâ sıraya giriyor, tekrar deneyin."
     }
   },
   "game_server": {

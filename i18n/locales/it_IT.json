@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} è stato invitato a iscriversi a un torneo"
     },
     "roles": {
+      "admin": "Admin",
       "captain": "Capitano",
+      "invite": "Invitare",
+      "member": "Membro",
       "owner": "Proprietario"
     },
     "leave": "Lascia il team",
@@ -9886,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "La tua lobby è già in coda.",
-      "player_in_match": "{name} è già in una partita."
+      "player_in_match": "{name} è già in una partita.",
+      "matchmaking_disabled": "Il matchmaking è disattivato.",
+      "queue_disabled": "Il matchmaking non è consentito.",
+      "role_required": "Non hai il permesso di entrare in questa coda.",
+      "queue_busy": "La tua lobby sta ancora entrando in coda, riprova."
     }
   },
   "game_server": {

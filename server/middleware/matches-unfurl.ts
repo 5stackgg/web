@@ -2,6 +2,8 @@
 // /matches/<id> get a server-rendered OG card (map screenshot + teams + score
 // + status); real browsers fall through to the SPA.
 
+import mapLabel from "~/utilities/mapLabel";
+
 const MATCH_QUERY = `query MatchForUnfurl($id: uuid!) {
   matches_by_pk(id: $id) {
     id
@@ -116,9 +118,7 @@ export default defineEventHandler(async (event) => {
 
   // Description facts: status, maps, series length, tournament.
   const statusText = record.e_match_status?.description || record.status;
-  const mapNames = maps
-    .map((m) => m.map?.label || m.map?.name)
-    .filter(Boolean);
+  const mapNames = maps.map((m) => mapLabel(m.map)).filter(Boolean);
   const tournamentName =
     record.tournament_brackets?.[0]?.stage?.tournament?.name || null;
   const bestOf =

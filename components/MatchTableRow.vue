@@ -215,7 +215,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
             isTournamentMatch && tournamentRoundLabel
               ? tournamentRoundLabel
               : null,
-            ...match.match_maps.map((mm) => mm.map?.label || mm.map?.name),
+            ...match.match_maps.map((mm) => mapLabel(mm.map)),
           ]
             .filter(Boolean)
             .join(' · ')
@@ -298,9 +298,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
               v-if="showMapRoundScore"
               class="rounded border border-border/60 bg-background/60 px-1.5 py-0.5 font-mono font-bold leading-none tabular-nums text-foreground/85"
               :class="showSeriesScore ? 'text-xs' : 'text-xl'"
-              :title="
-                previewMatchMap?.map?.label || previewMatchMap?.map?.name || ''
-              "
+              :title="mapLabel(previewMatchMap?.map)"
             >
               {{ previewMatchMap?.lineup_1_score ?? 0 }}
             </span>
@@ -343,9 +341,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
               v-if="showMapRoundScore"
               class="rounded border border-border/60 bg-background/60 px-1.5 py-0.5 font-mono font-bold leading-none tabular-nums text-foreground/85"
               :class="showSeriesScore ? 'text-xs' : 'text-xl'"
-              :title="
-                previewMatchMap?.map?.label || previewMatchMap?.map?.name || ''
-              "
+              :title="mapLabel(previewMatchMap?.map)"
             >
               {{ previewMatchMap?.lineup_2_score ?? 0 }}
             </span>

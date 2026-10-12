@@ -433,13 +433,7 @@ const recruitingTeam = computed(() => {
     return null;
   }
 
-  if (
-    ![
-      e_tournament_status_enum.RegistrationOpen,
-      e_tournament_status_enum.RegistrationClosed,
-      e_tournament_status_enum.CheckInReview,
-    ].includes(props.tournament?.status)
-  ) {
+  if (props.tournament?.status !== e_tournament_status_enum.RegistrationOpen) {
     return null;
   }
 

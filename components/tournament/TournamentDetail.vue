@@ -1580,9 +1580,6 @@ export default {
           this.checkInTeams = data?.tournament_teams ?? [];
         },
       },
-      // An undrafted free agent has no tournament_teams row at all, so every
-      // team-shaped check-in surface misses them — while the check-in job
-      // still pushes them "confirm your spot". This row is what lets them.
       freeAgentSteamIds: {
         query: generateSubscription({
           tournament_free_agents: [
@@ -1619,6 +1616,9 @@ export default {
           );
         },
       },
+      // An undrafted free agent has no tournament_teams row at all, so every
+      // team-shaped check-in surface misses them — while the check-in job
+      // still pushes them "confirm your spot". This row is what lets them.
       myFreeAgent: {
         query: generateSubscription({
           tournament_free_agents: [

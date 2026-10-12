@@ -541,6 +541,12 @@ export default {
         e_tournament_status_enum.CancelledMinTeams,
       ].includes(status);
     },
+    freeAgentTags() {
+      const tag = this.$t("tournament.team.free_agent_tag");
+      return Object.fromEntries(
+        this.freeAgentSteamIds.map((steamId) => [steamId, tag]),
+      );
+    },
     // Layered so the most specific fact wins: another team's roster first,
     // then this team's roster, then this team's pending invites.
     //
@@ -548,12 +554,6 @@ export default {
     // is only selectable for your own team (see the note in TournamentDetail's
     // visibleTeams), so those players still look selectable and fail on insert.
     // addMember maps that error to a specific toast.
-    freeAgentTags() {
-      const tag = this.$t("tournament.team.free_agent_tag");
-      return Object.fromEntries(
-        this.freeAgentSteamIds.map((steamId) => [steamId, tag]),
-      );
-    },
     ineligiblePlayers() {
       const map = {};
 

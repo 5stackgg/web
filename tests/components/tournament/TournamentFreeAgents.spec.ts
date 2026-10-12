@@ -36,12 +36,15 @@ function agent(steamId: string, player: Record<string, unknown>) {
   };
 }
 
-async function mountPool(myTeam: Record<string, unknown> | null = null) {
+async function mountPool(
+  myTeam: Record<string, unknown> | null = null,
+  status = "RegistrationOpen",
+) {
   const wrapper = await mountSuspended(TournamentFreeAgents, {
     props: {
       tournament: {
         id: "tournament-1",
-        status: "RegistrationOpen",
+        status,
         min_players_per_lineup: 2,
         max_players_per_lineup: 2,
         is_organizer: false,
@@ -133,6 +136,14 @@ describe("TournamentFreeAgents", () => {
           ],
         }),
       );
+
+      expect(inviteButton(wrapper)).toBeUndefined();
+    });
+
+    it("does not offer an invite once registration has closed", async () => {
+      pool.value = [agent("76561198000000003", {})];
+
+      const wrapper = await mountPool(captainsTeam(), "RegistrationClosed");
 
       expect(inviteButton(wrapper)).toBeUndefined();
     });

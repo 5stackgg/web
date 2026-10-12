@@ -424,7 +424,7 @@ function runCommand(
               class="lg:flex-1 lg:min-h-0"
             >
               <ServiceLogs
-                :service="`m-${match.id}`"
+                :service="`${match.source === 'practice' ? 'u' : 'm'}-${match.id}`"
                 :compact="true"
                 @has-logs="hasLogs = $event"
               />

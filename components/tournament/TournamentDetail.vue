@@ -38,8 +38,10 @@ import {
   CalendarDays,
   Layers,
   ChevronDown,
+  TriangleAlert,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -375,7 +377,11 @@ function clearTeamEnterDelay(el: Element) {
                       $t("tournament.manage.button")
                     }}</span>
                   </Button>
-                  <DropdownMenu>
+                  <DropdownMenu
+                    @update:open="
+                      (open) => open && (statusMenuOpenedAt = Date.now())
+                    "
+                  >
                     <DropdownMenuTrigger as-child>
                       <Button
                         variant="outline"
@@ -398,6 +404,37 @@ function clearTeamEnterDelay(el: Element) {
                           $t("tournament.actions.open_registration")
                         }}</span>
                       </DropdownMenuItem>
+                      <FiveStackToolTip
+                        v-else-if="openRegistrationBlockers.length"
+                        as-child
+                        :delay-duration="120"
+                      >
+                        <template #trigger>
+                          <div class="relative">
+                            <DropdownMenuItem class="pr-8" disabled>
+                              <Unlock />
+                              <span>{{
+                                $t("tournament.actions.open_registration")
+                              }}</span>
+                            </DropdownMenuItem>
+                            <span
+                              class="absolute right-2 top-1/2 inline-flex -translate-y-1/2 cursor-help text-[hsl(var(--tac-amber))]"
+                              role="img"
+                              :aria-label="openRegistrationBlockers.join(' ')"
+                            >
+                              <TriangleAlert class="h-3.5 w-3.5" />
+                            </span>
+                          </div>
+                        </template>
+                        <div class="max-w-[16rem] space-y-1.5">
+                          <p
+                            v-for="reason in openRegistrationBlockers"
+                            :key="reason"
+                          >
+                            {{ reason }}
+                          </p>
+                        </div>
+                      </FiveStackToolTip>
                       <DropdownMenuItem
                         v-if="tournament.can_close_registration"
                         @click="closeRegistration"
@@ -926,6 +963,7 @@ function clearTeamEnterDelay(el: Element) {
 <script lang="ts">
 import {
   $,
+  e_player_roles_enum,
   e_tournament_free_agent_statuses_enum,
   e_tournament_status_enum,
   order_by,
@@ -984,6 +1022,7 @@ export default {
       tournamentLive: undefined as Record<string, any> | undefined,
       tournamentStatic: undefined as Record<string, any> | undefined,
       tournamentRegistration: null as Record<string, any> | null,
+      statusMenuOpenedAt: Date.now(),
       checkInTeams: [] as Array<Record<string, any>>,
       myFreeAgent: null as Record<string, any> | null,
       tournamentDialog: false,
@@ -2056,6 +2095,60 @@ export default {
         minute: "2-digit",
       }).format(new Date(this.tournament.start));
     },
+    // can_open_tournament_registration's refusals, in its order, for an
+    // organizer the api would otherwise let open it. The start check reads the
+    // clock as of when the status menu last opened.
+    openRegistrationBlockers(): Array<string> {
+      const t = this.tournament;
+      if (!t || t.can_open_registration) {
+        return [];
+      }
+      if (
+        ![
+          e_tournament_status_enum.Setup,
+          e_tournament_status_enum.RegistrationClosed,
+          e_tournament_status_enum.Cancelled,
+          e_tournament_status_enum.CancelledMinTeams,
+          e_tournament_status_enum.CheckInReview,
+        ].includes(t.status)
+      ) {
+        return [];
+      }
+      const auth = useAuthStore();
+      const mayOpen =
+        auth.isRoleAbove(e_player_roles_enum.tournament_organizer) ||
+        (!!auth.me && t.admin?.steam_id === auth.me.steam_id);
+      if (!mayOpen) {
+        return [];
+      }
+
+      const blockers: Array<string> = [];
+      if (new Date(t.start).getTime() < this.statusMenuOpenedAt) {
+        blockers.push(
+          this.$t("tournament.actions.open_registration_start_passed"),
+        );
+      }
+      if (t.status !== e_tournament_status_enum.CheckInReview) {
+        const capacity = (t.stages ?? [])
+          .filter((stage: any) => stage.order === 1)
+          .reduce(
+            (sum: number, stage: any) => sum + (stage.max_teams ?? 0),
+            0,
+          );
+        const eligible = (t.teams ?? []).filter(
+          (team: any) => team.eligible_at,
+        ).length;
+        if (capacity > 0 && eligible >= capacity) {
+          blockers.push(this.$t("tournament.actions.open_registration_full"));
+        }
+      }
+      if (!t.stages?.length) {
+        blockers.push(
+          this.$t("tournament.actions.open_registration_no_stages"),
+        );
+      }
+      return blockers;
+    },
     hasStatusActions() {
       const t = this.tournament;
       if (!t) {
@@ -2063,6 +2156,7 @@ export default {
       }
       return (
         t.can_open_registration ||
+        this.openRegistrationBlockers.length > 0 ||
         t.can_close_registration ||
         t.can_start ||
         t.can_pause ||

@@ -7633,6 +7633,9 @@
     },
     "actions": {
       "open_registration": "开放报名",
+      "open_registration_start_passed": "开始时间已过。请将其推后以重新开放报名。",
+      "open_registration_no_stages": "请先添加一个阶段。",
+      "open_registration_full": "对阵图已满。",
       "close_registration": "关闭报名",
       "start": "开始赛事",
       "cancel": "取消赛事",

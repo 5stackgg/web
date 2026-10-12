@@ -7633,6 +7633,9 @@
     },
     "actions": {
       "open_registration": "登録を開始",
+      "open_registration_start_passed": "開始時刻を過ぎています。登録を再開するには開始時刻を先に変更してください。",
+      "open_registration_no_stages": "先にステージを追加してください。",
+      "open_registration_full": "ブラケットは満員です。",
       "close_registration": "登録を締め切る",
       "start": "トーナメントを開始",
       "cancel": "トーナメントを中止",

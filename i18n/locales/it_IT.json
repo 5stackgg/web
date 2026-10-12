@@ -7633,6 +7633,9 @@
     },
     "actions": {
       "open_registration": "Apri le registrazioni",
+      "open_registration_start_passed": "L'orario di inizio è passato. Spostalo più avanti per riaprire le registrazioni.",
+      "open_registration_no_stages": "Aggiungi prima una fase.",
+      "open_registration_full": "Il tabellone è al completo.",
       "close_registration": "Chiudi le registrazioni",
       "start": "Avvia torneo",
       "cancel": "Annulla torneo",

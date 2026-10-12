@@ -7633,6 +7633,9 @@
     },
     "actions": {
       "open_registration": "Åbn tilmelding",
+      "open_registration_start_passed": "Starttidspunktet er passeret. Flyt det frem for at genåbne tilmeldingen.",
+      "open_registration_no_stages": "Tilføj en fase først.",
+      "open_registration_full": "Turneringstræet er fuldt.",
       "close_registration": "Luk tilmelding",
       "start": "Start turnering",
       "cancel": "Annuller turnering",

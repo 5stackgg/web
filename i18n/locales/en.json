@@ -7635,6 +7635,9 @@
     },
     "actions": {
       "open_registration": "Open Registration",
+      "open_registration_start_passed": "The start time has passed. Move it forward to reopen registration.",
+      "open_registration_no_stages": "Add a stage first.",
+      "open_registration_full": "The bracket is full.",
       "close_registration": "Close Registration",
       "start": "Start Tournament",
       "cancel": "Cancel Tournament",

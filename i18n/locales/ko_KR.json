@@ -7633,6 +7633,9 @@
     },
     "actions": {
       "open_registration": "등록 열기",
+      "open_registration_start_passed": "시작 시간이 지났습니다. 등록을 다시 열려면 시작 시간을 뒤로 옮기세요.",
+      "open_registration_no_stages": "먼저 스테이지를 추가하세요.",
+      "open_registration_full": "대진표가 가득 찼습니다.",
       "close_registration": "등록 마감",
       "start": "토너먼트 시작",
       "cancel": "토너먼트 취소",

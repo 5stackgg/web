@@ -7633,6 +7633,9 @@
     },
     "actions": {
       "open_registration": "Ouvrir les inscriptions",
+      "open_registration_start_passed": "L'heure de début est passée. Repousse-la pour rouvrir les inscriptions.",
+      "open_registration_no_stages": "Ajoute d'abord une phase.",
+      "open_registration_full": "L'arbre est complet.",
       "close_registration": "Fermer les inscriptions",
       "start": "Démarrer le tournoi",
       "cancel": "Annuler le tournoi",

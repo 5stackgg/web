@@ -5,5 +5,8 @@
   "dependencies": {
     "aws4fetch": "1.0.20",
     "meshoptimizer": "1.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.4"
   }
 }

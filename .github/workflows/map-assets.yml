@@ -9,8 +9,12 @@ on:
       - "scripts/build-map-assets.mjs"
       - "scripts/extract-map-meshes.mjs"
       - "scripts/extract-map-callouts.mjs"
+      - "scripts/extract-map-blast.mjs"
       - "scripts/glb-to-tri.mjs"
       - "scripts/lib-*.mjs"
+      - "scripts/replay-stage/build-prep.mjs"
+      - "utilities/mapAssets.ts"
+      - "utilities/replayStage/**"
       - "docker/map-assets/**"
       - ".github/workflows/map-assets.yml"
   workflow_dispatch:

@@ -27,6 +27,7 @@
 //     node scripts/extract-map-meshes.mjs            # every map
 //   ... node scripts/extract-map-meshes.mjs de_mirage de_nuke --out /tmp/meshes
 //   ... --no-view                                    # collision only
+//   ... --vpk <workshop>/3070290240/de_brewery.vpk   # one VPK outside the install
 import {
   existsSync,
   mkdirSync,
@@ -38,7 +39,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { glbToTri } from "./glb-to-tri.mjs";
 import { minimapVolumes } from "./lib-entities.mjs";
@@ -152,11 +153,17 @@ function exportViewInputs(cli, vpk, map, tmp, lap) {
  * each stage took. Only the collision half can fail the map: anything that
  * goes wrong on the view side leaves `view` null and the reason in
  * `viewError`, and the map still ships its .tri and grenade clips.
+ *
+ * The VPK is `vpk`, else `<mapsDir>/<map>.vpk`; `inner` is the map's name
+ * inside it when that differs from the name the files are written under (a
+ * workshop map published under its maps-table name).
  */
 export async function extractMap(
   map,
   {
     mapsDir,
+    vpk: given = null,
+    inner = map,
     outDir,
     cli,
     maxMb = 40,
@@ -165,7 +172,7 @@ export async function extractMap(
     viewOptions = {},
   },
 ) {
-  const vpk = join(mapsDir, `${map}.vpk`);
+  const vpk = given ?? join(mapsDir, `${map}.vpk`);
   if (!existsSync(vpk)) {
     throw new Error(`no ${vpk}`);
   }
@@ -186,14 +193,14 @@ export async function extractMap(
     mkdirSync(physDir);
     // The PHYSICS hull, never the textured render mesh: the hull is what a
     // raycast should hit and it is two orders of magnitude smaller.
-    const physRun = decompile(cli, vpk, `maps/${map}/world_physics.vmdl_c`, physDir, [
+    const physRun = decompile(cli, vpk, `maps/${inner}/world_physics.vmdl_c`, physDir, [
       "--gltf_export_format",
       "glb",
     ]);
 
     // The CLI writes both a stub `world_physics.glb` and the real geometry as
     // `world_physics_physics.glb`; only the latter has vertices.
-    const physGlb = join(physDir, "maps", map, "world_physics_physics.glb");
+    const physGlb = join(physDir, "maps", inner, "world_physics_physics.glb");
     if (!existsSync(physGlb)) {
       throw missingOutput("world_physics_physics.glb", physRun);
     }
@@ -203,7 +210,7 @@ export async function extractMap(
     let viewError = null;
     if (view) {
       try {
-        viewInputs = exportViewInputs(cli, vpk, map, tmp, lap);
+        viewInputs = exportViewInputs(cli, vpk, inner, tmp, lap);
       } catch (error) {
         viewError = error.message;
       }
@@ -355,7 +362,7 @@ async function main() {
   // The token AFTER a value-taking flag is that flag's value, not a map name --
   // `--cs2 /opt/cs2` would otherwise be read as a request to build a map called
   // "/opt/cs2", which skips the directory scan entirely and reports FAILED.
-  const VALUE_FLAGS = new Set(["--cs2", "--out"]);
+  const VALUE_FLAGS = new Set(["--cs2", "--out", "--vpk"]);
   const only = args.filter((a, i) => !a.startsWith("--") && !VALUE_FLAGS.has(args[i - 1]));
 
   const cs2 =
@@ -372,13 +379,19 @@ async function main() {
   const maxMb = Number(process.env.MESH_MAX_MB || "40");
   const noDecimate = process.env.MESH_NO_DECIMATE === "1";
 
-  if (!existsSync(mapsDir)) {
+  // One VPK outside the install (a workshop map): its file name is the map.
+  const vpk = value("--vpk", null);
+  if (!vpk && !existsSync(mapsDir)) {
     console.error(`no CS2 maps at ${mapsDir}\n  set CS2_DIR or pass --cs2 <path>`);
     process.exit(1);
   }
 
   const cli = resolveCli();
-  const maps = only.length ? only : eligibleMaps(mapsDir);
+  const maps = vpk
+    ? [basename(vpk).replace(/(_dir)?\.vpk$/, "")]
+    : only.length
+      ? only
+      : eligibleMaps(mapsDir);
   mkdirSync(outDir, { recursive: true });
 
   let ok = 0;
@@ -387,6 +400,7 @@ async function main() {
     try {
       const result = await extractMap(map, {
         mapsDir,
+        vpk,
         outDir,
         cli,
         maxMb,

@@ -5,14 +5,15 @@
 //   maps/<build>/manifest.json            revision 1, the build's first run
 //   maps/<build>/manifest.r<N>.json       revision N: a re-run that retried
 //                                         only the maps revision N-1 listed
-//                                         as failed; its new files live under
-//                                         maps/<build>/r<N>/
+//                                         as failed, or a prep backfill
+//                                         (--prep-only); its new files live
+//                                         under maps/<build>/r<N>/
 //
 // Every manifest is immutable (the worker caches it for 30 days); only
 // latest.json moves, and only forwards.
 
 export const MANIFEST_VERSION = 1;
-export const ASSET_NAMES = ["tri", "grenadeclip", "view", "callouts"];
+export const ASSET_NAMES = ["tri", "grenadeclip", "view", "callouts", "prep", "blast"];
 
 /** A manifest's key relative to maps/. */
 export function manifestKey(build, revision = 1) {
@@ -106,9 +107,12 @@ export function listsFailure(manifest, map) {
  *   base       the manifest this run builds on: the newest one of this build
  *              for a retry, else latest.json's
  *   results    one per map this run looked at: `{ map, unchanged: true }` for
- *              a map whose inputs matched base's and was not built, else
- *              `{ map, source, files: { <asset>: { file, sha256 } },
- *              triFailed, calloutsFailed, viewFailed }`
+ *              a map whose inputs matched base's and was not built;
+ *              `{ map, patch: true, source, files }` for one that kept base's
+ *              entry and only built the files listed (prep for a new
+ *              PREP_VERSION), its `source` merged over base's and its failure
+ *              listings kept; else `{ map, source, files: { <asset>: { file,
+ *              sha256 } }, triFailed, calloutsFailed, viewFailed }`
  *   installed  every map in the install; base's entries for anything else
  *              are dropped. null keeps them all.
  *   pipeline   recorded as is, for whoever reads the manifest later
@@ -143,6 +147,7 @@ export function mergeManifest({
   let reused = 0;
 
   const attempted = new Set();
+  const patched = new Set();
   for (const result of [...results].sort((a, b) => a.map.localeCompare(b.map))) {
     const { map } = result;
     attempted.add(map);
@@ -150,6 +155,36 @@ export function mergeManifest({
     if (result.unchanged) {
       maps[map] = before;
       unchanged.push(map);
+      continue;
+    }
+    if (result.patch) {
+      patched.add(map);
+      const entry = {};
+      const sums = { ...before?.sha256 };
+      for (const asset of ASSET_NAMES) {
+        const file = result.files[asset];
+        if (!file) {
+          if (before?.[asset]) {
+            entry[asset] = before[asset];
+          }
+          continue;
+        }
+        if (before?.[asset] && before.sha256?.[asset] === file.sha256) {
+          entry[asset] = before[asset];
+          reused += 1;
+        } else {
+          entry[asset] = `${prefix}/${file.file}`;
+          uploads.push({ map, asset, key: `maps/${entry[asset]}`, sha256: file.sha256 });
+        }
+        sums[asset] = file.sha256;
+      }
+      maps[map] = {
+        ...entry,
+        sha256: sums,
+        ...(before?.source || result.source
+          ? { source: { ...before?.source, ...result.source } }
+          : {}),
+      };
       continue;
     }
     if (result.triFailed) {
@@ -201,13 +236,14 @@ export function mergeManifest({
       dropped.push(map);
     }
   }
+  const carriesFailures = (map) => (!attempted.has(map) || patched.has(map)) && kept(map);
   for (const map of base?.failed ?? []) {
-    if (!attempted.has(map) && kept(map)) {
+    if (carriesFailures(map)) {
       failed.add(map);
     }
   }
   for (const map of base?.failed_view ?? []) {
-    if (!attempted.has(map) && kept(map)) {
+    if (carriesFailures(map)) {
       failedView.add(map);
     }
   }

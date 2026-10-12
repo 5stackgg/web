@@ -226,3 +226,69 @@ describe("mergeManifest", () => {
     expect(sameContent(manifest, base)).toBe(true);
   });
 });
+
+describe("mergeManifest patches", () => {
+  const base = {
+    ...previous,
+    failed_view: ["de_nuke"],
+    maps: {
+      ...previous.maps,
+      de_mirage: {
+        ...previous.maps.de_mirage,
+        prep: "100/de_mirage.prep.v1.bin.gz",
+        sha256: { ...previous.maps.de_mirage.sha256, prep: "p1" },
+        source: { vpk_sha256: "vpk", pipeline: "pipe", prep: 1 },
+      },
+    },
+  };
+  const patch = (map: string, sum: string, version = 2) => ({
+    map,
+    patch: true,
+    files: { prep: file(`${map}.prep.v${version}.bin.gz`, sum) },
+    source: { prep: version },
+  });
+
+  it("keeps the entry, adds the new prep and merges its source", () => {
+    const { manifest, uploads } = mergeManifest({
+      build: "100",
+      revision: 2,
+      base,
+      results: [patch("de_mirage", "p2")],
+      createdAt: NOW,
+    });
+    expect(manifest.maps.de_mirage).toEqual({
+      tri: "100/de_mirage.tri.gz",
+      view: "100/de_mirage.view.bin.gz",
+      callouts: "100/de_mirage.callouts.json",
+      prep: "100/r2/de_mirage.prep.v2.bin.gz",
+      sha256: { tri: "t1", view: "v1", callouts: "c1", prep: "p2" },
+      source: { vpk_sha256: "vpk", pipeline: "pipe", prep: 2 },
+    });
+    expect(uploads).toEqual([
+      {
+        map: "de_mirage",
+        asset: "prep",
+        key: "maps/100/r2/de_mirage.prep.v2.bin.gz",
+        sha256: "p2",
+      },
+    ]);
+    expect(manifest.maps.de_nuke).toEqual(base.maps.de_nuke);
+  });
+
+  it("reuses the old key for an identical prep, and keeps the map's failure listings", () => {
+    const { manifest, uploads, reused } = mergeManifest({
+      build: "100",
+      revision: 2,
+      base,
+      results: [patch("de_mirage", "p1", 1), patch("de_nuke", "np")],
+      createdAt: NOW,
+    });
+    expect(uploads.map((u: { key: string }) => u.key)).toEqual([
+      "maps/100/r2/de_nuke.prep.v2.bin.gz",
+    ]);
+    expect(reused).toBe(1);
+    expect(manifest.maps.de_mirage.prep).toBe("100/de_mirage.prep.v1.bin.gz");
+    expect(manifest.failed_view).toEqual(["de_nuke"]);
+    expect(manifest.maps.de_nuke.source).toEqual({ prep: 2 });
+  });
+});

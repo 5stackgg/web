@@ -71,6 +71,44 @@ describe("extractCallouts", () => {
     expect(result.callouts[0].boxes).toEqual([{ min: [488, -512, -64], max: [1512, 512, 128] }]);
   });
 
+  it("returns every func_bomb_target with its designation, places or not", () => {
+    const target = (designation: string, x: number) => ({
+      classname: '"func_bomb_target"',
+      bomb_site_designation: designation,
+      origin: `"${x}.000000 0.000000 0.000000"`,
+      mins: "[ -64.0, -64.0, 0.0 ]",
+      maxs: "[ 64.0, 64.0, 96.0 ]",
+    });
+    const result = run({
+      "default_ents.vents": lump([place("BombsiteA", 1000), target("0", 1000)]),
+      "other_ents.vents": lump([target("1", -1000)]),
+    });
+    expect(result.bombTargets).toEqual([
+      { designation: "0", box: { min: [936, -64, 0], max: [1064, 64, 96] } },
+      { designation: "1", box: { min: [-1064, -64, 0], max: [-936, 64, 96] } },
+    ]);
+    const placeless = run({ "default_ents.vents": lump([target("1", 0)]) });
+    expect(placeless.none).toBe(true);
+    expect(placeless.bombTargets).toEqual([
+      { designation: "1", box: { min: [-64, -64, 0], max: [64, 64, 96] } },
+    ]);
+  });
+
+  it("reads a VPK published under another name by the name inside it", () => {
+    const source = join(dir, "inner.vents");
+    writeFileSync(source, lump([place("Mid", 0)]));
+    process.env.FAKE_S2V = JSON.stringify({
+      "maps/de_inner/entities/": { "maps/de_inner/entities/default_ents.vents": source },
+    });
+    const result = extractCallouts("3070290240", {
+      vpk: join(mapsDir, `${MAP}.vpk`),
+      inner: "de_inner",
+      cli,
+    });
+    expect(result.map).toBe("3070290240");
+    expect(result.callouts.map((c: { name: string }) => c.name)).toEqual(["Mid"]);
+  });
+
   it("looks in the folder's other lumps when default_ents has no places", () => {
     const result = run({
       "default_ents.vents": lump([{ classname: '"worldspawn"' }]),

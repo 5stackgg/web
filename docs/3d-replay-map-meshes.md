@@ -1,16 +1,18 @@
-# Map assets: collision, grenade clips, view meshes and callouts
+# Map assets: collision, grenade clips, view meshes, callouts, prep and blast
 
-Every map the game-server nodes run gets four files, built straight from the
-CS2 install and served by the panel's own Cloudflare worker
-(`cloudflare-workers/backblaze-proxy` in 5stack-panel) out of the B2 bucket
-`5stack`:
+Every map the game-server nodes run gets up to six files, built straight from
+the CS2 install (or the node's workshop downloads) and served by the panel's
+own Cloudflare worker (`cloudflare-workers/backblaze-proxy` in 5stack-panel)
+out of the B2 bucket `5stack`:
 
 | asset | file | read by |
 | --- | --- | --- |
 | collision | `<map>.tri.gz` | demo parser (line of sight, smoke flood fill, grenade sim), 3D viewer fallback |
 | grenade clips | `<map>.grenadeclip.tri.gz` (absent when the map has none) | demo parser grenade flight/drift sim |
-| view mesh | `<map>.view.bin.gz` | 3D viewer (`components/match/Replay3DLite.vue`) |
+| view mesh | `<map>.view.bin.gz` | 3D viewer (`components/match/Replay3DLite.vue`), replay stage |
 | callouts | `<map>.callouts.json` | API (`public.map_callouts`), radar overlay, utility naming |
+| prep | `<map>.prep.v<PREP_VERSION>.bin.gz` (absent without a view mesh) | replay stage map prep (`utilities/replayStage/mapPrepPack.ts`) |
+| blast | `<map>.blast.v2.bin.gz` (absent when the map bakes no bomb damage) | replay stage C4 blast (`utilities/replayStage/blastField.ts`) |
 
 Nothing is pinned by hand any more: a job rebuilds all of it when a new CS2
 build lands, and a pointer file tells every consumer where the newest files are.
@@ -25,6 +27,8 @@ https://demo-dl.5stack.gg/maps/<build>/<map>.tri.gz
 https://demo-dl.5stack.gg/maps/<build>/<map>.grenadeclip.tri.gz
 https://demo-dl.5stack.gg/maps/<build>/<map>.view.bin.gz
 https://demo-dl.5stack.gg/maps/<build>/<map>.callouts.json
+https://demo-dl.5stack.gg/maps/<build>/<map>.prep.v<N>.bin.gz
+https://demo-dl.5stack.gg/maps/<build>/<map>.blast.v2.bin.gz
 https://demo-dl.5stack.gg/maps/<build>/r<N>/<map>.…         files first published by revision N
 ```
 
@@ -46,11 +50,19 @@ which maps did not fully build:
     "grenadeclip": "25537370/de_mirage.grenadeclip.tri.gz",
     "view": "24957633/de_mirage.view.bin.gz",
     "callouts": "25537370/de_mirage.callouts.json",
-    "sha256": { "tri": "…", "grenadeclip": "…", "view": "…", "callouts": "…" },
-    "source": { "vpk_sha256": "…", "pipeline": "…" } } } }
+    "prep": "25537370/r2/de_mirage.prep.v1.bin.gz",
+    "blast": "25537370/de_mirage.blast.v2.bin.gz",
+    "sha256": { "tri": "…", "grenadeclip": "…", "view": "…", "callouts": "…", "prep": "…", "blast": "…" },
+    "source": { "vpk_sha256": "…", "pipeline": "…", "prep": 1 } } } }
 ```
 
-- `revision` is only present from 2 up.
+- `revision` is only present from 2 up. A revision is either a retry of
+  failed maps or a prep backfill (`--prep-only`, below).
+- `prep` and `blast` carry their format version in the file name, so a client
+  that knows another version can skip the key without downloading it. The
+  manifest's `source.prep` and `pipeline.prep` say the same for prep.
+- `source.workshop` is the Steam Workshop id of a map built from the node's
+  workshop downloads rather than the install.
 - `source` is what the entry was built from (see *Unchanged maps are not
   rebuilt* below); `pipeline` at the top is the run's own, with the versions
   spelled out.
@@ -109,12 +121,17 @@ the run in `map_asset_builds`, and has a manual trigger for admins. The job is
 just:
 
 ```bash
-node scripts/build-map-assets.mjs --cs2 /serverdata/serverfiles --build <id> --out /work --publish --only-maps <names>
+node scripts/build-map-assets.mjs --cs2 /serverdata/serverfiles --build <id> --out /work --publish \
+  --only-maps <names> \
+  --workshop /serverdata/serverfiles/game/bin/linuxsteamrt64/steamapps/workshop/content/730 \
+  --workshop-maps <name>=<workshop id>,…
 ```
 
 `--only-maps` is every `name` in the API's `maps` table: an install map 5stack
 does not know is treated as not installed, so it is never built and a base
 manifest's entry for it (and any failure listed for it) is dropped.
+
+`--workshop-maps` is every row with a `workshop_map_id` (see *Workshop maps*).
 
 with `S3_ACCESS_KEY` / `S3_SECRET` from the `s3-secrets` secret and emptyDirs at
 `/work` and `/tmp`. Everything the run writes goes to one of those two: the
@@ -157,7 +174,10 @@ What `build-map-assets.mjs` does:
    the hash only changes when the callouts do). Only the collision can fail a
    map; anything on the view side — no render export, a nav that does not
    validate (then the floors come from collision, logged as `NAV REJECTED`),
-   a mesh over budget — lands the map in `failed_view` instead.
+   a mesh over budget — lands the map in `failed_view` instead. Then the prep
+   from the view mesh and callouts just built, and the blast from the VPK's
+   baked bomb damage; neither can fail a map (a failure is logged and the
+   file left out, and the browser computes its own).
 5. Gzips each file and hashes the uncompressed bytes. A file whose hash matches
    the base manifest's entry reuses that key; maps not built this run carry
    over from the base, failure listings included.
@@ -177,6 +197,122 @@ the maps. A run in which every map is unchanged still publishes the build's
 (small) manifest and moves `latest.json`, so `maps/<build>/manifest.json`
 exists for every build the job has seen.
 
+### Workshop maps
+
+Maps like Thera, Mills, Brewery, Dogtown or Rooftop are not in the install:
+the game servers load them with `host_workshop_map <id>`, and CS2 downloads
+each into `game/bin/linuxsteamrt64/steamapps/workshop/content/730/<id>/` under
+the install. The game-server image keeps that `steamapps/` on the node's
+`serverfiles` volume (it is the one directory `setup.sh` links rather than
+copies), so every server on a node fills one folder, and the job, which
+already mounts that volume read-only, reads it at
+`/serverdata/serverfiles/game/bin/linuxsteamrt64/steamapps/workshop/content/730`.
+No extra mount: a `subPath` mount of a folder a node has never created would
+keep the pod from starting.
+
+For each `name=id`:
+
+- a copy in the install wins (de_poseidon, de_sanctum, de_stronghold and
+  de_warden ship in the install and also have workshop ids; the servers load
+  the workshop copy, the assets come from the install's);
+- `_night` variants are skipped, as for the install (consumers fold them
+  onto the base map);
+- otherwise `<dir>/<id>/<name>.vpk`, or the item's only map VPK, is built,
+  published under `name` (the maps-table name the consumers look up, which
+  for a map added by hand is its numeric id) and read under the name inside
+  the VPK (its file name);
+- an item this node never downloaded is skipped and keeps whatever entry
+  the base manifest has: it is not dropped. Play the map once on a server on
+  that node, or run the build on a node that has it.
+
+`source.vpk_sha256` is then the workshop VPK's hash, so a workshop update
+rebuilds the map at the next run.
+
+The lower-level scripts take a single VPK too:
+`node scripts/extract-map-meshes.mjs --vpk <dir>/<id>/<map>.vpk`, and the same
+for `extract-map-callouts.mjs` and `extract-map-blast.mjs`.
+
+### Prep
+
+The replay stage prepares each map in the browser (`analyseMap`,
+`utilities/replayStage/mapPrep.ts`), a few seconds of worker time. The job runs
+that same code once per map, after the view mesh and callouts, and publishes
+the packed result (`mapPrepPack.ts`, "5SPC"). The browser fingerprints the
+view mesh and callouts it loaded and only uses a file made from exactly those
+with its own `PREP_VERSION`; anything else it ignores and preps for itself.
+
+- **The code is the browser's.** `scripts/replay-stage/build-prep.mjs` imports
+  a bundle of `utilities/mapAssets.ts` (`parseViewMesh`) +
+  `utilities/replayStage/mapPrep.ts` + `mapPrepPack.ts`: in the image it is
+  prebuilt by the Dockerfile's `prep` stage (esbuild, pinned in
+  `docker/map-assets/package.json`) and named by `PREP_BUNDLE`; from a
+  checkout it is bundled on the fly with the checkout's esbuild
+  (`PREP_WEB_ROOT` points at another checkout).
+- **Versioned apart.** `source.prep` is the `PREP_VERSION` a map's prep was
+  made with. `build-prep.mjs` is left out of the pipeline hash
+  (`VERSIONED_APART` in `lib-fingerprint.mjs`), so changing the prep never
+  rebuilds meshes. A map whose VPK and pipeline are unchanged but whose prep
+  is missing or of another version has only its prep rebuilt, from the view
+  and callouts its entry already publishes. **Bump `PREP_VERSION` whenever
+  prep's output changes**; that is the only thing that republishes it.
+- **Never blocks a build.** If the prep code will not load, the run warns
+  (`⚠ NO PREP`) and publishes everything else; `--no-prep` does the same on
+  purpose. A map whose callouts failed is not prepped (it keeps its old
+  callouts, so the backfill preps it from what is published).
+
+#### Backfilling prep (no game files)
+
+```bash
+# what latest.json's build would get, written to .cache/map-assets/<build>/prep-r<N>/, nothing uploaded
+node scripts/build-map-assets.mjs --prep-only [--maps de_mirage,de_nuke]
+
+# publish it as the build's next revision (needs the B2 key, see below)
+S3_ACCESS_KEY=… S3_SECRET=… node scripts/build-map-assets.mjs --prep-only --publish [--dry-run]
+
+# or from the image, which carries the bundle
+docker run --rm -e S3_ACCESS_KEY -e S3_SECRET ghcr.io/5stackgg/map-assets:latest --prep-only --publish
+```
+
+It reads `latest.json` (or `--build <id>`) and that build's newest manifest,
+downloads the view mesh and callouts of every map whose prep is missing or of
+another version (`--force` / `--force-maps a,b`: regardless), preps them, and
+publishes `manifest.r<N+1>.json` with only the prep keys changed, files under
+`<build>/r<N+1>/`. A run with nothing to do, or that changes nothing,
+publishes nothing. Measured on de_mirage and de_nuke from the CDN: 1.6 s and
+2.3 s of prep, 1.4 and 2.5 MB gzipped, 0.4 GB peak memory.
+
+### Blast
+
+Since CS2's 2026 bomb rework the C4's damage is baked into each compiled map:
+`maps/<map>/baked_bomb_damage.vdata_c`, generic data of type
+`CS2_BOMB_DAMAGE_DATA`. `extract-map-blast.mjs` decompiles it to KV3 text
+(`lib-kv3.mjs` reads that), names the sites (the `func_bomb_target` whose
+`bomb_site_designation` touches each site's bounds, else the BombsiteA/B
+callouts, else the order -- the data names none, and its first site is not
+always A), and resamples each site onto a grid round the points it hurts.
+A map compiled before the rework has no such file and ships without `blast`;
+the browser then measures its own fields from the collision hull.
+
+The baked data (ValveResourceFormat's `BombDamage` is the reference):
+
+- `bombsites`: per site, bounds min/max and `power`, about the distance at
+  which the bomb still deals 100;
+- `positions`: sample points, `i16` xyz;
+- `damage_values`: per site and point, `phase` (`u16`, the effective distance
+  the blast travels to the point -- round corners, not through walls), and
+  the blast's yaw and pitch (not carried over).
+
+Damage, as the game computes it: `phase == 0` → 100; otherwise
+`clamp(100 − 100·(phase − power) / min(phase, 1800), 0, 255)` -- 100·power/phase
+up to 1800, then a straight fall to nothing at 1800 + power.
+
+**Resampling.** Points that take damage land on the voxels centred on them
+(the voxel is the points' lattice spacing when they sit on one between 16 and
+128 units, else 32; coarser if the grid would pass 4M voxels); a voxel holding
+several takes the smallest phase. Two layers of empty voxels round them take
+their smallest neighbour's, so a floor or wall just beside the sampled air
+reads a value; everything else is "not reached".
+
 ### Unchanged maps are not rebuilt
 
 Before any Source2Viewer work, every map gets a fingerprint, stored in its
@@ -191,7 +327,10 @@ manifest entry as `source`:
   imports, so a new `lib-*.mjs` is covered the moment it is imported), plus
   the Source2Viewer-CLI version (`--version`'s `Version:` line) and the
   meshoptimizer version. The macOS CLI and the linux image report the same
-  version and hash the same scripts, so a local run and the job agree.
+  version and hash the same scripts, so a local run and the job agree. The
+  prep module is left out: it is `prep` below.
+- `prep` — the `PREP_VERSION` the map's prep was made with (see *Prep*). It
+  does not decide whether the map is rebuilt, only whether its prep is.
 
 A map whose `source` equals the entry in the base manifest (the one
 `latest.json` points at) and which that manifest does not list in `failed` or
@@ -228,6 +367,9 @@ on first use; `CLI=<path>` overrides):
 node scripts/build-map-assets.mjs --cs2 "/path/to/Counter-Strike Global Offensive"
 node scripts/build-map-assets.mjs --cs2 <install> --maps de_mirage,rush_001
 
+# with workshop maps from the install's workshop downloads
+node scripts/build-map-assets.mjs --cs2 <install> --workshop-maps de_thera=3121217565,de_mills=3152430710
+
 # rebuild regardless of fingerprints
 node scripts/build-map-assets.mjs --cs2 <install> --force
 node scripts/build-map-assets.mjs --cs2 <install> --force-maps de_nuke,rush_001
@@ -260,6 +402,9 @@ Lower-level pieces, for debugging one map:
 ```bash
 node scripts/extract-map-meshes.mjs de_mirage --cs2 <install> --out /tmp/meshes   # .tri, .grenadeclip.tri, .view.bin
 node scripts/extract-map-callouts.mjs de_mirage --cs2 <install>                    # -> .cache/callouts/
+node scripts/extract-map-blast.mjs de_mirage --cs2 <install>                       # -> .cache/blast/
+node scripts/extract-map-blast.mjs --kv3 baked_bomb_damage.vdata --map de_mirage   # a file decompiled by hand
+node scripts/replay-stage/build-prep.mjs --map de_mirage --view <view.bin.gz> --callouts <callouts.json>
 node scripts/glb-to-tri.mjs <world_physics_physics.glb> out.tri
 node scripts/publish-map-assets.mjs --build <id> [--dry-run]   # uploads .cache/meshes + .cache/callouts as-is,
                                                               # with the same x-amz-meta-sha256; writes no
@@ -400,6 +545,43 @@ re-compress `application/octet-stream` — inferno came back 18.6 MB instead of
 To check an extract against the engine: `player_kills.attacker_location` is
 the engine's own answer for the same entities, and `.callouts` in a practice
 server dumps what the running level defines.
+
+### `.blast.v2.bin`
+
+Version 2 of the replay stage's blast file ("5SBL"; version 1 is the
+browser's own fields from the collision hull, with 48-byte site headers and a
+fixed 8-unit step, and stays as it was). Little-endian:
+
+```
+Header (12 bytes)
+  0   char[4]  "5SBL"
+  4   u16      version = 2
+  6   u16      site count
+  8   u32      triangles of the collision .tri it shipped with (the browser
+               checks it against the hull it loaded)
+Per site: a 72-byte header, then the values
+  0   u8       letter 'A' | 'B'
+  1   u8       model: 0 = path length from the collision hull (the browser's
+               own flood), 1 = Valve's baked phase
+  2   u16      unit: source units per step of a value
+  4   f32[3]   at: where the field is measured from (model 1: the middle of
+               the site's bounds, at their floor)
+  16  f32[4]   ox oy oz vs: the grid's minimum corner and voxel edge
+  32  u16[3]   dx dy dz
+  38  u16      reserved, 0
+  40  u32      value count = dx·dy·dz
+  44  f32      power (model 1), else 0
+  48  f32[6]   the site's bounds min xyz, max xyz, as baked (the game grows
+               them by 32 on every axis; a bomb uses the first site whose
+               grown bounds hold it)
+  72  u8[]     values, x fastest, then y, then z, zero-padded to 4 bytes:
+               255 = not reached; 0 = phase exactly 0; else value·unit = the
+               path length (phase), rounded
+```
+
+`unit` is 8, or wider when the farthest point a site still hurts is past
+254·8 units (`ceil(maxPhase / 254)`). A reader computes damage per site with
+the formula above from `value·unit` and `power`.
 
 ## Legacy
 

@@ -518,11 +518,16 @@ export function createSmokeModule(): SmokeModule {
     for (const collider of map.colliders) {
       collider.traverseVisible(muteForDepth);
     }
+    // One target for all of them: clearing before each (a storey laid
+    // beside the map is a second collider) would keep only the last.
+    const autoClear = renderer.autoClear;
+    renderer.autoClear = false;
     for (const collider of map.colliders) {
       if (collider.visible) {
         renderer.render(collider, camera);
       }
     }
+    renderer.autoClear = autoClear;
     for (const material of muted) {
       material.colorWrite = true;
     }

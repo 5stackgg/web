@@ -7434,6 +7434,18 @@
       "groups_placeholder": "이 스테이지의 그룹 수를 입력하세요...",
       "default_best_of": "기본 승수제",
       "default_best_of_description": "이 스테이지의 모든 라운드에 사용되는 기본 매치 형식입니다.",
+      "map_pool": {
+        "label": "맵 풀",
+        "description": "이 스테이지 경기에서 밴픽할 맵입니다.",
+        "same_as_tournament": "대회와 동일",
+        "active_duty": "액티브 듀티",
+        "custom": "커스텀",
+        "too_small": "{best_of}판에는 최소 {best_of}개의 맵이 필요합니다. 이 맵 풀에는 {count}개가 있습니다.",
+        "empty": "맵을 하나 이상 선택하세요.",
+        "tournament_plays_active_duty": "대회가 이미 액티브 듀티를 사용 중입니다. '대회와 동일'을 선택하세요.",
+        "unavailable": "더 이상 플레이할 수 없음: {maps}. 맵을 선택하면 풀에서 뺄 수 있습니다."
+      },
+      "match_settings_locked": "이 스테이지의 경기가 이미 편성되어 경기 설정을 더 이상 바꿀 수 없습니다.",
       "per_round_best_of": "라운드별 승수제",
       "third_place_match": "3위 결정전 활성화",
       "third_place_match_description": "준결승 패자 두 팀 간의 3위 결정전을 생성합니다.",

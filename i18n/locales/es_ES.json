@@ -7434,6 +7434,18 @@
       "groups_placeholder": "Introduce el número de grupos de esta fase...",
       "default_best_of": "Best of por defecto",
       "default_best_of_description": "El formato de partida por defecto para todas las rondas de esta fase.",
+      "map_pool": {
+        "label": "Pool de mapas",
+        "description": "Los mapas entre los que se hace el veto en las partidas de esta fase.",
+        "same_as_tournament": "Igual que el torneo",
+        "active_duty": "Active Duty",
+        "custom": "Personalizado",
+        "too_small": "Al mejor de {best_of} necesita al menos {best_of} mapas. Este pool tiene {count}.",
+        "empty": "Elige al menos un mapa.",
+        "tournament_plays_active_duty": "El torneo ya juega Active Duty. Elige «Igual que el torneo».",
+        "unavailable": "Ya no se puede jugar aquí: {maps}. Selecciona un mapa para quitarlo del pool."
+      },
+      "match_settings_locked": "Las partidas de esta fase ya están sorteadas, así que su configuración ya no puede cambiar.",
       "per_round_best_of": "Best of por ronda",
       "third_place_match": "Activar partida por el 3.er puesto",
       "third_place_match_description": "Crea una partida por el 3.er puesto entre los dos perdedores de semifinales.",

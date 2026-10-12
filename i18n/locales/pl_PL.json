@@ -7434,6 +7434,18 @@
       "groups_placeholder": "Wpisz liczbę grup dla tego etapu...",
       "default_best_of": "Domyślny format meczu",
       "default_best_of_description": "Domyślny format meczu używany dla wszystkich rund w tym etapie",
+      "map_pool": {
+        "label": "Map pool",
+        "description": "Mapy, z których mecze tego etapu wybierają i banują.",
+        "same_as_tournament": "Jak w turnieju",
+        "active_duty": "Active Duty",
+        "custom": "Niestandardowy",
+        "too_small": "Best of {best_of} wymaga co najmniej {best_of} map. Ten map pool ma {count}.",
+        "empty": "Wybierz co najmniej jedną mapę.",
+        "tournament_plays_active_duty": "Turniej gra już na Active Duty. Wybierz „Jak w turnieju”.",
+        "unavailable": "Nie można już tu grać: {maps}. Wybierz mapę, aby usunąć ją z puli."
+      },
+      "match_settings_locked": "Mecze tego etapu są już rozlosowane, więc ich ustawień nie można już zmienić.",
       "per_round_best_of": "Format meczu dla każdej rundy",
       "third_place_match": "Włącz mecz o 3. miejsce",
       "third_place_match_description": "Utwórz mecz o 3. miejsce między przegranymi obu półfinałów",

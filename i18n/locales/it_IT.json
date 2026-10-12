@@ -7434,6 +7434,18 @@
       "groups_placeholder": "Inserisci il numero di gironi per questa fase...",
       "default_best_of": "Formato predefinito",
       "default_best_of_description": "Il formato di match predefinito usato per tutti i round di questa fase.",
+      "map_pool": {
+        "label": "Map pool",
+        "description": "Le mappe da cui le partite di questa fase fanno il veto.",
+        "same_as_tournament": "Come il torneo",
+        "active_duty": "Active Duty",
+        "custom": "Personalizzato",
+        "too_small": "Un best of {best_of} richiede almeno {best_of} mappe. Questo map pool ne ha {count}.",
+        "empty": "Scegli almeno una mappa.",
+        "tournament_plays_active_duty": "Il torneo gioca già Active Duty. Scegli «Come il torneo».",
+        "unavailable": "Non più giocabile qui: {maps}. Seleziona una mappa per toglierla dal map pool."
+      },
+      "match_settings_locked": "Le partite di questa fase sono già state sorteggiate, quindi le loro impostazioni non possono più cambiare.",
       "per_round_best_of": "Formato per round",
       "third_place_match": "Attiva match per il 3° posto",
       "third_place_match_description": "Crea un match per il 3° posto tra le due squadre sconfitte in semifinale.",

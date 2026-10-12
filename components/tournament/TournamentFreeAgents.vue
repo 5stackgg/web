@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient, useSubscription } from "@vue/apollo-composable";
-import { Info, RefreshCw, UserMinus, Users } from "lucide-vue-next";
+import { Info, RefreshCw, UserMinus, UserPlus } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   Empty,
   EmptyDescription,
   EmptyTitle,
 } from "~/components/ui/empty";
-import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
+import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
+import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import TournamentChip from "~/components/tournament/TournamentChip.vue";
 import TournamentFreeAgentSignUp from "~/components/tournament/TournamentFreeAgentSignUp.vue";
 import { toast } from "~/components/ui/toast";
 import { $, e_tournament_status_enum } from "~/generated/zeus";
-import { generateSubscription } from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { useAuthStore } from "~/stores/AuthStore";
 import { dateLocale } from "~/utilities/dateLocale";
@@ -32,19 +33,14 @@ import {
 
 const props = defineProps<{
   tournament: Record<string, any>;
+  // The viewer's own team in this tournament, invites included.
+  myTeam?: Record<string, any> | null;
 }>();
 
 const { t } = useI18n();
 const { client } = useApolloClient();
 
 type Agent = Record<string, any>;
-
-/** A party, or a solo free agent. The draft only ever moves whole units. */
-type Unit = {
-  key: string;
-  partyId: string | null;
-  members: Agent[];
-};
 
 const me = computed(() => useAuthStore().me);
 
@@ -53,10 +49,6 @@ const me = computed(() => useAuthStore().me);
 // Deliberately un-ordered on the server: the sort key is an enum, and Zeus
 // cannot resolve an enum literal on a table its generated schema map has never
 // seen — it would emit `"asc"` quoted and Hasura would reject the document.
-//
-// PRE-CODEGEN ESCAPE HATCH — `party_id` lands with the free-agent-parties
-// migration, so it rides the same `as any`; drop nothing here but the cast once
-// `yarn codegen` has run against a migrated stack.
 const { result } = useSubscription(
   generateSubscription({
     tournament_free_agents: [
@@ -71,7 +63,6 @@ const { result } = useSubscription(
         id: true,
         status: true,
         created_at: true,
-        party_id: true,
         tournament_team_id: true,
         player: playerFields,
         tournament_team: {
@@ -84,12 +75,7 @@ const { result } = useSubscription(
   () => ({ tournamentId: props.tournament.id }),
 );
 
-const filter = ref("all");
-
-// A party's priority is its FOUNDER's signup — MIN(created_at), tie-broken by
-// MIN(id). That is both a floor and a ceiling: a latecomer can neither lift the
-// party ahead of anyone who signed up before the founder nor push the founder
-// back. Sign-up order is the whole rule, so it is the list's only ordering.
+// Sign-up order is the whole rule, so it is the list's only ordering.
 function compareSignup(a: Agent, b: Agent) {
   const left = new Date(a.created_at).getTime();
   const right = new Date(b.created_at).getTime();
@@ -99,45 +85,10 @@ function compareSignup(a: Agent, b: Agent) {
   return String(a.id).localeCompare(String(b.id));
 }
 
-// `party_id` IS the matchmaking lobby id the signup came from, so every row
-// carrying the same one is a single entity to the draft. Rendering them as
-// unrelated adjacent rows would hide the only thing that makes them a party.
-function groupUnits(rows: Agent[]): Unit[] {
-  const byParty = new Map<string, Unit>();
-  const units: Unit[] = [];
-
-  for (const row of rows) {
-    const partyId = row.party_id ? String(row.party_id) : null;
-    if (!partyId) {
-      units.push({ key: String(row.id), partyId: null, members: [row] });
-      continue;
-    }
-
-    const existing = byParty.get(partyId);
-    if (existing) {
-      existing.members.push(row);
-      continue;
-    }
-
-    const unit: Unit = { key: `party:${partyId}`, partyId, members: [row] };
-    byParty.set(partyId, unit);
-    units.push(unit);
-  }
-
-  return units;
-}
-
-const poolUnits = computed<Unit[]>(() => {
+const pool = computed<Agent[]>(() => {
   const rows = ((result.value as any)?.tournament_free_agents ?? []) as Agent[];
-  return groupUnits(rows.filter((row) => row.status !== "withdrawn"))
-    .map((unit) => ({
-      ...unit,
-      members: unit.members.slice().sort(compareSignup),
-    }))
-    .sort((a, b) => compareSignup(a.members[0], b.members[0]));
+  return rows.filter((row) => row.status !== "withdrawn").sort(compareSignup);
 });
-
-const pool = computed(() => poolUnits.value.flatMap((unit) => unit.members));
 
 const draftedAgents = computed(() =>
   pool.value.filter((row) => row.status === "drafted"),
@@ -146,57 +97,13 @@ const waitlistedAgents = computed(() =>
   pool.value.filter((row) => row.status === "waitlisted"),
 );
 
-const filterOptions = computed(() => [
-  {
-    key: "all",
-    label: t("tournament.free_agents.filter_all"),
-    count: pool.value.length,
-  },
-  {
-    key: "drafted",
-    label: t("tournament.free_agents.filter_drafted"),
-    count: draftedAgents.value.length,
-  },
-  {
-    key: "waitlist",
-    label: t("tournament.free_agents.filter_waitlist"),
-    count: waitlistedAgents.value.length,
-  },
-]);
-
-function matchesFilter(agent: Agent) {
-  if (filter.value === "drafted") {
-    return agent.status === "drafted";
-  }
-  if (filter.value === "waitlist") {
-    return agent.status === "waitlisted";
-  }
-  return true;
-}
-
-// The queue position runs across the whole visible list, not per unit — it is
-// the answer to "who is ahead of me", which parties do not change.
-const visibleUnits = computed(() => {
-  let position = 0;
-
-  return poolUnits.value
-    .map((unit) => {
-      const rows = unit.members.filter(matchesFilter).map((agent) => {
-        position += 1;
-        return { position, agent };
-      });
-      const statuses = new Set(rows.map((row) => row.agent.status));
-      return {
-        key: unit.key,
-        rows,
-        // The promotion split is the one thing that can leave a lone member
-        // holding a party id; one person is not a party, so it renders plain.
-        isParty: !!unit.partyId && rows.length > 1,
-        status: statuses.size === 1 ? [...statuses][0] : "",
-      };
-    })
-    .filter((unit) => unit.rows.length > 0);
-});
+// A drafted player is on a pickup team and listed under it, so the pool shows
+// only the players still waiting for a seat.
+const waitingRows = computed(() =>
+  pool.value
+    .filter((row) => row.status !== "drafted")
+    .map((agent, index) => ({ position: index + 1, agent })),
+);
 
 const teamSize = computed(
   () =>
@@ -244,61 +151,22 @@ const draftLocked = computed(() =>
 
 const canDraft = computed(() => !hasDrafted.value && !draftLocked.value);
 
-// First fit, in priority order, into `teams` bins of `teamSize`. A unit that
-// fits nowhere is SKIPPED and the walk continues — without that departure from
-// strict priority a five-stack arriving early strands four slots forever.
-//
-// Exactness is then checked by packing, never by summing: {4,4,2} into two
-// teams of five sums to the capacity and packs into neither.
-function packsExactly(sizes: number[], teams: number, size: number) {
-  const bins = new Array(teams).fill(size);
-  for (const unitSize of sizes) {
-    const bin = bins.findIndex((free) => free >= unitSize);
-    if (bin === -1) {
-      continue;
-    }
-    bins[bin] -= unitSize;
-  }
-  return bins.every((free) => free === 0);
-}
-
 // Mirrors stage 1 of draft_tournament_free_agent_teams, because the organizer
-// line is a promise about what the button will do. Parties break the old
-// floor(pool / size) arithmetic outright — enough players is no longer the same
-// question as enough teams.
+// line is a promise about what the button will do.
 const draftPlan = computed(() => {
   const total = pool.value.length;
   if (teamSize.value < 1) {
-    return { teams: 0, waitlisted: total, capacity: 0 };
+    return { teams: 0, waitlisted: total };
   }
 
   const room =
     stageMaxTeams.value === null
       ? Number.POSITIVE_INFINITY
       : Math.max(stageMaxTeams.value - existingTeams.value, 0);
-  const capacity = Math.min(Math.floor(total / teamSize.value), room);
-  const sizes = poolUnits.value.map((unit) => unit.members.length);
+  const teams = Math.min(Math.floor(total / teamSize.value), room);
 
-  // The decrement-and-retry loop is the only second chance first fit gets;
-  // reordering the walk would break priority, which outranks packing quality.
-  for (let teams = capacity; teams >= 1; teams--) {
-    if (packsExactly(sizes, teams, teamSize.value)) {
-      return { teams, waitlisted: total - teams * teamSize.value, capacity };
-    }
-  }
-
-  return { teams: 0, waitlisted: total, capacity };
+  return { teams, waitlisted: total - teams * teamSize.value };
 });
-
-// Enough players and enough room, but no exact packing: {4,4,4} into teams of
-// five is the canonical case. Naming it matters — "0 teams" under a full pool
-// reads as a broken draft rather than as arithmetic.
-const partyDeadlock = computed(
-  () =>
-    !hasDrafted.value &&
-    draftPlan.value.capacity >= 1 &&
-    draftPlan.value.teams === 0,
-);
 
 // Before the draft runs this is a projection of what will happen; afterwards it
 // is a report of what did. Both read the same, which is the point — an
@@ -350,15 +218,8 @@ const draftedTeams = computed(() => {
         .sort((a, b) => (playerElo(b) ?? 0) - (playerElo(a) ?? 0));
       return {
         ...group,
-        // Grouped off an ELO-sorted list, so each unit keeps its members in
-        // rating order and the units themselves stay in rating order — the
-        // team owner (highest rated) still leads the card, and a party is not
-        // scattered down it.
-        units: groupUnits(byElo).map((unit) => ({
-          key: unit.key,
-          members: unit.members,
-          isParty: !!unit.partyId && unit.members.length > 1,
-        })),
+        // Rating order, so the team owner (highest rated) leads the card.
+        members: byElo,
         averageElo: elos.length
           ? Math.round(elos.reduce((sum, elo) => sum + elo, 0) / elos.length)
           : null,
@@ -366,18 +227,6 @@ const draftedTeams = computed(() => {
     })
     .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 });
-
-// A party is drafted whole or waitlisted whole, so one that missed the cut is
-// visibly behind people who signed up after it. That inversion is the rule
-// working, and it only needs explaining while such a party is on screen.
-const hasWaitlistedParty = computed(() =>
-  poolUnits.value.some(
-    (unit) =>
-      !!unit.partyId &&
-      unit.members.length > 1 &&
-      unit.members.every((member) => member.status === "waitlisted"),
-  ),
-);
 
 // The single most confusing thing about this pool: the best player in it can be
 // on the waitlist. Say so out loud instead of letting it look like a bug.
@@ -401,19 +250,104 @@ const myEntry = computed(() => {
   );
 });
 
-// The same window leaveTournamentAsFreeAgent enforces, drafted included: an
-// organizer can regenerate the teams while registration is still open, and
-// gating on that would strand everyone the draft touched with no way out of a
-// tournament they can still be removed from. The action drops the roster row,
-// promotes the first waitlisted agent into it and reseeds.
-const canLeave = computed(
+// The same rule leaveTournamentAsFreeAgent enforces. A drafted player holds a
+// slot, and can give it up until registration closes: an organizer can draft
+// while registration is still open, and gating on that would strand everyone
+// the draft touched. The action drops the roster row, promotes the first
+// waitlisted agent into it and reseeds. Anyone still waiting holds nothing and
+// can step out until the bracket is in play -- kept on the waitlist, they would
+// be promoted into a team they will not show up for.
+const canLeave = computed(() => {
+  if (!myEntry.value) {
+    return false;
+  }
+
+  if (myEntry.value.status !== "drafted") {
+    return !draftLocked.value;
+  }
+
+  return [
+    e_tournament_status_enum.Setup,
+    e_tournament_status_enum.RegistrationOpen,
+  ].includes(props.tournament?.status);
+});
+
+const recruitingTeam = computed(() => {
+  const team = props.myTeam;
+  if (!team?.can_manage) {
+    return null;
+  }
+
+  if (props.tournament?.status !== e_tournament_status_enum.RegistrationOpen) {
+    return null;
+  }
+
+  const seats = Number(props.tournament?.max_players_per_lineup) || 0;
+  if (seats > 0 && (team.roster?.length ?? 0) >= seats) {
+    return null;
+  }
+
+  return team;
+});
+
+const invitedSteamIds = computed(
   () =>
-    !!myEntry.value &&
-    [
-      e_tournament_status_enum.Setup,
-      e_tournament_status_enum.RegistrationOpen,
-    ].includes(props.tournament?.status),
+    new Set(
+      (props.myTeam?.invites ?? []).map((invite: Agent) =>
+        String(invite.player?.steam_id),
+      ),
+    ),
 );
+
+function canInvite(agent: Agent) {
+  return (
+    !!recruitingTeam.value &&
+    ["registered", "waitlisted"].includes(agent.status) &&
+    String(agent.player?.steam_id) !== String(me.value?.steam_id)
+  );
+}
+
+async function invite(agent: Agent) {
+  try {
+    const result = await client.mutate({
+      mutation: generateMutation({
+        insert_tournament_team_roster_one: [
+          {
+            object: {
+              player_steam_id: agent.player.steam_id,
+              tournament_team_id: recruitingTeam.value?.id,
+              tournament_id: props.tournament.id,
+            },
+          },
+          {
+            player_steam_id: true,
+          },
+        ],
+      }),
+    });
+
+    // An organizer's session places the player outright; anyone else's
+    // becomes an invite the free agent answers.
+    const added = Boolean(
+      result.data?.insert_tournament_team_roster_one?.player_steam_id,
+    );
+
+    toast({
+      title: added
+        ? t("tournament.team.member_added")
+        : t("tournament.team.invite_sent"),
+      description: added
+        ? t("tournament.team.member_added_description", {
+            name: agent.player?.name,
+          })
+        : t("tournament.team.invite_sent_description", {
+            name: agent.player?.name,
+          }),
+    });
+  } catch {
+    // The refusal is already toasted by the global Apollo error handler.
+  }
+}
 
 function signUpTime(createdAt: string) {
   const date = new Date(createdAt);
@@ -434,18 +368,6 @@ function statusTone(status: string) {
     return "warn";
   }
   return "muted";
-}
-
-// Only worth saying once the draft has ruled on the party: before that every
-// unit is "registered" and the block header already says it is a party.
-function partyStatusLabel(status: string) {
-  if (status === "drafted") {
-    return t("tournament.free_agents.party_status_drafted");
-  }
-  if (status === "waitlisted") {
-    return t("tournament.free_agents.party_status_waitlisted");
-  }
-  return "";
 }
 
 function statusLabel(status: string) {
@@ -499,13 +421,9 @@ async function draftTeams() {
   if (created < 1) {
     toast({
       title: t("tournament.free_agents.nothing_drafted"),
-      description: partyDeadlock.value
-        ? t("tournament.free_agents.nothing_drafted_parties", {
-            size: teamSize.value,
-          })
-        : t("tournament.free_agents.nothing_drafted_hint", {
-            size: teamSize.value,
-          }),
+      description: t("tournament.free_agents.nothing_drafted_hint", {
+        size: teamSize.value,
+      }),
       variant: "destructive",
     });
     return;
@@ -525,18 +443,16 @@ async function draftTeams() {
         {{ $t("tournament.free_agents.title") }}
         <TournamentChip tone="amber">
           {{
-            $t("tournament.free_agents.signed_up", { count: pool.length })
+            hasDrafted
+              ? $t("tournament.free_agents.waitlisted_count", {
+                  count: waitingRows.length,
+                })
+              : $t("tournament.free_agents.signed_up", { count: pool.length })
           }}
         </TournamentChip>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <AnimatedFilters
-          v-if="pool.length > 0"
-          v-model="filter"
-          :options="filterOptions"
-          square
-        />
         <Button
           v-if="canLeave"
           variant="outline"
@@ -550,16 +466,22 @@ async function draftTeams() {
       </div>
     </div>
 
-    <TournamentFreeAgentSignUp
-      :tournament="tournament"
-      :pool="pool"
-      :my-entry="myEntry"
-    />
+    <TournamentFreeAgentSignUp :tournament="tournament" :my-entry="myEntry" />
 
-    <Empty v-if="pool.length === 0" class="min-h-[180px]">
-      <EmptyTitle>{{ $t("tournament.free_agents.empty_title") }}</EmptyTitle>
+    <Empty v-if="waitingRows.length === 0" class="min-h-[180px]">
+      <EmptyTitle>
+        {{
+          hasDrafted
+            ? $t("tournament.free_agents.nobody_waiting_title")
+            : $t("tournament.free_agents.empty_title")
+        }}
+      </EmptyTitle>
       <EmptyDescription>
-        {{ $t("tournament.free_agents.empty_description") }}
+        {{
+          hasDrafted
+            ? $t("tournament.free_agents.nobody_waiting_description")
+            : $t("tournament.free_agents.empty_description")
+        }}
       </EmptyDescription>
     </Empty>
 
@@ -573,115 +495,81 @@ async function draftTeams() {
         leave-to-class="opacity-0 -translate-y-1 motion-reduce:translate-y-0"
         move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
       >
-        <!-- Iterated by unit, not by row: a party is one thing the draft moves
-             and it has to look like one thing. Ordering is by unit priority, so
-             a party is always a contiguous block. -->
         <div
-          v-for="unit in visibleUnits"
-          :key="unit.key"
-          :class="
-            unit.isParty
-              ? 'rounded-md border border-l-2 border-[hsl(var(--tac-amber)_/_0.3)] border-l-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.04)] p-1.5'
-              : ''
-          "
+          v-for="row in waitingRows"
+          :key="row.agent.id"
+          class="flex flex-wrap items-center gap-3 rounded-md border border-border bg-card/45 px-3 py-2 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.35)]"
         >
-          <div
-            v-if="unit.isParty"
-            class="mb-1.5 flex flex-wrap items-center gap-2 px-1.5 pt-0.5"
+          <span
+            class="w-7 shrink-0 text-right font-mono text-[0.7rem] tabular-nums text-muted-foreground"
           >
-            <Users class="h-3 w-3 text-[hsl(var(--tac-amber))]" />
+            {{ String(row.position).padStart(2, "0") }}
+          </span>
+          <div class="min-w-0 flex-1">
+            <PlayerDisplay
+              :player="row.agent.player"
+              size="xs"
+              :linkable="true"
+              :show-elo="false"
+              :show-online="false"
+              :show-role="false"
+            />
+          </div>
+          <span class="flex shrink-0 items-center justify-end gap-1.5">
+            <PlayerPremierRank
+              :premier-rank="row.agent.player?.premier_rank"
+              :premier-rank-updated-at="
+                row.agent.player?.premier_rank_updated_at
+              "
+            />
+            <PlayerFaceitRank
+              :faceit-skill-level="row.agent.player?.faceit_skill_level"
+              :faceit-elo="row.agent.player?.faceit_elo"
+              :faceit-url="row.agent.player?.faceit_url"
+              :faceit-nickname="row.agent.player?.faceit_nickname"
+            />
+          </span>
+          <span class="flex w-14 shrink-0 justify-end">
+            <PlayerElo
+              v-if="playerElo(row.agent) !== null"
+              :elo="row.agent.player?.elo"
+              :type="eloLadder"
+            />
             <span
-              class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+              v-else
+              class="font-mono text-[0.78rem] text-muted-foreground"
             >
-              {{
-                $t("tournament.free_agents.party_of", {
-                  count: unit.rows.length,
-                })
-              }}
+              &mdash;
             </span>
+          </span>
+          <span
+            class="w-14 shrink-0 text-right font-mono text-[0.72rem] tabular-nums text-muted-foreground"
+          >
+            {{ signUpTime(row.agent.created_at) }}
+          </span>
+          <TournamentChip :tone="statusTone(row.agent.status)">
+            {{ statusLabel(row.agent.status) }}
+          </TournamentChip>
+          <template v-if="canInvite(row.agent)">
             <TournamentChip
-              v-if="partyStatusLabel(unit.status)"
-              :tone="statusTone(unit.status)"
+              v-if="invitedSteamIds.has(String(row.agent.player?.steam_id))"
+              tone="amber"
             >
-              {{ partyStatusLabel(unit.status) }}
+              {{ $t("tournament.free_agents.invited") }}
             </TournamentChip>
-          </div>
-
-          <div class="flex flex-col gap-1.5">
-            <div
-              v-for="row in unit.rows"
-              :key="row.agent.id"
-              class="flex flex-wrap items-center gap-3 rounded-md border bg-card/45 px-3 py-2 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.35)]"
-              :class="[
-                unit.isParty
-                  ? 'border-[hsl(var(--tac-amber)_/_0.18)]'
-                  : 'border-border',
-                { 'opacity-60': row.agent.status === 'waitlisted' },
-              ]"
+            <Button
+              v-else
+              variant="outline"
+              size="sm"
+              class="h-7 px-2.5"
+              @click="invite(row.agent)"
             >
-              <span
-                class="w-7 shrink-0 text-right font-mono text-[0.7rem] tabular-nums text-muted-foreground"
-              >
-                {{ String(row.position).padStart(2, "0") }}
-              </span>
-              <div class="min-w-0 flex-1">
-                <PlayerDisplay
-                  :player="row.agent.player"
-                  size="xs"
-                  :linkable="true"
-                  :show-elo="false"
-                  :show-online="false"
-                  :show-role="false"
-                />
-              </div>
-              <span class="flex w-14 shrink-0 justify-end">
-                <PlayerElo
-                  v-if="playerElo(row.agent) !== null"
-                  :elo="row.agent.player?.elo"
-                  :type="eloLadder"
-                />
-                <span
-                  v-else
-                  class="font-mono text-[0.78rem] text-muted-foreground"
-                >
-                  &mdash;
-                </span>
-              </span>
-              <span
-                class="w-14 shrink-0 text-right font-mono text-[0.72rem] tabular-nums text-muted-foreground"
-              >
-                {{ signUpTime(row.agent.created_at) }}
-              </span>
-              <TournamentChip :tone="statusTone(row.agent.status)">
-                {{ statusLabel(row.agent.status) }}
-              </TournamentChip>
-            </div>
-          </div>
+              <UserPlus class="mr-1.5 h-3.5 w-3.5" />
+              {{ $t("tournament.free_agents.invite") }}
+            </Button>
+          </template>
         </div>
       </TransitionGroup>
-
-      <div
-        v-if="partyDeadlock"
-        class="flex items-start gap-2.5 rounded-md border border-warning/50 bg-warning/10 px-4 py-3 text-[0.78rem] leading-relaxed text-muted-foreground"
-      >
-        <Info class="mt-px h-3.5 w-3.5 shrink-0 text-warning" />
-        <span>
-          {{
-            $t("tournament.free_agents.party_deadlock", {
-              count: pool.length,
-              size: teamSize,
-            })
-          }}
-        </span>
-      </div>
-
-      <div
-        v-if="hasWaitlistedParty"
-        class="flex items-start gap-2.5 rounded-md border border-border bg-muted/20 px-4 py-3 text-[0.78rem] leading-relaxed text-muted-foreground"
-      >
-        <Info class="mt-px h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]" />
-        <span>{{ $t("tournament.free_agents.party_waitlist_explainer") }}</span>
-      </div>
 
       <div
         v-if="topRatedWaitlisted"
@@ -759,63 +647,32 @@ async function draftTeams() {
             </TournamentChip>
           </div>
           <div class="flex flex-col gap-1">
-            <!-- `party_id` outlives the draft as the record of who signed up
-                 with whom, so the organizer can see what the draft kept
-                 together rather than inferring it from the roster. -->
             <div
-              v-for="unit in team.units"
-              :key="unit.key"
-              :class="
-                unit.isParty
-                  ? 'rounded border border-l-2 border-[hsl(var(--tac-amber)_/_0.3)] border-l-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.04)] p-1'
-                  : ''
-              "
+              v-for="member in team.members"
+              :key="member.id"
+              class="flex items-center justify-between gap-2 rounded border border-border/60 bg-card/40 px-2 py-1"
             >
-              <div
-                v-if="unit.isParty"
-                class="mb-1 flex items-center gap-1.5 px-1 pt-0.5 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))]"
-              >
-                <Users class="h-2.5 w-2.5" />
-                {{
-                  $t("tournament.free_agents.party_kept_together", {
-                    count: unit.members.length,
-                  })
-                }}
-              </div>
-              <div class="flex flex-col gap-1">
-                <div
-                  v-for="member in unit.members"
-                  :key="member.id"
-                  class="flex items-center justify-between gap-2 rounded border bg-card/40 px-2 py-1"
-                  :class="
-                    unit.isParty
-                      ? 'border-[hsl(var(--tac-amber)_/_0.18)]'
-                      : 'border-border/60'
-                  "
+              <PlayerDisplay
+                :player="member.player"
+                size="xs"
+                :linkable="true"
+                :show-elo="false"
+                :show-online="false"
+                :show-role="false"
+              />
+              <span class="flex shrink-0 justify-end">
+                <PlayerElo
+                  v-if="playerElo(member) !== null"
+                  :elo="member.player?.elo"
+                  :type="eloLadder"
+                />
+                <span
+                  v-else
+                  class="font-mono text-[0.7rem] text-muted-foreground"
                 >
-                  <PlayerDisplay
-                    :player="member.player"
-                    size="xs"
-                    :linkable="true"
-                    :show-elo="false"
-                    :show-online="false"
-                    :show-role="false"
-                  />
-                  <span class="flex shrink-0 justify-end">
-                    <PlayerElo
-                      v-if="playerElo(member) !== null"
-                      :elo="member.player?.elo"
-                      :type="eloLadder"
-                    />
-                    <span
-                      v-else
-                      class="font-mono text-[0.7rem] text-muted-foreground"
-                    >
-                      &mdash;
-                    </span>
-                  </span>
-                </div>
-              </div>
+                  &mdash;
+                </span>
+              </span>
             </div>
           </div>
         </div>

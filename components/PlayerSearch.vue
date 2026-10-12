@@ -89,6 +89,7 @@ const { height: viewportHeight } = useVisualViewport();
                     :player="player"
                     :active="indexOfPlayer(player) === selectedIndex"
                     :reason="reasonFor(player)"
+                    :tag="tags[String(player.steam_id)]"
                     @select="select(player)"
                     @hover="onHover(indexOfPlayer(player))"
                   />
@@ -113,6 +114,7 @@ const { height: viewportHeight } = useVisualViewport();
                 :player="player"
                 :active="index === selectedIndex"
                 :reason="reasonFor(player)"
+                :tag="tags[String(player.steam_id)]"
                 @select="select(player)"
                 @hover="onHover(index)"
               />
@@ -282,6 +284,7 @@ const { height: viewportHeight } = useVisualViewport();
                     :player="player"
                     :active="indexOfPlayer(player) === selectedIndex"
                     :reason="reasonFor(player)"
+                    :tag="tags[String(player.steam_id)]"
                     @select="select(player)"
                     @hover="onHover(indexOfPlayer(player))"
                   />
@@ -312,6 +315,7 @@ const { height: viewportHeight } = useVisualViewport();
                   :player="player"
                   :active="index === selectedIndex"
                   :reason="reasonFor(player)"
+                  :tag="tags[String(player.steam_id)]"
                   @select="select(player)"
                   @hover="onHover(index)"
                 />
@@ -387,6 +391,12 @@ export default {
     // non-selectable so the user can tell "already on a roster" from
     // "no such player".
     ineligible: {
+      type: Object as () => Record<string, string>,
+      required: false,
+      default: () => ({}),
+    },
+    // steam_id -> short label shown beside a selectable player.
+    tags: {
       type: Object as () => Record<string, string>,
       required: false,
       default: () => ({}),

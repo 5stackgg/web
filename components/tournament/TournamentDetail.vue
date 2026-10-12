@@ -668,6 +668,7 @@ function clearTeamEnterDelay(el: Element) {
                     <TournamentTeam
                       :tournament="tournament"
                       :team="myTeam"
+                      :free-agent-steam-ids="freeAgentSteamIds"
                     ></TournamentTeam>
                   </div>
                 </ManageSection>
@@ -725,6 +726,7 @@ function clearTeamEnterDelay(el: Element) {
                       v-if="teamsPanel === 'free-agents'"
                       key="free-agents"
                       :tournament="tournament"
+                      :my-team="myTeam"
                     />
 
                     <div
@@ -775,6 +777,7 @@ function clearTeamEnterDelay(el: Element) {
                         <TournamentTeam
                           :tournament="tournament"
                           :team="team"
+                          :free-agent-steam-ids="freeAgentSteamIds"
                           :collapsible="true"
                           :collapsed="collapsedTeams.has(team.id)"
                           @toggle-collapsed="toggleTeamCollapsed(team.id)"
@@ -921,7 +924,12 @@ function clearTeamEnterDelay(el: Element) {
 </template>
 
 <script lang="ts">
-import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
+import {
+  $,
+  e_tournament_free_agent_statuses_enum,
+  e_tournament_status_enum,
+  order_by,
+} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
@@ -997,6 +1005,7 @@ export default {
       collapsedTeams: new Set(),
       myTeamLoaded: false,
       myFreeAgentLoaded: false,
+      freeAgentSteamIds: [] as Array<string>,
       registrationLoaded: false,
       e_match_types: [],
     };
@@ -1205,6 +1214,7 @@ export default {
               },
               is_organizer: true,
               can_join: true,
+              joined_tournament: true,
               can_start: true,
               can_cancel: true,
               can_open_registration: true,
@@ -1570,6 +1580,42 @@ export default {
           this.checkInTeams = data?.tournament_teams ?? [];
         },
       },
+      freeAgentSteamIds: {
+        query: generateSubscription({
+          tournament_free_agents: [
+            {
+              where: {
+                tournament_id: {
+                  _eq: $("tournamentId", "uuid!"),
+                },
+                status: {
+                  _in: [
+                    e_tournament_free_agent_statuses_enum.registered,
+                    e_tournament_free_agent_statuses_enum.waitlisted,
+                  ],
+                },
+              },
+            },
+            {
+              player_steam_id: true,
+            },
+          ],
+        }),
+        variables: function (this: any) {
+          return {
+            tournamentId: this.$route.params.tournamentId,
+          };
+        },
+        skip: function (this: any): boolean {
+          return !this.myTeam?.can_manage || !this.freeAgentsTabVisible;
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.freeAgentSteamIds = (data?.tournament_free_agents ?? []).map(
+            (agent: { player_steam_id: string }) =>
+              String(agent.player_steam_id),
+          );
+        },
+      },
       // An undrafted free agent has no tournament_teams row at all, so every
       // team-shaped check-in surface misses them — while the check-in job
       // still pushes them "confirm your spot". This row is what lets them.
@@ -1583,6 +1629,12 @@ export default {
                 },
                 player_steam_id: {
                   _eq: $("steamId", "bigint!"),
+                },
+                // A withdrawn row is someone who left; read as an entry it
+                // offers them a check-in the API refuses and hides the sign-up
+                // that would put them back in.
+                status: {
+                  _neq: e_tournament_free_agent_statuses_enum.withdrawn,
                 },
               },
             },

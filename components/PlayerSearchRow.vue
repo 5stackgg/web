@@ -7,6 +7,7 @@ defineProps<{
   // When set the row is rendered dimmed and non-selectable, and this sentence
   // is shown underneath explaining why.
   reason?: string;
+  tag?: string;
 }>();
 
 const emit = defineEmits<{ select: []; hover: [] }>();
@@ -26,7 +27,15 @@ const emit = defineEmits<{ select: []; hover: [] }>();
     @click="reason ? undefined : emit('select')"
     @mouseenter="emit('hover')"
   >
-    <PlayerDisplay :player="player" />
+    <div class="flex items-center justify-between gap-2">
+      <PlayerDisplay :player="player" />
+      <span
+        v-if="tag"
+        class="shrink-0 rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+      >
+        {{ tag }}
+      </span>
+    </div>
     <p v-if="reason" class="mt-1 text-[11px] text-muted-foreground">
       {{ reason }}
     </p>

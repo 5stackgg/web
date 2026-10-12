@@ -375,6 +375,7 @@ import { toast } from "~/components/ui/toast";
                   :label="$t('tournament.team.add_player')"
                   :self="true"
                   :ineligible="ineligiblePlayers"
+                  :tags="freeAgentTags"
                   :team-id="team.team_id"
                   @selected="addMember"
                 >
@@ -469,6 +470,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    freeAgentSteamIds: {
+      type: Array as () => Array<string>,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -535,6 +540,12 @@ export default {
         e_tournament_status_enum.Cancelled,
         e_tournament_status_enum.CancelledMinTeams,
       ].includes(status);
+    },
+    freeAgentTags() {
+      const tag = this.$t("tournament.team.free_agent_tag");
+      return Object.fromEntries(
+        this.freeAgentSteamIds.map((steamId) => [steamId, tag]),
+      );
     },
     // Layered so the most specific fact wins: another team's roster first,
     // then this team's roster, then this team's pending invites.

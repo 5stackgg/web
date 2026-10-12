@@ -2042,11 +2042,6 @@
               "description": "Sua equipe perdeu o check-in e não entrou na chave.",
               "example": "Iron Wolves perdeu o check-in do Autumn Cup"
             },
-            "TournamentPartySignup": {
-              "title": "Inscrições de grupo de agentes livres",
-              "description": "Seu lobby foi inscrito em um torneio como grupo de agentes livres.",
-              "example": "Seu lobby foi inscrito no Autumn Cup"
-            },
             "EventReminder": {
               "title": "Lembretes de evento",
               "description": "Um evento que você vai participar começa em breve.",
@@ -7300,7 +7295,8 @@
         "benched": "No banco"
       },
       "already_rostered": "Em outra equipe",
-      "owner_on_a_team": "Já inscrito em uma equipe neste torneio."
+      "owner_on_a_team": "Já inscrito em uma equipe neste torneio.",
+      "leaves_pool": "Você está inscrito como agente livre. Inscrever um time tira você da lista de agentes livres."
     },
     "tournament_team": {
       "remove": "Remover Equipe",
@@ -7624,6 +7620,7 @@
       "cancel_invite": "Cancelar convite",
       "confirm_cancel_invite": "Cancelar convite",
       "cancel_invite_description": "Tem certeza que deseja cancelar este convite?",
+      "free_agent_tag": "Agente livre",
       "seed_label": "Seed",
       "seed_display": "Seed #{seed}"
     },
@@ -7900,47 +7897,33 @@
     "free_agents": {
       "title": "Agentes livres",
       "signed_up": "{count} inscritos",
-      "filter_all": "Todos",
-      "filter_drafted": "Draftados",
-      "filter_waitlist": "Lista de espera",
+      "waitlisted_count": "{count} na lista de espera",
       "sign_up": "Inscrever-se",
       "sign_up_hint": "Sem equipe? Inscreva-se sozinho e o draft vai te colocar em uma equipe de {size} quando as inscrições fecharem.",
       "joined": "Você está no grupo de agentes livres",
       "leave": "Sair do grupo",
       "already_in_pool": "Você já está inscrito como agente livre neste torneio.",
-      "sign_up_alone": "Inscrever-se sozinho",
-      "sign_up_with_lobby": "Inscrever os {count}",
-      "lobby_title": "Traga seu lobby",
-      "lobby_size": "{count} de {size}",
-      "lobby_hint": "Inscrever-se com seu lobby coloca vocês {count} de uma vez, e o draft mantém vocês na mesma equipe. Aqui as equipes são de {size} jogadores.",
-      "lobby_too_big": "Seu lobby de {count} é maior que uma equipe de {size}, então não dá para draftar junto. Inscreva-se sozinho, ou reduza para {size} e tente de novo.",
-      "lobby_not_captain": "Só {name} pode inscrever o lobby, do mesmo jeito que só o líder do grupo coloca ele na fila.",
-      "lobby_already_signed_up": "{count} deles já se inscreveram sozinhos; eles mantêm o lugar na fila e entram no seu grupo.",
       "status_drafted": "draftado",
       "status_waitlisted": "lista de espera",
       "status_registered": "inscrito",
       "empty_title": "Ainda não há agentes livres",
       "empty_description": "Os jogadores que se inscrevem sozinhos aparecem aqui e são draftados em equipes equilibradas quando as inscrições fecham.",
+      "nobody_waiting_title": "Ninguém está esperando",
+      "nobody_waiting_description": "Todos os inscritos foram draftados para uma equipe.",
       "waitlist_explainer": "{name} tem o melhor rating e ainda está na lista de espera — se inscreveu depois que as vagas encheram. O horário da inscrição decide quem pega vaga; o ELO decide só em qual equipe. É a regra funcionando, não um bug.",
-      "party_of": "Grupo de {count}",
-      "party_status_drafted": "draftados juntos",
-      "party_status_waitlisted": "na lista de espera juntos",
-      "party_kept_together": "{count} inscritos juntos",
-      "party_waitlist_explainer": "Um grupo é draftado inteiro ou não é draftado. O que não couber nas vagas restantes é pulado como um bloco e vai para a lista de espera junto, então uma inscrição menor que chegou depois pode ser draftada na frente dele.",
-      "party_deadlock": "Há {count} jogadores inscritos, mas nenhuma combinação dessas inscrições fecha uma equipe de {size}, e um grupo nunca é dividido para caber. Draftar agora não criaria nada. Mais inscrições, principalmente sozinhas, destravam a situação.",
       "organizer": "Organizador",
       "draft_summary": "{agents} agentes livres → {teams} equipes de {size}, {waitlisted} na lista de espera.",
       "regenerate": "Draftar equipes",
       "regenerated": "{count} equipes draftadas",
       "regenerate_failed": "Falha ao draftar as equipes",
       "join_failed": "Falha ao entrar no grupo de agentes livres",
-      "join_with_lobby_failed": "Falha ao inscrever seu lobby",
       "leave_failed": "Falha ao sair do grupo de agentes livres",
       "already_drafted": "As equipes já foram draftadas. Draftar de novo não faria nada — remova antes as equipes draftadas.",
       "draft_locked": "A chave já está em andamento, então o grupo não pode mais ser draftado.",
       "nothing_drafted": "Nenhuma equipe foi draftada",
       "nothing_drafted_hint": "Não sobraram agentes livres suficientes para completar uma equipe de {size}, ou a chave não tem espaço.",
-      "nothing_drafted_parties": "Nenhuma combinação das inscrições fecha uma equipe de {size}, e um grupo nunca é dividido para caber."
+      "invite": "Convidar",
+      "invited": "Convidado"
     },
     "entry": {
       "title": "Requisitos de participação",

@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Ton lobby est déjà en file d'attente.",
-      "player_in_match": "{name} est déjà dans un match."
+      "player_in_match": "{name} est déjà dans un match.",
+      "matchmaking_disabled": "Le matchmaking est désactivé.",
+      "queue_disabled": "Le matchmaking n'est pas autorisé.",
+      "role_required": "Tu n'as pas la permission de rejoindre cette file d'attente.",
+      "queue_busy": "Ton lobby rejoint encore la file d'attente, réessaie."
     }
   },
   "game_server": {

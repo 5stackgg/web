@@ -9893,7 +9893,11 @@
     },
     "errors": {
       "already_queued": "Your lobby is already in the queue.",
-      "player_in_match": "{name} is already in a match."
+      "player_in_match": "{name} is already in a match.",
+      "matchmaking_disabled": "Matchmaking is disabled.",
+      "queue_disabled": "Matchmaking is not allowed.",
+      "role_required": "You do not have permission to join this queue.",
+      "queue_busy": "Your lobby is still joining the queue, try again."
     }
   },
   "game_server": {

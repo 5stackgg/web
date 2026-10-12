@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Deine Lobby ist bereits in der Queue.",
-      "player_in_match": "{name} ist bereits in einem Match."
+      "player_in_match": "{name} ist bereits in einem Match.",
+      "matchmaking_disabled": "Matchmaking ist deaktiviert.",
+      "queue_disabled": "Matchmaking ist nicht erlaubt.",
+      "role_required": "Du hast keine Berechtigung, dieser Queue beizutreten.",
+      "queue_busy": "Deine Lobby tritt der Queue noch bei, versuch es erneut."
     }
   },
   "game_server": {

@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Twoje lobby jest już w kolejce.",
-      "player_in_match": "{name} jest już w meczu."
+      "player_in_match": "{name} jest już w meczu.",
+      "matchmaking_disabled": "Matchmaking jest wyłączony.",
+      "queue_disabled": "Matchmaking jest niedozwolony.",
+      "role_required": "Nie masz uprawnień, aby dołączyć do tej kolejki.",
+      "queue_busy": "Twoje lobby wciąż dołącza do kolejki, spróbuj ponownie."
     }
   },
   "game_server": {

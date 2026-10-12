@@ -1150,6 +1150,14 @@ function matchmakingErrorMessage(data: {
         return data.message;
       }
       return i18n.t("matchmaking.errors.player_in_match", { name: data.name });
+    case "matchmaking_disabled":
+      return i18n.t("matchmaking.errors.matchmaking_disabled");
+    case "queue_disabled":
+      return i18n.t("matchmaking.errors.queue_disabled");
+    case "role_required":
+      return i18n.t("matchmaking.errors.role_required");
+    case "queue_busy":
+      return i18n.t("matchmaking.errors.queue_busy");
     default:
       return data.message;
   }

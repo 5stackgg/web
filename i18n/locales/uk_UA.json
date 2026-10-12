@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Ваше лобі вже в черзі.",
-      "player_in_match": "{name} вже в матчі."
+      "player_in_match": "{name} вже в матчі.",
+      "matchmaking_disabled": "Добір матчів вимкнено.",
+      "queue_disabled": "Добір матчів заборонено.",
+      "role_required": "У вас немає дозволу приєднатися до цієї черги.",
+      "queue_busy": "Ваше лобі ще стає в чергу, спробуйте знову."
     }
   },
   "game_server": {

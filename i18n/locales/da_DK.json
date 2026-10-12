@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Din lobby er allerede i kø.",
-      "player_in_match": "{name} er allerede i en kamp."
+      "player_in_match": "{name} er allerede i en kamp.",
+      "matchmaking_disabled": "Matchmaking er deaktiveret.",
+      "queue_disabled": "Matchmaking er ikke tilladt.",
+      "role_required": "Du har ikke tilladelse til at deltage i denne kø.",
+      "queue_busy": "Din lobby er stadig ved at komme i kø, prøv igen."
     }
   },
   "game_server": {

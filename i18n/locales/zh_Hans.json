@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "你的大厅已在队列中。",
-      "player_in_match": "{name} 已在比赛中。"
+      "player_in_match": "{name} 已在比赛中。",
+      "matchmaking_disabled": "匹配已关闭。",
+      "queue_disabled": "不允许匹配。",
+      "role_required": "你没有加入此队列的权限。",
+      "queue_busy": "你的大厅仍在加入队列，请重试。"
     }
   },
   "game_server": {

@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Din lobby är redan i kön.",
-      "player_in_match": "{name} är redan i en match."
+      "player_in_match": "{name} är redan i en match.",
+      "matchmaking_disabled": "Matchmaking är avstängt.",
+      "queue_disabled": "Matchmaking är inte tillåtet.",
+      "role_required": "Du har inte behörighet att gå med i den här kön.",
+      "queue_busy": "Din lobby håller fortfarande på att gå med i kön, försök igen."
     }
   },
   "game_server": {

@@ -9889,7 +9889,11 @@
     },
     "errors": {
       "already_queued": "Tu lobby ya está en cola.",
-      "player_in_match": "{name} ya está en una partida."
+      "player_in_match": "{name} ya está en una partida.",
+      "matchmaking_disabled": "El emparejamiento está desactivado.",
+      "queue_disabled": "El emparejamiento no está permitido.",
+      "role_required": "No tienes permiso para unirte a esta cola.",
+      "queue_busy": "Tu lobby todavía se está uniendo a la cola, inténtalo de nuevo."
     }
   },
   "game_server": {

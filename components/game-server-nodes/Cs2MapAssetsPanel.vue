@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useNow } from "@vueuse/core";
 import { AlertTriangle, Box, Check, Clock, X } from "lucide-vue-next";
+import ServiceLogs from "~/components/ServiceLogs.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { Spinner } from "~/components/ui/spinner";
 import {
@@ -24,6 +25,7 @@ import {
   failedMapCount,
   formatDuration,
   mapAssetChangeRows,
+  mapAssetsProgress,
   mapAssetsRunStatus,
   type Cs2BuildNode,
   type Cs2BuildTone,
@@ -63,6 +65,23 @@ const rows = computed(() =>
 const changes = computed(() => props.row?.changes ?? null);
 const running = computed(
   () => status.value === "pending" || status.value === "building",
+);
+
+// The run's job log, streamed while it is around; how far the run has got
+// is read off it (`[3/27] de_mirage`).
+const logService = computed(() => `map-assets:${props.buildId}`);
+const logLines = ref<string[]>([]);
+watch(
+  () => [props.buildId, props.row?.started_at] as const,
+  () => (logLines.value = []),
+);
+const progress = computed(() =>
+  running.value ? mapAssetsProgress(logLines.value) : null,
+);
+const progressShare = computed(() =>
+  progress.value?.total
+    ? Math.min(1, progress.value.done / progress.value.total)
+    : 0,
 );
 
 const listTitle = computed(() => {
@@ -323,6 +342,39 @@ const error = computed(() =>
     </template>
 
     <template #list>
+      <div v-if="running" class="flex flex-col gap-1.5 px-3 py-2.5 text-xs">
+        <div class="flex items-center justify-between gap-3">
+          <span class="min-w-0 truncate text-muted-foreground">
+            <template v-if="progress?.current">
+              {{
+                $t("pages.game_server_nodes.cs2_build.building_map", {
+                  map: progress.current,
+                })
+              }}
+            </template>
+            <template v-else>
+              {{ $t("pages.game_server_nodes.cs2_build.waiting_for_log") }}
+            </template>
+          </span>
+          <span
+            v-if="progress"
+            class="shrink-0 tabular-nums text-muted-foreground"
+          >
+            {{
+              $t("pages.game_server_nodes.cs2_build.progress", {
+                done: progress.done,
+                total: progress.total,
+              })
+            }}
+          </span>
+        </div>
+        <div class="h-1 overflow-hidden rounded-full bg-white/10">
+          <div
+            class="h-full rounded-full bg-info transition-[width] duration-500"
+            :style="{ width: `${progressShare * 100}%` }"
+          />
+        </div>
+      </div>
       <div
         v-for="change of rows"
         :key="`${change.change}:${change.map}`"
@@ -376,8 +428,24 @@ const error = computed(() =>
       </p>
     </template>
 
-    <template v-if="error && (detailed || status === 'failed')" #details>
+    <template v-if="row" #details>
+      <!-- Mounted while closed too: the progress above is read off it. -->
+      <details class="rounded-md border border-border p-2 text-xs">
+        <summary
+          class="cursor-pointer font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+        >
+          {{ $t("pages.game_server_nodes.cs2_build.live_log") }}
+        </summary>
+        <div class="mt-2 h-72">
+          <ServiceLogs
+            :service="logService"
+            :compact="true"
+            @line="(line: string) => logLines.push(line)"
+          />
+        </div>
+      </details>
       <details
+        v-if="error && (detailed || status === 'failed')"
         class="rounded-md border border-destructive/40 bg-destructive/5 p-2 text-xs"
         :open="detailed"
       >

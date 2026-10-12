@@ -4264,6 +4264,10 @@
         "reused_from": "riutilizzato da {build}",
         "skipped_entries": "Saltati: {count} — verifica impossibile",
         "log": "Log della build",
+        "building_map": "Costruzione di {map}",
+        "waiting_for_log": "In attesa del log…",
+        "progress": "{done} di {total} mappe",
+        "live_log": "Log in tempo reale",
         "trigger": {
           "auto": "automatico",
           "manual": "manuale"

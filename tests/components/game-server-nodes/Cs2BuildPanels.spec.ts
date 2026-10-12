@@ -26,6 +26,11 @@ vi.mock("~/composables/useCs2BuildRuns", async () => {
   };
 });
 
+// The live log opens a socket; these panels only need to know it is there.
+vi.mock("~/components/ServiceLogs.vue", () => ({
+  default: { name: "ServiceLogs", render: () => null },
+}));
+
 const minutesAgo = (minutes: number) =>
   new Date(Date.now() - minutes * 60 * 1000).toISOString();
 

@@ -4264,6 +4264,10 @@
         "reused_from": "übernommen aus {build}",
         "skipped_entries": "{count} übersprungen — nicht prüfbar",
         "log": "Build-Log",
+        "building_map": "Baue {map}",
+        "waiting_for_log": "Warte auf das Log…",
+        "progress": "{done} von {total} Maps",
+        "live_log": "Live-Log",
         "trigger": {
           "auto": "automatisch",
           "manual": "manuell"

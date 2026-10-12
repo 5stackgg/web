@@ -7,6 +7,7 @@ import {
   gamedataErrorReason,
   gamedataRunStatus,
   mapAssetChangeRows,
+  mapAssetsProgress,
   mapAssetsRunStatus,
   nodeIneligibility,
   type Cs2BuildNode,
@@ -29,9 +30,7 @@ const gamedata = (fields: Partial<GamedataRunRow> = {}): GamedataRunRow => ({
   ...fields,
 });
 
-const mapAssets = (
-  fields: Partial<MapAssetsRunRow> = {},
-): MapAssetsRunRow => ({
+const mapAssets = (fields: Partial<MapAssetsRunRow> = {}): MapAssetsRunRow => ({
   build_id: "25537370",
   status: "Published",
   started_at: ago(30 * 60 * 1000),
@@ -307,5 +306,30 @@ describe("gamedataErrorReason", () => {
         }),
       ),
     ).toBe("could not verify upstream-ccs");
+  });
+});
+
+describe("mapAssetsProgress", () => {
+  it("reads the map being built and how many are done off the log", () => {
+    expect(mapAssetsProgress(["pipeline 44eff3b32ddd: Source2Viewer 20"])).toBe(
+      null,
+    );
+    expect(
+      mapAssetsProgress([
+        "CS2 build 25815307 revision 2: 27 map(s) -> /work (publishing)",
+        "[1/27] cs_office",
+        "cs_office          tri 106,068 (3.8 MB)",
+        "\u001b[33m[2/27] de_ancient\u001b[0m",
+      ]),
+    ).toEqual({ done: 1, total: 27, current: "de_ancient" });
+  });
+
+  it("is done once the run says what it built", () => {
+    expect(
+      mapAssetsProgress([
+        "[27/27] rush_001",
+        "built 20/27 map(s), 0 unchanged",
+      ]),
+    ).toEqual({ done: 27, total: 27, current: null });
   });
 });

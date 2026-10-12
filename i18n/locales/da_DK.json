@@ -4264,6 +4264,10 @@
         "reused_from": "genbrugt fra {build}",
         "skipped_entries": "{count} sprunget over — kunne ikke kontrolleres",
         "log": "Build-log",
+        "building_map": "Bygger {map}",
+        "waiting_for_log": "Venter på loggen…",
+        "progress": "{done} af {total} baner",
+        "live_log": "Live-log",
         "trigger": {
           "auto": "automatisk",
           "manual": "manuel"

@@ -4266,6 +4266,10 @@
         "reused_from": "reused from {build}",
         "skipped_entries": "{count} skipped — could not be checked",
         "log": "Build log",
+        "building_map": "Building {map}",
+        "waiting_for_log": "Waiting for the log…",
+        "progress": "{done} of {total} maps",
+        "live_log": "Live log",
         "trigger": {
           "auto": "automatic",
           "manual": "manual"

@@ -4264,6 +4264,10 @@
         "reused_from": "أُعيد استخدامه من {build}",
         "skipped_entries": "تم التخطي: {count} — تعذّر الفحص",
         "log": "سجل البناء",
+        "building_map": "جارٍ بناء {map}",
+        "waiting_for_log": "بانتظار السجل…",
+        "progress": "{done} من {total} خرائط",
+        "live_log": "السجل المباشر",
         "trigger": {
           "auto": "تلقائي",
           "manual": "يدوي"

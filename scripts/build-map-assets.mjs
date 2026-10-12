@@ -791,7 +791,10 @@ async function build(args) {
   const started = performance.now();
   const results = [];
   let hashing = 0;
+  let step = 0;
   for (const map of maps) {
+    // The node page reads its progress off these.
+    console.log(`[${++step}/${maps.length}] ${map}`);
     const from = sources.get(map);
     const hashStart = performance.now();
     const source = {

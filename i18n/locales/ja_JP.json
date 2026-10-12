@@ -4264,6 +4264,10 @@
         "reused_from": "{build} から再利用",
         "skipped_entries": "{count} 件スキップ — 確認できませんでした",
         "log": "ビルドログ",
+        "building_map": "{map} をビルド中",
+        "waiting_for_log": "ログを待っています…",
+        "progress": "{total} マップ中 {done}",
+        "live_log": "ライブログ",
         "trigger": {
           "auto": "自動",
           "manual": "手動"

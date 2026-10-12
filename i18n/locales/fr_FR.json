@@ -4264,6 +4264,10 @@
         "reused_from": "réutilisé depuis {build}",
         "skipped_entries": "Ignorés : {count} — vérification impossible",
         "log": "Journal de build",
+        "building_map": "Construction de {map}",
+        "waiting_for_log": "En attente du journal…",
+        "progress": "{done} sur {total} cartes",
+        "live_log": "Journal en direct",
         "trigger": {
           "auto": "automatique",
           "manual": "manuel"

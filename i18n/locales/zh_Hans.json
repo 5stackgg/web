@@ -4264,6 +4264,10 @@
         "reused_from": "复用自 {build}",
         "skipped_entries": "已跳过 {count} 个 — 无法检查",
         "log": "构建日志",
+        "building_map": "正在构建 {map}",
+        "waiting_for_log": "正在等待日志…",
+        "progress": "{done} / {total} 张地图",
+        "live_log": "实时日志",
         "trigger": {
           "auto": "自动",
           "manual": "手动"

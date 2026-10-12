@@ -4264,6 +4264,10 @@
         "reused_from": "взято з {build}",
         "skipped_entries": "Пропущено: {count} — не вдалося перевірити",
         "log": "Лог збирання",
+        "building_map": "Збирання {map}",
+        "waiting_for_log": "Очікування логу…",
+        "progress": "{done} з {total} мап",
+        "live_log": "Живий лог",
         "trigger": {
           "auto": "автоматично",
           "manual": "вручну"

@@ -479,6 +479,37 @@ export function mapAssetChangeRows(
   return rows;
 }
 
+export type MapAssetsProgress = {
+  /** Maps finished so far, of `total`. */
+  done: number;
+  total: number;
+  /** The map being built now, or null between maps and once done. */
+  current: string | null;
+};
+
+/**
+ * How far a map-asset run has got, read off its log: the build script prints
+ * `[3/27] de_mirage` as it starts each map and `built …` once all are done.
+ */
+export function mapAssetsProgress(lines: string[]): MapAssetsProgress | null {
+  let progress: MapAssetsProgress | null = null;
+  for (const raw of lines) {
+    const line = raw.replace(/\x1b\[[0-9;]*m/g, "").trim();
+    const step = line.match(/^\[(\d+)\/(\d+)\]\s+(\S+)/);
+    if (step) {
+      progress = {
+        done: Number(step[1]) - 1,
+        total: Number(step[2]),
+        current: step[3],
+      };
+    } else if (progress && /^built \d+\/\d+ map/.test(line)) {
+      const total: number = progress.total;
+      progress = { done: total, total, current: null };
+    }
+  }
+  return progress;
+}
+
 export function failedMapCount(row: MapAssetsRunRow | null | undefined) {
   return new Set([...(row?.failed ?? []), ...(row?.failed_view ?? [])]).size;
 }

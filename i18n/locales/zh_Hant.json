@@ -4264,6 +4264,10 @@
         "reused_from": "沿用自 {build}",
         "skipped_entries": "已略過 {count} 個 — 無法檢查",
         "log": "建置記錄",
+        "building_map": "正在建置 {map}",
+        "waiting_for_log": "正在等待日誌…",
+        "progress": "{done} / {total} 張地圖",
+        "live_log": "即時日誌",
         "trigger": {
           "auto": "自動",
           "manual": "手動"

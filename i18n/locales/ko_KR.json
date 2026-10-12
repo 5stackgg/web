@@ -4264,6 +4264,10 @@
         "reused_from": "{build}에서 재사용",
         "skipped_entries": "{count}개 건너뜀 — 확인할 수 없음",
         "log": "빌드 로그",
+        "building_map": "{map} 빌드 중",
+        "waiting_for_log": "로그를 기다리는 중…",
+        "progress": "{total}개 맵 중 {done}",
+        "live_log": "실시간 로그",
         "trigger": {
           "auto": "자동",
           "manual": "수동"

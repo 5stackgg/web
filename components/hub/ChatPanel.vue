@@ -30,9 +30,11 @@ import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { useDirectConversationBar } from "~/composables/useDirectConversationBar";
 import {
   directTabId,
+  peerSteamId,
   pendingComposerFocus,
   useDirectMessages,
 } from "~/composables/useDirectMessages";
+import { useRightSidebar } from "~/composables/useRightSidebar";
 import {
   useMessageRequests,
   type MessageRequest,
@@ -763,6 +765,37 @@ function handleCloseRoom() {
   activeChatId.value = activeTabId.value;
 }
 
+const directPeer = computed(() => {
+  const tab = activeTab.value;
+  const me = useAuthStore().me?.steam_id;
+
+  if (tab?.type !== "direct") {
+    return null;
+  }
+
+  const steamId =
+    tab.steamId ?? (me ? peerSteamId(tab.lobbyId, String(me)) : null);
+
+  if (!steamId) {
+    return null;
+  }
+
+  return {
+    profile: `/players/${steamId}`,
+    avatarUrl: tab.avatarUrl,
+    initials: (tab.label || "?").trim().slice(0, 2).toUpperCase(),
+  };
+});
+
+const { setRightSidebarOpen } = useRightSidebar();
+
+// On a phone the hub covers the page the link opens.
+function openDirectProfile() {
+  if (isMobile.value) {
+    setRightSidebarOpen(false);
+  }
+}
+
 // The header's title strip does nothing on click, so a press there must not
 // pull focus out of the composer -- and a click there puts it back.
 const HEADER_CONTROL = "button, a, input, textarea, select, [role='button']";
@@ -1066,9 +1099,38 @@ function handlePopOut() {
           @click="focusComposerFromHeader"
         >
           <div class="min-w-0 flex items-center gap-3">
+            <!-- The subtitle row under the name holds a button, which a link
+                 can't contain, so the avatar is a second, mouse-only link. -->
+            <NuxtLink
+              v-if="directPeer"
+              :to="directPeer.profile"
+              tabindex="-1"
+              aria-hidden="true"
+              class="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-[0.58rem] font-bold text-foreground/80 transition-shadow duration-150 hover:ring-2 hover:ring-[hsl(var(--tac-amber)/0.6)] motion-reduce:transition-none"
+              @click="openDirectProfile"
+            >
+              <img
+                v-if="directPeer.avatarUrl"
+                :src="directPeer.avatarUrl"
+                alt=""
+                class="h-full w-full object-cover"
+              />
+              <template v-else>{{ directPeer.initials }}</template>
+            </NuxtLink>
             <div class="min-w-0">
               <div class="flex min-w-0 items-center gap-2">
-                <div class="text-xs font-semibold text-foreground truncate">
+                <NuxtLink
+                  v-if="directPeer"
+                  :to="directPeer.profile"
+                  class="truncate rounded-sm text-xs font-semibold text-foreground underline-offset-2 transition-colors duration-150 hover:text-[hsl(var(--tac-amber))] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] motion-reduce:transition-none"
+                  @click="openDirectProfile"
+                >
+                  {{ activeTab?.label }}
+                </NuxtLink>
+                <div
+                  v-else
+                  class="text-xs font-semibold text-foreground truncate"
+                >
                   {{
                     activeTab?.label || $t("layouts.chat_panel.default_title")
                   }}

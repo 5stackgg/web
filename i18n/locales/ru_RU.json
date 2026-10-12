@@ -4264,6 +4264,10 @@
         "reused_from": "взято из {build}",
         "skipped_entries": "Пропущено: {count} — не удалось проверить",
         "log": "Лог сборки",
+        "building_map": "Сборка {map}",
+        "waiting_for_log": "Ожидание лога…",
+        "progress": "{done} из {total} карт",
+        "live_log": "Живой лог",
         "trigger": {
           "auto": "автоматически",
           "manual": "вручную"

@@ -249,7 +249,7 @@ type LogEntry = {
 };
 
 export default {
-  emits: ["follow-logs-changed", "has-logs"],
+  emits: ["follow-logs-changed", "has-logs", "line"],
 
   props: {
     service: { type: String, required: true },
@@ -441,6 +441,7 @@ export default {
 
           this.emptyRetries = 0;
           this.logsByPod[pod].push(log);
+          this.$emit("line", log.log);
         });
 
         // the server-side stream dies with the websocket — re-subscribe when

@@ -4264,6 +4264,10 @@
         "reused_from": "{build} sürümünden yeniden kullanıldı",
         "skipped_entries": "{count} atlandı — kontrol edilemedi",
         "log": "Oluşturma günlüğü",
+        "building_map": "{map} oluşturuluyor",
+        "waiting_for_log": "Günlük bekleniyor…",
+        "progress": "{total} haritadan {done}",
+        "live_log": "Canlı günlük",
         "trigger": {
           "auto": "otomatik",
           "manual": "manuel"

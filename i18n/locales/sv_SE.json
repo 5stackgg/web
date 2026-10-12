@@ -4264,6 +4264,10 @@
         "reused_from": "återanvänd från {build}",
         "skipped_entries": "Överhoppade: {count} — kunde inte kontrolleras",
         "log": "Bygglogg",
+        "building_map": "Bygger {map}",
+        "waiting_for_log": "Väntar på loggen…",
+        "progress": "{done} av {total} kartor",
+        "live_log": "Livelogg",
         "trigger": {
           "auto": "automatisk",
           "manual": "manuell"

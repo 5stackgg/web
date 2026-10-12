@@ -113,6 +113,34 @@ export type PrepResult = {
   ms: number;
 };
 
+/**
+ * What the slow part of prep decides, small enough to cache and to publish
+ * next to the map's meshes (mapPrepPack.ts): per source triangle its class
+ * and cut, per source vertex its fade and canopy normal, the draw order, and
+ * the ground. `expandPrep` turns it back into a `PrepResult` with the view
+ * mesh in a few dozen milliseconds.
+ */
+export type PrepCore = {
+  /** Source triangles (numbered across chunks) in drawing order. */
+  solidOrder: Uint32Array;
+  seeOrder: Uint32Array;
+  /** Where the cuttable and the 3D-ghosted triangles start in each order. */
+  solidCuttable: number;
+  solidGhost: number;
+  seeCuttable: number;
+  seeGhost: number;
+  /** Per source triangle. */
+  info: Uint16Array;
+  /** Per source triangle, three: see `PrepMesh.cut`. */
+  cut: Int16Array;
+  /** Per source vertex. */
+  remote: Uint8Array;
+  /** Per source vertex, four: see `PrepMesh.canopy`. */
+  canopy: Int8Array;
+  ground: GroundFill;
+  ms: number;
+};
+
 export const INFO_SURFACE = 0b11;
 export const INFO_OUTSIDE = 0b100;
 export const INFO_WALKABLE = 0b1000;
@@ -457,35 +485,49 @@ const STRAY_THIN = 24;
 /** A callout's boxes, source units: where players stand, per the map's author. */
 export type PrepArea = Array<{ min: number[]; max: number[] }>;
 
-export function prepareMap(chunks: PrepChunk[], areas: PrepArea = []): PrepResult {
-  const started = performance.now();
+/** The chunks as one mesh: vertices and triangles numbered across chunks. */
+function mergeChunks(chunks: PrepChunk[]) {
   let vertexTotal = 0;
   let triTotal = 0;
   for (const chunk of chunks) {
     vertexTotal += chunk.floorZ.length;
     triTotal += chunk.indices.length / 3;
   }
-
-  // Positions shared by triangles from different chunks or split vertices
-  // must count as one corner for the edge search.
   const vx = new Float32Array(vertexTotal * 3);
   const vz = new Float32Array(vertexTotal);
   const vflag = new Uint8Array(vertexTotal);
   const tris = new Uint32Array(triTotal * 3);
-  {
-    let vo = 0;
-    let to = 0;
-    for (const chunk of chunks) {
-      vx.set(chunk.positions, vo * 3);
-      vz.set(chunk.floorZ, vo);
-      vflag.set(chunk.flags, vo);
-      for (let i = 0; i < chunk.indices.length; i++) {
-        tris[to + i] = chunk.indices[i] + vo;
-      }
-      vo += chunk.floorZ.length;
-      to += chunk.indices.length;
+  let vo = 0;
+  let to = 0;
+  for (const chunk of chunks) {
+    vx.set(chunk.positions, vo * 3);
+    vz.set(chunk.floorZ, vo);
+    vflag.set(chunk.flags, vo);
+    for (let i = 0; i < chunk.indices.length; i++) {
+      tris[to + i] = chunk.indices[i] + vo;
     }
+    vo += chunk.floorZ.length;
+    to += chunk.indices.length;
   }
+  return { vx, vz, vflag, tris, vertexTotal, triTotal };
+}
+
+export function prepareMap(
+  chunks: PrepChunk[],
+  areas: PrepArea = [],
+): PrepResult {
+  return expandPrep(chunks, analyseMap(chunks, areas));
+}
+
+/** The slow part of prep: everything decided about the mesh. */
+export function analyseMap(
+  chunks: PrepChunk[],
+  areas: PrepArea = [],
+): PrepCore {
+  const started = performance.now();
+  // Positions shared by triangles from different chunks or split vertices
+  // must count as one corner for the edge search.
+  const { vx, vz, vflag, tris, vertexTotal, triTotal } = mergeChunks(chunks);
 
   const bits = new Uint32Array(vx.buffer);
   const canon = new Int32Array(vertexTotal);
@@ -717,20 +759,6 @@ export function prepareMap(chunks: PrepChunk[], areas: PrepArea = []): PrepResul
       }
     }
   }
-  let seeCount = 0;
-  let strayCount = 0;
-  for (let t = 0; t < triTotal; t++) {
-    if (stray[t]) {
-      strayCount++;
-    } else if ((info[t] & INFO_SURFACE) === SURFACE_SEE_THROUGH) {
-      seeCount++;
-    }
-  }
-  const solid = allocMesh(triTotal - seeCount - strayCount);
-  const seeThrough = allocMesh(seeCount);
-  let so = 0;
-  let po = 0;
-  // Uncuttable triangles first, then the cuttable ones.
   // Never cut first, then cut only in 2D, then cut in 3D as well.
   const order = (t: number) => {
     if (cut[t * 3] === NO_CUT) {
@@ -738,63 +766,126 @@ export function prepareMap(chunks: PrepChunk[], areas: PrepArea = []): PrepResul
     }
     const wall = (info[t] & (INFO_CUT_WALL | INFO_CUT_WHOLE)) === INFO_CUT_WALL;
     const top = wall
-      ? Math.max(vx[tris[t * 3] * 3 + 2], vx[tris[t * 3 + 1] * 3 + 2], vx[tris[t * 3 + 2] * 3 + 2])
+      ? Math.max(
+          vx[tris[t * 3] * 3 + 2],
+          vx[tris[t * 3 + 1] * 3 + 2],
+          vx[tris[t * 3 + 2] * 3 + 2],
+        )
       : cut[t * 3 + 1];
-    return (info[t] & INFO_SURFACE) !== SURFACE_FOLIAGE && top > cut[t * 3] + GHOST_HEIGHT ? 2 : 1;
+    return (info[t] & INFO_SURFACE) !== SURFACE_FOLIAGE &&
+      top > cut[t * 3] + GHOST_HEIGHT
+      ? 2
+      : 1;
   };
+  const solidOrder: number[] = [];
+  const seeOrder: number[] = [];
+  const starts = [0, 0, 0, 0];
   for (let pass = 0; pass < 3; pass++) {
     for (let t = 0; t < triTotal; t++) {
       if (stray[t] || order(t) !== pass) {
         continue;
       }
-      let value = info[t];
-      const see = (value & INFO_SURFACE) === SURFACE_SEE_THROUGH;
+      ((info[t] & INFO_SURFACE) === SURFACE_SEE_THROUGH
+        ? seeOrder
+        : solidOrder
+      ).push(t);
+    }
+    if (pass === 0) {
+      starts[0] = solidOrder.length;
+      starts[2] = seeOrder.length;
+    } else if (pass === 1) {
+      starts[1] = solidOrder.length;
+      starts[3] = seeOrder.length;
+    }
+  }
+  const remote = new Uint8Array(vertexTotal);
+  for (let v = 0; v < vertexTotal; v++) {
+    const away = distanceAt(vx[v * 3], vx[v * 3 + 1]);
+    remote[v] = Math.round(
+      Math.min(
+        1,
+        Math.max(0, (away - REMOTE_NEAR) / (REMOTE_FAR - REMOTE_NEAR)),
+      ) * 255,
+    );
+  }
+  const canopyOut = new Int8Array(vertexTotal * 4);
+  for (const [v, normal] of canopy) {
+    canopyOut.set(normal, v * 4);
+  }
+  return {
+    solidOrder: Uint32Array.from(solidOrder),
+    seeOrder: Uint32Array.from(seeOrder),
+    solidCuttable: starts[0],
+    solidGhost: starts[1],
+    seeCuttable: starts[2],
+    seeGhost: starts[3],
+    info,
+    cut,
+    remote,
+    canopy: canopyOut,
+    ground,
+    ms: performance.now() - started,
+  };
+}
+
+/** The fast part of prep: the meshes the map draws, from what was decided. */
+export function expandPrep(chunks: PrepChunk[], core: PrepCore): PrepResult {
+  const started = performance.now();
+  const { vx, vz, tris } = mergeChunks(chunks);
+  const build = (order: Uint32Array, cuttable: number, ghost: number) => {
+    const mesh = allocMesh(order.length);
+    mesh.cuttableStart = cuttable;
+    mesh.ghostStart = ghost;
+    for (let o = 0; o < order.length; o++) {
+      const t = order[o];
+      let value = core.info[t];
       if ((value & INFO_SURFACE) === SURFACE_FOLIAGE) {
         value &= ~(0b111 << INFO_EDGE_SHIFT);
       }
-      const target = see ? seeThrough : solid;
-      const o = see ? po++ : so++;
       for (let k = 0; k < 3; k++) {
         const v = tris[t * 3 + k];
         const out = o * 3 + k;
-        target.positions[out * 3] = vx[v * 3];
-        target.positions[out * 3 + 1] = vx[v * 3 + 1];
-        target.positions[out * 3 + 2] = vx[v * 3 + 2];
+        mesh.positions[out * 3] = vx[v * 3];
+        mesh.positions[out * 3 + 1] = vx[v * 3 + 1];
+        mesh.positions[out * 3 + 2] = vx[v * 3 + 2];
         const floor = vz[v];
-        target.height[out] =
+        mesh.height[out] =
           floor === floor
             ? Math.max(
                 -32000,
                 Math.min(32000, Math.round(vx[v * 3 + 2] - floor)),
               )
             : NO_FLOOR;
-        target.info[out] = value;
-        target.cut[out * 3] = cut[t * 3];
-        target.cut[out * 3 + 1] = cut[t * 3 + 1];
-        target.cut[out * 3 + 2] = cut[t * 3 + 2];
-        const away = distanceAt(vx[v * 3], vx[v * 3 + 1]);
-        target.remote[out] = Math.round(
-          Math.min(
-            1,
-            Math.max(0, (away - REMOTE_NEAR) / (REMOTE_FAR - REMOTE_NEAR)),
-          ) * 255,
-        );
-        if (canopy.has(v)) {
-          target.canopy.set(canopy.get(v)!, out * 4);
-        }
+        mesh.info[out] = value;
+        mesh.cut[out * 3] = core.cut[t * 3];
+        mesh.cut[out * 3 + 1] = core.cut[t * 3 + 1];
+        mesh.cut[out * 3 + 2] = core.cut[t * 3 + 2];
+        mesh.remote[out] = core.remote[v];
+        mesh.canopy[out * 4] = core.canopy[v * 4];
+        mesh.canopy[out * 4 + 1] = core.canopy[v * 4 + 1];
+        mesh.canopy[out * 4 + 2] = core.canopy[v * 4 + 2];
+        mesh.canopy[out * 4 + 3] = core.canopy[v * 4 + 3];
       }
     }
-    if (pass === 0) {
-      solid.cuttableStart = so;
-      seeThrough.cuttableStart = po;
-    } else if (pass === 1) {
-      solid.ghostStart = so;
-      seeThrough.ghostStart = po;
-    }
-  }
-
+    return mesh;
+  };
+  const solid = build(core.solidOrder, core.solidCuttable, core.solidGhost);
+  const seeThrough = build(core.seeOrder, core.seeCuttable, core.seeGhost);
   const pick = pickGrid(solid.positions);
-  return { solid, seeThrough, pick, ground, ms: performance.now() - started };
+  // Copies, so the result holds nothing of the core's buffer.
+  const ground = {
+    ...core.ground,
+    z: core.ground.z.slice(),
+    enclosed: core.ground.enclosed.slice(),
+    open: core.ground.open.slice(),
+  };
+  return {
+    solid,
+    seeThrough,
+    pick,
+    ground,
+    ms: core.ms + performance.now() - started,
+  };
 }
 
 /**
@@ -872,7 +963,9 @@ function canopyNormals(
     ny /= len;
     nz /= len;
     // One tone per clump: hashed from the 4-block cell the corner is in.
-    const h = Math.sin(Math.floor(x / 256) * 12.9898 + Math.floor(y / 256) * 78.233) * 43758.5453;
+    const h =
+      Math.sin(Math.floor(x / 256) * 12.9898 + Math.floor(y / 256) * 78.233) *
+      43758.5453;
     const tone = h - Math.floor(h);
     out.set(
       v,
@@ -1175,8 +1268,7 @@ function cutPlanes(
   );
 
   const out = new Int16Array(triTotal * 3);
-  const clamp = (v: number) =>
-    Math.max(-32000, Math.min(32000, Math.round(v)));
+  const clamp = (v: number) => Math.max(-32000, Math.min(32000, Math.round(v)));
   for (let t = 0; t < triTotal; t++) {
     const p = patch[t];
     const foliage = (info[t] & INFO_SURFACE) === SURFACE_FOLIAGE;

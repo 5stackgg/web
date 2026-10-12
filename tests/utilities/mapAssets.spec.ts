@@ -323,6 +323,8 @@ describe("resolveMapAssets", () => {
       grenadeclip: `${ROOT}/25537370/de_mirage.grenadeclip.tri.gz`,
       view: `${ROOT}/24957633/de_mirage.view.bin.gz`,
       callouts: `${ROOT}/25537370/de_mirage.callouts.json`,
+      prep: null,
+      blast: null,
       listed: ["tri", "view", "grenadeclip", "callouts"],
     });
   });
@@ -351,6 +353,8 @@ describe("resolveMapAssets", () => {
       tri: `${ROOT}/24957633/de_nuke.tri.gz`,
       grenadeclip: null,
       callouts: `${ROOT}/24957633/de_nuke.callouts.json`,
+      prep: null,
+      blast: null,
       listed: ["view"],
     });
   });
@@ -380,6 +384,8 @@ describe("resolveMapAssets", () => {
       view: null,
       grenadeclip: null,
       callouts: `${ROOT}/24957633/de_workshop_thing.callouts.json`,
+      prep: null,
+      blast: null,
       listed: [],
     });
   });

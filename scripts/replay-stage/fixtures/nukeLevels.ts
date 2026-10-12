@@ -8,9 +8,12 @@ import type { Scenario } from "./index";
 /**
  * Nuke with players on both storeys, for the level view: A site and hut up
  * at -416, B site and decon down at -768, one on heaven above it all.
- * `nuke-levels-lower` puts the lower storey in view, `-upper` the upper.
+ * `nuke-levels-lower` puts the lower storey in view, `-upper` the upper;
+ * `nuke-levels` and `vertigo-levels` (no band) are for the side-by-side layout.
  */
-const ACTORS: Array<[string, StageTeam, number, number, number, number]> = [
+type Actor = [string, StageTeam, number, number, number, number];
+
+const ACTORS: Actor[] = [
   ["Upper A", "ct", 700, -900, -416, 200],
   ["Hut", "t", 360, -960, -392, 340],
   ["Heaven", "ct", 1120, -400, -128, 250],
@@ -19,10 +22,17 @@ const ACTORS: Array<[string, StageTeam, number, number, number, number]> = [
   ["Decon", "t", 200, -1400, -776, 20],
 ];
 
-function player(
-  [name, team, x, y, z, yaw]: (typeof ACTORS)[number],
-  i: number,
-): StagePlayer {
+// Vertigo: A, B, mid and CT up at 11776; T spawn, tunnels and bridge below.
+const VERTIGO: Actor[] = [
+  ["A site", "ct", -160, -1100, 11776, 200],
+  ["B site", "ct", -2100, 800, 11776, 300],
+  ["Mid", "t", -1850, 0, 11776, 30],
+  ["T spawn", "t", -2100, -1100, 11488, 60],
+  ["Tunnels", "t", -1920, -200, 11488, 90],
+  ["Ladder", "ct", -1330, -680, 11488, 180],
+];
+
+function player([name, team, x, y, z, yaw]: Actor, i: number): StagePlayer {
   return {
     id: `p${i}`,
     name,
@@ -48,20 +58,36 @@ function player(
   };
 }
 
-function nukeLevels(name: string, band: { min: number; max: number }) {
+function nukeLevels(
+  name: string,
+  band: { min: number; max: number } | null,
+  map = "de_nuke",
+  actors = ACTORS,
+  floor = -416,
+) {
   const scenario: Scenario = {
     name,
-    map: "de_nuke",
-    floor: -416,
+    map,
+    floor,
     duration: 1,
     frameAt: () => ({
       ...EMPTY_FRAME,
-      players: ACTORS.map(player),
+      players: actors.map(player),
       levelBand: band,
+      callouts: true,
     }),
   };
   return scenario;
 }
+
+export const nukeLevelsSide = nukeLevels("nuke-levels", null);
+export const vertigoLevelsSide = nukeLevels(
+  "vertigo-levels",
+  null,
+  "de_vertigo",
+  VERTIGO,
+  11776,
+);
 
 export const nukeLevelsLower = nukeLevels("nuke-levels-lower", {
   min: -100000,

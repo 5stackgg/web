@@ -79,6 +79,7 @@ vec3 sandColor(vec3 src, float lit, vec3 sand, vec3 sandShade) {
 `;
 
 export const MAP_VERT = /* glsl */ `
+uniform vec3 uWorldShift;
 attribute float aHeight;
 attribute float aInfo;
 attribute vec3 aCut;
@@ -102,7 +103,8 @@ void main() {
   int corner = gl_VertexID % 3;
   vBary = vec3(corner == 0, corner == 1, corner == 2);
   vec4 world = modelMatrix * vec4(position, 1.0);
-  vWorld = world.xyz;
+  // A lower storey's copy is lit where the storey really is.
+  vWorld = world.xyz - uWorldShift;
   gl_Position = projectionMatrix * viewMatrix * world;
 }
 `;
@@ -141,6 +143,12 @@ uniform sampler2D uLetters;
 uniform float uLetterSize;
 uniform float uLineWidth;
 uniform float uAlpha;
+// Side by side: the main map clears outskirts where the lower storey's copy
+// lands (x0, y0, x1, y1; off when x1 < x0); the copy keeps only its storey,
+// in this rect and between these heights (bottom, cut).
+uniform vec4 uCopyLanding;
+uniform vec4 uCopyRect;
+uniform vec2 uCopyZ;
 uniform vec3 uHaze;
 uniform vec3 uMapCentre;
 uniform vec2 uHazeRange;
@@ -260,6 +268,24 @@ void main() {
   float levelLift = vSrc.z < uLevelCut ? uLevelMix : 0.0;
   bool foliage = surface == 1;
   float opacity = cutOpacity(info, vSrc.z);
+#ifdef LEVEL_COPY
+  levelLift = 1.0;
+  if (
+    surface == 1 ||
+    vSrc.z > uCopyZ.y ||
+    vSrc.z < uCopyZ.x ||
+    any(lessThan(vSrc.xy, uCopyRect.xy)) ||
+    any(greaterThan(vSrc.xy, uCopyRect.zw))
+  ) discard;
+#else
+  // Whatever of the map strays past its play area (a crane's jib, the
+  // outskirts) gives way where the lower storey is laid.
+  if (
+    uCopyLanding.z > uCopyLanding.x &&
+    all(greaterThan(vSrc.xy, uCopyLanding.xy)) &&
+    all(lessThan(vSrc.xy, uCopyLanding.zw))
+  ) discard;
+#endif
 #if defined(GHOST) || defined(GHOST_DEPTH)
   // The ghost passes draw only what is part-way gone.
   if (opacity > 0.999 || opacity < 0.001) discard;
@@ -280,6 +306,10 @@ void main() {
   // faces: they read as the top of the cut wall. Back faces anywhere else
   // (single-sided trims, tile ends) are just surfaces seen from behind.
   bool cap = !gl_FrontFacing && wallSliced(info);
+#ifdef LEVEL_COPY
+  // Cut open at its ceiling: whatever shows its back is a wall's inside.
+  cap = !gl_FrontFacing;
+#endif
   // Leaves light by their tree's soft canopy normal (see PrepMesh.canopy),
   // not card by card.
   vec3 leaf = dot(vCanopy.xyz, vCanopy.xyz) > 0.1 ? normalize(vCanopy.xyz) : n;
@@ -448,6 +478,12 @@ void main() {
     float d = (cut - vSrc.z) / max(fwidth(vSrc.z), 1e-4);
     line = min(line, smoothstep(uLineWidth - 0.5, uLineWidth + 0.5, d));
   }
+#ifdef LEVEL_COPY
+  if (!isFlat) {
+    float d = (uCopyZ.y - vSrc.z) / max(fwidth(vSrc.z), 1e-4);
+    line = min(line, smoothstep(uLineWidth - 0.5, uLineWidth + 0.5, d));
+  }
+#endif
   line = mix(line, 1.0, decal * 0.85);
   // Thinner ink when zoomed out, where every prop edge would turn to noise.
   float unitsPerPx = max(length(dx), length(dy));

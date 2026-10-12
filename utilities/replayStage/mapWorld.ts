@@ -37,6 +37,7 @@ uniform vec2 uHazeRange;
 uniform highp sampler2DShadow uShadowMap;
 uniform mat4 uShadowMatrix;
 uniform float uHasShadow;
+uniform vec4 uCopyLanding;
 varying vec3 vSrc;
 varying vec3 vWorld;
 varying vec3 vNormal;
@@ -44,6 +45,14 @@ varying vec2 vYard;
 ${SAND_GLSL}
 
 void main() {
+#ifdef FILL
+  // Gives way to a lower storey laid beside the map (the dunes there are flat).
+  if (
+    uCopyLanding.z > uCopyLanding.x &&
+    all(greaterThan(vSrc.xy, uCopyLanding.xy)) &&
+    all(lessThan(vSrc.xy, uCopyLanding.zw))
+  ) discard;
+#endif
   vec3 n = normalize(vNormal);
   float lit = clamp(dot(n, uSun) / uSun.z, 0.0, 1.15);
   if (uHasShadow > 0.5) {
@@ -120,7 +129,11 @@ function dune(x: number, y: number, scale: number) {
   // Sharp-crested ridges with soft backs, like wind-built sand.
   const ridge = 1 - Math.abs(valueNoise(wx * s, wy * s * 1.4) * 2 - 1);
   const swell = valueNoise(wx * s * 0.35 + 3, wy * s * 0.35);
-  return ridge * ridge * 0.55 + swell * 0.6 + valueNoise(wx * s * 2.7, wy * s * 2.7) * 0.08;
+  return (
+    ridge * ridge * 0.55 +
+    swell * 0.6 +
+    valueNoise(wx * s * 2.7, wy * s * 2.7) * 0.08
+  );
 }
 
 /**
@@ -132,6 +145,10 @@ export function createDunes(
   bounds: WorldBounds,
   uniforms: Record<string, THREE.IUniform>,
   ground: GroundFill,
+  flat: {
+    rects: Array<[number, number, number, number]>;
+    top: number;
+  } | null = null,
 ): THREE.Mesh {
   const { min, max } = bounds;
   const span = Math.max(max.x - min.x, max.y - min.y);
@@ -150,7 +167,12 @@ export function createDunes(
   const under = (x: number, y: number) => {
     const gx = Math.round((x - ground.minX) / ground.cell);
     const gy = Math.round((y - ground.minY) / ground.cell);
-    if (gx < -reach || gy < -reach || gx >= ground.width + reach || gy >= ground.height + reach) {
+    if (
+      gx < -reach ||
+      gy < -reach ||
+      gx >= ground.width + reach ||
+      gy >= ground.height + reach
+    ) {
       return Infinity;
     }
     const cx = Math.min(ground.width - 1, Math.max(0, gx));
@@ -166,20 +188,40 @@ export function createDunes(
       const oy = Math.max(min.y - margin - y, 0, y - max.y - margin);
       // A wavy shore, so the flat sand does not end on a ruled line; it only
       // ever reaches further out, never in over the map.
-      const shore = valueNoise(x / (span * 0.35) + 5, y / (span * 0.35)) * span * 0.3;
-      const away = Math.max(0, Math.hypot(ox, oy) - shore);
+      const shore =
+        valueNoise(x / (span * 0.35) + 5, y / (span * 0.35)) * span * 0.3;
+      // A lower storey laid beside the map counts as more of it.
+      let laid = Infinity;
+      for (const r of flat?.rects ?? []) {
+        laid = Math.min(
+          laid,
+          Math.hypot(
+            Math.max(r[0] - x, 0, x - r[2]),
+            Math.max(r[1] - y, 0, y - r[3]),
+          ),
+        );
+      }
+      const away = Math.max(
+        0,
+        Math.min(Math.hypot(ox, oy), laid + margin) - shore,
+      );
       const ramp = Math.min(1, away / (span * 0.9));
       const rise = ramp * ramp * ramp * (ramp * (ramp * 6 - 15) + 10);
       heights[j * (cells + 1) + i] = Math.min(
         base + rise * dune(x, y, span * 0.32) * span * 0.16,
         under(x, y),
+        flat && laid < step * 1.5 ? flat.top : Infinity,
       );
     }
   }
   const geometry = gridGeometry(
     cells + 1,
     cells + 1,
-    (i, j) => [cx - radius + i * step, cy - radius + j * step, heights[j * (cells + 1) + i]],
+    (i, j) => [
+      cx - radius + i * step,
+      cy - radius + j * step,
+      heights[j * (cells + 1) + i],
+    ],
     () => true,
   );
   const material = new THREE.ShaderMaterial({
@@ -211,7 +253,8 @@ export function createGroundFill(
     // stands far above its surroundings (a tower) would the fill hang off it
     // as a cliff: there the dunes are the ground.
     (a, b, c, d) =>
-      Math.max(z[a], z[b], z[c], z[d]) - Math.min(z[a], z[b], z[c], z[d]) <= cell * 1.5,
+      Math.max(z[a], z[b], z[c], z[d]) - Math.min(z[a], z[b], z[c], z[d]) <=
+      cell * 1.5,
   );
   if (!geometry.index?.count) {
     geometry.dispose();
@@ -230,6 +273,7 @@ export function createGroundFill(
       vertexShader: DUNE_VERT,
       fragmentShader: DUNE_FRAG,
       uniforms,
+      defines: { FILL: "" },
       side: THREE.DoubleSide,
     }),
   );

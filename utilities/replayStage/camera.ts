@@ -1,15 +1,25 @@
 import * as THREE from "three";
 import { createStageCursor } from "./cursor";
 import type { CursorMode, StageCursor } from "./cursor";
+import { frameShot, nextStory, placeOf, shotAt, versusOf } from "./director";
+import type {
+  DirectorLabel,
+  DirectorReplay,
+  PlannedShot,
+  RoundPlan,
+  ShotKind,
+  ShotLook,
+} from "./director";
 import { pickMapHeight } from "./map";
-import { frameArea } from "./mapFrame";
+import { drawnBounds, frameArea } from "./mapFrame";
 import { pickPlayer } from "./pick";
 import type { PlayerPick } from "./pick";
 import type { StageContext, StageFrame, StageModule, Vec3 } from "./types";
 
 /**
  * The camera's keys, for a shortcuts list: `keys` are what to print, `view`
- * where they do anything. V only works once `onViewKey` is wired.
+ * where they do anything. V only works once `onViewKey` is wired, B once the
+ * owner turns broadcast mode on and off with it (`setDirector`).
  */
 export const CAMERA_KEYS = [
   { action: "pan", keys: ["W", "A", "S", "D"], view: "both" },
@@ -20,6 +30,7 @@ export const CAMERA_KEYS = [
   { action: "frame", keys: ["0", "Home"], view: "both" },
   { action: "follow", keys: ["C"], view: "both" },
   { action: "view", keys: ["V"], view: "both" },
+  { action: "broadcast", keys: ["B"], view: "both" },
 ] as const;
 
 /**
@@ -37,6 +48,11 @@ export const CAMERA_KEYS = [
 export type CameraModule = StageModule & {
   /** Pins the camera: eye and target in source units, no easing. */
   place(eye: Vec3, target: Vec3): void;
+  /**
+   * Where the camera is, for `place` to put it back (share links); null
+   * while it still shows the whole map as framed on load.
+   */
+  pose(): { eye: Vec3; target: Vec3 } | null;
   /** Frames the whole map. */
   frameMap(animate?: boolean): void;
   /**
@@ -68,6 +84,29 @@ export type CameraModule = StageModule & {
   onClick(listener: (x: number, y: number, slop: number) => void): () => void;
   /** Called on V, for the owner to switch 2D and 3D. */
   onViewKey(listener: () => void): () => void;
+  /**
+   * Broadcast mode: the camera frames the round's planned shots (see
+   * director.ts). Any camera input, or following a player, pauses it.
+   */
+  setDirector(on: boolean): void;
+  /** The round's plan; the frames' ticks look their shot up in it. */
+  setDirectorPlan(plan: RoundPlan | null): void;
+  readonly directing: boolean;
+  /** Called whenever the director starts or stops, input included. */
+  onDirectorChange(listener: (directing: boolean) => void): () => void;
+  /** What the director shows, when it changes; null once it stops. */
+  onDirectorShot(listener: (label: DirectorLabel | null) => void): () => void;
+  /**
+   * An instant replay the plan offers, as playback passes its offer tick
+   * (forward play only, never on a scrub).
+   */
+  onDirectorReplay(listener: (offer: DirectorReplay) => void): () => void;
+  /**
+   * Shows an offered replay from a new angle: tighter, from another side,
+   * until it is over. The clock's owner rewinds to `offer.fromTick` and
+   * plays it.
+   */
+  replay(offer: DirectorReplay): void;
 };
 
 type Rig = {
@@ -90,9 +129,35 @@ const FOLLOW_MIN = 700;
 const FOLLOW_MAX = 2800;
 const ACTION_MIN_RADIUS = 520;
 
+/** How the director's shots look in 3D: tilt, by kind. */
+const SHOT_PITCH: Record<ShotKind, number> = {
+  wide: 64,
+  standoff: 58,
+  duel: 54,
+  clutch: 54,
+  defuse: 54,
+  fight: 58,
+  plant: 58,
+  bomb: 60,
+  execute: 62,
+  utility: 62,
+  retake: 62,
+};
+/** A 3D shot orbits this slowly, radians per second, turning each cut the other way. */
+const SHOT_DRIFT = 0.026;
+/** The most a cut turns the camera, so it never flips to the far side. */
+const SHOT_MAX_TURN = (120 * Math.PI) / 180;
+/** Crossing the map, the camera rises by this share of the way left. */
+const SWOOP = 0.75;
+/** An instant replay: this much tighter, turned this far round, this much lower. */
+const REPLAY_TIGHT = 0.7;
+const REPLAY_TURN = Math.PI * 0.6;
+const REPLAY_DIP = (12 * Math.PI) / 180;
+
 /** Seconds each part of the rig takes to settle. */
 const EASE = { target: 0.22, distance: 0.18, angle: 0.32 };
 const FOLLOW_EASE = { target: 0.45, distance: 0.9, angle: 0.32 };
+const DIRECTOR_EASE = { target: 0.5, distance: 0.85, angle: 1.3 };
 
 /** Press-to-release travel under which a press is a click, CSS px. */
 const CLICK_SLOP = 4;
@@ -226,6 +291,29 @@ export function createCameraModule(): CameraModule {
     (x: number, y: number, slop: number) => void
   >();
   const viewKeyListeners = new Set<() => void>();
+  let plan: RoundPlan | null = null;
+  let directing = false;
+  const directorListeners = new Set<(directing: boolean) => void>();
+  const shotListeners = new Set<(label: DirectorLabel | null) => void>();
+  const replayListeners = new Set<(offer: DirectorReplay) => void>();
+  /** The tick of the last frame directed, to see playback pass offers. */
+  let directedTick: number | null = null;
+  /** Place names, per shot. */
+  const places = new WeakMap<PlannedShot, string | null>();
+  /** The replay being shown, and whether to cut straight to its angle. */
+  let replaying: DirectorReplay | null = null;
+  let replayCut = false;
+  let shownLabel: DirectorLabel | null = null;
+  /** The shot (and view, and replay or not) the 3D angle was picked for. */
+  let angleFor: {
+    shot: PlannedShot;
+    view: string;
+    replay: boolean;
+  } | null = null;
+  let shotHeading = 0;
+  let shotPitch = PITCH_3D;
+  let shotClock = 0;
+  let shotTurn = 1;
   let cursor: StageCursor | null = null;
   /** The frame on screen, for picking players between renders. */
   let shownFrame: StageFrame | null = null;
@@ -253,7 +341,8 @@ export function createCameraModule(): CameraModule {
   /** The play area and the title band south of it (see mapFrame.ts). */
   function playArea() {
     const map = bounds();
-    return map ? frameArea(map) : null;
+    // The screen's shape picks the side a stacked map's lower storey goes.
+    return map ? frameArea(map, ctx?.camera.aspect) : null;
   }
 
   /** The floor height play mostly happens at: the callout boxes' bottoms, by area. */
@@ -264,7 +353,10 @@ export function createCameraModule(): CameraModule {
       return null;
     }
     const weighted = boxes
-      .map((b) => ({ z: b.min[2], w: (b.max[0] - b.min[0]) * (b.max[1] - b.min[1]) }))
+      .map((b) => ({
+        z: b.min[2],
+        w: (b.max[0] - b.min[0]) * (b.max[1] - b.min[1]),
+      }))
       .sort((a, b) => a.z - b.z);
     const total = weighted.reduce((sum, b) => sum + b.w, 0);
     let seen = 0;
@@ -331,7 +423,9 @@ export function createCameraModule(): CameraModule {
       Math.max(MIN_DISTANCE, rig.distance),
     );
     rig.pitch = Math.min(PITCH_2D, Math.max(pitchFloor(), rig.pitch));
-    const map = bounds();
+    const loaded = bounds();
+    // A lower storey laid beside the map is somewhere to look too.
+    const map = loaded && drawnBounds(loaded);
     if (map) {
       // World x = source x, world z = -source y.
       rig.target.x = Math.min(map.max.x, Math.max(map.min.x, rig.target.x));
@@ -440,6 +534,8 @@ export function createCameraModule(): CameraModule {
 
   function setFollowing(on: boolean) {
     if (on) {
+      // Picking a player is taking the camera from the director.
+      setDirecting(false);
       pinned = false;
       overview = false;
       // Keys still gliding would fight the follow.
@@ -459,6 +555,201 @@ export function createCameraModule(): CameraModule {
     pinned = false;
     overview = false;
     setFollowing(false);
+    setDirecting(false);
+  }
+
+  // --- broadcast -----------------------------------------------------------
+
+  function setShown(label: DirectorLabel | null) {
+    if (
+      label === shownLabel ||
+      (label &&
+        shownLabel &&
+        label.kind === shownLabel.kind &&
+        label.place === shownLabel.place &&
+        label.versus === shownLabel.versus &&
+        label.player === shownLabel.player &&
+        label.weapon === shownLabel.weapon &&
+        label.next?.kind === shownLabel.next?.kind &&
+        label.next?.place === shownLabel.next?.place)
+    ) {
+      return;
+    }
+    shownLabel = label;
+    for (const listener of shotListeners) {
+      listener(label);
+    }
+  }
+
+  function setDirecting(on: boolean) {
+    if (on) {
+      pinned = false;
+      setFollowing(false);
+      releaseKeys();
+      keyVel.x = keyVel.y = keyVel.turn = keyVel.tilt = keyVel.zoom = 0;
+    }
+    if (directing === on) {
+      return;
+    }
+    directing = on;
+    angleFor = null;
+    replaying = null;
+    directedTick = null;
+    if (!on) {
+      setShown(null);
+    }
+    for (const listener of directorListeners) {
+      listener(on);
+    }
+  }
+
+  /** The heading a cut looks from: `look` if it has one, turned no further than it must. */
+  function cutHeading(look: ShotLook | null) {
+    const from = current.heading;
+    if (!look) {
+      return from;
+    }
+    // Looking along source (x, y) is heading atan2(-x, y).
+    let turn = wrapAngle(Math.atan2(-look.x, look.y) - from);
+    if (look.either && Math.abs(turn) > Math.PI / 2) {
+      turn = wrapAngle(turn + Math.PI);
+    }
+    return from + Math.max(-SHOT_MAX_TURN, Math.min(SHOT_MAX_TURN, turn));
+  }
+
+  /** Whether `frame` is inside the replay being shown; drops it once outside. */
+  function inReplay(frame: StageFrame) {
+    const r = replaying;
+    if (!r) {
+      return false;
+    }
+    const inside =
+      frame.tick != null &&
+      frame.tick >= r.fromTick - 1 &&
+      frame.tick <= r.untilTick;
+    if (!inside && !replayCut) {
+      replaying = null;
+    }
+    return inside;
+  }
+
+  function placeFor(shot: PlannedShot) {
+    if (!places.has(shot)) {
+      places.set(
+        shot,
+        shot.kind === "wide" ? null : placeOf(shot.focus, ctx!.map?.callouts),
+      );
+    }
+    return places.get(shot)!;
+  }
+
+  function labelFor(shot: PlannedShot, frame: StageFrame): DirectorLabel {
+    const next =
+      plan &&
+      frame.tick != null &&
+      (shot.kind === "wide" || shot.kind === "standoff")
+        ? nextStory(plan, frame.tick, 6)
+        : null;
+    return {
+      kind: shot.kind,
+      place: placeFor(shot),
+      // Once the clutch is decided, it keeps the count it was played at.
+      versus:
+        shot.kind === "clutch"
+          ? (versusOf(frame.players) ?? shownLabel?.versus ?? null)
+          : null,
+      // Who wins a fight is only named once it is won.
+      player:
+        shot.protagonist &&
+        (shot.keyTick === null ||
+          shot.kind === "clutch" ||
+          shot.kind === "defuse" ||
+          (frame.tick ?? 0) >= shot.keyTick)
+          ? (frame.players.find((p) => p.id === shot.protagonist)?.name ?? null)
+          : null,
+      weapon: shot.weapon,
+      next: next ? { kind: next.kind, place: placeFor(next) } : null,
+    };
+  }
+
+  /** Offers the plan's replays as playback passes them, forward only. */
+  function offerReplays(frame: StageFrame) {
+    const tick = frame.tick ?? null;
+    const last = directedTick;
+    directedTick = tick;
+    if (
+      !plan ||
+      tick === null ||
+      last === null ||
+      tick <= last ||
+      tick - last > 0.6 * frame.tickRate
+    ) {
+      return;
+    }
+    for (const offer of plan.replays) {
+      if (last < offer.offerTick && offer.offerTick <= tick) {
+        for (const listener of replayListeners) {
+          listener(offer);
+        }
+      }
+    }
+  }
+
+  function directorGoal(frame: StageFrame, clock: number) {
+    const replay = inReplay(frame);
+    if (!replay) {
+      offerReplays(frame);
+    }
+    const shot = replay
+      ? replaying!.shot
+      : plan && frame.tick != null
+        ? shotAt(plan, frame.tick)
+        : null;
+    if (!shot || !frame.players.length) {
+      setShown(null);
+      return;
+    }
+    setShown(labelFor(shot, frame));
+    // Framed where things are drawn (ctx.wpos), in source axes.
+    const framing = frameShot(shot, frame.players, (p) => {
+      const w = ctx!.wpos(p, tmp);
+      return { x: w.x, y: -w.z, z: w.y };
+    });
+    goal.target.set(framing.target.x, framing.target.z, -framing.target.y);
+    const radius = framing.radius * (replay ? REPLAY_TIGHT : 1);
+    // Crossing the map, rise with the travel so the cut reads as one move.
+    const travel = Math.hypot(
+      current.target.x - goal.target.x,
+      current.target.z - goal.target.z,
+    );
+    goal.distance = replay
+      ? distanceFor(radius)
+      : Math.max(distanceFor(radius), travel * SWOOP);
+    if (ctx!.view === "2d") {
+      goal.heading = 0;
+      goal.pitch = PITCH_2D;
+    } else {
+      if (
+        angleFor?.shot !== shot ||
+        angleFor.view !== ctx!.view ||
+        angleFor.replay !== replay
+      ) {
+        angleFor = { shot, view: ctx!.view, replay };
+        shotHeading = cutHeading(shot.look) + (replay ? REPLAY_TURN : 0);
+        shotPitch =
+          (SHOT_PITCH[shot.kind] * Math.PI) / 180 - (replay ? REPLAY_DIP : 0);
+        shotClock = clock;
+        shotTurn = shot.id % 2 ? 1 : -1;
+      }
+      goal.heading = shotHeading + SHOT_DRIFT * shotTurn * (clock - shotClock);
+      goal.pitch = shotPitch;
+    }
+    // A replay opens on a cut, the way a broadcast does.
+    if (replay && replayCut) {
+      replayCut = false;
+      clampRig(goal);
+      snap();
+    }
   }
 
   function stopTargetEase() {
@@ -527,7 +818,8 @@ export function createCameraModule(): CameraModule {
     for (const d of frame.damages) {
       measure(d.at, 1.5 * (1 - d.age / 2));
     }
-    goal.target.set(x, z, -y);
+    // Where the fight is drawn: a lower storey laid beside the map is shifted.
+    ctx!.wpos({ x, y, z }, goal.target);
     // Kills and bangs alone weigh the centre but have no spread.
     const radius =
       sw > 0
@@ -1231,10 +1523,13 @@ export function createCameraModule(): CameraModule {
       if (following && !pinned) {
         followGoal(frame);
         clampRig(goal);
+      } else if (directing && !pinned) {
+        directorGoal(frame, context.clock);
+        clampRig(goal);
       }
       if (!pinned && dt > 0) {
         driveKeys(dt);
-        const ease = following ? FOLLOW_EASE : EASE;
+        const ease = following ? FOLLOW_EASE : directing ? DIRECTOR_EASE : EASE;
         current.target.x = damp(
           current.target.x,
           goal.target.x,
@@ -1288,6 +1583,17 @@ export function createCameraModule(): CameraModule {
       paintCursor();
     },
     place,
+    pose() {
+      if (!ctx || overview) {
+        return null;
+      }
+      const eye = ctx.camera.position;
+      const target = current.target;
+      return {
+        eye: { x: eye.x, y: -eye.z, z: eye.y },
+        target: { x: target.x, y: -target.z, z: target.y },
+      };
+    },
     frameMap,
     focus,
     setFollow: setFollowing,
@@ -1336,6 +1642,32 @@ export function createCameraModule(): CameraModule {
       viewKeyListeners.add(listener);
       return () => viewKeyListeners.delete(listener);
     },
+    setDirector: setDirecting,
+    setDirectorPlan(next) {
+      plan = next;
+      directedTick = null;
+    },
+    get directing() {
+      return directing;
+    },
+    onDirectorChange(listener) {
+      directorListeners.add(listener);
+      return () => directorListeners.delete(listener);
+    },
+    onDirectorShot(listener) {
+      shotListeners.add(listener);
+      return () => shotListeners.delete(listener);
+    },
+    onDirectorReplay(listener) {
+      replayListeners.add(listener);
+      return () => replayListeners.delete(listener);
+    },
+    replay(offer) {
+      setDirecting(true);
+      replaying = offer;
+      replayCut = true;
+      angleFor = null;
+    },
     dispose() {
       if (ctx) {
         detach(ctx.renderer.domElement);
@@ -1345,6 +1677,9 @@ export function createCameraModule(): CameraModule {
       clickListeners.clear();
       blankClickListeners.clear();
       viewKeyListeners.clear();
+      directorListeners.clear();
+      shotListeners.clear();
+      replayListeners.clear();
       shownFrame = null;
       ctx = null;
     },

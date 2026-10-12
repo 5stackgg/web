@@ -12,6 +12,15 @@ import {
 import type { ScreenAnchor } from "./playersShared";
 import type { StageContext, StageFrame, StageModule } from "./types";
 
+/** A label's spot, lifted, for `wpos` (one reused object). */
+const liftedSpot = { x: 0, y: 0, z: 0 };
+function lifted(label: { x: number; y: number; z: number }) {
+  liftedSpot.x = label.x;
+  liftedSpot.y = label.y;
+  liftedSpot.z = label.z + LIFT;
+  return liftedSpot;
+}
+
 /**
  * The map's callout names, quiet on the floor: one label per place, at the
  * middle of its widest box, flat on the ground and turned to read upright
@@ -111,6 +120,8 @@ export function createCalloutsModule(): StageModule {
   let texture: THREE.CanvasTexture | null = null;
   let canvas: HTMLCanvasElement | null = null;
   let labels: Label[] = [];
+  // The shift the labels were last placed under (a new object when it changes).
+  let placedShift: StageContext["levelShift"] = null;
   let token = 0;
   let ready: Promise<void> = Promise.resolve();
   let pos: THREE.InstancedBufferAttribute | null = null;
@@ -194,6 +205,19 @@ export function createCalloutsModule(): StageModule {
       sh[i * 2] = label.aw / ROW;
     });
     uvs!.needsUpdate = true;
+  }
+
+  /** Where each label stands, through `wpos` (so on its storey's copy). */
+  function place(context: StageContext) {
+    placedShift = context.levelShift ?? null;
+    const p = pos!.array as Float32Array;
+    labels.forEach((label, i) => {
+      context.wpos(lifted(label), view);
+      p[i * 3] = view.x;
+      p[i * 3 + 1] = view.y;
+      p[i * 3 + 2] = view.z;
+    });
+    pos!.needsUpdate = true;
   }
 
   function buildLabels(context: StageContext) {
@@ -315,13 +339,7 @@ export function createCalloutsModule(): StageModule {
         canvas.height = 1;
       }
       allocate(labels.length);
-      const p = pos!.array as Float32Array;
-      labels.forEach((label, i) => {
-        p[i * 3] = label.x;
-        p[i * 3 + 1] = label.z + LIFT;
-        p[i * 3 + 2] = -label.y;
-      });
-      pos!.needsUpdate = true;
+      place(context);
       layout();
       ready = fontReady(FONT).then(() => {
         if (mine === token) {
@@ -331,6 +349,10 @@ export function createCalloutsModule(): StageModule {
     },
     update(frame, context) {
       const m = mesh!;
+      // A stacked map laid side by side moves its lower storey's places.
+      if (labels.length && (context.levelShift ?? null) !== placedShift) {
+        place(context);
+      }
       if (!frame.callouts || !labels.length || !shape) {
         m.visible = false;
         xray!.visible = false;
@@ -357,8 +379,8 @@ export function createCalloutsModule(): StageModule {
       let kept = 0;
       for (let i = 0; i < labels.length; i++) {
         const label = labels[i];
-        view
-          .set(label.x, label.z + LIFT, -label.y)
+        context
+          .wpos(lifted(label), view)
           .applyMatrix4(camera.matrixWorldInverse);
         const depth = -view.z;
         let alpha = 0;

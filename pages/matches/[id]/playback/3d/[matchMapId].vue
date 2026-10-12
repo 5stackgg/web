@@ -10,7 +10,9 @@ useReplayNoZoom();
 // Chromeless full-screen replay, defaulting to the 3D map. This is the SAME
 // unified player as the popout — only the initial map view differs. ssr:false
 // because the three.js scene is browser-only.
-definePageMeta({ layout: false, ssr: false });
+// A shared moment rides in the hash (`#r=..&t=..`); it is not an element to
+// scroll to, and the page does not scroll.
+definePageMeta({ layout: false, ssr: false, scrollToTop: false });
 
 const route = useRoute();
 const matchMapId = computed(() => String(route.params.matchMapId));

@@ -117,7 +117,9 @@ export function createMapTitle(
   draw();
   const ready =
     typeof document !== "undefined" && document.fonts
-      ? document.fonts.load(`800 ${CANVAS_HEIGHT}px Oxanium`).then(draw, () => {})
+      ? document.fonts
+          .load(`800 ${CANVAS_HEIGHT}px Oxanium`)
+          .then(draw, () => {})
       : Promise.resolve();
 
   return {

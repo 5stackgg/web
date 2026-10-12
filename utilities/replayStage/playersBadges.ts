@@ -109,6 +109,8 @@ export type BadgeAtlas = {
   nameWidth(slot: number): number;
   /** The held weapon's icon, or null while it loads or for none. */
   weapon(name: string | null, frame: number): WeaponCell | null;
+  /** The defuse kit's icon, or null while it loads. */
+  kitIcon(): WeaponCell | null;
   /** Where the equipment SVGs live, e.g. "/img/equipment/". */
   setIconBase(base: string): void;
   /** Uploads the canvas if anything was drawn since the last call. */
@@ -502,6 +504,15 @@ export function createBadgeAtlas(iconBase: string): BadgeAtlas {
       cell.seen = frame;
       return cell.width > 0 ? cell : null;
     },
+    kitIcon() {
+      // Pinned: never the oldest cell, so a busy round cannot evict it.
+      const cell = byWeapon.get("defuser") ?? weaponCell("defuser", Infinity);
+      if (!cell) {
+        return null;
+      }
+      cell.seen = Infinity;
+      return cell.width > 0 ? cell : null;
+    },
     setIconBase(next) {
       if (next === base) {
         return;
@@ -537,6 +548,7 @@ attribute vec4 iWeapon;
 attribute vec4 iTint;
 attribute vec4 iChip;
 attribute vec2 iLevel;
+attribute vec4 iAct;
 uniform vec2 uViewport;
 varying vec2 vP;
 varying vec4 vAnchor;
@@ -547,6 +559,7 @@ varying vec4 vWeapon;
 varying vec4 vTint;
 varying vec4 vChip;
 varying vec2 vLevel;
+varying vec4 vAct;
 void main() {
   vec2 local = mix(vec2(${BADGE.quadMin[0].toFixed(1)}, ${BADGE.quadMin[1].toFixed(1)}), vec2(${BADGE.quadMax[0].toFixed(1)}, ${BADGE.quadMax[1].toFixed(1)}), uv);
   vec2 px = iAnchor.xy + vec2(local.x, -local.y) * iAnchor.z;
@@ -560,12 +573,15 @@ void main() {
   vTint = iTint;
   vChip = iChip;
   vLevel = iLevel;
+  vAct = iAct;
 }
 `;
 
 const FRAG = /* glsl */ `
 uniform sampler2D uAtlas;
 uniform float uPlates;
+/** The defuser icon's atlas cell: x, y, and its height in CSS px. */
+uniform vec3 uKit;
 varying vec2 vP;
 varying vec4 vAnchor;
 varying vec4 vRing;
@@ -575,6 +591,7 @@ varying vec4 vWeapon;
 varying vec4 vTint;
 varying vec4 vChip;
 varying vec2 vLevel;
+varying vec4 vAct;
 ${OUTPUT_GLSL}
 const float PR = ${BADGE.portraitRadius.toFixed(1)};
 const float PY_FULL = ${BADGE.portraitY.toFixed(1)};
@@ -639,8 +656,19 @@ void main() {
   over(vec3(1.0), atlas(nameCell + vec2(tq.x, -tq.y) * 2.0).a * inName * names * (1.0 - dead * 0.5));
   vec2 iq = p - vec2(right - 0.5 * iconW, PLATE_Y);
   float inIcon = step(abs(iq.x), 0.5 * iconW + 0.5) * step(abs(iq.y), 0.5 * vWeapon.w + 0.5) * step(0.5, iconW);
+  // A freshly drawn weapon: its slot of the plate flashes the team colour.
+  float dSlot = box(iq, vec2(0.5 * iconW + 3.0, PLATE_HH - 2.5), 3.0);
+  over(ringNow, 0.75 * vAct.z * names * vChip.w * step(0.5, iconW) * cover(dSlot));
   vec4 icon = atlas(vWeapon.xy + vec2(${(WEAPON_W / 2).toFixed(1)}, ${(WEAPON_H / 2).toFixed(1)}) + vec2(iq.x, -iq.y) * ICON_SCALE);
   over(vTint.rgb, icon.a * inIcon * names * vChip.w * (1.0 - dead * 0.5));
+  // Crouching: a down chevron on the portrait's lower left, over the plate.
+  vec2 duckC = vec2(-PR * 0.78, PY - PR * 0.62);
+  float duck = vAct.w;
+  float dDuck = length(p - duckC) - 8.5;
+  over(vec3(0.08, 0.09, 0.11), 0.92 * duck * cover(dDuck));
+  vec2 dq = p - duckC;
+  float dChev = abs(abs(dq.x) * 0.8 - dq.y * 0.6 - 0.9) - 1.25;
+  over(vec3(1.0), duck * cover(max(dChev, abs(dq.x) - 4.4)));
   } else {
   // Once the plates are gone, the weapon rides in a chip off the portrait's
   // side, kept to a readable size whatever the zoom; the portrait covers
@@ -656,6 +684,8 @@ void main() {
     float x1 = PR + 9.0 * k + iw;
     float dChip = box(cq - vec2(0.5 * (x0 + x1), 0.0), vec2(0.5 * (x1 - x0), 0.5 * ih + 3.5 * k), 4.0 * k);
     over(vec3(0.0), 0.62 * chip * cover(dChip));
+    // A freshly drawn weapon: the chip flashes the team colour.
+    over(ringNow, 0.75 * vAct.z * chip * cover(dChip));
     vec2 iq = vec2(p.x - side * (PR + 4.5 * k + 0.5 * iw), cq.y) / k;
     float inIcon = step(abs(iq.x), 0.5 * vWeapon.z + 0.5) * step(abs(iq.y), 0.5 * vWeapon.w + 0.5);
     vec4 icon = atlas(vWeapon.xy + vec2(${(WEAPON_W / 2).toFixed(1)}, ${(WEAPON_H / 2).toFixed(1)}) + vec2(iq.x, -iq.y) * ICON_SCALE);
@@ -702,10 +732,30 @@ void main() {
   over(vec3(1.0), cover(dEye) * eye);
   vec4 eyeIcon = atlas(vec2(32.0, ${(ICONS_Y + 32).toFixed(1)}) + vec2(p.x - eyeC.x, eyeC.y - p.y) * 2.4);
   over(eyeIcon.rgb, eyeIcon.a * cover(dEye) * eye);
+  // Kit: the game's defuser icon on CT blue; a defuse without one shows it
+  // crossed out.
   vec2 kitC = vec2(PR * 0.74, PY - PR * 0.74);
-  float dKit = length(p - kitC) - 8.5;
-  over(vec3(0.05, 0.16, 0.22), cover(dKit) * kit);
-  over(vec3(1.0), atlas(vec2(96.0, ${(ICONS_Y + 32).toFixed(1)}) + vec2(p.x - kitC.x, kitC.y - p.y) * 3.4).a * cover(dKit) * kit);
+  float dKit = length(p - kitC) - 9.5;
+  float hasKit = min(kit, 1.0);
+  float noKit = step(1.5, kit);
+  over(vec3(0.06, 0.07, 0.09), 0.9 * cover(dKit - 1.5) * hasKit);
+  over(mix(vec3(0.08, 0.3, 0.55), vec3(0.3, 0.08, 0.08), noKit), cover(dKit) * hasKit);
+  vec2 kq = (p - kitC) * (ICON_SCALE * max(uKit.z, 1.0) / 11.0);
+  float inKit = step(abs(kq.x), ${(WEAPON_W / 2).toFixed(1)}) * step(abs(kq.y), ${(WEAPON_H / 2).toFixed(1)}) * step(0.5, uKit.z);
+  vec4 kitIcon = atlas(uKit.xy + vec2(${(WEAPON_W / 2).toFixed(1)}, ${(WEAPON_H / 2).toFixed(1)}) + vec2(kq.x, -kq.y));
+  over(vec3(1.0) * (1.0 - 0.3 * noKit), kitIcon.a * inKit * cover(dKit) * hasKit);
+  vec2 sq = p - kitC;
+  over(vec3(1.0, 0.3, 0.25), noKit * cover(max(abs(sq.x + sq.y) * 0.7071 - 1.3, length(sq) - 9.0)));
+
+  // Planting or defusing: a ring outside the portrait filling clockwise
+  // over the real duration, bomb red to plant, team colour to defuse.
+  float act = vAct.x;
+  if (vAct.y > 0.5) {
+    float rAct = length(pc) - (PR + 6.0);
+    vec3 actCol = mix(vec3(1.0, 0.29, 0.24), ringNow, step(1.5, vAct.y));
+    over(vec3(0.06, 0.07, 0.09), 0.85 * cover(abs(rAct) - 3.4));
+    over(actCol, step(turn, act) * cover(abs(rAct) - 2.2));
+  }
 
   // Glows: white while blind, red-pink as they take a hit.
   float outside = max(d, 0.0);
@@ -747,7 +797,8 @@ export type BadgeBatch = {
     wash: number,
     flash: number,
     health: number,
-    kit: boolean,
+    /** 1 has a kit, 2 defusing without one, 0 neither. */
+    kit: number,
     eye: number,
     dead: number,
     /** 0..1, how much of the name plate shows. */
@@ -768,9 +819,19 @@ export type BadgeBatch = {
     level: number,
     /** 0..1, how far it is dimmed for standing off that storey. */
     dim: number,
+    /** How far a plant or defuse has got, 0..1. */
+    act: number,
+    /** 0 none, 1 planting, 2 defusing. */
+    actKind: number,
+    /** 1 just after a weapon switch, easing to 0. */
+    pop: number,
+    /** 0..1, crouching. */
+    duck: number,
   ): void;
   end(): void;
   setViewport(width: number, height: number): void;
+  /** Where the defuser icon sits in the atlas, once it has drawn. */
+  setKit(cell: WeaponCell | null): void;
   dispose(): void;
 };
 
@@ -792,6 +853,7 @@ export function createBadgeBatch(
     iTint: 4,
     iChip: 4,
     iLevel: 2,
+    iAct: 4,
   };
   const arrays: Record<string, Float32Array> = {};
   const attrs: THREE.InstancedBufferAttribute[] = [];
@@ -806,6 +868,7 @@ export function createBadgeBatch(
     attrs.push(attr);
   }
   const viewport = new THREE.Vector2(1, 1);
+  const kitCell = new THREE.Vector3(0, 0, 0);
   const pass = (plates: boolean) => {
     const material = new THREE.ShaderMaterial({
       vertexShader: VERT,
@@ -813,6 +876,7 @@ export function createBadgeBatch(
       uniforms: {
         uAtlas: { value: texture },
         uViewport: { value: viewport },
+        uKit: { value: kitCell },
         uPlates: { value: plates ? 1 : 0 },
       },
       transparent: true,
@@ -828,8 +892,17 @@ export function createBadgeBatch(
   };
   const mesh = pass(false);
   const plates = pass(true);
-  const { iAnchor, iRing, iState, iState2, iWeapon, iTint, iChip, iLevel } =
-    arrays;
+  const {
+    iAnchor,
+    iRing,
+    iState,
+    iState2,
+    iWeapon,
+    iTint,
+    iChip,
+    iLevel,
+    iAct,
+  } = arrays;
   let count = 0;
   return {
     mesh,
@@ -860,6 +933,10 @@ export function createBadgeBatch(
       plateIcon,
       level,
       dim,
+      act,
+      actKind,
+      pop,
+      duck,
     ) {
       if (count >= max || alpha <= 0) {
         return;
@@ -875,7 +952,7 @@ export function createBadgeBatch(
       iState[i * 4 + 1] = wash;
       iState[i * 4 + 2] = flash;
       iState[i * 4 + 3] = health;
-      iState2[i * 4] = kit ? 1 : 0;
+      iState2[i * 4] = kit;
       iState2[i * 4 + 1] = eye;
       iState2[i * 4 + 2] = dead;
       iState2[i * 4 + 3] = names;
@@ -891,6 +968,10 @@ export function createBadgeBatch(
       iChip[i * 4 + 3] = plateIcon;
       iLevel[i * 2] = level;
       iLevel[i * 2 + 1] = dim;
+      iAct[i * 4] = act;
+      iAct[i * 4 + 1] = actKind;
+      iAct[i * 4 + 2] = pop;
+      iAct[i * 4 + 3] = duck;
     },
     end() {
       geometry.instanceCount = count;
@@ -901,6 +982,9 @@ export function createBadgeBatch(
       }
       mesh.visible = count > 0;
       plates.visible = count > 0;
+    },
+    setKit(cell) {
+      kitCell.set(cell?.x ?? 0, cell?.y ?? 0, cell?.height ?? 0);
     },
     setViewport(width, height) {
       viewport.set(width, height);

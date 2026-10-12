@@ -21,9 +21,12 @@ const outDir = path.join(webRoot, "node_modules/.cache/replay-stage-fixtures");
 
 const args = process.argv.slice(2);
 const opt = {};
-for (let i = 0; i < args.length; i += 2) opt[args[i].replace(/^--/, "")] = args[i + 1];
+for (let i = 0; i < args.length; i += 2)
+  opt[args[i].replace(/^--/, "")] = args[i + 1];
 if (!opt.name || !(opt.parsed || (opt.dem && opt.parser))) {
-  console.error("usage: build-fixture.mjs --name <name> (--parsed <json> | --dem <file> --parser <binary|checkout>)");
+  console.error(
+    "usage: build-fixture.mjs --name <name> (--parsed <json> | --dem <file> --parser <binary|checkout>)",
+  );
   process.exit(1);
 }
 
@@ -31,11 +34,15 @@ function parse() {
   if (opt.parsed) return JSON.parse(readFileSync(opt.parsed, "utf8"));
   const parser = path.resolve(opt.parser);
   const isDir = statSync(parser).isDirectory();
-  const run = spawnSync(isDir ? "go" : parser, isDir ? ["run", "./cmd/server", "parse"] : ["parse"], {
-    cwd: isDir ? parser : undefined,
-    input: readFileSync(opt.dem),
-    maxBuffer: 1 << 30,
-  });
+  const run = spawnSync(
+    isDir ? "go" : parser,
+    isDir ? ["run", "./cmd/server", "parse"] : ["parse"],
+    {
+      cwd: isDir ? parser : undefined,
+      input: readFileSync(opt.dem),
+      maxBuffer: 1 << 30,
+    },
+  );
   process.stderr.write(run.stderr);
   if (run.status !== 0) throw new Error(`parser exited ${run.status}`);
   return JSON.parse(run.stdout.toString("utf8"));
@@ -101,7 +108,9 @@ function buildPlaybackBlob(matchMapId, parsed) {
   };
   const grenade_throws = [
     ...(parsed.grenade_throws ?? []).map((g) => mapGrenade(g, "thrown")),
-    ...(parsed.grenade_detonations ?? []).map((g) => mapGrenade(g, "detonated")),
+    ...(parsed.grenade_detonations ?? []).map((g) =>
+      mapGrenade(g, "detonated"),
+    ),
   ];
 
   const damages = (parsed.damages ?? []).map((d) => ({
@@ -170,7 +179,19 @@ const blob = buildPlaybackBlob(`fixture-${opt.name}`, parse());
 mkdirSync(outDir, { recursive: true });
 const file = path.join(outDir, `${opt.name}.json`);
 writeFileSync(file, JSON.stringify(blob));
-const counts = ["positions", "shots_fired", "damages", "kills", "grenade_throws", "smoke_volumes", "smoke_voxels", "infernos", "flashes"]
+const counts = [
+  "positions",
+  "shots_fired",
+  "damages",
+  "kills",
+  "grenade_throws",
+  "smoke_volumes",
+  "smoke_voxels",
+  "infernos",
+  "flashes",
+]
   .map((k) => `${k}=${blob[k].length}`)
   .join(" ");
-console.log(`${file}  map=${blob.map_name} rounds=${blob.round_ticks.length} ${counts}`);
+console.log(
+  `${file}  map=${blob.map_name} rounds=${blob.round_ticks.length} ${counts}`,
+);

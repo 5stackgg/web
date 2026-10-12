@@ -211,7 +211,10 @@ function instanced(max: number, layout: Record<string, number>) {
   geometry.setAttribute("uv", base.getAttribute("uv"));
   const attrs: Record<string, THREE.InstancedBufferAttribute> = {};
   for (const [name, size] of Object.entries(layout)) {
-    const attr = new THREE.InstancedBufferAttribute(new Float32Array(max * size), size);
+    const attr = new THREE.InstancedBufferAttribute(
+      new Float32Array(max * size),
+      size,
+    );
     attr.setUsage(THREE.DynamicDrawUsage);
     geometry.setAttribute(name, attr);
     attrs[name] = attr;
@@ -258,6 +261,7 @@ export function createFireModule(): StageModule {
   const depth = new Float32Array(maxTongues);
   const order = new Uint16Array(maxTongues);
   const at = new THREE.Vector3();
+  const shift = new THREE.Vector3();
   const camPos = new THREE.Vector3();
   const forward = new THREE.Vector3();
   const tint = new THREE.Color();
@@ -306,7 +310,11 @@ export function createFireModule(): StageModule {
       tongueMesh.renderOrder = 4;
       tongueMesh.visible = false;
 
-      sprites = createFxBatch({ texture, max: low ? 400 : 900, renderOrder: 5 });
+      sprites = createFxBatch({
+        texture,
+        max: low ? 400 : 900,
+        renderOrder: 5,
+      });
       context.scene.add(poolMesh, tongueMesh, sprites.mesh);
     },
     update(frame, context) {
@@ -337,6 +345,13 @@ export function createFireModule(): StageModule {
         }
         const kind = inferno.type === "incendiary" ? 1 : 0;
         const time = inferno.age + shimmer;
+        // Where `wpos` puts this fire against plain (x, z, -y): a stacked
+        // map laid side by side moves a lower storey's fires with it.
+        const first = inferno.flames[0];
+        context.wpos(first, shift);
+        shift.x -= first.x;
+        shift.y -= first.z;
+        shift.z += first.y;
         let cx = 0;
         let cy = 0;
         let cz = 0;
@@ -347,16 +362,26 @@ export function createFireModule(): StageModule {
           const intensity = clamp01(flame.intensity);
           // Scorch builds as the flame burns and stays while it is listed,
           // so a smoked-out fire leaves its burn on the floor.
-          const char = smoothstep(0, 0.6, flame.age) * (1 - smoothstep(0.92, 1, flame.life));
+          const char =
+            smoothstep(0, 0.6, flame.age) *
+            (1 - smoothstep(0.92, 1, flame.life));
           const f = start + i;
           // Sit on the drawn floor: a flame's z can be a few units under it.
           const floor = ground?.floorAt(flame.x, flame.y, flame.z + 8);
-          const z = floor !== null && floor !== undefined && floor > flame.z - 24 ? floor : flame.z;
-          flamesA[f].set(flame.x, -flame.y, POOL_RADIUS * (0.85 + 0.3 * rand(seed, 1)), intensity);
+          const z =
+            floor !== null && floor !== undefined && floor > flame.z - 24
+              ? floor
+              : flame.z;
+          flamesA[f].set(
+            flame.x + shift.x,
+            -flame.y + shift.z,
+            POOL_RADIUS * (0.85 + 0.3 * rand(seed, 1)),
+            intensity,
+          );
           scorch[f] = char;
-          pos[f * 3] = flame.x;
-          pos[f * 3 + 1] = z + 1.5;
-          pos[f * 3 + 2] = -flame.y;
+          pos[f * 3] = flame.x + shift.x;
+          pos[f * 3 + 1] = z + 1.5 + shift.y;
+          pos[f * 3 + 2] = -flame.y + shift.z;
           pa[f * 4] = POOL_HALF;
           pa[f * 4 + 1] = start;
           pa[f * 4 + 2] = count;
@@ -376,13 +401,20 @@ export function createFireModule(): StageModule {
           for (let j = 0; j < perFlame && tongueCount < maxTongues; j++) {
             const angle = rand(seed, 10 + j) * Math.PI * 2;
             const reach = j === 0 ? 0 : 10 + rand(seed, 20 + j) * 16;
-            const breath = 0.88 + 0.12 * Math.sin(flameTime * (2.6 + j) + rand(seed, 30 + j) * 6);
-            const height = (j === 0 ? 92 + 24 * rand(seed, 40) : 58 + 22 * rand(seed, 40 + j)) * tall * breath;
+            const breath =
+              0.88 +
+              0.12 * Math.sin(flameTime * (2.6 + j) + rand(seed, 30 + j) * 6);
+            const height =
+              (j === 0
+                ? 92 + 24 * rand(seed, 40)
+                : 58 + 22 * rand(seed, 40 + j)) *
+              tall *
+              breath;
             const t = tongueCount++;
             const o = t * 9;
-            stage[o] = flame.x + Math.cos(angle) * reach;
-            stage[o + 1] = z;
-            stage[o + 2] = -(flame.y + Math.sin(angle) * reach);
+            stage[o] = flame.x + Math.cos(angle) * reach + shift.x;
+            stage[o + 1] = z + shift.y;
+            stage[o + 2] = -(flame.y + Math.sin(angle) * reach) + shift.z;
             stage[o + 3] = height * (0.95 + 0.2 * rand(seed, 50 + j));
             stage[o + 4] = height;
             stage[o + 5] = rand(seed, 60 + j) * 7;
@@ -405,7 +437,7 @@ export function createFireModule(): StageModule {
               flame.x + (rand(seed, 120 + e) - 0.5) * 50 + sway,
               z + 10 + rise,
               -(flame.y + (rand(seed, 130 + e) - 0.5) * 50),
-            );
+            ).add(shift);
             tint.copy(EMBER_HOT).lerp(EMBER_COOL, phase);
             const alpha = Math.pow(Math.sin(Math.PI * phase), 1.5) * intensity;
             s.push(at, 5, 5, tint, alpha, CELL.glow, 0, 1, 2);
@@ -424,11 +456,22 @@ export function createFireModule(): StageModule {
           reach = Math.max(reach, Math.hypot(flame.x - cx, flame.y - cy));
         }
         const glow = clamp01(heat / 6);
-        const flicker = 0.88 + 0.12 * Math.sin(time * 9.1) * Math.sin(time * 5.3 + 1);
+        const flicker =
+          0.88 + 0.12 * Math.sin(time * 9.1) * Math.sin(time * 5.3 + 1);
         // Heat glow hanging over the whole fire.
-        at.set(cx, cz + 40, -cy);
+        at.set(cx, cz + 40, -cy).add(shift);
         const size = (reach + POOL_RADIUS * 2) * 2.4;
-        s.push(at, size, size, kind ? FIRE_GLOW_CT : FIRE_GLOW, 0.32 * glow * flicker, CELL.glow, 0, 1, 40);
+        s.push(
+          at,
+          size,
+          size,
+          kind ? FIRE_GLOW_CT : FIRE_GLOW,
+          0.32 * glow * flicker,
+          CELL.glow,
+          0,
+          1,
+          40,
+        );
 
         // A thin dark smoke column off the top, kept faint from above.
         const wisps = low ? 4 : 9;
@@ -442,10 +485,21 @@ export function createFireModule(): StageModule {
             cx + Math.cos(angle) * spread + phase * 30,
             cz + 70 + phase * 240,
             -(cy + Math.sin(angle) * spread),
-          );
+          ).add(shift);
           const wSize = 70 + 130 * phase;
-          const alpha = 0.22 * glow * Math.sin(Math.PI * phase) * (1 - top * 0.7);
-          s.push(at, wSize, wSize, SMOKE, alpha, CELL.puff, angle + phase, 0, 0);
+          const alpha =
+            0.22 * glow * Math.sin(Math.PI * phase) * (1 - top * 0.7);
+          s.push(
+            at,
+            wSize,
+            wSize,
+            SMOKE,
+            alpha,
+            CELL.puff,
+            angle + phase,
+            0,
+            0,
+          );
         }
       }
 

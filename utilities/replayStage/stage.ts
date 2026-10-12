@@ -47,6 +47,11 @@ export type Stage = {
   settle(): Promise<void>;
   /** Draws one frame now. `clock` pins the wall clock (harness). */
   render(clock?: number): void;
+  /**
+   * Called right after each frame is drawn, while the canvas still holds it
+   * (clip export copies it from here).
+   */
+  onRender(listener: () => void): () => void;
   resize(width: number, height: number): void;
   dispose(): void;
 };
@@ -116,7 +121,18 @@ export function createStage(options: StageOptions): Stage {
     view: options.view ?? "3d",
     quality,
     map: null,
-    wpos,
+    // Through `levelShift`: a lower storey laid beside the map moves
+    // whatever stands on it.
+    wpos: (p, out) => {
+      const at = wpos(p, out);
+      const shift = ctx.levelShift;
+      if (shift && p.z < shift.below) {
+        at.x += shift.offset.x;
+        at.y += shift.offset.z;
+        at.z -= shift.offset.y;
+      }
+      return at;
+    },
     width: 1,
     height: 1,
     pixelRatio,
@@ -129,6 +145,7 @@ export function createStage(options: StageOptions): Stage {
   let disposed = false;
   let mapToken = 0;
   let raf = 0;
+  const renderListeners = new Set<() => void>();
   const ready = Promise.all(modules.map((module) => module.init(ctx)));
 
   async function setMap(mapName: string | null): Promise<MapLoad> {
@@ -236,6 +253,9 @@ export function createStage(options: StageOptions): Stage {
     if (!drawn) {
       renderer.render(scene, camera);
     }
+    for (const listener of renderListeners) {
+      listener();
+    }
   }
 
   function resize(width: number, height: number) {
@@ -278,6 +298,10 @@ export function createStage(options: StageOptions): Stage {
       );
     },
     render,
+    onRender(listener) {
+      renderListeners.add(listener);
+      return () => renderListeners.delete(listener);
+    },
     resize,
     dispose() {
       disposed = true;

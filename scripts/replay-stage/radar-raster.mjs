@@ -63,7 +63,12 @@ function regions(mask, n, value, visit) {
       const i = stack[--top];
       pixels.push(i);
       const x = i % n;
-      for (const j of [i - n, i + n, x > 0 ? i - 1 : -1, x < n - 1 ? i + 1 : -1]) {
+      for (const j of [
+        i - n,
+        i + n,
+        x > 0 ? i - 1 : -1,
+        x < n - 1 ? i + 1 : -1,
+      ]) {
         if (j >= 0 && j < n * n && !seen[j] && !!mask[j] === value) {
           seen[j] = 1;
           stack[top++] = j;
@@ -78,7 +83,9 @@ function regions(mask, n, value, visit) {
 export function fillHoles(mask, n) {
   const out = Uint8Array.from(mask);
   regions(mask, n, false, (pixels) => {
-    const edge = pixels.some((i) => i < n || i >= n * (n - 1) || i % n === 0 || i % n === n - 1);
+    const edge = pixels.some(
+      (i) => i < n || i >= n * (n - 1) || i % n === 0 || i % n === n - 1,
+    );
     if (!edge) for (const i of pixels) out[i] = 1;
   });
   return out;
@@ -109,7 +116,8 @@ export function footprint(floor, n, { close, grow, minIsland }) {
   for (let i = 0; i < n * n; i++) closed[i] = far[i] > close ? 1 : 0;
   const reach = distanceTo(fillHoles(closed, n), n);
   const alpha = new Float32Array(n * n);
-  for (let i = 0; i < n * n; i++) alpha[i] = Math.min(1, Math.max(0, grow + 0.5 - reach[i]));
+  for (let i = 0; i < n * n; i++)
+    alpha[i] = Math.min(1, Math.max(0, grow + 0.5 - reach[i]));
   return alpha;
 }
 
@@ -148,12 +156,20 @@ export function bestShift(a, b, n, range, window = [0, 0, n, n]) {
   const at = (dx, dy) => scores.get(`${dx},${dy}`) ?? best.score;
   const refine = (lo, mid, hi) => {
     const denom = lo - 2 * mid + hi;
-    return denom < 0 ? Math.max(-0.5, Math.min(0.5, (0.5 * (lo - hi)) / denom)) : 0;
+    return denom < 0
+      ? Math.max(-0.5, Math.min(0.5, (0.5 * (lo - hi)) / denom))
+      : 0;
   };
   // b moved by (dx, dy) lines up with a, so b's error is the opposite.
   return {
-    dx: -(best.dx + refine(at(best.dx - 1, best.dy), best.score, at(best.dx + 1, best.dy))),
-    dy: -(best.dy + refine(at(best.dx, best.dy - 1), best.score, at(best.dx, best.dy + 1))),
+    dx: -(
+      best.dx +
+      refine(at(best.dx - 1, best.dy), best.score, at(best.dx + 1, best.dy))
+    ),
+    dy: -(
+      best.dy +
+      refine(at(best.dx, best.dy - 1), best.score, at(best.dx, best.dy + 1))
+    ),
     iou: best.score,
     iou0: scores.get("0,0"),
   };

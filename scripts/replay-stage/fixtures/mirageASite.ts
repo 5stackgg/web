@@ -283,10 +283,33 @@ export const mirageASite: Scenario = {
         health: actor.id === "c1" ? c1Health : 100,
         armor: 100,
         helmet: true,
-        weapon: actor.team === "t" ? "ak47" : "m4a1_silencer",
+        weapon:
+          actor.id === "t1" && t < 3
+            ? "knife"
+            : actor.team === "t"
+              ? "ak47"
+              : "m4a1_silencer",
+        weaponAge: actor.id === "t1" && t >= 3 && t < 4 ? t - 3 : null,
+        speed:
+          t < actor.walk
+            ? Math.hypot(
+                actor.to[0] - actor.from[0],
+                actor.to[1] - actor.from[1],
+              ) / actor.walk
+            : 0,
+        // jackasmo plants late; s1n defuses without a kit, Lake with one.
+        bombAction:
+          actor.id === "t2" && t >= 8.5 && t < 11.7
+            ? { kind: "plant", age: t - 8.5, duration: 3.2, kit: false }
+            : actor.id === "c5" && t >= 9
+              ? { kind: "defuse", age: t - 9, duration: 10, kit: false }
+              : actor.id === "c4" && t >= 9 && t < 14
+                ? { kind: "defuse", age: t - 9, duration: 5, kit: true }
+                : null,
         hasBomb: actor.id === "t2",
         hasKit: actor.id === "c4",
-        ducked: false,
+        // KRIMZ crouches to spray.
+        ducked: actor.id === "t3" && t >= 6.4 && t < 7.4,
         blind:
           actor.team === "ct" && t > 5.1 && t < 7.5 && actor.id !== "c5"
             ? Math.max(0, 1 - (t - 5.1) / 2.4)

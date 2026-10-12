@@ -147,8 +147,10 @@ varying vec3 vCore;
 varying vec4 vFx;
 varying float vDim;
 varying float vSelected;
+varying float vCrouch;
 void main() {
-  vSelected = iShape.w;
+  vSelected = mod(iShape.w, 2.0);
+  vCrouch = floor(iShape.w / 2.0);
 #ifdef GHOST
   vec3 p = position * (1.0 - aPart);
 #else
@@ -187,9 +189,13 @@ varying vec4 vFx;
 varying float vDim;
 ${OUTPUT_GLSL}
 const float H = ${PUCK_HEIGHT.toFixed(1)};
-const float RC = ${CORE_RADIUS.toFixed(2)};
+const float RC0 = ${CORE_RADIUS.toFixed(2)};
+
 const vec3 CHARCOAL = vec3(0.125, 0.145, 0.098);
+varying float vCrouch;
 void main() {
+  // Crouching: the core draws in, the rim thickens, so it reads from above.
+  float RC = RC0 * (1.0 - 0.24 * vCrouch);
   float flash = vFx.x;
   float fire = vFx.y;
   float dead = vFx.z;
@@ -262,6 +268,7 @@ export type PuckBatch = {
     height: number,
     bomb: boolean,
     selected: boolean,
+    crouch: boolean,
     rim: number,
     core: number,
     flash: number,
@@ -327,6 +334,7 @@ export function createPuckBatch(max: number): PuckBatch {
       height,
       bomb,
       selected,
+      crouch,
       rim,
       core,
       flash,
@@ -346,7 +354,7 @@ export function createPuckBatch(max: number): PuckBatch {
       shape[i * 4] = scale;
       shape[i * 4 + 1] = height;
       shape[i * 4 + 2] = bomb ? 1 : 0;
-      shape[i * 4 + 3] = selected ? 1 : 0;
+      shape[i * 4 + 3] = (selected ? 1 : 0) + (crouch ? 2 : 0);
       writeSrgb(rimA, i * 3, rim);
       writeSrgb(coreA, i * 3, core);
       fx[i * 4] = flash;

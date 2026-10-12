@@ -63,6 +63,9 @@ uniform vec3 uShade;
 uniform vec4 uBlast[${SMOKE_MAX_BLASTS}];
 uniform float uBlastK[${SMOKE_MAX_BLASTS}];
 uniform int uBlastCount;
+// The cloud is drawn shifted by this (source units): a lower storey laid
+// beside the map. The march runs where the smoke really is.
+uniform vec3 uShift;
 
 varying vec3 vWorld;
 
@@ -150,8 +153,8 @@ vec2 hitBox(vec3 ro, vec3 rd) {
 }
 
 void main() {
-  vec3 ro = toSource(cameraPosition);
-  vec3 rd = normalize(toSource(vWorld) - ro);
+  vec3 rd = normalize(toSource(vWorld) - toSource(cameraPosition));
+  vec3 ro = toSource(cameraPosition) - uShift;
   vec2 span = hitBox(ro, rd);
   span.x = max(span.x, 0.0);
 

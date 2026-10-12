@@ -25,7 +25,15 @@ export type MapPicker = {
     dx: number,
     dy: number,
     dz: number,
+    /** Only what lies between these heights and inside this rect counts (a storey's copy). */
+    clip?: PickClip,
   ): number | null;
+};
+
+export type PickClip = {
+  cut: number;
+  bottom: number;
+  rect: [number, number, number, number];
 };
 
 export type PickCut = {
@@ -72,7 +80,7 @@ export function createMapPicker(
     Math.min(n - 1, Math.max(0, Math.floor((v - min) / cell)));
 
   return {
-    pick(ox, oy, oz, dx, dy, dz) {
+    pick(ox, oy, oz, dx, dy, dz, clip) {
       if (!items.length) {
         return null;
       }
@@ -156,7 +164,23 @@ export function createMapPicker(
           if (hit < enter - EPSILON || hit > exit + EPSILON || hit >= best) {
             continue;
           }
-          if (!cutAway(t, oz + dz * hit, state)) {
+          const hz = oz + dz * hit;
+          if (clip) {
+            const hx = ox + dx * hit;
+            const hy = oy + dy * hit;
+            if (
+              hz > clip.cut ||
+              hz < clip.bottom ||
+              (info[t * 3] & INFO_SURFACE) === 1 ||
+              hx < clip.rect[0] ||
+              hx > clip.rect[2] ||
+              hy < clip.rect[1] ||
+              hy > clip.rect[3]
+            ) {
+              continue;
+            }
+          }
+          if (!cutAway(t, hz, state)) {
             best = hit;
           }
         }

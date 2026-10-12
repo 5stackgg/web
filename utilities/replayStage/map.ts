@@ -3,19 +3,33 @@ import { createMapBake, type MapBake } from "./mapBake";
 import { paletteFor, type MapPalette } from "./mapPalette";
 import { levelAt, levelsFor, type MapLevel } from "./mapLevels";
 import { createMapPicker, type MapPicker } from "./mapPick";
-import { playArea, titlePlace } from "./mapFrame";
+import {
+  isSideBySide,
+  levelSplit,
+  levelSplits,
+  playArea,
+  setSideBySide,
+  titlePlace,
+  type LevelSplit,
+} from "./mapFrame";
 import { createMapTitle, type MapTitle, type TitleSpot } from "./mapTitle";
 import cleanMapName from "~/utilities/cleanMapName";
+import { GHOST_HEIGHT, type PrepMesh, type PrepResult } from "./mapPrep";
+import { loadCachedPrep, storeCachedPrep } from "./mapPrepCache";
 import {
-  GHOST_HEIGHT,
-  prepareMap,
-  type PrepArea,
-  type PrepChunk,
-  type PrepMesh,
-  type PrepResult,
-} from "./mapPrep";
+  prepFingerprint,
+  runPrep,
+  type PrepReply,
+  type PrepRequest,
+} from "./mapPrepPack";
+import { fetchMeshBuffer, resolveMapAssets } from "~/utilities/mapAssets";
 import { MAP_FRAG, MAP_VERT } from "./mapShaders";
-import { createDunes, createGroundFill, createSky, createVignette } from "./mapWorld";
+import {
+  createDunes,
+  createGroundFill,
+  createSky,
+  createVignette,
+} from "./mapWorld";
 import type { StageContext, StageMap, StageModule, StageView } from "./types";
 
 /**
@@ -33,7 +47,17 @@ export type MapModule = StageModule & {
   setRoof(height: number | null): void;
   /** The cut each view starts with. */
   defaultRoof(view: StageView): number | null;
-  stats: { prepMs: number; bakeMs: number; triangles: number } | null;
+  stats: {
+    prepMs: number;
+    bakeMs: number;
+    triangles: number;
+    /**
+     * Where prep came from; `prepMs` is from the map landing to prep in hand
+     * (cache or CDN lookup included), `loadMs` to the map built and baked.
+     */
+    prepSource: PrepSource;
+    loadMs: number;
+  } | null;
   /** The map's storeys, top first; empty when it is played on one. */
   levels(): MapLevel[];
   /**
@@ -49,6 +73,14 @@ export type MapModule = StageModule & {
    * map's own (e.g. "de_dust2_night" reads "Dust2 Night").
    */
   setTitle(text: string | null): void;
+  /**
+   * How a stacked map shows its storeys: "side" lays the lower one out
+   * beside the rest (the default), "single" shows one at a time (setLevel).
+   */
+  setLevelLayout(layout: "side" | "single"): void;
+  levelLayout(): "side" | "single";
+  /** The table titles of the two storeys side by side (translated). */
+  setLevelLabels(labels: { upper: string; lower: string }): void;
   /**
    * Make `stats.bakeMs` the real GPU time. Reading a pixel back to get it
    * stalls the frame, so only the harness turns it on.
@@ -100,18 +132,37 @@ export function pickMapHeight(map: StageMap, ray: THREE.Ray): number | null {
   const { origin: o, direction: d } = ray;
   // World (x, y, z) is source (x, -z, y).
   const t = picker.pick(o.x, -o.z, o.y, d.x, -d.z, d.y);
-  return t === null ? null : o.y + d.y * t;
+  let best = t === null ? null : t;
+  // Side by side, the lower storey's copy: the ray taken back by its shift,
+  // against that storey alone.
+  const split = isSideBySide(map) ? levelSplit(map) : null;
+  if (split) {
+    const s = split.offset;
+    const tc = picker.pick(
+      o.x - s.x,
+      -o.z - s.y,
+      o.y - s.z,
+      d.x,
+      -d.z,
+      d.y,
+      split,
+    );
+    if (tc !== null && (best === null || tc < best)) {
+      best = tc;
+    }
+  }
+  return best === null ? null : o.y + d.y * best;
 }
 
-/** Preps the mesh in a worker; `cancel` stops it and resolves with null. */
-function prepInWorker(chunks: PrepChunk[], areas: PrepArea) {
+/** Preps in a worker; `cancel` stops it and resolves with null. */
+function prepInWorker(request: PrepRequest) {
   let worker: Worker | null = null;
-  let settle: (prep: PrepResult | null) => void = () => {};
-  const result = new Promise<PrepResult | null>((resolve, reject) => {
+  let settle: (reply: PrepReply | null) => void = () => {};
+  const result = new Promise<PrepReply | null>((resolve, reject) => {
     settle = resolve;
     const local = () => {
       try {
-        resolve(prepareMap(chunks, areas));
+        resolve(runPrep(request));
       } catch (error) {
         reject(error);
       }
@@ -119,7 +170,7 @@ function prepInWorker(chunks: PrepChunk[], areas: PrepArea) {
     worker = new Worker(new URL("./mapPrep.worker.ts", import.meta.url), {
       type: "module",
     });
-    worker.onmessage = (event: MessageEvent<PrepResult>) => {
+    worker.onmessage = (event: MessageEvent<PrepReply>) => {
       worker?.terminate();
       worker = null;
       resolve(event.data);
@@ -131,13 +182,13 @@ function prepInWorker(chunks: PrepChunk[], areas: PrepArea) {
       local();
     };
     worker.postMessage({
-      chunks: chunks.map(({ positions, floorZ, flags, indices }) => ({
+      ...request,
+      chunks: request.chunks.map(({ positions, floorZ, flags, indices }) => ({
         positions,
         floorZ,
         flags,
         indices,
       })),
-      areas,
     });
   });
   return {
@@ -148,6 +199,33 @@ function prepInWorker(chunks: PrepChunk[], areas: PrepArea) {
       settle(null);
     },
   };
+}
+
+export type PrepSource = "published" | "cache" | "worker";
+
+/**
+ * A packed prep core for this mesh, if one is at hand: published next to
+ * the map's meshes (a CDN build that lists `prep`), else from this
+ * browser's cache. Null means prep from scratch.
+ */
+async function storedPrep(
+  name: string,
+  assetBase: string | null,
+  fingerprint: string,
+): Promise<{ core: ArrayBuffer; source: PrepSource } | null> {
+  try {
+    const urls = await resolveMapAssets(name, assetBase ?? "");
+    if (urls?.prep) {
+      const core = await fetchMeshBuffer(urls.prep).catch(() => null);
+      if (core) {
+        return { core, source: "published" };
+      }
+    }
+  } catch {
+    // No manifest, no file: the cache, then the worker.
+  }
+  const cached = await loadCachedPrep(fingerprint);
+  return cached ? { core: cached, source: "cache" } : null;
 }
 
 /**
@@ -161,7 +239,8 @@ function letterTexture() {
   canvas.height = 256;
   const texture = new THREE.CanvasTexture(canvas);
   texture.anisotropy = 4;
-  const font = "800 228px 'Oxanium Stage', Oxanium, 'Arial Black', Arial, sans-serif";
+  const font =
+    "800 228px 'Oxanium Stage', Oxanium, 'Arial Black', Arial, sans-serif";
   const draw = () => {
     const g = canvas.getContext("2d")!;
     g.fillStyle = "#000";
@@ -184,12 +263,21 @@ function letterTexture() {
 
 function meshGeometry(mesh: PrepMesh) {
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.BufferAttribute(mesh.positions, 3));
+  geometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(mesh.positions, 3),
+  );
   geometry.setAttribute("aHeight", new THREE.BufferAttribute(mesh.height, 1));
   geometry.setAttribute("aInfo", new THREE.BufferAttribute(mesh.info, 1));
   geometry.setAttribute("aCut", new THREE.BufferAttribute(mesh.cut, 3));
-  geometry.setAttribute("aRemote", new THREE.BufferAttribute(mesh.remote, 1, true));
-  geometry.setAttribute("aCanopy", new THREE.BufferAttribute(mesh.canopy, 4, true));
+  geometry.setAttribute(
+    "aRemote",
+    new THREE.BufferAttribute(mesh.remote, 1, true),
+  );
+  geometry.setAttribute(
+    "aCanopy",
+    new THREE.BufferAttribute(mesh.canopy, 4, true),
+  );
   geometry.computeBoundingSphere();
   return geometry;
 }
@@ -206,7 +294,12 @@ function siteRects(map: StageMap, palette: MapPalette) {
     } else if (box) {
       const w = (box.max[0] - box.min[0]) * 0.22;
       const h = (box.max[1] - box.min[1]) * 0.22;
-      rects[i].set(box.min[0] + w, box.min[1] + h, box.max[0] - w, box.max[1] - h);
+      rects[i].set(
+        box.min[0] + w,
+        box.min[1] + h,
+        box.max[0] - w,
+        box.max[1] - h,
+      );
     } else {
       return;
     }
@@ -254,13 +347,27 @@ export function createMapModule(): MapModule {
   let cancelPrep: (() => void) | null = null;
   let token = 0;
   // Cut heights per view; a slider (`setRoof`) overrides the view it is in.
-  const roofs: Record<StageView, number | null> = { "2d": ROOF_2D, "3d": ROOF_3D };
+  const roofs: Record<StageView, number | null> = {
+    "2d": ROOF_2D,
+    "3d": ROOF_3D,
+  };
   let ghosts: THREE.Group | null = null;
   let ghostRanges: THREE.BufferGeometry[] = [];
   let cuttableFrom = 0;
   let ghostFrom = 0;
   let level: MapLevel | null = null;
   let title: MapTitle | null = null;
+  let lowerGroup: THREE.Group | null = null;
+  let lowerTitle: MapTitle | null = null;
+  let levelLabels = { upper: "Upper", lower: "Lower" };
+  // The viewer's choice, kept across map loads.
+  let wantedLayout: "side" | "single" = "side";
+  // Where the copy is drawn now: it moves when the screen's shape does.
+  let copyShift: THREE.Vector3 | null = null;
+  let placedSplit: LevelSplit | null = null;
+  // The title's spot (it redraws from it) and the ground height it was put at.
+  let titleAt: TitleSpot | null = null;
+  let titleGround = 0;
   let titleText: string | null = null;
   let lastClock: number | null = null;
   const forward = new THREE.Vector3();
@@ -295,7 +402,9 @@ export function createMapModule(): MapModule {
     uSkyMap: { value: null },
     uWall: { value: new THREE.Color() },
     uFoliage: { value: new THREE.Color() },
-    uProps: { value: [new THREE.Color(), new THREE.Color(), new THREE.Color()] },
+    uProps: {
+      value: [new THREE.Color(), new THREE.Color(), new THREE.Color()],
+    },
     uSeeThrough: { value: new THREE.Color() },
     uSand: { value: new THREE.Color() },
     uSandShade: { value: new THREE.Color() },
@@ -310,6 +419,9 @@ export function createMapModule(): MapModule {
     uLetterSize: { value: 220 },
     uLineWidth: { value: 1 },
     uAlpha: { value: 1 },
+    uCopyLanding: { value: new THREE.Vector4(1, 1, 0, 0) },
+    uCopyRect: { value: new THREE.Vector4() },
+    uCopyZ: { value: new THREE.Vector2() },
     uHaze: { value: new THREE.Color() },
     uMapCentre: { value: new THREE.Vector3() },
     uHazeRange: { value: new THREE.Vector2(1e9, 2e9) },
@@ -371,7 +483,23 @@ export function createMapModule(): MapModule {
       }
     });
     title?.dispose();
-    group = sky = vignette = bake = ghosts = title = null;
+    lowerTitle?.dispose();
+    if (lowerGroup && ctx) {
+      ctx.scene.remove(lowerGroup);
+    }
+    group =
+      sky =
+      vignette =
+      bake =
+      ghosts =
+      title =
+      lowerGroup =
+      lowerTitle =
+        null;
+    copyShift = placedSplit = titleAt = null;
+    if (ctx) {
+      ctx.levelShift = null;
+    }
     ghostRanges = [];
     level = null;
     cutUniforms.uLevelMix.value = 0;
@@ -459,6 +587,101 @@ export function createMapModule(): MapModule {
     bake?.run();
   }
 
+  /**
+   * The lower storey's copy for side by side: the same mesh again, shifted
+   * by the split's offset and clipped to the storey (LEVEL_COPY in the map
+   * shader), with no leaves and no ghost layer.
+   */
+  function buildLowerCopy(
+    geometry: THREE.BufferGeometry,
+    split: LevelSplit,
+    defines: Record<string, string>,
+  ) {
+    const shift = new THREE.Vector3(
+      split.offset.x,
+      split.offset.z,
+      -split.offset.y,
+    );
+    const material = new THREE.ShaderMaterial({
+      vertexShader: MAP_VERT,
+      fragmentShader: MAP_FRAG,
+      uniforms: {
+        ...uniforms,
+        uWorldShift: { value: shift },
+        uCopyRect: { value: new THREE.Vector4(...split.rect) },
+        uCopyZ: { value: new THREE.Vector2(split.bottom, split.cut) },
+      },
+      defines: { ...defines, LEVEL_COPY: "" },
+      side: THREE.DoubleSide,
+    });
+    materials.push(material);
+    copyShift = shift;
+    const copy = new THREE.Group();
+    copy.name = "map-lower";
+    copy.rotation.x = -Math.PI / 2;
+    copy.position.copy(shift);
+    copy.add(new THREE.Mesh(geometry, material));
+    return copy;
+  }
+
+  /** Where the lower storey and its title are laid: clear of the play area. */
+  function landingRect(
+    map: StageMap,
+    split: LevelSplit,
+  ): [number, number, number, number] {
+    const pad = titlePlace(map).height * 2.5;
+    const area = playArea(map);
+    const rect: [number, number, number, number] = [
+      split.min.x - pad,
+      split.min.y - pad * 1.5,
+      split.max.x + pad,
+      split.max.y + pad,
+    ];
+    if (split.min.x > area.max.x) {
+      rect[0] = Math.max(rect[0], area.max.x);
+    } else {
+      rect[3] = Math.min(rect[3], area.min.y);
+    }
+    return rect;
+  }
+
+  /** Side by side or one storey at a time: the copy, the shift, the titles. */
+  function applyLayout() {
+    const map = ctx?.map;
+    const split = map ? levelSplit(map) : null;
+    const side = !!map && !!split && isSideBySide(map);
+    placedSplit = split;
+    if (lowerGroup) {
+      lowerGroup.visible = side;
+      if (split && copyShift) {
+        copyShift.set(split.offset.x, split.offset.z, -split.offset.y);
+        lowerGroup.position.copy(copyShift);
+      }
+    }
+    if (ctx) {
+      ctx.levelShift =
+        side && split ? { below: split.below, offset: split.offset } : null;
+    }
+    const landing = uniforms.uCopyLanding.value as THREE.Vector4;
+    if (side && split) {
+      landing.set(...landingRect(map!, split));
+    } else {
+      landing.set(1, 1, 0, 0);
+    }
+    if (titleAt) {
+      // Up level with the storey laid beside it, where the ground is far
+      // under the play (Vertigo's street), so the copy never hides it.
+      titleAt.z =
+        side && split
+          ? Math.max(titleGround, split.floor + split.offset.z + 2)
+          : titleGround;
+    }
+    if (title && map) {
+      const name = titleText ?? cleanMapName(map.name);
+      title.setText(side ? `${name} · ${levelLabels.upper}` : name);
+    }
+  }
+
   function build(context: StageContext, map: StageMap, prep: PrepResult) {
     group = new THREE.Group();
     group.name = "map";
@@ -496,7 +719,10 @@ export function createMapModule(): MapModule {
       min: new THREE.Vector3(map.min.x, map.min.y, map.min.z),
       max: new THREE.Vector3(map.max.x, map.max.y, map.max.z),
     };
-    const span = Math.max(bounds.max.x - bounds.min.x, bounds.max.y - bounds.min.y);
+    const span = Math.max(
+      bounds.max.x - bounds.min.x,
+      bounds.max.y - bounds.min.y,
+    );
     uniforms.uMapCentre.value.set(
       (bounds.min.x + bounds.max.x) / 2,
       (bounds.min.y + bounds.max.y) / 2,
@@ -504,7 +730,19 @@ export function createMapModule(): MapModule {
     );
     uniforms.uHazeRange.value.set(span * 0.95, span * 3.6);
 
-    const dunes = createDunes(bounds, uniforms, prep.ground);
+    const split = levelSplit(map);
+    // The dunes stay flat, and under the lower storey's floor, wherever it may be laid.
+    const dunes = createDunes(
+      bounds,
+      uniforms,
+      prep.ground,
+      split
+        ? {
+            rects: levelSplits(map).map((s) => landingRect(map, s)),
+            top: split.floor + split.offset.z - 24,
+          }
+        : null,
+    );
     materials.push(dunes.material as THREE.Material);
     group.add(dunes);
     const fill = createGroundFill(prep.ground, uniforms);
@@ -514,14 +752,39 @@ export function createMapModule(): MapModule {
     }
 
     const palette = paletteFor(map.name);
+    titleAt = titleSpot(map, prep);
+    titleGround = titleAt.z;
     title = createMapTitle(
-      titleSpot(map, prep),
+      titleAt,
       titleText ?? cleanMapName(map.name),
       uniforms,
       color(palette.sand).lerp(new THREE.Color(0xffffff), 0.16),
     );
     group.add(title.mesh);
-    sky = createSky(color(palette.skyTop), color(palette.skyHorizon), SUN_WORLD);
+    setSideBySide(map, wantedLayout === "side");
+    if (split) {
+      lowerGroup = buildLowerCopy(solidGeometry, split, defines);
+      // In the copy's own (unshifted) frame, under it on its floor.
+      const height = titlePlace(map).height;
+      lowerTitle = createMapTitle(
+        {
+          x: (split.min.x + split.max.x) / 2 - split.offset.x,
+          y: split.min.y - split.offset.y - height * 1.1,
+          z: split.floor + 2,
+          height,
+        },
+        levelLabels.lower,
+        uniforms,
+        color(palette.sand).lerp(new THREE.Color(0xffffff), 0.16),
+      );
+      lowerGroup.add(lowerTitle.mesh);
+    }
+    applyLayout();
+    sky = createSky(
+      color(palette.skyTop),
+      color(palette.skyHorizon),
+      SUN_WORLD,
+    );
     materials.push(sky.material as THREE.Material);
 
     const sites = siteRects(map, palette);
@@ -555,7 +818,10 @@ export function createMapModule(): MapModule {
     module.stats = {
       prepMs: prep.ms,
       bakeMs: 0,
-      triangles: (prep.solid.positions.length + prep.seeThrough.positions.length) / 9,
+      triangles:
+        (prep.solid.positions.length + prep.seeThrough.positions.length) / 9,
+      prepSource: "worker",
+      loadMs: 0,
     };
     applyRoof();
 
@@ -565,7 +831,10 @@ export function createMapModule(): MapModule {
         // Picks pass through whatever is not solid in the look that dominates.
         const flat = cutUniforms.uView.value > 0.5;
         const cut = flat ? cutUniforms.uCut2D.value : cutUniforms.uCut3D.value;
-        const above = cutUniforms.uLevelMix.value > 0.5 ? cutUniforms.uLevelCut.value : NO_CUT;
+        const above =
+          cutUniforms.uLevelMix.value > 0.5
+            ? cutUniforms.uLevelCut.value
+            : NO_CUT;
         return {
           cut: cut < NO_CUT ? cut : null,
           above: above < NO_CUT ? above : null,
@@ -573,9 +842,12 @@ export function createMapModule(): MapModule {
         };
       }),
     );
-    map.colliders = [group];
+    map.colliders = lowerGroup ? [group, lowerGroup] : [group];
     context.scene.add(sky);
     context.scene.add(group);
+    if (lowerGroup) {
+      context.scene.add(lowerGroup);
+    }
     if (ghosts) {
       context.scene.add(ghosts);
     }
@@ -609,35 +881,79 @@ export function createMapModule(): MapModule {
       const palette = paletteFor(map.name);
       applyPalette(palette);
       const mine = token;
-      const prep = prepInWorker(
-        map.view.chunks,
-        map.callouts.flatMap((callout) => callout.boxes),
-      );
-      cancelPrep = prep.cancel;
-      pending = prep.result.then((result) => {
-        if (result && mine === token && ctx?.map === map) {
+      const started = performance.now();
+      const chunks = map.view.chunks;
+      const areas = map.callouts.flatMap((callout) => callout.boxes);
+      const fingerprint = prepFingerprint(chunks, areas);
+      pending = storedPrep(map.name, context.assetBase, fingerprint).then(
+        async (stored) => {
+          if (mine !== token) {
+            return;
+          }
+          const prep = prepInWorker({
+            chunks,
+            areas,
+            fingerprint,
+            core: stored?.core ?? null,
+          });
+          cancelPrep = prep.cancel;
+          const reply = await prep.result;
+          if (!reply || mine !== token || ctx?.map !== map) {
+            return;
+          }
           cancelPrep = null;
-          build(context, map, result);
-        }
-      });
+          const prepped = performance.now() - started;
+          build(context, map, reply.result);
+          if (module.stats) {
+            module.stats.prepMs = prepped;
+            module.stats.prepSource = reply.packed
+              ? "worker"
+              : (stored?.source ?? "worker");
+            module.stats.loadMs = performance.now() - started;
+            // For load profiling from outside (devtools, the harness, a probe).
+            performance.mark("replay-stage:map-ready", {
+              detail: { ...module.stats },
+            });
+          }
+          if (reply.packed) {
+            // After the map is up: the cache is for next time.
+            void storeCachedPrep(fingerprint, reply.packed);
+          }
+        },
+      );
       // Only the harness waits on `pending`; the live stage must still hear of it.
-      pending.catch((error) => console.error("[replay-stage] map prep failed:", error));
+      pending.catch((error) =>
+        console.error("[replay-stage] map prep failed:", error),
+      );
     },
     update(_frame, context) {
+      // The camera moved the lower storey to suit a new screen shape.
+      if (
+        lowerGroup &&
+        context.map &&
+        levelSplit(context.map) !== placedSplit
+      ) {
+        applyLayout();
+      }
       context.camera.getWorldDirection(forward);
       const pitch = Math.asin(Math.min(1, Math.max(-1, -forward.y)));
-      const t = Math.min(1, Math.max(0, (pitch - PITCH_3D) / (PITCH_2D - PITCH_3D)));
+      const t = Math.min(
+        1,
+        Math.max(0, (pitch - PITCH_3D) / (PITCH_2D - PITCH_3D)),
+      );
       cutUniforms.uView.value = t * t * (3 - 2 * t);
 
       // A chosen storey fades in over a quarter second, on the wall clock:
       // it is the viewer's choice, not part of the replay.
-      const dt = lastClock === null ? 0 : Math.max(0, context.clock - lastClock);
+      const dt =
+        lastClock === null ? 0 : Math.max(0, context.clock - lastClock);
       lastClock = context.clock;
       const goal = level?.below != null ? 1 : 0;
       const mix = cutUniforms.uLevelMix;
-      mix.value = goal > mix.value
-        ? Math.min(goal, mix.value + dt / LEVEL_FADE)
-        : Math.max(goal, mix.value - dt / LEVEL_FADE);
+      mix.value =
+        goal > mix.value
+          ? Math.min(goal, mix.value + dt / LEVEL_FADE)
+          : Math.max(goal, mix.value - dt / LEVEL_FADE);
       if (mix.value === 0) {
         cutUniforms.uLevelCut.value = level?.below ?? NO_CUT;
       }
@@ -668,10 +984,22 @@ export function createMapModule(): MapModule {
     },
     setTitle(text) {
       titleText = text;
-      const name = ctx?.map?.name;
-      if (title && name) {
-        title.setText(text ?? cleanMapName(name));
+      applyLayout();
+    },
+    setLevelLayout(layout) {
+      wantedLayout = layout;
+      if (ctx?.map) {
+        setSideBySide(ctx.map, layout === "side");
+        applyLayout();
       }
+    },
+    levelLayout() {
+      return ctx?.map && isSideBySide(ctx.map) ? "side" : "single";
+    },
+    setLevelLabels(labels) {
+      levelLabels = labels;
+      lowerTitle?.setText(labels.lower);
+      applyLayout();
     },
     levels() {
       return ctx?.map ? levelsFor(ctx.map.name) : [];

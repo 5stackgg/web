@@ -99,7 +99,10 @@ export function createSpriteBatch(options: SpriteBatchOptions): SpriteBatch {
   geometry.setAttribute("uv", base.getAttribute("uv"));
   const pos = new THREE.InstancedBufferAttribute(new Float32Array(max * 3), 3);
   const size = new THREE.InstancedBufferAttribute(new Float32Array(max * 2), 2);
-  const color = new THREE.InstancedBufferAttribute(new Float32Array(max * 4), 4);
+  const color = new THREE.InstancedBufferAttribute(
+    new Float32Array(max * 4),
+    4,
+  );
   const rotCell = new THREE.InstancedBufferAttribute(
     new Float32Array(max * 2),
     2,

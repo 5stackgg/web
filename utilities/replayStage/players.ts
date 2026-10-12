@@ -26,6 +26,13 @@ const MAX = 32;
 const HURT = 0.45;
 /** Portrait and name fade once dead. */
 const FADE_DEAD = 0.35;
+/** A step's bob, rising at full running speed (CS2 runs at ~250u/s). */
+const STEP_HZ = 1.1;
+const STEP_LIFT = 2.6;
+const RUN_SPEED = 250;
+/** A shot nudges its shooter back this far, over this long. */
+const RECOIL_DIST = 5;
+const RECOIL_SECS = 0.1;
 /** How much a player off the storey in view fades: to about 40%. */
 const OFF_LEVEL_DIM = 0.6;
 /** A death mark is never drawn wider than this radius on screen, CSS px. */
@@ -33,6 +40,15 @@ const DEAD_MARK_PX = 40;
 const MUZZLE_BLOOM = 0.09;
 /** The icon-only weapon chip's gun height, CSS px at 1080p, at any zoom. */
 const CHIP_PX = 13;
+
+/** Stable 0..1 per id, so each player steps on their own beat. */
+function hashUnit(id: string) {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) {
+    h = Math.imul(h ^ id.charCodeAt(i), 16777619);
+  }
+  return (h >>> 0) / 4294967296;
+}
 
 function boxHitsCircle(
   x0: number,
@@ -73,6 +89,8 @@ export function createPlayersModule(): PlayersModule {
   let frameNo = 0;
 
   const feet = new THREE.Vector3();
+  const body = new THREE.Vector3();
+  const kick = new THREE.Vector3();
   const anchor: ScreenAnchor = {
     x: 0,
     y: 0,
@@ -173,6 +191,29 @@ export function createPlayersModule(): PlayersModule {
       }
     }
     return sum;
+  }
+
+  /** The shooter's puck kicked back from their latest rounds, into `kick` (world). */
+  function recoil(frame: StageFrame, id: string) {
+    kick.set(0, 0, 0);
+    for (const shot of frame.shots) {
+      if (shot.shooterId !== id || shot.age >= RECOIL_SECS) {
+        continue;
+      }
+      const dx = shot.to.x - shot.from.x;
+      const dy = shot.to.y - shot.from.y;
+      const len = Math.hypot(dx, dy);
+      if (len < 1) {
+        continue;
+      }
+      const k = RECOIL_DIST * (1 - shot.age / RECOIL_SECS) ** 2;
+      kick.x -= (dx / len) * k;
+      kick.z += (dy / len) * k;
+    }
+    const len = Math.hypot(kick.x, kick.z);
+    if (len > RECOIL_DIST * 1.4) {
+      kick.multiplyScalar((RECOIL_DIST * 1.4) / len);
+    }
   }
 
   function muzzle(frame: StageFrame, id: string) {
@@ -278,14 +319,37 @@ export function createPlayersModule(): PlayersModule {
         dead ? 0 : blindGlow * keep,
         deadK * keep,
       );
+      // Alive, the puck steps as they walk, kicks back as they fire and
+      // sits low while they crouch. Steps run off the round clock, so a
+      // paused replay holds still.
+      body.copy(feet);
+      let radius = 1;
+      let height = 1;
+      if (!dead) {
+        const run = clamp01(((player.speed ?? 0) - 40) / (RUN_SPEED - 40));
+        const step = Math.abs(
+          Math.sin(
+            frame.time * STEP_HZ * Math.PI * 2 + hashUnit(player.id) * 6.283,
+          ),
+        );
+        body.y += STEP_LIFT * run * step * size;
+        radius += 0.04 * run * (step - 0.5);
+        recoil(frame, player.id);
+        body.addScaledVector(kick, size);
+        if (player.ducked) {
+          radius *= 0.9;
+          height *= 0.6;
+        }
+      }
       if (deadK < 1) {
         pucks.push(
-          feet,
+          body,
           yaw,
-          size * (1 + 0.07 * punch) * (1 - 0.2 * deadK),
-          size * (dead ? 1 - deadK : 1 + 0.1 * punch),
+          size * radius * (1 + 0.07 * punch) * (1 - 0.2 * deadK),
+          size * height * (dead ? 1 - deadK : 1 + 0.1 * punch),
           player.hasBomb && !dead,
           player.selected,
+          player.ducked && !dead,
           dead ? DEAD_PUCK : style.rim,
           style.core,
           flash,
@@ -354,19 +418,20 @@ export function createPlayersModule(): PlayersModule {
     for (let n = 0; n < shown; n++) {
       const i = order[n];
       const player = bPlayer[i]!;
+      const action = bDead[i] > 0 ? null : player.bombAction;
       const weapon =
         bDead[i] === 0 ? atlas.weapon(player.weapon, frameNo) : null;
       const chipScale = (CHIP_PX * scale) / (BADGE.iconH * bScale[i]);
       // Once the plate's gun would draw smaller than the chip's, the gun
       // moves off the plate into the chip.
-      let plateIcon =
-        bNames[i] *
-        clamp01(
-          (BADGE.iconH * bScale[i] - 0.95 * CHIP_PX * scale) / (2 * scale),
-        );
+      // One weapon display at a time: on the plate while it is big enough
+      // to read, else in the chip.
+      const plateFits =
+        bNames[i] > 0.5 && BADGE.iconH * bScale[i] >= 0.95 * CHIP_PX * scale;
+      let plateIcon = plateFits ? 1 : 0;
       let chipSide = 1;
       let chip = 0;
-      if (weapon && plateIcon < 1) {
+      if (weapon && !plateFits) {
         // The side that covers no one; with both blocked the gun stays on
         // the plate, or goes when there is none (the selected player's
         // always shows).
@@ -377,10 +442,9 @@ export function createPlayersModule(): PlayersModule {
           chipSide = -1;
         } else if (player.selected) {
           chip = 1;
-        } else {
-          plateIcon = bNames[i];
+        } else if (bNames[i] > 0.5) {
+          plateIcon = 1;
         }
-        chip *= 1 - plateIcon;
       }
       badges.push(
         bx[i],
@@ -393,7 +457,13 @@ export function createPlayersModule(): PlayersModule {
         player.blind,
         bFlash[i],
         bHealth[i],
-        player.hasKit && bDead[i] === 0,
+        bDead[i] > 0
+          ? 0
+          : player.bombAction?.kind === "defuse" && !player.bombAction.kit
+            ? 2
+            : player.hasKit
+              ? 1
+              : 0,
         clamp01((player.blind - 0.03) / 0.12),
         bDead[i],
         bNames[i],
@@ -405,10 +475,17 @@ export function createPlayersModule(): PlayersModule {
         plateIcon,
         bLevel[i],
         bLevel[i] ? OFF_LEVEL_DIM : 0,
+        action ? clamp01(action.age / action.duration) : 0,
+        action ? (action.kind === "plant" ? 1 : 2) : 0,
+        player.weaponAge != null && player.weaponAge < 0.4
+          ? Math.exp(-player.weaponAge * 9)
+          : 0,
+        player.ducked && bDead[i] === 0 ? 1 : 0,
       );
       bPlayer[i] = null;
     }
 
+    badges.setKit(atlas.kitIcon());
     atlas.flush();
     ground.end();
     pucks.end();

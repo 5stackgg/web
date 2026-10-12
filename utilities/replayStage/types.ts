@@ -47,6 +47,21 @@ export type StagePlayer = {
    * portraits (`avatarUrl` is then null).
    */
   slot?: number | null;
+  /** Ground speed, source units per second. */
+  speed?: number;
+  /** Seconds since the held weapon changed, while under a second. */
+  weaponAge?: number | null;
+  /** A plant or defuse they are in the middle of. */
+  bombAction?: StageBombAction | null;
+};
+
+export type StageBombAction = {
+  kind: "plant" | "defuse";
+  /** Seconds since they started. */
+  age: number;
+  /** Seconds it takes: 3.2 to plant, 10 to defuse, 5 with a kit. */
+  duration: number;
+  kit: boolean;
 };
 
 export type StageShot = {
@@ -190,6 +205,8 @@ export type StageBomb = {
 export type StageFrame = {
   /** Seconds into the round; effects key off ages, this is for idle motion. */
   time: number;
+  /** The demo tick on screen, for asking the clock's owner for slow motion. */
+  tick?: number;
   tickRate: number;
   players: StagePlayer[];
   shots: StageShot[];
@@ -213,6 +230,27 @@ export type StageFrame = {
   callouts?: boolean;
   /** The storey in view on a stacked map (source-unit z); others dim. */
   levelBand?: { min: number; max: number } | null;
+  /** Rounds stacked on one clock instead of one round's players. */
+  overlay?: StageOverlay | null;
+  /** Fog of war and who sees whom (vision.ts); absent while it is off. */
+  vision?: StageVisionPast | null;
+  /** Whose sight the fog shows; "both" dims only what neither side sees. */
+  visionSide?: StageTeam | "both";
+  /** The C4's damage zones on the ground (blast.ts): "Blast radius" is on. */
+  blastZones?: boolean;
+};
+
+/**
+ * Where everyone stood a moment ago, sampled on a fixed grid of the frame's
+ * clock, so vision can say when an enemy first came into sight.
+ */
+export type StageVisionPast = {
+  /** Seconds on the frame's `time` clock, newest first. */
+  times: Float32Array;
+  /** Player ids, in the order of each time's poses. */
+  ids: string[];
+  /** Per time, per player: x, y, z, yaw, flags (1 alive, 2 ducked). */
+  poses: Float32Array;
 };
 
 /** One detonation on the utility heatmap. */
@@ -244,6 +282,8 @@ export type StageThrowPath = {
 export type StageTrails = {
   points: Float32Array;
   strips: Array<{ id: string; team: StageTeam; start: number; count: number }>;
+  /** Seconds of walk shown behind each player; all of it when unset. */
+  tail?: number;
 };
 
 export type StageGroundItem = {
@@ -252,6 +292,30 @@ export type StageGroundItem = {
   at: Vec3;
   /** Seconds since it landed (planted: since the plant). */
   age: number;
+  /** Planted: seconds left on the fuse. */
+  timer?: number | null;
+};
+
+/** One player of one stacked round in the buy-round overlay. */
+export type StageOverlayActor = {
+  key: string;
+  round: number;
+  team: StageTeam;
+  x: number;
+  y: number;
+  z: number;
+  /** Degrees, source convention. */
+  yaw: number;
+};
+
+/**
+ * The buy-round overlay: several rounds stacked on one clock (seconds after
+ * freeze time), every round's living players where they stood at it.
+ */
+export type StageOverlay = {
+  /** The rounds stacked, in order; an actor's index here varies its tint. */
+  rounds: number[];
+  actors: StageOverlayActor[];
 };
 
 export const EMPTY_FRAME: StageFrame = {
@@ -315,6 +379,12 @@ export type StageContext = {
   clock: number;
   /** Where the asset CDN is, for modules that load their own files. */
   assetBase: string | null;
+  /**
+   * A stacked map laid out side by side (map module): points under `below`
+   * (source z) are drawn shifted by `offset` (source units). `wpos` applies
+   * it, so anything placed through `wpos` lands on its storey's copy.
+   */
+  levelShift?: { below: number; offset: Vec3 } | null;
 };
 
 export interface StageModule {

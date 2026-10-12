@@ -42,7 +42,9 @@ export function easeOutCubic(t: number) {
 
 /** World units per CSS pixel at a point, so effects keep a readable minimum size when zoomed out. */
 export function pxScale(ctx: StageContext) {
-  return (2 * Math.tan((ctx.camera.fov * Math.PI) / 360)) / Math.max(1, ctx.height);
+  return (
+    (2 * Math.tan((ctx.camera.fov * Math.PI) / 360)) / Math.max(1, ctx.height)
+  );
 }
 
 /** 0 when the camera looks across the map, 1 when it looks straight down (2D, or a steep 3D view). */
@@ -221,14 +223,24 @@ function drawCell(g: CanvasRenderingContext2D, cell: number) {
       const grad = g.createRadialGradient(c, c, 0, c, c, r);
       for (let i = 0; i <= 16; i++) {
         const k = i / 16;
-        grad.addColorStop(k, `rgba(255,255,255,${Math.exp(-k * k * 5.5) * (1 - k)})`);
+        grad.addColorStop(
+          k,
+          `rgba(255,255,255,${Math.exp(-k * k * 5.5) * (1 - k)})`,
+        );
       }
       g.fillStyle = grad;
       g.fillRect(0, 0, s, s);
       break;
     }
     case CELL.ball: {
-      const grad = g.createRadialGradient(c - r * 0.3, c - r * 0.35, 0, c, c, r * 0.8);
+      const grad = g.createRadialGradient(
+        c - r * 0.3,
+        c - r * 0.35,
+        0,
+        c,
+        c,
+        r * 0.8,
+      );
       grad.addColorStop(0, "#fff");
       grad.addColorStop(0.7, lin(225, 225, 225));
       grad.addColorStop(1, lin(170, 170, 170));
@@ -259,7 +271,8 @@ function drawCell(g: CanvasRenderingContext2D, cell: number) {
       const grad = g.createRadialGradient(c, c, 0, c, c, r);
       for (let i = 0; i <= 24; i++) {
         const k = i / 24;
-        const a = k < 0.93 ? 0.1 + 0.9 * Math.pow(k / 0.93, 7) : 1 - (k - 0.93) / 0.07;
+        const a =
+          k < 0.93 ? 0.1 + 0.9 * Math.pow(k / 0.93, 7) : 1 - (k - 0.93) / 0.07;
         grad.addColorStop(k, `rgba(255,255,255,${Math.max(0, a)})`);
       }
       g.fillStyle = grad;
@@ -392,7 +405,8 @@ function blurCell(image: ImageData, x0: number, y0: number, sigma: number) {
   const size = ATLAS_CELL;
   const n = size * size;
   const px = image.data;
-  const at = (i: number) => ((y0 + Math.floor(i / size)) * image.width + x0 + (i % size)) * 4;
+  const at = (i: number) =>
+    ((y0 + Math.floor(i / size)) * image.width + x0 + (i % size)) * 4;
   const planes = [0, 1, 2, 3].map(() => new Float32Array(n));
   for (let i = 0; i < n; i++) {
     const o = at(i);
@@ -405,7 +419,12 @@ function blurCell(image: ImageData, x0: number, y0: number, sigma: number) {
   // Three passes of radius r spread by sqrt(r^2 + r).
   const r = Math.max(1, Math.round((Math.sqrt(1 + 4 * sigma * sigma) - 1) / 2));
   const scratch = new Float32Array(n);
-  const pass = (src: Float32Array, dst: Float32Array, along: number, across: number) => {
+  const pass = (
+    src: Float32Array,
+    dst: Float32Array,
+    along: number,
+    across: number,
+  ) => {
     const norm = 1 / (2 * r + 1);
     for (let line = 0; line < size; line++) {
       const base = line * across;
@@ -456,7 +475,10 @@ export function acquireFxAtlas(): THREE.CanvasTexture {
   const g = canvas.getContext("2d")!;
   for (let cell = 0; cell < ATLAS_GRID[0] * ATLAS_GRID[1]; cell++) {
     g.save();
-    g.translate((cell % ATLAS_GRID[0]) * ATLAS_CELL, Math.floor(cell / ATLAS_GRID[0]) * ATLAS_CELL);
+    g.translate(
+      (cell % ATLAS_GRID[0]) * ATLAS_CELL,
+      Math.floor(cell / ATLAS_GRID[0]) * ATLAS_CELL,
+    );
     g.beginPath();
     g.rect(0, 0, ATLAS_CELL, ATLAS_CELL);
     g.clip();
@@ -543,6 +565,13 @@ void main() {
   } else {
     mv.xy += r;
     gl_Position = projectionMatrix * mv;
+    // A camera-facing glow is tested by its front, not the flat card through
+    // its middle, so a burst near the floor is not cut in half by it.
+    float lift = min(0.5 * max(size.x, size.y), 240.0);
+    vec4 front = projectionMatrix * vec4(mv.xy, mv.z + lift, 1.0);
+    if (front.w > 0.0) {
+      gl_Position.z = front.z / front.w * gl_Position.w;
+    }
   }
   float col = mod(iMisc.y, uGrid.x);
   float row = floor(iMisc.y / uGrid.x);
@@ -605,7 +634,10 @@ export function createFxBatch(options: {
   geometry.setAttribute("uv", base.getAttribute("uv"));
   const pos = new THREE.InstancedBufferAttribute(new Float32Array(max * 3), 3);
   const size = new THREE.InstancedBufferAttribute(new Float32Array(max * 2), 2);
-  const color = new THREE.InstancedBufferAttribute(new Float32Array(max * 4), 4);
+  const color = new THREE.InstancedBufferAttribute(
+    new Float32Array(max * 4),
+    4,
+  );
   const misc = new THREE.InstancedBufferAttribute(new Float32Array(max * 4), 4);
   const attrs = [pos, size, color, misc];
   for (const attr of attrs) {
@@ -699,7 +731,9 @@ export type GroundIndex = {
 const groundIndexes = new WeakMap<Float32Array, GroundIndex>();
 
 /** The floor lookup for a map's collision hull, built once and shared by the effect modules. */
-export function groundIndexFor(tri: Float32Array | null | undefined): GroundIndex | null {
+export function groundIndexFor(
+  tri: Float32Array | null | undefined,
+): GroundIndex | null {
   if (!tri) {
     return null;
   }
@@ -786,9 +820,15 @@ function createGroundIndex(tri: Float32Array, cellSize = 96): GroundIndex {
       let best = -Infinity;
       for (let k = counts[cell]; k < counts[cell + 1]; k++) {
         const i = items[k] * 9;
-        const ax = tri[i], ay = tri[i + 1], az = tri[i + 2];
-        const bx = tri[i + 3], by = tri[i + 4], bz = tri[i + 5];
-        const cx = tri[i + 6], cy = tri[i + 7], cz = tri[i + 8];
+        const ax = tri[i],
+          ay = tri[i + 1],
+          az = tri[i + 2];
+        const bx = tri[i + 3],
+          by = tri[i + 4],
+          bz = tri[i + 5];
+        const cx = tri[i + 6],
+          cy = tri[i + 7],
+          cz = tri[i + 8];
         const d = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy);
         if (Math.abs(d) < 1e-6) {
           continue;

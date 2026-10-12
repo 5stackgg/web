@@ -3,7 +3,13 @@ import type {
   StageMap,
 } from "../../../utilities/replayStage/types";
 import { mirageASite } from "./mirageASite";
-import { nukeLevelsLower, nukeLevelsUpper } from "./nukeLevels";
+import { mirageBlast } from "./mirageBlast";
+import {
+  nukeLevelsLower,
+  nukeLevelsSide,
+  nukeLevelsUpper,
+  vertigoLevelsSide,
+} from "./nukeLevels";
 
 /**
  * Height of the floor under (x, y), source units: the upward surface closest
@@ -22,8 +28,11 @@ export type Scenario = {
 
 export const scenarios: Record<string, Scenario> = {
   [mirageASite.name]: mirageASite,
+  [mirageBlast.name]: mirageBlast,
   [nukeLevelsLower.name]: nukeLevelsLower,
   [nukeLevelsUpper.name]: nukeLevelsUpper,
+  [nukeLevelsSide.name]: nukeLevelsSide,
+  [vertigoLevelsSide.name]: vertigoLevelsSide,
 };
 
 /**

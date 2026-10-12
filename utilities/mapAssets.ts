@@ -55,10 +55,27 @@ export const MESH_EXT = ".tri.gz";
 export const VIEW_EXT = ".view.bin.gz";
 export const GRENADECLIP_EXT = ".grenadeclip.tri.gz";
 export const CALLOUTS_EXT = ".callouts.json";
+// The replay stage's map prep, precomputed (scripts/replay-stage/build-prep.mjs).
+export const PREP_EXT = ".prep.bin.gz";
+// The C4 blast fields from each bomb site (scripts/replay-stage/build-blast.mjs).
+export const BLAST_EXT = ".blast.bin.gz";
 
-export type MapAssetKind = "tri" | "view" | "grenadeclip" | "callouts";
+export type MapAssetKind =
+  | "tri"
+  | "view"
+  | "grenadeclip"
+  | "callouts"
+  | "prep"
+  | "blast";
 
-const ASSET_KINDS: MapAssetKind[] = ["tri", "view", "grenadeclip", "callouts"];
+const ASSET_KINDS: MapAssetKind[] = [
+  "tri",
+  "view",
+  "grenadeclip",
+  "callouts",
+  "prep",
+  "blast",
+];
 
 export type MapAssetManifest = {
   version: number;
@@ -224,6 +241,8 @@ function urlsAt(base: string, map: string): Record<MapAssetKind, string> {
     view: `${base}/${map}${VIEW_EXT}`,
     grenadeclip: `${base}/${map}${GRENADECLIP_EXT}`,
     callouts: `${base}/${map}${CALLOUTS_EXT}`,
+    prep: `${base}/${map}${PREP_EXT}`,
+    blast: `${base}/${map}${BLAST_EXT}`,
   };
 }
 
@@ -257,6 +276,8 @@ export async function resolveMapAssets(
       view: null,
       grenadeclip: null,
       callouts: legacy.callouts,
+      prep: null,
+      blast: null,
       source: "legacy",
       build: LEGACY_MAP_BUILD,
       listed: [],
@@ -269,10 +290,48 @@ export async function resolveMapAssets(
     view: url("view"),
     grenadeclip: url("grenadeclip"),
     callouts: url("callouts") ?? legacy.callouts,
+    prep: url("prep"),
+    blast: url("blast"),
     source: "manifest",
     build: manifest.build,
     listed: ASSET_KINDS.filter((kind) => !!entry[kind]),
   };
+}
+
+const prefetched = new Set<string>();
+
+/**
+ * Starts downloading a map's replay files at low priority into the HTTP
+ * cache (the CDN marks them immutable), so opening the replay finds them
+ * warm. Once per map per page; failures are dropped: the replay fetches
+ * for itself.
+ */
+export function prefetchMapAssets(mapName: string, cdn = ""): void {
+  const map = normalizeMapName(mapName);
+  if (!map || prefetched.has(map)) {
+    return;
+  }
+  prefetched.add(map);
+  void resolveMapAssets(map, cdn)
+    .then((urls) => {
+      if (!urls) {
+        return;
+      }
+      const wanted = [
+        urls.view,
+        urls.tri,
+        urls.callouts,
+        urls.listed.includes("prep") ? urls.prep : null,
+      ];
+      for (const url of wanted) {
+        if (url) {
+          void fetch(url, { priority: "low" } as RequestInit)
+            .then((res) => (res.ok ? res.arrayBuffer() : null))
+            .catch(() => null);
+        }
+      }
+    })
+    .catch(() => {});
 }
 
 /** Identifies where assets currently resolve from, for caches keyed on it. */

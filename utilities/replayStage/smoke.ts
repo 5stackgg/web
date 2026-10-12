@@ -89,6 +89,8 @@ type Slot = {
     uBlast: Uniform<THREE.Vector4[]>;
     uBlastK: Uniform<number[]>;
     uBlastCount: Uniform<number>;
+    /** Where `wpos` puts this cloud against plain (x, z, -y), source units. */
+    uShift: Uniform<THREE.Vector3>;
   };
 };
 
@@ -109,8 +111,30 @@ function vectors3(count: number) {
   return Array.from({ length: count }, () => new THREE.Vector3());
 }
 
-export function createSmokeModule(): StageModule {
+/** A smoke's baked grid as line of sight reads it (vision.ts); the texels stay on `texture.image.data`. */
+export type SmokeGridView = Readonly<
+  Pick<
+    Grid,
+    "ox" | "oy" | "oz" | "size" | "boxMin" | "boxMax" | "span" | "reach"
+  > & { texture: THREE.Data3DTexture }
+>;
+
+export type SmokeModule = StageModule & {
+  /** The grid a smoke of the current frame is drawn from, once it is ready. */
+  gridOf(smoke: StageSmoke): SmokeGridView | null;
+  /**
+   * Where the frame's blasts come from instead of `frame.blasts` (blast.ts
+   * swaps the C4's sphere for holes where its wave really went).
+   */
+  setBlastSource(
+    source: ((frame: StageFrame) => StageFrame["blasts"]) | null,
+  ): void;
+};
+
+export function createSmokeModule(): SmokeModule {
   let ctx: StageContext | null = null;
+  let blastSource: ((frame: StageFrame) => StageFrame["blasts"]) | null = null;
+  const shiftAt = new THREE.Vector3();
   let worker: Worker | null = null;
   /** The worker's code on this thread, once the worker itself failed. */
   let local: Promise<typeof import("./smokeWorker") | null> | null = null;
@@ -226,6 +250,7 @@ export function createSmokeModule(): StageModule {
       },
       uBlastK: { value: new Array<number>(SMOKE_MAX_BLASTS).fill(0) },
       uBlastCount: { value: 0 },
+      uShift: { value: new THREE.Vector3() },
     };
     const high = quality === "high";
     const material = new THREE.ShaderMaterial({
@@ -664,6 +689,12 @@ export function createSmokeModule(): StageModule {
     const pop = 1 - Math.min(1, smoke.age / 0.6);
     u.uErode.value.setComponent(i, 0.55 + pop * 0.2 + (1 - entry.fade) * 0.45);
     if (i === 0) {
+      // A cloud goes with its detonation's storey on a map laid side by side.
+      const at = smoke.at;
+      const placed = ctx
+        ? ctx.wpos(at, shiftAt)
+        : shiftAt.set(at.x, at.z, -at.y);
+      u.uShift.value.set(placed.x - at.x, -(placed.z + at.y), placed.y - at.z);
       u.uBoxMin.value.copy(grid.boxMin);
       u.uBoxMax.value.copy(grid.boxMax);
     } else {
@@ -681,7 +712,7 @@ export function createSmokeModule(): StageModule {
     const min = u.uBoxMin.value;
     const max = u.uBoxMax.value;
     let count = 0;
-    for (const blast of frame.blasts) {
+    for (const blast of blastSource?.(frame) ?? frame.blasts) {
       if (count >= SMOKE_MAX_BLASTS) {
         break;
       }
@@ -712,10 +743,11 @@ export function createSmokeModule(): StageModule {
     u.uBlastCount.value = count;
 
     const mesh = slot.mesh;
+    const shift = u.uShift.value;
     mesh.position.set(
-      (min.x + max.x) / 2,
-      (min.z + max.z) / 2,
-      -(min.y + max.y) / 2,
+      (min.x + max.x) / 2 + shift.x,
+      (min.z + max.z) / 2 + shift.z,
+      -(min.y + max.y) / 2 - shift.y,
     );
     mesh.scale.set(max.x - min.x, max.z - min.z, max.y - min.y);
     mesh.visible = true;
@@ -845,6 +877,18 @@ export function createSmokeModule(): StageModule {
       for (let i = 0; i < liveCount; i++) {
         live[i].smoke = null;
       }
+    },
+    setBlastSource(source) {
+      blastSource = source;
+    },
+    gridOf(smoke) {
+      const voxels = smoke.voxels;
+      const grid = grids.get(
+        voxels ? voxels.arrival : pointKey(smoke.at.x, smoke.at.y, smoke.at.z),
+      );
+      return grid?.ready && !grid.empty && grid.texture
+        ? (grid as SmokeGridView)
+        : null;
     },
     settle() {
       return Promise.all([...pending]).then(() => undefined);

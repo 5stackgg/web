@@ -25,6 +25,15 @@ import type {
 } from "./types";
 import { UTILITY_COLORS } from "./teamColors";
 
+/** A spot on the floor, source units, for `wpos` (one reused object). */
+const floorSpot = { x: 0, y: 0, z: 0 };
+function floorPoint(x: number, y: number, z: number) {
+  floorSpot.x = x;
+  floorSpot.y = y;
+  floorSpot.z = z;
+  return floorSpot;
+}
+
 /** Seconds of flight the glowing trail covers behind a grenade. */
 const TRAIL_SECONDS = 0.24;
 const TRAIL_POINTS = 16;
@@ -198,7 +207,7 @@ export function createRibbons(max: number) {
     },
     /** Starts a strip; false when there is no room for `points` more. */
     strip(points: number) {
-      if ((vertices + points * 2) > max * 2) {
+      if (vertices + points * 2 > max * 2) {
         return false;
       }
       stripStart = vertices;
@@ -272,21 +281,93 @@ export function pathAt(path: Vec3[], k: number, out: Vec3, tangent: Vec3) {
   const p3 = i + 2 < n ? path[i + 2] : null;
   const t2 = t * t;
   const t3 = t2 * t;
-  out.x = spline(p0 ? p0.x : 2 * p1.x - p2.x, p1.x, p2.x, p3 ? p3.x : 2 * p2.x - p1.x, t, t2, t3);
-  out.y = spline(p0 ? p0.y : 2 * p1.y - p2.y, p1.y, p2.y, p3 ? p3.y : 2 * p2.y - p1.y, t, t2, t3);
-  out.z = spline(p0 ? p0.z : 2 * p1.z - p2.z, p1.z, p2.z, p3 ? p3.z : 2 * p2.z - p1.z, t, t2, t3);
-  tangent.x = slope(p0 ? p0.x : 2 * p1.x - p2.x, p1.x, p2.x, p3 ? p3.x : 2 * p2.x - p1.x, t, t2);
-  tangent.y = slope(p0 ? p0.y : 2 * p1.y - p2.y, p1.y, p2.y, p3 ? p3.y : 2 * p2.y - p1.y, t, t2);
-  tangent.z = slope(p0 ? p0.z : 2 * p1.z - p2.z, p1.z, p2.z, p3 ? p3.z : 2 * p2.z - p1.z, t, t2);
+  out.x = spline(
+    p0 ? p0.x : 2 * p1.x - p2.x,
+    p1.x,
+    p2.x,
+    p3 ? p3.x : 2 * p2.x - p1.x,
+    t,
+    t2,
+    t3,
+  );
+  out.y = spline(
+    p0 ? p0.y : 2 * p1.y - p2.y,
+    p1.y,
+    p2.y,
+    p3 ? p3.y : 2 * p2.y - p1.y,
+    t,
+    t2,
+    t3,
+  );
+  out.z = spline(
+    p0 ? p0.z : 2 * p1.z - p2.z,
+    p1.z,
+    p2.z,
+    p3 ? p3.z : 2 * p2.z - p1.z,
+    t,
+    t2,
+    t3,
+  );
+  tangent.x = slope(
+    p0 ? p0.x : 2 * p1.x - p2.x,
+    p1.x,
+    p2.x,
+    p3 ? p3.x : 2 * p2.x - p1.x,
+    t,
+    t2,
+  );
+  tangent.y = slope(
+    p0 ? p0.y : 2 * p1.y - p2.y,
+    p1.y,
+    p2.y,
+    p3 ? p3.y : 2 * p2.y - p1.y,
+    t,
+    t2,
+  );
+  tangent.z = slope(
+    p0 ? p0.z : 2 * p1.z - p2.z,
+    p1.z,
+    p2.z,
+    p3 ? p3.z : 2 * p2.z - p1.z,
+    t,
+    t2,
+  );
 }
 
 /** Uniform Catmull-Rom between b and c. */
-function spline(a: number, b: number, c: number, d: number, t: number, t2: number, t3: number) {
-  return 0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (3 * b - a - 3 * c + d) * t3);
+function spline(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  t: number,
+  t2: number,
+  t3: number,
+) {
+  return (
+    0.5 *
+    (2 * b +
+      (c - a) * t +
+      (2 * a - 5 * b + 4 * c - d) * t2 +
+      (3 * b - a - 3 * c + d) * t3)
+  );
 }
 
-function slope(a: number, b: number, c: number, d: number, t: number, t2: number) {
-  return 0.5 * (c - a + 2 * (2 * a - 5 * b + 4 * c - d) * t + 3 * (3 * b - a - 3 * c + d) * t2);
+function slope(
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  t: number,
+  t2: number,
+) {
+  return (
+    0.5 *
+    (c -
+      a +
+      2 * (2 * a - 5 * b + 4 * c - d) * t +
+      3 * (3 * b - a - 3 * c + d) * t2)
+  );
 }
 
 /** projectiles in flight with trails, flash bursts, HE starbursts and dust, decoys. */
@@ -358,7 +439,17 @@ export function createGrenadesModule(): StageModule {
         dir.set(tan.x, tan.z, -tan.y);
         const ahead = u >= k;
         const fade = smoothstep(0, 0.04, u) * smoothstep(1, 0.96, u);
-        r.point(at, dir, 2.4, 1.5, colors.arc, (ahead ? 0.4 : 0.14) * fade, 0.3, dist, 22);
+        r.point(
+          at,
+          dir,
+          2.4,
+          1.5,
+          colors.arc,
+          (ahead ? 0.4 : 0.14) * fade,
+          0.3,
+          dist,
+          22,
+        );
       }
       r.endStrip();
     }
@@ -380,7 +471,15 @@ export function createGrenadesModule(): StageModule {
         if (under) {
           r.point(at, dir, 30 * taper, 13 * taper, SHADOW, 0.3 * u, 0);
         } else {
-          r.point(at, dir, 18 * taper, 8 * taper, colors.trail, Math.pow(u, 1.1), 0.45);
+          r.point(
+            at,
+            dir,
+            18 * taper,
+            8 * taper,
+            colors.trail,
+            Math.pow(u, 1.1),
+            0.45,
+          );
         }
       }
       r.endStrip();
@@ -392,13 +491,33 @@ export function createGrenadesModule(): StageModule {
     // Shadow on the floor below and the landing mark at the end of the arc.
     const floor = floorUnder(src.x, src.y, src.z, path[path.length - 1].z);
     const height = Math.max(0, src.z - floor);
-    at2.set(src.x, floor + 1.5, -src.y);
-    d.push(at2, 18 + height * 0.04, 18 + height * 0.04, SHADOW, 0.32 * (1 - clamp01(height / 800)), CELL.disc, 0, 0, 6);
+    c.wpos(floorPoint(src.x, src.y, floor + 1.5), at2);
+    d.push(
+      at2,
+      18 + height * 0.04,
+      18 + height * 0.04,
+      SHADOW,
+      0.32 * (1 - clamp01(height / 800)),
+      CELL.disc,
+      0,
+      0,
+      6,
+    );
     const end = path[path.length - 1];
     const endFloor = floorUnder(end.x, end.y, end.z + 8, end.z);
     if (end.z - endFloor < 40) {
-      at2.set(end.x, endFloor + 1.5, -end.y);
-      d.push(at2, 46, 46, colors.core, 0.45 * smoothstep(0, 0.15, k), CELL.dashRing, k * 2.5, 0.5, 14);
+      c.wpos(floorPoint(end.x, end.y, endFloor + 1.5), at2);
+      d.push(
+        at2,
+        46,
+        46,
+        colors.core,
+        0.45 * smoothstep(0, 0.15, k),
+        CELL.dashRing,
+        k * 2.5,
+        0.5,
+        14,
+      );
     }
 
     // A burning rag drops embers behind a molotov.
@@ -418,7 +537,17 @@ export function createGrenadesModule(): StageModule {
         s.push(at2, 6, 6, tint, (1 - life / 0.4) * 0.9, CELL.glow, 0, 1, 2.5);
       }
       const flicker = 0.8 + 0.2 * Math.sin(p.age * 47 + key);
-      s.push(at, 38 * flicker, 38 * flicker, HE_FIRE, 0.75, CELL.glow, 0, 1, 14);
+      s.push(
+        at,
+        38 * flicker,
+        38 * flicker,
+        HE_FIRE,
+        0.75,
+        CELL.glow,
+        0,
+        1,
+        14,
+      );
     }
 
     s.push(at, 70, 70, colors.glow, 0.9, CELL.glow, 0, 1, 34);
@@ -435,21 +564,57 @@ export function createGrenadesModule(): StageModule {
     }
     c.wpos(det.at, at);
     // Blinding for a beat, then a quick falloff.
-    const burst = a < 0.03 ? a / 0.03 : a < 0.09 ? 1 : Math.exp(-(a - 0.09) * 9);
+    const burst =
+      a < 0.03 ? a / 0.03 : a < 0.09 ? 1 : Math.exp(-(a - 0.09) * 9);
 
     // Light thrown on the floor underneath.
     const floor = floorUnder(det.at.x, det.at.y, det.at.z, det.at.z - 150);
     const height = Math.max(0, det.at.z - floor);
-    at2.set(det.at.x, floor + 1.5, -det.at.y);
+    c.wpos(floorPoint(det.at.x, det.at.y, floor + 1.5), at2);
+    const near = 1 - clamp01(height / 700);
     const pool = 2 * (150 + 110 * (1 - burst));
-    d.push(at2, pool, pool, FLASH_LIGHT, 0.5 * burst * (1 - clamp01(height / 700)), CELL.disc, 0, 1, 40);
+    d.push(
+      at2,
+      pool,
+      pool,
+      FLASH_LIGHT,
+      0.5 * burst * near,
+      CELL.disc,
+      0,
+      1,
+      40,
+    );
+    // The light it throws, wide and brief (the old airborne bloom, laid on
+    // the floor so the ground cannot slice it).
+    d.push(
+      at2,
+      820,
+      820,
+      FLASH_LIGHT,
+      0.35 * burst * near,
+      CELL.glow,
+      0,
+      1,
+      150,
+    );
 
-    // Thin shell racing out.
+    // Thin shell racing out along the floor.
     if (a < 0.8) {
       const grow = easeOutCubic(a / 0.8);
       const size = 2 * (40 + 380 * grow);
-      const alpha = 0.75 * smoothstep(0, 0.03, a) * (1 - smoothstep(0.25, 0.8, a));
-      s.push(at, size, size, FLASH_SHELL, alpha, CELL.shell, 0, 0.3, 140 * grow);
+      const alpha =
+        0.75 * smoothstep(0, 0.03, a) * (1 - smoothstep(0.25, 0.8, a));
+      d.push(
+        at2,
+        size,
+        size,
+        FLASH_SHELL,
+        alpha * (0.4 + 0.6 * near),
+        CELL.shell,
+        0,
+        0.3,
+        140 * grow,
+      );
     }
 
     // Specks drifting out of the burst.
@@ -465,19 +630,30 @@ export function createGrenadesModule(): StageModule {
       src.y = det.at.y + Math.sin(theta) * flat * dist;
       src.z = det.at.z + zDir * dist - 20 * a * a;
       c.wpos(src, at2);
-      const twinkle = 0.65 + 0.35 * Math.sin(rand(seed, i * 5 + 3) * 40 + a * 18);
-      const spin = rand(seed, i * 5 + 4) * 6 + a * (rand(seed, i * 5 + 3) - 0.5) * 6;
+      const twinkle =
+        0.65 + 0.35 * Math.sin(rand(seed, i * 5 + 3) * 40 + a * 18);
+      const spin =
+        rand(seed, i * 5 + 4) * 6 + a * (rand(seed, i * 5 + 3) - 0.5) * 6;
       s.push(at2, 10, 3.5, WHITE, fade * twinkle, CELL.disc, spin, 0.45, 3);
     }
 
     if (burst < 0.01) {
       return;
     }
-    // Heavy bloom around a white-hot core.
-    s.push(at, 820, 820, WHITE, 0.5 * burst, CELL.glow, 0, 1, 150);
+    // Bloom around a white-hot core.
     s.push(at, 380, 380, WHITE, burst, CELL.glow, 0, 1, 80);
     const core = 150 * (0.55 + 0.45 * burst);
-    s.push(at, core, core, WHITE, Math.min(1, burst * 1.6), CELL.disc, 0, 0.25, 30);
+    s.push(
+      at,
+      core,
+      core,
+      WHITE,
+      Math.min(1, burst * 1.6),
+      CELL.disc,
+      0,
+      0.25,
+      30,
+    );
   }
 
   function he(det: StageDetonation, seed: number) {
@@ -492,15 +668,45 @@ export function createGrenadesModule(): StageModule {
     const centreZ = Math.max(det.at.z, floor);
 
     // Ground: scorch, a bright shock ring, and the fireball's light.
-    at2.set(det.at.x, floor + 1.5, -det.at.y);
+    c.wpos(floorPoint(det.at.x, det.at.y, floor + 1.5), at2);
     const scorch = 0.6 * smoothstep(0, 0.06, a) * (1 - smoothstep(0.9, 2.7, a));
-    d.push(at2, 190, 190, HE_SCORCH, scorch, CELL.scorch, rand(seed, 7) * 6, 0, 16);
+    d.push(
+      at2,
+      190,
+      190,
+      HE_SCORCH,
+      scorch,
+      CELL.scorch,
+      rand(seed, 7) * 6,
+      0,
+      16,
+    );
     if (a < 0.45) {
       const ring = 2 * (30 + 240 * easeOutCubic(a / 0.45));
-      d.push(at2, ring, ring, HE_RING, 0.85 * Math.pow(1 - a / 0.45, 2), CELL.ring, 0, 0.7, 30);
+      d.push(
+        at2,
+        ring,
+        ring,
+        HE_RING,
+        0.85 * Math.pow(1 - a / 0.45, 2),
+        CELL.ring,
+        0,
+        0.7,
+        30,
+      );
     }
     if (a < 0.6) {
-      d.push(at2, 460, 460, HE_FIRE, 0.75 * Math.exp(-a * 6), CELL.disc, 0, 1, 50);
+      d.push(
+        at2,
+        460,
+        460,
+        HE_FIRE,
+        0.75 * Math.exp(-a * 6),
+        CELL.disc,
+        0,
+        1,
+        50,
+      );
     }
 
     // Brown-orange dust rolling out and settling.
@@ -514,15 +720,30 @@ export function createGrenadesModule(): StageModule {
       const theta = (i / puffs) * Math.PI * 2 + rand(seed, i * 7 + 1) * 0.7;
       const reach = (i % 3 === 0 ? 30 : 80) + rand(seed, i * 7 + 2) * 110;
       const spread = reach * (1 - Math.exp(-t * 4.5));
-      const size = (80 + 60 * rand(seed, i * 7 + 3)) * (0.4 + 0.9 * (1 - Math.exp(-t * 3.5)));
+      const size =
+        (80 + 60 * rand(seed, i * 7 + 3)) *
+        (0.4 + 0.9 * (1 - Math.exp(-t * 3.5)));
       src.x = det.at.x + Math.cos(theta) * spread;
       src.y = det.at.y + Math.sin(theta) * spread;
       src.z = centreZ + size * 0.3 + 45 * t * rand(seed, i * 7 + 4);
       c.wpos(src, at2);
-      tint.copy(HE_LIT_DUST).lerp(i % 4 === 0 ? HE_DUST_DARK : HE_DUST, smoothstep(0.04, 0.4, t));
-      const alpha = 0.95 * smoothstep(0, 0.05, t) * (1 - smoothstep(0.35, 1.35, t));
+      tint
+        .copy(HE_LIT_DUST)
+        .lerp(i % 4 === 0 ? HE_DUST_DARK : HE_DUST, smoothstep(0.04, 0.4, t));
+      const alpha =
+        0.95 * smoothstep(0, 0.05, t) * (1 - smoothstep(0.35, 1.35, t));
       const spin = theta + t * (rand(seed, i * 7 + 5) - 0.5) * 1.5;
-      s.push(at2, size, size, tint, alpha, i % 2 ? CELL.puffB : CELL.puff, spin, 0, 18);
+      s.push(
+        at2,
+        size,
+        size,
+        tint,
+        alpha,
+        i % 2 ? CELL.puffB : CELL.puff,
+        spin,
+        0,
+        18,
+      );
     }
 
     // Debris shards flung out on arcs, hot then cooling.
@@ -542,9 +763,21 @@ export function createGrenadesModule(): StageModule {
       c.wpos(src, at2);
       tint.copy(HE_HOT_SHARD).lerp(HE_COLD_SHARD, smoothstep(0.1, 0.55, t));
       const size = 9 + 9 * rand(seed, i * 11 + 103);
-      const spin = rand(seed, i * 11 + 104) * 6 + t * (rand(seed, i * 11 + 105) - 0.5) * 24;
+      const spin =
+        rand(seed, i * 11 + 104) * 6 +
+        t * (rand(seed, i * 11 + 105) - 0.5) * 24;
       const alpha = 1 - smoothstep(0.65, 1, t);
-      s.push(at2, size, size * 0.8, tint, alpha, CELL.shard, spin, 0.4 * (1 - smoothstep(0, 0.3, t)), 4);
+      s.push(
+        at2,
+        size,
+        size * 0.8,
+        tint,
+        alpha,
+        CELL.shard,
+        spin,
+        0.4 * (1 - smoothstep(0, 0.3, t)),
+        4,
+      );
     }
 
     // Fast sparks.
@@ -567,7 +800,17 @@ export function createGrenadesModule(): StageModule {
       const angle = screenAngle(vx, rise, -vy);
       const len = 46 * (1 - t / 0.35) + 10;
       screenOffset(at2, angle, -len / 2, at2);
-      s.push(at2, 7, len, HE_YELLOW, 1 - t / 0.35, CELL.streak, angle - Math.PI / 2, 1, 14);
+      s.push(
+        at2,
+        7,
+        len,
+        HE_YELLOW,
+        1 - t / 0.35,
+        CELL.streak,
+        angle - Math.PI / 2,
+        1,
+        14,
+      );
     }
 
     // The comic starburst: white, then yellow, with long thin rays.
@@ -576,10 +819,21 @@ export function createGrenadesModule(): StageModule {
       src.y = det.at.y;
       src.z = centreZ + 30;
       c.wpos(src, at);
-      s.push(at, 320, 320, HE_FIRE, 0.8 * Math.exp(-a * 8), CELL.glow, 0, 1, 60);
+      s.push(
+        at,
+        320,
+        320,
+        HE_FIRE,
+        0.8 * Math.exp(-a * 8),
+        CELL.glow,
+        0,
+        1,
+        60,
+      );
     }
     if (a < 0.24) {
-      const pop = a < 0.05 ? 0.35 + 0.65 * easeOutCubic(a / 0.05) : 1 + (a - 0.05) * 0.8;
+      const pop =
+        a < 0.05 ? 0.35 + 0.65 * easeOutCubic(a / 0.05) : 1 + (a - 0.05) * 0.8;
       const fade = 1 - smoothstep(0.12, 0.24, a);
       const white = 1 - smoothstep(0.02, 0.09, a);
       const spin = rand(seed, 300) * Math.PI * 2 + a * 0.8;
@@ -587,15 +841,56 @@ export function createGrenadesModule(): StageModule {
       const size = 300 * pop;
       const rays = 7 + Math.floor(rand(seed, 302) * 4);
       for (let i = 0; i < rays; i++) {
-        const angle = (i / rays) * Math.PI * 2 + rand(seed, 310 + i) * 0.5 + spin;
+        const angle =
+          (i / rays) * Math.PI * 2 + rand(seed, 310 + i) * 0.5 + spin;
         const len = size * (0.5 + 0.45 * rand(seed, 330 + i));
         screenOffset(at, angle, len / 2, at2);
         tint.copy(HE_YELLOW).lerp(WHITE, white);
-        s.push(at2, 34 * pop, len, tint, fade, CELL.spike, angle - Math.PI / 2, 0.15, len * 0.22);
+        s.push(
+          at2,
+          34 * pop,
+          len,
+          tint,
+          fade,
+          CELL.spike,
+          angle - Math.PI / 2,
+          0.15,
+          len * 0.22,
+        );
       }
-      s.push(at, size, size, WHITE, fade, variant ? CELL.burstColor : CELL.burstColorB, spin, 0.1, 64);
-      s.push(at, size, size, WHITE, fade * white, variant ? CELL.burstWhite : CELL.burstWhiteB, spin, 0.3, 64);
-      s.push(at, 150 * pop, 150 * pop, WHITE, fade * (0.6 + 0.4 * white), CELL.disc, 0, 0.6, 26);
+      s.push(
+        at,
+        size,
+        size,
+        WHITE,
+        fade,
+        variant ? CELL.burstColor : CELL.burstColorB,
+        spin,
+        0.1,
+        64,
+      );
+      s.push(
+        at,
+        size,
+        size,
+        WHITE,
+        fade * white,
+        variant ? CELL.burstWhite : CELL.burstWhiteB,
+        spin,
+        0.3,
+        64,
+      );
+      s.push(
+        at,
+        150 * pop,
+        150 * pop,
+        WHITE,
+        fade * (0.6 + 0.4 * white),
+        CELL.disc,
+        0,
+        0.6,
+        26,
+      );
     }
   }
 
@@ -609,7 +904,17 @@ export function createGrenadesModule(): StageModule {
     src.y = det.at.y;
     src.z = Math.max(det.at.z, floor) + 14;
     c.wpos(src, at);
-    s.push(at, 26, 26, PROJECTILE_COLORS.decoy.glow, 0.55 + 0.2 * Math.sin(a * 9), CELL.glow, 0, 1, 10);
+    s.push(
+      at,
+      26,
+      26,
+      PROJECTILE_COLORS.decoy.glow,
+      0.55 + 0.2 * Math.sin(a * 9),
+      CELL.glow,
+      0,
+      1,
+      10,
+    );
     s.push(at, 9, 9, PROJECTILE_COLORS.decoy.core, 1, CELL.ball, 0, 0, 7);
     // Fake gunfire: bursts of pops at seeded intervals, each a muzzle-flash
     // spark with a ring on the floor so it reads from above too.
@@ -622,20 +927,42 @@ export function createGrenadesModule(): StageModule {
         s.push(at, 120, 120, DECOY_SPARK, fade * 0.8, CELL.glow, 0, 1, 26);
         if (t < 0.08) {
           const size = 70 * (0.6 + 0.4 * (t / 0.08));
-          s.push(at, size, size, WHITE, 1 - t / 0.08, CELL.burstColorB, spin, 0.3, 18);
+          s.push(
+            at,
+            size,
+            size,
+            WHITE,
+            1 - t / 0.08,
+            CELL.burstColorB,
+            spin,
+            0.3,
+            18,
+          );
         }
         for (let i = 0; i < 6; i++) {
           const angle = spin + (i / 6) * Math.PI * 2 + rand(seed + k, i) * 0.6;
           const out = 60 * (1 - Math.exp(-t * 12)) + 8;
           screenOffset(at, angle, out, at2);
-          s.push(at2, 5, 22, DECOY_SPARK, fade, CELL.streak, angle - Math.PI / 2, 1, 7);
+          s.push(
+            at2,
+            5,
+            22,
+            DECOY_SPARK,
+            fade,
+            CELL.streak,
+            angle - Math.PI / 2,
+            1,
+            7,
+          );
         }
-        at2.set(det.at.x, floor + 1.5, -det.at.y);
+        c.wpos(floorPoint(det.at.x, det.at.y, floor + 1.5), at2);
         const ring = 30 + 90 * easeOutCubic(t / 0.3);
         d.push(at2, ring, ring, DECOY_SPARK, fade * 0.7, CELL.ring, 0, 0.8, 16);
       }
       const burst = rand(seed, k) < 0.7;
-      pop += burst ? 0.09 + rand(seed, k + 500) * 0.08 : 0.5 + rand(seed, k + 900) * 1.1;
+      pop += burst
+        ? 0.09 + rand(seed, k + 500) * 0.08
+        : 0.5 + rand(seed, k + 900) * 1.1;
     }
   }
 
@@ -645,8 +972,17 @@ export function createGrenadesModule(): StageModule {
       ctx = context;
       low = context.quality === "low";
       const texture = acquireFxAtlas();
-      decals = createFxBatch({ texture, max: 256, ground: true, renderOrder: 2 });
-      sprites = createFxBatch({ texture, max: low ? 600 : 1400, renderOrder: 6 });
+      decals = createFxBatch({
+        texture,
+        max: 256,
+        ground: true,
+        renderOrder: 2,
+      });
+      sprites = createFxBatch({
+        texture,
+        max: low ? 600 : 1400,
+        renderOrder: 6,
+      });
       ribbons = createRibbons(MAX_RIBBON_POINTS);
       ribbons.mesh.renderOrder = 5;
       context.scene.add(decals.mesh, ribbons.mesh, sprites.mesh);

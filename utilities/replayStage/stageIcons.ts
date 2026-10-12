@@ -1,11 +1,13 @@
 import type * as THREE from "three";
+import { STAGE_FONT, fontReady } from "./playersShared";
 import { canvasTexture } from "./sprites";
 import type { StageGrenadeType } from "./types";
 
 /**
  * A small atlas for the overlays: a disc and a ring to build chips from, and
  * the equipment icons as white silhouettes with a dark rim, so a tint keeps
- * them readable on any floor. Cells are 128px on a 4x4 grid.
+ * them readable on any floor, and "×2".."×9+" count tags. Cells are 128px
+ * on a 4x8 grid.
  */
 export const ICON = {
   disc: 0,
@@ -20,7 +22,15 @@ export const ICON = {
   kit: 9,
 } as const;
 
-export const ICON_GRID: [number, number] = [4, 4];
+export const ICON_GRID: [number, number] = [4, 8];
+
+/** The first count tag ("×2"); `COUNT_CELL + 7` is "×9+". */
+const COUNT_CELL = 16;
+
+/** The atlas cell of the "×n" tag for a cluster of `n`. */
+export function countCell(n: number) {
+  return COUNT_CELL + Math.min(9, Math.max(2, n)) - 2;
+}
 
 const CELL = 128;
 const ICON_BOX = 100;
@@ -52,6 +62,27 @@ export type IconAtlas = {
   dispose(): void;
 };
 
+const COUNT_FONT = `700 54px ${STAGE_FONT}`;
+
+/** Count tags: a dark pill with white text, centred in its cell. */
+function drawCounts(g: CanvasRenderingContext2D) {
+  g.save();
+  g.font = COUNT_FONT;
+  g.textAlign = "center";
+  g.textBaseline = "middle";
+  for (let n = 2; n <= 9; n++) {
+    const [x, y] = origin(countCell(n));
+    g.clearRect(x, y, CELL, CELL);
+    g.fillStyle = "rgba(14, 12, 10, 0.9)";
+    g.beginPath();
+    g.roundRect(x + 6, y + 34, CELL - 12, 60, 30);
+    g.fill();
+    g.fillStyle = "#fff";
+    g.fillText(n === 9 ? "×9+" : `×${n}`, x + CELL / 2, y + CELL / 2 + 3);
+  }
+  g.restore();
+}
+
 function origin(cell: number) {
   return [(cell % ICON_GRID[0]) * CELL, Math.floor(cell / ICON_GRID[0]) * CELL];
 }
@@ -75,8 +106,15 @@ export function createIconAtlas(base: string): IconAtlas {
       ctx.beginPath();
       ctx.arc(rx + CELL / 2, ry + CELL / 2, CELL / 2 - 9, 0, Math.PI * 2);
       ctx.stroke();
+      drawCounts(ctx);
     },
   );
+  const counted = fontReady(COUNT_FONT).then(() => {
+    if (g && !disposed) {
+      drawCounts(g);
+      texture.needsUpdate = true;
+    }
+  });
   let disposed = false;
 
   function drawIcon(cell: number, img: HTMLImageElement) {
@@ -127,7 +165,7 @@ export function createIconAtlas(base: string): IconAtlas {
               img.src = `${base}${file}.svg`;
             }),
         );
-  const ready = Promise.all(loads).then(() => undefined);
+  const ready = Promise.all([...loads, counted]).then(() => undefined);
 
   return {
     texture,

@@ -15,7 +15,16 @@
 // protocol in a headless Chrome on SwiftShader, so it runs without a GPU.
 // Console errors from the page are printed after each shot.
 import { spawn } from "node:child_process";
-import { createReadStream, existsSync, mkdirSync, mkdtempSync, readFileSync, statSync, writeFileSync, rmSync } from "node:fs";
+import {
+  createReadStream,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  statSync,
+  writeFileSync,
+  rmSync,
+} from "node:fs";
 import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -42,21 +51,33 @@ mkdirSync(out, { recursive: true });
 
 const cacheDir = path.join(webRoot, "node_modules/.cache/replay-stage-assets");
 mkdirSync(cacheDir, { recursive: true });
-const fixturesDir = path.join(webRoot, "node_modules/.cache/replay-stage-fixtures");
+const fixturesDir = path.join(
+  webRoot,
+  "node_modules/.cache/replay-stage-fixtures",
+);
 const distDir = mkdtempSync(path.join(tmpdir(), "replay-stage-dist-"));
 
 async function ensureMapAssets(map) {
   const want = [".tri.gz", ".view.bin.gz", ".callouts.json"];
   if (want.every((ext) => existsSync(path.join(cacheDir, map + ext)))) return;
   const latest = await (await fetch(`${ASSETS_ROOT}/latest.json`)).json();
-  const manifest = await (await fetch(`${ASSETS_ROOT}/${latest.manifest}`)).json();
+  const manifest = await (
+    await fetch(`${ASSETS_ROOT}/${latest.manifest}`)
+  ).json();
   const entry = manifest.maps[map];
   if (!entry) throw new Error(`no assets for ${map}`);
-  for (const [kind, ext] of [["tri", ".tri.gz"], ["view", ".view.bin.gz"], ["callouts", ".callouts.json"]]) {
+  for (const [kind, ext] of [
+    ["tri", ".tri.gz"],
+    ["view", ".view.bin.gz"],
+    ["callouts", ".callouts.json"],
+  ]) {
     if (!entry[kind]) continue;
     const res = await fetch(`${ASSETS_ROOT}/${entry[kind]}`);
     if (!res.ok) throw new Error(`${entry[kind]}: ${res.status}`);
-    writeFileSync(path.join(cacheDir, map + ext), Buffer.from(await res.arrayBuffer()));
+    writeFileSync(
+      path.join(cacheDir, map + ext),
+      Buffer.from(await res.arrayBuffer()),
+    );
   }
 }
 
@@ -67,16 +88,33 @@ async function buildHarness() {
     base: "./",
     logLevel: "warn",
     resolve: { alias: { "~": webRoot } },
-    build: { outDir: distDir, emptyOutDir: true, sourcemap: false, chunkSizeWarningLimit: 4000 },
+    build: {
+      outDir: distDir,
+      emptyOutDir: true,
+      sourcemap: false,
+      chunkSizeWarningLimit: 4000,
+    },
   });
 }
 
 function serve() {
-  const types = { ".html": "text/html", ".js": "text/javascript", ".json": "application/json", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".ttf": "font/ttf" };
+  const types = {
+    ".html": "text/html",
+    ".js": "text/javascript",
+    ".json": "application/json",
+    ".css": "text/css",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".svg": "image/svg+xml",
+    ".ttf": "font/ttf",
+  };
   const server = createServer((req, res) => {
     const url = new URL(req.url, "http://x");
     let file;
-    if (url.pathname.startsWith("/assets/") && !existsSync(path.join(distDir, url.pathname))) {
+    if (
+      url.pathname.startsWith("/assets/") &&
+      !existsSync(path.join(distDir, url.pathname))
+    ) {
       file = path.join(cacheDir, path.basename(url.pathname));
     } else if (url.pathname.startsWith("/fixtures/")) {
       file = path.join(fixturesDir, path.basename(url.pathname));
@@ -86,17 +124,26 @@ function serve() {
       // Where the app serves public/fonts; the stage loads its face from here.
       file = path.join(webRoot, "public", url.pathname);
     } else {
-      file = path.join(distDir, url.pathname === "/" ? "index.html" : url.pathname);
+      file = path.join(
+        distDir,
+        url.pathname === "/" ? "index.html" : url.pathname,
+      );
     }
-    const allowed = [webRoot, distDir, cacheDir, fixturesDir].some((root) => file.startsWith(root));
+    const allowed = [webRoot, distDir, cacheDir, fixturesDir].some((root) =>
+      file.startsWith(root),
+    );
     if (!allowed || !existsSync(file) || statSync(file).isDirectory()) {
       res.writeHead(404).end();
       return;
     }
-    res.writeHead(200, { "content-type": types[path.extname(file)] ?? "application/octet-stream" });
+    res.writeHead(200, {
+      "content-type": types[path.extname(file)] ?? "application/octet-stream",
+    });
     createReadStream(file).pipe(res);
   });
-  return new Promise((resolve) => server.listen(0, "127.0.0.1", () => resolve(server)));
+  return new Promise((resolve) =>
+    server.listen(0, "127.0.0.1", () => resolve(server)),
+  );
 }
 
 function chromePath() {
@@ -132,7 +179,9 @@ function launchChrome() {
       const match = stderr.match(/DevTools listening on (ws:\/\/\S+)/);
       if (match) resolve({ chrome, profile, browserWs: match[1] });
     });
-    chrome.on("exit", (code) => reject(new Error(`chrome exited ${code}: ${stderr}`)));
+    chrome.on("exit", (code) =>
+      reject(new Error(`chrome exited ${code}: ${stderr}`)),
+    );
   });
 }
 
@@ -160,7 +209,9 @@ function cdp(wsUrl) {
     send(method, params = {}, sessionId) {
       const msgId = ++id;
       ws.send(JSON.stringify({ id: msgId, method, params, sessionId }));
-      return new Promise((resolve, reject) => pending.set(msgId, { resolve, reject }));
+      return new Promise((resolve, reject) =>
+        pending.set(msgId, { resolve, reject }),
+      );
     },
     on(fn) {
       listeners.push(fn);
@@ -180,8 +231,14 @@ async function main() {
     const map = params.get("map");
     if (map) maps.add(map);
     if (params.get("scenario") === "blob") {
-      const file = path.join(fixturesDir, `${params.get("fixture") ?? "inferno"}.json`);
-      if (!existsSync(file)) throw new Error(`${file} missing: run scripts/replay-stage/build-fixture.mjs`);
+      const file = path.join(
+        fixturesDir,
+        `${params.get("fixture") ?? "inferno"}.json`,
+      );
+      if (!existsSync(file))
+        throw new Error(
+          `${file} missing: run scripts/replay-stage/build-fixture.mjs`,
+        );
       const blobMap = JSON.parse(readFileSync(file, "utf8")).map_name;
       if (blobMap) maps.add(blobMap);
     }
@@ -194,18 +251,34 @@ async function main() {
   const { chrome, profile, browserWs } = await launchChrome();
   const client = cdp(browserWs);
   await client.ready;
-  const { targetId } = await client.send("Target.createTarget", { url: "about:blank" });
-  const { sessionId } = await client.send("Target.attachToTarget", { targetId, flatten: true });
+  const { targetId } = await client.send("Target.createTarget", {
+    url: "about:blank",
+  });
+  const { sessionId } = await client.send("Target.attachToTarget", {
+    targetId,
+    flatten: true,
+  });
   await client.send("Runtime.enable", {}, sessionId);
   await client.send("Page.enable", {}, sessionId);
-  await client.send("Emulation.setDeviceMetricsOverride", { width: size[0], height: size[1], deviceScaleFactor: 1, mobile: false }, sessionId);
+  await client.send(
+    "Emulation.setDeviceMetricsOverride",
+    { width: size[0], height: size[1], deviceScaleFactor: 1, mobile: false },
+    sessionId,
+  );
   const logs = [];
   client.on((msg) => {
     if (msg.sessionId !== sessionId) return;
-    if (msg.method === "Runtime.consoleAPICalled" && ["error", "warning"].includes(msg.params.type)) {
-      logs.push(`${msg.params.type}: ${msg.params.args.map((a) => a.value ?? a.description).join(" ")}`);
+    if (
+      msg.method === "Runtime.consoleAPICalled" &&
+      ["error", "warning"].includes(msg.params.type)
+    ) {
+      logs.push(
+        `${msg.params.type}: ${msg.params.args.map((a) => a.value ?? a.description).join(" ")}`,
+      );
     } else if (msg.method === "Runtime.exceptionThrown") {
-      logs.push(`exception: ${msg.params.exceptionDetails.exception?.description ?? msg.params.exceptionDetails.text}`);
+      logs.push(
+        `exception: ${msg.params.exceptionDetails.exception?.description ?? msg.params.exceptionDetails.text}`,
+      );
     }
   });
 
@@ -217,15 +290,33 @@ async function main() {
       params.delete("name");
       logs.length = 0;
       const started = Date.now();
-      await client.send("Page.navigate", { url: `http://127.0.0.1:${port}/index.html?${params}` }, sessionId);
+      await client.send(
+        "Page.navigate",
+        { url: `http://127.0.0.1:${port}/index.html?${params}` },
+        sessionId,
+      );
       let state = null;
       for (let i = 0; i < 600; i++) {
         await sleep(100);
-        const { result } = await client.send("Runtime.evaluate", { expression: "JSON.stringify({ready: !!window.__stageReady, error: window.__stageError ?? null})", returnByValue: true }, sessionId).catch(() => ({ result: {} }));
+        const { result } = await client
+          .send(
+            "Runtime.evaluate",
+            {
+              expression:
+                "JSON.stringify({ready: !!window.__stageReady, error: window.__stageError ?? null})",
+              returnByValue: true,
+            },
+            sessionId,
+          )
+          .catch(() => ({ result: {} }));
         state = result.value ? JSON.parse(result.value) : null;
         if (state?.ready) break;
       }
-      const { data } = await client.send("Page.captureScreenshot", { format: "png" }, sessionId);
+      const { data } = await client.send(
+        "Page.captureScreenshot",
+        { format: "png" },
+        sessionId,
+      );
       const file = path.join(out, `${name}.png`);
       writeFileSync(file, Buffer.from(data, "base64"));
       const secs = ((Date.now() - started) / 1000).toFixed(1);
@@ -243,7 +334,12 @@ async function main() {
     chrome.kill("SIGKILL");
     await Promise.race([exited, sleep(2000)]);
     server.close();
-    rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+    rmSync(profile, {
+      recursive: true,
+      force: true,
+      maxRetries: 5,
+      retryDelay: 100,
+    });
     rmSync(distDir, { recursive: true, force: true });
   }
   process.exit(failed ? 1 : 0);

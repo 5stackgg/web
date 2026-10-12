@@ -9,14 +9,17 @@ import {
   upperBound,
 } from "./frameIndex";
 import type { RoundIndex, RoundRange, StageBlob, Track } from "./frameIndex";
+import { visionPast } from "./visionFrame";
 import type {
   StageBomb,
+  StageBombAction,
   StageFlame,
   StageFrame,
   StageGrenadeType,
   StageGroundItem,
   StageHeatPoint,
   StagePlayer,
+  StageTeam,
   StageThrowPath,
   Vec3,
 } from "./types";
@@ -58,6 +61,15 @@ export type StageFrameOptions = {
   callouts?: boolean;
   /** The storey in view on a stacked map, source-unit z; players off it dim. */
   levelBand?: { min: number; max: number } | null;
+  /** Fog of war and who sees whom. */
+  vision?: boolean;
+  /**
+   * Whose sight the fog shows. Unset, the followed player's side, or both
+   * sides while nobody is followed.
+   */
+  visionSide?: StageTeam | "both" | null;
+  /** The C4's damage zones while it is planted ("Blast radius"). */
+  blastZones?: boolean;
 };
 
 export type StageRound = RoundRange;
@@ -69,7 +81,11 @@ const HURT_SECS = 1.5;
 const DETONATION_SECS = 3;
 const DECOY_SECS = 15;
 const BLAST_SECS = 2;
-const C4_SECS = 40;
+/**
+ * Planted to bomb_exploded in CS2 demos: the 40s mp_c4timer plus the second
+ * the event lands after it (41.00s on every explosion measured).
+ */
+export const C4_SECS = 41;
 /** Flame catch and gutter, as `liveFlames` in utils/smokeVolume. */
 const FLAME_IGNITE_SECS = 0.35;
 const FLAME_DIE_SECS = 0.6;
@@ -114,6 +130,7 @@ export function buildStageFrame(
   const rate = blob.tick_rate || 64;
   const frame: StageFrame = {
     time: index ? (tick - index.range.freezeEndTick) / rate : 0,
+    tick,
     tickRate: rate,
     players: [],
     shots: [],
@@ -153,6 +170,7 @@ export function buildStageFrame(
 
   const bomb = bombState(index, tick);
   const blobNames = playerNames(blob);
+  const actions = bombActions(index, tick);
   for (const track of index.tracks) {
     const player = playerAt(
       index,
@@ -162,6 +180,9 @@ export function buildStageFrame(
       options,
       blobNames,
     );
+    if (player.alive && actions.has(player.id)) {
+      player.bombAction = actions.get(player.id);
+    }
     if (
       options.deaths === false &&
       player.diedAge !== null &&
@@ -365,6 +386,7 @@ export function buildStageFrame(
       kind: b.state === "dropped" ? "bomb" : "planted",
       at: b.at,
       age: bomb.plantTick !== null ? ago(bomb.plantTick) : b.age,
+      timer: b.timer,
     });
   }
   if (options.groundKits !== false) {
@@ -385,6 +407,16 @@ export function buildStageFrame(
   }
   if (options.levelBand) {
     frame.levelBand = options.levelBand;
+  }
+  if (options.vision) {
+    frame.vision = visionPast(index, tick);
+    frame.visionSide =
+      options.visionSide ??
+      frame.players.find((p) => p.selected)?.team ??
+      "both";
+  }
+  if (options.blastZones) {
+    frame.blastZones = true;
   }
   return frame;
 }
@@ -532,7 +564,7 @@ function playerAt(
     health,
     armor: a.armor ?? 0,
     helmet: !!a.helmet,
-    weapon: a.active_weapon ?? null,
+    weapon: shownWeapon(rows, Math.max(0, Math.min(rows.length - 1, i)), rate),
     hasBomb: carrier === undefined ? !!a.has_bomb : carrier === id,
     hasKit: !!a.has_defuser,
     ducked: !!a.ducked,
@@ -544,7 +576,121 @@ function playerAt(
     hurtAge,
     diedAge: dead ? (tick - track.deathTick!) / rate : null,
     selected: !!options.selectedId && String(options.selectedId) === id,
+    speed:
+      dead || b === a
+        ? 0
+        : Math.hypot(b.x - a.x, b.y - a.y) / ((b.tick - a.tick) / rate),
+    weaponAge: dead ? null : weaponAge(track, i, tick, rate),
   };
+}
+
+/** A weapon out for less than this between two others is a quick switch. */
+const FLICK_SECS = 0.3;
+
+/**
+ * The weapon to show at row `j`: the one in hand, unless it was only out
+ * for a quick switch (a q-q, a flick to the knife), when the one before it
+ * stays up. Scans only a few rows either side.
+ */
+function shownWeapon(rows: Track["rows"], j: number, rate: number) {
+  const window = FLICK_SECS * rate;
+  for (let guard = 0; guard < 8 && j >= 0; guard++) {
+    const held = rows[j].active_weapon ?? null;
+    const same = (k: number) => (rows[k].active_weapon ?? null) === held;
+    let s = j;
+    while (s > 0 && same(s - 1) && rows[j].tick - rows[s - 1].tick < window) {
+      s--;
+    }
+    let e = j;
+    while (
+      e < rows.length - 1 &&
+      same(e + 1) &&
+      rows[e + 1].tick - rows[j].tick < window
+    ) {
+      e++;
+    }
+    const flick =
+      s > 0 &&
+      e < rows.length - 1 &&
+      !same(s - 1) &&
+      !same(e + 1) &&
+      rows[e + 1].tick - rows[s].tick < window;
+    if (!flick) {
+      return held;
+    }
+    j = s - 1;
+  }
+  return rows[Math.max(0, j)]?.active_weapon ?? null;
+}
+
+/** Seconds since the weapon shown at row `i` came up, under a second. */
+function weaponAge(track: Track, i: number, tick: number, rate: number) {
+  const rows = track.rows;
+  if (i <= 0 || i >= rows.length) {
+    return null;
+  }
+  const shown = shownWeapon(rows, i, rate);
+  for (let j = i; j > 0 && tick - rows[j].tick < rate; j--) {
+    if (shownWeapon(rows, j - 1, rate) !== shown) {
+      return (tick - rows[j].tick) / rate;
+    }
+  }
+  return null;
+}
+
+const PLANT_SECS = 3.2;
+const DEFUSE_SECS = 10;
+const DEFUSE_KIT_SECS = 5;
+
+/**
+ * Plants and defuses under way at `tick`, by player: from their begin
+ * events to the abort, plant, defuse or explosion that ends them.
+ */
+function bombActions(index: RoundIndex, tick: number) {
+  const open = new Map<
+    string,
+    { kind: "plant" | "defuse"; tick: number; kit: boolean }
+  >();
+  for (const b of index.bombs) {
+    if (b.tick > tick) {
+      break;
+    }
+    const id = b.player != null ? String(b.player) : null;
+    switch (b.type) {
+      case "plant_begin":
+        if (id) {
+          open.set(id, { kind: "plant", tick: b.tick, kit: false });
+        }
+        break;
+      case "defuse_begin":
+        if (id) {
+          open.set(id, { kind: "defuse", tick: b.tick, kit: !!b.has_kit });
+        }
+        break;
+      case "plant_abort":
+      case "defuse_abort":
+        if (id) {
+          open.delete(id);
+        }
+        break;
+      case "planted":
+      case "defused":
+      case "exploded":
+        open.clear();
+        break;
+    }
+  }
+  const actions = new Map<string, StageBombAction>();
+  for (const [id, a] of open) {
+    const duration =
+      a.kind === "plant" ? PLANT_SECS : a.kit ? DEFUSE_KIT_SECS : DEFUSE_SECS;
+    const age = (tick - a.tick) / index.rate;
+    // A begin whose end the demo lost stops a little after it would have.
+    if (age <= duration + 0.5) {
+      actions.set(id, { kind: a.kind, age, duration, kit: a.kit });
+    }
+  }
+  return actions;
 }
 
 /** The demo's own flash durations, on CS2's overlay curve. */
@@ -679,6 +825,16 @@ function bombState(index: RoundIndex, tick: number): BombWalk {
   return walk;
 }
 
+/** When the planted bomb goes off: the round's explosion, else the fuse. */
+function bombDeadline(index: RoundIndex, plantTick: number): number {
+  for (const b of index.bombs) {
+    if (b.tick >= plantTick && b.type === "exploded") {
+      return b.tick;
+    }
+  }
+  return plantTick + C4_SECS * index.rate;
+}
+
 function planterAt(track: Track, tick: number): Vec3 {
   const i = Math.max(0, upperBound(track.ticks, tick) - 1);
   const row = track.rows[i];
@@ -706,7 +862,7 @@ function bombFrame(
     age: (tick - walk.since) / index.rate,
     timer:
       armed && walk.plantTick !== null
-        ? Math.max(0, C4_SECS - (tick - walk.plantTick) / index.rate)
+        ? Math.max(0, (bombDeadline(index, walk.plantTick) - tick) / index.rate)
         : null,
   };
 }

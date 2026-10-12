@@ -5,6 +5,7 @@ import {
   fetchReplayBlob,
   normalizeBlobGrenades,
 } from "~/composables/useReplayBlob";
+import { normalizeRoundInventory } from "~/utilities/demoWeaponNames";
 import { Loader2 } from "lucide-vue-next";
 import ReplayViewer from "~/components/match/ReplayViewer.vue";
 
@@ -121,7 +122,7 @@ export default {
       self.demoBombs = data.demoBombs ?? [];
       self.demoKitDrops = data.demoKitDrops ?? [];
       self.demoRoundTicks = data.demoRoundTicks ?? [];
-      self.roundInventory = data.roundInventory ?? [];
+      self.roundInventory = normalizeRoundInventory(data.roundInventory ?? []);
       self.roundEconomy = data.roundEconomy ?? [];
       self.tickRate = data.tickRate ?? 64;
       self.hydratedFromOpener = true;
@@ -173,7 +174,9 @@ export default {
           self.demoBombs = blob.bombs ?? [];
           self.demoKitDrops = blob.kit_drops ?? [];
           self.demoRoundTicks = blob.round_ticks ?? [];
-          self.roundInventory = blob.round_inventory ?? [];
+          self.roundInventory = normalizeRoundInventory(
+            blob.round_inventory ?? [],
+          );
           self.tickRate = blob.tick_rate || 64;
         } catch (error) {
           // eslint-disable-next-line no-console

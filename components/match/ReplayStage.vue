@@ -15,6 +15,7 @@ import { createStageModules } from "~/utilities/replayStage/modules";
 import { EMPTY_FRAME } from "~/utilities/replayStage/types";
 import type { StageFrame, StageView } from "~/utilities/replayStage/types";
 import type { MapLevel } from "~/utilities/replayStage/mapLevels";
+import { useI18n } from "vue-i18n";
 
 /**
  * The replay stage: one three.js renderer for both the 2D (straight down) and
@@ -30,10 +31,18 @@ const props = withDefaults(
     running?: boolean;
     /** The storey shown on a stacked map (Nuke, Vertigo); null is the top. */
     level?: string | null;
+    /** A stacked map's storeys laid side by side, or one at a time (`level`). */
+    levelLayout?: "side" | "single";
     /** The map's own name when its file name is not one (workshop maps). */
     mapTitle?: string | null;
   }>(),
-  { view: "3d", running: true, level: null, mapTitle: null },
+  {
+    view: "3d",
+    running: true,
+    level: null,
+    levelLayout: "side",
+    mapTitle: null,
+  },
 );
 
 const emit = defineEmits<{
@@ -46,6 +55,7 @@ const emit = defineEmits<{
 }>();
 
 const runtimeConfig = useRuntimeConfig();
+const { t } = useI18n();
 const canvas = ref<HTMLCanvasElement | null>(null);
 const stage = shallowRef<Stage | null>(null);
 const camera = shallowRef<
@@ -91,6 +101,11 @@ onMounted(() => {
   camera.value = rig;
   map.value = mapModule;
   mapModule.setTitle(props.mapTitle);
+  mapModule.setLevelLabels({
+    upper: t("match.replay.chrome.level_upper"),
+    lower: t("match.replay.chrome.level_lower"),
+  });
+  mapModule.setLevelLayout(props.levelLayout);
   utility.value = overlay;
   stage.value.setFrame(EMPTY_FRAME);
   stage.value.setRunning(props.running);
@@ -128,6 +143,20 @@ async function loadMap(name: string | null) {
   }
   stage.value.setFrame(props.frame);
   ready.value = true;
+  for (const fn of readyQueue.splice(0)) {
+    fn();
+  }
+}
+
+// Work that has to wait for the map to settle and be framed (a shared
+// moment's camera): it runs then, or now if that already happened.
+const readyQueue: Array<() => void> = [];
+function whenReady(fn: () => void) {
+  if (ready.value) {
+    fn();
+  } else {
+    readyQueue.push(fn);
+  }
 }
 
 watch(
@@ -155,6 +184,16 @@ watch(
   (level) => map.value?.setLevel(level),
 );
 watch(
+  () => props.levelLayout,
+  (layout) => {
+    map.value?.setLevelLayout(layout);
+    // Back out to the whole table, however far in the viewer had zoomed.
+    if (ready.value) {
+      camera.value?.frameMap(true);
+    }
+  },
+);
+watch(
   () => props.mapTitle,
   (title) => map.value?.setTitle(title),
 );
@@ -165,7 +204,7 @@ onBeforeUnmount(() => {
   stage.value = null;
 });
 
-defineExpose({ stage, camera, map, utility });
+defineExpose({ stage, camera, map, utility, whenReady });
 </script>
 
 <template>

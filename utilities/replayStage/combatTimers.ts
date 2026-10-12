@@ -163,16 +163,44 @@ void main() {
   over(vec3(0.0), 0.35 * band);
   over(arc, band * step(turn, fraction));
 
-  // Whole seconds left, centred.
-  float tens = floor(seconds / 10.0);
-  float ones = seconds - tens * 10.0;
-  float two = step(0.5, tens);
-  float wTens = advance(tens) * two;
-  float wOnes = advance(ones);
-  float left = -0.5 * (wTens + wOnes);
   vec2 dp = c - vec2(0.0, -0.5);
-  float ink = digit(dp - vec2(left + 0.5 * wTens, 0.0), tens) * two
-    + digit(dp - vec2(left + wTens + 0.5 * wOnes, 0.0), ones);
+  float ink = 0.0;
+  if (vTimer.w > 0.5) {
+    // The last seconds to the hundredth, stopwatch style: the whole second
+    // large, the hundredths smaller on the same baseline, centred together.
+    float kBig = 0.95;
+    float kSmall = 0.62;
+    float v = max(seconds, 0.0);
+    float whole = min(floor(v), 9.0);
+    float hund = min(floor((v - whole) * 100.0), 99.0);
+    float d1 = floor(hund / 10.0);
+    float d2 = hund - d1 * 10.0;
+    float w0 = advance(whole) * kBig;
+    float w1 = advance(d1) * kSmall;
+    float w2 = advance(d2) * kSmall;
+    float wDot = 3.4;
+    float left = -0.5 * (w0 + wDot + w1 + w2);
+    // Digits sit centred on their cell; drop the small ones so their feet
+    // meet the big one's.
+    float base = -0.34 * DIGIT_PX * kBig;
+    float yBig = 0.0;
+    float ySmall = base + 0.34 * DIGIT_PX * kSmall;
+    ink = digit((dp - vec2(left + 0.5 * w0, yBig)) / kBig, whole)
+      + digit((dp - vec2(left + w0 + wDot + 0.5 * w1, ySmall)) / kSmall, d1)
+      + digit((dp - vec2(left + w0 + wDot + w1 + 0.5 * w2, ySmall)) / kSmall, d2);
+    vec2 point = dp - vec2(left + w0 + 0.5 * wDot, base + 1.4);
+    ink += 1.0 - smoothstep(0.9, 1.7, length(point));
+  } else {
+    // Whole seconds left, centred.
+    float tens = floor(seconds / 10.0);
+    float ones = seconds - tens * 10.0;
+    float two = step(0.5, tens);
+    float wTens = advance(tens) * two;
+    float wOnes = advance(ones);
+    float left = -0.5 * (wTens + wOnes);
+    ink = digit(dp - vec2(left + 0.5 * wTens, 0.0), tens) * two
+      + digit(dp - vec2(left + wTens + 0.5 * wOnes, 0.0), ones);
+  }
   over(mix(vec3(1.0), vec3(1.0, 0.86, 0.45), warn), clamp(ink, 0.0, 1.0));
 
   // Utility chip on the disc's shoulder.
@@ -206,6 +234,8 @@ export type TimerBatch = {
     fraction: number,
     seconds: number,
     icon: number,
+    /** Show `seconds` to the hundredth (under ten) instead of whole. */
+    hundredths?: boolean,
   ): void;
   end(): void;
   setViewport(width: number, height: number): void;
@@ -266,7 +296,18 @@ export function createTimerBatch(max: number): TimerBatch {
     begin() {
       count = 0;
     },
-    push(x, y, scale, alpha, team, warn, fraction, seconds, icon) {
+    push(
+      x,
+      y,
+      scale,
+      alpha,
+      team,
+      warn,
+      fraction,
+      seconds,
+      icon,
+      hundredths = false,
+    ) {
       if (count >= max || alpha <= 0) {
         return;
       }
@@ -280,6 +321,7 @@ export function createTimerBatch(max: number): TimerBatch {
       iTimer[i] = fraction;
       iTimer[i + 1] = seconds;
       iTimer[i + 2] = icon;
+      iTimer[i + 3] = hundredths ? 1 : 0;
     },
     end() {
       geometry.instanceCount = count;

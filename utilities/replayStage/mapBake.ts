@@ -96,7 +96,11 @@ export function createMapBake(
   const skyMaterial = new THREE.ShaderMaterial({
     vertexShader: MAP_VERT,
     fragmentShader: HEIGHT_FRAG,
-    uniforms: { ...cutUniforms, uCut2D: { value: 1e9 }, uZRange: { value: zRange } },
+    uniforms: {
+      ...cutUniforms,
+      uCut2D: { value: 1e9 },
+      uZRange: { value: zRange },
+    },
     side: THREE.DoubleSide,
   });
   const depthMaterial = new THREE.ShaderMaterial({

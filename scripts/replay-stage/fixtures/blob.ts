@@ -5,6 +5,7 @@ import {
 } from "../../../utilities/replayStage/frame";
 import type { StageFrameOptions } from "../../../utilities/replayStage/frame";
 import type { StageBlob } from "../../../utilities/replayStage/frameIndex";
+import { buildOverlayFrame } from "../../../utilities/replayStage/overlayFrame";
 import type { Scenario } from "./index";
 
 /**
@@ -12,12 +13,14 @@ import type { Scenario } from "./index";
  * through `buildStageFrame`: `?scenario=blob&fixture=inferno&round=8&t=14.5`.
  * `t` is seconds after freeze time ended; `select` picks a player by steam id
  * or name. `options` are the viewer's toggles (heatmap, trails, ...).
+ * `overlay` stacks those rounds instead, as the buy-round overlay does.
  */
 export async function blobScenario(
   fixture: string,
   round: number | null,
   select: string | null,
   options: StageFrameOptions = {},
+  overlay: number[] | null = null,
 ): Promise<Scenario> {
   const res = await fetch(`./fixtures/${fixture}.json`);
   if (!res.ok) {
@@ -46,6 +49,13 @@ export async function blobScenario(
     floor: 0,
     duration: (range.endTick - range.freezeEndTick) / rate,
     frameAt(t) {
+      if (overlay?.length) {
+        return buildOverlayFrame(blob, overlay, t, {
+          utility: options.utility,
+          tail: 5,
+          callouts: options.callouts,
+        });
+      }
       return buildStageFrame(
         blob,
         range.round,

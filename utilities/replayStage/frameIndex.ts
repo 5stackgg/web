@@ -99,6 +99,8 @@ export type BombRow = {
   type: string;
   player?: string;
   site?: string;
+  /** On "defuse_begin": whether they have a kit (5s, not 10s). */
+  has_kit?: boolean;
   x?: number;
   y?: number;
   z?: number;
@@ -211,6 +213,8 @@ export type IndexedGrenade = {
   /** Evenly spaced in time from `throwTick` to `endTick`. */
   path: Vec3[] | null;
   at: Vec3;
+  /** Who threw it, by steam id, when the demo says. */
+  throwerId?: string | null;
 };
 
 export type IndexedSmoke = {
@@ -1531,6 +1535,10 @@ function buildGrenades(
           ? flightPath(thr!, endTick, at, trajectory)
           : null,
       at,
+      throwerId:
+        thr?.thrower_steam_id || det?.thrower_steam_id
+          ? String(thr?.thrower_steam_id || det?.thrower_steam_id)
+          : null,
     });
     if (!det) {
       continue;

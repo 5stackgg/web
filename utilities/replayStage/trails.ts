@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { pxScale } from "./fx";
 import { TEAM_BASE } from "./teamColors";
-import type { StageModule, StageTrails } from "./types";
+import type { StageContext, StageModule, StageTrails } from "./types";
 
 /**
  * Where everyone walked this round, as ribbons flat on the floor in team
@@ -47,6 +47,7 @@ const FRAG = /* glsl */ `
 uniform vec3 uCt;
 uniform vec3 uT;
 uniform float uDim;
+uniform float uTail;
 varying float vAge;
 varying float vSide;
 varying float vTeam;
@@ -55,6 +56,8 @@ void main() {
   if (vAge < 0.0) discard;
   float recent = exp(-vAge / ${FADE_SECS.toFixed(1)});
   float alpha = mix(${OLD.toFixed(2)}, 0.9, recent) * mix(uDim, 1.0, vFocus);
+  // A tail, when asked for one, runs out instead of fading to a floor.
+  if (uTail > 0.0) alpha = 0.9 * (1.0 - smoothstep(uTail * 0.35, uTail, vAge));
   vec3 team = mix(uCt, uT, vTeam);
   float edge = abs(vSide);
   // A dark rim, so the line reads on sand and on shadow alike.
@@ -73,7 +76,12 @@ export function createTrailsModule(): StageModule {
   /** Player id → its index in the built mesh, for the focus. */
   let players = new Map<string, number>();
 
-  function build(trails: StageTrails) {
+  const spot = { x: 0, y: 0, z: 0 };
+  const at = new THREE.Vector3();
+  let builtShift: StageContext["levelShift"] = null;
+
+  function build(trails: StageTrails, ctx: StageContext) {
+    builtShift = ctx.levelShift ?? null;
     const geometry = mesh!.geometry;
     geometry.dispose();
     const next = new THREE.BufferGeometry();
@@ -113,9 +121,15 @@ export function createTrailsModule(): StageModule {
         dx /= len;
         dz /= len;
         for (let s = -1; s <= 1; s += 2) {
-          position[v * 3] = p[k * 4];
-          position[v * 3 + 1] = p[k * 4 + 2];
-          position[v * 3 + 2] = -p[k * 4 + 1];
+          // Through `wpos`, so a walk on a lower storey laid side by side
+          // is drawn on its copy.
+          spot.x = p[k * 4];
+          spot.y = p[k * 4 + 1];
+          spot.z = p[k * 4 + 2];
+          ctx.wpos(spot, at);
+          position[v * 3] = at.x;
+          position[v * 3 + 1] = at.y;
+          position[v * 3 + 2] = at.z;
           dir[v * 2] = dx;
           dir[v * 2 + 1] = dz;
           side[v] = s;
@@ -124,7 +138,14 @@ export function createTrailsModule(): StageModule {
           info[v * 2 + 1] = player;
           v++;
         }
-        if (i > 0) {
+        // A walk down to a storey laid beside the map breaks there, rather
+        // than drawing a line across to its copy.
+        const shift = ctx.levelShift;
+        const crosses =
+          !!shift &&
+          i > 0 &&
+          p[k * 4 + 2] < shift.below !== p[(k - 1) * 4 + 2] < shift.below;
+        if (i > 0 && !crosses) {
           const o = v - 4;
           index[n++] = o;
           index[n++] = o + 1;
@@ -141,6 +162,8 @@ export function createTrailsModule(): StageModule {
     next.setAttribute("aTime", new THREE.BufferAttribute(time, 1));
     next.setAttribute("aInfo", new THREE.BufferAttribute(info, 2));
     next.setIndex(new THREE.BufferAttribute(index, 1));
+    // Breaks between storeys leave the tail of the index unused.
+    next.setDrawRange(0, n);
     mesh!.geometry = next;
     built = trails;
   }
@@ -155,6 +178,7 @@ export function createTrailsModule(): StageModule {
           uNow: { value: 0 },
           uFocus: { value: -1 },
           uDim: { value: 1 },
+          uTail: { value: 0 },
           uPxScale: { value: 0.001 },
           uCt: { value: new THREE.Color(TEAM_BASE.ct) },
           uT: { value: new THREE.Color(TEAM_BASE.t) },
@@ -178,8 +202,8 @@ export function createTrailsModule(): StageModule {
         mesh!.visible = false;
         return;
       }
-      if (trails !== built) {
-        build(trails);
+      if (trails !== built || (ctx.levelShift ?? null) !== builtShift) {
+        build(trails, ctx);
       }
       let focus = -1;
       for (const player of frame.players) {
@@ -191,6 +215,7 @@ export function createTrailsModule(): StageModule {
       u.uNow.value = frame.time;
       u.uFocus.value = focus;
       u.uDim.value = focus >= 0 ? 0.5 : 1;
+      u.uTail.value = trails.tail ?? 0;
       u.uPxScale.value = pxScale(ctx);
       // From straight above it is a radar: walks under a roof still show.
       material!.depthTest = ctx.view === "3d";

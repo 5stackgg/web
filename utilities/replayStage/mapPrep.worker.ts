@@ -1,20 +1,11 @@
-import {
-  prepareMap,
-  type PrepArea,
-  type PrepChunk,
-  type PrepResult,
-} from "./mapPrep";
-
-type PrepRequest = { chunks: PrepChunk[]; areas: PrepArea };
+import { runPrep, type PrepRequest } from "./mapPrepPack";
 
 self.addEventListener("message", (event: MessageEvent<PrepRequest>) => {
-  const result: PrepResult = prepareMap(event.data.chunks, event.data.areas);
+  const reply = runPrep(event.data);
+  const { result, packed } = reply;
   const transfer: Transferable[] = [
     result.pick.start.buffer,
     result.pick.items.buffer,
-    result.ground.z.buffer,
-    result.ground.enclosed.buffer,
-    result.ground.open.buffer,
   ];
   for (const mesh of [result.solid, result.seeThrough]) {
     transfer.push(
@@ -26,5 +17,9 @@ self.addEventListener("message", (event: MessageEvent<PrepRequest>) => {
       mesh.canopy.buffer,
     );
   }
-  self.postMessage(result, { transfer });
+  if (packed) {
+    transfer.push(packed);
+  }
+  // The ground's arrays may be views into the core sent in: copy, not move.
+  self.postMessage(reply, { transfer });
 });

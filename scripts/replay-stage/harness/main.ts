@@ -38,7 +38,10 @@ import { blobScenario } from "../fixtures/blob";
  *
  * The viewer's toggles, for blob scenarios: `heat=1` (utility heatmap),
  * `hide=flash,he` (utility types filtered out), `pick=12,15` (grenade ids
- * picked), `trails=1`, `deaths=0`, `bomb=0`, `kits=0`, `callouts=1`.
+ * picked), `trails=1`, `deaths=0`, `bomb=0`, `kits=0`, `callouts=1`,
+ * `vision=1` (fog of war and sight lines; `side=ct|t|both`, else the
+ * followed player's side), `blast=1` (the C4's damage zones).
+ * `overlay=1,2,3` stacks those rounds on one clock (the buy-round overlay).
  */
 
 declare global {
@@ -81,6 +84,9 @@ function frameOptions(): StageFrameOptions {
     groundBomb: flag("bomb"),
     groundKits: flag("kits"),
     callouts: flag("callouts"),
+    vision: flag("vision"),
+    visionSide: (query.get("side") as StageFrameOptions["visionSide"]) ?? null,
+    blastZones: flag("blast"),
   };
 }
 
@@ -104,6 +110,7 @@ function loadScenario(): Promise<Scenario> | Scenario {
       round ? Number(round) : null,
       query.get("select"),
       frameOptions(),
+      query.get("overlay")?.split(",").filter(Boolean).map(Number) ?? null,
     );
   }
   const scenario = scenarios[name];
@@ -153,9 +160,16 @@ async function main() {
   }
   window.__stage = stage;
   window.__camera = camera;
+  const opening = performance.now();
   await stage.setMap(scenario.map);
+  const fetched = performance.now() - opening;
   // `level=lower`: one storey of a stacked map, shown at once.
+  // `layout=single` (implied by `level=`): one storey at a time, not side by side.
   const levelParam = query.get("level");
+  if (levelParam || query.get("layout") === "single") {
+    map.setLevelLayout("single");
+    camera.frameMap();
+  }
   if (levelParam) {
     map.setLevel(levelParam, false);
   }
@@ -199,7 +213,12 @@ async function main() {
   }
   stage.render(clock);
   if (bakeStats) {
-    console.warn(`map stats ${JSON.stringify(map.stats)}`);
+    // fetchMs: assets fetched and parsed; openMs: to the first finished frame.
+    const timing = {
+      fetchMs: Math.round(fetched),
+      openMs: Math.round(performance.now() - opening),
+    };
+    console.warn(`map stats ${JSON.stringify({ ...map.stats, ...timing })}`);
   }
   window.__stageReady = true;
 }

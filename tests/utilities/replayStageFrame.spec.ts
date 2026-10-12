@@ -618,6 +618,69 @@ describe("buildStageFrame utility", () => {
     expect(buildStageFrame(b, 1, 960 + 64 * 16).detonations).toHaveLength(0);
   });
 
+  it("times plants and defuses on the player, until they stop", () => {
+    const b = blob({
+      bombs: [
+        { tick: 1000, type: "plant_begin", player: T },
+        { tick: 1064, type: "plant_abort", player: T },
+        { tick: 1200, type: "plant_begin", player: T },
+        { tick: 1405, type: "planted", player: T, x: 1, y: 1, z: 0 },
+        { tick: 2000, type: "defuse_begin", player: CT, has_kit: true },
+        { tick: 2100, type: "defuse_abort", player: CT },
+        { tick: 2200, type: "defuse_begin", player: CT },
+      ],
+    });
+    const at = (tick: number, id: string) =>
+      buildStageFrame(b, 1, tick).players.find((p) => p.id === id)!.bombAction;
+    expect(at(1032, T)).toMatchObject({
+      kind: "plant",
+      age: 0.5,
+      duration: 3.2,
+    });
+    expect(at(1100, T)).toBeFalsy();
+    expect(at(1300, T)?.age).toBeCloseTo(100 / 64);
+    expect(at(1500, T)).toBeFalsy();
+    expect(at(2032, CT)).toMatchObject({
+      kind: "defuse",
+      duration: 5,
+      kit: true,
+    });
+    expect(at(2150, CT)).toBeFalsy();
+    expect(at(2264, CT)).toMatchObject({ age: 1, duration: 10, kit: false });
+  });
+
+  it("gives players their speed and how long they have held their weapon", () => {
+    const b = blob({
+      positions: [
+        position(T, "t", 100, 0, { active_weapon: "knife" }),
+        position(T, "t", 132, 125, { active_weapon: "ak47" }),
+        position(T, "t", 164, 250, { active_weapon: "ak47" }),
+        position(T, "t", 4000, 250, { active_weapon: "ak47" }),
+      ],
+    });
+    const player = buildStageFrame(b, 1, 148).players[0];
+    expect(player.speed).toBeCloseTo(250);
+    expect(player.weaponAge).toBeCloseTo(16 / 64);
+    expect(buildStageFrame(b, 1, 3000).players[0].weaponAge).toBeNull();
+  });
+
+  it("keeps the gun up through a quick switch", () => {
+    const b = blob({
+      positions: [
+        position(T, "t", 100, 0, { active_weapon: "ak47" }),
+        position(T, "t", 116, 0, { active_weapon: "ak47" }),
+        position(T, "t", 132, 0, { active_weapon: "knife" }),
+        position(T, "t", 148, 0, { active_weapon: "ak47" }),
+        position(T, "t", 4000, 0, { active_weapon: "ak47" }),
+      ],
+    });
+    for (const tick of [136, 152]) {
+      const player = buildStageFrame(b, 1, tick).players[0];
+      expect(player.weapon).toBe("ak47");
+      expect(player.weaponAge).toBeNull();
+    }
+  });
+
   it("tracks the bomb from carrier to plant", () => {
     const b = blob({
       positions: [
@@ -646,9 +709,20 @@ describe("buildStageFrame utility", () => {
       state: "planted",
       at: { x: 90, y: 9 },
       age: 10,
-      timer: 30,
+      timer: 31,
     });
     expect(planted.players[0].hasBomb).toBe(false);
+  });
+
+  it("counts the bomb down to the round's own explosion", () => {
+    const b = blob({
+      bombs: [
+        { tick: 1000, type: "planted", player: T, x: 0, y: 0, z: 0 },
+        { tick: 1000 + 64 * 41, type: "exploded" },
+      ],
+    });
+    expect(buildStageFrame(b, 1, 1000 + 64 * 40).bomb?.timer).toBeCloseTo(1);
+    expect(buildStageFrame(b, 1, 1000 + 64 * 41).bomb?.state).toBe("exploded");
   });
 });
 
@@ -825,7 +899,13 @@ describe("buildStageFrame viewer options", () => {
       kit_drops: [{ tick: 1500, round: 1, player: "x", x: 800, y: 0, z: 0 }],
     });
     expect(buildStageFrame(b, 1, 600).ground).toEqual([
-      { key: "bomb", kind: "bomb", at: { x: 40, y: 50, z: 6 }, age: 1.5625 },
+      {
+        key: "bomb",
+        kind: "bomb",
+        at: { x: 40, y: 50, z: 6 },
+        age: 1.5625,
+        timer: null,
+      },
     ]);
     expect(buildStageFrame(b, 1, 600, { groundBomb: false }).ground).toBe(
       undefined,

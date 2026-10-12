@@ -7646,7 +7646,7 @@
       "remove_member": "メンバーを削除",
       "confirm_remove_member": "このメンバーを削除しますか？",
       "remove_member_description": "メンバーをトーナメントチームから削除します",
-      "min_roster_locked": "トーナメントは開始済みです。ロスターは最小出場メンバー数を下回れないため、プレイヤーを外す前に控えを追加してください",
+      "min_roster_locked": "ブラケットのシードが確定しているため、ロスターは {count} 人未満にできません。先に控えを追加してください。",
       "cancel_invite": "招待を取り消す",
       "confirm_cancel_invite": "この招待を取り消しますか？",
       "cancel_invite_description": "このメンバーへの招待を取り消します",

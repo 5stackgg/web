@@ -7646,7 +7646,7 @@
       "remove_member": "Rimuovi membro",
       "confirm_remove_member": "Rimuovere questo membro?",
       "remove_member_description": "Questo rimuoverà il membro dal team del torneo",
-      "min_roster_locked": "Il torneo è già iniziato — aggiungi una riserva prima di rimuovere un giocatore, il roster non può scendere sotto il lineup minimo",
+      "min_roster_locked": "Il tabellone è già compilato, quindi il roster non può scendere sotto {count}. Aggiungi prima una riserva.",
       "cancel_invite": "Annulla invito",
       "confirm_cancel_invite": "Annullare questo invito?",
       "cancel_invite_description": "Questo annullerà l'invito per questo membro",

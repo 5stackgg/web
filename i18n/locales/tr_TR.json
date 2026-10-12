@@ -7646,7 +7646,7 @@
       "remove_member": "Üyeyi Kaldır",
       "confirm_remove_member": "Bu üyeyi kaldırmak istediğine emin misin?",
       "remove_member_description": "Bu, üyeyi turnuva takımından kaldırır",
-      "min_roster_locked": "Turnuva başladı — bir oyuncuyu çıkarmadan önce bir yedek ekle, kadro minimum diziliş sayısının altına düşemez",
+      "min_roster_locked": "Fikstür sıralaması yapıldı, bu yüzden kadro {count} kişinin altına düşemez. Önce bir yedek ekle.",
       "cancel_invite": "Daveti İptal Et",
       "confirm_cancel_invite": "Bu daveti iptal etmek istediğine emin misin?",
       "cancel_invite_description": "Bu, üyenin davetini iptal eder",

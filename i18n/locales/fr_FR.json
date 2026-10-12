@@ -7646,7 +7646,7 @@
       "remove_member": "Retirer le membre",
       "confirm_remove_member": "Retirer ce membre ?",
       "remove_member_description": "Le membre sera retiré de l'équipe du tournoi",
-      "min_roster_locked": "Le tournoi a commencé — ajoute un remplaçant avant de retirer un joueur, le roster ne peut pas passer sous la composition minimale",
+      "min_roster_locked": "L'arbre est tiré, le roster ne peut donc pas descendre sous {count}. Ajoute d'abord un remplaçant.",
       "cancel_invite": "Annuler l'invitation",
       "confirm_cancel_invite": "Annuler cette invitation ?",
       "cancel_invite_description": "L'invitation de ce membre sera annulée",

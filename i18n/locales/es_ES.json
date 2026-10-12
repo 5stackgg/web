@@ -7646,7 +7646,7 @@
       "remove_member": "Quitar miembro",
       "confirm_remove_member": "¿Seguro que quieres quitar a este miembro?",
       "remove_member_description": "Esto quitará al miembro del equipo del torneo",
-      "min_roster_locked": "El torneo ya ha empezado: añade un suplente antes de quitar a un jugador, el roster no puede bajar de la alineación mínima",
+      "min_roster_locked": "El cuadro ya está sembrado, así que el roster no puede bajar de {count}. Añade antes un suplente.",
       "cancel_invite": "Cancelar invitación",
       "confirm_cancel_invite": "¿Seguro que quieres cancelar esta invitación?",
       "cancel_invite_description": "Esto cancelará la invitación de este miembro",

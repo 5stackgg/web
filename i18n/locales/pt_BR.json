@@ -7646,7 +7646,7 @@
       "remove_member": "Remover Membro",
       "confirm_remove_member": "Você tem certeza que quer remover este membro?",
       "remove_member_description": "Isto irá remover um membro da equipe do torneio",
-      "min_roster_locked": "O torneio já começou — adicione um reserva antes de remover um jogador, o elenco não pode ficar abaixo da escalação mínima",
+      "min_roster_locked": "O chaveamento já foi semeado, então o elenco não pode ficar abaixo de {count}. Adicione um reserva primeiro.",
       "cancel_invite": "Cancelar convite",
       "confirm_cancel_invite": "Cancelar convite",
       "cancel_invite_description": "Tem certeza que deseja cancelar este convite?",

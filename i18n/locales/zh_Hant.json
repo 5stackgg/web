@@ -7646,7 +7646,7 @@
       "remove_member": "移除成員",
       "confirm_remove_member": "您確定要移除此成員嗎？",
       "remove_member_description": "這將從賽事隊伍中移除該成員",
-      "min_roster_locked": "賽事已開始——請先加入替補再移除選手，陣容人數不能低於最低要求",
+      "min_roster_locked": "對陣圖已完成種子排位，陣容不能少於 {count} 人。請先加入替補。",
       "cancel_invite": "取消邀請",
       "confirm_cancel_invite": "您確定要取消此邀請嗎？",
       "cancel_invite_description": "這將取消對該成員的邀請",

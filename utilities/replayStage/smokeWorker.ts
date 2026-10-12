@@ -612,24 +612,32 @@ function flood(solid: Uint8Array, dx: number, dy: number, dz: number) {
 
 /**
  * Valve's arrival grid (1/40 s, 255 never) as reach shares, and its reach:
- * the farthest voxel it filled, measured the way the flood measures.
+ * the farthest voxel it filled, measured the way the flood measures. Valve
+ * fills about half the cloud on the detonation tick; that part rolls out
+ * from the grenade by distance instead, so a voxel arrives at the later of
+ * its own time and the burst's front getting to it.
  */
 function valveShares(arrival: Uint8Array, dx: number, dy: number, dz: number) {
   const share = new Uint8Array(arrival.length).fill(255);
+  const away = new Float32Array(arrival.length);
   let reach = 1;
   for (let v = 0; v < arrival.length; v++) {
     if (arrival[v] === 255) {
       continue;
     }
-    share[v] = Math.min(254, Math.round(smokeReachedBy(arrival[v] / 40) * 254));
-    reach = Math.max(
-      reach,
-      Math.hypot(
-        (v % dx) + 0.5 - (dx >> 1),
-        (Math.floor(v / dx) % dy) + 0.5 - (dy >> 1),
-        (Math.floor(v / (dx * dy)) + 0.5 - (dz >> 1)) * VERTICAL_COST,
-      ),
+    away[v] = Math.hypot(
+      (v % dx) + 0.5 - (dx >> 1),
+      (Math.floor(v / dx) % dy) + 0.5 - (dy >> 1),
+      (Math.floor(v / (dx * dy)) + 0.5 - (dz >> 1)) * VERTICAL_COST,
     );
+    reach = Math.max(reach, away[v]);
+  }
+  for (let v = 0; v < arrival.length; v++) {
+    if (arrival[v] === 255) {
+      continue;
+    }
+    const at = Math.max(smokeReachedBy(arrival[v] / 40), away[v] / reach);
+    share[v] = Math.min(254, Math.round(at * 254));
   }
   return { share, reach };
 }

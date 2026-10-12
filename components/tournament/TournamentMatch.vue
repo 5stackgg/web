@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { computed, ref, watch } from "vue";
 import gql from "graphql-tag";
 import {
+  CirclePlus,
   MoreVertical,
   RotateCcw,
   TriangleAlert,
@@ -27,6 +28,8 @@ import {
   toZoned,
   getLocalTimeZone,
 } from "@internationalized/date";
+import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { useBracketView } from "~/composables/useBracketView";
 import MatchMapDots from "~/components/match/MatchMapDots.vue";
@@ -36,7 +39,9 @@ import {
   e_match_status_enum,
   e_player_roles_enum,
   e_tournament_stage_types_enum,
+  e_tournament_status_enum,
 } from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
 import { useAuthStore } from "~/stores/AuthStore";
 import type { Bracket } from "~/types/tournament";
 import {
@@ -186,6 +191,73 @@ const canManageBracketReset = computed(
     !!props.tournament?.is_organizer ||
     authStore.isRoleAbove(e_player_roles_enum.administrator),
 );
+
+const RECREATE_STATUSES = [
+  e_tournament_status_enum.RegistrationClosed,
+  e_tournament_status_enum.Live,
+  e_tournament_status_enum.Paused,
+] as string[];
+
+const canRecreate = (bracket: Bracket): boolean =>
+  canManageBracketReset.value &&
+  RECREATE_STATUSES.includes(props.tournament?.status ?? "") &&
+  !bracket.bye &&
+  !bracket.match &&
+  !!bracket.team_1 &&
+  !!bracket.team_2;
+
+const isOrphanedWin = (bracket: Bracket): boolean =>
+  canRecreate(bracket) && !!bracket.finished;
+
+// A won slot is replayed by unwinding what it fed, which the api refuses once
+// any of those matches has been played.
+const UNWINDABLE_STATUSES = [
+  e_match_status_enum.Scheduled,
+  e_match_status_enum.WaitingForCheckIn,
+  e_match_status_enum.Canceled,
+] as string[];
+
+const downstreamStarted = (bracket: Bracket): boolean =>
+  !!bracket.finished &&
+  [bracket.parent_bracket?.match, bracket.loser_bracket?.match].some(
+    (match) => !!match?.status && !UNWINDABLE_STATUSES.includes(match.status),
+  );
+
+const recreateDialogOpen = ref(false);
+const recreateTarget = ref<Bracket | null>(null);
+
+const openRecreate = (bracket: Bracket) => {
+  recreateTarget.value = bracket;
+  recreateDialogOpen.value = true;
+};
+
+const recreateMatch = async () => {
+  const bracket = recreateTarget.value;
+  if (!bracket) {
+    return;
+  }
+
+  try {
+    await nuxtApp.$apollo.defaultClient.mutate({
+      mutation: generateMutation({
+        recreateTournamentBracketMatch: [
+          { tournament_bracket_id: bracket.id },
+          { success: true },
+        ],
+      }),
+    });
+  } catch (error: any) {
+    toast({
+      title: t("tournament.match.recreate_failed"),
+      description: error?.message || t("toasts.please_try_again"),
+      variant: "destructive",
+    });
+    return;
+  }
+
+  recreateDialogOpen.value = false;
+  toast({ title: t("tournament.match.recreated") });
+};
 
 const requiresScheduledAt = computed(() => resetTargetWinner.value === "clear");
 
@@ -628,6 +700,13 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
     });
     return;
   }
+  // Every scheduler skips a finished slot, so Schedule would do nothing here.
+  if (isOrphanedWin(bracket)) {
+    if (!downstreamStarted(bracket)) {
+      openRecreate(bracket);
+    }
+    return;
+  }
   // No match yet — open schedule dialog if organizer
   if (props.tournament?.is_organizer) {
     emit("schedule-bracket", bracket);
@@ -894,6 +973,58 @@ const shouldShowCrossBracketDestination = (
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <template v-if="canRecreate(bracket)">
+            <FiveStackToolTip
+              v-if="bracket.finished"
+              as-child
+              :delay-duration="120"
+            >
+              <template #trigger>
+                <span
+                  class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                  tabindex="0"
+                  role="img"
+                  :aria-label="$t('tournament.match.recreate_orphaned')"
+                  @click.stop
+                >
+                  <TriangleAlert class="h-3 w-3" />
+                </span>
+              </template>
+              <p class="max-w-[16rem]">
+                {{ $t("tournament.match.recreate_orphaned") }}
+              </p>
+            </FiveStackToolTip>
+            <DropdownMenu>
+              <DropdownMenuTrigger as-child>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="relative h-5 w-5 rounded-sm text-muted-foreground hover:text-foreground after:absolute after:-inset-1.5"
+                  @click.stop
+                >
+                  <span class="sr-only">{{
+                    $t("tournament.open_match_actions")
+                  }}</span>
+                  <MoreVertical aria-hidden="true" class="h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" class="w-52">
+                <BlockedMenuItem
+                  v-if="downstreamStarted(bracket)"
+                  :reasons="[
+                    $t('tournament.match.recreate_downstream_started'),
+                  ]"
+                >
+                  <CirclePlus />
+                  <span>{{ $t("tournament.match.recreate") }}</span>
+                </BlockedMenuItem>
+                <DropdownMenuItem v-else @click.stop="openRecreate(bracket)">
+                  <CirclePlus />
+                  {{ $t("tournament.match.recreate") }}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </template>
         </span>
       </div>
 
@@ -990,6 +1121,36 @@ const shouldShowCrossBracketDestination = (
       </div>
     </div>
   </template>
+
+  <AlertDialog
+    :open="recreateDialogOpen"
+    @update:open="(open) => (recreateDialogOpen = open)"
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{ $t("tournament.match.recreate_title") }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{
+            $t("tournament.match.recreate_description", {
+              team_1: getTeamName(recreateTarget?.team_1),
+              team_2: getTeamName(recreateTarget?.team_2),
+            })
+          }}
+          <template v-if="recreateTarget?.finished">
+            {{ $t("tournament.match.recreate_unwinds") }}
+          </template>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <Button @click="recreateMatch">
+          {{ $t("tournament.match.recreate") }}
+        </Button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 
   <AlertDialog
     :open="resetDialogOpen"

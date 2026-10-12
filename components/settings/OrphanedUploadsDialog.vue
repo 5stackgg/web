@@ -13,6 +13,7 @@ import {
 import formatBytes from "~/utilities/formatBytes";
 import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
 import { useOrphanedScan } from "~/composables/useOrphanedScan";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const {
   scanning,
@@ -102,7 +103,7 @@ function close(value: boolean) {
             }}:
             {{
               result.scanned_at
-                ? new Date(result.scanned_at).toLocaleString()
+                ? new Date(result.scanned_at).toLocaleString(dateLocale())
                 : ""
             }}
             <span v-if="result.bucket"> · {{ result.bucket }}</span>

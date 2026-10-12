@@ -5,6 +5,7 @@ import { ArrowRight, Flag, GitBranch, Users } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { eventMediaUrl } from "~/composables/useEventMediaUpload";
 import { formatEventRange } from "~/utilities/watchEventCard";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // `hero` is for when it's the only thing on the page: the full card.
 const props = defineProps<{ event: any; hero?: boolean }>();
@@ -33,7 +34,7 @@ const until = computed(() => {
 });
 
 const month = computed(() =>
-  new Intl.DateTimeFormat(undefined, { month: "short" }).format(start.value),
+  new Intl.DateTimeFormat(dateLocale(), { month: "short" }).format(start.value),
 );
 const days = computed(() =>
   props.event.ends_at

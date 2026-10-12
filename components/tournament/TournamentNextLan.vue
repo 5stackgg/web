@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { useAuthStore } from "~/stores/AuthStore";
 import { loginLinks } from "~/utilities/loginLinks";
 import { useTournamentDisplay } from "~/composables/useTournamentDisplay";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // `hero` is for when it's the only thing on the page: the full card
 // instead of the slim strip that sits above a live tournament.
@@ -31,7 +32,7 @@ const {
 
 const longDay = computed(() =>
   start.value
-    ? new Intl.DateTimeFormat(undefined, {
+    ? new Intl.DateTimeFormat(dateLocale(), {
         weekday: "long",
         month: "long",
         day: "numeric",
@@ -59,7 +60,9 @@ const until = computed(() => {
 
 const month = computed(() =>
   start.value
-    ? new Intl.DateTimeFormat(undefined, { month: "short" }).format(start.value)
+    ? new Intl.DateTimeFormat(dateLocale(), { month: "short" }).format(
+        start.value,
+      )
     : null,
 );
 

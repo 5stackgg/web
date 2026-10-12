@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
 
 const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const timeZoneAbbr =
-  new Intl.DateTimeFormat(undefined, { timeZoneName: "short" })
+  new Intl.DateTimeFormat(dateLocale(), { timeZoneName: "short" })
     .formatToParts(now.value)
     .find((part) => part.type === "timeZoneName")?.value ?? "";
 

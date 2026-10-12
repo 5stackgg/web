@@ -87,7 +87,7 @@ export default {
             callbacks: {
               label: (context: any) => {
                 const val = Number(context.parsed.y || 0).toLocaleString(
-                  undefined,
+                  dateLocale(),
                   { maximumFractionDigits: 2 },
                 );
 
@@ -136,7 +136,7 @@ export default {
               callback: (index: number) => {
                 const time = (this as any).labels[index];
                 return time
-                  .toLocaleTimeString(navigator.language, {
+                  .toLocaleTimeString(dateLocale(), {
                     hour: "2-digit",
                     minute: "2-digit",
                   })

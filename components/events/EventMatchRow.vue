@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { TICKER_LIVE_STATUSES } from "~/components/watch/watchTicker";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // One dense result line for the event overview: when, where, who, score.
 // Scores go through MatchLineupScoreDisplay so the colours match every other
@@ -19,7 +20,7 @@ const map = computed(
 const when = computed(() => {
   const value = props.match.started_at || props.match.created_at;
   return value
-    ? new Intl.DateTimeFormat(undefined, {
+    ? new Intl.DateTimeFormat(dateLocale(), {
         weekday: "short",
         hour: "numeric",
         minute: "2-digit",

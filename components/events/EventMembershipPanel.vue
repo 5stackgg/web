@@ -13,6 +13,7 @@ import {
   tacticalTabsListClasses,
   tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // `event` is a prop on the Options-API default export below; the tab state
 // (section / filters) and all mutations live there too, so everything shares
@@ -22,7 +23,7 @@ function formatEventDate(value?: string | null): string | null {
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(dateLocale(), {
     year: "numeric",
     month: "short",
     day: "numeric",

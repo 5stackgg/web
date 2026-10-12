@@ -53,6 +53,7 @@ import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { systemAlertAdminFields } from "~/graphql/systemAlertsGraphql";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { toast } from "@/components/ui/toast";
+import { dateLocale } from "~/utilities/dateLocale";
 
 definePageMeta({
   middleware: "admin",
@@ -444,7 +445,7 @@ onUnmounted(() => {
                   ? $t("system_alerts.expired")
                   : $t("system_alerts.expires")
               }}
-              {{ new Date(alert.expires_at).toLocaleString() }}
+              {{ new Date(alert.expires_at).toLocaleString(dateLocale()) }}
             </span>
           </div>
         </button>

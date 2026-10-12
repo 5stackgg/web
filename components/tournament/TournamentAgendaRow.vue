@@ -6,6 +6,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import { e_tournament_status_enum } from "~/generated/zeus";
 import { useTournamentDisplay } from "~/composables/useTournamentDisplay";
 import { rememberTournaments } from "~/composables/useTournamentPreview";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // One line of the /tournaments agenda: the start date, then what it is, then
 // where it stands. A past tournament opens its page; one still to come opens
@@ -35,16 +36,18 @@ const cancelled = computed(
 
 const day = computed(() =>
   start.value
-    ? new Intl.DateTimeFormat(undefined, { day: "numeric" }).format(start.value)
+    ? new Intl.DateTimeFormat(dateLocale(), { day: "numeric" }).format(
+        start.value,
+      )
     : "—",
 );
 const weekdayMonth = computed(() =>
   start.value
     ? [
-        new Intl.DateTimeFormat(undefined, { weekday: "short" }).format(
+        new Intl.DateTimeFormat(dateLocale(), { weekday: "short" }).format(
           start.value,
         ),
-        new Intl.DateTimeFormat(undefined, { month: "short" }).format(
+        new Intl.DateTimeFormat(dateLocale(), { month: "short" }).format(
           start.value,
         ),
       ].join(" · ")

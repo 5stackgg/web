@@ -33,6 +33,7 @@ import {
   CPU_USAGE_CHART_COLORS,
   MEMORY_USAGE_CHART_COLORS,
 } from "@/utilities/chartColors";
+import { dateLocale } from "~/utilities/dateLocale";
 
 type GpuDeviceStat = {
   index: number;
@@ -116,7 +117,7 @@ export default {
                 const time = this.labels[index];
                 if (!time) return "";
                 return time
-                  .toLocaleTimeString(navigator.language, {
+                  .toLocaleTimeString(dateLocale(), {
                     hour: "2-digit",
                     minute: "2-digit",
                   })

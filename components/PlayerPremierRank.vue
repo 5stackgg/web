@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { dateLocale } from "~/utilities/dateLocale";
+
 const props = defineProps<{
   premierRank: number | null | undefined;
   premierRankUpdatedAt?: string | null;
@@ -104,7 +106,7 @@ const titleText = computed(() => {
   const parts = [`CS2 Premier ${props.premierRank!.toLocaleString()}`];
   if (props.premierRankUpdatedAt) {
     parts.push(
-      `as of ${new Date(props.premierRankUpdatedAt).toLocaleString()}`,
+      `as of ${new Date(props.premierRankUpdatedAt).toLocaleString(dateLocale())}`,
     );
   }
   return parts.join(" • ");

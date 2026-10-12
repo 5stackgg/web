@@ -233,6 +233,8 @@ ChartJS.register({
 </template>
 
 <script lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
+
 interface EloHistoryEntry {
   current_elo?: number | null;
   elo_change?: number | null;
@@ -404,7 +406,7 @@ export default {
         const year = date.getFullYear();
         out.set(
           index,
-          date.toLocaleDateString(navigator.language, {
+          date.toLocaleDateString(dateLocale(), {
             month: "short",
             day: "numeric",
             ...(spansYears && year !== lastYear ? { year: "2-digit" } : {}),
@@ -530,7 +532,7 @@ export default {
                 if (!item) return "";
                 const ts = self.unifiedTimestamps?.[item.dataIndex];
                 if (!ts) return "";
-                return new Date(ts).toLocaleString(navigator.language, {
+                return new Date(ts).toLocaleString(dateLocale(), {
                   month: "short",
                   day: "numeric",
                   year: "numeric",

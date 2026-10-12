@@ -6,7 +6,7 @@
     <span class="text-[hsl(var(--tac-amber))]">◢</span>
     <span>{{ $t("pod_logs.tail_since") }}</span>
     <span class="normal-case tracking-normal text-foreground">
-      {{ oldestLogTime.toLocaleString() }}
+      {{ oldestLogTime.toLocaleString(dateLocale()) }}
     </span>
   </div>
   <div
@@ -68,6 +68,7 @@
 <script lang="ts">
 import Convert from "ansi-to-html";
 import { PlayIcon } from "lucide-vue-next";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const convert = new Convert();
 
@@ -157,6 +158,7 @@ export default {
   },
 
   methods: {
+    dateLocale,
     handleScroll() {
       if (this.$refs.scrollContainer) {
         const el = this.$refs.scrollContainer as HTMLElement;

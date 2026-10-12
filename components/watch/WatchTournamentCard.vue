@@ -21,6 +21,7 @@ import {
   tournamentChampion,
   tournamentRowState,
 } from "~/utilities/watchEventCard";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // `stacked` puts the banner on top from lg up, for a grid column too narrow
 // to sit it beside the details; the banner then takes any extra height the
@@ -127,12 +128,12 @@ const sub = computed(() => {
 const startsAt = computed(() => {
   if (!props.tournament.start) return null;
   const start = new Date(props.tournament.start);
-  const day = new Intl.DateTimeFormat(undefined, {
+  const day = new Intl.DateTimeFormat(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",
   }).format(start);
-  const time = new Intl.DateTimeFormat(undefined, {
+  const time = new Intl.DateTimeFormat(dateLocale(), {
     hour: "numeric",
     minute: "2-digit",
   }).format(start);

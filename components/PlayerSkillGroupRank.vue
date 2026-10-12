@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import { csRankIcon } from "~/utilities/csRank";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const { t } = useI18n();
 
@@ -29,7 +30,9 @@ const titleText = computed(() => {
   if (!hasRank.value) return "";
   const parts = [`${label.value}`];
   if (props.updatedAt) {
-    parts.push(`as of ${new Date(props.updatedAt).toLocaleString()}`);
+    parts.push(
+      `as of ${new Date(props.updatedAt).toLocaleString(dateLocale())}`,
+    );
   }
   return parts.join(" • ");
 });

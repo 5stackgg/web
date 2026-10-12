@@ -1,5 +1,6 @@
 import { e_match_types_enum, e_tournament_status_enum } from "~/generated/zeus";
 import { EXPECTED_PLAYERS } from "~/utilities/matchmakingPartySize";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const DAY_MS = 86_400_000;
 
@@ -35,7 +36,7 @@ export function formatEventRange(
   endsAt?: string | null,
 ): string | null {
   if (!startsAt) return null;
-  const format = new Intl.DateTimeFormat(undefined, {
+  const format = new Intl.DateTimeFormat(dateLocale(), {
     month: "short",
     day: "numeric",
   });
@@ -65,20 +66,20 @@ export function formatStartTime(
     (localMidnight(date).getTime() - localMidnight(now).getTime()) / DAY_MS,
   );
   if (days === 0) {
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(dateLocale(), {
       hour: "2-digit",
       minute: "2-digit",
     }).format(date);
   }
   if (days > 0 && days < 7) {
     return new Intl.DateTimeFormat(
-      undefined,
+      dateLocale(),
       short
         ? { weekday: "short" }
         : { weekday: "short", hour: "2-digit", minute: "2-digit" },
     ).format(date);
   }
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(dateLocale(), {
     month: "short",
     day: "numeric",
   }).format(date);

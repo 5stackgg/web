@@ -28,6 +28,7 @@ import {
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { loginLinks } from "~/utilities/loginLinks";
+import mapLabel from "~/utilities/mapLabel";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -329,11 +330,12 @@ const otherCells = computed(() =>
 const scoreBug = computed(() =>
   current.value ? stageScoreBug(current.value) : "",
 );
+// A live cell's status already names the map.
 const phoneMeta = computed(() => {
   const mm = currentMatchMap(current.value);
   return [
     currentCell.value?.tag,
-    mm?.map?.label || mm?.map?.name,
+    currentCell.value?.kind === "live" ? null : mapLabel(mm?.map),
     currentCell.value?.status.text,
     currentCell.value?.status.detail,
   ]

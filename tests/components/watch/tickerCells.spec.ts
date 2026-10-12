@@ -98,6 +98,28 @@ describe("ticker cell", () => {
     expect(at("Overtime")).toBe("OT · R25 · Inferno");
   });
 
+  it("names an official map, which has no label, the way the rest of the site does", () => {
+    const ancient = { name: "de_ancient", label: null };
+    const at = (status: string) =>
+      tickerCell(
+        match({
+          match_maps: [
+            { id: "b", status, is_current_map: true, lineup_1_score: 7, lineup_2_score: 4, map: ancient },
+          ],
+        }),
+        ctx,
+      ).status.text;
+
+    expect(at("Live")).toBe("R12 · Ancient");
+    expect(at("Warmup")).toBe("Warmup · Ancient");
+    expect(at("Knife")).toBe("Knife round · Ancient");
+    expect(at("Finished")).toBe("Map over · Ancient");
+  });
+
+  it("leaves the map out while the match has none", () => {
+    expect(tickerCell(match({ match_maps: [] }), ctx).status.text).toBe("R1");
+  });
+
   it("marks pre-match states as about to go live, without scores", () => {
     const veto = tickerCell(match({ status: "Veto" }), ctx);
     expect(veto.kind).toBe("pre");

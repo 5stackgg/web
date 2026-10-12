@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Inbox } from "lucide-vue-next";
+import { formatBadgeCount } from "~/utilities/badgeCount";
 
 // The chat rail's way into message requests. Shown only while some wait, with
 // how many -- in amber, not the red of an unread badge, since a request is not
@@ -34,7 +35,7 @@ defineEmits<{ (e: "click"): void }>();
     <span
       class="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.6rem] font-bold tabular-nums leading-none text-black"
     >
-      {{ count > 99 ? "99+" : count }}
+      {{ formatBadgeCount(count) }}
     </span>
   </button>
 </template>

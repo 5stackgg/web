@@ -63,11 +63,19 @@ describe("tournament overview homepage link", () => {
   });
 
   it("is left out when the homepage is this site without a scheme", async () => {
-    const wrapper = await mountDetail({
-      homepage: `${window.location.host}/tournaments/t-1`,
-    });
+    const wrapper = await mountDetail({ homepage: window.location.host });
 
     expect(homepageLink(wrapper)).toBeUndefined();
+  });
+
+  it("links an event page on this site", async () => {
+    const wrapper = await mountDetail({
+      homepage: `${window.location.origin}/events/autumn-cup`,
+    });
+
+    expect(homepageLink(wrapper)?.attributes("href")).toBe(
+      `${window.location.origin}/events/autumn-cup`,
+    );
   });
 
   it("links an outside site, adding https when the scheme is missing", async () => {

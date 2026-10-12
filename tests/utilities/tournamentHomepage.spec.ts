@@ -22,16 +22,29 @@ describe("tournamentHomepageLink", () => {
     );
   });
 
-  it("hides this site, whatever the path, port, case or trailing dot", () => {
+  it("hides this site's bare address, whatever the port, case or trailing dot", () => {
     for (const homepage of [
       "https://5stack.gg",
-      "5stack.gg/tournaments/t-1",
+      "5stack.gg",
       "http://5STACK.gg:8443/",
       "https://5stack.gg./",
-      "panel.lan/tournaments",
+      "https://5stack.gg/#top",
+      "panel.lan",
     ]) {
       expect(tournamentHomepageLink(homepage, own), homepage).toBeNull();
     }
+  });
+
+  it("links a page on this site, like the event page the form suggests", () => {
+    expect(tournamentHomepageLink("5stack.gg/events/abc", own)).toBe(
+      "https://5stack.gg/events/abc",
+    );
+    expect(tournamentHomepageLink("https://panel.lan:3000/events/abc", own)).toBe(
+      "https://panel.lan:3000/events/abc",
+    );
+    expect(tournamentHomepageLink("https://5stack.gg/?ref=cup", own)).toBe(
+      "https://5stack.gg/?ref=cup",
+    );
   });
 
   it("links another site on a sub-domain of ours", () => {
@@ -50,13 +63,26 @@ describe("tournamentHomepageLink", () => {
     }
   });
 
-  it("drops anything that is not a web address", () => {
+  it("drops an address with any scheme but http or https", () => {
     for (const homepage of [
+      "ftp://files.nordic-lan.example/cup",
+      "javascript://nordic-lan.example/%0Aalert(1)",
       "javascript:alert(1)",
       "data:text/html,hi",
-      "https://",
-      "   ",
+      "mailto:cup@nordic-lan.example",
     ]) {
+      expect(tournamentHomepageLink(homepage, own), homepage).toBeNull();
+    }
+  });
+
+  it("does not mistake a host and port for a scheme", () => {
+    expect(tournamentHomepageLink("localhost:8080/cup", own)).toBe(
+      "https://localhost:8080/cup",
+    );
+  });
+
+  it("drops what can't be read as an address", () => {
+    for (const homepage of ["https://", "   "]) {
       expect(tournamentHomepageLink(homepage, own), homepage).toBeNull();
     }
   });

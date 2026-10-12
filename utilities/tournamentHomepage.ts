@@ -1,4 +1,7 @@
 const WEB_ADDRESS = /^https?:\/\//i;
+const SCHEME = /^[a-z][a-z\d+.-]*:(.*)$/is;
+// "localhost:8080/cup" is a host and a port, not the scheme "localhost".
+const PORT = /^\d+(?:[/?#]|$)/;
 
 function hostOf(value: string): string | null {
   try {
@@ -18,6 +21,13 @@ export function tournamentHomepageLink(
     return null;
   }
 
+  if (!WEB_ADDRESS.test(value)) {
+    const scheme = SCHEME.exec(value);
+    if (scheme && !PORT.test(scheme[1])) {
+      return null;
+    }
+  }
+
   let url: URL;
   try {
     url = new URL(WEB_ADDRESS.test(value) ? value : `https://${value}`);
@@ -25,9 +35,6 @@ export function tournamentHomepageLink(
     return null;
   }
 
-  if (url.protocol !== "http:" && url.protocol !== "https:") {
-    return null;
-  }
   if (url.username || url.password) {
     return null;
   }
@@ -36,7 +43,9 @@ export function tournamentHomepageLink(
   const own = ownHosts
     .filter((candidate): candidate is string => !!candidate)
     .map(hostOf);
-  if (own.includes(host)) {
+  // Only our bare address, which the create form used to prefill. A page on
+  // this site, like the event page the form suggests, is a real homepage.
+  if (own.includes(host) && url.pathname === "/" && !url.search) {
     return null;
   }
 

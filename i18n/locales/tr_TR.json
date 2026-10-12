@@ -7287,7 +7287,8 @@
         "benched": "Kadro dışı"
       },
       "already_rostered": "Başka bir takımda",
-      "owner_on_a_team": "Bu turnuvada zaten bir takımın kadrosunda."
+      "owner_on_a_team": "Bu turnuvada zaten bir takımın kadrosunda.",
+      "leaves_pool": "Serbest oyuncu olarak kayıtlısın. Bir takım kaydetmek seni serbest oyuncu listesinden çıkarır."
     },
     "tournament_team": {
       "remove": "Takımı Kaldır",

@@ -7287,7 +7287,8 @@
         "benched": "En el banquillo"
       },
       "already_rostered": "En otro equipo",
-      "owner_on_a_team": "Ya está en la plantilla de un equipo de este torneo."
+      "owner_on_a_team": "Ya está en la plantilla de un equipo de este torneo.",
+      "leaves_pool": "Estás apuntado como agente libre. Inscribir un equipo te saca de la lista de agentes libres."
     },
     "tournament_team": {
       "remove": "Quitar equipo",

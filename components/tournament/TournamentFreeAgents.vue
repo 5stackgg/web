@@ -12,6 +12,8 @@ import {
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
+import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
+import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import TournamentChip from "~/components/tournament/TournamentChip.vue";
 import TournamentFreeAgentSignUp from "~/components/tournament/TournamentFreeAgentSignUp.vue";
 import { toast } from "~/components/ui/toast";
@@ -642,6 +644,20 @@ async function draftTeams() {
                   :show-role="false"
                 />
               </div>
+              <span class="flex shrink-0 items-center justify-end gap-1.5">
+                <PlayerPremierRank
+                  :premier-rank="row.agent.player?.premier_rank"
+                  :premier-rank-updated-at="
+                    row.agent.player?.premier_rank_updated_at
+                  "
+                />
+                <PlayerFaceitRank
+                  :faceit-skill-level="row.agent.player?.faceit_skill_level"
+                  :faceit-elo="row.agent.player?.faceit_elo"
+                  :faceit-url="row.agent.player?.faceit_url"
+                  :faceit-nickname="row.agent.player?.faceit_nickname"
+                />
+              </span>
               <span class="flex w-14 shrink-0 justify-end">
                 <PlayerElo
                   v-if="playerElo(row.agent) !== null"

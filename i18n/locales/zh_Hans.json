@@ -7287,7 +7287,8 @@
         "benched": "替补席"
       },
       "already_rostered": "已在其他队伍",
-      "owner_on_a_team": "已在这场锦标赛的某支战队名单中。"
+      "owner_on_a_team": "已在这场锦标赛的某支战队名单中。",
+      "leaves_pool": "你已以自由选手身份报名。注册队伍会让你退出自由选手名单。"
     },
     "tournament_team": {
       "remove": "移除队伍",

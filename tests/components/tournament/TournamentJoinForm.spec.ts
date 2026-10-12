@@ -7,6 +7,8 @@ import { e_player_roles_enum } from "~/generated/zeus";
 
 const ME = "76561198000000001";
 const SOMEONE_ELSE = "76561198000000002";
+const LEAVES_POOL =
+  "You're signed up as a free agent. Registering a team takes you out of the free agent pool.";
 
 let unmount: (() => void) | null = null;
 
@@ -19,6 +21,7 @@ afterEach(() => {
 async function mountJoinForm(options: {
   isOrganizer?: boolean;
   tournamentOwners: string[];
+  myFreeAgent?: Record<string, unknown>;
 }) {
   useAuthStore().me = {
     steam_id: ME,
@@ -45,6 +48,7 @@ async function mountJoinForm(options: {
           roster: [],
         })),
       },
+      myFreeAgent: options.myFreeAgent ?? null,
     },
     global: { stubs: { TeamSearch: true } },
   });
@@ -66,6 +70,17 @@ describe("TournamentJoinForm", () => {
 
     expect(wrapper.text()).toContain("Create New Team");
     expect(ineligible(wrapper).mine).toBeUndefined();
+    expect(wrapper.text()).not.toContain(LEAVES_POOL);
+  });
+
+  it("tells a free agent that registering a team takes them out of the pool", async () => {
+    const wrapper = await mountJoinForm({
+      tournamentOwners: [SOMEONE_ELSE],
+      myFreeAgent: { id: "agent-1", status: "registered" },
+    });
+
+    expect(wrapper.text()).toContain("Create New Team");
+    expect(wrapper.text()).toContain(LEAVES_POOL);
   });
 
   it("stops a player who owns a team here from entering another they own", async () => {

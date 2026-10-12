@@ -7287,7 +7287,8 @@
         "benched": "벤치"
       },
       "already_rostered": "다른 팀 소속",
-      "owner_on_a_team": "이 토너먼트에서 이미 어떤 팀의 로스터에 등록되어 있습니다."
+      "owner_on_a_team": "이 토너먼트에서 이미 어떤 팀의 로스터에 등록되어 있습니다.",
+      "leaves_pool": "프리 에이전트로 신청되어 있습니다. 팀을 등록하면 프리 에이전트 목록에서 빠집니다."
     },
     "tournament_team": {
       "remove": "팀 제거",

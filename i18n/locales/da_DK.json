@@ -7287,7 +7287,8 @@
         "benched": "På bænken"
       },
       "already_rostered": "På et andet hold",
-      "owner_on_a_team": "Allerede på et holds trup i denne turnering."
+      "owner_on_a_team": "Allerede på et holds trup i denne turnering.",
+      "leaves_pool": "Du er tilmeldt som free agent. Tilmelder du et hold, bliver du fjernet fra free agent-puljen."
     },
     "tournament_team": {
       "remove": "Fjern hold",

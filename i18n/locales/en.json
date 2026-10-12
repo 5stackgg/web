@@ -7289,7 +7289,8 @@
         "benched": "Benched"
       },
       "already_rostered": "On another team",
-      "owner_on_a_team": "Already rostered on a team in this tournament."
+      "owner_on_a_team": "Already rostered on a team in this tournament.",
+      "leaves_pool": "You're signed up as a free agent. Registering a team takes you out of the free agent pool."
     },
     "tournament_team": {
       "remove": "Remove Team",

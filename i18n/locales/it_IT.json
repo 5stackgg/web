@@ -7287,7 +7287,8 @@
         "benched": "In panchina"
       },
       "already_rostered": "In un altro team",
-      "owner_on_a_team": "Già in rosa in una squadra di questo torneo."
+      "owner_on_a_team": "Già in rosa in una squadra di questo torneo.",
+      "leaves_pool": "Sei iscritto come free agent. Iscrivere una squadra ti toglie dal pool dei free agent."
     },
     "tournament_team": {
       "remove": "Rimuovi team",

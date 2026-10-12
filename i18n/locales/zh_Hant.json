@@ -7287,7 +7287,8 @@
         "benched": "板凳"
       },
       "already_rostered": "已在其他隊伍",
-      "owner_on_a_team": "已在這場錦標賽的某支隊伍名單中。"
+      "owner_on_a_team": "已在這場錦標賽的某支隊伍名單中。",
+      "leaves_pool": "你已以自由選手身分報名。註冊隊伍會讓你退出自由選手名單。"
     },
     "tournament_team": {
       "remove": "移除隊伍",

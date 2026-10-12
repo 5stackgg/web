@@ -7287,7 +7287,8 @@
         "benched": "Avbänkade"
       },
       "already_rostered": "I ett annat lag",
-      "owner_on_a_team": "Redan i ett lags trupp i den här turneringen."
+      "owner_on_a_team": "Redan i ett lags trupp i den här turneringen.",
+      "leaves_pool": "Du är anmäld som free agent. Registrerar du ett lag tas du bort från free agent-poolen."
     },
     "tournament_team": {
       "remove": "Ta bort lag",

@@ -7287,7 +7287,8 @@
         "benched": "Na ławce"
       },
       "already_rostered": "W innej drużynie",
-      "owner_on_a_team": "Już w składzie drużyny w tym turnieju."
+      "owner_on_a_team": "Już w składzie drużyny w tym turnieju.",
+      "leaves_pool": "Jesteś zapisany jako wolny zawodnik. Zgłoszenie drużyny usunie cię z listy wolnych zawodników."
     },
     "tournament_team": {
       "remove": "Usuń drużynę",

@@ -7287,7 +7287,8 @@
         "benched": "Auf der Bank"
       },
       "already_rostered": "In einem anderen Team",
-      "owner_on_a_team": "Bereits im Kader eines Teams in diesem Turnier."
+      "owner_on_a_team": "Bereits im Kader eines Teams in diesem Turnier.",
+      "leaves_pool": "Du bist als Free Agent angemeldet. Wenn du ein Team anmeldest, wirst du aus dem Free-Agent-Pool entfernt."
     },
     "tournament_team": {
       "remove": "Team entfernen",

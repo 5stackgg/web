@@ -125,14 +125,8 @@ const props = defineProps<{
   // buy-round overlay active — hides round-relative seek markers (they don't
   // map onto the shared window clock).
   overlay?: boolean;
-  // 3D-only controls (camera dock); hidden in 2D
-  show3d?: boolean;
-  camMode?: string;
   showPbp?: boolean;
   heatOn?: boolean;
-  // ceiling cut (3D): 0..100, 100 = full map / no cut
-  ceiling?: number;
-  onCeiling?: (v: number) => void;
   followName?: string | null;
   ctHex?: string;
   tHex?: string;
@@ -173,7 +167,6 @@ const props = defineProps<{
   onToggleType: (ty: string) => void;
   onTogglePbp?: () => void;
   onToggleHeat?: () => void;
-  onMode?: (m: string) => void;
   onPbpUtil?: (gi: number) => void;
   onClearSel?: () => void;
   onToggleOverlay?: () => void;
@@ -404,34 +397,6 @@ onBeforeUnmount(() => {
   if (seekFrame) cancelAnimationFrame(seekFrame);
 });
 
-// Same deal for the 3D ROOF slider in the mobile overflow menu — drive it from
-// pointer position so it can be dragged on touch, not just tapped.
-let ceilScrubbing = false;
-let ceilScrubEl: HTMLElement | null = null;
-function ceilFromEvent(e: PointerEvent) {
-  const rect = ceilScrubEl?.getBoundingClientRect();
-  if (!rect || rect.width === 0) return;
-  const frac = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-  props.onCeiling?.(Math.round(frac * 100));
-}
-function onCeilScrubDown(e: PointerEvent) {
-  ceilScrubEl = e.currentTarget as HTMLElement;
-  ceilScrubbing = true;
-  ceilFromEvent(e);
-  window.addEventListener("pointermove", onCeilScrubMove);
-  window.addEventListener("pointerup", onCeilScrubUp);
-  window.addEventListener("pointercancel", onCeilScrubUp);
-}
-function onCeilScrubMove(e: PointerEvent) {
-  if (ceilScrubbing) ceilFromEvent(e);
-}
-function onCeilScrubUp() {
-  ceilScrubbing = false;
-  ceilScrubEl = null;
-  window.removeEventListener("pointermove", onCeilScrubMove);
-  window.removeEventListener("pointerup", onCeilScrubUp);
-  window.removeEventListener("pointercancel", onCeilScrubUp);
-}
 const utilClusters = computed(() => {
   // Respect the util-type filter so toggling a type also drops its utility icons
   // from the seek bar (2D + 3D), not just the map.
@@ -475,7 +440,7 @@ const utilClusters = computed(() => {
         >
       </div>
 
-      <!-- left column: controls row (2D/3D | cam dock) + play-by-play -->
+      <!-- left column: controls row (2D/3D | camera) + play-by-play -->
       <div class="bp-left">
         <div class="bp-controls">
           <div class="bp-viewtoggle">
@@ -540,66 +505,6 @@ const utilClusters = computed(() => {
           </div>
           <span class="bp-pipe">|</span>
           <div class="bp-cam">
-            <template v-if="show3d && !mobile">
-              <Tooltip
-                ><TooltipTrigger as-child
-                  ><button
-                    :class="{ on: camMode === 'orbit' }"
-                    @click="onMode && onMode('orbit')"
-                  >
-                    {{ $t("match.replay.chrome.cam_orbit") }}
-                  </button></TooltipTrigger
-                ><TooltipContent>{{
-                  $t("match.replay.chrome.cam_orbit_tip")
-                }}</TooltipContent></Tooltip
-              >
-              <Tooltip
-                ><TooltipTrigger as-child
-                  ><button
-                    :class="{ on: camMode === 'top' }"
-                    @click="onMode && onMode('top')"
-                  >
-                    {{ $t("match.replay.chrome.cam_top") }}
-                  </button></TooltipTrigger
-                ><TooltipContent>{{
-                  $t("match.replay.chrome.cam_top_tip")
-                }}</TooltipContent></Tooltip
-              >
-              <Tooltip v-if="followName"
-                ><TooltipTrigger as-child
-                  ><button
-                    :class="{ on: camMode === 'follow' }"
-                    @click="onMode && onMode('follow')"
-                  >
-                    {{ $t("match.replay.chrome.cam_chase") }}
-                  </button></TooltipTrigger
-                ><TooltipContent>{{
-                  $t("match.replay.chrome.cam_chase_tip")
-                }}</TooltipContent></Tooltip
-              >
-              <Tooltip
-                ><TooltipTrigger as-child>
-                  <label class="bp-ceil" :class="{ on: (ceiling ?? 50) < 100 }">
-                    <span>{{ $t("match.replay.chrome.roof") }}</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      step="1"
-                      :value="ceiling ?? 50"
-                      @input="
-                        onCeiling &&
-                        onCeiling(
-                          Number(($event.target as HTMLInputElement).value),
-                        )
-                      "
-                    />
-                  </label> </TooltipTrigger
-                ><TooltipContent>{{
-                  $t("match.replay.chrome.roof_tip")
-                }}</TooltipContent></Tooltip
-              >
-            </template>
             <!-- Broadcast camera (the stage's director) and its slow motion. -->
             <template v-if="stage && onBroadcast && !overlay && !mobile">
               <Tooltip
@@ -701,54 +606,6 @@ const utilClusters = computed(() => {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" :side-offset="6" class="bp-dd">
-                <template v-if="show3d">
-                  <DropdownMenuItem
-                    class="bp-dd-item"
-                    :class="{ 'bp-dd-on': camMode === 'orbit' }"
-                    @select.prevent="onMode && onMode('orbit')"
-                  >
-                    {{ $t("match.replay.chrome.cam_orbit") }}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    class="bp-dd-item"
-                    :class="{ 'bp-dd-on': camMode === 'top' }"
-                    @select.prevent="onMode && onMode('top')"
-                  >
-                    {{ $t("match.replay.chrome.cam_top") }}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    v-if="followName"
-                    class="bp-dd-item"
-                    :class="{ 'bp-dd-on': camMode === 'follow' }"
-                    @select.prevent="onMode && onMode('follow')"
-                  >
-                    {{ $t("match.replay.chrome.cam_chase") }}
-                  </DropdownMenuItem>
-                  <!-- ROOF slider: let the slider own pointer + keys instead of
-                       the menu's navigation/close. -->
-                  <div
-                    class="bp-dd-item bp-dd-roof"
-                    :class="{ 'bp-dd-on': (ceiling ?? 50) < 100 }"
-                    @pointerdown.stop
-                    @keydown.stop
-                  >
-                    <span>{{ $t("match.replay.chrome.roof") }}</span>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      step="1"
-                      :value="ceiling ?? 50"
-                      @pointerdown="onCeilScrubDown"
-                      @input="
-                        onCeiling &&
-                        onCeiling(
-                          Number(($event.target as HTMLInputElement).value),
-                        )
-                      "
-                    />
-                  </div>
-                </template>
                 <template v-if="stage && onBroadcast && !overlay">
                   <DropdownMenuItem
                     class="bp-dd-item"
@@ -1155,7 +1012,7 @@ const utilClusters = computed(() => {
               : $t("match.replay.chrome.showing_numbers")
           }}</TooltipContent>
         </Tooltip>
-        <Tooltip v-if="view === '2d' || stage">
+        <Tooltip v-if="stage">
           <TooltipTrigger as-child>
             <button
               class="sbt"
@@ -1212,7 +1069,7 @@ const utilClusters = computed(() => {
             }}</TooltipContent>
           </Tooltip>
         </div>
-        <Tooltip v-if="view === '2d' || stage">
+        <Tooltip v-if="stage">
           <TooltipTrigger as-child>
             <button
               class="sbt sbt-icon"
@@ -1226,7 +1083,7 @@ const utilClusters = computed(() => {
             $t("match.replay.chrome.deaths_tip")
           }}</TooltipContent>
         </Tooltip>
-        <Tooltip v-if="(view === '2d' || stage) && hasCallouts">
+        <Tooltip v-if="stage && hasCallouts">
           <TooltipTrigger as-child>
             <button
               class="sbt sbt-icon"
@@ -1608,37 +1465,7 @@ const utilClusters = computed(() => {
                 <KbdGroup><Kbd>I</Kbd><Kbd>O</Kbd></KbdGroup
                 ><span>{{ $t("match.replay.share.kb_marks") }}</span>
               </div>
-              <template v-if="show3d">
-                <div class="hk hk-sep">
-                  {{ $t("match.replay.chrome.kb_3d_camera") }}
-                </div>
-                <div class="hk">
-                  <KbdGroup><Kbd>L-drag</Kbd></KbdGroup
-                  ><span>{{ $t("match.replay.chrome.kb_look") }}</span>
-                </div>
-                <div class="hk">
-                  <KbdGroup><Kbd>R-drag</Kbd></KbdGroup
-                  ><span>{{ $t("match.replay.chrome.kb_orbit") }}</span>
-                </div>
-                <div class="hk">
-                  <KbdGroup><Kbd>Scroll</Kbd></KbdGroup
-                  ><span>{{ $t("match.replay.chrome.kb_zoom") }}</span>
-                </div>
-                <div class="hk">
-                  <KbdGroup
-                    ><Kbd>W</Kbd><Kbd>A</Kbd><Kbd>S</Kbd><Kbd>D</Kbd></KbdGroup
-                  ><span>{{ $t("match.replay.chrome.kb_fly") }}</span>
-                </div>
-                <div class="hk">
-                  <KbdGroup><Kbd>Shift</Kbd><Kbd>Ctrl</Kbd></KbdGroup
-                  ><span>{{ $t("match.replay.chrome.kb_up_down") }}</span>
-                </div>
-                <div class="hk">
-                  <KbdGroup><Kbd>Q</Kbd><Kbd>E</Kbd></KbdGroup
-                  ><span>{{ $t("match.replay.chrome.kb_up_down") }}</span>
-                </div>
-              </template>
-              <template v-else-if="stage">
+              <template v-if="stage">
                 <div class="hk hk-sep">
                   {{ $t("match.replay.chrome.kb_camera") }}
                 </div>
@@ -2411,55 +2238,6 @@ const utilClusters = computed(() => {
   margin-top: -4px;
   font-size: 10px;
   color: #7d8b99;
-}
-.bp-ceil {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex: 0 0 auto;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 5px 8px;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-}
-.bp-ceil span {
-  font-size: 10px;
-  letter-spacing: 1px;
-  color: #9fb0c0;
-}
-.bp-ceil.on {
-  border-color: var(--accent);
-}
-.bp-ceil.on span {
-  color: #fff;
-}
-.bp-ceil input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 64px;
-  height: 3px;
-  border-radius: 3px;
-  background: var(--line);
-  outline: none;
-  cursor: pointer;
-}
-.bp-ceil input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: none;
-}
-.bp-ceil input[type="range"]::-moz-range-thumb {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: none;
 }
 .bp-foll {
   font-size: 11px;
@@ -3296,18 +3074,5 @@ const utilClusters = computed(() => {
 .bp-dd-item.bp-paused {
   border-style: dashed;
   border-color: hsl(var(--tac-amber) / 0.6);
-}
-.bp-dd-roof {
-  justify-content: space-between;
-  gap: 10px;
-}
-.bp-dd-roof span {
-  font-size: 10px;
-}
-.bp-dd-roof input[type="range"] {
-  width: 96px;
-  accent-color: hsl(var(--tac-amber));
-  touch-action: none;
-  cursor: pointer;
 }
 </style>

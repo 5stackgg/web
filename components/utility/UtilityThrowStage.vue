@@ -36,9 +36,8 @@ const props = withDefaults(
 const emit = defineEmits<{
   // The camera has arrived, so a run started now is a run you can see.
   (e: "framed"): void;
-  // No WebGL2, or no model of this map: draw it the old way.
-  (e: "fallback"): void;
-  (e: "mesh", kind: "view"): void;
+  // No WebGL2, or no model of this map: the owner says so in its place.
+  (e: "fallback", reason: "unsupported" | "missing-map"): void;
 }>();
 
 // Steeper than the replay's 64°: a throw usually clears a building, and from
@@ -130,7 +129,6 @@ function onReady() {
     return;
   }
   ready = true;
-  emit("mesh", "view");
   offViewKey?.();
   offViewKey = camera.onViewKey(() => {
     view.value = view.value === "3d" ? "2d" : "3d";
@@ -186,8 +184,8 @@ onBeforeUnmount(() => {
       :view="view"
       :level="level"
       level-layout="single"
-      @unsupported="emit('fallback')"
-      @missing-map="emit('fallback')"
+      @unsupported="emit('fallback', 'unsupported')"
+      @missing-map="emit('fallback', 'missing-map')"
     />
   </div>
 </template>

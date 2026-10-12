@@ -86,7 +86,7 @@ const BLAST_SECS = 2;
  * the event lands after it (41.00s on every explosion measured).
  */
 export const C4_SECS = 41;
-/** Flame catch and gutter, as `liveFlames` in utils/smokeVolume. */
+/** How long a flame takes to catch, and to gutter out. */
 const FLAME_IGNITE_SECS = 0.35;
 const FLAME_DIE_SECS = 0.6;
 /** CS2's molotov / incendiary burn time, for a fire without an end tick. */

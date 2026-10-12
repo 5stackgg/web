@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
-import Replay3DLite from "~/components/match/Replay3DLite.vue";
+import ReplayStageUnavailable from "~/components/match/ReplayStageUnavailable.vue";
 import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
-import { useRadarProjection } from "~/composables/useRadarProjection";
-import { normalizeMapName } from "~/utilities/mapAssets";
 import { lineupSmokeVoxels } from "~/utilities/lineupSmokeVoxels";
 import type { StageSmokeVoxels } from "~/utilities/replayStage/types";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
@@ -12,16 +10,8 @@ import {
   utilityStageThrow,
   utilityStageThrower,
 } from "~/utilities/replayStage/utilityFrame";
-import {
-  UTILITY_TYPE_COLORS,
-  utilityLanding,
-  utilityOrigin,
-  normalizeTrajectory,
-  replayUtilityType,
-  replayTeamForSide,
-} from "~/utilities/utilityDisplay";
-import { SMOKE_BLOOM_SECS } from "~/utils/smokeVolume";
-import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
+import { UTILITY_TYPE_COLORS } from "~/utilities/utilityDisplay";
+import type { UtilityLineup } from "~/types/utility";
 
 const props = defineProps<{
   lineup: UtilityLineup;
@@ -29,52 +19,11 @@ const props = defineProps<{
   fill?: boolean;
 }>();
 
-// One synthetic grenade, so Replay3DLite renders a lineup with exactly the same
-// code path it renders a demo with. Nothing about the renderer is utility-aware.
+// The lineup is the one grenade on the stage.
 const SYNTHETIC_GID = 1;
-const TICK_RATE = 64;
-
-const radarFailed = ref(false);
-const { radarSrc, calibration, projectCalibrated } = useRadarProjection(
-  () => props.lineup.map_name,
-  {
-    radarFailed,
-    volumePoints: () => {
-      const landing = utilityLanding(props.lineup);
-      const origin = utilityOrigin(props.lineup);
-      return landing ? [origin, landing] : [origin];
-    },
-  },
-);
 
 const runtimeConfig = useRuntimeConfig();
-const meshCdn = (runtimeConfig.public.mapMeshCdn as string) || "";
 const apiDomain = runtimeConfig.public.apiDomain as string;
-
-const mapName = computed(() => normalizeMapName(props.lineup.map_name) || null);
-
-const replayType = computed(() => replayUtilityType(props.lineup.utility_type));
-const throwerTeam = computed(() => replayTeamForSide(props.lineup.side));
-
-const trajectory = computed<UtilityTrajectoryPoint[]>(() => {
-  const preview = normalizeTrajectory(props.lineup.trajectory_preview);
-  if (preview.length >= 2) {
-    return preview;
-  }
-  const landing = utilityLanding(props.lineup);
-  if (!landing) {
-    return [];
-  }
-  return [
-    {
-      // double precision arrives as a string; three.js wants numbers.
-      x: Number(props.lineup.origin_x),
-      y: Number(props.lineup.origin_y),
-      z: Number(props.lineup.eye_z ?? props.lineup.origin_z),
-    },
-    landing,
-  ];
-});
 
 const flightMs = computed(() => {
   const recorded = props.lineup.flight_time_ms;
@@ -104,8 +53,7 @@ function show(elapsed: number) {
 }
 
 function tickFrame(now: number) {
-  // A frame's timestamp can predate the play() that scheduled it, and a
-  // negative progress indexed the trajectory from the end -- undefined.x.
+  // A frame's timestamp can predate the play() that scheduled it.
   const elapsed = Math.max(0, now - startedAt);
   show(Math.min(elapsed, lengthMs.value));
   if (elapsed < lengthMs.value) {
@@ -200,86 +148,6 @@ watch(
 
 onBeforeUnmount(stop);
 
-// Room around the throw for what it turns into: a smoke's cloud, a fire's
-// spread, a flash's burst.
-const BURST_UNITS: Partial<Record<string, number>> = {
-  Smoke: 180,
-  Molotov: 150,
-};
-
-// Where the camera settles: over the middle of the whole arc, looking from
-// behind the thrower toward where it lands. The arc's height counts as much as
-// its length -- a pop flash thrown straight up barely moves across the ground,
-// and framing only that cut the flash off the top.
-const cameraFrame = computed(() => {
-  const origin = utilityOrigin(props.lineup);
-  const landing = utilityLanding(props.lineup);
-  const points = [
-    origin,
-    ...(landing ? [landing] : []),
-    ...normalizeTrajectory(props.lineup.trajectory_preview),
-  ];
-  const xs = points.map((point) => point.x);
-  const ys = points.map((point) => point.y);
-  const zs = points.map((point) => point.z);
-  const across = Math.max(
-    Math.max(...xs) - Math.min(...xs),
-    Math.max(...ys) - Math.min(...ys),
-  );
-  const tall = Math.max(...zs) - Math.min(...zs);
-  const burst = BURST_UNITS[props.lineup.utility_type] ?? 110;
-  return {
-    x: (Math.max(...xs) + Math.min(...xs)) / 2,
-    y: (Math.max(...ys) + Math.min(...ys)) / 2,
-    z: (Math.max(...zs) + Math.min(...zs)) / 2,
-    span: Math.max(across, tall * 1.3) + burst * 2 + 200,
-    heading: landing
-      ? Math.atan2(landing.y - origin.y, landing.x - origin.x)
-      : null,
-    // 45° off the line of the throw, so the arc reads as an arc.
-    swing: Math.PI / 4,
-  };
-});
-
-const landed = computed(() => progress.value >= 1);
-
-const bloom = computed(() =>
-  Math.min(1, settledMs.value / 1000 / SMOKE_BLOOM_SECS),
-);
-
-function pointAtProgress(fraction: number): UtilityTrajectoryPoint {
-  const points = trajectory.value;
-  if (points.length === 0) {
-    return {
-      x: Number(props.lineup.origin_x),
-      y: Number(props.lineup.origin_y),
-      z: 0,
-    };
-  }
-  const index = Math.max(
-    0,
-    Math.min(points.length - 1, Math.floor(fraction * (points.length - 1))),
-  );
-  return points[index];
-}
-
-const players = computed(() => [
-  {
-    steamId: props.lineup.id,
-    team: throwerTeam.value,
-    alive: true,
-    x: Number(props.lineup.origin_x),
-    y: Number(props.lineup.origin_y),
-    z: Number(props.lineup.origin_z),
-    yaw: Number(props.lineup.view_yaw ?? 0),
-    pitch: Number(props.lineup.view_pitch ?? 0),
-    health: 100,
-    armor: 0,
-  },
-]);
-
-const names = computed(() => ({ [props.lineup.id]: props.lineup.name }));
-
 const avatars = computed(() => {
   const author = props.lineup.author;
   const url = resolveAvatarUrl(
@@ -289,114 +157,8 @@ const avatars = computed(() => {
   return url ? { [props.lineup.id]: url } : {};
 });
 
-const grenadeTrajectories = computed(() => {
-  const points = trajectory.value;
-  if (points.length < 2) {
-    return [];
-  }
-  return [
-    {
-      gid: SYNTHETIC_GID,
-      pts: points.map((point, index) => ({
-        t: point.t ?? index / (points.length - 1),
-        x: point.x,
-        y: point.y,
-        z: point.z,
-      })),
-    },
-  ];
-});
-
-// The arc tube comes from `inFlight` rather than a selected `roundUtilities`
-// entry: a selected utility also draws a thrower ghost, which would sit exactly
-// on top of the player token already standing at the throw origin.
-const inFlight = computed(() => {
-  const points = trajectory.value;
-  if (points.length < 2) {
-    return [];
-  }
-  const head = pointAtProgress(progress.value);
-  const last = points[points.length - 1];
-  return [
-    {
-      key: props.lineup.id,
-      gid: SYNTHETIC_GID,
-      type: replayType.value,
-      fromX: points[0].x,
-      fromY: points[0].y,
-      toX: last.x,
-      toY: last.y,
-      x: head.x,
-      y: head.y,
-      z: head.z,
-      progress: progress.value,
-    },
-  ];
-});
-
-const grenades = computed(() => {
-  if (!landed.value) {
-    return [];
-  }
-  const landing = utilityLanding(props.lineup);
-  if (!landing) {
-    return [];
-  }
-  return [
-    {
-      rx: landing.x,
-      ry: landing.y,
-      rz: landing.z,
-      type: replayType.value,
-      life: 1,
-      bloom: bloom.value,
-      grenade_id: SYNTHETIC_GID,
-      thrower_team: throwerTeam.value,
-    },
-  ];
-});
-
-// The renderer derives its roof cut from the tallest player it has seen, and a
-// lineup only has one. Take the highest point of the throw instead, so the cut
-// never slices through the arc it is meant to show.
-const autoCeilingZ = computed(() => {
-  let highest = Math.max(
-    Number(props.lineup.origin_z),
-    Number(props.lineup.eye_z ?? props.lineup.origin_z),
-    Number(props.lineup.land_z ?? props.lineup.origin_z),
-  );
-  for (const point of trajectory.value) {
-    if (point.z > highest) {
-      highest = point.z;
-    }
-  }
-  return highest + 400;
-});
-
-// The fallback renderer's roof cut: on a view mesh ~160u above each floor
-// keeps the walls a throw has to clear while still opening interior
-// ceilings; the .tri keeps its own plane-based default. The stage ghosts
-// roofs by itself.
-const VIEW_CEILING = 58;
-const TRI_CEILING = 70;
-const meshKind = ref<"view" | "tri" | "radar" | null>(null);
-const ceiling = computed(() =>
-  meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING,
-);
-
-// Only reached if the mesh 404s mid-flight and the renderer drops back to the
-// flat radar plane; in mesh mode nothing calls this.
-function project(point: { x: number; y: number; z?: number }) {
-  return projectCalibrated(point) ?? { x: 0, y: 0 };
-}
-
-const tick = computed(() =>
-  Math.round(((progress.value * flightMs.value) / 1000) * TICK_RATE),
-);
-
-// The replay stage draws it unless this browser or map cannot; then the
-// renderer above does, as it always has.
-const stageFailed = ref(false);
+// No WebGL2, or no model of this map: a message stands in the stage's place.
+const stageUnavailable = ref<"unsupported" | "missing-map" | null>(null);
 
 // The real smoke, when the plugin has recorded it; until then (or without
 // one) the stage floods its own.
@@ -448,40 +210,19 @@ const stageTime = computed(() => {
     :class="fill ? 'h-full' : 'aspect-[16/10]'"
   >
     <UtilityThrowStage
-      v-if="!stageFailed"
+      v-if="!stageUnavailable"
       :map-name="lineup.map_name"
       :throws="stageThrows"
       :throwers="stageThrowers"
       :time="stageTime"
       :controls="fill ? 64 : 56"
-      @mesh="(kind) => (meshKind = kind)"
       @framed="onFramed"
-      @fallback="stageFailed = true"
+      @fallback="(reason) => (stageUnavailable = reason)"
     />
-    <Replay3DLite
-      v-else
-      :map-name="mapName"
-      :mesh-cdn="meshCdn"
-      :radar-src="radarSrc"
-      :resolution="calibration?.resolution ?? 1"
-      :project="project"
-      :players="players"
-      :names="names"
-      :avatars="avatars"
-      :grenade-trajectories="grenadeTrajectories"
-      :in-flight="inFlight"
-      :grenades="grenades"
-      :tick="tick"
-      :tick-rate="TICK_RATE"
-      :ceiling="ceiling"
-      :auto-ceiling-z="autoCeilingZ"
-      cam-mode="orbit"
-      :frame="cameraFrame"
-      @mesh="(kind) => (meshKind = kind)"
-      @framed="onFramed"
-    />
+    <ReplayStageUnavailable v-else :reason="stageUnavailable" />
 
     <UtilityExecuteTransport
+      v-if="!stageUnavailable"
       class="absolute z-[10]"
       :class="fill ? 'inset-x-3 bottom-3' : 'inset-x-2 bottom-2'"
       :position="position"

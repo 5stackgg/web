@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-// Build + publish lightweight CS2 map collision meshes (".tri") for the 3D-lite
-// replay viewer.
+// Build + publish lightweight CS2 map collision meshes (".tri") for the demo
+// parser and the replay stage.
 //
 // A .tri file is a raw, non-indexed float32 position buffer (9 floats =
 // 3 vertices per triangle, no header) in CS2 source units — the SAME space as
 // demo player positions, so the mesh and players align with no calibration.
-// The viewer (components/match/Replay3DLite.vue) loads the .tri straight into a
-// three.js BufferGeometry.
 //
 // Sources:
 //   - awpy's published collision data (https://awpycs.com/<build>/tris.zip).

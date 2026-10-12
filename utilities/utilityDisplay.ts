@@ -120,8 +120,8 @@ export function aimPrecisionDegrees(precision: UtilityAimPrecision): number {
   );
 }
 
-// Same hexes Replay3DLite paints utility with, so a lineup reads identically on
-// the board, in the list and in the 3D scene.
+// Same hexes the replay stage paints utility with (UTILITY_MARKER_COLORS), so a
+// lineup reads identically on the board, in the list and in the 3D scene.
 export const UTILITY_TYPE_COLORS: Record<UtilityType, string> = {
   Smoke: "#32d6e0",
   Molotov: "#ff6a1a",

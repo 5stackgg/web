@@ -57,10 +57,10 @@ watch(
 
 const hasMesh = ref<boolean | null>(null);
 
-// The renderer decides its mesh mode once on mount, so the 3D view must not
-// appear until the probe has answered -- otherwise a map with no mesh shows an
-// empty scene rather than falling back to the radar. Nor does the radar show
-// while it asks, or turning the 3D tile on would flash it.
+// The stage draws from the map's view mesh, so the 3D view must not appear
+// until the probe has answered -- otherwise a map with none shows the stage's
+// message rather than the radar. Nor does the radar show while it asks, or
+// turning the 3D tile on would flash it.
 watch(
   () => [props.lineup.map_name, clip.value] as const,
   async ([name, clipSrc]) => {

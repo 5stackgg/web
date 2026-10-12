@@ -7,9 +7,9 @@ out of the B2 bucket `5stack`:
 
 | asset | file | read by |
 | --- | --- | --- |
-| collision | `<map>.tri.gz` | demo parser (line of sight, smoke flood fill, grenade sim), 3D viewer fallback |
+| collision | `<map>.tri.gz` | demo parser (line of sight, smoke flood fill, grenade sim) |
 | grenade clips | `<map>.grenadeclip.tri.gz` (absent when the map has none) | demo parser grenade flight/drift sim |
-| view mesh | `<map>.view.bin.gz` | 3D viewer (`components/match/Replay3DLite.vue`), replay stage |
+| view mesh | `<map>.view.bin.gz` | replay stage (`components/match/ReplayStage.vue`) |
 | callouts | `<map>.callouts.json` | API (`public.map_callouts`), radar overlay, utility naming |
 | prep | `<map>.prep.v<PREP_VERSION>.bin.gz` (absent without a view mesh) | replay stage map prep (`utilities/replayStage/mapPrepPack.ts`) |
 | blast | `<map>.blast.v2.bin.gz` (absent when the map bakes no bomb damage) | replay stage C4 blast (`utilities/replayStage/blastField.ts`) |

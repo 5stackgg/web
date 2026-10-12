@@ -10,7 +10,6 @@ Assets vendored from [boltgolt/boltobserv](https://github.com/boltgolt/boltobser
   maps with a radar per room.
 - `<map_name>_<volume>.png` — 1024×1024 radar of one room (see *Per-room
   radars*).
-- `projectiles/bomb-*.webp` — bomb planted / defused / dropped markers.
 
 Every map's whole-map radar is our own bake under `stage/` (below); a
 `<map_name>.png` here is only drawn for a map that has not been baked yet.

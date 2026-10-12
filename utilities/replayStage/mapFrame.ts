@@ -224,7 +224,7 @@ function splitsOf(map: StageMap): Splits | null {
   const levels = levelsFor(map.name.replace(/_night$/, ""));
   const upper = levels[0];
   const lower = levels[levels.length - 1];
-  const ceiling = lower.below;
+  const ceiling = lower?.below ?? null;
   if (levels.length < 2 || ceiling === null) {
     splits.set(map, null);
     return null;

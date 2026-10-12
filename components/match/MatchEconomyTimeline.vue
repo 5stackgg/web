@@ -35,7 +35,12 @@ import {
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import mapLabel from "~/utilities/mapLabel";
-import { ECO_MAX, FULL_MIN, moneyOf } from "~/utilities/buyType";
+import {
+  ECO_MAX,
+  FULL_MIN,
+  moneyOf,
+  startMoneyByRound,
+} from "~/utilities/buyType";
 
 ChartJS.register(
   CategoryScale,
@@ -122,6 +127,14 @@ const rounds = computed<RoundEntry[]>(() => {
     .sort((a, b) => a.round - b.round);
 });
 
+const startMoney = computed(() =>
+  startMoneyByRound(
+    rounds.value,
+    props.match?.options?.mr,
+    props.match?.options?.type,
+  ),
+);
+
 const hasData = computed(() => {
   return rounds.value.some(
     (r) => moneyOf(r.lineup_1_money) !== null || moneyOf(r.lineup_2_money) !== null,
@@ -161,12 +174,14 @@ const chartData = computed(() => {
     datasets: [
       {
         label: lineup1Name.value,
-        data: rounds.value.map((r) => moneyOf(r.lineup_1_money)),
+        data: rounds.value.map(
+          (r) => startMoney.value.get(r.round)?.lineup_1 ?? null,
+        ),
         borderColor: AMBER,
         backgroundColor: "rgba(251, 191, 36, 0.08)",
         borderWidth: 2,
         tension: 0.3,
-        spanGaps: true,
+        spanGaps: false,
         fill: false,
         pointRadius: 4,
         pointHoverRadius: 6,
@@ -176,12 +191,14 @@ const chartData = computed(() => {
       },
       {
         label: lineup2Name.value,
-        data: rounds.value.map((r) => moneyOf(r.lineup_2_money)),
+        data: rounds.value.map(
+          (r) => startMoney.value.get(r.round)?.lineup_2 ?? null,
+        ),
         borderColor: CYAN,
         backgroundColor: "rgba(56, 189, 248, 0.08)",
         borderWidth: 2,
         tension: 0.3,
-        spanGaps: true,
+        spanGaps: false,
         fill: false,
         pointRadius: 4,
         pointHoverRadius: 6,
@@ -337,6 +354,27 @@ const buyBandPlugin = {
         area.right - area.left,
         Math.min(fullTop, area.bottom) - area.top,
       );
+    }
+
+    // A dashed guide where neither team's start money is known.
+    const xScale = chart.scales?.x;
+    if (xScale) {
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 4]);
+      (chart.data.labels ?? []).forEach((_: unknown, index: number) => {
+        const unknown = chart.data.datasets.every(
+          (dataset: any) => dataset.data[index] === null,
+        );
+        if (!unknown) {
+          return;
+        }
+        const x = xScale.getPixelForValue(index);
+        ctx.beginPath();
+        ctx.moveTo(x, area.top);
+        ctx.lineTo(x, area.bottom);
+        ctx.stroke();
+      });
     }
 
     ctx.restore();

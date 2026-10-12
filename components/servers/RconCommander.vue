@@ -276,6 +276,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export default {
   props: {
@@ -603,7 +604,7 @@ export default {
       response: string,
       type: "command" | "response" | "error",
     ) {
-      const timestamp = new Date().toLocaleTimeString();
+      const timestamp = new Date().toLocaleTimeString(dateLocale());
 
       this.logs.unshift({
         id: uuidv4(),

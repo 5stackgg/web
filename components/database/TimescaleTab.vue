@@ -193,6 +193,7 @@ import {
 import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { generateQuery } from "~/graphql/graphqlGen";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export default {
   components: {
@@ -218,7 +219,7 @@ export default {
   methods: {
     formatDate(date: string | null) {
       if (!date) return this.$t("pages.database.timescale.not_scheduled");
-      return new Date(date).toLocaleString();
+      return new Date(date).toLocaleString(dateLocale());
     },
     getJobStatusVariant(status: string) {
       if (status === "Success") return "default";

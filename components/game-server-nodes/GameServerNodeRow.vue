@@ -68,6 +68,7 @@ import NodeMetrics from "@/components/system-metrics/NodeMetrics.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { ref } from "vue";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const { openFiles } = useFilePopout();
 
@@ -657,7 +658,11 @@ const isSectionExpanded = (section: string) => {
                           />
                         </div>
                         <div class="text-xs text-muted-foreground">
-                          {{ new Date(version.updated_at).toLocaleString() }}
+                          {{
+                            new Date(version.updated_at).toLocaleString(
+                              dateLocale(),
+                            )
+                          }}
                           <span
                             v-if="version.current"
                             class="text-green-500 ml-1"
@@ -807,7 +812,11 @@ const isSectionExpanded = (section: string) => {
                       </div>
                       <div>
                         {{ $t("game_server.plugin_version_published") }}:
-                        {{ new Date(version.published_at).toLocaleString() }}
+                        {{
+                          new Date(version.published_at).toLocaleString(
+                            dateLocale(),
+                          )
+                        }}
                       </div>
                     </div>
                   </div>
@@ -1529,7 +1538,9 @@ const isSectionExpanded = (section: string) => {
                               </div>
                               <div class="text-xs text-muted-foreground">
                                 {{
-                                  new Date(version.updated_at).toLocaleString()
+                                  new Date(version.updated_at).toLocaleString(
+                                    dateLocale(),
+                                  )
                                 }}
                                 <span
                                   v-if="version.current"
@@ -1641,7 +1652,9 @@ const isSectionExpanded = (section: string) => {
                             <div>
                               {{ $t("game_server.plugin_version_published") }}:
                               {{
-                                new Date(version.published_at).toLocaleString()
+                                new Date(version.published_at).toLocaleString(
+                                  dateLocale(),
+                                )
                               }}
                             </div>
                           </div>

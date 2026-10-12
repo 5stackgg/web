@@ -9,6 +9,7 @@ import {
   tournamentChampion,
   tournamentRowState,
 } from "~/utilities/watchEventCard";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // Status and category descriptions come from the database in title case;
 // keep acronyms (LAN) and lower the rest so the line reads as a sentence.
@@ -112,7 +113,7 @@ export function useTournamentDisplay(source: () => any) {
   );
   const startDay = computed(() =>
     start.value
-      ? new Intl.DateTimeFormat(undefined, {
+      ? new Intl.DateTimeFormat(dateLocale(), {
           weekday: "short",
           month: "short",
           day: "numeric",
@@ -121,7 +122,7 @@ export function useTournamentDisplay(source: () => any) {
   );
   const startTime = computed(() =>
     start.value
-      ? new Intl.DateTimeFormat(undefined, {
+      ? new Intl.DateTimeFormat(dateLocale(), {
           hour: "numeric",
           minute: "2-digit",
         }).format(start.value)

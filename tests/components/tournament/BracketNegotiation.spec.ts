@@ -12,6 +12,9 @@ import {
   PROPOSE_TIME_MUTATION,
   RESPOND_PROPOSAL_MUTATION,
 } from "~/graphql/leagues";
+import { pinBrowserLocale } from "../../helpers/browserLocale";
+
+pinBrowserLocale("en-US");
 
 const CAPTAIN_1 = "76561198000000001";
 const CAPTAIN_2 = "76561198000000002";

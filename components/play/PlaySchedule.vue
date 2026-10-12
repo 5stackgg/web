@@ -19,7 +19,7 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const auth = useAuthStore();
 
 // Matches come from the store the header lobby nav already keeps live
@@ -89,7 +89,6 @@ onBeforeUnmount(() => {
 const rows = computed(() => {
   const ctx = {
     t,
-    locale: locale.value,
     now: now.value,
     meSteamId: auth.me?.steam_id ?? null,
   };

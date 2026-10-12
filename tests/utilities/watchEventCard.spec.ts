@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { pinBrowserLocale } from "../helpers/browserLocale";
 import {
   eventDayProgress,
   formatEventRange,
@@ -7,6 +8,8 @@ import {
   tournamentChampion,
   tournamentRowState,
 } from "~/utilities/watchEventCard";
+
+pinBrowserLocale("en-US");
 
 const local = (y: number, m: number, d: number, h = 12) =>
   new Date(y, m - 1, d, h).toISOString();

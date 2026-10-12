@@ -24,6 +24,7 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // The team's one headline card: the match it's playing, else the next one on
 // the calendar, else what to do about an empty calendar.
@@ -38,7 +39,7 @@ const emit = defineEmits<{
   (e: "request-scrim"): void;
 }>();
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { client } = useApolloClient();
 
 // Live and scheduled are followed apart, so a long fixture list can't push
@@ -108,7 +109,7 @@ const clock =
     : null;
 onBeforeUnmount(() => clock && clearInterval(clock));
 
-const ctx = computed(() => ({ t, locale: locale.value, now: now.value }));
+const ctx = computed(() => ({ t, now: now.value }));
 
 const live = computed(() => {
   const match = sortLiveMatches(liveMatches.value)[0];
@@ -142,7 +143,7 @@ function vsLabel(match: any) {
 
 function startLabel(iso: string | null) {
   if (!iso) return t("match.stream.card.scheduled");
-  return new Date(iso).toLocaleString(locale.value, {
+  return new Date(iso).toLocaleString(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",

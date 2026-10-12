@@ -33,6 +33,7 @@ import {
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -336,7 +337,7 @@ export default {
       this.mapsById = byId;
     },
     formatTime(date: Date): string {
-      return date.toLocaleTimeString([], {
+      return date.toLocaleTimeString(dateLocale(), {
         hour: "numeric",
         minute: "2-digit",
       });

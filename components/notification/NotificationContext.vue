@@ -7,6 +7,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // MatchAbandoned carries the abandoned match's id, so it gets the same match
 // preview -- an admin seeing the alert can tell which match it was without
@@ -403,7 +404,7 @@ export default defineComponent({
     scrimTime(): string {
       if (!this.scrim?.proposed_scheduled_at) return "";
       return new Date(this.scrim.proposed_scheduled_at).toLocaleString(
-        undefined,
+        dateLocale(),
         {
           weekday: "short",
           month: "short",

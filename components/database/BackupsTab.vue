@@ -22,7 +22,7 @@
               formatBytes(backup.size)
             }}</TableCell>
             <TableCell>{{
-              new Date(backup.created_at).toLocaleString()
+              new Date(backup.created_at).toLocaleString(dateLocale())
             }}</TableCell>
           </TableRow>
         </TableBody>
@@ -49,6 +49,7 @@ import {
 import { Empty } from "@/components/ui/empty";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import formatBytes from "~/utilities/formatBytes";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export default {
   components: {
@@ -74,6 +75,7 @@ export default {
   },
   methods: {
     formatBytes,
+    dateLocale,
   },
   apollo: {
     $subscribe: {

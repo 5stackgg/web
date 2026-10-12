@@ -947,6 +947,7 @@ import { bracketProposalSelection } from "~/graphql/bracketNegotiation";
 import { formatPrizePool } from "~/utilities/prizePool";
 import { freeAgentPoolWhere } from "~/graphql/tournamentCardFields";
 import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
+import { dateLocale } from "~/utilities/dateLocale";
 import {
   getRequestedRouteTab,
   getRouteTabValue,
@@ -2061,7 +2062,7 @@ export default {
       if (!this.tournament?.start) {
         return "";
       }
-      return new Intl.DateTimeFormat(this.$i18n.locale, {
+      return new Intl.DateTimeFormat(dateLocale(), {
         weekday: "short",
         month: "short",
         day: "numeric",

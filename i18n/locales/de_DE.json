@@ -7433,6 +7433,8 @@
       "decider_best_of": "Entscheidung um Platz 3",
       "advanced_settings": "Erweiterte Stage-Einstellungen",
       "teams_count": "{count} Teams",
+      "structure_locked_label": "Typ, Teams und Gruppen",
+      "structure_locked": "Typ, Teams und Gruppen sind gesperrt, sobald der Turnierbaum gezogen ist. Best Of lässt sich weiterhin ändern.",
       "final_map_advantage": {
         "label": "Map-Vorteil im Finale",
         "description": "Vorsprung an Map-Punkten, den das Team aus dem Winner-Bracket ins Grand Final mitnimmt. Muss unter der Anzahl der zum Sieg nötigen Maps bleiben."
@@ -8033,6 +8035,7 @@
       "discord": "Discord",
       "needs_attention": "Braucht Aufmerksamkeit",
       "stages_locked": "Phasen können nach dem Turnierstart nicht mehr geändert werden.",
+      "stages_drawn": "Phasen können nicht mehr geändert werden, sobald der Turnierbaum gezogen ist. Setze das Turnier auf Setup zurück, um sie zu bearbeiten.",
       "stage_summary": "{min}–{max} Teams",
       "groups": "{count} Gruppen",
       "no_stages": "Noch keine Phasen",

@@ -7433,6 +7433,8 @@
       "decider_best_of": "Desempate por el 3.er puesto",
       "advanced_settings": "Ajustes avanzados de fase",
       "teams_count": "{count} equipos",
+      "structure_locked_label": "Tipo, equipos y grupos",
+      "structure_locked": "El tipo, los equipos y los grupos se bloquean una vez generado el cuadro. El best of aún se puede cambiar.",
       "final_map_advantage": {
         "label": "Ventaja de mapa en la final",
         "description": "Ventaja en mapas con la que el equipo del cuadro de ganadores llega a la gran final. Debe ser menor que los mapas necesarios para ganar."
@@ -8033,6 +8035,7 @@
       "discord": "Discord",
       "needs_attention": "Requiere atención",
       "stages_locked": "Las fases no se pueden cambiar una vez empezado el torneo.",
+      "stages_drawn": "Las fases no se pueden cambiar una vez generado el cuadro. Vuelve a poner el torneo en configuración para editarlas.",
       "stage_summary": "{min}–{max} equipos",
       "groups": "{count} grupos",
       "no_stages": "Aún no hay fases",

@@ -7433,6 +7433,8 @@
       "decider_best_of": "Bronzekamp",
       "advanced_settings": "Avancerede faseindstillinger",
       "teams_count": "{count} hold",
+      "structure_locked_label": "Type, hold og grupper",
+      "structure_locked": "Type, hold og grupper er låst, når turneringstræet er lavet. Best of kan stadig ændres.",
       "final_map_advantage": {
         "label": "Mapfordel i finalen",
         "description": "Forspring i map-point, som holdet fra winner bracket tager med i grand final. Skal være mindre end antallet af maps, der kræves for at vinde."
@@ -8033,6 +8035,7 @@
       "discord": "Discord",
       "needs_attention": "Kræver opmærksomhed",
       "stages_locked": "Faser kan ikke ændres, når turneringen er startet.",
+      "stages_drawn": "Faser kan ikke ændres, når turneringstræet er lavet. Nulstil turneringen til opsætning for at redigere dem.",
       "stage_summary": "{min}–{max} hold",
       "groups": "{count} grupper",
       "no_stages": "Ingen faser endnu",

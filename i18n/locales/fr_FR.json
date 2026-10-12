@@ -7433,6 +7433,8 @@
       "decider_best_of": "Match pour la 3e place",
       "advanced_settings": "Paramètres avancés de la phase",
       "teams_count": "{count} équipes",
+      "structure_locked_label": "Type, équipes et groupes",
+      "structure_locked": "Le type, les équipes et les groupes sont verrouillés une fois l'arbre tiré. Le best of peut encore changer.",
       "final_map_advantage": {
         "label": "Avantage de map en finale",
         "description": "Avance en points de map dont bénéficie l'équipe du bracket des vainqueurs en grande finale. Doit rester inférieure au nombre de maps nécessaires pour gagner."
@@ -8033,6 +8035,7 @@
       "discord": "Discord",
       "needs_attention": "Demande votre attention",
       "stages_locked": "Les phases ne peuvent plus changer une fois le tournoi lancé.",
+      "stages_drawn": "Les phases ne peuvent plus changer une fois l'arbre tiré. Repassez le tournoi en configuration pour les modifier.",
       "stage_summary": "{min}–{max} équipes",
       "groups": "{count} groupes",
       "no_stages": "Aucune phase",

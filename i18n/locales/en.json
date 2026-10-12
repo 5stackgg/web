@@ -7435,6 +7435,8 @@
       "decider_best_of": "3rd Place Decider",
       "advanced_settings": "Advanced Stage Settings",
       "teams_count": "{count} teams",
+      "structure_locked_label": "Type, teams and groups",
+      "structure_locked": "Type, teams and groups are locked once the bracket is drawn. Best-of can still change.",
       "final_map_advantage": {
         "label": "Final Map Advantage",
         "description": "Map-point head start the winner-bracket team carries into the grand final. Must stay below the maps needed to win."
@@ -8035,6 +8037,7 @@
       "discord": "Discord",
       "needs_attention": "Needs attention",
       "stages_locked": "Stages can't change once the tournament has started.",
+      "stages_drawn": "Stages can't change once the bracket is drawn. Reset the tournament to Setup to edit them.",
       "stage_summary": "{min}–{max} teams",
       "groups": "{count} groups",
       "no_stages": "No stages yet",

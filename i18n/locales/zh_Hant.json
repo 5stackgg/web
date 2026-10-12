@@ -7433,6 +7433,8 @@
       "decider_best_of": "季軍賽賽制",
       "advanced_settings": "進階階段設定",
       "teams_count": "{count} 支隊伍",
+      "structure_locked_label": "類型、隊伍和小組",
+      "structure_locked": "對陣圖產生後，類型、隊伍和小組將被鎖定。賽制仍可變更。",
       "final_map_advantage": {
         "label": "決賽地圖優勢",
         "description": "勝者組隊伍帶入總決賽的地圖分領先優勢。必須低於獲勝所需的地圖數。"
@@ -8033,6 +8035,7 @@
       "discord": "Discord",
       "needs_attention": "需要處理",
       "stages_locked": "賽事開始後無法變更階段。",
+      "stages_drawn": "對陣圖產生後無法變更階段。將賽事重設為設定狀態後才能編輯。",
       "stage_summary": "{min}–{max} 支隊伍",
       "groups": "{count} 個小組",
       "no_stages": "尚無階段",

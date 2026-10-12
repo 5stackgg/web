@@ -30734,6 +30734,7 @@ acceptInvite?: [{	invite_id: ValueTypes["uuid"] | Variable<any, string>,	type: s
 addCustomGamePlugin?: [{	description?: string | undefined | null | Variable<any, string>,	installPath?: string | undefined | null | Variable<any, string>,	layout?: string | undefined | null | Variable<any, string>,	name?: string | undefined | null | Variable<any, string>,	runtime: string | Variable<any, string>,	slug?: string | undefined | null | Variable<any, string>,	url: string | Variable<any, string>,	version?: string | undefined | null | Variable<any, string>},ValueTypes["AddCustomGamePluginOutput"]],
 addDraftPlayer?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	lineup?: number | undefined | null | Variable<any, string>,	steamId: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
 addSteamPresenceBotAccount?: [{	bot_secret: string | Variable<any, string>,	friend_capacity?: number | undefined | null | Variable<any, string>,	username: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+addTournamentFreeAgent?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 approveNameChange?: [{	name: string | Variable<any, string>,	steam_id: ValueTypes["bigint"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 approve_league_season_movements?: [{	/** input parameters for function "approve_league_season_movements" */
 	args: ValueTypes["approve_league_season_movements_args"] | Variable<any, string>,	/** distinct select on columns */
@@ -32808,7 +32809,7 @@ installGamePlugin?: [{	slug: string | Variable<any, string>,	version?: string | 
 inviteToUtilityPractice?: [{	session_id: ValueTypes["uuid"] | Variable<any, string>,	steam_ids: Array<string> | Variable<any, string>},ValueTypes["SuccessOutput"]],
 joinDraftGame?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	inviteCode?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 joinDraftGameAsParty?: [{	draftGameId: ValueTypes["uuid"] | Variable<any, string>,	inviteCode?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
-joinTournamentAsFreeAgent?: [{	tournament_id: ValueTypes["uuid"] | Variable<any, string>,	with_party?: boolean | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+joinTournamentAsFreeAgent?: [{	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 joinUtilityPractice?: [{	invite_code?: string | undefined | null | Variable<any, string>,	session_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>},ValueTypes["UtilityPracticeSessionOutput"]],
 kickServerPlayer?: [{	reason?: string | undefined | null | Variable<any, string>,	serverId: string | Variable<any, string>,	steam_id: string | Variable<any, string>},ValueTypes["KickResult"]],
 league_award_forfeit?: [{	/** input parameters for function "league_award_forfeit" */
@@ -32853,6 +32854,7 @@ recalculate_tournament_awards?: [{	/** input parameters for function "recalculat
 	recomputePlayerEloStatus?:ValueTypes["RecomputeEloStatusOutput"],
 reconcileNodePlugins?: [{	nodeId: string | Variable<any, string>},ValueTypes["ReconcileNodePluginsOutput"]],
 reconnectLive?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
+recreateTournamentBracketMatch?: [{	tournament_bracket_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 redeemTournamentInviteCode?: [{	code: string | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 	/** Reindex every player into the Typesense search index (admin only). Runs in the background; track via refreshAllPlayersStatus. */
 	refreshAllPlayers?:ValueTypes["ReindexStartedOutput"],
@@ -32866,6 +32868,7 @@ registerName?: [{	name: string | Variable<any, string>},ValueTypes["SuccessOutpu
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?:ValueTypes["SuccessOutput"],
 removeSteamPresenceBotAccount?: [{	account_id: string | Variable<any, string>},ValueTypes["SuccessOutput"]],
+removeTournamentFreeAgent?: [{	steam_id: ValueTypes["bigint"] | Variable<any, string>,	tournament_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 remove_league_team_from_season?: [{	/** input parameters for function "remove_league_team_from_season" */
 	args: ValueTypes["remove_league_team_from_season_args"] | Variable<any, string>,	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["league_team_seasons_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -35067,6 +35070,7 @@ writeServerFile?: [{	content: string | Variable<any, string>,	file_path: string 
 }>;
 	/** columns and relationships of "v_my_friends" */
 ["my_friends"]: AliasType<{
+	allow_message_requests?:boolean | `@${string}`,
 	avatar_url?:boolean | `@${string}`,
 	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -35207,6 +35211,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 	_and?: Array<ValueTypes["my_friends_bool_exp"]> | undefined | null | Variable<any, string>,
 	_not?: ValueTypes["my_friends_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["my_friends_bool_exp"]> | undefined | null | Variable<any, string>,
+	allow_message_requests?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	country?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -35275,6 +35280,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 };
 	/** input type for inserting data into table "v_my_friends" */
 ["my_friends_insert_input"]: {
+	allow_message_requests?: boolean | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
 	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -35458,6 +35464,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 }>;
 	/** Ordering options when selecting data from "v_my_friends". */
 ["my_friends_order_by"]: {
+	allow_message_requests?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	avatar_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	country?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -35510,6 +35517,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 ["my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns"]:my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "v_my_friends" */
 ["my_friends_set_input"]: {
+	allow_message_requests?: boolean | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
 	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -35632,6 +35640,7 @@ count?: [{	columns?: Array<ValueTypes["my_friends_select_column"]> | undefined |
 };
 	/** Initial value of the column from where the streaming should start */
 ["my_friends_stream_cursor_value_input"]: {
+	allow_message_requests?: boolean | undefined | null | Variable<any, string>,
 	avatar_url?: string | undefined | null | Variable<any, string>,
 	country?: string | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
@@ -67282,7 +67291,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_categories_select_column"]> | 
 	/** An object relationship */
 	e_tournament_free_agent_status?:ValueTypes["e_tournament_free_agent_statuses"],
 	id?:boolean | `@${string}`,
-	party_id?:boolean | `@${string}`,
 	/** An object relationship */
 	player?:ValueTypes["players"],
 	player_steam_id?:boolean | `@${string}`,
@@ -67363,7 +67371,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_tournament_free_agent_status?: ValueTypes["e_tournament_free_agent_statuses_bool_exp"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
-	party_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_free_agent_statuses_enum_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -67385,7 +67392,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	e_tournament_free_agent_status?: ValueTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	party_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_free_agent_statuses_enum"] | undefined | null | Variable<any, string>,
@@ -67400,7 +67406,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	party_id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -67412,7 +67417,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	party_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -67423,7 +67427,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	party_id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -67435,7 +67438,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	party_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -67460,7 +67462,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_tournament_free_agent_status?: ValueTypes["e_tournament_free_agent_statuses_order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
-	party_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -67481,7 +67482,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	party_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_free_agent_statuses_enum"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -67527,7 +67527,6 @@ count?: [{	columns?: Array<ValueTypes["tournament_free_agents_select_column"]> |
 	/** Registration priority: decides who makes the cut */
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
-	party_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	status?: ValueTypes["e_tournament_free_agent_statuses_enum"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -70783,6 +70782,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_invites_select_column"]> 
 	/** columns and relationships of "tournament_team_roster" */
 ["tournament_team_roster"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_team_role?:ValueTypes["e_team_roles"],
 	/** An object relationship */
@@ -70864,6 +70864,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	_not?: ValueTypes["tournament_team_roster_bool_exp"] | undefined | null | Variable<any, string>,
 	_or?: Array<ValueTypes["tournament_team_roster_bool_exp"]> | undefined | null | Variable<any, string>,
 	checked_in_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	e_team_role?: ValueTypes["e_team_roles_bool_exp"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -70883,6 +70884,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** input type for inserting data into table "tournament_team_roster" */
 ["tournament_team_roster_insert_input"]: {
 	checked_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	e_team_role?: ValueTypes["e_team_roles_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
@@ -70895,6 +70897,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** aggregate max on columns */
 ["tournament_team_roster_max_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -70903,6 +70906,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** order by max() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_max_order_by"]: {
 	checked_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -70910,6 +70914,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** aggregate min on columns */
 ["tournament_team_roster_min_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -70918,6 +70923,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** order by min() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_min_order_by"]: {
 	checked_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	tournament_team_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
@@ -70939,6 +70945,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** Ordering options when selecting data from "tournament_team_roster". */
 ["tournament_team_roster_order_by"]: {
 	checked_in_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	e_team_role?: ValueTypes["e_team_roles_order_by"] | undefined | null | Variable<any, string>,
 	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -70959,6 +70966,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** input type for updating data in table "tournament_team_roster" */
 ["tournament_team_roster_set_input"]: {
 	checked_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_team_roles_enum"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -71001,6 +71009,7 @@ count?: [{	columns?: Array<ValueTypes["tournament_team_roster_select_column"]> |
 	/** Initial value of the column from where the streaming should start */
 ["tournament_team_roster_stream_cursor_value_input"]: {
 	checked_in_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	player_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	role?: ValueTypes["e_team_roles_enum"] | undefined | null | Variable<any, string>,
 	tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -76815,6 +76824,10 @@ repairs_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["utility_lineup_repairs_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["utility_lineup_repairs_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["utility_lineup_repairs_aggregate"]],
 	side?:boolean | `@${string}`,
+	smoke_voxels_at?:boolean | `@${string}`,
+	smoke_voxels_file?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	/** An object relationship */
 	source_match?:ValueTypes["matches"],
@@ -77132,6 +77145,9 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	repairs?: ValueTypes["utility_lineup_repairs_bool_exp"] | undefined | null | Variable<any, string>,
 	repairs_aggregate?: ValueTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_enum_comparison_exp"] | undefined | null | Variable<any, string>,
+	smoke_voxels_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	smoke_voxels_file?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	smoke_voxels_url?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	source_match?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>,
 	source_match_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -77266,6 +77282,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	renders?: ValueTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	repairs?: ValueTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
+	smoke_voxels_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	smoke_voxels_file?: string | undefined | null | Variable<any, string>,
 	source_grenade_id?: number | undefined | null | Variable<any, string>,
 	source_match?: ValueTypes["matches_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	source_match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -77342,6 +77360,10 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
+	smoke_voxels_at?:boolean | `@${string}`,
+	smoke_voxels_file?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	source_match_id?:boolean | `@${string}`,
 	source_match_map_id?:boolean | `@${string}`,
@@ -77402,6 +77424,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	public_review_note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	smoke_voxels_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	smoke_voxels_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -77469,6 +77493,10 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
+	smoke_voxels_at?:boolean | `@${string}`,
+	smoke_voxels_file?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	source_match_id?:boolean | `@${string}`,
 	source_match_map_id?:boolean | `@${string}`,
@@ -77529,6 +77557,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	public_review_note?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	smoke_voxels_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	smoke_voxels_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_match_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -77628,6 +77658,9 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	renders_aggregate?: ValueTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	repairs_aggregate?: ValueTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	smoke_voxels_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	smoke_voxels_file?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	smoke_voxels_url?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_grenade_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	source_match?: ValueTypes["matches_order_by"] | undefined | null | Variable<any, string>,
 	source_match_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -77732,6 +77765,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	public_reviewed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
+	smoke_voxels_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	smoke_voxels_file?: string | undefined | null | Variable<any, string>,
 	source_grenade_id?: number | undefined | null | Variable<any, string>,
 	source_match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	source_match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -78021,6 +78056,8 @@ count?: [{	columns?: Array<ValueTypes["utility_lineups_select_column"]> | undefi
 	public_reviewed_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	public_reviewed_by?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	side?: ValueTypes["e_sides_enum"] | undefined | null | Variable<any, string>,
+	smoke_voxels_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	smoke_voxels_file?: string | undefined | null | Variable<any, string>,
 	source_grenade_id?: number | undefined | null | Variable<any, string>,
 	source_match_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
 	source_match_map_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -119559,6 +119596,7 @@ acceptInvite?: [{	invite_id: ResolverInputTypes["uuid"],	type: string},ResolverI
 addCustomGamePlugin?: [{	description?: string | undefined | null,	installPath?: string | undefined | null,	layout?: string | undefined | null,	name?: string | undefined | null,	runtime: string,	slug?: string | undefined | null,	url: string,	version?: string | undefined | null},ResolverInputTypes["AddCustomGamePluginOutput"]],
 addDraftPlayer?: [{	draftGameId: ResolverInputTypes["uuid"],	lineup?: number | undefined | null,	steamId: string},ResolverInputTypes["SuccessOutput"]],
 addSteamPresenceBotAccount?: [{	bot_secret: string,	friend_capacity?: number | undefined | null,	username: string},ResolverInputTypes["SuccessOutput"]],
+addTournamentFreeAgent?: [{	steam_id: ResolverInputTypes["bigint"],	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 approveNameChange?: [{	name: string,	steam_id: ResolverInputTypes["bigint"]},ResolverInputTypes["SuccessOutput"]],
 approve_league_season_movements?: [{	/** input parameters for function "approve_league_season_movements" */
 	args: ResolverInputTypes["approve_league_season_movements_args"],	/** distinct select on columns */
@@ -121633,7 +121671,7 @@ installGamePlugin?: [{	slug: string,	version?: string | undefined | null},Resolv
 inviteToUtilityPractice?: [{	session_id: ResolverInputTypes["uuid"],	steam_ids: Array<string>},ResolverInputTypes["SuccessOutput"]],
 joinDraftGame?: [{	draftGameId: ResolverInputTypes["uuid"],	inviteCode?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
 joinDraftGameAsParty?: [{	draftGameId: ResolverInputTypes["uuid"],	inviteCode?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
-joinTournamentAsFreeAgent?: [{	tournament_id: ResolverInputTypes["uuid"],	with_party?: boolean | undefined | null},ResolverInputTypes["SuccessOutput"]],
+joinTournamentAsFreeAgent?: [{	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 joinUtilityPractice?: [{	invite_code?: string | undefined | null,	session_id?: ResolverInputTypes["uuid"] | undefined | null},ResolverInputTypes["UtilityPracticeSessionOutput"]],
 kickServerPlayer?: [{	reason?: string | undefined | null,	serverId: string,	steam_id: string},ResolverInputTypes["KickResult"]],
 league_award_forfeit?: [{	/** input parameters for function "league_award_forfeit" */
@@ -121678,6 +121716,7 @@ recalculate_tournament_awards?: [{	/** input parameters for function "recalculat
 	recomputePlayerEloStatus?:ResolverInputTypes["RecomputeEloStatusOutput"],
 reconcileNodePlugins?: [{	nodeId: string},ResolverInputTypes["ReconcileNodePluginsOutput"]],
 reconnectLive?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
+recreateTournamentBracketMatch?: [{	tournament_bracket_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 redeemTournamentInviteCode?: [{	code: string,	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 	/** Reindex every player into the Typesense search index (admin only). Runs in the background; track via refreshAllPlayersStatus. */
 	refreshAllPlayers?:ResolverInputTypes["ReindexStartedOutput"],
@@ -121691,6 +121730,7 @@ registerName?: [{	name: string},ResolverInputTypes["SuccessOutput"]],
 	/** Remove dev fixture data (dev only) */
 	removeFixtures?:ResolverInputTypes["SuccessOutput"],
 removeSteamPresenceBotAccount?: [{	account_id: string},ResolverInputTypes["SuccessOutput"]],
+removeTournamentFreeAgent?: [{	steam_id: ResolverInputTypes["bigint"],	tournament_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 remove_league_team_from_season?: [{	/** input parameters for function "remove_league_team_from_season" */
 	args: ResolverInputTypes["remove_league_team_from_season_args"],	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["league_team_seasons_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -123892,6 +123932,7 @@ writeServerFile?: [{	content: string,	file_path: string,	node_id: string,	server
 }>;
 	/** columns and relationships of "v_my_friends" */
 ["my_friends"]: AliasType<{
+	allow_message_requests?:boolean | `@${string}`,
 	avatar_url?:boolean | `@${string}`,
 	country?:boolean | `@${string}`,
 	created_at?:boolean | `@${string}`,
@@ -124032,6 +124073,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 	_and?: Array<ResolverInputTypes["my_friends_bool_exp"]> | undefined | null,
 	_not?: ResolverInputTypes["my_friends_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["my_friends_bool_exp"]> | undefined | null,
+	allow_message_requests?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	avatar_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	country?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -124100,6 +124142,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 };
 	/** input type for inserting data into table "v_my_friends" */
 ["my_friends_insert_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -124283,6 +124326,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 }>;
 	/** Ordering options when selecting data from "v_my_friends". */
 ["my_friends_order_by"]: {
+	allow_message_requests?: ResolverInputTypes["order_by"] | undefined | null,
 	avatar_url?: ResolverInputTypes["order_by"] | undefined | null,
 	country?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
@@ -124335,6 +124379,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 ["my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns"]:my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "v_my_friends" */
 ["my_friends_set_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -124457,6 +124502,7 @@ count?: [{	columns?: Array<ResolverInputTypes["my_friends_select_column"]> | und
 };
 	/** Initial value of the column from where the streaming should start */
 ["my_friends_stream_cursor_value_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
@@ -156107,7 +156153,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_categories_select_colu
 	/** An object relationship */
 	e_tournament_free_agent_status?:ResolverInputTypes["e_tournament_free_agent_statuses"],
 	id?:boolean | `@${string}`,
-	party_id?:boolean | `@${string}`,
 	/** An object relationship */
 	player?:ResolverInputTypes["players"],
 	player_steam_id?:boolean | `@${string}`,
@@ -156188,7 +156233,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_tournament_free_agent_status?: ResolverInputTypes["e_tournament_free_agent_statuses_bool_exp"] | undefined | null,
 	id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
-	party_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
 	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_free_agent_statuses_enum_comparison_exp"] | undefined | null,
@@ -156210,7 +156254,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	e_tournament_free_agent_status?: ResolverInputTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	party_id?: ResolverInputTypes["uuid"] | undefined | null,
 	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
@@ -156225,7 +156268,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	party_id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -156237,7 +156279,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	party_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -156248,7 +156289,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** Registration priority: decides who makes the cut */
 	created_at?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
-	party_id?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -156260,7 +156300,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	party_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -156285,7 +156324,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	e_tournament_free_agent_status?: ResolverInputTypes["e_tournament_free_agent_statuses_order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
-	party_id?: ResolverInputTypes["order_by"] | undefined | null,
 	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	status?: ResolverInputTypes["order_by"] | undefined | null,
@@ -156306,7 +156344,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	party_id?: ResolverInputTypes["uuid"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -156352,7 +156389,6 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_free_agents_select_col
 	/** Registration priority: decides who makes the cut */
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
-	party_id?: ResolverInputTypes["uuid"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	status?: ResolverInputTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -159608,6 +159644,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_invites_select_co
 	/** columns and relationships of "tournament_team_roster" */
 ["tournament_team_roster"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	/** An object relationship */
 	e_team_role?:ResolverInputTypes["e_team_roles"],
 	/** An object relationship */
@@ -159689,6 +159726,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	_not?: ResolverInputTypes["tournament_team_roster_bool_exp"] | undefined | null,
 	_or?: Array<ResolverInputTypes["tournament_team_roster_bool_exp"]> | undefined | null,
 	checked_in_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_team_role?: ResolverInputTypes["e_team_roles_bool_exp"] | undefined | null,
 	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
@@ -159708,6 +159746,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** input type for inserting data into table "tournament_team_roster" */
 ["tournament_team_roster_insert_input"]: {
 	checked_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	e_team_role?: ResolverInputTypes["e_team_roles_obj_rel_insert_input"] | undefined | null,
 	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
@@ -159720,6 +159759,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** aggregate max on columns */
 ["tournament_team_roster_max_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -159728,6 +159768,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** order by max() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_max_order_by"]: {
 	checked_in_at?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -159735,6 +159776,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** aggregate min on columns */
 ["tournament_team_roster_min_fields"]: AliasType<{
 	checked_in_at?:boolean | `@${string}`,
+	created_at?:boolean | `@${string}`,
 	player_steam_id?:boolean | `@${string}`,
 	tournament_id?:boolean | `@${string}`,
 	tournament_team_id?:boolean | `@${string}`,
@@ -159743,6 +159785,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** order by min() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_min_order_by"]: {
 	checked_in_at?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_id?: ResolverInputTypes["order_by"] | undefined | null,
 	tournament_team_id?: ResolverInputTypes["order_by"] | undefined | null
@@ -159764,6 +159807,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** Ordering options when selecting data from "tournament_team_roster". */
 ["tournament_team_roster_order_by"]: {
 	checked_in_at?: ResolverInputTypes["order_by"] | undefined | null,
+	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	e_team_role?: ResolverInputTypes["e_team_roles_order_by"] | undefined | null,
 	player?: ResolverInputTypes["players_order_by"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -159784,6 +159828,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** input type for updating data in table "tournament_team_roster" */
 ["tournament_team_roster_set_input"]: {
 	checked_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	role?: ResolverInputTypes["e_team_roles_enum"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -159826,6 +159871,7 @@ count?: [{	columns?: Array<ResolverInputTypes["tournament_team_roster_select_col
 	/** Initial value of the column from where the streaming should start */
 ["tournament_team_roster_stream_cursor_value_input"]: {
 	checked_in_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	player_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	role?: ResolverInputTypes["e_team_roles_enum"] | undefined | null,
 	tournament_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -165640,6 +165686,10 @@ repairs_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["utility_lineup_repairs_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["utility_lineup_repairs_bool_exp"] | undefined | null},ResolverInputTypes["utility_lineup_repairs_aggregate"]],
 	side?:boolean | `@${string}`,
+	smoke_voxels_at?:boolean | `@${string}`,
+	smoke_voxels_file?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	/** An object relationship */
 	source_match?:ResolverInputTypes["matches"],
@@ -165957,6 +166007,9 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	repairs?: ResolverInputTypes["utility_lineup_repairs_bool_exp"] | undefined | null,
 	repairs_aggregate?: ResolverInputTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_enum_comparison_exp"] | undefined | null,
+	smoke_voxels_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	smoke_voxels_file?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	smoke_voxels_url?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	source_match?: ResolverInputTypes["matches_bool_exp"] | undefined | null,
 	source_match_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
@@ -166091,6 +166144,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	renders?: ResolverInputTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null,
 	repairs?: ResolverInputTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match?: ResolverInputTypes["matches_obj_rel_insert_input"] | undefined | null,
 	source_match_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -166167,6 +166222,10 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
+	smoke_voxels_at?:boolean | `@${string}`,
+	smoke_voxels_file?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	source_match_id?:boolean | `@${string}`,
 	source_match_map_id?:boolean | `@${string}`,
@@ -166227,6 +166286,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	public_review_note?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: ResolverInputTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	source_match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	source_match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -166294,6 +166355,10 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	public_review_note?:boolean | `@${string}`,
 	public_reviewed_at?:boolean | `@${string}`,
 	public_reviewed_by?:boolean | `@${string}`,
+	smoke_voxels_at?:boolean | `@${string}`,
+	smoke_voxels_file?:boolean | `@${string}`,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?:boolean | `@${string}`,
 	source_grenade_id?:boolean | `@${string}`,
 	source_match_id?:boolean | `@${string}`,
 	source_match_map_id?:boolean | `@${string}`,
@@ -166354,6 +166419,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	public_review_note?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ResolverInputTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: ResolverInputTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	source_match_id?: ResolverInputTypes["order_by"] | undefined | null,
 	source_match_map_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -166453,6 +166520,9 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	renders_aggregate?: ResolverInputTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null,
 	repairs_aggregate?: ResolverInputTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null,
 	side?: ResolverInputTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: ResolverInputTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: ResolverInputTypes["order_by"] | undefined | null,
+	smoke_voxels_url?: ResolverInputTypes["order_by"] | undefined | null,
 	source_grenade_id?: ResolverInputTypes["order_by"] | undefined | null,
 	source_match?: ResolverInputTypes["matches_order_by"] | undefined | null,
 	source_match_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -166557,6 +166627,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	public_reviewed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["bigint"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	source_match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -166846,6 +166918,8 @@ count?: [{	columns?: Array<ResolverInputTypes["utility_lineups_select_column"]> 
 	public_reviewed_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ResolverInputTypes["bigint"] | undefined | null,
 	side?: ResolverInputTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: ResolverInputTypes["uuid"] | undefined | null,
 	source_match_map_id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -205802,6 +205876,8 @@ export type ModelTypes = {
 	addDraftPlayer?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Add a friends-role presence bot account to the pool */
 	addSteamPresenceBotAccount?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Organizer adds a player to a tournament's free agent pool */
+	addTournamentFreeAgent?: ModelTypes["SuccessOutput"] | undefined | null,
 	approveNameChange?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** execute VOLATILE function "approve_league_season_movements" which returns "league_team_movements" */
 	approve_league_season_movements: Array<ModelTypes["league_team_movements"]>,
@@ -207693,7 +207769,7 @@ export type ModelTypes = {
 	joinDraftGame?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** joinDraftGameAsParty */
 	joinDraftGameAsParty?: ModelTypes["SuccessOutput"] | undefined | null,
-	/** Register for a tournament that drafts teams, alone or with your lobby */
+	/** Register as a free agent for a tournament that drafts teams */
 	joinTournamentAsFreeAgent?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Join a utility practice session */
 	joinUtilityPractice?: ModelTypes["UtilityPracticeSessionOutput"] | undefined | null,
@@ -207742,6 +207818,8 @@ export type ModelTypes = {
 	/** Re-read which plugins are actually on a node */
 	reconcileNodePlugins?: ModelTypes["ReconcileNodePluginsOutput"] | undefined | null,
 	reconnectLive?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Organizer recreates the match of a bracket slot whose match was deleted */
+	recreateTournamentBracketMatch?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Spend a tournament invite link for an unlock on an invite only tournament */
 	redeemTournamentInviteCode?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Reindex every player into the Typesense search index (admin only). Runs in the background; track via refreshAllPlayersStatus. */
@@ -207757,6 +207835,8 @@ export type ModelTypes = {
 	removeFixtures?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Remove a friends-role presence bot account */
 	removeSteamPresenceBotAccount?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Organizer removes a registered or waitlisted player from a tournament's free agent pool */
+	removeTournamentFreeAgent?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** execute VOLATILE function "remove_league_team_from_season" which returns "league_team_seasons" */
 	remove_league_team_from_season: Array<ModelTypes["league_team_seasons"]>,
 	/** Rename file or directory on game server */
@@ -209222,7 +209302,8 @@ export type ModelTypes = {
 };
 	/** columns and relationships of "v_my_friends" */
 ["my_friends"]: {
-		avatar_url?: string | undefined | null,
+		allow_message_requests?: boolean | undefined | null,
+	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	custom_avatar_url?: string | undefined | null,
@@ -209356,6 +209437,7 @@ export type ModelTypes = {
 	_and?: Array<ModelTypes["my_friends_bool_exp"]> | undefined | null,
 	_not?: ModelTypes["my_friends_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["my_friends_bool_exp"]> | undefined | null,
+	allow_message_requests?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	avatar_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	country?: ModelTypes["String_comparison_exp"] | undefined | null,
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -209424,6 +209506,7 @@ export type ModelTypes = {
 };
 	/** input type for inserting data into table "v_my_friends" */
 ["my_friends_insert_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -209604,6 +209687,7 @@ export type ModelTypes = {
 };
 	/** Ordering options when selecting data from "v_my_friends". */
 ["my_friends_order_by"]: {
+	allow_message_requests?: ModelTypes["order_by"] | undefined | null,
 	avatar_url?: ModelTypes["order_by"] | undefined | null,
 	country?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
@@ -209653,6 +209737,7 @@ export type ModelTypes = {
 	["my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns"]:my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "v_my_friends" */
 ["my_friends_set_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -209772,6 +209857,7 @@ export type ModelTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["my_friends_stream_cursor_value_input"]: {
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
@@ -235541,7 +235627,6 @@ export type ModelTypes = {
 	/** An object relationship */
 	e_tournament_free_agent_status: ModelTypes["e_tournament_free_agent_statuses"],
 	id: ModelTypes["uuid"],
-	party_id?: ModelTypes["uuid"] | undefined | null,
 	/** An object relationship */
 	player: ModelTypes["players"],
 	player_steam_id: ModelTypes["bigint"],
@@ -235618,7 +235703,6 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_tournament_free_agent_status?: ModelTypes["e_tournament_free_agent_statuses_bool_exp"] | undefined | null,
 	id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
-	party_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
 	player?: ModelTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
 	status?: ModelTypes["e_tournament_free_agent_statuses_enum_comparison_exp"] | undefined | null,
@@ -235639,7 +235723,6 @@ export type ModelTypes = {
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	e_tournament_free_agent_status?: ModelTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	party_id?: ModelTypes["uuid"] | undefined | null,
 	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	status?: ModelTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
@@ -235654,7 +235737,6 @@ export type ModelTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	party_id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_team_id?: ModelTypes["uuid"] | undefined | null
@@ -235665,7 +235747,6 @@ export type ModelTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
-	party_id?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_team_id?: ModelTypes["order_by"] | undefined | null
@@ -235676,7 +235757,6 @@ export type ModelTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	party_id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_team_id?: ModelTypes["uuid"] | undefined | null
@@ -235687,7 +235767,6 @@ export type ModelTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
-	party_id?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_team_id?: ModelTypes["order_by"] | undefined | null
@@ -235711,7 +235790,6 @@ export type ModelTypes = {
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	e_tournament_free_agent_status?: ModelTypes["e_tournament_free_agent_statuses_order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
-	party_id?: ModelTypes["order_by"] | undefined | null,
 	player?: ModelTypes["players_order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	status?: ModelTypes["order_by"] | undefined | null,
@@ -235731,7 +235809,6 @@ export type ModelTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	party_id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	status?: ModelTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
@@ -235774,7 +235851,6 @@ export type ModelTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
-	party_id?: ModelTypes["uuid"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	status?: ModelTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
@@ -238796,6 +238872,7 @@ export type ModelTypes = {
 	/** columns and relationships of "tournament_team_roster" */
 ["tournament_team_roster"]: {
 		checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_at: ModelTypes["timestamptz"],
 	/** An object relationship */
 	e_team_role: ModelTypes["e_team_roles"],
 	/** An object relationship */
@@ -238873,6 +238950,7 @@ export type ModelTypes = {
 	_not?: ModelTypes["tournament_team_roster_bool_exp"] | undefined | null,
 	_or?: Array<ModelTypes["tournament_team_roster_bool_exp"]> | undefined | null,
 	checked_in_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	created_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_team_role?: ModelTypes["e_team_roles_bool_exp"] | undefined | null,
 	player?: ModelTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
@@ -238891,6 +238969,7 @@ export type ModelTypes = {
 	/** input type for inserting data into table "tournament_team_roster" */
 ["tournament_team_roster_insert_input"]: {
 	checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	e_team_role?: ModelTypes["e_team_roles_obj_rel_insert_input"] | undefined | null,
 	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
@@ -238903,6 +238982,7 @@ export type ModelTypes = {
 	/** aggregate max on columns */
 ["tournament_team_roster_max_fields"]: {
 		checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_team_id?: ModelTypes["uuid"] | undefined | null
@@ -238910,6 +238990,7 @@ export type ModelTypes = {
 	/** order by max() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_max_order_by"]: {
 	checked_in_at?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_team_id?: ModelTypes["order_by"] | undefined | null
@@ -238917,6 +238998,7 @@ export type ModelTypes = {
 	/** aggregate min on columns */
 ["tournament_team_roster_min_fields"]: {
 		checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
 	tournament_team_id?: ModelTypes["uuid"] | undefined | null
@@ -238924,6 +239006,7 @@ export type ModelTypes = {
 	/** order by min() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_min_order_by"]: {
 	checked_in_at?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_id?: ModelTypes["order_by"] | undefined | null,
 	tournament_team_id?: ModelTypes["order_by"] | undefined | null
@@ -238944,6 +239027,7 @@ export type ModelTypes = {
 	/** Ordering options when selecting data from "tournament_team_roster". */
 ["tournament_team_roster_order_by"]: {
 	checked_in_at?: ModelTypes["order_by"] | undefined | null,
+	created_at?: ModelTypes["order_by"] | undefined | null,
 	e_team_role?: ModelTypes["e_team_roles_order_by"] | undefined | null,
 	player?: ModelTypes["players_order_by"] | undefined | null,
 	player_steam_id?: ModelTypes["order_by"] | undefined | null,
@@ -238963,6 +239047,7 @@ export type ModelTypes = {
 	/** input type for updating data in table "tournament_team_roster" */
 ["tournament_team_roster_set_input"]: {
 	checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	role?: ModelTypes["e_team_roles_enum"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
@@ -239002,6 +239087,7 @@ export type ModelTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["tournament_team_roster_stream_cursor_value_input"]: {
 	checked_in_at?: ModelTypes["timestamptz"] | undefined | null,
+	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	player_steam_id?: ModelTypes["bigint"] | undefined | null,
 	role?: ModelTypes["e_team_roles_enum"] | undefined | null,
 	tournament_id?: ModelTypes["uuid"] | undefined | null,
@@ -244371,6 +244457,10 @@ export type ModelTypes = {
 	/** An aggregate relationship */
 	repairs_aggregate: ModelTypes["utility_lineup_repairs_aggregate"],
 	side: ModelTypes["e_sides_enum"],
+	smoke_voxels_at?: ModelTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	/** An object relationship */
 	source_match?: ModelTypes["matches"] | undefined | null,
@@ -244675,6 +244765,9 @@ export type ModelTypes = {
 	repairs?: ModelTypes["utility_lineup_repairs_bool_exp"] | undefined | null,
 	repairs_aggregate?: ModelTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null,
 	side?: ModelTypes["e_sides_enum_comparison_exp"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	smoke_voxels_file?: ModelTypes["String_comparison_exp"] | undefined | null,
+	smoke_voxels_url?: ModelTypes["String_comparison_exp"] | undefined | null,
 	source_grenade_id?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	source_match?: ModelTypes["matches_bool_exp"] | undefined | null,
 	source_match_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
@@ -244808,6 +244901,8 @@ export type ModelTypes = {
 	renders?: ModelTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null,
 	repairs?: ModelTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null,
 	side?: ModelTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match?: ModelTypes["matches_obj_rel_insert_input"] | undefined | null,
 	source_match_id?: ModelTypes["uuid"] | undefined | null,
@@ -244884,6 +244979,10 @@ export type ModelTypes = {
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: ModelTypes["uuid"] | undefined | null,
 	source_match_map_id?: ModelTypes["uuid"] | undefined | null,
@@ -244943,6 +245042,8 @@ export type ModelTypes = {
 	public_review_note?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	source_match_id?: ModelTypes["order_by"] | undefined | null,
 	source_match_map_id?: ModelTypes["order_by"] | undefined | null,
@@ -245010,6 +245111,10 @@ export type ModelTypes = {
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: ModelTypes["uuid"] | undefined | null,
 	source_match_map_id?: ModelTypes["uuid"] | undefined | null,
@@ -245069,6 +245174,8 @@ export type ModelTypes = {
 	public_review_note?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_at?: ModelTypes["order_by"] | undefined | null,
 	public_reviewed_by?: ModelTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	source_match_id?: ModelTypes["order_by"] | undefined | null,
 	source_match_map_id?: ModelTypes["order_by"] | undefined | null,
@@ -245167,6 +245274,9 @@ export type ModelTypes = {
 	renders_aggregate?: ModelTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null,
 	repairs_aggregate?: ModelTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null,
 	side?: ModelTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: ModelTypes["order_by"] | undefined | null,
+	smoke_voxels_url?: ModelTypes["order_by"] | undefined | null,
 	source_grenade_id?: ModelTypes["order_by"] | undefined | null,
 	source_match?: ModelTypes["matches_order_by"] | undefined | null,
 	source_match_id?: ModelTypes["order_by"] | undefined | null,
@@ -245260,6 +245370,8 @@ export type ModelTypes = {
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
 	side?: ModelTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: ModelTypes["uuid"] | undefined | null,
 	source_match_map_id?: ModelTypes["uuid"] | undefined | null,
@@ -245546,6 +245658,8 @@ export type ModelTypes = {
 	public_reviewed_at?: ModelTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: ModelTypes["bigint"] | undefined | null,
 	side?: ModelTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: ModelTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: ModelTypes["uuid"] | undefined | null,
 	source_match_map_id?: ModelTypes["uuid"] | undefined | null,
@@ -285603,6 +285717,8 @@ export type GraphQLTypes = {
 	addDraftPlayer?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Add a friends-role presence bot account to the pool */
 	addSteamPresenceBotAccount?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Organizer adds a player to a tournament's free agent pool */
+	addTournamentFreeAgent?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	approveNameChange?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** execute VOLATILE function "approve_league_season_movements" which returns "league_team_movements" */
 	approve_league_season_movements: Array<GraphQLTypes["league_team_movements"]>,
@@ -287494,7 +287610,7 @@ export type GraphQLTypes = {
 	joinDraftGame?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** joinDraftGameAsParty */
 	joinDraftGameAsParty?: GraphQLTypes["SuccessOutput"] | undefined | null,
-	/** Register for a tournament that drafts teams, alone or with your lobby */
+	/** Register as a free agent for a tournament that drafts teams */
 	joinTournamentAsFreeAgent?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Join a utility practice session */
 	joinUtilityPractice?: GraphQLTypes["UtilityPracticeSessionOutput"] | undefined | null,
@@ -287543,6 +287659,8 @@ export type GraphQLTypes = {
 	/** Re-read which plugins are actually on a node */
 	reconcileNodePlugins?: GraphQLTypes["ReconcileNodePluginsOutput"] | undefined | null,
 	reconnectLive?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Organizer recreates the match of a bracket slot whose match was deleted */
+	recreateTournamentBracketMatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Spend a tournament invite link for an unlock on an invite only tournament */
 	redeemTournamentInviteCode?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Reindex every player into the Typesense search index (admin only). Runs in the background; track via refreshAllPlayersStatus. */
@@ -287558,6 +287676,8 @@ export type GraphQLTypes = {
 	removeFixtures?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Remove a friends-role presence bot account */
 	removeSteamPresenceBotAccount?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Organizer removes a registered or waitlisted player from a tournament's free agent pool */
+	removeTournamentFreeAgent?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** execute VOLATILE function "remove_league_team_from_season" which returns "league_team_seasons" */
 	remove_league_team_from_season: Array<GraphQLTypes["league_team_seasons"]>,
 	/** Rename file or directory on game server */
@@ -289024,6 +289144,7 @@ export type GraphQLTypes = {
 	/** columns and relationships of "v_my_friends" */
 ["my_friends"]: {
 	__typename: "my_friends",
+	allow_message_requests?: boolean | undefined | null,
 	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
@@ -289161,6 +289282,7 @@ export type GraphQLTypes = {
 		_and?: Array<GraphQLTypes["my_friends_bool_exp"]> | undefined | null,
 	_not?: GraphQLTypes["my_friends_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["my_friends_bool_exp"]> | undefined | null,
+	allow_message_requests?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	avatar_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	country?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
@@ -289229,7 +289351,8 @@ export type GraphQLTypes = {
 };
 	/** input type for inserting data into table "v_my_friends" */
 ["my_friends_insert_input"]: {
-		avatar_url?: string | undefined | null,
+		allow_message_requests?: boolean | undefined | null,
+	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	custom_avatar_url?: string | undefined | null,
@@ -289412,7 +289535,8 @@ export type GraphQLTypes = {
 };
 	/** Ordering options when selecting data from "v_my_friends". */
 ["my_friends_order_by"]: {
-		avatar_url?: GraphQLTypes["order_by"] | undefined | null,
+		allow_message_requests?: GraphQLTypes["order_by"] | undefined | null,
+	avatar_url?: GraphQLTypes["order_by"] | undefined | null,
 	country?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	custom_avatar_url?: GraphQLTypes["order_by"] | undefined | null,
@@ -289464,7 +289588,8 @@ export type GraphQLTypes = {
 ["my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns"]: my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns;
 	/** input type for updating data in table "v_my_friends" */
 ["my_friends_set_input"]: {
-		avatar_url?: string | undefined | null,
+		allow_message_requests?: boolean | undefined | null,
+	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	custom_avatar_url?: string | undefined | null,
@@ -289586,7 +289711,8 @@ export type GraphQLTypes = {
 };
 	/** Initial value of the column from where the streaming should start */
 ["my_friends_stream_cursor_value_input"]: {
-		avatar_url?: string | undefined | null,
+		allow_message_requests?: boolean | undefined | null,
+	avatar_url?: string | undefined | null,
 	country?: string | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	custom_avatar_url?: string | undefined | null,
@@ -316403,7 +316529,6 @@ export type GraphQLTypes = {
 	/** An object relationship */
 	e_tournament_free_agent_status: GraphQLTypes["e_tournament_free_agent_statuses"],
 	id: GraphQLTypes["uuid"],
-	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	/** An object relationship */
 	player: GraphQLTypes["players"],
 	player_steam_id: GraphQLTypes["bigint"],
@@ -316483,7 +316608,6 @@ export type GraphQLTypes = {
 	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_tournament_free_agent_status?: GraphQLTypes["e_tournament_free_agent_statuses_bool_exp"] | undefined | null,
 	id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
-	party_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
 	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_free_agent_statuses_enum_comparison_exp"] | undefined | null,
@@ -316505,7 +316629,6 @@ export type GraphQLTypes = {
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	e_tournament_free_agent_status?: GraphQLTypes["e_tournament_free_agent_statuses_obj_rel_insert_input"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
@@ -316521,7 +316644,6 @@ export type GraphQLTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
@@ -316532,7 +316654,6 @@ export type GraphQLTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
-	party_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
@@ -316544,7 +316665,6 @@ export type GraphQLTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
@@ -316555,7 +316675,6 @@ export type GraphQLTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
-	party_id?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
@@ -316580,7 +316699,6 @@ export type GraphQLTypes = {
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	e_tournament_free_agent_status?: GraphQLTypes["e_tournament_free_agent_statuses_order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
-	party_id?: GraphQLTypes["order_by"] | undefined | null,
 	player?: GraphQLTypes["players_order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	status?: GraphQLTypes["order_by"] | undefined | null,
@@ -316601,7 +316719,6 @@ export type GraphQLTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -316647,7 +316764,6 @@ export type GraphQLTypes = {
 	/** Registration priority: decides who makes the cut */
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
-	party_id?: GraphQLTypes["uuid"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	status?: GraphQLTypes["e_tournament_free_agent_statuses_enum"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -319871,6 +319987,7 @@ export type GraphQLTypes = {
 ["tournament_team_roster"]: {
 	__typename: "tournament_team_roster",
 	checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_at: GraphQLTypes["timestamptz"],
 	/** An object relationship */
 	e_team_role: GraphQLTypes["e_team_roles"],
 	/** An object relationship */
@@ -319951,6 +320068,7 @@ export type GraphQLTypes = {
 	_not?: GraphQLTypes["tournament_team_roster_bool_exp"] | undefined | null,
 	_or?: Array<GraphQLTypes["tournament_team_roster_bool_exp"]> | undefined | null,
 	checked_in_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	e_team_role?: GraphQLTypes["e_team_roles_bool_exp"] | undefined | null,
 	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
@@ -319970,6 +320088,7 @@ export type GraphQLTypes = {
 	/** input type for inserting data into table "tournament_team_roster" */
 ["tournament_team_roster_insert_input"]: {
 		checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	e_team_role?: GraphQLTypes["e_team_roles_obj_rel_insert_input"] | undefined | null,
 	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
@@ -319983,6 +320102,7 @@ export type GraphQLTypes = {
 ["tournament_team_roster_max_fields"]: {
 	__typename: "tournament_team_roster_max_fields",
 	checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
@@ -319990,6 +320110,7 @@ export type GraphQLTypes = {
 	/** order by max() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_max_order_by"]: {
 		checked_in_at?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
@@ -319998,6 +320119,7 @@ export type GraphQLTypes = {
 ["tournament_team_roster_min_fields"]: {
 	__typename: "tournament_team_roster_min_fields",
 	checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["uuid"] | undefined | null
@@ -320005,6 +320127,7 @@ export type GraphQLTypes = {
 	/** order by min() on columns of table "tournament_team_roster" */
 ["tournament_team_roster_min_order_by"]: {
 		checked_in_at?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_id?: GraphQLTypes["order_by"] | undefined | null,
 	tournament_team_id?: GraphQLTypes["order_by"] | undefined | null
@@ -320026,6 +320149,7 @@ export type GraphQLTypes = {
 	/** Ordering options when selecting data from "tournament_team_roster". */
 ["tournament_team_roster_order_by"]: {
 		checked_in_at?: GraphQLTypes["order_by"] | undefined | null,
+	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	e_team_role?: GraphQLTypes["e_team_roles_order_by"] | undefined | null,
 	player?: GraphQLTypes["players_order_by"] | undefined | null,
 	player_steam_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -320046,6 +320170,7 @@ export type GraphQLTypes = {
 	/** input type for updating data in table "tournament_team_roster" */
 ["tournament_team_roster_set_input"]: {
 		checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	role?: GraphQLTypes["e_team_roles_enum"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -320088,6 +320213,7 @@ export type GraphQLTypes = {
 	/** Initial value of the column from where the streaming should start */
 ["tournament_team_roster_stream_cursor_value_input"]: {
 		checked_in_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	player_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	role?: GraphQLTypes["e_team_roles_enum"] | undefined | null,
 	tournament_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -325722,6 +325848,10 @@ export type GraphQLTypes = {
 	/** An aggregate relationship */
 	repairs_aggregate: GraphQLTypes["utility_lineup_repairs_aggregate"],
 	side: GraphQLTypes["e_sides_enum"],
+	smoke_voxels_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	/** An object relationship */
 	source_match?: GraphQLTypes["matches"] | undefined | null,
@@ -326029,6 +326159,9 @@ export type GraphQLTypes = {
 	repairs?: GraphQLTypes["utility_lineup_repairs_bool_exp"] | undefined | null,
 	repairs_aggregate?: GraphQLTypes["utility_lineup_repairs_aggregate_bool_exp"] | undefined | null,
 	side?: GraphQLTypes["e_sides_enum_comparison_exp"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	smoke_voxels_file?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	smoke_voxels_url?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	source_match?: GraphQLTypes["matches_bool_exp"] | undefined | null,
 	source_match_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
@@ -326163,6 +326296,8 @@ export type GraphQLTypes = {
 	renders?: GraphQLTypes["utility_lineup_renders_arr_rel_insert_input"] | undefined | null,
 	repairs?: GraphQLTypes["utility_lineup_repairs_arr_rel_insert_input"] | undefined | null,
 	side?: GraphQLTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match?: GraphQLTypes["matches_obj_rel_insert_input"] | undefined | null,
 	source_match_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -326240,6 +326375,10 @@ export type GraphQLTypes = {
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	source_match_map_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -326299,6 +326438,8 @@ export type GraphQLTypes = {
 	public_review_note?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_at?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	source_match_id?: GraphQLTypes["order_by"] | undefined | null,
 	source_match_map_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -326367,6 +326508,10 @@ export type GraphQLTypes = {
 	public_review_note?: string | undefined | null,
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
+	/** A computed field, executes function "utility_lineup_smoke_voxels_url" */
+	smoke_voxels_url?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	source_match_map_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -326426,6 +326571,8 @@ export type GraphQLTypes = {
 	public_review_note?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_at?: GraphQLTypes["order_by"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	source_match_id?: GraphQLTypes["order_by"] | undefined | null,
 	source_match_map_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -326525,6 +326672,9 @@ export type GraphQLTypes = {
 	renders_aggregate?: GraphQLTypes["utility_lineup_renders_aggregate_order_by"] | undefined | null,
 	repairs_aggregate?: GraphQLTypes["utility_lineup_repairs_aggregate_order_by"] | undefined | null,
 	side?: GraphQLTypes["order_by"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["order_by"] | undefined | null,
+	smoke_voxels_file?: GraphQLTypes["order_by"] | undefined | null,
+	smoke_voxels_url?: GraphQLTypes["order_by"] | undefined | null,
 	source_grenade_id?: GraphQLTypes["order_by"] | undefined | null,
 	source_match?: GraphQLTypes["matches_order_by"] | undefined | null,
 	source_match_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -326629,6 +326779,8 @@ export type GraphQLTypes = {
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
 	side?: GraphQLTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	source_match_map_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -326918,6 +327070,8 @@ export type GraphQLTypes = {
 	public_reviewed_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	public_reviewed_by?: GraphQLTypes["bigint"] | undefined | null,
 	side?: GraphQLTypes["e_sides_enum"] | undefined | null,
+	smoke_voxels_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	smoke_voxels_file?: string | undefined | null,
 	source_grenade_id?: number | undefined | null,
 	source_match_id?: GraphQLTypes["uuid"] | undefined | null,
 	source_match_map_id?: GraphQLTypes["uuid"] | undefined | null,
@@ -342219,6 +342373,7 @@ export enum migration_hashes_hashes_update_column {
 }
 /** select columns of table "v_my_friends" */
 export enum my_friends_select_column {
+	allow_message_requests = "allow_message_requests",
 	avatar_url = "avatar_url",
 	country = "country",
 	created_at = "created_at",
@@ -342259,12 +342414,14 @@ export enum my_friends_select_column {
 }
 /** select "my_friends_aggregate_bool_exp_bool_and_arguments_columns" columns of table "v_my_friends" */
 export enum my_friends_select_column_my_friends_aggregate_bool_exp_bool_and_arguments_columns {
+	allow_message_requests = "allow_message_requests",
 	name_registered = "name_registered",
 	show_match_ready_modal = "show_match_ready_modal",
 	vac_banned = "vac_banned"
 }
 /** select "my_friends_aggregate_bool_exp_bool_or_arguments_columns" columns of table "v_my_friends" */
 export enum my_friends_select_column_my_friends_aggregate_bool_exp_bool_or_arguments_columns {
+	allow_message_requests = "allow_message_requests",
 	name_registered = "name_registered",
 	show_match_ready_modal = "show_match_ready_modal",
 	vac_banned = "vac_banned"
@@ -344403,7 +344560,6 @@ export enum tournament_free_agents_select_column {
 	checked_in_at = "checked_in_at",
 	created_at = "created_at",
 	id = "id",
-	party_id = "party_id",
 	player_steam_id = "player_steam_id",
 	status = "status",
 	tournament_id = "tournament_id",
@@ -344414,7 +344570,6 @@ export enum tournament_free_agents_update_column {
 	checked_in_at = "checked_in_at",
 	created_at = "created_at",
 	id = "id",
-	party_id = "party_id",
 	player_steam_id = "player_steam_id",
 	status = "status",
 	tournament_id = "tournament_id",
@@ -344708,6 +344863,7 @@ export enum tournament_team_roster_constraint {
 /** select columns of table "tournament_team_roster" */
 export enum tournament_team_roster_select_column {
 	checked_in_at = "checked_in_at",
+	created_at = "created_at",
 	player_steam_id = "player_steam_id",
 	role = "role",
 	tournament_id = "tournament_id",
@@ -344716,6 +344872,7 @@ export enum tournament_team_roster_select_column {
 /** update columns of table "tournament_team_roster" */
 export enum tournament_team_roster_update_column {
 	checked_in_at = "checked_in_at",
+	created_at = "created_at",
 	player_steam_id = "player_steam_id",
 	role = "role",
 	tournament_id = "tournament_id",
@@ -345502,6 +345659,8 @@ export enum utility_lineups_select_column {
 	public_reviewed_at = "public_reviewed_at",
 	public_reviewed_by = "public_reviewed_by",
 	side = "side",
+	smoke_voxels_at = "smoke_voxels_at",
+	smoke_voxels_file = "smoke_voxels_file",
 	source_grenade_id = "source_grenade_id",
 	source_match_id = "source_match_id",
 	source_match_map_id = "source_match_map_id",
@@ -345746,6 +345905,8 @@ export enum utility_lineups_update_column {
 	public_reviewed_at = "public_reviewed_at",
 	public_reviewed_by = "public_reviewed_by",
 	side = "side",
+	smoke_voxels_at = "smoke_voxels_at",
+	smoke_voxels_file = "smoke_voxels_file",
 	source_grenade_id = "source_grenade_id",
 	source_match_id = "source_match_id",
 	source_match_map_id = "source_match_map_id",

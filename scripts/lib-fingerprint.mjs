@@ -6,6 +6,9 @@
 //   pipeline    everything that turns those inputs into files: the source of
 //               the build script and every local module it imports, the
 //               Source2Viewer-CLI version and the meshoptimizer version
+//   prep        the PREP_VERSION of the map's replay-stage prep, which is
+//               made from the published view mesh and callouts rather than
+//               the VPK; a new one rebuilds prep alone (see VERSIONED_APART)
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createReadStream, existsSync, readFileSync } from "node:fs";
@@ -22,16 +25,26 @@ const IMPORT = new RegExp(
 
 export const PIPELINE_ENTRY = join(here, "build-map-assets.mjs");
 
+/**
+ * Modules whose output carries its own version in the manifest, left out of
+ * the pipeline hash so editing them never rebuilds every map's meshes: the
+ * replay-stage prep is `source.prep` = PREP_VERSION.
+ */
+export const VERSIONED_APART = new Set([join(here, "replay-stage", "build-prep.mjs")]);
+
 /** Relative (`./`, `../`) import specifiers in a module's source. */
 export function localImports(source) {
   return [...source.matchAll(IMPORT)].map((m) => m[1] ?? m[2]);
 }
 
-/** `entry` and every local module it imports, transitively; absolute, sorted. */
+/**
+ * `entry` and every local module it imports, transitively, except those
+ * VERSIONED_APART; absolute, sorted.
+ */
 export function pipelineSources(entry = PIPELINE_ENTRY) {
   const seen = new Set();
   const visit = (path) => {
-    if (seen.has(path)) {
+    if (seen.has(path) || VERSIONED_APART.has(path)) {
       return;
     }
     if (!existsSync(path)) {
@@ -104,8 +117,17 @@ export function sha256File(path) {
   });
 }
 
+/** Whether two map sources match on what the meshes are built from (prep aside). */
 export function sameSource(a, b) {
   return Boolean(
     a && b && a.vpk_sha256 === b.vpk_sha256 && a.pipeline === b.pipeline,
   );
+}
+
+/**
+ * Whether a manifest entry's prep is missing or of another version, so it
+ * needs (re)building: only for a map that has a view mesh to prep from.
+ */
+export function prepStale(entry, version) {
+  return Boolean(entry?.view) && (!entry.prep || entry.source?.prep !== version);
 }

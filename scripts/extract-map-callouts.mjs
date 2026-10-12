@@ -19,6 +19,7 @@
 //   node scripts/extract-map-callouts.mjs                  # every map with a radar
 //   node scripts/extract-map-callouts.mjs de_mirage        # specific map(s)
 //   CS2_DIR=~/Steam/steamapps/common/... node scripts/extract-map-callouts.mjs
+//   node scripts/extract-map-callouts.mjs --vpk <workshop>/3070290240/de_brewery.vpk
 //
 // Published with the meshes by build-map-assets.mjs (see
 // docs/3d-replay-map-meshes.md).
@@ -33,7 +34,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseDmx } from "./lib-dmx.mjs";
 import { decompile as runDecompile, missingOutput, resolveCli } from "./lib-s2v.mjs";
@@ -86,6 +87,7 @@ function entities(text, classname) {
 
       return {
         place: str("place_name") ?? str("placename") ?? str("targetname"),
+        designation: str("bomb_site_designation"),
         origin: nums("origin") ?? [0, 0, 0],
         mins: nums("mins"),
         maxs: nums("maxs"),
@@ -226,26 +228,59 @@ function round(v) {
   return Math.round(v * 100) / 100;
 }
 
+/** An entity's world-space box, from its own mins/maxs or its model's. */
+function worldBox(entity, tmp) {
+  const local =
+    entity.mins && entity.maxs
+      ? { min: entity.mins, max: entity.maxs }
+      : entity.model
+        ? boundsOfModel(join(tmp, entity.model), tmp)
+        : null;
+  if (!local) {
+    return null;
+  }
+  const [ox, oy, oz] = entity.origin;
+  return {
+    min: [local.min[0] + ox, local.min[1] + oy, local.min[2] + oz].map(round),
+    max: [local.max[0] + ox, local.max[1] + oy, local.max[2] + oz].map(round),
+  };
+}
+
 /**
- * One map's callouts, from its own VPK in `mapsDir` or, failing that, `pak`.
- * `{ map, callouts, skipped }`, or `{ none: true, why }` for a map that
- * defines no place entities at all.
+ * Every func_bomb_target in the lumps, `{ designation, box }`: what names the
+ * bomb sites in Valve's baked blast data (extract-map-blast.mjs).
  */
-export function extractCallouts(map, { mapsDir, pak, cli }) {
-  const own = join(mapsDir, `${map}.vpk`);
-  const vpk = existsSync(own) ? own : pak;
+function bombTargets(entitiesDir, tmp) {
+  return lumpFiles(entitiesDir)
+    .filter((file) => existsSync(join(entitiesDir, file)))
+    .flatMap((file) => entities(readFileSync(join(entitiesDir, file), "utf8"), "func_bomb_target"))
+    .map((target) => ({ designation: target.designation, box: worldBox(target, tmp) }))
+    .filter((target) => target.box);
+}
+
+/**
+ * One map's callouts, from `vpk`, else its own VPK in `mapsDir`, else `pak`.
+ * `inner` is the map's name inside the VPK, when it is published under
+ * another (a workshop map). `{ map, callouts, skipped, bombTargets }`, or
+ * `{ none: true, why, bombTargets }` for a map that defines no place entities
+ * at all.
+ */
+export function extractCallouts(map, { mapsDir, pak, cli, vpk: given = null, inner = map }) {
+  const own = mapsDir ? join(mapsDir, `${map}.vpk`) : null;
+  const vpk = given ?? (own && existsSync(own) ? own : pak);
   const tmp = mkdtempSync(join(tmpdir(), `callouts-${map}-`));
 
   try {
     // One call for the whole entities folder: it writes the lump AND every
     // place volume's hull beside it, so a map costs one VPK open instead of one
     // per callout.
-    const run = runDecompile(cli, vpk, `maps/${map}/entities/`, tmp);
+    const run = runDecompile(cli, vpk, `maps/${inner}/entities/`, tmp);
 
-    const entitiesDir = join(tmp, "maps", map, "entities");
+    const entitiesDir = join(tmp, "maps", inner, "entities");
     if (!existsSync(join(entitiesDir, "default_ents.vents"))) {
-      throw missingOutput(`maps/${map}/entities/default_ents.vents`, run);
+      throw missingOutput(`maps/${inner}/entities/default_ents.vents`, run);
     }
+    const targets = bombTargets(entitiesDir, tmp);
 
     const byName = new Map();
     let skipped = 0;
@@ -265,7 +300,14 @@ export function extractCallouts(map, { mapsDir, pak, cli }) {
     // A map with no place entities is a fact about the map -- arms-race and
     // some community maps never define any -- not a failure of this script.
     if (places.length === 0) {
-      return { map, callouts: [], skipped: 0, none: true, why: describeNoPlaces(lumps) };
+      return {
+        map,
+        callouts: [],
+        skipped: 0,
+        none: true,
+        why: describeNoPlaces(lumps),
+        bombTargets: targets,
+      };
     }
 
     for (const place of places) {
@@ -277,23 +319,12 @@ export function extractCallouts(map, { mapsDir, pak, cli }) {
 
       // A rare point-built place states its box outright; a brush-built one --
       // which is nearly all of them -- carries it on a model.
-      const local =
-        place.mins && place.maxs
-          ? { min: place.mins, max: place.maxs }
-          : place.model
-            ? boundsOfModel(join(tmp, place.model), tmp)
-            : null;
+      const box = worldBox(place, tmp);
 
-      if (!local) {
+      if (!box) {
         skipped += 1;
         continue;
       }
-
-      const [ox, oy, oz] = place.origin;
-      const box = {
-        min: [local.min[0] + ox, local.min[1] + oy, local.min[2] + oz].map(round),
-        max: [local.max[0] + ox, local.max[1] + oy, local.max[2] + oz].map(round),
-      };
 
       if (
         box.max[0] - box.min[0] < MIN_EXTENT ||
@@ -331,7 +362,7 @@ export function extractCallouts(map, { mapsDir, pak, cli }) {
       );
     }
 
-    return { map, callouts, skipped };
+    return { map, callouts, skipped, bombTargets: targets };
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
@@ -347,7 +378,7 @@ function main() {
   // The token AFTER a value-taking flag is that flag's value, not a map name --
   // `--cs2 /opt/cs2` would otherwise be read as a request to extract a map called
   // "/opt/cs2", which skips the directory scan entirely and reports FAILED.
-  const VALUE_FLAGS = new Set(["--cs2"]);
+  const VALUE_FLAGS = new Set(["--cs2", "--vpk"]);
   const only = args.filter(
     (a, i) => !a.startsWith("--") && !VALUE_FLAGS.has(args[i - 1]),
   );
@@ -363,8 +394,13 @@ function main() {
     );
   const MAPS_DIR = join(CS2_DIR, "game", "csgo", "maps");
   const PAK = join(CS2_DIR, "game", "csgo", "pak01_dir.vpk");
+  // One VPK outside the install (a workshop map): its file name is the map.
+  const vpk = value("--vpk", null);
+  if (vpk) {
+    only.splice(0, only.length, basename(vpk).replace(/(_dir)?\.vpk$/, ""));
+  }
 
-  if (!existsSync(MAPS_DIR)) {
+  if (!vpk && !existsSync(MAPS_DIR)) {
     console.error(`✗ no CS2 maps at ${MAPS_DIR}\n  set CS2_DIR or pass --cs2 <path>`);
     process.exit(1);
   }
@@ -382,7 +418,7 @@ function main() {
   let ok = 0;
   for (const map of maps) {
     try {
-      const result = extractCallouts(map, { mapsDir: MAPS_DIR, pak: PAK, cli });
+      const result = extractCallouts(map, { mapsDir: MAPS_DIR, pak: PAK, cli, vpk });
 
       if (result.none) {
         console.log(`${map.padEnd(16)} no callouts defined by this map (${result.why})`);

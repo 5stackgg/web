@@ -31,11 +31,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 
         <slot></slot>
 
-        <FormField
-          v-slot="{ componentField }"
-          name="type"
-          v-if="!stageBracketOverride"
-        >
+        <FormField v-slot="{ componentField }" name="type">
           <FormItem>
             <SettingHeader>{{ $t("match.options.type.label") }}</SettingHeader>
             <AnimatedFilters
@@ -65,7 +61,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
         </FormField>
       </div>
 
-      <FormField name="map_pool" v-if="!stageBracketOverride && !isRush">
+      <FormField name="map_pool" v-if="!isRush">
         <FormItem>
           <Card>
             <div class="p-6 space-y-6">
@@ -1500,11 +1496,6 @@ export default {
       default: null,
     },
     forceVeto: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
-    stageBracketOverride: {
       required: false,
       type: Boolean,
       default: false,

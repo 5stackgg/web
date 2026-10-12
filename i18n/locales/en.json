@@ -7429,6 +7429,15 @@
       "groups_placeholder": "Enter number of groups for this stage...",
       "default_best_of": "Default Best Of",
       "default_best_of_description": "The default match format used for all rounds in this stage.",
+      "map_pool": {
+        "label": "Map Pool",
+        "description": "The maps this stage's matches veto from.",
+        "same_as_tournament": "Same as Tournament",
+        "active_duty": "Active Duty",
+        "custom": "Custom",
+        "too_small": "Best of {best_of} needs at least {best_of} maps. This pool has {count}.",
+        "empty": "Pick at least one map."
+      },
       "per_round_best_of": "Per-Round Best Of",
       "third_place_match": "Enable 3rd Place Match",
       "third_place_match_description": "Create a 3rd place match between the two semifinal losers.",

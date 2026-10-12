@@ -7427,6 +7427,15 @@
       "groups_placeholder": "Bu etap için grup sayısını gir...",
       "default_best_of": "Varsayılan Maç Serisi",
       "default_best_of_description": "Bu etaptaki tüm turlar için kullanılan varsayılan maç formatı.",
+      "map_pool": {
+        "label": "Harita Havuzu",
+        "description": "Bu aşamadaki maçların veto yapacağı haritalar.",
+        "same_as_tournament": "Turnuvayla aynı",
+        "active_duty": "Aktif havuz",
+        "custom": "Özel",
+        "too_small": "BO{best_of} için en az {best_of} harita gerekir. Bu havuzda {count} var.",
+        "empty": "En az bir harita seç."
+      },
       "per_round_best_of": "Tur Bazlı Maç Serisi",
       "third_place_match": "3. Lük Maçını Etkinleştir",
       "third_place_match_description": "İki yarı final kaybedeni arasında 3.lük maçı oluştur.",

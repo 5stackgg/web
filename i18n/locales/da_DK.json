@@ -7427,6 +7427,15 @@
       "groups_placeholder": "Angiv antal grupper i denne fase...",
       "default_best_of": "Standard best of",
       "default_best_of_description": "Standardformatet for alle runder i denne fase.",
+      "map_pool": {
+        "label": "Map pool",
+        "description": "De maps, denne fases kampe vetoer fra.",
+        "same_as_tournament": "Samme som turneringen",
+        "active_duty": "Active Duty",
+        "custom": "Egen",
+        "too_small": "Bedst af {best_of} kræver mindst {best_of} maps. Denne pool har {count}.",
+        "empty": "Vælg mindst ét map."
+      },
       "per_round_best_of": "Best of pr. runde",
       "third_place_match": "Aktivér bronzekamp",
       "third_place_match_description": "Opret en bronzekamp mellem de to tabere fra semifinalerne.",

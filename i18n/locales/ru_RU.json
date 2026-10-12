@@ -7427,6 +7427,15 @@
       "groups_placeholder": "Укажи число групп для этого этапа…",
       "default_best_of": "Формат по умолчанию",
       "default_best_of_description": "Формат матча по умолчанию для всех раундов этого этапа.",
+      "map_pool": {
+        "label": "Пул карт",
+        "description": "Карты, из которых матчи этого этапа выбирают и банят.",
+        "same_as_tournament": "Как в турнире",
+        "active_duty": "Активный пул",
+        "custom": "Свой",
+        "too_small": "Для Bo{best_of} нужно не меньше {best_of} карт. В этом пуле {count}.",
+        "empty": "Выберите хотя бы одну карту."
+      },
       "per_round_best_of": "Формат по раундам",
       "third_place_match": "Включить матч за 3-е место",
       "third_place_match_description": "Создать матч за 3-е место между проигравшими полуфиналистами.",

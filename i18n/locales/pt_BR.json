@@ -7427,6 +7427,15 @@
       "groups_placeholder": "Insira número de grupos para esta fase...",
       "default_best_of": "Padrão Melhor De",
       "default_best_of_description": "O formato de partida padrão usado para todas as rodadas nesta fase.",
+      "map_pool": {
+        "label": "Map Pool",
+        "description": "Os mapas de onde as partidas desta fase fazem o veto.",
+        "same_as_tournament": "Igual ao torneio",
+        "active_duty": "Active Duty",
+        "custom": "Personalizado",
+        "too_small": "Melhor de {best_of} precisa de pelo menos {best_of} mapas. Este map pool tem {count}.",
+        "empty": "Escolha pelo menos um mapa."
+      },
       "per_round_best_of": "Por-Round Melhor De",
       "third_place_match": "Habilitar Partida de 3º Lugar",
       "third_place_match_description": "Criar uma partida para o 3º lugar entre os perdedores das semifinais.",

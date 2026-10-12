@@ -7427,6 +7427,15 @@
       "groups_placeholder": "輸入此階段的小組數...",
       "default_best_of": "預設賽制",
       "default_best_of_description": "此階段所有輪次使用的預設比賽賽制。",
+      "map_pool": {
+        "label": "地圖池",
+        "description": "本階段比賽進行禁選的地圖。",
+        "same_as_tournament": "與賽事相同",
+        "active_duty": "現役圖池",
+        "custom": "自訂",
+        "too_small": "BO{best_of} 至少需要 {best_of} 張地圖。此地圖池有 {count} 張。",
+        "empty": "至少選擇一張地圖。"
+      },
       "per_round_best_of": "各輪賽制",
       "third_place_match": "啟用季軍賽",
       "third_place_match_description": "在兩場準決賽敗者之間建立季軍賽。",

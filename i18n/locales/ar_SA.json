@@ -7427,6 +7427,15 @@
       "groups_placeholder": "أدخل عدد المجموعات لهذه المرحلة...",
       "default_best_of": "نظام Best Of الافتراضي",
       "default_best_of_description": "صيغة المباراة الافتراضية المستخدمة في كل جولات هذه المرحلة.",
+      "map_pool": {
+        "label": "قائمة الخرائط",
+        "description": "الخرائط التي تُستبعد وتُختار منها خرائط مباريات هذه المرحلة.",
+        "same_as_tournament": "مثل البطولة",
+        "active_duty": "Active Duty",
+        "custom": "مخصصة",
+        "too_small": "أفضل من {best_of} يحتاج إلى {best_of} خرائط على الأقل. هذه القائمة فيها {count}.",
+        "empty": "اختر خريطة واحدة على الأقل."
+      },
       "per_round_best_of": "Best Of لكل جولة",
       "third_place_match": "فعّل مباراة المركز الثالث",
       "third_place_match_description": "أنشئ مباراة لتحديد المركز الثالث بين خاسري نصف النهائي.",

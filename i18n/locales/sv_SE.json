@@ -7427,6 +7427,15 @@
       "groups_placeholder": "Ange antal grupper för denna fas...",
       "default_best_of": "Standard best of",
       "default_best_of_description": "Standardformatet som används för alla ronder i denna fas.",
+      "map_pool": {
+        "label": "Kartpool",
+        "description": "Kartorna som matcherna i det här steget vetoar från.",
+        "same_as_tournament": "Samma som turneringen",
+        "active_duty": "Active Duty",
+        "custom": "Anpassad",
+        "too_small": "Bäst av {best_of} kräver minst {best_of} kartor. Den här kartpoolen har {count}.",
+        "empty": "Välj minst en karta."
+      },
       "per_round_best_of": "Best of per rond",
       "third_place_match": "Aktivera bronsmatch",
       "third_place_match_description": "Skapa en bronsmatch mellan de två semifinalförlorarna.",

@@ -70,6 +70,11 @@ export type SmokeWorkerOut =
 const FLOOD_BUDGET = 1000;
 /** Climbing costs more than spreading, so the cloud pools. */
 const VERTICAL_COST = 1.3;
+/**
+ * Falling costs less than spreading: a smoke that pops on a ledge or a sill
+ * pours over the edge and fills down to the floor below, as CS2's do.
+ */
+const FALL_COST = 0.55;
 /** Radius of the region seeded on the detonation tick, in voxels. */
 const SEED_REACH = 4.5;
 /**
@@ -392,7 +397,9 @@ const NEIGHBOURS = (() => {
         }
         list.push({
           d: [i, j, k],
-          cost: Math.sqrt(i * i + j * j + (k * VERTICAL_COST) ** 2),
+          cost: Math.sqrt(
+            i * i + j * j + (k * (k < 0 ? FALL_COST : VERTICAL_COST)) ** 2,
+          ),
           via,
         });
       }

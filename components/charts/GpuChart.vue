@@ -34,6 +34,7 @@ import {
   MEMORY_USAGE_CHART_COLORS,
 } from "@/utilities/chartColors";
 import { dateLocale } from "~/utilities/dateLocale";
+import { chartTooltipTime } from "~/utilities/chartTooltipTime";
 
 type GpuDeviceStat = {
   index: number;
@@ -88,6 +89,8 @@ export default {
               return !label.endsWith(" Total");
             },
             callbacks: {
+              title: (items: any[]) =>
+                chartTooltipTime(this.labels[items[0]?.dataIndex]),
               label: (context: any) => {
                 const value = context.parsed.y;
                 if (value === null || value === undefined) {

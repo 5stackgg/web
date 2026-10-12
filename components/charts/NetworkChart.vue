@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { dateLocale } from "~/utilities/dateLocale";
+import { chartTooltipTime } from "~/utilities/chartTooltipTime";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -85,6 +86,8 @@ export default {
             mode: "index",
             intersect: false,
             callbacks: {
+              title: (items: any[]) =>
+                chartTooltipTime((this as any).labels[items[0]?.dataIndex]),
               label: (context: any) => {
                 const val = Number(context.parsed.y || 0).toLocaleString(
                   dateLocale(),

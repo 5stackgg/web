@@ -93,10 +93,41 @@ function bypasses(path: string) {
   return found;
 }
 
+// Chart.js titles a tooltip with '' + the label, so Date labels show
+// Date.prototype.toString() without any call above to catch.
+function untitledDateLabels(path: string) {
+  const source = readFileSync(path, "utf8");
+  if (!source.includes('from "vue-chartjs"')) {
+    return [];
+  }
+  const found: string[] = [];
+  const labels = /\blabels\s*\(\)[^{]*\{|\blabels\s*=\s*computed\(/g;
+
+  for (const match of source.matchAll(labels)) {
+    const open = match.index! + match[0].length - 1;
+    if (
+      /new Date\(/.test(callArguments(source, open)) &&
+      !/\btitle\s*:\s*\(/.test(source)
+    ) {
+      const line = source.slice(0, match.index).split("\n").length;
+      found.push(`${path}:${line} Date labels with no tooltip title`);
+    }
+  }
+  return found;
+}
+
 describe("date and time formatting", () => {
   it("goes through dateLocale() everywhere", () => {
     const offenders = ROOTS.flatMap((root) =>
       sourceFiles(root).flatMap(bypasses),
+    );
+
+    expect(offenders).toEqual([]);
+  });
+
+  it("titles a chart tooltip itself when the labels are dates", () => {
+    const offenders = ROOTS.flatMap((root) =>
+      sourceFiles(root).flatMap(untitledDateLabels),
     );
 
     expect(offenders).toEqual([]);

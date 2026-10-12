@@ -31,6 +31,7 @@ ChartJS.register(
 <script lang="ts">
 import { CPU_USAGE_CHART_COLORS } from "@/utilities/chartColors";
 import { dateLocale } from "~/utilities/dateLocale";
+import { chartTooltipTime } from "~/utilities/chartTooltipTime";
 export default {
   components: {
     Line,
@@ -62,6 +63,8 @@ export default {
             mode: "index" as const,
             intersect: false,
             callbacks: {
+              title: (items: any[]) =>
+                chartTooltipTime(this.labels[items[0]?.dataIndex]),
               label: (context) => {
                 return `${context.parsed.y} ${this.label}`;
               },

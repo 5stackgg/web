@@ -38,10 +38,9 @@ import {
   CalendarDays,
   Layers,
   ChevronDown,
-  TriangleAlert,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -377,11 +376,7 @@ function clearTeamEnterDelay(el: Element) {
                       $t("tournament.manage.button")
                     }}</span>
                   </Button>
-                  <DropdownMenu
-                    @update:open="
-                      (open) => open && (statusMenuOpenedAt = Date.now())
-                    "
-                  >
+                  <DropdownMenu @update:open="onStatusMenuOpen">
                     <DropdownMenuTrigger as-child>
                       <Button
                         variant="outline"
@@ -404,37 +399,15 @@ function clearTeamEnterDelay(el: Element) {
                           $t("tournament.actions.open_registration")
                         }}</span>
                       </DropdownMenuItem>
-                      <FiveStackToolTip
+                      <BlockedMenuItem
                         v-else-if="openRegistrationBlockers.length"
-                        as-child
-                        :delay-duration="120"
+                        :reasons="openRegistrationBlockers"
                       >
-                        <template #trigger>
-                          <div class="relative">
-                            <DropdownMenuItem class="pr-8" disabled>
-                              <Unlock />
-                              <span>{{
-                                $t("tournament.actions.open_registration")
-                              }}</span>
-                            </DropdownMenuItem>
-                            <span
-                              class="absolute right-2 top-1/2 inline-flex -translate-y-1/2 cursor-help text-[hsl(var(--tac-amber))]"
-                              role="img"
-                              :aria-label="openRegistrationBlockers.join(' ')"
-                            >
-                              <TriangleAlert class="h-3.5 w-3.5" />
-                            </span>
-                          </div>
-                        </template>
-                        <div class="max-w-[16rem] space-y-1.5">
-                          <p
-                            v-for="reason in openRegistrationBlockers"
-                            :key="reason"
-                          >
-                            {{ reason }}
-                          </p>
-                        </div>
-                      </FiveStackToolTip>
+                        <Unlock />
+                        <span>{{
+                          $t("tournament.actions.open_registration")
+                        }}</span>
+                      </BlockedMenuItem>
                       <DropdownMenuItem
                         v-if="tournament.can_close_registration"
                         @click="closeRegistration"
@@ -1022,7 +995,8 @@ export default {
       tournamentLive: undefined as Record<string, any> | undefined,
       tournamentStatic: undefined as Record<string, any> | undefined,
       tournamentRegistration: null as Record<string, any> | null,
-      statusMenuOpenedAt: Date.now(),
+      statusMenuNow: Date.now(),
+      statusMenuClock: null as ReturnType<typeof setInterval> | null,
       checkInTeams: [] as Array<Record<string, any>>,
       myFreeAgent: null as Record<string, any> | null,
       tournamentDialog: false,
@@ -1060,6 +1034,7 @@ export default {
   },
   unmounted() {
     useTournamentContext().value = null;
+    this.onStatusMenuOpen(false);
   },
   apollo: {
     e_match_types: {
@@ -2096,8 +2071,9 @@ export default {
       }).format(new Date(this.tournament.start));
     },
     // can_open_tournament_registration's refusals, in its order, for an
-    // organizer the api would otherwise let open it. The start check reads the
-    // clock as of when the status menu last opened.
+    // organizer the api would otherwise let open it. Out of Registration
+    // Closed or a cancel, reopening undoes the free agent draft, so its pickup
+    // teams don't count toward a full bracket.
     openRegistrationBlockers(): Array<string> {
       const t = this.tournament;
       if (!t || t.can_open_registration) {
@@ -2123,7 +2099,7 @@ export default {
       }
 
       const blockers: Array<string> = [];
-      if (new Date(t.start).getTime() < this.statusMenuOpenedAt) {
+      if (new Date(t.start).getTime() < this.statusMenuNow) {
         blockers.push(
           this.$t("tournament.actions.open_registration_start_passed"),
         );
@@ -2135,8 +2111,14 @@ export default {
             (sum: number, stage: any) => sum + (stage.max_teams ?? 0),
             0,
           );
+        const reopeningUndoesDraft = [
+          e_tournament_status_enum.RegistrationClosed,
+          e_tournament_status_enum.Cancelled,
+          e_tournament_status_enum.CancelledMinTeams,
+        ].includes(t.status);
         const eligible = (t.teams ?? []).filter(
-          (team: any) => team.eligible_at,
+          (team: any) =>
+            team.eligible_at && !(reopeningUndoesDraft && team.is_drafted),
         ).length;
         if (capacity > 0 && eligible >= capacity) {
           blockers.push(this.$t("tournament.actions.open_registration_full"));
@@ -2198,6 +2180,19 @@ export default {
     },
   },
   methods: {
+    onStatusMenuOpen(open: boolean) {
+      if (this.statusMenuClock) {
+        clearInterval(this.statusMenuClock);
+        this.statusMenuClock = null;
+      }
+      if (!open) {
+        return;
+      }
+      this.statusMenuNow = Date.now();
+      this.statusMenuClock = setInterval(() => {
+        this.statusMenuNow = Date.now();
+      }, 1000);
+    },
     openChatRoom() {
       if (!this.chatRoomTournament) {
         return;
@@ -2405,6 +2400,9 @@ export default {
     },
   },
   watch: {
+    "tournamentLive.can_open_registration"() {
+      this.statusMenuNow = Date.now();
+    },
     // Awards are granted server-side when a tournament finishes, and they now
     // arrive on the static query. Without this the podium would not appear
     // until the page was reloaded.

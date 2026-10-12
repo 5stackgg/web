@@ -7633,7 +7633,7 @@
     },
     "actions": {
       "open_registration": "Anmeldung öffnen",
-      "open_registration_start_passed": "Die Startzeit ist vorbei. Verschieb sie nach hinten, um die Anmeldung wieder zu öffnen.",
+      "open_registration_start_passed": "Die Startzeit ist vorbei. Leg eine spätere Startzeit fest, um die Anmeldung wieder zu öffnen.",
       "open_registration_no_stages": "Füg zuerst eine Phase hinzu.",
       "open_registration_full": "Der Turnierbaum ist voll.",
       "close_registration": "Anmeldung schließen",

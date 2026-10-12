@@ -7633,7 +7633,7 @@
     },
     "actions": {
       "open_registration": "Открыть регистрацию",
-      "open_registration_start_passed": "Время начала прошло. Перенеси его на более позднее, чтобы снова открыть регистрацию.",
+      "open_registration_start_passed": "Время начала прошло. Укажи более позднее время начала, чтобы снова открыть регистрацию.",
       "open_registration_no_stages": "Сначала добавь этап.",
       "open_registration_full": "Сетка заполнена.",
       "close_registration": "Закрыть регистрацию",

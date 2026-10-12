@@ -7633,7 +7633,7 @@
     },
     "actions": {
       "open_registration": "Kayıtları Aç",
-      "open_registration_start_passed": "Başlangıç saati geçti. Kayıtları yeniden açmak için ileri bir saate al.",
+      "open_registration_start_passed": "Başlangıç saati geçti. Kayıtları yeniden açmak için daha geç bir başlangıç saati belirle.",
       "open_registration_no_stages": "Önce bir aşama ekle.",
       "open_registration_full": "Fikstür dolu.",
       "close_registration": "Kayıtları Kapat",

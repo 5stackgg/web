@@ -7633,7 +7633,7 @@
     },
     "actions": {
       "open_registration": "Відкрити реєстрацію",
-      "open_registration_start_passed": "Час початку минув. Перенеси його на пізніше, щоб знову відкрити реєстрацію.",
+      "open_registration_start_passed": "Час початку минув. Встанови пізніший час початку, щоб знову відкрити реєстрацію.",
       "open_registration_no_stages": "Спершу додай етап.",
       "open_registration_full": "Сітка заповнена.",
       "close_registration": "Закрити реєстрацію",

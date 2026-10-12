@@ -7633,7 +7633,7 @@
     },
     "actions": {
       "open_registration": "افتح التسجيل",
-      "open_registration_start_passed": "انقضى وقت البدء. انقله إلى موعد لاحق لإعادة فتح التسجيل.",
+      "open_registration_start_passed": "انقضى وقت البدء. حدّد وقت بدء لاحقًا لإعادة فتح التسجيل.",
       "open_registration_no_stages": "أضف مرحلة أولًا.",
       "open_registration_full": "شجرة البطولة ممتلئة.",
       "close_registration": "أغلق التسجيل",

@@ -7633,7 +7633,7 @@
     },
     "actions": {
       "open_registration": "開放報名",
-      "open_registration_start_passed": "開始時間已過。請將其延後以重新開放報名。",
+      "open_registration_start_passed": "開始時間已過。請設定一個更晚的開始時間以重新開放報名。",
       "open_registration_no_stages": "請先新增一個階段。",
       "open_registration_full": "對陣圖已滿。",
       "close_registration": "關閉報名",

@@ -3,11 +3,12 @@ import { config, flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import TournamentDetail from "~/components/tournament/TournamentDetail.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
+import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 
 const OWNER = "76561198000000001";
 const CO_ORGANIZER = "76561198000000002";
 const START_PASSED =
-  "The start time has passed. Move it forward to reopen registration.";
+  "The start time has passed. Set a later start time to reopen registration.";
 const NO_STAGES = "Add a stage first.";
 const FULL = "The bracket is full.";
 
@@ -23,12 +24,15 @@ const stage = (order: number, maxTeams: number) => ({
   results: [],
 });
 
-const team = (id: string, eligible: boolean) => ({
+const team = (id: string, eligible: boolean, drafted = false) => ({
   id,
   name: id,
   roster: [],
+  is_drafted: drafted,
   eligible_at: eligible ? "2026-10-01T10:00:00Z" : null,
 });
+
+const passed = () => new Date(Date.now() - HOUR).toISOString();
 
 let mounted: { unmount: () => void } | null = null;
 
@@ -57,7 +61,7 @@ async function mountMenu(
   const wrapper = await mountSuspended(TournamentDetail, {
     route: "/tournaments/t-1",
     shallow: true,
-    global: { stubs: { FiveStackToolTip: false } },
+    global: { stubs: { FiveStackToolTip: false, BlockedMenuItem: false } },
   });
   mounted = wrapper;
   (wrapper.vm as any).tournamentLive = {
@@ -89,15 +93,27 @@ const openRegistration = (wrapper: Wrapper) =>
     .findAll("dropdown-menu-item-stub")
     .find((item) => item.text().includes("Open Registration"));
 
+const isBlocked = (item: {
+  attributes: (name: string) => string | undefined;
+}) => isDisabled(item) || item.attributes("aria-disabled") === "true";
+
 function blockedReasons(wrapper: Wrapper) {
   const item = openRegistration(wrapper);
   expect(item, "Open Registration").toBeDefined();
-  expect(isDisabled(item!)).toBe(true);
+  expect(isBlocked(item!)).toBe(true);
   const triangle = item!.element.parentElement!.querySelector(
     "[role='img'][aria-label]",
   );
   expect(triangle, "triangle").not.toBeNull();
   return triangle!.getAttribute("aria-label");
+}
+
+function statusMenu(wrapper: Wrapper) {
+  const menu = wrapper
+    .findAllComponents({ name: "DropdownMenu" })
+    .find((candidate) => candidate.text().includes("Tournament status"));
+  expect(menu, "status menu").toBeDefined();
+  return menu!;
 }
 
 describe("tournament status menu Open Registration", () => {
@@ -106,7 +122,16 @@ describe("tournament status menu Open Registration", () => {
     const item = openRegistration(wrapper);
 
     expect(item).toBeDefined();
+    expect(isBlocked(item!)).toBe(false);
+  });
+
+  it("stays reachable by keyboard while blocked", async () => {
+    const wrapper = await mountMenu({ start: passed() });
+    const item = openRegistration(wrapper);
+
+    expect(item).toBeDefined();
     expect(isDisabled(item!)).toBe(false);
+    expect(item!.attributes("aria-disabled")).toBe("true");
   });
 
   it("says the start time has passed", async () => {
@@ -131,6 +156,58 @@ describe("tournament status menu Open Registration", () => {
     });
 
     expect(blockedReasons(wrapper)).toBe(FULL);
+  });
+
+  it("does not call the bracket full while an eligible slot is still open", async () => {
+    const wrapper = await mountMenu({
+      start: passed(),
+      stages: [stage(1, 2)],
+      teams: [team("a", true), team("b", false)],
+    });
+
+    expect(blockedReasons(wrapper)).toBe(START_PASSED);
+  });
+
+  for (const status of [
+    "RegistrationClosed",
+    "Cancelled",
+    "CancelledMinTeams",
+  ]) {
+    it(`leaves out pickup teams the reopen undoes, out of ${status}`, async () => {
+      const wrapper = await mountMenu({
+        status,
+        start: passed(),
+        stages: [stage(1, 2)],
+        teams: [team("a", true, true), team("b", true, true)],
+      });
+
+      expect(blockedReasons(wrapper)).toBe(START_PASSED);
+    });
+  }
+
+  it("still calls the bracket full when the field's own teams fill it", async () => {
+    const wrapper = await mountMenu({
+      status: "RegistrationClosed",
+      start: passed(),
+      stages: [stage(1, 2)],
+      teams: [team("a", true), team("b", true), team("c", true, true)],
+    });
+
+    expect(blockedReasons(wrapper)).toBe(`${START_PASSED} ${FULL}`);
+  });
+
+  it("counts pickup teams in Setup, where nothing is undone", async () => {
+    const wrapper = await mountMenu({
+      start: passed(),
+      stages: [stage(1, 2)],
+      teams: [team("a", true, true), team("b", true, true)],
+    });
+
+    expect(blockedReasons(wrapper)).toBe(`${START_PASSED} ${FULL}`);
+  });
+
+  it("selects whether each team is a pickup team", () => {
+    expect(tournamentTeamFields).toHaveProperty("is_drafted", true);
   });
 
   it("names every reason that applies", async () => {
@@ -161,13 +238,46 @@ describe("tournament status menu Open Registration", () => {
     expect(openRegistration(wrapper)).toBeUndefined();
 
     vi.spyOn(Date, "now").mockReturnValue(Date.now() + 2 * HOUR);
-    const statusMenu = wrapper
-      .findAllComponents({ name: "DropdownMenu" })
-      .find((menu) => menu.text().includes("Tournament status"));
-    statusMenu!.vm.$emit("update:open", true);
+    statusMenu(wrapper).vm.$emit("update:open", true);
     await flushPromises();
 
     expect(blockedReasons(wrapper)).toBe(START_PASSED);
+  });
+
+  it("turns disabled when the api stops allowing it while the menu is open", async () => {
+    const wrapper = await mountMenu({
+      can_open_registration: true,
+      start: new Date(Date.now() + HOUR).toISOString(),
+    });
+    statusMenu(wrapper).vm.$emit("update:open", true);
+    await flushPromises();
+
+    vi.spyOn(Date, "now").mockReturnValue(Date.now() + 2 * HOUR);
+    (wrapper.vm as any).tournamentLive = {
+      ...(wrapper.vm as any).tournamentLive,
+      can_open_registration: false,
+    };
+    await flushPromises();
+
+    expect(blockedReasons(wrapper)).toBe(START_PASSED);
+  });
+
+  it("adds the start reason when the start passes while the menu is open", async () => {
+    const wrapper = await mountMenu({
+      stages: [],
+      start: new Date(Date.now() + HOUR).toISOString(),
+    });
+    statusMenu(wrapper).vm.$emit("update:open", true);
+    await flushPromises();
+
+    expect(blockedReasons(wrapper)).toBe(NO_STAGES);
+
+    vi.spyOn(Date, "now").mockReturnValue(Date.now() + 2 * HOUR);
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+    await flushPromises();
+
+    expect(blockedReasons(wrapper)).toBe(`${START_PASSED} ${NO_STAGES}`);
+    statusMenu(wrapper).vm.$emit("update:open", false);
   });
 
   it("stays hidden when the status can't open registration", async () => {
@@ -181,7 +291,7 @@ describe("tournament status menu Open Registration", () => {
 
   it("stays hidden from a co-organizer the api would refuse anyway", async () => {
     const wrapper = await mountMenu(
-      { start: new Date(Date.now() - HOUR).toISOString() },
+      { start: passed() },
       { steamId: CO_ORGANIZER },
     );
 
@@ -190,7 +300,7 @@ describe("tournament status menu Open Registration", () => {
 
   it("explains itself to a tournament organizer who does not own the tournament", async () => {
     const wrapper = await mountMenu(
-      { start: new Date(Date.now() - HOUR).toISOString() },
+      { start: passed() },
       {
         steamId: CO_ORGANIZER,
         role: e_player_roles_enum.tournament_organizer,

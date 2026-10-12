@@ -493,7 +493,7 @@ export function createUtilityOverlayModule(): UtilityOverlayModule {
       floorDecal(at, 36, WHITE, 0.9, CELL.ring, 0, 12);
     }
     // The heatmap already rings where a picked grenade went off.
-    if (marked) {
+    if (marked || t.landing === false) {
       return;
     }
     floorAt(t.at.x, t.at.y, floorOf(t.key, t.at) + 1.5, at);

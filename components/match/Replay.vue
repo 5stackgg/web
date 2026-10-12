@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ExternalLink, Box } from "lucide-vue-next";
 import mapLabel from "~/utilities/mapLabel";
+import { radarImageUrl } from "~/utilities/mapAssets";
 </script>
 
 <template>
@@ -32,9 +33,7 @@ import mapLabel from "~/utilities/mapLabel";
           @click="selectMap(m.id)"
         >
           <img
-            :src="`/radars/${m.map.name
-              .toLowerCase()
-              .replace(/_night$/, '')}.png`"
+            :src="radarImageUrl(m.map.name)"
             :alt="m.map.name"
             class="aspect-[4/3] w-full object-cover transition-opacity"
             :class="

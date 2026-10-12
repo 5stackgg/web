@@ -57,9 +57,15 @@ export type CameraModule = StageModule & {
   frameMap(animate?: boolean): void;
   /**
    * Centres on `target` (source units). `radius` is how much ground around
-   * it stays in view; without it the zoom is kept.
+   * it stays in view; without it the zoom is kept. `angle` turns and tilts
+   * it too (radians, as the rig takes them), in 3D only.
    */
-  focus(target: Vec3, radius?: number, animate?: boolean): void;
+  focus(
+    target: Vec3,
+    radius?: number,
+    animate?: boolean,
+    angle?: { heading?: number; pitch?: number },
+  ): void;
   /** Track the selected player, or the fight when nobody is selected. */
   setFollow(on: boolean): void;
   readonly following: boolean;
@@ -518,7 +524,12 @@ export function createCameraModule(): CameraModule {
     snap();
   }
 
-  function focus(target: Vec3, radius?: number, animate = true) {
+  function focus(
+    target: Vec3,
+    radius?: number,
+    animate = true,
+    angle?: { heading?: number; pitch?: number },
+  ) {
     if (!ctx) {
       return;
     }
@@ -528,6 +539,10 @@ export function createCameraModule(): CameraModule {
     ctx.wpos(target, goal.target);
     if (radius) {
       goal.distance = distanceFor(radius);
+    }
+    if (angle && ctx.view === "3d") {
+      goal.heading = angle.heading ?? goal.heading;
+      goal.pitch = angle.pitch ?? goal.pitch;
     }
     clampRig(goal);
     if (!animate) {

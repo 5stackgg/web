@@ -5456,8 +5456,7 @@
         "score": "{count} voto positivo | {count} votos positivos"
       },
       "viewer": {
-        "replay_throw": "Repetir arremesso",
-        "roof": "Teto"
+        "timeline": "Linha do tempo do arremesso"
       },
       "detail": {
         "previous": "Lineup anterior",
@@ -5465,6 +5464,8 @@
         "open_full": "Abrir a página completa",
         "practice_this": "Treinar isso",
         "share": "Compartilhar lineup",
+        "watch_3d": "Ver em 3D",
+        "watch_clip": "Ver o clipe",
         "copy_link": "Copiar link do lineup",
         "download_clip": "Baixar clip",
         "not_found": "Lineup não encontrado",
@@ -5768,6 +5769,8 @@
         "step_context_by": "Passo {step} de {count} em {name}. Arremessado aos {seconds}s por {player}.",
         "step_context_you": "Passo {step} de {count} em {name}. Arremessado aos {seconds}s por você.",
         "play": "Reproduzir",
+        "pause": "Pausar",
+        "seek": "Linha do tempo da execução",
         "stop": "Parar",
         "clock_of": "{now}s de {total}s",
         "duplicate": "Duplicar",

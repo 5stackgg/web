@@ -1,4 +1,5 @@
 import { computed, onMounted, ref, unref, watch, type Ref } from "vue";
+import { radarImageUrl } from "~/utilities/mapAssets";
 
 export type MapSplit = {
   bounds: { top: number; bottom: number };
@@ -211,6 +212,9 @@ export function useRadarProjection(
   options: {
     radarFailed?: Ref<boolean>;
     volumePoints?: () => RadarPoint[];
+    // The 2048px image where we have one. On by default: boards are drawn
+    // large and zoom, and small crops on the same page share its download.
+    retina?: boolean;
   } = {},
 ) {
   // Already read once this session: start with it, so a radar is on the first
@@ -219,11 +223,13 @@ export function useRadarProjection(
     sharedCalibrations,
   );
 
-  const normalizedMap = computed(() =>
-    normalizeRadarMapName(
-      typeof mapName === "function" ? mapName() : unref(mapName),
-    ),
+  // As played: a `_night` map shares its day map's calibration but has its
+  // own image.
+  const playedMap = computed(
+    () => (typeof mapName === "function" ? mapName() : unref(mapName)) || "",
   );
+
+  const normalizedMap = computed(() => normalizeRadarMapName(playedMap.value));
 
   const mapCalibration = computed<RadarMeta | null>(() => {
     if (!calibrations.value || !normalizedMap.value) {
@@ -274,10 +280,9 @@ export function useRadarProjection(
     ) {
       return null;
     }
-    if (activeVolume.value) {
-      return `/radars/${normalizedMap.value}_${activeVolume.value.name}.png`;
-    }
-    return `/radars/${normalizedMap.value}.png`;
+    return radarImageUrl(playedMap.value, activeVolume.value?.name, {
+      retina: options.retina ?? true,
+    });
   });
 
   // Undecided until the fetch resolves, so a caller does not flash "no radar"

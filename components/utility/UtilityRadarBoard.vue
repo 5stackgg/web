@@ -18,6 +18,7 @@ import {
   useRadarProjection,
   type RadarPoint,
 } from "~/composables/useRadarProjection";
+import { radarImageKey } from "~/utilities/mapAssets";
 import {
   UTILITY_TYPE_COLORS,
   utilityLanding,
@@ -252,9 +253,12 @@ watch(
 // Whether the board is showing the map it is supposed to be showing. Between
 // two maps it is not, and nothing that belongs to the incoming map may be drawn
 // over the outgoing one -- so the overlay waits and the map arrives bare, then
-// fills in.
+// fills in. The tile it was opened from hands over the same map at 1x, which
+// already is the right map while the sharper one decodes.
 const boardReady = computed(
-  () => !!radarSrc.value && displaySrc.value === radarSrc.value,
+  () =>
+    !!radarSrc.value &&
+    radarImageKey(displaySrc.value) === radarImageKey(radarSrc.value),
 );
 
 type Marker = {

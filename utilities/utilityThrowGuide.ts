@@ -1,4 +1,4 @@
-import type { UtilityApproachSample, UtilityLineup } from "~/types/utility";
+import type { UtilityApproachSample } from "~/types/utility";
 
 export const UTILITY_IN_BUTTONS = {
   attack: 1,
@@ -111,33 +111,4 @@ export function utilityRunUpCaps(runUp: UtilityRunUp): string[] {
     ...(runUp.crouch ? ["Ctrl"] : []),
     ...runUp.keys,
   ];
-}
-
-// game-server's RenderDirectorUtility films a lineup in fixed beats before
-// the throw: stance 1.4s, glide 0.7s, from-the-spot 1.0s, tilt 0.6s, so the
-// aim beat starts 3.7s in. Only that beat sheet cuts a stance_eyes still,
-// which is how a clip says it was filmed to it; anything else plays from 0.
-export const UTILITY_CLIP_PEEK_FROM_MS = 3500;
-const UTILITY_CLIP_PEEK_MIN_TAIL_MS = 2000;
-
-export function utilityClipPeekStartSeconds(
-  lineup: Pick<
-    UtilityLineup,
-    "preview_url" | "preview_stills_url" | "preview_duration_ms"
-  >,
-): number {
-  if (
-    !(lineup.preview_url ?? "").trim() ||
-    !lineup.preview_stills_url?.stance_eyes
-  ) {
-    return 0;
-  }
-  const duration = Number(lineup.preview_duration_ms ?? 0);
-  if (
-    duration > 0 &&
-    duration < UTILITY_CLIP_PEEK_FROM_MS + UTILITY_CLIP_PEEK_MIN_TAIL_MS
-  ) {
-    return 0;
-  }
-  return UTILITY_CLIP_PEEK_FROM_MS / 1000;
 }

@@ -216,26 +216,6 @@ export function pinchView(
   );
 }
 
-// Zoom to `zoom` keeping the map point under `at` where it is.
-export function zoomViewAt(
-  view: MapView,
-  zoom: number,
-  at: MapPoint,
-  frame: MapFrame,
-  insets: MapInsets = NO_MAP_INSETS,
-): MapView {
-  const ratio = zoom / view.zoom;
-  return clampMapPan(
-    {
-      zoom,
-      x: at.x - (at.x - view.x) * ratio,
-      y: at.y - (at.y - view.y) * ratio,
-    },
-    frame,
-    insets,
-  );
-}
-
 // Double-tap, hold, and drag: down zooms in, up zooms out, as Maps does it.
 export function dragZoom(startZoom: number, dragY: number, rate = 0.01) {
   return startZoom * Math.exp(dragY * rate);

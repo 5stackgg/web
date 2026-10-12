@@ -13,7 +13,6 @@ import {
   pinchView,
   releaseVelocity,
   resistZoom,
-  zoomViewAt,
   type MapPoint,
   type MapView,
 } from "~/utilities/mapGestures";
@@ -130,7 +129,7 @@ describe("pinchView", () => {
   });
 });
 
-describe("clampMapPan and zoomViewAt", () => {
+describe("clampMapPan", () => {
   it("never lets the map's edge come inside the frame", () => {
     expect(clampMapPan({ zoom: 2, x: 900, y: -900 }, frame)).toEqual({
       zoom: 2,
@@ -138,17 +137,6 @@ describe("clampMapPan and zoomViewAt", () => {
       y: -200,
     });
     expect(clampMapPan({ zoom: 1, x: 40, y: 40 }, frame)).toEqual(fit);
-  });
-
-  it("zooms toward the tapped point", () => {
-    const at = { x: 80, y: -60 };
-    const before = mapPointAt(fit, at);
-    const view = zoomViewAt(fit, 2, at, frame);
-    const after = mapPointAt(view, at);
-
-    expect(view.zoom).toBe(2);
-    expect(after.x).toBeCloseTo(before.x);
-    expect(after.y).toBeCloseTo(before.y);
   });
 });
 
@@ -229,7 +217,7 @@ describe("pan limits under a cover", () => {
     expect(mapCanPan(1.5, frame)).toBe(true);
   });
 
-  it("holds a pinch and a tap zoom to the same limits", () => {
+  it("holds a pinch to the cover's limits", () => {
     const start: MapView = { zoom: 1, x: 0, y: -100 };
     const still: [MapPoint, MapPoint] = [
       { x: -50, y: 0 },
@@ -237,12 +225,6 @@ describe("pan limits under a cover", () => {
     ];
     expect(pinchView(start, still, still, limits, frame, sheet)).toEqual(start);
     expect(pinchView(start, still, still, limits, frame)).toEqual(fit);
-
-    const zoomed = zoomViewAt(fit, 2, { x: 0, y: -200 }, frame, sheet);
-    expect(zoomed).toEqual({ zoom: 2, x: 0, y: 200 });
-    expect(
-      zoomViewAt({ zoom: 2, x: 0, y: -300 }, 1, { x: 0, y: 0 }, frame, sheet),
-    ).toEqual({ zoom: 1, x: 0, y: -100 });
   });
 });
 

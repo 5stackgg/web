@@ -1,18 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
+import { usePlaybackClock } from "~/composables/usePlaybackClock";
 
-const mountBar = (
-  props: Partial<{ position: number | null; running: boolean }> = {},
-) =>
+// A ten-second run, paused at `position`.
+function runAt(position: number) {
+  const run = usePlaybackClock({ length: () => 10 });
+  run.seek(position);
+  return run;
+}
+
+const mountBar = ({ position = 2 }: { position?: number } = {}) =>
   mount(UtilityExecuteTransport, {
     props: {
-      position: 2,
-      startedAt: null,
-      length: 10,
+      run: runAt(position),
       running: false,
       beats: [{ key: "a", seconds: 5, color: "#fff" }],
-      ...props,
     },
     global: { mocks: { $t: (key: string) => key } },
     attachTo: document.body,

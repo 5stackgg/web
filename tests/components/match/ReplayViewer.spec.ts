@@ -1,19 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent } from "vue";
+import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ReplayViewer from "~/components/match/ReplayViewer.vue";
+import ReplayStageUnavailable from "~/components/match/ReplayStageUnavailable.vue";
 
-vi.mock("virtual:public?%2Fimg%2Fequipment%2Fc4.svg", () => ({
-  default: "/img/equipment/c4.svg",
-}));
-vi.mock("virtual:public?%2Fimg%2Fequipment%2Fdefuser.svg", () => ({
-  default: "/img/equipment/defuser.svg",
-}));
 vi.mock("~/components/match/ReplayChrome.vue", () => ({
   default: defineComponent({ name: "ReplayChrome", render: () => null }),
-}));
-vi.mock("~/components/match/Replay3DLite.vue", () => ({
-  default: defineComponent({ name: "Replay3DLite", render: () => null }),
 }));
 
 function position(tick: number) {
@@ -55,11 +48,41 @@ describe("ReplayViewer", () => {
         grenades: [flash("thrown", 64), flash("detonated", 128)],
         mapName: "de_mirage",
       },
-      global: {
-        stubs: { RadarCallouts: true },
-      },
     });
 
     expect(wrapper.exists()).toBe(true);
   });
+
+  it.each(["unsupported", "missing-map"] as const)(
+    "puts a message in the stage's place when it reports %s",
+    async (reason) => {
+      const wrapper = await mountSuspended(ReplayViewer, {
+        props: {
+          match: { id: "match-1", lineup_1: {}, lineup_2: {} },
+          positions: [position(64), position(128)],
+          mapName: "de_mirage",
+        },
+        global: {
+          stubs: {
+            ReplayStage: defineComponent({
+              name: "ReplayStage",
+              emits: ["unsupported", "missing-map"],
+              mounted() {
+                this.$emit(reason);
+              },
+              render: () => null,
+            }),
+          },
+        },
+      });
+      await flushPromises();
+
+      expect(
+        wrapper.findComponent(ReplayStageUnavailable).props("reason"),
+      ).toBe(reason);
+      expect(wrapper.findComponent({ name: "ReplayStage" }).exists()).toBe(
+        false,
+      );
+    },
+  );
 });

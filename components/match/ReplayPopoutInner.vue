@@ -90,55 +90,13 @@ export default {
       tickRate: 64 as number,
       blobLoading: false as boolean,
       blobLoaded: false as boolean,
-      // Set true when we successfully consume handoff data from the
-      // opener window — skips the Apollo query entirely.
-      hydratedFromOpener: false,
-      handoffMatch: null as any,
-      handoffMapName: null as null | string,
-      handoffMapTitle: null as null | string,
     };
-  },
-  created() {
-    const self = this as any;
-    if (typeof window === "undefined") return;
-    try {
-      const opener: any = window.opener;
-      const data = opener?.__replayHandoff?.[self.matchMapId];
-      if (!data) return;
-      self.handoffMatch = data.match ?? null;
-      self.handoffMapName = data.mapName ?? null;
-      self.handoffMapTitle = data.mapTitle ?? null;
-      self.positions = data.positions ?? [];
-      self.grenades = data.grenades ?? [];
-      self.grenadeTrajectories = data.grenadeTrajectories ?? [];
-      self.smokeVolumes = data.smokeVolumes ?? [];
-      self.infernos = data.infernos ?? [];
-      self.smokeVoxels = data.smokeVoxels ?? [];
-      self.flashes = data.flashes;
-      self.shots = data.shots ?? [];
-      self.damages = data.damages ?? [];
-      self.demoPlayers = data.demoPlayers ?? [];
-      self.demoKills = data.demoKills ?? [];
-      self.demoBombs = data.demoBombs ?? [];
-      self.demoKitDrops = data.demoKitDrops ?? [];
-      self.demoRoundTicks = data.demoRoundTicks ?? [];
-      self.roundInventory = normalizeRoundInventory(data.roundInventory ?? []);
-      self.roundEconomy = data.roundEconomy ?? [];
-      self.tickRate = data.tickRate ?? 64;
-      self.hydratedFromOpener = true;
-      self.blobLoaded = true;
-    } catch {
-      // Opener may be closed or unavailable — fall through to Apollo.
-    }
   },
   apollo: {
     matchMap: {
       query: matchMapForPopoutQuery,
       variables(): any {
         return { matchMapId: (this as any).matchMapId };
-      },
-      skip(): boolean {
-        return (this as any).hydratedFromOpener;
       },
       manual: true,
       async result({ data }: { data: any }) {
@@ -191,21 +149,17 @@ export default {
   },
   computed: {
     match(): any {
-      // Prefer the handoff payload from the opener — it already has
-      // the full match object with lineup_1/lineup_2 + match_maps.
-      if (this.handoffMatch) return this.handoffMatch;
       const m = this.matchMap?.match ?? null;
       const maps = this.matchMap ? [this.matchMap] : [];
       return m ? { ...m, match_maps: maps } : { match_maps: maps };
     },
     mapName(): string | null {
-      return this.handoffMapName ?? this.matchMap?.map?.name ?? null;
+      return this.matchMap?.map?.name ?? null;
     },
     mapTitle(): string | null {
-      return this.handoffMapTitle ?? this.matchMap?.map?.label ?? null;
+      return this.matchMap?.map?.label ?? null;
     },
     loading(): boolean {
-      if (this.hydratedFromOpener) return false;
       return this.blobLoading || (!this.blobLoaded && this.positions === null);
     },
   },
@@ -243,7 +197,6 @@ export default {
       :demo-kills="demoKills"
       :demo-bombs="demoBombs"
       :demo-kit-drops="demoKitDrops"
-      :is-popout="true"
       :demo-round-ticks="demoRoundTicks"
       :round-inventory="roundInventory"
       :round-economy="roundEconomy"

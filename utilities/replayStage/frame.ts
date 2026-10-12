@@ -10,6 +10,14 @@ import {
 } from "./frameIndex";
 import type { RoundIndex, RoundRange, StageBlob, Track } from "./frameIndex";
 import { visionPast } from "./visionFrame";
+import {
+  BLAST_SECS,
+  DECOY_SECS,
+  DETONATION_SECS,
+  FLAME_DIE_SECS,
+  FLAME_IGNITE_SECS,
+  INFERNO_BURN_SECS,
+} from "./grenadeEffects";
 import type {
   StageBomb,
   StageBombAction,
@@ -78,19 +86,11 @@ export type StageRound = RoundRange;
 const SHOT_SECS = 1;
 const DAMAGE_SECS = 2;
 const HURT_SECS = 1.5;
-const DETONATION_SECS = 3;
-const DECOY_SECS = 15;
-const BLAST_SECS = 2;
 /**
  * Planted to bomb_exploded in CS2 demos: the 40s mp_c4timer plus the second
  * the event lands after it (41.00s on every explosion measured).
  */
 export const C4_SECS = 41;
-/** Flame catch and gutter, as `liveFlames` in utils/smokeVolume. */
-const FLAME_IGNITE_SECS = 0.35;
-const FLAME_DIE_SECS = 0.6;
-/** CS2's molotov / incendiary burn time, for a fire without an end tick. */
-const INFERNO_BURN_SECS = 7.03;
 /** CS2 keeps the screen fully white until this much of a flash is left. */
 const FLASH_FULL_SECS = 3;
 /**

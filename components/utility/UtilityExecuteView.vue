@@ -9,6 +9,7 @@ import Fold from "~/components/ui/transitions/Fold.vue";
 import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
 import UtilityExecuteViewer3D from "~/components/utility/UtilityExecuteViewer3D.vue";
 import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
+import type { PlaybackClock } from "~/composables/usePlaybackClock";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useUtilityCardViews } from "~/composables/useUtilityCardViews";
 import {
@@ -54,14 +55,10 @@ const props = withDefaults(
     /** Whose it is, and the team it belongs to, by name. */
     owner?: string | null;
     team?: string | null;
-    /** Seconds on the clock once it has been played. */
-    clock?: number | null;
-    /** The `performance.now()` that run started at while it runs. */
-    startedAt?: number | null;
+    /** The execute's run: its clock, and its play bar's length. */
+    run: PlaybackClock;
     /** The clock is running, or the scene is flying in to start it. */
     running?: boolean;
-    /** Seconds the run lasts on the play bar. */
-    length?: number;
     // Play has been pressed on a map with a mesh, so the execute is thrown in
     // 3D. Off until then: a three.js scene per execute you open to read is
     // waste. Once on it stays, showing the run it last played.
@@ -74,10 +71,7 @@ const props = withDefaults(
   {
     owner: null,
     team: null,
-    clock: null,
-    startedAt: null,
     running: false,
-    length: 0,
     scene: false,
     hoveredLineupId: null,
     lineupsLoading: false,
@@ -250,12 +244,16 @@ const notices = computed(() => {
   return out;
 });
 
+// Steps light as the run reaches them, which needs only its tenths: the rows
+// are not redrawn every frame.
+const clock = computed(() => props.run.tenths.value);
+
 function waiting(beat: UtilityExecuteBeat) {
-  return props.clock !== null && beat.seconds > props.clock;
+  return clock.value !== null && beat.seconds > clock.value;
 }
 
 function lit(beat: UtilityExecuteBeat) {
-  return props.clock !== null && beat.seconds <= props.clock;
+  return clock.value !== null && beat.seconds <= clock.value;
 }
 
 // What is said when it is thrown, and whether it is a second helping of a
@@ -318,17 +316,14 @@ onBeforeUnmount(() => {
         <UtilityExecuteViewer3D
           :map-name="playbook.map_name"
           :beats="beats"
-          :clock="clock"
-          :started-at="startedAt"
+          :run="run"
           :controls="64"
           fill
           @framed="emit('framed')"
         >
           <UtilityExecuteTransport
             class="absolute inset-x-3 bottom-3 z-[11]"
-            :position="clock"
-            :started-at="startedAt"
-            :length="length"
+            :run="run"
             :running="running"
             :beats="beats"
             @toggle="emit('toggle')"
@@ -355,16 +350,13 @@ onBeforeUnmount(() => {
         <UtilityExecuteViewer3D
           :map-name="playbook.map_name"
           :beats="beats"
-          :clock="clock"
-          :started-at="startedAt"
+          :run="run"
           :controls="56"
           @framed="emit('framed')"
         >
           <UtilityExecuteTransport
             class="absolute inset-x-2 bottom-2 z-[11]"
-            :position="clock"
-            :started-at="startedAt"
-            :length="length"
+            :run="run"
             :running="running"
             :beats="beats"
             @toggle="emit('toggle')"

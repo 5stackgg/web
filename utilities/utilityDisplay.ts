@@ -120,8 +120,8 @@ export function aimPrecisionDegrees(precision: UtilityAimPrecision): number {
   );
 }
 
-// Same hexes Replay3DLite paints utility with, so a lineup reads identically on
-// the board, in the list and in the 3D scene.
+// Same hexes the replay stage paints utility with (UTILITY_MARKER_COLORS), so a
+// lineup reads identically on the board, in the list and in the 3D scene.
 export const UTILITY_TYPE_COLORS: Record<UtilityType, string> = {
   Smoke: "#32d6e0",
   Molotov: "#ff6a1a",
@@ -273,24 +273,6 @@ export function utilityLandingOffsets(
       again * UTILITY_EXECUTE_FOLLOW_UP_SECONDS;
     return lands - executeFlightSeconds(lineup);
   });
-}
-
-/** The same, as clock times: the earliest throw on the first second. */
-export function utilityLandTogether(
-  steps: Parameters<typeof utilityLandingOffsets>[0],
-): Array<number | null> {
-  const offsets = utilityLandingOffsets(steps);
-  const known = offsets.filter((value): value is number => value !== null);
-  if (!known.length) {
-    return offsets;
-  }
-  const first = Math.min(...known);
-  return offsets.map((value) =>
-    value === null
-      ? null
-      : Math.round((value - first + UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS) * 10) /
-        10,
-  );
 }
 
 /**
@@ -868,14 +850,6 @@ export const UTILITY_SIGHTLINE_TONES: Record<UtilitySightlineVerdict, string> = 
   clear: "border-destructive/40 bg-destructive/10 text-destructive",
 };
 
-/** Board colours for a drawn sightline, keyed the same way as the chips. */
-export const UTILITY_SIGHTLINE_COLORS: Record<UtilitySightlineVerdict, string> = {
-  world: "#8b93a5",
-  blocked: "#3ddc84",
-  grazing: "#ffb020",
-  clear: "#ff3b3b",
-};
-
 export const UTILITY_SIGHTLINE_UNCHECKED_COLOR = "#e6ebf5";
 
 /**
@@ -955,47 +929,6 @@ export const UTILITY_COVERAGE_COLORS: Record<UtilityCoverageVerdict, string> = {
   open: "#ff3b3b",
   unknown: "#8b93a5",
 };
-
-/** Weakest to strongest, exactly as the backend grades it. */
-export const UTILITY_ONE_WAY_CONFIDENCES = [
-  "none",
-  "marginal",
-  "likely",
-  "strong",
-] as const;
-
-export type UtilityOneWayConfidence = (typeof UTILITY_ONE_WAY_CONFIDENCES)[number];
-
-export function utilityOneWayConfidence(raw: string | null | undefined) {
-  const token = String(raw ?? "")
-    .trim()
-    .toLowerCase();
-  return (UTILITY_ONE_WAY_CONFIDENCES as readonly string[]).includes(token)
-    ? (token as UtilityOneWayConfidence)
-    : null;
-}
-
-export const UTILITY_ONE_WAY_TONES: Record<UtilityOneWayConfidence, string> = {
-  none: "border-border bg-muted/40 text-muted-foreground",
-  marginal: "border-border bg-muted/40 text-muted-foreground",
-  likely:
-    "border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]",
-  strong:
-    "border-[hsl(var(--tac-amber)/0.7)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]",
-};
-
-/** `favors` values the UI has words for; anything else is shown as it came. */
-const UTILITY_ONE_WAY_FAVORS = ["from", "to", "attacker", "defender", "ct", "t"];
-
-export function utilityOneWayFavorsKey(raw: string | null | undefined) {
-  const token = String(raw ?? "")
-    .trim()
-    .toLowerCase();
-  if (token === "terrorist") {
-    return "t";
-  }
-  return UTILITY_ONE_WAY_FAVORS.includes(token) ? token : null;
-}
 
 /**
  * Renders an unrecognised server token without inventing a meaning for it:
@@ -1162,32 +1095,6 @@ export function utilityPlanReasonTone(reason: string | null | undefined) {
 }
 
 /**
- * A solve request is answered by a lineup showing up in the library, not by the
- * mutation. This is how close that lineup's landing has to be to the requested
- * target before the UI is willing to say "that one is yours".
- */
-export const UTILITY_SOLVE_MATCH_UNITS = 256;
-
-/** The solver's own ceiling — a request that outlives it is not coming back. */
-export const UTILITY_SOLVE_TIMEOUT_MS = 120000;
-
-export function utilitySolveMatches(
-  lineup: Pick<
-    UtilityLineup,
-    "land_x" | "land_y" | "land_z" | "trajectory_preview"
-  >,
-  target: { x: number; y: number; z: number },
-): boolean {
-  const landing = utilityLanding(lineup);
-  if (!landing) {
-    return false;
-  }
-  const dx = landing.x - target.x;
-  const dy = landing.y - target.y;
-  return Math.sqrt(dx * dx + dy * dy) <= UTILITY_SOLVE_MATCH_UNITS;
-}
-
-/**
  * The demo's own word for a grenade, reduced to the five the library keys on.
  * Null means the parser named something this UI has no lineup type for, which
  * is a row that cannot be saved rather than a row to guess at.
@@ -1255,19 +1162,6 @@ export function utilityMissBiasKey(raw: string | null | undefined) {
   return (UTILITY_MISS_BIASES as readonly string[]).includes(token)
     ? (token as UtilityMissBias)
     : null;
-}
-
-/**
- * A directional bias is the only one worth colouring: it is the one a human can
- * do something with. `scattered` and `none` are both "there is no pattern here"
- * and read as neutral.
- */
-export function utilityMissBiasTone(raw: string | null | undefined) {
-  const key = utilityMissBiasKey(raw);
-  if (!key || key === "none" || key === "scattered") {
-    return "border-border bg-muted/40 text-muted-foreground";
-  }
-  return "border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]";
 }
 
 export type UtilityMissAxis = "along" | "lateral" | "vertical";
@@ -1351,21 +1245,4 @@ export function utilityDifficultyKey(raw: string | null | undefined) {
 export function utilityDifficultyMeasured(raw: string | null | undefined) {
   const key = utilityDifficultyKey(raw);
   return !!key && key !== "unmeasured";
-}
-
-export function utilityDifficultyTone(raw: string | null | undefined) {
-  switch (utilityDifficultyKey(raw)) {
-    case "easy":
-      return "border-success/40 bg-success/10 text-success";
-    case "moderate":
-      return "border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]";
-    case "hard":
-      return "border-[hsl(var(--tac-amber)/0.7)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]";
-    case "very_hard":
-      return "border-destructive/40 bg-destructive/10 text-destructive";
-    default:
-      // Unmeasured and unknown share the dashed muted state the chip draws —
-      // neither of them is a grade, and neither may borrow one's colour.
-      return "border-dashed border-border bg-muted/30 text-muted-foreground";
-  }
 }

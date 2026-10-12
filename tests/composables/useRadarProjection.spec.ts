@@ -124,13 +124,14 @@ describe("useRadarProjection images", () => {
   it("gives the 1x image when asked, and the generic radar where there is no bake", async () => {
     const { state, mapName } = await mountProjection("de_mirage", {
       retina: false,
+      volumePoints: () => ROOM_204_SPAWNS,
     });
     expect(state.radarSrc.value).toBe(
       "/radars/stage/de_mirage.webp?v=4e5f6a7b",
     );
 
-    mapName.value = "de_cache";
+    mapName.value = "rush_001";
     await flushPromises();
-    expect(state.radarSrc.value).toBe("/radars/de_cache.png");
+    expect(state.radarSrc.value).toBe("/radars/rush_001_room204.png");
   });
 });

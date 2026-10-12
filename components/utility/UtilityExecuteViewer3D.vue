@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import Replay3DLite from "~/components/match/Replay3DLite.vue";
+import { computed, onMounted, ref, watch } from "vue";
+import ReplayStageUnavailable from "~/components/match/ReplayStageUnavailable.vue";
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
-import { useRadarProjection } from "~/composables/useRadarProjection";
-import { normalizeMapName } from "~/utilities/mapAssets";
+import type { PlaybackClock } from "~/composables/usePlaybackClock";
 import { lineupSmokeVoxels } from "~/utilities/lineupSmokeVoxels";
 import type { StageSmokeVoxels } from "~/utilities/replayStage/types";
 import {
@@ -11,17 +10,7 @@ import {
   utilityStageThrower,
 } from "~/utilities/replayStage/utilityFrame";
 import type { UtilityStageThrow } from "~/utilities/replayStage/utilityFrame";
-import {
-  executeFlightSeconds,
-  utilityLanding,
-  utilityOrigin,
-  normalizeTrajectory,
-  replayUtilityType,
-  replayTeamForSide,
-} from "~/utilities/utilityDisplay";
-import { SMOKE_BLOOM_SECS } from "~/utils/smokeVolume";
-import type { SmokeVolume } from "~/utils/smokeVolume";
-import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
+import type { UtilityLineup } from "~/types/utility";
 
 /** What the scene needs of a step: what is thrown, when, and by whom. */
 type Beat = {
@@ -40,69 +29,25 @@ type Beat = {
  *
  * The clock is not kept here. The panel that opened the execute runs it, so
  * the timeline in the card, the label in the dock and this scene are one
- * clock; this only draws the moment it is handed.
+ * clock; this only draws the moment it is at.
  */
 const props = withDefaults(
   defineProps<{
     mapName: string;
     beats: Beat[];
-    /** Seconds into the run, or null before it has been played. */
-    clock: number | null;
-    /**
-     * The `performance.now()` the run started at while it runs, null while
-     * it is paused. The clock moves in tenths, which is fine for a label and
-     * a stutter for a grenade in the air, so between its ticks the scene
-     * reads the same run off its start.
-     */
-    startedAt?: number | null;
+    run: PlaybackClock;
     /** Fills the box it is put in -- the map's square -- instead of 16:10. */
     fill?: boolean;
     /** CSS px at the bottom the owner's controls cover; the shot avoids it. */
     controls?: number;
   }>(),
-  { startedAt: null, fill: false, controls: 0 },
+  { fill: false, controls: 0 },
 );
 
 const emit = defineEmits<{
   // The camera has arrived, so a run started now is a run you can see.
   (e: "framed"): void;
 }>();
-
-// Replay3DLite keeps twelve tokens and twelve arcs. An execute can be written
-// longer than that; past it the newest throws are the ones drawn.
-const SCENE_SLOTS = 12;
-const TICK_RATE = 64;
-
-const runtimeConfig = useRuntimeConfig();
-const meshCdn = (runtimeConfig.public.mapMeshCdn as string) || "";
-const apiDomain = runtimeConfig.public.apiDomain as string;
-
-const sceneMap = computed(() => normalizeMapName(props.mapName) || null);
-
-// The detailed path and the measured cloud of each lineup, by lineup id. Both
-// arrive after the scene does; until then a throw flies its preview.
-const fullTrajectories = ref<Record<string, UtilityTrajectoryPoint[]>>({});
-const smokeVolumesByLineup = ref<Record<string, SmokeVolume>>({});
-
-function previewOf(lineup: UtilityLineup): UtilityTrajectoryPoint[] {
-  const preview = normalizeTrajectory(lineup.trajectory_preview);
-  if (preview.length >= 2) {
-    return preview;
-  }
-  const landing = utilityLanding(lineup);
-  if (!landing) {
-    return [];
-  }
-  return [
-    {
-      // double precision arrives as a string; three.js wants numbers.
-      x: Number(lineup.origin_x),
-      y: Number(lineup.origin_y),
-      z: Number(lineup.eye_z ?? lineup.origin_z),
-    },
-    landing,
-  ];
-}
 
 // One entry per step that can be drawn, in the order they are thrown. Every
 // step is its own grenade, so a lineup thrown twice is two of them.
@@ -119,84 +64,9 @@ const throws = computed(() =>
         lineup,
         who: beat.who,
         start: beat.seconds,
-        flight: executeFlightSeconds(lineup),
-        type: replayUtilityType(lineup.utility_type),
-        team: replayTeamForSide(lineup.side),
-        origin: utilityOrigin(lineup),
-        landing: utilityLanding(lineup),
-        points: fullTrajectories.value[lineup.id] ?? previewOf(lineup),
       };
     })
     .sort((a, b) => a.start - b.start || a.gid - b.gid),
-);
-
-// Only used if the mesh fails mid-flight and the renderer drops to the flat
-// radar. Declared after the throws it reads.
-const radarFailed = ref(false);
-const { radarSrc, calibration, projectCalibrated } = useRadarProjection(
-  () => props.mapName,
-  {
-    radarFailed,
-    volumePoints: () =>
-      throws.value.map((entry) => entry.landing ?? entry.origin),
-  },
-);
-
-let loadToken = 0;
-async function loadTrajectories(lineups: UtilityLineup[]) {
-  const token = ++loadToken;
-  // The size is written with the file and is safe to select; the S3 key is
-  // not something the browser needs to know.
-  const wanted = lineups.filter(
-    (lineup) => lineup.trajectory_size && !fullTrajectories.value[lineup.id],
-  );
-  await Promise.all(
-    wanted.map(async (lineup) => {
-      try {
-        const response = await fetch(
-          `https://${apiDomain}/utility/${lineup.id}/trajectory`,
-          { credentials: "include" },
-        );
-        if (!response.ok || token !== loadToken) {
-          return;
-        }
-        const payload = await response.json();
-        if (token !== loadToken) {
-          return;
-        }
-        const points = normalizeTrajectory(payload?.points ?? payload);
-        if (points.length >= 2) {
-          fullTrajectories.value = {
-            ...fullTrajectories.value,
-            [lineup.id]: points,
-          };
-        }
-        const volume = payload?.smoke_volume ?? payload?.smokeVolume ?? null;
-        if (volume) {
-          smokeVolumesByLineup.value = {
-            ...smokeVolumesByLineup.value,
-            [lineup.id]: volume as SmokeVolume,
-          };
-        }
-      } catch {
-        // The preview already flies; the detail is only a better line.
-      }
-    }),
-  );
-}
-
-watch(
-  () =>
-    [...new Set(throws.value.map((entry) => entry.lineup.id))].sort().join(),
-  () => {
-    const seen = new Set<string>();
-    void loadTrajectories(
-      throws.value
-        .map((entry) => entry.lineup)
-        .filter((lineup) => !seen.has(lineup.id) && seen.add(lineup.id)),
-    );
-  },
-  { immediate: true },
 );
 
 /**
@@ -207,114 +77,22 @@ watch(
 const BEFORE = -1;
 const AFTER = Number.POSITIVE_INFINITY;
 
-const time = ref(BEFORE);
-let played = false;
-let frame: number | null = null;
-let lastFrameAt = 0;
-
-function tickFrame(now: number) {
-  lastFrameAt = now;
-  if (props.clock === null || props.startedAt === null) {
-    frame = null;
-    return;
-  }
-  // A frame's timestamp can predate the run it belongs to.
-  time.value = Math.max(0, (now - props.startedAt) / 1000);
-  frame = requestAnimationFrame(tickFrame);
-}
-
-function stopFrames() {
-  if (frame !== null) {
-    cancelAnimationFrame(frame);
-    frame = null;
-  }
-}
-
+const played = ref(false);
 watch(
-  () => [props.clock, props.startedAt] as const,
-  ([clock, startedAt]) => {
-    if (clock === null) {
-      stopFrames();
-      time.value = played ? AFTER : BEFORE;
-      return;
-    }
-    played = true;
-    // Paused, or scrubbed while paused: the clock is the moment.
-    if (startedAt === null) {
-      stopFrames();
-      time.value = clock;
-      return;
-    }
-    // While frames are arriving they are the smoother reading of the same
-    // run. Without them -- a hidden tab -- the clock's own value is.
-    if (performance.now() - lastFrameAt > 200) {
-      time.value = clock;
-    }
-    if (frame === null) {
-      frame = requestAnimationFrame(tickFrame);
+  () => props.run.position.value !== null,
+  (started) => {
+    if (started) {
+      played.value = true;
     }
   },
   { immediate: true },
 );
-
-onBeforeUnmount(() => {
-  stopFrames();
-  loadToken += 1;
-});
-
-// Room around a throw for what it turns into: a smoke's cloud, a fire's
-// spread, a flash's burst.
-const BURST_UNITS: Partial<Record<string, number>> = {
-  Smoke: 180,
-  Molotov: 150,
-};
-
-// One frame for the whole execute: every place somebody stands, every landing
-// and every arc, seen from the throwers' side looking toward where it all
-// lands. Built from the lineups' own previews and never from the detailed
-// paths that load afterwards, so it is the same frame before, during and
-// after a run -- the renderer flies in again whenever its frame changes.
-const cameraFrame = computed(() => {
-  const points: UtilityTrajectoryPoint[] = [];
-  const origins: UtilityTrajectoryPoint[] = [];
-  const landings: UtilityTrajectoryPoint[] = [];
-  let burst = 110;
-  for (const entry of throws.value) {
-    origins.push(entry.origin);
-    points.push(entry.origin, ...previewOf(entry.lineup));
-    if (entry.landing) {
-      landings.push(entry.landing);
-      points.push(entry.landing);
-    }
-    burst = Math.max(burst, BURST_UNITS[entry.lineup.utility_type] ?? 110);
+const time = computed(() => {
+  const at = props.run.position.value;
+  if (at === null) {
+    return played.value ? AFTER : BEFORE;
   }
-  if (!points.length) {
-    return null;
-  }
-  const xs = points.map((point) => point.x);
-  const ys = points.map((point) => point.y);
-  const zs = points.map((point) => point.z);
-  const across = Math.max(
-    Math.max(...xs) - Math.min(...xs),
-    Math.max(...ys) - Math.min(...ys),
-  );
-  const tall = Math.max(...zs) - Math.min(...zs);
-  const centre = (list: UtilityTrajectoryPoint[], axis: "x" | "y") =>
-    list.reduce((sum, point) => sum + point[axis], 0) / list.length;
-  return {
-    x: (Math.max(...xs) + Math.min(...xs)) / 2,
-    y: (Math.max(...ys) + Math.min(...ys)) / 2,
-    z: (Math.max(...zs) + Math.min(...zs)) / 2,
-    span: Math.max(across, tall * 1.3) + burst * 2 + 200,
-    heading: landings.length
-      ? Math.atan2(
-          centre(landings, "y") - centre(origins, "y"),
-          centre(landings, "x") - centre(origins, "x"),
-        )
-      : null,
-    // 45° off the line of the throws, so the arcs read as arcs.
-    swing: Math.PI / 4,
-  };
+  return at;
 });
 
 // Somebody stands where each lineup is thrown from. A lineup thrown twice is
@@ -334,181 +112,23 @@ const tokens = computed(() => {
       entry,
     });
   }
-  return out.slice(0, SCENE_SLOTS);
-});
-
-const players = computed(() =>
-  tokens.value.map(({ id, entry }) => ({
-    steamId: id,
-    team: entry.team,
-    alive: true,
-    x: entry.origin.x,
-    y: entry.origin.y,
-    z: entry.origin.z,
-    yaw: Number(entry.lineup.view_yaw ?? 0),
-    pitch: Number(entry.lineup.view_pitch ?? 0),
-    health: 100,
-    armor: 0,
-  })),
-);
-
-const names = computed(() =>
-  Object.fromEntries(tokens.value.map(({ id, name }) => [id, name])),
-);
-
-const grenadeTrajectories = computed(() =>
-  throws.value
-    .filter((entry) => entry.points.length >= 2)
-    .map((entry) => ({
-      gid: entry.gid,
-      pts: entry.points.map((point, index) => ({
-        t: point.t ?? index / (entry.points.length - 1),
-        x: point.x,
-        y: point.y,
-        z: point.z,
-      })),
-    })),
-);
-
-function pointAt(points: UtilityTrajectoryPoint[], fraction: number) {
-  const index = Math.max(
-    0,
-    Math.min(points.length - 1, Math.floor(fraction * (points.length - 1))),
-  );
-  return points[index];
-}
-
-// Everything that has left a hand. A grenade that has landed stays in the
-// list at the end of its path, because its entry here is also what draws the
-// arc it flew -- the same way the single lineup's replay keeps its line.
-const inFlight = computed(() => {
-  const now = time.value;
-  return throws.value
-    .filter((entry) => entry.points.length >= 2 && entry.start <= now)
-    .slice(-SCENE_SLOTS)
-    .map((entry) => {
-      const progress = Math.max(
-        0,
-        Math.min(1, (now - entry.start) / entry.flight),
-      );
-      const head = pointAt(entry.points, progress);
-      const last = entry.points[entry.points.length - 1];
-      return {
-        key: entry.key,
-        gid: entry.gid,
-        type: entry.type,
-        fromX: entry.points[0].x,
-        fromY: entry.points[0].y,
-        toX: last.x,
-        toY: last.y,
-        x: head.x,
-        y: head.y,
-        z: head.z,
-        progress,
-      };
-    });
-});
-
-// What each one has turned into once it is down, for as long as the scene is
-// up: an execute is read as the picture all of it makes together.
-const grenades = computed(() => {
-  const now = time.value;
-  const out: Array<{
-    rx: number;
-    ry: number;
-    rz: number;
-    type: string;
-    life: number;
-    bloom: number;
-    grenade_id: number;
-    thrower_team: string;
-  }> = [];
-  for (const entry of throws.value) {
-    const settled = now - (entry.start + entry.flight);
-    if (!entry.landing || settled < 0) {
-      continue;
-    }
-    out.push({
-      rx: entry.landing.x,
-      ry: entry.landing.y,
-      rz: entry.landing.z,
-      type: entry.type,
-      life: 1,
-      bloom: Math.min(1, settled / SMOKE_BLOOM_SECS),
-      grenade_id: entry.gid,
-      thrower_team: entry.team,
-    });
-  }
   return out;
-});
-
-// A cloud is measured per lineup and worn per step.
-const smokeVolumes = computed(() => {
-  const out: SmokeVolume[] = [];
-  for (const entry of throws.value) {
-    const volume = smokeVolumesByLineup.value[entry.lineup.id];
-    if (volume) {
-      out.push({ ...volume, gid: entry.gid } as SmokeVolume);
-    }
-  }
-  return out;
-});
-
-// The renderer derives its roof cut from the tallest player it has seen. Take
-// the highest point of any throw instead, so the cut never slices an arc.
-const autoCeilingZ = computed(() => {
-  let highest = Number.NEGATIVE_INFINITY;
-  for (const entry of throws.value) {
-    highest = Math.max(
-      highest,
-      entry.origin.z,
-      Number(entry.lineup.eye_z ?? entry.lineup.origin_z),
-      entry.landing?.z ?? entry.origin.z,
-    );
-    for (const point of entry.points) {
-      if (point.z > highest) {
-        highest = point.z;
-      }
-    }
-  }
-  return Number.isFinite(highest) ? highest + 400 : null;
-});
-
-// The fallback renderer's roof cut, on the single lineup's defaults. The
-// stage ghosts roofs by itself.
-const VIEW_CEILING = 58;
-const TRI_CEILING = 70;
-const meshKind = ref<"view" | "tri" | "radar" | null>(null);
-const ceiling = computed(() =>
-  meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING,
-);
-
-// Only reached if the mesh 404s mid-flight and the renderer drops back to the
-// flat radar plane; in mesh mode nothing calls this.
-function project(point: { x: number; y: number; z?: number }) {
-  return projectCalibrated(point) ?? { x: 0, y: 0 };
-}
-
-// When the last grenade is down, for the moments that have no number.
-const runEnd = computed(() =>
-  Math.max(0, ...throws.value.map((entry) => entry.start + entry.flight)),
-);
-
-const tick = computed(() => {
-  const now = Number.isFinite(time.value) ? time.value : runEnd.value;
-  return Math.round(Math.max(0, now) * TICK_RATE);
 });
 
 onMounted(() => {
   // Nothing to fly to: say so, or whatever waits on the camera waits forever.
-  if (!cameraFrame.value) {
+  if (!throws.value.length) {
     emit("framed");
   }
 });
 
-// The replay stage draws it unless this browser or map cannot; then the
-// renderer above does, as it always has.
-const stageFailed = ref(false);
+// No WebGL2, or no model of this map: a message stands in the stage's place,
+// and the run goes ahead on the card's timeline without waiting for a camera.
+const stageUnavailable = ref<"unsupported" | "missing-map" | null>(null);
+function onUnavailable(reason: "unsupported" | "missing-map") {
+  stageUnavailable.value = reason;
+  emit("framed");
+}
 
 // Each smoke's real cloud, when the plugin has recorded it, by lineup.
 const smokeVoxels = ref<Record<string, StageSmokeVoxels>>({});
@@ -537,7 +157,6 @@ const stageThrows = computed(() =>
         key: entry.key,
         gid: entry.gid,
         start: entry.start,
-        points: fullTrajectories.value[entry.lineup.id],
         voxels: smokeVoxels.value[entry.lineup.id] ?? null,
       }),
     )
@@ -552,8 +171,6 @@ const stageThrowers = computed(() =>
 
 // Standing still after a run is the finished execute: the stage's still.
 const stageTime = computed(() => (time.value === AFTER ? null : time.value));
-
-defineExpose({ time, inFlight, grenades, players, cameraFrame });
 </script>
 
 <template>
@@ -562,38 +179,16 @@ defineExpose({ time, inFlight, grenades, players, cameraFrame });
     :class="fill ? 'h-full' : 'aspect-[16/10]'"
   >
     <UtilityThrowStage
-      v-if="!stageFailed"
+      v-if="!stageUnavailable"
       :map-name="mapName"
       :throws="stageThrows"
       :throwers="stageThrowers"
       :time="stageTime"
       :controls="controls"
-      @mesh="(kind) => (meshKind = kind)"
       @framed="emit('framed')"
-      @fallback="stageFailed = true"
+      @fallback="onUnavailable"
     />
-    <Replay3DLite
-      v-else
-      :map-name="sceneMap"
-      :mesh-cdn="meshCdn"
-      :radar-src="radarSrc"
-      :resolution="calibration?.resolution ?? 1"
-      :project="project"
-      :players="players"
-      :names="names"
-      :grenade-trajectories="grenadeTrajectories"
-      :in-flight="inFlight"
-      :grenades="grenades"
-      :smoke-volumes="smokeVolumes"
-      :tick="tick"
-      :tick-rate="TICK_RATE"
-      :ceiling="ceiling"
-      :auto-ceiling-z="autoCeilingZ"
-      cam-mode="orbit"
-      :frame="cameraFrame"
-      @mesh="(kind) => (meshKind = kind)"
-      @framed="emit('framed')"
-    />
+    <ReplayStageUnavailable v-else :reason="stageUnavailable" />
 
     <slot />
   </div>

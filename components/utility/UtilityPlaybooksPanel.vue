@@ -34,6 +34,7 @@ import {
   stepOutOf,
 } from "~/composables/useBackDismiss";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
+import { usePlaybackClock } from "~/composables/usePlaybackClock";
 import { useRouteTab } from "~/composables/useRouteTab";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
@@ -512,12 +513,18 @@ watch(
  * timeline and the grenades in the air are one run. In the scene it plays
  * like a video: it pauses, scrubs, and stops on its last moment.
  */
-const clock = ref<number | null>(null);
-// The `performance.now()` the run would have started at to be where it is,
-// while it runs; null while it is paused. The clock moves in tenths; the
-// scene reads the same run off this between its ticks.
-const startedAt = ref<number | null>(null);
-let timer: ReturnType<typeof setInterval> | null = null;
+const run = usePlaybackClock({
+  length: () => runLength.value,
+  // The scene stops on its last moment, where the bar can take it back; on
+  // the flat board the run is over.
+  onEnd: () => {
+    if (!scene.value) {
+      stopClock();
+    }
+  },
+});
+// Seconds on the clock, in tenths while it runs; null before it is played.
+const clock = run.tenths;
 
 // The scene is asked for the first time Play is pressed and stays up after,
 // showing the run it last played. Its camera has to arrive before anything is
@@ -527,7 +534,7 @@ const awaitingScene = ref(false);
 let sceneFramed = false;
 
 const playing = computed(() => clock.value !== null || awaitingScene.value);
-const running = computed(() => startedAt.value !== null || awaitingScene.value);
+const running = computed(() => run.running.value || awaitingScene.value);
 
 // In the scene a run lasts until the last grenade is down. On the flat board
 // nothing flies, so it ends with the last throw.
@@ -547,72 +554,32 @@ const runEnd = computed(() => {
 // enough for the last cloud to be up.
 const runLength = computed(() => runEnd.value + (scene.value ? 2 : 1));
 
-function stopTimer() {
-  if (timer) {
-    clearInterval(timer);
-    timer = null;
-  }
-}
-
 function stopClock() {
-  stopTimer();
   awaitingScene.value = false;
-  clock.value = null;
-  startedAt.value = null;
+  run.stop();
 }
 
 function pauseClock() {
-  stopTimer();
   awaitingScene.value = false;
-  if (startedAt.value !== null) {
-    clock.value = Math.min(
-      runLength.value,
-      (performance.now() - startedAt.value) / 1000,
-    );
-  }
-  startedAt.value = null;
-}
-
-function startClock(from = 0) {
-  stopTimer();
-  startedAt.value = performance.now() - from * 1000;
-  clock.value = from;
-  timer = setInterval(() => {
-    const now = (performance.now() - startedAt.value!) / 1000;
-    if (now < runLength.value) {
-      clock.value = Math.round(now * 10) / 10;
-      return;
-    }
-    // The scene stops on its last moment, where the bar can take it back;
-    // on the flat board the run is over.
-    if (scene.value) {
-      pauseClock();
-      clock.value = runLength.value;
-    } else {
-      stopClock();
-    }
-  }, 100);
+  run.pause();
 }
 
 // The play bar's button: pause a run, carry on from where it stopped, or
 // start again once it has finished.
 function toggle() {
+  const at = run.position.value;
   if (running.value) {
     pauseClock();
-  } else if (clock.value === null || clock.value >= runLength.value) {
+  } else if (at === null || at >= runLength.value) {
     play();
   } else {
-    startClock(clock.value);
+    run.play(at);
   }
 }
 
 function seek(seconds: number) {
-  const at = Math.min(runLength.value, Math.max(0, seconds));
   awaitingScene.value = false;
-  clock.value = at;
-  if (startedAt.value !== null) {
-    startedAt.value = performance.now() - at * 1000;
-  }
+  run.seek(seconds);
 }
 
 function play() {
@@ -620,12 +587,12 @@ function play() {
   mine.value = false;
   confirming.value = false;
   if (!hasMesh.value) {
-    startClock();
+    run.play();
     return;
   }
   scene.value = true;
   if (sceneFramed) {
-    startClock();
+    run.play();
     return;
   }
   awaitingScene.value = true;
@@ -637,7 +604,7 @@ function onSceneFramed() {
   sceneFramed = true;
   if (awaitingScene.value) {
     awaitingScene.value = false;
-    startClock();
+    run.play();
   }
 }
 
@@ -1288,10 +1255,8 @@ async function destroy() {
         :beats="beats"
         :owner="ownerName"
         :team="teamName"
-        :clock="clock"
-        :started-at="startedAt"
+        :run="run"
         :running="running"
-        :length="runLength"
         :scene="scene"
         :hovered-lineup-id="hoveredLineupId"
         :lineups-loading="lineupsLoading"

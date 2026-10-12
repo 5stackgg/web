@@ -1,5 +1,10 @@
 import { computed, onMounted, ref, unref, watch, type Ref } from "vue";
-import { radarImageUrl } from "~/utilities/mapAssets";
+import {
+  loadRadarCalibrations,
+  loadedRadarCalibrations,
+  normalizeMapName,
+  radarImageUrl,
+} from "~/utilities/mapAssets";
 
 export type MapSplit = {
   bounds: { top: number; bottom: number };
@@ -24,13 +29,6 @@ export type RadarPoint = { x: number; y: number; z?: number };
 
 export const RADAR_CANVAS = 1024;
 export const RADAR_PX = 1024;
-
-export function normalizeRadarMapName(name: string | null | undefined): string {
-  return (name || "")
-    .trim()
-    .toLowerCase()
-    .replace(/_night$/, "");
-}
 
 // Nuke and Vertigo stack two playable levels on one radar image. When a point's
 // Z falls inside a split's bounds the whole point shifts by a percentage of the
@@ -161,52 +159,6 @@ export function unprojectWithCalibration(
   return { x: gameX - offset.x, y: gameY - offset.y, z };
 }
 
-let sharedCalibrations: Record<string, RadarMeta> | null = null;
-let sharedLoad: Promise<Record<string, RadarMeta> | null> | null = null;
-
-// One fetch per page load, shared by every caller. The 2D viewer, the analysis
-// board and the utility library all mount against the same file.
-export function loadRadarCalibrations(): Promise<Record<
-  string,
-  RadarMeta
-> | null> {
-  if (sharedCalibrations) {
-    return Promise.resolve(sharedCalibrations);
-  }
-  if (sharedLoad) {
-    return sharedLoad;
-  }
-
-  const load = (async () => {
-    try {
-      const res = await fetch("/radars/metadata.json");
-      if (!res.ok) {
-        return null;
-      }
-      const data = await res.json();
-      const { _comment, ...rest } = data;
-      sharedCalibrations = rest as Record<string, RadarMeta>;
-      return sharedCalibrations;
-    } catch {
-      return null;
-    }
-  })();
-
-  sharedLoad = load;
-
-  // A failure must not be memoised. This promise is what every later caller --
-  // the replay viewer, the analysis board, every utility panel -- gets back, so
-  // holding a resolved null here would leave the whole page with no calibration
-  // over one blip. Dropped instead, and the next caller re-fetches.
-  void load.then((result) => {
-    if (!result && sharedLoad === load) {
-      sharedLoad = null;
-    }
-  });
-
-  return load;
-}
-
 export function useRadarProjection(
   mapName: Ref<string | null | undefined> | (() => string | null | undefined),
   options: {
@@ -220,7 +172,7 @@ export function useRadarProjection(
   // Already read once this session: start with it, so a radar is on the first
   // frame instead of one tick behind it.
   const calibrations = ref<Record<string, RadarMeta> | null>(
-    sharedCalibrations,
+    loadedRadarCalibrations(),
   );
 
   // As played: a `_night` map shares its day map's calibration but has its
@@ -229,7 +181,7 @@ export function useRadarProjection(
     () => (typeof mapName === "function" ? mapName() : unref(mapName)) || "",
   );
 
-  const normalizedMap = computed(() => normalizeRadarMapName(playedMap.value));
+  const normalizedMap = computed(() => normalizeMapName(playedMap.value));
 
   const mapCalibration = computed<RadarMeta | null>(() => {
     if (!calibrations.value || !normalizedMap.value) {

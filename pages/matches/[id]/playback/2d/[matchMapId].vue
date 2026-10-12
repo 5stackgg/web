@@ -10,18 +10,15 @@ import { useReplayNoZoom } from "~/composables/useReplayNoZoom";
 useReplayNoZoom();
 
 // Chromeless single-purpose route — opened via window.open() from the
-// ReplayViewer's pop-out button. We render only the replay viewer so
-// the user can drag the OS window anywhere (second monitor, snapped
-// half-screen, etc.) and we don't waste pixels on the app shell.
+// match page's map card. We render only the replay viewer so the user can
+// drag the OS window anywhere (second monitor, snapped half-screen, etc.)
+// and we don't waste pixels on the app shell.
 //
 // The default layout supplies the global TooltipProvider; we skip the
 // layout here, so we have to wrap our own — Tooltips inside the
 // replay viewer rely on the radix-vue context to mount.
 //
-// ssr: false because the opener-handoff trick (window.opener.__replayHandoff)
-// is browser-only — under SSR the page can't see the parent window and
-// falls back to a fresh GraphQL + blob fetch, defeating the whole
-// point of the popout reusing already-loaded data.
+// ssr: false because the three.js scene is browser-only.
 // A shared moment rides in the hash (`#r=..&t=..`); it is not an element to
 // scroll to, and the page does not scroll.
 definePageMeta({ layout: false, ssr: false, scrollToTop: false });

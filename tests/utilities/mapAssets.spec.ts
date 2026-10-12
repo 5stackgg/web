@@ -1,5 +1,4 @@
 // @vitest-environment node
-import { gzipSync } from "node:zlib";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 type MapAssets = typeof import("~/utilities/mapAssets");
@@ -206,13 +205,15 @@ describe("parseViewMesh", () => {
 
   it("decodes the surface and outside bits", () => {
     const [world] = assets.parseViewMesh(buildViewBin([WORLD])).chunks;
-    const surface = (i: number) => world.flags[i] & assets.VIEW_SURFACE_MASK;
+    const surface = (i: number) => world.flags[i] & 0b11;
+    const [solid, foliage, seeThrough] = [0, 1, 2];
+    const outside = 0b100;
 
-    expect(surface(0)).toBe(assets.VIEW_SURFACE_SOLID);
-    expect(surface(1)).toBe(assets.VIEW_SURFACE_FOLIAGE);
-    expect(surface(2)).toBe(assets.VIEW_SURFACE_SEE_THROUGH);
-    expect(world.flags[2] & assets.VIEW_FLAG_OUTSIDE).toBeTruthy();
-    expect(world.flags[0] & assets.VIEW_FLAG_OUTSIDE).toBeFalsy();
+    expect(surface(0)).toBe(solid);
+    expect(surface(1)).toBe(foliage);
+    expect(surface(2)).toBe(seeThrough);
+    expect(world.flags[2] & outside).toBeTruthy();
+    expect(world.flags[0] & outside).toBeFalsy();
   });
 
   it("uses the whole 16 bytes for a name with no terminator", () => {
@@ -416,8 +417,7 @@ describe("resolveMapAssets", () => {
       view: null,
       listed: ["tri", "callouts"],
     });
-    expect(await assets.fetchViewMesh("de_inferno")).toBeNull();
-    expect(await assets.hasMeshForMap("", "de_inferno")).toBe(true);
+    expect(await assets.hasMeshForMap("", "de_inferno")).toBe(false);
   });
 
   it("sends a map that failed outright to the pinned build", async () => {
@@ -483,7 +483,6 @@ describe("resolveMapAssets", () => {
         ...PUBLISHED,
         [`${ROOT}/25537370/manifest.json`]: () =>
           json({ ...MANIFEST, version: 2 }),
-        [`${ROOT}/24957633/de_mirage.tri.gz`]: () => new Response(null),
       }),
     );
 
@@ -491,7 +490,7 @@ describe("resolveMapAssets", () => {
       source: "legacy",
       tri: `${ROOT}/24957633/de_mirage.tri.gz`,
     });
-    expect(await assets.hasMeshForMap("", "de_mirage")).toBe(true);
+    expect(await assets.hasMeshForMap("", "de_mirage")).toBe(false);
     expect(await assets.mapAssetsRevision()).toBe("legacy:24957633");
   });
 
@@ -526,36 +525,7 @@ describe("resolveMapAssets", () => {
   });
 });
 
-describe("fetchViewMesh", () => {
-  it("downloads, gunzips and parses the manifest's view mesh", async () => {
-    const gz = gzipSync(new Uint8Array(buildViewBin([WORLD, ROOM])));
-    vi.stubGlobal(
-      "fetch",
-      routes({
-        ...PUBLISHED,
-        [`${ROOT}/24957633/de_mirage.view.bin.gz`]: () => new Response(gz),
-      }),
-    );
-
-    const mesh = await assets.fetchViewMesh("de_mirage");
-
-    expect(mesh?.chunks.map((chunk) => chunk.indices.length)).toEqual([3, 9]);
-  });
-
-  it("is null when no view mesh is published", async () => {
-    vi.stubGlobal("fetch", routes(PUBLISHED));
-
-    expect(await assets.fetchViewMesh("de_dust2")).toBeNull();
-  });
-
-  it("throws on a missing file so the viewer can drop to the .tri", async () => {
-    vi.stubGlobal("fetch", routes({}));
-
-    await expect(
-      assets.fetchViewMesh("de_mirage", "https://cdn.example/maps/1"),
-    ).rejects.toThrow("404");
-  });
-
+describe("fetchMeshBuffer", () => {
   it("stops the download when its signal aborts", async () => {
     const fetchMock = vi.fn(
       (_input: RequestInfo | URL, init?: RequestInit) =>
@@ -568,7 +538,7 @@ describe("fetchViewMesh", () => {
     vi.stubGlobal("fetch", fetchMock);
     const controller = new AbortController();
 
-    const pending = assets.fetchViewMeshUrl(
+    const pending = assets.fetchMeshBuffer(
       `${ROOT}/25537370/de_nuke.view.bin.gz`,
       controller.signal,
     );
@@ -602,29 +572,21 @@ describe("hasMeshForMap", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it("probes the pinned .tri for an entry that lists no mesh", async () => {
-    const fetchMock = routes(PUBLISHED);
-    vi.stubGlobal("fetch", fetchMock);
-
-    expect(await assets.hasMeshForMap("", "de_evil")).toBe(false);
-    expect(fetchMock.mock.calls.map(([url]) => String(url))).toContain(
-      `${ROOT}/24957633/de_evil.tri.gz`,
-    );
-  });
-
-  it("probes the pinned build for maps outside the manifest", async () => {
+  it("needs a view mesh: a .tri alone is not enough for the stage", async () => {
     const fetchMock = routes({
       ...PUBLISHED,
       [`${ROOT}/24957633/de_train.tri.gz`]: () => new Response(null),
     });
     vi.stubGlobal("fetch", fetchMock);
 
-    expect(await assets.hasMeshForMap("", "de_train")).toBe(true);
-    expect(await assets.hasMeshForMap("", "de_nowhere")).toBe(false);
-    expect(storage.get(`mesh-asset:v1:${ROOT}/24957633:de_train`)).toBe("1");
+    expect(await assets.hasMeshForMap("", "de_evil")).toBe(false);
+    expect(await assets.hasMeshForMap("", "de_train")).toBe(false);
+    expect(
+      fetchMock.mock.calls.filter(([, init]) => init?.method === "HEAD"),
+    ).toEqual([]);
   });
 
-  it("counts a view mesh under the override when the .tri is missing", async () => {
+  it("probes the override for a view mesh and remembers the answer", async () => {
     vi.stubGlobal(
       "fetch",
       routes({
@@ -636,6 +598,15 @@ describe("hasMeshForMap", () => {
     expect(
       await assets.hasMeshForMap("https://cdn.example/maps/1", "de_mirage"),
     ).toBe(true);
+    expect(
+      await assets.hasMeshForMap("https://cdn.example/maps/1", "de_nuke"),
+    ).toBe(false);
+    expect(
+      storage.get("mesh-asset:v2:https://cdn.example/maps/1:de_mirage"),
+    ).toBe("1");
+    expect(storage.get("mesh-asset:v2:https://cdn.example/maps/1:de_nuke")).toBe(
+      "0",
+    );
   });
 });
 
@@ -709,171 +680,6 @@ describe("mapAssetAvailability", () => {
   });
 });
 
-describe("replaySceneKey", () => {
-  const mounts = (
-    steps: Array<[string, boolean | null, string | null]>,
-  ): string[] => {
-    const keys: string[] = [];
-    for (const [map, available, radar] of steps) {
-      const key = assets.replaySceneKey(map, available, radar);
-      if (key !== null && keys[keys.length - 1] !== key) {
-        keys.push(key);
-      }
-    }
-    return keys;
-  };
-
-  it("does not mount until mesh availability is known", () => {
-    expect(assets.replaySceneKey("rush_001", null, "/radars/a.png")).toBeNull();
-    expect(assets.replaySceneKey("", true, "/radars/a.png")).toBeNull();
-  });
-
-  it("mounts a Rush map with a mesh once, whatever room the radar follows", () => {
-    expect(
-      mounts([
-        ["rush_001", null, "/radars/rush_001.png"],
-        ["rush_001", null, "/radars/rush_001_room101.png"],
-        ["rush_001", true, "/radars/rush_001_room101.png"],
-        ["rush_001", true, "/radars/rush_001_room204.png"],
-        ["rush_001", true, "/radars/rush_001_convoy.png"],
-      ]),
-    ).toEqual(["map:rush_001"]);
-  });
-
-  it("rebuilds the radar plane per room when there is no mesh", () => {
-    expect(
-      mounts([
-        ["rush_001", null, "/radars/rush_001_room101.png"],
-        ["rush_001", false, "/radars/rush_001_room101.png"],
-        ["rush_001", false, "/radars/rush_001_room204.png"],
-      ]),
-    ).toEqual([
-      "radar:/radars/rush_001_room101.png",
-      "radar:/radars/rush_001_room204.png",
-    ]);
-  });
-
-  it("mounts again only when the map itself changes", () => {
-    expect(
-      mounts([
-        ["de_mirage", true, "/radars/de_mirage.png"],
-        ["de_nuke", null, "/radars/de_nuke.png"],
-        ["de_nuke", true, "/radars/de_nuke.png"],
-      ]),
-    ).toEqual(["map:de_mirage", "map:de_nuke"]);
-  });
-});
-
-function quad(
-  x0: number,
-  y0: number,
-  x1: number,
-  y1: number,
-  z: number,
-  floor: number,
-  flag = 0,
-): ChunkSpec {
-  return {
-    name: "world",
-    positions: [x0, y0, z, x1, y0, z, x1, y1, z, x0, y1, z],
-    floorZ: [floor, floor, floor, floor],
-    flags: [flag, flag, flag, flag],
-    indices: [0, 1, 2, 0, 2, 3],
-  };
-}
-
-function merge(parts: ChunkSpec[]): ChunkSpec {
-  const out: ChunkSpec = {
-    name: "world",
-    positions: [],
-    floorZ: [],
-    flags: [],
-    indices: [],
-  };
-  for (const part of parts) {
-    const base = out.floorZ.length;
-    out.positions.push(...part.positions);
-    out.floorZ.push(...part.floorZ);
-    out.flags.push(...part.flags);
-    out.indices.push(...part.indices.map((i) => i + base));
-  }
-  return out;
-}
-
-describe("buildFloorGrid", () => {
-  const lower = quad(0, 0, 256, 256, 0, 0);
-  const upper = quad(128, 0, 512, 256, 200, 200);
-  const wall = {
-    name: "world",
-    positions: [0, 256, 0, 512, 256, 0, 512, 256, 300],
-    floorZ: [0, 0, 0],
-    flags: [0, 0, 0],
-    indices: [0, 1, 2],
-  };
-  const roof = quad(640, 0, 768, 128, 150, 0);
-  const outside = quad(0, 512, 256, 768, -40, -40, 0b100);
-  const floorless = quad(512, 512, 768, 768, 0, NaN);
-  const grid = (parts: ChunkSpec[]) =>
-    assets.buildFloorGrid(assets.parseViewMesh(buildViewBin([merge(parts)])));
-  const at = (g: ReturnType<typeof grid>, x: number, y: number) =>
-    g.lowest[
-      Math.floor((y - g.minY) / g.cell) * g.width +
-        Math.floor((x - g.minX) / g.cell)
-    ];
-
-  it("keeps the lowest walkable floor over each cell", () => {
-    const g = grid([lower, upper, wall, roof, outside, floorless]);
-
-    expect(g.cell).toBe(assets.FLOOR_GRID_CELL);
-    expect(at(g, 64, 64)).toBe(0);
-    expect(at(g, 200, 64)).toBe(0);
-    expect(at(g, 400, 64)).toBe(200);
-  });
-
-  it("ignores walls, roofs, outside-only and floorless surfaces", () => {
-    const g = grid([lower, upper, wall, roof, outside, floorless]);
-
-    expect(at(g, 400, 300)).toBe(g.empty);
-    expect(at(g, 700, 64)).toBe(g.empty);
-    expect(at(g, 100, 600)).toBe(g.empty);
-    expect(at(g, 600, 600)).toBe(g.empty);
-  });
-
-  it("widens its cells to stay within the texture budget", () => {
-    const g = grid([quad(-40000, -40000, 40000, 40000, 0, 0)]);
-
-    expect(g.width).toBeLessThanOrEqual(1025);
-    expect(g.height).toBeLessThanOrEqual(1025);
-    expect(at(g, 0, 0)).toBe(0);
-  });
-});
-
-describe("viewCutHeight", () => {
-  it("maps the slider onto a height above the local floor", () => {
-    expect(assets.viewCutHeight(0)).toBe(assets.VIEW_CUT_FLOOR);
-    expect(assets.viewCutHeight(50)).toBe(assets.VIEW_CUT_DEFAULT);
-    expect(assets.viewCutHeight(99)).toBeCloseTo(assets.VIEW_CUT_TALL);
-    expect(assets.viewCutHeight(100)).toBe(assets.VIEW_CUT_NONE);
-  });
-
-  it("clears a standing player at the default and rises steadily", () => {
-    expect(assets.viewCutHeight(50)).toBeGreaterThan(72);
-    expect(assets.viewCutHeight(50)).toBeLessThan(128);
-    let previous = -Infinity;
-    for (let v = 0; v <= 100; v++) {
-      const height = assets.viewCutHeight(v);
-      expect(height).toBeGreaterThan(previous);
-      previous = height;
-    }
-  });
-
-  it("clamps out-of-range input", () => {
-    expect(assets.viewCutHeight(-20)).toBe(assets.VIEW_CUT_FLOOR);
-    expect(assets.viewCutHeight(250)).toBe(assets.VIEW_CUT_NONE);
-    expect(assets.viewCutHeight(Number.NaN)).toBe(assets.VIEW_CUT_DEFAULT);
-  });
-});
-
 describe("radarImageUrl", () => {
   let radar: MapAssets;
 
@@ -907,12 +713,12 @@ describe("radarImageUrl", () => {
   });
 
   it("falls back to the generic radar where there is no bake", () => {
-    expect(radar.radarImageUrl("de_cache")).toBe("/radars/de_cache.png");
-    expect(radar.radarImageUrl("de_cache", null, { retina: true })).toBe(
-      "/radars/de_cache.png",
+    expect(radar.radarImageUrl("cs_italy")).toBe("/radars/cs_italy.png");
+    expect(radar.radarImageUrl("cs_italy", null, { retina: true })).toBe(
+      "/radars/cs_italy.png",
     );
-    expect(radar.radarImageUrl("de_inferno_night")).toBe(
-      "/radars/de_inferno.png",
+    expect(radar.radarImageUrl("cs_italy_night")).toBe(
+      "/radars/cs_italy.png",
     );
   });
 
@@ -942,8 +748,8 @@ describe("radarImageUrl", () => {
         radar.radarImageUrl("de_mirage", null, { retina: true }),
       ),
     ).toBe(key);
-    expect(radar.radarImageKey("/radars/de_cache.png")).toBe(
-      "/radars/de_cache.png",
+    expect(radar.radarImageKey("/radars/rush_001_room204.png")).toBe(
+      "/radars/rush_001_room204.png",
     );
     expect(radar.radarImageKey(null)).toBeNull();
   });

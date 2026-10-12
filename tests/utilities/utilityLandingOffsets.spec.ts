@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   UTILITY_EXECUTE_FOLLOW_UP_SECONDS,
-  UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS,
   executeFlightSeconds,
-  utilityLandTogether,
+  utilityLandingOffsets,
 } from "~/utilities/utilityDisplay";
 
 const lineup = (id: string, utility_type: string, flight_time_ms: number) => ({
@@ -16,7 +15,7 @@ const lineup = (id: string, utility_type: string, flight_time_ms: number) => ({
 function landings(
   steps: Array<{ lineup: ReturnType<typeof lineup> | null }>,
 ) {
-  return utilityLandTogether(steps).map((seconds, index) =>
+  return utilityLandingOffsets(steps).map((seconds, index) =>
     seconds === null || !steps[index].lineup
       ? null
       : Math.round(
@@ -25,18 +24,13 @@ function landings(
   );
 }
 
-describe("utilityLandTogether", () => {
-  it("lands every smoke on one moment and starts the clock on the first throw", () => {
-    const steps = [
+describe("utilityLandingOffsets", () => {
+  it("lands every smoke on one moment", () => {
+    const landed = landings([
       { lineup: lineup("a", "Smoke", 2400) },
       { lineup: lineup("b", "Smoke", 4100) },
       { lineup: lineup("c", "Smoke", 1300) },
-    ];
-    const times = utilityLandTogether(steps);
-    expect(Math.min(...(times as number[]))).toBe(
-      UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS,
-    );
-    const landed = landings(steps);
+    ]);
     expect(new Set(landed).size).toBe(1);
   });
 
@@ -68,11 +62,11 @@ describe("utilityLandTogether", () => {
   });
 
   it("leaves a step it has no flight for", () => {
-    const times = utilityLandTogether([
+    const offsets = utilityLandingOffsets([
       { lineup: null },
       { lineup: lineup("a", "Smoke", 2000) },
     ]);
-    expect(times[0]).toBeNull();
-    expect(times[1]).toBe(UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS);
+    expect(offsets[0]).toBeNull();
+    expect(offsets[1]).toBe(-2);
   });
 });

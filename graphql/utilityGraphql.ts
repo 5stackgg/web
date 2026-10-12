@@ -103,7 +103,6 @@ export const utilityLineupListFields = {
 export const utilityLineupFields = {
   ...utilityLineupListFields,
   description: true,
-  trajectory_size: true,
   updated_at: true,
   public_reviewed_at: true,
   public_review_note: true,
@@ -214,23 +213,7 @@ export const utilityLineupsCountQuery = generateQuery({
 // are still right in shape, and the list itself is the place to page.
 export const UTILITY_LANDINGS_LIMIT = 3000;
 
-export const utilityLineupLandingsQuery = generateQuery({
-  utility_lineups: [
-    {
-      where: $("where", "utility_lineups_bool_exp!"),
-      limit: $("limit", "Int!"),
-    },
-    {
-      id: true,
-      utility_type: true,
-      land_x: true,
-      land_y: true,
-      land_z: true,
-    },
-  ],
-});
-
-// The same rows, live, plus the columns that change when a lineup is saved,
+// Those landings, live, plus the columns that change when a lineup is saved,
 // published, archived, renamed or rendered. The page watches this to keep the
 // spots current and to know when the list on screen has gone stale -- a lineup
 // saved from a practice server, a review approved, an archive undone from its
@@ -887,15 +870,6 @@ export const utilityPlaybooksQuery = generateQuery({
   ],
 });
 
-export const utilityPlaybookQuery = generateQuery({
-  utility_playbooks_by_pk: [
-    {
-      id: $("id", "uuid!"),
-    },
-    utilityPlaybookFields,
-  ],
-});
-
 // One call for every listed playbook's steps, keyed back by playbook_id.
 export const utilityPlaybookStepsQuery = generateQuery({
   utility_playbook_steps: [
@@ -987,22 +961,6 @@ export const syncMapCalloutsMutation = generateMutation({
     {
       maps: true,
       callouts: true,
-    },
-  ],
-});
-
-// How precise the throw has to be before its in-game marker turns green. Set
-// after the fact rather than at .save: the plugin records a throw, it cannot
-// know whether landing it depends on the exact pixel or roughly the right wall.
-export const setUtilityLineupPrecisionMutation = generateMutation({
-  update_utility_lineups_by_pk: [
-    {
-      pk_columns: { id: $("id", "uuid!") },
-      _set: { aim_tolerance: $("aim_tolerance", "float8") },
-    },
-    {
-      id: true,
-      aim_tolerance: true,
     },
   ],
 });
@@ -1154,61 +1112,6 @@ export const teamRosterQuery = generateQuery({
 });
 
 /**
- * The three analysis actions are read-only and are asked for as queries; the
- * two that make the server go and do something are mutations. If an action
- * turns out to be tracked the other way round, the fix is the generate* call
- * here plus the matching client.query/client.mutate at the call site.
- */
-export const checkUtilitySightlinesQuery = generateQuery({
-  checkUtilitySightlines: [
-    {
-      lineup_id: $("lineup_id", "uuid!"),
-      pairs: $("pairs", "[UtilitySightlinePairInput!]!"),
-      // Omitted rather than guessed: the server's own default comes back on
-      // the response, which is what the UI shows.
-      threshold: $("threshold", "Float"),
-    },
-    {
-      threshold: true,
-      // `degraded` is the difference between "nothing blocks this" and "we
-      // could not check". Never selected optionally — an empty `results` is
-      // unreadable without it.
-      degraded: true,
-      message: true,
-      results: {
-        index: true,
-        blocked: true,
-        blocked_by: true,
-        depth: true,
-        transmittance: true,
-        world_blocked: true,
-      },
-    },
-  ],
-});
-
-export const checkUtilityOneWayQuery = generateQuery({
-  checkUtilityOneWay: [
-    {
-      lineup_id: $("lineup_id", "uuid!"),
-      pairs: $("pairs", "[UtilitySightlinePairInput!]!"),
-    },
-    {
-      degraded: true,
-      message: true,
-      results: {
-        index: true,
-        one_way: true,
-        favors: true,
-        cause: true,
-        confidence: true,
-        contested: true,
-      },
-    },
-  ],
-});
-
-/**
  * The same pair input as the sightline check, asked of a whole execute instead
  * of one lineup. `covered` is only ever read next to `degraded` — see
  * readUtilityPlaybookCoverage in utilities/utilityDisplay.ts, which is the only place
@@ -1269,33 +1172,6 @@ export const utilitySolverCalibrationQuery = generateQuery({
       status: true,
       ready: true,
       detail: true,
-    },
-  ],
-});
-
-/**
- * Returns as soon as the job is taken: `accepted` is not a solved lineup. The
- * lineup itself shows up in the library through normal ingest up to two
- * minutes later, so every caller has to watch for it rather than await this.
- */
-export const solveUtilityLineupMutation = generateMutation({
-  solveUtilityLineup: [
-    {
-      session_id: $("session_id", "uuid!"),
-      target_x: $("target_x", "Float!"),
-      target_y: $("target_y", "Float!"),
-      target_z: $("target_z", "Float!"),
-      from_x: $("from_x", "Float"),
-      from_y: $("from_y", "Float"),
-      from_z: $("from_z", "Float"),
-      utility_type: $("utility_type", "String"),
-      name: $("name", "String"),
-      tolerance: $("tolerance", "Float"),
-    },
-    {
-      accepted: true,
-      status: true,
-      message: true,
     },
   ],
 });

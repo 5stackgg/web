@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Pause, Play, RotateCcw } from "lucide-vue-next";
+import type { PlaybackClock } from "~/composables/usePlaybackClock";
 
 /**
  * The execute's play bar, under the scene like a video's: play and pause, the
- * time, and a track to scrub with a tick where each step is thrown. The clock
- * is the panel's; this only asks it to move.
+ * time, and a track to scrub with a tick where each step is thrown. The run is
+ * its owner's; this reads it every frame, so it glides, and only asks it to
+ * move.
  */
 const props = defineProps<{
-  /** Seconds into the run, or null before it has been played. */
-  position: number | null;
-  /**
-   * The `performance.now()` the run started at while it runs. The clock moves
-   * in tenths; the bar reads the run off this every frame so it glides.
-   */
-  startedAt: number | null;
-  /** Seconds the run lasts, the last grenade down and its cloud up. */
-  length: number;
+  /** The run, the last grenade down and its cloud up. */
+  run: PlaybackClock;
+  /** Playing, as the owner counts it: a run waiting on its camera is. */
   running: boolean;
   beats: { key: string; seconds: number; color: string }[];
   /** What the track is called; an execute's timeline unless said. */
@@ -28,40 +24,7 @@ const emit = defineEmits<{
   (e: "seek", seconds: number): void;
 }>();
 
-const live = ref<number | null>(null);
-let frame: number | null = null;
-
-function tick(now: number) {
-  if (props.startedAt === null) {
-    frame = null;
-    live.value = null;
-    return;
-  }
-  live.value = (now - props.startedAt) / 1000;
-  frame = requestAnimationFrame(tick);
-}
-
-watch(
-  () => props.startedAt,
-  (startedAt) => {
-    if (startedAt === null) {
-      if (frame !== null) {
-        cancelAnimationFrame(frame);
-        frame = null;
-      }
-      live.value = null;
-    } else if (frame === null) {
-      frame = requestAnimationFrame(tick);
-    }
-  },
-  { immediate: true },
-);
-
-onBeforeUnmount(() => {
-  if (frame !== null) {
-    cancelAnimationFrame(frame);
-  }
-});
+const length = computed(() => props.run.length.value);
 
 // Under the pointer while it drags, so the thumb stays in the hand rather
 // than running on ahead of it.
@@ -69,17 +32,20 @@ const dragAt = ref<number | null>(null);
 
 const at = computed(() =>
   Math.min(
-    props.length,
-    Math.max(0, dragAt.value ?? live.value ?? props.position ?? 0),
+    length.value,
+    Math.max(0, dragAt.value ?? props.run.position.value ?? 0),
   ),
 );
 const ended = computed(
-  () => !props.running && props.position !== null && at.value >= props.length,
+  () =>
+    !props.running &&
+    props.run.position.value !== null &&
+    at.value >= length.value,
 );
 
 function share(seconds: number) {
-  return props.length > 0
-    ? (Math.min(Math.max(0, seconds), props.length) / props.length) * 100
+  return length.value > 0
+    ? (Math.min(Math.max(0, seconds), length.value) / length.value) * 100
     : 0;
 }
 
@@ -91,7 +57,7 @@ function seekAt(event: PointerEvent) {
     return;
   }
   const k = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
-  dragAt.value = k * props.length;
+  dragAt.value = k * length.value;
   emit("seek", dragAt.value);
 }
 
@@ -124,7 +90,7 @@ function onKey(event: KeyboardEvent) {
         : event.key === "Home"
           ? 0
           : event.key === "End"
-            ? props.length
+            ? length.value
             : null;
   if (to === null) {
     return;
@@ -132,7 +98,7 @@ function onKey(event: KeyboardEvent) {
   // The stage's camera listens on the window: these keys are the bar's.
   event.preventDefault();
   event.stopPropagation();
-  emit("seek", Math.min(props.length, Math.max(0, to)));
+  emit("seek", Math.min(length.value, Math.max(0, to)));
 }
 </script>
 

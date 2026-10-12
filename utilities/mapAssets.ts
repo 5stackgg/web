@@ -3,40 +3,80 @@ import {
   BLAST_FILE_VERSIONS,
   PREP_VERSION,
 } from "~/utilities/replayStage/assetVersions";
+import type { RadarMeta } from "~/composables/useRadarProjection";
 
-export function normalizeMapName(name: string): string {
-  let n = (name || "").toLowerCase().trim();
-  const slash = n.lastIndexOf("/");
-  if (slash >= 0) {
-    n = n.slice(slash + 1);
-  }
-  return n.replace(/_night$/, "");
+// The map as played: lowercased, without any path in front of it.
+function playedMapName(name: string): string {
+  const played = (name || "").toLowerCase().trim();
+  return played.slice(played.lastIndexOf("/") + 1);
 }
 
-let radarSetPromise: Promise<Set<string>> | null = null;
+/** The map a name plays on: a `_night` variant is its day map. */
+export function normalizeMapName(name: string): string {
+  return playedMapName(name).replace(/_night$/, "");
+}
 
-export function loadRadarMaps(): Promise<Set<string>> {
-  if (!radarSetPromise) {
-    radarSetPromise = (async () => {
-      try {
-        const res = await fetch("/radars/metadata.json");
-        if (!res.ok) {
-          return new Set<string>();
-        }
-        const data = await res.json();
-        const set = new Set<string>();
-        for (const key of Object.keys(data)) {
-          if (!key.startsWith("_")) {
-            set.add(key.toLowerCase());
-          }
-        }
-        return set;
-      } catch {
-        return new Set<string>();
-      }
-    })();
+let radarCalibrations: Record<string, RadarMeta> | null = null;
+let radarCalibrationsLoad: Promise<Record<string, RadarMeta> | null> | null =
+  null;
+
+/** The radar calibrations, when they have already been read this session. */
+export function loadedRadarCalibrations() {
+  return radarCalibrations;
+}
+
+// One fetch of /radars/metadata.json per page load, shared by every caller:
+// the analysis board, the utility library and the map lists all read the same
+// file.
+export function loadRadarCalibrations(): Promise<Record<
+  string,
+  RadarMeta
+> | null> {
+  if (radarCalibrations) {
+    return Promise.resolve(radarCalibrations);
   }
-  return radarSetPromise;
+  if (radarCalibrationsLoad) {
+    return radarCalibrationsLoad;
+  }
+
+  const load = (async () => {
+    try {
+      const res = await fetch("/radars/metadata.json");
+      if (!res.ok) {
+        return null;
+      }
+      const data = await res.json();
+      const { _comment, ...rest } = data;
+      radarCalibrations = rest as Record<string, RadarMeta>;
+      return radarCalibrations;
+    } catch {
+      return null;
+    }
+  })();
+
+  radarCalibrationsLoad = load;
+
+  // A failure must not be memoised. This promise is what every later caller --
+  // the analysis board, every utility panel, every map list -- gets back, so
+  // holding a resolved null here would leave the whole page with no calibration
+  // over one blip. Dropped instead, and the next caller re-fetches.
+  void load.then((result) => {
+    if (!result && radarCalibrationsLoad === load) {
+      radarCalibrationsLoad = null;
+    }
+  });
+
+  return load;
+}
+
+/** The maps there is a radar calibration for. */
+export async function loadRadarMaps(): Promise<Set<string>> {
+  const calibrations = await loadRadarCalibrations();
+  return new Set(
+    Object.keys(calibrations ?? {})
+      .filter((key) => !key.startsWith("_"))
+      .map((key) => key.toLowerCase()),
+  );
 }
 
 export async function hasRadarForMap(mapName: string): Promise<boolean> {
@@ -60,12 +100,8 @@ export function radarImageUrl(
   volume?: string | null,
   options: { retina?: boolean } = {},
 ): string {
-  let played = (mapName || "").toLowerCase().trim();
-  const slash = played.lastIndexOf("/");
-  if (slash >= 0) {
-    played = played.slice(slash + 1);
-  }
-  const day = played.replace(/_night$/, "");
+  const played = playedMapName(mapName);
+  const day = normalizeMapName(mapName);
   const room = volume ? `_${volume}` : "";
   for (const name of [`${played}${room}`, `${day}${room}`]) {
     const hash = STAGE_RADARS[name];
@@ -426,13 +462,6 @@ export async function fetchMeshBuffer(
 
 export const VIEW_MESH_MAGIC = "5SVM";
 export const VIEW_MESH_VERSION = 1;
-// Same cap the viewer has always applied to the decompressed .tri.
-export const MAX_VIEW_MESH_BYTES = 96 * 1024 * 1024;
-export const VIEW_SURFACE_MASK = 0b11;
-export const VIEW_SURFACE_SOLID = 0;
-export const VIEW_SURFACE_FOLIAGE = 1;
-export const VIEW_SURFACE_SEE_THROUGH = 2;
-export const VIEW_FLAG_OUTSIDE = 0b100;
 
 const VIEW_HEADER_BYTES = 32;
 const VIEW_CHUNK_ENTRY_BYTES = 32;
@@ -532,164 +561,6 @@ export function parseViewMesh(buffer: ArrayBuffer): ViewMesh {
   return { version, bboxMin, bboxMax, chunks };
 }
 
-export async function fetchViewMeshUrl(
-  url: string,
-  signal?: AbortSignal,
-): Promise<ViewMesh> {
-  const buffer = await fetchMeshBuffer(url, signal);
-  if (buffer.byteLength > MAX_VIEW_MESH_BYTES) {
-    throw new Error("view mesh too large");
-  }
-  return parseViewMesh(buffer);
-}
-
-/** Resolves to null when no view mesh is published for the map. */
-export async function fetchViewMesh(
-  mapName: string,
-  cdn = "",
-  signal?: AbortSignal,
-): Promise<ViewMesh | null> {
-  const assets = await resolveMapAssets(mapName, cdn);
-  if (!assets?.view) {
-    return null;
-  }
-  return fetchViewMeshUrl(assets.view, signal);
-}
-
-export type FloorGrid = {
-  minX: number;
-  minY: number;
-  cell: number;
-  width: number;
-  height: number;
-  // Lowest walkable floor whose surface covers each cell's centre; `empty`
-  // where none does.
-  lowest: Float32Array;
-  empty: number;
-};
-
-export const FLOOR_GRID_CELL = 64;
-const FLOOR_GRID_MAX_CELLS = 1024;
-const FLOOR_SURFACE_TOLERANCE = 16;
-
-/**
- * Where walkable floor lies, per XY cell, so the viewer can tell an upper
- * storey (something walkable sits under it) from higher ground beside a
- * player (nothing does). A triangle counts as floor when every vertex sits on
- * its own floor; outside-only and floorless vertices never do. A cell only
- * takes a floor that covers its centre, so edges err toward "no floor".
- */
-export function buildFloorGrid(
-  view: ViewMesh,
-  empty = VIEW_CUT_NONE,
-): FloorGrid {
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
-  for (const { positions } of view.chunks) {
-    for (let i = 0; i < positions.length; i += 3) {
-      const x = positions[i];
-      const y = positions[i + 1];
-      if (x < minX) {
-        minX = x;
-      }
-      if (x > maxX) {
-        maxX = x;
-      }
-      if (y < minY) {
-        minY = y;
-      }
-      if (y > maxY) {
-        maxY = y;
-      }
-    }
-  }
-  if (!(maxX >= minX && maxY >= minY)) {
-    minX = minY = 0;
-    maxX = maxY = 0;
-  }
-  const span = Math.max(maxX - minX, maxY - minY);
-  const cell = Math.max(FLOOR_GRID_CELL, span / FLOOR_GRID_MAX_CELLS);
-  const width = Math.max(1, Math.ceil((maxX - minX) / cell) + 1);
-  const height = Math.max(1, Math.ceil((maxY - minY) / cell) + 1);
-  const lowest = new Float32Array(width * height).fill(empty);
-
-  for (const { positions: p, floorZ: f, flags, indices } of view.chunks) {
-    for (let t = 0; t < indices.length; t += 3) {
-      const a = indices[t];
-      const b = indices[t + 1];
-      const c = indices[t + 2];
-      const onFloor =
-        Math.abs(p[a * 3 + 2] - f[a]) <= FLOOR_SURFACE_TOLERANCE &&
-        Math.abs(p[b * 3 + 2] - f[b]) <= FLOOR_SURFACE_TOLERANCE &&
-        Math.abs(p[c * 3 + 2] - f[c]) <= FLOOR_SURFACE_TOLERANCE;
-      if (!onFloor || (flags[a] | flags[b] | flags[c]) & VIEW_FLAG_OUTSIDE) {
-        continue;
-      }
-      const ax = p[a * 3];
-      const ay = p[a * 3 + 1];
-      const bx = p[b * 3];
-      const by = p[b * 3 + 1];
-      const cx = p[c * 3];
-      const cy = p[c * 3 + 1];
-      if (Math.abs((bx - ax) * (cy - ay) - (by - ay) * (cx - ax)) < 1e-3) {
-        continue;
-      }
-      const floor = Math.min(f[a], f[b], f[c]);
-      const x0 = Math.max(0, Math.floor((Math.min(ax, bx, cx) - minX) / cell));
-      const x1 = Math.min(
-        width - 1,
-        Math.floor((Math.max(ax, bx, cx) - minX) / cell),
-      );
-      const y0 = Math.max(0, Math.floor((Math.min(ay, by, cy) - minY) / cell));
-      const y1 = Math.min(
-        height - 1,
-        Math.floor((Math.max(ay, by, cy) - minY) / cell),
-      );
-      for (let gy = y0; gy <= y1; gy++) {
-        const py = minY + (gy + 0.5) * cell;
-        for (let gx = x0; gx <= x1; gx++) {
-          const px = minX + (gx + 0.5) * cell;
-          const w0 = (bx - ax) * (py - ay) - (by - ay) * (px - ax);
-          const w1 = (cx - bx) * (py - by) - (cy - by) * (px - bx);
-          const w2 = (ax - cx) * (py - cy) - (ay - cy) * (px - cx);
-          const inside =
-            (w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0);
-          const at = gy * width + gx;
-          if (inside && floor < lowest[at]) {
-            lowest[at] = floor;
-          }
-        }
-      }
-    }
-  }
-  return { minX, minY, cell, width, height, lowest, empty };
-}
-
-// The ROOF slider (0..100) as a cut height above each vertex's own floor.
-// 0 is a floor plan, 50 clears a standing player's head (72u) but sits under
-// the usual 128u+ interior ceiling and just below a 112u doorway's lintel, so
-// doors read as gaps; above 50 walls grow geometrically, and 100 is no cut.
-export const VIEW_CUT_FLOOR = 24;
-export const VIEW_CUT_DEFAULT = 110;
-export const VIEW_CUT_TALL = 1024;
-export const VIEW_CUT_NONE = 1e9;
-
-export function viewCutHeight(slider: number): number {
-  const v = Math.max(0, Math.min(100, Number.isFinite(slider) ? slider : 50));
-  if (v >= 100) {
-    return VIEW_CUT_NONE;
-  }
-  if (v <= 50) {
-    return VIEW_CUT_FLOOR + ((VIEW_CUT_DEFAULT - VIEW_CUT_FLOOR) * v) / 50;
-  }
-  return (
-    VIEW_CUT_DEFAULT *
-    Math.pow(VIEW_CUT_TALL / VIEW_CUT_DEFAULT, (v - 50) / 49)
-  );
-}
-
 const PROBE_ATTEMPTS = 3;
 
 async function probeAsset(url: string): Promise<boolean | null> {
@@ -740,27 +611,13 @@ export async function mapAssetAvailability(
   return unknown ? null : false;
 }
 
-/**
- * The key Replay3DLite is mounted under, or null while it must not mount yet.
- * It builds its scene once, so it waits for mesh availability rather than
- * being keyed on the radar first and the map later (a Rush scene was built
- * twice that way). With a mesh the scene never reads the radar and lives for
- * the whole map; without one it draws the radar, which a Rush room swaps.
- */
-export function replaySceneKey(
-  mapName: string,
-  meshAvailable: boolean | null,
-  radarSrc: string | null,
-): string | null {
-  if (meshAvailable === null || !mapName) {
-    return null;
-  }
-  return meshAvailable ? `map:${mapName}` : `radar:${radarSrc ?? ""}`;
-}
-
 const meshMemo: Record<string, Promise<boolean>> = {};
 
-/** A map is viewable in 3D when it has a view mesh or a collision .tri. */
+/**
+ * A map can be shown on the replay stage when it has a view mesh: the stage
+ * draws from nothing else. Only the manifest lists one; under the override it
+ * is probed for, and the pinned pre-manifest build never had any.
+ */
 export function hasMeshForMap(cdn: string, mapName: string): Promise<boolean> {
   const norm = normalizeMapName(mapName);
   if (!norm) {
@@ -770,16 +627,13 @@ export function hasMeshForMap(cdn: string, mapName: string): Promise<boolean> {
   if (!meshMemo[memoKey]) {
     meshMemo[memoKey] = (async () => {
       const assets = await resolveMapAssets(norm, cdn);
-      if (!assets) {
+      if (!assets?.view) {
         return false;
       }
-      if (assets.listed.includes("view") || assets.listed.includes("tri")) {
+      if (assets.source !== "override") {
         return true;
       }
-      // Kept on the pre-manifest key so answers cached against the pinned
-      // build stay valid.
-      const base = assets.source === "override" ? cdn : LEGACY_BASE;
-      const cacheKey = `mesh-asset:v1:${base}:${norm}`;
+      const cacheKey = `mesh-asset:v2:${cdn}:${norm}`;
       try {
         const cached = localStorage.getItem(cacheKey);
         if (cached === "1") {
@@ -789,7 +643,7 @@ export function hasMeshForMap(cdn: string, mapName: string): Promise<boolean> {
           return false;
         }
       } catch {}
-      const result = await mapAssetAvailability(cdn, norm, ["tri", "view"]);
+      const result = await mapAssetAvailability(cdn, norm, ["view"]);
       if (result !== null) {
         try {
           localStorage.setItem(cacheKey, result ? "1" : "0");

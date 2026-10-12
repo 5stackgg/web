@@ -15,8 +15,19 @@ import {
   Undo2,
   Eye,
   PencilLine,
+  Trash2,
 } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateMutation } from "~/graphql/graphqlGen";
 import { newsPostAdminFields } from "~/graphql/newsGraphql";
@@ -51,7 +62,9 @@ const clearCover = async () => {
 };
 
 const canPostNews = computed(() => useApplicationSettingsStore().canPostNews);
+const newsLabel = computed(() => useApplicationSettingsStore().newsLabel);
 const saving = ref(false);
+const confirmingDelete = ref(false);
 const previewMode = ref(false);
 
 const fetchPost = async () => {
@@ -65,7 +78,7 @@ const fetchPost = async () => {
     });
     const post = (data as { newsPostAdmin: NewsPost | null }).newsPostAdmin;
     if (!post) {
-      return navigateTo("/news/manage");
+      return navigateTo("/news");
     }
     title.value = post.title;
     teaser.value = post.teaser ?? "";
@@ -151,7 +164,7 @@ const publish = async () => {
     }
     await setStatus(post.id, "published");
     toast({ title: useNuxtApp().$i18n.t("pages.news.manage.published_toast") });
-    navigateTo("/news/manage");
+    navigateTo(post.slug ? `/news/${post.slug}` : "/news");
   } finally {
     saving.value = false;
   }
@@ -173,6 +186,19 @@ const unpublish = async () => {
   } finally {
     saving.value = false;
   }
+};
+
+const deletePost = async () => {
+  if (!id.value) {
+    return;
+  }
+  await getGraphqlClient().mutate({
+    mutation: generateMutation({
+      deleteNewsPost: [{ id: id.value }, { success: true }],
+    }),
+  });
+  toast({ title: useNuxtApp().$i18n.t("pages.news.manage.deleted") });
+  navigateTo("/news");
 };
 
 // ⌘S / Ctrl+S saves without publishing, from anywhere on the page (the body
@@ -207,10 +233,10 @@ onBeforeUnmount(() => {
 <template>
   <PageTransition>
     <div class="flex items-center justify-between">
-      <NuxtLink to="/news/manage">
+      <NuxtLink to="/news">
         <Button variant="ghost" size="sm" class="gap-1">
           <ArrowLeft class="h-4 w-4" />
-          {{ $t("pages.news.manage.title") }}
+          {{ newsLabel || $t("pages.news.title") }}
         </Button>
       </NuxtLink>
       <div v-if="!loading" class="flex items-center gap-4">
@@ -262,10 +288,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template v-else>
-      <div
-        v-if="previewMode"
-        class="mx-auto w-full max-w-3xl rounded-lg border border-border/60 bg-card/40 p-6 sm:p-8"
-      >
+      <div v-if="previewMode">
         <NewsArticleView
           :title="title"
           :teaser="teaser"
@@ -325,6 +348,16 @@ onBeforeUnmount(() => {
       <div
         class="sticky bottom-0 -mx-1 flex flex-wrap items-center justify-end gap-2 border-t border-border/60 bg-background/80 px-1 py-3 backdrop-blur"
       >
+        <Button
+          v-if="!isNew"
+          variant="ghost"
+          class="mr-auto gap-2 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          :disabled="saving"
+          @click="confirmingDelete = true"
+        >
+          <Trash2 class="h-4 w-4" />
+          {{ $t("pages.news.manage.delete") }}
+        </Button>
         <!-- Both buttons take a solid fill: an outline variant next to the
              filled primary measures the same but reads as smaller. -->
         <template v-if="status === 'published'">
@@ -362,4 +395,22 @@ onBeforeUnmount(() => {
     </div>
   </PageTransition>
 
+  <AlertDialog v-model:open="confirmingDelete">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{ $t("pages.news.manage.delete_confirm_title") }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("pages.news.manage.delete_confirm_description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <AlertDialogAction @click="deletePost">
+          {{ $t("pages.news.manage.delete") }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>

@@ -5723,6 +5723,7 @@
         "kicker": "Execute · {map}",
         "view_only": "Kun visning",
         "empty_line": "Ingen executes på {map} endnu. Byg en af de opstillinger, du allerede har.",
+        "empty_public": "Ingen offentlige executes på {map} endnu.",
         "empty_side": "Ingen executes for {side}-siden på {map} endnu.",
         "step_word": "Trin | Trin",
         "player_word": "Spiller | Spillere",

@@ -5723,6 +5723,7 @@
         "kicker": "실행 플랜 · {map}",
         "view_only": "보기 전용",
         "empty_line": "{map}에는 아직 실행 플랜이 없습니다. 이미 가진 라인업으로 하나 만들어 보세요.",
+        "empty_public": "{map}에는 아직 공개된 실행 플랜이 없습니다.",
         "empty_side": "{map}에는 아직 {side} 진영 실행 플랜이 없습니다.",
         "step_word": "단계 | 단계",
         "player_word": "플레이어 | 플레이어",

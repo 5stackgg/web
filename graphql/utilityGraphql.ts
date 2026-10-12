@@ -852,6 +852,13 @@ export const utilityPlaybookFields = {
   updated_at: true,
   can_view: true,
   can_edit: true,
+  owner: {
+    steam_id: true,
+    name: true,
+  },
+  team: {
+    name: true,
+  },
 } as const;
 
 // Scalars only, and the steps are fetched as their own row set rather than

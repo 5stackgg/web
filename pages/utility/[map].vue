@@ -112,6 +112,20 @@ import type {
 } from "~/types/utility";
 
 definePageMeta({
+  // Executes were `?tab=playbooks` until 2026-10-11, and Copy link handed
+  // that address out.
+  middleware: (to) => {
+    if (to.query.tab === "playbooks") {
+      return navigateTo(
+        {
+          path: to.path,
+          query: { ...to.query, tab: "executes" },
+          hash: to.hash,
+        },
+        { replace: true },
+      );
+    }
+  },
   persistQueryKeys: [
     "scope",
     "sort",
@@ -292,7 +306,7 @@ const LIST_TAB = "lineups";
 const META_TAB = "meta";
 const CREATE_TAB = "create";
 const BLOCK_TAB = "block";
-const PLAYBOOKS_TAB = "playbooks";
+const EXECUTES_TAB = "executes";
 const PLAN_TAB = "plan";
 const COLLECTIONS_TAB = "collections";
 
@@ -306,7 +320,7 @@ const ALL_TABS = [
   LIST_TAB,
   META_TAB,
   COLLECTIONS_TAB,
-  PLAYBOOKS_TAB,
+  EXECUTES_TAB,
   PLAN_TAB,
   BLOCK_TAB,
   CREATE_TAB,
@@ -569,10 +583,10 @@ const listTabs = computed(() => {
   }
   // Collections had nowhere to be looked at: you could add a lineup to one from
   // three dialogs and then never see it again. This is the missing half.
-  // Collections, executes and the plan are all things you own, so a signed-out
-  // visitor gets the library and the meta and nothing that needs an account.
-  // Block is built but not ready to ship, so it stays off the strip. Everything
-  // behind BLOCK_TAB is left wired up for when it is.
+  // Collections and the plan are things you own, so a signed-out visitor gets
+  // the library, the meta and the executes made public, and nothing that needs
+  // an account. Block is built but not ready to ship, so it stays off the
+  // strip. Everything behind BLOCK_TAB is left wired up for when it is.
   if (mySteamId.value) {
     tabs.push({
       key: COLLECTIONS_TAB,
@@ -581,13 +595,15 @@ const listTabs = computed(() => {
       desc: t("pages.utility.collections.hint"),
       icon: Library,
     });
-    tabs.push({
-      key: PLAYBOOKS_TAB,
-      label: t("pages.utility.views.playbooks_tab"),
-      title: t("pages.utility.views.playbooks_tab"),
-      desc: t("pages.utility.views.playbooks_hint"),
-      icon: ListOrdered,
-    });
+  }
+  tabs.push({
+    key: EXECUTES_TAB,
+    label: t("pages.utility.views.playbooks_tab"),
+    title: t("pages.utility.views.playbooks_tab"),
+    desc: t("pages.utility.views.playbooks_hint"),
+    icon: ListOrdered,
+  });
+  if (mySteamId.value) {
     tabs.push({
       key: PLAN_TAB,
       label: t("pages.utility.plan.tab"),
@@ -705,7 +721,7 @@ const showCreatePanel = computed(
 );
 const showBlockPanel = computed(() => listTab.value === BLOCK_TAB);
 
-const showPlaybooks = computed(() => listTab.value === PLAYBOOKS_TAB);
+const showExecutes = computed(() => listTab.value === EXECUTES_TAB);
 
 /**
  * One primary action -- Practice, true on every tab -- and one slot that belongs
@@ -2340,12 +2356,12 @@ function selectLineup(id: string | null) {
               />
 
               <UtilityPlaybooksPanel
-                v-else-if="showPlaybooks && mySteamId"
-                key="playbooks"
+                v-else-if="showExecutes"
+                key="executes"
                 :map-name="mapName"
                 :types="filters.types"
                 :open-lineup-id="detailId"
-                :can-practice="!isMobile"
+                :can-practice="!isMobile && !!mySteamId"
                 @board="(state) => (panelBoard = state)"
                 @cover="(value) => (panelCover = value)"
                 @bar="(offer) => (panelBar = offer)"

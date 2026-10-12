@@ -5723,6 +5723,7 @@
         "kicker": "套路 · {map}",
         "view_only": "仅可查看",
         "empty_line": "{map} 还没有套路。用你已有的点位搭一套。",
+        "empty_public": "{map} 还没有公开的套路。",
         "empty_side": "{map} 还没有 {side} 阵营的套路。",
         "step_word": "步 | 步",
         "player_word": "名玩家 | 名玩家",

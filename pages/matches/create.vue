@@ -19,15 +19,13 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
+import FormStepCard from "~/components/common/FormStepCard.vue";
 import DateTimePicker from "~/components/common/DateTimePicker.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import DraftTeamPanel from "~/components/draft-games/DraftTeamPanel.vue";
 import { Spinner } from "~/components/ui/spinner";
-import {
-  tacticalSectionTickClasses,
-  tacticalCtaButtonClasses,
-} from "~/utilities/tacticalClasses";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 
 definePageMeta({ middleware: ["match-schedule"] });
 
@@ -57,7 +55,7 @@ const matchType = computed(() => (form.values as any).type);
 const perTeam = computed(() => PER_TEAM[matchType.value] || 5);
 
 const submitting = ref(false);
-const settingsSection = ref<HTMLElement | null>(null);
+const settingsSection = ref<{ $el: HTMLElement } | null>(null);
 
 const scheduledAtLocal = ref("");
 // Empty = ASAP. Only invalid when a time is set but it's in the past.
@@ -288,7 +286,7 @@ const submit = form.handleSubmit(
     }
   },
   () => {
-    settingsSection.value?.scrollIntoView({
+    settingsSection.value?.$el.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
@@ -303,41 +301,25 @@ const submit = form.handleSubmit(
 
       <div class="create-match-grid">
         <div class="create-match-form space-y-4">
-          <section
+          <FormStepCard
+            id="create-match-settings"
             ref="settingsSection"
-            class="create-match-card scroll-mt-4"
-            aria-labelledby="create-match-settings"
+            :step="1"
+            :title="$t('match.tabs.settings')"
           >
-            <h2
-              id="create-match-settings"
-              class="mb-4 flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.18em]"
-            >
-              <span :class="tacticalSectionTickClasses"></span>
-              1 · {{ $t("match.tabs.settings") }}
-            </h2>
             <MatchOptions :form="form" />
-          </section>
+          </FormStepCard>
 
-          <section
-            class="create-match-card"
-            aria-labelledby="create-match-lineups"
+          <FormStepCard
+            id="create-match-lineups"
+            :step="2"
+            :title="$t('pages.matches.schedule.step_teams')"
           >
-            <div
-              class="mb-3 flex flex-wrap items-baseline justify-between gap-2"
-            >
-              <h2
-                id="create-match-lineups"
-                class="flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.18em]"
-              >
-                <span :class="tacticalSectionTickClasses"></span>
-                2 · {{ $t("pages.matches.schedule.step_teams") }}
-              </h2>
-              <p class="text-xs text-muted-foreground">
-                {{
-                  $t("pages.matches.schedule.lineups_desc", { count: perTeam })
-                }}
-              </p>
-            </div>
+            <template #aside>
+              {{
+                $t("pages.matches.schedule.lineups_desc", { count: perTeam })
+              }}
+            </template>
 
             <div class="create-match-sides">
               <div
@@ -397,25 +379,17 @@ const submit = form.handleSubmit(
                 </HeightSwap>
               </div>
             </div>
-          </section>
-
+          </FormStepCard>
         </div>
 
         <aside
           class="create-match-aside"
           :aria-label="$t('pages.matches.schedule.summary')"
         >
-          <section
-            class="create-match-card"
-            aria-labelledby="create-match-kickoff"
+          <FormStepCard
+            id="create-match-kickoff"
+            :title="$t('pages.matches.schedule.kickoff')"
           >
-            <h2
-              id="create-match-kickoff"
-              class="mb-3 flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.18em]"
-            >
-              <span :class="tacticalSectionTickClasses"></span>
-              {{ $t("pages.matches.schedule.kickoff") }}
-            </h2>
             <div
               role="radiogroup"
               :aria-label="$t('pages.matches.schedule.kickoff')"
@@ -475,7 +449,7 @@ const submit = form.handleSubmit(
                 {{ $t("pages.matches.schedule.kickoff_future") }}
               </p>
             </Fold>
-          </section>
+          </FormStepCard>
 
           <div class="create-match-card space-y-3">
             <div

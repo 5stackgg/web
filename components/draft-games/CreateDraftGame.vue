@@ -31,6 +31,7 @@ import { Fold } from "~/components/ui/transitions";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import MatchOptions from "~/components/MatchOptions.vue";
+import FormStepCard from "~/components/common/FormStepCard.vue";
 import DraftModePicker from "~/components/draft-games/DraftModePicker.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import DraftRosterPicker from "~/components/draft-games/DraftRosterPicker.vue";
@@ -166,7 +167,7 @@ const draftEligibleModes = computed<Array<Record<string, any>>>(() =>
 // rather than make the host scroll past it.
 const hasModeStep = computed(() => draftEligibleModes.value.length > 0);
 
-const formatSection = ref<HTMLElement | null>(null);
+const formatSection = ref<{ $el: HTMLElement } | null>(null);
 
 const sectionNumbers = computed(() => {
   const order = ["format", "settings"];
@@ -624,7 +625,7 @@ const submit = form.handleSubmit(async (values: any) => {
       title: t("common.error"),
       description: t("draft_games.create.team_1_required_error"),
     });
-    formatSection.value?.scrollIntoView({
+    formatSection.value?.$el.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
@@ -736,19 +737,12 @@ const submit = form.handleSubmit(async (values: any) => {
   >
     <div class="create-draft-grid">
       <div class="create-draft-sections space-y-4">
-        <section
+        <FormStepCard
+          id="create-draft-format"
           ref="formatSection"
-          class="scroll-mt-4 rounded-xl border border-border bg-card/40 p-5"
-          aria-labelledby="create-draft-format"
+          :step="sectionNumbers.format"
+          :title="$t('draft_games.create.step_format')"
         >
-          <h2
-            id="create-draft-format"
-            class="mb-4 flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.18em]"
-          >
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ sectionNumbers.format }} ·
-            {{ $t("draft_games.create.step_format") }}
-          </h2>
           <div class="space-y-5">
             <section v-if="!isDuel">
               <AnimatedFilters
@@ -968,54 +962,33 @@ const submit = form.handleSubmit(async (values: any) => {
               </section>
             </Fold>
           </div>
-        </section>
+        </FormStepCard>
 
-        <section
-          class="rounded-xl border border-border bg-card/40 p-5"
-          aria-labelledby="create-draft-settings"
+        <FormStepCard
+          id="create-draft-settings"
+          :step="sectionNumbers.settings"
+          :title="$t('draft_games.create.step_settings')"
         >
-          <h2
-            id="create-draft-settings"
-            class="mb-4 flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.18em]"
-          >
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ sectionNumbers.settings }} ·
-            {{ $t("draft_games.create.step_settings") }}
-          </h2>
           <MatchOptions :form="form" hide-game-mode />
-        </section>
+        </FormStepCard>
 
-        <section
+        <FormStepCard
+          id="create-draft-mode"
           v-if="hasModeStep"
-          class="rounded-xl border border-border bg-card/40 p-5"
-          aria-labelledby="create-draft-mode"
+          :step="sectionNumbers.mode"
+          :title="$t('draft_games.create.step_mode')"
         >
-          <h2
-            id="create-draft-mode"
-            class="mb-4 flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.18em]"
-          >
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ sectionNumbers.mode }} ·
-            {{ $t("draft_games.create.step_mode") }}
-          </h2>
           <p class="mb-3 text-sm text-muted-foreground">
             {{ $t("draft_games.create.mode_description") }}
           </p>
           <DraftModePicker :form="form" :modes="draftEligibleModes" />
-        </section>
+        </FormStepCard>
 
-        <section
-          class="rounded-xl border border-border bg-card/40 p-5"
-          aria-labelledby="create-draft-rules"
+        <FormStepCard
+          id="create-draft-rules"
+          :step="sectionNumbers.rules"
+          :title="$t('draft_games.create.step_rules')"
         >
-          <h2
-            id="create-draft-rules"
-            class="mb-4 flex items-center gap-2 font-sans text-sm font-bold uppercase tracking-[0.18em]"
-          >
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ sectionNumbers.rules }} ·
-            {{ $t("draft_games.create.step_rules") }}
-          </h2>
           <div class="space-y-5">
             <section v-if="!bothTeamsAssigned">
               <div :class="tacticalSectionLabelClasses">
@@ -1133,7 +1106,7 @@ const submit = form.handleSubmit(async (values: any) => {
               </div>
             </section>
           </div>
-        </section>
+        </FormStepCard>
       </div>
 
       <aside

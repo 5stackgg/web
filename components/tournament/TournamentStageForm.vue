@@ -2456,7 +2456,7 @@ export default {
           toast({
             variant: "destructive",
             title: this.$t("common.error"),
-            description: this.$t("tournament.stage.match_settings_locked"),
+            description: this.$t("tournament.stage.match_settings_drawn"),
           });
           return;
         }

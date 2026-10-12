@@ -7373,7 +7373,7 @@
         "tournament_plays_active_duty": "Il torneo gioca già Active Duty. Scegli «Come il torneo».",
         "unavailable": "Non più giocabile qui: {maps}. Seleziona una mappa per toglierla dal map pool."
       },
-      "match_settings_locked": "Le partite di questa fase sono già state sorteggiate, quindi le loro impostazioni non possono più cambiare.",
+      "match_settings_drawn": "Le partite di questa fase sono già state sorteggiate, quindi le loro impostazioni non possono più cambiare.",
       "per_round_best_of": "Formato per round",
       "third_place_match": "Attiva match per il 3° posto",
       "third_place_match_description": "Crea un match per il 3° posto tra le due squadre sconfitte in semifinale.",

@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "تمت دعوة {team} للتسجيل في بطولة"
     },
     "roles": {
+      "admin": "مشرف",
       "captain": "قائد الفريق",
+      "invite": "دعوة",
+      "member": "عضو",
       "owner": "المالك"
     },
     "leave": "غادر الفريق",

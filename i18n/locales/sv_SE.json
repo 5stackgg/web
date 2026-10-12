@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} har bjudits in att anmäla sig till en turnering"
     },
     "roles": {
+      "admin": "Admin",
       "captain": "Lagkapten",
+      "invite": "Bjuda in",
+      "member": "Medlem",
       "owner": "Ägare"
     },
     "leave": "Lämna laget",

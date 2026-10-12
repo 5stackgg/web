@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "Команду {team} пригласили зарегистрироваться на турнир"
     },
     "roles": {
+      "admin": "Админ",
       "captain": "Капитан",
+      "invite": "Приглашение",
+      "member": "Участник",
       "owner": "Владелец"
     },
     "leave": "Покинуть команду",

@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} foi convidada para se inscrever em um torneio"
     },
     "roles": {
+      "admin": "Admin",
       "captain": "Capitão",
+      "invite": "Convidar",
+      "member": "Membro",
       "owner": "Dono"
     },
     "leave": "Sair da Equipe",

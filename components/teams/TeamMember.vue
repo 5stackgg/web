@@ -72,7 +72,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
             v-if="!isInvite && (isOwner || member.role)"
             class="text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80"
           >
-            {{ isOwner ? $t("team.roles.owner") : member.role }}
+            {{ isOwner ? $t("team.roles.owner") : roleLabel(member.role) }}
           </span>
           <span
             v-if="!isInvite && member.coach"
@@ -140,7 +140,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
               <DropdownMenuSubTrigger>
                 <span>{{ $t("team.members.role") }}</span>
                 <span class="ml-auto text-muted-foreground text-xs">{{
-                  member.role
+                  roleLabel(member.role)
                 }}</span>
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent class="w-64">
@@ -151,7 +151,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                   @click="publishRole(role.value)"
                 >
                   <div class="flex w-full items-center justify-between">
-                    <span>{{ role.value }}</span>
+                    <span>{{ roleLabel(role.value) }}</span>
                     <span
                       v-if="role.value === member.role"
                       class="text-xs text-primary"
@@ -321,6 +321,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import type { e_team_roles_enum } from "~/generated/zeus";
+import { teamRoleLabel } from "~/utilities/teamRoleLabel";
 
 interface Role {
   value: string;
@@ -449,6 +450,9 @@ export default {
     },
   },
   methods: {
+    roleLabel(role: string): string {
+      return teamRoleLabel(role, (key) => this.$t(key));
+    },
     async updateMemberStatus(value: e_team_roster_statuses_enum) {
       await (this as any).$apollo.mutate({
         mutation: generateMutation({

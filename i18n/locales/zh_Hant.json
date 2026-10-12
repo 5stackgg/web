@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} 受邀報名參加賽事"
     },
     "roles": {
+      "admin": "管理員",
       "captain": "隊長",
+      "invite": "邀請",
+      "member": "成員",
       "owner": "擁有者"
     },
     "leave": "離開隊伍",

@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} がトーナメントへの参加登録に招待されました"
     },
     "roles": {
+      "admin": "管理者",
       "captain": "キャプテン",
+      "invite": "招待",
+      "member": "メンバー",
       "owner": "オーナー"
     },
     "leave": "チームを脱退",

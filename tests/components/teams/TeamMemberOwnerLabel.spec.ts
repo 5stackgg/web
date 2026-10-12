@@ -14,10 +14,12 @@ async function mountMember(options: {
   isOwner: boolean;
   isCaptain: boolean;
   role: string;
+  canChangeRole?: boolean;
 }) {
   const wrapper = await mountSuspended(TeamMember, {
+    attachTo: document.body,
     props: {
-      team: { id: "team-1" },
+      team: { id: "team-1", can_change_role: options.canChangeRole ?? false },
       member: {
         role: options.role,
         coach: false,
@@ -30,7 +32,10 @@ async function mountMember(options: {
           avatar_url: null,
         },
       },
-      roles: [],
+      roles: [
+        { value: "Member", description: "Basic Membership" },
+        { value: "Invite", description: "Ability Invite / Add Players" },
+      ],
       isInvite: false,
       isOwner: options.isOwner,
       isCaptain: options.isCaptain,
@@ -78,5 +83,58 @@ describe("TeamMember role label", () => {
 
     expect(labels(wrapper)).toContain("Admin");
     expect(labels(wrapper)).not.toContain("Owner");
+  });
+});
+
+describe("TeamMember role label in the viewer's language", () => {
+  const i18n = () => (useNuxtApp() as any).$i18n;
+
+  afterEach(async () => {
+    await i18n().setLocale("en");
+  });
+
+  it.each([
+    ["de", "Member", "Mitglied"],
+    ["de", "Invite", "Einladen"],
+    ["ja", "Admin", "管理者"],
+    ["en", "Member", "Member"],
+  ])("names a %s roster's %s role %s", async (locale, role, label) => {
+    await i18n().setLocale(locale);
+    const wrapper = await mountMember({
+      isOwner: false,
+      isCaptain: false,
+      role,
+    });
+
+    expect(labels(wrapper)).toEqual([label]);
+  });
+
+  it("names the roles in the change-role menu", async () => {
+    await i18n().setLocale("de");
+    const wrapper = await mountMember({
+      isOwner: false,
+      isCaptain: false,
+      role: "Member",
+      canChangeRole: true,
+    });
+
+    await wrapper
+      .find("button[aria-haspopup='menu']")
+      .trigger("keydown", { key: "Enter" });
+    await flushPromises();
+    const roleItem = Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).find((item) => item.textContent?.includes("Rolle"));
+    expect(roleItem?.textContent).toContain("Mitglied");
+    expect(roleItem?.textContent).not.toContain("Member");
+
+    roleItem!.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }),
+    );
+    await flushPromises();
+    const names = Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"] > div'),
+    ).map((row) => row.firstElementChild?.textContent?.trim());
+    expect(names).toEqual(["Mitglied", "Einladen"]);
   });
 });

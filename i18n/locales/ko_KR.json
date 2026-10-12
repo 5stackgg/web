@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} 팀이 토너먼트 참가 신청에 초대되었습니다"
     },
     "roles": {
+      "admin": "관리자",
       "captain": "팀장",
+      "invite": "초대",
+      "member": "멤버",
       "owner": "소유자"
     },
     "leave": "팀 탈퇴",

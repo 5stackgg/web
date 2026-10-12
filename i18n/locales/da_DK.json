@@ -8089,7 +8089,10 @@
       "tournament_team_registration_message": "{team} er inviteret til at tilmelde sig en turnering"
     },
     "roles": {
+      "admin": "Admin",
       "captain": "Anfører",
+      "invite": "Invitere",
+      "member": "Medlem",
       "owner": "Ejer"
     },
     "leave": "Forlad hold",

@@ -1570,6 +1570,7 @@
         "where": "Where",
         "online": "Online",
         "teams": "Teams",
+        "players": "Players",
         "part_of": "Part of"
       },
       "next_lan": {
@@ -7246,6 +7247,7 @@
     },
     "feature_card": {
       "teams": "Teams",
+      "players": "Players",
       "default_label": "Tournament",
       "organized_by": "By {team}"
     },
@@ -7276,6 +7278,7 @@
       "ended": "Ended",
       "starts": "Starts",
       "teams": "Teams",
+      "players": "Players",
       "champion": "Champion",
       "second": "2nd",
       "third": "3rd",
@@ -7396,6 +7399,7 @@
       "tournament": "Tournament",
       "type": "Type",
       "teams_joined": "Teams Joined",
+      "players_joined": "Players Joined",
       "starts": "Starts",
       "no_tournaments_found": "No tournaments found",
       "maps_label": "Maps:"

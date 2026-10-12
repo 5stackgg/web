@@ -1570,6 +1570,7 @@
         "where": "Miejsce",
         "online": "Online",
         "teams": "Drużyny",
+        "players": "Gracze",
         "part_of": "W ramach"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Drużyny",
+      "players": "Gracze",
       "default_label": "Turniej",
       "organized_by": "Przez {team}"
     },
@@ -7274,6 +7276,7 @@
       "ended": "Zakończony",
       "starts": "Start",
       "teams": "Drużyny",
+      "players": "Gracze",
       "champion": "Mistrz",
       "second": "2. miejsce",
       "third": "3. miejsce",
@@ -7394,6 +7397,7 @@
       "tournament": "Turniej",
       "type": "Typ",
       "teams_joined": "Dołączone drużyny",
+      "players_joined": "Dołączeni gracze",
       "starts": "Start",
       "no_tournaments_found": "Nie znaleziono turniejów",
       "maps_label": "Mapy:"

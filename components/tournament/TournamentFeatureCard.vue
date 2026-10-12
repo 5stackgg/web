@@ -3,11 +3,13 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { GitBranch, Trophy, UsersRound } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
 import { formatPrizePool } from "~/utilities/prizePool";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
 import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
 import { tournamentCurrentStage } from "~/utilities/tournamentCurrentStage";
+import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
 
 type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
@@ -74,9 +76,13 @@ const organizerTeam = computed(
   () => props.tournament?.organizer_teams?.[0]?.team || null,
 );
 
-const teamsCount = computed(
-  () => props.tournament?.teams_aggregate?.aggregate?.count || 0,
+const registration = computed(() =>
+  tournamentRegistrationCount(props.tournament),
 );
+const registrationValue = computed(() => {
+  const { unit, count, max } = registration.value;
+  return unit === "players" && max ? `${count} / ${max}` : String(count);
+});
 
 const primaryStage = computed(() => {
   return [...(props.tournament?.stages || [])].sort(
@@ -236,8 +242,14 @@ const statusChipClasses = computed(() => {
         </span>
         <span class="inline-flex items-center gap-1.5">
           <UsersRound class="h-3.5 w-3.5 text-white/55" />
-          <span class="font-bold text-white">{{ teamsCount }}</span>
-          {{ $t("tournament.feature_card.teams") }}
+          <span class="font-bold text-white">
+            <AnimatedStat :value="registrationValue" />
+          </span>
+          {{
+            registration.unit === "players"
+              ? $t("tournament.feature_card.players")
+              : $t("tournament.feature_card.teams")
+          }}
         </span>
         <span class="inline-flex items-center gap-1.5">
           <GitBranch class="h-3.5 w-3.5 text-white/55" />

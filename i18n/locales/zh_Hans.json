@@ -1570,6 +1570,7 @@
         "where": "地点",
         "online": "线上",
         "teams": "队伍",
+        "players": "玩家",
         "part_of": "所属活动"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "队伍",
+      "players": "玩家",
       "default_label": "赛事",
       "organized_by": "由 {team} 主办"
     },
@@ -7274,6 +7276,7 @@
       "ended": "已结束",
       "starts": "开始",
       "teams": "队伍",
+      "players": "玩家",
       "champion": "冠军",
       "second": "亚军",
       "third": "季军",
@@ -7394,6 +7397,7 @@
       "tournament": "赛事",
       "type": "类型",
       "teams_joined": "已加入队伍",
+      "players_joined": "已加入玩家",
       "starts": "开始",
       "no_tournaments_found": "未找到赛事",
       "maps_label": "地图："

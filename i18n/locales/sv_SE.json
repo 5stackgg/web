@@ -1570,6 +1570,7 @@
         "where": "Plats",
         "online": "Online",
         "teams": "Lag",
+        "players": "Spelare",
         "part_of": "Del av"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Lag",
+      "players": "Spelare",
       "default_label": "Turnering",
       "organized_by": "Av {team}"
     },
@@ -7274,6 +7276,7 @@
       "ended": "Avslutad",
       "starts": "Startar",
       "teams": "Lag",
+      "players": "Spelare",
       "champion": "Mästare",
       "second": "2:a",
       "third": "3:a",
@@ -7394,6 +7397,7 @@
       "tournament": "Turnering",
       "type": "Typ",
       "teams_joined": "Anmälda lag",
+      "players_joined": "Anmälda spelare",
       "starts": "Startar",
       "no_tournaments_found": "Inga turneringar hittades",
       "maps_label": "Kartor:"

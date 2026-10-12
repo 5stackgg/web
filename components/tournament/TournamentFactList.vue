@@ -7,8 +7,14 @@ const props = defineProps<{
   event?: { id: string; name: string } | null;
 }>();
 
-const { state, registrationOpen, startDay, startTime, teamsLabel } =
-  useTournamentDisplay(() => props.tournament);
+const {
+  state,
+  registrationOpen,
+  startDay,
+  startTime,
+  teamsLabel,
+  registrationUnit,
+} = useTournamentDisplay(() => props.tournament);
 
 // No location on a LAN means the organizer hasn't said where yet, not online.
 const inPerson = computed(() =>
@@ -49,7 +55,11 @@ const startKey = computed(() =>
     </div>
     <div v-if="!registrationOpen" class="grid min-w-0 gap-0.5">
       <dt class="text-xs text-muted-foreground">
-        {{ $t("pages.tournaments.facts.teams") }}
+        {{
+          registrationUnit === "players"
+            ? $t("pages.tournaments.facts.players")
+            : $t("pages.tournaments.facts.teams")
+        }}
       </dt>
       <dd class="m-0 text-[0.8125rem] font-semibold tabular-nums">
         {{ teamsLabel }}

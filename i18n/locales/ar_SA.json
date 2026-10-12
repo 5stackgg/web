@@ -1570,6 +1570,7 @@
         "where": "المكان",
         "online": "عبر الإنترنت",
         "teams": "الفرق",
+        "players": "اللاعبون",
         "part_of": "ضمن"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "فرق",
+      "players": "اللاعبون",
       "default_label": "بطولة",
       "organized_by": "بواسطة {team}"
     },
@@ -7274,6 +7276,7 @@
       "ended": "انتهت",
       "starts": "تبدأ",
       "teams": "فرق",
+      "players": "اللاعبون",
       "champion": "البطل",
       "second": "الثاني",
       "third": "الثالث",
@@ -7394,6 +7397,7 @@
       "tournament": "بطولة",
       "type": "النوع",
       "teams_joined": "فرق منضمة",
+      "players_joined": "لاعبون منضمون",
       "starts": "تبدأ",
       "no_tournaments_found": "لا توجد بطولات",
       "maps_label": "خرائط:"

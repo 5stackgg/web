@@ -1570,6 +1570,7 @@
         "where": "Lieu",
         "online": "En ligne",
         "teams": "Équipes",
+        "players": "Joueurs",
         "part_of": "Fait partie de"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Équipes",
+      "players": "Joueurs",
       "default_label": "Tournoi",
       "organized_by": "Par {team}"
     },
@@ -7274,6 +7276,7 @@
       "ended": "Terminé",
       "starts": "Début",
       "teams": "Équipes",
+      "players": "Joueurs",
       "champion": "Champion",
       "second": "2e",
       "third": "3e",
@@ -7394,6 +7397,7 @@
       "tournament": "Tournoi",
       "type": "Type",
       "teams_joined": "Équipes inscrites",
+      "players_joined": "Joueurs inscrits",
       "starts": "Début",
       "no_tournaments_found": "Aucun tournoi trouvé",
       "maps_label": "Maps :"

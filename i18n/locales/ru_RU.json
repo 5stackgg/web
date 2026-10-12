@@ -1570,6 +1570,7 @@
         "where": "Место",
         "online": "Онлайн",
         "teams": "Команды",
+        "players": "Игроки",
         "part_of": "В рамках"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Команды",
+      "players": "Игроки",
       "default_label": "Турнир",
       "organized_by": "От {team}"
     },
@@ -7274,6 +7276,7 @@
       "ended": "Завершён",
       "starts": "Начало",
       "teams": "Команды",
+      "players": "Игроки",
       "champion": "Чемпион",
       "second": "2 место",
       "third": "3 место",
@@ -7394,6 +7397,7 @@
       "tournament": "Турнир",
       "type": "Тип",
       "teams_joined": "Команд участвует",
+      "players_joined": "Игроков участвует",
       "starts": "Начало",
       "no_tournaments_found": "Турниры не найдены",
       "maps_label": "Карты:"

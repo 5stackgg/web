@@ -1570,6 +1570,7 @@
         "where": "Konum",
         "online": "Çevrimiçi",
         "teams": "Takımlar",
+        "players": "Oyuncular",
         "part_of": "Etkinlik"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Takımlar",
+      "players": "Oyuncular",
       "default_label": "Turnuva",
       "organized_by": "{team} tarafından"
     },
@@ -7274,6 +7276,7 @@
       "ended": "Bitti",
       "starts": "Başlangıç",
       "teams": "Takımlar",
+      "players": "Oyuncular",
       "champion": "Şampiyon",
       "second": "2.",
       "third": "3.",
@@ -7394,6 +7397,7 @@
       "tournament": "Turnuva",
       "type": "Tür",
       "teams_joined": "Katılan Takım",
+      "players_joined": "Katılan Oyuncu",
       "starts": "Başlangıç",
       "no_tournaments_found": "Turnuva bulunamadı",
       "maps_label": "Haritalar:"

@@ -10,11 +10,13 @@ import {
   UsersRound,
 } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import AwardBadge from "~/components/award/AwardBadge.vue";
 import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
 import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
 import { tournamentCurrentStage } from "~/utilities/tournamentCurrentStage";
+import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
 
 const { t } = useI18n();
 
@@ -70,9 +72,13 @@ const hiddenCategoryCount = computed(() =>
   Math.max(categories.value.length - visibleCategories.value.length, 0),
 );
 
-const teamsCount = computed(
-  () => props.tournament?.teams_aggregate?.aggregate?.count || 0,
+const registration = computed(() =>
+  tournamentRegistrationCount(props.tournament),
 );
+const registrationValue = computed(() => {
+  const { unit, count, max } = registration.value;
+  return unit === "players" && max ? `${count} / ${max}` : String(count);
+});
 
 const isLive = computed(() => props.statusVariant === "live");
 const isFinished = computed(() => props.statusVariant === "finished");
@@ -439,8 +445,14 @@ const runnerUps = computed(() => {
     >
       <span class="inline-flex items-center gap-1.5">
         <UsersRound class="h-3 w-3" />
-        <span class="text-foreground">{{ teamsCount }}</span>
-        {{ $t("tournament.compact_card.teams") }}
+        <span class="text-foreground">
+          <AnimatedStat :value="registrationValue" />
+        </span>
+        {{
+          registration.unit === "players"
+            ? $t("tournament.compact_card.players")
+            : $t("tournament.compact_card.teams")
+        }}
       </span>
       <span v-if="currentStage" class="inline-flex items-center gap-1.5">
         <GitBranch class="h-3 w-3" />

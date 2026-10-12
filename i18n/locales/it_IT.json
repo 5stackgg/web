@@ -1570,6 +1570,7 @@
         "where": "Luogo",
         "online": "Online",
         "teams": "Team",
+        "players": "Giocatori",
         "part_of": "Parte di"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Team",
+      "players": "Giocatori",
       "default_label": "Torneo",
       "organized_by": "Di {team}"
     },
@@ -7274,6 +7276,7 @@
       "ended": "Concluso",
       "starts": "Inizia",
       "teams": "Team",
+      "players": "Giocatori",
       "champion": "Campione",
       "second": "2°",
       "third": "3°",
@@ -7394,6 +7397,7 @@
       "tournament": "Torneo",
       "type": "Tipo",
       "teams_joined": "Team iscritti",
+      "players_joined": "Giocatori iscritti",
       "starts": "Inizia",
       "no_tournaments_found": "Nessun torneo trovato",
       "maps_label": "Mappe:"

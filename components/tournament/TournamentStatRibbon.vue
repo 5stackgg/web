@@ -3,10 +3,12 @@ import { dateLocale } from "~/utilities/dateLocale";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { MapPin } from "lucide-vue-next";
+import AnimatedStat from "~/components/AnimatedStat.vue";
+import type { TournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
 
 const props = defineProps<{
   prizePool?: string | null;
-  teamsCount?: number | null;
+  registration?: TournamentRegistrationCount | null;
   format?: string | null;
   start?: string | number | Date | null;
   location?: string | null;
@@ -33,7 +35,7 @@ const cells = computed(() => {
     label: string;
     value: string;
     accent?: boolean;
-    kind?: "stat" | "location";
+    kind?: "stat" | "count" | "location";
   }> = [];
   if (props.prizePool) {
     list.push({
@@ -43,11 +45,16 @@ const cells = computed(() => {
       accent: true,
     });
   }
-  if (props.teamsCount != null) {
+  if (props.registration) {
+    const { unit, count, max } = props.registration;
     list.push({
-      key: "teams",
-      label: t("tournament.stats.teams"),
-      value: String(props.teamsCount),
+      key: "registration",
+      label:
+        unit === "players"
+          ? t("tournament.stats.players")
+          : t("tournament.stats.teams"),
+      value: unit === "players" && max ? `${count} / ${max}` : String(count),
+      kind: "count",
     });
   }
   if (props.format) {
@@ -110,7 +117,8 @@ const cells = computed(() => {
         :class="cell.accent ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'"
         :title="cell.value"
       >
-        {{ cell.value }}
+        <AnimatedStat v-if="cell.kind === 'count'" :value="cell.value" />
+        <template v-else>{{ cell.value }}</template>
       </div>
     </div>
   </div>

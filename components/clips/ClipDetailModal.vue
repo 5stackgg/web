@@ -63,6 +63,7 @@ import {
   clipDownloadUrl,
 } from "~/utilities/clipDownloadName";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { clipPreloadUrl } from "~/utilities/clipViews";
 import cleanMapName from "~/utilities/cleanMapName";
 import { clipDisplayTitle, formatClipDuration } from "~/utilities/clipDisplay";
 import {
@@ -518,7 +519,7 @@ const preloadSrc = computed(() => {
   const p = prefetchedClip.value;
   if (!p?.download_url) return null;
   if (clip.value && p.id === clip.value.id) return null;
-  return p.download_url;
+  return clipPreloadUrl(p.download_url);
 });
 
 // Pull the full next clip (incl. download_url + lineups) ahead of time so

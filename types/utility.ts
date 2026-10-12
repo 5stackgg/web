@@ -136,6 +136,8 @@ export type UtilityLineup = {
   preview_stills_url?: Record<string, string> | null;
   preview_duration_ms?: number | null;
   preview_rendered_at?: string | null;
+  /** CS2's own grid for this smoke, recorded off the grenade; a computed field. */
+  smoke_voxels_url?: string | null;
   verified_at: string | null;
   created_at?: string | null;
   updated_at?: string | null;

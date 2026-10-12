@@ -5,6 +5,8 @@ import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTranspor
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import { normalizeMapName } from "~/utilities/mapAssets";
+import { lineupSmokeVoxels } from "~/utilities/lineupSmokeVoxels";
+import type { StageSmokeVoxels } from "~/utilities/replayStage/types";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import {
   utilityStageThrow,
@@ -446,11 +448,27 @@ const tick = computed(() =>
 // renderer above does, as it always has.
 const stageFailed = ref(false);
 
+// The real smoke, when the plugin has recorded it; until then (or without
+// one) the stage floods its own.
+const smokeVoxels = ref<StageSmokeVoxels | null>(null);
+watch(
+  () => props.lineup.smoke_voxels_url,
+  async (url) => {
+    smokeVoxels.value = null;
+    const voxels = await lineupSmokeVoxels(url);
+    if (props.lineup.smoke_voxels_url === url) {
+      smokeVoxels.value = voxels;
+    }
+  },
+  { immediate: true },
+);
+
 const stageThrows = computed(() => {
   const entry = utilityStageThrow(props.lineup, {
     key: props.lineup.id,
     gid: SYNTHETIC_GID,
     points: fullTrajectory.value,
+    voxels: smokeVoxels.value,
   });
   return entry ? [entry] : [];
 });

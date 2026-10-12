@@ -583,7 +583,10 @@ function clearTeamEnterDelay(el: Element) {
                   :prizes="tournament.prizes"
                 ></TournamentPrizes>
 
-                <div class="grid items-start gap-8 xl:grid-cols-2">
+                <div
+                  class="grid items-start gap-8"
+                  :class="tournament.description && 'xl:grid-cols-2'"
+                >
                   <ManageSection
                     v-if="tournament.description"
                     :label="$t('tournament.page.about_section')"
@@ -943,6 +946,7 @@ import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { bracketProposalSelection } from "~/graphql/bracketNegotiation";
 import { formatPrizePool } from "~/utilities/prizePool";
+import { tournamentHomepageLink } from "~/utilities/tournamentHomepage";
 import {
   getRequestedRouteTab,
   getRouteTabValue,
@@ -1784,11 +1788,10 @@ export default {
       });
     },
     tournamentHomepage() {
-      const homepage = this.tournament?.homepage;
-      if (!homepage) {
-        return null;
-      }
-      return /^https?:\/\//.test(homepage) ? homepage : `https://${homepage}`;
+      return tournamentHomepageLink(this.tournament?.homepage, [
+        useRequestURL().host,
+        useRuntimeConfig().public.webDomain,
+      ]);
     },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;

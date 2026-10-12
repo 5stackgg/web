@@ -11,6 +11,7 @@ import {
   Trophy,
   XCircle,
 } from "lucide-vue-next";
+import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
@@ -160,7 +161,7 @@ const menuLabel =
         </span>
       </button>
       <button
-        v-if="canDeleteMatch"
+        v-if="canDeleteMatch && !isBracketMatch"
         type="button"
         :class="dockDanger"
         @click="confirmDelete"
@@ -419,7 +420,20 @@ const menuLabel =
         </template>
 
         <template v-if="!dock && canDeleteMatch">
-          <DropdownMenuItem class="text-destructive" @click="confirmDelete">
+          <BlockedMenuItem
+            v-if="isBracketMatch"
+            :reasons="[$t('match.actions.delete_blocked_tournament')]"
+          >
+            <Trash2 class="text-destructive" />
+            <span class="text-destructive">
+              {{ $t("match.actions.delete") }}
+            </span>
+          </BlockedMenuItem>
+          <DropdownMenuItem
+            v-else
+            class="text-destructive"
+            @click="confirmDelete"
+          >
             <Trash2 />
             {{ $t("match.actions.delete") }}
           </DropdownMenuItem>
@@ -1124,7 +1138,7 @@ export default {
       return (
         !!this.primaryAction ||
         this.match.can_cancel ||
-        this.canDeleteMatch ||
+        (this.canDeleteMatch && !this.isBracketMatch) ||
         this.hasMoreItems
       );
     },
@@ -1304,6 +1318,14 @@ export default {
       return (
         this.match.status !== e_match_status_enum.Live &&
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
+      );
+    },
+    // Read from either half: the live one carries the bracket before the
+    // static one's is_tournament_match has loaded.
+    isBracketMatch() {
+      return (
+        !!this.match.is_tournament_match ||
+        (this.match.tournament_brackets?.length ?? 0) > 0
       );
     },
     // One shared rule, mirroring CameraService.watchScope. This used to be a

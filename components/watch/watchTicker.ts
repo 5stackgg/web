@@ -1,4 +1,5 @@
 import type { WatchStream } from "~/components/watch/streamPlatform";
+import mapLabel from "~/utilities/mapLabel";
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
 
@@ -61,10 +62,6 @@ function mapsWon(match: any, lineupId: string | null | undefined) {
   return (match?.match_maps ?? []).filter(
     (mm: any) => mm.winning_lineup_id === lineupId,
   ).length;
-}
-
-function mapLabel(mm: any): string {
-  return mm?.map?.label || mm?.map?.name || "";
 }
 
 export function teamMonogram(name: string, shortName?: string | null) {
@@ -204,7 +201,7 @@ function statusLine(
   }
 
   const current = currentMatchMap(match);
-  const map = mapLabel(current);
+  const map = mapLabel(current?.map);
   const join = (...parts: Array<string | null | false>) =>
     parts.filter(Boolean).join(" · ");
   const live = (text: string) => ({ dot: "live" as const, text, detail: null });

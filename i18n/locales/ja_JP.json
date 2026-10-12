@@ -5456,8 +5456,7 @@
         "score": "{count} 件の高評価 | {count} 件の高評価"
       },
       "viewer": {
-        "replay_throw": "投げを再生",
-        "roof": "屋根"
+        "timeline": "投擲のタイムライン"
       },
       "detail": {
         "previous": "前のラインナップ",
@@ -5465,6 +5464,8 @@
         "open_full": "全画面ページを開く",
         "practice_this": "これを練習",
         "share": "ラインナップを共有",
+        "watch_3d": "3Dで見る",
+        "watch_clip": "クリップを見る",
         "copy_link": "ラインナップのリンクをコピー",
         "download_clip": "クリップをダウンロード",
         "not_found": "ラインナップが見つかりません",
@@ -5768,6 +5769,8 @@
         "step_context_by": "{name} の {count} ステップ中 {step} 番目。{seconds}秒に {player} が投げます。",
         "step_context_you": "{name} の {count} ステップ中 {step} 番目。{seconds}秒にあなたが投げます。",
         "play": "再生",
+        "pause": "一時停止",
+        "seek": "エクスキュートのタイムライン",
         "stop": "停止",
         "clock_of": "{now}秒 / {total}秒",
         "duplicate": "複製",

@@ -42,6 +42,7 @@ import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicke
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import UtilityLineupPreview from "~/components/utility/UtilityLineupPreview.vue";
+import UtilityLineupViewer3D from "~/components/utility/UtilityLineupViewer3D.vue";
 import UtilityLineupStills from "~/components/utility/UtilityLineupStills.vue";
 import UtilityMissPatternPanel from "~/components/utility/UtilityMissPatternPanel.vue";
 import UtilityProgressPanel from "~/components/utility/UtilityProgressPanel.vue";
@@ -65,13 +66,16 @@ import type {
   UtilityBarOffer,
   UtilityLineupContext,
 } from "~/utilities/utilityDisplay";
+import { useUtilityCardViews } from "~/composables/useUtilityCardViews";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
+import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useUtilityRunUp } from "~/composables/useUtilityRunUp";
 import { useUtilityLineupShare } from "~/composables/useUtilityLineupShare";
 import { useUtilityRendersInFlight } from "~/composables/useUtilityRendersInFlight";
 import { useAuthStore } from "~/stores/AuthStore";
 import type { UtilityLineup, UtilityVisibility } from "~/types/utility";
 import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
+import { hasMeshForMap } from "~/utilities/mapAssets";
 
 const props = defineProps<{
   /** The page's own list, so a lineup already on screen opens without a fetch. */
@@ -200,7 +204,12 @@ function onKey(event: KeyboardEvent) {
 }
 
 onMounted(() => window.addEventListener("keydown", onKey));
-onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
+onBeforeUnmount(() => {
+  window.removeEventListener("keydown", onKey);
+  if (layers && onStage.value) {
+    layers.staged.value = false;
+  }
+});
 
 // Already standing on a practice server? Then "practice this" is not a booking
 // flow, it is one RCON away: stand them on it where they are.
@@ -402,6 +411,51 @@ const hasClip = computed(
   () => !!lineup.value && !!utilityClipSource(lineup.value),
 );
 
+// The 3D tile throws the lineup on the map's own square, in the map's place,
+// the way an execute is played; the card keeps its clip. A phone has no
+// square beside the card, so there it swaps the card's clip for the throw.
+// It stays on from one lineup to the next until the panel closes.
+const meshCdn = useRuntimeConfig().public.mapMeshCdn as string;
+const hasMesh = ref(false);
+const threeD = ref(false);
+const layers = useUtilityCardViews();
+const { isMobile } = useSidebar();
+const staged = computed(() => !!layers?.stage.value && !isMobile.value);
+const onStage = computed(
+  () => threeD.value && staged.value && open.value && !!lineup.value,
+);
+const cardThreeD = computed(() => threeD.value && !staged.value);
+const canThreeD = computed(
+  () => hasMesh.value && (staged.value || hasClip.value),
+);
+const threeDLabel = computed(() =>
+  !threeD.value
+    ? t("pages.utility.detail.watch_3d")
+    : staged.value
+      ? t("pages.utility.playbooks.show_map")
+      : t("pages.utility.detail.watch_clip"),
+);
+
+watch(onStage, (on, was) => {
+  if (layers && (on || was)) {
+    layers.staged.value = on;
+  }
+});
+watch(
+  () => lineup.value?.map_name,
+  async (name) => {
+    hasMesh.value = false;
+    if (!name || !import.meta.client) {
+      return;
+    }
+    const found = await hasMeshForMap(meshCdn, name);
+    if (lineup.value?.map_name === name) {
+      hasMesh.value = found;
+    }
+  },
+  { immediate: true },
+);
+
 // Your drill record arrives after the lineup does -- patched in from the live
 // subscription -- so the block it lives in has to know whether there is one.
 const hasRecord = computed(
@@ -518,6 +572,7 @@ watch(
 watch(open, (isOpen) => {
   if (!isOpen) {
     editing.value = false;
+    threeD.value = false;
   }
 });
 
@@ -615,6 +670,25 @@ const stats = computed(() => {
       class="absolute inset-0 z-20 flex flex-col bg-sidebar max-md:bg-background"
       :aria-label="lineup?.name ?? $t('pages.utility.detail.not_found')"
     >
+      <Teleport v-if="onStage && layers?.stage.value" :to="layers.stage.value">
+        <Transition
+          appear
+          enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+          enter-from-class="scale-[0.98] opacity-0"
+        >
+          <div class="pointer-events-auto absolute inset-0">
+            <UtilityLineupViewer3D :key="lineup!.id" :lineup="lineup!" fill />
+            <button
+              type="button"
+              class="absolute left-3 top-3 z-[11] inline-flex h-8 items-center rounded-md border border-border/60 bg-black/60 px-3 text-xs font-semibold text-foreground backdrop-blur transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              @click="threeD = false"
+            >
+              {{ $t("pages.utility.playbooks.show_map") }}
+            </button>
+          </div>
+        </Transition>
+      </Teleport>
+
       <!-- Slid out over the list: Back puts the list where it was. The
            header is the way out on the left, big enough to hit without
            aiming, and on the right what you do TO the lineup: the reactions
@@ -680,6 +754,27 @@ const stats = computed(() => {
               </button>
             </template>
             {{ $t("pages.utility.plan.skip") }}
+          </FiveStackToolTip>
+
+          <FiveStackToolTip
+            v-if="canThreeD"
+            as-child
+            side="bottom"
+            :delay-duration="120"
+            :tap-toggle="false"
+          >
+            <template #trigger>
+              <button
+                type="button"
+                :class="tile(threeD, true)"
+                :aria-pressed="threeD"
+                :aria-label="threeDLabel"
+                @click="threeD = !threeD"
+              >
+                3D
+              </button>
+            </template>
+            {{ threeDLabel }}
           </FiveStackToolTip>
 
           <FiveStackToolTip
@@ -752,7 +847,7 @@ const stats = computed(() => {
           />
 
           <FiveStackToolTip
-            v-if="!hasClip"
+            v-if="!hasClip || cardThreeD"
             as-child
             side="bottom"
             :delay-duration="120"
@@ -946,7 +1041,7 @@ const stats = computed(() => {
             </div>
           </div>
 
-          <UtilityLineupPreview :lineup="lineup" />
+          <UtilityLineupPreview :lineup="lineup" :three-d="cardThreeD" />
           <UtilityLineupStills :stills="lineup.preview_stills_url" />
 
           <!-- Editing swaps the details for the form; the throw stays on

@@ -4,6 +4,7 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import metadata from "~/public/radars/metadata.json";
 import type { UtilityLineup } from "~/types/utility";
+import { radarImageUrl } from "~/utilities/mapAssets";
 
 const CANVAS = 1024;
 
@@ -72,7 +73,7 @@ async function mountBoard(frame: number, coarse: boolean) {
     props: {
       mapName: "de_mirage",
       lineups: [lineup],
-      seedSrc: "/radars/de_mirage.png",
+      seedSrc: radarImageUrl("de_mirage"),
     },
     attachTo: document.body,
   });

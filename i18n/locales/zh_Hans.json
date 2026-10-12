@@ -5456,8 +5456,7 @@
         "score": "{count} 个赞 | {count} 个赞"
       },
       "viewer": {
-        "replay_throw": "回放投掷",
-        "roof": "屋顶"
+        "timeline": "投掷时间轴"
       },
       "detail": {
         "previous": "上一个点位",
@@ -5465,6 +5464,8 @@
         "open_full": "打开完整页面",
         "practice_this": "练习这个",
         "share": "分享点位",
+        "watch_3d": "3D 观看",
+        "watch_clip": "观看片段",
         "copy_link": "复制点位链接",
         "download_clip": "下载片段",
         "not_found": "未找到该点位",
@@ -5768,6 +5769,8 @@
         "step_context_by": "{name} 的第 {step} 步，共 {count} 步。在 {seconds} 秒时由 {player} 投出。",
         "step_context_you": "{name} 的第 {step} 步，共 {count} 步。在 {seconds} 秒时由你投出。",
         "play": "播放",
+        "pause": "暂停",
+        "seek": "战术时间轴",
         "stop": "停止",
         "clock_of": "{now} 秒 / {total} 秒",
         "duplicate": "复制一份",

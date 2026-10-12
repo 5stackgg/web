@@ -6,6 +6,7 @@ import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
+import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
 import UtilityExecuteViewer3D from "~/components/utility/UtilityExecuteViewer3D.vue";
 import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -53,10 +54,14 @@ const props = withDefaults(
     /** Whose it is, and the team it belongs to, by name. */
     owner?: string | null;
     team?: string | null;
-    /** Seconds on the clock while it is being played back. */
+    /** Seconds on the clock once it has been played. */
     clock?: number | null;
-    /** The `performance.now()` that run started at, for the scene. */
+    /** The `performance.now()` that run started at while it runs. */
     startedAt?: number | null;
+    /** The clock is running, or the scene is flying in to start it. */
+    running?: boolean;
+    /** Seconds the run lasts on the play bar. */
+    length?: number;
     // Play has been pressed on a map with a mesh, so the execute is thrown in
     // 3D. Off until then: a three.js scene per execute you open to read is
     // waste. Once on it stays, showing the run it last played.
@@ -71,6 +76,8 @@ const props = withDefaults(
     team: null,
     clock: null,
     startedAt: null,
+    running: false,
+    length: 0,
     scene: false,
     hoveredLineupId: null,
     lineupsLoading: false,
@@ -84,6 +91,8 @@ const emit = defineEmits<{
   (e: "framed"): void;
   // Put the map back where the scene was.
   (e: "close-scene"): void;
+  (e: "toggle"): void;
+  (e: "seek", seconds: number): void;
 }>();
 
 const mine = defineModel<boolean>("mine", { default: false });
@@ -311,9 +320,21 @@ onBeforeUnmount(() => {
           :beats="beats"
           :clock="clock"
           :started-at="startedAt"
+          :controls="64"
           fill
           @framed="emit('framed')"
-        />
+        >
+          <UtilityExecuteTransport
+            class="absolute inset-x-3 bottom-3 z-[11]"
+            :position="clock"
+            :started-at="startedAt"
+            :length="length"
+            :running="running"
+            :beats="beats"
+            @toggle="emit('toggle')"
+            @seek="(seconds) => emit('seek', seconds)"
+          />
+        </UtilityExecuteViewer3D>
         <button
           type="button"
           class="absolute left-3 top-3 z-[11] inline-flex h-8 items-center rounded-md border border-border/60 bg-black/60 px-3 text-xs font-semibold text-foreground backdrop-blur transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
@@ -336,8 +357,20 @@ onBeforeUnmount(() => {
           :beats="beats"
           :clock="clock"
           :started-at="startedAt"
+          :controls="56"
           @framed="emit('framed')"
-        />
+        >
+          <UtilityExecuteTransport
+            class="absolute inset-x-2 bottom-2 z-[11]"
+            :position="clock"
+            :started-at="startedAt"
+            :length="length"
+            :running="running"
+            :beats="beats"
+            @toggle="emit('toggle')"
+            @seek="(seconds) => emit('seek', seconds)"
+          />
+        </UtilityExecuteViewer3D>
       </div>
     </Fold>
   </div>

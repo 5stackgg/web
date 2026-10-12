@@ -8,6 +8,16 @@ import {
 } from "~/composables/useRadarProjection";
 import metadata from "~/public/radars/metadata.json";
 
+vi.mock("~/utilities/stageRadars.json", () => ({
+  default: {
+    rush_001: "0a1b2c3d",
+    de_mirage: "4e5f6a7b",
+    de_dust2_night: "8c9d0e1f",
+  },
+}));
+
+const RUSH = "/radars/stage/rush_001@2x.webp?v=0a1b2c3d";
+
 beforeAll(() => {
   vi.stubGlobal(
     "fetch",
@@ -49,7 +59,7 @@ describe("useRadarProjection with volumes", () => {
     expect(state.volumes.value).toHaveLength(20);
     expect(state.activeVolume.value).toBeNull();
     expect(state.calibration.value?.resolution).toBe(18.910156);
-    expect(state.radarSrc.value).toBe("/radars/rush_001.png");
+    expect(state.radarSrc.value).toBe(RUSH);
   });
 
   it("follows the points into their room", async () => {
@@ -73,7 +83,7 @@ describe("useRadarProjection with volumes", () => {
 
     points.value = [];
     expect(state.activeVolume.value).toBeNull();
-    expect(state.radarSrc.value).toBe("/radars/rush_001.png");
+    expect(state.radarSrc.value).toBe(RUSH);
   });
 
   it("lets a manual room win until the map changes", async () => {
@@ -94,7 +104,33 @@ describe("useRadarProjection with volumes", () => {
     expect(state.volumeOverride.value).toBeNull();
     expect(state.volumes.value).toEqual([]);
     expect(state.activeVolume.value).toBeNull();
-    expect(state.radarSrc.value).toBe("/radars/de_mirage.png");
+    expect(state.radarSrc.value).toBe(
+      "/radars/stage/de_mirage@2x.webp?v=4e5f6a7b",
+    );
     expect(state.calibration.value?.resolution).toBe(5.02);
+  });
+});
+
+describe("useRadarProjection images", () => {
+  it("draws a night map in its own image on its day map's calibration", async () => {
+    const { state } = await mountProjection("de_dust2_night");
+
+    expect(state.calibration.value?.resolution).toBe(4.4);
+    expect(state.radarSrc.value).toBe(
+      "/radars/stage/de_dust2_night@2x.webp?v=8c9d0e1f",
+    );
+  });
+
+  it("gives the 1x image when asked, and the generic radar where there is no bake", async () => {
+    const { state, mapName } = await mountProjection("de_mirage", {
+      retina: false,
+    });
+    expect(state.radarSrc.value).toBe(
+      "/radars/stage/de_mirage.webp?v=4e5f6a7b",
+    );
+
+    mapName.value = "de_cache";
+    await flushPromises();
+    expect(state.radarSrc.value).toBe("/radars/de_cache.png");
   });
 });

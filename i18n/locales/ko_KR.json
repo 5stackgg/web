@@ -5456,8 +5456,7 @@
         "score": "추천 {count}개 | 추천 {count}개"
       },
       "viewer": {
-        "replay_throw": "투척 다시 보기",
-        "roof": "지붕"
+        "timeline": "투척 타임라인"
       },
       "detail": {
         "previous": "이전 라인업",
@@ -5465,6 +5464,8 @@
         "open_full": "전체 페이지 열기",
         "practice_this": "이걸 연습하기",
         "share": "라인업 공유",
+        "watch_3d": "3D로 보기",
+        "watch_clip": "클립 보기",
         "copy_link": "라인업 링크 복사",
         "download_clip": "클립 다운로드",
         "not_found": "라인업을 찾을 수 없습니다",
@@ -5768,6 +5769,8 @@
         "step_context_by": "{name}의 {count}단계 중 {step}단계. {seconds}초에 {player}이(가) 던집니다.",
         "step_context_you": "{name}의 {count}단계 중 {step}단계. {seconds}초에 내가 던집니다.",
         "play": "재생",
+        "pause": "일시정지",
+        "seek": "실행 타임라인",
         "stop": "정지",
         "clock_of": "{now}초 / {total}초",
         "duplicate": "복제",

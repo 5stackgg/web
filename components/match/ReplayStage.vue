@@ -220,7 +220,7 @@ onBeforeUnmount(() => {
   stage.value = null;
 });
 
-defineExpose({ stage, camera, map, utility, whenReady });
+defineExpose({ stage, camera, utility, whenReady });
 </script>
 
 <template>

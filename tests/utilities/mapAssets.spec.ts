@@ -1,5 +1,4 @@
 // @vitest-environment node
-import { gzipSync } from "node:zlib";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 type MapAssets = typeof import("~/utilities/mapAssets");
@@ -206,11 +205,12 @@ describe("parseViewMesh", () => {
 
   it("decodes the surface and outside bits", () => {
     const [world] = assets.parseViewMesh(buildViewBin([WORLD])).chunks;
-    const surface = (i: number) => world.flags[i] & assets.VIEW_SURFACE_MASK;
+    const surface = (i: number) => world.flags[i] & 0b11;
+    const [solid, foliage, seeThrough] = [0, 1, 2];
 
-    expect(surface(0)).toBe(assets.VIEW_SURFACE_SOLID);
-    expect(surface(1)).toBe(assets.VIEW_SURFACE_FOLIAGE);
-    expect(surface(2)).toBe(assets.VIEW_SURFACE_SEE_THROUGH);
+    expect(surface(0)).toBe(solid);
+    expect(surface(1)).toBe(foliage);
+    expect(surface(2)).toBe(seeThrough);
     expect(world.flags[2] & assets.VIEW_FLAG_OUTSIDE).toBeTruthy();
     expect(world.flags[0] & assets.VIEW_FLAG_OUTSIDE).toBeFalsy();
   });
@@ -416,7 +416,6 @@ describe("resolveMapAssets", () => {
       view: null,
       listed: ["tri", "callouts"],
     });
-    expect(await assets.fetchViewMesh("de_inferno")).toBeNull();
     expect(await assets.hasMeshForMap("", "de_inferno")).toBe(true);
   });
 
@@ -526,36 +525,7 @@ describe("resolveMapAssets", () => {
   });
 });
 
-describe("fetchViewMesh", () => {
-  it("downloads, gunzips and parses the manifest's view mesh", async () => {
-    const gz = gzipSync(new Uint8Array(buildViewBin([WORLD, ROOM])));
-    vi.stubGlobal(
-      "fetch",
-      routes({
-        ...PUBLISHED,
-        [`${ROOT}/24957633/de_mirage.view.bin.gz`]: () => new Response(gz),
-      }),
-    );
-
-    const mesh = await assets.fetchViewMesh("de_mirage");
-
-    expect(mesh?.chunks.map((chunk) => chunk.indices.length)).toEqual([3, 9]);
-  });
-
-  it("is null when no view mesh is published", async () => {
-    vi.stubGlobal("fetch", routes(PUBLISHED));
-
-    expect(await assets.fetchViewMesh("de_dust2")).toBeNull();
-  });
-
-  it("throws on a missing file so the viewer can drop to the .tri", async () => {
-    vi.stubGlobal("fetch", routes({}));
-
-    await expect(
-      assets.fetchViewMesh("de_mirage", "https://cdn.example/maps/1"),
-    ).rejects.toThrow("404");
-  });
-
+describe("fetchViewMeshUrl", () => {
   it("stops the download when its signal aborts", async () => {
     const fetchMock = vi.fn(
       (_input: RequestInfo | URL, init?: RequestInit) =>
@@ -907,12 +877,12 @@ describe("radarImageUrl", () => {
   });
 
   it("falls back to the generic radar where there is no bake", () => {
-    expect(radar.radarImageUrl("de_cache")).toBe("/radars/de_cache.png");
-    expect(radar.radarImageUrl("de_cache", null, { retina: true })).toBe(
-      "/radars/de_cache.png",
+    expect(radar.radarImageUrl("cs_italy")).toBe("/radars/cs_italy.png");
+    expect(radar.radarImageUrl("cs_italy", null, { retina: true })).toBe(
+      "/radars/cs_italy.png",
     );
-    expect(radar.radarImageUrl("de_inferno_night")).toBe(
-      "/radars/de_inferno.png",
+    expect(radar.radarImageUrl("cs_italy_night")).toBe(
+      "/radars/cs_italy.png",
     );
   });
 
@@ -942,8 +912,8 @@ describe("radarImageUrl", () => {
         radar.radarImageUrl("de_mirage", null, { retina: true }),
       ),
     ).toBe(key);
-    expect(radar.radarImageKey("/radars/de_cache.png")).toBe(
-      "/radars/de_cache.png",
+    expect(radar.radarImageKey("/radars/rush_001_room204.png")).toBe(
+      "/radars/rush_001_room204.png",
     );
     expect(radar.radarImageKey(null)).toBeNull();
   });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
@@ -21,7 +21,6 @@ import {
   replayTeamForSide,
 } from "~/utilities/utilityDisplay";
 import { SMOKE_BLOOM_SECS } from "~/utils/smokeVolume";
-import type { SmokeVolume } from "~/utils/smokeVolume";
 import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
 
 const props = defineProps<{
@@ -57,13 +56,7 @@ const mapName = computed(() => normalizeMapName(props.lineup.map_name) || null);
 const replayType = computed(() => replayUtilityType(props.lineup.utility_type));
 const throwerTeam = computed(() => replayTeamForSide(props.lineup.side));
 
-const fullTrajectory = ref<UtilityTrajectoryPoint[] | null>(null);
-const smokeVolume = ref<SmokeVolume | null>(null);
-
 const trajectory = computed<UtilityTrajectoryPoint[]>(() => {
-  if (fullTrajectory.value?.length) {
-    return fullTrajectory.value;
-  }
   const preview = normalizeTrajectory(props.lineup.trajectory_preview);
   if (preview.length >= 2) {
     return preview;
@@ -82,36 +75,6 @@ const trajectory = computed<UtilityTrajectoryPoint[]>(() => {
     landing,
   ];
 });
-
-async function loadTrajectory() {
-  fullTrajectory.value = null;
-  smokeVolume.value = null;
-  // The size is written with the file and is safe to select; the S3 key is
-  // not something the browser needs to know.
-  if (!props.lineup.trajectory_size) {
-    return;
-  }
-  try {
-    const response = await fetch(
-      `https://${apiDomain}/utility/${props.lineup.id}/trajectory`,
-      { credentials: "include" },
-    );
-    if (!response.ok) {
-      return;
-    }
-    const payload = await response.json();
-    const points = normalizeTrajectory(payload?.points ?? payload);
-    if (points.length >= 2) {
-      fullTrajectory.value = points;
-    }
-    const volume = payload?.smoke_volume ?? payload?.smokeVolume ?? null;
-    if (volume) {
-      smokeVolume.value = { ...volume, gid: SYNTHETIC_GID } as SmokeVolume;
-    }
-  } catch {
-    fullTrajectory.value = null;
-  }
-}
 
 const flightMs = computed(() => {
   const recorded = props.lineup.flight_time_ms;
@@ -230,16 +193,9 @@ function onFramed() {
   }, 200);
 }
 
-onMounted(() => {
-  void loadTrajectory();
-});
-
 watch(
   () => props.lineup.id,
-  () => {
-    stop();
-    void loadTrajectory();
-  },
+  () => stop(),
 );
 
 onBeforeUnmount(stop);
@@ -254,9 +210,7 @@ const BURST_UNITS: Partial<Record<string, number>> = {
 // Where the camera settles: over the middle of the whole arc, looking from
 // behind the thrower toward where it lands. The arc's height counts as much as
 // its length -- a pop flash thrown straight up barely moves across the ground,
-// and framing only that cut the flash off the top. Built from the lineup's own
-// preview, not the full trajectory that loads after it, so the frame does not
-// shift (and restart the throw) when the detailed path arrives.
+// and framing only that cut the flash off the top.
 const cameraFrame = computed(() => {
   const origin = utilityOrigin(props.lineup);
   const landing = utilityLanding(props.lineup);
@@ -402,10 +356,6 @@ const grenades = computed(() => {
   ];
 });
 
-const smokeVolumes = computed(() =>
-  smokeVolume.value ? [smokeVolume.value] : [],
-);
-
 // The renderer derives its roof cut from the tallest player it has seen, and a
 // lineup only has one. Take the highest point of the throw instead, so the cut
 // never slices through the arc it is meant to show.
@@ -467,7 +417,6 @@ const stageThrows = computed(() => {
   const entry = utilityStageThrow(props.lineup, {
     key: props.lineup.id,
     gid: SYNTHETIC_GID,
-    points: fullTrajectory.value,
     voxels: smokeVoxels.value,
   });
   return entry ? [entry] : [];
@@ -522,7 +471,6 @@ const stageTime = computed(() => {
       :grenade-trajectories="grenadeTrajectories"
       :in-flight="inFlight"
       :grenades="grenades"
-      :smoke-volumes="smokeVolumes"
       :tick="tick"
       :tick-rate="TICK_RATE"
       :ceiling="ceiling"

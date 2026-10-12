@@ -428,10 +428,6 @@ export const VIEW_MESH_MAGIC = "5SVM";
 export const VIEW_MESH_VERSION = 1;
 // Same cap the viewer has always applied to the decompressed .tri.
 export const MAX_VIEW_MESH_BYTES = 96 * 1024 * 1024;
-export const VIEW_SURFACE_MASK = 0b11;
-export const VIEW_SURFACE_SOLID = 0;
-export const VIEW_SURFACE_FOLIAGE = 1;
-export const VIEW_SURFACE_SEE_THROUGH = 2;
 export const VIEW_FLAG_OUTSIDE = 0b100;
 
 const VIEW_HEADER_BYTES = 32;
@@ -541,19 +537,6 @@ export async function fetchViewMeshUrl(
     throw new Error("view mesh too large");
   }
   return parseViewMesh(buffer);
-}
-
-/** Resolves to null when no view mesh is published for the map. */
-export async function fetchViewMesh(
-  mapName: string,
-  cdn = "",
-  signal?: AbortSignal,
-): Promise<ViewMesh | null> {
-  const assets = await resolveMapAssets(mapName, cdn);
-  if (!assets?.view) {
-    return null;
-  }
-  return fetchViewMeshUrl(assets.view, signal);
 }
 
 export type FloorGrid = {

@@ -312,17 +312,6 @@ function voxelize(grid: VisionGrid, t: Float32Array) {
   }
 }
 
-export function isSolid(g: VisionGrid, x: number, y: number, z: number) {
-  const i = Math.floor((x - g.ox) / g.vs);
-  const j = Math.floor((y - g.oy) / g.vs);
-  const k = Math.floor((z - g.oz) / g.vs);
-  if (i < 0 || j < 0 || k < 0 || i >= g.nx || j >= g.ny || k >= g.nz) {
-    return false;
-  }
-  const v = i + g.nx * (j + g.ny * k);
-  return (g.bits[v >>> 5] & (1 << (v & 31))) !== 0;
-}
-
 /** Hits nearer than this are the surface the ray starts on. */
 const NEAR = 0.05;
 

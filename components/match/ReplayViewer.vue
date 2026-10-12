@@ -11,11 +11,7 @@ import {
   nextTick,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  weaponIconPath,
-  weaponIconFallback,
-  weaponBasename,
-} from "~/utilities/weaponIcon";
+import { weaponIconPath, weaponBasename } from "~/utilities/weaponIcon";
 import { kdColor } from "~/utils/statTiers";
 import {
   activeBlastsAt,
@@ -62,56 +58,13 @@ import type {
   DirectorReplay,
 } from "~/utilities/replayStage/director";
 import { EMPTY_FRAME } from "~/utilities/replayStage/types";
-
-// Canonical icon first (5Stack/new demos); if it 404s, retry the legacy
-// strip-all path for old, already-parsed demos before hiding.
-function onWeaponIconError(e: Event, weapon: string | null | undefined) {
-  const img = e.target as HTMLImageElement;
-  const fb = weaponIconFallback(weapon);
-  if (fb && !img.dataset.fb && !img.src.endsWith(fb)) {
-    img.dataset.fb = "1";
-    img.src = fb;
-  } else {
-    img.style.display = "none";
-  }
-}
-import {
-  Play,
-  Pause,
-  SkipBack,
-  SkipForward,
-  Gauge,
-  ExternalLink,
-  Users,
-  Hash,
-  Crosshair,
-  Settings2,
-  Keyboard,
-  PanelRightClose,
-  PanelRightOpen,
-  Route,
-  ChevronLeft,
-  ChevronRight,
-  Layers,
-  Box,
-  Skull,
-  RotateCcw,
-  Smartphone,
-} from "lucide-vue-next";
-import { Kbd } from "~/components/ui/kbd";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "~/components/ui/popover";
+import { RotateCcw, Smartphone } from "lucide-vue-next";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
 } from "~/components/ui/select";
-import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
-import RoundSelector from "~/components/match/RoundSelector.vue";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
 import {
   hasMeshForMap,
@@ -315,10 +268,6 @@ const props = defineProps<{
   mapName?: string | null;
   // The map row's label: a workshop map's name is its workshop id.
   mapTitle?: string | null;
-  // True when the viewer is already inside the popout window — we
-  // hide the popout button so the user can't open the popout of the
-  // popout.
-  isPopout?: boolean;
   // Initial map view ("2d" default; "3d" for the standalone 3D page).
   initialView?: "2d" | "3d";
 }>();
@@ -904,14 +853,6 @@ const killFeedDisplay = computed(() =>
   killsBeforeCursor.value.slice().reverse(),
 );
 
-const killFeedEl = ref<HTMLElement | null>(null);
-watch(
-  () => killsBeforeCursor.value.length,
-  () => {
-    const el = killFeedEl.value;
-    if (el) el.scrollTop = 0;
-  },
-);
 const nextTickValue = computed(
   () => ticks.value[Math.min(tickIndex.value + 1, ticks.value.length - 1)] ?? 0,
 );
@@ -969,14 +910,6 @@ const groundKitsAt = computed<
 // Sliding window in ticks for "did this player just fire / take damage".
 // At 64 tps a 0.2s window = ~13 ticks.
 const RECENT_TICKS = 16;
-
-function findPositionAt(samples: Position[], tick: number): Position | null {
-  // Linear search is fine — typical round has ~120 samples per player.
-  for (const p of samples) {
-    if (p.tick >= tick) return p;
-  }
-  return samples[samples.length - 1] ?? null;
-}
 
 // Shortest-path angle interpolation. Without this, yaw 350° → 10° jumps
 // 340° around when it should sweep 20° the short way.
@@ -2029,18 +1962,6 @@ const inFlightGrenades = computed<InFlightGrenade[]>(() => {
   return out;
 });
 
-function parseLocCoords(
-  s: string | null,
-): { x: number; y: number; z: number } | null {
-  if (!s) return null;
-  const parts = s
-    .replace(/[(){}\[\]]/g, "")
-    .split(/[, ]+/)
-    .map(Number);
-  if (parts.length < 2 || parts.some((n) => !Number.isFinite(n))) return null;
-  return { x: parts[0], y: parts[1], z: parts[2] ?? 0 };
-}
-
 const bounds = computed(() => {
   let minX = Infinity,
     maxX = -Infinity,
@@ -2323,42 +2244,6 @@ const overlayProgressPct = computed(() => {
   );
 });
 
-// Scrubbing: click anywhere on the bar to jump, drag to scrub. We use
-// pointer events so it works for mouse, pen, and touch identically.
-function seekByPointer(e: PointerEvent, el: HTMLElement) {
-  const rect = el.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  if (overlayMode.value) {
-    overlayElapsedSec.value = Math.max(
-      0,
-      Math.min(overlayWindowSec.value, pct * overlayWindowSec.value),
-    );
-    return;
-  }
-  const i = Math.round(pct * (ticks.value.length - 1));
-  tickIndex.value = Math.max(0, Math.min(ticks.value.length - 1, i));
-  fractional.value = 0;
-}
-function onScrubStart(e: PointerEvent) {
-  const el = e.currentTarget as HTMLElement;
-  pause();
-  el.setPointerCapture(e.pointerId);
-  seekByPointer(e, el);
-  const onMove = (ev: PointerEvent) => seekByPointer(ev, el);
-  const onUp = (ev: PointerEvent) => {
-    el.removeEventListener("pointermove", onMove);
-    el.removeEventListener("pointerup", onUp);
-    el.removeEventListener("pointercancel", onUp);
-    try {
-      el.releasePointerCapture(ev.pointerId);
-    } catch {
-      /* already released */
-    }
-  };
-  el.addEventListener("pointermove", onMove);
-  el.addEventListener("pointerup", onUp);
-  el.addEventListener("pointercancel", onUp);
-}
 function jumpToRound(delta: number) {
   // Single-round navigation is meaningless while the overlay stacks
   // every selected round on one clock.
@@ -2367,32 +2252,6 @@ function jumpToRound(delta: number) {
   const idx = rounds.value.indexOf(activeRound.value ?? rounds.value[0]);
   const next = Math.max(0, Math.min(rounds.value.length - 1, idx + delta));
   activeRound.value = rounds.value[next] ?? null;
-}
-const canPrevRound = computed(
-  () => rounds.value.indexOf(activeRound.value ?? rounds.value[0]) > 0,
-);
-const canNextRound = computed(() => {
-  const idx = rounds.value.indexOf(activeRound.value ?? rounds.value[0]);
-  return idx >= 0 && idx < rounds.value.length - 1;
-});
-function jumpToNextKill() {
-  const t = currentTick.value;
-  // Map kill timestamps to nearest tick via the player's positions —
-  // approximate by stepping the slider to ticks that contain a kill
-  // event in the position-tick neighbourhood. For now: find the next
-  // demoKills give us actual ticks — find the next kill after the
-  // cursor and snap the slider there.
-  const kills = roundKills.value;
-  if (kills.length === 0) return;
-  const killTicks = kills.map((k) => k.tick).sort((a, b) => a - b);
-  const nextK = killTicks.find((kt) => kt > t);
-  if (nextK === undefined) return;
-  const idx = ticks.value.findIndex((tt) => tt >= nextK);
-  if (idx >= 0) {
-    pause();
-    tickIndex.value = idx;
-    fractional.value = 0;
-  }
 }
 onUnmounted(pause);
 
@@ -3266,27 +3125,12 @@ const overlayActors3d = computed(() => {
 });
 
 const layoutRootEl = ref<HTMLElement | null>(null);
-// playbarRowEl is referenced from the in-radar overlay; kept here so
-// ResizeObserver triggers when the overlay's wrap state changes.
-const playbarRowEl = ref<HTMLElement | null>(null);
-const playbarDockEl = ref<HTMLElement | null>(null);
 // Map square side, fit to the smaller of available width/height so the
 // whole map stays within the window bounds (no cropping).
 const radarMaxPx = ref(560);
 // On touch, how far to shift the centered square UP so it clears the floating
 // transport bar (its center moves to the middle of the room above the bar).
 const mapTopShift = ref(0);
-
-// Floating scoreboard: shown by default, toggleable. When visible it
-// reserves horizontal room on the right so the map shrinks instead of
-// being impeded by the overlay; hidden, the map reclaims the full width.
-// Old floating scoreboard is replaced by the unified ReplayChrome; keep it off
-// (this also zeroes scoreboardReserve so the map uses the full stage).
-const showScoreboard = ref(false);
-const SCOREBOARD_RESERVE = 416; // 400px panel + 16px breathing room
-const scoreboardReserve = computed(() =>
-  showScoreboard.value ? SCOREBOARD_RESERVE : 0,
-);
 
 // ── Mobile / orientation handling ──────────────────────────────────────────
 // The replay stage is built for a wide layout (floating scoreboard + a
@@ -3295,8 +3139,7 @@ const scoreboardReserve = computed(() =>
 // `mobile` flag so it scales its panels down. `(pointer: coarse)` is the
 // primary-touch signal (true on phones/tablets, false on a mouse/trackpad
 // laptop even if it has a touchscreen). The chrome scoreboard gets its own
-// visibility ref so it can be collapsed for room — separate from the dead
-// `showScoreboard` reserve logic above.
+// visibility ref so it can be collapsed for room.
 const isCoarsePointer = ref(false);
 const isPortrait = ref(false);
 const isTablet = ref(false);
@@ -3620,10 +3463,8 @@ function recomputeRadarSize() {
   const rootRect = root.getBoundingClientRect();
   const SAFETY = 16;
   const bottomChrome = detectBottomChromeHeight();
-  const dockH = playbarDockEl.value?.offsetHeight ?? 0;
-  const availableH =
-    window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
-  const availableW = rootRect.width - scoreboardReserve.value;
+  const availableH = window.innerHeight - rootRect.top - SAFETY - bottomChrome;
+  const availableW = rootRect.width;
   // Desktop (windowed or fullscreen): fit the whole square map inside the stage
   // (letterbox the short side) so nothing is cropped. Touch: scale to the room
   // BETWEEN the top score HUD and the bottom transport bar — both float over
@@ -3664,9 +3505,6 @@ function recomputeRadarSize() {
   clampPan2d();
 }
 
-// Re-fit the map when the scoreboard is toggled so it grows/shrinks to
-// match the freed/reserved width.
-watch(showScoreboard, () => recomputeRadarSize());
 // Entering/leaving fullscreen flips the fit between contain and fill-width;
 // reset any active zoom so it starts clean at the new base size.
 watch([isFullscreen, mobileChrome], () => {
@@ -3764,36 +3602,6 @@ const SMOKE_PUFFS = [
   { dx: -18, dy: 3, r: 12, d: 0.34 },
   { dx: 3, dy: 16, r: 12, d: 0.3 },
 ];
-
-// Molotov fire spread: a scatter of flame cells across the burn footprint
-// so the pool reads as spreading fire, not one blob.
-const FIRE_CELLS = [
-  { dx: 0, dy: 0, r: 13, d: 0 },
-  { dx: -13, dy: -4, r: 10, d: 0.1 },
-  { dx: 12, dy: -6, r: 10, d: 0.14 },
-  { dx: -8, dy: 10, r: 9, d: 0.2 },
-  { dx: 10, dy: 9, r: 9, d: 0.18 },
-  { dx: 2, dy: -13, r: 8, d: 0.26 },
-  { dx: 16, dy: 3, r: 8, d: 0.24 },
-  { dx: -16, dy: 2, r: 8, d: 0.3 },
-];
-
-function projectileIcon(type: Grenade["type"], team: string | null): string {
-  const teamSlug = team === "t" ? "T" : "CT";
-  const map: Record<Grenade["type"], string> = {
-    Flash: "flashbang",
-    HE: "frag",
-    Smoke: "smoke",
-    Molotov: "firebomb",
-    Decoy: "smoke",
-  };
-  return `/radars/projectiles/projectile-img-${map[type]}-${teamSlug}.webp`;
-}
-
-function projectileSize(type: Grenade["type"]): number {
-  if (type === "Smoke" || type === "Molotov") return 56;
-  return 32;
-}
 
 // Demo-driven roster: derive every player who actually appears in the
 // recorded match (positions + demoPlayers list) rather than relying on
@@ -3985,11 +3793,6 @@ function kdrText(s: PlayerStats): string {
   if (s.d === 0) return s.k > 0 ? s.k.toFixed(2) : "0.00";
   return (s.k / s.d).toFixed(2);
 }
-function followLabelFor(focused: boolean, name: string): string {
-  return focused
-    ? t("match.replay.follow_stop")
-    : t("match.replay.follow_player", { name });
-}
 // Per-steamId lookup for the live carrier / defuser / action flags.
 // Backed by interpolatedPlayers so it tracks the playhead and avoids
 // repeatedly scanning the array from inside template expressions.
@@ -4000,12 +3803,6 @@ const interpBySteamId = computed(() => {
 });
 function hasBombFor(sid: string): boolean {
   return interpBySteamId.value.get(sid)?.hasBomb === true;
-}
-function hasDefuserFor(sid: string): boolean {
-  return interpBySteamId.value.get(sid)?.hasDefuser === true;
-}
-function bombActionFor(sid: string): BombInteraction {
-  return interpBySteamId.value.get(sid)?.bombAction ?? null;
 }
 // Ground-marker hover state. Keyed so we can show a hover halo on a
 // specific kit / the bomb without using CSS :hover (which is
@@ -4183,50 +3980,6 @@ const sideByRound = computed(() => {
   return out;
 });
 
-const roundStripEntries = computed(() => {
-  const winnerByRound = new Map<number, string | null>();
-  for (const rt of props.demoRoundTicks ?? []) {
-    if (typeof rt.round === "number") {
-      winnerByRound.set(rt.round, rt.winner ?? null);
-    }
-  }
-  return rounds.value.map((round) => {
-    const w = winnerByRound.get(round);
-    const winnerSide: "CT" | "T" | null =
-      w === "ct" ? "CT" : w === "t" ? "T" : null;
-    return { round, winnerSide };
-  });
-});
-
-// Halftime divider: track a reference player's side across rounds; the
-// swap is the first round where it flips from round one's assignment.
-const roundStripHalftime = computed<number | null>(() => {
-  const rs = rounds.value;
-  if (rs.length < 2) {
-    return null;
-  }
-  const sbr = sideByRound.value;
-  const firstSides = sbr.get(rs[0]);
-  if (!firstSides || !firstSides.size) {
-    return null;
-  }
-  const refSid = [...firstSides.keys()][0];
-  const refSide = firstSides.get(refSid);
-  for (let i = 1; i < rs.length; i++) {
-    const s = sbr.get(rs[i])?.get(refSid);
-    if (s && refSide && s !== refSide) {
-      return i;
-    }
-  }
-  return null;
-});
-
-function selectStripRound(round: number | null) {
-  if (round != null) {
-    activeRound.value = round;
-  }
-}
-
 const liveScore = computed<{ lineup_1: number; lineup_2: number }>(() => {
   const cur = activeRound.value;
   if (cur === null || cur <= 1) return { lineup_1: 0, lineup_2: 0 };
@@ -4303,61 +4056,6 @@ const sideScores = computed<{ ct: number; t: number }>(() => {
   }
   if (ctLineup === "2") return { ct: sb.rightScore, t: sb.leftScore };
   return { ct: sb.leftScore, t: sb.rightScore };
-});
-
-// Compact HUD payload for the 3D viewer's top score/round/timer readout.
-const hud3d = computed(() => {
-  const ss = sideScores.value;
-  let aliveCt = 0;
-  let aliveT = 0;
-  for (const p of interpolatedPlayers.value) {
-    if (!p.alive) continue;
-    if (p.team === "ct") aliveCt++;
-    else if (p.team === "t") aliveT++;
-  }
-  const tm = timer.value;
-  const clock =
-    tm.phase === "bomb"
-      ? `\u{1F4A3} ${formatMMSS(tm.secondsRemaining)}`
-      : formatMMSS(tm.secondsRemaining);
-  return {
-    round: activeRoundTick.value?.round ?? (activeRound.value ?? 0) + 1,
-    ct: ss.ct,
-    t: ss.t,
-    clock,
-    aliveCt,
-    aliveT,
-  };
-});
-
-// Full scoreboard rows for the 3D overlay (CT/T), Replay3D-styled.
-const scoreboard3d = computed(() => {
-  const live = liveStateBySteam.value;
-  const load = loadoutBySteam.value;
-  const build = (rows: RosterEntry[]) =>
-    rows.map((r) => {
-      const st = statsFor(r.steamId);
-      const ls = live.get(r.steamId);
-      const lo = load.get(r.steamId);
-      return {
-        sid: r.steamId,
-        name: r.name,
-        k: st.k,
-        d: st.d,
-        a: st.a,
-        alive: ls?.alive ?? false,
-        hp: ls?.health ?? 0,
-        primary: lo?.primary ?? null,
-        flash: lo?.flash ?? 0,
-        smoke: lo?.smoke ?? 0,
-        he: lo?.he ?? 0,
-        molotov: lo?.molotov ?? 0,
-        decoy: lo?.decoy ?? 0,
-        kit: lo?.kit ?? false,
-        hasBomb: hasBombFor(r.steamId),
-      };
-    });
-  return { ct: build(lineupRows.value.ct), t: build(lineupRows.value.t) };
 });
 
 // Play-by-play for the active round: kills + utility + bomb, up to cursor.
@@ -4498,54 +4196,6 @@ function grenadeIconPath(type: Grenade["type"]): string {
   return GRENADE_ICONS[type] ?? "";
 }
 
-// "Pop out" the replay into a free-floating window. Opens a new route
-// (pages/matches/[id]/playback/2d/[matchMapId].vue) that mounts a fresh
-// ReplayViewer. To avoid re-querying everything we already have loaded
-// here, we stash the current props onto `window.__replayHandoff` keyed
-// by match-map id; the popout child reads `window.opener.__replayHandoff[id]`
-// on mount and skips its own Apollo queries when present. Falls back
-// to fetching if the user navigated to /matches/:id/playback/2d/ directly.
-function openReplayPopout() {
-  if (typeof window === "undefined") return;
-  const mmId = (props.match?.match_maps ?? []).find(
-    (mm: any) => mm?.id && mm?.map?.name === props.mapName,
-  )?.id;
-  const matchId = props.match?.id;
-  if (!mmId || !matchId) return;
-  const w = window as any;
-  w.__replayHandoff = w.__replayHandoff ?? {};
-  w.__replayHandoff[mmId] = {
-    match: props.match,
-    positions: props.positions,
-    grenades: props.grenades,
-    // The popout treats a handoff as a complete payload and never fetches the
-    // blob, so anything omitted here is simply missing over there.
-    grenadeTrajectories: props.grenadeTrajectories,
-    smokeVolumes: props.smokeVolumes,
-    infernos: props.infernos,
-    smokeVoxels: props.smokeVoxels,
-    flashes: props.flashes,
-    shots: props.shots,
-    damages: props.damages,
-    demoPlayers: props.demoPlayers,
-    demoKills: props.demoKills,
-    demoBombs: props.demoBombs,
-    demoKitDrops: props.demoKitDrops,
-    demoRoundTicks: props.demoRoundTicks,
-    roundInventory: props.roundInventory,
-    roundEconomy: props.roundEconomy,
-    tickRate: props.tickRate,
-    mapName: props.mapName,
-    mapTitle: props.mapTitle,
-  };
-  const url = `/matches/${matchId}/playback/2d/${mmId}`;
-  window.open(
-    url,
-    `replay-popout-${mmId}`,
-    "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
-  );
-}
-
 // ===================================================================
 // Unified chrome (ReplayChrome) adapters — map ReplayViewer's live
 // playback state onto Replay3D's bp-* chrome shape so 2D and 3D share
@@ -4638,12 +4288,6 @@ function buildChromeRows(rows: RosterEntry[], side: number) {
 }
 const chromeTeamA = computed(() => buildChromeRows(lineupRows.value.ct, 0));
 const chromeTeamB = computed(() => buildChromeRows(lineupRows.value.t, 1));
-const chromeAliveA = computed(
-  () => chromeTeamA.value.filter((r) => r.alive).length,
-);
-const chromeAliveB = computed(
-  () => chromeTeamB.value.filter((r) => r.alive).length,
-);
 const chromeHud = computed(() => {
   const ss = sideScores.value;
   const tm = timer.value;
@@ -4885,7 +4529,7 @@ const replayShare = useReplayShare({
         :style="{
           width: radarMaxPx + 'px',
           height: radarMaxPx + 'px',
-          left: `calc(50% - ${scoreboardReserve / 2}px)`,
+          left: '50%',
           top: `calc(50% - ${mapTopShift}px)`,
         }"
         @wheel.prevent="onWheel2d"
@@ -6394,9 +6038,6 @@ const replayShare = useReplayShare({
         :hud="chromeHud"
         :team-a="chromeTeamA"
         :team-b="chromeTeamB"
-        :side-a="0"
-        :alive-a="chromeAliveA"
-        :alive-b="chromeAliveB"
         :feed="chromeFeed"
         :pbp="chromePbp"
         :analysis="roundAnalysis"
@@ -6550,720 +6191,11 @@ const replayShare = useReplayShare({
           </p>
         </div>
       </Transition>
-
-      <!-- Round timer (top-left) + HUD controls (top-right) are
-             anchored to the STAGE edges, not the centered map, so they
-             hug the viewport corners and the map reads wider. -->
-      <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
-           sized 40×40 to read as broadcast-grade action buttons. -->
-      <div
-        v-if="false"
-        class="absolute top-2 right-2 z-20 flex items-center gap-1.5"
-      >
-        <Tooltip v-if="radarSrc">
-          <TooltipTrigger as-child>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border transition-colors backdrop-blur-sm"
-              :class="
-                viewMode === '3d'
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                  : 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]'
-              "
-              @click="viewMode = viewMode === '3d' ? '2d' : '3d'"
-            >
-              <Box class="w-5 h-5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>{{ viewMode === "3d" ? "2D" : "3D" }}</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-              @click="showScoreboard = !showScoreboard"
-            >
-              <PanelRightClose v-if="showScoreboard" class="w-5 h-5" />
-              <PanelRightOpen v-else class="w-5 h-5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            {{
-              showScoreboard
-                ? $t("match.replay.hide_scoreboard")
-                : $t("match.replay.show_scoreboard")
-            }}
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-              @click="showAvatars = !showAvatars"
-            >
-              <Users v-if="showAvatars" class="w-5 h-5" />
-              <Hash v-else class="w-5 h-5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            {{
-              showAvatars
-                ? $t("match.replay.toggle_to_slots")
-                : $t("match.replay.toggle_to_avatars")
-            }}
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border bg-[hsl(var(--card)/0.85)] transition-colors backdrop-blur-sm"
-              :class="
-                pathingMode === 'off'
-                  ? 'border-[hsl(var(--tac-amber)/0.35)] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))]'
-                  : 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-              "
-              @click="togglePathing"
-            >
-              <Route class="w-5 h-5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            {{
-              pathingMode === "off"
-                ? t("match.replay.pathing_off")
-                : t("match.replay.pathing_progress")
-            }}
-          </TooltipContent>
-        </Tooltip>
-        <Popover>
-          <PopoverTrigger as-child>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-              :title="$t('match.replay.overlays')"
-            >
-              <Settings2 class="w-5 h-5" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
-            <div
-              class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
-            >
-              {{ $t("match.replay.overlays") }}
-            </div>
-            <label
-              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-            >
-              <input
-                v-model="showC4"
-                type="checkbox"
-                class="accent-[hsl(var(--tac-amber))]"
-              />
-              <span>{{ $t("match.replay.overlay_c4") }}</span>
-            </label>
-            <label
-              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-            >
-              <input
-                v-model="showDefuser"
-                type="checkbox"
-                class="accent-[hsl(var(--tac-amber))]"
-              />
-              <span>{{ $t("match.replay.overlay_defuser") }}</span>
-            </label>
-            <label
-              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-            >
-              <input
-                v-model="showGroundBomb"
-                type="checkbox"
-                class="accent-[hsl(var(--tac-amber))]"
-              />
-              <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
-            </label>
-            <label
-              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-            >
-              <input
-                v-model="showGroundKits"
-                type="checkbox"
-                class="accent-[hsl(var(--tac-amber))]"
-              />
-              <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
-            </label>
-          </PopoverContent>
-        </Popover>
-        <Tooltip v-if="!isPopout">
-          <TooltipTrigger as-child>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-              @click="openReplayPopout"
-            >
-              <ExternalLink class="w-5 h-5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
-        </Tooltip>
-      </div>
-
-      <!-- Old top-left timer HUD — replaced by ReplayChrome's center HUD. -->
-      <div
-        v-if="false"
-        class="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none z-10"
-      >
-        <template v-if="overlayMode">
-          <div
-            class="inline-flex items-center gap-2 px-2.5 py-1 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-          >
-            <Layers class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))] shrink-0" />
-            <span
-              class="font-mono text-[0.5rem] tracking-[0.22em] uppercase text-[hsl(var(--tac-amber)/0.8)]"
-            >
-              {{ t("match.replay.overlay_buy_section") }}
-            </span>
-            <span
-              class="font-mono text-sm font-bold tabular-nums text-[hsl(var(--tac-amber))]"
-            >
-              +{{ formatMMSS(overlayElapsedSec) }}
-              <span class="text-[hsl(var(--tac-amber)/0.5)]">/</span>
-              {{ formatMMSS(overlayWindowSec) }}
-            </span>
-          </div>
-          <div class="px-1 font-mono text-[0.6rem] text-muted-foreground">
-            {{
-              t("match.replay.overlay_buy_explainer", {
-                sec: overlayWindowSec,
-                count: overlaySelectedRounds.size,
-              })
-            }}
-          </div>
-        </template>
-        <template v-else>
-          <!-- stacked score + RD + time box (mirrors the 3D viewer's HUD) -->
-          <div
-            class="inline-flex flex-col items-center gap-0.5 px-3 py-1.5 border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-          >
-            <div class="font-mono text-lg font-bold tabular-nums leading-none">
-              <span :style="{ color: colorFor('ct') }">{{
-                sideScores.ct
-              }}</span>
-              <span class="text-muted-foreground/50 mx-1.5">:</span>
-              <span :style="{ color: colorFor('t') }">{{ sideScores.t }}</span>
-            </div>
-            <div
-              class="font-mono text-[0.62rem] tabular-nums leading-none flex items-center gap-1.5"
-              :class="
-                timer.phase === 'bomb'
-                  ? 'text-[hsl(var(--destructive))]'
-                  : 'text-muted-foreground'
-              "
-            >
-              <span
-                v-if="activeRound != null"
-                class="tracking-[0.18em] text-[hsl(var(--tac-amber)/0.85)]"
-                >RD {{ activeRound }}</span
-              >
-              <span class="opacity-40">·</span>
-              <span
-                v-if="timer.phase === 'freeze'"
-                class="tracking-[0.18em] uppercase"
-                >{{ $t("match.replay.phase_freeze") }}</span
-              >
-              <span
-                v-else-if="timer.phase === 'bomb'"
-                class="tracking-[0.18em] uppercase"
-                >{{ $t("match.replay.phase_bomb") }}</span
-              >
-              <span>{{ formatMMSS(timer.secondsRemaining) }}</span>
-            </div>
-          </div>
-          <div
-            v-if="timer.phase === 'bomb'"
-            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] backdrop-blur-sm"
-          >
-            <span class="relative inline-flex h-1.5 w-1.5">
-              <span
-                class="absolute inline-flex h-full w-full rounded-full bg-current animate-ping"
-              />
-              <span
-                class="relative inline-flex h-1.5 w-1.5 rounded-full bg-current"
-              />
-            </span>
-            {{
-              $t("match.replay.bomb_planted", {
-                site: bombPlantThisRound?.site ?? "",
-              })
-            }}
-          </div>
-          <div
-            v-else-if="
-              bombDefuseThisRound && bombDefuseThisRound.tick <= currentTick
-            "
-            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--success)/0.6)] bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] backdrop-blur-sm"
-          >
-            <span class="w-1.5 h-1.5 rounded-full bg-current" />
-            {{ $t("match.replay.bomb_defused") }}
-          </div>
-          <div
-            v-else-if="
-              bombExplodeThisRound && bombExplodeThisRound.tick <= currentTick
-            "
-            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.8)] bg-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] backdrop-blur-sm"
-          >
-            {{ $t("match.replay.bomb_exploded") }}
-          </div>
-        </template>
-      </div>
-
-      <!-- Floating scoreboard: the ONLY floating element. Stacked at the
-             stage's right edge (dead space) so it never overlays the map
-             action. Holds both side rosters + the round kill feed. Wrapper
-             is pointer-events-none so gaps don't swallow map interactions;
-             cards re-enable pointer events for click-to-follow. -->
-      <!-- Old floating scoreboard — replaced by ReplayChrome's scoreboard.
-             Disabled (its Tooltip needs ReplayChrome's TooltipProvider). -->
-      <Transition name="scoreboard">
-        <div
-          v-if="false"
-          class="absolute top-14 right-2 bottom-3 z-20 hidden md:flex flex-col gap-1.5 w-[400px] pointer-events-none"
-        >
-          <div
-            class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-            :style="{ borderColor: 'hsl(210 80% 60% / 0.45)' }"
-          >
-            <ReplayLineupTeam
-              team="ct"
-              :label="$t('match.replay.counter_terrorists')"
-              :score="sideScores.ct"
-              :members="lineupRows.ct"
-              :live-state-by-steam="liveStateBySteam"
-              :loadout-by-steam="loadoutBySteam"
-              :focused-player-id="focusedPlayerId"
-              :show-avatars="showAvatars"
-              :show-c4="showC4"
-              :stats-for="statsFor"
-              :has-bomb-for="hasBombFor"
-              :follow-label="followLabelFor"
-              @focus="toggleFocus"
-            />
-          </div>
-          <div
-            class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-            :style="{ borderColor: 'hsl(33 94% 58% / 0.45)' }"
-          >
-            <ReplayLineupTeam
-              team="t"
-              :label="$t('match.replay.terrorists')"
-              :score="sideScores.t"
-              :members="lineupRows.t"
-              :live-state-by-steam="liveStateBySteam"
-              :loadout-by-steam="loadoutBySteam"
-              :focused-player-id="focusedPlayerId"
-              :show-avatars="showAvatars"
-              :show-c4="showC4"
-              :stats-for="statsFor"
-              :has-bomb-for="hasBombFor"
-              :follow-label="followLabelFor"
-              @focus="toggleFocus"
-            />
-          </div>
-          <p
-            class="pointer-events-none text-[0.55rem] leading-tight text-muted-foreground/70 px-0.5"
-          >
-            {{ $t("match.replay.follow_hint") }}
-          </p>
-
-          <!-- Round kill feed, tucked under the rosters so it floats WITH
-                 the scoreboard (right-side dead space) — no overlay on the
-                 action, and nothing else floats. flex-1 fills the space
-                 beneath the rosters and scrolls internally. -->
-          <div
-            v-if="killsBeforeCursor.length > 0"
-            class="pointer-events-auto flex-1 min-h-0 flex flex-col gap-1 px-2 py-1.5 border border-border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-          >
-            <div
-              class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground shrink-0"
-            >
-              {{ $t("match.round_kills") }}
-            </div>
-            <div
-              ref="killFeedEl"
-              class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-1 pr-1"
-            >
-              <div
-                v-for="(k, i) of killFeedDisplay"
-                :key="'kf-' + i"
-                class="font-mono text-[0.65rem] tabular-nums flex items-center gap-1 py-0.5"
-              >
-                <!-- Killer block: identity pip (avatar or slot number) +
-                   name, colored to the killer's team. -->
-                <img
-                  v-if="
-                    showAvatars && k.killer && playerAvatarMap[String(k.killer)]
-                  "
-                  :src="playerAvatarMap[String(k.killer)]"
-                  :alt="playerName(k.killer ?? '')"
-                  :title="playerName(k.killer ?? '')"
-                  class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
-                  :style="{ borderColor: colorFor(k.killer_team ?? null) }"
-                  @error="
-                    ($event.target as HTMLImageElement).style.display = 'none'
-                  "
-                />
-                <span
-                  v-else
-                  class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
-                  :title="playerName(k.killer ?? '')"
-                  :style="{
-                    background: colorFor(k.killer_team ?? null),
-                    color:
-                      k.killer_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
-                  }"
-                >
-                  {{ slotByPlayer[String(k.killer ?? "")]?.slot ?? "?" }}
-                </span>
-                <span
-                  class="truncate max-w-[5rem]"
-                  :style="{ color: colorFor(k.killer_team ?? null) }"
-                >
-                  {{ playerName(k.killer ?? "") }}
-                </span>
-                <img
-                  v-if="k.weapon && weaponIconPath(k.weapon)"
-                  :src="weaponIconPath(k.weapon)"
-                  :alt="k.weapon"
-                  :title="k.weapon"
-                  class="h-4 w-auto opacity-90 shrink-0"
-                  @error="onWeaponIconError($event, k.weapon)"
-                />
-                <Crosshair
-                  v-if="k.headshot"
-                  class="w-3 h-3 text-[hsl(var(--tac-amber))] drop-shadow-[0_0_4px_hsl(var(--tac-amber)/0.6)] shrink-0"
-                  :stroke-width="2.5"
-                  :title="$t('match.replay.headshot')"
-                />
-                <!-- Victim block: same identity pip + name, team color. -->
-                <img
-                  v-if="
-                    showAvatars && k.victim && playerAvatarMap[String(k.victim)]
-                  "
-                  :src="playerAvatarMap[String(k.victim)]"
-                  :alt="playerName(k.victim ?? '')"
-                  :title="playerName(k.victim ?? '')"
-                  class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
-                  :style="{ borderColor: colorFor(k.victim_team ?? null) }"
-                  @error="
-                    ($event.target as HTMLImageElement).style.display = 'none'
-                  "
-                />
-                <span
-                  v-else
-                  class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
-                  :title="playerName(k.victim ?? '')"
-                  :style="{
-                    background: colorFor(k.victim_team ?? null),
-                    color:
-                      k.victim_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
-                  }"
-                >
-                  {{ slotByPlayer[String(k.victim ?? "")]?.slot ?? "?" }}
-                </span>
-                <span
-                  class="truncate max-w-[5rem]"
-                  :style="{ color: colorFor(k.victim_team ?? null) }"
-                >
-                  {{ playerName(k.victim ?? "") }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Transition>
-    </div>
-
-    <!-- Old docked transport — replaced by ReplayChrome's bottom transport. -->
-    <div
-      v-if="false"
-      ref="playbarDockEl"
-      class="flex flex-col bg-[hsl(var(--card)/0.6)] border border-border rounded-md overflow-hidden"
-    >
-      <!-- Round row. In overlay mode the per-round nav is replaced by
-               the overlay's window slider + full-buy round chips; the
-               overlay toggle is an icon pinned at the end either way. -->
-      <div
-        v-if="roundStripEntries.length || overlayAvailable"
-        class="flex flex-wrap items-center gap-1.5 px-3 pt-2 pb-1 border-b transition-colors"
-        :class="
-          overlayMode
-            ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]'
-            : 'border-border/40'
-        "
-      >
-        <template v-if="!overlayMode">
-          <button
-            type="button"
-            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-md text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
-            :title="$t('match.replay.prev_round')"
-            :disabled="!canPrevRound"
-            @click="jumpToRound(-1)"
-          >
-            <ChevronLeft class="w-4 h-4" />
-          </button>
-          <RoundSelector
-            class="min-w-0 flex-1"
-            :rounds="roundStripEntries"
-            :model-value="activeRound"
-            :halftime-index="roundStripHalftime"
-            @update:model-value="selectStripRound"
-          />
-          <button
-            type="button"
-            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-md text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
-            :title="$t('match.replay.next_round')"
-            :disabled="!canNextRound"
-            @click="jumpToRound(1)"
-          >
-            <ChevronRight class="w-4 h-4" />
-          </button>
-        </template>
-        <template v-else>
-          <div class="flex items-center gap-2 min-w-[9rem] flex-1">
-            <input
-              v-model.number="overlayWindowSec"
-              type="range"
-              min="10"
-              max="115"
-              step="5"
-              class="flex-1 accent-[hsl(var(--tac-amber))]"
-              :title="
-                t('match.replay.overlay_buy_window', { sec: overlayWindowSec })
-              "
-            />
-            <span
-              class="font-mono text-xs tabular-nums text-[hsl(var(--tac-amber))] shrink-0 w-9"
-            >
-              {{ overlayWindowSec }}s
-            </span>
-          </div>
-          <div class="flex flex-wrap items-center gap-1">
-            <button
-              v-for="rn in fullBuyRounds"
-              :key="rn"
-              type="button"
-              class="inline-flex items-center justify-center min-w-6 h-6 px-1.5 rounded-md border text-[0.65rem] tabular-nums transition-colors"
-              :class="
-                overlaySelectedRounds.has(rn)
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)]'
-              "
-              @click="toggleOverlayRound(rn)"
-            >
-              {{ rn }}
-            </button>
-          </div>
-        </template>
-        <!-- Overlay toggle: icon-only, pinned at the end of the row. -->
-        <button
-          v-if="overlayAvailable"
-          type="button"
-          class="inline-flex items-center justify-center w-7 h-7 shrink-0 border rounded-md transition-colors ml-auto"
-          :class="
-            overlayMode
-              ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-              : 'border-border/60 text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)]'
-          "
-          :title="t('match.replay.overlay_buy_section')"
-          :aria-pressed="overlayMode"
-          @click="overlayMode = !overlayMode"
-        >
-          <Layers class="w-4 h-4" />
-        </button>
-      </div>
-      <!-- YouTube-style transport: play/step on the left, then a tall
-               scrubber that carries the round's kill + grenade event track,
-               time readout, speed, and a shortcuts popover. -->
-      <div ref="playbarRowEl" class="flex items-center gap-3 px-3 py-2.5">
-        <!-- Left transport cluster -->
-        <div class="flex items-center gap-1 shrink-0">
-          <button
-            type="button"
-            class="inline-flex items-center justify-center w-10 h-10 rounded-md border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.28)] transition-colors"
-            :title="
-              playing ? $t('match.replay.pause') : $t('match.replay.play')
-            "
-            @click="toggle()"
-          >
-            <Play v-if="!playing" class="w-5 h-5" />
-            <Pause v-else class="w-5 h-5" />
-          </button>
-          <button
-            type="button"
-            class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
-            :title="$t('match.replay.step_back')"
-            @click="step(-1)"
-          >
-            <SkipBack class="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
-            :title="$t('match.replay.step_forward')"
-            @click="step(1)"
-          >
-            <SkipForward class="w-4 h-4" />
-          </button>
-        </div>
-
-        <!-- Scrubber -->
-        <div
-          class="relative flex-1 min-w-[6rem] h-8 group cursor-pointer select-none"
-          @pointerdown="onScrubStart"
-        >
-          <!-- Kill markers above the rail. -->
-          <div
-            v-if="!overlayMode"
-            class="absolute inset-x-0 top-0 h-3 pointer-events-none"
-          >
-            <span
-              v-for="(m, i) in scrubberMarkers"
-              v-show="m.lane === 'kill'"
-              :key="'k' + i"
-              class="absolute bottom-0 w-[2px] h-3 -translate-x-1/2 rounded-sm"
-              :style="{ left: m.left + '%', backgroundColor: m.color }"
-              :title="m.title"
-            />
-          </div>
-          <div
-            class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2.5 bg-[hsl(var(--border))] rounded-full overflow-hidden group-hover:h-3 transition-[height] duration-100"
-          >
-            <div
-              class="absolute inset-y-0 left-0 bg-[hsl(var(--tac-amber))] transition-[width] duration-100 ease-linear"
-              :style="{
-                width: (overlayMode ? overlayProgressPct : progressPct) + '%',
-              }"
-            />
-          </div>
-          <!-- Grenade ICONS below the rail (Replay3D-style util lane). -->
-          <div
-            v-if="!overlayMode"
-            class="absolute inset-x-0 -bottom-1 h-4 pointer-events-none"
-          >
-            <img
-              v-for="(m, i) in scrubberMarkers"
-              v-show="m.lane === 'utility' && m.icon"
-              :key="'n' + i"
-              :src="m.icon"
-              class="absolute top-0 h-4 w-4 -translate-x-1/2 object-contain"
-              :style="{ left: m.left + '%', filter: 'brightness(0) invert(1)' }"
-              :title="m.title"
-            />
-          </div>
-          <div
-            class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_0_2px_hsl(var(--background)),0_0_10px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-100 ease-linear pointer-events-none z-10 group-hover:scale-110"
-            :style="{
-              left: (overlayMode ? overlayProgressPct : progressPct) + '%',
-            }"
-          />
-        </div>
-
-        <!-- Time readout -->
-        <span
-          class="font-mono text-xs tabular-nums text-muted-foreground shrink-0"
-        >
-          <template v-if="overlayMode">
-            {{ formatMMSS(overlayElapsedSec) }}
-            <span class="text-muted-foreground/50">/</span>
-            {{ formatMMSS(overlayWindowSec) }}
-          </template>
-          <template v-else>
-            {{ formatMMSS(roundElapsedSec) }}
-            <span class="text-muted-foreground/50">/</span>
-            {{ formatMMSS(roundLengthSec) }}
-          </template>
-        </span>
-
-        <div class="w-px h-6 bg-border shrink-0" />
-
-        <!-- Speed -->
-        <div class="inline-flex items-center gap-0.5 shrink-0">
-          <Gauge class="w-3.5 h-3.5 text-muted-foreground mr-1" />
-          <button
-            v-for="s of SPEEDS"
-            :key="s"
-            type="button"
-            class="px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums transition-colors border rounded-md"
-            :class="
-              speed === s
-                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
-                : 'border-transparent text-muted-foreground hover:text-foreground'
-            "
-            @click="speed = s"
-          >
-            {{ s }}x
-          </button>
-        </div>
-
-        <!-- Keyboard shortcuts -->
-        <Popover>
-          <PopoverTrigger as-child>
-            <button
-              type="button"
-              class="inline-flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors shrink-0"
-              :title="$t('match.replay.shortcuts_title')"
-            >
-              <Keyboard class="w-4 h-4" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            class="w-auto p-3 text-[0.65rem] text-muted-foreground"
-          >
-            <div
-              class="font-mono text-[0.55rem] tracking-[0.22em] uppercase mb-2"
-            >
-              {{ $t("match.replay.shortcuts_title") }}
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <span class="inline-flex items-center gap-1.5">
-                <Kbd>Space</Kbd> {{ $t("match.replay.shortcut_play") }}
-              </span>
-              <span class="inline-flex items-center gap-1.5">
-                <Kbd>←</Kbd><Kbd>→</Kbd>
-                {{ $t("match.replay.shortcut_step") }}
-              </span>
-              <span class="inline-flex items-center gap-1.5">
-                <Kbd>[</Kbd><Kbd>]</Kbd>
-                {{ $t("match.replay.shortcut_round") }}
-              </span>
-              <span class="inline-flex items-center gap-1.5">
-                <Kbd>1</Kbd>–<Kbd>5</Kbd>
-                {{ $t("match.replay.shortcut_speed") }}
-              </span>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Scoreboard show/hide: slide in from the right edge + fade. */
-.scoreboard-enter-active,
-.scoreboard-leave-active {
-  transition:
-    opacity 0.25s ease,
-    transform 0.25s ease;
-}
-.scoreboard-enter-from,
-.scoreboard-leave-to {
-  opacity: 0;
-  transform: translateX(16px);
-}
 /* 2D <-> 3D map swap: fade + a subtle "grow in" scale. */
 .mapfade-enter-active {
   transition:

@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  UTILITY_CLIP_PEEK_FROM_MS,
   UTILITY_IN_BUTTONS as IN,
-  utilityClipPeekStartSeconds,
   utilityRunUp,
   utilityRunUpCaps,
   utilityRunUpSeconds,
@@ -137,40 +135,5 @@ describe("utilityRunUp", () => {
     const runUp = utilityRunUp([...ticks, null, { t: "x", buttons: 1 }]);
     expect(runUp?.keys).toEqual(["A"]);
     expect(runUp?.ms).toBe(297);
-  });
-});
-
-describe("utilityClipPeekStartSeconds", () => {
-  const rendered = {
-    preview_url: "https://clips.example/a.mp4",
-    preview_stills_url: { stance: "s.jpg", stance_eyes: "e.jpg" },
-    preview_duration_ms: 14000,
-  };
-
-  it("starts a clip filmed to the current beat sheet just before the aim", () => {
-    expect(utilityClipPeekStartSeconds(rendered)).toBe(
-      UTILITY_CLIP_PEEK_FROM_MS / 1000,
-    );
-    expect(
-      utilityClipPeekStartSeconds({ ...rendered, preview_duration_ms: null }),
-    ).toBe(UTILITY_CLIP_PEEK_FROM_MS / 1000);
-  });
-
-  it("plays anything else from the top", () => {
-    expect(
-      utilityClipPeekStartSeconds({
-        ...rendered,
-        preview_stills_url: { stance: "s.jpg", aim: "a.jpg" },
-      }),
-    ).toBe(0);
-    expect(
-      utilityClipPeekStartSeconds({ ...rendered, preview_stills_url: null }),
-    ).toBe(0);
-    expect(
-      utilityClipPeekStartSeconds({ ...rendered, preview_url: null }),
-    ).toBe(0);
-    expect(
-      utilityClipPeekStartSeconds({ ...rendered, preview_duration_ms: 4000 }),
-    ).toBe(0);
   });
 });

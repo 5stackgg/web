@@ -87,9 +87,6 @@ const props = defineProps<{
   };
   teamA: Row[];
   teamB: Row[];
-  sideA: number;
-  aliveA: number;
-  aliveB: number;
   feed: Array<{
     k: string;
     v: string;
@@ -99,7 +96,6 @@ const props = defineProps<{
     vc: string;
   }>;
   pbp: PbpEvent[];
-  roundSummary?: string;
   // the round's buys, trades and flash report up to the playhead
   analysis?: RoundAnalysis;
   rounds: Array<{ i: number; n: number; win: number }>;
@@ -840,7 +836,6 @@ const utilClusters = computed(() => {
               }}
             </button>
           </div>
-          <div v-if="roundSummary" class="bp-pbp-sum">{{ roundSummary }}</div>
           <ReplayRoundAnalysis
             v-if="analysis && !overlay && !mobile"
             :analysis="analysis"
@@ -935,8 +930,8 @@ const utilClusters = computed(() => {
         <div
           class="bp-team"
           v-for="(team, ti) in [
-            { rows: teamA, side: sideA, score: hud.ct, alive: aliveA },
-            { rows: teamB, side: 1 - sideA, score: hud.t, alive: aliveB },
+            { rows: teamA, side: 0, score: hud.ct },
+            { rows: teamB, side: 1, score: hud.t },
           ]"
           :key="ti"
         >
@@ -1883,13 +1878,6 @@ const utilClusters = computed(() => {
   border-radius: 6px;
   cursor: pointer;
   text-transform: uppercase;
-}
-.bp-pbp-sum {
-  font-size: 11px;
-  color: #cfe0f2;
-  margin-bottom: 7px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--line);
 }
 .bp-pbp-empty {
   font-size: 11px;

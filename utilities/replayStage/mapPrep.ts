@@ -537,13 +537,6 @@ function mergeChunks(chunks: PrepChunk[]) {
   return { vx, vz, vflag, tris, vertexTotal, triTotal };
 }
 
-export function prepareMap(
-  chunks: PrepChunk[],
-  areas: PrepArea = [],
-): PrepResult {
-  return expandPrep(chunks, analyseMap(chunks, areas));
-}
-
 /** The slow part of prep: everything decided about the mesh. */
 export function analyseMap(
   chunks: PrepChunk[],

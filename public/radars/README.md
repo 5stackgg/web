@@ -8,12 +8,12 @@ Assets vendored from [boltgolt/boltobserv](https://github.com/boltgolt/boltobser
 - `metadata.json` — per-map calibration `{ resolution, offset, splits?, zRange?, volumes? }`
   matching boltobserv's `src/maps/<map>/meta.json5` shape, plus `volumes` for
   maps with a radar per room.
-- `<map_name>.png` — 1024×1024 overhead radar image.
 - `<map_name>_<volume>.png` — 1024×1024 radar of one room (see *Per-room
   radars*).
-- `projectiles/projectile-img-<type>-<team>.webp` — grenade icons used on
-  the radar overlay (smoke / firebomb / flashbang / frag).
 - `projectiles/bomb-*.webp` — bomb planted / defused / dropped markers.
+
+Every map's whole-map radar is our own bake under `stage/` (below); a
+`<map_name>.png` here is only drawn for a map that has not been baked yet.
 
 ## 5Stack's own radars
 
@@ -121,12 +121,5 @@ fetches it into `.cache/s2v/` on first use.
 3. If multi-level, add a `splits[]` entry per level.
 
 ## Refreshing from boltobserv
-
-```sh
-cd ~/Downloads/boltobserv-master/src
-cp maps/*/radar.png    <repo>/web/public/radars/   # rename to <map>.png
-cp img/projectile-*.webp <repo>/web/public/radars/projectiles/
-cp img/bomb-*.webp     <repo>/web/public/radars/projectiles/
-```
 
 The `resolution` + `offset` values come from each `maps/<map>/meta.json5`.

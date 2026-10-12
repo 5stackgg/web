@@ -208,11 +208,6 @@ export function valveSiteAt(sites: BlastSite[], at: Vec3): BlastField | null {
   return null;
 }
 
-/** Seconds after the explosion the front reaches `d` units along its path. */
-export function blastArrival(d: number, speed = BLAST_SPEED) {
-  return d / speed;
-}
-
 /** Plant spots within `BLAST_SPOT` of each other share this key. */
 export function blastSpotKey(at: Vec3) {
   return `${Math.round(at.x / BLAST_SPOT)},${Math.round(at.y / BLAST_SPOT)},${Math.round(at.z / BLAST_SPOT)}`;

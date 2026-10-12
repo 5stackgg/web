@@ -20,7 +20,6 @@ import {
   replayTeamForSide,
 } from "~/utilities/utilityDisplay";
 import { SMOKE_BLOOM_SECS } from "~/utils/smokeVolume";
-import type { SmokeVolume } from "~/utils/smokeVolume";
 import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
 
 /** What the scene needs of a step: what is thrown, when, and by whom. */
@@ -75,14 +74,8 @@ const TICK_RATE = 64;
 
 const runtimeConfig = useRuntimeConfig();
 const meshCdn = (runtimeConfig.public.mapMeshCdn as string) || "";
-const apiDomain = runtimeConfig.public.apiDomain as string;
 
 const sceneMap = computed(() => normalizeMapName(props.mapName) || null);
-
-// The detailed path and the measured cloud of each lineup, by lineup id. Both
-// arrive after the scene does; until then a throw flies its preview.
-const fullTrajectories = ref<Record<string, UtilityTrajectoryPoint[]>>({});
-const smokeVolumesByLineup = ref<Record<string, SmokeVolume>>({});
 
 function previewOf(lineup: UtilityLineup): UtilityTrajectoryPoint[] {
   const preview = normalizeTrajectory(lineup.trajectory_preview);
@@ -124,7 +117,7 @@ const throws = computed(() =>
         team: replayTeamForSide(lineup.side),
         origin: utilityOrigin(lineup),
         landing: utilityLanding(lineup),
-        points: fullTrajectories.value[lineup.id] ?? previewOf(lineup),
+        points: previewOf(lineup),
       };
     })
     .sort((a, b) => a.start - b.start || a.gid - b.gid),
@@ -140,63 +133,6 @@ const { radarSrc, calibration, projectCalibrated } = useRadarProjection(
     volumePoints: () =>
       throws.value.map((entry) => entry.landing ?? entry.origin),
   },
-);
-
-let loadToken = 0;
-async function loadTrajectories(lineups: UtilityLineup[]) {
-  const token = ++loadToken;
-  // The size is written with the file and is safe to select; the S3 key is
-  // not something the browser needs to know.
-  const wanted = lineups.filter(
-    (lineup) => lineup.trajectory_size && !fullTrajectories.value[lineup.id],
-  );
-  await Promise.all(
-    wanted.map(async (lineup) => {
-      try {
-        const response = await fetch(
-          `https://${apiDomain}/utility/${lineup.id}/trajectory`,
-          { credentials: "include" },
-        );
-        if (!response.ok || token !== loadToken) {
-          return;
-        }
-        const payload = await response.json();
-        if (token !== loadToken) {
-          return;
-        }
-        const points = normalizeTrajectory(payload?.points ?? payload);
-        if (points.length >= 2) {
-          fullTrajectories.value = {
-            ...fullTrajectories.value,
-            [lineup.id]: points,
-          };
-        }
-        const volume = payload?.smoke_volume ?? payload?.smokeVolume ?? null;
-        if (volume) {
-          smokeVolumesByLineup.value = {
-            ...smokeVolumesByLineup.value,
-            [lineup.id]: volume as SmokeVolume,
-          };
-        }
-      } catch {
-        // The preview already flies; the detail is only a better line.
-      }
-    }),
-  );
-}
-
-watch(
-  () =>
-    [...new Set(throws.value.map((entry) => entry.lineup.id))].sort().join(),
-  () => {
-    const seen = new Set<string>();
-    void loadTrajectories(
-      throws.value
-        .map((entry) => entry.lineup)
-        .filter((lineup) => !seen.has(lineup.id) && seen.add(lineup.id)),
-    );
-  },
-  { immediate: true },
 );
 
 /**
@@ -257,10 +193,7 @@ watch(
   { immediate: true },
 );
 
-onBeforeUnmount(() => {
-  stopFrames();
-  loadToken += 1;
-});
+onBeforeUnmount(stopFrames);
 
 // Room around a throw for what it turns into: a smoke's cloud, a fire's
 // spread, a flash's burst.
@@ -271,9 +204,7 @@ const BURST_UNITS: Partial<Record<string, number>> = {
 
 // One frame for the whole execute: every place somebody stands, every landing
 // and every arc, seen from the throwers' side looking toward where it all
-// lands. Built from the lineups' own previews and never from the detailed
-// paths that load afterwards, so it is the same frame before, during and
-// after a run -- the renderer flies in again whenever its frame changes.
+// lands.
 const cameraFrame = computed(() => {
   const points: UtilityTrajectoryPoint[] = [];
   const origins: UtilityTrajectoryPoint[] = [];
@@ -442,18 +373,6 @@ const grenades = computed(() => {
   return out;
 });
 
-// A cloud is measured per lineup and worn per step.
-const smokeVolumes = computed(() => {
-  const out: SmokeVolume[] = [];
-  for (const entry of throws.value) {
-    const volume = smokeVolumesByLineup.value[entry.lineup.id];
-    if (volume) {
-      out.push({ ...volume, gid: entry.gid } as SmokeVolume);
-    }
-  }
-  return out;
-});
-
 // The renderer derives its roof cut from the tallest player it has seen. Take
 // the highest point of any throw instead, so the cut never slices an arc.
 const autoCeilingZ = computed(() => {
@@ -537,7 +456,6 @@ const stageThrows = computed(() =>
         key: entry.key,
         gid: entry.gid,
         start: entry.start,
-        points: fullTrajectories.value[entry.lineup.id],
         voxels: smokeVoxels.value[entry.lineup.id] ?? null,
       }),
     )
@@ -553,7 +471,6 @@ const stageThrowers = computed(() =>
 // Standing still after a run is the finished execute: the stage's still.
 const stageTime = computed(() => (time.value === AFTER ? null : time.value));
 
-defineExpose({ time, inFlight, grenades, players, cameraFrame });
 </script>
 
 <template>
@@ -584,7 +501,6 @@ defineExpose({ time, inFlight, grenades, players, cameraFrame });
       :grenade-trajectories="grenadeTrajectories"
       :in-flight="inFlight"
       :grenades="grenades"
-      :smoke-volumes="smokeVolumes"
       :tick="tick"
       :tick-rate="TICK_RATE"
       :ceiling="ceiling"

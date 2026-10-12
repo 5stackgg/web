@@ -147,23 +147,6 @@ export function weaponIconPath(w: string | undefined | null): string {
 }
 
 /**
- * Old-way resolution: the pre-canonical slug (lowercase, weapon_ prefix
- * dropped, ALL non-alphanumerics removed). Used as a fallback for the 2D
- * replay of already-parsed demos — their weapon strings won't be re-parsed, so
- * if the canonical icon 404s we retry the legacy path before hiding the image.
- */
-export function weaponIconFallback(w: string | undefined | null): string {
-  if (!w) return "";
-  const lower = w.toLowerCase().trim();
-  if (lower === "unknown" || lower === "world") return "";
-  if (lower.includes("knife") || lower === "bayonet") {
-    return "/img/equipment/knife.svg";
-  }
-  const slug = lower.replace(/^weapon_/, "").replace(/[^a-z0-9]/g, "");
-  return slug ? `/img/equipment/${slug}.svg` : "";
-}
-
-/**
  * Resolve a weapon to a stable de-dupe key + icon + display label. Different
  * spellings of the same gun share a `key`, so callers can merge their counts.
  */

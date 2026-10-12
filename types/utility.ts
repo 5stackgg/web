@@ -108,7 +108,6 @@ export type UtilityLineup = {
   confidence: UtilityConfidence;
   /** Up to 32 quantized points — enough to draw the line on a list/board. */
   trajectory_preview: Array<[number, number, number]> | null;
-  trajectory_size?: number | null;
   /**
    * Signed disagreement between the aim the trajectory implies and the view
    * angles the demo recorded. Only mined lineups carry it, and a big number
@@ -524,33 +523,6 @@ export type UtilitySightlineResult = {
   depth: number;
   transmittance: number;
   world_blocked: boolean;
-};
-
-export type UtilitySightlineOutput = {
-  threshold: number | null;
-  degraded: boolean | null;
-  message: string | null;
-  results: UtilitySightlineResult[] | null;
-};
-
-/**
- * One `checkUtilityOneWay` result. `confidence` is graded on purpose — volumetric
- * lighting and target contrast are not modelled, so this is an indication and
- * the UI must never render it as a fact.
- */
-export type UtilityOneWayResult = {
-  index: number;
-  one_way: boolean;
-  favors: string | null;
-  cause: string | null;
-  confidence: string;
-  contested: boolean;
-};
-
-export type UtilityOneWayOutput = {
-  degraded: boolean | null;
-  message: string | null;
-  results: UtilityOneWayResult[] | null;
 };
 
 /**

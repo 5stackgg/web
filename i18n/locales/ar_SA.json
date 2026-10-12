@@ -1083,14 +1083,14 @@
     "proposed_time": "الوقت المقترح",
     "pick_from_availability": "← اختر من أوقات توفرهم",
     "request_other_time": "اطلب وقتًا آخر بدلًا من ذلك",
-    "best_of_indicator": "· أفضل من {bestOf}",
-    "availability_help": "اختر بداية ضمن أوقات توفرهم ثم حدّد التاريخ — يمكنك الجدولة قبل أسابيع. أفضل من {count} يستغرق نحو {count} ساعة. | اختر بداية ضمن أوقات توفرهم ثم حدّد التاريخ — يمكنك الجدولة قبل أسابيع. أفضل من {count} يستغرق نحو {count} ساعات.",
+    "best_of_indicator": "· نظام Best Of {bestOf}",
+    "availability_help": "اختر بداية ضمن أوقات توفرهم ثم حدّد التاريخ — يمكنك الجدولة قبل أسابيع. مباراة بنظام Best Of {count} تستغرق نحو {count} ساعة. | اختر بداية ضمن أوقات توفرهم ثم حدّد التاريخ — يمكنك الجدولة قبل أسابيع. مباراة بنظام Best Of {count} تستغرق نحو {count} ساعات.",
     "accepts_outside_hours": "هذا الفريق يقبل الطلبات خارج أوقاته المعلنة — اختر أي تاريخ ووقت",
     "accepts_any_time": "لم يعلن هذا الفريق أوقات توفره لكنه يقبل الطلبات في أي وقت — اختر تاريخًا ووقتًا",
     "they_must_accept": "ما زال عليهم القبول",
     "series": "سلسلة",
     "no_hour_slot": "لا يوجد لدى {team} فترة بطول {hours} ساعة",
-    "best_of": "أفضل من {option}",
+    "best_of": "نظام Best Of {option}",
     "send_request": "أرسل الطلب",
     "cannot_scrim_self": "لا يمكن للفريق أن يلعب Scrim ضد نفسه",
     "time_must_be_future": "يجب أن يكون الوقت المقترح في المستقبل",
@@ -3408,7 +3408,7 @@
       "tournaments": {
         "title": "البطولات",
         "by": "بواسطة {name}",
-        "best_of": "أفضل من {count}",
+        "best_of": "نظام Best Of {count}",
         "registered_count": "{count} من {max}",
         "register": "سجّل فريقًا",
         "sign_in_to_register": "سجّل الدخول للتسجيل",
@@ -3977,7 +3977,7 @@
         "in_hours": "بعد {count} س",
         "tomorrow": "غدًا",
         "in_days": "بعد {count} أيام",
-        "best_of": "أفضل من {count}",
+        "best_of": "نظام Best Of {count}",
         "teams": "{count} فرق",
         "live": "مباشر",
         "live_round": "مباشر · الجولة {round}",
@@ -8333,7 +8333,7 @@
       "card": {
         "final": "النتيجة النهائية",
         "replay": "إعادة",
-        "best_of": "الأفضل من {count}",
+        "best_of": "نظام Best Of {count}",
         "map_of": "الخريطة {current} من {total}",
         "rounds": "{count} جولة",
         "round": "الجولة {round}",
@@ -8387,10 +8387,10 @@
         "label": "نوع المباراة"
       },
       "best_of": {
-        "label": "أفضل من",
+        "label": "نظام Best Of",
         "description": "يُحدَّد الفائز بمن يفوز بأغلبية عدد محدد من المباريات",
-        "placeholder": "اختر قيمة أفضل من",
-        "option": "أفضل من {count}",
+        "placeholder": "اختر نظام Best Of",
+        "option": "نظام Best Of {count}",
         "short": "BO{count}"
       },
       "map_veto_settings": {
@@ -8408,7 +8408,7 @@
         "toggle": "بدّل الإعدادات المتقدمة",
         "overtime": {
           "label": "وقت إضافي",
-          "description": "كل وقت إضافي هو أفضل من 6."
+          "description": "كل وقت إضافي يُلعب بنظام Best Of 6."
         },
         "knife_round": {
           "label": "جولة السكين",
@@ -10507,7 +10507,7 @@
       "theater_mode": "وضع المسرح",
       "default_view": "العرض الافتراضي",
       "previous_next": "السابق / التالي",
-      "best_of": "أفضل من {count}",
+      "best_of": "نظام Best Of {count}",
       "make_public": "اجعله عامًا",
       "make_private": "اجعله خاصًا",
       "more_actions": "إجراءات أخرى",
@@ -10916,7 +10916,7 @@
       "overtime": "وقت إضافي",
       "knife": "جولة السكين",
       "coaches": "المدربون",
-      "best_of": "الأفضل من",
+      "best_of": "نظام Best Of",
       "map_veto": "Veto الخرائط",
       "on": "مفعّل",
       "off": "معطّل",
@@ -11004,8 +11004,8 @@
       "relegation_up": "ملحق صعود",
       "relegation_down": "ملحق هبوط",
       "direct_relegate": "هبوط مباشر",
-      "best_of": "الأفضل من",
-      "playoff_best_of": "الأفضل من في الإقصائيات",
+      "best_of": "نظام Best Of",
+      "playoff_best_of": "نظام Best Of في الإقصائيات",
       "default_day": "يوم المباراة الافتراضي",
       "default_time": "وقت المباراة الافتراضي",
       "weekdays": {

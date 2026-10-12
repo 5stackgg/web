@@ -1570,6 +1570,7 @@
         "where": "장소",
         "online": "온라인",
         "teams": "팀",
+        "players": "플레이어",
         "part_of": "소속 이벤트"
       },
       "next_lan": {
@@ -7240,6 +7241,7 @@
     },
     "feature_card": {
       "teams": "팀",
+      "players": "플레이어",
       "default_label": "토너먼트",
       "organized_by": "{team} 주최"
     },
@@ -7271,6 +7273,7 @@
       "ended": "종료",
       "starts": "시작",
       "teams": "팀",
+      "players": "플레이어",
       "champion": "우승",
       "second": "2위",
       "third": "3위",
@@ -7391,6 +7394,7 @@
       "tournament": "토너먼트",
       "type": "유형",
       "teams_joined": "참가 팀",
+      "players_joined": "참가 플레이어",
       "starts": "시작",
       "no_tournaments_found": "토너먼트를 찾을 수 없습니다",
       "maps_label": "맵:"

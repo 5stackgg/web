@@ -1570,6 +1570,7 @@
         "where": "地點",
         "online": "線上",
         "teams": "隊伍",
+        "players": "玩家",
         "part_of": "所屬活動"
       },
       "next_lan": {
@@ -7240,6 +7241,7 @@
     },
     "feature_card": {
       "teams": "隊伍",
+      "players": "玩家",
       "default_label": "賽事",
       "organized_by": "由 {team} 主辦"
     },
@@ -7271,6 +7273,7 @@
       "ended": "已結束",
       "starts": "開始",
       "teams": "隊伍",
+      "players": "玩家",
       "champion": "冠軍",
       "second": "亞軍",
       "third": "季軍",
@@ -7391,6 +7394,7 @@
       "tournament": "賽事",
       "type": "類型",
       "teams_joined": "已加入隊伍",
+      "players_joined": "已加入玩家",
       "starts": "開始",
       "no_tournaments_found": "找不到賽事",
       "maps_label": "地圖："

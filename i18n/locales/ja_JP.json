@@ -1570,6 +1570,7 @@
         "where": "場所",
         "online": "オンライン",
         "teams": "チーム",
+        "players": "プレイヤー",
         "part_of": "所属イベント"
       },
       "next_lan": {
@@ -7240,6 +7241,7 @@
     },
     "feature_card": {
       "teams": "チーム",
+      "players": "プレイヤー",
       "default_label": "トーナメント",
       "organized_by": "主催：{team}"
     },
@@ -7271,6 +7273,7 @@
       "ended": "終了",
       "starts": "開始",
       "teams": "チーム",
+      "players": "プレイヤー",
       "champion": "優勝",
       "second": "2位",
       "third": "3位",
@@ -7391,6 +7394,7 @@
       "tournament": "トーナメント",
       "type": "形式",
       "teams_joined": "参加チーム",
+      "players_joined": "参加プレイヤー",
       "starts": "開始",
       "no_tournaments_found": "トーナメントが見つかりません",
       "maps_label": "マップ："

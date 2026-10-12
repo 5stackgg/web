@@ -567,7 +567,7 @@ function clearTeamEnterDelay(el: Element) {
               <div class="flex flex-col gap-8">
                 <TournamentStatRibbon
                   :prize-pool="prizePool"
-                  :teams-count="teamsCount"
+                  :registration="registrationCount"
                   :format="formatLabel"
                   :start="tournament.start"
                   :location="shortLocation"
@@ -943,6 +943,8 @@ import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { bracketProposalSelection } from "~/graphql/bracketNegotiation";
 import { formatPrizePool } from "~/utilities/prizePool";
+import { freeAgentPoolWhere } from "~/graphql/tournamentCardFields";
+import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
 import {
   getRequestedRouteTab,
   getRouteTabValue,
@@ -1493,6 +1495,10 @@ export default {
               check_in_started: true,
               can_review_check_in: true,
               missed_check_in_count: true,
+              free_agents_aggregate: [
+                { where: freeAgentPoolWhere },
+                { aggregate: { count: true } },
+              ],
             },
           ],
           // Zeus types for the new columns land with `yarn codegen`; until
@@ -1875,8 +1881,13 @@ export default {
     descLong() {
       return (this.tournament?.description?.length ?? 0) > 280;
     },
-    teamsCount() {
-      return this.tournament?.teams_aggregate?.aggregate?.count ?? 0;
+    registrationCount() {
+      return tournamentRegistrationCount({
+        ...this.tournament,
+        registration_type: this.tournamentRegistration?.registration_type,
+        free_agents_aggregate:
+          this.tournamentRegistration?.free_agents_aggregate,
+      });
     },
     formatLabel() {
       if (this.singleStageTypeWithBestOf) {

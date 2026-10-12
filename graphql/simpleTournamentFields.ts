@@ -1,5 +1,6 @@
 import { order_by, Selector } from "~/generated/zeus";
 import { matchOptionsFields } from "./matchOptionsFields";
+import { freeAgentPoolWhere } from "./tournamentCardFields";
 
 /**
  * The registration / check-in columns and their computed fields.
@@ -120,6 +121,7 @@ export const simpleTournamentFields = Selector("tournaments")({
         description: true,
       },
       order: true,
+      max_teams: true,
       options: matchOptionsFields,
       default_best_of: true,
       final_map_advantage: true,
@@ -134,6 +136,11 @@ export const simpleTournamentFields = Selector("tournaments")({
         count: true,
       },
     },
+  ],
+  min_players_per_lineup: true,
+  free_agents_aggregate: [
+    { where: freeAgentPoolWhere },
+    { aggregate: { count: true } },
   ],
 });
 

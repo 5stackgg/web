@@ -1570,6 +1570,7 @@
         "where": "Місце",
         "online": "Онлайн",
         "teams": "Команди",
+        "players": "Гравці",
         "part_of": "У межах"
       },
       "next_lan": {
@@ -7240,6 +7241,7 @@
     },
     "feature_card": {
       "teams": "Команди",
+      "players": "Гравці",
       "default_label": "Турнір",
       "organized_by": "Від {team}"
     },
@@ -7271,6 +7273,7 @@
       "ended": "Завершено",
       "starts": "Початок",
       "teams": "Команди",
+      "players": "Гравці",
       "champion": "Чемпіон",
       "second": "2-ге місце",
       "third": "3-тє місце",
@@ -7391,6 +7394,7 @@
       "tournament": "Турнір",
       "type": "Тип",
       "teams_joined": "Приєдналося команд",
+      "players_joined": "Приєдналося гравців",
       "starts": "Початок",
       "no_tournaments_found": "Турнірів не знайдено",
       "maps_label": "Карти:"

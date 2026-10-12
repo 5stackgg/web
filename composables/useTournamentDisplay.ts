@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { e_tournament_status_enum } from "~/generated/zeus";
 import { formatPrizePool } from "~/utilities/prizePool";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
+import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
 import {
   matchTypeLabel,
   tournamentChampion,
@@ -78,20 +79,26 @@ export function useTournamentDisplay(source: () => any) {
     return parts.join(" · ");
   });
 
-  const teams = computed(
-    () => tournament.value?.teams_aggregate?.aggregate?.count ?? 0,
+  // Free agent tournaments count players: "teams" and "maxTeams" are the
+  // registration count and its cap in whichever unit the tournament uses.
+  const registration = computed(() =>
+    tournamentRegistrationCount(tournament.value),
   );
-  const maxTeams = computed(
-    () => tournament.value?.stages?.[0]?.max_teams ?? 0,
-  );
+  const registrationUnit = computed(() => registration.value.unit);
+  const teams = computed(() => registration.value.count);
+  const maxTeams = computed(() => registration.value.max ?? 0);
   const teamsLabel = computed(() => {
+    const unitKey =
+      registrationUnit.value === "players"
+        ? "pages.watch.events.count_players"
+        : "pages.watch.events.count_teams";
     if (maxTeams.value > 0) {
       return `${t("pages.watch.tournaments.registered_count", {
         count: teams.value,
         max: maxTeams.value,
-      })} ${t("pages.watch.events.count_teams", maxTeams.value)}`;
+      })} ${t(unitKey, maxTeams.value)}`;
     }
-    return `${teams.value} ${t("pages.watch.events.count_teams", teams.value)}`;
+    return `${teams.value} ${t(unitKey, teams.value)}`;
   });
   const spotsLeft = computed(() => Math.max(0, maxTeams.value - teams.value));
 
@@ -129,6 +136,7 @@ export function useTournamentDisplay(source: () => any) {
     statusLabel,
     categories,
     sub,
+    registrationUnit,
     teams,
     maxTeams,
     teamsLabel,

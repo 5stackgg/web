@@ -9972,6 +9972,10 @@
       "online_room": "Salon en ligne",
       "lan_room_hint": "Seuls les joueurs de ce réseau peuvent rejoindre",
       "online_room_hint": "Se joue en ligne, tout le monde peut rejoindre"
+    },
+    "errors": {
+      "already_queued": "Ton lobby est déjà en file d'attente.",
+      "player_in_match": "{name} est déjà dans un match."
     }
   },
   "game_server": {

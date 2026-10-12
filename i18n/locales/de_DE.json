@@ -9972,6 +9972,10 @@
       "online_room": "Online-Raum",
       "lan_room_hint": "Nur Spieler in diesem Netzwerk können beitreten",
       "online_room_hint": "Wird online gespielt, jeder kann beitreten"
+    },
+    "errors": {
+      "already_queued": "Deine Lobby ist bereits in der Queue.",
+      "player_in_match": "{name} ist bereits in einem Match."
     }
   },
   "game_server": {

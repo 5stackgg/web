@@ -9972,6 +9972,10 @@
       "online_room": "Çevrimiçi oda",
       "lan_room_hint": "Yalnızca bu ağdaki oyuncular katılabilir",
       "online_room_hint": "Çevrimiçi oynanır, herkes katılabilir"
+    },
+    "errors": {
+      "already_queued": "Lobiniz zaten sırada.",
+      "player_in_match": "{name} zaten bir maçta."
     }
   },
   "game_server": {

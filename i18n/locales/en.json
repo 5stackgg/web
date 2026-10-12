@@ -9976,6 +9976,10 @@
       "online_room": "Online room",
       "lan_room_hint": "Only players on this network can join",
       "online_room_hint": "Plays online, anyone can join"
+    },
+    "errors": {
+      "already_queued": "Your lobby is already in the queue.",
+      "player_in_match": "{name} is already in a match."
     }
   },
   "game_server": {

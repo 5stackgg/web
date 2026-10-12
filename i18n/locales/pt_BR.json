@@ -9972,6 +9972,10 @@
       "online_room": "Sala online",
       "lan_room_hint": "Apenas jogadores nesta rede podem entrar",
       "online_room_hint": "Joga online, qualquer pessoa pode entrar"
+    },
+    "errors": {
+      "already_queued": "Sua lobby já está na fila.",
+      "player_in_match": "{name} já está em uma partida."
     }
   },
   "game_server": {

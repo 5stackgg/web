@@ -9972,6 +9972,10 @@
       "online_room": "オンラインルーム",
       "lan_room_hint": "このネットワーク上のプレイヤーのみ参加できます",
       "online_room_hint": "オンラインでプレイ、誰でも参加できます"
+    },
+    "errors": {
+      "already_queued": "ロビーはすでにキューに入っています。",
+      "player_in_match": "{name} はすでに試合中です。"
     }
   },
   "game_server": {

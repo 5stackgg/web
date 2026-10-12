@@ -9972,6 +9972,10 @@
       "online_room": "Onlinerum",
       "lan_room_hint": "Bara spelare på det här nätverket kan gå med",
       "online_room_hint": "Spelas online, alla kan gå med"
+    },
+    "errors": {
+      "already_queued": "Din lobby är redan i kön.",
+      "player_in_match": "{name} är redan i en match."
     }
   },
   "game_server": {

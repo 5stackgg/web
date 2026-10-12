@@ -9972,6 +9972,10 @@
       "online_room": "Online-rum",
       "lan_room_hint": "Kun spillere på dette netværk kan deltage",
       "online_room_hint": "Spilles online, alle kan deltage"
+    },
+    "errors": {
+      "already_queued": "Din lobby er allerede i kø.",
+      "player_in_match": "{name} er allerede i en kamp."
     }
   },
   "game_server": {

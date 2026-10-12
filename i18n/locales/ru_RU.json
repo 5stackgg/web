@@ -5437,8 +5437,7 @@
         "score": "{count} голос за | {count} голосов за"
       },
       "viewer": {
-        "replay_throw": "Повторить бросок",
-        "roof": "Крыша"
+        "replay_throw": "Повторить бросок"
       },
       "detail": {
         "previous": "Предыдущая раскидка",
@@ -5446,6 +5445,8 @@
         "open_full": "Открыть полную страницу",
         "practice_this": "Отработать это",
         "share": "Поделиться раскидкой",
+        "watch_3d": "Смотреть в 3D",
+        "watch_clip": "Смотреть клип",
         "copy_link": "Скопировать ссылку на раскидку",
         "download_clip": "Скачать клип",
         "not_found": "Раскидка не найдена",
@@ -5749,6 +5750,8 @@
         "step_context_by": "Шаг {step} из {count} в {name}. Бросает {player} на {seconds}с.",
         "step_context_you": "Шаг {step} из {count} в {name}. Бросаешь ты на {seconds}с.",
         "play": "Пуск",
+        "pause": "Пауза",
+        "seek": "Таймлайн выхода",
         "stop": "Стоп",
         "clock_of": "{now}с из {total}с",
         "duplicate": "Дублировать",

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { Slider } from "~/components/ui/slider";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
@@ -46,18 +44,21 @@ const props = withDefaults(
   defineProps<{
     mapName: string;
     beats: Beat[];
-    /** Seconds into the run, or null while it is not being played. */
+    /** Seconds into the run, or null before it has been played. */
     clock: number | null;
     /**
-     * The `performance.now()` the run started at. The clock moves in tenths,
-     * which is fine for a label and a stutter for a grenade in the air, so
-     * between its ticks the scene reads the same run off its start.
+     * The `performance.now()` the run started at while it runs, null while
+     * it is paused. The clock moves in tenths, which is fine for a label and
+     * a stutter for a grenade in the air, so between its ticks the scene
+     * reads the same run off its start.
      */
     startedAt?: number | null;
     /** Fills the box it is put in -- the map's square -- instead of 16:10. */
     fill?: boolean;
+    /** CSS px at the bottom the owner's controls cover; the shot avoids it. */
+    controls?: number;
   }>(),
-  { startedAt: null, fill: false },
+  { startedAt: null, fill: false, controls: 0 },
 );
 
 const emit = defineEmits<{
@@ -228,21 +229,26 @@ function stopFrames() {
 }
 
 watch(
-  () => props.clock,
-  (clock) => {
+  () => [props.clock, props.startedAt] as const,
+  ([clock, startedAt]) => {
     if (clock === null) {
       stopFrames();
       time.value = played ? AFTER : BEFORE;
       return;
     }
     played = true;
+    // Paused, or scrubbed while paused: the clock is the moment.
+    if (startedAt === null) {
+      stopFrames();
+      time.value = clock;
+      return;
+    }
     // While frames are arriving they are the smoother reading of the same
-    // run. Without them -- a hidden tab, or a clock moved by hand -- the
-    // clock's own value is the moment.
+    // run. Without them -- a hidden tab -- the clock's own value is.
     if (performance.now() - lastFrameAt > 200) {
       time.value = clock;
     }
-    if (frame === null && props.startedAt !== null) {
+    if (frame === null) {
       frame = requestAnimationFrame(tickFrame);
     }
   },
@@ -466,15 +472,13 @@ const autoCeilingZ = computed(() => {
   return Number.isFinite(highest) ? highest + 400 : null;
 });
 
-// The same roof control the single lineup has, on the same defaults.
+// The fallback renderer's roof cut, on the single lineup's defaults. The
+// stage ghosts roofs by itself.
 const VIEW_CEILING = 58;
 const TRI_CEILING = 70;
 const meshKind = ref<"view" | "tri" | "radar" | null>(null);
-const ceilingChoice = ref<number | null>(null);
-const ceiling = computed(
-  () =>
-    ceilingChoice.value ??
-    (meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING),
+const ceiling = computed(() =>
+  meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING,
 );
 
 // Only reached if the mesh 404s mid-flight and the renderer drops back to the
@@ -540,8 +544,7 @@ defineExpose({ time, inFlight, grenades, players, cameraFrame });
       :throws="stageThrows"
       :throwers="stageThrowers"
       :time="stageTime"
-      :roof="ceiling"
-      :controls="44"
+      :controls="controls"
       @mesh="(kind) => (meshKind = kind)"
       @framed="emit('framed')"
       @fallback="stageFailed = true"
@@ -569,46 +572,6 @@ defineExpose({ time, inFlight, grenades, players, cameraFrame });
       @framed="emit('framed')"
     />
 
-    <!-- The dock under the card is what plays and stops this, so the only
-         control on the picture is the roof. -->
-    <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 z-[10] flex items-end justify-end p-3"
-    >
-      <div
-        class="pointer-events-auto flex h-8 w-36 items-center gap-2.5 rounded-md border border-border/60 bg-black/60 pl-2.5 pr-3 backdrop-blur"
-      >
-        <FiveStackToolTip as-child side="top" :delay-duration="120">
-          <template #trigger>
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-4 w-4 shrink-0 text-white/75"
-              role="img"
-              :aria-label="$t('pages.utility.viewer.roof')"
-            >
-              <!-- A roof, and the line it is cut at. -->
-              <path d="M1.5 8 8 2.5 14.5 8" />
-              <path d="M3.5 12.5h9" stroke-dasharray="1.5 2.5" />
-            </svg>
-          </template>
-          {{ $t("pages.utility.viewer.roof") }}
-        </FiveStackToolTip>
-        <Slider
-          class="min-w-0 flex-1"
-          :model-value="[ceiling]"
-          :min="0"
-          :max="100"
-          :step="1"
-          :aria-label="$t('pages.utility.viewer.roof')"
-          @update:model-value="
-            (value) => (ceilingChoice = value?.[0] ?? ceiling)
-          "
-        />
-      </div>
-    </div>
+    <slot />
   </div>
 </template>

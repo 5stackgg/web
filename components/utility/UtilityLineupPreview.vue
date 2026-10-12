@@ -14,13 +14,16 @@ import { useClipFileSize } from "~/composables/useClipFileSize";
 import { useUtilityLineupShare } from "~/composables/useUtilityLineupShare";
 import type { UtilityLineup } from "~/types/utility";
 
-const props = defineProps<{ lineup: UtilityLineup }>();
+const props = defineProps<{ lineup: UtilityLineup; threeD?: boolean }>();
 
 const meshCdn = useRuntimeConfig().public.mapMeshCdn as string;
 
 // Watching it beats replaying a lineup nobody filmed, so a clip wins whenever
-// there is one. Everything below it is a reconstruction.
-const clip = computed(() => utilityClipSource(props.lineup));
+// there is one, unless the card's 3D tile asks for the throw. Everything below
+// it is a reconstruction.
+const clip = computed(() =>
+  props.threeD ? null : utilityClipSource(props.lineup),
+);
 
 const download = computed(() => utilityClipDownload(props.lineup));
 const size = useClipFileSize(() =>
@@ -52,19 +55,23 @@ watch(
   { flush: "post" },
 );
 
-const hasMesh = ref(false);
+const hasMesh = ref<boolean | null>(null);
 
 // The renderer decides its mesh mode once on mount, so the 3D view must not
 // appear until the probe has answered -- otherwise a map with no mesh shows an
-// empty scene rather than falling back to the radar.
+// empty scene rather than falling back to the radar. Nor does the radar show
+// while it asks, or turning the 3D tile on would flash it.
 watch(
   () => [props.lineup.map_name, clip.value] as const,
   async ([name, clipSrc]) => {
-    hasMesh.value = false;
+    hasMesh.value = null;
     if (clipSrc || !name || !import.meta.client) {
       return;
     }
-    hasMesh.value = await hasMeshForMap(meshCdn, name);
+    const found = await hasMeshForMap(meshCdn, name);
+    if (props.lineup.map_name === name && !clip.value) {
+      hasMesh.value = found;
+    }
   },
   { immediate: true },
 );
@@ -111,7 +118,7 @@ watch(
       data-no-sheet-drag
     />
 
-    <template v-else>
+    <template v-else-if="hasMesh === false">
       <UtilityRadarBoard
         :map-name="lineup.map_name"
         :lineups="[lineup]"

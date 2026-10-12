@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { Slider } from "~/components/ui/slider";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
@@ -24,6 +22,8 @@ import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
 
 const props = defineProps<{
   lineup: UtilityLineup;
+  /** Fills the box it is put in -- the map's square -- instead of 16:10. */
+  fill?: boolean;
 }>();
 
 // One synthetic grenade, so Replay3DLite renders a lineup with exactly the same
@@ -366,17 +366,15 @@ const autoCeilingZ = computed(() => {
   return highest + 400;
 });
 
-// A view mesh cuts walls at a height above their own floor; ~160u keeps the
-// walls a throw has to clear while still opening interior ceilings. The .tri
-// fallback keeps its own plane-based default.
+// The fallback renderer's roof cut: on a view mesh ~160u above each floor
+// keeps the walls a throw has to clear while still opening interior
+// ceilings; the .tri keeps its own plane-based default. The stage ghosts
+// roofs by itself.
 const VIEW_CEILING = 58;
 const TRI_CEILING = 70;
 const meshKind = ref<"view" | "tri" | "radar" | null>(null);
-const ceilingChoice = ref<number | null>(null);
-const ceiling = computed(
-  () =>
-    ceilingChoice.value ??
-    (meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING),
+const ceiling = computed(() =>
+  meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING,
 );
 
 // Only reached if the mesh 404s mid-flight and the renderer drops back to the
@@ -425,7 +423,7 @@ const stageTime = computed(() => {
 <template>
   <div
     class="relative w-full overflow-hidden rounded-md border border-border bg-background"
-    style="aspect-ratio: 16 / 10"
+    :class="fill ? 'h-full' : 'aspect-[16/10]'"
   >
     <UtilityThrowStage
       v-if="!stageFailed"
@@ -433,7 +431,6 @@ const stageTime = computed(() => {
       :throws="stageThrows"
       :throwers="stageThrowers"
       :time="stageTime"
-      :roof="ceiling"
       :controls="44"
       @mesh="(kind) => (meshKind = kind)"
       @framed="onFramed"
@@ -464,7 +461,7 @@ const stageTime = computed(() => {
     />
 
     <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 z-[10] flex items-end justify-between gap-4 p-3"
+      class="pointer-events-none absolute inset-x-0 bottom-0 z-[10] flex items-end p-3"
     >
       <button
         type="button"
@@ -490,45 +487,6 @@ const stageTime = computed(() => {
         </svg>
         {{ $t("pages.utility.viewer.replay_throw") }}
       </button>
-
-      <!-- One line, the height of the button beside it: a roof glyph where
-           the word was, the word on its tooltip. A label stacked over the
-           slider made this the tallest thing on the picture. -->
-      <div
-        class="pointer-events-auto flex h-8 w-36 items-center gap-2.5 rounded-md border border-border/60 bg-black/60 pl-2.5 pr-3 backdrop-blur"
-      >
-        <FiveStackToolTip as-child side="top" :delay-duration="120">
-          <template #trigger>
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-4 w-4 shrink-0 text-white/75"
-              role="img"
-              :aria-label="$t('pages.utility.viewer.roof')"
-            >
-              <!-- A roof, and the line it is cut at. -->
-              <path d="M1.5 8 8 2.5 14.5 8" />
-              <path d="M3.5 12.5h9" stroke-dasharray="1.5 2.5" />
-            </svg>
-          </template>
-          {{ $t("pages.utility.viewer.roof") }}
-        </FiveStackToolTip>
-        <Slider
-          class="min-w-0 flex-1"
-          :model-value="[ceiling]"
-          :min="0"
-          :max="100"
-          :step="1"
-          :aria-label="$t('pages.utility.viewer.roof')"
-          @update:model-value="
-            (value) => (ceilingChoice = value?.[0] ?? ceiling)
-          "
-        />
-      </div>
     </div>
   </div>
 </template>

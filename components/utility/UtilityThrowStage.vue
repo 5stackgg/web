@@ -2,7 +2,6 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import ReplayStage from "~/components/match/ReplayStage.vue";
 import { useReplayStageSlot } from "~/composables/useReplayStageSlot";
-import { viewCutHeight } from "~/utilities/mapAssets";
 import {
   buildUtilityFrame,
   fitStageShot,
@@ -28,8 +27,6 @@ const props = withDefaults(
     throwers: StagePlayer[];
     /** Seconds into the run, -1 before it, null for the finished picture. */
     time: number | null;
-    /** The roof slider, 0..100; 100 takes nothing off. */
-    roof: number;
     /** CSS px at the bottom the owner's controls cover; the shot avoids it. */
     controls?: number;
   }>(),
@@ -127,13 +124,6 @@ function frameShot() {
   later(() => emit("framed"), FLY_IN_MS);
 }
 
-function applyRoof() {
-  const el = stageEl.value;
-  if (el?.stage?.ctx.view === "3d") {
-    el.map?.setRoof(props.roof >= 100 ? null : viewCutHeight(props.roof));
-  }
-}
-
 function onReady() {
   const camera = stageEl.value?.camera;
   if (!camera) {
@@ -141,7 +131,6 @@ function onReady() {
   }
   ready = true;
   emit("mesh", "view");
-  applyRoof();
   offViewKey?.();
   offViewKey = camera.onViewKey(() => {
     view.value = view.value === "3d" ? "2d" : "3d";
@@ -158,7 +147,6 @@ function onReady() {
 
 watch(stageEl, (el) => el?.whenReady(onReady));
 watch(shotKey, () => ready && frameShot());
-watch(() => props.roof, applyRoof);
 
 // Another view took the page's stage: keep a picture of this one, and where
 // the camera was, until it comes back.

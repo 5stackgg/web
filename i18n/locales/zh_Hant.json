@@ -5437,8 +5437,7 @@
         "score": "{count} 個讚 | {count} 個讚"
       },
       "viewer": {
-        "replay_throw": "重播投擲",
-        "roof": "屋頂"
+        "replay_throw": "重播投擲"
       },
       "detail": {
         "previous": "上一個點位",
@@ -5446,6 +5445,8 @@
         "open_full": "開啟完整頁面",
         "practice_this": "練習這個",
         "share": "分享點位",
+        "watch_3d": "3D 觀看",
+        "watch_clip": "觀看片段",
         "copy_link": "複製點位連結",
         "download_clip": "下載片段",
         "not_found": "找不到該點位",
@@ -5749,6 +5750,8 @@
         "step_context_by": "{name} 的第 {step} 步，共 {count} 步。在 {seconds} 秒時由 {player} 投出。",
         "step_context_you": "{name} 的第 {step} 步，共 {count} 步。在 {seconds} 秒時由你投出。",
         "play": "播放",
+        "pause": "暫停",
+        "seek": "戰術時間軸",
         "stop": "停止",
         "clock_of": "{now} 秒 / {total} 秒",
         "duplicate": "複製一份",

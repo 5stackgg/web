@@ -29,7 +29,6 @@ function agent(steamId: string, player: Record<string, unknown>) {
     id: `agent-${steamId}`,
     status: "registered",
     created_at: "2026-10-01T12:00:00Z",
-    party_id: null,
     tournament_team_id: null,
     tournament_team: null,
     player: { steam_id: steamId, name: `Player ${steamId}`, ...player },
@@ -156,14 +155,36 @@ describe("TournamentFreeAgents", () => {
       expect(inviteButton(wrapper)).toBeUndefined();
     });
 
-    it("does not offer an invite for a drafted free agent", async () => {
+  });
+
+  describe("after the draft", () => {
+    const drafted = (steamId: string) => ({
+      ...agent(steamId, {}),
+      status: "drafted",
+      tournament_team_id: "pickup-1",
+      tournament_team: { id: "pickup-1", name: "Team 1" },
+    });
+
+    it("lists only the players still waiting", async () => {
       pool.value = [
-        { ...agent("76561198000000003", {}), status: "drafted" },
+        drafted("76561198000000004"),
+        { ...agent("76561198000000005", {}), status: "waitlisted" },
       ];
 
-      const wrapper = await mountPool(captainsTeam());
+      const wrapper = await mountPool();
 
-      expect(inviteButton(wrapper)).toBeUndefined();
+      expect(wrapper.text()).not.toContain("Player 76561198000000004");
+      expect(wrapper.text()).toContain("Player 76561198000000005");
+      expect(wrapper.text()).toContain("1 on the waitlist");
+    });
+
+    it("says nobody is waiting once everyone was drafted", async () => {
+      pool.value = [drafted("76561198000000004")];
+
+      const wrapper = await mountPool();
+
+      expect(wrapper.text()).toContain("Nobody is waiting");
+      expect(wrapper.text()).not.toContain("Player 76561198000000004");
     });
   });
 });

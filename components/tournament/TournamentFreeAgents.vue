@@ -1,18 +1,37 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient, useSubscription } from "@vue/apollo-composable";
-import { Info, RefreshCw, UserMinus, UserPlus } from "lucide-vue-next";
+import { CaretSortIcon } from "@radix-icons/vue";
+import {
+  Info,
+  RefreshCw,
+  TriangleAlert,
+  UserMinus,
+  UserPlus,
+} from "lucide-vue-next";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import {
   Empty,
   EmptyDescription,
   EmptyTitle,
 } from "~/components/ui/empty";
+import { FadeSwap, HeightSwap } from "~/components/ui/transitions";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
+import PlayerSearch from "~/components/PlayerSearch.vue";
 import TournamentChip from "~/components/tournament/TournamentChip.vue";
 import TournamentFreeAgentSignUp from "~/components/tournament/TournamentFreeAgentSignUp.vue";
 import { toast } from "~/components/ui/toast";
@@ -349,6 +368,119 @@ async function invite(agent: Agent) {
   }
 }
 
+// The api's window for organizer edits, wider than a player's own sign-up:
+// closing registration is what drafts the pool.
+const POOL_EDITABLE = [
+  e_tournament_status_enum.Setup,
+  e_tournament_status_enum.RegistrationOpen,
+  e_tournament_status_enum.CheckInReview,
+] as string[];
+
+const poolEditable = computed(
+  () =>
+    !!props.tournament?.is_organizer &&
+    POOL_EDITABLE.includes(props.tournament?.status),
+);
+
+const poolLocked = computed(
+  () =>
+    !!props.tournament?.is_organizer &&
+    props.tournament?.status === e_tournament_status_enum.RegistrationClosed,
+);
+
+// Layered so the most specific fact wins: a drafted player is in the pool and
+// also on their pickup team.
+const ineligibleAgents = computed(() => {
+  const reasons: Record<string, string> = {};
+
+  for (const row of pool.value) {
+    if (row.player?.steam_id) {
+      reasons[String(row.player.steam_id)] = t(
+        "tournament.free_agents.ineligible_in_pool",
+      );
+    }
+  }
+
+  for (const team of props.tournament?.teams ?? []) {
+    for (const member of team.roster ?? []) {
+      if (member.player?.steam_id) {
+        reasons[String(member.player.steam_id)] = t(
+          "tournament.team.ineligible.on_other_team",
+          { team: team.name },
+        );
+      }
+    }
+  }
+
+  return reasons;
+});
+
+async function addAgent(player: Agent) {
+  const data = await runTournamentAction(
+    client,
+    {
+      addTournamentFreeAgent: [
+        {
+          tournament_id: props.tournament.id,
+          steam_id: player.steam_id,
+        },
+        {
+          success: true,
+        },
+      ],
+    },
+    t("tournament.free_agents.add_failed"),
+  );
+
+  if (!data) {
+    return;
+  }
+
+  toast({
+    title: t("tournament.free_agents.added", { name: player.name }),
+  });
+}
+
+const removeDialogOpen = ref(false);
+const removing = ref<Agent | null>(null);
+
+function confirmRemove(agent: Agent) {
+  removing.value = agent;
+  removeDialogOpen.value = true;
+}
+
+async function removeAgent() {
+  const agent = removing.value;
+  if (!agent) {
+    return;
+  }
+
+  const data = await runTournamentAction(
+    client,
+    {
+      removeTournamentFreeAgent: [
+        {
+          tournament_id: props.tournament.id,
+          steam_id: agent.player?.steam_id,
+        },
+        {
+          success: true,
+        },
+      ],
+    },
+    t("tournament.free_agents.remove_failed"),
+  );
+
+  if (!data) {
+    return;
+  }
+
+  removeDialogOpen.value = false;
+  toast({
+    title: t("tournament.free_agents.removed", { name: agent.player?.name }),
+  });
+}
+
 function signUpTime(createdAt: string) {
   const date = new Date(createdAt);
   if (Number.isNaN(date.getTime())) {
@@ -468,123 +600,183 @@ async function draftTeams() {
 
     <TournamentFreeAgentSignUp :tournament="tournament" :my-entry="myEntry" />
 
-    <Empty v-if="waitingRows.length === 0" class="min-h-[180px]">
-      <EmptyTitle>
-        {{
-          hasDrafted
-            ? $t("tournament.free_agents.nobody_waiting_title")
-            : $t("tournament.free_agents.empty_title")
-        }}
-      </EmptyTitle>
-      <EmptyDescription>
-        {{
-          hasDrafted
-            ? $t("tournament.free_agents.nobody_waiting_description")
-            : $t("tournament.free_agents.empty_description")
-        }}
-      </EmptyDescription>
-    </Empty>
-
-    <template v-else>
-      <TransitionGroup
-        tag="div"
-        class="relative flex flex-col gap-1.5"
-        enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
-        enter-from-class="opacity-0 translate-y-2 motion-reduce:translate-y-0"
-        leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
-        leave-to-class="opacity-0 -translate-y-1 motion-reduce:translate-y-0"
-        move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
-      >
-        <div
-          v-for="row in waitingRows"
-          :key="row.agent.id"
-          class="flex flex-wrap items-center gap-3 rounded-md border border-border bg-card/45 px-3 py-2 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.35)]"
-        >
-          <span
-            class="w-7 shrink-0 text-right font-mono text-[0.7rem] tabular-nums text-muted-foreground"
-          >
-            {{ String(row.position).padStart(2, "0") }}
-          </span>
-          <div class="min-w-0 flex-1">
-            <PlayerDisplay
-              :player="row.agent.player"
-              size="xs"
-              :linkable="true"
-              :show-elo="false"
-              :show-online="false"
-              :show-role="false"
-            />
-          </div>
-          <span class="flex shrink-0 items-center justify-end gap-1.5">
-            <PlayerPremierRank
-              :premier-rank="row.agent.player?.premier_rank"
-              :premier-rank-updated-at="
-                row.agent.player?.premier_rank_updated_at
-              "
-            />
-            <PlayerFaceitRank
-              :faceit-skill-level="row.agent.player?.faceit_skill_level"
-              :faceit-elo="row.agent.player?.faceit_elo"
-              :faceit-url="row.agent.player?.faceit_url"
-              :faceit-nickname="row.agent.player?.faceit_nickname"
-            />
-          </span>
-          <span class="flex w-14 shrink-0 justify-end">
-            <PlayerElo
-              v-if="playerElo(row.agent) !== null"
-              :elo="row.agent.player?.elo"
-              :type="eloLadder"
-            />
-            <span
-              v-else
-              class="font-mono text-[0.78rem] text-muted-foreground"
-            >
-              &mdash;
-            </span>
-          </span>
-          <span
-            class="w-14 shrink-0 text-right font-mono text-[0.72rem] tabular-nums text-muted-foreground"
-          >
-            {{ signUpTime(row.agent.created_at) }}
-          </span>
-          <TournamentChip :tone="statusTone(row.agent.status)">
-            {{ statusLabel(row.agent.status) }}
-          </TournamentChip>
-          <template v-if="canInvite(row.agent)">
-            <TournamentChip
-              v-if="invitedSteamIds.has(String(row.agent.player?.steam_id))"
-              tone="amber"
-            >
-              {{ $t("tournament.free_agents.invited") }}
-            </TournamentChip>
-            <Button
-              v-else
-              variant="outline"
-              size="sm"
-              class="h-7 px-2.5"
-              @click="invite(row.agent)"
-            >
-              <UserPlus class="mr-1.5 h-3.5 w-3.5" />
-              {{ $t("tournament.free_agents.invite") }}
-            </Button>
-          </template>
+    <div v-if="poolEditable || poolLocked" class="flex items-center gap-2">
+      <FadeSwap class="min-w-0 flex-1">
+        <div v-if="poolEditable" key="add">
+          <PlayerSearch
+            :label="$t('tournament.free_agents.add')"
+            :ineligible="ineligibleAgents"
+            @selected="addAgent"
+          />
         </div>
-      </TransitionGroup>
-
-      <div
-        v-if="topRatedWaitlisted"
-        class="flex items-start gap-2.5 rounded-md border border-border bg-muted/20 px-4 py-3 text-[0.78rem] leading-relaxed text-muted-foreground"
-      >
-        <Info class="mt-px h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]" />
-        <span>
-          {{
-            $t("tournament.free_agents.waitlist_explainer", {
-              name: topRatedWaitlisted.player?.name,
-            })
-          }}
+        <Button
+          v-else
+          key="locked"
+          variant="outline"
+          disabled
+          class="w-full justify-between [&>span:last-child]:w-full [&>span:last-child]:justify-between"
+        >
+          {{ $t("tournament.free_agents.add") }}
+          <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </FadeSwap>
+      <FadeSwap>
+        <span v-if="poolLocked" key="locked" class="inline-flex">
+          <FiveStackToolTip as-child :delay-duration="120">
+            <template #trigger>
+              <span
+                class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                tabindex="0"
+                role="img"
+                :aria-label="$t('tournament.free_agents.pool_locked')"
+                @click.prevent
+              >
+                <TriangleAlert class="h-4 w-4" />
+              </span>
+            </template>
+            <p class="max-w-[16rem]">
+              {{ $t("tournament.free_agents.pool_locked") }}
+            </p>
+          </FiveStackToolTip>
         </span>
+      </FadeSwap>
+    </div>
+
+    <HeightSwap>
+      <Empty v-if="waitingRows.length === 0" key="empty" class="min-h-[180px]">
+        <EmptyTitle>
+          {{
+            hasDrafted
+              ? $t("tournament.free_agents.nobody_waiting_title")
+              : $t("tournament.free_agents.empty_title")
+          }}
+        </EmptyTitle>
+        <EmptyDescription>
+          {{
+            hasDrafted
+              ? $t("tournament.free_agents.nobody_waiting_description")
+              : $t("tournament.free_agents.empty_description")
+          }}
+        </EmptyDescription>
+      </Empty>
+
+      <div v-else key="list" class="flex flex-col gap-5">
+        <TransitionGroup
+          tag="div"
+          class="relative flex flex-col gap-1.5"
+          enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
+          enter-from-class="opacity-0 translate-y-2 motion-reduce:translate-y-0"
+          leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
+          leave-to-class="opacity-0 -translate-y-1 motion-reduce:translate-y-0"
+          move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
+        >
+          <div
+            v-for="row in waitingRows"
+            :key="row.agent.id"
+            class="flex flex-wrap items-center gap-3 rounded-md border border-border bg-card/45 px-3 py-2 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.35)]"
+          >
+            <span
+              class="w-7 shrink-0 text-right font-mono text-[0.7rem] tabular-nums text-muted-foreground"
+            >
+              {{ String(row.position).padStart(2, "0") }}
+            </span>
+            <div class="min-w-0 flex-1">
+              <PlayerDisplay
+                :player="row.agent.player"
+                size="xs"
+                :linkable="true"
+                :show-elo="false"
+                :show-online="false"
+                :show-role="false"
+              />
+            </div>
+            <span class="flex shrink-0 items-center justify-end gap-1.5">
+              <PlayerPremierRank
+                :premier-rank="row.agent.player?.premier_rank"
+                :premier-rank-updated-at="
+                  row.agent.player?.premier_rank_updated_at
+                "
+              />
+              <PlayerFaceitRank
+                :faceit-skill-level="row.agent.player?.faceit_skill_level"
+                :faceit-elo="row.agent.player?.faceit_elo"
+                :faceit-url="row.agent.player?.faceit_url"
+                :faceit-nickname="row.agent.player?.faceit_nickname"
+              />
+            </span>
+            <span class="flex w-14 shrink-0 justify-end">
+              <PlayerElo
+                v-if="playerElo(row.agent) !== null"
+                :elo="row.agent.player?.elo"
+                :type="eloLadder"
+              />
+              <span
+                v-else
+                class="font-mono text-[0.78rem] text-muted-foreground"
+              >
+                &mdash;
+              </span>
+            </span>
+            <span
+              class="w-14 shrink-0 text-right font-mono text-[0.72rem] tabular-nums text-muted-foreground"
+            >
+              {{ signUpTime(row.agent.created_at) }}
+            </span>
+            <TournamentChip :tone="statusTone(row.agent.status)">
+              {{ statusLabel(row.agent.status) }}
+            </TournamentChip>
+            <template v-if="canInvite(row.agent)">
+              <TournamentChip
+                v-if="invitedSteamIds.has(String(row.agent.player?.steam_id))"
+                tone="amber"
+              >
+                {{ $t("tournament.free_agents.invited") }}
+              </TournamentChip>
+              <Button
+                v-else
+                variant="outline"
+                size="sm"
+                class="h-7 px-2.5"
+                @click="invite(row.agent)"
+              >
+                <UserPlus class="mr-1.5 h-3.5 w-3.5" />
+                {{ $t("tournament.free_agents.invite") }}
+              </Button>
+            </template>
+            <Button
+              v-if="poolEditable"
+              variant="ghost"
+              size="icon"
+              class="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive [&_svg]:size-3.5"
+              :aria-label="
+                $t('tournament.free_agents.remove_agent', {
+                  name: row.agent.player?.name,
+                })
+              "
+              @click="confirmRemove(row.agent)"
+            >
+              <UserMinus />
+            </Button>
+          </div>
+        </TransitionGroup>
+
+        <div
+          v-if="topRatedWaitlisted"
+          class="flex items-start gap-2.5 rounded-md border border-border bg-muted/20 px-4 py-3 text-[0.78rem] leading-relaxed text-muted-foreground"
+        >
+          <Info
+            class="mt-px h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+          />
+          <span>
+            {{
+              $t("tournament.free_agents.waitlist_explainer", {
+                name: topRatedWaitlisted.player?.name,
+              })
+            }}
+          </span>
+        </div>
       </div>
-    </template>
+    </HeightSwap>
 
     <template v-if="tournament.is_organizer">
       <div class="h-px bg-border"></div>
@@ -678,5 +870,31 @@ async function draftTeams() {
         </div>
       </div>
     </template>
+
+    <AlertDialog
+      :open="removeDialogOpen"
+      @update:open="(open) => (removeDialogOpen = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {{
+              $t("tournament.free_agents.remove_title", {
+                name: removing?.player?.name,
+              })
+            }}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("tournament.free_agents.remove_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <Button variant="destructive" @click="removeAgent">
+            {{ $t("tournament.free_agents.remove") }}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>

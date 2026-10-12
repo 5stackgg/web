@@ -847,7 +847,6 @@ const stats = computed(() => {
           />
 
           <FiveStackToolTip
-            v-if="!hasClip || cardThreeD"
             as-child
             side="bottom"
             :delay-duration="120"

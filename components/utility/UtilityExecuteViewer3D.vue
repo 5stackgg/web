@@ -4,6 +4,8 @@ import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import { normalizeMapName } from "~/utilities/mapAssets";
+import { lineupSmokeVoxels } from "~/utilities/lineupSmokeVoxels";
+import type { StageSmokeVoxels } from "~/utilities/replayStage/types";
 import {
   utilityStageThrow,
   utilityStageThrower,
@@ -508,6 +510,26 @@ onMounted(() => {
 // renderer above does, as it always has.
 const stageFailed = ref(false);
 
+// Each smoke's real cloud, when the plugin has recorded it, by lineup.
+const smokeVoxels = ref<Record<string, StageSmokeVoxels>>({});
+watch(
+  () => throws.value.map((entry) => entry.lineup),
+  (lineups) => {
+    for (const lineup of lineups) {
+      const url = lineup.smoke_voxels_url;
+      if (!url) {
+        continue;
+      }
+      void lineupSmokeVoxels(url).then((voxels) => {
+        if (voxels && lineup.smoke_voxels_url === url) {
+          smokeVoxels.value = { ...smokeVoxels.value, [lineup.id]: voxels };
+        }
+      });
+    }
+  },
+  { immediate: true },
+);
+
 const stageThrows = computed(() =>
   throws.value
     .map((entry) =>
@@ -516,6 +538,7 @@ const stageThrows = computed(() =>
         gid: entry.gid,
         start: entry.start,
         points: fullTrajectories.value[entry.lineup.id],
+        voxels: smokeVoxels.value[entry.lineup.id] ?? null,
       }),
     )
     .filter((entry): entry is UtilityStageThrow => !!entry),

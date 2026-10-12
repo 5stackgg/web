@@ -74,6 +74,8 @@ export const utilityLineupListFields = {
   preview_url: true,
   preview_thumbnail_url: true,
   preview_stills_url: true,
+  // The smoke the plugin recorded off the real grenade, when it has.
+  smoke_voxels_url: true,
   preview_duration_ms: true,
   preview_rendered_at: true,
   verified_at: true,

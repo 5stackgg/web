@@ -3416,6 +3416,9 @@
         "registered_count": "{count} af {max}",
         "register": "Tilmeld et hold",
         "sign_in_to_register": "Log ind for at tilmelde",
+        "joined_team": "Tilmeldt",
+        "joined_free_agent": "Tilmeldt som free agent",
+        "joined_waitlisted": "Free agent · på venteliste",
         "details": "Detaljer",
         "results": "Resultater",
         "champion": "Vinder: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "Top {percent}%",
         "player_profile": "Spillerprofil",
         "recent_form": "Aktuel form",
+        "recent_form_elo": "ELO-ændring over de seneste {count} kampe",
         "range": "Interval",
         "custom_range": "Eget interval",
         "custom_window_active": "Eget vindue aktivt. Vælger du en forudindstilling, ryddes det.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "Spring turneringskampe over i stats og graf.",
         "tournaments_section_label": "TURNERINGER",
         "tournaments_description": "Turneringer, denne spiller har deltaget i.",
+        "tournament_finish_of": "af {count}",
+        "show_less": "Vis mindre",
+        "honors_section": "Udmærkelser",
+        "honors_all": "Alle udmærkelser",
+        "honors_group": {
+          "tournaments": "Turneringer",
+          "seasons": "Sæsoner",
+          "awarded": "Tildelt"
+        },
         "current_elo": "Nuværende ELO",
         "source": "Kilde",
         "provider": "Udbyder",

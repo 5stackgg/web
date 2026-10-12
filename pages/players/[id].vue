@@ -21,11 +21,11 @@ const { t } = useI18n();
 const showDemoUpload = ref(false);
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
-import AwardCase from "~/components/award/AwardCase.vue";
+import PlayerTournaments from "~/components/player/PlayerTournaments.vue";
+import PlayerHonorBar from "~/components/player/PlayerHonorBar.vue";
+import PlayerHeroActions from "~/components/player/PlayerHeroActions.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import { Button } from "~/components/ui/button";
-import { Plus } from "lucide-vue-next";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -70,22 +70,9 @@ import {
   ExternalLink,
   Settings2,
   Maximize2,
-  UserPlus,
-  UserCheck,
-  X,
-  Clock,
-  MessageSquare,
   Calendar as CalendarIcon,
   ChevronDown,
-  MoreVertical,
 } from "lucide-vue-next";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -112,12 +99,7 @@ import PluginRemote from "~/components/plugins/PluginRemote.vue";
 import { usePluginsStore, type Plugin } from "~/stores/Plugins";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import {
-  $,
-  order_by,
-  e_tournament_status_enum,
-  Selector,
-} from "~/generated/zeus";
+import { $, order_by, Selector } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { playerMatchSummaryQuery } from "~/graphql/playerMatchAggStatsGraphql";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
@@ -137,13 +119,6 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { parseDate, type DateValue } from "@internationalized/date";
-
-// `CheckInReview` only joins e_tournament_status_enum once codegen has run
-// against the check-in migration; until then the enum member is undefined and
-// would poison the status filter in the template. The raw column value is what
-// the row carries either way. Declared after the imports on purpose: a const
-// ahead of a later import makes vue-tsc treat that import as non-top-level.
-const CHECK_IN_REVIEW_STATUS = "CheckInReview" as e_tournament_status_enum;
 
 type RangeKey =
   "l30" | "7d" | "30d" | "90d" | "1y" | "all" | "custom" | "season";
@@ -2013,18 +1988,6 @@ const playerHeroInlineRoleChipClasses =
   "inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground";
 const playerHeroInlineRoleWrapClasses =
   "inline-flex [&_button]:inline-flex [&_button]:h-7 [&_button]:items-center [&_button]:gap-1.5 [&_button]:rounded-md [&_button]:border-[hsl(var(--tac-amber)_/_0.4)] [&_button]:bg-[hsl(var(--tac-amber)_/_0.08)] [&_button]:px-2.5 [&_button]:font-mono [&_button]:text-[0.6rem] [&_button]:font-semibold [&_button]:tracking-[0.14em] [&_button]:text-[hsl(var(--tac-amber))] [&_button]:hover:border-[hsl(var(--tac-amber))] [&_button]:hover:bg-[hsl(var(--tac-amber)_/_0.16)] [&_button>span]:uppercase [&_button>svg]:h-3 [&_button>svg]:w-3 [&_button>svg]:shrink-0";
-const playerHeroNameEditButtonClasses =
-  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:h-4 [&_svg]:w-4";
-const playerHeroDangerActionButtonClasses =
-  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive disabled:cursor-not-allowed disabled:opacity-60 [&_svg]:h-4 [&_svg]:w-4";
-const playerHeroAddFriendClasses =
-  "group/addfriend relative inline-flex items-center justify-center gap-[0.55rem] overflow-hidden rounded-md border border-[hsl(var(--tac-amber)_/_0.55)] bg-[hsl(var(--tac-amber)_/_0.12)] px-4 py-2.5 font-sans text-[0.8rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.2)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.45),0_8px_24px_-8px_hsl(var(--tac-amber)/0.5)] disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
-const playerHeroFriendBadgeClasses =
-  "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-emerald-400 max-md:w-full";
-const playerHeroBlockedBadgeClasses =
-  "inline-flex items-center justify-center gap-[0.5rem] rounded-md border border-border bg-muted/40 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-muted-foreground max-md:w-full";
-const playerHeroCancelRequestClasses =
-  "group/req inline-flex items-center justify-center rounded-md border border-border/70 bg-muted/30 px-3 py-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em] text-muted-foreground transition-colors duration-150 hover:border-destructive/50 hover:bg-destructive/15 hover:text-destructive focus-visible:border-destructive/50 focus-visible:bg-destructive/15 focus-visible:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
 const playerHeroAvatarFrameClasses =
   "relative h-[156px] w-[156px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-20 max-md:w-20";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
@@ -2037,7 +2000,6 @@ const playerHeroNameClasses =
 const playerHeroNameMainClasses = "relative text-foreground";
 const playerHeroNameGhostClasses =
   "pointer-events-none absolute inset-0 text-transparent select-none [-webkit-text-stroke:1px_hsl(var(--tac-amber)_/_0.35)] [transform:translate(4px,4px)]";
-const playerHeroActionsClasses = "flex shrink-0 items-center gap-2";
 const playerHeroMetaStripClasses =
   "flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.76rem] text-muted-foreground max-md:col-span-2 max-md:flex-col max-md:items-start";
 // Desktop flows the groups as one strip; phones give each its own row.
@@ -2056,7 +2018,9 @@ const playerHeroPlayIconClasses =
   "h-5 w-5 fill-current transition-transform duration-300 group-hover/play:translate-x-0.5 group-hover/play:scale-110";
 const playerHeroPlayGlowClasses =
   "pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full";
-const playerHeroFooterClasses = "mt-auto flex flex-col gap-4 max-md:mt-5";
+// pt keeps the first separator off the avatar when the card is no taller than
+// its content (mt-auto only spaces it when the ELO card stretches the row).
+const playerHeroFooterClasses = "mt-auto flex flex-col gap-4 pt-5";
 const playerHeroFormClasses = "border-t border-border/60 pt-4";
 const playerHeroFormLabelClasses =
   "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
@@ -2096,83 +2060,20 @@ const playerHeroTeamChipDotClasses =
 
             <div :class="playerHeroIdentityClasses">
               <div :class="playerHeroHeadClasses">
-                <div class="flex items-start justify-between gap-3">
-                  <h1
-                    :class="[playerHeroNameClasses, playerHeroNameSizeClasses]"
+                <h1
+                  :class="[playerHeroNameClasses, playerHeroNameSizeClasses]"
+                >
+                  <span
+                    v-if="showNameGhost"
+                    :class="playerHeroNameGhostClasses"
+                    aria-hidden="true"
                   >
-                    <span
-                      v-if="showNameGhost"
-                      :class="playerHeroNameGhostClasses"
-                      aria-hidden="true"
-                    >
-                      {{ player.name }}
-                    </span>
-                    <span :class="playerHeroNameMainClasses">{{
-                      player.name
-                    }}</span>
-                  </h1>
-                  <div :class="playerHeroActionsClasses">
-                    <!-- A menu holding a single entry is just a slower button, so
-                       one available action renders as that action directly. -->
-                    <button
-                      v-if="heroActions.length === 1"
-                      type="button"
-                      :class="
-                        heroActions[0].destructive
-                          ? playerHeroDangerActionButtonClasses
-                          : playerHeroNameEditButtonClasses
-                      "
-                      :title="heroActions[0].label"
-                      :aria-label="heroActions[0].label"
-                      :disabled="heroActions[0].busy"
-                      @click="heroActions[0].run()"
-                    >
-                      <component :is="heroActions[0].icon" />
-                    </button>
-                    <DropdownMenu v-else-if="heroActions.length > 1">
-                      <DropdownMenuTrigger as-child>
-                        <button
-                          type="button"
-                          :class="playerHeroNameEditButtonClasses"
-                          :title="$t('pages.players.detail.more_actions')"
-                          :aria-label="$t('pages.players.detail.more_actions')"
-                        >
-                          <MoreVertical />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" class="w-52">
-                        <template
-                          v-for="action in heroActions"
-                          :key="action.key"
-                        >
-                          <DropdownMenuSeparator v-if="action.destructive" />
-                          <DropdownMenuItem
-                            class="gap-2"
-                            :class="{
-                              'text-destructive focus:text-destructive':
-                                action.destructive,
-                            }"
-                            :disabled="action.busy"
-                            @click="action.run()"
-                          >
-                            <component
-                              :is="action.icon"
-                              class="h-4 w-4"
-                              :class="{ 'text-destructive': action.danger }"
-                            />
-                            {{ action.label }}
-                            <span
-                              v-if="action.count"
-                              class="ml-auto font-mono text-xs tabular-nums text-muted-foreground"
-                            >
-                              {{ action.count }}
-                            </span>
-                          </DropdownMenuItem>
-                        </template>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </div>
+                    {{ player.name }}
+                  </span>
+                  <span :class="playerHeroNameMainClasses">{{
+                    player.name
+                  }}</span>
+                </h1>
               </div>
 
               <div :class="playerHeroMetaStripClasses">
@@ -2248,6 +2149,10 @@ const playerHeroTeamChipDotClasses =
           </div>
 
           <div :class="playerHeroFooterClasses">
+            <div v-if="playerAwards?.length" :class="playerHeroFormClasses">
+              <PlayerHonorBar :awards="playerAwards" />
+            </div>
+
             <div :class="playerHeroFormClasses">
               <div class="flex items-center justify-between gap-4">
                 <div class="min-w-0 space-y-2.5">
@@ -2256,6 +2161,35 @@ const playerHeroTeamChipDotClasses =
                     {{ $t("pages.players.detail.recent_form") }}
                     <span class="tabular-nums text-foreground/70">
                       {{ recentForm.wins }}–{{ recentForm.losses }}
+                    </span>
+                    <!-- The ELO those matches moved, muted like the W–L with
+                         only the arrow colored. -->
+                    <span
+                      v-if="recentForm.net !== 0"
+                      class="inline-flex items-center gap-1.5 tabular-nums"
+                      :title="
+                        $t('pages.players.detail.recent_form_elo', {
+                          count: RECENT_FORM_COUNT,
+                        })
+                      "
+                    >
+                      <span class="text-muted-foreground/50" aria-hidden="true">
+                        ·
+                      </span>
+                      <span
+                        :class="
+                          recentForm.net > 0
+                            ? 'text-emerald-400'
+                            : 'text-red-400'
+                        "
+                        aria-hidden="true"
+                      >
+                        {{ recentForm.net > 0 ? "▲" : "▼" }}
+                      </span>
+                      <span class="text-foreground/70">
+                        {{ Math.abs(recentForm.net).toLocaleString() }}
+                      </span>
+                      <span>ELO</span>
                     </span>
                   </span>
                   <div :class="playerHeroFormDotsClasses">
@@ -2275,30 +2209,19 @@ const playerHeroTeamChipDotClasses =
                     ></span>
                   </div>
                 </div>
-                <span
-                  class="shrink-0 font-mono text-sm font-semibold tabular-nums"
-                  :class="
-                    recentForm.net > 0
-                      ? 'text-emerald-400'
-                      : recentForm.net < 0
-                        ? 'text-red-400'
-                        : 'text-muted-foreground'
-                  "
-                >
-                  <template v-if="recentForm.net > 0">
-                    ▲ +{{ recentForm.net }}
-                  </template>
-                  <template v-else-if="recentForm.net < 0">
-                    ▼ {{ recentForm.net }}
-                  </template>
-                  <template v-else>+0</template>
-                </span>
+                <PlayerHeroActions
+                  v-bind="heroActionsBind"
+                  class="shrink-0"
+                  @add="addAsFriend"
+                  @accept="acceptFriendRequest"
+                  @cancel="cancelFriendRequest"
+                  @message="messagePlayer"
+                />
               </div>
             </div>
 
-            <div v-if="hasRightColumn" :class="playerHeroRightActionsClasses">
+            <div v-if="isSelfProfile" :class="playerHeroRightActionsClasses">
               <NuxtLink
-                v-if="isSelfProfile"
                 to="/play"
                 :class="[playerHeroPlayClasses, 'max-md:hidden']"
               >
@@ -2311,74 +2234,6 @@ const playerHeroTeamChipDotClasses =
                   aria-hidden="true"
                 ></span>
               </NuxtLink>
-              <div v-else class="flex items-stretch gap-2">
-                <span
-                  v-if="isBlocked"
-                  :class="[playerHeroBlockedBadgeClasses, 'flex-1']"
-                >
-                  <Ban class="h-3.5 w-3.5" />
-                  <span>{{ $t("player_blocks.blocked_badge") }}</span>
-                </span>
-                <button
-                  v-else-if="canAddFriend"
-                  type="button"
-                  :class="[playerHeroAddFriendClasses, 'flex-1']"
-                  :disabled="friendActionPending"
-                  @click="addAsFriend"
-                >
-                  <UserPlus class="h-4 w-4" />
-                  <span>{{ $t("player.status.add_friend") }}</span>
-                </button>
-                <button
-                  v-else-if="friendRelationship === 'incoming'"
-                  type="button"
-                  :class="[playerHeroAddFriendClasses, 'flex-1']"
-                  :disabled="friendActionPending"
-                  @click="acceptFriendRequest"
-                >
-                  <UserCheck class="h-4 w-4" />
-                  <span>{{ $t("matchmaking.friends.accept") }}</span>
-                </button>
-                <button
-                  v-else-if="friendRelationship === 'outgoing'"
-                  type="button"
-                  :class="[playerHeroCancelRequestClasses, 'flex-1']"
-                  :disabled="friendActionPending"
-                  :aria-label="$t('matchmaking.friends.cancel_request_aria')"
-                  @click="cancelFriendRequest"
-                >
-                  <span class="grid justify-items-center [&>*]:[grid-area:1/1]">
-                    <span
-                      class="inline-flex items-center gap-[0.5rem] transition-opacity duration-150 group-hover/req:opacity-0 group-focus-visible/req:opacity-0 [@media(hover:none)]:opacity-0"
-                    >
-                      <Clock class="h-3.5 w-3.5" />
-                      {{ $t("matchmaking.friends.requested") }}
-                    </span>
-                    <span
-                      class="inline-flex items-center gap-[0.5rem] opacity-0 transition-opacity duration-150 group-hover/req:opacity-100 group-focus-visible/req:opacity-100 [@media(hover:none)]:opacity-100"
-                    >
-                      <X class="h-3.5 w-3.5" />
-                      {{ $t("matchmaking.friends.cancel_request") }}
-                    </span>
-                  </span>
-                </button>
-                <span
-                  v-else-if="friendRelationship === 'friend'"
-                  :class="[playerHeroFriendBadgeClasses, 'flex-1']"
-                >
-                  <UserCheck class="h-3.5 w-3.5" />
-                  <span>{{ $t("pages.players.detail.friend") }}</span>
-                </span>
-                <button
-                  v-if="canMessage"
-                  type="button"
-                  :class="[playerHeroAddFriendClasses, 'flex-1']"
-                  @click="messagePlayer"
-                >
-                  <MessageSquare class="h-4 w-4" />
-                  <span>{{ $t("chat.direct.message") }}</span>
-                </button>
-              </div>
             </div>
           </div>
         </header>
@@ -2749,22 +2604,6 @@ const playerHeroTeamChipDotClasses =
         </AnimatedCard>
       </PageTransition>
     </div>
-
-    <PageTransition :delay="50" v-if="playerAwards && playerAwards.length > 0">
-      <AwardCase :awards="playerAwards" :empty-state="false">
-        <template v-if="canGrantAwards" #action>
-          <button
-            type="button"
-            class="grid h-9 w-9 place-items-center rounded-md border border-border/80 bg-background/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-            :title="$t('awards.composer.grant_here')"
-            :aria-label="$t('awards.composer.grant_here')"
-            @click="awardComposerOpen = true"
-          >
-            <Plus class="h-4 w-4" />
-          </button>
-        </template>
-      </AwardCase>
-    </PageTransition>
 
     <AwardComposer
       v-if="player && awardComposerOpen"
@@ -3522,28 +3361,7 @@ const playerHeroTeamChipDotClasses =
       <Separator />
 
       <PageTransition v-if="playerId">
-        <RecentTournaments
-          :section-label="$t('pages.players.detail.tournaments_section_label')"
-          :section-description="
-            $t('pages.players.detail.tournaments_description')
-          "
-          :statuses="[
-            e_tournament_status_enum.Finished,
-            e_tournament_status_enum.Live,
-            e_tournament_status_enum.RegistrationOpen,
-            e_tournament_status_enum.RegistrationClosed,
-            e_tournament_status_enum.Setup,
-            CHECK_IN_REVIEW_STATUS,
-          ]"
-          status-variant="finished"
-          order-direction="desc"
-          card="simple"
-          horizontal
-          see-all-as-modal
-          hide-when-empty
-          :player-steam-id="playerId"
-          :limit="8"
-        />
+        <PlayerTournaments :player-steam-id="playerId" />
       </PageTransition>
       <PageTransition :delay="500">
         <div>
@@ -3895,6 +3713,17 @@ export default {
     };
   },
   computed: {
+    heroActionsBind(): Record<string, any> {
+      return {
+        actions: this.heroActions,
+        relationship: this.friendRelationship,
+        canAddFriend: this.canAddFriend,
+        canMessage: this.canMessage,
+        isBlocked: this.isBlocked,
+        isSelf: this.isSelfProfile,
+        pending: this.friendActionPending,
+      };
+    },
     canGrantAwards() {
       return useApplicationSettingsStore().canGrantAwards;
     },
@@ -4050,15 +3879,6 @@ export default {
         !this.isSelfProfile &&
         !this.isBlocked &&
         this.friendRelationship === "none"
-      );
-    },
-    hasRightColumn() {
-      return (
-        this.isSelfProfile ||
-        this.isBlocked ||
-        this.canAddFriend ||
-        this.friendRelationship !== "none" ||
-        this.canMessage
       );
     },
     // Friends, or anyone who takes message requests. Not a plain my_friends

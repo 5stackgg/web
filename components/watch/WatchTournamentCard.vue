@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { CalendarDays, Eye, MapPin, Trophy, Users } from "lucide-vue-next";
+import {
+  CalendarDays,
+  Check,
+  Eye,
+  MapPin,
+  Trophy,
+  Users,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { e_tournament_status_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -19,10 +26,13 @@ import {
 // to sit it beside the details; the banner then takes any extra height the
 // row hands the card. `quickLook` turns the banner and the card's empty space
 // into a quick-look trigger instead of a link.
+// `hideChampion` drops the winner line for callers that put their own facts
+// in the `facts` slot (the player profile shows that player's finish instead).
 const props = defineProps<{
   tournament: any;
   stacked?: boolean;
   quickLook?: boolean;
+  hideChampion?: boolean;
 }>();
 const emit = defineEmits<{ (e: "quick-look"): void }>();
 
@@ -44,6 +54,23 @@ const registrationOpen = computed(
   () => props.tournament.status === e_tournament_status_enum.RegistrationOpen,
 );
 const isGuest = computed(() => !useAuthStore().me?.steam_id);
+
+// Already in: say how, instead of offering to register again.
+const joinedLabel = computed(() => {
+  if (state.value !== "upcoming" || !props.tournament.joined_tournament) {
+    return null;
+  }
+  const steamId = useAuthStore().me?.steam_id;
+  const freeAgent = (props.tournament.free_agents || []).find(
+    (agent: any) => String(agent.player_steam_id) === String(steamId),
+  );
+  if (freeAgent?.status === "waitlisted") {
+    return t("pages.watch.tournaments.joined_waitlisted");
+  }
+  return freeAgent
+    ? t("pages.watch.tournaments.joined_free_agent")
+    : t("pages.watch.tournaments.joined_team");
+});
 
 const bannerSrc = computed(() => {
   if (props.tournament.banner) {
@@ -129,7 +156,9 @@ const teamsLabel = computed(() => {
 });
 const prizePool = computed(() => formatPrizePool(props.tournament.prizes));
 const champion = computed(() =>
-  state.value === "finished" ? tournamentChampion(props.tournament) : null,
+  state.value === "finished" && !props.hideChampion
+    ? tournamentChampion(props.tournament)
+    : null,
 );
 
 function signIn() {
@@ -250,6 +279,7 @@ const primaryClasses =
             <CalendarDays class="h-3.5 w-3.5 text-muted-foreground" />
             {{ startsAt }}
           </li>
+          <slot name="facts" />
           <li
             v-if="tournament.location && state !== 'finished'"
             class="flex min-w-0 items-center gap-1.5"
@@ -287,7 +317,14 @@ const primaryClasses =
       </div>
 
       <div class="mt-auto flex flex-wrap gap-2 pt-1">
-        <template v-if="registrationOpen">
+        <span
+          v-if="joinedLabel"
+          class="inline-flex h-8 items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.5)] px-3 text-xs font-semibold text-[hsl(var(--tac-amber))]"
+        >
+          <Check class="h-3.5 w-3.5" />
+          {{ joinedLabel }}
+        </span>
+        <template v-else-if="registrationOpen">
           <Button
             v-if="isGuest"
             size="sm"

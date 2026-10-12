@@ -3416,6 +3416,9 @@
         "registered_count": "{count} из {max}",
         "register": "Зарегистрировать команду",
         "sign_in_to_register": "Войди, чтобы зарегистрироваться",
+        "joined_team": "Зарегистрирован",
+        "joined_free_agent": "Записан свободным агентом",
+        "joined_waitlisted": "Свободный агент · в листе ожидания",
         "details": "Детали",
         "results": "Результаты",
         "champion": "Чемпион: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "Топ {percent}%",
         "player_profile": "Профиль игрока",
         "recent_form": "Текущая форма",
+        "recent_form_elo": "Изменение ELO за последние {count} матчей",
         "range": "Диапазон",
         "custom_range": "Свой диапазон",
         "custom_window_active": "Активен свой период. Выбор пресета сбросит его.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "Не учитывать турнирные матчи в статистике и на графике.",
         "tournaments_section_label": "ТУРНИРЫ",
         "tournaments_description": "Турниры, в которых участвовал этот игрок.",
+        "tournament_finish_of": "из {count}",
+        "show_less": "Свернуть",
+        "honors_section": "Регалии",
+        "honors_all": "Все регалии",
+        "honors_group": {
+          "tournaments": "Турниры",
+          "seasons": "Сезоны",
+          "awarded": "Вручено"
+        },
         "current_elo": "Текущий ELO",
         "source": "Источник",
         "provider": "Провайдер",

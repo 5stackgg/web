@@ -3416,6 +3416,9 @@
         "registered_count": "{count} / {max}",
         "register": "チームを登録",
         "sign_in_to_register": "ログインして登録",
+        "joined_team": "登録済み",
+        "joined_free_agent": "フリーエージェントで参加済み",
+        "joined_waitlisted": "フリーエージェント・補欠",
         "details": "詳細",
         "results": "結果",
         "champion": "優勝: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "上位 {percent}%",
         "player_profile": "プレイヤープロフィール",
         "recent_form": "直近の調子",
+        "recent_form_elo": "直近{count}試合のELO変動",
         "range": "範囲",
         "custom_range": "カスタム範囲",
         "custom_window_active": "カスタム期間が有効です。プリセットを選ぶと解除されます。",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "スタッツとグラフからトーナメントの試合を除きます。",
         "tournaments_section_label": "トーナメント",
         "tournaments_description": "このプレイヤーが出場したトーナメント。",
+        "tournament_finish_of": "/ {count}",
+        "show_less": "表示を減らす",
+        "honors_section": "栄誉",
+        "honors_all": "すべての栄誉",
+        "honors_group": {
+          "tournaments": "トーナメント",
+          "seasons": "シーズン",
+          "awarded": "授与"
+        },
         "current_elo": "現在の ELO",
         "source": "ソース",
         "provider": "プロバイダー",

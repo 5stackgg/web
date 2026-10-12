@@ -1,4 +1,7 @@
-import { order_by } from "~/generated/zeus";
+import {
+  e_tournament_free_agent_statuses_enum,
+  order_by,
+} from "~/generated/zeus";
 
 const count = [{}, { aggregate: { count: true } }] as const;
 
@@ -37,6 +40,23 @@ export const tournamentCardFields = {
         },
       ],
     },
+  ],
+  // The viewer's own standing, so a card never offers "Register a team" to
+  // someone already in: on a roster or owning a team, or in the free agent
+  // pool (which of those is told apart by the pool rows).
+  joined_tournament: true,
+  free_agents: [
+    {
+      where: {
+        status: {
+          _in: [
+            e_tournament_free_agent_statuses_enum.registered,
+            e_tournament_free_agent_statuses_enum.waitlisted,
+          ],
+        },
+      },
+    },
+    { player_steam_id: true, status: true },
   ],
   awards: [
     { where: { placement: { _eq: 1 } } },

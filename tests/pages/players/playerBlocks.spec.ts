@@ -79,7 +79,11 @@ async function mountProfile(player: { steam_id: string; name: string }) {
   const wrapper = await mountSuspended(PlayerPage, {
     shallow: true,
     route: `/players/${player.steam_id}`,
-    global: { renderStubDefaultSlot: true },
+    // The hero's friend, message and ⋮ actions live in PlayerHeroActions.
+    global: {
+      renderStubDefaultSlot: true,
+      stubs: { PlayerHeroActions: false },
+    },
   } as any);
   unmount = () => wrapper.unmount();
   (wrapper.vm as any).player = player;
@@ -89,9 +93,7 @@ async function mountProfile(player: { steam_id: string; name: string }) {
 
 type Wrapper = Awaited<ReturnType<typeof mountProfile>>;
 
-const button = (wrapper: Wrapper, text: string) =>
-  wrapper.findAll("button").find((candidate) => candidate.text() === text);
-
+// Every hero action is an icon button named by its aria-label.
 const heroAction = (wrapper: Wrapper, label: string) =>
   wrapper.find(`button[aria-label="${label}"]`);
 
@@ -144,8 +146,8 @@ describe("player profile blocking", () => {
     pushBlocks([]);
     const wrapper = await mountProfile({ steam_id: DANA, name: "Dana" });
 
-    expect(button(wrapper, "Add as friend")).toBeDefined();
-    expect(button(wrapper, "Message")).toBeDefined();
+    expect(heroAction(wrapper, "Add as friend").exists()).toBe(true);
+    expect(heroAction(wrapper, "Message").exists()).toBe(true);
     expect(dialog(wrapper).props("open")).toBe(false);
 
     await heroAction(wrapper, "Block").trigger("click");
@@ -164,13 +166,10 @@ describe("player profile blocking", () => {
     pushBlocks([DANA]);
     const wrapper = await mountProfile({ steam_id: DANA, name: "Dana" });
 
-    const badge = wrapper
-      .findAll("span")
-      .find((span) => span.classes().includes("bg-muted/40"));
-    expect(badge?.text()).toBe("Blocked");
-    expect(button(wrapper, "Add as friend")).toBeUndefined();
-    expect(button(wrapper, "Message")).toBeUndefined();
-    expect(wrapper.text()).not.toContain("Friend");
+    expect(wrapper.find('span[aria-label="Blocked"]').exists()).toBe(true);
+    expect(heroAction(wrapper, "Add as friend").exists()).toBe(false);
+    expect(heroAction(wrapper, "Message").exists()).toBe(false);
+    expect(wrapper.find('[aria-label="Friend"]').exists()).toBe(false);
     expect(heroAction(wrapper, "Block").exists()).toBe(false);
   });
 

@@ -3416,6 +3416,9 @@
         "registered_count": "{count} / {max}",
         "register": "报名队伍",
         "sign_in_to_register": "登录后报名",
+        "joined_team": "已报名",
+        "joined_free_agent": "已以自由选手身份报名",
+        "joined_waitlisted": "自由选手 · 候补",
         "details": "详情",
         "results": "结果",
         "champion": "冠军：{name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "前 {percent}%",
         "player_profile": "玩家资料",
         "recent_form": "近期状态",
+        "recent_form_elo": "最近 {count} 场比赛的 ELO 变化",
         "range": "范围",
         "custom_range": "自定义范围",
         "custom_window_active": "自定义窗口已激活。选择预设将清除它。",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "在数据和图表中跳过赛事比赛。",
         "tournaments_section_label": "锦标赛",
         "tournaments_description": "这位玩家参加过的锦标赛。",
+        "tournament_finish_of": "/ {count}",
+        "show_less": "显示更少",
+        "honors_section": "荣誉",
+        "honors_all": "全部荣誉",
+        "honors_group": {
+          "tournaments": "赛事",
+          "seasons": "赛季",
+          "awarded": "授予"
+        },
         "current_elo": "当前 ELO",
         "source": "来源",
         "provider": "提供方",

@@ -34,7 +34,7 @@ afterEach(async () => {
 });
 
 describe("player profile outgoing friend request", () => {
-  it("names the button with the label it shows at rest", async () => {
+  it("names the icon button with its state and its action", async () => {
     useAuthStore().me = { steam_id: ME, name: "Viewer", role: "user" } as any;
     useMatchmakingStore().friends = [
       {
@@ -48,15 +48,22 @@ describe("player profile outgoing friend request", () => {
     const wrapper = await mountSuspended(PlayerPage, {
       shallow: true,
       route: `/players/${DANA}`,
-      global: { renderStubDefaultSlot: true },
+      global: {
+        renderStubDefaultSlot: true,
+        stubs: { PlayerHeroActions: false },
+      },
     } as any);
     unmount = () => wrapper.unmount();
     (wrapper.vm as any).player = { steam_id: DANA, name: "Dana" };
     await flushPromises();
 
+    // An icon button now: its tooltip says "Requested", so the accessible
+    // name has to carry that state as well as what a click does.
     const button = wrapper
       .findAll("button")
-      .find((candidate) => candidate.text().includes("Requested"));
+      .find((candidate) =>
+        (candidate.attributes("aria-label") ?? "").includes("Requested"),
+      );
     expect(button).toBeDefined();
 
     const name = button!.attributes("aria-label") ?? "";

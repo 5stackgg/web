@@ -3416,6 +3416,9 @@
         "registered_count": "{count} з {max}",
         "register": "Зареєструвати команду",
         "sign_in_to_register": "Увійди, щоб зареєструватися",
+        "joined_team": "Зареєстровано",
+        "joined_free_agent": "Записано вільним агентом",
+        "joined_waitlisted": "Вільний агент · у списку очікування",
         "details": "Деталі",
         "results": "Результати",
         "champion": "Чемпіон: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "Топ {percent}%",
         "player_profile": "Профіль гравця",
         "recent_form": "Недавня форма",
+        "recent_form_elo": "Зміна ELO за останні {count} матчів",
         "range": "Діапазон",
         "custom_range": "Власний діапазон",
         "custom_window_active": "Активний власний період. Вибір пресету скине його.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "Пропускати турнірні матчі в статистиці та графіку.",
         "tournaments_section_label": "ТУРНІРИ",
         "tournaments_description": "Турніри, у яких брав участь цей гравець.",
+        "tournament_finish_of": "з {count}",
+        "show_less": "Згорнути",
+        "honors_section": "Регалії",
+        "honors_all": "Усі регалії",
+        "honors_group": {
+          "tournaments": "Турніри",
+          "seasons": "Сезони",
+          "awarded": "Вручено"
+        },
         "current_elo": "Поточний ELO",
         "source": "Джерело",
         "provider": "Провайдер",

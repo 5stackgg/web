@@ -207,3 +207,45 @@ describe("WatchStreamStage over the game stream", () => {
     expect(wrapper.findComponent(StreamMatchCard).exists()).toBe(true);
   });
 });
+
+describe("WatchStreamStage phone caption", () => {
+  const ancient = { name: "de_ancient", label: null };
+
+  beforeEach(() => {
+    pushes.length = 0;
+    useApplicationSettingsStore().settings = [];
+    useAuthStore().me = { steam_id: "1", role: "user" } as any;
+  });
+
+  const caption = (wrapper: Awaited<ReturnType<typeof mountStage>>) =>
+    wrapper.find("p.basis-full").text();
+
+  it("names an official map once, the way the status already does", async () => {
+    const wrapper = await mountStage([
+      liveMatch({
+        options: { best_of: 1, mr: 12 },
+        match_maps: [
+          { id: "b", is_current_map: true, status: "Live", lineup_1_score: 7, lineup_2_score: 4, map: ancient },
+        ],
+      }),
+    ]);
+
+    expect(caption(wrapper)).toBe("R12 · Ancient");
+  });
+
+  it("keeps the map beside a finished match's result", async () => {
+    const wrapper = await mountStage([
+      liveMatch({
+        status: "Finished",
+        winning_lineup_id: "l1",
+        options: { best_of: 1, mr: 12 },
+        streams: [gameStreamer],
+        match_maps: [
+          { id: "b", status: "Finished", winning_lineup_id: "l1", lineup_1_score: 13, lineup_2_score: 4, map: ancient },
+        ],
+      }),
+    ]);
+
+    expect(caption(wrapper)).toBe("Ancient · Final");
+  });
+});

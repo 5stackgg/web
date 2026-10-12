@@ -8100,7 +8100,8 @@
       "tournament_team_registration_message": "{team} 受邀報名參加賽事"
     },
     "roles": {
-      "captain": "隊長"
+      "captain": "隊長",
+      "owner": "擁有者"
     },
     "leave": "離開隊伍",
     "management": {

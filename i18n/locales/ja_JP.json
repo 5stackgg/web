@@ -8100,7 +8100,8 @@
       "tournament_team_registration_message": "{team} がトーナメントへの参加登録に招待されました"
     },
     "roles": {
-      "captain": "キャプテン"
+      "captain": "キャプテン",
+      "owner": "オーナー"
     },
     "leave": "チームを脱退",
     "management": {

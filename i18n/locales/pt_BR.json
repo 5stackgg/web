@@ -8100,7 +8100,8 @@
       "tournament_team_registration_message": "{team} foi convidada para se inscrever em um torneio"
     },
     "roles": {
-      "captain": "Capitão"
+      "captain": "Capitão",
+      "owner": "Dono"
     },
     "leave": "Sair da Equipe",
     "management": {

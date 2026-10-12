@@ -8100,7 +8100,8 @@
       "tournament_team_registration_message": "Команду {team} запросили зареєструватися на турнір"
     },
     "roles": {
-      "captain": "Капітан"
+      "captain": "Капітан",
+      "owner": "Власник"
     },
     "leave": "Покинути команду",
     "management": {

@@ -8100,7 +8100,8 @@
       "tournament_team_registration_message": "{team} 팀이 토너먼트 참가 신청에 초대되었습니다"
     },
     "roles": {
-      "captain": "팀장"
+      "captain": "팀장",
+      "owner": "소유자"
     },
     "leave": "팀 탈퇴",
     "management": {

@@ -7452,6 +7452,11 @@
       "decider_best_of": "Avgörande för tredjeplatsen",
       "advanced_settings": "Avancerade fasinställningar",
       "teams_count": "{count} lag",
+      "structure_locked_label": "Typ, lag och grupper",
+      "structure_locked": "Typ, lag och grupper är låsta när slutspelsträdet har skapats. Best of kan fortfarande ändras.",
+      "match_settings_locked_label": "Matchinställningar",
+      "match_settings_locked": "Matchinställningarna är låsta när slutspelsträdet har skapats.",
+      "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta dina ändringar av typ, lag, grupper eller matchinställningar och spara sedan best of.",
       "final_map_advantage": {
         "label": "Kartfördel i final",
         "description": "Kartpoängsförsprång som vinnarträdets lag tar med sig in i finalen. Måste vara lägre än antalet kartor som krävs för vinst."
@@ -8066,6 +8071,7 @@
       "discord": "Discord",
       "needs_attention": "Behöver åtgärdas",
       "stages_locked": "Faser kan inte ändras när turneringen har startat.",
+      "stages_drawn": "Faser kan inte ändras när slutspelsträdet har skapats. Återställ turneringen till setup för att redigera dem.",
       "stage_summary": "{min}–{max} lag",
       "groups": "{count} grupper",
       "no_stages": "Inga faser än",

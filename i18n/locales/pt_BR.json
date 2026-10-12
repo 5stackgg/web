@@ -7452,6 +7452,11 @@
       "decider_best_of": "Decisão de 3º Lugar - Melhor De",
       "advanced_settings": "Configurações Avançadas de Fase",
       "teams_count": "{count} equipes",
+      "structure_locked_label": "Tipo, times e grupos",
+      "structure_locked": "Tipo, times e grupos ficam bloqueados depois que o chaveamento é gerado. O formato Melhor De ainda pode mudar.",
+      "match_settings_locked_label": "Configurações da partida",
+      "match_settings_locked": "As configurações da partida ficam bloqueadas depois que o chaveamento é gerado.",
+      "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações de tipo, times, grupos ou configurações da partida e depois salve o formato Melhor De.",
       "final_map_advantage": {
         "label": "Vantagem de Mapa na Final",
         "description": "Vantagem em pontos de mapa que a equipe da chave dos vencedores leva para a grande final. Deve ficar abaixo do número de mapas necessários para vencer."
@@ -8066,6 +8071,7 @@
       "discord": "Discord",
       "needs_attention": "Precisa de atenção",
       "stages_locked": "As fases não podem mudar depois que o torneio começa.",
+      "stages_drawn": "As fases não podem mudar depois que o chaveamento é gerado. Resete o torneio para Configuração para editá-las.",
       "stage_summary": "{min}–{max} times",
       "groups": "{count} grupos",
       "no_stages": "Nenhuma fase ainda",

@@ -7452,6 +7452,11 @@
       "decider_best_of": "3位決定戦",
       "advanced_settings": "ステージ詳細設定",
       "teams_count": "{count} チーム",
+      "structure_locked_label": "形式・チーム数・グループ",
+      "structure_locked": "ブラケット作成後は形式・チーム数・グループがロックされます。Best Of は引き続き変更できます。",
+      "match_settings_locked_label": "試合設定",
+      "match_settings_locked": "ブラケット作成後は試合設定がロックされます。",
+      "drawn_while_editing": "編集中にブラケットが作成されました。形式・チーム数・グループ・試合設定の変更を破棄してから Best Of を保存してください。",
       "final_map_advantage": {
         "label": "決勝マップアドバンテージ",
         "description": "上位ブラケットのチームがグランドファイナルに持ち込むマップポイントのリード。勝利に必要なマップ数未満にする必要があります。"
@@ -8066,6 +8071,7 @@
       "discord": "Discord",
       "needs_attention": "要対応",
       "stages_locked": "大会開始後はステージを変更できません。",
+      "stages_drawn": "ブラケット作成後はステージを変更できません。編集するには大会をセットアップに戻してください。",
       "stage_summary": "{min}–{max} チーム",
       "groups": "{count} グループ",
       "no_stages": "ステージはまだありません",

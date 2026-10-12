@@ -7452,6 +7452,11 @@
       "decider_best_of": "Mecz decydujący o 3. miejscu",
       "advanced_settings": "Zaawansowane ustawienia etapu",
       "teams_count": "{count} drużyn",
+      "structure_locked_label": "Typ, drużyny i grupy",
+      "structure_locked": "Typ, drużyny i grupy są zablokowane po utworzeniu drabinki. Format meczu nadal można zmienić.",
+      "match_settings_locked_label": "Ustawienia meczu",
+      "match_settings_locked": "Ustawienia meczu są zablokowane po utworzeniu drabinki.",
+      "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany typu, drużyn, grup lub ustawień meczu, a potem zapisz format meczu.",
       "final_map_advantage": {
         "label": "Przewaga mapowa w finale",
         "description": "Przewaga punktowa na mapach, którą drużyna z górnej drabinki przenosi do wielkiego finału. Musi być mniejsza od liczby map potrzebnych do wygranej."
@@ -8066,6 +8071,7 @@
       "discord": "Discord",
       "needs_attention": "Wymaga uwagi",
       "stages_locked": "Etapów nie można zmieniać po rozpoczęciu turnieju.",
+      "stages_drawn": "Etapów nie można zmieniać po utworzeniu drabinki. Zresetuj turniej do konfiguracji, aby je edytować.",
       "stage_summary": "{min}–{max} drużyn",
       "groups": "Grupy: {count}",
       "no_stages": "Brak etapów",

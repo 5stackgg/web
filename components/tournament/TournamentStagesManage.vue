@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { Pencil, Plus, Trash2, Lock } from "lucide-vue-next";
+import { Pencil, Plus, Trash2, Lock, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   AlertDialog,
@@ -12,7 +12,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { Fold } from "~/components/ui/transitions";
+import { FadeSwap, Fold } from "~/components/ui/transitions";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue";
 import { toast } from "@/components/ui/toast";
@@ -37,11 +38,37 @@ const stages = computed(() =>
 const nextOrder = computed(
   () => Math.max(0, ...stages.value.map((s: any) => s.order ?? 1)) + 1,
 );
-const locked = computed(
-  () =>
-    props.tournament.status === e_tournament_status_enum.Live ||
-    props.tournament.status === e_tournament_status_enum.Finished,
+const finished = computed(
+  () => props.tournament.status === e_tournament_status_enum.Finished,
 );
+const bracketDrawn = computed(() =>
+  stages.value.some((stage: any) =>
+    (stage.brackets ?? []).some(
+      (bracket: any) => bracket.team_1 || bracket.team_2 || bracket.match,
+    ),
+  ),
+);
+// Mirrors the api's assert_tournament_stages_editable: Setup is always open
+// (opening registration redraws every bracket), registration and check-in
+// review only until a team or match is in a bracket. Best-of edits pass at
+// any status.
+const structureLocked = computed(() => {
+  switch (props.tournament.status) {
+    case e_tournament_status_enum.Setup:
+      return false;
+    case e_tournament_status_enum.RegistrationOpen:
+    case e_tournament_status_enum.CheckInReview:
+      return bracketDrawn.value;
+    default:
+      return true;
+  }
+});
+
+watch(structureLocked, (locked) => {
+  if (locked && editing.value === "new") {
+    editing.value = null;
+  }
+});
 
 const bestOf = (stage: any) =>
   stage.default_best_of ??
@@ -82,7 +109,7 @@ async function confirmDelete() {
 <template>
   <ManageSection
     :label="$t('tournament.manage.stages')"
-    :hint="locked ? $t('tournament.manage.stages_locked') : undefined"
+    :hint="finished ? $t('tournament.manage.stages_locked') : undefined"
   >
     <div class="grid gap-2">
       <div
@@ -118,7 +145,7 @@ async function confirmDelete() {
               </template>
             </span>
           </div>
-          <template v-if="!locked">
+          <template v-if="!finished">
             <Button
               type="button"
               variant="ghost"
@@ -129,7 +156,29 @@ async function confirmDelete() {
               <Pencil class="mr-1.5 h-3.5 w-3.5" />
               {{ $t("common.edit") }}
             </Button>
+            <FiveStackToolTip
+              v-if="structureLocked"
+              as-child
+              :delay-duration="120"
+            >
+              <template #trigger>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  class="h-8 w-8 cursor-default text-muted-foreground opacity-50 hover:bg-transparent hover:text-muted-foreground"
+                  :aria-label="$t('tournament.stage.delete')"
+                  aria-disabled="true"
+                >
+                  <Trash2 class="h-4 w-4" />
+                </Button>
+              </template>
+              <p class="max-w-[16rem]">
+                {{ $t("tournament.manage.stages_drawn") }}
+              </p>
+            </FiveStackToolTip>
             <Button
+              v-else
               type="button"
               variant="ghost"
               size="icon"
@@ -149,6 +198,7 @@ async function confirmDelete() {
               :stage="stage"
               :order="stage.order"
               :tournament="tournament"
+              :structure-locked="structureLocked"
               @updated="editing = null"
             />
           </div>
@@ -165,7 +215,7 @@ async function confirmDelete() {
         {{ $t("tournament.manage.no_stages_hint") }}
       </div>
 
-      <template v-if="!locked">
+      <template v-if="!finished">
         <Fold :open="editing === 'new'">
           <div
             class="rounded-md border border-[hsl(var(--tac-amber)/0.45)] px-3 py-4"
@@ -179,20 +229,44 @@ async function confirmDelete() {
             />
           </div>
         </Fold>
-        <Button
+        <div
           v-if="editing !== 'new'"
-          type="button"
-          variant="outline"
-          class="justify-self-start"
-          @click="toggle('new')"
+          class="flex items-center gap-2 justify-self-start"
         >
-          <Plus class="mr-1.5 h-4 w-4" />
-          {{
-            stages.length
-              ? $t("tournament.stage.add_another")
-              : $t("tournament.manage.add_first_stage")
-          }}
-        </Button>
+          <Button
+            type="button"
+            variant="outline"
+            :disabled="structureLocked"
+            @click="toggle('new')"
+          >
+            <Plus class="mr-1.5 h-4 w-4" />
+            {{
+              stages.length
+                ? $t("tournament.stage.add_another")
+                : $t("tournament.manage.add_first_stage")
+            }}
+          </Button>
+          <FadeSwap>
+            <span v-if="structureLocked" key="locked" class="inline-flex">
+              <FiveStackToolTip as-child :delay-duration="120">
+                <template #trigger>
+                  <span
+                    class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                    tabindex="0"
+                    role="img"
+                    :aria-label="$t('tournament.manage.stages_drawn')"
+                    @click.prevent
+                  >
+                    <TriangleAlert class="h-4 w-4" />
+                  </span>
+                </template>
+                <p class="max-w-[16rem]">
+                  {{ $t("tournament.manage.stages_drawn") }}
+                </p>
+              </FiveStackToolTip>
+            </span>
+          </FadeSwap>
+        </div>
       </template>
     </div>
   </ManageSection>

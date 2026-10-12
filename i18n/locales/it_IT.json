@@ -7452,6 +7452,11 @@
       "decider_best_of": "Decider per il 3° posto",
       "advanced_settings": "Impostazioni avanzate della fase",
       "teams_count": "{count} team",
+      "structure_locked_label": "Tipo, squadre e gironi",
+      "structure_locked": "Tipo, squadre e gironi sono bloccati dopo la generazione del tabellone. Il formato Best Of si può ancora cambiare.",
+      "match_settings_locked_label": "Impostazioni match",
+      "match_settings_locked": "Le impostazioni match sono bloccate dopo la generazione del tabellone.",
+      "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche a tipo, squadre, gironi o impostazioni match, poi salva il formato Best Of.",
       "final_map_advantage": {
         "label": "Vantaggio mappe finale",
         "description": "Vantaggio in punti mappa che il team dell'upper bracket porta nella finale. Deve restare sotto le mappe necessarie per vincere."
@@ -8066,6 +8071,7 @@
       "discord": "Discord",
       "needs_attention": "Richiede attenzione",
       "stages_locked": "Le fasi non si possono modificare dopo l'inizio del torneo.",
+      "stages_drawn": "Le fasi non si possono modificare dopo la generazione del tabellone. Reimposta il torneo a setup per modificarle.",
       "stage_summary": "{min}–{max} squadre",
       "groups": "{count} gruppi",
       "no_stages": "Ancora nessuna fase",

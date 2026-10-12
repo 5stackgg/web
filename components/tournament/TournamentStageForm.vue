@@ -72,6 +72,33 @@ import { $ } from "~/generated/zeus";
 
 <template>
   <form @submit.prevent="updateCreateStage" class="grid gap-4">
+    <Fold :open="structureLocked">
+      <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
+        <span>{{ $t("tournament.stage.structure_locked_label") }}</span>
+        <FiveStackToolTip as-child :delay-duration="120">
+          <template #trigger>
+            <span
+              class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+              tabindex="0"
+              role="img"
+              :aria-label="$t('tournament.stage.structure_locked')"
+              @click.prevent
+            >
+              <TriangleAlert class="h-3.5 w-3.5" />
+            </span>
+          </template>
+          <p class="max-w-[16rem]">
+            {{ $t("tournament.stage.structure_locked") }}
+          </p>
+        </FiveStackToolTip>
+      </div>
+    </Fold>
+
+    <fieldset
+      :disabled="structureLocked"
+      class="grid min-w-0 gap-4 transition-opacity duration-200 motion-reduce:transition-none"
+      :class="structureLocked && 'pointer-events-none opacity-50'"
+    >
     <FormField v-slot="{ value, handleChange }" name="stage_type">
       <FormItem>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -289,6 +316,7 @@ import { $ } from "~/generated/zeus";
       </Fold>
     </div>
     </Fold>
+    </fieldset>
 
     <!-- Section A: Default Best Of -->
     <Card>
@@ -426,6 +454,11 @@ import { $ } from "~/generated/zeus";
         !!form.values.max_teams
       "
     >
+    <fieldset
+      :disabled="structureLocked"
+      class="grid min-w-0 gap-4 transition-opacity duration-200 motion-reduce:transition-none"
+      :class="structureLocked && 'pointer-events-none opacity-50'"
+    >
     <Card>
       <div class="p-4 space-y-4">
         <FormField v-slot="{ value, handleChange }" name="third_place_match">
@@ -494,10 +527,16 @@ import { $ } from "~/generated/zeus";
         </Fold>
       </div>
     </Card>
+    </fieldset>
     </Fold>
 
     <!-- Section B2: Final Map Advantage (DE only) -->
     <Fold :open="form.values.stage_type === 'DoubleElimination'">
+    <fieldset
+      :disabled="structureLocked"
+      class="grid min-w-0 gap-4 transition-opacity duration-200 motion-reduce:transition-none"
+      :class="structureLocked && 'pointer-events-none opacity-50'"
+    >
     <Card>
       <div class="flex flex-col space-y-3 p-4">
         <FormField v-slot="{ value }" name="final_map_advantage">
@@ -536,6 +575,7 @@ import { $ } from "~/generated/zeus";
         </FormField>
       </div>
     </Card>
+    </fieldset>
     </Fold>
 
     <!-- Section C: Advanced Settings (collapsible) -->
@@ -602,6 +642,37 @@ import { $ } from "~/generated/zeus";
           </Card>
           </Fold>
 
+          <Fold :open="structureLocked">
+            <div
+              class="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <span>{{
+                $t("tournament.stage.match_settings_locked_label")
+              }}</span>
+              <FiveStackToolTip as-child :delay-duration="120">
+                <template #trigger>
+                  <span
+                    class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                    tabindex="0"
+                    role="img"
+                    :aria-label="$t('tournament.stage.match_settings_locked')"
+                    @click.prevent
+                  >
+                    <TriangleAlert class="h-3.5 w-3.5" />
+                  </span>
+                </template>
+                <p class="max-w-[16rem]">
+                  {{ $t("tournament.stage.match_settings_locked") }}
+                </p>
+              </FiveStackToolTip>
+            </div>
+          </Fold>
+
+          <fieldset
+            :disabled="structureLocked"
+            class="flex min-w-0 flex-col gap-4 transition-opacity duration-200 motion-reduce:transition-none"
+            :class="structureLocked && 'pointer-events-none opacity-50'"
+          >
           <!-- TV Delay -->
           <Card>
             <div class="flex flex-col space-y-3 p-4">
@@ -1033,6 +1104,7 @@ import { $ } from "~/generated/zeus";
               </FormField>
             </div>
           </Card>
+          </fieldset>
         </div>
       </div>
     </Collapsible>
@@ -1136,6 +1208,10 @@ export default {
     tournament: {
       type: Object,
       required: false,
+    },
+    structureLocked: {
+      type: Boolean,
+      default: false,
     },
   },
   apollo: {
@@ -1884,6 +1960,28 @@ export default {
     discardChanges() {
       this.populateStage(this.stage);
     },
+    structureChanged(): boolean {
+      if (this.baseline === null) {
+        return false;
+      }
+      const baseline = JSON.parse(this.baseline);
+      const current = JSON.parse(this.serializeState());
+      if (
+        baseline.mapPoolMode !== current.mapPoolMode ||
+        JSON.stringify(baseline.customMapPool) !==
+          JSON.stringify(current.customMapPool)
+      ) {
+        return true;
+      }
+      const before = baseline.values;
+      const after = this.form.values;
+      const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
+      return [...keys].some(
+        (key) =>
+          key !== "default_best_of" &&
+          JSON.stringify(before[key]) !== JSON.stringify(after[key]),
+      );
+    },
     animateAdvanced(open: boolean) {
       const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
       if (!wrap) {
@@ -2310,6 +2408,43 @@ export default {
         const form = this.form.values;
         const customAdvancedSettings = this.hasAdvancedSettingsChanged();
         const settings = this.buildSettings();
+
+        if (this.stage && this.structureLocked) {
+          if (this.structureChanged()) {
+            toast({
+              variant: "destructive",
+              title: this.$t("common.error"),
+              description: this.$t("tournament.stage.drawn_while_editing"),
+            });
+            return;
+          }
+
+          await (this as any).$apollo.mutate({
+            variables: {
+              settings: settings,
+            },
+            mutation: generateMutation({
+              update_tournament_stages_by_pk: [
+                {
+                  pk_columns: {
+                    id: this.stage.id,
+                  },
+                  _set: {
+                    default_best_of: parseInt(form.default_best_of),
+                    settings: $("settings", "jsonb"),
+                  },
+                },
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+
+          this.takeSnapshot();
+          this.$emit("updated");
+          return;
+        }
 
         // tbu_tournament_stages refuses a new or dropped options row once a
         // match is drawn; ask first so nothing is inserted for a refused save.

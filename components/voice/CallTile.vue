@@ -53,6 +53,16 @@ const videoHidden = computed(
 );
 const videoEl = ref<HTMLVideoElement | null>(null);
 
+// Covering a 16:9 tile with an upright phone's 9:16 frame keeps only its
+// middle third, so those are fitted whole. Re-read on resize: phones turn.
+const portrait = ref(false);
+
+function readShape() {
+  const el = videoEl.value;
+
+  portrait.value = !!el && el.videoHeight > el.videoWidth;
+}
+
 // Hover alone is not enough. In the hub column a tile is ~112px wide, which is
 // a small target to hold a pointer over, and on a touch screen there is no
 // hover at all -- so tapping a tile latches its controls open too.
@@ -78,6 +88,7 @@ function bind() {
   }
 
   el.srcObject = shown.value;
+  readShape();
 
   if (shown.value) {
     void el.play().catch(() => {});
@@ -130,11 +141,16 @@ function initials(name: string | null) {
     <video
       v-show="shown"
       ref="videoEl"
-      class="absolute inset-0 h-full w-full object-cover"
-      :class="mirrored ? '-scale-x-100' : ''"
+      class="absolute inset-0 h-full w-full"
+      :class="[
+        portrait ? 'object-contain' : 'object-cover',
+        mirrored ? '-scale-x-100' : '',
+      ]"
       autoplay
       playsinline
       muted
+      @loadedmetadata="readShape"
+      @resize="readShape"
     ></video>
 
     <!-- No camera. The avatar keeps the tile the same size either way, so the

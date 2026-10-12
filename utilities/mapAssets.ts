@@ -1,3 +1,8 @@
+import {
+  BLAST_FILE_VERSIONS,
+  PREP_VERSION,
+} from "~/utilities/replayStage/assetVersions";
+
 export function normalizeMapName(name: string): string {
   let n = (name || "").toLowerCase().trim();
   const slash = n.lastIndexOf("/");
@@ -284,7 +289,9 @@ export async function resolveMapAssets(
     };
   }
   const url = (kind: MapAssetKind) =>
-    entry[kind] ? `${MAP_ASSETS_ROOT}/${entry[kind]}` : null;
+    entry[kind] && readable(kind, entry[kind])
+      ? `${MAP_ASSETS_ROOT}/${entry[kind]}`
+      : null;
   return {
     tri: url("tri") ?? legacy.tri,
     view: url("view"),
@@ -294,8 +301,26 @@ export async function resolveMapAssets(
     blast: url("blast"),
     source: "manifest",
     build: manifest.build,
-    listed: ASSET_KINDS.filter((kind) => !!entry[kind]),
+    listed: ASSET_KINDS.filter((kind) => !!url(kind)),
   };
+}
+
+const READABLE: Partial<Record<MapAssetKind, number[]>> = {
+  prep: [PREP_VERSION],
+  blast: BLAST_FILE_VERSIONS,
+};
+
+/**
+ * Whether this build reads the file a key names: the map-asset job puts the
+ * format version in versioned files' names (`<map>.prep.v2.bin.gz`), so one
+ * of another version is skipped without downloading it. An unversioned key
+ * is left to the reader.
+ */
+function readable(kind: MapAssetKind, key: string) {
+  const version = /\.v(\d+)\.bin\.gz$/.exec(key)?.[1];
+  return (
+    !version || !READABLE[kind] || READABLE[kind]!.includes(Number(version))
+  );
 }
 
 const prefetched = new Set<string>();

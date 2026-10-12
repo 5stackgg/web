@@ -19,7 +19,9 @@ import {
  * fingerprint, the scalars, and where each array is), then the arrays, each
  * 8-byte aligned.
  */
-export const PREP_VERSION = 1;
+import { PREP_VERSION } from "./assetVersions";
+
+export { PREP_VERSION };
 
 const MAGIC = "5SPC";
 

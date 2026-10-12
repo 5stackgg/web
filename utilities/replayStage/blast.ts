@@ -6,11 +6,13 @@ import {
   BLAST_UNIT,
   C4_RADIUS,
   blastSpotKey,
-  blastZones,
   fieldDistance,
+  fieldZones,
   siteCentre,
   unpackBlastFile,
+  valveSiteAt,
   type BlastField,
+  type BlastSite,
 } from "./blastField";
 import {
   CELL,
@@ -63,9 +65,6 @@ export type BlastModule = StageModule & {
   stats: { fieldMs: number | null; source: "worker" | "published" | null };
 };
 
-const ZONES = blastZones();
-/** Smokes inside this path length are blown away. */
-const SMOKE_CLEAR = ZONES.heavy;
 /** A hole this "radius" (smoke.ts scales it) takes a whole smoke. */
 const SMOKE_HOLE = 720;
 /** Seconds the front and its afterglow play for; the scorch stays longer. */
@@ -148,6 +147,7 @@ uniform vec3 uFieldMin;
 uniform vec3 uFieldSize;
 uniform float uVoxel;
 uniform vec3 uReach;
+uniform float uUnit;
 uniform float uBombZ;
 uniform float uRadius;
 uniform float uSpeed;
@@ -179,7 +179,7 @@ float pathAt(vec3 p) {
   vec3 uvw = (p - uFieldMin) / uFieldSize;
   if (any(lessThan(uvw, vec3(0.0))) || any(greaterThan(uvw, vec3(1.0)))) return 1e5;
   float q = texture(uField, uvw).r * 255.0;
-  return q > 250.0 ? 1e5 : q * ${BLAST_UNIT.toFixed(1)};
+  return q > 250.0 ? 1e5 : q * uUnit;
 }
 
 // A crisp line of about 'w' pixels at distance r.
@@ -318,6 +318,10 @@ export function createBlastModule(): BlastModule {
   const overlays = new Map<string, Overlay>();
   let sites: Promise<Array<{ site: string; field: BlastField }>> | null = null;
   let siteFields: Array<{ site: string; field: BlastField }> | null = null;
+  /** The published file's sites, once fetched (`publishedSites`). */
+  let publishedList: Promise<BlastSite[] | null> | null = null;
+  /** Its Valve-baked sites: a bomb planted in one uses it, as the game does. */
+  let valveSites: BlastSite[] = [];
   let mapToken = 0;
   let memo: { frame: StageFrame; out: StageBlast[] } | null = null;
   const tmp = new THREE.Vector3();
@@ -359,6 +363,8 @@ export function createBlastModule(): BlastModule {
       fields.clear();
       sites = null;
       siteFields = null;
+      publishedList = null;
+      valveSites = [];
       mapTri = context.map?.tri ?? null;
       mapSent = false;
       localMap = false;
@@ -378,7 +384,9 @@ export function createBlastModule(): BlastModule {
           : null;
       const shown = new Map<string, { zones: number; wave: number }>();
       if (planted && context.map?.tri) {
-        const entry = fieldFor(planted.at);
+        void publishedSites();
+        const valve = valveSiteAt(valveSites, planted.at);
+        const entry = valve ? { field: valve } : fieldFor(planted.at);
         if (entry.field) {
           let zones = 0;
           if (frame.blastZones) {
@@ -589,7 +597,7 @@ export function createBlastModule(): BlastModule {
       const map = ctx.map;
       const token = mapToken;
       sites = track(
-        published(map.name, map.tri).then(async (list) => {
+        publishedSites().then(async (list) => {
           if (list?.length) {
             module.stats = { fieldMs: null, source: "published" };
             return list;
@@ -619,6 +627,21 @@ export function createBlastModule(): BlastModule {
       });
     }
     return siteFields ?? [];
+  }
+
+  function publishedSites() {
+    if (!publishedList && ctx?.map) {
+      const token = mapToken;
+      publishedList = track(published(ctx.map.name, ctx.map.tri)).then(
+        (list) => {
+          if (token === mapToken && list) {
+            valveSites = list.filter((s) => s.field.model === 1);
+          }
+          return list;
+        },
+      );
+    }
+    return publishedList ?? Promise.resolve(null);
   }
 
   async function published(name: string, tri: Float32Array | null) {
@@ -673,6 +696,7 @@ export function createBlastModule(): BlastModule {
     if (overlays.has(key)) {
       return;
     }
+    const zones = fieldZones(field);
     const texture = new THREE.Data3DTexture(
       field.dist,
       field.dx,
@@ -708,8 +732,9 @@ export function createBlastModule(): BlastModule {
         },
         uVoxel: { value: field.vs },
         uReach: {
-          value: new THREE.Vector3(ZONES.core, ZONES.heavy, ZONES.edge),
+          value: new THREE.Vector3(zones.core, zones.heavy, zones.edge),
         },
+        uUnit: { value: field.unit ?? BLAST_UNIT },
         uBombZ: { value: field.at.z },
         uRadius: { value: C4_RADIUS },
         uSpeed: { value: BLAST_SPEED },
@@ -936,10 +961,14 @@ export function createBlastModule(): BlastModule {
     if (!bomb || bomb.state !== "exploded") {
       return frame.blasts;
     }
-    const field = fields.get(blastSpotKey(bomb.at))?.field;
+    const field =
+      valveSiteAt(valveSites, bomb.at) ??
+      fields.get(blastSpotKey(bomb.at))?.field;
     if (!field) {
       return frame.blasts;
     }
+    // Smokes inside this path length are blown away.
+    const smokeClear = fieldZones(field).heavy;
     // The frame's C4 blast is a sphere through walls; the field says where
     // the wave really went.
     const out = frame.blasts.filter(
@@ -952,7 +981,7 @@ export function createBlastModule(): BlastModule {
         continue;
       }
       const d = fieldDistance(field, smoke.at.x, smoke.at.y, smoke.at.z + 40);
-      if (d === null || d > SMOKE_CLEAR) {
+      if (d === null || d > smokeClear) {
         continue;
       }
       const since = bomb.age - d / BLAST_SPEED;

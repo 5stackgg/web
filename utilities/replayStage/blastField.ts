@@ -1,3 +1,4 @@
+import { BLAST_FILE_VERSIONS } from "./assetVersions";
 import type { Vec3 } from "./types";
 
 /**
@@ -63,6 +64,17 @@ export type BlastField = BlastGrid & {
    * reads the air in front of it.
    */
   dist: Uint8Array;
+  /** Source units per step of `dist`; `BLAST_UNIT` unless a published file says. */
+  unit?: number;
+  /**
+   * 1: Valve's baked bomb damage (a v2 file): `dist` is its phase, damage
+   * comes from `power` (valveDamage). Else the browser's own flood.
+   */
+  model?: 0 | 1;
+  /** Valve's BombPower for the site (model 1). */
+  power?: number;
+  /** The site's bounds as baked (model 1); see valveSiteAt. */
+  bounds?: { min: number[]; max: number[] };
 };
 
 // ------------------------------------------------------------- damage
@@ -133,6 +145,67 @@ export function blastZones(radius = C4_RADIUS, damage = C4_DAMAGE): BlastZones {
     heavy: lethalReach(100, 0, radius, damage),
     edge: lethalReach(1, 0, radius, damage),
   };
+}
+
+/** Above this Valve's falloff turns linear. */
+export const PHASE_CAP = 1800;
+
+/**
+ * Valve's damage at `phase` from a site of `power`, as the game computes it
+ * (ValveResourceFormat's BombDamage.CalculateDamage): 100 * power / phase up
+ * to 1800, then a straight fall to nothing at 1800 + power.
+ */
+export function valveDamage(phase: number, power: number) {
+  if (phase === 0) {
+    return phase >= power ? 0 : 100;
+  }
+  const damage = 100 - (100 * (phase - power)) / Math.min(phase, PHASE_CAP);
+  return Math.min(255, Math.max(0, damage));
+}
+
+/** A field's zones: from Valve's damage for a baked site, else the generic ones. */
+export function fieldZones(field: BlastField): BlastZones {
+  const power = field.power ?? 0;
+  if (field.model !== 1 || power <= 0) {
+    return blastZones();
+  }
+  const reach = (health: number, armor: number) => {
+    const hurts = (d: number) =>
+      damageTaken(valveDamage(Math.max(d, 1), power), armor).health >= health;
+    let lo = 0;
+    let hi = PHASE_CAP + power;
+    if (!hurts(lo)) {
+      return 0;
+    }
+    for (let i = 0; i < 40; i++) {
+      const mid = (lo + hi) / 2;
+      if (hurts(mid)) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return lo;
+  };
+  return { core: reach(100, 100), heavy: reach(100, 0), edge: reach(1, 0) };
+}
+
+/**
+ * The baked field of the site a bomb at `at` belongs to: the first whose
+ * bounds, grown by 32 as the game grows them, hold it.
+ */
+export function valveSiteAt(sites: BlastSite[], at: Vec3): BlastField | null {
+  for (const { field } of sites) {
+    const b = field.bounds;
+    if (field.model !== 1 || !b) {
+      continue;
+    }
+    const p = [at.x, at.y, at.z];
+    if (p.every((v, k) => v >= b.min[k] - 32 && v <= b.max[k] + 32)) {
+      return field;
+    }
+  }
+  return null;
 }
 
 /** Seconds after the explosion the front reaches `d` units along its path. */
@@ -895,7 +968,7 @@ export function fieldDistance(
     sum += q * w;
     weight += w;
   }
-  return weight > 1e-6 ? (sum / weight) * BLAST_UNIT : null;
+  return weight > 1e-6 ? (sum / weight) * (field.unit ?? BLAST_UNIT) : null;
 }
 
 // ------------------------------------------------------- published file
@@ -910,6 +983,12 @@ export function fieldDistance(
  *
  * The triangle count is a cheap check that it was made from the hull in
  * use; the browser computes for itself when it differs.
+ *
+ * Version 2 is Valve's baked bomb damage, written by the map-asset job
+ * (scripts/extract-map-blast.mjs; docs/3d-replay-map-meshes.md): 72-byte
+ * site headers whose bytes 1-3 are the model (1 = Valve) and the unit, 44
+ * the site's power, 48-71 its baked bounds; the values are the phase in
+ * `unit` steps (0 = exactly 0, 255 = not reached).
  */
 export const BLAST_FILE_MAGIC = "5SBL";
 export const BLAST_FILE_VERSION = 1;
@@ -962,18 +1041,17 @@ export function unpackBlastFile(
   const bytes = new Uint8Array(buffer);
   const view = new DataView(buffer);
   const magic = String.fromCharCode(bytes[0], bytes[1], bytes[2], bytes[3]);
-  if (
-    magic !== BLAST_FILE_MAGIC ||
-    view.getUint16(4, true) !== BLAST_FILE_VERSION
-  ) {
+  const version = view.getUint16(4, true);
+  if (magic !== BLAST_FILE_MAGIC || !BLAST_FILE_VERSIONS.includes(version)) {
     return null;
   }
+  const head = version === 2 ? 72 : 48;
   const count = view.getUint16(6, true);
   const triangles = view.getUint32(8, true);
   const sites: BlastSite[] = [];
   let o = 12;
   for (let n = 0; n < count; n++) {
-    if (o + 48 > buffer.byteLength) {
+    if (o + head > buffer.byteLength) {
       return null;
     }
     const letter = String.fromCharCode(bytes[o]);
@@ -981,9 +1059,10 @@ export function unpackBlastFile(
     const dy = view.getUint16(o + 34, true);
     const dz = view.getUint16(o + 36, true);
     const length = view.getUint32(o + 40, true);
-    if (length !== dx * dy * dz || o + 48 + length > buffer.byteLength) {
+    if (length !== dx * dy * dz || o + head + length > buffer.byteLength) {
       return null;
     }
+    const f = (at: number) => view.getFloat32(o + at, true);
     if (letter === "A" || letter === "B") {
       sites.push({
         site: letter,
@@ -1000,11 +1079,22 @@ export function unpackBlastFile(
           dx,
           dy,
           dz,
-          dist: bytes.slice(o + 48, o + 48 + length),
+          dist: bytes.slice(o + head, o + head + length),
+          ...(version === 2
+            ? {
+                model: bytes[o + 1] === 1 ? (1 as const) : (0 as const),
+                unit: view.getUint16(o + 2, true) || BLAST_UNIT,
+                power: f(44),
+                bounds: {
+                  min: [f(48), f(52), f(56)],
+                  max: [f(60), f(64), f(68)],
+                },
+              }
+            : {}),
         },
       });
     }
-    o += 48 + ((length + 3) & ~3);
+    o += head + ((length + 3) & ~3);
   }
   return { triangles, sites };
 }

@@ -8119,7 +8119,8 @@
       "tournament_team_registration_message": "{team} har bjudits in att anmäla sig till en turnering"
     },
     "roles": {
-      "captain": "Lagkapten"
+      "captain": "Lagkapten",
+      "owner": "Ägare"
     },
     "leave": "Lämna laget",
     "management": {

@@ -8119,7 +8119,8 @@
       "tournament_team_registration_message": "تمت دعوة {team} للتسجيل في بطولة"
     },
     "roles": {
-      "captain": "قائد الفريق"
+      "captain": "قائد الفريق",
+      "owner": "المالك"
     },
     "leave": "غادر الفريق",
     "management": {

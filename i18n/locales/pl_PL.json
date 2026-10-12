@@ -8119,7 +8119,8 @@
       "tournament_team_registration_message": "Drużyna {team} została zaproszona do rejestracji na turniej"
     },
     "roles": {
-      "captain": "Kapitan"
+      "captain": "Kapitan",
+      "owner": "Właściciel"
     },
     "leave": "Opuść drużynę",
     "management": {

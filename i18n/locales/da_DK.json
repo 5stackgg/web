@@ -8119,7 +8119,8 @@
       "tournament_team_registration_message": "{team} er inviteret til at tilmelde sig en turnering"
     },
     "roles": {
-      "captain": "Anfører"
+      "captain": "Anfører",
+      "owner": "Ejer"
     },
     "leave": "Forlad hold",
     "management": {

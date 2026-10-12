@@ -69,10 +69,10 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
       >
         <template #name-postfix>
           <span
-            v-if="!isInvite && member.role"
+            v-if="!isInvite && (isOwner || member.role)"
             class="text-[10px] uppercase tracking-[0.16em] text-muted-foreground/80"
           >
-            {{ member.role }}
+            {{ isOwner ? $t("team.roles.owner") : member.role }}
           </span>
           <span
             v-if="!isInvite && member.coach"

@@ -39,6 +39,11 @@ export type MapPalette = {
    * boxes (inset) are used, which on most maps are far bigger than the zone.
    */
   sites?: Partial<Record<"A" | "B", [number, number, number, number]>>;
+  /**
+   * Hatch the flat tops nobody can walk on: on an industrial map a roof is
+   * as flat and grey as a floor, so this says where players cannot go.
+   */
+  noAccess?: boolean;
 };
 
 /** The table and sky every map shares, whatever its theme. */
@@ -121,17 +126,18 @@ const RAIL_YARD: MapPalette = {
 /** Plants and towers: cool steel, concrete, warning paint. */
 const STEEL: MapPalette = {
   ...TABLE,
-  top: "#dbe0e4",
+  top: "#c9d0d6",
   floor: "#676c72",
   wall: "#8c949b",
   foliage: "#4e7a4c",
   props: ["#cfa92e", "#3c8a8a", "#b4553c"],
   seeThrough: "#dfe6ea",
-  shadow: "#8d99ad",
+  shadow: "#a0abbd",
   occlusion: "#28303d",
   outline: "#121820",
   site: "#b3261c",
   vignette: "#a9b1bf",
+  noAccess: true,
 };
 
 /** City parks and canals: pale concrete, lawns, ivy. */
@@ -370,7 +376,7 @@ const PALETTES: Record<string, MapPalette> = {
   // White and blue steel plant, hazard yellow.
   de_nuke: {
     ...STEEL,
-    top: "#e7ecf0",
+    top: "#d0d7de",
     wall: "#93a0ac",
     props: ["#c9a53a", "#3c8a8a", "#b4553c"],
     sites: {
@@ -381,19 +387,19 @@ const PALETTES: Record<string, MapPalette> = {
   // Construction-site concrete, scaffold yellow, sky blue.
   de_vertigo: {
     ...STEEL,
-    top: "#e2e1dc",
+    top: "#cfcec9",
     floor: "#6d6e6c",
     wall: "#999a98",
     props: ["#dbb12a", "#5d8aa8", "#c8603a"],
     seeThrough: "#e6e8e8",
-    shadow: "#919db0",
+    shadow: "#a3adbe",
     occlusion: "#2c323c",
     outline: "#151a20",
   },
   // Aircraft hangar: white bays, blue and yellow rigs.
   de_assembly: {
     ...STEEL,
-    top: "#e4e8ec",
+    top: "#cdd3d9",
     floor: "#707478",
     wall: "#8e98a4",
     props: ["#d6ae2a", "#3f6f96", "#c0392b"],

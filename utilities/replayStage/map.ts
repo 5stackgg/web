@@ -425,6 +425,7 @@ export function createMapModule(): MapModule {
     uHaze: { value: new THREE.Color() },
     uMapCentre: { value: new THREE.Vector3() },
     uHazeRange: { value: new THREE.Vector2(1e9, 2e9) },
+    uNoAccess: { value: 0 },
   };
 
   function applyPalette(palette: MapPalette) {
@@ -445,6 +446,7 @@ export function createMapModule(): MapModule {
     set("uSite", palette.site);
     set("uSiteLetter", palette.siteLetter);
     set("uHaze", palette.skyHorizon);
+    uniforms.uNoAccess.value = palette.noAccess ? 1 : 0;
     if (ctx) {
       ctx.scene.background = color(palette.skyHorizon);
     }

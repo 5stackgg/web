@@ -165,6 +165,11 @@ export const INFO_PROP_SHIFT = 9;
 export const INFO_CUT_WALL = 1 << 11;
 /** A wall-type surface that still goes whole: part of a small loose piece. */
 export const INFO_CUT_WHOLE = 1 << 12;
+/**
+ * Hangs over a room that opens (a vent hood, a lamp, a duct): it goes
+ * outright with the room's roof, in 3D too, rather than as a ghost.
+ */
+export const INFO_OVERHEAD = 1 << 14;
 
 export const NO_FLOOR = 32767;
 export const NO_CUT = 32767;
@@ -742,6 +747,18 @@ export function analyseMap(
     ) {
       break;
     }
+    floors = floorLevels(vx, tris, info, triTotal);
+  }
+  if (
+    spreadFloor(
+      vx,
+      tris,
+      info,
+      normals,
+      triTotal,
+      pairs.subarray(0, pairCount * 2),
+    )
+  ) {
     floors = floorLevels(vx, tris, info, triTotal);
   }
   const reachable = growLevels(
@@ -1402,6 +1419,8 @@ function cutPlanes(
     top,
     bottom,
     ceiling,
+    vx,
+    columns,
   );
 
   const out = new Int16Array(triTotal * 3);
@@ -1432,6 +1451,9 @@ function cutPlanes(
     if (cut && !foliage && wallOf[p]) {
       info[t] |= whole[p] ? INFO_CUT_WALL | INFO_CUT_WHOLE : INFO_CUT_WALL;
     }
+    if (cut && whole[p] === 2) {
+      info[t] |= INFO_OVERHEAD;
+    }
     out[t * 3 + 1] = clamp(top_);
     out[t * 3 + 2] = clamp(bottom_);
   }
@@ -1443,7 +1465,8 @@ function cutPlanes(
  * that is not a wall) goes whole, never sliced, and so does everything joined
  * to it across an edge, so a sloped or broken roof leaves no hanging pieces.
  * A small loose piece (a rafter, a shutter, a sign) goes whole too, with the
- * lowest plane of its patches, unless it is a tall piece of wall. Each
+ * lowest plane of its patches, unless it is a tall piece of wall; so does a
+ * piece hanging over the room (INFO_OVERHEAD), whatever its shape. Each
  * group's top becomes every member's, and the shader removes the group once
  * the cut is below that top. A small group of ceilings alone (an arch's
  * crown, under a wall that stays) hides nothing from above, so it goes only
@@ -1463,6 +1486,8 @@ function groupWhole(
   top: Float32Array,
   bottom: Float32Array,
   ceiling: Uint8Array,
+  vx: Float32Array,
+  columns: ReturnType<typeof surfaceColumns>,
 ): Uint8Array {
   const cuttable = (t: number) =>
     planeOf[patch[t]] === planeOf[patch[t]] &&
@@ -1515,12 +1540,22 @@ function groupWhole(
   const partWallArea = new Float64Array(canon.length);
   const partTop = new Float32Array(canon.length).fill(-Infinity);
   const partBottom = new Float32Array(canon.length).fill(Infinity);
+  const partWalk = new Uint8Array(canon.length);
+  const partX = new Float64Array(canon.length);
+  const partHang = new Uint8Array(canon.length);
+  const partY = new Float64Array(canon.length);
   const partFirst = new Int32Array(canon.length).fill(-1);
   const root = new Int32Array(triTotal);
   for (let t = 0; t < triTotal; t++) {
     const r = findPart(canon[tris[t * 3]]);
     root[t] = r;
     partArea[r] += triArea[t];
+    const v = tris[t * 3] * 3;
+    partX[r] += vx[v] * triArea[t];
+    partY[r] += vx[v + 1] * triArea[t];
+    if (info[t] & INFO_WALKABLE) {
+      partWalk[r] = 1;
+    }
     if (cuttable(t)) {
       const p = patch[t];
       partPlane[r] = Math.min(partPlane[r], planeOf[p]);
@@ -1540,18 +1575,36 @@ function groupWhole(
     // Mostly wall and taller than a sign (an arch, a door frame): sliced like
     // the wall it is part of, rather than gone with its crown.
     const wallLike = partWallArea[r] > partRoofArea[r];
+    // Clear of the floor over a standing player's head, under a roof: it
+    // hangs in the room. (Out in the open it is a landmark: a conveyor.)
+    if (!partHang[r]) {
+      partHang[r] =
+        !partWalk[r] &&
+        partArea[r] < OVERHEAD_AREA &&
+        partBottom[r] - partPlane[r] >= OVERHEAD_CLEAR &&
+        columns.anyBetween(
+          partX[r] / partArea[r],
+          partY[r] / partArea[r],
+          partTop[r] + 8,
+          partTop[r] + OVERHEAD_ROOF,
+        )
+          ? 1
+          : 2;
+    }
+    const hanging = partHang[r] === 1;
     if (
-      partArea[r] >= SMALL_PART_AREA ||
       partPlane[r] === Infinity ||
       info[t] & INFO_WALKABLE ||
       (info[t] & INFO_SURFACE) === SURFACE_FOLIAGE ||
-      (wallLike && partTop[r] - partBottom[r] > LOOSE_WALL_HEIGHT)
+      (!hanging &&
+        (partArea[r] >= SMALL_PART_AREA ||
+          (wallLike && partTop[r] - partBottom[r] > LOOSE_WALL_HEIGHT)))
     ) {
       continue;
     }
     planeOf[p] = partPlane[r];
     wallOf[p] = wallLike ? 1 : 0;
-    whole[p] = 1;
+    whole[p] = hanging ? 2 : 1;
     if (partFirst[r] < 0) {
       partFirst[r] = p;
     } else {
@@ -1588,6 +1641,12 @@ function groupWhole(
 const SMALL_PART_AREA = 40000;
 /** A wall-like loose piece taller than this is sliced, not taken whole. */
 const LOOSE_WALL_HEIGHT = 128;
+/** A piece this far over its floor hangs over the room (a standing head). */
+const OVERHEAD_CLEAR = 112;
+/** Hanging pieces up to this size go with the room's roof. */
+const OVERHEAD_AREA = 400000;
+/** A roof this far over a hanging piece puts it in a room. */
+const OVERHEAD_ROOF = 512;
 
 const PATCH_COS = Math.cos((20 * Math.PI) / 180);
 /** Patches flatter than this (mean |n.z|) are roofs and ceilings, not walls. */
@@ -2164,6 +2223,96 @@ function adoptFloorPatches(
   }
   return adopted;
 }
+
+/**
+ * Floor that the per-cell adoption misses: the triangles a floor is fanned
+ * into reach its walls, past where the extractor's floor stops, and their
+ * middles can land in a cell with no floor level, so a roof read them as
+ * tops (bright wedges on a walkable roof). Level, flat triangles joined
+ * edge to edge at one height make a surface; when most of it is walkable,
+ * the rest of it is too. A surface mostly out of play (a canal bed under a
+ * street) is left alone.
+ */
+function spreadFloor(
+  vx: Float32Array,
+  tris: Uint32Array,
+  info: Uint16Array,
+  normals: Float32Array,
+  triTotal: number,
+  pairs: Int32Array,
+) {
+  const level = (t: number) =>
+    normals[t * 3 + 2] >= 0.98 &&
+    !(info[t] & INFO_SURFACE) &&
+    !(info[t] & INFO_THIN) &&
+    ((info[t] >> INFO_PROP_SHIFT) & 3) === 0;
+  const height = (t: number) =>
+    (vx[tris[t * 3] * 3 + 2] +
+      vx[tris[t * 3 + 1] * 3 + 2] +
+      vx[tris[t * 3 + 2] * 3 + 2]) /
+    3;
+  const area = (t: number) => {
+    const a = tris[t * 3] * 3;
+    const b = tris[t * 3 + 1] * 3;
+    const c = tris[t * 3 + 2] * 3;
+    return (
+      Math.abs(
+        (vx[b] - vx[a]) * (vx[c + 1] - vx[a + 1]) -
+          (vx[c] - vx[a]) * (vx[b + 1] - vx[a + 1]),
+      ) / 2
+    );
+  };
+  const parent = new Int32Array(triTotal);
+  for (let t = 0; t < triTotal; t++) {
+    parent[t] = t;
+  }
+  const find = (i: number) => {
+    while (parent[i] !== i) {
+      parent[i] = parent[parent[i]];
+      i = parent[i];
+    }
+    return i;
+  };
+  for (let i = 0; i < pairs.length; i += 2) {
+    const a = pairs[i];
+    const b = pairs[i + 1];
+    if (
+      level(a) &&
+      level(b) &&
+      Math.abs(height(a) - height(b)) <= FLOOR_SPREAD_STEP
+    ) {
+      parent[find(a)] = find(b);
+    }
+  }
+  const total = new Float64Array(triTotal);
+  const walked = new Float64Array(triTotal);
+  for (let t = 0; t < triTotal; t++) {
+    if (level(t)) {
+      const r = find(t);
+      const a = area(t);
+      total[r] += a;
+      if (info[t] & INFO_WALKABLE) {
+        walked[r] += a;
+      }
+    }
+  }
+  let spread = 0;
+  for (let t = 0; t < triTotal; t++) {
+    if (!(info[t] & INFO_WALKABLE) && level(t)) {
+      const r = find(t);
+      if (walked[r] >= total[r] * FLOOR_SPREAD_SHARE) {
+        info[t] |= INFO_WALKABLE;
+        spread++;
+      }
+    }
+  }
+  return spread;
+}
+
+/** Floor triangles this far apart in height are not one floor. */
+const FLOOR_SPREAD_STEP = 4;
+/** A surface this much walkable already is floor all over. */
+const FLOOR_SPREAD_SHARE = 0.6;
 
 /**
  * Sorts the mesh's connected parts. Wire-like parts (little surface for

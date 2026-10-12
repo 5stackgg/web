@@ -5,7 +5,7 @@
  */
 
 /** Bump whenever prep's output changes (mapPrepPack.ts). */
-export const PREP_VERSION = 2;
+export const PREP_VERSION = 3;
 
 /** 1: the browser's own fields; 2: Valve's baked damage (blastField.ts). */
 export const BLAST_FILE_VERSIONS = [1, 2];

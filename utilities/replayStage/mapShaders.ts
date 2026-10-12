@@ -37,10 +37,11 @@ bool cutBy(int info, float z, float h) {
 }
 
 // 1 solid, 0 gone, between: the ghost's opacity. Leaves stay in 3D and are
-// screened, not removed, in 2D.
+// screened, not removed, in 2D; what hangs over a room goes outright.
 float cutOpacity(int info, float z) {
   bool leaf = (info & 3) == 1;
-  float in3D = !leaf && cutBy(info, z, uCut3D) ? uGhost : 1.0;
+  float ghost = (info & 16384) != 0 ? 0.0 : uGhost;
+  float in3D = !leaf && cutBy(info, z, uCut3D) ? ghost : 1.0;
   float in2D = cutBy(info, z, uCut2D) ? (leaf ? 0.4 : 0.0) : 1.0;
   float opacity = mix(in3D, in2D, uView);
   if (z > uLevelCut) opacity *= mix(1.0, 0.1, uLevelMix);
@@ -121,6 +122,8 @@ uniform sampler2D uAoMap;
 uniform vec4 uTopGrid;
 uniform vec2 uZRange;
 uniform vec3 uTop;
+// 1 to hatch the flat tops nobody can walk on (MapPalette.noAccess).
+uniform float uNoAccess;
 uniform vec3 uFloor;
 // Floors open to the sky (a yard, a street), and the top-down height of the
 // map with nothing cut, which says which floors are.
@@ -421,6 +424,14 @@ void main() {
   if (!isFlat && !cap && decal == 0.0) {
     lit *= 0.86;
   }
+  // Where tops are hatched as out of play, the sun no longer carves them
+  // into bright wedges between wall shadows: one tone, a hint of shade.
+  if (
+    uNoAccess > 0.5 && isFlat && !walkable && !cap && !foliage && !ground &&
+    prop == 0 && decal == 0.0
+  ) {
+    lit = mix(lit, 1.0, 0.8);
+  }
   if (ground && !cap) {
     // Out-of-bounds ground is the dunes' sand, painted the same way; long
     // shadows across it would read as holes, so they stay light.
@@ -466,6 +477,18 @@ void main() {
   // Scenery far from anywhere a player goes (hills, buildings nobody
   // reaches) recedes into the table, so the playable map is what stands out.
   col = mix(col, uSand * mix(0.8, 1.15, lit), vRemote * 0.6);
+  // Tops nobody can walk on, hatched where the palette asks: roofs that
+  // would otherwise read as more floor. Fades out before it would alias.
+  if (
+    uNoAccess > 0.5 && isFlat && !walkable && !cap && !foliage && !ground &&
+    prop == 0 && decal == 0.0
+  ) {
+    float s = (vSrc.x + vSrc.y) / 40.0;
+    float fw = max(fwidth(s), 1e-4);
+    float px = min(fract(s), 1.0 - fract(s)) / fw;
+    float hatch = 1.0 - smoothstep(0.5, 1.3, px);
+    col *= 1.0 - hatch * (1.0 - smoothstep(0.12, 0.3, fw)) * 0.16;
+  }
 
   // Outlines on creases and open edges, a pixel or so wide at any zoom.
   int edges = (info >> 4) & 7;

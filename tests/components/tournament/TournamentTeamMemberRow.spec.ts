@@ -180,7 +180,7 @@ describe("TournamentTeamMemberRow Remove Member", () => {
     { name: "an organizer", isOrganizer: true },
     { name: "a team manager", canManage: true },
   ]) {
-    it(`explains the minimum-lineup lock to ${viewer.name} with a triangle instead of a title`, async () => {
+    it(`explains the minimum-lineup lock to ${viewer.name} by hover or keyboard`, async () => {
       const wrapper = await mountRow({
         status: "RegistrationClosed",
         rosterLockedAtMin: true,
@@ -189,11 +189,30 @@ describe("TournamentTeamMemberRow Remove Member", () => {
       const item = await removeItem(wrapper);
 
       expect(item).toBeDefined();
-      expect(item!.hasAttribute("data-disabled")).toBe(true);
+      expect(item!.getAttribute("aria-disabled")).toBe("true");
       expect(item!.hasAttribute("title")).toBe(false);
       expect(
         document.body.querySelector(`[aria-label="${LOCKED}"]`),
       ).not.toBeNull();
+
+      for (let step = 0; step < 3 && document.activeElement !== item; step++) {
+        (document.activeElement as HTMLElement).dispatchEvent(
+          new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
+        );
+        await flushPromises();
+      }
+      expect(document.activeElement).toBe(item);
+      expect(
+        document.body.querySelector('[role="tooltip"]')?.textContent,
+      ).toContain(LOCKED);
+
+      item!.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
+      );
+      await flushPromises();
+      expect(document.body.textContent).not.toContain(
+        "Are you sure you want to remove this member?",
+      );
     });
   }
 });

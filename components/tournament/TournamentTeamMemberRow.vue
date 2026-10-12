@@ -28,7 +28,6 @@ import {
   Shield,
   LogOut,
   MoreVertical,
-  TriangleAlert,
   UserMinus,
 } from "lucide-vue-next";
 import {
@@ -39,7 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import Separator from "../ui/separator/Separator.vue";
 </script>
 
@@ -131,28 +130,15 @@ import Separator from "../ui/separator/Separator.vue";
               <LogOut />
               {{ $t("tournament.team.leave_team") }}
             </DropdownMenuItem>
-            <FiveStackToolTip
+            <BlockedMenuItem
               v-if="canRemoveMember && rosterLockedAtMin"
-              as-child
-              :delay-duration="120"
+              :reasons="[minRosterLockedReason]"
             >
-              <template #trigger>
-                <div class="relative">
-                  <DropdownMenuItem class="text-destructive pr-8" disabled>
-                    <UserMinus />
-                    {{ $t("tournament.team.remove_member") }}
-                  </DropdownMenuItem>
-                  <span
-                    class="absolute right-2 top-1/2 inline-flex -translate-y-1/2 cursor-help text-[hsl(var(--tac-amber))]"
-                    role="img"
-                    :aria-label="minRosterLockedReason"
-                  >
-                    <TriangleAlert class="h-3.5 w-3.5" />
-                  </span>
-                </div>
-              </template>
-              <p class="max-w-[16rem]">{{ minRosterLockedReason }}</p>
-            </FiveStackToolTip>
+              <UserMinus class="text-destructive" />
+              <span class="text-destructive">{{
+                $t("tournament.team.remove_member")
+              }}</span>
+            </BlockedMenuItem>
             <DropdownMenuItem
               v-else-if="canRemoveMember"
               class="text-destructive"

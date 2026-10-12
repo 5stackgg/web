@@ -114,6 +114,35 @@ describe("startMoney", () => {
     expect(startMoney(economy, 1, "ct")).toBeNull();
     expect(startMoney(economy, 3, "ct")).toBeNull();
   });
+
+  it("resets on each overtime half, where the sides do not swap", () => {
+    // MR12: lineup 1 is T for 1-12 and CT for 13-24. Overtime halves are
+    // 3 rounds: CT 25-27, T 28-30, T 31-33 (no swap at 24->25 or 30->31).
+    const lineup1Ct = (round: number) => {
+      if (round <= 12) return false;
+      if (round <= 24) return true;
+      return Math.floor((Math.floor((round - 25) / 3) + 1) / 2) % 2 === 0;
+    };
+    const mr12 = Array.from({ length: 33 }, (_, i) => {
+      const round = i + 1;
+      const ct = lineup1Ct(round);
+      return {
+        round,
+        lineup_1_money: 1000 * round,
+        lineup_2_money: 500 * round,
+        lineup_1_side: ct ? "CT" : "TERRORIST",
+        lineup_2_side: ct ? "TERRORIST" : "CT",
+      };
+    });
+    expect(startMoney(mr12, 24, "t")).toBe(11500);
+    // Same sides as round 24, but the money resets.
+    expect(startMoney(mr12, 25, "ct")).toBeNull();
+    expect(startMoney(mr12, 26, "ct")).toBe(25000);
+    expect(startMoney(mr12, 28, "t")).toBeNull();
+    // Same sides as round 30, but a new overtime.
+    expect(startMoney(mr12, 31, "t")).toBeNull();
+    expect(startMoney(mr12, 32, "t")).toBe(31000);
+  });
 });
 
 describe("money formatting", () => {

@@ -176,6 +176,37 @@ function moneySide(side: string | null | undefined): "ct" | "t" | null {
  * money as the round ends, so it is the previous round's figure, and only
  * while the lineup stays on the same side (money resets at the half).
  */
+/**
+ * Rounds per half, read off the data: the first round a lineup changes side
+ * is the second half's first. Null when sides never swap (Rush).
+ */
+function halfLength(economy: RoundMoney[]): number | null {
+  const sorted = [...economy].sort((a, b) => a.round - b.round);
+  for (let i = 1; i < sorted.length; i++) {
+    const a = sorted[i - 1];
+    const b = sorted[i];
+    if (
+      b.round === a.round + 1 &&
+      moneySide(a.lineup_1_side) !== moneySide(b.lineup_1_side)
+    ) {
+      return a.round;
+    }
+  }
+  return null;
+}
+
+/**
+ * Money resets on these rounds whatever the sides do: each regulation half,
+ * and each overtime half (3 rounds a side), where sides do not swap at
+ * 24 -> 25 or 30 -> 31.
+ */
+function resetsMoney(round: number, mr: number | null): boolean {
+  if (round === 1) return true;
+  if (mr === null) return false;
+  if (round === mr + 1) return true;
+  return round > 2 * mr && (round - 2 * mr - 1) % 3 === 0;
+}
+
 export function startMoney(
   economy: RoundMoney[],
   round: number,
@@ -184,6 +215,7 @@ export function startMoney(
   const cur = economy.find((r) => r.round === round);
   const prev = economy.find((r) => r.round === round - 1);
   if (!cur || !prev) return null;
+  if (resetsMoney(round, halfLength(economy))) return null;
   for (const n of [1, 2] as const) {
     if (moneySide(cur[`lineup_${n}_side`]) !== side) continue;
     if (moneySide(prev[`lineup_${n}_side`]) !== side) return null;

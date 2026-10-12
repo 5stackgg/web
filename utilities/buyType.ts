@@ -16,10 +16,12 @@ export function moneyOf(
   return Number.isFinite(n) ? n : null;
 }
 
+// The same cut-offs as the api's buy-type views (v_match_lineup_buy_types):
+// under $5,000 is an eco, over $20,000 a full buy, both ends of force kept.
 export function classifyBuyType(money: number | null): BuyType {
   if (money === null) return "unknown";
-  if (money >= FULL_MIN) return "full";
-  if (money <= ECO_MAX) return "eco";
+  if (money > FULL_MIN) return "full";
+  if (money < ECO_MAX) return "eco";
   return "force";
 }
 

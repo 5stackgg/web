@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import {
+  classifyBuyType,
   moneyPeriod,
   startMoneyByRound,
   type EconomyRound,
@@ -120,5 +121,15 @@ describe("startMoneyByRound", () => {
       lineup_1: null,
       lineup_2: null,
     });
+  });
+});
+
+describe("classifyBuyType", () => {
+  it("cuts eco and full where the api's buy-type views do", () => {
+    expect(classifyBuyType(4999)).toBe("eco");
+    expect(classifyBuyType(5000)).toBe("force");
+    expect(classifyBuyType(20000)).toBe("force");
+    expect(classifyBuyType(20001)).toBe("full");
+    expect(classifyBuyType(null)).toBe("unknown");
   });
 });

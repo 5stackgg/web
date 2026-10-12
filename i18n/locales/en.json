@@ -7614,6 +7614,7 @@
       "cancel_invite": "Cancel Invite",
       "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
       "cancel_invite_description": "This will cancel the invite for this member",
+      "free_agent_tag": "Free agent",
       "seed_label": "Seed",
       "seed_display": "Seed #{seed}"
     },
@@ -7930,7 +7931,9 @@
       "draft_locked": "The bracket is in play, so the pool can no longer be drafted.",
       "nothing_drafted": "No teams were drafted",
       "nothing_drafted_hint": "There are not enough free agents left to fill a team of {size}, or the bracket has no room.",
-      "nothing_drafted_parties": "No combination of the sign-ups in the pool adds up to a team of {size}, and a party is never split to make one fit."
+      "nothing_drafted_parties": "No combination of the sign-ups in the pool adds up to a team of {size}, and a party is never split to make one fit.",
+      "invite": "Invite",
+      "invited": "Invited"
     },
     "entry": {
       "title": "Entry requirements",

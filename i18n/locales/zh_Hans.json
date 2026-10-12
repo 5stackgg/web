@@ -7612,6 +7612,7 @@
       "cancel_invite": "取消邀请",
       "confirm_cancel_invite": "您确定要取消此邀请吗？",
       "cancel_invite_description": "这将取消对该成员的邀请",
+      "free_agent_tag": "自由选手",
       "seed_label": "种子排名",
       "seed_display": "种子 #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "对阵表已经开打，选手池无法再分队。",
       "nothing_drafted": "没有组成任何队伍",
       "nothing_drafted_hint": "剩下的自由选手不足以凑满一支 {size} 人的队伍，或者对阵表已没有空位。",
-      "nothing_drafted_parties": "选手池中报名的任何组合都凑不满 {size} 人的队伍，而小队绝不会为了凑数被拆开。"
+      "nothing_drafted_parties": "选手池中报名的任何组合都凑不满 {size} 人的队伍，而小队绝不会为了凑数被拆开。",
+      "invite": "邀请",
+      "invited": "已邀请"
     },
     "entry": {
       "title": "参赛条件",

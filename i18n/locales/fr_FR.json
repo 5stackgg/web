@@ -7612,6 +7612,7 @@
       "cancel_invite": "Annuler l'invitation",
       "confirm_cancel_invite": "Annuler cette invitation ?",
       "cancel_invite_description": "L'invitation de ce membre sera annulée",
+      "free_agent_tag": "Agent libre",
       "seed_label": "Seed",
       "seed_display": "Seed n° {seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "Le bracket est en cours, le pool ne peut plus être drafté.",
       "nothing_drafted": "Aucune équipe n'a été draftée",
       "nothing_drafted_hint": "Il ne reste pas assez d'agents libres pour compléter une équipe de {size}, ou le bracket n'a plus de place.",
-      "nothing_drafted_parties": "Aucune combinaison des inscriptions du pool ne fait une équipe de {size}, et un groupe n'est jamais scindé pour que ça rentre."
+      "nothing_drafted_parties": "Aucune combinaison des inscriptions du pool ne fait une équipe de {size}, et un groupe n'est jamais scindé pour que ça rentre.",
+      "invite": "Inviter",
+      "invited": "Invité"
     },
     "entry": {
       "title": "Conditions d'inscription",

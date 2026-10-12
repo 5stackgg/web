@@ -7612,6 +7612,7 @@
       "cancel_invite": "Cancelar convite",
       "confirm_cancel_invite": "Cancelar convite",
       "cancel_invite_description": "Tem certeza que deseja cancelar este convite?",
+      "free_agent_tag": "Agente livre",
       "seed_label": "Seed",
       "seed_display": "Seed #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "A chave já está em andamento, então o grupo não pode mais ser draftado.",
       "nothing_drafted": "Nenhuma equipe foi draftada",
       "nothing_drafted_hint": "Não sobraram agentes livres suficientes para completar uma equipe de {size}, ou a chave não tem espaço.",
-      "nothing_drafted_parties": "Nenhuma combinação das inscrições fecha uma equipe de {size}, e um grupo nunca é dividido para caber."
+      "nothing_drafted_parties": "Nenhuma combinação das inscrições fecha uma equipe de {size}, e um grupo nunca é dividido para caber.",
+      "invite": "Convidar",
+      "invited": "Convidado"
     },
     "entry": {
       "title": "Requisitos de participação",

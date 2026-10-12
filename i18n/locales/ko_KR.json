@@ -7612,6 +7612,7 @@
       "cancel_invite": "초대 취소",
       "confirm_cancel_invite": "정말 이 초대를 취소하시겠습니까?",
       "cancel_invite_description": "이 멤버에 대한 초대가 취소됩니다",
+      "free_agent_tag": "프리 에이전트",
       "seed_label": "시드",
       "seed_display": "시드 #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "대진표가 진행 중이라 풀을 더 이상 드래프트할 수 없습니다.",
       "nothing_drafted": "구성된 팀이 없습니다",
       "nothing_drafted_hint": "{size}명 팀을 채울 만큼 프리 에이전트가 남지 않았거나, 대진표에 자리가 없습니다.",
-      "nothing_drafted_parties": "풀에 있는 신청들을 어떻게 조합해도 {size}명 팀이 되지 않으며, 파티는 맞추기 위해 나뉘지 않습니다."
+      "nothing_drafted_parties": "풀에 있는 신청들을 어떻게 조합해도 {size}명 팀이 되지 않으며, 파티는 맞추기 위해 나뉘지 않습니다.",
+      "invite": "초대",
+      "invited": "초대됨"
     },
     "entry": {
       "title": "참가 조건",

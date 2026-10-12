@@ -375,6 +375,7 @@ import { toast } from "~/components/ui/toast";
                   :label="$t('tournament.team.add_player')"
                   :self="true"
                   :ineligible="ineligiblePlayers"
+                  :tags="freeAgentTags"
                   :team-id="team.team_id"
                   @selected="addMember"
                 >
@@ -469,6 +470,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    freeAgentSteamIds: {
+      type: Array as () => Array<string>,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -543,6 +548,12 @@ export default {
     // is only selectable for your own team (see the note in TournamentDetail's
     // visibleTeams), so those players still look selectable and fail on insert.
     // addMember maps that error to a specific toast.
+    freeAgentTags() {
+      const tag = this.$t("tournament.team.free_agent_tag");
+      return Object.fromEntries(
+        this.freeAgentSteamIds.map((steamId) => [steamId, tag]),
+      );
+    },
     ineligiblePlayers() {
       const map = {};
 

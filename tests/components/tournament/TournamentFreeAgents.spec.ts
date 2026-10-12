@@ -5,10 +5,11 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import TournamentFreeAgents from "~/components/tournament/TournamentFreeAgents.vue";
 
 const pool = ref<Array<Record<string, unknown>>>([]);
+const { mutate } = vi.hoisted(() => ({ mutate: vi.fn() }));
 
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
-  useApolloClient: () => ({ client: { query: vi.fn(), mutate: vi.fn() } }),
+  useApolloClient: () => ({ client: { query: vi.fn(), mutate } }),
   useSubscription: () => ({
     result: ref({ tournament_free_agents: pool.value }),
   }),
@@ -20,6 +21,7 @@ afterEach(() => {
   unmount?.();
   unmount = undefined;
   pool.value = [];
+  mutate.mockReset();
 });
 
 function agent(steamId: string, player: Record<string, unknown>) {
@@ -34,15 +36,17 @@ function agent(steamId: string, player: Record<string, unknown>) {
   };
 }
 
-async function mountPool() {
+async function mountPool(myTeam: Record<string, unknown> | null = null) {
   const wrapper = await mountSuspended(TournamentFreeAgents, {
     props: {
       tournament: {
         id: "tournament-1",
         status: "RegistrationOpen",
-        min_players_per_lineup: 5,
+        min_players_per_lineup: 2,
+        max_players_per_lineup: 2,
         is_organizer: false,
       },
+      myTeam,
     },
   });
   unmount = () => wrapper.unmount();
@@ -73,5 +77,82 @@ describe("TournamentFreeAgents", () => {
 
     expect(wrapper.text()).toContain("Player 76561198000000002");
     expect(wrapper.find('[title^="Faceit"]').exists()).toBe(false);
+  });
+
+  describe("recruiting", () => {
+    const captainsTeam = (overrides: Record<string, unknown> = {}) => ({
+      id: "team-1",
+      can_manage: true,
+      roster: [{ player: { steam_id: "76561198000000099" } }],
+      invites: [],
+      ...overrides,
+    });
+
+    const inviteButton = (wrapper: Awaited<ReturnType<typeof mountPool>>) =>
+      wrapper.findAll("button").find((button) => button.text() === "Invite");
+
+    it("lets a captain with an open seat invite a free agent", async () => {
+      pool.value = [agent("76561198000000003", {})];
+      mutate.mockResolvedValue({
+        data: { insert_tournament_team_roster_one: null },
+      });
+
+      const wrapper = await mountPool(captainsTeam());
+      const button = inviteButton(wrapper);
+      expect(button).toBeDefined();
+      await button?.trigger("click");
+      await flushPromises();
+
+      expect(mutate).toHaveBeenCalledTimes(1);
+      expect(JSON.stringify(mutate.mock.calls[0][0])).toContain(
+        "insert_tournament_team_roster_one",
+      );
+    });
+
+    it("shows a free agent the team already invited as invited", async () => {
+      pool.value = [agent("76561198000000003", {})];
+
+      const wrapper = await mountPool(
+        captainsTeam({
+          invites: [{ id: "invite-1", player: { steam_id: "76561198000000003" } }],
+        }),
+      );
+
+      expect(inviteButton(wrapper)).toBeUndefined();
+      expect(wrapper.text()).toContain("Invited");
+    });
+
+    it("does not offer an invite once the team is full", async () => {
+      pool.value = [agent("76561198000000003", {})];
+
+      const wrapper = await mountPool(
+        captainsTeam({
+          roster: [
+            { player: { steam_id: "76561198000000098" } },
+            { player: { steam_id: "76561198000000099" } },
+          ],
+        }),
+      );
+
+      expect(inviteButton(wrapper)).toBeUndefined();
+    });
+
+    it("does not offer an invite to someone who cannot manage a team", async () => {
+      pool.value = [agent("76561198000000003", {})];
+
+      const wrapper = await mountPool(captainsTeam({ can_manage: false }));
+
+      expect(inviteButton(wrapper)).toBeUndefined();
+    });
+
+    it("does not offer an invite for a drafted free agent", async () => {
+      pool.value = [
+        { ...agent("76561198000000003", {}), status: "drafted" },
+      ];
+
+      const wrapper = await mountPool(captainsTeam());
+
+      expect(inviteButton(wrapper)).toBeUndefined();
+    });
   });
 });

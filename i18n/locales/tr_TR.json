@@ -7612,6 +7612,7 @@
       "cancel_invite": "Daveti İptal Et",
       "confirm_cancel_invite": "Bu daveti iptal etmek istediğine emin misin?",
       "cancel_invite_description": "Bu, üyenin davetini iptal eder",
+      "free_agent_tag": "Serbest oyuncu",
       "seed_label": "Seri Başı",
       "seed_display": "Seri Başı #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "Eşleşme tablosu oyunda olduğu için havuzdan artık takım oluşturulamaz.",
       "nothing_drafted": "Hiç takım oluşturulmadı",
       "nothing_drafted_hint": "{size} kişilik bir takımı dolduracak kadar serbest oyuncu kalmadı ya da eşleşme tablosunda yer yok.",
-      "nothing_drafted_parties": "Havuzdaki kayıtların hiçbir birleşimi {size} kişilik bir takım etmiyor ve bir parti, uysun diye asla bölünmez."
+      "nothing_drafted_parties": "Havuzdaki kayıtların hiçbir birleşimi {size} kişilik bir takım etmiyor ve bir parti, uysun diye asla bölünmez.",
+      "invite": "Davet et",
+      "invited": "Davet edildi"
     },
     "entry": {
       "title": "Katılım koşulları",

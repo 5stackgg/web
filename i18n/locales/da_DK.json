@@ -7612,6 +7612,7 @@
       "cancel_invite": "Annuller invitation",
       "confirm_cancel_invite": "Annuller denne invitation?",
       "cancel_invite_description": "Dette annullerer invitationen til dette medlem",
+      "free_agent_tag": "Free agent",
       "seed_label": "Seedning",
       "seed_display": "Seedning #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "Bracketen er i gang, så puljen kan ikke længere draftes.",
       "nothing_drafted": "Der blev ikke draftet nogen hold",
       "nothing_drafted_hint": "Der er ikke nok free agents tilbage til at fylde et hold på {size}, eller også er der ikke plads i bracketen.",
-      "nothing_drafted_parties": "Ingen kombination af tilmeldingerne i puljen giver et hold på {size}, og et party bliver aldrig delt for at få det til at passe."
+      "nothing_drafted_parties": "Ingen kombination af tilmeldingerne i puljen giver et hold på {size}, og et party bliver aldrig delt for at få det til at passe.",
+      "invite": "Inviter",
+      "invited": "Inviteret"
     },
     "entry": {
       "title": "Adgangskrav",

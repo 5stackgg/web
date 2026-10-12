@@ -7612,6 +7612,7 @@
       "cancel_invite": "Cancelar invitación",
       "confirm_cancel_invite": "¿Seguro que quieres cancelar esta invitación?",
       "cancel_invite_description": "Esto cancelará la invitación de este miembro",
+      "free_agent_tag": "Agente libre",
       "seed_label": "Seed",
       "seed_display": "Seed n.º {seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "El cuadro ya está en juego, así que el grupo ya no se puede draftear.",
       "nothing_drafted": "No se drafteó ningún equipo",
       "nothing_drafted_hint": "No quedan suficientes agentes libres para completar un equipo de {size}, o el cuadro no tiene hueco.",
-      "nothing_drafted_parties": "Ninguna combinación de las inscripciones suma un equipo de {size}, y un grupo nunca se parte para que cuadre."
+      "nothing_drafted_parties": "Ninguna combinación de las inscripciones suma un equipo de {size}, y un grupo nunca se parte para que cuadre.",
+      "invite": "Invitar",
+      "invited": "Invitado"
     },
     "entry": {
       "title": "Requisitos de acceso",

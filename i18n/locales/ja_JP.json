@@ -7612,6 +7612,7 @@
       "cancel_invite": "招待を取り消す",
       "confirm_cancel_invite": "この招待を取り消しますか？",
       "cancel_invite_description": "このメンバーへの招待を取り消します",
+      "free_agent_tag": "フリーエージェント",
       "seed_label": "シード",
       "seed_display": "シード #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "ブラケットが進行中のため、プールはもうドラフトできません。",
       "nothing_drafted": "チームは作成されませんでした",
       "nothing_drafted_hint": "{size}人編成のチームを組むだけのフリーエージェントが残っていないか、ブラケットに空きがありません。",
-      "nothing_drafted_parties": "プール内の登録をどう組み合わせても{size}人のチームにならず、パーティーが枠に合わせて分割されることはありません。"
+      "nothing_drafted_parties": "プール内の登録をどう組み合わせても{size}人のチームにならず、パーティーが枠に合わせて分割されることはありません。",
+      "invite": "招待",
+      "invited": "招待済み"
     },
     "entry": {
       "title": "参加条件",

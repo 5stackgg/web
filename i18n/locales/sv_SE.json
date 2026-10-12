@@ -7612,6 +7612,7 @@
       "cancel_invite": "Avbryt inbjudan",
       "confirm_cancel_invite": "Avbryta denna inbjudan?",
       "cancel_invite_description": "Detta avbryter inbjudan för denna medlem",
+      "free_agent_tag": "Free agent",
       "seed_label": "Seedning",
       "seed_display": "Seedning #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "Slutspelsträdet är i gång, så poolen kan inte längre draftas.",
       "nothing_drafted": "Inga lag draftades",
       "nothing_drafted_hint": "Det finns inte tillräckligt många free agents kvar för att fylla ett lag på {size}, eller så finns det ingen plats i slutspelsträdet.",
-      "nothing_drafted_parties": "Ingen kombination av anmälningarna i poolen blir ett lag på {size}, och ett party delas aldrig upp för att det ska gå ihop."
+      "nothing_drafted_parties": "Ingen kombination av anmälningarna i poolen blir ett lag på {size}, och ett party delas aldrig upp för att det ska gå ihop.",
+      "invite": "Bjud in",
+      "invited": "Inbjuden"
     },
     "entry": {
       "title": "Deltagarkrav",

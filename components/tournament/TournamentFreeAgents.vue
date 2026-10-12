@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient, useSubscription } from "@vue/apollo-composable";
-import { Info, RefreshCw, UserMinus, Users } from "lucide-vue-next";
+import { Info, RefreshCw, UserMinus, UserPlus, Users } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   Empty,
@@ -18,7 +18,7 @@ import TournamentChip from "~/components/tournament/TournamentChip.vue";
 import TournamentFreeAgentSignUp from "~/components/tournament/TournamentFreeAgentSignUp.vue";
 import { toast } from "~/components/ui/toast";
 import { $, e_tournament_status_enum } from "~/generated/zeus";
-import { generateSubscription } from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { useAuthStore } from "~/stores/AuthStore";
 import { dateLocale } from "~/utilities/dateLocale";
@@ -34,6 +34,8 @@ import {
 
 const props = defineProps<{
   tournament: Record<string, any>;
+  // The viewer's own team in this tournament, invites included.
+  myTeam?: Record<string, any> | null;
 }>();
 
 const { t } = useI18n();
@@ -425,6 +427,89 @@ const canLeave = computed(() => {
   ].includes(props.tournament?.status);
 });
 
+const recruitingTeam = computed(() => {
+  const team = props.myTeam;
+  if (!team?.can_manage) {
+    return null;
+  }
+
+  if (
+    ![
+      e_tournament_status_enum.RegistrationOpen,
+      e_tournament_status_enum.RegistrationClosed,
+      e_tournament_status_enum.CheckInReview,
+    ].includes(props.tournament?.status)
+  ) {
+    return null;
+  }
+
+  const seats = Number(props.tournament?.max_players_per_lineup) || 0;
+  if (seats > 0 && (team.roster?.length ?? 0) >= seats) {
+    return null;
+  }
+
+  return team;
+});
+
+const invitedSteamIds = computed(
+  () =>
+    new Set(
+      (props.myTeam?.invites ?? []).map((invite: Agent) =>
+        String(invite.player?.steam_id),
+      ),
+    ),
+);
+
+function canInvite(agent: Agent) {
+  return (
+    !!recruitingTeam.value &&
+    ["registered", "waitlisted"].includes(agent.status) &&
+    String(agent.player?.steam_id) !== String(me.value?.steam_id)
+  );
+}
+
+async function invite(agent: Agent) {
+  try {
+    const result = await client.mutate({
+      mutation: generateMutation({
+        insert_tournament_team_roster_one: [
+          {
+            object: {
+              player_steam_id: agent.player.steam_id,
+              tournament_team_id: recruitingTeam.value?.id,
+              tournament_id: props.tournament.id,
+            },
+          },
+          {
+            player_steam_id: true,
+          },
+        ],
+      }),
+    });
+
+    // An organizer's session places the player outright; anyone else's
+    // becomes an invite the free agent answers.
+    const added = Boolean(
+      result.data?.insert_tournament_team_roster_one?.player_steam_id,
+    );
+
+    toast({
+      title: added
+        ? t("tournament.team.member_added")
+        : t("tournament.team.invite_sent"),
+      description: added
+        ? t("tournament.team.member_added_description", {
+            name: agent.player?.name,
+          })
+        : t("tournament.team.invite_sent_description", {
+            name: agent.player?.name,
+          }),
+    });
+  } catch {
+    // The refusal is already toasted by the global Apollo error handler.
+  }
+}
+
 function signUpTime(createdAt: string) {
   const date = new Date(createdAt);
   if (Number.isNaN(date.getTime())) {
@@ -679,6 +764,24 @@ async function draftTeams() {
               <TournamentChip :tone="statusTone(row.agent.status)">
                 {{ statusLabel(row.agent.status) }}
               </TournamentChip>
+              <template v-if="canInvite(row.agent)">
+                <TournamentChip
+                  v-if="invitedSteamIds.has(String(row.agent.player?.steam_id))"
+                  tone="amber"
+                >
+                  {{ $t("tournament.free_agents.invited") }}
+                </TournamentChip>
+                <Button
+                  v-else
+                  variant="outline"
+                  size="sm"
+                  class="h-7 px-2.5"
+                  @click="invite(row.agent)"
+                >
+                  <UserPlus class="mr-1.5 h-3.5 w-3.5" />
+                  {{ $t("tournament.free_agents.invite") }}
+                </Button>
+              </template>
             </div>
           </div>
         </div>

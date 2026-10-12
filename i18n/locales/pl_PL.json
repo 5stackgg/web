@@ -7612,6 +7612,7 @@
       "cancel_invite": "Anuluj zaproszenie",
       "confirm_cancel_invite": "Czy na pewno chcesz anulować to zaproszenie?",
       "cancel_invite_description": "Spowoduje to anulowanie zaproszenia dla tego członka",
+      "free_agent_tag": "Wolny zawodnik",
       "seed_label": "Rozstawienie",
       "seed_display": "Rozstawienie #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "Drabinka jest już w grze, więc puli nie da się już rozdzielić w drafcie.",
       "nothing_drafted": "Nie utworzono żadnych drużyn",
       "nothing_drafted_hint": "Nie zostało dość wolnych zawodników, by skompletować drużynę liczącą {size}, albo w drabince nie ma miejsca.",
-      "nothing_drafted_parties": "Żadna kombinacja zapisów w puli nie składa się na drużynę liczącą {size}, a ekipy nigdy nie dzieli się, żeby coś dopasować."
+      "nothing_drafted_parties": "Żadna kombinacja zapisów w puli nie składa się na drużynę liczącą {size}, a ekipy nigdy nie dzieli się, żeby coś dopasować.",
+      "invite": "Zaproś",
+      "invited": "Zaproszono"
     },
     "entry": {
       "title": "Wymagania udziału",

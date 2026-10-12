@@ -7612,6 +7612,7 @@
       "cancel_invite": "取消邀請",
       "confirm_cancel_invite": "您確定要取消此邀請嗎？",
       "cancel_invite_description": "這將取消對該成員的邀請",
+      "free_agent_tag": "自由選手",
       "seed_label": "種子序",
       "seed_display": "種子 #{seed}"
     },
@@ -7928,7 +7929,9 @@
       "draft_locked": "對戰表已經開打，選手池無法再分隊。",
       "nothing_drafted": "沒有組成任何隊伍",
       "nothing_drafted_hint": "剩下的自由選手不足以湊滿一支 {size} 人的隊伍，或者對戰表已沒有空位。",
-      "nothing_drafted_parties": "選手池中報名的任何組合都湊不滿 {size} 人的隊伍，而小隊絕不會為了湊數被拆開。"
+      "nothing_drafted_parties": "選手池中報名的任何組合都湊不滿 {size} 人的隊伍，而小隊絕不會為了湊數被拆開。",
+      "invite": "邀請",
+      "invited": "已邀請"
     },
     "entry": {
       "title": "參賽條件",

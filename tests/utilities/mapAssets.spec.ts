@@ -873,3 +873,99 @@ describe("viewCutHeight", () => {
     expect(assets.viewCutHeight(Number.NaN)).toBe(assets.VIEW_CUT_DEFAULT);
   });
 });
+
+describe("radarImageUrl", () => {
+  let radar: MapAssets;
+
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.doMock("~/utilities/stageRadars.json", () => ({
+      default: {
+        de_mirage: "4e5f6a7b",
+        de_dust2: "1a2b3c4d",
+        de_dust2_night: "8c9d0e1f",
+        rush_001: "0a1b2c3d",
+      },
+    }));
+    radar = await import("~/utilities/mapAssets");
+  });
+
+  afterEach(() => {
+    vi.doUnmock("~/utilities/stageRadars.json");
+  });
+
+  it("prefers our own bake, at 1x or 2x, with its hash on the URL", () => {
+    expect(radar.radarImageUrl("de_mirage")).toBe(
+      "/radars/stage/de_mirage.webp?v=4e5f6a7b",
+    );
+    expect(radar.radarImageUrl("de_mirage", null, { retina: true })).toBe(
+      "/radars/stage/de_mirage@2x.webp?v=4e5f6a7b",
+    );
+    expect(radar.radarImageUrl(" Maps/DE_Mirage ")).toBe(
+      "/radars/stage/de_mirage.webp?v=4e5f6a7b",
+    );
+  });
+
+  it("falls back to the generic radar where there is no bake", () => {
+    expect(radar.radarImageUrl("de_cache")).toBe("/radars/de_cache.png");
+    expect(radar.radarImageUrl("de_cache", null, { retina: true })).toBe(
+      "/radars/de_cache.png",
+    );
+    expect(radar.radarImageUrl("de_inferno_night")).toBe(
+      "/radars/de_inferno.png",
+    );
+  });
+
+  it("gives a night map its own image, or else its day map's", () => {
+    expect(radar.radarImageUrl("de_dust2_night")).toBe(
+      "/radars/stage/de_dust2_night.webp?v=8c9d0e1f",
+    );
+    expect(radar.radarImageUrl("de_mirage_night")).toBe(
+      "/radars/stage/de_mirage.webp?v=4e5f6a7b",
+    );
+  });
+
+  it("asks for a room's own image, generic when it was not baked", () => {
+    expect(radar.radarImageUrl("rush_001")).toBe(
+      "/radars/stage/rush_001.webp?v=0a1b2c3d",
+    );
+    expect(radar.radarImageUrl("rush_001", "room204")).toBe(
+      "/radars/rush_001_room204.png",
+    );
+  });
+
+  it("keys a picture the same at either resolution", () => {
+    const key = radar.radarImageKey(radar.radarImageUrl("de_mirage"));
+    expect(key).toBe("/radars/stage/de_mirage.webp");
+    expect(
+      radar.radarImageKey(
+        radar.radarImageUrl("de_mirage", null, { retina: true }),
+      ),
+    ).toBe(key);
+    expect(radar.radarImageKey("/radars/de_cache.png")).toBe(
+      "/radars/de_cache.png",
+    );
+    expect(radar.radarImageKey(null)).toBeNull();
+  });
+
+  it("lists only bakes that are on disk, for maps the app can calibrate", async () => {
+    const { existsSync, readFileSync } = await import("node:fs");
+    const root = process.cwd();
+    const index = JSON.parse(
+      readFileSync(`${root}/utilities/stageRadars.json`, "utf8"),
+    ) as Record<string, string>;
+    const calibrations = JSON.parse(
+      readFileSync(`${root}/public/radars/metadata.json`, "utf8"),
+    );
+    expect(Object.keys(index).length).toBeGreaterThan(0);
+    for (const [name, hash] of Object.entries(index)) {
+      expect(hash).toMatch(/^[0-9a-f]{8}$/);
+      for (const file of [`${name}.webp`, `${name}@2x.webp`]) {
+        expect(existsSync(`${root}/public/radars/stage/${file}`), file).toBe(
+          true,
+        );
+      }
+      expect(calibrations[name.replace(/_night$/, "")], name).toBeTruthy();
+    }
+  });
+});

@@ -3,9 +3,14 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Slider } from "~/components/ui/slider";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
+import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import { normalizeMapName } from "~/utilities/mapAssets";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import {
+  utilityStageThrow,
+  utilityStageThrower,
+} from "~/utilities/replayStage/utilityFrame";
 import {
   utilityLanding,
   utilityOrigin,
@@ -383,6 +388,38 @@ function project(point: { x: number; y: number; z?: number }) {
 const tick = computed(() =>
   Math.round(((progress.value * flightMs.value) / 1000) * TICK_RATE),
 );
+
+// The replay stage draws it unless this browser or map cannot; then the
+// renderer above does, as it always has.
+const stageFailed = ref(false);
+
+const stageThrows = computed(() => {
+  const entry = utilityStageThrow(props.lineup, {
+    key: props.lineup.id,
+    gid: SYNTHETIC_GID,
+    points: fullTrajectory.value,
+  });
+  return entry ? [entry] : [];
+});
+
+const stageThrowers = computed(() => [
+  utilityStageThrower(props.lineup, {
+    id: props.lineup.id,
+    name: props.lineup.name,
+    avatarUrl: avatars.value[props.lineup.id] ?? null,
+  }),
+]);
+
+// Before the throw, in flight and blooming, then a still once it has settled.
+const stageTime = computed(() => {
+  if (settledMs.value >= 4000) {
+    return null;
+  }
+  if (progress.value === 0 && settledMs.value === 0) {
+    return -1;
+  }
+  return (progress.value * flightMs.value + settledMs.value) / 1000;
+});
 </script>
 
 <template>
@@ -390,7 +427,20 @@ const tick = computed(() =>
     class="relative w-full overflow-hidden rounded-md border border-border bg-background"
     style="aspect-ratio: 16 / 10"
   >
+    <UtilityThrowStage
+      v-if="!stageFailed"
+      :map-name="lineup.map_name"
+      :throws="stageThrows"
+      :throwers="stageThrowers"
+      :time="stageTime"
+      :roof="ceiling"
+      :controls="44"
+      @mesh="(kind) => (meshKind = kind)"
+      @framed="onFramed"
+      @fallback="stageFailed = true"
+    />
     <Replay3DLite
+      v-else
       :map-name="mapName"
       :mesh-cdn="meshCdn"
       :radar-src="radarSrc"

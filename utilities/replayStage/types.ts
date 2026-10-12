@@ -272,6 +272,8 @@ export type StageThrowPath = {
   /** Release to rest, evenly spaced in time; empty when the throw was not recorded. */
   path: Vec3[];
   at: Vec3;
+  /** False leaves out the ring where it went off (a cloud or fire is there). */
+  landing?: boolean;
 };
 
 /**

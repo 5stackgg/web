@@ -1,14 +1,8 @@
 import * as THREE from "three";
-import type {
-  RadarMeta,
-  RadarVolume,
-} from "../../../composables/useRadarProjection";
+import type { RadarMeta, RadarVolume } from "../../../composables/useRadarProjection";
 import { createMapModule } from "../../../utilities/replayStage/map";
 import { paletteFor } from "../../../utilities/replayStage/mapPalette";
-import {
-  INFO_OUTSIDE,
-  INFO_WALKABLE,
-} from "../../../utilities/replayStage/mapPrep";
+import { INFO_OUTSIDE, INFO_WALKABLE } from "../../../utilities/replayStage/mapPrep";
 import { MAP_VERT } from "../../../utilities/replayStage/mapShaders";
 import { createStage } from "../../../utilities/replayStage/stage";
 
@@ -93,9 +87,7 @@ function frameOf(
 
 function levelsOf(calib: Calib): Level[] {
   const splits = calib.splits ?? [];
-  const top = splits.length
-    ? Math.max(...splits.map((s) => s.bounds.top))
-    : -FAR;
+  const top = splits.length ? Math.max(...splits.map((s) => s.bounds.top)) : -FAR;
   // A split's bounds only say where a player is drawn; its storey reaches up
   // to the main level's lowest floor (Vertigo's ramps sit between the two).
   const ceiling = calib.zRange?.min ?? -FAR;
@@ -118,8 +110,7 @@ function levelsOf(calib: Calib): Level[] {
     });
   });
   for (const volume of calib.volumes ?? []) {
-    const { minX, minY, maxX, maxY, minZ, maxZ } =
-      volume.bounds as VolumeBounds;
+    const { minX, minY, maxX, maxY, minZ, maxZ } = volume.bounds as VolumeBounds;
     // Rooms stack (Rush's 2xx over 1xx): from above, only a volume's own
     // heights tell which storey it is.
     if (minZ === undefined || maxZ === undefined) {
@@ -151,9 +142,7 @@ function autoCalib(positions: Float32Array, info: Uint16Array): Calib {
     minY = Math.min(minY, positions[v * 3 + 1]);
     maxY = Math.max(maxY, positions[v * 3 + 1]);
   }
-  const resolution =
-    Math.ceil(((Math.max(maxX - minX, maxY - minY) * 1.12) / RADAR_PX) * 100) /
-    100;
+  const resolution = Math.ceil((Math.max(maxX - minX, maxY - minY) * 1.12) / RADAR_PX * 100) / 100;
   const half = (RADAR_PX * resolution) / 2;
   return {
     resolution,
@@ -164,11 +153,7 @@ function autoCalib(positions: Float32Array, info: Uint16Array): Calib {
   };
 }
 
-function floorHistogram(
-  positions: Float32Array,
-  info: Uint16Array,
-  bin: number,
-) {
+function floorHistogram(positions: Float32Array, info: Uint16Array, bin: number) {
   const counts = new Map<number, number>();
   for (let v = 0; v < info.length; v += 3) {
     if (info[v] & INFO_WALKABLE) {
@@ -180,9 +165,7 @@ function floorHistogram(
 }
 
 async function main() {
-  const job = JSON.parse(
-    atob(new URLSearchParams(location.search).get("job") ?? ""),
-  ) as Job;
+  const job = JSON.parse(atob(new URLSearchParams(location.search).get("job") ?? "")) as Job;
   const canvas = document.getElementById("stage") as HTMLCanvasElement;
   const mapModule = createMapModule();
   const stage = createStage({
@@ -194,15 +177,13 @@ async function main() {
     assetBase: `${location.origin}/assets`,
   });
   stage.resize(job.size, job.size);
+  // A radar stacks its storeys by `splits`; the stage's side-by-side copy
+  // would put the lower one in twice.
+  mapModule.setLevelLayout("single");
   const { renderer, scene } = stage.ctx;
   const gl = renderer.getContext();
-  if (
-    gl.drawingBufferWidth !== job.size ||
-    gl.drawingBufferHeight !== job.size
-  ) {
-    throw new Error(
-      `drawing buffer is ${gl.drawingBufferWidth}x${gl.drawingBufferHeight}, not ${job.size}`,
-    );
+  if (gl.drawingBufferWidth !== job.size || gl.drawingBufferHeight !== job.size) {
+    throw new Error(`drawing buffer is ${gl.drawingBufferWidth}x${gl.drawingBufferHeight}, not ${job.size}`);
   }
   await stage.setMap(job.map);
   await mapModule.settle?.();
@@ -213,16 +194,25 @@ async function main() {
   }
 
   const dunes = group.getObjectByName("dunes") as THREE.Mesh;
+  // The map's own triangles (solid, then see-through), which a storey's cut
+  // drops; the table, the ground fill and the title are indexed grids.
   const meshes = group.children.filter(
-    (child) => child !== dunes,
+    (child) => child instanceof THREE.Mesh && !!child.geometry.getAttribute("aInfo"),
   ) as THREE.Mesh[];
+  // Ground at the main level's height, which would roof a lower storey over.
+  const ground = group.getObjectByName("ground");
   const solid = meshes[0];
   const material = solid.material as THREE.ShaderMaterial;
   const uniforms = material.uniforms;
   uniforms.uLineWidth.value = (job.line * job.size) / RADAR_PX;
   // A radar is read edge to edge: nothing fades into the distance.
   uniforms.uHazeRange.value.set(1e9, 2e9);
-  for (const name of ["sky", "vignette"]) {
+  // The stage's own update sets the look from its camera's pitch, and is
+  // never run here: straight down is the 2D look, roofs cut, no ghosts.
+  uniforms.uView.value = 1;
+  uniforms.uLevelMix.value = 0;
+  // The map's name on the table, its ghosts and its storey laid aside.
+  for (const name of ["sky", "vignette", "map-title", "map-ghosts", "map-lower"]) {
     const object = scene.getObjectByName(name);
     if (object) {
       object.visible = false;
@@ -232,9 +222,7 @@ async function main() {
   const positions = meshes.map(
     (mesh) => mesh.geometry.getAttribute("position") as THREE.BufferAttribute,
   );
-  const originals = positions.map((attr) =>
-    (attr.array as Float32Array).slice(),
-  );
+  const originals = positions.map((attr) => (attr.array as Float32Array).slice());
   const solidInfo = solid.geometry.getAttribute("aInfo").array as Uint16Array;
   const calib = job.calib ?? autoCalib(originals[0], solidInfo);
   const levels = levelsOf(calib);
@@ -287,21 +275,19 @@ async function main() {
       }
       attr.needsUpdate = true;
     });
-    // Re-bakes the sun shadow and occlusion against what is left.
+    // Re-bakes the sun shadow and occlusion against what is left; the module
+    // skips the bake when the roof height alone has not moved.
+    if (mapModule.stats) {
+      mapModule.stats.bakeMs = 0;
+    }
     mapModule.setRoof(mapModule.defaultRoof("2d"));
   }
 
   async function post(name: string) {
     const blob = await new Promise<Blob>((resolve, reject) =>
-      canvas.toBlob(
-        (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
-        "image/png",
-      ),
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/png"),
     );
-    const res = await fetch(`/out/${job.map}.${name}.png`, {
-      method: "POST",
-      body: blob,
-    });
+    const res = await fetch(`/out/${job.map}.${name}.png`, { method: "POST", body: blob });
     if (!res.ok) {
       throw new Error(`posting ${name}: ${res.status}`);
     }
@@ -311,15 +297,16 @@ async function main() {
   for (const level of levels) {
     cutAt(level.cut);
     aim(level.frame, level.cut);
+    if (ground) {
+      ground.visible = level.cut === null;
+    }
     renderer.render(scene, camera);
     await post(`${level.name}.color`);
 
     solid.material = floorMaterial;
     floorMaterial.uniforms.uZ.value.set(level.z[0], level.z[1]);
-    floorMaterial.uniforms.uXY.value.set(
-      ...(level.xy ?? [-FAR, -FAR, FAR, FAR]),
-    );
-    const hidden = [dunes, ...meshes.slice(1)];
+    floorMaterial.uniforms.uXY.value.set(...(level.xy ?? [-FAR, -FAR, FAR, FAR]));
+    const hidden = [dunes, ...meshes.slice(1), ...(ground ? [ground] : [])];
     hidden.forEach((mesh) => (mesh.visible = false));
     scene.background = new THREE.Color(0x000000);
     aim(level.frame, null);

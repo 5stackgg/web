@@ -3,8 +3,14 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Slider } from "~/components/ui/slider";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
+import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import { normalizeMapName } from "~/utilities/mapAssets";
+import {
+  utilityStageThrow,
+  utilityStageThrower,
+} from "~/utilities/replayStage/utilityFrame";
+import type { UtilityStageThrow } from "~/utilities/replayStage/utilityFrame";
 import {
   executeFlightSeconds,
   utilityLanding,
@@ -494,6 +500,32 @@ onMounted(() => {
   }
 });
 
+// The replay stage draws it unless this browser or map cannot; then the
+// renderer above does, as it always has.
+const stageFailed = ref(false);
+
+const stageThrows = computed(() =>
+  throws.value
+    .map((entry) =>
+      utilityStageThrow(entry.lineup, {
+        key: entry.key,
+        gid: entry.gid,
+        start: entry.start,
+        points: fullTrajectories.value[entry.lineup.id],
+      }),
+    )
+    .filter((entry): entry is UtilityStageThrow => !!entry),
+);
+
+const stageThrowers = computed(() =>
+  tokens.value.map(({ id, name, entry }) =>
+    utilityStageThrower(entry.lineup, { id, name }),
+  ),
+);
+
+// Standing still after a run is the finished execute: the stage's still.
+const stageTime = computed(() => (time.value === AFTER ? null : time.value));
+
 defineExpose({ time, inFlight, grenades, players, cameraFrame });
 </script>
 
@@ -502,7 +534,20 @@ defineExpose({ time, inFlight, grenades, players, cameraFrame });
     class="relative w-full overflow-hidden rounded-md border border-border bg-background"
     :class="fill ? 'h-full' : 'aspect-[16/10]'"
   >
+    <UtilityThrowStage
+      v-if="!stageFailed"
+      :map-name="mapName"
+      :throws="stageThrows"
+      :throwers="stageThrowers"
+      :time="stageTime"
+      :roof="ceiling"
+      :controls="44"
+      @mesh="(kind) => (meshKind = kind)"
+      @framed="emit('framed')"
+      @fallback="stageFailed = true"
+    />
     <Replay3DLite
+      v-else
       :map-name="sceneMap"
       :mesh-cdn="meshCdn"
       :radar-src="radarSrc"

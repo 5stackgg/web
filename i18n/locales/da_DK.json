@@ -7258,8 +7258,7 @@
         "matches": "Kampe",
         "next_best": "Næstbedst: {name}",
         "manual": "Udvalgt af turneringsarrangøren."
-      },
-      "no_matches_played": "Ingen kampe spillet endnu"
+      }
     },
     "swiss": {
       "advanced": "VIDERE",
@@ -7752,6 +7751,18 @@
       "expand": "Fold ud",
       "collapse_all": "Fold alt sammen",
       "expand_all": "Fold alt ud"
+    },
+    "matches_filter": {
+      "live": "Live",
+      "upcoming": "Kommende",
+      "results": "Resultater",
+      "all": "Alle",
+      "empty": {
+        "live": "Intet er live lige nu.",
+        "upcoming": "Ingen kommende kampe.",
+        "results": "Ingen resultater endnu.",
+        "all": "Ingen kampe endnu. De vises, når turneringstræet er lagt."
+      }
     },
     "registration": {
       "section": "Tilmelding",

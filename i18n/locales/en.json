@@ -7260,8 +7260,7 @@
         "matches": "Matches",
         "next_best": "Next best: {name}",
         "manual": "Hand-picked by the tournament organizer."
-      },
-      "no_matches_played": "No matches played yet"
+      }
     },
     "swiss": {
       "advanced": "ADVANCED",
@@ -7754,6 +7753,18 @@
       "expand": "Expand",
       "collapse_all": "Collapse All",
       "expand_all": "Expand All"
+    },
+    "matches_filter": {
+      "live": "Live",
+      "upcoming": "Upcoming",
+      "results": "Results",
+      "all": "All",
+      "empty": {
+        "live": "Nothing is live right now.",
+        "upcoming": "No upcoming matches.",
+        "results": "No results yet.",
+        "all": "No matches yet. They appear once the bracket is drawn."
+      }
     },
     "registration": {
       "section": "Registration",

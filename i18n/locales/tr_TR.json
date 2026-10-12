@@ -7258,8 +7258,7 @@
         "matches": "Maçlar",
         "next_best": "Sonraki en iyi: {name}",
         "manual": "Turnuva organizatörü tarafından seçildi."
-      },
-      "no_matches_played": "Henüz oynanan maç yok"
+      }
     },
     "swiss": {
       "advanced": "TUR ATLADI",
@@ -7752,6 +7751,18 @@
       "expand": "Genişlet",
       "collapse_all": "Tümünü daralt",
       "expand_all": "Tümünü genişlet"
+    },
+    "matches_filter": {
+      "live": "Canlı",
+      "upcoming": "Yaklaşan",
+      "results": "Sonuçlar",
+      "all": "Tümü",
+      "empty": {
+        "live": "Şu anda canlı bir şey yok.",
+        "upcoming": "Yaklaşan maç yok.",
+        "results": "Henüz sonuç yok.",
+        "all": "Henüz maç yok. Fikstür oluşturulduğunda görünürler."
+      }
     },
     "registration": {
       "section": "Kayıt",

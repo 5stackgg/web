@@ -7258,8 +7258,7 @@
         "matches": "Mecze",
         "next_best": "Następny: {name}",
         "manual": "Wybrany przez organizatora turnieju."
-      },
-      "no_matches_played": "Nie rozegrano jeszcze żadnego meczu"
+      }
     },
     "swiss": {
       "advanced": "AWANSOWAŁ",
@@ -7752,6 +7751,18 @@
       "expand": "Rozwiń",
       "collapse_all": "Zwiń wszystko",
       "expand_all": "Rozwiń wszystko"
+    },
+    "matches_filter": {
+      "live": "Na żywo",
+      "upcoming": "Nadchodzące",
+      "results": "Wyniki",
+      "all": "Wszystkie",
+      "empty": {
+        "live": "Obecnie nic nie jest na żywo.",
+        "upcoming": "Brak nadchodzących meczów.",
+        "results": "Brak wyników.",
+        "all": "Brak meczów. Pojawią się po utworzeniu drabinki."
+      }
     },
     "registration": {
       "section": "Rejestracja",

@@ -543,18 +543,28 @@ mark {
    over Tailwind's `@layer base` preflight, which otherwise strips heading/list
    spacing and makes the rendered markdown read as flat text. */
 .news-content {
+  max-width: 68ch;
+  color: hsl(var(--foreground) / 0.86);
+  line-height: 1.75;
+  font-size: 1.03rem;
+}
+.news-content strong {
   color: hsl(var(--foreground));
-  line-height: 1.7;
-  font-size: 1.05rem;
+  font-weight: 650;
+}
+.news-content em {
+  color: hsl(var(--foreground));
 }
 .news-content h1,
 .news-content h2,
 .news-content h3,
 .news-content h4 {
+  color: hsl(var(--foreground));
   font-weight: 700;
   line-height: 1.25;
-  margin-top: 1.75rem;
+  margin-top: 2.2rem;
   margin-bottom: 0.75rem;
+  text-wrap: balance;
 }
 .news-content h1:first-child,
 .news-content h2:first-child,
@@ -568,34 +578,83 @@ mark {
 .news-content h2 {
   font-size: 1.5rem;
 }
+/* Sections: a little air above when scrolled to, and a link beside them. */
 .news-content h3 {
-  font-size: 1.25rem;
+  position: relative;
+  font-size: 1.3rem;
+  scroll-margin-top: 1.5rem;
+}
+.news-content .news-anchor {
+  position: absolute;
+  left: -1.1em;
+  width: 1em;
+  color: hsl(var(--muted-foreground) / 0.6);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 110ms, color 110ms;
+}
+.news-content h3:hover .news-anchor,
+.news-content .news-anchor:focus-visible {
+  opacity: 1;
+}
+.news-content .news-anchor:hover {
+  color: hsl(var(--tac-amber));
+}
+@media (hover: none), (max-width: 640px) {
+  .news-content .news-anchor {
+    display: none;
+  }
 }
 .news-content p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
+  text-wrap: pretty;
 }
 .news-content a {
-  color: hsl(var(--primary));
+  color: hsl(var(--tac-amber));
   text-decoration: underline;
+  text-decoration-color: hsl(var(--tac-amber) / 0.45);
+  text-underline-offset: 3px;
+}
+.news-content a:hover {
+  text-decoration-color: hsl(var(--tac-amber));
 }
 .news-content ul,
 .news-content ol {
-  margin: 0 0 1rem 1.5rem;
+  margin: 0 0 1.2rem 1.4rem;
 }
+/* Diamond markers, as in the nav. */
 .news-content ul {
-  list-style: disc;
+  list-style: none;
+  margin-left: 1.25rem;
+}
+.news-content ul > li {
+  position: relative;
+}
+.news-content ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.05rem;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  transform: rotate(45deg);
+  background: hsl(var(--tac-amber) / 0.8);
 }
 .news-content ol {
   list-style: decimal;
 }
 .news-content li {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.55rem;
+  padding-left: 0.15rem;
+}
+.news-content li::marker {
+  color: hsl(var(--muted-foreground));
 }
 .news-content blockquote {
   border-left: 3px solid hsl(var(--border));
   padding-left: 1rem;
   color: hsl(var(--muted-foreground));
-  margin: 0 0 1rem 0;
+  margin: 0 0 1.2rem 0;
 }
 .news-content img {
   max-width: 100%;
@@ -632,36 +691,64 @@ mark {
   word-break: break-all;
 }
 .news-content pre {
-  background: hsl(var(--muted));
-  padding: 1rem;
+  background: hsl(var(--muted) / 0.6);
+  padding: 0.875rem 1rem;
   border-radius: 0.5rem;
   overflow-x: auto;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 .news-content code {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.875em;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 0.84em;
+  color: hsl(var(--foreground));
 }
 .news-content :not(pre) > code {
-  background: hsl(var(--muted));
-  padding: 0.15rem 0.35rem;
+  background: hsl(var(--muted) / 0.8);
+  padding: 0.12rem 0.36rem;
   border-radius: 0.25rem;
 }
 .news-content hr {
   border: none;
   border-top: 1px solid hsl(var(--border));
-  margin: 1.5rem 0;
+  margin: 2rem 0;
 }
 .news-content table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 .news-content th,
 .news-content td {
   border: 1px solid hsl(var(--border));
   padding: 0.5rem 0.75rem;
   text-align: left;
+}
+
+/* A post's closing call to action (the paragraph after its last ---). */
+.news-closing {
+  max-width: 68ch;
+  margin-top: 2.2rem;
+  padding: 1rem 1.125rem;
+  border: 1px solid hsl(var(--tac-amber) / 0.3);
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, hsl(var(--tac-amber) / 0.07), transparent 70%);
+  color: hsl(var(--foreground) / 0.85);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+.news-closing p {
+  margin: 0;
+}
+.news-closing p + p {
+  margin-top: 0.5rem;
+}
+.news-closing strong {
+  color: hsl(var(--foreground));
+}
+.news-closing a {
+  color: hsl(var(--tac-amber));
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* Between the utility maps index and a map, the radar you picked grows into

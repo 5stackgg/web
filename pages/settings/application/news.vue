@@ -28,7 +28,7 @@ import { PencilLine } from "lucide-vue-next";
           </template>
 
           <div v-if="canPostNews" class="flex justify-end">
-            <NuxtLink to="/news/manage">
+            <NuxtLink to="/news">
               <Button variant="outline" class="gap-2 shrink-0">
                 <PencilLine class="h-4 w-4" />
                 {{ $t("pages.settings.application.news.manage") }}

@@ -8,6 +8,14 @@ export const newsArticleListFields = {
   published_at: true,
 } as const;
 
+// List cards show a read time and the lead lists its sections, both worked
+// out from the body.
+export const newsArticleCardFields = {
+  ...newsArticleListFields,
+  content_markdown: true,
+  updated_at: true,
+} as const;
+
 export const newsArticleFields = {
   ...newsArticleListFields,
   content_markdown: true,

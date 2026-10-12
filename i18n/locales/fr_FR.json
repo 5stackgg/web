@@ -7435,6 +7435,9 @@
       "teams_count": "{count} équipes",
       "structure_locked_label": "Type, équipes et groupes",
       "structure_locked": "Le type, les équipes et les groupes sont verrouillés une fois l'arbre tiré. Le best of peut encore changer.",
+      "match_settings_locked_label": "Paramètres de match",
+      "match_settings_locked": "Les paramètres de match sont verrouillés une fois l'arbre tiré.",
+      "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule tes changements de type, d'équipes, de groupes ou de paramètres de match, puis enregistre le best of.",
       "final_map_advantage": {
         "label": "Avantage de map en finale",
         "description": "Avance en points de map dont bénéficie l'équipe du bracket des vainqueurs en grande finale. Doit rester inférieure au nombre de maps nécessaires pour gagner."

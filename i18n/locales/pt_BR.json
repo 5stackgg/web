@@ -7435,6 +7435,9 @@
       "teams_count": "{count} equipes",
       "structure_locked_label": "Tipo, times e grupos",
       "structure_locked": "Tipo, times e grupos ficam bloqueados depois que o chaveamento é gerado. O formato Melhor De ainda pode mudar.",
+      "match_settings_locked_label": "Configurações da partida",
+      "match_settings_locked": "As configurações da partida ficam bloqueadas depois que o chaveamento é gerado.",
+      "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações de tipo, times, grupos ou configurações da partida e depois salve o formato Melhor De.",
       "final_map_advantage": {
         "label": "Vantagem de Mapa na Final",
         "description": "Vantagem em pontos de mapa que a equipe da chave dos vencedores leva para a grande final. Deve ficar abaixo do número de mapas necessários para vencer."

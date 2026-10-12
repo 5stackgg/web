@@ -7435,6 +7435,9 @@
       "teams_count": "{count} takım",
       "structure_locked_label": "Tür, takımlar ve gruplar",
       "structure_locked": "Fikstür çekildikten sonra tür, takımlar ve gruplar kilitlenir. Maç serisi formatı hâlâ değiştirilebilir.",
+      "match_settings_locked_label": "Maç ayarları",
+      "match_settings_locked": "Fikstür çekildikten sonra maç ayarları kilitlenir.",
+      "drawn_while_editing": "Sen düzenlerken fikstür çekildi. Tür, takım, grup veya maç ayarlarındaki değişikliklerini at, sonra maç serisi formatını kaydet.",
       "final_map_advantage": {
         "label": "Final Harita Avantajı",
         "description": "Üst tablo takımının büyük finale taşıdığı harita avantajı. Galibiyet için gereken harita sayısının altında kalmalı."

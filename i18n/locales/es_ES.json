@@ -7435,6 +7435,9 @@
       "teams_count": "{count} equipos",
       "structure_locked_label": "Tipo, equipos y grupos",
       "structure_locked": "El tipo, los equipos y los grupos se bloquean una vez generado el cuadro. El best of aún se puede cambiar.",
+      "match_settings_locked_label": "Ajustes de partida",
+      "match_settings_locked": "Los ajustes de partida se bloquean una vez generado el cuadro.",
+      "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta tus cambios de tipo, equipos, grupos o ajustes de partida y luego guarda el best of.",
       "final_map_advantage": {
         "label": "Ventaja de mapa en la final",
         "description": "Ventaja en mapas con la que el equipo del cuadro de ganadores llega a la gran final. Debe ser menor que los mapas necesarios para ganar."

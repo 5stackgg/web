@@ -544,6 +544,32 @@ import { $ } from "~/generated/zeus";
           </Card>
           </Fold>
 
+          <Fold :open="structureLocked">
+            <div
+              class="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <span>{{
+                $t("tournament.stage.match_settings_locked_label")
+              }}</span>
+              <FiveStackToolTip as-child :delay-duration="120">
+                <template #trigger>
+                  <span
+                    class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                    tabindex="0"
+                    role="img"
+                    :aria-label="$t('tournament.stage.match_settings_locked')"
+                    @click.prevent
+                  >
+                    <TriangleAlert class="h-3.5 w-3.5" />
+                  </span>
+                </template>
+                <p class="max-w-[16rem]">
+                  {{ $t("tournament.stage.match_settings_locked") }}
+                </p>
+              </FiveStackToolTip>
+            </div>
+          </Fold>
+
           <fieldset
             :disabled="structureLocked"
             class="flex min-w-0 flex-col gap-4 transition-opacity duration-200 motion-reduce:transition-none"
@@ -1608,6 +1634,19 @@ export default {
     discardChanges() {
       this.populateStage(this.stage);
     },
+    structureChanged(): boolean {
+      if (this.baseline === null) {
+        return false;
+      }
+      const before = JSON.parse(this.baseline).values;
+      const after = this.form.values;
+      const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
+      return [...keys].some(
+        (key) =>
+          key !== "default_best_of" &&
+          JSON.stringify(before[key]) !== JSON.stringify(after[key]),
+      );
+    },
     animateAdvanced(open: boolean) {
       const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
       if (!wrap) {
@@ -1940,6 +1979,15 @@ export default {
         const settings = this.buildSettings();
 
         if (this.stage && this.structureLocked) {
+          if (this.structureChanged()) {
+            toast({
+              variant: "destructive",
+              title: this.$t("common.error"),
+              description: this.$t("tournament.stage.drawn_while_editing"),
+            });
+            return;
+          }
+
           await (this as any).$apollo.mutate({
             variables: {
               settings: settings,

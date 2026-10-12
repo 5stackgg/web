@@ -7435,6 +7435,9 @@
       "teams_count": "{count} Teams",
       "structure_locked_label": "Typ, Teams und Gruppen",
       "structure_locked": "Typ, Teams und Gruppen sind gesperrt, sobald der Turnierbaum gezogen ist. Best Of lässt sich weiterhin ändern.",
+      "match_settings_locked_label": "Match-Einstellungen",
+      "match_settings_locked": "Die Match-Einstellungen sind gesperrt, sobald der Turnierbaum gezogen ist.",
+      "drawn_while_editing": "Der Turnierbaum wurde gezogen, während du bearbeitet hast. Verwirf deine Änderungen an Typ, Teams, Gruppen oder Match-Einstellungen und speichere dann das Best Of.",
       "final_map_advantage": {
         "label": "Map-Vorteil im Finale",
         "description": "Vorsprung an Map-Punkten, den das Team aus dem Winner-Bracket ins Grand Final mitnimmt. Muss unter der Anzahl der zum Sieg nötigen Maps bleiben."

@@ -7435,6 +7435,9 @@
       "teams_count": "{count} 支队伍",
       "structure_locked_label": "类型、队伍和小组",
       "structure_locked": "对阵图生成后，类型、队伍和小组将被锁定。赛制仍可更改。",
+      "match_settings_locked_label": "比赛设置",
+      "match_settings_locked": "对阵图生成后，比赛设置将被锁定。",
+      "drawn_while_editing": "你编辑期间对阵图已生成。请放弃对类型、队伍、小组或比赛设置的更改，然后保存赛制。",
       "final_map_advantage": {
         "label": "决赛地图优势",
         "description": "胜者组队伍带入总决赛的地图分优势。必须小于取胜所需的地图数。"

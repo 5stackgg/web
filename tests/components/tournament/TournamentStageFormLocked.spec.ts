@@ -5,8 +5,19 @@ import { print } from "graphql";
 import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 
+const { toastMock } = vi.hoisted(() => ({ toastMock: vi.fn() }));
+
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast: toastMock,
+}));
+
 const LOCKED =
   "Type, teams and groups are locked once the bracket is drawn. Best-of can still change.";
+const MATCH_SETTINGS_LOCKED =
+  "Match settings are locked once the bracket is drawn.";
+const DRAWN_WHILE_EDITING =
+  "The bracket was drawn while you were editing. Discard your changes to type, teams, groups or match settings, then save the best-of.";
 
 const tournamentOptions = {
   id: "options-1",
@@ -60,6 +71,7 @@ beforeEach(() => {
   // `{ clients, defaultClient }` object, not vue-apollo's, so the form's
   // `this.$apollo.mutate` is given one here.
   mutate = vi.fn().mockResolvedValue({ data: {} });
+  toastMock.mockClear();
   (useNuxtApp() as any).$apollo.mutate = mutate;
 });
 
@@ -118,6 +130,23 @@ describe("TournamentStageForm with the structure locked", () => {
     expect(wrapper.find(`[aria-label="${LOCKED}"]`).exists()).toBe(true);
   });
 
+  it("says the match settings are locked too", async () => {
+    const wrapper = await mountLocked(true);
+    const matchSettings = wrapper.find(
+      `[aria-label="${MATCH_SETTINGS_LOCKED}"]`,
+    );
+
+    expect(matchSettings.exists()).toBe(true);
+    expect(
+      wrapper.find("fieldset[disabled]").element.textContent,
+    ).not.toContain("TV Delay");
+    expect(
+      wrapper
+        .findAll("fieldset[disabled]")
+        .some((fieldset) => fieldset.text().includes("TV Delay")),
+    ).toBe(true);
+  });
+
   it("keeps the default best-of editable", async () => {
     const wrapper = await mountLocked(true);
     const bestOf = wrapper
@@ -149,6 +178,42 @@ describe("TournamentStageForm with the structure locked", () => {
     ]) {
       expect(calls[0].document).not.toContain(field);
     }
+  });
+
+  it("refuses to drop structural edits made before the lock, and keeps the form open", async () => {
+    const wrapper = await mountLocked(false);
+    (wrapper.vm as any).form.setFieldValue("max_teams", "16");
+    (wrapper.vm as any).form.setFieldValue("default_best_of", "3");
+    await flushPromises();
+
+    await wrapper.setProps({ structureLocked: true });
+    await (wrapper.vm as any).updateCreateStage();
+    await flushPromises();
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: DRAWN_WHILE_EDITING }),
+    );
+    expect(wrapper.emitted("updated")).toBeUndefined();
+    expect((wrapper.vm as any).form.values.max_teams).toBe("16");
+    expect((wrapper.vm as any).isDirty).toBe(true);
+  });
+
+  it("saves the best-of once the structural edits are discarded", async () => {
+    const wrapper = await mountLocked(false);
+    (wrapper.vm as any).form.setFieldValue("max_teams", "16");
+    await flushPromises();
+    await wrapper.setProps({ structureLocked: true });
+
+    (wrapper.vm as any).discardChanges();
+    await flushPromises();
+    (wrapper.vm as any).form.setFieldValue("default_best_of", "3");
+    await flushPromises();
+    await (wrapper.vm as any).updateCreateStage();
+    await flushPromises();
+
+    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted("updated")).toHaveLength(1);
   });
 
   it("leaves the stage's own match options alone", async () => {

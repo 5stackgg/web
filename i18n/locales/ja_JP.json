@@ -7435,6 +7435,9 @@
       "teams_count": "{count} チーム",
       "structure_locked_label": "形式・チーム数・グループ",
       "structure_locked": "ブラケット作成後は形式・チーム数・グループがロックされます。Best Of は引き続き変更できます。",
+      "match_settings_locked_label": "試合設定",
+      "match_settings_locked": "ブラケット作成後は試合設定がロックされます。",
+      "drawn_while_editing": "編集中にブラケットが作成されました。形式・チーム数・グループ・試合設定の変更を破棄してから Best Of を保存してください。",
       "final_map_advantage": {
         "label": "決勝マップアドバンテージ",
         "description": "上位ブラケットのチームがグランドファイナルに持ち込むマップポイントのリード。勝利に必要なマップ数未満にする必要があります。"

@@ -7435,6 +7435,9 @@
       "teams_count": "{count}팀",
       "structure_locked_label": "유형, 팀, 그룹",
       "structure_locked": "대진표가 만들어지면 유형, 팀, 그룹이 잠깁니다. 승수제는 계속 바꿀 수 있습니다.",
+      "match_settings_locked_label": "매치 설정",
+      "match_settings_locked": "대진표가 만들어지면 매치 설정이 잠깁니다.",
+      "drawn_while_editing": "수정하는 동안 대진표가 만들어졌습니다. 유형, 팀, 그룹, 매치 설정 변경 사항을 취소한 뒤 승수제를 저장하세요.",
       "final_map_advantage": {
         "label": "결승 맵 어드밴티지",
         "description": "승자조 팀이 그랜드 파이널에 진출할 때 갖는 맵 점수 어드밴티지입니다. 우승에 필요한 맵 수보다 적어야 합니다."

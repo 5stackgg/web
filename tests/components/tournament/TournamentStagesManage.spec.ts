@@ -45,6 +45,7 @@ async function mountStages(status: string, brackets: Bracket[] = []) {
       },
     },
     global: { stubs: { TournamentStageForm: true } },
+    attachTo: document.body,
   });
   unmount = () => wrapper.unmount();
   await flushPromises();
@@ -62,11 +63,15 @@ const deletes = (wrapper: Wrapper) =>
 const disabled = (el: { attributes: (name: string) => string | undefined }) =>
   el.attributes("disabled") !== undefined;
 
+const unavailable = (el: {
+  attributes: (name: string) => string | undefined;
+}) => disabled(el) || el.attributes("aria-disabled") === "true";
+
 function expectStructureOpen(wrapper: Wrapper) {
   expect(buttons(wrapper, "Add Another Stage")).toHaveLength(1);
   expect(disabled(buttons(wrapper, "Add Another Stage")[0])).toBe(false);
   expect(deletes(wrapper)).toHaveLength(2);
-  expect(deletes(wrapper).some(disabled)).toBe(false);
+  expect(deletes(wrapper).some(unavailable)).toBe(false);
   expect(wrapper.find(`[aria-label="${LOCKED}"]`).exists()).toBe(false);
 }
 
@@ -74,7 +79,7 @@ function expectStructureLocked(wrapper: Wrapper) {
   expect(buttons(wrapper, "Add Another Stage")).toHaveLength(1);
   expect(disabled(buttons(wrapper, "Add Another Stage")[0])).toBe(true);
   expect(deletes(wrapper)).toHaveLength(2);
-  expect(deletes(wrapper).every(disabled)).toBe(true);
+  expect(deletes(wrapper).every(unavailable)).toBe(true);
   expect(wrapper.find(`[aria-label="${LOCKED}"]`).exists()).toBe(true);
 }
 
@@ -135,6 +140,26 @@ describe("TournamentStagesManage", () => {
     expectStructureLocked(wrapper);
     expect(buttons(wrapper, "Edit")).toHaveLength(2);
     expect((await openEdit(wrapper)).props("structureLocked")).toBe(true);
+  });
+
+  it("keeps a locked delete reachable by keyboard, with its reason, and inert", async () => {
+    const wrapper = await mountStages("Paused");
+    const trash = deletes(wrapper)[0];
+
+    expect(disabled(trash)).toBe(false);
+    expect(trash.attributes("aria-disabled")).toBe("true");
+
+    (trash.element as HTMLElement).focus();
+    await flushPromises();
+    expect(
+      document.body.querySelector('[role="tooltip"]')?.textContent,
+    ).toContain(LOCKED);
+
+    await trash.trigger("click");
+    await flushPromises();
+    expect(document.body.textContent).not.toContain(
+      "Are you sure you want to delete this stage?",
+    );
   });
 
   it("locks every stage control once the tournament is finished", async () => {

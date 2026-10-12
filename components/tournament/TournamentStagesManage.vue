@@ -162,22 +162,16 @@ async function confirmDelete() {
               :delay-duration="120"
             >
               <template #trigger>
-                <span
-                  class="inline-flex"
-                  tabindex="0"
-                  :aria-label="$t('tournament.manage.stages_drawn')"
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  class="h-8 w-8 cursor-default text-muted-foreground opacity-50 hover:bg-transparent hover:text-muted-foreground"
+                  :aria-label="$t('tournament.stage.delete')"
+                  aria-disabled="true"
                 >
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    class="h-8 w-8 text-muted-foreground"
-                    :aria-label="$t('tournament.stage.delete')"
-                    disabled
-                  >
-                    <Trash2 class="h-4 w-4" />
-                  </Button>
-                </span>
+                  <Trash2 class="h-4 w-4" />
+                </Button>
               </template>
               <p class="max-w-[16rem]">
                 {{ $t("tournament.manage.stages_drawn") }}

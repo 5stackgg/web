@@ -7435,6 +7435,9 @@
       "teams_count": "{count} team",
       "structure_locked_label": "Tipo, squadre e gironi",
       "structure_locked": "Tipo, squadre e gironi sono bloccati dopo la generazione del tabellone. Il formato Best Of si può ancora cambiare.",
+      "match_settings_locked_label": "Impostazioni match",
+      "match_settings_locked": "Le impostazioni match sono bloccate dopo la generazione del tabellone.",
+      "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche a tipo, squadre, gironi o impostazioni match, poi salva il formato Best Of.",
       "final_map_advantage": {
         "label": "Vantaggio mappe finale",
         "description": "Vantaggio in punti mappa che il team dell'upper bracket porta nella finale. Deve restare sotto le mappe necessarie per vincere."

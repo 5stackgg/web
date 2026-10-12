@@ -7597,7 +7597,9 @@
     },
     "team": {
       "eligible": "참가 가능",
-      "not_eligible": "{count}명의 플레이어가 더 필요합니다",
+      "not_eligible": "참가 불가",
+      "need_players": "{count}명의 플레이어가 더 필요합니다 | {count}명의 플레이어가 더 필요합니다",
+      "missed_check_in": "체크인 누락",
       "leave_tournament": "토너먼트 탈퇴",
       "leave_team": "팀 탈퇴",
       "slot": "슬롯 {number}",

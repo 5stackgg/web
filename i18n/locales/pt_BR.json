@@ -7597,7 +7597,9 @@
     },
     "team": {
       "eligible": "Elegível",
-      "not_eligible": "Necessário {count} mais jogadores",
+      "not_eligible": "Não elegível",
+      "need_players": "Falta {count} jogador | Faltam {count} jogadores",
+      "missed_check_in": "Check-in perdido",
       "leave_tournament": "Sair do campeonato",
       "leave_team": "Sair",
       "slot": "Slot {number}",

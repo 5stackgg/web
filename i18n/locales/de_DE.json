@@ -7597,7 +7597,9 @@
     },
     "team": {
       "eligible": "Startberechtigt",
-      "not_eligible": "Noch {count} Spieler nötig",
+      "not_eligible": "Nicht startberechtigt",
+      "need_players": "Noch {count} Spieler nötig | Noch {count} Spieler nötig",
+      "missed_check_in": "Check-in verpasst",
       "leave_tournament": "Turnier verlassen",
       "leave_team": "Team verlassen",
       "slot": "Slot {number}",

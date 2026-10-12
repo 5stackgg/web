@@ -7597,7 +7597,9 @@
     },
     "team": {
       "eligible": "Kvalificerat",
-      "not_eligible": "Behöver {count} spelare till",
+      "not_eligible": "Inte kvalificerat",
+      "need_players": "Behöver {count} spelare till | Behöver {count} spelare till",
+      "missed_check_in": "Missad incheckning",
       "leave_tournament": "Lämna turneringen",
       "leave_team": "Lämna laget",
       "slot": "Plats {number}",

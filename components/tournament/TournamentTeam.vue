@@ -199,16 +199,15 @@ import { toast } from "~/components/ui/toast";
               "
             >
               <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
-              <template v-if="team.eligible_at">
-                {{ $t("tournament.team.eligible") }}
-              </template>
-              <template v-else>
-                {{
-                  $t("tournament.team.not_eligible", {
-                    count: requiredPlayers - team.roster.length,
-                  })
-                }}
-              </template>
+              <Transition
+                mode="out-in"
+                enter-active-class="transition-opacity duration-150 ease-out motion-reduce:!duration-0"
+                leave-active-class="transition-opacity duration-100 ease-in motion-reduce:!duration-0"
+                enter-from-class="opacity-0"
+                leave-to-class="opacity-0"
+              >
+                <span :key="eligibilityLabel">{{ eligibilityLabel }}</span>
+              </Transition>
             </span>
 
             <span
@@ -474,6 +473,10 @@ export default {
       type: Array as () => Array<string>,
       default: () => [],
     },
+    registration: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -609,6 +612,34 @@ export default {
     },
     minPlayers() {
       return this.tournament.min_players_per_lineup;
+    },
+    missingPlayers() {
+      return Math.max(0, this.minPlayers - this.team.roster.length);
+    },
+    // Same gate as the api's tournament_check_in_window_opened: a team is only
+    // a no-show once a check-in window actually opened.
+    missedCheckIn() {
+      return (
+        !!this.registration?.check_in_required &&
+        !!this.registration?.check_in_ends_at &&
+        !this.team.checked_in_at
+      );
+    },
+    eligibilityLabel() {
+      if (this.team.eligible_at) {
+        return this.$t("tournament.team.eligible");
+      }
+      if (this.missingPlayers > 0) {
+        return this.$t(
+          "tournament.team.need_players",
+          { count: this.missingPlayers },
+          this.missingPlayers,
+        );
+      }
+      if (this.missedCheckIn) {
+        return this.$t("tournament.team.missed_check_in");
+      }
+      return this.$t("tournament.team.not_eligible");
     },
     rosterLocked() {
       // Once the bracket has been seeded the roster is locked to its minimum;

@@ -7597,7 +7597,9 @@
     },
     "team": {
       "eligible": "Kvalificeret",
-      "not_eligible": "Mangler {count} spillere",
+      "not_eligible": "Ikke kvalificeret",
+      "need_players": "Mangler {count} spiller | Mangler {count} spillere",
+      "missed_check_in": "Misset check-in",
       "leave_tournament": "Forlad turnering",
       "leave_team": "Forlad hold",
       "slot": "Plads {number}",

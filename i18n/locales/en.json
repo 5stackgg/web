@@ -7599,7 +7599,9 @@
     },
     "team": {
       "eligible": "Eligible",
-      "not_eligible": "Need {count} more players",
+      "not_eligible": "Not Eligible",
+      "need_players": "Need {count} more player | Need {count} more players",
+      "missed_check_in": "Missed Check-in",
       "leave_tournament": "Leave Tournament",
       "leave_team": "Leave Team",
       "slot": "Slot {number}",

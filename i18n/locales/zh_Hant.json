@@ -5753,6 +5753,7 @@
         "kicker": "套路 · {map}",
         "view_only": "僅供檢視",
         "empty_line": "{map} 還沒有套路。用你已有的點位組一套。",
+        "empty_public": "{map} 還沒有公開的套路。",
         "empty_side": "{map} 還沒有 {side} 陣營的套路。",
         "step_word": "步 | 步",
         "player_word": "名玩家 | 名玩家",

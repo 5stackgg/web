@@ -5753,6 +5753,7 @@
         "kicker": "Ejecución · {map}",
         "view_only": "Solo lectura",
         "empty_line": "Todavía no hay ejecuciones en {map}. Construye una con los lineups que ya tienes.",
+        "empty_public": "Todavía no hay ejecuciones públicas en {map}.",
         "empty_side": "Todavía no hay ejecuciones del bando {side} en {map}.",
         "step_word": "Paso | Pasos",
         "player_word": "Jugador | Jugadores",

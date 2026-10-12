@@ -112,9 +112,6 @@ const auth = useAuthStore();
 const mySteamId = computed(() =>
   auth.me?.steam_id ? String(auth.me.steam_id) : null,
 );
-const myTeams = computed(
-  () => (auth.me?.teams ?? []) as Array<{ id: string; name: string }>,
-);
 
 const playbooks = ref<UtilityPlaybook[]>([]);
 const steps = ref<UtilityPlaybookStep[]>([]);
@@ -371,7 +368,7 @@ const editorBoard = ref<UtilityPanelBoard | null>(null);
 
 // The views are drawn into the page's card, outside this panel, so they would
 // outlive the tab by the length of its fade. They leave with the tab instead.
-const onTab = computed(() => route.query.tab === "playbooks");
+const onTab = computed(() => route.query.tab === "executes");
 
 const viewOpen = computed(() => onTab.value && !!current.value);
 const editorOpen = computed(
@@ -474,12 +471,15 @@ const duration = computed(() =>
   Math.max(0, ...beats.value.map((beat) => beat.seconds)),
 );
 
-const ownerName = computed(() => playerName(current.value?.owner_steam_id));
-const teamName = computed(
-  () =>
-    myTeams.value.find((team) => team.id === current.value?.team_id)?.name ??
-    null,
-);
+// A public execute is read by people on neither its team nor yours, so its
+// owner and team come with it rather than from a roster.
+const ownerName = computed(() => {
+  const owner = current.value?.owner;
+  return owner && String(owner.steam_id) !== mySteamId.value
+    ? owner.name
+    : playerName(current.value?.owner_steam_id);
+});
+const teamName = computed(() => current.value?.team?.name ?? null);
 
 // Whether this map has a mesh to throw an execute in. Without one Play runs
 // on the flat board alone, the way it always did.
@@ -1052,7 +1052,7 @@ async function copyLink() {
   }
   const href = router.resolve({
     path: route.path,
-    query: { tab: "playbooks", execute: playbook.id },
+    query: { tab: "executes", execute: playbook.id },
   }).href;
   try {
     await navigator.clipboard.writeText(`${window.location.origin}${href}`);
@@ -1103,6 +1103,7 @@ async function destroy() {
       />
       <span class="flex-1" />
       <Button
+        v-if="mySteamId"
         variant="outline"
         size="sm"
         class="h-8 border-white/10 px-2.5 font-mono text-[0.64rem] font-bold uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground"
@@ -1130,9 +1131,12 @@ async function destroy() {
         class="px-0.5 text-xs leading-relaxed text-muted-foreground"
       >
         {{
-          $t("pages.utility.playbooks.empty_line", {
-            map: cleanMapName(mapName),
-          })
+          $t(
+            mySteamId
+              ? "pages.utility.playbooks.empty_line"
+              : "pages.utility.playbooks.empty_public",
+            { map: cleanMapName(mapName) },
+          )
         }}
       </p>
 
@@ -1177,7 +1181,7 @@ async function destroy() {
 
           {{ card.playbook.name }}
 
-          <template v-if="!card.playbook.can_edit" #badges>
+          <template v-if="mySteamId && !card.playbook.can_edit" #badges>
             <FiveStackToolTip as-child :delay-duration="120">
               <template #trigger>
                 <span class="inline-flex shrink-0 text-muted-foreground">
@@ -1359,7 +1363,12 @@ async function destroy() {
           </template>
           <!-- Somebody else's: you can read it and take a copy of your own. -->
           <template v-else>
-            <UtilityDockButton wide :disabled="busy" @click="duplicate()">
+            <UtilityDockButton
+              v-if="mySteamId"
+              wide
+              :disabled="busy"
+              @click="duplicate()"
+            >
               <Copy class="h-3.5 w-3.5" />
               {{ $t("pages.utility.playbooks.save_copy") }}
             </UtilityDockButton>

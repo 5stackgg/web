@@ -5753,6 +5753,7 @@
         "kicker": "Execute · {map}",
         "view_only": "Endast visning",
         "empty_line": "Inga executes på {map} ännu. Bygg en av uppställningar du redan har.",
+        "empty_public": "Inga offentliga executes på {map} ännu.",
         "empty_side": "Inga executes för {side}-sidan på {map} ännu.",
         "step_word": "Steg | Steg",
         "player_word": "Spelare | Spelare",

@@ -342,6 +342,8 @@ export type UtilityPlaybook = {
   updated_at?: string | null;
   can_view: boolean;
   can_edit: boolean;
+  owner?: { steam_id: string; name: string } | null;
+  team?: { name: string } | null;
 };
 
 /** What saveUtilityPlaybook takes per step — order comes from the array index. */

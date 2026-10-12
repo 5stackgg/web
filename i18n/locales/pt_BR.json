@@ -5753,6 +5753,7 @@
         "kicker": "Execute · {map}",
         "view_only": "Somente visualização",
         "empty_line": "Ainda não há executes em {map}. Monte um com os lineups que você já tem.",
+        "empty_public": "Ainda não há executes públicos em {map}.",
         "empty_side": "Ainda não há executes do lado {side} em {map}.",
         "step_word": "Passo | Passos",
         "player_word": "Jogador | Jogadores",

@@ -5753,6 +5753,7 @@
         "kicker": "Execute · {map}",
         "view_only": "Tylko do podglądu",
         "empty_line": "Na {map} nie ma jeszcze execute'ów. Zbuduj jeden z ustawek, które już masz.",
+        "empty_public": "Na {map} nie ma jeszcze publicznych execute'ów.",
         "empty_side": "Na {map} nie ma jeszcze execute'ów dla strony {side}.",
         "step_word": "Krok | Kroki",
         "player_word": "Gracz | Gracze",

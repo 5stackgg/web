@@ -5753,6 +5753,7 @@
         "kicker": "Execute · {map}",
         "view_only": "Salt görüntüleme",
         "empty_line": "{map} haritasında henüz execute yok. Elindeki dizilimlerden bir tane kur.",
+        "empty_public": "{map} haritasında henüz herkese açık execute yok.",
         "empty_side": "{map} haritasında henüz {side} tarafı execute'u yok.",
         "step_word": "Adım | Adım",
         "player_word": "Oyuncu | Oyuncu",

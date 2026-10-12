@@ -2239,8 +2239,12 @@ onMounted(() => {
     return { grp, models };
   }
   const projs = Array.from({ length: 12 }, makeUtilityModels);
-  const arcMat = () =>
-    new THREE.MeshStandardMaterial({
+  // The trail ends exactly where the grenade is. A tube's u runs along its
+  // curve by arc length, so cutting on it reveals the flown part smoothly;
+  // revealing whole segments made the grenade, which rode the cut, sit still
+  // for a frame and then jump -- on a 120Hz screen more often than it moved.
+  const arcMat = () => {
+    const mat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
       emissive: 0xffffff,
       emissiveIntensity: 0.45,
@@ -2251,11 +2255,30 @@ onMounted(() => {
       depthTest: false,
       side: THREE.DoubleSide,
     });
-  // Tube tessellation, shared with the draw-range slicing that reveals the
-  // trail as the grenade flies.
-  // More segments than before: the trail is revealed a whole segment at a time,
-  // so segment count *is* the smoothness of the reveal. 32 was coarse enough to
-  // see the line jump forward in steps.
+    const reveal = { value: 1 };
+    mat.userData.reveal = reveal;
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uReveal = reveal;
+      shader.vertexShader = shader.vertexShader
+        .replace("#include <common>", "#include <common>\nvarying float vArcU;")
+        .replace(
+          "#include <begin_vertex>",
+          "#include <begin_vertex>\nvArcU = uv.x;",
+        );
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          "#include <common>",
+          "#include <common>\nuniform float uReveal;\nvarying float vArcU;",
+        )
+        .replace(
+          "void main() {",
+          "void main() {\nif (vArcU > uReveal) discard;",
+        );
+    };
+    return mat;
+  };
+  // Tube tessellation. The draw range skips the segments not flown yet; the
+  // shader cuts the one the grenade is inside.
   const ARC_SEGMENTS = 96;
   const ARC_RADIAL = 6;
   // Thin. A grenade leaves a trail, not a pipe.
@@ -2328,7 +2351,7 @@ onMounted(() => {
   // Fraction of the curve's total length reached at curve parameter `t`. Three
   // caches its own length table, so this is a lookup after the first call.
   function arcU(curve: THREE.Curve<THREE.Vector3>, t: number) {
-    const lengths = curve.getLengths(ARC_SEGMENTS * 2);
+    const lengths = curve.getLengths();
     const total = lengths[lengths.length - 1];
     if (!(total > 0)) {
       return t;
@@ -2872,7 +2895,11 @@ onMounted(() => {
       const arcKey = `${g.key}`;
       if (arc.userData.arcKey !== arcKey) {
         arc.userData.arcKey = arcKey;
-        arc.userData.curve = arcCurve(g);
+        const built = arcCurve(g);
+        // One length table for the tube's rings, `arcU` and `getPointAt`.
+        // Asked for at two resolutions, every frame rebuilt both.
+        built.arcLengthDivisions = ARC_SEGMENTS * 2;
+        arc.userData.curve = built;
         arc.geometry.dispose();
         arc.geometry = new THREE.TubeGeometry(
           arc.userData.curve,
@@ -2891,28 +2918,26 @@ onMounted(() => {
       // of the index buffer is exactly the flown portion — which turns a static
       // line into the utility drawing its own arc as it travels.
       const prog = Math.max(0, Math.min(1, g.progress));
-      // Quantise to whole tube segments and drive BOTH the trail and the
-      // grenade from that same value. Revealing the trail by a rounded segment
-      // count while positioning the head at the exact fraction let the grenade
-      // run ahead of its own trail, which read as the utility arriving before the
-      // line caught up.
       // TubeGeometry lays its rings out by getPointAt — arc length — while
       // `progress` is a fraction of flight time, which getPoint consumes. On a
       // bounce path those two parameterisations pull far apart (the throw
       // covers a lot of ground early and little late), which is why the
       // grenade ran out ahead of its own trail. Convert time → arc length once
-      // and drive both from it.
-      const flownSegs = Math.max(1, Math.round(arcU(curve, prog) * ARC_SEGMENTS));
-      const flownT = flownSegs / ARC_SEGMENTS;
-      arc.geometry.setDrawRange(0, flownSegs * ARC_RADIAL * 6);
+      // and drive both the trail and the grenade from it.
+      const flown = arcU(curve, prog);
+      arc.geometry.setDrawRange(
+        0,
+        Math.ceil(flown * ARC_SEGMENTS) * ARC_RADIAL * 6,
+      );
 
       const m = arc.material as THREE.MeshStandardMaterial;
+      m.userData.reveal.value = flown;
       m.color.setHex(hex);
       m.emissive.setHex(hex);
       // the grenade model rides the SAME curve as the line (so it never drifts
       // off onto its own path).
       const nm = projs[i];
-      curve.getPointAt(flownT, _v);
+      curve.getPointAt(flown, _v);
       nm.grp.visible = true;
       nm.grp.position.copy(_v);
       for (const k in nm.models) nm.models[k].visible = k === g.type;
@@ -2922,7 +2947,7 @@ onMounted(() => {
       const gl: any = arcHeads[i];
       gl.visible = true;
       gl.position.copy(_v);
-      const gs = (26 + 10 * Math.sin(flownT * 22)) * U;
+      const gs = (26 + 10 * Math.sin(flown * 22)) * U;
       gl.scale.set(gs, gs, 1);
       gl.material.color.setHex(hex);
       gl.material.opacity = 0.55;

@@ -5755,6 +5755,7 @@
         "kicker": "Execute · {map}",
         "view_only": "View only",
         "empty_line": "No executes on {map} yet. Build one from lineups you already have.",
+        "empty_public": "No public executes on {map} yet.",
         "empty_side": "No {side} side executes on {map} yet.",
         "step_word": "Step | Steps",
         "player_word": "Player | Players",

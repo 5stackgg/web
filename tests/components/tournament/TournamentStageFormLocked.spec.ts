@@ -38,7 +38,24 @@ const tournamentOptions = {
   coaches: true,
   number_of_substitutes: 0,
   timeout_setting: "Admin",
-  map_pool: { id: "pool-1", maps: [] },
+  map_pool: {
+    id: "pool-1",
+    type: "Competitive",
+    maps: [
+      "de_ancient",
+      "de_anubis",
+      "de_dust2",
+      "de_inferno",
+      "de_mirage",
+      "de_nuke",
+      "de_train",
+    ].map((name) => ({
+      id: `map-${name}`,
+      name,
+      label: null,
+      type: "Competitive",
+    })),
+  },
 };
 
 const stage = (options: Record<string, unknown> | null) => ({
@@ -197,6 +214,22 @@ describe("TournamentStageForm with the structure locked", () => {
     expect(wrapper.emitted("updated")).toBeUndefined();
     expect((wrapper.vm as any).form.values.max_teams).toBe("16");
     expect((wrapper.vm as any).isDirty).toBe(true);
+  });
+
+  it("refuses to drop a map pool change made before the lock", async () => {
+    const wrapper = await mountLocked(false);
+    (wrapper.vm as any).mapPoolMode = "custom";
+    (wrapper.vm as any).customMapPool = ["map-de_ancient", "map-de_anubis"];
+    await flushPromises();
+
+    await wrapper.setProps({ structureLocked: true });
+    await (wrapper.vm as any).updateCreateStage();
+    await flushPromises();
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: DRAWN_WHILE_EDITING }),
+    );
   });
 
   it("saves the best-of once the structural edits are discarded", async () => {

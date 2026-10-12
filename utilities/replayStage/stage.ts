@@ -33,9 +33,10 @@ export type Stage = {
   ctx: StageContext;
   /**
    * Loads a map. "missing" means there is nothing to draw it from (no view
-   * mesh); "stale" that another call took over first.
+   * mesh); "stale" that another call took over first. `play` is where the
+   * match was played (StageMap.play).
    */
-  setMap(mapName: string | null): Promise<MapLoad>;
+  setMap(mapName: string | null, play?: StageMap["play"]): Promise<MapLoad>;
   setView(view: StageView): void;
   setFrame(frame: StageFrame): void;
   /** Stops drawing while the stage is hidden; the loop resumes on true. */
@@ -148,7 +149,10 @@ export function createStage(options: StageOptions): Stage {
   const renderListeners = new Set<() => void>();
   const ready = Promise.all(modules.map((module) => module.init(ctx)));
 
-  async function setMap(mapName: string | null): Promise<MapLoad> {
+  async function setMap(
+    mapName: string | null,
+    play: StageMap["play"] = null,
+  ): Promise<MapLoad> {
     const token = ++mapToken;
     await ready;
     const name = mapName ? normalizeMapName(mapName) : "";
@@ -216,6 +220,7 @@ export function createStage(options: StageOptions): Stage {
       max,
       callouts: callouts?.callouts ?? [],
       colliders: [],
+      play,
     };
     ctx.map = map;
     for (const module of modules) {

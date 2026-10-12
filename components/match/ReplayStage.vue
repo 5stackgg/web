@@ -13,7 +13,11 @@ import { createStage } from "~/utilities/replayStage/stage";
 import type { Stage } from "~/utilities/replayStage/stage";
 import { createStageModules } from "~/utilities/replayStage/modules";
 import { EMPTY_FRAME } from "~/utilities/replayStage/types";
-import type { StageFrame, StageView } from "~/utilities/replayStage/types";
+import type {
+  StageFrame,
+  StageMap,
+  StageView,
+} from "~/utilities/replayStage/types";
 import type { MapLevel } from "~/utilities/replayStage/mapLevels";
 import { useI18n } from "vue-i18n";
 
@@ -35,6 +39,8 @@ const props = withDefaults(
     levelLayout?: "side" | "single";
     /** The map's own name when its file name is not one (workshop maps). */
     mapTitle?: string | null;
+    /** Where the match was played: framed on a map with no callouts. */
+    play?: StageMap["play"];
   }>(),
   {
     view: "3d",
@@ -42,6 +48,7 @@ const props = withDefaults(
     level: null,
     levelLayout: "side",
     mapTitle: null,
+    play: null,
   },
 );
 
@@ -121,7 +128,7 @@ async function loadMap(name: string | null) {
   const token = ++loadToken;
   ready.value = false;
   stage.value?.setFrame(EMPTY_FRAME);
-  const result = await stage.value?.setMap(name);
+  const result = await stage.value?.setMap(name, props.play);
   if (token !== loadToken || !stage.value || result === "stale") {
     return;
   }
@@ -170,6 +177,15 @@ watch(
 watch(
   () => props.mapName,
   (name) => void loadMap(name),
+);
+// Positions that land after the map only matter where they do the framing.
+watch(
+  () => props.play,
+  () => {
+    if (stage.value?.ctx.map && !stage.value.ctx.map.callouts.length) {
+      void loadMap(props.mapName);
+    }
+  },
 );
 watch(
   () => props.view,

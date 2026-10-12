@@ -354,6 +354,11 @@ export type StageMap = {
   }>;
   /** World-space meshes other modules may raycast against. */
   colliders: THREE.Object3D[];
+  /**
+   * Where the match was played, from its players' positions: what is framed
+   * on a map with no callouts to say (a Rush room among twenty).
+   */
+  play?: { min: Vec3; max: Vec3 } | null;
 };
 
 export type StageContext = {

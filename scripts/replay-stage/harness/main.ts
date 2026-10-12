@@ -161,7 +161,17 @@ async function main() {
   window.__stage = stage;
   window.__camera = camera;
   const opening = performance.now();
-  await stage.setMap(scenario.map);
+  // `play=x0,y0,z0,x1,y1,z1`: where the match was played (StageMap.play).
+  const play = query.get("play")?.split(",").map(Number);
+  await stage.setMap(
+    scenario.map,
+    play?.length === 6 && play.every(Number.isFinite)
+      ? {
+          min: { x: play[0], y: play[1], z: play[2] },
+          max: { x: play[3], y: play[4], z: play[5] },
+        }
+      : null,
+  );
   const fetched = performance.now() - opening;
   // `level=lower`: one storey of a stacked map, shown at once.
   // `layout=single` (implied by `level=`): one storey at a time, not side by side.

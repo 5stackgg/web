@@ -2551,6 +2551,35 @@ watch(showAvatars, (v) => {
 // The replay stage draws both views itself, the buy-round overlay included,
 // so the radar board and 3D-lite are not mounted while it runs. They remain
 // for browsers without WebGL2.
+// Where the match was played, the outliers trimmed: what the stage frames
+// on a map with no callouts (a Rush room, not the twenty around it).
+const stagePlay = computed(() => {
+  const xs: number[] = [];
+  const ys: number[] = [];
+  const zs: number[] = [];
+  for (const p of props.positions) {
+    if (p.alive && p.x != null && p.y != null && p.z != null) {
+      xs.push(p.x);
+      ys.push(p.y);
+      zs.push(p.z);
+    }
+  }
+  if (xs.length < 20) {
+    return null;
+  }
+  const trim = (values: number[]) => {
+    values.sort((a, b) => a - b);
+    return [
+      values[Math.floor(values.length * 0.01)],
+      values[Math.floor(values.length * 0.99)],
+    ];
+  };
+  const [x0, x1] = trim(xs);
+  const [y0, y1] = trim(ys);
+  const [z0, z1] = trim(zs);
+  return { min: { x: x0, y: y0, z: z0 }, max: { x: x1, y: y1, z: z1 } };
+});
+
 const stageOn = ref(true);
 const stageActive = computed(() => stageOn.value);
 const stageEl = ref<InstanceType<typeof ReplayStage> | null>(null);
@@ -6347,6 +6376,7 @@ const replayShare = useReplayShare({
         :level="stageLevel"
         :level-layout="levelsSideBySide ? 'side' : 'single'"
         :map-title="stageMapTitle"
+        :play="stagePlay"
         @unsupported="onStageUnsupported"
         @missing-map="onStageMissingMap"
         @levels="onStageLevels"

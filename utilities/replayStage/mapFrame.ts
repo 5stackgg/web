@@ -10,6 +10,23 @@ import type { StageMap, Vec3 } from "./types";
  */
 export function playArea(map: StageMap): { min: Vec3; max: Vec3 } {
   const boxes = map.callouts.flatMap((c) => c.boxes);
+  if (!boxes.length && map.play) {
+    // No callouts: where the match was played, with room round it.
+    const { min, max } = map.play;
+    const pad = Math.max(max.x - min.x, max.y - min.y, 512) * 0.15;
+    return {
+      min: {
+        x: Math.max(map.min.x, min.x - pad),
+        y: Math.max(map.min.y, min.y - pad),
+        z: min.z,
+      },
+      max: {
+        x: Math.min(map.max.x, max.x + pad),
+        y: Math.min(map.max.y, max.y + pad),
+        z: max.z,
+      },
+    };
+  }
   if (!boxes.length) {
     return { min: { ...map.min }, max: { ...map.max } };
   }

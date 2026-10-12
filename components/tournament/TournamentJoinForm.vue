@@ -244,6 +244,12 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       >
         {{ $t("tournament.free_agents.already_in_pool") }}
       </p>
+      <p
+        v-else-if="tournament.joined_tournament"
+        class="rounded-md border border-border bg-card/45 p-3.5 text-[0.8rem] leading-relaxed text-muted-foreground"
+      >
+        {{ $t("tournament.join.owner_on_a_team") }}
+      </p>
       <TournamentFreeAgentSignUp
         v-else
         :tournament="tournament"

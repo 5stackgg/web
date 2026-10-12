@@ -401,19 +401,27 @@ const myEntry = computed(() => {
   );
 });
 
-// The same window leaveTournamentAsFreeAgent enforces, drafted included: an
-// organizer can regenerate the teams while registration is still open, and
-// gating on that would strand everyone the draft touched with no way out of a
-// tournament they can still be removed from. The action drops the roster row,
-// promotes the first waitlisted agent into it and reseeds.
-const canLeave = computed(
-  () =>
-    !!myEntry.value &&
-    [
-      e_tournament_status_enum.Setup,
-      e_tournament_status_enum.RegistrationOpen,
-    ].includes(props.tournament?.status),
-);
+// The same rule leaveTournamentAsFreeAgent enforces. A drafted player holds a
+// slot, and can give it up until registration closes: an organizer can draft
+// while registration is still open, and gating on that would strand everyone
+// the draft touched. The action drops the roster row, promotes the first
+// waitlisted agent into it and reseeds. Anyone still waiting holds nothing and
+// can step out until the bracket is in play -- kept on the waitlist, they would
+// be promoted into a team they will not show up for.
+const canLeave = computed(() => {
+  if (!myEntry.value) {
+    return false;
+  }
+
+  if (myEntry.value.status !== "drafted") {
+    return !draftLocked.value;
+  }
+
+  return [
+    e_tournament_status_enum.Setup,
+    e_tournament_status_enum.RegistrationOpen,
+  ].includes(props.tournament?.status);
+});
 
 function signUpTime(createdAt: string) {
   const date = new Date(createdAt);

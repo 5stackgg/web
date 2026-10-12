@@ -921,7 +921,12 @@ function clearTeamEnterDelay(el: Element) {
 </template>
 
 <script lang="ts">
-import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
+import {
+  $,
+  e_tournament_free_agent_statuses_enum,
+  e_tournament_status_enum,
+  order_by,
+} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
@@ -1205,6 +1210,7 @@ export default {
               },
               is_organizer: true,
               can_join: true,
+              joined_tournament: true,
               can_start: true,
               can_cancel: true,
               can_open_registration: true,
@@ -1583,6 +1589,12 @@ export default {
                 },
                 player_steam_id: {
                   _eq: $("steamId", "bigint!"),
+                },
+                // A withdrawn row is someone who left; read as an entry it
+                // offers them a check-in the API refuses and hides the sign-up
+                // that would put them back in.
+                status: {
+                  _neq: e_tournament_free_agent_statuses_enum.withdrawn,
                 },
               },
             },

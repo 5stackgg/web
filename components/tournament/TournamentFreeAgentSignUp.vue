@@ -44,11 +44,15 @@ const teamSize = computed(
 // joinTournamentAsFreeAgent requires exactly RegistrationOpen, while the leave
 // rule also allows Setup. Offering Sign up during Setup produces a button that
 // can only ever fail, so the two windows are kept apart.
+//
+// joined_tournament with no pool row is a player already on a team (or owning
+// one), whom the API refuses: a player is in a tournament once.
 const canSignUp = computed(
   () =>
     !!me.value &&
     props.tournament?.status === e_tournament_status_enum.RegistrationOpen &&
-    !props.myEntry,
+    !props.myEntry &&
+    !props.tournament?.joined_tournament,
 );
 
 // The party IS the matchmaking lobby — there is no separate invite to accept,

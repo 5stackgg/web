@@ -7659,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "Öppna anmälan",
+      "open_registration_start_passed": "Starttiden har passerat. Välj en senare starttid för att öppna anmälan igen.",
+      "open_registration_no_stages": "Lägg till en fas först.",
+      "open_registration_full": "Slutspelsträdet är fullt.",
       "close_registration": "Stäng anmälan",
       "start": "Starta turnering",
       "cancel": "Ställ in turnering",

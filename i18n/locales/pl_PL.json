@@ -7659,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "Otwórz rejestrację",
+      "open_registration_start_passed": "Godzina startu minęła. Ustaw późniejszą godzinę startu, aby ponownie otworzyć rejestrację.",
+      "open_registration_no_stages": "Najpierw dodaj etap.",
+      "open_registration_full": "Drabinka jest pełna.",
       "close_registration": "Zamknij rejestrację",
       "start": "Rozpocznij turniej",
       "cancel": "Anuluj turniej",

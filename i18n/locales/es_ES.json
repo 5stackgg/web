@@ -7659,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "Abrir inscripción",
+      "open_registration_start_passed": "La hora de inicio ya pasó. Fija una hora de inicio posterior para reabrir la inscripción.",
+      "open_registration_no_stages": "Añade primero una fase.",
+      "open_registration_full": "El cuadro está completo.",
       "close_registration": "Cerrar inscripción",
       "start": "Iniciar torneo",
       "cancel": "Cancelar torneo",

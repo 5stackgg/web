@@ -31,6 +31,7 @@ export default {
   team_id: true,
   seed: true,
   eligible_at: true,
+  is_drafted: true,
   can_manage: true,
   // captain_steam_id is the only captain signal anything reads -- the roster
   // row it points at is already in `roster` below. A `captain: playerFields`

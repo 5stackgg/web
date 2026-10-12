@@ -480,19 +480,18 @@ export default {
         useMatchContext().value = context;
       },
     },
-    // A status change is what turns most of the static half over: who may
-    // cancel, check in or assign a server all follow from it.
-    "matchLive.status"(status, previousStatus) {
-      if (previousStatus !== undefined && status !== previousStatus) {
-        void this.refetchMatchStatic();
+    // A different match id is left alone: the query's variables changed with
+    // it, so Apollo is already fetching that match's own answer.
+    matchStaticKey(key, previousKey) {
+      if (!key || !previousKey || key === previousKey) {
+        return;
       }
-    },
-    // Assigning a server does not move the status, but it does decide whether
-    // this viewer is offered the server controls.
-    "matchLive.server_id"(serverId, previousServerId) {
-      if (previousServerId !== undefined && serverId !== previousServerId) {
-        void this.refetchMatchStatic();
+
+      if (key.split("|")[0] !== previousKey.split("|")[0]) {
+        return;
       }
+
+      void this.refetchMatchStatic();
     },
     // The inline chat on this page is a real room being read, and until now it
     // told the server nothing -- so reading a match chat here left the badge up
@@ -559,9 +558,9 @@ export default {
               },
               // The permission and membership fields moved to `matchStatic`.
               // Each is a function call the database re-runs for this row on
-              // every tick, and none of them change without either a status
-              // change or an organizer action -- both of which refetch that
-              // half explicitly.
+              // every tick, and none of them change without a status, server,
+              // organizer or lineup change (see `matchStaticKey`) or an
+              // organizer action -- all of which refetch that half explicitly.
               //
               // can_start and can_check_in stay here: they read lineup
               // readiness, which is live. can_start is only costly in the
@@ -570,6 +569,7 @@ export default {
               can_start: true,
               can_check_in: true,
               label: true,
+              organizer_steam_id: true,
               server_id: true,
               server_type: true,
               server_region: true,
@@ -798,7 +798,44 @@ export default {
       if (!this.matchLive) {
         return this.matchLive;
       }
+
+      if (this.matchStatic?.id !== this.matchLive.id) {
+        return this.matchLive;
+      }
+
       return { ...this.matchStatic, ...this.matchLive };
+    },
+    // Everything the static half is computed from that the live half can see.
+    // Every lineup member counts, not only this viewer: scheduling also waits
+    // on each lineup reaching its minimum.
+    matchStaticKey(): string | null {
+      if (!this.matchLive) {
+        return null;
+      }
+
+      const me = useAuthStore().me;
+      const lineups = [this.matchLive.lineup_1, this.matchLive.lineup_2].map(
+        (lineup) =>
+          [
+            lineup?.coach?.steam_id ?? "",
+            ...(lineup?.lineup_players ?? [])
+              .map(
+                (member) =>
+                  `${member.steam_id ?? member.placeholder_name}:${member.captain ? 1 : 0}`,
+              )
+              .sort(),
+          ].join(","),
+      );
+
+      return [
+        this.matchLive.id,
+        this.matchLive.status,
+        this.matchLive.server_id,
+        this.matchLive.organizer_steam_id,
+        me?.steam_id,
+        me?.role,
+        ...lineups,
+      ].join("|");
     },
     // Assigned on every tick before the split as well -- this keeps that
     // behaviour and simply picks the title back up once the static half,

@@ -7620,7 +7620,7 @@
       "remove_member": "Usuń członka",
       "confirm_remove_member": "Czy na pewno chcesz usunąć tego członka?",
       "remove_member_description": "Spowoduje to usunięcie członka z drużyny turniejowej",
-      "min_roster_locked": "Turniej się rozpoczął — dodaj rezerwowego przed usunięciem gracza, skład nie może spaść poniżej minimalnego ustawienia",
+      "min_roster_locked": "Drabinka jest rozstawiona, więc skład nie może spaść poniżej {count}. Najpierw dodaj rezerwowego.",
       "cancel_invite": "Anuluj zaproszenie",
       "confirm_cancel_invite": "Czy na pewno chcesz anulować to zaproszenie?",
       "cancel_invite_description": "Spowoduje to anulowanie zaproszenia dla tego członka",

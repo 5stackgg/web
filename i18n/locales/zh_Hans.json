@@ -7620,7 +7620,7 @@
       "remove_member": "移除成员",
       "confirm_remove_member": "您确定要移除此成员吗？",
       "remove_member_description": "这将从赛事队伍中移除该成员",
-      "min_roster_locked": "赛事已开始——先添加替补再移除玩家，阵容不能低于最低人数",
+      "min_roster_locked": "对阵图已完成种子排位，阵容不能少于 {count} 人。请先添加替补。",
       "cancel_invite": "取消邀请",
       "confirm_cancel_invite": "您确定要取消此邀请吗？",
       "cancel_invite_description": "这将取消对该成员的邀请",

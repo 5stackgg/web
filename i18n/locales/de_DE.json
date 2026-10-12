@@ -7620,7 +7620,7 @@
       "remove_member": "Mitglied entfernen",
       "confirm_remove_member": "Willst du dieses Mitglied wirklich entfernen?",
       "remove_member_description": "Damit wird das Mitglied aus dem Turnier-Team entfernt",
-      "min_roster_locked": "Das Turnier läuft bereits — füg einen Ersatzspieler hinzu, bevor du einen Spieler entfernst; das Roster darf nicht unter das Mindest-Lineup fallen",
+      "min_roster_locked": "Der Turnierbaum ist gesetzt, daher darf das Roster nicht unter {count} fallen. Füg zuerst einen Ersatzspieler hinzu.",
       "cancel_invite": "Einladung zurückziehen",
       "confirm_cancel_invite": "Willst du diese Einladung wirklich zurückziehen?",
       "cancel_invite_description": "Damit wird die Einladung für dieses Mitglied zurückgezogen",

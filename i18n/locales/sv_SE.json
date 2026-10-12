@@ -7620,7 +7620,7 @@
       "remove_member": "Ta bort medlem",
       "confirm_remove_member": "Ta bort denna medlem?",
       "remove_member_description": "Detta tar bort medlemmen från turneringslaget",
-      "min_roster_locked": "Turneringen har startat — lägg till en reserv innan du tar bort en spelare, truppen kan inte gå under minsta laguppställning",
+      "min_roster_locked": "Slutspelsträdet är seedat, så truppen kan inte gå under {count}. Lägg till en reserv först.",
       "cancel_invite": "Avbryt inbjudan",
       "confirm_cancel_invite": "Avbryta denna inbjudan?",
       "cancel_invite_description": "Detta avbryter inbjudan för denna medlem",

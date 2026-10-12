@@ -7620,7 +7620,7 @@
       "remove_member": "Fjern medlem",
       "confirm_remove_member": "Fjern dette medlem?",
       "remove_member_description": "Dette fjerner medlemmet fra turneringsholdet",
-      "min_roster_locked": "Turneringen er startet — tilføj en reserve, før du fjerner en spiller; truppen må ikke komme under minimumsopstillingen",
+      "min_roster_locked": "Turneringstræet er seedet, så truppen kan ikke komme under {count}. Tilføj en reserve først.",
       "cancel_invite": "Annuller invitation",
       "confirm_cancel_invite": "Annuller denne invitation?",
       "cancel_invite_description": "Dette annullerer invitationen til dette medlem",

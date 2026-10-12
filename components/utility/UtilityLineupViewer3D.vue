@@ -387,7 +387,7 @@ const tick = computed(() =>
 
 <template>
   <div
-    class="relative w-full overflow-hidden rounded-md border border-border bg-[#08101f]"
+    class="relative w-full overflow-hidden rounded-md border border-border bg-background"
     style="aspect-ratio: 16 / 10"
   >
     <Replay3DLite

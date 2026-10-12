@@ -1,4 +1,5 @@
 import type { Inferno, SmokeVolume } from "~/utils/smokeVolume";
+import type { FlashRow, SmokeVoxelRow } from "~/utilities/replayStage/frameIndex";
 
 export type ReplayRoundInventory = {
   round: number;
@@ -40,6 +41,10 @@ export type ReplayBlob = {
   smoke_volumes?: SmokeVolume[];
   // Per-molotov flame positions and lifetimes, straight off the demo (v9+).
   infernos?: Inferno[];
+  // CS2's own smoke grid per smoke, rebuilt from the demo's voxel log, and
+  // who each flash blinded and for how long (v11+).
+  smoke_voxels?: SmokeVoxelRow[];
+  flashes?: FlashRow[];
   damages: any[];
   round_inventory?: ReplayRoundInventory[];
 };

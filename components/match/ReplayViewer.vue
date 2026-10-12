@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import {
   computed,
+  markRaw,
   ref,
   shallowRef,
+  toRaw,
   watch,
   onMounted,
   onUnmounted,
@@ -39,6 +41,12 @@ import {
   type SmokeVolume,
 } from "~/utils/smokeVolume";
 import { moneyOf, isFullBuyRound } from "~/utilities/buyType";
+import { toast } from "~/components/ui/toast";
+import ReplayStage from "~/components/match/ReplayStage.vue";
+import { buildStageFrame } from "~/utilities/replayStage/frame";
+import type { StageBlob } from "~/utilities/replayStage/frameIndex";
+import type { MapLevel } from "~/utilities/replayStage/mapLevels";
+import { EMPTY_FRAME } from "~/utilities/replayStage/types";
 
 // Canonical icon first (5Stack/new demos); if it 404s, retry the legacy
 // strip-all path for old, already-parsed demos before hiding.
@@ -90,7 +98,11 @@ import {
 import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
-import { hasMeshForMap, replaySceneKey } from "~/utilities/mapAssets";
+import {
+  hasMeshForMap,
+  hasRadarForMap,
+  replaySceneKey,
+} from "~/utilities/mapAssets";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   RADAR_CANVAS,
@@ -267,6 +279,10 @@ const props = defineProps<{
   // Per-molotov flame positions and lifetimes (blob schema v9+). Absent on
   // older blobs, which fall back to the invented flame cluster.
   infernos?: Inferno[];
+  // CS2's own smoke grids and who each flash blinded (blob schema v11+). Only
+  // the new renderer reads them.
+  smokeVoxels?: StageBlob["smoke_voxels"];
+  flashes?: StageBlob["flashes"];
   shots?: Shot[];
   damages?: Damage[];
   demoPlayers?: DemoPlayer[];
@@ -280,6 +296,8 @@ const props = defineProps<{
   roundEconomy?: RoundEconomyEntry[];
   tickRate?: number;
   mapName?: string | null;
+  // The map row's label: a workshop map's name is its workshop id.
+  mapTitle?: string | null;
   // True when the viewer is already inside the popout window — we
   // hide the popout button so the user can't open the popout of the
   // popout.
@@ -2106,10 +2124,20 @@ function frame(now: number) {
     rafHandle = requestAnimationFrame(frame);
     return;
   }
-  const SAMPLE_SEC = 0.25;
-  fractional.value += (dt * speed.value) / SAMPLE_SEC;
-  while (fractional.value >= 1) {
-    fractional.value -= 1;
+  // Samples are 4Hz but every tick around a grenade throw, so each step
+  // lasts as long as the ticks it spans; a fixed 0.25s per sample played
+  // every throw about sixteen times slow.
+  const rate = props.tickRate || 64;
+  let left = dt * speed.value;
+  while (left > 0) {
+    const span = Math.max(1, nextTickValue.value - currentTick.value) / rate;
+    const toNext = (1 - fractional.value) * span;
+    if (left < toNext) {
+      fractional.value += left / span;
+      break;
+    }
+    left -= toNext;
+    fractional.value = 0;
     if (tickIndex.value < ticks.value.length - 1) {
       tickIndex.value++;
     } else {
@@ -2276,6 +2304,7 @@ onUnmounted(pause);
 //   [  ]           previous / next round
 //   1 2 3 4 5      speed 0.5× / 1× / 2× / 4× / 8×
 //   Esc            pause
+//   L              next storey (stage, stacked maps)
 function onKeyDown(e: KeyboardEvent) {
   const t = e.target as HTMLElement | null;
   const tag = t?.tagName;
@@ -2335,6 +2364,19 @@ function onKeyDown(e: KeyboardEvent) {
     case "Escape":
       pause();
       return;
+    case "l":
+    case "L":
+      if (
+        stageActive.value &&
+        stageLevels.value.length &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.altKey
+      ) {
+        e.preventDefault();
+        cycleLevel();
+      }
+      return;
   }
   if (e.key >= "1" && e.key <= "5") {
     const i = Number(e.key) - 1;
@@ -2387,6 +2429,237 @@ watch(showAvatars, (v) => {
     localStorage.setItem(REPLAY_MARKER_PREF_KEY, v ? "avatar" : "number");
   } catch {
     /* private browsing or storage full — fail silent */
+  }
+});
+
+// The replay stage draws both views itself, so the radar board and 3D-lite
+// are not mounted while it runs. They remain for browsers without WebGL2 and
+// for the buy-round overlay; the stage stays loaded under the overlay, paused,
+// so leaving it is instant.
+const stageOn = ref(true);
+const stageActive = computed(() => stageOn.value && !overlayMode.value);
+const stageEl = ref<InstanceType<typeof ReplayStage> | null>(null);
+
+function onStageUnsupported() {
+  stageOn.value = false;
+  toast({
+    title: t("match.replay.chrome.stage_unsupported"),
+    variant: "destructive",
+  });
+}
+
+// Without a model the stage only has its table to stand players on. The radar
+// board is better when this map has a radar image, and otherwise no better.
+async function onStageMissingMap() {
+  if (props.mapName && (await hasRadarForMap(props.mapName))) {
+    stageOn.value = false;
+    toast({ title: t("match.replay.chrome.stage_no_map") });
+  }
+}
+
+// The stage reads the blob as one object, indexed once in a WeakMap, and
+// walks every row: the parts arrive here separately and reactive, so they are
+// put back together unwrapped.
+const stageBlob = computed(
+  () =>
+    markRaw({
+      schema_version: 0,
+      match_map_id: "",
+      map_name: props.mapName ?? null,
+      tick_rate: props.tickRate || 64,
+      total_ticks: 0,
+      positions: toRaw(props.positions) ?? [],
+      shots_fired: toRaw(props.shots) ?? [],
+      damages: toRaw(props.damages) ?? [],
+      grenade_throws: toRaw(props.grenades) ?? [],
+      grenade_trajectories: toRaw(props.grenadeTrajectories) ?? [],
+      smoke_volumes: toRaw(props.smokeVolumes) ?? [],
+      smoke_voxels: toRaw(props.smokeVoxels) ?? [],
+      flashes: toRaw(props.flashes),
+      infernos: toRaw(props.infernos) ?? [],
+      kills: toRaw(props.demoKills) ?? [],
+      bombs: toRaw(props.demoBombs) ?? [],
+      kit_drops: toRaw(props.demoKitDrops) ?? [],
+      round_ticks: toRaw(props.demoRoundTicks) ?? [],
+      players: toRaw(props.demoPlayers) ?? [],
+    }) as StageBlob,
+);
+
+// The chrome's legend filter, in the stage's utility types.
+const stageUtility = computed(() => {
+  const f = utilTypeFilter.value;
+  return {
+    smoke: f.Smoke !== false,
+    molotov: f.Molotov !== false,
+    incendiary: f.Molotov !== false,
+    he: f.HE !== false,
+    flash: f.Flash !== false,
+    decoy: f.Decoy !== false,
+  };
+});
+const stageSlots = computed(() => {
+  const out: Record<string, number> = {};
+  for (const [id, entry] of Object.entries(slotByPlayer.value)) {
+    out[id] = entry.slot;
+  }
+  return out;
+});
+
+const stageFrame = computed(() =>
+  activeRound.value === null
+    ? EMPTY_FRAME
+    : buildStageFrame(
+        stageBlob.value,
+        activeRound.value,
+        smoothCurrentTick.value,
+        {
+          names: playerNameMap.value,
+          avatars: showAvatars.value ? playerAvatarMap.value : undefined,
+          slots: showAvatars.value ? undefined : stageSlots.value,
+          selectedId: focusedPlayerId.value,
+          utility: stageUtility.value,
+          selectedGids: selectedGi.value,
+          heatmap: heatOn.value,
+          trails: pathingMode.value !== "off",
+          deaths: showDeaths.value,
+          groundBomb: showGroundBomb.value,
+          groundKits: showGroundKits.value,
+          callouts: showCallouts.value,
+          levelBand: stageLevelBand.value,
+        },
+      ),
+);
+
+// Picking a player follows them; letting go hands the camera back. Moving
+// the camera by hand stops following, so it lets go of the player too.
+watch([focusedPlayerId, () => stageEl.value?.camera], ([id, camera]) =>
+  camera?.setFollow(!!id),
+);
+watch(
+  () => stageEl.value?.camera,
+  (camera, _, onCleanup) => {
+    if (camera) {
+      const off = [
+        camera.onFollowChange((following) => {
+          if (!following) {
+            focusedPlayerId.value = null;
+          }
+        }),
+        camera.onPlayerClick(toggleFocus),
+        // A heatmap disc or a picked grenade's landing toggles that grenade.
+        camera.onClick((x, y, slop) => {
+          const gid = stageEl.value?.utility?.pickUtility(x, y, slop);
+          if (gid != null) {
+            toggleUtilSel(gid);
+          }
+        }),
+        camera.onViewKey(() => {
+          viewMode.value = viewMode.value === "3d" ? "2d" : "3d";
+        }),
+      ];
+      onCleanup(() => off.forEach((fn) => fn()));
+    }
+  },
+);
+
+// Stacked maps (Nuke, Vertigo): which storey the stage shows. Following a
+// player tracks the storey they stand on; picking one by hand holds until
+// the focus changes. With nobody followed it is the pick, else the top.
+const stageLevels = shallowRef<MapLevel[]>([]);
+const levelPick = ref<string | null>(null);
+const levelPickedInFocus = ref(false);
+const levelFollowed = ref<string | null>(null);
+// How far past a storey's edge a followed player goes before it switches, so
+// walking the stairs does not flicker between them.
+const LEVEL_HYSTERESIS = 32;
+
+function onStageLevels(levels: MapLevel[]) {
+  stageLevels.value = levels;
+  levelPick.value = null;
+  levelFollowed.value = null;
+}
+
+function followLevel(levels: MapLevel[], current: string | null, z: number) {
+  const found = levels.findIndex((level) => z >= level.from);
+  const target = found < 0 ? levels.length - 1 : found;
+  const at = levels.findIndex((level) => level.id === current);
+  if (at < 0 || at === target) {
+    return levels[target].id;
+  }
+  const clear =
+    target < at
+      ? z >= levels[target].from + LEVEL_HYSTERESIS
+      : z < levels[at].from - LEVEL_HYSTERESIS;
+  return clear ? levels[target].id : current;
+}
+
+const stageLevel = computed(() => {
+  const levels = stageLevels.value;
+  if (!levels.length) {
+    return null;
+  }
+  if (
+    focusedPlayerId.value &&
+    !levelPickedInFocus.value &&
+    levelFollowed.value
+  ) {
+    return levelFollowed.value;
+  }
+  return levelPick.value ?? levels[0].id;
+});
+
+function pickLevel(id: string) {
+  levelPick.value = id;
+  levelPickedInFocus.value = !!focusedPlayerId.value;
+}
+
+function cycleLevel() {
+  const levels = stageLevels.value;
+  const at = levels.findIndex((level) => level.id === stageLevel.value);
+  if (levels.length) {
+    pickLevel(levels[(at + 1) % levels.length].id);
+  }
+}
+
+// Players off the storey in view dim; this is the height band that is on it.
+const stageLevelBand = computed(() => {
+  const level = stageLevels.value.find((l) => l.id === stageLevel.value);
+  if (!level) {
+    return null;
+  }
+  return level.below != null
+    ? { min: -Infinity, max: level.below }
+    : { min: level.from, max: Infinity };
+});
+
+const chromeLevels = computed(() =>
+  stageActive.value ? stageLevels.value.map((level) => level.id) : [],
+);
+
+// A workshop map's file name is its id: the stage titles it with the label.
+const stageMapTitle = computed(() =>
+  props.mapTitle && /^\d+$/.test(normalizedMap.value) ? props.mapTitle : null,
+);
+
+// The followed player's height, for the storey to follow them.
+const focusedZ = computed(() => {
+  const id = focusedPlayerId.value;
+  if (!id || !stageActive.value || !stageLevels.value.length) {
+    return null;
+  }
+  return stageFrame.value.players.find((p) => p.id === id)?.z ?? null;
+});
+watch([focusedPlayerId, focusedZ], ([id, z], [previous]) => {
+  if (id !== previous) {
+    levelPickedInFocus.value = false;
+    levelFollowed.value = null;
+  }
+  if (z !== null) {
+    levelFollowed.value = followLevel(
+      stageLevels.value,
+      levelFollowed.value,
+      z,
+    );
   }
 });
 
@@ -3867,6 +4140,8 @@ function openReplayPopout() {
     grenadeTrajectories: props.grenadeTrajectories,
     smokeVolumes: props.smokeVolumes,
     infernos: props.infernos,
+    smokeVoxels: props.smokeVoxels,
+    flashes: props.flashes,
     shots: props.shots,
     damages: props.damages,
     demoPlayers: props.demoPlayers,
@@ -3878,6 +4153,7 @@ function openReplayPopout() {
     roundEconomy: props.roundEconomy,
     tickRate: props.tickRate,
     mapName: props.mapName,
+    mapTitle: props.mapTitle,
   };
   const url = `/matches/${matchId}/playback/2d/${mmId}`;
   window.open(
@@ -4057,10 +4333,18 @@ const chromeTickMarkers = computed(() =>
 const chromeSeekFrac = computed(() =>
   overlayMode.value ? overlayProgressPct.value / 100 : progressPct.value / 100,
 );
+// Seconds into the round's samples, from ticks: the samples are not evenly
+// spaced, so their index is not a clock.
+const roundElapsedSec = computed(
+  () => (smoothCurrentTick.value - tickRange.value.min) / (props.tickRate || 64),
+);
+const roundLengthSec = computed(
+  () => (tickRange.value.max - tickRange.value.min) / (props.tickRate || 64),
+);
 const chromeTimeLabel = computed(() =>
   overlayMode.value
     ? `${formatMMSS(overlayElapsedSec.value)} / ${formatMMSS(overlayWindowSec.value)}`
-    : `${formatMMSS(tickIndex.value * 0.25)} / ${formatMMSS(Math.max(0, ticks.value.length - 1) * 0.25)}`,
+    : `${formatMMSS(roundElapsedSec.value)} / ${formatMMSS(roundLengthSec.value)}`,
 );
 const chromeFollowName = computed(
   () =>
@@ -4124,6 +4408,7 @@ watch(overlayMode, (on) => {
            the right edge; the transport bar is docked below and pinned to
            the bottom by this flex-1 stage. -->
       <div
+        v-if="!stageActive"
         ref="stage2dEl"
         class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 overflow-visible transition-[width,height,left] duration-300 ease-out touch-none"
         :class="
@@ -5568,7 +5853,13 @@ watch(overlayMode, (on) => {
              over it at higher z. -->
       <Transition name="mapfade">
         <Replay3DLite
-          v-if="viewMode === '3d' && radarSrc && calibration && replay3dKey"
+          v-if="
+            viewMode === '3d' &&
+            !stageActive &&
+            radarSrc &&
+            calibration &&
+            replay3dKey
+          "
           :key="replay3dKey"
           class="z-[1]"
           :map-name="meshAvailable ? normalizedMap : null"
@@ -5605,6 +5896,22 @@ watch(overlayMode, (on) => {
         />
       </Transition>
 
+      <ReplayStage
+        v-if="stageOn"
+        v-show="stageActive"
+        ref="stageEl"
+        class="absolute inset-0 z-[1]"
+        :map-name="mapName?.trim() || null"
+        :frame="stageActive ? stageFrame : EMPTY_FRAME"
+        :view="viewMode"
+        :running="stageActive"
+        :level="stageLevel"
+        :map-title="stageMapTitle"
+        @unsupported="onStageUnsupported"
+        @missing-map="onStageMissingMap"
+        @levels="onStageLevels"
+      />
+
       <!-- Unified chrome (Replay3D look) — shown over BOTH 2D and 3D so the
              player is identical; only the map underneath differs. -->
       <ReplayChrome
@@ -5633,8 +5940,9 @@ watch(overlayMode, (on) => {
         :seek-frac="chromeSeekFrac"
         :time-label="chromeTimeLabel"
         :view="viewMode"
+        :stage="stageActive"
         :overlay="overlayMode"
-        :show3d="viewMode === '3d'"
+        :show3d="viewMode === '3d' && !stageActive"
         :cam-mode="camMode"
         :show-pbp="showPbpPanel"
         :heat-on="heatOn"
@@ -5653,6 +5961,9 @@ watch(overlayMode, (on) => {
         :on-toggle-heat="() => (heatOn = !heatOn)"
         :on-mode="chromeMode"
         :on-view="(v) => (viewMode = v)"
+        :levels="chromeLevels"
+        :level="stageLevel"
+        :on-level="pickLevel"
         :on-pbp-util="toggleUtilSel"
         :on-clear-sel="() => (selectedGi = [])"
         :overlay-rounds="overlayRoundsArr"
@@ -5676,7 +5987,7 @@ watch(overlayMode, (on) => {
       />
 
       <div
-        v-if="radarVolumes.length"
+        v-if="radarVolumes.length && !stageActive"
         class="absolute left-1/2 z-[21] -translate-x-1/2"
         :class="mobileChrome ? 'top-[60px]' : 'top-[78px]'"
       >
@@ -6376,9 +6687,9 @@ watch(overlayMode, (on) => {
             {{ formatMMSS(overlayWindowSec) }}
           </template>
           <template v-else>
-            {{ formatMMSS(tickIndex * 0.25) }}
+            {{ formatMMSS(roundElapsedSec) }}
             <span class="text-muted-foreground/50">/</span>
-            {{ formatMMSS(Math.max(0, ticks.length - 1) * 0.25) }}
+            {{ formatMMSS(roundLengthSec) }}
           </template>
         </span>
 

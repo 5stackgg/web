@@ -5,6 +5,7 @@ import {
   fetchReplayBlob,
   normalizeBlobGrenades,
 } from "~/composables/useReplayBlob";
+import { Loader2 } from "lucide-vue-next";
 import ReplayViewer from "~/components/match/ReplayViewer.vue";
 
 const matchMapForPopoutQuery = typedGql("query")({
@@ -13,7 +14,7 @@ const matchMapForPopoutQuery = typedGql("query")({
     {
       id: true,
       match_id: true,
-      map: { name: true },
+      map: { name: true, label: true },
       demos: [{ limit: 1 }, { playback_url: true }],
       // Per-round team money — drives full-buy detection for the
       // buy-round overlay. The replay blob carries loadout but no money.
@@ -61,7 +62,7 @@ const matchMapForPopoutQuery = typedGql("query")({
 });
 
 export default {
-  components: { ReplayViewer },
+  components: { Loader2, ReplayViewer },
   props: {
     matchMapId: { type: String, required: true },
     initialView: { type: String, default: "2d" },
@@ -74,6 +75,8 @@ export default {
       grenadeTrajectories: [] as any[],
       smokeVolumes: [] as any[],
       infernos: [] as any[],
+      smokeVoxels: [] as any[],
+      flashes: undefined as undefined | any[],
       shots: null as null | any[],
       damages: null as null | any[],
       demoPlayers: [] as any[],
@@ -91,6 +94,7 @@ export default {
       hydratedFromOpener: false,
       handoffMatch: null as any,
       handoffMapName: null as null | string,
+      handoffMapTitle: null as null | string,
     };
   },
   created() {
@@ -102,11 +106,14 @@ export default {
       if (!data) return;
       self.handoffMatch = data.match ?? null;
       self.handoffMapName = data.mapName ?? null;
+      self.handoffMapTitle = data.mapTitle ?? null;
       self.positions = data.positions ?? [];
       self.grenades = data.grenades ?? [];
       self.grenadeTrajectories = data.grenadeTrajectories ?? [];
       self.smokeVolumes = data.smokeVolumes ?? [];
       self.infernos = data.infernos ?? [];
+      self.smokeVoxels = data.smokeVoxels ?? [];
+      self.flashes = data.flashes;
       self.shots = data.shots ?? [];
       self.damages = data.damages ?? [];
       self.demoPlayers = data.demoPlayers ?? [];
@@ -157,6 +164,8 @@ export default {
           self.grenadeTrajectories = blob.grenade_trajectories ?? [];
           self.smokeVolumes = blob.smoke_volumes ?? [];
           self.infernos = blob.infernos ?? [];
+          self.smokeVoxels = blob.smoke_voxels ?? [];
+          self.flashes = blob.flashes;
           self.shots = blob.shots_fired ?? [];
           self.damages = blob.damages ?? [];
           self.demoPlayers = blob.players ?? [];
@@ -189,6 +198,9 @@ export default {
     mapName(): string | null {
       return this.handoffMapName ?? this.matchMap?.map?.name ?? null;
     },
+    mapTitle(): string | null {
+      return this.handoffMapTitle ?? this.matchMap?.map?.label ?? null;
+    },
     loading(): boolean {
       if (this.hydratedFromOpener) return false;
       return this.blobLoading || (!this.blobLoaded && this.positions === null);
@@ -201,8 +213,9 @@ export default {
   <div class="flex h-full w-full flex-col overflow-hidden">
     <div
       v-if="loading"
-      class="py-10 text-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground"
+      class="flex flex-1 items-center justify-center gap-2 text-sm text-muted-foreground"
     >
+      <Loader2 class="h-4 w-4 animate-spin" />
       {{ $t("match.replay.loading") }}
     </div>
     <div
@@ -219,6 +232,8 @@ export default {
       :grenade-trajectories="grenadeTrajectories || []"
       :smoke-volumes="smokeVolumes || []"
       :infernos="infernos || []"
+      :smoke-voxels="smokeVoxels"
+      :flashes="flashes"
       :shots="shots || []"
       :damages="damages || []"
       :demo-players="demoPlayers"
@@ -231,6 +246,7 @@ export default {
       :round-economy="roundEconomy"
       :tick-rate="tickRate"
       :map-name="mapName"
+      :map-title="mapTitle"
       :initial-view="initialView as '2d' | '3d'"
     />
   </div>

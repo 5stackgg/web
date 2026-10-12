@@ -6,6 +6,7 @@
 import { Skull, Tags } from "lucide-vue-next";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { weaponIconPath } from "~/utilities/weaponIcon";
+import { UTILITY_MARKER_COLORS } from "~/utilities/replayStage/teamColors";
 import Kbd from "~/components/ui/kbd/Kbd.vue";
 import KbdGroup from "~/components/ui/kbd/KbdGroup.vue";
 import {
@@ -93,6 +94,13 @@ const props = defineProps<{
   // 2D/3D map toggle (the only difference between the two views)
   view?: "2d" | "3d";
   onView?: (v: "2d" | "3d") => void;
+  // The storeys of a stacked map on the stage (ids, top first), the one in
+  // view, and picking one; empty on a one-storey map.
+  levels?: string[];
+  level?: string | null;
+  onLevel?: (id: string) => void;
+  // The replay stage is drawing (its camera keys go in the shortcuts list).
+  stage?: boolean;
   // buy-round overlay active — hides round-relative seek markers (they don't
   // map onto the shared window clock).
   overlay?: boolean;
@@ -158,15 +166,19 @@ const UTIL_ICON: Record<string, string> = {
   molotov: "/img/equipment/molotov.svg",
   decoy: "/img/equipment/decoy.svg",
 };
+// The stage's markers share these hues, so the legend names what it shows.
+const legendHex = (hex: number) => `#${hex.toString(16).padStart(6, "0")}`;
 const UTIL_LEGEND: Record<string, string> = {
-  Smoke: "#32d6e0",
-  Molotov: "#ff6a1a",
-  HE: "#ff3b3b",
-  Flash: "#ffd21a",
-  Decoy: "#66dd55",
+  Smoke: legendHex(UTILITY_MARKER_COLORS.smoke),
+  Molotov: legendHex(UTILITY_MARKER_COLORS.molotov),
+  HE: legendHex(UTILITY_MARKER_COLORS.he),
+  Flash: legendHex(UTILITY_MARKER_COLORS.flash),
+  Decoy: legendHex(UTILITY_MARKER_COLORS.decoy),
 };
 const sideHex = (s: number) =>
-  s === 0 ? props.ctHex || "#57cdff" : props.tHex || "#ffb049";
+  s === 0
+    ? props.ctHex || "hsl(210, 80%, 60%)"
+    : props.tHex || "hsl(33, 94%, 58%)";
 const utilIcon = (ty: string) => UTIL_ICON[ty.toLowerCase()] || "";
 const legendCol = (ty: string) => UTIL_LEGEND[ty] || "#9fb0c0";
 const selIncludes = (gi: number | undefined) =>
@@ -372,6 +384,25 @@ const utilClusters = computed(() => {
                 $t("match.replay.chrome.view_3d")
               }}</TooltipContent></Tooltip
             >
+            <template v-if="stage && levels?.length">
+              <span class="bp-viewsep" />
+              <Tooltip v-for="id in levels" :key="id"
+                ><TooltipTrigger as-child
+                  ><button
+                    :class="{ on: level === id }"
+                    @click="onLevel && onLevel(id)"
+                  >
+                    {{
+                      id === "lower"
+                        ? $t("match.replay.chrome.level_lower")
+                        : $t("match.replay.chrome.level_upper")
+                    }}
+                  </button></TooltipTrigger
+                ><TooltipContent>{{
+                  $t("match.replay.chrome.level_tip")
+                }}</TooltipContent></Tooltip
+              >
+            </template>
           </div>
           <span class="bp-pipe">|</span>
           <div class="bp-cam">
@@ -832,7 +863,7 @@ const utilClusters = computed(() => {
               : $t("match.replay.chrome.showing_numbers")
           }}</TooltipContent>
         </Tooltip>
-        <Tooltip v-if="view === '2d'">
+        <Tooltip v-if="view === '2d' || stage">
           <TooltipTrigger as-child>
             <button
               class="sbt"
@@ -846,7 +877,7 @@ const utilClusters = computed(() => {
             $t("match.replay.chrome.trace_tip")
           }}</TooltipContent>
         </Tooltip>
-        <Tooltip v-if="view === '2d'">
+        <Tooltip v-if="view === '2d' || stage">
           <TooltipTrigger as-child>
             <button
               class="sbt sbt-icon"
@@ -860,7 +891,7 @@ const utilClusters = computed(() => {
             $t("match.replay.chrome.deaths_tip")
           }}</TooltipContent>
         </Tooltip>
-        <Tooltip v-if="view === '2d' && hasCallouts">
+        <Tooltip v-if="(view === '2d' || stage) && hasCallouts">
           <TooltipTrigger as-child>
             <button
               class="sbt sbt-icon"
@@ -1244,6 +1275,58 @@ const utilClusters = computed(() => {
                   ><span>{{ $t("match.replay.chrome.kb_up_down") }}</span>
                 </div>
               </template>
+              <template v-else-if="stage">
+                <div class="hk hk-sep">
+                  {{ $t("match.replay.chrome.kb_camera") }}
+                </div>
+                <div class="hk">
+                  <KbdGroup><Kbd>Click</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_follow_player") }}</span>
+                </div>
+                <div class="hk">
+                  <KbdGroup
+                    ><Kbd>W</Kbd><Kbd>A</Kbd><Kbd>S</Kbd><Kbd>D</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_pan") }}</span>
+                </div>
+                <div class="hk">
+                  <KbdGroup><Kbd>Z</Kbd><Kbd>X</Kbd><Kbd>Scroll</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_zoom") }}</span>
+                </div>
+                <template v-if="view === '3d'">
+                  <div class="hk">
+                    <KbdGroup><Kbd>Q</Kbd><Kbd>E</Kbd></KbdGroup
+                    ><span>{{ $t("match.replay.chrome.kb_rotate") }}</span>
+                  </div>
+                  <div class="hk">
+                    <KbdGroup><Kbd>R</Kbd><Kbd>F</Kbd></KbdGroup
+                    ><span>{{ $t("match.replay.chrome.kb_tilt") }}</span>
+                  </div>
+                  <div class="hk">
+                    <KbdGroup><Kbd>R-drag</Kbd></KbdGroup
+                    ><span>{{ $t("match.replay.chrome.kb_orbit") }}</span>
+                  </div>
+                </template>
+                <div class="hk">
+                  <KbdGroup><Kbd>Shift</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_faster") }}</span>
+                </div>
+                <div class="hk">
+                  <KbdGroup><Kbd>C</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_follow") }}</span>
+                </div>
+                <div class="hk">
+                  <KbdGroup><Kbd>0</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_frame_map") }}</span>
+                </div>
+                <div class="hk">
+                  <KbdGroup><Kbd>V</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_switch_view") }}</span>
+                </div>
+                <div v-if="levels?.length" class="hk">
+                  <KbdGroup><Kbd>L</Kbd></KbdGroup
+                  ><span>{{ $t("match.replay.chrome.kb_level") }}</span>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -1260,9 +1343,9 @@ const utilClusters = computed(() => {
   color: #d6e0ea;
   font-family: "Oxanium", system-ui, sans-serif;
   user-select: none;
-  --accent: #57cdff;
-  --ct: #57cdff;
-  --t: #ffb049;
+  --accent: hsl(var(--tac-amber));
+  --ct: hsl(210, 80%, 60%);
+  --t: hsl(var(--tac-amber));
   --panel: rgba(12, 15, 20, 0.82);
   --line: rgba(120, 140, 165, 0.18);
 }
@@ -1820,6 +1903,11 @@ const utilClusters = computed(() => {
   background: color-mix(in srgb, var(--accent) 18%, transparent);
   border-color: var(--accent);
   color: #fff;
+}
+.bp-viewsep {
+  width: 1px;
+  margin: 3px 2px;
+  background: var(--line);
 }
 /* camera dock */
 .bp-cam {
@@ -2626,14 +2714,14 @@ const utilClusters = computed(() => {
 .bp-dd-item:hover,
 .bp-dd-item:focus,
 .bp-dd-item[data-highlighted] {
-  border-color: #57cdff;
+  border-color: hsl(var(--tac-amber));
   color: #f0f6fc !important;
   background: rgba(255, 255, 255, 0.08) !important;
   outline: none;
 }
 .bp-dd-item.bp-dd-on {
-  background: color-mix(in srgb, #57cdff 20%, transparent) !important;
-  border-color: #57cdff;
+  background: hsl(var(--tac-amber) / 0.2) !important;
+  border-color: hsl(var(--tac-amber));
   color: #fff !important;
 }
 .bp-dd-roof {
@@ -2645,7 +2733,7 @@ const utilClusters = computed(() => {
 }
 .bp-dd-roof input[type="range"] {
   width: 96px;
-  accent-color: #57cdff;
+  accent-color: hsl(var(--tac-amber));
   touch-action: none;
   cursor: pointer;
 }

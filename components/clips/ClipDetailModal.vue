@@ -548,12 +548,14 @@ async function prefetchNextClip() {
 }
 
 // Seconds left in the clip on screen; drives the expanded view's "Up next"
-// card. Cancel holds auto-advance for this clip only.
+// card. Cancel holds auto-advance for this clip only, and so does editing
+// the title (switching clips would throw the edit away).
 const remaining = ref<number | null>(null);
 const advanceCancelled = ref(false);
+const advanceHeld = computed(() => advanceCancelled.value || editing.value);
 const upNextCountdown = computed(() =>
   nextClip.value &&
-  !advanceCancelled.value &&
+  !advanceHeld.value &&
   remaining.value != null &&
   remaining.value <= PRELOAD_REMAINING_S
     ? Math.max(1, Math.ceil(remaining.value))
@@ -575,7 +577,7 @@ function onModalProgress({
   }
   if (
     nextClip.value &&
-    !advanceCancelled.value &&
+    !advanceHeld.value &&
     remaining.value <= 0.35 &&
     !modalAutoAdvanced.value
   ) {
@@ -585,7 +587,7 @@ function onModalProgress({
 }
 
 function onModalEnded() {
-  if (nextClip.value && !advanceCancelled.value && !modalAutoAdvanced.value) {
+  if (nextClip.value && !advanceHeld.value && !modalAutoAdvanced.value) {
     modalAutoAdvanced.value = true;
     openNextClip();
   }
@@ -1156,59 +1158,6 @@ const edgeButton =
                 </button>
               </template>
 
-              <Transition
-                enter-active-class="transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
-                enter-from-class="opacity-0 translate-y-2"
-                leave-active-class="transition-opacity duration-150 ease-in"
-                leave-to-class="opacity-0"
-              >
-                <div
-                  v-if="expanded && upNextCountdown && nextClip"
-                  class="absolute right-4 top-[4.25rem] z-[5] flex w-[17rem] items-center gap-3 rounded-lg bg-black/75 p-2 pr-3 shadow-[0_0_0_1px_rgb(255_255_255/0.08)] backdrop-blur-md"
-                >
-                  <button
-                    type="button"
-                    class="relative grid aspect-video w-[6.5rem] shrink-0 place-items-center overflow-hidden rounded-[4px] bg-black outline outline-1 -outline-offset-1 outline-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
-                    :aria-label="$t('ui_extras.next_clip')"
-                    @click="openNextClip"
-                  >
-                    <NuxtImg
-                      v-if="nextClip.thumbnailUrl ?? nextClip.posterUrl"
-                      :src="nextClip.thumbnailUrl ?? nextClip.posterUrl ?? ''"
-                      alt=""
-                      class="h-full w-full object-cover"
-                    />
-                    <Film v-else class="h-4 w-4 text-white/40" />
-                  </button>
-                  <div class="min-w-0 flex-1">
-                    <p
-                      class="text-[11px] font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
-                    >
-                      {{
-                        $t("clips.detail.up_next_in", {
-                          seconds: upNextCountdown,
-                        })
-                      }}
-                    </p>
-                    <p
-                      class="line-clamp-2 text-[13px] font-bold leading-snug text-white"
-                    >
-                      {{
-                        clipDisplayTitle(nextClip.title, nextClip.playerName) ??
-                        $t("clips.untitled_clip")
-                      }}
-                    </p>
-                    <button
-                      type="button"
-                      class="mt-0.5 rounded-sm text-xs text-white/55 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
-                      @click="advanceCancelled = true"
-                    >
-                      {{ $t("common.cancel") }}
-                    </button>
-                  </div>
-                </div>
-              </Transition>
-
               <!-- Instant "loading next clip" feedback while the new clip's
                    data is in flight, over the still-visible previous clip. -->
               <Transition
@@ -1282,14 +1231,73 @@ const edgeButton =
                 {{ editError }}
               </p>
             </form>
-            <p
+            <!-- As wide as the video, so "Up next" sits under its right
+                 edge: off the clip, clear of the kill feed. -->
+            <div
               v-else
-              class="clip-modal-hints hidden items-center gap-2 text-xs text-white/40"
+              class="clip-modal-stage relative flex h-10 items-center justify-center"
             >
-              <Kbd>←</Kbd><Kbd>→</Kbd> {{ $t("clips.detail.previous_next") }}
-              <span class="mx-1.5" aria-hidden="true">·</span>
-              <Kbd>Esc</Kbd> {{ $t("clips.detail.default_view") }}
-            </p>
+              <p
+                class="clip-modal-hints hidden items-center gap-2 text-xs text-white/40 transition-opacity duration-150"
+                :class="upNextCountdown ? 'opacity-0' : ''"
+              >
+                <Kbd>←</Kbd><Kbd>→</Kbd> {{ $t("clips.detail.previous_next") }}
+                <span class="mx-1.5" aria-hidden="true">·</span>
+                <Kbd>Esc</Kbd> {{ $t("clips.detail.default_view") }}
+              </p>
+              <Transition
+                enter-active-class="transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
+                enter-from-class="opacity-0 translate-y-1"
+                leave-active-class="transition-opacity duration-150 ease-in"
+                leave-to-class="opacity-0"
+              >
+                <div
+                  v-if="upNextCountdown && nextClip"
+                  class="absolute inset-y-0 right-0 flex items-center gap-2.5"
+                >
+                  <button
+                    type="button"
+                    class="relative grid aspect-video w-16 shrink-0 place-items-center overflow-hidden rounded-[4px] bg-black outline outline-1 -outline-offset-1 outline-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                    :aria-label="$t('ui_extras.next_clip')"
+                    @click="openNextClip"
+                  >
+                    <NuxtImg
+                      v-if="nextClip.thumbnailUrl ?? nextClip.posterUrl"
+                      :src="nextClip.thumbnailUrl ?? nextClip.posterUrl ?? ''"
+                      alt=""
+                      class="h-full w-full object-cover"
+                    />
+                    <Film v-else class="h-3.5 w-3.5 text-white/40" />
+                  </button>
+                  <div class="grid min-w-0 max-w-64 gap-px">
+                    <p
+                      class="text-[11px] font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
+                    >
+                      {{
+                        $t("clips.detail.up_next_in", {
+                          seconds: upNextCountdown,
+                        })
+                      }}
+                    </p>
+                    <p
+                      class="truncate text-[13px] font-bold leading-snug text-white"
+                    >
+                      {{
+                        clipDisplayTitle(nextClip.title, nextClip.playerName) ??
+                        $t("clips.untitled_clip")
+                      }}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    class="ml-1.5 h-8 shrink-0 rounded-md bg-white/[0.06] px-3 text-xs text-white/75 transition-colors duration-150 hover:bg-white/[0.12] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                    @click="advanceCancelled = true"
+                  >
+                    {{ $t("common.cancel") }}
+                  </button>
+                </div>
+              </Transition>
+            </div>
           </footer>
 
           <template v-else>

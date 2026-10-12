@@ -25,7 +25,7 @@ import {
   EmptyDescription,
   EmptyTitle,
 } from "~/components/ui/empty";
-import { FadeSwap, HeightSwap } from "~/components/ui/transitions";
+import { FadeSwap, Fold, HeightSwap } from "~/components/ui/transitions";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
@@ -389,7 +389,7 @@ const poolLocked = computed(
 );
 
 // Layered so the most specific fact wins: a drafted player is in the pool and
-// also on their pickup team.
+// also on their pickup team. An owner is entered even when off the roster.
 const ineligibleAgents = computed(() => {
   const reasons: Record<string, string> = {};
 
@@ -402,6 +402,11 @@ const ineligibleAgents = computed(() => {
   }
 
   for (const team of props.tournament?.teams ?? []) {
+    if (team.owner_steam_id) {
+      reasons[String(team.owner_steam_id)] = t(
+        "team.search.ineligible.in_tournament",
+      );
+    }
     for (const member of team.roster ?? []) {
       if (member.player?.steam_id) {
         reasons[String(member.player.steam_id)] = t(
@@ -600,47 +605,49 @@ async function draftTeams() {
 
     <TournamentFreeAgentSignUp :tournament="tournament" :my-entry="myEntry" />
 
-    <div v-if="poolEditable || poolLocked" class="flex items-center gap-2">
-      <FadeSwap class="min-w-0 flex-1">
-        <div v-if="poolEditable" key="add">
-          <PlayerSearch
-            :label="$t('tournament.free_agents.add')"
-            :ineligible="ineligibleAgents"
-            @selected="addAgent"
-          />
-        </div>
-        <Button
-          v-else
-          key="locked"
-          variant="outline"
-          disabled
-          class="w-full justify-between [&>span:last-child]:w-full [&>span:last-child]:justify-between"
-        >
-          {{ $t("tournament.free_agents.add") }}
-          <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </FadeSwap>
-      <FadeSwap>
-        <span v-if="poolLocked" key="locked" class="inline-flex">
-          <FiveStackToolTip as-child :delay-duration="120">
-            <template #trigger>
-              <span
-                class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
-                tabindex="0"
-                role="img"
-                :aria-label="$t('tournament.free_agents.pool_locked')"
-                @click.prevent
-              >
-                <TriangleAlert class="h-4 w-4" />
-              </span>
-            </template>
-            <p class="max-w-[16rem]">
-              {{ $t("tournament.free_agents.pool_locked") }}
-            </p>
-          </FiveStackToolTip>
-        </span>
-      </FadeSwap>
-    </div>
+    <Fold :open="poolEditable || poolLocked">
+      <div class="flex items-center gap-2">
+        <FadeSwap class="min-w-0 flex-1">
+          <div v-if="poolEditable" key="add">
+            <PlayerSearch
+              :label="$t('tournament.free_agents.add')"
+              :ineligible="ineligibleAgents"
+              @selected="addAgent"
+            />
+          </div>
+          <Button
+            v-else
+            key="locked"
+            variant="outline"
+            disabled
+            class="w-full justify-between [&>span:last-child]:w-full [&>span:last-child]:justify-between"
+          >
+            {{ $t("tournament.free_agents.add") }}
+            <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </FadeSwap>
+        <FadeSwap>
+          <span v-if="poolLocked" key="locked" class="inline-flex">
+            <FiveStackToolTip as-child :delay-duration="120">
+              <template #trigger>
+                <span
+                  class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                  tabindex="0"
+                  role="img"
+                  :aria-label="$t('tournament.free_agents.pool_locked')"
+                  @click.prevent
+                >
+                  <TriangleAlert class="h-4 w-4" />
+                </span>
+              </template>
+              <p class="max-w-[16rem]">
+                {{ $t("tournament.free_agents.pool_locked") }}
+              </p>
+            </FiveStackToolTip>
+          </span>
+        </FadeSwap>
+      </div>
+    </Fold>
 
     <HeightSwap>
       <Empty v-if="waitingRows.length === 0" key="empty" class="min-h-[180px]">

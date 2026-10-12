@@ -42,16 +42,14 @@ export interface Bracket {
     group?: number;
     match_number?: number;
     path?: string;
-    match?: { status?: string } | null;
-  } | null;
+  };
   loser_bracket?: {
     id?: string;
     round: number;
     group?: number;
     match_number?: number;
     path?: string;
-    match?: { status?: string } | null;
-  } | null;
+  };
   team_1?: {
     id?: string;
     name?: string;

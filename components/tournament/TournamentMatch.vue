@@ -67,6 +67,7 @@ const props = defineProps<{
       best_of?: number;
     };
     windows?: NegotiationWindow[] | null;
+    brackets?: Bracket[];
   };
   tournament?: {
     is_organizer?: boolean;
@@ -195,19 +196,24 @@ const canManageBracketReset = computed(
 const RECREATE_STATUSES = [
   e_tournament_status_enum.RegistrationClosed,
   e_tournament_status_enum.Live,
-  e_tournament_status_enum.Paused,
 ] as string[];
 
+const REPLAYABLE_STAGES = [
+  e_tournament_stage_types_enum.SingleElimination,
+  e_tournament_stage_types_enum.DoubleElimination,
+] as string[];
+
+// Only a won slot can be stranded: an unfinished one with both teams and no
+// match is just not due yet, and the scheduler creates it when it is.
 const canRecreate = (bracket: Bracket): boolean =>
   canManageBracketReset.value &&
   RECREATE_STATUSES.includes(props.tournament?.status ?? "") &&
+  REPLAYABLE_STAGES.includes(props.stage?.type ?? "") &&
+  !!bracket.finished &&
   !bracket.bye &&
   !bracket.match &&
   !!bracket.team_1 &&
   !!bracket.team_2;
-
-const isOrphanedWin = (bracket: Bracket): boolean =>
-  canRecreate(bracket) && !!bracket.finished;
 
 // A won slot is replayed by unwinding what it fed, which the api refuses once
 // any of those matches has been played.
@@ -217,11 +223,20 @@ const UNWINDABLE_STATUSES = [
   e_match_status_enum.Canceled,
 ] as string[];
 
+const stageBrackets = computed(
+  () => new Map((props.stage?.brackets ?? []).map((row) => [row.id, row])),
+);
+
 const downstreamStarted = (bracket: Bracket): boolean =>
-  !!bracket.finished &&
-  [bracket.parent_bracket?.match, bracket.loser_bracket?.match].some(
-    (match) => !!match?.status && !UNWINDABLE_STATUSES.includes(match.status),
-  );
+  [bracket.parent_bracket?.id, bracket.loser_bracket?.id].some((id) => {
+    const status = id ? stageBrackets.value.get(id)?.match?.status : null;
+    return !!status && !UNWINDABLE_STATUSES.includes(status);
+  });
+
+const orphanedReason = (bracket: Bracket): string =>
+  downstreamStarted(bracket)
+    ? t("tournament.match.recreate_orphaned_blocked")
+    : t("tournament.match.recreate_orphaned");
 
 const recreateDialogOpen = ref(false);
 const recreateTarget = ref<Bracket | null>(null);
@@ -701,7 +716,7 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
     return;
   }
   // Every scheduler skips a finished slot, so Schedule would do nothing here.
-  if (isOrphanedWin(bracket)) {
+  if (canRecreate(bracket)) {
     if (!downstreamStarted(bracket)) {
       openRecreate(bracket);
     }
@@ -974,24 +989,20 @@ const shouldShowCrossBracketDestination = (
             </DropdownMenuContent>
           </DropdownMenu>
           <template v-if="canRecreate(bracket)">
-            <FiveStackToolTip
-              v-if="bracket.finished"
-              as-child
-              :delay-duration="120"
-            >
+            <FiveStackToolTip as-child :delay-duration="120">
               <template #trigger>
                 <span
                   class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
                   tabindex="0"
                   role="img"
-                  :aria-label="$t('tournament.match.recreate_orphaned')"
+                  :aria-label="orphanedReason(bracket)"
                   @click.stop
                 >
                   <TriangleAlert class="h-3 w-3" />
                 </span>
               </template>
               <p class="max-w-[16rem]">
-                {{ $t("tournament.match.recreate_orphaned") }}
+                {{ orphanedReason(bracket) }}
               </p>
             </FiveStackToolTip>
             <DropdownMenu>
@@ -1138,9 +1149,7 @@ const shouldShowCrossBracketDestination = (
               team_2: getTeamName(recreateTarget?.team_2),
             })
           }}
-          <template v-if="recreateTarget?.finished">
-            {{ $t("tournament.match.recreate_unwinds") }}
-          </template>
+          {{ $t("tournament.match.recreate_unwinds") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>

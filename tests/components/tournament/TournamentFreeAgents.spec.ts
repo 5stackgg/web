@@ -327,6 +327,24 @@ describe("TournamentFreeAgents", () => {
       });
     });
 
+    it("greys out a team owner who is not on their own roster", async () => {
+      const wrapper = await mountAsOrganizer("RegistrationOpen", {
+        teams: [
+          {
+            id: "team-1",
+            name: "Iron Wolves",
+            owner_steam_id: "76561198000000009",
+            roster: [{ player: { steam_id: "76561198000000007" } }],
+          },
+        ],
+      });
+
+      expect(addSearch(wrapper).props("ineligible")).toMatchObject({
+        "76561198000000009": "Already entered in this tournament.",
+        "76561198000000007": "Already rostered on Iron Wolves in this tournament.",
+      });
+    });
+
     it("adds the picked player to this tournament's pool", async () => {
       mutate.mockResolvedValue({
         data: { addTournamentFreeAgent: { success: true } },

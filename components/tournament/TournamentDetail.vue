@@ -1380,9 +1380,6 @@ export default {
                         group: true,
                         match_number: true,
                         path: true,
-                        match: {
-                          status: true,
-                        },
                       },
                       loser_bracket: {
                         id: true,
@@ -1390,9 +1387,6 @@ export default {
                         group: true,
                         match_number: true,
                         path: true,
-                        match: {
-                          status: true,
-                        },
                       },
                       feeding_brackets: {
                         id: true,

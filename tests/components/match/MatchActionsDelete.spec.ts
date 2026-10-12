@@ -5,8 +5,7 @@ import MatchActions from "~/components/match/MatchActions.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
-const BLOCKED =
-  "Tournament matches can't be deleted. Use Reset winner on the bracket instead.";
+const BLOCKED = "Tournament matches can't be deleted from the match page.";
 
 let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined;
 let mutate: ReturnType<typeof vi.fn>;
@@ -95,7 +94,7 @@ afterEach(() => {
 });
 
 describe("match actions Delete on a tournament bracket match", () => {
-  it("is blocked with a pointer to Reset winner", async () => {
+  it("is blocked with a reason true of every stage type", async () => {
     await openMenu({ is_tournament_match: true });
 
     const item = deleteItem();

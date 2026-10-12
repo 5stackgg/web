@@ -701,7 +701,7 @@ provide("commander", commander);
       </div>
       <div v-if="canViewMatchServerLogs" v-show="hasLogs">
         <ServiceLogs
-          :service="`m-${match.id}`"
+          :service="`${match.source === 'practice' ? 'u' : 'm'}-${match.id}`"
           :compact="true"
           :disable-retry="isMatchTerminal"
           @has-logs="hasLogs = $event"

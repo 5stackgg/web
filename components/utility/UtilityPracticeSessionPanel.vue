@@ -514,7 +514,7 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
               compact
             />
 
-            <ServiceLogs v-if="isAdmin && matchId" :service="`m-${matchId}`" compact />
+            <ServiceLogs v-if="isAdmin && matchId" :service="`u-${matchId}`" compact />
           </CollapsibleContent>
         </Collapsible>
       </template>

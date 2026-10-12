@@ -7434,8 +7434,11 @@
         "active_duty": "Active Duty",
         "custom": "Eigener",
         "too_small": "Best of {best_of} braucht mindestens {best_of} Maps. Dieser Pool hat {count}.",
-        "empty": "Wähle mindestens eine Map."
+        "empty": "Wähle mindestens eine Map.",
+        "tournament_plays_active_duty": "Das Turnier spielt bereits Active Duty. Wähle „Wie im Turnier“.",
+        "unavailable": "Hier nicht mehr spielbar: {maps}. Wähle eine Map, um sie aus dem Pool zu nehmen."
       },
+      "match_settings_locked": "Die Matches dieser Stage sind bereits ausgelost, daher lassen sich ihre Match-Einstellungen nicht mehr ändern.",
       "per_round_best_of": "Best Of pro Runde",
       "third_place_match": "Spiel um Platz 3 aktivieren",
       "third_place_match_description": "Erstellt ein Spiel um Platz 3 zwischen den beiden Halbfinal-Verlierern.",

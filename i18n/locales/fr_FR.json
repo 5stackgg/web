@@ -7434,8 +7434,11 @@
         "active_duty": "Active Duty",
         "custom": "Personnalisé",
         "too_small": "Un best of {best_of} nécessite au moins {best_of} cartes. Ce map pool en a {count}.",
-        "empty": "Choisissez au moins une carte."
+        "empty": "Choisissez au moins une carte.",
+        "tournament_plays_active_duty": "Le tournoi joue déjà Active Duty. Choisissez « Comme le tournoi ».",
+        "unavailable": "N'est plus jouable ici : {maps}. Sélectionnez une carte pour la retirer du map pool."
       },
+      "match_settings_locked": "Les matchs de cette phase sont déjà tirés, leurs paramètres ne peuvent donc plus changer.",
       "per_round_best_of": "Best of par round",
       "third_place_match": "Activer la petite finale",
       "third_place_match_description": "Crée un match pour la 3e place entre les deux perdants de demi-finale.",

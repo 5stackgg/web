@@ -84,7 +84,10 @@ import { $ } from "~/generated/zeus";
               value === type.value &&
                 '!border-[hsl(var(--tac-amber))] ![background:linear-gradient(180deg,hsl(var(--tac-amber)/0.12)_0%,hsl(var(--tac-amber)/0.04)_100%)] !text-foreground !shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.08)] hover:!translate-y-0',
             ]"
-            @click="handleChange(type.value)"
+            @click="
+              pruneRoundBestOf(type.value);
+              handleChange(type.value);
+            "
           >
             <span
               aria-hidden="true"
@@ -345,43 +348,51 @@ import { $ } from "~/generated/zeus";
             block
           />
 
-          <FadeSwap>
-            <div
-              v-if="mapPoolMode !== 'custom'"
-              :key="mapPoolMode"
-              class="flex flex-wrap gap-2"
-            >
-              <MiniMapDisplay
-                v-for="map in stageMapPoolMaps"
-                :key="map.id"
-                :map="map"
-              />
-            </div>
-          </FadeSwap>
-
-          <Fold :open="mapPoolMode === 'custom'">
-            <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
-              <button
-                v-for="map in customMapChoices"
-                :key="map.id"
-                type="button"
-                :aria-label="mapLabel(map)"
-                :aria-pressed="customMapPool.includes(map.id)"
-                class="rounded-[12px] transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] motion-reduce:transition-none"
-                :class="customMapPool.includes(map.id) ? '' : 'opacity-40'"
-                @click="toggleCustomMap(map.id)"
+          <div>
+            <FadeSwap>
+              <div
+                v-if="mapPoolMode !== 'custom'"
+                :key="mapPoolMode"
+                class="flex flex-wrap gap-2"
               >
-                <MapDisplay class="h-[96px]" :map="map" />
-              </button>
-            </div>
-          </Fold>
+                <MiniMapDisplay
+                  v-for="map in stageMapPoolMaps"
+                  :key="map.id"
+                  :map="map"
+                />
+              </div>
+            </FadeSwap>
+
+            <Fold :open="mapPoolMode === 'custom'">
+              <div class="grid grid-cols-2 gap-2 md:grid-cols-4">
+                <button
+                  v-for="map in customMapChoices"
+                  :key="map.id"
+                  type="button"
+                  :aria-label="mapLabel(map)"
+                  :aria-pressed="customMapPool.includes(map.id)"
+                  :disabled="map.unavailable && !customMapPool.includes(map.id)"
+                  class="relative rounded-[12px] transition-opacity duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:cursor-not-allowed motion-reduce:transition-none"
+                  :class="customMapPool.includes(map.id) ? '' : 'opacity-40'"
+                  @click="toggleCustomMap(map.id)"
+                >
+                  <MapDisplay class="h-[96px]" :map="map" />
+                  <TriangleAlert
+                    v-if="map.unavailable"
+                    aria-hidden="true"
+                    class="absolute right-1.5 top-1.5 h-4 w-4 text-[hsl(var(--tac-amber))]"
+                  />
+                </button>
+              </div>
+            </Fold>
+          </div>
 
           <div
             class="flex items-center gap-1.5 border-t border-border pt-3 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             {{ mapPoolSummary }}
             <Transition v-bind="badgePopTransition">
-              <span v-if="mapPoolShortfall" class="inline-flex">
+              <span v-if="mapPoolWarnings.length" class="inline-flex">
                 <FiveStackToolTip as-child :delay-duration="120">
                   <template #trigger>
                     <Button
@@ -389,14 +400,16 @@ import { $ } from "~/generated/zeus";
                       size="icon"
                       as="span"
                       tabindex="0"
-                      :aria-label="mapPoolShortfallText"
+                      :aria-label="mapPoolWarnings.join(' ')"
                       class="h-6 w-6 cursor-default border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))] [&_svg]:size-3.5"
                     >
                       <TriangleAlert />
                     </Button>
                   </template>
-                  <span class="block max-w-[18rem]">
-                    {{ mapPoolShortfallText }}
+                  <span class="grid max-w-[18rem] gap-1">
+                    <span v-for="warning in mapPoolWarnings" :key="warning">
+                      {{ warning }}
+                    </span>
                   </span>
                 </FiveStackToolTip>
               </span>
@@ -1094,6 +1107,7 @@ import {
   stageHighestBestOf,
   stageMapPoolMode,
   stageMapPoolShortfall,
+  stageRoundKeys,
   type StageMapPoolMode,
 } from "~/utilities/stageMapPool";
 
@@ -1600,6 +1614,12 @@ export default {
         (stagePool?.type === type ? stagePool : null)
       );
     },
+    tournamentPlaysSeeded(): boolean {
+      return (
+        !!this.seededMapPool &&
+        this.seededMapPool.id === this.tournamentMapPool?.id
+      );
+    },
     mapPoolModeOptions() {
       return [
         {
@@ -1609,7 +1629,12 @@ export default {
         {
           key: "seeded",
           label: this.$t("tournament.stage.map_pool.active_duty"),
-          disabled: !this.seededMapPool,
+          disabled: !this.seededMapPool || this.tournamentPlaysSeeded,
+          desc: this.tournamentPlaysSeeded
+            ? this.$t(
+                "tournament.stage.map_pool.tournament_plays_active_duty",
+              )
+            : undefined,
         },
         {
           key: "custom",
@@ -1619,13 +1644,32 @@ export default {
     },
     customMapChoices(): Array<any> {
       const type = this.tournament?.options?.type;
-      return this.maps
+      const playable = this.maps
         .filter((map: any) => map.type === type)
         .sort(
           (a: any, b: any) =>
             Number(!!a.workshop_map_id) - Number(!!b.workshop_map_id) ||
             a.name.localeCompare(b.name),
         );
+      const saved = this.stage?.options?.map_pool;
+      const retired =
+        saved?.type === e_map_pool_types_enum.Custom
+          ? saved.maps
+              .filter(
+                (map: any) =>
+                  !playable.some((choice: any) => choice.id === map.id),
+              )
+              .map((map: any) => ({ ...map, unavailable: true }))
+          : [];
+      return [...playable, ...retired];
+    },
+    unavailableCustomMaps(): Array<any> {
+      if (this.mapPoolMode !== "custom") {
+        return [];
+      }
+      return this.customMapChoices.filter(
+        (map: any) => map.unavailable && this.customMapPool.includes(map.id),
+      );
     },
     stageMapPoolMaps(): Array<any> {
       if (this.mapPoolMode === "seeded") {
@@ -1663,12 +1707,25 @@ export default {
           stageType: values.stage_type,
           maxTeams: parseInt(values.max_teams) || 0,
           groups: values.groups || 1,
+          swissNoElimination: !!values.swiss_no_elimination,
           defaultBestOf: values.default_best_of,
-          thirdPlaceMatch: !!values.third_place_match,
-          deciderBestOf: values.decider_best_of,
           roundBestOf: this.roundBestOf,
         }),
       );
+    },
+    mapPoolWarnings(): string[] {
+      const warnings: string[] = [];
+      if (this.mapPoolShortfall) {
+        warnings.push(this.mapPoolShortfallText);
+      }
+      if (this.unavailableCustomMaps.length) {
+        warnings.push(
+          this.$t("tournament.stage.map_pool.unavailable", {
+            maps: this.unavailableCustomMaps.map(mapLabel).join(", "),
+          }),
+        );
+      }
+      return warnings;
     },
     mapPoolShortfallText(): string {
       const shortfall = this.mapPoolShortfall;
@@ -1810,7 +1867,8 @@ export default {
         values: this.form.values,
         roundBestOf: this.roundBestOf,
         mapPoolMode: this.mapPoolMode,
-        customMapPool: this.customMapPool,
+        customMapPool:
+          this.mapPoolMode === "custom" ? this.customMapPool : null,
       });
     },
     recomputeDirty() {
@@ -1965,6 +2023,37 @@ export default {
       }
 
       return false;
+    },
+    pruneRoundBestOf(stageType: string) {
+      if (stageType === this.form.values.stage_type) {
+        return;
+      }
+      const keys = stageRoundKeys(
+        stageType,
+        parseInt(this.form.values.max_teams) || 0,
+        this.form.values.groups || 1,
+      );
+      this.roundBestOf = Object.fromEntries(
+        Object.entries(this.roundBestOf).filter(([key]) => keys.includes(key)),
+      );
+    },
+    async stageHasDrawnMatches(): Promise<boolean> {
+      const { data } = await (this as any).$apollo.query({
+        fetchPolicy: "network-only",
+        query: generateQuery({
+          tournament_brackets: [
+            {
+              where: {
+                tournament_stage_id: { _eq: this.stage.id },
+                match_id: { _is_null: false },
+              },
+              limit: 1,
+            },
+            { id: true },
+          ],
+        }),
+      });
+      return (data?.tournament_brackets?.length ?? 0) > 0;
     },
     toggleCustomMap(mapId: string) {
       const pool = [...this.customMapPool];
@@ -2221,6 +2310,22 @@ export default {
         const form = this.form.values;
         const customAdvancedSettings = this.hasAdvancedSettingsChanged();
         const settings = this.buildSettings();
+
+        // tbu_tournament_stages refuses a new or dropped options row once a
+        // match is drawn; ask first so nothing is inserted for a refused save.
+        if (
+          this.stage &&
+          !!this.stage.options?.id !== customAdvancedSettings &&
+          (await this.stageHasDrawnMatches())
+        ) {
+          toast({
+            variant: "destructive",
+            title: this.$t("common.error"),
+            description: this.$t("tournament.stage.match_settings_locked"),
+          });
+          return;
+        }
+
         const mapPoolId = customAdvancedSettings
           ? await this.stageMapPoolId()
           : null;

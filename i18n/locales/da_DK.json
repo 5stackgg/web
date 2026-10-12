@@ -7434,8 +7434,11 @@
         "active_duty": "Active Duty",
         "custom": "Egen",
         "too_small": "Bedst af {best_of} kræver mindst {best_of} maps. Denne pool har {count}.",
-        "empty": "Vælg mindst ét map."
+        "empty": "Vælg mindst ét map.",
+        "tournament_plays_active_duty": "Turneringen spiller allerede Active Duty. Vælg Samme som turneringen.",
+        "unavailable": "Kan ikke længere spilles her: {maps}. Vælg et map for at tage det ud af poolen."
       },
+      "match_settings_locked": "Denne fases kampe er allerede trukket, så kampindstillingerne kan ikke længere ændres.",
       "per_round_best_of": "Best of pr. runde",
       "third_place_match": "Aktivér bronzekamp",
       "third_place_match_description": "Opret en bronzekamp mellem de to tabere fra semifinalerne.",

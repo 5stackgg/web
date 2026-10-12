@@ -7434,8 +7434,11 @@
         "active_duty": "Aktif havuz",
         "custom": "Özel",
         "too_small": "BO{best_of} için en az {best_of} harita gerekir. Bu havuzda {count} var.",
-        "empty": "En az bir harita seç."
+        "empty": "En az bir harita seç.",
+        "tournament_plays_active_duty": "Turnuva zaten aktif havuzu kullanıyor. \"Turnuvayla aynı\" seçeneğini seç.",
+        "unavailable": "Artık burada oynanamaz: {maps}. Havuzdan çıkarmak için bir harita seç."
       },
+      "match_settings_locked": "Bu aşamanın maçları zaten çekildi, bu yüzden maç ayarları artık değiştirilemez.",
       "per_round_best_of": "Tur Bazlı Maç Serisi",
       "third_place_match": "3. Lük Maçını Etkinleştir",
       "third_place_match_description": "İki yarı final kaybedeni arasında 3.lük maçı oluştur.",

@@ -79,11 +79,16 @@ function stage(options: Record<string, unknown> | null) {
 
 let unmount: (() => void) | null = null;
 const mutate = vi.fn(respond);
+const drawnBrackets = { value: [] as Array<{ id: string }> };
+const query = vi.fn(async () => ({
+  data: { tournament_brackets: drawnBrackets.value },
+}));
 
-// The Options API components call this.$apollo.mutate, which the test app does
-// not install; the Nuxt $apollo they fall back to has no mutate of its own.
+// The Options API components call this.$apollo.mutate and .query, which the
+// test app does not install; the Nuxt $apollo they fall back to has neither.
 beforeEach(() => {
   (useNuxtApp() as any).$apollo.mutate = mutate;
+  (useNuxtApp() as any).$apollo.query = query;
   useAuthStore().me = {
     steam_id: "76561198000000001",
     name: "Organizer",
@@ -93,13 +98,19 @@ beforeEach(() => {
 
 afterEach(() => {
   delete (useNuxtApp() as any).$apollo.mutate;
+  delete (useNuxtApp() as any).$apollo.query;
   mutate.mockClear();
+  query.mockClear();
+  drawnBrackets.value = [];
   unmount?.();
   unmount = null;
   useAuthStore().me = undefined;
 });
 
-async function mountStageForm(existing: ReturnType<typeof stage> | null) {
+async function mountStageForm(
+  existing: ReturnType<typeof stage> | null,
+  pool: { id: string; type: string; maps: any[] } = tournamentPool,
+) {
   const wrapper = await mountSuspended(TournamentStageForm, {
     props: {
       order: 1,
@@ -107,7 +118,7 @@ async function mountStageForm(existing: ReturnType<typeof stage> | null) {
       tournament: {
         id: "tournament-1",
         status: "Setup",
-        options: tournamentOptions(),
+        options: tournamentOptions({ map_pool_id: pool.id, map_pool: pool }),
         stages: existing ? [existing] : [],
       },
     },
@@ -117,6 +128,10 @@ async function mountStageForm(existing: ReturnType<typeof stage> | null) {
   const vm = wrapper.vm as any;
   vm.map_pools = [seededPool];
   vm.maps = maps;
+  vm.e_tournament_stage_types = [
+    { value: "SingleElimination", description: "Single Elimination" },
+    { value: "RoundRobin", description: "Round Robin" },
+  ];
   await flushPromises();
   return wrapper;
 }
@@ -330,5 +345,84 @@ describe("TournamentStageForm map pool", () => {
     expect(
       calls.some(({ body }) => body.includes("update_match_options_by_pk")),
     ).toBe(false);
+  });
+
+  it("drops per-round formats that don't apply once the stage type changes", async () => {
+    const wrapper = await mountStageForm(null);
+    const vm = wrapper.vm as any;
+    vm.form.setValues({ min_teams: "8", max_teams: "8" });
+    vm.roundBestOf = { "WB:3": "5" };
+    await flushPromises();
+
+    const roundRobin = wrapper
+      .findAll("button")
+      .find((button) => button.text().includes("Round Robin"));
+    await roundRobin!.trigger("click");
+    await flushPromises();
+
+    expect(vm.roundBestOf).toEqual({});
+  });
+
+  it("does not create a pool for a stage whose matches are already drawn", async () => {
+    drawnBrackets.value = [{ id: "bracket-1" }];
+    const wrapper = await mountStageForm(stage(null));
+    const vm = wrapper.vm as any;
+    await pickCustom(wrapper, ["ancient", "anubis", "inferno"]);
+
+    await vm.updateCreateStage();
+
+    expect(mutate).not.toHaveBeenCalled();
+  });
+
+  it("does not offer Active Duty as its own choice when the tournament plays it", async () => {
+    const wrapper = await mountStageForm(null, seededPool);
+
+    expect(filterButton(wrapper, "Active Duty").attributes()).toHaveProperty(
+      "disabled",
+    );
+  });
+
+  it("shows a pool map that is no longer playable, so it can be taken out", async () => {
+    const retired = {
+      id: "map-de_vertigo",
+      name: "de_vertigo",
+      label: "vertigo",
+      type: "Competitive",
+      poster: null,
+      patch: null,
+      workshop_map_id: null,
+    };
+    const stagePool = {
+      id: "stage-pool",
+      type: "Custom",
+      maps: [...maps.slice(0, 4), retired],
+    };
+    const wrapper = await mountStageForm(
+      stage(
+        tournamentOptions({
+          id: "stage-options",
+          map_pool_id: stagePool.id,
+          map_pool: stagePool,
+        }),
+      ),
+    );
+
+    expect(wrapper.text()).toContain("Custom Map Pool (5)");
+    await wrapper.get('button[aria-label="vertigo"]').trigger("click");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Custom Map Pool (4)");
+  });
+
+  it("is not dirty after going back to the pool it started with", async () => {
+    const wrapper = await mountStageForm(stage(null));
+    const vm = wrapper.vm as any;
+    await pickCustom(wrapper, ["ancient"]);
+    expect(vm.isDirty).toBe(true);
+
+    await filterButton(wrapper, "Same as Tournament").trigger("click");
+    await flushPromises();
+
+    expect(vm.isDirty).toBe(false);
   });
 });

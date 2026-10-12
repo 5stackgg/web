@@ -14,6 +14,7 @@ import { Search } from "lucide-vue-next";
 import MapForm from "~/components/map-pools/MapForm.vue";
 import MapPoolRow from "~/components/map-pools/MapPoolRow.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
+import mapLabel from "~/utilities/mapLabel";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -74,7 +75,7 @@ const { isMobile } = useSidebar();
               {{ $t("pages.map_pools.pool.pool_heading", { type: pool.type }) }}
             </h2>
             <p class="text-sm text-muted-foreground mt-1">
-              {{ pool.maps.map((map) => map.name).join(", ") }}
+              {{ pool.maps.map((map) => mapLabel(map)).join(", ") }}
             </p>
           </div>
           <Button variant="secondary" size="sm" as-child>

@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { order_by } from "~/generated/zeus";
 import { dateLocale } from "~/utilities/dateLocale";
+import resolveMapLabel from "~/utilities/mapLabel";
 
 export type StreamMatchRow = {
   name: string;
@@ -129,7 +130,7 @@ export function useStreamMatchSummary(
   onBeforeUnmount(stop);
 
   const mapLabel = (mm: any): string | null =>
-    mm?.map?.label || mm?.map?.name || null;
+    resolveMapLabel(mm?.map) || null;
 
   const join = (parts: Array<string | null | false | undefined>) =>
     parts.filter(Boolean).join(" · ") || null;

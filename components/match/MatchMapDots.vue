@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { e_veto_pick_types_enum } from "~/generated/zeus";
+import mapLabel from "~/utilities/mapLabel";
 
 type Veto = {
   side?: string | null;
@@ -72,8 +73,7 @@ const dots = computed<Dot[]>(() => {
 });
 
 const mapDisplayName = (dot: Dot) =>
-  dot.matchMap?.map?.label ||
-  dot.matchMap?.map?.name ||
+  mapLabel(dot.matchMap?.map) ||
   t("match.map_number", { count: dot.index + 1 });
 
 const statusLabel = (status: DotStatus) => {

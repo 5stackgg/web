@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dateLocale } from "~/utilities/dateLocale";
+import cleanMapName from "~/utilities/cleanMapName";
 import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1006,7 +1007,7 @@ function formatPendingDate(date: string): string {
         >
           <div class="min-w-0">
             <div v-if="entry.map_name" class="font-medium truncate">
-              {{ entry.map_name }}
+              {{ cleanMapName(entry.map_name) }}
             </div>
             <div
               v-if="entry.match_start_time"

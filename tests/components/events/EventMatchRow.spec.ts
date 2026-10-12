@@ -45,6 +45,28 @@ describe("EventMatchRow", () => {
     ]);
   });
 
+  it("names an official map by its label, never its de_ name", async () => {
+    const wrapper = await mountSuspended(EventMatchRow, {
+      props: {
+        match: match({
+          match_maps: [
+            {
+              id: "mm1",
+              is_current_map: false,
+              lineup_1_score: 13,
+              lineup_2_score: 10,
+              winning_lineup_id: "l1",
+              map: { name: "de_ancient", label: null, poster: null },
+            },
+          ],
+        }),
+      },
+    });
+
+    expect(wrapper.text()).toContain("Ancient");
+    expect(wrapper.text()).not.toContain("de_ancient");
+  });
+
   it("shows a live marker instead of the time while it is being played", async () => {
     const wrapper = await mountSuspended(EventMatchRow, {
       props: { match: match({ status: "Live", winning_lineup_id: null }) },

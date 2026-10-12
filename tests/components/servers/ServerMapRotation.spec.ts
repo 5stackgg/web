@@ -14,9 +14,14 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => {
 
 import ServerMapRotation from "~/components/servers/ServerMapRotation.vue";
 
-const map = (id: string, label: string | null, workshopId: string | null) => ({
+const map = (
+  id: string,
+  label: string | null,
+  workshopId: string | null,
+  name = workshopId ?? label ?? id,
+) => ({
   id,
-  name: workshopId ?? label ?? id,
+  name,
   label,
   poster: null,
   workshop_map_id: workshopId,
@@ -38,7 +43,7 @@ function fixture({
       plugin_overrides: off.map((plugin_slug) => ({ plugin_slug })),
       map_rotation: [
         { map: map("m1", "Prophunt Mirage", "3615968422") },
-        { map: map("m2", null, null) },
+        { map: map("m2", null, null, "de_ancient") },
       ],
     },
     maps: [
@@ -149,7 +154,8 @@ describe("ServerMapRotation", () => {
     expect(items).toHaveLength(2);
     expect(items[0]).toContain("Prophunt Mirage");
     expect(items[0]).toContain("Workshop");
-    expect(items[1]).toContain("m2");
+    expect(items[1]).toContain("Ancient");
+    expect(items[1]).toContain("de_ancient");
     expect(wrapper.text()).not.toContain("No map rotation plugin is installed");
     expect(wrapper.text()).not.toContain("Boots First");
   });
@@ -228,7 +234,7 @@ describe("ServerMapRotation", () => {
     await press(tile(wrapper, "Dust II"), 50, 450);
     await move(50, 110);
 
-    expect(rowTexts(wrapper)).toEqual(["(gap)", "Prophunt Mirage", "m2"]);
+    expect(rowTexts(wrapper)).toEqual(["(gap)", "Prophunt Mirage", "Ancient"]);
     expect(ids(wrapper)).toEqual(["m1", "m2"]);
 
     await release(50, 110);
@@ -244,11 +250,11 @@ describe("ServerMapRotation", () => {
     await press(wrapper.findAll("li[data-rotation-row]")[0], 50, 110);
     await move(50, 120);
 
-    expect(rowTexts(wrapper)).toEqual(["(gap)", "m2"]);
+    expect(rowTexts(wrapper)).toEqual(["(gap)", "Ancient"]);
 
     await move(50, 165);
 
-    expect(rowTexts(wrapper)).toEqual(["m2", "(gap)"]);
+    expect(rowTexts(wrapper)).toEqual(["Ancient", "(gap)"]);
 
     await release(50, 165);
 
@@ -270,7 +276,7 @@ describe("ServerMapRotation", () => {
     await press(tile(wrapper, "Dust II"), 50, 450);
     await move(50, 110);
 
-    expect(rowTexts(wrapper)).toEqual(["Prophunt Mirage", "m2", "(gap)"]);
+    expect(rowTexts(wrapper)).toEqual(["Prophunt Mirage", "Ancient", "(gap)"]);
   });
 
   it("removes a rotation map dropped back on the pool", async () => {
@@ -300,7 +306,7 @@ describe("ServerMapRotation", () => {
     await flushPromises();
 
     expect(ids(wrapper)).toEqual(["m1", "m2"]);
-    expect(rowTexts(wrapper)).toEqual(["Prophunt Mirage", "m2"]);
+    expect(rowTexts(wrapper)).toEqual(["Prophunt Mirage", "Ancient"]);
   });
 
   it("does not add the tile a drag started from when it is let go outside the list", async () => {

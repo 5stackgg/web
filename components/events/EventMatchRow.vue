@@ -3,6 +3,7 @@ import { computed } from "vue";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { TICKER_LIVE_STATUSES } from "~/components/watch/watchTicker";
 import { dateLocale } from "~/utilities/dateLocale";
+import mapLabel from "~/utilities/mapLabel";
 
 // One dense result line for the event overview: when, where, who, score.
 // Scores go through MatchLineupScoreDisplay so the colours match every other
@@ -68,7 +69,7 @@ const lost = (lineupId: string) =>
           loading="lazy"
           class="hidden h-[1.625rem] w-[2.875rem] shrink-0 rounded object-cover sm:block"
         />
-        <span class="truncate">{{ map?.label ?? map?.name }}</span>
+        <span class="truncate">{{ mapLabel(map) }}</span>
       </span>
     </span>
 

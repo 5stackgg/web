@@ -392,6 +392,7 @@ import {
 } from "~/utilities/matchParties";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { $, e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
+import mapLabel from "~/utilities/mapLabel";
 
 export default {
   components: {
@@ -636,7 +637,7 @@ export default {
         ) {
           continue;
         }
-        const label = mm.map?.label ?? mm.map?.name ?? `Map ${out.length + 1}`;
+        const label = mapLabel(mm.map) || `Map ${out.length + 1}`;
         out.push({ id: String(mm.id), label });
       }
       return out;

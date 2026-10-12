@@ -41,6 +41,7 @@ import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { Spinner } from "~/components/ui/spinner";
 import { e_match_status_enum } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import mapLabel from "~/utilities/mapLabel";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import BootSequence from "~/components/match/BootSequence.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
@@ -126,7 +127,7 @@ type LiveMatchMap = {
   id: string;
   lineup_1_score: number;
   lineup_2_score: number;
-  map: { name: string | null } | null;
+  map: { name: string | null; label: string | null } | null;
 };
 
 type LiveMatch = {
@@ -499,7 +500,7 @@ function liveRoundScore(m: LiveMatch): { l: number; r: number } | null {
 }
 
 function currentMapName(m: LiveMatch): string | null {
-  return currentMapFor(m)?.map?.name ?? null;
+  return mapLabel(currentMapFor(m)?.map) || null;
 }
 
 function matchStatusLabel(m: LiveMatch): string {

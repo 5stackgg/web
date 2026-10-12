@@ -7,6 +7,7 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
 import formatStatValue from "~/utilities/formatStatValue";
+import mapLabel from "~/utilities/mapLabel";
 import { kdColor } from "~/utils/statTiers";
 
 // Drop-in scoreboard pulldown for any player surface (WHEP, Twitch,
@@ -132,7 +133,7 @@ function ensureSubscribed() {
                 id: true,
                 order: true,
                 status: true,
-                map: { name: true, patch: true },
+                map: { name: true, label: true, patch: true },
                 lineup_1_score: true,
                 lineup_2_score: true,
                 winning_lineup_id: true,
@@ -350,7 +351,7 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
               <span
                 class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
-                {{ currentMap.map?.name }}
+                {{ mapLabel(currentMap.map) }}
               </span>
               <div class="flex min-w-0 items-center justify-end gap-2">
                 <MatchLineupScoreDisplay
@@ -485,7 +486,7 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
             <span
               class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
             >
-              {{ mm.map?.name }}
+              {{ mapLabel(mm.map) }}
             </span>
             <div class="flex min-w-0 items-center justify-end gap-2">
               <MatchLineupScoreDisplay

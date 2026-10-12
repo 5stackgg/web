@@ -47,6 +47,7 @@ import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 import { Spinner } from "~/components/ui/spinner";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import mapLabel from "~/utilities/mapLabel";
 
 const authStore = useAuthStore();
 const { showClip, setClipQueue } = useClipModal();
@@ -1002,9 +1003,8 @@ const queueStatus = computed<{
           :key="g.matchMapId"
           :expanded="isActiveExpanded(g.matchMapId)"
           :title="
-            matchupLabel(g.sample) ??
-            g.sample.match_map?.map?.label ??
-            g.sample.match_map?.map?.name ??
+            matchupLabel(g.sample) ||
+            mapLabel(g.sample.match_map?.map) ||
             $t('clips.render_queue.unknown_match')
           "
           avatar-class="border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]"
@@ -1022,12 +1022,8 @@ const queueStatus = computed<{
           </template>
 
           <template #meta>
-            <span
-              v-if="
-                g.sample.match_map?.map?.label || g.sample.match_map?.map?.name
-              "
-            >
-              {{ g.sample.match_map.map.label ?? g.sample.match_map.map.name }}
+            <span v-if="mapLabel(g.sample.match_map?.map)">
+              {{ mapLabel(g.sample.match_map?.map) }}
               ·
             </span>
             <span class="tabular-nums">
@@ -1494,9 +1490,8 @@ const queueStatus = computed<{
             :key="g.matchMapId"
             :expanded="!!finishedExpanded[g.matchMapId]"
             :title="
-              matchupLabel(g.sample) ??
-              g.sample.match_map?.map?.label ??
-              g.sample.match_map?.map?.name ??
+              matchupLabel(g.sample) ||
+              mapLabel(g.sample.match_map?.map) ||
               $t('clips.render_queue.unknown_match')
             "
             :avatar-class="
@@ -1510,15 +1505,8 @@ const queueStatus = computed<{
             @toggle="toggleFinishedExpanded(g.matchMapId)"
           >
             <template #meta>
-              <span
-                v-if="
-                  g.sample.match_map?.map?.label ||
-                  g.sample.match_map?.map?.name
-                "
-              >
-                {{
-                  g.sample.match_map.map.label ?? g.sample.match_map.map.name
-                }}
+              <span v-if="mapLabel(g.sample.match_map?.map)">
+                {{ mapLabel(g.sample.match_map?.map) }}
                 ·
               </span>
               <span class="tabular-nums">{{

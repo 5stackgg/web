@@ -17,6 +17,7 @@ import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const props = defineProps<{ myTeamIds: string[] }>();
 
@@ -158,7 +159,7 @@ function sameDate(a: Date, b: Date) {
 }
 
 function time(date: Date) {
-  return date.toLocaleTimeString(locale.value, {
+  return date.toLocaleTimeString(dateLocale(), {
     hour: "numeric",
     minute: "2-digit",
   });
@@ -204,7 +205,7 @@ function availability(posting: any): { label: string; today: boolean } {
       .sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7))
       .map((day) =>
         // 2023-01-01 was a Sunday, so day 0..6 lands on the right weekday.
-        new Date(2023, 0, 1 + day).toLocaleDateString(locale.value, {
+        new Date(2023, 0, 1 + day).toLocaleDateString(dateLocale(), {
           weekday: "short",
         }),
       );

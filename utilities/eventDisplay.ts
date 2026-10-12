@@ -1,8 +1,10 @@
+import { dateLocale } from "~/utilities/dateLocale";
+
 export function formatEventDate(value?: string | null): string | null {
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(dateLocale(), {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -77,7 +79,7 @@ export function formatEventRange(
 ): string | null {
   const starts = startsAt ? new Date(startsAt) : null;
   const ends = endsAt ? new Date(endsAt) : null;
-  const format = new Intl.DateTimeFormat(undefined, {
+  const format = new Intl.DateTimeFormat(dateLocale(), {
     year: "numeric",
     month: "short",
     day: "numeric",

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import TimeAgo from "@/components/TimeAgo.vue";
 import DateTimePicker from "@/components/common/DateTimePicker.vue";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export default {
   components: { Button, Badge, TimeAgo, DateTimePicker },
@@ -63,6 +64,7 @@ export default {
     },
   },
   methods: {
+    dateLocale,
     isAwaitingUs(request: any): boolean {
       return request.awaiting_team_id === this.teamId;
     },
@@ -174,7 +176,9 @@ export default {
 
       <div class="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
         <span class="text-foreground">
-          {{ new Date(request.proposed_scheduled_at).toLocaleString() }}
+          {{
+            new Date(request.proposed_scheduled_at).toLocaleString(dateLocale())
+          }}
         </span>
         <span v-if="request.match_options" class="text-muted-foreground">
           {{ $t("scrim.best_of_indicator", { bestOf: request.match_options.best_of }) }}

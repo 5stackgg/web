@@ -7,13 +7,14 @@ import { Button } from "~/components/ui/button";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { checkBackblazeWorker } from "~/utilities/backblazeWorkerHealth";
+import { dateLocale } from "~/utilities/dateLocale";
 
 type StageId = "write" | "read" | "edge";
 type StageState = "idle" | "running" | "ok" | "fail" | "manual" | "skipped";
 type Stage = { state: StageState; detail?: string };
 
 const { client } = useApolloClient();
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const key = (name: string) => `pages.settings.application.demo_settings.${name}`;
 
 const workerUrl = computed(
@@ -203,7 +204,7 @@ const text: Record<StageState, string> = {
 };
 
 const lastRunTime = computed(() =>
-  lastRun.value ? lastRun.value.toLocaleTimeString(locale.value) : "",
+  lastRun.value ? lastRun.value.toLocaleTimeString(dateLocale()) : "",
 );
 </script>
 

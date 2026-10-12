@@ -3,6 +3,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { order_by } from "~/generated/zeus";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export type StreamMatchRow = {
   name: string;
@@ -61,7 +62,7 @@ const MAP_OVER_STATUSES = ["Finished", "WaitingForTV", "UploadingDemo"];
 export function useStreamMatchSummary(
   source: () => { matchId?: string | null; matchMapId?: string | null },
 ) {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const { client } = useApolloClient();
 
   const match = ref<any | null>(null);
@@ -137,7 +138,7 @@ export function useStreamMatchSummary(
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return "";
     const sameDay = d.toDateString() === new Date().toDateString();
-    return d.toLocaleString(locale.value, {
+    return d.toLocaleString(dateLocale(), {
       ...(sameDay ? {} : { weekday: "short" }),
       hour: "numeric",
       minute: "2-digit",

@@ -1570,6 +1570,7 @@
         "where": "地點",
         "online": "線上",
         "teams": "隊伍",
+        "players": "玩家",
         "part_of": "所屬活動"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "隊伍",
+      "players": "玩家",
       "default_label": "賽事",
       "organized_by": "由 {team} 主辦"
     },
@@ -7258,8 +7260,7 @@
         "matches": "場次",
         "next_best": "次佳：{name}",
         "manual": "由賽事主辦方選定。"
-      },
-      "no_matches_played": "尚未進行任何比賽"
+      }
     },
     "swiss": {
       "advanced": "晉級",
@@ -7275,6 +7276,7 @@
       "ended": "已結束",
       "starts": "開始",
       "teams": "隊伍",
+      "players": "玩家",
       "champion": "冠軍",
       "second": "亞軍",
       "third": "季軍",
@@ -7395,6 +7397,7 @@
       "tournament": "賽事",
       "type": "類型",
       "teams_joined": "已加入隊伍",
+      "players_joined": "已加入玩家",
       "starts": "開始",
       "no_tournaments_found": "找不到賽事",
       "maps_label": "地圖："
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "輸入此階段的小組數...",
       "default_best_of": "預設賽制",
       "default_best_of_description": "此階段所有輪次使用的預設比賽賽制。",
+      "map_pool": {
+        "label": "地圖池",
+        "description": "本階段比賽進行禁選的地圖。",
+        "same_as_tournament": "與賽事相同",
+        "active_duty": "現役圖池",
+        "custom": "自訂",
+        "too_small": "BO{best_of} 至少需要 {best_of} 張地圖。此地圖池有 {count} 張。",
+        "empty": "至少選擇一張地圖。",
+        "tournament_plays_active_duty": "賽事已在使用現役圖池。請選擇「與賽事相同」。",
+        "unavailable": "此處已無法使用：{maps}。選擇地圖即可將其移出地圖池。"
+      },
+      "match_settings_locked": "本階段的比賽已經排定，因此比賽設定無法再更改。",
       "per_round_best_of": "各輪賽制",
       "third_place_match": "啟用季軍賽",
       "third_place_match_description": "在兩場準決賽敗者之間建立季軍賽。",
       "decider_best_of": "季軍賽賽制",
       "advanced_settings": "進階階段設定",
       "teams_count": "{count} 支隊伍",
+      "structure_locked_label": "類型、隊伍和小組",
+      "structure_locked": "對陣圖產生後，類型、隊伍和小組將被鎖定。賽制仍可變更。",
+      "match_settings_locked_label": "比賽設定",
+      "match_settings_locked": "對陣圖產生後，比賽設定將被鎖定。",
+      "drawn_while_editing": "你編輯期間對陣圖已產生。請捨棄對類型、隊伍、小組或比賽設定的變更，然後儲存賽制。",
       "final_map_advantage": {
         "label": "決賽地圖優勢",
         "description": "勝者組隊伍帶入總決賽的地圖分領先優勢。必須低於獲勝所需的地圖數。"
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "符合資格",
-      "not_eligible": "還需要 {count} 名選手",
+      "not_eligible": "不符合資格",
+      "need_players": "還需要 {count} 名選手 | 還需要 {count} 名選手",
+      "missed_check_in": "錯過報到",
       "leave_tournament": "離開賽事",
       "leave_team": "離開隊伍",
       "slot": "第 {number} 號位",
@@ -7624,7 +7646,7 @@
       "remove_member": "移除成員",
       "confirm_remove_member": "您確定要移除此成員嗎？",
       "remove_member_description": "這將從賽事隊伍中移除該成員",
-      "min_roster_locked": "賽事已開始——請先加入替補再移除選手，陣容人數不能低於最低要求",
+      "min_roster_locked": "對陣圖已完成種子排位，陣容不能少於 {count} 人。請先加入替補。",
       "cancel_invite": "取消邀請",
       "confirm_cancel_invite": "您確定要取消此邀請嗎？",
       "cancel_invite_description": "這將取消對該成員的邀請",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "開放報名",
+      "open_registration_start_passed": "開始時間已過。請設定一個更晚的開始時間以重新開放報名。",
+      "open_registration_no_stages": "請先新增一個階段。",
+      "open_registration_full": "對陣圖已滿。",
       "close_registration": "關閉報名",
       "start": "開始賽事",
       "cancel": "取消賽事",
@@ -7752,6 +7777,18 @@
       "expand": "展開",
       "collapse_all": "全部收合",
       "expand_all": "全部展開"
+    },
+    "matches_filter": {
+      "live": "進行中",
+      "upcoming": "即將開始",
+      "results": "結果",
+      "all": "全部",
+      "empty": {
+        "live": "目前沒有進行中的比賽。",
+        "upcoming": "沒有即將開始的比賽。",
+        "results": "尚無結果。",
+        "all": "尚無比賽。對陣圖產生後會顯示在這裡。"
+      }
     },
     "registration": {
       "section": "報名",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "需要處理",
       "stages_locked": "賽事開始後無法變更階段。",
+      "stages_drawn": "對陣圖產生後無法變更階段。將賽事重設為設定狀態後才能編輯。",
       "stage_summary": "{min}–{max} 支隊伍",
       "groups": "{count} 個小組",
       "no_stages": "尚無階段",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "{team} 受邀報名參加賽事"
     },
     "roles": {
-      "captain": "隊長"
+      "captain": "隊長",
+      "owner": "擁有者"
     },
     "leave": "離開隊伍",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "找不到隊伍",
       "owner": "擁有者",
       "captain": "隊長",
+      "admin": "管理員",
       "ineligible_short": "已鎖定",
-      "tournament_join_requires_owner_or_captain": "您只能以擁有者或隊長身分的隊伍加入賽事。",
+      "tournament_join_requires_owner_or_captain": "您只能以擁有者、隊長或管理員身分所在的隊伍參加。",
       "not_enough_players": "至少需要 {count} 名玩家才能發起挑戰。",
       "selected": "已選",
       "loading_more": "載入更多…",
@@ -9955,6 +9995,10 @@
       "online_room": "線上房間",
       "lan_room_hint": "僅此網路中的玩家可以加入",
       "online_room_hint": "線上進行，任何人都可以加入"
+    },
+    "errors": {
+      "already_queued": "你的大廳已在佇列中。",
+      "player_in_match": "{name} 已在比賽中。"
     }
   },
   "game_server": {

@@ -277,6 +277,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { generateQuery } from "~/graphql/graphqlGen";
 import SchemaSelector from "./SchemaSelector.vue";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export default {
   components: {
@@ -315,7 +316,7 @@ export default {
     },
     formatDate(date: string | null) {
       if (!date) return this.$t("common.never");
-      return new Date(date).toLocaleString();
+      return new Date(date).toLocaleString(dateLocale());
     },
     getDeadTupleVariant(dead: number, live: number) {
       if (live === 0) return "secondary";

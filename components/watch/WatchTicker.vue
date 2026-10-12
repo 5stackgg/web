@@ -31,7 +31,7 @@ const props = defineProps<{
   streamableMatchIds: string[];
 }>();
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { client } = useApolloClient();
 const { stageMatchId, setStage } = useWatchStage();
 
@@ -224,7 +224,7 @@ const clock =
     : null;
 onBeforeUnmount(() => clock && clearInterval(clock));
 
-const ctx = computed(() => ({ t, locale: locale.value, now: now.value }));
+const ctx = computed(() => ({ t, now: now.value }));
 const liveCells = computed(() =>
   sortLiveMatches(live.value).map((m) => tickerCell(m, ctx.value)),
 );
@@ -259,7 +259,7 @@ const nothingLive = computed(() => {
   const next = upcoming.value.find((m) => m.scheduled_at);
   return next
     ? t("pages.watch.ticker.nothing_live_next", {
-        time: formatStartTime(next.scheduled_at, now.value, locale.value),
+        time: formatStartTime(next.scheduled_at, now.value),
       })
     : t("pages.watch.ticker.nothing_live");
 });
@@ -303,7 +303,7 @@ const items = computed<Item[]>(() => {
   if (f === "all" || f === "results") {
     let lastDay: string | null = null;
     for (const match of results.value) {
-      const day = resultDayLabel(match.ended_at, now.value, t, locale.value);
+      const day = resultDayLabel(match.ended_at, now.value, t);
       if (day !== lastDay) {
         list.push({
           type: "divider",

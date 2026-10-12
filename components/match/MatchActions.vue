@@ -172,7 +172,7 @@ const menuLabel =
       </button>
     </template>
 
-    <DropdownMenu v-if="!dock || hasMoreItems">
+    <DropdownMenu v-if="!dock || hasMoreItems" @update:open="onMenuOpen">
       <DropdownMenuTrigger as-child>
         <button v-if="dock" type="button" :class="dockNeutral">
           <SlidersHorizontal class="h-3 w-3 shrink-0" />
@@ -1006,6 +1006,13 @@ export default {
           (command) => command.action === action,
         )
       );
+    },
+    // A support call clears when an organizer reads its notification, which
+    // nothing this page subscribes to can see.
+    onMenuOpen(open: boolean) {
+      if (open && this.match.requested_organizer) {
+        void this.refetchMatchStatic();
+      }
     },
     async callForOrganizer() {
       await this.$apollo.mutate({

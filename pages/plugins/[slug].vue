@@ -53,6 +53,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { dateLocale } from "~/utilities/dateLocale";
 
 definePageMeta({
   middleware: "admin",
@@ -857,7 +858,11 @@ definePageMeta({
                   </Badge>
                 </div>
                 <span class="text-xs text-muted-foreground">
-                  {{ new Date(version.published_at).toLocaleDateString() }}
+                  {{
+                    new Date(version.published_at).toLocaleDateString(
+                      dateLocale(),
+                    )
+                  }}
                 </span>
               </div>
             </CardContent>

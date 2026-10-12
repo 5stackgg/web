@@ -1570,6 +1570,7 @@
         "where": "地点",
         "online": "线上",
         "teams": "队伍",
+        "players": "玩家",
         "part_of": "所属活动"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "队伍",
+      "players": "玩家",
       "default_label": "赛事",
       "organized_by": "由 {team} 主办"
     },
@@ -7258,8 +7260,7 @@
         "matches": "场次",
         "next_best": "次佳：{name}",
         "manual": "由赛事主办方选定。"
-      },
-      "no_matches_played": "尚未进行任何比赛"
+      }
     },
     "swiss": {
       "advanced": "晋级",
@@ -7275,6 +7276,7 @@
       "ended": "已结束",
       "starts": "开始",
       "teams": "队伍",
+      "players": "玩家",
       "champion": "冠军",
       "second": "亚军",
       "third": "季军",
@@ -7395,6 +7397,7 @@
       "tournament": "赛事",
       "type": "类型",
       "teams_joined": "已加入队伍",
+      "players_joined": "已加入玩家",
       "starts": "开始",
       "no_tournaments_found": "未找到赛事",
       "maps_label": "地图："
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "输入此阶段的小组数...",
       "default_best_of": "默认最好",
       "default_best_of_description": "此阶段所有轮次使用的默认比赛格式。",
+      "map_pool": {
+        "label": "地图池",
+        "description": "本阶段比赛进行禁选的地图。",
+        "same_as_tournament": "与赛事相同",
+        "active_duty": "现役图池",
+        "custom": "自定义",
+        "too_small": "BO{best_of} 至少需要 {best_of} 张地图。此地图池有 {count} 张。",
+        "empty": "至少选择一张地图。",
+        "tournament_plays_active_duty": "赛事已在使用现役图池。请选择“与赛事相同”。",
+        "unavailable": "此处已无法使用：{maps}。选择地图即可将其移出地图池。"
+      },
+      "match_settings_locked": "本阶段的比赛已经排定，因此比赛设置无法再更改。",
       "per_round_best_of": "按轮最好",
       "third_place_match": "启用季军赛",
       "third_place_match_description": "在两名半决赛失利者之间创建季军赛。",
       "decider_best_of": "季军赛最好",
       "advanced_settings": "高级阶段设置",
       "teams_count": "{count} 支队伍",
+      "structure_locked_label": "类型、队伍和小组",
+      "structure_locked": "对阵图生成后，类型、队伍和小组将被锁定。赛制仍可更改。",
+      "match_settings_locked_label": "比赛设置",
+      "match_settings_locked": "对阵图生成后，比赛设置将被锁定。",
+      "drawn_while_editing": "你编辑期间对阵图已生成。请放弃对类型、队伍、小组或比赛设置的更改，然后保存赛制。",
       "final_map_advantage": {
         "label": "决赛地图优势",
         "description": "胜者组队伍带入总决赛的地图分优势。必须小于取胜所需的地图数。"
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "符合条件",
-      "not_eligible": "还需要 {count} 名玩家",
+      "not_eligible": "不符合条件",
+      "need_players": "还需要 {count} 名玩家 | 还需要 {count} 名玩家",
+      "missed_check_in": "错过签到",
       "leave_tournament": "离开赛事",
       "leave_team": "离开队伍",
       "slot": "第 {number} 号位",
@@ -7624,7 +7646,7 @@
       "remove_member": "移除成员",
       "confirm_remove_member": "您确定要移除此成员吗？",
       "remove_member_description": "这将从赛事队伍中移除该成员",
-      "min_roster_locked": "赛事已开始——先添加替补再移除玩家，阵容不能低于最低人数",
+      "min_roster_locked": "对阵图已完成种子排位，阵容不能少于 {count} 人。请先添加替补。",
       "cancel_invite": "取消邀请",
       "confirm_cancel_invite": "您确定要取消此邀请吗？",
       "cancel_invite_description": "这将取消对该成员的邀请",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "开放报名",
+      "open_registration_start_passed": "开始时间已过。请设置一个更晚的开始时间以重新开放报名。",
+      "open_registration_no_stages": "请先添加一个阶段。",
+      "open_registration_full": "对阵图已满。",
       "close_registration": "关闭报名",
       "start": "开始赛事",
       "cancel": "取消赛事",
@@ -7752,6 +7777,18 @@
       "expand": "展开",
       "collapse_all": "全部收起",
       "expand_all": "全部展开"
+    },
+    "matches_filter": {
+      "live": "进行中",
+      "upcoming": "即将开始",
+      "results": "结果",
+      "all": "全部",
+      "empty": {
+        "live": "目前没有进行中的比赛。",
+        "upcoming": "没有即将开始的比赛。",
+        "results": "暂无结果。",
+        "all": "暂无比赛。对阵图生成后会显示在这里。"
+      }
     },
     "registration": {
       "section": "报名",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "需要处理",
       "stages_locked": "赛事开始后无法更改阶段。",
+      "stages_drawn": "对阵图生成后无法更改阶段。将赛事重置为设置状态后才能编辑。",
       "stage_summary": "{min}–{max} 支队伍",
       "groups": "{count} 个小组",
       "no_stages": "暂无阶段",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "{team} 受邀报名参加赛事"
     },
     "roles": {
-      "captain": "队长"
+      "captain": "队长",
+      "owner": "拥有者"
     },
     "leave": "离开队伍",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "未找到队伍",
       "owner": "拥有者",
       "captain": "队长",
+      "admin": "管理员",
       "ineligible_short": "已锁定",
-      "tournament_join_requires_owner_or_captain": "您只能以拥有者或队长身份加入赛事的队伍。",
+      "tournament_join_requires_owner_or_captain": "您只能以拥有者、队长或管理员身份所在的队伍参加。",
       "not_enough_players": "至少需要 {count} 名玩家才能发起挑战。",
       "selected": "已选",
       "loading_more": "加载更多…",
@@ -9955,6 +9995,10 @@
       "online_room": "线上房间",
       "lan_room_hint": "仅此网络中的玩家可以加入",
       "online_room_hint": "线上进行，任何人都可以加入"
+    },
+    "errors": {
+      "already_queued": "你的大厅已在队列中。",
+      "player_in_match": "{name} 已在比赛中。"
     }
   },
   "game_server": {

@@ -1570,6 +1570,7 @@
         "where": "Lieu",
         "online": "En ligne",
         "teams": "Équipes",
+        "players": "Joueurs",
         "part_of": "Fait partie de"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Équipes",
+      "players": "Joueurs",
       "default_label": "Tournoi",
       "organized_by": "Par {team}"
     },
@@ -7258,8 +7260,7 @@
         "matches": "Matchs",
         "next_best": "Suivant : {name}",
         "manual": "Choisi par l'organisateur du tournoi."
-      },
-      "no_matches_played": "Aucun match joué pour le moment"
+      }
     },
     "swiss": {
       "advanced": "QUALIFIÉ",
@@ -7275,6 +7276,7 @@
       "ended": "Terminé",
       "starts": "Début",
       "teams": "Équipes",
+      "players": "Joueurs",
       "champion": "Champion",
       "second": "2e",
       "third": "3e",
@@ -7395,6 +7397,7 @@
       "tournament": "Tournoi",
       "type": "Type",
       "teams_joined": "Équipes inscrites",
+      "players_joined": "Joueurs inscrits",
       "starts": "Début",
       "no_tournaments_found": "Aucun tournoi trouvé",
       "maps_label": "Maps :"
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "Indique le nombre de groupes pour cette phase...",
       "default_best_of": "Best of par défaut",
       "default_best_of_description": "Le format de match utilisé par défaut pour tous les rounds de cette phase.",
+      "map_pool": {
+        "label": "Map pool",
+        "description": "Les cartes sur lesquelles se fait le veto des matchs de cette phase.",
+        "same_as_tournament": "Comme le tournoi",
+        "active_duty": "Active Duty",
+        "custom": "Personnalisé",
+        "too_small": "Un best of {best_of} nécessite au moins {best_of} cartes. Ce map pool en a {count}.",
+        "empty": "Choisissez au moins une carte.",
+        "tournament_plays_active_duty": "Le tournoi joue déjà Active Duty. Choisissez « Comme le tournoi ».",
+        "unavailable": "N'est plus jouable ici : {maps}. Sélectionnez une carte pour la retirer du map pool."
+      },
+      "match_settings_locked": "Les matchs de cette phase sont déjà tirés, leurs paramètres ne peuvent donc plus changer.",
       "per_round_best_of": "Best of par round",
       "third_place_match": "Activer la petite finale",
       "third_place_match_description": "Crée un match pour la 3e place entre les deux perdants de demi-finale.",
       "decider_best_of": "Match pour la 3e place",
       "advanced_settings": "Paramètres avancés de la phase",
       "teams_count": "{count} équipes",
+      "structure_locked_label": "Type, équipes et groupes",
+      "structure_locked": "Le type, les équipes et les groupes sont verrouillés une fois l'arbre tiré. Le best of peut encore changer.",
+      "match_settings_locked_label": "Paramètres de match",
+      "match_settings_locked": "Les paramètres de match sont verrouillés une fois l'arbre tiré.",
+      "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule tes changements de type, d'équipes, de groupes ou de paramètres de match, puis enregistre le best of.",
       "final_map_advantage": {
         "label": "Avantage de map en finale",
         "description": "Avance en points de map dont bénéficie l'équipe du bracket des vainqueurs en grande finale. Doit rester inférieure au nombre de maps nécessaires pour gagner."
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "Éligible",
-      "not_eligible": "Il manque {count} joueurs",
+      "not_eligible": "Non éligible",
+      "need_players": "Il manque {count} joueur | Il manque {count} joueurs",
+      "missed_check_in": "Check-in manqué",
       "leave_tournament": "Quitter le tournoi",
       "leave_team": "Quitter l'équipe",
       "slot": "Slot {number}",
@@ -7624,7 +7646,7 @@
       "remove_member": "Retirer le membre",
       "confirm_remove_member": "Retirer ce membre ?",
       "remove_member_description": "Le membre sera retiré de l'équipe du tournoi",
-      "min_roster_locked": "Le tournoi a commencé — ajoute un remplaçant avant de retirer un joueur, le roster ne peut pas passer sous la composition minimale",
+      "min_roster_locked": "L'arbre est tiré, le roster ne peut donc pas descendre sous {count}. Ajoute d'abord un remplaçant.",
       "cancel_invite": "Annuler l'invitation",
       "confirm_cancel_invite": "Annuler cette invitation ?",
       "cancel_invite_description": "L'invitation de ce membre sera annulée",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "Ouvrir les inscriptions",
+      "open_registration_start_passed": "L'heure de début est passée. Choisis une heure de début plus tardive pour rouvrir les inscriptions.",
+      "open_registration_no_stages": "Ajoute d'abord une phase.",
+      "open_registration_full": "L'arbre est complet.",
       "close_registration": "Fermer les inscriptions",
       "start": "Démarrer le tournoi",
       "cancel": "Annuler le tournoi",
@@ -7752,6 +7777,18 @@
       "expand": "Déplier",
       "collapse_all": "Tout replier",
       "expand_all": "Tout déplier"
+    },
+    "matches_filter": {
+      "live": "En direct",
+      "upcoming": "À venir",
+      "results": "Résultats",
+      "all": "Tous",
+      "empty": {
+        "live": "Rien en direct pour le moment.",
+        "upcoming": "Aucun match à venir.",
+        "results": "Aucun résultat pour l'instant.",
+        "all": "Aucun match pour l'instant. Ils apparaîtront une fois l'arbre établi."
+      }
     },
     "registration": {
       "section": "Inscription",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "Demande votre attention",
       "stages_locked": "Les phases ne peuvent plus changer une fois le tournoi lancé.",
+      "stages_drawn": "Les phases ne peuvent plus changer une fois l'arbre tiré. Repassez le tournoi en configuration pour les modifier.",
       "stage_summary": "{min}–{max} équipes",
       "groups": "{count} groupes",
       "no_stages": "Aucune phase",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "{team} a été invitée à s'inscrire à un tournoi"
     },
     "roles": {
-      "captain": "Capitaine"
+      "captain": "Capitaine",
+      "owner": "Propriétaire"
     },
     "leave": "Quitter l'équipe",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "Aucune équipe trouvée",
       "owner": "Propriétaire",
       "captain": "Capitaine",
+      "admin": "Admin",
       "ineligible_short": "Verrouillée",
-      "tournament_join_requires_owner_or_captain": "Tu peux rejoindre un tournoi uniquement avec les équipes dont tu es propriétaire ou capitaine.",
+      "tournament_join_requires_owner_or_captain": "Tu peux rejoindre uniquement avec les équipes dont tu es propriétaire, capitaine ou admin.",
       "not_enough_players": "Il faut au moins {count} joueurs pour lancer un défi.",
       "selected": "Sélectionnée",
       "loading_more": "Chargement…",
@@ -9955,6 +9995,10 @@
       "online_room": "Salon en ligne",
       "lan_room_hint": "Seuls les joueurs de ce réseau peuvent rejoindre",
       "online_room_hint": "Se joue en ligne, tout le monde peut rejoindre"
+    },
+    "errors": {
+      "already_queued": "Ton lobby est déjà en file d'attente.",
+      "player_in_match": "{name} est déjà dans un match."
     }
   },
   "game_server": {

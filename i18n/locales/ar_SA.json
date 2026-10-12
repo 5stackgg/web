@@ -1570,6 +1570,7 @@
         "where": "المكان",
         "online": "عبر الإنترنت",
         "teams": "الفرق",
+        "players": "اللاعبون",
         "part_of": "ضمن"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "فرق",
+      "players": "اللاعبون",
       "default_label": "بطولة",
       "organized_by": "بواسطة {team}"
     },
@@ -7258,8 +7260,7 @@
         "matches": "المباريات",
         "next_best": "التالي: {name}",
         "manual": "اختاره منظم البطولة."
-      },
-      "no_matches_played": "لم تُلعب أي مباراة بعد"
+      }
     },
     "swiss": {
       "advanced": "تأهل",
@@ -7275,6 +7276,7 @@
       "ended": "انتهت",
       "starts": "تبدأ",
       "teams": "فرق",
+      "players": "اللاعبون",
       "champion": "البطل",
       "second": "الثاني",
       "third": "الثالث",
@@ -7395,6 +7397,7 @@
       "tournament": "بطولة",
       "type": "النوع",
       "teams_joined": "فرق منضمة",
+      "players_joined": "لاعبون منضمون",
       "starts": "تبدأ",
       "no_tournaments_found": "لا توجد بطولات",
       "maps_label": "خرائط:"
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "أدخل عدد المجموعات لهذه المرحلة...",
       "default_best_of": "نظام Best Of الافتراضي",
       "default_best_of_description": "صيغة المباراة الافتراضية المستخدمة في كل جولات هذه المرحلة.",
+      "map_pool": {
+        "label": "قائمة الخرائط",
+        "description": "الخرائط التي تُستبعد وتُختار منها خرائط مباريات هذه المرحلة.",
+        "same_as_tournament": "مثل البطولة",
+        "active_duty": "Active Duty",
+        "custom": "مخصصة",
+        "too_small": "نظام Best Of {best_of} يحتاج إلى {best_of} خرائط على الأقل. هذه القائمة فيها {count}.",
+        "empty": "اختر خريطة واحدة على الأقل.",
+        "tournament_plays_active_duty": "البطولة تلعب بالفعل على قائمة Active Duty. اختر «مثل البطولة».",
+        "unavailable": "لم تعد قابلة للعب هنا: {maps}. اختر خريطة لإخراجها من القائمة."
+      },
+      "match_settings_locked": "سُحبت مباريات هذه المرحلة بالفعل، لذا لا يمكن تغيير إعدادات مبارياتها.",
       "per_round_best_of": "Best Of لكل جولة",
       "third_place_match": "فعّل مباراة المركز الثالث",
       "third_place_match_description": "أنشئ مباراة لتحديد المركز الثالث بين خاسري نصف النهائي.",
       "decider_best_of": "محدد المركز الثالث",
       "advanced_settings": "إعدادات المرحلة المتقدمة",
       "teams_count": "{count} فرق",
+      "structure_locked_label": "النوع والفرق والمجموعات",
+      "structure_locked": "النوع والفرق والمجموعات مقفلة بعد سحب شجرة البطولة. لا يزال بالإمكان تغيير نظام Best Of.",
+      "match_settings_locked_label": "إعدادات المباراة",
+      "match_settings_locked": "تُقفل إعدادات المباراة بعد سحب شجرة البطولة.",
+      "drawn_while_editing": "تم سحب شجرة البطولة أثناء التعديل. تجاهل تغييراتك على النوع أو الفرق أو المجموعات أو إعدادات المباراة، ثم احفظ نظام Best Of.",
       "final_map_advantage": {
         "label": "أفضلية الخريطة في النهائي",
         "description": "أفضلية بنقاط خرائط يدخل بها فريق شجرة الفائزين إلى النهائي الكبير. يجب أن تبقى أقل من عدد الخرائط اللازمة للفوز."
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "مؤهل",
-      "not_eligible": "تحتاج إلى {count} لاعبين إضافيين",
+      "not_eligible": "غير مؤهل",
+      "need_players": "تحتاج إلى {count} لاعب إضافي | تحتاج إلى {count} لاعبين إضافيين",
+      "missed_check_in": "تأكيد حضور فائت",
       "leave_tournament": "غادر البطولة",
       "leave_team": "غادر الفريق",
       "slot": "الخانة {number}",
@@ -7624,7 +7646,7 @@
       "remove_member": "احذف العضو",
       "confirm_remove_member": "هل تريد حذف هذا العضو؟",
       "remove_member_description": "سيؤدي هذا إلى حذف العضو من فريق البطولة",
-      "min_roster_locked": "بدأت البطولة — أضف لاعبًا بديلًا قبل حذف لاعب، فلا يمكن أن تقل قائمة اللاعبين عن الحد الأدنى للتشكيلة",
+      "min_roster_locked": "تم توزيع الفرق في شجرة البطولة، لذا لا يمكن أن تقل القائمة عن {count}. أضف لاعبًا بديلًا أولًا.",
       "cancel_invite": "ألغِ الدعوة",
       "confirm_cancel_invite": "هل تريد إلغاء هذه الدعوة؟",
       "cancel_invite_description": "سيؤدي هذا إلى إلغاء الدعوة لهذا العضو",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "افتح التسجيل",
+      "open_registration_start_passed": "انقضى وقت البدء. حدّد وقت بدء لاحقًا لإعادة فتح التسجيل.",
+      "open_registration_no_stages": "أضف مرحلة أولًا.",
+      "open_registration_full": "شجرة البطولة ممتلئة.",
       "close_registration": "أغلق التسجيل",
       "start": "ابدأ البطولة",
       "cancel": "ألغِ البطولة",
@@ -7752,6 +7777,18 @@
       "expand": "توسيع",
       "collapse_all": "طي الكل",
       "expand_all": "توسيع الكل"
+    },
+    "matches_filter": {
+      "live": "مباشر",
+      "upcoming": "قادمة",
+      "results": "النتائج",
+      "all": "الكل",
+      "empty": {
+        "live": "لا يوجد شيء مباشر الآن.",
+        "upcoming": "لا توجد مباريات قادمة.",
+        "results": "لا نتائج بعد.",
+        "all": "لا توجد مباريات بعد. ستظهر بمجرد إنشاء شجرة البطولة."
+      }
     },
     "registration": {
       "section": "التسجيل",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "يحتاج إلى انتباه",
       "stages_locked": "لا يمكن تغيير المراحل بعد بدء البطولة.",
+      "stages_drawn": "لا يمكن تغيير المراحل بعد سحب شجرة البطولة. أعد البطولة إلى الإعداد لتعديلها.",
       "stage_summary": "{min}–{max} فرق",
       "groups": "{count} مجموعات",
       "no_stages": "لا توجد مراحل بعد",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "تمت دعوة {team} للتسجيل في بطولة"
     },
     "roles": {
-      "captain": "قائد الفريق"
+      "captain": "قائد الفريق",
+      "owner": "المالك"
     },
     "leave": "غادر الفريق",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "لا توجد فرق",
       "owner": "المالك",
       "captain": "قائد الفريق",
+      "admin": "مشرف",
       "ineligible_short": "مقفل",
-      "tournament_join_requires_owner_or_captain": "يمكنك الانضمام إلى بطولة فقط بالفرق التي تكون فيها المالك أو قائد الفريق.",
+      "tournament_join_requires_owner_or_captain": "يمكنك الانضمام فقط بالفرق التي تكون فيها المالك أو قائد الفريق أو مشرفًا.",
       "not_enough_players": "يلزم {count} لاعبين على الأقل لإرسال تحدٍّ.",
       "selected": "محدد",
       "loading_more": "جارٍ تحميل المزيد…",
@@ -9955,6 +9995,10 @@
       "online_room": "غرفة أونلاين",
       "lan_room_hint": "يمكن للاعبين على هذه الشبكة فقط الانضمام",
       "online_room_hint": "تُلعب أونلاين، ويمكن لأي شخص الانضمام"
+    },
+    "errors": {
+      "already_queued": "اللوبي الخاص بك موجود بالفعل في طابور الانتظار.",
+      "player_in_match": "{name} موجود بالفعل في مباراة."
     }
   },
   "game_server": {

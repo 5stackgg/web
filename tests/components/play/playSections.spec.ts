@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import { pinBrowserLocale } from "../../helpers/browserLocale";
 import {
   defaultDraftFilters,
   draftAction,
@@ -245,8 +246,10 @@ describe("draft room filters", () => {
 });
 
 describe("schedule rows", () => {
+  pinBrowserLocale("en-US");
+
   const now = new Date(2026, 9, 2, 20, 40);
-  const ctx = { t, locale: "en-US", now, meSteamId: "me" };
+  const ctx = { t, now, meSteamId: "me" };
   const at = (hours: number, minutes: number) =>
     new Date(2026, 9, 2, hours, minutes).toISOString();
   const lineup = (id: string, name: string, players: any[] = []) => ({

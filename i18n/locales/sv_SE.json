@@ -1570,6 +1570,7 @@
         "where": "Plats",
         "online": "Online",
         "teams": "Lag",
+        "players": "Spelare",
         "part_of": "Del av"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Lag",
+      "players": "Spelare",
       "default_label": "Turnering",
       "organized_by": "Av {team}"
     },
@@ -7258,8 +7260,7 @@
         "matches": "Matcher",
         "next_best": "Näst bäst: {name}",
         "manual": "Utvald av turneringsarrangören."
-      },
-      "no_matches_played": "Inga matcher spelade ännu"
+      }
     },
     "swiss": {
       "advanced": "AVANCERADE",
@@ -7275,6 +7276,7 @@
       "ended": "Avslutad",
       "starts": "Startar",
       "teams": "Lag",
+      "players": "Spelare",
       "champion": "Mästare",
       "second": "2:a",
       "third": "3:a",
@@ -7395,6 +7397,7 @@
       "tournament": "Turnering",
       "type": "Typ",
       "teams_joined": "Anmälda lag",
+      "players_joined": "Anmälda spelare",
       "starts": "Startar",
       "no_tournaments_found": "Inga turneringar hittades",
       "maps_label": "Kartor:"
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "Ange antal grupper för denna fas...",
       "default_best_of": "Standard best of",
       "default_best_of_description": "Standardformatet som används för alla ronder i denna fas.",
+      "map_pool": {
+        "label": "Kartpool",
+        "description": "Kartorna som matcherna i det här steget vetoar från.",
+        "same_as_tournament": "Samma som turneringen",
+        "active_duty": "Active Duty",
+        "custom": "Anpassad",
+        "too_small": "Bäst av {best_of} kräver minst {best_of} kartor. Den här kartpoolen har {count}.",
+        "empty": "Välj minst en karta.",
+        "tournament_plays_active_duty": "Turneringen spelar redan Active Duty. Välj Samma som turneringen.",
+        "unavailable": "Kan inte längre spelas här: {maps}. Välj en karta för att ta bort den ur poolen."
+      },
+      "match_settings_locked": "Matcherna i det här steget är redan lottade, så deras matchinställningar kan inte ändras längre.",
       "per_round_best_of": "Best of per rond",
       "third_place_match": "Aktivera bronsmatch",
       "third_place_match_description": "Skapa en bronsmatch mellan de två semifinalförlorarna.",
       "decider_best_of": "Avgörande för tredjeplatsen",
       "advanced_settings": "Avancerade fasinställningar",
       "teams_count": "{count} lag",
+      "structure_locked_label": "Typ, lag och grupper",
+      "structure_locked": "Typ, lag och grupper är låsta när slutspelsträdet har skapats. Best of kan fortfarande ändras.",
+      "match_settings_locked_label": "Matchinställningar",
+      "match_settings_locked": "Matchinställningarna är låsta när slutspelsträdet har skapats.",
+      "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta dina ändringar av typ, lag, grupper eller matchinställningar och spara sedan best of.",
       "final_map_advantage": {
         "label": "Kartfördel i final",
         "description": "Kartpoängsförsprång som vinnarträdets lag tar med sig in i finalen. Måste vara lägre än antalet kartor som krävs för vinst."
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "Kvalificerat",
-      "not_eligible": "Behöver {count} spelare till",
+      "not_eligible": "Inte kvalificerat",
+      "need_players": "Behöver {count} spelare till | Behöver {count} spelare till",
+      "missed_check_in": "Missad incheckning",
       "leave_tournament": "Lämna turneringen",
       "leave_team": "Lämna laget",
       "slot": "Plats {number}",
@@ -7624,7 +7646,7 @@
       "remove_member": "Ta bort medlem",
       "confirm_remove_member": "Ta bort denna medlem?",
       "remove_member_description": "Detta tar bort medlemmen från turneringslaget",
-      "min_roster_locked": "Turneringen har startat — lägg till en reserv innan du tar bort en spelare, truppen kan inte gå under minsta laguppställning",
+      "min_roster_locked": "Slutspelsträdet är seedat, så truppen kan inte gå under {count}. Lägg till en reserv först.",
       "cancel_invite": "Avbryt inbjudan",
       "confirm_cancel_invite": "Avbryta denna inbjudan?",
       "cancel_invite_description": "Detta avbryter inbjudan för denna medlem",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "Öppna anmälan",
+      "open_registration_start_passed": "Starttiden har passerat. Välj en senare starttid för att öppna anmälan igen.",
+      "open_registration_no_stages": "Lägg till en fas först.",
+      "open_registration_full": "Slutspelsträdet är fullt.",
       "close_registration": "Stäng anmälan",
       "start": "Starta turnering",
       "cancel": "Ställ in turnering",
@@ -7752,6 +7777,18 @@
       "expand": "Fäll ut",
       "collapse_all": "Fäll ihop alla",
       "expand_all": "Fäll ut alla"
+    },
+    "matches_filter": {
+      "live": "Live",
+      "upcoming": "Kommande",
+      "results": "Resultat",
+      "all": "Alla",
+      "empty": {
+        "live": "Inget är live just nu.",
+        "upcoming": "Inga kommande matcher.",
+        "results": "Inga resultat ännu.",
+        "all": "Inga matcher ännu. De visas när slutspelsträdet är klart."
+      }
     },
     "registration": {
       "section": "Anmälan",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "Behöver åtgärdas",
       "stages_locked": "Faser kan inte ändras när turneringen har startat.",
+      "stages_drawn": "Faser kan inte ändras när slutspelsträdet har skapats. Återställ turneringen till setup för att redigera dem.",
       "stage_summary": "{min}–{max} lag",
       "groups": "{count} grupper",
       "no_stages": "Inga faser än",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "{team} har bjudits in att anmäla sig till en turnering"
     },
     "roles": {
-      "captain": "Lagkapten"
+      "captain": "Lagkapten",
+      "owner": "Ägare"
     },
     "leave": "Lämna laget",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "Inga lag hittades",
       "owner": "Ägare",
       "captain": "Lagkapten",
+      "admin": "Admin",
       "ineligible_short": "Låst",
-      "tournament_join_requires_owner_or_captain": "Du kan bara gå med i en turnering med lag där du är ägare eller lagkapten.",
+      "tournament_join_requires_owner_or_captain": "Du kan bara gå med med lag där du är ägare, lagkapten eller admin.",
       "not_enough_players": "Kräver minst {count} spelare för att utmana.",
       "selected": "Vald",
       "loading_more": "Läser in fler…",
@@ -9955,6 +9995,10 @@
       "online_room": "Onlinerum",
       "lan_room_hint": "Bara spelare på det här nätverket kan gå med",
       "online_room_hint": "Spelas online, alla kan gå med"
+    },
+    "errors": {
+      "already_queued": "Din lobby är redan i kön.",
+      "player_in_match": "{name} är redan i en match."
     }
   },
   "game_server": {

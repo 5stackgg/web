@@ -1570,6 +1570,7 @@
         "where": "Konum",
         "online": "Çevrimiçi",
         "teams": "Takımlar",
+        "players": "Oyuncular",
         "part_of": "Etkinlik"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Takımlar",
+      "players": "Oyuncular",
       "default_label": "Turnuva",
       "organized_by": "{team} tarafından"
     },
@@ -7258,8 +7260,7 @@
         "matches": "Maçlar",
         "next_best": "Sonraki en iyi: {name}",
         "manual": "Turnuva organizatörü tarafından seçildi."
-      },
-      "no_matches_played": "Henüz oynanan maç yok"
+      }
     },
     "swiss": {
       "advanced": "TUR ATLADI",
@@ -7275,6 +7276,7 @@
       "ended": "Bitti",
       "starts": "Başlangıç",
       "teams": "Takımlar",
+      "players": "Oyuncular",
       "champion": "Şampiyon",
       "second": "2.",
       "third": "3.",
@@ -7395,6 +7397,7 @@
       "tournament": "Turnuva",
       "type": "Tür",
       "teams_joined": "Katılan Takım",
+      "players_joined": "Katılan Oyuncu",
       "starts": "Başlangıç",
       "no_tournaments_found": "Turnuva bulunamadı",
       "maps_label": "Haritalar:"
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "Bu etap için grup sayısını gir...",
       "default_best_of": "Varsayılan Maç Serisi",
       "default_best_of_description": "Bu etaptaki tüm turlar için kullanılan varsayılan maç formatı.",
+      "map_pool": {
+        "label": "Harita Havuzu",
+        "description": "Bu aşamadaki maçların veto yapacağı haritalar.",
+        "same_as_tournament": "Turnuvayla aynı",
+        "active_duty": "Aktif havuz",
+        "custom": "Özel",
+        "too_small": "BO{best_of} için en az {best_of} harita gerekir. Bu havuzda {count} var.",
+        "empty": "En az bir harita seç.",
+        "tournament_plays_active_duty": "Turnuva zaten aktif havuzu kullanıyor. \"Turnuvayla aynı\" seçeneğini seç.",
+        "unavailable": "Artık burada oynanamaz: {maps}. Havuzdan çıkarmak için bir harita seç."
+      },
+      "match_settings_locked": "Bu aşamanın maçları zaten çekildi, bu yüzden maç ayarları artık değiştirilemez.",
       "per_round_best_of": "Tur Bazlı Maç Serisi",
       "third_place_match": "3. Lük Maçını Etkinleştir",
       "third_place_match_description": "İki yarı final kaybedeni arasında 3.lük maçı oluştur.",
       "decider_best_of": "3.lük Belirleyici",
       "advanced_settings": "Gelişmiş Etap Ayarları",
       "teams_count": "{count} takım",
+      "structure_locked_label": "Tür, takımlar ve gruplar",
+      "structure_locked": "Fikstür çekildikten sonra tür, takımlar ve gruplar kilitlenir. Maç serisi formatı hâlâ değiştirilebilir.",
+      "match_settings_locked_label": "Maç ayarları",
+      "match_settings_locked": "Fikstür çekildikten sonra maç ayarları kilitlenir.",
+      "drawn_while_editing": "Sen düzenlerken fikstür çekildi. Tür, takım, grup veya maç ayarlarındaki değişikliklerini at, sonra maç serisi formatını kaydet.",
       "final_map_advantage": {
         "label": "Final Harita Avantajı",
         "description": "Üst tablo takımının büyük finale taşıdığı harita avantajı. Galibiyet için gereken harita sayısının altında kalmalı."
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "Uygun",
-      "not_eligible": "{count} oyuncu daha gerekiyor",
+      "not_eligible": "Uygun değil",
+      "need_players": "{count} oyuncu daha gerekiyor | {count} oyuncu daha gerekiyor",
+      "missed_check_in": "Katılım onayı kaçırıldı",
       "leave_tournament": "Turnuvadan Ayrıl",
       "leave_team": "Takımdan Ayrıl",
       "slot": "Slot {number}",
@@ -7624,7 +7646,7 @@
       "remove_member": "Üyeyi Kaldır",
       "confirm_remove_member": "Bu üyeyi kaldırmak istediğine emin misin?",
       "remove_member_description": "Bu, üyeyi turnuva takımından kaldırır",
-      "min_roster_locked": "Turnuva başladı — bir oyuncuyu çıkarmadan önce bir yedek ekle, kadro minimum diziliş sayısının altına düşemez",
+      "min_roster_locked": "Fikstür sıralaması yapıldı, bu yüzden kadro {count} kişinin altına düşemez. Önce bir yedek ekle.",
       "cancel_invite": "Daveti İptal Et",
       "confirm_cancel_invite": "Bu daveti iptal etmek istediğine emin misin?",
       "cancel_invite_description": "Bu, üyenin davetini iptal eder",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "Kayıtları Aç",
+      "open_registration_start_passed": "Başlangıç saati geçti. Kayıtları yeniden açmak için daha geç bir başlangıç saati belirle.",
+      "open_registration_no_stages": "Önce bir aşama ekle.",
+      "open_registration_full": "Fikstür dolu.",
       "close_registration": "Kayıtları Kapat",
       "start": "Turnuvayı Başlat",
       "cancel": "Turnuvayı İptal Et",
@@ -7752,6 +7777,18 @@
       "expand": "Genişlet",
       "collapse_all": "Tümünü daralt",
       "expand_all": "Tümünü genişlet"
+    },
+    "matches_filter": {
+      "live": "Canlı",
+      "upcoming": "Yaklaşan",
+      "results": "Sonuçlar",
+      "all": "Tümü",
+      "empty": {
+        "live": "Şu anda canlı bir şey yok.",
+        "upcoming": "Yaklaşan maç yok.",
+        "results": "Henüz sonuç yok.",
+        "all": "Henüz maç yok. Fikstür oluşturulduğunda görünürler."
+      }
     },
     "registration": {
       "section": "Kayıt",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "İlgi bekliyor",
       "stages_locked": "Turnuva başladıktan sonra aşamalar değiştirilemez.",
+      "stages_drawn": "Fikstür çekildikten sonra aşamalar değiştirilemez. Düzenlemek için turnuvayı kuruluma sıfırla.",
       "stage_summary": "{min}–{max} takım",
       "groups": "{count} grup",
       "no_stages": "Henüz aşama yok",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "{team} bir turnuvaya kaydolmak için davet edildi"
     },
     "roles": {
-      "captain": "Kaptan"
+      "captain": "Kaptan",
+      "owner": "Sahip"
     },
     "leave": "Takımdan ayrıl",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "Takım bulunamadı",
       "owner": "Sahip",
       "captain": "Kaptan",
+      "admin": "Yönetici",
       "ineligible_short": "Kilitli",
-      "tournament_join_requires_owner_or_captain": "Bir turnuvaya yalnızca sahibi veya kaptanı olduğun takımlarla katılabilirsin.",
+      "tournament_join_requires_owner_or_captain": "Yalnızca sahibi, kaptanı veya yöneticisi olduğun takımlarla katılabilirsin.",
       "not_enough_players": "Meydan okumak için en az {count} oyuncu gerekli.",
       "selected": "Seçildi",
       "loading_more": "Daha fazlası yükleniyor…",
@@ -9955,6 +9995,10 @@
       "online_room": "Çevrimiçi oda",
       "lan_room_hint": "Yalnızca bu ağdaki oyuncular katılabilir",
       "online_room_hint": "Çevrimiçi oynanır, herkes katılabilir"
+    },
+    "errors": {
+      "already_queued": "Lobiniz zaten sırada.",
+      "player_in_match": "{name} zaten bir maçta."
     }
   },
   "game_server": {

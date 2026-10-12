@@ -22,6 +22,9 @@ const props = defineProps<{
   dirty?: boolean;
   submitting?: boolean;
   contained?: boolean;
+  // Manual mode's stand-in for form errors: the host knows the settings can't
+  // be saved as they are.
+  invalid?: boolean;
   // Validation-gate mode (e.g. a create flow): show the bar regardless of
   // dirty state and only enable the action once `valid` is true.
   forceVisible?: boolean;
@@ -65,7 +68,7 @@ const dirty = computed(() => {
 });
 
 const hasErrors = computed(() => {
-  if (!props.form) return false;
+  if (!props.form) return !!props.invalid;
   const errs = unref(props.form?.errors) as Record<string, unknown> | undefined;
   return errs ? Object.keys(errs).length > 0 : false;
 });

@@ -1,4 +1,6 @@
 import type { WatchStream } from "~/components/watch/streamPlatform";
+import { dateLocale } from "~/utilities/dateLocale";
+import mapLabel from "~/utilities/mapLabel";
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
 
@@ -63,10 +65,6 @@ function mapsWon(match: any, lineupId: string | null | undefined) {
   ).length;
 }
 
-function mapLabel(mm: any): string {
-  return mm?.map?.label || mm?.map?.name || "";
-}
-
 export function teamMonogram(name: string, shortName?: string | null) {
   if (shortName) return shortName.slice(0, 3).toUpperCase();
   const words = name.replace(/[^\p{L}\p{N}\s]/gu, "").trim().split(/\s+/);
@@ -80,16 +78,20 @@ function sameDay(a: Date, b: Date) {
 }
 
 // "21:30" today, "Sat 12:00" this week, "Oct 31, 19:00" beyond that.
-export function formatStartTime(iso: string, now: Date, locale: string) {
+export function formatStartTime(iso: string, now: Date) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
   const time: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "2-digit" };
-  if (sameDay(d, now)) return d.toLocaleTimeString(locale, time);
+  if (sameDay(d, now)) return d.toLocaleTimeString(dateLocale(), time);
   const days = (d.getTime() - now.getTime()) / 86_400_000;
   if (days > 0 && days < 6) {
-    return d.toLocaleString(locale, { weekday: "short", ...time });
+    return d.toLocaleString(dateLocale(), { weekday: "short", ...time });
   }
-  return d.toLocaleString(locale, { month: "short", day: "numeric", ...time });
+  return d.toLocaleString(dateLocale(), {
+    month: "short",
+    day: "numeric",
+    ...time,
+  });
 }
 
 // Day divider for results: "Today", "Yesterday", then "Wed, Sep 30".
@@ -97,7 +99,6 @@ export function resultDayLabel(
   iso: string | null | undefined,
   now: Date,
   t: Translate,
-  locale: string,
 ) {
   if (!iso) return "";
   const d = new Date(iso);
@@ -106,7 +107,7 @@ export function resultDayLabel(
   const yesterday = new Date(now);
   yesterday.setDate(now.getDate() - 1);
   if (sameDay(d, yesterday)) return t("pages.watch.ticker.yesterday");
-  return d.toLocaleDateString(locale, {
+  return d.toLocaleDateString(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -160,7 +161,6 @@ function statusLine(
   match: any,
   kind: TickerKind,
   t: Translate,
-  locale: string,
   now: Date,
 ): TickerCellModel["status"] {
   if (kind === "result") {
@@ -185,7 +185,7 @@ function statusLine(
     return {
       dot: null,
       text: match?.scheduled_at
-        ? formatStartTime(match.scheduled_at, now, locale)
+        ? formatStartTime(match.scheduled_at, now)
         : t("match.stream.card.scheduled"),
       detail: null,
     };
@@ -204,7 +204,7 @@ function statusLine(
   }
 
   const current = currentMatchMap(match);
-  const map = mapLabel(current);
+  const map = mapLabel(current?.map);
   const join = (...parts: Array<string | null | false>) =>
     parts.filter(Boolean).join(" · ");
   const live = (text: string) => ({ dot: "live" as const, text, detail: null });
@@ -309,14 +309,14 @@ export function tickerTag(match: any): string | null {
 
 export function tickerCell(
   match: any,
-  ctx: { t: Translate; locale: string; now: Date },
+  ctx: { t: Translate; now: Date },
 ): TickerCellModel {
   const kind = tickerKind(match);
   const lineups = teams(match, kind, ctx.t);
   return {
     id: match.id,
     kind,
-    status: statusLine(match, kind, ctx.t, ctx.locale, ctx.now),
+    status: statusLine(match, kind, ctx.t, ctx.now),
     checkIn: totalCheckIn(lineups),
     teams: lineups,
     tag: tickerTag(match),

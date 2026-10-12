@@ -15,12 +15,14 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { loginLinks } from "~/utilities/loginLinks";
 import { formatPrizePool } from "~/utilities/prizePool";
 import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
+import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
 import { rememberTournaments } from "~/composables/useTournamentPreview";
 import {
   matchTypeLabel,
   tournamentChampion,
   tournamentRowState,
 } from "~/utilities/watchEventCard";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // `stacked` puts the banner on top from lg up, for a grid column too narrow
 // to sit it beside the details; the banner then takes any extra height the
@@ -127,32 +129,35 @@ const sub = computed(() => {
 const startsAt = computed(() => {
   if (!props.tournament.start) return null;
   const start = new Date(props.tournament.start);
-  const day = new Intl.DateTimeFormat(undefined, {
+  const day = new Intl.DateTimeFormat(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",
   }).format(start);
-  const time = new Intl.DateTimeFormat(undefined, {
+  const time = new Intl.DateTimeFormat(dateLocale(), {
     hour: "numeric",
     minute: "2-digit",
   }).format(start);
   return `${day} · ${time}`;
 });
 
-const teams = computed(
-  () => props.tournament.teams_aggregate?.aggregate?.count ?? 0,
+const registration = computed(() =>
+  tournamentRegistrationCount(props.tournament),
 );
-const maxTeams = computed(() => props.tournament.stages?.[0]?.max_teams ?? 0);
+const teams = computed(() => registration.value.count);
+const maxTeams = computed(() => registration.value.max ?? 0);
 const teamsLabel = computed(() => {
+  const unitKey =
+    registration.value.unit === "players"
+      ? "pages.watch.events.count_players"
+      : "pages.watch.events.count_teams";
   if (maxTeams.value > 0) {
     return `${t("pages.watch.tournaments.registered_count", {
       count: teams.value,
       max: maxTeams.value,
-    })} ${t("pages.watch.events.count_teams", maxTeams.value)}`;
+    })} ${t(unitKey, maxTeams.value)}`;
   }
-  return teams.value > 0
-    ? `${teams.value} ${t("pages.watch.events.count_teams", teams.value)}`
-    : null;
+  return teams.value > 0 ? `${teams.value} ${t(unitKey, teams.value)}` : null;
 });
 const prizePool = computed(() => formatPrizePool(props.tournament.prizes));
 const champion = computed(() =>

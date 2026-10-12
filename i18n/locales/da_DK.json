@@ -1570,6 +1570,7 @@
         "where": "Sted",
         "online": "Online",
         "teams": "Hold",
+        "players": "Spillere",
         "part_of": "Del af"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "Hold",
+      "players": "Spillere",
       "default_label": "Turnering",
       "organized_by": "Af {team}"
     },
@@ -7258,8 +7260,7 @@
         "matches": "Kampe",
         "next_best": "Næstbedst: {name}",
         "manual": "Udvalgt af turneringsarrangøren."
-      },
-      "no_matches_played": "Ingen kampe spillet endnu"
+      }
     },
     "swiss": {
       "advanced": "VIDERE",
@@ -7275,6 +7276,7 @@
       "ended": "Afsluttet",
       "starts": "Starter",
       "teams": "Hold",
+      "players": "Spillere",
       "champion": "Vinder",
       "second": "2.",
       "third": "3.",
@@ -7395,6 +7397,7 @@
       "tournament": "Turnering",
       "type": "Type",
       "teams_joined": "Tilmeldte hold",
+      "players_joined": "Tilmeldte spillere",
       "starts": "Starter",
       "no_tournaments_found": "Ingen turneringer fundet",
       "maps_label": "Maps:"
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "Angiv antal grupper i denne fase...",
       "default_best_of": "Standard best of",
       "default_best_of_description": "Standardformatet for alle runder i denne fase.",
+      "map_pool": {
+        "label": "Map pool",
+        "description": "De maps, denne fases kampe vetoer fra.",
+        "same_as_tournament": "Samme som turneringen",
+        "active_duty": "Active Duty",
+        "custom": "Egen",
+        "too_small": "Bedst af {best_of} kræver mindst {best_of} maps. Denne pool har {count}.",
+        "empty": "Vælg mindst ét map.",
+        "tournament_plays_active_duty": "Turneringen spiller allerede Active Duty. Vælg Samme som turneringen.",
+        "unavailable": "Kan ikke længere spilles her: {maps}. Vælg et map for at tage det ud af poolen."
+      },
+      "match_settings_locked": "Denne fases kampe er allerede trukket, så kampindstillingerne kan ikke længere ændres.",
       "per_round_best_of": "Best of pr. runde",
       "third_place_match": "Aktivér bronzekamp",
       "third_place_match_description": "Opret en bronzekamp mellem de to tabere fra semifinalerne.",
       "decider_best_of": "Bronzekamp",
       "advanced_settings": "Avancerede faseindstillinger",
       "teams_count": "{count} hold",
+      "structure_locked_label": "Type, hold og grupper",
+      "structure_locked": "Type, hold og grupper er låst, når turneringstræet er lavet. Best of kan stadig ændres.",
+      "match_settings_locked_label": "Kampindstillinger",
+      "match_settings_locked": "Kampindstillingerne er låst, når turneringstræet er lavet.",
+      "drawn_while_editing": "Turneringstræet blev lavet, mens du redigerede. Kassér dine ændringer af type, hold, grupper eller kampindstillinger, og gem så best of.",
       "final_map_advantage": {
         "label": "Mapfordel i finalen",
         "description": "Forspring i map-point, som holdet fra winner bracket tager med i grand final. Skal være mindre end antallet af maps, der kræves for at vinde."
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "Kvalificeret",
-      "not_eligible": "Mangler {count} spillere",
+      "not_eligible": "Ikke kvalificeret",
+      "need_players": "Mangler {count} spiller | Mangler {count} spillere",
+      "missed_check_in": "Misset check-in",
       "leave_tournament": "Forlad turnering",
       "leave_team": "Forlad hold",
       "slot": "Plads {number}",
@@ -7624,7 +7646,7 @@
       "remove_member": "Fjern medlem",
       "confirm_remove_member": "Fjern dette medlem?",
       "remove_member_description": "Dette fjerner medlemmet fra turneringsholdet",
-      "min_roster_locked": "Turneringen er startet — tilføj en reserve, før du fjerner en spiller; truppen må ikke komme under minimumsopstillingen",
+      "min_roster_locked": "Turneringstræet er seedet, så truppen kan ikke komme under {count}. Tilføj en reserve først.",
       "cancel_invite": "Annuller invitation",
       "confirm_cancel_invite": "Annuller denne invitation?",
       "cancel_invite_description": "Dette annullerer invitationen til dette medlem",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "Åbn tilmelding",
+      "open_registration_start_passed": "Starttidspunktet er passeret. Vælg et senere starttidspunkt for at genåbne tilmeldingen.",
+      "open_registration_no_stages": "Tilføj en fase først.",
+      "open_registration_full": "Turneringstræet er fuldt.",
       "close_registration": "Luk tilmelding",
       "start": "Start turnering",
       "cancel": "Annuller turnering",
@@ -7752,6 +7777,18 @@
       "expand": "Fold ud",
       "collapse_all": "Fold alt sammen",
       "expand_all": "Fold alt ud"
+    },
+    "matches_filter": {
+      "live": "Live",
+      "upcoming": "Kommende",
+      "results": "Resultater",
+      "all": "Alle",
+      "empty": {
+        "live": "Intet er live lige nu.",
+        "upcoming": "Ingen kommende kampe.",
+        "results": "Ingen resultater endnu.",
+        "all": "Ingen kampe endnu. De vises, når turneringstræet er lagt."
+      }
     },
     "registration": {
       "section": "Tilmelding",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "Kræver opmærksomhed",
       "stages_locked": "Faser kan ikke ændres, når turneringen er startet.",
+      "stages_drawn": "Faser kan ikke ændres, når turneringstræet er lavet. Nulstil turneringen til opsætning for at redigere dem.",
       "stage_summary": "{min}–{max} hold",
       "groups": "{count} grupper",
       "no_stages": "Ingen faser endnu",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "{team} er inviteret til at tilmelde sig en turnering"
     },
     "roles": {
-      "captain": "Anfører"
+      "captain": "Anfører",
+      "owner": "Ejer"
     },
     "leave": "Forlad hold",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "Ingen hold fundet",
       "owner": "Ejer",
       "captain": "Anfører",
+      "admin": "Admin",
       "ineligible_short": "Låst",
-      "tournament_join_requires_owner_or_captain": "Du kan kun tilmelde dig en turnering med hold, hvor du er ejer eller anfører.",
+      "tournament_join_requires_owner_or_captain": "Du kan kun tilmelde dig med hold, hvor du er ejer, anfører eller admin.",
       "not_enough_players": "Kræver mindst {count} spillere for at udfordre.",
       "selected": "Valgt",
       "loading_more": "Indlæser flere…",
@@ -9955,6 +9995,10 @@
       "online_room": "Online-rum",
       "lan_room_hint": "Kun spillere på dette netværk kan deltage",
       "online_room_hint": "Spilles online, alle kan deltage"
+    },
+    "errors": {
+      "already_queued": "Din lobby er allerede i kø.",
+      "player_in_match": "{name} er allerede i en kamp."
     }
   },
   "game_server": {

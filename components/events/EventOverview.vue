@@ -24,6 +24,7 @@ import {
   formatEventRange,
   type EventPhase,
 } from "~/utilities/eventDisplay";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // The overview reorders itself by phase: before the event it sells the event
 // (when, sign-ups, who's going), during it follows the action (live matches,
@@ -252,9 +253,9 @@ const endDate = computed(() =>
 );
 const dateBlock = computed(() => {
   if (!startDate.value) return null;
-  const month = new Intl.DateTimeFormat(undefined, { month: "short" }).format(
-    startDate.value,
-  );
+  const month = new Intl.DateTimeFormat(dateLocale(), {
+    month: "short",
+  }).format(startDate.value);
   const sameMonth =
     endDate.value && endDate.value.getMonth() === startDate.value.getMonth();
   return {
@@ -267,7 +268,7 @@ const dateBlock = computed(() => {
 });
 function dayTime(date: Date | null) {
   return date
-    ? new Intl.DateTimeFormat(undefined, {
+    ? new Intl.DateTimeFormat(dateLocale(), {
         weekday: "short",
         hour: "numeric",
         minute: "2-digit",

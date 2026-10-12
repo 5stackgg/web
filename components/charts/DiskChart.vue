@@ -30,6 +30,7 @@ ChartJS.register(
 
 <script lang="ts">
 import { DISK_USAGE_CHART_COLORS } from "@/utilities/chartColors";
+import { dateLocale } from "~/utilities/dateLocale";
 export default {
   components: {
     Line,
@@ -151,7 +152,7 @@ export default {
               callback: (index: number) => {
                 const time = (this as any).labels[index];
                 return time
-                  .toLocaleTimeString(navigator.language, {
+                  .toLocaleTimeString(dateLocale(), {
                     hour: "2-digit",
                     minute: "2-digit",
                   })

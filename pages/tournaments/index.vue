@@ -43,6 +43,7 @@ import {
   tacticalSectionSeparatorClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // Keep filter query params out of the NuxtPage page-key (app.vue) so applying a
 // filter updates the URL without remounting/refreshing the whole page.
@@ -308,7 +309,7 @@ const lanHero = computed(() => !live.value.length);
 // The agenda's month headings, in the order the list already runs.
 function byMonth(tournaments: any[]) {
   const months: Array<{ key: string; label: string; tournaments: any[] }> = [];
-  const format = new Intl.DateTimeFormat(undefined, {
+  const format = new Intl.DateTimeFormat(dateLocale(), {
     month: "long",
     year: "numeric",
   });

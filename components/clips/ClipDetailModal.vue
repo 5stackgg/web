@@ -63,6 +63,7 @@ import {
   clipDownloadUrl,
 } from "~/utilities/clipDownloadName";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { clipPreloadUrl } from "~/utilities/clipViews";
 import cleanMapName from "~/utilities/cleanMapName";
 import { clipDisplayTitle, formatClipDuration } from "~/utilities/clipDisplay";
 import {
@@ -285,6 +286,10 @@ function subscribe(id: string) {
     error: (err: any) => {
       console.error("[clip-modal] subscription error:", err);
       loading.value = false;
+      if (clip.value?.id !== id) {
+        clip.value = null;
+        notFound.value = true;
+      }
     },
   });
 }
@@ -298,7 +303,6 @@ watch(
       activeSub?.unsubscribe();
       activeSub = null;
       clip.value = null;
-      editing.value = false;
       prefetchedClip.value = null;
       prefetchingId.value = null;
     }
@@ -515,7 +519,7 @@ const preloadSrc = computed(() => {
   const p = prefetchedClip.value;
   if (!p?.download_url) return null;
   if (clip.value && p.id === clip.value.id) return null;
-  return p.download_url;
+  return clipPreloadUrl(p.download_url);
 });
 
 // Pull the full next clip (incl. download_url + lineups) ahead of time so
@@ -599,6 +603,9 @@ watch(
     modalAutoAdvanced.value = false;
     advanceCancelled.value = false;
     remaining.value = null;
+    editing.value = false;
+    draftTitle.value = "";
+    editError.value = null;
     if (id) {
       void nextTick().then(() => modalPlayerRef.value?.play());
     }

@@ -1570,6 +1570,7 @@
         "where": "Where",
         "online": "Online",
         "teams": "Teams",
+        "players": "Players",
         "part_of": "Part of"
       },
       "next_lan": {
@@ -7246,6 +7247,7 @@
     },
     "feature_card": {
       "teams": "Teams",
+      "players": "Players",
       "default_label": "Tournament",
       "organized_by": "By {team}"
     },
@@ -7260,8 +7262,7 @@
         "matches": "Matches",
         "next_best": "Next best: {name}",
         "manual": "Hand-picked by the tournament organizer."
-      },
-      "no_matches_played": "No matches played yet"
+      }
     },
     "swiss": {
       "advanced": "ADVANCED",
@@ -7277,6 +7278,7 @@
       "ended": "Ended",
       "starts": "Starts",
       "teams": "Teams",
+      "players": "Players",
       "champion": "Champion",
       "second": "2nd",
       "third": "3rd",
@@ -7397,6 +7399,7 @@
       "tournament": "Tournament",
       "type": "Type",
       "teams_joined": "Teams Joined",
+      "players_joined": "Players Joined",
       "starts": "Starts",
       "no_tournaments_found": "No tournaments found",
       "maps_label": "Maps:"
@@ -7433,12 +7436,29 @@
       "groups_placeholder": "Enter number of groups for this stage...",
       "default_best_of": "Default Best Of",
       "default_best_of_description": "The default match format used for all rounds in this stage.",
+      "map_pool": {
+        "label": "Map Pool",
+        "description": "The maps this stage's matches veto from.",
+        "same_as_tournament": "Same as Tournament",
+        "active_duty": "Active Duty",
+        "custom": "Custom",
+        "too_small": "Best of {best_of} needs at least {best_of} maps. This pool has {count}.",
+        "empty": "Pick at least one map.",
+        "tournament_plays_active_duty": "The tournament already plays Active Duty. Pick Same as Tournament.",
+        "unavailable": "No longer playable here: {maps}. Select a map to take it out of the pool."
+      },
+      "match_settings_locked": "This stage's matches are already drawn, so its match settings can't change.",
       "per_round_best_of": "Per-Round Best Of",
       "third_place_match": "Enable 3rd Place Match",
       "third_place_match_description": "Create a 3rd place match between the two semifinal losers.",
       "decider_best_of": "3rd Place Decider",
       "advanced_settings": "Advanced Stage Settings",
       "teams_count": "{count} teams",
+      "structure_locked_label": "Type, teams and groups",
+      "structure_locked": "Type, teams and groups are locked once the bracket is drawn. Best-of can still change.",
+      "match_settings_locked_label": "Match settings",
+      "match_settings_locked": "Match settings are locked once the bracket is drawn.",
+      "drawn_while_editing": "The bracket was drawn while you were editing. Discard your changes to type, teams, groups or match settings, then save the best-of.",
       "final_map_advantage": {
         "label": "Final Map Advantage",
         "description": "Map-point head start the winner-bracket team carries into the grand final. Must stay below the maps needed to win."
@@ -7603,7 +7623,9 @@
     },
     "team": {
       "eligible": "Eligible",
-      "not_eligible": "Need {count} more players",
+      "not_eligible": "Not Eligible",
+      "need_players": "Need {count} more player | Need {count} more players",
+      "missed_check_in": "Missed Check-in",
       "leave_tournament": "Leave Tournament",
       "leave_team": "Leave Team",
       "slot": "Slot {number}",
@@ -7626,7 +7648,7 @@
       "remove_member": "Remove Member",
       "confirm_remove_member": "Are you sure you want to remove this member?",
       "remove_member_description": "This will remove the member from the tournament team",
-      "min_roster_locked": "The tournament has started — add a substitute before removing a player, the roster can't drop below the minimum lineup",
+      "min_roster_locked": "The bracket is seeded, so the roster can't drop below {count}. Add a substitute first.",
       "cancel_invite": "Cancel Invite",
       "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
       "cancel_invite_description": "This will cancel the invite for this member",
@@ -7639,6 +7661,9 @@
     },
     "actions": {
       "open_registration": "Open Registration",
+      "open_registration_start_passed": "The start time has passed. Set a later start time to reopen registration.",
+      "open_registration_no_stages": "Add a stage first.",
+      "open_registration_full": "The bracket is full.",
       "close_registration": "Close Registration",
       "start": "Start Tournament",
       "cancel": "Cancel Tournament",
@@ -7754,6 +7779,18 @@
       "expand": "Expand",
       "collapse_all": "Collapse All",
       "expand_all": "Expand All"
+    },
+    "matches_filter": {
+      "live": "Live",
+      "upcoming": "Upcoming",
+      "results": "Results",
+      "all": "All",
+      "empty": {
+        "live": "Nothing is live right now.",
+        "upcoming": "No upcoming matches.",
+        "results": "No results yet.",
+        "all": "No matches yet. They appear once the bracket is drawn."
+      }
     },
     "registration": {
       "section": "Registration",
@@ -8039,6 +8076,7 @@
       "discord": "Discord",
       "needs_attention": "Needs attention",
       "stages_locked": "Stages can't change once the tournament has started.",
+      "stages_drawn": "Stages can't change once the bracket is drawn. Reset the tournament to Setup to edit them.",
       "stage_summary": "{min}–{max} teams",
       "groups": "{count} groups",
       "no_stages": "No stages yet",
@@ -8106,7 +8144,8 @@
       "tournament_team_registration_message": "{team} has been invited to register for a tournament"
     },
     "roles": {
-      "captain": "Captain"
+      "captain": "Captain",
+      "owner": "Owner"
     },
     "leave": "Leave Team",
     "management": {
@@ -8154,8 +8193,9 @@
       "no_teams_found": "No teams found",
       "owner": "Owner",
       "captain": "Captain",
+      "admin": "Admin",
       "ineligible_short": "Locked",
-      "tournament_join_requires_owner_or_captain": "You can only join a tournament with teams where you are the owner or captain.",
+      "tournament_join_requires_owner_or_captain": "You can only join with teams where you're the owner, captain or an admin.",
       "not_enough_players": "Needs at least {count} players to challenge.",
       "selected": "Selected",
       "loading_more": "Loading more...",
@@ -9959,6 +9999,10 @@
       "online_room": "Online room",
       "lan_room_hint": "Only players on this network can join",
       "online_room_hint": "Plays online, anyone can join"
+    },
+    "errors": {
+      "already_queued": "Your lobby is already in the queue.",
+      "player_in_match": "{name} is already in a match."
     }
   },
   "game_server": {

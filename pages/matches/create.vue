@@ -26,6 +26,7 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
 import DraftTeamPanel from "~/components/draft-games/DraftTeamPanel.vue";
 import { Spinner } from "~/components/ui/spinner";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import { dateLocale } from "~/utilities/dateLocale";
 
 definePageMeta({ middleware: ["match-schedule"] });
 
@@ -76,9 +77,9 @@ const eveningOf = (daysAhead: number) => {
   return date;
 };
 const formatTime = (date: Date) =>
-  date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  date.toLocaleTimeString(dateLocale(), { hour: "2-digit", minute: "2-digit" });
 const formatKickoff = (value: string) =>
-  new Date(value).toLocaleString(undefined, {
+  new Date(value).toLocaleString(dateLocale(), {
     weekday: "short",
     month: "short",
     day: "numeric",

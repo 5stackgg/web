@@ -1570,6 +1570,7 @@
         "where": "場所",
         "online": "オンライン",
         "teams": "チーム",
+        "players": "プレイヤー",
         "part_of": "所属イベント"
       },
       "next_lan": {
@@ -7244,6 +7245,7 @@
     },
     "feature_card": {
       "teams": "チーム",
+      "players": "プレイヤー",
       "default_label": "トーナメント",
       "organized_by": "主催：{team}"
     },
@@ -7258,8 +7260,7 @@
         "matches": "試合数",
         "next_best": "次点: {name}",
         "manual": "大会主催者が選出しました。"
-      },
-      "no_matches_played": "試合はまだありません"
+      }
     },
     "swiss": {
       "advanced": "進出",
@@ -7275,6 +7276,7 @@
       "ended": "終了",
       "starts": "開始",
       "teams": "チーム",
+      "players": "プレイヤー",
       "champion": "優勝",
       "second": "2位",
       "third": "3位",
@@ -7395,6 +7397,7 @@
       "tournament": "トーナメント",
       "type": "形式",
       "teams_joined": "参加チーム",
+      "players_joined": "参加プレイヤー",
       "starts": "開始",
       "no_tournaments_found": "トーナメントが見つかりません",
       "maps_label": "マップ："
@@ -7431,12 +7434,29 @@
       "groups_placeholder": "このステージのグループ数を入力...",
       "default_best_of": "既定の Best Of",
       "default_best_of_description": "このステージの全ラウンドで使用される既定の試合形式。",
+      "map_pool": {
+        "label": "マッププール",
+        "description": "このステージの試合でBANとPICKを行うマップです。",
+        "same_as_tournament": "大会と同じ",
+        "active_duty": "アクティブデューティ",
+        "custom": "カスタム",
+        "too_small": "Best of {best_of} には少なくとも {best_of} マップが必要です。このプールは {count} マップです。",
+        "empty": "マップを1つ以上選んでください。",
+        "tournament_plays_active_duty": "大会はすでにアクティブデューティを使用しています。「大会と同じ」を選んでください。",
+        "unavailable": "ここではもうプレイできません: {maps}。マップを選択するとプールから外せます。"
+      },
+      "match_settings_locked": "このステージの試合はすでに組まれているため、試合設定は変更できません。",
       "per_round_best_of": "ラウンド別 Best Of",
       "third_place_match": "3位決定戦を有効化",
       "third_place_match_description": "準決勝の敗者同士で3位決定戦を作成します。",
       "decider_best_of": "3位決定戦",
       "advanced_settings": "ステージ詳細設定",
       "teams_count": "{count} チーム",
+      "structure_locked_label": "形式・チーム数・グループ",
+      "structure_locked": "ブラケット作成後は形式・チーム数・グループがロックされます。Best Of は引き続き変更できます。",
+      "match_settings_locked_label": "試合設定",
+      "match_settings_locked": "ブラケット作成後は試合設定がロックされます。",
+      "drawn_while_editing": "編集中にブラケットが作成されました。形式・チーム数・グループ・試合設定の変更を破棄してから Best Of を保存してください。",
       "final_map_advantage": {
         "label": "決勝マップアドバンテージ",
         "description": "上位ブラケットのチームがグランドファイナルに持ち込むマップポイントのリード。勝利に必要なマップ数未満にする必要があります。"
@@ -7601,7 +7621,9 @@
     },
     "team": {
       "eligible": "参加可能",
-      "not_eligible": "あと {count} 人必要",
+      "not_eligible": "参加不可",
+      "need_players": "あと {count} 人必要 | あと {count} 人必要",
+      "missed_check_in": "チェックイン未完了",
       "leave_tournament": "トーナメントを離脱",
       "leave_team": "チームを離脱",
       "slot": "スロット {number}",
@@ -7624,7 +7646,7 @@
       "remove_member": "メンバーを削除",
       "confirm_remove_member": "このメンバーを削除しますか？",
       "remove_member_description": "メンバーをトーナメントチームから削除します",
-      "min_roster_locked": "トーナメントは開始済みです。ロスターは最小出場メンバー数を下回れないため、プレイヤーを外す前に控えを追加してください",
+      "min_roster_locked": "ブラケットのシードが確定しているため、ロスターは {count} 人未満にできません。先に控えを追加してください。",
       "cancel_invite": "招待を取り消す",
       "confirm_cancel_invite": "この招待を取り消しますか？",
       "cancel_invite_description": "このメンバーへの招待を取り消します",
@@ -7637,6 +7659,9 @@
     },
     "actions": {
       "open_registration": "登録を開始",
+      "open_registration_start_passed": "開始時刻を過ぎています。登録を再開するには、より遅い開始時刻を設定してください。",
+      "open_registration_no_stages": "先にステージを追加してください。",
+      "open_registration_full": "ブラケットは満員です。",
       "close_registration": "登録を締め切る",
       "start": "トーナメントを開始",
       "cancel": "トーナメントを中止",
@@ -7752,6 +7777,18 @@
       "expand": "展開",
       "collapse_all": "すべて折りたたむ",
       "expand_all": "すべて展開"
+    },
+    "matches_filter": {
+      "live": "ライブ",
+      "upcoming": "予定",
+      "results": "結果",
+      "all": "すべて",
+      "empty": {
+        "live": "現在ライブ中の試合はありません。",
+        "upcoming": "予定されている試合はありません。",
+        "results": "結果はまだありません。",
+        "all": "試合はまだありません。ブラケットが作成されると表示されます。"
+      }
     },
     "registration": {
       "section": "参加登録",
@@ -8037,6 +8074,7 @@
       "discord": "Discord",
       "needs_attention": "要対応",
       "stages_locked": "大会開始後はステージを変更できません。",
+      "stages_drawn": "ブラケット作成後はステージを変更できません。編集するには大会をセットアップに戻してください。",
       "stage_summary": "{min}–{max} チーム",
       "groups": "{count} グループ",
       "no_stages": "ステージはまだありません",
@@ -8104,7 +8142,8 @@
       "tournament_team_registration_message": "{team} がトーナメントへの参加登録に招待されました"
     },
     "roles": {
-      "captain": "キャプテン"
+      "captain": "キャプテン",
+      "owner": "オーナー"
     },
     "leave": "チームを脱退",
     "management": {
@@ -8152,8 +8191,9 @@
       "no_teams_found": "チームが見つかりません",
       "owner": "オーナー",
       "captain": "キャプテン",
+      "admin": "管理者",
       "ineligible_short": "ロック中",
-      "tournament_join_requires_owner_or_captain": "オーナーまたはキャプテンを務めるチームでのみトーナメントに参加できます。",
+      "tournament_join_requires_owner_or_captain": "オーナー、キャプテン、または管理者を務めるチームでのみ参加できます。",
       "not_enough_players": "対戦を申し込むには最低{count}人必要です。",
       "selected": "選択中",
       "loading_more": "さらに読み込み中…",
@@ -9955,6 +9995,10 @@
       "online_room": "オンラインルーム",
       "lan_room_hint": "このネットワーク上のプレイヤーのみ参加できます",
       "online_room_hint": "オンラインでプレイ、誰でも参加できます"
+    },
+    "errors": {
+      "already_queued": "ロビーはすでにキューに入っています。",
+      "player_in_match": "{name} はすでに試合中です。"
     }
   },
   "game_server": {

@@ -66,7 +66,7 @@ function toggleEdits(messageId: string) {
 const failed = ref(false);
 const selected = ref(FULL_MATCH);
 
-const clock = new Intl.DateTimeFormat(undefined, {
+const clock = new Intl.DateTimeFormat(dateLocale(), {
   hour: "2-digit",
   minute: "2-digit",
   hourCycle: "h23",

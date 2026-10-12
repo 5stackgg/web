@@ -413,9 +413,6 @@ export default {
       bannerBlob: null as Blob | null,
       form: useForm({
         keepValuesOnUnmount: true,
-        // Most organizers run the tournament on this instance, so seed the
-        // homepage with its own origin rather than leaving the field blank.
-        initialValues: { homepage: useRequestURL().origin },
         validationSchema: toTypedSchema(
           matchOptionsValidator(
             this,

@@ -63,11 +63,7 @@ import {
   clipDownloadUrl,
 } from "~/utilities/clipDownloadName";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
-import {
-  CLIP_VIEW_FRACTION,
-  clipPlaybackUrl,
-  sendClipView,
-} from "~/utilities/clipViews";
+import { clipPreloadUrl } from "~/utilities/clipViews";
 import cleanMapName from "~/utilities/cleanMapName";
 import { clipDisplayTitle, formatClipDuration } from "~/utilities/clipDisplay";
 import {
@@ -250,9 +246,6 @@ async function setVisibility(v: Visibility) {
   }
 }
 
-const playbackSrc = computed(() =>
-  clip.value?.download_url ? clipPlaybackUrl(clip.value.download_url) : null,
-);
 const fileSize = useClipFileSize(() => clip.value?.download_url ?? null);
 
 // Full data for the upcoming clip, fetched while the current one is near
@@ -261,7 +254,6 @@ const fileSize = useClipFileSize(() => clip.value?.download_url ?? null);
 // hidden <video> preloader (see preloadSrc).
 const prefetchedClip = ref<Clip | null>(null);
 const prefetchingId = ref<string | null>(null);
-const viewSentFor = ref<string | null>(null);
 
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe(id: string) {
@@ -310,7 +302,6 @@ watch(
       editing.value = false;
       prefetchedClip.value = null;
       prefetchingId.value = null;
-      viewSentFor.value = null;
     }
   },
   { immediate: true },
@@ -525,7 +516,7 @@ const preloadSrc = computed(() => {
   const p = prefetchedClip.value;
   if (!p?.download_url) return null;
   if (clip.value && p.id === clip.value.id) return null;
-  return clipPlaybackUrl(p.download_url);
+  return clipPreloadUrl(p.download_url);
 });
 
 // Pull the full next clip (incl. download_url + lineups) ahead of time so
@@ -582,14 +573,6 @@ function onModalProgress({
 }) {
   if (!Number.isFinite(duration) || duration <= 0) return;
   remaining.value = duration - currentTime;
-  if (
-    clip.value?.download_url &&
-    viewSentFor.value !== clip.value.id &&
-    currentTime >= duration * CLIP_VIEW_FRACTION
-  ) {
-    viewSentFor.value = clip.value.id;
-    sendClipView(clip.value.download_url);
-  }
   if (nextClip.value && remaining.value <= PRELOAD_REMAINING_S) {
     void prefetchNextClip();
   }
@@ -870,7 +853,7 @@ const edgeButton =
                 :class="
                   expanded ? 'clip-modal-player--expanded !rounded-xl' : '!rounded-none'
                 "
-                :src="playbackSrc"
+                :src="clip.download_url"
                 :poster="poster"
                 :clip-key="clip.id"
                 @ended="onModalEnded"

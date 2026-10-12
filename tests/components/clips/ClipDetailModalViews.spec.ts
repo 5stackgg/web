@@ -133,85 +133,27 @@ describe("ClipDetailModal view counting", () => {
     expect(preload.searchParams.get("noview")).toBe("1");
   });
 
-  it("plays from the very URL it warmed, so the switch is served from cache", async () => {
+  it("plays each clip from its own URL, so whatever serves it counts the view", async () => {
     await openOn("c-1");
-    await playTo(15);
-    const warmed = preloadVideo()!.getAttribute("src");
+    expect(playerVideo()!.getAttribute("src")).toBe(clip("c-1").download_url);
 
+    await playTo(15);
     await wrapper!.setProps({ clipId: "c-2" });
     await flushPromises();
 
-    expect(playerVideo()!.getAttribute("src")).toBe(warmed);
+    expect(playerVideo()!.getAttribute("src")).toBe(clip("c-2").download_url);
+    expect(preloadVideo()).toBeNull();
   });
 
-  it("counts a clip once its playback passes the midpoint", async () => {
+  it("sends no view of its own on top of the player's request", async () => {
     await openOn("c-1");
+    await playTo(12);
+    await playTo(19);
 
-    await playTo(9);
     expect(beacon).not.toHaveBeenCalled();
-
-    await playTo(10.5);
-    await playTo(14);
-
-    expect(beacon).toHaveBeenCalledTimes(1);
-    expect(beacon).toHaveBeenCalledWith(clip("c-1").download_url);
-  });
-
-  it("does not count a clip skipped before its midpoint, nor the one it was warming", async () => {
-    await openOn("c-1");
-    await playTo(15);
-    await playTo(9);
-
-    await wrapper!.setProps({ clipId: "c-2" });
-    await flushPromises();
-    observers["c-2"].next({ data: { match_clips: [clip("c-2")] } });
-    await flushPromises();
-    await playTo(2);
-
-    expect(beacon.mock.calls.map(([url]) => url)).toEqual([
-      clip("c-1").download_url,
-    ]);
-  });
-
-  it("counts the next clip on its own once it is watched", async () => {
-    await openOn("c-1");
-    await playTo(12);
-
-    await wrapper!.setProps({ clipId: "c-2" });
-    await flushPromises();
-    observers["c-2"].next({ data: { match_clips: [clip("c-2")] } });
-    await flushPromises();
-    await playTo(11);
-
-    expect(beacon.mock.calls.map(([url]) => url)).toEqual([
-      clip("c-1").download_url,
-      clip("c-2").download_url,
-    ]);
-  });
-
-  it("counts a clip watched again after the viewer closed and reopened it", async () => {
-    await openOn("c-1");
-    await playTo(12);
-
-    await wrapper!.setProps({ clipId: null });
-    await flushPromises();
-    await wrapper!.setProps({ clipId: "c-1" });
-    await flushPromises();
-    observers["c-1"].next({ data: { match_clips: [clip("c-1")] } });
-    await flushPromises();
-    await playTo(12);
-
-    expect(beacon).toHaveBeenCalledTimes(2);
-  });
-
-  it("falls back to a keepalive request where beacons are refused", async () => {
-    beacon.mockReturnValue(false);
-    await openOn("c-1");
-    await playTo(12);
-
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      clip("c-1").download_url,
-      expect.objectContaining({ method: "POST", keepalive: true }),
+    expect(globalThis.fetch).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ method: "POST" }),
     );
   });
 });

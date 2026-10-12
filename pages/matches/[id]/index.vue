@@ -467,6 +467,9 @@ export default {
   beforeUnmount() {
     this.inlineChatObserver?.disconnect();
     this.inlineChatObserver = null;
+    if (this.roleRefetchTimer) {
+      clearTimeout(this.roleRefetchTimer);
+    }
   },
   provide() {
     return {
@@ -492,6 +495,23 @@ export default {
       }
 
       void this.refetchMatchStatic();
+    },
+    // The api caches each player's role until the players event trigger
+    // clears it, so the refetch the key change makes can still answer for the
+    // old role. One more, once that has had time to run.
+    viewerRole(role, previousRole) {
+      if (previousRole === undefined || role === previousRole) {
+        return;
+      }
+
+      if (this.roleRefetchTimer) {
+        clearTimeout(this.roleRefetchTimer);
+      }
+
+      this.roleRefetchTimer = setTimeout(() => {
+        this.roleRefetchTimer = null;
+        void this.refetchMatchStatic();
+      }, 5000);
     },
     // The inline chat on this page is a real room being read, and until now it
     // told the server nothing -- so reading a match chat here left the badge up
@@ -525,6 +545,7 @@ export default {
       cameraOverlayDismissed: false,
       inlineChatVisible: false,
       inlineChatObserver: null as IntersectionObserver | null,
+      roleRefetchTimer: null as ReturnType<typeof setTimeout> | null,
     };
   },
   apollo: {
@@ -556,11 +577,12 @@ export default {
               e_region: {
                 description: true,
               },
-              // The permission and membership fields moved to `matchStatic`.
-              // Each is a function call the database re-runs for this row on
-              // every tick, and none of them change without a status, server,
-              // organizer or lineup change (see `matchStaticKey`) or an
-              // organizer action -- all of which refetch that half explicitly.
+              // The viewer's permission and membership fields moved to
+              // `matchStatic`: each is a function call the database re-runs
+              // for this row and this viewer on every tick. That half is
+              // fetched again when `matchStaticKey` changes, when an
+              // organizer control edits the match, and (for
+              // requested_organizer) when the actions menu opens.
               //
               // can_start and can_check_in stay here: they read lineup
               // readiness, which is live. can_start is only costly in the
@@ -570,6 +592,19 @@ export default {
               can_check_in: true,
               label: true,
               organizer_steam_id: true,
+              map_veto_type: true,
+              tournament_brackets: [
+                { limit: 1 },
+                {
+                  stage: {
+                    tournament: {
+                      id: true,
+                      name: true,
+                      organizers: [{}, { steam_id: true }],
+                    },
+                  },
+                },
+              ],
               server_id: true,
               server_type: true,
               server_region: true,
@@ -770,19 +805,7 @@ export default {
             is_tournament_match: true,
             min_players_per_lineup: true,
             max_players_per_lineup: true,
-            map_veto_type: true,
             organizer: playerFields,
-            tournament_brackets: [
-              { limit: 1 },
-              {
-                stage: {
-                  tournament: {
-                    id: true,
-                    name: true,
-                  },
-                },
-              },
-            ],
           },
         ],
       }),
@@ -805,15 +828,24 @@ export default {
 
       return { ...this.matchStatic, ...this.matchLive };
     },
-    // Everything the static half is computed from that the live half can see.
-    // Every lineup member counts, not only this viewer: scheduling also waits
-    // on each lineup reaching its minimum.
+    // What the static half is computed from that the live half can see: the
+    // status, server, organizer, match type and substitutes (the lineup
+    // sizes), the tournament and whether this viewer organizes it, the
+    // viewer, and every lineup member -- not only this viewer, since
+    // scheduling waits on each lineup reaching its minimum. Not covered: a
+    // tournament switching substitutes off mid-match.
     matchStaticKey(): string | null {
       if (!this.matchLive) {
         return null;
       }
 
       const me = useAuthStore().me;
+      const tournament =
+        this.matchLive.tournament_brackets?.[0]?.stage?.tournament;
+      const tournamentOrganizer = (tournament?.organizers ?? []).some(
+        (organizer: { steam_id: string }) =>
+          !!me?.steam_id && String(organizer.steam_id) === String(me.steam_id),
+      );
       const lineups = [this.matchLive.lineup_1, this.matchLive.lineup_2].map(
         (lineup) =>
           [
@@ -832,14 +864,18 @@ export default {
         this.matchLive.status,
         this.matchLive.server_id,
         this.matchLive.organizer_steam_id,
+        this.matchLive.options?.type,
+        this.matchLive.options?.number_of_substitutes,
+        tournament?.id,
+        tournamentOrganizer,
         me?.steam_id,
         me?.role,
         ...lineups,
       ].join("|");
     },
-    // Assigned on every tick before the split as well -- this keeps that
-    // behaviour and simply picks the title back up once the static half,
-    // which owns `label` and the tournament, has landed.
+    viewerRole() {
+      return useAuthStore().me?.role;
+    },
     matchContext(): Record<string, any> | null {
       if (!this.match) {
         return null;

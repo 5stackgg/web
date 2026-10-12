@@ -14,6 +14,7 @@ const SOMEONE = "76561198000000002";
 type Observer = { next: (result: any) => void };
 
 let liveObservers: Record<string, Observer> = {};
+let liveFields: Record<string, string[]> = {};
 let answers: Record<string, Record<string, unknown>> = {};
 let staticQueries: {
   matchId: string;
@@ -28,6 +29,21 @@ function operation(query: any) {
     kind: definition?.operation,
     field: definition?.selectionSet?.selections[0]?.name?.value,
   };
+}
+
+// What the query asks for at the match's top level. Both halves answer from
+// one row, the way the api does, so a field asked of the wrong half goes stale.
+function fieldsOf(query: any): string[] {
+  const match = query.definitions[0].selectionSet.selections[0];
+  return match.selectionSet.selections.map(
+    (selection: any) => selection.name.value,
+  );
+}
+
+function project(row: Record<string, unknown>, fields: string[]) {
+  return Object.fromEntries(
+    Object.entries(row).filter(([field]) => fields.includes(field)),
+  );
 }
 
 function lineup(id: string, players: Record<string, unknown>[] = []) {
@@ -76,7 +92,10 @@ function signIn(steamId = ME, role = "user") {
 }
 
 function emitLive(match: Record<string, unknown>) {
-  liveObservers[String(match.id)].next({ data: { matches_by_pk: match } });
+  const id = String(match.id);
+  liveObservers[id].next({
+    data: { matches_by_pk: project(match, liveFields[id]) },
+  });
 }
 
 function staticFor(matchId: string) {
@@ -99,6 +118,7 @@ async function mountMatch(answer: Record<string, unknown>) {
     subscribe(observer: Observer) {
       if (operation(options.query).field === "matches_by_pk") {
         liveObservers[options.variables.matchId] = observer;
+        liveFields[options.variables.matchId] = fieldsOf(options.query);
       }
       return { unsubscribe() {}, closed: false };
     },
@@ -111,7 +131,10 @@ async function mountMatch(answer: Record<string, unknown>) {
       observers: [] as Observer[],
       refetch: vi.fn(),
     };
-    const answer = () => (isStatic ? answers[record.matchId] : undefined);
+    const answer = () =>
+      isStatic && answers[record.matchId]
+        ? project(answers[record.matchId], fieldsOf(options.query))
+        : undefined;
     const result = () => ({
       loading: false,
       data: answer() ? { matches_by_pk: answer() } : undefined,
@@ -167,6 +190,7 @@ afterEach(() => {
   mounted?.unmount();
   mounted = null;
   liveObservers = {};
+  liveFields = {};
   answers = {};
   staticQueries = [];
   useAuthStore().me = undefined;
@@ -395,5 +419,137 @@ describe("the match page's one-time permissions", () => {
     await flushPromises();
 
     expect(refetches()).toBe(1);
+  });
+});
+
+describe("the match page's per-match fields", () => {
+  function row(overrides: Record<string, unknown> = {}) {
+    return { ...live(), ...permissions(), ...overrides };
+  }
+
+  it("follow every veto pick for a spectator", async () => {
+    signIn();
+    const match = row({
+      status: e_match_status_enum.Veto,
+      map_veto_type: "Ban",
+    });
+    const wrapper = await mountMatch(match);
+    emitLive(match);
+    await flushPromises();
+
+    expect((wrapper.vm as any).match.map_veto_type).toBe("Ban");
+
+    match.map_veto_type = "Pick";
+    emitLive(match);
+    await flushPromises();
+    expect((wrapper.vm as any).match.map_veto_type).toBe("Pick");
+
+    match.map_veto_type = "Side";
+    emitLive(match);
+    await flushPromises();
+    expect((wrapper.vm as any).match.map_veto_type).toBe("Side");
+  });
+
+  it("re-read the lineup size when the organizer changes the match type", async () => {
+    signIn();
+    const match = row({
+      options: { type: "Competitive", number_of_substitutes: 2, best_of: 1 },
+      min_players_per_lineup: 5,
+      max_players_per_lineup: 7,
+    });
+    const wrapper = await mountMatch(match);
+    emitLive(match);
+    await flushPromises();
+
+    Object.assign(match, {
+      options: { type: "Wingman", number_of_substitutes: 2, best_of: 1 },
+      min_players_per_lineup: 2,
+      max_players_per_lineup: 4,
+    });
+    emitLive(match);
+    await flushPromises();
+
+    expect((wrapper.vm as any).match.min_players_per_lineup).toBe(2);
+    expect((wrapper.vm as any).match.max_players_per_lineup).toBe(4);
+  });
+
+  it("re-read the lineup size when the substitutes change", async () => {
+    signIn();
+    const match = row({
+      options: { type: "Competitive", number_of_substitutes: 2, best_of: 1 },
+      max_players_per_lineup: 7,
+    });
+    const wrapper = await mountMatch(match);
+    emitLive(match);
+    await flushPromises();
+
+    Object.assign(match, {
+      options: { type: "Competitive", number_of_substitutes: 0, best_of: 1 },
+      max_players_per_lineup: 5,
+    });
+    emitLive(match);
+    await flushPromises();
+
+    expect((wrapper.vm as any).match.max_players_per_lineup).toBe(5);
+  });
+
+  it("give a newly added tournament organizer their controls", async () => {
+    signIn();
+    const bracket = (organizers: string[]) => [
+      {
+        stage: {
+          tournament: {
+            id: "t-1",
+            name: "Autumn Cup",
+            organizers: organizers.map((steam_id) => ({ steam_id })),
+          },
+        },
+      },
+    ];
+    const match = row({ tournament_brackets: bracket([]) });
+    const wrapper = await mountMatch(match);
+    emitLive(match);
+    await flushPromises();
+
+    expect((wrapper.vm as any).matchContext.tournament).toEqual({
+      id: "t-1",
+      name: "Autumn Cup",
+    });
+
+    Object.assign(match, { tournament_brackets: bracket([SOMEONE]) });
+    emitLive(match);
+    await flushPromises();
+    expect(refetches()).toBe(0);
+
+    Object.assign(match, {
+      tournament_brackets: bracket([SOMEONE, ME]),
+      is_organizer: true,
+    });
+    emitLive(match);
+    await flushPromises();
+
+    expect(refetches()).toBe(1);
+    expect((wrapper.vm as any).match.is_organizer).toBe(true);
+  });
+
+  it("are fetched once more after a role change, once the api has caught up", async () => {
+    signIn(ME, "user");
+    const match = row();
+    await mountMatch(match);
+    emitLive(match);
+    await flushPromises();
+
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    try {
+      signIn(ME, "match_organizer");
+      await flushPromises();
+      expect(refetches()).toBe(1);
+
+      vi.advanceTimersByTime(5000);
+      await flushPromises();
+      expect(refetches()).toBe(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

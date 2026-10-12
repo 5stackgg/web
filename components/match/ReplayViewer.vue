@@ -355,7 +355,7 @@ const {
   volumes: radarVolumes,
   activeVolume,
   volumeOverride,
-} = useRadarProjection(normalizedMap, {
+} = useRadarProjection(() => props.mapName, {
   radarFailed,
   volumePoints: () => roomPoints.value,
 });

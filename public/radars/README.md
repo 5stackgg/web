@@ -15,6 +15,21 @@ Assets vendored from [boltgolt/boltobserv](https://github.com/boltgolt/boltobser
   the radar overlay (smoke / firebomb / flashbang / frag).
 - `projectiles/bomb-*.webp` — bomb planted / defused / dropped markers.
 
+## 5Stack's own radars
+
+`stage/<map>.webp` (1024) and `stage/<map>@2x.webp` (2048) are our own radars,
+baked from the replay stage's map in its 2D look under the same calibration
+as `metadata.json`, plus `stage/<map>_night.webp` in the moonlit palette.
+`utilities/stageRadars.json` lists them, and `radarImageUrl` in
+`utilities/mapAssets.ts` draws them wherever they exist and the radar here
+everywhere else (Rush's rooms, any map not baked). Re-bake after a palette or
+map change:
+
+```sh
+node scripts/replay-stage/bake-radars.mjs --webp                       # every map
+node scripts/replay-stage/bake-radars.mjs --webp --maps de_mirage,de_dust2_night
+```
+
 ## Coordinate system
 
 `resolution` = world units per radar pixel. `offset.{x,y}` = world-unit

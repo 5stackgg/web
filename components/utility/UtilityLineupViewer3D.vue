@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { Slider } from "~/components/ui/slider";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
+import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
+import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import { normalizeMapName } from "~/utilities/mapAssets";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import {
+  utilityStageThrow,
+  utilityStageThrower,
+} from "~/utilities/replayStage/utilityFrame";
+import {
+  UTILITY_TYPE_COLORS,
   utilityLanding,
   utilityOrigin,
   normalizeTrajectory,
@@ -19,6 +24,8 @@ import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
 
 const props = defineProps<{
   lineup: UtilityLineup;
+  /** Fills the box it is put in -- the map's square -- instead of 16:10. */
+  fill?: boolean;
 }>();
 
 // One synthetic grenade, so Replay3DLite renders a lineup with exactly the same
@@ -112,39 +119,92 @@ const flightMs = computed(() => {
   return 2000;
 });
 
+// The throw plays like a video under its play bar: the flight, then four
+// seconds for what it turns into, and it can be paused and scrubbed.
+const SETTLE_MS = 4000;
 const progress = ref(0);
 const settledMs = ref(0);
+const running = ref(false);
 let frame: number | null = null;
 let startedAt = 0;
 
-function tickFrame(now: number) {
-  // A frame's timestamp can predate the replay() that scheduled it, and a
-  // negative progress indexed the trajectory from the end -- undefined.x.
-  const elapsed = Math.max(0, now - startedAt);
+const lengthMs = computed(() => flightMs.value + SETTLE_MS);
+const position = computed(
+  () => (progress.value * flightMs.value + settledMs.value) / 1000,
+);
+
+function show(elapsed: number) {
   progress.value = Math.min(1, elapsed / flightMs.value);
   settledMs.value = Math.max(0, elapsed - flightMs.value);
-  if (settledMs.value < 4000) {
+}
+
+function tickFrame(now: number) {
+  // A frame's timestamp can predate the play() that scheduled it, and a
+  // negative progress indexed the trajectory from the end -- undefined.x.
+  const elapsed = Math.max(0, now - startedAt);
+  show(Math.min(elapsed, lengthMs.value));
+  if (elapsed < lengthMs.value) {
     frame = requestAnimationFrame(tickFrame);
     return;
   }
   frame = null;
+  running.value = false;
 }
 
-function replay() {
+function play(fromMs = 0) {
   if (frame !== null) {
     cancelAnimationFrame(frame);
   }
-  progress.value = 0;
-  settledMs.value = 0;
-  startedAt = performance.now();
+  show(fromMs);
+  startedAt = performance.now() - fromMs;
+  running.value = true;
   frame = requestAnimationFrame(tickFrame);
 }
+
+function replay() {
+  play(0);
+}
+
+function pause() {
+  if (frame !== null) {
+    cancelAnimationFrame(frame);
+    frame = null;
+  }
+  running.value = false;
+}
+
+// Pause it, carry on from where it stopped, or throw it again once done.
+function toggle() {
+  const at = position.value * 1000;
+  if (running.value) {
+    pause();
+  } else {
+    play(at >= lengthMs.value ? 0 : at);
+  }
+}
+
+function seek(seconds: number) {
+  const at = Math.min(lengthMs.value, Math.max(0, seconds * 1000));
+  show(at);
+  if (running.value) {
+    startedAt = performance.now() - at;
+  }
+}
+
+const landingTick = computed(() => [
+  {
+    key: "lands",
+    seconds: flightMs.value / 1000,
+    color: UTILITY_TYPE_COLORS[props.lineup.utility_type] ?? "#fff",
+  },
+]);
 
 function stop() {
   if (frame !== null) {
     cancelAnimationFrame(frame);
     frame = null;
   }
+  running.value = false;
   if (throwTimer) {
     clearTimeout(throwTimer);
     throwTimer = null;
@@ -361,17 +421,15 @@ const autoCeilingZ = computed(() => {
   return highest + 400;
 });
 
-// A view mesh cuts walls at a height above their own floor; ~160u keeps the
-// walls a throw has to clear while still opening interior ceilings. The .tri
-// fallback keeps its own plane-based default.
+// The fallback renderer's roof cut: on a view mesh ~160u above each floor
+// keeps the walls a throw has to clear while still opening interior
+// ceilings; the .tri keeps its own plane-based default. The stage ghosts
+// roofs by itself.
 const VIEW_CEILING = 58;
 const TRI_CEILING = 70;
 const meshKind = ref<"view" | "tri" | "radar" | null>(null);
-const ceilingChoice = ref<number | null>(null);
-const ceiling = computed(
-  () =>
-    ceilingChoice.value ??
-    (meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING),
+const ceiling = computed(() =>
+  meshKind.value === "view" ? VIEW_CEILING : TRI_CEILING,
 );
 
 // Only reached if the mesh 404s mid-flight and the renderer drops back to the
@@ -383,14 +441,58 @@ function project(point: { x: number; y: number; z?: number }) {
 const tick = computed(() =>
   Math.round(((progress.value * flightMs.value) / 1000) * TICK_RATE),
 );
+
+// The replay stage draws it unless this browser or map cannot; then the
+// renderer above does, as it always has.
+const stageFailed = ref(false);
+
+const stageThrows = computed(() => {
+  const entry = utilityStageThrow(props.lineup, {
+    key: props.lineup.id,
+    gid: SYNTHETIC_GID,
+    points: fullTrajectory.value,
+  });
+  return entry ? [entry] : [];
+});
+
+const stageThrowers = computed(() => [
+  utilityStageThrower(props.lineup, {
+    id: props.lineup.id,
+    name: props.lineup.name,
+    avatarUrl: avatars.value[props.lineup.id] ?? null,
+  }),
+]);
+
+// Before the throw, in flight and blooming, then a still once it has settled.
+const stageTime = computed(() => {
+  if (settledMs.value >= SETTLE_MS) {
+    return null;
+  }
+  if (progress.value === 0 && settledMs.value === 0) {
+    return -1;
+  }
+  return (progress.value * flightMs.value + settledMs.value) / 1000;
+});
 </script>
 
 <template>
   <div
     class="relative w-full overflow-hidden rounded-md border border-border bg-background"
-    style="aspect-ratio: 16 / 10"
+    :class="fill ? 'h-full' : 'aspect-[16/10]'"
   >
+    <UtilityThrowStage
+      v-if="!stageFailed"
+      :map-name="lineup.map_name"
+      :throws="stageThrows"
+      :throwers="stageThrowers"
+      :time="stageTime"
+      :controls="fill ? 64 : 56"
+      @mesh="(kind) => (meshKind = kind)"
+      @framed="onFramed"
+      @fallback="stageFailed = true"
+    />
     <Replay3DLite
+      v-else
       :map-name="mapName"
       :mesh-cdn="meshCdn"
       :radar-src="radarSrc"
@@ -413,72 +515,17 @@ const tick = computed(() =>
       @framed="onFramed"
     />
 
-    <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 z-[10] flex items-end justify-between gap-4 p-3"
-    >
-      <button
-        type="button"
-        class="pointer-events-auto inline-flex h-8 items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-black/60 px-3 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] backdrop-blur transition-colors hover:bg-black/80"
-        @click="replay()"
-      >
-        <!-- One glyph for "throw it again": the arc a grenade flies, out of
-             the hand and over to an arrowhead. A play triangle that turned
-             into a rotate arrow mid-throw said two different things. -->
-        <svg
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          class="h-4 w-4"
-        >
-          <path d="M2.4 12.4C3.6 6.2 8 3.2 13.4 5.6" />
-          <path d="M10.2 3.5l3.2 2.1l-2 3.2" />
-          <circle cx="2.4" cy="12.6" r="1.4" fill="currentColor" stroke="none" />
-        </svg>
-        {{ $t("pages.utility.viewer.replay_throw") }}
-      </button>
-
-      <!-- One line, the height of the button beside it: a roof glyph where
-           the word was, the word on its tooltip. A label stacked over the
-           slider made this the tallest thing on the picture. -->
-      <div
-        class="pointer-events-auto flex h-8 w-36 items-center gap-2.5 rounded-md border border-border/60 bg-black/60 pl-2.5 pr-3 backdrop-blur"
-      >
-        <FiveStackToolTip as-child side="top" :delay-duration="120">
-          <template #trigger>
-            <svg
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="h-4 w-4 shrink-0 text-white/75"
-              role="img"
-              :aria-label="$t('pages.utility.viewer.roof')"
-            >
-              <!-- A roof, and the line it is cut at. -->
-              <path d="M1.5 8 8 2.5 14.5 8" />
-              <path d="M3.5 12.5h9" stroke-dasharray="1.5 2.5" />
-            </svg>
-          </template>
-          {{ $t("pages.utility.viewer.roof") }}
-        </FiveStackToolTip>
-        <Slider
-          class="min-w-0 flex-1"
-          :model-value="[ceiling]"
-          :min="0"
-          :max="100"
-          :step="1"
-          :aria-label="$t('pages.utility.viewer.roof')"
-          @update:model-value="
-            (value) => (ceilingChoice = value?.[0] ?? ceiling)
-          "
-        />
-      </div>
-    </div>
+    <UtilityExecuteTransport
+      class="absolute z-[10]"
+      :class="fill ? 'inset-x-3 bottom-3' : 'inset-x-2 bottom-2'"
+      :position="position"
+      :started-at="null"
+      :length="lengthMs / 1000"
+      :running="running"
+      :beats="landingTick"
+      :label="$t('pages.utility.viewer.timeline')"
+      @toggle="toggle"
+      @seek="seek"
+    />
   </div>
 </template>

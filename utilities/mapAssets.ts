@@ -1,3 +1,4 @@
+import stageRadars from "./stageRadars.json";
 import {
   BLAST_FILE_VERSIONS,
   PREP_VERSION,
@@ -41,6 +42,43 @@ export function loadRadarMaps(): Promise<Set<string>> {
 export async function hasRadarForMap(mapName: string): Promise<boolean> {
   const set = await loadRadarMaps();
   return set.has(normalizeMapName(mapName));
+}
+
+// Our own radars, baked from the replay stage's map in its 2D look
+// (scripts/replay-stage/bake-radars.mjs --webp), by image name with a hash of
+// the pixels for the URL. Same calibration as the generic ones.
+const STAGE_RADARS: Record<string, string> = stageRadars;
+
+/**
+ * The radar image for a map, or for one of its rooms: our own bake when there
+ * is one (a `_night` map in its moonlit palette), else the generic radar. Both
+ * are drawn under the map's entry in /radars/metadata.json. `retina` asks for
+ * the 2048px bake, for a board shown large or zoomed.
+ */
+export function radarImageUrl(
+  mapName: string,
+  volume?: string | null,
+  options: { retina?: boolean } = {},
+): string {
+  let played = (mapName || "").toLowerCase().trim();
+  const slash = played.lastIndexOf("/");
+  if (slash >= 0) {
+    played = played.slice(slash + 1);
+  }
+  const day = played.replace(/_night$/, "");
+  const room = volume ? `_${volume}` : "";
+  for (const name of [`${played}${room}`, `${day}${room}`]) {
+    const hash = STAGE_RADARS[name];
+    if (hash) {
+      return `/radars/stage/${name}${options.retina ? "@2x" : ""}.webp?v=${hash}`;
+    }
+  }
+  return `/radars/${day}${room}.png`;
+}
+
+/** Which picture a radar URL is, whatever its resolution. */
+export function radarImageKey(src: string | null | undefined): string | null {
+  return src ? src.replace(/\?.*$/, "").replace(/@2x(?=\.\w+$)/, "") : null;
 }
 
 export const MAP_ASSETS_ROOT = "https://demo-dl.5stack.gg/maps";

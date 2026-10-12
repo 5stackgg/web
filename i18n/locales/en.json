@@ -5439,8 +5439,7 @@
         "score": "{count} upvote | {count} upvotes"
       },
       "viewer": {
-        "replay_throw": "Replay throw",
-        "roof": "Roof"
+        "timeline": "Throw timeline"
       },
       "detail": {
         "previous": "Previous lineup",
@@ -5448,6 +5447,8 @@
         "open_full": "Open the full page",
         "practice_this": "Practice This",
         "share": "Share lineup",
+        "watch_3d": "Watch in 3D",
+        "watch_clip": "Watch the clip",
         "copy_link": "Copy lineup link",
         "download_clip": "Download clip",
         "not_found": "Lineup not found",
@@ -5751,6 +5752,8 @@
         "step_context_by": "Step {step} of {count} in {name}. Thrown at {seconds}s by {player}.",
         "step_context_you": "Step {step} of {count} in {name}. Thrown at {seconds}s by you.",
         "play": "Play",
+        "pause": "Pause",
+        "seek": "Execute timeline",
         "stop": "Stop",
         "clock_of": "{now}s of {total}s",
         "duplicate": "Duplicate",

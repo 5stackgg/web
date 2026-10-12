@@ -5437,8 +5437,7 @@
         "score": "{count} voto positivo | {count} votos positivos"
       },
       "viewer": {
-        "replay_throw": "Repetir lanzamiento",
-        "roof": "Techo"
+        "timeline": "Línea de tiempo del lanzamiento"
       },
       "detail": {
         "previous": "Lineup anterior",
@@ -5446,6 +5445,8 @@
         "open_full": "Abrir la página completa",
         "practice_this": "Practicar esto",
         "share": "Compartir lineup",
+        "watch_3d": "Ver en 3D",
+        "watch_clip": "Ver el clip",
         "copy_link": "Copiar enlace del lineup",
         "download_clip": "Descargar clip",
         "not_found": "Lineup no encontrado",
@@ -5749,6 +5750,8 @@
         "step_context_by": "Paso {step} de {count} en {name}. Lo lanza {player} a los {seconds}s.",
         "step_context_you": "Paso {step} de {count} en {name}. Lo lanzas tú a los {seconds}s.",
         "play": "Reproducir",
+        "pause": "Pausa",
+        "seek": "Línea de tiempo de la ejecución",
         "stop": "Parar",
         "clock_of": "{now}s de {total}s",
         "duplicate": "Duplicar",

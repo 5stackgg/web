@@ -5437,8 +5437,7 @@
         "score": "{count} vote positif | {count} votes positifs"
       },
       "viewer": {
-        "replay_throw": "Rejouer le lancer",
-        "roof": "Toit"
+        "timeline": "Chronologie du lancer"
       },
       "detail": {
         "previous": "Lineup précédent",
@@ -5446,6 +5445,8 @@
         "open_full": "Ouvrir la page complète",
         "practice_this": "S'entraîner dessus",
         "share": "Partager le lineup",
+        "watch_3d": "Voir en 3D",
+        "watch_clip": "Voir le clip",
         "copy_link": "Copier le lien du lineup",
         "download_clip": "Télécharger le clip",
         "not_found": "Lineup introuvable",
@@ -5749,6 +5750,8 @@
         "step_context_by": "Étape {step} sur {count} dans {name}. Lancé à {seconds}s par {player}.",
         "step_context_you": "Étape {step} sur {count} dans {name}. Lancé à {seconds}s par vous.",
         "play": "Lire",
+        "pause": "Pause",
+        "seek": "Chronologie de l’exécution",
         "stop": "Arrêter",
         "clock_of": "{now}s sur {total}s",
         "duplicate": "Dupliquer",

@@ -5437,8 +5437,7 @@
         "score": "{count} تصويت إيجابي | {count} تصويتات إيجابية"
       },
       "viewer": {
-        "replay_throw": "إعادة عرض الرمية",
-        "roof": "السقف"
+        "timeline": "الخط الزمني للرمية"
       },
       "detail": {
         "previous": "الرمية السابقة",
@@ -5446,6 +5445,8 @@
         "open_full": "فتح الصفحة الكاملة",
         "practice_this": "تدرّب على هذه",
         "share": "شارك الرمية",
+        "watch_3d": "شاهد بتقنية ثلاثية الأبعاد",
+        "watch_clip": "شاهد المقطع",
         "copy_link": "نسخ رابط الرمية",
         "download_clip": "نزّل المقطع",
         "not_found": "لم يُعثر على الرمية",
@@ -5749,6 +5750,8 @@
         "step_context_by": "الخطوة {step} من {count} في {name}. يرميها {player} عند {seconds}ث.",
         "step_context_you": "الخطوة {step} من {count} في {name}. ترميها أنت عند {seconds}ث.",
         "play": "تشغيل",
+        "pause": "إيقاف مؤقت",
+        "seek": "الخط الزمني للتنفيذ",
         "stop": "إيقاف",
         "clock_of": "{now}ث من {total}ث",
         "duplicate": "تكرار",

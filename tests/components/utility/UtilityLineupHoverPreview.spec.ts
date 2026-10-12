@@ -6,6 +6,7 @@ import UtilityLineupCard from "~/components/utility/UtilityLineupCard.vue";
 import UtilityLineupHoverPreview from "~/components/utility/UtilityLineupHoverPreview.vue";
 import UtilityRadarBoard from "~/components/utility/UtilityRadarBoard.vue";
 import metadata from "~/public/radars/metadata.json";
+import { radarImageUrl } from "~/utilities/mapAssets";
 import type { UtilityLineup } from "~/types/utility";
 
 const lineup = {
@@ -233,7 +234,7 @@ describe("lineup hover peek", () => {
         mapName: "de_mirage",
         lineups: [lineup],
         peek: true,
-        seedSrc: "/radars/de_mirage.png",
+        seedSrc: radarImageUrl("de_mirage"),
       },
       attachTo: document.body,
     });

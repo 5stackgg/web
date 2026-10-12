@@ -5437,8 +5437,7 @@
         "score": "{count} uppröst | {count} uppröster"
       },
       "viewer": {
-        "replay_throw": "Spela upp kastet",
-        "roof": "Tak"
+        "timeline": "Tidslinje för kastet"
       },
       "detail": {
         "previous": "Föregående uppställning",
@@ -5446,6 +5445,8 @@
         "open_full": "Öppna hela sidan",
         "practice_this": "Träna den här",
         "share": "Dela uppställningen",
+        "watch_3d": "Se i 3D",
+        "watch_clip": "Se klippet",
         "copy_link": "Kopiera länk till uppställningen",
         "download_clip": "Ladda ner klipp",
         "not_found": "Uppställningen hittades inte",
@@ -5749,6 +5750,8 @@
         "step_context_by": "Steg {step} av {count} i {name}. Kastas vid {seconds}s av {player}.",
         "step_context_you": "Steg {step} av {count} i {name}. Kastas vid {seconds}s av dig.",
         "play": "Spela upp",
+        "pause": "Pausa",
+        "seek": "Tidslinje för executen",
         "stop": "Stopp",
         "clock_of": "{now}s av {total}s",
         "duplicate": "Duplicera",

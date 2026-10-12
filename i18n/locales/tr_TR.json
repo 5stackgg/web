@@ -5437,8 +5437,7 @@
         "score": "{count} olumlu oy | {count} olumlu oy"
       },
       "viewer": {
-        "replay_throw": "Atışı tekrar oynat",
-        "roof": "Çatı"
+        "timeline": "Atışın zaman çizelgesi"
       },
       "detail": {
         "previous": "Önceki dizilim",
@@ -5446,6 +5445,8 @@
         "open_full": "Tam sayfayı aç",
         "practice_this": "Bunu çalış",
         "share": "Dizilimi paylaş",
+        "watch_3d": "3D olarak izle",
+        "watch_clip": "Klibi izle",
         "copy_link": "Dizilim bağlantısını kopyala",
         "download_clip": "Klibi indir",
         "not_found": "Dizilim bulunamadı",
@@ -5749,6 +5750,8 @@
         "step_context_by": "{name} içinde adım {step} / {count}. {seconds} sn'de {player} atar.",
         "step_context_you": "{name} içinde adım {step} / {count}. {seconds} sn'de sen atarsın.",
         "play": "Oynat",
+        "pause": "Duraklat",
+        "seek": "Uygulamanın zaman çizelgesi",
         "stop": "Durdur",
         "clock_of": "{now} sn / {total} sn",
         "duplicate": "Çoğalt",

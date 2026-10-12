@@ -508,11 +508,13 @@ watch(
  * whole show. A step lights when its time comes -- the states change on the
  * tick -- so that part is the same with reduced motion.
  *
- * The clock lives here and the scene is handed it, so the dock's label, the
- * timeline and the grenades in the air are one run.
+ * The clock lives here and the scene is handed it, so the play bar, the
+ * timeline and the grenades in the air are one run. In the scene it plays
+ * like a video: it pauses, scrubs, and stops on its last moment.
  */
 const clock = ref<number | null>(null);
-// The `performance.now()` the run started at. The clock moves in tenths; the
+// The `performance.now()` the run would have started at to be where it is,
+// while it runs; null while it is paused. The clock moves in tenths; the
 // scene reads the same run off this between its ticks.
 const startedAt = ref<number | null>(null);
 let timer: ReturnType<typeof setInterval> | null = null;
@@ -525,6 +527,7 @@ const awaitingScene = ref(false);
 let sceneFramed = false;
 
 const playing = computed(() => clock.value !== null || awaitingScene.value);
+const running = computed(() => startedAt.value !== null || awaitingScene.value);
 
 // In the scene a run lasts until the last grenade is down. On the flat board
 // nothing flies, so it ends with the last throw.
@@ -540,29 +543,76 @@ const runEnd = computed(() => {
   );
 });
 
-function stopClock() {
+// A beat held after the end, so the end reads as an end; in the scene, long
+// enough for the last cloud to be up.
+const runLength = computed(() => runEnd.value + (scene.value ? 2 : 1));
+
+function stopTimer() {
   if (timer) {
     clearInterval(timer);
     timer = null;
   }
+}
+
+function stopClock() {
+  stopTimer();
   awaitingScene.value = false;
   clock.value = null;
   startedAt.value = null;
 }
 
-function startClock() {
-  const epoch = performance.now();
-  startedAt.value = epoch;
-  clock.value = 0;
+function pauseClock() {
+  stopTimer();
+  awaitingScene.value = false;
+  if (startedAt.value !== null) {
+    clock.value = Math.min(
+      runLength.value,
+      (performance.now() - startedAt.value) / 1000,
+    );
+  }
+  startedAt.value = null;
+}
+
+function startClock(from = 0) {
+  stopTimer();
+  startedAt.value = performance.now() - from * 1000;
+  clock.value = from;
   timer = setInterval(() => {
-    const now = (performance.now() - epoch) / 1000;
-    // A beat held after the end, so the end reads as an end.
-    if (now > runEnd.value + 1) {
-      stopClock();
+    const now = (performance.now() - startedAt.value!) / 1000;
+    if (now < runLength.value) {
+      clock.value = Math.round(now * 10) / 10;
       return;
     }
-    clock.value = Math.round(now * 10) / 10;
+    // The scene stops on its last moment, where the bar can take it back;
+    // on the flat board the run is over.
+    if (scene.value) {
+      pauseClock();
+      clock.value = runLength.value;
+    } else {
+      stopClock();
+    }
   }, 100);
+}
+
+// The play bar's button: pause a run, carry on from where it stopped, or
+// start again once it has finished.
+function toggle() {
+  if (running.value) {
+    pauseClock();
+  } else if (clock.value === null || clock.value >= runLength.value) {
+    play();
+  } else {
+    startClock(clock.value);
+  }
+}
+
+function seek(seconds: number) {
+  const at = Math.min(runLength.value, Math.max(0, seconds));
+  awaitingScene.value = false;
+  clock.value = at;
+  if (startedAt.value !== null) {
+    startedAt.value = performance.now() - at * 1000;
+  }
 }
 
 function play() {
@@ -601,7 +651,12 @@ function dropScene() {
 // A clock nobody is watching is a clock that has drifted by the time they
 // come back to it.
 function onVisibility() {
-  if (document.hidden) {
+  if (!document.hidden) {
+    return;
+  }
+  if (scene.value) {
+    pauseClock();
+  } else {
     stopClock();
   }
 }
@@ -1231,12 +1286,16 @@ async function destroy() {
         :team="teamName"
         :clock="clock"
         :started-at="startedAt"
+        :running="running"
+        :length="runLength"
         :scene="scene"
         :hovered-lineup-id="hoveredLineupId"
         :lineups-loading="lineupsLoading"
         @step="openStep"
         @hover="(id) => (hoveredLineupId = id)"
         @framed="onSceneFramed"
+        @toggle="toggle()"
+        @seek="seek"
         @close-scene="
           stopClock();
           dropScene();
@@ -1244,9 +1303,9 @@ async function destroy() {
       />
 
       <template v-if="current" #dock>
-        <!-- While it plays -- or the scene is still flying in to play it --
-             the row is the clock and the way to stop it. -->
-        <template v-if="playing">
+        <!-- While it plays on the flat board the row is the clock and the
+             way to stop it; the scene has its own play bar. -->
+        <template v-if="playing && !scene">
           <span class="pr-1 text-xs tabular-nums text-muted-foreground">
             {{ clockLabel }}
           </span>

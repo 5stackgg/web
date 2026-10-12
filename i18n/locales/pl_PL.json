@@ -5437,8 +5437,7 @@
         "score": "{count} głos za | {count} głosów za"
       },
       "viewer": {
-        "replay_throw": "Odtwórz rzut",
-        "roof": "Dach"
+        "timeline": "Oś czasu rzutu"
       },
       "detail": {
         "previous": "Poprzednia ustawka",
@@ -5446,6 +5445,8 @@
         "open_full": "Otwórz pełną stronę",
         "practice_this": "Ćwicz tę",
         "share": "Udostępnij ustawkę",
+        "watch_3d": "Zobacz w 3D",
+        "watch_clip": "Zobacz klip",
         "copy_link": "Kopiuj link do ustawki",
         "download_clip": "Pobierz klip",
         "not_found": "Nie znaleziono ustawki",
@@ -5749,6 +5750,8 @@
         "step_context_by": "Krok {step} z {count} w {name}. Rzuca {player} w {seconds}s.",
         "step_context_you": "Krok {step} z {count} w {name}. Rzucasz ty w {seconds}s.",
         "play": "Odtwórz",
+        "pause": "Pauza",
+        "seek": "Oś czasu wejścia",
         "stop": "Stop",
         "clock_of": "{now}s z {total}s",
         "duplicate": "Duplikuj",

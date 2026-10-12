@@ -36,9 +36,10 @@ const props = defineProps<{
   privateCount: number;
 }>();
 
+// The 1x image: nine tiles at once, and the board it opens upgrades its own.
 const { radarSrc, projectCalibrated, CANVAS } = useRadarProjection(
   () => props.tile.name,
-  { volumePoints: () => props.landings },
+  { volumePoints: () => props.landings, retina: false },
 );
 
 // The radar is cut into this many cells a side; landings sharing one are one
@@ -149,7 +150,7 @@ defineExpose({
           y="0"
           :width="CANVAS"
           :height="CANVAS"
-          class="opacity-65 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+          class="opacity-85 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
         />
         <circle
           v-for="mark of marks"

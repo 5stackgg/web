@@ -7254,8 +7254,7 @@
         "matches": "試合数",
         "next_best": "次点: {name}",
         "manual": "大会主催者が選出しました。"
-      },
-      "no_matches_played": "試合はまだありません"
+      }
     },
     "swiss": {
       "advanced": "進出",
@@ -7748,6 +7747,18 @@
       "expand": "展開",
       "collapse_all": "すべて折りたたむ",
       "expand_all": "すべて展開"
+    },
+    "matches_filter": {
+      "live": "ライブ",
+      "upcoming": "予定",
+      "results": "結果",
+      "all": "すべて",
+      "empty": {
+        "live": "現在ライブ中の試合はありません。",
+        "upcoming": "予定されている試合はありません。",
+        "results": "結果はまだありません。",
+        "all": "試合はまだありません。ブラケットが作成されると表示されます。"
+      }
     },
     "registration": {
       "section": "参加登録",

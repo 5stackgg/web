@@ -7254,8 +7254,7 @@
         "matches": "場次",
         "next_best": "次佳：{name}",
         "manual": "由賽事主辦方選定。"
-      },
-      "no_matches_played": "尚未進行任何比賽"
+      }
     },
     "swiss": {
       "advanced": "晉級",
@@ -7748,6 +7747,18 @@
       "expand": "展開",
       "collapse_all": "全部收合",
       "expand_all": "全部展開"
+    },
+    "matches_filter": {
+      "live": "進行中",
+      "upcoming": "即將開始",
+      "results": "結果",
+      "all": "全部",
+      "empty": {
+        "live": "目前沒有進行中的比賽。",
+        "upcoming": "沒有即將開始的比賽。",
+        "results": "尚無結果。",
+        "all": "尚無比賽。對陣圖產生後會顯示在這裡。"
+      }
     },
     "registration": {
       "section": "報名",

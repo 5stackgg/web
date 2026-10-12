@@ -7254,8 +7254,7 @@
         "matches": "경기 수",
         "next_best": "차순위: {name}",
         "manual": "대회 주최자가 선정했습니다."
-      },
-      "no_matches_played": "아직 진행된 매치가 없습니다"
+      }
     },
     "swiss": {
       "advanced": "진출",
@@ -7748,6 +7747,18 @@
       "expand": "펼치기",
       "collapse_all": "모두 접기",
       "expand_all": "모두 펼치기"
+    },
+    "matches_filter": {
+      "live": "라이브",
+      "upcoming": "예정",
+      "results": "결과",
+      "all": "전체",
+      "empty": {
+        "live": "지금 진행 중인 경기가 없습니다.",
+        "upcoming": "예정된 경기가 없습니다.",
+        "results": "아직 결과가 없습니다.",
+        "all": "아직 경기가 없습니다. 대진표가 만들어지면 표시됩니다."
+      }
     },
     "registration": {
       "section": "참가 신청",

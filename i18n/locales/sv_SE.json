@@ -7254,8 +7254,7 @@
         "matches": "Matcher",
         "next_best": "Näst bäst: {name}",
         "manual": "Utvald av turneringsarrangören."
-      },
-      "no_matches_played": "Inga matcher spelade ännu"
+      }
     },
     "swiss": {
       "advanced": "AVANCERADE",
@@ -7748,6 +7747,18 @@
       "expand": "Fäll ut",
       "collapse_all": "Fäll ihop alla",
       "expand_all": "Fäll ut alla"
+    },
+    "matches_filter": {
+      "live": "Live",
+      "upcoming": "Kommande",
+      "results": "Resultat",
+      "all": "Alla",
+      "empty": {
+        "live": "Inget är live just nu.",
+        "upcoming": "Inga kommande matcher.",
+        "results": "Inga resultat ännu.",
+        "all": "Inga matcher ännu. De visas när slutspelsträdet är klart."
+      }
     },
     "registration": {
       "section": "Anmälan",

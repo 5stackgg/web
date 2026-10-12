@@ -221,14 +221,19 @@ export function workshopRoot(cs2) {
   return null;
 }
 
-/** `name=id,name=id` -> `[{ name, id }]`. */
+/**
+ * `name=id,name=id` -> `[{ name, id }]`. A pair that is not one (a maps row
+ * with a malformed workshop_map_id) is skipped, not fatal: it must not cost
+ * every other map its build.
+ */
 function workshopList(text) {
-  return list(text).map((pair) => {
+  return list(text).flatMap((pair) => {
     const [name, id] = pair.split("=").map((part) => part.trim());
     if (!name || !/^\d+$/.test(id ?? "")) {
-      fail(`--workshop-maps wants name=<workshop id>, got "${pair}"`);
+      console.warn(`• --workshop-maps: skipped "${pair}" (wants name=<workshop id>)`);
+      return [];
     }
-    return { name, id };
+    return [{ name, id }];
   });
 }
 

@@ -529,7 +529,7 @@ describe("build-map-assets", () => {
     const first = await publish("100", {
       args: [
         "--workshop-maps",
-        "de_gamma=3000,4000999=4000,de_missing=5000,de_alpha=6000,de_alpha_night=7000",
+        "de_gamma=3000,4000999=4000,de_missing=5000,de_alpha=6000,de_alpha_night=7000,de_bad=x",
       ],
       overrides: { ...workshopPlan("de_gamma"), ...workshopPlan("de_inner") },
       workshop: {

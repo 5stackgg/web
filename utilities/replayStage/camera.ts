@@ -82,7 +82,10 @@ export type CameraModule = StageModule & {
    * px) and how far off a target may be, for overlays to pick their own.
    */
   onClick(listener: (x: number, y: number, slop: number) => void): () => void;
-  /** Called on V, for the owner to switch 2D and 3D. */
+  /**
+   * Called on V, for the owner to switch 2D and 3D; and on a right-drag in
+   * 2D, which tilts into 3D.
+   */
   onViewKey(listener: () => void): () => void;
   /**
    * Broadcast mode: the camera frames the round's planned shots (see
@@ -832,6 +835,8 @@ export function createCameraModule(): CameraModule {
 
   const pointers = new Map<number, { x: number; y: number }>();
   let dragMode: "pan" | "orbit" | null = null;
+  // This drag has asked to tilt out of 2D.
+  let tilted = false;
   /** Where the press began, until it moves far enough to be a drag. */
   let press: { x: number; y: number; button: number } | null = null;
   /** A mouse or pen over the canvas, canvas CSS px; touch never hovers. */
@@ -1065,6 +1070,7 @@ export function createCameraModule(): CameraModule {
         event.button === 1 ||
         (event.button === 0 && (event.shiftKey || event.altKey));
       dragMode = orbit ? "orbit" : "pan";
+      tilted = false;
     }
     paintCursor();
   }
@@ -1094,7 +1100,15 @@ export function createCameraModule(): CameraModule {
         updateHover();
         paintCursor();
       }
-      if (dragMode === "pan" || ctx?.view === "2d") {
+      if (dragMode === "orbit" && ctx?.view === "2d") {
+        // Tilting the flat map: into 3D, where the rest of the drag orbits.
+        if (!tilted) {
+          tilted = true;
+          for (const listener of viewKeyListeners) {
+            listener();
+          }
+        }
+      } else if (dragMode === "pan" || ctx?.view === "2d") {
         panBy(last.x, last.y, now.x, now.y);
       } else if (dragMode === "orbit") {
         orbitBy(now.x - last.x, now.y - last.y);

@@ -170,6 +170,11 @@ export const INFO_CUT_WHOLE = 1 << 12;
  * outright with the room's roof, in 3D too, rather than as a ghost.
  */
 export const INFO_OVERHEAD = 1 << 14;
+/**
+ * Out-of-play terrain the extractor cut off mid-surface (open edges): at
+ * the map's rim it fades into the table along a smoothed outline.
+ */
+export const INFO_RIM = 1 << 15;
 
 export const NO_FLOOR = 32767;
 export const NO_CUT = 32767;
@@ -749,18 +754,6 @@ export function analyseMap(
     }
     floors = floorLevels(vx, tris, info, triTotal);
   }
-  if (
-    spreadFloor(
-      vx,
-      tris,
-      info,
-      normals,
-      triTotal,
-      pairs.subarray(0, pairCount * 2),
-    )
-  ) {
-    floors = floorLevels(vx, tris, info, triTotal);
-  }
   const reachable = growLevels(
     reachableFloors(vx, tris, info, normals, triTotal, floors, areas),
   );
@@ -791,6 +784,15 @@ export function analyseMap(
       }
     }
   }
+  markRims(
+    vx,
+    tris,
+    info,
+    normals,
+    triTotal,
+    pairs.subarray(0, pairCount * 2),
+    ground.level,
+  );
   // Never cut first, then cut only in 2D, then cut in 3D as well.
   const order = (t: number) => {
     if (cut[t * 3] === NO_CUT) {
@@ -1575,11 +1577,13 @@ function groupWhole(
     // Mostly wall and taller than a sign (an arch, a door frame): sliced like
     // the wall it is part of, rather than gone with its crown.
     const wallLike = partWallArea[r] > partRoofArea[r];
-    // Clear of the floor over a standing player's head, under a roof: it
-    // hangs in the room. (Out in the open it is a landmark: a conveyor.)
+    // Too big to go whole as a small piece, clear of the floor over a
+    // standing player's head, under a roof: it hangs in the room (a vent
+    // hood, a crane). Out in the open it is a landmark: a conveyor.
     if (!partHang[r]) {
       partHang[r] =
         !partWalk[r] &&
+        partArea[r] >= SMALL_PART_AREA &&
         partArea[r] < OVERHEAD_AREA &&
         partBottom[r] - partPlane[r] >= OVERHEAD_CLEAR &&
         columns.anyBetween(
@@ -2225,44 +2229,39 @@ function adoptFloorPatches(
 }
 
 /**
- * Floor that the per-cell adoption misses: the triangles a floor is fanned
- * into reach its walls, past where the extractor's floor stops, and their
- * middles can land in a cell with no floor level, so a roof read them as
- * tops (bright wedges on a walkable roof). Level, flat triangles joined
- * edge to edge at one height make a surface; when most of it is walkable,
- * the rest of it is too. A surface mostly out of play (a canal bed under a
- * street) is left alone.
+ * Out-of-play, upward-facing surface pieces with open edges: terrain the
+ * extractor stopped keeping part-way across (INFO_RIM). A roof or a closed
+ * piece meets its walls along every edge, so it never qualifies; nor does
+ * anything well above the ground the map stands on.
  */
-function spreadFloor(
+function markRims(
   vx: Float32Array,
   tris: Uint32Array,
   info: Uint16Array,
   normals: Float32Array,
   triTotal: number,
   pairs: Int32Array,
+  groundLevel: number,
 ) {
-  const level = (t: number) =>
-    normals[t * 3 + 2] >= 0.98 &&
-    !(info[t] & INFO_SURFACE) &&
-    !(info[t] & INFO_THIN) &&
-    ((info[t] >> INFO_PROP_SHIFT) & 3) === 0;
-  const height = (t: number) =>
-    (vx[tris[t * 3] * 3 + 2] +
-      vx[tris[t * 3 + 1] * 3 + 2] +
-      vx[tris[t * 3 + 2] * 3 + 2]) /
-    3;
-  const area = (t: number) => {
-    const a = tris[t * 3] * 3;
-    const b = tris[t * 3 + 1] * 3;
-    const c = tris[t * 3 + 2] * 3;
-    return (
-      Math.abs(
-        (vx[b] - vx[a]) * (vx[c + 1] - vx[a + 1]) -
-          (vx[c] - vx[a]) * (vx[b + 1] - vx[a + 1]),
-      ) / 2
-    );
-  };
+  // The extractor's outside flag is noisy across a see-through sheet (a
+  // grate, water), so one counts wherever it lies.
+  const terrain = (t: number) =>
+    ((info[t] & INFO_OUTSIDE) !== 0 ||
+      (info[t] & INFO_SURFACE) === SURFACE_SEE_THROUGH) &&
+    !(info[t] & INFO_WALKABLE) &&
+    (info[t] & INFO_SURFACE) !== SURFACE_FOLIAGE &&
+    !(info[t] & INFO_GROUND) &&
+    ((info[t] >> INFO_PROP_SHIFT) & 3) === 0 &&
+    // Either winding: the mesh is drawn double-sided.
+    Math.abs(normals[t * 3 + 2]) > 0.3 &&
+    Math.max(
+      vx[tris[t * 3] * 3 + 2],
+      vx[tris[t * 3 + 1] * 3 + 2],
+      vx[tris[t * 3 + 2] * 3 + 2],
+    ) <
+      groundLevel + RIM_RISE;
   const parent = new Int32Array(triTotal);
+  const sides = new Uint8Array(triTotal);
   for (let t = 0; t < triTotal; t++) {
     parent[t] = t;
   }
@@ -2276,43 +2275,27 @@ function spreadFloor(
   for (let i = 0; i < pairs.length; i += 2) {
     const a = pairs[i];
     const b = pairs[i + 1];
-    if (
-      level(a) &&
-      level(b) &&
-      Math.abs(height(a) - height(b)) <= FLOOR_SPREAD_STEP
-    ) {
+    sides[a]++;
+    sides[b]++;
+    if (terrain(a) && terrain(b)) {
       parent[find(a)] = find(b);
     }
   }
-  const total = new Float64Array(triTotal);
-  const walked = new Float64Array(triTotal);
+  const open = new Uint8Array(triTotal);
   for (let t = 0; t < triTotal; t++) {
-    if (level(t)) {
-      const r = find(t);
-      const a = area(t);
-      total[r] += a;
-      if (info[t] & INFO_WALKABLE) {
-        walked[r] += a;
-      }
+    if (terrain(t) && sides[t] < 3) {
+      open[find(t)] = 1;
     }
   }
-  let spread = 0;
   for (let t = 0; t < triTotal; t++) {
-    if (!(info[t] & INFO_WALKABLE) && level(t)) {
-      const r = find(t);
-      if (walked[r] >= total[r] * FLOOR_SPREAD_SHARE) {
-        info[t] |= INFO_WALKABLE;
-        spread++;
-      }
+    if (terrain(t) && open[find(t)]) {
+      info[t] |= INFO_RIM;
     }
   }
-  return spread;
 }
 
-/** Floor triangles this far apart in height are not one floor. */
-const FLOOR_SPREAD_STEP = 4;
-/** A surface this much walkable already is floor all over. */
-const FLOOR_SPREAD_SHARE = 0.6;
+/** Rim terrain lies within this of the ground the map stands on. */
+const RIM_RISE = 160;
 
 /**
  * Sorts the mesh's connected parts. Wire-like parts (little surface for

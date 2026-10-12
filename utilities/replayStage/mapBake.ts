@@ -3,8 +3,10 @@ import {
   AO_BLUR_FRAG,
   AO_FRAG,
   DEPTH_FRAG,
+  EDGE_BLUR_FRAG,
   FULLSCREEN_VERT,
   HEIGHT_FRAG,
+  MASK_FRAG,
   MAP_VERT,
 } from "./mapShaders";
 
@@ -22,6 +24,8 @@ export type MapBake = {
   /** As `height`, with nothing cut: what is open to the sky. */
   sky: THREE.Texture;
   ao: THREE.Texture;
+  /** The solid map seen from above, blurred wide: its smoothed rim (R). */
+  edge: THREE.Texture;
   /** minX, minY, 1/spanX, 1/spanY: source xy to height/AO uv. */
   topGrid: THREE.Vector4;
   /** z at 0, z span: the height map's packing. */
@@ -36,6 +40,12 @@ export type MapBake = {
 
 export type BakeBounds = { min: THREE.Vector3; max: THREE.Vector3 };
 
+/**
+ * Source units between the rim blur's taps: about 200 to a deviation, so a
+ * cut slope's steps and teeth smooth into one curve.
+ */
+const EDGE_TAP = 80;
+
 export function createMapBake(
   renderer: THREE.WebGLRenderer,
   geometry: THREE.BufferGeometry,
@@ -43,6 +53,8 @@ export function createMapBake(
   bounds: BakeBounds,
   sunWorld: THREE.Vector3,
   quality: "high" | "low",
+  /** Glass, grates and water: part of the map's outline, nothing else. */
+  seeThrough: THREE.BufferGeometry | null = null,
 ): MapBake {
   const topSize = quality === "high" ? 2048 : 1024;
   const shadowSize = quality === "high" ? 4096 : 2048;
@@ -76,6 +88,18 @@ export function createMapBake(
     generateMipmaps: false,
     depthBuffer: false,
   });
+  // The rim outline: coarse, as it only has to be smooth. The mask is drawn
+  // into the second, blurred across into the first and down back.
+  const edgeSize = 256;
+  const edgeTargets = [0, 1].map(
+    () =>
+      new THREE.WebGLRenderTarget(edgeSize, edgeSize, {
+        minFilter: THREE.LinearFilter,
+        magFilter: THREE.LinearFilter,
+        generateMipmaps: false,
+        depthBuffer: false,
+      }),
+  );
   const shadow = new THREE.DepthTexture(shadowSize, shadowSize);
   shadow.type = THREE.UnsignedIntType;
   shadow.compareFunction = THREE.LessEqualCompare;
@@ -133,12 +157,38 @@ export function createMapBake(
     depthWrite: false,
   });
 
+  const maskMaterial = new THREE.ShaderMaterial({
+    vertexShader: MAP_VERT,
+    fragmentShader: MASK_FRAG,
+    uniforms: { ...cutUniforms },
+    side: THREE.DoubleSide,
+    depthTest: false,
+    depthWrite: false,
+  });
+  const edgeMaterial = new THREE.ShaderMaterial({
+    vertexShader: FULLSCREEN_VERT,
+    fragmentShader: EDGE_BLUR_FRAG,
+    uniforms: {
+      uSource: { value: null },
+      uStep: { value: new THREE.Vector2() },
+      uChannel: { value: new THREE.Vector4() },
+    },
+    depthTest: false,
+    depthWrite: false,
+  });
+
   const scene = new THREE.Scene();
   const group = new THREE.Group();
   group.rotation.x = -Math.PI / 2;
   const mesh = new THREE.Mesh(geometry, heightMaterial);
   mesh.frustumCulled = false;
   group.add(mesh);
+  const seeMesh = seeThrough ? new THREE.Mesh(seeThrough, maskMaterial) : null;
+  if (seeMesh) {
+    seeMesh.frustumCulled = false;
+    seeMesh.visible = false;
+    group.add(seeMesh);
+  }
   scene.add(group);
   scene.updateMatrixWorld(true);
 
@@ -203,6 +253,7 @@ export function createMapBake(
     height: heightTarget.texture,
     sky: skyTarget.texture,
     ao: aoTarget.texture,
+    edge: edgeTargets[1].texture,
     topGrid,
     zRange,
     run(measure = false) {
@@ -237,6 +288,29 @@ export function createMapBake(
       renderer.setRenderTarget(aoTarget);
       renderer.render(aoScene, topCamera);
 
+      // The rim: everything solid from above, blurred across then down.
+      mesh.material = maskMaterial;
+      if (seeMesh) {
+        seeMesh.visible = true;
+      }
+      renderer.setRenderTarget(edgeTargets[1]);
+      renderer.clear();
+      renderer.render(scene, topCamera);
+      if (seeMesh) {
+        seeMesh.visible = false;
+      }
+      quad.material = edgeMaterial;
+      edgeMaterial.uniforms.uSource.value = edgeTargets[1].texture;
+      edgeMaterial.uniforms.uChannel.value.set(1, 0, 0, 0);
+      edgeMaterial.uniforms.uStep.value.set(EDGE_TAP / spanX, 0);
+      renderer.setRenderTarget(edgeTargets[0]);
+      renderer.render(aoScene, topCamera);
+      edgeMaterial.uniforms.uSource.value = edgeTargets[0].texture;
+      edgeMaterial.uniforms.uChannel.value.set(1, 0, 0, 0);
+      edgeMaterial.uniforms.uStep.value.set(0, EDGE_TAP / spanY);
+      renderer.setRenderTarget(edgeTargets[1]);
+      renderer.render(aoScene, topCamera);
+
       mesh.material = depthMaterial;
       renderer.setRenderTarget(shadowTarget);
       renderer.clear();
@@ -255,6 +329,9 @@ export function createMapBake(
       skyMaterial.dispose();
       aoTarget.dispose();
       aoRawTarget.dispose();
+      edgeTargets.forEach((target) => target.dispose());
+      edgeMaterial.dispose();
+      maskMaterial.dispose();
       shadowTarget.dispose();
       shadow.dispose();
       heightMaterial.dispose();

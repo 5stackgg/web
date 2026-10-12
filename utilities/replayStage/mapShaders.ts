@@ -124,6 +124,8 @@ uniform vec2 uZRange;
 uniform vec3 uTop;
 // 1 to hatch the flat tops nobody can walk on (MapPalette.noAccess).
 uniform float uNoAccess;
+// The map's solid coverage seen from above, blurred: its smoothed outline.
+uniform sampler2D uEdgeMap;
 uniform vec3 uFloor;
 // Floors open to the sky (a yard, a street), and the top-down height of the
 // map with nothing cut, which says which floors are.
@@ -513,6 +515,18 @@ void main() {
   float ink = mix(0.8, 0.42, smoothstep(1.5, 7.0, unitsPerPx));
   col = mix(uOutline, col, mix(1.0, line, ink));
 
+  // Out-of-play terrain the extractor cut off (a slope, a verge) ends in
+  // its triangles' teeth. Past a smoothed outline of the map seen from
+  // above it fades into the table instead, outlines and all.
+  if ((info & 32768) != 0 && uTopGrid.z > 0.0) {
+    float edge = texture2D(uEdgeMap, (vSrc.xy - uTopGrid.xy) * uTopGrid.zw).r;
+    col = mix(
+      col,
+      sandColor(vSrc, lit, uSand, uSandShade),
+      1.0 - smoothstep(0.5, 0.85, edge)
+    );
+  }
+
   float haze = smoothstep(uHazeRange.x, uHazeRange.y, length(vSrc.xy - uMapCentre.xy));
   col = mix(col, uHaze, haze * 0.85);
 
@@ -532,6 +546,41 @@ flat varying float vInfo;
 void main() {
   int info = int(vInfo + 0.5);
   if ((info & 3) != 1 && cutBy(info, vSrc.z, uCut2D)) discard;
+  gl_FragColor = vec4(1.0);
+}
+`;
+
+/**
+ * One direction of a wide gaussian over a channel of the top-down maps: the
+ * rim outline is where the map's solid coverage, blurred, falls off.
+ */
+export const EDGE_BLUR_FRAG = /* glsl */ `
+uniform sampler2D uSource;
+uniform vec2 uStep;
+uniform vec4 uChannel;
+varying vec2 vUv;
+void main() {
+  float sum = 0.0;
+  float weight = 0.0;
+  for (int i = -6; i <= 6; i++) {
+    float w = exp(-float(i * i) / 12.5);
+    sum += dot(texture2D(uSource, vUv + uStep * float(i)), uChannel) * w;
+    weight += w;
+  }
+  gl_FragColor = vec4(sum / weight, 0.0, 0.0, 1.0);
+}
+`;
+
+/**
+ * Where the map has anything solid at all, seen from above, whatever lies
+ * over it: the rim outline is this, blurred. Leaves, cables and the ground
+ * fill (painted as the table) are not the map's edge.
+ */
+export const MASK_FRAG = /* glsl */ `
+flat varying float vInfo;
+void main() {
+  int info = int(vInfo + 0.5);
+  if ((info & 3) == 1 || (info & 256) != 0 || (info & 8192) != 0) discard;
   gl_FragColor = vec4(1.0);
 }
 `;

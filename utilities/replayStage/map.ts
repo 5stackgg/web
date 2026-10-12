@@ -426,6 +426,7 @@ export function createMapModule(): MapModule {
     uMapCentre: { value: new THREE.Vector3() },
     uHazeRange: { value: new THREE.Vector2(1e9, 2e9) },
     uNoAccess: { value: 0 },
+    uEdgeMap: { value: null },
   };
 
   function applyPalette(palette: MapPalette) {
@@ -703,6 +704,7 @@ export function createMapModule(): MapModule {
     group.add(new THREE.Mesh(solidGeometry, solid));
     ghosts = buildGhosts(solidGeometry, prep.solid.cuttableStart, defines);
     ghostFrom = prep.solid.ghostStart * 3;
+    let seeThroughGeometry: THREE.BufferGeometry | null = null;
     if (prep.seeThrough.positions.length) {
       const seeThrough = new THREE.ShaderMaterial({
         vertexShader: MAP_VERT,
@@ -714,7 +716,8 @@ export function createMapModule(): MapModule {
         depthWrite: false,
       });
       materials.push(seeThrough);
-      group.add(new THREE.Mesh(meshGeometry(prep.seeThrough), seeThrough));
+      seeThroughGeometry = meshGeometry(prep.seeThrough);
+      group.add(new THREE.Mesh(seeThroughGeometry, seeThrough));
     }
 
     const bounds = {
@@ -806,6 +809,7 @@ export function createMapModule(): MapModule {
       bounds,
       SUN_WORLD,
       context.quality,
+      seeThroughGeometry,
     );
     uniforms.uShadowMap.value = bake.shadow;
     uniforms.uShadowMatrix.value = bake.shadowMatrix;
@@ -815,6 +819,7 @@ export function createMapModule(): MapModule {
     uniforms.uSkyMap.value = bake.sky;
     uniforms.uAoMap.value = bake.ao;
     uniforms.uTopGrid.value = bake.topGrid;
+    uniforms.uEdgeMap.value = bake.edge;
     uniforms.uZRange.value = bake.zRange;
 
     module.stats = {

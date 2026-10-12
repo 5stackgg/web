@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import {
   computed,
+  markRaw,
   ref,
   shallowRef,
+  toRaw,
   watch,
   onMounted,
   onUnmounted,
@@ -38,7 +40,28 @@ import {
   type SmokeBlast,
   type SmokeVolume,
 } from "~/utils/smokeVolume";
-import { moneyOf, isFullBuyRound } from "~/utilities/buyType";
+import { isFullBuyRound } from "~/utilities/buyType";
+import { useReplayAnalysis } from "~/composables/useReplayAnalysis";
+import {
+  startMoney,
+  teamValuesByRound,
+} from "~/utilities/replayAnalysis/buy";
+import { toast } from "~/components/ui/toast";
+import ReplayStage from "~/components/match/ReplayStage.vue";
+import { buildStageFrame } from "~/utilities/replayStage/frame";
+import { buildOverlayFrame } from "~/utilities/replayStage/overlayFrame";
+import type { StageBlob } from "~/utilities/replayStage/frameIndex";
+import type { MapLevel } from "~/utilities/replayStage/mapLevels";
+import {
+  roundPlan,
+  speedAt,
+  weaponLabel,
+} from "~/utilities/replayStage/director";
+import type {
+  DirectorLabel,
+  DirectorReplay,
+} from "~/utilities/replayStage/director";
+import { EMPTY_FRAME } from "~/utilities/replayStage/types";
 
 // Canonical icon first (5Stack/new demos); if it 404s, retry the legacy
 // strip-all path for old, already-parsed demos before hiding.
@@ -90,7 +113,11 @@ import {
 import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
 import RoundSelector from "~/components/match/RoundSelector.vue";
 import RadarCallouts from "~/components/common/RadarCallouts.vue";
-import { hasMeshForMap, replaySceneKey } from "~/utilities/mapAssets";
+import {
+  hasMeshForMap,
+  hasRadarForMap,
+  replaySceneKey,
+} from "~/utilities/mapAssets";
 import { useMapCallouts } from "~/composables/useMapCallouts";
 import {
   RADAR_CANVAS,
@@ -101,6 +128,8 @@ import {
 } from "~/composables/useRadarProjection";
 import Replay3DLite from "~/components/match/Replay3DLite.vue";
 import ReplayChrome from "~/components/match/ReplayChrome.vue";
+import ReplayShareMenu from "~/components/match/ReplayShareMenu.vue";
+import { useReplayShare } from "~/composables/useReplayShare";
 
 type Position = {
   round: number;
@@ -267,6 +296,10 @@ const props = defineProps<{
   // Per-molotov flame positions and lifetimes (blob schema v9+). Absent on
   // older blobs, which fall back to the invented flame cluster.
   infernos?: Inferno[];
+  // CS2's own smoke grids and who each flash blinded (blob schema v11+). Only
+  // the new renderer reads them.
+  smokeVoxels?: StageBlob["smoke_voxels"];
+  flashes?: StageBlob["flashes"];
   shots?: Shot[];
   damages?: Damage[];
   demoPlayers?: DemoPlayer[];
@@ -280,6 +313,8 @@ const props = defineProps<{
   roundEconomy?: RoundEconomyEntry[];
   tickRate?: number;
   mapName?: string | null;
+  // The map row's label: a workshop map's name is its workshop id.
+  mapTitle?: string | null;
   // True when the viewer is already inside the popout window — we
   // hide the popout button so the user can't open the popout of the
   // popout.
@@ -692,6 +727,14 @@ const tickIndex = ref(0);
 const fractional = ref(0);
 const speed = ref(1);
 const playing = ref(false);
+// Broadcast mode's held slow motion: a share of `speed` until a tick, while
+// an instant replay plays (see playReplay).
+const slowmo = shallowRef<{
+  speed: number;
+  fromTick: number;
+  untilTick: number;
+} | null>(null);
+let slowRate = 1;
 
 // On round change, snap the cursor past freezetime so the user lands
 // at the live-round start. Falling through the 15s buy phase in
@@ -747,6 +790,9 @@ const scrubberMarkers = computed<
     title: string;
     icon?: string;
     gid?: number;
+    // Bomb lane: which event; a defuse attempt spans `width` (% of the bar).
+    bomb?: "planted" | "defused" | "exploded" | "defuse";
+    width?: number;
   }>
 >(() => {
   const range = tickRange.value;
@@ -762,6 +808,9 @@ const scrubberMarkers = computed<
     title: string;
     icon?: string;
     gid?: number;
+    // Bomb lane: which event; a defuse attempt spans `width` (% of the bar).
+    bomb?: "planted" | "defused" | "exploded" | "defuse";
+    width?: number;
   }> = [];
   for (const k of killsByRound.value.get(round) ?? []) {
     const left = ((k.tick - range.min) / span) * 100;
@@ -808,6 +857,43 @@ const scrubberMarkers = computed<
         lane: "bomb",
         color: "#ff5a4d",
         title: plant.site ? `Bomb planted ${plant.site}` : "Bomb planted",
+        bomb: "planted",
+      });
+    }
+  }
+  // How the bomb ended, and every defuse tried along the way (a band from
+  // its start to where it was let go, or finished).
+  const at = (tick: number) => ((tick - range.min) / span) * 100;
+  const clamp = (left: number) => Math.max(0, Math.min(100, left));
+  const bombs = activeRoundBombs.value;
+  for (let i = 0; i < bombs.length; i++) {
+    const b = bombs[i];
+    if (b.type === "defused" || b.type === "exploded") {
+      out.push({
+        left: clamp(at(b.tick)),
+        lane: "bomb",
+        color: b.type === "defused" ? SCRUB_KILL_CT : "#ffb03b",
+        title: b.type === "defused" ? "Bomb defused" : "Bomb exploded",
+        bomb: b.type,
+      });
+    } else if (b.type === "defuse_begin") {
+      const end = bombs
+        .slice(i + 1)
+        .find(
+          (e) =>
+            e.type === "defuse_abort" ||
+            e.type === "defused" ||
+            e.type === "exploded",
+        );
+      const from = clamp(at(b.tick));
+      const to = clamp(at(end ? end.tick : range.max));
+      out.push({
+        left: from,
+        width: Math.max(0.3, to - from),
+        lane: "bomb",
+        color: SCRUB_KILL_CT,
+        title: b.has_kit ? "Defuse attempt (kit)" : "Defuse attempt",
+        bomb: "defuse",
       });
     }
   }
@@ -2091,6 +2177,36 @@ const playerPathSegments = computed<RadarPathSegment[]>(() => {
 let rafHandle: number | null = null;
 let lastFrameTs = 0;
 
+// The playback speed this frame: the user's, eased into and out of the
+// director's slow motion while one is held.
+function playbackRate(dt: number) {
+  const tick = smoothCurrentTick.value;
+  const plan = broadcastLive.value ? directorPlan.value : null;
+  // The plan's own curve: eased slow motion on its big moments, and quiet
+  // stretches hurried through when condensed is on.
+  let want = plan
+    ? speedAt(plan, tick, {
+        slowmo: broadcastSlowmo.value,
+        condensed: broadcastCondensed.value,
+      })
+    : 1;
+  const held = slowmo.value;
+  if (
+    held &&
+    (!broadcastLive.value || tick >= held.untilTick || tick < held.fromTick - 1)
+  ) {
+    slowmo.value = null;
+  }
+  if (slowmo.value) {
+    want = Math.min(want, slowmo.value.speed);
+  }
+  slowRate += (want - slowRate) * (1 - Math.exp(-dt / 0.12));
+  if (Math.abs(slowRate - want) < 0.005) {
+    slowRate = want;
+  }
+  return speed.value * slowRate;
+}
+
 function frame(now: number) {
   if (!playing.value) return;
   const dt = lastFrameTs ? (now - lastFrameTs) / 1000 : 0;
@@ -2106,10 +2222,20 @@ function frame(now: number) {
     rafHandle = requestAnimationFrame(frame);
     return;
   }
-  const SAMPLE_SEC = 0.25;
-  fractional.value += (dt * speed.value) / SAMPLE_SEC;
-  while (fractional.value >= 1) {
-    fractional.value -= 1;
+  // Samples are 4Hz but every tick around a grenade throw, so each step
+  // lasts as long as the ticks it spans; a fixed 0.25s per sample played
+  // every throw about sixteen times slow.
+  const rate = props.tickRate || 64;
+  let left = dt * playbackRate(dt);
+  while (left > 0) {
+    const span = Math.max(1, nextTickValue.value - currentTick.value) / rate;
+    const toNext = (1 - fractional.value) * span;
+    if (left < toNext) {
+      fractional.value += left / span;
+      break;
+    }
+    left -= toNext;
+    fractional.value = 0;
     if (tickIndex.value < ticks.value.length - 1) {
       tickIndex.value++;
     } else {
@@ -2144,6 +2270,8 @@ function play() {
 }
 function pause() {
   playing.value = false;
+  slowmo.value = null;
+  slowRate = 1;
   if (rafHandle !== null) {
     cancelAnimationFrame(rafHandle);
     rafHandle = null;
@@ -2276,6 +2404,9 @@ onUnmounted(pause);
 //   [  ]           previous / next round
 //   1 2 3 4 5      speed 0.5× / 1× / 2× / 4× / 8×
 //   Esc            pause
+//   L              next storey (stage, stacked maps)
+//   B              broadcast camera (stage)
+//   G              fog of war and sight lines (stage)
 function onKeyDown(e: KeyboardEvent) {
   const t = e.target as HTMLElement | null;
   const tag = t?.tagName;
@@ -2335,6 +2466,33 @@ function onKeyDown(e: KeyboardEvent) {
     case "Escape":
       pause();
       return;
+    case "l":
+    case "L":
+      if (
+        stageActive.value &&
+        stageLevels.value.length &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.altKey
+      ) {
+        e.preventDefault();
+        levelsSideBySide.value = !levelsSideBySide.value;
+      }
+      return;
+    case "b":
+    case "B":
+      if (stageActive.value && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        toggleBroadcast();
+      }
+      return;
+    case "g":
+    case "G":
+      if (stageActive.value && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault();
+        showVision.value = !showVision.value;
+      }
+      return;
   }
   if (e.key >= "1" && e.key <= "5") {
     const i = Number(e.key) - 1;
@@ -2390,6 +2548,464 @@ watch(showAvatars, (v) => {
   }
 });
 
+// The replay stage draws both views itself, the buy-round overlay included,
+// so the radar board and 3D-lite are not mounted while it runs. They remain
+// for browsers without WebGL2.
+// Where the match was played, the outliers trimmed: what the stage frames
+// on a map with no callouts (a Rush room, not the twenty around it).
+const stagePlay = computed(() => {
+  const xs: number[] = [];
+  const ys: number[] = [];
+  const zs: number[] = [];
+  for (const p of props.positions) {
+    if (p.alive && p.x != null && p.y != null && p.z != null) {
+      xs.push(p.x);
+      ys.push(p.y);
+      zs.push(p.z);
+    }
+  }
+  if (xs.length < 20) {
+    return null;
+  }
+  const trim = (values: number[]) => {
+    values.sort((a, b) => a - b);
+    return [
+      values[Math.floor(values.length * 0.01)],
+      values[Math.floor(values.length * 0.99)],
+    ];
+  };
+  const [x0, x1] = trim(xs);
+  const [y0, y1] = trim(ys);
+  const [z0, z1] = trim(zs);
+  return { min: { x: x0, y: y0, z: z0 }, max: { x: x1, y: y1, z: z1 } };
+});
+
+const stageOn = ref(true);
+const stageActive = computed(() => stageOn.value);
+const stageEl = ref<InstanceType<typeof ReplayStage> | null>(null);
+
+function onStageUnsupported() {
+  stageOn.value = false;
+  toast({
+    title: t("match.replay.chrome.stage_unsupported"),
+    variant: "destructive",
+  });
+}
+
+// Without a model the stage only has its table to stand players on. The radar
+// board is better when this map has a radar image, and otherwise no better.
+async function onStageMissingMap() {
+  if (props.mapName && (await hasRadarForMap(props.mapName))) {
+    stageOn.value = false;
+    toast({ title: t("match.replay.chrome.stage_no_map") });
+  }
+}
+
+// The stage reads the blob as one object, indexed once in a WeakMap, and
+// walks every row: the parts arrive here separately and reactive, so they are
+// put back together unwrapped.
+const stageBlob = computed(
+  () =>
+    markRaw({
+      schema_version: 0,
+      match_map_id: "",
+      map_name: props.mapName ?? null,
+      tick_rate: props.tickRate || 64,
+      total_ticks: 0,
+      positions: toRaw(props.positions) ?? [],
+      shots_fired: toRaw(props.shots) ?? [],
+      damages: toRaw(props.damages) ?? [],
+      grenade_throws: toRaw(props.grenades) ?? [],
+      grenade_trajectories: toRaw(props.grenadeTrajectories) ?? [],
+      smoke_volumes: toRaw(props.smokeVolumes) ?? [],
+      smoke_voxels: toRaw(props.smokeVoxels) ?? [],
+      flashes: toRaw(props.flashes),
+      infernos: toRaw(props.infernos) ?? [],
+      kills: toRaw(props.demoKills) ?? [],
+      bombs: toRaw(props.demoBombs) ?? [],
+      kit_drops: toRaw(props.demoKitDrops) ?? [],
+      round_ticks: toRaw(props.demoRoundTicks) ?? [],
+      players: toRaw(props.demoPlayers) ?? [],
+    }) as StageBlob,
+);
+
+// The chrome's legend filter, in the stage's utility types.
+const stageUtility = computed(() => {
+  const f = utilTypeFilter.value;
+  return {
+    smoke: f.Smoke !== false,
+    molotov: f.Molotov !== false,
+    incendiary: f.Molotov !== false,
+    he: f.HE !== false,
+    flash: f.Flash !== false,
+    decoy: f.Decoy !== false,
+  };
+});
+const stageSlots = computed(() => {
+  const out: Record<string, number> = {};
+  for (const [id, entry] of Object.entries(slotByPlayer.value)) {
+    out[id] = entry.slot;
+  }
+  return out;
+});
+
+// The buy-round overlay's team filter: one lineup's players across halves.
+const overlayInclude = computed(() => {
+  if (overlayTeam.value === "all") {
+    return null;
+  }
+  const ids = new Set<string>();
+  for (const [id, lineup] of lineupBySteam.value) {
+    if (lineup === overlayTeam.value) {
+      ids.add(id);
+    }
+  }
+  return ids;
+});
+// Seconds of walk behind each player stacked in the overlay.
+const OVERLAY_TAIL_SECS = 5;
+
+const stageFrame = computed(() => {
+  if (overlayMode.value) {
+    return buildOverlayFrame(
+      stageBlob.value,
+      overlayRoundsArr.value,
+      overlayElapsedSec.value,
+      {
+        include: overlayInclude.value,
+        utility: stageUtility.value,
+        tail: OVERLAY_TAIL_SECS,
+        callouts: showCallouts.value,
+        levelBand: stageLevelBand.value,
+      },
+    );
+  }
+  if (activeRound.value === null) {
+    return EMPTY_FRAME;
+  }
+  return buildStageFrame(
+    stageBlob.value,
+    activeRound.value,
+    smoothCurrentTick.value,
+    {
+      names: playerNameMap.value,
+      avatars: showAvatars.value ? playerAvatarMap.value : undefined,
+      slots: showAvatars.value ? undefined : stageSlots.value,
+      selectedId: focusedPlayerId.value,
+      utility: stageUtility.value,
+      selectedGids: selectedGi.value,
+      heatmap: heatOn.value,
+      trails: pathingMode.value !== "off",
+      deaths: showDeaths.value,
+      groundBomb: showGroundBomb.value,
+      groundKits: showGroundKits.value,
+      callouts: showCallouts.value,
+      levelBand: stageLevelBand.value,
+      vision: showVision.value,
+      visionSide: visionSidePin.value,
+    },
+  );
+});
+
+// Picking a player follows them; letting go hands the camera back. Moving
+// the camera by hand stops following, so it lets go of the player too.
+watch([focusedPlayerId, () => stageEl.value?.camera], ([id, camera]) =>
+  camera?.setFollow(!!id),
+);
+watch(
+  () => stageEl.value?.camera,
+  (camera, _, onCleanup) => {
+    if (camera) {
+      const off = [
+        camera.onFollowChange((following) => {
+          if (!following) {
+            focusedPlayerId.value = null;
+          }
+        }),
+        camera.onPlayerClick(toggleFocus),
+        // A heatmap disc or a picked grenade's landing toggles that grenade.
+        // A cluster of them picks them all, or lets them all go.
+        camera.onClick((x, y, slop) => {
+          const gids = stageEl.value?.utility?.pickUtilities(x, y, slop);
+          if (!gids?.length) {
+            return;
+          }
+          const all = gids.every((gid) => selectedGi.value.includes(gid));
+          selectedGi.value = all
+            ? selectedGi.value.filter((gid) => !gids.includes(gid))
+            : [...new Set([...selectedGi.value, ...gids])];
+        }),
+        camera.onViewKey(() => {
+          viewMode.value = viewMode.value === "3d" ? "2d" : "3d";
+        }),
+      ];
+      onCleanup(() => off.forEach((fn) => fn()));
+    }
+  },
+);
+
+// Broadcast mode: the camera plays the round's planned shots, with planned
+// slow motion on the big moments. Moving the camera by hand, or following a
+// player, pauses it until the toggle (or B) resumes it; the preference
+// itself stays on.
+const broadcastOn = persistedBool("5s.replay.broadcast", false);
+const broadcastSlowmo = persistedBool("5s.replay.broadcast_slowmo", true);
+const broadcastPaused = ref(false);
+const broadcastShot = shallowRef<DirectorLabel | null>(null);
+const broadcastLive = computed(
+  () => broadcastOn.value && !broadcastPaused.value && stageActive.value,
+);
+const broadcastState = computed(() =>
+  !broadcastOn.value ? "off" : broadcastPaused.value ? "paused" : "on",
+);
+// "1v2 clutch · ResQ (AWP) · B Site", and what is coming up during a lull.
+function shotCaption(kind: string, place: string | null, extra?: string) {
+  return [kind, extra, place].filter(Boolean).join(" · ");
+}
+const broadcastCaption = computed(() => {
+  const shot = broadcastShot.value;
+  if (!shot || !broadcastLive.value) {
+    return null;
+  }
+  const kind = t(`match.replay.chrome.shot_${shot.kind}`, {
+    n: shot.versus ?? 1,
+  });
+  const weapon = shot.weapon ? weaponLabel(shot.weapon) : null;
+  const player = shot.player
+    ? weapon
+      ? `${shot.player} (${weapon})`
+      : shot.player
+    : undefined;
+  return shotCaption(kind, shot.place, player);
+});
+const broadcastNext = computed(() => {
+  const next = broadcastShot.value?.next;
+  if (!next || !broadcastLive.value) {
+    return null;
+  }
+  return t("match.replay.chrome.shot_coming_up", {
+    shot: shotCaption(
+      t(`match.replay.chrome.shot_${next.kind}`, { n: 1 }),
+      next.place,
+    ),
+  });
+});
+
+function toggleBroadcast() {
+  if (broadcastOn.value && broadcastPaused.value) {
+    broadcastPaused.value = false;
+    return;
+  }
+  broadcastOn.value = !broadcastOn.value;
+  broadcastPaused.value = false;
+}
+
+// The round's plan: the shots, slow motion and replays the director worked
+// out ahead of time (director.ts), built once per round while it is on.
+const directorPlan = computed(() =>
+  broadcastOn.value && stageActive.value && activeRound.value !== null
+    ? roundPlan(stageBlob.value, activeRound.value)
+    : null,
+);
+const broadcastCondensed = persistedBool(
+  "5s.replay.broadcast_condensed",
+  false,
+);
+
+// Once the action settles the plan offers an instant replay (a fight it cut
+// away from, or a multi-kill): a chip that rewinds to it and plays it at half
+// speed from a new angle.
+const REPLAY_OFFER_MS = 6000;
+const REPLAY_SPEED = 0.5;
+const replayOffer = shallowRef<DirectorReplay | null>(null);
+let replayOfferTimer: ReturnType<typeof setTimeout> | null = null;
+
+function offerReplay(offer: DirectorReplay) {
+  if (!playing.value) {
+    return;
+  }
+  replayOffer.value = offer;
+  if (replayOfferTimer) {
+    clearTimeout(replayOfferTimer);
+  }
+  replayOfferTimer = setTimeout(() => {
+    replayOffer.value = null;
+  }, REPLAY_OFFER_MS);
+}
+
+function seekToTick(tick: number) {
+  const list = ticks.value;
+  let lo = 0;
+  let hi = list.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (list[mid] <= tick) {
+      lo = mid;
+    } else {
+      hi = mid - 1;
+    }
+  }
+  const next = list[lo + 1];
+  tickIndex.value = lo;
+  fractional.value =
+    next !== undefined && next > list[lo]
+      ? Math.min(0.999, Math.max(0, (tick - list[lo]) / (next - list[lo])))
+      : 0;
+}
+
+function playReplay() {
+  const offer = replayOffer.value;
+  const camera = stageEl.value?.camera;
+  replayOffer.value = null;
+  if (!offer || !camera) {
+    return;
+  }
+  camera.replay(offer);
+  seekToTick(offer.fromTick);
+  slowmo.value = {
+    speed: REPLAY_SPEED,
+    fromTick: offer.fromTick,
+    untilTick: offer.untilTick,
+  };
+  play();
+}
+
+watch(
+  () => stageEl.value?.camera,
+  (camera, _, onCleanup) => {
+    if (!camera) {
+      return;
+    }
+    const off = [
+      camera.onDirectorChange((directing) => {
+        // The director stopping by itself means input took the camera.
+        if (!directing && broadcastLive.value) {
+          broadcastPaused.value = true;
+        }
+      }),
+      camera.onDirectorShot((shot) => {
+        broadcastShot.value = shot;
+      }),
+      camera.onDirectorReplay(offerReplay),
+    ];
+    camera.setDirectorPlan(directorPlan.value);
+    camera.setDirector(broadcastLive.value);
+    onCleanup(() => off.forEach((fn) => fn()));
+  },
+);
+watch(directorPlan, (plan) => stageEl.value?.camera?.setDirectorPlan(plan));
+watch(broadcastLive, (live) => {
+  stageEl.value?.camera?.setDirector(live);
+  if (!live) {
+    slowmo.value = null;
+    replayOffer.value = null;
+  }
+});
+watch(activeRound, () => {
+  replayOffer.value = null;
+});
+onUnmounted(() => {
+  if (replayOfferTimer) {
+    clearTimeout(replayOfferTimer);
+  }
+});
+
+// Stacked maps (Nuke, Vertigo): which storey the stage shows. Following a
+// player tracks the storey they stand on; picking one by hand holds until
+// the focus changes. With nobody followed it is the pick, else the top.
+const stageLevels = shallowRef<MapLevel[]>([]);
+const levelPick = ref<string | null>(null);
+const levelPickedInFocus = ref(false);
+const levelFollowed = ref<string | null>(null);
+// Both storeys laid side by side on the table (the default), or one at a
+// time with the rest cut away.
+const levelsSideBySide = persistedBool("5s.replay.levels_layout_side", true);
+// How far past a storey's edge a followed player goes before it switches, so
+// walking the stairs does not flicker between them.
+const LEVEL_HYSTERESIS = 32;
+
+function onStageLevels(levels: MapLevel[]) {
+  stageLevels.value = levels;
+  levelPick.value = null;
+  levelFollowed.value = null;
+}
+
+function followLevel(levels: MapLevel[], current: string | null, z: number) {
+  const found = levels.findIndex((level) => z >= level.from);
+  const target = found < 0 ? levels.length - 1 : found;
+  const at = levels.findIndex((level) => level.id === current);
+  if (at < 0 || at === target) {
+    return levels[target].id;
+  }
+  const clear =
+    target < at
+      ? z >= levels[target].from + LEVEL_HYSTERESIS
+      : z < levels[at].from - LEVEL_HYSTERESIS;
+  return clear ? levels[target].id : current;
+}
+
+const stageLevel = computed(() => {
+  const levels = stageLevels.value;
+  if (!levels.length || levelsSideBySide.value) {
+    return null;
+  }
+  if (
+    focusedPlayerId.value &&
+    !levelPickedInFocus.value &&
+    levelFollowed.value
+  ) {
+    return levelFollowed.value;
+  }
+  return levelPick.value ?? levels[0].id;
+});
+
+function pickLevel(id: string) {
+  levelPick.value = id;
+  levelPickedInFocus.value = !!focusedPlayerId.value;
+}
+
+// Players off the storey in view dim; this is the height band that is on it.
+const stageLevelBand = computed(() => {
+  const level = stageLevels.value.find((l) => l.id === stageLevel.value);
+  if (!level) {
+    return null;
+  }
+  return level.below != null
+    ? { min: -Infinity, max: level.below }
+    : { min: level.from, max: Infinity };
+});
+
+const chromeLevels = computed(() =>
+  stageActive.value ? stageLevels.value.map((level) => level.id) : [],
+);
+
+// A workshop map's file name is its id: the stage titles it with the label.
+const stageMapTitle = computed(() =>
+  props.mapTitle && /^\d+$/.test(normalizedMap.value) ? props.mapTitle : null,
+);
+
+// The followed player's height, for the storey to follow them.
+const focusedZ = computed(() => {
+  const id = focusedPlayerId.value;
+  if (!id || !stageActive.value || !stageLevels.value.length) {
+    return null;
+  }
+  return stageFrame.value.players.find((p) => p.id === id)?.z ?? null;
+});
+watch([focusedPlayerId, focusedZ], ([id, z], [previous]) => {
+  if (id !== previous) {
+    levelPickedInFocus.value = false;
+    levelFollowed.value = null;
+  }
+  if (z !== null) {
+    levelFollowed.value = followLevel(
+      stageLevels.value,
+      levelFollowed.value,
+      z,
+    );
+  }
+});
+
 // Per-feature visibility toggles for the bomb/kit overlays. Persisted
 // per-key so a coach can hide the noise they don't care about (e.g.
 // dropped kits during a casual playback) and have it stick across
@@ -2425,6 +3041,33 @@ const showGroundKits = persistedBool("5s.replay.show_ground_kits", true);
 // The map's own vocabulary, off by default: it is a reference layer, and the
 // board is busy enough during a round without forty labelled boxes under it.
 const showCallouts = persistedBool("5s.replay.show_callouts", false);
+// Fog of war and who sees whom on the stage; off by default, an analysis layer.
+const showVision = persistedBool("5s.replay.show_vision", false);
+// Whose sight the fog shows once a side is picked; until then (null) the
+// followed player's side, or both sides while nobody is followed.
+type VisionSide = "ct" | "t" | "both";
+const VISION_SIDE_KEY = "5s.replay.vision_side";
+const visionSidePin = ref<VisionSide | null>(null);
+if (typeof window !== "undefined") {
+  try {
+    const v = localStorage.getItem(VISION_SIDE_KEY);
+    if (v === "ct" || v === "t" || v === "both") visionSidePin.value = v;
+  } catch {
+    /* localStorage unavailable */
+  }
+}
+watch(visionSidePin, (v) => {
+  try {
+    if (v) localStorage.setItem(VISION_SIDE_KEY, v);
+    else localStorage.removeItem(VISION_SIDE_KEY);
+  } catch {
+    /* private browsing — fail silent */
+  }
+});
+// Picking the side already pinned goes back to following the player.
+function pickVisionSide(side: VisionSide) {
+  visionSidePin.value = visionSidePin.value === side ? null : side;
+}
 // Pathing always starts off — it's a heavy overlay, not a sticky preference.
 const pathingMode = ref<PathingMode>("off");
 // The Route button is a simple on/off for the live-tracing "progress" mode;
@@ -2459,11 +3102,22 @@ const freezeEndByRound = computed(() => {
 
 // Full-buy rounds we actually have data for: either side ≥ FULL_MIN AND
 // the round has positions AND a freeze-end to anchor the shared clock.
+// A side's buy is its freeze-end equipment value; without loadouts, the
+// money it went into the round with. The money on a round is what the
+// lineups ended it with, so the round's own figure belongs to the next one.
 const fullBuyRounds = computed<number[]>(() => {
   const out: number[] = [];
-  for (const r of props.roundEconomy ?? []) {
-    if (!isFullBuyRound(moneyOf(r.lineup_1_money), moneyOf(r.lineup_2_money)))
-      continue;
+  const economy = props.roundEconomy ?? [];
+  const values = teamValuesByRound(props.roundInventory ?? []);
+  for (const r of economy) {
+    const v = values.get(r.round);
+    const full = v
+      ? isFullBuyRound(v.ct, v.t)
+      : isFullBuyRound(
+          startMoney(economy, r.round, "ct"),
+          startMoney(economy, r.round, "t"),
+        );
+    if (!full) continue;
     if (!positionsByRound.value.has(r.round)) continue;
     if (!freezeEndByRound.value.has(r.round)) continue;
     out.push(r.round);
@@ -3722,6 +4376,7 @@ const pbp3d = computed(() => {
     hs?: boolean;
     team?: string | null;
     gid?: number | null;
+    kill?: EnrichedKill;
   }> = [];
   for (const k of killsByRound.value.get(activeRound.value ?? -1) ?? []) {
     if (k.tick > cursor) continue;
@@ -3733,6 +4388,7 @@ const pbp3d = computed(() => {
       w: k.weapon ?? "",
       hs: !!k.headshot,
       team: k.killer_team ?? null,
+      kill: k,
     });
   }
   for (const g of roundGrenades.value) {
@@ -3867,6 +4523,8 @@ function openReplayPopout() {
     grenadeTrajectories: props.grenadeTrajectories,
     smokeVolumes: props.smokeVolumes,
     infernos: props.infernos,
+    smokeVoxels: props.smokeVoxels,
+    flashes: props.flashes,
     shots: props.shots,
     damages: props.damages,
     demoPlayers: props.demoPlayers,
@@ -3878,6 +4536,7 @@ function openReplayPopout() {
     roundEconomy: props.roundEconomy,
     tickRate: props.tickRate,
     mapName: props.mapName,
+    mapTitle: props.mapTitle,
   };
   const url = `/matches/${matchId}/playback/2d/${mmId}`;
   window.open(
@@ -3927,6 +4586,25 @@ const blindedBySteam = computed(() => {
   return m;
 });
 
+const {
+  summary: roundAnalysis,
+  killTrade,
+  flashNote,
+  playerValue,
+} = useReplayAnalysis({
+  round: () => activeRound.value,
+  kills: () => roundKills.value,
+  grenades: () => roundGrenades.value,
+  flashes: () => props.flashes,
+  inventory: () => props.roundInventory,
+  economy: () => props.roundEconomy,
+  sideByRound: () => sideByRound.value,
+  cursor: () => currentTick.value,
+  roundEnd: () => activeRoundTick.value?.end_tick ?? null,
+  tickRate: () => props.tickRate || 64,
+  name: (sid) => playerNameMap.value[sid] ?? "",
+});
+
 function buildChromeRows(rows: RosterEntry[], side: number) {
   const live = liveStateBySteam.value;
   const load = loadoutBySteam.value;
@@ -3954,6 +4632,7 @@ function buildChromeRows(rows: RosterEntry[], side: number) {
       bomb: hasBombFor(r.steamId),
       kit: lo?.kit ?? false,
       avatarUrl: r.avatarUrl,
+      value: playerValue(r.steamId),
     };
   });
 }
@@ -3999,6 +4678,7 @@ const chromePbp = computed(() =>
         hs: e.hs,
         kc: colorFor(e.team ?? null),
         vc: "#9fb0c0",
+        trade: killTrade(e.kill),
       };
     if (e.kind === "util")
       return {
@@ -4007,6 +4687,7 @@ const chromePbp = computed(() =>
         thrower: e.a,
         tc: colorFor(e.team ?? null),
         gi: e.gid ?? undefined,
+        flash: e.w === "Flash" ? flashNote(e.gid) : undefined,
       };
     return { time: `${e.sec}s`, bomb: e.w };
   }),
@@ -4044,9 +4725,16 @@ const chromeTickMarkers = computed(() =>
     .filter((m) => m.lane === "kill" || m.lane === "bomb")
     .map((m) => ({
       frac: m.left / 100,
+      width: m.width != null ? m.width / 100 : undefined,
       cls:
         m.lane === "bomb"
-          ? "mk-bomb"
+          ? m.bomb === "defused"
+            ? "mk-bomb mk-defused"
+            : m.bomb === "exploded"
+              ? "mk-bomb mk-exploded"
+              : m.bomb === "defuse"
+                ? "mk-defuse"
+                : "mk-bomb"
           : m.color === SCRUB_KILL_CT
             ? "mk-ct"
             : m.color === SCRUB_KILL_T
@@ -4057,10 +4745,18 @@ const chromeTickMarkers = computed(() =>
 const chromeSeekFrac = computed(() =>
   overlayMode.value ? overlayProgressPct.value / 100 : progressPct.value / 100,
 );
+// Seconds into the round's samples, from ticks: the samples are not evenly
+// spaced, so their index is not a clock.
+const roundElapsedSec = computed(
+  () => (smoothCurrentTick.value - tickRange.value.min) / (props.tickRate || 64),
+);
+const roundLengthSec = computed(
+  () => (tickRange.value.max - tickRange.value.min) / (props.tickRate || 64),
+);
 const chromeTimeLabel = computed(() =>
   overlayMode.value
     ? `${formatMMSS(overlayElapsedSec.value)} / ${formatMMSS(overlayWindowSec.value)}`
-    : `${formatMMSS(tickIndex.value * 0.25)} / ${formatMMSS(Math.max(0, ticks.value.length - 1) * 0.25)}`,
+    : `${formatMMSS(roundElapsedSec.value)} / ${formatMMSS(roundLengthSec.value)}`,
 );
 const chromeFollowName = computed(
   () =>
@@ -4078,14 +4774,28 @@ function chromeSeek(frac: number) {
     );
     return;
   }
-  tickIndex.value = Math.max(
-    0,
-    Math.min(
-      ticks.value.length - 1,
-      Math.round(frac * (ticks.value.length - 1)),
-    ),
-  );
-  fractional.value = 0;
+  // The bar is drawn by tick (progressPct), and samples bunch up around
+  // throws, so land on the tick under the pointer, not the nth sample.
+  const list = ticks.value;
+  if (list.length < 2) {
+    tickIndex.value = 0;
+    fractional.value = 0;
+    return;
+  }
+  const first = list[0];
+  const last = list[list.length - 1];
+  const target = first + Math.min(1, Math.max(0, frac)) * (last - first);
+  let lo = 0;
+  let hi = list.length - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (list[mid] <= target) lo = mid;
+    else hi = mid;
+  }
+  const span = list[hi] - list[lo];
+  tickIndex.value = lo;
+  fractional.value =
+    span > 0 ? Math.min(0.999, Math.max(0, (target - list[lo]) / span)) : 0;
 }
 function chromeSpeed(s: number) {
   speed.value = s;
@@ -4112,6 +4822,48 @@ watch(overlayMode, (on) => {
     }
   }
 });
+
+// Links to the moment on screen, and clip export of the stage (the share
+// button in the chrome's transport).
+const replayShare = useReplayShare({
+  stage: () => stageEl.value,
+  stageActive: () => stageActive.value,
+  rounds: () => rounds.value,
+  round: activeRound,
+  ticks: () => ticks.value,
+  tickIndex,
+  fractional,
+  tick: () => smoothCurrentTick.value,
+  tickRate: () => props.tickRate || 64,
+  liveStart: () => activeRoundTick.value?.freeze_end_tick ?? null,
+  playing: () => playing.value,
+  play,
+  pause,
+  speed,
+  view: viewMode,
+  level: () => stageLevel.value,
+  levels: () => stageLevels.value,
+  pickLevel,
+  follow: focusedPlayerId,
+  caption: () => {
+    const ctLineup = lineupRows.value.ct
+      .map((row) => lineupBySteam.value.get(row.steamId))
+      .find(Boolean);
+    const board = scoreboard.value;
+    const hud = chromeHud.value;
+    const swapped = ctLineup === "2";
+    return {
+      ctName: swapped ? board.rightName : board.leftName,
+      tName: swapped ? board.leftName : board.rightName,
+      ctScore: hud.ct,
+      tScore: hud.t,
+      round: hud.round,
+      clock: hud.clock,
+      bomb: hud.bomb || null,
+    };
+  },
+  mapName: () => props.mapName ?? null,
+});
 </script>
 
 <template>
@@ -4124,6 +4876,7 @@ watch(overlayMode, (on) => {
            the right edge; the transport bar is docked below and pinned to
            the bottom by this flex-1 stage. -->
       <div
+        v-if="!stageActive"
         ref="stage2dEl"
         class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 overflow-visible transition-[width,height,left] duration-300 ease-out touch-none"
         :class="
@@ -5568,7 +6321,13 @@ watch(overlayMode, (on) => {
              over it at higher z. -->
       <Transition name="mapfade">
         <Replay3DLite
-          v-if="viewMode === '3d' && radarSrc && calibration && replay3dKey"
+          v-if="
+            viewMode === '3d' &&
+            !stageActive &&
+            radarSrc &&
+            calibration &&
+            replay3dKey
+          "
           :key="replay3dKey"
           class="z-[1]"
           :map-name="meshAvailable ? normalizedMap : null"
@@ -5605,6 +6364,24 @@ watch(overlayMode, (on) => {
         />
       </Transition>
 
+      <ReplayStage
+        v-if="stageOn"
+        v-show="stageActive"
+        ref="stageEl"
+        class="absolute inset-0 z-[1]"
+        :map-name="mapName?.trim() || null"
+        :frame="stageActive ? stageFrame : EMPTY_FRAME"
+        :view="viewMode"
+        :running="stageActive"
+        :level="stageLevel"
+        :level-layout="levelsSideBySide ? 'side' : 'single'"
+        :map-title="stageMapTitle"
+        :play="stagePlay"
+        @unsupported="onStageUnsupported"
+        @missing-map="onStageMissingMap"
+        @levels="onStageLevels"
+      />
+
       <!-- Unified chrome (Replay3D look) — shown over BOTH 2D and 3D so the
              player is identical; only the map underneath differs. -->
       <ReplayChrome
@@ -5622,6 +6399,7 @@ watch(overlayMode, (on) => {
         :alive-b="chromeAliveB"
         :feed="chromeFeed"
         :pbp="chromePbp"
+        :analysis="roundAnalysis"
         :rounds="chromeRounds"
         :active-round-u-i="activeRound ?? 0"
         :util-markers="chromeUtilMarkers"
@@ -5633,8 +6411,9 @@ watch(overlayMode, (on) => {
         :seek-frac="chromeSeekFrac"
         :time-label="chromeTimeLabel"
         :view="viewMode"
+        :stage="stageActive"
         :overlay="overlayMode"
-        :show3d="viewMode === '3d'"
+        :show3d="viewMode === '3d' && !stageActive"
         :cam-mode="camMode"
         :show-pbp="showPbpPanel"
         :heat-on="heatOn"
@@ -5653,6 +6432,11 @@ watch(overlayMode, (on) => {
         :on-toggle-heat="() => (heatOn = !heatOn)"
         :on-mode="chromeMode"
         :on-view="(v) => (viewMode = v)"
+        :levels="chromeLevels"
+        :level="stageLevel"
+        :on-level="pickLevel"
+        :levels-side="levelsSideBySide"
+        :on-levels-side="(v) => (levelsSideBySide = v)"
         :on-pbp-util="toggleUtilSel"
         :on-clear-sel="() => (selectedGi = [])"
         :overlay-rounds="overlayRoundsArr"
@@ -5673,10 +6457,30 @@ watch(overlayMode, (on) => {
         :show-callouts="showCallouts"
         :has-callouts="hasCallouts"
         :on-toggle-callouts="() => (showCallouts = !showCallouts)"
-      />
+        :vision-on="showVision"
+        :on-toggle-vision="() => (showVision = !showVision)"
+        :vision-side="stageFrame.visionSide ?? 'both'"
+        :vision-side-pinned="!!visionSidePin"
+        :on-vision-side="pickVisionSide"
+        :broadcast="broadcastState"
+        :broadcast-shot="broadcastCaption"
+        :slowmo="broadcastSlowmo"
+        :on-broadcast="toggleBroadcast"
+        :on-slowmo="() => (broadcastSlowmo = !broadcastSlowmo)"
+        :broadcast-replay="!!replayOffer && broadcastLive"
+        :on-broadcast-replay="playReplay"
+        :broadcast-next="broadcastNext"
+        :condensed="broadcastCondensed"
+        :on-condensed="() => (broadcastCondensed = !broadcastCondensed)"
+        :clip-marks="replayShare.chromeMarks"
+      >
+        <template #share>
+          <ReplayShareMenu :share="replayShare" />
+        </template>
+      </ReplayChrome>
 
       <div
-        v-if="radarVolumes.length"
+        v-if="radarVolumes.length && !stageActive"
         class="absolute left-1/2 z-[21] -translate-x-1/2"
         :class="mobileChrome ? 'top-[60px]' : 'top-[78px]'"
       >
@@ -6376,9 +7180,9 @@ watch(overlayMode, (on) => {
             {{ formatMMSS(overlayWindowSec) }}
           </template>
           <template v-else>
-            {{ formatMMSS(tickIndex * 0.25) }}
+            {{ formatMMSS(roundElapsedSec) }}
             <span class="text-muted-foreground/50">/</span>
-            {{ formatMMSS(Math.max(0, ticks.length - 1) * 0.25) }}
+            {{ formatMMSS(roundLengthSec) }}
           </template>
         </span>
 

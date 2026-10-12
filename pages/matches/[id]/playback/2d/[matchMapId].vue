@@ -22,7 +22,9 @@ useReplayNoZoom();
 // is browser-only — under SSR the page can't see the parent window and
 // falls back to a fresh GraphQL + blob fetch, defeating the whole
 // point of the popout reusing already-loaded data.
-definePageMeta({ layout: false, ssr: false });
+// A shared moment rides in the hash (`#r=..&t=..`); it is not an element to
+// scroll to, and the page does not scroll.
+definePageMeta({ layout: false, ssr: false, scrollToTop: false });
 
 const route = useRoute();
 const matchMapId = computed(() => String(route.params.matchMapId));

@@ -322,6 +322,21 @@ function surfaceColumns(
       }
       return false;
     },
+    /** Whether any structural surface crosses (x, y) between `lo` and `hi`. */
+    anyBetween(x: number, y: number, lo: number, hi: number) {
+      const gx = Math.floor((x - minX) / cell);
+      const gy = Math.floor((y - minY) / cell);
+      if (lo >= hi || gx < 0 || gy < 0 || gx >= width || gy >= height) {
+        return false;
+      }
+      const at = gy * width + gx;
+      for (let i = start[at]; i < start[at + 1]; i++) {
+        if (z[i] > lo && z[i] < hi) {
+          return true;
+        }
+      }
+      return false;
+    },
   };
 }
 
@@ -1033,7 +1048,11 @@ function cutPlanes(
       normals[a * 3] * normals[b * 3] +
       normals[a * 3 + 1] * normals[b * 3 + 1] +
       normals[a * 3 + 2] * normals[b * 3 + 2];
-    if (dot >= PATCH_COS) {
+    // A ceiling is never one patch with the wall it springs from: an arch's
+    // sides stay walls under its crown. (A dome's cap faces up and stays.)
+    const downA = normals[a * 3 + 2] <= -WALL_UPNESS;
+    const downB = normals[b * 3 + 2] <= -WALL_UPNESS;
+    if (dot >= PATCH_COS && downA === downB) {
       parent[find(b)] = find(a);
     }
   }
@@ -1041,6 +1060,7 @@ function cutPlanes(
   const patch = new Int32Array(triTotal);
   const area = new Float64Array(triTotal);
   const upness = new Float64Array(triTotal);
+  const facing = new Float64Array(triTotal);
   const top = new Float32Array(triTotal).fill(-Infinity);
   const bottom = new Float32Array(triTotal).fill(Infinity);
   const triArea = new Float32Array(triTotal);
@@ -1061,6 +1081,7 @@ function cutPlanes(
     triArea[t] = ta;
     area[p] += ta;
     upness[p] += ta * Math.abs(normals[t * 3 + 2]);
+    facing[p] += ta * normals[t * 3 + 2];
     top[p] = Math.max(top[p], vx[a + 2], vx[b + 2], vx[c + 2]);
     bottom[p] = Math.min(bottom[p], vx[a + 2], vx[b + 2], vx[c + 2]);
   }
@@ -1109,11 +1130,27 @@ function cutPlanes(
   }
   const columns = surfaceColumns(vx, tris, info, normals, triTotal, floors);
   const nearTop = nearestTopLevel(floors, NEAR_REACH);
+  // The reachable floor beside a wall, unless the point stands on a slab of
+  // its own within a storey above that floor: then the wall is part of an
+  // upper storey over that floor (see `weak` below).
+  const openBelow = (x: number, y: number, z: number) => {
+    const level = levelBelow(x, y, z);
+    return level > -Infinity &&
+      columns.anyBetween(
+        x,
+        y,
+        Math.max(level + SLAB_CLEAR, z - STOREY),
+        z - SLAB_CLEAR,
+      )
+      ? -Infinity
+      : level;
+  };
 
   // Each triangle is measured at its centroid and at three points between
   // the centroid and its corners. A wall needs reachable floor on both
   // sides; a roof needs reachable floor under it.
   const hit = new Float64Array(triTotal);
+  const openHit = new Float64Array(triTotal);
   const base = new Float32Array(triTotal).fill(-Infinity);
   const patchHit = new Float64Array(triTotal);
   const patchBase = new Float32Array(triTotal).fill(-Infinity);
@@ -1158,6 +1195,13 @@ function cutPlanes(
           front > -Infinity && back > -Infinity
             ? Math.max(front, back)
             : -Infinity;
+        if (
+          level > -Infinity &&
+          openBelow(x + nx, y + ny, z) > -Infinity &&
+          openBelow(x - nx, y - ny, z) > -Infinity
+        ) {
+          openHit[p] += triArea[t] / 4;
+        }
       } else {
         level = levelBelow(x, y, z);
       }
@@ -1185,6 +1229,7 @@ function cutPlanes(
   }
   const planeOf = new Float32Array(triTotal).fill(NaN);
   const wallOf = new Uint8Array(triTotal);
+  const weak = new Uint8Array(triTotal);
   for (let t = 0; t < triTotal; t++) {
     const p = patch[t];
     if (
@@ -1202,6 +1247,7 @@ function cutPlanes(
       if (hit[p] >= area[p] * WALL_ENCLOSED) {
         planeOf[p] = base[p];
         wallOf[p] = 1;
+        weak[p] = openHit[p] < area[p] * WALL_ENCLOSED ? 1 : 0;
       }
       continue;
     }
@@ -1216,17 +1262,100 @@ function cutPlanes(
     area[p] < TRIM_AREA &&
     !(info[t] & INFO_WALKABLE) &&
     (info[t] & INFO_SURFACE) !== SURFACE_FOLIAGE;
+  // A wall enclosed only through another storey's slab belongs to that upper
+  // storey. Set into a bigger facade that stays whole (the wall round a
+  // window over a passage) it keeps its height too, instead of leaving a
+  // hole; a whole storey of them (a building over a lower level) still opens.
+  {
+    const isWallTri = (t: number) =>
+      !(info[t] & INFO_WALKABLE) &&
+      (info[t] & INFO_SURFACE) !== SURFACE_FOLIAGE &&
+      upness[patch[t]] < area[patch[t]] * WALL_UPNESS;
+    const piece = new Int32Array(triTotal);
+    for (let i = 0; i < triTotal; i++) {
+      piece[i] = i;
+    }
+    const findPiece = (i: number) => {
+      while (piece[i] !== i) {
+        piece[i] = piece[piece[i]];
+        i = piece[i];
+      }
+      return i;
+    };
+    for (let i = 0; i < pairs.length; i += 2) {
+      const pa = patch[pairs[i]];
+      const pb = patch[pairs[i + 1]];
+      if (pa !== pb && weak[pa] && weak[pb]) {
+        piece[findPiece(pa)] = findPiece(pb);
+      }
+    }
+    const pieceArea = new Float64Array(triTotal);
+    for (let p = 0; p < triTotal; p++) {
+      if (patch[p] === p && weak[p]) {
+        pieceArea[findPiece(p)] += area[p];
+      }
+    }
+    const solidAround = new Map<number, Set<number>>();
+    for (let i = 0; i < pairs.length; i += 2) {
+      for (const [a, b] of [
+        [pairs[i], pairs[i + 1]],
+        [pairs[i + 1], pairs[i]],
+      ]) {
+        const pa = patch[a];
+        const pb = patch[b];
+        if (
+          weak[pa] &&
+          !weak[pb] &&
+          planeOf[pb] !== planeOf[pb] &&
+          isWallTri(b)
+        ) {
+          const root = findPiece(pa);
+          const seen = solidAround.get(root) ?? new Set<number>();
+          seen.add(pb);
+          solidAround.set(root, seen);
+        }
+      }
+    }
+    const solidArea = new Float64Array(triTotal);
+    for (const [root, seen] of solidAround) {
+      for (const q of seen) {
+        solidArea[root] += area[q];
+      }
+    }
+    for (let p = 0; p < triTotal; p++) {
+      if (patch[p] === p && weak[p]) {
+        const root = findPiece(p);
+        if (solidArea[root] > pieceArea[root]) {
+          planeOf[p] = NaN;
+          wallOf[p] = 0;
+        }
+      }
+    }
+  }
+
+  // A trim takes a plane from what it hangs off: a cut patch no lower than
+  // itself (a cornice under its roof, a ledge on its wall), never one below,
+  // so a passage's ceiling does not open the storey standing on it. A piece
+  // of wall taller than a roof's edge band is no trim: it was measured as a
+  // wall, and a facade with nothing behind it keeps its height.
+  const reach = new Float32Array(top);
+  const standsAsWall = (p: number) =>
+    upness[p] < area[p] * WALL_UPNESS && top[p] - bottom[p] > FASCIA_HEIGHT;
   const next = new Float32Array(triTotal);
   const nextWall = new Uint8Array(triTotal);
+  const nextReach = new Float32Array(triTotal);
   for (let round = 0; round < TRIM_ROUNDS; round++) {
     let changed = false;
     next.set(planeOf);
     nextWall.set(wallOf);
+    nextReach.set(reach);
     const spread = (from: number, to: number, t: number) => {
       if (
         planeOf[from] !== planeOf[from] ||
         planeOf[to] === planeOf[to] ||
-        !trimmable(to, t)
+        !trimmable(to, t) ||
+        standsAsWall(to) ||
+        top[to] > reach[from] + TRIM_RISE
       ) {
         return;
       }
@@ -1234,6 +1363,7 @@ function cutPlanes(
       if (!(next[to] <= planeOf[from])) {
         next[to] = planeOf[from];
         nextWall[to] = wallOf[from];
+        nextReach[to] = reach[from];
         changed = true;
       } else if (next[to] === planeOf[from] && !wallOf[from]) {
         nextWall[to] = 0;
@@ -1249,11 +1379,16 @@ function cutPlanes(
     }
     planeOf.set(next);
     wallOf.set(nextWall);
+    reach.set(nextReach);
     if (!changed) {
       break;
     }
   }
 
+  const ceiling = new Uint8Array(triTotal);
+  for (let p = 0; p < triTotal; p++) {
+    ceiling[p] = facing[p] < -area[p] * WALL_UPNESS ? 1 : 0;
+  }
   const whole = groupWhole(
     tris,
     canon,
@@ -1265,6 +1400,8 @@ function cutPlanes(
     planeOf,
     wallOf,
     top,
+    bottom,
+    ceiling,
   );
 
   const out = new Int16Array(triTotal * 3);
@@ -1306,9 +1443,12 @@ function cutPlanes(
  * that is not a wall) goes whole, never sliced, and so does everything joined
  * to it across an edge, so a sloped or broken roof leaves no hanging pieces.
  * A small loose piece (a rafter, a shutter, a sign) goes whole too, with the
- * lowest plane of its patches. Each group's top becomes every member's, and
- * the shader removes the group once the cut is below that top. Returns which
- * wall-type patches go whole (roof-type ones always do).
+ * lowest plane of its patches, unless it is a tall piece of wall. Each
+ * group's top becomes every member's, and the shader removes the group once
+ * the cut is below that top. A small group of ceilings alone (an arch's
+ * crown, under a wall that stays) hides nothing from above, so it goes only
+ * once the cut is below all of it. Returns which wall-type patches go whole (roof-type
+ * ones always do).
  */
 function groupWhole(
   tris: Uint32Array,
@@ -1321,6 +1461,8 @@ function groupWhole(
   planeOf: Float32Array,
   wallOf: Uint8Array,
   top: Float32Array,
+  bottom: Float32Array,
+  ceiling: Uint8Array,
 ): Uint8Array {
   const cuttable = (t: number) =>
     planeOf[patch[t]] === planeOf[patch[t]] &&
@@ -1369,7 +1511,10 @@ function groupWhole(
   }
   const partArea = new Float64Array(canon.length);
   const partPlane = new Float32Array(canon.length).fill(Infinity);
-  const partRoof = new Uint8Array(canon.length);
+  const partRoofArea = new Float64Array(canon.length);
+  const partWallArea = new Float64Array(canon.length);
+  const partTop = new Float32Array(canon.length).fill(-Infinity);
+  const partBottom = new Float32Array(canon.length).fill(Infinity);
   const partFirst = new Int32Array(canon.length).fill(-1);
   const root = new Int32Array(triTotal);
   for (let t = 0; t < triTotal; t++) {
@@ -1377,26 +1522,35 @@ function groupWhole(
     root[t] = r;
     partArea[r] += triArea[t];
     if (cuttable(t)) {
-      partPlane[r] = Math.min(partPlane[r], planeOf[patch[t]]);
-      if (!wallOf[patch[t]]) {
-        partRoof[r] = 1;
+      const p = patch[t];
+      partPlane[r] = Math.min(partPlane[r], planeOf[p]);
+      if (wallOf[p]) {
+        partWallArea[r] += triArea[t];
+      } else {
+        partRoofArea[r] += triArea[t];
       }
+      partTop[r] = Math.max(partTop[r], top[p]);
+      partBottom[r] = Math.min(partBottom[r], bottom[p]);
     }
   }
   const whole = new Uint8Array(triTotal);
   for (let t = 0; t < triTotal; t++) {
     const r = root[t];
     const p = patch[t];
+    // Mostly wall and taller than a sign (an arch, a door frame): sliced like
+    // the wall it is part of, rather than gone with its crown.
+    const wallLike = partWallArea[r] > partRoofArea[r];
     if (
       partArea[r] >= SMALL_PART_AREA ||
       partPlane[r] === Infinity ||
       info[t] & INFO_WALKABLE ||
-      (info[t] & INFO_SURFACE) === SURFACE_FOLIAGE
+      (info[t] & INFO_SURFACE) === SURFACE_FOLIAGE ||
+      (wallLike && partTop[r] - partBottom[r] > LOOSE_WALL_HEIGHT)
     ) {
       continue;
     }
     planeOf[p] = partPlane[r];
-    wallOf[p] = partRoof[r] ? 0 : 1;
+    wallOf[p] = wallLike ? 1 : 0;
     whole[p] = 1;
     if (partFirst[r] < 0) {
       partFirst[r] = p;
@@ -1406,21 +1560,34 @@ function groupWhole(
   }
 
   const groupTop = new Float32Array(triTotal).fill(-Infinity);
+  const groupLow = new Float32Array(triTotal).fill(Infinity);
+  const groupOpen = new Uint8Array(triTotal);
+  const groupArea = new Float64Array(triTotal);
   for (let t = 0; t < triTotal; t++) {
     if (cuttable(t)) {
-      const g = find(patch[t]);
-      groupTop[g] = Math.max(groupTop[g], top[patch[t]]);
+      const p = patch[t];
+      const g = find(p);
+      groupTop[g] = Math.max(groupTop[g], top[p]);
+      groupLow[g] = Math.min(groupLow[g], bottom[p]);
+      groupArea[g] += triArea[t];
+      if (!ceiling[p]) {
+        groupOpen[g] = 1;
+      }
     }
   }
   for (let t = 0; t < triTotal; t++) {
     if (cuttable(t) && (!wallOf[patch[t]] || whole[patch[t]])) {
-      top[patch[t]] = groupTop[find(patch[t])];
+      const g = find(patch[t]);
+      top[patch[t]] =
+        groupOpen[g] || groupArea[g] >= TRIM_AREA ? groupTop[g] : groupLow[g];
     }
   }
   return whole;
 }
 
 const SMALL_PART_AREA = 40000;
+/** A wall-like loose piece taller than this is sliced, not taken whole. */
+const LOOSE_WALL_HEIGHT = 128;
 
 const PATCH_COS = Math.cos((20 * Math.PI) / 180);
 /** Patches flatter than this (mean |n.z|) are roofs and ceilings, not walls. */
@@ -1432,6 +1599,14 @@ const ROOF_COVERED = 0.5;
 const TRIM_AREA = 20000;
 /** Below a roof sample, this deep is still the roof itself (its underside). */
 const ROOF_THICK = 96;
+/** A surface this close to a floor or a sample is that floor or that surface. */
+const SLAB_CLEAR = 16;
+/** A slab this far under a wall's sample is the floor of the storey it is on. */
+const STOREY = 160;
+/** How far above what it hangs off a trim may reach and still take its cut. */
+const TRIM_RISE = 16;
+/** A roof slab's edge band is no taller than this; a wall piece is. */
+const FASCIA_HEIGHT = 40;
 /** A roof triangle on its own opens when this many of its 4 samples do. */
 const TRI_COVERED = 4;
 /** How far round a piece to look for the floor it stands over. */

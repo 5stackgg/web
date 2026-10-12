@@ -9951,6 +9951,10 @@
       "online_room": "Stanza online",
       "lan_room_hint": "Possono entrare solo i giocatori di questa rete",
       "online_room_hint": "Si gioca online, chiunque può entrare"
+    },
+    "errors": {
+      "already_queued": "La tua lobby è già in coda.",
+      "player_in_match": "{name} è già in una partita."
     }
   },
   "game_server": {

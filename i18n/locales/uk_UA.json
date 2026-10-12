@@ -9951,6 +9951,10 @@
       "online_room": "Онлайн-кімната",
       "lan_room_hint": "Приєднатися можуть лише гравці в цій мережі",
       "online_room_hint": "Гра онлайн, приєднатися може будь-хто"
+    },
+    "errors": {
+      "already_queued": "Ваше лобі вже в черзі.",
+      "player_in_match": "{name} вже в матчі."
     }
   },
   "game_server": {

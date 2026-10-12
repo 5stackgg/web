@@ -1133,13 +1133,38 @@ socket.listen("players-online", (onlinePlayerSteamIds) => {
   useMatchmakingStore().presenceLoaded = true;
 });
 
-socket.listen("matchmaking:error", (data: { message: string }) => {
-  toast({
-    variant: "destructive",
-    title: useNuxtApp().$i18n.t("common.error"),
-    description: data.message,
-  });
-});
+// The api sends a code with its English message. A code this build doesn't
+// know, or an api that predates codes, keeps the message.
+function matchmakingErrorMessage(data: {
+  code?: string;
+  name?: string;
+  message: string;
+}) {
+  const i18n = useNuxtApp().$i18n;
+
+  switch (data.code) {
+    case "already_queued":
+      return i18n.t("matchmaking.errors.already_queued");
+    case "player_in_match":
+      if (!data.name) {
+        return data.message;
+      }
+      return i18n.t("matchmaking.errors.player_in_match", { name: data.name });
+    default:
+      return data.message;
+  }
+}
+
+socket.listen(
+  "matchmaking:error",
+  (data: { code?: string; name?: string; message: string }) => {
+    toast({
+      variant: "destructive",
+      title: useNuxtApp().$i18n.t("common.error"),
+      description: matchmakingErrorMessage(data),
+    });
+  },
+);
 
 socket.listen(
   "matchmaking:details",

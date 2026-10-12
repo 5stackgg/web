@@ -9951,6 +9951,10 @@
       "online_room": "線上房間",
       "lan_room_hint": "僅此網路中的玩家可以加入",
       "online_room_hint": "線上進行，任何人都可以加入"
+    },
+    "errors": {
+      "already_queued": "你的大廳已在佇列中。",
+      "player_in_match": "{name} 已在比賽中。"
     }
   },
   "game_server": {

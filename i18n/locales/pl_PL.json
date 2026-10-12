@@ -9951,6 +9951,10 @@
       "online_room": "Pokój online",
       "lan_room_hint": "Dołączyć mogą tylko gracze w tej sieci",
       "online_room_hint": "Gra online, każdy może dołączyć"
+    },
+    "errors": {
+      "already_queued": "Twoje lobby jest już w kolejce.",
+      "player_in_match": "{name} jest już w meczu."
     }
   },
   "game_server": {

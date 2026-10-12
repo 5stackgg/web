@@ -5437,7 +5437,7 @@
         "score": "{count} 个赞 | {count} 个赞"
       },
       "viewer": {
-        "replay_throw": "回放投掷"
+        "timeline": "投掷时间轴"
       },
       "detail": {
         "previous": "上一个点位",

@@ -5437,7 +5437,7 @@
         "score": "{count} Upvote | {count} Upvotes"
       },
       "viewer": {
-        "replay_throw": "Wurf abspielen"
+        "timeline": "Zeitleiste des Wurfs"
       },
       "detail": {
         "previous": "Vorheriges Lineup",

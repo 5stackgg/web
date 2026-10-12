@@ -5437,7 +5437,7 @@
         "score": "{count} 件の高評価 | {count} 件の高評価"
       },
       "viewer": {
-        "replay_throw": "投げを再生"
+        "timeline": "投擲のタイムライン"
       },
       "detail": {
         "previous": "前のラインナップ",

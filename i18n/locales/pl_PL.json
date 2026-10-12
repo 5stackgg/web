@@ -5437,7 +5437,7 @@
         "score": "{count} głos za | {count} głosów za"
       },
       "viewer": {
-        "replay_throw": "Odtwórz rzut"
+        "timeline": "Oś czasu rzutu"
       },
       "detail": {
         "previous": "Poprzednia ustawka",

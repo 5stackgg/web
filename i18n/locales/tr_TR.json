@@ -5437,7 +5437,7 @@
         "score": "{count} olumlu oy | {count} olumlu oy"
       },
       "viewer": {
-        "replay_throw": "Atışı tekrar oynat"
+        "timeline": "Atışın zaman çizelgesi"
       },
       "detail": {
         "previous": "Önceki dizilim",

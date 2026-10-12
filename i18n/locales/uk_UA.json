@@ -5437,7 +5437,7 @@
         "score": "{count} голос за | {count} голосів за"
       },
       "viewer": {
-        "replay_throw": "Повторити кидок"
+        "timeline": "Таймлайн кидка"
       },
       "detail": {
         "previous": "Попередня розкидка",

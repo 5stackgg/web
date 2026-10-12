@@ -5439,7 +5439,7 @@
         "score": "{count} upvote | {count} upvotes"
       },
       "viewer": {
-        "replay_throw": "Replay throw"
+        "timeline": "Throw timeline"
       },
       "detail": {
         "previous": "Previous lineup",

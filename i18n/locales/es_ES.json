@@ -5437,7 +5437,7 @@
         "score": "{count} voto positivo | {count} votos positivos"
       },
       "viewer": {
-        "replay_throw": "Repetir lanzamiento"
+        "timeline": "Línea de tiempo del lanzamiento"
       },
       "detail": {
         "previous": "Lineup anterior",

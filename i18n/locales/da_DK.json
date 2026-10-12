@@ -5437,7 +5437,7 @@
         "score": "{count} opstemme | {count} opstemmer"
       },
       "viewer": {
-        "replay_throw": "Afspil kastet"
+        "timeline": "Tidslinje for kastet"
       },
       "detail": {
         "previous": "Forrige opstilling",

@@ -5437,7 +5437,7 @@
         "score": "{count} uppröst | {count} uppröster"
       },
       "viewer": {
-        "replay_throw": "Spela upp kastet"
+        "timeline": "Tidslinje för kastet"
       },
       "detail": {
         "previous": "Föregående uppställning",

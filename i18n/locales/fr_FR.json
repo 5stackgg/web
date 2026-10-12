@@ -5437,7 +5437,7 @@
         "score": "{count} vote positif | {count} votes positifs"
       },
       "viewer": {
-        "replay_throw": "Rejouer le lancer"
+        "timeline": "Chronologie du lancer"
       },
       "detail": {
         "previous": "Lineup précédent",

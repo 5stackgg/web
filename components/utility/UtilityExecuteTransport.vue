@@ -19,6 +19,8 @@ const props = defineProps<{
   length: number;
   running: boolean;
   beats: { key: string; seconds: number; color: string }[];
+  /** What the track is called; an execute's timeline unless said. */
+  label?: string;
 }>();
 
 const emit = defineEmits<{
@@ -169,7 +171,7 @@ function onKey(event: KeyboardEvent) {
       ref="track"
       role="slider"
       tabindex="0"
-      :aria-label="$t('pages.utility.playbooks.seek')"
+      :aria-label="label ?? $t('pages.utility.playbooks.seek')"
       :aria-valuemin="0"
       :aria-valuemax="Number(length.toFixed(1))"
       :aria-valuenow="Number(at.toFixed(1))"

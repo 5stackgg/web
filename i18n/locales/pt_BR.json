@@ -5437,7 +5437,7 @@
         "score": "{count} voto positivo | {count} votos positivos"
       },
       "viewer": {
-        "replay_throw": "Repetir arremesso"
+        "timeline": "Linha do tempo do arremesso"
       },
       "detail": {
         "previous": "Lineup anterior",

@@ -5437,7 +5437,7 @@
         "score": "{count} голос за | {count} голосов за"
       },
       "viewer": {
-        "replay_throw": "Повторить бросок"
+        "timeline": "Таймлайн броска"
       },
       "detail": {
         "previous": "Предыдущая раскидка",

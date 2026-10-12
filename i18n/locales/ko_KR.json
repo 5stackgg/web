@@ -5437,7 +5437,7 @@
         "score": "추천 {count}개 | 추천 {count}개"
       },
       "viewer": {
-        "replay_throw": "투척 다시 보기"
+        "timeline": "투척 타임라인"
       },
       "detail": {
         "previous": "이전 라인업",

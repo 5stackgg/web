@@ -5437,7 +5437,7 @@
         "score": "{count} 個讚 | {count} 個讚"
       },
       "viewer": {
-        "replay_throw": "重播投擲"
+        "timeline": "投擲時間軸"
       },
       "detail": {
         "previous": "上一個點位",

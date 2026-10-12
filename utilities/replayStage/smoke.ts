@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { smokeReachedBy } from "./smokeArrival";
+import { HE_BLAST_RADIUS } from "./grenadeEffects";
 import {
   COMPOSITE_FRAG,
   COMPOSITE_VERT,
@@ -43,7 +44,6 @@ const MAX_GRIDS = 48;
 const NOISE_SIZE = 64;
 /** The last seconds of a smoke, when it thins out and breaks up. */
 const FADE_SECS = 1.75;
-const BLAST_HOLE_RADIUS = 250;
 
 type Grid = {
   ready: boolean;
@@ -725,7 +725,7 @@ export function createSmokeModule(): SmokeModule {
       if (blast.age > youngest) {
         continue;
       }
-      const reach = blast.radius || BLAST_HOLE_RADIUS;
+      const reach = blast.radius || HE_BLAST_RADIUS;
       if (
         blast.x < min.x - reach ||
         blast.x > max.x + reach ||

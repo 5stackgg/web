@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import ReplayStageUnavailable from "~/components/match/ReplayStageUnavailable.vue";
 import UtilityThrowStage from "~/components/utility/UtilityThrowStage.vue";
+import type { PlaybackClock } from "~/composables/usePlaybackClock";
 import { lineupSmokeVoxels } from "~/utilities/lineupSmokeVoxels";
 import type { StageSmokeVoxels } from "~/utilities/replayStage/types";
 import {
@@ -28,27 +29,19 @@ type Beat = {
  *
  * The clock is not kept here. The panel that opened the execute runs it, so
  * the timeline in the card, the label in the dock and this scene are one
- * clock; this only draws the moment it is handed.
+ * clock; this only draws the moment it is at.
  */
 const props = withDefaults(
   defineProps<{
     mapName: string;
     beats: Beat[];
-    /** Seconds into the run, or null before it has been played. */
-    clock: number | null;
-    /**
-     * The `performance.now()` the run started at while it runs, null while
-     * it is paused. The clock moves in tenths, which is fine for a label and
-     * a stutter for a grenade in the air, so between its ticks the scene
-     * reads the same run off its start.
-     */
-    startedAt?: number | null;
+    run: PlaybackClock;
     /** Fills the box it is put in -- the map's square -- instead of 16:10. */
     fill?: boolean;
     /** CSS px at the bottom the owner's controls cover; the shot avoids it. */
     controls?: number;
   }>(),
-  { startedAt: null, fill: false, controls: 0 },
+  { fill: false, controls: 0 },
 );
 
 const emit = defineEmits<{
@@ -84,57 +77,23 @@ const throws = computed(() =>
 const BEFORE = -1;
 const AFTER = Number.POSITIVE_INFINITY;
 
-const time = ref(BEFORE);
-let played = false;
-let frame: number | null = null;
-let lastFrameAt = 0;
-
-function tickFrame(now: number) {
-  lastFrameAt = now;
-  if (props.clock === null || props.startedAt === null) {
-    frame = null;
-    return;
-  }
-  // A frame's timestamp can predate the run it belongs to.
-  time.value = Math.max(0, (now - props.startedAt) / 1000);
-  frame = requestAnimationFrame(tickFrame);
-}
-
-function stopFrames() {
-  if (frame !== null) {
-    cancelAnimationFrame(frame);
-    frame = null;
-  }
-}
-
+const played = ref(false);
 watch(
-  () => [props.clock, props.startedAt] as const,
-  ([clock, startedAt]) => {
-    if (clock === null) {
-      stopFrames();
-      time.value = played ? AFTER : BEFORE;
-      return;
-    }
-    played = true;
-    // Paused, or scrubbed while paused: the clock is the moment.
-    if (startedAt === null) {
-      stopFrames();
-      time.value = clock;
-      return;
-    }
-    // While frames are arriving they are the smoother reading of the same
-    // run. Without them -- a hidden tab -- the clock's own value is.
-    if (performance.now() - lastFrameAt > 200) {
-      time.value = clock;
-    }
-    if (frame === null) {
-      frame = requestAnimationFrame(tickFrame);
+  () => props.run.position.value !== null,
+  (started) => {
+    if (started) {
+      played.value = true;
     }
   },
   { immediate: true },
 );
-
-onBeforeUnmount(stopFrames);
+const time = computed(() => {
+  const at = props.run.position.value;
+  if (at === null) {
+    return played.value ? AFTER : BEFORE;
+  }
+  return at;
+});
 
 // Somebody stands where each lineup is thrown from. A lineup thrown twice is
 // one person on one spot, so it is one token.

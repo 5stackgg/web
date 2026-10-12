@@ -1,4 +1,3 @@
-import { HE_BLAST_RADIUS } from "~/utils/smokeVolume";
 import {
   executeFlightSeconds,
   normalizeTrajectory,
@@ -6,6 +5,14 @@ import {
   utilityOrigin,
 } from "~/utilities/utilityDisplay";
 import { levelAt, levelsFor } from "./mapLevels";
+import {
+  BLAST_SECS,
+  DECOY_SECS,
+  DETONATION_SECS,
+  HE_BLAST_RADIUS,
+  INFERNO_BURN_SECS,
+  SMOKE_SECS,
+} from "./grenadeEffects";
 import { normalizeMapName } from "~/utilities/mapAssets";
 import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
 import type {
@@ -55,16 +62,11 @@ export type UtilityStageShot = {
   floor: number;
 };
 
-const SMOKE_SECS = 20;
-const INFERNO_SECS = 7.03;
-const DECOY_SECS = 15;
-const DETONATION_SECS = 3;
-const BLAST_SECS = 2;
 /** What stays on the ground once it is down, and for how long. */
 const LASTS: Partial<Record<StageGrenadeType, number>> = {
   smoke: SMOKE_SECS,
-  molotov: INFERNO_SECS,
-  incendiary: INFERNO_SECS,
+  molotov: INFERNO_BURN_SECS,
+  incendiary: INFERNO_BURN_SECS,
   decoy: DECOY_SECS,
 };
 /**
@@ -301,7 +303,7 @@ function flames(at: Vec3, since: number, key: number): StageFlame[] {
   FLAME_CELLS.forEach(([dx, dy], i) => {
     const caught = (Math.hypot(dx, dy) / FLAME_REACH) * FLAME_SPREAD_SECS;
     const age = since - caught;
-    const lasts = INFERNO_SECS - caught;
+    const lasts = INFERNO_BURN_SECS - caught;
     if (age < 0 || age > lasts) {
       return;
     }
@@ -397,14 +399,14 @@ export function buildUtilityFrame(
         break;
       case "molotov":
       case "incendiary":
-        if (since < INFERNO_SECS) {
+        if (since < INFERNO_BURN_SECS) {
           frame.infernos.push({
             key: `${entry.key}:fire`,
             team: entry.team,
             type: entry.type,
             flames: flames(at, since, entry.gid),
             age: since,
-            remaining: left(INFERNO_SECS),
+            remaining: left(INFERNO_BURN_SECS),
           });
         }
         break;

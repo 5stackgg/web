@@ -6,6 +6,7 @@ import UtilityExecuteViewer3D from "~/components/utility/UtilityExecuteViewer3D.
 import UtilityLineupViewer3D from "~/components/utility/UtilityLineupViewer3D.vue";
 import ReplayStageUnavailable from "~/components/match/ReplayStageUnavailable.vue";
 import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
+import { usePlaybackClock } from "~/composables/usePlaybackClock";
 
 // A throw stage that cannot draw, for the reason given.
 function failingStage(reason: "unsupported" | "missing-map") {
@@ -54,7 +55,7 @@ describe("utility viewers without a stage", () => {
       props: {
         mapName: "de_mirage",
         beats: [{ key: "a", index: 0, lineup, seconds: 1, who: null }],
-        clock: null,
+        run: usePlaybackClock({ length: () => 5 }),
       },
       global: { stubs: { UtilityThrowStage: failingStage("unsupported") } },
     });

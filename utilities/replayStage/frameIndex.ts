@@ -1,5 +1,10 @@
 import type { ReplayBlob } from "~/composables/useReplayBlob";
 import type { Inferno, SmokeVolume } from "~/utils/smokeVolume";
+import {
+  C4_BLAST_RADIUS,
+  HE_BLAST_RADIUS,
+  SMOKE_SECS,
+} from "./grenadeEffects";
 import type {
   StageGrenadeType,
   StageSmokeVoxels,
@@ -325,12 +330,8 @@ type BlobIndex = {
 export const SHOT_CLAIM_SECS = 0.25;
 /** How far a miss with no wall behind it is drawn. */
 const MISS_RANGE = 1600;
-/** Smokes whose end the demo did not record. */
-const SMOKE_FALLBACK_SECS = 20;
 /** No smoke that expired on its own lasted less than this. */
 const SMOKE_MIN_SECS = 18;
-const HE_BLAST_RADIUS = 250;
-const C4_BLAST_RADIUS = 600;
 /** Longer than any real throw: a detonation this far off is a stale position. */
 const MAX_FLIGHT_DIST = 2500;
 
@@ -1549,7 +1550,7 @@ function buildGrenades(
       const end =
         voxelRow?.end_tick ??
         volume?.end_tick ??
-        det.tick + SMOKE_FALLBACK_SECS * rate;
+        det.tick + SMOKE_SECS * rate;
       smokes.push({
         key: `smoke${round}-${gid}`,
         gid: gid >= 0 ? gid : null,
@@ -1560,7 +1561,7 @@ function buildGrenades(
         expireTick:
           end - det.tick >= SMOKE_MIN_SECS * rate
             ? end
-            : det.tick + SMOKE_FALLBACK_SECS * rate,
+            : det.tick + SMOKE_SECS * rate,
         at,
         volume,
         voxelRow,

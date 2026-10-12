@@ -3,40 +3,80 @@ import {
   BLAST_FILE_VERSIONS,
   PREP_VERSION,
 } from "~/utilities/replayStage/assetVersions";
+import type { RadarMeta } from "~/composables/useRadarProjection";
 
-export function normalizeMapName(name: string): string {
-  let n = (name || "").toLowerCase().trim();
-  const slash = n.lastIndexOf("/");
-  if (slash >= 0) {
-    n = n.slice(slash + 1);
-  }
-  return n.replace(/_night$/, "");
+// The map as played: lowercased, without any path in front of it.
+function playedMapName(name: string): string {
+  const played = (name || "").toLowerCase().trim();
+  return played.slice(played.lastIndexOf("/") + 1);
 }
 
-let radarSetPromise: Promise<Set<string>> | null = null;
+/** The map a name plays on: a `_night` variant is its day map. */
+export function normalizeMapName(name: string): string {
+  return playedMapName(name).replace(/_night$/, "");
+}
 
-export function loadRadarMaps(): Promise<Set<string>> {
-  if (!radarSetPromise) {
-    radarSetPromise = (async () => {
-      try {
-        const res = await fetch("/radars/metadata.json");
-        if (!res.ok) {
-          return new Set<string>();
-        }
-        const data = await res.json();
-        const set = new Set<string>();
-        for (const key of Object.keys(data)) {
-          if (!key.startsWith("_")) {
-            set.add(key.toLowerCase());
-          }
-        }
-        return set;
-      } catch {
-        return new Set<string>();
-      }
-    })();
+let radarCalibrations: Record<string, RadarMeta> | null = null;
+let radarCalibrationsLoad: Promise<Record<string, RadarMeta> | null> | null =
+  null;
+
+/** The radar calibrations, when they have already been read this session. */
+export function loadedRadarCalibrations() {
+  return radarCalibrations;
+}
+
+// One fetch of /radars/metadata.json per page load, shared by every caller:
+// the analysis board, the utility library and the map lists all read the same
+// file.
+export function loadRadarCalibrations(): Promise<Record<
+  string,
+  RadarMeta
+> | null> {
+  if (radarCalibrations) {
+    return Promise.resolve(radarCalibrations);
   }
-  return radarSetPromise;
+  if (radarCalibrationsLoad) {
+    return radarCalibrationsLoad;
+  }
+
+  const load = (async () => {
+    try {
+      const res = await fetch("/radars/metadata.json");
+      if (!res.ok) {
+        return null;
+      }
+      const data = await res.json();
+      const { _comment, ...rest } = data;
+      radarCalibrations = rest as Record<string, RadarMeta>;
+      return radarCalibrations;
+    } catch {
+      return null;
+    }
+  })();
+
+  radarCalibrationsLoad = load;
+
+  // A failure must not be memoised. This promise is what every later caller --
+  // the analysis board, every utility panel, every map list -- gets back, so
+  // holding a resolved null here would leave the whole page with no calibration
+  // over one blip. Dropped instead, and the next caller re-fetches.
+  void load.then((result) => {
+    if (!result && radarCalibrationsLoad === load) {
+      radarCalibrationsLoad = null;
+    }
+  });
+
+  return load;
+}
+
+/** The maps there is a radar calibration for. */
+export async function loadRadarMaps(): Promise<Set<string>> {
+  const calibrations = await loadRadarCalibrations();
+  return new Set(
+    Object.keys(calibrations ?? {})
+      .filter((key) => !key.startsWith("_"))
+      .map((key) => key.toLowerCase()),
+  );
 }
 
 export async function hasRadarForMap(mapName: string): Promise<boolean> {
@@ -60,12 +100,8 @@ export function radarImageUrl(
   volume?: string | null,
   options: { retina?: boolean } = {},
 ): string {
-  let played = (mapName || "").toLowerCase().trim();
-  const slash = played.lastIndexOf("/");
-  if (slash >= 0) {
-    played = played.slice(slash + 1);
-  }
-  const day = played.replace(/_night$/, "");
+  const played = playedMapName(mapName);
+  const day = normalizeMapName(mapName);
   const room = volume ? `_${volume}` : "";
   for (const name of [`${played}${room}`, `${day}${room}`]) {
     const hash = STAGE_RADARS[name];

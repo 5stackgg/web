@@ -35,6 +35,7 @@ import type {
 import { EMPTY_FRAME } from "~/utilities/replayStage/types";
 import { RotateCcw, Smartphone } from "lucide-vue-next";
 import { useMapCallouts } from "~/composables/useMapCallouts";
+import { normalizeMapName } from "~/utilities/mapAssets";
 import ReplayChrome from "~/components/match/ReplayChrome.vue";
 import ReplayShareMenu from "~/components/match/ReplayShareMenu.vue";
 import { useReplayShare } from "~/composables/useReplayShare";
@@ -238,12 +239,7 @@ const BOMB_TIMER_SEC = 40;
 // playback state.
 const viewMode = ref<"2d" | "3d">(props.initialView ?? "2d");
 
-const normalizedMap = computed(() =>
-  (props.mapName || "")
-    .trim()
-    .toLowerCase()
-    .replace(/_night$/, ""),
-);
+const normalizedMap = computed(() => normalizeMapName(props.mapName ?? ""));
 
 const dedupedPositions = computed(() => {
   const seen = new Set<string>();

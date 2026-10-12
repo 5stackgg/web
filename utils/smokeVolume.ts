@@ -30,10 +30,6 @@ export type SmokeVolume = {
   den?: string;
 };
 
-// Kept in step with the parser (internal/parser/smoke.go): how far an HE
-// reaches into a cloud.
-export const HE_BLAST_RADIUS = 250;
-
 // Fire needs no reconstruction: the engine networks every individual flame, so
 // the parser records exactly where each one burned and for how long.
 

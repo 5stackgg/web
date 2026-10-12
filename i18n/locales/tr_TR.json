@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "Uygun",
-      "not_eligible": "{count} oyuncu daha gerekiyor",
+      "not_eligible": "Uygun değil",
+      "need_players": "{count} oyuncu daha gerekiyor | {count} oyuncu daha gerekiyor",
+      "missed_check_in": "Katılım onayı kaçırıldı",
       "leave_tournament": "Turnuvadan Ayrıl",
       "leave_team": "Takımdan Ayrıl",
       "slot": "Slot {number}",

@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "Elegible",
-      "not_eligible": "Faltan {count} jugadores",
+      "not_eligible": "No elegible",
+      "need_players": "Falta {count} jugador | Faltan {count} jugadores",
+      "missed_check_in": "Check-in perdido",
       "leave_tournament": "Salir del torneo",
       "leave_team": "Salir del equipo",
       "slot": "Hueco {number}",

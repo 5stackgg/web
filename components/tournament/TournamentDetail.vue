@@ -668,6 +668,7 @@ function clearTeamEnterDelay(el: Element) {
                     <TournamentTeam
                       :tournament="tournament"
                       :team="myTeam"
+                      :registration="tournamentRegistration"
                       :free-agent-steam-ids="freeAgentSteamIds"
                     ></TournamentTeam>
                   </div>
@@ -777,6 +778,7 @@ function clearTeamEnterDelay(el: Element) {
                         <TournamentTeam
                           :tournament="tournament"
                           :team="team"
+                          :registration="tournamentRegistration"
                           :free-agent-steam-ids="freeAgentSteamIds"
                           :collapsible="true"
                           :collapsed="collapsedTeams.has(team.id)"

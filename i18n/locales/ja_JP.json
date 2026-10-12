@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "参加可能",
-      "not_eligible": "あと {count} 人必要",
+      "not_eligible": "参加不可",
+      "need_players": "あと {count} 人必要 | あと {count} 人必要",
+      "missed_check_in": "チェックイン未完了",
       "leave_tournament": "トーナメントを離脱",
       "leave_team": "チームを離脱",
       "slot": "スロット {number}",

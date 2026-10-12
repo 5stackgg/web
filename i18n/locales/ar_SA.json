@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "مؤهل",
-      "not_eligible": "تحتاج إلى {count} لاعبين إضافيين",
+      "not_eligible": "غير مؤهل",
+      "need_players": "تحتاج إلى {count} لاعب إضافي | تحتاج إلى {count} لاعبين إضافيين",
+      "missed_check_in": "تأكيد حضور فائت",
       "leave_tournament": "غادر البطولة",
       "leave_team": "غادر الفريق",
       "slot": "الخانة {number}",

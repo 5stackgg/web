@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "Idoneo",
-      "not_eligible": "Servono altri {count} giocatori",
+      "not_eligible": "Non idoneo",
+      "need_players": "Serve ancora {count} giocatore | Servono altri {count} giocatori",
+      "missed_check_in": "Check-in mancato",
       "leave_tournament": "Abbandona torneo",
       "leave_team": "Lascia team",
       "slot": "Slot {number}",

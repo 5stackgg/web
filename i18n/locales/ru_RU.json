@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "Допущена",
-      "not_eligible": "Нужно ещё {count} игроков",
+      "not_eligible": "Не допущена",
+      "need_players": "Не хватает игроков: {count} | Не хватает игроков: {count}",
+      "missed_check_in": "Чек-ин пропущен",
       "leave_tournament": "Покинуть турнир",
       "leave_team": "Покинуть команду",
       "slot": "Слот {number}",

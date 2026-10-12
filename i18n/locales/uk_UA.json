@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "Відповідає вимогам",
-      "not_eligible": "Потрібно ще {count} гравців",
+      "not_eligible": "Не відповідає вимогам",
+      "need_players": "Бракує гравців: {count} | Бракує гравців: {count}",
+      "missed_check_in": "Підтвердження пропущено",
       "leave_tournament": "Покинути турнір",
       "leave_team": "Покинути команду",
       "slot": "Слот {number}",

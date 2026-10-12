@@ -7604,7 +7604,9 @@
     },
     "team": {
       "eligible": "符合条件",
-      "not_eligible": "还需要 {count} 名玩家",
+      "not_eligible": "不符合条件",
+      "need_players": "还需要 {count} 名玩家 | 还需要 {count} 名玩家",
+      "missed_check_in": "错过签到",
       "leave_tournament": "离开赛事",
       "leave_team": "离开队伍",
       "slot": "第 {number} 号位",

@@ -143,7 +143,7 @@ onUnmounted(() => {
   color: hsl(var(--tac-amber));
 }
 .bravo-label {
-  color: hsl(200 90% 62%);
+  color: hsl(var(--tac-blue));
 }
 .cap.dim {
   opacity: 0.35;

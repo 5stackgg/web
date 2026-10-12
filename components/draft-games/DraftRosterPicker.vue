@@ -320,8 +320,8 @@ const team2Members = computed(() =>
   color: hsl(var(--tac-amber));
 }
 .side-btn.side-blue.active {
-  border-color: hsl(200 90% 62%);
-  background: hsl(200 90% 62% / 0.12);
-  color: hsl(200 90% 62%);
+  border-color: hsl(var(--tac-blue));
+  background: hsl(var(--tac-blue) / 0.12);
+  color: hsl(var(--tac-blue));
 }
 </style>

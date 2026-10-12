@@ -27,10 +27,11 @@ import {
 } from "~/utilities/setupOptions";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { HeightMorph, HeightSwap, Fold } from "~/components/ui/transitions";
+import { Fold } from "~/components/ui/transitions";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import MatchOptions from "~/components/MatchOptions.vue";
+import FormStepCard from "~/components/common/FormStepCard.vue";
 import DraftModePicker from "~/components/draft-games/DraftModePicker.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import DraftRosterPicker from "~/components/draft-games/DraftRosterPicker.vue";
@@ -79,7 +80,7 @@ const captainSelection = ref<string>(source?.captain_selection || "TopEloTwo");
 const draftOrder = ref<string>(source?.draft_order || "Snake");
 
 // Organizers can open a lobby they manage without being added as a player via
-// the "Host Only" toggle in the lobby rules step. Defaults on (host plays).
+// the "Host Only" toggle in the lobby rules section. Defaults on (host plays).
 const hostJoins = ref<boolean>(true);
 const RANK_MIN = 0;
 const RANK_MAX = 30000;
@@ -162,54 +163,19 @@ const draftEligibleModes = computed<Array<Record<string, any>>>(() =>
       ),
   ),
 );
-// With nothing but Competitive to pick, the step is a page with one answer --
-// drop it from the flow rather than make the host click through it.
+// With nothing but Competitive to pick, the section has one answer -- drop it
+// rather than make the host scroll past it.
 const hasModeStep = computed(() => draftEligibleModes.value.length > 0);
 
-const STEP_MODE = 2;
-const STEP_FORMAT = 3;
-const step = ref(1);
-const steps = [
-  { id: 1, label: "draft_games.create.step_settings" },
-  { id: STEP_MODE, label: "draft_games.create.step_mode" },
-  { id: STEP_FORMAT, label: "draft_games.create.step_format" },
-  { id: 4, label: "draft_games.create.step_rules" },
-];
-const visibleSteps = computed(() =>
-  steps.filter((s) => s.id !== STEP_MODE || hasModeStep.value),
-);
-// Format is the step a 1v1 has nothing to choose in.
-const stepDisabled = (n: number) => n === STEP_FORMAT && isDuel.value;
-const reachableSteps = computed(() =>
-  visibleSteps.value.map((s) => s.id).filter((id) => !stepDisabled(id)),
-);
+const formatSection = ref<{ $el: HTMLElement } | null>(null);
 
-const goToStep = (n: number) => {
-  if (stepDisabled(n)) {
-    return;
+const sectionNumbers = computed(() => {
+  const order = ["format", "settings"];
+  if (hasModeStep.value) {
+    order.push("mode");
   }
-  step.value = n;
-};
-
-const next = () => {
-  const target = reachableSteps.value.find((id) => id > step.value);
-  if (target) {
-    step.value = target;
-  }
-};
-const prev = () => {
-  const target = [...reachableSteps.value]
-    .reverse()
-    .find((id) => id < step.value);
-  if (target) {
-    step.value = target;
-  }
-};
-
-watch(hasModeStep, (visible) => {
-  if (!visible && step.value === STEP_MODE) {
-    next();
-  }
+  order.push("rules");
+  return Object.fromEntries(order.map((key, index) => [key, index + 1]));
 });
 
 const modeOptions = [
@@ -510,11 +476,6 @@ const selectedModeDescription = computed(() => {
 watch(matchType, () => {
   if (isDuel.value) {
     mode.value = "Pug";
-    // Switching to a duel can disable the step being stood on, which would
-    // leave the form showing an empty greyed-out pane.
-    if (stepDisabled(step.value)) {
-      prev();
-    }
     return;
   }
   if (!availableModes.value.some((option) => option.value === mode.value)) {
@@ -597,6 +558,62 @@ const applyRehost = (rehost: any) => {
 
 watch(() => props.rehost, applyRehost, { immediate: true });
 
+// Mirrors get_draft_game_pattern so the host sees the exact pick sequence
+// this lobby size produces.
+const draftPattern = computed(() => {
+  const picks = perTeam.value * 2 - 2;
+  const perSide = perTeam.value - 1;
+  const counts: Record<number, number> = { 1: 0, 2: 0 };
+  const pattern: Array<number> = [];
+  for (let index = 0; index < picks; index++) {
+    let side: number;
+    if (draftOrder.value === "Alternating") {
+      side = index % 2 === 0 ? 1 : 2;
+    } else if (draftOrder.value === "FrontLoaded") {
+      side = index === 0 ? 1 : index <= 2 ? 2 : index % 2 === 1 ? 1 : 2;
+    } else {
+      side =
+        Math.floor(index / 2) % 2 === 0
+          ? index % 2 === 0
+            ? 1
+            : 2
+          : index % 2 === 0
+            ? 2
+            : 1;
+    }
+    if (counts[side] >= perSide) {
+      side = side === 1 ? 2 : 1;
+    }
+    counts[side]++;
+    pattern.push(side);
+  }
+  return pattern;
+});
+
+const modeLabel = computed(() => {
+  const option = modeOptions.find((o) => o.value === mode.value);
+  return option ? t(option.label) : "";
+});
+
+const accessLabel = computed(() => {
+  const option = accessOptions.find((o) => o.value === access.value);
+  return option ? t(option.label) : "";
+});
+
+const formatLine = computed(() =>
+  [matchType.value, `${perTeam.value}v${perTeam.value}`]
+    .filter(Boolean)
+    .join(" · "),
+);
+
+const rankLabel = computed(() =>
+  rankGated.value
+    ? `${rankRange.value[0]}–${
+        rankRange.value[1] === RANK_MAX ? "∞" : rankRange.value[1]
+      }`
+    : t("draft_games.filters.any"),
+);
+
 const submit = form.handleSubmit(async (values: any) => {
   if (submitting.value) {
     return;
@@ -608,8 +625,10 @@ const submit = form.handleSubmit(async (values: any) => {
       title: t("common.error"),
       description: t("draft_games.create.team_1_required_error"),
     });
-    // Format -- where the team selector the message is about actually lives.
-    step.value = STEP_FORMAT;
+    formatSection.value?.$el.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
     return;
   }
 
@@ -711,441 +730,452 @@ const submit = form.handleSubmit(async (values: any) => {
 
   <form
     v-else
-    class="space-y-5"
+    class="create-draft"
     @submit.prevent="submit"
     @pointerdown.capture="interacted = true"
     @keydown.capture="interacted = true"
   >
-    <div class="flex items-center gap-2">
-      <template v-for="({ id, label }, index) in visibleSteps" :key="id">
-        <button
-          type="button"
-          :disabled="stepDisabled(id)"
-          :title="stepDisabled(id) ? $t('draft_games.create.no_formats') : ''"
-          class="step-pill flex flex-1 basis-0 items-center justify-center gap-2 rounded-md border px-3 py-2 text-center transition-colors disabled:cursor-not-allowed disabled:opacity-40"
-          :class="
-            stepDisabled(id)
-              ? 'border-dashed border-border text-muted-foreground/40'
-              : step === id
-                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
-                : step > id
-                  ? 'border-[hsl(var(--tac-amber)/0.4)] text-muted-foreground'
-                  : 'border-border text-muted-foreground/60'
-          "
-          @click="goToStep(id)"
+    <div class="create-draft-grid">
+      <div class="create-draft-sections space-y-4">
+        <FormStepCard
+          id="create-draft-format"
+          ref="formatSection"
+          :step="sectionNumbers.format"
+          :title="$t('draft_games.create.step_format')"
         >
-          <span
-            class="grid h-5 w-5 shrink-0 place-items-center rounded-full border text-[0.6rem] font-bold"
-            :class="
-              step >= id && !stepDisabled(id)
-                ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
-                : 'border-border'
-            "
-          >
-            {{ index + 1 }}
-          </span>
-          <span
-            class="hidden font-mono text-[0.62rem] uppercase tracking-[0.16em] sm:inline"
-          >
-            {{ $t(label) }}
-          </span>
-        </button>
-        <div
-          v-if="index < visibleSteps.length - 1"
-          class="h-px w-4 shrink-0 bg-border sm:w-8"
-        ></div>
-      </template>
-    </div>
-
-    <!-- The shell eases between step heights while the leaver fades out of
-         flow -- the sticky footer and scrollbar used to snap by the full
-         difference on frame one. v-show keeps panels mounted for their
-         state. -->
-    <HeightMorph :state="step" class="step-stack">
-    <Transition name="step">
-      <div v-show="step === STEP_FORMAT" class="space-y-5">
-        <section v-if="!isDuel">
-          <AnimatedFilters
-            v-model="mode"
-            :options="modeFilterOptions"
-            square
-            size="lg"
-            block
-          />
-          <p class="mt-1.5 text-[0.72rem] leading-snug text-muted-foreground">
-            {{ selectedModeDescription }}
-          </p>
-        </section>
-
-        <Fold :open="showKeepTogether">
-          <section>
-            <div
-              class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
-              :class="{
-                'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
-                  keepLobbyTogether,
-              }"
-              @click="keepLobbyTogether = !keepLobbyTogether"
-            >
-              <div class="flex items-center gap-3">
-                <Users
-                  class="h-5 w-5 shrink-0"
-                  :class="
-                    keepLobbyTogether
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-muted-foreground'
-                  "
-                />
-                <div>
-                  <div
-                    class="font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em]"
-                  >
-                    {{ $t("draft_games.create.keep_lobby") }}
-                  </div>
-                  <div
-                    class="text-[0.72rem] leading-snug text-muted-foreground"
-                  >
-                    {{
-                      $t("draft_games.create.keep_lobby_desc", {
-                        count: lobbyMemberCount,
-                      })
-                    }}
-                  </div>
-                </div>
-              </div>
-              <Switch
-                class="pointer-events-none"
-                :model-value="keepLobbyTogether"
+          <div class="space-y-5">
+            <section v-if="!isDuel">
+              <AnimatedFilters
+                v-model="mode"
+                :options="modeFilterOptions"
+                square
+                size="lg"
+                block
               />
-            </div>
-          </section>
-        </Fold>
+              <p class="mt-1.5 text-[0.72rem] leading-snug text-muted-foreground">
+                {{ selectedModeDescription }}
+              </p>
+            </section>
+            <p v-else class="text-[0.72rem] leading-snug text-muted-foreground">
+              {{ $t("draft_games.create.no_formats") }}
+            </p>
 
-        <!-- Picking Teams used to detonate this whole section (two combos +
-             the roster picker) in one frame while its neighbours animated. -->
-        <Fold :open="mode === 'Teams'">
-        <section>
-          <div :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("draft_games.create.teams") }}
-          </div>
-          <p class="mb-2 text-[0.72rem] leading-snug text-muted-foreground">
-            {{ $t("draft_games.create.teams_desc") }}
-          </p>
-          <div
-            class="grid grid-cols-1 gap-3"
-            :class="{ 'sm:grid-cols-2': !innerSquad }"
-          >
-            <TeamSearch
-              :label="$t('draft_games.create.team_1_required')"
-              :model-value="team1Id"
-              my-teams
-              :min-players="perTeam"
-              :ineligible="
-                team2Id
-                  ? { [team2Id]: $t('team.search.ineligible.other_side') }
-                  : {}
-              "
-              @selected="(team) => (team1Id = team.id)"
-            />
-            <div v-if="!innerSquad" class="flex items-center gap-2">
-              <div class="min-w-0 flex-1">
+            <Fold :open="showKeepTogether">
+              <section>
+                <div
+                  class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
+                  :class="{
+                    'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
+                      keepLobbyTogether,
+                  }"
+                  @click="keepLobbyTogether = !keepLobbyTogether"
+                >
+                  <div class="flex items-center gap-3">
+                    <Users
+                      class="h-5 w-5 shrink-0"
+                      :class="
+                        keepLobbyTogether
+                          ? 'text-[hsl(var(--tac-amber))]'
+                          : 'text-muted-foreground'
+                      "
+                    />
+                    <div>
+                      <div
+                        class="font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em]"
+                      >
+                        {{ $t("draft_games.create.keep_lobby") }}
+                      </div>
+                      <div
+                        class="text-[0.72rem] leading-snug text-muted-foreground"
+                      >
+                        {{
+                          $t("draft_games.create.keep_lobby_desc", {
+                            count: lobbyMemberCount,
+                          })
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                  <Switch
+                    class="pointer-events-none"
+                    :model-value="keepLobbyTogether"
+                  />
+                </div>
+              </section>
+            </Fold>
+
+            <!-- Picking Teams used to detonate this whole section (two combos +
+                 the roster picker) in one frame while its neighbours animated. -->
+            <Fold :open="mode === 'Teams'">
+            <section>
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("draft_games.create.teams") }}
+              </div>
+              <p class="mb-2 text-[0.72rem] leading-snug text-muted-foreground">
+                {{ $t("draft_games.create.teams_desc") }}
+              </p>
+              <div
+                class="grid grid-cols-1 gap-3"
+                :class="{ 'sm:grid-cols-2': !innerSquad }"
+              >
                 <TeamSearch
-                  :label="$t('draft_games.create.team_2_optional')"
-                  :model-value="team2Id"
+                  :label="$t('draft_games.create.team_1_required')"
+                  :model-value="team1Id"
+                  my-teams
                   :min-players="perTeam"
                   :ineligible="
-                    team1Id
-                      ? { [team1Id]: $t('team.search.ineligible.other_side') }
+                    team2Id
+                      ? { [team2Id]: $t('team.search.ineligible.other_side') }
                       : {}
                   "
-                  @selected="(team) => (team2Id = team.id)"
+                  @selected="(team) => (team1Id = team.id)"
                 />
-              </div>
-              <Button
-                v-if="team2Id"
-                type="button"
-                variant="ghost"
-                size="icon"
-                class="shrink-0 text-muted-foreground hover:text-destructive"
-                :title="$t('draft_games.create.clear_team')"
-                @click="team2Id = undefined"
-              >
-                <X class="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          <Fold :open="!!team1Id && !team2Id">
-            <div
-              class="mt-3 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
-              :class="{
-                'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
-                  innerSquad,
-              }"
-              @click="innerSquad = !innerSquad"
-            >
-              <div class="flex items-center gap-3">
-                <Users
-                  class="h-5 w-5 shrink-0"
-                  :class="
-                    innerSquad
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-muted-foreground'
-                  "
-                />
-                <div>
-                  <div
-                    class="font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em]"
+                <div v-if="!innerSquad" class="flex items-center gap-2">
+                  <div class="min-w-0 flex-1">
+                    <TeamSearch
+                      :label="$t('draft_games.create.team_2_optional')"
+                      :model-value="team2Id"
+                      :min-players="perTeam"
+                      :ineligible="
+                        team1Id
+                          ? { [team1Id]: $t('team.search.ineligible.other_side') }
+                          : {}
+                      "
+                      @selected="(team) => (team2Id = team.id)"
+                    />
+                  </div>
+                  <Button
+                    v-if="team2Id"
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    class="shrink-0 text-muted-foreground hover:text-destructive"
+                    :title="$t('draft_games.create.clear_team')"
+                    @click="team2Id = undefined"
                   >
-                    {{ $t("draft_games.create.inner_squad") }}
-                  </div>
-                  <div class="text-[0.72rem] leading-snug text-muted-foreground">
-                    {{
-                      innerSquad
-                        ? $t("draft_games.create.inner_squad_on_desc")
-                        : $t("draft_games.create.inner_squad_off_desc")
-                    }}
-                  </div>
+                    <X class="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-              <Switch class="pointer-events-none" :model-value="innerSquad" />
-            </div>
-          </Fold>
 
-          <Fold :open="!!team1Id">
-          <div class="mt-4">
-            <p class="mb-2 text-[0.72rem] leading-snug text-muted-foreground">
-              {{ $t("draft_games.create.roster_desc") }}
-            </p>
-            <DraftRosterPicker
-              v-model="rosterAssignment"
-              :team1="team1Selection"
-              :team2="innerSquad ? null : team2Selection"
-              :per-team="perTeam"
-              :inner-squad="innerSquad"
-              :initial-assignment="initialAssignment"
-            />
-          </div>
-          </Fold>
-        </section>
-        </Fold>
+              <Fold :open="!!team1Id && !team2Id">
+                <div
+                  class="mt-3 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
+                  :class="{
+                    'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
+                      innerSquad,
+                  }"
+                  @click="innerSquad = !innerSquad"
+                >
+                  <div class="flex items-center gap-3">
+                    <Users
+                      class="h-5 w-5 shrink-0"
+                      :class="
+                        innerSquad
+                          ? 'text-[hsl(var(--tac-amber))]'
+                          : 'text-muted-foreground'
+                      "
+                    />
+                    <div>
+                      <div
+                        class="font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em]"
+                      >
+                        {{ $t("draft_games.create.inner_squad") }}
+                      </div>
+                      <div class="text-[0.72rem] leading-snug text-muted-foreground">
+                        {{
+                          innerSquad
+                            ? $t("draft_games.create.inner_squad_on_desc")
+                            : $t("draft_games.create.inner_squad_off_desc")
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                  <Switch class="pointer-events-none" :model-value="innerSquad" />
+                </div>
+              </Fold>
 
-        <Fold :open="mode === 'Captains'">
-          <section class="space-y-4">
-            <div class="flex flex-col gap-1.5">
-              <div :class="tacticalSectionLabelClasses">
-                <span :class="tacticalSectionTickClasses"></span>
-                {{ $t("draft_games.create.captain_selection") }}
+              <Fold :open="!!team1Id">
+              <div class="mt-4">
+                <p class="mb-2 text-[0.72rem] leading-snug text-muted-foreground">
+                  {{ $t("draft_games.create.roster_desc") }}
+                </p>
+                <DraftRosterPicker
+                  v-model="rosterAssignment"
+                  :team1="team1Selection"
+                  :team2="innerSquad ? null : team2Selection"
+                  :per-team="perTeam"
+                  :inner-squad="innerSquad"
+                  :initial-assignment="initialAssignment"
+                />
               </div>
-              <AnimatedFilters
-                v-model="captainSelection"
-                :options="captainSelectionOptions"
-                square
-                size="lg"
-                block
-                fill
-              />
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <div :class="tacticalSectionLabelClasses">
-                <span :class="tacticalSectionTickClasses"></span>
-                {{ $t("draft_games.create.draft_order") }}
-              </div>
-              <AnimatedFilters
-                v-model="draftOrder"
-                :options="draftOrderOptions"
-                square
-                size="lg"
-                block
-                fill
-              />
-            </div>
-          </section>
-        </Fold>
-      </div>
-    </Transition>
+              </Fold>
+            </section>
+            </Fold>
 
-    <Transition name="step">
-      <div v-show="step === 1">
-        <MatchOptions :form="form" hide-game-mode />
-      </div>
-    </Transition>
-
-    <Transition name="step">
-      <div v-show="step === STEP_MODE" class="space-y-5">
-        <section>
-          <div :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("draft_games.create.step_mode") }}
+            <Fold :open="mode === 'Captains'">
+              <section class="space-y-4">
+                <div class="flex flex-col gap-1.5">
+                  <div :class="tacticalSectionLabelClasses">
+                    <span :class="tacticalSectionTickClasses"></span>
+                    {{ $t("draft_games.create.captain_selection") }}
+                  </div>
+                  <AnimatedFilters
+                    v-model="captainSelection"
+                    :options="captainSelectionOptions"
+                    square
+                    size="lg"
+                    block
+                    fill
+                  />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <div :class="tacticalSectionLabelClasses">
+                    <span :class="tacticalSectionTickClasses"></span>
+                    {{ $t("draft_games.create.draft_order") }}
+                  </div>
+                  <AnimatedFilters
+                    v-model="draftOrder"
+                    :options="draftOrderOptions"
+                    square
+                    size="lg"
+                    block
+                    fill
+                  />
+                  <ol
+                    v-if="draftPattern.length"
+                    class="mt-1 flex flex-wrap gap-1"
+                    :aria-label="$t('draft_games.room.pick_order')"
+                  >
+                    <li
+                      v-for="(side, index) in draftPattern"
+                      :key="index"
+                      class="order-chip"
+                      :class="side === 2 ? 'is-bravo' : ''"
+                    >
+                      <span class="text-muted-foreground">{{ index + 1 }}</span>
+                      T{{ side }}
+                    </li>
+                  </ol>
+                </div>
+              </section>
+            </Fold>
           </div>
+        </FormStepCard>
 
+        <FormStepCard
+          id="create-draft-settings"
+          :step="sectionNumbers.settings"
+          :title="$t('draft_games.create.step_settings')"
+        >
+          <MatchOptions :form="form" hide-game-mode />
+        </FormStepCard>
+
+        <FormStepCard
+          id="create-draft-mode"
+          v-if="hasModeStep"
+          :step="sectionNumbers.mode"
+          :title="$t('draft_games.create.step_mode')"
+        >
           <p class="mb-3 text-sm text-muted-foreground">
             {{ $t("draft_games.create.mode_description") }}
           </p>
-
           <DraftModePicker :form="form" :modes="draftEligibleModes" />
-        </section>
-      </div>
-    </Transition>
+        </FormStepCard>
 
-    <Transition name="step">
-      <div v-show="step === 4" class="space-y-5">
-        <section v-if="!bothTeamsAssigned">
-          <div :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("draft_games.create.access") }}
-          </div>
-          <AnimatedFilters
-            v-model="access"
-            :options="accessFilterOptions"
-            square
-            size="lg"
-            block
-          />
-          <p class="mt-1.5 text-[0.72rem] leading-snug text-muted-foreground">
-            {{ $t(`draft_games.access.${access.toLowerCase()}_desc`) }}
-          </p>
-        </section>
-        <section v-else>
-          <div :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("draft_games.create.access") }}
-          </div>
-          <p class="mt-1.5 text-[0.72rem] leading-snug text-muted-foreground">
-            {{ $t("draft_games.create.both_teams_private") }}
-          </p>
-        </section>
-
-        <section>
-          <div class="flex items-center justify-between">
-            <div :class="tacticalSectionLabelClasses">
-              <span :class="tacticalSectionTickClasses"></span>
-              {{ $t("draft_games.create.rank_gate") }}
-            </div>
-            <span
-              class="font-mono text-[0.72rem] tabular-nums text-foreground/70"
-            >
-              <template v-if="rankGated">
-                {{ rankRange[0] }}–{{
-                  rankRange[1] === RANK_MAX ? "∞" : rankRange[1]
-                }}
-              </template>
-              <template v-else>{{ $t("draft_games.filters.any") }}</template>
-            </span>
-          </div>
-          <Slider
-            v-model="rankRange"
-            :min="RANK_MIN"
-            :max="RANK_MAX"
-            :step="RANK_STEP"
-            :min-steps-between-thumbs="1"
-            class="mt-3"
-          />
-        </section>
-
-        <section>
-          <div :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("draft_games.create.require_approval") }}
-          </div>
-          <div
-            class="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
-            :class="{
-              'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
-                requireApproval,
-            }"
-            @click="requireApproval = !requireApproval"
-          >
-            <div class="flex items-center gap-3">
-              <Inbox
-                class="h-5 w-5 shrink-0"
-                :class="
-                  requireApproval
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-muted-foreground'
-                "
-              />
-              <div class="text-[0.72rem] leading-snug text-muted-foreground">
-                {{ $t("draft_games.create.require_approval_desc") }}
-              </div>
-            </div>
-            <Switch
-              class="pointer-events-none"
-              :model-value="requireApproval"
-            />
-          </div>
-        </section>
-
-        <section v-if="canHostForOthers && !editing">
-          <div :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("draft_games.create.host_only") }}
-          </div>
-          <div
-            class="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
-            :class="{
-              'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
-                !hostJoins,
-            }"
-            @click="hostJoins = !hostJoins"
-          >
-            <div class="flex items-center gap-3">
-              <UserMinus
-                class="h-5 w-5 shrink-0"
-                :class="
-                  !hostJoins
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-muted-foreground'
-                "
-              />
-              <div class="text-[0.72rem] leading-snug text-muted-foreground">
-                {{ $t("draft_games.create.host_only_desc") }}
-              </div>
-            </div>
-            <Switch class="pointer-events-none" :model-value="!hostJoins" />
-          </div>
-        </section>
-      </div>
-    </Transition>
-    </HeightMorph>
-
-    <div
-      v-if="!editing"
-      class="sticky bottom-0 z-10 flex items-center justify-between gap-3 border-t border-border/60 bg-background/90 py-4 [backdrop-filter:blur(8px)]"
-    >
-      <Button
-        type="button"
-        variant="outline"
-        :disabled="step === 1"
-        class="gap-2"
-        @click="prev"
-      >
-        <ArrowLeft class="h-4 w-4" />
-        {{ $t("draft_games.create.back") }}
-      </Button>
-      <!-- Next and Deploy are different widths; the shell tweens between
-           them instead of the footer's right edge snapping. -->
-      <HeightSwap axis="x">
-        <Button
-          v-if="step < steps.length"
-          key="next"
-          type="button"
-          class="gap-2"
-          @click="next"
+        <FormStepCard
+          id="create-draft-rules"
+          :step="sectionNumbers.rules"
+          :title="$t('draft_games.create.step_rules')"
         >
-          {{ $t("draft_games.create.next") }}
-          <ArrowRight class="h-4 w-4" />
-        </Button>
+          <div class="space-y-5">
+            <section v-if="!bothTeamsAssigned">
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("draft_games.create.access") }}
+              </div>
+              <AnimatedFilters
+                v-model="access"
+                :options="accessFilterOptions"
+                square
+                size="lg"
+                block
+              />
+              <p class="mt-1.5 text-[0.72rem] leading-snug text-muted-foreground">
+                {{ $t(`draft_games.access.${access.toLowerCase()}_desc`) }}
+              </p>
+            </section>
+            <section v-else>
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("draft_games.create.access") }}
+              </div>
+              <p class="mt-1.5 text-[0.72rem] leading-snug text-muted-foreground">
+                {{ $t("draft_games.create.both_teams_private") }}
+              </p>
+            </section>
+
+            <section>
+              <div class="flex items-center justify-between">
+                <div :class="tacticalSectionLabelClasses">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("draft_games.create.rank_gate") }}
+                </div>
+                <span
+                  class="font-mono text-[0.72rem] tabular-nums text-foreground/70"
+                >
+                  <template v-if="rankGated">
+                    {{ rankRange[0] }}–{{
+                      rankRange[1] === RANK_MAX ? "∞" : rankRange[1]
+                    }}
+                  </template>
+                  <template v-else>{{ $t("draft_games.filters.any") }}</template>
+                </span>
+              </div>
+              <Slider
+                v-model="rankRange"
+                :min="RANK_MIN"
+                :max="RANK_MAX"
+                :step="RANK_STEP"
+                :min-steps-between-thumbs="1"
+                class="mt-3"
+              />
+            </section>
+
+            <section>
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("draft_games.create.require_approval") }}
+              </div>
+              <div
+                class="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
+                :class="{
+                  'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
+                    requireApproval,
+                }"
+                @click="requireApproval = !requireApproval"
+              >
+                <div class="flex items-center gap-3">
+                  <Inbox
+                    class="h-5 w-5 shrink-0"
+                    :class="
+                      requireApproval
+                        ? 'text-[hsl(var(--tac-amber))]'
+                        : 'text-muted-foreground'
+                    "
+                  />
+                  <div class="text-[0.72rem] leading-snug text-muted-foreground">
+                    {{ $t("draft_games.create.require_approval_desc") }}
+                  </div>
+                </div>
+                <Switch
+                  class="pointer-events-none"
+                  :model-value="requireApproval"
+                />
+              </div>
+            </section>
+
+            <section v-if="canHostForOthers && !editing">
+              <div :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("draft_games.create.host_only") }}
+              </div>
+              <div
+                class="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
+                :class="{
+                  'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
+                    !hostJoins,
+                }"
+                @click="hostJoins = !hostJoins"
+              >
+                <div class="flex items-center gap-3">
+                  <UserMinus
+                    class="h-5 w-5 shrink-0"
+                    :class="
+                      !hostJoins
+                        ? 'text-[hsl(var(--tac-amber))]'
+                        : 'text-muted-foreground'
+                    "
+                  />
+                  <div class="text-[0.72rem] leading-snug text-muted-foreground">
+                    {{ $t("draft_games.create.host_only_desc") }}
+                  </div>
+                </div>
+                <Switch class="pointer-events-none" :model-value="!hostJoins" />
+              </div>
+            </section>
+          </div>
+        </FormStepCard>
+      </div>
+
+      <aside
+        v-if="!editing"
+        class="create-draft-aside"
+        :aria-label="$t('draft_games.create.preview')"
+      >
+        <div class="space-y-4 rounded-xl border border-border bg-card/40 p-5">
+          <div>
+            <div
+              class="font-sans text-sm font-bold uppercase tracking-[0.18em]"
+            >
+              {{ modeLabel }}
+            </div>
+            <div
+              class="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
+            >
+              {{ formatLine }}
+            </div>
+          </div>
+
+          <div v-if="mode === 'Captains' && draftPattern.length">
+            <div class="summary-label mb-2">
+              {{ $t("draft_games.room.pick_order") }}
+            </div>
+            <ol class="flex flex-wrap gap-1">
+              <li
+                v-for="(side, index) in draftPattern"
+                :key="index"
+                class="order-chip"
+                :class="side === 2 ? 'is-bravo' : ''"
+              >
+                T{{ side }}
+              </li>
+            </ol>
+          </div>
+
+          <dl
+            class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 border-t border-dotted border-border pt-3 text-sm"
+          >
+            <dt class="summary-label">
+              {{ $t("draft_games.create.access") }}
+            </dt>
+            <dd class="font-semibold">{{ accessLabel }}</dd>
+            <dt class="summary-label">
+              {{ $t("draft_games.create.rank_range") }}
+            </dt>
+            <dd class="font-semibold tabular-nums">{{ rankLabel }}</dd>
+            <dt class="summary-label">
+              {{ $t("draft_games.create.require_approval") }}
+            </dt>
+            <dd class="font-semibold">
+              {{
+                requireApproval
+                  ? $t("draft_games.bar.on")
+                  : $t("draft_games.bar.off")
+              }}
+            </dd>
+          </dl>
+        </div>
+
         <button
-          v-else
-          key="deploy"
-          type="submit"
+          type="button"
           :class="[
             tacticalCtaButtonClasses,
-            'relative h-9 !py-0 disabled:cursor-default',
+            'create-draft-cta relative h-12 w-full !py-0 disabled:cursor-default',
           ]"
           :disabled="submitting"
+          @click="submit"
         >
           <span
             v-if="submitting"
@@ -1158,7 +1188,35 @@ const submit = form.handleSubmit(async (values: any) => {
           </span>
           <ArrowRight class="h-4 w-4" :class="{ invisible: submitting }" />
         </button>
-      </HeightSwap>
+      </aside>
+    </div>
+
+    <div v-if="!editing" class="create-draft-bar">
+      <span
+        class="min-w-0 flex-1 truncate font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
+      >
+        {{ modeLabel }} · {{ formatLine }}
+      </span>
+      <button
+        type="button"
+        :class="[
+          tacticalCtaButtonClasses,
+          'relative h-9 !py-0 disabled:cursor-default',
+        ]"
+        :disabled="submitting"
+        @click="submit"
+      >
+        <span
+          v-if="submitting"
+          class="absolute inset-0 flex items-center justify-center"
+        >
+          <Spinner />
+        </span>
+        <span :class="{ invisible: submitting }">
+          {{ $t("draft_games.create.deploy") }}
+        </span>
+        <ArrowRight class="h-4 w-4" :class="{ invisible: submitting }" />
+      </button>
     </div>
 
     <SettingsSaveBar
@@ -1173,31 +1231,77 @@ const submit = form.handleSubmit(async (values: any) => {
 </template>
 
 <style scoped>
-/* The leaver goes out of flow so two steps never stack; the HeightMorph shell
-   owns the height while they trade. Opacity/transform only, so the fades keep
-   playing even when the entering step is heavy. */
-.step-enter-active {
-  transition:
-    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+.create-draft {
+  container-type: inline-size;
 }
-.step-leave-active {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  transition: opacity 0.11s ease-in;
+.create-draft-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.25rem;
 }
-.step-enter-from {
-  opacity: 0;
-  transform: translateX(12px);
+.create-draft-sections {
+  flex: 999 1 640px;
+  min-width: 0;
 }
-.step-leave-to {
-  opacity: 0;
+.create-draft-aside {
+  display: flex;
+  flex: 1 1 300px;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
 }
-@media (prefers-reduced-motion: reduce) {
-  .step-enter-active,
-  .step-leave-active {
-    transition-duration: 1ms;
+.create-draft-cta {
+  display: none;
+}
+.create-draft-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  border-top: 1px solid hsl(var(--border) / 0.6);
+  background: hsl(var(--background) / 0.9);
+  padding: 1rem 0;
+  backdrop-filter: blur(8px);
+}
+@container (min-width: 980px) {
+  .create-draft-aside {
+    position: sticky;
+    top: 1rem;
   }
+  .create-draft-cta {
+    display: inline-flex;
+  }
+  .create-draft-bar {
+    display: none;
+  }
+}
+.summary-label {
+  align-self: center;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: hsl(var(--muted-foreground));
+}
+.order-chip {
+  --chip: var(--tac-amber);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 0.3rem;
+  border: 1px solid hsl(var(--chip) / 0.45);
+  background: hsl(var(--chip) / 0.08);
+  padding: 0.15rem 0.4rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: hsl(var(--chip));
+}
+.order-chip.is-bravo {
+  --chip: var(--tac-blue);
 }
 </style>

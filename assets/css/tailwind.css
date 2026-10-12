@@ -84,6 +84,7 @@
 
     --tac-amber: 33 94% 58%;
     --tac-amber-foreground: 0 0% 10%;
+    --tac-blue: 200 90% 62%;
 
     /* CTA gradient endpoints derived from --tac-amber so the whole gradient
        follows branding (lighter tint -> base -> darker shade). */

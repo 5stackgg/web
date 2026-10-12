@@ -2,10 +2,8 @@
 import { computed, ref, watch } from "vue";
 import {
   ArrowRight,
-  ArrowUp,
   Swords,
   Play,
-  X,
   MessagesSquare,
   Inbox,
 } from "lucide-vue-next";
@@ -41,7 +39,9 @@ import DraftTeamPanel from "~/components/draft-games/DraftTeamPanel.vue";
 import DraftPlayerCard from "~/components/draft-games/DraftPlayerCard.vue";
 import DraftBackupsPanel from "~/components/draft-games/DraftBackupsPanel.vue";
 import DraftClock from "~/components/draft-games/DraftClock.vue";
-import DraftLog from "~/components/draft-games/DraftLog.vue";
+import DraftPickTrack from "~/components/draft-games/DraftPickTrack.vue";
+import DraftActionButton from "~/components/draft-games/DraftActionButton.vue";
+import DraftSelfStatus from "~/components/draft-games/DraftSelfStatus.vue";
 import DraftRequestQueue from "~/components/draft-games/DraftRequestQueue.vue";
 import DraftOpenSlot from "~/components/draft-games/DraftOpenSlot.vue";
 import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue";
@@ -49,6 +49,7 @@ import DraftCoinFlip from "~/components/draft-games/DraftCoinFlip.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
+import { useCountdown } from "~/composables/useCountdown";
 
 const props = defineProps<{
   room: any;
@@ -360,8 +361,6 @@ const openSlots = computed(() =>
   Math.max(0, props.room.capacity - accepted.value.length),
 );
 
-const hasPicks = computed(() => (props.room.picks?.length || 0) > 0);
-
 const pending = ref<Set<string>>(new Set());
 
 const isPending = (key: string) => pending.value.has(key);
@@ -425,7 +424,7 @@ const respondInvite = (accept: boolean) => {
 };
 
 const clockAccent = computed(() =>
-  currentLineup.value === 2 ? "200 90% 62%" : "var(--tac-amber)",
+  currentLineup.value === 2 ? "var(--tac-blue)" : "var(--tac-amber)",
 );
 
 const statusLabel = computed(() => {
@@ -447,17 +446,162 @@ const draftedCount = computed(
       .length,
 );
 
-const pickTimeline = computed(() =>
-  (props.room.pattern ?? []).map((lineup: number, index: number) => ({
-    lineup,
-    state:
-      index < draftedCount.value
-        ? "done"
-        : index === draftedCount.value
-          ? "current"
-          : "upcoming",
-  })),
+const pattern = computed<Array<number>>(() => props.room.pattern ?? []);
+
+const draftSideLabel = (lineup: number) =>
+  t(
+    lineup === 1
+      ? "draft_games.room.team_alpha"
+      : "draft_games.room.team_bravo",
+  );
+
+// pick_order counts within one side (captain 0, then 1, 2...), while the board
+// numbers picks across the whole draft, so the nth pick of a side is the nth
+// time that side appears in the pattern.
+const overallPickNumber = (lineup: number, order: number) => {
+  let seen = 0;
+  for (let index = 0; index < pattern.value.length; index++) {
+    if (pattern.value[index] !== lineup) {
+      continue;
+    }
+    seen++;
+    if (seen === order) {
+      return index + 1;
+    }
+  }
+  return null;
+};
+
+// Only a captains draft fills sides in pattern order; Pug's auto-split and
+// Host assignment number each side 1..n themselves.
+const pickLabelsFor = (players: Array<any>) =>
+  props.room.mode !== "Captains"
+    ? {}
+    : Object.fromEntries(
+        players.map((player: any) => [
+          player.steam_id,
+          player.is_captain
+            ? "C"
+            : String(
+                overallPickNumber(player.lineup, player.pick_order) ??
+                  player.pick_order ??
+                  "",
+              ),
+        ]),
+      );
+
+const upcomingPicksFor = (lineup: number) =>
+  isDrafting.value
+    ? pattern.value
+        .map((side, index) => ({ side, no: index + 1 }))
+        .filter((pick) => pick.side === lineup && pick.no > draftedCount.value)
+        .map((pick) => pick.no)
+    : [];
+
+const clockPick = computed(() =>
+  isDrafting.value ? draftedCount.value + 1 : null,
 );
+
+const pickTrack = computed(() => {
+  const seen: Record<number, number> = {};
+  return pattern.value.map((lineup, index) => {
+    seen[lineup] = (seen[lineup] ?? 0) + 1;
+    const order = seen[lineup];
+    const member = props.room.players.find(
+      (p: any) =>
+        p.lineup === lineup &&
+        !p.is_captain &&
+        p.status !== "Waitlist" &&
+        p.pick_order === order,
+    );
+    if (member) {
+      const pick = (props.room.picks || []).find(
+        (entry: any) => entry.picked?.steam_id === member.steam_id,
+      );
+      return {
+        no: index + 1,
+        lineup,
+        state: "done" as const,
+        name: member.player?.name ?? "",
+        avatar: member.player?.custom_avatar_url || member.player?.avatar_url,
+        auto: !!pick?.auto_picked,
+      };
+    }
+    const current = isDrafting.value && index === draftedCount.value;
+    return {
+      no: index + 1,
+      lineup,
+      state: current ? ("current" as const) : ("upcoming" as const),
+      name: current
+        ? t(
+            isMyTurn.value
+              ? "draft_games.room.your_pick"
+              : "draft_games.room.on_the_clock",
+          )
+        : draftSideLabel(lineup),
+    };
+  });
+});
+
+const pickProgress = computed(() =>
+  t("draft_games.room.pick_of", {
+    n: Math.min(draftedCount.value + 1, pattern.value.length),
+    total: pattern.value.length,
+  }),
+);
+
+// Same rule as the server's auto-pick: highest elo_snapshot, ties to whoever
+// joined first (the pool is already in join order and the sort is stable).
+const autoPickName = computed(
+  () =>
+    [...pool.value].sort(
+      (a: any, b: any) => (b.elo_snapshot || 0) - (a.elo_snapshot || 0),
+    )[0]?.player?.name,
+);
+
+const hasPicks = computed(() => (props.room.picks?.length || 0) > 0);
+
+const { remaining: pickRemaining } = useCountdown(
+  computed(() => props.room.pick_deadline),
+  ref(30),
+);
+
+const freshSteamIds = ref<Array<string>>([]);
+const pickAnnouncement = ref("");
+
+watch(
+  () => props.room.picks?.length ?? 0,
+  (count, previous) => {
+    if (previous === undefined || count <= previous) {
+      return;
+    }
+    const latest = props.room.picks[count - 1];
+    const steamId = latest?.picked?.steam_id;
+    if (!steamId) {
+      return;
+    }
+    freshSteamIds.value = [...freshSteamIds.value, steamId];
+    pickAnnouncement.value = t("draft_games.room.picked_announce", {
+      captain: latest.captain?.name ?? "",
+      player: latest.picked?.name ?? "",
+    });
+    setTimeout(() => {
+      freshSteamIds.value = freshSteamIds.value.filter((id) => id !== steamId);
+    }, 2400);
+  },
+  { immediate: true },
+);
+
+const hasSelfStatus = computed(
+  () =>
+    canJoin.value ||
+    hasRequested.value ||
+    isWaitlisted.value ||
+    isInvited.value,
+);
+
+const leaveWaitlist = () =>
+  runGuarded("leave", () => useDraftGamesStore().leave(props.room.id));
 
 const remainingToFill = computed(
   () => props.room.capacity - accepted.value.length,
@@ -573,6 +717,13 @@ const canManageSide = (lineup: number) => {
 
 const sideFull = (lineup: number) =>
   startersFor(lineup).length >= perTeam.value;
+
+const startLabel = (lineup: number) =>
+  sideFull(lineup)
+    ? t("draft_games.room.side_full")
+    : t("draft_games.room.start_for", {
+        team: sideName(lineup) || t("draft_games.room.team", { team: lineup }),
+      });
 
 const startPlayer = (steamId: string, lineup: number) =>
   runGuarded(`swap:${steamId}`, () =>
@@ -742,8 +893,37 @@ const start = () => {
       </div>
     </Transition>
 
-    <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-start">
-      <div class="min-w-0 space-y-4">
+    <div class="sr-only" aria-live="polite">{{ pickAnnouncement }}</div>
+
+    <!-- Laid out by the lobby's own width, not the viewport's: the sidebar and
+         the hub dock take a different share at every screen size, and the
+         chat rail only fits beside the board once the lobby itself is wide. -->
+    <div class="draft-room-body">
+      <div class="draft-main min-w-0 space-y-4">
+        <!-- Below the rail breakpoint the rail stacks under the board, so the
+             viewer's own join or invite prompt moves above it. -->
+        <Transition name="collapse">
+          <div
+            v-if="hasSelfStatus"
+            class="draft-status-top grid grid-rows-[1fr]"
+          >
+            <div class="collapse-clip">
+              <DraftSelfStatus
+                inline
+                :can-join="canJoin"
+                :has-requested="hasRequested"
+                :is-waitlisted="isWaitlisted"
+                :is-invited="isInvited"
+                :lobby-full="lobbyFull"
+                :require-approval="!!room.require_approval"
+                @join="joinRoom"
+                @leave="leaveWaitlist"
+                @respond="respondInvite"
+              />
+            </div>
+          </div>
+        </Transition>
+
         <!-- Match info appears when the match is made -- it folds into the
              column with the room's collapse idiom instead of fading in at
              full height and shoving the board down. -->
@@ -925,7 +1105,7 @@ const start = () => {
                 </div>
               </div>
 
-              <div class="grid items-stretch gap-4 sm:grid-cols-2">
+              <div class="draft-pair-grid items-stretch">
                 <DraftTeamPanel
                   :title="
                     sideName(1) || $t('draft_games.room.team', { team: 1 })
@@ -981,42 +1161,34 @@ const start = () => {
                 >
                   <template #action="{ player }">
                     <div class="flex items-center gap-1.5">
-                      <Button
+                      <DraftActionButton
                         v-for="side in [1, 2]"
                         :key="`start-${side}`"
                         v-show="canManageSide(side)"
-                        variant="ghost"
-                        class="start-btn"
+                        icon="start"
+                        :tone="side === 1 ? 'amber' : 'blue'"
+                        :side="side"
+                        :label="startLabel(side)"
                         :disabled="
                           isPending(`swap:${player.steam_id}`) || sideFull(side)
                         "
-                        :title="
-                          sideFull(side)
-                            ? $t('draft_games.room.side_full')
-                            : $t('draft_games.room.start_player')
-                        "
-                        @click="startPlayer(player.steam_id, side)"
-                      >
-                        {{ side === 1 ? "A" : "B" }}
-                      </Button>
-                      <Button
+                        :action="() => startPlayer(player.steam_id, side)"
+                      />
+                      <DraftActionButton
                         v-if="
                           canManageSide(player.lineup ?? 1) &&
                           player.steam_id !== room.host_steam_id
                         "
-                        variant="ghost"
-                        class="kick-btn"
-                        :title="$t('draft_games.room.kick')"
-                        @click="kick(player.steam_id)"
-                      >
-                        <X class="h-3.5 w-3.5" />
-                      </Button>
+                        icon="remove"
+                        :label="$t('draft_games.room.kick')"
+                        :action="() => kick(player.steam_id)"
+                      />
                     </div>
                   </template>
                 </DraftBackupsPanel>
               </template>
 
-              <div v-else class="grid items-stretch gap-4 sm:grid-cols-2">
+              <div v-else class="draft-pair-grid items-stretch">
                 <DraftBackupsPanel
                   v-for="side in [1, 2]"
                   :key="`backups-${side}`"
@@ -1040,34 +1212,26 @@ const start = () => {
                 >
                   <template #action="{ player }">
                     <div class="flex items-center gap-1.5">
-                      <Button
+                      <DraftActionButton
                         v-if="canManageSide(side)"
-                        variant="ghost"
-                        class="start-btn"
+                        icon="start"
+                        :tone="side === 1 ? 'amber' : 'blue'"
+                        :side="side"
+                        :label="startLabel(side)"
                         :disabled="
                           isPending(`swap:${player.steam_id}`) || sideFull(side)
                         "
-                        :title="
-                          sideFull(side)
-                            ? $t('draft_games.room.side_full')
-                            : $t('draft_games.room.start_player')
-                        "
-                        @click="startPlayer(player.steam_id, side)"
-                      >
-                        <ArrowUp class="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
+                        :action="() => startPlayer(player.steam_id, side)"
+                      />
+                      <DraftActionButton
                         v-if="
                           canManageSide(side) &&
                           player.steam_id !== room.host_steam_id
                         "
-                        variant="ghost"
-                        class="kick-btn"
-                        :title="$t('draft_games.room.kick')"
-                        @click="kick(player.steam_id)"
-                      >
-                        <X class="h-3.5 w-3.5" />
-                      </Button>
+                        icon="remove"
+                        :label="$t('draft_games.room.kick')"
+                        :action="() => kick(player.steam_id)"
+                      />
                     </div>
                   </template>
                 </DraftBackupsPanel>
@@ -1095,38 +1259,29 @@ const start = () => {
                     >
                       <template #action="{ player }">
                         <div class="flex items-center gap-1.5">
-                          <Button
+                          <DraftActionButton
                             v-for="side in [1, 2]"
                             :key="`slot-${side}`"
                             v-show="canManageSide(side)"
-                            variant="ghost"
-                            class="start-btn"
+                            icon="start"
+                            :tone="side === 1 ? 'amber' : 'blue'"
+                            :side="side"
+                            :label="startLabel(side)"
                             :disabled="
                               isPending(`swap:${player.steam_id}`) ||
                               sideFull(side)
                             "
-                            :title="
-                              sideFull(side)
-                                ? $t('draft_games.room.side_full')
-                                : sideName(side) ||
-                                  $t('draft_games.room.start_player')
-                            "
-                            @click="startPlayer(player.steam_id, side)"
-                          >
-                            {{ side === 1 ? "A" : "B" }}
-                          </Button>
-                          <Button
+                            :action="() => startPlayer(player.steam_id, side)"
+                          />
+                          <DraftActionButton
                             v-if="
                               canManage &&
                               player.steam_id !== room.host_steam_id
                             "
-                            variant="ghost"
-                            class="kick-btn"
-                            :title="$t('draft_games.room.kick')"
-                            @click="kick(player.steam_id)"
-                          >
-                            <X class="h-3.5 w-3.5" />
-                          </Button>
+                            icon="remove"
+                            :label="$t('draft_games.room.kick')"
+                            :action="() => kick(player.steam_id)"
+                          />
                         </div>
                       </template>
                     </DraftBackupsPanel>
@@ -1188,56 +1343,54 @@ const start = () => {
                         <div
                           v-else-if="isDrafting"
                           key="drafting"
-                          class="flex w-full flex-col items-center gap-5"
+                          class="flex w-full flex-col gap-4"
                         >
-                          <DraftClock
-                            :deadline="room.pick_deadline"
-                            :accent="clockAccent"
-                            :pulse="isMyTurn"
-                          >
-                            {{ $t("draft_games.room.on_the_clock") }}
-                          </DraftClock>
-                          <div
-                            class="status-banner text-center font-sans text-sm font-bold uppercase tracking-[0.18em]"
-                            :class="isMyTurn ? 'is-mine' : ''"
-                            :style="{ '--accent': clockAccent }"
-                          >
-                            <template v-if="isMyTurn">
-                              {{ $t("draft_games.room.your_pick") }}
-                            </template>
-                            <template v-else-if="currentCaptain">
-                              {{
-                                $t("draft_games.room.captain_picking", {
-                                  name: currentCaptain.player.name,
-                                })
-                              }}
-                            </template>
-                            <template v-else>
-                              {{ $t(statusLabel) }}
-                            </template>
-                          </div>
-
-                          <div
-                            v-if="pickTimeline.length"
-                            class="pick-order-strip"
-                          >
-                            <span class="pick-order-label">
-                              {{ $t("draft_games.room.pick_order") }}
-                            </span>
-                            <div class="pick-order-track">
-                              <span
-                                v-for="(slot, index) in pickTimeline"
-                                :key="index"
-                                class="pick-order-chip"
-                                :class="[
-                                  `is-${slot.state}`,
-                                  slot.lineup === 1 ? 'is-alpha' : 'is-bravo',
-                                ]"
+                          <div class="flex items-center gap-4">
+                            <DraftClock
+                              compact
+                              :deadline="room.pick_deadline"
+                              :accent="clockAccent"
+                              :pulse="isMyTurn"
+                            />
+                            <div class="min-w-0 flex-1">
+                              <div
+                                class="status-banner font-sans text-sm font-bold uppercase tracking-[0.18em]"
+                                :class="isMyTurn ? 'is-mine' : ''"
+                                :style="{ '--accent': clockAccent }"
                               >
-                                {{ slot.lineup === 1 ? "T1" : "T2" }}
-                              </span>
+                                <template v-if="isMyTurn">
+                                  {{ $t("draft_games.room.your_pick") }}
+                                </template>
+                                <template v-else-if="currentCaptain">
+                                  {{
+                                    $t("draft_games.room.captain_picking", {
+                                      name: currentCaptain.player.name,
+                                    })
+                                  }}
+                                </template>
+                                <template v-else>
+                                  {{ $t(statusLabel) }}
+                                </template>
+                              </div>
+                              <div
+                                v-if="pattern.length"
+                                class="mt-1 text-xs leading-relaxed text-muted-foreground"
+                              >
+                                {{ pickProgress }}
+                                <template v-if="isMyTurn && autoPickName">
+                                  {{
+                                    $t("draft_games.room.auto_pick_hint", {
+                                      name: autoPickName,
+                                    })
+                                  }}
+                                </template>
+                              </div>
                             </div>
                           </div>
+                          <DraftPickTrack
+                            v-if="pickTrack.length"
+                            :cells="pickTrack"
+                          />
                         </div>
                       </Transition>
 
@@ -1272,7 +1425,7 @@ const start = () => {
               <Transition name="collapse">
                 <div v-if="showTeamPanels" class="grid grid-rows-[1fr]">
                   <div class="collapse-clip">
-                    <div class="grid items-start gap-4 sm:grid-cols-2">
+                    <div class="draft-pair-grid items-start">
                       <DraftTeamPanel
                         :title="$t('draft_games.room.team_alpha')"
                         :players="team1"
@@ -1281,6 +1434,10 @@ const start = () => {
                         :host-steam-id="room.host_steam_id"
                         :check-in-by-steam-id="checkInBySteamId"
                         :active="isDrafting && currentLineup === 1"
+                        :pick-labels="pickLabelsFor(team1)"
+                        :upcoming-picks="upcomingPicksFor(1)"
+                        :clock-pick="currentLineup === 1 ? clockPick : null"
+                        :fresh-steam-ids="freshSteamIds"
                         :removable="
                           canAssign || (isManualCaptains && canManage)
                         "
@@ -1300,6 +1457,10 @@ const start = () => {
                         :host-steam-id="room.host_steam_id"
                         :check-in-by-steam-id="checkInBySteamId"
                         :active="isDrafting && currentLineup === 2"
+                        :pick-labels="pickLabelsFor(team2)"
+                        :upcoming-picks="upcomingPicksFor(2)"
+                        :clock-pick="currentLineup === 2 ? clockPick : null"
+                        :fresh-steam-ids="freshSteamIds"
                         :removable="
                           canAssign || (isManualCaptains && canManage)
                         "
@@ -1401,7 +1562,7 @@ const start = () => {
                       <TransitionGroup
                         name="pool"
                         tag="div"
-                        class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+                        class="draft-pool-grid"
                       >
                         <DraftPlayerCard
                           v-for="player in pool"
@@ -1430,55 +1591,51 @@ const start = () => {
                               <template
                                 v-else-if="canAssign || canSelfPick(player)"
                               >
-                                <Button
-                                  variant="ghost"
-                                  class="assign-btn assign-amber"
-                                  :disabled="team1Full"
-                                  @click="assign(player.steam_id, 1)"
-                                >
-                                  1
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  class="assign-btn assign-blue"
-                                  :disabled="team2Full"
-                                  @click="assign(player.steam_id, 2)"
-                                >
-                                  2
-                                </Button>
+                                <DraftActionButton
+                                  v-for="side in [1, 2]"
+                                  :key="`assign-${side}`"
+                                  icon="add"
+                                  :tone="side === 1 ? 'amber' : 'blue'"
+                                  :side="side"
+                                  :label="
+                                    $t('draft_games.room.add_to_team', {
+                                      team: draftSideLabel(side),
+                                    })
+                                  "
+                                  :disabled="side === 1 ? team1Full : team2Full"
+                                  :action="() => assign(player.steam_id, side)"
+                                />
                               </template>
                               <template v-else-if="canDesignateCaptain">
-                                <Button
-                                  variant="ghost"
-                                  class="assign-btn assign-amber"
-                                  :title="$t('draft_games.room.make_captain')"
-                                  :disabled="!!team1Captain"
-                                  @click="designateCaptain(player.steam_id, 1)"
-                                >
-                                  C1
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  class="assign-btn assign-blue"
-                                  :title="$t('draft_games.room.make_captain')"
-                                  :disabled="!!team2Captain"
-                                  @click="designateCaptain(player.steam_id, 2)"
-                                >
-                                  C2
-                                </Button>
+                                <DraftActionButton
+                                  v-for="side in [1, 2]"
+                                  :key="`captain-${side}`"
+                                  icon="captain"
+                                  :tone="side === 1 ? 'amber' : 'blue'"
+                                  :side="side"
+                                  :label="
+                                    $t('draft_games.room.captain_of', {
+                                      team: draftSideLabel(side),
+                                    })
+                                  "
+                                  :disabled="
+                                    side === 1 ? !!team1Captain : !!team2Captain
+                                  "
+                                  :action="
+                                    () =>
+                                      designateCaptain(player.steam_id, side)
+                                  "
+                                />
                               </template>
-                              <Button
+                              <DraftActionButton
                                 v-if="
                                   canManage &&
                                   player.steam_id !== room.host_steam_id
                                 "
-                                variant="ghost"
-                                class="kick-btn"
-                                :title="$t('draft_games.room.kick')"
-                                @click="kick(player.steam_id)"
-                              >
-                                <X class="h-3.5 w-3.5" />
-                              </Button>
+                                icon="remove"
+                                :label="$t('draft_games.room.kick')"
+                                :action="() => kick(player.steam_id)"
+                              />
                             </div>
                           </template>
                         </DraftPlayerCard>
@@ -1527,7 +1684,7 @@ const start = () => {
                               <TransitionGroup
                                 name="pool"
                                 tag="div"
-                                class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+                                class="draft-pool-grid"
                               >
                                 <DraftPlayerCard
                                   v-for="(player, index) in waitlist"
@@ -1546,18 +1703,15 @@ const start = () => {
                                       >
                                         #{{ Number(index) + 1 }}
                                       </span>
-                                      <Button
+                                      <DraftActionButton
                                         v-if="
                                           canManage &&
                                           player.steam_id !== room.host_steam_id
                                         "
-                                        variant="ghost"
-                                        class="kick-btn"
-                                        :title="$t('draft_games.room.kick')"
-                                        @click="kick(player.steam_id)"
-                                      >
-                                        <X class="h-3.5 w-3.5" />
-                                      </Button>
+                                        icon="remove"
+                                        :label="$t('draft_games.room.kick')"
+                                        :action="() => kick(player.steam_id)"
+                                      />
                                     </div>
                                   </template>
                                 </DraftPlayerCard>
@@ -1590,7 +1744,7 @@ const start = () => {
                               <TransitionGroup
                                 name="pool"
                                 tag="div"
-                                class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+                                class="draft-pool-grid"
                               >
                                 <DraftPlayerCard
                                   v-for="player in invited"
@@ -1613,16 +1767,13 @@ const start = () => {
                                           )
                                         }}
                                       </span>
-                                      <Button
-                                        variant="ghost"
-                                        class="kick-btn"
-                                        :title="
+                                      <DraftActionButton
+                                        icon="remove"
+                                        :label="
                                           $t('draft_games.room.cancel_invite')
                                         "
-                                        @click="kick(player.steam_id)"
-                                      >
-                                        <X class="h-3.5 w-3.5" />
-                                      </Button>
+                                        :action="() => kick(player.steam_id)"
+                                      />
                                     </div>
                                   </template>
                                 </DraftPlayerCard>
@@ -1639,111 +1790,74 @@ const start = () => {
           </div>
         </HeightSwap>
 
-        <!-- The log only exists once a pick lands, which happens while people
-             are watching the board -- it slides in under it. -->
         <Transition name="collapse">
-          <div v-if="hasPicks" class="grid grid-rows-[1fr]">
+          <div v-if="hasPicks && !isDrafting" class="grid grid-rows-[1fr]">
             <div class="collapse-clip">
               <div class="rounded-xl border border-border bg-card/40 p-4">
-                <DraftLog :picks="room.picks" />
+                <h3
+                  class="mb-3 flex items-center gap-2 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  <span class="pool-tick"></span>
+                  {{ $t("draft_games.room.draft_log") }}
+                </h3>
+                <DraftPickTrack :cells="pickTrack" />
               </div>
             </div>
           </div>
         </Transition>
+
+        <Transition name="cta">
+          <div
+            v-if="isMyTurn"
+            class="draft-pickbar sticky bottom-0 z-10 items-center gap-3 rounded-t-lg border-t border-[hsl(var(--tac-amber)/0.45)] bg-background/95 px-3 py-2.5 [backdrop-filter:blur(8px)]"
+          >
+            <div class="min-w-0 flex-1">
+              <div
+                class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+              >
+                {{ $t("draft_games.room.your_pick") }} · {{ pickProgress }}
+              </div>
+              <div
+                v-if="autoPickName"
+                class="truncate text-xs text-muted-foreground"
+              >
+                {{
+                  $t("draft_games.room.auto_pick_hint", { name: autoPickName })
+                }}
+              </div>
+            </div>
+            <span
+              class="font-mono text-lg font-bold tabular-nums text-[hsl(var(--tac-amber))]"
+            >
+              {{ Math.ceil(pickRemaining) }}
+            </span>
+          </div>
+        </Transition>
       </div>
 
-      <!-- Self-status banners live in this column rather than above the room:
-           they appear and disappear as the lobby fills, and full width they
-           shoved the whole roster down every time. -->
-      <div class="flex flex-col xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)]">
-        <Transition name="banner">
-          <div
-            v-if="canJoin || hasRequested || isWaitlisted"
-            class="self-banner mb-3 flex flex-col items-start gap-2 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-3"
-          >
-            <span
-              class="font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-            >
-              {{
-                hasRequested
-                  ? $t("draft_games.room.request_pending")
-                  : isWaitlisted
-                    ? $t("draft_games.room.waitlist_pending")
-                    : lobbyFull
-                      ? $t("draft_games.room.waitlist_prompt")
-                      : room.require_approval
-                        ? $t("draft_games.room.request_prompt")
-                        : $t("draft_games.room.join_prompt")
-              }}
-            </span>
-            <button
-              v-if="canJoin"
-              type="button"
-              :class="tacticalCtaButtonClasses"
-              @click="joinRoom"
-            >
-              {{
-                room.require_approval
-                  ? $t("draft_games.card.request")
-                  : lobbyFull
-                    ? $t("draft_games.room.join_waitlist")
-                    : $t("draft_games.card.join")
-              }}
-            </button>
-            <button
-              v-else-if="isWaitlisted"
-              type="button"
-              class="rounded-md border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
-              @click="
-                runGuarded('leave', () => useDraftGamesStore().leave(room.id))
-              "
-            >
-              {{ $t("draft_games.room.leave_waitlist") }}
-            </button>
-            <span
-              v-else
-              class="flex items-center gap-1.5 font-mono text-xs text-muted-foreground"
-            >
-              {{ $t("draft_games.card.requested") }}
-            </span>
-          </div>
-        </Transition>
-
-        <Transition name="banner">
-          <div
-            v-if="isInvited"
-            class="self-banner mb-3 flex flex-col items-start gap-2 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-3"
-          >
-            <span
-              class="font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-            >
-              {{ $t("draft_games.room.invite_pending") }}
-            </span>
-            <div class="flex gap-2">
-              <button
-                type="button"
-                :class="tacticalCtaButtonClasses"
-                @click="respondInvite(true)"
-              >
-                {{ $t("draft_games.room.accept_invite") }}
-              </button>
-              <button
-                type="button"
-                class="rounded-md border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
-                @click="respondInvite(false)"
-              >
-                {{ $t("draft_games.room.decline_invite") }}
-              </button>
-            </div>
-          </div>
-        </Transition>
+      <!-- On a wide lobby the self-status banners live in this column rather
+           than above the room: they appear and disappear as the lobby fills,
+           and full width they shoved the whole roster down every time. -->
+      <div class="draft-rail flex flex-col">
+        <DraftSelfStatus
+          class="draft-status-rail"
+          :can-join="canJoin"
+          :has-requested="hasRequested"
+          :is-waitlisted="isWaitlisted"
+          :is-invited="isInvited"
+          :lobby-full="lobbyFull"
+          :require-approval="!!room.require_approval"
+          @join="joinRoom"
+          @leave="leaveWaitlist"
+          @respond="respondInvite"
+        />
 
         <!-- Capped rather than left to fill the rail. The rail is a full
              viewport tall but starts well down the page, and the page is too
              short to scroll the remainder into view, so anything pinned to the
              rail's bottom edge -- the message box -- was unreachable. -->
         <div
-          class="flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40 xl:min-h-[380px] xl:max-h-[34rem] xl:flex-1"
+          class="draft-chat flex min-h-[440px] flex-col overflow-hidden rounded-xl border border-border bg-card/40"
         >
           <div v-if="showQueue" class="flex min-h-0 flex-1 flex-col">
             <div
@@ -1922,29 +2036,68 @@ const start = () => {
 .collapse-leave-active .collapse-clip {
   overflow: hidden;
 }
-/* The banner collapses its own height and bottom margin so the chat panel
-   below it slides rather than jumping when a slot opens. */
-.self-banner {
-  max-height: 16rem;
+.draft-room-body {
+  container-type: inline-size;
+  container-name: draft-room;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
 }
-.banner-enter-active,
-.banner-leave-active {
-  overflow: hidden;
-  transition:
-    max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    margin-bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.2s ease,
-    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+.draft-main,
+.draft-rail {
+  flex: 1 1 100%;
 }
-.banner-enter-from,
-.banner-leave-to {
-  max-height: 0;
-  margin-bottom: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  border-width: 0;
-  opacity: 0;
-  transform: translateY(-4px);
+.draft-pair-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+.draft-pool-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+.draft-status-rail {
+  display: none;
+}
+.draft-pickbar {
+  display: flex;
+}
+@container draft-room (min-width: 520px) {
+  .draft-pair-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container draft-room (min-width: 760px) {
+  .draft-pickbar {
+    display: none;
+  }
+}
+@container draft-room (min-width: 1100px) {
+  .draft-main {
+    flex: 1 1 0%;
+  }
+  .draft-rail {
+    flex: 0 0 340px;
+    position: sticky;
+    top: 1rem;
+    height: calc(100vh - 2rem);
+  }
+  .draft-chat {
+    min-height: 380px;
+    max-height: 34rem;
+    flex: 1 1 0%;
+  }
+  .draft-status-top {
+    display: none;
+  }
+  .draft-status-top + * {
+    margin-top: 0 !important;
+  }
+  .draft-status-rail {
+    display: block;
+  }
 }
 .team-slot {
   display: flex;
@@ -1965,8 +2118,8 @@ const start = () => {
   box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.6);
 }
 .team-slot .blue-tick {
-  background: hsl(200 90% 62%);
-  box-shadow: 0 0 8px hsl(200 90% 62% / 0.6);
+  background: hsl(var(--tac-blue));
+  box-shadow: 0 0 8px hsl(var(--tac-blue) / 0.6);
 }
 .vs-badge {
   display: inline-flex;
@@ -2027,53 +2180,6 @@ const start = () => {
 .status-banner {
   color: hsl(var(--muted-foreground));
 }
-.pick-order-strip {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-}
-.pick-order-label {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.24em;
-  color: hsl(var(--muted-foreground));
-}
-.pick-order-track {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.35rem;
-}
-.pick-order-chip {
-  --chip: var(--tac-amber);
-  min-width: 1.9rem;
-  padding: 0.15rem 0.4rem;
-  border-radius: 0.375rem;
-  border: 1px solid hsl(var(--chip) / 0.5);
-  font-family: var(--font-mono, monospace);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-align: center;
-  color: hsl(var(--chip));
-  background: hsl(var(--chip) / 0.08);
-  transition: all 0.15s ease;
-}
-.pick-order-chip.is-bravo {
-  --chip: 200 90% 62%;
-}
-.pick-order-chip.is-done {
-  opacity: 0.4;
-}
-.pick-order-chip.is-current {
-  background: hsl(var(--chip) / 0.22);
-  box-shadow: 0 0 12px hsl(var(--chip) / 0.5);
-  transform: scale(1.08);
-}
 .status-banner.is-mine {
   color: hsl(var(--accent));
   text-shadow: 0 0 16px hsl(var(--accent) / 0.5);
@@ -2087,81 +2193,6 @@ const start = () => {
   50% {
     opacity: 0.55;
   }
-}
-.assign-btn {
-  display: grid;
-  place-items: center;
-  height: 1.75rem;
-  width: 1.75rem;
-  padding: 0;
-  border-radius: 0.375rem;
-  font-family: var(--font-mono, monospace);
-  font-weight: 700;
-  font-size: 0.72rem;
-  border: 1px solid;
-  transition: all 0.15s ease;
-}
-.assign-btn:disabled,
-.kick-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-  pointer-events: none;
-}
-.assign-amber {
-  color: hsl(var(--tac-amber));
-  border-color: hsl(var(--tac-amber) / 0.4);
-  background: hsl(var(--tac-amber) / 0.1);
-}
-.assign-amber:hover {
-  background: hsl(var(--tac-amber) / 0.25);
-}
-.assign-blue {
-  color: hsl(200 90% 62%);
-  border-color: hsl(200 90% 62% / 0.4);
-  background: hsl(200 90% 62% / 0.1);
-}
-.assign-blue:hover {
-  background: hsl(200 90% 62% / 0.25);
-}
-.kick-btn {
-  display: grid;
-  place-items: center;
-  height: 1.75rem;
-  width: 1.75rem;
-  padding: 0;
-  border-radius: 0.375rem;
-  color: hsl(var(--muted-foreground));
-  border: 1px solid hsl(var(--border));
-  transition: all 0.15s ease;
-}
-.kick-btn:hover {
-  color: hsl(var(--destructive));
-  border-color: hsl(var(--destructive) / 0.4);
-  background: hsl(var(--destructive) / 0.12);
-}
-/* Same box as .kick-btn so the two backup actions read as a matched pair. */
-.start-btn {
-  display: grid;
-  place-items: center;
-  height: 1.75rem;
-  width: 1.75rem;
-  padding: 0;
-  border-radius: 0.375rem;
-  font-family: var(--font-mono, monospace);
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: hsl(var(--muted-foreground));
-  border: 1px solid hsl(var(--border));
-  transition: all 0.15s ease;
-}
-.start-btn:hover:not(:disabled) {
-  color: hsl(var(--tac-amber));
-  border-color: hsl(var(--tac-amber) / 0.5);
-  background: hsl(var(--tac-amber) / 0.12);
-}
-.start-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 .dock-toggle {
   display: flex;

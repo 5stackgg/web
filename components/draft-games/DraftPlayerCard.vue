@@ -12,6 +12,8 @@ const props = withDefaults(
     isCaptain?: boolean;
     isHost?: boolean;
     showPickOrder?: boolean;
+    pickLabel?: string | null;
+    fresh?: boolean;
     dim?: boolean;
     matchType?: string | null;
     checkedIn?: boolean | null;
@@ -23,6 +25,8 @@ const props = withDefaults(
     isCaptain: false,
     isHost: false,
     showPickOrder: false,
+    pickLabel: null,
+    fresh: false,
     dim: false,
     matchType: null,
     checkedIn: null,
@@ -53,7 +57,7 @@ const accentVar = computed(() => {
     return "var(--tac-amber)";
   }
   if (props.accent === "blue") {
-    return "200 90% 62%";
+    return "var(--tac-blue)";
   }
   return "var(--muted-foreground)";
 });
@@ -66,6 +70,7 @@ const accentVar = computed(() => {
       'opacity-40 grayscale': dim,
       'is-draggable': draggable,
       'is-dragging': dragging,
+      'is-fresh': fresh,
     }"
     :style="{ '--accent': accentVar }"
     :draggable="draggable"
@@ -77,7 +82,7 @@ const accentVar = computed(() => {
     <!-- Rendered even without a pick order so every row in a lineup keeps the
          same gutter and the avatars stay on one vertical line. -->
     <span v-if="showPickOrder" class="pick-numeral select-none" aria-hidden="true">
-      {{ member.pick_order || "" }}
+      {{ pickLabel ?? (member.pick_order || "") }}
     </span>
 
     <FiveStackToolTip as-child side="top" :delay-duration="120">
@@ -160,6 +165,23 @@ const accentVar = computed(() => {
 }
 .draft-player-card.is-draggable:active {
   cursor: grabbing;
+}
+.draft-player-card.is-fresh {
+  border-color: hsl(var(--accent) / 0.7);
+  animation: fresh-pick 1.1s ease-out 2;
+}
+@keyframes fresh-pick {
+  from {
+    box-shadow: 0 0 0 0 hsl(var(--accent) / 0.6);
+  }
+  to {
+    box-shadow: 0 0 0 10px hsl(var(--accent) / 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .draft-player-card.is-fresh {
+    animation: none;
+  }
 }
 .draft-player-card.is-dragging {
   opacity: 0.35;

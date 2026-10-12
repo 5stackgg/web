@@ -14532,6 +14532,10 @@ export const AllTypesProps: Record<string,any> = {
 		addSteamPresenceBotAccount:{
 
 		},
+		addTournamentFreeAgent:{
+			steam_id:"bigint",
+			tournament_id:"uuid"
+		},
 		approveNameChange:{
 			steam_id:"bigint"
 		},
@@ -17931,6 +17935,9 @@ export const AllTypesProps: Record<string,any> = {
 		reconnectLive:{
 			match_id:"uuid"
 		},
+		recreateTournamentBracketMatch:{
+			tournament_bracket_id:"uuid"
+		},
 		redeemTournamentInviteCode:{
 			tournament_id:"uuid"
 		},
@@ -17945,6 +17952,10 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		removeSteamPresenceBotAccount:{
 
+		},
+		removeTournamentFreeAgent:{
+			steam_id:"bigint",
+			tournament_id:"uuid"
 		},
 		remove_league_team_from_season:{
 			args:"remove_league_team_from_season_args",
@@ -21237,6 +21248,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"my_friends_bool_exp",
 		_not:"my_friends_bool_exp",
 		_or:"my_friends_bool_exp",
+		allow_message_requests:"Boolean_comparison_exp",
 		avatar_url:"String_comparison_exp",
 		country:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
@@ -21372,6 +21384,7 @@ export const AllTypesProps: Record<string,any> = {
 		vac_ban_count:"order_by"
 	},
 	my_friends_order_by:{
+		allow_message_requests:"order_by",
 		avatar_url:"order_by",
 		country:"order_by",
 		created_at:"order_by",
@@ -40327,7 +40340,6 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz_comparison_exp",
 		e_tournament_free_agent_status:"e_tournament_free_agent_statuses_bool_exp",
 		id:"uuid_comparison_exp",
-		party_id:"uuid_comparison_exp",
 		player:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
 		status:"e_tournament_free_agent_statuses_enum_comparison_exp",
@@ -40345,7 +40357,6 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		e_tournament_free_agent_status:"e_tournament_free_agent_statuses_obj_rel_insert_input",
 		id:"uuid",
-		party_id:"uuid",
 		player:"players_obj_rel_insert_input",
 		player_steam_id:"bigint",
 		status:"e_tournament_free_agent_statuses_enum",
@@ -40358,7 +40369,6 @@ export const AllTypesProps: Record<string,any> = {
 		checked_in_at:"order_by",
 		created_at:"order_by",
 		id:"order_by",
-		party_id:"order_by",
 		player_steam_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
@@ -40367,7 +40377,6 @@ export const AllTypesProps: Record<string,any> = {
 		checked_in_at:"order_by",
 		created_at:"order_by",
 		id:"order_by",
-		party_id:"order_by",
 		player_steam_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
@@ -40382,7 +40391,6 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"order_by",
 		e_tournament_free_agent_status:"e_tournament_free_agent_statuses_order_by",
 		id:"order_by",
-		party_id:"order_by",
 		player:"players_order_by",
 		player_steam_id:"order_by",
 		status:"order_by",
@@ -40399,7 +40407,6 @@ export const AllTypesProps: Record<string,any> = {
 		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		id:"uuid",
-		party_id:"uuid",
 		player_steam_id:"bigint",
 		status:"e_tournament_free_agent_statuses_enum",
 		tournament_id:"uuid",
@@ -40422,7 +40429,6 @@ export const AllTypesProps: Record<string,any> = {
 		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		id:"uuid",
-		party_id:"uuid",
 		player_steam_id:"bigint",
 		status:"e_tournament_free_agent_statuses_enum",
 		tournament_id:"uuid",
@@ -41968,6 +41974,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"tournament_team_roster_bool_exp",
 		_or:"tournament_team_roster_bool_exp",
 		checked_in_at:"timestamptz_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
 		e_team_role:"e_team_roles_bool_exp",
 		player:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
@@ -41984,6 +41991,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_team_roster_insert_input:{
 		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
 		e_team_role:"e_team_roles_obj_rel_insert_input",
 		player:"players_obj_rel_insert_input",
 		player_steam_id:"bigint",
@@ -41995,12 +42003,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_team_roster_max_order_by:{
 		checked_in_at:"order_by",
+		created_at:"order_by",
 		player_steam_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
 	},
 	tournament_team_roster_min_order_by:{
 		checked_in_at:"order_by",
+		created_at:"order_by",
 		player_steam_id:"order_by",
 		tournament_id:"order_by",
 		tournament_team_id:"order_by"
@@ -42012,6 +42022,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_team_roster_order_by:{
 		checked_in_at:"order_by",
+		created_at:"order_by",
 		e_team_role:"e_team_roles_order_by",
 		player:"players_order_by",
 		player_steam_id:"order_by",
@@ -42029,6 +42040,7 @@ export const AllTypesProps: Record<string,any> = {
 	tournament_team_roster_select_column: "enum" as const,
 	tournament_team_roster_set_input:{
 		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
 		player_steam_id:"bigint",
 		role:"e_team_roles_enum",
 		tournament_id:"uuid",
@@ -42049,6 +42061,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_team_roster_stream_cursor_value_input:{
 		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
 		player_steam_id:"bigint",
 		role:"e_team_roles_enum",
 		tournament_id:"uuid",
@@ -45193,6 +45206,9 @@ export const AllTypesProps: Record<string,any> = {
 		repairs:"utility_lineup_repairs_bool_exp",
 		repairs_aggregate:"utility_lineup_repairs_aggregate_bool_exp",
 		side:"e_sides_enum_comparison_exp",
+		smoke_voxels_at:"timestamptz_comparison_exp",
+		smoke_voxels_file:"String_comparison_exp",
+		smoke_voxels_url:"String_comparison_exp",
 		source_grenade_id:"Int_comparison_exp",
 		source_match:"matches_bool_exp",
 		source_match_id:"uuid_comparison_exp",
@@ -45287,6 +45303,7 @@ export const AllTypesProps: Record<string,any> = {
 		renders:"utility_lineup_renders_arr_rel_insert_input",
 		repairs:"utility_lineup_repairs_arr_rel_insert_input",
 		side:"e_sides_enum",
+		smoke_voxels_at:"timestamptz",
 		source_match:"matches_obj_rel_insert_input",
 		source_match_id:"uuid",
 		source_match_map:"match_maps_obj_rel_insert_input",
@@ -45347,6 +45364,8 @@ export const AllTypesProps: Record<string,any> = {
 		public_review_note:"order_by",
 		public_reviewed_at:"order_by",
 		public_reviewed_by:"order_by",
+		smoke_voxels_at:"order_by",
+		smoke_voxels_file:"order_by",
 		source_grenade_id:"order_by",
 		source_match_id:"order_by",
 		source_match_map_id:"order_by",
@@ -45405,6 +45424,8 @@ export const AllTypesProps: Record<string,any> = {
 		public_review_note:"order_by",
 		public_reviewed_at:"order_by",
 		public_reviewed_by:"order_by",
+		smoke_voxels_at:"order_by",
+		smoke_voxels_file:"order_by",
 		source_grenade_id:"order_by",
 		source_match_id:"order_by",
 		source_match_map_id:"order_by",
@@ -45492,6 +45513,9 @@ export const AllTypesProps: Record<string,any> = {
 		renders_aggregate:"utility_lineup_renders_aggregate_order_by",
 		repairs_aggregate:"utility_lineup_repairs_aggregate_order_by",
 		side:"order_by",
+		smoke_voxels_at:"order_by",
+		smoke_voxels_file:"order_by",
+		smoke_voxels_url:"order_by",
 		source_grenade_id:"order_by",
 		source_match:"matches_order_by",
 		source_match_id:"order_by",
@@ -45565,6 +45589,7 @@ export const AllTypesProps: Record<string,any> = {
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
 		side:"e_sides_enum",
+		smoke_voxels_at:"timestamptz",
 		source_match_id:"uuid",
 		source_match_map_id:"uuid",
 		team_id:"uuid",
@@ -45711,6 +45736,7 @@ export const AllTypesProps: Record<string,any> = {
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
 		side:"e_sides_enum",
+		smoke_voxels_at:"timestamptz",
 		source_match_id:"uuid",
 		source_match_map_id:"uuid",
 		team_id:"uuid",
@@ -59214,6 +59240,7 @@ export const ReturnTypes: Record<string,any> = {
 		addCustomGamePlugin:"AddCustomGamePluginOutput",
 		addDraftPlayer:"SuccessOutput",
 		addSteamPresenceBotAccount:"SuccessOutput",
+		addTournamentFreeAgent:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
 		approve_league_season_movements:"league_team_movements",
 		assignSteamPresenceBot:"SteamPresenceBotAssignment",
@@ -60193,6 +60220,7 @@ export const ReturnTypes: Record<string,any> = {
 		recomputePlayerEloStatus:"RecomputeEloStatusOutput",
 		reconcileNodePlugins:"ReconcileNodePluginsOutput",
 		reconnectLive:"SuccessOutput",
+		recreateTournamentBracketMatch:"SuccessOutput",
 		redeemTournamentInviteCode:"SuccessOutput",
 		refreshAllPlayers:"ReindexStartedOutput",
 		refreshAllPlayersStatus:"ReindexStatusOutput",
@@ -60202,6 +60230,7 @@ export const ReturnTypes: Record<string,any> = {
 		remineUtilityMeta:"UtilityRemineOutput",
 		removeFixtures:"SuccessOutput",
 		removeSteamPresenceBotAccount:"SuccessOutput",
+		removeTournamentFreeAgent:"SuccessOutput",
 		remove_league_team_from_season:"league_team_seasons",
 		renameServerItem:"SuccessOutput",
 		renderUtilityLineupPreview:"UtilityRenderQueueOutput",
@@ -60953,6 +60982,7 @@ export const ReturnTypes: Record<string,any> = {
 		writeServerFile:"SuccessOutput"
 	},
 	my_friends:{
+		allow_message_requests:"Boolean",
 		avatar_url:"String",
 		country:"String",
 		created_at:"timestamptz",
@@ -71100,7 +71130,6 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		e_tournament_free_agent_status:"e_tournament_free_agent_statuses",
 		id:"uuid",
-		party_id:"uuid",
 		player:"players",
 		player_steam_id:"bigint",
 		status:"e_tournament_free_agent_statuses_enum",
@@ -71133,7 +71162,6 @@ export const ReturnTypes: Record<string,any> = {
 		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		id:"uuid",
-		party_id:"uuid",
 		player_steam_id:"bigint",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
@@ -71142,7 +71170,6 @@ export const ReturnTypes: Record<string,any> = {
 		checked_in_at:"timestamptz",
 		created_at:"timestamptz",
 		id:"uuid",
-		party_id:"uuid",
 		player_steam_id:"bigint",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
@@ -72183,6 +72210,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournament_team_roster:{
 		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
 		e_team_role:"e_team_roles",
 		player:"players",
 		player_steam_id:"bigint",
@@ -72215,12 +72243,14 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournament_team_roster_max_fields:{
 		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
 		player_steam_id:"bigint",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
 	},
 	tournament_team_roster_min_fields:{
 		checked_in_at:"timestamptz",
+		created_at:"timestamptz",
 		player_steam_id:"bigint",
 		tournament_id:"uuid",
 		tournament_team_id:"uuid"
@@ -73940,6 +73970,9 @@ export const ReturnTypes: Record<string,any> = {
 		repairs:"utility_lineup_repairs",
 		repairs_aggregate:"utility_lineup_repairs_aggregate",
 		side:"e_sides_enum",
+		smoke_voxels_at:"timestamptz",
+		smoke_voxels_file:"String",
+		smoke_voxels_url:"String",
 		source_grenade_id:"Int",
 		source_match:"matches",
 		source_match_id:"uuid",
@@ -74063,6 +74096,9 @@ export const ReturnTypes: Record<string,any> = {
 		public_review_note:"String",
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
+		smoke_voxels_at:"timestamptz",
+		smoke_voxels_file:"String",
+		smoke_voxels_url:"String",
 		source_grenade_id:"Int",
 		source_match_id:"uuid",
 		source_match_map_id:"uuid",
@@ -74125,6 +74161,9 @@ export const ReturnTypes: Record<string,any> = {
 		public_review_note:"String",
 		public_reviewed_at:"timestamptz",
 		public_reviewed_by:"bigint",
+		smoke_voxels_at:"timestamptz",
+		smoke_voxels_file:"String",
+		smoke_voxels_url:"String",
 		source_grenade_id:"Int",
 		source_match_id:"uuid",
 		source_match_map_id:"uuid",

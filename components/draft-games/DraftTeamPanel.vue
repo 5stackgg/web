@@ -19,6 +19,10 @@ const props = defineProps<{
   draggable?: boolean;
   droppable?: boolean;
   dragSteamId?: string | null;
+  pickLabels?: Record<string, string>;
+  upcomingPicks?: Array<number>;
+  clockPick?: number | null;
+  freshSteamIds?: Array<string>;
 }>();
 
 const emit = defineEmits<{
@@ -52,7 +56,7 @@ const onDrop = () => {
 };
 
 const accentVar = computed(() =>
-  props.accent === "amber" ? "var(--tac-amber)" : "200 90% 62%",
+  props.accent === "amber" ? "var(--tac-amber)" : "var(--tac-blue)",
 );
 
 const avgElo = computed(() => {
@@ -71,6 +75,9 @@ const captainSteamId = computed(() => {
     (a, b) => (a.pick_order ?? 99) - (b.pick_order ?? 99),
   )[0]?.steam_id;
 });
+
+const isClockSlot = (index: number) =>
+  props.clockPick != null && props.upcomingPicks?.[index] === props.clockPick;
 
 const slots = computed(() => {
   return Array.from({ length: props.perTeam }, (_, index) => {
@@ -131,6 +138,8 @@ const slots = computed(() => {
         :is-captain="player.steam_id === captainSteamId"
         :is-host="!!hostSteamId && player.steam_id === hostSteamId"
         :show-pick-order="true"
+        :pick-label="pickLabels?.[player.steam_id] ?? null"
+        :fresh="!!freshSteamIds?.includes(player.steam_id)"
         :checked-in="
           checkInBySteamId == null
             ? null
@@ -169,8 +178,21 @@ const slots = computed(() => {
           v-for="index in Math.max(0, perTeam - players.length)"
           :key="`empty-${index}`"
           class="empty-slot grid min-h-[3.5rem] place-items-center rounded-lg border border-dashed text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/40"
+          :class="isClockSlot(index - 1) ? 'is-clock' : ''"
         >
-          {{ $t("draft_games.room.open_slot") }}
+          <template v-if="upcomingPicks?.[index - 1] == null">
+            {{ $t("draft_games.room.open_slot") }}
+          </template>
+          <template v-else-if="isClockSlot(index - 1)">
+            {{ $t("draft_games.room.on_the_clock") }}
+          </template>
+          <template v-else>
+            {{
+              $t("draft_games.room.pick_slot", {
+                n: upcomingPicks[index - 1],
+              })
+            }}
+          </template>
         </div>
       </template>
     </TransitionGroup>
@@ -216,6 +238,26 @@ const slots = computed(() => {
 }
 .empty-slot {
   border-color: hsl(var(--accent) / 0.18);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+.empty-slot.is-clock {
+  border-color: hsl(var(--accent) / 0.8);
+  background: hsl(var(--accent) / 0.08);
+  color: hsl(var(--accent));
+  font-weight: 700;
+  animation: clock-slot 1.4s ease-in-out infinite;
+}
+@keyframes clock-slot {
+  0%,
+  100% {
+    border-color: hsl(var(--accent) / 0.45);
+  }
+  50% {
+    border-color: hsl(var(--accent) / 0.9);
+  }
 }
 .remove-btn {
   color: hsl(var(--muted-foreground));
@@ -259,6 +301,9 @@ const slots = computed(() => {
   opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {
+  .empty-slot.is-clock {
+    animation: none;
+  }
   .roster-move,
   .roster-enter-active,
   .roster-leave-active {

@@ -31,7 +31,7 @@ const onCreated = () => {
 
 <template>
   <PageTransition>
-    <div class="mx-auto max-w-3xl pb-24 pt-4">
+    <div class="mx-auto max-w-6xl pb-8 pt-4">
       <CreateDraftGame :rehost="rehost" @created="onCreated" />
     </div>
   </PageTransition>

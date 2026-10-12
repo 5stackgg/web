@@ -34,7 +34,7 @@ const accentVar = computed(() => {
     return "var(--tac-amber)";
   }
   if (props.accent === "blue") {
-    return "200 90% 62%";
+    return "var(--tac-blue)";
   }
   return "var(--muted-foreground)";
 });

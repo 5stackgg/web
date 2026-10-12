@@ -1,3 +1,5 @@
+import { dateLocale } from "~/utilities/dateLocale";
+
 // Pure helpers behind /play's "More ways to play" so the layout rules can be
 // tested without the data layer.
 
@@ -76,8 +78,8 @@ export function countScrimTeamsToday(
   return teams.size;
 }
 
-export function formatDay(value: string, locale?: string): string {
-  return new Intl.DateTimeFormat(locale, {
+export function formatDay(value: string): string {
+  return new Intl.DateTimeFormat(dateLocale(), {
     month: "short",
     day: "numeric",
   }).format(new Date(value));

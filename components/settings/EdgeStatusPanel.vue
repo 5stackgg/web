@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { ExternalLink, RefreshCw } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export type EdgeStatusState =
   | "checking"
@@ -20,8 +20,6 @@ const props = defineProps<{
 }>();
 
 defineEmits<{ (e: "check"): void }>();
-
-const { locale } = useI18n();
 
 const tones: Record<
   EdgeStatusState,
@@ -69,7 +67,7 @@ const BAR_HEIGHTS = ["h-[5px]", "h-[8px]", "h-[11px]"];
 const tone = computed(() => tones[props.state]);
 
 const checkedTime = computed(() =>
-  props.checkedAt ? props.checkedAt.toLocaleTimeString(locale.value) : "",
+  props.checkedAt ? props.checkedAt.toLocaleTimeString(dateLocale()) : "",
 );
 </script>
 

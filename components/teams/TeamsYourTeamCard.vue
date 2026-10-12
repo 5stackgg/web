@@ -10,7 +10,7 @@ import { teamOpponent, teamResult } from "~/utilities/teamResults";
 
 const props = defineProps<{ team: any; now: Date }>();
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { items } = useTeamNeeds(() => props.team, { followInvites: false });
 
 const teamPath = computed(() => `/teams/${props.team.id}`);
@@ -56,7 +56,7 @@ const next = computed(() => {
     tone = "hot";
   } else {
     when = match.scheduled_at
-      ? formatStartTime(match.scheduled_at, props.now, locale.value)
+      ? formatStartTime(match.scheduled_at, props.now)
       : t("match.stream.card.scheduled");
   }
   return { id: match.id, when, tone, opponent, context: matchContext(match) };

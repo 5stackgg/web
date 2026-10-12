@@ -5,8 +5,9 @@ export type BrowserClock = {
   hourCycle: string | undefined;
 };
 
-let browserClockCache: BrowserClock | null | undefined;
-let resolvedCache: { ui: string; value: string | undefined } | undefined;
+let resolvedCache:
+  | { ui: string; browser: string | null; value: string | undefined }
+  | undefined;
 
 function uiLocale(): string | undefined {
   const locale = (tryUseNuxtApp()?.$i18n as { locale?: unknown } | undefined)
@@ -19,21 +20,29 @@ function uiLocale(): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
-function browserClock(): BrowserClock | null {
-  if (browserClockCache !== undefined) {
-    return browserClockCache;
+// The user's content language, not Intl's default: Firefox resolves the
+// default to its own UI language, whatever the user asked pages to use.
+function browserLanguage(): string | null {
+  if (typeof navigator === "undefined") {
+    return null;
+  }
+  return navigator.languages?.[0] || navigator.language || null;
+}
+
+export function browserClock(locale: string | null): BrowserClock | null {
+  if (!locale) {
+    return null;
   }
   try {
-    browserClockCache = {
-      locale: new Intl.DateTimeFormat().resolvedOptions().locale,
-      hourCycle: new Intl.DateTimeFormat(undefined, {
+    return {
+      locale,
+      hourCycle: new Intl.DateTimeFormat(locale, {
         hour: "numeric",
       }).resolvedOptions().hourCycle,
     };
   } catch {
-    browserClockCache = null;
+    return null;
   }
-  return browserClockCache;
 }
 
 function sameWritingSystem(a: Intl.Locale, b: Intl.Locale) {
@@ -76,8 +85,13 @@ export function dateLocale(): string | undefined {
   if (!ui) {
     return undefined;
   }
-  if (resolvedCache?.ui !== ui) {
-    resolvedCache = { ui, value: resolveDateLocale(ui, browserClock()) };
+  const browser = browserLanguage();
+  if (resolvedCache?.ui !== ui || resolvedCache.browser !== browser) {
+    resolvedCache = {
+      ui,
+      browser,
+      value: resolveDateLocale(ui, browserClock(browser)),
+    };
   }
   return resolvedCache.value;
 }

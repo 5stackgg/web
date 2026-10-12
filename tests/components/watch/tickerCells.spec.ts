@@ -1,6 +1,10 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
+  pinBrowserLocale,
+  setBrowserLanguages,
+} from "../../helpers/browserLocale";
+import {
   formatStartTime,
   resultDayLabel,
   sortLiveMatches,
@@ -22,8 +26,10 @@ function t(key: string, values?: any): string {
   return form.replace(/\{(\w+)\}/g, (_, k) => String(named[k] ?? `{${k}}`));
 }
 
+pinBrowserLocale("en-US");
+
 const now = new Date(2026, 9, 2, 20, 40);
-const ctx = { t, locale: "en-US", now };
+const ctx = { t, now };
 
 const inferno = { name: "de_inferno", label: "Inferno" };
 const lineup = (id: string, name: string, short: string, extra = {}) => ({
@@ -172,9 +178,20 @@ describe("ticker cell", () => {
     const cell = tickerCell(match({ status: "Scheduled", scheduled_at: tonight }), ctx);
     expect(cell.kind).toBe("upcoming");
     expect(cell.status.dot).toBeNull();
-    expect(cell.status.text).toBe(formatStartTime(tonight, now, "en-US"));
+    expect(cell.status.text).toBe(formatStartTime(tonight, now));
     expect(cell.status.text).not.toMatch(/Sat/);
-    expect(formatStartTime(saturday, now, "en-US")).toMatch(/^Sat/);
+    expect(formatStartTime(saturday, now)).toMatch(/^Sat/);
+  });
+
+  it("reads start times on the browser's clock, whatever the UI language", () => {
+    setBrowserLanguages(["en-GB"]);
+    const tonight = new Date(2026, 9, 2, 21, 30).toISOString();
+    const later = new Date(2026, 9, 31, 19, 0).toISOString();
+
+    const cell = tickerCell(match({ status: "Scheduled", scheduled_at: tonight }), ctx);
+    expect(cell.status.text).toBe("21:30");
+    expect(formatStartTime(later, now)).toBe("31 Oct, 19:00");
+    expect(resultDayLabel(new Date(2026, 8, 30, 22).toISOString(), now, t)).toMatch(/^Wed 30 Sep/);
   });
 
   it("shows a final with the winner, map score on Bo1 and series on Bo3", () => {
@@ -250,8 +267,8 @@ describe("ticker ordering and filters", () => {
   });
 
   it("labels result days", () => {
-    expect(resultDayLabel(new Date(2026, 9, 2, 12).toISOString(), now, t, "en-US")).toBe("Today");
-    expect(resultDayLabel(new Date(2026, 9, 1, 22).toISOString(), now, t, "en-US")).toBe("Yesterday");
-    expect(resultDayLabel(new Date(2026, 8, 30, 22).toISOString(), now, t, "en-US")).toMatch(/Sep 30/);
+    expect(resultDayLabel(new Date(2026, 9, 2, 12).toISOString(), now, t)).toBe("Today");
+    expect(resultDayLabel(new Date(2026, 9, 1, 22).toISOString(), now, t)).toBe("Yesterday");
+    expect(resultDayLabel(new Date(2026, 8, 30, 22).toISOString(), now, t)).toMatch(/Sep 30/);
   });
 });

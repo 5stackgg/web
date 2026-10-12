@@ -43,8 +43,6 @@ const props = defineProps<{
   practiceEnabled: boolean;
 }>();
 
-const { locale } = useI18n();
-
 const serverTiles = computed(() => pickServerTiles(props.servers));
 const tileCount = computed(
   () =>
@@ -162,7 +160,7 @@ const secondaryClasses = [
             <template v-if="league.signupClosesAt">
               {{
                 $t("pages.play.more_ways.league.open_until", {
-                  date: formatDay(league.signupClosesAt, locale),
+                  date: formatDay(league.signupClosesAt),
                 })
               }}
             </template>

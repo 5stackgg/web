@@ -1,5 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { dateLocale, resolveDateLocale } from "~/utilities/dateLocale";
+import { afterEach, describe, expect, it } from "vitest";
+import {
+  browserClock,
+  dateLocale,
+  resolveDateLocale,
+} from "~/utilities/dateLocale";
+import {
+  resetBrowserLanguages,
+  setBrowserLanguages,
+} from "../helpers/browserLocale";
 
 const matchStart = new Date("2026-10-17T21:30:00Z");
 
@@ -89,11 +97,61 @@ describe("resolveDateLocale", () => {
   });
 });
 
-describe("dateLocale", () => {
-  it("formats in the UI language", () => {
-    const locale = dateLocale();
+describe("browserClock", () => {
+  it("reads the hour cycle of the browser's language", () => {
+    expect(browserClock("en-US")).toEqual({
+      locale: "en-US",
+      hourCycle: "h12",
+    });
+    expect(browserClock("en-GB")).toEqual({
+      locale: "en-GB",
+      hourCycle: "h23",
+    });
+  });
 
-    expect(locale).toBeDefined();
-    expect(new Intl.Locale(locale!).language).toBe("en");
+  it("has nothing to lend without a readable language", () => {
+    expect(browserClock(null)).toBeNull();
+    expect(browserClock("not a locale")).toBeNull();
+  });
+});
+
+describe("dateLocale", () => {
+  const i18n = () =>
+    useNuxtApp().$i18n as unknown as { locale: { value: string } };
+
+  afterEach(() => {
+    resetBrowserLanguages();
+    i18n().locale.value = "en";
+  });
+
+  // One of the two differs from whatever Intl's own default is on the host,
+  // so this fails if the browser's language list is not what is read.
+  it("takes the region and clock from the browser's first language", () => {
+    setBrowserLanguages(["en-GB", "en-US"]);
+    expect(format(dateLocale())).toBe("Sat 17 Oct, 21:30");
+
+    setBrowserLanguages(["en-US", "en-GB"]);
+    expect(format(dateLocale())).toBe("Sat, Oct 17, 9:30 PM");
+  });
+
+  it("keeps the UI language and takes only the clock from another language", () => {
+    setBrowserLanguages(["de-DE"]);
+
+    expect(format(dateLocale())).toBe("Sat, Oct 17, 21:30");
+  });
+
+  it("falls back to navigator.language when the language list is empty", () => {
+    setBrowserLanguages([], "en-GB");
+
+    expect(format(dateLocale())).toBe("Sat 17 Oct, 21:30");
+  });
+
+  it("follows a switch of the UI language", () => {
+    setBrowserLanguages(["en-US"]);
+    expect(format(dateLocale())).toBe("Sat, Oct 17, 9:30 PM");
+
+    i18n().locale.value = "de";
+
+    expect(format(dateLocale())).toBe("Sa., 17. Okt., 9:30 PM");
   });
 });

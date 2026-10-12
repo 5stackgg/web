@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 import gql from "graphql-tag";
 import { useApolloClient } from "@vue/apollo-composable";
-import { useI18n } from "vue-i18n";
 import AwardBadge from "~/components/award/AwardBadge.vue";
 import AwardModal from "~/components/award/AwardModal.vue";
 import AwardCase from "~/components/award/AwardCase.vue";
@@ -25,7 +24,6 @@ const props = defineProps<{
   matchesCount: number;
 }>();
 
-const { locale } = useI18n();
 const { client } = useApolloClient();
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
@@ -69,7 +67,7 @@ watch(
 
 const founded = computed(() =>
   createdAt.value
-    ? new Date(createdAt.value).toLocaleDateString(locale.value, {
+    ? new Date(createdAt.value).toLocaleDateString(dateLocale(), {
         month: "short",
         year: "numeric",
       })

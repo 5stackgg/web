@@ -285,6 +285,10 @@ function subscribe(id: string) {
     error: (err: any) => {
       console.error("[clip-modal] subscription error:", err);
       loading.value = false;
+      if (clip.value?.id !== id) {
+        clip.value = null;
+        notFound.value = true;
+      }
     },
   });
 }
@@ -298,7 +302,6 @@ watch(
       activeSub?.unsubscribe();
       activeSub = null;
       clip.value = null;
-      editing.value = false;
       prefetchedClip.value = null;
       prefetchingId.value = null;
     }
@@ -599,6 +602,9 @@ watch(
     modalAutoAdvanced.value = false;
     advanceCancelled.value = false;
     remaining.value = null;
+    editing.value = false;
+    draftTitle.value = "";
+    editError.value = null;
     if (id) {
       void nextTick().then(() => modalPlayerRef.value?.play());
     }

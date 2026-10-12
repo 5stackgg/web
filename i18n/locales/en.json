@@ -3416,6 +3416,9 @@
         "registered_count": "{count} of {max}",
         "register": "Register a team",
         "sign_in_to_register": "Sign in to register",
+        "joined_team": "Registered",
+        "joined_free_agent": "Joined as a free agent",
+        "joined_waitlisted": "Free agent · waitlisted",
         "details": "Details",
         "results": "Results",
         "champion": "Champion: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "Top {percent}%",
         "player_profile": "Player Profile",
         "recent_form": "Recent Form",
+        "recent_form_elo": "ELO change over the last {count} matches",
         "range": "Range",
         "custom_range": "Custom Range",
         "custom_window_active": "Custom window active. Choosing a preset clears it.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "Skip tournament matches in stats and chart.",
         "tournaments_section_label": "TOURNAMENTS",
         "tournaments_description": "Tournaments this player has competed in.",
+        "tournament_finish_of": "of {count}",
+        "show_less": "Show less",
+        "honors_section": "Honors",
+        "honors_all": "All honors",
+        "honors_group": {
+          "tournaments": "Tournaments",
+          "seasons": "Seasons",
+          "awarded": "Awarded"
+        },
         "current_elo": "Current ELO",
         "source": "Source",
         "provider": "Provider",

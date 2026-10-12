@@ -3416,6 +3416,9 @@
         "registered_count": "{count} من {max}",
         "register": "سجّل فريقًا",
         "sign_in_to_register": "سجّل الدخول للتسجيل",
+        "joined_team": "مسجّل",
+        "joined_free_agent": "منضم كلاعب حر",
+        "joined_waitlisted": "لاعب حر · في قائمة الانتظار",
         "details": "التفاصيل",
         "results": "النتائج",
         "champion": "البطل: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "ضمن أفضل {percent}%",
         "player_profile": "ملف اللاعب",
         "recent_form": "المستوى الأخير",
+        "recent_form_elo": "تغيّر ELO خلال آخر {count} مباراة",
         "range": "النطاق",
         "custom_range": "نطاق مخصص",
         "custom_window_active": "نطاق مخصص مفعّل. اختيار نطاق جاهز يلغيه.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "تجاهل مباريات البطولات في الإحصاءات والرسم البياني.",
         "tournaments_section_label": "البطولات",
         "tournaments_description": "البطولات التي شارك فيها هذا اللاعب.",
+        "tournament_finish_of": "من {count}",
+        "show_less": "اعرض أقل",
+        "honors_section": "الأوسمة",
+        "honors_all": "كل الأوسمة",
+        "honors_group": {
+          "tournaments": "البطولات",
+          "seasons": "المواسم",
+          "awarded": "ممنوحة"
+        },
         "current_elo": "ELO الحالي",
         "source": "المصدر",
         "provider": "المزوّد",

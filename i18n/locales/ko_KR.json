@@ -3416,6 +3416,9 @@
         "registered_count": "{count} / {max}",
         "register": "팀 등록",
         "sign_in_to_register": "로그인하고 등록",
+        "joined_team": "등록됨",
+        "joined_free_agent": "프리 에이전트로 참가함",
+        "joined_waitlisted": "프리 에이전트 · 대기 명단",
         "details": "상세 정보",
         "results": "결과",
         "champion": "우승: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "상위 {percent}%",
         "player_profile": "플레이어 프로필",
         "recent_form": "최근 폼",
+        "recent_form_elo": "최근 {count}경기 ELO 변동",
         "range": "범위",
         "custom_range": "사용자 지정 범위",
         "custom_window_active": "사용자 지정 기간이 적용 중입니다. 프리셋을 선택하면 초기화됩니다.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "통계와 차트에서 토너먼트 매치를 제외합니다.",
         "tournaments_section_label": "토너먼트",
         "tournaments_description": "이 플레이어가 참가한 토너먼트입니다.",
+        "tournament_finish_of": "/ {count}",
+        "show_less": "간략히 보기",
+        "honors_section": "영예",
+        "honors_all": "모든 영예",
+        "honors_group": {
+          "tournaments": "토너먼트",
+          "seasons": "시즌",
+          "awarded": "수여"
+        },
         "current_elo": "현재 ELO",
         "source": "소스",
         "provider": "제공자",

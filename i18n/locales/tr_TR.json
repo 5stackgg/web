@@ -3416,6 +3416,9 @@
         "registered_count": "{count}/{max}",
         "register": "Takım kaydet",
         "sign_in_to_register": "Kaydolmak için giriş yap",
+        "joined_team": "Kayıtlı",
+        "joined_free_agent": "Serbest oyuncu olarak katıldı",
+        "joined_waitlisted": "Serbest oyuncu · yedek listesinde",
         "details": "Detaylar",
         "results": "Sonuçlar",
         "champion": "Şampiyon: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "İlk %{percent}",
         "player_profile": "Oyuncu profili",
         "recent_form": "Son form",
+        "recent_form_elo": "Son {count} maçtaki ELO değişimi",
         "range": "Aralık",
         "custom_range": "Özel aralık",
         "custom_window_active": "Özel aralık aktif. Hazır seçenek seçmek onu temizler.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "Turnuva maçlarını istatistik ve grafikte atla.",
         "tournaments_section_label": "TURNUVALAR",
         "tournaments_description": "Bu oyuncunun katıldığı turnuvalar.",
+        "tournament_finish_of": "/ {count}",
+        "show_less": "Daha az göster",
+        "honors_section": "Onurlar",
+        "honors_all": "Tüm onurlar",
+        "honors_group": {
+          "tournaments": "Turnuvalar",
+          "seasons": "Sezonlar",
+          "awarded": "Verilenler"
+        },
         "current_elo": "Güncel ELO",
         "source": "Kaynak",
         "provider": "Sağlayıcı",

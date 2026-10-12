@@ -3416,6 +3416,9 @@
         "registered_count": "{count} av {max}",
         "register": "Anmäl ett lag",
         "sign_in_to_register": "Logga in för att anmäla",
+        "joined_team": "Anmäld",
+        "joined_free_agent": "Anmäld som free agent",
+        "joined_waitlisted": "Free agent · väntelista",
         "details": "Detaljer",
         "results": "Resultat",
         "champion": "Mästare: {name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "Topp {percent}%",
         "player_profile": "Spelarprofil",
         "recent_form": "Senaste form",
+        "recent_form_elo": "ELO-förändring de senaste {count} matcherna",
         "range": "Intervall",
         "custom_range": "Anpassat intervall",
         "custom_window_active": "Anpassat fönster aktivt. Att välja en förinställning rensar det.",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "Hoppa över turneringsmatcher i statistik och diagram.",
         "tournaments_section_label": "TURNERINGAR",
         "tournaments_description": "Turneringar den här spelaren har deltagit i.",
+        "tournament_finish_of": "av {count}",
+        "show_less": "Visa färre",
+        "honors_section": "Meriter",
+        "honors_all": "Alla meriter",
+        "honors_group": {
+          "tournaments": "Turneringar",
+          "seasons": "Säsonger",
+          "awarded": "Tilldelade"
+        },
         "current_elo": "Nuvarande ELO",
         "source": "Källa",
         "provider": "Leverantör",

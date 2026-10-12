@@ -3416,6 +3416,9 @@
         "registered_count": "{count} / {max}",
         "register": "報名隊伍",
         "sign_in_to_register": "登入後報名",
+        "joined_team": "已報名",
+        "joined_free_agent": "已以自由選手身分報名",
+        "joined_waitlisted": "自由選手 · 候補",
         "details": "詳情",
         "results": "結果",
         "champion": "冠軍：{name}"
@@ -3710,6 +3713,7 @@
         "top_percent": "前 {percent}%",
         "player_profile": "玩家資料",
         "recent_form": "近期狀態",
+        "recent_form_elo": "最近 {count} 場比賽的 ELO 變化",
         "range": "範圍",
         "custom_range": "自訂範圍",
         "custom_window_active": "自訂區間已啟用。選擇預設集將清除它。",
@@ -3717,6 +3721,15 @@
         "exclude_tournaments_description": "在數據和圖表中略過賽事比賽。",
         "tournaments_section_label": "錦標賽",
         "tournaments_description": "這位玩家參加過的錦標賽。",
+        "tournament_finish_of": "/ {count}",
+        "show_less": "顯示較少",
+        "honors_section": "榮譽",
+        "honors_all": "全部榮譽",
+        "honors_group": {
+          "tournaments": "賽事",
+          "seasons": "賽季",
+          "awarded": "授予"
+        },
         "current_elo": "目前 ELO",
         "source": "來源",
         "provider": "提供方",

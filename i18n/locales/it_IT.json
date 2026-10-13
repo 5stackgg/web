@@ -7273,6 +7273,8 @@
         "description": "I team possono inserire nel roster e schierare riserve oltre ai titolari. Se disattivato, roster e match sono limitati ai titolari.",
         "locked": "Le riserve non possono essere disattivate dopo la chiusura delle iscrizioni."
       },
+      "map_pool_locked_label": "Tipo di match e map pool",
+      "map_pool_locked": "Il tipo di match e il map pool sono bloccati dopo la generazione del tabellone.",
       "logo": {
         "label": "Logo"
       },

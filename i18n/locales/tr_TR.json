@@ -7273,6 +7273,8 @@
         "description": "Takımlar başlangıç kadrosunun ötesinde yedekleri kadroya ekleyip oynatabilir. Kapalıyken kadrolar ve maçlar başlangıç kadrosuyla sınırlıdır.",
         "locked": "Kayıtlar kapandıktan sonra yedekler kapatılamaz."
       },
+      "map_pool_locked_label": "Maç türü ve harita havuzu",
+      "map_pool_locked": "Fikstür çekildikten sonra maç türü ve harita havuzu kilitlenir.",
       "logo": {
         "label": "Logo"
       },

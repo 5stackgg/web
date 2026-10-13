@@ -7273,6 +7273,8 @@
         "description": "Hold kan have reserver i truppen og stille med dem ud over startopstillingen. Når det er slået fra, er trupper og kampe begrænset til startopstillingen.",
         "locked": "Reserver kan ikke slås fra, når tilmeldingen er lukket."
       },
+      "map_pool_locked_label": "Kamptype og map pool",
+      "map_pool_locked": "Kamptype og map pool er låst, når turneringstræet er lavet.",
       "logo": {
         "label": "Logo"
       },

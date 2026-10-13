@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { TriangleAlert } from "lucide-vue-next";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
+import { Fold } from "~/components/ui/transitions";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 import SettingHeader from "~/components/match/SettingHeader.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
@@ -13,6 +16,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       :hide-best-of="true"
       :hide-match-mode="true"
       :lock-substitutes="true"
+      :lock-map-pool="mapPoolLocked"
     >
       <FormField v-slot="{ value, handleChange }" name="negotiated_scheduling">
         <FormItem>
@@ -100,6 +104,28 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           </div>
         </FormItem>
       </FormField>
+
+      <Fold :open="mapPoolLocked">
+        <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span>{{ $t("tournament.form.map_pool_locked_label") }}</span>
+          <FiveStackToolTip as-child :delay-duration="120">
+            <template #trigger>
+              <span
+                class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                tabindex="0"
+                role="img"
+                :aria-label="$t('tournament.form.map_pool_locked')"
+                @click.prevent
+              >
+                <TriangleAlert class="h-3.5 w-3.5" />
+              </span>
+            </template>
+            <p class="max-w-[16rem]">
+              {{ $t("tournament.form.map_pool_locked") }}
+            </p>
+          </FiveStackToolTip>
+        </div>
+      </Fold>
     </MatchOptions>
 
     <div class="pb-24"></div>
@@ -130,6 +156,7 @@ import {
   setupOptionsVariables,
   setupOptionsSetMutation,
 } from "~/utilities/setupOptions";
+import { isTournamentBracketDrawn } from "~/utilities/tournamentBracketDrawn";
 import * as z from "zod";
 
 export default {
@@ -221,6 +248,9 @@ export default {
     },
   },
   computed: {
+    mapPoolLocked() {
+      return isTournamentBracketDrawn(this.tournament);
+    },
     substitutesLocked() {
       return (
         this.tournament.substitutes_enabled &&
@@ -277,6 +307,19 @@ export default {
     discardChanges() {
       this.populate();
     },
+    holdsCustomMapPool(mapIds: string[]) {
+      const pool = this.tournament.options.map_pool;
+      if (pool.type !== e_map_pool_types_enum.Custom) {
+        return false;
+      }
+
+      const current = new Set(pool.maps.map(({ id }: { id: string }) => id));
+      const selected = new Set(mapIds);
+      return (
+        current.size === selected.size &&
+        [...selected].every((id) => current.has(id))
+      );
+    },
     async save() {
       if (this.submitting) {
         return;
@@ -325,9 +368,15 @@ export default {
           }),
         });
 
+        const mapPoolLocked = this.mapPoolLocked;
         let mapPoolId = form.map_pool_id;
 
-        if (form.custom_map_pool) {
+        if (
+          mapPoolLocked ||
+          (form.custom_map_pool && this.holdsCustomMapPool(form.map_pool))
+        ) {
+          mapPoolId = this.tournament.options.map_pool.id;
+        } else if (form.custom_map_pool) {
           const { data } = await this.$apollo.mutate({
             variables: {
               map_pool: {
@@ -350,7 +399,14 @@ export default {
         await this.$apollo.mutate({
           variables: {
             id: this.tournament.options.id,
-            ...setupOptionsVariables(form, { mapPoolId }),
+            // The api keeps a drawn tournament's pool but would take a new
+            // type, so one picked before the draw is not sent.
+            ...setupOptionsVariables(
+              mapPoolLocked
+                ? { ...form, type: this.tournament.options.type }
+                : form,
+              { mapPoolId },
+            ),
           },
           mutation: generateMutation({
             update_match_options_by_pk: [

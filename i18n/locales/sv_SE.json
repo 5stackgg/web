@@ -7273,6 +7273,8 @@
         "description": "Lag kan ha reserver i truppen och ställa upp dem utöver startuppställningen. När det är avstängt begränsas trupper och matcher till startuppställningen.",
         "locked": "Reserver kan inte stängas av när anmälan har stängt."
       },
+      "map_pool_locked_label": "Matchtyp och kartpool",
+      "map_pool_locked": "Matchtyp och kartpool är låsta när slutspelsträdet har skapats.",
       "logo": {
         "label": "Logotyp"
       },

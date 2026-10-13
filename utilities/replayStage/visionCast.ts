@@ -11,6 +11,8 @@
  * it in node.
  */
 
+import { SMOKE_BIAS } from "./smokeShaders";
+
 export type VisionGrid = {
   /** Minimum corner, source units. */
   ox: number;
@@ -554,10 +556,13 @@ export type VisionSmoke = {
   holeCount: number;
 };
 
-/** Source units inside the surface where the cloud reads as solid. */
-const SMOKE_SOLID = 10;
-/** The cloud fades out before its grid box (smokeShaders BIAS + 2). */
-const BOX_FADE = 22;
+/**
+ * Source units inside the surface where the cloud reads as solid: on it, as
+ * it is drawn opaque there, so sight stops at the voxels the smoke fills.
+ */
+const SMOKE_SOLID = 0;
+/** The cloud fades out before its grid box, as the shader has it. */
+const BOX_FADE = SMOKE_BIAS + 2;
 
 /** Whether the point is inside the opaque part of the cloud. */
 export function smokeDenseAt(s: VisionSmoke, x: number, y: number, z: number) {

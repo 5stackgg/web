@@ -21,6 +21,7 @@
  */
 
 import { smokeReachedBy } from "./smokeArrival";
+import { SMOKE_BIAS } from "./smokeShaders";
 
 export type SmokeGridJob = {
   id: number;
@@ -34,6 +35,12 @@ export type SmokeGridJob = {
   dz: number;
   /** Valve's arrival grid when the demo carried it; flooded here otherwise. */
   arrival: Uint8Array | null;
+  /**
+   * Where the grenade went off, in voxels from the minimum corner. Valve's
+   * grid is cropped to its cloud, so that is not the middle of the box; a
+   * flooded grid is centred on it.
+   */
+  at: [number, number, number] | null;
 };
 
 export type SmokeGridStats = {
@@ -90,10 +97,15 @@ const SD_RANGE = 4;
  * there, near enough that the noise can round its corners on it.
  */
 const WALL_SURFACE = 2.5;
-/** Spacing of the slow lobes baked into the surface, in source units. */
+/** Spacing of the slow lobes baked into a flood's surface, in source units. */
 const LUMP_CELL = 160;
 /** How far the lobes move the surface, in voxels, peak to peak. */
 const LUMP_DEPTH = 3;
+/**
+ * Voxels past the surface the distance is walked out to: the shader's swell,
+ * and one more to filter across.
+ */
+const OUTER_REACH = 3.5;
 
 const scope = self as unknown as {
   onmessage: ((event: MessageEvent<SmokeWorkerIn>) => void) | null;
@@ -624,7 +636,9 @@ function flood(solid: Uint8Array, dx: number, dy: number, dz: number) {
  * from the grenade by distance instead, so a voxel arrives at the later of
  * its own time and the burst's front getting to it.
  */
-function valveShares(arrival: Uint8Array, dx: number, dy: number, dz: number) {
+function valveShares(arrival: Uint8Array, job: SmokeGridJob) {
+  const { dx, dy, dz } = job;
+  const [ax, ay, az] = job.at ?? [dx >> 1, dy >> 1, dz >> 1];
   const share = new Uint8Array(arrival.length).fill(255);
   const away = new Float32Array(arrival.length);
   let reach = 1;
@@ -633,9 +647,9 @@ function valveShares(arrival: Uint8Array, dx: number, dy: number, dz: number) {
       continue;
     }
     away[v] = Math.hypot(
-      (v % dx) + 0.5 - (dx >> 1),
-      (Math.floor(v / dx) % dy) + 0.5 - (dy >> 1),
-      (Math.floor(v / (dx * dy)) + 0.5 - (dz >> 1)) * VERTICAL_COST,
+      (v % dx) + 0.5 - ax,
+      (Math.floor(v / dx) % dy) + 0.5 - ay,
+      (Math.floor(v / (dx * dy)) + 0.5 - az) * VERTICAL_COST,
     );
     reach = Math.max(reach, away[v]);
   }
@@ -687,6 +701,7 @@ function valueNoise(x: number, y: number, z: number) {
  * ±SD_RANGE. The flood's own edge is flat wherever it stopped across a
  * corridor or under its budget, so the shader needs room to carve billows:
  * a distance gives the shell a depth, where an occupancy would be a step.
+ * Valve's grid is the game's own cloud, so its surface is left where it is.
  *
  * Distances walk only through the cloud (inside) or open air (outside), so
  * smoke never reaches round a wall into the next room. Floors make no
@@ -766,7 +781,7 @@ function signedDistance(
       inner.push(best, v);
     }
   }
-  // Outside, only the first voxels matter: past -2 nothing shows anyway.
+  // Outside, only the first voxels matter: past the swell nothing shows.
   const walk = (
     heap: ReturnType<typeof createHeap>,
     dist: Float32Array,
@@ -800,17 +815,18 @@ function signedDistance(
   };
   walk(inner, din, 1, SD_RANGE + 0.5);
   walk(walled, dwall, 1, SD_RANGE + 0.5);
-  walk(outer, dout, 0, 2.5);
+  walk(outer, dout, 0, OUTER_REACH);
 
   // A voxel centre one step from the other side is half a voxel from the
   // face between them, which is where the surface goes.
   const { ox, oy, oz, vs } = job;
+  const lumpy = !job.arrival;
   const sd = new Float32Array(size);
   for (let v = 0; v < size; v++) {
     let d = inside[v]
       ? Math.min(SD_RANGE, din[v] - 0.5)
       : Math.max(-SD_RANGE, 0.5 - dout[v]);
-    if (Math.abs(d) < SD_RANGE) {
+    if (lumpy && Math.abs(d) < SD_RANGE) {
       // Slow lobes a few voxels across, so a lid or a corridor's end is not
       // one plane. They run tall: seen from above, the outline is every
       // height at once, and lumps that differ height to height fill in each
@@ -958,8 +974,8 @@ function bake(share: Uint8Array, solid: Uint8Array | null, job: SmokeGridJob) {
     texels[v * 4 + 1] = arr[v];
     texels[v * 4 + 2] = Math.round(sky[v] * 255);
     texels[v * 4 + 3] = Math.round((1 - Math.min(1, open[v])) * 255);
-    // The shader lets puffs swell up to 20u past the surface (BIAS).
-    if (d > -1.6) {
+    // The shader lets puffs swell past the surface.
+    if (d > -(SMOKE_BIAS / job.vs + 0.6)) {
       const i = v % dx;
       const j = Math.floor(v / dx) % dy;
       const k = Math.floor(v / sz);
@@ -1004,7 +1020,7 @@ function buildGrid(
   }
   const t1 = performance.now();
   const { share, reach } = job.arrival
-    ? valveShares(job.arrival, dx, dy, dz)
+    ? valveShares(job.arrival, job)
     : flood(solid, dx, dy, dz);
   const t2 = performance.now();
   // Valve's grid already went around the walls; without a hull there is no

@@ -20,6 +20,7 @@ import type {
   StageFrame,
   StageModule,
   StageSmoke,
+  StageSmokeVoxels,
 } from "./types";
 
 /**
@@ -38,6 +39,12 @@ import type {
 
 const GRID = 32;
 const VOXEL = 20;
+/**
+ * Voxels of open air put round Valve's grid. It comes cropped to its cloud,
+ * and the cloud's puffs swell past the voxels and fade out before the box's
+ * faces: without room the widest, highest and lowest of it were cut away.
+ */
+const GRID_PAD = 4;
 /** Smokes drawn at once, and the marches (clusters) they can need. */
 const MAX_SMOKES = 16;
 const MAX_GRIDS = 48;
@@ -109,6 +116,24 @@ function pointKey(x: number, y: number, z: number) {
 
 function vectors3(count: number) {
   return Array.from({ length: count }, () => new THREE.Vector3());
+}
+
+/** Valve's arrival grid with `pad` voxels the smoke never reached on every side. */
+function padded(voxels: StageSmokeVoxels, pad: number) {
+  const { dx, dy, dz, arrival } = voxels;
+  const nx = dx + 2 * pad;
+  const ny = dy + 2 * pad;
+  const out = new Uint8Array(nx * ny * (dz + 2 * pad)).fill(255);
+  for (let k = 0; k < dz; k++) {
+    for (let j = 0; j < dy; j++) {
+      const row = (k * dy + j) * dx;
+      out.set(
+        arrival.subarray(row, row + dx),
+        ((k + pad) * ny + j + pad) * nx + pad,
+      );
+    }
+  }
+  return out;
 }
 
 /** A smoke's baked grid as line of sight reads it (vision.ts); the texels stay on `texture.image.data`. */
@@ -408,13 +433,17 @@ export function createSmokeModule(): SmokeModule {
       hit.used = frameNo;
       return hit;
     }
-    const ox = voxels ? voxels.ox : smoke.at.x - (GRID / 2) * VOXEL;
-    const oy = voxels ? voxels.oy : smoke.at.y - (GRID / 2) * VOXEL;
-    const oz = voxels ? voxels.oz : smoke.at.z - (GRID / 2) * VOXEL;
     const vs = voxels ? voxels.vs : VOXEL;
-    const dx = voxels ? voxels.dx : GRID;
-    const dy = voxels ? voxels.dy : GRID;
-    const dz = voxels ? voxels.dz : GRID;
+    const pad = voxels ? GRID_PAD : 0;
+    const ox =
+      (voxels ? voxels.ox : smoke.at.x - (GRID / 2) * VOXEL) - pad * vs;
+    const oy =
+      (voxels ? voxels.oy : smoke.at.y - (GRID / 2) * VOXEL) - pad * vs;
+    const oz =
+      (voxels ? voxels.oz : smoke.at.z - (GRID / 2) * VOXEL) - pad * vs;
+    const dx = (voxels ? voxels.dx : GRID) + 2 * pad;
+    const dy = (voxels ? voxels.dy : GRID) + 2 * pad;
+    const dz = (voxels ? voxels.dz : GRID) + 2 * pad;
     const grid: Grid = {
       ready: false,
       empty: true,
@@ -443,7 +472,14 @@ export function createSmokeModule(): SmokeModule {
         dx,
         dy,
         dz,
-        arrival: voxels ? voxels.arrival : null,
+        arrival: voxels ? padded(voxels, pad) : null,
+        at: voxels
+          ? [
+              (smoke.at.x - ox) / vs,
+              (smoke.at.y - oy) / vs,
+              (smoke.at.z - oz) / vs,
+            ]
+          : null,
       }).then((out) => {
         if (grids.get(key) !== grid) {
           return;

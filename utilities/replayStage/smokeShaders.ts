@@ -4,6 +4,8 @@
  */
 
 export const SMOKE_MAX_BLASTS = 5;
+/** Source units a puff may swell past the baked surface. */
+export const SMOKE_BIAS = 30;
 /** Grids one march merges, so overlapping smokes read as one cloud. */
 export const SMOKE_MEMBERS = 4;
 
@@ -86,16 +88,19 @@ float holes(vec3 p) {
   for (int i = 0; i < ${SMOKE_MAX_BLASTS}; i++) {
     if (i >= uBlastCount) break;
     float s = uBlast[i].w / 250.0;
-    hole = min(hole, distance(p, uBlast[i].xyz) - 190.0 * s * uBlastK[i]);
+    hole = min(hole, distance(p, uBlast[i].xyz) - 214.0 * s * uBlastK[i]);
   }
   return hole;
 }
 
-// How far smoke may billow past the flood's surface, how deep the billows
+// How far smoke may billow past the grid's surface, how deep the billows
 // carve at full erosion, and the depth over which density reaches full, in
-// source units.
-const float BIAS = 20.0;
-const float CARVE = 120.0;
+// source units. Balanced so a settled cloud turns opaque on the faces of the
+// voxels it fills: measured against the game's own render of a recorded
+// smoke, whose outline is those faces, a cloud carved deeper than it swells
+// drew half the size.
+const float BIAS = ${SMOKE_BIAS.toFixed(1)};
+const float CARVE = 70.0;
 const float SOFT = 18.0;
 
 // The grids carry signed distance to the cloud's surface (R), so the cloud

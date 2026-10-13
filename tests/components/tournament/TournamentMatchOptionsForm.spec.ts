@@ -4,6 +4,8 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
 import TournamentMatchOptionsForm from "~/components/tournament/TournamentMatchOptionsForm.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import { e_player_roles_enum } from "~/generated/zeus";
 import {
   answerMatchOptionsQueries,
   competitiveMaps,
@@ -90,6 +92,7 @@ describe("TournamentMatchOptionsForm substitutes switch", () => {
 
 const LOCKED_LABEL = "Match type and map pool";
 const LOCKED = "Match type and map pool are locked once the bracket is drawn.";
+const GAME_MODE = "6426e1b6-1e09-4f51-95c0-8fd312dc0b82";
 const DRAWN_WHILE_EDITING =
   "The bracket was drawn while you were editing. Discard your changes to match type and map pool, then save again.";
 
@@ -116,6 +119,28 @@ const customPool: Pool = {
 };
 
 const idsOf = (maps: Array<{ id: string }>) => maps.map(({ id }) => id);
+
+type Row = Record<string, any>;
+
+// What a query selecting `fields` returns of a row: nothing it did not ask for.
+function selected(row: Row, fields: Row): Row {
+  return Object.fromEntries(
+    Object.entries(fields).map(([key, field]) => {
+      const nested = Array.isArray(field) ? field[1] : field;
+      const value = row[key];
+      expect(value, `${key} on the row`).not.toBe(undefined);
+      if (nested === true || value === null) {
+        return [key, value];
+      }
+      return [
+        key,
+        Array.isArray(value)
+          ? value.map((item) => selected(item, nested))
+          : selected(value, nested),
+      ];
+    }),
+  );
+}
 
 function drawable(
   status: string,
@@ -182,6 +207,7 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
     unmount?.();
     unmount = null;
     useApplicationSettingsStore().availableRegions = [];
+    useAuthStore().me = undefined;
     vi.restoreAllMocks();
   });
 
@@ -545,6 +571,40 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
       expect((wrapper.vm as any).isDirty).toBe(false);
     },
   );
+
+  it("sends the tournament's game mode back when an organizer saves another setting", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Organizer",
+      role: e_player_roles_enum.administrator,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const tournament = drawable("Setup");
+    const row = {
+      ...tournament.options,
+      auto_cancellation: true,
+      auto_cancel_duration: null,
+      live_match_timeout: null,
+      round_restart_delay: null,
+      halftime_pausematch: false,
+      camera_required: false,
+      camera_allow_teammates: false,
+      game_mode_id: GAME_MODE,
+      map_pool: { ...customPool, e_type: { description: "Custom" } },
+    };
+    const wrapper = await mountForm({
+      ...tournament,
+      options: selected(row, matchOptionsFields) as typeof row,
+    });
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+
+    await save(wrapper);
+
+    expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
+      tv_delay: 30,
+      game_mode_id: GAME_MODE,
+    });
+  });
 
   it("reuses the custom pool when an undrawn tournament is saved with the same maps", async () => {
     const wrapper = await mountForm(drawable("Setup"));

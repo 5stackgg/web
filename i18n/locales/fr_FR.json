@@ -7363,15 +7363,8 @@
       "default_best_of": "Best of par défaut",
       "default_best_of_description": "Le format de match utilisé par défaut pour tous les rounds de cette phase.",
       "map_pool": {
-        "label": "Map pool",
-        "description": "Les cartes sur lesquelles se fait le veto des matchs de cette phase.",
-        "same_as_tournament": "Comme le tournoi",
-        "active_duty": "Active Duty",
-        "custom": "Personnalisé",
-        "too_small": "Un best of {best_of} nécessite au moins {best_of} cartes. Ce map pool en a {count}.",
-        "empty": "Choisissez au moins une carte.",
-        "tournament_plays_active_duty": "Le tournoi joue déjà Active Duty. Choisissez « Comme le tournoi ».",
-        "unavailable": "N'est plus jouable ici : {maps}. Sélectionnez une carte pour la retirer du map pool."
+        "too_small": "Un best of {best_of} nécessite au moins {best_of} cartes. Le map pool du tournoi en a {count}.",
+        "empty": "Le map pool du tournoi ne contient aucune carte."
       },
       "match_settings_drawn": "Les matchs de cette phase sont déjà tirés, leurs paramètres ne peuvent donc plus changer.",
       "per_round_best_of": "Best of par round",

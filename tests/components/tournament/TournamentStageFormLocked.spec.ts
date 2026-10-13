@@ -216,20 +216,24 @@ describe("TournamentStageForm with the structure locked", () => {
     expect((wrapper.vm as any).isDirty).toBe(true);
   });
 
-  it("refuses to drop a map pool change made before the lock", async () => {
-    const wrapper = await mountLocked(false);
-    (wrapper.vm as any).mapPoolMode = "custom";
-    (wrapper.vm as any).customMapPool = ["map-de_ancient", "map-de_anubis"];
-    await flushPromises();
+  it("saves the best-of of a stage that still holds a pool of its own, and leaves that pool alone", async () => {
+    const wrapper = await mountLocked(true, {
+      ...tournamentOptions,
+      id: "stage-options-1",
+      map_pool_id: "stage-pool",
+      map_pool: {
+        id: "stage-pool",
+        type: "Custom",
+        maps: tournamentOptions.map_pool.maps.slice(0, 3),
+      },
+    });
+    const calls = await saveBestOf(wrapper);
 
-    await wrapper.setProps({ structureLocked: true });
-    await (wrapper.vm as any).updateCreateStage();
-    await flushPromises();
-
-    expect(mutate).not.toHaveBeenCalled();
-    expect(toastMock).toHaveBeenCalledWith(
-      expect.objectContaining({ description: DRAWN_WHILE_EDITING }),
-    );
+    expect(toastMock).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(1);
+    expect(calls[0].document).toContain("default_best_of: 3");
+    expect(calls[0].document).not.toContain("match_options");
+    expect(calls[0].document).not.toContain("map_pool");
   });
 
   it("saves the best-of once the structural edits are discarded", async () => {

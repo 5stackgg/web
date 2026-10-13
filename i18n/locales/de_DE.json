@@ -7363,15 +7363,8 @@
       "default_best_of": "Standard Best Of",
       "default_best_of_description": "Das Standard-Match-Format für alle Runden dieser Stage.",
       "map_pool": {
-        "label": "Map-Pool",
-        "description": "Aus diesen Maps vetoen die Matches dieser Stage.",
-        "same_as_tournament": "Wie im Turnier",
-        "active_duty": "Active Duty",
-        "custom": "Eigener",
-        "too_small": "Best of {best_of} braucht mindestens {best_of} Maps. Dieser Pool hat {count}.",
-        "empty": "Wähle mindestens eine Map.",
-        "tournament_plays_active_duty": "Das Turnier spielt bereits Active Duty. Wähle „Wie im Turnier“.",
-        "unavailable": "Hier nicht mehr spielbar: {maps}. Wähle eine Map, um sie aus dem Pool zu nehmen."
+        "too_small": "Best of {best_of} braucht mindestens {best_of} Maps. Der Map-Pool des Turniers hat {count}.",
+        "empty": "Der Map-Pool des Turniers enthält keine Maps."
       },
       "match_settings_drawn": "Die Matches dieser Stage sind bereits ausgelost, daher lassen sich ihre Match-Einstellungen nicht mehr ändern.",
       "per_round_best_of": "Best Of pro Runde",

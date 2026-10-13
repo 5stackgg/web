@@ -7365,15 +7365,8 @@
       "default_best_of": "Default Best Of",
       "default_best_of_description": "The default match format used for all rounds in this stage.",
       "map_pool": {
-        "label": "Map Pool",
-        "description": "The maps this stage's matches veto from.",
-        "same_as_tournament": "Same as Tournament",
-        "active_duty": "Active Duty",
-        "custom": "Custom",
-        "too_small": "Best of {best_of} needs at least {best_of} maps. This pool has {count}.",
-        "empty": "Pick at least one map.",
-        "tournament_plays_active_duty": "The tournament already plays Active Duty. Pick Same as Tournament.",
-        "unavailable": "No longer playable here: {maps}. Select a map to take it out of the pool."
+        "too_small": "Best of {best_of} needs at least {best_of} maps. The tournament's map pool has {count}.",
+        "empty": "The tournament's map pool has no maps."
       },
       "match_settings_drawn": "This stage's matches are already drawn, so its match settings can't change.",
       "per_round_best_of": "Per-Round Best Of",

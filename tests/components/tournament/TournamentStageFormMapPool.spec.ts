@@ -12,6 +12,9 @@ vi.mock("@/components/ui/toast", async (importOriginal) => ({
   toast: toastMock,
 }));
 
+const MATCH_SETTINGS_DRAWN =
+  "This stage's matches are already drawn, so its match settings can't change.";
+
 const MAP_NAMES = [
   "de_ancient",
   "de_anubis",
@@ -32,11 +35,35 @@ const maps = MAP_NAMES.map((name) => ({
   workshop_map_id: null,
 }));
 
-const seededPool = { id: "seeded-pool", type: "Competitive", maps };
-const tournamentPool = {
+type Pool = { id: string; type: string; maps: typeof maps };
+
+const tournamentPoolOf = (count: number): Pool => ({
   id: "tournament-pool",
   type: "Custom",
-  maps: maps.slice(0, 5),
+  maps: maps.slice(0, count),
+});
+
+const tournamentPool = tournamentPoolOf(5);
+
+// Stages could hold a pool of their own for a short while; some still do.
+const ownPools: Record<string, Pool> = {
+  "hand-picked": {
+    id: "stage-pool",
+    type: "Custom",
+    maps: [
+      ...maps.slice(3, 7),
+      {
+        id: "map-de_vertigo",
+        name: "de_vertigo",
+        label: "vertigo",
+        type: "Competitive",
+        poster: null,
+        patch: null,
+        workshop_map_id: null,
+      },
+    ],
+  },
+  "Active Duty": { id: "seeded-pool", type: "Competitive", maps },
 };
 
 function tournamentOptions(overrides: Record<string, unknown> = {}) {
@@ -84,6 +111,19 @@ function stage(options: Record<string, unknown> | null) {
   };
 }
 
+const stageWithOwnPool = (
+  pool: Pool,
+  overrides: Record<string, unknown> = {},
+) =>
+  stage(
+    tournamentOptions({
+      id: "stage-options",
+      map_pool_id: pool.id,
+      map_pool: pool,
+      ...overrides,
+    }),
+  );
+
 let unmount: (() => void) | null = null;
 const mutate = vi.fn(respond);
 const drawnBrackets = { value: [] as Array<{ id: string }> };
@@ -96,6 +136,7 @@ const query = vi.fn(async () => ({
 beforeEach(() => {
   (useNuxtApp() as any).$apollo.mutate = mutate;
   (useNuxtApp() as any).$apollo.query = query;
+  toastMock.mockClear();
   useAuthStore().me = {
     steam_id: "76561198000000001",
     name: "Organizer",
@@ -116,7 +157,11 @@ afterEach(() => {
 
 async function mountStageForm(
   existing: ReturnType<typeof stage> | null,
-  pool: { id: string; type: string; maps: any[] } = tournamentPool,
+  {
+    pool = tournamentPool,
+    type = "Competitive",
+    saveBar = false,
+  }: { pool?: Pool; type?: string; saveBar?: boolean } = {},
 ) {
   const wrapper = await mountSuspended(TournamentStageForm, {
     props: {
@@ -125,23 +170,27 @@ async function mountStageForm(
       tournament: {
         id: "tournament-1",
         status: "Setup",
-        options: tournamentOptions({ map_pool_id: pool.id, map_pool: pool }),
+        options: tournamentOptions({
+          type,
+          map_pool_id: pool.id,
+          map_pool: pool,
+        }),
         stages: existing ? [existing] : [],
       },
     },
-    global: { stubs: { SettingsSaveBar: true } },
+    global: { stubs: { SettingsSaveBar: !saveBar } },
+    attachTo: document.body,
   });
   unmount = () => wrapper.unmount();
-  const vm = wrapper.vm as any;
-  vm.map_pools = [seededPool];
-  vm.maps = maps;
-  vm.e_tournament_stage_types = [
+  (wrapper.vm as any).e_tournament_stage_types = [
     { value: "SingleElimination", description: "Single Elimination" },
     { value: "RoundRobin", description: "Round Robin" },
   ];
   await flushPromises();
   return wrapper;
 }
+
+type Wrapper = Awaited<ReturnType<typeof mountStageForm>>;
 
 function mutations() {
   return mutate.mock.calls.map(([options]: [any]) => ({
@@ -150,11 +199,11 @@ function mutations() {
   }));
 }
 
+const sent = (name: string) =>
+  mutations().find(({ body }) => body.includes(name));
+
 async function respond({ mutation }: { mutation: any }) {
   const body = print(mutation);
-  if (body.includes("insert_map_pools_one")) {
-    return { data: { insert_map_pools_one: { id: "new-custom-pool" } } };
-  }
   if (body.includes("insert_match_options_one")) {
     return { data: { insert_match_options_one: { id: "new-options" } } };
   }
@@ -164,200 +213,188 @@ async function respond({ mutation }: { mutation: any }) {
   return { data: {} };
 }
 
-function filterButton(
-  wrapper: Awaited<ReturnType<typeof mountStageForm>>,
-  label: string,
-) {
-  const button = wrapper
-    .findAll("button")
-    .find((candidate) => candidate.text() === label);
-  expect(button, label).toBeDefined();
-  return button!;
+async function edit(wrapper: Wrapper, values: Record<string, unknown>) {
+  (wrapper.vm as any).form.setValues(values);
+  await flushPromises();
 }
 
-async function pickCustom(
-  wrapper: Awaited<ReturnType<typeof mountStageForm>>,
-  labels: string[],
-) {
-  await filterButton(wrapper, "Custom").trigger("click");
-  await flushPromises();
-  for (const label of labels) {
-    await wrapper.get(`button[aria-label="${label}"]`).trigger("click");
-  }
+async function save(wrapper: Wrapper) {
+  await (wrapper.vm as any).updateCreateStage();
   await flushPromises();
 }
+
+const addButton = (wrapper: Wrapper) => wrapper.get("button[type='submit']");
+
+const isDisabled = (button: ReturnType<typeof addButton>) =>
+  button.attributes("disabled") !== undefined;
+
+async function addButtonReason(wrapper: Wrapper) {
+  addButton(wrapper).element.parentElement!.focus();
+  await flushPromises();
+  return document.body.querySelector('[role="tooltip"]')?.textContent;
+}
+
+const saveBarButton = (wrapper: Wrapper) =>
+  wrapper.findAll("button").find((button) => button.text().includes("Save"))!;
 
 describe("TournamentStageForm map pool", () => {
-  it("keeps a stage's own map pool when its other settings are saved", async () => {
-    const stagePool = {
-      id: "stage-pool",
-      type: "Custom",
-      maps: maps.slice(2, 7),
-    };
-    const wrapper = await mountStageForm(
-      stage(
-        tournamentOptions({
-          id: "stage-options",
-          tv_delay: 30,
-          map_pool_id: stagePool.id,
-          map_pool: stagePool,
-        }),
-      ),
-    );
-
-    await (wrapper.vm as any).updateCreateStage();
-
-    const update = mutations().find(({ body }) =>
-      body.includes("update_match_options_by_pk"),
-    );
-    expect(update?.variables.map_pool_id).toBe("stage-pool");
-    expect(
-      mutations().some(({ body }) => body.includes("insert_map_pools")),
-    ).toBe(false);
-  });
-
-  it("follows the tournament's pool by default", async () => {
+  it("has no Map Pool card and no pool selector", async () => {
     const wrapper = await mountStageForm(null);
 
-    expect(filterButton(wrapper, "Same as Tournament").classes()).toContain(
-      "font-bold",
-    );
+    expect(wrapper.text()).not.toContain("Map Pool");
+    for (const label of ["Same as Tournament", "Active Duty", "Custom"]) {
+      expect(
+        wrapper.findAll("button").some((button) => button.text() === label),
+        label,
+      ).toBe(false);
+    }
     for (const map of tournamentPool.maps) {
-      expect(wrapper.text()).toContain(map.label);
+      expect(wrapper.text()).not.toContain(map.label);
     }
   });
 
-  it("blocks saving a best of 5 on a four-map custom pool, and says why", async () => {
+  it.each(Object.entries(ownPools))(
+    "shows nothing about the %s pool an older stage still holds",
+    async (_kind, pool) => {
+      const wrapper = await mountStageForm(stageWithOwnPool(pool));
+
+      expect(wrapper.text()).not.toContain("Map Pool");
+      for (const map of pool.maps) {
+        expect(wrapper.text()).not.toContain(map.label);
+        expect(wrapper.find(`[aria-label="${map.label}"]`).exists()).toBe(
+          false,
+        );
+      }
+      expect((wrapper.vm as any).isDirty).toBe(false);
+    },
+  );
+
+  it("gives a new stage no options row when its match settings are the tournament's", async () => {
     const wrapper = await mountStageForm(null);
-    (wrapper.vm as any).form.setFieldValue("default_best_of", "5");
-    await pickCustom(wrapper, ["ancient", "anubis", "inferno", "mirage"]);
+    await edit(wrapper, { min_teams: "4", max_teams: "8" });
 
-    const warning = wrapper.get(
-      '[aria-label="Best of 5 needs at least 5 maps. This pool has 4."]',
-    );
-    expect(warning.exists()).toBe(true);
-    expect(wrapper.get("button[type='submit']").attributes()).toHaveProperty(
-      "disabled",
-    );
+    await save(wrapper);
 
-    await wrapper.get('button[aria-label="nuke"]').trigger("click");
-    await flushPromises();
-
-    expect(
-      wrapper
-        .find('[aria-label="Best of 5 needs at least 5 maps. This pool has 4."]')
-        .exists(),
-    ).toBe(false);
-    expect(
-      wrapper.get("button[type='submit']").attributes(),
-    ).not.toHaveProperty("disabled");
+    expect(sent("insert_tournament_stages_one")).toBeDefined();
+    expect(sent("insert_match_options_one")).toBeUndefined();
   });
 
-  it("counts a best of 5 final against the pool even when the default is a best of 1", async () => {
+  it("writes the tournament's pool into a new stage's options row", async () => {
     const wrapper = await mountStageForm(null);
-    const vm = wrapper.vm as any;
-    vm.form.setValues({ min_teams: "8", max_teams: "8" });
-    vm.roundBestOf = { "WB:3": "5" };
-    await pickCustom(wrapper, ["ancient", "anubis", "inferno"]);
+    await edit(wrapper, { min_teams: "4", max_teams: "8", tv_delay: 30 });
 
-    expect(
-      wrapper
-        .find('[aria-label="Best of 5 needs at least 5 maps. This pool has 3."]')
-        .exists(),
-    ).toBe(true);
-  });
+    await save(wrapper);
 
-  it("refuses to save while the pool is too small", async () => {
-    const wrapper = await mountStageForm(null);
-    const vm = wrapper.vm as any;
-    vm.form.setValues({
-      min_teams: "4",
-      max_teams: "8",
-      default_best_of: "3",
+    expect(sent("insert_match_options_one")?.variables).toMatchObject({
+      tv_delay: 30,
+      map_pool_id: "tournament-pool",
     });
-    await pickCustom(wrapper, ["ancient", "anubis"]);
+    expect(sent("insert_map_pools")).toBeUndefined();
+  });
 
-    await vm.updateCreateStage();
+  it("writes the tournament's pool into the options row an existing stage gains", async () => {
+    const wrapper = await mountStageForm(stage(null));
+    await edit(wrapper, { tv_delay: 30 });
+
+    await save(wrapper);
+
+    expect(sent("insert_match_options_one")?.variables).toMatchObject({
+      tv_delay: 30,
+      map_pool_id: "tournament-pool",
+    });
+    expect(sent("insert_map_pools")).toBeUndefined();
+  });
+
+  it("keeps the tournament's pool on an options row that is saved again", async () => {
+    const wrapper = await mountStageForm(
+      stage(tournamentOptions({ id: "stage-options", tv_delay: 30 })),
+    );
+    await edit(wrapper, { tv_delay: 45 });
+
+    await save(wrapper);
+
+    expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
+      id: "stage-options",
+      tv_delay: 45,
+      map_pool_id: "tournament-pool",
+    });
+  });
+
+  it.each(Object.entries(ownPools))(
+    "puts a stage that held its own %s pool back on the tournament's",
+    async (_kind, pool) => {
+      const wrapper = await mountStageForm(
+        stageWithOwnPool(pool, { tv_delay: 30 }),
+      );
+      await edit(wrapper, { default_best_of: "1" });
+
+      await save(wrapper);
+
+      expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
+        id: "stage-options",
+        tv_delay: 30,
+        map_pool_id: "tournament-pool",
+      });
+      expect(sent("insert_map_pools")).toBeUndefined();
+      expect(sent("delete_match_options_by_pk")).toBeUndefined();
+    },
+  );
+
+  it.each(Object.entries(ownPools))(
+    "removes the options row of a stage whose %s pool was its only difference",
+    async (_kind, pool) => {
+      const wrapper = await mountStageForm(stageWithOwnPool(pool));
+      await edit(wrapper, { default_best_of: "1" });
+
+      await save(wrapper);
+
+      expect(sent("update_match_options_by_pk")).toBeUndefined();
+      expect(sent("insert_map_pools")).toBeUndefined();
+      expect(sent("delete_match_options_by_pk")?.body ?? "").toContain(
+        '"stage-options"',
+      );
+      const stageUpdates = mutations().filter(({ body }) =>
+        body.includes("update_tournament_stages_by_pk"),
+      );
+      expect(stageUpdates.length).toBeGreaterThan(0);
+      for (const update of stageUpdates) {
+        expect(update.body).toContain("match_options_id: null");
+      }
+    },
+  );
+
+  it("leaves a drawn stage's own pool where it is, and says the matches are drawn", async () => {
+    drawnBrackets.value = [{ id: "bracket-1" }];
+    const wrapper = await mountStageForm(
+      stageWithOwnPool(ownPools["hand-picked"]),
+    );
+    await edit(wrapper, { default_best_of: "1" });
+
+    await save(wrapper);
 
     expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: MATCH_SETTINGS_DRAWN }),
+    );
   });
 
-  it("saves a custom pool as a new Custom map pool on the stage's options", async () => {
-    const wrapper = await mountStageForm(null);
-    const vm = wrapper.vm as any;
-    vm.form.setValues({ min_teams: "4", max_teams: "8" });
-    await pickCustom(wrapper, ["ancient", "anubis", "inferno"]);
+  it("does not give a stage whose matches are already drawn an options row", async () => {
+    drawnBrackets.value = [{ id: "bracket-1" }];
+    const wrapper = await mountStageForm(stage(null));
+    await edit(wrapper, { tv_delay: 30 });
 
-    await vm.updateCreateStage();
+    await save(wrapper);
 
-    const calls = mutations();
-    const pool = calls.find(({ body }) =>
-      body.includes("insert_map_pools_one"),
+    expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: MATCH_SETTINGS_DRAWN }),
     );
-    expect(pool?.variables.map_pool).toEqual({
-      type: "Custom",
-      maps: {
-        data: [
-          { id: "map-de_ancient" },
-          { id: "map-de_anubis" },
-          { id: "map-de_inferno" },
-        ],
-      },
-    });
-    const options = calls.find(({ body }) =>
-      body.includes("insert_match_options_one"),
-    );
-    expect(options?.variables.map_pool_id).toBe("new-custom-pool");
-  });
-
-  it("gives the stage the seeded pool for Active Duty", async () => {
-    const wrapper = await mountStageForm(null);
-    const vm = wrapper.vm as any;
-    vm.form.setValues({ min_teams: "4", max_teams: "8" });
-    await filterButton(wrapper, "Active Duty").trigger("click");
-    await flushPromises();
-
-    await vm.updateCreateStage();
-
-    const options = mutations().find(({ body }) =>
-      body.includes("insert_match_options_one"),
-    );
-    expect(options?.variables.map_pool_id).toBe("seeded-pool");
-  });
-
-  it("drops the stage's own options when it goes back to the tournament's pool and nothing else differs", async () => {
-    const stagePool = {
-      id: "stage-pool",
-      type: "Custom",
-      maps: maps.slice(2, 7),
-    };
-    const wrapper = await mountStageForm(
-      stage(
-        tournamentOptions({
-          id: "stage-options",
-          map_pool_id: stagePool.id,
-          map_pool: stagePool,
-        }),
-      ),
-    );
-    await filterButton(wrapper, "Same as Tournament").trigger("click");
-    await flushPromises();
-
-    await (wrapper.vm as any).updateCreateStage();
-
-    const calls = mutations();
-    expect(
-      calls.some(({ body }) => body.includes("delete_match_options_by_pk")),
-    ).toBe(true);
-    expect(
-      calls.some(({ body }) => body.includes("update_match_options_by_pk")),
-    ).toBe(false);
   });
 
   it("drops per-round formats that don't apply once the stage type changes", async () => {
     const wrapper = await mountStageForm(null);
     const vm = wrapper.vm as any;
-    vm.form.setValues({ min_teams: "8", max_teams: "8" });
+    await edit(wrapper, { min_teams: "8", max_teams: "8" });
     vm.roundBestOf = { "WB:3": "5" };
     await flushPromises();
 
@@ -369,74 +406,154 @@ describe("TournamentStageForm map pool", () => {
 
     expect(vm.roundBestOf).toEqual({});
   });
+});
 
-  it("does not create a pool for a stage whose matches are already drawn", async () => {
-    drawnBrackets.value = [{ id: "bracket-1" }];
-    const wrapper = await mountStageForm(stage(null));
-    const vm = wrapper.vm as any;
-    await pickCustom(wrapper, ["ancient", "anubis", "inferno"]);
+describe("TournamentStageForm map pool size", () => {
+  const FOUR_OF_FIVE =
+    "Best of 5 needs at least 5 maps. The tournament's map pool has 4.";
 
-    toastMock.mockClear();
-    await vm.updateCreateStage();
+  it("blocks adding a best of 5 stage to a tournament with four maps, and says why", async () => {
+    const wrapper = await mountStageForm(null, { pool: tournamentPoolOf(4) });
+    await edit(wrapper, {
+      min_teams: "4",
+      max_teams: "8",
+      default_best_of: "5",
+    });
+
+    expect(isDisabled(addButton(wrapper))).toBe(true);
+    expect(await addButtonReason(wrapper)).toContain(FOUR_OF_FIVE);
+
+    await save(wrapper);
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: FOUR_OF_FIVE }),
+    );
+  });
+
+  it("adds a best of 5 stage once the tournament has five maps", async () => {
+    const wrapper = await mountStageForm(null, { pool: tournamentPoolOf(5) });
+    await edit(wrapper, {
+      min_teams: "4",
+      max_teams: "8",
+      default_best_of: "5",
+    });
+
+    expect(isDisabled(addButton(wrapper))).toBe(false);
+
+    await save(wrapper);
+
+    expect(sent("insert_tournament_stages_one")).toBeDefined();
+    expect(toastMock).not.toHaveBeenCalled();
+  });
+
+  it("counts a best of 5 final even when the default is a best of 1", async () => {
+    const wrapper = await mountStageForm(null, { pool: tournamentPoolOf(4) });
+    await edit(wrapper, { min_teams: "8", max_teams: "8" });
+    expect(isDisabled(addButton(wrapper))).toBe(false);
+
+    (wrapper.vm as any).roundBestOf = { "WB:3": "5" };
+    await flushPromises();
+
+    expect(isDisabled(addButton(wrapper))).toBe(true);
+    expect(await addButtonReason(wrapper)).toContain(FOUR_OF_FIVE);
+  });
+
+  it("says the tournament's pool is empty when it has no maps", async () => {
+    const wrapper = await mountStageForm(null, { pool: tournamentPoolOf(0) });
+    await edit(wrapper, { min_teams: "4", max_teams: "8" });
+
+    expect(isDisabled(addButton(wrapper))).toBe(true);
+    expect(await addButtonReason(wrapper)).toContain(
+      "The tournament's map pool has no maps.",
+    );
+
+    await save(wrapper);
+
+    expect(mutate).not.toHaveBeenCalled();
+  });
+
+  it("stays out of the way of a Rush tournament", async () => {
+    const wrapper = await mountStageForm(null, {
+      pool: tournamentPoolOf(0),
+      type: "Rush",
+    });
+    await edit(wrapper, { min_teams: "4", max_teams: "8" });
+
+    expect(isDisabled(addButton(wrapper))).toBe(false);
+
+    await save(wrapper);
+
+    expect(sent("insert_tournament_stages_one")).toBeDefined();
+    expect(toastMock).not.toHaveBeenCalled();
+  });
+
+  it("blocks saving a stage raised past the tournament's pool", async () => {
+    const wrapper = await mountStageForm(stage(null), {
+      pool: tournamentPoolOf(4),
+      saveBar: true,
+    });
+    await edit(wrapper, { default_best_of: "5" });
+
+    expect(wrapper.text()).toContain("Invalid settings");
+    expect(isDisabled(saveBarButton(wrapper))).toBe(true);
+
+    await save(wrapper);
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: FOUR_OF_FIVE }),
+    );
+  });
+
+  it("saves a stage whose best-of the tournament's pool covers", async () => {
+    const wrapper = await mountStageForm(stage(null), {
+      pool: tournamentPoolOf(5),
+      saveBar: true,
+    });
+    await edit(wrapper, { default_best_of: "5" });
+
+    expect(wrapper.text()).not.toContain("Invalid settings");
+    expect(isDisabled(saveBarButton(wrapper))).toBe(false);
+
+    await save(wrapper);
+
+    expect(sent("update_tournament_stages_by_pk")).toBeDefined();
+  });
+
+  it("measures the tournament's pool, not the bigger pool an older stage still holds", async () => {
+    const wrapper = await mountStageForm(
+      stageWithOwnPool(ownPools["Active Duty"]),
+      { pool: tournamentPoolOf(2), saveBar: true },
+    );
+    await edit(wrapper, { tv_delay: 30 });
+
+    expect(isDisabled(saveBarButton(wrapper))).toBe(true);
+
+    await save(wrapper);
 
     expect(mutate).not.toHaveBeenCalled();
     expect(toastMock).toHaveBeenCalledWith(
       expect.objectContaining({
         description:
-          "This stage's matches are already drawn, so its match settings can't change.",
+          "Best of 3 needs at least 3 maps. The tournament's map pool has 2.",
       }),
     );
   });
 
-  it("does not offer Active Duty as its own choice when the tournament plays it", async () => {
-    const wrapper = await mountStageForm(null, seededPool);
+  it("measures the tournament's pool, not the smaller pool an older stage still holds", async () => {
+    const small = { ...ownPools["hand-picked"], maps: maps.slice(0, 2) };
+    const wrapper = await mountStageForm(stageWithOwnPool(small), {
+      saveBar: true,
+    });
+    await edit(wrapper, { tv_delay: 30 });
 
-    expect(filterButton(wrapper, "Active Duty").attributes()).toHaveProperty(
-      "disabled",
+    expect(isDisabled(saveBarButton(wrapper))).toBe(false);
+
+    await save(wrapper);
+
+    expect(sent("update_match_options_by_pk")?.variables.map_pool_id).toBe(
+      "tournament-pool",
     );
-  });
-
-  it("shows a pool map that is no longer playable, so it can be taken out", async () => {
-    const retired = {
-      id: "map-de_vertigo",
-      name: "de_vertigo",
-      label: "vertigo",
-      type: "Competitive",
-      poster: null,
-      patch: null,
-      workshop_map_id: null,
-    };
-    const stagePool = {
-      id: "stage-pool",
-      type: "Custom",
-      maps: [...maps.slice(0, 4), retired],
-    };
-    const wrapper = await mountStageForm(
-      stage(
-        tournamentOptions({
-          id: "stage-options",
-          map_pool_id: stagePool.id,
-          map_pool: stagePool,
-        }),
-      ),
-    );
-
-    expect(wrapper.text()).toContain("Custom Map Pool (5)");
-    await wrapper.get('button[aria-label="vertigo"]').trigger("click");
-    await flushPromises();
-
-    expect(wrapper.text()).toContain("Custom Map Pool (4)");
-  });
-
-  it("is not dirty after going back to the pool it started with", async () => {
-    const wrapper = await mountStageForm(stage(null));
-    const vm = wrapper.vm as any;
-    await pickCustom(wrapper, ["ancient"]);
-    expect(vm.isDirty).toBe(true);
-
-    await filterButton(wrapper, "Same as Tournament").trigger("click");
-    await flushPromises();
-
-    expect(vm.isDirty).toBe(false);
   });
 });

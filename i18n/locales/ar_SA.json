@@ -7363,15 +7363,8 @@
       "default_best_of": "نظام Best Of الافتراضي",
       "default_best_of_description": "صيغة المباراة الافتراضية المستخدمة في كل جولات هذه المرحلة.",
       "map_pool": {
-        "label": "قائمة الخرائط",
-        "description": "الخرائط التي تُستبعد وتُختار منها خرائط مباريات هذه المرحلة.",
-        "same_as_tournament": "مثل البطولة",
-        "active_duty": "Active Duty",
-        "custom": "مخصصة",
-        "too_small": "نظام Best Of {best_of} يحتاج إلى {best_of} خرائط على الأقل. هذه القائمة فيها {count}.",
-        "empty": "اختر خريطة واحدة على الأقل.",
-        "tournament_plays_active_duty": "البطولة تلعب بالفعل على قائمة Active Duty. اختر «مثل البطولة».",
-        "unavailable": "لم تعد قابلة للعب هنا: {maps}. اختر خريطة لإخراجها من القائمة."
+        "too_small": "نظام Best Of {best_of} يحتاج إلى {best_of} خرائط على الأقل. قائمة خرائط البطولة فيها {count}.",
+        "empty": "قائمة خرائط البطولة لا تحتوي على أي خريطة."
       },
       "match_settings_drawn": "سُحبت مباريات هذه المرحلة بالفعل، لذا لا يمكن تغيير إعدادات مبارياتها.",
       "per_round_best_of": "Best Of لكل جولة",

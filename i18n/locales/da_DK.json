@@ -7363,15 +7363,8 @@
       "default_best_of": "Standard best of",
       "default_best_of_description": "Standardformatet for alle runder i denne fase.",
       "map_pool": {
-        "label": "Map pool",
-        "description": "De maps, denne fases kampe vetoer fra.",
-        "same_as_tournament": "Samme som turneringen",
-        "active_duty": "Active Duty",
-        "custom": "Egen",
-        "too_small": "Bedst af {best_of} kræver mindst {best_of} maps. Denne pool har {count}.",
-        "empty": "Vælg mindst ét map.",
-        "tournament_plays_active_duty": "Turneringen spiller allerede Active Duty. Vælg Samme som turneringen.",
-        "unavailable": "Kan ikke længere spilles her: {maps}. Vælg et map for at tage det ud af poolen."
+        "too_small": "Bedst af {best_of} kræver mindst {best_of} maps. Turneringens map pool har {count}.",
+        "empty": "Turneringens map pool har ingen maps."
       },
       "match_settings_drawn": "Denne fases kampe er allerede trukket, så kampindstillingerne kan ikke længere ændres.",
       "per_round_best_of": "Best of pr. runde",

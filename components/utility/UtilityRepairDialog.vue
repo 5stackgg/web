@@ -115,7 +115,17 @@ function subscribeSession(id: string) {
     })
     .subscribe({
       next: ({ data }: { data: any }) => {
-        session.value = data?.utility_practice_sessions_by_pk ?? null;
+        const row = data?.utility_practice_sessions_by_pk ?? null;
+
+        if (
+          readUtilityPracticeSession(row).isOver ||
+          (!row && session.value)
+        ) {
+          onSessionLost(row);
+          return;
+        }
+
+        session.value = row;
       },
       error: (error: unknown) => {
         console.error("[utility] repair session subscription error:", error);
@@ -183,6 +193,29 @@ async function start() {
   }
 }
 
+function forgetSession() {
+  unsubscribeSession();
+  sessionId.value = null;
+  session.value = null;
+  started.value = null;
+}
+
+// Reaped, or never came up: the row outlives the server, and following it by
+// id would otherwise leave this on "starting" for a server that is gone.
+function onSessionLost(row: UtilityPracticeSession | null) {
+  const { hasFailed, failureReason } = readUtilityPracticeSession(row);
+
+  forgetSession();
+
+  if (hasFailed) {
+    toast({
+      title: t("pages.utility.practice.start_failed"),
+      description: failureReason ?? undefined,
+      variant: "destructive",
+    });
+  }
+}
+
 async function stop() {
   const id = sessionId.value;
   if (!id) {
@@ -193,10 +226,7 @@ async function stop() {
       mutation: stopUtilityPracticeMutation,
       variables: { session_id: id },
     });
-    unsubscribeSession();
-    sessionId.value = null;
-    session.value = null;
-    started.value = null;
+    forgetSession();
   } catch (error: any) {
     toast({
       title: t("pages.utility.practice.stop_failed"),
@@ -316,16 +346,8 @@ async function repair() {
           class="flex items-center gap-3 rounded-md border border-border bg-foreground/5 p-4"
         >
           <Spinner class="shrink-0" />
-          <div class="min-w-0">
-            <div class="text-sm font-medium">
-              {{ $t("pages.utility.practice.booting") }}
-            </div>
-            <p
-              v-if="practice.failureReason"
-              class="mt-1 whitespace-pre-wrap break-words text-xs text-[hsl(var(--tac-amber))]"
-            >
-              {{ practice.failureReason }}
-            </p>
+          <div class="min-w-0 text-sm font-medium">
+            {{ $t("pages.utility.practice.booting") }}
           </div>
         </div>
 

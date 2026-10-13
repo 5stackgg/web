@@ -519,6 +519,33 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
     expect((wrapper.vm as any).isDirty).toBe(false);
   });
 
+  it.each([1, 2, 3])(
+    "ends on the latest tournament when it changes again mid-reload, %i microtask(s) in",
+    async (microtasks) => {
+      const saved = drawable("Setup", { mr: 15 });
+      const wrapper = await mountForm(saved);
+      const pool = { ...customPool, id: "wingman-pool", maps: wingmanMaps };
+
+      wrapper.setProps({
+        tournament: drawable("Setup", { pool, type: "Wingman", mr: 12 }),
+      });
+      for (let tick = 0; tick < microtasks; tick++) {
+        await Promise.resolve();
+      }
+      wrapper.setProps({ tournament: saved });
+      await flushPromises();
+
+      expect(values(wrapper)).toMatchObject({
+        type: "Competitive",
+        mr: "15",
+        custom_map_pool: true,
+        map_pool_id: "custom-pool",
+        map_pool: idsOf(customPool.maps),
+      });
+      expect((wrapper.vm as any).isDirty).toBe(false);
+    },
+  );
+
   it("reuses the custom pool when an undrawn tournament is saved with the same maps", async () => {
     const wrapper = await mountForm(drawable("Setup"));
     (wrapper.vm as any).form.setFieldValue("tv_delay", 30);

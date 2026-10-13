@@ -195,6 +195,7 @@ export default {
       submitting: false,
       baseline: null as string | null,
       isDirty: false,
+      populating: 0,
       form: useForm({
         keepValuesOnUnmount: true,
         validationSchema: toTypedSchema(
@@ -215,8 +216,10 @@ export default {
     tournament: {
       immediate: true,
       handler() {
-        if (this.baseline === null || !this.isDirty) {
-          this.populate();
+        // A reload in flight reads dirty until its snapshot is taken; a change
+        // that lands meanwhile is still one to reload, not an edit to keep.
+        if (this.baseline === null || !this.isDirty || this.populating > 0) {
+          return this.populate();
         }
       },
     },
@@ -277,10 +280,15 @@ export default {
     // type's default max rounds and an empty map selection, so the tournament's
     // values go in again once its watchers have run.
     async populate() {
-      this.applyTournament();
-      await this.$nextTick();
-      this.applyTournament();
-      this.takeSnapshot();
+      this.populating += 1;
+      try {
+        this.applyTournament();
+        await this.$nextTick();
+        this.applyTournament();
+        await this.takeSnapshot();
+      } finally {
+        this.populating -= 1;
+      }
     },
     applyTournament() {
       this.form.setValues({
@@ -306,7 +314,7 @@ export default {
       }
     },
     takeSnapshot() {
-      this.$nextTick(() => {
+      return this.$nextTick(() => {
         this.baseline = JSON.stringify(this.form.values);
         this.isDirty = false;
       });

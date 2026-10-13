@@ -7373,7 +7373,7 @@
         "tournament_plays_active_duty": "Turneringen spelar redan Active Duty. Välj Samma som turneringen.",
         "unavailable": "Kan inte längre spelas här: {maps}. Välj en karta för att ta bort den ur poolen."
       },
-      "match_settings_locked": "Matcherna i det här steget är redan lottade, så deras matchinställningar kan inte ändras längre.",
+      "match_settings_drawn": "Matcherna i det här steget är redan lottade, så deras matchinställningar kan inte ändras längre.",
       "per_round_best_of": "Best of per rond",
       "third_place_match": "Aktivera bronsmatch",
       "third_place_match_description": "Skapa en bronsmatch mellan de två semifinalförlorarna.",

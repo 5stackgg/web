@@ -5,6 +5,13 @@ import { print } from "graphql";
 import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 
+const { toastMock } = vi.hoisted(() => ({ toastMock: vi.fn() }));
+
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast: toastMock,
+}));
+
 const MAP_NAMES = [
   "de_ancient",
   "de_anubis",
@@ -369,9 +376,16 @@ describe("TournamentStageForm map pool", () => {
     const vm = wrapper.vm as any;
     await pickCustom(wrapper, ["ancient", "anubis", "inferno"]);
 
+    toastMock.mockClear();
     await vm.updateCreateStage();
 
     expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description:
+          "This stage's matches are already drawn, so its match settings can't change.",
+      }),
+    );
   });
 
   it("does not offer Active Duty as its own choice when the tournament plays it", async () => {

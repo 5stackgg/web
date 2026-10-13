@@ -7373,7 +7373,7 @@
         "tournament_plays_active_duty": "赛事已在使用现役图池。请选择“与赛事相同”。",
         "unavailable": "此处已无法使用：{maps}。选择地图即可将其移出地图池。"
       },
-      "match_settings_locked": "本阶段的比赛已经排定，因此比赛设置无法再更改。",
+      "match_settings_drawn": "本阶段的比赛已经排定，因此比赛设置无法再更改。",
       "per_round_best_of": "按轮最好",
       "third_place_match": "启用季军赛",
       "third_place_match_description": "在两名半决赛失利者之间创建季军赛。",

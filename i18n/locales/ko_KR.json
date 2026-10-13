@@ -7363,8 +7363,9 @@
       "default_best_of": "기본 승수제",
       "default_best_of_description": "이 스테이지의 모든 라운드에 사용되는 기본 매치 형식입니다.",
       "map_pool": {
-        "too_small": "{best_of}판에는 최소 {best_of}개의 맵이 필요합니다. 대회 맵 풀에는 {count}개가 있습니다.",
-        "empty": "대회 맵 풀에 맵이 없습니다."
+        "too_small": "{best_of}판에는 최소 {best_of}개의 맵이 필요합니다. 토너먼트 맵 풀에는 {count}개가 있습니다.",
+        "too_small_stage": "{best_of}판에는 최소 {best_of}개의 맵이 필요합니다. 이 스테이지의 맵 풀에는 {count}개가 있습니다.",
+        "empty": "토너먼트 맵 풀에 맵이 없습니다."
       },
       "match_settings_drawn": "이 스테이지의 경기가 이미 편성되어 경기 설정을 더 이상 바꿀 수 없습니다.",
       "per_round_best_of": "라운드별 승수제",

@@ -7363,8 +7363,9 @@
       "default_best_of": "既定の Best Of",
       "default_best_of_description": "このステージの全ラウンドで使用される既定の試合形式。",
       "map_pool": {
-        "too_small": "Best of {best_of} には少なくとも {best_of} マップが必要です。大会のマッププールは {count} マップです。",
-        "empty": "大会のマッププールにマップがありません。"
+        "too_small": "Best of {best_of} には少なくとも {best_of} マップが必要です。トーナメントのマッププールは {count} マップです。",
+        "too_small_stage": "Best of {best_of} には少なくとも {best_of} マップが必要です。このステージのマッププールは {count} マップです。",
+        "empty": "トーナメントのマッププールにマップがありません。"
       },
       "match_settings_drawn": "このステージの試合はすでに組まれているため、試合設定は変更できません。",
       "per_round_best_of": "ラウンド別 Best Of",

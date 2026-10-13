@@ -7364,6 +7364,7 @@
       "default_best_of_description": "Il formato di match predefinito usato per tutti i round di questa fase.",
       "map_pool": {
         "too_small": "Un best of {best_of} richiede almeno {best_of} mappe. Il map pool del torneo ne ha {count}.",
+        "too_small_stage": "Un best of {best_of} richiede almeno {best_of} mappe. Il map pool di questa fase ne ha {count}.",
         "empty": "Il map pool del torneo non ha mappe."
       },
       "match_settings_drawn": "Le partite di questa fase sono già state sorteggiate, quindi le loro impostazioni non possono più cambiare.",

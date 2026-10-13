@@ -1530,13 +1530,22 @@ export default {
         },
       ];
     },
+    // A locked save leaves the stage's options row alone, so a stage still
+    // holding a pool of its own goes on playing that one.
+    keptOwnMapPool(): any {
+      const pool = this.structureLocked ? this.stage?.options?.map_pool : null;
+      return pool && pool.id !== this.tournament?.options?.map_pool?.id
+        ? pool
+        : null;
+    },
     mapPoolShortfall(): { bestOf: number; size: number } | null {
       if (this.isRush) {
         return null;
       }
       const values = this.form.values;
+      const pool = this.keptOwnMapPool ?? this.tournament?.options?.map_pool;
       return stageMapPoolShortfall(
-        this.tournament?.options?.map_pool?.maps?.length ?? 0,
+        pool?.maps?.length ?? 0,
         stageHighestBestOf({
           stageType: values.stage_type,
           maxTeams: parseInt(values.max_teams) || 0,
@@ -1551,6 +1560,12 @@ export default {
       const shortfall = this.mapPoolShortfall;
       if (!shortfall) {
         return "";
+      }
+      if (this.keptOwnMapPool) {
+        return this.$t("tournament.stage.map_pool.too_small_stage", {
+          best_of: shortfall.bestOf,
+          count: shortfall.size,
+        });
       }
       if (shortfall.size === 0) {
         return this.$t("tournament.stage.map_pool.empty");

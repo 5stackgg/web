@@ -7364,6 +7364,7 @@
       "default_best_of_description": "Standardformatet som används för alla ronder i denna fas.",
       "map_pool": {
         "too_small": "Bäst av {best_of} kräver minst {best_of} kartor. Turneringens kartpool har {count}.",
+        "too_small_stage": "Bäst av {best_of} kräver minst {best_of} kartor. Det här stegets kartpool har {count}.",
         "empty": "Turneringens kartpool har inga kartor."
       },
       "match_settings_drawn": "Matcherna i det här steget är redan lottade, så deras matchinställningar kan inte ändras längre.",

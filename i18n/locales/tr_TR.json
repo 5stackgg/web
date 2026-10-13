@@ -7364,6 +7364,7 @@
       "default_best_of_description": "Bu etaptaki tüm turlar için kullanılan varsayılan maç formatı.",
       "map_pool": {
         "too_small": "BO{best_of} için en az {best_of} harita gerekir. Turnuvanın harita havuzunda {count} var.",
+        "too_small_stage": "BO{best_of} için en az {best_of} harita gerekir. Bu aşamanın harita havuzunda {count} var.",
         "empty": "Turnuvanın harita havuzunda harita yok."
       },
       "match_settings_drawn": "Bu aşamanın maçları zaten çekildi, bu yüzden maç ayarları artık değiştirilemez.",

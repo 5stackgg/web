@@ -7364,6 +7364,7 @@
       "default_best_of_description": "Das Standard-Match-Format für alle Runden dieser Stage.",
       "map_pool": {
         "too_small": "Best of {best_of} braucht mindestens {best_of} Maps. Der Map-Pool des Turniers hat {count}.",
+        "too_small_stage": "Best of {best_of} braucht mindestens {best_of} Maps. Der Map-Pool dieser Stage hat {count}.",
         "empty": "Der Map-Pool des Turniers enthält keine Maps."
       },
       "match_settings_drawn": "Die Matches dieser Stage sind bereits ausgelost, daher lassen sich ihre Match-Einstellungen nicht mehr ändern.",

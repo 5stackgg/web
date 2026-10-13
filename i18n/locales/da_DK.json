@@ -7364,6 +7364,7 @@
       "default_best_of_description": "Standardformatet for alle runder i denne fase.",
       "map_pool": {
         "too_small": "Bedst af {best_of} kræver mindst {best_of} maps. Turneringens map pool har {count}.",
+        "too_small_stage": "Bedst af {best_of} kræver mindst {best_of} maps. Denne fases map pool har {count}.",
         "empty": "Turneringens map pool har ingen maps."
       },
       "match_settings_drawn": "Denne fases kampe er allerede trukket, så kampindstillingerne kan ikke længere ændres.",

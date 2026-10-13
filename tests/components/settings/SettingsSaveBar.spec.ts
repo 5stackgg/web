@@ -67,6 +67,28 @@ describe("SettingsSaveBar", () => {
     ).toContain(REASON);
   });
 
+  it("does not save on Ctrl+S or Cmd+S while it shows a reason", async () => {
+    const press = (modifier: "ctrlKey" | "metaKey") =>
+      window.dispatchEvent(
+        new KeyboardEvent("keydown", {
+          key: "s",
+          [modifier]: true,
+          cancelable: true,
+        }),
+      );
+
+    const open = await mountBar({});
+    press("ctrlKey");
+    press("metaKey");
+    expect(open.emitted("save")).toHaveLength(2);
+    open.unmount();
+
+    const blocked = await mountBar({ invalid: true, invalidReason: REASON });
+    press("ctrlKey");
+    press("metaKey");
+    expect(blocked.emitted("save")).toBeUndefined();
+  });
+
   it("keeps the generic line and a bare Save when no reason is given", async () => {
     const wrapper = await mountBar({ invalid: true });
 

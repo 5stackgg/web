@@ -7364,6 +7364,7 @@
       "default_best_of_description": "El formato de partida por defecto para todas las rondas de esta fase.",
       "map_pool": {
         "too_small": "Al mejor de {best_of} necesita al menos {best_of} mapas. El pool de mapas del torneo tiene {count}.",
+        "too_small_stage": "Al mejor de {best_of} necesita al menos {best_of} mapas. El pool de mapas de esta fase tiene {count}.",
         "empty": "El pool de mapas del torneo no tiene mapas."
       },
       "match_settings_drawn": "Las partidas de esta fase ya están sorteadas, así que su configuración ya no puede cambiar.",

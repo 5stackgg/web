@@ -7364,6 +7364,7 @@
       "default_best_of_description": "Domyślny format meczu używany dla wszystkich rund w tym etapie",
       "map_pool": {
         "too_small": "Best of {best_of} wymaga co najmniej {best_of} map. Map pool turnieju ma {count}.",
+        "too_small_stage": "Best of {best_of} wymaga co najmniej {best_of} map. Map pool tego etapu ma {count}.",
         "empty": "Map pool turnieju nie ma żadnych map."
       },
       "match_settings_drawn": "Mecze tego etapu są już rozlosowane, więc ich ustawień nie można już zmienić.",

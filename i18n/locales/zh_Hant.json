@@ -7364,6 +7364,7 @@
       "default_best_of_description": "此階段所有輪次使用的預設比賽賽制。",
       "map_pool": {
         "too_small": "BO{best_of} 至少需要 {best_of} 張地圖。賽事地圖池有 {count} 張。",
+        "too_small_stage": "BO{best_of} 至少需要 {best_of} 張地圖。本階段的地圖池有 {count} 張。",
         "empty": "賽事地圖池中沒有地圖。"
       },
       "match_settings_drawn": "本階段的比賽已經排定，因此比賽設定無法再更改。",

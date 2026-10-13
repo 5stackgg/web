@@ -7363,15 +7363,9 @@
       "default_best_of": "既定の Best Of",
       "default_best_of_description": "このステージの全ラウンドで使用される既定の試合形式。",
       "map_pool": {
-        "label": "マッププール",
-        "description": "このステージの試合でBANとPICKを行うマップです。",
-        "same_as_tournament": "大会と同じ",
-        "active_duty": "アクティブデューティ",
-        "custom": "カスタム",
-        "too_small": "Best of {best_of} には少なくとも {best_of} マップが必要です。このプールは {count} マップです。",
-        "empty": "マップを1つ以上選んでください。",
-        "tournament_plays_active_duty": "大会はすでにアクティブデューティを使用しています。「大会と同じ」を選んでください。",
-        "unavailable": "ここではもうプレイできません: {maps}。マップを選択するとプールから外せます。"
+        "too_small": "Best of {best_of} には少なくとも {best_of} マップが必要です。トーナメントのマッププールは {count} マップです。",
+        "too_small_stage": "Best of {best_of} には少なくとも {best_of} マップが必要です。このステージのマッププールは {count} マップです。",
+        "empty": "トーナメントのマッププールにマップがありません。"
       },
       "match_settings_drawn": "このステージの試合はすでに組まれているため、試合設定は変更できません。",
       "per_round_best_of": "ラウンド別 Best Of",

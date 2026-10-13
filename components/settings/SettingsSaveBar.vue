@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 /**
  * Floating "command bar" that docks to the bottom-center of the viewport
@@ -25,6 +26,7 @@ const props = defineProps<{
   // Manual mode's stand-in for form errors: the host knows the settings can't
   // be saved as they are.
   invalid?: boolean;
+  invalidReason?: string;
   // Validation-gate mode (e.g. a create flow): show the bar regardless of
   // dirty state and only enable the action once `valid` is true.
   forceVisible?: boolean;
@@ -72,6 +74,12 @@ const hasErrors = computed(() => {
   const errs = unref(props.form?.errors) as Record<string, unknown> | undefined;
   return errs ? Object.keys(errs).length > 0 : false;
 });
+
+// A form's errors sit on its own fields; only a host-declared invalid state
+// has nothing on screen to point at.
+const blockedReason = computed(() =>
+  !props.form && hasErrors.value ? props.invalidReason || "" : "",
+);
 
 const visible = computed(() => props.forceVisible || dirty.value);
 
@@ -221,7 +229,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
             <span class="truncate text-xs text-muted-foreground">
               {{
                 hasErrors
-                  ? $t("common.save_bar.resolve_errors")
+                  ? blockedReason || $t("common.save_bar.resolve_errors")
                   : description || $t("common.save_bar.review_and_save")
               }}
             </span>
@@ -240,7 +248,24 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
           >
             {{ $t("common.discard") }}
           </Button>
+          <FiveStackToolTip v-if="blockedReason" as-child :delay-duration="120">
+            <template #trigger>
+              <span class="grid shrink-0" tabindex="0">
+                <Button type="button" size="sm" class="tac-amber-cta" disabled>
+                  <span class="flex items-center gap-2">
+                    {{ actionLabel || $t("common.save_changes") }}
+                    <kbd
+                      class="hidden rounded border border-black/25 bg-black/10 px-1 py-px font-mono text-[0.65rem] leading-none sm:inline"
+                      >{{ saveShortcut }}</kbd
+                    >
+                  </span>
+                </Button>
+              </span>
+            </template>
+            <span class="block max-w-[18rem]">{{ blockedReason }}</span>
+          </FiveStackToolTip>
           <Button
+            v-else
             type="button"
             size="sm"
             class="tac-amber-cta shrink-0"

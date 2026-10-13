@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
 import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 const { toastMock } = vi.hoisted(() => ({ toastMock: vi.fn() }));
@@ -99,9 +100,23 @@ afterEach(() => {
   delete (useNuxtApp() as any).$apollo.mutate;
 });
 
+const poolOf = (id: string, count: number) => ({
+  id,
+  type: "Custom",
+  maps: tournamentOptions.map_pool.maps.slice(0, count),
+});
+
+const ownPoolOptions = (count: number) => ({
+  ...tournamentOptions,
+  id: "stage-options-1",
+  map_pool_id: "stage-pool",
+  map_pool: poolOf("stage-pool", count),
+});
+
 async function mountLocked(
   structureLocked: boolean,
   options: Record<string, unknown> | null = null,
+  tournamentMaps = 7,
 ) {
   const wrapper = await mountSuspended(TournamentStageForm, {
     props: {
@@ -111,7 +126,10 @@ async function mountLocked(
       tournament: {
         id: "tournament-1",
         status: "Paused",
-        options: tournamentOptions,
+        options: {
+          ...tournamentOptions,
+          map_pool: poolOf("pool-1", tournamentMaps),
+        },
         stages: [stage(options)],
       },
     },
@@ -216,19 +234,61 @@ describe("TournamentStageForm with the structure locked", () => {
     expect((wrapper.vm as any).isDirty).toBe(true);
   });
 
-  it("refuses to drop a map pool change made before the lock", async () => {
-    const wrapper = await mountLocked(false);
-    (wrapper.vm as any).mapPoolMode = "custom";
-    (wrapper.vm as any).customMapPool = ["map-de_ancient", "map-de_anubis"];
-    await flushPromises();
+  it("saves the best-of of a stage that still holds a pool of its own, and leaves that pool alone", async () => {
+    const wrapper = await mountLocked(true, ownPoolOptions(3));
+    const calls = await saveBestOf(wrapper);
 
-    await wrapper.setProps({ structureLocked: true });
-    await (wrapper.vm as any).updateCreateStage();
-    await flushPromises();
+    expect(toastMock).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(1);
+    expect(calls[0].document).toContain("default_best_of: 3");
+    expect(calls[0].document).not.toContain("match_options");
+    expect(calls[0].document).not.toContain("map_pool");
+  });
 
-    expect(mutate).not.toHaveBeenCalled();
+  it("refuses a best of 3 the stage's own two-map pool can't play, and names that pool", async () => {
+    const reason =
+      "Best of 3 needs at least 3 maps. This stage's map pool has 2.";
+    const wrapper = await mountLocked(true, ownPoolOptions(2));
+    const calls = await saveBestOf(wrapper);
+
+    expect(calls).toHaveLength(0);
     expect(toastMock).toHaveBeenCalledWith(
-      expect.objectContaining({ description: DRAWN_WHILE_EDITING }),
+      expect.objectContaining({ description: reason }),
+    );
+    const bar = wrapper.findComponent(SettingsSaveBar);
+    expect(bar.props("invalid")).toBe(true);
+    expect(bar.props("invalidReason")).toBe(reason);
+  });
+
+  it("saves a best of 3 the stage's own seven-map pool can play, whatever the tournament's holds", async () => {
+    const wrapper = await mountLocked(true, ownPoolOptions(7), 2);
+    const calls = await saveBestOf(wrapper);
+
+    expect(toastMock).not.toHaveBeenCalled();
+    expect(wrapper.findComponent(SettingsSaveBar).props("invalid")).toBe(false);
+    expect(calls).toHaveLength(1);
+    expect(calls[0].document).toContain("default_best_of: 3");
+    expect(calls[0].document).not.toContain("match_options");
+  });
+
+  it("names the tournament's pool when the stage's options row holds it", async () => {
+    const wrapper = await mountLocked(
+      true,
+      {
+        ...tournamentOptions,
+        id: "stage-options-1",
+        map_pool: poolOf("pool-1", 2),
+      },
+      2,
+    );
+    const calls = await saveBestOf(wrapper);
+
+    expect(calls).toHaveLength(0);
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description:
+          "Best of 3 needs at least 3 maps. The tournament's map pool has 2.",
+      }),
     );
   });
 

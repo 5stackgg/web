@@ -7363,15 +7363,9 @@
       "default_best_of": "Varsayılan Maç Serisi",
       "default_best_of_description": "Bu etaptaki tüm turlar için kullanılan varsayılan maç formatı.",
       "map_pool": {
-        "label": "Harita Havuzu",
-        "description": "Bu aşamadaki maçların veto yapacağı haritalar.",
-        "same_as_tournament": "Turnuvayla aynı",
-        "active_duty": "Aktif havuz",
-        "custom": "Özel",
-        "too_small": "BO{best_of} için en az {best_of} harita gerekir. Bu havuzda {count} var.",
-        "empty": "En az bir harita seç.",
-        "tournament_plays_active_duty": "Turnuva zaten aktif havuzu kullanıyor. \"Turnuvayla aynı\" seçeneğini seç.",
-        "unavailable": "Artık burada oynanamaz: {maps}. Havuzdan çıkarmak için bir harita seç."
+        "too_small": "BO{best_of} için en az {best_of} harita gerekir. Turnuvanın harita havuzunda {count} var.",
+        "too_small_stage": "BO{best_of} için en az {best_of} harita gerekir. Bu aşamanın harita havuzunda {count} var.",
+        "empty": "Turnuvanın harita havuzunda harita yok."
       },
       "match_settings_drawn": "Bu aşamanın maçları zaten çekildi, bu yüzden maç ayarları artık değiştirilemez.",
       "per_round_best_of": "Tur Bazlı Maç Serisi",

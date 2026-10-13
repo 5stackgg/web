@@ -7363,15 +7363,9 @@
       "default_best_of": "Padrão Melhor De",
       "default_best_of_description": "O formato de partida padrão usado para todas as rodadas nesta fase.",
       "map_pool": {
-        "label": "Map Pool",
-        "description": "Os mapas de onde as partidas desta fase fazem o veto.",
-        "same_as_tournament": "Igual ao torneio",
-        "active_duty": "Active Duty",
-        "custom": "Personalizado",
-        "too_small": "Melhor de {best_of} precisa de pelo menos {best_of} mapas. Este map pool tem {count}.",
-        "empty": "Escolha pelo menos um mapa.",
-        "tournament_plays_active_duty": "O torneio já joga Active Duty. Escolha “Igual ao torneio”.",
-        "unavailable": "Não pode mais ser jogado aqui: {maps}. Selecione um mapa para tirá-lo do map pool."
+        "too_small": "Melhor de {best_of} precisa de pelo menos {best_of} mapas. O map pool do torneio tem {count}.",
+        "too_small_stage": "Melhor de {best_of} precisa de pelo menos {best_of} mapas. O map pool desta fase tem {count}.",
+        "empty": "O map pool do torneio não tem mapas."
       },
       "match_settings_drawn": "As partidas desta fase já foram sorteadas, então as configurações delas não podem mais mudar.",
       "per_round_best_of": "Por-Round Melhor De",

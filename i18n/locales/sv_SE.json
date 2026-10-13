@@ -7363,15 +7363,9 @@
       "default_best_of": "Standard best of",
       "default_best_of_description": "Standardformatet som används för alla ronder i denna fas.",
       "map_pool": {
-        "label": "Kartpool",
-        "description": "Kartorna som matcherna i det här steget vetoar från.",
-        "same_as_tournament": "Samma som turneringen",
-        "active_duty": "Active Duty",
-        "custom": "Anpassad",
-        "too_small": "Bäst av {best_of} kräver minst {best_of} kartor. Den här kartpoolen har {count}.",
-        "empty": "Välj minst en karta.",
-        "tournament_plays_active_duty": "Turneringen spelar redan Active Duty. Välj Samma som turneringen.",
-        "unavailable": "Kan inte längre spelas här: {maps}. Välj en karta för att ta bort den ur poolen."
+        "too_small": "Bäst av {best_of} kräver minst {best_of} kartor. Turneringens kartpool har {count}.",
+        "too_small_stage": "Bäst av {best_of} kräver minst {best_of} kartor. Det här stegets kartpool har {count}.",
+        "empty": "Turneringens kartpool har inga kartor."
       },
       "match_settings_drawn": "Matcherna i det här steget är redan lottade, så deras matchinställningar kan inte ändras längre.",
       "per_round_best_of": "Best of per rond",

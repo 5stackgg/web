@@ -1,27 +1,7 @@
-import {
-  e_map_pool_types_enum,
-  e_tournament_stage_types_enum,
-} from "~/generated/zeus";
+import { e_tournament_stage_types_enum } from "~/generated/zeus";
 import { calculateRounds } from "~/utilities/tournamentRoundCalculator";
 
-export type StageMapPoolMode = "tournament" | "seeded" | "custom";
-
 type BestOf = string | number | null | undefined;
-
-// Seeded pools are typed by match type and every hand-picked pool is Custom,
-// so the stage's pool says what it is before the seeded pools have loaded.
-export function stageMapPoolMode(
-  stagePool: { id: string; type?: string | null } | null | undefined,
-  tournamentPoolId: string | null | undefined,
-): StageMapPoolMode {
-  if (!stagePool || stagePool.id === tournamentPoolId) {
-    return "tournament";
-  }
-  if (stagePool.type && stagePool.type !== e_map_pool_types_enum.Custom) {
-    return "seeded";
-  }
-  return "custom";
-}
 
 type StageFormat = {
   stageType: string | null | undefined;

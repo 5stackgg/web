@@ -145,7 +145,19 @@ function subscribeSession(id: string) {
     })
     .subscribe({
       next: ({ data }: { data: any }) => {
-        session.value = data?.utility_practice_sessions_by_pk ?? null;
+        const row = data?.utility_practice_sessions_by_pk ?? null;
+
+        // A row that was here and is not any more is a guest taken off a
+        // session they could only see from its roster.
+        if (
+          readUtilityPracticeSession(row).isOver ||
+          (!row && session.value)
+        ) {
+          onSessionLost(row);
+          return;
+        }
+
+        session.value = row;
       },
       error: (error: unknown) => {
         console.error("[utility] practice session subscription error:", error);
@@ -494,6 +506,26 @@ function onSessionEnded() {
 
   if (wasHost) {
     joinedKey.value = null;
+  }
+}
+
+/**
+ * Over without anybody here ending it: reaped while idle, stopped from the top
+ * bar, or never came up. The form is what a refresh would show, so it is what
+ * this goes back to -- and a failed boot says why, the same way a refused start
+ * does.
+ */
+function onSessionLost(row: UtilityPracticeSession | null) {
+  const { hasFailed, failureReason } = readUtilityPracticeSession(row);
+
+  onSessionEnded();
+
+  if (hasFailed) {
+    toast({
+      title: t("pages.utility.practice.start_failed"),
+      description: failureReason ?? undefined,
+      variant: "destructive",
+    });
   }
 }
 

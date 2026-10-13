@@ -83,8 +83,9 @@ const mapDisplay = computed(() =>
 );
 
 // The panel is only mounted for a session that exists or is being joined, so
-// "no connect string" means it is still coming up. The bar used to say so in
-// its strip and then open onto an empty menu.
+// "no connect string" means it is still coming up -- both surfaces drop a
+// session that is over before it gets here. The bar used to say so in its
+// strip and then open onto an empty menu.
 const booting = computed(() => !practice.value.isLive);
 
 const liveAccess = computed(() =>
@@ -344,16 +345,8 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
 
     <div v-if="booting" class="flex items-center gap-3 py-1">
       <Spinner class="shrink-0" />
-      <div class="min-w-0">
-        <div class="text-sm font-medium">
-          {{ $t("pages.utility.practice.booting") }}
-        </div>
-        <p
-          v-if="practice.failureReason"
-          class="mt-1 whitespace-pre-wrap break-words text-xs text-[hsl(var(--tac-amber))]"
-        >
-          {{ practice.failureReason }}
-        </p>
+      <div class="min-w-0 text-sm font-medium">
+        {{ $t("pages.utility.practice.booting") }}
       </div>
     </div>
 

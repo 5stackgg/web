@@ -437,6 +437,14 @@ export type UtilityPracticeView = {
   /** Open | Friends | Invite | Private. Null on rows started before the column. */
   access: string | null;
   isLive: boolean;
+  /**
+   * Ended or Failed. The row stays in the table after the server is gone, so a
+   * subscription by id keeps answering for a session that is over -- and "not
+   * live" on its own reads that as one still coming up.
+   */
+  isOver: boolean;
+  /** Over because it never came up, rather than stopped or reaped. */
+  hasFailed: boolean;
   canManage: boolean;
   /** The match behind the session, for the pod log tail. */
   matchId: string | null;
@@ -491,6 +499,8 @@ export function readUtilityPracticeSession(
     isOpen: session?.is_open !== false,
     access: session?.access ?? null,
     isLive: isLiveSession(status, connectionString),
+    isOver: status === "Ended" || status === "Failed",
+    hasFailed: status === "Failed",
     canManage: session?.can_manage === true,
     matchId: session?.match_id ?? started?.match_id ?? null,
     serverId: session?.match?.server_id ?? null,

@@ -15,7 +15,10 @@ import {
 const customPool = competitiveMaps.slice(0, 5).map(({ id }) => id);
 
 const Host = defineComponent({
-  props: { lockMapPool: { type: Boolean, default: false } },
+  props: {
+    lockMapPool: { type: Boolean, default: false },
+    match: { type: Object, default: null },
+  },
   data() {
     return {
       form: useForm({
@@ -32,6 +35,7 @@ const Host = defineComponent({
     return h(MatchOptions, {
       form: this.form,
       lockMapPool: this.lockMapPool,
+      match: this.match,
     });
   },
 });
@@ -67,9 +71,12 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-async function mountOptions(lockMapPool: boolean) {
+async function mountOptions(
+  lockMapPool: boolean,
+  match: { status: string } | null = null,
+) {
   const wrapper = await mountSuspended(Host, {
-    props: { lockMapPool },
+    props: { lockMapPool, match },
     global: {
       mixins: (useNuxtApp().vueApp as any)._context.mixins,
     },
@@ -213,4 +220,25 @@ describe("MatchOptions with the match type and map pool open", () => {
 
     expect(values(wrapper).type).toBe("Wingman");
   });
+});
+
+describe("MatchOptions for a match that is in veto or live", () => {
+  it.each(["Veto", "Live"])(
+    "locks the match type and map pool of a match in %s",
+    async (status) => {
+      const wrapper = await mountOptions(false, { status });
+
+      expect(typeButtons(wrapper)).toHaveLength(2);
+      expect(typeButtons(wrapper).every(isDisabled)).toBe(true);
+      expect(isDisabled(customPoolSwitch(wrapper))).toBe(true);
+      expect(isDisabled(mapFilter(wrapper))).toBe(true);
+
+      for (const label of ["mirage", "nuke"]) {
+        await mapTile(wrapper, label).trigger("click");
+        await flushPromises();
+      }
+
+      expect(values(wrapper).map_pool).toEqual(customPool);
+    },
+  );
 });

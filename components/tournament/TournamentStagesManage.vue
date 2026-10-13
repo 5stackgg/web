@@ -19,6 +19,7 @@ import TournamentStageForm from "~/components/tournament/TournamentStageForm.vue
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_tournament_status_enum } from "~/generated/zeus";
+import { isTournamentBracketDrawn } from "~/utilities/tournamentBracketDrawn";
 
 const props = defineProps<{ tournament: Record<string, any> }>();
 
@@ -41,28 +42,10 @@ const nextOrder = computed(
 const finished = computed(
   () => props.tournament.status === e_tournament_status_enum.Finished,
 );
-const bracketDrawn = computed(() =>
-  stages.value.some((stage: any) =>
-    (stage.brackets ?? []).some(
-      (bracket: any) => bracket.team_1 || bracket.team_2 || bracket.match,
-    ),
-  ),
+// Locks adding, deleting and the structure; best-of edits pass at any status.
+const structureLocked = computed(() =>
+  isTournamentBracketDrawn(props.tournament),
 );
-// Mirrors the api's assert_tournament_stages_editable: Setup is always open
-// (opening registration redraws every bracket), registration and check-in
-// review only until a team or match is in a bracket. Best-of edits pass at
-// any status.
-const structureLocked = computed(() => {
-  switch (props.tournament.status) {
-    case e_tournament_status_enum.Setup:
-      return false;
-    case e_tournament_status_enum.RegistrationOpen:
-    case e_tournament_status_enum.CheckInReview:
-      return bracketDrawn.value;
-    default:
-      return true;
-  }
-});
 
 watch(structureLocked, (locked) => {
   if (locked && editing.value === "new") {

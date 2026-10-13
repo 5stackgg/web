@@ -11,6 +11,13 @@ import {
   wingmanMaps,
 } from "../../helpers/matchOptionsQueries";
 
+const { toastMock } = vi.hoisted(() => ({ toastMock: vi.fn() }));
+
+vi.mock("@/components/ui/toast", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/components/ui/toast")>()),
+  toast: toastMock,
+}));
+
 const tournament = (status: string, substitutes_enabled = true) => ({
   id: "tournament-1",
   status,
@@ -83,6 +90,8 @@ describe("TournamentMatchOptionsForm substitutes switch", () => {
 
 const LOCKED_LABEL = "Match type and map pool";
 const LOCKED = "Match type and map pool are locked once the bracket is drawn.";
+const DRAWN_WHILE_EDITING =
+  "The bracket was drawn while you were editing. Discard your changes to match type and map pool, then save again.";
 
 type Bracket = {
   team_1?: { id: string } | null;
@@ -110,7 +119,13 @@ const idsOf = (maps: Array<{ id: string }>) => maps.map(({ id }) => id);
 
 function drawable(
   status: string,
-  { pool = customPool, brackets = [] as Bracket[] } = {},
+  {
+    pool = customPool,
+    brackets = [] as Bracket[],
+    type = "Competitive",
+    mr = 12,
+    regions = [] as string[],
+  } = {},
 ) {
   return {
     id: "tournament-1",
@@ -121,14 +136,14 @@ function drawable(
     stages: [{ id: "stage-1", order: 1, brackets }],
     options: {
       id: "options-1",
-      type: "Competitive",
-      mr: 12,
+      type,
+      mr,
       best_of: 1,
       map_veto: true,
       tv_delay: 115,
       veto_pick_timeout: 60,
       region_veto: true,
-      regions: [],
+      regions,
       check_in_setting: "Captains",
       ready_setting: "Players",
       timeout_setting: "Admin",
@@ -150,6 +165,7 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
   let mutate: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
+    toastMock.mockClear();
     answerMatchOptionsQueries();
     mutate = vi.fn(async ({ mutation }: { mutation: any }) =>
       print(mutation).includes("insert_map_pools_one")
@@ -165,6 +181,7 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
   afterEach(() => {
     unmount?.();
     unmount = null;
+    useApplicationSettingsStore().availableRegions = [];
     vi.restoreAllMocks();
   });
 
@@ -211,9 +228,44 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
     await flushPromises();
   }
 
+  const customPoolSwitch = (wrapper: Wrapper) =>
+    wrapper.get("div.justify-end button[role='switch']");
+
+  type Undrawn = { pool?: Pool; mr?: number };
+
+  const mountUndrawn = (options: Undrawn = {}) =>
+    mountForm(
+      drawable("RegistrationOpen", { ...options, brackets: [emptySlot()] }),
+    );
+
+  async function draw(wrapper: Wrapper, options: Undrawn = {}) {
+    await wrapper.setProps({
+      tournament: drawable("RegistrationOpen", {
+        ...options,
+        brackets: [seated()],
+      }),
+    });
+    await flushPromises();
+  }
+
   async function save(wrapper: Wrapper) {
     await (wrapper.vm as any).save();
     await flushPromises();
+  }
+
+  async function discard(wrapper: Wrapper) {
+    (wrapper.vm as any).discardChanges();
+    await flushPromises();
+  }
+
+  function expectRefused() {
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variant: "destructive",
+        description: DRAWN_WHILE_EDITING,
+      }),
+    );
+    expect(mutate).not.toHaveBeenCalled();
   }
 
   function sent(name: string) {
@@ -256,15 +308,10 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
   });
 
   it("locks them as soon as the bracket is drawn under an open form", async () => {
-    const wrapper = await mountForm(
-      drawable("RegistrationOpen", { brackets: [emptySlot()] }),
-    );
+    const wrapper = await mountUndrawn();
     expectLock(wrapper, false);
 
-    await wrapper.setProps({
-      tournament: drawable("RegistrationOpen", { brackets: [seated()] }),
-    });
-    await flushPromises();
+    await draw(wrapper);
 
     expectLock(wrapper, true);
   });
@@ -298,54 +345,178 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
     );
   });
 
-  it("drops a map picked before the bracket was drawn instead of saving a new pool", async () => {
-    const wrapper = await mountForm(
-      drawable("RegistrationOpen", { brackets: [emptySlot()] }),
-    );
-    await clickMap(wrapper, "nuke");
-    expect(values(wrapper).map_pool).toHaveLength(6);
-
-    await wrapper.setProps({
-      tournament: drawable("RegistrationOpen", { brackets: [seated()] }),
+  it("saves a drawn tournament on a pool that is neither custom nor its type's seeded one", async () => {
+    const pool = { ...customPool, id: "older-pool", type: "Competitive" };
+    const wrapper = await mountForm(drawable("Live", { pool }));
+    expect(values(wrapper)).toMatchObject({
+      custom_map_pool: true,
+      map_pool: idsOf(pool.maps),
     });
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
     await flushPromises();
+
     await save(wrapper);
 
-    expect(sent("insert_map_pools_one")).toBeUndefined();
-    expect(sent("update_match_options_by_pk")?.variables.map_pool_id).toBe(
-      "custom-pool",
+    expect(toastMock).not.toHaveBeenCalledWith(
+      expect.objectContaining({ variant: "destructive" }),
     );
+    expect(sent("insert_map_pools_one")).toBeUndefined();
+    expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
+      tv_delay: 30,
+      map_pool_id: "older-pool",
+    });
   });
 
-  it("drops a match type picked before the bracket was drawn", async () => {
-    const wrapper = await mountForm(
-      drawable("RegistrationOpen", {
-        pool: seededPools.Competitive,
-        brackets: [emptySlot()],
-      }),
-    );
+  it("refuses a save that holds a match type picked before the bracket was drawn", async () => {
+    const seeded = { pool: seededPools.Competitive };
+    const wrapper = await mountUndrawn(seeded);
     await clickButton(wrapper, "Wingman");
     await clickMap(wrapper, "overpass");
     await clickMap(wrapper, "vertigo");
+
+    await draw(wrapper, seeded);
+    await save(wrapper);
+
+    expectRefused();
     expect(values(wrapper)).toMatchObject({
       type: "Wingman",
       map_pool: idsOf(wingmanMaps),
     });
+    expect((wrapper.vm as any).isDirty).toBe(true);
+  });
 
-    await wrapper.setProps({
-      tournament: drawable("RegistrationOpen", {
-        pool: seededPools.Competitive,
-        brackets: [seated()],
-      }),
-    });
-    await flushPromises();
+  it("refuses a save that holds a map toggled before the bracket was drawn", async () => {
+    const wrapper = await mountUndrawn();
+    await clickMap(wrapper, "nuke");
+
+    await draw(wrapper);
     await save(wrapper);
 
+    expectRefused();
+    expect(values(wrapper).map_pool).toHaveLength(6);
+  });
+
+  it("refuses a save that holds a custom pool switched off before the bracket was drawn", async () => {
+    const wrapper = await mountUndrawn();
+    await customPoolSwitch(wrapper).trigger("click");
+    await flushPromises();
+    expect(values(wrapper).custom_map_pool).toBe(false);
+
+    await draw(wrapper);
+    await save(wrapper);
+
+    expectRefused();
+  });
+
+  it("refuses a save that holds a custom pool switched on before the bracket was drawn", async () => {
+    const seeded = { pool: seededPools.Competitive };
+    const wrapper = await mountUndrawn(seeded);
+    await customPoolSwitch(wrapper).trigger("click");
+    await flushPromises();
+    expect(values(wrapper).custom_map_pool).toBe(true);
+
+    await draw(wrapper, seeded);
+    await save(wrapper);
+
+    expectRefused();
+  });
+
+  it("saves a drawn tournament again once a stale match type is discarded", async () => {
+    const saved = { mr: 15 };
+    const wrapper = await mountUndrawn(saved);
+    await clickButton(wrapper, "Wingman");
+    await draw(wrapper, saved);
+    await save(wrapper);
+    expectRefused();
+
+    await discard(wrapper);
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+    toastMock.mockClear();
+    await save(wrapper);
+
+    expect(sent("insert_map_pools_one")).toBeUndefined();
     expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
       type: "Competitive",
-      map_pool_id: "seeded-competitive",
+      mr: "15",
+      tv_delay: 30,
+      map_pool_id: "custom-pool",
     });
-    expect(sent("insert_map_pools_one")).toBeUndefined();
+    expect(toastMock).not.toHaveBeenCalledWith(
+      expect.objectContaining({ variant: "destructive" }),
+    );
+  });
+
+  it.each([
+    ["custom", customPool, idsOf(customPool.maps)],
+    ["seeded", seededPools.Competitive, []],
+  ])(
+    "puts the saved type, max rounds and %s pool back when a picked type is discarded",
+    async (_kind, pool, selection) => {
+      const wrapper = await mountForm(drawable("Setup", { pool, mr: 15 }));
+      await save(wrapper);
+      const untouched = sent("update_match_options_by_pk")?.variables;
+      mutate.mockClear();
+
+      await clickButton(wrapper, "Wingman");
+      expect(values(wrapper)).toMatchObject({ type: "Wingman", mr: "8" });
+      await discard(wrapper);
+
+      expect(values(wrapper)).toMatchObject({
+        type: "Competitive",
+        mr: "15",
+        custom_map_pool: pool.type === "Custom",
+        map_pool_id: pool.id,
+        map_pool: selection,
+      });
+      expect((wrapper.vm as any).isDirty).toBe(false);
+
+      await save(wrapper);
+
+      expect(sent("insert_map_pools_one")).toBeUndefined();
+      expect(sent("update_match_options_by_pk")?.variables).toEqual(untouched);
+      expect(untouched).toMatchObject({ mr: "15", map_pool_id: pool.id });
+    },
+  );
+
+  it("puts the saved regions back when a region veto change is discarded", async () => {
+    useApplicationSettingsStore().availableRegions = [
+      { value: "eu", description: "Europe", is_lan: false },
+      { value: "na", description: "North America", is_lan: false },
+    ] as ReturnType<typeof useApplicationSettingsStore>["availableRegions"];
+    const wrapper = await mountForm(
+      drawable("Setup", { regions: ["eu", "na"] }),
+    );
+    (wrapper.vm as any).form.setFieldValue("region_veto", false);
+    await flushPromises();
+    expect(values(wrapper).regions).toEqual(["eu"]);
+
+    await discard(wrapper);
+
+    expect(values(wrapper)).toMatchObject({
+      region_veto: true,
+      regions: ["eu", "na"],
+    });
+    expect((wrapper.vm as any).isDirty).toBe(false);
+  });
+
+  it("shows a tournament whose type, max rounds and pool changed under a clean form", async () => {
+    const wrapper = await mountForm(drawable("Setup"));
+    const pool = { ...customPool, id: "wingman-pool", maps: wingmanMaps };
+
+    await wrapper.setProps({
+      tournament: drawable("Setup", { pool, type: "Wingman", mr: 12 }),
+    });
+    await flushPromises();
+
+    expect(values(wrapper)).toMatchObject({
+      type: "Wingman",
+      mr: "12",
+      custom_map_pool: true,
+      map_pool_id: "wingman-pool",
+      map_pool: idsOf(wingmanMaps),
+    });
+    expect((wrapper.vm as any).isDirty).toBe(false);
   });
 
   it("reuses the custom pool when an undrawn tournament is saved with the same maps", async () => {
@@ -416,7 +587,7 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
     );
     expect(values(wrapper).custom_map_pool).toBe(false);
 
-    await wrapper.get("div.justify-end button[role='switch']").trigger("click");
+    await customPoolSwitch(wrapper).trigger("click");
     await flushPromises();
     for (const { label } of competitiveMaps) {
       await clickMap(wrapper, label);

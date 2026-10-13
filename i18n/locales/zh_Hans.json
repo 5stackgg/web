@@ -7275,6 +7275,7 @@
       },
       "map_pool_locked_label": "比赛类型和地图池",
       "map_pool_locked": "对阵图生成后，比赛类型和地图池将被锁定。",
+      "drawn_while_editing": "你编辑期间对阵图已生成。请放弃对比赛类型和地图池的更改，然后重新保存。",
       "logo": {
         "label": "标志"
       },

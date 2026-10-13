@@ -273,7 +273,16 @@ export default {
     },
   },
   methods: {
-    populate() {
+    // MatchOptions answers a restored match type on the next flush with that
+    // type's default max rounds and an empty map selection, so the tournament's
+    // values go in again once its watchers have run.
+    async populate() {
+      this.applyTournament();
+      await this.$nextTick();
+      this.applyTournament();
+      this.takeSnapshot();
+    },
+    applyTournament() {
       this.form.setValues({
         map_veto: true,
         auto_start: this.tournament.auto_start,
@@ -295,8 +304,6 @@ export default {
           });
         }
       }
-
-      this.takeSnapshot();
     },
     takeSnapshot() {
       this.$nextTick(() => {
@@ -305,14 +312,10 @@ export default {
       });
     },
     discardChanges() {
-      this.populate();
+      return this.populate();
     },
-    holdsCustomMapPool(mapIds: string[]) {
+    selectsCurrentMaps(mapIds: string[]) {
       const pool = this.tournament.options.map_pool;
-      if (pool.type !== e_map_pool_types_enum.Custom) {
-        return false;
-      }
-
       const current = new Set(pool.maps.map(({ id }: { id: string }) => id));
       const selected = new Set(mapIds);
       return (
@@ -320,8 +323,39 @@ export default {
         [...selected].every((id) => current.has(id))
       );
     },
+    holdsCustomMapPool(mapIds: string[]) {
+      const pool = this.tournament.options.map_pool;
+      return (
+        pool.type === e_map_pool_types_enum.Custom &&
+        this.selectsCurrentMaps(mapIds)
+      );
+    },
+    typeOrMapPoolChanged(): boolean {
+      const form = this.form.values;
+      const options = this.tournament.options;
+
+      if (form.type !== options.type) {
+        return true;
+      }
+      if (!form.custom_map_pool) {
+        return form.map_pool_id !== options.map_pool.id;
+      }
+      return this.isDefaultMapPool || !this.selectsCurrentMaps(form.map_pool);
+    },
     async save() {
       if (this.submitting) {
+        return;
+      }
+
+      // Ahead of validation: a pick the draw overtook can be one the form
+      // rejects (a custom pool with no maps) and can no longer be corrected.
+      const mapPoolLocked = this.mapPoolLocked;
+      if (mapPoolLocked && this.typeOrMapPoolChanged()) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: this.$t("tournament.form.drawn_while_editing"),
+        });
         return;
       }
 
@@ -368,9 +402,11 @@ export default {
           }),
         });
 
-        const mapPoolLocked = this.mapPoolLocked;
         let mapPoolId = form.map_pool_id;
 
+        // A pool that is neither Custom nor its type's seeded one shows as a
+        // custom selection; drawn, it stays instead of being saved as a new
+        // Custom pool.
         if (
           mapPoolLocked ||
           (form.custom_map_pool && this.holdsCustomMapPool(form.map_pool))
@@ -399,14 +435,7 @@ export default {
         await this.$apollo.mutate({
           variables: {
             id: this.tournament.options.id,
-            // The api keeps a drawn tournament's pool but would take a new
-            // type, so one picked before the draw is not sent.
-            ...setupOptionsVariables(
-              mapPoolLocked
-                ? { ...form, type: this.tournament.options.type }
-                : form,
-              { mapPoolId },
-            ),
+            ...setupOptionsVariables(form, { mapPoolId }),
           },
           mutation: generateMutation({
             update_match_options_by_pk: [

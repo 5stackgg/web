@@ -7275,6 +7275,7 @@
       },
       "map_pool_locked_label": "比賽類型和地圖池",
       "map_pool_locked": "對陣圖產生後，比賽類型和地圖池將被鎖定。",
+      "drawn_while_editing": "你編輯期間對陣圖已產生。請捨棄對比賽類型和地圖池的變更，然後重新儲存。",
       "logo": {
         "label": "標誌"
       },

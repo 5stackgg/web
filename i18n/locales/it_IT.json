@@ -7275,6 +7275,7 @@
       },
       "map_pool_locked_label": "Tipo di match e map pool",
       "map_pool_locked": "Il tipo di match e il map pool sono bloccati dopo la generazione del tabellone.",
+      "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche a tipo di match e map pool, poi salva di nuovo.",
       "logo": {
         "label": "Logo"
       },

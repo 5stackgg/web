@@ -7275,6 +7275,7 @@
       },
       "map_pool_locked_label": "Kamptype og map pool",
       "map_pool_locked": "Kamptype og map pool er låst, når turneringstræet er lavet.",
+      "drawn_while_editing": "Turneringstræet blev lavet, mens du redigerede. Kassér dine ændringer af kamptype og map pool, og gem så igen.",
       "logo": {
         "label": "Logo"
       },

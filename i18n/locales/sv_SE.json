@@ -7275,6 +7275,7 @@
       },
       "map_pool_locked_label": "Matchtyp och kartpool",
       "map_pool_locked": "Matchtyp och kartpool är låsta när slutspelsträdet har skapats.",
+      "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta dina ändringar av matchtyp och kartpool och spara sedan igen.",
       "logo": {
         "label": "Logotyp"
       },

@@ -7275,6 +7275,7 @@
       },
       "map_pool_locked_label": "Typ meczu i map pool",
       "map_pool_locked": "Typ meczu i map pool są zablokowane po utworzeniu drabinki.",
+      "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany typu meczu i map poolu, a potem zapisz ponownie.",
       "logo": {
         "label": "Logo"
       },

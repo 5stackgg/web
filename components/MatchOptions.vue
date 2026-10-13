@@ -40,14 +40,14 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                 selectableMatchTypes.map((type) => ({
                   key: type.value,
                   label: type.value,
-                  disabled: isLocked,
+                  disabled: mapPoolLocked,
                 }))
               "
               square
               size="lg"
               block
               @update:model-value="
-                (value) => !isLocked && form.setFieldValue('type', value)
+                (value) => !mapPoolLocked && form.setFieldValue('type', value)
               "
             />
             <p
@@ -216,7 +216,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                         <Switch
                           :model-value="value"
                           @update:model-value="handleChange"
-                          :disabled="isLocked"
+                          :disabled="mapPoolLocked"
                         />
                       </div>
                     </FormControl>
@@ -238,8 +238,8 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                             type="text"
                             :placeholder="$t('match.options.filter_maps')"
                             class="pl-10"
-                            :readonly="isLocked"
-                            :disabled="isLocked"
+                            :readonly="mapPoolLocked"
+                            :disabled="mapPoolLocked"
                           />
                           <Search
                             class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
@@ -281,13 +281,13 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                               v-for="map in maps"
                               :key="map.id"
                               class="relative rounded-lg overflow-hidden transition duration-200 ease-in-out"
-                              @click="!isLocked && updateMapPool(map.id)"
+                              @click="!mapPoolLocked && updateMapPool(map.id)"
                               :class="{
                                 'opacity-40':
                                   form.values.custom_map_pool &&
                                   !form.values.map_pool?.includes(map.id),
                                 'cursor-pointer transform hover:scale-105':
-                                  form.values.custom_map_pool,
+                                  form.values.custom_map_pool && !mapPoolLocked,
                               }"
                             >
                               <MapDisplay class="h-[150px]" :map="map">
@@ -1515,6 +1515,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    lockMapPool: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   apollo: {
     gameModes: {
@@ -1794,6 +1799,9 @@ export default {
     },
     isLive(): boolean {
       return !!this.match && this.match.status === e_match_status_enum.Live;
+    },
+    mapPoolLocked(): boolean {
+      return this.isLocked || this.lockMapPool;
     },
     isRush(): boolean {
       return this.form.values.type === e_match_types_enum.Rush;

@@ -7273,6 +7273,9 @@
         "description": "Les équipes peuvent inscrire et aligner des remplaçants en plus des titulaires. Désactivé, les rosters et les matchs sont limités aux titulaires.",
         "locked": "Les remplaçants ne peuvent plus être désactivés une fois les inscriptions closes."
       },
+      "map_pool_locked_label": "Type de match et map pool",
+      "map_pool_locked": "Le type de match et le map pool sont verrouillés une fois l'arbre tiré.",
+      "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule tes changements de type de match et de map pool, puis enregistre à nouveau.",
       "logo": {
         "label": "Logo"
       },

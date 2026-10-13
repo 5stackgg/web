@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { TriangleAlert } from "lucide-vue-next";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
+import { Fold } from "~/components/ui/transitions";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 import SettingHeader from "~/components/match/SettingHeader.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
@@ -13,6 +16,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       :hide-best-of="true"
       :hide-match-mode="true"
       :lock-substitutes="true"
+      :lock-map-pool="mapPoolLocked"
     >
       <FormField v-slot="{ value, handleChange }" name="negotiated_scheduling">
         <FormItem>
@@ -100,6 +104,28 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           </div>
         </FormItem>
       </FormField>
+
+      <Fold :open="mapPoolLocked">
+        <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span>{{ $t("tournament.form.map_pool_locked_label") }}</span>
+          <FiveStackToolTip as-child :delay-duration="120">
+            <template #trigger>
+              <span
+                class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                tabindex="0"
+                role="img"
+                :aria-label="$t('tournament.form.map_pool_locked')"
+                @click.prevent
+              >
+                <TriangleAlert class="h-3.5 w-3.5" />
+              </span>
+            </template>
+            <p class="max-w-[16rem]">
+              {{ $t("tournament.form.map_pool_locked") }}
+            </p>
+          </FiveStackToolTip>
+        </div>
+      </Fold>
     </MatchOptions>
 
     <div class="pb-24"></div>
@@ -130,6 +156,7 @@ import {
   setupOptionsVariables,
   setupOptionsSetMutation,
 } from "~/utilities/setupOptions";
+import { isTournamentBracketDrawn } from "~/utilities/tournamentBracketDrawn";
 import * as z from "zod";
 
 export default {
@@ -168,6 +195,7 @@ export default {
       submitting: false,
       baseline: null as string | null,
       isDirty: false,
+      populating: 0,
       form: useForm({
         keepValuesOnUnmount: true,
         validationSchema: toTypedSchema(
@@ -188,8 +216,10 @@ export default {
     tournament: {
       immediate: true,
       handler() {
-        if (this.baseline === null || !this.isDirty) {
-          this.populate();
+        // A reload in flight reads dirty until its snapshot is taken; a change
+        // that lands meanwhile is still one to reload, not an edit to keep.
+        if (this.baseline === null || !this.isDirty || this.populating > 0) {
+          return this.populate();
         }
       },
     },
@@ -221,6 +251,9 @@ export default {
     },
   },
   computed: {
+    mapPoolLocked() {
+      return isTournamentBracketDrawn(this.tournament);
+    },
     substitutesLocked() {
       return (
         this.tournament.substitutes_enabled &&
@@ -243,7 +276,21 @@ export default {
     },
   },
   methods: {
-    populate() {
+    // MatchOptions answers a restored match type on the next flush with that
+    // type's default max rounds and an empty map selection, so the tournament's
+    // values go in again once its watchers have run.
+    async populate() {
+      this.populating += 1;
+      try {
+        this.applyTournament();
+        await this.$nextTick();
+        this.applyTournament();
+        await this.takeSnapshot();
+      } finally {
+        this.populating -= 1;
+      }
+    },
+    applyTournament() {
       this.form.setValues({
         map_veto: true,
         auto_start: this.tournament.auto_start,
@@ -265,20 +312,58 @@ export default {
           });
         }
       }
-
-      this.takeSnapshot();
     },
     takeSnapshot() {
-      this.$nextTick(() => {
+      return this.$nextTick(() => {
         this.baseline = JSON.stringify(this.form.values);
         this.isDirty = false;
       });
     },
     discardChanges() {
-      this.populate();
+      return this.populate();
+    },
+    selectsCurrentMaps(mapIds: string[]) {
+      const pool = this.tournament.options.map_pool;
+      const current = new Set(pool.maps.map(({ id }: { id: string }) => id));
+      const selected = new Set(mapIds);
+      return (
+        current.size === selected.size &&
+        [...selected].every((id) => current.has(id))
+      );
+    },
+    holdsCustomMapPool(mapIds: string[]) {
+      const pool = this.tournament.options.map_pool;
+      return (
+        pool.type === e_map_pool_types_enum.Custom &&
+        this.selectsCurrentMaps(mapIds)
+      );
+    },
+    typeOrMapPoolChanged(): boolean {
+      const form = this.form.values;
+      const options = this.tournament.options;
+
+      if (form.type !== options.type) {
+        return true;
+      }
+      if (!form.custom_map_pool) {
+        return form.map_pool_id !== options.map_pool.id;
+      }
+      return this.isDefaultMapPool || !this.selectsCurrentMaps(form.map_pool);
     },
     async save() {
       if (this.submitting) {
+        return;
+      }
+
+      // Ahead of validation: a pick the draw overtook can be one the form
+      // rejects (a custom pool with no maps) and can no longer be corrected.
+      const mapPoolLocked = this.mapPoolLocked;
+      if (mapPoolLocked && this.typeOrMapPoolChanged()) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: this.$t("tournament.form.drawn_while_editing"),
+        });
         return;
       }
 
@@ -327,7 +412,15 @@ export default {
 
         let mapPoolId = form.map_pool_id;
 
-        if (form.custom_map_pool) {
+        // A pool that is neither Custom nor its type's seeded one shows as a
+        // custom selection; drawn, it stays instead of being saved as a new
+        // Custom pool.
+        if (
+          mapPoolLocked ||
+          (form.custom_map_pool && this.holdsCustomMapPool(form.map_pool))
+        ) {
+          mapPoolId = this.tournament.options.map_pool.id;
+        } else if (form.custom_map_pool) {
           const { data } = await this.$apollo.mutate({
             variables: {
               map_pool: {

@@ -24,6 +24,7 @@ export const matchOptionsFields = Selector("match_options")({
   halftime_pausematch: true,
   camera_required: true,
   camera_allow_teammates: true,
+  game_mode_id: true,
   number_of_substitutes: true,
   timeout_setting: true,
   tech_timeout_setting: true,

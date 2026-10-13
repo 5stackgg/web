@@ -7273,6 +7273,9 @@
         "description": "Los equipos pueden incluir suplentes en su roster y alinearlos además de los titulares. Si se desactiva, los rosters y las partidas se limitan a la alineación titular.",
         "locked": "Los suplentes no se pueden desactivar una vez cerradas las inscripciones."
       },
+      "map_pool_locked_label": "Tipo de partida y pool de mapas",
+      "map_pool_locked": "El tipo de partida y el pool de mapas se bloquean una vez generado el cuadro.",
+      "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta tus cambios de tipo de partida y pool de mapas y luego guarda de nuevo.",
       "logo": {
         "label": "Logo"
       },

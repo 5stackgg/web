@@ -7273,6 +7273,9 @@
         "description": "Teams können Ersatzspieler über die Startaufstellung hinaus ins Roster aufnehmen und einsetzen. Wenn deaktiviert, sind Roster und Matches auf die Startaufstellung beschränkt.",
         "locked": "Ersatzspieler können nach Ende der Anmeldung nicht mehr deaktiviert werden."
       },
+      "map_pool_locked_label": "Match-Typ und Map-Pool",
+      "map_pool_locked": "Match-Typ und Map-Pool sind gesperrt, sobald der Turnierbaum gezogen ist.",
+      "drawn_while_editing": "Der Turnierbaum wurde gezogen, während du bearbeitet hast. Verwirf deine Änderungen an Match-Typ und Map-Pool und speichere dann erneut.",
       "logo": {
         "label": "Logo"
       },

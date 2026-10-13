@@ -7275,6 +7275,9 @@
         "description": "Teams can roster and field substitutes beyond the starting lineup. When disabled, rosters and matches are limited to the starting lineup.",
         "locked": "Substitutes can't be turned off once registration has closed."
       },
+      "map_pool_locked_label": "Match type and map pool",
+      "map_pool_locked": "Match type and map pool are locked once the bracket is drawn.",
+      "drawn_while_editing": "The bracket was drawn while you were editing. Discard your changes to match type and map pool, then save again.",
       "logo": {
         "label": "Logo"
       },

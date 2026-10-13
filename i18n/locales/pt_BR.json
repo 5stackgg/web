@@ -7273,6 +7273,9 @@
         "description": "As equipes podem inscrever e escalar reservas além dos titulares. Quando desativado, elencos e partidas ficam limitados aos titulares.",
         "locked": "As reservas não podem ser desativadas depois que as inscrições forem encerradas."
       },
+      "map_pool_locked_label": "Tipo de partida e map pool",
+      "map_pool_locked": "O tipo de partida e o map pool ficam bloqueados depois que o chaveamento é gerado.",
+      "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações de tipo de partida e map pool e depois salve novamente.",
       "logo": {
         "label": "Logo"
       },

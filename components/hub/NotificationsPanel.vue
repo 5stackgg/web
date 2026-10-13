@@ -40,8 +40,11 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-active-class="notif-fold"
         leave-to-class="notif-fold-collapsed"
       >
-        <div v-if="featureSpotlight" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+        <div
+          v-if="featureSpotlight"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+        >
+          <div class="min-h-0 min-w-0">
             <div class="mb-3">
               <FeatureSpotlightNotification :spotlight="featureSpotlight" />
             </div>
@@ -52,15 +55,20 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
            last of anything used to remove rows, invite blocks, separators and
            the footer on one frame. Each block owns its transition, so a mass
            dismiss is a set of folds closing rather than a cut; the mb-3
-           spacing rides inside the clipped rows. -->
+           spacing rides inside the clipped rows. Each fold pins its column to
+           the panel: an auto column grows to its card's min-content, so a
+           node id that should truncate pushed the card past the panel. -->
       <Transition
         enter-active-class="notif-fold"
         enter-from-class="notif-fold-collapsed"
         leave-active-class="notif-fold"
         leave-to-class="notif-fold-collapsed"
       >
-        <div v-if="scheduleTasks.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+        <div
+          v-if="scheduleTasks.length > 0"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+        >
+          <div class="min-h-0 min-w-0">
             <div class="mb-3">
               <LeagueScheduleStack :tasks="scheduleTasks" />
             </div>
@@ -74,8 +82,11 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-active-class="notif-fold"
         leave-to-class="notif-fold-collapsed"
       >
-        <div v-if="rosterNeeds.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+        <div
+          v-if="rosterNeeds.length > 0"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+        >
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 space-y-2">
               <TeamRosterNeedNotification
                 v-for="need in rosterNeeds"
@@ -93,8 +104,11 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-active-class="notif-fold"
         leave-to-class="notif-fold-collapsed"
       >
-        <div v-if="draft_invites.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+        <div
+          v-if="draft_invites.length > 0"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+        >
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <DraftInviteNotification
                 :invite="invite"
@@ -120,8 +134,11 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-active-class="notif-fold"
         leave-to-class="notif-fold-collapsed"
       >
-        <div v-if="team_invites.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+        <div
+          v-if="team_invites.length > 0"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+        >
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <TeamInviteNotification
                 type="team"
@@ -143,9 +160,9 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
       >
         <div
           v-if="tournament_team_invites.length > 0"
-          class="grid grid-rows-[1fr]"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
         >
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <TeamInviteNotification
                 type="tournament"
@@ -168,8 +185,11 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         leave-active-class="notif-fold"
         leave-to-class="notif-fold-collapsed"
       >
-        <div v-if="tournament_invites.length > 0" class="grid grid-rows-[1fr]">
-          <div class="min-h-0">
+        <div
+          v-if="tournament_invites.length > 0"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
+        >
+          <div class="min-h-0 min-w-0">
             <div class="mb-3 p-3 bg-card/60 border border-border rounded-md">
               <TeamInviteNotification
                 type="tournament-registration"
@@ -195,9 +215,9 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
         <div
           v-for="item of stackedNotifications"
           :key="item.kind === 'single' ? item.notification.id : item.entityId"
-          class="grid grid-rows-[1fr]"
+          class="grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
         >
-          <div class="min-h-0">
+          <div class="min-h-0 min-w-0">
             <NotificationStack
               v-if="item.kind === 'stack'"
               variant="hub"
@@ -245,9 +265,9 @@ import TeamRosterNeedNotification from "~/components/notification/TeamRosterNeed
     >
       <div
         v-if="notifications.length > 0"
-        class="flex-shrink-0 grid grid-rows-[1fr]"
+        class="flex-shrink-0 grid grid-cols-[minmax(0,1fr)] grid-rows-[1fr]"
       >
-        <div class="min-h-0">
+        <div class="min-h-0 min-w-0">
           <div class="flex flex-row gap-2 px-3 py-3 border-t border-border">
             <Button
               size="sm"

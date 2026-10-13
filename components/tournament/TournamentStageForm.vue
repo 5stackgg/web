@@ -1043,6 +1043,7 @@ import { $ } from "~/generated/zeus";
       contained
       :dirty="isDirty"
       :invalid="!!mapPoolShortfall"
+      :invalid-reason="mapPoolShortfallText"
       :submitting="submitting"
       @save="updateCreateStage"
       @discard="discardChanges"

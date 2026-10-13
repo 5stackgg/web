@@ -237,6 +237,15 @@ async function addButtonReason(wrapper: Wrapper) {
 const saveBarButton = (wrapper: Wrapper) =>
   wrapper.findAll("button").find((button) => button.text().includes("Save"))!;
 
+const saveBarTrigger = (wrapper: Wrapper) =>
+  saveBarButton(wrapper).element.closest<HTMLElement>("span[tabindex]");
+
+async function saveBarReason(wrapper: Wrapper) {
+  saveBarTrigger(wrapper)?.focus();
+  await flushPromises();
+  return document.body.querySelector('[role="tooltip"]')?.textContent;
+}
+
 describe("TournamentStageForm map pool", () => {
   it("has no Map Pool card and no pool selector", async () => {
     const wrapper = await mountStageForm(null);
@@ -488,7 +497,7 @@ describe("TournamentStageForm map pool size", () => {
     expect(toastMock).not.toHaveBeenCalled();
   });
 
-  it("blocks saving a stage raised past the tournament's pool", async () => {
+  it("blocks saving a stage raised past the tournament's pool, and says why on the save bar", async () => {
     const wrapper = await mountStageForm(stage(null), {
       pool: tournamentPoolOf(4),
       saveBar: true,
@@ -496,7 +505,10 @@ describe("TournamentStageForm map pool size", () => {
     await edit(wrapper, { default_best_of: "5" });
 
     expect(wrapper.text()).toContain("Invalid settings");
+    expect(wrapper.text()).toContain(FOUR_OF_FIVE);
+    expect(wrapper.text()).not.toContain("Fix the highlighted fields to save");
     expect(isDisabled(saveBarButton(wrapper))).toBe(true);
+    expect(await saveBarReason(wrapper)).toContain(FOUR_OF_FIVE);
 
     await save(wrapper);
 
@@ -515,6 +527,7 @@ describe("TournamentStageForm map pool size", () => {
 
     expect(wrapper.text()).not.toContain("Invalid settings");
     expect(isDisabled(saveBarButton(wrapper))).toBe(false);
+    expect(saveBarTrigger(wrapper)).toBeNull();
 
     await save(wrapper);
 

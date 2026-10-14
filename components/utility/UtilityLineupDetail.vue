@@ -79,7 +79,11 @@ import { useUtilityRunUp } from "~/composables/useUtilityRunUp";
 import { useUtilityLineupShare } from "~/composables/useUtilityLineupShare";
 import { useUtilityRendersInFlight } from "~/composables/useUtilityRendersInFlight";
 import { useAuthStore } from "~/stores/AuthStore";
-import type { UtilityLineup, UtilityVisibility } from "~/types/utility";
+import type {
+  UtilityLineup,
+  UtilityTeamRef,
+  UtilityVisibility,
+} from "~/types/utility";
 import { escapeTaken, takeEscape } from "~/utilities/escapeKey";
 import { hasMeshForMap } from "~/utilities/mapAssets";
 
@@ -238,12 +242,27 @@ const detailsOpen = ref(false);
 
 const editing = ref(false);
 const saving = ref(false);
+// Reka Select rejects an empty-string value, so "unset" rides a sentinel.
+const NO_TEAM = "none";
+
 const form = ref({
   name: "",
   description: "",
   tags: "",
   visibility: "Private" as UtilityVisibility,
+  team_id: NO_TEAM,
 });
+
+const auth = useAuthStore();
+const myTeams = computed(() => (auth.me?.teams ?? []) as UtilityTeamRef[]);
+
+// The api only takes a team the author is on, so a team admin fixing somebody
+// else's lineup leaves it in the team it is in.
+const canPickTeam = computed(
+  () =>
+    !!auth.me?.steam_id &&
+    String(lineup.value?.author_steam_id) === String(auth.me.steam_id),
+);
 
 // Public is not a setting an author can flip: it goes through review, and the
 // submit action is the door to that. Coming back DOWN off Public is theirs.
@@ -265,6 +284,7 @@ function startEdit() {
     description: value.description ?? "",
     tags: (value.tags ?? []).join(", "),
     visibility: value.visibility,
+    team_id: value.team_id ?? NO_TEAM,
   };
   editing.value = true;
 }
@@ -276,8 +296,13 @@ const editedTags = computed(() =>
     .filter((tag) => tag.length > 0),
 );
 
+const missingTeam = computed(
+  () => form.value.visibility === "Team" && form.value.team_id === NO_TEAM,
+);
+
 const canSave = computed(
-  () => form.value.name.trim().length > 0 && !saving.value,
+  () =>
+    form.value.name.trim().length > 0 && !missingTeam.value && !saving.value,
 );
 
 async function save() {
@@ -286,19 +311,29 @@ async function save() {
     return;
   }
   saving.value = true;
-  const patch = {
+  // Team visibility without a team is a lineup nobody can reach, so the
+  // team only rides along while it is the thing being addressed.
+  const teamId =
+    form.value.visibility === "Team" && form.value.team_id !== NO_TEAM
+      ? form.value.team_id
+      : null;
+  const fields = {
     name: form.value.name.trim(),
     description: form.value.description.trim() || null,
     tags: editedTags.value,
     visibility: form.value.visibility,
-    // Team visibility without a team is a lineup nobody can reach, so the
-    // team only rides along while it is the thing being addressed.
-    team_id: form.value.visibility === "Team" ? value.team_id : null,
+    team_id: teamId,
+  };
+  const patch = {
+    ...fields,
+    team: teamId
+      ? (myTeams.value.find((team) => team.id === teamId) ?? value.team)
+      : null,
   };
   try {
     await getGraphqlClient().mutate({
       mutation: updateUtilityLineupMutation,
-      variables: { id: value.id, ...patch },
+      variables: { id: value.id, ...fields },
     });
     // The fetched copy is this dialog's own; the list's copy belongs to the
     // page, which patches it in place rather than refetching the whole set.
@@ -1113,6 +1148,40 @@ const stats = computed(() => {
                 class="text-[0.68rem] leading-snug text-muted-foreground"
               >
                 {{ $t("pages.utility.edit.public_note") }}
+              </p>
+            </div>
+
+            <div
+              v-if="canPickTeam && form.visibility === 'Team'"
+              class="flex flex-col gap-1"
+            >
+              <label
+                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
+                {{ $t("pages.utility.playbooks.team") }}
+              </label>
+              <Select v-model="form.team_id">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem :value="NO_TEAM">{{
+                    $t("common.none")
+                  }}</SelectItem>
+                  <SelectItem
+                    v-for="team of myTeams"
+                    :key="team.id"
+                    :value="team.id"
+                  >
+                    {{ team.name }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p
+                v-if="missingTeam"
+                class="text-[0.68rem] leading-snug text-[hsl(var(--tac-amber))]"
+              >
+                {{ $t("pages.utility.playbooks.team_required") }}
               </p>
             </div>
 

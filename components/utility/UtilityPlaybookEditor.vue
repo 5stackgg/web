@@ -280,12 +280,21 @@ const smokesLand = ref(UTILITY_PLAYBOOK_MIN_OFFSET_SECONDS);
 // times it would give and which were set by hand.
 const timingReady = ref(true);
 
+function onStepGrid(seconds: number) {
+  return (
+    Math.round(seconds / UTILITY_PLAYBOOK_OFFSET_STEP_SECONDS) *
+    UTILITY_PLAYBOOK_OFFSET_STEP_SECONDS
+  );
+}
+
+// On the stepper's half-second grid, as the smokes' moment is: a call is "two
+// and a half", not 2.8, and every worked-out step still agrees on one moment.
 function landingOffsets() {
   return utilityLandingOffsets(
     rows.value.map((row) => ({
       lineup: lineupsById.value[row.lineupId] ?? null,
     })),
-  );
+  ).map((offset) => (offset === null ? null : onStepGrid(offset)));
 }
 
 /**
@@ -307,7 +316,7 @@ function retime(fromScratch: boolean) {
     ? earliest
     : Math.max(smokesLand.value, earliest);
   rows.value.forEach((row, index) => {
-    const seconds = Math.round((smokesLand.value + offsets[index]) * 10) / 10;
+    const seconds = onStepGrid(smokesLand.value + offsets[index]);
     if (secondsOf(row) !== seconds) {
       row.offsetSeconds = offsetText(seconds);
     }
@@ -358,6 +367,7 @@ watch(
  * moment for the smokes are the worked-out ones, and every other time was set
  * by hand. An execute timed before any of this agrees on nothing, so it opens
  * with every step locked, as it was written -- and Re-time all works it out.
+ * Either way its times are put on the grid, which the field will not save off.
  */
 function readTiming() {
   const auto = landingOffsets();
@@ -391,6 +401,7 @@ function readTiming() {
         : secondsOf(row) - smokesLand.value;
   });
   timingReady.value = true;
+  retime(false);
 }
 
 /** Puts the steps in time order; says whether anything had to move. */

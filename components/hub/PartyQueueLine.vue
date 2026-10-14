@@ -49,9 +49,7 @@ const confirmation = computed(() => {
   return pending && !pending.matchId ? pending : null;
 });
 
-const liveMatch = computed(
-  () => (useMatchLobbyStore().myMatches as any[])?.[0] ?? null,
-);
+const liveMatch = computed(() => useMatchLobbyStore().currentMatch ?? null);
 const liveMatchLabel = computed(() => {
   const match = liveMatch.value;
   if (!match) return "";

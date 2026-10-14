@@ -180,35 +180,7 @@ export default {
     myMatches: {
       immediate: true,
       handler() {
-        if (this.myMatches.length === 0) {
-          return;
-        }
-
-        const match = this.myMatches
-          .sort((a: any, b: any) => {
-            if (a.started_at && !b.started_at) {
-              return -1;
-            }
-            if (!a.started_at && b.started_at) {
-              return 1;
-            }
-
-            if (a.started_at && b.started_at) {
-              const dateDiff =
-                new Date(a.started_at).getTime() -
-                new Date(b.started_at).getTime();
-              if (dateDiff !== 0) {
-                return dateDiff;
-              }
-            }
-
-            return (
-              this.getStatusPriority(a.status) -
-              this.getStatusPriority(b.status)
-            );
-          })
-          .at(0);
-
+        const match = useMatchLobbyStore().currentMatch;
         if (!match) {
           return;
         }
@@ -304,7 +276,8 @@ export default {
       // back to the most relevant match so the selector renders whenever the
       // user is in a match — even before `viewingMatchId` has been set.
       return (
-        matches.find((match) => match.id === this.matchId) ?? matches.at(0)
+        matches.find((match) => match.id === this.matchId) ??
+        useMatchLobbyStore().currentMatch
       );
     },
     onMatchPage() {
@@ -315,20 +288,6 @@ export default {
     },
   },
   methods: {
-    getStatusPriority(status: e_match_status_enum): number {
-      switch (status) {
-        case e_match_status_enum.Live:
-          return 1;
-        case e_match_status_enum.WaitingForServer:
-          return 2;
-        case e_match_status_enum.Veto:
-          return 3;
-        case e_match_status_enum.WaitingForCheckIn:
-          return 4;
-        default:
-          return 999;
-      }
-    },
     selectLobby(matchId: string) {
       this.choosingLobby = false;
       useMatchmakingStore().viewingMatchId = matchId;

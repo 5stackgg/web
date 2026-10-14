@@ -125,6 +125,9 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
       void nextTick(() => {
         socket.rejoinAll();
       });
+      if (postAuthSubscriptionsStarted) {
+        useMatchLobbyStore().subscribeToMyMatches();
+      }
     }
 
     return true;

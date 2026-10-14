@@ -15,10 +15,27 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
 import { FINISHED_TOURNAMENT_CHAT_MS } from "~/constants/chat";
 
+const SCHEDULED_MATCH_LEAD_MS = 60 * 60 * 1000;
+
+// The match that needs you first; within a status, the newest.
+const CURRENT_MATCH_STATUSES: string[] = [
+  e_match_status_enum.Live,
+  e_match_status_enum.Veto,
+  e_match_status_enum.WaitingForCheckIn,
+  e_match_status_enum.WaitingForServer,
+  e_match_status_enum.PickingPlayers,
+  e_match_status_enum.Scheduled,
+];
+
+function currentMatchRank(match: any) {
+  const rank = CURRENT_MATCH_STATUSES.indexOf(match.status);
+  return rank === -1 ? CURRENT_MATCH_STATUSES.length : rank;
+}
+
 export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const lobbyChat = ref<Record<string, Map<string, unknown>>>({});
 
-  const myMatches = ref([]);
+  const myMatchRows = ref<any[]>([]);
   const myMatchesLoaded = ref(false);
   const managingMatchesCount = ref(0);
   const liveMatchesCount = ref(0);
@@ -27,6 +44,14 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const chatTournamentRows = ref<any[]>([]);
   const now = ref(Date.now());
   let clock: ReturnType<typeof setInterval> | undefined;
+
+  const startClock = () => {
+    now.value = Date.now();
+    clearInterval(clock);
+    clock = setInterval(() => {
+      now.value = Date.now();
+    }, 60_000);
+  };
 
   // The subscription's cutoff is fixed when it starts, so a finished
   // tournament's week is judged here, against a clock that keeps moving.
@@ -44,6 +69,46 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       chatTournamentRows.value = rows;
     },
   });
+
+  // A scheduled match is "upcoming" — keep it out of the lobby nav until it's
+  // within an hour of kickoff, judged against the clock rather than when the
+  // subscription last pushed. The clock ticks every minute, so the same
+  // matches hand back the same array and watchers only hear real changes.
+  const myMatches = computed({
+    get: (previous?: any[]) => {
+      const cutoff = now.value + SCHEDULED_MATCH_LEAD_MS;
+      const matches = myMatchRows.value.filter((match: any) => {
+        if (match.status !== e_match_status_enum.Scheduled) {
+          return true;
+        }
+        return (
+          !!match.scheduled_at &&
+          new Date(match.scheduled_at).getTime() <= cutoff
+        );
+      });
+      if (
+        previous?.length === matches.length &&
+        matches.every((match, index) => match === previous[index])
+      ) {
+        return previous;
+      }
+      return matches;
+    },
+    set: (rows: any[]) => {
+      myMatchRows.value = rows;
+    },
+  });
+
+  const currentMatch = computed(() =>
+    [...myMatches.value]
+      .sort(
+        (a: any, b: any) =>
+          currentMatchRank(a) - currentMatchRank(b) ||
+          new Date(b.created_at ?? 0).getTime() -
+            new Date(a.created_at ?? 0).getTime(),
+      )
+      .at(0),
+  );
 
   const subscribeToLiveMatches = async () => {
     const subscription = getGraphqlClient().subscribe({
@@ -161,11 +226,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   };
 
   const subscribeToChatTournaments = async () => {
-    now.value = Date.now();
-    clearInterval(clock);
-    clock = setInterval(() => {
-      now.value = Date.now();
-    }, 60_000);
+    startClock();
 
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
@@ -294,6 +355,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     }
 
     myMatchesLoaded.value = false;
+    startClock();
 
     const subscription = getGraphqlClient().subscribe({
       query: generateSubscription({
@@ -392,18 +454,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       "matchLobby:myMatches",
       subscription.subscribe({
         next: ({ data }) => {
-          // A scheduled match is "upcoming" — keep it out of the lobby nav until
-          // it's within an hour of kickoff so it doesn't read as an active match.
-          const cutoff = Date.now() + 60 * 60 * 1000;
-          myMatches.value = (data?.matches ?? []).filter((match: any) => {
-            if (match.status !== e_match_status_enum.Scheduled) {
-              return true;
-            }
-            return (
-              !!match.scheduled_at &&
-              new Date(match.scheduled_at).getTime() <= cutoff
-            );
-          });
+          myMatchRows.value = data?.matches ?? [];
           myMatchesLoaded.value = true;
         },
         error: (err: any) => {
@@ -461,9 +512,7 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     liveTournamentsCount,
     openRegistrationTournamentsCount,
     chatTournaments,
-    currentMatch: computed(() => {
-      return myMatches.value.at(0);
-    }),
+    currentMatch,
     currentUserInGame: computed(() => {
       const steamId = useAuthStore().me?.steam_id;
       if (!steamId) return false;

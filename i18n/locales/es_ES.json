@@ -6037,6 +6037,39 @@
         "review_failed": "No se pudo revisar ese lineup",
         "in_review": "En revisión"
       },
+      "mine": {
+        "state": {
+          "private": "Privado",
+          "team": "Equipo",
+          "review": "En revisión",
+          "public": "Público",
+          "rejected": "Rechazado",
+          "archived": "Archivado"
+        },
+        "tip": {
+          "private": "Privado: solo tú puedes verlo. Envíalo a público cuando caiga siempre bien.",
+          "team": "Equipo: tu equipo puede verlo. Envíalo a público cuando esté listo para todos.",
+          "review": "En revisión: un revisor comprueba que cae bien. No tienes que hacer nada; aún puedes editarlo.",
+          "public": "Público: en la biblioteca pública. Cualquiera puede practicarlo y votarlo.",
+          "rejected": "Rechazado: un revisor lo devolvió. Ábrelo para ver por qué, corrígelo y vuelve a enviarlo.",
+          "archived": "Archivado: oculto en todas partes. Restáuralo desde la pestaña Archivados o bórralo para siempre."
+        },
+        "private_line": "Solo tú",
+        "team_line": "Tu equipo",
+        "review_line": "Enviado a revisión",
+        "rejected_line": "Rechazado: {note}",
+        "archived_line": "Archivado"
+      },
+      "review": {
+        "lands": "Cae en",
+        "reject_because": "Rechazar porque",
+        "reasons": {
+          "no_land": "No cae bien",
+          "duplicate": "Ya está en la biblioteca",
+          "bad_name": "El nombre no dice dónde",
+          "needs_clip": "Necesita un clip"
+        }
+      },
       "archive": {
         "action": "Archivar lineup",
         "title": "¿Archivar este lineup?",

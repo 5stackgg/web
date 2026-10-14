@@ -6039,6 +6039,39 @@
         "review_failed": "Could not review that lineup",
         "in_review": "In review"
       },
+      "mine": {
+        "state": {
+          "private": "Private",
+          "team": "Team",
+          "review": "Under review",
+          "public": "Public",
+          "rejected": "Rejected",
+          "archived": "Archived"
+        },
+        "tip": {
+          "private": "Private: only you can see it. Submit it for public when it lands every time.",
+          "team": "Team: your team can see it. Submit it for public when it is ready for everyone.",
+          "review": "Under review: a reviewer is checking it lands. Nothing to do; you can still edit it.",
+          "public": "Public: in the public library. Anyone can drill it and vote on it.",
+          "rejected": "Rejected: a reviewer sent it back. Open it to read why, fix it, then submit it again.",
+          "archived": "Archived: hidden everywhere. Restore it from the Archived tab, or delete it for good."
+        },
+        "private_line": "Only you",
+        "team_line": "Your team",
+        "review_line": "Sent for review",
+        "rejected_line": "Declined: {note}",
+        "archived_line": "Archived"
+      },
+      "review": {
+        "lands": "Lands",
+        "reject_because": "Reject because",
+        "reasons": {
+          "no_land": "Doesn't land",
+          "duplicate": "Already in the library",
+          "bad_name": "Name doesn't say where",
+          "needs_clip": "Needs a clip"
+        }
+      },
       "archive": {
         "action": "Archive lineup",
         "title": "Archive this lineup?",

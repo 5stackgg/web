@@ -6037,6 +6037,39 @@
         "review_failed": "Kunne ikke gennemgå den opstilling",
         "in_review": "Til gennemgang"
       },
+      "mine": {
+        "state": {
+          "private": "Privat",
+          "team": "Hold",
+          "review": "Under gennemgang",
+          "public": "Offentlig",
+          "rejected": "Afvist",
+          "archived": "Arkiveret"
+        },
+        "tip": {
+          "private": "Privat: kun du kan se den. Indsend den til offentlig, når den lander hver gang.",
+          "team": "Hold: dit hold kan se den. Indsend den til offentlig, når den er klar til alle.",
+          "review": "Under gennemgang: en anmelder tjekker, at den lander. Intet at gøre; du kan stadig redigere den.",
+          "public": "Offentlig: i det offentlige bibliotek. Alle kan træne den og stemme på den.",
+          "rejected": "Afvist: en anmelder sendte den tilbage. Åbn den for at læse hvorfor, ret den og indsend den igen.",
+          "archived": "Arkiveret: skjult overalt. Gendan den fra fanen Arkiveret, eller slet den for altid."
+        },
+        "private_line": "Kun dig",
+        "team_line": "Dit hold",
+        "review_line": "Sendt til gennemgang",
+        "rejected_line": "Afvist: {note}",
+        "archived_line": "Arkiveret"
+      },
+      "review": {
+        "lands": "Lander",
+        "reject_because": "Afvis fordi",
+        "reasons": {
+          "no_land": "Lander ikke",
+          "duplicate": "Allerede i biblioteket",
+          "bad_name": "Navnet siger ikke hvor",
+          "needs_clip": "Mangler et klip"
+        }
+      },
       "archive": {
         "action": "Arkivér opstillingen",
         "title": "Arkivér denne opstilling?",

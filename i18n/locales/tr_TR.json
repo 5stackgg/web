@@ -6037,6 +6037,39 @@
         "review_failed": "O dizilim incelenemedi",
         "in_review": "İncelemede"
       },
+      "mine": {
+        "state": {
+          "private": "Özel",
+          "team": "Takım",
+          "review": "İncelemede",
+          "public": "Herkese açık",
+          "rejected": "Reddedildi",
+          "archived": "Arşivlendi"
+        },
+        "tip": {
+          "private": "Özel: yalnızca sen görebilirsin. Her seferinde düştüğünde herkese açık için gönder.",
+          "team": "Takım: takımın görebilir. Herkese hazır olduğunda herkese açık için gönder.",
+          "review": "İncelemede: bir inceleyici düştüğünü kontrol ediyor. Yapacak bir şey yok; yine de düzenleyebilirsin.",
+          "public": "Herkese açık: herkese açık kitaplıkta. Herkes çalışabilir ve oy verebilir.",
+          "rejected": "Reddedildi: bir inceleyici geri gönderdi. Nedenini okumak için aç, düzelt ve yeniden gönder.",
+          "archived": "Arşivlendi: her yerde gizli. Arşivlenenler sekmesinden geri yükle ya da kalıcı olarak sil."
+        },
+        "private_line": "Yalnızca sen",
+        "team_line": "Takımın",
+        "review_line": "İncelemeye gönderildi",
+        "rejected_line": "Reddedildi: {note}",
+        "archived_line": "Arşivlendi"
+      },
+      "review": {
+        "lands": "Düştüğü yer",
+        "reject_because": "Reddetme nedeni",
+        "reasons": {
+          "no_land": "Düşmüyor",
+          "duplicate": "Zaten kitaplıkta",
+          "bad_name": "İsim yeri söylemiyor",
+          "needs_clip": "Klip gerekiyor"
+        }
+      },
       "archive": {
         "action": "Dizilimi arşivle",
         "title": "Bu dizilim arşivlensin mi?",

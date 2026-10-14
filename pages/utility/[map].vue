@@ -46,6 +46,7 @@ import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
 import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue";
 import UtilityDeleteDialog from "~/components/utility/UtilityDeleteDialog.vue";
 import UtilityLineupDetail from "~/components/utility/UtilityLineupDetail.vue";
+import UtilityReviewTile from "~/components/utility/UtilityReviewTile.vue";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import {
@@ -1488,9 +1489,15 @@ function skipFromDetail(id: string) {
 
 // Reviewing, restoring and deleting all take the row out of the list you were
 // reading, so the lineup closes first instead of turning into a fetched orphan.
+// The bar has no room to ask why, so a decline from it says it plainly: the
+// author still needs to see that it was turned down.
 function reviewFromDetail(id: string, approve: boolean) {
   closeDetail();
-  void reviewPublic(id, approve);
+  void reviewPublic(
+    id,
+    approve,
+    approve ? null : t("pages.utility.publish.rejected"),
+  );
 }
 
 function restoreFromDetail(id: string) {
@@ -1833,7 +1840,11 @@ async function requestPublic(id: string) {
   }
 }
 
-async function reviewPublic(id: string, approve: boolean) {
+async function reviewPublic(
+  id: string,
+  approve: boolean,
+  reason: string | null = null,
+) {
   try {
     await getGraphqlClient().mutate({
       mutation: reviewUtilityLineupPublicMutation,
@@ -1843,7 +1854,9 @@ async function reviewPublic(id: string, approve: boolean) {
         // Approving clears the request through the trigger; rejecting has to
         // clear it here, or the queue never empties.
         public_requested_at: approve ? undefined : null,
-        public_review_note: null,
+        // The reason is the author's to read: it is what marks the lineup as
+        // turned down on their own list.
+        public_review_note: approve ? null : reason,
       },
     });
     lineups.value = lineups.value.filter((entry) => entry.id !== id);
@@ -2500,9 +2513,18 @@ function selectLineup(id: string | null) {
                   />
                 </div>
                 <div v-else :id="`utility-card-${entry.lineup.id}`" class="pt-2">
+                <!-- The queue is judged from the tile: a submission is approved
+                     or declined without opening it. -->
+                <UtilityReviewTile
+                  v-if="filters.scope === 'pending' && canReview"
+                  :lineup="entry.lineup"
+                  @select="openLineup"
+                  @review="reviewPublic"
+                />
                 <!-- A click opens the lineup in the panel, where everything you can
                      do with it lives -- so the row carries no menu of its own. -->
                 <UtilityLineupCard
+                  v-else
                   :lineup="entry.lineup"
                   mode="row"
                   :menu="false"
@@ -2515,6 +2537,7 @@ function selectLineup(id: string | null) {
                   :meta-busiest="metaBusiest"
                   :show-practice="!isMobile"
                   :show-author="filters.scope !== 'mine' && filters.scope !== 'archived'"
+                  :own-state="filters.scope === 'mine' || filters.scope === 'archived'"
                   :context-menu="!isMobile"
                   :can-review="canReview"
                   :can-react="!!mySteamId"

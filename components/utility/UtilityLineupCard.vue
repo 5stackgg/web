@@ -6,6 +6,7 @@ import {
   Archive,
   ArchiveRestore,
   Check,
+  CircleX,
   Clock,
   Crosshair,
   Ellipsis,
@@ -14,12 +15,14 @@ import {
   GitFork,
   Globe,
   Link2,
+  Lock,
   PencilLine,
   Play,
   Repeat,
   Send,
   Trash2,
   UserRound,
+  Users,
   X,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
@@ -40,6 +43,8 @@ import {
 } from "~/components/ui/context-menu";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import { Spinner } from "~/components/ui/spinner";
@@ -116,6 +121,9 @@ const props = withDefaults(
     showAuthor?: boolean;
     // Right-click for what you can do to it without opening it.
     contextMenu?: boolean;
+    // Your own lineups: one icon for where it stands, and a third line on
+    // what that means for it right now.
+    ownState?: boolean;
   }>(),
   {
     selected: false,
@@ -137,6 +145,7 @@ const props = withDefaults(
     showPractice: true,
     showAuthor: false,
     contextMenu: false,
+    ownState: false,
   },
 );
 
@@ -383,6 +392,48 @@ const tags = computed(() => props.lineup.tags ?? []);
 
 const authorLine = computed(() => props.showAuthor && !!props.lineup.author);
 
+// A rejection leaves no flag of its own: the reviewer's reason on a lineup
+// that is neither public nor asked again is what says it was turned down.
+const state = computed(() => {
+  const row = props.lineup;
+  if (row.archived_at) {
+    return "archived";
+  }
+  if (row.public_requested_at) {
+    return "review";
+  }
+  if (row.visibility === "Public") {
+    return "public";
+  }
+  if (row.public_review_note) {
+    return "rejected";
+  }
+  return row.visibility === "Team" ? "team" : "private";
+});
+
+const STATE_ICONS = {
+  private: Lock,
+  team: Users,
+  review: Clock,
+  public: Globe,
+  rejected: CircleX,
+  archived: Archive,
+} as const;
+
+const stateSince = computed(() => {
+  const row = props.lineup;
+  switch (state.value) {
+    case "archived":
+      return row.archived_at ?? null;
+    case "review":
+      return row.public_requested_at ?? null;
+    default:
+      return row.created_at ?? null;
+  }
+});
+
+const thumbBox = computed(() => (props.ownState ? "size-14" : "size-10"));
+
 // The menu offers what the lineup's own page does, and nothing it would not.
 const canLoadHere = computed(
   () => props.showPractice && load.canLoad(props.lineup.map_name),
@@ -456,7 +507,8 @@ function open() {
              it is thrown share the second; the numbers stand in a column. -->
         <div class="flex items-center gap-2.5">
           <span
-            class="relative block size-10 shrink-0"
+            class="relative block shrink-0"
+            :class="thumbBox"
             :title="
               rendering
                 ? renderingLabel
@@ -465,7 +517,7 @@ function open() {
                   : undefined
             "
           >
-            <FadeSwap class="size-10">
+            <FadeSwap :class="thumbBox">
               <img
                 v-if="clipThumb"
                 :key="clipThumb"
@@ -473,7 +525,8 @@ function open() {
                 alt=""
                 loading="lazy"
                 decoding="async"
-                class="block size-10 rounded-[3px] border border-border bg-background object-cover"
+                class="block rounded-[3px] border border-border bg-background object-cover"
+                :class="thumbBox"
                 @error="failedThumb = clipThumb"
               />
               <UtilityRadarThumb
@@ -483,7 +536,7 @@ function open() {
                 :origin="origin"
                 :landing="landing"
                 :color="color"
-                :size="40"
+                :size="ownState ? 56 : 40"
               />
             </FadeSwap>
             <Transition
@@ -523,7 +576,7 @@ function open() {
             </div>
             <div class="flex min-w-0 items-center gap-1.5">
               <span
-                v-if="ownStatus && showStatus"
+                v-if="ownStatus && showStatus && !ownState"
                 class="inline-flex h-4 shrink-0 items-center gap-1 rounded-sm px-1 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em]"
                 :class="ownStatus.tone"
                 :title="$t('pages.utility.card.yours', { status: ownStatus.label })"
@@ -532,7 +585,7 @@ function open() {
                 {{ ownStatus.label }}
               </span>
               <Clock
-                v-else-if="awaitingReview"
+                v-else-if="awaitingReview && !ownState"
                 class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
                 :title="$t('pages.utility.publish.pending')"
               />
@@ -556,7 +609,63 @@ function open() {
               :context-menu="false"
               class="min-w-0 text-muted-foreground"
             />
+            <p
+              v-if="ownState"
+              data-state-line
+              class="flex min-w-0 items-center gap-1 text-xs text-muted-foreground"
+            >
+              <span v-if="state === 'public'" class="truncate">
+                {{
+                  $t(
+                    "pages.utility.card.score",
+                    { count: Number(lineup.upvotes ?? 0) },
+                    Number(lineup.upvotes ?? 0),
+                  )
+                }}
+              </span>
+              <span
+                v-else-if="state === 'rejected'"
+                class="truncate text-foreground/80"
+              >
+                {{
+                  $t("pages.utility.mine.rejected_line", {
+                    note: lineup.public_review_note,
+                  })
+                }}
+              </span>
+              <template v-else>
+                <span class="shrink-0">
+                  {{ $t(`pages.utility.mine.${state}_line`) }}
+                </span>
+                <template v-if="stateSince">
+                  <span aria-hidden="true">·</span>
+                  <TimeAgo :date="stateSince" hide-icon />
+                </template>
+              </template>
+            </p>
           </div>
+
+          <FiveStackToolTip v-if="ownState" as-child :delay-duration="120">
+            <template #trigger>
+              <span
+                data-state-icon
+                :data-state="state"
+                role="img"
+                :aria-label="$t(`pages.utility.mine.state.${state}`)"
+                class="grid size-7 shrink-0 place-items-center self-start rounded-md border bg-background/60"
+                :class="
+                  state === 'rejected'
+                    ? 'border-destructive/40 text-destructive'
+                    : 'border-border text-muted-foreground'
+                "
+              >
+                <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
+              </span>
+            </template>
+            <span class="block max-w-[15rem]">
+              {{ $t(`pages.utility.mine.tip.${state}`) }}
+            </span>
+          </FiveStackToolTip>
 
           <div
             v-if="practiceReady"
@@ -566,7 +675,7 @@ function open() {
           </div>
 
           <div
-            v-if="score !== null || metaThrowers"
+            v-if="!ownState && (score !== null || metaThrowers)"
             class="flex w-14 shrink-0 flex-col items-end gap-1.5"
           >
             <UtilityUpvoteToggle

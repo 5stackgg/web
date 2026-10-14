@@ -6037,6 +6037,39 @@
         "review_failed": "Impossible de valider ce lineup",
         "in_review": "En revue"
       },
+      "mine": {
+        "state": {
+          "private": "Privé",
+          "team": "Équipe",
+          "review": "En cours de relecture",
+          "public": "Public",
+          "rejected": "Refusé",
+          "archived": "Archivé"
+        },
+        "tip": {
+          "private": "Privé : toi seul peux le voir. Soumets-le en public quand il atterrit à chaque fois.",
+          "team": "Équipe : ton équipe peut le voir. Soumets-le en public quand il est prêt pour tous.",
+          "review": "En cours de relecture : un relecteur vérifie qu'il atterrit. Rien à faire ; tu peux encore le modifier.",
+          "public": "Public : dans la bibliothèque publique. Tout le monde peut le travailler et voter.",
+          "rejected": "Refusé : un relecteur l'a renvoyé. Ouvre-le pour lire pourquoi, corrige-le, puis soumets-le à nouveau.",
+          "archived": "Archivé : masqué partout. Restaure-le depuis l'onglet Archivés, ou supprime-le définitivement."
+        },
+        "private_line": "Toi seul",
+        "team_line": "Ton équipe",
+        "review_line": "Envoyé en relecture",
+        "rejected_line": "Refusé : {note}",
+        "archived_line": "Archivé"
+      },
+      "review": {
+        "lands": "Atterrit",
+        "reject_because": "Refuser car",
+        "reasons": {
+          "no_land": "N'atterrit pas",
+          "duplicate": "Déjà dans la bibliothèque",
+          "bad_name": "Le nom ne dit pas où",
+          "needs_clip": "Il faut un clip"
+        }
+      },
       "archive": {
         "action": "Archiver le lineup",
         "title": "Archiver ce lineup ?",

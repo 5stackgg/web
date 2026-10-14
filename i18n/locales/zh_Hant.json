@@ -6037,6 +6037,39 @@
         "review_failed": "無法審核該點位",
         "in_review": "審核中"
       },
+      "mine": {
+        "state": {
+          "private": "私密",
+          "team": "團隊",
+          "review": "審核中",
+          "public": "公開",
+          "rejected": "已拒絕",
+          "archived": "已封存"
+        },
+        "tip": {
+          "private": "私密：只有你能看到。每次都能命中時，提交公開。",
+          "team": "團隊：你的團隊能看到。準備好給所有人用時，提交公開。",
+          "review": "審核中：審核員正在檢查是否命中。你無需操作，仍可編輯。",
+          "public": "公開：在公共庫中。任何人都能練習和投票。",
+          "rejected": "已拒絕：審核員退回了它。打開查看原因，修改後再次提交。",
+          "archived": "已封存：在所有地方隱藏。可在已封存分頁中還原，或永久刪除。"
+        },
+        "private_line": "僅你",
+        "team_line": "你的團隊",
+        "review_line": "已提交審核",
+        "rejected_line": "已拒絕：{note}",
+        "archived_line": "已封存"
+      },
+      "review": {
+        "lands": "落點",
+        "reject_because": "拒絕原因",
+        "reasons": {
+          "no_land": "沒有命中",
+          "duplicate": "庫中已有",
+          "bad_name": "名字沒說明位置",
+          "needs_clip": "需要片段"
+        }
+      },
       "archive": {
         "action": "封存點位",
         "title": "要封存這個點位嗎？",

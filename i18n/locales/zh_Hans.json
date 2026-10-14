@@ -6037,6 +6037,39 @@
         "review_failed": "无法审核该点位",
         "in_review": "审核中"
       },
+      "mine": {
+        "state": {
+          "private": "私密",
+          "team": "团队",
+          "review": "审核中",
+          "public": "公开",
+          "rejected": "已拒绝",
+          "archived": "已归档"
+        },
+        "tip": {
+          "private": "私密：只有你能看到。每次都能命中时，提交公开。",
+          "team": "团队：你的团队能看到。准备好给所有人用时，提交公开。",
+          "review": "审核中：审核员正在检查是否命中。你无需操作，仍可编辑。",
+          "public": "公开：在公共库中。任何人都能练习和投票。",
+          "rejected": "已拒绝：审核员退回了它。打开查看原因，修改后再次提交。",
+          "archived": "已归档：在所有地方隐藏。可在已归档标签中恢复，或永久删除。"
+        },
+        "private_line": "仅你",
+        "team_line": "你的团队",
+        "review_line": "已提交审核",
+        "rejected_line": "已拒绝：{note}",
+        "archived_line": "已归档"
+      },
+      "review": {
+        "lands": "落点",
+        "reject_because": "拒绝原因",
+        "reasons": {
+          "no_land": "没有命中",
+          "duplicate": "库中已有",
+          "bad_name": "名字没说明位置",
+          "needs_clip": "需要片段"
+        }
+      },
       "archive": {
         "action": "归档点位",
         "title": "要归档这个点位吗？",

@@ -6037,6 +6037,39 @@
         "review_failed": "Dieses Lineup konnte nicht geprüft werden",
         "in_review": "In Prüfung"
       },
+      "mine": {
+        "state": {
+          "private": "Privat",
+          "team": "Team",
+          "review": "In Prüfung",
+          "public": "Öffentlich",
+          "rejected": "Abgelehnt",
+          "archived": "Archiviert"
+        },
+        "tip": {
+          "private": "Privat: nur du siehst es. Reiche es öffentlich ein, wenn es jedes Mal landet.",
+          "team": "Team: dein Team sieht es. Reiche es öffentlich ein, wenn es für alle bereit ist.",
+          "review": "In Prüfung: ein Prüfer schaut, ob es landet. Nichts zu tun; du kannst es weiter bearbeiten.",
+          "public": "Öffentlich: in der öffentlichen Bibliothek. Jeder kann es üben und darüber abstimmen.",
+          "rejected": "Abgelehnt: ein Prüfer hat es zurückgeschickt. Öffne es, lies warum, korrigiere es und reiche es erneut ein.",
+          "archived": "Archiviert: überall ausgeblendet. Stelle es im Tab Archiviert wieder her oder lösche es endgültig."
+        },
+        "private_line": "Nur du",
+        "team_line": "Dein Team",
+        "review_line": "Zur Prüfung eingereicht",
+        "rejected_line": "Abgelehnt: {note}",
+        "archived_line": "Archiviert"
+      },
+      "review": {
+        "lands": "Landet",
+        "reject_because": "Ablehnen, weil",
+        "reasons": {
+          "no_land": "Landet nicht",
+          "duplicate": "Schon in der Bibliothek",
+          "bad_name": "Name sagt nicht, wohin",
+          "needs_clip": "Braucht einen Clip"
+        }
+      },
       "archive": {
         "action": "Lineup archivieren",
         "title": "Dieses Lineup archivieren?",

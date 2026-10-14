@@ -6037,6 +6037,39 @@
         "review_failed": "Não foi possível revisar esse lineup",
         "in_review": "Em análise"
       },
+      "mine": {
+        "state": {
+          "private": "Privado",
+          "team": "Time",
+          "review": "Em revisão",
+          "public": "Público",
+          "rejected": "Recusado",
+          "archived": "Arquivado"
+        },
+        "tip": {
+          "private": "Privado: só você vê. Envie para público quando ele cair certo toda vez.",
+          "team": "Time: seu time vê. Envie para público quando estiver pronto para todos.",
+          "review": "Em revisão: um revisor está conferindo se cai certo. Nada a fazer; você ainda pode editar.",
+          "public": "Público: na biblioteca pública. Qualquer um pode treinar e votar.",
+          "rejected": "Recusado: um revisor devolveu. Abra para ler o motivo, corrija e envie de novo.",
+          "archived": "Arquivado: oculto em todo lugar. Restaure na aba Arquivados ou exclua de vez."
+        },
+        "private_line": "Só você",
+        "team_line": "Seu time",
+        "review_line": "Enviado para revisão",
+        "rejected_line": "Recusado: {note}",
+        "archived_line": "Arquivado"
+      },
+      "review": {
+        "lands": "Cai em",
+        "reject_because": "Recusar porque",
+        "reasons": {
+          "no_land": "Não cai certo",
+          "duplicate": "Já está na biblioteca",
+          "bad_name": "O nome não diz onde",
+          "needs_clip": "Precisa de um clipe"
+        }
+      },
       "archive": {
         "action": "Arquivar lineup",
         "title": "Arquivar este lineup?",

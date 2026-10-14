@@ -6037,6 +6037,39 @@
         "review_failed": "그 라인업을 검토하지 못했습니다",
         "in_review": "검토 중"
       },
+      "mine": {
+        "state": {
+          "private": "비공개",
+          "team": "팀",
+          "review": "검토 중",
+          "public": "공개",
+          "rejected": "거절됨",
+          "archived": "보관됨"
+        },
+        "tip": {
+          "private": "비공개: 나만 볼 수 있습니다. 매번 성공하면 공개로 제출하세요.",
+          "team": "팀: 팀원이 볼 수 있습니다. 모두에게 공개할 준비가 되면 제출하세요.",
+          "review": "검토 중: 검토자가 성공하는지 확인하고 있습니다. 할 일은 없고, 계속 편집할 수 있습니다.",
+          "public": "공개: 공개 라이브러리에 있습니다. 누구나 연습하고 투표할 수 있습니다.",
+          "rejected": "거절됨: 검토자가 돌려보냈습니다. 열어서 이유를 확인하고 고친 뒤 다시 제출하세요.",
+          "archived": "보관됨: 어디에도 표시되지 않습니다. 보관 탭에서 복원하거나 영구 삭제하세요."
+        },
+        "private_line": "나만",
+        "team_line": "내 팀",
+        "review_line": "검토 요청됨",
+        "rejected_line": "거절됨: {note}",
+        "archived_line": "보관됨"
+      },
+      "review": {
+        "lands": "떨어지는 곳",
+        "reject_because": "거절 사유",
+        "reasons": {
+          "no_land": "떨어지지 않음",
+          "duplicate": "이미 라이브러리에 있음",
+          "bad_name": "이름에 위치가 없음",
+          "needs_clip": "클립이 필요함"
+        }
+      },
       "archive": {
         "action": "라인업 보관",
         "title": "이 라인업을 보관할까요?",

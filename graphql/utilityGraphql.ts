@@ -86,6 +86,10 @@ export const utilityLineupListFields = {
   // already submitted.
   archived_at: true,
   public_requested_at: true,
+  // Mine says why a lineup was turned down, and the review queue shows the
+  // author's own words, both from the list.
+  public_review_note: true,
+  description: true,
   can_view: true,
   can_edit: true,
   my_vote: true,
@@ -102,10 +106,8 @@ export const utilityLineupListFields = {
 
 export const utilityLineupFields = {
   ...utilityLineupListFields,
-  description: true,
   updated_at: true,
   public_reviewed_at: true,
-  public_review_note: true,
 } as const;
 
 // Deliberately narrow: only the columns the picker renders plus the two

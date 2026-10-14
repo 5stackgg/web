@@ -6037,6 +6037,39 @@
         "review_failed": "Impossibile revisionare quel lineup",
         "in_review": "In revisione"
       },
+      "mine": {
+        "state": {
+          "private": "Privato",
+          "team": "Squadra",
+          "review": "In revisione",
+          "public": "Pubblico",
+          "rejected": "Rifiutato",
+          "archived": "Archiviato"
+        },
+        "tip": {
+          "private": "Privato: solo tu puoi vederlo. Invialo come pubblico quando atterra ogni volta.",
+          "team": "Squadra: la tua squadra può vederlo. Invialo come pubblico quando è pronto per tutti.",
+          "review": "In revisione: un revisore controlla che atterri. Niente da fare; puoi ancora modificarlo.",
+          "public": "Pubblico: nella libreria pubblica. Chiunque può allenarlo e votarlo.",
+          "rejected": "Rifiutato: un revisore l'ha rimandato indietro. Aprilo per leggere il motivo, correggilo e invialo di nuovo.",
+          "archived": "Archiviato: nascosto ovunque. Ripristinalo dalla scheda Archiviati o eliminalo per sempre."
+        },
+        "private_line": "Solo tu",
+        "team_line": "La tua squadra",
+        "review_line": "Inviato in revisione",
+        "rejected_line": "Rifiutato: {note}",
+        "archived_line": "Archiviato"
+      },
+      "review": {
+        "lands": "Atterra",
+        "reject_because": "Rifiuta perché",
+        "reasons": {
+          "no_land": "Non atterra",
+          "duplicate": "Già nella libreria",
+          "bad_name": "Il nome non dice dove",
+          "needs_clip": "Serve una clip"
+        }
+      },
       "archive": {
         "action": "Archivia lineup",
         "title": "Archiviare questo lineup?",

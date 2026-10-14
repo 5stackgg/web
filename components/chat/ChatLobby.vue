@@ -570,6 +570,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    // False while a host hides this chat without unmounting it (v-show). The
+    // participants popover is portaled out of the host, so it would stay open.
+    visible: {
+      type: Boolean,
+      default: true,
+    },
     match: {
       type: Object as PropType<unknown>,
       required: false,
@@ -1158,6 +1164,11 @@ export default {
     },
   },
   watch: {
+    visible(visible) {
+      if (!visible) {
+        this.showParticipants = false;
+      }
+    },
     // Showing a room again is what clears its mark -- the messages it was
     // holding are on screen the moment the filter widens.
     viewFilter: {

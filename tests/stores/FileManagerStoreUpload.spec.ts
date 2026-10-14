@@ -16,7 +16,12 @@ const fileManager = async () => {
   return { store, unmount: () => wrapper.unmount() };
 };
 
-type Sent = { url: string; withCredentials: boolean; body: FormData };
+type Sent = {
+  url: string;
+  withCredentials: boolean;
+  headers: Record<string, string>;
+  body: FormData;
+};
 
 const sent: Sent[] = [];
 
@@ -30,11 +35,20 @@ class FakeXhr {
   onerror: (() => void) | null = null;
   onabort: (() => void) | null = null;
   private url = "";
+  private headers: Record<string, string> = {};
   open(_method: string, url: string) {
     this.url = url;
   }
+  setRequestHeader(name: string, value: string) {
+    this.headers[name] = value;
+  }
   send(body: FormData) {
-    sent.push({ url: this.url, withCredentials: this.withCredentials, body });
+    sent.push({
+      url: this.url,
+      withCredentials: this.withCredentials,
+      headers: this.headers,
+      body,
+    });
     this.onload?.();
   }
   abort() {}
@@ -61,6 +75,7 @@ describe("FileManagerStore uploads", () => {
 
     expect(sent[0].url).toMatch(/\/file-manager\/upload\/node-1\/server-1$/);
     expect(sent[0].withCredentials).toBe(true);
+    expect(sent[0].headers["X-Requested-With"]).toBe("XMLHttpRequest");
     expect(sent[0].body.has("userId")).toBe(false);
   });
 
@@ -80,6 +95,7 @@ describe("FileManagerStore uploads", () => {
 
     for (const request of sent) {
       expect(request.withCredentials).toBe(true);
+      expect(request.headers["X-Requested-With"]).toBe("XMLHttpRequest");
       expect(request.body.has("userId")).toBe(false);
     }
   });

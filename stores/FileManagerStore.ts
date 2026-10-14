@@ -664,6 +664,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
             reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
           xhr.withCredentials = true;
+          xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
           xhr.send(formData);
         });
 
@@ -807,6 +808,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
             reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
           xhr.withCredentials = true;
+          xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
           xhr.send(formData);
         });
 

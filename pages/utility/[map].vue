@@ -73,7 +73,8 @@ import { toast, ToastAction } from "~/components/ui/toast";
 import {
   archiveUtilityLineupMutation,
   requestUtilityLineupPublicMutation,
-  reviewUtilityLineupPublicMutation,
+  approveUtilityLineupPublicMutation,
+  rejectUtilityLineupPublicMutation,
   UTILITY_LANDINGS_LIMIT,
   myUtilityProgressSubscription,
   utilityLibraryPulseSubscription,
@@ -1885,19 +1886,20 @@ async function reviewPublic(
   reason: string | null = null,
 ) {
   try {
-    await getGraphqlClient().mutate({
-      mutation: reviewUtilityLineupPublicMutation,
-      variables: {
-        id,
-        visibility: approve ? "Public" : undefined,
-        // Approving clears the request through the trigger; rejecting has to
-        // clear it here, or the queue never empties.
-        public_requested_at: approve ? undefined : null,
-        // The reason is the author's to read: it is what marks the lineup as
-        // turned down on their own list.
-        public_review_note: approve ? null : reason,
-      },
-    });
+    // Approving clears the request through the trigger; rejecting clears it
+    // itself, or the queue never empties. The reason is the author's to read:
+    // it is what marks the lineup as turned down on their own list.
+    await getGraphqlClient().mutate(
+      approve
+        ? {
+            mutation: approveUtilityLineupPublicMutation,
+            variables: { id },
+          }
+        : {
+            mutation: rejectUtilityLineupPublicMutation,
+            variables: { id, public_review_note: reason },
+          },
+    );
     lineups.value = lineups.value.filter((entry) => entry.id !== id);
     totalCount.value = Math.max(0, totalCount.value - 1);
     toast({

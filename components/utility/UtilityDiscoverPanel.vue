@@ -703,7 +703,7 @@ const footprint = computed<UtilityTrajectoryPoint[][] | null>(() => {
   }
   const up = upsampleFootprint(
     decoded,
-    smokeFootprint(decoded, []),
+    smokeFootprint(decoded),
     SMOKE_UPSAMPLE,
   );
   const loops = traceContour(up.view, up.mask, 0.4);

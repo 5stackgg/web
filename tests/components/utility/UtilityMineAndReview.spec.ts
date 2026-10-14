@@ -77,6 +77,15 @@ describe("UtilityLineupCard on Mine", () => {
     );
   });
 
+  it("leaves a private one's third line to the time, the lock says the rest", async () => {
+    const wrapper = await mine({ visibility: "Private" });
+
+    expect(wrapper.find("[data-state-icon]").attributes("data-state")).toBe(
+      "private",
+    );
+    expect(wrapper.find("[data-state-line]").text()).not.toContain("Only you");
+  });
+
   it("says why it was turned down on its third line", async () => {
     const wrapper = await mine({ public_review_note: "Doesn't land" });
 
@@ -85,11 +94,11 @@ describe("UtilityLineupCard on Mine", () => {
     );
   });
 
-  it("counts upvotes on a public one, with no separate score column", async () => {
+  it("counts upvotes on a public one where every tile counts them", async () => {
     const wrapper = await mine({ visibility: "Public" });
 
-    expect(wrapper.find("[data-state-line]").text()).toBe("4 upvotes");
-    expect(wrapper.find("[data-upvote]").exists()).toBe(false);
+    expect(wrapper.find("[data-tallies] [data-upvote]").text()).toBe("4");
+    expect(wrapper.find("[data-state-line]").text()).not.toContain("upvotes");
   });
 });
 

@@ -6053,11 +6053,7 @@
           "rejected": "Rechazado: un revisor lo devolvió. Ábrelo para ver por qué, corrígelo y vuelve a enviarlo.",
           "archived": "Archivado: oculto en todas partes. Restáuralo desde la pestaña Archivados o bórralo para siempre."
         },
-        "private_line": "Solo tú",
-        "team_line": "Tu equipo",
-        "review_line": "Enviado a revisión",
-        "rejected_line": "Rechazado: {note}",
-        "archived_line": "Archivado"
+        "rejected_line": "Rechazado: {note}"
       },
       "review": {
         "lands": "Cae en",

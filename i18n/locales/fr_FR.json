@@ -6053,11 +6053,7 @@
           "rejected": "Refusé : un relecteur l'a renvoyé. Ouvre-le pour lire pourquoi, corrige-le, puis soumets-le à nouveau.",
           "archived": "Archivé : masqué partout. Restaure-le depuis l'onglet Archivés, ou supprime-le définitivement."
         },
-        "private_line": "Toi seul",
-        "team_line": "Ton équipe",
-        "review_line": "Envoyé en relecture",
-        "rejected_line": "Refusé : {note}",
-        "archived_line": "Archivé"
+        "rejected_line": "Refusé : {note}"
       },
       "review": {
         "lands": "Atterrit",

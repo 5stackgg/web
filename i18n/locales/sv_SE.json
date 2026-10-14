@@ -6053,11 +6053,7 @@
           "rejected": "Avvisad: en granskare skickade tillbaka den. Öppna den för att läsa varför, rätta den och skicka in igen.",
           "archived": "Arkiverad: dold överallt. Återställ den från fliken Arkiverade eller radera den för gott."
         },
-        "private_line": "Bara du",
-        "team_line": "Ditt lag",
-        "review_line": "Skickad för granskning",
-        "rejected_line": "Avvisad: {note}",
-        "archived_line": "Arkiverad"
+        "rejected_line": "Avvisad: {note}"
       },
       "review": {
         "lands": "Landar",

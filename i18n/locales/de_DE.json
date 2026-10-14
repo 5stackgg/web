@@ -6053,11 +6053,7 @@
           "rejected": "Abgelehnt: ein Prüfer hat es zurückgeschickt. Öffne es, lies warum, korrigiere es und reiche es erneut ein.",
           "archived": "Archiviert: überall ausgeblendet. Stelle es im Tab Archiviert wieder her oder lösche es endgültig."
         },
-        "private_line": "Nur du",
-        "team_line": "Dein Team",
-        "review_line": "Zur Prüfung eingereicht",
-        "rejected_line": "Abgelehnt: {note}",
-        "archived_line": "Archiviert"
+        "rejected_line": "Abgelehnt: {note}"
       },
       "review": {
         "lands": "Landet",

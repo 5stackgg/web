@@ -6053,11 +6053,7 @@
           "rejected": "Afvist: en anmelder sendte den tilbage. Åbn den for at læse hvorfor, ret den og indsend den igen.",
           "archived": "Arkiveret: skjult overalt. Gendan den fra fanen Arkiveret, eller slet den for altid."
         },
-        "private_line": "Kun dig",
-        "team_line": "Dit hold",
-        "review_line": "Sendt til gennemgang",
-        "rejected_line": "Afvist: {note}",
-        "archived_line": "Arkiveret"
+        "rejected_line": "Afvist: {note}"
       },
       "review": {
         "lands": "Lander",

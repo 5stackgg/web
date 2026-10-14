@@ -6053,11 +6053,7 @@
           "rejected": "已拒绝：审核员退回了它。打开查看原因，修改后再次提交。",
           "archived": "已归档：在所有地方隐藏。可在已归档标签中恢复，或永久删除。"
         },
-        "private_line": "仅你",
-        "team_line": "你的团队",
-        "review_line": "已提交审核",
-        "rejected_line": "已拒绝：{note}",
-        "archived_line": "已归档"
+        "rejected_line": "已拒绝：{note}"
       },
       "review": {
         "lands": "落点",

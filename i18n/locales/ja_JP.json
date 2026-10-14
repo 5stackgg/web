@@ -6053,11 +6053,7 @@
           "rejected": "却下：レビュアーが差し戻しました。開いて理由を確認し、直してから再申請してください。",
           "archived": "アーカイブ済み：どこにも表示されません。アーカイブタブから復元するか、完全に削除できます。"
         },
-        "private_line": "自分のみ",
-        "team_line": "チーム",
-        "review_line": "レビュー申請済み",
-        "rejected_line": "却下：{note}",
-        "archived_line": "アーカイブ済み"
+        "rejected_line": "却下：{note}"
       },
       "review": {
         "lands": "着弾",

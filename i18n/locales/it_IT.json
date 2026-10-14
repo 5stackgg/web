@@ -6053,11 +6053,7 @@
           "rejected": "Rifiutato: un revisore l'ha rimandato indietro. Aprilo per leggere il motivo, correggilo e invialo di nuovo.",
           "archived": "Archiviato: nascosto ovunque. Ripristinalo dalla scheda Archiviati o eliminalo per sempre."
         },
-        "private_line": "Solo tu",
-        "team_line": "La tua squadra",
-        "review_line": "Inviato in revisione",
-        "rejected_line": "Rifiutato: {note}",
-        "archived_line": "Archiviato"
+        "rejected_line": "Rifiutato: {note}"
       },
       "review": {
         "lands": "Atterra",

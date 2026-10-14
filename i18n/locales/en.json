@@ -6055,11 +6055,7 @@
           "rejected": "Rejected: a reviewer sent it back. Open it to read why, fix it, then submit it again.",
           "archived": "Archived: hidden everywhere. Restore it from the Archived tab, or delete it for good."
         },
-        "private_line": "Only you",
-        "team_line": "Your team",
-        "review_line": "Sent for review",
-        "rejected_line": "Declined: {note}",
-        "archived_line": "Archived"
+        "rejected_line": "Declined: {note}"
       },
       "review": {
         "lands": "Lands",

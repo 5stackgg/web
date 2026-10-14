@@ -6053,11 +6053,7 @@
           "rejected": "Odrzucony: recenzent go odesłał. Otwórz, by przeczytać dlaczego, popraw i zgłoś ponownie.",
           "archived": "Zarchiwizowany: ukryty wszędzie. Przywróć go z karty Zarchiwizowane albo usuń na stałe."
         },
-        "private_line": "Tylko ty",
-        "team_line": "Twoja drużyna",
-        "review_line": "Wysłano do recenzji",
-        "rejected_line": "Odrzucono: {note}",
-        "archived_line": "Zarchiwizowany"
+        "rejected_line": "Odrzucono: {note}"
       },
       "review": {
         "lands": "Ląduje",

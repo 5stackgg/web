@@ -6053,11 +6053,7 @@
           "rejected": "已拒絕：審核員退回了它。打開查看原因，修改後再次提交。",
           "archived": "已封存：在所有地方隱藏。可在已封存分頁中還原，或永久刪除。"
         },
-        "private_line": "僅你",
-        "team_line": "你的團隊",
-        "review_line": "已提交審核",
-        "rejected_line": "已拒絕：{note}",
-        "archived_line": "已封存"
+        "rejected_line": "已拒絕：{note}"
       },
       "review": {
         "lands": "落點",

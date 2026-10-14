@@ -21,7 +21,6 @@ import {
   Repeat,
   Send,
   Trash2,
-  UserRound,
   Users,
   X,
 } from "lucide-vue-next";
@@ -102,12 +101,6 @@ const props = withDefaults(
     openInPlace?: boolean;
     // Off where a click already opens the lineup and its actions live there.
     menu?: boolean;
-    // Off on the Public scope, where every row is public and a pill saying so
-    // on each one is noise; on Mine it is the thing that tells yours apart.
-    showStatus?: boolean;
-    // On Mine, public is the ordinary state of a lineup: a chip saying so on
-    // every row says nothing, so only the exceptions wear one there.
-    quietPublic?: boolean;
     // "row" is the index form: one line per lineup, for reading down a list
     // rather than reading one. The page swaps the selected row back to a card.
     mode?: "card" | "row";
@@ -139,8 +132,6 @@ const props = withDefaults(
     canReact: false,
     openInPlace: false,
     menu: true,
-    showStatus: true,
-    quietPublic: false,
     mode: "card",
     showPractice: true,
     showAuthor: false,
@@ -313,42 +304,11 @@ const stats = computed(() => {
   return out;
 });
 
-const awaitingReview = computed(
-  () => !!props.lineup.can_edit && !!props.lineup.public_requested_at,
-);
-
-// Your own lineups sit in the same list as everybody's public ones, and from
-// the row alone there was no telling which were which -- or which of yours
-// anyone else could see. A pill on yours answers both; the rest stay bare.
 const mine = computed(
   () =>
     !!mySteamId.value &&
     String(props.lineup.author_steam_id) === String(mySteamId.value),
 );
-
-const STATUS_TONES = {
-  Public: "bg-success/15 text-success",
-  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
-  Private: "bg-muted/60 text-muted-foreground",
-  review: "bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]",
-} as const;
-
-const ownStatus = computed(() => {
-  if (!mine.value || props.lineup.archived_at) {
-    return null;
-  }
-  const key = props.lineup.public_requested_at
-    ? "review"
-    : props.lineup.visibility;
-  if (key === "Public" && props.quietPublic) {
-    return null;
-  }
-  const label =
-    key === "review"
-      ? t("pages.utility.publish.in_review")
-      : t(`pages.utility.visibility.${key}`);
-  return { label, tone: STATUS_TONES[key] };
-});
 
 // Only a public lineup can be voted on, so only there does the count mean
 // anything -- a private one's 0 would read as "nobody liked this".
@@ -435,16 +395,18 @@ const stateSince = computed(() => {
 const LOAD_SQUARE =
   "!size-6 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)]";
 
-// The third line: who made it, or where yours stands, and the tallies.
-const bottomLine = computed(
-  () =>
-    authorLine.value ||
-    props.ownState ||
-    score.value !== null ||
-    !!props.metaThrowers,
-);
+const STATE_TONES: Record<string, string> = {
+  private: "border-border text-muted-foreground",
+  team: "border-border text-muted-foreground",
+  review: "border-[hsl(var(--tac-amber)/0.4)] text-[hsl(var(--tac-amber))]",
+  public: "border-success/40 text-success",
+  rejected: "border-destructive/40 text-destructive",
+  archived: "border-border text-muted-foreground",
+};
 
-const thumbBox = computed(() => (bottomLine.value ? "size-14" : "size-10"));
+// As tall as the three lines beside it: 24 + 18 + 24 with two 6px gaps.
+const thumbPx = 78;
+const thumbBox = "size-[78px]";
 
 // The menu offers what the lineup's own page does, and nothing it would not.
 const canLoadHere = computed(
@@ -549,7 +511,7 @@ function open() {
                 :origin="origin"
                 :landing="landing"
                 :color="color"
-                :size="bottomLine ? 56 : 40"
+                :size="thumbPx"
               />
             </FadeSwap>
             <Transition
@@ -580,10 +542,12 @@ function open() {
             </Transition>
           </span>
 
-          <!-- Two columns: what it is on the left, one line each, and on the
-               right edge the name's line and the last line carry what you
-               act on -- loading it, its status, its tallies. Placed by row so
-               an empty slot never lets the next line climb into it. -->
+          <!-- One layout for every list. Left: the name, how it is thrown,
+               and who made it -- or, on your own list, how long it has stood
+               where it is. Right, in the same places on every tile: where it
+               stands on the name's line, and on the last line the tallies and
+               the way into your server. Placed by row so an empty slot never
+               lets the next line climb into it. -->
           <div
             class="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1.5"
           >
@@ -594,55 +558,44 @@ function open() {
               <UtilityConfidenceMark :lineup="lineup" />
             </div>
 
-            <div
-              v-if="ownState || practiceReady"
-              data-rail
-              class="col-start-2 row-start-1 flex justify-end"
-            >
-              <FiveStackToolTip v-if="ownState" as-child :delay-duration="120">
-                <template #trigger>
-                  <span
-                    data-state-icon
-                    :data-state="state"
-                    role="img"
-                    :aria-label="$t(`pages.utility.mine.state.${state}`)"
-                    class="grid size-6 shrink-0 place-items-center rounded-md border bg-background/60"
-                    :class="
-                      state === 'rejected'
-                        ? 'border-destructive/40 text-destructive'
-                        : 'border-border text-muted-foreground'
-                    "
-                  >
-                    <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
-                  </span>
-                </template>
-                <span class="block max-w-[15rem]">
-                  {{ $t(`pages.utility.mine.tip.${state}`) }}
+            <FiveStackToolTip as-child :delay-duration="120">
+              <template #trigger>
+                <button
+                  v-if="canSubmitPublic"
+                  type="button"
+                  data-state-icon
+                  :data-state="state"
+                  :aria-label="$t('pages.utility.publish.submit')"
+                  class="col-start-2 row-start-1 grid size-6 shrink-0 place-items-center justify-self-end rounded-md border bg-background/60 transition-colors hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-[hsl(var(--tac-amber))]"
+                  :class="STATE_TONES[state]"
+                  @click.stop="emit('request-public', lineup.id)"
+                >
+                  <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
+                </button>
+                <span
+                  v-else
+                  data-state-icon
+                  :data-state="state"
+                  role="img"
+                  :aria-label="$t(`pages.utility.mine.state.${state}`)"
+                  class="col-start-2 row-start-1 grid size-6 shrink-0 place-items-center justify-self-end rounded-md border bg-background/60"
+                  :class="STATE_TONES[state]"
+                >
+                  <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
                 </span>
-              </FiveStackToolTip>
-              <UtilityPracticeButton
-                v-else
-                :lineup="lineup"
-                shape="icon"
-                :class="LOAD_SQUARE"
-              />
-            </div>
-
-            <div class="col-span-2 col-start-1 row-start-2 flex h-4 min-w-0 items-center gap-1.5">
-              <span
-                v-if="ownStatus && showStatus && !ownState"
-                class="inline-flex h-4 shrink-0 items-center gap-1 rounded-sm px-1 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em]"
-                :class="ownStatus.tone"
-                :title="$t('pages.utility.card.yours', { status: ownStatus.label })"
-              >
-                <UserRound class="h-2.5 w-2.5" />
-                {{ ownStatus.label }}
+              </template>
+              <span class="flex max-w-[15rem] flex-col gap-1">
+                <span>{{ $t(`pages.utility.mine.tip.${state}`) }}</span>
+                <span
+                  v-if="canSubmitPublic"
+                  class="font-semibold text-[hsl(var(--tac-amber))]"
+                >
+                  {{ $t("pages.utility.publish.submit") }}
+                </span>
               </span>
-              <Clock
-                v-else-if="awaitingReview && !ownState"
-                class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                :title="$t('pages.utility.publish.pending')"
-              />
+            </FiveStackToolTip>
+
+            <div class="col-span-2 col-start-1 row-start-2 flex h-[1.125rem] min-w-0 items-center">
               <UtilitySpecLine
                 :lineup="lineup"
                 compact
@@ -652,7 +605,6 @@ function open() {
             </div>
 
             <div
-              v-if="bottomLine"
               class="col-start-1 row-start-3 flex h-6 min-w-0 items-center gap-2"
             >
               <UtilityAuthorByline
@@ -662,21 +614,12 @@ function open() {
                 class="text-muted-foreground"
               />
               <p
-                v-if="ownState"
+                v-else-if="ownState"
                 data-state-line
                 class="flex min-w-0 items-center gap-1 text-xs text-muted-foreground"
               >
-                <span v-if="state === 'public'" class="truncate">
-                  {{
-                    $t(
-                      "pages.utility.card.score",
-                      { count: Number(lineup.upvotes ?? 0) },
-                      Number(lineup.upvotes ?? 0),
-                    )
-                  }}
-                </span>
                 <span
-                  v-else-if="state === 'rejected'"
+                  v-if="state === 'rejected'"
                   class="truncate text-foreground/80"
                 >
                   {{
@@ -685,29 +628,13 @@ function open() {
                     })
                   }}
                 </span>
-                <template v-else>
-                  <span class="shrink-0">
-                    {{ $t(`pages.utility.mine.${state}_line`) }}
-                  </span>
-                  <template v-if="stateSince">
-                    <span aria-hidden="true">·</span>
-                    <TimeAgo :date="stateSince" hide-icon />
-                  </template>
-                </template>
+                <TimeAgo v-else-if="stateSince" :date="stateSince" hide-icon />
               </p>
-            </div>
-
-            <div
-              v-if="(ownState && practiceReady) || (!ownState && (score !== null || metaThrowers))"
-              class="col-start-2 row-start-3 flex items-center justify-end gap-2"
-            >
-              <UtilityPracticeButton
-                v-if="ownState"
-                :lineup="lineup"
-                shape="icon"
-                :class="LOAD_SQUARE"
-              />
-              <template v-else>
+              <div
+                v-if="score !== null || metaThrowers"
+                data-tallies
+                class="ml-auto flex shrink-0 items-center gap-2"
+              >
                 <UtilityThrowersMeter
                   v-if="metaThrowers"
                   inline
@@ -723,8 +650,16 @@ function open() {
                   :disabled="!canReact"
                   @toggle="emit('vote', lineup.id, 1)"
                 />
-              </template>
+              </div>
             </div>
+
+            <UtilityPracticeButton
+              v-if="practiceReady"
+              :lineup="lineup"
+              shape="icon"
+              class="col-start-2 row-start-3 justify-self-end"
+              :class="LOAD_SQUARE"
+            />
           </div>
 
           <!-- One trigger instead of a row of unlabelled glyphs. It holds its space

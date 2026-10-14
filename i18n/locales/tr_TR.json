@@ -6053,11 +6053,7 @@
           "rejected": "Reddedildi: bir inceleyici geri gönderdi. Nedenini okumak için aç, düzelt ve yeniden gönder.",
           "archived": "Arşivlendi: her yerde gizli. Arşivlenenler sekmesinden geri yükle ya da kalıcı olarak sil."
         },
-        "private_line": "Yalnızca sen",
-        "team_line": "Takımın",
-        "review_line": "İncelemeye gönderildi",
-        "rejected_line": "Reddedildi: {note}",
-        "archived_line": "Arşivlendi"
+        "rejected_line": "Reddedildi: {note}"
       },
       "review": {
         "lands": "Düştüğü yer",

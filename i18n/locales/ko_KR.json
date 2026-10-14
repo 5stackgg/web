@@ -6053,11 +6053,7 @@
           "rejected": "거절됨: 검토자가 돌려보냈습니다. 열어서 이유를 확인하고 고친 뒤 다시 제출하세요.",
           "archived": "보관됨: 어디에도 표시되지 않습니다. 보관 탭에서 복원하거나 영구 삭제하세요."
         },
-        "private_line": "나만",
-        "team_line": "내 팀",
-        "review_line": "검토 요청됨",
-        "rejected_line": "거절됨: {note}",
-        "archived_line": "보관됨"
+        "rejected_line": "거절됨: {note}"
       },
       "review": {
         "lands": "떨어지는 곳",

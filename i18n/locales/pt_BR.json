@@ -6053,11 +6053,7 @@
           "rejected": "Recusado: um revisor devolveu. Abra para ler o motivo, corrija e envie de novo.",
           "archived": "Arquivado: oculto em todo lugar. Restaure na aba Arquivados ou exclua de vez."
         },
-        "private_line": "Só você",
-        "team_line": "Seu time",
-        "review_line": "Enviado para revisão",
-        "rejected_line": "Recusado: {note}",
-        "archived_line": "Arquivado"
+        "rejected_line": "Recusado: {note}"
       },
       "review": {
         "lands": "Cai em",

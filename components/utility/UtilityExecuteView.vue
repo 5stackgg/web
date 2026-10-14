@@ -16,6 +16,7 @@ import { useUtilityCardViews } from "~/composables/useUtilityCardViews";
 import {
   UTILITY_CARRY_LIMITS,
   UTILITY_CARRY_TOTAL,
+  UTILITY_TYPE_ICONS,
   utilityThrowButtonsKey,
 } from "~/utilities/utilityDisplay";
 import type {
@@ -281,6 +282,18 @@ function call(beat: UtilityExecuteBeat) {
 // Where on the run's clock a step falls, as a share of the whole run.
 function along(beat: UtilityExecuteBeat) {
   return duration.value > 0 ? (beat.seconds / duration.value) * 100 : 0;
+}
+
+// The badge says which step; the icon says which grenade, in its colour.
+function typeIcon(beat: UtilityExecuteBeat) {
+  const src = beat.lineup ? UTILITY_TYPE_ICONS[beat.lineup.utility_type] : null;
+  return src
+    ? {
+        backgroundColor: beat.color,
+        maskImage: `url(${src})`,
+        WebkitMaskImage: `url(${src})`,
+      }
+    : null;
 }
 
 function throwShort(lineup: UtilityLineup) {
@@ -595,8 +608,19 @@ onBeforeUnmount(() => {
             </span>
 
             <span v-if="beat.lineup" class="flex min-w-0 flex-col gap-[3px]">
-              <span class="truncate text-[0.82rem] font-semibold leading-tight">
-                {{ beat.lineup.name }}
+              <span class="flex min-w-0 items-center gap-1.5">
+                <span
+                  v-if="typeIcon(beat)"
+                  data-type-icon
+                  aria-hidden="true"
+                  class="size-3.5 shrink-0 [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain]"
+                  :style="typeIcon(beat)!"
+                />
+                <span
+                  class="min-w-0 truncate text-[0.82rem] font-semibold leading-tight"
+                >
+                  {{ beat.lineup.name }}
+                </span>
               </span>
               <span
                 class="truncate font-mono text-[0.6rem] uppercase leading-relaxed tracking-[0.1em] text-muted-foreground"
@@ -605,30 +629,30 @@ onBeforeUnmount(() => {
                 <span aria-hidden="true" class="mx-1 text-border">/</span>
                 {{ throwShort(beat.lineup) }}
               </span>
-              <span
+              <PlayerDisplay
+                v-if="beat.player"
                 data-thrower
-                class="flex min-w-0 items-center text-xs"
+                :player="beat.player"
+                size="xs"
+                compact
+                truncate-name
+                :show-elo="false"
+                :show-role="false"
+                :show-online="false"
+                :context-menu="false"
+                class="min-w-0"
                 :class="
                   beat.mine
                     ? 'text-[hsl(var(--tac-amber))]'
                     : 'text-muted-foreground'
                 "
+              />
+              <span
+                v-else
+                data-thrower
+                class="truncate text-xs text-muted-foreground"
               >
-                <PlayerDisplay
-                  v-if="beat.player"
-                  :player="beat.player"
-                  size="xs"
-                  compact
-                  truncate-name
-                  :show-elo="false"
-                  :show-role="false"
-                  :show-online="false"
-                  :context-menu="false"
-                  class="min-w-0"
-                />
-                <span v-else class="truncate">
-                  {{ beat.who ?? $t("pages.utility.playbooks.unassigned") }}
-                </span>
+                {{ beat.who ?? $t("pages.utility.playbooks.unassigned") }}
               </span>
               <span
                 v-if="call(beat)"

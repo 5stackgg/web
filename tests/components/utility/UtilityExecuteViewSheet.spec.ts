@@ -111,4 +111,15 @@ describe("UtilityExecuteView run sheet", () => {
     expect(throwers[0]).toContain("nyx");
     expect(throwers[1]).toBe("Anyone");
   });
+
+  it("marks each step with its grenade's icon in the grenade's colour", async () => {
+    const wrapper = await mountSuspended(UtilityExecuteView, {
+      props: { playbook, beats: [beat(0, 1, "nyx")], run },
+    });
+    await flushPromises();
+
+    const icon = wrapper.find("[data-run-sheet] [data-type-icon]");
+    expect(icon.attributes("style")).toContain("smokegrenade.svg");
+    expect(icon.attributes("style")).toContain("background-color");
+  });
 });

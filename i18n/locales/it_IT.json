@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Match trovato",
+    "match_found_description": "Premi Pronto per accettare il match prima che scada il tempo.",
     "waiting_for_players": "In attesa di giocatori",
     "waiting_on_others": "In attesa degli altri",
+    "seconds_left": "Secondi rimanenti: {seconds}",
     "confirmed": "Confermato",
     "ready": "Pronto",
     "locked_in": "Bloccato",

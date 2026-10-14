@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Kamp fundet",
+    "match_found_description": "Tryk på Klar for at acceptere kampen, før tiden løber ud.",
     "waiting_for_players": "Venter på spillere",
     "waiting_on_others": "Venter på andre",
+    "seconds_left": "Sekunder tilbage: {seconds}",
     "confirmed": "Bekræftet",
     "ready": "Klar",
     "locked_in": "Låst",

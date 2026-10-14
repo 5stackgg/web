@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Partida encontrada",
+    "match_found_description": "Pulsa Listo para aceptar la partida antes de que se acabe el tiempo.",
     "waiting_for_players": "Esperando a jugadores",
     "waiting_on_others": "Esperando a los demás",
+    "seconds_left": "Segundos restantes: {seconds}",
     "confirmed": "Confirmado",
     "ready": "Listo",
     "locked_in": "Confirmado y bloqueado",

@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "تم العثور على مباراة",
+    "match_found_description": "اضغط على «جاهز» لقبول المباراة قبل انتهاء الوقت.",
     "waiting_for_players": "بانتظار اللاعبين",
     "waiting_on_others": "بانتظار الآخرين",
+    "seconds_left": "الثواني المتبقية: {seconds}",
     "confirmed": "مؤكد",
     "ready": "جاهز",
     "locked_in": "تم التثبيت",

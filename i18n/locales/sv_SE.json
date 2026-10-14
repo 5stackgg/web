@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Match hittad",
+    "match_found_description": "Tryck på Redo för att acceptera matchen innan tiden tar slut.",
     "waiting_for_players": "Väntar på spelare",
     "waiting_on_others": "Väntar på andra",
+    "seconds_left": "Sekunder kvar: {seconds}",
     "confirmed": "Bekräftad",
     "ready": "Redo",
     "locked_in": "Låst",

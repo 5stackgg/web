@@ -108,6 +108,85 @@ describe("ChatLobby gag", () => {
   });
 });
 
+describe("ChatLobby participants", () => {
+  // happy-dom focuses any element; a browser ignores focus() on an element it
+  // can't focus, which is where a popover with nothing tabbable leaves focus.
+  beforeEach(() => {
+    const focus = HTMLElement.prototype.focus;
+    vi.spyOn(HTMLElement.prototype, "focus").mockImplementation(function (
+      this: HTMLElement,
+      options?: FocusOptions,
+    ) {
+      if (this.hasAttribute("tabindex") || this.matches("button, a, input")) {
+        focus.call(this, options);
+      }
+    });
+  });
+
+  async function openParticipants() {
+    signIn({ is_gagged: false });
+    const wrapper = await mountSuspended(ChatLobby, {
+      props: {
+        instance: "chat-lobby-spec",
+        type: "match",
+        lobbyId: `match-${++lobbyCounter}`,
+        playNotificationSound: false,
+      },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+    const trigger = wrapper
+      .findAll("button")
+      .find((button) => button.text().endsWith("in chat"))!
+      .element as HTMLElement;
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+
+    trigger.click();
+    await flushPromises();
+    return trigger;
+  }
+
+  const popup = () =>
+    document.body.querySelector<HTMLElement>("[role='dialog']");
+
+  it("opens a popup the button names and points at", async () => {
+    const trigger = await openParticipants();
+
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(trigger.getAttribute("aria-haspopup")).toBe("dialog");
+    expect(popup()?.id).toBe(trigger.getAttribute("aria-controls"));
+    expect(popup()?.getAttribute("aria-labelledby")).toBe(trigger.id);
+    expect(popup()?.textContent).toContain("No one else is in this chat yet.");
+  });
+
+  it("closes on Escape", async () => {
+    const trigger = await openParticipants();
+    expect(popup()).not.toBeNull();
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    );
+    await flushPromises();
+
+    expect(popup()).toBeNull();
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("closes on a click outside", async () => {
+    const trigger = await openParticipants();
+    expect(popup()).not.toBeNull();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    document.body.dispatchEvent(
+      new PointerEvent("pointerdown", { bubbles: true, pointerType: "mouse" }),
+    );
+    await flushPromises();
+
+    expect(popup()).toBeNull();
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  });
+});
+
 describe("ChatLobby moderation", () => {
   async function mountWithHistory(
     type: string,

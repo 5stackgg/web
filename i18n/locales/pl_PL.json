@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Znaleziono mecz",
+    "match_found_description": "Naciśnij Gotowy, aby zaakceptować mecz, zanim skończy się czas.",
     "waiting_for_players": "Oczekiwanie na graczy",
     "waiting_on_others": "Oczekiwanie na innych",
+    "seconds_left": "Pozostałe sekundy: {seconds}",
     "confirmed": "Potwierdzono",
     "ready": "Gotowy",
     "locked_in": "Zablokowano",

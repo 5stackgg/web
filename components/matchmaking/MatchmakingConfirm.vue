@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 </script>
 
 <template>
@@ -34,7 +39,7 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 
         <div class="relative z-10 flex flex-col items-center gap-5 text-center">
           <div class="flex flex-col items-center gap-1.5">
-            <div
+            <AlertDialogTitle
               class="inline-flex items-center gap-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.28em] transition-colors duration-300"
               :class="
                 isCritical ? 'text-destructive' : 'text-[hsl(var(--tac-amber))]'
@@ -53,7 +58,10 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
                   isCritical ? 'bg-destructive' : 'bg-[hsl(var(--tac-amber))]'
                 "
               ></span>
-            </div>
+            </AlertDialogTitle>
+            <AlertDialogDescription class="sr-only">
+              {{ $t("matchmaking.match_found_description") }}
+            </AlertDialogDescription>
             <div
               v-if="confirmation"
               class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
@@ -75,6 +83,9 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
             >
               {{ formattedCountdown }}
             </div>
+            <span class="sr-only" aria-live="polite">{{
+              countdownAnnouncement
+            }}</span>
             <div
               class="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground/80"
             >
@@ -156,6 +167,8 @@ export default {
   data() {
     return {
       remainingSeconds: 0,
+      countdownAnnouncement: "",
+      announcedCountdownStep: undefined as number | undefined,
       routedConfirmedId: undefined as string | undefined,
       countdownInterval: undefined as NodeJS.Timeout | undefined,
       playCountdownSound: useSound().playCountdownSound,
@@ -222,6 +235,8 @@ export default {
           if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
           }
+          this.countdownAnnouncement = "";
+          this.announcedCountdownStep = undefined;
           this.playMatchFoundSound();
           this.updateCountdown();
           this.countdownInterval = setInterval(this.updateCountdown, 1000);
@@ -287,7 +302,23 @@ export default {
 
         this.playCountdownSound();
         this.remainingSeconds = difference;
+        this.announceCountdown(difference);
       }
+    },
+    // Read out every ten seconds and once more at the last five, not every
+    // tick, so a screen reader can still get the dialog's other words in.
+    announceCountdown(seconds: number) {
+      if (seconds <= 0) {
+        return;
+      }
+      const step = seconds > 5 ? Math.ceil(seconds / 10) : 0;
+      if (step === this.announcedCountdownStep) {
+        return;
+      }
+      this.announcedCountdownStep = step;
+      this.countdownAnnouncement = this.$t("matchmaking.seconds_left", {
+        seconds,
+      });
     },
   },
   beforeUnmount() {

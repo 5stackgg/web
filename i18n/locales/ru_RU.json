@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Матч найден",
+    "match_found_description": "Нажмите «Готов», чтобы принять матч, пока не истекло время.",
     "waiting_for_players": "Ожидание игроков",
     "waiting_on_others": "Ожидание остальных",
+    "seconds_left": "Осталось секунд: {seconds}",
     "confirmed": "Подтверждено",
     "ready": "Готов",
     "locked_in": "Зафиксировано",

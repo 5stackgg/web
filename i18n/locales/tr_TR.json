@@ -5377,7 +5377,9 @@
         "plugin": "Oyunda",
         "demo": "Demo",
         "editor": "Editör",
-        "import": "İçe aktarım"
+        "import": "İçe aktarım",
+        "fork": "Çatal",
+        "discovery": "Keşfet"
       },
       "confidence": {
         "exact": "Kaydedilmiş",
@@ -9989,6 +9991,8 @@
     "select_region": "Bölge seç",
     "no_region": "Atanmamış",
     "remove_node": "Düğümü kaldır",
+    "remove_node_confirm_title": "Bu düğüm kaldırılsın mı?",
+    "remove_node_confirm_description": "Düğüm ve üzerindeki tüm özel sunucular 5Stack'ten kaldırılacak. Bu işlem geri alınamaz.",
     "remove_ports": "Portları kaldır",
     "mode": {
       "use_as_match": "Maç sunucusu olarak kullan",

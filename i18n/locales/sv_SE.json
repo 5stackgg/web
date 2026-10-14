@@ -5377,7 +5377,9 @@
         "plugin": "I spelet",
         "demo": "Demo",
         "editor": "Redigerare",
-        "import": "Import"
+        "import": "Import",
+        "fork": "Förgrening",
+        "discovery": "Upptäck"
       },
       "confidence": {
         "exact": "Inspelad",
@@ -9989,6 +9991,8 @@
     "select_region": "Välj region",
     "no_region": "Ej tilldelad",
     "remove_node": "Ta bort nod",
+    "remove_node_confirm_title": "Ta bort den här noden?",
+    "remove_node_confirm_description": "Noden och alla dedikerade servrar på den tas bort från 5Stack. Det går inte att ångra.",
     "remove_ports": "Ta bort portar",
     "mode": {
       "use_as_match": "Använd som matchserver",

@@ -120,6 +120,11 @@ const killsFilter = computed<KillsPreset>(() =>
     ? (route.query.kills as KillsPreset)
     : "any",
 );
+const killsLabel = computed(
+  () =>
+    KILLS_OPTIONS.value.find((option) => option.value === killsFilter.value)
+      ?.label,
+);
 const viewMode = computed<ViewMode>(() =>
   route.query.view === "singles" ? "singles" : "matches",
 );

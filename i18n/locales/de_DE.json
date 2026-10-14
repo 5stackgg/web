@@ -5377,7 +5377,9 @@
         "plugin": "Im Spiel",
         "demo": "Demo",
         "editor": "Editor",
-        "import": "Import"
+        "import": "Import",
+        "fork": "Fork",
+        "discovery": "Entdecken"
       },
       "confidence": {
         "exact": "Aufgezeichnet",
@@ -9989,6 +9991,8 @@
     "select_region": "Region wählen",
     "no_region": "Nicht zugewiesen",
     "remove_node": "Node entfernen",
+    "remove_node_confirm_title": "Diesen Node entfernen?",
+    "remove_node_confirm_description": "Der Node und alle dedizierten Server darauf werden aus 5Stack entfernt. Das kann nicht rückgängig gemacht werden.",
     "remove_ports": "Ports entfernen",
     "mode": {
       "use_as_match": "Als Match-Server nutzen",

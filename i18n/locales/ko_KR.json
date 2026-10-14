@@ -5377,7 +5377,9 @@
         "plugin": "게임 내",
         "demo": "데모",
         "editor": "편집기",
-        "import": "가져오기"
+        "import": "가져오기",
+        "fork": "포크",
+        "discovery": "발견"
       },
       "confidence": {
         "exact": "기록됨",
@@ -9989,6 +9991,8 @@
     "select_region": "지역 선택",
     "no_region": "미할당",
     "remove_node": "노드 제거",
+    "remove_node_confirm_title": "이 노드를 제거할까요?",
+    "remove_node_confirm_description": "노드와 해당 노드의 모든 전용 서버가 5Stack에서 제거됩니다. 이 작업은 되돌릴 수 없습니다.",
     "remove_ports": "포트 제거",
     "mode": {
       "use_as_match": "매치 서버로 사용",

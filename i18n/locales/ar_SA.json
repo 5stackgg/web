@@ -5377,7 +5377,9 @@
         "plugin": "داخل اللعبة",
         "demo": "تسجيل",
         "editor": "المحرر",
-        "import": "استيراد"
+        "import": "استيراد",
+        "fork": "نسخة مستقلة",
+        "discovery": "اكتشاف"
       },
       "confidence": {
         "exact": "مسجّلة",
@@ -9989,6 +9991,8 @@
     "select_region": "اختر المنطقة",
     "no_region": "غير مخصصة",
     "remove_node": "احذف العقدة",
+    "remove_node_confirm_title": "حذف هذه العقدة؟",
+    "remove_node_confirm_description": "ستُحذف العقدة وجميع الخوادم المخصصة عليها من 5Stack. لا يمكن التراجع عن ذلك.",
     "remove_ports": "احذف المنافذ",
     "mode": {
       "use_as_match": "استخدمها كسيرفر مباريات",

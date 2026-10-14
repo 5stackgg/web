@@ -91,8 +91,6 @@ async function mountPanel() {
       stubs: {
         PlayerSearch: true,
         RconCommander: true,
-        ServiceLogs: true,
-        UtilityPracticeCommands: true,
         UtilitySaveLineupDialog: true,
       },
     },

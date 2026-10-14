@@ -67,11 +67,16 @@ const reachable = computed(
   () => load.canLoad(props.mapName) || load.canSwitchTo(props.mapName),
 );
 
+// A drill runs on the server you are in, so it waits for one on this map.
 const actions = computed(() =>
   props.open
     ? []
-    : (props.offer?.actions ?? []).filter(
-        (action) => action.kind === "run" || (props.server && reachable.value),
+    : (props.offer?.actions ?? []).filter((action) =>
+        action.kind === "run"
+          ? true
+          : action.kind === "drill"
+            ? props.server && load.canLoad(props.mapName)
+            : props.server && reachable.value,
       ),
 );
 
@@ -227,6 +232,27 @@ const joinLink = computed(() =>
         size="sm"
         class="h-8 min-w-0 shrink overflow-hidden px-3.5 text-[13px] font-semibold"
       />
+      <FiveStackToolTip
+        v-else-if="action.kind === 'drill'"
+        as-child
+        :delay-duration="120"
+        :tap-toggle="false"
+      >
+        <template #trigger>
+          <Button
+            size="sm"
+            variant="outline"
+            data-bar-drill
+            class="!h-8 !w-8 shrink-0 border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] p-0 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] hover:text-[hsl(var(--tac-amber))]"
+            :aria-label="$t('pages.utility.load.drill')"
+            :loading="load.sending.value === 'drill'"
+            @click="load.sendDrill([action.lineup])"
+          >
+            <Repeat class="h-4 w-4" />
+          </Button>
+        </template>
+        {{ $t("pages.utility.load.drill") }}
+      </FiveStackToolTip>
       <UtilityPracticeButton
         v-else-if="action.kind === 'spot'"
         :spot="action.spot"

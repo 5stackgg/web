@@ -91,12 +91,15 @@ watch(
       loop
     >
       <template #top-left>
-        <span
-          v-if="seconds"
-          class="inline-flex h-[26px] items-center rounded-md bg-black/60 px-2 font-mono text-xs font-semibold tabular-nums text-white/90 backdrop-blur-sm"
-        >
-          {{ seconds }}s
-        </span>
+        <div class="flex items-center gap-2">
+          <span
+            v-if="seconds"
+            class="inline-flex h-[26px] items-center rounded-md bg-black/60 px-2 font-mono text-xs font-semibold tabular-nums text-white/90 backdrop-blur-sm"
+          >
+            {{ seconds }}s
+          </span>
+          <slot name="corner" />
+        </div>
       </template>
       <template #top-right>
         <ClipShareMenu
@@ -112,11 +115,12 @@ watch(
       </template>
     </ClipPlayer>
 
-    <UtilityLineupViewer3D
-      v-else-if="hasMesh"
-      :lineup="lineup"
-      data-no-sheet-drag
-    />
+    <div v-else-if="hasMesh" class="relative">
+      <UtilityLineupViewer3D :lineup="lineup" data-no-sheet-drag />
+      <div v-if="$slots.corner" class="absolute left-2 top-2 z-[11]">
+        <slot name="corner" />
+      </div>
+    </div>
 
     <template v-else-if="hasMesh === false">
       <UtilityRadarBoard

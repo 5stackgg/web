@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -11,7 +12,7 @@ import {
 } from "~/composables/useUtilityMapHandoff";
 import { useUtilityMaps } from "~/composables/useUtilityMaps";
 import { normalizeMapName } from "~/utilities/mapAssets";
-import { UTILITY_TYPES, UTILITY_TYPE_COLORS } from "~/utilities/utilityDisplay";
+import { UTILITY_TYPES } from "~/utilities/utilityDisplay";
 
 // Every map, each as its own radar with its library drawn on it. The maps
 // rail beside it belongs to the section's shell (`pages/utility.vue`), with
@@ -184,11 +185,7 @@ const LEGEND_SPAN: Record<number, string> = {
                     :key="type"
                     class="inline-flex items-center gap-1.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
                   >
-                    <span
-                      aria-hidden="true"
-                      class="size-2 rounded-full"
-                      :style="{ backgroundColor: UTILITY_TYPE_COLORS[type] }"
-                    />
+                    <UtilityTypeGlyph :type="type" class="size-3" />
                     {{ $t(`pages.utility.types.${type}`) }}
                   </span>
                 </p>

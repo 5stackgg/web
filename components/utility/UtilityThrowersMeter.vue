@@ -10,11 +10,14 @@ const props = withDefaults(
     color?: string;
     // Amber is reserved for a spot people throw that nobody has written up.
     amber?: boolean;
+    // On one line of text beside other tallies: the count alone.
+    inline?: boolean;
   }>(),
   {
     max: null,
     color: "#ffffff",
     amber: false,
+    inline: false,
   },
 );
 
@@ -29,7 +32,10 @@ const share = computed(() => {
 
 <template>
   <span
-    class="flex w-20 shrink-0 flex-col items-end gap-1"
+    class="flex shrink-0"
+    :class="
+      inline ? 'items-center gap-1.5' : 'w-20 flex-col items-end gap-1'
+    "
     :title="$t('pages.utility.meta.throwers_hint')"
   >
     <span
@@ -39,7 +45,7 @@ const share = computed(() => {
       {{ count }}
     </span>
     <span
-      v-if="share !== null"
+      v-if="share !== null && !inline"
       class="h-[3px] w-full overflow-hidden rounded-sm bg-border"
     >
       <span

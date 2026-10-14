@@ -130,6 +130,15 @@ export const UTILITY_TYPE_COLORS: Record<UtilityType, string> = {
   Decoy: "#66dd55",
 };
 
+// The game's own equipment icons, drawn as a mask so they take the type colour.
+export const UTILITY_TYPE_ICONS: Record<UtilityType, string> = {
+  Smoke: "/img/equipment/smokegrenade.svg",
+  Molotov: "/img/equipment/molotov.svg",
+  HighExplosive: "/img/equipment/hegrenade.svg",
+  Flash: "/img/equipment/flashbang.svg",
+  Decoy: "/img/equipment/decoy.svg",
+};
+
 // The replay renderer keys its colours and filters off the demo's short name.
 export function replayUtilityType(type: UtilityType): string {
   return type === "HighExplosive" ? "HE" : type;
@@ -780,6 +789,8 @@ export type UtilityBarAction =
   // "Load me in" for a saved lineup or a mined spot. The button hides itself
   // until there is a server to load into.
   | { kind: "lineup"; lineup: UtilityLineup }
+  // Repeat it on the server you are in; a glyph beside "Load me in".
+  | { kind: "drill"; lineup: UtilityLineup }
   | { kind: "spot"; spot: UtilityMetaSpot; name: string }
   | {
       kind: "run";

@@ -73,7 +73,7 @@ describe("UtilityLineupCard row", () => {
       preview_stills_url: { landing: "https://cdn.test/landing.webp" },
     });
 
-    expect(wrapper.find("img").exists()).toBe(false);
+    expect(wrapper.find("img[data-thumb]").exists()).toBe(false);
     expect(wrapper.find("[data-has-video]").exists()).toBe(false);
   });
 
@@ -84,7 +84,7 @@ describe("UtilityLineupCard row", () => {
       preview_stills_url: { landing: "https://cdn.test/landing.webp" },
     });
 
-    const thumb = wrapper.find("img");
+    const thumb = wrapper.find("img[data-thumb]");
     expect(thumb.attributes("src")).toBe("https://cdn.test/landing.webp");
     expect(thumb.attributes("loading")).toBe("lazy");
     expect(wrapper.find("[data-has-video]").text()).toBe("Has video");
@@ -96,12 +96,12 @@ describe("UtilityLineupCard row", () => {
       preview_thumbnail_url: "https://cdn.test/thumb.jpg",
     });
 
-    expect(wrapper.find("img").attributes("src")).toBe(
+    expect(wrapper.find("img[data-thumb]").attributes("src")).toBe(
       "https://cdn.test/thumb.jpg",
     );
 
-    await wrapper.find("img").trigger("error");
-    expect(wrapper.find("img").exists()).toBe(false);
+    await wrapper.find("img[data-thumb]").trigger("error");
+    expect(wrapper.find("img[data-thumb]").exists()).toBe(false);
     expect(wrapper.find("[data-has-video]").exists()).toBe(true);
   });
 
@@ -138,22 +138,47 @@ describe("UtilityLineupCard row", () => {
     expect(derived.text()).not.toContain("From a demo");
   });
 
-  it("drops the Public chip on Mine but keeps the ones that say something", async () => {
-    const mine = { author_steam_id: "9" } as Partial<UtilityLineup>;
+  it("wears where it stands in the same corner on every list", async () => {
+    const everybody = await mountRow({ visibility: "Public" });
+    const yours = await mountRow({ visibility: "Public" }, { ownState: true });
 
-    const quiet = await mountRow(
-      { ...mine, visibility: "Public" },
-      { quietPublic: true },
+    for (const wrapper of [everybody, yours]) {
+      const icon = wrapper.find("[data-state-icon]");
+      expect(icon.attributes("data-state")).toBe("public");
+      expect(icon.classes()).toContain("row-start-1");
+    }
+  });
+
+  it("asks before its lock submits your own private lineup for public", async () => {
+    const wrapper = await mountRow(
+      { visibility: "Private", can_edit: true } as Partial<UtilityLineup>,
+      { ownState: true },
     );
-    expect(quiet.text()).not.toContain("Public");
 
-    const elsewhere = await mountRow({ ...mine, visibility: "Public" });
-    expect(elsewhere.text()).toContain("Public");
+    await wrapper.find("[data-state-icon]").trigger("click");
+    await flushPromises();
 
+    expect(wrapper.emitted("request-public")).toBeUndefined();
+    expect(wrapper.emitted("select")).toBeUndefined();
+
+    (document.querySelector("[data-submit-public]") as HTMLElement).click();
+    await flushPromises();
+
+    expect(wrapper.emitted("request-public")?.[0]).toEqual([base.id]);
+  });
+
+  it("counts upvotes only on a public lineup, beside the same player count", async () => {
     const hidden = await mountRow(
-      { ...mine, visibility: "Private" },
-      { quietPublic: true },
+      { visibility: "Private" },
+      { ownState: true, metaThrowers: 5 },
     );
-    expect(hidden.text()).toContain("Private");
+    expect(hidden.find("[data-upvote]").exists()).toBe(false);
+    expect(hidden.find("[data-tallies]").text()).toContain("5");
+
+    const shown = await mountRow(
+      { visibility: "Public" },
+      { metaThrowers: 5 },
+    );
+    expect(shown.find("[data-tallies] [data-upvote]").exists()).toBe(true);
   });
 });

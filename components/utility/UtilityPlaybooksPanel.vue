@@ -4,11 +4,13 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
   Copy,
+  Globe,
   Link2,
   Lock,
   PencilLine,
   Play,
   Plus,
+  Users,
 } from "lucide-vue-next";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
@@ -420,6 +422,23 @@ async function loadRoster(teamId: string | null) {
 
 watch(() => current.value?.team_id ?? null, loadRoster, { immediate: true });
 
+// The same player as a face, for the lines that show who throws.
+function playerRef(steamId: string | null | undefined): UtilityAuthorRef | null {
+  if (!steamId) {
+    return null;
+  }
+  const id = String(steamId);
+  const me = auth.me;
+  if (id === mySteamId.value && me) {
+    return {
+      steam_id: id,
+      name: t("pages.utility.playbooks.you"),
+      avatar_url: (me as { avatar_url?: string | null }).avatar_url ?? null,
+    };
+  }
+  return roster.value[id] ?? null;
+}
+
 function playerName(steamId: string | null | undefined) {
   if (!steamId) {
     return null;
@@ -461,6 +480,7 @@ const beats = computed<UtilityExecuteBeat[]>(() => {
       showTime,
       repeatOf: first === undefined ? null : first + 1,
       who: playerName(step.assigned_steam_id),
+      player: playerRef(step.assigned_steam_id),
       mine:
         !!mySteamId.value &&
         String(step.assigned_steam_id ?? "") === mySteamId.value,
@@ -481,6 +501,25 @@ const ownerName = computed(() => {
     : playerName(current.value?.owner_steam_id);
 });
 const teamName = computed(() => current.value?.team?.name ?? null);
+const VISIBILITY_TONES: Record<string, string> = {
+  Public: "border-success/40 bg-success/15 text-success",
+  Team: "border-[hsl(214_80%_62%/0.4)] bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
+  Private: "border-border bg-muted/60 text-muted-foreground",
+};
+
+const VISIBILITY_ICONS: Record<string, typeof Globe> = {
+  Public: Globe,
+  Team: Users,
+  Private: Lock,
+};
+
+const ownerPlayer = computed<UtilityAuthorRef | null>(() => {
+  const owner = current.value?.owner;
+  if (owner && String(owner.steam_id) !== mySteamId.value) {
+    return owner;
+  }
+  return playerRef(current.value?.owner_steam_id) ?? owner ?? null;
+});
 
 // Whether this map has a mesh to throw an execute in. Without one Play runs
 // on the flat board alone, the way it always did.
@@ -1246,6 +1285,24 @@ async function destroy() {
           </template>
           {{ $t(`pages.utility.sides.${current.side}`) }}
         </FiveStackToolTip>
+        <!-- Who can see it, at the end of the line as on a lineup. -->
+        <FiveStackToolTip as-child :delay-duration="120">
+          <template #trigger>
+            <span
+              data-execute-visibility
+              class="ml-auto grid size-7 shrink-0 place-items-center rounded-md border"
+              :class="VISIBILITY_TONES[current.visibility] ?? VISIBILITY_TONES.Private"
+              role="img"
+              :aria-label="$t(`pages.utility.visibility.${current.visibility}`)"
+            >
+              <component
+                :is="VISIBILITY_ICONS[current.visibility] ?? VISIBILITY_ICONS.Private"
+                class="h-3.5 w-3.5"
+              />
+            </span>
+          </template>
+          {{ $t(`pages.utility.visibility.${current.visibility}`) }}
+        </FiveStackToolTip>
       </template>
 
       <UtilityExecuteView
@@ -1254,6 +1311,7 @@ async function destroy() {
         :playbook="current"
         :beats="beats"
         :owner="ownerName"
+        :owner-player="ownerPlayer"
         :team="teamName"
         :run="run"
         :running="running"

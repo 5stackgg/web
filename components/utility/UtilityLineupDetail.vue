@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
-  ArrowBigUp,
+  Archive,
+  ArchiveRestore,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -11,8 +13,10 @@ import {
   Globe,
   Heart,
   Lock,
+  PencilLine,
   Share2,
   SkipForward,
+  Trash2,
   Users,
 } from "lucide-vue-next";
 import {
@@ -36,10 +40,12 @@ import { Skeleton } from "~/components/ui/skeleton";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import { toast } from "~/components/ui/toast";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicker.vue";
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
+import UtilityLineupActions from "~/components/utility/UtilityLineupActions.vue";
+import UtilityAuthorByline from "~/components/utility/UtilityAuthorByline.vue";
+import UtilityUpvoteToggle from "~/components/utility/UtilityUpvoteToggle.vue";
 import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import UtilityLineupPreview from "~/components/utility/UtilityLineupPreview.vue";
 import UtilityLineupViewer3D from "~/components/utility/UtilityLineupViewer3D.vue";
@@ -360,7 +366,12 @@ const barOffer = computed<UtilityBarOffer | null>(() => {
   return {
     target: { lineupId: row.id },
     actions:
-      props.canPractice === false ? [] : [{ kind: "lineup", lineup: row }],
+      props.canPractice === false
+        ? []
+        : [
+            { kind: "lineup", lineup: row },
+            { kind: "drill", lineup: row },
+          ],
   };
 });
 
@@ -387,6 +398,17 @@ const canEdit = computed(
 const canRestore = computed(
   () => !!lineup.value?.can_edit && !!lineup.value.archived_at,
 );
+
+// Only a public lineup can be voted on, and marking your own as bad says
+// nothing anybody needs to hear.
+const canMarkBad = computed(
+  () =>
+    !!props.canReact &&
+    lineup.value?.visibility === "Public" &&
+    !lineup.value.archived_at &&
+    !lineup.value.can_edit,
+);
+
 
 const color = computed(
   () => UTILITY_TYPE_COLORS[lineup.value?.utility_type ?? "Smoke"] ?? "#ffffff",
@@ -471,10 +493,11 @@ const score = computed(
 
 // Whose it is and who can see it, on yours and on anything waiting for review.
 const STATUS_TONES = {
-  Public: "bg-success/15 text-success",
-  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
-  Private: "bg-muted/60 text-muted-foreground",
-  review: "bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]",
+  Public: "border-success/40 bg-success/15 text-success",
+  Team: "border-[hsl(214_80%_62%/0.4)] bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
+  Private: "border-border bg-muted/60 text-muted-foreground",
+  review:
+    "border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]",
 } as const;
 
 const STATUS_ICONS = {
@@ -757,57 +780,6 @@ const stats = computed(() => {
           </FiveStackToolTip>
 
           <FiveStackToolTip
-            v-if="canThreeD"
-            as-child
-            side="bottom"
-            :delay-duration="120"
-            :tap-toggle="false"
-          >
-            <template #trigger>
-              <button
-                type="button"
-                :class="tile(threeD, true)"
-                :aria-pressed="threeD"
-                :aria-label="threeDLabel"
-                @click="threeD = !threeD"
-              >
-                3D
-              </button>
-            </template>
-            {{ threeDLabel }}
-          </FiveStackToolTip>
-
-          <FiveStackToolTip
-            as-child
-            side="bottom"
-            :delay-duration="120"
-            :tap-toggle="false"
-          >
-            <template #trigger>
-              <button
-                type="button"
-                :class="tile(myVote === 1, true)"
-                :disabled="!canReact"
-                :aria-pressed="myVote === 1"
-                :aria-label="
-                  myVote === 1
-                    ? $t('pages.utility.card.unvote')
-                    : $t('pages.utility.card.upvote')
-                "
-                @click="emit('vote', lineup.id, 1)"
-              >
-                <ArrowBigUp class="h-4 w-4" />
-                {{ score }}
-              </button>
-            </template>
-            {{
-              myVote === 1
-                ? $t("pages.utility.card.unvote")
-                : $t("pages.utility.card.upvote")
-            }}
-          </FiveStackToolTip>
-
-          <FiveStackToolTip
             as-child
             side="bottom"
             :delay-duration="120"
@@ -874,7 +846,7 @@ const stats = computed(() => {
             }}
           </FiveStackToolTip>
 
-          <DropdownMenu v-if="canReact">
+          <DropdownMenu v-if="canEdit || canRestore">
             <FiveStackToolTip
               as-child
               side="bottom"
@@ -886,6 +858,7 @@ const stats = computed(() => {
                   <button
                     ref="moreRef"
                     type="button"
+                    data-more
                     :class="tile()"
                     :aria-label="$t('pages.utility.card.more_actions')"
                   >
@@ -900,70 +873,37 @@ const stats = computed(() => {
               side="bottom"
               align="end"
               :side-offset="10"
-              class="w-56 rounded-xl border-white/[0.12] bg-[#232327] p-1.5 [&_[role=separator]]:my-1.5 [&_[role=separator]]:bg-white/[0.08]"
+              class="w-52 rounded-xl border-white/[0.12] bg-[#232327] p-1.5 [&_[role=separator]]:my-1.5 [&_[role=separator]]:bg-white/[0.08]"
             >
-              <!-- Three groups, ruled apart: what its owner does to it,
-                   what anyone can do with it, and taking it away. Words
-                   only -- the glyphs said nothing the words did not. -->
-              <template v-if="canEdit || canSubmitPublic || canRerender">
-                <DropdownMenuItem v-if="canEdit" @click="startEdit()">
-                  {{ $t("pages.utility.edit.action") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canSubmitPublic"
-                  @click="emit('request-public', lineup.id)"
-                >
-                  {{ $t("pages.utility.publish.submit") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canRerender"
-                  :disabled="rendering"
-                  :title="
-                    rendering
-                      ? $t('pages.utility.render_queue.in_flight')
-                      : undefined
-                  "
-                  @click="emit('rerender-preview', lineup.id)"
-                >
-                  {{ $t("pages.utility.render_queue.rerender") }}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-              </template>
-
-              <DropdownMenuItem @click="emit('fork', lineup.id, lineup.name)">
-                {{ $t("pages.utility.fork.action") }}
+              <!-- Changing it and putting it away. What anyone can do with
+                   it is in the Library block, where it can be seen. -->
+              <DropdownMenuItem v-if="canEdit" @click="startEdit()">
+                <PencilLine />
+                {{ $t("pages.utility.edit.action") }}
               </DropdownMenuItem>
-              <DropdownMenuItem @click="emit('vote', lineup.id, -1)">
-                {{
-                  myVote === -1
-                    ? $t("pages.utility.card.unvote")
-                    : $t("pages.utility.card.downvote")
-                }}
+              <DropdownMenuItem
+                v-if="canEdit"
+                class="text-destructive focus:text-destructive"
+                @click="emit('archive', lineup.id, lineup.name)"
+              >
+                <Archive />
+                {{ $t("pages.utility.archive.action") }}
               </DropdownMenuItem>
-
-              <template v-if="canEdit || canRestore">
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  v-if="canEdit"
-                  class="text-destructive focus:text-destructive"
-                  @click="emit('archive', lineup.id, lineup.name)"
-                >
-                  {{ $t("pages.utility.archive.action") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canRestore"
-                  @click="emit('restore', lineup.id)"
-                >
-                  {{ $t("pages.utility.archive.restore") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canRestore"
-                  class="text-destructive focus:text-destructive"
-                  @click="emit('delete', lineup.id)"
-                >
-                  {{ $t("pages.utility.archive.delete") }}
-                </DropdownMenuItem>
-              </template>
+              <DropdownMenuItem
+                v-if="canRestore"
+                @click="emit('restore', lineup.id)"
+              >
+                <ArchiveRestore />
+                {{ $t("pages.utility.archive.restore") }}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                v-if="canRestore"
+                class="text-destructive focus:text-destructive"
+                @click="emit('delete', lineup.id)"
+              >
+                <Trash2 />
+                {{ $t("pages.utility.archive.delete") }}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -984,15 +924,16 @@ const stats = computed(() => {
           "
         >
           <!-- What it is, as the line over its name: the utility in its
-               own colour, the map, and the side as the side's own mark. -->
+               own colour, the map, and the side as the side's own mark; who
+               can see it and the upvote at its end. -->
           <div v-if="!editing" class="flex flex-col gap-1.5">
             <p
               class="flex min-w-0 items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
             >
-              <span
-                aria-hidden="true"
-                class="size-2 shrink-0 rounded-[2px]"
-                :style="{ backgroundColor: color }"
+              <UtilityTypeGlyph
+                :type="lineup.utility_type"
+                :color="color"
+                class="-my-1"
               />
               <span class="truncate tabular-nums">
                 <template v-if="context?.kicker">{{ context.kicker }}</template>
@@ -1015,6 +956,28 @@ const stats = computed(() => {
                 </template>
                 {{ $t(`pages.utility.sides.${lineup.side}`) }}
               </FiveStackToolTip>
+              <span class="ml-auto flex shrink-0 items-center gap-1.5 normal-case tracking-normal">
+                <FiveStackToolTip v-if="status" as-child :delay-duration="120">
+                  <template #trigger>
+                    <span
+                      data-visibility
+                      class="grid size-7 shrink-0 place-items-center rounded-md border"
+                      :class="status.tone"
+                      role="img"
+                      :aria-label="status.label"
+                    >
+                      <component :is="status.icon" class="h-3.5 w-3.5" />
+                    </span>
+                  </template>
+                  {{ $t("pages.utility.card.yours", { status: status.label }) }}
+                </FiveStackToolTip>
+                <UtilityUpvoteToggle
+                  :count="score"
+                  :pressed="myVote === 1"
+                  :disabled="!canReact"
+                  @toggle="emit('vote', lineup.id, 1)"
+                />
+              </span>
             </p>
             <div class="flex items-start gap-2">
               <h2
@@ -1023,24 +986,63 @@ const stats = computed(() => {
                 {{ lineup.name }}
               </h2>
               <UtilityConfidenceMark :lineup="lineup" class="mt-1" />
-              <!-- Who can see it is worth a glyph, not a word's width. -->
-              <FiveStackToolTip v-if="status" as-child :delay-duration="120">
-                <template #trigger>
-                  <span
-                    class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-md"
-                    :class="status.tone"
-                    role="img"
-                    :aria-label="status.label"
-                  >
-                    <component :is="status.icon" class="h-3.5 w-3.5" />
-                  </span>
-                </template>
-                {{ $t("pages.utility.card.yours", { status: status.label }) }}
-              </FiveStackToolTip>
+            </div>
+            <div
+              class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2"
+            >
+              <div
+                data-byline
+                class="flex min-w-0 items-center gap-2 text-xs text-muted-foreground"
+              >
+                <UtilityAuthorByline
+                  v-if="lineup.author"
+                  :author="lineup.author"
+                />
+                <span v-else>
+                  {{ $t("pages.utility.card.unknown_author") }}
+                </span>
+                <span
+                  v-if="lineup.team"
+                  class="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
+                >
+                  {{ lineup.team.short_name || lineup.team.name }}
+                </span>
+              </div>
+              <UtilityLineupActions
+                v-if="canReact"
+                :can-submit-public="canSubmitPublic"
+                :can-mark-bad="canMarkBad"
+                :marked-bad="myVote === -1"
+                :can-rerender="canRerender"
+                :rendering="rendering"
+                @fork="emit('fork', lineup.id, lineup.name)"
+                @request-public="emit('request-public', lineup.id)"
+                @mark-bad="emit('vote', lineup.id, -1)"
+                @rerender="emit('rerender-preview', lineup.id)"
+              />
             </div>
           </div>
 
-          <UtilityLineupPreview :lineup="lineup" :three-d="cardThreeD" />
+          <UtilityLineupPreview :lineup="lineup" :three-d="cardThreeD">
+            <template v-if="canThreeD" #corner>
+              <button
+                type="button"
+                data-three-d
+                class="inline-flex h-[26px] items-center rounded-md border px-2 font-mono text-xs font-semibold backdrop-blur-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                :class="
+                  threeD
+                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-black/70 text-[hsl(var(--tac-amber))]'
+                    : 'border-transparent bg-black/60 text-white/90 hover:bg-black/80'
+                "
+                :aria-pressed="threeD"
+                :aria-label="threeDLabel"
+                :title="threeDLabel"
+                @click="threeD = !threeD"
+              >
+                3D
+              </button>
+            </template>
+          </UtilityLineupPreview>
           <UtilityLineupStills :stills="lineup.preview_stills_url" />
 
           <!-- Editing swaps the details for the form; the throw stays on
@@ -1217,35 +1219,10 @@ const stats = computed(() => {
               />
             </HeightGlide>
 
-            <!-- Who made it, whether it is public and the raw numbers are what
-                 you read last, if at all -- so they sit at the foot of the
-                 panel, pushed there even when the lineup has little to say. -->
+            <!-- The raw numbers are what you read last, if at all -- so they
+                 sit at the foot of the panel, pushed there even when the
+                 lineup has little to say. -->
             <div class="mt-auto flex flex-col gap-3 pt-3">
-              <div
-                class="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs text-muted-foreground"
-              >
-                <PlayerDisplay
-                  v-if="lineup.author"
-                  :player="lineup.author"
-                  size="xs"
-                  compact
-                  truncate-name
-                  :show-elo="false"
-                  :show-role="false"
-                  :show-online="false"
-                  class="min-w-0"
-                />
-                <span v-else>
-                  {{ $t("pages.utility.card.unknown_author") }}
-                </span>
-                <span
-                  v-if="lineup.team"
-                  class="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
-                >
-                  {{ lineup.team.short_name || lineup.team.name }}
-                </span>
-              </div>
-
               <!-- The telemetry, folded: it answers "why did this land there" on
                    the day something is wrong with the lineup, and nothing at all
                    on the ordinary day you came to learn it. -->

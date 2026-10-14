@@ -1416,7 +1416,7 @@
         "favorites": "Ulubione",
         "votes": "Głosy",
         "collections": "Kolekcje",
-        "playbooks": "Playbooki",
+        "playbooks": "Execute'y",
         "playbook_steps": "{steps} kroków",
         "demo_throws": "Wydobyte rzuty",
         "demo_throws_hint": "Granaty odzyskane z przeanalizowanych dem. Nikt ich nie spisał — to jest to, co gracze naprawdę rzucali, i na tym budowane są klastry mety.",
@@ -5446,6 +5446,7 @@
         "favorite": "Zapisz na swojej liście",
         "unfavorite": "Usuń z zapisanych",
         "open": "Otwórz ustawkę",
+        "load_in_game": "Wczytaj w grze",
         "has_video": "Z wideo",
         "rendering": "Renderowanie podglądu…",
         "rendering_progress": "Renderowanie podglądu… {percent}%",
@@ -5455,7 +5456,7 @@
         "more_actions": "Więcej akcji",
         "flight_time_hint": "Jak długo granat jest w powietrzu po rzucie.",
         "stat_hit_rate": "Moja skuteczność",
-        "stat_flight": "Lot",
+        "stat_flight": "Czas w powietrzu",
         "stat_difficulty": "Trudność",
         "yours": "Twój · {status}",
         "score": "{count} głos za | {count} głosów za"
@@ -5487,7 +5488,7 @@
           "open": "Pokaż {still}",
           "viewer": "Kadry ustawki, przełączaj strzałkami"
         },
-        "flight_time": "Czas lotu",
+        "flight_time": "Czas w powietrzu",
         "stand": "Stań w",
         "lands": "Ląduje w",
         "distance": "Dystans rzutu",
@@ -5500,7 +5501,8 @@
         "precision_failed": "Nie udało się zmienić dokładności celowania",
         "favorite_failed": "Nie udało się zaktualizować zapisanych ustawek",
         "aim_delta": "Celowanie wyliczone vs nagrane",
-        "technical": "Szczegóły techniczne"
+        "technical": "Szczegóły techniczne",
+        "mark_bad": "Oznacz jako słabą"
       },
       "practice": {
         "title": "Serwer treningowy",
@@ -5564,45 +5566,6 @@
         "ask_host": "Poproś {host}, żeby ją przełączył.",
         "ask_the_host": "Poproś gospodarza, żeby ją przełączył.",
         "nav_switching": "Przełączanie",
-        "commands": {
-          "title": "Komendy w grze",
-          "hint": "Wpisuj je na czacie, gdy już jesteś na serwerze. .help wypisuje tę samą listę w grze.",
-          "bind_hint": "To komendy czatu, więc każdą można podpiąć pod klawisz:",
-          "group_lineups": "Ustawki",
-          "group_drills": "Drille i execute",
-          "group_tools": "Narzędzia serwera",
-          "save": "zapisuje rzut, który właśnie wykonałeś",
-          "load": "stawia cię na pasującej ustawce",
-          "next": "przechodzenie po ostatnim wyszukiwaniu",
-          "jump": "stań tam, gdzie ląduje wczytana ustawka",
-          "rethrow": "z powrotem na wczytaną ustawkę",
-          "last": "z powrotem do twojego rzutu",
-          "list": "zarządzaj biblioteką z poziomu gry",
-          "edit": "zmień nazwę wczytanej ustawki, opisz ją albo zmień, kto ją widzi",
-          "drill": "przerabia twój zestaw, po trzy rzuty, i ocenia go",
-          "drill_here": "powtarza ustawkę, na której stoisz, aż ją zatrzymasz",
-          "skip": "pomiń ustawkę, którą właśnie ćwiczysz",
-          "cancel": "przerwij trwający drill",
-          "playbook": "odtwarza wczytany execute w jego czasach",
-          "playbook_stop": "zatrzymuje go",
-          "bloom": "zaznacza, gdzie ląduje wczytany smoke",
-          "solve": "znajduje rzut w punkt, na który patrzysz",
-          "pos": "zapisz pozycję i wróć do niej",
-          "spawn": "teleportuje cię do punktu startowego",
-          "spawns": "pokazuje spawny z trybu rankingowego",
-          "noclip": "latanie i brak obrażeń",
-          "timer": "start i stop stopera",
-          "solo": "widzisz tylko własne podglądy",
-          "colors": "każdy rzut dostaje własny kolor, żebyś poznał swoje",
-          "clear": "czyści wczytaną ustawkę, znaczniki i duchy",
-          "help": "wypisuje wszystkie komendy w grze",
-          "group_panels": "Panele na ekranie",
-          "panels_hint": "Serwery z dodatkiem HUD pokazują klikalne panele zamiast tekstu na środku ekranu. Bez niego wszystko wraca do tekstu, który zastępował.",
-          "menu": "wybór ustawek, z filtrami zakresu, strony i typu",
-          "map": "minimapa miejsc, w które lecą rzuty; kliknij punkt, żeby zobaczyć jego ustawki",
-          "hud": "przełącza panele z powrotem na tekst na środku, tylko dla ciebie",
-          "here": "zawęża listę do ustawek, które rzucisz z miejsca, w którym stoisz"
-        },
         "operator": "Konsola serwera"
       },
       "collections": {
@@ -5661,7 +5624,7 @@
         "add_count": "{count} w „{name}”"
       },
       "progress": {
-        "drilled": "Ćwiczona",
+        "drilled": "W toku",
         "mastered": "Opanowana",
         "record": "{successes} / {attempts}",
         "hit_rate": "{percent}%",
@@ -5711,11 +5674,11 @@
         "write_another": "Opisz kolejną ustawkę dla tego miejsca"
       },
       "playbooks": {
-        "title": "Playbooki",
+        "title": "Execute'y",
         "eyebrow": "Drużynowe execute'y",
         "subtitle": "Uporządkowane utility z czasami — kto co rzuca i kiedy.",
-        "new": "Nowy playbook",
-        "empty": "Brak playbooków dla tej mapy",
+        "new": "Nowy execute",
+        "empty": "Brak execute'ów dla tej mapy",
         "name_placeholder": "Standardowy A",
         "name_required": "Nazwij execute, zanim go zapiszesz",
         "description_placeholder": "Do czego służy ten execute i kiedy go wołać.",
@@ -5774,7 +5737,7 @@
         "step_context": "Krok {step} z {count} w {name}. Rzut w {seconds}s.",
         "step_context_by": "Krok {step} z {count} w {name}. Rzuca {player} w {seconds}s.",
         "step_context_you": "Krok {step} z {count} w {name}. Rzucasz ty w {seconds}s.",
-        "play": "Odtwórz",
+        "play": "Uruchom",
         "pause": "Pauza",
         "seek": "Oś czasu wejścia",
         "stop": "Stop",
@@ -5789,6 +5752,7 @@
         "delete_ask": "Usunąć? Jego ustawki zostaną.",
         "deleted": "Execute usunięty. Jego ustawki zostają.",
         "steps": "Kroki",
+        "sheet_throw": "Rzut",
         "steps_of": "{count} z {max}",
         "steps_required": "Dodaj co najmniej jeden rzut, zanim go zapiszesz",
         "add_throw": "Dodaj rzut",
@@ -6072,13 +6036,38 @@
         "review_failed": "Nie udało się rozpatrzyć tej ustawki",
         "in_review": "W weryfikacji"
       },
+      "mine": {
+        "state": {
+          "private": "Prywatny",
+          "team": "Drużyna",
+          "review": "W recenzji",
+          "public": "Publiczny",
+          "rejected": "Odrzucony",
+          "archived": "Zarchiwizowany"
+        },
+        "tip": {
+          "private": "Prywatny: widzisz go tylko ty. Zgłoś go jako publiczny, gdy za każdym razem ląduje.",
+          "team": "Drużyna: widzi go twoja drużyna. Zgłoś go jako publiczny, gdy będzie gotowy dla wszystkich.",
+          "review": "W recenzji: recenzent sprawdza, czy ląduje. Nic nie musisz robić; nadal możesz go edytować.",
+          "public": "Publiczny: w publicznej bibliotece. Każdy może go ćwiczyć i na niego głosować.",
+          "rejected": "Odrzucony: recenzent go odesłał. Otwórz, by przeczytać dlaczego, popraw i zgłoś ponownie.",
+          "archived": "Zarchiwizowany: ukryty wszędzie. Przywróć go z karty Zarchiwizowane albo usuń na stałe."
+        },
+        "rejected_line": "Odrzucono: {note}"
+      },
+      "review": {
+        "lands": "Ląduje",
+        "reject_because": "Odrzuć, bo",
+        "reasons": {
+          "no_land": "Nie ląduje",
+          "duplicate": "Już jest w bibliotece",
+          "bad_name": "Nazwa nie mówi, gdzie",
+          "needs_clip": "Potrzebny klip"
+        }
+      },
       "archive": {
         "action": "Archiwizuj ustawkę",
-        "title": "Zarchiwizować tę ustawkę?",
         "this_lineup": "ta ustawka",
-        "description": "„{name}” zniknie z każdej biblioteki, planszy i wyszukiwania na tej mapie.",
-        "keeps_history": "Nic nie jest niszczone. Postęp treningu, głosy i każdy playbook z nią zostają, a przywrócić ją możesz z zakładki Zarchiwizowane.",
-        "confirm": "Archiwizuj",
         "done": "Zarchiwizowano „{name}”",
         "undo": "Cofnij",
         "restore": "Przywróć ustawkę",
@@ -6211,7 +6200,7 @@
         "confirm": "Zapisz ustawkę",
         "saved": "Ustawka zapisana",
         "failed": "Nie udało się zapisać ustawki",
-        "practice_note": "Zapisane z otwartej sesji, względem ustawki, którą ćwiczysz. Komenda .save w grze robi to samo z rzutem, który masz przed sobą.",
+        "practice_note": "Zapisano z otwartej sesji, dla lineupu, który ćwiczysz. Save Throw w menu w grze robi to samo z rzutem przed tobą.",
         "practice_entry_title": "Zapisz rzut",
         "practice_entry_hint": "Zachowaj to, co tu rzucałeś, jako swoją ustawkę.",
         "practice_entry_open": "Zapisz z treningu"
@@ -6337,7 +6326,7 @@
         "failed_unreachable": "Nie udało się połączyć z twoim serwerem",
         "failed_nothing_to_drill": "Nie ma czego ćwiczyć",
         "drill_name": "ustawek: {count}",
-        "drill": "Ćwicz w grze",
+        "drill": "Powtarzaj w grze",
         "drill_hint": "Przepuszcza je na serwerze, na którym jesteś, po trzy rzuty każda",
         "test": "Sprawdź w grze",
         "test_hint": "Stań na tym rzucie, zanim go zapiszesz",

@@ -1416,7 +1416,7 @@
         "favorites": "Favoritos",
         "votes": "Votos",
         "collections": "Coleções",
-        "playbooks": "Playbooks",
+        "playbooks": "Executes",
         "playbook_steps": "{steps} passos",
         "demo_throws": "Arremessos extraídos",
         "demo_throws_hint": "Granadas recuperadas de demos analisadas. Ninguém as registrou — são o que os jogadores realmente arremessaram, e são a base dos grupos do meta.",
@@ -5446,6 +5446,7 @@
         "favorite": "Salvar na sua lista",
         "unfavorite": "Remover da sua lista de salvos",
         "open": "Abrir lineup",
+        "load_in_game": "Carregar no jogo",
         "has_video": "Com vídeo",
         "rendering": "Renderizando a prévia…",
         "rendering_progress": "Renderizando a prévia… {percent}%",
@@ -5455,7 +5456,7 @@
         "more_actions": "Mais ações",
         "flight_time_hint": "Quanto tempo a granada fica no ar depois do arremesso.",
         "stat_hit_rate": "Minha taxa de acerto",
-        "stat_flight": "Voo",
+        "stat_flight": "Tempo no ar",
         "stat_difficulty": "Dificuldade",
         "yours": "Seu · {status}",
         "score": "{count} voto positivo | {count} votos positivos"
@@ -5487,7 +5488,7 @@
           "open": "Ver {still}",
           "viewer": "Imagens do lineup, use as setas para navegar entre elas"
         },
-        "flight_time": "Tempo de voo",
+        "flight_time": "Tempo no ar",
         "stand": "Fique em",
         "lands": "Cai em",
         "distance": "Distância do arremesso",
@@ -5500,7 +5501,8 @@
         "precision_failed": "Não foi possível mudar a precisão de mira",
         "favorite_failed": "Não foi possível atualizar seus lineups salvos",
         "aim_delta": "Mira deduzida vs gravada",
-        "technical": "Detalhes técnicos"
+        "technical": "Detalhes técnicos",
+        "mark_bad": "Marcar como ruim"
       },
       "practice": {
         "title": "Servidor de treino",
@@ -5564,45 +5566,6 @@
         "ask_host": "Peça para {host} trocar.",
         "ask_the_host": "Peça para o dono trocar.",
         "nav_switching": "Trocando",
-        "commands": {
-          "title": "Comandos no jogo",
-          "hint": "Digite no chat assim que estiver no servidor. .help mostra a mesma lista dentro do jogo.",
-          "bind_hint": "São comandos de chat, então dá para ligar qualquer um a uma tecla:",
-          "group_lineups": "Lineups",
-          "group_drills": "Drills e executes",
-          "group_tools": "Ferramentas do servidor",
-          "save": "salva o arremesso que você acabou de fazer",
-          "load": "te coloca em um lineup correspondente",
-          "next": "percorrer a última busca",
-          "jump": "fique onde o lineup carregado cai",
-          "rethrow": "volta para o lineup carregado",
-          "last": "volta para um arremesso seu",
-          "list": "gerencie sua biblioteca de dentro do jogo",
-          "edit": "renomeie o lineup carregado, descreva-o ou mude quem pode vê-lo",
-          "drill": "treina seu repertório, três arremessos cada, e pontua",
-          "drill_here": "repete o lineup em que você está até você parar",
-          "skip": "pula o lineup que você está treinando",
-          "cancel": "para o drill em que você está",
-          "playbook": "roda o execute carregado nos tempos dele",
-          "playbook_stop": "para ele",
-          "bloom": "desenha onde a smoke carregada cai",
-          "solve": "acha um arremesso para o ponto que você está olhando",
-          "pos": "salvar uma posição e voltar para ela",
-          "spawn": "te teleporta para um ponto de spawn",
-          "spawns": "mostra os spawns competitivos",
-          "noclip": "voar, e parar de tomar dano",
-          "timer": "inicia e para um cronômetro",
-          "solo": "ver só as suas prévias",
-          "colors": "cada arremesso ganha uma cor própria, para você achar os seus",
-          "clear": "limpa o lineup carregado, os marcadores e os ghosts",
-          "help": "mostra todos os comandos no jogo",
-          "group_panels": "Painéis na tela",
-          "panels_hint": "Servidores com o addon de HUD montado mostram painéis clicáveis no lugar do texto no centro da tela. Sem ele, tudo volta para o texto que substituía.",
-          "menu": "o seletor de lineups, com filtros de escopo, lado e tipo",
-          "map": "um minimapa de onde os arremessos caem; clique num ponto para ver os lineups dele",
-          "hud": "volta os painéis para o texto no centro, só para você",
-          "here": "reduz a lista aos lineups que dá para arremessar de onde você está"
-        },
         "operator": "Console do servidor"
       },
       "collections": {
@@ -5661,7 +5624,7 @@
         "add_count": "{count} em {name}"
       },
       "progress": {
-        "drilled": "Treinado",
+        "drilled": "Em andamento",
         "mastered": "Dominado",
         "record": "{successes} / {attempts}",
         "hit_rate": "{percent}%",
@@ -5711,11 +5674,11 @@
         "write_another": "Escrever outro lineup para este ponto"
       },
       "playbooks": {
-        "title": "Playbooks",
+        "title": "Executes",
         "eyebrow": "Executes de time",
         "subtitle": "Utilitário em ordem, com tempos — quem joga o quê, e quando.",
-        "new": "Novo playbook",
-        "empty": "Nenhum playbook para este mapa",
+        "new": "Novo execute",
+        "empty": "Nenhum execute para este mapa",
         "name_placeholder": "Bomb A padrão",
         "name_required": "Dê um nome ao execute antes de salvar",
         "description_placeholder": "Para que serve este execute e quando pedir por ele.",
@@ -5774,7 +5737,7 @@
         "step_context": "Passo {step} de {count} em {name}. Arremessado aos {seconds}s.",
         "step_context_by": "Passo {step} de {count} em {name}. Arremessado aos {seconds}s por {player}.",
         "step_context_you": "Passo {step} de {count} em {name}. Arremessado aos {seconds}s por você.",
-        "play": "Reproduzir",
+        "play": "Executar",
         "pause": "Pausar",
         "seek": "Linha do tempo da execução",
         "stop": "Parar",
@@ -5789,6 +5752,7 @@
         "delete_ask": "Excluir? Os lineups dele ficam.",
         "deleted": "Execute excluído. Os lineups dele ficam.",
         "steps": "Passos",
+        "sheet_throw": "Arremesso",
         "steps_of": "{count} de {max}",
         "steps_required": "Adicione pelo menos um arremesso antes de salvar",
         "add_throw": "Adicionar arremesso",
@@ -6072,13 +6036,38 @@
         "review_failed": "Não foi possível revisar esse lineup",
         "in_review": "Em análise"
       },
+      "mine": {
+        "state": {
+          "private": "Privado",
+          "team": "Time",
+          "review": "Em revisão",
+          "public": "Público",
+          "rejected": "Recusado",
+          "archived": "Arquivado"
+        },
+        "tip": {
+          "private": "Privado: só você vê. Envie para público quando ele cair certo toda vez.",
+          "team": "Time: seu time vê. Envie para público quando estiver pronto para todos.",
+          "review": "Em revisão: um revisor está conferindo se cai certo. Nada a fazer; você ainda pode editar.",
+          "public": "Público: na biblioteca pública. Qualquer um pode treinar e votar.",
+          "rejected": "Recusado: um revisor devolveu. Abra para ler o motivo, corrija e envie de novo.",
+          "archived": "Arquivado: oculto em todo lugar. Restaure na aba Arquivados ou exclua de vez."
+        },
+        "rejected_line": "Recusado: {note}"
+      },
+      "review": {
+        "lands": "Cai em",
+        "reject_because": "Recusar porque",
+        "reasons": {
+          "no_land": "Não cai certo",
+          "duplicate": "Já está na biblioteca",
+          "bad_name": "O nome não diz onde",
+          "needs_clip": "Precisa de um clipe"
+        }
+      },
       "archive": {
         "action": "Arquivar lineup",
-        "title": "Arquivar este lineup?",
         "this_lineup": "este lineup",
-        "description": "{name} vai sumir de toda biblioteca, quadro e busca deste mapa.",
-        "keeps_history": "Nada é destruído. O progresso, os votos e qualquer playbook que o use ficam guardados, e você pode trazê-lo de volta pela aba Arquivados.",
-        "confirm": "Arquivar",
         "done": "{name} arquivado",
         "undo": "Desfazer",
         "restore": "Restaurar lineup",
@@ -6211,7 +6200,7 @@
         "confirm": "Salvar lineup",
         "saved": "Lineup salvo",
         "failed": "Não foi possível salvar o lineup",
-        "practice_note": "Salvo a partir da sessão que você tem aberta, contra o lineup que você está treinando. O comando .save no jogo faz o mesmo com o arremesso que está na sua frente.",
+        "practice_note": "Salvo a partir da sessão que você tem aberta, para o lineup que você está treinando. Save Throw no menu do jogo faz o mesmo com o arremesso à sua frente.",
         "practice_entry_title": "Salvar um arremesso",
         "practice_entry_hint": "Guarde o que você vem arremessando aqui como um lineup seu.",
         "practice_entry_open": "Salvar do treino"
@@ -6337,7 +6326,7 @@
         "failed_unreachable": "Não foi possível alcançar seu servidor",
         "failed_nothing_to_drill": "Nada para treinar",
         "drill_name": "{count} lineups",
-        "drill": "Treinar no jogo",
+        "drill": "Repetir no jogo",
         "drill_hint": "Roda estes no servidor em que você está, três arremessos cada",
         "test": "Testar no jogo",
         "test_hint": "Fique neste arremesso antes de salvá-lo",

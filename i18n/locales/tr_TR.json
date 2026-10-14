@@ -1416,7 +1416,7 @@
         "favorites": "Favoriler",
         "votes": "Oylar",
         "collections": "Koleksiyonlar",
-        "playbooks": "Taktik Kitapları",
+        "playbooks": "Execute'lar",
         "playbook_steps": "{steps} adım",
         "demo_throws": "Çıkarılan Atışlar",
         "demo_throws_hint": "Çözümlenmiş demolardan kurtarılan el bombaları. Bunları kimse yazmadı — oyuncuların gerçekten attıkları bunlar ve meta kümeleri bunların üzerine kuruluyor.",
@@ -5446,6 +5446,7 @@
         "favorite": "Listene kaydet",
         "unfavorite": "Kaydedilenlerden çıkar",
         "open": "Dizilimi aç",
+        "load_in_game": "Oyunda yükle",
         "has_video": "Videosu var",
         "rendering": "Önizleme işleniyor…",
         "rendering_progress": "Önizleme işleniyor… {percent}%",
@@ -5455,7 +5456,7 @@
         "more_actions": "Diğer işlemler",
         "flight_time_hint": "Bomba atıldıktan sonra havada ne kadar kalıyor.",
         "stat_hit_rate": "İsabet oranım",
-        "stat_flight": "Uçuş",
+        "stat_flight": "Havada kalma süresi",
         "stat_difficulty": "Zorluk",
         "yours": "Senin · {status}",
         "score": "{count} olumlu oy | {count} olumlu oy"
@@ -5487,7 +5488,7 @@
           "open": "{still} görüntüle",
           "viewer": "Dizilim kareleri, ok tuşlarıyla aralarında gezin"
         },
-        "flight_time": "Uçuş süresi",
+        "flight_time": "Havada kalma süresi",
         "stand": "Şurada dur",
         "lands": "Şuraya düşer",
         "distance": "Atış mesafesi",
@@ -5500,7 +5501,8 @@
         "precision_failed": "Nişan hassasiyeti değiştirilemedi",
         "favorite_failed": "Kaydettiğin dizilimler güncellenemedi",
         "aim_delta": "Çıkarılan ve Kaydedilen Nişan",
-        "technical": "Teknik ayrıntılar"
+        "technical": "Teknik ayrıntılar",
+        "mark_bad": "Kötü olarak işaretle"
       },
       "practice": {
         "title": "Antrenman Sunucusu",
@@ -5564,45 +5566,6 @@
         "ask_host": "Değiştirmesi için {host} kişisine söyle.",
         "ask_the_host": "Değiştirmesi için sunucu sahibine söyle.",
         "nav_switching": "Değişiyor",
-        "commands": {
-          "title": "Oyun içi komutlar",
-          "hint": "Sunucuya girdikten sonra sohbete yaz. .help aynı listeyi oyun içinde basar.",
-          "bind_hint": "Bunlar sohbet komutu, yani hepsi bir tuşa bağlanabilir:",
-          "group_lineups": "Dizilimler",
-          "group_drills": "Drill ve execute",
-          "group_tools": "Sunucu araçları",
-          "save": "az önce yaptığın atışı kaydeder",
-          "load": "eşleşen bir dizilimin üzerine ışınlar",
-          "next": "son aramada gezin",
-          "jump": "yüklü dizilimin düştüğü yere geç",
-          "rethrow": "yüklü dizilime geri dön",
-          "last": "yaptığın bir atışa geri dön",
-          "list": "kütüphaneni oyun içinden yönet",
-          "edit": "yüklü dizilimi yeniden adlandır, açıkla ya da kimlerin göreceğini değiştir",
-          "drill": "defterini çalıştırır, üçer atış, ve puanlar",
-          "drill_here": "üzerinde durduğun dizilimi sen durdurana kadar tekrarlar",
-          "skip": "çalıştığın dizilimi atla",
-          "cancel": "içinde olduğun drill'i durdur",
-          "playbook": "yüklü execute'u kendi zamanlamasıyla oynatır",
-          "playbook_stop": "onu durdurur",
-          "bloom": "yüklü sisin nereye düştüğünü çizer",
-          "solve": "baktığın noktaya bir atış bulur",
-          "pos": "bir konum kaydet ve oraya dön",
-          "spawn": "seni bir spawn noktasına ışınlar",
-          "spawns": "rekabetçi spawn noktalarını gösterir",
-          "noclip": "uç, ve hasar alma",
-          "timer": "kronometreyi başlat ve durdur",
-          "solo": "sadece kendi önizlemelerini gör",
-          "colors": "her atış kendi rengini alır, böylece kendininkileri ayırırsın",
-          "clear": "yüklü dizilimi, işaretleri ve ghost'ları temizler",
-          "help": "bütün komutları oyun içinde basar",
-          "group_panels": "Ekran panelleri",
-          "panels_hint": "HUD eklentisi yüklü sunucular, ekranın ortasındaki yazı yerine tıklanabilir paneller gösterir. Eklenti yoksa her şey yerini aldığı yazıya geri döner.",
-          "menu": "kapsam, taraf ve tür filtreleriyle dizilim seçici",
-          "map": "atışların nereye düştüğünü gösteren mini harita; bir noktaya tıkla, dizilimlerini gör",
-          "hud": "panelleri ekran ortasındaki yazıya döndürür, yalnızca sana",
-          "here": "listeyi durduğun yerden atabileceğin dizilimlere daraltır"
-        },
         "operator": "Sunucu konsolu"
       },
       "collections": {
@@ -5661,7 +5624,7 @@
         "add_count": "{name} içinde {count}"
       },
       "progress": {
-        "drilled": "Çalışıldı",
+        "drilled": "Devam ediyor",
         "mastered": "Ustalaşıldı",
         "record": "{successes} / {attempts}",
         "hit_rate": "%{percent}",
@@ -5711,11 +5674,11 @@
         "write_another": "Bu nokta için bir dizilim daha yaz"
       },
       "playbooks": {
-        "title": "Playbook'lar",
+        "title": "Execute'lar",
         "eyebrow": "Takım Execute'ları",
         "subtitle": "Zamanlamalı, sıralı utility — kim neyi ne zaman atıyor.",
-        "new": "Yeni Playbook",
-        "empty": "Bu harita için playbook yok",
+        "new": "Yeni execute",
+        "empty": "Bu harita için execute yok",
         "name_placeholder": "A bölgesi standardı",
         "name_required": "Kaydetmeden önce execute'a bir ad ver",
         "description_placeholder": "Bu execute ne işe yarar ve ne zaman çağrılır.",
@@ -5774,7 +5737,7 @@
         "step_context": "{name} içinde adım {step} / {count}. {seconds} sn'de atılır.",
         "step_context_by": "{name} içinde adım {step} / {count}. {seconds} sn'de {player} atar.",
         "step_context_you": "{name} içinde adım {step} / {count}. {seconds} sn'de sen atarsın.",
-        "play": "Oynat",
+        "play": "Başlat",
         "pause": "Duraklat",
         "seek": "Uygulamanın zaman çizelgesi",
         "stop": "Durdur",
@@ -5789,6 +5752,7 @@
         "delete_ask": "Silinsin mi? Dizilimleri kalır.",
         "deleted": "Execute silindi. Dizilimleri kalır.",
         "steps": "Adımlar",
+        "sheet_throw": "Atış",
         "steps_of": "{count} / {max}",
         "steps_required": "Kaydetmeden önce en az bir atış ekle",
         "add_throw": "Atış ekle",
@@ -6072,13 +6036,38 @@
         "review_failed": "O dizilim incelenemedi",
         "in_review": "İncelemede"
       },
+      "mine": {
+        "state": {
+          "private": "Özel",
+          "team": "Takım",
+          "review": "İncelemede",
+          "public": "Herkese açık",
+          "rejected": "Reddedildi",
+          "archived": "Arşivlendi"
+        },
+        "tip": {
+          "private": "Özel: yalnızca sen görebilirsin. Her seferinde düştüğünde herkese açık için gönder.",
+          "team": "Takım: takımın görebilir. Herkese hazır olduğunda herkese açık için gönder.",
+          "review": "İncelemede: bir inceleyici düştüğünü kontrol ediyor. Yapacak bir şey yok; yine de düzenleyebilirsin.",
+          "public": "Herkese açık: herkese açık kitaplıkta. Herkes çalışabilir ve oy verebilir.",
+          "rejected": "Reddedildi: bir inceleyici geri gönderdi. Nedenini okumak için aç, düzelt ve yeniden gönder.",
+          "archived": "Arşivlendi: her yerde gizli. Arşivlenenler sekmesinden geri yükle ya da kalıcı olarak sil."
+        },
+        "rejected_line": "Reddedildi: {note}"
+      },
+      "review": {
+        "lands": "Düştüğü yer",
+        "reject_because": "Reddetme nedeni",
+        "reasons": {
+          "no_land": "Düşmüyor",
+          "duplicate": "Zaten kitaplıkta",
+          "bad_name": "İsim yeri söylemiyor",
+          "needs_clip": "Klip gerekiyor"
+        }
+      },
       "archive": {
         "action": "Dizilimi arşivle",
-        "title": "Bu dizilim arşivlensin mi?",
         "this_lineup": "bu dizilim",
-        "description": "{name}, bu haritadaki her kütüphaneden, panodan ve aramadan kaybolacak.",
-        "keeps_history": "Hiçbir şey yok edilmez. Çalışma ilerlemesi, oylar ve onu kullanan playbook'lar korunur; Arşivlenenler sekmesinden geri getirebilirsin.",
-        "confirm": "Arşivle",
         "done": "{name} arşivlendi",
         "undo": "Geri al",
         "restore": "Dizilimi geri getir",
@@ -6211,7 +6200,7 @@
         "confirm": "Dizilimi Kaydet",
         "saved": "Dizilim kaydedildi",
         "failed": "Dizilim kaydedilemedi",
-        "practice_note": "Açık olan oturumdan, çalıştığın dizilime karşı kaydedildi. Oyun içi .save komutu, önündeki atışla aynı işi yapar.",
+        "practice_note": "Açık olan oturumdan, çalıştığın lineup için kaydedildi. Oyun içi menüdeki Save Throw, önündeki atışla aynı işi yapar.",
         "practice_entry_title": "Bir atış kaydet",
         "practice_entry_hint": "Burada attıklarını kendi dizilimin olarak sakla.",
         "practice_entry_open": "Antrenmandan Kaydet"
@@ -6337,7 +6326,7 @@
         "failed_unreachable": "Sunucuna ulaşılamadı",
         "failed_nothing_to_drill": "Çalışılacak bir şey yok",
         "drill_name": "{count} dizilim",
-        "drill": "Oyunda çalış",
+        "drill": "Oyunda tekrarla",
         "drill_hint": "Bunları içinde olduğun sunucuda, her biri üç atış olacak şekilde çalıştırır",
         "test": "Oyunda dene",
         "test_hint": "Kaydetmeden önce bu atışın üzerinde dur",

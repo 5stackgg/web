@@ -1416,7 +1416,7 @@
         "favorites": "즐겨찾기",
         "votes": "투표",
         "collections": "컬렉션",
-        "playbooks": "플레이북",
+        "playbooks": "실행 플랜",
         "playbook_steps": "{steps}단계",
         "demo_throws": "채굴된 투척",
         "demo_throws_hint": "분석된 데모에서 복원한 수류탄입니다. 아무도 정리하지 않았지만 플레이어가 실제로 던진 것이며, 메타 클러스터의 바탕이 됩니다.",
@@ -5446,6 +5446,7 @@
         "favorite": "내 목록에 저장",
         "unfavorite": "저장 목록에서 제거",
         "open": "라인업 열기",
+        "load_in_game": "게임에서 불러오기",
         "has_video": "영상 있음",
         "rendering": "미리보기 렌더링 중…",
         "rendering_progress": "미리보기 렌더링 중… {percent}%",
@@ -5455,7 +5456,7 @@
         "more_actions": "더 보기",
         "flight_time_hint": "던진 뒤 수류탄이 공중에 머무는 시간입니다.",
         "stat_hit_rate": "내 성공률",
-        "stat_flight": "비행",
+        "stat_flight": "체공 시간",
         "stat_difficulty": "난이도",
         "yours": "내 것 · {status}",
         "score": "추천 {count}개 | 추천 {count}개"
@@ -5487,7 +5488,7 @@
           "open": "{still} 보기",
           "viewer": "라인업 스틸, 화살표 키로 이동"
         },
-        "flight_time": "비행 시간",
+        "flight_time": "체공 시간",
         "stand": "서는 위치",
         "lands": "낙하 지점",
         "distance": "투척 거리",
@@ -5500,7 +5501,8 @@
         "precision_failed": "조준 정밀도를 바꾸지 못했습니다",
         "favorite_failed": "저장한 라인업을 갱신하지 못했습니다",
         "aim_delta": "추정 조준 대 기록 조준",
-        "technical": "기술 정보"
+        "technical": "기술 정보",
+        "mark_bad": "좋지 않음으로 표시"
       },
       "practice": {
         "title": "연습 서버",
@@ -5564,45 +5566,6 @@
         "ask_host": "{host}에게 바꿔 달라고 요청하세요.",
         "ask_the_host": "호스트에게 바꿔 달라고 요청하세요.",
         "nav_switching": "전환 중",
-        "commands": {
-          "title": "게임 내 명령어",
-          "hint": "서버에 들어간 뒤 채팅에 입력하세요. .help를 치면 게임 안에서 같은 목록이 나옵니다.",
-          "bind_hint": "채팅 명령어라서 아무거나 키에 연결할 수 있습니다:",
-          "group_lineups": "라인업",
-          "group_drills": "드릴과 실행 플랜",
-          "group_tools": "서버 도구",
-          "save": "방금 한 투척을 저장",
-          "load": "조건에 맞는 라인업으로 이동",
-          "next": "마지막 검색 결과를 넘겨보기",
-          "jump": "불러온 라인업이 떨어지는 자리에 서기",
-          "rethrow": "불러온 라인업으로 돌아가기",
-          "last": "내가 던진 자리로 돌아가기",
-          "list": "게임 안에서 라이브러리 관리",
-          "edit": "불러온 라인업의 이름, 설명, 공개 범위 변경",
-          "drill": "내 목록을 세 번씩 드릴하고 점수 매기기",
-          "drill_here": "지금 서 있는 라인업을 멈출 때까지 반복",
-          "skip": "드릴 중인 라인업 건너뛰기",
-          "cancel": "진행 중인 드릴 중단",
-          "playbook": "불러온 실행 플랜을 타이밍대로 재생",
-          "playbook_stop": "재생 중단",
-          "bloom": "불러온 연막이 퍼지는 범위 표시",
-          "solve": "보고 있는 지점으로 가는 투척 찾기",
-          "pos": "위치를 저장하고 다시 돌아가기",
-          "spawn": "스폰 지점으로 이동",
-          "spawns": "경쟁전 스폰 지점 표시",
-          "noclip": "날아다니고 피해를 받지 않기",
-          "timer": "스톱워치 시작과 정지",
-          "solo": "내 미리보기만 보기",
-          "colors": "투척마다 다른 색이 붙어 내 것을 구분",
-          "clear": "불러온 라인업, 마커, 고스트 지우기",
-          "help": "모든 명령어를 게임 안에 표시",
-          "group_panels": "화면 패널",
-          "panels_hint": "HUD 애드온이 올라간 서버에서는 화면 중앙 텍스트 대신 클릭할 수 있는 패널이 표시됩니다. 없으면 모두 원래 텍스트로 돌아갑니다.",
-          "menu": "공개 범위, 진영, 종류로 거르는 라인업 선택기",
-          "map": "착탄 지점 미니맵. 지점을 누르면 해당 라인업 표시",
-          "hud": "패널을 화면 중앙 텍스트로 되돌리기 (나에게만)",
-          "here": "서 있는 자리에서 던질 수 있는 라인업만 표시"
-        },
         "operator": "서버 콘솔"
       },
       "collections": {
@@ -5661,7 +5624,7 @@
         "add_count": "{name}에 {count}개"
       },
       "progress": {
-        "drilled": "연습함",
+        "drilled": "진행 중",
         "mastered": "숙달함",
         "record": "{successes} / {attempts}",
         "hit_rate": "{percent}%",
@@ -5711,11 +5674,11 @@
         "write_another": "이 지점의 라인업 하나 더 정리하기"
       },
       "playbooks": {
-        "title": "플레이북",
+        "title": "실행 플랜",
         "eyebrow": "팀 실행 플랜",
         "subtitle": "타이밍이 붙은 순서대로의 유틸 — 누가 무엇을 언제 던지는지.",
-        "new": "새 플레이북",
-        "empty": "이 맵의 플레이북이 없습니다",
+        "new": "새 실행 플랜",
+        "empty": "이 맵의 실행 플랜이 없습니다",
         "name_placeholder": "A 사이트 기본",
         "name_required": "저장하기 전에 실행 플랜에 이름을 지어 주세요",
         "description_placeholder": "이 실행 플랜의 용도와 언제 콜할지.",
@@ -5774,7 +5737,7 @@
         "step_context": "{name}의 {count}단계 중 {step}단계. {seconds}초에 던집니다.",
         "step_context_by": "{name}의 {count}단계 중 {step}단계. {seconds}초에 {player}이(가) 던집니다.",
         "step_context_you": "{name}의 {count}단계 중 {step}단계. {seconds}초에 내가 던집니다.",
-        "play": "재생",
+        "play": "실행",
         "pause": "일시정지",
         "seek": "실행 타임라인",
         "stop": "정지",
@@ -5789,6 +5752,7 @@
         "delete_ask": "삭제할까요? 라인업은 남습니다.",
         "deleted": "실행 플랜을 삭제했습니다. 라인업은 남습니다.",
         "steps": "단계",
+        "sheet_throw": "투척",
         "steps_of": "{count} / {max}",
         "steps_required": "저장하기 전에 투척을 하나 이상 추가하세요",
         "add_throw": "투척 추가",
@@ -6072,13 +6036,38 @@
         "review_failed": "그 라인업을 검토하지 못했습니다",
         "in_review": "검토 중"
       },
+      "mine": {
+        "state": {
+          "private": "비공개",
+          "team": "팀",
+          "review": "검토 중",
+          "public": "공개",
+          "rejected": "거절됨",
+          "archived": "보관됨"
+        },
+        "tip": {
+          "private": "비공개: 나만 볼 수 있습니다. 매번 성공하면 공개로 제출하세요.",
+          "team": "팀: 팀원이 볼 수 있습니다. 모두에게 공개할 준비가 되면 제출하세요.",
+          "review": "검토 중: 검토자가 성공하는지 확인하고 있습니다. 할 일은 없고, 계속 편집할 수 있습니다.",
+          "public": "공개: 공개 라이브러리에 있습니다. 누구나 연습하고 투표할 수 있습니다.",
+          "rejected": "거절됨: 검토자가 돌려보냈습니다. 열어서 이유를 확인하고 고친 뒤 다시 제출하세요.",
+          "archived": "보관됨: 어디에도 표시되지 않습니다. 보관 탭에서 복원하거나 영구 삭제하세요."
+        },
+        "rejected_line": "거절됨: {note}"
+      },
+      "review": {
+        "lands": "떨어지는 곳",
+        "reject_because": "거절 사유",
+        "reasons": {
+          "no_land": "떨어지지 않음",
+          "duplicate": "이미 라이브러리에 있음",
+          "bad_name": "이름에 위치가 없음",
+          "needs_clip": "클립이 필요함"
+        }
+      },
       "archive": {
         "action": "라인업 보관",
-        "title": "이 라인업을 보관할까요?",
         "this_lineup": "이 라인업",
-        "description": "{name}은(는) 이 맵의 모든 라이브러리, 보드, 검색에서 사라집니다.",
-        "keeps_history": "아무것도 없어지지 않습니다. 연습 기록, 평가, 이 라인업을 쓰는 플레이북은 그대로 남고, 보관됨 탭에서 되돌릴 수 있습니다.",
-        "confirm": "보관하기",
         "done": "{name}을(를) 보관했습니다",
         "undo": "실행 취소",
         "restore": "라인업 복원",
@@ -6211,7 +6200,7 @@
         "confirm": "라인업 저장",
         "saved": "라인업을 저장했습니다",
         "failed": "라인업을 저장하지 못했습니다",
-        "practice_note": "열려 있는 세션에서, 지금 연습 중인 라인업을 기준으로 저장합니다. 게임 내 .save 명령도 눈앞의 투척에 대해 같은 일을 합니다.",
+        "practice_note": "열려 있는 세션에서 연습 중인 라인업으로 저장했습니다. 게임 내 메뉴의 Save Throw도 눈앞의 투척으로 같은 일을 합니다.",
         "practice_entry_title": "투척 저장",
         "practice_entry_hint": "여기서 던지던 것을 내 라인업으로 남겨 두세요.",
         "practice_entry_open": "연습에서 저장"
@@ -6337,7 +6326,7 @@
         "failed_unreachable": "서버에 연결하지 못했습니다",
         "failed_nothing_to_drill": "연습할 것이 없습니다",
         "drill_name": "라인업 {count}개",
-        "drill": "게임에서 연습",
+        "drill": "게임에서 반복",
         "drill_hint": "접속 중인 서버에서 각각 세 번씩 실행합니다",
         "test": "게임에서 시험",
         "test_hint": "저장하기 전에 이 투척 자리에 서 보세요",

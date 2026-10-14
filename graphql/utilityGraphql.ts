@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { $, order_by } from "~/generated/zeus";
+import { $, e_utility_visibility_enum, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
   generateMutation,
@@ -86,6 +86,10 @@ export const utilityLineupListFields = {
   // already submitted.
   archived_at: true,
   public_requested_at: true,
+  // Mine says why a lineup was turned down, and the review queue shows the
+  // author's own words, both from the list.
+  public_review_note: true,
+  description: true,
   can_view: true,
   can_edit: true,
   my_vote: true,
@@ -102,10 +106,8 @@ export const utilityLineupListFields = {
 
 export const utilityLineupFields = {
   ...utilityLineupListFields,
-  description: true,
   updated_at: true,
   public_reviewed_at: true,
-  public_review_note: true,
 } as const;
 
 // Deliberately narrow: only the columns the picker renders plus the two
@@ -837,10 +839,7 @@ export const utilityPlaybookFields = {
   updated_at: true,
   can_view: true,
   can_edit: true,
-  owner: {
-    steam_id: true,
-    name: true,
-  },
+  owner: utilityAuthorFields,
   team: {
     name: true,
   },
@@ -923,13 +922,33 @@ export const requestUtilityLineupPublicMutation = generateMutation({
   ],
 });
 
-export const reviewUtilityLineupPublicMutation = generateMutation({
+// Two documents, because an unset variable in a _set is a null and not an
+// omission: one document that turns a request down sent visibility: null,
+// which the enum refuses.
+export const approveUtilityLineupPublicMutation = generateMutation({
   update_utility_lineups_by_pk: [
     {
       pk_columns: { id: $("id", "uuid!") },
       _set: {
-        visibility: $("visibility", "e_utility_visibility_enum"),
-        public_requested_at: $("public_requested_at", "timestamptz"),
+        visibility: e_utility_visibility_enum.Public,
+        public_review_note: null,
+      },
+    },
+    {
+      id: true,
+      visibility: true,
+      public_requested_at: true,
+      public_reviewed_at: true,
+    },
+  ],
+});
+
+export const rejectUtilityLineupPublicMutation = generateMutation({
+  update_utility_lineups_by_pk: [
+    {
+      pk_columns: { id: $("id", "uuid!") },
+      _set: {
+        public_requested_at: null,
         public_review_note: $("public_review_note", "String"),
       },
     },

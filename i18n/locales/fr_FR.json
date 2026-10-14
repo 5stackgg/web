@@ -1416,7 +1416,7 @@
         "favorites": "Favoris",
         "votes": "Votes",
         "collections": "Collections",
-        "playbooks": "Playbooks",
+        "playbooks": "Exécutions",
         "playbook_steps": "{steps} étapes",
         "demo_throws": "Jets extraits",
         "demo_throws_hint": "Grenades récupérées dans les démos analysées. Personne ne les a consignées — c'est ce que les joueurs ont réellement lancé, et c'est la base des groupes méta.",
@@ -5446,6 +5446,7 @@
         "favorite": "Enregistrer dans votre liste",
         "unfavorite": "Retirer de votre liste",
         "open": "Ouvrir le lineup",
+        "load_in_game": "Charger en jeu",
         "has_video": "Avec vidéo",
         "rendering": "Rendu de l'aperçu…",
         "rendering_progress": "Rendu de l'aperçu… {percent}%",
@@ -5455,7 +5456,7 @@
         "more_actions": "Plus d'actions",
         "flight_time_hint": "Combien de temps la grenade reste en l'air après le lancer.",
         "stat_hit_rate": "Mon taux de réussite",
-        "stat_flight": "Vol",
+        "stat_flight": "Temps en l'air",
         "stat_difficulty": "Difficulté",
         "yours": "À vous · {status}",
         "score": "{count} vote positif | {count} votes positifs"
@@ -5487,7 +5488,7 @@
           "open": "Voir {still}",
           "viewer": "Images du lineup, utilisez les flèches pour passer de l'une à l'autre"
         },
-        "flight_time": "Temps de vol",
+        "flight_time": "Temps en l'air",
         "stand": "Se placer à",
         "lands": "Atterrit à",
         "distance": "Distance de lancer",
@@ -5500,7 +5501,8 @@
         "precision_failed": "Impossible de changer la précision de visée",
         "favorite_failed": "Impossible de mettre à jour vos lineups enregistrés",
         "aim_delta": "Visée déduite vs enregistrée",
-        "technical": "Détails techniques"
+        "technical": "Détails techniques",
+        "mark_bad": "Marquer comme mauvais"
       },
       "practice": {
         "title": "Serveur d'entraînement",
@@ -5564,45 +5566,6 @@
         "ask_host": "Demandez à {host} de la changer.",
         "ask_the_host": "Demandez à l'hôte de la changer.",
         "nav_switching": "Changement",
-        "commands": {
-          "title": "Commandes en jeu",
-          "hint": "Tapez-les dans le chat une fois sur le serveur. .help affiche la même liste en jeu.",
-          "bind_hint": "Ce sont des commandes de chat : chacune peut donc être liée à une touche :",
-          "group_lineups": "Lineups",
-          "group_drills": "Drills et exécutions",
-          "group_tools": "Outils du serveur",
-          "save": "enregistre le lancer que vous venez de faire",
-          "load": "vous place sur un lineup correspondant",
-          "next": "parcourir la dernière recherche",
-          "jump": "vous place là où le lineup chargé retombe",
-          "rethrow": "retour au lineup chargé",
-          "last": "retour à un de vos lancers",
-          "list": "gérez votre bibliothèque depuis le jeu",
-          "edit": "renommez le lineup chargé, décrivez-le, ou changez qui peut le voir",
-          "drill": "enchaîne votre carnet, trois lancers chacun, et le note",
-          "drill_here": "répète le lineup sur lequel vous vous trouvez jusqu'à ce que vous l'arrêtiez",
-          "skip": "passe le lineup en cours de drill",
-          "cancel": "arrête le drill en cours",
-          "playbook": "joue l'exécution chargée sur ses timings",
-          "playbook_stop": "l'arrête",
-          "bloom": "dessine où retombe le smoke chargé",
-          "solve": "trouve un lancer vers l'endroit que vous regardez",
-          "pos": "enregistrer une position et y revenir",
-          "spawn": "vous téléporte à un point d'apparition",
-          "spawns": "affiche les spawns compétitifs",
-          "noclip": "voler, et ne plus prendre de dégâts",
-          "timer": "démarrer et arrêter un chronomètre",
-          "solo": "ne voir que vos propres aperçus",
-          "colors": "chaque lancer prend sa propre couleur, pour reconnaître les vôtres",
-          "clear": "efface le lineup chargé, les marqueurs et les ghosts",
-          "help": "affiche toutes les commandes en jeu",
-          "group_panels": "Panneaux à l'écran",
-          "panels_hint": "Les serveurs avec l'addon HUD monté affichent des panneaux cliquables au lieu du texte au centre. Sans lui, tout revient au texte qu'il remplaçait.",
-          "menu": "le sélecteur de lineups, avec filtres de portée, de camp et de type",
-          "map": "une minicarte des points de chute ; cliquez sur un endroit pour voir ses lineups",
-          "hud": "repasse les panneaux en texte au centre, pour vous seul",
-          "here": "réduit la liste aux lineups que vous pouvez lancer d'où vous êtes"
-        },
         "operator": "Console du serveur"
       },
       "collections": {
@@ -5661,7 +5624,7 @@
         "add_count": "{count} dans {name}"
       },
       "progress": {
-        "drilled": "Travaillé",
+        "drilled": "En cours",
         "mastered": "Maîtrisé",
         "record": "{successes} / {attempts}",
         "hit_rate": "{percent}%",
@@ -5711,11 +5674,11 @@
         "write_another": "Rédiger un autre lineup pour ce spot"
       },
       "playbooks": {
-        "title": "Playbooks",
+        "title": "Exécutions",
         "eyebrow": "Exécutions d'équipe",
         "subtitle": "De l'utilitaire ordonné avec des timings — qui lance quoi, et quand.",
-        "new": "Nouveau playbook",
-        "empty": "Aucun playbook pour cette map",
+        "new": "Nouvelle exécution",
+        "empty": "Aucune exécution pour cette map",
         "name_placeholder": "Site A par défaut",
         "name_required": "Donnez un nom à l'exécution avant de l'enregistrer",
         "description_placeholder": "À quoi sert cette exécution, et quand l'appeler.",
@@ -5774,7 +5737,7 @@
         "step_context": "Étape {step} sur {count} dans {name}. Lancé à {seconds}s.",
         "step_context_by": "Étape {step} sur {count} dans {name}. Lancé à {seconds}s par {player}.",
         "step_context_you": "Étape {step} sur {count} dans {name}. Lancé à {seconds}s par vous.",
-        "play": "Lire",
+        "play": "Lancer",
         "pause": "Pause",
         "seek": "Chronologie de l’exécution",
         "stop": "Arrêter",
@@ -5789,6 +5752,7 @@
         "delete_ask": "La supprimer ? Ses lineups restent.",
         "deleted": "Exécution supprimée. Ses lineups restent.",
         "steps": "Étapes",
+        "sheet_throw": "Lancer",
         "steps_of": "{count} sur {max}",
         "steps_required": "Ajoutez au moins un lancer avant de l'enregistrer",
         "add_throw": "Ajouter un lancer",
@@ -6072,13 +6036,38 @@
         "review_failed": "Impossible de valider ce lineup",
         "in_review": "En revue"
       },
+      "mine": {
+        "state": {
+          "private": "Privé",
+          "team": "Équipe",
+          "review": "En cours de relecture",
+          "public": "Public",
+          "rejected": "Refusé",
+          "archived": "Archivé"
+        },
+        "tip": {
+          "private": "Privé : toi seul peux le voir. Soumets-le en public quand il atterrit à chaque fois.",
+          "team": "Équipe : ton équipe peut le voir. Soumets-le en public quand il est prêt pour tous.",
+          "review": "En cours de relecture : un relecteur vérifie qu'il atterrit. Rien à faire ; tu peux encore le modifier.",
+          "public": "Public : dans la bibliothèque publique. Tout le monde peut le travailler et voter.",
+          "rejected": "Refusé : un relecteur l'a renvoyé. Ouvre-le pour lire pourquoi, corrige-le, puis soumets-le à nouveau.",
+          "archived": "Archivé : masqué partout. Restaure-le depuis l'onglet Archivés, ou supprime-le définitivement."
+        },
+        "rejected_line": "Refusé : {note}"
+      },
+      "review": {
+        "lands": "Atterrit",
+        "reject_because": "Refuser car",
+        "reasons": {
+          "no_land": "N'atterrit pas",
+          "duplicate": "Déjà dans la bibliothèque",
+          "bad_name": "Le nom ne dit pas où",
+          "needs_clip": "Il faut un clip"
+        }
+      },
       "archive": {
         "action": "Archiver le lineup",
-        "title": "Archiver ce lineup ?",
         "this_lineup": "ce lineup",
-        "description": "{name} disparaîtra de toutes les bibliothèques, de tous les tableaux et de toutes les recherches sur cette map.",
-        "keeps_history": "Rien n'est détruit. La progression, les votes et tout playbook qui l'utilise sont conservés, et vous pouvez le remettre depuis l'onglet Archivés.",
-        "confirm": "Archiver",
         "done": "{name} archivé",
         "undo": "Annuler",
         "restore": "Restaurer le lineup",
@@ -6211,7 +6200,7 @@
         "confirm": "Enregistrer le lineup",
         "saved": "Lineup enregistré",
         "failed": "Impossible d'enregistrer le lineup",
-        "practice_note": "Enregistré depuis la session que vous avez ouverte, sur le lineup que vous travaillez. La commande .save en jeu fait la même chose avec le lancer que vous avez sous les yeux.",
+        "practice_note": "Enregistré depuis la session ouverte, pour le lineup que tu travailles. Save Throw dans le menu en jeu fait la même chose avec le lancer devant toi.",
         "practice_entry_title": "Enregistrer un lancer",
         "practice_entry_hint": "Gardez ce que vous lancez ici comme votre propre lineup.",
         "practice_entry_open": "Enregistrer depuis l'entraînement"
@@ -6337,7 +6326,7 @@
         "failed_unreachable": "Impossible de joindre votre serveur",
         "failed_nothing_to_drill": "Rien à travailler",
         "drill_name": "{count} lineups",
-        "drill": "Travailler en jeu",
+        "drill": "Répéter en jeu",
         "drill_hint": "Les enchaîne sur le serveur où vous êtes, trois lancers chacun",
         "test": "Tester en jeu",
         "test_hint": "Placez-vous sur ce lancer avant de l'enregistrer",

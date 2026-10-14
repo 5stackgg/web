@@ -45,9 +45,9 @@ import UtilityMobileSheet from "~/components/utility/UtilityMobileSheet.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
-import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue";
 import UtilityDeleteDialog from "~/components/utility/UtilityDeleteDialog.vue";
 import UtilityLineupDetail from "~/components/utility/UtilityLineupDetail.vue";
+import UtilityReviewTile from "~/components/utility/UtilityReviewTile.vue";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import {
@@ -75,7 +75,8 @@ import { toast, ToastAction } from "~/components/ui/toast";
 import {
   archiveUtilityLineupMutation,
   requestUtilityLineupPublicMutation,
-  reviewUtilityLineupPublicMutation,
+  approveUtilityLineupPublicMutation,
+  rejectUtilityLineupPublicMutation,
   UTILITY_LANDINGS_LIMIT,
   myUtilityProgressSubscription,
   utilityLibraryPulseSubscription,
@@ -299,8 +300,6 @@ const { isMobile } = useSidebar();
 const forkOpen = ref(false);
 type LineupRef = { id: string; name: string };
 const forkLineup = ref<LineupRef | null>(null);
-const archiveOpen = ref(false);
-const archiveLineup = ref<LineupRef | null>(null);
 const deleteOpen = ref(false);
 const deleteLineup = ref<LineupRef | null>(null);
 
@@ -1503,9 +1502,15 @@ function skipFromDetail(id: string) {
 
 // Reviewing, restoring and deleting all take the row out of the list you were
 // reading, so the lineup closes first instead of turning into a fetched orphan.
+// The bar has no room to ask why, so a decline from it says it plainly: the
+// author still needs to see that it was turned down.
 function reviewFromDetail(id: string, approve: boolean) {
   closeDetail();
-  void reviewPublic(id, approve);
+  void reviewPublic(
+    id,
+    approve,
+    approve ? null : t("pages.utility.publish.rejected"),
+  );
 }
 
 function restoreFromDetail(id: string) {
@@ -1742,18 +1747,60 @@ function togglePractice() {
   }
 }
 
-// Fork and archive are asked for from inside the dialog; both open a dialog of
-// their own, so the detail has to get out of the way first.
+// Fork is asked for from inside the detail and opens a dialog of its own, so
+// the detail has to get out of the way first.
 function forkFromDetail(id: string, name: string) {
   closeDetail();
   forkLineup.value = { id, name };
   forkOpen.value = true;
 }
 
-function archiveFromDetail(id: string, name: string) {
+// Archiving asks nothing: it keeps everything and the toast undoes it. The
+// live library brings the row back when it is.
+async function archiveFromDetail(id: string, name: string) {
   closeDetail();
-  archiveLineup.value = { id, name };
-  archiveOpen.value = true;
+  try {
+    await getGraphqlClient().mutate({
+      mutation: archiveUtilityLineupMutation,
+      variables: { id, archived_at: new Date().toISOString() },
+    });
+    onArchived(id);
+    toast({
+      title: t("pages.utility.archive.done", {
+        name: name || t("pages.utility.archive.this_lineup"),
+      }),
+      action: h(
+        ToastAction,
+        {
+          altText: t("pages.utility.archive.undo"),
+          onClick: () => void undoArchive(id),
+        },
+        () => t("pages.utility.archive.undo"),
+      ),
+    });
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.archive.failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
+}
+
+async function undoArchive(id: string) {
+  try {
+    await getGraphqlClient().mutate({
+      mutation: archiveUtilityLineupMutation,
+      variables: { id, archived_at: null },
+    });
+    toast({ title: t("pages.utility.archive.restored") });
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.archive.restore_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
 }
 
 // Patched in place rather than refetched: the whole list would flicker to move
@@ -1848,19 +1895,26 @@ async function requestPublic(id: string) {
   }
 }
 
-async function reviewPublic(id: string, approve: boolean) {
+async function reviewPublic(
+  id: string,
+  approve: boolean,
+  reason: string | null = null,
+) {
   try {
-    await getGraphqlClient().mutate({
-      mutation: reviewUtilityLineupPublicMutation,
-      variables: {
-        id,
-        visibility: approve ? "Public" : undefined,
-        // Approving clears the request through the trigger; rejecting has to
-        // clear it here, or the queue never empties.
-        public_requested_at: approve ? undefined : null,
-        public_review_note: null,
-      },
-    });
+    // Approving clears the request through the trigger; rejecting clears it
+    // itself, or the queue never empties. The reason is the author's to read:
+    // it is what marks the lineup as turned down on their own list.
+    await getGraphqlClient().mutate(
+      approve
+        ? {
+            mutation: approveUtilityLineupPublicMutation,
+            variables: { id },
+          }
+        : {
+            mutation: rejectUtilityLineupPublicMutation,
+            variables: { id, public_review_note: reason },
+          },
+    );
     lineups.value = lineups.value.filter((entry) => entry.id !== id);
     totalCount.value = Math.max(0, totalCount.value - 1);
     toast({
@@ -2245,7 +2299,7 @@ function selectLineup(id: string | null) {
                again on Back, scrolled to where you left it. -->
           <div
             ref="listScroller"
-            class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-[max(1rem,env(safe-area-inset-bottom))] transition-[opacity,transform] motion-reduce:![transition-duration:1ms]"
+            class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 [scrollbar-gutter:stable] pb-[max(1rem,env(safe-area-inset-bottom))] transition-[opacity,transform] motion-reduce:![transition-duration:1ms]"
             :class="
               covered
                 ? 'pointer-events-none -translate-x-4 opacity-0 [transition-duration:110ms] ease-in'
@@ -2527,20 +2581,30 @@ function selectLineup(id: string | null) {
                   />
                 </div>
                 <div v-else :id="`utility-card-${entry.lineup.id}`" class="pt-2">
+                <!-- The queue is judged from the tile: a submission is approved
+                     or declined without opening it. -->
+                <UtilityReviewTile
+                  v-if="filters.scope === 'pending' && canReview"
+                  :lineup="entry.lineup"
+                  @select="openLineup"
+                  @review="reviewPublic"
+                />
                 <!-- A click opens the lineup in the panel, where everything you can
                      do with it lives -- so the row carries no menu of its own. -->
                 <UtilityLineupCard
+                  v-else
                   :lineup="entry.lineup"
                   mode="row"
                   :menu="false"
-                  :show-status="filters.scope !== 'public'"
-                  :quiet-public="filters.scope === 'mine'"
                   :selected="selectedId === entry.lineup.id"
                   :hovered="hoveredId === entry.lineup.id"
                   :meta-throwers="metaSpotByLineup[entry.lineup.id]?.throwers ?? null"
                   :meta-throws="metaSpotByLineup[entry.lineup.id]?.throws ?? null"
                   :meta-busiest="metaBusiest"
                   :show-practice="!isMobile"
+                  :show-author="filters.scope !== 'mine' && filters.scope !== 'archived'"
+                  :own-state="filters.scope === 'mine' || filters.scope === 'archived'"
+                  :context-menu="!isMobile"
                   :can-review="canReview"
                   :can-react="!!mySteamId"
                   @select="openLineup"
@@ -2548,6 +2612,9 @@ function selectLineup(id: string | null) {
                   @review-public="reviewPublic"
                   @vote="onVote"
                   @favorite="onFavorite"
+                  @fork="(id) => forkFromDetail(id, entry.lineup.name)"
+                  @archive="(id) => archiveFromDetail(id, entry.lineup.name)"
+                  @request-public="requestPublic"
                 />
                 </div>
                 </div>
@@ -2710,13 +2777,6 @@ function selectLineup(id: string | null) {
     :lineup-id="forkLineup?.id ?? null"
     :source-name="forkLineup?.name ?? null"
     :map-name="mapName"
-  />
-
-  <UtilityArchiveDialog
-    v-model:open="archiveOpen"
-    :lineup-id="archiveLineup?.id ?? null"
-    :lineup-name="archiveLineup?.name ?? null"
-    @archived="onArchived"
   />
 
   <UtilityDeleteDialog

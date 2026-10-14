@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { UTILITY_TYPES, UTILITY_TYPE_COLORS } from "~/utilities/utilityDisplay";
+import { useI18n } from "vue-i18n";
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
+import { UTILITY_TYPES } from "~/utilities/utilityDisplay";
 import type { UtilityType } from "~/types/utility";
 
 const props = withDefaults(
@@ -15,7 +17,8 @@ const props = withDefaults(
     // Fill the row instead of sitting at their natural width: the strip under
     // a card's tabs is exactly as wide as the card. A name is never cut short
     // to fit: the counts go first, and past that the row is expected to
-    // scroll.
+    // scroll. Each chip's share is set by its name alone -- sized by content,
+    // every tab's different counts nudged the chips sideways as it opened.
     fill?: boolean;
   }>(),
   {
@@ -26,6 +29,16 @@ const props = withDefaults(
 );
 
 const selected = defineModel<UtilityType[]>({ required: true });
+
+const { t } = useI18n();
+
+// The glyph, the gaps and room for a two-digit count, in characters.
+const CHIP_CHROME_CHARS = 8;
+
+function share(type: UtilityType) {
+  const grow = t(`pages.utility.types.${type}`).length + CHIP_CHROME_CHARS;
+  return { flex: `${grow} 1 0%` };
+}
 
 function toggle(type: UtilityType) {
   if (props.single) {
@@ -49,20 +62,20 @@ function toggle(type: UtilityType) {
     class="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border font-mono text-[0.6rem] font-bold uppercase leading-none transition-[color,background-color,border-color,opacity] duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
     :class="[
       fill
-        ? 'flex-auto justify-center px-1.5 tracking-[0.06em]'
+        ? 'justify-center px-1.5 tracking-[0.06em]'
         : 'shrink-0 px-2.5 tracking-[0.14em]',
       selected.includes(type)
         ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
         : 'border-border/70 bg-transparent text-muted-foreground hover:border-border hover:bg-muted/40 hover:text-foreground',
       counts && !counts[type] && !selected.includes(type) ? 'opacity-45' : '',
     ]"
+    :style="fill ? share(type) : undefined"
     @click="toggle(type)"
   >
-    <span
-      aria-hidden="true"
-      class="h-2 w-2 shrink-0 rounded-[1px] transition-opacity duration-150"
+    <UtilityTypeGlyph
+      :type="type"
+      class="transition-opacity duration-150"
       :class="selected.includes(type) ? 'opacity-100' : 'opacity-45'"
-      :style="{ backgroundColor: UTILITY_TYPE_COLORS[type] }"
     />
     <!-- One line high and wrapping: a count with no room beside its name
          drops to a second line that is not shown, so the chip can give up

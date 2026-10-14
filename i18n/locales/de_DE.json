@@ -1416,7 +1416,7 @@
         "favorites": "Favoriten",
         "votes": "Stimmen",
         "collections": "Sammlungen",
-        "playbooks": "Playbooks",
+        "playbooks": "Executes",
         "playbook_steps": "{steps} Schritte",
         "demo_throws": "Geschürfte Würfe",
         "demo_throws_hint": "Granaten aus ausgewerteten Demos. Niemand hat sie aufgeschrieben — sie sind das, was Spieler tatsächlich geworfen haben, und die Grundlage der Meta-Cluster.",
@@ -5446,6 +5446,7 @@
         "favorite": "In deiner Liste speichern",
         "unfavorite": "Aus deiner Liste entfernen",
         "open": "Lineup öffnen",
+        "load_in_game": "Im Spiel laden",
         "has_video": "Mit Video",
         "rendering": "Vorschau wird gerendert…",
         "rendering_progress": "Vorschau wird gerendert… {percent}%",
@@ -5455,7 +5456,7 @@
         "more_actions": "Weitere Aktionen",
         "flight_time_hint": "Wie lange die Granate nach dem Wurf in der Luft ist.",
         "stat_hit_rate": "Meine Trefferquote",
-        "stat_flight": "Flug",
+        "stat_flight": "Luftzeit",
         "stat_difficulty": "Schwierigkeit",
         "yours": "Deins · {status}",
         "score": "{count} Upvote | {count} Upvotes"
@@ -5487,7 +5488,7 @@
           "open": "{still} ansehen",
           "viewer": "Lineup-Standbilder, mit den Pfeiltasten wechseln"
         },
-        "flight_time": "Flugzeit",
+        "flight_time": "Luftzeit",
         "stand": "Stehen bei",
         "lands": "Landet bei",
         "distance": "Wurfdistanz",
@@ -5500,7 +5501,8 @@
         "precision_failed": "Die Zielgenauigkeit konnte nicht geändert werden",
         "favorite_failed": "Deine gespeicherten Lineups konnten nicht aktualisiert werden",
         "aim_delta": "Abgeleitetes vs. aufgezeichnetes Zielen",
-        "technical": "Technische Details"
+        "technical": "Technische Details",
+        "mark_bad": "Als schlecht markieren"
       },
       "practice": {
         "title": "Übungsserver",
@@ -5564,45 +5566,6 @@
         "ask_host": "Bitte {host}, sie zu wechseln.",
         "ask_the_host": "Bitte den Host, sie zu wechseln.",
         "nav_switching": "Wechselt",
-        "commands": {
-          "title": "Befehle im Spiel",
-          "hint": "Tippe sie im Chat ein, sobald du auf dem Server bist. .help gibt dieselbe Liste im Spiel aus.",
-          "bind_hint": "Es sind Chat-Befehle, also lässt sich jeder auf eine Taste legen:",
-          "group_lineups": "Lineups",
-          "group_drills": "Drills & Executes",
-          "group_tools": "Server-Werkzeuge",
-          "save": "speichert den Wurf, den du gerade gemacht hast",
-          "load": "setzt dich auf ein passendes Lineup",
-          "next": "durch die letzte Suche blättern",
-          "jump": "stell dich dorthin, wo das geladene Lineup landet",
-          "rethrow": "zurück zum geladenen Lineup",
-          "last": "zurück zu einem Wurf von dir",
-          "list": "verwalte deine Bibliothek aus dem Spiel",
-          "edit": "das geladene Lineup umbenennen, beschreiben oder ändern, wer es sehen darf",
-          "drill": "drillt dein Buch, je drei Würfe, und wertet es aus",
-          "drill_here": "wiederholt das Lineup, auf dem du stehst, bis du aufhörst",
-          "skip": "überspringt das Lineup, das du gerade drillst",
-          "cancel": "beendet den laufenden Drill",
-          "playbook": "spielt den geladenen Execute nach seinen Zeiten ab",
-          "playbook_stop": "stoppt ihn",
-          "bloom": "zeigt an, wo der geladene Smoke landet",
-          "solve": "sucht einen Wurf auf den Punkt, den du ansiehst",
-          "pos": "eine Position speichern und wieder dorthin zurück",
-          "spawn": "teleportiert dich zu einem Spawnpunkt",
-          "spawns": "zeigt die kompetitiven Spawns",
-          "noclip": "fliegen, und keinen Schaden mehr nehmen",
-          "timer": "Stoppuhr starten und stoppen",
-          "solo": "nur noch deine eigenen Vorschauen sehen",
-          "colors": "jeder Wurf bekommt seine eigene Farbe, damit du deine erkennst",
-          "clear": "löscht das geladene Lineup, Marker und Ghosts",
-          "help": "gibt alle Befehle im Spiel aus",
-          "group_panels": "Panels auf dem Bildschirm",
-          "panels_hint": "Server mit dem HUD-Addon zeigen klickbare Panels statt Text in der Bildschirmmitte. Ohne das Addon fällt alles auf den Text zurück, den es ersetzt hat.",
-          "menu": "die Lineup-Auswahl, mit Filtern für Sichtbarkeit, Seite und Typ",
-          "map": "eine Minimap, wo die Würfe landen; klick auf eine Stelle für ihre Lineups",
-          "hud": "schaltet die Panels zurück auf Text in der Bildschirmmitte, nur für dich",
-          "here": "beschränkt die Liste auf Lineups, die du von deiner Position aus werfen kannst"
-        },
         "operator": "Server-Konsole"
       },
       "collections": {
@@ -5661,7 +5624,7 @@
         "add_count": "{count} in {name}"
       },
       "progress": {
-        "drilled": "Geübt",
+        "drilled": "In Arbeit",
         "mastered": "Gemeistert",
         "record": "{successes} / {attempts}",
         "hit_rate": "{percent}%",
@@ -5711,11 +5674,11 @@
         "write_another": "Weiteres Lineup für diesen Spot schreiben"
       },
       "playbooks": {
-        "title": "Playbooks",
+        "title": "Executes",
         "eyebrow": "Team-Executes",
         "subtitle": "Geordnete Utility mit Timings – wer wirft was, und wann.",
-        "new": "Neues Playbook",
-        "empty": "Keine Playbooks für diese Map",
+        "new": "Neues Execute",
+        "empty": "Keine Executes für diese Map",
         "name_placeholder": "A-Site Standard",
         "name_required": "Gib dem Execute einen Namen, bevor du ihn speicherst",
         "description_placeholder": "Wofür dieser Execute gedacht ist und wann man ihn callt.",
@@ -5774,7 +5737,7 @@
         "step_context": "Schritt {step} von {count} in {name}. Geworfen bei {seconds}s.",
         "step_context_by": "Schritt {step} von {count} in {name}. Geworfen bei {seconds}s von {player}.",
         "step_context_you": "Schritt {step} von {count} in {name}. Geworfen bei {seconds}s von dir.",
-        "play": "Abspielen",
+        "play": "Starten",
         "pause": "Pause",
         "seek": "Zeitleiste des Executes",
         "stop": "Stopp",
@@ -5789,6 +5752,7 @@
         "delete_ask": "Löschen? Seine Lineups bleiben.",
         "deleted": "Execute gelöscht. Seine Lineups bleiben.",
         "steps": "Schritte",
+        "sheet_throw": "Wurf",
         "steps_of": "{count} von {max}",
         "steps_required": "Füge mindestens einen Wurf hinzu, bevor du speicherst",
         "add_throw": "Wurf hinzufügen",
@@ -6072,13 +6036,38 @@
         "review_failed": "Dieses Lineup konnte nicht geprüft werden",
         "in_review": "In Prüfung"
       },
+      "mine": {
+        "state": {
+          "private": "Privat",
+          "team": "Team",
+          "review": "In Prüfung",
+          "public": "Öffentlich",
+          "rejected": "Abgelehnt",
+          "archived": "Archiviert"
+        },
+        "tip": {
+          "private": "Privat: nur du siehst es. Reiche es öffentlich ein, wenn es jedes Mal landet.",
+          "team": "Team: dein Team sieht es. Reiche es öffentlich ein, wenn es für alle bereit ist.",
+          "review": "In Prüfung: ein Prüfer schaut, ob es landet. Nichts zu tun; du kannst es weiter bearbeiten.",
+          "public": "Öffentlich: in der öffentlichen Bibliothek. Jeder kann es üben und darüber abstimmen.",
+          "rejected": "Abgelehnt: ein Prüfer hat es zurückgeschickt. Öffne es, lies warum, korrigiere es und reiche es erneut ein.",
+          "archived": "Archiviert: überall ausgeblendet. Stelle es im Tab Archiviert wieder her oder lösche es endgültig."
+        },
+        "rejected_line": "Abgelehnt: {note}"
+      },
+      "review": {
+        "lands": "Landet",
+        "reject_because": "Ablehnen, weil",
+        "reasons": {
+          "no_land": "Landet nicht",
+          "duplicate": "Schon in der Bibliothek",
+          "bad_name": "Name sagt nicht, wohin",
+          "needs_clip": "Braucht einen Clip"
+        }
+      },
       "archive": {
         "action": "Lineup archivieren",
-        "title": "Dieses Lineup archivieren?",
         "this_lineup": "dieses Lineup",
-        "description": "{name} verschwindet aus jeder Bibliothek, jedem Board und jeder Suche auf dieser Map.",
-        "keeps_history": "Es wird nichts zerstört. Übungsfortschritt, Bewertungen und jedes Playbook, das es nutzt, bleiben erhalten, und du kannst es aus dem Tab „Archiviert“ zurückholen.",
-        "confirm": "Archivieren",
         "done": "{name} archiviert",
         "undo": "Rückgängig",
         "restore": "Lineup wiederherstellen",
@@ -6211,7 +6200,7 @@
         "confirm": "Lineup speichern",
         "saved": "Lineup gespeichert",
         "failed": "Das Lineup konnte nicht gespeichert werden",
-        "practice_note": "Aus der geöffneten Sitzung gespeichert, gegen das Lineup, das du gerade übst. Der Ingame-Befehl .save macht dasselbe mit dem Wurf direkt vor dir.",
+        "practice_note": "Gespeichert aus der offenen Sitzung, für das Lineup, das du gerade übst. Save Throw im Menü im Spiel macht dasselbe mit dem Wurf vor dir.",
         "practice_entry_title": "Wurf speichern",
         "practice_entry_hint": "Behalte, was du hier geworfen hast, als eigenes Lineup.",
         "practice_entry_open": "Aus dem Training speichern"
@@ -6337,7 +6326,7 @@
         "failed_unreachable": "Dein Server war nicht erreichbar",
         "failed_nothing_to_drill": "Nichts zu üben",
         "drill_name": "{count} Lineups",
-        "drill": "Im Spiel üben",
+        "drill": "Im Spiel wiederholen",
         "drill_hint": "Spielt diese auf deinem Server durch, je drei Würfe",
         "test": "Im Spiel testen",
         "test_hint": "Stell dich auf diesen Wurf, bevor du ihn speicherst",

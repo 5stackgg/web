@@ -2,23 +2,34 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import {
-  ArrowBigUp,
   ArrowUpRight,
   Archive,
   ArchiveRestore,
   Check,
+  CircleX,
   Clock,
+  Crosshair,
   Ellipsis,
   Film,
+  Flag,
   GitFork,
   Globe,
+  Link2,
+  Lock,
   PencilLine,
   Play,
+  Repeat,
+  Send,
   Trash2,
-  UserRound,
+  Users,
   X,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,13 +37,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "~/components/ui/context-menu";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
+import UtilityAuthorByline from "~/components/utility/UtilityAuthorByline.vue";
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import { Spinner } from "~/components/ui/spinner";
 import UtilityProgressPanel from "~/components/utility/UtilityProgressPanel.vue";
 import UtilityReactions from "~/components/utility/UtilityReactions.vue";
+import UtilityUpvoteToggle from "~/components/utility/UtilityUpvoteToggle.vue";
 import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
 import UtilitySpecLine from "~/components/utility/UtilitySpecLine.vue";
@@ -48,7 +70,12 @@ import {
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityLoad } from "~/composables/useUtilityLoad";
 import { useUtilityRendersInFlight } from "~/composables/useUtilityRendersInFlight";
+import { useUtilityLineupShare } from "~/composables/useUtilityLineupShare";
 import type { UtilityLineup, UtilityTrajectoryPoint } from "~/types/utility";
+
+// The tile sits inside the right-click menu's trigger, so attributes from the
+// call site belong on the tile and not on the menu around it.
+defineOptions({ inheritAttrs: false });
 
 const props = withDefaults(
   defineProps<{
@@ -79,12 +106,6 @@ const props = withDefaults(
     openInPlace?: boolean;
     // Off where a click already opens the lineup and its actions live there.
     menu?: boolean;
-    // Off on the Public scope, where every row is public and a pill saying so
-    // on each one is noise; on Mine it is the thing that tells yours apart.
-    showStatus?: boolean;
-    // On Mine, public is the ordinary state of a lineup: a chip saying so on
-    // every row says nothing, so only the exceptions wear one there.
-    quietPublic?: boolean;
     // "row" is the index form: one line per lineup, for reading down a list
     // rather than reading one. The page swaps the selected row back to a card.
     mode?: "card" | "row";
@@ -93,6 +114,14 @@ const props = withDefaults(
     // choosing, and there a tile that loads you into the game instead of
     // ticking the row is the wrong verb on the only target there is.
     showPractice?: boolean;
+    // Whose it is, on a line of its own under the throw. Off on the scopes
+    // that only ever hold your own.
+    showAuthor?: boolean;
+    // Right-click for what you can do to it without opening it.
+    contextMenu?: boolean;
+    // Your own lineups: one icon for where it stands, and a third line on
+    // what that means for it right now.
+    ownState?: boolean;
   }>(),
   {
     selected: false,
@@ -108,10 +137,11 @@ const props = withDefaults(
     canReact: false,
     openInPlace: false,
     menu: true,
-    showStatus: true,
-    quietPublic: false,
     mode: "card",
     showPractice: true,
+    showAuthor: false,
+    contextMenu: false,
+    ownState: false,
   },
 );
 
@@ -279,42 +309,11 @@ const stats = computed(() => {
   return out;
 });
 
-const awaitingReview = computed(
-  () => !!props.lineup.can_edit && !!props.lineup.public_requested_at,
-);
-
-// Your own lineups sit in the same list as everybody's public ones, and from
-// the row alone there was no telling which were which -- or which of yours
-// anyone else could see. A pill on yours answers both; the rest stay bare.
 const mine = computed(
   () =>
     !!mySteamId.value &&
     String(props.lineup.author_steam_id) === String(mySteamId.value),
 );
-
-const STATUS_TONES = {
-  Public: "bg-success/15 text-success",
-  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
-  Private: "bg-muted/60 text-muted-foreground",
-  review: "bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]",
-} as const;
-
-const ownStatus = computed(() => {
-  if (!mine.value || props.lineup.archived_at) {
-    return null;
-  }
-  const key = props.lineup.public_requested_at
-    ? "review"
-    : props.lineup.visibility;
-  if (key === "Public" && props.quietPublic) {
-    return null;
-  }
-  const label =
-    key === "review"
-      ? t("pages.utility.publish.in_review")
-      : t(`pages.utility.visibility.${key}`);
-  return { label, tone: STATUS_TONES[key] };
-});
 
 // Only a public lineup can be voted on, so only there does the count mean
 // anything -- a private one's 0 would read as "nobody liked this".
@@ -356,6 +355,107 @@ const canRerender = computed(
 
 const tags = computed(() => props.lineup.tags ?? []);
 
+const authorLine = computed(() => props.showAuthor && !!props.lineup.author);
+
+// A rejection leaves no flag of its own: the reviewer's reason on a lineup
+// that is neither public nor asked again is what says it was turned down.
+const state = computed(() => {
+  const row = props.lineup;
+  if (row.archived_at) {
+    return "archived";
+  }
+  if (row.public_requested_at) {
+    return "review";
+  }
+  if (row.visibility === "Public") {
+    return "public";
+  }
+  if (row.public_review_note) {
+    return "rejected";
+  }
+  return row.visibility === "Team" ? "team" : "private";
+});
+
+const STATE_ICONS = {
+  private: Lock,
+  team: Users,
+  review: Clock,
+  public: Globe,
+  rejected: CircleX,
+  archived: Archive,
+} as const;
+
+const stateSince = computed(() => {
+  const row = props.lineup;
+  switch (state.value) {
+    case "archived":
+      return row.archived_at ?? null;
+    case "review":
+      return row.public_requested_at ?? null;
+    default:
+      return row.created_at ?? null;
+  }
+});
+
+const LOAD_SQUARE =
+  "!size-6 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)]";
+
+const submitOpen = ref(false);
+
+function submitPublic() {
+  submitOpen.value = false;
+  emit("request-public", props.lineup.id);
+}
+
+const STATE_TONES: Record<string, string> = {
+  private: "border-border text-muted-foreground",
+  team: "border-border text-muted-foreground",
+  review: "border-[hsl(var(--tac-amber)/0.4)] text-[hsl(var(--tac-amber))]",
+  public: "border-success/40 text-success",
+  rejected: "border-destructive/40 text-destructive",
+  archived: "border-border text-muted-foreground",
+};
+
+// As tall as the three lines beside it: 24 + 18 + 24 with two 6px gaps.
+const thumbPx = 78;
+const thumbBox = "size-[78px]";
+
+// The menu offers what the lineup's own page does, and nothing it would not.
+const canLoadHere = computed(
+  () => props.showPractice && load.canLoad(props.lineup.map_name),
+);
+const canSwitchHere = computed(
+  () => props.showPractice && load.canSwitchTo(props.lineup.map_name),
+);
+const canMarkBad = computed(
+  () => props.canReact && score.value !== null && !mine.value,
+);
+const canArchiveHere = computed(
+  () => !!props.lineup.can_edit && !props.lineup.archived_at,
+);
+
+async function loadInGame() {
+  if (canLoadHere.value) {
+    await load.sendLineup(props.lineup);
+    return;
+  }
+  await load.switchMap(props.lineup.map_name, {
+    key: props.lineup.id,
+    name: props.lineup.name,
+    lineup_id: props.lineup.id,
+  });
+}
+
+function repeatInGame() {
+  void load.sendDrill([props.lineup]);
+}
+
+const { shareLineup } = useUtilityLineupShare();
+
+function copyLink() {
+  void shareLineup(props.lineup.map_name, props.lineup.id);
+}
+
 const rowEl = ref<HTMLElement | null>(null);
 
 function open() {
@@ -364,356 +464,508 @@ function open() {
 </script>
 
 <template>
-  <div
-    ref="rowEl"
-    role="button"
-    tabindex="0"
-    class="group relative flex cursor-pointer flex-col rounded-md border border-l-2 py-2 pl-3 pr-2.5 text-left [backdrop-filter:blur(6px)] transition-[background-color,border-color,box-shadow] duration-200 ease-out"
-    :class="
-      selected
-        ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.045)] shadow-[0_12px_32px_-20px_rgba(0,0,0,0.95)]'
-        : hovered
-          ? 'border-[hsl(var(--tac-amber)/0.3)] bg-card/60'
-          : 'border-border bg-card/40 hover:border-[hsl(var(--tac-amber)/0.3)] hover:bg-card/55'
-    "
-    :style="{ borderLeftColor: color }"
-    @click="emit('select', lineup.id)"
-    @keydown.enter="emit('select', lineup.id)"
-    @keydown.space.prevent="emit('select', lineup.id)"
-    @mouseenter="emit('hover', lineup.id)"
-    @mouseleave="emit('hover', null)"
-  >
-    <!-- Identical in both modes: opening a row must not move a single thing
-         you were already looking at, or the swap reads as a jump rather than
-         as the row growing. Everything that only a card shows folds in
-         underneath. The name gets the whole first line; whose it is and how
-         it is thrown share the second; the numbers stand in a column. -->
-    <div class="flex items-center gap-2.5">
-      <span
-        class="relative block size-10 shrink-0"
-        :title="
-          rendering
-            ? renderingLabel
-            : hasClip
-              ? $t('pages.utility.card.has_video')
-              : undefined
+  <ContextMenu>
+    <ContextMenuTrigger as-child :disabled="!contextMenu">
+      <div
+        v-bind="$attrs"
+        ref="rowEl"
+        role="button"
+        tabindex="0"
+        class="group relative flex cursor-pointer flex-col rounded-md border border-l-2 py-2 pl-3 pr-2.5 text-left [backdrop-filter:blur(6px)] transition-[background-color,border-color,box-shadow] duration-200 ease-out"
+        :class="
+          selected
+            ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.045)] shadow-[0_12px_32px_-20px_rgba(0,0,0,0.95)]'
+            : hovered
+              ? 'border-[hsl(var(--tac-amber)/0.3)] bg-card/60'
+              : 'border-border bg-card/40 hover:border-[hsl(var(--tac-amber)/0.3)] hover:bg-card/55'
         "
+        :style="{ borderLeftColor: color }"
+        @click="emit('select', lineup.id)"
+        @keydown.enter="emit('select', lineup.id)"
+        @keydown.space.prevent="emit('select', lineup.id)"
+        @mouseenter="emit('hover', lineup.id)"
+        @mouseleave="emit('hover', null)"
       >
-        <FadeSwap class="size-10">
-          <img
-            v-if="clipThumb"
-            :key="clipThumb"
-            :src="clipThumb"
-            alt=""
-            loading="lazy"
-            decoding="async"
-            class="block size-10 rounded-[3px] border border-border bg-background object-cover"
-            @error="failedThumb = clipThumb"
-          />
-          <UtilityRadarThumb
-            v-else
-            key="radar"
-            :map-name="lineup.map_name"
-            :origin="origin"
-            :landing="landing"
-            :color="color"
-            :size="40"
-          />
-        </FadeSwap>
-        <Transition
-          enter-active-class="transition-opacity duration-200 ease-out motion-reduce:transition-none"
-          enter-from-class="opacity-0"
-        >
+        <!-- Identical in both modes: opening a row must not move a single thing
+             you were already looking at, or the swap reads as a jump rather than
+             as the row growing. Everything that only a card shows folds in
+             underneath. The name gets the whole first line; whose it is and how
+             it is thrown share the second; the numbers stand in a column. -->
+        <div class="flex items-center gap-2.5">
           <span
-            v-if="rendering"
-            data-rendering
-            class="absolute -bottom-1 -right-1 inline-flex size-4 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-black/80 text-[hsl(var(--tac-amber))]"
-          >
-            <Spinner class="size-2.5" aria-hidden="true" />
-            <span class="sr-only">{{ renderingLabel }}</span>
-          </span>
-          <span
-            v-else-if="hasClip"
-            data-has-video
-            class="absolute -bottom-1 -right-1 inline-flex size-4 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-black/80 text-[hsl(var(--tac-amber))]"
-          >
-            <Play
-              class="size-2 translate-x-px fill-current"
-              aria-hidden="true"
-            />
-            <span class="sr-only">
-              {{ $t("pages.utility.card.has_video") }}
-            </span>
-          </span>
-        </Transition>
-      </span>
-
-      <div class="flex min-w-0 flex-1 flex-col gap-1">
-        <div class="flex items-center gap-1.5">
-          <span class="truncate text-sm font-semibold leading-tight">
-            {{ lineup.name }}
-          </span>
-          <UtilityConfidenceMark :lineup="lineup" />
-        </div>
-        <div class="flex min-w-0 items-center gap-1.5">
-          <span
-            v-if="ownStatus && showStatus"
-            class="inline-flex h-4 shrink-0 items-center gap-1 rounded-sm px-1 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em]"
-            :class="ownStatus.tone"
-            :title="$t('pages.utility.card.yours', { status: ownStatus.label })"
-          >
-            <UserRound class="h-2.5 w-2.5" />
-            {{ ownStatus.label }}
-          </span>
-          <Clock
-            v-else-if="awaitingReview"
-            class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-            :title="$t('pages.utility.publish.pending')"
-          />
-          <UtilitySpecLine
-            :lineup="lineup"
-            compact
-            :show-confidence="false"
-            class="min-w-0 truncate"
-          />
-        </div>
-      </div>
-
-      <div
-        v-if="practiceReady"
-        class="flex h-7 w-7 shrink-0 items-center justify-center"
-      >
-        <UtilityPracticeButton :lineup="lineup" shape="icon" />
-      </div>
-
-      <div
-        v-if="score !== null || metaThrowers"
-        class="flex w-14 shrink-0 flex-col items-end gap-1.5"
-      >
-        <span
-          v-if="score !== null"
-          class="flex shrink-0 items-center gap-0.5 font-mono text-[0.65rem] tabular-nums"
-          :class="
-            lineup.my_vote === 1
-              ? 'text-[hsl(var(--tac-amber))]'
-              : score > 0
-                ? 'text-foreground/80'
-                : 'text-muted-foreground/60'
-          "
-          :title="$t('pages.utility.card.score', { count: score }, score)"
-        >
-          <ArrowBigUp class="h-3.5 w-3.5" />
-          {{ score }}
-        </span>
-
-        <UtilityThrowersMeter
-          v-if="metaThrowers"
-          :count="metaThrowers"
-          :max="metaBusiest"
-          :color="color"
-          class="!w-14"
-        />
-      </div>
-
-      <!-- One trigger instead of a row of unlabelled glyphs. It holds its space
-           on every row so the meter never shifts; it just stays quiet until the
-           row is pointed at or open. -->
-      <DropdownMenu v-if="hasMenu">
-        <DropdownMenuTrigger as-child>
-          <button
-            type="button"
-            class="-mr-0.5 shrink-0 rounded-md p-1 text-muted-foreground transition-opacity duration-200 hover:bg-muted/50 hover:text-foreground focus-visible:opacity-100 data-[state=open]:bg-muted/50 data-[state=open]:text-foreground"
-            :class="
-              mode === 'card' || selected
-                ? 'opacity-100'
-                : 'opacity-0 group-hover:opacity-100'
-            "
-            :title="$t('pages.utility.card.more_actions')"
-            @click.stop
-          >
-            <Ellipsis class="h-4 w-4" />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" class="w-48">
-          <div @click.stop>
-          <DropdownMenuItem v-if="showOpenLink && openInPlace" @click="open()">
-            <ArrowUpRight />
-            {{ $t("pages.utility.card.open") }}
-          </DropdownMenuItem>
-          <DropdownMenuItem v-else-if="showOpenLink" as-child>
-            <NuxtLink :to="utilityLineupRoute(lineup.map_name, lineup.id)">
-              <ArrowUpRight />
-              {{ $t("pages.utility.card.open") }}
-            </NuxtLink>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem v-if="canEdit" @click="emit('edit', lineup.id)">
-            <PencilLine />
-            {{ $t("pages.utility.edit.action") }}
-          </DropdownMenuItem>
-
-          <DropdownMenuItem v-if="showFork" @click="emit('fork', lineup.id)">
-            <GitFork />
-            {{ $t("pages.utility.fork.action") }}
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            v-if="canSubmitPublic"
-            @click="emit('request-public', lineup.id)"
-          >
-            <Globe />
-            {{ $t("pages.utility.publish.submit") }}
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            v-if="canRerender"
-            :disabled="rendering"
+            class="relative block shrink-0"
+            :class="thumbBox"
             :title="
-              rendering ? $t('pages.utility.render_queue.in_flight') : undefined
+              rendering
+                ? renderingLabel
+                : hasClip
+                  ? $t('pages.utility.card.has_video')
+                  : undefined
             "
-            @click="emit('rerender-preview', lineup.id)"
           >
-            <Film />
-            {{ $t("pages.utility.render_queue.rerender") }}
-          </DropdownMenuItem>
-
-          <template v-if="canArchive || canRestore || canDelete">
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              v-if="canArchive"
-              class="text-destructive focus:text-destructive"
-              @click="emit('archive', lineup.id)"
+            <FadeSwap :class="thumbBox">
+              <img
+                v-if="clipThumb"
+                :key="clipThumb"
+                data-thumb
+                :src="clipThumb"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                class="block rounded-[3px] border border-border bg-background object-cover"
+                :class="thumbBox"
+                @error="failedThumb = clipThumb"
+              />
+              <UtilityRadarThumb
+                v-else
+                key="radar"
+                :map-name="lineup.map_name"
+                :origin="origin"
+                :landing="landing"
+                :color="color"
+                :size="thumbPx"
+              />
+            </FadeSwap>
+            <Transition
+              enter-active-class="transition-opacity duration-200 ease-out motion-reduce:transition-none"
+              enter-from-class="opacity-0"
             >
-              <Archive />
-              {{ $t("pages.utility.archive.action") }}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              v-if="canRestore"
-              @click="emit('restore', lineup.id)"
-            >
-              <ArchiveRestore />
-              {{ $t("pages.utility.archive.restore") }}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              v-if="canDelete"
-              class="text-destructive focus:text-destructive"
-              @click="emit('delete', lineup.id)"
-            >
-              <Trash2 />
-              {{ $t("pages.utility.archive.delete") }}
-            </DropdownMenuItem>
-          </template>
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-
-    <!-- The card IS the row plus this. One height animation, one fade: the
-         body used to mount at full size, which is what made opening a row
-         snap. -->
-    <Fold :open="mode === 'card'">
-      <div class="flex flex-col gap-2.5 pt-2.5">
-        <div
-          v-if="stats.length"
-          class="flex divide-x divide-border/60 overflow-hidden rounded border border-border/60 bg-background/50"
-        >
-          <div
-            v-for="stat of stats"
-            :key="stat.key"
-            class="min-w-0 flex-1 px-2.5 pb-1.5 pt-1"
-          >
-            <span
-              class="block truncate text-sm font-bold leading-tight tabular-nums"
-              :class="stat.quiet ? 'text-muted-foreground' : ''"
-            >
-              {{ stat.value
-              }}<span
-                v-if="stat.unit"
-                class="text-[0.6rem] font-medium text-muted-foreground"
-                >{{ stat.unit }}</span
+              <span
+                v-if="rendering"
+                data-rendering
+                class="absolute -bottom-1 -right-1 inline-flex size-4 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-black/80 text-[hsl(var(--tac-amber))]"
               >
-            </span>
-            <span
-              class="block truncate font-mono text-[0.5rem] uppercase tracking-[0.16em] text-muted-foreground/70"
+                <Spinner class="size-2.5" aria-hidden="true" />
+                <span class="sr-only">{{ renderingLabel }}</span>
+              </span>
+              <span
+                v-else-if="hasClip"
+                data-has-video
+                class="absolute -bottom-1 -right-1 inline-flex size-4 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-black/80 text-[hsl(var(--tac-amber))]"
+              >
+                <Play
+                  class="size-2 translate-x-px fill-current"
+                  aria-hidden="true"
+                />
+                <span class="sr-only">
+                  {{ $t("pages.utility.card.has_video") }}
+                </span>
+              </span>
+            </Transition>
+          </span>
+
+          <!-- One layout for every list. Left: the name, how it is thrown,
+               and who made it -- or, on your own list, how long it has stood
+               where it is. Right, in the same places on every tile: where it
+               stands on the name's line, and on the last line the tallies and
+               the way into your server. Placed by row so an empty slot never
+               lets the next line climb into it. -->
+          <div
+            class="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1.5"
+          >
+            <div class="col-start-1 row-start-1 flex h-6 min-w-0 items-center gap-1.5">
+              <span class="truncate text-sm font-semibold leading-tight">
+                {{ lineup.name }}
+              </span>
+              <UtilityConfidenceMark :lineup="lineup" />
+            </div>
+
+            <!-- Yours and not public yet: the lock asks before it sends it
+                 off for review. Anything else only says where it stands. -->
+            <Popover v-if="canSubmitPublic" v-model:open="submitOpen">
+              <PopoverTrigger as-child>
+                <button
+                  type="button"
+                  data-state-icon
+                  :data-state="state"
+                  :aria-label="$t(`pages.utility.mine.state.${state}`)"
+                  class="col-start-2 row-start-1 grid size-6 shrink-0 place-items-center justify-self-end rounded-md border bg-background/60 transition-colors hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-[hsl(var(--tac-amber))] data-[state=open]:border-[hsl(var(--tac-amber)/0.45)] data-[state=open]:text-[hsl(var(--tac-amber))]"
+                  :class="STATE_TONES[state]"
+                  @click.stop
+                >
+                  <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                class="flex w-64 flex-col gap-2.5 p-3"
+                @click.stop
+              >
+                <p class="text-xs leading-relaxed text-muted-foreground">
+                  {{ $t(`pages.utility.mine.tip.${state}`) }}
+                </p>
+                <Button
+                  size="sm"
+                  data-submit-public
+                  class="tac-amber-cta h-8 w-full text-[13px] font-semibold"
+                  @click="submitPublic()"
+                >
+                  <Globe class="mr-1 h-3.5 w-3.5" />
+                  {{ $t("pages.utility.publish.submit") }}
+                </Button>
+              </PopoverContent>
+            </Popover>
+            <FiveStackToolTip v-else as-child :delay-duration="120">
+              <template #trigger>
+                <span
+                  data-state-icon
+                  :data-state="state"
+                  role="img"
+                  :aria-label="$t(`pages.utility.mine.state.${state}`)"
+                  class="col-start-2 row-start-1 grid size-6 shrink-0 place-items-center justify-self-end rounded-md border bg-background/60"
+                  :class="STATE_TONES[state]"
+                >
+                  <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
+                </span>
+              </template>
+              <span class="block max-w-[15rem]">
+                {{ $t(`pages.utility.mine.tip.${state}`) }}
+              </span>
+            </FiveStackToolTip>
+
+            <div class="col-span-2 col-start-1 row-start-2 flex h-[1.125rem] min-w-0 items-center">
+              <UtilitySpecLine
+                :lineup="lineup"
+                compact
+                :show-confidence="false"
+                class="min-w-0 truncate"
+              />
+            </div>
+
+            <div
+              class="col-start-1 row-start-3 flex h-6 min-w-0 items-center gap-2"
             >
-              {{ stat.label }}
-            </span>
-          </div>
-        </div>
+              <UtilityAuthorByline
+                v-if="authorLine"
+                data-author-line
+                :author="lineup.author!"
+                class="text-muted-foreground"
+              />
+              <p
+                v-else-if="ownState"
+                data-state-line
+                class="flex min-w-0 items-center gap-1 text-xs text-muted-foreground"
+              >
+                <span
+                  v-if="state === 'rejected'"
+                  class="truncate text-foreground/80"
+                >
+                  {{
+                    $t("pages.utility.mine.rejected_line", {
+                      note: lineup.public_review_note,
+                    })
+                  }}
+                </span>
+                <TimeAgo v-else-if="stateSince" :date="stateSince" hide-icon />
+              </p>
+              <div
+                v-if="score !== null || metaThrowers"
+                data-tallies
+                class="ml-auto flex shrink-0 items-center gap-2"
+              >
+                <UtilityThrowersMeter
+                  v-if="metaThrowers"
+                  inline
+                  :count="metaThrowers"
+                  :max="metaBusiest"
+                  :color="color"
+                />
+                <UtilityUpvoteToggle
+                  v-if="score !== null"
+                  size="xs"
+                  :count="score"
+                  :pressed="lineup.my_vote === 1"
+                  :disabled="!canReact"
+                  @toggle="emit('vote', lineup.id, 1)"
+                />
+              </div>
+            </div>
 
-        <UtilityProgressPanel
-          v-if="progress"
-          :progress="lineup.progress"
-          variant="track"
-          :show-rate="false"
-        />
-
-        <p
-          v-if="tags.length"
-          class="flex flex-wrap gap-x-2 gap-y-0.5 font-mono text-[0.6rem] lowercase tracking-[0.08em] text-muted-foreground/70"
-        >
-          <span v-for="tag of tags" :key="tag">#{{ tag }}</span>
-        </p>
-
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex min-w-0 items-center gap-2">
-            <PlayerDisplay
-              v-if="lineup.author"
-              :player="lineup.author"
-              size="xs"
-              compact
-              truncate-name
-              :show-elo="false"
-              :show-role="false"
-              :show-online="false"
-              class="min-w-0"
+            <UtilityPracticeButton
+              v-if="practiceReady"
+              :lineup="lineup"
+              shape="icon"
+              class="col-start-2 row-start-3 justify-self-end"
+              :class="LOAD_SQUARE"
             />
-            <span v-else class="text-[0.65rem] text-muted-foreground">
-              {{ $t("pages.utility.card.unknown_author") }}
-            </span>
           </div>
 
-          <UtilityReactions
-            :lineup="lineup"
-            :can-react="canReact"
-            @vote="(id, value) => emit('vote', id, value)"
-            @favorite="(id) => emit('favorite', id)"
-          />
+          <!-- One trigger instead of a row of unlabelled glyphs. It holds its space
+               on every row so the meter never shifts; it just stays quiet until the
+               row is pointed at or open. -->
+          <DropdownMenu v-if="hasMenu">
+            <DropdownMenuTrigger as-child>
+              <button
+                type="button"
+                class="-mr-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground transition-opacity duration-200 hover:bg-muted/50 hover:text-foreground focus-visible:opacity-100 data-[state=open]:bg-muted/50 data-[state=open]:text-foreground"
+                :class="
+                  mode === 'card' || selected
+                    ? 'opacity-100'
+                    : 'opacity-0 group-hover:opacity-100'
+                "
+                :title="$t('pages.utility.card.more_actions')"
+                @click.stop
+              >
+                <Ellipsis class="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-48">
+              <div @click.stop>
+              <DropdownMenuItem v-if="showOpenLink && openInPlace" @click="open()">
+                <ArrowUpRight />
+                {{ $t("pages.utility.card.open") }}
+              </DropdownMenuItem>
+              <DropdownMenuItem v-else-if="showOpenLink" as-child>
+                <NuxtLink :to="utilityLineupRoute(lineup.map_name, lineup.id)">
+                  <ArrowUpRight />
+                  {{ $t("pages.utility.card.open") }}
+                </NuxtLink>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem v-if="canEdit" @click="emit('edit', lineup.id)">
+                <PencilLine />
+                {{ $t("pages.utility.edit.action") }}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem v-if="showFork" @click="emit('fork', lineup.id)">
+                <GitFork />
+                {{ $t("pages.utility.fork.action") }}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                v-if="canSubmitPublic"
+                @click="emit('request-public', lineup.id)"
+              >
+                <Globe />
+                {{ $t("pages.utility.publish.submit") }}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                v-if="canRerender"
+                :disabled="rendering"
+                :title="
+                  rendering ? $t('pages.utility.render_queue.in_flight') : undefined
+                "
+                @click="emit('rerender-preview', lineup.id)"
+              >
+                <Film />
+                {{ $t("pages.utility.render_queue.rerender") }}
+              </DropdownMenuItem>
+
+              <template v-if="canArchive || canRestore || canDelete">
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  v-if="canArchive"
+                  class="text-destructive focus:text-destructive"
+                  @click="emit('archive', lineup.id)"
+                >
+                  <Archive />
+                  {{ $t("pages.utility.archive.action") }}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  v-if="canRestore"
+                  @click="emit('restore', lineup.id)"
+                >
+                  <ArchiveRestore />
+                  {{ $t("pages.utility.archive.restore") }}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  v-if="canDelete"
+                  class="text-destructive focus:text-destructive"
+                  @click="emit('delete', lineup.id)"
+                >
+                  <Trash2 />
+                  {{ $t("pages.utility.archive.delete") }}
+                </DropdownMenuItem>
+              </template>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
-        <!-- Publishing is a review. The author's side of it is the clock beside
-             the name; this is the reviewer's side, and it stays inline because
-             on the Review scope answering it *is* the job. -->
-        <div
-          v-if="reviewable"
-          class="flex items-center gap-1.5 border-t border-border/60 pt-2.5"
-          @click.stop
-        >
-          <Button
-            size="sm"
-            class="tac-amber-cta flex-1"
-            @click.stop="emit('review-public', lineup.id, true)"
-          >
-            <Check class="mr-1 h-3.5 w-3.5" />
-            {{ $t("pages.utility.publish.approve") }}
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            class="flex-1"
-            @click.stop="emit('review-public', lineup.id, false)"
-          >
-            <X class="mr-1 h-3.5 w-3.5" />
-            {{ $t("pages.utility.publish.reject") }}
-          </Button>
-        </div>
+        <!-- The card IS the row plus this. One height animation, one fade: the
+             body used to mount at full size, which is what made opening a row
+             snap. -->
+        <Fold :open="mode === 'card'">
+          <div class="flex flex-col gap-2.5 pt-2.5">
+            <div
+              v-if="stats.length"
+              class="flex divide-x divide-border/60 overflow-hidden rounded border border-border/60 bg-background/50"
+            >
+              <div
+                v-for="stat of stats"
+                :key="stat.key"
+                class="min-w-0 flex-1 px-2.5 pb-1.5 pt-1"
+              >
+                <span
+                  class="block truncate text-sm font-bold leading-tight tabular-nums"
+                  :class="stat.quiet ? 'text-muted-foreground' : ''"
+                >
+                  {{ stat.value
+                  }}<span
+                    v-if="stat.unit"
+                    class="text-[0.6rem] font-medium text-muted-foreground"
+                    >{{ stat.unit }}</span
+                  >
+                </span>
+                <span
+                  class="block truncate font-mono text-[0.5rem] uppercase tracking-[0.16em] text-muted-foreground/70"
+                >
+                  {{ stat.label }}
+                </span>
+              </div>
+            </div>
+
+            <UtilityProgressPanel
+              v-if="progress"
+              :progress="lineup.progress"
+              variant="track"
+              :show-rate="false"
+            />
+
+            <p
+              v-if="tags.length"
+              class="flex flex-wrap gap-x-2 gap-y-0.5 font-mono text-[0.6rem] lowercase tracking-[0.08em] text-muted-foreground/70"
+            >
+              <span v-for="tag of tags" :key="tag">#{{ tag }}</span>
+            </p>
+
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex min-w-0 items-center gap-2">
+                <template v-if="authorLine" />
+                <UtilityAuthorByline
+                  v-else-if="lineup.author"
+                  :author="lineup.author"
+                />
+                <span v-else class="text-[0.65rem] text-muted-foreground">
+                  {{ $t("pages.utility.card.unknown_author") }}
+                </span>
+              </div>
+
+              <UtilityReactions
+                :lineup="lineup"
+                :can-react="canReact"
+                @vote="(id, value) => emit('vote', id, value)"
+                @favorite="(id) => emit('favorite', id)"
+              />
+            </div>
+
+            <!-- Publishing is a review. The author's side of it is the clock beside
+                 the name; this is the reviewer's side, and it stays inline because
+                 on the Review scope answering it *is* the job. -->
+            <div
+              v-if="reviewable"
+              class="flex items-center gap-1.5 border-t border-border/60 pt-2.5"
+              @click.stop
+            >
+              <Button
+                size="sm"
+                class="tac-amber-cta flex-1"
+                @click.stop="emit('review-public', lineup.id, true)"
+              >
+                <Check class="mr-1 h-3.5 w-3.5" />
+                {{ $t("pages.utility.publish.approve") }}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                class="flex-1"
+                @click.stop="emit('review-public', lineup.id, false)"
+              >
+                <X class="mr-1 h-3.5 w-3.5" />
+                {{ $t("pages.utility.publish.reject") }}
+              </Button>
+            </div>
+          </div>
+        </Fold>
+
+        <UtilityLineupHoverPreview
+          :lineup="lineup"
+          :anchor="rowEl"
+          :enabled="mode === 'row'"
+        />
       </div>
-    </Fold>
-
-    <UtilityLineupHoverPreview
-      :lineup="lineup"
-      :anchor="rowEl"
-      :enabled="mode === 'row'"
-    />
-  </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent
+      v-if="contextMenu"
+      data-lineup-menu
+      class="w-60 rounded-xl border-white/[0.12] bg-[#232327] p-1.5 [&_[role=separator]]:my-1.5 [&_[role=separator]]:bg-white/[0.08]"
+    >
+      <ContextMenuLabel class="flex flex-col gap-0.5 px-2 pb-1.5 pt-1">
+        <span class="truncate text-[0.8rem] font-semibold">
+          {{ lineup.name }}
+        </span>
+        <span
+          class="truncate font-mono text-[0.58rem] font-medium uppercase tracking-[0.12em] text-muted-foreground"
+        >
+          {{ $t(`pages.utility.types.${lineup.utility_type}`) }} ·
+          {{ $t(`pages.utility.sides.${lineup.side}`) }} ·
+          {{ $t(`pages.utility.techniques.${lineup.technique}`) }}
+        </span>
+      </ContextMenuLabel>
+      <template v-if="canLoadHere || canSwitchHere">
+        <ContextMenuSeparator />
+        <ContextMenuItem data-menu="load" @select="loadInGame()">
+          <Crosshair />
+          {{
+            canLoadHere
+              ? $t("pages.utility.card.load_in_game")
+              : $t("pages.utility.load.switch_and_load")
+          }}
+        </ContextMenuItem>
+        <ContextMenuItem
+          v-if="canLoadHere"
+          data-menu="repeat"
+          @select="repeatInGame()"
+        >
+          <Repeat />
+          {{ $t("pages.utility.load.drill") }}
+        </ContextMenuItem>
+      </template>
+      <ContextMenuSeparator />
+      <ContextMenuItem
+        v-if="canReact"
+        data-menu="fork"
+        @select="emit('fork', lineup.id)"
+      >
+        <GitFork />
+        {{ $t("pages.utility.fork.action") }}
+      </ContextMenuItem>
+      <ContextMenuItem
+        v-if="canSubmitPublic"
+        data-menu="submit"
+        @select="emit('request-public', lineup.id)"
+      >
+        <Send />
+        {{ $t("pages.utility.publish.submit") }}
+      </ContextMenuItem>
+      <ContextMenuItem
+        v-if="canMarkBad"
+        data-menu="bad"
+        @select="emit('vote', lineup.id, -1)"
+      >
+        <Flag />
+        {{
+          lineup.my_vote === -1
+            ? $t("pages.utility.card.unvote")
+            : $t("pages.utility.detail.mark_bad")
+        }}
+      </ContextMenuItem>
+      <ContextMenuItem data-menu="link" @select="copyLink()">
+        <Link2 />
+        {{ $t("pages.utility.detail.copy_link") }}
+      </ContextMenuItem>
+      <template v-if="canArchiveHere">
+        <ContextMenuSeparator />
+        <ContextMenuItem
+          data-menu="archive"
+          class="text-destructive focus:text-destructive"
+          @select="emit('archive', lineup.id)"
+        >
+          <Archive />
+          {{ $t("pages.utility.archive.action") }}
+        </ContextMenuItem>
+      </template>
+    </ContextMenuContent>
+  </ContextMenu>
 </template>

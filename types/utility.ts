@@ -343,7 +343,7 @@ export type UtilityPlaybook = {
   updated_at?: string | null;
   can_view: boolean;
   can_edit: boolean;
-  owner?: { steam_id: string; name: string } | null;
+  owner?: UtilityAuthorRef | null;
   team?: { name: string } | null;
 };
 

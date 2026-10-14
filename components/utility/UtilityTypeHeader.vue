@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { ListFilter } from "lucide-vue-next";
-import { UTILITY_TYPE_COLORS } from "~/utilities/utilityDisplay";
 import type { UtilityType } from "~/types/utility";
 
 // The heading over one type's rows in a list of throws. It is also the type
@@ -23,11 +23,7 @@ defineEmits<{ (event: "toggle"): void }>();
     :aria-pressed="!!active"
     @click="$emit('toggle')"
   >
-    <span
-      aria-hidden="true"
-      class="size-2 shrink-0 rounded-[2px]"
-      :style="{ backgroundColor: UTILITY_TYPE_COLORS[type] }"
-    />
+    <UtilityTypeGlyph :type="type" />
     <span
       class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.16em] transition-colors"
       :class="active ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'"

@@ -1416,7 +1416,7 @@
         "favorites": "收藏",
         "votes": "投票",
         "collections": "合集",
-        "playbooks": "战术手册",
+        "playbooks": "套路",
         "playbook_steps": "{steps} 个步骤",
         "demo_throws": "挖掘出的投掷",
         "demo_throws_hint": "从解析过的录像中还原的手雷。没有人把它们写成点位——这是玩家实际投出的东西，也是元数据聚类的基础。",
@@ -5446,6 +5446,7 @@
         "favorite": "收藏到我的列表",
         "unfavorite": "从收藏列表中移除",
         "open": "打开点位",
+        "load_in_game": "在游戏中载入",
         "has_video": "有视频",
         "rendering": "正在渲染预览…",
         "rendering_progress": "正在渲染预览… {percent}%",
@@ -5455,7 +5456,7 @@
         "more_actions": "更多操作",
         "flight_time_hint": "手雷出手后在空中停留的时间。",
         "stat_hit_rate": "我的成功率",
-        "stat_flight": "飞行",
+        "stat_flight": "滞空时间",
         "stat_difficulty": "难度",
         "yours": "我的 · {status}",
         "score": "{count} 个赞 | {count} 个赞"
@@ -5487,7 +5488,7 @@
           "open": "查看{still}",
           "viewer": "点位截图，用方向键切换"
         },
-        "flight_time": "飞行时间",
+        "flight_time": "滞空时间",
         "stand": "站位",
         "lands": "落点",
         "distance": "投掷距离",
@@ -5500,7 +5501,8 @@
         "precision_failed": "无法修改瞄准精度",
         "favorite_failed": "无法更新你收藏的点位",
         "aim_delta": "推算瞄准与记录瞄准",
-        "technical": "技术细节"
+        "technical": "技术细节",
+        "mark_bad": "标记为不好"
       },
       "practice": {
         "title": "练习服务器",
@@ -5564,45 +5566,6 @@
         "ask_host": "请让 {host} 来切换。",
         "ask_the_host": "请让房主来切换。",
         "nav_switching": "切换中",
-        "commands": {
-          "title": "游戏内指令",
-          "hint": "进入服务器后在聊天框输入。输入 .help 会在游戏里打印同一份列表。",
-          "bind_hint": "它们都是聊天指令，所以任何一条都能绑到按键上：",
-          "group_lineups": "点位",
-          "group_drills": "训练与套路",
-          "group_tools": "服务器工具",
-          "save": "保存你刚刚投出的那一发",
-          "load": "把你送到匹配的点位上",
-          "next": "翻看上一次搜索的结果",
-          "jump": "站到已载入点位的落点上",
-          "rethrow": "回到已载入的点位",
-          "last": "回到你投掷时的位置",
-          "list": "在游戏里管理你的点位库",
-          "edit": "重命名已载入的点位、写说明，或改谁能看到",
-          "drill": "把你的点位每个练三次并打分",
-          "drill_here": "反复练习你所站的这个点位，直到你停下",
-          "skip": "跳过正在训练的点位",
-          "cancel": "停止当前的训练",
-          "playbook": "按时间轴播放已载入的套路",
-          "playbook_stop": "停止播放",
-          "bloom": "画出已载入烟雾的覆盖范围",
-          "solve": "为你正在看的位置找一条投掷线路",
-          "pos": "保存一个位置并随时回到那里",
-          "spawn": "传送到出生点",
-          "spawns": "显示竞技模式的出生点",
-          "noclip": "飞行，并且不再受到伤害",
-          "timer": "开始和停止秒表",
-          "solo": "只看自己的预览",
-          "colors": "每次投掷各用一种颜色，方便分辨自己的",
-          "clear": "清除已载入的点位、标记和残影",
-          "help": "在游戏里打印全部指令",
-          "group_panels": "屏幕面板",
-          "panels_hint": "装了 HUD 插件的服务器会显示可点击的面板，取代屏幕中央的文字。没装的话，一切都退回它替换掉的文字。",
-          "menu": "点位选择器，可按可见范围、阵营和类型筛选",
-          "map": "落点小地图；点一处即可看到该处的点位",
-          "hud": "把面板换回屏幕中央的文字，只对你自己生效",
-          "here": "只列出你从当前位置能投的点位"
-        },
         "operator": "服务器控制台"
       },
       "collections": {
@@ -5661,7 +5624,7 @@
         "add_count": "{name} 中有 {count} 个"
       },
       "progress": {
-        "drilled": "已练习",
+        "drilled": "进行中",
         "mastered": "已精通",
         "record": "{successes} / {attempts}",
         "hit_rate": "{percent}%",
@@ -5711,11 +5674,11 @@
         "write_another": "为这个落点再写一个点位"
       },
       "playbooks": {
-        "title": "战术手册",
+        "title": "套路",
         "eyebrow": "战队进攻套路",
         "subtitle": "带时间点的有序道具——谁在什么时候扔什么。",
-        "new": "新建战术手册",
-        "empty": "这张地图还没有战术手册",
+        "new": "新建套路",
+        "empty": "这张地图还没有套路",
         "name_placeholder": "A 点标准打法",
         "name_required": "保存前先给这套套路起个名字",
         "description_placeholder": "这套套路用来干什么，以及什么时候喊出来。",
@@ -5774,7 +5737,7 @@
         "step_context": "{name} 的第 {step} 步，共 {count} 步。在 {seconds} 秒时投出。",
         "step_context_by": "{name} 的第 {step} 步，共 {count} 步。在 {seconds} 秒时由 {player} 投出。",
         "step_context_you": "{name} 的第 {step} 步，共 {count} 步。在 {seconds} 秒时由你投出。",
-        "play": "播放",
+        "play": "执行",
         "pause": "暂停",
         "seek": "战术时间轴",
         "stop": "停止",
@@ -5789,6 +5752,7 @@
         "delete_ask": "要删除吗？其中的点位会保留。",
         "deleted": "套路已删除。其中的点位会保留。",
         "steps": "步骤",
+        "sheet_throw": "投掷",
         "steps_of": "{count} / {max}",
         "steps_required": "保存前至少添加一次投掷",
         "add_throw": "添加投掷",
@@ -6072,13 +6036,38 @@
         "review_failed": "无法审核该点位",
         "in_review": "审核中"
       },
+      "mine": {
+        "state": {
+          "private": "私密",
+          "team": "团队",
+          "review": "审核中",
+          "public": "公开",
+          "rejected": "已拒绝",
+          "archived": "已归档"
+        },
+        "tip": {
+          "private": "私密：只有你能看到。每次都能命中时，提交公开。",
+          "team": "团队：你的团队能看到。准备好给所有人用时，提交公开。",
+          "review": "审核中：审核员正在检查是否命中。你无需操作，仍可编辑。",
+          "public": "公开：在公共库中。任何人都能练习和投票。",
+          "rejected": "已拒绝：审核员退回了它。打开查看原因，修改后再次提交。",
+          "archived": "已归档：在所有地方隐藏。可在已归档标签中恢复，或永久删除。"
+        },
+        "rejected_line": "已拒绝：{note}"
+      },
+      "review": {
+        "lands": "落点",
+        "reject_because": "拒绝原因",
+        "reasons": {
+          "no_land": "没有命中",
+          "duplicate": "库中已有",
+          "bad_name": "名字没说明位置",
+          "needs_clip": "需要片段"
+        }
+      },
       "archive": {
         "action": "归档点位",
-        "title": "要归档这个点位吗？",
         "this_lineup": "这个点位",
-        "description": "{name} 将从这张地图的所有道具库、面板和搜索结果中消失。",
-        "keeps_history": "不会销毁任何东西。练习进度、评价以及使用它的战术手册都会保留，你可以从「已归档」标签页把它恢复回来。",
-        "confirm": "归档",
         "done": "已归档 {name}",
         "undo": "撤销",
         "restore": "恢复点位",
@@ -6211,7 +6200,7 @@
         "confirm": "保存点位",
         "saved": "点位已保存",
         "failed": "无法保存该点位",
-        "practice_note": "保存自你当前打开的会话，对应你正在练的那个点位。游戏内的 .save 指令，对眼前这次投掷做的是同一件事。",
+        "practice_note": "已从你打开的会话中保存到你正在练习的道具。游戏内菜单中的 Save Throw 也能用眼前的投掷完成同样的事。",
         "practice_entry_title": "保存一次投掷",
         "practice_entry_hint": "把你在这里投的这一手，留成你自己的点位。",
         "practice_entry_open": "从练习中保存"
@@ -6337,7 +6326,7 @@
         "failed_unreachable": "无法连接到你的服务器",
         "failed_nothing_to_drill": "没有可练习的内容",
         "drill_name": "{count} 个点位",
-        "drill": "在游戏中练习",
+        "drill": "在游戏中重复",
         "drill_hint": "在你所在的服务器里逐个过一遍，每个投三次",
         "test": "在游戏中试投",
         "test_hint": "保存之前，先站到这个投掷点上试试",

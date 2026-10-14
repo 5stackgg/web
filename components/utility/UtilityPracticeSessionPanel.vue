@@ -16,7 +16,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { Separator } from "~/components/ui/separator";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
-import UtilityPracticeCommands from "~/components/utility/UtilityPracticeCommands.vue";
+import UtilityPracticeControls from "~/components/utility/UtilityPracticeControls.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import {
@@ -470,7 +470,7 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
            discoverable only by knowing to type .help in chat. -->
       <Separator />
 
-      <UtilityPracticeCommands />
+      <UtilityPracticeControls />
 
       <!-- Operator tools. A practice pod is a game server like any other, and
            when one refuses connections the only thing that answers why is its

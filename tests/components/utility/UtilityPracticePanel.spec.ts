@@ -92,7 +92,7 @@ async function mountPanel() {
         PlayerSearch: true,
         RconCommander: true,
         ServiceLogs: true,
-        UtilityPracticeCommands: true,
+        UtilityPracticeControls: true,
         UtilitySaveLineupDialog: true,
       },
     },

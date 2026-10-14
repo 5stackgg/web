@@ -76,6 +76,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
           <Switch
             :model-value="faceitEnabled"
             @update:model-value="(v) => save('public.faceit_import_enabled', v)"
+            @click.stop
           />
         </div>
 

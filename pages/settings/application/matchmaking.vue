@@ -54,6 +54,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                     <Switch
                       :model-value="isMatchmakingTypeEnabled(match_type)"
                       @update:model-value="toggleMatchmakingType(match_type)"
+                      @click.stop
                     />
                   </div>
                 </template>
@@ -205,6 +206,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
               <Switch
                 :model-value="fivestackRanksMatchesEnabled"
                 @update:model-value="toggleFivestackRanks('matches')"
+                @click.stop
               />
             </div>
             <div
@@ -219,6 +221,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
               <Switch
                 :model-value="fivestackRanksTournamentsEnabled"
                 @update:model-value="toggleFivestackRanks('tournaments')"
+                @click.stop
               />
             </div>
           </div>

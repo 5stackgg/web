@@ -278,6 +278,7 @@ import { $ } from "~/generated/zeus";
                 class="pointer-events-none"
                 :model-value="value"
                 @update:model-value="handleChange"
+                @click.stop
               />
             </FormControl>
           </div>
@@ -387,6 +388,7 @@ import { $ } from "~/generated/zeus";
                   class="pointer-events-none"
                   :model-value="value"
                   @update:model-value="handleChange"
+                  @click.stop
                 />
               </FormControl>
             </div>
@@ -716,6 +718,7 @@ import { $ } from "~/generated/zeus";
                               :model-value="value"
                               @update:model-value="handleChange"
                               :disabled="form.values.lan"
+                              @click.stop
                             />
                           </FormControl>
                         </div>

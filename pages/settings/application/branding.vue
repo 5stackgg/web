@@ -151,6 +151,7 @@ import {
             <Switch
               :model-value="showSeparators"
               @update:model-value="toggleSeparators"
+              @click.stop
             />
           </div>
         </SettingsSection>
@@ -233,6 +234,7 @@ import {
             <Switch
               :model-value="loginShowFooter"
               @update:model-value="toggleLoginFooter"
+              @click.stop
             />
           </div>
 

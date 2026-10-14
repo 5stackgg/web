@@ -128,6 +128,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           :model-value="value"
                           @update:model-value="handleChange"
                           :disabled="isLocked"
+                          @click.stop
                         />
                       </FormControl>
                     </div>
@@ -352,6 +353,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                 class="pointer-events-none"
                 :model-value="value"
                 @update:model-value="handleChange"
+                @click.stop
               />
             </FormControl>
           </div>
@@ -436,6 +438,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>
@@ -467,6 +470,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>
@@ -560,6 +564,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                                   form.values.lan === false && handleChange
                                 "
                                 :disabled="form.values.lan || isLocked"
+                                @click.stop
                               />
                             </FormControl>
                           </div>
@@ -941,6 +946,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>
@@ -1077,6 +1083,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>
@@ -1121,6 +1128,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                             :disabled="!cameraArmed"
                             :model-value="value"
                             @update:model-value="handleChange"
+                            @click.stop
                           />
                         </FormControl>
                       </div>
@@ -1227,6 +1235,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>
@@ -1409,6 +1418,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>

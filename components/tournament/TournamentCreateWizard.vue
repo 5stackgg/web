@@ -261,6 +261,7 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
                         class="pointer-events-none"
                         :model-value="value"
                         @update:model-value="handleChange"
+                        @click.stop
                       />
                     </FormControl>
                   </div>
@@ -289,6 +290,7 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>
@@ -319,6 +321,7 @@ import { HeightMorph, Fold } from "~/components/ui/transitions";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
+                          @click.stop
                         />
                       </FormControl>
                     </div>

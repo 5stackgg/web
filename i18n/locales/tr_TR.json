@@ -10422,6 +10422,7 @@
     "delete_error": "Yayın silinemedi. Tekrar dene.",
     "priority_update_error": "Yayın öncelikleri güncellenemedi. Tekrar dene.",
     "link": "Bağlantı",
+    "link_must_be_http": "http:// veya https:// ile başlayan bir bağlantı girin",
     "title": "Başlık",
     "stream_title_placeholder": "Yayın Başlığı",
     "live_badge": "CANLI",

@@ -10422,6 +10422,7 @@
     "delete_error": "删除直播失败，请重试。",
     "priority_update_error": "更新直播优先级失败，请重试。",
     "link": "链接",
+    "link_must_be_http": "请输入以 http:// 或 https:// 开头的链接",
     "title": "标题",
     "stream_title_placeholder": "直播标题",
     "live_badge": "直播中",

@@ -10422,6 +10422,7 @@
     "delete_error": "تعذّر حذف البث، حاول مرة أخرى.",
     "priority_update_error": "تعذّر تحديث أولويات البث، حاول مرة أخرى.",
     "link": "الرابط",
+    "link_must_be_http": "أدخل رابطًا يبدأ بـ http:// أو https://",
     "title": "العنوان",
     "stream_title_placeholder": "عنوان البث",
     "live_badge": "مباشر",

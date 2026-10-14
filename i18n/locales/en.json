@@ -10426,6 +10426,7 @@
     "delete_error": "Failed to delete stream. Please try again.",
     "priority_update_error": "Failed to update stream priorities. Please try again.",
     "link": "Link",
+    "link_must_be_http": "Enter a link that starts with http:// or https://",
     "title": "Title",
     "stream_title_placeholder": "Stream Title",
     "live_badge": "LIVE",

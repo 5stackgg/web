@@ -10422,6 +10422,7 @@
     "delete_error": "스트림 삭제에 실패했습니다. 다시 시도해 주세요.",
     "priority_update_error": "스트림 우선순위 업데이트에 실패했습니다. 다시 시도해 주세요.",
     "link": "링크",
+    "link_must_be_http": "http:// 또는 https://로 시작하는 링크를 입력하세요",
     "title": "제목",
     "stream_title_placeholder": "스트림 제목",
     "live_badge": "LIVE",

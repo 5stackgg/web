@@ -10422,6 +10422,7 @@
     "delete_error": "No se ha podido eliminar la emisión. Inténtalo de nuevo.",
     "priority_update_error": "No se han podido actualizar las prioridades de las emisiones. Inténtalo de nuevo.",
     "link": "Enlace",
+    "link_must_be_http": "Introduce un enlace que empiece por http:// o https://",
     "title": "Título",
     "stream_title_placeholder": "Título de la emisión",
     "live_badge": "EN DIRECTO",

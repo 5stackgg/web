@@ -134,6 +134,7 @@ import {
   embedStreamKey,
   useStoppedStreams,
 } from "~/composables/useStoppedStreams";
+import { isHttpLink } from "~/utilities/httpLink";
 
 export default {
   components: {
@@ -293,6 +294,10 @@ export default {
       platform: Platform;
       embedId: string | null;
     } {
+      if (!isHttpLink(link)) {
+        return { platform: null, embedId: null };
+      }
+
       const url = new URL(link);
       const hostname = url.hostname.toLowerCase();
 
@@ -464,6 +469,12 @@ export default {
       this.cleanupPlayer();
 
       const iframe = document.createElement("iframe");
+      // Any http(s) page can be a stream, so it may run its own player but
+      // never navigate this tab, submit forms or raise dialogs over it.
+      iframe.setAttribute(
+        "sandbox",
+        "allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox",
+      );
       iframe.src = url;
       iframe.width = "100%";
       iframe.height = "100%";

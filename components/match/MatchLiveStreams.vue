@@ -31,6 +31,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
+import { isHttpLink } from "~/utilities/httpLink";
 </script>
 
 <template>
@@ -187,7 +188,10 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                     <Button
                       variant="ghost"
                       size="sm"
-                      :disabled="stream.is_game_streamer && !stream.is_live"
+                      :disabled="
+                        (stream.is_game_streamer && !stream.is_live) ||
+                        !isHttpLink(stream.link)
+                      "
                       @click="openStream(stream.link)"
                     >
                       <ExternalLink class="h-3 w-3" />
@@ -244,6 +248,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                                 v-bind="componentField"
                                 :placeholder="stream.link"
                               />
+                              <FormMessage />
                             </FormItem>
                           </FormField>
                           <FormField v-slot="{ componentField }" name="title">
@@ -357,6 +362,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                   v-bind="componentField"
                   placeholder="https://twitch.tv/username"
                 />
+                <FormMessage />
               </FormItem>
             </FormField>
             <FormField v-slot="{ componentField }" name="title">
@@ -421,7 +427,12 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            link: z.string().url(),
+            link: z
+              .string()
+              .url()
+              .refine(isHttpLink, {
+                message: this.$t("streams.link_must_be_http"),
+              }),
             title: z.string(),
           }),
         ),
@@ -623,7 +634,10 @@ export default {
       }
     },
     openStream(link) {
-      window.open(link, "_blank");
+      if (!isHttpLink(link)) {
+        return;
+      }
+      window.open(link, "_blank", "noopener,noreferrer");
     },
     openEditModal(stream) {
       // ensure add modal is closed to avoid shared form conflicts

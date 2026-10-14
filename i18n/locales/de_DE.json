@@ -10422,6 +10422,7 @@
     "delete_error": "Stream konnte nicht gelöscht werden. Versuch es erneut.",
     "priority_update_error": "Stream-Prioritäten konnten nicht aktualisiert werden. Versuch es erneut.",
     "link": "Link",
+    "link_must_be_http": "Gib einen Link ein, der mit http:// oder https:// beginnt",
     "title": "Titel",
     "stream_title_placeholder": "Stream-Titel",
     "live_badge": "LIVE",

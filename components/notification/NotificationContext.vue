@@ -5,6 +5,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
+import NewsPoster from "~/components/news/NewsPoster.vue";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { dateLocale } from "~/utilities/dateLocale";
@@ -34,6 +35,9 @@ const SCRIM_TYPES = [
 ];
 
 const TEAM_SUGGESTION_TYPES = ["FormTeamSuggestion"];
+
+// NewsPublished carries the post's id, so the bell shows the post's cover.
+const NEWS_TYPES = ["NewsPublished"];
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -65,6 +69,7 @@ export default defineComponent({
     AvatarImage,
     AvatarFallback,
     TeamRankSummary,
+    NewsPoster,
   },
   props: {
     type: { type: String, required: true },
@@ -78,6 +83,7 @@ export default defineComponent({
       player: null as any,
       scrim: null as any,
       suggestionPlayers: [] as any[],
+      newsArticle: null as any,
       matchLoaded: false,
       serverLoaded: false,
       nodeLoaded: false,
@@ -139,6 +145,7 @@ export default defineComponent({
       if (PLAYER_TYPES.includes(this.type)) return "player";
       if (SCRIM_TYPES.includes(this.type)) return "scrim";
       if (TEAM_SUGGESTION_TYPES.includes(this.type)) return "teamSuggestion";
+      if (NEWS_TYPES.includes(this.type)) return "news";
       return null;
     },
     iconComponent() {
@@ -394,6 +401,22 @@ export default defineComponent({
         this.suggestionLoaded = true;
       },
     },
+    newsArticle: {
+      skip: function (this: any) {
+        return this.kind !== "news" || !this.hasValidEntity;
+      },
+      fetchPolicy: "cache-first",
+      query: typedGql("query")({
+        news_articles_by_pk: [
+          { id: $("id", "uuid!") },
+          { id: true, slug: true, cover_image_url: true },
+        ],
+      }),
+      variables: function (this: any) {
+        return { id: this.entityId };
+      },
+      update: (data: any) => data?.news_articles_by_pk ?? null,
+    },
   },
   methods: {
     teamAvatar(team: any): string | null {
@@ -464,6 +487,17 @@ export default defineComponent({
       size="sm"
     />
   </div>
+  <!-- The message already links the post, so the cover is a second way in for
+       the pointer only. -->
+  <NuxtLink
+    v-else-if="kind === 'news' && newsArticle?.cover_image_url"
+    :to="`/news/${newsArticle.slug}`"
+    tabindex="-1"
+    aria-hidden="true"
+    class="group/news block"
+  >
+    <NewsPoster :src="newsArticle.cover_image_url" />
+  </NuxtLink>
   <NuxtLink
     v-else-if="kind === 'scrim' && scrim"
     :to="scrimLink"

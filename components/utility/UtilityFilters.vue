@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { Search } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
@@ -15,7 +16,6 @@ import {
   UTILITY_SIDES,
   UTILITY_TECHNIQUES,
   UTILITY_THROW_STRENGTHS,
-  UTILITY_TYPE_COLORS,
   UTILITY_TYPES,
 } from "~/utilities/utilityDisplay";
 import type {
@@ -309,11 +309,7 @@ const sortOptions = computed(() => [
             ]"
             @click="toggleIn('types', type)"
           >
-            <span
-              aria-hidden="true"
-              class="size-2 shrink-0 rounded-[2px]"
-              :style="{ backgroundColor: UTILITY_TYPE_COLORS[type] }"
-            />
+            <UtilityTypeGlyph :type="type" />
             <span class="max-w-full truncate">
               {{ $t(`pages.utility.types.${type}`) }}
             </span>

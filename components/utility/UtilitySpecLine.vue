@@ -40,6 +40,8 @@ type Segment = {
   hint?: string;
   /** Drawn as the mouse rather than spelled out. */
   mouse?: boolean;
+  /** Drawn as the side's own mark. */
+  side?: boolean;
 };
 
 const delta = computed(() => utilityAimDelta(props.lineup));
@@ -56,6 +58,7 @@ const segments = computed<Segment[]>(() => {
       key: "side",
       text: t(`pages.utility.sides.${lineup.side}`),
       tone: "lead",
+      side: true,
     },
     {
       key: "technique",
@@ -164,8 +167,19 @@ const TONES: Record<Segment["tone"], string> = {
            whatever size the line is set in: 1.5em tall against a ~0.72em cap
            height puts its middle on theirs at -0.39em. Its outline takes the
            line's own grey, which reads where the icon's default does not. -->
+      <img
+        v-if="segment.side"
+        :src="
+          lineup.side === 'CT'
+            ? '/img/teams/ct_logo.svg'
+            : '/img/teams/t_logo.svg'
+        "
+        :alt="segment.text"
+        :title="segment.text"
+        class="inline-block h-[1.6em] w-[1.6em] align-[-0.45em]"
+      />
       <span
-        v-if="segment.mouse"
+        v-else-if="segment.mouse"
         class="inline-block align-[-0.39em]"
         :title="segment.hint"
       >

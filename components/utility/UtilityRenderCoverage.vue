@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Clapperboard, RotateCw } from "lucide-vue-next";
@@ -32,10 +33,7 @@ import { Fold } from "~/components/ui/transitions";
 import { toast } from "~/components/ui/toast";
 import { useUtilityMaps } from "~/composables/useUtilityMaps";
 import cleanMapName from "~/utilities/cleanMapName";
-import {
-  UTILITY_TYPE_COLORS,
-  utilityLineupRoute,
-} from "~/utilities/utilityDisplay";
+import { utilityLineupRoute } from "~/utilities/utilityDisplay";
 import type {
   UtilityRenderCoverage,
   UtilityRenderGap,
@@ -400,13 +398,7 @@ async function renderAll() {
             :data-gap="gap.state"
             class="flex items-center gap-2 px-3 py-1.5"
           >
-            <span
-              aria-hidden="true"
-              class="h-2 w-2 shrink-0 rounded-[1px]"
-              :style="{
-                backgroundColor: UTILITY_TYPE_COLORS[gap.utility_type],
-              }"
-            />
+            <UtilityTypeGlyph :type="gap.utility_type" />
             <NuxtLink
               :to="utilityLineupRoute(gap.map_name, gap.id)"
               class="min-w-0 flex-1 truncate text-xs transition-colors hover:text-[hsl(var(--tac-amber))]"

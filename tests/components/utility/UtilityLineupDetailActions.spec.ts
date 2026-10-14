@@ -113,17 +113,21 @@ describe("UtilityLineupDetail actions", () => {
     expect(items).toEqual(["Edit", "Archive lineup"]);
   });
 
-  it("puts who can see it on the top row as an icon, not beside the name", async () => {
+  it("shows who can see it as an icon at the end of the kind line, with the upvote", async () => {
     const wrapper = await mountDetail({
       visibility: "Private",
       can_edit: true,
       author_steam_id: "9",
     } as Partial<UtilityLineup>);
 
-    const visibility = wrapper.find("header [data-visibility]");
+    const visibility = wrapper.find("[data-visibility]");
     expect(visibility.attributes("aria-label")).toBe("Private");
     expect(visibility.text()).toBe("");
-    expect(wrapper.find("h2 + [data-visibility]").exists()).toBe(false);
+    expect(wrapper.find("header [data-visibility]").exists()).toBe(false);
+    expect(wrapper.find("header [data-upvote]").exists()).toBe(false);
+    expect(
+      visibility.element.closest("p")?.querySelector("[data-upvote]"),
+    ).not.toBeNull();
   });
 
   it("names the author under the title with the library actions beside it", async () => {

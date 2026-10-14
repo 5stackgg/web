@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
@@ -756,22 +757,6 @@ const stats = computed(() => {
           v-else-if="lineup"
           class="ml-auto flex min-w-0 items-center gap-1.5"
         >
-          <!-- Who can see it, on the row with everything else you do to it. -->
-          <FiveStackToolTip v-if="status" as-child :delay-duration="120">
-            <template #trigger>
-              <span
-                data-visibility
-                class="grid size-8 shrink-0 place-items-center rounded-md"
-                :class="status.tone"
-                role="img"
-                :aria-label="status.label"
-              >
-                <component :is="status.icon" class="h-4 w-4" />
-              </span>
-            </template>
-            {{ $t("pages.utility.card.yours", { status: status.label }) }}
-          </FiveStackToolTip>
-
           <!-- From the plan there is a queue behind this one. -->
           <FiveStackToolTip
             v-if="context?.skippable"
@@ -792,14 +777,6 @@ const stats = computed(() => {
             </template>
             {{ $t("pages.utility.plan.skip") }}
           </FiveStackToolTip>
-
-          <UtilityUpvoteToggle
-            :count="score"
-            :pressed="myVote === 1"
-            :disabled="!canReact"
-            size="md"
-            @toggle="emit('vote', lineup.id, 1)"
-          />
 
           <FiveStackToolTip
             as-child
@@ -946,15 +923,16 @@ const stats = computed(() => {
           "
         >
           <!-- What it is, as the line over its name: the utility in its
-               own colour, the map, and the side as the side's own mark. -->
+               own colour, the map, and the side as the side's own mark; who
+               can see it and the upvote at its end. -->
           <div v-if="!editing" class="flex flex-col gap-1.5">
             <p
               class="flex min-w-0 items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
             >
-              <span
-                aria-hidden="true"
-                class="size-2 shrink-0 rounded-[2px]"
-                :style="{ backgroundColor: color }"
+              <UtilityTypeGlyph
+                :type="lineup.utility_type"
+                :color="color"
+                class="-my-1"
               />
               <span class="truncate tabular-nums">
                 <template v-if="context?.kicker">{{ context.kicker }}</template>
@@ -977,6 +955,28 @@ const stats = computed(() => {
                 </template>
                 {{ $t(`pages.utility.sides.${lineup.side}`) }}
               </FiveStackToolTip>
+              <span class="ml-auto flex shrink-0 items-center gap-1.5 normal-case tracking-normal">
+                <FiveStackToolTip v-if="status" as-child :delay-duration="120">
+                  <template #trigger>
+                    <span
+                      data-visibility
+                      class="grid size-7 shrink-0 place-items-center rounded-md"
+                      :class="status.tone"
+                      role="img"
+                      :aria-label="status.label"
+                    >
+                      <component :is="status.icon" class="h-3.5 w-3.5" />
+                    </span>
+                  </template>
+                  {{ $t("pages.utility.card.yours", { status: status.label }) }}
+                </FiveStackToolTip>
+                <UtilityUpvoteToggle
+                  :count="score"
+                  :pressed="myVote === 1"
+                  :disabled="!canReact"
+                  @toggle="emit('vote', lineup.id, 1)"
+                />
+              </span>
             </p>
             <div class="flex items-start gap-2">
               <h2

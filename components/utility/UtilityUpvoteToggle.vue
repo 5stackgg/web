@@ -11,7 +11,7 @@ withDefaults(
     count: number;
     pressed: boolean;
     disabled?: boolean;
-    size?: "sm" | "md";
+    size?: "xs" | "sm" | "md";
   }>(),
   {
     disabled: false,
@@ -36,10 +36,16 @@ const emit = defineEmits<{
     "
     class="group/upvote shrink-0 gap-1.5 font-mono font-bold tabular-nums transition-[color,background-color,border-color,transform] duration-150 active:scale-95 disabled:opacity-60"
     :class="[
-      size === 'md' ? 'h-8 px-2.5 text-xs' : 'h-7 px-2 text-[0.7rem]',
+      size === 'md'
+        ? 'h-8 px-2.5 text-xs'
+        : size === 'xs'
+          ? 'h-6 gap-1 px-1.5 text-[0.7rem] [&_svg]:size-3.5'
+          : 'h-7 px-2 text-[0.7rem]',
       pressed
         ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.16)] hover:text-[hsl(var(--tac-amber))]'
-        : 'text-muted-foreground',
+        : size === 'xs'
+          ? 'border-transparent bg-transparent text-muted-foreground hover:border-border'
+          : 'text-muted-foreground',
     ]"
     @click.stop="emit('toggle')"
   >

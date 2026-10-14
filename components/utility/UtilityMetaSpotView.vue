@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { BadgeCheck, Copy, PencilLine } from "lucide-vue-next";
@@ -20,7 +21,6 @@ import { utilityLineupsQuery } from "~/graphql/utilityGraphql";
 import { order_by } from "~/generated/zeus";
 import cleanMapName from "~/utilities/cleanMapName";
 import { loginLinks } from "~/utilities/loginLinks";
-import { UTILITY_TYPE_COLORS } from "~/utilities/utilityDisplay";
 import type {
   UtilityBarOffer,
   UtilityLineupContext,
@@ -263,11 +263,7 @@ function signIn() {
     @back="emit('back')"
   >
     <template v-if="shown" #kicker>
-      <span
-        aria-hidden="true"
-        class="size-2 shrink-0 rounded-[2px]"
-        :style="{ backgroundColor: UTILITY_TYPE_COLORS[shown.utilityType] }"
-      />
+      <UtilityTypeGlyph :type="shown.utilityType" class="-my-1" />
       <span class="truncate">
         {{ $t("pages.utility.meta.spot_kicker") }} ·
         {{ cleanMapName(mapName) }}

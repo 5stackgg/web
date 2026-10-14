@@ -5,6 +5,7 @@ import { Globe, Lock, Users } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import UtilityAuthorByline from "~/components/utility/UtilityAuthorByline.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
@@ -421,17 +422,7 @@ onBeforeUnmount(() => {
     data-execute-by
     class="-mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground"
   >
-    <PlayerDisplay
-      v-if="ownerPlayer"
-      :player="ownerPlayer"
-      size="xs"
-      compact
-      truncate-name
-      :show-elo="false"
-      :show-role="false"
-      :show-online="false"
-      class="min-w-0"
-    />
+    <UtilityAuthorByline v-if="ownerPlayer" :author="ownerPlayer" />
     <span v-else-if="owner" class="min-w-0 truncate">{{ owner }}</span>
     <span v-if="(ownerPlayer || owner) && team" aria-hidden="true">·</span>
     <span v-if="team" class="min-w-0 truncate">{{ team }}</span>

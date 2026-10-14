@@ -432,7 +432,19 @@ const stateSince = computed(() => {
   }
 });
 
-const thumbBox = computed(() => (props.ownState ? "size-14" : "size-10"));
+const LOAD_SQUARE =
+  "!size-6 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)]";
+
+// The third line: who made it, or where yours stands, and the tallies.
+const bottomLine = computed(
+  () =>
+    authorLine.value ||
+    props.ownState ||
+    score.value !== null ||
+    !!props.metaThrowers,
+);
+
+const thumbBox = computed(() => (bottomLine.value ? "size-14" : "size-10"));
 
 // The menu offers what the lineup's own page does, and nothing it would not.
 const canLoadHere = computed(
@@ -505,9 +517,9 @@ function open() {
              as the row growing. Everything that only a card shows folds in
              underneath. The name gets the whole first line; whose it is and how
              it is thrown share the second; the numbers stand in a column. -->
-        <div class="flex items-start gap-2.5">
+        <div class="flex items-center gap-2.5">
           <span
-            class="relative block shrink-0 self-center"
+            class="relative block shrink-0"
             :class="thumbBox"
             :title="
               rendering
@@ -521,6 +533,7 @@ function open() {
               <img
                 v-if="clipThumb"
                 :key="clipThumb"
+                data-thumb
                 :src="clipThumb"
                 alt=""
                 loading="lazy"
@@ -536,7 +549,7 @@ function open() {
                 :origin="origin"
                 :landing="landing"
                 :color="color"
-                :size="ownState ? 56 : 40"
+                :size="bottomLine ? 56 : 40"
               />
             </FadeSwap>
             <Transition
@@ -567,14 +580,55 @@ function open() {
             </Transition>
           </span>
 
-          <div class="flex min-w-0 flex-1 flex-col gap-1">
-            <div class="flex items-center gap-1.5">
+          <!-- Two columns: what it is on the left, one line each, and on the
+               right edge the name's line and the last line carry what you
+               act on -- loading it, its status, its tallies. Placed by row so
+               an empty slot never lets the next line climb into it. -->
+          <div
+            class="grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1.5"
+          >
+            <div class="col-start-1 row-start-1 flex h-6 min-w-0 items-center gap-1.5">
               <span class="truncate text-sm font-semibold leading-tight">
                 {{ lineup.name }}
               </span>
               <UtilityConfidenceMark :lineup="lineup" />
             </div>
-            <div class="flex min-w-0 items-center gap-1.5">
+
+            <div
+              v-if="ownState || practiceReady"
+              data-rail
+              class="col-start-2 row-start-1 flex justify-end"
+            >
+              <FiveStackToolTip v-if="ownState" as-child :delay-duration="120">
+                <template #trigger>
+                  <span
+                    data-state-icon
+                    :data-state="state"
+                    role="img"
+                    :aria-label="$t(`pages.utility.mine.state.${state}`)"
+                    class="grid size-6 shrink-0 place-items-center rounded-md border bg-background/60"
+                    :class="
+                      state === 'rejected'
+                        ? 'border-destructive/40 text-destructive'
+                        : 'border-border text-muted-foreground'
+                    "
+                  >
+                    <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
+                  </span>
+                </template>
+                <span class="block max-w-[15rem]">
+                  {{ $t(`pages.utility.mine.tip.${state}`) }}
+                </span>
+              </FiveStackToolTip>
+              <UtilityPracticeButton
+                v-else
+                :lineup="lineup"
+                shape="icon"
+                :class="LOAD_SQUARE"
+              />
+            </div>
+
+            <div class="col-span-2 col-start-1 row-start-2 flex h-4 min-w-0 items-center gap-1.5">
               <span
                 v-if="ownStatus && showStatus && !ownState"
                 class="inline-flex h-4 shrink-0 items-center gap-1 rounded-sm px-1 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em]"
@@ -596,98 +650,81 @@ function open() {
                 class="min-w-0 truncate"
               />
             </div>
-            <UtilityAuthorByline
-              v-if="authorLine"
-              data-author-line
-              :author="lineup.author!"
-              :context-menu="false"
-              class="text-muted-foreground"
-            />
-            <p
-              v-if="ownState"
-              data-state-line
-              class="flex min-w-0 items-center gap-1 text-xs text-muted-foreground"
+
+            <div
+              v-if="bottomLine"
+              class="col-start-1 row-start-3 flex h-6 min-w-0 items-center gap-2"
             >
-              <span v-if="state === 'public'" class="truncate">
-                {{
-                  $t(
-                    "pages.utility.card.score",
-                    { count: Number(lineup.upvotes ?? 0) },
-                    Number(lineup.upvotes ?? 0),
-                  )
-                }}
-              </span>
-              <span
-                v-else-if="state === 'rejected'"
-                class="truncate text-foreground/80"
-              >
-                {{
-                  $t("pages.utility.mine.rejected_line", {
-                    note: lineup.public_review_note,
-                  })
-                }}
-              </span>
-              <template v-else>
-                <span class="shrink-0">
-                  {{ $t(`pages.utility.mine.${state}_line`) }}
-                </span>
-                <template v-if="stateSince">
-                  <span aria-hidden="true">·</span>
-                  <TimeAgo :date="stateSince" hide-icon />
-                </template>
-              </template>
-            </p>
-          </div>
-
-          <FiveStackToolTip v-if="ownState" as-child :delay-duration="120">
-            <template #trigger>
-              <span
-                data-state-icon
-                :data-state="state"
-                role="img"
-                :aria-label="$t(`pages.utility.mine.state.${state}`)"
-                class="grid size-7 shrink-0 place-items-center self-start rounded-md border bg-background/60"
-                :class="
-                  state === 'rejected'
-                    ? 'border-destructive/40 text-destructive'
-                    : 'border-border text-muted-foreground'
-                "
-              >
-                <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
-              </span>
-            </template>
-            <span class="block max-w-[15rem]">
-              {{ $t(`pages.utility.mine.tip.${state}`) }}
-            </span>
-          </FiveStackToolTip>
-
-          <!-- One column for everything on the right: the buttons on the
-               name's line, the meter on the last. -->
-          <div
-            v-if="practiceReady || (!ownState && (score !== null || metaThrowers))"
-            data-rail
-            class="flex shrink-0 flex-col items-end justify-between gap-1.5 self-stretch"
-          >
-            <div class="flex items-center gap-1.5">
-              <div v-if="practiceReady" class="grid size-7 place-items-center">
-                <UtilityPracticeButton :lineup="lineup" shape="icon" />
-              </div>
-              <UtilityUpvoteToggle
-                v-if="!ownState && score !== null"
-                :count="score"
-                :pressed="lineup.my_vote === 1"
-                :disabled="!canReact"
-                @toggle="emit('vote', lineup.id, 1)"
+              <UtilityAuthorByline
+                v-if="authorLine"
+                data-author-line
+                :author="lineup.author!"
+                class="text-muted-foreground"
               />
+              <p
+                v-if="ownState"
+                data-state-line
+                class="flex min-w-0 items-center gap-1 text-xs text-muted-foreground"
+              >
+                <span v-if="state === 'public'" class="truncate">
+                  {{
+                    $t(
+                      "pages.utility.card.score",
+                      { count: Number(lineup.upvotes ?? 0) },
+                      Number(lineup.upvotes ?? 0),
+                    )
+                  }}
+                </span>
+                <span
+                  v-else-if="state === 'rejected'"
+                  class="truncate text-foreground/80"
+                >
+                  {{
+                    $t("pages.utility.mine.rejected_line", {
+                      note: lineup.public_review_note,
+                    })
+                  }}
+                </span>
+                <template v-else>
+                  <span class="shrink-0">
+                    {{ $t(`pages.utility.mine.${state}_line`) }}
+                  </span>
+                  <template v-if="stateSince">
+                    <span aria-hidden="true">·</span>
+                    <TimeAgo :date="stateSince" hide-icon />
+                  </template>
+                </template>
+              </p>
             </div>
 
-            <UtilityThrowersMeter
-              v-if="!ownState && metaThrowers"
-              :count="metaThrowers"
-              :max="metaBusiest"
-              :color="color"
-              class="!w-14"
-            />
+            <div
+              v-if="(ownState && practiceReady) || (!ownState && (score !== null || metaThrowers))"
+              class="col-start-2 row-start-3 flex items-center justify-end gap-2"
+            >
+              <UtilityPracticeButton
+                v-if="ownState"
+                :lineup="lineup"
+                shape="icon"
+                :class="LOAD_SQUARE"
+              />
+              <template v-else>
+                <UtilityThrowersMeter
+                  v-if="metaThrowers"
+                  inline
+                  :count="metaThrowers"
+                  :max="metaBusiest"
+                  :color="color"
+                />
+                <UtilityUpvoteToggle
+                  v-if="score !== null"
+                  size="xs"
+                  :count="score"
+                  :pressed="lineup.my_vote === 1"
+                  :disabled="!canReact"
+                  @toggle="emit('vote', lineup.id, 1)"
+                />
+              </template>
+            </div>
           </div>
 
           <!-- One trigger instead of a row of unlabelled glyphs. It holds its space

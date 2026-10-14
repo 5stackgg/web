@@ -73,7 +73,7 @@ describe("UtilityLineupCard row", () => {
       preview_stills_url: { landing: "https://cdn.test/landing.webp" },
     });
 
-    expect(wrapper.find("img").exists()).toBe(false);
+    expect(wrapper.find("img[data-thumb]").exists()).toBe(false);
     expect(wrapper.find("[data-has-video]").exists()).toBe(false);
   });
 
@@ -84,7 +84,7 @@ describe("UtilityLineupCard row", () => {
       preview_stills_url: { landing: "https://cdn.test/landing.webp" },
     });
 
-    const thumb = wrapper.find("img");
+    const thumb = wrapper.find("img[data-thumb]");
     expect(thumb.attributes("src")).toBe("https://cdn.test/landing.webp");
     expect(thumb.attributes("loading")).toBe("lazy");
     expect(wrapper.find("[data-has-video]").text()).toBe("Has video");
@@ -96,12 +96,12 @@ describe("UtilityLineupCard row", () => {
       preview_thumbnail_url: "https://cdn.test/thumb.jpg",
     });
 
-    expect(wrapper.find("img").attributes("src")).toBe(
+    expect(wrapper.find("img[data-thumb]").attributes("src")).toBe(
       "https://cdn.test/thumb.jpg",
     );
 
-    await wrapper.find("img").trigger("error");
-    expect(wrapper.find("img").exists()).toBe(false);
+    await wrapper.find("img[data-thumb]").trigger("error");
+    expect(wrapper.find("img[data-thumb]").exists()).toBe(false);
     expect(wrapper.find("[data-has-video]").exists()).toBe(true);
   });
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { UTILITY_TYPES, UTILITY_TYPE_COLORS } from "~/utilities/utilityDisplay";
+import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
+import { UTILITY_TYPES } from "~/utilities/utilityDisplay";
 import type { UtilityType } from "~/types/utility";
 
 const props = withDefaults(
@@ -58,11 +59,10 @@ function toggle(type: UtilityType) {
     ]"
     @click="toggle(type)"
   >
-    <span
-      aria-hidden="true"
-      class="h-2 w-2 shrink-0 rounded-[1px] transition-opacity duration-150"
+    <UtilityTypeGlyph
+      :type="type"
+      class="transition-opacity duration-150"
       :class="selected.includes(type) ? 'opacity-100' : 'opacity-45'"
-      :style="{ backgroundColor: UTILITY_TYPE_COLORS[type] }"
     />
     <!-- One line high and wrapping: a count with no room beside its name
          drops to a second line that is not shown, so the chip can give up

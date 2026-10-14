@@ -49,7 +49,9 @@ function playerAvatarSrc(player: {
       <header class="relative mb-6 flex flex-col gap-1">
         <div :class="[tacticalSectionLabelClasses, 'mb-0']">
           <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("awards.title") }}
+          {{
+            hasAwards ? $t("awards.title") : $t("tournament.standings.title")
+          }}
         </div>
         <div
           class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
@@ -87,7 +89,7 @@ function playerAvatarSrc(player: {
                 {{ placementLabel(entry.placement) }}
               </div>
 
-              <div class="relative">
+              <div v-if="entry.hasAward" class="relative">
                 <div
                   class="pointer-events-none absolute inset-0 blur-2xl transition-opacity duration-300 group-hover/step:opacity-100"
                   :class="entry.placement === 1 ? 'opacity-60' : 'opacity-30'"
@@ -600,9 +602,33 @@ export default {
     return {
       tournamentPlayerStats: [] as any[],
       mvpImpacts: [] as any[],
+      podiumSteps: null as any[] | null,
     };
   },
   apollo: {
+    // Its own optional query, so an api without the podium field only loses
+    // this and falls back to the podium built from the awards.
+    podiumSteps: {
+      query: typedGql("query")({
+        tournaments_by_pk: [
+          { id: $("tournamentId", "uuid!") },
+          { id: true, podium: true } as any,
+        ],
+      }),
+      variables: function () {
+        return { tournamentId: (this as any).tournament?.id };
+      },
+      skip: function () {
+        const self = this as any;
+        return (
+          !self.tournament?.id ||
+          self.tournament?.status !== e_tournament_status_enum.Finished
+        );
+      },
+      update: (data: any) => data?.tournaments_by_pk?.podium ?? null,
+      context: { optional: true },
+      error: () => {},
+    },
     // Per-match impact for the winning roster, the same rows
     // calculate_tournament_awards ranks to pick the MVP.
     mvpImpacts: {
@@ -691,6 +717,58 @@ export default {
     },
   },
   methods: {
+    podiumFromAwards(awards: any[]) {
+      if (awards.length === 0) {
+        return [];
+      }
+      // Keyed by team too: an organizer can hand the same placement to two
+      // teams, e.g. both semifinal losers when there is no third-place match.
+      const steps = new Map();
+      for (const t of awards) {
+        if (![1, 2, 3].includes(t.placement)) {
+          continue;
+        }
+        const key = `${t.placement}-${t.tournament_team_id}`;
+        const existing = steps.get(key);
+        if (existing) {
+          if (
+            t.player &&
+            !existing.players.some(
+              (p: any) => String(p.steam_id) === String(t.player.steam_id),
+            )
+          ) {
+            existing.players.push(t.player);
+          }
+          continue;
+        }
+        const rosterPlayers = (t.tournament_team?.roster || [])
+          .map((r: any) => r.player)
+          .filter(Boolean);
+        const players = rosterPlayers.length
+          ? rosterPlayers
+          : t.player
+            ? [t.player]
+            : [];
+        steps.set(key, {
+          placement: t.placement,
+          hasAward: true,
+          // The granted row is authoritative: it records the award the server
+          // resolved, so a later config edit cannot rewrite history here.
+          award: t.award || null,
+          teamId: t.tournament_team_id,
+          realTeamId: t.tournament_team?.team?.id || null,
+          teamName: this.displayTeamName(
+            t.tournament_team,
+            t.tournament_team_id,
+          ),
+          tournamentType: this.finalStageType,
+          players,
+        });
+      }
+      return Array.from(steps.values()).sort(
+        (a: any, b: any) => a.placement - b.placement,
+      );
+    },
     tierColor(placement: number) {
       if (placement === 0) return "hsl(195 85% 60%)";
       if (placement === 1) return "hsl(45 95% 60%)";
@@ -744,59 +822,53 @@ export default {
       const stages = (this.tournament as any)?.stages || [];
       return stages.length ? stages[stages.length - 1]?.type || null : null;
     },
+    // The tournament's placements, plus any placement award granted to a team
+    // they don't name (an organizer's own 3rd); the awards alone when the api
+    // has no placements to give.
     podium() {
       const awards = (this.tournament as any)?.awards || [];
-      if (awards.length === 0) return [];
-      // Keyed by team too: an organizer can hand the same placement to two
-      // teams, e.g. both semifinal losers when there is no third-place match.
-      const steps = new Map();
-      for (const t of awards) {
-        if (![1, 2, 3].includes(t.placement)) {
-          continue;
-        }
-        const key = `${t.placement}-${t.tournament_team_id}`;
-        const existing = steps.get(key);
-        if (existing) {
-          if (
-            t.player &&
-            !existing.players.some(
-              (p: any) => String(p.steam_id) === String(t.player.steam_id),
-            )
-          ) {
-            existing.players.push(t.player);
-          }
-          continue;
-        }
-        const rosterPlayers = (t.tournament_team?.roster || [])
-          .map((r: any) => r.player)
-          .filter(Boolean);
-        const players = rosterPlayers.length
-          ? rosterPlayers
-          : t.player
-            ? [t.player]
-            : [];
-        steps.set(key, {
-          placement: t.placement,
-          // The granted row is authoritative: it records the award the server
-          // resolved, so a later config edit cannot rewrite history here.
-          award: t.award || null,
-          teamId: t.tournament_team_id,
-          realTeamId: t.tournament_team?.team?.id || null,
-          teamName: this.displayTeamName(
-            t.tournament_team,
-            t.tournament_team_id,
-          ),
-          tournamentType: this.finalStageType,
-          players,
-        });
+      const fromAwards = (this as any).podiumFromAwards(awards);
+      const rows = (this as any).podiumSteps as any[] | null;
+      if (!Array.isArray(rows) || rows.length === 0) {
+        return fromAwards;
       }
-      return Array.from(steps.values()).sort(
-        (a: any, b: any) => a.placement - b.placement,
+      const steps = rows.map((step: any) => {
+        const grant = awards.find(
+          (t: any) =>
+            t.placement === step.placement &&
+            t.tournament_team_id === step.tournament_team_id,
+        );
+        return {
+          placement: step.placement,
+          award: grant?.award || null,
+          hasAward: !!grant,
+          teamId: step.tournament_team_id,
+          realTeamId: step.team_id || null,
+          teamName: step.name,
+          tournamentType: this.finalStageType,
+          players: step.players || [],
+        };
+      });
+      const shown = new Set(
+        steps.map((step: any) => `${step.placement}-${step.teamId}`),
       );
+      for (const step of fromAwards) {
+        if (!shown.has(`${step.placement}-${step.teamId}`)) {
+          steps.push(step);
+        }
+      }
+      return steps.sort((a: any, b: any) => a.placement - b.placement);
     },
     mvp() {
       const awards = (this.tournament as any)?.awards || [];
       return awards.find((t: any) => t.placement === 0) || null;
+    },
+    hasAwards() {
+      return (
+        (this as any).podium.some((entry: any) => entry.hasAward) ||
+        !!(this as any).mvp ||
+        (this as any).otherAwards.length > 0
+      );
     },
     mvpTeamName() {
       if (!this.mvp?.tournament_team) return "";

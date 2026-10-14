@@ -31,12 +31,19 @@ function grant(overrides: Record<string, unknown>) {
   };
 }
 
-function podium(awards: any[]) {
-  return computed.podium.call({
+function context(awards: any[], podiumSteps: any[] | null = null) {
+  const self: any = {
     tournament: { awards },
+    podiumSteps,
     finalStageType: "SingleElimination",
     displayTeamName: methods.displayTeamName,
-  });
+  };
+  self.podiumFromAwards = methods.podiumFromAwards.bind(self);
+  return self;
+}
+
+function podium(awards: any[]) {
+  return computed.podium.call(context(awards));
 }
 
 describe("TournamentResults podium", () => {
@@ -135,5 +142,112 @@ describe("TournamentResults podium", () => {
       ["Brazino69", ["5", "6"]],
       ["Quarta Linha", ["7", "8"]],
     ]);
+  });
+
+  describe("from the tournament's placements", () => {
+    const step = (
+      placement: number,
+      entry: ReturnType<typeof tournamentTeam>,
+    ) => ({
+      placement,
+      tournament_team_id: entry.id,
+      team_id: entry.team.id,
+      name: entry.team.name,
+      players: entry.roster.map((seat) => seat.player),
+    });
+
+    const fromPlacements = (rows: any[], awards: any[] = []) =>
+      computed.podium.call(context(awards, rows));
+
+    it("shows every placing team when awards are off", () => {
+      const fourths = tournamentTeam("tt-4", "Quarta Linha", ["7", "8"]);
+
+      const steps = fromPlacements([
+        step(1, winners),
+        step(2, runnersUp),
+        step(3, thirds),
+        step(3, fourths),
+      ]);
+
+      expect(
+        steps.map((s: any) => [s.placement, s.teamName, s.hasAward]),
+      ).toEqual([
+        [1, "100FOFOCA", false],
+        [2, "SOCAFOFO", false],
+        [3, "Brazino69", false],
+        [3, "Quarta Linha", false],
+      ]);
+      expect(steps[0].players.map((p: any) => p.steam_id)).toEqual([
+        "1",
+        "2",
+      ]);
+    });
+
+    it("wears an award only where one was granted", () => {
+      const steps = fromPlacements(
+        [step(1, winners), step(2, runnersUp)],
+        [
+          grant({
+            placement: 1,
+            source: "tournament",
+            tournament_team_id: winners.id,
+            tournament_team: winners,
+          }),
+        ],
+      );
+
+      expect(steps.map((s: any) => s.hasAward)).toEqual([true, false]);
+      expect(steps[0].award.tier).toBe("gold");
+    });
+
+    it("keeps a placement award granted to a team the placements don't name", () => {
+      const steps = fromPlacements(
+        [step(1, winners), step(2, runnersUp), step(3, thirds)],
+        [
+          grant({
+            placement: 3,
+            source: "manual",
+            tournament_team_id: "tt-9",
+            tournament_team: tournamentTeam("tt-9", "Joint Third", ["9"]),
+          }),
+        ],
+      );
+
+      expect(
+        steps.map((s: any) => [s.placement, s.teamName, s.hasAward]),
+      ).toEqual([
+        [1, "100FOFOCA", false],
+        [2, "SOCAFOFO", false],
+        [3, "Brazino69", false],
+        [3, "Joint Third", true],
+      ]);
+    });
+
+    it("falls back to the awards when there are no placements", () => {
+      const steps = fromPlacements(
+        [],
+        [
+          grant({
+            placement: 1,
+            source: "tournament",
+            tournament_team_id: winners.id,
+            tournament_team: winners,
+          }),
+        ],
+      );
+
+      expect(steps.map((s: any) => [s.placement, s.teamName])).toEqual([
+        [1, "100FOFOCA"],
+      ]);
+    });
+
+    it("calls the section Standings when nothing was awarded", () => {
+      const hasAwards = (podium: any[], mvp: any = null) =>
+        computed.hasAwards.call({ podium, mvp, otherAwards: [] });
+
+      expect(hasAwards([{ hasAward: false }])).toBe(false);
+      expect(hasAwards([{ hasAward: true }])).toBe(true);
+      expect(hasAwards([{ hasAward: false }], { placement: 0 })).toBe(true);
+    });
   });
 });

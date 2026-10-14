@@ -32,9 +32,12 @@ async function settle() {
   await flushPromises();
 }
 
-async function mountEmbed(props: Record<string, unknown> = {}) {
+async function mountEmbed(
+  props: Record<string, unknown> = {},
+  streams: unknown[] = [youtube],
+) {
   const wrapper = await mountSuspended(StreamEmbed, {
-    props: { streams: [youtube], ...props },
+    props: { streams, ...props },
   });
   unmount = () => wrapper.unmount();
   await settle();
@@ -90,5 +93,47 @@ describe("StreamEmbed stop", () => {
     const wrapper = await mountEmbed({ global: true });
 
     expect(buttonNamed(wrapper, "Stop stream")).toBeUndefined();
+  });
+});
+
+describe("StreamEmbed links", () => {
+  beforeEach(() => {
+    useApplicationSettingsStore().setGlobalStream();
+  });
+
+  afterEach(() => {
+    unmount?.();
+    unmount = undefined;
+  });
+
+  it.each(["javascript:void(0)", "data:text/html,<p>stream</p>"])(
+    "never embeds %s",
+    async (link) => {
+      const wrapper = await mountEmbed({}, [
+        { id: "s2", link, title: "Feed", preview: true },
+      ]);
+
+      expect(wrapper.find("iframe").exists()).toBe(false);
+    },
+  );
+
+  it("sandboxes a self-hosted player so it can't navigate this tab", async () => {
+    const wrapper = await mountEmbed({}, [
+      {
+        id: "s3",
+        link: "https://stream.example.com/player",
+        title: "Feed",
+        preview: true,
+      },
+    ]);
+
+    const iframe = wrapper.find("iframe");
+    expect(iframe.attributes("src")).toBe("https://stream.example.com/player");
+    const sandbox = iframe.attributes("sandbox")?.split(" ") ?? [];
+    expect(sandbox).toEqual(
+      expect.arrayContaining(["allow-scripts", "allow-same-origin"]),
+    );
+    expect(sandbox).not.toContain("allow-top-navigation");
+    expect(sandbox).not.toContain("allow-forms");
   });
 });

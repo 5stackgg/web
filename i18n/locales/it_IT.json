@@ -10422,6 +10422,7 @@
     "delete_error": "Impossibile eliminare lo stream. Riprova.",
     "priority_update_error": "Impossibile aggiornare le priorità degli stream. Riprova.",
     "link": "Link",
+    "link_must_be_http": "Inserisci un link che inizi con http:// o https://",
     "title": "Titolo",
     "stream_title_placeholder": "Titolo stream",
     "live_badge": "LIVE",

@@ -10422,6 +10422,7 @@
     "delete_error": "Nie udało się usunąć transmisji. Spróbuj ponownie.",
     "priority_update_error": "Nie udało się zaktualizować priorytetów transmisji. Spróbuj ponownie.",
     "link": "Link",
+    "link_must_be_http": "Podaj link zaczynający się od http:// lub https://",
     "title": "Tytuł",
     "stream_title_placeholder": "Tytuł transmisji",
     "live_badge": "NA ŻYWO",

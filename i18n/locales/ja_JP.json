@@ -10422,6 +10422,7 @@
     "delete_error": "配信を削除できませんでした。しばらくしてから再試行してください。",
     "priority_update_error": "配信の優先順位を更新できませんでした。しばらくしてから再試行してください。",
     "link": "リンク",
+    "link_must_be_http": "http:// または https:// で始まるリンクを入力してください",
     "title": "タイトル",
     "stream_title_placeholder": "配信タイトル",
     "live_badge": "LIVE",

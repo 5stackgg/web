@@ -10422,6 +10422,7 @@
     "delete_error": "Det gick inte att ta bort sändningen. Försök igen.",
     "priority_update_error": "Det gick inte att uppdatera sändningsprioriteringarna. Försök igen.",
     "link": "Länk",
+    "link_must_be_http": "Ange en länk som börjar med http:// eller https://",
     "title": "Titel",
     "stream_title_placeholder": "Sändningstitel",
     "live_badge": "LIVE",

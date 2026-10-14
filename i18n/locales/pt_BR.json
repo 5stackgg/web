@@ -10422,6 +10422,7 @@
     "delete_error": "Falha ao remover transmissão. Tente novamente.",
     "priority_update_error": "Falha ao atualizar prioridades de transmissão. Tente novamente.",
     "link": "Link",
+    "link_must_be_http": "Insira um link que comece com http:// ou https://",
     "title": "Título",
     "stream_title_placeholder": "Título da Transmissão",
     "live_badge": "AO VIVO",

@@ -2,6 +2,7 @@ import { Radio } from "lucide-vue-next";
 import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
+import { isHttpLink } from "~/utilities/httpLink";
 
 export type StreamPlatform = "internal" | "twitch" | "youtube" | "kick" | "iframe";
 
@@ -18,6 +19,10 @@ export function parseStreamLink(link: string): {
   platform: Exclude<StreamPlatform, "internal">;
   id: string | null;
 } {
+  if (!isHttpLink(link)) {
+    return { platform: "iframe", id: null };
+  }
+
   try {
     const url = new URL(link);
     const host = url.hostname.toLowerCase();

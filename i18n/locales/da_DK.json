@@ -10422,6 +10422,7 @@
     "delete_error": "Streamet kunne ikke slettes. Prøv igen.",
     "priority_update_error": "Stream-prioriteterne kunne ikke opdateres. Prøv igen.",
     "link": "Link",
+    "link_must_be_http": "Angiv et link, der starter med http:// eller https://",
     "title": "Titel",
     "stream_title_placeholder": "Stream-titel",
     "live_badge": "LIVE",

@@ -99,6 +99,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
                   class="pointer-events-none"
                   :model-value="value"
                   @update:model-value="handleChange"
+                  @click.stop
                 />
               </FormControl>
             </div>

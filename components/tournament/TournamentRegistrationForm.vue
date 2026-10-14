@@ -169,6 +169,7 @@ import {
                   class="pointer-events-none"
                   :model-value="value"
                   @update:model-value="handleChange"
+                  @click.stop
                 />
               </FormControl>
             </div>
@@ -207,6 +208,7 @@ import {
                 class="pointer-events-none"
                 :model-value="value"
                 @update:model-value="handleChange"
+                @click.stop
               />
             </FormControl>
           </div>

@@ -42,6 +42,7 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
                   class="pointer-events-none flex-shrink-0"
                   :model-value="value"
                   @update:model-value="handleChange"
+                  @click.stop
                 />
               </FormControl>
             </div>

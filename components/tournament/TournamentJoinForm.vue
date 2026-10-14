@@ -70,6 +70,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
                   class="pointer-events-none"
                   :model-value="value"
                   @update:model-value="handleChange"
+                  @click.stop
                 />
               </FormControl>
             </div>
@@ -101,6 +102,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
                     class="pointer-events-none"
                     :model-value="value"
                     @update:model-value="handleChange"
+                    @click.stop
                   />
                 </FormControl>
               </div>

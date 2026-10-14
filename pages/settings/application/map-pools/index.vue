@@ -46,6 +46,7 @@ const { isMobile } = useSidebar();
             <Switch
               :model-value="updateMapPools"
               @update:model-value="toggleUpdateMapPools"
+              @click.stop
             />
           </div>
         </template>

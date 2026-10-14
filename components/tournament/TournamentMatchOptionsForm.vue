@@ -37,6 +37,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                 class="pointer-events-none"
                 :model-value="value"
                 @update:model-value="handleChange"
+                @click.stop
               />
             </FormControl>
           </div>
@@ -66,6 +67,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                 class="pointer-events-none"
                 :model-value="value"
                 @update:model-value="handleChange"
+                @click.stop
               />
             </FormControl>
           </div>
@@ -99,6 +101,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                 :model-value="value"
                 :disabled="substitutesLocked"
                 @update:model-value="handleChange"
+                @click.stop
               />
             </FormControl>
           </div>

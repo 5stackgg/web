@@ -62,7 +62,7 @@ function toggle(type: UtilityType) {
     class="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border font-mono text-[0.6rem] font-bold uppercase leading-none transition-[color,background-color,border-color,opacity] duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
     :class="[
       fill
-        ? 'min-w-0 justify-center px-1.5 tracking-[0.06em]'
+        ? 'justify-center px-1.5 tracking-[0.06em]'
         : 'shrink-0 px-2.5 tracking-[0.14em]',
       selected.includes(type)
         ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'

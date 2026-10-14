@@ -19,6 +19,9 @@ let lastStatePushMs = 0;
 // Not store.sessionRow?.id: the row only arrives with the subscription's
 // first result, and leaving before then must still unsubscribe.
 let subscribedSessionId: string | null = null;
+// Bumped by detach(): a start() still awaiting the api when its page goes
+// finds it changed and bails, so it never subscribes for a page that is gone.
+let startGeneration = 0;
 
 type DemoSpecSlot = {
   slot: number;
@@ -251,7 +254,11 @@ export function useDemoPlayback() {
     );
   }
 
-  async function loadMetadata(matchMapId: string, demoId?: string | null) {
+  async function loadMetadata(
+    matchMapId: string,
+    demoId?: string | null,
+    isStale?: () => boolean,
+  ) {
     const where = demoId
       ? { id: { _eq: demoId } }
       : { match_map_id: { _eq: matchMapId } };
@@ -312,6 +319,9 @@ export function useDemoPlayback() {
       }),
     });
 
+    if (isStale?.()) {
+      return null;
+    }
     const demo = data?.match_map_demos?.[0] as any;
     if (!demo) return null;
     if (demo.total_ticks) store.totalTicks = demo.total_ticks;
@@ -352,6 +362,8 @@ export function useDemoPlayback() {
     demoId?: string | null,
     opts?: { attach?: boolean },
   ) {
+    const generation = ++startGeneration;
+    const isStale = () => generation !== startGeneration;
     store.reset();
     store.localStatus = "starting";
     // Seed from the instance default or reset() mislabels the HUD the pod booted.
@@ -371,12 +383,18 @@ export function useDemoPlayback() {
             },
           } as any),
         });
+        if (isStale()) {
+          return;
+        }
         const out = (data as any)?.attachDemo;
         if (!out?.success || !out.session_id || !out.match_map_id) {
           throw new Error("attachDemo returned no session");
         }
         store.matchMapId = out.match_map_id;
-        await loadMetadata(out.match_map_id, null);
+        await loadMetadata(out.match_map_id, null, isStale);
+        if (isStale()) {
+          return;
+        }
         subscribeToSession(out.session_id);
         return;
       }
@@ -399,6 +417,9 @@ export function useDemoPlayback() {
           ],
         } as any),
       });
+      if (isStale()) {
+        return;
+      }
       const out = (data as any)?.watchDemo;
       if (!out?.success || !out.session_id) {
         throw new Error("watchDemo returned no session");
@@ -408,12 +429,18 @@ export function useDemoPlayback() {
       // tick_rate / kills / bombs / round_ticks. Populate the store
       // so the seek bar + event nav appear as soon as the popup
       // moves out of the booting state.
-      await loadMetadata(matchMapId, demoId ?? null);
+      await loadMetadata(matchMapId, demoId ?? null, isStale);
+      if (isStale()) {
+        return;
+      }
 
       // Subscription will populate store.sessionRow with the latest
       // status (booting → launching_steam → live, or errored).
       subscribeToSession(out.session_id);
     } catch (error) {
+      if (isStale()) {
+        return;
+      }
       store.localStatus = "error";
       store.errorMessage = (error as Error)?.message ?? String(error);
       throw error;
@@ -440,6 +467,7 @@ export function useDemoPlayback() {
   // Lets go of the session without stopping it: drops the subscription,
   // the state poll and its listeners, and leaves the pod running.
   function detach() {
+    startGeneration++;
     if (subscribedSessionId) {
       unsubscribe(subscriptionKey(subscribedSessionId));
       subscribedSessionId = null;

@@ -138,6 +138,9 @@ function onKeyDown(e: KeyboardEvent) {
 // the reaper doesn't fire prematurely.
 const WATCH_INTERVAL_MS = 10_000;
 let watchHandle: ReturnType<typeof setInterval> | null = null;
+// start() can still be awaiting the api when the page goes; nothing it would
+// set up afterwards may outlive the page.
+let unmounted = false;
 
 function announceWatch() {
   // Use the resolved id (store) so /demo/dev watches the real session, not the
@@ -158,6 +161,9 @@ onMounted(async () => {
     // store.errorMessage is populated; UI renders the error state.
     return;
   }
+  if (unmounted) {
+    return;
+  }
 
   // First watch event right after the row exists, then every 10s. We
   // don't wait on the initial event — Socket queues offline events and
@@ -168,6 +174,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  unmounted = true;
   if (watchHandle) clearInterval(watchHandle);
   window.removeEventListener("keydown", onKeyDown);
   // Polite "I'm leaving" — gives the server a head start on cleanup

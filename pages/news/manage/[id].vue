@@ -288,7 +288,7 @@ onBeforeUnmount(() => {
     </template>
 
     <template v-else>
-      <div v-if="previewMode">
+      <div v-if="previewMode" class="mx-auto lg:max-w-7xl">
         <NewsArticleView
           :title="title"
           :teaser="teaser"

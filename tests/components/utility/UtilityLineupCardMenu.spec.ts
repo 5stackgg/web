@@ -128,3 +128,23 @@ describe("UtilityLineupCard right-click menu", () => {
     expect(wrapper.emitted("fork")?.[0]).toEqual(["l-1"]);
   });
 });
+
+describe("UtilityLineupCard upvote", () => {
+  it("is a toggle that shows whether you pressed it", async () => {
+    const off = await mountTile();
+    expect(off.find("[data-upvote]").attributes("aria-pressed")).toBe("false");
+
+    const on = await mountTile({ my_vote: 1 } as Partial<UtilityLineup>);
+    expect(on.find("[data-upvote]").attributes("aria-pressed")).toBe("true");
+    expect(on.find("[data-upvote]").text()).toContain("3");
+  });
+
+  it("votes without opening the lineup", async () => {
+    const wrapper = await mountTile();
+
+    await wrapper.find("[data-upvote]").trigger("click");
+
+    expect(wrapper.emitted("vote")?.[0]).toEqual(["l-1", 1]);
+    expect(wrapper.emitted("select")).toBeUndefined();
+  });
+});

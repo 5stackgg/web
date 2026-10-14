@@ -5503,11 +5503,7 @@
         "aim_delta": "추정 조준 대 기록 조준",
         "technical": "기술 정보",
         "actions_title": "라이브러리",
-        "fork_hint": "라이브러리에 복사해 수정합니다",
-        "submit_hint": "다음으로 검토자가 확인합니다",
-        "mark_bad": "좋지 않음으로 표시",
-        "bad_hint": "기록된 대로 떨어지지 않습니다",
-        "rerender_hint": "미리보기를 다시 촬영합니다"
+        "mark_bad": "좋지 않음으로 표시"
       },
       "practice": {
         "title": "연습 서버",

@@ -4,7 +4,6 @@ import { useI18n } from "vue-i18n";
 import {
   Archive,
   ArchiveRestore,
-  ArrowBigUp,
   Check,
   ChevronDown,
   ChevronLeft,
@@ -45,6 +44,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicker.vue";
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import UtilityLineupActions from "~/components/utility/UtilityLineupActions.vue";
+import UtilityUpvoteToggle from "~/components/utility/UtilityUpvoteToggle.vue";
 import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import UtilityLineupPreview from "~/components/utility/UtilityLineupPreview.vue";
 import UtilityLineupViewer3D from "~/components/utility/UtilityLineupViewer3D.vue";
@@ -810,35 +810,13 @@ const stats = computed(() => {
             {{ threeDLabel }}
           </FiveStackToolTip>
 
-          <FiveStackToolTip
-            as-child
-            side="bottom"
-            :delay-duration="120"
-            :tap-toggle="false"
-          >
-            <template #trigger>
-              <button
-                type="button"
-                :class="tile(myVote === 1, true)"
-                :disabled="!canReact"
-                :aria-pressed="myVote === 1"
-                :aria-label="
-                  myVote === 1
-                    ? $t('pages.utility.card.unvote')
-                    : $t('pages.utility.card.upvote')
-                "
-                @click="emit('vote', lineup.id, 1)"
-              >
-                <ArrowBigUp class="h-4 w-4" />
-                {{ score }}
-              </button>
-            </template>
-            {{
-              myVote === 1
-                ? $t("pages.utility.card.unvote")
-                : $t("pages.utility.card.upvote")
-            }}
-          </FiveStackToolTip>
+          <UtilityUpvoteToggle
+            :count="score"
+            :pressed="myVote === 1"
+            :disabled="!canReact"
+            size="md"
+            @toggle="emit('vote', lineup.id, 1)"
+          />
 
           <FiveStackToolTip
             as-child
@@ -1210,6 +1188,8 @@ const stats = computed(() => {
             <div class="mt-auto flex flex-col gap-3 pt-3">
               <UtilityLineupActions
                 v-if="canReact"
+                :lineup="lineup"
+                :can-practice="canPractice !== false"
                 :can-submit-public="canSubmitPublic"
                 :can-mark-bad="canMarkBad"
                 :marked-bad="myVote === -1"

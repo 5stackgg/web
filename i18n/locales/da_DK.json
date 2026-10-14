@@ -5503,11 +5503,7 @@
         "aim_delta": "Udledt vs optaget sigte",
         "technical": "Tekniske detaljer",
         "actions_title": "Bibliotek",
-        "fork_hint": "Kopiér den til dit bibliotek for at ændre den",
-        "submit_hint": "En anmelder ser på den som det næste",
-        "mark_bad": "Markér som dårlig",
-        "bad_hint": "Den lander ikke som optaget",
-        "rerender_hint": "Optag forhåndsvisningen igen"
+        "mark_bad": "Markér som dårlig"
       },
       "practice": {
         "title": "Træningsserver",

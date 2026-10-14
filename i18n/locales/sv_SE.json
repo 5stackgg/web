@@ -5503,11 +5503,7 @@
         "aim_delta": "Härlett vs inspelat sikte",
         "technical": "Tekniska detaljer",
         "actions_title": "Bibliotek",
-        "fork_hint": "Kopiera till ditt bibliotek för att ändra den",
-        "submit_hint": "En granskare tittar på den härnäst",
-        "mark_bad": "Markera som dålig",
-        "bad_hint": "Den landar inte som inspelad",
-        "rerender_hint": "Filma förhandsvisningen igen"
+        "mark_bad": "Markera som dålig"
       },
       "practice": {
         "title": "Träningsserver",

@@ -5503,11 +5503,7 @@
         "aim_delta": "Puntería deducida vs grabada",
         "technical": "Detalles técnicos",
         "actions_title": "Biblioteca",
-        "fork_hint": "Cópialo a tu biblioteca para cambiarlo",
-        "submit_hint": "Un revisor lo mirará a continuación",
-        "mark_bad": "Marcar como malo",
-        "bad_hint": "No cae como se grabó",
-        "rerender_hint": "Grabar de nuevo su vista previa"
+        "mark_bad": "Marcar como malo"
       },
       "practice": {
         "title": "Servidor de práctica",

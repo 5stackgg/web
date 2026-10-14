@@ -5503,11 +5503,7 @@
         "aim_delta": "推定エイムと記録エイム",
         "technical": "技術的な詳細",
         "actions_title": "ライブラリ",
-        "fork_hint": "ライブラリにコピーして変更する",
-        "submit_hint": "次にレビュアーが確認します",
-        "mark_bad": "良くないと評価",
-        "bad_hint": "記録どおりに着地しない",
-        "rerender_hint": "プレビューを撮り直す"
+        "mark_bad": "良くないと評価"
       },
       "practice": {
         "title": "練習サーバー",

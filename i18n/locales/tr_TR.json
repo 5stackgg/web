@@ -5503,11 +5503,7 @@
         "aim_delta": "Çıkarılan ve Kaydedilen Nişan",
         "technical": "Teknik ayrıntılar",
         "actions_title": "Kitaplık",
-        "fork_hint": "Değiştirmek için kitaplığına kopyala",
-        "submit_hint": "Sırada bir inceleyici bakacak",
-        "mark_bad": "Kötü olarak işaretle",
-        "bad_hint": "Kaydedildiği gibi düşmüyor",
-        "rerender_hint": "Önizlemesini yeniden çek"
+        "mark_bad": "Kötü olarak işaretle"
       },
       "practice": {
         "title": "Antrenman Sunucusu",

@@ -5503,11 +5503,7 @@
         "aim_delta": "Abgeleitetes vs. aufgezeichnetes Zielen",
         "technical": "Technische Details",
         "actions_title": "Bibliothek",
-        "fork_hint": "In deine Bibliothek kopieren, um es zu ändern",
-        "submit_hint": "Als Nächstes sieht es sich ein Prüfer an",
-        "mark_bad": "Als schlecht markieren",
-        "bad_hint": "Es landet nicht wie aufgezeichnet",
-        "rerender_hint": "Die Vorschau neu filmen"
+        "mark_bad": "Als schlecht markieren"
       },
       "practice": {
         "title": "Übungsserver",

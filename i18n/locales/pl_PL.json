@@ -5503,11 +5503,7 @@
         "aim_delta": "Celowanie wyliczone vs nagrane",
         "technical": "Szczegóły techniczne",
         "actions_title": "Biblioteka",
-        "fork_hint": "Skopiuj do swojej biblioteki, aby ją zmienić",
-        "submit_hint": "Następnie obejrzy ją recenzent",
-        "mark_bad": "Oznacz jako słabą",
-        "bad_hint": "Nie ląduje tak, jak nagrano",
-        "rerender_hint": "Nagraj podgląd ponownie"
+        "mark_bad": "Oznacz jako słabą"
       },
       "practice": {
         "title": "Serwer treningowy",

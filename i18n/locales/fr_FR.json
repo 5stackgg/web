@@ -5503,11 +5503,7 @@
         "aim_delta": "Visée déduite vs enregistrée",
         "technical": "Détails techniques",
         "actions_title": "Bibliothèque",
-        "fork_hint": "Copie-le dans ta bibliothèque pour le modifier",
-        "submit_hint": "Un relecteur l'examine ensuite",
-        "mark_bad": "Marquer comme mauvais",
-        "bad_hint": "Il n'atterrit pas comme enregistré",
-        "rerender_hint": "Refilmer son aperçu"
+        "mark_bad": "Marquer comme mauvais"
       },
       "practice": {
         "title": "Serveur d'entraînement",

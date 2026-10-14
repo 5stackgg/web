@@ -5503,11 +5503,7 @@
         "aim_delta": "Mira dedotta vs registrata",
         "technical": "Dettagli tecnici",
         "actions_title": "Libreria",
-        "fork_hint": "Copialo nella tua libreria per modificarlo",
-        "submit_hint": "Un revisore lo guarderà a breve",
-        "mark_bad": "Segna come scadente",
-        "bad_hint": "Non atterra come registrato",
-        "rerender_hint": "Rigira la sua anteprima"
+        "mark_bad": "Segna come scadente"
       },
       "practice": {
         "title": "Server di allenamento",

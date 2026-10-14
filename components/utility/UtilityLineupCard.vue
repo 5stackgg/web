@@ -2,7 +2,6 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import {
-  ArrowBigUp,
   ArrowUpRight,
   Archive,
   ArchiveRestore,
@@ -46,6 +45,7 @@ import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vu
 import { Spinner } from "~/components/ui/spinner";
 import UtilityProgressPanel from "~/components/utility/UtilityProgressPanel.vue";
 import UtilityReactions from "~/components/utility/UtilityReactions.vue";
+import UtilityUpvoteToggle from "~/components/utility/UtilityUpvoteToggle.vue";
 import UtilityPracticeButton from "~/components/utility/UtilityPracticeButton.vue";
 import UtilityRadarThumb from "~/components/utility/UtilityRadarThumb.vue";
 import UtilitySpecLine from "~/components/utility/UtilitySpecLine.vue";
@@ -569,21 +569,13 @@ function open() {
             v-if="score !== null || metaThrowers"
             class="flex w-14 shrink-0 flex-col items-end gap-1.5"
           >
-            <span
+            <UtilityUpvoteToggle
               v-if="score !== null"
-              class="flex shrink-0 items-center gap-0.5 font-mono text-[0.65rem] tabular-nums"
-              :class="
-                lineup.my_vote === 1
-                  ? 'text-[hsl(var(--tac-amber))]'
-                  : score > 0
-                    ? 'text-foreground/80'
-                    : 'text-muted-foreground/60'
-              "
-              :title="$t('pages.utility.card.score', { count: score }, score)"
-            >
-              <ArrowBigUp class="h-3.5 w-3.5" />
-              {{ score }}
-            </span>
+              :count="score"
+              :pressed="lineup.my_vote === 1"
+              :disabled="!canReact"
+              @toggle="emit('vote', lineup.id, 1)"
+            />
 
             <UtilityThrowersMeter
               v-if="metaThrowers"

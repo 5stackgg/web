@@ -5503,11 +5503,7 @@
         "aim_delta": "推算瞄準與記錄瞄準",
         "technical": "技術細節",
         "actions_title": "庫",
-        "fork_hint": "複製到你的庫中再修改",
-        "submit_hint": "接下來由審核員查看",
-        "mark_bad": "標記為不好",
-        "bad_hint": "落點與錄製的不符",
-        "rerender_hint": "重新拍攝預覽"
+        "mark_bad": "標記為不好"
       },
       "practice": {
         "title": "練習伺服器",

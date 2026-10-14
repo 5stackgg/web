@@ -5505,11 +5505,7 @@
         "aim_delta": "Inferred vs Recorded Aim",
         "technical": "Technical details",
         "actions_title": "Library",
-        "fork_hint": "Copy it into your library to change it",
-        "submit_hint": "A reviewer looks at it next",
-        "mark_bad": "Mark as bad",
-        "bad_hint": "It does not land as recorded",
-        "rerender_hint": "Film its preview again"
+        "mark_bad": "Mark as bad"
       },
       "practice": {
         "title": "Practice Server",

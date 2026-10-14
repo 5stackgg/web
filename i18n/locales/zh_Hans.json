@@ -5503,11 +5503,7 @@
         "aim_delta": "推算瞄准与记录瞄准",
         "technical": "技术细节",
         "actions_title": "库",
-        "fork_hint": "复制到你的库中再修改",
-        "submit_hint": "接下来由审核员查看",
-        "mark_bad": "标记为不好",
-        "bad_hint": "落点与录制的不符",
-        "rerender_hint": "重新拍摄预览"
+        "mark_bad": "标记为不好"
       },
       "practice": {
         "title": "练习服务器",

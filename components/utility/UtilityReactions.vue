@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { ArrowBigDown, ArrowBigUp, Heart } from "lucide-vue-next";
+import { ArrowBigDown, Heart } from "lucide-vue-next";
+import UtilityUpvoteToggle from "~/components/utility/UtilityUpvoteToggle.vue";
 import type { UtilityLineup } from "~/types/utility";
 
 const props = withDefaults(
@@ -43,12 +44,6 @@ const score = computed(
   () => Number(props.lineup.upvotes ?? 0) - Number(props.lineup.downvotes ?? 0),
 );
 
-const voteTitle = computed(() =>
-  myVote.value === 1
-    ? t("pages.utility.card.unvote")
-    : t("pages.utility.card.upvote"),
-);
-
 const downvoteTitle = computed(() =>
   myVote.value === -1
     ? t("pages.utility.card.unvote")
@@ -75,24 +70,13 @@ const digits = computed(() =>
     class="flex shrink-0 items-center gap-1 font-mono tabular-nums"
     :class="digits"
   >
-    <button
-      type="button"
+    <UtilityUpvoteToggle
+      :count="score"
+      :pressed="myVote === 1"
       :disabled="!canReact"
-      class="inline-flex h-7 items-center gap-1.5 rounded-md px-1.5 transition-colors disabled:cursor-default disabled:opacity-60"
-      :class="
-        myVote === 1
-          ? 'text-[hsl(var(--tac-amber))]'
-          : 'text-muted-foreground enabled:hover:bg-muted/50 enabled:hover:text-foreground'
-      "
-      :title="voteTitle"
-      @click.stop="emit('vote', lineup.id, 1)"
-    >
-      <ArrowBigUp
-        :class="[glyph, myVote === 1 ? 'fill-current' : '']"
-        class="transition-transform"
-      />
-      {{ score }}
-    </button>
+      :size="size"
+      @toggle="emit('vote', lineup.id, 1)"
+    />
 
     <button
       v-if="showDownvote"

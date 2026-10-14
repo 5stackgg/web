@@ -167,24 +167,10 @@ export default {
     myMatches: {
       immediate: true,
       handler() {
-        if (this.myMatches.length === 0) return;
-        const match = this.myMatches
-          .sort((a: any, b: any) => {
-            if (a.started_at && !b.started_at) return -1;
-            if (!a.started_at && b.started_at) return 1;
-            if (a.started_at && b.started_at) {
-              const diff =
-                new Date(a.started_at).getTime() -
-                new Date(b.started_at).getTime();
-              if (diff !== 0) return diff;
-            }
-            return (
-              this.getStatusPriority(a.status) -
-              this.getStatusPriority(b.status)
-            );
-          })
-          .at(0);
-        if (match) this.selectLobby((match as any).id);
+        const match = useMatchLobbyStore().currentMatch;
+        if (match) {
+          this.selectLobby((match as any).id);
+        }
       },
     },
     currentMatch: {
@@ -250,20 +236,6 @@ export default {
     },
     goToMatch(match: any) {
       this.$router.push({ name: "matches-id", params: { id: match.id } });
-    },
-    getStatusPriority(status: e_match_status_enum): number {
-      switch (status) {
-        case e_match_status_enum.Live:
-          return 1;
-        case e_match_status_enum.WaitingForServer:
-          return 2;
-        case e_match_status_enum.Veto:
-          return 3;
-        case e_match_status_enum.WaitingForCheckIn:
-          return 4;
-        default:
-          return 999;
-      }
     },
     selectLobby(matchId: string) {
       useMatchmakingStore().viewingMatchId = matchId;

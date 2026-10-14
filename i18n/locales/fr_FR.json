@@ -7872,6 +7872,8 @@
       "observer_hint": "Les équipes confirment leur présence avant la constitution du bracket. Toute équipe qui n'a pas fait son check-in à {time} met le tournoi en attente de ton examen.",
       "confirm_heading": "Confirme la présence de ton équipe",
       "confirm_hint": "Les équipes qui n'ont pas fait leur check-in à {time} ne sont pas placées dans le bracket.",
+      "captain_heading": "En attente du check-in de {captain}",
+      "captain_hint": "Le check-in de {team} est fait par quelqu'un qui joue dans l'équipe : son capitaine ou un admin de l'équipe. Les équipes qui n'ont pas fait leur check-in à {time} ne sont pas placées dans le bracket.",
       "players_progress": "{checked} sur {required} ont fait leur check-in",
       "players_heading": "Chaque joueur doit faire son check-in",
       "players_hint": "Ton équipe est validée dès que {count} joueurs confirment. Les remplaçants ne sont pas obligés.",
@@ -8206,7 +8208,6 @@
       "loading_more": "Chargement…",
       "ineligible": {
         "in_tournament": "Déjà inscrite à ce tournoi.",
-        "owner_in_tournament": "Son propriétaire a déjà une équipe dans ce tournoi.",
         "in_season": "Déjà inscrite pour cette saison.",
         "tournament_organizer": "Déjà organisatrice de ce tournoi.",
         "in_event": "Déjà rattachée à cet événement.",

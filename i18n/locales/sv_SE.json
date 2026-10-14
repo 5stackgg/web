@@ -7872,6 +7872,8 @@
       "observer_hint": "Lagen bekräftar att de deltar innan slutspelsträdet sätts. Varje lag som inte har checkat in {time} pausar turneringen för din granskning.",
       "confirm_heading": "Bekräfta att ditt lag deltar",
       "confirm_hint": "Lag som inte har checkat in {time} placeras inte i slutspelsträdet.",
+      "captain_heading": "Väntar på att {captain} checkar in",
+      "captain_hint": "{team} checkas in av någon som spelar i laget: lagkaptenen eller en lagadministratör. Lag som inte har checkat in {time} placeras inte i slutspelsträdet.",
       "players_progress": "{checked} av {required} incheckade",
       "players_heading": "Alla spelare måste checka in",
       "players_hint": "Ditt lag är med så snart {count} spelare bekräftar. Reserver behöver inte.",
@@ -8206,7 +8208,6 @@
       "loading_more": "Läser in fler…",
       "ineligible": {
         "in_tournament": "Redan anmält till den här turneringen.",
-        "owner_in_tournament": "Ägaren har redan ett lag i den här turneringen.",
         "in_season": "Redan registrerat för den här säsongen.",
         "tournament_organizer": "Redan arrangör för den här turneringen.",
         "in_event": "Redan kopplat till det här evenemanget.",

@@ -318,6 +318,21 @@ const myRosterEntry = computed(() =>
 // captain_steam_id/owner_steam_id would find.
 const canManageMyTeam = computed(() => myTeam.value?.can_manage === true);
 
+const isMyTeamCaptain = computed(
+  () =>
+    !!me.value?.steam_id &&
+    String(myTeam.value?.captain_steam_id) === String(me.value.steam_id),
+);
+
+const captainName = computed(
+  () =>
+    myRoster.value.find(
+      (member) =>
+        String(member.player_steam_id) ===
+        String(myTeam.value?.captain_steam_id),
+    )?.player?.name ?? teamName(myTeam.value),
+);
+
 // Marking OTHER teams present, which is Admin mode and the organizer alone.
 const canMarkTeamsPresent = computed(
   () =>
@@ -345,8 +360,28 @@ const canCheckInSelf = computed(() => {
   if (isPlayersMode.value) {
     return !!myRosterEntry.value && !myRosterEntry.value.checked_in_at;
   }
-  return canManageMyTeam.value && !myTeamCheckedIn.value;
+  if (myTeamCheckedIn.value) {
+    return false;
+  }
+  // Someone who plays on the team checks it in, never an owner managing it
+  // from outside. Organizers can mark any team present.
+  return (
+    !!myTeam.value &&
+    (props.tournament?.is_organizer === true ||
+      (!!myRosterEntry.value &&
+        (isMyTeamCaptain.value || canManageMyTeam.value)))
+  );
 });
+
+const waitingOnCaptain = computed(
+  () =>
+    !!myTeam.value &&
+    !isFreeAgent.value &&
+    !isPlayersMode.value &&
+    !isAdminMode.value &&
+    !myTeamCheckedIn.value &&
+    !canCheckInSelf.value,
+);
 
 const registrationOpen = computed(
   () => props.tournament?.status === e_tournament_status_enum.RegistrationOpen,
@@ -370,6 +405,11 @@ const openHeading = computed(() => {
   if (isAdminMode.value) {
     return t("tournament.check_in.admin_heading");
   }
+  if (waitingOnCaptain.value) {
+    return t("tournament.check_in.captain_heading", {
+      captain: captainName.value,
+    });
+  }
   return t("tournament.check_in.confirm_heading");
 });
 
@@ -390,6 +430,12 @@ const openHint = computed(() => {
   if (isAdminMode.value) {
     return t("tournament.check_in.admin_hint");
   }
+  if (waitingOnCaptain.value) {
+    return t("tournament.check_in.captain_hint", {
+      team: teamName(myTeam.value),
+      time: closesAtLabel.value,
+    });
+  }
   return t("tournament.check_in.confirm_hint", { time: closesAtLabel.value });
 });
 
@@ -400,7 +446,7 @@ const openChip = computed(() => {
       required: minPlayers.value,
     });
   }
-  if (isObserver.value && !isAdminMode.value) {
+  if ((isObserver.value && !isAdminMode.value) || waitingOnCaptain.value) {
     return t("tournament.check_in.chip_open");
   }
   return t("tournament.check_in.chip_action_needed");
@@ -573,7 +619,7 @@ async function checkIn(teamId?: string | null) {
       'relative mt-4 rounded-lg border px-6 py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]',
       state === 'missed'
         ? 'border-destructive/50'
-        : state === 'open'
+        : state === 'open' && !waitingOnCaptain
           ? 'border-[hsl(var(--tac-amber)_/_0.45)]'
           : 'border-border',
     ]"
@@ -655,7 +701,11 @@ async function checkIn(teamId?: string | null) {
       <div class="flex flex-wrap items-center justify-between gap-5">
         <div class="min-w-0">
           <TournamentChip
-            :tone="isObserver && !isAdminMode ? 'muted' : 'amber'"
+            :tone="
+              (isObserver && !isAdminMode) || waitingOnCaptain
+                ? 'muted'
+                : 'amber'
+            "
           >
             {{ openChip }}
           </TournamentChip>

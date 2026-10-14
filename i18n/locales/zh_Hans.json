@@ -7872,6 +7872,8 @@
       "observer_hint": "在生成对阵表之前，队伍需确认参赛。任何在 {time} 前未签到的队伍都会让赛事暂停，等你处理。",
       "confirm_heading": "确认你的队伍参赛",
       "confirm_hint": "在 {time} 前未签到的队伍不会进入对阵表。",
+      "captain_heading": "等待 {captain} 签到",
+      "captain_hint": "{team} 由队内上场的成员签到：队长或队伍管理员。在 {time} 前未签到的队伍不会进入对阵表。",
       "players_progress": "{required} 人中已有 {checked} 人签到",
       "players_heading": "所有选手都需要签到",
       "players_hint": "有 {count} 位选手确认后，你的队伍即算参赛。替补无需签到。",
@@ -8206,7 +8208,6 @@
       "loading_more": "加载更多…",
       "ineligible": {
         "in_tournament": "已报名这场锦标赛。",
-        "owner_in_tournament": "其所有者已在这场锦标赛中拥有战队。",
         "in_season": "已注册这个赛季。",
         "tournament_organizer": "已是这场锦标赛的主办方。",
         "in_event": "已与这个活动关联。",

@@ -7872,6 +7872,8 @@
       "observer_hint": "As equipes confirmam presença antes de a chave ser montada. Qualquer equipe que não tiver feito check-in até {time} deixa o torneio parado para a sua análise.",
       "confirm_heading": "Confirme a presença da sua equipe",
       "confirm_hint": "Equipes que não fizerem check-in até {time} não entram na chave.",
+      "captain_heading": "Aguardando o check-in de {captain}",
+      "captain_hint": "O check-in de {team} é feito por alguém que joga na equipe: o capitão ou um administrador da equipe. Equipes que não fizerem check-in até {time} não entram na chave.",
       "players_progress": "{checked} de {required} com check-in",
       "players_heading": "Todos os jogadores precisam fazer check-in",
       "players_hint": "Sua equipe entra assim que {count} jogadores confirmarem. Os reservas não precisam.",
@@ -8206,7 +8208,6 @@
       "loading_more": "Carregando mais...",
       "ineligible": {
         "in_tournament": "Já inscrito neste torneio.",
-        "owner_in_tournament": "O dono já tem um time neste torneio.",
         "in_season": "Já registrado nesta temporada.",
         "tournament_organizer": "Já é organizador deste torneio.",
         "in_event": "Já vinculado a este evento.",

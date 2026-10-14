@@ -7872,6 +7872,8 @@
       "observer_hint": "Drużyny potwierdzają udział, zanim powstanie drabinka. Każda drużyna, która nie potwierdzi obecności do {time}, wstrzymuje turniej do twojej decyzji.",
       "confirm_heading": "Potwierdź udział swojej drużyny",
       "confirm_hint": "Drużyny, które nie potwierdzą obecności do {time}, nie trafiają do drabinki.",
+      "captain_heading": "Czekamy, aż {captain} potwierdzi obecność",
+      "captain_hint": "Obecność drużyny {team} potwierdza ktoś, kto w niej gra: kapitan albo administrator drużyny. Drużyny, które nie potwierdzą obecności do {time}, nie trafiają do drabinki.",
       "players_progress": "{checked} z {required} potwierdziło obecność",
       "players_heading": "Każdy gracz musi potwierdzić obecność",
       "players_hint": "Twoja drużyna jest w turnieju, gdy potwierdzi {count} graczy. Rezerwowi nie muszą.",
@@ -8206,7 +8208,6 @@
       "loading_more": "Wczytywanie…",
       "ineligible": {
         "in_tournament": "Już zgłoszona do tego turnieju.",
-        "owner_in_tournament": "Jej właściciel ma już drużynę w tym turnieju.",
         "in_season": "Już zarejestrowana na ten sezon.",
         "tournament_organizer": "Już jest organizatorem tego turnieju.",
         "in_event": "Już przypisana do tego wydarzenia.",

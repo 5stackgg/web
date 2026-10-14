@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "已找到比赛",
+    "match_found_description": "请在倒计时结束前点击“已准备”接受比赛。",
     "waiting_for_players": "等待玩家",
     "waiting_on_others": "等待其他人",
+    "seconds_left": "剩余秒数：{seconds}",
     "confirmed": "已确认",
     "ready": "已准备",
     "locked_in": "已锁定",

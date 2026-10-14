@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "マッチが見つかりました",
+    "match_found_description": "時間切れになる前に「準備完了」を押してマッチを承諾してください。",
     "waiting_for_players": "プレイヤーを待機中",
     "waiting_on_others": "他の参加者を待機中",
+    "seconds_left": "残り秒数: {seconds}",
     "confirmed": "確定済み",
     "ready": "準備完了",
     "locked_in": "確定",

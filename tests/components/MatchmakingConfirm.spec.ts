@@ -71,6 +71,55 @@ describe("MatchmakingConfirm countdown", () => {
   });
 });
 
+describe("MatchmakingConfirm for screen readers", () => {
+  const dialog = () =>
+    document.body.querySelector<HTMLElement>("[role='alertdialog']")!;
+  const announcement = () =>
+    dialog().querySelector("[aria-live='polite']")?.textContent?.trim();
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("names the dialog by its heading and describes what to do", async () => {
+    setConfirmation(confirmation());
+    wrapper = await mountSuspended(MatchmakingConfirm);
+    await flushPromises();
+
+    const labelledBy = dialog().getAttribute("aria-labelledby")!;
+    const describedBy = dialog().getAttribute("aria-describedby")!;
+    expect(document.getElementById(labelledBy)?.textContent?.trim()).toBe(
+      "Match Found",
+    );
+    expect(document.getElementById(describedBy)?.textContent?.trim()).toBe(
+      "Press Ready to accept the match before the timer runs out.",
+    );
+  });
+
+  it("reads the countdown out every ten seconds and at five, not every second", async () => {
+    vi.useFakeTimers({ toFake: ["Date", "setInterval", "clearInterval"] });
+    setConfirmation(confirmation());
+    wrapper = await mountSuspended(MatchmakingConfirm);
+    await flushPromises();
+
+    const heard = [announcement()];
+    for (let second = 0; second < 30; second++) {
+      vi.advanceTimersByTime(1000);
+      await flushPromises();
+      if (announcement() !== heard.at(-1)) {
+        heard.push(announcement());
+      }
+    }
+
+    expect(heard).toEqual([
+      "Seconds left: 30",
+      "Seconds left: 20",
+      "Seconds left: 10",
+      "Seconds left: 5",
+    ]);
+  });
+});
+
 describe("MatchmakingConfirm ring", () => {
   it("keeps ringing until the player accepts, then closes only this ready check's ring", async () => {
     setConfirmation(confirmation());

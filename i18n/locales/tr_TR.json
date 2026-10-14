@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Maç bulundu",
+    "match_found_description": "Süre dolmadan maçı kabul etmek için Hazır'a bas.",
     "waiting_for_players": "Oyuncular bekleniyor",
     "waiting_on_others": "Diğerleri bekleniyor",
+    "seconds_left": "Kalan saniye: {seconds}",
     "confirmed": "Onaylandı",
     "ready": "Hazır",
     "locked_in": "Kesinleşti",

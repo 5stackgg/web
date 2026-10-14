@@ -9,8 +9,16 @@ import PartyQueueLine from "~/components/hub/PartyQueueLine.vue";
 import { Button } from "~/components/ui/button";
 import { useInvites } from "@/composables/useInvites";
 import { useVoiceSession } from "~/composables/useVoiceSession";
+import { useRightSidebar } from "~/composables/useRightSidebar";
+import { currentHub } from "~/composables/useHubState";
 
 const { hasLobbyInvites } = useInvites();
+
+// The hub hides the panels it switches away from rather than unmounting them.
+const { rightSidebarOpen } = useRightSidebar();
+const shown = computed(
+  () => rightSidebarOpen.value && currentHub() === "lobby",
+);
 
 // Party voice can be turned off platform-wide without touching match voice.
 const voiceChatEnabled = computed(
@@ -128,6 +136,7 @@ watch(lobbyId, (next, previous) => {
           type="matchmaking"
           :lobby-id="(currentLobby as any).id"
           :frameless="true"
+          :visible="shown"
           class="min-h-0 flex-1"
         />
       </div>

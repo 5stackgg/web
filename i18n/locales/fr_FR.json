@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Match trouvé",
+    "match_found_description": "Appuyez sur Prêt pour accepter le match avant la fin du compte à rebours.",
     "waiting_for_players": "En attente de joueurs",
     "waiting_on_others": "En attente des autres",
+    "seconds_left": "Secondes restantes : {seconds}",
     "confirmed": "Confirmé",
     "ready": "Prêt",
     "locked_in": "Validé",

@@ -9868,8 +9868,10 @@
       }
     },
     "match_found": "Match gefunden",
+    "match_found_description": "Drück auf Bereit, um das Match anzunehmen, bevor die Zeit abläuft.",
     "waiting_for_players": "Warten auf Spieler",
     "waiting_on_others": "Warten auf andere",
+    "seconds_left": "Verbleibende Sekunden: {seconds}",
     "confirmed": "Bestätigt",
     "ready": "Bereit",
     "locked_in": "Fix dabei",

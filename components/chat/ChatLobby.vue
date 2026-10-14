@@ -8,6 +8,12 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import ChatMatchHeader from "~/components/chat/ChatMatchHeader.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { Upload } from "lucide-vue-next";
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 </script>
 
 <template>
@@ -61,43 +67,51 @@ import { Upload } from "lucide-vue-next";
           {{ matchScoreText }}
         </div>
       </div>
-      <div
-        class="flex items-center justify-between px-3 py-1 text-[11px] text-muted-foreground border-b border-border/40"
-      >
-        <div class="flex items-center gap-1.5">
-          <div class="relative inline-flex">
-            <span
-              v-if="participantsCount > 0"
-              class="absolute inline-flex h-2.5 w-2.5 rounded-full animate-ping bg-emerald-500/60"
-            ></span>
-            <span
-              class="relative inline-flex h-2.5 w-2.5 rounded-full"
-              :class="
-                participantsCount > 0 ? 'bg-emerald-400' : 'bg-zinc-500/60'
-              "
-            ></span>
-          </div>
-          <button
-            type="button"
-            class="underline-offset-2 hover:underline"
-            @click.stop="showParticipants = !showParticipants"
+      <Popover v-model:open="showParticipants">
+        <PopoverAnchor as-child>
+          <div
+            class="flex items-center justify-between px-3 py-1 text-[11px] text-muted-foreground border-b border-border/40"
           >
-            {{ participantsCount }} {{ $t("chat.in_chat") }}
-          </button>
-        </div>
-      </div>
-      <div
-        v-if="showParticipants"
-        class="absolute z-50 top-11 left-2 right-2 rounded-md border bg-popover text-popover-foreground shadow-md p-3 text-xs max-h-52 overflow-y-auto"
-      >
-        <div
-          v-if="participantsCount === 0"
-          class="text-muted-foreground text-[11px]"
+            <div class="flex items-center gap-1.5">
+              <div class="relative inline-flex">
+                <span
+                  v-if="participantsCount > 0"
+                  class="absolute inline-flex h-2.5 w-2.5 rounded-full animate-ping bg-emerald-500/60"
+                ></span>
+                <span
+                  class="relative inline-flex h-2.5 w-2.5 rounded-full"
+                  :class="
+                    participantsCount > 0 ? 'bg-emerald-400' : 'bg-zinc-500/60'
+                  "
+                ></span>
+              </div>
+              <PopoverTrigger as-child>
+                <button
+                  type="button"
+                  class="underline-offset-2 hover:underline"
+                  @click.stop
+                >
+                  {{ participantsCount }} {{ $t("chat.in_chat") }}
+                </button>
+              </PopoverTrigger>
+            </div>
+          </div>
+        </PopoverAnchor>
+        <PopoverContent
+          align="center"
+          class="w-[calc(var(--reka-popover-trigger-width)-1rem)] max-h-52 overflow-y-auto border-border p-3 text-xs shadow-md motion-reduce:!animate-none"
         >
-          {{ $t("chat.no_participants", "No one else is in this chat yet.") }}
-        </div>
-        <ChatParticipants v-else :participants="participants as any" />
-      </div>
+          <div
+            v-if="participantsCount === 0"
+            class="text-muted-foreground text-[11px]"
+          >
+            {{
+              $t("chat.no_participants", "No one else is in this chat yet.")
+            }}
+          </div>
+          <ChatParticipants v-else :participants="participants as any" />
+        </PopoverContent>
+      </Popover>
       <div
         v-if="!isMinimized"
         class="flex flex-col flex-1 min-h-0 transition-opacity duration-200"
@@ -205,95 +219,104 @@ import { Upload } from "lucide-vue-next";
       v-if="isGlobalContext && hideParticipantsSummary && matchInfo"
       :match="matchInfo"
     />
-    <div
+    <Popover
       v-else-if="!hideParticipantsSummary"
-      class="mb-2 flex items-center justify-between text-[11px] text-muted-foreground gap-3"
+      v-model:open="showParticipants"
     >
-      <!-- min-w-0 so this side is what gives when the row runs out of room.
-           The filter beside it is a control at a fixed width; the count is a
-           readout, and a clipped count beats a filter pushed off the card. -->
-      <div class="flex min-w-0 items-center gap-1.5">
-        <!-- A panel serving one room has to say which one, where more than one
-             is on screen. Merged, the destination pills over the input carry
-             that instead and this would only repeat them. -->
-        <span
-          v-if="label && !isMerged"
-          class="inline-flex items-center rounded-sm border px-1.5 py-[1px] font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.14em]"
-          :class="
-            isTeamContext
-              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-              : 'border-border bg-muted/40 text-muted-foreground'
-          "
-        >
-          {{ label }}
-        </span>
-        <span
-          class="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
-          :class="participantsCount > 0 ? 'bg-emerald-400' : 'bg-zinc-500/60'"
-        ></span>
-        <button
-          type="button"
-          class="truncate underline-offset-2 hover:underline"
-          @click.stop="showParticipants = !showParticipants"
-        >
-          {{ participantsCount }} {{ $t("chat.in_chat") }}
-        </button>
-      </div>
-      <div class="flex shrink-0 items-center gap-2">
-        <!-- What is on screen, as opposed to where the next line goes. Both
-             rooms by default; narrowing is for reading one of them while the
-             other is busy. -->
+      <PopoverAnchor as-child>
         <div
-          v-if="isMerged"
-          class="relative grid grid-cols-3 rounded-md bg-background/60 p-[2px]"
+          class="mb-2 flex items-center justify-between text-[11px] text-muted-foreground gap-3"
         >
-          <span
-            class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(33.333%-1.333px)] rounded-sm bg-muted/70 transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
-            :style="{ transform: `translateX(${viewFilterIndex * 100}%)` }"
-          ></span>
-          <button
-            v-for="option in viewFilters"
-            :key="option.value"
-            type="button"
-            class="relative z-10 px-1.5 py-[2px] font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.14em] transition-colors duration-200"
-            :class="
-              viewFilter === option.value
-                ? 'text-foreground'
-                : 'text-muted-foreground/60 hover:text-muted-foreground'
-            "
-            @click.stop="viewFilter = option.value as any"
-          >
-            {{ option.label }}
-            <!-- Narrowing the view is the one way to miss a message on this
-                 panel, so the way back to it is what carries the mark. -->
+          <!-- min-w-0 so this side is what gives when the row runs out of room.
+               The filter beside it is a control at a fixed width; the count is a
+               readout, and a clipped count beats a filter pushed off the card. -->
+          <div class="flex min-w-0 items-center gap-1.5">
+            <!-- A panel serving one room has to say which one, where more than one
+                 is on screen. Merged, the destination pills over the input carry
+                 that instead and this would only repeat them. -->
             <span
-              v-if="unseenFor(option.value)"
-              class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+              v-if="label && !isMerged"
+              class="inline-flex items-center rounded-sm border px-1.5 py-[1px] font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.14em]"
+              :class="
+                isTeamContext
+                  ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                  : 'border-border bg-muted/40 text-muted-foreground'
+              "
+            >
+              {{ label }}
+            </span>
+            <span
+              class="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
+              :class="
+                participantsCount > 0 ? 'bg-emerald-400' : 'bg-zinc-500/60'
+              "
             ></span>
-          </button>
+            <PopoverTrigger as-child>
+              <button
+                type="button"
+                class="truncate underline-offset-2 hover:underline"
+                @click.stop
+              >
+                {{ participantsCount }} {{ $t("chat.in_chat") }}
+              </button>
+            </PopoverTrigger>
+          </div>
+          <div class="flex shrink-0 items-center gap-2">
+            <!-- What is on screen, as opposed to where the next line goes. Both
+                 rooms by default; narrowing is for reading one of them while the
+                 other is busy. -->
+            <div
+              v-if="isMerged"
+              class="relative grid grid-cols-3 rounded-md bg-background/60 p-[2px]"
+            >
+              <span
+                class="pointer-events-none absolute inset-y-[2px] left-[2px] w-[calc(33.333%-1.333px)] rounded-sm bg-muted/70 transition-transform duration-300 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"
+                :style="{ transform: `translateX(${viewFilterIndex * 100}%)` }"
+              ></span>
+              <button
+                v-for="option in viewFilters"
+                :key="option.value"
+                type="button"
+                class="relative z-10 px-1.5 py-[2px] font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.14em] transition-colors duration-200"
+                :class="
+                  viewFilter === option.value
+                    ? 'text-foreground'
+                    : 'text-muted-foreground/60 hover:text-muted-foreground'
+                "
+                @click.stop="viewFilter = option.value as any"
+              >
+                {{ option.label }}
+                <!-- Narrowing the view is the one way to miss a message on this
+                     panel, so the way back to it is what carries the mark. -->
+                <span
+                  v-if="unseenFor(option.value)"
+                  class="absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                ></span>
+              </button>
+            </div>
+            <NuxtLink
+              v-if="isGlobalContext && matchInfo"
+              :to="`/matches/${(matchInfo as any).id}`"
+              class="flex items-center gap-1.5 text-xs text-primary hover:underline whitespace-nowrap"
+            >
+              {{ matchMetaText }}
+            </NuxtLink>
+            <slot name="header-actions"></slot>
+          </div>
         </div>
-        <NuxtLink
-          v-if="isGlobalContext && matchInfo"
-          :to="`/matches/${(matchInfo as any).id}`"
-          class="flex items-center gap-1.5 text-xs text-primary hover:underline whitespace-nowrap"
-        >
-          {{ matchMetaText }}
-        </NuxtLink>
-        <slot name="header-actions"></slot>
-      </div>
-    </div>
-    <div
-      v-if="showParticipants"
-      class="absolute z-20 top-10 right-4 left-4 rounded-md border bg-popover text-popover-foreground shadow-md p-3 text-xs max-h-52 overflow-y-auto"
-    >
-      <div
-        v-if="participantsCount === 0"
-        class="text-muted-foreground text-[11px]"
+      </PopoverAnchor>
+      <PopoverContent
+        class="w-[var(--reka-popover-trigger-width)] max-h-52 overflow-y-auto border-border p-3 text-xs shadow-md motion-reduce:!animate-none"
       >
-        {{ $t("chat.no_participants", "No one else is in this chat yet.") }}
-      </div>
-      <ChatParticipants v-else :participants="participants as any" />
-    </div>
+        <div
+          v-if="participantsCount === 0"
+          class="text-muted-foreground text-[11px]"
+        >
+          {{ $t("chat.no_participants", "No one else is in this chat yet.") }}
+        </div>
+        <ChatParticipants v-else :participants="participants as any" />
+      </PopoverContent>
+    </Popover>
     <div class="relative flex flex-1 min-h-0 flex-col gap-2">
       <!-- First message in an empty room dissolves the empty copy under the
            arriving list instead of trading them on a frame. Both branches
@@ -546,6 +569,12 @@ export default {
     hideParticipantsSummary: {
       type: Boolean,
       default: false,
+    },
+    // False while a host hides this chat without unmounting it (v-show). The
+    // participants popover is portaled out of the host, so it would stay open.
+    visible: {
+      type: Boolean,
+      default: true,
     },
     match: {
       type: Object as PropType<unknown>,
@@ -1135,6 +1164,11 @@ export default {
     },
   },
   watch: {
+    visible(visible) {
+      if (!visible) {
+        this.showParticipants = false;
+      }
+    },
     // Showing a room again is what clears its mark -- the messages it was
     // holding are on screen the moment the filter widens.
     viewFilter: {

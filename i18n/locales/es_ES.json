@@ -5377,7 +5377,9 @@
         "plugin": "En el juego",
         "demo": "Demo",
         "editor": "Editor",
-        "import": "Importación"
+        "import": "Importación",
+        "fork": "Bifurcación",
+        "discovery": "Descubrir"
       },
       "confidence": {
         "exact": "Grabado",
@@ -9989,6 +9991,8 @@
     "select_region": "Selecciona una región",
     "no_region": "Sin asignar",
     "remove_node": "Eliminar nodo",
+    "remove_node_confirm_title": "¿Eliminar este nodo?",
+    "remove_node_confirm_description": "El nodo y todos sus servidores dedicados se eliminarán de 5Stack. Esta acción no se puede deshacer.",
     "remove_ports": "Eliminar puertos",
     "mode": {
       "use_as_match": "Usar como servidor de partidas",

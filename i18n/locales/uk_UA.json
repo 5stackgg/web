@@ -5377,7 +5377,9 @@
         "plugin": "У грі",
         "demo": "Демо",
         "editor": "Редактор",
-        "import": "Імпорт"
+        "import": "Імпорт",
+        "fork": "Відгалуження",
+        "discovery": "Пошук"
       },
       "confidence": {
         "exact": "Записана",
@@ -9989,6 +9991,8 @@
     "select_region": "Обери регіон",
     "no_region": "Не призначено",
     "remove_node": "Видалити ноду",
+    "remove_node_confirm_title": "Видалити цю ноду?",
+    "remove_node_confirm_description": "Ноду та всі виділені сервери на ній буде видалено з 5Stack. Цю дію не можна скасувати.",
     "remove_ports": "Видалити порти",
     "mode": {
       "use_as_match": "Використовувати як матч-сервер",

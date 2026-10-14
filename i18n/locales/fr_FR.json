@@ -5377,7 +5377,9 @@
         "plugin": "En jeu",
         "demo": "Démo",
         "editor": "Éditeur",
-        "import": "Import"
+        "import": "Import",
+        "fork": "Copie",
+        "discovery": "Découvrir"
       },
       "confidence": {
         "exact": "Enregistré",
@@ -9989,6 +9991,8 @@
     "select_region": "Sélectionner une région",
     "no_region": "Non attribué",
     "remove_node": "Supprimer le nœud",
+    "remove_node_confirm_title": "Supprimer ce nœud ?",
+    "remove_node_confirm_description": "Le nœud et tous les serveurs dédiés qu'il héberge seront supprimés de 5Stack. Cette action est irréversible.",
     "remove_ports": "Supprimer les ports",
     "mode": {
       "use_as_match": "Utiliser comme serveur de match",

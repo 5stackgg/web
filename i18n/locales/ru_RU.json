@@ -5377,7 +5377,9 @@
         "plugin": "В игре",
         "demo": "Демо",
         "editor": "Редактор",
-        "import": "Импорт"
+        "import": "Импорт",
+        "fork": "Ответвление",
+        "discovery": "Поиск"
       },
       "confidence": {
         "exact": "Записана",
@@ -9989,6 +9991,8 @@
     "select_region": "Выбрать регион",
     "no_region": "Не назначен",
     "remove_node": "Удалить ноду",
+    "remove_node_confirm_title": "Удалить эту ноду?",
+    "remove_node_confirm_description": "Нода и все выделенные серверы на ней будут удалены из 5Stack. Это действие нельзя отменить.",
     "remove_ports": "Удалить порты",
     "mode": {
       "use_as_match": "Использовать как сервер для матчей",

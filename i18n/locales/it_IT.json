@@ -5377,7 +5377,9 @@
         "plugin": "In gioco",
         "demo": "Demo",
         "editor": "Editor",
-        "import": "Importazione"
+        "import": "Importazione",
+        "fork": "Copia",
+        "discovery": "Scopri"
       },
       "confidence": {
         "exact": "Registrato",
@@ -9989,6 +9991,8 @@
     "select_region": "Seleziona regione",
     "no_region": "Non assegnato",
     "remove_node": "Rimuovi nodo",
+    "remove_node_confirm_title": "Rimuovere questo nodo?",
+    "remove_node_confirm_description": "Il nodo e tutti i server dedicati presenti verranno rimossi da 5Stack. L'operazione non può essere annullata.",
     "remove_ports": "Rimuovi porte",
     "mode": {
       "use_as_match": "Usa come server di match",

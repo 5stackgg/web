@@ -61,6 +61,15 @@ import {
   Network,
   MoreVertical,
 } from "lucide-vue-next";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
@@ -980,7 +989,7 @@ const isSectionExpanded = (section: string) => {
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
-              @click="removeGameNodeServer"
+              @click="confirmRemoveNode = true"
               class="text-destructive focus:text-destructive"
             >
               <Trash2 />
@@ -1209,7 +1218,7 @@ const isSectionExpanded = (section: string) => {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                @click="removeGameNodeServer"
+                @click="confirmRemoveNode = true"
                 class="text-destructive focus:text-destructive"
               >
                 <Trash2 />
@@ -1881,6 +1890,35 @@ const isSectionExpanded = (section: string) => {
     :open="editCs2OptionsSheet"
     @close="editCs2OptionsSheet = false"
   />
+
+  <AlertDialog
+    :open="confirmRemoveNode"
+    @update:open="(open) => (confirmRemoveNode = open)"
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{ $t("game_server.remove_node_confirm_title") }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("game_server.remove_node_confirm_description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel :disabled="removingNode">
+          {{ $t("common.cancel") }}
+        </AlertDialogCancel>
+        <Button
+          variant="destructive"
+          data-testid="confirm-remove-node"
+          @click="removeGameNodeServer"
+        >
+          <Trash2 class="mr-2 h-4 w-4" />
+          {{ $t("game_server.remove_node") }}
+        </Button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts">
@@ -1958,6 +1996,7 @@ interface ComponentData {
   portForm: ReturnType<typeof useForm>;
   server_regions: ServerRegion[];
   removingNode: boolean;
+  confirmRemoveNode: boolean;
 }
 
 export default defineComponent({
@@ -2048,6 +2087,7 @@ export default defineComponent({
       editCs2OptionsSheet: false,
       server_regions: [],
       removingNode: false,
+      confirmRemoveNode: false,
       pinBuildIdForm: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -2266,6 +2306,7 @@ export default defineComponent({
             ],
           }),
         });
+        this.confirmRemoveNode = false;
       } finally {
         this.removingNode = false;
       }

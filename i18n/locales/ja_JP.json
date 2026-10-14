@@ -5377,7 +5377,9 @@
         "plugin": "ゲーム内",
         "demo": "デモ",
         "editor": "エディタ",
-        "import": "インポート"
+        "import": "インポート",
+        "fork": "フォーク",
+        "discovery": "発見"
       },
       "confidence": {
         "exact": "記録済み",
@@ -9989,6 +9991,8 @@
     "select_region": "リージョンを選択",
     "no_region": "未割り当て",
     "remove_node": "ノードを削除",
+    "remove_node_confirm_title": "このノードを削除しますか？",
+    "remove_node_confirm_description": "このノードと、そこにあるすべての専用サーバーが5Stackから削除されます。この操作は元に戻せません。",
     "remove_ports": "ポートを削除",
     "mode": {
       "use_as_match": "試合サーバーとして使用",

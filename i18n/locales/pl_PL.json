@@ -5377,7 +5377,9 @@
         "plugin": "W grze",
         "demo": "Demo",
         "editor": "Edytor",
-        "import": "Import"
+        "import": "Import",
+        "fork": "Rozgałęzienie",
+        "discovery": "Odkrywaj"
       },
       "confidence": {
         "exact": "Nagrana",
@@ -9989,6 +9991,8 @@
     "select_region": "Wybierz region",
     "no_region": "Nieprzypisany",
     "remove_node": "Usuń węzeł",
+    "remove_node_confirm_title": "Usunąć ten węzeł?",
+    "remove_node_confirm_description": "Węzeł i wszystkie serwery dedykowane na nim zostaną usunięte z 5Stack. Tej operacji nie można cofnąć.",
     "remove_ports": "Usuń porty",
     "mode": {
       "use_as_match": "Użyj jako serwer meczowy",

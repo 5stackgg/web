@@ -5377,7 +5377,9 @@
         "plugin": "游戏内",
         "demo": "录像",
         "editor": "编辑器",
-        "import": "导入"
+        "import": "导入",
+        "fork": "复刻",
+        "discovery": "发现"
       },
       "confidence": {
         "exact": "已录制",
@@ -9989,6 +9991,8 @@
     "select_region": "选择地区",
     "no_region": "未分配",
     "remove_node": "移除节点",
+    "remove_node_confirm_title": "移除此节点？",
+    "remove_node_confirm_description": "该节点及其上的所有专用服务器都将从 5Stack 中移除。此操作无法撤销。",
     "remove_ports": "移除端口",
     "mode": {
       "use_as_match": "用作比赛服务器",

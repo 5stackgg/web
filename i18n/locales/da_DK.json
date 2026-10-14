@@ -5377,7 +5377,9 @@
         "plugin": "I spillet",
         "demo": "Demo",
         "editor": "Editor",
-        "import": "Import"
+        "import": "Import",
+        "fork": "Forgrening",
+        "discovery": "Opdag"
       },
       "confidence": {
         "exact": "Optaget",
@@ -9989,6 +9991,8 @@
     "select_region": "Vælg region",
     "no_region": "Ikke tildelt",
     "remove_node": "Fjern node",
+    "remove_node_confirm_title": "Fjern denne node?",
+    "remove_node_confirm_description": "Noden og alle dedikerede servere på den fjernes fra 5Stack. Det kan ikke fortrydes.",
     "remove_ports": "Fjern porte",
     "mode": {
       "use_as_match": "Brug som kampserver",

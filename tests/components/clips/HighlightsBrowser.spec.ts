@@ -84,6 +84,12 @@ describe("HighlightsBrowser", () => {
     ]);
   });
 
+  it("shows the chosen kills filter on its trigger", async () => {
+    const wrapper = await mountBrowser("/highlights?kills=3");
+
+    expect(wrapper.text()).toContain("3+ kills");
+  });
+
   it("lists the event's participants in the player filter", async () => {
     const wrapper = await mountBrowser(
       "/events/event-1?tab=highlights",

@@ -5446,6 +5446,7 @@
         "favorite": "내 목록에 저장",
         "unfavorite": "저장 목록에서 제거",
         "open": "라인업 열기",
+        "load_in_game": "게임에서 불러오기",
         "has_video": "영상 있음",
         "rendering": "미리보기 렌더링 중…",
         "rendering_progress": "미리보기 렌더링 중… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "조준 정밀도를 바꾸지 못했습니다",
         "favorite_failed": "저장한 라인업을 갱신하지 못했습니다",
         "aim_delta": "추정 조준 대 기록 조준",
-        "technical": "기술 정보"
+        "technical": "기술 정보",
+        "actions_title": "라이브러리",
+        "fork_hint": "라이브러리에 복사해 수정합니다",
+        "submit_hint": "다음으로 검토자가 확인합니다",
+        "mark_bad": "좋지 않음으로 표시",
+        "bad_hint": "기록된 대로 떨어지지 않습니다",
+        "rerender_hint": "미리보기를 다시 촬영합니다"
       },
       "practice": {
         "title": "연습 서버",
@@ -5779,6 +5786,7 @@
         "delete_ask": "삭제할까요? 라인업은 남습니다.",
         "deleted": "실행 플랜을 삭제했습니다. 라인업은 남습니다.",
         "steps": "단계",
+        "sheet_throw": "투척",
         "steps_of": "{count} / {max}",
         "steps_required": "저장하기 전에 투척을 하나 이상 추가하세요",
         "add_throw": "투척 추가",

@@ -5448,6 +5448,7 @@
         "favorite": "Save to your list",
         "unfavorite": "Remove from your saved list",
         "open": "Open lineup",
+        "load_in_game": "Load in game",
         "has_video": "Has video",
         "rendering": "Rendering preview…",
         "rendering_progress": "Rendering preview… {percent}%",
@@ -5502,7 +5503,13 @@
         "precision_failed": "Could not change the aim precision",
         "favorite_failed": "Could not update your saved lineups",
         "aim_delta": "Inferred vs Recorded Aim",
-        "technical": "Technical details"
+        "technical": "Technical details",
+        "actions_title": "Library",
+        "fork_hint": "Copy it into your library to change it",
+        "submit_hint": "A reviewer looks at it next",
+        "mark_bad": "Mark as bad",
+        "bad_hint": "It does not land as recorded",
+        "rerender_hint": "Film its preview again"
       },
       "practice": {
         "title": "Practice Server",
@@ -5781,6 +5788,7 @@
         "delete_ask": "Delete it? Its lineups stay.",
         "deleted": "Execute deleted. Its lineups stay.",
         "steps": "Steps",
+        "sheet_throw": "Throw",
         "steps_of": "{count} of {max}",
         "steps_required": "Add at least one throw before saving it",
         "add_throw": "Add a throw",

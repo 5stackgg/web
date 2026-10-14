@@ -5446,6 +5446,7 @@
         "favorite": "Enregistrer dans votre liste",
         "unfavorite": "Retirer de votre liste",
         "open": "Ouvrir le lineup",
+        "load_in_game": "Charger en jeu",
         "has_video": "Avec vidéo",
         "rendering": "Rendu de l'aperçu…",
         "rendering_progress": "Rendu de l'aperçu… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "Impossible de changer la précision de visée",
         "favorite_failed": "Impossible de mettre à jour vos lineups enregistrés",
         "aim_delta": "Visée déduite vs enregistrée",
-        "technical": "Détails techniques"
+        "technical": "Détails techniques",
+        "actions_title": "Bibliothèque",
+        "fork_hint": "Copie-le dans ta bibliothèque pour le modifier",
+        "submit_hint": "Un relecteur l'examine ensuite",
+        "mark_bad": "Marquer comme mauvais",
+        "bad_hint": "Il n'atterrit pas comme enregistré",
+        "rerender_hint": "Refilmer son aperçu"
       },
       "practice": {
         "title": "Serveur d'entraînement",
@@ -5779,6 +5786,7 @@
         "delete_ask": "La supprimer ? Ses lineups restent.",
         "deleted": "Exécution supprimée. Ses lineups restent.",
         "steps": "Étapes",
+        "sheet_throw": "Lancer",
         "steps_of": "{count} sur {max}",
         "steps_required": "Ajoutez au moins un lancer avant de l'enregistrer",
         "add_throw": "Ajouter un lancer",

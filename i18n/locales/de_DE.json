@@ -5446,6 +5446,7 @@
         "favorite": "In deiner Liste speichern",
         "unfavorite": "Aus deiner Liste entfernen",
         "open": "Lineup öffnen",
+        "load_in_game": "Im Spiel laden",
         "has_video": "Mit Video",
         "rendering": "Vorschau wird gerendert…",
         "rendering_progress": "Vorschau wird gerendert… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "Die Zielgenauigkeit konnte nicht geändert werden",
         "favorite_failed": "Deine gespeicherten Lineups konnten nicht aktualisiert werden",
         "aim_delta": "Abgeleitetes vs. aufgezeichnetes Zielen",
-        "technical": "Technische Details"
+        "technical": "Technische Details",
+        "actions_title": "Bibliothek",
+        "fork_hint": "In deine Bibliothek kopieren, um es zu ändern",
+        "submit_hint": "Als Nächstes sieht es sich ein Prüfer an",
+        "mark_bad": "Als schlecht markieren",
+        "bad_hint": "Es landet nicht wie aufgezeichnet",
+        "rerender_hint": "Die Vorschau neu filmen"
       },
       "practice": {
         "title": "Übungsserver",
@@ -5779,6 +5786,7 @@
         "delete_ask": "Löschen? Seine Lineups bleiben.",
         "deleted": "Execute gelöscht. Seine Lineups bleiben.",
         "steps": "Schritte",
+        "sheet_throw": "Wurf",
         "steps_of": "{count} von {max}",
         "steps_required": "Füge mindestens einen Wurf hinzu, bevor du speicherst",
         "add_throw": "Wurf hinzufügen",

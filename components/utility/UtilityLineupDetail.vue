@@ -2,6 +2,8 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
+  Archive,
+  ArchiveRestore,
   ArrowBigUp,
   Check,
   ChevronDown,
@@ -11,8 +13,10 @@ import {
   Globe,
   Heart,
   Lock,
+  PencilLine,
   Share2,
   SkipForward,
+  Trash2,
   Users,
 } from "lucide-vue-next";
 import {
@@ -40,6 +44,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicker.vue";
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
+import UtilityLineupActions from "~/components/utility/UtilityLineupActions.vue";
 import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import UtilityLineupPreview from "~/components/utility/UtilityLineupPreview.vue";
 import UtilityLineupViewer3D from "~/components/utility/UtilityLineupViewer3D.vue";
@@ -388,6 +393,17 @@ const canRestore = computed(
   () => !!lineup.value?.can_edit && !!lineup.value.archived_at,
 );
 
+// Only a public lineup can be voted on, and marking your own as bad says
+// nothing anybody needs to hear.
+const canMarkBad = computed(
+  () =>
+    !!props.canReact &&
+    lineup.value?.visibility === "Public" &&
+    !lineup.value.archived_at &&
+    !lineup.value.can_edit,
+);
+
+
 const color = computed(
   () => UTILITY_TYPE_COLORS[lineup.value?.utility_type ?? "Smoke"] ?? "#ffffff",
 );
@@ -735,6 +751,23 @@ const stats = computed(() => {
           v-else-if="lineup"
           class="ml-auto flex min-w-0 items-center gap-1.5"
         >
+          <!-- Who can see it, on the row with everything else you do to it. -->
+          <FiveStackToolTip v-if="status" as-child :delay-duration="120">
+            <template #trigger>
+              <span
+                data-visibility
+                class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold"
+                :class="status.tone"
+                role="img"
+                :aria-label="status.label"
+              >
+                <component :is="status.icon" class="h-3.5 w-3.5" />
+                {{ status.label }}
+              </span>
+            </template>
+            {{ $t("pages.utility.card.yours", { status: status.label }) }}
+          </FiveStackToolTip>
+
           <!-- From the plan there is a queue behind this one. -->
           <FiveStackToolTip
             v-if="context?.skippable"
@@ -874,7 +907,7 @@ const stats = computed(() => {
             }}
           </FiveStackToolTip>
 
-          <DropdownMenu v-if="canReact">
+          <DropdownMenu v-if="canEdit || canRestore">
             <FiveStackToolTip
               as-child
               side="bottom"
@@ -886,6 +919,7 @@ const stats = computed(() => {
                   <button
                     ref="moreRef"
                     type="button"
+                    data-more
                     :class="tile()"
                     :aria-label="$t('pages.utility.card.more_actions')"
                   >
@@ -900,70 +934,37 @@ const stats = computed(() => {
               side="bottom"
               align="end"
               :side-offset="10"
-              class="w-56 rounded-xl border-white/[0.12] bg-[#232327] p-1.5 [&_[role=separator]]:my-1.5 [&_[role=separator]]:bg-white/[0.08]"
+              class="w-52 rounded-xl border-white/[0.12] bg-[#232327] p-1.5 [&_[role=separator]]:my-1.5 [&_[role=separator]]:bg-white/[0.08]"
             >
-              <!-- Three groups, ruled apart: what its owner does to it,
-                   what anyone can do with it, and taking it away. Words
-                   only -- the glyphs said nothing the words did not. -->
-              <template v-if="canEdit || canSubmitPublic || canRerender">
-                <DropdownMenuItem v-if="canEdit" @click="startEdit()">
-                  {{ $t("pages.utility.edit.action") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canSubmitPublic"
-                  @click="emit('request-public', lineup.id)"
-                >
-                  {{ $t("pages.utility.publish.submit") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canRerender"
-                  :disabled="rendering"
-                  :title="
-                    rendering
-                      ? $t('pages.utility.render_queue.in_flight')
-                      : undefined
-                  "
-                  @click="emit('rerender-preview', lineup.id)"
-                >
-                  {{ $t("pages.utility.render_queue.rerender") }}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-              </template>
-
-              <DropdownMenuItem @click="emit('fork', lineup.id, lineup.name)">
-                {{ $t("pages.utility.fork.action") }}
+              <!-- Changing it and putting it away. What anyone can do with
+                   it is in the Library block, where it can be seen. -->
+              <DropdownMenuItem v-if="canEdit" @click="startEdit()">
+                <PencilLine />
+                {{ $t("pages.utility.edit.action") }}
               </DropdownMenuItem>
-              <DropdownMenuItem @click="emit('vote', lineup.id, -1)">
-                {{
-                  myVote === -1
-                    ? $t("pages.utility.card.unvote")
-                    : $t("pages.utility.card.downvote")
-                }}
+              <DropdownMenuItem
+                v-if="canEdit"
+                class="text-destructive focus:text-destructive"
+                @click="emit('archive', lineup.id, lineup.name)"
+              >
+                <Archive />
+                {{ $t("pages.utility.archive.action") }}
               </DropdownMenuItem>
-
-              <template v-if="canEdit || canRestore">
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  v-if="canEdit"
-                  class="text-destructive focus:text-destructive"
-                  @click="emit('archive', lineup.id, lineup.name)"
-                >
-                  {{ $t("pages.utility.archive.action") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canRestore"
-                  @click="emit('restore', lineup.id)"
-                >
-                  {{ $t("pages.utility.archive.restore") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="canRestore"
-                  class="text-destructive focus:text-destructive"
-                  @click="emit('delete', lineup.id)"
-                >
-                  {{ $t("pages.utility.archive.delete") }}
-                </DropdownMenuItem>
-              </template>
+              <DropdownMenuItem
+                v-if="canRestore"
+                @click="emit('restore', lineup.id)"
+              >
+                <ArchiveRestore />
+                {{ $t("pages.utility.archive.restore") }}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                v-if="canRestore"
+                class="text-destructive focus:text-destructive"
+                @click="emit('delete', lineup.id)"
+              >
+                <Trash2 />
+                {{ $t("pages.utility.archive.delete") }}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -1023,20 +1024,6 @@ const stats = computed(() => {
                 {{ lineup.name }}
               </h2>
               <UtilityConfidenceMark :lineup="lineup" class="mt-1" />
-              <!-- Who can see it is worth a glyph, not a word's width. -->
-              <FiveStackToolTip v-if="status" as-child :delay-duration="120">
-                <template #trigger>
-                  <span
-                    class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-md"
-                    :class="status.tone"
-                    role="img"
-                    :aria-label="status.label"
-                  >
-                    <component :is="status.icon" class="h-3.5 w-3.5" />
-                  </span>
-                </template>
-                {{ $t("pages.utility.card.yours", { status: status.label }) }}
-              </FiveStackToolTip>
             </div>
           </div>
 
@@ -1221,6 +1208,19 @@ const stats = computed(() => {
                  you read last, if at all -- so they sit at the foot of the
                  panel, pushed there even when the lineup has little to say. -->
             <div class="mt-auto flex flex-col gap-3 pt-3">
+              <UtilityLineupActions
+                v-if="canReact"
+                :can-submit-public="canSubmitPublic"
+                :can-mark-bad="canMarkBad"
+                :marked-bad="myVote === -1"
+                :can-rerender="canRerender"
+                :rendering="rendering"
+                @fork="emit('fork', lineup.id, lineup.name)"
+                @request-public="emit('request-public', lineup.id)"
+                @mark-bad="emit('vote', lineup.id, -1)"
+                @rerender="emit('rerender-preview', lineup.id)"
+              />
+
               <div
                 class="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs text-muted-foreground"
               >

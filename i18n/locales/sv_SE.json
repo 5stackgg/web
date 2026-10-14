@@ -5446,6 +5446,7 @@
         "favorite": "Spara i din lista",
         "unfavorite": "Ta bort från dina sparade",
         "open": "Öppna uppställningen",
+        "load_in_game": "Ladda i spelet",
         "has_video": "Har video",
         "rendering": "Renderar förhandsvisning…",
         "rendering_progress": "Renderar förhandsvisning… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "Kunde inte ändra siktprecisionen",
         "favorite_failed": "Kunde inte uppdatera dina sparade uppställningar",
         "aim_delta": "Härlett vs inspelat sikte",
-        "technical": "Tekniska detaljer"
+        "technical": "Tekniska detaljer",
+        "actions_title": "Bibliotek",
+        "fork_hint": "Kopiera till ditt bibliotek för att ändra den",
+        "submit_hint": "En granskare tittar på den härnäst",
+        "mark_bad": "Markera som dålig",
+        "bad_hint": "Den landar inte som inspelad",
+        "rerender_hint": "Filma förhandsvisningen igen"
       },
       "practice": {
         "title": "Träningsserver",
@@ -5779,6 +5786,7 @@
         "delete_ask": "Ta bort den? Uppställningarna blir kvar.",
         "deleted": "Executen borttagen. Uppställningarna blir kvar.",
         "steps": "Steg",
+        "sheet_throw": "Kast",
         "steps_of": "{count} av {max}",
         "steps_required": "Lägg till minst ett kast innan du sparar",
         "add_throw": "Lägg till ett kast",

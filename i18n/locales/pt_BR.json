@@ -5446,6 +5446,7 @@
         "favorite": "Salvar na sua lista",
         "unfavorite": "Remover da sua lista de salvos",
         "open": "Abrir lineup",
+        "load_in_game": "Carregar no jogo",
         "has_video": "Com vídeo",
         "rendering": "Renderizando a prévia…",
         "rendering_progress": "Renderizando a prévia… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "Não foi possível mudar a precisão de mira",
         "favorite_failed": "Não foi possível atualizar seus lineups salvos",
         "aim_delta": "Mira deduzida vs gravada",
-        "technical": "Detalhes técnicos"
+        "technical": "Detalhes técnicos",
+        "actions_title": "Biblioteca",
+        "fork_hint": "Copie para sua biblioteca para alterá-lo",
+        "submit_hint": "Um revisor vai olhar em seguida",
+        "mark_bad": "Marcar como ruim",
+        "bad_hint": "Não cai como foi gravado",
+        "rerender_hint": "Gravar a prévia de novo"
       },
       "practice": {
         "title": "Servidor de treino",
@@ -5779,6 +5786,7 @@
         "delete_ask": "Excluir? Os lineups dele ficam.",
         "deleted": "Execute excluído. Os lineups dele ficam.",
         "steps": "Passos",
+        "sheet_throw": "Arremesso",
         "steps_of": "{count} de {max}",
         "steps_required": "Adicione pelo menos um arremesso antes de salvar",
         "add_throw": "Adicionar arremesso",

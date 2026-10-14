@@ -5446,6 +5446,7 @@
         "favorite": "收藏到我的清單",
         "unfavorite": "從收藏清單中移除",
         "open": "開啟點位",
+        "load_in_game": "在遊戲中載入",
         "has_video": "有影片",
         "rendering": "正在渲染預覽…",
         "rendering_progress": "正在渲染預覽… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "無法修改瞄準精度",
         "favorite_failed": "無法更新你收藏的點位",
         "aim_delta": "推算瞄準與記錄瞄準",
-        "technical": "技術細節"
+        "technical": "技術細節",
+        "actions_title": "庫",
+        "fork_hint": "複製到你的庫中再修改",
+        "submit_hint": "接下來由審核員查看",
+        "mark_bad": "標記為不好",
+        "bad_hint": "落點與錄製的不符",
+        "rerender_hint": "重新拍攝預覽"
       },
       "practice": {
         "title": "練習伺服器",
@@ -5779,6 +5786,7 @@
         "delete_ask": "要刪除嗎？其中的點位會保留。",
         "deleted": "套路已刪除。其中的點位會保留。",
         "steps": "步驟",
+        "sheet_throw": "投擲",
         "steps_of": "{count} / {max}",
         "steps_required": "儲存前至少新增一次投擲",
         "add_throw": "新增投擲",

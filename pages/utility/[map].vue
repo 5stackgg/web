@@ -2514,6 +2514,8 @@ function selectLineup(id: string | null) {
                   :meta-throws="metaSpotByLineup[entry.lineup.id]?.throws ?? null"
                   :meta-busiest="metaBusiest"
                   :show-practice="!isMobile"
+                  :show-author="filters.scope !== 'mine' && filters.scope !== 'archived'"
+                  :context-menu="!isMobile"
                   :can-review="canReview"
                   :can-react="!!mySteamId"
                   @select="openLineup"
@@ -2521,6 +2523,9 @@ function selectLineup(id: string | null) {
                   @review-public="reviewPublic"
                   @vote="onVote"
                   @favorite="onFavorite"
+                  @fork="(id) => forkFromDetail(id, entry.lineup.name)"
+                  @archive="(id) => archiveFromDetail(id, entry.lineup.name)"
+                  @request-public="requestPublic"
                 />
                 </div>
                 </div>

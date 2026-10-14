@@ -5446,6 +5446,7 @@
         "favorite": "收藏到我的列表",
         "unfavorite": "从收藏列表中移除",
         "open": "打开点位",
+        "load_in_game": "在游戏中载入",
         "has_video": "有视频",
         "rendering": "正在渲染预览…",
         "rendering_progress": "正在渲染预览… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "无法修改瞄准精度",
         "favorite_failed": "无法更新你收藏的点位",
         "aim_delta": "推算瞄准与记录瞄准",
-        "technical": "技术细节"
+        "technical": "技术细节",
+        "actions_title": "库",
+        "fork_hint": "复制到你的库中再修改",
+        "submit_hint": "接下来由审核员查看",
+        "mark_bad": "标记为不好",
+        "bad_hint": "落点与录制的不符",
+        "rerender_hint": "重新拍摄预览"
       },
       "practice": {
         "title": "练习服务器",
@@ -5779,6 +5786,7 @@
         "delete_ask": "要删除吗？其中的点位会保留。",
         "deleted": "套路已删除。其中的点位会保留。",
         "steps": "步骤",
+        "sheet_throw": "投掷",
         "steps_of": "{count} / {max}",
         "steps_required": "保存前至少添加一次投掷",
         "add_throw": "添加投掷",

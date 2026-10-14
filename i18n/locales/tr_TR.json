@@ -5446,6 +5446,7 @@
         "favorite": "Listene kaydet",
         "unfavorite": "Kaydedilenlerden çıkar",
         "open": "Dizilimi aç",
+        "load_in_game": "Oyunda yükle",
         "has_video": "Videosu var",
         "rendering": "Önizleme işleniyor…",
         "rendering_progress": "Önizleme işleniyor… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "Nişan hassasiyeti değiştirilemedi",
         "favorite_failed": "Kaydettiğin dizilimler güncellenemedi",
         "aim_delta": "Çıkarılan ve Kaydedilen Nişan",
-        "technical": "Teknik ayrıntılar"
+        "technical": "Teknik ayrıntılar",
+        "actions_title": "Kitaplık",
+        "fork_hint": "Değiştirmek için kitaplığına kopyala",
+        "submit_hint": "Sırada bir inceleyici bakacak",
+        "mark_bad": "Kötü olarak işaretle",
+        "bad_hint": "Kaydedildiği gibi düşmüyor",
+        "rerender_hint": "Önizlemesini yeniden çek"
       },
       "practice": {
         "title": "Antrenman Sunucusu",
@@ -5779,6 +5786,7 @@
         "delete_ask": "Silinsin mi? Dizilimleri kalır.",
         "deleted": "Execute silindi. Dizilimleri kalır.",
         "steps": "Adımlar",
+        "sheet_throw": "Atış",
         "steps_of": "{count} / {max}",
         "steps_required": "Kaydetmeden önce en az bir atış ekle",
         "add_throw": "Atış ekle",

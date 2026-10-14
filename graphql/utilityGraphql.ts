@@ -837,10 +837,7 @@ export const utilityPlaybookFields = {
   updated_at: true,
   can_view: true,
   can_edit: true,
-  owner: {
-    steam_id: true,
-    name: true,
-  },
+  owner: utilityAuthorFields,
   team: {
     name: true,
   },

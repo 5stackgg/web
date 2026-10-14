@@ -5446,6 +5446,7 @@
         "favorite": "Guardar en tu lista",
         "unfavorite": "Quitar de tu lista de guardados",
         "open": "Abrir lineup",
+        "load_in_game": "Cargar en el juego",
         "has_video": "Con vídeo",
         "rendering": "Renderizando vista previa…",
         "rendering_progress": "Renderizando vista previa… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "No se pudo cambiar la precisión de puntería",
         "favorite_failed": "No se pudieron actualizar tus lineups guardados",
         "aim_delta": "Puntería deducida vs grabada",
-        "technical": "Detalles técnicos"
+        "technical": "Detalles técnicos",
+        "actions_title": "Biblioteca",
+        "fork_hint": "Cópialo a tu biblioteca para cambiarlo",
+        "submit_hint": "Un revisor lo mirará a continuación",
+        "mark_bad": "Marcar como malo",
+        "bad_hint": "No cae como se grabó",
+        "rerender_hint": "Grabar de nuevo su vista previa"
       },
       "practice": {
         "title": "Servidor de práctica",
@@ -5779,6 +5786,7 @@
         "delete_ask": "¿Eliminarla? Sus lineups se quedan.",
         "deleted": "Ejecución eliminada. Sus lineups se quedan.",
         "steps": "Pasos",
+        "sheet_throw": "Lanzamiento",
         "steps_of": "{count} de {max}",
         "steps_required": "Añade al menos un lanzamiento antes de guardarla",
         "add_throw": "Añadir un lanzamiento",

@@ -420,6 +420,23 @@ async function loadRoster(teamId: string | null) {
 
 watch(() => current.value?.team_id ?? null, loadRoster, { immediate: true });
 
+// The same player as a face, for the lines that show who throws.
+function playerRef(steamId: string | null | undefined): UtilityAuthorRef | null {
+  if (!steamId) {
+    return null;
+  }
+  const id = String(steamId);
+  const me = auth.me;
+  if (id === mySteamId.value && me) {
+    return {
+      steam_id: id,
+      name: t("pages.utility.playbooks.you"),
+      avatar_url: (me as { avatar_url?: string | null }).avatar_url ?? null,
+    };
+  }
+  return roster.value[id] ?? null;
+}
+
 function playerName(steamId: string | null | undefined) {
   if (!steamId) {
     return null;
@@ -461,6 +478,7 @@ const beats = computed<UtilityExecuteBeat[]>(() => {
       showTime,
       repeatOf: first === undefined ? null : first + 1,
       who: playerName(step.assigned_steam_id),
+      player: playerRef(step.assigned_steam_id),
       mine:
         !!mySteamId.value &&
         String(step.assigned_steam_id ?? "") === mySteamId.value,
@@ -481,6 +499,13 @@ const ownerName = computed(() => {
     : playerName(current.value?.owner_steam_id);
 });
 const teamName = computed(() => current.value?.team?.name ?? null);
+const ownerPlayer = computed<UtilityAuthorRef | null>(() => {
+  const owner = current.value?.owner;
+  if (owner && String(owner.steam_id) !== mySteamId.value) {
+    return owner;
+  }
+  return playerRef(current.value?.owner_steam_id) ?? owner ?? null;
+});
 
 // Whether this map has a mesh to throw an execute in. Without one Play runs
 // on the flat board alone, the way it always did.
@@ -1254,6 +1279,7 @@ async function destroy() {
         :playbook="current"
         :beats="beats"
         :owner="ownerName"
+        :owner-player="ownerPlayer"
         :team="teamName"
         :run="run"
         :running="running"

@@ -5446,6 +5446,7 @@
         "favorite": "自分のリストに保存",
         "unfavorite": "保存リストから削除",
         "open": "ラインナップを開く",
+        "load_in_game": "ゲーム内で読み込む",
         "has_video": "動画あり",
         "rendering": "プレビューをレンダリング中…",
         "rendering_progress": "プレビューをレンダリング中… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "エイム精度を変更できませんでした",
         "favorite_failed": "保存済みラインナップを更新できませんでした",
         "aim_delta": "推定エイムと記録エイム",
-        "technical": "技術的な詳細"
+        "technical": "技術的な詳細",
+        "actions_title": "ライブラリ",
+        "fork_hint": "ライブラリにコピーして変更する",
+        "submit_hint": "次にレビュアーが確認します",
+        "mark_bad": "良くないと評価",
+        "bad_hint": "記録どおりに着地しない",
+        "rerender_hint": "プレビューを撮り直す"
       },
       "practice": {
         "title": "練習サーバー",
@@ -5779,6 +5786,7 @@
         "delete_ask": "削除しますか？ラインナップは残ります。",
         "deleted": "エグゼキュートを削除しました。ラインナップは残ります。",
         "steps": "ステップ",
+        "sheet_throw": "投擲",
         "steps_of": "{count} / {max}",
         "steps_required": "保存する前に投げ物を1つ以上追加してください",
         "add_throw": "投げ物を追加",

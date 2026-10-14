@@ -5446,6 +5446,7 @@
         "favorite": "Gem på din liste",
         "unfavorite": "Fjern fra dine gemte",
         "open": "Åbn opstillingen",
+        "load_in_game": "Indlæs i spillet",
         "has_video": "Har video",
         "rendering": "Renderer forhåndsvisning…",
         "rendering_progress": "Renderer forhåndsvisning… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "Kunne ikke ændre sigtepræcisionen",
         "favorite_failed": "Kunne ikke opdatere dine gemte opstillinger",
         "aim_delta": "Udledt vs optaget sigte",
-        "technical": "Tekniske detaljer"
+        "technical": "Tekniske detaljer",
+        "actions_title": "Bibliotek",
+        "fork_hint": "Kopiér den til dit bibliotek for at ændre den",
+        "submit_hint": "En anmelder ser på den som det næste",
+        "mark_bad": "Markér som dårlig",
+        "bad_hint": "Den lander ikke som optaget",
+        "rerender_hint": "Optag forhåndsvisningen igen"
       },
       "practice": {
         "title": "Træningsserver",
@@ -5779,6 +5786,7 @@
         "delete_ask": "Slet den? Dens opstillinger bliver.",
         "deleted": "Execute slettet. Dens opstillinger bliver.",
         "steps": "Trin",
+        "sheet_throw": "Kast",
         "steps_of": "{count} af {max}",
         "steps_required": "Tilføj mindst ét kast, før du gemmer den",
         "add_throw": "Tilføj et kast",

@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { Globe, Lock, Users } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import UtilityExecuteTransport from "~/components/utility/UtilityExecuteTransport.vue";
@@ -18,6 +19,7 @@ import {
   utilityThrowButtonsKey,
 } from "~/utilities/utilityDisplay";
 import type {
+  UtilityAuthorRef,
   UtilityLineup,
   UtilityPlaybook,
   UtilityPlaybookStep,
@@ -40,6 +42,8 @@ export type UtilityExecuteBeat = {
   repeatOf: number | null;
   /** Who throws it, by name. */
   who: string | null;
+  /** And as a face, when the roster knows them. */
+  player?: UtilityAuthorRef | null;
   mine: boolean;
 };
 
@@ -54,6 +58,7 @@ const props = withDefaults(
     beats: UtilityExecuteBeat[];
     /** Whose it is, and the team it belongs to, by name. */
     owner?: string | null;
+    ownerPlayer?: UtilityAuthorRef | null;
     team?: string | null;
     /** The execute's run: its clock, and its play bar's length. */
     run: PlaybackClock;
@@ -70,6 +75,7 @@ const props = withDefaults(
   }>(),
   {
     owner: null,
+    ownerPlayer: null,
     team: null,
     running: false,
     scene: false,
@@ -272,6 +278,11 @@ function call(beat: UtilityExecuteBeat) {
   return parts.join(" ");
 }
 
+// Where on the run's clock a step falls, as a share of the whole run.
+function along(beat: UtilityExecuteBeat) {
+  return duration.value > 0 ? (beat.seconds / duration.value) * 100 : 0;
+}
+
 function throwShort(lineup: UtilityLineup) {
   return t(
     `pages.utility.throw_buttons.${utilityThrowButtonsKey(lineup.throw_strength)}_short`,
@@ -392,6 +403,27 @@ onBeforeUnmount(() => {
     </FiveStackToolTip>
   </div>
 
+  <div
+    v-if="ownerPlayer || owner || team"
+    data-execute-by
+    class="-mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground"
+  >
+    <PlayerDisplay
+      v-if="ownerPlayer"
+      :player="ownerPlayer"
+      size="xs"
+      compact
+      truncate-name
+      :show-elo="false"
+      :show-role="false"
+      :show-online="false"
+      class="min-w-0"
+    />
+    <span v-else-if="owner" class="min-w-0 truncate">{{ owner }}</span>
+    <span v-if="(ownerPlayer || owner) && team" aria-hidden="true">·</span>
+    <span v-if="team" class="min-w-0 truncate">{{ team }}</span>
+  </div>
+
   <p
     v-if="playbook.description"
     class="whitespace-pre-wrap text-xs leading-relaxed text-muted-foreground"
@@ -502,106 +534,155 @@ onBeforeUnmount(() => {
     </p>
   </template>
 
-  <!-- Time runs down the gutter, because an execute is a clock. A second that
+  <!-- A run sheet: when, what, who, and where on the clock. A second that
        repeats prints once, so four throws on one call read as one moment. -->
-  <ol v-else class="flex flex-col">
-    <li v-for="beat of beats" :key="beat.key">
-      <component
-        :is="beat.lineup ? 'button' : 'div'"
-        :type="beat.lineup ? 'button' : undefined"
-        class="grid w-full grid-cols-[2.375rem_1.375rem_minmax(0,1fr)] items-start gap-2 rounded-md px-1 py-[7px] text-left transition-[opacity,background-color] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/70 motion-reduce:transition-none"
-        :class="[
-          beat.lineup ? 'hover:bg-white/[0.04]' : '',
-          waiting(beat) ? 'opacity-40' : '',
-          lit(beat) || (beat.lineup && hoveredLineupId === beat.lineup.id)
-            ? 'bg-white/[0.04]'
-            : '',
-        ]"
-        @click="beat.lineup ? emit('step', beat.index) : undefined"
-        @mouseenter="beat.lineup ? emit('hover', beat.lineup.id) : undefined"
-        @mouseleave="beat.lineup ? emit('hover', null) : undefined"
+  <div
+    v-else
+    data-run-sheet
+    class="overflow-hidden rounded-[10px] border border-border"
+  >
+    <div
+      class="grid h-7 grid-cols-[2.5rem_minmax(0,1fr)_5.5rem] items-center gap-2 border-b border-border bg-card/60 px-2.5 font-mono text-[0.56rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70 max-[480px]:grid-cols-[2.25rem_minmax(0,1fr)]"
+    >
+      <span class="text-right">T+</span>
+      <span>{{ $t("pages.utility.playbooks.sheet_throw") }}</span>
+      <span class="tabular-nums max-[480px]:hidden">
+        0 ···
+        {{
+          $t("pages.utility.playbooks.duration", {
+            seconds: duration.toFixed(1),
+          })
+        }}
+      </span>
+    </div>
+    <ol class="flex flex-col">
+      <li
+        v-for="beat of beats"
+        :key="beat.key"
+        class="border-b border-border last:border-b-0"
       >
-        <span
-          class="pt-[5px] text-right font-mono text-[0.69rem] font-semibold leading-none tabular-nums"
-          :class="beat.showTime ? 'text-muted-foreground' : 'text-transparent'"
-          :aria-hidden="!beat.showTime"
+        <component
+          :is="beat.lineup ? 'button' : 'div'"
+          :type="beat.lineup ? 'button' : undefined"
+          class="grid w-full grid-cols-[2.5rem_minmax(0,1fr)_5.5rem] items-center gap-2 px-2.5 py-2 text-left transition-[opacity,background-color] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/70 motion-reduce:transition-none max-[480px]:grid-cols-[2.25rem_minmax(0,1fr)]"
+          :class="[
+            beat.lineup ? 'hover:bg-white/[0.04]' : '',
+            waiting(beat) ? 'opacity-40' : '',
+            lit(beat) || (beat.lineup && hoveredLineupId === beat.lineup.id)
+              ? 'bg-white/[0.04]'
+              : '',
+          ]"
+          @click="beat.lineup ? emit('step', beat.index) : undefined"
+          @mouseenter="beat.lineup ? emit('hover', beat.lineup.id) : undefined"
+          @mouseleave="beat.lineup ? emit('hover', null) : undefined"
         >
-          {{
-            $t("pages.utility.playbooks.duration", {
-              seconds: beat.seconds.toFixed(1),
-            })
-          }}
-        </span>
-        <span
-          aria-hidden="true"
-          class="grid size-[1.375rem] place-items-center rounded-full text-[0.69rem] font-bold leading-none tabular-nums"
-          :class="beat.lineup ? 'text-[#05070b]' : 'text-muted-foreground'"
-          :style="{ backgroundColor: beat.lineup ? beat.color : '#3f3f46' }"
-        >
-          {{ beat.index + 1 }}
-        </span>
-
-        <span v-if="beat.lineup" class="flex min-w-0 flex-col gap-[3px]">
-          <span class="truncate text-[0.84rem] font-semibold leading-tight">
-            {{ beat.lineup.name }}
+          <span
+            class="self-start pt-[3px] text-right font-mono text-[0.75rem] font-bold leading-none tabular-nums"
+            :class="beat.showTime ? 'text-foreground/80' : 'text-transparent'"
+            :aria-hidden="!beat.showTime"
+          >
+            {{ beat.seconds.toFixed(1) }}
           </span>
-          <span class="flex min-w-0 items-center gap-1.5">
+
+          <span class="flex min-w-0 items-start gap-2">
             <span
-              class="truncate font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.1em] text-muted-foreground"
+              aria-hidden="true"
+              class="grid size-5 shrink-0 place-items-center rounded-[5px] text-[0.69rem] font-extrabold leading-none tabular-nums"
+              :class="beat.lineup ? 'text-[#05070b]' : 'text-muted-foreground'"
+              :style="{ backgroundColor: beat.lineup ? beat.color : '#3f3f46' }"
             >
-              {{ $t(`pages.utility.techniques.${beat.lineup.technique}`) }}
-              <span aria-hidden="true" class="mx-1 text-border">/</span>
-              {{ throwShort(beat.lineup) }}
+              {{ beat.index + 1 }}
             </span>
+
+            <span v-if="beat.lineup" class="flex min-w-0 flex-col gap-[3px]">
+              <span class="truncate text-[0.82rem] font-semibold leading-tight">
+                {{ beat.lineup.name }}
+              </span>
+              <span
+                class="truncate font-mono text-[0.6rem] uppercase leading-relaxed tracking-[0.1em] text-muted-foreground"
+              >
+                {{ $t(`pages.utility.techniques.${beat.lineup.technique}`) }}
+                <span aria-hidden="true" class="mx-1 text-border">/</span>
+                {{ throwShort(beat.lineup) }}
+              </span>
+              <span
+                data-thrower
+                class="flex min-w-0 items-center text-xs"
+                :class="
+                  beat.mine
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground'
+                "
+              >
+                <PlayerDisplay
+                  v-if="beat.player"
+                  :player="beat.player"
+                  size="xs"
+                  compact
+                  truncate-name
+                  :show-elo="false"
+                  :show-role="false"
+                  :show-online="false"
+                  :context-menu="false"
+                  class="min-w-0"
+                />
+                <span v-else class="truncate">
+                  {{ beat.who ?? $t("pages.utility.playbooks.unassigned") }}
+                </span>
+              </span>
+              <span
+                v-if="call(beat)"
+                class="truncate text-xs italic text-muted-foreground"
+              >
+                {{ call(beat) }}
+              </span>
+            </span>
+
+            <span v-else class="flex min-w-0 flex-col gap-[3px]">
+              <span
+                class="truncate text-[0.82rem] font-semibold leading-tight text-muted-foreground"
+              >
+                {{
+                  lineupsLoading
+                    ? $t("pages.utility.playbooks.step_loading")
+                    : $t("pages.utility.playbooks.step_hidden")
+                }}
+              </span>
+              <span
+                v-if="!lineupsLoading"
+                class="truncate text-xs italic text-muted-foreground"
+              >
+                {{ $t("pages.utility.playbooks.step_hidden_note") }}
+              </span>
+            </span>
+          </span>
+
+          <span
+            aria-hidden="true"
+            class="relative h-3.5 rounded-[3px] bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.05)_0_1px,transparent_1px_25%)] max-[480px]:hidden"
+          >
             <span
-              v-if="beat.who"
-              class="inline-flex h-4 max-w-[45%] shrink-0 items-center rounded-full border px-1.5 font-mono text-[0.56rem] font-semibold uppercase leading-none tracking-[0.08em]"
-              :class="
-                beat.mine
-                  ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border text-muted-foreground'
-              "
-            >
-              <span class="truncate">{{ beat.who }}</span>
-            </span>
+              class="absolute left-0 top-1/2 h-0.5 -translate-y-1/2 opacity-40"
+              :style="{ width: `${along(beat)}%`, backgroundColor: beat.color }"
+            />
+            <span
+              class="absolute top-1/2 size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              :style="{
+                left: `${along(beat)}%`,
+                backgroundColor: beat.color,
+                boxShadow: `0 0 8px ${beat.color}`,
+              }"
+            />
           </span>
-          <span
-            v-if="call(beat)"
-            class="truncate text-xs italic text-muted-foreground"
-          >
-            {{ call(beat) }}
-          </span>
-        </span>
+        </component>
+      </li>
+    </ol>
+  </div>
 
-        <span v-else class="flex min-w-0 flex-col gap-[3px]">
-          <span
-            class="truncate text-[0.84rem] font-semibold leading-tight text-muted-foreground"
-          >
-            {{
-              lineupsLoading
-                ? $t("pages.utility.playbooks.step_loading")
-                : $t("pages.utility.playbooks.step_hidden")
-            }}
-          </span>
-          <span
-            v-if="!lineupsLoading"
-            class="truncate text-xs italic text-muted-foreground"
-          >
-            {{ $t("pages.utility.playbooks.step_hidden_note") }}
-          </span>
-        </span>
-      </component>
-    </li>
-  </ol>
-
-  <!-- Whose it is and when it last changed are what you read last, if at
-       all, so they sit at the foot of the panel. -->
+  <!-- When it last changed is what you read last, if at all. -->
   <div
     class="mt-auto flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-white/[0.06] pt-3 text-xs text-muted-foreground"
   >
-    <span v-if="owner" class="min-w-0 truncate">{{ owner }}</span>
-    <span v-if="owner && team" aria-hidden="true">·</span>
-    <span v-if="team" class="min-w-0 truncate">{{ team }}</span>
     <span class="flex-1" />
     <span
       v-if="playbook.updated_at"

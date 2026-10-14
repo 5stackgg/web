@@ -5446,6 +5446,7 @@
         "favorite": "Zapisz na swojej liście",
         "unfavorite": "Usuń z zapisanych",
         "open": "Otwórz ustawkę",
+        "load_in_game": "Wczytaj w grze",
         "has_video": "Z wideo",
         "rendering": "Renderowanie podglądu…",
         "rendering_progress": "Renderowanie podglądu… {percent}%",
@@ -5500,7 +5501,13 @@
         "precision_failed": "Nie udało się zmienić dokładności celowania",
         "favorite_failed": "Nie udało się zaktualizować zapisanych ustawek",
         "aim_delta": "Celowanie wyliczone vs nagrane",
-        "technical": "Szczegóły techniczne"
+        "technical": "Szczegóły techniczne",
+        "actions_title": "Biblioteka",
+        "fork_hint": "Skopiuj do swojej biblioteki, aby ją zmienić",
+        "submit_hint": "Następnie obejrzy ją recenzent",
+        "mark_bad": "Oznacz jako słabą",
+        "bad_hint": "Nie ląduje tak, jak nagrano",
+        "rerender_hint": "Nagraj podgląd ponownie"
       },
       "practice": {
         "title": "Serwer treningowy",
@@ -5779,6 +5786,7 @@
         "delete_ask": "Usunąć? Jego ustawki zostaną.",
         "deleted": "Execute usunięty. Jego ustawki zostają.",
         "steps": "Kroki",
+        "sheet_throw": "Rzut",
         "steps_of": "{count} z {max}",
         "steps_required": "Dodaj co najmniej jeden rzut, zanim go zapiszesz",
         "add_throw": "Dodaj rzut",

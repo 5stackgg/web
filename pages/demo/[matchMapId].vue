@@ -41,7 +41,7 @@ const attach = computed(() => {
   return matchMapId.value === "dev" || v === "1" || v === "true" || v === "";
 });
 const authStore = useAuthStore();
-const { store, start, stop } = useDemoPlayback();
+const { store, start, stop, detach } = useDemoPlayback();
 
 // In attach mode the route param ("dev") isn't a real id — the resolved one
 // lives in the store after start(). Use it for the WS watch + player binding.
@@ -179,8 +179,11 @@ onBeforeUnmount(() => {
   // SPA-internal navigation away from the popup (rare — the URL bar
   // case) still needs the explicit stop. The WS close handler covers
   // window-close. In attach mode we DON'T stop: the standing dev pod
-  // outlives the popup, and the api reaper reclaims the attach row.
-  if (!attach.value) {
+  // outlives the popup, and the api reaper reclaims the attach row; only
+  // this page's listeners go.
+  if (attach.value) {
+    detach();
+  } else {
     void stop();
   }
 });

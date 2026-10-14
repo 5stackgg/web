@@ -16,6 +16,9 @@ let statePollTimer: ReturnType<typeof setInterval> | null = null;
 let stateSocketHandler: ((data: any) => void) | null = null;
 // Wall clock of the last pod-pushed state frame; gates the fallback poll.
 let lastStatePushMs = 0;
+// Not store.sessionRow?.id: the row only arrives with the subscription's
+// first result, and leaving before then must still unsubscribe.
+let subscribedSessionId: string | null = null;
 
 type DemoSpecSlot = {
   slot: number;
@@ -188,6 +191,7 @@ export function useDemoPlayback() {
   }
 
   function subscribeToSession(sessionId: string) {
+    subscribedSessionId = sessionId;
     const sub = getGraphqlClient().subscribe({
       query: generateSubscription({
         match_demo_sessions: [
@@ -418,7 +422,6 @@ export function useDemoPlayback() {
 
   async function stop() {
     if (!store.matchMapId) return;
-    const sessionId = store.sessionRow?.id ?? null;
     store.localStatus = "stopping";
     try {
       await $apollo.defaultClient.mutate({
@@ -430,10 +433,19 @@ export function useDemoPlayback() {
         } as any),
       });
     } finally {
-      if (sessionId) unsubscribe(subscriptionKey(sessionId));
-      stopStatePoll();
-      store.reset();
+      detach();
     }
+  }
+
+  // Lets go of the session without stopping it: drops the subscription,
+  // the state poll and its listeners, and leaves the pod running.
+  function detach() {
+    if (subscribedSessionId) {
+      unsubscribe(subscriptionKey(subscribedSessionId));
+      subscribedSessionId = null;
+    }
+    stopStatePoll();
+    store.reset();
   }
 
   // Fire-and-forget over the existing WS — lower latency than a
@@ -755,6 +767,7 @@ export function useDemoPlayback() {
     store,
     start,
     stop,
+    detach,
     play,
     pause,
     togglePause,

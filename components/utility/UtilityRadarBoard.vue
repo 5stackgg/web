@@ -28,6 +28,7 @@ import {
 import type {
   UtilityBoardMarker,
   UtilityBoardSegment,
+  UtilityBoardShape,
   UtilityMetaSpot,
 } from "~/utilities/utilityDisplay";
 import type { UtilityLineup } from "~/types/utility";
@@ -85,6 +86,7 @@ const props = withDefaults(
     pickZ?: number;
     markers?: UtilityBoardMarker[];
     segments?: UtilityBoardSegment[];
+    shapes?: UtilityBoardShape[];
     selectedSegmentKey?: string | null;
     // The page draws the zoom row above the map instead; see defineExpose.
     controls?: boolean;
@@ -111,6 +113,7 @@ const props = withDefaults(
     pickZ: 0,
     markers: () => [],
     segments: () => [],
+    shapes: () => [],
     selectedSegmentKey: null,
     controls: true,
     peek: false,
@@ -176,6 +179,15 @@ function boardVolumePoints(): RadarPoint[] {
   }
   for (const segment of props.segments ?? []) {
     points.push(segment.from, segment.to);
+  }
+  // One point a ring: a smoke's outline is hundreds, and would outvote
+  // everything else on the board.
+  for (const shape of props.shapes ?? []) {
+    for (const ring of shape.rings) {
+      if (ring.length) {
+        points.push(ring[0]);
+      }
+    }
   }
   return points;
 }
@@ -754,6 +766,45 @@ const drawnSegments = computed<DrawnSegment[]>(() => {
       from,
       to,
     });
+  }
+  return out;
+});
+
+type DrawnShape = {
+  key: string;
+  color: string;
+  fillOpacity: number;
+  dashed: boolean;
+  d: string;
+};
+
+const drawnShapes = computed<DrawnShape[]>(() => {
+  const out: DrawnShape[] = [];
+  for (const shape of props.shapes ?? []) {
+    let d = "";
+    for (const ring of shape.rings) {
+      let first = true;
+      for (const point of ring) {
+        const at = projectCalibrated(point);
+        if (!at) {
+          continue;
+        }
+        d += `${first ? "M" : "L"}${at.x.toFixed(1)},${at.y.toFixed(1)}`;
+        first = false;
+      }
+      if (!first) {
+        d += "Z";
+      }
+    }
+    if (d) {
+      out.push({
+        key: shape.key,
+        color: shape.color ?? "#ffffff",
+        fillOpacity: shape.fillOpacity ?? 0.12,
+        dashed: shape.dashed === true,
+        d,
+      });
+    }
   }
   return out;
 });
@@ -2148,6 +2199,23 @@ function trailPath(marker: Marker) {
               </g>
             </g>
           </g>
+
+          <path
+            v-for="shape of drawnShapes"
+            :key="`shape-${shape.key}`"
+            :d="shape.d"
+            :fill="shape.color"
+            :fill-opacity="shape.fillOpacity"
+            fill-rule="evenodd"
+            :stroke="shape.color"
+            :stroke-opacity="0.85"
+            :stroke-width="2 * ink"
+            :stroke-dasharray="
+              shape.dashed ? `${10 * ink} ${8 * ink}` : undefined
+            "
+            stroke-linejoin="round"
+            class="pointer-events-none"
+          />
 
           <!-- Throws arrive and leave rather than blink. Hovering an execute in
            the rail swaps the whole set at once, and a hard cut there reads as a

@@ -35,7 +35,11 @@ afterEach(() => {
 });
 
 // A board `frame` CSS px wide, on a screen that is or is not a touch screen.
-async function mountBoard(frame: number, coarse: boolean) {
+async function mountBoard(
+  frame: number,
+  coarse: boolean,
+  extra: Record<string, unknown> = {},
+) {
   // Nothing is laid out here, so the measurement is handed over the way a
   // browser reports it: on the first observation.
   vi.stubGlobal(
@@ -74,6 +78,7 @@ async function mountBoard(frame: number, coarse: boolean) {
       mapName: "de_mirage",
       lineups: [lineup],
       seedSrc: radarImageUrl("de_mirage"),
+      ...extra,
     },
     attachTo: document.body,
   });
@@ -107,6 +112,34 @@ async function zoomThrough(wrapper: Wrapper, read: () => number[]) {
 const RING = "g.utility-glyph-fade circle:last-child";
 
 describe("UtilityRadarBoard marks", () => {
+  // An area to throw from and a smoke's footprint: outlines in world units,
+  // a ring inside another filled as a hole.
+  it("draws a panel's shapes as projected outlines that take no clicks", async () => {
+    const square = (x: number, y: number, side: number) => [
+      { x, y, z: -160 },
+      { x: x + side, y, z: -160 },
+      { x: x + side, y: y + side, z: -160 },
+      { x, y: y + side, z: -160 },
+    ];
+    const wrapper = await mountBoard(390, false, {
+      shapes: [
+        {
+          key: "area",
+          color: "#f5b544",
+          dashed: true,
+          rings: [square(-1400, -1400, 400), square(-1300, -1300, 100)],
+        },
+      ],
+    });
+
+    const path = wrapper.find("path[fill-rule='evenodd']");
+    expect(path.exists()).toBe(true);
+    expect(path.attributes("d")!.match(/M/g)).toHaveLength(2);
+    expect(path.attributes("d")!.match(/Z/g)).toHaveLength(2);
+    expect(path.attributes("stroke-dasharray")).toBeTruthy();
+    expect(path.classes()).toContain("pointer-events-none");
+  });
+
   it("keeps a mark the same size on a phone however far in the map is", async () => {
     const wrapper = await mountBoard(390, true);
     const seen = await zoomThrough(wrapper, () =>

@@ -149,16 +149,22 @@ describe("UtilityLineupCard row", () => {
     }
   });
 
-  it("submits your own private lineup for public from its lock", async () => {
+  it("asks before its lock submits your own private lineup for public", async () => {
     const wrapper = await mountRow(
       { visibility: "Private", can_edit: true } as Partial<UtilityLineup>,
       { ownState: true },
     );
 
     await wrapper.find("[data-state-icon]").trigger("click");
+    await flushPromises();
+
+    expect(wrapper.emitted("request-public")).toBeUndefined();
+    expect(wrapper.emitted("select")).toBeUndefined();
+
+    (document.querySelector("[data-submit-public]") as HTMLElement).click();
+    await flushPromises();
 
     expect(wrapper.emitted("request-public")?.[0]).toEqual([base.id]);
-    expect(wrapper.emitted("select")).toBeUndefined();
   });
 
   it("counts upvotes only on a public lineup, beside the same player count", async () => {

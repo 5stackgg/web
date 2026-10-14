@@ -26,6 +26,11 @@ import {
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -395,6 +400,13 @@ const stateSince = computed(() => {
 const LOAD_SQUARE =
   "!size-6 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)]";
 
+const submitOpen = ref(false);
+
+function submitPublic() {
+  submitOpen.value = false;
+  emit("request-public", props.lineup.id);
+}
+
 const STATE_TONES: Record<string, string> = {
   private: "border-border text-muted-foreground",
   team: "border-border text-muted-foreground",
@@ -558,22 +570,44 @@ function open() {
               <UtilityConfidenceMark :lineup="lineup" />
             </div>
 
-            <FiveStackToolTip as-child :delay-duration="120">
-              <template #trigger>
+            <!-- Yours and not public yet: the lock asks before it sends it
+                 off for review. Anything else only says where it stands. -->
+            <Popover v-if="canSubmitPublic" v-model:open="submitOpen">
+              <PopoverTrigger as-child>
                 <button
-                  v-if="canSubmitPublic"
                   type="button"
                   data-state-icon
                   :data-state="state"
-                  :aria-label="$t('pages.utility.publish.submit')"
-                  class="col-start-2 row-start-1 grid size-6 shrink-0 place-items-center justify-self-end rounded-md border bg-background/60 transition-colors hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-[hsl(var(--tac-amber))]"
+                  :aria-label="$t(`pages.utility.mine.state.${state}`)"
+                  class="col-start-2 row-start-1 grid size-6 shrink-0 place-items-center justify-self-end rounded-md border bg-background/60 transition-colors hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-[hsl(var(--tac-amber))] data-[state=open]:border-[hsl(var(--tac-amber)/0.45)] data-[state=open]:text-[hsl(var(--tac-amber))]"
                   :class="STATE_TONES[state]"
-                  @click.stop="emit('request-public', lineup.id)"
+                  @click.stop
                 >
                   <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
                 </button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                class="flex w-64 flex-col gap-2.5 p-3"
+                @click.stop
+              >
+                <p class="text-xs leading-relaxed text-muted-foreground">
+                  {{ $t(`pages.utility.mine.tip.${state}`) }}
+                </p>
+                <Button
+                  size="sm"
+                  data-submit-public
+                  class="tac-amber-cta h-8 w-full text-[13px] font-semibold"
+                  @click="submitPublic()"
+                >
+                  <Globe class="mr-1 h-3.5 w-3.5" />
+                  {{ $t("pages.utility.publish.submit") }}
+                </Button>
+              </PopoverContent>
+            </Popover>
+            <FiveStackToolTip v-else as-child :delay-duration="120">
+              <template #trigger>
                 <span
-                  v-else
                   data-state-icon
                   :data-state="state"
                   role="img"
@@ -584,14 +618,8 @@ function open() {
                   <component :is="STATE_ICONS[state]" class="h-3.5 w-3.5" />
                 </span>
               </template>
-              <span class="flex max-w-[15rem] flex-col gap-1">
-                <span>{{ $t(`pages.utility.mine.tip.${state}`) }}</span>
-                <span
-                  v-if="canSubmitPublic"
-                  class="font-semibold text-[hsl(var(--tac-amber))]"
-                >
-                  {{ $t("pages.utility.publish.submit") }}
-                </span>
+              <span class="block max-w-[15rem]">
+                {{ $t(`pages.utility.mine.tip.${state}`) }}
               </span>
             </FiveStackToolTip>
 

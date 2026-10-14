@@ -493,10 +493,11 @@ const score = computed(
 
 // Whose it is and who can see it, on yours and on anything waiting for review.
 const STATUS_TONES = {
-  Public: "bg-success/15 text-success",
-  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
-  Private: "bg-muted/60 text-muted-foreground",
-  review: "bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]",
+  Public: "border-success/40 bg-success/15 text-success",
+  Team: "border-[hsl(214_80%_62%/0.4)] bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
+  Private: "border-border bg-muted/60 text-muted-foreground",
+  review:
+    "border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]",
 } as const;
 
 const STATUS_ICONS = {
@@ -960,7 +961,7 @@ const stats = computed(() => {
                   <template #trigger>
                     <span
                       data-visibility
-                      class="grid size-7 shrink-0 place-items-center rounded-md"
+                      class="grid size-7 shrink-0 place-items-center rounded-md border"
                       :class="status.tone"
                       role="img"
                       :aria-label="status.label"

@@ -502,9 +502,9 @@ const ownerName = computed(() => {
 });
 const teamName = computed(() => current.value?.team?.name ?? null);
 const VISIBILITY_TONES: Record<string, string> = {
-  Public: "bg-success/15 text-success",
-  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
-  Private: "bg-muted/60 text-muted-foreground",
+  Public: "border-success/40 bg-success/15 text-success",
+  Team: "border-[hsl(214_80%_62%/0.4)] bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
+  Private: "border-border bg-muted/60 text-muted-foreground",
 };
 
 const VISIBILITY_ICONS: Record<string, typeof Globe> = {
@@ -1290,7 +1290,7 @@ async function destroy() {
           <template #trigger>
             <span
               data-execute-visibility
-              class="ml-auto grid size-7 shrink-0 place-items-center rounded-md"
+              class="ml-auto grid size-7 shrink-0 place-items-center rounded-md border"
               :class="VISIBILITY_TONES[current.visibility] ?? VISIBILITY_TONES.Private"
               role="img"
               :aria-label="$t(`pages.utility.visibility.${current.visibility}`)"

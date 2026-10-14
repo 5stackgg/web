@@ -21,6 +21,7 @@ afterEach(() => {
 async function mountJoinForm(options: {
   isOrganizer?: boolean;
   tournamentOwners: string[];
+  rostered?: string[];
   myFreeAgent?: Record<string, unknown>;
 }) {
   useAuthStore().me = {
@@ -45,7 +46,12 @@ async function mountJoinForm(options: {
           id: `entry-${index}`,
           team_id: `registered-${index}`,
           owner_steam_id: owner,
-          roster: [],
+          roster:
+            index === 0
+              ? (options.rostered ?? []).map((steam_id) => ({
+                  player: { steam_id },
+                }))
+              : [],
         })),
       },
       myFreeAgent: options.myFreeAgent ?? null,
@@ -83,22 +89,28 @@ describe("TournamentJoinForm", () => {
     expect(wrapper.text()).toContain(LEAVES_POOL);
   });
 
-  it("stops a player who owns a team here from entering another they own", async () => {
+  it("lets a player who owns a team here enter another they own", async () => {
     const wrapper = await mountJoinForm({ tournamentOwners: [ME] });
 
-    expect(wrapper.text()).not.toContain("Create New Team");
-    expect(ineligible(wrapper).mine).toBe(
-      "Its owner already has a team in this tournament.",
-    );
+    expect(wrapper.text()).toContain("Create New Team");
+    expect(ineligible(wrapper).mine).toBeUndefined();
     expect(ineligible(wrapper).theirs).toBeUndefined();
   });
 
-  it("blocks a managed team whose owner already has a team here", async () => {
+  it("offers a managed team whose owner already has a team here", async () => {
     const wrapper = await mountJoinForm({ tournamentOwners: [SOMEONE_ELSE] });
 
-    expect(ineligible(wrapper).theirs).toBe(
-      "Its owner already has a team in this tournament.",
-    );
+    expect(ineligible(wrapper).theirs).toBeUndefined();
+  });
+
+  it("does not offer a new team to a player already on a roster here", async () => {
+    const wrapper = await mountJoinForm({
+      tournamentOwners: [SOMEONE_ELSE],
+      rostered: [ME],
+    });
+
+    expect(wrapper.text()).not.toContain("Create New Team");
+    expect(ineligible(wrapper).mine).toBeUndefined();
   });
 
   it("lets an organizer add as many teams as they need", async () => {

@@ -7874,6 +7874,8 @@
       "observer_hint": "Teams confirm they're attending before the bracket is seeded. Any team that hasn't checked in by {time} holds the tournament for your review.",
       "confirm_heading": "Confirm your team is attending",
       "confirm_hint": "Teams that haven't checked in by {time} are not seeded into the bracket.",
+      "captain_heading": "Waiting for {captain} to check in",
+      "captain_hint": "Someone who plays on {team} checks it in: its captain or a team admin. Teams that haven't checked in by {time} are not seeded into the bracket.",
       "players_progress": "{checked} of {required} checked in",
       "players_heading": "Every player must check in",
       "players_hint": "Your team is in once {count} players confirm. Substitutes don't need to.",
@@ -8208,7 +8210,6 @@
       "loading_more": "Loading more...",
       "ineligible": {
         "in_tournament": "Already entered in this tournament.",
-        "owner_in_tournament": "Its owner already has a team in this tournament.",
         "in_season": "Already registered for this season.",
         "tournament_organizer": "Already an organizer for this tournament.",
         "in_event": "Already attached to this event.",

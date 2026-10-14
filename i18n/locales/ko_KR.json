@@ -7872,6 +7872,8 @@
       "observer_hint": "대진표를 짜기 전에 팀이 참가를 확정합니다. {time}까지 체크인하지 않은 팀이 있으면 토너먼트는 회원님의 검토를 기다리며 보류됩니다.",
       "confirm_heading": "팀의 참가를 확정하세요",
       "confirm_hint": "{time}까지 체크인하지 않은 팀은 대진표에 들어가지 않습니다.",
+      "captain_heading": "{captain}의 체크인을 기다리는 중",
+      "captain_hint": "{team}의 체크인은 팀에서 뛰는 선수, 즉 팀장이나 팀 관리자가 합니다. {time}까지 체크인하지 않은 팀은 대진표에 들어가지 않습니다.",
       "players_progress": "{required}명 중 {checked}명 체크인",
       "players_heading": "모든 선수가 체크인해야 합니다",
       "players_hint": "{count}명의 선수가 확정하면 팀이 확정됩니다. 교체 선수는 하지 않아도 됩니다.",
@@ -8206,7 +8208,6 @@
       "loading_more": "더 불러오는 중…",
       "ineligible": {
         "in_tournament": "이미 이 토너먼트에 등록되어 있습니다.",
-        "owner_in_tournament": "소유자가 이미 이 토너먼트에 팀을 등록했습니다.",
         "in_season": "이미 이 시즌에 등록되어 있습니다.",
         "tournament_organizer": "이미 이 토너먼트의 주최자입니다.",
         "in_event": "이미 이 이벤트에 연결되어 있습니다.",

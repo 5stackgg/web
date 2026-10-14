@@ -7872,6 +7872,8 @@
       "observer_hint": "Holdene bekræfter, at de deltager, før bracketen sættes op. Ethvert hold, der ikke har checket ind kl. {time}, sætter turneringen på hold til din gennemgang.",
       "confirm_heading": "Bekræft at dit hold deltager",
       "confirm_hint": "Hold, der ikke har checket ind kl. {time}, kommer ikke i bracketen.",
+      "captain_heading": "Venter på, at {captain} checker ind",
+      "captain_hint": "{team} checkes ind af en, der spiller på holdet: anføreren eller en holdadministrator. Hold, der ikke har checket ind kl. {time}, kommer ikke i bracketen.",
       "players_progress": "{checked} ud af {required} har checket ind",
       "players_heading": "Alle spillere skal checke ind",
       "players_hint": "Dit hold er med, så snart {count} spillere bekræfter. Reserver behøver ikke.",
@@ -8206,7 +8208,6 @@
       "loading_more": "Indlæser flere…",
       "ineligible": {
         "in_tournament": "Allerede tilmeldt denne turnering.",
-        "owner_in_tournament": "Ejeren har allerede et hold i denne turnering.",
         "in_season": "Allerede tilmeldt denne sæson.",
         "tournament_organizer": "Allerede arrangør af denne turnering.",
         "in_event": "Allerede knyttet til denne begivenhed.",

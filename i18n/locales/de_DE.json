@@ -7872,6 +7872,8 @@
       "observer_hint": "Teams bestätigen ihre Teilnahme, bevor das Bracket gesetzt wird. Jedes Team, das bis {time} nicht eingecheckt hat, hält das Turnier zur Prüfung an.",
       "confirm_heading": "Bestätige die Teilnahme deines Teams",
       "confirm_hint": "Teams, die bis {time} nicht eingecheckt haben, kommen nicht ins Bracket.",
+      "captain_heading": "Warte darauf, dass {captain} eincheckt",
+      "captain_hint": "{team} wird von jemandem eingecheckt, der im Team spielt: dem Captain oder einem Team-Admin. Teams, die bis {time} nicht eingecheckt haben, kommen nicht ins Bracket.",
       "players_progress": "{checked} von {required} eingecheckt",
       "players_heading": "Jeder Spieler muss einchecken",
       "players_hint": "Dein Team ist dabei, sobald {count} Spieler bestätigen. Ersatzspieler müssen nicht.",
@@ -8206,7 +8208,6 @@
       "loading_more": "Weitere werden geladen …",
       "ineligible": {
         "in_tournament": "Bereits in diesem Turnier gemeldet.",
-        "owner_in_tournament": "Der Besitzer hat bereits ein Team in diesem Turnier.",
         "in_season": "Bereits für diese Saison registriert.",
         "tournament_organizer": "Bereits Organisator dieses Turniers.",
         "in_event": "Bereits diesem Event zugeordnet.",

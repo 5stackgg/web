@@ -545,6 +545,18 @@ function clearTeamEnterDelay(el: Element) {
             :already-entered="!!myTeam || !!myFreeAgent"
           />
 
+          <!-- An owner can enter several of their teams; the check-in panel and
+             the My team card follow the one picked here. -->
+          <Fold :open="myTeams.length > 1">
+            <AnimatedFilters
+              class="mt-4"
+              :model-value="myTeamId"
+              :options="myTeamOptions"
+              square
+              @update:model-value="(id) => (selectedMyTeamId = id ?? null)"
+            />
+          </Fold>
+
           <!-- Directly under the header, above every tab: a check-in deadline the
              reader scrolls past is a team that misses the bracket. -->
           <TournamentCheckInPanel
@@ -994,7 +1006,8 @@ const LEGACY_TABS: Record<string, { tab: string; section?: string }> = {
 export default {
   data() {
     return {
-      myTeam: undefined,
+      myTeams: [] as Array<Record<string, any>>,
+      selectedMyTeamId: null as string | null,
       // The two halves the `tournament` computed merges: the live subscription
       // and the static query. Nothing should read these directly.
       //
@@ -1716,6 +1729,11 @@ export default {
                   },
                 ],
               },
+              order_by: [
+                {
+                  created_at: order_by.asc,
+                },
+              ],
             },
             Object.assign({}, tournamentTeamFields, {
               invites: [
@@ -1738,7 +1756,7 @@ export default {
           return !this.me?.steam_id;
         },
         result: function ({ data }) {
-          this.myTeam = data.tournament_teams?.[0];
+          this.myTeams = data.tournament_teams ?? [];
           this.myTeamLoaded = true;
           const ctx = useTournamentContext();
           if (
@@ -1748,7 +1766,7 @@ export default {
           ) {
             ctx.value = {
               ...ctx.value,
-              isParticipant: !!this.myTeam,
+              isParticipant: this.myTeams.length > 0,
             };
           }
         },
@@ -1949,12 +1967,15 @@ export default {
         : teams;
 
       // tournament_team_invites is only selectable by the `user` role, so the
-      // public teams query can't ask for invites. Swap in the myTeam copy,
-      // which carries them, so pending invites show on this tab too.
-      if (!this.myTeam) return visible;
-      return visible.map((team) =>
-        team.id === this.myTeam.id ? this.myTeam : team,
+      // public teams query can't ask for invites. Swap in the viewer's own
+      // copies, which carry them, so pending invites show on this tab too.
+      const mine = new Map(
+        (this.myTeams as Array<Record<string, any>>).map((team) => [
+          team.id,
+          team,
+        ]),
       );
+      return visible.map((team) => mine.get(team.id) ?? team);
     },
     incompleteTeams() {
       return this.visibleTeams.filter((team) => !team.eligible_at);
@@ -2197,6 +2218,26 @@ export default {
         (this.tournamentRegistration?.can_review_check_in === true ||
           tournament?.is_organizer === true)
       );
+    },
+    myTeam(): Record<string, any> | undefined {
+      const teams = this.myTeams as Array<Record<string, any>>;
+      const steamId = String(this.me?.steam_id ?? "");
+      return (
+        teams.find((team) => team.id === this.selectedMyTeamId) ??
+        teams.find((team) =>
+          (team.roster ?? []).some(
+            (member: Record<string, any>) =>
+              String(member.player?.steam_id) === steamId,
+          ),
+        ) ??
+        teams[0]
+      );
+    },
+    myTeamOptions() {
+      return (this.myTeams as Array<Record<string, any>>).map((team) => ({
+        key: team.id,
+        label: team.name || team.team?.name,
+      }));
     },
     myTeamId() {
       return (this.myTeam as Record<string, any> | undefined)?.id ?? null;

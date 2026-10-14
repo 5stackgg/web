@@ -7872,6 +7872,8 @@
       "observer_hint": "Los equipos confirman su asistencia antes de armar el cuadro. Todo equipo que no haya hecho check-in a las {time} deja el torneo en espera de tu revisión.",
       "confirm_heading": "Confirma la asistencia de tu equipo",
       "confirm_hint": "Los equipos que no hayan hecho check-in a las {time} no entran en el cuadro.",
+      "captain_heading": "Esperando a que {captain} haga check-in",
+      "captain_hint": "El check-in de {team} lo hace alguien que juega en el equipo: su capitán o un administrador del equipo. Los equipos que no hayan hecho check-in a las {time} no entran en el cuadro.",
       "players_progress": "{checked} de {required} con check-in",
       "players_heading": "Todos los jugadores deben hacer check-in",
       "players_hint": "Tu equipo entra cuando {count} jugadores confirmen. Los suplentes no hace falta.",
@@ -8206,7 +8208,6 @@
       "loading_more": "Cargando más…",
       "ineligible": {
         "in_tournament": "Ya está inscrito en este torneo.",
-        "owner_in_tournament": "Su propietario ya tiene un equipo en este torneo.",
         "in_season": "Ya está registrado para esta temporada.",
         "tournament_organizer": "Ya es organizador de este torneo.",
         "in_event": "Ya está asociado a este evento.",

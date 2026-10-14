@@ -7872,6 +7872,8 @@
       "observer_hint": "在產生對戰表之前，隊伍須確認參賽。任何在 {time} 前未報到的隊伍都會讓賽事暫停，等你處理。",
       "confirm_heading": "確認你的隊伍參賽",
       "confirm_hint": "在 {time} 前未報到的隊伍不會進入對戰表。",
+      "captain_heading": "等待 {captain} 報到",
+      "captain_hint": "{team} 由隊內上場的成員報到：隊長或隊伍管理員。在 {time} 前未報到的隊伍不會進入對戰表。",
       "players_progress": "{required} 人中已有 {checked} 人報到",
       "players_heading": "所有選手都需要報到",
       "players_hint": "有 {count} 位選手確認後，你的隊伍即算參賽。替補不用報到。",
@@ -8206,7 +8208,6 @@
       "loading_more": "載入更多…",
       "ineligible": {
         "in_tournament": "已報名這場錦標賽。",
-        "owner_in_tournament": "其擁有者已在這場錦標賽中擁有隊伍。",
         "in_season": "已註冊這個賽季。",
         "tournament_organizer": "已是這場錦標賽的主辦方。",
         "in_event": "已與這個活動連結。",

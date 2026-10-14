@@ -52,7 +52,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       </p>
 
       <FormField
-        v-if="!ownsTeamHere"
+        v-if="!rosteredHere"
         v-slot="{ value, handleChange }"
         name="new_team"
       >
@@ -372,24 +372,20 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    teams() {
-      return this.me.teams;
-    },
     canSelectAnyTeam() {
       return this.tournament.is_organizer || useAuthStore().isAdmin;
     },
-    // Only organizers may own more than one team in a tournament.
-    ownersInTournament() {
-      return new Set(
-        (this.tournament.teams || [])
-          .filter((team) => team.owner_steam_id)
-          .map((team) => String(team.owner_steam_id)),
-      );
-    },
-    ownsTeamHere() {
+    // No player is entered twice: a new team would seat its creator, so it is
+    // closed to anyone already on a roster here. Owning entries is no bar.
+    rosteredHere() {
       return (
         !this.canSelectAnyTeam &&
-        this.ownersInTournament.has(String(this.me.steam_id))
+        (this.tournament.teams || []).some((team) =>
+          (team.roster || []).some(
+            (entry) =>
+              String(entry.player?.steam_id) === String(this.me.steam_id),
+          ),
+        )
       );
     },
     registrationType() {
@@ -450,18 +446,6 @@ export default {
           map[String(team.team_id)] = this.$t(
             "team.search.ineligible.in_tournament",
           );
-        }
-      }
-      if (!this.canSelectAnyTeam) {
-        for (const team of this.teams || []) {
-          if (
-            !map[String(team.id)] &&
-            this.ownersInTournament.has(String(team.owner_steam_id))
-          ) {
-            map[String(team.id)] = this.$t(
-              "team.search.ineligible.owner_in_tournament",
-            );
-          }
         }
       }
       return map;

@@ -1272,7 +1272,7 @@ export default {
     canViewChatLog() {
       return (
         this.isMatchTerminal &&
-        useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
+        useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
       );
     },
     // The api runs RCON only for moderators and above, whoever organizes the match.

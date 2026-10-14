@@ -168,6 +168,7 @@ describe("the Chat Log tab", () => {
   });
 
   it.each([
+    e_player_roles_enum.moderator,
     e_player_roles_enum.tournament_organizer,
     e_player_roles_enum.administrator,
   ])("is shown to a %s organizing nothing", async (role) => {
@@ -179,7 +180,6 @@ describe("the Chat Log tab", () => {
   it.each([
     e_player_roles_enum.user,
     e_player_roles_enum.streamer,
-    e_player_roles_enum.moderator,
   ])("is hidden from a %s, even one organizing the match", async (role) => {
     signIn(role);
 

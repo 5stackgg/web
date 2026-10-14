@@ -45,7 +45,7 @@ import Fold from "~/components/ui/transitions/Fold.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import UtilityAuthorByline from "~/components/utility/UtilityAuthorByline.vue";
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import { Spinner } from "~/components/ui/spinner";
 import UtilityProgressPanel from "~/components/utility/UtilityProgressPanel.vue";
@@ -505,9 +505,9 @@ function open() {
              as the row growing. Everything that only a card shows folds in
              underneath. The name gets the whole first line; whose it is and how
              it is thrown share the second; the numbers stand in a column. -->
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-start gap-2.5">
           <span
-            class="relative block shrink-0"
+            class="relative block shrink-0 self-center"
             :class="thumbBox"
             :title="
               rendering
@@ -596,18 +596,12 @@ function open() {
                 class="min-w-0 truncate"
               />
             </div>
-            <PlayerDisplay
+            <UtilityAuthorByline
               v-if="authorLine"
               data-author-line
-              :player="lineup.author!"
-              size="xs"
-              compact
-              truncate-name
-              :show-elo="false"
-              :show-role="false"
-              :show-online="false"
+              :author="lineup.author!"
               :context-menu="false"
-              class="min-w-0 text-muted-foreground"
+              class="text-muted-foreground"
             />
             <p
               v-if="ownState"
@@ -667,27 +661,28 @@ function open() {
             </span>
           </FiveStackToolTip>
 
+          <!-- One column for everything on the right: the buttons on the
+               name's line, the meter on the last. -->
           <div
-            v-if="practiceReady"
-            class="flex h-7 w-7 shrink-0 items-center justify-center"
+            v-if="practiceReady || (!ownState && (score !== null || metaThrowers))"
+            data-rail
+            class="flex shrink-0 flex-col items-end justify-between gap-1.5 self-stretch"
           >
-            <UtilityPracticeButton :lineup="lineup" shape="icon" />
-          </div>
-
-          <div
-            v-if="!ownState && (score !== null || metaThrowers)"
-            class="flex w-14 shrink-0 flex-col items-end gap-1.5"
-          >
-            <UtilityUpvoteToggle
-              v-if="score !== null"
-              :count="score"
-              :pressed="lineup.my_vote === 1"
-              :disabled="!canReact"
-              @toggle="emit('vote', lineup.id, 1)"
-            />
+            <div class="flex items-center gap-1.5">
+              <div v-if="practiceReady" class="grid size-7 place-items-center">
+                <UtilityPracticeButton :lineup="lineup" shape="icon" />
+              </div>
+              <UtilityUpvoteToggle
+                v-if="!ownState && score !== null"
+                :count="score"
+                :pressed="lineup.my_vote === 1"
+                :disabled="!canReact"
+                @toggle="emit('vote', lineup.id, 1)"
+              />
+            </div>
 
             <UtilityThrowersMeter
-              v-if="metaThrowers"
+              v-if="!ownState && metaThrowers"
               :count="metaThrowers"
               :max="metaBusiest"
               :color="color"
@@ -702,7 +697,7 @@ function open() {
             <DropdownMenuTrigger as-child>
               <button
                 type="button"
-                class="-mr-0.5 shrink-0 rounded-md p-1 text-muted-foreground transition-opacity duration-200 hover:bg-muted/50 hover:text-foreground focus-visible:opacity-100 data-[state=open]:bg-muted/50 data-[state=open]:text-foreground"
+                class="-mr-0.5 grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground transition-opacity duration-200 hover:bg-muted/50 hover:text-foreground focus-visible:opacity-100 data-[state=open]:bg-muted/50 data-[state=open]:text-foreground"
                 :class="
                   mode === 'card' || selected
                     ? 'opacity-100'
@@ -838,16 +833,9 @@ function open() {
             <div class="flex items-center justify-between gap-2">
               <div class="flex min-w-0 items-center gap-2">
                 <template v-if="authorLine" />
-                <PlayerDisplay
+                <UtilityAuthorByline
                   v-else-if="lineup.author"
-                  :player="lineup.author"
-                  size="xs"
-                  compact
-                  truncate-name
-                  :show-elo="false"
-                  :show-role="false"
-                  :show-online="false"
-                  class="min-w-0"
+                  :author="lineup.author"
                 />
                 <span v-else class="text-[0.65rem] text-muted-foreground">
                   {{ $t("pages.utility.card.unknown_author") }}

@@ -43,7 +43,6 @@ import UtilityMobileSheet from "~/components/utility/UtilityMobileSheet.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilitySkeletonList from "~/components/utility/UtilitySkeletonList.vue";
 import UtilityForkDialog from "~/components/utility/UtilityForkDialog.vue";
-import UtilityArchiveDialog from "~/components/utility/UtilityArchiveDialog.vue";
 import UtilityDeleteDialog from "~/components/utility/UtilityDeleteDialog.vue";
 import UtilityLineupDetail from "~/components/utility/UtilityLineupDetail.vue";
 import UtilityReviewTile from "~/components/utility/UtilityReviewTile.vue";
@@ -298,8 +297,6 @@ const { isMobile } = useSidebar();
 const forkOpen = ref(false);
 type LineupRef = { id: string; name: string };
 const forkLineup = ref<LineupRef | null>(null);
-const archiveOpen = ref(false);
-const archiveLineup = ref<LineupRef | null>(null);
 const deleteOpen = ref(false);
 const deleteLineup = ref<LineupRef | null>(null);
 
@@ -1734,18 +1731,60 @@ function togglePractice() {
   }
 }
 
-// Fork and archive are asked for from inside the dialog; both open a dialog of
-// their own, so the detail has to get out of the way first.
+// Fork is asked for from inside the detail and opens a dialog of its own, so
+// the detail has to get out of the way first.
 function forkFromDetail(id: string, name: string) {
   closeDetail();
   forkLineup.value = { id, name };
   forkOpen.value = true;
 }
 
-function archiveFromDetail(id: string, name: string) {
+// Archiving asks nothing: it keeps everything and the toast undoes it. The
+// live library brings the row back when it is.
+async function archiveFromDetail(id: string, name: string) {
   closeDetail();
-  archiveLineup.value = { id, name };
-  archiveOpen.value = true;
+  try {
+    await getGraphqlClient().mutate({
+      mutation: archiveUtilityLineupMutation,
+      variables: { id, archived_at: new Date().toISOString() },
+    });
+    onArchived(id);
+    toast({
+      title: t("pages.utility.archive.done", {
+        name: name || t("pages.utility.archive.this_lineup"),
+      }),
+      action: h(
+        ToastAction,
+        {
+          altText: t("pages.utility.archive.undo"),
+          onClick: () => void undoArchive(id),
+        },
+        () => t("pages.utility.archive.undo"),
+      ),
+    });
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.archive.failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
+}
+
+async function undoArchive(id: string) {
+  try {
+    await getGraphqlClient().mutate({
+      mutation: archiveUtilityLineupMutation,
+      variables: { id, archived_at: null },
+    });
+    toast({ title: t("pages.utility.archive.restored") });
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.archive.restore_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  }
 }
 
 // Patched in place rather than refetched: the whole list would flicker to move
@@ -2711,13 +2750,6 @@ function selectLineup(id: string | null) {
     :lineup-id="forkLineup?.id ?? null"
     :source-name="forkLineup?.name ?? null"
     :map-name="mapName"
-  />
-
-  <UtilityArchiveDialog
-    v-model:open="archiveOpen"
-    :lineup-id="archiveLineup?.id ?? null"
-    :lineup-name="archiveLineup?.name ?? null"
-    @archived="onArchived"
   />
 
   <UtilityDeleteDialog

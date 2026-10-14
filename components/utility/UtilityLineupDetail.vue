@@ -39,11 +39,11 @@ import { Skeleton } from "~/components/ui/skeleton";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import { toast } from "~/components/ui/toast";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import UtilityCollectionPicker from "~/components/utility/UtilityCollectionPicker.vue";
 import UtilityConfidenceMark from "~/components/utility/UtilityConfidenceMark.vue";
 import UtilityLineupActions from "~/components/utility/UtilityLineupActions.vue";
+import UtilityAuthorByline from "~/components/utility/UtilityAuthorByline.vue";
 import UtilityUpvoteToggle from "~/components/utility/UtilityUpvoteToggle.vue";
 import UtilityThrowStrip from "~/components/utility/UtilityThrowStrip.vue";
 import UtilityLineupPreview from "~/components/utility/UtilityLineupPreview.vue";
@@ -365,7 +365,12 @@ const barOffer = computed<UtilityBarOffer | null>(() => {
   return {
     target: { lineupId: row.id },
     actions:
-      props.canPractice === false ? [] : [{ kind: "lineup", lineup: row }],
+      props.canPractice === false
+        ? []
+        : [
+            { kind: "lineup", lineup: row },
+            { kind: "drill", lineup: row },
+          ],
   };
 });
 
@@ -756,13 +761,12 @@ const stats = computed(() => {
             <template #trigger>
               <span
                 data-visibility
-                class="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-semibold"
+                class="grid size-8 shrink-0 place-items-center rounded-md"
                 :class="status.tone"
                 role="img"
                 :aria-label="status.label"
               >
-                <component :is="status.icon" class="h-3.5 w-3.5" />
-                {{ status.label }}
+                <component :is="status.icon" class="h-4 w-4" />
               </span>
             </template>
             {{ $t("pages.utility.card.yours", { status: status.label }) }}
@@ -787,27 +791,6 @@ const stats = computed(() => {
               </button>
             </template>
             {{ $t("pages.utility.plan.skip") }}
-          </FiveStackToolTip>
-
-          <FiveStackToolTip
-            v-if="canThreeD"
-            as-child
-            side="bottom"
-            :delay-duration="120"
-            :tap-toggle="false"
-          >
-            <template #trigger>
-              <button
-                type="button"
-                :class="tile(threeD, true)"
-                :aria-pressed="threeD"
-                :aria-label="threeDLabel"
-                @click="threeD = !threeD"
-              >
-                3D
-              </button>
-            </template>
-            {{ threeDLabel }}
           </FiveStackToolTip>
 
           <UtilityUpvoteToggle
@@ -1003,9 +986,62 @@ const stats = computed(() => {
               </h2>
               <UtilityConfidenceMark :lineup="lineup" class="mt-1" />
             </div>
+            <div
+              class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2"
+            >
+              <div
+                data-byline
+                class="flex min-w-0 items-center gap-2 text-xs text-muted-foreground"
+              >
+                <UtilityAuthorByline
+                  v-if="lineup.author"
+                  :author="lineup.author"
+                />
+                <span v-else>
+                  {{ $t("pages.utility.card.unknown_author") }}
+                </span>
+                <span
+                  v-if="lineup.team"
+                  class="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
+                >
+                  {{ lineup.team.short_name || lineup.team.name }}
+                </span>
+              </div>
+              <UtilityLineupActions
+                v-if="canReact"
+                :can-submit-public="canSubmitPublic"
+                :can-mark-bad="canMarkBad"
+                :marked-bad="myVote === -1"
+                :can-rerender="canRerender"
+                :rendering="rendering"
+                @fork="emit('fork', lineup.id, lineup.name)"
+                @request-public="emit('request-public', lineup.id)"
+                @mark-bad="emit('vote', lineup.id, -1)"
+                @rerender="emit('rerender-preview', lineup.id)"
+              />
+            </div>
           </div>
 
-          <UtilityLineupPreview :lineup="lineup" :three-d="cardThreeD" />
+          <UtilityLineupPreview :lineup="lineup" :three-d="cardThreeD">
+            <template v-if="canThreeD" #corner>
+              <button
+                type="button"
+                data-three-d
+                class="inline-flex h-[26px] items-center rounded-md border px-2 font-mono text-xs font-semibold backdrop-blur-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                :class="
+                  threeD
+                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-black/70 text-[hsl(var(--tac-amber))]'
+                    : 'border-transparent bg-black/60 text-white/90 hover:bg-black/80'
+                "
+                :aria-pressed="threeD"
+                :aria-label="threeDLabel"
+                :title="threeDLabel"
+                @click="threeD = !threeD"
+              >
+                3D
+              </button>
+            </template>
+          </UtilityLineupPreview>
           <UtilityLineupStills :stills="lineup.preview_stills_url" />
 
           <!-- Editing swaps the details for the form; the throw stays on
@@ -1182,50 +1218,10 @@ const stats = computed(() => {
               />
             </HeightGlide>
 
-            <!-- Who made it, whether it is public and the raw numbers are what
-                 you read last, if at all -- so they sit at the foot of the
-                 panel, pushed there even when the lineup has little to say. -->
+            <!-- The raw numbers are what you read last, if at all -- so they
+                 sit at the foot of the panel, pushed there even when the
+                 lineup has little to say. -->
             <div class="mt-auto flex flex-col gap-3 pt-3">
-              <UtilityLineupActions
-                v-if="canReact"
-                :lineup="lineup"
-                :can-practice="canPractice !== false"
-                :can-submit-public="canSubmitPublic"
-                :can-mark-bad="canMarkBad"
-                :marked-bad="myVote === -1"
-                :can-rerender="canRerender"
-                :rendering="rendering"
-                @fork="emit('fork', lineup.id, lineup.name)"
-                @request-public="emit('request-public', lineup.id)"
-                @mark-bad="emit('vote', lineup.id, -1)"
-                @rerender="emit('rerender-preview', lineup.id)"
-              />
-
-              <div
-                class="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-xs text-muted-foreground"
-              >
-                <PlayerDisplay
-                  v-if="lineup.author"
-                  :player="lineup.author"
-                  size="xs"
-                  compact
-                  truncate-name
-                  :show-elo="false"
-                  :show-role="false"
-                  :show-online="false"
-                  class="min-w-0"
-                />
-                <span v-else>
-                  {{ $t("pages.utility.card.unknown_author") }}
-                </span>
-                <span
-                  v-if="lineup.team"
-                  class="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
-                >
-                  {{ lineup.team.short_name || lineup.team.name }}
-                </span>
-              </div>
-
               <!-- The telemetry, folded: it answers "why did this land there" on
                    the day something is wrong with the lineup, and nothing at all
                    on the ordinary day you came to learn it. -->

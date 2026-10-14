@@ -5504,7 +5504,6 @@
         "favorite_failed": "Could not update your saved lineups",
         "aim_delta": "Inferred vs Recorded Aim",
         "technical": "Technical details",
-        "actions_title": "Library",
         "mark_bad": "Mark as bad"
       },
       "practice": {
@@ -6074,11 +6073,7 @@
       },
       "archive": {
         "action": "Archive lineup",
-        "title": "Archive this lineup?",
         "this_lineup": "this lineup",
-        "description": "{name} will disappear from every library, board and search on this map.",
-        "keeps_history": "Nothing is destroyed. Drill progress, votes and any playbook using it are kept, and you can put it back from the Archived tab.",
-        "confirm": "Archive it",
         "done": "Archived {name}",
         "undo": "Undo",
         "restore": "Restore lineup",

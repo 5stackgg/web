@@ -5502,7 +5502,6 @@
         "favorite_failed": "Deine gespeicherten Lineups konnten nicht aktualisiert werden",
         "aim_delta": "Abgeleitetes vs. aufgezeichnetes Zielen",
         "technical": "Technische Details",
-        "actions_title": "Bibliothek",
         "mark_bad": "Als schlecht markieren"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Lineup archivieren",
-        "title": "Dieses Lineup archivieren?",
         "this_lineup": "dieses Lineup",
-        "description": "{name} verschwindet aus jeder Bibliothek, jedem Board und jeder Suche auf dieser Map.",
-        "keeps_history": "Es wird nichts zerstört. Übungsfortschritt, Bewertungen und jedes Playbook, das es nutzt, bleiben erhalten, und du kannst es aus dem Tab „Archiviert“ zurückholen.",
-        "confirm": "Archivieren",
         "done": "{name} archiviert",
         "undo": "Rückgängig",
         "restore": "Lineup wiederherstellen",

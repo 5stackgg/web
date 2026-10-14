@@ -770,6 +770,8 @@ export type UtilityBarAction =
   // "Load me in" for a saved lineup or a mined spot. The button hides itself
   // until there is a server to load into.
   | { kind: "lineup"; lineup: UtilityLineup }
+  // Repeat it on the server you are in; a glyph beside "Load me in".
+  | { kind: "drill"; lineup: UtilityLineup }
   | { kind: "spot"; spot: UtilityMetaSpot; name: string }
   | {
       kind: "run";

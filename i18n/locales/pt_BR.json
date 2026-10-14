@@ -5502,7 +5502,6 @@
         "favorite_failed": "Não foi possível atualizar seus lineups salvos",
         "aim_delta": "Mira deduzida vs gravada",
         "technical": "Detalhes técnicos",
-        "actions_title": "Biblioteca",
         "mark_bad": "Marcar como ruim"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Arquivar lineup",
-        "title": "Arquivar este lineup?",
         "this_lineup": "este lineup",
-        "description": "{name} vai sumir de toda biblioteca, quadro e busca deste mapa.",
-        "keeps_history": "Nada é destruído. O progresso, os votos e qualquer playbook que o use ficam guardados, e você pode trazê-lo de volta pela aba Arquivados.",
-        "confirm": "Arquivar",
         "done": "{name} arquivado",
         "undo": "Desfazer",
         "restore": "Restaurar lineup",

@@ -5502,7 +5502,6 @@
         "favorite_failed": "Nie udało się zaktualizować zapisanych ustawek",
         "aim_delta": "Celowanie wyliczone vs nagrane",
         "technical": "Szczegóły techniczne",
-        "actions_title": "Biblioteka",
         "mark_bad": "Oznacz jako słabą"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Archiwizuj ustawkę",
-        "title": "Zarchiwizować tę ustawkę?",
         "this_lineup": "ta ustawka",
-        "description": "„{name}” zniknie z każdej biblioteki, planszy i wyszukiwania na tej mapie.",
-        "keeps_history": "Nic nie jest niszczone. Postęp treningu, głosy i każdy playbook z nią zostają, a przywrócić ją możesz z zakładki Zarchiwizowane.",
-        "confirm": "Archiwizuj",
         "done": "Zarchiwizowano „{name}”",
         "undo": "Cofnij",
         "restore": "Przywróć ustawkę",

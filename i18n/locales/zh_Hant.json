@@ -5502,7 +5502,6 @@
         "favorite_failed": "無法更新你收藏的點位",
         "aim_delta": "推算瞄準與記錄瞄準",
         "technical": "技術細節",
-        "actions_title": "庫",
         "mark_bad": "標記為不好"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "封存點位",
-        "title": "要封存這個點位嗎？",
         "this_lineup": "這個點位",
-        "description": "{name} 將從這張地圖的所有道具庫、面板與搜尋結果中消失。",
-        "keeps_history": "不會銷毀任何東西。練習進度、評價以及使用它的戰術手冊都會保留，你可以從「已封存」分頁把它還原回來。",
-        "confirm": "封存",
         "done": "已封存 {name}",
         "undo": "復原",
         "restore": "還原點位",

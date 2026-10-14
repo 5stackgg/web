@@ -5502,7 +5502,6 @@
         "favorite_failed": "저장한 라인업을 갱신하지 못했습니다",
         "aim_delta": "추정 조준 대 기록 조준",
         "technical": "기술 정보",
-        "actions_title": "라이브러리",
         "mark_bad": "좋지 않음으로 표시"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "라인업 보관",
-        "title": "이 라인업을 보관할까요?",
         "this_lineup": "이 라인업",
-        "description": "{name}은(는) 이 맵의 모든 라이브러리, 보드, 검색에서 사라집니다.",
-        "keeps_history": "아무것도 없어지지 않습니다. 연습 기록, 평가, 이 라인업을 쓰는 플레이북은 그대로 남고, 보관됨 탭에서 되돌릴 수 있습니다.",
-        "confirm": "보관하기",
         "done": "{name}을(를) 보관했습니다",
         "undo": "실행 취소",
         "restore": "라인업 복원",

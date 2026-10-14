@@ -5502,7 +5502,6 @@
         "favorite_failed": "Impossible de mettre à jour vos lineups enregistrés",
         "aim_delta": "Visée déduite vs enregistrée",
         "technical": "Détails techniques",
-        "actions_title": "Bibliothèque",
         "mark_bad": "Marquer comme mauvais"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Archiver le lineup",
-        "title": "Archiver ce lineup ?",
         "this_lineup": "ce lineup",
-        "description": "{name} disparaîtra de toutes les bibliothèques, de tous les tableaux et de toutes les recherches sur cette map.",
-        "keeps_history": "Rien n'est détruit. La progression, les votes et tout playbook qui l'utilise sont conservés, et vous pouvez le remettre depuis l'onglet Archivés.",
-        "confirm": "Archiver",
         "done": "{name} archivé",
         "undo": "Annuler",
         "restore": "Restaurer le lineup",

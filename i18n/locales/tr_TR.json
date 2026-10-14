@@ -5502,7 +5502,6 @@
         "favorite_failed": "Kaydettiğin dizilimler güncellenemedi",
         "aim_delta": "Çıkarılan ve Kaydedilen Nişan",
         "technical": "Teknik ayrıntılar",
-        "actions_title": "Kitaplık",
         "mark_bad": "Kötü olarak işaretle"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Dizilimi arşivle",
-        "title": "Bu dizilim arşivlensin mi?",
         "this_lineup": "bu dizilim",
-        "description": "{name}, bu haritadaki her kütüphaneden, panodan ve aramadan kaybolacak.",
-        "keeps_history": "Hiçbir şey yok edilmez. Çalışma ilerlemesi, oylar ve onu kullanan playbook'lar korunur; Arşivlenenler sekmesinden geri getirebilirsin.",
-        "confirm": "Arşivle",
         "done": "{name} arşivlendi",
         "undo": "Geri al",
         "restore": "Dizilimi geri getir",

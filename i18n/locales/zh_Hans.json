@@ -5502,7 +5502,6 @@
         "favorite_failed": "无法更新你收藏的点位",
         "aim_delta": "推算瞄准与记录瞄准",
         "technical": "技术细节",
-        "actions_title": "库",
         "mark_bad": "标记为不好"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "归档点位",
-        "title": "要归档这个点位吗？",
         "this_lineup": "这个点位",
-        "description": "{name} 将从这张地图的所有道具库、面板和搜索结果中消失。",
-        "keeps_history": "不会销毁任何东西。练习进度、评价以及使用它的战术手册都会保留，你可以从「已归档」标签页把它恢复回来。",
-        "confirm": "归档",
         "done": "已归档 {name}",
         "undo": "撤销",
         "restore": "恢复点位",

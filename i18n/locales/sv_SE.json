@@ -5502,7 +5502,6 @@
         "favorite_failed": "Kunde inte uppdatera dina sparade uppställningar",
         "aim_delta": "Härlett vs inspelat sikte",
         "technical": "Tekniska detaljer",
-        "actions_title": "Bibliotek",
         "mark_bad": "Markera som dålig"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Arkivera uppställningen",
-        "title": "Arkivera den här uppställningen?",
         "this_lineup": "den här uppställningen",
-        "description": "{name} försvinner från alla bibliotek, tavlor och sökningar på den här kartan.",
-        "keeps_history": "Inget förstörs. Övningsframsteg, röster och alla playbooks som använder den behålls, och du kan lägga tillbaka den från fliken Arkiverade.",
-        "confirm": "Arkivera",
         "done": "Arkiverade {name}",
         "undo": "Ångra",
         "restore": "Återställ uppställningen",

@@ -5502,7 +5502,6 @@
         "favorite_failed": "Impossibile aggiornare i tuoi lineup salvati",
         "aim_delta": "Mira dedotta vs registrata",
         "technical": "Dettagli tecnici",
-        "actions_title": "Libreria",
         "mark_bad": "Segna come scadente"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Archivia lineup",
-        "title": "Archiviare questo lineup?",
         "this_lineup": "questo lineup",
-        "description": "{name} sparirà da ogni libreria, tabellone e ricerca di questa mappa.",
-        "keeps_history": "Non viene distrutto nulla. I progressi, i voti e ogni playbook che lo usa restano, e puoi rimetterlo dalla scheda Archiviati.",
-        "confirm": "Archivia",
         "done": "{name} archiviato",
         "undo": "Annulla",
         "restore": "Ripristina lineup",

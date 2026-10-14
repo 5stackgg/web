@@ -5502,7 +5502,6 @@
         "favorite_failed": "Kunne ikke opdatere dine gemte opstillinger",
         "aim_delta": "Udledt vs optaget sigte",
         "technical": "Tekniske detaljer",
-        "actions_title": "Bibliotek",
         "mark_bad": "Markér som dårlig"
       },
       "practice": {
@@ -6072,11 +6071,7 @@
       },
       "archive": {
         "action": "Arkivér opstillingen",
-        "title": "Arkivér denne opstilling?",
         "this_lineup": "denne opstilling",
-        "description": "{name} forsvinder fra alle biblioteker, tavler og søgninger på denne bane.",
-        "keeps_history": "Intet bliver ødelagt. Træningsfremgang, stemmer og enhver playbook, der bruger den, bevares, og du kan hente den tilbage fra fanen Arkiverede.",
-        "confirm": "Arkivér",
         "done": "Arkiverede {name}",
         "undo": "Fortryd",
         "restore": "Gendan opstillingen",

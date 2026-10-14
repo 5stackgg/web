@@ -97,20 +97,17 @@ export default defineEventHandler(async (event) => {
     filterBy.push(`(is_registered:=true || last_sign_in_at:!~~)`);
   }
 
-  // Presence is live app state, not something the index knows, so the caller
-  // sends the roster it can see and results are constrained to it.
-  const onlineSteamIds = Array.isArray(body.online_steam_ids)
-    ? body.online_steam_ids.filter((id: unknown) => /^[0-9]+$/.test(String(id)))
-    : null;
+  const rosterSteamIds = playersSearchSteamIds(body);
 
-  // Nobody online has to mean no results. Falling through to an unfiltered
-  // search would return everyone, which reads as "the filter is broken".
-  if (onlineSteamIds && onlineSteamIds.length === 0) {
+  // Nobody online (or live) has to mean no results. Falling through to an
+  // unfiltered search would return everyone, which reads as "the filter is
+  // broken".
+  if (rosterSteamIds && rosterSteamIds.length === 0) {
     return { found: 0, hits: [] };
   }
 
-  if (onlineSteamIds) {
-    filterBy.push(`steam_id:[${onlineSteamIds.join(",")}]`);
+  if (rosterSteamIds) {
+    filterBy.push(`steam_id:[${rosterSteamIds.join(",")}]`);
   }
 
   // Filter by team
@@ -187,7 +184,7 @@ export default defineEventHandler(async (event) => {
   // presence filter listing hundreds of steam ids can overrun the request line
   // and come back as a hard error. multiSearch sends the same search as a POST
   // body, which has no such ceiling.
-  const results = onlineSteamIds
+  const results = rosterSteamIds
     ? (
         await client.multiSearch.perform<any[]>({
           searches: [{ collection: "players", ...searchParams }],
@@ -200,12 +197,12 @@ export default defineEventHandler(async (event) => {
   }
 
   // Only do Steam API search if we have a query and no results found. A search
-  // scoped to who is online can't be satisfied by a Steam account we have never
-  // seen, so that path stays out of it.
+  // scoped to who is online or live can't be satisfied by a Steam account we
+  // have never seen, so that path stays out of it.
   if (
     process.env.STEAM_API_KEY &&
     !body.teamId &&
-    !onlineSteamIds &&
+    !rosterSteamIds &&
     query &&
     results.found === 0
   ) {

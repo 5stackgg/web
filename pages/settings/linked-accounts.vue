@@ -22,6 +22,7 @@ import {
 import { Spinner } from "~/components/ui/spinner";
 import { Skeleton } from "~/components/ui/skeleton";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import TwitchAccountCard from "~/components/settings/TwitchAccountCard.vue";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -37,6 +38,9 @@ const apolloClient = useApolloClient().client;
 const me = computed(() => useAuthStore().me);
 const linkedAccountsEnabled = computed(
   () => useApplicationSettingsStore().linkedAccountsEnabled,
+);
+const supportsTwitch = computed(
+  () => useApplicationSettingsStore().supportsTwitch,
 );
 
 const authCode = ref("");
@@ -553,6 +557,12 @@ function formatPendingDate(date: string): string {
 </script>
 
 <template>
+  <PageTransition v-if="supportsTwitch" :delay="0">
+    <div class="max-w-xl">
+      <TwitchAccountCard />
+    </div>
+  </PageTransition>
+
   <PageTransition v-if="!linkedAccountsEnabled" :delay="0">
     <div
       class="max-w-xl rounded-lg border border-border bg-card/50 px-4 py-3 text-sm text-muted-foreground"

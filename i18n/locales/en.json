@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "Send a non-deletable notification when disk usage exceeds this percentage. Set to 0 to disable."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch Application",
+          "app_section_description": "Players link Twitch by signing in with it, which proves the channel is theirs. Register an application in the Twitch developer console and enter its client ID and secret. Everything Twitch stays hidden until both are set.",
+          "redirect_url": "OAuth Redirect URL",
+          "redirect_url_description": "Add this exact URL to the application's OAuth Redirect URLs.",
+          "console_link": "Open the Twitch developer console",
+          "client_id": "Client ID",
+          "client_secret": "Client Secret",
+          "client_secret_placeholder": "Enter a new client secret",
+          "secret_set": "A secret is set. Enter a new one to replace it.",
+          "secret_missing": "Twitch stays off until both a client ID and a secret are set.",
+          "secret_remove": "Remove Secret",
+          "secret_removed": "Twitch client secret removed",
+          "updated": "Updated Twitch settings"
+        },
         "game_type_configs": {
           "title": "Game Type Configs",
           "global": "Global",
@@ -12220,5 +12236,43 @@
     },
     "cancelled": "The organizer cancelled it before it started.",
     "cancelled_min_teams": "Not enough teams signed up, so it was called off."
+  },
+  "twitch": {
+    "live": "Live",
+    "live_viewers": "Live · {count}",
+    "live_on_twitch": "Live on Twitch",
+    "watching": "{count} watching",
+    "live_for": "live {duration}",
+    "open_on_twitch": "Open on Twitch",
+    "channel": "Twitch Channel",
+    "play": "Play Stream",
+    "pov": "{name} POV",
+    "account": {
+      "title": "Twitch",
+      "description": "Show your stream on the matches you play",
+      "link": "Link Twitch",
+      "unlink": "Unlink Twitch",
+      "live_game": "Live · {game}",
+      "offline": "Offline",
+      "stale": "Twitch didn't answer the last status check, so this may be out of date.",
+      "unavailable": "Your Twitch link can't be checked right now. Try again later.",
+      "linked": "Twitch linked",
+      "link_failed": "Couldn't link Twitch",
+      "unlinked": "Twitch unlinked",
+      "unlink_failed": "Couldn't unlink Twitch. Please try again.",
+      "unlink_dialog": {
+        "title": "Unlink Twitch Account",
+        "description": "Your stream will stop showing on your profile, in player search and on the matches you play. You can link it again at any time.",
+        "confirm": "Unlink"
+      },
+      "errors": {
+        "not_configured": "Twitch isn't set up on this site yet.",
+        "invalid_state": "The Twitch sign-in expired or was already used. Please try again.",
+        "denied": "The Twitch sign-in was canceled.",
+        "already_linked": "That Twitch account is already linked to another player.",
+        "twitch_unavailable": "Twitch didn't respond. Please try again in a moment.",
+        "unknown": "Something went wrong. Please try again."
+      }
+    }
   }
 }

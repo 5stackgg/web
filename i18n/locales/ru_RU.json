@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "Отправлять неудаляемое уведомление, когда использование диска превышает этот процент. Установи 0, чтобы отключить."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Приложение Twitch",
+          "app_section_description": "Игроки привязывают Twitch, входя через Twitch, — это подтверждает, что канал принадлежит им. Зарегистрируйте приложение в консоли разработчика Twitch и введите его Client ID и секрет. Всё, что связано с Twitch, остаётся скрытым, пока не заданы оба значения.",
+          "redirect_url": "URL Перенаправления OAuth",
+          "redirect_url_description": "Добавьте именно этот URL в OAuth Redirect URLs приложения.",
+          "console_link": "Открыть консоль разработчика Twitch",
+          "client_id": "Client ID",
+          "client_secret": "Секрет Клиента",
+          "client_secret_placeholder": "Введите новый секрет клиента",
+          "secret_set": "Секрет задан. Введите новый, чтобы заменить его.",
+          "secret_missing": "Twitch остаётся выключенным, пока не заданы и Client ID, и секрет.",
+          "secret_remove": "Удалить Секрет",
+          "secret_removed": "Секрет клиента Twitch удалён",
+          "updated": "Настройки Twitch обновлены"
+        },
         "game_type_configs": {
           "title": "Конфигурации типов игр",
           "global": "Глобальная",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "Организатор отменил его до начала.",
     "cancelled_min_teams": "Записалось слишком мало команд, поэтому его отменили."
+  },
+  "twitch": {
+    "live": "В эфире",
+    "live_viewers": "В эфире · {count}",
+    "live_on_twitch": "В эфире на Twitch",
+    "watching": "Смотрят: {count}",
+    "live_for": "в эфире {duration}",
+    "open_on_twitch": "Открыть на Twitch",
+    "channel": "Канал Twitch",
+    "play": "Воспроизвести Трансляцию",
+    "pov": "POV: {name}",
+    "account": {
+      "title": "Twitch",
+      "description": "Показывайте свою трансляцию в матчах, которые вы играете",
+      "link": "Привязать Twitch",
+      "unlink": "Отвязать Twitch",
+      "live_game": "В эфире · {game}",
+      "offline": "Оффлайн",
+      "stale": "Twitch не ответил на последнюю проверку статуса, поэтому информация может быть устаревшей.",
+      "unavailable": "Сейчас не удаётся проверить привязку Twitch. Попробуйте позже.",
+      "linked": "Twitch привязан",
+      "link_failed": "Не удалось привязать Twitch",
+      "unlinked": "Twitch отвязан",
+      "unlink_failed": "Не удалось отвязать Twitch. Попробуйте ещё раз.",
+      "unlink_dialog": {
+        "title": "Отвязать Аккаунт Twitch",
+        "description": "Ваша трансляция больше не будет показываться в профиле, в поиске игроков и в матчах, которые вы играете. Вы можете привязать её снова в любой момент.",
+        "confirm": "Отвязать"
+      },
+      "errors": {
+        "not_configured": "Twitch на этом сайте ещё не настроен.",
+        "invalid_state": "Вход через Twitch истёк или уже был использован. Попробуйте ещё раз.",
+        "denied": "Вход через Twitch был отменён.",
+        "already_linked": "Этот аккаунт Twitch уже привязан к другому игроку.",
+        "twitch_unavailable": "Twitch не ответил. Попробуйте ещё раз чуть позже.",
+        "unknown": "Что-то пошло не так. Попробуйте ещё раз."
+      }
+    }
   }
 }

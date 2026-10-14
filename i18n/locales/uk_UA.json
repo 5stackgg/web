@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "Надсилати сповіщення, яке не можна видалити, коли використання диска перевищує цей відсоток. Встанови 0, щоб вимкнути."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Застосунок Twitch",
+          "app_section_description": "Гравці прив'язують Twitch, входячи через Twitch, — це підтверджує, що канал належить їм. Зареєструйте застосунок у консолі розробника Twitch і введіть його Client ID та секрет. Усе, що стосується Twitch, лишається прихованим, доки не задано обидва значення.",
+          "redirect_url": "URL Перенаправлення OAuth",
+          "redirect_url_description": "Додайте саме цей URL до OAuth Redirect URLs застосунку.",
+          "console_link": "Відкрити консоль розробника Twitch",
+          "client_id": "Client ID",
+          "client_secret": "Секрет Клієнта",
+          "client_secret_placeholder": "Введіть новий секрет клієнта",
+          "secret_set": "Секрет задано. Введіть новий, щоб замінити його.",
+          "secret_missing": "Twitch лишається вимкненим, доки не задано і Client ID, і секрет.",
+          "secret_remove": "Видалити Секрет",
+          "secret_removed": "Секрет клієнта Twitch видалено",
+          "updated": "Налаштування Twitch оновлено"
+        },
         "game_type_configs": {
           "title": "Конфігурації типів гри",
           "global": "Глобальна",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "Організатор скасував його до початку.",
     "cancelled_min_teams": "Записалося замало команд, тож його скасували."
+  },
+  "twitch": {
+    "live": "Наживо",
+    "live_viewers": "Наживо · {count}",
+    "live_on_twitch": "Наживо на Twitch",
+    "watching": "{count} глядачів",
+    "live_for": "наживо {duration}",
+    "open_on_twitch": "Відкрити на Twitch",
+    "channel": "Канал Twitch",
+    "play": "Відтворити Трансляцію",
+    "pov": "POV: {name}",
+    "account": {
+      "title": "Twitch",
+      "description": "Показуйте свою трансляцію в матчах, які ви граєте",
+      "link": "Прив'язати Twitch",
+      "unlink": "Відв'язати Twitch",
+      "live_game": "Наживо · {game}",
+      "offline": "Офлайн",
+      "stale": "Twitch не відповів на останню перевірку статусу, тому ця інформація може бути застарілою.",
+      "unavailable": "Зараз неможливо перевірити прив'язку Twitch. Спробуйте пізніше.",
+      "linked": "Twitch прив'язано",
+      "link_failed": "Не вдалося прив'язати Twitch",
+      "unlinked": "Twitch відв'язано",
+      "unlink_failed": "Не вдалося відв'язати Twitch. Спробуйте ще раз.",
+      "unlink_dialog": {
+        "title": "Відв'язати Акаунт Twitch",
+        "description": "Ваша трансляція більше не показуватиметься у профілі, у пошуку гравців і в матчах, які ви граєте. Ви можете прив'язати її знову будь-коли.",
+        "confirm": "Відв'язати"
+      },
+      "errors": {
+        "not_configured": "Twitch на цьому сайті ще не налаштовано.",
+        "invalid_state": "Вхід через Twitch прострочено або вже використано. Спробуйте ще раз.",
+        "denied": "Вхід через Twitch скасовано.",
+        "already_linked": "Цей акаунт Twitch уже прив'язано до іншого гравця.",
+        "twitch_unavailable": "Twitch не відповів. Спробуйте ще раз за мить.",
+        "unknown": "Щось пішло не так. Спробуйте ще раз."
+      }
+    }
   }
 }

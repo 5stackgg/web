@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "Send en notifikation, der ikke kan slettes, når diskforbruget overstiger denne procent. Sæt til 0 for at slå fra."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch-applikation",
+          "app_section_description": "Spillere tilknytter Twitch ved at logge ind med Twitch, hvilket beviser, at kanalen er deres. Registrér en applikation i Twitchs udviklerkonsol, og indtast dens klient-ID og hemmelighed. Alt med Twitch forbliver skjult, indtil begge er angivet.",
+          "redirect_url": "OAuth-omdirigerings-URL",
+          "redirect_url_description": "Tilføj præcis denne URL til applikationens OAuth Redirect URLs.",
+          "console_link": "Åbn Twitchs udviklerkonsol",
+          "client_id": "Klient-ID",
+          "client_secret": "Klienthemmelighed",
+          "client_secret_placeholder": "Indtast en ny klienthemmelighed",
+          "secret_set": "Der er angivet en hemmelighed. Indtast en ny for at erstatte den.",
+          "secret_missing": "Twitch forbliver slået fra, indtil både et klient-ID og en hemmelighed er angivet.",
+          "secret_remove": "Fjern Hemmelighed",
+          "secret_removed": "Twitch-klienthemmeligheden er fjernet",
+          "updated": "Twitch-indstillinger opdateret"
+        },
         "game_type_configs": {
           "title": "Konfigurationer af spiltyper",
           "global": "Global",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "Arrangøren aflyste den, før den startede.",
     "cancelled_min_teams": "Der tilmeldte sig ikke nok hold, så den blev aflyst."
+  },
+  "twitch": {
+    "live": "Live",
+    "live_viewers": "Live · {count}",
+    "live_on_twitch": "Live på Twitch",
+    "watching": "{count} ser med",
+    "live_for": "live i {duration}",
+    "open_on_twitch": "Åbn på Twitch",
+    "channel": "Twitch-kanal",
+    "play": "Afspil Stream",
+    "pov": "{name} POV",
+    "account": {
+      "title": "Twitch",
+      "description": "Vis din stream på de kampe, du spiller",
+      "link": "Tilknyt Twitch",
+      "unlink": "Fjern Twitch",
+      "live_game": "Live · {game}",
+      "offline": "Offline",
+      "stale": "Twitch svarede ikke på det seneste statustjek, så dette kan være forældet.",
+      "unavailable": "Din Twitch-tilknytning kan ikke tjekkes lige nu. Prøv igen senere.",
+      "linked": "Twitch tilknyttet",
+      "link_failed": "Twitch kunne ikke tilknyttes",
+      "unlinked": "Twitch fjernet",
+      "unlink_failed": "Twitch kunne ikke fjernes. Prøv igen.",
+      "unlink_dialog": {
+        "title": "Fjern Twitch-konto",
+        "description": "Din stream vises ikke længere på din profil, i spillersøgningen eller på de kampe, du spiller. Du kan tilknytte den igen når som helst.",
+        "confirm": "Fjern"
+      },
+      "errors": {
+        "not_configured": "Twitch er endnu ikke sat op på denne side.",
+        "invalid_state": "Twitch-login er udløbet eller allerede brugt. Prøv igen.",
+        "denied": "Twitch-login blev annulleret.",
+        "already_linked": "Den Twitch-konto er allerede tilknyttet en anden spiller.",
+        "twitch_unavailable": "Twitch svarede ikke. Prøv igen om lidt.",
+        "unknown": "Noget gik galt. Prøv igen."
+      }
+    }
   }
 }

@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "디스크 사용량이 이 비율을 초과하면 삭제 불가능한 알림을 전송합니다. 0으로 설정하면 비활성화됩니다."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch 애플리케이션",
+          "app_section_description": "플레이어는 Twitch로 로그인해 연동하므로 채널이 본인 소유임이 증명됩니다. Twitch 개발자 콘솔에서 애플리케이션을 등록하고 클라이언트 ID와 시크릿을 입력하세요. 둘 다 설정되기 전까지 Twitch 관련 항목은 모두 숨겨집니다.",
+          "redirect_url": "OAuth 리디렉션 URL",
+          "redirect_url_description": "이 URL을 그대로 애플리케이션의 OAuth Redirect URLs에 추가하세요.",
+          "console_link": "Twitch 개발자 콘솔 열기",
+          "client_id": "클라이언트 ID",
+          "client_secret": "클라이언트 시크릿",
+          "client_secret_placeholder": "새 클라이언트 시크릿 입력",
+          "secret_set": "시크릿이 설정되어 있습니다. 교체하려면 새 시크릿을 입력하세요.",
+          "secret_missing": "클라이언트 ID와 시크릿이 모두 설정될 때까지 Twitch는 꺼져 있습니다.",
+          "secret_remove": "시크릿 제거",
+          "secret_removed": "Twitch 클라이언트 시크릿을 제거했습니다",
+          "updated": "Twitch 설정이 업데이트되었습니다"
+        },
         "game_type_configs": {
           "title": "게임 타입 설정",
           "global": "전역",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "시작 전에 주최자가 취소했습니다.",
     "cancelled_min_teams": "신청한 팀이 부족해 취소되었습니다."
+  },
+  "twitch": {
+    "live": "라이브",
+    "live_viewers": "라이브 · {count}",
+    "live_on_twitch": "Twitch 방송 중",
+    "watching": "{count}명 시청 중",
+    "live_for": "{duration}째 방송 중",
+    "open_on_twitch": "Twitch에서 열기",
+    "channel": "Twitch 채널",
+    "play": "방송 재생",
+    "pov": "{name} 시점",
+    "account": {
+      "title": "Twitch",
+      "description": "내가 플레이하는 매치에 내 방송을 표시합니다",
+      "link": "Twitch 연동",
+      "unlink": "Twitch 연동 해제",
+      "live_game": "방송 중 · {game}",
+      "offline": "오프라인",
+      "stale": "Twitch가 마지막 상태 확인에 응답하지 않아 이 정보가 최신이 아닐 수 있습니다.",
+      "unavailable": "지금은 Twitch 연동을 확인할 수 없습니다. 나중에 다시 시도하세요.",
+      "linked": "Twitch가 연동되었습니다",
+      "link_failed": "Twitch를 연동하지 못했습니다",
+      "unlinked": "Twitch 연동이 해제되었습니다",
+      "unlink_failed": "Twitch 연동을 해제하지 못했습니다. 다시 시도하세요.",
+      "unlink_dialog": {
+        "title": "Twitch 계정 연동 해제",
+        "description": "내 방송이 프로필, 플레이어 검색, 내가 플레이하는 매치에 더 이상 표시되지 않습니다. 언제든지 다시 연동할 수 있습니다.",
+        "confirm": "연동 해제"
+      },
+      "errors": {
+        "not_configured": "이 사이트에는 아직 Twitch가 설정되지 않았습니다.",
+        "invalid_state": "Twitch 로그인이 만료되었거나 이미 사용되었습니다. 다시 시도하세요.",
+        "denied": "Twitch 로그인이 취소되었습니다.",
+        "already_linked": "해당 Twitch 계정은 이미 다른 플레이어와 연동되어 있습니다.",
+        "twitch_unavailable": "Twitch가 응답하지 않습니다. 잠시 후 다시 시도하세요.",
+        "unknown": "문제가 발생했습니다. 다시 시도하세요."
+      }
+    }
   }
 }

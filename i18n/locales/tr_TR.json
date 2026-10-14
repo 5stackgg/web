@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "Disk kullanımı bu yüzdeyi aştığında silinemeyen bir bildirim gönder. Kapatmak için 0 yap."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch Uygulaması",
+          "app_section_description": "Oyuncular Twitch ile giriş yaparak Twitch'i bağlar; bu da kanalın onlara ait olduğunu kanıtlar. Twitch geliştirici konsolunda bir uygulama kaydet, ardından istemci kimliğini ve gizli anahtarını gir. İkisi de ayarlanana kadar Twitch ile ilgili her şey gizli kalır.",
+          "redirect_url": "OAuth Yönlendirme URL'si",
+          "redirect_url_description": "Bu URL'yi aynen uygulamanın OAuth Redirect URLs listesine ekle.",
+          "console_link": "Twitch geliştirici konsolunu aç",
+          "client_id": "İstemci Kimliği",
+          "client_secret": "İstemci Gizli Anahtarı",
+          "client_secret_placeholder": "Yeni bir istemci gizli anahtarı gir",
+          "secret_set": "Bir gizli anahtar ayarlı. Değiştirmek için yenisini gir.",
+          "secret_missing": "Hem istemci kimliği hem de gizli anahtar ayarlanana kadar Twitch kapalı kalır.",
+          "secret_remove": "Gizli Anahtarı Kaldır",
+          "secret_removed": "Twitch istemci gizli anahtarı kaldırıldı",
+          "updated": "Twitch ayarları güncellendi"
+        },
         "game_type_configs": {
           "title": "Oyun türü ayarları",
           "global": "Genel",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "Organizatör başlamadan önce iptal etti.",
     "cancelled_min_teams": "Yeterli takım kaydolmadığı için iptal edildi."
+  },
+  "twitch": {
+    "live": "Canlı",
+    "live_viewers": "Canlı · {count}",
+    "live_on_twitch": "Twitch'te Canlı",
+    "watching": "{count} izliyor",
+    "live_for": "{duration} süredir canlı",
+    "open_on_twitch": "Twitch'te Aç",
+    "channel": "Twitch Kanalı",
+    "play": "Yayını Oynat",
+    "pov": "{name} POV",
+    "account": {
+      "title": "Twitch",
+      "description": "Oynadığın maçlarda yayınını göster",
+      "link": "Twitch bağla",
+      "unlink": "Twitch bağlantısını kaldır",
+      "live_game": "Canlı · {game}",
+      "offline": "Çevrimdışı",
+      "stale": "Twitch son durum kontrolüne yanıt vermedi, bu yüzden bu bilgi güncel olmayabilir.",
+      "unavailable": "Twitch bağlantın şu anda kontrol edilemiyor. Daha sonra tekrar dene.",
+      "linked": "Twitch bağlandı",
+      "link_failed": "Twitch bağlanamadı",
+      "unlinked": "Twitch bağlantısı kaldırıldı",
+      "unlink_failed": "Twitch bağlantısı kaldırılamadı. Tekrar dene.",
+      "unlink_dialog": {
+        "title": "Twitch Hesabının Bağlantısını Kaldır",
+        "description": "Yayının artık profilinde, oyuncu aramasında ve oynadığın maçlarda gösterilmeyecek. İstediğin zaman yeniden bağlayabilirsin.",
+        "confirm": "Bağlantıyı kaldır"
+      },
+      "errors": {
+        "not_configured": "Twitch bu sitede henüz ayarlanmadı.",
+        "invalid_state": "Twitch girişinin süresi doldu ya da zaten kullanıldı. Tekrar dene.",
+        "denied": "Twitch girişi iptal edildi.",
+        "already_linked": "Bu Twitch hesabı zaten başka bir oyuncuya bağlı.",
+        "twitch_unavailable": "Twitch yanıt vermedi. Birazdan tekrar dene.",
+        "unknown": "Bir şeyler ters gitti. Tekrar dene."
+      }
+    }
   }
 }

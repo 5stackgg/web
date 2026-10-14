@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "當磁碟使用率超過此百分比時傳送不可刪除的通知。設為 0 即停用。"
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch 應用程式",
+          "app_section_description": "玩家透過使用 Twitch 登入來連結 Twitch，藉此證明頻道歸其所有。請在 Twitch 開發者主控台註冊一個應用程式，並填寫其用戶端 ID 和密鑰。在兩者都設定之前，所有 Twitch 相關內容都會保持隱藏。",
+          "redirect_url": "OAuth 重新導向 URL",
+          "redirect_url_description": "將此 URL 原樣新增到應用程式的 OAuth Redirect URLs 中。",
+          "console_link": "開啟 Twitch 開發者主控台",
+          "client_id": "用戶端 ID",
+          "client_secret": "用戶端密鑰",
+          "client_secret_placeholder": "輸入新的用戶端密鑰",
+          "secret_set": "已設定密鑰。輸入新的密鑰即可取代。",
+          "secret_missing": "在用戶端 ID 和密鑰都設定之前，Twitch 將保持關閉。",
+          "secret_remove": "移除密鑰",
+          "secret_removed": "已移除 Twitch 用戶端密鑰",
+          "updated": "Twitch 設定已更新"
+        },
         "game_type_configs": {
           "title": "遊戲類型設定",
           "global": "全域",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "主辦方在開賽前取消了此賽事。",
     "cancelled_min_teams": "報名隊伍不足，賽事已取消。"
+  },
+  "twitch": {
+    "live": "直播中",
+    "live_viewers": "直播中 · {count}",
+    "live_on_twitch": "正在 Twitch 直播",
+    "watching": "{count} 人觀看",
+    "live_for": "已直播 {duration}",
+    "open_on_twitch": "在 Twitch 上開啟",
+    "channel": "Twitch 頻道",
+    "play": "播放直播",
+    "pov": "{name} 視角",
+    "account": {
+      "title": "Twitch",
+      "description": "在你參加的比賽中展示你的直播",
+      "link": "連結 Twitch",
+      "unlink": "取消連結 Twitch",
+      "live_game": "直播中 · {game}",
+      "offline": "離線",
+      "stale": "Twitch 未回應上一次狀態檢查，因此此資訊可能已過時。",
+      "unavailable": "目前無法檢查你的 Twitch 連結。請稍後再試。",
+      "linked": "已連結 Twitch",
+      "link_failed": "無法連結 Twitch",
+      "unlinked": "已取消連結 Twitch",
+      "unlink_failed": "無法取消連結 Twitch。請重試。",
+      "unlink_dialog": {
+        "title": "取消連結 Twitch 帳戶",
+        "description": "你的直播將不再顯示在你的個人檔案、玩家搜尋以及你參加的比賽中。你可以隨時重新連結。",
+        "confirm": "取消連結"
+      },
+      "errors": {
+        "not_configured": "本站尚未設定 Twitch。",
+        "invalid_state": "Twitch 登入已過期或已被使用。請重試。",
+        "denied": "Twitch 登入已取消。",
+        "already_linked": "該 Twitch 帳戶已連結到其他玩家。",
+        "twitch_unavailable": "Twitch 沒有回應。請稍後再試。",
+        "unknown": "發生了一些問題。請重試。"
+      }
+    }
   }
 }

@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "Envoie une notification non supprimable quand l'utilisation du disque dépasse ce pourcentage. Mets 0 pour désactiver."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Application Twitch",
+          "app_section_description": "Les joueurs lient Twitch en se connectant avec Twitch, ce qui prouve que la chaîne leur appartient. Enregistrez une application dans la console développeur de Twitch, puis saisissez son ID client et son secret. Tout ce qui concerne Twitch reste masqué tant que les deux ne sont pas définis.",
+          "redirect_url": "URL de Redirection OAuth",
+          "redirect_url_description": "Ajoutez exactement cette URL aux OAuth Redirect URLs de l'application.",
+          "console_link": "Ouvrir la console développeur de Twitch",
+          "client_id": "ID Client",
+          "client_secret": "Secret Client",
+          "client_secret_placeholder": "Saisissez un nouveau secret client",
+          "secret_set": "Un secret est défini. Saisissez-en un nouveau pour le remplacer.",
+          "secret_missing": "Twitch reste désactivé tant qu'un ID client et un secret ne sont pas tous deux définis.",
+          "secret_remove": "Retirer le Secret",
+          "secret_removed": "Secret client Twitch retiré",
+          "updated": "Paramètres Twitch mis à jour"
+        },
         "game_type_configs": {
           "title": "Configs par type de partie",
           "global": "Global",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "L'organisateur l'a annulé avant le début.",
     "cancelled_min_teams": "Pas assez d'équipes inscrites, il a donc été annulé."
+  },
+  "twitch": {
+    "live": "En direct",
+    "live_viewers": "En direct · {count}",
+    "live_on_twitch": "En direct sur Twitch",
+    "watching": "{count} spectateurs",
+    "live_for": "en direct depuis {duration}",
+    "open_on_twitch": "Ouvrir sur Twitch",
+    "channel": "Chaîne Twitch",
+    "play": "Lire le Stream",
+    "pov": "POV de {name}",
+    "account": {
+      "title": "Twitch",
+      "description": "Affichez votre stream sur les matchs que vous jouez",
+      "link": "Lier Twitch",
+      "unlink": "Délier Twitch",
+      "live_game": "En direct · {game}",
+      "offline": "Hors ligne",
+      "stale": "Twitch n'a pas répondu à la dernière vérification de statut, ces informations peuvent donc être obsolètes.",
+      "unavailable": "Votre liaison Twitch ne peut pas être vérifiée pour le moment. Réessayez plus tard.",
+      "linked": "Twitch lié",
+      "link_failed": "Impossible de lier Twitch",
+      "unlinked": "Twitch délié",
+      "unlink_failed": "Impossible de délier Twitch. Veuillez réessayer.",
+      "unlink_dialog": {
+        "title": "Délier le Compte Twitch",
+        "description": "Votre stream ne s'affichera plus sur votre profil, dans la recherche de joueurs ni sur les matchs que vous jouez. Vous pourrez le lier à nouveau à tout moment.",
+        "confirm": "Délier"
+      },
+      "errors": {
+        "not_configured": "Twitch n'est pas encore configuré sur ce site.",
+        "invalid_state": "La connexion Twitch a expiré ou a déjà été utilisée. Veuillez réessayer.",
+        "denied": "La connexion Twitch a été annulée.",
+        "already_linked": "Ce compte Twitch est déjà lié à un autre joueur.",
+        "twitch_unavailable": "Twitch n'a pas répondu. Réessayez dans un instant.",
+        "unknown": "Une erreur est survenue. Veuillez réessayer."
+      }
+    }
   }
 }

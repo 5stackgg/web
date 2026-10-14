@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "当磁盘使用率超过此百分比时发送不可删除的通知。设为 0 以禁用。"
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch 应用",
+          "app_section_description": "玩家通过使用 Twitch 登录来关联 Twitch，从而证明频道归其所有。请在 Twitch 开发者控制台注册一个应用，并填写其客户端 ID 和密钥。在两者都设置之前，所有 Twitch 相关内容都会保持隐藏。",
+          "redirect_url": "OAuth 重定向 URL",
+          "redirect_url_description": "将此 URL 原样添加到应用的 OAuth Redirect URLs 中。",
+          "console_link": "打开 Twitch 开发者控制台",
+          "client_id": "客户端 ID",
+          "client_secret": "客户端密钥",
+          "client_secret_placeholder": "输入新的客户端密钥",
+          "secret_set": "已设置密钥。输入新密钥即可替换。",
+          "secret_missing": "在客户端 ID 和密钥都设置之前，Twitch 将保持关闭。",
+          "secret_remove": "移除密钥",
+          "secret_removed": "已移除 Twitch 客户端密钥",
+          "updated": "Twitch 设置已更新"
+        },
         "game_type_configs": {
           "title": "游戏类型配置",
           "global": "全局",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "主办方在开赛前取消了此赛事。",
     "cancelled_min_teams": "报名队伍不足，赛事已取消。"
+  },
+  "twitch": {
+    "live": "直播中",
+    "live_viewers": "直播中 · {count}",
+    "live_on_twitch": "正在 Twitch 直播",
+    "watching": "{count} 人观看",
+    "live_for": "已直播 {duration}",
+    "open_on_twitch": "在 Twitch 上打开",
+    "channel": "Twitch 频道",
+    "play": "播放直播",
+    "pov": "{name} 视角",
+    "account": {
+      "title": "Twitch",
+      "description": "在你参加的比赛中展示你的直播",
+      "link": "关联 Twitch",
+      "unlink": "取消关联 Twitch",
+      "live_game": "直播中 · {game}",
+      "offline": "离线",
+      "stale": "Twitch 未响应上一次状态检查，因此此信息可能已过时。",
+      "unavailable": "暂时无法检查你的 Twitch 关联。请稍后再试。",
+      "linked": "已关联 Twitch",
+      "link_failed": "无法关联 Twitch",
+      "unlinked": "已取消关联 Twitch",
+      "unlink_failed": "无法取消关联 Twitch。请重试。",
+      "unlink_dialog": {
+        "title": "取消关联 Twitch 账号",
+        "description": "你的直播将不再显示在你的个人资料、玩家搜索以及你参加的比赛中。你可以随时重新关联。",
+        "confirm": "取消关联"
+      },
+      "errors": {
+        "not_configured": "本站尚未设置 Twitch。",
+        "invalid_state": "Twitch 登录已过期或已被使用。请重试。",
+        "denied": "Twitch 登录已取消。",
+        "already_linked": "该 Twitch 账号已关联到其他玩家。",
+        "twitch_unavailable": "Twitch 没有响应。请稍后再试。",
+        "unknown": "出了点问题。请重试。"
+      }
+    }
   }
 }

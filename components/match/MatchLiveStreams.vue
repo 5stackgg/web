@@ -31,6 +31,8 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
+import MatchTwitchPovs from "~/components/match/MatchTwitchPovs.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import { isHttpLink } from "~/utilities/httpLink";
 </script>
 
@@ -75,276 +77,283 @@ import { isHttpLink } from "~/utilities/httpLink";
            pop out to Twitch/YouTube/Kick to see it. Controls hidden
            and starts muted (autoplay-friendly) — the StreamEmbed
            overlays a custom mute pill matching the WHEP player. -->
-      <div v-if="embeddableStreams.length > 0" class="mb-4">
-        <StreamEmbed
-          :streams="embeddableStreams"
-          :match-id="match.id"
-          :show-title="false"
-        />
-      </div>
+      <MatchTwitchPovs
+        :match="match"
+        :streams="embeddableStreams"
+        v-slot="{ streams: liveEmbedStreams }"
+      >
+        <Fold :open="liveEmbedStreams.length > 0">
+          <div class="pb-4">
+            <StreamEmbed :streams="liveEmbedStreams" :match-id="match.id" />
+          </div>
+        </Fold>
 
-      <!-- Streams Table -->
-      <div v-if="match.streams.length > 0">
-        <div class="border rounded-lg relative">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead class="w-12"></TableHead>
-                <TableHead>{{ $t("streams.title") }}</TableHead>
-                <TableHead class="w-24"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <!-- Top spacer removed to avoid visual white gap; moving row directly during drag -->
+        <!-- Streams Table -->
+        <div v-if="match.streams.length > 0">
+          <div class="border rounded-lg relative">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead class="w-12"></TableHead>
+                  <TableHead>{{ $t("streams.title") }}</TableHead>
+                  <TableHead class="w-24"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <!-- Top spacer removed to avoid visual white gap; moving row directly during drag -->
 
-              <template
-                v-for="(stream, index) in match.streams"
-                :key="stream.id"
-              >
-                <!-- Spacer to preview insertion position (slot before each row) -->
-                <tr v-if="isDragging && dragOverIndex === index" class="h-0">
+                <template
+                  v-for="(stream, index) in match.streams"
+                  :key="stream.id"
+                >
+                  <!-- Spacer to preview insertion position (slot before each row) -->
+                  <tr v-if="isDragging && dragOverIndex === index" class="h-0">
+                    <td colspan="4" class="p-0">
+                      <div class="h-12"></div>
+                    </td>
+                  </tr>
+                  <TableRow
+                    :ref="(el) => setRowRef(el, index)"
+                    class="hover:bg-muted/50 transition-all duration-200"
+                    :class="{
+                      'cursor-move': !stream.is_game_streamer,
+                      'opacity-0 pointer-events-none':
+                        isDragging && draggedIndex === index,
+                      'bg-blue-50':
+                        !isDragging &&
+                        dragOverIndex === index &&
+                        draggedIndex !== index,
+                    }"
+                    @mousedown="
+                      !stream.is_game_streamer && startDrag(index, $event)
+                    "
+                  >
+                    <TableCell class="w-12" v-if="canManageStreams">
+                      <div
+                        v-if="!stream.is_game_streamer"
+                        class="cursor-grab active:cursor-grabbing p-1 -m-1 rounded-md hover:bg-black/5"
+                      >
+                        <GripVertical
+                          class="h-4 w-4 text-muted-foreground transition-colors"
+                          :class="{ 'text-blue-500': draggedIndex === index }"
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell class="w-full">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span>{{ stream.title }}</span>
+                        <Badge
+                          v-if="stream.is_game_streamer && stream.is_live"
+                          variant="secondary"
+                          class="text-[10px] py-0 px-2"
+                        >
+                          {{ $t("streams.live_badge") }}
+                        </Badge>
+                        <StreamViewerBadge
+                          v-if="stream.is_game_streamer && stream.is_live"
+                          :match-id="match.id"
+                        />
+                        <!-- Mode badge — Direct (live) has no GOTV delay,
+                             TV honors `tv_delay`. Always shown for the
+                             system row so operators can tell the two
+                             apart at a glance. -->
+                        <Badge
+                          v-if="stream.is_game_streamer"
+                          variant="outline"
+                          class="text-[10px] py-0 px-2"
+                        >
+                          {{
+                            stream.mode === "live"
+                              ? $t("streams.mode_live")
+                              : $t("streams.mode_tv")
+                          }}
+                        </Badge>
+                        <Badge
+                          v-else-if="
+                            stream.is_game_streamer && stream.status === 'errored'
+                          "
+                          variant="destructive"
+                          class="text-[10px] py-0 px-2"
+                          :title="stream.error_message ?? ''"
+                        >
+                          {{
+                            stream.error_message || $t("stream_status.errored")
+                          }}
+                        </Badge>
+                        <Badge
+                          v-else-if="stream.is_game_streamer && !stream.is_live"
+                          variant="outline"
+                          class="text-[10px] py-0 px-2"
+                        >
+                          {{ gameStreamerStatusLabel(stream) }}
+                        </Badge>
+                      </div>
+                    </TableCell>
+                    <TableCell class="flex items-center justify-end">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        :disabled="
+                          (stream.is_game_streamer && !stream.is_live) ||
+                          !isHttpLink(stream.link)
+                        "
+                        @click="openStream(stream.link)"
+                      >
+                        <ExternalLink class="h-3 w-3" />
+                      </Button>
+
+                      <!-- Actions Dropdown — system-managed rows have no
+                           edit/delete; their lifecycle is owned by the API. -->
+                      <DropdownMenu
+                        v-if="canManageStreams && !stream.is_game_streamer"
+                      >
+                        <DropdownMenuTrigger as-child>
+                          <Button variant="ghost" size="icon">
+                            <MoreVertical class="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent class="w-44">
+                          <DropdownMenuItem @click="openEditModal(stream)">
+                            <Pencil />
+                            <span>{{ $t("streams.update") }}</span>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            class="text-destructive"
+                            @click="deleteStream(stream.id)"
+                          >
+                            <Trash2 />
+                            <span>{{ $t("common.delete") }}</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      <!-- Edit Dialog (opened via dropdown) -->
+                      <Dialog
+                        v-model:open="isEditStreamModalOpen[stream.id]"
+                        v-if="canManageStreams && !stream.is_game_streamer"
+                      >
+                        <DialogContent class="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>{{
+                              $t("streams.edit_stream")
+                            }}</DialogTitle>
+                            <DialogDescription>
+                              {{ $t("streams.edit_description") }}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <form
+                            class="space-y-4"
+                            @submit.prevent="updateStream(stream.id)"
+                          >
+                            <FormField v-slot="{ componentField }" name="link">
+                              <FormItem>
+                                <FormLabel>{{ $t("streams.link") }}</FormLabel>
+                                <Input
+                                  v-bind="componentField"
+                                  :placeholder="stream.link"
+                                />
+                                <FormMessage />
+                              </FormItem>
+                            </FormField>
+                            <FormField v-slot="{ componentField }" name="title">
+                              <FormItem>
+                                <FormLabel>{{ $t("streams.title") }}</FormLabel>
+                                <Input
+                                  v-bind="componentField"
+                                  :placeholder="stream.title"
+                                />
+                              </FormItem>
+                            </FormField>
+                            <DialogFooter>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                @click="isEditStreamModalOpen[stream.id] = false"
+                              >
+                                {{ $t("common.cancel") }}
+                              </Button>
+                              <Button
+                                variant="tactical"
+                                type="submit"
+                                :loading="submitting"
+                              >
+                                {{ $t("streams.update") }}
+                              </Button>
+                            </DialogFooter>
+                          </form>
+                        </DialogContent>
+                      </Dialog>
+                    </TableCell>
+                  </TableRow>
+                </template>
+                <!-- Spacer to preview insertion at the very end (after last row) -->
+                <tr
+                  v-if="isDragging && dragOverIndex === match.streams.length"
+                  class="h-0"
+                >
                   <td colspan="4" class="p-0">
                     <div class="h-12"></div>
                   </td>
                 </tr>
-                <TableRow
-                  :ref="(el) => setRowRef(el, index)"
-                  class="hover:bg-muted/50 transition-all duration-200"
-                  :class="{
-                    'cursor-move': !stream.is_game_streamer,
-                    'opacity-0 pointer-events-none':
-                      isDragging && draggedIndex === index,
-                    'bg-blue-50':
-                      !isDragging &&
-                      dragOverIndex === index &&
-                      draggedIndex !== index,
-                  }"
-                  @mousedown="
-                    !stream.is_game_streamer && startDrag(index, $event)
-                  "
-                >
-                  <TableCell class="w-12" v-if="canManageStreams">
-                    <div
-                      v-if="!stream.is_game_streamer"
-                      class="cursor-grab active:cursor-grabbing p-1 -m-1 rounded-md hover:bg-black/5"
-                    >
-                      <GripVertical
-                        class="h-4 w-4 text-muted-foreground transition-colors"
-                        :class="{ 'text-blue-500': draggedIndex === index }"
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell class="w-full">
-                    <div class="flex items-center gap-2 flex-wrap">
-                      <span>{{ stream.title }}</span>
-                      <Badge
-                        v-if="stream.is_game_streamer && stream.is_live"
-                        variant="secondary"
-                        class="text-[10px] py-0 px-2"
-                      >
-                        {{ $t("streams.live_badge") }}
-                      </Badge>
-                      <StreamViewerBadge
-                        v-if="stream.is_game_streamer && stream.is_live"
-                        :match-id="match.id"
-                      />
-                      <!-- Mode badge — Direct (live) has no GOTV delay,
-                           TV honors `tv_delay`. Always shown for the
-                           system row so operators can tell the two
-                           apart at a glance. -->
-                      <Badge
-                        v-if="stream.is_game_streamer"
-                        variant="outline"
-                        class="text-[10px] py-0 px-2"
-                      >
-                        {{
-                          stream.mode === "live"
-                            ? $t("streams.mode_live")
-                            : $t("streams.mode_tv")
-                        }}
-                      </Badge>
-                      <Badge
-                        v-else-if="
-                          stream.is_game_streamer && stream.status === 'errored'
-                        "
-                        variant="destructive"
-                        class="text-[10px] py-0 px-2"
-                        :title="stream.error_message ?? ''"
-                      >
-                        {{
-                          stream.error_message || $t("stream_status.errored")
-                        }}
-                      </Badge>
-                      <Badge
-                        v-else-if="stream.is_game_streamer && !stream.is_live"
-                        variant="outline"
-                        class="text-[10px] py-0 px-2"
-                      >
-                        {{ gameStreamerStatusLabel(stream) }}
-                      </Badge>
-                    </div>
-                  </TableCell>
-                  <TableCell class="flex items-center justify-end">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      :disabled="
-                        (stream.is_game_streamer && !stream.is_live) ||
-                        !isHttpLink(stream.link)
-                      "
-                      @click="openStream(stream.link)"
-                    >
-                      <ExternalLink class="h-3 w-3" />
-                    </Button>
-
-                    <!-- Actions Dropdown — system-managed rows have no
-                         edit/delete; their lifecycle is owned by the API. -->
-                    <DropdownMenu
-                      v-if="canManageStreams && !stream.is_game_streamer"
-                    >
-                      <DropdownMenuTrigger as-child>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical class="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent class="w-44">
-                        <DropdownMenuItem @click="openEditModal(stream)">
-                          <Pencil />
-                          <span>{{ $t("streams.update") }}</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          class="text-destructive"
-                          @click="deleteStream(stream.id)"
-                        >
-                          <Trash2 />
-                          <span>{{ $t("common.delete") }}</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <!-- Edit Dialog (opened via dropdown) -->
-                    <Dialog
-                      v-model:open="isEditStreamModalOpen[stream.id]"
-                      v-if="canManageStreams && !stream.is_game_streamer"
-                    >
-                      <DialogContent class="sm:max-w-[425px]">
-                        <DialogHeader>
-                          <DialogTitle>{{
-                            $t("streams.edit_stream")
-                          }}</DialogTitle>
-                          <DialogDescription>
-                            {{ $t("streams.edit_description") }}
-                          </DialogDescription>
-                        </DialogHeader>
-                        <form
-                          class="space-y-4"
-                          @submit.prevent="updateStream(stream.id)"
-                        >
-                          <FormField v-slot="{ componentField }" name="link">
-                            <FormItem>
-                              <FormLabel>{{ $t("streams.link") }}</FormLabel>
-                              <Input
-                                v-bind="componentField"
-                                :placeholder="stream.link"
-                              />
-                              <FormMessage />
-                            </FormItem>
-                          </FormField>
-                          <FormField v-slot="{ componentField }" name="title">
-                            <FormItem>
-                              <FormLabel>{{ $t("streams.title") }}</FormLabel>
-                              <Input
-                                v-bind="componentField"
-                                :placeholder="stream.title"
-                              />
-                            </FormItem>
-                          </FormField>
-                          <DialogFooter>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              @click="isEditStreamModalOpen[stream.id] = false"
-                            >
-                              {{ $t("common.cancel") }}
-                            </Button>
-                            <Button
-                              variant="tactical"
-                              type="submit"
-                              :loading="submitting"
-                            >
-                              {{ $t("streams.update") }}
-                            </Button>
-                          </DialogFooter>
-                        </form>
-                      </DialogContent>
-                    </Dialog>
-                  </TableCell>
-                </TableRow>
-              </template>
-              <!-- Spacer to preview insertion at the very end (after last row) -->
-              <tr
-                v-if="isDragging && dragOverIndex === match.streams.length"
-                class="h-0"
-              >
-                <td colspan="4" class="p-0">
-                  <div class="h-12"></div>
-                </td>
-              </tr>
-            </TableBody>
-          </Table>
-          <!-- Floating drag overlay following the cursor (moves actual row look) -->
-          <div
-            v-if="isDragging && match.streams && match.streams[draggedIndex]"
-            class="pointer-events-none absolute left-0 right-0 z-50"
-            :style="{ top: overlayY + 'px' }"
-          >
+              </TableBody>
+            </Table>
+            <!-- Floating drag overlay following the cursor (moves actual row look) -->
             <div
-              class="mx-0 bg-background/90 backdrop-blur border-2 border-dashed border-blue-400 rounded shadow-sm"
+              v-if="isDragging && match.streams && match.streams[draggedIndex]"
+              class="pointer-events-none absolute left-0 right-0 z-50"
+              :style="{ top: overlayY + 'px' }"
             >
-              <div class="table w-full">
-                <div class="table-row">
-                  <div class="table-cell w-12 align-middle">
-                    <div class="p-1 -m-1">
-                      <GripVertical class="h-4 w-4 text-blue-500" />
+              <div
+                class="mx-0 bg-background/90 backdrop-blur border-2 border-dashed border-blue-400 rounded shadow-sm"
+              >
+                <div class="table w-full">
+                  <div class="table-row">
+                    <div class="table-cell w-12 align-middle">
+                      <div class="p-1 -m-1">
+                        <GripVertical class="h-4 w-4 text-blue-500" />
+                      </div>
                     </div>
-                  </div>
-                  <div class="table-cell align-middle">
-                    <div class="flex items-center space-x-2 py-2">
-                      <span class="font-medium">{{
-                        match.streams[draggedIndex].title
-                      }}</span>
+                    <div class="table-cell align-middle">
+                      <div class="flex items-center space-x-2 py-2">
+                        <span class="font-medium">{{
+                          match.streams[draggedIndex].title
+                        }}</span>
+                      </div>
                     </div>
-                  </div>
-                  <div class="table-cell w-24 align-middle">
-                    <div class="h-0"></div>
+                    <div class="table-cell w-24 align-middle">
+                      <div class="h-0"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        v-else
-        class="mt-2 flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border/70 bg-muted/10 px-6 py-14 text-center"
-      >
-        <div
-          class="flex h-12 w-12 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)]"
+        <Fold
+          :open="match.streams.length === 0 && liveEmbedStreams.length === 0"
         >
-          <Radio class="h-5 w-5 text-[hsl(var(--tac-amber))]" />
-        </div>
-        <div class="space-y-1.5">
-          <h4
-            class="font-mono text-[0.7rem] font-bold tracking-[0.22em] uppercase text-foreground"
+          <div
+            class="mt-2 flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border/70 bg-muted/10 px-6 py-14 text-center"
           >
-            {{ $t("streams.no_streams_title") }}
-          </h4>
-          <p class="text-sm text-muted-foreground max-w-sm mx-auto">
-            {{ $t("streams.no_streams") }}
-          </p>
-        </div>
-      </div>
+            <div
+              class="flex h-12 w-12 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)]"
+            >
+              <Radio class="h-5 w-5 text-[hsl(var(--tac-amber))]" />
+            </div>
+            <div class="space-y-1.5">
+              <h4
+                class="font-mono text-[0.7rem] font-bold tracking-[0.22em] uppercase text-foreground"
+              >
+                {{ $t("streams.no_streams_title") }}
+              </h4>
+              <p class="text-sm text-muted-foreground max-w-sm mx-auto">
+                {{ $t("streams.no_streams") }}
+              </p>
+            </div>
+          </div>
+        </Fold>
+      </MatchTwitchPovs>
 
       <Dialog v-if="canManageStreams" v-model:open="isAddStreamModalOpen">
         <DialogContent class="sm:max-w-[425px]">

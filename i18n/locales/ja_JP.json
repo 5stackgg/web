@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "ディスク使用率がこの割合を超えると、削除できない通知を送信します。0 で無効になります。"
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch アプリケーション",
+          "app_section_description": "プレイヤーは Twitch でサインインして連携するため、チャンネルが本人のものであることが証明されます。Twitch デベロッパーコンソールでアプリケーションを登録し、そのクライアント ID とシークレットを入力してください。両方が設定されるまで、Twitch 関連の表示はすべて非表示になります。",
+          "redirect_url": "OAuth リダイレクト URL",
+          "redirect_url_description": "この URL をそのままアプリケーションの OAuth Redirect URLs に追加してください。",
+          "console_link": "Twitch デベロッパーコンソールを開く",
+          "client_id": "クライアント ID",
+          "client_secret": "クライアントシークレット",
+          "client_secret_placeholder": "新しいクライアントシークレットを入力",
+          "secret_set": "シークレットが設定されています。置き換えるには新しいシークレットを入力してください。",
+          "secret_missing": "クライアント ID とシークレットの両方が設定されるまで、Twitch はオフのままです。",
+          "secret_remove": "シークレットを削除",
+          "secret_removed": "Twitch クライアントシークレットを削除しました",
+          "updated": "Twitch 設定を更新しました"
+        },
         "game_type_configs": {
           "title": "ゲームタイプ設定",
           "global": "グローバル",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "開始前に主催者が中止しました。",
     "cancelled_min_teams": "参加チームが足りなかったため、中止になりました。"
+  },
+  "twitch": {
+    "live": "ライブ",
+    "live_viewers": "ライブ · {count}",
+    "live_on_twitch": "Twitch で配信中",
+    "watching": "{count}人視聴中",
+    "live_for": "配信開始から{duration}",
+    "open_on_twitch": "Twitch で開く",
+    "channel": "Twitch チャンネル",
+    "play": "配信を再生",
+    "pov": "{name} 視点",
+    "account": {
+      "title": "Twitch",
+      "description": "プレイする試合にあなたの配信を表示します",
+      "link": "Twitch と連携",
+      "unlink": "Twitch 連携を解除",
+      "live_game": "配信中 · {game}",
+      "offline": "オフライン",
+      "stale": "Twitch が直近のステータス確認に応答しなかったため、この情報は古い可能性があります。",
+      "unavailable": "現在 Twitch 連携を確認できません。しばらくしてからもう一度お試しください。",
+      "linked": "Twitch と連携しました",
+      "link_failed": "Twitch と連携できませんでした",
+      "unlinked": "Twitch 連携を解除しました",
+      "unlink_failed": "Twitch 連携を解除できませんでした。もう一度お試しください。",
+      "unlink_dialog": {
+        "title": "Twitch アカウントの連携を解除",
+        "description": "あなたの配信はプロフィール、プレイヤー検索、プレイする試合に表示されなくなります。いつでも再度連携できます。",
+        "confirm": "解除"
+      },
+      "errors": {
+        "not_configured": "このサイトではまだ Twitch が設定されていません。",
+        "invalid_state": "Twitch のサインインが期限切れか、すでに使用されています。もう一度お試しください。",
+        "denied": "Twitch のサインインがキャンセルされました。",
+        "already_linked": "その Twitch アカウントはすでに別のプレイヤーと連携されています。",
+        "twitch_unavailable": "Twitch から応答がありません。少し待ってからもう一度お試しください。",
+        "unknown": "問題が発生しました。もう一度お試しください。"
+      }
+    }
   }
 }

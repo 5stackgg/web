@@ -2412,6 +2412,22 @@
             "disk_critical_percent_description": "Invia una notifica non eliminabile quando l'uso del disco supera questa percentuale. Imposta 0 per disattivare."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Applicazione Twitch",
+          "app_section_description": "I giocatori collegano Twitch accedendo con Twitch, il che dimostra che il canale è loro. Registra un'applicazione nella console sviluppatori di Twitch e inserisci il suo client ID e il suo secret. Tutto ciò che riguarda Twitch resta nascosto finché entrambi non sono impostati.",
+          "redirect_url": "URL di Reindirizzamento OAuth",
+          "redirect_url_description": "Aggiungi esattamente questo URL agli OAuth Redirect URLs dell'applicazione.",
+          "console_link": "Apri la console sviluppatori di Twitch",
+          "client_id": "Client ID",
+          "client_secret": "Client Secret",
+          "client_secret_placeholder": "Inserisci un nuovo client secret",
+          "secret_set": "È impostato un secret. Inseriscine uno nuovo per sostituirlo.",
+          "secret_missing": "Twitch resta disattivato finché non sono impostati sia un client ID sia un secret.",
+          "secret_remove": "Rimuovi Secret",
+          "secret_removed": "Client secret di Twitch rimosso",
+          "updated": "Impostazioni Twitch aggiornate"
+        },
         "game_type_configs": {
           "title": "Config per tipo di gioco",
           "global": "Globale",
@@ -12214,5 +12230,43 @@
     },
     "cancelled": "L'organizzatore l'ha annullato prima dell'inizio.",
     "cancelled_min_teams": "Non si sono iscritti abbastanza team, quindi è stato annullato."
+  },
+  "twitch": {
+    "live": "Live",
+    "live_viewers": "Live · {count}",
+    "live_on_twitch": "Live su Twitch",
+    "watching": "{count} spettatori",
+    "live_for": "live da {duration}",
+    "open_on_twitch": "Apri su Twitch",
+    "channel": "Canale Twitch",
+    "play": "Riproduci Stream",
+    "pov": "POV di {name}",
+    "account": {
+      "title": "Twitch",
+      "description": "Mostra il tuo stream nelle partite che giochi",
+      "link": "Collega Twitch",
+      "unlink": "Scollega Twitch",
+      "live_game": "Live · {game}",
+      "offline": "Offline",
+      "stale": "Twitch non ha risposto all'ultimo controllo di stato, quindi queste informazioni potrebbero non essere aggiornate.",
+      "unavailable": "Al momento non è possibile verificare il collegamento a Twitch. Riprova più tardi.",
+      "linked": "Twitch collegato",
+      "link_failed": "Impossibile collegare Twitch",
+      "unlinked": "Twitch scollegato",
+      "unlink_failed": "Impossibile scollegare Twitch. Riprova.",
+      "unlink_dialog": {
+        "title": "Scollega Account Twitch",
+        "description": "Il tuo stream non verrà più mostrato sul tuo profilo, nella ricerca giocatori e nelle partite che giochi. Puoi ricollegarlo in qualsiasi momento.",
+        "confirm": "Scollega"
+      },
+      "errors": {
+        "not_configured": "Twitch non è ancora configurato su questo sito.",
+        "invalid_state": "L'accesso con Twitch è scaduto o è già stato usato. Riprova.",
+        "denied": "L'accesso con Twitch è stato annullato.",
+        "already_linked": "Questo account Twitch è già collegato a un altro giocatore.",
+        "twitch_unavailable": "Twitch non ha risposto. Riprova tra un attimo.",
+        "unknown": "Qualcosa è andato storto. Riprova."
+      }
+    }
   }
 }

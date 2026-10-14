@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
+import UtilityTechniqueIcon from "~/components/utility/UtilityTechniqueIcon.vue";
 import UtilityThrowIcon from "~/components/utility/UtilityThrowIcon.vue";
 import {
   UTILITY_AIM_DELTA_WARN_DEGREES,
@@ -42,6 +43,8 @@ type Segment = {
   mouse?: boolean;
   /** Drawn as the side's own mark. */
   side?: boolean;
+  /** Drawn as the technique's figure beside its name. */
+  figure?: boolean;
 };
 
 const delta = computed(() => utilityAimDelta(props.lineup));
@@ -64,6 +67,7 @@ const segments = computed<Segment[]>(() => {
       key: "technique",
       text: t(`pages.utility.techniques.${lineup.technique}`),
       tone: "plain",
+      figure: true,
     },
     {
       // The throw is the one thing here you physically do, so it shows which
@@ -146,27 +150,26 @@ const segments = computed<Segment[]>(() => {
 const TONES: Record<Segment["tone"], string> = {
   lead: "text-foreground",
   plain: "text-muted-foreground",
-  warn: "text-[hsl(var(--tac-amber))]",
-  bad: "text-destructive",
-  unknown: "text-muted-foreground/70 [border-bottom:1px_dotted_currentColor]",
+  warn: "border-[hsl(var(--tac-amber)/0.35)] text-[hsl(var(--tac-amber))]",
+  bad: "border-destructive/40 text-destructive",
+  unknown: "border-dashed text-muted-foreground/70",
 };
 </script>
 
 <template>
-  <p
-    class="font-mono text-[0.62rem] uppercase leading-relaxed tracking-[0.1em] tabular-nums"
-  >
-    <!-- Native titles rather than FiveStackToolTip: this renders five times per
-         card in a list of them, and a tooltip provider per segment is a lot of
-         machinery to explain a word you can also just read. -->
-    <template v-for="(segment, index) of segments" :key="segment.key">
-      <span v-if="index > 0" aria-hidden="true" class="mx-1.5 text-border">
-        /
-      </span>
-      <!-- Sized and dropped in em so the mouse sits centred on the caps of
-           whatever size the line is set in: 1.5em tall against a ~0.72em cap
-           height puts its middle on theirs at -0.39em. Its outline takes the
-           line's own grey, which reads where the icon's default does not. -->
+  <!-- A chip per fact, one height: the side's mark, the technique's figure
+       with its name, the mouse as the picture. Only a problem takes colour.
+       Native titles rather than FiveStackToolTip: this renders a handful of
+       times per card in a list of them. -->
+  <p class="flex min-w-0 items-center gap-1 overflow-hidden whitespace-nowrap">
+    <span
+      v-for="segment of segments"
+      :key="segment.key"
+      :data-spec="segment.key"
+      class="inline-flex h-[1.125rem] shrink-0 items-center gap-1 rounded-[5px] border border-white/[0.07] bg-white/[0.04] px-1.5 text-[0.7rem] leading-none"
+      :class="TONES[segment.tone]"
+      :title="segment.hint ?? segment.text"
+    >
       <img
         v-if="segment.side"
         :src="
@@ -175,28 +178,22 @@ const TONES: Record<Segment["tone"], string> = {
             : '/img/teams/t_logo.svg'
         "
         :alt="segment.text"
-        :title="segment.text"
-        class="inline-block h-[1.6em] w-[1.6em] align-[-0.45em]"
+        class="size-3.5"
       />
-      <span
+      <UtilityThrowIcon
         v-else-if="segment.mouse"
-        class="inline-block align-[-0.39em]"
-        :title="segment.hint"
-      >
-        <UtilityThrowIcon
-          :strength="lineup.throw_strength"
-          :label="segment.text"
-          class="block h-[1.5em] w-[1.04em] [&_[data-part=shell]]:stroke-muted-foreground [&_[data-part=shell]]:[stroke-width:1.5]"
+        :strength="lineup.throw_strength"
+        :label="segment.text"
+        class="block h-3.5 w-2.5 [&_[data-part=shell]]:stroke-muted-foreground [&_[data-part=shell]]:[stroke-width:1.5]"
+      />
+      <template v-else>
+        <UtilityTechniqueIcon
+          v-if="segment.figure"
+          :technique="lineup.technique"
+          class="size-3.5 text-foreground"
         />
-      </span>
-      <span
-        v-else
-        :class="TONES[segment.tone]"
-        class="whitespace-nowrap"
-        :title="segment.hint"
-      >
         {{ segment.text }}
-      </span>
-    </template>
+      </template>
+    </span>
   </p>
 </template>

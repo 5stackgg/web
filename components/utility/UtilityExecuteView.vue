@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { Globe, Lock, Users } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import UtilityAuthorByline from "~/components/utility/UtilityAuthorByline.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -101,21 +99,29 @@ const mine = defineModel<boolean>("mine", { default: false });
 
 const { t, locale } = useI18n();
 
-const STATUS_TONES = {
-  Public: "bg-success/15 text-success",
-  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
-  Private: "bg-muted/60 text-muted-foreground",
-} as const;
-
-const STATUS_ICONS = {
-  Public: Globe,
-  Team: Users,
-  Private: Lock,
-} as const;
-
 const duration = computed(() =>
   Math.max(0, ...props.beats.map((beat) => beat.seconds)),
 );
+
+const stats = computed(() => [
+  {
+    key: "steps",
+    value: String(props.beats.length),
+    label: t("pages.utility.playbooks.step_word", props.beats.length),
+  },
+  {
+    key: "duration",
+    value: t("pages.utility.playbooks.duration", {
+      seconds: duration.value.toFixed(1),
+    }),
+    label: t("pages.utility.playbooks.start_to_finish"),
+  },
+  {
+    key: "players",
+    value: players.value.length ? String(players.value.length) : t("common.any"),
+    label: t("pages.utility.playbooks.player_word", players.value.length || 2),
+  },
+]);
 
 const players = computed(() => {
   const names = new Set<string>();
@@ -392,35 +398,14 @@ onBeforeUnmount(() => {
     </Fold>
   </div>
 
-  <div class="flex items-start gap-2">
-    <h2
-      class="min-w-0 flex-1 text-lg font-bold leading-tight [text-wrap:balance]"
-    >
-      {{ playbook.name }}
-    </h2>
-    <!-- Who can see it is worth a glyph, not a word's width. -->
-    <FiveStackToolTip as-child :delay-duration="120">
-      <template #trigger>
-        <span
-          class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-md"
-          :class="STATUS_TONES[playbook.visibility] ?? STATUS_TONES.Private"
-          role="img"
-          :aria-label="$t(`pages.utility.visibility.${playbook.visibility}`)"
-        >
-          <component
-            :is="STATUS_ICONS[playbook.visibility] ?? STATUS_ICONS.Private"
-            class="h-3.5 w-3.5"
-          />
-        </span>
-      </template>
-      {{ $t(`pages.utility.visibility.${playbook.visibility}`) }}
-    </FiveStackToolTip>
-  </div>
+  <h2 class="text-lg font-bold leading-tight [text-wrap:balance]">
+    {{ playbook.name }}
+  </h2>
 
   <div
     v-if="ownerPlayer || owner || team"
     data-execute-by
-    class="-mt-1.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground"
+    class="-mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground"
   >
     <UtilityAuthorByline v-if="ownerPlayer" :author="ownerPlayer" />
     <span v-else-if="owner" class="min-w-0 truncate">{{ owner }}</span>
@@ -435,39 +420,18 @@ onBeforeUnmount(() => {
     {{ playbook.description }}
   </p>
 
-  <div class="grid grid-cols-3 gap-2">
-    <div class="min-w-0">
-      <span class="block text-[1.375rem] font-bold leading-none tabular-nums">
-        {{ beats.length }}
+  <div
+    data-execute-stats
+    class="flex divide-x divide-border/60 overflow-hidden rounded border border-border/60 bg-background/50"
+  >
+    <div v-for="stat of stats" :key="stat.key" class="min-w-0 flex-1 px-2.5 pb-1.5 pt-1">
+      <span class="block truncate text-sm font-bold leading-tight tabular-nums">
+        {{ stat.value }}
       </span>
       <span
-        class="mt-1.5 block truncate font-mono text-[0.56rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70"
+        class="block truncate font-mono text-[0.5rem] uppercase tracking-[0.16em] text-muted-foreground/70"
       >
-        {{ $t("pages.utility.playbooks.step_word", beats.length) }}
-      </span>
-    </div>
-    <div class="min-w-0">
-      <span class="block text-[1.375rem] font-bold leading-none tabular-nums">
-        {{
-          $t("pages.utility.playbooks.duration", {
-            seconds: duration.toFixed(1),
-          })
-        }}
-      </span>
-      <span
-        class="mt-1.5 block truncate font-mono text-[0.56rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70"
-      >
-        {{ $t("pages.utility.playbooks.start_to_finish") }}
-      </span>
-    </div>
-    <div class="min-w-0">
-      <span class="block text-[1.375rem] font-bold leading-none tabular-nums">
-        {{ players.length || $t("common.any") }}
-      </span>
-      <span
-        class="mt-1.5 block truncate font-mono text-[0.56rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70"
-      >
-        {{ $t("pages.utility.playbooks.player_word", players.length || 2) }}
+        {{ stat.label }}
       </span>
     </div>
   </div>

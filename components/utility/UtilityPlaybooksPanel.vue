@@ -4,11 +4,13 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
   Copy,
+  Globe,
   Link2,
   Lock,
   PencilLine,
   Play,
   Plus,
+  Users,
 } from "lucide-vue-next";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
@@ -499,6 +501,18 @@ const ownerName = computed(() => {
     : playerName(current.value?.owner_steam_id);
 });
 const teamName = computed(() => current.value?.team?.name ?? null);
+const VISIBILITY_TONES: Record<string, string> = {
+  Public: "bg-success/15 text-success",
+  Team: "bg-[hsl(214_80%_62%/0.15)] text-[hsl(214_80%_68%)]",
+  Private: "bg-muted/60 text-muted-foreground",
+};
+
+const VISIBILITY_ICONS: Record<string, typeof Globe> = {
+  Public: Globe,
+  Team: Users,
+  Private: Lock,
+};
+
 const ownerPlayer = computed<UtilityAuthorRef | null>(() => {
   const owner = current.value?.owner;
   if (owner && String(owner.steam_id) !== mySteamId.value) {
@@ -1270,6 +1284,24 @@ async function destroy() {
             />
           </template>
           {{ $t(`pages.utility.sides.${current.side}`) }}
+        </FiveStackToolTip>
+        <!-- Who can see it, at the end of the line as on a lineup. -->
+        <FiveStackToolTip as-child :delay-duration="120">
+          <template #trigger>
+            <span
+              data-execute-visibility
+              class="ml-auto grid size-7 shrink-0 place-items-center rounded-md"
+              :class="VISIBILITY_TONES[current.visibility] ?? VISIBILITY_TONES.Private"
+              role="img"
+              :aria-label="$t(`pages.utility.visibility.${current.visibility}`)"
+            >
+              <component
+                :is="VISIBILITY_ICONS[current.visibility] ?? VISIBILITY_ICONS.Private"
+                class="h-3.5 w-3.5"
+              />
+            </span>
+          </template>
+          {{ $t(`pages.utility.visibility.${current.visibility}`) }}
         </FiveStackToolTip>
       </template>
 

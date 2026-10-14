@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 import { describe, expect, it } from "vitest";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { roleOrder } from "~/stores/AuthStore";

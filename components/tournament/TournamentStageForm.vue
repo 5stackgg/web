@@ -184,6 +184,7 @@ import { $ } from "~/generated/zeus";
                   <SelectItem
                     v-for="option in minTeamOptions"
                     :key="option.value"
+                    v-memo="[option.value]"
                     :value="option.value"
                   >
                     {{ option.display }}
@@ -213,6 +214,7 @@ import { $ } from "~/generated/zeus";
                   <SelectItem
                     v-for="option in maxTeamOptions"
                     :key="option.value"
+                    v-memo="[option.value]"
                     :value="option.value"
                   >
                     {{ option.display }}

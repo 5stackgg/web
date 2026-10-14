@@ -13,9 +13,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  vitest:
+  # Each test file boots its own Nuxt app, which keeps a runner's cores busy for
+  # minutes; split across runners, the files boot side by side instead.
+  shard:
+    name: vitest (${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v5
@@ -41,5 +48,16 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      # Vitest leaves a core free by default, for the machine it shares; a
+      # runner has nothing else to do.
       - name: Run tests
-        run: yarn test
+        run: yarn test --shard=${{ matrix.shard }}/6 --maxWorkers=100%
+
+  # The check a branch rule can require: one name, whatever the shard count.
+  vitest:
+    if: ${{ !cancelled() }}
+    needs: shard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every shard passed
+        run: test "${{ needs.shard.result }}" = success

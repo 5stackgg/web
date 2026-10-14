@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import type { ChatTab } from "~/composables/useChatTabs";
 import { orderChatTabs } from "~/utilities/chatTabOrder";

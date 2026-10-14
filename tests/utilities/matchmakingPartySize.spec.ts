@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { canPartyQueue } from "~/utilities/matchmakingPartySize";
 import { e_match_types_enum } from "~/generated/zeus";

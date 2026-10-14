@@ -1,4 +1,12 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  onTestFinished,
+  vi,
+} from "vitest";
 import { ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
@@ -79,6 +87,7 @@ afterEach(async () => {
   unmount?.();
   unmount = undefined;
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
   useAuthStore().me = undefined;
   useApplicationSettingsStore().settings = [];
   await flushPromises();
@@ -93,6 +102,35 @@ describe("player profile Twitch", () => {
       stream(true),
     );
     expect(wrapper.findComponent(PlayerTwitchWatchCard).exists()).toBe(true);
+  });
+
+  it("re-checks a playing stream even in a hidden tab, and cuts it once the api stops returning it", async () => {
+    twitch = () => Promise.resolve(stream(true));
+    const wrapper = await mountProfile();
+    vi.useFakeTimers({
+      toFake: ["setTimeout", "clearTimeout"],
+      shouldClearNativeTimers: true,
+    });
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
+    wrapper
+      .findComponent(PlayerTwitchWatchCard)
+      .vm.$emit("update:playing", true);
+    await flushPromises();
+
+    twitch = () =>
+      Promise.reject(Object.assign(new Error("Not Found"), { statusCode: 404 }));
+    vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
+    document.dispatchEvent(new Event("visibilitychange"));
+    await flushPromises();
+    expect(wrapper.findComponent(PlayerTwitchWatchCard).exists()).toBe(true);
+
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+
+    expect(wrapper.findComponent(PlayerTwitchWatchCard).exists()).toBe(false);
+    expect(wrapper.findComponent(PlayerTwitchLink).exists()).toBe(false);
   });
 
   it("keeps the Twitch button but no watch card while offline", async () => {

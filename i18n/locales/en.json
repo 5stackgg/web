@@ -2423,7 +2423,9 @@
           "client_secret": "Client Secret",
           "client_secret_placeholder": "Enter a new client secret",
           "secret_set": "A secret is set. Enter a new one to replace it.",
-          "secret_missing": "Twitch stays off until both a client ID and a secret are set.",
+          "secret_saved": "Secret saved. It can't be shown again; enter a new one to replace it.",
+          "secret_none": "No secret is set.",
+          "secret_unknown": "A saved secret can't be shown or checked here. Twitch turns on once a client ID and a secret are both saved.",
           "secret_remove": "Remove Secret",
           "secret_removed": "Twitch client secret removed",
           "updated": "Updated Twitch settings"

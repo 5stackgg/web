@@ -726,7 +726,19 @@ const playerIdRef = computed<string | null>(() => {
 
 watch(playerIdRef, () => clearCompareTarget());
 
-const { stream: twitchStream } = useTwitchPlayer(playerIdRef);
+const twitchPlaying = ref(false);
+const { stream: twitchStream } = useTwitchPlayer(playerIdRef, {
+  playing: twitchPlaying,
+});
+
+watch(
+  () => twitchStream.value?.is_live,
+  (live) => {
+    if (!live) {
+      twitchPlaying.value = false;
+    }
+  },
+);
 
 // ---- plugin-contributed profile tabs ----------------------------------------
 // A plugin mounted in a tab navigates LOCALLY. Under /apps/<slug> the host's
@@ -2256,6 +2268,7 @@ const playerHeroTeamChipDotClasses =
         <Fold :open="!!twitchStream?.is_live">
           <PlayerTwitchWatchCard
             v-if="twitchStream?.is_live"
+            v-model:playing="twitchPlaying"
             :stream="twitchStream"
             class="mt-4 lg:mt-6"
           />

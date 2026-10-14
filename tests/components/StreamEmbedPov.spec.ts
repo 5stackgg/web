@@ -109,13 +109,28 @@ describe("StreamEmbed with player POVs", () => {
     );
   });
 
+  it("follows the first stream when the viewer picked nothing and an organizer stream appears", async () => {
+    const wrapper = await mountEmbed([kappa]);
+    expect(wrapper.get("[data-test='stream-pov-label']").text()).toBe(
+      "kappa POV",
+    );
+
+    await wrapper.setProps({ streams: [organizer, kappa] });
+    await settle();
+
+    expect(wrapper.find("[data-test='stream-pov-label']").exists()).toBe(false);
+    expect(wrapper.find("iframe").attributes("src")).toContain(
+      "youtube.com/embed/abc123",
+    );
+  });
+
   it("stays on the POV picked when the list is refreshed", async () => {
     const wrapper = await mountEmbed([organizer, kappa, rook]);
     await chipNamed(wrapper, "rook POV").trigger("click");
     await settle();
 
     await wrapper.setProps({
-      streams: [{ ...organizer }, { ...kappa }, { ...rook }],
+      streams: [{ ...organizer, id: "stream-0" }, { ...kappa }, { ...rook }],
     });
     await settle();
 

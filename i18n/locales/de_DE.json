@@ -2423,7 +2423,9 @@
           "client_secret": "Client-Secret",
           "client_secret_placeholder": "Neues Client-Secret eingeben",
           "secret_set": "Ein Secret ist gesetzt. Gib ein neues ein, um es zu ersetzen.",
-          "secret_missing": "Twitch bleibt aus, bis sowohl eine Client-ID als auch ein Secret gesetzt sind.",
+          "secret_saved": "Secret gespeichert. Es kann nicht erneut angezeigt werden; gib ein neues ein, um es zu ersetzen.",
+          "secret_none": "Kein Secret gesetzt.",
+          "secret_unknown": "Ein gespeichertes Secret kann hier weder angezeigt noch geprüft werden. Twitch wird aktiv, sobald eine Client-ID und ein Secret gespeichert sind.",
           "secret_remove": "Secret Entfernen",
           "secret_removed": "Twitch-Client-Secret entfernt",
           "updated": "Twitch-Einstellungen aktualisiert"

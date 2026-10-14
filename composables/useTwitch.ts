@@ -61,6 +61,11 @@ export const TWITCH_STATUS_STALE_MS = 3 * 60 * 1000;
 const STATUS_REFRESH_MS = 60_000;
 const MATCH_POV_REFRESH_MS = 45_000;
 
+// A stream someone may be watching is re-checked this often, hidden tab or
+// not: it is how long a player who joins the streamer's match can keep
+// watching them before the api's 404 cuts the picture.
+const PLAYING_REFRESH_MS = 20_000;
+
 export function twitchApiUrl(path: string) {
   return `https://${useRuntimeConfig().public.apiDomain}/twitch${path}`;
 }
@@ -73,24 +78,44 @@ export function twitchLinkUrl(redirect: string) {
   return `https://${useRuntimeConfig().public.webDomain}/auth/twitch?redirect=${encodeURIComponent(redirect)}`;
 }
 
-function sameIds(left: string[], right: string[]) {
+// Only a 404 means "nothing to show" -- the api's anti-ghosting answer. An
+// outage keeps the last known state rather than flapping everything away.
+function isNotFound(error: unknown) {
+  const failure = error as {
+    statusCode?: number;
+    status?: number;
+    response?: { status?: number };
+  } | null;
+
   return (
-    left.length === right.length &&
-    left.every((steamId, index) => steamId === right[index])
+    (failure?.statusCode ?? failure?.status ?? failure?.response?.status) ===
+    404
   );
+}
+
+function sameIdSet(left: string[], right: string[]) {
+  const known = new Set(left);
+  const next = new Set(right);
+
+  return known.size === next.size && [...next].every((id) => known.has(id));
 }
 
 // A new key drops what the old key loaded before asking, so one profile's
 // stream never shows on the next.
-function useVisiblePoll(
-  key: () => string | null,
-  load: (key: string, isCurrent: () => boolean) => Promise<void>,
-  everyMs: number,
-  reset: () => void,
-) {
+function useVisiblePoll(options: {
+  key: () => string | null;
+  load: (key: string, isCurrent: () => boolean) => Promise<void>;
+  everyMs: () => number;
+  reset: () => void;
+  keepAlive?: () => boolean;
+}) {
   const visibility = useDocumentVisibility();
   let timer: ReturnType<typeof setTimeout> | null = null;
   let generation = 0;
+  let running = false;
+
+  const active = () =>
+    visibility.value === "visible" || !!options.keepAlive?.();
 
   function cancel() {
     generation++;
@@ -100,30 +125,46 @@ function useVisiblePoll(
     }
   }
 
-  async function tick(current: string) {
-    cancel();
-    const mine = generation;
-    await load(current, () => mine === generation);
-    if (mine !== generation || visibility.value !== "visible") {
-      return;
+  function schedule(current: string) {
+    if (timer) {
+      clearTimeout(timer);
     }
     timer = setTimeout(() => {
       timer = null;
       void tick(current);
-    }, everyMs);
+    }, options.everyMs());
+  }
+
+  async function tick(current: string) {
+    cancel();
+    const mine = generation;
+    await options.load(current, () => mine === generation);
+    if (mine !== generation || !active()) {
+      return;
+    }
+    schedule(current);
   }
 
   watch(
-    [key, visibility] as const,
-    ([current, visible], previous) => {
-      if (current !== previous?.[0]) {
-        reset();
+    [options.key, visibility, () => !!options.keepAlive?.()] as const,
+    ([current], previous) => {
+      const changedKey = current !== previous?.[0];
+      if (changedKey) {
+        options.reset();
       }
-      if (!current || visible !== "visible") {
+      if (!current || !active()) {
         cancel();
+        running = false;
         return;
       }
-      void tick(current);
+      if (changedKey || !running) {
+        running = true;
+        void tick(current);
+        return;
+      }
+      if (timer) {
+        schedule(current);
+      }
     },
     { immediate: true },
   );
@@ -132,8 +173,8 @@ function useVisiblePoll(
 
   return {
     refresh() {
-      const current = key();
-      if (current && visibility.value === "visible") {
+      const current = options.key();
+      if (current && active()) {
         return tick(current);
       }
       return Promise.resolve();
@@ -143,13 +184,17 @@ function useVisiblePoll(
 
 export function useTwitchPlayer(
   steamId: MaybeRefOrGetter<string | null | undefined>,
+  { playing }: { playing?: MaybeRefOrGetter<boolean> } = {},
 ) {
   const settings = useApplicationSettingsStore();
   const stream = shallowRef<TwitchPlayer | null>(null);
 
-  useVisiblePoll(
-    () => (settings.supportsTwitch && toValue(steamId)) || null,
-    async (id, isCurrent) => {
+  useVisiblePoll({
+    key: () => (settings.supportsTwitch && toValue(steamId)) || null,
+    keepAlive: () => !!toValue(playing),
+    everyMs: () =>
+      toValue(playing) ? PLAYING_REFRESH_MS : STATUS_REFRESH_MS,
+    async load(id, isCurrent) {
       try {
         const player = await $fetch<TwitchPlayer>(
           twitchApiUrl(`/players/${encodeURIComponent(id)}`),
@@ -158,17 +203,16 @@ export function useTwitchPlayer(
         if (isCurrent()) {
           stream.value = player?.login ? player : null;
         }
-      } catch {
-        if (isCurrent()) {
+      } catch (error) {
+        if (isCurrent() && isNotFound(error)) {
           stream.value = null;
         }
       }
     },
-    STATUS_REFRESH_MS,
-    () => {
+    reset() {
       stream.value = null;
     },
-  );
+  });
 
   return { stream };
 }
@@ -178,9 +222,10 @@ export function useTwitchLiveSteamIds() {
   const steamIds = shallowRef<string[]>([]);
   const loaded = ref(false);
 
-  useVisiblePoll(
-    () => (settings.supportsTwitch ? "live" : null),
-    async (_, isCurrent) => {
+  useVisiblePoll({
+    key: () => (settings.supportsTwitch ? "live" : null),
+    everyMs: () => STATUS_REFRESH_MS,
+    async load(_, isCurrent) {
       try {
         const live = await $fetch<{ steam_ids: string[] }>(
           twitchApiUrl("/live"),
@@ -190,7 +235,7 @@ export function useTwitchLiveSteamIds() {
           return;
         }
         const next = (live?.steam_ids ?? []).map(String);
-        if (!sameIds(steamIds.value, next)) {
+        if (!sameIdSet(steamIds.value, next)) {
           steamIds.value = next;
         }
         loaded.value = true;
@@ -200,12 +245,11 @@ export function useTwitchLiveSteamIds() {
         }
       }
     },
-    STATUS_REFRESH_MS,
-    () => {
+    reset() {
       steamIds.value = [];
       loaded.value = false;
     },
-  );
+  });
 
   return { steamIds, loaded };
 }
@@ -225,8 +269,12 @@ export function useMatchTwitchPovs(
   const settings = useApplicationSettingsStore();
   const streams = shallowRef<TwitchMatchStream[]>([]);
 
-  useVisiblePoll(
-    () => {
+  // Any listed POV may be the one playing, and a Twitch embed plays on in a
+  // hidden tab.
+  const listed = () => streams.value.length > 0;
+
+  useVisiblePoll({
+    key: () => {
       const current = toValue(match);
       return settings.supportsTwitch &&
         current?.id &&
@@ -236,7 +284,9 @@ export function useMatchTwitchPovs(
         ? current.id
         : null;
     },
-    async (id, isCurrent) => {
+    keepAlive: listed,
+    everyMs: () => (listed() ? PLAYING_REFRESH_MS : MATCH_POV_REFRESH_MS),
+    async load(id, isCurrent) {
       try {
         const result = await $fetch<{ streams: TwitchMatchStream[] }>(
           twitchApiUrl(`/matches/${encodeURIComponent(id)}/streams`),
@@ -245,19 +295,64 @@ export function useMatchTwitchPovs(
         if (isCurrent()) {
           streams.value = result?.streams ?? [];
         }
-      } catch {
-        if (isCurrent()) {
+      } catch (error) {
+        if (isCurrent() && isNotFound(error)) {
           streams.value = [];
         }
       }
     },
-    MATCH_POV_REFRESH_MS,
-    () => {
+    reset() {
       streams.value = [];
     },
-  );
+  });
 
   return { streams };
+}
+
+// The floating player outlives the match page that polled its POV, so the
+// POV is re-checked here and let go once the api stops returning it.
+export function useTwitchPovGuard(
+  stream: MaybeRefOrGetter<
+    | {
+        is_pov?: boolean;
+        match_id?: string | null;
+        steam_id?: string | null;
+      }
+    | null
+    | undefined
+  >,
+  onGone: () => void,
+) {
+  useVisiblePoll({
+    key: () => {
+      const current = toValue(stream);
+      return current?.is_pov && current.match_id && current.steam_id
+        ? `${current.match_id}/${current.steam_id}`
+        : null;
+    },
+    keepAlive: () => true,
+    everyMs: () => PLAYING_REFRESH_MS,
+    async load(key, isCurrent) {
+      const [matchId, steamId] = key.split("/");
+      try {
+        const result = await $fetch<{ streams: TwitchMatchStream[] }>(
+          twitchApiUrl(`/matches/${encodeURIComponent(matchId)}/streams`),
+          { credentials: "include" },
+        );
+        const returned = (result?.streams ?? []).some(
+          (pov) => String(pov.steam_id) === steamId,
+        );
+        if (isCurrent() && !returned) {
+          onGone();
+        }
+      } catch (error) {
+        if (isCurrent() && isNotFound(error)) {
+          onGone();
+        }
+      }
+    },
+    reset() {},
+  });
 }
 
 export function useTwitchAccount() {
@@ -267,9 +362,10 @@ export function useTwitchAccount() {
   const enabled = ref(false);
   const state = ref<"loading" | "ready" | "failed">("loading");
 
-  const poll = useVisiblePoll(
-    () => (settings.supportsTwitch && auth.me?.steam_id) || null,
-    async (_, isCurrent) => {
+  const poll = useVisiblePoll({
+    key: () => (settings.supportsTwitch && auth.me?.steam_id) || null,
+    everyMs: () => STATUS_REFRESH_MS,
+    async load(_, isCurrent) {
       try {
         const me = await $fetch<TwitchMe>(twitchApiUrl("/me"), {
           credentials: "include",
@@ -286,13 +382,12 @@ export function useTwitchAccount() {
         }
       }
     },
-    STATUS_REFRESH_MS,
-    () => {
+    reset() {
       account.value = null;
       enabled.value = false;
       state.value = "loading";
     },
-  );
+  });
 
   async function unlink() {
     await $fetch(twitchApiUrl("/me"), {
@@ -303,5 +398,5 @@ export function useTwitchAccount() {
     void poll.refresh();
   }
 
-  return { account, enabled, state, refresh: poll.refresh, unlink };
+  return { account, enabled, state, unlink };
 }

@@ -90,7 +90,7 @@ const TWITCH_CONSOLE_URL = "https://dev.twitch.tv/console/apps";
                   />
                 </FormControl>
                 <Button
-                  v-if="secretSet"
+                  v-if="secretState !== 'none'"
                   type="button"
                   variant="outline"
                   class="shrink-0"
@@ -101,13 +101,7 @@ const TWITCH_CONSOLE_URL = "https://dev.twitch.tv/console/apps";
               </div>
               <FormDescription>
                 <FadeSwap>
-                  <span :key="secretSet ? 'set' : 'missing'">
-                    {{
-                      secretSet
-                        ? $t("pages.settings.application.twitch.secret_set")
-                        : $t("pages.settings.application.twitch.secret_missing")
-                    }}
-                  </span>
+                  <span :key="secretState">{{ secretStatus }}</span>
                 </FadeSwap>
               </FormDescription>
               <FormMessage />
@@ -234,11 +228,21 @@ export default {
     settings() {
       return useApplicationSettingsStore().settings;
     },
-    // The browser never sees the secret; the api's public.supports_twitch is
-    // only true once it and the client ID are both set.
-    secretSet(): boolean {
-      return (
-        this.secretWritten ?? useApplicationSettingsStore().supportsTwitch
+    // Nothing the browser can read says whether a secret alone is saved:
+    // public.supports_twitch needs the client ID as well, so without it the
+    // page only knows what it wrote itself.
+    secretState(): "set" | "saved" | "none" | "unknown" {
+      if (this.secretWritten === true) {
+        return "saved";
+      }
+      if (this.secretWritten === false) {
+        return "none";
+      }
+      return useApplicationSettingsStore().supportsTwitch ? "set" : "unknown";
+    },
+    secretStatus(): string {
+      return this.$t(
+        `pages.settings.application.twitch.secret_${this.secretState}`,
       );
     },
     redirectUrl(): string {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useNow } from "@vueuse/core";
 import {
@@ -26,7 +26,6 @@ import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { badgePopTransition } from "~/utilities/badgeCount";
 import {
-  TWITCH_LINK_ERRORS,
   TWITCH_STATUS_STALE_MS,
   twitchChannelUrl,
   twitchLinkUrl,
@@ -34,10 +33,8 @@ import {
 } from "~/composables/useTwitch";
 
 const { t } = useI18n();
-const route = useRoute();
-const router = useRouter();
 
-const { account, enabled, state, refresh, unlink } = useTwitchAccount();
+const { account, enabled, state, unlink } = useTwitchAccount();
 
 const now = useNow({ interval: 30_000 });
 const showUnlinkConfirm = ref(false);
@@ -103,36 +100,6 @@ async function confirmUnlink() {
     unlinking.value = false;
   }
 }
-
-function stripLinkResult() {
-  const query = { ...route.query };
-  delete query.twitch;
-  delete query.twitch_error;
-  return router.replace({ path: route.path, query, hash: route.hash });
-}
-
-watch(
-  () => [route.query.twitch, route.query.twitch_error] as const,
-  ([linked, error]) => {
-    if (linked === "linked") {
-      toast({ title: t("twitch.account.linked") });
-      void refresh();
-    } else if (typeof error === "string" && error) {
-      const code = (TWITCH_LINK_ERRORS as readonly string[]).includes(error)
-        ? error
-        : "unknown";
-      toast({
-        title: t("twitch.account.link_failed"),
-        description: t(`twitch.account.errors.${code}`),
-        variant: "destructive",
-      });
-    } else {
-      return;
-    }
-    void stripLinkResult();
-  },
-  { immediate: true },
-);
 </script>
 
 <template>

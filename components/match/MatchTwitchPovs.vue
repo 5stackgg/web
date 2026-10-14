@@ -28,6 +28,8 @@ const povStreams = computed(() =>
     link: twitchChannelUrl(pov.login),
     title: t("twitch.pov", { name: pov.name }),
     name: pov.name,
+    steam_id: pov.steam_id,
+    match_id: props.match?.id ?? null,
     avatar_url: resolveAvatarUrl(
       pov.avatar_url,
       useRuntimeConfig().public.apiDomain,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useNow } from "@vueuse/core";
 import { ExternalLink, Play } from "lucide-vue-next";
@@ -10,20 +10,42 @@ import { twitchChannelUrl, type TwitchPlayer } from "~/composables/useTwitch";
 
 const props = defineProps<{ stream: TwitchPlayer }>();
 
+const emit = defineEmits<{ "update:playing": [playing: boolean] }>();
+
 const { t } = useI18n();
 const { played, count } = useCommunityFormat();
 const now = useNow({ interval: 60_000 });
 
 const playing = ref(false);
 
-watch(
-  () => props.stream.login,
-  () => {
+function play() {
+  playing.value = true;
+  emit("update:playing", true);
+}
+
+function stop() {
+  if (playing.value) {
     playing.value = false;
-  },
-);
+    emit("update:playing", false);
+  }
+}
+
+watch(() => props.stream.login, stop);
+
+onBeforeUnmount(stop);
 
 const href = computed(() => twitchChannelUrl(props.stream.login));
+
+// Twitch serves the preview under one URL for the whole broadcast, so a
+// cached copy would show the moment the browser first saw it.
+const thumbnail = computed(() => {
+  if (!props.stream.thumbnail_url) {
+    return null;
+  }
+  const url = new URL(props.stream.thumbnail_url);
+  url.searchParams.set("t", String(Math.floor(now.value.getTime() / 60_000)));
+  return url.toString();
+});
 
 const title = computed(
   () => props.stream.title || props.stream.display_name || props.stream.login,
@@ -66,11 +88,11 @@ const embedSrc = computed(
         type="button"
         class="group relative block aspect-video w-full overflow-hidden bg-muted/40 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
         :aria-label="$t('twitch.play')"
-        @click="playing = true"
+        @click="play"
       >
         <img
-          v-if="stream.thumbnail_url"
-          :src="stream.thumbnail_url"
+          v-if="thumbnail"
+          :src="thumbnail"
           alt=""
           loading="lazy"
           class="absolute inset-0 h-full w-full object-cover"

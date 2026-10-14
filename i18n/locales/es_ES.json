@@ -2423,7 +2423,9 @@
           "client_secret": "Secreto de Cliente",
           "client_secret_placeholder": "Introduce un nuevo secreto de cliente",
           "secret_set": "Hay un secreto configurado. Introduce uno nuevo para reemplazarlo.",
-          "secret_missing": "Twitch permanece desactivado hasta que haya un ID de cliente y un secreto configurados.",
+          "secret_saved": "Secreto guardado. No se puede volver a mostrar; introduce uno nuevo para reemplazarlo.",
+          "secret_none": "No hay ningún secreto configurado.",
+          "secret_unknown": "Un secreto guardado no se puede mostrar ni comprobar aquí. Twitch se activa cuando hay un ID de cliente y un secreto guardados.",
           "secret_remove": "Quitar Secreto",
           "secret_removed": "Secreto de cliente de Twitch eliminado",
           "updated": "Ajustes de Twitch actualizados"

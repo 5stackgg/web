@@ -119,6 +119,8 @@ describe("match POV streams", () => {
         link: "https://www.twitch.tv/kappa_cs",
         is_pov: true,
         name: "kappa",
+        steam_id: "76561198000000001",
+        match_id: MATCH,
       }),
     );
     expect(streams()[1].avatar_url).toBe(

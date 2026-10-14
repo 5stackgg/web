@@ -2423,7 +2423,9 @@
           "client_secret": "客户端密钥",
           "client_secret_placeholder": "输入新的客户端密钥",
           "secret_set": "已设置密钥。输入新密钥即可替换。",
-          "secret_missing": "在客户端 ID 和密钥都设置之前，Twitch 将保持关闭。",
+          "secret_saved": "密钥已保存。它无法再次显示；输入新密钥即可替换。",
+          "secret_none": "尚未设置密钥。",
+          "secret_unknown": "已保存的密钥无法在此显示或检查。客户端 ID 和密钥都保存后，Twitch 才会开启。",
           "secret_remove": "移除密钥",
           "secret_removed": "已移除 Twitch 客户端密钥",
           "updated": "Twitch 设置已更新"

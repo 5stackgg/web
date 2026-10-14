@@ -38,6 +38,33 @@ describe("playersSearchSteamIds", () => {
     expect(playersSearchSteamIds({ live_steam_ids: [] })).toEqual([]);
   });
 
+  it("ignores a roster that is not a list", () => {
+    expect(playersSearchSteamIds({ live_steam_ids: "1,2,3" })).toBeNull();
+    expect(
+      playersSearchSteamIds({ online_steam_ids: { 0: A }, live_steam_ids: [A] }),
+    ).toEqual([A]);
+  });
+
+  it("reads at most 5000 ids from a roster, however many are sent", () => {
+    const sent = Array.from({ length: 20_000 }, (_, index) =>
+      String(76561198000000000n + BigInt(index)),
+    );
+
+    const ids = playersSearchSteamIds({
+      online_steam_ids: sent,
+      live_steam_ids: sent,
+    })!;
+
+    expect(ids).toHaveLength(5000);
+    expect(ids.at(-1)).toBe(sent[4999]);
+  });
+
+  it("drops ids too long to be a steam id", () => {
+    expect(
+      playersSearchSteamIds({ live_steam_ids: [A, "1".repeat(21)] }),
+    ).toEqual([A]);
+  });
+
   it("drops anything that is not a steam id, so it can't reach the filter", () => {
     expect(
       playersSearchSteamIds({

@@ -2423,7 +2423,9 @@
           "client_secret": "İstemci Gizli Anahtarı",
           "client_secret_placeholder": "Yeni bir istemci gizli anahtarı gir",
           "secret_set": "Bir gizli anahtar ayarlı. Değiştirmek için yenisini gir.",
-          "secret_missing": "Hem istemci kimliği hem de gizli anahtar ayarlanana kadar Twitch kapalı kalır.",
+          "secret_saved": "Gizli anahtar kaydedildi. Tekrar gösterilemez; değiştirmek için yenisini gir.",
+          "secret_none": "Ayarlı bir gizli anahtar yok.",
+          "secret_unknown": "Kaydedilmiş bir gizli anahtar burada gösterilemez veya kontrol edilemez. Hem istemci kimliği hem de gizli anahtar kaydedildiğinde Twitch açılır.",
           "secret_remove": "Gizli Anahtarı Kaldır",
           "secret_removed": "Twitch istemci gizli anahtarı kaldırıldı",
           "updated": "Twitch ayarları güncellendi"

@@ -113,9 +113,7 @@ import { badgePopTransition } from "~/utilities/badgeCount";
               ? 'bg-primary text-primary-foreground'
               : '',
           ]"
-          @click.prevent.stop="
-            globalStream ? setGlobalStream(stream) : selectStream(stream)
-          "
+          @click.prevent.stop="pickStream(stream)"
         >
           <template v-if="stream.is_pov">
             <Avatar class="h-4 w-4 rounded-sm text-[0.45rem]">
@@ -213,6 +211,9 @@ export default {
       embedId: null as string | null,
       selectedStream: null as MatchStream | null,
       scoreboardOpen: false,
+      // Only a stream the viewer chose survives a refreshed list; one picked
+      // for them keeps following the first stream, as it always has.
+      pickedByHand: false,
       // Always start muted so browsers actually autoplay. Toggled by
       // the custom mute pill — for Twitch via the SDK's setMuted, for
       // iframe-based embeds (YouTube/Kick/generic) by rebuilding the
@@ -273,6 +274,14 @@ export default {
   methods: {
     povInitials(name?: string) {
       return (name || "?").slice(0, 2).toUpperCase();
+    },
+    pickStream(stream: MatchStream) {
+      if (this.globalStream) {
+        this.setGlobalStream(stream);
+        return;
+      }
+      this.pickedByHand = true;
+      this.selectStream(stream);
     },
     setGlobalStream(stream: MatchStream) {
       this.selectedStream = null;
@@ -635,14 +644,14 @@ export default {
           this.inline ||
           (!this.setGlobalStreamOnly && !this.globalStream)
         ) {
-          // A refreshed list (the player POVs are re-polled) must not pull the
-          // viewer off the stream they picked while it is still there.
           if (
+            this.pickedByHand &&
             this.selectedStream &&
             this.streams.some(({ id }) => id === this.selectedStream?.id)
           ) {
             return;
           }
+          this.pickedByHand = false;
 
           const firstStream = this.streams.at(0);
           if (firstStream) {
@@ -660,8 +669,9 @@ export default {
     globalStream(next, prev) {
       if (prev && !next && !this.global && !this.setGlobalStreamOnly) {
         if (!this.selectedStream && this.streams && this.streams.length > 0) {
-          const stream =
-            this.streams.find((s) => s.id === prev.id) ?? this.streams.at(0);
+          const floated = this.streams.find((s) => s.id === prev.id);
+          this.pickedByHand = !!floated;
+          const stream = floated ?? this.streams.at(0);
           if (stream) {
             this.selectStream(stream);
           }

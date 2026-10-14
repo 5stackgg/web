@@ -190,45 +190,6 @@ describe("Twitch card, linked", () => {
   });
 });
 
-describe("Twitch card, coming back from Twitch", () => {
-  it("confirms the link and takes the flag out of the address", async () => {
-    mePayload({ enabled: true, account: account() });
-    await mountCard("/?twitch=linked&tab=links");
-
-    expect(latestToast()?.title).toBe("Twitch linked");
-    await vi.waitFor(() => expect(useRoute().query).toEqual({ tab: "links" }));
-  });
-
-  it.each([
-    ["not_configured", "Twitch isn't set up on this site yet."],
-    [
-      "invalid_state",
-      "The Twitch sign-in expired or was already used. Please try again.",
-    ],
-    ["denied", "The Twitch sign-in was canceled."],
-    [
-      "already_linked",
-      "That Twitch account is already linked to another player.",
-    ],
-    [
-      "twitch_unavailable",
-      "Twitch didn't respond. Please try again in a moment.",
-    ],
-    ["something_new", "Something went wrong. Please try again."],
-  ])("explains %s and takes it out of the address", async (code, message) => {
-    await mountCard(`/?twitch_error=${code}`);
-
-    expect(latestToast()).toEqual(
-      expect.objectContaining({
-        title: "Couldn't link Twitch",
-        description: message,
-        variant: "destructive",
-      }),
-    );
-    await vi.waitFor(() => expect(useRoute().query).toEqual({}));
-  });
-});
-
 describe("Twitch card, hidden and degraded", () => {
   it("shows nothing when the api says Twitch is not set up", async () => {
     mePayload({ enabled: false, account: null });

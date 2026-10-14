@@ -2423,7 +2423,9 @@
           "client_secret": "Klienthemmelighed",
           "client_secret_placeholder": "Indtast en ny klienthemmelighed",
           "secret_set": "Der er angivet en hemmelighed. Indtast en ny for at erstatte den.",
-          "secret_missing": "Twitch forbliver slået fra, indtil både et klient-ID og en hemmelighed er angivet.",
+          "secret_saved": "Hemmeligheden er gemt. Den kan ikke vises igen; indtast en ny for at erstatte den.",
+          "secret_none": "Der er ikke angivet nogen hemmelighed.",
+          "secret_unknown": "En gemt hemmelighed kan ikke vises eller tjekkes her. Twitch slås til, når både et klient-ID og en hemmelighed er gemt.",
           "secret_remove": "Fjern Hemmelighed",
           "secret_removed": "Twitch-klienthemmeligheden er fjernet",
           "updated": "Twitch-indstillinger opdateret"

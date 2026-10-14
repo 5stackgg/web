@@ -6,6 +6,7 @@ import {
   useMatchTwitchPovs,
   useTwitchLiveSteamIds,
   useTwitchPlayer,
+  useTwitchPovGuard,
 } from "~/composables/useTwitch";
 
 const PLAYER = "76561198000000002";
@@ -41,6 +42,10 @@ let scope: ReturnType<typeof effectScope> | undefined;
 
 function notFound() {
   return Object.assign(new Error("Not Found"), { statusCode: 404 });
+}
+
+function badGateway() {
+  return Object.assign(new Error("Bad Gateway"), { statusCode: 502 });
 }
 
 function run<T>(fn: () => T): T {
@@ -107,6 +112,55 @@ describe("useTwitchPlayer", () => {
     expect(stream.value).toBeNull();
   });
 
+  it("keeps the last known stream through an outage (only a 404 hides it)", async () => {
+    fetched.mockResolvedValueOnce(live).mockRejectedValueOnce(badGateway());
+    const { stream } = run(() => useTwitchPlayer(PLAYER));
+    await flushPromises();
+
+    await vi.advanceTimersByTimeAsync(60_000);
+    await flushPromises();
+
+    expect(calls(`/twitch/players/${PLAYER}`)).toBe(2);
+    expect(stream.value).toEqual(live);
+  });
+
+  it("stops asking while the tab is hidden and nothing is playing", async () => {
+    fetched.mockResolvedValue(live);
+    run(() => useTwitchPlayer(PLAYER));
+    await flushPromises();
+
+    setVisibility("hidden");
+    await nextTick();
+    await vi.advanceTimersByTimeAsync(180_000);
+
+    expect(calls(`/twitch/players/${PLAYER}`)).toBe(1);
+  });
+
+  it("keeps checking every 20 seconds while the stream plays, even in a hidden tab, and cuts it on a 404", async () => {
+    fetched.mockResolvedValue(live);
+    const playing = ref(false);
+    const { stream } = run(() => useTwitchPlayer(PLAYER, { playing }));
+    await flushPromises();
+
+    playing.value = true;
+    await nextTick();
+    await flushPromises();
+    setVisibility("hidden");
+    await nextTick();
+    await flushPromises();
+    const checked = calls(`/twitch/players/${PLAYER}`);
+
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+    expect(calls(`/twitch/players/${PLAYER}`)).toBe(checked + 1);
+
+    fetched.mockRejectedValue(notFound());
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+
+    expect(stream.value).toBeNull();
+  });
+
   it("never asks while Twitch is not set up", async () => {
     useApplicationSettingsStore().settings = [];
     const { stream } = run(() => useTwitchPlayer(PLAYER));
@@ -151,6 +205,22 @@ describe("useTwitchLiveSteamIds", () => {
     expect(steamIds.value).toEqual([]);
   });
 
+  it("keeps the same list object when only the viewer order changed", async () => {
+    const OTHER = "76561198000000005";
+    fetched
+      .mockResolvedValueOnce({ steam_ids: [PLAYER, OTHER] })
+      .mockResolvedValueOnce({ steam_ids: [OTHER, PLAYER] });
+    const { steamIds } = run(() => useTwitchLiveSteamIds());
+    await flushPromises();
+    const first = steamIds.value;
+
+    await vi.advanceTimersByTimeAsync(60_000);
+    await flushPromises();
+
+    expect(calls("/twitch/live")).toBe(2);
+    expect(steamIds.value).toBe(first);
+  });
+
   it("keeps the same list object when nobody went live or offline", async () => {
     fetched.mockResolvedValue({ steam_ids: [PLAYER] });
     const { steamIds } = run(() => useTwitchLiveSteamIds());
@@ -166,7 +236,7 @@ describe("useTwitchLiveSteamIds", () => {
 });
 
 describe("useMatchTwitchPovs", () => {
-  it("polls a Live match's POVs every 45 seconds", async () => {
+  it("polls a Live match's POVs, every 20 seconds while one is listed", async () => {
     fetched.mockResolvedValue({ streams: [pov] });
     const { streams } = run(() =>
       useMatchTwitchPovs({ id: MATCH, status: "Live" }),
@@ -179,7 +249,7 @@ describe("useMatchTwitchPovs", () => {
     );
     expect(streams.value).toEqual([pov]);
 
-    await vi.advanceTimersByTimeAsync(45_000);
+    await vi.advanceTimersByTimeAsync(20_000);
     await flushPromises();
 
     expect(calls("/streams")).toBe(2);
@@ -219,8 +289,42 @@ describe("useMatchTwitchPovs", () => {
     expect(calls("/streams")).toBe(1);
   });
 
-  it("stops polling while the tab is hidden and catches up when it comes back", async () => {
+  it("keeps the POVs through an outage, and drops them on a 404", async () => {
+    fetched
+      .mockResolvedValueOnce({ streams: [pov] })
+      .mockRejectedValueOnce(badGateway())
+      .mockRejectedValueOnce(notFound());
+    const { streams } = run(() =>
+      useMatchTwitchPovs({ id: MATCH, status: "Live" }),
+    );
+    await flushPromises();
+
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+    expect(streams.value).toEqual([pov]);
+
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+    expect(streams.value).toEqual([]);
+  });
+
+  it("keeps checking every 20 seconds while a POV may be playing, even in a hidden tab", async () => {
     fetched.mockResolvedValue({ streams: [pov] });
+    run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    await flushPromises();
+
+    setVisibility("hidden");
+    await nextTick();
+    await flushPromises();
+    const checked = calls("/streams");
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+
+    expect(calls("/streams")).toBe(checked + 1);
+  });
+
+  it("stops polling while the tab is hidden and no POV is listed, and catches up when it comes back", async () => {
+    fetched.mockResolvedValue({ streams: [] });
     run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
     await flushPromises();
     expect(calls("/streams")).toBe(1);
@@ -236,6 +340,18 @@ describe("useMatchTwitchPovs", () => {
     expect(calls("/streams")).toBe(2);
   });
 
+  it("polls every 45 seconds while no POV is listed", async () => {
+    fetched.mockResolvedValue({ streams: [] });
+    run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    await flushPromises();
+
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(calls("/streams")).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(25_000);
+    expect(calls("/streams")).toBe(2);
+  });
+
   it("stops when the page that asked goes away", async () => {
     fetched.mockResolvedValue({ streams: [pov] });
     run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
@@ -245,5 +361,61 @@ describe("useMatchTwitchPovs", () => {
     await vi.advanceTimersByTimeAsync(180_000);
 
     expect(calls("/streams")).toBe(1);
+  });
+});
+
+describe("useTwitchPovGuard", () => {
+  const floating = {
+    id: `twitch-pov:${PLAYER}`,
+    is_pov: true,
+    steam_id: PLAYER,
+    match_id: MATCH,
+  };
+
+  it("re-checks a floating POV every 20 seconds, even in a hidden tab, and lets it go once it is not returned", async () => {
+    fetched.mockResolvedValue({ streams: [pov] });
+    const gone = vi.fn();
+    run(() => useTwitchPovGuard(floating, gone));
+    await flushPromises();
+    expect(fetched).toHaveBeenCalledWith(
+      expect.stringMatching(new RegExp(`/twitch/matches/${MATCH}/streams$`)),
+      expect.objectContaining({ credentials: "include" }),
+    );
+
+    setVisibility("hidden");
+    await nextTick();
+    await flushPromises();
+    fetched.mockResolvedValue({ streams: [] });
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+
+    expect(gone).toHaveBeenCalledTimes(1);
+  });
+
+  it("lets it go on a 404 but not through an outage", async () => {
+    fetched.mockRejectedValueOnce(badGateway());
+    const gone = vi.fn();
+    run(() => useTwitchPovGuard(floating, gone));
+    await flushPromises();
+    expect(gone).not.toHaveBeenCalled();
+
+    fetched.mockRejectedValueOnce(notFound());
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+    expect(gone).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves every other stream alone", async () => {
+    const gone = vi.fn();
+    run(() =>
+      useTwitchPovGuard(
+        { id: "stream-1", link: "https://www.twitch.tv/caster" },
+        gone,
+      ),
+    );
+    await flushPromises();
+
+    expect(fetched).not.toHaveBeenCalled();
+    expect(gone).not.toHaveBeenCalled();
   });
 });

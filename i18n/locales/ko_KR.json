@@ -2423,7 +2423,9 @@
           "client_secret": "클라이언트 시크릿",
           "client_secret_placeholder": "새 클라이언트 시크릿 입력",
           "secret_set": "시크릿이 설정되어 있습니다. 교체하려면 새 시크릿을 입력하세요.",
-          "secret_missing": "클라이언트 ID와 시크릿이 모두 설정될 때까지 Twitch는 꺼져 있습니다.",
+          "secret_saved": "시크릿을 저장했습니다. 다시 표시할 수 없으며, 교체하려면 새 시크릿을 입력하세요.",
+          "secret_none": "설정된 시크릿이 없습니다.",
+          "secret_unknown": "저장된 시크릿은 여기서 표시하거나 확인할 수 없습니다. 클라이언트 ID와 시크릿이 모두 저장되면 Twitch가 켜집니다.",
           "secret_remove": "시크릿 제거",
           "secret_removed": "Twitch 클라이언트 시크릿을 제거했습니다",
           "updated": "Twitch 설정이 업데이트되었습니다"

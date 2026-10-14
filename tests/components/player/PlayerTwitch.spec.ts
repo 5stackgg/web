@@ -72,10 +72,15 @@ describe("profile Twitch link", () => {
 describe("profile Twitch watch card", () => {
   it("shows Twitch's thumbnail and the stream's details without loading the stream", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
-    vi.setSystemTime(new Date(STARTED.getTime() + (2 * 60 + 14) * 60_000));
+    const now = STARTED.getTime() + (2 * 60 + 14) * 60_000;
+    vi.setSystemTime(new Date(now));
     const wrapper = await mount(PlayerTwitchWatchCard, live);
 
-    expect(wrapper.get("img").attributes("src")).toBe(live.thumbnail_url);
+    const thumbnail = new URL(wrapper.get("img").attributes("src")!);
+    expect(`${thumbnail.origin}${thumbnail.pathname}`).toBe(live.thumbnail_url);
+    expect(thumbnail.searchParams.get("t")).toBe(
+      String(Math.floor(now / 60_000)),
+    );
     expect(wrapper.find("iframe").exists()).toBe(false);
     expect(wrapper.text()).toContain("FACEIT grind then scrims w/ Northwind");
     expect(wrapper.text()).toContain(
@@ -91,9 +96,12 @@ describe("profile Twitch watch card", () => {
   it("loads the Twitch player only when play is pressed", async () => {
     const wrapper = await mount(PlayerTwitchWatchCard, live);
 
+    expect(wrapper.emitted("update:playing")).toBeUndefined();
+
     await wrapper.get("button[aria-label='Play Stream']").trigger("click");
     await flushPromises();
 
+    expect(wrapper.emitted("update:playing")).toEqual([[true]]);
     const src = new URL(wrapper.get("iframe").attributes("src")!);
     expect(src.origin).toBe("https://player.twitch.tv");
     expect(src.searchParams.get("channel")).toBe("kappa_cs");

@@ -106,24 +106,32 @@ describe("Twitch application settings", () => {
     expect(secret.attributes("data-bwignore")).toBeDefined();
   });
 
-  it("writes a typed secret, empties the field and says one is set", async () => {
+  it("does not claim a secret is or isn't set when it can't know", async () => {
+    useApplicationSettingsStore().settings = [
+      { name: "twitch_client_id", value: "" },
+    ];
     const wrapper = await mountPage();
-    expect(wrapper.text()).toContain(
-      "Twitch stays off until both a client ID and a secret are set.",
-    );
 
-    await wrapper.get("input[name='twitch_client_id']").setValue("abc123");
+    expect(wrapper.text()).toContain(
+      "A saved secret can't be shown or checked here. Twitch turns on once a client ID and a secret are both saved.",
+    );
+    expect(wrapper.text()).not.toContain("A secret is set.");
+  });
+
+  it("says a secret was saved only once it was saved here, even without a client ID", async () => {
+    const wrapper = await mountPage();
+
     await secretInput(wrapper).setValue("s3cr3t");
     await (wrapper.vm as any).updateSettings();
     await flushPromises();
 
     expect(saved()).toEqual([
-      { name: "twitch_client_id", value: "abc123" },
+      { name: "twitch_client_id", value: "" },
       { name: "twitch_client_secret", value: "s3cr3t" },
     ]);
     expect((secretInput(wrapper).element as HTMLInputElement).value).toBe("");
     expect(wrapper.text()).toContain(
-      "A secret is set. Enter a new one to replace it.",
+      "Secret saved. It can't be shown again; enter a new one to replace it.",
     );
   });
 
@@ -141,9 +149,7 @@ describe("Twitch application settings", () => {
     await flushPromises();
 
     expect(saved()).toEqual([{ name: "twitch_client_secret", value: "" }]);
-    expect(wrapper.text()).toContain(
-      "Twitch stays off until both a client ID and a secret are set.",
-    );
+    expect(wrapper.text()).toContain("No secret is set.");
   });
 
   it("shows the redirect URL the Twitch application has to allow", async () => {

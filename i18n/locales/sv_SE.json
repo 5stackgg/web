@@ -2423,7 +2423,9 @@
           "client_secret": "Klienthemlighet",
           "client_secret_placeholder": "Ange en ny klienthemlighet",
           "secret_set": "En hemlighet är angiven. Ange en ny för att ersätta den.",
-          "secret_missing": "Twitch förblir avstängt tills både ett klient-ID och en hemlighet är angivna.",
+          "secret_saved": "Hemligheten är sparad. Den kan inte visas igen; ange en ny för att ersätta den.",
+          "secret_none": "Ingen hemlighet är angiven.",
+          "secret_unknown": "En sparad hemlighet kan inte visas eller kontrolleras här. Twitch slås på när både ett klient-ID och en hemlighet är sparade.",
           "secret_remove": "Ta Bort Hemlighet",
           "secret_removed": "Twitch-klienthemligheten togs bort",
           "updated": "Twitch-inställningarna har uppdaterats"

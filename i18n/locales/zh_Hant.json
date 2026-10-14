@@ -2423,7 +2423,9 @@
           "client_secret": "用戶端密鑰",
           "client_secret_placeholder": "輸入新的用戶端密鑰",
           "secret_set": "已設定密鑰。輸入新的密鑰即可取代。",
-          "secret_missing": "在用戶端 ID 和密鑰都設定之前，Twitch 將保持關閉。",
+          "secret_saved": "密鑰已儲存。它無法再次顯示；輸入新的密鑰即可取代。",
+          "secret_none": "尚未設定密鑰。",
+          "secret_unknown": "已儲存的密鑰無法在此顯示或檢查。用戶端 ID 和密鑰都儲存後，Twitch 才會開啟。",
           "secret_remove": "移除密鑰",
           "secret_removed": "已移除 Twitch 用戶端密鑰",
           "updated": "Twitch 設定已更新"

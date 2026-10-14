@@ -21,6 +21,8 @@ import {
 import { radarImageKey } from "~/utilities/mapAssets";
 import {
   UTILITY_TYPE_COLORS,
+  UTILITY_TYPE_ICONS,
+  UTILITY_TYPES,
   utilityLanding,
   utilityOrigin,
   normalizeTrajectory,
@@ -263,6 +265,7 @@ const boardReady = computed(
 
 type Marker = {
   id: string;
+  type: string;
   color: string;
   origin: { x: number; y: number };
   landing: { x: number; y: number } | null;
@@ -321,6 +324,7 @@ const markers = computed<Marker[]>(() => {
         : null;
     out.push({
       id: lineup.id,
+      type: lineup.utility_type,
       color: UTILITY_TYPE_COLORS[lineup.utility_type] ?? "#ffffff",
       origin,
       landing,
@@ -1802,6 +1806,18 @@ function metaLit(key: string) {
 // The open lineup keeps its line while the cursor is on another marker, just
 // quieter: hovering is a look at something else, not a reason for the thing
 // you are reading to vanish and come back.
+// Where to stand is only drawn for the throw being looked at: the landing is
+// what the board is read for, and a square beside every one of them doubled
+// the marks on a map that is already full.
+function showStand(marker: Marker) {
+  return (
+    props.showAllLines ||
+    !marker.landing ||
+    marker.id === props.selectedId ||
+    marker.id === props.hoveredId
+  );
+}
+
 const steadyTrails = computed(() =>
   markers.value.filter(
     (marker) =>
@@ -2154,6 +2170,27 @@ function trailPath(marker: Marker) {
            glitch on the map instead of an answer to the cursor. Opacity only:
            SVG geometry tweens would run on the main thread while the panel
            beside it is mounting. -->
+          <!-- The game's equipment icons as masks, so a landing is drawn as
+               its grenade in the grenade's own colour. -->
+          <defs>
+            <mask
+              v-for="type of UTILITY_TYPES"
+              :id="`${uid}-type-${type}`"
+              :key="type"
+              maskContentUnits="objectBoundingBox"
+              style="mask-type: alpha"
+            >
+              <image
+                :href="UTILITY_TYPE_ICONS[type]"
+                x="0"
+                y="0"
+                width="1"
+                height="1"
+                preserveAspectRatio="xMidYMid meet"
+              />
+            </mask>
+          </defs>
+
           <TransitionGroup name="mk" tag="g">
             <g
               v-for="marker of markers"
@@ -2196,12 +2233,15 @@ function trailPath(marker: Marker) {
                       :stroke-width="2 * ink"
                     />
                   </g>
-                  <circle
-                    :cx="marker.landing.x"
-                    :cy="marker.landing.y"
-                    :r="2.5 * ink"
+                  <rect
+                    data-landing-icon
+                    :x="marker.landing.x - 5.5 * ink"
+                    :y="marker.landing.y - 5.5 * ink"
+                    :width="11 * ink"
+                    :height="11 * ink"
                     :fill="marker.color"
-                    :fill-opacity="activeId === marker.id ? 1 : 0.8"
+                    :fill-opacity="activeId === marker.id ? 1 : 0.9"
+                    :mask="`url(#${uid}-type-${marker.type})`"
                   />
                 </g>
                 <!-- The ring is smaller than the dot it replaced; the target
@@ -2218,29 +2258,33 @@ function trailPath(marker: Marker) {
 
               <!-- The throw origin is the part a player has to stand on, so it is
              drawn as a hard square while the landing stays a soft ring. -->
-              <g
-                class="utility-glyph"
-                :style="grow(marker.origin, activeId === marker.id ? 1.3 : 1)"
-              >
-                <rect
-                  :x="marker.origin.x - 5.5 * ink"
-                  :y="marker.origin.y - 5.5 * ink"
-                  :width="11 * ink"
-                  :height="11 * ink"
-                  :rx="3 * ink"
-                  :fill="marker.color"
-                  :fill-opacity="activeId === marker.id ? 1 : 0.7"
-                  stroke="#05070b"
-                  :stroke-width="2 * ink"
-                />
-              </g>
-              <circle
-                data-mark-hit
-                :cx="marker.origin.x"
-                :cy="marker.origin.y"
-                :r="hit(11)"
-                fill="transparent"
-              />
+              <Transition name="trail">
+                <g v-if="showStand(marker)" data-stand>
+                  <g
+                    class="utility-glyph"
+                    :style="grow(marker.origin, activeId === marker.id ? 1.3 : 1)"
+                  >
+                    <rect
+                      :x="marker.origin.x - 5.5 * ink"
+                      :y="marker.origin.y - 5.5 * ink"
+                      :width="11 * ink"
+                      :height="11 * ink"
+                      :rx="3 * ink"
+                      :fill="marker.color"
+                      :fill-opacity="activeId === marker.id ? 1 : 0.7"
+                      stroke="#05070b"
+                      :stroke-width="2 * ink"
+                    />
+                  </g>
+                  <circle
+                    data-mark-hit
+                    :cx="marker.origin.x"
+                    :cy="marker.origin.y"
+                    :r="hit(11)"
+                    fill="transparent"
+                  />
+                </g>
+              </Transition>
             </g>
           </TransitionGroup>
 

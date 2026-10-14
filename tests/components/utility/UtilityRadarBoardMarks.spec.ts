@@ -132,11 +132,31 @@ describe("UtilityRadarBoard marks", () => {
     );
 
     for (const entry of seen) {
-      expect(entry.sizes).toHaveLength(2);
+      // Only the landing until the lineup is pointed at or picked.
+      expect(entry.sizes).toHaveLength(1);
       for (const radius of entry.sizes) {
         expect(radius * 2).toBeGreaterThanOrEqual(44 - 1e-6);
       }
     }
+  });
+
+  it("draws the landing as the grenade's icon in its colour", async () => {
+    const wrapper = await mountBoard(888, false);
+
+    const icon = wrapper.find("[data-landing-icon]");
+    expect(icon.attributes("mask")).toMatch(/type-Smoke\)$/);
+    expect(icon.attributes("fill")).toBe("#32d6e0");
+  });
+
+  it("shows where to stand only for the lineup pointed at or picked", async () => {
+    const wrapper = await mountBoard(888, false);
+    expect(wrapper.find("[data-stand]").exists()).toBe(false);
+
+    await wrapper.setProps({ hoveredId: "l-1" });
+    expect(wrapper.find("[data-stand]").exists()).toBe(true);
+
+    await wrapper.setProps({ hoveredId: null, selectedId: "l-1" });
+    expect(wrapper.find("[data-stand]").exists()).toBe(true);
   });
 
   it("gives a mouse at least 24px, and the marks as they were drawn", async () => {

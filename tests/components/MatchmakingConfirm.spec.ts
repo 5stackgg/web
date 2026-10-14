@@ -52,6 +52,25 @@ afterEach(() => {
   worker.restore();
 });
 
+describe("MatchmakingConfirm countdown", () => {
+  afterEach(() => {
+    useMatchmakingStore().serverClockOffsetMs = null;
+  });
+
+  it("counts down on the api's clock when the device clock runs ahead", async () => {
+    useMatchmakingStore().serverClockOffsetMs = -120_000;
+    setConfirmation(
+      confirmation({
+        expiresAt: new Date(Date.now() - 120_000 + 30_000).toISOString(),
+      }),
+    );
+    wrapper = await mountSuspended(MatchmakingConfirm);
+    await flushPromises();
+
+    expect((wrapper.vm as any).formattedCountdown).toMatch(/^00:(29|30)$/);
+  });
+});
+
 describe("MatchmakingConfirm ring", () => {
   it("keeps ringing until the player accepts, then closes only this ready check's ring", async () => {
     setConfirmation(confirmation());

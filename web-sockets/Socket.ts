@@ -1,6 +1,5 @@
 import EventEmitter from "eventemitter3";
 import { shallowRef, type ShallowRef } from "vue";
-import type { e_match_types_enum } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import { useChatReadState } from "~/composables/useChatReadState";
 import {
@@ -1176,16 +1175,28 @@ socket.listen(
 
 socket.listen(
   "matchmaking:details",
-  (
-    data: Array<{
-      totalInQueue: number;
-      type: e_match_types_enum;
-      region: string;
-    }>,
-  ) => {
-    useMatchmakingStore().joinedMatchmakingQueues = data;
+  (data: { serverNow?: string } & Record<string, any>) => {
+    const matchmakingStore = useMatchmakingStore();
+    const serverNow = data?.serverNow ? Date.parse(data.serverNow) : NaN;
+    // Time in transit only ever makes a reading smaller, so the largest one
+    // since the socket opened is the truest; a message held back while the
+    // tab slept must not drag the clock behind.
+    if (!Number.isNaN(serverNow)) {
+      const offset = serverNow - Date.now();
+      if (
+        matchmakingStore.serverClockOffsetMs === null ||
+        offset > matchmakingStore.serverClockOffsetMs
+      ) {
+        matchmakingStore.serverClockOffsetMs = offset;
+      }
+    }
+    matchmakingStore.joinedMatchmakingQueues = data;
   },
 );
+
+socket.listen("online", () => {
+  useMatchmakingStore().serverClockOffsetMs = null;
+});
 
 socket.listen("team-lobby:join", (data) => {});
 

@@ -67,6 +67,15 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     confirmation: undefined,
   });
 
+  // How far the api's clock is from this device's. Ready check and search
+  // timers read time through serverNow, so a device clock that is off cannot
+  // show a ready check as already over. Null until a queue update says.
+  const serverClockOffsetMs = ref<number | null>(null);
+
+  function serverNow(): number {
+    return Date.now() + (serverClockOffsetMs.value ?? 0);
+  }
+
   const regionStats = ref<RegionStats>({});
 
   // Presence arrives as a full roster on every change, so asking for the whole
@@ -834,6 +843,8 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     onlinePlayerSteamIds,
     presenceLoaded,
     joinedMatchmakingQueues,
+    serverClockOffsetMs,
+    serverNow,
 
     checkLatenies,
     refreshLatencies,

@@ -282,7 +282,7 @@ export default {
         this.confirmation.confirmed !== this.confirmation.players
       ) {
         const expiresAt = new Date(this.confirmation.expiresAt).getTime();
-        const now = new Date().getTime();
+        const now = useMatchmakingStore().serverNow();
         const difference = Math.max(0, Math.floor((expiresAt - now) / 1000));
 
         this.playCountdownSound();

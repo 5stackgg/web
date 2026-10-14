@@ -117,7 +117,12 @@ export function useQuickQueue() {
     if (!joinedAt) return null;
     const seconds = Math.max(
       0,
-      Math.floor((now.value.getTime() - new Date(joinedAt).getTime()) / 1000),
+      Math.floor(
+        (now.value.getTime() +
+          (matchmakingStore.serverClockOffsetMs ?? 0) -
+          new Date(joinedAt).getTime()) /
+          1000,
+      ),
     );
     return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
   });

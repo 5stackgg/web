@@ -2281,7 +2281,7 @@ function selectLineup(id: string | null) {
                again on Back, scrolled to where you left it. -->
           <div
             ref="listScroller"
-            class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-[max(1rem,env(safe-area-inset-bottom))] transition-[opacity,transform] motion-reduce:![transition-duration:1ms]"
+            class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 [scrollbar-gutter:stable] pb-[max(1rem,env(safe-area-inset-bottom))] transition-[opacity,transform] motion-reduce:![transition-duration:1ms]"
             :class="
               covered
                 ? 'pointer-events-none -translate-x-4 opacity-0 [transition-duration:110ms] ease-in'

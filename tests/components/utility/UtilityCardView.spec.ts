@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useRouter } from "#app";
@@ -19,13 +19,13 @@ describe("UtilityCardView and the Back button", () => {
     });
     const before = position();
 
+    // The entry is taken once the router has nothing else in flight, which a
+    // busy machine stretches past any fixed wait.
     await wrapper.setProps({ open: true });
-    await settle();
-    expect(position()).toBe(before + 1);
+    await vi.waitFor(() => expect(position()).toBe(before + 1));
 
     useRouter().back();
-    await settle();
-    expect(wrapper.emitted("back")).toHaveLength(1);
+    await vi.waitFor(() => expect(wrapper.emitted("back")).toHaveLength(1));
     expect(position()).toBe(before);
     wrapper.unmount();
   });

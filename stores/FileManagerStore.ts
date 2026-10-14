@@ -624,7 +624,6 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("filePath", filePath);
-        formData.append("userId", useAuthStore().me?.steam_id || "");
 
         const config = useRuntimeConfig();
         const serverPath = targetServer ? `/${targetServer}` : "";
@@ -664,6 +663,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
           xhr.onabort = () =>
             reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
+          xhr.withCredentials = true;
+          xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
           xhr.send(formData);
         });
 
@@ -761,7 +762,6 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("filePath", filePath);
-        formData.append("userId", useAuthStore().me?.steam_id || "");
 
         const config = useRuntimeConfig();
         const serverPath = targetServer ? `/${targetServer}` : "";
@@ -807,6 +807,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
           xhr.onabort = () =>
             reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
+          xhr.withCredentials = true;
+          xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
           xhr.send(formData);
         });
 

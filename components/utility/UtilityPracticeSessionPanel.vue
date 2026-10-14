@@ -16,8 +16,6 @@ import { Spinner } from "~/components/ui/spinner";
 import { Separator } from "~/components/ui/separator";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
-import UtilityPracticeControls from "~/components/utility/UtilityPracticeControls.vue";
-import ServiceLogs from "~/components/ServiceLogs.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import {
   Collapsible,
@@ -163,10 +161,9 @@ const canDrive = computed(() => practice.value.isLive && canManage.value);
 const matchId = computed(() => practice.value.matchId);
 const serverId = computed(() => practice.value.serverId);
 
-// Both operator tools are refused by the API for anyone below these roles, so
-// showing them lower would only ever render a console that answers with an
-// error. The log socket is administrator only; RCON also takes the moderator
-// running the match, which the practice host is.
+// RCON is refused by the API for anyone below these roles, so showing it lower
+// would only ever render a console that answers with an error. It takes an
+// administrator, or the moderator running the match, which the practice host is.
 const isAdmin = computed(() =>
   useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
 );
@@ -465,20 +462,9 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
         </div>
       </template>
 
-      <!-- Everything the server can do once you are on it. The connect string
-           is only half of what a practice session is, and the other half was
-           discoverable only by knowing to type .help in chat. -->
-      <Separator />
-
-      <UtilityPracticeControls />
-
       <!-- Operator tools. A practice pod is a game server like any other, and
-           when one refuses connections the only thing that answers why is its
-           console and its log -- which the match page has had all along and
-           this panel had no equivalent of. Both are staff-gated here because
-           both are staff-gated on the server: the log socket is administrator
-           only, and RCON needs an administrator or the moderator running the
-           match. -->
+           when one refuses connections its console is what answers why. It
+           is staff-gated here because RCON is staff-gated on the server. -->
       <template v-if="canOperate">
         <Separator />
 
@@ -506,8 +492,6 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
               :match-id="matchId ?? undefined"
               compact
             />
-
-            <ServiceLogs v-if="isAdmin && matchId" :service="`u-${matchId}`" compact />
           </CollapsibleContent>
         </Collapsible>
       </template>

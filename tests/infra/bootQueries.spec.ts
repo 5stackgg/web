@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
 
 // Every file boots the app, whose auth middleware asks the api who is signed

@@ -1,3 +1,4 @@
+// @vitest-environment happy-dom
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { pinBrowserLocale } from "../../helpers/browserLocale";

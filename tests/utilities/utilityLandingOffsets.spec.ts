@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import {
   UTILITY_EXECUTE_FOLLOW_UP_SECONDS,

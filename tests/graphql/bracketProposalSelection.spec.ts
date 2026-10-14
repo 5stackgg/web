@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { print } from "graphql";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";

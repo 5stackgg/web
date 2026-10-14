@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { e_match_status_enum } from "~/generated/zeus";
 import {

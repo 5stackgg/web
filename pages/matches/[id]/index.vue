@@ -1160,7 +1160,12 @@ export default {
     transition-duration: 1ms;
   }
 }
-/* A card stays hidden until its turn to unfold. */
+/* A card stays hidden until its turn to unfold, and the cards' own unfold
+   sets the column's height: a second open on top of it lags, then catches
+   up, and the page drifts. */
+.veto-arriving {
+  transition-property: opacity;
+}
 .veto-arriving [data-veto-home]:not([data-landed]) {
   opacity: 0;
 }

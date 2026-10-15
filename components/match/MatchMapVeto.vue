@@ -421,10 +421,12 @@ export default {
 </script>
 
 <style scoped>
-/* The whole block folds shut when the veto completes -- height, then gone. */
+/* The whole block folds shut when the veto completes -- height, then gone.
+   The page's spacing under it folds too, or it snaps shut at the end. */
 .veto-collapse {
   transition:
     grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.2s ease-in;
 }
 .veto-collapse > * {
@@ -432,6 +434,8 @@ export default {
 }
 .veto-collapse-to {
   grid-template-rows: 0fr;
+  padding-top: 0;
+  padding-bottom: 0;
   opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {

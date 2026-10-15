@@ -519,118 +519,125 @@ const resultText = computed(() =>
       </span>
     </div>
 
-    <div
-      class="flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground md:justify-center"
-    >
-      <!-- Phone: the series as one divided strip, a cell per map. -->
+    <!-- The veto row shares this last item, so the header's gap only opens
+         with it. -->
+    <div>
       <div
-        v-if="mapChips.length"
-        class="grid w-full auto-cols-fr grid-flow-col divide-x divide-white/[0.07] overflow-hidden rounded-md bg-white/[0.04] ring-1 ring-inset ring-white/[0.07] md:hidden"
+        class="flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground md:justify-center"
       >
+        <!-- Phone: the series as one divided strip, a cell per map. -->
         <div
+          v-if="mapChips.length"
+          class="grid w-full auto-cols-fr grid-flow-col divide-x divide-white/[0.07] overflow-hidden rounded-md bg-white/[0.04] ring-1 ring-inset ring-white/[0.07] md:hidden"
+        >
+          <div
+            v-for="(chip, index) in mapChips"
+            :key="chip.key"
+            class="grid min-w-0 justify-items-center gap-1 px-1.5 py-2"
+            :class="
+              chip.matchMap?.is_current_map && isLive
+                ? 'bg-destructive/10 text-foreground/90'
+                : chip.matchMap
+                  ? 'text-foreground/90'
+                  : 'text-muted-foreground/60'
+            "
+          >
+            <span
+              class="flex min-w-0 max-w-full items-center gap-1.5 text-[12px] leading-none"
+            >
+              <img
+                v-if="chip.matchMap?.map?.patch && mapChips.length <= 3"
+                :src="chip.matchMap.map.patch"
+                alt=""
+                class="size-3.5 shrink-0 object-contain"
+              />
+              <span class="truncate">{{
+                chip.matchMap
+                  ? mapLabel(chip.matchMap.map)
+                  : $t("match.map_number", { count: index + 1 })
+              }}</span>
+            </span>
+            <span
+              v-if="chip.matchMap"
+              class="text-[13px] font-semibold leading-none tabular-nums"
+            >
+              <MatchLineupScoreDisplay
+                :match="match"
+                :lineup="lineups[0]"
+                :match-map="chip.matchMap"
+                :halves="false"
+              />–<MatchLineupScoreDisplay
+                :match="match"
+                :lineup="lineups[1]"
+                :match-map="chip.matchMap"
+                :halves="false"
+              />
+            </span>
+            <span v-else class="text-[13px] leading-none">–</span>
+          </div>
+        </div>
+
+        <span
           v-for="(chip, index) in mapChips"
           :key="chip.key"
-          class="grid min-w-0 justify-items-center gap-1 px-1.5 py-2"
+          class="inline-flex h-7 items-center gap-2 whitespace-nowrap rounded-md pl-2 pr-2.5 max-md:hidden"
           :class="
-            chip.matchMap?.is_current_map && isLive
-              ? 'bg-destructive/10 text-foreground/90'
-              : chip.matchMap
-                ? 'text-foreground/90'
-                : 'text-muted-foreground/60'
+            !chip.matchMap
+              ? 'outline-dashed outline-1 -outline-offset-1 outline-white/[0.11]'
+              : chip.matchMap.is_current_map && isLive
+                ? 'bg-white/[0.04] text-foreground/90 ring-1 ring-inset ring-destructive/45'
+                : 'bg-white/[0.04] text-foreground/90 ring-1 ring-inset ring-white/[0.07]'
           "
         >
-          <span
-            class="flex min-w-0 max-w-full items-center gap-1.5 text-[12px] leading-none"
-          >
+          <template v-if="chip.matchMap">
             <img
-              v-if="chip.matchMap?.map?.patch && mapChips.length <= 3"
+              v-if="chip.matchMap.map?.patch"
               :src="chip.matchMap.map.patch"
               alt=""
-              class="size-3.5 shrink-0 object-contain"
+              class="size-4 object-contain"
             />
-            <span class="truncate">{{
-              chip.matchMap
-                ? mapLabel(chip.matchMap.map)
-                : $t("match.map_number", { count: index + 1 })
-            }}</span>
-          </span>
-          <span
-            v-if="chip.matchMap"
-            class="text-[13px] font-semibold leading-none tabular-nums"
-          >
-            <MatchLineupScoreDisplay
-              :match="match"
-              :lineup="lineups[0]"
-              :match-map="chip.matchMap"
-              :halves="false"
-            />–<MatchLineupScoreDisplay
-              :match="match"
-              :lineup="lineups[1]"
-              :match-map="chip.matchMap"
-              :halves="false"
-            />
-          </span>
-          <span v-else class="text-[13px] leading-none">–</span>
-        </div>
+            {{ mapLabel(chip.matchMap.map) }}
+            <span class="tabular-nums text-muted-foreground">
+              <MatchLineupScoreDisplay
+                :match="match"
+                :lineup="lineups[0]"
+                :match-map="chip.matchMap"
+                :halves="false"
+              />–<MatchLineupScoreDisplay
+                :match="match"
+                :lineup="lineups[1]"
+                :match-map="chip.matchMap"
+                :halves="false"
+              />
+            </span>
+          </template>
+          <template v-else>
+            {{ $t("match.map_number", { count: index + 1 }) }}
+          </template>
+        </span>
+
+        <span
+          v-if="metaLine"
+          class="inline-flex h-7 items-center max-md:hidden"
+        >
+          {{ metaLine }}
+        </span>
+        <span v-if="metaLine" class="grid w-full gap-1 leading-snug md:hidden">
+          <span v-if="metaFacts">{{ metaFacts }}</span>
+          <span v-if="formattedSchedule">{{ formattedSchedule }}</span>
+        </span>
+
+        <span
+          v-if="showAutoCancel"
+          class="inline-flex h-7 items-center gap-1.5 text-destructive"
+        >
+          <AlertTriangle class="size-3.5 shrink-0" />
+          {{ $t("match.auto_canceling") }}
+          <TimeAgo :date="match.cancels_at" countdown hide-icon />
+        </span>
       </div>
 
-      <span
-        v-for="(chip, index) in mapChips"
-        :key="chip.key"
-        class="inline-flex h-7 items-center gap-2 whitespace-nowrap rounded-md pl-2 pr-2.5 max-md:hidden"
-        :class="
-          !chip.matchMap
-            ? 'outline-dashed outline-1 -outline-offset-1 outline-white/[0.11]'
-            : chip.matchMap.is_current_map && isLive
-              ? 'bg-white/[0.04] text-foreground/90 ring-1 ring-inset ring-destructive/45'
-              : 'bg-white/[0.04] text-foreground/90 ring-1 ring-inset ring-white/[0.07]'
-        "
-      >
-        <template v-if="chip.matchMap">
-          <img
-            v-if="chip.matchMap.map?.patch"
-            :src="chip.matchMap.map.patch"
-            alt=""
-            class="size-4 object-contain"
-          />
-          {{ mapLabel(chip.matchMap.map) }}
-          <span class="tabular-nums text-muted-foreground">
-            <MatchLineupScoreDisplay
-              :match="match"
-              :lineup="lineups[0]"
-              :match-map="chip.matchMap"
-              :halves="false"
-            />–<MatchLineupScoreDisplay
-              :match="match"
-              :lineup="lineups[1]"
-              :match-map="chip.matchMap"
-              :halves="false"
-            />
-          </span>
-        </template>
-        <template v-else>
-          {{ $t("match.map_number", { count: index + 1 }) }}
-        </template>
-      </span>
-
-      <span v-if="metaLine" class="inline-flex h-7 items-center max-md:hidden">
-        {{ metaLine }}
-      </span>
-      <span v-if="metaLine" class="grid w-full gap-1 leading-snug md:hidden">
-        <span v-if="metaFacts">{{ metaFacts }}</span>
-        <span v-if="formattedSchedule">{{ formattedSchedule }}</span>
-      </span>
-
-      <span
-        v-if="showAutoCancel"
-        class="inline-flex h-7 items-center gap-1.5 text-destructive"
-      >
-        <AlertTriangle class="size-3.5 shrink-0" />
-        {{ $t("match.auto_canceling") }}
-        <TimeAgo :date="match.cancels_at" countdown hide-icon />
-      </span>
+      <MatchHeaderVeto :match="match" />
     </div>
-
-    <MatchHeaderVeto :match="match" />
   </div>
 </template>

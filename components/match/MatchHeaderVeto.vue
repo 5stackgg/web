@@ -106,12 +106,14 @@ const viewerLineup = computed(() =>
 </template>
 
 <style scoped>
+/* The header's own gap above the row lives inside it, so folded it takes no
+   room at all. */
 .hv {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
-  padding-top: 2px;
+  padding-top: 18px;
 }
 .hv-label {
   font-size: 12px;
@@ -120,21 +122,18 @@ const viewerLineup = computed(() =>
 .is-arriving [data-veto-home]:not([data-landed]) {
   opacity: 0;
 }
-/* Opening, the row brings its share of the header's gap with it. */
 .hv-fold {
   transition:
     grid-template-rows 420ms cubic-bezier(0.16, 1, 0.3, 1),
-    margin-top 420ms cubic-bezier(0.16, 1, 0.3, 1),
     opacity 240ms ease;
 }
 .hv-fold-from {
   grid-template-rows: 0fr;
-  margin-top: -16px;
   opacity: 0;
 }
 @media (min-width: 768px) {
-  .hv-fold-from {
-    margin-top: -18px;
+  .hv {
+    padding-top: 20px;
   }
 }
 @media (max-width: 767px) {

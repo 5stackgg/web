@@ -469,6 +469,7 @@ import {
   mentionsViewer,
 } from "~/utilities/chatMentions";
 import { chatRoomRings } from "~/composables/useChatRoomSettings";
+import { useChatReadState } from "~/composables/useChatReadState";
 import { canModerateTeamChat, chatTeam } from "~/utilities/teamChat";
 import mapLabel from "~/utilities/mapLabel";
 
@@ -636,6 +637,10 @@ export default {
     // carrying two rooms at once, which is why the merged one now counts.
     tracksReadPosition() {
       return this.isGlobalContext || this.isMerged;
+    },
+    // On screen and in front. Going out of this is leaving the room.
+    viewing() {
+      return this.isActiveTab && this.visible && !this.isMinimized;
     },
     // Read straight off the lobby: the message list belongs to the lobby, and
     // every widget on it renders the same one.
@@ -943,6 +948,19 @@ export default {
     },
   },
   methods: {
+    // Everything the room had on screen when it was left has been seen, so a
+    // line tagging the viewer is plain the next time it opens. Team lines are
+    // never lit, so only the main room is kept.
+    markSeen(lobbyId: string) {
+      let latest = 0;
+      for (const message of this.messages) {
+        if ((message.__channel ?? "everyone") === "everyone") {
+          latest = Math.max(latest, chatMessageTime(message));
+        }
+      }
+
+      useChatReadState().markSeen(this.type, lobbyId, latest);
+    },
     // The (type, id) pair a destination resolves to. Sending is nothing more
     // than choosing between them.
     channelVisible(channel: "everyone" | "team") {
@@ -1255,6 +1273,11 @@ export default {
         this.showParticipants = false;
       }
     },
+    viewing(viewing: boolean, wasViewing: boolean) {
+      if (wasViewing && !viewing) {
+        this.markSeen(this.lobbyId);
+      }
+    },
     // Showing a room again is what clears its mark -- the messages it was
     // holding are on screen the moment the filter widens.
     viewFilter: {
@@ -1268,7 +1291,11 @@ export default {
     },
     lobbyId: {
       immediate: true,
-      handler() {
+      handler(_lobbyId: string, previous?: string) {
+        if (previous && this.viewing) {
+          this.markSeen(previous);
+        }
+
         this.lobby?.leave();
 
         const lobby = socket.joinLobby(
@@ -1397,6 +1424,10 @@ export default {
     window.addEventListener("dragleave", this.onWindowDragLeave);
   },
   beforeUnmount() {
+    if (this.viewing) {
+      this.markSeen(this.lobbyId);
+    }
+
     this.lobby?.leave();
     this.teamLobby?.leave();
     window.removeEventListener("drop", this.resetDrag);

@@ -1,6 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
+import { useChatReadState } from "~/composables/useChatReadState";
+import { chatThreadKey } from "~/utilities/chatThread";
 
 const ME = "76561198000000001";
 const VEXX = "76561198000000002";
@@ -15,16 +17,31 @@ const line = (message: string, mentions?: unknown) => ({
   ...(mentions ? { mentions } : {}),
 });
 
+const ROOM = { type: "tournament", id: "t-1" };
+
 async function mount(message: ReturnType<typeof line>) {
-  return await mountSuspended(ChatMessage, { props: { message } });
+  return await mountSuspended(ChatMessage, { props: { message, room: ROOM } });
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   useAuthStore().me = { steam_id: ME, name: "kappa", role: "user" } as any;
+  vi.stubGlobal(
+    "$fetch",
+    vi.fn().mockResolvedValue({
+      threads: [
+        {
+          thread: chatThreadKey(ROOM.type, ROOM.id),
+          lastReadAt: new Date(Date.UTC(2026, 9, 14, 11, 0)).toISOString(),
+        },
+      ],
+    }),
+  );
+  await useChatReadState().hydrate();
 });
 
 afterEach(() => {
   useAuthStore().me = undefined;
+  vi.unstubAllGlobals();
 });
 
 describe("ChatMessage mentions", () => {
@@ -52,6 +69,24 @@ describe("ChatMessage mentions", () => {
       "self",
     );
     expect(wrapper.find("[data-chat-mentions-me]").exists()).toBe(true);
+  });
+
+  it("keeps only the tag once the room has been seen with the line in it", async () => {
+    const message = line("@kappa you're up next on Nuke", [
+      { steam_id: ME, name: "kappa" },
+    ]);
+    useChatReadState().markSeen(
+      ROOM.type,
+      ROOM.id,
+      new Date(message.timestamp).getTime(),
+    );
+
+    const wrapper = await mount(message);
+
+    expect(wrapper.get("[data-chat-mention]").attributes("data-chat-mention")).toBe(
+      "self",
+    );
+    expect(wrapper.find("[data-chat-mentions-me]").exists()).toBe(false);
   });
 
   it("leaves an @name the server did not accept as plain text", async () => {

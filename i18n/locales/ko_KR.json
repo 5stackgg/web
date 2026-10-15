@@ -11024,7 +11024,6 @@
       "cancel_invite": "초대 취소",
       "invite_to_draft": "드래프트에 초대",
       "invite_sent": "{name}님을 드래프트에 초대했습니다",
-      "picks_first": "{name}님이 먼저 픽합니다",
       "match_starting": "매치 시작 중 — 서버 부팅 중",
       "no_regions_available_description": "사용 가능한 게임 서버 지역이 없습니다. 서버가 온라인 상태가 될 때까지 드래프트를 시작할 수 없습니다 — 관리자에게 문의하세요.",
       "assign_all": "모든 플레이어 배정",

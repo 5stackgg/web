@@ -11029,7 +11029,6 @@
       "cancel_invite": "Cancel Invite",
       "invite_to_draft": "Invite to Draft",
       "invite_sent": "Invited {name} to your draft",
-      "picks_first": "{name} picks first",
       "match_starting": "Match Starting — Booting Server",
       "no_regions_available_description": "No game server regions have servers available. The draft cannot start until a server comes online — contact an administrator.",
       "assign_all": "Assign All Players",

@@ -45,7 +45,6 @@ import DraftSelfStatus from "~/components/draft-games/DraftSelfStatus.vue";
 import DraftRequestQueue from "~/components/draft-games/DraftRequestQueue.vue";
 import DraftOpenSlot from "~/components/draft-games/DraftOpenSlot.vue";
 import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue";
-import DraftCoinFlip from "~/components/draft-games/DraftCoinFlip.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
@@ -327,23 +326,6 @@ const isMyTurn = computed(
     isDrafting.value &&
     !isHostMode.value &&
     myCaptainLineup.value === currentLineup.value,
-);
-
-const showCoinFlip = ref(false);
-const coinFlipShown = ref(false);
-watch(
-  () => props.room.status,
-  (status) => {
-    if (
-      status === "Drafting" &&
-      props.room.mode === "Captains" &&
-      !coinFlipShown.value
-    ) {
-      coinFlipShown.value = true;
-      showCoinFlip.value = true;
-    }
-  },
-  { immediate: true },
 );
 
 const canAssign = computed(() => isHostAssigning.value && isOrganizer.value);
@@ -857,12 +839,6 @@ const start = () => {
 
 <template>
   <div class="draft-room space-y-4">
-    <DraftCoinFlip
-      v-if="showCoinFlip"
-      :room="room"
-      @done="showCoinFlip = false"
-    />
-
     <DraftSettingsBar
       :room="room"
       :match="match"

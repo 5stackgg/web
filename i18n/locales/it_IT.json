@@ -11024,7 +11024,6 @@
       "cancel_invite": "Annulla invito",
       "invite_to_draft": "Invita al draft",
       "invite_sent": "Hai invitato {name} al tuo draft",
-      "picks_first": "{name} sceglie per primo",
       "match_starting": "Avvio match — avvio server in corso",
       "no_regions_available_description": "Nessuna regione ha server disponibili. Il draft non può iniziare finché un server non torna online — contatta un amministratore.",
       "assign_all": "Assegna tutti i giocatori",

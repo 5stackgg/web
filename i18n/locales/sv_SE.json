@@ -11024,7 +11024,6 @@
       "cancel_invite": "Avbryt inbjudan",
       "invite_to_draft": "Bjud in till draft",
       "invite_sent": "Bjöd in {name} till din draft",
-      "picks_first": "{name} väljer först",
       "match_starting": "Matchen startar — startar server",
       "no_regions_available_description": "Inga spelserverregioner har lediga servrar. Draften kan inte starta förrän en server kommer online — kontakta en administratör.",
       "assign_all": "Tilldela alla spelare",

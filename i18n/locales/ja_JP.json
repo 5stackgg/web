@@ -10478,6 +10478,28 @@
       "forbidden_title": "このチャットは開けません",
       "forbidden_description": "{team} の選手とオーナーだけが読めます。",
       "forbidden_description_unnamed": "このチームの選手とオーナーだけが読めます。"
+    },
+    "room_settings": {
+      "menu": "通知設定",
+      "mute_room": "ルームをミュート",
+      "unmute_room": "ルームのミュートを解除",
+      "mute_conversation": "会話をミュート",
+      "unmute_conversation": "会話のミュートを解除",
+      "mute_for": {
+        "minutes_15": "15分間",
+        "hour_1": "1時間",
+        "hours_8": "8時間",
+        "hours_24": "24時間",
+        "until_unmuted": "自分で解除するまで"
+      },
+      "muted": "ミュート中",
+      "muted_until": "{time} までミュート中",
+      "notify_me_about": "通知する内容",
+      "notify": {
+        "all": "すべてのメッセージ",
+        "mentions": "{'@'}メンションのみ",
+        "nothing": "通知しない"
+      }
     }
   },
   "charts": {

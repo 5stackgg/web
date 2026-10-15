@@ -356,9 +356,7 @@ function clearTeamEnterDelay(el: Element) {
                       :data-tone="chatRoomBadge.tone"
                       :class="[
                         tournamentChatRoomUnreadClasses,
-                        chatRoomBadge.tone === 'red'
-                          ? 'bg-red-500 text-white'
-                          : 'bg-zinc-50 text-zinc-950',
+                        chatBadgeClass(chatRoomBadge.tone),
                       ]"
                     >
                       <AtSign
@@ -999,7 +997,12 @@ import {
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { tournamentChatTab } from "~/composables/useChatTabSetup";
-import { chatTabBadge, type ChatBadge } from "~/utilities/chatBadges";
+import {
+  chatBadgeClass,
+  chatTabBadge,
+  type ChatBadge,
+} from "~/utilities/chatBadges";
+import { chatTabQuiet } from "~/composables/useChatRoomSettings";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { setActiveHub } from "~/composables/useHubState";
 import { useRightSidebar } from "~/composables/useRightSidebar";
@@ -1828,6 +1831,7 @@ export default {
         tab,
         unreadCounts.value[tab.id] ?? 0,
         mentionCounts.value[tab.id] ?? 0,
+        chatTabQuiet(tab),
       );
     },
     leagueSeasonId() {
@@ -2260,6 +2264,7 @@ export default {
     },
   },
   methods: {
+    chatBadgeClass,
     onStatusMenuOpen(open: boolean) {
       if (this.statusMenuClock) {
         clearInterval(this.statusMenuClock);

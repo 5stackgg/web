@@ -10478,6 +10478,28 @@
       "forbidden_title": "Du kan inte öppna den här chatten",
       "forbidden_description": "Bara spelarna och ägaren av {team} kan läsa den.",
       "forbidden_description_unnamed": "Bara lagets spelare och ägare kan läsa den."
+    },
+    "room_settings": {
+      "menu": "Aviseringsinställningar",
+      "mute_room": "Tysta rum",
+      "unmute_room": "Slå på rummet igen",
+      "mute_conversation": "Tysta konversation",
+      "unmute_conversation": "Slå på konversationen igen",
+      "mute_for": {
+        "minutes_15": "I 15 minuter",
+        "hour_1": "I 1 timme",
+        "hours_8": "I 8 timmar",
+        "hours_24": "I 24 timmar",
+        "until_unmuted": "Tills jag slår på den igen"
+      },
+      "muted": "Tystad",
+      "muted_until": "Tystad till {time}",
+      "notify_me_about": "Avisera mig om",
+      "notify": {
+        "all": "Alla meddelanden",
+        "mentions": "Bara {'@'}taggar",
+        "nothing": "Ingenting"
+      }
     }
   },
   "charts": {

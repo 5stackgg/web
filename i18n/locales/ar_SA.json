@@ -10478,6 +10478,28 @@
       "forbidden_title": "لا يمكنك فتح هذه الدردشة",
       "forbidden_description": "يمكن فقط للاعبي {team} ومالكه قراءتها.",
       "forbidden_description_unnamed": "يمكن فقط للاعبي هذا الفريق ومالكه قراءتها."
+    },
+    "room_settings": {
+      "menu": "إعدادات الإشعارات",
+      "mute_room": "كتم الغرفة",
+      "unmute_room": "إلغاء كتم الغرفة",
+      "mute_conversation": "كتم المحادثة",
+      "unmute_conversation": "إلغاء كتم المحادثة",
+      "mute_for": {
+        "minutes_15": "لمدة 15 دقيقة",
+        "hour_1": "لمدة ساعة واحدة",
+        "hours_8": "لمدة 8 ساعات",
+        "hours_24": "لمدة 24 ساعة",
+        "until_unmuted": "حتى أعيد تشغيلها"
+      },
+      "muted": "مكتومة",
+      "muted_until": "مكتومة حتى {time}",
+      "notify_me_about": "أعلمني بـ",
+      "notify": {
+        "all": "كل الرسائل",
+        "mentions": "إشارات {'@'} فقط",
+        "nothing": "لا شيء"
+      }
     }
   },
   "charts": {

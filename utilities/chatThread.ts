@@ -19,3 +19,14 @@ export function notificationThreadKey(
 ) {
   return `${type}:${entityId ?? ""}`;
 }
+
+// The thread a player's mute and "notify me about" for a room are kept under.
+// A side's team room is shown inside its match room, whose setting covers it;
+// the api's roomSettingsThreadFor agrees.
+export function chatRoomSettingsThread(type: string, lobbyId: string) {
+  if (type === "match_team") {
+    return chatThreadKey("match", lobbyId.split(":")[0]);
+  }
+
+  return chatThreadKey(type, lobbyId);
+}

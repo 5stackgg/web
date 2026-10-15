@@ -7,6 +7,7 @@ import {
   type DirectMessagePeer,
 } from "~/composables/useDirectMessages";
 import { isChatTabOnScreen } from "~/composables/useChatTabSetup";
+import { chatRoomRings } from "~/composables/useChatRoomSettings";
 
 // Outlives the default layout that mounts this, like the rooms in
 // useChatTabSetup: a remount replaces the listener rather than adding another.
@@ -171,7 +172,9 @@ export function useIncomingDirectMessages() {
       setAwaitingReply(data.roomId, false);
 
       // The room's own `lobby:chat` carries the same id when its tab is open.
-      useTabFlash().signalChat("direct", data.message);
+      if (chatRoomRings("direct", data.roomId, false)) {
+        useTabFlash().signalChat("direct", data.message);
+      }
 
       // Deliberately does not inject the message: opening the tab makes
       // useChatTabSetup join the room, and the join's history snapshot delivers

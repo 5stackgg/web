@@ -9,6 +9,7 @@ import { useInvites } from "~/composables/useInvites";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
 import { chatBadgeFor } from "~/utilities/chatBadges";
+import { chatTabQuiet } from "~/composables/useChatRoomSettings";
 
 const { openLastOrDefaultHub } = useHubState();
 const { tabs, unreadCounts, mentionCounts } = useChatTabs();
@@ -16,7 +17,12 @@ const { unreadNotificationCount } = useNotificationBadge();
 const { pendingFriends } = useInvites();
 
 const chatBadge = computed(() =>
-  chatBadgeFor(tabs.value, unreadCounts.value, mentionCounts.value),
+  chatBadgeFor(
+    tabs.value,
+    unreadCounts.value,
+    mentionCounts.value,
+    chatTabQuiet,
+  ),
 );
 
 // Red for what needs you, the dock's rule: chatter shows in white only while

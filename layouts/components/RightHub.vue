@@ -48,7 +48,16 @@ import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
 import HubDockItem from "~/components/hub/HubDockItem.vue";
 import HubVoiceBar from "~/components/hub/HubVoiceBar.vue";
 import { formatBadgeCount } from "~/utilities/badgeCount";
-import { chatBadgeFor, chatTabBadge } from "~/utilities/chatBadges";
+import {
+  chatBadgeFor,
+  chatCounts,
+  chatTabBadge,
+} from "~/utilities/chatBadges";
+import {
+  chatRoomMutedLabel,
+  chatTabQuiet,
+} from "~/composables/useChatRoomSettings";
+import ChatRoomNotifyMenu from "~/components/chat/ChatRoomNotifyMenu.vue";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { chatTeam } from "~/utilities/teamChat";
 import teamAvatar from "~/utilities/teamAvatar";
@@ -82,8 +91,6 @@ const {
   unreadCounts,
   mentionCounts,
   activityAt,
-  totalUnread,
-  totalMentions,
   activeTabId: activeChatTabId,
   setActiveTab,
 } = useChatTabs();
@@ -454,6 +461,7 @@ const chatLeftoverBadge = computed(() => {
     chatTabs.value.filter((tab) => !onDock.has(tab.id)),
     unreadCounts.value,
     mentionCounts.value,
+    chatTabQuiet,
   );
 });
 
@@ -462,20 +470,23 @@ function shortcutBadge(tab: ChatTab) {
     tab,
     unreadCounts.value[tab.id] ?? 0,
     mentionCounts.value[tab.id] ?? 0,
+    chatTabQuiet(tab),
   );
 }
 
 const chatDetail = computed(() => {
+  const { direct, mentions, chatter } = chatCounts(
+    chatTabs.value,
+    unreadCounts.value,
+    mentionCounts.value,
+    chatTabQuiet,
+  );
+  const unread = direct + chatter;
+
   const parts = [
-    totalUnread.value > 0
-      ? t("layouts.hub.dock.unread", { count: totalUnread.value })
-      : "",
-    totalMentions.value > 0
-      ? t(
-          "chat.mentions.tagged_you",
-          { count: totalMentions.value },
-          totalMentions.value,
-        )
+    unread > 0 ? t("layouts.hub.dock.unread", { count: unread }) : "",
+    mentions > 0
+      ? t("chat.mentions.tagged_you", { count: mentions }, mentions)
       : "",
   ].filter(Boolean);
 
@@ -492,13 +503,18 @@ function shortcutIcon(tab: ChatTab) {
 }
 
 function shortcutDetail(tab: ChatTab) {
-  const mentions = mentionCounts.value[tab.id] ?? 0;
-  if (mentions > 0) {
-    return t("chat.mentions.tagged_you", { count: mentions }, mentions);
+  const badge = shortcutBadge(tab);
+  if (badge?.mention) {
+    return t("chat.mentions.tagged_you", { count: badge.count }, badge.count);
   }
-  const unread = unreadCounts.value[tab.id] ?? 0;
-  if (unread > 0) {
-    return t("layouts.hub.dock.unread", { count: unread });
+  const muted = chatRoomMutedLabel(chatTabQuiet(tab), (key, params) =>
+    t(key, params ?? {}),
+  );
+  if (muted) {
+    return muted;
+  }
+  if (badge) {
+    return t("layouts.hub.dock.unread", { count: badge.count });
   }
   if (tab.type === "direct") return t("chat_room_subtitles.direct");
   if (tab.type === "organizers") return t("chat_room_subtitles.organizers");
@@ -973,7 +989,10 @@ function onHubTouchEnd(e: TouchEvent) {
                     :label="tab.label"
                     :detail="shortcutDetail(tab)"
                     :current="isHubActive('chat') && activeChatTabId === tab.id"
-                    :unread="shortcutBadge(tab) !== null"
+                    :unread="
+                      shortcutBadge(tab) !== null &&
+                      shortcutBadge(tab)?.tone !== 'muted'
+                    "
                     :badge="
                       shortcutBadge(tab)
                         ? formatBadgeCount(shortcutBadge(tab)?.count ?? 0)
@@ -981,6 +1000,7 @@ function onHubTouchEnd(e: TouchEvent) {
                     "
                     :badge-tone="shortcutBadge(tab)?.tone ?? 'red'"
                     :badge-mention="shortcutBadge(tab)?.mention ?? false"
+                    :muted="chatTabQuiet(tab).muted"
                     @select="openChatTab(tab)"
                     @intent="hoverOpenChat(tab)"
                   >
@@ -1019,7 +1039,13 @@ function onHubTouchEnd(e: TouchEvent) {
                     </span>
                   </HubDockItem>
                 </ContextMenuTrigger>
-                <ContextMenuContent class="w-52" data-right-hub-interactive>
+                <ContextMenuContent class="w-56" data-right-hub-interactive>
+                  <ChatRoomNotifyMenu
+                    kind="context"
+                    :type="tab.type"
+                    :lobby-id="tab.lobbyId"
+                    separated
+                  />
                   <ContextMenuItem @select="toggleShortcutPin(tab.id)">
                     {{
                       isShortcutPinned(tab.id)

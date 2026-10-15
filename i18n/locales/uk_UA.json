@@ -10478,6 +10478,28 @@
       "forbidden_title": "Ви не можете відкрити цей чат",
       "forbidden_description": "Його можуть читати лише гравці та власник {team}.",
       "forbidden_description_unnamed": "Його можуть читати лише гравці та власник цієї команди."
+    },
+    "room_settings": {
+      "menu": "Налаштування сповіщень",
+      "mute_room": "Заглушити кімнату",
+      "unmute_room": "Увімкнути сповіщення кімнати",
+      "mute_conversation": "Заглушити розмову",
+      "unmute_conversation": "Увімкнути сповіщення розмови",
+      "mute_for": {
+        "minutes_15": "На 15 хвилин",
+        "hour_1": "На 1 годину",
+        "hours_8": "На 8 годин",
+        "hours_24": "На 24 години",
+        "until_unmuted": "Доки не ввімкну знову"
+      },
+      "muted": "Заглушено",
+      "muted_until": "Заглушено до {time}",
+      "notify_me_about": "Сповіщення",
+      "notify": {
+        "all": "Усі повідомлення",
+        "mentions": "Лише {'@'}згадки",
+        "nothing": "Нічого"
+      }
     }
   },
   "charts": {

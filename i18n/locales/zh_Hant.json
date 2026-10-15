@@ -10478,6 +10478,28 @@
       "forbidden_title": "你無法開啟此聊天",
       "forbidden_description": "只有 {team} 的隊員和擁有者可以閱讀。",
       "forbidden_description_unnamed": "只有該隊伍的隊員和擁有者可以閱讀。"
+    },
+    "room_settings": {
+      "menu": "通知設定",
+      "mute_room": "靜音房間",
+      "unmute_room": "取消靜音房間",
+      "mute_conversation": "靜音對話",
+      "unmute_conversation": "取消靜音對話",
+      "mute_for": {
+        "minutes_15": "15 分鐘",
+        "hour_1": "1 小時",
+        "hours_8": "8 小時",
+        "hours_24": "24 小時",
+        "until_unmuted": "直到我手動取消"
+      },
+      "muted": "已靜音",
+      "muted_until": "靜音至 {time}",
+      "notify_me_about": "通知我",
+      "notify": {
+        "all": "所有訊息",
+        "mentions": "僅 {'@'}提及",
+        "nothing": "不通知"
+      }
     }
   },
   "charts": {

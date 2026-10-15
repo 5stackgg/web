@@ -10478,6 +10478,28 @@
       "forbidden_title": "Nie możesz otworzyć tego czatu",
       "forbidden_description": "Tylko gracze i właściciel {team} mogą go czytać.",
       "forbidden_description_unnamed": "Tylko gracze i właściciel tej drużyny mogą go czytać."
+    },
+    "room_settings": {
+      "menu": "Ustawienia powiadomień",
+      "mute_room": "Wycisz pokój",
+      "unmute_room": "Wyłącz wyciszenie pokoju",
+      "mute_conversation": "Wycisz rozmowę",
+      "unmute_conversation": "Wyłącz wyciszenie rozmowy",
+      "mute_for": {
+        "minutes_15": "Na 15 minut",
+        "hour_1": "Na 1 godzinę",
+        "hours_8": "Na 8 godzin",
+        "hours_24": "Na 24 godziny",
+        "until_unmuted": "Dopóki go nie włączę"
+      },
+      "muted": "Wyciszono",
+      "muted_until": "Wyciszono do {time}",
+      "notify_me_about": "Powiadomienia",
+      "notify": {
+        "all": "Wszystkie wiadomości",
+        "mentions": "Tylko {'@'}oznaczenia",
+        "nothing": "Brak"
+      }
     }
   },
   "charts": {

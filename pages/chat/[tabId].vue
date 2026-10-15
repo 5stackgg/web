@@ -2,7 +2,20 @@
 import { computed, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "#app";
 import { useI18n } from "vue-i18n";
+import { Bell, BellOff } from "lucide-vue-next";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
+import ChatRoomNotifyMenu from "~/components/chat/ChatRoomNotifyMenu.vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import {
+  chatRoomQuiet,
+  resetChatRoomSettings,
+  syncChatRoomSettings,
+  useChatRoomSettings,
+} from "~/composables/useChatRoomSettings";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import {
   setPageChatFocus,
@@ -246,6 +259,29 @@ useChatPresence();
 // a player blocked while it was open.
 useChatBlocks();
 
+// Nor the sign-in that follows the player's room settings, which keep a muted
+// room's sound quiet here too.
+watch(
+  () => useAuthStore().me?.steam_id,
+  (steamId) => {
+    if (steamId) {
+      void syncChatRoomSettings(String(steamId));
+      return;
+    }
+
+    resetChatRoomSettings();
+  },
+  { immediate: true },
+);
+
+const { supported: roomSettingsSupported } = useChatRoomSettings();
+
+const roomMuted = computed(() =>
+  currentTab.value
+    ? chatRoomQuiet(currentTab.value.type, currentTab.value.lobbyId).muted
+    : false,
+);
+
 // The team room is known only once the match is, which can be after the
 // thread.
 watch(
@@ -287,13 +323,34 @@ onUnmounted(() => {
           <span v-else>{{ $t("chat_page.not_found") }}</span>
         </p>
       </div>
-      <a
-        :href="'/'"
-        class="inline-flex items-center justify-center h-7 px-2 rounded-md border border-border bg-background text-xs hover:bg-accent shrink-0"
-        @click.prevent="handleBackToHub"
-      >
-        {{ $t("chat_page.back_to_hub") }}
-      </a>
+      <div class="flex shrink-0 items-center gap-1.5">
+        <DropdownMenu v-if="hasTab && roomSettingsSupported">
+          <DropdownMenuTrigger as-child>
+            <button
+              type="button"
+              data-chat-room-menu
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-foreground motion-reduce:transition-none"
+              :aria-label="$t('chat.room_settings.menu')"
+            >
+              <BellOff v-if="roomMuted" class="size-3.5" />
+              <Bell v-else class="size-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-56">
+            <ChatRoomNotifyMenu
+              :type="currentTab!.type"
+              :lobby-id="currentTab!.lobbyId"
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <a
+          :href="'/'"
+          class="inline-flex items-center justify-center h-7 px-2 rounded-md border border-border bg-background text-xs hover:bg-accent shrink-0"
+          @click.prevent="handleBackToHub"
+        >
+          {{ $t("chat_page.back_to_hub") }}
+        </a>
+      </div>
     </div>
 
     <div class="flex-1 min-h-0 flex flex-col p-2">

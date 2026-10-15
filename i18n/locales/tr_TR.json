@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Haberler"
             },
+            "news_replies": {
+              "title": "Yorum yanıtları"
+            },
             "staff_moderation": {
               "title": "Moderasyon"
             },
@@ -2200,6 +2203,11 @@
               "title": "Haber yazıları",
               "description": "Yeni bir yazı yayımlandı.",
               "example": "Yama notları: Rush modu"
+            },
+            "NewsCommentReply": {
+              "title": "Yorumlarına gelen yanıtlar",
+              "description": "Biri bir haber gönderisindeki yorumuna yanıt verdi.",
+              "example": "kairo yorumuna yanıt verdi"
             },
             "MatchSupport": {
               "title": "Maç yardımı",
@@ -3585,6 +3593,71 @@
         "list_item": "Liste öğesi",
         "quote": "Alıntı",
         "code": "kod"
+      },
+      "comments": {
+        "title": "Yorumlar",
+        "placeholder": "Yorum ekle",
+        "post": "Yorumu Gönder",
+        "reply": "Yanıtla",
+        "reply_placeholder": "{name} adlı oyuncuya yanıt ver",
+        "save": "Kaydet",
+        "edit": "Düzenle",
+        "edited": "düzenlendi",
+        "edited_at": "{date} tarihinde düzenlendi",
+        "delete": "Sil",
+        "copy_link": "Bağlantıyı kopyala",
+        "more_actions": "{name} adlı oyuncunun yorumu için işlemler",
+        "hide": "Gizle…",
+        "restore": "Geri yükle",
+        "hidden_badge": "Gizli",
+        "hidden_by": "{name} tarafından gizlendi",
+        "hidden_by_reason": "{name} tarafından gizlendi · neden: {reason}",
+        "deleted": "Bu yorum silindi.",
+        "removed_by_staff": "Moderasyon tarafından kaldırıldı.",
+        "own_vote": "Kendi yorumuna +1 veremezsin.",
+        "plus_one_label": "+1, şu ana kadar {count}",
+        "minutes": "{count} dk",
+        "edit_minutes_left": "Düzenlemek için {count} dk kaldı",
+        "characters_left": "{count} karakter kaldı | {count} karakter kaldı",
+        "open_days": "{count} gün daha açık | {count} gün daha açık",
+        "open_hours": "{count} saat daha açık | {count} saat daha açık",
+        "sign_in_prompt": "Sohbete katılmak için giriş yap.",
+        "sign_in": "Giriş Yap",
+        "read_only": {
+          "closed": "Yorumlar kapandı. Gönderiler yayımlandıktan sonra 7 gün boyunca yorum alır.",
+          "not_verified": "Yalnızca doğrulanmış oyuncular yorum yapıp +1 verebilir.",
+          "banned": "Banlısın, yorum yapamazsın.",
+          "gagged": "Sohbetin kapatıldı, yorum yapamazsın."
+        },
+        "empty_open": "Henüz yorum yok. İlk yorumu sen yap.",
+        "empty_closed": "Bu gönderide yorum yok",
+        "load_failed": "Yorumlar yüklenemedi.",
+        "try_again": "Tekrar Dene",
+        "show_more": "Daha Fazla Yorum Göster",
+        "hide_dialog": {
+          "title": "Bu yorum gizlensin mi?",
+          "description": "Okuyucular \"Moderasyon tarafından kaldırıldı.\" yazısını görecek. Yanıtlar yerinde kalır. Daha sonra geri yükleyebilirsin.",
+          "reason": "Neden (isteğe bağlı)",
+          "action": "Gizle"
+        },
+        "delete_dialog": {
+          "title": "Bu yorum silinsin mi?",
+          "description": "Bu işlem geri alınamaz. Yanıtlar yerinde kalır."
+        },
+        "errors": {
+          "title": "Bu işlem yapılamadı",
+          "generic": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+          "not_found": "Bu yorum veya gönderi artık yok.",
+          "empty": "Önce bir şey yaz.",
+          "too_long": "Bir yorum en fazla 2.000 karakter olabilir.",
+          "parent_removed": "Bu yorum kaldırıldı, bu yüzden yanıtlanamaz.",
+          "rate_limited": "Çok hızlı gidiyorsun. Bir dakika bekleyip tekrar dene.",
+          "daily_limit": "Bugünkü yorum sınırına ulaştın.",
+          "not_yours": "Yalnızca kendi yorumlarını değiştirebilirsin.",
+          "edit_window": "Bir yorum yalnızca 10 dakika boyunca düzenlenebilir.",
+          "removed": "Bu yorum kaldırıldı.",
+          "staff_only": "Bunu yalnızca moderatörler yapabilir."
+        }
       }
     },
     "seasons": {

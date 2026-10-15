@@ -1973,6 +1973,9 @@
             "news": {
               "title": "新聞"
             },
+            "news_replies": {
+              "title": "留言回覆"
+            },
             "staff_moderation": {
               "title": "管理"
             },
@@ -2200,6 +2203,11 @@
               "title": "新聞文章",
               "description": "有新文章發布。",
               "example": "更新說明：Rush 模式"
+            },
+            "NewsCommentReply": {
+              "title": "你的留言收到的回覆",
+              "description": "有人回覆了你在新聞文章下的留言。",
+              "example": "kairo 回覆了你的留言"
             },
             "MatchSupport": {
               "title": "比賽協助",
@@ -3585,6 +3593,71 @@
         "list_item": "清單項目",
         "quote": "引用",
         "code": "程式碼"
+      },
+      "comments": {
+        "title": "留言",
+        "placeholder": "新增留言",
+        "post": "發表留言",
+        "reply": "回覆",
+        "reply_placeholder": "回覆 {name}",
+        "save": "儲存",
+        "edit": "編輯",
+        "edited": "已編輯",
+        "edited_at": "編輯於 {date}",
+        "delete": "刪除",
+        "copy_link": "複製連結",
+        "more_actions": "{name} 的留言操作",
+        "hide": "隱藏…",
+        "restore": "還原",
+        "hidden_badge": "已隱藏",
+        "hidden_by": "由 {name} 隱藏",
+        "hidden_by_reason": "由 {name} 隱藏 · 原因：{reason}",
+        "deleted": "此留言已刪除。",
+        "removed_by_staff": "已被管理團隊移除。",
+        "own_vote": "你不能替自己的留言 +1。",
+        "plus_one_label": "+1，目前 {count} 個",
+        "minutes": "{count} 分鐘",
+        "edit_minutes_left": "還可編輯 {count} 分鐘",
+        "characters_left": "還剩 {count} 個字元 | 還剩 {count} 個字元",
+        "open_days": "還開放 {count} 天 | 還開放 {count} 天",
+        "open_hours": "還開放 {count} 小時 | 還開放 {count} 小時",
+        "sign_in_prompt": "登入即可參與討論。",
+        "sign_in": "登入",
+        "read_only": {
+          "closed": "留言已關閉。文章發布後 7 天內可以留言。",
+          "not_verified": "只有已驗證的玩家可以留言和 +1。",
+          "banned": "你已被封禁，無法留言。",
+          "gagged": "你已被禁言，無法留言。"
+        },
+        "empty_open": "還沒有留言。來發表第一則吧。",
+        "empty_closed": "這篇文章沒有留言",
+        "load_failed": "無法載入留言。",
+        "try_again": "重試",
+        "show_more": "顯示更多留言",
+        "hide_dialog": {
+          "title": "隱藏此留言？",
+          "description": "讀者會看到「已被管理團隊移除。」回覆會保留在原處。你之後可以還原它。",
+          "reason": "原因（選填）",
+          "action": "隱藏"
+        },
+        "delete_dialog": {
+          "title": "刪除此留言？",
+          "description": "此操作無法復原。回覆會保留在原處。"
+        },
+        "errors": {
+          "title": "無法完成操作",
+          "generic": "發生錯誤，請再試一次。",
+          "not_found": "該留言或文章已不存在。",
+          "empty": "請先寫點什麼。",
+          "too_long": "留言最多 2,000 個字元。",
+          "parent_removed": "該留言已被移除，無法回覆。",
+          "rate_limited": "操作太快了。請等一分鐘再試。",
+          "daily_limit": "你已達到今天的留言上限。",
+          "not_yours": "你只能修改自己的留言。",
+          "edit_window": "留言只能在 10 分鐘內編輯。",
+          "removed": "該留言已被移除。",
+          "staff_only": "只有版主可以這麼做。"
+        }
       }
     },
     "seasons": {

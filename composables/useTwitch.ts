@@ -291,10 +291,29 @@ const matchPovPolls = new Map<string, MatchPovPoll>();
 
 const droppedPovs = new Set<string>();
 
+function droppedPovKey(matchId: string, steamId: string) {
+  return `${matchId}/${steamId}`;
+}
+
 // A POV the floating player let go because the api stopped returning it, so
-// the page it came from does not take it straight back.
-export function isDroppedTwitchPov(id: string) {
-  return droppedPovs.has(id);
+// the page it came from does not take it straight back -- until that match's
+// poll lists it again.
+export function isDroppedTwitchPov(
+  stream:
+    | {
+        is_pov?: boolean;
+        match_id?: string | null;
+        steam_id?: string | null;
+      }
+    | null
+    | undefined,
+) {
+  return (
+    !!stream?.is_pov &&
+    droppedPovs.has(
+      droppedPovKey(String(stream.match_id), String(stream.steam_id)),
+    )
+  );
 }
 
 function startMatchPovPoll(matchId: string): MatchPovPoll {
@@ -325,6 +344,9 @@ function startMatchPovPoll(matchId: string): MatchPovPoll {
           if (isCurrent()) {
             poll.streams.value = result?.streams ?? [];
             poll.loaded.value = true;
+            for (const pov of poll.streams.value) {
+              droppedPovs.delete(droppedPovKey(id, String(pov.steam_id)));
+            }
           }
         } catch (error) {
           if (isCurrent() && isNotFound(error)) {
@@ -439,12 +461,8 @@ export function useTwitchPovGuard(
 ) {
   const target = computed(() => {
     const current = toValue(stream);
-    return current?.is_pov &&
-      current.id &&
-      current.match_id &&
-      current.steam_id
+    return current?.is_pov && current.match_id && current.steam_id
       ? {
-          id: String(current.id),
           matchId: String(current.match_id),
           steamId: String(current.steam_id),
         }
@@ -454,16 +472,6 @@ export function useTwitchPovGuard(
   const poll = useMatchPovPoll(() => target.value?.matchId ?? null, {
     floating: true,
   });
-
-  watch(
-    () => target.value?.id,
-    (id) => {
-      if (id) {
-        droppedPovs.delete(id);
-      }
-    },
-    { immediate: true },
-  );
 
   watch(
     () =>
@@ -480,7 +488,7 @@ export function useTwitchPovGuard(
         (pov) => String(pov.steam_id) === current.steamId,
       );
       if (!returned) {
-        droppedPovs.add(current.id);
+        droppedPovs.add(droppedPovKey(current.matchId, current.steamId));
         onGone();
       }
     },

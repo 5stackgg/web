@@ -565,7 +565,41 @@ describe("useTwitchPovGuard", () => {
 
     expect(calls("/streams")).toBe(2);
     expect(gone).toHaveBeenCalledTimes(1);
-    expect(isDroppedTwitchPov(floating.id)).toBe(true);
+    expect(isDroppedTwitchPov(floating)).toBe(true);
+  });
+
+  it("holds a POV it let go only to its own match", async () => {
+    fetched.mockResolvedValue({ streams: [] });
+    run(() => useTwitchPovGuard(floating, vi.fn()));
+    await flushPromises();
+
+    expect(isDroppedTwitchPov(floating)).toBe(true);
+    expect(
+      isDroppedTwitchPov({
+        ...floating,
+        match_id: "7c1d2e3f-2222-4333-8444-955566667777",
+      }),
+    ).toBe(false);
+  });
+
+  it("forgets a POV it let go once the match lists it again", async () => {
+    fetched.mockResolvedValue({ streams: [pov] });
+    run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    const gone = vi.fn();
+    run(() => useTwitchPovGuard(floating, gone));
+    await flushPromises();
+
+    fetched.mockResolvedValue({ streams: [] });
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+    expect(gone).toHaveBeenCalledTimes(1);
+    expect(isDroppedTwitchPov(floating)).toBe(true);
+
+    fetched.mockResolvedValue({ streams: [pov] });
+    await vi.advanceTimersByTimeAsync(45_000);
+    await flushPromises();
+
+    expect(isDroppedTwitchPov(floating)).toBe(false);
   });
 
   it("still checks at least every 20 seconds while the viewer alt-tabs every 15", async () => {

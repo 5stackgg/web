@@ -164,7 +164,6 @@ describe("the Streams card", () => {
     expect(
       embed.props("streams").map((stream: any) => stream.title),
     ).toEqual(["Main broadcast", "kappa POV", "rook POV"]);
-    expect(embed.props("showTitle")).toBe(true);
   });
 
   it("shows the POVs without saying there are no streams when the organizer added none", async () => {
@@ -185,5 +184,71 @@ describe("the Streams card", () => {
 
     expect(wrapper.findComponent(StreamEmbed).exists()).toBe(false);
     expect(wrapper.text()).toContain("No Live Streams");
+  });
+});
+
+describe("the Streams card's stream picker", () => {
+  const twitchStream = {
+    id: "stream-2",
+    link: "https://www.twitch.tv/caster",
+    title: "Caster desk",
+    priority: 2,
+    is_game_streamer: false,
+  };
+
+  beforeEach(() => {
+    vi.stubGlobal("Twitch", {
+      Player: class {
+        destroy() {}
+        setMuted() {}
+      },
+    });
+  });
+
+  async function mountPicker(streams: unknown[]) {
+    const wrapper = await mountSuspended(MatchLiveStreams, {
+      props: {
+        match: { id: MATCH, status: "Live", streams, is_organizer: false },
+      },
+      global: { stubs: { LiveStreamPlayer: true } },
+    });
+    unmount = () => wrapper.unmount();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    await flushPromises();
+    return () =>
+      wrapper
+        .findComponent(StreamEmbed)
+        .findAll(".flex.flex-wrap.gap-2 > button")
+        .map((chip) => chip.text());
+  }
+
+  it("keeps the button that floats a lone organizer stream when no POV is listed", async () => {
+    povs = [];
+    const chips = await mountPicker([organizerStream]);
+
+    expect(chips()).toEqual([""]);
+  });
+
+  it("shows the organizer's streams as icons when no POV is listed", async () => {
+    povs = [];
+    const chips = await mountPicker([organizerStream, twitchStream]);
+
+    expect(chips()).toEqual(["", ""]);
+  });
+
+  it("keeps the button that floats a lone POV, named after the player", async () => {
+    povs = [pov("76561198000000001", "kappa", "kappa_cs")];
+    const chips = await mountPicker([]);
+
+    expect(chips()).toHaveLength(1);
+    expect(chips()[0]).toContain("kappa POV");
+  });
+
+  it("names every POV next to the organizer's streams", async () => {
+    const chips = await mountPicker([organizerStream]);
+
+    expect(chips()).toHaveLength(3);
+    expect(chips()[1]).toContain("kappa POV");
+    expect(chips()[2]).toContain("rook POV");
   });
 });

@@ -4,7 +4,10 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
-import { useTwitchPovGuard } from "~/composables/useTwitch";
+import {
+  useMatchTwitchPovs,
+  useTwitchPovGuard,
+} from "~/composables/useTwitch";
 
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
@@ -202,6 +205,90 @@ describe("StreamEmbed after the floating player closes", () => {
     expect(wrapper.find("[data-test='stream-pov-label']").exists()).toBe(false);
     expect(wrapper.find("iframe").attributes("src")).toContain(
       "youtube.com/embed/abc123",
+    );
+  });
+});
+
+describe("StreamEmbed after a POV was let go", () => {
+  const LATER = "7c1d2e3f-2222-4333-8444-955566667777";
+
+  let listed: Record<string, string[]>;
+  let guard: ReturnType<typeof effectScope>;
+
+  const store = () => useApplicationSettingsStore();
+
+  async function float(wrapper: any, stream: ReturnType<typeof pov>) {
+    await chipNamed(wrapper, stream.title).trigger("click");
+    await settle();
+    (wrapper.vm as any).setGlobalStream(stream);
+    await settle();
+  }
+
+  async function letGo(stream: ReturnType<typeof pov>) {
+    store().setGlobalStream(stream);
+    await settle();
+    expect(store().globalStream).toBeNull();
+  }
+
+  beforeEach(() => {
+    store().settings = [{ name: "public.supports_twitch", value: "true" }];
+    listed = {};
+    vi.stubGlobal(
+      "$fetch",
+      vi.fn((url: string) => {
+        const match = /\/matches\/([^/]+)\/streams$/.exec(String(url))?.[1];
+        return Promise.resolve({
+          streams: (listed[match ?? ""] ?? []).map((steam_id) => ({
+            steam_id,
+          })),
+        });
+      }),
+    );
+    guard = effectScope();
+    guard.run(() =>
+      useTwitchPovGuard(
+        () => store().globalStream as any,
+        () => store().setGlobalStream(),
+      ),
+    );
+  });
+
+  afterEach(() => {
+    guard.stop();
+    store().settings = [];
+  });
+
+  it("falls back to a player's POV in a later match after it was let go in an earlier one", async () => {
+    await letGo(kappa);
+
+    const laterKappa = { ...kappa, match_id: LATER };
+    const laterRook = { ...rook, match_id: LATER };
+    listed[LATER] = [kappa.steam_id];
+    const wrapper = await mountEmbed([laterKappa, laterRook]);
+    await float(wrapper, laterRook);
+
+    expect(store().globalStream).toBeNull();
+    expect(wrapper.get("[data-test='stream-pov-label']").text()).toBe(
+      "kappa POV",
+    );
+  });
+
+  it("falls back to a POV again once its match lists it again", async () => {
+    await letGo(kappa);
+
+    listed[MATCH] = [kappa.steam_id, rook.steam_id];
+    const matchPage = effectScope();
+    matchPage.run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    await settle();
+    matchPage.stop();
+
+    listed[MATCH] = [kappa.steam_id];
+    const wrapper = await mountEmbed([kappa, rook]);
+    await float(wrapper, rook);
+
+    expect(store().globalStream).toBeNull();
+    expect(wrapper.get("[data-test='stream-pov-label']").text()).toBe(
+      "kappa POV",
     );
   });
 });

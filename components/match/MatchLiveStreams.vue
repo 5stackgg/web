@@ -84,7 +84,11 @@ import { isHttpLink } from "~/utilities/httpLink";
       >
         <Fold :open="liveEmbedStreams.length > 0">
           <div class="pb-4">
-            <StreamEmbed :streams="liveEmbedStreams" :match-id="match.id" />
+            <StreamEmbed
+              :streams="liveEmbedStreams"
+              :match-id="match.id"
+              :show-title="false"
+            />
           </div>
         </Fold>
 

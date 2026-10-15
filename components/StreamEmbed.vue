@@ -670,12 +670,12 @@ export default {
     globalStream(next, prev) {
       if (prev && !next && !this.global && !this.setGlobalStreamOnly) {
         if (!this.selectedStream && this.streams && this.streams.length > 0) {
-          const floated = isDroppedTwitchPov(prev.id)
+          const floated = isDroppedTwitchPov(prev)
             ? undefined
             : this.streams.find((s) => s.id === prev.id);
           this.pickedByHand = !!floated;
           const stream =
-            floated ?? this.streams.find((s) => !isDroppedTwitchPov(s.id));
+            floated ?? this.streams.find((s) => !isDroppedTwitchPov(s));
           if (stream) {
             this.selectStream(stream);
           }

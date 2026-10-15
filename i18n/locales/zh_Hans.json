@@ -9682,7 +9682,8 @@
         "warning": "已向 {name} 发出警告"
       },
       "warning_note": "警告会保存到玩家档案并通知该玩家。它永远不会被执行，也永不过期。",
-      "typed_player": "{type}玩家"
+      "typed_player": "{type}玩家",
+      "outranked": "只有角色高于该玩家的人才能执行此操作。"
     },
     "search": {
       "no_players_found": "未找到玩家。",

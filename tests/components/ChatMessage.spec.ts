@@ -593,3 +593,65 @@ describe("ChatMessage reactions", () => {
     expect(react).not.toHaveBeenCalled();
   });
 });
+
+describe("ChatMessage moderation", () => {
+  const ME = "76561198000000001";
+  const ROOM = { type: "match", id: "match-1" };
+  const TRIGGER = 'button[aria-label="Message actions"]';
+
+  const from = (role: string) => ({
+    id: "7f1d0c2e-8b1a-4c6e-9f00-000000000003",
+    message: "rush b",
+    source: "web",
+    timestamp: new Date(Date.now() - 60_000).toISOString(),
+    from: { steam_id: "76561198000000002", name: "Dana", role },
+  });
+
+  let unmount: (() => void) | undefined;
+
+  beforeEach(() => {
+    useAuthStore().me = { steam_id: ME, role: "moderator" } as any;
+    while (useRightSidebar().hoverCloseSuspended.value) {
+      useRightSidebar().resumeHoverClose();
+    }
+  });
+
+  afterEach(() => {
+    unmount?.();
+    unmount = undefined;
+    useAuthStore().me = undefined;
+    vi.restoreAllMocks();
+  });
+
+  async function menuFor(role: string) {
+    const wrapper = await mountSuspended(ChatMessage, {
+      props: { message: from(role), room: ROOM, canModerate: true },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+    await wrapper.get(TRIGGER).trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    return Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).map((item) => item.textContent?.trim());
+  }
+
+  it("offers a moderator a sanction on a player below them", async () => {
+    expect(await menuFor("user")).toContain("Moderate Dana");
+  });
+
+  it("offers a moderator no sanction on a fellow moderator or anyone above, but keeps the delete", async () => {
+    for (const role of ["moderator", "administrator"]) {
+      const items = await menuFor(role);
+
+      expect(items).not.toContain("Moderate Dana");
+      expect(items).toContain("Delete Message");
+
+      unmount?.();
+      unmount = undefined;
+      await flushPromises();
+    }
+  });
+});

@@ -9682,7 +9682,8 @@
         "warning": "Advertencia emitida a {name}"
       },
       "warning_note": "La advertencia se guarda en el historial del jugador y se le notifica. Nunca se aplica y nunca caduca.",
-      "typed_player": "Jugador {type}"
+      "typed_player": "Jugador {type}",
+      "outranked": "Solo alguien con un rol superior al de este jugador puede hacer esto."
     },
     "search": {
       "no_players_found": "No se han encontrado jugadores.",

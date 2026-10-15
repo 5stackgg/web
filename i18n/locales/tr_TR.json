@@ -9682,7 +9682,8 @@
         "warning": "{name} adlı oyuncuya uyarı verildi"
       },
       "warning_note": "Uyarı oyuncunun siciline kaydedilir ve oyuncuya bildirilir. Asla uygulanmaz ve süresi hiç dolmaz.",
-      "typed_player": "{type} Oyuncu"
+      "typed_player": "{type} Oyuncu",
+      "outranked": "Bunu yalnızca bu oyuncunun rolünden daha yüksek bir role sahip biri yapabilir."
     },
     "search": {
       "no_players_found": "Oyuncu bulunamadı.",

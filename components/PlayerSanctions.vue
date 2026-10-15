@@ -315,36 +315,56 @@ const tabCountClasses =
                       <TooltipProvider v-if="canEditEndDate(sanction)">
                         <Tooltip>
                           <TooltipTrigger as-child>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              class="h-7 w-7"
-                              :aria-label="$t('player.sanctions.edit')"
-                              @click="openEditDialog(sanction)"
+                            <span
+                              class="inline-flex"
+                              :tabindex="outranksTarget ? undefined : 0"
                             >
-                              <Edit2 class="h-3.5 w-3.5" />
-                            </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                class="h-7 w-7"
+                                :disabled="!outranksTarget"
+                                :aria-label="$t('player.sanctions.edit')"
+                                @click="openEditDialog(sanction)"
+                              >
+                                <Edit2 class="h-3.5 w-3.5" />
+                              </Button>
+                            </span>
                           </TooltipTrigger>
-                          <TooltipContent>
-                            {{ $t("player.sanctions.edit") }}
+                          <TooltipContent class="max-w-[16rem]">
+                            {{
+                              outranksTarget
+                                ? $t("player.sanctions.edit")
+                                : $t("player.sanction.outranked")
+                            }}
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger as-child>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              class="h-7 w-7 text-destructive hover:text-destructive"
-                              :aria-label="$t('player.sanctions.remove')"
-                              @click="removeSanction(sanction)"
+                            <span
+                              class="inline-flex"
+                              :tabindex="outranksTarget ? undefined : 0"
                             >
-                              <Trash2 class="h-3.5 w-3.5" />
-                            </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                class="h-7 w-7 text-destructive hover:text-destructive"
+                                :disabled="!outranksTarget"
+                                :aria-label="$t('player.sanctions.remove')"
+                                @click="removeSanction(sanction)"
+                              >
+                                <Trash2 class="h-3.5 w-3.5" />
+                              </Button>
+                            </span>
                           </TooltipTrigger>
-                          <TooltipContent>
-                            {{ $t("player.sanctions.remove") }}
+                          <TooltipContent class="max-w-[16rem]">
+                            {{
+                              outranksTarget
+                                ? $t("player.sanctions.remove")
+                                : $t("player.sanction.outranked")
+                            }}
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -628,6 +648,7 @@ import { $, e_player_roles_enum, order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
+import { outranksPlayer } from "~/utilities/sanctionAuthority";
 import gql from "graphql-tag";
 
 export default {
@@ -803,6 +824,9 @@ export default {
     },
     canManageSanctions() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
+    },
+    outranksTarget(): boolean {
+      return outranksPlayer(useAuthStore().isRoleAbove, this.player?.role);
     },
     steamProfileUrl() {
       return `https://steamcommunity.com/profiles/${this.playerId}`;

@@ -9682,7 +9682,8 @@
         "warning": "Wystawiono ostrzeżenie dla {name}"
       },
       "warning_note": "Ostrzeżenie zostaje zapisane w historii gracza, a gracz otrzymuje powiadomienie. Nigdy nie jest egzekwowane i nigdy nie wygasa.",
-      "typed_player": "Gracz: {type}"
+      "typed_player": "Gracz: {type}",
+      "outranked": "Może to zrobić tylko osoba z rolą wyższą niż rola tego gracza."
     },
     "search": {
       "no_players_found": "Nie znaleziono graczy",

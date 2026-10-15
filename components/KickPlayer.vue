@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import gql from "graphql-tag";
 import { UserMinus } from "lucide-vue-next";
@@ -14,7 +14,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { toast } from "@/components/ui/toast";
+import { useAuthStore } from "~/stores/AuthStore";
+import { outranksPlayer } from "~/utilities/sanctionAuthority";
 
 const props = defineProps<{
   player: Record<string, any>;
@@ -25,6 +33,10 @@ const emit = defineEmits<{ (e: "kicked"): void }>();
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
+
+const outranksTarget = computed(() =>
+  outranksPlayer(useAuthStore().isRoleAbove, props.player.role),
+);
 
 const open = ref(false);
 const reason = ref("");
@@ -92,15 +104,27 @@ async function kick() {
 </script>
 
 <template>
-  <button
-    type="button"
-    :title="$t('player.kick.button')"
-    :aria-label="$t('player.kick.button')"
-    class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-500/45 bg-amber-500/10 text-amber-400 transition-colors hover:border-amber-500/80 hover:bg-amber-500/20 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-    @click="open = true"
-  >
-    <UserMinus class="h-4 w-4" />
-  </button>
+  <TooltipProvider :delay-duration="200">
+    <Tooltip :disabled="outranksTarget">
+      <TooltipTrigger as-child>
+        <span class="inline-flex" :tabindex="outranksTarget ? undefined : 0">
+          <button
+            type="button"
+            :disabled="!outranksTarget"
+            :title="$t('player.kick.button')"
+            :aria-label="$t('player.kick.button')"
+            class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-500/45 bg-amber-500/10 text-amber-400 transition-colors hover:border-amber-500/80 hover:bg-amber-500/20 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
+            @click="open = true"
+          >
+            <UserMinus class="h-4 w-4" />
+          </button>
+        </span>
+      </TooltipTrigger>
+      <TooltipContent class="max-w-[16rem]">
+        {{ $t("player.sanction.outranked") }}
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
 
   <Dialog :open="open" @update:open="open = $event">
     <DialogContent>

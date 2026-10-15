@@ -9682,7 +9682,8 @@
         "warning": "Varning utfärdad till {name}"
       },
       "warning_note": "En varning sparas i spelarens historik och spelaren meddelas. Den verkställs aldrig och upphör aldrig.",
-      "typed_player": "{type}-spelare"
+      "typed_player": "{type}-spelare",
+      "outranked": "Bara någon med en roll över den här spelarens kan göra detta."
     },
     "search": {
       "no_players_found": "Inga spelare hittades",

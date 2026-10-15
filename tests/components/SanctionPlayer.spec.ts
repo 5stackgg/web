@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { TriangleAlert } from "lucide-vue-next";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
+import { useAuthStore } from "~/stores/AuthStore";
 
 const PLAYER = "76561198000000001";
 
@@ -231,5 +232,74 @@ describe("SanctionPlayer on a server", () => {
     expect(toast).toHaveBeenCalledWith(
       expect.objectContaining({ description: undefined }),
     );
+  });
+});
+
+describe("SanctionPlayer by role", () => {
+  const OUTRANKED =
+    "Only someone with a role above this player's can do this.";
+
+  afterEach(() => {
+    useAuthStore().me = undefined;
+  });
+
+  async function mountTrigger(
+    viewer: string,
+    target: string | null,
+    variant: "icon" | "block" = "icon",
+  ) {
+    useAuthStore().me = { steam_id: "76561198000000099", role: viewer } as any;
+    const wrapper = await mountSuspended(SanctionPlayer, {
+      props: {
+        player: { steam_id: PLAYER, name: "Player", role: target },
+        variant,
+      },
+      attachTo: document.body,
+      global: {
+        mixins: (useNuxtApp().vueApp as any)._context.mixins,
+        stubs: { PlayerDisplay: true },
+      },
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+    return wrapper.get("button");
+  }
+
+  async function reason(trigger: Awaited<ReturnType<typeof mountTrigger>>) {
+    trigger.element.closest<HTMLElement>("span[tabindex]")?.focus();
+    await flushPromises();
+    return document.body.querySelector('[role="tooltip"]')?.textContent;
+  }
+
+  it.each([
+    ["user", "moderator"],
+    [null, "verified_user"],
+    ["tournament_organizer", "administrator"],
+  ])("offers a sanction on a %s to a %s", async (target, viewer) => {
+    const trigger = await mountTrigger(viewer, target);
+
+    expect(trigger.attributes("disabled")).toBeUndefined();
+  });
+
+  it.each([
+    ["moderator", "moderator"],
+    ["administrator", "moderator"],
+    ["administrator", "administrator"],
+  ])(
+    "disables the sanction on a %s for a %s, and says why",
+    async (target, viewer) => {
+      const trigger = await mountTrigger(viewer, target);
+
+      expect(trigger.attributes("disabled")).toBeDefined();
+      expect(await reason(trigger)).toContain(OUTRANKED);
+    },
+  );
+
+  it("disables the full-width trigger too", async () => {
+    const trigger = await mountTrigger("moderator", "moderator", "block");
+
+    expect(trigger.text()).toContain("Sanction Player");
+    expect(trigger.attributes("disabled")).toBeDefined();
+    expect(await reason(trigger)).toContain(OUTRANKED);
   });
 });

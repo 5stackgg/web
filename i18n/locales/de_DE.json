@@ -9682,7 +9682,8 @@
         "warning": "Verwarnung an {name} erteilt"
       },
       "warning_note": "Eine Verwarnung wird in der Akte des Spielers gespeichert und der Spieler wird benachrichtigt. Sie wird nie durchgesetzt und läuft nie ab.",
-      "typed_player": "{type}-Spieler"
+      "typed_player": "{type}-Spieler",
+      "outranked": "Das kann nur jemand mit einer höheren Rolle als dieser Spieler."
     },
     "search": {
       "no_players_found": "Keine Spieler gefunden.",

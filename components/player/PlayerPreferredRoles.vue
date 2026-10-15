@@ -8,7 +8,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
-import { RESULT_STATUSES } from "~/utilities/teamResults";
+import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 
 const props = defineProps<{
   steamId: string;
@@ -42,7 +42,7 @@ const { skeleton: showSkeleton, refreshing } = useDeferredLoading(
 const rows = ref<any[]>([]);
 
 function buildMatchesWhere() {
-  const where: Record<string, any> = { status: { _in: RESULT_STATUSES } };
+  const where: Record<string, any> = { ...RESULT_MATCHES_WHERE };
   if (props.source && props.source !== "all") {
     where.source =
       props.source === "5stack"

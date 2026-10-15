@@ -48,6 +48,10 @@ import {
   isNegotiableBracket,
   type NegotiationWindow,
 } from "~/utilities/bracketNegotiation";
+import {
+  isEndedWithResult,
+  resultStatusLabelKey,
+} from "~/utilities/teamResults";
 
 type FeedingBracket = NonNullable<Bracket["feeding_brackets"]>[number];
 
@@ -472,10 +476,11 @@ const isThirdPlaceMatch = (bracket: Bracket): boolean => {
 
 const hasProblemStatus = (bracket: Bracket): boolean => {
   const status = bracket.match?.status as e_match_status_enum | undefined;
-  if (!status) return false;
+  if (!status || isEndedWithResult(bracket.match)) {
+    return false;
+  }
   return [
     e_match_status_enum.Canceled,
-    e_match_status_enum.Forfeit,
     e_match_status_enum.Surrendered,
     e_match_status_enum.WaitingForServer,
   ].includes(status);
@@ -608,6 +613,11 @@ const statusLabel = (bracket: Bracket) =>
     ? t(`tournament.notifications.status.${bracket.match.status}`)
     : "";
 
+const resultLabel = (bracket: Bracket) => {
+  const key = resultStatusLabelKey(bracket.match);
+  return key ? t(key) : "";
+};
+
 const teamIds = (bracket: Bracket) =>
   [bracket.team_1?.id, bracket.team_2?.id].filter(Boolean) as string[];
 
@@ -627,7 +637,7 @@ const cardClasses = (bracket: Bracket) => {
         ? "border-emerald-500/70 shadow-[0_0_0_1px_rgb(16_185_129/0.25)]"
         : isWaitingForCheckIn(bracket)
           ? "border-amber-500/60"
-          : hasProblemStatus(bracket) && !isForfeit(bracket)
+          : hasProblemStatus(bracket)
             ? "border-red-500/60"
             : isEmptyBracket(bracket)
               ? ""
@@ -926,13 +936,15 @@ const shouldShowCrossBracketDestination = (
           <span v-else-if="isWaitingForCheckIn(bracket)" class="text-amber-400">
             {{ statusLabel(bracket) }}
           </span>
-          <span
-            v-else-if="hasProblemStatus(bracket) && !isForfeit(bracket)"
-            class="text-red-400"
-          >
+          <span v-else-if="hasProblemStatus(bracket)" class="text-red-400">
             {{ statusLabel(bracket) }}
           </span>
-          <MatchMapDots v-else-if="bracket.match" :match="bracket.match" />
+          <template v-else-if="bracket.match">
+            <span v-if="resultLabel(bracket)">
+              {{ resultLabel(bracket) }}
+            </span>
+            <MatchMapDots :match="bracket.match" />
+          </template>
           <span
             v-else-if="
               !isNegotiableBracket(props.tournament, bracket) &&

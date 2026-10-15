@@ -32,7 +32,7 @@ import TableSkeleton from "~/components/player/stats/TableSkeleton.vue";
 import { resolveWeapon } from "~/utilities/weaponIcon";
 import { hltvColor } from "~/utils/statTiers";
 import { schemaHasType } from "~/utilities/schemaHasType";
-import { RESULT_STATUSES } from "~/utilities/teamResults";
+import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 
 const props = defineProps<{
   steamId: string;
@@ -148,8 +148,10 @@ async function loadWindowed(
       variables: {
         where: {
           ...matchFilter({}),
-          status: { _in: RESULT_STATUSES },
-          _or: [{ lineup_1: player }, { lineup_2: player }],
+          _and: [
+            RESULT_MATCHES_WHERE,
+            { _or: [{ lineup_1: player }, { lineup_2: player }] },
+          ],
         },
         limit,
       },

@@ -42,7 +42,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
 
 <template>
   <div
-    v-if="alwaysShow || !compact || isEndedWithResult(match.status)"
+    v-if="alwaysShow || !compact || isEndedWithResult(match)"
     :class="[
       'transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full',
       embedded
@@ -1246,7 +1246,7 @@ export default {
   mounted() {
     if (
       (this.player as any)?.steam_id &&
-      isEndedWithResult((this.match as any)?.status)
+      isEndedWithResult(this.match as any)
     ) {
       // Eager-load the full match_stats row (matchAllMapsStats). One
       // query, all fields — powers the inline Overview readout AND
@@ -1419,7 +1419,7 @@ export default {
     },
     getTeamScore(match: any, lineupId: string): string | number {
       if (
-        !isEndedWithResult(match.status) &&
+        !isEndedWithResult(match) &&
         match.status !== e_match_status_enum.Live
       ) {
         return "";
@@ -1481,7 +1481,7 @@ export default {
         return "text-muted-foreground";
       }
 
-      if (isEndedWithResult(this.match.status)) {
+      if (isEndedWithResult(this.match)) {
         if (this.playerLineup) {
           if (this.playerLineup === lineupId) {
             return this.didTeamWin(lineupId)
@@ -1570,7 +1570,7 @@ export default {
       );
     },
     statusLabelKey(): string | null {
-      return resultStatusLabelKey(this.match?.status);
+      return resultStatusLabelKey(this.match);
     },
     clipCount(): number {
       return (this.match?.match_maps || []).reduce(
@@ -1690,7 +1690,7 @@ export default {
       // looks the same as before.
       return Boolean(
         (this.player as any)?.steam_id &&
-          isEndedWithResult((this.match as any)?.status),
+          isEndedWithResult(this.match as any),
       );
     },
     focusPlayerLineupDetailed(): any {

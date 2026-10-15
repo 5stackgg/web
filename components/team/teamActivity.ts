@@ -132,7 +132,7 @@ function resultEvents(
         teamId: opponent?.team_id ?? null,
       },
       score: resultScore(match, teamId),
-      statusLabelKey: resultStatusLabelKey(match.status),
+      statusLabelKey: resultStatusLabelKey(match),
       context: [
         match.tournament_brackets?.[0]?.stage?.tournament?.name ??
           match.options?.type,

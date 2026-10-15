@@ -35,7 +35,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import mapLabel from "~/utilities/mapLabel";
-import { RESULT_STATUSES } from "~/utilities/teamResults";
+import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 
 ChartJS.register(
   CategoryScale,
@@ -82,9 +82,7 @@ function statDesc(key: string): string {
 function buildMatchesWhere(
   range: { since?: string | null; until?: string | null } = props,
 ) {
-  const where: Record<string, any> = {
-    status: { _in: RESULT_STATUSES },
-  };
+  const where: Record<string, any> = { ...RESULT_MATCHES_WHERE };
   if (props.source && props.source !== "all") {
     where.source =
       props.source === "5stack"

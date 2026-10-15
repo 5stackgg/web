@@ -10,7 +10,7 @@ import { Button } from "~/components/ui/button";
 import TeamsYourTeamCard from "~/components/teams/TeamsYourTeamCard.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import { lastYourTeams } from "~/utilities/teamsListCache";
-import { RESULT_STATUSES } from "~/utilities/teamResults";
+import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
   listCreateButtonClasses,
@@ -98,9 +98,7 @@ const yourTeamsQuery = generateSubscription({
         last_matches: {
           matches: [
             {
-              where: {
-                status: { _in: $("finished", "[e_match_status_enum!]") },
-              },
+              where: RESULT_MATCHES_WHERE,
               order_by: [{ ended_at: order_by.desc_nulls_last }],
               limit: 1,
             },
@@ -149,7 +147,6 @@ watch(
           steamId,
           live: [...TICKER_LIVE_STATUSES],
           upcoming: ["Scheduled"],
-          finished: RESULT_STATUSES,
         },
       })
       .subscribe({

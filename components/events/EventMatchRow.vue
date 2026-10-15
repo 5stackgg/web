@@ -29,9 +29,7 @@ const when = computed(() => {
       }).format(new Date(value))
     : "";
 });
-const statusLabelKey = computed(() =>
-  resultStatusLabelKey(props.match.status),
-);
+const statusLabelKey = computed(() => resultStatusLabelKey(props.match));
 const lost = (lineupId: string) =>
   !live.value &&
   !!props.match.winning_lineup_id &&

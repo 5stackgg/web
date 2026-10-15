@@ -2,25 +2,49 @@ import type { e_match_status_enum } from "~/generated/zeus";
 
 export type TeamResult = "W" | "L" | "T";
 
-// A forfeit or surrender keeps its own status with a winner (api#615); it used
-// to be stored as Finished, so every result surface counts all three.
+type ResultMatch =
+  | { status?: string | null; winning_lineup_id?: string | null }
+  | null
+  | undefined;
+
+// A Forfeit or Surrendered match is a result only once it has a winner
+// (api#615). Before that api, a decided one was stored as Finished, so every
+// Forfeit/Surrendered row it left behind has no winner and is not a result.
+const DECIDED_BY_WINNER = ["Forfeit", "Surrendered"] as e_match_status_enum[];
+
 export const RESULT_STATUSES = [
   "Finished",
-  "Forfeit",
-  "Surrendered",
+  ...DECIDED_BY_WINNER,
 ] as e_match_status_enum[];
 
-export function isEndedWithResult(status: string | null | undefined) {
-  return !!status && (RESULT_STATUSES as string[]).includes(status);
+export const RESULT_MATCHES_WHERE = {
+  _or: [
+    { status: { _eq: "Finished" as e_match_status_enum } },
+    {
+      status: { _in: DECIDED_BY_WINNER },
+      winning_lineup_id: { _is_null: false },
+    },
+  ],
+};
+
+export function isEndedWithResult(match: ResultMatch): boolean {
+  if (match?.status === "Finished") {
+    return true;
+  }
+  return (
+    (DECIDED_BY_WINNER as string[]).includes(match?.status ?? "") &&
+    !!match?.winning_lineup_id
+  );
 }
 
-export function resultStatusLabelKey(
-  status: string | null | undefined,
-): string | null {
-  if (status === "Forfeit") {
+export function resultStatusLabelKey(match: ResultMatch): string | null {
+  if (!isEndedWithResult(match)) {
+    return null;
+  }
+  if (match?.status === "Forfeit") {
     return "match.stream.card.forfeit";
   }
-  if (status === "Surrendered") {
+  if (match?.status === "Surrendered") {
     return "match.stream.card.surrendered";
   }
   return null;
@@ -35,7 +59,7 @@ export function teamLineupId(match: any, teamId: string): string | null {
 
 export function teamResult(match: any, teamId: string): TeamResult | null {
   const lineupId = teamLineupId(match, teamId);
-  if (!lineupId || !isEndedWithResult(match?.status)) {
+  if (!lineupId || !isEndedWithResult(match)) {
     return null;
   }
   if (!match.winning_lineup_id) return "T";

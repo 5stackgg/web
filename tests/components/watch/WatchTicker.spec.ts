@@ -109,6 +109,15 @@ describe("WatchTicker", () => {
     expect(results?.variables).toMatchObject({ limit: 12, offset: 0 });
   });
 
+  it("takes forfeits and surrenders as results only with a winner", async () => {
+    await mountTicker();
+
+    const results = queries.find((q) => q.query.includes("offset: $offset"));
+    expect(results?.query).toContain(
+      "_or: [{status: {_eq: Finished}}, {status: {_in: [Forfeit, Surrendered]}, winning_lineup_id: {_is_null: false}}]",
+    );
+  });
+
   it("shows placeholders and runs no queries for a new server", async () => {
     const wrapper = await mountSuspended(WatchTicker, {
       props: { streamableMatchIds: [], ghost: true },

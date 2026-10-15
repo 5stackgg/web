@@ -180,7 +180,7 @@ import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { eloFields } from "~/graphql/eloFields";
 import { playerMatchAggStatsQuery } from "~/graphql/playerMatchAggStatsGraphql";
 import mapLabel from "~/utilities/mapLabel";
-import { RESULT_STATUSES } from "~/utilities/teamResults";
+import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 
 export default {
   data() {
@@ -325,7 +325,7 @@ export default {
               limit: 10,
               where: {
                 is_in_lineup: { _eq: true },
-                status: { _in: RESULT_STATUSES },
+                ...RESULT_MATCHES_WHERE,
               },
               order_by: [{}, { created_at: order_by.desc }],
             },

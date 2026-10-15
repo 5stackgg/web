@@ -550,7 +550,7 @@ export default {
     },
     getTeamScore(match: any, lineupId: string): string | number {
       if (
-        !isEndedWithResult(match.status) &&
+        !isEndedWithResult(match) &&
         match.status !== e_match_status_enum.Live
       ) {
         return "";
@@ -567,7 +567,7 @@ export default {
     },
     getScoreColorClasses(lineupId: string): string {
       if (this.isMatchLive()) return "text-foreground";
-      if (isEndedWithResult(this.match.status)) {
+      if (isEndedWithResult(this.match)) {
         if (this.playerLineup) {
           if (this.playerLineup === lineupId) {
             return this.didTeamWin(lineupId)

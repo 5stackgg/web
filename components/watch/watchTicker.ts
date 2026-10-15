@@ -166,7 +166,7 @@ function statusLine(
 ): TickerCellModel["status"] {
   if (kind === "result") {
     const bestOf: number = match?.options?.best_of ?? 1;
-    const labelKey = resultStatusLabelKey(match?.status);
+    const labelKey = resultStatusLabelKey(match);
     const detail = labelKey ? t(labelKey) : null;
     if (bestOf > 1) {
       return {

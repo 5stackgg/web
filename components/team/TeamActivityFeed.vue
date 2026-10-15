@@ -225,7 +225,7 @@ const rosterSteamIds = computed(() =>
 );
 const recentResultIds = computed(() =>
   ((props.team?.matches ?? []) as any[])
-    .filter((match) => isEndedWithResult(match.status) && match.ended_at)
+    .filter((match) => isEndedWithResult(match) && match.ended_at)
     .sort((a, b) => (b.ended_at as string).localeCompare(a.ended_at))
     .slice(0, 40)
     .map((match) => match.id as string),

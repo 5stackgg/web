@@ -46,7 +46,7 @@ export function useMatchRowStats(
     const focus = focusSteamId.value;
     const byMatch = new Map<string, Map<string, any>>();
     for (const match of matches.value) {
-      if (!isEndedWithResult(match?.status)) {
+      if (!isEndedWithResult(match)) {
         continue;
       }
       const players = new Map<string, any>();

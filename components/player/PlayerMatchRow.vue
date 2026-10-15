@@ -787,10 +787,10 @@ export default {
   },
   computed: {
     isFinished(): boolean {
-      return isEndedWithResult(this.match?.status);
+      return isEndedWithResult(this.match);
     },
     resultLabelKey(): string | null {
-      return resultStatusLabelKey(this.match?.status);
+      return resultStatusLabelKey(this.match);
     },
     hasScore(): boolean {
       return this.isFinished || this.match?.status === e_match_status_enum.Live;

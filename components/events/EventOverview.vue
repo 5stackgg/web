@@ -200,7 +200,7 @@ const liveMatches = computed(() =>
   ),
 );
 const finishedMatches = computed(() =>
-  props.matches.filter((match) => isEndedWithResult(match.status)),
+  props.matches.filter((match) => isEndedWithResult(match)),
 );
 
 const tournaments = computed(() =>

@@ -58,10 +58,26 @@ export default {
     canCreateAwards(): boolean {
       return useApplicationSettingsStore().canManageAwards;
     },
+    // The MVP picker owns the tournament's MVP, built-in or configured, and the
+    // api refuses a hand grant of it inside the tournament.
+    mvpAwardIds(): string[] {
+      const ids = (this.awards as any[])
+        .filter((award) => award.system_key === "tournament_mvp")
+        .map((award) => award.id);
+      const configured = ((this.tournament?.award_configs || []) as any[]).find(
+        (config) => config.placement === 0,
+      )?.award_id;
+      if (configured) {
+        ids.push(configured);
+      }
+      return ids;
+    },
     // The 1st/2nd/3rd/MVP awards are placed by the bracket calculation, so
     // offering them here would let an organizer duplicate an automated grant.
     grantableAwards(): any[] {
-      return (this.awards as any[]).filter((award) => !award.system_key);
+      return (this.awards as any[]).filter(
+        (award) => !award.system_key && !this.mvpAwardIds.includes(award.id),
+      );
     },
     teams(): any[] {
       return (this.tournament?.teams || []) as any[];
@@ -206,6 +222,7 @@ export default {
         :tournament-id="tournament.id"
         :player-options="rosterGroups"
         :team-options="teamOptions"
+        :exclude-award-ids="mvpAwardIds"
         @saved="onGranted"
       />
 
@@ -259,6 +276,10 @@ export default {
           </Button>
         </li>
       </TransitionGroup>
+
+      <p class="text-xs text-muted-foreground/70">
+        {{ $t("tournament.awards_manage.mvp_hint") }}
+      </p>
     </template>
   </ManageSection>
 </template>

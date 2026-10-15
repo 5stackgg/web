@@ -7788,7 +7788,8 @@
       "remove": "Supprimer",
       "hint": "Attribue une récompense en dehors du calcul du bracket.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "Le MVP du tournoi ne s'attribue pas ici. Choisissez-le plus haut, dans MVP du tournoi."
     },
     "mvp_pick": {
       "title": "MVP du tournoi",

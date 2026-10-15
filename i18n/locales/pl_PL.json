@@ -7788,7 +7788,8 @@
       "remove": "Usuń",
       "hint": "Przyznaj nagrodę poza obliczeniami drabinki.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "MVP turnieju nie przyznaje się tutaj. Wybierz go powyżej, w sekcji MVP turnieju."
     },
     "mvp_pick": {
       "title": "MVP turnieju",

@@ -39,6 +39,7 @@ type PickRow = {
   player_steam_id: string;
   note: string | null;
   replaced_steam_id: string | null;
+  kept_automatic?: boolean;
   created_at: string;
   player: { steam_id: string; name: string } | null;
   picked_by: { steam_id: string; name: string } | null;
@@ -53,8 +54,8 @@ type PickState = {
 };
 
 // Raw gql: the switch, the history and both actions ship with the api ahead
-// of the generated types.
-const PICK_STATE = gql`
+// of the generated types; kept_automatic arrived after the history did.
+const pickState = (keptAutomatic: boolean) => gql`
   query TournamentMvpPickState($id: uuid!) {
     tournaments_by_pk(id: $id) {
       id
@@ -66,6 +67,7 @@ const PICK_STATE = gql`
         player_steam_id
         note
         replaced_steam_id
+        ${keptAutomatic ? "kept_automatic" : ""}
         created_at
         player {
           steam_id
@@ -83,6 +85,9 @@ const PICK_STATE = gql`
     }
   }
 `;
+
+const PICK_STATE = pickState(false);
+const PICK_STATE_WITH_KEPT = pickState(true);
 
 const CANDIDATES = gql`
   query TournamentMvpCandidates($id: uuid!) {
@@ -249,20 +254,26 @@ const unchanged = computed(
 
 const history = computed(() => {
   const picks = state.value?.mvp_picks ?? [];
-  const rows = picks.map((pick, index) => ({
-    key: pick.id,
-    name: pick.player?.name ?? pick.player_steam_id,
-    by: pick.picked_by?.name ?? null,
-    at: pick.created_at,
-    current:
-      index === 0 &&
-      !!mvp.value?.awarded_by_steam_id &&
-      String(mvp.value?.player_steam_id) === String(pick.player_steam_id),
-    automatic: false,
-  }));
+  const picked = !!mvp.value?.awarded_by_steam_id;
+  const rows = picks.map((pick, index) => {
+    const kept = !!pick.kept_automatic;
+    return {
+      key: pick.id,
+      name: pick.player?.name ?? pick.player_steam_id,
+      by: pick.picked_by?.name ?? null,
+      at: kept
+        ? (state.value?.finished_at ?? pick.created_at)
+        : pick.created_at,
+      current:
+        index === 0 &&
+        String(mvp.value?.player_steam_id) === String(pick.player_steam_id) &&
+        (kept ? !picked : picked),
+      automatic: kept,
+    };
+  });
 
   const first = picks[picks.length - 1];
-  if (first?.replaced_steam_id) {
+  if (first?.replaced_steam_id && !first.kept_automatic) {
     rows.push({
       key: "automatic",
       name: first.replaced_player?.name ?? first.replaced_steam_id,
@@ -311,9 +322,10 @@ async function load() {
     return;
   }
 
-  const [hasSwitch, hasHistory] = await Promise.all([
+  const [hasSwitch, hasHistory, hasKept] = await Promise.all([
     schemaHasField(client, "tournaments", "can_pick_mvp"),
     schemaHasField(client, "tournaments", "mvp_picks"),
+    schemaHasField(client, "tournament_mvp_picks", "kept_automatic"),
   ]);
   supported.value = hasSwitch && hasHistory;
   if (!supported.value) {
@@ -322,7 +334,7 @@ async function load() {
 
   try {
     const { data } = await client.query({
-      query: PICK_STATE,
+      query: hasKept ? PICK_STATE_WITH_KEPT : PICK_STATE,
       variables: { id },
       fetchPolicy: "network-only",
     });
@@ -359,9 +371,10 @@ async function toggleSwitch(next: boolean) {
     if (state.value) {
       state.value = { ...state.value, organizer_picks_mvp: next };
     }
-    if (!next && finished.value) {
-      await refetchTournamentStatic();
-    }
+    await Promise.all([
+      load(),
+      finished.value ? refetchTournamentStatic() : undefined,
+    ]);
   } catch (error) {
     console.error("[tournament-mvp] switch error", error);
   } finally {

@@ -3,10 +3,11 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import TournamentMvpPick from "~/components/tournament/TournamentMvpPick.vue";
 
-const { query, mutate, hasFields } = vi.hoisted(() => ({
+const { query, mutate, hasFields, missingFields } = vi.hoisted(() => ({
   query: vi.fn(),
   mutate: vi.fn(),
   hasFields: { value: true },
+  missingFields: new Set<string>(),
 }));
 
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
@@ -15,7 +16,8 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => ({
 }));
 
 vi.mock("~/utilities/schemaHasType", () => ({
-  schemaHasField: async () => hasFields.value,
+  schemaHasField: async (_client: unknown, type: string, field: string) =>
+    hasFields.value && !missingFields.has(`${type}.${field}`),
   schemaHasType: async () => hasFields.value,
 }));
 
@@ -135,6 +137,7 @@ function radios() {
 
 beforeEach(() => {
   hasFields.value = true;
+  missingFields.clear();
   refetch = vi.fn().mockResolvedValue(undefined);
   pickState = {
     id: "tournament-1",
@@ -293,6 +296,106 @@ describe("TournamentMvpPick", () => {
       "SetTournamentOrganizerPicksMvp",
     );
     expect(variables).toEqual({ id: "tournament-1", value: true });
+  });
+
+  it("reloads the history after the switch, where turning it on records the kept pick", async () => {
+    await mountPick(tournament());
+    const loads = () =>
+      query.mock.calls.filter(
+        ([{ query: document }]: any) =>
+          document.definitions[0].name.value === "TournamentMvpPickState",
+      ).length;
+    const before = loads();
+
+    await click(document.body.querySelector('[role="switch"]')!);
+
+    expect(loads()).toBe(before + 1);
+    expect(refetch).toHaveBeenCalled();
+  });
+
+  it("asks for kept picks only from an api that has them", async () => {
+    const fieldsAsked = () =>
+      query.mock.calls
+        .map(([{ query: document }]: any) => document)
+        .filter(
+          (document: any) =>
+            document.definitions[0].name.value === "TournamentMvpPickState",
+        )
+        .map((document: any) => document.loc.source.body);
+
+    await mountPick(tournament());
+    expect(fieldsAsked().at(-1)).toContain("kept_automatic");
+
+    mounted?.unmount();
+    query.mockClear();
+    missingFields.add("tournament_mvp_picks.kept_automatic");
+    await mountPick(tournament());
+    expect(fieldsAsked().at(-1)).not.toContain("kept_automatic");
+  });
+
+  it("shows a kept automatic pick as the automatic one, current while it holds", async () => {
+    pickState.organizer_picks_mvp = true;
+    pickState.mvp_picks = [
+      {
+        id: "kept",
+        player_steam_id: KAIRO,
+        note: null,
+        replaced_steam_id: null,
+        kept_automatic: true,
+        created_at: "2026-10-13T20:00:00Z",
+        player: { steam_id: KAIRO, name: "kairo" },
+        picked_by: { steam_id: LUKE, name: "luke" },
+        replaced_player: null,
+      },
+    ];
+    const wrapper = await mountPick(tournament());
+
+    const rows = wrapper.findAll("li");
+    expect(rows).toHaveLength(1);
+    expect(rows[0].text()).toContain("kairo");
+    expect(rows[0].text()).toContain("picked automatically");
+    expect(rows[0].text()).not.toContain("picked by");
+    expect(rows[0].find(".line-through").exists()).toBe(false);
+  });
+
+  it("still shows the automatic pick once an organizer picks over a kept one", async () => {
+    pickState.organizer_picks_mvp = true;
+    pickState.mvp_picks = [
+      {
+        id: "pick",
+        player_steam_id: FEXX,
+        note: null,
+        replaced_steam_id: KAIRO,
+        kept_automatic: false,
+        created_at: "2026-10-13T21:04:00Z",
+        player: { steam_id: FEXX, name: "fexx" },
+        picked_by: { steam_id: LUKE, name: "luke" },
+        replaced_player: { steam_id: KAIRO, name: "kairo" },
+      },
+      {
+        id: "kept",
+        player_steam_id: KAIRO,
+        note: null,
+        replaced_steam_id: null,
+        kept_automatic: true,
+        created_at: "2026-10-13T20:00:00Z",
+        player: { steam_id: KAIRO, name: "kairo" },
+        picked_by: { steam_id: LUKE, name: "luke" },
+        replaced_player: null,
+      },
+    ];
+    const wrapper = await mountPick(
+      tournament({ awards: [mvpAward(FEXX, { awarded_by_steam_id: LUKE })] }),
+    );
+
+    const rows = wrapper.findAll("li");
+    expect(rows.map((row) => row.text())).toHaveLength(2);
+    expect(rows[0].text()).toContain("fexx");
+    expect(rows[0].text()).toContain("picked by luke");
+    expect(rows[0].find(".line-through").exists()).toBe(false);
+    expect(rows[1].text()).toContain("kairo");
+    expect(rows[1].text()).toContain("picked automatically");
+    expect(rows[1].find(".line-through").exists()).toBe(true);
   });
 
   it("offers a pick when the organizers pick and none is made yet", async () => {

@@ -7788,7 +7788,8 @@
       "remove": "Ta bort",
       "hint": "Dela ut en utmärkelse utanför slutspelsberäkningen.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "Turneringens MVP delas inte ut här. Välj den ovan under Turneringens MVP."
     },
     "mvp_pick": {
       "title": "Turneringens MVP",

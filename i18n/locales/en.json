@@ -7790,7 +7790,8 @@
       "remove": "Remove",
       "hint": "Grant an award outside of the bracket calculation.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award to grant first."
+      "no_awards": "Create an award to grant first.",
+      "mvp_hint": "The tournament MVP isn't granted here. Pick it in Tournament MVP above."
     },
     "mvp_pick": {
       "title": "Tournament MVP",

@@ -7788,7 +7788,8 @@
       "remove": "移除",
       "hint": "在对阵计算之外单独颁发奖项。",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "赛事 MVP 不在此处颁发，请在上方的赛事 MVP 中选择。"
     },
     "mvp_pick": {
       "title": "赛事 MVP",

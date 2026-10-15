@@ -7788,7 +7788,8 @@
       "remove": "Quitar",
       "hint": "Otorga un trofeo al margen del cálculo del cuadro.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "El MVP del torneo no se otorga aquí. Elígelo arriba, en MVP del torneo."
     },
     "mvp_pick": {
       "title": "MVP del torneo",

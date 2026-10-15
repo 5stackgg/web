@@ -7788,7 +7788,8 @@
       "remove": "احذف",
       "hint": "امنح كأسًا خارج حساب شجرة البطولة.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "لا تُمنح جائزة أفضل لاعب في البطولة من هنا. اختره من قسم أفضل لاعب في البطولة أعلاه."
     },
     "mvp_pick": {
       "title": "أفضل لاعب في البطولة",

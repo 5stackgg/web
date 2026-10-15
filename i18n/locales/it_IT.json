@@ -7788,7 +7788,8 @@
       "remove": "Rimuovi",
       "hint": "Assegna un trofeo al di fuori del calcolo del bracket.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "L'MVP del torneo non si assegna qui. Sceglilo sopra, in MVP del torneo."
     },
     "mvp_pick": {
       "title": "MVP del torneo",

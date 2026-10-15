@@ -67,6 +67,8 @@ const props = withDefaults(
       players: Array<{ steam_id: string; name: string }>;
     }> | null;
     teamOptions?: Array<{ id: string; team_id: string; name: string }> | null;
+    /** Awards the caller hands out another way, e.g. a tournament's MVP. */
+    excludeAwardIds?: Array<string>;
   }>(),
   {
     awardId: null,
@@ -81,6 +83,7 @@ const props = withDefaults(
     lockRecipient: false,
     playerOptions: null,
     teamOptions: null,
+    excludeAwardIds: () => [],
   },
 );
 
@@ -96,6 +99,9 @@ const { client } = useApolloClient();
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 
 const awards = ref<any[]>([]);
+const pickableAwards = computed(() =>
+  awards.value.filter((award) => !props.excludeAwardIds.includes(award.id)),
+);
 const catalogLoaded = ref(false);
 const pickerOpen = ref(false);
 const saving = ref(false);
@@ -758,7 +764,7 @@ async function submit() {
 
   <AwardPickerDialog
     v-model:open="pickerOpen"
-    :awards="awards"
+    :awards="pickableAwards"
     :selected="draft.id"
     :can-create="false"
     @select="onPicked"

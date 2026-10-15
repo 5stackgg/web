@@ -22,6 +22,12 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
 vi.mock("~/utilities/schemaHasType", () => ({
   schemaHasType: async (client: any, name: string) =>
     !!(await client.query({ variables: { name } })).data?.__type,
+  schemaHasField: async (client: any, type: string, field: string) => {
+    const { data } = await client.query({ variables: { name: type } });
+    return (data?.__type?.fields ?? []).some(
+      ({ name }: { name: string }) => name === field,
+    );
+  },
 }));
 
 const ME = "76561198000000001";
@@ -89,21 +95,20 @@ describe("useChatRoomSettings", () => {
     expect(chatRoomRings("team", "t-1", false)).toBe(true);
   });
 
-  it("mutes for as long as asked, from now", async () => {
+  it("asks the api for a length, which ends by the api's clock", async () => {
     vi.useFakeTimers({ now: NOW });
     await signIn();
 
     await muteChatRoom("tournament", "t-1", 60);
 
     expect(fake.api.writes()).toEqual([
-      {
-        thread: "chat:tournament:t-1",
-        muted: true,
-        muted_until: minutesFromNow(60),
-        notify: "all",
-      },
+      { thread: "chat:tournament:t-1", muted: true, mute_minutes: 60 },
     ]);
-    expect(chatRoomQuiet("tournament", "t-1").muted).toBe(true);
+    expect(chatRoomQuiet("tournament", "t-1")).toEqual({
+      muted: true,
+      mutedUntil: minutesFromNow(60),
+      notify: "all",
+    });
   });
 
   it("mutes until unmuted with no end, and unmutes keeping the room's level", async () => {
@@ -114,35 +119,25 @@ describe("useChatRoomSettings", () => {
     await unmuteChatRoom("team", "t-1");
 
     expect(fake.api.writes()).toEqual([
-      {
-        thread: "chat:team:t-1",
-        muted: true,
-        muted_until: null,
-        notify: "mentions",
-      },
-      {
-        thread: "chat:team:t-1",
-        muted: false,
-        muted_until: null,
-        notify: "mentions",
-      },
+      { thread: "chat:team:t-1", muted: true, mute_minutes: null },
+      { thread: "chat:team:t-1", muted: false, mute_minutes: null },
     ]);
+    expect(chatRoomQuiet("team", "t-1").notify).toBe("mentions");
   });
 
-  it("sets what the room notifies about, leaving its mute alone", async () => {
+  it("sets what the room notifies about, sending nothing of its mute", async () => {
+    vi.useFakeTimers({ now: NOW });
     await signIn();
-    fake.api.rooms([room("chat:team:t-1", { muted: true })]);
+    fake.api.rooms([
+      room("chat:team:t-1", { muted: true, muted_until: minutesFromNow(30) }),
+    ]);
 
     await setChatRoomNotify("team", "t-1", "nothing");
 
     expect(fake.api.writes()).toEqual([
-      {
-        thread: "chat:team:t-1",
-        muted: true,
-        muted_until: null,
-        notify: "nothing",
-      },
+      { thread: "chat:team:t-1", notify: "nothing" },
     ]);
+    expect(chatRoomQuiet("team", "t-1").muted).toBe(true);
   });
 
   it("puts the room back as it was when the api refuses the write", async () => {
@@ -158,6 +153,14 @@ describe("useChatRoomSettings", () => {
 
   it("offers nothing against an api without the table", async () => {
     fake.api.state.supported = false;
+    await signIn();
+
+    expect(useChatRoomSettings().supported.value).toBe(false);
+    expect(fake.api.state.subscriptions).toBe(0);
+  });
+
+  it("offers nothing against an api that takes an end time, not a length", async () => {
+    fake.api.state.muteLength = false;
     await signIn();
 
     expect(useChatRoomSettings().supported.value).toBe(false);

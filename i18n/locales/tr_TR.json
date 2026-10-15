@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Bildirim ayarları",
-      "mute_channel": "Kanalı sessize al",
-      "unmute_channel": "Kanalın sesini aç",
+      "mute_room": "Odayı sessize al",
+      "unmute_room": "Odanın sesini aç",
       "mute_conversation": "Sohbeti sessize al",
       "unmute_conversation": "Sohbetin sesini aç",
       "mute_for": {

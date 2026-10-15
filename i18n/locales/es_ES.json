@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Ajustes de notificaciones",
-      "mute_channel": "Silenciar canal",
-      "unmute_channel": "Dejar de silenciar canal",
+      "mute_room": "Silenciar sala",
+      "unmute_room": "Dejar de silenciar sala",
       "mute_conversation": "Silenciar conversación",
       "unmute_conversation": "Dejar de silenciar conversación",
       "mute_for": {

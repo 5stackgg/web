@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   chatBadgeClass,
   chatBadgeFor,
+  chatCounts,
   chatTabBadge,
 } from "~/utilities/chatBadges";
 
@@ -203,5 +204,70 @@ describe("chatBadgeClass", () => {
     expect(new Set(classes).size).toBe(3);
     expect(chatBadgeClass("red")).toContain("bg-red-500");
     expect(chatBadgeClass("muted")).not.toContain("bg-red-500");
+  });
+});
+
+describe("chatCounts", () => {
+  const loud = { muted: false, mutedUntil: null, notify: "all" as const };
+  const nothing = { ...loud, notify: "nothing" as const };
+  const muted = { ...loud, muted: true };
+  const match = room("match:m", "match");
+  const lobby = room("matchmaking:l", "matchmaking");
+  const dana = person("direct:dana");
+  const quietFor =
+    (quiet: Record<string, typeof loud>) => (tab: { id: string }) =>
+      quiet[tab.id] ?? loud;
+
+  it("counts a tag in a match room set to nothing as chatter, as the badge does", () => {
+    const quiet = quietFor({ "match:m": nothing });
+
+    expect(chatCounts([match], {}, { "match:m": 2 }, quiet)).toEqual({
+      direct: 0,
+      mentions: 0,
+      chatter: 2,
+    });
+    expect(chatBadgeFor([match], {}, { "match:m": 2 }, quiet)).toEqual({
+      tone: "fresh",
+      count: 2,
+      mention: false,
+    });
+  });
+
+  it("adds up to whatever the badge shows, however the rooms are set", () => {
+    const tabs = [match, lobby, dana];
+    const cases: Array<{
+      unread: Record<string, number>;
+      mentions: Record<string, number>;
+      quiet: Record<string, typeof loud>;
+    }> = [
+      { unread: { "matchmaking:l": 3 }, mentions: {}, quiet: {} },
+      { unread: { "direct:dana": 2 }, mentions: { "match:m": 1 }, quiet: {} },
+      {
+        unread: { "matchmaking:l": 3, "direct:dana": 2 },
+        mentions: { "matchmaking:l": 1 },
+        quiet: { "matchmaking:l": muted, "direct:dana": muted },
+      },
+      {
+        unread: { "matchmaking:l": 4 },
+        mentions: { "match:m": 2, "matchmaking:l": 1 },
+        quiet: { "match:m": nothing, "matchmaking:l": nothing },
+      },
+      {
+        unread: {},
+        mentions: { "match:m": 2 },
+        quiet: { "match:m": { ...nothing, muted: true } },
+      },
+    ];
+
+    for (const { unread, mentions, quiet } of cases) {
+      const counts = chatCounts(tabs, unread, mentions, quietFor(quiet));
+      const badge = chatBadgeFor(tabs, unread, mentions, quietFor(quiet));
+      const shown =
+        counts.direct + counts.mentions > 0
+          ? counts.direct + counts.mentions
+          : counts.chatter;
+
+      expect(badge?.count ?? 0).toBe(shown);
+    }
   });
 });

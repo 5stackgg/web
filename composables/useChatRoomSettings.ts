@@ -1,7 +1,7 @@
 import { ref, watch } from "vue";
 import gql from "graphql-tag";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { schemaHasType } from "~/utilities/schemaHasType";
+import { schemaHasField } from "~/utilities/schemaHasType";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { useAuthStore } from "~/stores/AuthStore";
 import { chatRoomSettingsThread } from "~/utilities/chatThread";
@@ -34,23 +34,34 @@ const CHAT_ROOM_SETTINGS = gql`
   }
 `;
 
-const SET_CHAT_ROOM_SETTING = gql`
-  mutation SetChatRoomSetting(
+// A length, not an end: the api ends the mute by its own clock, the one the
+// push gate reads. Each write sets only its own columns, so a change of level
+// leaves a running mute's end where it was.
+const MUTE_CHAT_ROOM = gql`
+  mutation MuteChatRoom(
     $thread: String!
     $muted: Boolean!
-    $muted_until: timestamptz
-    $notify: String!
+    $mute_minutes: Int
   ) {
     insert_chat_room_settings_one(
-      object: {
-        thread: $thread
-        muted: $muted
-        muted_until: $muted_until
-        notify: $notify
-      }
+      object: { thread: $thread, muted: $muted, mute_minutes: $mute_minutes }
       on_conflict: {
         constraint: chat_room_settings_pkey
-        update_columns: [muted, muted_until, notify]
+        update_columns: [muted, mute_minutes]
+      }
+    ) {
+      thread
+    }
+  }
+`;
+
+const SET_CHAT_ROOM_NOTIFY = gql`
+  mutation SetChatRoomNotify($thread: String!, $notify: String!) {
+    insert_chat_room_settings_one(
+      object: { thread: $thread, notify: $notify }
+      on_conflict: {
+        constraint: chat_room_settings_pkey
+        update_columns: [notify]
       }
     ) {
       thread
@@ -59,8 +70,8 @@ const SET_CHAT_ROOM_SETTING = gql`
 `;
 
 const settings = ref<Record<string, ChatRoomSetting>>({});
-// False against an api that does not serve the table yet, which hides the
-// controls and leaves every room as it always was.
+// False against an api that does not take a mute's length yet, which hides
+// the controls and leaves every room as it always was.
 const supported = ref(false);
 // Moved on when a timed mute runs out, so whatever reads a room's quiet is
 // worked out again at that moment and not on the next unrelated change.
@@ -117,7 +128,6 @@ export function chatTabQuiet(tab: { type: string; lobbyId?: string }) {
   return chatRoomQuiet(tab.type, tab.lobbyId ?? "");
 }
 
-// "Muted until Fri 16:30", or plain "Muted" for a mute with no end.
 export function chatRoomMutedLabel(
   quiet: ChatRoomQuiet,
   t: (key: string, params?: Record<string, unknown>) => string,
@@ -133,21 +143,29 @@ export function chatRoomMutedLabel(
     : t("chat.room_settings.muted");
 }
 
-// Whether a line in the room may ring or flash the tab.
 export function chatRoomRings(type: string, lobbyId: string, tagged: boolean) {
   return chatRoomAlerts(chatRoomQuiet(type, lobbyId), tagged);
 }
 
-async function write(type: string, lobbyId: string, next: ChatRoomSetting) {
+async function write(
+  type: string,
+  lobbyId: string,
+  next: Partial<ChatRoomSetting>,
+  mutation: typeof MUTE_CHAT_ROOM,
+  variables: Record<string, unknown>,
+) {
   const thread = chatRoomSettingsThread(type, lobbyId);
   const previous = settings.value[thread];
 
-  settings.value = { ...settings.value, [thread]: next };
+  settings.value = {
+    ...settings.value,
+    [thread]: { ...settingFor(type, lobbyId), ...next },
+  };
 
   try {
     await getGraphqlClient().mutate({
-      mutation: SET_CHAT_ROOM_SETTING,
-      variables: { thread, ...next },
+      mutation,
+      variables: { thread, ...variables },
     });
   } catch (error) {
     const restored = { ...settings.value };
@@ -168,19 +186,23 @@ export function muteChatRoom(
   lobbyId: string,
   minutes: number | null,
 ) {
-  return write(type, lobbyId, {
-    ...settingFor(type, lobbyId),
-    muted: true,
-    muted_until: muteEndsAt(minutes, Date.now()),
-  });
+  return write(
+    type,
+    lobbyId,
+    { muted: true, muted_until: muteEndsAt(minutes, Date.now()) },
+    MUTE_CHAT_ROOM,
+    { muted: true, mute_minutes: minutes },
+  );
 }
 
 export function unmuteChatRoom(type: string, lobbyId: string) {
-  return write(type, lobbyId, {
-    ...settingFor(type, lobbyId),
-    muted: false,
-    muted_until: null,
-  });
+  return write(
+    type,
+    lobbyId,
+    { muted: false, muted_until: null },
+    MUTE_CHAT_ROOM,
+    { muted: false, mute_minutes: null },
+  );
 }
 
 export function setChatRoomNotify(
@@ -188,7 +210,7 @@ export function setChatRoomNotify(
   lobbyId: string,
   notify: ChatNotifyLevel,
 ) {
-  return write(type, lobbyId, { ...settingFor(type, lobbyId), notify });
+  return write(type, lobbyId, { notify }, SET_CHAT_ROOM_NOTIFY, { notify });
 }
 
 // Started on sign-in by the main window and by the chat pop-out, each of which
@@ -197,7 +219,7 @@ export function setChatRoomNotify(
 export async function syncChatRoomSettings(steamId: string) {
   const client = getGraphqlClient();
 
-  if (!(await schemaHasType(client, "chat_room_settings"))) {
+  if (!(await schemaHasField(client, "chat_room_settings", "mute_minutes"))) {
     return;
   }
 

@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Notifikationsindstillinger",
-      "mute_channel": "Slå kanal på lydløs",
-      "unmute_channel": "Slå lyd til for kanal",
+      "mute_room": "Slå rum på lydløs",
+      "unmute_room": "Slå lyd til for rum",
       "mute_conversation": "Slå samtale på lydløs",
       "unmute_conversation": "Slå lyd til for samtale",
       "mute_for": {

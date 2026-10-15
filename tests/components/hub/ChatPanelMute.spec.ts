@@ -157,7 +157,7 @@ describe("ChatPanel with rooms the player quieted", () => {
 
     await rightClick(wrapper, "tournament:t-1");
 
-    expect(menu()?.textContent).toContain("Mute channel");
+    expect(menu()?.textContent).toContain("Mute room");
     expect(menu()?.textContent).toContain("Notify me about");
     expect(menu()?.textContent).toContain("All messages");
 
@@ -165,15 +165,8 @@ describe("ChatPanel with rooms the player quieted", () => {
     await click('[data-chat-room-mute-for="60"]');
 
     expect(fake.api.writes()).toEqual([
-      expect.objectContaining({
-        thread: "chat:tournament:t-1",
-        muted: true,
-        notify: "all",
-      }),
+      { thread: "chat:tournament:t-1", muted: true, mute_minutes: 60 },
     ]);
-    const until = Date.parse(fake.api.writes()[0].muted_until);
-    expect(until - Date.now()).toBeGreaterThan(59 * 60_000);
-    expect(until - Date.now()).toBeLessThanOrEqual(60 * 60_000);
   });
 
   it("sets a room to only tags from its menu", async () => {
@@ -184,12 +177,7 @@ describe("ChatPanel with rooms the player quieted", () => {
     await click('[data-chat-room-notify-level="mentions"]');
 
     expect(fake.api.writes()).toEqual([
-      {
-        thread: "chat:tournament:t-1",
-        muted: false,
-        muted_until: null,
-        notify: "mentions",
-      },
+      { thread: "chat:tournament:t-1", notify: "mentions" },
     ]);
   });
 
@@ -199,6 +187,7 @@ describe("ChatPanel with rooms the player quieted", () => {
     await rightClick(wrapper, DIRECT);
 
     expect(menu()?.textContent).toContain("Mute conversation");
+    expect(menu()?.textContent).not.toContain("Mute room");
     expect(menu()?.textContent).not.toContain("Notify me about");
     expect(menu()?.textContent).toContain("Remove");
   });
@@ -219,18 +208,13 @@ describe("ChatPanel with rooms the player quieted", () => {
       .trigger("keydown", { key: "Enter" });
     await settle();
 
-    expect(menu()?.textContent).toContain("Unmute channel");
+    expect(menu()?.textContent).toContain("Unmute room");
     expect(menu()?.textContent).toMatch(/Muted until /);
 
     await click("[data-chat-room-unmute]");
 
     expect(fake.api.writes()).toEqual([
-      {
-        thread: "chat:tournament:t-1",
-        muted: false,
-        muted_until: null,
-        notify: "all",
-      },
+      { thread: "chat:tournament:t-1", muted: false, mute_minutes: null },
     ]);
   });
 
@@ -240,7 +224,7 @@ describe("ChatPanel with rooms the player quieted", () => {
 
     await rightClick(wrapper, "tournament:t-1");
 
-    expect(menu()?.textContent ?? "").not.toContain("Mute channel");
+    expect(menu()?.textContent ?? "").not.toContain("Mute room");
     expect(menu()?.textContent ?? "").not.toContain("Notify me about");
   });
 });

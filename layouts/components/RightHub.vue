@@ -48,7 +48,11 @@ import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
 import HubDockItem from "~/components/hub/HubDockItem.vue";
 import HubVoiceBar from "~/components/hub/HubVoiceBar.vue";
 import { formatBadgeCount } from "~/utilities/badgeCount";
-import { chatBadgeFor, chatTabBadge } from "~/utilities/chatBadges";
+import {
+  chatBadgeFor,
+  chatCounts,
+  chatTabBadge,
+} from "~/utilities/chatBadges";
 import {
   chatRoomMutedLabel,
   chatTabQuiet,
@@ -470,23 +474,14 @@ function shortcutBadge(tab: ChatTab) {
   );
 }
 
-// What the Chat icon's own count leaves out, its description leaves out too:
-// a muted room's chatter, and a tag in a room set to nothing.
 const chatDetail = computed(() => {
-  let unread = 0;
-  let mentions = 0;
-
-  for (const tab of chatTabs.value) {
-    const quiet = chatTabQuiet(tab);
-
-    if (!quiet.muted) {
-      unread += unreadCounts.value[tab.id] ?? 0;
-    }
-
-    if (quiet.notify !== "nothing") {
-      mentions += mentionCounts.value[tab.id] ?? 0;
-    }
-  }
+  const { direct, mentions, chatter } = chatCounts(
+    chatTabs.value,
+    unreadCounts.value,
+    mentionCounts.value,
+    chatTabQuiet,
+  );
+  const unread = direct + chatter;
 
   const parts = [
     unread > 0 ? t("layouts.hub.dock.unread", { count: unread }) : "",
@@ -1005,6 +1000,7 @@ function onHubTouchEnd(e: TouchEvent) {
                     "
                     :badge-tone="shortcutBadge(tab)?.tone ?? 'red'"
                     :badge-mention="shortcutBadge(tab)?.mention ?? false"
+                    :muted="chatTabQuiet(tab).muted"
                     @select="openChatTab(tab)"
                     @intent="hoverOpenChat(tab)"
                   >

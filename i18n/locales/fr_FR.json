@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Paramètres de notification",
-      "mute_channel": "Rendre le salon muet",
-      "unmute_channel": "Réactiver le salon",
+      "mute_room": "Rendre le salon muet",
+      "unmute_room": "Réactiver le salon",
       "mute_conversation": "Rendre la conversation muette",
       "unmute_conversation": "Réactiver la conversation",
       "mute_for": {

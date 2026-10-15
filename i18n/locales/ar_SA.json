@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "إعدادات الإشعارات",
-      "mute_channel": "كتم القناة",
-      "unmute_channel": "إلغاء كتم القناة",
+      "mute_room": "كتم الغرفة",
+      "unmute_room": "إلغاء كتم الغرفة",
       "mute_conversation": "كتم المحادثة",
       "unmute_conversation": "إلغاء كتم المحادثة",
       "mute_for": {

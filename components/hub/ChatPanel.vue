@@ -852,7 +852,7 @@ function handlePopOut() {
   <div class="flex h-full">
     <!-- Left channel rail (compact) -->
     <div
-      class="w-16 flex-shrink-0 border-r border-border flex flex-col items-center py-2 gap-1"
+      class="w-16 max-[374px]:w-[52px] flex-shrink-0 border-r border-border flex flex-col items-center py-2 gap-1"
     >
       <div
         v-if="orderedTabs.length"

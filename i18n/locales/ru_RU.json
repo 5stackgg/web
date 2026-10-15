@@ -1770,6 +1770,9 @@
         "matchmaking": "Подбор игры",
         "update_success": "Профиль обновлён",
         "discord": {
+          "title": "Discord",
+          "description": "Перемещаем вас в голосовой канал команды во время матчей",
+          "linked": "Привязан",
           "unlink": "Отвязать Discord",
           "link": "Привязать Discord",
           "unlink_dialog": {

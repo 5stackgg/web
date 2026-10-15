@@ -1770,6 +1770,9 @@
         "matchmaking": "Matchmaking",
         "update_success": "Profil aktualisiert",
         "discord": {
+          "title": "Discord",
+          "description": "Werde für Matches in den Sprachkanal deines Teams verschoben",
+          "linked": "Verknüpft",
           "unlink": "Discord trennen",
           "link": "Discord verknüpfen",
           "unlink_dialog": {

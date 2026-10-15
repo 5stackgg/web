@@ -1770,6 +1770,9 @@
         "matchmaking": "マッチメイキング",
         "update_success": "プロフィールを更新しました",
         "discord": {
+          "title": "Discord",
+          "description": "試合時にチームのボイスチャンネルへ自動で移動します",
+          "linked": "連携済み",
           "unlink": "Discord 連携を解除",
           "link": "Discord と連携",
           "unlink_dialog": {

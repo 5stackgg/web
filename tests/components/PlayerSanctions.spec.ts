@@ -4,6 +4,7 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
+import { touchScreen } from "../helpers/touchScreen";
 
 const PLAYER = "76561198000000001";
 
@@ -346,6 +347,41 @@ describe("PlayerSanctions by role", () => {
 
     expect(control("Mute", "Edit").disabled).toBe(false);
     expect(control("Mute", "Remove").disabled).toBe(false);
+  });
+
+  it.each(["Edit", "Remove"])(
+    "names an enabled %s when tabbed onto, and describes the button",
+    async (name) => {
+      await mountSheet(
+        [sanction("mute-1", "mute", tomorrow())],
+        undefined,
+        "streamer",
+      );
+      const button = control("Mute", name);
+
+      button.focus();
+      await flushPromises();
+
+      const tooltip = document.body.querySelector('[role="tooltip"]');
+      expect(tooltip?.textContent).toContain(name);
+      expect(button.getAttribute("aria-describedby")).toBe(tooltip!.id);
+    },
+  );
+
+  it("says why on a tap, on a phone", async () => {
+    touchScreen();
+    await mountSheet(
+      [sanction("mute-1", "mute", tomorrow())],
+      undefined,
+      "moderator",
+    );
+
+    control("Mute", "Remove").closest<HTMLElement>("span[tabindex]")!.click();
+    await flushPromises();
+
+    expect(
+      document.body.querySelector('[role="tooltip"]')?.textContent,
+    ).toContain(OUTRANKED);
   });
 
   it.each(["moderator", "administrator"])(

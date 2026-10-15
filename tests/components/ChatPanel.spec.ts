@@ -62,6 +62,7 @@ async function mountPanel(visible: boolean) {
   );
   unmount = () => wrapper.unmount();
   await flushPromises();
+  return wrapper;
 }
 
 function incoming() {
@@ -120,6 +121,14 @@ describe("ChatPanel", () => {
     expect(useChatTabs().unreadCounts.value[DIRECT]).toBe(1);
   });
 
+  it("narrows the room rail below 375px, where the composer needs the width", async () => {
+    const wrapper = await mountPanel(true);
+
+    expect(wrapper.get(".w-16.border-r").classes()).toContain(
+      "max-[374px]:w-[52px]",
+    );
+  });
+
   it("clears a first message's badge once the panel shows it", async () => {
     await mountPanel(true);
 
@@ -128,5 +137,98 @@ describe("ChatPanel", () => {
 
     expect(useChatTabs().activeTabId.value).toBe(DIRECT);
     expect(useChatTabs().unreadCounts.value[DIRECT]).toBe(0);
+  });
+});
+
+describe("ChatPanel dock", () => {
+  const RECT = { left: 600, top: 300, width: 44, height: 44 };
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  // Floating UI places the popper a few ticks after it opens.
+  async function settle() {
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    await flushPromises();
+  }
+
+  async function focusDana() {
+    useChatTabs().openTab({
+      id: DIRECT,
+      label: "Dana",
+      instance: "direct",
+      type: "direct",
+      lobbyId: ROOM,
+      avatarUrl: "https://example.com/dana.png",
+    });
+    const wrapper = await mountSuspended(ChatPanel, {
+      props: { isSidebarOpen: true, isTabActive: true },
+      global: { stubs: { ChatLobby: true, ChatParticipants: true } },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+
+    const root = document.documentElement;
+    vi.spyOn(root, "clientWidth", "get").mockReturnValue(1280);
+    vi.spyOn(root, "clientHeight", "get").mockReturnValue(800);
+    const button = wrapper.get('img[alt="Dana"]').element.closest("button")!;
+    vi.spyOn(button, "getBoundingClientRect").mockReturnValue({
+      ...RECT,
+      x: RECT.left,
+      y: RECT.top,
+      right: RECT.left + RECT.width,
+      bottom: RECT.top + RECT.height,
+      toJSON: () => ({}),
+    } as DOMRect);
+
+    button.focus();
+    await settle();
+    return button;
+  }
+
+  const translate = (content: Element) => {
+    const { transform } = content.closest<HTMLElement>(
+      "[data-reka-popper-content-wrapper]",
+    )!.style;
+    const match = transform.match(/translate\((-?[\d.]+)px, (-?[\d.]+)px\)/);
+    expect(match, `positioned, not "${transform}"`).not.toBeNull();
+    return match!.slice(1).map(Number);
+  };
+
+  it("anchors a room's tooltip to its button", async () => {
+    const button = await focusDana();
+
+    const tooltip = document.body.querySelector('[role="tooltip"]');
+    expect(tooltip?.textContent).toContain("Dana");
+    expect(button.getAttribute("aria-describedby")).toBe(tooltip!.id);
+
+    const [x, y] = translate(tooltip!);
+    expect(x).toBeGreaterThan(RECT.left - 50);
+    expect(x).toBeLessThanOrEqual(RECT.left);
+    expect(y).toBeGreaterThan(RECT.top);
+    expect(y).toBeLessThan(RECT.top + RECT.height);
+  });
+
+  it("opens the room's menu at the pointer on a right-click", async () => {
+    const button = await focusDana();
+
+    button.dispatchEvent(
+      new MouseEvent("contextmenu", {
+        bubbles: true,
+        cancelable: true,
+        clientX: 610,
+        clientY: 310,
+      }),
+    );
+    await settle();
+
+    const menu = document.body.querySelector('[role="menu"]');
+    expect(menu?.textContent).toContain("Remove");
+    const [x, y] = translate(menu!);
+    expect(x).toBeCloseTo(610, -1);
+    expect(y).toBeCloseTo(310, -1);
   });
 });

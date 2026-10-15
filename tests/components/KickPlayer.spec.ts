@@ -1,8 +1,9 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import KickPlayer from "~/components/KickPlayer.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import { touchScreen } from "../helpers/touchScreen";
 
 const OUTRANKED = "Only someone with a role above this player's can do this.";
 
@@ -12,7 +13,10 @@ afterEach(() => {
   unmount?.();
   unmount = null;
   useAuthStore().me = undefined;
+  vi.restoreAllMocks();
 });
+
+const tooltip = () => document.body.querySelector('[role="tooltip"]');
 
 async function mountKick(viewer: string, target: string | null) {
   useAuthStore().me = { steam_id: "76561198000000099", role: viewer } as any;
@@ -53,9 +57,28 @@ describe("KickPlayer by role", () => {
       kick.element.closest<HTMLElement>("span[tabindex]")?.focus();
       await flushPromises();
 
-      expect(
-        document.body.querySelector('[role="tooltip"]')?.textContent,
-      ).toContain(OUTRANKED);
+      expect(tooltip()?.textContent).toContain(OUTRANKED);
     },
   );
+
+  it("says why on a tap, on a phone", async () => {
+    touchScreen();
+    const kick = await mountKick("moderator", "moderator");
+
+    kick.element.closest<HTMLElement>("span[tabindex]")!.click();
+    await flushPromises();
+
+    expect(tooltip()?.textContent).toContain(OUTRANKED);
+  });
+
+  it("opens the kick on a tap, on a phone, without a tooltip", async () => {
+    touchScreen();
+    const kick = await mountKick("moderator", "streamer");
+
+    await kick.trigger("click");
+    await flushPromises();
+
+    expect(document.body.textContent).toContain("Kick Player");
+    expect(tooltip()).toBeNull();
+  });
 });

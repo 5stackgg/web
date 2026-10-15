@@ -59,6 +59,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import Pagination from "~/components/Pagination.vue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -312,62 +313,86 @@ const tabCountClasses =
                       v-if="canManageSanctions"
                       class="flex gap-1 items-center shrink-0"
                     >
-                      <TooltipProvider v-if="canEditEndDate(sanction)">
-                        <Tooltip>
-                          <TooltipTrigger as-child>
-                            <span
-                              class="inline-flex"
-                              :tabindex="outranksTarget ? undefined : 0"
+                      <template v-if="canEditEndDate(sanction)">
+                        <FiveStackToolTip
+                          v-if="outranksTarget"
+                          as-child
+                          :tap-toggle="false"
+                          :delay-duration="200"
+                        >
+                          <template #trigger>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              class="h-7 w-7"
+                              :aria-label="$t('player.sanctions.edit')"
+                              @click="openEditDialog(sanction)"
                             >
+                              <Edit2 class="h-3.5 w-3.5" />
+                            </Button>
+                          </template>
+                          {{ $t("player.sanctions.edit") }}
+                        </FiveStackToolTip>
+                        <FiveStackToolTip
+                          v-else
+                          as-child
+                          :delay-duration="200"
+                        >
+                          <template #trigger>
+                            <span class="inline-flex" tabindex="0">
                               <Button
                                 variant="ghost"
                                 size="icon"
                                 class="h-7 w-7"
-                                :disabled="!outranksTarget"
+                                disabled
                                 :aria-label="$t('player.sanctions.edit')"
-                                @click="openEditDialog(sanction)"
                               >
                                 <Edit2 class="h-3.5 w-3.5" />
                               </Button>
                             </span>
-                          </TooltipTrigger>
-                          <TooltipContent class="max-w-[16rem]">
-                            {{
-                              outranksTarget
-                                ? $t("player.sanctions.edit")
-                                : $t("player.sanction.outranked")
-                            }}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger as-child>
-                            <span
-                              class="inline-flex"
-                              :tabindex="outranksTarget ? undefined : 0"
+                          </template>
+                          <span class="block max-w-[16rem]">
+                            {{ $t("player.sanction.outranked") }}
+                          </span>
+                        </FiveStackToolTip>
+                      </template>
+                      <FiveStackToolTip
+                        v-if="outranksTarget"
+                        as-child
+                        :tap-toggle="false"
+                        :delay-duration="200"
+                      >
+                        <template #trigger>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-7 w-7 text-destructive hover:text-destructive"
+                            :aria-label="$t('player.sanctions.remove')"
+                            @click="removeSanction(sanction)"
+                          >
+                            <Trash2 class="h-3.5 w-3.5" />
+                          </Button>
+                        </template>
+                        {{ $t("player.sanctions.remove") }}
+                      </FiveStackToolTip>
+                      <FiveStackToolTip v-else as-child :delay-duration="200">
+                        <template #trigger>
+                          <span class="inline-flex" tabindex="0">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              class="h-7 w-7 text-destructive hover:text-destructive"
+                              disabled
+                              :aria-label="$t('player.sanctions.remove')"
                             >
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                class="h-7 w-7 text-destructive hover:text-destructive"
-                                :disabled="!outranksTarget"
-                                :aria-label="$t('player.sanctions.remove')"
-                                @click="removeSanction(sanction)"
-                              >
-                                <Trash2 class="h-3.5 w-3.5" />
-                              </Button>
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent class="max-w-[16rem]">
-                            {{
-                              outranksTarget
-                                ? $t("player.sanctions.remove")
-                                : $t("player.sanction.outranked")
-                            }}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                              <Trash2 class="h-3.5 w-3.5" />
+                            </Button>
+                          </span>
+                        </template>
+                        <span class="block max-w-[16rem]">
+                          {{ $t("player.sanction.outranked") }}
+                        </span>
+                      </FiveStackToolTip>
                     </div>
                   </div>
 

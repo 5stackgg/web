@@ -852,7 +852,7 @@ function handlePopOut() {
   <div class="flex h-full">
     <!-- Left channel rail (compact) -->
     <div
-      class="w-16 flex-shrink-0 border-r border-border flex flex-col items-center py-2 gap-1"
+      class="w-16 max-[374px]:w-[52px] flex-shrink-0 border-r border-border flex flex-col items-center py-2 gap-1"
     >
       <div
         v-if="orderedTabs.length"
@@ -917,13 +917,13 @@ function handlePopOut() {
               :count="requestCount"
               @click="viewingRequests = true"
             />
-            <!-- ContextMenu wraps the pair: its root renders no element, so
-                 it cannot sit under TooltipTrigger's as-child. The two triggers
-                 chain onto the one button instead. -->
+            <!-- Each trigger sits under its own root: an anchor attaches to
+                 the nearest one, so a menu trigger inside the tooltip pinned
+                 the tooltip to the menu's pointer position. -->
             <ContextMenu>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <ContextMenuTrigger as-child>
+              <ContextMenuTrigger class="flex">
+                <Tooltip>
+                  <TooltipTrigger as-child>
                     <button
                       :ref="setChatButtonRef(tab.id)"
                       class="relative z-[1] flex items-center justify-center w-11 h-11 rounded-md transition-colors duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -993,22 +993,22 @@ function handlePopOut() {
                         <X class="h-2.5 w-2.5" />
                       </span>
                     </button>
-                  </ContextMenuTrigger>
-                </TooltipTrigger>
-                <TooltipContent side="left">
-                  <div class="flex flex-col">
-                    <span class="text-xs font-medium">
-                      {{ tab.label }}
-                    </span>
-                    <span
-                      v-if="getRoomSubtitle(tab)"
-                      class="text-[10px] text-zinc-200/80"
-                    >
-                      {{ getRoomSubtitle(tab) }}
-                    </span>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <div class="flex flex-col">
+                      <span class="text-xs font-medium">
+                        {{ tab.label }}
+                      </span>
+                      <span
+                        v-if="getRoomSubtitle(tab)"
+                        class="text-[10px] text-zinc-200/80"
+                      >
+                        {{ getRoomSubtitle(tab) }}
+                      </span>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </ContextMenuTrigger>
               <ContextMenuContent
                 v-if="onDock(tab) || tab.type === 'direct'"
                 class="w-56"

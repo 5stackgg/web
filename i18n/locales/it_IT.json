@@ -9563,7 +9563,20 @@
         "captain_picks": "{captain} la sceglie in {n} veti su {of} da capitano",
         "players_note": "I cinque giocatori di ogni lato, con le loro partite su questa mappa",
         "record": "{team}: {wins} vinte, {losses} perse su questa mappa",
-        "your_record": "Il tuo bilancio qui: {wins}–{losses}"
+        "edge": "Vantaggio",
+        "edge_key": "il lato più forte su ogni mappa e di quanti punti è più alta la sua percentuale di vittorie",
+        "too_few": "— meno di {n} partite",
+        "players_games": "Partite dei giocatori stessi",
+        "even": "Pari",
+        "edge_ahead": "{team}: percentuale vittorie più alta di {points} punti qui",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Percentuali vittorie entro {points} punti",
+        "edge_few": "Troppo poche partite qui per calcolare un vantaggio",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} partite",
+        "win_rate_on": "Percentuale vittorie su {map}",
+        "edge_key_you": "di quanti punti la tua percentuale di vittorie è sopra (+) o sotto (−) la loro su ogni mappa",
+        "edge_short_behind": "{team} −{points}"
       },
       "keys": {
         "browse": "sfoglia",

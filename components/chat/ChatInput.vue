@@ -151,7 +151,7 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
               :class="
                 variant === 'global'
                   ? 'flex gap-2'
-                  : 'flex items-center gap-2 p-2'
+                  : 'flex items-center gap-2 p-2 max-[374px]:gap-1 max-[374px]:p-1.5'
               "
             >
               <template v-if="canAttach">
@@ -188,7 +188,7 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                   'min-h-0 resize-none py-1.5 leading-snug',
                   variant === 'global'
                     ? 'flex-1 transition-[border-color,box-shadow] duration-200'
-                    : 'flex-1 border-0 shadow-none focus-visible:ring-0',
+                    : 'min-w-0 flex-1 border-0 shadow-none placeholder:whitespace-nowrap focus-visible:ring-0 max-[374px]:px-1.5',
                 ]"
                 @keydown.enter="onEnter"
                 @keydown.tab.exact="onTab"

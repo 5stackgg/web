@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, watch } from "vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "#app";
 import { useI18n } from "vue-i18n";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
@@ -13,7 +13,12 @@ import { peerSteamId } from "~/composables/useDirectMessages";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { chatThreadKey } from "~/utilities/chatThread";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
-import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
+import {
+  matchTeamLobbyId,
+  type MatchLike,
+} from "~/utilities/matchTeamLobby";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { generateQuery } from "~/graphql/graphqlGen";
 import socket, { type ChatType } from "~/web-sockets/Socket";
 
 definePageMeta({
@@ -101,8 +106,44 @@ const blockedPeer = computed(() => {
 const hasTab = computed(() => currentTab.value !== null && !blockedPeer.value);
 
 // Same second room the sidebar and the match page offer. This window can be
-// opened cold from a bare URL, so the match is looked up in the store rather
-// than expected in the query string.
+// opened cold from a bare URL, so the match is asked for rather than expected
+// in the query string -- and asked of the match itself, because the store only
+// holds matches still being played, while a team room outlives its match.
+const lineupsOf = ref<MatchLike | null>(null);
+
+watch(
+  () => (currentTab.value?.type === "match" ? currentTab.value.lobbyId : null),
+  async (matchId) => {
+    lineupsOf.value = null;
+
+    if (!matchId) {
+      return;
+    }
+
+    const lineup = { id: true, is_on_lineup: true, coach: { steam_id: true } };
+
+    try {
+      const { data } = await getGraphqlClient().query({
+        query: generateQuery({
+          matches_by_pk: [
+            { id: matchId },
+            { id: true, status: true, lineup_1: lineup, lineup_2: lineup },
+          ],
+        } as any),
+        fetchPolicy: "network-only",
+      });
+
+      if (currentTab.value?.lobbyId === matchId) {
+        lineupsOf.value = (data as any)?.matches_by_pk ?? null;
+      }
+    } catch {
+      // The store's copy, while the match is still being played, is all
+      // there is to go on.
+    }
+  },
+  { immediate: true },
+);
+
 const teamLobbyId = computed(() => {
   const tab = currentTab.value;
 
@@ -110,9 +151,11 @@ const teamLobbyId = computed(() => {
     return undefined;
   }
 
-  const match = (useMatchLobbyStore().myMatches as unknown as any[])?.find(
-    (candidate) => candidate.id === tab.lobbyId,
-  );
+  const match =
+    lineupsOf.value ??
+    (useMatchLobbyStore().myMatches as unknown as any[])?.find(
+      (candidate) => candidate.id === tab.lobbyId,
+    );
 
   return matchTeamLobbyId(match, useAuthStore().me?.steam_id);
 });

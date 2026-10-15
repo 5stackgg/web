@@ -7,6 +7,7 @@ import {
 } from "~/composables/useChatTabs";
 import { pageChatFocus } from "~/composables/useChatPresence";
 import { chatThreadKey } from "~/utilities/chatThread";
+import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 import { useChatReadState } from "~/composables/useChatReadState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -49,15 +50,24 @@ export function tournamentChatTab(tournament: {
 // in-game flag, only to rejoin on the way back.
 const persistentLobbies = new Map<string, Lobby>();
 
+// The open chat hub wins over a page's claim, as it does for the focus
+// reported to the server (useChatPresence), and on a phone any open hub sheet
+// covers the page behind it.
 export function isChatTabOnScreen(tabId: string) {
   const { activeTabId, tabs } = useChatTabs();
+  const hubOpen = useRightSidebar().rightSidebarOpen.value;
+  const chatInFront = hubOpen && currentHub() === "chat";
+
+  if (chatInFront) {
+    return activeTabId.value === tabId;
+  }
 
   if (
-    activeTabId.value === tabId &&
-    useRightSidebar().rightSidebarOpen.value &&
-    currentHub() === "chat"
+    hubOpen &&
+    typeof window !== "undefined" &&
+    window.matchMedia?.(SIDEBAR_MOBILE_QUERY).matches
   ) {
-    return true;
+    return false;
   }
 
   const tab = tabs.value.find(({ id }) => id === tabId);

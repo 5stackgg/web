@@ -266,6 +266,74 @@ describe("useChatTabSetup mentions", () => {
     );
   });
 
+  it("forgets a team room recount queued for a match tab that has since closed", async () => {
+    unmount?.();
+    let answer: (value: unknown) => void = () => {};
+    vi.stubGlobal(
+      "$fetch",
+      vi.fn(() => new Promise((resolve) => (answer = resolve))),
+    );
+    const wrapper = await mountSuspended(
+      defineComponent({
+        setup() {
+          useChatTabSetup();
+          return () => h("div");
+        },
+      }),
+    );
+    unmount = () => wrapper.unmount();
+
+    room("match_team", `${matchId}:lineup-1`).history([
+      line("team-tag", 8, [ME]),
+    ]);
+    useChatTabs().closeTab(`match:${matchId}`);
+    answer({ threads: [] });
+    await flushPromises();
+
+    expect(useChatTabs().mentionCounts.value).not.toHaveProperty(
+      `match:${matchId}`,
+    );
+  });
+
+  it("lets the chat hub in front win over a page's claim", () => {
+    setPageChatFocus(chatThreadKey("match", matchId));
+    useChatTabs().setActiveTab(tournamentTab());
+    useRightSidebar().setRightSidebarOpen(true);
+    setActiveHub("chat");
+
+    try {
+      room("match", matchId).live(line("behind-the-hub", 5, [ME]));
+    } finally {
+      setPageChatFocus(null);
+    }
+
+    expect(mentions(`match:${matchId}`)).toBe(1);
+  });
+
+  it("lets a phone's open hub sheet win over a page's claim", () => {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches: true,
+        addEventListener() {},
+        removeEventListener() {},
+      })),
+    );
+    setPageChatFocus(chatThreadKey("match", matchId));
+    useRightSidebar().setRightSidebarOpen(true);
+    setActiveHub("social");
+
+    try {
+      room("match_team", `${matchId}:lineup-1`).live(
+        line("under-the-sheet", 5, [ME]),
+      );
+    } finally {
+      setPageChatFocus(null);
+    }
+
+    expect(mentions(`match:${matchId}`)).toBe(1);
+  });
+
   it("never counts a line of my own", () => {
     room("tournament", tournamentId).live(line("mine", 5, [ME], ME));
 

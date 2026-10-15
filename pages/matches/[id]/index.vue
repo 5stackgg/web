@@ -516,13 +516,13 @@ export default {
         void this.refetchMatchStatic();
       }, 5000);
     },
+    myLineupId() {
+      this.markTeamRoomRead();
+    },
     // The inline chat on this page is a real room being read, and until now it
     // told the server nothing -- so reading a match chat here left the badge up
     // everywhere else and kept the phone buzzing for messages already on
     // screen.
-    myLineupId() {
-      this.markTeamRoomRead();
-    },
     chatThread: {
       immediate: true,
       handler(thread, previous) {

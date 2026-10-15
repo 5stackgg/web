@@ -5,6 +5,7 @@ import { provideApolloClient } from "@vue/apollo-composable";
 import MatchPage from "~/pages/matches/[id]/index.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_match_status_enum } from "~/generated/zeus";
+import socket from "~/web-sockets/Socket";
 
 const MATCH_A = "11111111-1111-4111-8111-111111111111";
 const MATCH_B = "44444444-4444-4444-8444-444444444444";
@@ -551,5 +552,26 @@ describe("the match page's per-match fields", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe("the match page's team room read state", () => {
+  it("marks the team room read once the viewer's lineup arrives", async () => {
+    const read = vi.spyOn(socket, "markLobbyRead");
+    signIn();
+    const wrapper = await mountMatch(permissions({ is_organizer: true }));
+
+    emitLive(live());
+    await flushPromises();
+    (wrapper.vm as any).inlineChatVisible = true;
+    await flushPromises();
+
+    expect(read).toHaveBeenCalledWith("match", MATCH_A);
+    expect(read).not.toHaveBeenCalledWith("match_team", expect.anything());
+
+    emitLive(live({ lineup_1: { ...lineup("lineup-1"), is_on_lineup: true } }));
+    await flushPromises();
+
+    expect(read).toHaveBeenCalledWith("match_team", `${MATCH_A}:lineup-1`);
   });
 });

@@ -325,14 +325,14 @@ describe("ChatInput mentions", () => {
 
     expect(field().attributes("role")).toBeUndefined();
     expect(field().attributes("aria-autocomplete")).toBe("list");
-    expect(field().attributes("aria-expanded")).toBe("false");
+    expect(field().attributes("aria-expanded")).toBeUndefined();
 
     await typeText(wrapper, "@ka");
 
     const listId = list(wrapper).attributes("id");
     expect(listId).toBeTruthy();
     expect(field().attributes("aria-controls")).toBe(listId);
-    expect(field().attributes("aria-expanded")).toBe("true");
+    expect(field().attributes("aria-expanded")).toBeUndefined();
     expect(field().attributes("aria-activedescendant")).toBe(
       rows(wrapper)[0].attributes("id"),
     );

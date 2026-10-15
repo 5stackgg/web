@@ -10,11 +10,12 @@ import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 
 const graphql = vi.hoisted(() => ({
   observers: [] as Array<{ observer: any; closed: boolean }>,
+  queryData: {} as Record<string, unknown>,
 }));
 
 vi.mock("~/graphql/getGraphqlClient", () => ({
   default: () => ({
-    query: vi.fn().mockResolvedValue({ data: {} }),
+    query: vi.fn(async () => ({ data: graphql.queryData })),
     mutate: vi.fn(),
     subscribe: () => ({
       subscribe(observer: any) {
@@ -129,6 +130,27 @@ describe("chat pop-out", () => {
 describe("chat pop-out read state", () => {
   afterEach(() => {
     useMatchLobbyStore().myMatches = [];
+    graphql.queryData = {};
+  });
+
+  it("keeps showing and marking the team room of a match that has finished", async () => {
+    const read = vi.spyOn(socket, "markLobbyRead");
+    useMatchLobbyStore().myMatches = [];
+    graphql.queryData = {
+      matches_by_pk: {
+        id: "popout-finished",
+        status: "Finished",
+        lineup_1: { id: "l-1", is_on_lineup: true, coach: null },
+        lineup_2: { id: "l-2", is_on_lineup: false, coach: null },
+      },
+    };
+
+    const wrapper = await mountPopout("match:popout-finished");
+
+    expect(wrapper.findComponent(ChatLobby).props("teamLobbyId")).toBe(
+      "popout-finished:l-1",
+    );
+    expect(read).toHaveBeenCalledWith("match_team", "popout-finished:l-1");
   });
 
   it("marks the match's team room read once the lineup is known", async () => {

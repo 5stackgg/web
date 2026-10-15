@@ -203,7 +203,6 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                 data-bwignore="true"
                 data-form-type="other"
                 aria-autocomplete="list"
-                :aria-expanded="mentionState !== null ? 'true' : 'false'"
                 :aria-controls="mentionState !== null ? mentionListId : undefined"
                 :aria-activedescendant="activeMentionOptionId"
                 :class="[

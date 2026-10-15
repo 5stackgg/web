@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { nextTick } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import VetoBoard from "~/components/match/VetoBoard.vue";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
@@ -205,7 +206,28 @@ describe("VetoBoard keys", () => {
 });
 
 describe("VetoBoard choosing", () => {
-  it("lets a click take back a choice, and hovering still opens other maps", async () => {
+  it("arms a map on a click and picks it on a second", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+    });
+
+    await slice(wrapper, "mirage").trigger("click");
+    expect(slice(wrapper, "mirage").classes()).toContain("is-selected");
+    expect(slice(wrapper, "mirage").find(".vb-arm").exists()).toBe(true);
+    expect(wrapper.find(".vb-line").text()).toBe(
+      "Click mirage again to pick it · Esc to cancel",
+    );
+    // Its records stay up while it is armed.
+    expect(slice(wrapper, "mirage").findAll(".vb-rec")).toHaveLength(2);
+    expect(wrapper.emitted("confirm")).toBeUndefined();
+
+    await slice(wrapper, "mirage").trigger("click");
+    expect(wrapper.emitted("confirm")).toEqual([[{ itemId: "mirage" }]]);
+  });
+
+  it("lets a chosen map go on a click off the board", async () => {
     const wrapper = await mount({
       steps: steps(["train", "dust2"]),
       pickingLineup: 1,
@@ -214,18 +236,75 @@ describe("VetoBoard choosing", () => {
     });
 
     await slice(wrapper, "mirage").trigger("click");
-    expect(slice(wrapper, "mirage").classes()).toContain("is-selected");
-    expect(wrapper.find(".vb-cta").text()).toBe("Pick mirage");
+    document.body.dispatchEvent(new Event("pointerdown", { bubbles: true }));
+    await nextTick();
 
-    // A second click lets it go; nothing is sent.
-    await slice(wrapper, "mirage").trigger("click");
     expect(slice(wrapper, "mirage").classes()).not.toContain("is-selected");
-    expect(wrapper.emitted("confirm")).toBeUndefined();
+    expect(wrapper.find(".vb-line").text()).toBe(
+      "Pick a map · click one twice to pick it",
+    );
+  });
 
-    // Chosen again, the button confirms it.
+  it("keeps a sent map armed until its move lands, even if the turn passes first", async () => {
+    const wrapper = await mount({
+      steps: steps(["train"]),
+      pickingLineup: 2,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await slice(wrapper, "dust2").trigger("click");
+    await slice(wrapper, "dust2").trigger("click");
+    expect(wrapper.emitted("confirm")).toEqual([[{ itemId: "dust2" }]]);
+
+    // The turn passes before the ban itself arrives.
+    await wrapper.setProps({ submitting: true });
+    await wrapper.setProps({ isPicking: false, pickingLineup: 1 });
+    expect(slice(wrapper, "dust2").classes()).toContain("is-selected");
+    expect(slice(wrapper, "dust2").classes()).toContain("is-wide");
+    expect(slice(wrapper, "dust2").find(".vb-arm").exists()).toBe(true);
+
+    // Then it lands, straight into its replay.
+    await wrapper.setProps({
+      steps: steps(["train", "dust2"]),
+      submitting: false,
+    });
+    expect(slice(wrapper, "dust2").find(".vb-arm").exists()).toBe(false);
+    expect(slice(wrapper, "dust2").classes()).toContain("is-wide");
+    expect(slice(wrapper, "dust2").attributes("data-status")).toBe("Ban");
+  });
+
+  it("opens the map under the pointer when it is not your turn", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 2,
+      isPicking: false,
+    });
+
+    await slice(wrapper, "mirage").trigger("pointermove");
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    await nextTick();
+
+    expect(slice(wrapper, "mirage").classes()).toContain("is-wide");
+    expect(slice(wrapper, "mirage").findAll(".vb-rec")).toHaveLength(2);
     await slice(wrapper, "mirage").trigger("click");
-    await wrapper.find(".vb-cta").trigger("click");
-    expect(wrapper.emitted("confirm")).toEqual([[{ itemId: "mirage" }]]);
+    expect(wrapper.emitted("confirm")).toBeUndefined();
+  });
+
+  it("opens your own move for a moment when it lands", async () => {
+    const wrapper = await mount({
+      steps: steps(["train"]),
+      pickingLineup: 2,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await wrapper.setProps({ steps: steps(["train", "dust2"]) });
+
+    expect(slice(wrapper, "dust2").classes()).toContain("is-wide");
+    expect(
+      slice(wrapper, "dust2").find(".vb-sub").attributes("data-tone"),
+    ).toBe("Ban");
   });
 
   it("confirms by keys with a second Enter", async () => {
@@ -318,7 +397,8 @@ describe("VetoBoard start", () => {
       start: { phase: "booting", maps },
     });
 
-    expect(wrapper.find(".vb-lead").text()).toBe("Server booting");
+    expect(wrapper.find(".st-boot b").text()).toBe("Server booting");
+    expect(wrapper.find(".vb-lead").text()).toBe("Veto complete");
     expect(wrapper.find(".st-area").classes()).toContain("is-starting");
     // The start's key takes over the scouting key's line.
     expect(wrapper.findAll(".vb-scoutkey")).toHaveLength(1);
@@ -357,7 +437,7 @@ describe("VetoBoard start", () => {
     expect(wrapper.find(".vb-scoutkey").exists()).toBe(false);
   });
 
-  it("names the first map and your side, then hands the maps over", async () => {
+  it("folds the maps away as soon as the server is ready", async () => {
     const wrapper = await mount({
       steps: done,
       viewer: 1,
@@ -367,11 +447,9 @@ describe("VetoBoard start", () => {
     });
 
     await wrapper.setProps({ start: { phase: "ready", maps } });
-    expect(wrapper.find(".vb-lead").text()).toBe("Server ready");
-    expect(wrapper.find(".vb-line").text()).toBe("mirage first · you start T");
+    expect(wrapper.find(".st-boot").classes()).not.toContain("is-shown");
 
-    // A beat to read it, then the maps fold and the board hands over.
-    await new Promise((done) => setTimeout(done, 1800));
+    await new Promise((done) => setTimeout(done, 1000));
     expect(wrapper.emitted("handoff")).toHaveLength(1);
   });
 
@@ -428,7 +506,6 @@ describe("VetoBoard start", () => {
       start: { phase: "ready", maps: [maps[0]] },
     });
 
-    expect(wrapper.find(".vb-line").text()).toBe("mirage · you start CT");
     expect(wrapper.find(".st-panel .st-kick").text()).toContain("The map");
     expect(wrapper.find(".st-num").exists()).toBe(false);
   });

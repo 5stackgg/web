@@ -8,6 +8,7 @@ import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import DraftRoom from "~/components/draft-games/DraftRoom.vue";
+import { STARTING_STATUSES } from "~/utilities/vetoStage";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Button } from "~/components/ui/button";
 
@@ -172,21 +173,23 @@ watch(
   },
 );
 
-let liveRedirect: ReturnType<typeof setTimeout> | undefined;
+// The match page takes over once the server starts: it shows the maps while
+// it boots and folds them into its cards once it is ready. A veto stays up
+// here for a moment first, so the last ban and the decider are seen.
+let startRedirect: ReturnType<typeof setTimeout> | undefined;
 watch(
-  () => !!match.value?.id && match.value?.status === "Live",
-  (live) => {
-    if (live && !liveRedirect) {
-      liveRedirect = setTimeout(() => {
-        if (match.value?.id) {
-          navigateTo(`/matches/${match.value.id}`);
-        }
-      }, 4000);
+  () => !!match.value?.id && STARTING_STATUSES.includes(match.value?.status),
+  (starting) => {
+    if (!starting || startRedirect) {
+      return;
     }
+    startRedirect = setTimeout(
+      () => navigateTo(`/matches/${match.value.id}`),
+      match.value.options?.map_veto ? 2500 : 0,
+    );
   },
 );
-onUnmounted(() => clearTimeout(liveRedirect));
-
+onUnmounted(() => clearTimeout(startRedirect));
 </script>
 
 <template>
@@ -252,10 +255,7 @@ onUnmounted(() => clearTimeout(liveRedirect));
           </div>
         </template>
 
-        <div
-          v-else-if="previewing"
-          class="py-2 text-xs text-muted-foreground"
-        >
+        <div v-else-if="previewing" class="py-2 text-xs text-muted-foreground">
           {{ $t("draft_games.room.loading") }}
         </div>
 

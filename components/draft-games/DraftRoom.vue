@@ -8,6 +8,7 @@ import {
   Inbox,
 } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
+import { useElementSize } from "@vueuse/core";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -68,16 +69,15 @@ const inStartStage = computed(
     STARTING_STATUSES.includes(props.match?.status),
 );
 
+// Match info is often empty here (during the veto); then it adds no gap above
+// the board, so the board's top lines up with the chat rail's.
+const matchInfoEl = ref<HTMLElement | null>(null);
+const { height: matchInfoHeight } = useElementSize(matchInfoEl);
+
 const inVeto = computed(
   () =>
     !!props.room.match_id &&
     (props.match?.status === "Veto" || inStartStage.value),
-);
-
-const vetoPhaseLabel = computed(() =>
-  props.match?.options?.region_veto && !props.match?.region
-    ? "draft_games.bar.region_veto"
-    : "draft_games.bar.map_veto",
 );
 
 const inMatchStarting = computed(
@@ -916,7 +916,12 @@ const start = () => {
              column with the room's collapse idiom instead of fading in at
              full height and shoving the board down. -->
         <Transition name="collapse">
-          <div v-if="match" class="grid grid-rows-[1fr]">
+          <div
+            v-if="match"
+            ref="matchInfoEl"
+            class="draft-match-info grid grid-rows-[1fr]"
+            :class="{ 'is-empty': matchInfoHeight === 0 }"
+          >
             <div class="collapse-clip">
               <MatchInfo :match="match" hide-booting />
             </div>
@@ -933,17 +938,6 @@ const start = () => {
               v-if="inVeto"
               class="veto-stage rounded-xl border border-[hsl(var(--tac-amber)/0.25)] bg-card/40 p-6 [backdrop-filter:blur(8px)]"
             >
-              <div class="mb-5 flex items-center justify-center gap-2">
-                <h3
-                  class="font-sans text-base font-bold uppercase tracking-[0.2em]"
-                >
-                  {{
-                    inStartStage
-                      ? $t("match.veto.start.heading")
-                      : $t(vetoPhaseLabel)
-                  }}
-                </h3>
-              </div>
               <MatchRegionVeto
                 :match="match"
                 :match-id="room.match_id"
@@ -952,7 +946,7 @@ const start = () => {
               <MatchMapVeto
                 :match="match"
                 :match-id="room.match_id"
-                :hand-off="false"
+                :stage="false"
               />
             </div>
 
@@ -2043,6 +2037,9 @@ const start = () => {
 .draft-main,
 .draft-rail {
   flex: 1 1 100%;
+}
+.draft-match-info.is-empty + * {
+  margin-top: 0 !important;
 }
 .draft-pair-grid {
   display: grid;

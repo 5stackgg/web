@@ -9,6 +9,7 @@ import {
   watch,
 } from "vue";
 import { useI18n } from "vue-i18n";
+import { Ban, Check } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import VetoCrest from "~/components/match/VetoCrest.vue";
 import VetoRail from "~/components/match/VetoRail.vue";
@@ -186,7 +187,7 @@ const recordCount = computed(
 );
 
 // A move landing clears any half-made choice, and the map it touched opens for
-// a moment for anyone not choosing right now.
+// a moment -- yours too -- until the pointer moves onto another map.
 watch(recordCount, (now, prev) => {
   selected.value = null;
   // A live move adds one (two when the decider lands with the last ban); a
@@ -194,17 +195,25 @@ watch(recordCount, (now, prev) => {
   if (prev === undefined || now <= prev || now - prev > 2) return;
   const newest = props.steps[now - 1];
   if (!newest?.record || newest.type === "Side") return;
+  clearTimeout(hoverTimer);
+  hover.value = null;
   replayId.value = newest.record.itemId;
   clearTimeout(replayTimer);
   replayTimer = setTimeout(() => {
     replayId.value = null;
+    hover.value = pendingHover;
   }, REPLAY_MS);
 });
+// The turn passing clears a choice, except the one being sent: the turn can
+// pass a moment before the move itself lands.
 watch(
   () => props.isPicking,
   () => {
-    selected.value = null;
+    if (!props.submitting) selected.value = null;
   },
+);
+const chosen = computed(() =>
+  mine.value || props.submitting ? selected.value : null,
 );
 
 onBeforeUnmount(() => {
@@ -217,16 +226,37 @@ const focus = computed(() => {
   if (!s) return null;
   if (s.type === "Side") return sideMapId.value;
   if (s.type === "Decider") return available.value[0] ?? null;
-  // Your turn: the map under the pointer opens, even with one chosen; the
-  // chosen one (still outlined) opens again when the pointer leaves.
-  if (mine.value) {
-    if (hover.value && available.value.includes(hover.value)) {
-      return hover.value;
-    }
-    return selected.value;
+  // The map under the pointer opens, your turn or not, so anyone can read its
+  // records; the chosen one (still outlined) opens again when it leaves.
+  if (hover.value && available.value.includes(hover.value)) {
+    return hover.value;
   }
-  return replayId.value;
+  return replayId.value ?? chosen.value;
 });
+
+// The chosen map's button sits in the room its words leave it, below its
+// records and above its name, and shrinks where that room is tight.
+const armRoom = ref<{ y: number; d: number } | null>(null);
+function placeArm() {
+  const id = chosen.value;
+  const slice = id
+    ? stageEl.value?.querySelector<HTMLElement>(`[data-item="${id}"]`)
+    : null;
+  if (!slice) return;
+  const box = slice.getBoundingClientRect();
+  const bottomOf = (selector: string) =>
+    slice.querySelector(selector)?.getBoundingClientRect().bottom ?? box.top;
+  const top = Math.max(bottomOf(".vb-top"), bottomOf(".vb-scout")) - box.top;
+  const bottom =
+    (slice.querySelector(".vb-namerow")?.getBoundingClientRect().top ??
+      box.bottom) - box.top;
+  const room = bottom - top;
+  armRoom.value = {
+    y: top + room / 2,
+    d: Math.max(40, Math.min(84, room - 20)),
+  };
+}
+watch([chosen, focus], () => nextTick(placeArm));
 
 function weight(id: string) {
   const status = stateOf(id).status;
@@ -284,6 +314,12 @@ const openWidth = (id: string) => {
   );
   return Math.max(0, (free * 4.2) / (rest + 4.2));
 };
+// A map that opens narrow keeps its words closer to its edges. Judged by the
+// width it opens to, so they never jump as it grows past the line.
+const isCramped = (id: string) => {
+  const width = openWidth(id);
+  return !!width && width < 240;
+};
 
 const isLive = (id: string) =>
   live.value &&
@@ -300,15 +336,15 @@ function confirm() {
   }
 }
 
-// A click chooses a map, and a click on the chosen one lets it go; only its
-// button bans or picks it. By keys, Enter on the chosen map confirms.
-function choose(id: string, by: "click" | "key" = "click") {
+// A click (or Enter) chooses a map and a second one on it bans or picks it,
+// so a double click does it at once. Esc or a click off the maps lets it go.
+function choose(id: string) {
   if (!isLive(id)) return;
-  if (selected.value !== id) {
-    selected.value = id;
-  } else if (by === "key") {
-    confirm();
-  } else {
+  if (selected.value === id) confirm();
+  else selected.value = id;
+}
+function onDocPointerDown(event: PointerEvent) {
+  if (selected.value && !stageEl.value?.contains(event.target as Node)) {
     selected.value = null;
   }
 }
@@ -322,7 +358,7 @@ function chooseSide(side: string) {
 function onKey(event: KeyboardEvent, id: string) {
   if (event.key !== "Enter" && event.key !== " ") return;
   event.preventDefault();
-  choose(id, "key");
+  choose(id);
 }
 
 // Keys: the arrows walk the open maps (or the two sides), Enter chooses and
@@ -414,7 +450,6 @@ const seconds = computed(() => Math.ceil(remaining.value));
 
 /* ---------- copy ---------- */
 const lead = computed(() => {
-  if (props.start) return t(`match.veto.start.${props.start.phase}`);
   const s = step.value;
   if (!s) {
     return isRegion.value
@@ -432,7 +467,6 @@ const lead = computed(() => {
 });
 
 const line = computed(() => {
-  if (props.start) return startLine.value;
   const s = step.value;
   if (!s) return isRegion.value ? "" : t("match.veto.complete_line");
   if (s.type === "Decider") {
@@ -447,10 +481,19 @@ const line = computed(() => {
       : t("match.veto.picking_side", { map });
   }
   if (mine.value) {
-    if (s.type === "Pick") return t("match.veto.pick_map");
-    return isRegion.value
-      ? t("match.veto.ban_region")
-      : t("match.veto.ban_map");
+    const pick = s.type === "Pick";
+    const chosen = label(selected.value);
+    if (chosen) {
+      return t(pick ? "match.veto.again_pick" : "match.veto.again_ban", {
+        map: chosen,
+      });
+    }
+    const ask = pick
+      ? t("match.veto.pick_map")
+      : isRegion.value
+        ? t("match.veto.ban_region")
+        : t("match.veto.ban_map");
+    return `${ask} · ${t(pick ? "match.veto.twice_pick" : "match.veto.twice_ban")}`;
   }
   if (s.type === "Pick") return t("match.veto.picking_map");
   return isRegion.value
@@ -480,9 +523,9 @@ function badge(id: string) {
 const pickerStarts = (st: ItemState) =>
   st.side ? sideShort(otherSide(st.side.side)) : null;
 
-// The read on a wide slice: an action on your turn, the move that just
-// landed, the decider, or where a picked map stands once the veto is done.
-function wideCopy(id: string): { sub: string; tone: string; cta?: string } {
+// The line over a wide slice's name: the move that just landed, the decider,
+// a region's ping, or where a picked map stands once the veto is done.
+function wideCopy(id: string): { sub: string; tone: string } {
   const st = stateOf(id);
   const item = props.items.find((entry) => entry.id === id);
   const s = step.value;
@@ -497,23 +540,13 @@ function wideCopy(id: string): { sub: string; tone: string; cta?: string } {
             : t("match.veto.decider_last", { n: props.bestOf }),
       };
     }
-    if (mine.value) {
-      if (selected.value === id) {
-        return {
-          tone: "",
-          sub: "",
-          cta:
-            s.type === "Ban"
-              ? t("match.veto.cta_ban", { map: item?.label ?? "" })
-              : t("match.veto.cta_pick", { map: item?.label ?? "" }),
-        };
-      }
+    if (st.status === "open") {
       return {
         tone: "",
         sub:
           isRegion.value && item?.ping != null
-            ? t("match.veto.choose_with_ping", { ping: item.ping })
-            : t("match.veto.choose"),
+            ? t("match.veto.your_ping", { ping: item.ping })
+            : "",
       };
     }
     if (st.status === "Ban") {
@@ -873,25 +906,10 @@ function startEdge(itemId: string) {
   return edge.tone === "few" ? null : edge;
 }
 
-const startLine = computed(() => {
-  const phase = props.start?.phase;
-  if (phase !== "ready") {
-    return phase === "waiting"
-      ? t("match.veto.start.waiting_line")
-      : t("match.veto.start.booting_line");
-  }
-  const first = startMaps.value[0];
-  if (!first) return "";
-  const map = first.item?.label ?? "";
-  const side = viewerLineup.value ? first.sides?.[viewerLineup.value] : null;
-  // One map is not "first" of anything.
-  if (startMaps.value.length === 1) {
-    return side ? t("match.veto.start.ready_only_you", { map, side }) : map;
-  }
-  return side
-    ? t("match.veto.start.ready_first_you", { map, side })
-    : t("match.veto.start.ready_first", { map });
-});
+// The server's state over the maps until it is ready; then they fold up.
+const bootPhase = computed(() =>
+  props.start?.phase === "waiting" ? "waiting" : "booting",
+);
 
 // A played map's number, big in the middle of it (on a phone's rows it
 // joins the edge's box instead).
@@ -1006,6 +1024,7 @@ async function grow(animate: boolean) {
 
 let resize: ResizeObserver | undefined;
 onMounted(() => {
+  document.addEventListener("pointerdown", onDocPointerDown);
   if (typeof ResizeObserver !== "undefined" && stageEl.value) {
     stageObserver = new ResizeObserver(() => {
       const stage = stageEl.value;
@@ -1013,6 +1032,7 @@ onMounted(() => {
       stageW.value = stage.clientWidth;
       stageH.value = stage.clientHeight;
       stageRow.value = getComputedStyle(stage).flexDirection === "row";
+      placeArm();
     });
     stageObserver.observe(stageEl.value);
   }
@@ -1034,18 +1054,16 @@ watch(
   },
 );
 
-// Server ready: a beat to read it, the panels let go of their words, and the
-// maps hand over to the page.
+// Server ready: the panels let go of their words and the maps hand over to
+// the page.
 let handTimer: ReturnType<typeof setTimeout> | undefined;
 watch(
   () => props.start?.phase === "ready" && props.handOff,
   (go) => {
     clearTimeout(handTimer);
     if (!go) return;
-    handTimer = setTimeout(() => {
-      shown.value = [];
-      handTimer = setTimeout(() => void handOffNow(), 260);
-    }, 700);
+    shown.value = [];
+    handTimer = setTimeout(() => void handOffNow(), 260);
   },
   { immediate: true },
 );
@@ -1074,6 +1092,7 @@ async function handOffNow() {
 }
 
 onBeforeUnmount(() => {
+  document.removeEventListener("pointerdown", onDocPointerDown);
   clearTimeout(handTimer);
   resize?.disconnect();
   stageObserver?.disconnect();
@@ -1081,7 +1100,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="vb" :class="{ 'is-live': live }">
+  <div class="vb" :class="{ 'is-live': live }" :data-act="step?.type">
     <!-- One line in every state: your turn changes its colour and words, never
          its height. -->
     <div class="vb-status" aria-live="polite">
@@ -1091,15 +1110,9 @@ onBeforeUnmount(() => {
         :size="24"
         :title="lineupName(actingLineup)"
       />
-      <span
-        class="vb-lead"
-        :class="{ 'is-you': mine, 'is-ready': start?.phase === 'ready' }"
-        :title="lead"
-        ><Spinner
-          v-if="start && start.phase !== 'ready'"
-          class="vb-spin h-3.5 w-3.5"
-        />{{ lead }}</span
-      >
+      <span class="vb-lead" :class="{ 'is-you': mine }" :title="lead">{{
+        lead
+      }}</span>
       <span class="vb-line" :title="line">{{ line }}</span>
       <span v-if="keys && mine" class="vb-keys"
         ><kbd>←</kbd><kbd>→</kbd> {{ t("match.veto.keys.browse") }} ·
@@ -1183,10 +1196,11 @@ onBeforeUnmount(() => {
             'is-mid': isWide(item.id) && done,
             'is-thin': weight(item.id) < 0.5,
             'is-live': isLive(item.id),
-            'is-selected': mine && selected === item.id,
+            'is-selected': chosen === item.id,
             'is-siding': sideMapId === item.id,
             'is-echo': echo === item.id,
             'is-sized': !!openWidth(item.id),
+            'is-cramped': isCramped(item.id),
           }"
           :style="{
             '--g': weight(item.id),
@@ -1221,6 +1235,27 @@ onBeforeUnmount(() => {
             class="vb-likely"
             aria-hidden="true"
           />
+
+          <!-- Chosen: the map takes the move's colour and mark; a second
+               click on it makes the move. -->
+          <div
+            v-if="chosen === item.id"
+            class="vb-arm"
+            :class="{ 'is-sending': submitting }"
+            :style="
+              armRoom
+                ? { '--arm-y': `${armRoom.y}px`, '--arm-d': `${armRoom.d}px` }
+                : undefined
+            "
+            aria-hidden="true"
+          >
+            <span class="vb-arm-ping" />
+            <span class="vb-arm-btn">
+              <Spinner v-if="submitting" />
+              <Check v-else-if="step?.type === 'Pick'" />
+              <Ban v-else />
+            </span>
+          </div>
 
           <div class="vb-top">
             <span class="vb-id">
@@ -1391,7 +1426,14 @@ onBeforeUnmount(() => {
           </div>
 
           <!-- wide: the full read -->
+          <!-- The name sits at the foot; what happened to the map goes over
+               it, so the name never moves. -->
           <div class="vb-open">
+            <div v-if="doneSides(item.id) === undefined" class="vb-act">
+              <span class="vb-sub" :data-tone="wideCopy(item.id).tone">{{
+                wideCopy(item.id).sub
+              }}</span>
+            </div>
             <div class="vb-namerow">
               <img v-if="!isRegion && item.patch" :src="item.patch" alt="" />
               <span class="vb-name">{{ item.label }}</span>
@@ -1402,21 +1444,6 @@ onBeforeUnmount(() => {
               :lineups="lineups"
               :viewer="viewerLineup"
             />
-            <div v-else-if="isWide(item.id)" class="vb-act">
-              <button
-                v-if="wideCopy(item.id).cta"
-                type="button"
-                class="vb-cta tac-amber-cta"
-                :disabled="submitting"
-                @click.stop="confirm"
-              >
-                <Spinner v-if="submitting" class="h-4 w-4" />
-                {{ wideCopy(item.id).cta }}
-              </button>
-              <span v-else class="vb-sub" :data-tone="wideCopy(item.id).tone">{{
-                wideCopy(item.id).sub
-              }}</span>
-            </div>
           </div>
 
           <!-- side: the picked map opens across the stage and splits CT / T -->
@@ -1424,8 +1451,8 @@ onBeforeUnmount(() => {
             v-if="!isRegion && sideMapId === item.id"
             class="vb-split"
             :class="{
-              'sel-CT': mine && selected === 'CT',
-              'sel-T': mine && selected === 'TERRORIST',
+              'sel-CT': chosen === 'CT',
+              'sel-T': chosen === 'TERRORIST',
             }"
             @click.stop
           >
@@ -1435,7 +1462,7 @@ onBeforeUnmount(() => {
               type="button"
               class="vb-half"
               :data-side="sideShort(side)"
-              :class="{ 'is-selected': mine && selected === side }"
+              :class="{ 'is-selected': chosen === side }"
               :style="{ backgroundImage: sidePoster }"
               :disabled="!mine || submitting"
               @click="chooseSide(side)"
@@ -1464,7 +1491,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div v-if="!isRegion" class="vb-series">
+      <div v-if="!isRegion && bestOf > 1" class="vb-series">
         <div
           v-for="slot in series"
           :key="slot.n"
@@ -1582,6 +1609,24 @@ onBeforeUnmount(() => {
               :viewer="viewerLineup"
             />
           </div>
+        </div>
+        <!-- The server's state sits over the maps, where the eye already is
+             (above their numbers in a series). -->
+        <div
+          class="st-boot"
+          :class="{
+            'is-shown': shown.length > 0 && start.phase !== 'ready',
+            'is-series': startMaps.length > 1,
+          }"
+          :style="{ '--n': startMaps.length }"
+          role="status"
+          aria-live="polite"
+        >
+          <Spinner class="st-boot-icon" />
+          <span class="st-boot-text">
+            <b>{{ t(`match.veto.start.${bootPhase}`) }}</b>
+            <span>{{ t(`match.veto.start.${bootPhase}_line`) }}</span>
+          </span>
         </div>
       </div>
     </div>
@@ -1884,7 +1929,7 @@ onBeforeUnmount(() => {
   letter-spacing: -0.02em;
 }
 .vb-act {
-  height: 36px;
+  height: 24px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1988,12 +2033,18 @@ onBeforeUnmount(() => {
   left: 50%;
   bottom: 7px;
   z-index: 4;
-  width: 24px;
+  width: var(--vb-foot-w, 24px);
   height: 3px;
   border-radius: 2px;
   translate: -50% 0;
   pointer-events: none;
   background: var(--vb-foot, transparent);
+  transition: width 440ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+/* An open map's mark runs the width of its words, and draws back to a tick
+   as the map closes. */
+.vb-slice.is-wide {
+  --vb-foot-w: calc(100% - 40px);
 }
 .vb-slice[data-status="Ban"] {
   --vb-foot: var(--vb-ban);
@@ -2009,13 +2060,106 @@ onBeforeUnmount(() => {
 }
 .vb-slice.is-live {
   cursor: pointer;
+  user-select: none;
 }
 .vb-slice.is-live.is-wide .vb-poster {
   transform: scale(1.03);
 }
-.vb-slice.is-selected::after,
 .vb-slice:focus-visible::after {
   box-shadow: inset 0 0 0 2px var(--vb-amber);
+}
+/* The chosen map takes the colour of the move it is about to get, with its
+   mark in the middle while it is open. */
+.vb {
+  --vb-arm: var(--vb-ban);
+  --vb-arm-hsl: var(--destructive);
+  --vb-arm-deep: color-mix(in oklab, var(--vb-arm) 74%, black);
+}
+.vb[data-act="Pick"] {
+  --vb-arm: var(--vb-pick);
+  --vb-arm-hsl: var(--success);
+  --vb-arm-deep: color-mix(in oklab, var(--vb-arm) 74%, black);
+}
+.vb-slice.is-selected::after {
+  box-shadow: inset 0 0 0 2px var(--vb-arm);
+}
+.vb-arm {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    0deg,
+    hsl(var(--vb-arm-hsl) / 0.4),
+    hsl(var(--vb-arm-hsl) / 0.06) 70%
+  );
+  animation: vb-arm-in 160ms var(--vb-ease);
+}
+/* Its mark becomes a round button: it springs in, pings until it is
+   pressed, lifts under the pointer and sinks when clicked. */
+.vb-arm-ping,
+.vb-arm-btn {
+  position: absolute;
+  left: 50%;
+  top: var(--arm-y, 50%);
+  width: var(--arm-d, 84px);
+  height: var(--arm-d, 84px);
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.vb-arm-ping {
+  background: var(--vb-arm-deep);
+  opacity: 0;
+}
+.vb-slice.is-wide .vb-arm:not(.is-sending) .vb-arm-ping {
+  animation: vb-ping 1.8s cubic-bezier(0, 0, 0.2, 1) 300ms infinite;
+}
+@keyframes vb-ping {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  75%,
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+.vb-arm-btn {
+  display: grid;
+  place-items: center;
+  color: white;
+  background: var(--vb-arm-deep);
+  box-shadow:
+    inset 0 0 0 3px hsl(0 0% 100% / 0.85),
+    0 12px 30px rgb(0 0 0 / 0.5);
+  opacity: 0;
+  scale: 0.55;
+  transition:
+    opacity 160ms var(--vb-ease),
+    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 160ms ease;
+}
+.vb-arm-btn > svg {
+  width: 48%;
+  height: 48%;
+}
+.vb-slice.is-wide .vb-arm-btn {
+  opacity: 1;
+  scale: 1;
+}
+.vb-slice.is-wide:hover .vb-arm-btn {
+  scale: 1.07;
+  filter: brightness(1.1);
+}
+.vb-slice.is-wide:active .vb-arm-btn {
+  scale: 0.93;
+  transition-duration: 80ms;
+}
+@keyframes vb-arm-in {
+  from {
+    opacity: 0;
+  }
 }
 .vb-slice.is-echo::after {
   box-shadow: inset 0 0 0 2px hsl(0 0% 100% / 0.55);
@@ -2549,14 +2693,6 @@ onBeforeUnmount(() => {
 }
 
 /* ---------- the start: the series grows into the maps ---------- */
-.vb-lead.is-ready {
-  color: var(--vb-pick);
-}
-.vb-lead :deep(.vb-spin) {
-  display: inline-block;
-  margin-right: 8px;
-  vertical-align: -2px;
-}
 .st-area {
   position: relative;
   display: grid;
@@ -2578,6 +2714,81 @@ onBeforeUnmount(() => {
 .st-layer {
   position: absolute;
   inset: 0;
+}
+.st-boot {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: 44%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(100% - 32px);
+  padding: 14px 22px 14px 18px;
+  border-radius: 12px;
+  background: hsl(240 10% 4% / 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 0 0 1px hsl(0 0% 100% / 0.12),
+    0 12px 32px rgb(0 0 0 / 0.45);
+  pointer-events: none;
+  opacity: 0;
+  translate: -50% calc(-50% + 8px);
+  transition:
+    opacity 320ms var(--vb-ease),
+    translate 420ms var(--vb-ease);
+}
+.st-boot.is-shown {
+  opacity: 1;
+  translate: -50% -50%;
+}
+/* A series puts it on one line, between the maps' edges and their numbers. */
+.st-boot.is-series {
+  top: 22%;
+  padding: 10px 18px 10px 14px;
+}
+.st-boot.is-series .st-boot-text {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.st-boot.is-series .st-boot-text b {
+  font-size: 16px;
+}
+.st-boot-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--vb-amber);
+}
+.st-boot-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.st-boot-text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.st-boot-text b {
+  font-size: 18px;
+  font-weight: 700;
+}
+.st-boot-text span {
+  font-size: 13px;
+  color: hsl(0 0% 100% / 0.72);
+}
+/* A phone's rows: just the state, in the middle of the first map. */
+@container vb (max-width: 560px) {
+  .st-boot,
+  .st-boot.is-series {
+    top: calc(45% / var(--n));
+    padding: 10px 16px 10px 12px;
+  }
+  .st-boot-text span {
+    display: none;
+  }
 }
 .st-panel {
   container: panel / size;
@@ -2666,12 +2877,10 @@ onBeforeUnmount(() => {
   display: none;
 }
 /* A narrow map's words sit closer to its edges, so the team plates fit. */
-@container panel (max-width: 240px) {
-  .vb-open {
-    left: 10px;
-    right: 10px;
-    bottom: 12px;
-  }
+.vb-slice.is-cramped .vb-open {
+  left: 10px;
+  bottom: 12px;
+  width: calc(var(--fw) - 20px);
 }
 /* Narrow panels (best of five). */
 @container panel (max-width: 200px) {
@@ -3052,6 +3261,9 @@ onBeforeUnmount(() => {
   .vb *::after {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
+  }
+  .vb-arm-ping {
+    display: none;
   }
 }
 </style>

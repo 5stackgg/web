@@ -96,7 +96,11 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
             </div>
           </ClipBoard>
           <template v-if="match.connection_link">
-            <a :href="match.connection_link" class="w-full" @click="handleClick">
+            <a
+              :href="match.connection_link"
+              class="w-full"
+              @click="handleClick"
+            >
               <Button
                 variant="outline"
                 class="w-full h-12 connect-action"
@@ -145,8 +149,9 @@ export default {
       type: Object,
       required: true,
     },
-    // Suppress the booting spinner when the surrounding UI already shows a
-    // booting indicator (e.g. the draft room's "Match Starting" panel).
+    // The surrounding UI shows the server starting (the veto's start stage):
+    // no booting spinner here, and the connect box waits until that hands
+    // over, so it arrives with the page's map cards.
     hideBooting: {
       type: Boolean,
       default: false,
@@ -207,7 +212,11 @@ export default {
       return this.showBootingState;
     },
     showConnect() {
-      return !!this.match.connection_string && this.match.is_server_online;
+      return (
+        !!this.match.connection_string &&
+        this.match.is_server_online &&
+        !this.hideBooting
+      );
     },
     showConnectPanel() {
       return !!this.me && this.isLive && !this.blockedByCamera;

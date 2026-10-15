@@ -164,6 +164,7 @@ import {
   useStoppedStreams,
 } from "~/composables/useStoppedStreams";
 import { isHttpLink } from "~/utilities/httpLink";
+import { isDroppedTwitchPov } from "~/composables/useTwitch";
 
 export default {
   components: {
@@ -669,9 +670,12 @@ export default {
     globalStream(next, prev) {
       if (prev && !next && !this.global && !this.setGlobalStreamOnly) {
         if (!this.selectedStream && this.streams && this.streams.length > 0) {
-          const floated = this.streams.find((s) => s.id === prev.id);
+          const floated = isDroppedTwitchPov(prev.id)
+            ? undefined
+            : this.streams.find((s) => s.id === prev.id);
           this.pickedByHand = !!floated;
-          const stream = floated ?? this.streams.at(0);
+          const stream =
+            floated ?? this.streams.find((s) => !isDroppedTwitchPov(s.id));
           if (stream) {
             this.selectStream(stream);
           }

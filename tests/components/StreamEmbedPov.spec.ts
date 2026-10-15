@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { effectScope } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useTwitchPovGuard } from "~/composables/useTwitch";
 
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
@@ -20,8 +22,12 @@ const organizer = {
   preview: true as const,
 };
 
+const MATCH = "2b7a3c4d-1111-4222-8333-944455556666";
+
 const pov = (steamId: string, name: string, login: string) => ({
   id: `twitch-pov:${steamId}`,
+  steam_id: steamId,
+  match_id: MATCH,
   link: `https://www.twitch.tv/${login}`,
   title: `${name} POV`,
   name,
@@ -71,6 +77,7 @@ afterEach(() => {
   unmount?.();
   unmount = undefined;
   vi.unstubAllGlobals();
+  useApplicationSettingsStore().setGlobalStream();
 });
 
 describe("StreamEmbed with player POVs", () => {
@@ -147,6 +154,51 @@ describe("StreamEmbed with player POVs", () => {
     await wrapper.setProps({ streams: [organizer, kappa] });
     await settle();
 
+    expect(wrapper.find("[data-test='stream-pov-label']").exists()).toBe(false);
+    expect(wrapper.find("iframe").attributes("src")).toContain(
+      "youtube.com/embed/abc123",
+    );
+  });
+});
+
+describe("StreamEmbed after the floating player closes", () => {
+  async function floatKappa() {
+    const wrapper = await mountEmbed([organizer, kappa]);
+    await chipNamed(wrapper, "kappa POV").trigger("click");
+    await settle();
+    (wrapper.vm as any).setGlobalStream(kappa);
+    await settle();
+    return wrapper;
+  }
+
+  it("takes the POV back inline when the viewer closes it", async () => {
+    const wrapper = await floatKappa();
+
+    useApplicationSettingsStore().setGlobalStream();
+    await settle();
+
+    expect(wrapper.get("[data-test='stream-pov-label']").text()).toBe(
+      "kappa POV",
+    );
+  });
+
+  it("does not take back a POV the api stopped returning", async () => {
+    const wrapper = await floatKappa();
+    vi.stubGlobal(
+      "$fetch",
+      vi.fn(() => Promise.resolve({ streams: [] })),
+    );
+    const guard = effectScope();
+    guard.run(() =>
+      useTwitchPovGuard(
+        () => useApplicationSettingsStore().globalStream as any,
+        () => useApplicationSettingsStore().setGlobalStream(),
+      ),
+    );
+    await settle();
+    guard.stop();
+
+    expect(useApplicationSettingsStore().globalStream).toBeNull();
     expect(wrapper.find("[data-test='stream-pov-label']").exists()).toBe(false);
     expect(wrapper.find("iframe").attributes("src")).toContain(
       "youtube.com/embed/abc123",

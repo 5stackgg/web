@@ -1,10 +1,15 @@
 import {
+  computed,
+  effectScope,
   onScopeDispose,
   ref,
   shallowRef,
   toValue,
   watch,
+  type EffectScope,
   type MaybeRefOrGetter,
+  type Ref,
+  type ShallowRef,
 } from "vue";
 import { useDocumentVisibility } from "@vueuse/core";
 import { e_match_status_enum } from "~/generated/zeus";
@@ -101,7 +106,9 @@ function sameIdSet(left: string[], right: string[]) {
 }
 
 // A new key drops what the old key loaded before asking, so one profile's
-// stream never shows on the next.
+// stream never shows on the next. A pending check is only ever brought
+// forward: pushing it back on every focus change let a viewer who alt-tabs
+// faster than the interval go unchecked for the whole match.
 function useVisiblePoll(options: {
   key: () => string | null;
   load: (key: string, isCurrent: () => boolean) => Promise<void>;
@@ -111,28 +118,36 @@ function useVisiblePoll(options: {
 }) {
   const visibility = useDocumentVisibility();
   let timer: ReturnType<typeof setTimeout> | null = null;
+  let dueAt = 0;
+  let checkedAt = 0;
   let generation = 0;
   let running = false;
 
   const active = () =>
     visibility.value === "visible" || !!options.keepAlive?.();
 
-  function cancel() {
-    generation++;
+  function clearTimer() {
     if (timer) {
       clearTimeout(timer);
       timer = null;
     }
   }
 
-  function schedule(current: string) {
-    if (timer) {
-      clearTimeout(timer);
-    }
-    timer = setTimeout(() => {
-      timer = null;
-      void tick(current);
-    }, options.everyMs());
+  function cancel() {
+    generation++;
+    clearTimer();
+  }
+
+  function scheduleAt(current: string, at: number) {
+    clearTimer();
+    dueAt = at;
+    timer = setTimeout(
+      () => {
+        timer = null;
+        void tick(current);
+      },
+      Math.max(0, at - Date.now()),
+    );
   }
 
   async function tick(current: string) {
@@ -142,12 +157,13 @@ function useVisiblePoll(options: {
     if (mine !== generation || !active()) {
       return;
     }
-    schedule(current);
+    checkedAt = Date.now();
+    scheduleAt(current, checkedAt + options.everyMs());
   }
 
   watch(
     [options.key, visibility, () => !!options.keepAlive?.()] as const,
-    ([current], previous) => {
+    ([current, visible], previous) => {
       const changedKey = current !== previous?.[0];
       if (changedKey) {
         options.reset();
@@ -162,8 +178,15 @@ function useVisiblePoll(options: {
         void tick(current);
         return;
       }
-      if (timer) {
-        schedule(current);
+
+      const due = checkedAt + options.everyMs();
+      const cameBack = visible === "visible" && previous?.[1] !== "visible";
+      if (cameBack && Date.now() >= due) {
+        void tick(current);
+        return;
+      }
+      if (timer && due < dueAt) {
+        scheduleAt(current, due);
       }
     },
     { immediate: true },
@@ -254,6 +277,120 @@ export function useTwitchLiveSteamIds() {
   return { steamIds, loaded };
 }
 
+type MatchPovPoll = {
+  streams: ShallowRef<TwitchMatchStream[]>;
+  loaded: Ref<boolean>;
+  floating: Ref<number>;
+  users: number;
+  scope: EffectScope;
+};
+
+// One poll per match, however many views of it are open (the match page, its
+// Streams tab, the floating player).
+const matchPovPolls = new Map<string, MatchPovPoll>();
+
+const droppedPovs = new Set<string>();
+
+// A POV the floating player let go because the api stopped returning it, so
+// the page it came from does not take it straight back.
+export function isDroppedTwitchPov(id: string) {
+  return droppedPovs.has(id);
+}
+
+function startMatchPovPoll(matchId: string): MatchPovPoll {
+  const poll: MatchPovPoll = {
+    streams: shallowRef([]),
+    loaded: ref(false),
+    floating: ref(0),
+    users: 0,
+    scope: effectScope(true),
+  };
+
+  // Any listed POV may be the one playing, and a Twitch embed plays on in a
+  // hidden tab.
+  const playing = () =>
+    poll.streams.value.length > 0 || poll.floating.value > 0;
+
+  poll.scope.run(() => {
+    useVisiblePoll({
+      key: () => matchId,
+      keepAlive: playing,
+      everyMs: () => (playing() ? PLAYING_REFRESH_MS : MATCH_POV_REFRESH_MS),
+      async load(id, isCurrent) {
+        try {
+          const result = await $fetch<{ streams: TwitchMatchStream[] }>(
+            twitchApiUrl(`/matches/${encodeURIComponent(id)}/streams`),
+            { credentials: "include" },
+          );
+          if (isCurrent()) {
+            poll.streams.value = result?.streams ?? [];
+            poll.loaded.value = true;
+          }
+        } catch (error) {
+          if (isCurrent() && isNotFound(error)) {
+            poll.streams.value = [];
+            poll.loaded.value = true;
+          }
+        }
+      },
+      reset() {},
+    });
+  });
+
+  return poll;
+}
+
+function useMatchPovPoll(
+  matchId: () => string | null,
+  { floating = false }: { floating?: boolean } = {},
+) {
+  const poll = shallowRef<MatchPovPoll | null>(null);
+  let joined: { matchId: string; poll: MatchPovPoll } | null = null;
+
+  function leave() {
+    if (joined) {
+      if (floating) {
+        joined.poll.floating.value--;
+      }
+      joined.poll.users--;
+      if (joined.poll.users <= 0) {
+        joined.poll.scope.stop();
+        if (matchPovPolls.get(joined.matchId) === joined.poll) {
+          matchPovPolls.delete(joined.matchId);
+        }
+      }
+      joined = null;
+    }
+    poll.value = null;
+  }
+
+  watch(
+    matchId,
+    (id) => {
+      leave();
+      if (!id) {
+        return;
+      }
+      let shared = matchPovPolls.get(id);
+      if (!shared) {
+        shared = startMatchPovPoll(id);
+        matchPovPolls.set(id, shared);
+      }
+      shared.users++;
+      if (floating) {
+        shared.floating.value++;
+      }
+      joined = { matchId: id, poll: shared };
+      poll.value = shared;
+    },
+    { immediate: true },
+  );
+
+  onScopeDispose(leave);
+
+  return poll;
+}
+
 export function useMatchTwitchPovs(
   match: MaybeRefOrGetter<
     | {
@@ -267,53 +404,30 @@ export function useMatchTwitchPovs(
   >,
 ) {
   const settings = useApplicationSettingsStore();
-  const streams = shallowRef<TwitchMatchStream[]>([]);
 
-  // Any listed POV may be the one playing, and a Twitch embed plays on in a
-  // hidden tab.
-  const listed = () => streams.value.length > 0;
-
-  useVisiblePoll({
-    key: () => {
-      const current = toValue(match);
-      return settings.supportsTwitch &&
-        current?.id &&
-        current.status === e_match_status_enum.Live &&
-        !current.is_in_lineup &&
-        !current.is_coach
-        ? current.id
-        : null;
-    },
-    keepAlive: listed,
-    everyMs: () => (listed() ? PLAYING_REFRESH_MS : MATCH_POV_REFRESH_MS),
-    async load(id, isCurrent) {
-      try {
-        const result = await $fetch<{ streams: TwitchMatchStream[] }>(
-          twitchApiUrl(`/matches/${encodeURIComponent(id)}/streams`),
-          { credentials: "include" },
-        );
-        if (isCurrent()) {
-          streams.value = result?.streams ?? [];
-        }
-      } catch (error) {
-        if (isCurrent() && isNotFound(error)) {
-          streams.value = [];
-        }
-      }
-    },
-    reset() {
-      streams.value = [];
-    },
+  const poll = useMatchPovPoll(() => {
+    const current = toValue(match);
+    return settings.supportsTwitch &&
+      current?.id &&
+      current.status === e_match_status_enum.Live &&
+      !current.is_in_lineup &&
+      !current.is_coach
+      ? current.id
+      : null;
   });
 
-  return { streams };
+  return {
+    streams: computed(() => poll.value?.streams.value ?? []),
+  };
 }
 
-// The floating player outlives the match page that polled its POV, so the
-// POV is re-checked here and let go once the api stops returning it.
+// The floating player outlives the match page that polled its POV, so it
+// keeps the match's poll going and lets the POV go once the api stops
+// returning it.
 export function useTwitchPovGuard(
   stream: MaybeRefOrGetter<
     | {
+        id?: string | null;
         is_pov?: boolean;
         match_id?: string | null;
         steam_id?: string | null;
@@ -323,36 +437,55 @@ export function useTwitchPovGuard(
   >,
   onGone: () => void,
 ) {
-  useVisiblePoll({
-    key: () => {
-      const current = toValue(stream);
-      return current?.is_pov && current.match_id && current.steam_id
-        ? `${current.match_id}/${current.steam_id}`
-        : null;
-    },
-    keepAlive: () => true,
-    everyMs: () => PLAYING_REFRESH_MS,
-    async load(key, isCurrent) {
-      const [matchId, steamId] = key.split("/");
-      try {
-        const result = await $fetch<{ streams: TwitchMatchStream[] }>(
-          twitchApiUrl(`/matches/${encodeURIComponent(matchId)}/streams`),
-          { credentials: "include" },
-        );
-        const returned = (result?.streams ?? []).some(
-          (pov) => String(pov.steam_id) === steamId,
-        );
-        if (isCurrent() && !returned) {
-          onGone();
+  const target = computed(() => {
+    const current = toValue(stream);
+    return current?.is_pov &&
+      current.id &&
+      current.match_id &&
+      current.steam_id
+      ? {
+          id: String(current.id),
+          matchId: String(current.match_id),
+          steamId: String(current.steam_id),
         }
-      } catch (error) {
-        if (isCurrent() && isNotFound(error)) {
-          onGone();
-        }
+      : null;
+  });
+
+  const poll = useMatchPovPoll(() => target.value?.matchId ?? null, {
+    floating: true,
+  });
+
+  watch(
+    () => target.value?.id,
+    (id) => {
+      if (id) {
+        droppedPovs.delete(id);
       }
     },
-    reset() {},
-  });
+    { immediate: true },
+  );
+
+  watch(
+    () =>
+      [
+        target.value,
+        poll.value?.loaded.value,
+        poll.value?.streams.value,
+      ] as const,
+    ([current, loaded, streams]) => {
+      if (!current || !loaded) {
+        return;
+      }
+      const returned = (streams ?? []).some(
+        (pov) => String(pov.steam_id) === current.steamId,
+      );
+      if (!returned) {
+        droppedPovs.add(current.id);
+        onGone();
+      }
+    },
+    { immediate: true },
+  );
 }
 
 export function useTwitchAccount() {

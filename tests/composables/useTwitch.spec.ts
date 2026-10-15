@@ -7,6 +7,7 @@ import {
   useTwitchLiveSteamIds,
   useTwitchPlayer,
   useTwitchPovGuard,
+  isDroppedTwitchPov,
 } from "~/composables/useTwitch";
 
 const PLAYER = "76561198000000002";
@@ -38,7 +39,7 @@ const pov = {
 };
 
 let fetched: ReturnType<typeof vi.fn>;
-let scope: ReturnType<typeof effectScope> | undefined;
+let scopes: Array<ReturnType<typeof effectScope>> = [];
 
 function notFound() {
   return Object.assign(new Error("Not Found"), { statusCode: 404 });
@@ -49,8 +50,42 @@ function badGateway() {
 }
 
 function run<T>(fn: () => T): T {
-  scope = effectScope();
+  const scope = effectScope();
+  scopes.push(scope);
   return scope.run(fn)!;
+}
+
+function stopAll() {
+  scopes.forEach((scope) => scope.stop());
+  scopes = [];
+}
+
+let times: number[] = [];
+
+// When each check happened, on the faked clock.
+function checkTimes(path: string) {
+  return fetched.mock.calls
+    .map(([url], index) => [String(url), times[index]] as const)
+    .filter(([url]) => url.endsWith(path))
+    .map(([, at]) => at);
+}
+
+// A viewer alt-tabbing out and back every 15 seconds for five minutes.
+async function altTabEvery15Seconds() {
+  for (let index = 0; index < 20; index++) {
+    setVisibility(index % 2 === 0 ? "hidden" : "visible");
+    await nextTick();
+    await vi.advanceTimersByTimeAsync(15_000);
+    await flushPromises();
+  }
+}
+
+function largestGap(at: number[], until: number) {
+  return Math.max(
+    ...[...at, until].map((time, index, all) =>
+      index === 0 ? 0 : time - all[index - 1],
+    ),
+  );
 }
 
 function setVisibility(state: DocumentVisibilityState) {
@@ -62,17 +97,20 @@ const calls = (path: string) =>
   fetched.mock.calls.filter(([url]) => String(url).endsWith(path)).length;
 
 beforeEach(() => {
-  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
+  times = [];
   fetched = vi.fn();
-  vi.stubGlobal("$fetch", fetched);
+  vi.stubGlobal("$fetch", (...args: unknown[]) => {
+    times.push(Date.now());
+    return fetched(...args);
+  });
   useApplicationSettingsStore().settings = [
     { name: "public.supports_twitch", value: "true" },
   ];
 });
 
 afterEach(() => {
-  scope?.stop();
-  scope = undefined;
+  stopAll();
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -159,6 +197,69 @@ describe("useTwitchPlayer", () => {
     await flushPromises();
 
     expect(stream.value).toBeNull();
+  });
+
+  it("still checks at least every 20 seconds while it plays and the viewer alt-tabs every 15", async () => {
+    fetched.mockResolvedValue(live);
+    run(() => useTwitchPlayer(PLAYER, { playing: true }));
+    await flushPromises();
+    const start = Date.now();
+
+    await altTabEvery15Seconds();
+
+    const at = checkTimes(`/twitch/players/${PLAYER}`).filter(
+      (time) => time >= start,
+    );
+    expect(at.length).toBeGreaterThanOrEqual(14);
+    expect(largestGap([start, ...at], Date.now())).toBeLessThanOrEqual(20_000);
+  });
+
+  it("checks straight away on coming back once a check is overdue", async () => {
+    fetched.mockResolvedValue(live);
+    run(() => useTwitchPlayer(PLAYER, { playing: true }));
+    await flushPromises();
+    setVisibility("hidden");
+    await nextTick();
+    const checked = calls(`/twitch/players/${PLAYER}`);
+
+    // A hidden tab's timers can be throttled to once a minute; the clock
+    // moves on without them firing.
+    vi.setSystemTime(Date.now() + 60_000);
+    setVisibility("visible");
+    await nextTick();
+    await flushPromises();
+
+    expect(calls(`/twitch/players/${PLAYER}`)).toBe(checked + 1);
+  });
+
+  it("brings the next check forward when the stream starts playing", async () => {
+    fetched.mockResolvedValue(live);
+    const playing = ref(false);
+    run(() => useTwitchPlayer(PLAYER, { playing }));
+    await flushPromises();
+
+    await vi.advanceTimersByTimeAsync(10_000);
+    playing.value = true;
+    await nextTick();
+    await vi.advanceTimersByTimeAsync(10_000);
+    await flushPromises();
+
+    expect(calls(`/twitch/players/${PLAYER}`)).toBe(2);
+  });
+
+  it("never pushes a pending check later when the stream stops playing", async () => {
+    fetched.mockResolvedValue(live);
+    const playing = ref(true);
+    run(() => useTwitchPlayer(PLAYER, { playing }));
+    await flushPromises();
+
+    await vi.advanceTimersByTimeAsync(15_000);
+    playing.value = false;
+    await nextTick();
+    await vi.advanceTimersByTimeAsync(5_000);
+    await flushPromises();
+
+    expect(calls(`/twitch/players/${PLAYER}`)).toBe(2);
   });
 
   it("never asks while Twitch is not set up", async () => {
@@ -340,6 +441,50 @@ describe("useMatchTwitchPovs", () => {
     expect(calls("/streams")).toBe(2);
   });
 
+  it("still checks at least every 20 seconds while a POV is listed and the viewer alt-tabs every 15", async () => {
+    fetched.mockResolvedValue({ streams: [pov] });
+    run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    await flushPromises();
+    const start = Date.now();
+
+    await altTabEvery15Seconds();
+
+    const at = checkTimes("/streams").filter((time) => time >= start);
+    expect(at.length).toBeGreaterThanOrEqual(14);
+    expect(largestGap([start, ...at], Date.now())).toBeLessThanOrEqual(20_000);
+  });
+
+  it("shares one poll between every view of the same match", async () => {
+    fetched.mockResolvedValue({ streams: [pov] });
+    const first = run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    const second = run(() =>
+      useMatchTwitchPovs({ id: MATCH, status: "Live" }),
+    );
+    await flushPromises();
+
+    expect(calls("/streams")).toBe(1);
+    expect(first.streams.value).toEqual([pov]);
+    expect(second.streams.value).toEqual([pov]);
+
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+    expect(calls("/streams")).toBe(2);
+  });
+
+  it("keeps the shared poll for the views still open", async () => {
+    fetched.mockResolvedValue({ streams: [pov] });
+    run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    const leaving = effectScope();
+    leaving.run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    await flushPromises();
+
+    leaving.stop();
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+
+    expect(calls("/streams")).toBe(2);
+  });
+
   it("polls every 45 seconds while no POV is listed", async () => {
     fetched.mockResolvedValue({ streams: [] });
     run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
@@ -357,7 +502,7 @@ describe("useMatchTwitchPovs", () => {
     run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
     await flushPromises();
 
-    scope?.stop();
+    stopAll();
     await vi.advanceTimersByTimeAsync(180_000);
 
     expect(calls("/streams")).toBe(1);
@@ -403,6 +548,37 @@ describe("useTwitchPovGuard", () => {
     await vi.advanceTimersByTimeAsync(20_000);
     await flushPromises();
     expect(gone).toHaveBeenCalledTimes(1);
+  });
+
+  it("rides the match page's poll instead of asking again", async () => {
+    fetched.mockResolvedValue({ streams: [pov] });
+    run(() => useMatchTwitchPovs({ id: MATCH, status: "Live" }));
+    const gone = vi.fn();
+    run(() => useTwitchPovGuard(floating, gone));
+    await flushPromises();
+
+    expect(calls("/streams")).toBe(1);
+
+    fetched.mockResolvedValue({ streams: [] });
+    await vi.advanceTimersByTimeAsync(20_000);
+    await flushPromises();
+
+    expect(calls("/streams")).toBe(2);
+    expect(gone).toHaveBeenCalledTimes(1);
+    expect(isDroppedTwitchPov(floating.id)).toBe(true);
+  });
+
+  it("still checks at least every 20 seconds while the viewer alt-tabs every 15", async () => {
+    fetched.mockResolvedValue({ streams: [pov] });
+    run(() => useTwitchPovGuard(floating, vi.fn()));
+    await flushPromises();
+    const start = Date.now();
+
+    await altTabEvery15Seconds();
+
+    const at = checkTimes("/streams").filter((time) => time >= start);
+    expect(at.length).toBeGreaterThanOrEqual(14);
+    expect(largestGap([start, ...at], Date.now())).toBeLessThanOrEqual(20_000);
   });
 
   it("leaves every other stream alone", async () => {

@@ -54,6 +54,7 @@ import {
           class="mb-4"
           :stage="stage"
           :only-group="division"
+          :placements="podiumSteps || []"
         />
 
         <BracketPair
@@ -96,6 +97,7 @@ import {
 
 <script lang="ts">
 import { useBracketView } from "~/composables/useBracketView";
+import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 
 export default {
   props: {
@@ -131,7 +133,27 @@ export default {
   data() {
     return {
       activeGroupTab: "group-1",
+      podiumSteps: null as any[] | null,
     };
+  },
+  apollo: {
+    podiumSteps: {
+      query: tournamentPodiumQuery,
+      variables: function () {
+        return { tournamentId: (this as any).tournament?.id };
+      },
+      skip: function () {
+        const self = this as any;
+        return (
+          !self.isFinalStage ||
+          !self.tournament?.id ||
+          self.tournament?.status !== e_tournament_status_enum.Finished
+        );
+      },
+      update: (data: any) => data?.tournaments_by_pk?.podium ?? null,
+      context: { optional: true },
+      error: () => {},
+    },
   },
   mounted() {
     this.syncGroupLabel();

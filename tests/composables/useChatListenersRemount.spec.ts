@@ -102,6 +102,7 @@ describe("chat listeners across a layout remount", () => {
     expect(flash.signalChat).toHaveBeenCalledWith(
       "matchmaking",
       expect.objectContaining({ id: "m1" }),
+      ME,
     );
     expect(socket.listenerCount(`${room()}:chat`)).toBe(1);
   });

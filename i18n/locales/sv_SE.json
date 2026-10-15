@@ -10320,7 +10320,17 @@
         "waiting": "Väntar på svar"
       }
     },
-    "awaiting_reply": "Din meddelandeförfrågan har inte besvarats än. Du kan skriva igen när de svarar."
+    "awaiting_reply": "Din meddelandeförfrågan har inte besvarats än. Du kan skriva igen när de svarar.",
+    "mentions": {
+      "list": "Spelare du kan tagga",
+      "finding": "Söker efter spelare…",
+      "no_match": "Ingen i det här rummet matchar \"{query}\"",
+      "failed": "Det gick inte att läsa in spelarna",
+      "limit": "Du kan tagga upp till {max} spelare i ett meddelande.",
+      "too_many": "Ett meddelande kan tagga högst {max} spelare.",
+      "organizer": "Arrangör",
+      "tagged_you": "{count} meddelande taggar dig | {count} meddelanden taggar dig"
+    }
   },
   "charts": {
     "usage": "Användning",

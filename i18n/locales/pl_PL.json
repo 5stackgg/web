@@ -10320,7 +10320,17 @@
         "waiting": "Czekasz na odpowiedź"
       }
     },
-    "awaiting_reply": "Twoja prośba o wiadomość nie doczekała się jeszcze odpowiedzi. Napiszesz ponownie, gdy ktoś odpowie."
+    "awaiting_reply": "Twoja prośba o wiadomość nie doczekała się jeszcze odpowiedzi. Napiszesz ponownie, gdy ktoś odpowie.",
+    "mentions": {
+      "list": "Gracze do oznaczenia",
+      "finding": "Szukanie graczy…",
+      "no_match": "Nikt w tym pokoju nie pasuje do „{query}”",
+      "failed": "Nie udało się wczytać graczy",
+      "limit": "W jednej wiadomości możesz oznaczyć maksymalnie {max} graczy.",
+      "too_many": "Wiadomość może oznaczać maksymalnie {max} graczy.",
+      "organizer": "Organizator",
+      "tagged_you": "Wiadomości, w których cię oznaczono: {count} | Wiadomości, w których cię oznaczono: {count}"
+    }
   },
   "charts": {
     "usage": "Wykorzystanie",

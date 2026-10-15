@@ -10320,7 +10320,17 @@
         "waiting": "Yanıt bekleniyor"
       }
     },
-    "awaiting_reply": "Mesaj isteğin henüz yanıtlanmadı. Yanıt verdiklerinde tekrar yazabilirsin."
+    "awaiting_reply": "Mesaj isteğin henüz yanıtlanmadı. Yanıt verdiklerinde tekrar yazabilirsin.",
+    "mentions": {
+      "list": "Etiketlenebilecek oyuncular",
+      "finding": "Oyuncular aranıyor…",
+      "no_match": "Bu odada \"{query}\" ile eşleşen kimse yok",
+      "failed": "Oyuncular yüklenemedi",
+      "limit": "Bir mesajda en fazla {max} oyuncu etiketleyebilirsin.",
+      "too_many": "Bir mesaj en fazla {max} oyuncuyu etiketleyebilir.",
+      "organizer": "Organizatör",
+      "tagged_you": "Seni etiketleyen {count} mesaj | Seni etiketleyen {count} mesaj"
+    }
   },
   "charts": {
     "usage": "Kullanım",

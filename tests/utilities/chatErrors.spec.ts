@@ -35,6 +35,12 @@ describe("chatErrorDescription", () => {
     );
   });
 
+  it("says how many players one message may tag", () => {
+    expect(
+      chatErrorDescription({ code: "too_many_mentions", max: 10 }, t),
+    ).toBe('chat.mentions.too_many {"max":10}');
+  });
+
   it.each(["invalid", "some_future_code", ""])(
     "treats %j as a plain failed send",
     (code) => {

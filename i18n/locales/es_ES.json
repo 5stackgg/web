@@ -10320,7 +10320,17 @@
         "waiting": "Esperando respuesta"
       }
     },
-    "awaiting_reply": "Aún no han respondido a tu solicitud de mensaje. Podrás volver a escribir cuando respondan."
+    "awaiting_reply": "Aún no han respondido a tu solicitud de mensaje. Podrás volver a escribir cuando respondan.",
+    "mentions": {
+      "list": "Jugadores que puedes mencionar",
+      "finding": "Buscando jugadores…",
+      "no_match": "Nadie en esta sala coincide con «{query}»",
+      "failed": "No se pudieron cargar los jugadores",
+      "limit": "Puedes mencionar hasta {max} jugadores en un mensaje.",
+      "too_many": "Un mensaje puede mencionar como máximo a {max} jugadores.",
+      "organizer": "Organizador",
+      "tagged_you": "{count} mensaje te menciona | {count} mensajes te mencionan"
+    }
   },
   "charts": {
     "usage": "Uso",

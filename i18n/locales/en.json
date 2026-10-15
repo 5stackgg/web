@@ -10324,7 +10324,17 @@
         "waiting": "Waiting for a reply"
       }
     },
-    "awaiting_reply": "Your message request hasn't been answered yet. You can write again once they reply."
+    "awaiting_reply": "Your message request hasn't been answered yet. You can write again once they reply.",
+    "mentions": {
+      "list": "Players to tag",
+      "finding": "Finding players…",
+      "no_match": "No one in this room matches \"{query}\"",
+      "failed": "Couldn't load players",
+      "limit": "You can tag up to {max} players in one message.",
+      "too_many": "A message can tag up to {max} players.",
+      "organizer": "Organizer",
+      "tagged_you": "{count} message tags you | {count} messages tag you"
+    }
   },
   "charts": {
     "usage": "Usage",

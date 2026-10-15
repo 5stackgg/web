@@ -14,6 +14,10 @@ export function setPageChatFocus(thread: string | null) {
   pageFocus.value = thread;
 }
 
+export function pageChatFocus() {
+  return pageFocus.value;
+}
+
 // Tells the server what this tab is showing, so a push can be skipped for a
 // conversation the recipient is already reading.
 //

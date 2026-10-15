@@ -1,5 +1,6 @@
 import { toast } from "@/components/ui/toast";
 import { CHAT_MESSAGE_MAX_LENGTH } from "~/constants/chat";
+import { MAX_CHAT_MENTIONS } from "~/utilities/chatMentions";
 
 // Echoed by the api on `chat:ack` and `chat:error`. An api that predates it
 // sends none, and only ever answered sends.
@@ -103,6 +104,10 @@ export function chatErrorDescription(
       return t("chat.gagged");
     case "awaiting_reply":
       return t("chat.awaiting_reply");
+    case "too_many_mentions":
+      return t("chat.mentions.too_many", {
+        max: error.max ?? MAX_CHAT_MENTIONS,
+      });
     // Also sent when a send queued while offline reaches the server before the
     // lobby rejoin does, so it must not tell the user they are barred.
     case "not_allowed":

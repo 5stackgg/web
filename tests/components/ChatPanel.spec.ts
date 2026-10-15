@@ -6,12 +6,14 @@ import ChatPanel from "~/components/hub/ChatPanel.vue";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useIncomingDirectMessages } from "~/composables/useIncomingDirectMessages";
 import { directTabId } from "~/composables/useDirectMessages";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 
 const socketMock = vi.hoisted(() => {
   const handlers = new Map<string, Set<(data: any) => void>>();
 
   return {
     handlers,
+    markLobbyRead: vi.fn(),
     emit(event: string, data: unknown) {
       for (const handler of handlers.get(event) ?? []) {
         handler(data);
@@ -37,7 +39,7 @@ vi.mock("~/web-sockets/Socket", async (importOriginal) => ({
     },
     joinLobby: () => ({ messages: [], on() {}, leave() {} }),
     hidesAuthor: () => false,
-    markLobbyRead() {},
+    markLobbyRead: socketMock.markLobbyRead,
     lobbyMessages: () => [],
   },
 }));
@@ -74,6 +76,7 @@ function incoming() {
 
 beforeEach(() => {
   socketMock.handlers.clear();
+  socketMock.markLobbyRead.mockClear();
   useChatTabs().clearAll();
   useAuthStore().me = { steam_id: ME } as any;
   vi.stubGlobal("$fetch", vi.fn().mockResolvedValue({ conversations: [] }));
@@ -230,5 +233,100 @@ describe("ChatPanel dock", () => {
     const [x, y] = translate(menu!);
     expect(x).toBeCloseTo(610, -1);
     expect(y).toBeCloseTo(310, -1);
+  });
+});
+
+describe("ChatPanel rail badges", () => {
+  const badgeOf = (
+    wrapper: Awaited<ReturnType<typeof mountPanel>>,
+    tabId: string,
+  ) => wrapper.get(`[data-chat-tab="${tabId}"] [data-chat-rail-badge]`);
+
+  beforeEach(() => {
+    const { openTab } = useChatTabs();
+    openTab({
+      id: "tournament:t-1",
+      label: "Autumn Cup",
+      instance: "tournament",
+      type: "tournament",
+      lobbyId: "t-1",
+      pinned: true,
+      activate: false,
+    });
+    openTab({
+      id: "matchmaking:lobby-1",
+      label: "Lobby",
+      instance: "matchmaking",
+      type: "matchmaking",
+      lobbyId: "lobby-1",
+      pinned: true,
+      activate: false,
+    });
+    openTab({
+      id: DIRECT,
+      label: "Dana",
+      instance: "direct",
+      type: "direct",
+      lobbyId: ROOM,
+      avatarUrl: "https://example.com/dana.png",
+      activate: false,
+    });
+  });
+
+  it("shows a tag in red with an @, chatter in white and a direct message in red", async () => {
+    const { setUnread, incrementMention } = useChatTabs();
+    setUnread("tournament:t-1", 9);
+    incrementMention("tournament:t-1", "m-1");
+    incrementMention("tournament:t-1", "m-2");
+    setUnread("matchmaking:lobby-1", 3);
+    setUnread(DIRECT, 1);
+
+    const wrapper = await mountPanel(false);
+
+    const tagged = badgeOf(wrapper, "tournament:t-1");
+    expect(tagged.attributes("data-tone")).toBe("red");
+    expect(tagged.find("svg").exists()).toBe(true);
+    expect(tagged.text()).toBe("2");
+
+    const chatter = badgeOf(wrapper, "matchmaking:lobby-1");
+    expect(chatter.attributes("data-tone")).toBe("fresh");
+    expect(chatter.text()).toBe("3");
+
+    const direct = badgeOf(wrapper, DIRECT);
+    expect(direct.attributes("data-tone")).toBe("red");
+    expect(direct.text()).toBe("1");
+  });
+});
+
+describe("ChatPanel reading a match", () => {
+  afterEach(() => {
+    useMatchLobbyStore().myMatches = [];
+  });
+
+  it("marks its team room read along with it", async () => {
+    useMatchLobbyStore().myMatches = [
+      {
+        id: "m-1",
+        label: "A vs B",
+        lineup_1: { id: "l-1", is_on_lineup: true },
+        lineup_2: { id: "l-2", is_on_lineup: false },
+      },
+    ] as any;
+    useChatTabs().openTab({
+      id: "match:m-1",
+      label: "A vs B",
+      instance: "match",
+      type: "match",
+      lobbyId: "m-1",
+      pinned: true,
+    });
+
+    await mountPanel(true);
+
+    expect(socketMock.markLobbyRead).toHaveBeenCalledWith("match", "m-1");
+    expect(socketMock.markLobbyRead).toHaveBeenCalledWith(
+      "match_team",
+      "m-1:l-1",
+    );
   });
 });

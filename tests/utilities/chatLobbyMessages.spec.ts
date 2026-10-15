@@ -244,6 +244,35 @@ describe("mergeChatSnapshot", () => {
     expect(ids(merged)).toEqual(["a", "b"]);
   });
 
+  it("keeps the tags of an edit a stale snapshot doesn't know about yet", () => {
+    const kairo = { steam_id: "76561198000000002", name: "kairo" };
+    const kaspr = { steam_id: "76561198000000003", name: "kaspr" };
+    const original = {
+      ...line("a", 1),
+      message: "@kairo @kaspr check-in",
+      mentions: [kairo, kaspr],
+    };
+    const edited = {
+      ...original,
+      message: "@kaspr check-in",
+      mentions: [kaspr],
+      edited_at: "2026-09-28T12:05:00.000Z",
+    };
+    const untagged = {
+      ...original,
+      message: "check-in",
+      edited_at: "2026-09-28T12:05:00.000Z",
+    };
+    delete (untagged as Partial<typeof original>).mentions;
+
+    expect(
+      mergeChatSnapshot([edited], [original], new Set())[0].mentions,
+    ).toEqual([kaspr]);
+    expect(
+      mergeChatSnapshot([untagged], [original], new Set())[0],
+    ).not.toHaveProperty("mentions");
+  });
+
   it("takes a later edit from the snapshot over the one held", () => {
     const held = {
       ...line("a", 1),
@@ -406,6 +435,32 @@ describe("applyChatMessageEdit", () => {
     });
     expect(edited![0]).toBe(messages[0]);
     expect(messages[1].message).toBe("line b");
+  });
+
+  it("drops a tag whose name the edit took out", () => {
+    const kairo = { steam_id: "76561198000000002", name: "kairo" };
+    const kaspr = { steam_id: "76561198000000003", name: "kaspr" };
+    const tagged = {
+      ...line("b", 1),
+      message: "@kairo @kaspr check-in",
+      mentions: [kairo, kaspr],
+    };
+
+    const [edited] = applyChatMessageEdit(
+      [tagged],
+      { ...edit, message: "@kaspr check-in" },
+      new Set(),
+    )!;
+
+    expect(edited.mentions).toEqual([kaspr]);
+
+    const [cleared] = applyChatMessageEdit(
+      [tagged],
+      { ...edit, message: "check-in" },
+      new Set(),
+    )!;
+
+    expect(cleared).not.toHaveProperty("mentions");
   });
 
   it("ignores an edit for a line it doesn't hold, rather than creating it", () => {

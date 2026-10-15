@@ -10320,7 +10320,17 @@
         "waiting": "等待回复"
       }
     },
-    "awaiting_reply": "你的消息请求尚未得到回复。对方回复后你才能再次发送。"
+    "awaiting_reply": "你的消息请求尚未得到回复。对方回复后你才能再次发送。",
+    "mentions": {
+      "list": "可提及的玩家",
+      "finding": "正在查找玩家…",
+      "no_match": "此房间中没有人匹配“{query}”",
+      "failed": "无法加载玩家",
+      "limit": "一条消息最多可提及 {max} 名玩家。",
+      "too_many": "一条消息最多只能提及 {max} 名玩家。",
+      "organizer": "主办方",
+      "tagged_you": "{count} 条消息提到了你 | {count} 条消息提到了你"
+    }
   },
   "charts": {
     "usage": "使用量",

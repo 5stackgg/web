@@ -10320,7 +10320,17 @@
         "waiting": "En attente de réponse"
       }
     },
-    "awaiting_reply": "Votre demande de message n'a pas encore reçu de réponse. Vous pourrez réécrire après sa réponse."
+    "awaiting_reply": "Votre demande de message n'a pas encore reçu de réponse. Vous pourrez réécrire après sa réponse.",
+    "mentions": {
+      "list": "Joueurs à mentionner",
+      "finding": "Recherche des joueurs…",
+      "no_match": "Personne dans ce salon ne correspond à « {query} »",
+      "failed": "Impossible de charger les joueurs",
+      "limit": "Vous pouvez mentionner jusqu'à {max} joueurs par message.",
+      "too_many": "Un message peut mentionner au maximum {max} joueurs.",
+      "organizer": "Organisateur",
+      "tagged_you": "{count} message vous mentionne | {count} messages vous mentionnent"
+    }
   },
   "charts": {
     "usage": "Utilisation",

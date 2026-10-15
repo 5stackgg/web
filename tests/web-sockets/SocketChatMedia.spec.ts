@@ -53,6 +53,46 @@ describe("Socket.chat with media", () => {
   });
 });
 
+describe("Socket.chat with mentions", () => {
+  it("sends the tagged steam ids beside the text", () => {
+    const { socket, sent } = connected();
+
+    socket.chat("tournament", "t-1", "@kairo hi", {
+      mentions: ["76561198000000002"],
+    });
+
+    expect(sent()[0].data).toEqual({
+      id: "t-1",
+      type: "tournament",
+      message: "@kairo hi",
+      mentions: ["76561198000000002"],
+    });
+  });
+
+  it("sends them with a captioned upload too", async () => {
+    const { socket, sent } = connected();
+
+    const delivered = socket.sendChat("tournament", "t-1", "@kairo look", {
+      attachments: ["a-1"],
+      mentions: ["76561198000000002"],
+    });
+
+    const [{ data }] = sent();
+    expect(data).toMatchObject({
+      attachments: ["a-1"],
+      mentions: ["76561198000000002"],
+    });
+
+    socket.resolveChatRequest({
+      requestId: data.requestId,
+      messageId: "m-1",
+      action: "send",
+    });
+
+    await expect(delivered).resolves.toBeUndefined();
+  });
+});
+
 describe("Socket.sendChat", () => {
   it("sends with a requestId and settles when the room takes it", async () => {
     const { socket, sent } = connected();

@@ -98,7 +98,7 @@ describe("VetoBoard scouting", () => {
     expect(edge("nuke").text()).toBe("−58");
     expect(edge("nuke").attributes("data-tone")).toBe("them");
     // 50% against 55%: within five points.
-    expect(edge("dust2").text()).toBe("Even");
+    expect(edge("dust2").text()).toBe("+0");
     // Two games are too few for a rate.
     expect(edge("inferno").text()).toBe("—");
 

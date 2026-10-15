@@ -195,7 +195,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             $t('pages.settings.application.veto_scouting.description')
           "
         >
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div
               v-for="match_type in VETO_SCOUTING_MODES"
               :key="match_type"

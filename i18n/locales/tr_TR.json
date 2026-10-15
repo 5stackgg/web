@@ -1770,6 +1770,9 @@
         "matchmaking": "Eşleştirme",
         "update_success": "Profil güncellendi",
         "discord": {
+          "title": "Discord",
+          "description": "Maçlarda takımının ses kanalına taşın",
+          "linked": "Bağlı",
           "unlink": "Discord bağlantısını kaldır",
           "link": "Discord bağla",
           "unlink_dialog": {

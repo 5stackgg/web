@@ -1770,6 +1770,9 @@
         "matchmaking": "Matchmaking",
         "update_success": "Perfil actualizado",
         "discord": {
+          "title": "Discord",
+          "description": "Te movemos al canal de voz de tu equipo en las partidas",
+          "linked": "Vinculado",
           "unlink": "Desvincular Discord",
           "link": "Vincular Discord",
           "unlink_dialog": {

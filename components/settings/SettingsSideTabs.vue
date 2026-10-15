@@ -200,9 +200,5 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
         </Button>
       </div>
     </div>
-
-    <div v-if="$slots.actions" class="mt-2 border-t border-border/50 pt-2">
-      <slot name="actions" />
-    </div>
   </nav>
 </template>

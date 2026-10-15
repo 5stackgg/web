@@ -23,6 +23,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { Skeleton } from "~/components/ui/skeleton";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TwitchAccountCard from "~/components/settings/TwitchAccountCard.vue";
+import DiscordAccountCard from "~/components/settings/DiscordAccountCard.vue";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -41,6 +42,11 @@ const linkedAccountsEnabled = computed(
 );
 const supportsTwitch = computed(
   () => useApplicationSettingsStore().supportsTwitch,
+);
+const showDiscord = computed(
+  () =>
+    useAuthStore().hasDiscordLinked ||
+    useApplicationSettingsStore().supportsDiscordBot,
 );
 
 const authCode = ref("");
@@ -557,9 +563,10 @@ function formatPendingDate(date: string): string {
 </script>
 
 <template>
-  <PageTransition v-if="supportsTwitch" :delay="0">
-    <div class="max-w-xl">
-      <TwitchAccountCard />
+  <PageTransition v-if="showDiscord || supportsTwitch" :delay="0">
+    <div class="grid gap-4 max-w-xl">
+      <DiscordAccountCard v-if="showDiscord" />
+      <TwitchAccountCard v-if="supportsTwitch" />
     </div>
   </PageTransition>
 

@@ -1770,6 +1770,9 @@
         "matchmaking": "Matchmaking",
         "update_success": "Profil uppdaterad",
         "discord": {
+          "title": "Discord",
+          "description": "Flyttas till ditt lags röstkanal under matcher",
+          "linked": "Kopplad",
           "unlink": "Koppla från Discord",
           "link": "Koppla Discord",
           "unlink_dialog": {

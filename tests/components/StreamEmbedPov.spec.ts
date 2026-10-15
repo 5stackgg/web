@@ -8,6 +8,10 @@ import {
   useMatchTwitchPovs,
   useTwitchPovGuard,
 } from "~/composables/useTwitch";
+import {
+  embedStreamKey,
+  useStoppedStreams,
+} from "~/composables/useStoppedStreams";
 
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
@@ -289,6 +293,43 @@ describe("StreamEmbed after a POV was let go", () => {
     expect(store().globalStream).toBeNull();
     expect(wrapper.get("[data-test='stream-pov-label']").text()).toBe(
       "kappa POV",
+    );
+  });
+});
+
+describe("a POV stopped in one match", () => {
+  const NEXT_MATCH = "9d8c7b6a-2222-4333-8444-a55566667777";
+
+  afterEach(() => {
+    for (const match_id of [MATCH, NEXT_MATCH]) {
+      useStoppedStreams().resume(embedStreamKey({ ...kappa, match_id }));
+    }
+  });
+
+  const remount = async (streams: unknown[]) => {
+    unmount?.();
+    unmount = undefined;
+    return mountEmbed(streams);
+  };
+
+  it("stays stopped there and plays in the player's next match", async () => {
+    const first = await mountEmbed([kappa]);
+    await first
+      .findAll("button")
+      .find((button: any) => button.text() === "Stop stream")!
+      .trigger("click");
+    expect(first.text()).toContain("Stream stopped");
+
+    const next = await remount([{ ...kappa, match_id: NEXT_MATCH }]);
+    expect(next.text()).not.toContain("Stream stopped");
+
+    const again = await remount([kappa]);
+    expect(again.text()).toContain("Stream stopped");
+  });
+
+  it("keeps an organizer stream's key on its own row", () => {
+    expect(embedStreamKey({ ...organizer, match_id: MATCH })).toBe(
+      "embed:stream-1",
     );
   });
 });

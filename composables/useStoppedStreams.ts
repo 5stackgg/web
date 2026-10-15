@@ -12,7 +12,9 @@ import { reactive } from "vue";
 //
 // Keys: the game-streamer feed follows the match (`liveStreamKey`), so a
 // stream that restarts mid-match stays stopped; embeds follow their row
-// (`embedStreamKey`), so stopping one Twitch channel leaves the others.
+// (`embedStreamKey`), so stopping one Twitch channel leaves the others. A
+// player's POV has the same id in every match they play, so its key also
+// carries the match.
 
 const STORAGE_KEY = "5stack:stopped-streams";
 
@@ -43,7 +45,14 @@ function writeStopped() {
 }
 
 export const liveStreamKey = (matchId: string) => `live:${matchId}`;
-export const embedStreamKey = (streamId: string) => `embed:${streamId}`;
+export const embedStreamKey = (stream: {
+  id: string;
+  is_pov?: boolean | null;
+  match_id?: string | null;
+}) =>
+  stream.is_pov && stream.match_id
+    ? `embed:${stream.match_id}/${stream.id}`
+    : `embed:${stream.id}`;
 
 export function useStoppedStreams() {
   function isStopped(key: string) {

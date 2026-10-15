@@ -24,6 +24,7 @@ import {
 } from "~/utilities/chatLobbyMessages";
 import type { ChatReaction } from "~/constants/chat";
 import type { ChatAttachment, ChatGif } from "~/utilities/chatAttachments";
+import type { ChatMention } from "~/utilities/chatMentions";
 import { blockedIdsChange } from "~/utilities/playerBlocks";
 import guid from "~/utilities/uuid";
 
@@ -42,6 +43,8 @@ export interface LobbyMessage {
   reactions?: ChatReactions;
   attachments?: ChatAttachment[];
   gif?: ChatGif;
+  // Who the line tags, as the api resolved and checked them when it was sent.
+  mentions?: ChatMention[];
   from?: {
     role?: string;
     name?: string;
@@ -501,7 +504,7 @@ export class Socket extends EventEmitter {
     type: ChatType,
     id: string,
     message: string,
-    media?: { attachments?: string[]; gif?: ChatGif },
+    media?: { attachments?: string[]; gif?: ChatGif; mentions?: string[] },
   ) {
     this.event(`lobby:chat`, {
       id,
@@ -509,6 +512,7 @@ export class Socket extends EventEmitter {
       message,
       ...(media?.attachments?.length ? { attachments: media.attachments } : {}),
       ...(media?.gif ? { gif: media.gif } : {}),
+      ...(media?.mentions?.length ? { mentions: media.mentions } : {}),
     });
   }
 
@@ -521,7 +525,7 @@ export class Socket extends EventEmitter {
     type: ChatType,
     id: string,
     message: string,
-    media: { attachments?: string[]; gif?: ChatGif },
+    media: { attachments?: string[]; gif?: ChatGif; mentions?: string[] },
     sentLate?: () => void,
   ): Promise<void> {
     let settled = false;
@@ -536,6 +540,7 @@ export class Socket extends EventEmitter {
           ? { attachments: media.attachments }
           : {}),
         ...(media.gif ? { gif: media.gif } : {}),
+        ...(media.mentions?.length ? { mentions: media.mentions } : {}),
       },
       {
         resolved: () => {

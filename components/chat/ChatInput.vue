@@ -3,6 +3,7 @@ import { CornerDownLeft } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import ChatAttachmentTray from "~/components/chat/ChatAttachmentTray.vue";
 import ChatAttachMenu from "~/components/chat/ChatAttachMenu.vue";
+import ChatMentionList from "~/components/chat/ChatMentionList.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
@@ -144,6 +145,24 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
           </button>
         </div>
       </Fold>
+      <!-- Typing @ in a group room offers its members. Arrows move, Enter or
+           Tab takes one, Esc leaves the text as typed. -->
+      <Fold :open="mentionState !== null">
+        <div
+          :class="
+            variant === 'global' ? 'mb-2' : 'border-b border-border/60 p-1'
+          "
+        >
+          <ChatMentionList
+            :state="mentionState ?? 'empty'"
+            :rows="mentionRows"
+            :active-index="mentionIndex"
+            :query="mentionTarget?.query ?? ''"
+            @pick="pickMention"
+            @hover="mentionIndex = $event"
+          />
+        </div>
+      </Fold>
       <FormField v-slot="{ componentField }" name="message">
         <FormItem>
           <FormControl>
@@ -193,7 +212,10 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                 @keydown.enter="onEnter"
                 @keydown.tab.exact="onTab"
                 @keydown.up="onArrowUp"
+                @keydown.down="onArrowDown"
                 @keydown.esc="onEscape"
+                @keyup="trackMentionCaret"
+                @click="trackMentionCaret"
                 @paste="onPaste"
               />
               <span
@@ -267,6 +289,18 @@ import {
   type ChatFileRejection,
   type ChatGif,
 } from "~/utilities/chatAttachments";
+import { useChatMentionCandidates } from "~/composables/useChatMentionCandidates";
+import {
+  chatRoomTakesMentions,
+  insertMention,
+  MAX_CHAT_MENTIONS,
+  mentionedSteamIds,
+  mentionQuery,
+  rankMentionCandidates,
+  type ChatMention,
+  type ChatMentionCandidate,
+  type ChatMentionListState,
+} from "~/utilities/chatMentions";
 
 export interface ChatInputChannel {
   value: string;
@@ -303,6 +337,11 @@ export default {
       type: Object as PropType<{ type: string; id: string } | null>,
       default: null,
     },
+    // The room whose members @ offers. Null where nobody can be tagged.
+    mentionRoom: {
+      type: Object as PropType<{ type: string; id: string } | null>,
+      default: null,
+    },
   },
   emits: ["sendMessage", "update:destination", "edit-last"],
   watch: {
@@ -322,7 +361,23 @@ export default {
     // would replace vee-validate's. Watching the value also covers a paste and
     // the reset after sending.
     "form.values.message"() {
-      void this.$nextTick(() => this.growToFit());
+      void this.$nextTick(() => {
+        this.growToFit();
+        this.trackMentionCaret();
+      });
+    },
+    // Once per @ typed, so a list that failed to load is asked for again on
+    // the next one rather than on every keystroke.
+    "mentionTarget.start"(start: number | null | undefined) {
+      if (typeof start === "number" && this.mentionRoom) {
+        void this.mentionCandidates.load(
+          this.mentionRoom.type,
+          this.mentionRoom.id,
+        );
+      }
+    },
+    mentionRowKey() {
+      this.mentionIndex = 0;
     },
     // An Esc holds until the box stops reading as the command. The label keeps
     // the last term so it does not change under the row as it folds away.
@@ -339,6 +394,14 @@ export default {
 
     return {
       mediaConfig,
+      mentionCandidates: useChatMentionCandidates(),
+      // Where the caret was last seen, which is what decides whether an @ is
+      // being typed. Null until the box has been typed or clicked in.
+      mentionCaret: null as number | null,
+      // The @ an Escape or a pick closed the list for, so it stays shut.
+      mentionClosedAt: -1,
+      mentionIndex: 0,
+      mentionPicks: [] as ChatMention[],
       tray: createChatComposerAttachments({
         room: () => this.attachmentRoom,
         config: () => mediaConfig.config.value,
@@ -405,6 +468,80 @@ export default {
     },
     gifCommandOffered(): boolean {
       return this.gifCommand !== null && !this.gifCommandDismissed;
+    },
+    mentionsEnabled(): boolean {
+      return chatRoomTakesMentions(this.mentionRoom?.type);
+    },
+    mentionTarget(): { start: number; query: string } | null {
+      if (!this.mentionsEnabled || this.mentionCaret === null) {
+        return null;
+      }
+
+      const target = mentionQuery(
+        this.form.values.message ?? "",
+        this.mentionCaret,
+      );
+
+      return target && target.start !== this.mentionClosedAt ? target : null;
+    },
+    roomMentionCandidates(): {
+      status: "loading" | "ready" | "failed";
+      members: ChatMentionCandidate[];
+    } | null {
+      if (!this.mentionRoom) {
+        return null;
+      }
+
+      return (
+        this.mentionCandidates.candidates(
+          this.mentionRoom.type,
+          this.mentionRoom.id,
+        ) ?? null
+      );
+    },
+    mentionRows() {
+      if (!this.mentionTarget) {
+        return [];
+      }
+
+      return rankMentionCandidates(
+        this.roomMentionCandidates?.members ?? [],
+        this.mentionTarget.query,
+      );
+    },
+    mentionRowKey(): string {
+      return this.mentionRows
+        .map(({ candidate }) => candidate.steam_id)
+        .join(",");
+    },
+    mentionState(): ChatMentionListState | null {
+      const target = this.mentionTarget;
+
+      if (!target) {
+        return null;
+      }
+
+      const text = this.form.values.message ?? "";
+      const others =
+        text.slice(0, target.start) +
+        text.slice(this.mentionCaret ?? target.start);
+
+      if (this.mentionedIn(others).length >= MAX_CHAT_MENTIONS) {
+        return "limit";
+      }
+
+      const status = this.roomMentionCandidates?.status ?? "loading";
+
+      if (status !== "ready") {
+        return status;
+      }
+
+      if (this.mentionRows.length > 0) {
+        return "rows";
+      }
+
+      // A space after the @ means a sentence is being typed now, not a name.
+      return /\s/.test(target.query) ? null : "empty";
     },
     acceptTypes(): string {
       return (this.mediaConfig.config?.mime_types ?? []).join(",");
@@ -522,6 +659,12 @@ export default {
         return;
       }
 
+      if (action === "send" && this.mentionState === "rows") {
+        event.preventDefault();
+        this.pickMention(this.mentionIndex);
+        return;
+      }
+
       // The box is a textarea now, so nothing submits the form on its own.
       event.preventDefault();
 
@@ -530,6 +673,12 @@ export default {
       );
     },
     onTab(event: KeyboardEvent) {
+      if (this.mentionState === "rows") {
+        event.preventDefault();
+        this.pickMention(this.mentionIndex);
+        return;
+      }
+
       if (!this.gifCommandOffered) {
         return;
       }
@@ -537,8 +686,24 @@ export default {
       event.preventDefault();
       this.runGifCommand();
     },
+    onArrowDown(event: KeyboardEvent) {
+      if (this.mentionState !== "rows") {
+        return;
+      }
+
+      event.preventDefault();
+      this.mentionIndex = (this.mentionIndex + 1) % this.mentionRows.length;
+    },
     // Up from an empty box picks up the last line sent, to fix it.
     onArrowUp(event: KeyboardEvent) {
+      if (this.mentionState === "rows") {
+        event.preventDefault();
+        this.mentionIndex =
+          (this.mentionIndex - 1 + this.mentionRows.length) %
+          this.mentionRows.length;
+        return;
+      }
+
       if (
         event.isComposing ||
         event.altKey ||
@@ -554,6 +719,13 @@ export default {
       this.$emit("edit-last");
     },
     onEscape(event: KeyboardEvent) {
+      if (this.mentionTarget && this.mentionState !== null) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.mentionClosedAt = this.mentionTarget.start;
+        return;
+      }
+
       if (!this.gifCommandOffered || event.isComposing) {
         return;
       }
@@ -571,6 +743,56 @@ export default {
         this.$refs.attachMenu as
           { searchGifs?: (term: string) => void } | undefined
       )?.searchGifs?.(term);
+    },
+    trackMentionCaret() {
+      const field = (this.$refs.inputRef as any)?.$el as
+        | HTMLTextAreaElement
+        | undefined;
+
+      if (!this.mentionsEnabled || typeof field?.selectionStart !== "number") {
+        return;
+      }
+
+      this.mentionCaret = field.selectionStart;
+    },
+    mentionedIn(text: string): string[] {
+      return mentionedSteamIds(
+        text,
+        this.mentionPicks,
+        this.roomMentionCandidates?.members ?? [],
+      );
+    },
+    pickMention(index: number) {
+      const row = this.mentionRows[index];
+      const target = this.mentionTarget;
+
+      if (!row || !target) {
+        return;
+      }
+
+      const { text, caret } = insertMention(
+        this.form.values.message ?? "",
+        target.start,
+        this.mentionCaret ?? target.start,
+        row.candidate.name,
+      );
+
+      this.mentionPicks = [
+        ...this.mentionPicks,
+        { steam_id: row.candidate.steam_id, name: row.candidate.name },
+      ];
+      this.mentionClosedAt = target.start;
+      this.mentionCaret = caret;
+      this.form.setFieldValue("message", text);
+
+      void this.$nextTick(() => {
+        const field = (this.$refs.inputRef as any)?.$el as
+          | HTMLTextAreaElement
+          | undefined;
+
+        field?.focus();
+        field?.setSelectionRange(caret, caret);
+      });
     },
     // One line until the message needs more, then up to five.
     growToFit() {
@@ -604,10 +826,21 @@ export default {
       }
 
       const target = destination ?? this.activeChannelValue ?? undefined;
+      const mentions = this.mentionsEnabled ? this.mentionedIn(message) : [];
+
+      if (mentions.length > MAX_CHAT_MENTIONS) {
+        toastChatError({ code: "too_many_mentions", max: MAX_CHAT_MENTIONS });
+        return;
+      }
 
       if (!hasFiles) {
-        this.$emit("sendMessage", message, target);
+        if (mentions.length > 0) {
+          this.$emit("sendMessage", message, target, { mentions });
+        } else {
+          this.$emit("sendMessage", message, target);
+        }
         this.form.resetForm();
+        this.forgetMentions();
         this.flashSending();
         return;
       }
@@ -616,9 +849,15 @@ export default {
       // them back rather than leaving them stranded upload-side.
       this.$emit("sendMessage", message, target, {
         attachments: this.tray.beginSend(),
+        ...(mentions.length > 0 ? { mentions } : {}),
         delivered: (request: Promise<void>) => this.settleSend(request),
         sentLate: () => this.landed(message),
       });
+    },
+    forgetMentions() {
+      this.mentionPicks = [];
+      this.mentionCaret = null;
+      this.mentionClosedAt = -1;
     },
     settleSend(request: Promise<void>) {
       this.sending = true;
@@ -658,6 +897,7 @@ export default {
 
       if ((this.form.values.message?.trim() ?? "") === sentText) {
         this.form.resetForm();
+        this.forgetMentions();
       }
     },
     // The picker stays on screen through its close animation, where a second

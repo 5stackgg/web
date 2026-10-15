@@ -3,6 +3,7 @@ import { config, flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import TournamentDetail from "~/components/tournament/TournamentDetail.vue";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { useChatTabs } from "~/composables/useChatTabs";
 
 const tournament = {
   id: "t-1",
@@ -70,5 +71,32 @@ describe("tournament chat room button", () => {
       span.textContent?.includes("Chat Room"),
     )!;
     expect(label.className.split(/\s+/)).toContain("max-sm:sr-only");
+  });
+});
+
+describe("tournament chat room badge", () => {
+  afterEach(() => {
+    useChatTabs().clearAll();
+  });
+
+  it("counts the room's chatter in white", async () => {
+    useChatTabs().setUnread("tournament:t-1", 3);
+
+    const wrapper = await mountDetail(true);
+    const badge = wrapper.get("[data-chat-room-badge]");
+
+    expect(badge.attributes("data-tone")).toBe("fresh");
+    expect(classesOf(badge)).toContain("bg-zinc-50");
+  });
+
+  it("turns red when a line tags you", async () => {
+    useChatTabs().setUnread("tournament:t-1", 3);
+    useChatTabs().incrementMention("tournament:t-1", "m-1");
+
+    const wrapper = await mountDetail(true);
+    const badge = wrapper.get("[data-chat-room-badge]");
+
+    expect(badge.attributes("data-tone")).toBe("red");
+    expect(classesOf(badge)).toContain("bg-red-500");
   });
 });

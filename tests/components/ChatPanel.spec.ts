@@ -232,3 +232,65 @@ describe("ChatPanel dock", () => {
     expect(y).toBeCloseTo(310, -1);
   });
 });
+
+describe("ChatPanel rail badges", () => {
+  const badgeOf = (
+    wrapper: Awaited<ReturnType<typeof mountPanel>>,
+    tabId: string,
+  ) => wrapper.get(`[data-chat-tab="${tabId}"] [data-chat-rail-badge]`);
+
+  beforeEach(() => {
+    const { openTab } = useChatTabs();
+    openTab({
+      id: "tournament:t-1",
+      label: "Autumn Cup",
+      instance: "tournament",
+      type: "tournament",
+      lobbyId: "t-1",
+      pinned: true,
+      activate: false,
+    });
+    openTab({
+      id: "matchmaking:lobby-1",
+      label: "Lobby",
+      instance: "matchmaking",
+      type: "matchmaking",
+      lobbyId: "lobby-1",
+      pinned: true,
+      activate: false,
+    });
+    openTab({
+      id: DIRECT,
+      label: "Dana",
+      instance: "direct",
+      type: "direct",
+      lobbyId: ROOM,
+      avatarUrl: "https://example.com/dana.png",
+      activate: false,
+    });
+  });
+
+  it("shows a tag in red with an @, chatter in white and a direct message in red", async () => {
+    const { setUnread, incrementMention } = useChatTabs();
+    setUnread("tournament:t-1", 9);
+    incrementMention("tournament:t-1", "m-1");
+    incrementMention("tournament:t-1", "m-2");
+    setUnread("matchmaking:lobby-1", 3);
+    setUnread(DIRECT, 1);
+
+    const wrapper = await mountPanel(false);
+
+    const tagged = badgeOf(wrapper, "tournament:t-1");
+    expect(tagged.attributes("data-tone")).toBe("red");
+    expect(tagged.find("svg").exists()).toBe(true);
+    expect(tagged.text()).toBe("2");
+
+    const chatter = badgeOf(wrapper, "matchmaking:lobby-1");
+    expect(chatter.attributes("data-tone")).toBe("fresh");
+    expect(chatter.text()).toBe("3");
+
+    const direct = badgeOf(wrapper, DIRECT);
+    expect(direct.attributes("data-tone")).toBe("red");
+    expect(direct.text()).toBe("1");
+  });
+});

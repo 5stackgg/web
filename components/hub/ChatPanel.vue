@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { useMediaQuery } from "@vueuse/core";
 import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 import {
+  AtSign,
   Megaphone,
   Merge,
   Sword,
@@ -40,6 +41,7 @@ import {
   type MessageRequest,
 } from "~/composables/useMessageRequests";
 import { orderChatTabs } from "~/utilities/chatTabOrder";
+import { chatTabBadge, type ChatBadge } from "~/utilities/chatBadges";
 import { hapticTap } from "~/utilities/haptics";
 import {
   ContextMenu,
@@ -71,8 +73,15 @@ const props = defineProps<{
 const { t } = useI18n();
 const router = useRouter();
 
-const { tabs, unreadCounts, activeTabId, setActiveTab, resetUnread, closeTab } =
-  useChatTabs();
+const {
+  tabs,
+  unreadCounts,
+  mentionCounts,
+  activeTabId,
+  setActiveTab,
+  resetUnread,
+  closeTab,
+} = useChatTabs();
 const { remove, reorder, directRoomIds } = useDirectConversationBar();
 
 const matchLobbyStore = useMatchLobbyStore();
@@ -109,6 +118,19 @@ function teamLobbyIdFor(tab: ChatTab) {
 const activeChatId = ref<string | null>(null);
 
 const orderedTabs = computed<ChatTab[]>(() => orderChatTabs(tabs.value));
+
+const railBadges = computed<Record<string, ChatBadge | null>>(() =>
+  Object.fromEntries(
+    orderedTabs.value.map((tab) => [
+      tab.id,
+      chatTabBadge(
+        tab,
+        unreadCounts.value[tab.id] ?? 0,
+        mentionCounts.value[tab.id] ?? 0,
+      ),
+    ]),
+  ),
+);
 
 // The divider only earns its place when there are channels above it.
 const firstDirectTabId = computed(() => {
@@ -738,6 +760,16 @@ function getRoomIcon(tab: ChatTab) {
   return MessageSquare;
 }
 
+function getRoomDetail(tab: ChatTab) {
+  const mentions = mentionCounts.value[tab.id] ?? 0;
+  const tagged =
+    mentions > 0
+      ? t("chat.mentions.tagged_you", { count: mentions }, mentions)
+      : "";
+
+  return [getRoomSubtitle(tab), tagged].filter(Boolean).join(" · ");
+}
+
 function getRoomSubtitle(tab: ChatTab) {
   if (tab.type === "organizers") return t("chat_room_subtitles.organizers");
   if (tab.type === "tournament") return t("chat_room_subtitles.tournament");
@@ -926,6 +958,7 @@ function handlePopOut() {
                   <TooltipTrigger as-child>
                     <button
                       :ref="setChatButtonRef(tab.id)"
+                      :data-chat-tab="tab.id"
                       class="relative z-[1] flex items-center justify-center w-11 h-11 rounded-md transition-colors duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       :class="[
                         activeChatId === tab.id
@@ -971,11 +1004,24 @@ function handlePopOut() {
                       </div>
                       <Transition v-bind="badgePopTransition">
                         <span
-                          v-if="unreadCounts[tab.id] > 0 && !wiggling"
-                          class="absolute -top-1 -right-1 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background origin-center"
+                          v-if="railBadges[tab.id] && !wiggling"
+                          data-chat-rail-badge
+                          :data-tone="railBadges[tab.id]?.tone"
+                          class="absolute -top-1 -right-1 inline-flex h-3.5 min-w-3.5 items-center justify-center gap-px rounded-full px-0.5 text-[0.55rem] font-bold leading-none tabular-nums shadow-sm ring-1 ring-background origin-center transition-colors duration-200 motion-reduce:transition-none"
+                          :class="
+                            railBadges[tab.id]?.tone === 'red'
+                              ? 'bg-red-500 text-white'
+                              : 'bg-zinc-50 text-zinc-950'
+                          "
                         >
+                          <AtSign
+                            v-if="railBadges[tab.id]?.mention"
+                            class="size-2 shrink-0"
+                          />
                           <AnimatedStat
-                            :value="formatBadgeCount(unreadCounts[tab.id])"
+                            :value="
+                              formatBadgeCount(railBadges[tab.id]?.count ?? 0)
+                            "
                           />
                         </span>
                       </Transition>
@@ -1000,10 +1046,10 @@ function handlePopOut() {
                         {{ tab.label }}
                       </span>
                       <span
-                        v-if="getRoomSubtitle(tab)"
+                        v-if="getRoomDetail(tab)"
                         class="text-[10px] text-zinc-200/80"
                       >
-                        {{ getRoomSubtitle(tab) }}
+                        {{ getRoomDetail(tab) }}
                       </span>
                     </div>
                   </TooltipContent>

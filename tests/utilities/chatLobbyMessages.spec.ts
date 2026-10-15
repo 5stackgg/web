@@ -408,6 +408,32 @@ describe("applyChatMessageEdit", () => {
     expect(messages[1].message).toBe("line b");
   });
 
+  it("drops a tag whose name the edit took out", () => {
+    const kairo = { steam_id: "76561198000000002", name: "kairo" };
+    const kaspr = { steam_id: "76561198000000003", name: "kaspr" };
+    const tagged = {
+      ...line("b", 1),
+      message: "@kairo @kaspr check-in",
+      mentions: [kairo, kaspr],
+    };
+
+    const [edited] = applyChatMessageEdit(
+      [tagged],
+      { ...edit, message: "@kaspr check-in" },
+      new Set(),
+    )!;
+
+    expect(edited.mentions).toEqual([kaspr]);
+
+    const [cleared] = applyChatMessageEdit(
+      [tagged],
+      { ...edit, message: "check-in" },
+      new Set(),
+    )!;
+
+    expect(cleared).not.toHaveProperty("mentions");
+  });
+
   it("ignores an edit for a line it doesn't hold, rather than creating it", () => {
     expect(
       applyChatMessageEdit([line("a", 0)], { ...edit, id: "b" }, new Set()),

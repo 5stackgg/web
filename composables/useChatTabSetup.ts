@@ -6,6 +6,7 @@ import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { newestMessageIdsFrom } from "~/utilities/chatLobbyMessages";
+import { mentionsViewer } from "~/utilities/chatMentions";
 import socket, {
   type ChatType,
   type Lobby,
@@ -60,6 +61,9 @@ export function useChatTabSetup() {
     incrementUnread,
     decrementUnread,
     setUnread,
+    incrementMention,
+    decrementMention,
+    setMentions,
     noteActivity,
   } = useChatTabs();
   const { hydrate: hydrateReadState, isUnread } = useChatReadState();
@@ -89,14 +93,23 @@ export function useChatTabSetup() {
       // while the browser tab is hidden.
       useTabFlash().signalChat(tab.type, message);
 
-      if (counted && !isChatTabOnScreen(tab.id)) {
+      if (isChatTabOnScreen(tab.id)) {
+        return;
+      }
+
+      if (counted) {
         incrementUnread(tab.id, message?.id);
+      }
+
+      if (message?.id && mentionsViewer(message, authStore.me?.steam_id)) {
+        incrementMention(tab.id, message.id);
       }
     });
 
     lobby.on("lobby:deleted", ({ message }: LobbyMessageDeleted) => {
       if (message?.id) {
         decrementUnread(tab.id, message.id);
+        decrementMention(tab.id, message.id);
       }
 
       // The api forgets a conversation whose only message is deleted, so an
@@ -136,7 +149,25 @@ export function useChatTabSetup() {
         noteActivity(tab.id, newest);
       }
 
-      if (!counted || isChatTabOnScreen(tab.id)) {
+      if (isChatTabOnScreen(tab.id)) {
+        setUnread(tab.id, 0);
+        setMentions(tab.id, []);
+        return;
+      }
+
+      const unread = (messages ?? []).filter((message) =>
+        isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id),
+      );
+
+      setMentions(
+        tab.id,
+        unread
+          .filter((message) => mentionsViewer(message, authStore.me?.steam_id))
+          .map((message) => message?.id)
+          .filter(Boolean),
+      );
+
+      if (!counted) {
         setUnread(tab.id, 0);
         return;
       }
@@ -151,10 +182,6 @@ export function useChatTabSetup() {
         );
         return;
       }
-
-      const unread = (messages ?? []).filter((message) =>
-        isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id),
-      );
 
       setUnread(
         tab.id,

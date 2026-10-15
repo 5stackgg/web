@@ -35,6 +35,7 @@ import {
   Minimize,
   Maximize,
   MessageSquare,
+  AtSign,
   CalendarDays,
   Layers,
   ChevronDown,
@@ -76,6 +77,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { NuxtLink } from "#components";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import { formatBadgeCount } from "~/utilities/badgeCount";
 import MobileTabSelect from "~/components/common/MobileTabSelect.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
@@ -137,7 +139,7 @@ const tournamentTabTriggerClasses = [
   "h-11 shrink-0",
 ];
 const tournamentChatRoomUnreadClasses =
-  "inline-flex h-4 min-w-[1rem] origin-center items-center justify-center rounded-full bg-red-500 px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal text-white tabular-nums";
+  "inline-flex h-4 min-w-[1rem] origin-center items-center justify-center gap-px rounded-full px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal tabular-nums transition-colors duration-200 motion-reduce:transition-none";
 const chatRoomUnreadPopTransition = {
   enterActiveClass:
     "[transition:transform_0.3s_cubic-bezier(0.34,1.56,0.64,1),opacity_0.2s_ease] motion-reduce:[transition:none]",
@@ -349,10 +351,23 @@ function clearTeamEnterDelay(el: Element) {
                   </span>
                   <Transition v-bind="chatRoomUnreadPopTransition">
                     <span
-                      v-if="chatRoomUnreadLabel"
-                      :class="tournamentChatRoomUnreadClasses"
+                      v-if="chatRoomBadge"
+                      data-chat-room-badge
+                      :data-tone="chatRoomBadge.tone"
+                      :class="[
+                        tournamentChatRoomUnreadClasses,
+                        chatRoomBadge.tone === 'red'
+                          ? 'bg-red-500 text-white'
+                          : 'bg-zinc-50 text-zinc-950',
+                      ]"
                     >
-                      <AnimatedStat :value="chatRoomUnreadLabel" />
+                      <AtSign
+                        v-if="chatRoomBadge.mention"
+                        class="size-[0.55rem] shrink-0"
+                      />
+                      <AnimatedStat
+                        :value="formatBadgeCount(chatRoomBadge.count)"
+                      />
                     </span>
                   </Transition>
                 </Button>
@@ -984,6 +999,7 @@ import {
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { tournamentChatTab } from "~/composables/useChatTabSetup";
+import { chatTabBadge, type ChatBadge } from "~/utilities/chatBadges";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { setActiveHub } from "~/composables/useHubState";
 import { useRightSidebar } from "~/composables/useRightSidebar";
@@ -1801,18 +1817,17 @@ export default {
         }>
       ).find((candidate) => candidate.id === id);
     },
-    chatRoomUnreadLabel(): string {
+    chatRoomBadge(): ChatBadge | null {
       if (!this.chatRoomTournament) {
-        return "";
+        return null;
       }
-      const unread =
-        useChatTabs().unreadCounts.value[
-          tournamentChatTab(this.chatRoomTournament).id
-        ] ?? 0;
-      if (unread <= 0) {
-        return "";
-      }
-      return unread > 100 ? "100+" : String(unread);
+      const tab = tournamentChatTab(this.chatRoomTournament);
+      const { unreadCounts, mentionCounts } = useChatTabs();
+      return chatTabBadge(
+        tab,
+        unreadCounts.value[tab.id] ?? 0,
+        mentionCounts.value[tab.id] ?? 0,
+      );
     },
     leagueSeasonId() {
       return this.$route.params.seasonId ?? null;

@@ -10317,7 +10317,17 @@
         "waiting": "Warte auf Antwort"
       }
     },
-    "awaiting_reply": "Deine Nachrichtenanfrage wurde noch nicht beantwortet. Du kannst wieder schreiben, sobald geantwortet wurde."
+    "awaiting_reply": "Deine Nachrichtenanfrage wurde noch nicht beantwortet. Du kannst wieder schreiben, sobald geantwortet wurde.",
+    "mentions": {
+      "list": "Spieler, die du markieren kannst",
+      "finding": "Spieler werden gesucht…",
+      "no_match": "Niemand in diesem Raum passt zu „{query}“",
+      "failed": "Spieler konnten nicht geladen werden",
+      "limit": "Du kannst bis zu {max} Spieler in einer Nachricht markieren.",
+      "too_many": "Eine Nachricht kann höchstens {max} Spieler markieren.",
+      "organizer": "Veranstalter",
+      "tagged_you": "{count} Nachricht markiert dich | {count} Nachrichten markieren dich"
+    }
   },
   "charts": {
     "usage": "Auslastung",

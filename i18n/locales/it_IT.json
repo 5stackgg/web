@@ -10317,7 +10317,17 @@
         "waiting": "In attesa di risposta"
       }
     },
-    "awaiting_reply": "La tua richiesta di messaggio non ha ancora ricevuto risposta. Potrai scrivere di nuovo quando risponderanno."
+    "awaiting_reply": "La tua richiesta di messaggio non ha ancora ricevuto risposta. Potrai scrivere di nuovo quando risponderanno.",
+    "mentions": {
+      "list": "Giocatori da menzionare",
+      "finding": "Ricerca dei giocatori…",
+      "no_match": "Nessuno in questa stanza corrisponde a \"{query}\"",
+      "failed": "Impossibile caricare i giocatori",
+      "limit": "Puoi menzionare fino a {max} giocatori in un messaggio.",
+      "too_many": "Un messaggio può menzionare al massimo {max} giocatori.",
+      "organizer": "Organizzatore",
+      "tagged_you": "{count} messaggio ti menziona | {count} messaggi ti menzionano"
+    }
   },
   "charts": {
     "usage": "Utilizzo",

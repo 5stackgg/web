@@ -10317,7 +10317,17 @@
         "waiting": "Venter på svar"
       }
     },
-    "awaiting_reply": "Din beskedanmodning er ikke besvaret endnu. Du kan skrive igen, når de svarer."
+    "awaiting_reply": "Din beskedanmodning er ikke besvaret endnu. Du kan skrive igen, når de svarer.",
+    "mentions": {
+      "list": "Spillere, du kan tagge",
+      "finding": "Finder spillere…",
+      "no_match": "Ingen i dette rum matcher \"{query}\"",
+      "failed": "Spillerne kunne ikke indlæses",
+      "limit": "Du kan tagge op til {max} spillere i én besked.",
+      "too_many": "En besked kan tagge op til {max} spillere.",
+      "organizer": "Arrangør",
+      "tagged_you": "{count} besked tagger dig | {count} beskeder tagger dig"
+    }
   },
   "charts": {
     "usage": "Forbrug",

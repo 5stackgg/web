@@ -49,12 +49,12 @@ export function useHubState() {
   const isMobile = useMediaQuery(SIDEBAR_MOBILE_QUERY);
   const { hasNotifications } = useNotificationBadge();
   const { hasLobbyInvites, hasSocialInvites } = useInvites();
-  const { totalUnread } = useChatTabs();
+  const { totalUnread, totalMentions } = useChatTabs();
 
   function defaultHub(): Hub {
     if (hasNotifications.value) return "notifications";
     if (hasLobbyInvites.value) return "lobby";
-    if (totalUnread.value > 0) return "chat";
+    if (totalUnread.value > 0 || totalMentions.value > 0) return "chat";
     if (hasSocialInvites.value) return "social";
     return "social";
   }

@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useHoverIntent } from "~/composables/useHoverIntent";
 import { dockSettleMs, DOCK_TOLERANCE_PX } from "~/composables/useDockIntent";
+import { AtSign } from "lucide-vue-next";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { badgePopTransition } from "~/utilities/badgeCount";
 
@@ -20,6 +21,8 @@ const props = withDefaults(
     // red: needs an answer. fresh: new since you last looked, not urgent.
     // neutral: a standing count.
     badgeTone?: "red" | "fresh" | "neutral";
+    // The count is of messages that tag you.
+    badgeMention?: boolean;
     pip?: boolean;
     tone?: "default" | "voice";
     ring?: boolean;
@@ -183,7 +186,8 @@ const tileClass = computed(() => {
         <Transition v-bind="badgePopTransition">
           <span
             v-if="badge && !face"
-            class="pointer-events-none absolute -right-2 -top-1.5 z-[2] inline-flex h-4 min-w-4 origin-center items-center justify-center rounded-full px-1 text-[0.6rem] font-bold leading-none tabular-nums shadow-[0_0_0_2px_#1e1e22] transition-colors [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+            data-hub-dock-badge
+            class="pointer-events-none absolute -right-2 -top-1.5 z-[2] inline-flex h-4 min-w-4 origin-center items-center justify-center gap-px rounded-full px-1 text-[0.6rem] font-bold leading-none tabular-nums shadow-[0_0_0_2px_#1e1e22] transition-colors [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
             :class="
               badgeTone === 'red'
                 ? 'bg-red-500 text-white'
@@ -198,6 +202,7 @@ const tileClass = computed(() => {
               aria-hidden="true"
               class="absolute inset-0 -z-10 rounded-full bg-zinc-50 motion-safe:animate-[ping_1s_cubic-bezier(0,0,0.2,1)_2_forwards]"
             />
+            <AtSign v-if="badgeMention" class="size-[0.55rem] shrink-0" />
             <AnimatedStat :value="badge" />
           </span>
         </Transition>

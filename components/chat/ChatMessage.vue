@@ -28,6 +28,13 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       ]"
     ></span>
 
+    <!-- A line that tags you gets the team rail's shape, in red. -->
+    <span
+      v-if="mentionsMe && !isTeamMessage"
+      data-chat-mentions-me
+      class="pointer-events-none absolute inset-y-0 left-0 w-[2px] rounded-full bg-destructive/70"
+    ></span>
+
     <!-- Grouped lines carry no name and no time, which is what makes a run
          readable -- but the time still has to be recoverable, so it comes back
          in the gutter the avatar left empty, on hover. -->
@@ -99,7 +106,21 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         v-else-if="hasText"
         class="text-[13px] leading-snug break-words whitespace-pre-wrap"
       >
-        <span>{{ message.message }}</span>
+        <span
+          ><template v-for="(segment, index) in messageSegments" :key="index"
+            ><span
+              v-if="segment.mention"
+              :data-chat-mention="segment.self ? 'self' : 'other'"
+              class="rounded-sm px-0.5 font-semibold"
+              :class="
+                segment.self
+                  ? 'bg-destructive/20 text-destructive'
+                  : 'bg-muted/70 text-foreground'
+              "
+              >{{ segment.text }}</span
+            ><template v-else>{{ segment.text }}</template></template
+          ></span
+        >
         <FiveStackToolTip
           v-if="editedAtLabel"
           as-child
@@ -162,6 +183,7 @@ import {
 } from "~/utilities/chatMessageActions";
 import { outranksPlayer } from "~/utilities/sanctionAuthority";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
+import { mentionSegments, mentionsViewer } from "~/utilities/chatMentions";
 
 export default {
   props: {
@@ -248,6 +270,17 @@ export default {
   computed: {
     hasText() {
       return !!this.message?.message?.trim();
+    },
+    // Only the tags the api accepted are drawn; any other @name is text.
+    messageSegments() {
+      return mentionSegments(
+        this.message?.message ?? "",
+        this.message?.mentions,
+        this.viewerSteamId,
+      );
+    },
+    mentionsMe() {
+      return mentionsViewer(this.message, this.viewerSteamId);
     },
     hasMedia() {
       return (this.message?.attachments?.length ?? 0) > 0 || !!this.message?.gif;
@@ -338,7 +371,7 @@ export default {
     // have to match it can never drift apart.
     padTopRem() {
       if (!this.isTeamMessage) {
-        return 0;
+        return this.mentionsMe ? 0.25 : 0;
       }
 
       if (this.startsTeamRun) {
@@ -362,6 +395,17 @@ export default {
       // hover never rewraps the line under the pointer.
       if (this.reservesActions) {
         classes.push("pr-7");
+      }
+
+      if (!this.isTeamMessage && this.mentionsMe) {
+        classes.push(
+          "rounded-sm bg-destructive/[0.06] pb-1.5 before:inset-0",
+          this.isSameSender && this.isCloseTogether ? "mt-1" : "mt-3",
+        );
+        if (!this.reservesActions) {
+          classes.push("pr-2");
+        }
+        return classes;
       }
 
       if (!this.isTeamMessage) {

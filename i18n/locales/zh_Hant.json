@@ -10317,7 +10317,17 @@
         "waiting": "等待回覆"
       }
     },
-    "awaiting_reply": "你的訊息請求尚未獲得回覆。對方回覆後你才能再次傳送。"
+    "awaiting_reply": "你的訊息請求尚未獲得回覆。對方回覆後你才能再次傳送。",
+    "mentions": {
+      "list": "可提及的玩家",
+      "finding": "正在尋找玩家…",
+      "no_match": "此房間中沒有人符合「{query}」",
+      "failed": "無法載入玩家",
+      "limit": "一則訊息最多可提及 {max} 名玩家。",
+      "too_many": "一則訊息最多只能提及 {max} 名玩家。",
+      "organizer": "主辦方",
+      "tagged_you": "{count} 則訊息提到了你 | {count} 則訊息提到了你"
+    }
   },
   "charts": {
     "usage": "使用量",

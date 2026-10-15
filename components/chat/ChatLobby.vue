@@ -174,6 +174,7 @@ import {
           ref="chatInputRef"
           variant="global"
           :attachment-room="attachmentRoom"
+          :mention-room="mentionRoom"
           :channels="chatChannels"
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
@@ -409,6 +410,7 @@ import {
           ref="chatInputRef"
           variant="embedded"
           :attachment-room="attachmentRoom"
+          :mention-room="mentionRoom"
           :channels="chatChannels"
           :destination="sendTo"
           @update:destination="sendTo = $event as any"
@@ -467,6 +469,7 @@ import { useSound } from "~/composables/useSound";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
 import { chatRoomTakesAttachments } from "~/utilities/chatAttachments";
+import { chatRoomTakesMentions } from "~/utilities/chatMentions";
 import mapLabel from "~/utilities/mapLabel";
 
 const { rightSidebarOpen } = useRightSidebar();
@@ -705,6 +708,12 @@ export default {
       }
 
       return { type: this.type, id: this.lobbyId };
+    },
+    // Whoever the next line can tag is whoever reads the room it is going to.
+    mentionRoom() {
+      const target = this.channelTarget(this.sendTo);
+
+      return chatRoomTakesMentions(target.type) ? target : null;
     },
     acceptsDrops() {
       return (
@@ -1098,6 +1107,7 @@ export default {
       media?: {
         attachments?: string[];
         gif?: ChatGif;
+        mentions?: string[];
         delivered?: (request: Promise<void>) => void;
         sentLate?: () => void;
       },
@@ -1111,7 +1121,7 @@ export default {
             target.type,
             target.id,
             message,
-            { attachments: media.attachments },
+            { attachments: media.attachments, mentions: media.mentions },
             media.sentLate,
           ),
         );

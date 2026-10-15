@@ -1,4 +1,5 @@
 import type { ChatReactions, LobbyMessage } from "~/web-sockets/Socket";
+import { mentionsStillIn } from "~/utilities/chatMentions";
 
 // The live `chat` event and the history snapshot sent on every (re)join can
 // carry the same message, so a message needs an identity the client can compare
@@ -325,6 +326,13 @@ export function applyChatMessageEdit(
     message: edit.message,
     edited_at: edit.edited_at ?? new Date().toISOString(),
   };
+
+  const mentions = mentionsStillIn(edit.message, edited.mentions);
+  if (mentions) {
+    edited.mentions = mentions;
+  } else {
+    delete edited.mentions;
+  }
 
   if (edit.edited_at) {
     delete edited.__edited_locally;

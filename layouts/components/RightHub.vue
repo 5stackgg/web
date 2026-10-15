@@ -48,6 +48,7 @@ import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
 import HubDockItem from "~/components/hub/HubDockItem.vue";
 import HubVoiceBar from "~/components/hub/HubVoiceBar.vue";
 import { formatBadgeCount } from "~/utilities/badgeCount";
+import { chatBadgeFor, chatTabBadge } from "~/utilities/chatBadges";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import SocialPanel from "~/components/hub/SocialPanel.vue";
 import RecentGamesPanel from "~/components/hub/RecentGamesPanel.vue";
@@ -76,8 +77,10 @@ const dockIntent = useDockIntent(() =>
 const {
   tabs: chatTabs,
   unreadCounts,
+  mentionCounts,
   activityAt,
   totalUnread,
+  totalMentions,
   activeTabId: activeChatTabId,
   setActiveTab,
 } = useChatTabs();
@@ -409,7 +412,9 @@ const chatShortcuts = computed(() => {
       !tab.id.startsWith("matchmaking:") &&
       !hidden.includes(tab.id) &&
       (isPinnedTab(tab) ||
-        (((unreadCounts.value[tab.id] ?? 0) > 0 || activity(tab) > cutoff) &&
+        (((unreadCounts.value[tab.id] ?? 0) > 0 ||
+          (mentionCounts.value[tab.id] ?? 0) > 0 ||
+          activity(tab) > cutoff) &&
           activity(tab) > (dismissed[tab.id] ?? 0))),
   );
 
@@ -439,15 +444,42 @@ const chatShortcuts = computed(() => {
 
 // Every unread message is counted once: on its shortcut when it has one, and
 // only what is left over -- conversations not on the dock -- on Chat itself.
-const shortcutUnread = computed(() =>
-  chatShortcuts.value.reduce(
-    (sum, tab) => sum + (unreadCounts.value[tab.id] ?? 0),
-    0,
-  ),
-);
-const chatLeftoverUnread = computed(() =>
-  Math.max(0, totalUnread.value - shortcutUnread.value),
-);
+const chatLeftoverBadge = computed(() => {
+  const onDock = new Set(chatShortcuts.value.map((tab) => tab.id));
+
+  return chatBadgeFor(
+    chatTabs.value.filter((tab) => !onDock.has(tab.id)),
+    unreadCounts.value,
+    mentionCounts.value,
+  );
+});
+
+function shortcutBadge(tab: ChatTab) {
+  return chatTabBadge(
+    tab,
+    unreadCounts.value[tab.id] ?? 0,
+    mentionCounts.value[tab.id] ?? 0,
+  );
+}
+
+const chatDetail = computed(() => {
+  const parts = [
+    totalUnread.value > 0
+      ? t("layouts.hub.dock.unread", { count: totalUnread.value })
+      : "",
+    totalMentions.value > 0
+      ? t(
+          "chat.mentions.tagged_you",
+          { count: totalMentions.value },
+          totalMentions.value,
+        )
+      : "",
+  ].filter(Boolean);
+
+  return parts.length > 0
+    ? parts.join(", ")
+    : t("layouts.hub.dock.nothing_new");
+});
 
 function shortcutIcon(tab: ChatTab) {
   if (tab.type === "organizers" || tab.type === "tournament") return Megaphone;
@@ -457,6 +489,10 @@ function shortcutIcon(tab: ChatTab) {
 }
 
 function shortcutDetail(tab: ChatTab) {
+  const mentions = mentionCounts.value[tab.id] ?? 0;
+  if (mentions > 0) {
+    return t("chat.mentions.tagged_you", { count: mentions }, mentions);
+  }
   const unread = unreadCounts.value[tab.id] ?? 0;
   if (unread > 0) {
     return t("layouts.hub.dock.unread", { count: unread });
@@ -826,19 +862,17 @@ function onHubTouchEnd(e: TouchEvent) {
               <HubDockItem
                 :nested="chatShortcuts.length > 0"
                 :label="$t('layouts.hub.dock.chat')"
-                :detail="
-                  totalUnread > 0
-                    ? $t('layouts.hub.dock.unread', { count: totalUnread })
-                    : $t('layouts.hub.dock.nothing_new')
-                "
+                :detail="chatDetail"
                 :active="isHubActive('chat')"
                 :preview="!isPinned"
-                :unread="chatLeftoverUnread > 0"
+                :unread="chatLeftoverBadge !== null"
                 :badge="
-                  chatLeftoverUnread > 0
-                    ? formatBadgeCount(chatLeftoverUnread)
+                  chatLeftoverBadge
+                    ? formatBadgeCount(chatLeftoverBadge.count)
                     : null
                 "
+                :badge-tone="chatLeftoverBadge?.tone ?? 'red'"
+                :badge-mention="chatLeftoverBadge?.mention ?? false"
                 @select="clickHub('chat')"
                 @intent="hoverOpen('chat')"
               >
@@ -927,12 +961,14 @@ function onHubTouchEnd(e: TouchEvent) {
                     :label="tab.label"
                     :detail="shortcutDetail(tab)"
                     :current="isHubActive('chat') && activeChatTabId === tab.id"
-                    :unread="(unreadCounts[tab.id] ?? 0) > 0"
+                    :unread="shortcutBadge(tab) !== null"
                     :badge="
-                      (unreadCounts[tab.id] ?? 0) > 0
-                        ? formatBadgeCount(unreadCounts[tab.id])
+                      shortcutBadge(tab)
+                        ? formatBadgeCount(shortcutBadge(tab)?.count ?? 0)
                         : null
                     "
+                    :badge-tone="shortcutBadge(tab)?.tone ?? 'red'"
+                    :badge-mention="shortcutBadge(tab)?.mention ?? false"
                     @select="openChatTab(tab)"
                     @intent="hoverOpenChat(tab)"
                   >

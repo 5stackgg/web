@@ -49,7 +49,7 @@ const buttonNamed = (wrapper: any, name: string) =>
 
 describe("StreamEmbed stop", () => {
   beforeEach(() => {
-    useStoppedStreams().resume(embedStreamKey("s1"));
+    useStoppedStreams().resume(embedStreamKey(youtube));
     useApplicationSettingsStore().setGlobalStream();
   });
 
@@ -81,7 +81,7 @@ describe("StreamEmbed stop", () => {
   });
 
   it("starts stopped when the stream was stopped earlier", async () => {
-    useStoppedStreams().stop(embedStreamKey("s1"));
+    useStoppedStreams().stop(embedStreamKey(youtube));
 
     const wrapper = await mountEmbed();
 

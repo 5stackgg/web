@@ -159,7 +159,7 @@ export default {
         useStoppedStreams().stop(
           this.isGameStreamer
             ? liveStreamKey(stream.match_id)
-            : embedStreamKey(stream.id),
+            : embedStreamKey(stream),
         );
       }
       useApplicationSettingsStore().setGlobalStream();

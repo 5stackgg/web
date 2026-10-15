@@ -152,6 +152,7 @@ interface MatchStream {
   priority?: number;
   preview: true;
   is_pov?: boolean;
+  match_id?: string | null;
   name?: string;
   avatar_url?: string | null;
 }
@@ -249,7 +250,7 @@ export default {
       return (
         this.canStop &&
         !!this.selectedStream &&
-        useStoppedStreams().isStopped(embedStreamKey(this.selectedStream.id))
+        useStoppedStreams().isStopped(embedStreamKey(this.selectedStream))
       );
     },
     // Only the Twitch SDK can change volume at runtime; the other embeds
@@ -293,11 +294,11 @@ export default {
       // Tear the player down before StreamCanvas unmounts so the Twitch
       // SDK gets its destroy() rather than just losing its iframe.
       this.cleanupPlayer();
-      useStoppedStreams().stop(embedStreamKey(this.selectedStream.id));
+      useStoppedStreams().stop(embedStreamKey(this.selectedStream));
     },
     resumeStream() {
       if (!this.selectedStream) return;
-      useStoppedStreams().resume(embedStreamKey(this.selectedStream.id));
+      useStoppedStreams().resume(embedStreamKey(this.selectedStream));
       // The player div only exists again once StreamCanvas re-renders.
       this.$nextTick(() => {
         this.loadStream();

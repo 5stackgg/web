@@ -21,6 +21,14 @@ const twitch = {
   link: "https://twitch.tv/northside",
   preview: true,
 };
+const pov = {
+  id: "twitch-pov:76561198000000001",
+  match_id: "m-1",
+  link: "https://www.twitch.tv/kappa_cs",
+  is_pov: true,
+  steam_id: "76561198000000001",
+  preview: true,
+};
 
 let unmount: (() => void) | undefined;
 
@@ -42,7 +50,8 @@ describe("StreamGlobal close", () => {
 
   beforeEach(() => {
     stopped.resume(liveStreamKey("m-1"));
-    stopped.resume(embedStreamKey("s1"));
+    stopped.resume(embedStreamKey(twitch));
+    stopped.resume(embedStreamKey(pov));
   });
 
   afterEach(() => {
@@ -60,8 +69,17 @@ describe("StreamGlobal close", () => {
   it("stops an embedded stream by its own row", async () => {
     await closeFloatingPlayer(twitch, "/matches/m-1");
 
-    expect(stopped.isStopped(embedStreamKey("s1"))).toBe(true);
+    expect(stopped.isStopped(embedStreamKey(twitch))).toBe(true);
     expect(stopped.isStopped(liveStreamKey("m-1"))).toBe(false);
+  });
+
+  it("stops a player's POV for this match only", async () => {
+    await closeFloatingPlayer(pov, "/matches/m-1");
+
+    expect(stopped.isStopped(embedStreamKey(pov))).toBe(true);
+    expect(
+      stopped.isStopped(embedStreamKey({ ...pov, match_id: "m-2" })),
+    ).toBe(false);
   });
 
   it("only closes on any other page", async () => {

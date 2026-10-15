@@ -47,7 +47,9 @@ const { result } = useQuery(
 );
 const picks = computed(() => result.value?.match_map_veto_picks ?? []);
 
-const arriving = computed(() => vetoHandoffPhase(props.match.id) === "flying");
+const arriving = computed(
+  () => vetoHandoffPhase(props.match.id) === "arriving",
+);
 
 // Not while the board itself shows the veto; as soon as its rail is on the
 // way here; otherwise once there are picks to show.
@@ -74,8 +76,7 @@ const viewerLineup = computed(() =>
 
 <template>
   <!-- The veto's order of play, under the scorebug for the rest of the match.
-       It opens as the start stage hands over and the board's rail lands
-       here. -->
+       It opens as the start stage hands over to the page. -->
   <Transition
     enter-active-class="hv-fold"
     enter-from-class="hv-fold-from"

@@ -9721,9 +9721,7 @@
         "sides_title": "Startsider",
         "sides_key": "CT forsvarer først, T angriber først, siderne byttes ved halvleg",
         "knife_key": "Decider-sider: knivrunde",
-        "picked": "pickede",
         "starts": "Starter på {side}",
-        "you": "Dig",
         "knife": "Knivrunde",
         "knife_line": "Vinderen vælger side"
       }

@@ -9721,9 +9721,7 @@
         "sides_title": "Bandos iniciales",
         "sides_key": "CT defiende primero, T ataca primero, los bandos se cambian en el descanso",
         "knife_key": "Bandos del decisivo: ronda a cuchillo",
-        "picked": "elegido",
         "starts": "Empieza en {side}",
-        "you": "Tú",
         "knife": "Ronda a cuchillo",
         "knife_line": "El ganador elige bando"
       }

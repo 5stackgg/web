@@ -9721,9 +9721,7 @@
         "sides_title": "시작 진영",
         "sides_key": "CT는 먼저 수비, T는 먼저 공격, 하프타임에 진영 교체",
         "knife_key": "데사이더 진영: 나이프 라운드",
-        "picked": "픽",
         "starts": "{side}로 시작",
-        "you": "나",
         "knife": "나이프 라운드",
         "knife_line": "승리 팀이 진영 선택"
       }

@@ -28,7 +28,6 @@ import type {
   VetoBoardStep,
 } from "~/utilities/vetoOrder";
 import type { VetoStart, VetoStartSide } from "~/utilities/vetoStage";
-import type { VetoFlight } from "~/utilities/vetoHandoff";
 
 // The veto as one fixed-size stage: every map (or region) is a slice of it.
 // The one in play opens wide, bans thin to slivers, picks tuck in and dim, so
@@ -78,7 +77,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   confirm: [choice: { itemId?: string; side?: string }];
-  handoff: [flight: VetoFlight];
+  handoff: [];
 }>();
 
 const { t } = useI18n();
@@ -832,7 +831,7 @@ const sideIconShort = (side: VetoStartSide) =>
   sideIcon(side === "CT" ? "CT" : "TERRORIST");
 
 // The panels sit over the stage and the series, across the board (down it
-// on a phone), placed by hand so they can grow out of the series chips.
+// on a phone).
 type Box = { left: number; top: number; width: number; height: number };
 const areaEl = ref<HTMLElement | null>(null);
 const railRef = ref<InstanceType<typeof VetoRail> | null>(null);
@@ -865,6 +864,11 @@ function fit() {
   });
 }
 
+const settle = (animations: Animation[]) =>
+  Promise.all(
+    animations.map((animation) => animation.finished.catch(() => {})),
+  );
+
 async function grow(animate: boolean) {
   fit();
   await nextTick();
@@ -876,29 +880,19 @@ async function grow(animate: boolean) {
     shown.value = startMaps.value.map((_, i) => i);
     return;
   }
-  const a = area.getBoundingClientRect();
-  const chips = Array.from(area.querySelectorAll(".vb-chip"));
   panels().forEach((panel, i) => {
-    const chip = chips[i]?.getBoundingClientRect();
-    const to = boxes.value[i];
-    if (!chip || !to) {
-      shown.value = [...shown.value, i];
-      return;
-    }
-    const from = {
-      left: chip.left - a.left,
-      top: chip.top - a.top,
-      width: chip.width,
-      height: chip.height,
-    };
     panel
       .animate(
         [
-          { ...px(from), opacity: 0, borderRadius: "8px" },
-          { opacity: 1, offset: 0.16 },
-          { ...px(to), opacity: 1, borderRadius: "12px" },
+          { opacity: 0, transform: "translateY(22px) scale(0.97)" },
+          { opacity: 1, transform: "none" },
         ],
-        { duration: 760, delay: 120 + i * 90, easing: EASE, fill: "backwards" },
+        {
+          duration: 620,
+          delay: 160 + i * 100,
+          easing: EASE,
+          fill: "backwards",
+        },
       )
       .finished.then(() => {
         shown.value = [...shown.value, i];
@@ -917,8 +911,8 @@ onMounted(() => {
   resize.observe(areaEl.value);
 });
 
-// The veto finishing on screen grows the series; a page opened mid-boot
-// just shows it.
+// The veto finishing on screen raises the maps; a page opened mid-boot just
+// shows them.
 watch(
   () => !!props.start,
   (on) => {
@@ -928,7 +922,7 @@ watch(
 );
 
 // Server ready: a beat to read it, the panels let go of their words, and the
-// maps and the order of play fly home.
+// maps hand over to the page.
 let handTimer: ReturnType<typeof setTimeout> | undefined;
 watch(
   () => props.start?.phase === "ready" && props.handOff,
@@ -937,26 +931,33 @@ watch(
     if (!go) return;
     handTimer = setTimeout(() => {
       shown.value = [];
-      handTimer = setTimeout(handOffNow, 260);
+      handTimer = setTimeout(() => void handOffNow(), 260);
     }, 700);
   },
   { immediate: true },
 );
 
-function handOffNow() {
-  const rail = railRef.value?.$el as HTMLElement | undefined;
-  emit("handoff", {
-    maps: panels().map((panel, i) => {
-      const map = startMaps.value[i];
-      return {
-        rect: panel.getBoundingClientRect(),
-        poster: map?.item?.poster || DEFAULT_POSTER,
-        label: map?.item?.label ?? "",
-        home: `map-${i + 1}`,
-      };
-    }),
-    rail: rail ? { el: rail, rect: rail.getBoundingClientRect() } : null,
-  });
+// The maps fold up where they stand; the page unfolds its own cards for them.
+async function handOffNow() {
+  if (typeof areaEl.value?.animate === "function") {
+    await settle(
+      panels().map((panel, i) =>
+        panel.animate(
+          [
+            { clipPath: "inset(0 0 0% 0 round 12px)", opacity: 1 },
+            { clipPath: "inset(0 0 100% 0 round 12px)", opacity: 0.3 },
+          ],
+          {
+            duration: 420,
+            delay: i * 70,
+            easing: "cubic-bezier(0.55, 0, 0.75, 0)",
+            fill: "forwards",
+          },
+        ),
+      ),
+    );
+  }
+  emit("handoff");
 }
 
 onBeforeUnmount(() => {
@@ -1016,7 +1017,9 @@ onBeforeUnmount(() => {
       @echo="echo = $event"
     />
 
-    <div v-if="start" class="vb-scoutkey">
+    <!-- The start's key takes the scouting key's line, never a new one: a
+         line added here would push the maps down as they come in. -->
+    <div v-if="start && scoutOn" class="vb-scoutkey">
       <span class="lead"
         ><b>{{ t("match.veto.start.sides_title") }}</b> ·
         {{ t("match.veto.start.sides_key") }}</span
@@ -1339,12 +1342,22 @@ onBeforeUnmount(() => {
             <span class="n" :class="{ 'is-decider': map.decider }">{{
               map.label
             }}</span>
-            <span v-if="map.pickedBy" class="by"
-              ><VetoCrest :lineup="lineups[map.pickedBy - 1]" :size="16" />{{
-                t("match.veto.start.picked")
-              }}</span
-            >
+            <VetoCrest
+              v-if="map.pickedBy"
+              class="by-sm"
+              :lineup="lineups[map.pickedBy - 1]"
+              :size="22"
+            />
           </div>
+          <VetoCrest
+            v-if="map.pickedBy"
+            class="by reveal"
+            :lineup="lineups[map.pickedBy - 1]"
+            :size="44"
+            :title="
+              t('match.veto.picked_by', { team: lineupName(map.pickedBy) })
+            "
+          />
           <div class="reveal">
             <div class="nm up">
               <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
@@ -1363,23 +1376,15 @@ onBeforeUnmount(() => {
                   :key="lineup"
                   class="plate"
                   :class="{ 'is-you': viewerLineup === lineup }"
-                  :data-side="map.sides[lineup]"
                   :title="`${lineupName(lineup)} · ${t('match.veto.start.starts', { side: map.sides[lineup] })}`"
                 >
                   <VetoCrest :lineup="lineups[lineup - 1]" :size="26" />
-                  <span class="tx"
-                    ><b>{{ lineupName(lineup) }}</b
-                    ><small
-                      ><img :src="sideIconShort(map.sides[lineup])" alt="" />{{
-                        t("match.veto.start.starts", {
-                          side: map.sides[lineup],
-                        })
-                      }}</small
-                    ></span
-                  >
-                  <span v-if="viewerLineup === lineup" class="you">{{
-                    t("match.veto.start.you")
-                  }}</span>
+                  <b>{{ lineupName(lineup) }}</b>
+                  <img
+                    class="side"
+                    :src="sideIconShort(map.sides[lineup])"
+                    :alt="map.sides[lineup]"
+                  />
                 </div>
               </template>
               <div v-else class="plate is-knife">
@@ -2364,13 +2369,18 @@ onBeforeUnmount(() => {
 .st-panel .top .n.is-decider {
   color: var(--vb-decider);
 }
-.st-panel .top .by {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  overflow: hidden;
-  white-space: nowrap;
-  color: hsl(0 0% 100% / 0.75);
+/* Who picked the map: their crest, large, in the top corner (beside the
+   label on a phone's short panels, where the corner holds the name). */
+.st-panel .top .by-sm {
+  display: none;
+}
+.st-panel .by {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  box-shadow:
+    0 6px 18px rgb(0 0 0 / 0.45),
+    0 0 0 1px rgb(255 255 255 / 0.18);
 }
 .st-panel .bottom {
   position: absolute;
@@ -2405,7 +2415,7 @@ onBeforeUnmount(() => {
 .st-panel .nm.up {
   display: none;
 }
-/* Each team on a small plate; CT and T are only its top edge. */
+/* Each team on a small plate: crest, name, and the side it starts on. */
 .st-panel .plates {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -2421,66 +2431,44 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   background: rgb(10 10 14 / 0.6);
   backdrop-filter: blur(6px);
-  box-shadow:
-    inset 0 2px 0 var(--edge),
-    inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
 }
-.plate[data-side="CT"] {
-  --edge: var(--vb-ct);
-}
-.plate[data-side="T"] {
-  --edge: var(--vb-t);
+/* Yours sits a step brighter, as your moves do on the rail. */
+.plate.is-you {
+  background: rgb(60 60 70 / 0.78);
 }
 .plate.is-you .veto-crest,
 .plate .veto-crest.is-mine {
   box-shadow: 0 0 0 2px var(--vb-amber);
+}
+.plate > b,
+.plate .tx b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.plate .side {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  margin-left: auto;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.5));
 }
 .plate .tx {
   display: grid;
   min-width: 0;
   line-height: 1.2;
 }
-.plate .tx b {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-}
 .plate .tx small {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
   white-space: nowrap;
   font-size: 11px;
   font-weight: 600;
   color: hsl(0 0% 100% / 0.75);
 }
-.plate[data-side="CT"] .tx small {
-  color: var(--vb-ct);
-}
-.plate[data-side="T"] .tx small {
-  color: var(--vb-t);
-}
-.plate .tx small img {
-  width: 13px;
-  height: 13px;
-}
-.plate .you {
-  position: absolute;
-  top: -8px;
-  right: 6px;
-  height: 16px;
-  padding: 0 6px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 16px;
-  color: hsl(var(--tac-amber-foreground));
-  background: var(--vb-amber);
-}
 .plate.is-knife {
   grid-column: 1 / -1;
-  --edge: hsl(0 0% 100% / 0.4);
 }
 .plate.is-knife .vs {
   display: flex;
@@ -2491,11 +2479,8 @@ onBeforeUnmount(() => {
 }
 /* A best of three's panels: the plate drops the name, crest and side stay. */
 @container panel (max-width: 300px) {
-  .plate .tx b {
+  .plate > b {
     display: none;
-  }
-  .plate {
-    justify-content: center;
   }
 }
 /* Narrow panels (best of five): stacked plates. */
@@ -2510,9 +2495,6 @@ onBeforeUnmount(() => {
     width: 22px;
     height: 22px;
   }
-  .st-panel .top .by {
-    display: none;
-  }
   .plate.is-knife .tx small {
     display: none;
   }
@@ -2522,9 +2504,12 @@ onBeforeUnmount(() => {
   .st-panel .top {
     right: 45%;
   }
-  .st-panel .top .by,
+  .st-panel .by,
   .st-panel .bottom .nm {
     display: none;
+  }
+  .st-panel .top .by-sm {
+    display: grid;
   }
   .st-panel .nm.up {
     position: absolute;

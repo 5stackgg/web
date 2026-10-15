@@ -9721,9 +9721,7 @@
         "sides_title": "Başlangıç tarafları",
         "sides_key": "CT önce savunur, T önce saldırır, devre arasında taraflar değişir",
         "knife_key": "Karar haritası tarafları: bıçak raundu",
-        "picked": "seçti",
         "starts": "{side} tarafında başlıyor",
-        "you": "Sen",
         "knife": "Bıçak raundu",
         "knife_line": "Kazanan tarafı seçer"
       }

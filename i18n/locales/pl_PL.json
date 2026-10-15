@@ -9721,9 +9721,7 @@
         "sides_title": "Strony startowe",
         "sides_key": "CT najpierw broni, T najpierw atakuje, strony zmieniają się na przerwie",
         "knife_key": "Strony na decydującej: knife round",
-        "picked": "pick",
         "starts": "Zaczyna po stronie {side}",
-        "you": "Ty",
         "knife": "Knife round",
         "knife_line": "Zwycięzca wybiera stronę"
       }

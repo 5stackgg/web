@@ -268,8 +268,8 @@ onUnmounted(() => rankSub?.unsubscribe());
           <PageTransition :delay="200">
             <!-- While the veto board is up (the veto, then the start stage
                  while the server boots) it shows the maps, so the cards fold
-                 away; once the server is ready each map flies home to its
-                 card, which stays hidden until it lands. -->
+                 away; once the server is ready the board folds and the cards
+                 unfold one after another. -->
             <div
               v-if="match.options.best_of && match.options.best_of > 0"
               class="grid grid-cols-[minmax(0,1fr)] transition-[grid-template-rows,opacity] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
@@ -904,7 +904,7 @@ export default {
       );
     },
     vetoArriving() {
-      return vetoHandoffPhase(this.match?.id) === "flying";
+      return vetoHandoffPhase(this.match?.id) === "arriving";
     },
     mapSlots() {
       if (!this.match || !this.match.options?.best_of) {
@@ -1160,7 +1160,7 @@ export default {
     transition-duration: 1ms;
   }
 }
-/* A card waits for its map to land on it. */
+/* A card stays hidden until its turn to unfold. */
 .veto-arriving [data-veto-home]:not([data-landed]) {
   opacity: 0;
 }

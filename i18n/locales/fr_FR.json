@@ -9721,9 +9721,7 @@
         "sides_title": "Camps de départ",
         "sides_key": "CT défend d'abord, T attaque d'abord, les camps s'inversent à la mi-temps",
         "knife_key": "Camps de la décisive : knife round",
-        "picked": "choisie",
         "starts": "Commence {side}",
-        "you": "Vous",
         "knife": "Knife round",
         "knife_line": "Le vainqueur choisit son camp"
       }

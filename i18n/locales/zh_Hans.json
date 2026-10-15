@@ -9721,9 +9721,7 @@
         "sides_title": "开局阵营",
         "sides_key": "CT 先防守，T 先进攻，中场交换阵营",
         "knife_key": "决胜图阵营：刀战局",
-        "picked": "已选",
         "starts": "{side} 方开局",
-        "you": "你",
         "knife": "刀战局",
         "knife_line": "胜者选择阵营"
       }

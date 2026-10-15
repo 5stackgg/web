@@ -9721,9 +9721,7 @@
         "sides_title": "Startsidor",
         "sides_key": "CT försvarar först, T anfaller först, sidorna byts vid halvtid",
         "knife_key": "Avgörarens sidor: knivrond",
-        "picked": "valde",
         "starts": "Börjar på {side}",
-        "you": "Du",
         "knife": "Knivrond",
         "knife_line": "Vinnaren väljer sida"
       }

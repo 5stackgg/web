@@ -9721,9 +9721,7 @@
         "sides_title": "Lati iniziali",
         "sides_key": "CT difende per primo, T attacca per primo, i lati si invertono a metà tempo",
         "knife_key": "Lati del decider: knife round",
-        "picked": "scelta",
         "starts": "Inizia su {side}",
-        "you": "Tu",
         "knife": "Knife round",
         "knife_line": "Chi vince sceglie il lato"
       }

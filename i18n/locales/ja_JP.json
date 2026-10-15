@@ -9721,9 +9721,7 @@
         "sides_title": "開始サイド",
         "sides_key": "CT は先に防衛、T は先に攻撃、ハーフタイムでサイド交代",
         "knife_key": "決着マップのサイド：ナイフラウンド",
-        "picked": "Pick",
         "starts": "{side} スタート",
-        "you": "あなた",
         "knife": "ナイフラウンド",
         "knife_line": "勝者がサイドを選択"
       }

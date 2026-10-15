@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import VetoBoard from "~/components/match/VetoBoard.vue";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
@@ -273,16 +273,17 @@ describe("VetoBoard start", () => {
     { itemId: "ancient", decider: true, pickedBy: null, sides: null },
   ];
 
-  it("grows the series into the maps with the side each team starts on", async () => {
+  it("raises the maps with the side each team starts on", async () => {
     const wrapper = await mount({
       steps: done,
       viewer: 1,
-      scouting: null,
       start: { phase: "booting", maps },
     });
 
     expect(wrapper.find(".vb-lead").text()).toBe("Server booting");
     expect(wrapper.find(".st-area").classes()).toContain("is-starting");
+    // The start's key takes over the scouting key's line.
+    expect(wrapper.findAll(".vb-scoutkey")).toHaveLength(1);
     expect(wrapper.find(".vb-scoutkey").text()).toContain("Starting sides");
     expect(wrapper.find(".vb-scoutkey").text()).toContain("knife round");
 
@@ -290,15 +291,29 @@ describe("VetoBoard start", () => {
     expect(panels).toHaveLength(3);
     expect(panels[0].find(".top .n").text()).toBe("Map 1");
     expect(panels[2].find(".top .n").text()).toBe("Decider · Map 3");
+    // The picker's crest sits in the corner; the decider has none.
+    expect(panels[0].find(".by").text()).toBe("BB");
+    expect(panels[2].find(".by").exists()).toBe(false);
 
-    // Your plate wears the You pill; theirs does not.
+    // Each side as its logo; your plate sits a step brighter.
     const plates = panels[0].findAll(".plate");
-    expect(plates[0].attributes("data-side")).toBe("T");
-    expect(plates[0].find(".you").exists()).toBe(true);
-    expect(plates[1].attributes("data-side")).toBe("CT");
-    expect(plates[1].find(".you").exists()).toBe(false);
+    expect(plates[0].find(".side").attributes("alt")).toBe("T");
+    expect(plates[0].classes()).toContain("is-you");
+    expect(plates[1].find(".side").attributes("alt")).toBe("CT");
+    expect(plates[1].classes()).not.toContain("is-you");
 
     expect(panels[2].find(".plate.is-knife").text()).toContain("Knife round");
+  });
+
+  it("adds no key line of its own when scouting is off", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 1,
+      scouting: null,
+      start: { phase: "booting", maps },
+    });
+
+    expect(wrapper.find(".vb-scoutkey").exists()).toBe(false);
   });
 
   it("names the first map and your side, then hands the maps over", async () => {
@@ -310,25 +325,13 @@ describe("VetoBoard start", () => {
       handOff: true,
     });
 
-    vi.useFakeTimers();
-    try {
-      await wrapper.setProps({ start: { phase: "ready", maps } });
-      expect(wrapper.find(".vb-lead").text()).toBe("Server ready");
-      expect(wrapper.find(".vb-line").text()).toBe(
-        "mirage first · you start T",
-      );
+    await wrapper.setProps({ start: { phase: "ready", maps } });
+    expect(wrapper.find(".vb-lead").text()).toBe("Server ready");
+    expect(wrapper.find(".vb-line").text()).toBe("mirage first · you start T");
 
-      vi.advanceTimersByTime(1000);
-      const [[flight]] = wrapper.emitted("handoff") as [[any]];
-      expect(flight.maps.map((map: any) => map.home)).toEqual([
-        "map-1",
-        "map-2",
-        "map-3",
-      ]);
-      expect(flight.rail).not.toBeNull();
-    } finally {
-      vi.useRealTimers();
-    }
+    // A beat to read it, then the maps fold and the board hands over.
+    await new Promise((done) => setTimeout(done, 1800));
+    expect(wrapper.emitted("handoff")).toHaveLength(1);
   });
 
   it("does not call the only map of a best of one first", async () => {

@@ -9721,9 +9721,7 @@
         "sides_title": "Lados iniciais",
         "sides_key": "CT defende primeiro, T ataca primeiro, os lados trocam no intervalo",
         "knife_key": "Lados do decisivo: round faca",
-        "picked": "escolheu",
         "starts": "Começa como {side}",
-        "you": "Você",
         "knife": "Round faca",
         "knife_line": "O vencedor escolhe o lado"
       }

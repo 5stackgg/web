@@ -56,7 +56,7 @@ import {
   vetoStartMaps,
   type VetoStart,
 } from "~/utilities/vetoStage";
-import { flyHome, type VetoFlight } from "~/utilities/vetoHandoff";
+import { unfoldHome } from "~/utilities/vetoHandoff";
 import { useVetoHandoff, vetoHandoffPhase } from "~/composables/useVetoHandoff";
 import { loadVetoScouting } from "~/utilities/loadVetoScouting";
 import type { ScoutLineup } from "~/utilities/vetoScouting";
@@ -72,8 +72,9 @@ export default {
       type: String,
       required: false,
     },
-    // Once the server is ready the maps fly to their cards on the page. The
-    // draft room has none, so its board stays on the start until it leaves.
+    // Once the server is ready the board folds and the page unfolds its map
+    // cards. The draft room has none, so its board stays on the start until
+    // it leaves.
     handOff: {
       type: Boolean,
       default: true,
@@ -197,11 +198,11 @@ export default {
       }
       this.submitting = false;
     },
-    onHandoff(flight: VetoFlight) {
+    onHandoff() {
       const handoff = useVetoHandoff();
       const matchId = this.match.id;
-      handoff.value = { matchId, phase: "flying" };
-      void flyHome(flight).finally(() => {
+      handoff.value = { matchId, phase: "arriving" };
+      void unfoldHome().finally(() => {
         if (handoff.value?.matchId === matchId) {
           handoff.value = null;
         }
@@ -382,7 +383,7 @@ export default {
       return vetoStarting(this.match);
     },
     // After the last pick: the server booting (or waiting for one), then
-    // ready for a beat before the maps fly home.
+    // ready for a beat before the board hands over to the page.
     startPhase(): VetoStart["phase"] | null {
       const regionSet = !this.match.options.region_veto || this.match.region;
       if (!regionSet || !vetoMapsSet(this.match)) {

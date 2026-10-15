@@ -9721,9 +9721,7 @@
         "sides_title": "開局陣營",
         "sides_key": "CT 先防守，T 先進攻，中場交換陣營",
         "knife_key": "決勝圖陣營：刀戰局",
-        "picked": "已選",
         "starts": "{side} 方開局",
-        "you": "你",
         "knife": "刀戰局",
         "knife_line": "勝者選擇陣營"
       }

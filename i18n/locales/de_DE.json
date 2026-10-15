@@ -9721,9 +9721,7 @@
         "sides_title": "Startseiten",
         "sides_key": "CT verteidigt zuerst, T greift zuerst an, zur Halbzeit werden die Seiten getauscht",
         "knife_key": "Decider-Seiten: Knife-Runde",
-        "picked": "gepickt",
         "starts": "Startet auf {side}",
-        "you": "Du",
         "knife": "Knife-Runde",
         "knife_line": "Gewinner wählt die Seite"
       }

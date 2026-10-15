@@ -96,9 +96,9 @@ describe("MatchMapVeto start stage", () => {
     } as Record<string, unknown>);
     expect(board(wrapper).props("start").phase).toBe("ready");
 
-    board(wrapper).vm.$emit("handoff", { maps: [], rail: null });
+    board(wrapper).vm.$emit("handoff");
     await wrapper.vm.$nextTick();
-    expect(useVetoHandoff().value?.phase).toBe("flying");
+    expect(useVetoHandoff().value?.phase).toBe("arriving");
     expect(board(wrapper).exists()).toBe(false);
 
     await new Promise((done) => setTimeout(done, 600));

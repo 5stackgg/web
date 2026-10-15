@@ -9723,9 +9723,7 @@
         "sides_title": "Starting sides",
         "sides_key": "CT defends first, T attacks first, sides swap at half time",
         "knife_key": "Decider sides: knife round",
-        "picked": "picked",
         "starts": "Starts {side}",
-        "you": "You",
         "knife": "Knife round",
         "knife_line": "Winner picks a side"
       }

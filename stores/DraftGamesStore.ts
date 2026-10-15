@@ -346,7 +346,16 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
                 can_pick_map_veto: true,
                 is_picking_region_veto: true,
                 can_pick_region_veto: true,
-                lineup_players: [{}, { steam_id: true, checked_in: true }],
+                lineup_players: [
+                  {},
+                  {
+                    steam_id: true,
+                    checked_in: true,
+                    // Veto scouting finds a pickup's captain by these.
+                    captain: true,
+                    player: { name: true },
+                  },
+                ],
               },
             ],
             lineup_2: [
@@ -358,7 +367,16 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
                 can_pick_map_veto: true,
                 is_picking_region_veto: true,
                 can_pick_region_veto: true,
-                lineup_players: [{}, { steam_id: true, checked_in: true }],
+                lineup_players: [
+                  {},
+                  {
+                    steam_id: true,
+                    checked_in: true,
+                    // Veto scouting finds a pickup's captain by these.
+                    captain: true,
+                    player: { name: true },
+                  },
+                ],
               },
             ],
             streams: [

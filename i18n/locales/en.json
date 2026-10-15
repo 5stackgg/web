@@ -3189,6 +3189,11 @@
               "description": "A team missed a required tournament check-in. Checked on the way in only, so a player already in a running bracket keeps their place."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto scouting",
+          "description": "During a map veto, show each side's record on every map, the other side's usual bans and picks, and their likely next move. Team matches use the team's history; pickups use the players' own games and the captain's past vetoes. It is on for every mode until you switch it off here.",
+          "updated": "Veto scouting updated"
         }
       },
       "language": {
@@ -9546,7 +9551,27 @@
       "confirm_side": "Confirm {side}",
       "your_side_on": "Your starting side on {map}",
       "their_side_on": "{team} picks a side on {map}",
-      "not_set": "Not set"
+      "not_set": "Not set",
+      "scout": {
+        "you": "You",
+        "no_games": "No games",
+        "usually_bans": "Usually bans",
+        "usually_picks": "Usually picks",
+        "likely_ban": "Likely ban",
+        "likely_pick": "Likely pick",
+        "team_bans": "{team} ban it in {n} of {of} vetoes",
+        "team_picks": "{team} pick it in {n} of {of} vetoes",
+        "captain_bans": "{captain} bans it in {n} of {of} vetoes as captain",
+        "captain_picks": "{captain} picks it in {n} of {of} vetoes as captain",
+        "players_note": "Each side's five players, their own games on this map",
+        "record": "{team}: {wins} won, {losses} lost on this map",
+        "your_record": "Your record here: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "browse",
+        "choose": "choose",
+        "clear": "clear"
+      }
     }
   },
   "ui": {

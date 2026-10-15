@@ -3189,6 +3189,11 @@
               "description": "Ein Team hat einen erforderlichen Turnier-Check-in verpasst. Wird nur beim Eintritt geprüft, ein Spieler in einem laufenden Bracket behält also seinen Platz."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto-Scouting",
+          "description": "Zeigt während eines Map-Vetos die Bilanz jeder Seite auf jeder Map, die üblichen Bans und Picks der Gegenseite und ihren wahrscheinlichen nächsten Zug. Team-Matches nutzen die Historie des Teams; Pick-up-Games die eigenen Matches der Spieler und die bisherigen Vetos des Captains. Es ist für jeden Modus aktiv, bis du es hier ausschaltest.",
+          "updated": "Veto-Scouting aktualisiert"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "{side} bestätigen",
       "your_side_on": "Deine Startseite auf {map}",
       "their_side_on": "{team} wählt eine Seite auf {map}",
-      "not_set": "Nicht festgelegt"
+      "not_set": "Nicht festgelegt",
+      "scout": {
+        "you": "Du",
+        "no_games": "Keine Matches",
+        "usually_bans": "Bannt meist",
+        "usually_picks": "Pickt meist",
+        "likely_ban": "Ban erwartet",
+        "likely_pick": "Pick erwartet",
+        "team_bans": "{team} bannt sie in {n} von {of} Vetos",
+        "team_picks": "{team} pickt sie in {n} von {of} Vetos",
+        "captain_bans": "{captain} bannt sie als Captain in {n} von {of} Vetos",
+        "captain_picks": "{captain} pickt sie als Captain in {n} von {of} Vetos",
+        "players_note": "Je Seite die fünf Spieler mit ihren eigenen Matches auf dieser Map",
+        "record": "{team}: {wins} gewonnen, {losses} verloren auf dieser Map",
+        "your_record": "Deine Bilanz hier: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "blättern",
+        "choose": "wählen",
+        "clear": "aufheben"
+      }
     }
   },
   "ui": {

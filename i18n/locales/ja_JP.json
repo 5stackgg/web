@@ -3189,6 +3189,11 @@
               "description": "チームが必須のトーナメントチェックインを逃しました。参加時にのみ判定されるため、進行中のブラケットにいるプレイヤーはその場所を保持します。"
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto スカウティング",
+          "description": "マップ Veto 中に、各マップでの両サイドの戦績、相手サイドがよく BAN・Pick するマップ、次の一手の予想を表示します。チームマッチではチームの履歴を、ピックアップマッチでは各プレイヤー自身の試合とキャプテンの過去の Veto を使います。ここでオフにするまで、すべてのモードでオンになっています。",
+          "updated": "Veto スカウティングを更新しました"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "{side} を確定",
       "your_side_on": "{map} でのあなたの開始サイド",
       "their_side_on": "{team} が {map} のサイドを選択中",
-      "not_set": "未定"
+      "not_set": "未定",
+      "scout": {
+        "you": "あなた",
+        "no_games": "試合なし",
+        "usually_bans": "よく BAN",
+        "usually_picks": "よく Pick",
+        "likely_ban": "BAN 予想",
+        "likely_pick": "Pick 予想",
+        "team_bans": "{team} は {of} 回の Veto のうち {n} 回 BAN",
+        "team_picks": "{team} は {of} 回の Veto のうち {n} 回 Pick",
+        "captain_bans": "{captain} はキャプテンとして {of} 回の Veto のうち {n} 回 BAN",
+        "captain_picks": "{captain} はキャプテンとして {of} 回の Veto のうち {n} 回 Pick",
+        "players_note": "各サイドの 5 人それぞれの、このマップでの試合",
+        "record": "{team}：このマップで {wins}勝 {losses}敗",
+        "your_record": "ここでのあなたの戦績：{wins}–{losses}"
+      },
+      "keys": {
+        "browse": "移動",
+        "choose": "選択",
+        "clear": "解除"
+      }
     }
   },
   "ui": {

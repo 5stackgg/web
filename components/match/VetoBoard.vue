@@ -2,7 +2,13 @@
 import { computed, onBeforeUnmount, ref, toRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { Spinner } from "~/components/ui/spinner";
+import VetoCrest from "~/components/match/VetoCrest.vue";
 import { useCountdown } from "~/composables/useCountdown";
+import {
+  scoutHabit,
+  scoutLikely,
+  type ScoutLineup,
+} from "~/utilities/vetoScouting";
 import type {
   VetoBoardItem,
   VetoBoardLineup,
@@ -26,6 +32,12 @@ const props = withDefaults(
     deadline?: string | null;
     total?: number;
     bestOf?: number;
+    // Each lineup's history and which lineup is yours, when veto scouting is
+    // on for this match's mode.
+    scouting?: {
+      lineups: [ScoutLineup | null, ScoutLineup | null];
+      viewer: 1 | 2 | null;
+    } | null;
   }>(),
   {
     pickingLineup: null,
@@ -34,6 +46,7 @@ const props = withDefaults(
     deadline: null,
     total: 0,
     bestOf: 1,
+    scouting: null,
   },
 );
 
@@ -229,6 +242,66 @@ function onKey(event: KeyboardEvent, id: string) {
   choose(id);
 }
 
+// Keys: the arrows walk the open maps (or the two sides), Enter chooses and
+// then confirms, Esc lets go. The hint shows while you steer by keys.
+const stageEl = ref<HTMLElement | null>(null);
+const keys = ref(false);
+
+function onStageKey(event: KeyboardEvent) {
+  const s = step.value;
+  if (!mine.value || props.submitting || !s) return;
+  const forward = event.key === "ArrowRight" || event.key === "ArrowDown";
+  const back = event.key === "ArrowLeft" || event.key === "ArrowUp";
+
+  if (s.type === "Side") {
+    if (forward || back) {
+      event.preventDefault();
+      keys.value = true;
+      selected.value = forward ? "TERRORIST" : "CT";
+    } else if (event.key === "Enter" && selected.value) {
+      event.preventDefault();
+      confirm();
+    }
+    return;
+  }
+  if (s.type !== "Ban" && s.type !== "Pick") return;
+
+  if (forward || back) {
+    event.preventDefault();
+    keys.value = true;
+    const open = available.value;
+    if (!open.length) return;
+    const at = open.indexOf(selected.value ?? hover.value ?? "");
+    const next =
+      at === -1
+        ? forward
+          ? 0
+          : open.length - 1
+        : (at + (forward ? 1 : -1) + open.length) % open.length;
+    selected.value = null;
+    hover.value = open[next];
+    stageEl.value
+      ?.querySelector<HTMLElement>(`[data-item="${open[next]}"]`)
+      ?.focus();
+  } else if (event.key === "Escape") {
+    event.preventDefault();
+    selected.value = null;
+    hover.value = null;
+  }
+}
+
+function onStageFocusIn(event: FocusEvent) {
+  if ((event.target as HTMLElement).matches(":focus-visible")) {
+    keys.value = true;
+  }
+}
+
+function onStageFocusOut(event: FocusEvent) {
+  if (!stageEl.value?.contains(event.relatedTarget as Node | null)) {
+    keys.value = false;
+  }
+}
+
 // Hover intent: a slice opens once the pointer settles on it, so sweeping
 // across the stage does not ripple every slice open in turn.
 function onPointerMove(event: PointerEvent) {
@@ -399,6 +472,8 @@ function wideCopy(id: string): { sub: string; tone: string; cta?: string } {
 }
 
 function sliceTitle(id: string) {
+  const chip = scoutView.value.get(id)?.chip;
+  if (chip) return `${label(id)} · ${chip.title}`;
   const st = stateOf(id);
   if (st.status === "open") return label(id);
   const who = st.lineup ? ` · ${lineupName(st.lineup)}` : "";
@@ -418,6 +493,159 @@ const sidePoster = computed(() => {
   const item = props.items.find((entry) => entry.id === sideMapId.value);
   return `url("${item?.poster || DEFAULT_POSTER}")`;
 });
+
+/* ---------- scouting ---------- */
+const scoutOn = computed(() => !!props.scouting && !isRegion.value);
+const viewerLineup = computed(() => props.scouting?.viewer ?? null);
+const scoutOf = (lineup: 1 | 2) => props.scouting?.lineups[lineup - 1] ?? null;
+// Whose habits you see: the other side's; watching, both.
+const habitLineups = computed<(1 | 2)[]>(() =>
+  viewerLineup.value ? [viewerLineup.value === 1 ? 2 : 1] : [1, 2],
+);
+
+function habitOf(id: string) {
+  for (const lineup of habitLineups.value) {
+    const habit = scoutHabit(scoutOf(lineup), id);
+    if (habit) return { ...habit, lineup };
+  }
+  return null;
+}
+
+function habitText(lineup: 1 | 2, kind: "ban" | "pick", n: number, of: number) {
+  const scout = scoutOf(lineup);
+  if (!scout) return "";
+  if (scout.source === "players") {
+    return kind === "ban"
+      ? t("match.veto.scout.captain_bans", { captain: scout.owner, n, of })
+      : t("match.veto.scout.captain_picks", { captain: scout.owner, n, of });
+  }
+  return kind === "ban"
+    ? t("match.veto.scout.team_bans", { team: scout.owner, n, of })
+    : t("match.veto.scout.team_picks", { team: scout.owner, n, of });
+}
+
+// Their most likely move while they are on the clock.
+const likely = computed(() => {
+  const s = step.value;
+  const acting = actingLineup.value;
+  if (!scoutOn.value || mine.value || !acting || !s) return null;
+  if (s.type !== "Ban" && s.type !== "Pick") return null;
+  const guess = scoutLikely(scoutOf(acting), s.type, available.value);
+  return guess ? { ...guess, lineup: acting, type: s.type } : null;
+});
+
+function record(lineup: 1 | 2, id: string) {
+  const map = scoutOf(lineup)?.maps[id];
+  const played = map?.played ?? 0;
+  const wins = map?.wins ?? 0;
+  return {
+    played,
+    wins,
+    losses: played - wins,
+    pct: played ? Math.round((wins / played) * 100) : null,
+  };
+}
+
+type ScoutRecord = ReturnType<typeof record>;
+type ScoutChip = { kind: string; lineup: 1 | 2; text: string; title: string };
+type ScoutRow = ScoutRecord & { lineup: 1 | 2; name: string; ahead: boolean };
+
+const scoutView = computed(() => {
+  const view = new Map<
+    string,
+    {
+      rate: ScoutRecord | null;
+      chip: ScoutChip | null;
+      likely: boolean;
+      rows: ScoutRow[];
+      line: { kind: string; text: string } | null;
+    }
+  >();
+  if (!scoutOn.value) return view;
+
+  for (const item of props.items) {
+    const id = item.id;
+    const status = stateOf(id).status;
+    const wide = isWide(id);
+    const open = status === "open";
+
+    // Your win rate, at the top of every open map.
+    let rate: ScoutRecord | null = null;
+    if (open && !wide && viewerLineup.value) {
+      const yours = record(viewerLineup.value, id);
+      rate = yours.played ? yours : null;
+    }
+
+    // On a narrow open map: their likely move now, or a habit.
+    let chip: ScoutChip | null = null;
+    const guess = likely.value;
+    const isLikely = !!guess && guess.mapId === id && !wide;
+    if (open && !wide) {
+      if (guess && isLikely) {
+        const kind = guess.type === "Ban" ? "ban" : "pick";
+        chip = {
+          kind: `likely-${kind}`,
+          lineup: guess.lineup,
+          text:
+            kind === "ban"
+              ? t("match.veto.scout.likely_ban")
+              : t("match.veto.scout.likely_pick"),
+          title: habitText(guess.lineup, kind, guess.n, guess.of),
+        };
+      } else {
+        const habit = habitOf(id);
+        if (habit) {
+          chip = {
+            kind: habit.kind,
+            lineup: habit.lineup,
+            text:
+              habit.kind === "ban"
+                ? t("match.veto.scout.usually_bans")
+                : t("match.veto.scout.usually_picks"),
+            title: habitText(habit.lineup, habit.kind, habit.n, habit.of),
+          };
+        }
+      }
+    }
+
+    // On the open map: both sides' records, and the habit spelled out.
+    let rows: ScoutRow[] = [];
+    let line: { kind: string; text: string } | null = null;
+    if (wide && (open || (done.value && status !== "Ban"))) {
+      const order: (1 | 2)[] = viewerLineup.value === 2 ? [2, 1] : [1, 2];
+      rows = order
+        .filter((lineup) => scoutOf(lineup))
+        .map((lineup) => ({
+          lineup,
+          name:
+            viewerLineup.value === lineup
+              ? t("match.veto.scout.you")
+              : lineupName(lineup),
+          ...record(lineup, id),
+          ahead: false,
+        }));
+      const best = Math.max(...rows.map((row) => row.pct ?? -1));
+      if (best >= 0 && rows.filter((row) => row.pct === best).length === 1) {
+        rows.forEach((row) => {
+          row.ahead = row.pct === best;
+        });
+      }
+      const habit = open ? habitOf(id) : null;
+      line = habit
+        ? {
+            kind: habit.kind,
+            text: habitText(habit.lineup, habit.kind, habit.n, habit.of),
+          }
+        : null;
+    }
+
+    view.set(id, { rate, chip, likely: isLikely, rows, line });
+  }
+  return view;
+});
+const scoutPlayersNote = computed(() =>
+  ([1, 2] as const).some((lineup) => scoutOf(lineup)?.source === "players"),
+);
 
 /* ---------- order of play ---------- */
 const railSteps = computed(() =>
@@ -498,24 +726,22 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
     <!-- One line in every state: your turn changes its colour and words, never
          its height. -->
     <div class="vb-status" aria-live="polite">
-      <span
+      <VetoCrest
         v-if="actingLineup"
-        class="vb-crest"
-        style="--s: 24px"
+        :lineup="lineups[actingLineup - 1]"
+        :size="24"
         :title="lineupName(actingLineup)"
-      >
-        <img
-          v-if="lineups[actingLineup - 1].crest"
-          :src="lineups[actingLineup - 1].crest!"
-          alt=""
-        />
-        <template v-else>{{ lineups[actingLineup - 1].monogram }}</template>
-      </span>
+      />
       <span class="vb-lead" :class="{ 'is-you': mine }" :title="lead">{{
         lead
       }}</span>
       <span class="vb-line" :title="line">{{ line }}</span>
-      <span class="vb-step tabular-nums">{{ stepCount }}</span>
+      <span v-if="keys && mine" class="vb-keys"
+        ><kbd>←</kbd><kbd>→</kbd> {{ t("match.veto.keys.browse") }} ·
+        <kbd>Enter</kbd> {{ t("match.veto.keys.choose") }} · <kbd>Esc</kbd>
+        {{ t("match.veto.keys.clear") }}</span
+      >
+      <span v-else class="vb-step tabular-nums">{{ stepCount }}</span>
       <span
         class="vb-clock tabular-nums"
         :class="{ 'is-urgent': timed && urgent }"
@@ -551,10 +777,16 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
     </ol>
 
     <div
+      ref="stageEl"
       class="vb-stage"
       :class="{ 'is-region': isRegion }"
+      :tabindex="live ? 0 : undefined"
       @pointermove="onPointerMove"
       @pointerleave="onPointerLeave"
+      @pointerdown="keys = false"
+      @keydown="onStageKey"
+      @focusin="onStageFocusIn"
+      @focusout="onStageFocusOut"
     >
       <div
         v-for="item in items"
@@ -597,24 +829,87 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
           />
         </template>
 
+        <div
+          v-if="scoutView.get(item.id)?.likely"
+          class="vb-likely"
+          aria-hidden="true"
+        />
+
         <div class="vb-top">
-          <span
+          <VetoCrest
             v-if="stateOf(item.id).lineup"
-            class="vb-crest"
-            style="--s: 20px"
-          >
-            <img
-              v-if="lineups[stateOf(item.id).lineup! - 1].crest"
-              :src="lineups[stateOf(item.id).lineup! - 1].crest!"
-              alt=""
-            />
-            <template v-else>{{
-              lineups[stateOf(item.id).lineup! - 1].monogram
-            }}</template>
-          </span>
+            :lineup="lineups[stateOf(item.id).lineup! - 1]"
+          />
           <span v-if="badge(item.id)" class="vb-badge">{{
             badge(item.id)
           }}</span>
+
+          <template v-if="scoutView.get(item.id)">
+            <span
+              v-if="scoutView.get(item.id)!.rate"
+              class="vb-rate tabular-nums"
+              :title="
+                t('match.veto.scout.your_record', {
+                  wins: scoutView.get(item.id)!.rate!.wins,
+                  losses: scoutView.get(item.id)!.rate!.losses,
+                })
+              "
+              >{{ scoutView.get(item.id)!.rate!.pct }}%</span
+            >
+            <span
+              v-if="scoutView.get(item.id)!.chip"
+              class="vb-habit"
+              :data-kind="scoutView.get(item.id)!.chip!.kind"
+            >
+              <VetoCrest
+                :lineup="lineups[scoutView.get(item.id)!.chip!.lineup - 1]"
+                :size="14"
+              />
+              <span>{{ scoutView.get(item.id)!.chip!.text }}</span>
+            </span>
+            <div v-if="scoutView.get(item.id)!.rows.length" class="vb-scout">
+              <div
+                v-for="row in scoutView.get(item.id)!.rows"
+                :key="row.lineup"
+                class="vb-rec"
+                :class="{ 'is-ahead': row.ahead, 'is-none': !row.played }"
+                :title="
+                  t('match.veto.scout.record', {
+                    team: lineupName(row.lineup),
+                    wins: row.wins,
+                    losses: row.losses,
+                  })
+                "
+              >
+                <VetoCrest :lineup="lineups[row.lineup - 1]" :size="18" />
+                <span class="nm">{{ row.name }}</span>
+                <template v-if="row.played">
+                  <span class="wl tabular-nums"
+                    >{{ row.wins }}–{{ row.losses }}</span
+                  >
+                  <span class="trk"
+                    ><i :style="{ width: `${row.pct}%` }"
+                  /></span>
+                  <span class="pct tabular-nums">{{ row.pct }}%</span>
+                </template>
+                <template v-else>
+                  <span class="wl">{{ t("match.veto.scout.no_games") }}</span>
+                  <span />
+                  <span class="pct">—</span>
+                </template>
+              </div>
+              <div
+                v-if="scoutView.get(item.id)!.line"
+                class="vb-habitline"
+                :data-kind="scoutView.get(item.id)!.line!.kind"
+              >
+                {{ scoutView.get(item.id)!.line!.text }}
+              </div>
+              <div v-if="scoutPlayersNote" class="vb-scoutnote">
+                {{ t("match.veto.scout.players_note") }}
+              </div>
+            </div>
+          </template>
         </div>
 
         <!-- narrow: emblem over a vertical name -->
@@ -819,26 +1114,6 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 }
 .vb-bar.is-urgent i {
   background: var(--vb-ban);
-}
-
-.vb-crest {
-  width: var(--s);
-  height: var(--s);
-  flex: none;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 6px;
-  background: hsl(var(--secondary));
-  color: hsl(var(--foreground));
-  font-size: calc(var(--s) * 0.4);
-  font-weight: 700;
-  line-height: 1;
-}
-.vb-crest img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 /* ---------- order of play ---------- */
@@ -1449,6 +1724,163 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   color: hsl(var(--foreground));
 }
 
+/* ---------- scouting ---------- */
+.vb-rate {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.6);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.vb-habit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 1px 6px 1px 2px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.6);
+  font-size: 10px;
+  font-weight: 600;
+}
+/* On a narrow slice the words wrap under each other rather than cut off. */
+.vb-habit > span {
+  padding-block: 1px;
+  line-height: 1.15;
+  text-align: center;
+}
+.vb-habit[data-kind="ban"] {
+  color: var(--vb-ban);
+  box-shadow: inset 0 0 0 1px hsl(var(--destructive) / 0.45);
+}
+.vb-habit[data-kind="pick"] {
+  color: var(--vb-pick);
+  box-shadow: inset 0 0 0 1px hsl(var(--success) / 0.45);
+}
+.vb-habit[data-kind^="likely"] {
+  color: hsl(var(--foreground));
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.5);
+}
+/* Their likely move while they are on the clock. */
+.vb-likely {
+  position: absolute;
+  inset: 3px;
+  z-index: 4;
+  border: 1.5px dashed hsl(0 0% 100% / 0.55);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.vb-slice:first-child .vb-likely {
+  border-radius: 13px 2px 2px 13px;
+}
+.vb-slice:last-child .vb-likely {
+  border-radius: 2px 13px 13px 2px;
+}
+/* Both sides' records sit at the top of the open map, above its name. */
+.vb-slice.is-wide .vb-top {
+  flex-wrap: wrap;
+}
+.vb-scout {
+  flex-basis: 100%;
+  display: grid;
+  gap: 5px;
+  max-width: 300px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: hsl(240 10% 4% / 0.55);
+  backdrop-filter: blur(4px);
+}
+.vb-rec {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto 64px 3.2em;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: hsl(0 0% 100% / 0.72);
+}
+.vb-rec .nm {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vb-rec .wl {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.vb-rec .pct {
+  text-align: right;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+.vb-rec .trk {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: hsl(0 0% 100% / 0.12);
+}
+.vb-rec .trk i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: hsl(0 0% 100% / 0.45);
+}
+.vb-rec.is-ahead .trk i {
+  background: hsl(var(--foreground));
+}
+.vb-rec.is-none .wl,
+.vb-rec.is-none .pct {
+  font-weight: 500;
+  color: var(--vb-muted);
+}
+.vb-habitline {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: hsl(0 0% 100% / 0.78);
+}
+.vb-habitline::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+.vb-habitline[data-kind="ban"] {
+  color: var(--vb-ban);
+}
+.vb-habitline[data-kind="pick"] {
+  color: var(--vb-pick);
+}
+.vb-scoutnote {
+  font-size: 11px;
+  color: hsl(0 0% 100% / 0.5);
+}
+
+/* The key hint takes the step counter's place while you steer by keys. */
+.vb-keys {
+  flex: none;
+  font-size: 12px;
+  color: var(--vb-muted);
+  white-space: nowrap;
+}
+.vb-keys kbd {
+  margin: 0 1px;
+  padding: 0 5px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 11px;
+  color: hsl(var(--foreground));
+  box-shadow: inset 0 0 0 1px hsl(var(--muted-foreground) / 0.4);
+}
+.vb-stage:focus-visible {
+  outline: 2px solid var(--vb-amber);
+  outline-offset: 2px;
+}
+
 /* ---------- phones: the stage turns on its side ---------- */
 @container (max-width: 560px) {
   .vb-status {
@@ -1603,6 +2035,28 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   }
   .vb-chip .sd {
     display: none;
+  }
+  .vb-keys {
+    display: none;
+  }
+  .vb-slice.is-wide .vb-top {
+    left: 14px;
+    right: 14px;
+  }
+  .vb-scout {
+    gap: 3px;
+    padding: 5px 7px;
+  }
+  .vb-rec {
+    grid-template-columns: 16px minmax(0, 1fr) auto 40px 3em;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .vb-slice:first-child .vb-likely {
+    border-radius: 13px 13px 2px 2px;
+  }
+  .vb-slice:last-child .vb-likely {
+    border-radius: 2px 2px 13px 13px;
   }
 }
 

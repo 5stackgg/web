@@ -3189,6 +3189,11 @@
               "description": "Une équipe a manqué un check-in de tournoi obligatoire. Vérifié uniquement à l'entrée : un joueur déjà dans un bracket en cours garde sa place."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Scouting du veto",
+          "description": "Pendant un veto de maps, affiche le bilan de chaque camp sur chaque map, les bans et picks habituels du camp adverse et son prochain choix probable. Les matchs d'équipe utilisent l'historique de l'équipe ; les matchs pick-up utilisent les propres matchs des joueurs et les vetos passés du capitaine. Il est activé pour tous les modes jusqu'à ce que vous le désactiviez ici.",
+          "updated": "Scouting du veto mis à jour"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "Confirmer {side}",
       "your_side_on": "Votre camp de départ sur {map}",
       "their_side_on": "{team} choisit un camp sur {map}",
-      "not_set": "À définir"
+      "not_set": "À définir",
+      "scout": {
+        "you": "Vous",
+        "no_games": "Aucun match",
+        "usually_bans": "Ban habituel",
+        "usually_picks": "Pick habituel",
+        "likely_ban": "Ban probable",
+        "likely_pick": "Pick probable",
+        "team_bans": "{team} la bannit dans {n} vetos sur {of}",
+        "team_picks": "{team} la choisit dans {n} vetos sur {of}",
+        "captain_bans": "{captain} la bannit dans {n} vetos sur {of} en tant que capitaine",
+        "captain_picks": "{captain} la choisit dans {n} vetos sur {of} en tant que capitaine",
+        "players_note": "Les cinq joueurs de chaque camp, avec leurs propres matchs sur cette map",
+        "record": "{team} : {wins} gagnés, {losses} perdus sur cette map",
+        "your_record": "Votre bilan ici : {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "parcourir",
+        "choose": "choisir",
+        "clear": "effacer"
+      }
     }
   },
   "ui": {

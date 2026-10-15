@@ -3189,6 +3189,11 @@
               "description": "Drużyna przegapiła wymagane potwierdzenie obecności na turnieju. Sprawdzane tylko przy wejściu, więc gracz już w trwającej drabince zachowuje swoje miejsce."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Scouting veto",
+          "description": "Podczas veto map pokazuje bilans każdej strony na każdej mapie, typowe bany i picki drugiej strony oraz jej prawdopodobny następny ruch. Mecze drużynowe korzystają z historii drużyny; mecze pick-up z własnych meczów graczy i wcześniejszych veto kapitana. Funkcja jest włączona we wszystkich trybach, dopóki jej tu nie wyłączysz.",
+          "updated": "Scouting veto zaktualizowany"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "Potwierdź {side}",
       "your_side_on": "Twoja strona startowa na mapie {map}",
       "their_side_on": "{team} wybiera stronę na mapie {map}",
-      "not_set": "Nie ustalono"
+      "not_set": "Nie ustalono",
+      "scout": {
+        "you": "Ty",
+        "no_games": "Brak meczów",
+        "usually_bans": "Zwykle banuje",
+        "usually_picks": "Zwykle wybiera",
+        "likely_ban": "Spodziewany ban",
+        "likely_pick": "Spodziewany pick",
+        "team_bans": "{team} banuje ją w {n} z {of} veto",
+        "team_picks": "{team} wybiera ją w {n} z {of} veto",
+        "captain_bans": "{captain} banuje ją w {n} z {of} veto jako kapitan",
+        "captain_picks": "{captain} wybiera ją w {n} z {of} veto jako kapitan",
+        "players_note": "Pięciu graczy każdej strony i ich własne mecze na tej mapie",
+        "record": "{team}: wygrane {wins}, przegrane {losses} na tej mapie",
+        "your_record": "Twój bilans tutaj: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "przeglądaj",
+        "choose": "wybierz",
+        "clear": "wyczyść"
+      }
     }
   },
   "ui": {

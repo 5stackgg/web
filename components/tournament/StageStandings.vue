@@ -130,6 +130,12 @@ import { kdColor } from "~/utils/statTiers";
                             <th class="px-2 py-2 text-center font-normal">
                               <StatLabel stat="kd" label="K/D" />
                             </th>
+                            <th
+                              v-if="showAdr"
+                              class="px-2 py-2 text-center font-normal"
+                            >
+                              <StatLabel stat="adr" label="ADR" />
+                            </th>
                             <th class="px-2 py-2 text-center font-normal">
                               <StatLabel stat="hs" label="HS%" />
                             </th>
@@ -193,6 +199,16 @@ import { kdColor } from "~/utils/statTiers";
                                 }}
                               </td>
                               <td
+                                v-if="showAdr"
+                                class="px-2 py-2 text-center font-mono tabular-nums"
+                              >
+                                {{
+                                  Math.round(
+                                    playerStatFor(member.player.steam_id).adr,
+                                  )
+                                }}
+                              </td>
+                              <td
                                 class="px-2 py-2 text-center font-mono tabular-nums"
                               >
                                 {{
@@ -212,7 +228,7 @@ import { kdColor } from "~/utils/statTiers";
                             </template>
                             <template v-else>
                               <td
-                                colspan="6"
+                                :colspan="showAdr ? 7 : 6"
                                 class="px-2 py-2 text-center font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/60"
                               >
                                 {{ $t("tournament.results_section.no_data") }}
@@ -297,6 +313,12 @@ export default {
         }
       }
       return map;
+    },
+    // Only an api that serves v_tournament_player_stats.adr sends it.
+    showAdr() {
+      return ((this.playerStats as any[]) || []).some(
+        (stats: any) => stats?.adr != null,
+      );
     },
     statsByPlayer() {
       const map = new Map<string, any>();
@@ -440,6 +462,7 @@ export default {
         headshots: Number(raw.headshots ?? 0),
         kdr: Number(raw.kdr ?? 0),
         headshot_percentage: Number(raw.headshot_percentage ?? 0),
+        adr: Number(raw.adr ?? 0),
         matches_played: Number(raw.matches_played ?? 0),
       };
     },

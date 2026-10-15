@@ -17,6 +17,7 @@ import TournamentMatchOptionsForm from "~/components/tournament/TournamentMatchO
 import TournamentPrizesManage from "~/components/tournament/TournamentPrizesManage.vue";
 import TournamentAwardsConfig from "~/components/tournament/TournamentAwardsConfig.vue";
 import TournamentAwardsManage from "~/components/tournament/TournamentAwardsManage.vue";
+import TournamentMvpPick from "~/components/tournament/TournamentMvpPick.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentStagesManage from "~/components/tournament/TournamentStagesManage.vue";
@@ -207,6 +208,7 @@ onUnmounted(() => resizeObserver?.disconnect());
       <template v-else-if="current.key === 'prizes'">
         <TournamentPrizesManage :tournament="tournament" />
         <TournamentAwardsConfig :tournament="tournament" />
+        <TournamentMvpPick :tournament="tournament" />
         <TournamentAwardsManage :tournament="tournament" />
       </template>
 

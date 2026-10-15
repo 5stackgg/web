@@ -7266,6 +7266,7 @@
     "results_section": {
       "no_data": "НЕМАЄ ДАНИХ",
       "mvp": "НАЙЦІННІШИЙ ГРАВЕЦЬ",
+      "mvp_picked": "Обраний організаторами",
       "mvp_tooltip": {
         "title": "Як обирається MVP",
         "rule": "Гравець команди-переможця з найвищим середнім впливом у всіх матчах турніру.",
@@ -7273,7 +7274,9 @@
         "avg_impact": "Сер. вплив",
         "matches": "Матчі",
         "next_best": "Наступний: {name}",
-        "manual": "Обраний організатором турніру."
+        "manual": "Обраний організатором турніру.",
+        "picked": "Обраний організаторами.",
+        "automatic_pick": "Автоматичний вибір: {name}"
       }
     },
     "swiss": {
@@ -7785,7 +7788,44 @@
       "remove": "Прибрати",
       "hint": "Вручи нагороду поза розрахунком сітки.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "MVP турніру тут не видається. Оберіть його вище, у розділі MVP турніру."
+    },
+    "mvp_pick": {
+      "title": "MVP турніру",
+      "hint_automatic": "Обирається автоматично після завершення турніру. Ви можете його змінити.",
+      "hint_organizer": "MVP цього турніру обираєте ви.",
+      "awards_off": "Нагороди вимкнено, тому MVP немає",
+      "not_finished": "MVP обирається після завершення турніру",
+      "none_yet": "MVP ще немає. Оберіть одного з гравців команди-переможця.",
+      "pick": "Обрати MVP",
+      "change": "Змінити MVP",
+      "suggested": "Рекомендований",
+      "self_disabled": "Не можна обрати себе. Це може зробити адміністратор.",
+      "picked_by_organizers": "Обраний організаторами",
+      "impact_value": "вплив {value}",
+      "matches_count": "{count} матч | {count} матчів",
+      "switch_label": "Я оберу MVP сам",
+      "switch_hint": "Не обирати автоматично в цьому турнірі.",
+      "history": "Історія",
+      "history_picked_by": "обрав {name}",
+      "history_automatic": "обрано автоматично",
+      "dialog_title_pick": "Обрати MVP Турніру",
+      "dialog_title_change": "Змінити MVP Турніру",
+      "dialog_description": "Гравці {team}, які грали, за спаданням середнього впливу.",
+      "dialog_description_fallback": "Гравці команди-переможця, які грали, за спаданням середнього впливу.",
+      "column_player": "Гравець",
+      "column_impact": "Вплив",
+      "column_matches": "Матчі",
+      "no_candidates": "Ні в кого з команди-переможця ще немає оціненого матчу.",
+      "note_label": "Нотатка (необов'язково)",
+      "continue": "Продовжити",
+      "confirm_title": "Зробити {name} MVP Турніру?",
+      "confirm_replaces_automatic": "{name} обрано автоматично. Він втрачає нагороду MVP і зберігає медаль за 1-ше місце.",
+      "confirm_replaces_pick": "{name} обрали організатори. Він втрачає нагороду MVP і зберігає медаль за 1-ше місце.",
+      "confirm_keeps": "{name} залишається MVP, тепер за вибором організаторів.",
+      "confirm_gets": "{name} отримає нагороду та сповіщення про неї.",
+      "confirm": "Підтвердити MVP"
     },
     "teams_filter": {
       "all": "Усі",

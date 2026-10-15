@@ -7266,6 +7266,7 @@
     "results_section": {
       "no_data": "데이터 없음",
       "mvp": "최우수 선수",
+      "mvp_picked": "주최자가 선정",
       "mvp_tooltip": {
         "title": "MVP 선정 방식",
         "rule": "우승 팀에서 대회 전체 경기의 평균 임팩트가 가장 높은 선수입니다.",
@@ -7273,7 +7274,9 @@
         "avg_impact": "평균 임팩트",
         "matches": "경기 수",
         "next_best": "차순위: {name}",
-        "manual": "대회 주최자가 선정했습니다."
+        "manual": "대회 주최자가 선정했습니다.",
+        "picked": "주최자가 선정했습니다.",
+        "automatic_pick": "자동 선정: {name}"
       }
     },
     "swiss": {
@@ -7785,7 +7788,44 @@
       "remove": "제거",
       "hint": "대진표 계산과 별개로 어워드를 수여합니다.",
       "no_participants": "Teams must register before awards can be granted.",
-      "no_awards": "Create an award in the catalog first."
+      "no_awards": "Create an award in the catalog first.",
+      "mvp_hint": "대회 MVP는 여기서 수여하지 않습니다. 위의 대회 MVP에서 선정하세요."
+    },
+    "mvp_pick": {
+      "title": "대회 MVP",
+      "hint_automatic": "대회가 끝나면 자동으로 선정됩니다. 변경할 수 있습니다.",
+      "hint_organizer": "이 대회의 MVP는 직접 선정합니다.",
+      "awards_off": "어워드가 꺼져 있어 MVP가 없습니다",
+      "not_finished": "MVP는 대회가 끝나면 선정됩니다",
+      "none_yet": "아직 MVP가 없습니다. 우승 팀 선수 중에서 선정하세요.",
+      "pick": "MVP 선정",
+      "change": "MVP 변경",
+      "suggested": "추천",
+      "self_disabled": "자기 자신은 선정할 수 없습니다. 관리자는 선정할 수 있습니다.",
+      "picked_by_organizers": "주최자가 선정",
+      "impact_value": "임팩트 {value}",
+      "matches_count": "{count}경기 | {count}경기",
+      "switch_label": "MVP를 직접 선정하겠습니다",
+      "switch_hint": "이 대회에서는 자동으로 선정하지 않습니다.",
+      "history": "기록",
+      "history_picked_by": "{name} 님이 선정",
+      "history_automatic": "자동 선정",
+      "dialog_title_pick": "대회 MVP 선정",
+      "dialog_title_change": "대회 MVP 변경",
+      "dialog_description": "출전한 {team} 선수, 평균 임팩트가 높은 순.",
+      "dialog_description_fallback": "출전한 우승 팀 선수, 평균 임팩트가 높은 순.",
+      "column_player": "선수",
+      "column_impact": "임팩트",
+      "column_matches": "경기",
+      "no_candidates": "우승 팀에 아직 평가된 경기가 있는 선수가 없습니다.",
+      "note_label": "메모 (선택)",
+      "continue": "계속",
+      "confirm_title": "{name} 님을 대회 MVP로 선정할까요?",
+      "confirm_replaces_automatic": "{name} 님은 자동으로 선정되었습니다. MVP 어워드는 잃지만 1위 메달은 유지됩니다.",
+      "confirm_replaces_pick": "{name} 님은 주최자가 선정했습니다. MVP 어워드는 잃지만 1위 메달은 유지됩니다.",
+      "confirm_keeps": "{name} 님이 계속 MVP이며, 이제 주최자의 선정입니다.",
+      "confirm_gets": "{name} 님이 어워드와 알림을 받습니다.",
+      "confirm": "MVP 확정"
     },
     "teams_filter": {
       "all": "전체",

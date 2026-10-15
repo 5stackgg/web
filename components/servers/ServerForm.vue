@@ -829,6 +829,11 @@ const SERVER_TYPE_RANKED = "Ranked";
 const SERVER_TYPE_PRACTICE = "Practice";
 const SERVER_TYPE_CUSTOM = "Custom";
 
+// Custom with no mode boots Valve's Custom game type, where the map's own
+// scripts run the game, so it is a Valve preset. Picking "Custom Presets"
+// before there is a mode to pick holds this instead.
+const NO_CUSTOM_MODE = "no-custom-mode";
+
 // Past this many nodes the picker gets a search and a region filter.
 const NODE_FILTER_THRESHOLD = 6;
 
@@ -1313,12 +1318,15 @@ export default {
       );
     },
     valveModeTypes() {
-      return this.knownServerTypes.filter(
-        (t) =>
-          t !== SERVER_TYPE_RANKED &&
-          t !== SERVER_TYPE_PRACTICE &&
-          t !== SERVER_TYPE_CUSTOM,
-      );
+      return [
+        ...this.knownServerTypes.filter(
+          (t) =>
+            t !== SERVER_TYPE_RANKED &&
+            t !== SERVER_TYPE_PRACTICE &&
+            t !== SERVER_TYPE_CUSTOM,
+        ),
+        SERVER_TYPE_CUSTOM,
+      ];
     },
     // Which of the four top-level choices the current `type` represents. The
     // field itself still holds either an enum value or a mode uuid; this is
@@ -1331,7 +1339,7 @@ export default {
       if (selected === SERVER_TYPE_PRACTICE) {
         return "practice";
       }
-      if (this.holdsModeId || selected === SERVER_TYPE_CUSTOM) {
+      if (this.holdsModeId || selected === NO_CUSTOM_MODE) {
         return "presets";
       }
       return "valve";
@@ -1369,7 +1377,11 @@ export default {
     // separate question -- see isCustomModeSelected.
     holdsModeId(): boolean {
       const selected = this.form.values.type;
-      return !!selected && !this.knownServerTypes.includes(selected);
+      return (
+        !!selected &&
+        selected !== NO_CUSTOM_MODE &&
+        !this.knownServerTypes.includes(selected)
+      );
     },
     isCustomModeSelected(): boolean {
       const selected = this.form.values.type;
@@ -1401,6 +1413,9 @@ export default {
       if (this.holdsModeId) {
         return { type: this.valveModeTypes[0], game_mode_id: null };
       }
+      if (selected === NO_CUSTOM_MODE) {
+        return { type: SERVER_TYPE_CUSTOM, game_mode_id: null };
+      }
       return { type: selected || "Ranked", game_mode_id: null };
     },
     setServerKind(kind: string) {
@@ -1428,7 +1443,7 @@ export default {
       if (!this.isCustomModeSelected) {
         this.form.setFieldValue(
           "type",
-          this.customModes[0]?.id ?? SERVER_TYPE_CUSTOM,
+          this.customModes[0]?.id ?? NO_CUSTOM_MODE,
         );
       }
     },

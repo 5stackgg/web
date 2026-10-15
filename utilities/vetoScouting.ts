@@ -20,8 +20,8 @@ export type ScoutLineup = {
 };
 
 // The modes with a scouting switch on Settings › Matchmaking. Other match types
-// (Premier, Faceit) have no switch and no scouting.
-export const VETO_SCOUTING_MODES = ["competitive", "wingman", "duel", "rush"];
+// (Premier, Faceit, and Rush, which has no veto) have no switch and no scouting.
+export const VETO_SCOUTING_MODES = ["competitive", "wingman", "duel"];
 
 // A habit only counts once there are a few vetoes behind it.
 export const SCOUT_MIN_VETOES = 3;

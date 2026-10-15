@@ -5,6 +5,7 @@ import {
   scoutHabit,
   scoutLikely,
   scoutRate,
+  VETO_SCOUTING_MODES,
   type ScoutLineup,
 } from "~/utilities/vetoScouting";
 
@@ -132,5 +133,11 @@ describe("scoutEdge", () => {
     expect(scoutEdge([null, played(5, 10)], "mirage")).toEqual({
       kind: "few",
     });
+  });
+});
+
+describe("VETO_SCOUTING_MODES", () => {
+  it("has no Rush switch, since Rush has no veto", () => {
+    expect(VETO_SCOUTING_MODES).toEqual(["competitive", "wingman", "duel"]);
   });
 });

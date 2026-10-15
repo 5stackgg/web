@@ -656,7 +656,7 @@ function onHubTouchEnd(e: TouchEvent) {
     <div
       :class="
         isMobile
-          ? 'flex h-full gap-2 p-2'
+          ? 'flex h-full gap-2 p-2 max-[374px]:gap-1 max-[374px]:p-1'
           : 'fixed bottom-0 right-0 z-20 flex gap-3 p-3'
       "
       ref="hubLayerRef"

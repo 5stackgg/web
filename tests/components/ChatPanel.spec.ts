@@ -62,6 +62,7 @@ async function mountPanel(visible: boolean) {
   );
   unmount = () => wrapper.unmount();
   await flushPromises();
+  return wrapper;
 }
 
 function incoming() {
@@ -118,6 +119,14 @@ describe("ChatPanel", () => {
     await nextTick();
 
     expect(useChatTabs().unreadCounts.value[DIRECT]).toBe(1);
+  });
+
+  it("narrows the room rail below 375px, where the composer needs the width", async () => {
+    const wrapper = await mountPanel(true);
+
+    expect(wrapper.get(".w-16.border-r").classes()).toContain(
+      "max-[374px]:w-[52px]",
+    );
   });
 
   it("clears a first message's badge once the panel shows it", async () => {

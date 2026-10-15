@@ -139,3 +139,38 @@ describe("ChatInput", () => {
     expect(wrapper.emitted("edit-last")).toBeUndefined();
   });
 });
+
+describe("ChatInput on narrow phones", () => {
+  const NARROW = "max-[374px]:";
+
+  it("tightens the embedded composer below 375px and lets its text shrink", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { variant: "embedded" },
+    });
+    const field = wrapper.get("textarea");
+
+    expect(field.classes()).toEqual(
+      expect.arrayContaining([
+        "min-w-0",
+        "placeholder:whitespace-nowrap",
+        `${NARROW}px-1.5`,
+      ]),
+    );
+    expect([...field.element.parentElement!.classList]).toEqual(
+      expect.arrayContaining(["p-2", `${NARROW}p-1.5`, `${NARROW}gap-1`]),
+    );
+  });
+
+  it("leaves the floating composer as it is", async () => {
+    const wrapper = await mountSuspended(ChatInput, {
+      props: { variant: "global" },
+    });
+    const field = wrapper.get("textarea");
+
+    expect(
+      [...field.classes(), ...field.element.parentElement!.classList].filter(
+        (name) => name.startsWith(NARROW),
+      ),
+    ).toEqual([]);
+  });
+});

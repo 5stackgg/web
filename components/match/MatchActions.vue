@@ -13,6 +13,7 @@ import {
 } from "lucide-vue-next";
 import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
+import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
@@ -108,8 +109,9 @@ const menuLabel =
         :disabled="!hasMinimumLineupPlayers"
         @click="startMatch"
       >
-        <Play class="h-3 w-3 shrink-0" />
-        {{ startLabel }}
+        <MatchDockLabel :label="startLabel" :compact="compact">
+          <Play class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
       </button>
       <button
         v-else-if="primaryAction === 'force_ready'"
@@ -117,8 +119,12 @@ const menuLabel =
         :class="dockPrimary"
         @click="forceReady"
       >
-        <CheckCheck class="h-3 w-3 shrink-0" />
-        {{ $t("match.commands.force_ready") }}
+        <MatchDockLabel
+          :label="$t('match.commands.force_ready')"
+          :compact="compact"
+        >
+          <CheckCheck class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
       </button>
       <button
         v-else-if="primaryAction === 'skip_knife'"
@@ -126,8 +132,12 @@ const menuLabel =
         :class="dockPrimary"
         @click="skipKnife"
       >
-        <SkipForward class="h-3 w-3 shrink-0" />
-        {{ $t("match.commands.skip_knife") }}
+        <MatchDockLabel
+          :label="$t('match.commands.skip_knife')"
+          :compact="compact"
+        >
+          <SkipForward class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
       </button>
       <button
         v-else-if="primaryAction === 'pause'"
@@ -136,8 +146,14 @@ const menuLabel =
         :disabled="!match.is_server_online"
         @click="togglePause"
       >
-        <component :is="isPaused ? Play : Pause" class="h-3 w-3 shrink-0" />
-        {{ isPaused ? $t("match.actions.resume") : $t("match.actions.pause") }}
+        <MatchDockLabel
+          :label="
+            isPaused ? $t('match.actions.resume') : $t('match.actions.pause')
+          "
+          :compact="compact"
+        >
+          <component :is="isPaused ? Play : Pause" class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
       </button>
       <button
         v-else-if="primaryAction === 'winner'"
@@ -145,8 +161,9 @@ const menuLabel =
         :class="dockPrimary"
         @click="openWinnerDialog"
       >
-        <Trophy class="h-3 w-3 shrink-0" />
-        {{ $t("match.winner.set") }}
+        <MatchDockLabel :label="$t('match.winner.set')" :compact="compact">
+          <Trophy class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
       </button>
 
       <button
@@ -155,10 +172,9 @@ const menuLabel =
         :class="dockDanger"
         @click="confirmCancel"
       >
-        <XCircle class="h-3 w-3 shrink-0" />
-        <span class="sr-only sm:not-sr-only">
-          {{ $t("match.actions.cancel") }}
-        </span>
+        <MatchDockLabel :label="$t('match.actions.cancel')" :compact="compact">
+          <XCircle class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
       </button>
       <button
         v-if="canDeleteMatch && !isBracketMatch"
@@ -166,20 +182,21 @@ const menuLabel =
         :class="dockDanger"
         @click="confirmDelete"
       >
-        <Trash2 class="h-3 w-3 shrink-0" />
-        <span class="sr-only sm:not-sr-only">
-          {{ $t("match.actions.delete") }}
-        </span>
+        <MatchDockLabel :label="$t('match.actions.delete')" :compact="compact">
+          <Trash2 class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
       </button>
     </template>
 
     <DropdownMenu v-if="!dock || hasMoreItems" @update:open="onMenuOpen">
       <DropdownMenuTrigger as-child>
         <button v-if="dock" type="button" :class="dockNeutral">
-          <SlidersHorizontal class="h-3 w-3 shrink-0" />
-          <span class="sr-only sm:not-sr-only">
-            {{ $t("match.admin_bar.actions") }}
-          </span>
+          <MatchDockLabel
+            :label="$t('match.admin_bar.actions')"
+            :compact="compact"
+          >
+            <SlidersHorizontal class="h-3 w-3 shrink-0" />
+          </MatchDockLabel>
         </button>
         <Button v-else size="icon" variant="outline">
           <MoreVertical class="h-3.5 w-3.5" />
@@ -562,6 +579,12 @@ export default {
     // opens upward. The camera chip, pause button and support call stay in
     // the header.
     dock: {
+      type: Boolean,
+      default: false,
+    },
+    // The dock is too narrow for labels: its controls show their icons, the
+    // labels as tooltips.
+    compact: {
       type: Boolean,
       default: false,
     },

@@ -11,9 +11,15 @@ import {
   upcomingAdminActions,
 } from "~/utilities/matchAdminSteps";
 
-const props = defineProps<{
-  match: Record<string, any>;
-}>();
+const props = withDefaults(
+  defineProps<{
+    match: Record<string, any>;
+    // Every step's label, or only the current one's (the rest keep their
+    // tooltips).
+    labels?: "all" | "current";
+  }>(),
+  { labels: "all" },
+);
 
 const steps = computed(() => matchAdminSteps(props.match));
 const currentIndex = computed(() =>
@@ -84,7 +90,9 @@ function unlocksAt(step: MatchAdminStep) {
             >
               <Check v-if="index < currentIndex" class="size-2" />
             </span>
-            <span :class="index !== currentIndex && 'sr-only md:not-sr-only'">
+            <span
+              :class="index !== currentIndex && labels !== 'all' && 'sr-only'"
+            >
               {{ $t(labelKey(step)) }}
             </span>
           </span>

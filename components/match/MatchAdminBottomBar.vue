@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, provide, onMounted, onBeforeUnmount } from "vue";
+import {
+  ref,
+  computed,
+  provide,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import EventEmitter from "eventemitter3";
 import { useMatchBackupRounds } from "~/composables/useMatchBackupRounds";
 import {
@@ -12,6 +19,8 @@ import {
 import { useVetoOverride } from "~/composables/useVetoOverride";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchAdminSteps from "~/components/match/MatchAdminSteps.vue";
+import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
@@ -100,6 +109,61 @@ function startDrag(e: MouseEvent) {
 
 let dockRaf = 0;
 
+// The dock spans the content column, which a pinned chat or the hub can
+// narrow at any screen size, so it fits itself to its own width: the
+// fullest layout that does not overlap. The steps drop to the current one's
+// label first, then the controls to icons (labels as tooltips), and last the
+// steps go.
+const FITS = ["full", "steps", "icons", "tight"] as const;
+const fit = ref<(typeof FITS)[number]>("full");
+const rowEl = ref<HTMLElement | null>(null);
+const leftEl = ref<HTMLElement | null>(null);
+const actionsEl = ref<HTMLElement | null>(null);
+
+const overflows = () => {
+  const row = rowEl.value;
+  const left = leftEl.value;
+  if (!row) return false;
+  return (
+    row.scrollWidth > row.clientWidth + 1 ||
+    (!!left && left.scrollWidth > left.clientWidth + 1)
+  );
+};
+
+// Each try renders before the next frame paints, so only the one that fits
+// is ever seen.
+let fitting = false;
+async function refit() {
+  if (fitting || !rowEl.value) return;
+  fitting = true;
+  try {
+    for (const next of FITS) {
+      fit.value = next;
+      await nextTick();
+      if (!overflows()) break;
+    }
+  } finally {
+    fitting = false;
+  }
+}
+
+// The row's width, and the controls' (a step's own action comes and goes).
+let fitObserver: ResizeObserver | undefined;
+function observe(el: HTMLElement | null) {
+  if (el) fitObserver?.observe(el);
+}
+function setRow(el: unknown) {
+  rowEl.value = (el as HTMLElement) ?? null;
+  observe(rowEl.value);
+}
+function setActions(el: unknown) {
+  actionsEl.value = (el as HTMLElement) ?? null;
+  observe(actionsEl.value);
+}
+if (typeof ResizeObserver !== "undefined") {
+  fitObserver = new ResizeObserver(() => void refit());
+}
+
 onMounted(() => {
   panelHeight.value = Math.round(window.innerHeight * 0.45);
   // Teleport resolves its target once, at mount, and never re-resolves it on
@@ -116,6 +180,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  fitObserver?.disconnect();
   cancelAnimationFrame(dockRaf);
   stopDrag();
 });
@@ -248,8 +313,13 @@ function runCommand(
            Clicking the first region also opens the console; the chevron is the
            labeled control, since the steps carry their own tooltips. All three
            shade off the shared `group` rather than their own :hover. -->
-      <div class="group flex items-stretch" :class="dragging && 'select-none'">
+      <div
+        :ref="setRow"
+        class="group flex items-stretch"
+        :class="dragging && 'select-none'"
+      >
         <div
+          ref="leftEl"
           class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out"
           @click="open = !open"
         >
@@ -262,13 +332,20 @@ function runCommand(
             "
           >
             <Shield class="w-3 h-3" />
-            <span class="sr-only sm:not-sr-only">{{ $t("match.admin") }}</span>
+            <span :class="fit === 'tight' && 'sr-only'">{{
+              $t("match.admin")
+            }}</span>
           </div>
 
-          <MatchAdminSteps :match="match" class="max-sm:hidden" />
+          <MatchAdminSteps
+            v-show="fit !== 'tight'"
+            :match="match"
+            :labels="fit === 'full' ? 'all' : 'current'"
+          />
         </div>
 
         <div
+          :ref="setActions"
           class="flex shrink-0 items-center gap-2 px-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out empty:hidden"
         >
           <button
@@ -283,25 +360,51 @@ function runCommand(
             :aria-pressed="vetoOverride"
             @click="vetoOverride = !vetoOverride"
           >
-            <Zap class="h-3 w-3 shrink-0" />
-            {{ $t("match.admin_bar.veto_override") }}
+            <MatchDockLabel
+              :label="$t('match.admin_bar.veto_override')"
+              :compact="fit === 'icons' || fit === 'tight'"
+            >
+              <Zap class="h-3 w-3 shrink-0" />
+            </MatchDockLabel>
           </button>
 
-          <MatchActions :match="match" dock />
+          <MatchActions
+            :match="match"
+            dock
+            :compact="fit === 'icons' || fit === 'tight'"
+          />
         </div>
 
-        <button
-          type="button"
-          class="flex shrink-0 items-center gap-1.5 pl-2 pr-4 py-2 text-xs text-muted-foreground group-hover:bg-muted/40 transition-colors duration-200 ease-out"
-          :aria-expanded="open"
-          :aria-label="open ? $t('common.close') : $t('common.more')"
-          @click="open = !open"
+        <FiveStackToolTip
+          as-child
+          side="top"
+          :delay-duration="120"
+          :tap-toggle="false"
         >
-          <ChevronUp
-            class="w-4 h-4 transition-transform duration-300 ease-out"
-            :class="open ? 'rotate-180' : 'rotate-0'"
-          />
-        </button>
+          <template #trigger>
+            <button
+              type="button"
+              class="flex shrink-0 items-center gap-1.5 pl-2 pr-4 py-2 text-xs text-muted-foreground group-hover:bg-muted/40 transition-colors duration-200 ease-out"
+              :aria-expanded="open"
+              :aria-label="
+                open
+                  ? $t('match.admin_bar.hide_console')
+                  : $t('match.admin_bar.show_console')
+              "
+              @click="open = !open"
+            >
+              <ChevronUp
+                class="w-4 h-4 transition-transform duration-300 ease-out"
+                :class="open ? 'rotate-180' : 'rotate-0'"
+              />
+            </button>
+          </template>
+          {{
+            open
+              ? $t("match.admin_bar.hide_console")
+              : $t("match.admin_bar.show_console")
+          }}
+        </FiveStackToolTip>
       </div>
 
       <div

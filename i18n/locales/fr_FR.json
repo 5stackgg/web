@@ -9682,7 +9682,8 @@
         "warning": "Avertissement émis pour {name}"
       },
       "warning_note": "Un avertissement est enregistré au dossier du joueur et lui est notifié. Il n'est jamais appliqué et n'expire jamais.",
-      "typed_player": "Joueur {type}"
+      "typed_player": "Joueur {type}",
+      "outranked": "Seule une personne ayant un rôle supérieur à celui de ce joueur peut faire cela."
     },
     "search": {
       "no_players_found": "Aucun joueur trouvé.",

@@ -160,6 +160,7 @@ import {
   hasChatMessageActions,
   isOwnChatMessage,
 } from "~/utilities/chatMessageActions";
+import { outranksPlayer } from "~/utilities/sanctionAuthority";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 
 export default {
@@ -268,6 +269,10 @@ export default {
         viewerSteamId: this.viewerSteamId,
         viewerGagged: !!useAuthStore().me?.is_gagged,
         canModerate: this.canModerate,
+        outranksAuthor: outranksPlayer(
+          useAuthStore().isRoleAbove,
+          this.message?.from?.role,
+        ),
         canPost: this.canPost,
         roomType: this.room?.type ?? "",
         now: this.permissionsCheckedAt,

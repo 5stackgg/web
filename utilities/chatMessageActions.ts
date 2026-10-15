@@ -17,6 +17,7 @@ export interface ChatMessagePermissionInput {
   viewerSteamId?: string | null;
   viewerGagged?: boolean;
   canModerate: boolean;
+  outranksAuthor?: boolean;
   canPost?: boolean;
   roomType: ChatType | string;
   now?: number;
@@ -70,7 +71,8 @@ export function heldChatReactions(
 // only offered the reactions they already hold.
 //
 // A sanction is on the author, not the line, so it needs neither an id nor a
-// source -- only someone other than the viewer to put it on.
+// source -- only someone other than the viewer, ranked below them, to put it
+// on.
 //
 // A line that is only files or a GIF has no text to edit, and the api refuses
 // an edit that would leave it empty.
@@ -79,6 +81,7 @@ export function chatMessagePermissions({
   viewerSteamId,
   viewerGagged = false,
   canModerate,
+  outranksAuthor = false,
   canPost = false,
   roomType,
   now = Date.now(),
@@ -110,6 +113,7 @@ export function chatMessagePermissions({
     canAddReaction,
     canSanction:
       canModerate &&
+      outranksAuthor &&
       roomType !== "direct" &&
       !!message?.from?.steam_id &&
       !isOwnChatMessage(message, viewerSteamId),

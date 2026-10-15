@@ -9682,7 +9682,8 @@
         "warning": "Advarsel givet til {name}"
       },
       "warning_note": "En advarsel gemmes på spillerens historik og giver spilleren besked. Den håndhæves aldrig og udløber aldrig.",
-      "typed_player": "{type}-spiller"
+      "typed_player": "{type}-spiller",
+      "outranked": "Kun en med en rolle over denne spillers kan gøre dette."
     },
     "search": {
       "no_players_found": "Ingen spillere fundet.",

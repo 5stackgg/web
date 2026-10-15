@@ -325,6 +325,7 @@ const registeredQuery = gql`
     players(where: { steam_id: { _in: $steamIds } }) {
       steam_id
       name
+      role
       avatar_url
       is_registered
       is_banned

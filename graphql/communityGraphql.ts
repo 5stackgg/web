@@ -11,6 +11,7 @@ export const COMMUNITY_OPTIONAL = { optional: true };
 const ROW_PLAYER_FIELDS = `
   steam_id
   name
+  role
   avatar_url
   is_registered
   is_banned

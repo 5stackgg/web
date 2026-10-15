@@ -9682,7 +9682,8 @@
         "warning": "{name} に警告を発行しました"
       },
       "warning_note": "警告はプレイヤーの記録に保存され、本人に通知されます。適用されることはなく、期限切れにもなりません。",
-      "typed_player": "{type}プレイヤー"
+      "typed_player": "{type}プレイヤー",
+      "outranked": "このプレイヤーより上のロールを持つ人だけが実行できます。"
     },
     "search": {
       "no_players_found": "プレイヤーが見つかりません。",

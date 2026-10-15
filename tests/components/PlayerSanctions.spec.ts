@@ -66,7 +66,11 @@ function serve() {
   vi.spyOn(client, "mutate").mockImplementation(mutate);
 }
 
-async function mountSheet(sanctions: any[], serverId?: string) {
+async function mountSheet(
+  sanctions: any[],
+  serverId?: string,
+  role?: string,
+) {
   rows = sanctions;
   useAuthStore().me = {
     steam_id: MODERATOR,
@@ -77,7 +81,7 @@ async function mountSheet(sanctions: any[], serverId?: string) {
   const wrapper = await mountSuspended(PlayerSanctions, {
     props: {
       playerId: PLAYER,
-      player: { steam_id: PLAYER, name: "Player" },
+      player: { steam_id: PLAYER, name: "Player", role },
       variant: "external",
       open: true,
       serverId,
@@ -318,4 +322,49 @@ describe("PlayerSanctions removal on a server", () => {
       expect.objectContaining({ description: undefined }),
     );
   });
+});
+
+describe("PlayerSanctions by role", () => {
+  const OUTRANKED =
+    "Only someone with a role above this player's can do this.";
+
+  const control = (label: string, name: string) =>
+    card(label).querySelector<HTMLButtonElement>(`[aria-label="${name}"]`)!;
+
+  async function reason(button: HTMLButtonElement) {
+    button.closest<HTMLElement>("span[tabindex]")?.focus();
+    await flushPromises();
+    return document.body.querySelector('[role="tooltip"]')?.textContent;
+  }
+
+  it("lets a moderator edit and lift a sanction on a player below them", async () => {
+    await mountSheet(
+      [sanction("mute-1", "mute", tomorrow())],
+      undefined,
+      "streamer",
+    );
+
+    expect(control("Mute", "Edit").disabled).toBe(false);
+    expect(control("Mute", "Remove").disabled).toBe(false);
+  });
+
+  it.each(["moderator", "administrator"])(
+    "disables editing and lifting a sanction on a %s, and says why",
+    async (role) => {
+      await mountSheet(
+        [sanction("mute-1", "mute", tomorrow())],
+        undefined,
+        role,
+      );
+
+      expect(control("Mute", "Edit").disabled).toBe(true);
+      expect(control("Mute", "Remove").disabled).toBe(true);
+      expect(await reason(control("Mute", "Remove"))).toContain(OUTRANKED);
+
+      control("Mute", "Remove").click();
+      await flushPromises();
+
+      expect(document.body.querySelector('[role="alertdialog"]')).toBeNull();
+    },
+  );
 });

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
+import { print } from "graphql";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -642,5 +643,101 @@ describe("ServerPlayerManagement player states", () => {
     expect(row(wrapper, "76561198000000014").text()).toContain(
       "203.0.113.150",
     );
+  });
+});
+
+describe("ServerPlayerManagement actions by role", () => {
+  const OUTRANKED =
+    "Only someone with a role above this player's can do this.";
+
+  const actions = (
+    wrapper: Awaited<ReturnType<typeof mountCard>>,
+    steamId: string,
+  ) =>
+    ["Kick", "Sanction Player"].map((label) =>
+      row(wrapper, steamId).get(`button[aria-label="${label}"]`),
+    );
+
+  beforeEach(() => {
+    useAuthStore().me = {
+      steam_id: "76561198000000002",
+      role: "moderator",
+    } as any;
+  });
+
+  it("disables the kick and the sanction on anyone at or above the viewer's role, and says why", async () => {
+    mockRcon([]);
+    state.roster = roster([
+      session(
+        1,
+        "76561198000000011",
+        "nyx",
+        "203.0.113.24",
+        account("76561198000000011", "nyx", { role: "administrator" }),
+      ),
+      session(
+        2,
+        "76561198000000013",
+        "Mika",
+        "203.0.113.150",
+        account("76561198000000013", "Mika", { role: "user" }),
+      ),
+      session(3, "76561198000000012", "kebab_king", "192.0.2.44"),
+    ]);
+
+    const wrapper = await mountCard({ online: true });
+
+    for (const action of actions(wrapper, "76561198000000011")) {
+      expect(action.attributes("disabled")).toBeDefined();
+    }
+    for (const steamId of ["76561198000000013", "76561198000000012"]) {
+      for (const action of actions(wrapper, steamId)) {
+        expect(action.attributes("disabled")).toBeUndefined();
+      }
+    }
+
+    actions(wrapper, "76561198000000011")[0]
+      .element.closest<HTMLElement>("span[tabindex]")!
+      .focus();
+    await flushPromises();
+
+    expect(
+      document.body.querySelector('[role="tooltip"]')?.textContent,
+    ).toContain(OUTRANKED);
+  });
+
+  it("asks for the role of the players RCON lists", async () => {
+    const asked: string[] = [];
+    vi.spyOn(
+      (useNuxtApp() as any).$apollo.defaultClient,
+      "query",
+    ).mockImplementation(async ({ query }: any) => {
+      asked.push(print(query));
+
+      return operationName(query) === "ServerManagementPlayers"
+        ? {
+            data: {
+              getDedicatedServerPlayers: [
+                { steam_id: "76561198000000011", name: "nyx" },
+              ],
+            },
+          }
+        : {
+            data: {
+              players: [
+                account("76561198000000011", "nyx", { role: "moderator" }),
+              ],
+            },
+          };
+    });
+
+    const wrapper = await mountCard({ online: true });
+
+    expect(
+      asked.find((text) => text.includes("RegisteredServerPlayers")),
+    ).toMatch(/players\([^)]*\) \{[^}]*\brole\b/);
+    for (const action of actions(wrapper, "76561198000000011")) {
+      expect(action.attributes("disabled")).toBeDefined();
+    }
   });
 });

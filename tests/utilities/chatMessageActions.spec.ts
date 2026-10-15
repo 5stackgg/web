@@ -31,6 +31,7 @@ describe("chatMessagePermissions", () => {
         message,
         viewerSteamId,
         canModerate: true,
+        outranksAuthor: true,
         roomType,
       }),
     ).toEqual({
@@ -48,6 +49,7 @@ describe("chatMessagePermissions", () => {
         message: { ...message, from: { steam_id: viewerSteamId } },
         viewerSteamId,
         canModerate: true,
+        outranksAuthor: true,
         roomType: "match",
       }).canSanction,
     ).toBe(false);
@@ -56,9 +58,22 @@ describe("chatMessagePermissions", () => {
         message,
         viewerSteamId,
         canModerate: true,
+        outranksAuthor: true,
         roomType: "direct",
       }).canSanction,
     ).toBe(false);
+  });
+
+  it("offers a moderator no sanction on an author whose role is not below theirs, but keeps the delete", () => {
+    expect(
+      chatMessagePermissions({
+        message,
+        viewerSteamId,
+        canModerate: true,
+        outranksAuthor: false,
+        roomType: "match",
+      }),
+    ).toMatchObject({ canDelete: true, canSanction: false });
   });
 
   it("never offers a delete in a direct conversation", () => {
@@ -112,6 +127,7 @@ describe("chatMessagePermissions for the author", () => {
       message: { ...own, ...overrides },
       viewerSteamId,
       canModerate: options.canModerate ?? false,
+      outranksAuthor: options.canModerate ?? false,
       roomType: options.roomType ?? "match",
       now: sentAt + (options.age ?? 60_000),
     });

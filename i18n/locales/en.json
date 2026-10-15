@@ -9684,7 +9684,8 @@
         "warning": "Warning issued to {name}"
       },
       "warning_note": "A warning is saved to the player's record and notifies them. It is never enforced and never expires.",
-      "typed_player": "{type} Player"
+      "typed_player": "{type} Player",
+      "outranked": "Only someone with a role above this player's can do this."
     },
     "search": {
       "no_players_found": "No Players Found.",

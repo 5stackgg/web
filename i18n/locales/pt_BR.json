@@ -9682,7 +9682,8 @@
         "warning": "{name} recebeu uma advertência"
       },
       "warning_note": "A advertência fica salva no histórico do jogador e ele é notificado. Nunca é aplicada e nunca expira.",
-      "typed_player": "Jogador {type}"
+      "typed_player": "Jogador {type}",
+      "outranked": "Só alguém com um cargo acima do deste jogador pode fazer isso."
     },
     "search": {
       "no_players_found": "Nenhum jogador encontrado.",

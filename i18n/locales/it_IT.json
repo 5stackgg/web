@@ -9682,7 +9682,8 @@
         "warning": "Avvertimento emesso a {name}"
       },
       "warning_note": "Un avvertimento viene salvato nello storico del giocatore e gli viene notificato. Non viene mai applicato e non scade mai.",
-      "typed_player": "Giocatore {type}"
+      "typed_player": "Giocatore {type}",
+      "outranked": "Solo chi ha un ruolo superiore a quello di questo giocatore può farlo."
     },
     "search": {
       "no_players_found": "Nessun giocatore trovato.",

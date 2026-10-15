@@ -731,15 +731,17 @@ const scoutView = computed(() => {
 
     // Who is stronger here, at the top of every open map, and still on the
     // maps that will be played once they are picked (the edge alone there).
+    // An open map keeps its edge and its records while it opens and closes;
+    // the page only fades one into the other.
     const played = status === "Pick" || status === "Decider";
-    const edge = (open && !wide) || played ? edgeOf(id) : null;
+    const edge = open || played ? edgeOf(id) : null;
 
-    // On a narrow open map: their likely move now, or a habit.
+    // On an open map: their likely move now, or a habit.
     let chip: ScoutChip | null = null;
     const guess = likely.value;
     const isLikely = !!guess && guess.mapId === id && !wide;
-    if (open && !wide) {
-      if (guess && isLikely) {
+    if (open) {
+      if (guess && guess.mapId === id) {
         const kind = guess.type === "Ban" ? "ban" : "pick";
         chip = {
           kind: `likely-${kind}`,
@@ -766,10 +768,10 @@ const scoutView = computed(() => {
       }
     }
 
-    // On the open map: both sides' records, and the habit spelled out.
+    // Both sides' records and the habit spelled out, shown on the open map.
     let rows: ScoutRow[] = [];
     let line: { kind: string; text: string } | null = null;
-    if (wide && open) {
+    if (open) {
       const order: (1 | 2)[] = viewerLineup.value === 2 ? [2, 1] : [1, 2];
       rows = order
         .filter((lineup) => scoutOf(lineup))
@@ -1262,6 +1264,8 @@ onBeforeUnmount(() => {
                 :class="{
                   'is-bare':
                     stateOf(item.id).status !== 'open' && !kickInBox(item.id),
+                  'is-away':
+                    stateOf(item.id).status === 'open' && isWide(item.id),
                 }"
               >
                 <span
@@ -1299,7 +1303,11 @@ onBeforeUnmount(() => {
                   />{{ badge(item.id) }}</span
                 >
               </div>
-              <div v-if="scoutView.get(item.id)!.rows.length" class="vb-scout">
+              <div
+                v-if="scoutView.get(item.id)!.rows.length"
+                class="vb-scout"
+                :class="{ 'is-shown': isWide(item.id) }"
+              >
                 <div class="vb-scouthead">
                   <b>{{
                     t("match.veto.scout.win_rate_on", { map: item.label })
@@ -1798,7 +1806,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  transition: opacity 220ms var(--vb-ease) 160ms;
+  transition: opacity 180ms var(--vb-ease) 60ms;
 }
 .vb-vpatch {
   width: min(30px, 66%);
@@ -2318,13 +2326,14 @@ onBeforeUnmount(() => {
   padding: 0 2px;
   border-radius: 6px;
   background: rgb(0 0 0 / 0.62);
-  animation: vb-settle-in 220ms var(--vb-ease) 160ms both;
+  transition: opacity 180ms var(--vb-ease) 60ms;
 }
-/* A map's resting labels return once it has mostly closed. */
-@keyframes vb-settle-in {
-  from {
-    opacity: 0;
-  }
+/* On the map you open the edge gives way to the records, and comes back as
+   they fade out. */
+.vb-tag.is-away {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 100ms var(--vb-ease);
 }
 .vb-tag:not(.is-bare) > .vb-edge,
 .vb-tag:not(.is-bare) > .vb-habit {
@@ -2427,15 +2436,27 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
 }
 .vb-scout {
-  animation: vb-settle-in 140ms var(--vb-ease) 40ms both;
-  flex-basis: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: min(300px, calc(var(--fw, 324px) - 24px));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms var(--vb-ease);
   display: grid;
   gap: 5px;
-  max-width: 300px;
   padding: 7px 9px;
   border-radius: 8px;
   background: hsl(240 10% 4% / 0.55);
   backdrop-filter: blur(4px);
+}
+.vb-scout.is-shown {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 140ms var(--vb-ease) 40ms;
+}
+.vb-slice:not(.is-wide) .vb-scout {
+  left: 6px;
 }
 .vb-rec {
   display: grid;
@@ -3004,6 +3025,9 @@ onBeforeUnmount(() => {
   .vb-slice.is-wide .vb-top {
     left: 14px;
     right: 14px;
+  }
+  .vb-slice:not(.is-wide) .vb-scout {
+    transition: none;
   }
   .vb-scout {
     gap: 3px;

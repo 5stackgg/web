@@ -68,7 +68,8 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (!clip || !clip.download_url) {
+  // The admin secret sees every clip, and this card is for anyone who asks.
+  if (!clip || !clip.download_url || clip.visibility !== "public") {
     return sendRedirect(event, fallback, 302);
   }
 

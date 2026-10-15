@@ -19,7 +19,8 @@ export function formatClipBytes(bytes: number | null): string | null {
 }
 
 // The schema does not track a clip's size, so it is read off a HEAD of the
-// file itself -- best effort, and nothing is shown until it answers.
+// file itself -- best effort, and nothing is shown until it answers. A clip
+// that is not public is only served to a signed-in viewer's cookie.
 export function useClipFileSize(
   url: MaybeRefOrGetter<string | null | undefined>,
 ) {
@@ -35,7 +36,10 @@ export function useClipFileSize(
         return;
       }
       try {
-        const res = await fetch(next, { method: "HEAD" });
+        const res = await fetch(next, {
+          method: "HEAD",
+          credentials: "include",
+        });
         const length = Number(res.headers.get("content-length"));
         if (mine === token && Number.isFinite(length) && length > 0) {
           bytes.value = length;

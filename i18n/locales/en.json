@@ -10330,6 +10330,7 @@
     "new_messages": "New messages",
     "loading_older": "Loading older messages…",
     "no_older_messages": "No older messages",
+    "older_messages": "Older messages",
     "organizers": {
       "title": "Organizer Chat",
       "no_access": "You do not have access to this page.",

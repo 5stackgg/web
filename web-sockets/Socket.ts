@@ -16,6 +16,7 @@ import {
   insertChatMessage,
   isChatMessageDeleted,
   isChatMessageFrom,
+  chatSnapshotMeets,
   mergeChatSnapshot,
   prependChatHistory,
   removeChatMessage,
@@ -107,6 +108,8 @@ interface LobbyState {
   // Bumped whenever a snapshot replaces the list: an older page asked for
   // before then would no longer join on to it.
   generation: number;
+  // When paging back may be asked for again after a page that failed.
+  retryAt: number;
   instances: Set<string>;
   callbacks: Map<string, (data: any) => void>;
   listeners: ReturnType<typeof Socket.prototype.listen>[];
@@ -181,6 +184,9 @@ export class Socket extends EventEmitter {
   private hidesAuthorsInGroups = true;
   // The api answers a request it failed to carry out with nothing at all.
   private static readonly REQUEST_TIMEOUT_MS = 8000;
+
+  // How long a room waits after a failed older page before asking again.
+  private static readonly HISTORY_RETRY_MS = 5_000;
   // How long a request that timed out still recognises its answer, so a slow
   // one is applied quietly instead of being reported a second time.
   private static readonly LATE_ANSWER_MS = 60000;
@@ -879,6 +885,7 @@ export class Socket extends EventEmitter {
       cursor: null,
       paged: false,
       generation: 0,
+      retryAt: 0,
       callbacks: new Map(),
       listeners: [],
     };
@@ -952,11 +959,17 @@ export class Socket extends EventEmitter {
     return this.createLobbyHandle(lobbyId, lobby, instanceKey, type, _id);
   }
 
-  // The newest page. One that says the room goes back further keeps whatever
-  // was scrolled back to; one that says it does not is the whole room.
+  // The newest page. One that says the room goes back further, and joins on
+  // to what is held, keeps whatever was scrolled back to. One that says it
+  // does not is the whole room, and one that does not join on -- the room
+  // moved on while the connection was down -- would leave a hole between
+  // them, so both start over from the newest page.
   private mergeLobbyMessages(lobby: LobbyState, page: LobbyPage) {
     const snapshot = page?.messages || [];
-    const keepsOlder = lobby.paged && page?.more === true;
+    const keepsOlder =
+      lobby.paged &&
+      page?.more === true &&
+      chatSnapshotMeets(lobby.messages.value, snapshot);
     const merged = mergeChatSnapshot(
       lobby.messages.value,
       hideChatAuthors(snapshot, this.authorsHiddenIn(lobby))?.messages ??
@@ -969,6 +982,7 @@ export class Socket extends EventEmitter {
     if (!keepsOlder) {
       lobby.paged = false;
       lobby.generation++;
+      lobby.retryAt = 0;
       lobby.cursor = typeof page?.cursor === "string" ? page.cursor : null;
       lobby.history.value =
         typeof page?.more === "boolean"
@@ -987,15 +1001,27 @@ export class Socket extends EventEmitter {
 
   // Older lines are history, not news: they go out as `lobby:older` alone, so
   // nothing that counts unread or tags ever sees them.
+  //
+  // Nothing is asked while the connection is down, and nothing again for a
+  // while after a page that failed: a reader at the top of the list would
+  // otherwise ask again the moment the failure cleared the loading row. A
+  // room that turns the reader away, or a cursor it can't read, is done.
   private loadOlder(lobby: LobbyState, type: ChatType, id: string) {
     const history = lobby.history.value;
 
-    if (!history?.more || history.loading || !lobby.cursor) {
+    if (
+      !this.connected ||
+      !this.connection ||
+      !history?.more ||
+      history.loading ||
+      !lobby.cursor ||
+      Date.now() < lobby.retryAt
+    ) {
       return Promise.resolve();
     }
 
     const generation = lobby.generation;
-    let page: LobbyPage | undefined;
+    let page: LobbyPage = {};
 
     lobby.history.value = { ...history, loading: true };
 
@@ -1010,15 +1036,22 @@ export class Socket extends EventEmitter {
       },
     )
       .then(() => {
-        if (page && generation === lobby.generation) {
+        if (generation === lobby.generation) {
           this.addOlderLobbyMessages(lobby, page);
         }
       })
-      .catch(() => {})
-      .finally(() => {
-        if (generation === lobby.generation && lobby.history.value) {
-          lobby.history.value = { ...lobby.history.value, loading: false };
+      .catch((error: ChatError) => {
+        if (generation !== lobby.generation) {
+          return;
         }
+
+        if (error?.code === "not_allowed" || error?.code === "invalid") {
+          lobby.history.value = { more: false, loading: false };
+          return;
+        }
+
+        lobby.retryAt = Date.now() + Socket.HISTORY_RETRY_MS;
+        lobby.history.value = { ...history, loading: false };
       });
   }
 
@@ -1037,7 +1070,7 @@ export class Socket extends EventEmitter {
     lobby.cursor = typeof page.cursor === "string" ? page.cursor : null;
     lobby.history.value = {
       more: page.more === true && !!lobby.cursor,
-      loading: lobby.history.value?.loading ?? false,
+      loading: false,
     };
 
     if (older.length === 0) {

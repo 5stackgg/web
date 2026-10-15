@@ -52,6 +52,7 @@ afterEach(() => {
   unmount = undefined;
   restore();
   useAuthStore().me = undefined;
+  vi.useRealTimers();
   vi.restoreAllMocks();
 });
 
@@ -217,5 +218,88 @@ describe("ChatLobby loading older messages", () => {
     scroller.dispatchEvent(new Event("scroll"));
 
     expect(requests()).toEqual([]);
+  });
+});
+
+describe("ChatLobby loading older messages when it goes wrong", () => {
+  // The bound on a loop that would otherwise never yield: every attempt past
+  // it is left hanging rather than failing straight back.
+  function countAttempts() {
+    const chatRequest = (socket as any).chatRequest.bind(socket);
+    let attempts = 0;
+    vi.spyOn(socket as any, "chatRequest").mockImplementation(
+      (...args: any[]) => {
+        attempts++;
+        return attempts > 5 ? new Promise(() => {}) : chatRequest(...args);
+      },
+    );
+    return () => attempts;
+  }
+
+  const scrollToTop = (scroller: HTMLElement) => {
+    scroller.scrollTop = 0;
+    scroller.dispatchEvent(new Event("scroll"));
+  };
+
+  it("never asks on mounting, whatever the list's scroll", async () => {
+    vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(300);
+    vi.spyOn(Element.prototype, "scrollHeight", "get").mockReturnValue(4000);
+
+    await mountRoom();
+    await flushPromises();
+
+    expect(requests()).toEqual([]);
+  });
+
+  it("asks nothing while the connection is down, and does not spin on it", async () => {
+    const wrapper = await mountRoom();
+    const scroller = scrollerOf(wrapper);
+    layOut(scroller);
+    const attempts = countAttempts();
+    (socket as any).connected = false;
+
+    scrollToTop(scroller);
+    await flushPromises();
+
+    expect(attempts()).toBe(0);
+    expect(wrapper.text()).not.toContain("Loading older messages…");
+  });
+
+  it("stops paging a room that refuses the reader, after one request", async () => {
+    const wrapper = await mountRoom();
+    const scroller = scrollerOf(wrapper);
+    layOut(scroller);
+
+    scrollToTop(scroller);
+    socket.emit("chat:error", {
+      code: "not_allowed",
+      action: "history",
+      requestId: requests()[0].data.requestId,
+    });
+    await flushPromises();
+    scrollToTop(scroller);
+    await flushPromises();
+
+    expect(requests()).toHaveLength(1);
+  });
+
+  it("waits for a scroll a few seconds later after a page that timed out", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
+    const wrapper = await mountRoom();
+    const scroller = scrollerOf(wrapper);
+    layOut(scroller);
+
+    scrollToTop(scroller);
+    await vi.advanceTimersByTimeAsync(8_000);
+    await flushPromises();
+    expect(requests()).toHaveLength(1);
+
+    scrollToTop(scroller);
+    await flushPromises();
+    expect(requests()).toHaveLength(1);
+
+    await vi.advanceTimersByTimeAsync(5_000);
+    scrollToTop(scroller);
+    expect(requests()).toHaveLength(2);
   });
 });

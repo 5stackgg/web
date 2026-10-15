@@ -479,6 +479,7 @@ interface ChatMessagesRef {
   scrollToBottom: (force?: boolean) => void;
   scrollToNewDivider?: () => void;
   editLast?: () => void;
+  markPageLanded?: () => void;
 }
 
 const NO_MESSAGES: LobbyMessage[] = [];
@@ -1014,9 +1015,17 @@ export default {
       older: LobbyMessage[],
       channel: "everyone" | "team",
     ) {
-      if (this.lastReadMessageCount > 0 && this.channelVisible(channel)) {
+      if (!this.channelVisible(channel)) {
+        return;
+      }
+
+      if (this.lastReadMessageCount > 0) {
         this.lastReadMessageCount += older.length;
       }
+
+      (
+        this.$refs.chatMessagesRef as ChatMessagesRef | undefined
+      )?.markPageLanded?.();
     },
     // The "New" line is a count from the top, so a line removed above it would
     // otherwise drag it down onto a message that was already read.

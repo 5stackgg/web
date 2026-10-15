@@ -10326,6 +10326,7 @@
     "new_messages": "新着メッセージ",
     "loading_older": "以前のメッセージを読み込み中…",
     "no_older_messages": "これより前のメッセージはありません",
+    "older_messages": "以前のメッセージ",
     "organizers": {
       "title": "主催者チャット",
       "no_access": "このページへのアクセス権がありません。",

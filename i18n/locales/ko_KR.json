@@ -10326,6 +10326,7 @@
     "new_messages": "새 메시지",
     "loading_older": "이전 메시지를 불러오는 중…",
     "no_older_messages": "이전 메시지가 없습니다",
+    "older_messages": "이전 메시지",
     "organizers": {
       "title": "주최자 채팅",
       "no_access": "이 페이지에 접근할 권한이 없습니다.",

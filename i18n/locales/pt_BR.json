@@ -10326,6 +10326,7 @@
     "new_messages": "Novas mensagens",
     "loading_older": "Carregando mensagens anteriores…",
     "no_older_messages": "Não há mensagens anteriores",
+    "older_messages": "Mensagens anteriores",
     "organizers": {
       "title": "Chat dos Organizadores",
       "no_access": "Você não tem acesso a esta página.",

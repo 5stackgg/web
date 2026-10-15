@@ -1,5 +1,5 @@
 // @vitest-environment happy-dom
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Socket, type LobbyMessage } from "~/web-sockets/Socket";
 
 const OTHER = "76561198000000002";
@@ -45,6 +45,10 @@ function connected() {
 
 const ids = (messages: readonly LobbyMessage[]) =>
   messages.map(({ id }) => id);
+
+afterEach(() => {
+  vi.useRealTimers();
+});
 
 describe("Socket paging back", () => {
   it("asks for the page before the cursor the newest page handed out", async () => {
@@ -158,7 +162,7 @@ describe("Socket paging back", () => {
     expect(lobby.history).toEqual({ more: true, loading: false });
   });
 
-  it("leaves a refused page quietly, ready to ask again", async () => {
+  it("stops paging a room that refuses the reader", async () => {
     const { socket, lobby, snapshot, requests } = connected();
     snapshot({ messages: [line("c", 3)], more: true, cursor: "cursor-c" });
 
@@ -170,10 +174,85 @@ describe("Socket paging back", () => {
     });
     await loaded;
 
+    expect(lobby.history).toEqual({ more: false, loading: false });
+
+    await lobby.loadOlder();
+    expect(requests()).toHaveLength(1);
+  });
+
+  it.each([
+    [
+      "times out",
+      async () => {
+        await vi.advanceTimersByTimeAsync(8_000);
+      },
+    ],
+    [
+      "is turned away for asking too often",
+      async (socket: Socket, requestId: string) => {
+        socket.rejectChatRequest({
+          code: "rate_limited",
+          action: "history",
+          requestId,
+        });
+      },
+    ],
+  ])(
+    "asks again only a few seconds after a page that %s",
+    async (_, fail) => {
+      vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
+      const { socket, lobby, snapshot, requests } = connected();
+      snapshot({ messages: [line("c", 3)], more: true, cursor: "cursor-c" });
+
+      const loaded = lobby.loadOlder();
+      await fail(socket, requests()[0].data.requestId);
+      await loaded;
+
+      expect(lobby.history).toEqual({ more: true, loading: false });
+
+      await lobby.loadOlder();
+      expect(requests()).toHaveLength(1);
+
+      await vi.advanceTimersByTimeAsync(5_000);
+      void lobby.loadOlder();
+      expect(requests()).toHaveLength(2);
+    },
+  );
+
+  it("asks nothing while the connection is down, and leaves the room as it was", async () => {
+    const { socket, lobby, snapshot, requests } = connected();
+    snapshot({ messages: [line("c", 3)], more: true, cursor: "cursor-c" });
+    (socket as any).connected = false;
+
+    await lobby.loadOlder();
+
+    expect(requests()).toEqual([]);
+    expect(lobby.history).toEqual({ more: true, loading: false });
+
+    (socket as any).connected = true;
+    void lobby.loadOlder();
+    expect(requests()).toHaveLength(1);
+  });
+
+  it("drops the scrolled-back pages when a newer snapshot no longer meets them", async () => {
+    const { lobby, snapshot, answer, requests } = connected();
+    snapshot({ messages: [line("c", 3)], more: true, cursor: "cursor-c" });
+
+    const loaded = lobby.loadOlder();
+    answer({ messages: [line("b", 2)], more: true, cursor: "cursor-b" });
+    await loaded;
+
+    snapshot({
+      messages: [line("x", 30), line("y", 31)],
+      more: true,
+      cursor: "cursor-x",
+    });
+
+    expect(ids(lobby.messages)).toEqual(["x", "y"]);
     expect(lobby.history).toEqual({ more: true, loading: false });
 
     void lobby.loadOlder();
-    expect(requests()).toHaveLength(2);
+    expect(requests().at(-1)?.data.before).toBe("cursor-x");
   });
 
   it("asks nothing of an api that predates paging back", async () => {

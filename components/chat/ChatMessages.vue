@@ -12,6 +12,9 @@
          the line being read by this row changing too. -->
     <div
       v-if="history"
+      role="status"
+      aria-live="polite"
+      :aria-label="$t('chat.older_messages')"
       class="flex h-7 items-center justify-center text-[11px] text-muted-foreground/70"
       data-chat-history-edge
     >
@@ -27,7 +30,7 @@
           key="loading"
           class="inline-flex items-center gap-1.5"
         >
-          <Spinner class="h-3 w-3" />
+          <Spinner class="h-3 w-3" aria-hidden="true" />
           {{ $t("chat.loading_older") }}
         </span>
         <span
@@ -59,7 +62,7 @@
         :key="groupKey"
         tag="div"
         enter-from-class="opacity-0 translate-y-1"
-        enter-active-class="transition duration-200 ease-out"
+        enter-active-class="transition duration-200 ease-out motion-reduce:transition-none"
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="hidden"
       >
@@ -173,6 +176,12 @@ export default {
   data() {
     return {
       isAtBottom: false,
+      // Where this component last scrolled the list to, so the scroll event
+      // that follows is not taken for the reader's.
+      scrolledTo: null as number | null,
+      // Set by the room when an older page has landed: once the lines are in
+      // and the reading position kept, the top is checked again.
+      pageLanded: false,
       editingId: null as string | null,
       editingFromComposer: false,
     };
@@ -227,8 +236,41 @@ export default {
         const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
         this.isAtBottom = atBottom;
         this.$emit("bottom-state-change", atBottom);
+      }
+    },
+    // A scroll that moves nothing fires no event, so only one that moved is
+    // waited for.
+    scrollListTo(top: number) {
+      const chatMessages = this.$refs.chatMessages as HTMLElement;
+      const from = chatMessages.scrollTop;
+      chatMessages.scrollTop = top;
+      this.scrolledTo =
+        chatMessages.scrollTop === from ? null : chatMessages.scrollTop;
+    },
+    // Only the reader asks for more by scrolling. A scroll this component made
+    // -- to the bottom on opening, back to the line being read -- does not.
+    onScroll() {
+      const chatMessages = this.$refs.chatMessages as HTMLElement;
+      const ours =
+        this.scrolledTo !== null &&
+        Math.abs(chatMessages.scrollTop - this.scrolledTo) <= 1;
+      this.scrolledTo = null;
+
+      this.checkIfAtBottom();
+
+      if (!ours) {
         this.checkIfNearTop();
       }
+    },
+    // A list too short to scroll never scrolls; wheeling up over it is the
+    // same ask.
+    onWheel(event: WheelEvent) {
+      if (event.deltaY < 0) {
+        this.checkIfNearTop();
+      }
+    },
+    markPageLanded() {
+      this.pageLanded = true;
     },
     // A list too short to scroll is at the top already. One with no height
     // at all is hidden, and asks for nothing.
@@ -282,13 +324,15 @@ export default {
         return;
       }
 
-      chatMessages.scrollTop +=
-        element.getBoundingClientRect().top - anchor.top;
+      const moved = element.getBoundingClientRect().top - anchor.top;
+      if (moved !== 0) {
+        this.scrollListTo(chatMessages.scrollTop + moved);
+      }
     },
     scrollToBottom(force = false) {
       const chatMessages = this.$refs.chatMessages as HTMLElement;
       if (chatMessages && (this.isAtBottom || force)) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        this.scrollListTo(chatMessages.scrollHeight);
       }
     },
     scrollToNewDivider() {
@@ -316,7 +360,7 @@ export default {
         chatMessages.getBoundingClientRect().top +
         chatMessages.scrollTop;
       const targetTop = offset - Math.max(0, chatMessages.clientHeight / 3);
-      chatMessages.scrollTop = targetTop < 0 ? 0 : targetTop;
+      this.scrollListTo(targetTop < 0 ? 0 : targetTop);
       this.checkIfAtBottom();
     },
   },
@@ -338,32 +382,30 @@ export default {
           this.keepReadingAnchor(anchor);
           this.scrollToBottom(prev.length === 0);
           this.checkIfAtBottom();
+
+          // A page that leaves the list still short of the top asks for the
+          // next; one that failed or brought nothing never gets here.
+          if (this.pageLanded) {
+            this.pageLanded = false;
+            this.checkIfNearTop();
+          }
         });
       },
-      deep: true,
-    },
-    // A page that leaves the list still short of the top asks for the next.
-    history(current, previous) {
-      if (
-        current?.more &&
-        !current.loading &&
-        (!previous?.more || previous.loading)
-      ) {
-        this.$nextTick(() => this.checkIfNearTop());
-      }
     },
   },
   mounted() {
     const chatMessages = this.$refs.chatMessages as HTMLElement;
     if (chatMessages) {
-      chatMessages.addEventListener("scroll", this.checkIfAtBottom);
+      chatMessages.addEventListener("scroll", this.onScroll);
+      chatMessages.addEventListener("wheel", this.onWheel, { passive: true });
       this.checkIfAtBottom();
     }
   },
   beforeUnmount() {
     const chatMessages = this.$refs.chatMessages as HTMLElement;
     if (chatMessages) {
-      chatMessages.removeEventListener("scroll", this.checkIfAtBottom);
+      chatMessages.removeEventListener("scroll", this.onScroll);
+      chatMessages.removeEventListener("wheel", this.onWheel);
     }
   },
 };

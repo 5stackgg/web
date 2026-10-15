@@ -10326,6 +10326,7 @@
     "new_messages": "新訊息",
     "loading_older": "正在載入更早的訊息…",
     "no_older_messages": "沒有更早的訊息",
+    "older_messages": "更早的訊息",
     "organizers": {
       "title": "主辦方聊天",
       "no_access": "您沒有存取此頁面的權限。",

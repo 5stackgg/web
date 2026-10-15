@@ -10326,6 +10326,7 @@
     "new_messages": "Nye beskeder",
     "loading_older": "Indlæser ældre beskeder…",
     "no_older_messages": "Ingen ældre beskeder",
+    "older_messages": "Ældre beskeder",
     "organizers": {
       "title": "Arrangørchat",
       "no_access": "Du har ikke adgang til denne side.",

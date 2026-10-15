@@ -158,6 +158,27 @@ function keepLiveReactions(
   return { ...snapshot, reactions: held.reactions };
 }
 
+// Whether a snapshot of the newest page joins on to what is held: it shares a
+// line with it, or reaches back to before the newest of it.
+export function chatSnapshotMeets(
+  current: readonly LobbyMessage[],
+  snapshot: readonly LobbyMessage[],
+) {
+  if (current.length === 0 || snapshot.length === 0) {
+    return false;
+  }
+
+  const held = new Set(current.map(chatMessageKey));
+  if (snapshot.some((message) => held.has(chatMessageKey(message)))) {
+    return true;
+  }
+
+  return (
+    Math.min(...snapshot.map(chatMessageTime)) <=
+    Math.max(...current.map(chatMessageTime))
+  );
+}
+
 // An older page, merged in by time. Equal times keep the page ahead, since it
 // was cut from before everything already held.
 export function prependChatHistory(

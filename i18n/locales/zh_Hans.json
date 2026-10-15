@@ -10326,6 +10326,7 @@
     "new_messages": "新消息",
     "loading_older": "正在加载更早的消息…",
     "no_older_messages": "没有更早的消息",
+    "older_messages": "更早的消息",
     "organizers": {
       "title": "组织者聊天",
       "no_access": "您没有访问此页面的权限。",

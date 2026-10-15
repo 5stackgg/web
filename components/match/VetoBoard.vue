@@ -596,7 +596,7 @@ function edgeOf(id: string): EdgeView {
     return {
       tone: "even",
       lineup: null,
-      text: t("match.veto.scout.even"),
+      text: "+0",
       title: `${t("match.veto.scout.edge_even", { points: SCOUT_EVEN_POINTS })} · ${detail}`,
     };
   }

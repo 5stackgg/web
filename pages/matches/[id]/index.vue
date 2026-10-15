@@ -343,11 +343,6 @@ onUnmounted(() => rankSub?.unsubscribe());
                     <div
                       class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
                     >
-                      <div
-                        class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
-                      >
-                        {{ $t("common.map_veto") }}
-                      </div>
                       <MatchPicksDisplay
                         v-if="showVetoPicks"
                         :match="match"

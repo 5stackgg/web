@@ -1,12 +1,32 @@
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { teamMonogram } from "~/components/watch/watchTicker";
-import type { VetoBoardLineup } from "~/utilities/vetoOrder";
+import { mapVetoOrder } from "~/utilities/vetoOrder";
+import type { VetoBoardLineup, VetoBoardStep } from "~/utilities/vetoOrder";
 
 // Which of the match's two lineups made a pick.
 export function lineupSlot(match: any, lineupId: string | null | undefined) {
   if (lineupId && lineupId === match?.lineup_1_id) return 1 as const;
   if (lineupId && lineupId === match?.lineup_2_id) return 2 as const;
   return null;
+}
+
+// Every step of a match's map veto, with the picks made so far.
+export function mapVetoSteps(match: any, picks: any[]): VetoBoardStep[] {
+  const poolSize = match?.options?.map_pool?.maps?.length ?? 0;
+  return mapVetoOrder(match?.options?.best_of, poolSize).map((step, index) => {
+    const pick = picks[index];
+    return {
+      ...step,
+      record: pick
+        ? {
+            itemId: pick.map.id,
+            lineup: lineupSlot(match, pick.match_lineup_id),
+            side: pick.side,
+            auto: pick.auto_picked,
+          }
+        : null,
+    };
+  });
 }
 
 // The lineup the signed-in player is on, if any.

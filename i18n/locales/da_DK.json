@@ -9589,7 +9589,8 @@
     },
     "header": {
       "final": "Slutresultat",
-      "winner": "Vinder"
+      "winner": "Vinder",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility mod opstillinger",
@@ -9706,6 +9707,25 @@
         "Ban": "Din ban",
         "Pick": "Dit pick",
         "Side": "Din side"
+      },
+      "start": {
+        "heading": "Kampen starter",
+        "waiting": "Venter på en server",
+        "waiting_line": "Din kamp starter, så snart en er ledig",
+        "booting": "Serveren starter op",
+        "booting_line": "Starter din kampserver",
+        "ready": "Serveren er klar",
+        "ready_first": "{map} først",
+        "ready_first_you": "{map} først · du starter på {side}",
+        "ready_only_you": "{map} · du starter på {side}",
+        "sides_title": "Startsider",
+        "sides_key": "CT forsvarer først, T angriber først, siderne byttes ved halvleg",
+        "knife_key": "Decider-sider: knivrunde",
+        "picked": "pickede",
+        "starts": "Starter på {side}",
+        "you": "Dig",
+        "knife": "Knivrunde",
+        "knife_line": "Vinderen vælger side"
       }
     }
   },

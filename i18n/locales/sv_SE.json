@@ -9589,7 +9589,8 @@
     },
     "header": {
       "final": "Slutresultat",
-      "winner": "Vinnare"
+      "winner": "Vinnare",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility mot uppställningar",
@@ -9706,6 +9707,25 @@
         "Ban": "Din bann",
         "Pick": "Ditt val",
         "Side": "Din sida"
+      },
+      "start": {
+        "heading": "Matchen startar",
+        "waiting": "Väntar på en server",
+        "waiting_line": "Din match startar så fort en är ledig",
+        "booting": "Servern startar",
+        "booting_line": "Startar din matchserver",
+        "ready": "Servern är redo",
+        "ready_first": "{map} först",
+        "ready_first_you": "{map} först · du börjar på {side}",
+        "ready_only_you": "{map} · du börjar på {side}",
+        "sides_title": "Startsidor",
+        "sides_key": "CT försvarar först, T anfaller först, sidorna byts vid halvtid",
+        "knife_key": "Avgörarens sidor: knivrond",
+        "picked": "valde",
+        "starts": "Börjar på {side}",
+        "you": "Du",
+        "knife": "Knivrond",
+        "knife_line": "Vinnaren väljer sida"
       }
     }
   },

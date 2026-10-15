@@ -9589,7 +9589,8 @@
     },
     "header": {
       "final": "Encerrada",
-      "winner": "Vencedor"
+      "winner": "Vencedor",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utilitário vs lineups",
@@ -9706,6 +9707,25 @@
         "Ban": "Seu ban",
         "Pick": "Seu pick",
         "Side": "Seu lado"
+      },
+      "start": {
+        "heading": "Partida iniciando",
+        "waiting": "Aguardando um servidor",
+        "waiting_line": "Sua partida começa assim que um estiver livre",
+        "booting": "Servidor iniciando",
+        "booting_line": "Iniciando o servidor da sua partida",
+        "ready": "Servidor pronto",
+        "ready_first": "{map} primeiro",
+        "ready_first_you": "{map} primeiro · você começa como {side}",
+        "ready_only_you": "{map} · você começa como {side}",
+        "sides_title": "Lados iniciais",
+        "sides_key": "CT defende primeiro, T ataca primeiro, os lados trocam no intervalo",
+        "knife_key": "Lados do decisivo: round faca",
+        "picked": "escolheu",
+        "starts": "Começa como {side}",
+        "you": "Você",
+        "knife": "Round faca",
+        "knife_line": "O vencedor escolhe o lado"
       }
     }
   },

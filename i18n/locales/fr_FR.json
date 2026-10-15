@@ -9589,7 +9589,8 @@
     },
     "header": {
       "final": "Score final",
-      "winner": "Vainqueur"
+      "winner": "Vainqueur",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utilitaire vs lineups",
@@ -9706,6 +9707,25 @@
         "Ban": "Votre ban",
         "Pick": "Votre pick",
         "Side": "Votre camp"
+      },
+      "start": {
+        "heading": "Match en préparation",
+        "waiting": "En attente d'un serveur",
+        "waiting_line": "Votre match commence dès qu'un serveur est libre",
+        "booting": "Démarrage du serveur",
+        "booting_line": "Démarrage de votre serveur de match",
+        "ready": "Serveur prêt",
+        "ready_first": "{map} en premier",
+        "ready_first_you": "{map} en premier · vous commencez {side}",
+        "ready_only_you": "{map} · vous commencez {side}",
+        "sides_title": "Camps de départ",
+        "sides_key": "CT défend d'abord, T attaque d'abord, les camps s'inversent à la mi-temps",
+        "knife_key": "Camps de la décisive : knife round",
+        "picked": "choisie",
+        "starts": "Commence {side}",
+        "you": "Vous",
+        "knife": "Knife round",
+        "knife_line": "Le vainqueur choisit son camp"
       }
     }
   },

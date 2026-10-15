@@ -1,8 +1,17 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRef, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  toRef,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import { Spinner } from "~/components/ui/spinner";
 import VetoCrest from "~/components/match/VetoCrest.vue";
+import VetoRail from "~/components/match/VetoRail.vue";
 import { useCountdown } from "~/composables/useCountdown";
 import {
   SCOUT_EVEN_POINTS,
@@ -18,6 +27,8 @@ import type {
   VetoBoardLineup,
   VetoBoardStep,
 } from "~/utilities/vetoOrder";
+import type { VetoStart, VetoStartSide } from "~/utilities/vetoStage";
+import type { VetoFlight } from "~/utilities/vetoHandoff";
 
 // The veto as one fixed-size stage: every map (or region) is a slice of it.
 // The one in play opens wide, bans thin to slivers, picks tuck in and dim, so
@@ -44,6 +55,12 @@ const props = withDefaults(
       lineups: [ScoutLineup | null, ScoutLineup | null];
       viewer: 1 | 2 | null;
     } | null;
+    // Once the veto is done and the server boots, the series grows over the
+    // pool: each map to be played, large, with the side each team starts on.
+    start?: VetoStart | null;
+    // When the server is ready, hand the maps and the order of play over to
+    // the page around the board.
+    handOff?: boolean;
   }>(),
   {
     pickingLineup: null,
@@ -54,16 +71,20 @@ const props = withDefaults(
     bestOf: 1,
     viewer: null,
     scouting: null,
+    start: null,
+    handOff: false,
   },
 );
 
 const emit = defineEmits<{
   confirm: [choice: { itemId?: string; side?: string }];
+  handoff: [flight: VetoFlight];
 }>();
 
 const { t } = useI18n();
 
 const REPLAY_MS = 2600;
+const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 const DEFAULT_POSTER = "/img/maps/screenshots/default.webp";
 
 const isRegion = computed(() => props.kind === "region");
@@ -338,6 +359,7 @@ const seconds = computed(() => Math.ceil(remaining.value));
 
 /* ---------- copy ---------- */
 const lead = computed(() => {
+  if (props.start) return t(`match.veto.start.${props.start.phase}`);
   const s = step.value;
   if (!s) {
     return isRegion.value
@@ -355,6 +377,7 @@ const lead = computed(() => {
 });
 
 const line = computed(() => {
+  if (props.start) return startLine.value;
   const s = step.value;
   if (!s) return isRegion.value ? "" : t("match.veto.complete_line");
   if (s.type === "Decider") {
@@ -739,77 +762,6 @@ function panelEdge(id: string) {
   });
 }
 
-/* ---------- order of play ---------- */
-const railSteps = computed(() =>
-  props.steps.map((s, index) => {
-    const state = s.record ? "done" : index === cursor.value ? "now" : "next";
-    const lineup = s.type === "Decider" ? null : (s.record?.lineup ?? s.lineup);
-    const typeLabel =
-      s.type === "Decider" && isRegion.value
-        ? t("match.veto.steps.Region")
-        : t(`match.veto.steps.${s.type}`);
-    let what =
-      state === "now" && mine.value
-        ? t(`match.veto.yours.${s.type}`)
-        : typeLabel;
-    let side: string | null = null;
-    if (s.record) {
-      if (s.type === "Side") {
-        side = s.record.side ?? null;
-        what = sideShort(side);
-      } else {
-        what = label(s.record.itemId);
-      }
-    }
-    const detail = s.record
-      ? s.type === "Side"
-        ? `${sideShort(side)} · ${label(s.record.itemId)}`
-        : label(s.record.itemId)
-      : "";
-    return {
-      key: index,
-      type: s.type,
-      state,
-      you: state === "now" && mine.value,
-      lineup,
-      mine: !!lineup && lineup === viewerLineup.value,
-      typeLabel,
-      tag:
-        lineup && !(state === "now" && mine.value)
-          ? props.lineups[lineup - 1].monogram
-          : "",
-      what,
-      side,
-      itemId: s.record?.itemId ?? null,
-      title: [
-        `${index + 1}. ${typeLabel}`,
-        lineupName(lineup),
-        detail,
-        s.record?.auto ? t("match.picks.auto_picked") : "",
-      ]
-        .filter(Boolean)
-        .join(" · "),
-    };
-  }),
-);
-
-// On a phone the order of play is a ledger: one row per lineup, its moves in
-// order, and the decider under them.
-const ledgerRows = computed(() =>
-  ([1, 2] as const)
-    .map((lineup) => ({
-      lineup,
-      mine: lineup === viewerLineup.value,
-      steps: railSteps.value.filter(
-        (s) => s.type !== "Decider" && s.lineup === lineup,
-      ),
-    }))
-    .filter((row) => row.steps.length),
-);
-const ledgerDecider = computed(
-  () => railSteps.value.find((s) => s.type === "Decider") ?? null,
-);
-
 /* ---------- series ---------- */
 const series = computed(() => {
   const played = props.steps.filter(
@@ -837,6 +789,180 @@ const series = computed(() => {
   });
 });
 const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
+
+/* ---------- the start ---------- */
+const item = (id: string) => props.items.find((entry) => entry.id === id);
+
+const startMaps = computed(() =>
+  (props.start?.maps ?? []).map((map, i) => ({
+    ...map,
+    n: i + 1,
+    item: item(map.itemId),
+    label:
+      props.bestOf === 1
+        ? t("match.veto.the_map")
+        : map.decider
+          ? t("match.veto.decider_map_n", { n: i + 1 })
+          : t("match.veto.map_n", { n: i + 1 }),
+  })),
+);
+const knife = computed(() => startMaps.value.some((map) => !map.sides));
+
+const startLine = computed(() => {
+  const phase = props.start?.phase;
+  if (phase !== "ready") {
+    return phase === "waiting"
+      ? t("match.veto.start.waiting_line")
+      : t("match.veto.start.booting_line");
+  }
+  const first = startMaps.value[0];
+  if (!first) return "";
+  const map = first.item?.label ?? "";
+  const side = viewerLineup.value ? first.sides?.[viewerLineup.value] : null;
+  // One map is not "first" of anything.
+  if (startMaps.value.length === 1) {
+    return side ? t("match.veto.start.ready_only_you", { map, side }) : map;
+  }
+  return side
+    ? t("match.veto.start.ready_first_you", { map, side })
+    : t("match.veto.start.ready_first", { map });
+});
+
+const sideIconShort = (side: VetoStartSide) =>
+  sideIcon(side === "CT" ? "CT" : "TERRORIST");
+
+// The panels sit over the stage and the series, across the board (down it
+// on a phone), placed by hand so they can grow out of the series chips.
+type Box = { left: number; top: number; width: number; height: number };
+const areaEl = ref<HTMLElement | null>(null);
+const railRef = ref<InstanceType<typeof VetoRail> | null>(null);
+const boxes = ref<Box[]>([]);
+const shown = ref<number[]>([]);
+const px = (rect: Box) => ({
+  left: `${rect.left}px`,
+  top: `${rect.top}px`,
+  width: `${rect.width}px`,
+  height: `${rect.height}px`,
+});
+const panels = () =>
+  Array.from(areaEl.value?.querySelectorAll<HTMLElement>(".st-panel") ?? []);
+
+function fit() {
+  const area = areaEl.value;
+  const n = startMaps.value.length;
+  if (!area || !n) return;
+  const w = area.clientWidth;
+  const h = area.clientHeight;
+  const gap = 4;
+  const across = w > 560;
+  boxes.value = Array.from({ length: n }, (_, i) => {
+    if (across) {
+      const width = (w - gap * (n - 1)) / n;
+      return { left: i * (width + gap), top: 0, width, height: h };
+    }
+    const height = (h - gap * (n - 1)) / n;
+    return { left: 0, top: i * (height + gap), width: w, height };
+  });
+}
+
+async function grow(animate: boolean) {
+  fit();
+  await nextTick();
+  const area = areaEl.value;
+  if (!area) return;
+  const reduced = !!window.matchMedia?.("(prefers-reduced-motion: reduce)")
+    ?.matches;
+  if (!animate || reduced || typeof area.animate !== "function") {
+    shown.value = startMaps.value.map((_, i) => i);
+    return;
+  }
+  const a = area.getBoundingClientRect();
+  const chips = Array.from(area.querySelectorAll(".vb-chip"));
+  panels().forEach((panel, i) => {
+    const chip = chips[i]?.getBoundingClientRect();
+    const to = boxes.value[i];
+    if (!chip || !to) {
+      shown.value = [...shown.value, i];
+      return;
+    }
+    const from = {
+      left: chip.left - a.left,
+      top: chip.top - a.top,
+      width: chip.width,
+      height: chip.height,
+    };
+    panel
+      .animate(
+        [
+          { ...px(from), opacity: 0, borderRadius: "8px" },
+          { opacity: 1, offset: 0.16 },
+          { ...px(to), opacity: 1, borderRadius: "12px" },
+        ],
+        { duration: 760, delay: 120 + i * 90, easing: EASE, fill: "backwards" },
+      )
+      .finished.then(() => {
+        shown.value = [...shown.value, i];
+      })
+      .catch(() => {});
+  });
+}
+
+let resize: ResizeObserver | undefined;
+onMounted(() => {
+  if (props.start) void grow(false);
+  if (typeof ResizeObserver === "undefined" || !areaEl.value) return;
+  resize = new ResizeObserver(() => {
+    if (props.start) fit();
+  });
+  resize.observe(areaEl.value);
+});
+
+// The veto finishing on screen grows the series; a page opened mid-boot
+// just shows it.
+watch(
+  () => !!props.start,
+  (on) => {
+    shown.value = [];
+    if (on) void grow(true);
+  },
+);
+
+// Server ready: a beat to read it, the panels let go of their words, and the
+// maps and the order of play fly home.
+let handTimer: ReturnType<typeof setTimeout> | undefined;
+watch(
+  () => props.start?.phase === "ready" && props.handOff,
+  (go) => {
+    clearTimeout(handTimer);
+    if (!go) return;
+    handTimer = setTimeout(() => {
+      shown.value = [];
+      handTimer = setTimeout(handOffNow, 260);
+    }, 700);
+  },
+  { immediate: true },
+);
+
+function handOffNow() {
+  const rail = railRef.value?.$el as HTMLElement | undefined;
+  emit("handoff", {
+    maps: panels().map((panel, i) => {
+      const map = startMaps.value[i];
+      return {
+        rect: panel.getBoundingClientRect(),
+        poster: map?.item?.poster || DEFAULT_POSTER,
+        label: map?.item?.label ?? "",
+        home: `map-${i + 1}`,
+      };
+    }),
+    rail: rail ? { el: rail, rect: rail.getBoundingClientRect() } : null,
+  });
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(handTimer);
+  resize?.disconnect();
+});
 </script>
 
 <template>
@@ -850,9 +976,15 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
         :size="24"
         :title="lineupName(actingLineup)"
       />
-      <span class="vb-lead" :class="{ 'is-you': mine }" :title="lead">{{
-        lead
-      }}</span>
+      <span
+        class="vb-lead"
+        :class="{ 'is-you': mine, 'is-ready': start?.phase === 'ready' }"
+        :title="lead"
+        ><Spinner
+          v-if="start && start.phase !== 'ready'"
+          class="vb-spin h-3.5 w-3.5"
+        />{{ lead }}</span
+      >
       <span class="vb-line" :title="line">{{ line }}</span>
       <span v-if="keys && mine" class="vb-keys"
         ><kbd>←</kbd><kbd>→</kbd> {{ t("match.veto.keys.browse") }} ·
@@ -873,84 +1005,27 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
       </span>
     </div>
 
-    <ol
-      class="vb-rail"
-      :aria-label="t('match.veto.order')"
-      @pointerleave="echo = null"
-    >
-      <li
-        v-for="s in railSteps"
-        :key="s.key"
-        class="vb-railstep"
-        :data-type="s.type"
-        :data-state="s.state"
-        :class="{ 'is-you': s.you, 'is-mine': s.mine }"
-        :title="s.title"
-        @pointerenter="echo = s.itemId"
-      >
-        <img v-if="s.side" class="sd" :src="sideIcon(s.side)" alt="" />
-        <span class="what"
-          ><span class="lbl">{{ s.what }}</span></span
-        >
-        <span v-if="s.tag" class="who">{{ s.tag }}</span>
-      </li>
-    </ol>
+    <VetoRail
+      ref="railRef"
+      :kind="kind"
+      :items="items"
+      :steps="steps"
+      :lineups="lineups"
+      :viewer="viewerLineup"
+      :your-turn="mine"
+      @echo="echo = $event"
+    />
 
-    <div
-      class="vb-ledger"
-      :aria-label="t('match.veto.order')"
-      @pointerleave="echo = null"
-    >
-      <div
-        v-for="row in ledgerRows"
-        :key="row.lineup"
-        class="vb-lrow"
-        :style="{ '--n': row.steps.length }"
+    <div v-if="start" class="vb-scoutkey">
+      <span class="lead"
+        ><b>{{ t("match.veto.start.sides_title") }}</b> ·
+        {{ t("match.veto.start.sides_key") }}</span
       >
-        <span
-          class="vb-lwho"
-          :class="{ 'is-mine': row.mine }"
-          :title="lineupName(row.lineup)"
-        >
-          <VetoCrest :lineup="lineups[row.lineup - 1]" :size="24" />
-        </span>
-        <span
-          v-for="s in row.steps"
-          :key="s.key"
-          class="vb-tok"
-          :data-type="s.type"
-          :data-state="s.state"
-          :class="{ 'is-you': s.you, 'is-mine': s.mine }"
-          :title="s.title"
-          @pointerenter="echo = s.itemId"
-        >
-          <span class="n">{{ s.key + 1 }}</span>
-          <span
-            class="lbl"
-            :class="s.side ? (s.side === 'CT' ? 'is-ct' : 'is-t') : ''"
-            >{{ s.what }}</span
-          >
-        </span>
-      </div>
-      <div v-if="ledgerDecider" class="vb-ldec">
-        <span
-          class="vb-tok"
-          data-type="Decider"
-          :data-state="ledgerDecider.state"
-          :title="ledgerDecider.title"
-          @pointerenter="echo = ledgerDecider.itemId"
-        >
-          <span class="n">{{ ledgerDecider.key + 1 }}</span>
-          <span class="lbl">{{
-            ledgerDecider.state === "done"
-              ? `${ledgerDecider.typeLabel} · ${ledgerDecider.what}`
-              : ledgerDecider.typeLabel
-          }}</span>
-        </span>
-      </div>
+      <span v-if="knife" class="fine">{{
+        t("match.veto.start.knife_key")
+      }}</span>
     </div>
-
-    <div v-if="scoutOn" class="vb-scoutkey">
+    <div v-else-if="scoutOn" class="vb-scoutkey">
       <span class="lead"
         ><b>{{ t("match.veto.scout.edge") }}</b> ·
         {{
@@ -966,281 +1041,367 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
       >
     </div>
 
-    <div
-      ref="stageEl"
-      class="vb-stage"
-      :class="{ 'is-region': isRegion }"
-      :tabindex="live ? 0 : undefined"
-      @pointermove="onPointerMove"
-      @pointerleave="onPointerLeave"
-      @pointerdown="keys = false"
-      @keydown="onStageKey"
-      @focusin="onStageFocusIn"
-      @focusout="onStageFocusOut"
-    >
+    <div ref="areaEl" class="st-area" :class="{ 'is-starting': !!start }">
       <div
-        v-for="item in items"
-        :key="item.id"
-        class="vb-slice"
-        :data-item="item.id"
-        :data-status="stateOf(item.id).status"
-        :class="{
-          'is-wide': isWide(item.id),
-          'is-mid': isWide(item.id) && done,
-          'is-thin': weight(item.id) < 0.5,
-          'is-live': isLive(item.id),
-          'is-selected': mine && selected === item.id,
-          'is-siding': sideMapId === item.id,
-          'is-echo': echo === item.id,
-        }"
-        :style="{ '--g': weight(item.id) }"
-        :tabindex="isLive(item.id) ? 0 : -1"
-        :role="isLive(item.id) ? 'button' : undefined"
-        :aria-label="sliceTitle(item.id)"
-        :title="sliceTitle(item.id)"
-        @click="choose(item.id)"
-        @keydown="onKey($event, item.id)"
+        ref="stageEl"
+        class="vb-stage"
+        :class="{ 'is-region': isRegion }"
+        :tabindex="live ? 0 : undefined"
+        @pointermove="onPointerMove"
+        @pointerleave="onPointerLeave"
+        @pointerdown="keys = false"
+        @keydown="onStageKey"
+        @focusin="onStageFocusIn"
+        @focusout="onStageFocusOut"
       >
-        <template v-if="!isRegion">
-          <NuxtImg
-            class="vb-poster"
-            :src="item.poster || DEFAULT_POSTER"
-            sizes="400px md:900px"
-            alt=""
-          />
-          <div class="vb-shade" />
-        </template>
-        <template v-else>
-          <div class="vb-regionbg" />
-          <div
-            v-if="item.ping != null"
-            class="vb-pingfill"
-            :style="{ '--q': pingQ(item.ping) }"
-          />
-        </template>
-
         <div
-          v-if="scoutView.get(item.id)?.likely"
-          class="vb-likely"
-          aria-hidden="true"
-        />
-
-        <div class="vb-top">
-          <VetoCrest
-            v-if="stateOf(item.id).lineup"
-            :lineup="lineups[stateOf(item.id).lineup! - 1]"
-          />
-          <span v-if="badge(item.id)" class="vb-badge">{{
-            badge(item.id)
-          }}</span>
-
-          <template v-if="scoutView.get(item.id)">
-            <div
-              v-if="
-                scoutView.get(item.id)!.edge || scoutView.get(item.id)!.chip
-              "
-              class="vb-tag"
-            >
-              <span
-                v-if="scoutView.get(item.id)!.edge"
-                class="vb-edge tabular-nums"
-                :data-tone="scoutView.get(item.id)!.edge!.tone"
-                :title="scoutView.get(item.id)!.edge!.title"
-              >
-                <VetoCrest
-                  v-if="scoutView.get(item.id)!.edge!.lineup"
-                  :lineup="lineups[scoutView.get(item.id)!.edge!.lineup! - 1]"
-                  :size="15"
-                />
-                {{ scoutView.get(item.id)!.edge!.text }}
-              </span>
-              <span
-                v-if="scoutView.get(item.id)!.chip"
-                class="vb-habit"
-                :data-kind="scoutView.get(item.id)!.chip!.kind"
-                :title="scoutView.get(item.id)!.chip!.title"
-              >
-                <VetoCrest
-                  :lineup="lineups[scoutView.get(item.id)!.chip!.lineup - 1]"
-                  :size="14"
-                />
-                <span class="txt">{{
-                  scoutView.get(item.id)!.chip!.text
-                }}</span>
-              </span>
-            </div>
-            <div v-if="scoutView.get(item.id)!.rows.length" class="vb-scout">
-              <div class="vb-scouthead">
-                <b>{{
-                  t("match.veto.scout.win_rate_on", { map: item.label })
-                }}</b>
-                <span>{{ panelEdge(item.id) }}</span>
-              </div>
-              <div
-                v-for="row in scoutView.get(item.id)!.rows"
-                :key="row.lineup"
-                class="vb-rec"
-                :class="{ 'is-ahead': row.ahead, 'is-none': row.pct == null }"
-                :title="
-                  t('match.veto.scout.record', {
-                    team: lineupName(row.lineup),
-                    wins: row.wins,
-                    losses: row.losses,
-                  })
-                "
-              >
-                <VetoCrest :lineup="lineups[row.lineup - 1]" :size="18" />
-                <span class="nm">{{ row.name }}</span>
-                <template v-if="row.pct != null">
-                  <span class="wl tabular-nums"
-                    >{{ row.wins }}–{{ row.losses }}</span
-                  >
-                  <span class="trk"
-                    ><i :style="{ width: `${row.pct}%` }"
-                  /></span>
-                  <span class="pct tabular-nums">{{ row.pct }}%</span>
-                </template>
-                <template v-else-if="row.played">
-                  <span class="wl tabular-nums"
-                    >{{ row.wins }}–{{ row.losses }}</span
-                  >
-                  <span />
-                  <span class="pct">—</span>
-                </template>
-                <template v-else>
-                  <span class="wl">{{ t("match.veto.scout.no_games") }}</span>
-                  <span />
-                  <span class="pct">—</span>
-                </template>
-              </div>
-              <div
-                v-if="scoutView.get(item.id)!.line"
-                class="vb-habitline"
-                :data-kind="scoutView.get(item.id)!.line!.kind"
-              >
-                {{ scoutView.get(item.id)!.line!.text }}
-              </div>
-              <div v-if="scoutPlayersNote" class="vb-scoutnote">
-                {{ t("match.veto.scout.players_note") }}
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <!-- narrow: emblem over a vertical name -->
-        <div class="vb-v">
-          <span
-            v-if="isRegion"
-            class="vb-dot"
-            :data-status="item.serverStatus"
-          />
-          <img
-            v-else-if="item.patch"
-            class="vb-vpatch"
-            :src="item.patch"
-            alt=""
-          />
-          <span class="vb-vname">{{ item.label }}</span>
-          <span v-if="isRegion && item.ping != null" class="vb-vping"
-            ><b class="tabular-nums">{{ item.ping }}</b> ms</span
-          >
-        </div>
-
-        <!-- wide: the full read -->
-        <div class="vb-open">
-          <div class="vb-namerow">
-            <img v-if="!isRegion && item.patch" :src="item.patch" alt="" />
-            <span class="vb-name">{{ item.label }}</span>
-          </div>
-          <div v-if="isWide(item.id)" class="vb-act">
-            <button
-              v-if="wideCopy(item.id).cta"
-              type="button"
-              class="vb-cta tac-amber-cta"
-              :disabled="submitting"
-              @click.stop="confirm"
-            >
-              <Spinner v-if="submitting" class="h-4 w-4" />
-              {{ wideCopy(item.id).cta }}
-            </button>
-            <span v-else class="vb-sub" :data-tone="wideCopy(item.id).tone">{{
-              wideCopy(item.id).sub
-            }}</span>
-          </div>
-        </div>
-
-        <!-- side: the picked map opens across the stage and splits CT / T -->
-        <div
-          v-if="!isRegion && sideMapId === item.id"
-          class="vb-split"
+          v-for="item in items"
+          :key="item.id"
+          class="vb-slice"
+          :data-item="item.id"
+          :data-status="stateOf(item.id).status"
           :class="{
-            'sel-CT': mine && selected === 'CT',
-            'sel-T': mine && selected === 'TERRORIST',
+            'is-wide': isWide(item.id),
+            'is-mid': isWide(item.id) && done,
+            'is-thin': weight(item.id) < 0.5,
+            'is-live': isLive(item.id),
+            'is-selected': mine && selected === item.id,
+            'is-siding': sideMapId === item.id,
+            'is-echo': echo === item.id,
           }"
-          @click.stop
+          :style="{ '--g': weight(item.id) }"
+          :tabindex="isLive(item.id) ? 0 : -1"
+          :role="isLive(item.id) ? 'button' : undefined"
+          :aria-label="sliceTitle(item.id)"
+          :title="sliceTitle(item.id)"
+          @click="choose(item.id)"
+          @keydown="onKey($event, item.id)"
         >
-          <button
-            v-for="side in ['CT', 'TERRORIST']"
-            :key="side"
-            type="button"
-            class="vb-half"
-            :data-side="sideShort(side)"
-            :class="{ 'is-selected': mine && selected === side }"
-            :style="{ backgroundImage: sidePoster }"
-            :disabled="!mine || submitting"
-            @click="chooseSide(side)"
+          <template v-if="!isRegion">
+            <NuxtImg
+              class="vb-poster"
+              :src="item.poster || DEFAULT_POSTER"
+              sizes="400px md:900px"
+              alt=""
+            />
+            <div class="vb-shade" />
+          </template>
+          <template v-else>
+            <div class="vb-regionbg" />
+            <div
+              v-if="item.ping != null"
+              class="vb-pingfill"
+              :style="{ '--q': pingQ(item.ping) }"
+            />
+          </template>
+
+          <div
+            v-if="scoutView.get(item.id)?.likely"
+            class="vb-likely"
+            aria-hidden="true"
+          />
+
+          <div class="vb-top">
+            <VetoCrest
+              v-if="stateOf(item.id).lineup"
+              :lineup="lineups[stateOf(item.id).lineup! - 1]"
+            />
+            <span v-if="badge(item.id)" class="vb-badge">{{
+              badge(item.id)
+            }}</span>
+
+            <template v-if="scoutView.get(item.id)">
+              <div
+                v-if="
+                  scoutView.get(item.id)!.edge || scoutView.get(item.id)!.chip
+                "
+                class="vb-tag"
+              >
+                <span
+                  v-if="scoutView.get(item.id)!.edge"
+                  class="vb-edge tabular-nums"
+                  :data-tone="scoutView.get(item.id)!.edge!.tone"
+                  :title="scoutView.get(item.id)!.edge!.title"
+                >
+                  <VetoCrest
+                    v-if="scoutView.get(item.id)!.edge!.lineup"
+                    :lineup="lineups[scoutView.get(item.id)!.edge!.lineup! - 1]"
+                    :size="15"
+                  />
+                  {{ scoutView.get(item.id)!.edge!.text }}
+                </span>
+                <span
+                  v-if="scoutView.get(item.id)!.chip"
+                  class="vb-habit"
+                  :data-kind="scoutView.get(item.id)!.chip!.kind"
+                  :title="scoutView.get(item.id)!.chip!.title"
+                >
+                  <VetoCrest
+                    :lineup="lineups[scoutView.get(item.id)!.chip!.lineup - 1]"
+                    :size="14"
+                  />
+                  <span class="txt">{{
+                    scoutView.get(item.id)!.chip!.text
+                  }}</span>
+                </span>
+              </div>
+              <div v-if="scoutView.get(item.id)!.rows.length" class="vb-scout">
+                <div class="vb-scouthead">
+                  <b>{{
+                    t("match.veto.scout.win_rate_on", { map: item.label })
+                  }}</b>
+                  <span>{{ panelEdge(item.id) }}</span>
+                </div>
+                <div
+                  v-for="row in scoutView.get(item.id)!.rows"
+                  :key="row.lineup"
+                  class="vb-rec"
+                  :class="{ 'is-ahead': row.ahead, 'is-none': row.pct == null }"
+                  :title="
+                    t('match.veto.scout.record', {
+                      team: lineupName(row.lineup),
+                      wins: row.wins,
+                      losses: row.losses,
+                    })
+                  "
+                >
+                  <VetoCrest :lineup="lineups[row.lineup - 1]" :size="18" />
+                  <span class="nm">{{ row.name }}</span>
+                  <template v-if="row.pct != null">
+                    <span class="wl tabular-nums"
+                      >{{ row.wins }}–{{ row.losses }}</span
+                    >
+                    <span class="trk"
+                      ><i :style="{ width: `${row.pct}%` }"
+                    /></span>
+                    <span class="pct tabular-nums">{{ row.pct }}%</span>
+                  </template>
+                  <template v-else-if="row.played">
+                    <span class="wl tabular-nums"
+                      >{{ row.wins }}–{{ row.losses }}</span
+                    >
+                    <span />
+                    <span class="pct">—</span>
+                  </template>
+                  <template v-else>
+                    <span class="wl">{{ t("match.veto.scout.no_games") }}</span>
+                    <span />
+                    <span class="pct">—</span>
+                  </template>
+                </div>
+                <div
+                  v-if="scoutView.get(item.id)!.line"
+                  class="vb-habitline"
+                  :data-kind="scoutView.get(item.id)!.line!.kind"
+                >
+                  {{ scoutView.get(item.id)!.line!.text }}
+                </div>
+                <div v-if="scoutPlayersNote" class="vb-scoutnote">
+                  {{ t("match.veto.scout.players_note") }}
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- narrow: emblem over a vertical name -->
+          <div class="vb-v">
+            <span
+              v-if="isRegion"
+              class="vb-dot"
+              :data-status="item.serverStatus"
+            />
+            <img
+              v-else-if="item.patch"
+              class="vb-vpatch"
+              :src="item.patch"
+              alt=""
+            />
+            <span class="vb-vname">{{ item.label }}</span>
+            <span v-if="isRegion && item.ping != null" class="vb-vping"
+              ><b class="tabular-nums">{{ item.ping }}</b> ms</span
+            >
+          </div>
+
+          <!-- wide: the full read -->
+          <div class="vb-open">
+            <div class="vb-namerow">
+              <img v-if="!isRegion && item.patch" :src="item.patch" alt="" />
+              <span class="vb-name">{{ item.label }}</span>
+            </div>
+            <div v-if="isWide(item.id)" class="vb-act">
+              <button
+                v-if="wideCopy(item.id).cta"
+                type="button"
+                class="vb-cta tac-amber-cta"
+                :disabled="submitting"
+                @click.stop="confirm"
+              >
+                <Spinner v-if="submitting" class="h-4 w-4" />
+                {{ wideCopy(item.id).cta }}
+              </button>
+              <span v-else class="vb-sub" :data-tone="wideCopy(item.id).tone">{{
+                wideCopy(item.id).sub
+              }}</span>
+            </div>
+          </div>
+
+          <!-- side: the picked map opens across the stage and splits CT / T -->
+          <div
+            v-if="!isRegion && sideMapId === item.id"
+            class="vb-split"
+            :class="{
+              'sel-CT': mine && selected === 'CT',
+              'sel-T': mine && selected === 'TERRORIST',
+            }"
+            @click.stop
           >
-            <span class="vb-half-in">
-              <img :src="sideIcon(side)" alt="" />
-              <b>{{ t("match.veto.start_side", { side: sideShort(side) }) }}</b>
-              <small>{{
-                side === "CT"
-                  ? t("match.veto.defend_first")
-                  : t("match.veto.attack_first")
-              }}</small>
-              <span class="vb-cta tac-amber-cta">
-                <Spinner
-                  v-if="submitting && selected === side"
-                  class="h-4 w-4"
-                />
-                {{ t("match.veto.confirm_side", { side: sideShort(side) }) }}
+            <button
+              v-for="side in ['CT', 'TERRORIST']"
+              :key="side"
+              type="button"
+              class="vb-half"
+              :data-side="sideShort(side)"
+              :class="{ 'is-selected': mine && selected === side }"
+              :style="{ backgroundImage: sidePoster }"
+              :disabled="!mine || submitting"
+              @click="chooseSide(side)"
+            >
+              <span class="vb-half-in">
+                <img :src="sideIcon(side)" alt="" />
+                <b>{{
+                  t("match.veto.start_side", { side: sideShort(side) })
+                }}</b>
+                <small>{{
+                  side === "CT"
+                    ? t("match.veto.defend_first")
+                    : t("match.veto.attack_first")
+                }}</small>
+                <span class="vb-cta tac-amber-cta">
+                  <Spinner
+                    v-if="submitting && selected === side"
+                    class="h-4 w-4"
+                  />
+                  {{ t("match.veto.confirm_side", { side: sideShort(side) }) }}
+                </span>
               </span>
-            </span>
-          </button>
-          <span class="vb-seam">{{ sideSeam }}</span>
+            </button>
+            <span class="vb-seam">{{ sideSeam }}</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div v-if="!isRegion" class="vb-series">
-      <div
-        v-for="slot in series"
-        :key="slot.n"
-        class="vb-chip"
-        :class="{ 'is-set': !!slot.item }"
-      >
-        <img
-          v-if="slot.item"
-          class="th"
-          :src="slot.item.poster || DEFAULT_POSTER"
-          alt=""
-        />
-        <span v-else class="th is-empty" />
-        <span class="tx">
-          <span class="n"
-            >{{ slot.label
-            }}<template v-if="slot.tag"> · {{ slot.tag }}</template></span
-          >
-          <span class="m">{{
-            slot.item ? slot.item.label : t("match.veto.not_set")
-          }}</span>
-        </span>
-        <img
-          v-if="slot.starts"
-          class="sd"
-          :src="sideIcon(slot.starts === 'CT' ? 'CT' : 'TERRORIST')"
-          :alt="slot.starts"
-        />
+      <div v-if="!isRegion" class="vb-series">
+        <div
+          v-for="slot in series"
+          :key="slot.n"
+          class="vb-chip"
+          :class="{ 'is-set': !!slot.item }"
+        >
+          <img
+            v-if="slot.item"
+            class="th"
+            :src="slot.item.poster || DEFAULT_POSTER"
+            alt=""
+          />
+          <span v-else class="th is-empty" />
+          <span class="tx">
+            <span class="n"
+              >{{ slot.label
+              }}<template v-if="slot.tag"> · {{ slot.tag }}</template></span
+            >
+            <span class="m">{{
+              slot.item ? slot.item.label : t("match.veto.not_set")
+            }}</span>
+          </span>
+          <img
+            v-if="slot.starts"
+            class="sd"
+            :src="sideIcon(slot.starts === 'CT' ? 'CT' : 'TERRORIST')"
+            :alt="slot.starts"
+          />
+        </div>
+      </div>
+
+      <div v-if="start" class="st-layer">
+        <div
+          v-for="(map, i) in startMaps"
+          :key="map.itemId"
+          class="st-panel"
+          :class="{ 'is-shown': shown.includes(i) }"
+          :style="{
+            '--i': i,
+            ...(boxes[i] ? px(boxes[i]) : {}),
+            backgroundImage: `url('${map.item?.poster || DEFAULT_POSTER}')`,
+          }"
+        >
+          <div class="shade" />
+          <div class="top reveal">
+            <span class="n" :class="{ 'is-decider': map.decider }">{{
+              map.label
+            }}</span>
+            <span v-if="map.pickedBy" class="by"
+              ><VetoCrest :lineup="lineups[map.pickedBy - 1]" :size="16" />{{
+                t("match.veto.start.picked")
+              }}</span
+            >
+          </div>
+          <div class="reveal">
+            <div class="nm up">
+              <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
+              <span>{{ map.item?.label }}</span>
+            </div>
+          </div>
+          <div class="bottom reveal">
+            <div class="nm">
+              <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
+              <span>{{ map.item?.label }}</span>
+            </div>
+            <div class="plates">
+              <template v-if="map.sides">
+                <div
+                  v-for="lineup in [1, 2] as const"
+                  :key="lineup"
+                  class="plate"
+                  :class="{ 'is-you': viewerLineup === lineup }"
+                  :data-side="map.sides[lineup]"
+                  :title="`${lineupName(lineup)} · ${t('match.veto.start.starts', { side: map.sides[lineup] })}`"
+                >
+                  <VetoCrest :lineup="lineups[lineup - 1]" :size="26" />
+                  <span class="tx"
+                    ><b>{{ lineupName(lineup) }}</b
+                    ><small
+                      ><img :src="sideIconShort(map.sides[lineup])" alt="" />{{
+                        t("match.veto.start.starts", {
+                          side: map.sides[lineup],
+                        })
+                      }}</small
+                    ></span
+                  >
+                  <span v-if="viewerLineup === lineup" class="you">{{
+                    t("match.veto.start.you")
+                  }}</span>
+                </div>
+              </template>
+              <div v-else class="plate is-knife">
+                <span class="vs"
+                  ><VetoCrest
+                    :lineup="lineups[0]"
+                    :size="22"
+                    :class="{ 'is-mine': viewerLineup === 1 }" />{{
+                    t("common.vs")
+                  }}<VetoCrest
+                    :lineup="lineups[1]"
+                    :size="22"
+                    :class="{ 'is-mine': viewerLineup === 2 }"
+                /></span>
+                <span class="tx"
+                  ><b>{{ t("match.veto.start.knife") }}</b
+                  ><small>{{ t("match.veto.start.knife_line") }}</small></span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1334,186 +1495,6 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 }
 .vb-bar.is-urgent i {
   background: var(--vb-ban);
-}
-
-/* ---------- order of play ---------- */
-.vb-rail {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 4px;
-}
-.vb-railstep {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  height: 32px;
-  padding: 0 9px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  background: var(--vb-surface);
-  color: var(--vb-faint);
-  overflow: hidden;
-  transition:
-    color 240ms var(--vb-ease),
-    background-color 240ms var(--vb-ease),
-    box-shadow 240ms var(--vb-ease);
-}
-.vb-railstep .what {
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.vb-railstep .who {
-  flex: none;
-  font-size: 11px;
-  opacity: 0.8;
-}
-.vb-railstep .sd {
-  width: 14px;
-  height: 14px;
-  flex: none;
-}
-/* What a step was (ban, pick, side, decider) is a short line under its name,
-   drawn in as the step lands. */
-.vb-railstep .lbl,
-.vb-tok .lbl {
-  --mark: var(--vb-line-2);
-  display: inline-block;
-  max-width: 100%;
-  padding-bottom: 3px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  background: linear-gradient(var(--mark), var(--mark)) left bottom / 0 2px
-    no-repeat;
-  transition: background-size 240ms var(--vb-ease);
-}
-[data-type="Ban"] > .lbl,
-[data-type="Ban"] > .what > .lbl {
-  --mark: var(--vb-ban);
-}
-[data-type="Pick"] > .lbl,
-[data-type="Pick"] > .what > .lbl {
-  --mark: var(--vb-pick);
-}
-[data-type="Side"] > .lbl,
-[data-type="Side"] > .what > .lbl {
-  --mark: var(--vb-muted);
-}
-[data-type="Decider"] > .lbl,
-[data-type="Decider"] > .what > .lbl {
-  --mark: var(--vb-decider);
-}
-.vb-railstep[data-state="done"] .lbl,
-.vb-tok[data-state="done"] .lbl {
-  background-size: 100% 2px;
-}
-.vb-railstep[data-state="done"] {
-  color: hsl(var(--foreground));
-  background: var(--vb-surface-2);
-}
-.vb-railstep[data-state="done"][data-type="Ban"] .what {
-  color: var(--vb-muted);
-}
-.vb-railstep[data-state="now"] {
-  color: hsl(var(--foreground));
-  box-shadow: inset 0 0 0 1px var(--vb-muted);
-}
-.vb-railstep[data-state="now"].is-you {
-  box-shadow: inset 0 0 0 1px var(--vb-amber);
-}
-.vb-railstep[data-state="now"].is-you .what {
-  color: var(--vb-amber);
-  font-weight: 600;
-}
-/* Your moves sit a step brighter; your tag is amber. */
-.vb-railstep.is-mine[data-state="done"] {
-  background: hsl(240 4% 19%);
-}
-.vb-railstep.is-mine .who {
-  color: var(--vb-amber);
-  opacity: 1;
-}
-
-/* ---------- order of play on a phone: the ledger ---------- */
-.vb-ledger {
-  display: none;
-  gap: 6px;
-}
-.vb-lrow {
-  display: grid;
-  grid-template-columns: 26px repeat(var(--n), minmax(0, 1fr));
-  gap: 4px;
-  align-items: center;
-}
-.vb-lwho {
-  display: grid;
-  place-items: center;
-  border-radius: 7px;
-}
-.vb-lwho.is-mine {
-  box-shadow: 0 0 0 2px var(--vb-amber);
-}
-.vb-ldec {
-  padding-left: 30px;
-}
-.vb-tok {
-  position: relative;
-  height: 30px;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-  color: hsl(var(--foreground));
-  background: var(--vb-surface-2);
-}
-.vb-tok .n {
-  position: absolute;
-  top: 2px;
-  left: 4px;
-  font-size: 8px;
-  line-height: 1;
-  color: var(--vb-faint);
-}
-.vb-tok[data-state="done"][data-type="Ban"] .lbl {
-  color: var(--vb-muted);
-}
-.vb-tok .lbl.is-ct {
-  color: var(--vb-ct);
-  font-weight: 700;
-}
-.vb-tok .lbl.is-t {
-  color: var(--vb-t);
-  font-weight: 700;
-}
-.vb-tok.is-mine[data-state="done"] {
-  background: hsl(240 4% 19%);
-}
-.vb-tok[data-state="next"] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--vb-line-2);
-  color: var(--vb-faint);
-  font-weight: 500;
-}
-.vb-tok[data-state="now"] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--vb-muted);
-}
-.vb-tok[data-state="now"].is-you {
-  box-shadow: inset 0 0 0 1.5px var(--vb-amber);
-  color: var(--vb-amber);
 }
 
 /* ---------- stage ---------- */
@@ -2290,6 +2271,277 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   outline-offset: 2px;
 }
 
+/* ---------- the start: the series grows into the maps ---------- */
+.vb-lead.is-ready {
+  color: var(--vb-pick);
+}
+.vb-lead :deep(.vb-spin) {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+.st-area {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+.st-area > .vb-stage,
+.st-area > .vb-series {
+  transition: opacity 280ms ease;
+}
+.st-area.is-starting > .vb-stage,
+.st-area.is-starting > .vb-series {
+  opacity: 0;
+  pointer-events: none;
+}
+.st-area.is-starting > .vb-series {
+  transition-duration: 160ms;
+}
+.st-layer {
+  position: absolute;
+  inset: 0;
+}
+.st-panel {
+  container: panel / size;
+  position: absolute;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--vb-surface);
+  background-size: cover;
+  background-position: center;
+}
+.st-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.1);
+  pointer-events: none;
+}
+/* The map stays the picture: only the edges darken, for the words. */
+.st-panel .shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      0deg,
+      hsl(240 10% 4% / 0.88) 0%,
+      hsl(240 10% 4% / 0.35) 34%,
+      transparent 52%
+    ),
+    linear-gradient(180deg, hsl(240 10% 4% / 0.5) 0%, transparent 20%);
+}
+.st-panel .reveal {
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 320ms var(--vb-ease) calc(var(--i) * 70ms),
+    translate 420ms var(--vb-ease) calc(var(--i) * 70ms);
+}
+.st-panel.is-shown .reveal {
+  opacity: 1;
+  translate: none;
+}
+.st-panel .top {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.st-panel .top .n {
+  padding: 1px 7px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.6);
+  white-space: nowrap;
+}
+.st-panel .top .n.is-decider {
+  color: var(--vb-decider);
+}
+.st-panel .top .by {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  color: hsl(0 0% 100% / 0.75);
+}
+.st-panel .bottom {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  gap: 8px;
+}
+.st-panel .nm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-left: 2px;
+}
+.st-panel .nm img {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
+}
+.st-panel .nm span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.st-panel .nm.up {
+  display: none;
+}
+/* Each team on a small plate; CT and T are only its top edge. */
+.st-panel .plates {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+}
+.plate {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: rgb(10 10 14 / 0.6);
+  backdrop-filter: blur(6px);
+  box-shadow:
+    inset 0 2px 0 var(--edge),
+    inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+.plate[data-side="CT"] {
+  --edge: var(--vb-ct);
+}
+.plate[data-side="T"] {
+  --edge: var(--vb-t);
+}
+.plate.is-you .veto-crest,
+.plate .veto-crest.is-mine {
+  box-shadow: 0 0 0 2px var(--vb-amber);
+}
+.plate .tx {
+  display: grid;
+  min-width: 0;
+  line-height: 1.2;
+}
+.plate .tx b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.plate .tx small {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  color: hsl(0 0% 100% / 0.75);
+}
+.plate[data-side="CT"] .tx small {
+  color: var(--vb-ct);
+}
+.plate[data-side="T"] .tx small {
+  color: var(--vb-t);
+}
+.plate .tx small img {
+  width: 13px;
+  height: 13px;
+}
+.plate .you {
+  position: absolute;
+  top: -8px;
+  right: 6px;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  color: hsl(var(--tac-amber-foreground));
+  background: var(--vb-amber);
+}
+.plate.is-knife {
+  grid-column: 1 / -1;
+  --edge: hsl(0 0% 100% / 0.4);
+}
+.plate.is-knife .vs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--vb-muted);
+}
+/* A best of three's panels: the plate drops the name, crest and side stay. */
+@container panel (max-width: 300px) {
+  .plate .tx b {
+    display: none;
+  }
+  .plate {
+    justify-content: center;
+  }
+}
+/* Narrow panels (best of five): stacked plates. */
+@container panel (max-width: 200px) {
+  .st-panel .plates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .st-panel .nm span {
+    font-size: 16px;
+  }
+  .st-panel .nm img {
+    width: 22px;
+    height: 22px;
+  }
+  .st-panel .top .by {
+    display: none;
+  }
+  .plate.is-knife .tx small {
+    display: none;
+  }
+}
+/* Short panels (rows on a phone): the name moves up beside the label. */
+@container panel (max-height: 170px) {
+  .st-panel .top {
+    right: 45%;
+  }
+  .st-panel .top .by,
+  .st-panel .bottom .nm {
+    display: none;
+  }
+  .st-panel .nm.up {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    padding: 0;
+  }
+  .st-panel .nm.up span {
+    font-size: 17px;
+  }
+  .st-panel .nm.up img {
+    width: 22px;
+    height: 22px;
+  }
+}
+
 /* ---------- phones: the stage turns on its side ---------- */
 @container (max-width: 560px) {
   .vb-status {
@@ -2305,12 +2557,6 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   }
   .vb-step {
     display: none;
-  }
-  .vb-rail {
-    display: none;
-  }
-  .vb-ledger {
-    display: grid;
   }
   .vb-stage {
     flex-direction: column;

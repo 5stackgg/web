@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import VetoBoard from "~/components/match/VetoBoard.vue";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
@@ -240,5 +240,107 @@ describe("VetoBoard your moves", () => {
     expect(rows[1].find(".vb-lwho").classes()).toContain("is-mine");
     expect(rows[1].findAll(".vb-tok")[1].text()).toContain("T");
     expect(wrapper.find(".vb-ldec").text()).toContain("Decider");
+  });
+});
+
+describe("VetoBoard start", () => {
+  // A best of three done: Mirage picked by Buttah Boyz (1), Nuke by Night
+  // Owls (2), Ancient left as the decider.
+  const done = steps([
+    "train",
+    "dust2",
+    "mirage",
+    "mirage",
+    "nuke",
+    "nuke",
+    "anubis",
+    "inferno",
+    "ancient",
+  ]);
+  const maps = [
+    {
+      itemId: "mirage",
+      decider: false,
+      pickedBy: 1 as const,
+      sides: { 1: "T" as const, 2: "CT" as const },
+    },
+    {
+      itemId: "nuke",
+      decider: false,
+      pickedBy: 2 as const,
+      sides: { 1: "CT" as const, 2: "T" as const },
+    },
+    { itemId: "ancient", decider: true, pickedBy: null, sides: null },
+  ];
+
+  it("grows the series into the maps with the side each team starts on", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 1,
+      scouting: null,
+      start: { phase: "booting", maps },
+    });
+
+    expect(wrapper.find(".vb-lead").text()).toBe("Server booting");
+    expect(wrapper.find(".st-area").classes()).toContain("is-starting");
+    expect(wrapper.find(".vb-scoutkey").text()).toContain("Starting sides");
+    expect(wrapper.find(".vb-scoutkey").text()).toContain("knife round");
+
+    const panels = wrapper.findAll(".st-panel");
+    expect(panels).toHaveLength(3);
+    expect(panels[0].find(".top .n").text()).toBe("Map 1");
+    expect(panels[2].find(".top .n").text()).toBe("Decider · Map 3");
+
+    // Your plate wears the You pill; theirs does not.
+    const plates = panels[0].findAll(".plate");
+    expect(plates[0].attributes("data-side")).toBe("T");
+    expect(plates[0].find(".you").exists()).toBe(true);
+    expect(plates[1].attributes("data-side")).toBe("CT");
+    expect(plates[1].find(".you").exists()).toBe(false);
+
+    expect(panels[2].find(".plate.is-knife").text()).toContain("Knife round");
+  });
+
+  it("names the first map and your side, then hands the maps over", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 1,
+      scouting: null,
+      start: { phase: "booting", maps },
+      handOff: true,
+    });
+
+    vi.useFakeTimers();
+    try {
+      await wrapper.setProps({ start: { phase: "ready", maps } });
+      expect(wrapper.find(".vb-lead").text()).toBe("Server ready");
+      expect(wrapper.find(".vb-line").text()).toBe(
+        "mirage first · you start T",
+      );
+
+      vi.advanceTimersByTime(1000);
+      const [[flight]] = wrapper.emitted("handoff") as [[any]];
+      expect(flight.maps.map((map: any) => map.home)).toEqual([
+        "map-1",
+        "map-2",
+        "map-3",
+      ]);
+      expect(flight.rail).not.toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("does not call the only map of a best of one first", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 2,
+      scouting: null,
+      bestOf: 1,
+      start: { phase: "ready", maps: [maps[0]] },
+    });
+
+    expect(wrapper.find(".vb-line").text()).toBe("mirage · you start CT");
+    expect(wrapper.find(".st-panel .top .n").text()).toBe("The map");
   });
 });

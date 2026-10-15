@@ -9589,7 +9589,8 @@
     },
     "header": {
       "final": "Finale",
-      "winner": "Vincitore"
+      "winner": "Vincitore",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility vs lineup",
@@ -9706,6 +9707,25 @@
         "Ban": "Il tuo ban",
         "Pick": "Il tuo pick",
         "Side": "Il tuo lato"
+      },
+      "start": {
+        "heading": "Avvio match",
+        "waiting": "In attesa di un server",
+        "waiting_line": "Il tuo match inizia appena un server è libero",
+        "booting": "Avvio server",
+        "booting_line": "Avvio del server del tuo match",
+        "ready": "Server pronto",
+        "ready_first": "Prima {map}",
+        "ready_first_you": "Prima {map} · inizi su {side}",
+        "ready_only_you": "{map} · inizi su {side}",
+        "sides_title": "Lati iniziali",
+        "sides_key": "CT difende per primo, T attacca per primo, i lati si invertono a metà tempo",
+        "knife_key": "Lati del decider: knife round",
+        "picked": "scelta",
+        "starts": "Inizia su {side}",
+        "you": "Tu",
+        "knife": "Knife round",
+        "knife_line": "Chi vince sceglie il lato"
       }
     }
   },

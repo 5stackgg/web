@@ -9589,7 +9589,8 @@
     },
     "header": {
       "final": "Bitti",
-      "winner": "Kazanan"
+      "winner": "Kazanan",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility ve Dizilimler",
@@ -9706,6 +9707,25 @@
         "Ban": "Senin banın",
         "Pick": "Senin pick'in",
         "Side": "Senin tarafın"
+      },
+      "start": {
+        "heading": "Maç başlıyor",
+        "waiting": "Sunucu bekleniyor",
+        "waiting_line": "Bir sunucu boşalır boşalmaz maçın başlar",
+        "booting": "Sunucu açılıyor",
+        "booting_line": "Maç sunucun başlatılıyor",
+        "ready": "Sunucu hazır",
+        "ready_first": "Önce {map}",
+        "ready_first_you": "Önce {map} · {side} tarafında başlıyorsun",
+        "ready_only_you": "{map} · {side} tarafında başlıyorsun",
+        "sides_title": "Başlangıç tarafları",
+        "sides_key": "CT önce savunur, T önce saldırır, devre arasında taraflar değişir",
+        "knife_key": "Karar haritası tarafları: bıçak raundu",
+        "picked": "seçti",
+        "starts": "{side} tarafında başlıyor",
+        "you": "Sen",
+        "knife": "Bıçak raundu",
+        "knife_line": "Kazanan tarafı seçer"
       }
     }
   },

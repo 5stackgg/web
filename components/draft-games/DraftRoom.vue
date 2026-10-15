@@ -49,6 +49,7 @@ import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import { useCountdown } from "~/composables/useCountdown";
+import { STARTING_STATUSES, vetoMapsSet } from "~/utilities/vetoStage";
 
 const props = defineProps<{
   room: any;
@@ -58,8 +59,19 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+// After the last pick the veto box stays: the board turns into the start
+// stage while the server boots, until the room hands over to the match page.
+const inStartStage = computed(
+  () =>
+    !!props.room.match_id &&
+    vetoMapsSet(props.match) &&
+    STARTING_STATUSES.includes(props.match?.status),
+);
+
 const inVeto = computed(
-  () => !!props.room.match_id && props.match?.status === "Veto",
+  () =>
+    !!props.room.match_id &&
+    (props.match?.status === "Veto" || inStartStage.value),
 );
 
 const vetoPhaseLabel = computed(() =>
@@ -925,7 +937,11 @@ const start = () => {
                 <h3
                   class="font-sans text-base font-bold uppercase tracking-[0.2em]"
                 >
-                  {{ $t(vetoPhaseLabel) }}
+                  {{
+                    inStartStage
+                      ? $t("match.veto.start.heading")
+                      : $t(vetoPhaseLabel)
+                  }}
                 </h3>
               </div>
               <MatchRegionVeto
@@ -933,7 +949,11 @@ const start = () => {
                 :match-id="room.match_id"
                 class="pb-6"
               />
-              <MatchMapVeto :match="match" :match-id="room.match_id" />
+              <MatchMapVeto
+                :match="match"
+                :match-id="room.match_id"
+                :hand-off="false"
+              />
             </div>
 
             <div

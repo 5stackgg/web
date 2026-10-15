@@ -6,6 +6,7 @@ import { NuxtLink } from "#components";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
+import MatchHeaderVeto from "~/components/match/MatchHeaderVeto.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { e_match_status_enum } from "~/generated/zeus";
@@ -629,5 +630,7 @@ const resultText = computed(() =>
         <TimeAgo :date="match.cancels_at" countdown hide-icon />
       </span>
     </div>
+
+    <MatchHeaderVeto :match="match" />
   </div>
 </template>

@@ -9589,7 +9589,8 @@
     },
     "header": {
       "final": "已结束",
-      "winner": "胜者"
+      "winner": "胜者",
+      "veto": "BP"
     },
     "utility": {
       "title": "道具与点位",
@@ -9706,6 +9707,25 @@
         "Ban": "你的禁用",
         "Pick": "你的选择",
         "Side": "你的阵营"
+      },
+      "start": {
+        "heading": "比赛开始",
+        "waiting": "等待服务器",
+        "waiting_line": "有空闲服务器时比赛立即开始",
+        "booting": "服务器启动中",
+        "booting_line": "正在启动你的比赛服务器",
+        "ready": "服务器就绪",
+        "ready_first": "先打 {map}",
+        "ready_first_you": "先打 {map} · 你以 {side} 方开局",
+        "ready_only_you": "{map} · 你以 {side} 方开局",
+        "sides_title": "开局阵营",
+        "sides_key": "CT 先防守，T 先进攻，中场交换阵营",
+        "knife_key": "决胜图阵营：刀战局",
+        "picked": "已选",
+        "starts": "{side} 方开局",
+        "you": "你",
+        "knife": "刀战局",
+        "knife_line": "胜者选择阵营"
       }
     }
   },

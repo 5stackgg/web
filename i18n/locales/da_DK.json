@@ -9628,6 +9628,11 @@
         "browse": "bladr",
         "choose": "vælg",
         "clear": "ryd"
+      },
+      "yours": {
+        "Ban": "Din ban",
+        "Pick": "Dit pick",
+        "Side": "Din side"
       }
     }
   },

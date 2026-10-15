@@ -29,6 +29,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
           :deadline="vetoPickDeadline"
           :total="match.options.veto_pick_timeout"
           :best-of="bestOf"
+          :viewer="viewerLineup"
           :scouting="scoutingView"
           @confirm="onConfirm"
         />
@@ -52,7 +53,7 @@ import { isVetoOverrideEnabled } from "~/composables/useVetoOverride";
 import { toast } from "@/components/ui/toast";
 import mapLabel from "~/utilities/mapLabel";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
-import { lineupSlot, vetoLineups } from "~/utilities/vetoLineups";
+import { lineupSlot, vetoLineups, viewerSlot } from "~/utilities/vetoLineups";
 import { loadVetoScouting } from "~/utilities/loadVetoScouting";
 import type { ScoutLineup } from "~/utilities/vetoScouting";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -322,21 +323,7 @@ export default {
     // The lineup you play on, so your side reads "You" and you see the other
     // side's habits.
     viewerLineup(): 1 | 2 | null {
-      const steamId = useAuthStore().me?.steam_id;
-      if (!steamId) {
-        return null;
-      }
-      const on = (lineup: any) =>
-        (lineup?.lineup_players ?? []).some(
-          (member: any) => String(member.steam_id) === String(steamId),
-        );
-      if (on(this.match.lineup_1)) {
-        return 1;
-      }
-      if (on(this.match.lineup_2)) {
-        return 2;
-      }
-      return null;
+      return viewerSlot(this.match, useAuthStore().me?.steam_id);
     },
     // On from the first frame, so the board keeps its height while the
     // history loads; dropped only when there turns out to be none.

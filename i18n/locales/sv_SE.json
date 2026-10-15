@@ -9628,6 +9628,11 @@
         "browse": "bläddra",
         "choose": "välj",
         "clear": "rensa"
+      },
+      "yours": {
+        "Ban": "Din bann",
+        "Pick": "Ditt val",
+        "Side": "Din sida"
       }
     }
   },

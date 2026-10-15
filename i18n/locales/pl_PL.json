@@ -9628,6 +9628,11 @@
         "browse": "przeglądaj",
         "choose": "wybierz",
         "clear": "wyczyść"
+      },
+      "yours": {
+        "Ban": "Twój ban",
+        "Pick": "Twój pick",
+        "Side": "Twoja strona"
       }
     }
   },

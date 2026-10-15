@@ -9630,6 +9630,11 @@
         "browse": "browse",
         "choose": "choose",
         "clear": "clear"
+      },
+      "yours": {
+        "Ban": "Your ban",
+        "Pick": "Your pick",
+        "Side": "Your side"
       }
     }
   },

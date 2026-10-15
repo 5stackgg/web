@@ -36,6 +36,8 @@ const props = withDefaults(
     deadline?: string | null;
     total?: number;
     bestOf?: number;
+    // The lineup the viewer plays on; their moves sit a step brighter.
+    viewer?: 1 | 2 | null;
     // Each lineup's history and which lineup is yours, when veto scouting is
     // on for this match's mode.
     scouting?: {
@@ -50,6 +52,7 @@ const props = withDefaults(
     deadline: null,
     total: 0,
     bestOf: 1,
+    viewer: null,
     scouting: null,
   },
 );
@@ -505,7 +508,9 @@ const scoutOn = computed(() => !!props.scouting && !isRegion.value);
 const scoutLoaded = computed(
   () => !!props.scouting?.lineups.some((lineup) => lineup),
 );
-const viewerLineup = computed(() => props.scouting?.viewer ?? null);
+const viewerLineup = computed(
+  () => props.viewer ?? props.scouting?.viewer ?? null,
+);
 const scoutOf = (lineup: 1 | 2) => props.scouting?.lineups[lineup - 1] ?? null;
 // Whose habits you see: the other side's; watching, both.
 const habitLineups = computed<(1 | 2)[]>(() =>
@@ -743,7 +748,10 @@ const railSteps = computed(() =>
       s.type === "Decider" && isRegion.value
         ? t("match.veto.steps.Region")
         : t(`match.veto.steps.${s.type}`);
-    let what = typeLabel;
+    let what =
+      state === "now" && mine.value
+        ? t(`match.veto.yours.${s.type}`)
+        : typeLabel;
     let side: string | null = null;
     if (s.record) {
       if (s.type === "Side") {
@@ -763,7 +771,13 @@ const railSteps = computed(() =>
       type: s.type,
       state,
       you: state === "now" && mine.value,
-      tag: lineup ? props.lineups[lineup - 1].monogram : "",
+      lineup,
+      mine: !!lineup && lineup === viewerLineup.value,
+      typeLabel,
+      tag:
+        lineup && !(state === "now" && mine.value)
+          ? props.lineups[lineup - 1].monogram
+          : "",
       what,
       side,
       itemId: s.record?.itemId ?? null,
@@ -777,6 +791,23 @@ const railSteps = computed(() =>
         .join(" · "),
     };
   }),
+);
+
+// On a phone the order of play is a ledger: one row per lineup, its moves in
+// order, and the decider under them.
+const ledgerRows = computed(() =>
+  ([1, 2] as const)
+    .map((lineup) => ({
+      lineup,
+      mine: lineup === viewerLineup.value,
+      steps: railSteps.value.filter(
+        (s) => s.type !== "Decider" && s.lineup === lineup,
+      ),
+    }))
+    .filter((row) => row.steps.length),
+);
+const ledgerDecider = computed(
+  () => railSteps.value.find((s) => s.type === "Decider") ?? null,
 );
 
 /* ---------- series ---------- */
@@ -853,15 +884,71 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
         class="vb-railstep"
         :data-type="s.type"
         :data-state="s.state"
-        :class="{ 'is-you': s.you }"
+        :class="{ 'is-you': s.you, 'is-mine': s.mine }"
         :title="s.title"
         @pointerenter="echo = s.itemId"
       >
         <img v-if="s.side" class="sd" :src="sideIcon(s.side)" alt="" />
-        <span class="what">{{ s.what }}</span>
+        <span class="what"
+          ><span class="lbl">{{ s.what }}</span></span
+        >
         <span v-if="s.tag" class="who">{{ s.tag }}</span>
       </li>
     </ol>
+
+    <div
+      class="vb-ledger"
+      :aria-label="t('match.veto.order')"
+      @pointerleave="echo = null"
+    >
+      <div
+        v-for="row in ledgerRows"
+        :key="row.lineup"
+        class="vb-lrow"
+        :style="{ '--n': row.steps.length }"
+      >
+        <span
+          class="vb-lwho"
+          :class="{ 'is-mine': row.mine }"
+          :title="lineupName(row.lineup)"
+        >
+          <VetoCrest :lineup="lineups[row.lineup - 1]" :size="24" />
+        </span>
+        <span
+          v-for="s in row.steps"
+          :key="s.key"
+          class="vb-tok"
+          :data-type="s.type"
+          :data-state="s.state"
+          :class="{ 'is-you': s.you, 'is-mine': s.mine }"
+          :title="s.title"
+          @pointerenter="echo = s.itemId"
+        >
+          <span class="n">{{ s.key + 1 }}</span>
+          <span
+            class="lbl"
+            :class="s.side ? (s.side === 'CT' ? 'is-ct' : 'is-t') : ''"
+            >{{ s.what }}</span
+          >
+        </span>
+      </div>
+      <div v-if="ledgerDecider" class="vb-ldec">
+        <span
+          class="vb-tok"
+          data-type="Decider"
+          :data-state="ledgerDecider.state"
+          :title="ledgerDecider.title"
+          @pointerenter="echo = ledgerDecider.itemId"
+        >
+          <span class="n">{{ ledgerDecider.key + 1 }}</span>
+          <span class="lbl">{{
+            ledgerDecider.state === "done"
+              ? `${ledgerDecider.typeLabel} · ${ledgerDecider.what}`
+              : ledgerDecider.typeLabel
+          }}</span>
+        </span>
+      </div>
+    </div>
 
     <div v-if="scoutOn" class="vb-scoutkey">
       <span class="lead"
@@ -1171,6 +1258,8 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   --vb-ban: hsl(var(--destructive));
   --vb-pick: hsl(var(--success));
   --vb-decider: hsl(48 96% 62%);
+  --vb-ct: hsl(212 70% 70%);
+  --vb-t: hsl(38 85% 62%);
   --vb-ease: cubic-bezier(0.16, 1, 0.3, 1);
   container-type: inline-size;
   display: grid;
@@ -1291,34 +1380,44 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   height: 14px;
   flex: none;
 }
-.vb-railstep::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 2px;
-  background: var(--vb-line-2);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 240ms var(--vb-ease);
+/* What a step was (ban, pick, side, decider) is a short line under its name,
+   drawn in as the step lands. */
+.vb-railstep .lbl,
+.vb-tok .lbl {
+  --mark: var(--vb-line-2);
+  display: inline-block;
+  max-width: 100%;
+  padding-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  background: linear-gradient(var(--mark), var(--mark)) left bottom / 0 2px
+    no-repeat;
+  transition: background-size 240ms var(--vb-ease);
 }
-.vb-railstep[data-type="Ban"]::after {
-  background: var(--vb-ban);
+[data-type="Ban"] > .lbl,
+[data-type="Ban"] > .what > .lbl {
+  --mark: var(--vb-ban);
 }
-.vb-railstep[data-type="Pick"]::after {
-  background: var(--vb-pick);
+[data-type="Pick"] > .lbl,
+[data-type="Pick"] > .what > .lbl {
+  --mark: var(--vb-pick);
 }
-.vb-railstep[data-type="Side"]::after {
-  background: var(--vb-muted);
+[data-type="Side"] > .lbl,
+[data-type="Side"] > .what > .lbl {
+  --mark: var(--vb-muted);
 }
-.vb-railstep[data-type="Decider"]::after {
-  background: var(--vb-decider);
+[data-type="Decider"] > .lbl,
+[data-type="Decider"] > .what > .lbl {
+  --mark: var(--vb-decider);
+}
+.vb-railstep[data-state="done"] .lbl,
+.vb-tok[data-state="done"] .lbl {
+  background-size: 100% 2px;
 }
 .vb-railstep[data-state="done"] {
   color: hsl(var(--foreground));
   background: var(--vb-surface-2);
-}
-.vb-railstep[data-state="done"]::after {
-  transform: none;
 }
 .vb-railstep[data-state="done"][data-type="Ban"] .what {
   color: var(--vb-muted);
@@ -1333,6 +1432,88 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 .vb-railstep[data-state="now"].is-you .what {
   color: var(--vb-amber);
   font-weight: 600;
+}
+/* Your moves sit a step brighter; your tag is amber. */
+.vb-railstep.is-mine[data-state="done"] {
+  background: hsl(240 4% 19%);
+}
+.vb-railstep.is-mine .who {
+  color: var(--vb-amber);
+  opacity: 1;
+}
+
+/* ---------- order of play on a phone: the ledger ---------- */
+.vb-ledger {
+  display: none;
+  gap: 6px;
+}
+.vb-lrow {
+  display: grid;
+  grid-template-columns: 26px repeat(var(--n), minmax(0, 1fr));
+  gap: 4px;
+  align-items: center;
+}
+.vb-lwho {
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+}
+.vb-lwho.is-mine {
+  box-shadow: 0 0 0 2px var(--vb-amber);
+}
+.vb-ldec {
+  padding-left: 30px;
+}
+.vb-tok {
+  position: relative;
+  height: 30px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: hsl(var(--foreground));
+  background: var(--vb-surface-2);
+}
+.vb-tok .n {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 8px;
+  line-height: 1;
+  color: var(--vb-faint);
+}
+.vb-tok[data-state="done"][data-type="Ban"] .lbl {
+  color: var(--vb-muted);
+}
+.vb-tok .lbl.is-ct {
+  color: var(--vb-ct);
+  font-weight: 700;
+}
+.vb-tok .lbl.is-t {
+  color: var(--vb-t);
+  font-weight: 700;
+}
+.vb-tok.is-mine[data-state="done"] {
+  background: hsl(240 4% 19%);
+}
+.vb-tok[data-state="next"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--vb-line-2);
+  color: var(--vb-faint);
+  font-weight: 500;
+}
+.vb-tok[data-state="now"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--vb-muted);
+}
+.vb-tok[data-state="now"].is-you {
+  box-shadow: inset 0 0 0 1.5px var(--vb-amber);
+  color: var(--vb-amber);
 }
 
 /* ---------- stage ---------- */
@@ -2126,25 +2307,10 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
     display: none;
   }
   .vb-rail {
-    gap: 3px;
-  }
-  .vb-railstep {
-    height: 6px;
-    padding: 0;
-    border-radius: 3px;
-  }
-  .vb-railstep > * {
     display: none;
   }
-  .vb-railstep::after {
-    height: 100%;
-  }
-  .vb-railstep[data-state="now"] {
-    box-shadow: none;
-    background: var(--vb-muted);
-  }
-  .vb-railstep[data-state="now"].is-you {
-    background: var(--vb-amber);
+  .vb-ledger {
+    display: grid;
   }
   .vb-stage {
     flex-direction: column;

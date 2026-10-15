@@ -9628,6 +9628,11 @@
         "browse": "parcourir",
         "choose": "choisir",
         "clear": "effacer"
+      },
+      "yours": {
+        "Ban": "Votre ban",
+        "Pick": "Votre pick",
+        "Side": "Votre camp"
       }
     }
   },

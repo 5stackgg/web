@@ -9,6 +9,18 @@ export function lineupSlot(match: any, lineupId: string | null | undefined) {
   return null;
 }
 
+// The lineup the signed-in player is on, if any.
+export function viewerSlot(match: any, steamId: string | null | undefined) {
+  if (!steamId) return null;
+  const on = (lineup: any) =>
+    (lineup?.lineup_players ?? []).some(
+      (member: any) => String(member.steam_id) === String(steamId),
+    );
+  if (on(match?.lineup_1)) return 1 as const;
+  if (on(match?.lineup_2)) return 2 as const;
+  return null;
+}
+
 // The two lineups as the veto board shows them. A pickup game's lineups are
 // named after their captains, so the captain's face stands in for the missing
 // team crest; anything else without a crest gets a monogram.

@@ -9628,6 +9628,11 @@
         "browse": "gezin",
         "choose": "seç",
         "clear": "temizle"
+      },
+      "yours": {
+        "Ban": "Senin banın",
+        "Pick": "Senin pick'in",
+        "Side": "Senin tarafın"
       }
     }
   },

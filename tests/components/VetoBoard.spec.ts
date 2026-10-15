@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import VetoBoard from "~/components/match/VetoBoard.vue";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
-import type { VetoBoardLineup } from "~/utilities/vetoOrder";
+import type { VetoBoardLineup, VetoBoardStep } from "~/utilities/vetoOrder";
 import type { ScoutLineup } from "~/utilities/vetoScouting";
 
 const MAPS = [
@@ -22,7 +22,7 @@ const lineups: [VetoBoardLineup, VetoBoardLineup] = [
 ];
 
 // Steps of a best of three with the first `done` moves made.
-function steps(done: string[]) {
+function steps(done: string[]): VetoBoardStep[] {
   return mapVetoOrder(3, MAPS.length).map((step, index) => ({
     ...step,
     record: done[index]
@@ -201,5 +201,44 @@ describe("VetoBoard keys", () => {
 
     await wrapper.find(".vb-stage").trigger("keydown", { key: "Escape" });
     expect(slice(wrapper, "anubis").classes()).not.toContain("is-wide");
+  });
+});
+
+describe("VetoBoard your moves", () => {
+  it("lifts your moves and names your turn on the rail", async () => {
+    // Two bans in: Buttah Boyz (1) banned, Night Owls (2) banned, now 1 picks.
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      viewer: 1,
+      scouting: null,
+    });
+
+    const rail = wrapper.findAll(".vb-railstep");
+    expect(rail[0].classes()).toContain("is-mine");
+    expect(rail[1].classes()).not.toContain("is-mine");
+    expect(rail[2].text()).toBe("Your pick");
+  });
+
+  it("lays the order of play out as a ledger for phones", async () => {
+    // Night Owls (2) chose T on the Mirage that Buttah Boyz picked.
+    const done = steps(["train", "dust2", "mirage", "mirage"]);
+    done[3].record = { itemId: "mirage", lineup: 2, side: "T", auto: false };
+    const wrapper = await mount({
+      steps: done,
+      pickingLineup: 2,
+      isPicking: false,
+      viewer: 2,
+      scouting: null,
+    });
+
+    const rows = wrapper.findAll(".vb-ledger .vb-lrow");
+    expect(rows).toHaveLength(2);
+    // Lineup 1 bans, picks, chooses a side, bans; lineup 2 the mirror.
+    expect(rows[0].findAll(".vb-tok")).toHaveLength(4);
+    expect(rows[1].find(".vb-lwho").classes()).toContain("is-mine");
+    expect(rows[1].findAll(".vb-tok")[1].text()).toContain("T");
+    expect(wrapper.find(".vb-ldec").text()).toContain("Decider");
   });
 });

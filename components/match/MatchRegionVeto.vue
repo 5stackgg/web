@@ -21,6 +21,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
       :submitting="submitting"
       :deadline="vetoPickDeadline"
       :total="match.options.veto_pick_timeout"
+      :viewer="viewerLineup"
       @confirm="({ itemId }) => itemId && vetoPick(itemId)"
     />
     <template v-else-if="canSelectRegion && !match.region">
@@ -98,7 +99,7 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useSound } from "~/composables/useSound";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { regionVetoOrder } from "~/utilities/vetoOrder";
-import { lineupSlot, vetoLineups } from "~/utilities/vetoLineups";
+import { lineupSlot, vetoLineups, viewerSlot } from "~/utilities/vetoLineups";
 import { isVetoOverrideEnabled } from "~/composables/useVetoOverride";
 import { toast } from "@/components/ui/toast";
 
@@ -207,6 +208,9 @@ export default {
     },
     lineups() {
       return vetoLineups(this.match, this.$t);
+    },
+    viewerLineup(): 1 | 2 | null {
+      return viewerSlot(this.match, useAuthStore().me?.steam_id);
     },
     items() {
       const matchmaking = useMatchmakingStore();

@@ -9628,6 +9628,11 @@
         "browse": "移動",
         "choose": "選択",
         "clear": "解除"
+      },
+      "yours": {
+        "Ban": "あなたの BAN",
+        "Pick": "あなたの Pick",
+        "Side": "あなたのサイド"
       }
     }
   },

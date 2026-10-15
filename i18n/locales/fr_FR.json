@@ -9724,7 +9724,8 @@
         "starts": "Commence {side}",
         "knife": "Knife round",
         "knife_line": "Le vainqueur choisit son camp"
-      }
+      },
+      "map": "Map"
     }
   },
   "ui": {

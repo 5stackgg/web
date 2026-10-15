@@ -9724,7 +9724,8 @@
         "starts": "Startet auf {side}",
         "knife": "Knife-Runde",
         "knife_line": "Gewinner wählt die Seite"
-      }
+      },
+      "map": "Map"
     }
   },
   "ui": {

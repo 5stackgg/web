@@ -9724,7 +9724,8 @@
         "starts": "Starter på {side}",
         "knife": "Knivrunde",
         "knife_line": "Vinderen vælger side"
-      }
+      },
+      "map": "Bane"
     }
   },
   "ui": {

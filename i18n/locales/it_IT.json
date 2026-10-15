@@ -9724,7 +9724,8 @@
         "starts": "Inizia su {side}",
         "knife": "Knife round",
         "knife_line": "Chi vince sceglie il lato"
-      }
+      },
+      "map": "Mappa"
     }
   },
   "ui": {

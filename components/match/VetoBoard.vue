@@ -788,7 +788,7 @@ const series = computed(() => {
             ? t("match.veto.decider_map_n", { n })
             : t("match.veto.map_n", { n }),
       item,
-      tag: st?.lineup ? props.lineups[st.lineup - 1].monogram : "",
+      picker: st?.lineup ?? null,
       starts: st ? pickerStarts(st) : null,
     };
   });
@@ -838,6 +838,31 @@ const startLine = computed(() => {
     ? t("match.veto.start.ready_first_you", { map, side })
     : t("match.veto.start.ready_first", { map });
 });
+
+// A played map's number, big in the middle of it (on a phone's rows it
+// joins the edge's box instead).
+function bigNumber(id: string) {
+  // Wide only once the veto is done (a pick opening for its replay keeps
+  // the full read).
+  // One map has no order to number.
+  if (props.bestOf === 1 || (isWide(id) && !done.value)) return null;
+  const st = stateOf(id);
+  if (st.status !== "Pick" && st.status !== "Decider") return null;
+  const word =
+    st.status === "Decider" ? t("match.veto.decider") : t("match.veto.map");
+  return { n: st.mapNumber, word };
+}
+
+// On a narrow picked map the map's number joins its edge in one box, as a
+// habit does on an open map (shown there on a phone's rows).
+function kickInBox(id: string) {
+  const status = stateOf(id).status;
+  return (
+    !isWide(id) &&
+    (status === "Pick" || status === "Decider") &&
+    !!scoutView.value.get(id)?.edge
+  );
+}
 
 // On the finished board each map to be played shows its teams the way the
 // start will: who starts on which side, or a knife round for the decider.
@@ -1129,13 +1154,37 @@ onBeforeUnmount(() => {
           />
 
           <div class="vb-top">
-            <VetoCrest
-              v-if="stateOf(item.id).lineup"
-              :lineup="lineups[stateOf(item.id).lineup! - 1]"
-            />
-            <span v-if="badge(item.id)" class="vb-badge">{{
-              badge(item.id)
-            }}</span>
+            <span class="vb-id">
+              <VetoCrest
+                v-if="stateOf(item.id).lineup"
+                :lineup="lineups[stateOf(item.id).lineup! - 1]"
+                :size="28"
+              />
+            </span>
+            <span
+              v-if="
+                badge(item.id) &&
+                stateOf(item.id).status !== 'Ban' &&
+                !kickInBox(item.id)
+              "
+              class="vb-kick"
+              :class="{ 'has-num': !!bigNumber(item.id) }"
+            >
+              <VetoCrest
+                v-if="stateOf(item.id).lineup"
+                :lineup="lineups[stateOf(item.id).lineup! - 1]"
+                :size="24"
+              />
+              <span>{{ badge(item.id) }}</span>
+              <span v-if="stateOf(item.id).lineup" class="by-t"
+                >·
+                {{
+                  t("match.veto.picked_by", {
+                    team: lineupName(stateOf(item.id).lineup),
+                  })
+                }}</span
+              >
+            </span>
 
             <template v-if="scoutView.get(item.id)">
               <div
@@ -1143,7 +1192,10 @@ onBeforeUnmount(() => {
                   scoutView.get(item.id)!.edge || scoutView.get(item.id)!.chip
                 "
                 class="vb-tag"
-                :class="{ 'is-bare': stateOf(item.id).status !== 'open' }"
+                :class="{
+                  'is-bare':
+                    stateOf(item.id).status !== 'open' && !kickInBox(item.id),
+                }"
               >
                 <span
                   v-if="scoutView.get(item.id)!.edge"
@@ -1154,7 +1206,7 @@ onBeforeUnmount(() => {
                   <VetoCrest
                     v-if="scoutView.get(item.id)!.edge!.lineup"
                     :lineup="lineups[scoutView.get(item.id)!.edge!.lineup! - 1]"
-                    :size="15"
+                    :size="22"
                   />
                   {{ scoutView.get(item.id)!.edge!.text }}
                 </span>
@@ -1166,12 +1218,19 @@ onBeforeUnmount(() => {
                 >
                   <VetoCrest
                     :lineup="lineups[scoutView.get(item.id)!.chip!.lineup - 1]"
-                    :size="14"
+                    :size="18"
                   />
                   <span class="txt">{{
                     scoutView.get(item.id)!.chip!.text
                   }}</span>
                 </span>
+                <span v-if="kickInBox(item.id)" class="vb-krow"
+                  ><VetoCrest
+                    v-if="stateOf(item.id).lineup"
+                    :lineup="lineups[stateOf(item.id).lineup! - 1]"
+                    :size="24"
+                  />{{ badge(item.id) }}</span
+                >
               </div>
               <div v-if="scoutView.get(item.id)!.rows.length" class="vb-scout">
                 <div class="vb-scouthead">
@@ -1229,6 +1288,12 @@ onBeforeUnmount(() => {
                 </div>
               </div>
             </template>
+          </div>
+
+          <!-- a played map's number, big -->
+          <div v-if="bigNumber(item.id)" class="vb-num" aria-hidden="true">
+            <span class="k">{{ bigNumber(item.id)!.word }}</span>
+            <b class="tabular-nums">{{ bigNumber(item.id)!.n }}</b>
           </div>
 
           <!-- narrow: emblem over a vertical name -->
@@ -1341,18 +1406,26 @@ onBeforeUnmount(() => {
           <span class="tx">
             <span class="n"
               >{{ slot.label
-              }}<template v-if="slot.tag"> · {{ slot.tag }}</template></span
+              }}<template v-if="slot.picker">
+                ·
+                {{
+                  t("match.veto.picked_by", { team: lineupName(slot.picker) })
+                }}</template
+              ></span
             >
             <span class="m">{{
               slot.item ? slot.item.label : t("match.veto.not_set")
             }}</span>
           </span>
-          <img
-            v-if="slot.starts"
-            class="sd"
-            :src="sideIcon(slot.starts === 'CT' ? 'CT' : 'TERRORIST')"
-            :alt="slot.starts"
-          />
+          <span v-if="slot.picker" class="end">
+            <VetoCrest :lineup="lineups[slot.picker - 1]" :size="22" />
+            <img
+              v-if="slot.starts"
+              class="sd"
+              :src="sideIcon(slot.starts === 'CT' ? 'CT' : 'TERRORIST')"
+              :alt="slot.starts"
+            />
+          </span>
         </div>
       </div>
 
@@ -1369,8 +1442,9 @@ onBeforeUnmount(() => {
           }"
         >
           <div class="shade" />
-          <!-- The edge first, where it sits on the board; the map's number
-               to the right, beside who picked it. -->
+          <!-- The edge first, where it sits on the board; who picked the map
+               on the right (its number and picker together on a phone's
+               short panels). -->
           <div class="top reveal">
             <span
               v-if="startEdge(map.itemId)"
@@ -1381,32 +1455,46 @@ onBeforeUnmount(() => {
               <VetoCrest
                 v-if="startEdge(map.itemId)!.lineup"
                 :lineup="lineups[startEdge(map.itemId)!.lineup! - 1]"
-                :size="15"
+                :size="22"
               />
               {{ startEdge(map.itemId)!.text }}
             </span>
-            <span class="n">{{ map.label }}</span>
             <VetoCrest
               v-if="map.pickedBy"
-              class="by-sm"
+              class="by-b"
               :lineup="lineups[map.pickedBy - 1]"
-              :size="22"
+              :size="28"
             />
-            <VetoCrest
-              v-if="map.pickedBy"
-              class="by"
-              :lineup="lineups[map.pickedBy - 1]"
-              :size="44"
-              :title="
-                t('match.veto.picked_by', { team: lineupName(map.pickedBy) })
-              "
-            />
+            <span class="st-kick">
+              <VetoCrest
+                v-if="map.pickedBy"
+                :lineup="lineups[map.pickedBy - 1]"
+                :size="24"
+              />
+              <span>{{ map.label }}</span>
+              <span v-if="map.pickedBy" class="by-t"
+                >·
+                {{
+                  t("match.veto.picked_by", { team: lineupName(map.pickedBy) })
+                }}</span
+              >
+            </span>
           </div>
           <div class="reveal">
             <div class="nm up">
               <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
               <span>{{ map.item?.label }}</span>
             </div>
+          </div>
+          <div
+            v-if="bestOf > 1"
+            class="vb-num st-num reveal"
+            aria-hidden="true"
+          >
+            <span class="k">{{
+              map.decider ? t("match.veto.decider") : t("match.veto.map")
+            }}</span>
+            <b class="tabular-nums">{{ map.n }}</b>
           </div>
           <div class="bottom reveal">
             <div class="nm">
@@ -1613,28 +1701,15 @@ onBeforeUnmount(() => {
   gap: 6px;
   min-width: 0;
 }
+.vb-slice.is-thin .vb-top {
+  left: 4px;
+  right: 4px;
+}
 .vb-slice.is-wide .vb-top {
   left: 12px;
   right: 12px;
   flex-direction: row;
   justify-content: flex-start;
-}
-.vb-badge {
-  max-width: 100%;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: rgb(0 0 0 / 0.6);
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.vb-slice[data-status="Ban"] .vb-badge {
-  color: var(--vb-ban);
-}
-.vb-slice.is-thin .vb-badge {
-  display: none;
 }
 
 .vb-v {
@@ -1810,16 +1885,18 @@ onBeforeUnmount(() => {
 .vb-slice[data-status="Pick"]:not(.is-wide) .vb-vname {
   color: hsl(0 0% 100% / 0.7);
 }
-/* What a map became is a flat bar of colour along its foot; it does not
-   follow the stage's rounded corners. */
+/* What a map became is a short tick of colour at its foot, clear of the
+   stage's rounded corners (before the name on a phone's rows). */
 .vb-slice::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  bottom: 7px;
   z-index: 4;
+  width: 24px;
   height: 3px;
+  border-radius: 2px;
+  translate: -50% 0;
   pointer-events: none;
   background: var(--vb-foot, transparent);
 }
@@ -2019,7 +2096,12 @@ onBeforeUnmount(() => {
   line-height: 1.2;
 }
 .vb-chip .n {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 11px;
+}
+.vb-chip.is-set .n {
+  color: hsl(0 0% 100% / 0.72);
 }
 .vb-chip .m {
   overflow: hidden;
@@ -2027,11 +2109,18 @@ onBeforeUnmount(() => {
   font-weight: 600;
   color: var(--vb-muted);
 }
+/* Who picked the map, and the side they start on. */
+.vb-chip .end {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
 .vb-chip .sd {
   width: 18px;
   height: 18px;
   flex: none;
-  margin-left: auto;
 }
 .vb-chip.is-set {
   background: var(--vb-surface);
@@ -2106,39 +2195,40 @@ onBeforeUnmount(() => {
 /* Edge and habit on one map share one box, the same width on every map, so
    they line up across the pool. */
 /* On a picked map the edge stands alone, first, where it sits on an open
-   map; the map's number moves to the right. */
+   map. */
 .vb-tag.is-bare {
   display: contents;
 }
 .vb-tag.is-bare > .vb-edge {
   order: -1;
 }
-.vb-slice.is-wide .vb-badge {
-  margin-left: auto;
+.vb-id {
+  display: contents;
 }
-.vb-slice.is-wide .vb-top > .veto-crest {
+.vb-slice.is-wide .vb-id > .veto-crest {
   order: 2;
 }
 /* An edge on its own (a picked map, a start panel) is a chip of its own,
-   as tall as the label beside it. */
+   as tall as the crests and labels beside it. */
 .vb-tag.is-bare > .vb-edge,
 .st-panel .top .vb-edge {
-  height: 20px;
-  padding: 0 8px;
+  height: 28px;
+  padding: 0 10px;
   gap: 5px;
-  border-radius: 5px;
-  font-size: 12px;
+  border-radius: 6px;
+  font-size: 15px;
   line-height: 1;
 }
 .vb-tag.is-bare > .vb-edge[data-tone="side"],
 .st-panel .top .vb-edge[data-tone="side"] {
   padding-left: 3px;
+  gap: 6px;
 }
 .vb-tag:not(.is-bare) {
   display: flex;
   flex-direction: column;
   width: min(100%, 132px);
-  padding: 2px;
+  padding: 0 2px;
   border-radius: 6px;
   background: rgb(0 0 0 / 0.62);
 }
@@ -2150,13 +2240,26 @@ onBeforeUnmount(() => {
   background: none;
   box-shadow: none;
 }
+/* Everything at the top of a map is one height: the edge (in its box or on
+   its own), the crests, the map's label. */
 .vb-tag:not(.is-bare) > .vb-edge {
+  height: 28px;
+  padding: 0 4px;
   font-size: 15px;
 }
-.vb-tag:not(.is-bare) > .vb-habit {
-  margin-top: 2px;
-  padding-top: 4px;
-  border-top: 1px solid hsl(0 0% 100% / 0.1);
+.vb-tag:not(.is-bare) > .vb-habit,
+.vb-tag:not(.is-bare) > .vb-krow {
+  padding: 4px 4px 5px;
+  border-top: 1px solid hsl(0 0% 100% / 0.18);
+}
+.vb-krow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .vb-scouthead {
   display: flex;
@@ -2413,26 +2516,6 @@ onBeforeUnmount(() => {
   font-size: 12px;
   font-weight: 600;
 }
-.st-panel .top .n {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  padding: 0 8px;
-  border-radius: 5px;
-  background: rgb(0 0 0 / 0.6);
-  white-space: nowrap;
-}
-/* Who picked the map: their crest, large, in the top corner (beside the
-   label on a phone's short panels, where the corner holds the name). */
-.st-panel .top .by-sm {
-  display: none;
-}
-.st-panel .by {
-  box-shadow:
-    0 6px 18px rgb(0 0 0 / 0.45),
-    0 0 0 1px rgb(255 255 255 / 0.18);
-}
 .st-panel .bottom {
   position: absolute;
   left: 10px;
@@ -2466,19 +2549,12 @@ onBeforeUnmount(() => {
 .st-panel .nm.up {
   display: none;
 }
-/* A narrow map's words sit closer to its edges, so the team plates fit,
-   and its picker's crest comes down to the small one. */
+/* A narrow map's words sit closer to its edges, so the team plates fit. */
 @container panel (max-width: 240px) {
   .vb-open {
     left: 10px;
     right: 10px;
     bottom: 12px;
-  }
-  .st-panel .by {
-    display: none;
-  }
-  .st-panel .top .by-sm {
-    display: grid;
   }
 }
 /* Narrow panels (best of five). */
@@ -2496,15 +2572,8 @@ onBeforeUnmount(() => {
   .st-panel .top {
     right: 45%;
   }
-  .st-panel .by,
   .st-panel .bottom .nm {
     display: none;
-  }
-  .st-panel .top .by-sm {
-    display: grid;
-  }
-  .st-panel .top .n {
-    margin-left: 0;
   }
   .st-panel .nm.up {
     position: absolute;
@@ -2519,6 +2588,178 @@ onBeforeUnmount(() => {
   .st-panel .nm.up img {
     width: 22px;
     height: 22px;
+  }
+}
+
+/* ---------- the top of each map ---------- */
+/* The edge on the left. On the right: the picker's crest, or on a wide map
+   still in play its number and picker; a played map's number sits big in
+   its middle. */
+.vb-slice:not([data-status="Ban"]) .vb-id {
+  display: none;
+}
+.vb-slice:not(.is-wide)[data-status="Pick"] .vb-id,
+.vb-slice.is-mid[data-status="Pick"] .vb-id {
+  display: contents;
+}
+.vb-slice.is-mid .vb-id > .veto-crest {
+  margin-left: auto;
+}
+.vb-slice.is-mid .vb-top {
+  flex-wrap: nowrap;
+}
+.vb-kick,
+.st-kick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  height: 28px;
+  padding: 0 9px 0 2px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 0.6);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.vb-kick:not(:has(.veto-crest)),
+.st-kick:not(:has(.veto-crest)) {
+  padding-left: 9px;
+}
+.vb-kick .by-t,
+.st-kick .by-t {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: hsl(0 0% 100% / 0.7);
+}
+.vb-slice.is-wide .vb-kick {
+  margin-left: auto;
+}
+.vb-kick.has-num,
+.vb-krow {
+  display: none;
+}
+@container panel (max-width: 240px) {
+  .vb-kick .by-t,
+  .st-kick .by-t {
+    display: none;
+  }
+}
+.vb-num {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46%;
+  translate: 0 -50%;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  pointer-events: none;
+  text-shadow:
+    0 1px 3px rgb(0 0 0 / 0.8),
+    0 2px 14px rgb(0 0 0 / 0.7);
+}
+/* A soft shade behind the number, so it reads on bright map art too. */
+.vb-num::before {
+  content: "";
+  position: absolute;
+  inset: -28px -12px;
+  z-index: -1;
+  background: radial-gradient(
+    closest-side,
+    rgb(0 0 0 / 0.5),
+    rgb(0 0 0 / 0.25) 60%,
+    transparent
+  );
+}
+.vb-num .k {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.85);
+}
+.vb-num b {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 0.9;
+  color: hsl(0 0% 100% / 0.95);
+}
+.vb-slice.is-thin .vb-num {
+  display: none;
+}
+/* The start's panels read the same as the finished board's maps. */
+.st-panel .top .by-b {
+  margin-left: auto;
+}
+.st-panel .top .st-kick {
+  display: none;
+}
+.st-num {
+  top: 44%;
+}
+.st-num.reveal {
+  translate: 0 calc(-50% + 8px);
+}
+.st-panel.is-shown .st-num.reveal {
+  translate: 0 -50%;
+}
+@container panel (max-height: 170px) {
+  .st-num,
+  .st-panel .top .by-b {
+    display: none;
+  }
+  .st-panel .top .st-kick {
+    display: inline-flex;
+  }
+  .st-panel .top .st-kick .by-t {
+    display: none;
+  }
+}
+/* A phone's rows are short: the edge and the map's number sit side by side
+   in the box, the crests stay on the right, and the tick stands before the
+   name. */
+@container vb (max-width: 560px) {
+  .vb-num,
+  .vb-slice:not(.is-wide)[data-status="Pick"] .vb-id,
+  .vb-slice.is-mid[data-status="Pick"] .vb-id {
+    display: none;
+  }
+  .vb-kick.has-num {
+    display: inline-flex;
+  }
+  .vb-krow {
+    display: flex;
+  }
+  .vb-tag:not(.is-bare):has(.vb-krow) {
+    flex-direction: row;
+    width: auto;
+  }
+  .vb-tag:not(.is-bare) > .vb-krow {
+    padding: 0 8px;
+    border-top: 0;
+    border-left: 1px solid hsl(0 0% 100% / 0.18);
+  }
+  .vb-tag:not(.is-bare):has(.vb-krow) > .vb-edge {
+    padding: 0 8px;
+  }
+  .vb-slice.is-thin .vb-top {
+    left: auto;
+    right: 10px;
+  }
+  .vb-slice::before {
+    left: 5px;
+    top: 50%;
+    bottom: auto;
+    width: 3px;
+    height: 14px;
+    translate: 0 -50%;
   }
 }
 

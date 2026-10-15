@@ -9724,7 +9724,8 @@
         "starts": "Börjar på {side}",
         "knife": "Knivrond",
         "knife_line": "Vinnaren väljer sida"
-      }
+      },
+      "map": "Karta"
     }
   },
   "ui": {

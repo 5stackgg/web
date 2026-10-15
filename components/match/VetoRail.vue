@@ -246,20 +246,26 @@ const ledgerDecider = computed(
   height: 14px;
   flex: none;
 }
-/* What a step was (ban, pick, side, decider) is a short line under its name,
-   drawn in as the step lands. */
+/* What a step was (ban, pick, decider) is a dot of its colour before its
+   name; a side shows as its coloured CT / T. */
 .vb-railstep .lbl,
 .vb-tok .lbl {
   --mark: var(--vb-line-2);
   display: inline-block;
   max-width: 100%;
-  padding-bottom: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle;
-  background: linear-gradient(var(--mark), var(--mark)) left bottom / 0 2px
-    no-repeat;
-  transition: background-size 240ms var(--vb-ease);
+}
+[data-state="done"]:not([data-type="Side"]) .lbl::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 5px;
+  border-radius: 50%;
+  vertical-align: 1px;
+  background: var(--mark);
 }
 [data-type="Ban"] > .lbl,
 [data-type="Ban"] > .what > .lbl {
@@ -276,10 +282,6 @@ const ledgerDecider = computed(
 [data-type="Decider"] > .lbl,
 [data-type="Decider"] > .what > .lbl {
   --mark: var(--vb-decider);
-}
-.vb-railstep[data-state="done"] .lbl,
-.vb-tok[data-state="done"] .lbl {
-  background-size: 100% 2px;
 }
 .vb-railstep[data-state="done"] {
   color: hsl(var(--foreground));

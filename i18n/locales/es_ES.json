@@ -9724,7 +9724,8 @@
         "starts": "Empieza en {side}",
         "knife": "Ronda a cuchillo",
         "knife_line": "El ganador elige bando"
-      }
+      },
+      "map": "Mapa"
     }
   },
   "ui": {

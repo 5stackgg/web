@@ -9724,7 +9724,8 @@
         "starts": "Começa como {side}",
         "knife": "Round faca",
         "knife_line": "O vencedor escolhe o lado"
-      }
+      },
+      "map": "Mapa"
     }
   },
   "ui": {

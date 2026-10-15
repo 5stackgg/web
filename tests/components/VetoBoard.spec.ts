@@ -289,11 +289,14 @@ describe("VetoBoard start", () => {
 
     const panels = wrapper.findAll(".st-panel");
     expect(panels).toHaveLength(3);
-    expect(panels[0].find(".top .n").text()).toBe("Map 1");
-    expect(panels[2].find(".top .n").text()).toBe("Decider · Map 3");
+    // Each map's number big in its middle (and in its label on a phone).
+    expect(panels[0].find(".st-num").text()).toBe("Map1");
+    expect(panels[2].find(".st-num").text()).toBe("Decider3");
+    expect(panels[0].find(".st-kick").text()).toContain("Map 1");
+    expect(panels[0].find(".st-kick").text()).toContain("Buttah Boyz");
     // The picker's crest sits in the corner; the decider has none.
-    expect(panels[0].find(".by").text()).toBe("BB");
-    expect(panels[2].find(".by").exists()).toBe(false);
+    expect(panels[0].find(".by-b").text()).toBe("BB");
+    expect(panels[2].find(".by-b").exists()).toBe(false);
 
     // Each side as its logo; your plate sits a step brighter.
     const plates = panels[0].findAll(".plate");
@@ -388,6 +391,7 @@ describe("VetoBoard start", () => {
     });
 
     expect(wrapper.find(".vb-line").text()).toBe("mirage · you start CT");
-    expect(wrapper.find(".st-panel .top .n").text()).toBe("The map");
+    expect(wrapper.find(".st-panel .st-kick").text()).toContain("The map");
+    expect(wrapper.find(".st-num").exists()).toBe(false);
   });
 });

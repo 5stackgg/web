@@ -9724,7 +9724,8 @@
         "starts": "{side} tarafında başlıyor",
         "knife": "Bıçak raundu",
         "knife_line": "Kazanan tarafı seçer"
-      }
+      },
+      "map": "Harita"
     }
   },
   "ui": {

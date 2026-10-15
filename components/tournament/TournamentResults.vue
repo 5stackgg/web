@@ -569,6 +569,7 @@ function playerAvatarSrc(player: {
           <StageStandings
             :stage="stage"
             :player-stats="tournamentPlayerStats"
+            :placements="stage.id === finalStageId ? podiumSteps || [] : []"
           />
         </CardContent>
       </Card>
@@ -586,6 +587,7 @@ function playerAvatarSrc(player: {
 import { $, e_tournament_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { TIER_PALETTES, resolveAwardTier } from "~/utilities/awardSeed";
+import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 
 export default {
   props: {
@@ -609,12 +611,7 @@ export default {
     // Its own optional query, so an api without the podium field only loses
     // this and falls back to the podium built from the awards.
     podiumSteps: {
-      query: typedGql("query")({
-        tournaments_by_pk: [
-          { id: $("tournamentId", "uuid!") },
-          { id: true, podium: true } as any,
-        ],
-      }),
+      query: tournamentPodiumQuery,
       variables: function () {
         return { tournamentId: (this as any).tournament?.id };
       },
@@ -821,6 +818,10 @@ export default {
     finalStageType() {
       const stages = (this.tournament as any)?.stages || [];
       return stages.length ? stages[stages.length - 1]?.type || null : null;
+    },
+    finalStageId() {
+      const stages = (this.tournament as any)?.stages || [];
+      return stages.length ? stages[stages.length - 1]?.id || null : null;
     },
     // The tournament's placements, plus any placement award granted to a team
     // they don't name (an organizer's own 3rd); the awards alone when the api

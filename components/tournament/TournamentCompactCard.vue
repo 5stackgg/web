@@ -102,11 +102,21 @@ function teamNameForResult(row: any): string | null {
   );
 }
 
+// The tournament's placements first, the ones its podium and medals read; then
+// a placement award they don't name.
 const podium = computed(() => {
   const awards = (props.tournament?.awards || []) as any[];
   const byPlacement: Record<number, string | null> = {};
+  for (const step of (props.tournament?.podium || []) as any[]) {
+    const placement = Number(step.placement);
+    if (placement >= 1 && placement <= 3 && step.name) {
+      byPlacement[placement] = byPlacement[placement]
+        ? `${byPlacement[placement]} · ${step.name}`
+        : step.name;
+    }
+  }
   for (const t of awards) {
-    if (t.placement >= 1 && t.placement <= 3) {
+    if (t.placement >= 1 && t.placement <= 3 && !byPlacement[t.placement]) {
       byPlacement[t.placement] = teamNameForAward(t);
     }
   }

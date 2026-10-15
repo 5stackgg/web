@@ -11,7 +11,8 @@ import {
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by } from "~/generated/zeus";
+import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
+import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { loginLinks } from "~/utilities/loginLinks";
@@ -70,6 +71,15 @@ const { result } = useQuery(
     ],
   } as any),
   () => ({ id: props.tournament.id }),
+);
+
+const { result: podiumResult } = useQuery(
+  tournamentPodiumQuery,
+  () => ({ tournamentId: props.tournament.id }),
+  () => ({
+    enabled: props.tournament.status === e_tournament_status_enum.Finished,
+    context: { optional: true },
+  }),
 );
 
 const details = computed(() => (result.value as any)?.tournaments_by_pk);
@@ -133,8 +143,24 @@ const requirements = computed(() => {
   return list;
 });
 
-// Final stage's standings, best first.
+const podiumSteps = computed<any[]>(
+  () => (podiumResult.value as any)?.tournaments_by_pk?.podium ?? [],
+);
+
+// The tournament's placements, which the podium reads; the final stage's
+// standings when the api has none.
 const podium = computed(() => {
+  const placed = podiumSteps.value
+    .filter((step) => step.name && step.placement >= 1 && step.placement <= 3)
+    .map((step) => ({
+      key: `${step.placement}-${step.tournament_team_id}`,
+      rank: Number(step.placement),
+      name: step.name,
+    }))
+    .sort((a, b) => a.rank - b.rank);
+  if (placed.length) {
+    return placed;
+  }
   const stages = [...(props.tournament.stages || [])].sort(
     (a: any, b: any) => (b.order ?? 0) - (a.order ?? 0),
   );
@@ -143,6 +169,7 @@ const podium = computed(() => {
     .sort((a: any, b: any) => a.rank - b.rank)
     .slice(0, 3)
     .map((row: any) => ({
+      key: String(row.rank),
       rank: row.rank,
       name: row.team?.team?.name || row.team?.name,
     }));
@@ -346,7 +373,7 @@ const section = "grid gap-2.5 border-t border-border/65 pt-4";
       <ol class="m-0 grid list-none gap-1 p-0">
         <li
           v-for="row in podium"
-          :key="row.rank"
+          :key="row.key"
           class="grid grid-cols-[2.25rem_minmax(0,1fr)] items-center gap-2 py-1 text-sm"
         >
           <span

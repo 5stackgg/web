@@ -8,12 +8,7 @@ import {
   DrawerDescription,
 } from "~/components/ui/drawer";
 import { Button } from "~/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import {
   MicOff,
   MessageSquareOff,
@@ -31,83 +26,86 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
-  <TooltipProvider v-if="variant !== 'none'" :delay-duration="200">
-    <Tooltip :disabled="outranksTarget">
-      <TooltipTrigger as-child>
-        <span
-          :class="variant === 'block' ? 'flex w-full' : 'inline-flex'"
-          :tabindex="outranksTarget ? undefined : 0"
-        >
-          <Popover>
-            <PopoverTrigger as-child>
-              <button
-                v-if="variant === 'block'"
-                type="button"
-                :disabled="!outranksTarget"
-                class="group/sanction flex w-full items-center justify-between gap-3 rounded-md border border-red-500/45 bg-red-500/10 px-4 py-3 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
-              >
-                <span
-                  class="flex items-center gap-2.5 font-sans text-[0.72rem] font-bold uppercase tracking-[0.16em]"
-                >
-                  <Ban class="h-4 w-4 shrink-0" />
-                  {{ $t("player.sanction.button") }}
-                </span>
-                <ChevronDown
-                  class="h-4 w-4 shrink-0 opacity-60 transition-transform duration-150 group-hover/sanction:translate-y-px"
-                />
-              </button>
-              <button
-                v-else
-                type="button"
-                :disabled="!outranksTarget"
-                :title="$t('player.sanction.button')"
-                :aria-label="$t('player.sanction.button')"
-                class="group/sanction inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-500/45 bg-red-500/10 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
-              >
-                <Ban class="h-4 w-4" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent
-              class="p-0"
-              :align="variant === 'block' ? 'start' : 'end'"
-              :style="
-                variant === 'block'
-                  ? 'width: var(--reka-popover-trigger-width)'
-                  : undefined
-              "
+  <FiveStackToolTip
+    v-if="variant !== 'none'"
+    as-child
+    :disabled="outranksTarget"
+    :delay-duration="200"
+  >
+    <template #trigger>
+      <span
+        :class="variant === 'block' ? 'flex w-full' : 'inline-flex'"
+        :tabindex="outranksTarget ? undefined : 0"
+      >
+        <Popover>
+          <PopoverTrigger as-child>
+            <button
+              v-if="variant === 'block'"
+              type="button"
+              :disabled="!outranksTarget"
+              class="group/sanction flex w-full items-center justify-between gap-3 rounded-md border border-red-500/45 bg-red-500/10 px-4 py-3 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
             >
-              <Command v-model="sanctionType">
-                <CommandList>
-                  <CommandGroup>
-                    <template v-for="(sanction, type) in sanctions" :key="type">
-                      <CommandItem
-                        :value="type"
-                        @click="sanctioningPlayer = true"
-                        class="flex flex-col items-start px-4 py-2 cursor-pointer"
-                      >
-                        <div class="flex items-center gap-2">
-                          <component :is="sanction.icon" class="h-4 w-4" />
-                          <span class="font-medium">
-                            {{ $t(`player.sanctions.type_labels.${type}`) }}
-                          </span>
-                        </div>
-                        <p class="text-sm text-muted-foreground mt-1">
-                          {{ sanction.description }}
-                        </p>
-                      </CommandItem>
-                    </template>
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent class="max-w-[16rem]">
-        {{ $t("player.sanction.outranked") }}
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+              <span
+                class="flex items-center gap-2.5 font-sans text-[0.72rem] font-bold uppercase tracking-[0.16em]"
+              >
+                <Ban class="h-4 w-4 shrink-0" />
+                {{ $t("player.sanction.button") }}
+              </span>
+              <ChevronDown
+                class="h-4 w-4 shrink-0 opacity-60 transition-transform duration-150 group-hover/sanction:translate-y-px"
+              />
+            </button>
+            <button
+              v-else
+              type="button"
+              :disabled="!outranksTarget"
+              :title="$t('player.sanction.button')"
+              :aria-label="$t('player.sanction.button')"
+              class="group/sanction inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-red-500/45 bg-red-500/10 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
+            >
+              <Ban class="h-4 w-4" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            class="p-0"
+            :align="variant === 'block' ? 'start' : 'end'"
+            :style="
+              variant === 'block'
+                ? 'width: var(--reka-popover-trigger-width)'
+                : undefined
+            "
+          >
+            <Command v-model="sanctionType">
+              <CommandList>
+                <CommandGroup>
+                  <template v-for="(sanction, type) in sanctions" :key="type">
+                    <CommandItem
+                      :value="type"
+                      @click="sanctioningPlayer = true"
+                      class="flex flex-col items-start px-4 py-2 cursor-pointer"
+                    >
+                      <div class="flex items-center gap-2">
+                        <component :is="sanction.icon" class="h-4 w-4" />
+                        <span class="font-medium">
+                          {{ $t(`player.sanctions.type_labels.${type}`) }}
+                        </span>
+                      </div>
+                      <p class="text-sm text-muted-foreground mt-1">
+                        {{ sanction.description }}
+                      </p>
+                    </CommandItem>
+                  </template>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </span>
+    </template>
+    <span class="block max-w-[16rem]">
+      {{ $t("player.sanction.outranked") }}
+    </span>
+  </FiveStackToolTip>
 
   <Drawer :open="sanctioningPlayer" @update:open="sanctioningPlayer = $event">
     <DrawerContent class="p-4">

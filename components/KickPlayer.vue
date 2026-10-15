@@ -14,12 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { toast } from "@/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { outranksPlayer } from "~/utilities/sanctionAuthority";
@@ -104,27 +99,25 @@ async function kick() {
 </script>
 
 <template>
-  <TooltipProvider :delay-duration="200">
-    <Tooltip :disabled="outranksTarget">
-      <TooltipTrigger as-child>
-        <span class="inline-flex" :tabindex="outranksTarget ? undefined : 0">
-          <button
-            type="button"
-            :disabled="!outranksTarget"
-            :title="$t('player.kick.button')"
-            :aria-label="$t('player.kick.button')"
-            class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-500/45 bg-amber-500/10 text-amber-400 transition-colors hover:border-amber-500/80 hover:bg-amber-500/20 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
-            @click="open = true"
-          >
-            <UserMinus class="h-4 w-4" />
-          </button>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent class="max-w-[16rem]">
-        {{ $t("player.sanction.outranked") }}
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
+  <FiveStackToolTip as-child :disabled="outranksTarget" :delay-duration="200">
+    <template #trigger>
+      <span class="inline-flex" :tabindex="outranksTarget ? undefined : 0">
+        <button
+          type="button"
+          :disabled="!outranksTarget"
+          :title="$t('player.kick.button')"
+          :aria-label="$t('player.kick.button')"
+          class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-amber-500/45 bg-amber-500/10 text-amber-400 transition-colors hover:border-amber-500/80 hover:bg-amber-500/20 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
+          @click="open = true"
+        >
+          <UserMinus class="h-4 w-4" />
+        </button>
+      </span>
+    </template>
+    <span class="block max-w-[16rem]">
+      {{ $t("player.sanction.outranked") }}
+    </span>
+  </FiveStackToolTip>
 
   <Dialog :open="open" @update:open="open = $event">
     <DialogContent>

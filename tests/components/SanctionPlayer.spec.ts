@@ -4,6 +4,7 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { TriangleAlert } from "lucide-vue-next";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import { touchScreen } from "../helpers/touchScreen";
 
 const PLAYER = "76561198000000001";
 
@@ -294,6 +295,32 @@ describe("SanctionPlayer by role", () => {
       expect(await reason(trigger)).toContain(OUTRANKED);
     },
   );
+
+  it.each(["icon", "block"] as const)(
+    "says why on a tap, on a phone (%s)",
+    async (variant) => {
+      touchScreen();
+      const trigger = await mountTrigger("moderator", "moderator", variant);
+
+      trigger.element.closest<HTMLElement>("span[tabindex]")!.click();
+      await flushPromises();
+
+      expect(
+        document.body.querySelector('[role="tooltip"]')?.textContent,
+      ).toContain(OUTRANKED);
+    },
+  );
+
+  it("opens the sanction menu on a tap, on a phone", async () => {
+    touchScreen();
+    const trigger = await mountTrigger("moderator", "user");
+
+    await trigger.trigger("click");
+    await flushPromises();
+
+    expect(document.body.querySelector('[role="tooltip"]')).toBeNull();
+    expect(document.body.textContent).toContain("Warning");
+  });
 
   it("disables the full-width trigger too", async () => {
     const trigger = await mountTrigger("moderator", "moderator", "block");

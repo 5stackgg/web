@@ -1973,6 +1973,9 @@
             "news": {
               "title": "新闻"
             },
+            "news_replies": {
+              "title": "评论回复"
+            },
             "staff_moderation": {
               "title": "管理"
             },
@@ -2200,6 +2203,11 @@
               "title": "新闻文章",
               "description": "发布了新文章。",
               "example": "更新说明：Rush 模式"
+            },
+            "NewsCommentReply": {
+              "title": "你的评论收到的回复",
+              "description": "有人回复了你在新闻文章下的评论。",
+              "example": "kairo 回复了你的评论"
             },
             "MatchSupport": {
               "title": "比赛协助",
@@ -3585,6 +3593,71 @@
         "list_item": "列表项",
         "quote": "引用",
         "code": "代码"
+      },
+      "comments": {
+        "title": "评论",
+        "placeholder": "添加评论",
+        "post": "发表评论",
+        "reply": "回复",
+        "reply_placeholder": "回复 {name}",
+        "save": "保存",
+        "edit": "编辑",
+        "edited": "已编辑",
+        "edited_at": "编辑于 {date}",
+        "delete": "删除",
+        "copy_link": "复制链接",
+        "more_actions": "{name} 的评论操作",
+        "hide": "隐藏…",
+        "restore": "恢复",
+        "hidden_badge": "已隐藏",
+        "hidden_by": "由 {name} 隐藏",
+        "hidden_by_reason": "由 {name} 隐藏 · 原因：{reason}",
+        "deleted": "此评论已删除。",
+        "removed_by_staff": "已被管理团队移除。",
+        "own_vote": "你不能给自己的评论 +1。",
+        "plus_one_label": "+1，目前 {count} 个",
+        "minutes": "{count} 分钟",
+        "edit_minutes_left": "还可编辑 {count} 分钟",
+        "characters_left": "还剩 {count} 个字符 | 还剩 {count} 个字符",
+        "open_days": "还开放 {count} 天 | 还开放 {count} 天",
+        "open_hours": "还开放 {count} 小时 | 还开放 {count} 小时",
+        "sign_in_prompt": "登录后即可参与讨论。",
+        "sign_in": "登录",
+        "read_only": {
+          "closed": "评论已关闭。文章发布后 7 天内可以评论。",
+          "not_verified": "只有认证玩家可以评论和 +1。",
+          "banned": "你已被封禁，无法评论。",
+          "gagged": "你已被禁言，无法评论。"
+        },
+        "empty_open": "还没有评论。来发表第一条吧。",
+        "empty_closed": "这篇文章没有评论",
+        "load_failed": "无法加载评论。",
+        "try_again": "重试",
+        "show_more": "显示更多评论",
+        "hide_dialog": {
+          "title": "隐藏此评论？",
+          "description": "读者将看到“已被管理团队移除。”回复会保留在原处。你之后可以恢复它。",
+          "reason": "原因（可选）",
+          "action": "隐藏"
+        },
+        "delete_dialog": {
+          "title": "删除此评论？",
+          "description": "此操作无法撤销。回复会保留在原处。"
+        },
+        "errors": {
+          "title": "无法完成操作",
+          "generic": "出了点问题，请重试。",
+          "not_found": "该评论或文章已不存在。",
+          "empty": "请先写点什么。",
+          "too_long": "评论最多 2,000 个字符。",
+          "parent_removed": "该评论已被移除，无法回复。",
+          "rate_limited": "操作太快了。请等一分钟再试。",
+          "daily_limit": "你已达到今天的评论上限。",
+          "not_yours": "你只能修改自己的评论。",
+          "edit_window": "评论只能在 10 分钟内编辑。",
+          "removed": "该评论已被移除。",
+          "staff_only": "只有版主可以这样做。"
+        }
       }
     },
     "seasons": {

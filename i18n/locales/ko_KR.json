@@ -1973,6 +1973,9 @@
             "news": {
               "title": "뉴스"
             },
+            "news_replies": {
+              "title": "댓글 답글"
+            },
             "staff_moderation": {
               "title": "운영"
             },
@@ -2200,6 +2203,11 @@
               "title": "뉴스 글",
               "description": "새 글이 게시되었습니다.",
               "example": "패치 노트: Rush 모드"
+            },
+            "NewsCommentReply": {
+              "title": "내 댓글에 달린 답글",
+              "description": "누군가 뉴스 게시물에 남긴 내 댓글에 답글을 달았습니다.",
+              "example": "kairo님이 내 댓글에 답글을 달았습니다"
             },
             "MatchSupport": {
               "title": "경기 지원",
@@ -3585,6 +3593,71 @@
         "list_item": "목록 항목",
         "quote": "인용",
         "code": "코드"
+      },
+      "comments": {
+        "title": "댓글",
+        "placeholder": "댓글 추가",
+        "post": "댓글 게시",
+        "reply": "답글",
+        "reply_placeholder": "{name}님에게 답글",
+        "save": "저장",
+        "edit": "수정",
+        "edited": "수정됨",
+        "edited_at": "{date}에 수정됨",
+        "delete": "삭제",
+        "copy_link": "링크 복사",
+        "more_actions": "{name}님의 댓글 작업",
+        "hide": "숨기기…",
+        "restore": "복원",
+        "hidden_badge": "숨겨짐",
+        "hidden_by": "{name}님이 숨김",
+        "hidden_by_reason": "{name}님이 숨김 · 사유: {reason}",
+        "deleted": "삭제된 댓글입니다.",
+        "removed_by_staff": "운영진이 삭제했습니다.",
+        "own_vote": "자신의 댓글에는 +1을 할 수 없습니다.",
+        "plus_one_label": "+1, 현재 {count}개",
+        "minutes": "{count}분",
+        "edit_minutes_left": "수정 가능 시간 {count}분 남음",
+        "characters_left": "{count}자 남음 | {count}자 남음",
+        "open_days": "{count}일 더 열려 있음 | {count}일 더 열려 있음",
+        "open_hours": "{count}시간 더 열려 있음 | {count}시간 더 열려 있음",
+        "sign_in_prompt": "로그인하고 대화에 참여하세요.",
+        "sign_in": "로그인",
+        "read_only": {
+          "closed": "댓글이 닫혔습니다. 게시물은 게시 후 7일 동안 댓글을 받습니다.",
+          "not_verified": "인증된 플레이어만 댓글과 +1을 할 수 있습니다.",
+          "banned": "차단되어 댓글을 달 수 없습니다.",
+          "gagged": "채팅이 금지되어 댓글을 달 수 없습니다."
+        },
+        "empty_open": "아직 댓글이 없습니다. 첫 댓글을 남겨 보세요.",
+        "empty_closed": "이 게시물에는 댓글이 없습니다",
+        "load_failed": "댓글을 불러오지 못했습니다.",
+        "try_again": "다시 시도",
+        "show_more": "댓글 더 보기",
+        "hide_dialog": {
+          "title": "이 댓글을 숨기시겠습니까?",
+          "description": "독자에게는 \"운영진이 삭제했습니다.\"라고 표시됩니다. 답글은 그대로 남습니다. 나중에 복원할 수 있습니다.",
+          "reason": "사유 (선택)",
+          "action": "숨기기"
+        },
+        "delete_dialog": {
+          "title": "이 댓글을 삭제하시겠습니까?",
+          "description": "되돌릴 수 없습니다. 답글은 그대로 남습니다."
+        },
+        "errors": {
+          "title": "처리하지 못했습니다",
+          "generic": "문제가 발생했습니다. 다시 시도해 주세요.",
+          "not_found": "해당 댓글 또는 게시물이 더 이상 없습니다.",
+          "empty": "먼저 내용을 입력하세요.",
+          "too_long": "댓글은 최대 2,000자까지 작성할 수 있습니다.",
+          "parent_removed": "삭제된 댓글이라 답글을 달 수 없습니다.",
+          "rate_limited": "너무 빠릅니다. 1분 후 다시 시도해 주세요.",
+          "daily_limit": "오늘의 댓글 한도에 도달했습니다.",
+          "not_yours": "자신의 댓글만 변경할 수 있습니다.",
+          "edit_window": "댓글은 10분 동안만 수정할 수 있습니다.",
+          "removed": "삭제된 댓글입니다.",
+          "staff_only": "모더레이터만 할 수 있습니다."
+        }
       }
     },
     "seasons": {

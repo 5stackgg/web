@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Nyheder"
             },
+            "news_replies": {
+              "title": "Svar på kommentarer"
+            },
             "staff_moderation": {
               "title": "Moderation"
             },
@@ -2200,6 +2203,11 @@
               "title": "Nyhedsartikler",
               "description": "En ny artikel blev udgivet.",
               "example": "Patch notes: Rush-tilstand"
+            },
+            "NewsCommentReply": {
+              "title": "Svar på dine kommentarer",
+              "description": "Nogen har svaret på din kommentar på et nyhedsindlæg.",
+              "example": "kairo svarede på din kommentar"
             },
             "MatchSupport": {
               "title": "Kamphjælp",
@@ -3585,6 +3593,71 @@
         "list_item": "Listepunkt",
         "quote": "Citat",
         "code": "kode"
+      },
+      "comments": {
+        "title": "Kommentarer",
+        "placeholder": "Tilføj en kommentar",
+        "post": "Send kommentar",
+        "reply": "Svar",
+        "reply_placeholder": "Svar {name}",
+        "save": "Gem",
+        "edit": "Redigér",
+        "edited": "redigeret",
+        "edited_at": "Redigeret {date}",
+        "delete": "Slet",
+        "copy_link": "Kopiér link",
+        "more_actions": "Handlinger for {name}s kommentar",
+        "hide": "Skjul…",
+        "restore": "Gendan",
+        "hidden_badge": "Skjult",
+        "hidden_by": "Skjult af {name}",
+        "hidden_by_reason": "Skjult af {name} · årsag: {reason}",
+        "deleted": "Denne kommentar er slettet.",
+        "removed_by_staff": "Fjernet af moderatorer.",
+        "own_vote": "Du kan ikke give din egen kommentar +1.",
+        "plus_one_label": "+1, {count} indtil videre",
+        "minutes": "{count} min",
+        "edit_minutes_left": "{count} min tilbage til at redigere",
+        "characters_left": "{count} tegn tilbage | {count} tegn tilbage",
+        "open_days": "Åben {count} dag mere | Åben {count} dage mere",
+        "open_hours": "Åben {count} time mere | Åben {count} timer mere",
+        "sign_in_prompt": "Log ind for at deltage i samtalen.",
+        "sign_in": "Log ind",
+        "read_only": {
+          "closed": "Kommentarerne er lukket. Indlæg tager imod kommentarer i 7 dage efter udgivelsen.",
+          "not_verified": "Kun verificerede spillere kan kommentere og give +1.",
+          "banned": "Du er udelukket og kan ikke kommentere.",
+          "gagged": "Din chat er lukket, så du kan ikke kommentere."
+        },
+        "empty_open": "Ingen kommentarer endnu. Vær den første.",
+        "empty_closed": "Ingen kommentarer på dette indlæg",
+        "load_failed": "Kommentarerne kunne ikke indlæses.",
+        "try_again": "Prøv igen",
+        "show_more": "Vis flere kommentarer",
+        "hide_dialog": {
+          "title": "Skjul denne kommentar?",
+          "description": "Læserne ser \"Fjernet af moderatorer.\" Svarene bliver, hvor de er. Du kan gendanne den senere.",
+          "reason": "Årsag (valgfri)",
+          "action": "Skjul"
+        },
+        "delete_dialog": {
+          "title": "Slet denne kommentar?",
+          "description": "Det kan ikke fortrydes. Eventuelle svar bliver, hvor de er."
+        },
+        "errors": {
+          "title": "Det kunne ikke lade sig gøre",
+          "generic": "Noget gik galt. Prøv igen.",
+          "not_found": "Den kommentar eller det indlæg findes ikke længere.",
+          "empty": "Skriv noget først.",
+          "too_long": "En kommentar kan højst være 2.000 tegn.",
+          "parent_removed": "Den kommentar er fjernet, så der kan ikke svares på den.",
+          "rate_limited": "Du går for hurtigt frem. Vent et minut, og prøv igen.",
+          "daily_limit": "Du har nået dagens grænse for kommentarer.",
+          "not_yours": "Du kan kun ændre dine egne kommentarer.",
+          "edit_window": "En kommentar kan kun redigeres i 10 minutter.",
+          "removed": "Den kommentar er fjernet.",
+          "staff_only": "Kun moderatorer kan gøre det."
+        }
       }
     },
     "seasons": {

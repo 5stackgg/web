@@ -7,6 +7,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import NewsArticleView from "~/components/news/NewsArticleView.vue";
 import NewsCard from "~/components/news/NewsCard.vue";
 import NewsPoster from "~/components/news/NewsPoster.vue";
+import NewsComments from "~/components/news/NewsComments.vue";
 import { ArrowLeft, ArrowRight, Link2, PencilLine } from "lucide-vue-next";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { dateLocale } from "~/utilities/dateLocale";
@@ -287,6 +288,12 @@ onMounted(() => {
         </template>
 
         <template #footer>
+          <NewsComments
+            :article-id="article.id"
+            :slug="article.slug"
+            :published-at="article.published_at"
+          />
+
           <nav
             v-if="older || newer"
             :aria-label="$t('pages.news.around')"

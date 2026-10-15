@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Noticias"
             },
+            "news_replies": {
+              "title": "Respuestas a comentarios"
+            },
             "staff_moderation": {
               "title": "Moderación"
             },
@@ -2200,6 +2203,11 @@
               "title": "Artículos de noticias",
               "description": "Se publicó un artículo nuevo.",
               "example": "Notas del parche: modo Rush"
+            },
+            "NewsCommentReply": {
+              "title": "Respuestas a tus comentarios",
+              "description": "Alguien respondió a tu comentario en una noticia.",
+              "example": "kairo respondió a tu comentario"
             },
             "MatchSupport": {
               "title": "Asistencia en partidas",
@@ -3585,6 +3593,71 @@
         "list_item": "Elemento de lista",
         "quote": "Cita",
         "code": "código"
+      },
+      "comments": {
+        "title": "Comentarios",
+        "placeholder": "Añade un comentario",
+        "post": "Publicar comentario",
+        "reply": "Responder",
+        "reply_placeholder": "Responder a {name}",
+        "save": "Guardar",
+        "edit": "Editar",
+        "edited": "editado",
+        "edited_at": "Editado el {date}",
+        "delete": "Eliminar",
+        "copy_link": "Copiar enlace",
+        "more_actions": "Acciones del comentario de {name}",
+        "hide": "Ocultar…",
+        "restore": "Restaurar",
+        "hidden_badge": "Oculto",
+        "hidden_by": "Ocultado por {name}",
+        "hidden_by_reason": "Ocultado por {name} · motivo: {reason}",
+        "deleted": "Este comentario se ha eliminado.",
+        "removed_by_staff": "Eliminado por la moderación.",
+        "own_vote": "No puedes dar +1 a tu propio comentario.",
+        "plus_one_label": "+1, {count} hasta ahora",
+        "minutes": "{count} min",
+        "edit_minutes_left": "Quedan {count} min para editar",
+        "characters_left": "Queda {count} carácter | Quedan {count} caracteres",
+        "open_days": "Abierto {count} día más | Abierto {count} días más",
+        "open_hours": "Abierto {count} hora más | Abierto {count} horas más",
+        "sign_in_prompt": "Inicia sesión para unirte a la conversación.",
+        "sign_in": "Iniciar sesión",
+        "read_only": {
+          "closed": "Los comentarios están cerrados. Las entradas admiten comentarios durante 7 días tras su publicación.",
+          "not_verified": "Solo los jugadores verificados pueden comentar y dar +1.",
+          "banned": "Estás baneado y no puedes comentar.",
+          "gagged": "Estás silenciado en el chat y no puedes comentar."
+        },
+        "empty_open": "Aún no hay comentarios. Sé el primero.",
+        "empty_closed": "No hay comentarios en esta entrada",
+        "load_failed": "No se pudieron cargar los comentarios.",
+        "try_again": "Reintentar",
+        "show_more": "Mostrar más comentarios",
+        "hide_dialog": {
+          "title": "¿Ocultar este comentario?",
+          "description": "Los lectores verán \"Eliminado por la moderación.\" Las respuestas se quedan donde están. Puedes restaurarlo más tarde.",
+          "reason": "Motivo (opcional)",
+          "action": "Ocultar"
+        },
+        "delete_dialog": {
+          "title": "¿Eliminar este comentario?",
+          "description": "No se puede deshacer. Las respuestas se quedan donde están."
+        },
+        "errors": {
+          "title": "No se pudo hacer",
+          "generic": "Algo salió mal. Inténtalo de nuevo.",
+          "not_found": "Ese comentario o esa entrada ya no existe.",
+          "empty": "Escribe algo primero.",
+          "too_long": "Un comentario puede tener hasta 2000 caracteres.",
+          "parent_removed": "Ese comentario se eliminó, así que no admite respuestas.",
+          "rate_limited": "Vas demasiado rápido. Espera un minuto y vuelve a intentarlo.",
+          "daily_limit": "Has alcanzado el límite de comentarios de hoy.",
+          "not_yours": "Solo puedes cambiar tus propios comentarios.",
+          "edit_window": "Un comentario solo se puede editar durante 10 minutos.",
+          "removed": "Ese comentario se eliminó.",
+          "staff_only": "Solo los moderadores pueden hacer eso."
+        }
       }
     },
     "seasons": {

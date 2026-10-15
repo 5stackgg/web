@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "通知设置",
-      "mute_channel": "静音频道",
-      "unmute_channel": "取消静音频道",
+      "mute_room": "静音房间",
+      "unmute_room": "取消静音房间",
       "mute_conversation": "静音对话",
       "unmute_conversation": "取消静音对话",
       "mute_for": {

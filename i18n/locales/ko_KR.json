@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "알림 설정",
-      "mute_channel": "채널 음소거",
-      "unmute_channel": "채널 음소거 해제",
+      "mute_room": "방 음소거",
+      "unmute_room": "방 음소거 해제",
       "mute_conversation": "대화 음소거",
       "unmute_conversation": "대화 음소거 해제",
       "mute_for": {

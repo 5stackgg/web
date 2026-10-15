@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Ustawienia powiadomień",
-      "mute_channel": "Wycisz kanał",
-      "unmute_channel": "Wyłącz wyciszenie kanału",
+      "mute_room": "Wycisz pokój",
+      "unmute_room": "Wyłącz wyciszenie pokoju",
       "mute_conversation": "Wycisz rozmowę",
       "unmute_conversation": "Wyłącz wyciszenie rozmowy",
       "mute_for": {

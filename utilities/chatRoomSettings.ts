@@ -15,7 +15,6 @@ export const CHAT_MUTE_DURATIONS: ReadonlyArray<number | null> = [
   null,
 ];
 
-// A row of chat_room_settings, as the api serves it.
 export interface ChatRoomSetting {
   muted: boolean;
   muted_until: string | null;
@@ -53,7 +52,7 @@ export function chatRoomQuietAt(
   };
 }
 
-// Whether a line may ring, flash or push: the api's chat_room_notifies.
+// The api's chat_room_notifies, which decides the push, says the same.
 export function chatRoomAlerts(quiet: ChatRoomQuiet, tagged: boolean) {
   if (quiet.notify === "nothing") {
     return false;

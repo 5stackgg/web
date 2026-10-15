@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useHoverIntent } from "~/composables/useHoverIntent";
 import { dockSettleMs, DOCK_TOLERANCE_PX } from "~/composables/useDockIntent";
-import { AtSign } from "lucide-vue-next";
+import { AtSign, BellOff } from "lucide-vue-next";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { badgePopTransition } from "~/utilities/badgeCount";
 
@@ -23,6 +23,8 @@ const props = withDefaults(
     badgeTone?: "red" | "fresh" | "neutral" | "muted";
     // The count is of messages that tag you.
     badgeMention?: boolean;
+    // A room the player muted, marked as the chat rail marks it.
+    muted?: boolean;
     pip?: boolean;
     tone?: "default" | "voice";
     ring?: boolean;
@@ -231,6 +233,16 @@ const tileClass = computed(() => {
             >
               {{ face.initials }}
             </span>
+          </span>
+        </Transition>
+        <Transition v-bind="badgePopTransition">
+          <span
+            v-if="muted"
+            data-hub-dock-muted
+            aria-hidden="true"
+            class="pointer-events-none absolute -bottom-1 -right-1 z-[2] inline-flex size-3.5 origin-center items-center justify-center rounded-full bg-zinc-900 text-zinc-400 shadow-[0_0_0_2px_#1e1e22]"
+          >
+            <BellOff class="size-2" />
           </span>
         </Transition>
         <Transition v-bind="badgePopTransition">

@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Aviseringsinställningar",
-      "mute_channel": "Tysta kanal",
-      "unmute_channel": "Slå på kanalen igen",
+      "mute_room": "Tysta rum",
+      "unmute_room": "Slå på rummet igen",
       "mute_conversation": "Tysta konversation",
       "unmute_conversation": "Slå på konversationen igen",
       "mute_for": {

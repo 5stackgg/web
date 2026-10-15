@@ -145,7 +145,7 @@ function setLevel(level: unknown) {
         {{
           isConversation
             ? $t("chat.room_settings.unmute_conversation")
-            : $t("chat.room_settings.unmute_channel")
+            : $t("chat.room_settings.unmute_room")
         }}
       </span>
       <span
@@ -161,7 +161,7 @@ function setLevel(level: unknown) {
         {{
           isConversation
             ? $t("chat.room_settings.mute_conversation")
-            : $t("chat.room_settings.mute_channel")
+            : $t("chat.room_settings.mute_room")
         }}
       </component>
       <component :is="menu.SubContent" data-right-hub-interactive>

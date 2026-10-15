@@ -55,14 +55,21 @@ export function chatTabBadge(
   };
 }
 
-// A muted room's chatter is left out of both totals; only a tag it lets
-// through is counted, in red.
-export function chatBadgeFor<Tab extends BadgedTab>(
+export interface ChatCounts {
+  direct: number;
+  mentions: number;
+  chatter: number;
+}
+
+// A muted room's chatter is left out of every total; only a tag it lets
+// through is counted, in red. The Chat icon's badge and its description both
+// read these, so they cannot disagree.
+export function chatCounts<Tab extends BadgedTab>(
   tabs: Tab[],
   unreadCounts: Record<string, number>,
   mentionCounts: Record<string, number>,
   quietFor: (tab: Tab) => ChatRoomQuiet = () => LOUD_ROOM,
-): ChatBadge | null {
+): ChatCounts {
   let direct = 0;
   let mentions = 0;
   let chatter = 0;
@@ -87,6 +94,22 @@ export function chatBadgeFor<Tab extends BadgedTab>(
 
     chatter += chatterOf(unread, tagged, quiet);
   }
+
+  return { direct, mentions, chatter };
+}
+
+export function chatBadgeFor<Tab extends BadgedTab>(
+  tabs: Tab[],
+  unreadCounts: Record<string, number>,
+  mentionCounts: Record<string, number>,
+  quietFor: (tab: Tab) => ChatRoomQuiet = () => LOUD_ROOM,
+): ChatBadge | null {
+  const { direct, mentions, chatter } = chatCounts(
+    tabs,
+    unreadCounts,
+    mentionCounts,
+    quietFor,
+  );
 
   if (direct + mentions > 0) {
     return { tone: "red", count: direct + mentions, mention: direct === 0 };

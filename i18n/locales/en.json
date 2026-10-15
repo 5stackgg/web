@@ -10462,8 +10462,8 @@
     },
     "room_settings": {
       "menu": "Notification settings",
-      "mute_channel": "Mute channel",
-      "unmute_channel": "Unmute channel",
+      "mute_room": "Mute room",
+      "unmute_room": "Unmute room",
       "mute_conversation": "Mute conversation",
       "unmute_conversation": "Unmute conversation",
       "mute_for": {

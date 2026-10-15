@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Настройки уведомлений",
-      "mute_channel": "Заглушить канал",
-      "unmute_channel": "Включить уведомления канала",
+      "mute_room": "Заглушить комнату",
+      "unmute_room": "Включить уведомления комнаты",
       "mute_conversation": "Заглушить беседу",
       "unmute_conversation": "Включить уведомления беседы",
       "mute_for": {

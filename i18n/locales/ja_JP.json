@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "通知設定",
-      "mute_channel": "チャンネルをミュート",
-      "unmute_channel": "チャンネルのミュートを解除",
+      "mute_room": "ルームをミュート",
+      "unmute_room": "ルームのミュートを解除",
       "mute_conversation": "会話をミュート",
       "unmute_conversation": "会話のミュートを解除",
       "mute_for": {

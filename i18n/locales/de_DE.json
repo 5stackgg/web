@@ -10458,8 +10458,8 @@
     },
     "room_settings": {
       "menu": "Benachrichtigungseinstellungen",
-      "mute_channel": "Kanal stummschalten",
-      "unmute_channel": "Stummschaltung des Kanals aufheben",
+      "mute_room": "Raum stummschalten",
+      "unmute_room": "Stummschaltung des Raums aufheben",
       "mute_conversation": "Unterhaltung stummschalten",
       "unmute_conversation": "Stummschaltung der Unterhaltung aufheben",
       "mute_for": {

@@ -9553,7 +9553,9 @@
         "now": "You are here",
         "unlocks": "Unlocks here",
         "nothing_new": "Nothing new for you here"
-      }
+      },
+      "show_console": "Show console and logs",
+      "hide_console": "Hide console and logs"
     },
     "demo_processing_hint": "The match demo is uploading from the game server. Stats, the 2D replay and highlights land once it finishes.",
     "demo_playback": {

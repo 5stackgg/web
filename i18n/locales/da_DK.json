@@ -9551,7 +9551,9 @@
         "now": "Du er her",
         "unlocks": "Låses op her",
         "nothing_new": "Intet nyt for dig her"
-      }
+      },
+      "show_console": "Vis konsol og logs",
+      "hide_console": "Skjul konsol og logs"
     },
     "demo_processing_hint": "Kampens demo uploades fra spilserveren. Statistik, 2D-replay og højdepunkter kommer, når den er færdig.",
     "demo_playback": {

@@ -9551,7 +9551,9 @@
         "now": "Du bist hier",
         "unlocks": "Wird hier freigeschaltet",
         "nothing_new": "Hier kommt für dich nichts Neues"
-      }
+      },
+      "show_console": "Konsole und Logs anzeigen",
+      "hide_console": "Konsole und Logs ausblenden"
     },
     "demo_processing_hint": "Die Match-Demo wird vom Gameserver hochgeladen. Statistiken, das 2D-Replay und Highlights folgen, sobald das abgeschlossen ist.",
     "demo_playback": {

@@ -209,6 +209,7 @@ watch(
 
 onBeforeUnmount(() => {
   clearTimeout(hoverTimer);
+  clearTimeout(settleTimer);
   clearTimeout(replayTimer);
 });
 
@@ -240,6 +241,40 @@ function weight(id: string) {
 const isWide = (id: string) =>
   !sideMapId.value &&
   (focus.value === id || (done.value && stateOf(id).status !== "Ban"));
+// A map opening shows its words once it has finished growing, so they do
+// not squeeze and reflow while it widens.
+const settled = ref<string[]>([]);
+const wideKey = computed(() =>
+  props.items
+    .filter((item) => isWide(item.id))
+    .map((item) => item.id)
+    .join("|"),
+);
+let settleTimer: ReturnType<typeof setTimeout> | undefined;
+watch(
+  wideKey,
+  (now, before) => {
+    const wide = now ? now.split("|") : [];
+    clearTimeout(settleTimer);
+    // On the first render nothing grows.
+    if (before === undefined) {
+      settled.value = wide;
+      return;
+    }
+    settled.value = settled.value.filter((id) => wide.includes(id));
+    // In case a map's width did not animate (it was already at its size).
+    settleTimer = setTimeout(() => {
+      settled.value = wide;
+    }, 520);
+  },
+  { immediate: true },
+);
+function onSliceGrown(event: TransitionEvent, id: string) {
+  if (event.target !== event.currentTarget) return;
+  if (event.propertyName !== "flex-grow" || !isWide(id)) return;
+  if (!settled.value.includes(id)) settled.value = [...settled.value, id];
+}
+
 const isLive = (id: string) =>
   live.value &&
   (step.value?.type === "Ban" || step.value?.type === "Pick") &&
@@ -1120,14 +1155,15 @@ onBeforeUnmount(() => {
             'is-selected': mine && selected === item.id,
             'is-siding': sideMapId === item.id,
             'is-echo': echo === item.id,
+            'is-settled': settled.includes(item.id),
           }"
           :style="{ '--g': weight(item.id) }"
           :tabindex="isLive(item.id) ? 0 : -1"
           :role="isLive(item.id) ? 'button' : undefined"
           :aria-label="sliceTitle(item.id)"
-          :title="sliceTitle(item.id)"
           @click="choose(item.id)"
           @keydown="onKey($event, item.id)"
+          @transitionend="onSliceGrown($event, item.id)"
         >
           <template v-if="!isRegion">
             <NuxtImg
@@ -1628,11 +1664,17 @@ onBeforeUnmount(() => {
   outline: none;
   transition: flex-grow 460ms var(--vb-ease);
 }
+/* Each map has softly rounded corners of its own, so the outline on the
+   one you choose (or focus) is rounded too; the stage's outer corners stay
+   at 12px. */
+.vb-slice {
+  border-radius: 6px;
+}
 .vb-slice:first-child {
-  border-radius: 12px 0 0 12px;
+  border-radius: 12px 6px 6px 12px;
 }
 .vb-slice:last-child {
-  border-radius: 0 12px 12px 0;
+  border-radius: 6px 12px 12px 6px;
 }
 .vb-slice::after {
   content: "";
@@ -1773,7 +1815,6 @@ onBeforeUnmount(() => {
   min-width: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 160ms var(--vb-ease);
 }
 .vb-namerow {
   display: flex;
@@ -1835,10 +1876,11 @@ onBeforeUnmount(() => {
   font-weight: 700;
   white-space: nowrap;
 }
-.vb-slice.is-wide .vb-open {
+/* In once the map has opened; gone at once when it closes. */
+.vb-slice.is-wide.is-settled .vb-open {
   opacity: 1;
   pointer-events: auto;
-  transition-delay: 140ms;
+  transition: opacity 160ms var(--vb-ease);
 }
 .vb-slice.is-wide .vb-v {
   opacity: 0;
@@ -2319,14 +2361,14 @@ onBeforeUnmount(() => {
   inset: 3px;
   z-index: 4;
   border: 1.5px dashed hsl(0 0% 100% / 0.55);
-  border-radius: 2px;
+  border-radius: 4px;
   pointer-events: none;
 }
 .vb-slice:first-child .vb-likely {
-  border-radius: 9px 2px 2px 9px;
+  border-radius: 9px 4px 4px 9px;
 }
 .vb-slice:last-child .vb-likely {
-  border-radius: 2px 9px 9px 2px;
+  border-radius: 4px 9px 9px 4px;
 }
 /* Both sides' records sit at the top of the open map, above its name. */
 .vb-slice.is-wide .vb-top {
@@ -2341,6 +2383,11 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   background: hsl(240 10% 4% / 0.55);
   backdrop-filter: blur(4px);
+  opacity: 0;
+}
+.vb-slice.is-settled .vb-scout {
+  opacity: 1;
+  transition: opacity 160ms var(--vb-ease);
 }
 .vb-rec {
   display: grid;
@@ -2788,10 +2835,10 @@ onBeforeUnmount(() => {
     height: 340px;
   }
   .vb-slice:first-child {
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px 12px 6px 6px;
   }
   .vb-slice:last-child {
-    border-radius: 0 0 12px 12px;
+    border-radius: 6px 6px 12px 12px;
   }
   .vb-pingfill {
     top: 0;
@@ -2920,10 +2967,10 @@ onBeforeUnmount(() => {
     font-size: 11px;
   }
   .vb-slice:first-child .vb-likely {
-    border-radius: 9px 9px 2px 2px;
+    border-radius: 9px 9px 4px 4px;
   }
   .vb-slice:last-child .vb-likely {
-    border-radius: 2px 2px 9px 9px;
+    border-radius: 4px 4px 9px 9px;
   }
 }
 

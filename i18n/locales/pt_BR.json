@@ -9551,7 +9551,9 @@
         "now": "Você está aqui",
         "unlocks": "Desbloqueia aqui",
         "nothing_new": "Nada novo para você aqui"
-      }
+      },
+      "show_console": "Mostrar console e logs",
+      "hide_console": "Ocultar console e logs"
     },
     "demo_processing_hint": "A demo da partida está sendo enviada do servidor de jogo. Estatísticas, replay 2D e destaques ficam disponíveis quando terminar.",
     "demo_playback": {

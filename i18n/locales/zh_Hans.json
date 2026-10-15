@@ -9551,7 +9551,9 @@
         "now": "当前阶段",
         "unlocks": "在此解锁",
         "nothing_new": "此阶段没有新操作"
-      }
+      },
+      "show_console": "显示控制台和日志",
+      "hide_console": "隐藏控制台和日志"
     },
     "demo_processing_hint": "比赛 demo 正从游戏服务器上传。完成后就会出现数据、2D 回放和集锦。",
     "demo_playback": {

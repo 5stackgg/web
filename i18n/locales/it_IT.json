@@ -9551,7 +9551,9 @@
         "now": "Sei qui",
         "unlocks": "Si sblocca qui",
         "nothing_new": "Niente di nuovo per te qui"
-      }
+      },
+      "show_console": "Mostra console e log",
+      "hide_console": "Nascondi console e log"
     },
     "demo_processing_hint": "La demo della partita è in caricamento dal server di gioco. Statistiche, replay 2D e highlight arriveranno al termine.",
     "demo_playback": {

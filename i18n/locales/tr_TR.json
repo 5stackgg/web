@@ -9551,7 +9551,9 @@
         "now": "Buradasın",
         "unlocks": "Burada açılır",
         "nothing_new": "Burada senin için yeni bir şey yok"
-      }
+      },
+      "show_console": "Konsolu ve günlükleri göster",
+      "hide_console": "Konsolu ve günlükleri gizle"
     },
     "demo_processing_hint": "Maç demosu oyun sunucusundan yükleniyor. İstatistikler, 2B tekrar ve öne çıkanlar tamamlandığında gelir.",
     "demo_playback": {

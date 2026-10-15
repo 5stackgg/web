@@ -9551,7 +9551,9 @@
         "now": "目前階段",
         "unlocks": "在此解鎖",
         "nothing_new": "此階段沒有新操作"
-      }
+      },
+      "show_console": "顯示主控台和日誌",
+      "hide_console": "隱藏主控台和日誌"
     },
     "demo_processing_hint": "比賽 demo 正從遊戲伺服器上傳。完成後就會出現數據、2D 重播與精華片段。",
     "demo_playback": {

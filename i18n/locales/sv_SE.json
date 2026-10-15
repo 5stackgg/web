@@ -9551,7 +9551,9 @@
         "now": "Du är här",
         "unlocks": "Låses upp här",
         "nothing_new": "Inget nytt för dig här"
-      }
+      },
+      "show_console": "Visa konsol och loggar",
+      "hide_console": "Dölj konsol och loggar"
     },
     "demo_processing_hint": "Matchens demo laddas upp från spelservern. Statistik, 2D-replay och höjdpunkter kommer när den är klar.",
     "demo_playback": {

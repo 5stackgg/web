@@ -9551,7 +9551,9 @@
         "now": "Jesteś tutaj",
         "unlocks": "Odblokowuje się tutaj",
         "nothing_new": "Nic nowego dla ciebie"
-      }
+      },
+      "show_console": "Pokaż konsolę i logi",
+      "hide_console": "Ukryj konsolę i logi"
     },
     "demo_processing_hint": "Demo meczu jest przesyłane z serwera gry. Statystyki, powtórka 2D i highlighty pojawią się po zakończeniu.",
     "demo_playback": {

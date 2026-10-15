@@ -9551,7 +9551,9 @@
         "now": "현재 단계",
         "unlocks": "여기서 열림",
         "nothing_new": "여기서는 새로운 작업이 없습니다"
-      }
+      },
+      "show_console": "콘솔 및 로그 표시",
+      "hide_console": "콘솔 및 로그 숨기기"
     },
     "demo_processing_hint": "경기 데모를 게임 서버에서 업로드하고 있습니다. 완료되면 통계, 2D 리플레이, 하이라이트가 표시됩니다.",
     "demo_playback": {

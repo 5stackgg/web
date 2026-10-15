@@ -1174,6 +1174,9 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   --vb-ease: cubic-bezier(0.16, 1, 0.3, 1);
   container-type: inline-size;
   display: grid;
+  /* minmax(0, …): an auto column grows to the rail's min-content, and a best
+     of five's eleven steps pushed the board past its column. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 

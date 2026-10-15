@@ -10324,6 +10324,9 @@
     "start_the_conversation": "اكتب شيئًا لبدء المحادثة.",
     "jump_to_new": "انتقل إلى الجديد",
     "new_messages": "رسائل جديدة",
+    "loading_older": "جارٍ تحميل الرسائل الأقدم…",
+    "no_older_messages": "لا توجد رسائل أقدم",
+    "older_messages": "الرسائل الأقدم",
     "organizers": {
       "title": "دردشة المنظمين",
       "no_access": "ليس لديك صلاحية الوصول إلى هذه الصفحة.",

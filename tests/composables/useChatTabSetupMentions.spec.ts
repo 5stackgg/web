@@ -366,3 +366,49 @@ describe("useChatTabSetup mentions", () => {
     expect(mentions(tournamentTab())).toBe(0);
   });
 });
+
+describe("useChatTabSetup with an older page", () => {
+  let restore: () => void;
+  let sent: () => Array<{ event: string; data: any }>;
+
+  beforeEach(() => {
+    const send = vi.fn();
+    const held = {
+      connected: (socket as any).connected,
+      connection: (socket as any).connection,
+    };
+    (socket as any).connected = true;
+    (socket as any).connection = { send };
+    sent = () => send.mock.calls.map(([raw]) => JSON.parse(raw));
+    restore = () => Object.assign(socket as any, held);
+  });
+
+  afterEach(() => {
+    restore();
+  });
+
+  it("counts nothing in it: an older page is read already, tags and all", async () => {
+    socket.emit(`lobby:tournament:${tournamentId}:messages`, {
+      messages: [line("new-tag", 5, [ME]), line("chatter", 6)],
+      more: true,
+      cursor: "cursor-5",
+    });
+    expect(unread(tournamentTab())).toBe(2);
+    expect(mentions(tournamentTab())).toBe(1);
+
+    const handle = socket.joinLobby("spec", "tournament", tournamentId);
+    const loaded = handle.loadOlder();
+    const [request] = sent().filter(({ event }) => event === "lobby:history");
+    socket.emit(`lobby:tournament:${tournamentId}:history`, {
+      messages: [line("older-tag", 2, [ME]), line("older", 3)],
+      more: false,
+      cursor: "cursor-2",
+      requestId: request.data.requestId,
+    });
+    await loaded;
+    handle.leave();
+
+    expect(unread(tournamentTab())).toBe(2);
+    expect(mentions(tournamentTab())).toBe(1);
+  });
+});

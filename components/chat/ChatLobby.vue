@@ -130,8 +130,10 @@ import {
             :message-room="messageRoom"
             :can-moderate="canModerate"
             :can-post="canSend"
+            :history="history"
             @bottom-state-change="handleBottomStateChange"
             @edit-last-end="focusComposer"
+            @load-older="loadOlder"
           />
           <Empty v-else class="flex-1 text-muted-foreground">
             <div class="space-y-1">
@@ -335,8 +337,10 @@ import {
           :message-room="messageRoom"
           :can-moderate="canModerate"
           :can-post="canSend"
+          :history="history"
           @bottom-state-change="handleBottomStateChange"
           @edit-last-end="focusComposer"
+          @load-older="loadOlder"
         />
         <Empty v-else key="empty" class="min-h-0 flex-1 text-muted-foreground">
           <div class="space-y-1">
@@ -448,6 +452,7 @@ import socket, { chatMessageKey, chatMessageTime } from "~/web-sockets/Socket";
 import type {
   ChatType,
   Lobby,
+  LobbyHistory,
   LobbyMessage,
   LobbyMessageDeleted,
 } from "~/web-sockets/Socket";
@@ -474,6 +479,7 @@ interface ChatMessagesRef {
   scrollToBottom: (force?: boolean) => void;
   scrollToNewDivider?: () => void;
   editLast?: () => void;
+  markPageLanded?: () => void;
 }
 
 const NO_MESSAGES: LobbyMessage[] = [];
@@ -669,6 +675,31 @@ export default {
           (a.__channel === "team" ? 1 : 0) - (b.__channel === "team" ? 1 : 0)
         );
       });
+    },
+    // The rooms on screen, which a scroll to the top pages back through.
+    visibleLobbies(): Lobby[] {
+      if (!this.isMerged) {
+        return this.lobby ? [this.lobby] : [];
+      }
+
+      return [
+        this.channelVisible("everyone") ? this.lobby : undefined,
+        this.channelVisible("team") ? this.teamLobby : undefined,
+      ].filter((lobby): lobby is Lobby => !!lobby);
+    },
+    history(): LobbyHistory {
+      const states = this.visibleLobbies
+        .map((lobby) => lobby.history)
+        .filter((state): state is NonNullable<LobbyHistory> => !!state);
+
+      if (states.length === 0) {
+        return null;
+      }
+
+      return {
+        more: states.some((state) => state.more),
+        loading: states.some((state) => state.loading),
+      };
     },
     // A conversation between two people is theirs; the api refuses to moderate
     // one, even for an administrator. A team's room is the team's own to
@@ -973,6 +1004,29 @@ export default {
 
       return index + earlier;
     },
+    loadOlder() {
+      for (const lobby of this.visibleLobbies) {
+        void lobby.loadOlder();
+      }
+    },
+    // The "New" line is a count from the top, so lines landing above it would
+    // otherwise push it up onto them. An older page is read already.
+    handleOlderMessages(
+      older: LobbyMessage[],
+      channel: "everyone" | "team",
+    ) {
+      if (!this.channelVisible(channel)) {
+        return;
+      }
+
+      if (this.lastReadMessageCount > 0) {
+        this.lastReadMessageCount += older.length;
+      }
+
+      (
+        this.$refs.chatMessagesRef as ChatMessagesRef | undefined
+      )?.markPageLanded?.();
+    },
     // The "New" line is a count from the top, so a line removed above it would
     // otherwise drag it down onto a message that was already read.
     handleDeletedMessage(
@@ -1241,6 +1295,10 @@ export default {
         lobby.on("lobby:deleted", (deleted: LobbyMessageDeleted) => {
           this.handleDeletedMessage(deleted, "everyone");
         });
+
+        lobby.on("lobby:older", (older: LobbyMessage[]) => {
+          this.handleOlderMessages(older, "everyone");
+        });
       },
     },
     // The second room. joinLobby is refcounted per call and hands back its own
@@ -1277,6 +1335,10 @@ export default {
 
         lobby.on("lobby:deleted", (deleted: LobbyMessageDeleted) => {
           this.handleDeletedMessage(deleted, "team");
+        });
+
+        lobby.on("lobby:older", (older: LobbyMessage[]) => {
+          this.handleOlderMessages(older, "team");
         });
       },
     },

@@ -9565,7 +9565,18 @@
         "captain_picks": "{captain} picks it in {n} of {of} vetoes as captain",
         "players_note": "Each side's five players, their own games on this map",
         "record": "{team}: {wins} won, {losses} lost on this map",
-        "your_record": "Your record here: {wins}–{losses}"
+        "edge": "Edge",
+        "edge_key": "the stronger side on each map, and how many points higher its win rate is",
+        "too_few": "— under {n} games",
+        "players_games": "Players' own games",
+        "even": "Even",
+        "edge_ahead": "{team} win here {points} points more often",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Win rates within {points} points",
+        "edge_few": "Too few games here for an edge",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} games",
+        "win_rate_on": "Win rate on {map}"
       },
       "keys": {
         "browse": "browse",

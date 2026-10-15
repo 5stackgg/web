@@ -338,11 +338,19 @@ export default {
       }
       return null;
     },
+    // On from the first frame, so the board keeps its height while the
+    // history loads; dropped only when there turns out to be none.
     scoutingView() {
-      if (!this.scouting) {
+      if (!this.scoutingKey) {
         return null;
       }
-      return { lineups: this.scouting, viewer: this.viewerLineup };
+      if (this.scouting && !this.scouting.some(Boolean)) {
+        return null;
+      }
+      return {
+        lineups: this.scouting ?? ([null, null] as [null, null]),
+        viewer: this.viewerLineup,
+      };
     },
     steps() {
       const picks = this.picks ?? [];

@@ -9563,7 +9563,18 @@
         "captain_picks": "{captain}, kaptan olarak {of} vetoda {n} kez bu haritayı seçti",
         "players_note": "Her tarafın beş oyuncusu, bu haritadaki kendi maçları",
         "record": "{team}: bu haritada {wins} galibiyet, {losses} mağlubiyet",
-        "your_record": "Buradaki sonuçların: {wins}–{losses}"
+        "edge": "Üstünlük",
+        "edge_key": "her haritada güçlü olan taraf ve galibiyet oranının kaç puan yüksek olduğu",
+        "too_few": "— {n} maçtan az",
+        "players_games": "Oyuncuların kendi maçları",
+        "even": "Denk",
+        "edge_ahead": "{team}: burada galibiyet oranı {points} puan daha yüksek",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Galibiyet oranları arasında en fazla {points} puan fark var",
+        "edge_few": "Üstünlük için burada yeterince maç yok",
+        "rate_line": "{team} %{rate}",
+        "games_line": "{team}: {n} maç",
+        "win_rate_on": "{map} haritasında galibiyet oranı"
       },
       "keys": {
         "browse": "gezin",

@@ -9563,7 +9563,18 @@
         "captain_picks": "{captain} väljer den i {n} av {of} veton som lagkapten",
         "players_note": "Varje sidas fem spelare, deras egna matcher på den här kartan",
         "record": "{team}: {wins} vunna, {losses} förlorade på den här kartan",
-        "your_record": "Ditt facit här: {wins}–{losses}"
+        "edge": "Fördel",
+        "edge_key": "den starkare sidan på varje karta och hur många procentenheter högre dess vinstandel är",
+        "too_few": "— under {n} matcher",
+        "players_games": "Spelarnas egna matcher",
+        "even": "Jämnt",
+        "edge_ahead": "{team}: vinstandel här {points} procentenheter högre",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Vinstandelar inom {points} procentenheter",
+        "edge_few": "För få matcher här för en fördel",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} matcher",
+        "win_rate_on": "Vinstandel på {map}"
       },
       "keys": {
         "browse": "bläddra",

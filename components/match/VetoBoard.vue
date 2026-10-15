@@ -5,8 +5,12 @@ import { Spinner } from "~/components/ui/spinner";
 import VetoCrest from "~/components/match/VetoCrest.vue";
 import { useCountdown } from "~/composables/useCountdown";
 import {
+  SCOUT_EVEN_POINTS,
+  SCOUT_MIN_GAMES,
+  scoutEdge,
   scoutHabit,
   scoutLikely,
+  scoutRate,
   type ScoutLineup,
 } from "~/utilities/vetoScouting";
 import type {
@@ -496,6 +500,11 @@ const sidePoster = computed(() => {
 
 /* ---------- scouting ---------- */
 const scoutOn = computed(() => !!props.scouting && !isRegion.value);
+// Scouting can be on before its history arrives: the key line holds its place
+// from the first frame, and the numbers fill in under it.
+const scoutLoaded = computed(
+  () => !!props.scouting?.lineups.some((lineup) => lineup),
+);
 const viewerLineup = computed(() => props.scouting?.viewer ?? null);
 const scoutOf = (lineup: 1 | 2) => props.scouting?.lineups[lineup - 1] ?? null;
 // Whose habits you see: the other side's; watching, both.
@@ -538,11 +547,71 @@ function record(lineup: 1 | 2, id: string) {
   const map = scoutOf(lineup)?.maps[id];
   const played = map?.played ?? 0;
   const wins = map?.wins ?? 0;
+  return { played, wins, losses: played - wins, pct: scoutRate(map) };
+}
+
+const scoutName = (lineup: 1 | 2) =>
+  viewerLineup.value === lineup
+    ? t("match.veto.scout.you")
+    : lineupName(lineup);
+
+// The numbers behind an edge, for its tooltip.
+function rateDetail(id: string) {
+  const order: (1 | 2)[] = viewerLineup.value === 2 ? [2, 1] : [1, 2];
+  return order
+    .map((lineup) => {
+      const rec = record(lineup, id);
+      return rec.pct == null
+        ? t("match.veto.scout.games_line", {
+            team: scoutName(lineup),
+            n: rec.played,
+          })
+        : t("match.veto.scout.rate_line", {
+            team: scoutName(lineup),
+            rate: rec.pct,
+          });
+    })
+    .join(" · ");
+}
+
+type EdgeView = {
+  tone: "you" | "them" | "side" | "even" | "few";
+  lineup: 1 | 2 | null;
+  text: string;
+  title: string;
+};
+
+function edgeOf(id: string): EdgeView {
+  const edge = scoutEdge(props.scouting!.lineups, id);
+  const detail = rateDetail(id);
+  if (edge.kind === "few") {
+    return {
+      tone: "few",
+      lineup: null,
+      text: "—",
+      title: `${t("match.veto.scout.edge_few")} · ${detail}`,
+    };
+  }
+  if (edge.kind === "even") {
+    return {
+      tone: "even",
+      lineup: null,
+      text: t("match.veto.scout.even"),
+      title: `${t("match.veto.scout.edge_even", { points: SCOUT_EVEN_POINTS })} · ${detail}`,
+    };
+  }
   return {
-    played,
-    wins,
-    losses: played - wins,
-    pct: played ? Math.round((wins / played) * 100) : null,
+    tone: !viewerLineup.value
+      ? "side"
+      : edge.lineup === viewerLineup.value
+        ? "you"
+        : "them",
+    lineup: edge.lineup,
+    text: `+${edge.points}`,
+    title: `${t("match.veto.scout.edge_ahead", {
+      team: scoutName(edge.lineup),
+      points: edge.points,
+    })} · ${detail}`,
   };
 }
 
@@ -554,14 +623,14 @@ const scoutView = computed(() => {
   const view = new Map<
     string,
     {
-      rate: ScoutRecord | null;
+      edge: EdgeView | null;
       chip: ScoutChip | null;
       likely: boolean;
       rows: ScoutRow[];
       line: { kind: string; text: string } | null;
     }
   >();
-  if (!scoutOn.value) return view;
+  if (!scoutOn.value || !scoutLoaded.value) return view;
 
   for (const item of props.items) {
     const id = item.id;
@@ -569,12 +638,8 @@ const scoutView = computed(() => {
     const wide = isWide(id);
     const open = status === "open";
 
-    // Your win rate, at the top of every open map.
-    let rate: ScoutRecord | null = null;
-    if (open && !wide && viewerLineup.value) {
-      const yours = record(viewerLineup.value, id);
-      rate = yours.played ? yours : null;
-    }
+    // Who is stronger here, at the top of every open map.
+    const edge = open && !wide ? edgeOf(id) : null;
 
     // On a narrow open map: their likely move now, or a habit.
     let chip: ScoutChip | null = null;
@@ -617,10 +682,7 @@ const scoutView = computed(() => {
         .filter((lineup) => scoutOf(lineup))
         .map((lineup) => ({
           lineup,
-          name:
-            viewerLineup.value === lineup
-              ? t("match.veto.scout.you")
-              : lineupName(lineup),
+          name: scoutName(lineup),
           ...record(lineup, id),
           ahead: false,
         }));
@@ -639,13 +701,24 @@ const scoutView = computed(() => {
         : null;
     }
 
-    view.set(id, { rate, chip, likely: isLikely, rows, line });
+    view.set(id, { edge, chip, likely: isLikely, rows, line });
   }
   return view;
 });
 const scoutPlayersNote = computed(() =>
   ([1, 2] as const).some((lineup) => scoutOf(lineup)?.source === "players"),
 );
+
+// The open map's panel: whose win rates these are, and the edge on it.
+function panelEdge(id: string) {
+  const edge = scoutEdge(props.scouting!.lineups, id);
+  if (edge.kind === "few") return t("match.veto.scout.edge_few");
+  if (edge.kind === "even") return t("match.veto.scout.even");
+  return t("match.veto.scout.edge_short", {
+    team: scoutName(edge.lineup),
+    points: edge.points,
+  });
+}
 
 /* ---------- order of play ---------- */
 const railSteps = computed(() =>
@@ -776,6 +849,18 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
       </li>
     </ol>
 
+    <div v-if="scoutOn" class="vb-scoutkey">
+      <span class="lead"
+        ><b>{{ t("match.veto.scout.edge") }}</b> ·
+        {{ t("match.veto.scout.edge_key") }}</span
+      >
+      <span class="fine"
+        ><template v-if="scoutPlayersNote"
+          >{{ t("match.veto.scout.players_games") }} · </template
+        >{{ t("match.veto.scout.too_few", { n: SCOUT_MIN_GAMES }) }}</span
+      >
+    </div>
+
     <div
       ref="stageEl"
       class="vb-stage"
@@ -846,16 +931,18 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 
           <template v-if="scoutView.get(item.id)">
             <span
-              v-if="scoutView.get(item.id)!.rate"
-              class="vb-rate tabular-nums"
-              :title="
-                t('match.veto.scout.your_record', {
-                  wins: scoutView.get(item.id)!.rate!.wins,
-                  losses: scoutView.get(item.id)!.rate!.losses,
-                })
-              "
-              >{{ scoutView.get(item.id)!.rate!.pct }}%</span
+              v-if="scoutView.get(item.id)!.edge"
+              class="vb-edge tabular-nums"
+              :data-tone="scoutView.get(item.id)!.edge!.tone"
+              :title="scoutView.get(item.id)!.edge!.title"
             >
+              <VetoCrest
+                v-if="scoutView.get(item.id)!.edge!.lineup"
+                :lineup="lineups[scoutView.get(item.id)!.edge!.lineup! - 1]"
+                :size="15"
+              />
+              {{ scoutView.get(item.id)!.edge!.text }}
+            </span>
             <span
               v-if="scoutView.get(item.id)!.chip"
               class="vb-habit"
@@ -865,14 +952,20 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
                 :lineup="lineups[scoutView.get(item.id)!.chip!.lineup - 1]"
                 :size="14"
               />
-              <span>{{ scoutView.get(item.id)!.chip!.text }}</span>
+              <span class="txt">{{ scoutView.get(item.id)!.chip!.text }}</span>
             </span>
             <div v-if="scoutView.get(item.id)!.rows.length" class="vb-scout">
+              <div class="vb-scouthead">
+                <b>{{
+                  t("match.veto.scout.win_rate_on", { map: item.label })
+                }}</b>
+                <span>{{ panelEdge(item.id) }}</span>
+              </div>
               <div
                 v-for="row in scoutView.get(item.id)!.rows"
                 :key="row.lineup"
                 class="vb-rec"
-                :class="{ 'is-ahead': row.ahead, 'is-none': !row.played }"
+                :class="{ 'is-ahead': row.ahead, 'is-none': row.pct == null }"
                 :title="
                   t('match.veto.scout.record', {
                     team: lineupName(row.lineup),
@@ -883,7 +976,7 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
               >
                 <VetoCrest :lineup="lineups[row.lineup - 1]" :size="18" />
                 <span class="nm">{{ row.name }}</span>
-                <template v-if="row.played">
+                <template v-if="row.pct != null">
                   <span class="wl tabular-nums"
                     >{{ row.wins }}–{{ row.losses }}</span
                   >
@@ -891,6 +984,13 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
                     ><i :style="{ width: `${row.pct}%` }"
                   /></span>
                   <span class="pct tabular-nums">{{ row.pct }}%</span>
+                </template>
+                <template v-else-if="row.played">
+                  <span class="wl tabular-nums"
+                    >{{ row.wins }}–{{ row.losses }}</span
+                  >
+                  <span />
+                  <span class="pct">—</span>
                 </template>
                 <template v-else>
                   <span class="wl">{{ t("match.veto.scout.no_games") }}</span>
@@ -1725,14 +1825,75 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 }
 
 /* ---------- scouting ---------- */
-.vb-rate {
-  padding: 1px 6px;
+/* The key: one fixed line between the order of play and the stage. */
+.vb-scoutkey {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0 4px;
+  font-size: 12px;
+  color: var(--vb-muted);
+  white-space: nowrap;
+}
+.vb-scoutkey .lead {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vb-scoutkey b {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.vb-scoutkey .fine {
+  flex: none;
+  margin-left: auto;
+  color: var(--vb-faint);
+}
+/* The edge on a map: the stronger side's crest and its lead in points. */
+.vb-edge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px 1px 2px;
   border-radius: 4px;
-  background: rgb(0 0 0 / 0.6);
+  background: rgb(0 0 0 / 0.62);
   font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
 }
+.vb-edge[data-tone="you"] {
+  color: var(--vb-pick);
+  box-shadow: inset 0 0 0 1px hsl(var(--success) / 0.45);
+}
+.vb-edge[data-tone="them"] {
+  color: var(--vb-ban);
+  box-shadow: inset 0 0 0 1px hsl(var(--destructive) / 0.45);
+}
+.vb-edge[data-tone="side"] {
+  color: hsl(var(--foreground));
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.35);
+}
+.vb-edge[data-tone="even"],
+.vb-edge[data-tone="few"] {
+  padding-left: 6px;
+  font-weight: 600;
+  color: hsl(0 0% 100% / 0.7);
+}
+.vb-scouthead {
+  display: flex;
+  gap: 6px;
+  font-size: 11px;
+  color: hsl(0 0% 100% / 0.6);
+}
+.vb-scouthead b {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+/* A habit is quieter than the edge above it: neutral words, and the ban or
+   pick colour only as a dot, so green and red there keep meaning you and
+   them. */
 .vb-habit {
   display: inline-flex;
   align-items: center;
@@ -1743,20 +1904,30 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   background: rgb(0 0 0 / 0.6);
   font-size: 10px;
   font-weight: 600;
+  color: hsl(0 0% 100% / 0.82);
 }
 /* On a narrow slice the words wrap under each other rather than cut off. */
-.vb-habit > span {
+.vb-habit .txt {
+  order: 2;
+  min-width: 0;
   padding-block: 1px;
   line-height: 1.15;
   text-align: center;
 }
-.vb-habit[data-kind="ban"] {
-  color: var(--vb-ban);
-  box-shadow: inset 0 0 0 1px hsl(var(--destructive) / 0.45);
+.vb-habit[data-kind="ban"]::after,
+.vb-habit[data-kind="pick"]::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  order: 1;
+  border-radius: 50%;
 }
-.vb-habit[data-kind="pick"] {
-  color: var(--vb-pick);
-  box-shadow: inset 0 0 0 1px hsl(var(--success) / 0.45);
+.vb-habit[data-kind="ban"]::after {
+  background: var(--vb-ban);
+}
+.vb-habit[data-kind="pick"]::after {
+  background: var(--vb-pick);
 }
 .vb-habit[data-kind^="likely"] {
   color: hsl(var(--foreground));
@@ -2037,6 +2208,12 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
     display: none;
   }
   .vb-keys {
+    display: none;
+  }
+  .vb-scoutkey {
+    font-size: 11px;
+  }
+  .vb-scoutkey .fine {
     display: none;
   }
   .vb-slice.is-wide .vb-top {

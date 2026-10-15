@@ -9563,7 +9563,18 @@
         "captain_picks": "{captain} picker den i {n} af {of} vetoer som anfører",
         "players_note": "Hver sides fem spillere, deres egne kampe på denne bane",
         "record": "{team}: {wins} vundet, {losses} tabt på denne bane",
-        "your_record": "Dine resultater her: {wins}–{losses}"
+        "edge": "Fordel",
+        "edge_key": "den stærkeste side på hver bane, og hvor mange point højere dens sejrsrate er",
+        "too_few": "— under {n} kampe",
+        "players_games": "Spillernes egne kampe",
+        "even": "Lige",
+        "edge_ahead": "{team}: sejrsrate her {points} point højere",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Sejrsrater inden for {points} point",
+        "edge_few": "For få kampe her til at vise en fordel",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} kampe",
+        "win_rate_on": "Sejrsrate på {map}"
       },
       "keys": {
         "browse": "bladr",

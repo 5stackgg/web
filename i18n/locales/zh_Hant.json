@@ -9563,7 +9563,18 @@
         "captain_picks": "{captain} 以隊長身分在 {of} 次 BP 中 {n} 次選擇此圖",
         "players_note": "雙方各五名玩家在此地圖上的個人比賽",
         "record": "{team}：此地圖 {wins} 勝 {losses} 負",
-        "your_record": "你在此圖的戰績：{wins}–{losses}"
+        "edge": "優勢",
+        "edge_key": "每張地圖上較強的一方，以及其勝率高出多少個百分點",
+        "too_few": "— 少於 {n} 場比賽",
+        "players_games": "玩家自己的比賽",
+        "even": "持平",
+        "edge_ahead": "{team}：此圖勝率高出 {points} 個百分點",
+        "edge_short": "{team} +{points}",
+        "edge_even": "勝率相差不超過 {points} 個百分點",
+        "edge_few": "此圖比賽太少，無法判斷優勢",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}：{n} 場比賽",
+        "win_rate_on": "{map} 勝率"
       },
       "keys": {
         "browse": "瀏覽",

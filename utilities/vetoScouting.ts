@@ -29,6 +29,38 @@ export const SCOUT_BAN_RATE = 0.5;
 export const SCOUT_PICK_RATE = 0.4;
 export const SCOUT_LIKELY_RATE = 0.3;
 
+// A win rate from one or two games says nothing, so under this it is "—".
+export const SCOUT_MIN_GAMES = 3;
+// Win rates this close or closer are even.
+export const SCOUT_EVEN_POINTS = 5;
+
+export function scoutRate(map: ScoutMap | null | undefined): number | null {
+  if (!map || map.played < SCOUT_MIN_GAMES) return null;
+  return Math.round((map.wins / map.played) * 100);
+}
+
+export type ScoutEdge =
+  | { kind: "few" }
+  | { kind: "even" }
+  | { kind: "ahead"; lineup: 1 | 2; points: number };
+
+// Who is stronger on a map, and by how many win-rate points.
+export function scoutEdge(
+  lineups: [ScoutLineup | null, ScoutLineup | null],
+  mapId: string,
+): ScoutEdge {
+  const first = scoutRate(lineups[0]?.maps[mapId]);
+  const second = scoutRate(lineups[1]?.maps[mapId]);
+  if (first == null || second == null) return { kind: "few" };
+  const points = first - second;
+  if (Math.abs(points) <= SCOUT_EVEN_POINTS) return { kind: "even" };
+  return {
+    kind: "ahead",
+    lineup: points > 0 ? 1 : 2,
+    points: Math.abs(points),
+  };
+}
+
 export type ScoutHabit = { kind: "ban" | "pick"; n: number; of: number };
 
 export function scoutHabit(

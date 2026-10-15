@@ -9563,7 +9563,18 @@
         "captain_picks": "{captain} يختارها في {n} من أصل {of} Veto بصفته القائد",
         "players_note": "لاعبو كل جانب الخمسة، ومبارياتهم الخاصة على هذه الخريطة",
         "record": "{team}: {wins} فوز، {losses} خسارة على هذه الخريطة",
-        "your_record": "سجلك هنا: {wins}–{losses}"
+        "edge": "الأفضلية",
+        "edge_key": "الجانب الأقوى على كل خريطة، وبكم نقطة تزيد نسبة فوزه",
+        "too_few": "— أقل من {n} مباريات",
+        "players_games": "مباريات اللاعبين الخاصة",
+        "even": "متعادل",
+        "edge_ahead": "{team}: نسبة الفوز هنا أعلى بـ {points} نقطة",
+        "edge_short": "{team} +{points}",
+        "edge_even": "الفارق في نسبة الفوز ضمن {points} نقاط",
+        "edge_few": "مباريات قليلة جدًا هنا لتحديد الأفضلية",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: عدد المباريات {n}",
+        "win_rate_on": "نسبة الفوز على {map}"
       },
       "keys": {
         "browse": "تصفّح",

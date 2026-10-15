@@ -448,6 +448,7 @@ import { toast } from "~/components/ui/toast";
 import { e_team_roles_enum, e_tournament_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
+import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 
 export default {
@@ -486,9 +487,28 @@ export default {
       savingIdentity: false,
       identityError: "",
       removeTeamDialog: false,
+      podiumSteps: null as any[] | null,
     };
   },
   apollo: {
+    // The placements the podium shows, where a shared 3rd is two teams on
+    // the same step. Optional, so an api without the field falls back.
+    podiumSteps: {
+      query: tournamentPodiumQuery,
+      variables: function () {
+        return { tournamentId: (this as any).tournament?.id };
+      },
+      skip: function () {
+        const self = this as any;
+        return (
+          !self.tournament?.id ||
+          self.tournament?.status !== e_tournament_status_enum.Finished
+        );
+      },
+      update: (data: any) => data?.tournaments_by_pk?.podium ?? null,
+      context: { optional: true },
+      error: () => {},
+    },
     e_team_roles: {
       fetchPolicy: "cache-first",
       query: typedGql("query")({
@@ -723,6 +743,13 @@ export default {
     finalPlacement() {
       if (this.tournament.status !== e_tournament_status_enum.Finished) {
         return null;
+      }
+      const step = ((this.podiumSteps as any[]) || []).find(
+        (s: any) =>
+          s?.tournament_team_id === this.team.id && Number(s.placement) > 0,
+      );
+      if (step) {
+        return Number(step.placement);
       }
       const awards = (this.tournament as any).awards || [];
       const award = awards.find(

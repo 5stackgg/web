@@ -209,7 +209,6 @@ watch(
 
 onBeforeUnmount(() => {
   clearTimeout(hoverTimer);
-  clearTimeout(settleTimer);
   clearTimeout(replayTimer);
 });
 
@@ -218,11 +217,13 @@ const focus = computed(() => {
   if (!s) return null;
   if (s.type === "Side") return sideMapId.value;
   if (s.type === "Decider") return available.value[0] ?? null;
+  // Your turn: the map under the pointer opens, even with one chosen; the
+  // chosen one (still outlined) opens again when the pointer leaves.
   if (mine.value) {
-    if (selected.value) return selected.value;
-    return hover.value && available.value.includes(hover.value)
-      ? hover.value
-      : null;
+    if (hover.value && available.value.includes(hover.value)) {
+      return hover.value;
+    }
+    return selected.value;
   }
   return replayId.value;
 });
@@ -241,39 +242,17 @@ function weight(id: string) {
 const isWide = (id: string) =>
   !sideMapId.value &&
   (focus.value === id || (done.value && stateOf(id).status !== "Ban"));
-// A map opening shows its words once it has finished growing, so they do
-// not squeeze and reflow while it widens.
-const settled = ref<string[]>([]);
-const wideKey = computed(() =>
-  props.items
-    .filter((item) => isWide(item.id))
-    .map((item) => item.id)
-    .join("|"),
-);
-let settleTimer: ReturnType<typeof setTimeout> | undefined;
-watch(
-  wideKey,
-  (now, before) => {
-    const wide = now ? now.split("|") : [];
-    clearTimeout(settleTimer);
-    // On the first render nothing grows.
-    if (before === undefined) {
-      settled.value = wide;
-      return;
-    }
-    settled.value = settled.value.filter((id) => wide.includes(id));
-    // In case a map's width did not animate (it was already at its size).
-    settleTimer = setTimeout(() => {
-      settled.value = wide;
-    }, 520);
-  },
-  { immediate: true },
-);
-function onSliceGrown(event: TransitionEvent, id: string) {
-  if (event.target !== event.currentTarget) return;
-  if (event.propertyName !== "flex-grow" || !isWide(id)) return;
-  if (!settled.value.includes(id)) settled.value = [...settled.value, id];
-}
+// A wide map lays out its words at the width it opens to, from the first
+// frame: the map grows over them instead of squeezing them as it widens.
+const stageW = ref(0);
+const stageRow = ref(true);
+let stageObserver: ResizeObserver | undefined;
+const openWidth = (id: string) => {
+  if (!stageRow.value || !stageW.value) return null;
+  const total = props.items.reduce((sum, item) => sum + weight(item.id), 0);
+  const free = stageW.value - 4 * (props.items.length - 1);
+  return Math.max(0, (free * weight(id)) / total);
+};
 
 const isLive = (id: string) =>
   live.value &&
@@ -290,10 +269,17 @@ function confirm() {
   }
 }
 
-function choose(id: string) {
+// A click chooses a map, and a click on the chosen one lets it go; only its
+// button bans or picks it. By keys, Enter on the chosen map confirms.
+function choose(id: string, by: "click" | "key" = "click") {
   if (!isLive(id)) return;
-  if (selected.value === id) confirm();
-  else selected.value = id;
+  if (selected.value !== id) {
+    selected.value = id;
+  } else if (by === "key") {
+    confirm();
+  } else {
+    selected.value = null;
+  }
 }
 
 function chooseSide(side: string) {
@@ -305,7 +291,7 @@ function chooseSide(side: string) {
 function onKey(event: KeyboardEvent, id: string) {
   if (event.key !== "Enter" && event.key !== " ") return;
   event.preventDefault();
-  choose(id);
+  choose(id, "key");
 }
 
 // Keys: the arrows walk the open maps (or the two sides), Enter chooses and
@@ -987,6 +973,15 @@ async function grow(animate: boolean) {
 
 let resize: ResizeObserver | undefined;
 onMounted(() => {
+  if (typeof ResizeObserver !== "undefined" && stageEl.value) {
+    stageObserver = new ResizeObserver(() => {
+      const stage = stageEl.value;
+      if (!stage) return;
+      stageW.value = stage.clientWidth;
+      stageRow.value = getComputedStyle(stage).flexDirection === "row";
+    });
+    stageObserver.observe(stageEl.value);
+  }
   if (props.start) void grow(false);
   if (typeof ResizeObserver === "undefined" || !areaEl.value) return;
   resize = new ResizeObserver(() => {
@@ -1047,6 +1042,7 @@ async function handOffNow() {
 onBeforeUnmount(() => {
   clearTimeout(handTimer);
   resize?.disconnect();
+  stageObserver?.disconnect();
 });
 </script>
 
@@ -1155,15 +1151,17 @@ onBeforeUnmount(() => {
             'is-selected': mine && selected === item.id,
             'is-siding': sideMapId === item.id,
             'is-echo': echo === item.id,
-            'is-settled': settled.includes(item.id),
+            'is-sized': !!openWidth(item.id),
           }"
-          :style="{ '--g': weight(item.id) }"
+          :style="{
+            '--g': weight(item.id),
+            '--fw': openWidth(item.id) ? `${openWidth(item.id)}px` : undefined,
+          }"
           :tabindex="isLive(item.id) ? 0 : -1"
           :role="isLive(item.id) ? 'button' : undefined"
           :aria-label="sliceTitle(item.id)"
           @click="choose(item.id)"
           @keydown="onKey($event, item.id)"
-          @transitionend="onSliceGrown($event, item.id)"
         >
           <template v-if="!isRegion">
             <NuxtImg
@@ -1876,14 +1874,24 @@ onBeforeUnmount(() => {
   font-weight: 700;
   white-space: nowrap;
 }
-/* In once the map has opened; gone at once when it closes. */
-.vb-slice.is-wide.is-settled .vb-open {
+/* In as the map opens, at the width it opens to (so nothing reflows while
+   it grows, it is only uncovered); gone at once when it closes. */
+.vb-slice.is-wide .vb-open {
   opacity: 1;
   pointer-events: auto;
-  transition: opacity 160ms var(--vb-ease);
+  transition: opacity 140ms var(--vb-ease) 40ms;
+}
+.vb-slice.is-wide.is-sized .vb-open {
+  right: auto;
+  width: calc(var(--fw) - 40px);
+}
+.vb-slice.is-wide.is-sized .vb-top {
+  right: auto;
+  width: calc(var(--fw) - 24px);
 }
 .vb-slice.is-wide .vb-v {
   opacity: 0;
+  transition-duration: 0ms;
 }
 .vb-slice.is-mid .vb-name {
   font-size: 24px;
@@ -2383,11 +2391,6 @@ onBeforeUnmount(() => {
   border-radius: 8px;
   background: hsl(240 10% 4% / 0.55);
   backdrop-filter: blur(4px);
-  opacity: 0;
-}
-.vb-slice.is-settled .vb-scout {
-  opacity: 1;
-  transition: opacity 160ms var(--vb-ease);
 }
 .vb-rec {
   display: grid;

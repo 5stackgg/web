@@ -204,6 +204,44 @@ describe("VetoBoard keys", () => {
   });
 });
 
+describe("VetoBoard choosing", () => {
+  it("lets a click take back a choice, and hovering still opens other maps", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await slice(wrapper, "mirage").trigger("click");
+    expect(slice(wrapper, "mirage").classes()).toContain("is-selected");
+    expect(wrapper.find(".vb-cta").text()).toBe("Pick mirage");
+
+    // A second click lets it go; nothing is sent.
+    await slice(wrapper, "mirage").trigger("click");
+    expect(slice(wrapper, "mirage").classes()).not.toContain("is-selected");
+    expect(wrapper.emitted("confirm")).toBeUndefined();
+
+    // Chosen again, the button confirms it.
+    await slice(wrapper, "mirage").trigger("click");
+    await wrapper.find(".vb-cta").trigger("click");
+    expect(wrapper.emitted("confirm")).toEqual([[{ itemId: "mirage" }]]);
+  });
+
+  it("confirms by keys with a second Enter", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await slice(wrapper, "nuke").trigger("keydown", { key: "Enter" });
+    await slice(wrapper, "nuke").trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("confirm")).toEqual([[{ itemId: "nuke" }]]);
+  });
+});
+
 describe("VetoBoard your moves", () => {
   it("lifts your moves and names your turn on the rail", async () => {
     // Two bans in: Buttah Boyz (1) banned, Night Owls (2) banned, now 1 picks.

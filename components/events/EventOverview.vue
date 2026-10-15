@@ -25,6 +25,7 @@ import {
   type EventPhase,
 } from "~/utilities/eventDisplay";
 import { dateLocale } from "~/utilities/dateLocale";
+import { isEndedWithResult } from "~/utilities/teamResults";
 
 // The overview reorders itself by phase: before the event it sells the event
 // (when, sign-ups, who's going), during it follows the action (live matches,
@@ -199,7 +200,7 @@ const liveMatches = computed(() =>
   ),
 );
 const finishedMatches = computed(() =>
-  props.matches.filter((match) => match.status === "Finished"),
+  props.matches.filter((match) => isEndedWithResult(match)),
 );
 
 const tournaments = computed(() =>

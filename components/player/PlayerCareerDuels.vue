@@ -40,6 +40,7 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import { useRememberedCount } from "~/composables/useRememberedCount";
 import StatGridTableSkeleton from "~/components/player/stats/StatGridTableSkeleton.vue";
+import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 
 const WINDOW_MAPS = 40;
 
@@ -56,7 +57,7 @@ const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
 
 function buildMatchesWhere(season?: ComparisonWindow) {
-  const where: Record<string, any> = { status: { _eq: "Finished" } };
+  const where: Record<string, any> = { ...RESULT_MATCHES_WHERE };
   if (props.source && props.source !== "all") {
     where.source =
       props.source === "5stack"

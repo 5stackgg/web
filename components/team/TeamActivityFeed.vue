@@ -21,6 +21,7 @@ import { order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import { schemaHasField } from "~/utilities/schemaHasType";
+import { isEndedWithResult } from "~/utilities/teamResults";
 import ClipTile from "~/components/clips/ClipTile.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -224,7 +225,7 @@ const rosterSteamIds = computed(() =>
 );
 const recentResultIds = computed(() =>
   ((props.team?.matches ?? []) as any[])
-    .filter((match) => match.status === "Finished" && match.ended_at)
+    .filter((match) => isEndedWithResult(match) && match.ended_at)
     .sort((a, b) => (b.ended_at as string).localeCompare(a.ended_at))
     .slice(0, 40)
     .map((match) => match.id as string),
@@ -420,8 +421,18 @@ const inlineButton =
                     }}</template>
                   </NuxtLink>
                 </span>
-                <span v-if="event.context.length" :class="metaClasses">
-                  {{ event.context.join(" · ") }}
+                <span
+                  v-if="event.statusLabelKey || event.context.length"
+                  :class="metaClasses"
+                >
+                  {{
+                    [
+                      event.statusLabelKey && $t(event.statusLabelKey),
+                      ...event.context,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")
+                  }}
                 </span>
               </div>
               <!-- The match's highlights, as a small rail under the result.

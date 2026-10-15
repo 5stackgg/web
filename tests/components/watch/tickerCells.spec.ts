@@ -249,6 +249,36 @@ describe("ticker cell", () => {
     expect(bo3.teams[0].pips).toBeNull();
   });
 
+  it("labels a forfeit or surrender final and keeps its winner", () => {
+    const forfeit = tickerCell(
+      match({
+        status: "Forfeit",
+        winning_lineup_id: "l2",
+        options: { best_of: 3, mr: 12, type: "Competitive" },
+        match_maps: [
+          { id: "a", winning_lineup_id: "l2", lineup_1_score: 9, lineup_2_score: 13, map: inferno },
+        ],
+      }),
+      ctx,
+    );
+    expect(forfeit.kind).toBe("result");
+    expect(forfeit.status.text).toBe("Final · Bo3");
+    expect(forfeit.status.detail).toBe("Forfeit");
+    expect(forfeit.teams.map((team) => team.emphasis)).toEqual([null, "win"]);
+
+    const surrender = tickerCell(
+      match({ status: "Surrendered", winning_lineup_id: "l1" }),
+      ctx,
+    );
+    expect(surrender.status.detail).toBe("Surrendered");
+
+    const finished = tickerCell(
+      match({ status: "Finished", winning_lineup_id: "l1" }),
+      ctx,
+    );
+    expect(finished.status.detail).toBeNull();
+  });
+
   it("tags a match with its event and tournament", () => {
     const cell = tickerCell(
       match({

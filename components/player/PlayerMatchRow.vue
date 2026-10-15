@@ -19,6 +19,8 @@ import { kdColor, hltvColor } from "~/utils/statTiers";
 // OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · RANK · VIEW
 const wideGrid =
   "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_10rem_2.5rem] items-center gap-x-2";
+const resultTagClasses =
+  "shrink-0 rounded border border-border/70 bg-muted/35 px-1 py-0.5 font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.1em] text-muted-foreground";
 </script>
 
 <template>
@@ -168,6 +170,9 @@ const wideGrid =
         />
         <span class="min-w-0 truncate text-xs text-foreground/85">
           {{ mapInfo.label }}
+        </span>
+        <span v-if="resultLabelKey" :class="resultTagClasses">
+          {{ $t(resultLabelKey) }}
         </span>
         <Trophy
           v-if="isTournamentMatch"
@@ -401,6 +406,9 @@ const wideGrid =
           class="ml-auto flex shrink-0 items-center gap-1.5 text-muted-foreground"
         >
           <MatchStatus v-if="neutral && !isFinished" :match="match" />
+          <span v-if="resultLabelKey" :class="resultTagClasses">
+            {{ $t(resultLabelKey) }}
+          </span>
           <MatchSourceBadge :source="match.source" />
           <Trophy
             v-if="isTournamentMatch"
@@ -655,6 +663,10 @@ import { matchClipFields } from "~/graphql/matchClip";
 import { $, order_by } from "~/generated/zeus";
 import { useClipModal } from "~/composables/useClipModal";
 import mapLabel from "~/utilities/mapLabel";
+import {
+  isEndedWithResult,
+  resultStatusLabelKey,
+} from "~/utilities/teamResults";
 import { csRankKind } from "~/utilities/csRank";
 import type { MatchRankMove } from "~/components/MatchRankBadge.vue";
 import {
@@ -775,7 +787,10 @@ export default {
   },
   computed: {
     isFinished(): boolean {
-      return this.match?.status === e_match_status_enum.Finished;
+      return isEndedWithResult(this.match);
+    },
+    resultLabelKey(): string | null {
+      return resultStatusLabelKey(this.match);
     },
     hasScore(): boolean {
       return this.isFinished || this.match?.status === e_match_status_enum.Live;

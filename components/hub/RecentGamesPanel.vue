@@ -175,11 +175,12 @@ import HubEmptyState from "~/components/hub/HubEmptyState.vue";
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, e_match_status_enum, order_by } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { eloFields } from "~/graphql/eloFields";
 import { playerMatchAggStatsQuery } from "~/graphql/playerMatchAggStatsGraphql";
 import mapLabel from "~/utilities/mapLabel";
+import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 
 export default {
   data() {
@@ -324,7 +325,7 @@ export default {
               limit: 10,
               where: {
                 is_in_lineup: { _eq: true },
-                status: { _eq: e_match_status_enum.Finished },
+                ...RESULT_MATCHES_WHERE,
               },
               order_by: [{}, { created_at: order_by.desc }],
             },

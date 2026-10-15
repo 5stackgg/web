@@ -4,6 +4,7 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
 import { TICKER_LIVE_STATUSES } from "~/components/watch/watchTicker";
 import { dateLocale } from "~/utilities/dateLocale";
 import mapLabel from "~/utilities/mapLabel";
+import { resultStatusLabelKey } from "~/utilities/teamResults";
 
 // One dense result line for the event overview: when, where, who, score.
 // Scores go through MatchLineupScoreDisplay so the colours match every other
@@ -28,6 +29,7 @@ const when = computed(() => {
       }).format(new Date(value))
     : "";
 });
+const statusLabelKey = computed(() => resultStatusLabelKey(props.match));
 const lost = (lineupId: string) =>
   !live.value &&
   !!props.match.winning_lineup_id &&
@@ -70,6 +72,12 @@ const lost = (lineupId: string) =>
           class="hidden h-[1.625rem] w-[2.875rem] shrink-0 rounded object-cover sm:block"
         />
         <span class="truncate">{{ mapLabel(map) }}</span>
+        <span
+          v-if="statusLabelKey"
+          class="shrink-0 font-mono text-[0.6rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"
+        >
+          {{ $t(statusLabelKey) }}
+        </span>
       </span>
     </span>
 

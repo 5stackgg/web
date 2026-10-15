@@ -2,6 +2,10 @@
 import { computed } from "vue";
 import { e_match_status_enum, e_match_map_status_enum } from "~/generated/zeus";
 import TimeAgo from "~/components/TimeAgo.vue";
+import {
+  isEndedWithResult,
+  resultStatusLabelKey,
+} from "~/utilities/teamResults";
 
 const props = defineProps<{
   match: {
@@ -29,6 +33,8 @@ const PROBLEM_STATUSES = [
   e_match_status_enum.WaitingForServer,
 ];
 
+const resultLabelKey = computed(() => resultStatusLabelKey(props.match));
+
 const hasPausedMap = computed(() => {
   return props.match.match_maps?.some(
     (m) => m.status === e_match_map_status_enum.Paused,
@@ -36,7 +42,10 @@ const hasPausedMap = computed(() => {
 });
 
 const badgeVariant = computed(() => {
-  if (PROBLEM_STATUSES.includes(props.match.status as e_match_status_enum)) {
+  if (
+    !isEndedWithResult(props.match) &&
+    PROBLEM_STATUSES.includes(props.match.status as e_match_status_enum)
+  ) {
     return "destructive";
   }
 
@@ -69,6 +78,9 @@ const badgeClasses = computed(() => {
     </template>
     <template v-else-if="match.status == e_match_status_enum.Finished">
       {{ $t("common.finished") }}
+    </template>
+    <template v-else-if="resultLabelKey">
+      {{ $t(resultLabelKey) }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Scheduled">
       <span v-if="match.server && !match.is_match_server_available">

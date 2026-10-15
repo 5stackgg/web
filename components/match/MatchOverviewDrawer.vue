@@ -412,6 +412,7 @@ import {
 import { generateQuery } from "~/graphql/graphqlGen";
 import { matchLineupStats } from "~/graphql/matchLineupStats";
 import { e_match_status_enum } from "~/generated/zeus";
+import { isEndedWithResult } from "~/utilities/teamResults";
 
 export default {
   props: {
@@ -549,7 +550,7 @@ export default {
     },
     getTeamScore(match: any, lineupId: string): string | number {
       if (
-        match.status !== e_match_status_enum.Finished &&
+        !isEndedWithResult(match) &&
         match.status !== e_match_status_enum.Live
       ) {
         return "";
@@ -566,7 +567,7 @@ export default {
     },
     getScoreColorClasses(lineupId: string): string {
       if (this.isMatchLive()) return "text-foreground";
-      if (this.match.status === e_match_status_enum.Finished) {
+      if (isEndedWithResult(this.match)) {
         if (this.playerLineup) {
           if (this.playerLineup === lineupId) {
             return this.didTeamWin(lineupId)

@@ -573,6 +573,10 @@ import { $, e_match_status_enum, order_by } from "~/generated/zeus";
 import { validate as validateUUID } from "uuid";
 import { useAuthStore } from "~/stores/AuthStore";
 import {
+  RESULT_MATCHES_WHERE,
+  RESULT_STATUSES,
+} from "~/utilities/teamResults";
+import {
   CalendarDateTime,
   fromDate,
   toCalendarDate,
@@ -618,7 +622,7 @@ const statusPresets: Record<string, e_match_status_enum[]> = {
     e_match_status_enum.Scheduled,
     e_match_status_enum.PickingPlayers,
   ],
-  finished: [e_match_status_enum.Finished],
+  finished: RESULT_STATUSES,
 };
 
 interface FilterTeam {
@@ -706,7 +710,7 @@ export default {
         matchId: saved.matchId ?? "",
         teams: saved.teams ?? [],
         players: saved.players ?? [],
-        statuses: saved.statuses ?? [],
+        statuses: savedStatuses(saved.statuses),
         dateFrom: saved.dateFrom ?? "",
         dateTo: saved.dateTo ?? "",
       },
@@ -914,7 +918,9 @@ export default {
         });
       }
 
-      if (statuses?.length) {
+      if (this.activePresetName === "finished") {
+        ands.push(RESULT_MATCHES_WHERE);
+      } else if (statuses?.length) {
         where.status = { _in: statuses };
       }
 
@@ -1106,6 +1112,15 @@ export default {
     },
   },
 };
+
+// The finished preset was just Finished before forfeits and surrenders kept
+// their own status.
+function savedStatuses(statuses?: e_match_status_enum[]) {
+  if (statuses?.length === 1 && statuses[0] === e_match_status_enum.Finished) {
+    return [...statusPresets.finished];
+  }
+  return statuses ?? [];
+}
 
 function loadFiltersFromStorage(): Partial<{
   matchId: string;

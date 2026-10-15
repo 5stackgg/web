@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import { useBracketView } from "~/composables/useBracketView";
 import { Badge } from "~/components/ui/badge";
+import { isEndedWithResult } from "~/utilities/teamResults";
 
 interface TeamRecord {
   wins: number;
@@ -87,7 +88,7 @@ const teamRecords = computed(() => {
   );
 
   sortedBrackets.forEach((bracket: any) => {
-    if (bracket.match && bracket.match.status === "Finished") {
+    if (bracket.match && isEndedWithResult(bracket.match)) {
       const match = bracket.match;
       const winningLineupId = match.winning_lineup_id;
 
@@ -318,7 +319,7 @@ const getAdvancedTeams = (
                 bracket.team_2?.id || bracket.team_2?.team_id || null;
               if (
                 (tid1 === teamId || tid2 === teamId) &&
-                bracket.match?.status === "Finished"
+                isEndedWithResult(bracket.match)
               ) {
                 // Check if this team won this match
                 const winningLineupId = bracket.match.winning_lineup_id;
@@ -392,7 +393,7 @@ const getEliminatedTeams = (
             const tid2 = bracket.team_2?.id || bracket.team_2?.team_id || null;
             if (
               (tid1 === teamId || tid2 === teamId) &&
-              bracket.match?.status === "Finished"
+              isEndedWithResult(bracket.match)
             ) {
               // Check if this team lost this match
               const winningLineupId = bracket.match.winning_lineup_id;

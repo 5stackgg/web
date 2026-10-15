@@ -22,7 +22,7 @@ const GIPHY_DASHBOARD_URL = "https://developers.giphy.com/dashboard/";
           <FormField
             v-for="room in rooms"
             :key="room.name"
-            v-slot="{ componentField }"
+            v-slot="{ componentField, value }"
             :name="room.name"
           >
             <FormItem>
@@ -32,6 +32,9 @@ const GIPHY_DASHBOARD_URL = "https://developers.giphy.com/dashboard/";
               <FormControl>
                 <Input v-bind="componentField" type="number" min="0" />
               </FormControl>
+              <FormDescription v-if="retentionLabel(value)">
+                {{ retentionLabel(value) }}
+              </FormDescription>
               <FormMessage />
             </FormItem>
           </FormField>
@@ -201,6 +204,7 @@ import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
+import { dateLocale } from "~/utilities/dateLocale";
 
 // One entry per lobby type, matching ChatService.TTL_SETTINGS in the API.
 // There was a single setting before, and it wrote a name the API never read --
@@ -214,7 +218,14 @@ const ROOMS = [
   { key: "chat_ttl_matchmaking", label: "ttl_matchmaking", fallback: 3600 },
   { key: "chat_ttl_draft", label: "ttl_draft", fallback: 3600 },
   { key: "chat_ttl_tournament", label: "ttl_tournament", fallback: 604800 },
-  { key: "chat_ttl_organizers", label: "ttl_organizers", fallback: 86400 },
+  { key: "chat_ttl_organizers", label: "ttl_organizers", fallback: 7776000 },
+];
+
+const RETENTION_UNITS = [
+  { unit: "day", seconds: 86400 },
+  { unit: "hour", seconds: 3600 },
+  { unit: "minute", seconds: 60 },
+  { unit: "second", seconds: 1 },
 ];
 
 const DIRECT_RETENTION = {
@@ -309,6 +320,20 @@ export default {
     },
   },
   methods: {
+    retentionLabel(value: unknown): string | null {
+      const seconds = Number(value);
+      if (!Number.isInteger(seconds) || seconds <= 0) {
+        return null;
+      }
+      const { unit, seconds: size } = RETENTION_UNITS.find(
+        (candidate) => seconds % candidate.seconds === 0,
+      )!;
+      return new Intl.NumberFormat(dateLocale(), {
+        style: "unit",
+        unit,
+        unitDisplay: "long",
+      }).format(seconds / size);
+    },
     async updateSettings() {
       if (this.submitting) {
         return;

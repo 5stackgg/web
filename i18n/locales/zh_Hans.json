@@ -10455,6 +10455,28 @@
       "forbidden_title": "你无法打开此聊天",
       "forbidden_description": "只有 {team} 的队员和所有者可以阅读。",
       "forbidden_description_unnamed": "只有该战队的队员和所有者可以阅读。"
+    },
+    "room_settings": {
+      "menu": "通知设置",
+      "mute_channel": "静音频道",
+      "unmute_channel": "取消静音频道",
+      "mute_conversation": "静音对话",
+      "unmute_conversation": "取消静音对话",
+      "mute_for": {
+        "minutes_15": "15 分钟",
+        "hour_1": "1 小时",
+        "hours_8": "8 小时",
+        "hours_24": "24 小时",
+        "until_unmuted": "直到我手动取消"
+      },
+      "muted": "已静音",
+      "muted_until": "静音至 {time}",
+      "notify_me_about": "通知我",
+      "notify": {
+        "all": "所有消息",
+        "mentions": "仅 {'@'}提及",
+        "nothing": "不通知"
+      }
     }
   },
   "charts": {

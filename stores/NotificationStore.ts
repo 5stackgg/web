@@ -17,6 +17,10 @@ import {
   syncRosterNeedDismissals,
 } from "~/composables/useRosterNeedDismissals";
 import {
+  resetChatRoomSettings,
+  syncChatRoomSettings,
+} from "~/composables/useChatRoomSettings";
+import {
   activeFeatureSpotlight,
   dismissFeatureSpotlight,
   resetFeatureSpotlights,
@@ -764,6 +768,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
       if (steamId) {
         subscribeToAll(steamId);
         void syncRosterNeedDismissals(steamId);
+        void syncChatRoomSettings(steamId);
         // Loaded here rather than only on the settings page: the bell filters
         // on these, and isAlertTypeEnabled shows everything until they arrive.
         void useNotificationPreferences().load("in_app");
@@ -779,6 +784,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:schedule_tasks");
         unsubscribe("notifications:team_roster_needs");
         resetRosterNeedDismissals();
+        resetChatRoomSettings();
         unsubscribe("notifications:season_rebuilds");
         unsubscribe("notifications:latest_news");
         unsubscribe("notifications:news_read_state");

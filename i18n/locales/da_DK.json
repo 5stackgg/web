@@ -10455,6 +10455,28 @@
       "forbidden_title": "Du kan ikke åbne denne chat",
       "forbidden_description": "Kun spillerne og ejeren af {team} kan læse den.",
       "forbidden_description_unnamed": "Kun holdets spillere og ejer kan læse den."
+    },
+    "room_settings": {
+      "menu": "Notifikationsindstillinger",
+      "mute_channel": "Slå kanal på lydløs",
+      "unmute_channel": "Slå lyd til for kanal",
+      "mute_conversation": "Slå samtale på lydløs",
+      "unmute_conversation": "Slå lyd til for samtale",
+      "mute_for": {
+        "minutes_15": "I 15 minutter",
+        "hour_1": "I 1 time",
+        "hours_8": "I 8 timer",
+        "hours_24": "I 24 timer",
+        "until_unmuted": "Indtil jeg slår den til igen"
+      },
+      "muted": "Lydløs",
+      "muted_until": "Lydløs indtil {time}",
+      "notify_me_about": "Giv mig besked om",
+      "notify": {
+        "all": "Alle beskeder",
+        "mentions": "Kun {'@'}tags",
+        "nothing": "Intet"
+      }
     }
   },
   "charts": {

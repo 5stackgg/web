@@ -459,7 +459,11 @@ import { useSound } from "~/composables/useSound";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
 import { chatRoomTakesAttachments } from "~/utilities/chatAttachments";
-import { chatRoomTakesMentions } from "~/utilities/chatMentions";
+import {
+  chatRoomTakesMentions,
+  mentionsViewer,
+} from "~/utilities/chatMentions";
+import { chatRoomRings } from "~/composables/useChatRoomSettings";
 import { canModerateTeamChat, chatTeam } from "~/utilities/teamChat";
 import mapLabel from "~/utilities/mapLabel";
 
@@ -1027,6 +1031,11 @@ export default {
       if (
         this.playNotificationSound &&
         !isOwnMessage &&
+        chatRoomRings(
+          target.type,
+          target.id,
+          mentionsViewer(message, mySteamId),
+        ) &&
         claimNotification(
           `${target.type}:${target.id}:${chatMessageKey(message)}`,
         )

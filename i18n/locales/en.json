@@ -10459,6 +10459,28 @@
       "forbidden_title": "You can't open this chat",
       "forbidden_description": "Only {team}'s players and owner can read it.",
       "forbidden_description_unnamed": "Only this team's players and owner can read it."
+    },
+    "room_settings": {
+      "menu": "Notification settings",
+      "mute_channel": "Mute channel",
+      "unmute_channel": "Unmute channel",
+      "mute_conversation": "Mute conversation",
+      "unmute_conversation": "Unmute conversation",
+      "mute_for": {
+        "minutes_15": "For 15 minutes",
+        "hour_1": "For 1 hour",
+        "hours_8": "For 8 hours",
+        "hours_24": "For 24 hours",
+        "until_unmuted": "Until I turn it back on"
+      },
+      "muted": "Muted",
+      "muted_until": "Muted until {time}",
+      "notify_me_about": "Notify me about",
+      "notify": {
+        "all": "All messages",
+        "mentions": "Only {'@'}tags",
+        "nothing": "Nothing"
+      }
     }
   },
   "charts": {

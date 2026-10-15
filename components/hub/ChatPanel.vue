@@ -5,6 +5,7 @@ import { useMediaQuery } from "@vueuse/core";
 import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 import {
   AtSign,
+  BellOff,
   Megaphone,
   Merge,
   Sword,
@@ -42,7 +43,18 @@ import {
   type MessageRequest,
 } from "~/composables/useMessageRequests";
 import { orderChatTabs } from "~/utilities/chatTabOrder";
-import { chatTabBadge, type ChatBadge } from "~/utilities/chatBadges";
+import {
+  chatBadgeClass,
+  chatTabBadge,
+  type ChatBadge,
+} from "~/utilities/chatBadges";
+import {
+  chatRoomMutedLabel,
+  chatTabQuiet,
+  useChatRoomSettings,
+} from "~/composables/useChatRoomSettings";
+import ChatRoomNotifyMenu from "~/components/chat/ChatRoomNotifyMenu.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { hapticTap } from "~/utilities/haptics";
 import {
   ContextMenu,
@@ -131,6 +143,7 @@ const railBadges = computed<Record<string, ChatBadge | null>>(() =>
         tab,
         unreadCounts.value[tab.id] ?? 0,
         mentionCounts.value[tab.id] ?? 0,
+        chatTabQuiet(tab),
       ),
     ]),
   ),
@@ -844,15 +857,33 @@ function getRoomIcon(tab: ChatTab) {
   return MessageSquare;
 }
 
+const { supported: roomSettingsSupported } = useChatRoomSettings();
+
+function mutedLabelOf(tab: ChatTab) {
+  return chatRoomMutedLabel(chatTabQuiet(tab), (key, params) =>
+    t(key, params ?? {}),
+  );
+}
+
+// A tag in a room set to nothing is plain chatter, so it is not called one.
 function getRoomDetail(tab: ChatTab) {
-  const mentions = mentionCounts.value[tab.id] ?? 0;
+  const mentions =
+    chatTabQuiet(tab).notify === "nothing"
+      ? 0
+      : (mentionCounts.value[tab.id] ?? 0);
   const tagged =
     mentions > 0
       ? t("chat.mentions.tagged_you", { count: mentions }, mentions)
       : "";
 
-  return [getRoomSubtitle(tab), tagged].filter(Boolean).join(" · ");
+  return [getRoomSubtitle(tab), tagged, mutedLabelOf(tab)]
+    .filter(Boolean)
+    .join(" · ");
 }
+
+const activeMutedLabel = computed(() =>
+  activeTab.value ? mutedLabelOf(activeTab.value) : null,
+);
 
 function getRoomSubtitle(tab: ChatTab) {
   if (tab.type === "organizers") return t("chat_room_subtitles.organizers");
@@ -1116,11 +1147,7 @@ function handlePopOut() {
                           data-chat-rail-badge
                           :data-tone="railBadges[tab.id]?.tone"
                           class="absolute -top-1 -right-1 inline-flex h-3.5 min-w-3.5 items-center justify-center gap-px rounded-full px-0.5 text-[0.55rem] font-bold leading-none tabular-nums shadow-sm ring-1 ring-background origin-center transition-colors duration-200 motion-reduce:transition-none"
-                          :class="
-                            railBadges[tab.id]?.tone === 'red'
-                              ? 'bg-red-500 text-white'
-                              : 'bg-zinc-50 text-zinc-950'
-                          "
+                          :class="chatBadgeClass(railBadges[tab.id]!.tone)"
                         >
                           <AtSign
                             v-if="railBadges[tab.id]?.mention"
@@ -1131,6 +1158,16 @@ function handlePopOut() {
                               formatBadgeCount(railBadges[tab.id]?.count ?? 0)
                             "
                           />
+                        </span>
+                      </Transition>
+                      <Transition v-bind="badgePopTransition">
+                        <span
+                          v-if="chatTabQuiet(tab).muted && !wiggling"
+                          data-chat-rail-muted
+                          aria-hidden="true"
+                          class="pointer-events-none absolute -bottom-0.5 -right-0.5 inline-flex size-3.5 origin-center items-center justify-center rounded-full bg-zinc-900 text-zinc-400 ring-1 ring-background"
+                        >
+                          <BellOff class="size-2" />
                         </span>
                       </Transition>
                       <!-- Editing mode's remove badge, in place of the unread
@@ -1164,10 +1201,20 @@ function handlePopOut() {
                 </Tooltip>
               </ContextMenuTrigger>
               <ContextMenuContent
-                v-if="onDock(tab) || tab.type === 'direct'"
+                v-if="
+                  roomSettingsSupported ||
+                  onDock(tab) ||
+                  tab.type === 'direct'
+                "
                 class="w-56"
                 data-right-hub-interactive
               >
+                <ChatRoomNotifyMenu
+                  kind="context"
+                  :type="tab.type"
+                  :lobby-id="tab.lobbyId"
+                  :separated="onDock(tab) || tab.type === 'direct'"
+                />
                 <template v-if="onDock(tab)">
                   <template v-if="!isShortcutHidden(tab.id)">
                     <ContextMenuItem @select="toggleShortcutPin(tab.id)">
@@ -1304,6 +1351,23 @@ function handlePopOut() {
                   :key="activeTab?.id"
                   :finished-at="activeTournamentFinishedAt"
                 />
+                <FiveStackToolTip
+                  v-if="activeMutedLabel"
+                  side="bottom"
+                  as-child
+                >
+                  <template #trigger>
+                    <span
+                      data-chat-header-muted
+                      role="img"
+                      :aria-label="activeMutedLabel"
+                      class="inline-flex shrink-0 text-muted-foreground"
+                    >
+                      <BellOff class="size-3" />
+                    </span>
+                  </template>
+                  {{ activeMutedLabel }}
+                </FiveStackToolTip>
               </div>
               <div
                 class="flex items-center gap-2 text-[10px] text-muted-foreground truncate"
@@ -1358,11 +1422,19 @@ function handlePopOut() {
               </Tooltip>
             </TooltipProvider>
 
-            <!-- The conversation's own menu: its place on the hub dock, and,
-                 for a conversation (channels are derived from what you are
-                 in), closing it. No tooltip on the trigger: a reka tooltip
-                 wrapping a menu trigger shares its popper and hides the menu. -->
-            <DropdownMenu v-if="activeTab && (onDock(activeTab) || activeTab.type === 'direct')">
+            <!-- The conversation's own menu: its mute and what it notifies
+                 about, its place on the hub dock, and, for a conversation
+                 (channels are derived from what you are in), closing it. No
+                 tooltip on the trigger: a reka tooltip wrapping a menu
+                 trigger shares its popper and hides the menu. -->
+            <DropdownMenu
+              v-if="
+                activeTab &&
+                (roomSettingsSupported ||
+                  onDock(activeTab) ||
+                  activeTab.type === 'direct')
+              "
+            >
               <DropdownMenuTrigger as-child>
                 <button
                   type="button"
@@ -1373,6 +1445,11 @@ function handlePopOut() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" class="w-56" data-right-hub-interactive>
+                <ChatRoomNotifyMenu
+                  :type="activeTab.type"
+                  :lobby-id="activeTab.lobbyId"
+                  :separated="onDock(activeTab) || activeTab.type === 'direct'"
+                />
                 <template v-if="onDock(activeTab)">
                   <template v-if="!isShortcutHidden(activeTab.id)">
                     <DropdownMenuItem @select="toggleShortcutPin(activeTab.id)">

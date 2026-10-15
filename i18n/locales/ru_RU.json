@@ -10455,6 +10455,28 @@
       "forbidden_title": "Вы не можете открыть этот чат",
       "forbidden_description": "Его могут читать только игроки и владелец {team}.",
       "forbidden_description_unnamed": "Его могут читать только игроки и владелец этой команды."
+    },
+    "room_settings": {
+      "menu": "Настройки уведомлений",
+      "mute_channel": "Заглушить канал",
+      "unmute_channel": "Включить уведомления канала",
+      "mute_conversation": "Заглушить беседу",
+      "unmute_conversation": "Включить уведомления беседы",
+      "mute_for": {
+        "minutes_15": "На 15 минут",
+        "hour_1": "На 1 час",
+        "hours_8": "На 8 часов",
+        "hours_24": "На 24 часа",
+        "until_unmuted": "Пока не включу снова"
+      },
+      "muted": "Заглушено",
+      "muted_until": "Заглушено до {time}",
+      "notify_me_about": "Уведомления",
+      "notify": {
+        "all": "Все сообщения",
+        "mentions": "Только {'@'}упоминания",
+        "nothing": "Ничего"
+      }
     }
   },
   "charts": {

@@ -10455,6 +10455,28 @@
       "forbidden_title": "Bu sohbeti açamazsın",
       "forbidden_description": "Bunu yalnızca {team} oyuncuları ve sahibi okuyabilir.",
       "forbidden_description_unnamed": "Bunu yalnızca bu takımın oyuncuları ve sahibi okuyabilir."
+    },
+    "room_settings": {
+      "menu": "Bildirim ayarları",
+      "mute_channel": "Kanalı sessize al",
+      "unmute_channel": "Kanalın sesini aç",
+      "mute_conversation": "Sohbeti sessize al",
+      "unmute_conversation": "Sohbetin sesini aç",
+      "mute_for": {
+        "minutes_15": "15 dakikalığına",
+        "hour_1": "1 saatliğine",
+        "hours_8": "8 saatliğine",
+        "hours_24": "24 saatliğine",
+        "until_unmuted": "Ben tekrar açana kadar"
+      },
+      "muted": "Sessizde",
+      "muted_until": "Sessizde, bitiş: {time}",
+      "notify_me_about": "Bana bildir",
+      "notify": {
+        "all": "Tüm mesajlar",
+        "mentions": "Yalnızca {'@'}etiketler",
+        "nothing": "Hiçbir şey"
+      }
     }
   },
   "charts": {

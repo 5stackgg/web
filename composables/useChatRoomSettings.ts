@@ -1,0 +1,240 @@
+import { ref, watch } from "vue";
+import gql from "graphql-tag";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { schemaHasType } from "~/utilities/schemaHasType";
+import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
+import { useAuthStore } from "~/stores/AuthStore";
+import { chatRoomSettingsThread } from "~/utilities/chatThread";
+import { formatStartTime } from "~/utilities/watchEventCard";
+import {
+  chatRoomAlerts,
+  chatRoomQuietAt,
+  muteEndsAt,
+  nextMuteExpiry,
+  type ChatNotifyLevel,
+  type ChatRoomQuiet,
+  type ChatRoomSetting,
+} from "~/utilities/chatRoomSettings";
+
+// A player's mute and "notify me about" per room, kept on their account so
+// every device agrees. The api's push gate reads the same rows; this side
+// decides the badge, the sound and the tab flash.
+
+const SUBSCRIPTION_KEY = "chat:room_settings";
+
+// Raw documents: chat_room_settings is newer than the generated Zeus types.
+const CHAT_ROOM_SETTINGS = gql`
+  subscription ChatRoomSettings {
+    chat_room_settings {
+      thread
+      muted
+      muted_until
+      notify
+    }
+  }
+`;
+
+const SET_CHAT_ROOM_SETTING = gql`
+  mutation SetChatRoomSetting(
+    $thread: String!
+    $muted: Boolean!
+    $muted_until: timestamptz
+    $notify: String!
+  ) {
+    insert_chat_room_settings_one(
+      object: {
+        thread: $thread
+        muted: $muted
+        muted_until: $muted_until
+        notify: $notify
+      }
+      on_conflict: {
+        constraint: chat_room_settings_pkey
+        update_columns: [muted, muted_until, notify]
+      }
+    ) {
+      thread
+    }
+  }
+`;
+
+const settings = ref<Record<string, ChatRoomSetting>>({});
+// False against an api that does not serve the table yet, which hides the
+// controls and leaves every room as it always was.
+const supported = ref(false);
+// Moved on when a timed mute runs out, so whatever reads a room's quiet is
+// worked out again at that moment and not on the next unrelated change.
+const now = ref(Date.now());
+let expiry: ReturnType<typeof setTimeout> | null = null;
+
+// setTimeout overflows past this and fires at once.
+const MAX_TIMEOUT_MS = 2_147_483_647;
+
+function scheduleExpiry() {
+  if (expiry) {
+    clearTimeout(expiry);
+    expiry = null;
+  }
+
+  const next = nextMuteExpiry(Object.values(settings.value), Date.now());
+
+  if (next === null) {
+    return;
+  }
+
+  expiry = setTimeout(
+    () => {
+      now.value = Date.now();
+      scheduleExpiry();
+    },
+    Math.min(Math.max(next - Date.now(), 0) + 50, MAX_TIMEOUT_MS),
+  );
+}
+
+watch(settings, () => {
+  now.value = Date.now();
+  scheduleExpiry();
+});
+
+function settingFor(type: string, lobbyId: string): ChatRoomSetting {
+  return (
+    settings.value[chatRoomSettingsThread(type, lobbyId)] ?? {
+      muted: false,
+      muted_until: null,
+      notify: "all",
+    }
+  );
+}
+
+export function chatRoomQuiet(type: string, lobbyId: string): ChatRoomQuiet {
+  return chatRoomQuietAt(
+    settings.value[chatRoomSettingsThread(type, lobbyId)],
+    now.value,
+  );
+}
+
+export function chatTabQuiet(tab: { type: string; lobbyId?: string }) {
+  return chatRoomQuiet(tab.type, tab.lobbyId ?? "");
+}
+
+// "Muted until Fri 16:30", or plain "Muted" for a mute with no end.
+export function chatRoomMutedLabel(
+  quiet: ChatRoomQuiet,
+  t: (key: string, params?: Record<string, unknown>) => string,
+) {
+  if (!quiet.muted) {
+    return null;
+  }
+
+  return quiet.mutedUntil
+    ? t("chat.room_settings.muted_until", {
+        time: formatStartTime(quiet.mutedUntil),
+      })
+    : t("chat.room_settings.muted");
+}
+
+// Whether a line in the room may ring or flash the tab.
+export function chatRoomRings(type: string, lobbyId: string, tagged: boolean) {
+  return chatRoomAlerts(chatRoomQuiet(type, lobbyId), tagged);
+}
+
+async function write(type: string, lobbyId: string, next: ChatRoomSetting) {
+  const thread = chatRoomSettingsThread(type, lobbyId);
+  const previous = settings.value[thread];
+
+  settings.value = { ...settings.value, [thread]: next };
+
+  try {
+    await getGraphqlClient().mutate({
+      mutation: SET_CHAT_ROOM_SETTING,
+      variables: { thread, ...next },
+    });
+  } catch (error) {
+    const restored = { ...settings.value };
+
+    if (previous) {
+      restored[thread] = previous;
+    } else {
+      delete restored[thread];
+    }
+
+    settings.value = restored;
+    throw error;
+  }
+}
+
+export function muteChatRoom(
+  type: string,
+  lobbyId: string,
+  minutes: number | null,
+) {
+  return write(type, lobbyId, {
+    ...settingFor(type, lobbyId),
+    muted: true,
+    muted_until: muteEndsAt(minutes, Date.now()),
+  });
+}
+
+export function unmuteChatRoom(type: string, lobbyId: string) {
+  return write(type, lobbyId, {
+    ...settingFor(type, lobbyId),
+    muted: false,
+    muted_until: null,
+  });
+}
+
+export function setChatRoomNotify(
+  type: string,
+  lobbyId: string,
+  notify: ChatNotifyLevel,
+) {
+  return write(type, lobbyId, { ...settingFor(type, lobbyId), notify });
+}
+
+// Started on sign-in by the main window and by the chat pop-out, each of which
+// is an app of its own. Follows the player's rooms live, so a mute set on one
+// device quiets every other.
+export async function syncChatRoomSettings(steamId: string) {
+  const client = getGraphqlClient();
+
+  if (!(await schemaHasType(client, "chat_room_settings"))) {
+    return;
+  }
+
+  if (String(useAuthStore().me?.steam_id ?? "") !== String(steamId)) {
+    return;
+  }
+
+  supported.value = true;
+
+  useSubscriptionManager().subscribe(
+    SUBSCRIPTION_KEY,
+    client.subscribe({ query: CHAT_ROOM_SETTINGS }).subscribe({
+      next: ({ data }) => {
+        const rows: Array<ChatRoomSetting & { thread: string }> =
+          (data as any)?.chat_room_settings ?? [];
+        const next: Record<string, ChatRoomSetting> = {};
+
+        for (const row of rows) {
+          next[row.thread] = {
+            muted: row.muted === true,
+            muted_until: row.muted_until ?? null,
+            notify: row.notify ?? "all",
+          };
+        }
+
+        settings.value = next;
+      },
+    }),
+  );
+}
+
+export function resetChatRoomSettings() {
+  useSubscriptionManager().unsubscribe(SUBSCRIPTION_KEY);
+  supported.value = false;
+  settings.value = {};
+}
+
+export function useChatRoomSettings() {
+  return { supported, settings };
+}

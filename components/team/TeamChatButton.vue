@@ -7,7 +7,8 @@ import { useChatTabs } from "~/composables/useChatTabs";
 import { cancelChatTabRestore } from "~/composables/useChatTabPersistence";
 import { useRightSidebar } from "~/composables/useRightSidebar";
 import { setActiveHub } from "~/composables/useHubState";
-import { chatTabBadge } from "~/utilities/chatBadges";
+import { chatBadgeClass, chatTabBadge } from "~/utilities/chatBadges";
+import { chatTabQuiet } from "~/composables/useChatRoomSettings";
 import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
 import { chatTeam, teamChatTab } from "~/utilities/teamChat";
 
@@ -30,6 +31,7 @@ const badge = computed(() => {
     tab.value,
     unreadCounts.value[tab.value.id] ?? 0,
     mentionCounts.value[tab.value.id] ?? 0,
+    chatTabQuiet(tab.value),
   );
 });
 
@@ -57,11 +59,7 @@ function openRoom() {
         data-chat-room-badge
         :data-tone="badge.tone"
         class="inline-flex h-4 min-w-4 origin-center items-center justify-center gap-px rounded-full px-1 text-[0.6rem] font-bold leading-none tabular-nums transition-colors duration-200 motion-reduce:transition-none"
-        :class="
-          badge.tone === 'red'
-            ? 'bg-red-500 text-white'
-            : 'bg-zinc-50 text-zinc-950'
-        "
+        :class="chatBadgeClass(badge.tone)"
       >
         <AtSign v-if="badge.mention" class="size-[0.55rem] shrink-0" />
         <AnimatedStat :value="formatBadgeCount(badge.count)" />

@@ -10455,6 +10455,28 @@
       "forbidden_title": "Você não pode abrir este chat",
       "forbidden_description": "Só os jogadores e o dono de {team} podem lê-lo.",
       "forbidden_description_unnamed": "Só os jogadores e o dono desta equipe podem lê-lo."
+    },
+    "room_settings": {
+      "menu": "Configurações de notificação",
+      "mute_channel": "Silenciar canal",
+      "unmute_channel": "Reativar canal",
+      "mute_conversation": "Silenciar conversa",
+      "unmute_conversation": "Reativar conversa",
+      "mute_for": {
+        "minutes_15": "Por 15 minutos",
+        "hour_1": "Por 1 hora",
+        "hours_8": "Por 8 horas",
+        "hours_24": "Por 24 horas",
+        "until_unmuted": "Até eu reativar"
+      },
+      "muted": "Silenciado",
+      "muted_until": "Silenciado até {time}",
+      "notify_me_about": "Notificar sobre",
+      "notify": {
+        "all": "Todas as mensagens",
+        "mentions": "Só {'@'}menções",
+        "nothing": "Nada"
+      }
     }
   },
   "charts": {

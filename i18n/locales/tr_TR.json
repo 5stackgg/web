@@ -3189,6 +3189,11 @@
               "description": "Bir takım zorunlu turnuva katılım onayını kaçırdı. Yalnızca girişte kontrol edilir, dolayısıyla devam eden bir eşleşme tablosundaki oyuncu yerini korur."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto analizi",
+          "description": "Harita vetosu sırasında her tarafın her haritadaki sonuçlarını, rakibin her zamanki ban ve pick'lerini ve olası sonraki hamlesini göster. Takım maçları takımın geçmişini kullanır; pick-up maçları oyuncuların kendi maçlarını ve kaptanın önceki vetolarını kullanır. Her mod için ayrı açılır; bir maçın vetosu modunu izler.",
+          "updated": "Veto analizi güncellendi"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "{side} tarafını onayla",
       "your_side_on": "{map} haritasında başlangıç tarafın",
       "their_side_on": "{team}, {map} haritasında taraf seçiyor",
-      "not_set": "Belirlenmedi"
+      "not_set": "Belirlenmedi",
+      "scout": {
+        "you": "Sen",
+        "no_games": "Maç yok",
+        "usually_bans": "Genelde banlar",
+        "usually_picks": "Genelde seçer",
+        "likely_ban": "Olası ban",
+        "likely_pick": "Olası pick",
+        "team_bans": "{team}, {of} vetoda {n} kez bu haritayı banladı",
+        "team_picks": "{team}, {of} vetoda {n} kez bu haritayı seçti",
+        "captain_bans": "{captain}, kaptan olarak {of} vetoda {n} kez bu haritayı banladı",
+        "captain_picks": "{captain}, kaptan olarak {of} vetoda {n} kez bu haritayı seçti",
+        "players_note": "Her tarafın beş oyuncusu, bu haritadaki kendi maçları",
+        "record": "{team}: bu haritada {wins} galibiyet, {losses} mağlubiyet",
+        "your_record": "Buradaki sonuçların: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "gezin",
+        "choose": "seç",
+        "clear": "temizle"
+      }
     }
   },
   "ui": {

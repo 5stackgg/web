@@ -188,6 +188,32 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         </SettingsSection>
 
         <SettingsSection
+          id="veto-scouting"
+          :title="$t('pages.settings.application.veto_scouting.title')"
+          :description="
+            $t('pages.settings.application.veto_scouting.description')
+          "
+        >
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div
+              v-for="match_type in ['competitive', 'wingman', 'duel', 'rush']"
+              :key="match_type"
+              class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
+              @click="toggleVetoScouting(match_type)"
+            >
+              <h4 class="text-sm font-medium capitalize">
+                {{ match_type }}
+              </h4>
+              <Switch
+                :model-value="isVetoScoutingEnabled(match_type)"
+                @click.stop
+                @update:model-value="toggleVetoScouting(match_type)"
+              />
+            </div>
+          </div>
+        </SettingsSection>
+
+        <SettingsSection
           v-if="matchMakingAllowed"
           id="ranks"
           :title="$t('pages.settings.application.fivestack_ranks.title')"
@@ -452,6 +478,41 @@ export default {
 
       toast({
         title: this.$t("pages.settings.application.matchmaking.updated"),
+      });
+    },
+    isVetoScoutingEnabled(match_type: string) {
+      return (
+        this.settings.find(
+          (setting: { name: string; value: string | null }) =>
+            setting.name === `public.veto_scouting_${match_type}`,
+        )?.value === "true"
+      );
+    },
+    async toggleVetoScouting(match_type: string) {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: `public.veto_scouting_${match_type}`,
+                value: this.isVetoScoutingEnabled(match_type)
+                  ? "false"
+                  : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.veto_scouting.updated"),
       });
     },
     async toggleFivestackRanks(scope: "matches" | "tournaments") {

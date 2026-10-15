@@ -3189,6 +3189,11 @@
               "description": "队伍错过了赛事的必需签到。仅在进入时检查，因此已经在进行中的对阵表里的玩家会保留位置。"
             }
           }
+        },
+        "veto_scouting": {
+          "title": "BP 情报",
+          "description": "地图 BP 期间，显示双方在每张地图上的战绩、对方常用的禁用和选择，以及其可能的下一步。战队比赛使用战队的历史记录；路人局使用玩家自己的比赛和队长以往的 BP。按模式开启；比赛的 BP 遵循其模式设置。",
+          "updated": "BP 情报已更新"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "确认 {side}",
       "your_side_on": "你在 {map} 的开局阵营",
       "their_side_on": "{team} 正在为 {map} 选择阵营",
-      "not_set": "待定"
+      "not_set": "待定",
+      "scout": {
+        "you": "你",
+        "no_games": "暂无比赛",
+        "usually_bans": "常禁用",
+        "usually_picks": "常选择",
+        "likely_ban": "可能禁用",
+        "likely_pick": "可能选择",
+        "team_bans": "{team} 在 {of} 次 BP 中 {n} 次禁用此图",
+        "team_picks": "{team} 在 {of} 次 BP 中 {n} 次选择此图",
+        "captain_bans": "{captain} 作为队长在 {of} 次 BP 中 {n} 次禁用此图",
+        "captain_picks": "{captain} 作为队长在 {of} 次 BP 中 {n} 次选择此图",
+        "players_note": "双方各五名玩家在此地图上的个人比赛",
+        "record": "{team}：此地图 {wins} 胜 {losses} 负",
+        "your_record": "你在此图的战绩：{wins}–{losses}"
+      },
+      "keys": {
+        "browse": "浏览",
+        "choose": "选择",
+        "clear": "清除"
+      }
     }
   },
   "ui": {

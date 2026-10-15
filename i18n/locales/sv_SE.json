@@ -3189,6 +3189,11 @@
               "description": "Ett lag missade en obligatorisk turneringsincheckning. Kontrolleras bara vid ingången, så en spelare som redan är i ett pågående slutspelsträd behåller sin plats."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto-scouting",
+          "description": "Visa under ett kartveto varje sidas facit på varje karta, motståndarens vanliga bann och val och deras troliga nästa drag. Lagmatcher använder lagets historik; pick-up-matcher använder spelarnas egna matcher och lagkaptenens tidigare veton. Slå på det per läge; en matchs veto följer dess läge.",
+          "updated": "Veto-scouting uppdaterad"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "Bekräfta {side}",
       "your_side_on": "Din startsida på {map}",
       "their_side_on": "{team} väljer sida på {map}",
-      "not_set": "Inte vald"
+      "not_set": "Inte vald",
+      "scout": {
+        "you": "Du",
+        "no_games": "Inga matcher",
+        "usually_bans": "Brukar banna",
+        "usually_picks": "Brukar välja",
+        "likely_ban": "Trolig bann",
+        "likely_pick": "Troligt val",
+        "team_bans": "{team} bannar den i {n} av {of} veton",
+        "team_picks": "{team} väljer den i {n} av {of} veton",
+        "captain_bans": "{captain} bannar den i {n} av {of} veton som lagkapten",
+        "captain_picks": "{captain} väljer den i {n} av {of} veton som lagkapten",
+        "players_note": "Varje sidas fem spelare, deras egna matcher på den här kartan",
+        "record": "{team}: {wins} vunna, {losses} förlorade på den här kartan",
+        "your_record": "Ditt facit här: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "bläddra",
+        "choose": "välj",
+        "clear": "rensa"
+      }
     }
   },
   "ui": {

@@ -3189,6 +3189,11 @@
               "description": "Un equipo se perdió un check-in obligatorio del torneo. Solo se comprueba al entrar, así que un jugador que ya está en un cuadro en marcha conserva su plaza."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Scouting del veto",
+          "description": "Durante el veto de mapas, muestra el balance de cada bando en cada mapa, los baneos y elecciones habituales del rival y su próximo movimiento probable. Las partidas de equipo usan el historial del equipo; las pick-up usan las propias partidas de los jugadores y los vetos anteriores del capitán. Actívalo por modo; el veto de una partida sigue su modo.",
+          "updated": "Scouting del veto actualizado"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "Confirmar {side}",
       "your_side_on": "Tu bando inicial en {map}",
       "their_side_on": "{team} elige bando en {map}",
-      "not_set": "Sin definir"
+      "not_set": "Sin definir",
+      "scout": {
+        "you": "Tú",
+        "no_games": "Sin partidas",
+        "usually_bans": "Suele banear",
+        "usually_picks": "Suele elegir",
+        "likely_ban": "Baneo probable",
+        "likely_pick": "Elección probable",
+        "team_bans": "{team} lo banea en {n} de {of} vetos",
+        "team_picks": "{team} lo elige en {n} de {of} vetos",
+        "captain_bans": "{captain} lo banea en {n} de {of} vetos como capitán",
+        "captain_picks": "{captain} lo elige en {n} de {of} vetos como capitán",
+        "players_note": "Los cinco jugadores de cada bando, con sus propias partidas en este mapa",
+        "record": "{team}: {wins} ganadas, {losses} perdidas en este mapa",
+        "your_record": "Tu balance aquí: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "navegar",
+        "choose": "elegir",
+        "clear": "limpiar"
+      }
     }
   },
   "ui": {

@@ -3189,6 +3189,11 @@
               "description": "Uma equipe perdeu um check-in obrigatório do torneio. Verificado só na entrada, então um jogador que já está numa chave em andamento mantém a vaga."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Scouting de veto",
+          "description": "Durante o veto de mapas, mostra o histórico de cada lado em cada mapa, os bans e picks habituais do adversário e o provável próximo movimento dele. Partidas de time usam o histórico do time; partidas pick-up usam as próprias partidas dos jogadores e os vetos anteriores do capitão. Ative por modo; o veto de uma partida segue o modo dela.",
+          "updated": "Scouting de veto atualizado"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "Confirmar {side}",
       "your_side_on": "Seu lado inicial em {map}",
       "their_side_on": "{team} escolhe o lado em {map}",
-      "not_set": "A definir"
+      "not_set": "A definir",
+      "scout": {
+        "you": "Você",
+        "no_games": "Sem partidas",
+        "usually_bans": "Costuma banir",
+        "usually_picks": "Costuma escolher",
+        "likely_ban": "Ban provável",
+        "likely_pick": "Pick provável",
+        "team_bans": "{team} o bane em {n} de {of} vetos",
+        "team_picks": "{team} o escolhe em {n} de {of} vetos",
+        "captain_bans": "{captain} o bane em {n} de {of} vetos como capitão",
+        "captain_picks": "{captain} o escolhe em {n} de {of} vetos como capitão",
+        "players_note": "Os cinco jogadores de cada lado, com as próprias partidas neste mapa",
+        "record": "{team}: {wins} vitórias, {losses} derrotas neste mapa",
+        "your_record": "Seu histórico aqui: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "navegar",
+        "choose": "escolher",
+        "clear": "limpar"
+      }
     }
   },
   "ui": {

@@ -301,6 +301,17 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Veto scouting, switched per matchmaking mode and off by default (an
+    // absent row is off). A match's veto follows its own type.
+    function vetoScoutingEnabled(matchType: string | null | undefined) {
+      if (!matchType) return false;
+      const name = `public.veto_scouting_${matchType.toLowerCase()}`;
+      return (
+        settings.value?.find((setting) => setting.name === name)?.value ===
+        "true"
+      );
+    }
+
     // Community events: off by default (absent row = disabled), matching the
     // public_events insert permission gate on public.events_enabled.
     const eventsEnabled = computed(() => {
@@ -746,6 +757,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerVersionPinning,
       playerNameRegistration,
       newsEnabled,
+      vetoScoutingEnabled,
       seasonsEnabled,
       leaguesEnabled,
       leagueAllowDivisionRequest,

@@ -3189,6 +3189,11 @@
               "description": "팀이 필수 토너먼트 체크인을 놓쳤습니다. 진입할 때만 확인하므로 이미 진행 중인 대진표에 있는 플레이어는 자리를 유지합니다."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "밴픽 스카우팅",
+          "description": "맵 밴픽 중에 각 맵에서 양 진영의 전적, 상대 진영이 주로 밴·픽하는 맵, 예상되는 다음 선택을 보여줍니다. 팀 매치는 팀 기록을, 픽업 매치는 플레이어 개인의 경기와 팀장의 이전 밴픽을 사용합니다. 모드별로 켤 수 있으며, 경기의 밴픽은 해당 모드 설정을 따릅니다.",
+          "updated": "밴픽 스카우팅이 업데이트되었습니다"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "{side} 확정",
       "your_side_on": "{map}의 내 시작 진영",
       "their_side_on": "{team}이(가) {map} 진영 선택 중",
-      "not_set": "미정"
+      "not_set": "미정",
+      "scout": {
+        "you": "나",
+        "no_games": "경기 없음",
+        "usually_bans": "주로 밴",
+        "usually_picks": "주로 픽",
+        "likely_ban": "밴 예상",
+        "likely_pick": "픽 예상",
+        "team_bans": "{team}이(가) 밴픽 {of}회 중 {n}회 밴",
+        "team_picks": "{team}이(가) 밴픽 {of}회 중 {n}회 픽",
+        "captain_bans": "{captain} 님이 팀장으로서 밴픽 {of}회 중 {n}회 밴",
+        "captain_picks": "{captain} 님이 팀장으로서 밴픽 {of}회 중 {n}회 픽",
+        "players_note": "각 진영 5명의 이 맵 개인 경기 기록",
+        "record": "{team}: 이 맵에서 {wins}승 {losses}패",
+        "your_record": "이 맵의 내 전적: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "탐색",
+        "choose": "선택",
+        "clear": "해제"
+      }
     }
   },
   "ui": {

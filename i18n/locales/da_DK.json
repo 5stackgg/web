@@ -3189,6 +3189,11 @@
               "description": "Et hold missede et påkrævet turnerings-check-in. Tjekkes kun ved indgangen, så en spiller, der allerede er i en igangværende bracket, beholder sin plads."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto-scouting",
+          "description": "Vis under et bane-veto hver sides resultater på hver bane, modstanderens sædvanlige bans og picks og deres sandsynlige næste træk. Holdkampe bruger holdets historik; pick-up-kampe bruger spillernes egne kampe og anførerens tidligere vetoer. Slå det til pr. tilstand; en kamps veto følger dens tilstand.",
+          "updated": "Veto-scouting opdateret"
         }
       },
       "language": {
@@ -9544,7 +9549,27 @@
       "confirm_side": "Bekræft {side}",
       "your_side_on": "Din startside på {map}",
       "their_side_on": "{team} vælger side på {map}",
-      "not_set": "Ikke valgt"
+      "not_set": "Ikke valgt",
+      "scout": {
+        "you": "Dig",
+        "no_games": "Ingen kampe",
+        "usually_bans": "Banner typisk",
+        "usually_picks": "Picker typisk",
+        "likely_ban": "Forventet ban",
+        "likely_pick": "Forventet pick",
+        "team_bans": "{team} banner den i {n} af {of} vetoer",
+        "team_picks": "{team} picker den i {n} af {of} vetoer",
+        "captain_bans": "{captain} banner den i {n} af {of} vetoer som anfører",
+        "captain_picks": "{captain} picker den i {n} af {of} vetoer som anfører",
+        "players_note": "Hver sides fem spillere, deres egne kampe på denne bane",
+        "record": "{team}: {wins} vundet, {losses} tabt på denne bane",
+        "your_record": "Dine resultater her: {wins}–{losses}"
+      },
+      "keys": {
+        "browse": "bladr",
+        "choose": "vælg",
+        "clear": "ryd"
+      }
     }
   },
   "ui": {

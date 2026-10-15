@@ -7800,6 +7800,7 @@
       "pick": "اختر أفضل لاعب",
       "change": "تغيير أفضل لاعب",
       "suggested": "مقترح",
+      "self_disabled": "لا يمكنك اختيار نفسك. يمكن للمسؤول ذلك.",
       "picked_by_organizers": "اختاره المنظمون",
       "impact_value": "التأثير {value}",
       "matches_count": "{count} مباراة | {count} مباريات",

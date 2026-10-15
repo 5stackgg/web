@@ -622,6 +622,42 @@ import { $, e_tournament_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { TIER_PALETTES, resolveAwardTier } from "~/utilities/awardSeed";
 import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
+import { schemaHasField } from "~/utilities/schemaHasType";
+
+const tournamentPlayerStatsFields = {
+  player_steam_id: true,
+  kills: true,
+  deaths: true,
+  assists: true,
+  headshots: true,
+  kdr: true,
+  headshot_percentage: true,
+  matches_played: true,
+};
+
+const tournamentPlayerStatsWhere = {
+  where: {
+    tournament_id: {
+      _eq: $("tournamentId", "uuid!"),
+    },
+  },
+};
+
+const tournamentPlayerStatsSubscription = typedGql("subscription")({
+  v_tournament_player_stats: [
+    tournamentPlayerStatsWhere,
+    tournamentPlayerStatsFields,
+  ],
+});
+
+// adr ships with the api ahead of the generated types, and an older api
+// would reject the whole subscription over it.
+const tournamentPlayerStatsWithAdrSubscription = typedGql("subscription")({
+  v_tournament_player_stats: [
+    tournamentPlayerStatsWhere,
+    { ...tournamentPlayerStatsFields, ...({ adr: true } as {}) },
+  ],
+});
 
 export default {
   props: {
@@ -637,9 +673,22 @@ export default {
   data() {
     return {
       tournamentPlayerStats: [] as any[],
+      statsHaveAdr: null as boolean | null,
       mvpImpacts: [] as any[],
       podiumSteps: null as any[] | null,
     };
+  },
+  mounted() {
+    const self = this as any;
+    const client = self.$apollo?.getClient?.();
+    if (!client) {
+      return;
+    }
+    schemaHasField(client, "v_tournament_player_stats", "adr").then(
+      (has: boolean) => {
+        self.statsHaveAdr = has;
+      },
+    );
   },
   apollo: {
     // Its own optional query, so an api without the podium field only loses
@@ -706,27 +755,11 @@ export default {
     },
     $subscribe: {
       tournamentPlayerStats: {
-        query: typedGql("subscription")({
-          v_tournament_player_stats: [
-            {
-              where: {
-                tournament_id: {
-                  _eq: $("tournamentId", "uuid!"),
-                },
-              },
-            },
-            {
-              player_steam_id: true,
-              kills: true,
-              deaths: true,
-              assists: true,
-              headshots: true,
-              kdr: true,
-              headshot_percentage: true,
-              matches_played: true,
-            },
-          ],
-        }),
+        query: function () {
+          return (this as any).statsHaveAdr
+            ? tournamentPlayerStatsWithAdrSubscription
+            : tournamentPlayerStatsSubscription;
+        },
         variables: function () {
           return {
             tournamentId: (this as any).tournament?.id,
@@ -734,7 +767,11 @@ export default {
         },
         skip: function () {
           const self = this as any;
-          return !self.tournament?.id || !self.showStandings;
+          return (
+            !self.tournament?.id ||
+            !self.showStandings ||
+            self.statsHaveAdr === null
+          );
         },
         result: function ({
           data,
@@ -842,6 +879,7 @@ export default {
         matches_played: Number(raw.matches_played ?? 0),
         kdr: Number(raw.kdr ?? 0),
         headshot_percentage: Number(raw.headshot_percentage ?? 0),
+        adr: raw.adr == null ? null : Number(raw.adr),
       };
     },
   },

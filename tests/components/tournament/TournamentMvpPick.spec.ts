@@ -161,6 +161,7 @@ beforeEach(() => {
 afterEach(async () => {
   mounted?.unmount();
   mounted = null;
+  useAuthStore().me = undefined;
   await flushPromises();
 });
 
@@ -251,6 +252,34 @@ describe("TournamentMvpPick", () => {
       note: "Held B alone",
     });
     expect(refetch).toHaveBeenCalled();
+  });
+
+  it("keeps a non-admin organizer off their own row", async () => {
+    useAuthStore().me = { steam_id: FEXX, role: "user" } as any;
+    await mountPick(tournament());
+    await click(bodyButton("Change MVP"));
+
+    const own = radios()[2];
+    expect(own.getAttribute("data-steam-id")).toBe(FEXX);
+    expect(own.getAttribute("aria-disabled")).toBe("true");
+
+    await click(own);
+
+    expect(own.getAttribute("aria-checked")).toBe("false");
+    expect(radios()[0].getAttribute("aria-checked")).toBe("true");
+  });
+
+  it("lets an administrator pick themselves", async () => {
+    useAuthStore().me = { steam_id: FEXX, role: "administrator" } as any;
+    await mountPick(tournament());
+    await click(bodyButton("Change MVP"));
+
+    const own = radios()[2];
+    expect(own.getAttribute("aria-disabled")).toBe("false");
+
+    await click(own);
+
+    expect(own.getAttribute("aria-checked")).toBe("true");
   });
 
   it("turns the automatic pick off through the switch", async () => {

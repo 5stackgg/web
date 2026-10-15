@@ -7800,6 +7800,7 @@
       "pick": "Обрати MVP",
       "change": "Змінити MVP",
       "suggested": "Рекомендований",
+      "self_disabled": "Не можна обрати себе. Це може зробити адміністратор.",
       "picked_by_organizers": "Обраний організаторами",
       "impact_value": "вплив {value}",
       "matches_count": "{count} матч | {count} матчів",

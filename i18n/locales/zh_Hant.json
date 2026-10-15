@@ -7800,6 +7800,7 @@
       "pick": "選擇 MVP",
       "change": "更改 MVP",
       "suggested": "推薦",
+      "self_disabled": "你不能選擇自己，管理員可以。",
       "picked_by_organizers": "主辦方選定",
       "impact_value": "影響力 {value}",
       "matches_count": "{count} 場比賽 | {count} 場比賽",

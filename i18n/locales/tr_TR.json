@@ -7800,6 +7800,7 @@
       "pick": "MVP Seç",
       "change": "MVP'yi Değiştir",
       "suggested": "Önerilen",
+      "self_disabled": "Kendinizi seçemezsiniz. Bir yönetici seçebilir.",
       "picked_by_organizers": "Organizatörler seçti",
       "impact_value": "etki {value}",
       "matches_count": "{count} maç | {count} maç",

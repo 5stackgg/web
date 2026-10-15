@@ -7800,6 +7800,7 @@
       "pick": "Escolher MVP",
       "change": "Alterar MVP",
       "suggested": "Sugerido",
+      "self_disabled": "Você não pode escolher a si mesmo. Um administrador pode.",
       "picked_by_organizers": "Escolhido pelos organizadores",
       "impact_value": "impacto {value}",
       "matches_count": "{count} partida | {count} partidas",

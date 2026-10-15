@@ -7800,6 +7800,7 @@
       "pick": "MVPを選ぶ",
       "change": "MVPを変更",
       "suggested": "おすすめ",
+      "self_disabled": "自分自身は選べません。管理者なら選べます。",
       "picked_by_organizers": "主催者が選出",
       "impact_value": "インパクト {value}",
       "matches_count": "{count} 試合 | {count} 試合",

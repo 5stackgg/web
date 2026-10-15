@@ -7800,6 +7800,7 @@
       "pick": "MVP 선정",
       "change": "MVP 변경",
       "suggested": "추천",
+      "self_disabled": "자기 자신은 선정할 수 없습니다. 관리자는 선정할 수 있습니다.",
       "picked_by_organizers": "주최자가 선정",
       "impact_value": "임팩트 {value}",
       "matches_count": "{count}경기 | {count}경기",

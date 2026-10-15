@@ -4,6 +4,7 @@ import gql from "graphql-tag";
 import { useApolloClient } from "@vue/apollo-composable";
 import { Check, Crown, History, Repeat } from "lucide-vue-next";
 import ManageSection from "~/components/common/ManageSection.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -132,6 +133,7 @@ const refetchTournamentStatic = inject<() => unknown>(
 );
 
 const { client } = useApolloClient();
+const auth = useAuthStore();
 
 const supported = ref(false);
 const state = ref<PickState | null>(null);
@@ -218,6 +220,25 @@ const winnerName = computed(() =>
 const mvpStats = computed(() => candidateFor(mvp.value?.player_steam_id));
 
 const selectedCandidate = computed(() => candidateFor(selected.value));
+
+function isSelf(steamId?: string | null) {
+  return (
+    !auth.isAdmin &&
+    !!auth.me?.steam_id &&
+    String(auth.me.steam_id) === String(steamId)
+  );
+}
+
+function isSelected(candidate: Candidate) {
+  return String(selected.value) === String(candidate.player_steam_id);
+}
+
+function choose(candidate: Candidate) {
+  if (isSelf(candidate.player_steam_id)) {
+    return;
+  }
+  selected.value = String(candidate.player_steam_id);
+}
 
 const unchanged = computed(
   () =>
@@ -644,79 +665,88 @@ const confirmReplaces = computed(() => {
                   <span class="text-right">ADR</span>
                   <span class="text-right">HS%</span>
                 </div>
-                <button
+                <FiveStackToolTip
                   v-for="candidate in ranked"
                   :key="candidate.player_steam_id"
-                  type="button"
-                  role="radio"
-                  :aria-checked="
-                    String(selected) === String(candidate.player_steam_id)
-                  "
-                  :data-steam-id="candidate.player_steam_id"
-                  class="grid grid-cols-[1rem_minmax(0,1fr)_repeat(5,3.25rem)] items-center gap-2 rounded-md border px-2.5 py-2 text-left text-[0.8125rem] transition-colors duration-150 motion-reduce:transition-none"
-                  :class="
-                    String(selected) === String(candidate.player_steam_id)
-                      ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)]'
-                      : 'border-border/70 hover:bg-muted/30'
-                  "
-                  @click="selected = String(candidate.player_steam_id)"
+                  as-child
+                  :disabled="!isSelf(candidate.player_steam_id)"
+                  :delay-duration="120"
                 >
-                  <span
-                    class="grid h-4 w-4 place-items-center rounded-full border transition-colors duration-150 motion-reduce:transition-none"
-                    :class="
-                      String(selected) === String(candidate.player_steam_id)
-                        ? 'border-[hsl(var(--tac-amber))]'
-                        : 'border-border'
-                    "
-                  >
-                    <span
-                      class="h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))] transition-transform duration-150 motion-reduce:transition-none"
-                      :class="
-                        String(selected) === String(candidate.player_steam_id)
-                          ? 'scale-100'
-                          : 'scale-0'
-                      "
-                    ></span>
-                  </span>
-                  <span class="flex min-w-0 items-center gap-2">
-                    <PlayerDisplay
-                      :player="playerFor(candidate)"
-                      :show-name="false"
-                      :show-flag="false"
-                      :show-role="false"
-                      :show-elo="false"
-                      :linkable="false"
-                      :show-online="false"
-                      :tooltip="false"
-                      :context-menu="false"
-                      size="xs"
-                    />
-                    <span class="grid min-w-0 leading-tight">
-                      <span class="truncate font-semibold">
-                        {{ candidate.name }}
+                  <template #trigger>
+                    <button
+                      type="button"
+                      role="radio"
+                      :aria-checked="isSelected(candidate)"
+                      :aria-disabled="isSelf(candidate.player_steam_id)"
+                      :data-steam-id="candidate.player_steam_id"
+                      class="grid grid-cols-[1rem_minmax(0,1fr)_repeat(5,3.25rem)] items-center gap-2 rounded-md border px-2.5 py-2 text-left text-[0.8125rem] transition-colors duration-150 motion-reduce:transition-none"
+                      :class="[
+                        isSelected(candidate)
+                          ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)]'
+                          : 'border-border/70',
+                        isSelf(candidate.player_steam_id)
+                          ? 'cursor-not-allowed opacity-50'
+                          : 'hover:bg-muted/30',
+                      ]"
+                      @click="choose(candidate)"
+                    >
+                      <span
+                        class="grid h-4 w-4 place-items-center rounded-full border transition-colors duration-150 motion-reduce:transition-none"
+                        :class="
+                          isSelected(candidate)
+                            ? 'border-[hsl(var(--tac-amber))]'
+                            : 'border-border'
+                        "
+                      >
+                        <span
+                          class="h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))] transition-transform duration-150 motion-reduce:transition-none"
+                          :class="
+                            isSelected(candidate) ? 'scale-100' : 'scale-0'
+                          "
+                        ></span>
+                      </span>
+                      <span class="flex min-w-0 items-center gap-2">
+                        <PlayerDisplay
+                          :player="playerFor(candidate)"
+                          :show-name="false"
+                          :show-flag="false"
+                          :show-role="false"
+                          :show-elo="false"
+                          :linkable="false"
+                          :show-online="false"
+                          :tooltip="false"
+                          :context-menu="false"
+                          size="xs"
+                        />
+                        <span class="grid min-w-0 leading-tight">
+                          <span class="truncate font-semibold">
+                            {{ candidate.name }}
+                          </span>
+                          <span
+                            v-if="candidate.rank === 1"
+                            class="truncate font-mono text-[0.5rem] uppercase tracking-[0.16em] text-muted-foreground"
+                          >
+                            {{ $t("tournament.mvp_pick.suggested") }}
+                          </span>
+                        </span>
                       </span>
                       <span
-                        v-if="candidate.rank === 1"
-                        class="truncate font-mono text-[0.5rem] uppercase tracking-[0.16em] text-muted-foreground"
+                        v-for="(value, index) in [
+                          formatImpact(candidate.avg_impact),
+                          candidate.matches,
+                          Number(candidate.kdr ?? 0).toFixed(2),
+                          Math.round(Number(candidate.adr ?? 0)),
+                          `${Math.round(Number(candidate.headshot_percentage ?? 0))}%`,
+                        ]"
+                        :key="index"
+                        class="text-right font-mono text-xs tabular-nums text-muted-foreground"
                       >
-                        {{ $t("tournament.mvp_pick.suggested") }}
+                        {{ value }}
                       </span>
-                    </span>
-                  </span>
-                  <span
-                    v-for="(value, index) in [
-                      formatImpact(candidate.avg_impact),
-                      candidate.matches,
-                      Number(candidate.kdr ?? 0).toFixed(2),
-                      Math.round(Number(candidate.adr ?? 0)),
-                      `${Math.round(Number(candidate.headshot_percentage ?? 0))}%`,
-                    ]"
-                    :key="index"
-                    class="text-right font-mono text-xs tabular-nums text-muted-foreground"
-                  >
-                    {{ value }}
-                  </span>
-                </button>
+                    </button>
+                  </template>
+                  {{ $t("tournament.mvp_pick.self_disabled") }}
+                </FiveStackToolTip>
               </div>
             </div>
 
@@ -734,7 +764,9 @@ const confirmReplaces = computed(() => {
                 {{ $t("common.cancel") }}
               </Button>
               <Button
-                :disabled="!selectedCandidate || unchanged"
+                :disabled="
+                  !selectedCandidate || unchanged || isSelf(selected)
+                "
                 @click="step = 'confirm'"
               >
                 {{ $t("tournament.mvp_pick.continue") }}

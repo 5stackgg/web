@@ -7800,6 +7800,7 @@
       "pick": "Vælg MVP",
       "change": "Skift MVP",
       "suggested": "Foreslået",
+      "self_disabled": "Du kan ikke vælge dig selv. En administrator kan.",
       "picked_by_organizers": "Valgt af arrangører",
       "impact_value": "impact {value}",
       "matches_count": "{count} kamp | {count} kampe",

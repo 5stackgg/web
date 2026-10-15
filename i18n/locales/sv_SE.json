@@ -7800,6 +7800,7 @@
       "pick": "Välj MVP",
       "change": "Byt MVP",
       "suggested": "Föreslagen",
+      "self_disabled": "Du kan inte välja dig själv. En administratör kan.",
       "picked_by_organizers": "Utvald av arrangörer",
       "impact_value": "impact {value}",
       "matches_count": "{count} match | {count} matcher",

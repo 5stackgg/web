@@ -245,13 +245,44 @@ const isWide = (id: string) =>
 // A wide map lays out its words at the width it opens to, from the first
 // frame: the map grows over them instead of squeezing them as it widens.
 const stageW = ref(0);
+const stageH = ref(0);
 const stageRow = ref(true);
+// Each map's picture keeps one size whatever its slice's width (its height,
+// on a phone's rows), so a slice opening uncovers more of it instead of
+// zooming it.
+const stageVars = computed(() =>
+  stageRow.value
+    ? {
+        "--pw": stageW.value
+          ? `${Math.round(stageW.value * 0.52)}px`
+          : undefined,
+      }
+    : {
+        "--ph": stageH.value
+          ? `${Math.round(stageH.value * 0.5)}px`
+          : undefined,
+      },
+);
 let stageObserver: ResizeObserver | undefined;
+// The width a map opens to: its share with it open and the rest at rest.
+// The same whether or not it is open right now, so its words keep their
+// layout while it closes too.
+const restWeight = (id: string) => {
+  const status = stateOf(id).status;
+  return status === "Ban" ? 0.42 : status === "Pick" ? 0.68 : 1;
+};
 const openWidth = (id: string) => {
-  if (!stageRow.value || !stageW.value) return null;
-  const total = props.items.reduce((sum, item) => sum + weight(item.id), 0);
+  if (!stageRow.value || !stageW.value || sideMapId.value) return null;
   const free = stageW.value - 4 * (props.items.length - 1);
-  return Math.max(0, (free * weight(id)) / total);
+  if (done.value) {
+    const total = props.items.reduce((sum, item) => sum + weight(item.id), 0);
+    return Math.max(0, (free * weight(id)) / total);
+  }
+  const rest = props.items.reduce(
+    (sum, item) => sum + (item.id === id ? 0 : restWeight(item.id)),
+    0,
+  );
+  return Math.max(0, (free * 4.2) / (rest + 4.2));
 };
 
 const isLive = (id: string) =>
@@ -978,6 +1009,7 @@ onMounted(() => {
       const stage = stageEl.value;
       if (!stage) return;
       stageW.value = stage.clientWidth;
+      stageH.value = stage.clientHeight;
       stageRow.value = getComputedStyle(stage).flexDirection === "row";
     });
     stageObserver.observe(stageEl.value);
@@ -1129,6 +1161,7 @@ onBeforeUnmount(() => {
         ref="stageEl"
         class="vb-stage"
         :class="{ 'is-region': isRegion }"
+        :style="stageVars"
         :tabindex="live ? 0 : undefined"
         @pointermove="onPointerMove"
         @pointerleave="onPointerLeave"
@@ -1660,7 +1693,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
   background: var(--vb-surface);
   outline: none;
-  transition: flex-grow 460ms var(--vb-ease);
+  transition: flex-grow 440ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 /* Each map has softly rounded corners of its own, so the outline on the
    one you choose (or focus) is rounded too; the stage's outer corners stay
@@ -1686,9 +1719,12 @@ onBeforeUnmount(() => {
 }
 .vb-poster {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  width: max(100%, var(--pw, 100%));
+  height: max(100%, var(--ph, 100%));
+  max-width: none;
+  translate: -50% -50%;
   object-fit: cover;
   transition:
     filter 360ms var(--vb-ease),
@@ -1762,7 +1798,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  transition: opacity 200ms var(--vb-ease);
+  transition: opacity 220ms var(--vb-ease) 160ms;
 }
 .vb-vpatch {
   width: min(30px, 66%);
@@ -1813,6 +1849,7 @@ onBeforeUnmount(() => {
   min-width: 0;
   opacity: 0;
   pointer-events: none;
+  transition: opacity 120ms var(--vb-ease);
 }
 .vb-namerow {
   display: flex;
@@ -1881,7 +1918,7 @@ onBeforeUnmount(() => {
   pointer-events: auto;
   transition: opacity 140ms var(--vb-ease) 40ms;
 }
-.vb-slice.is-wide.is-sized .vb-open {
+.vb-slice.is-sized .vb-open {
   right: auto;
   width: calc(var(--fw) - 40px);
 }
@@ -1891,7 +1928,7 @@ onBeforeUnmount(() => {
 }
 .vb-slice.is-wide .vb-v {
   opacity: 0;
-  transition-duration: 0ms;
+  transition: none;
 }
 .vb-slice.is-mid .vb-name {
   font-size: 24px;
@@ -2281,6 +2318,13 @@ onBeforeUnmount(() => {
   padding: 0 2px;
   border-radius: 6px;
   background: rgb(0 0 0 / 0.62);
+  animation: vb-settle-in 220ms var(--vb-ease) 160ms both;
+}
+/* A map's resting labels return once it has mostly closed. */
+@keyframes vb-settle-in {
+  from {
+    opacity: 0;
+  }
 }
 .vb-tag:not(.is-bare) > .vb-edge,
 .vb-tag:not(.is-bare) > .vb-habit {
@@ -2383,6 +2427,7 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
 }
 .vb-scout {
+  animation: vb-settle-in 140ms var(--vb-ease) 40ms both;
   flex-basis: 100%;
   display: grid;
   gap: 5px;

@@ -18,6 +18,24 @@ const message = {
 const viewerSteamId = "76561198000000001";
 
 describe("chatMessagePermissions", () => {
+  it("lets a team room's admin delete anyone's line, but sanctions nobody there", () => {
+    expect(
+      chatMessagePermissions({
+        message,
+        viewerSteamId,
+        canModerate: true,
+        outranksAuthor: true,
+        roomType: "team",
+      }),
+    ).toEqual({
+      canDelete: true,
+      canEdit: false,
+      canReact: false,
+      canAddReaction: false,
+      canSanction: false,
+    });
+  });
+
   it.each([
     "match",
     "match_team",

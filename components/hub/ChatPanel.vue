@@ -23,6 +23,7 @@ import NewChatRailButton from "~/components/hub/NewChatRailButton.vue";
 import MessageRequests from "~/components/hub/MessageRequests.vue";
 import MessageRequestsRailButton from "~/components/hub/MessageRequestsRailButton.vue";
 import HubEmptyState from "~/components/hub/HubEmptyState.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { toast } from "~/components/ui/toast";
 import AnimatedStat from "~/components/AnimatedStat.vue";
@@ -63,6 +64,9 @@ import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "~/components/ui/tooltip/TooltipContent.vue";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
+import { chatTeam, type ChatTeam } from "~/utilities/teamChat";
+import { useChatMentionCandidates } from "~/composables/useChatMentionCandidates";
+import TeamsEmblem from "~/components/teams/TeamsEmblem.vue";
 import socket from "~/web-sockets/Socket";
 
 const props = defineProps<{
@@ -178,6 +182,81 @@ const activeParticipants = computed<
   if (!map) return [];
   return Array.from(map.values());
 });
+
+function teamFor(tab: ChatTab): ChatTeam | null {
+  return tab.type === "team"
+    ? chatTeam(useAuthStore().me?.teams, tab.lobbyId)
+    : null;
+}
+
+function isLostTeamRoom(tab: ChatTab) {
+  return tab.type === "team" && !teamFor(tab);
+}
+
+const activeTeamLost = computed(
+  () => !!activeTab.value && isLostTeamRoom(activeTab.value),
+);
+
+const mentionCandidates = useChatMentionCandidates();
+
+watch(
+  () =>
+    activeTab.value?.type === "team" && !activeTeamLost.value
+      ? activeTab.value.lobbyId
+      : null,
+  (teamId) => {
+    if (teamId) {
+      void mentionCandidates.load("team", teamId);
+    }
+  },
+  { immediate: true },
+);
+
+type TeamMember = {
+  steam_id: string;
+  name: string;
+  avatar_url?: string | null;
+  away: boolean;
+};
+
+// A team's room lists everyone who can read it, not only who is in it: what
+// is said there stays for weeks, so who will see it later is the question.
+const teamMembers = computed<TeamMember[]>(() => {
+  const tab = activeTab.value;
+  const me = useAuthStore().me;
+
+  if (tab?.type !== "team" || activeTeamLost.value || !me) {
+    return [];
+  }
+
+  const room = mentionCandidates.candidates("team", tab.lobbyId);
+
+  if (room?.status !== "ready") {
+    return [];
+  }
+
+  const here = new Set(
+    activeParticipants.value.map(({ steam_id }) => String(steam_id)),
+  );
+
+  return [
+    {
+      steam_id: String(me.steam_id),
+      name: me.name,
+      avatar_url: me.avatar_url,
+    },
+    ...room.members,
+  ]
+    .map((member) => ({
+      ...member,
+      away: !here.has(String(member.steam_id)),
+    }))
+    .sort((a, b) => Number(a.away) - Number(b.away));
+});
+
+const stripParticipants = computed(() =>
+  teamMembers.value.length ? teamMembers.value : activeParticipants.value,
+);
 
 const isParticipantsOpen = ref(false);
 
@@ -778,6 +857,7 @@ function getRoomDetail(tab: ChatTab) {
 function getRoomSubtitle(tab: ChatTab) {
   if (tab.type === "organizers") return t("chat_room_subtitles.organizers");
   if (tab.type === "tournament") return t("chat_room_subtitles.tournament");
+  if (tab.type === "team") return t("chat_room_subtitles.team");
   if (tab.id.startsWith("matchmaking:"))
     return t("chat_room_subtitles.matchmaking");
   if (tab.type === "match") return t("chat_room_subtitles.match");
@@ -823,6 +903,23 @@ const directPeer = computed(() => {
     initials: (tab.label || "?").trim().slice(0, 2).toUpperCase(),
   };
 });
+
+const teamHeader = computed(() => {
+  const tab = activeTab.value;
+
+  if (tab?.type !== "team") {
+    return null;
+  }
+
+  return {
+    to: `/teams/${tab.lobbyId}`,
+    team: teamFor(tab) ?? { id: tab.lobbyId, name: tab.label },
+  };
+});
+
+const headerLink = computed(
+  () => directPeer.value?.profile ?? teamHeader.value?.to ?? null,
+);
 
 const { setRightSidebarOpen } = useRightSidebar();
 
@@ -985,7 +1082,13 @@ function handlePopOut() {
                       @pointerup="handlePointerUp"
                       @pointercancel="cancelPress"
                     >
+                      <TeamsEmblem
+                        v-if="tab.type === 'team'"
+                        :team="teamFor(tab) ?? { name: tab.label }"
+                        :size="28"
+                      />
                       <div
+                        v-else
                         class="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-inherit transition-colors"
                         :class="
                           activeChatId === tab.id
@@ -1168,11 +1271,21 @@ function handlePopOut() {
               />
               <template v-else>{{ directPeer.initials }}</template>
             </NuxtLink>
+            <NuxtLink
+              v-else-if="teamHeader"
+              :to="teamHeader.to"
+              tabindex="-1"
+              aria-hidden="true"
+              class="flex shrink-0 rounded-md transition-shadow duration-150 hover:ring-2 hover:ring-[hsl(var(--tac-amber)/0.6)] motion-reduce:transition-none"
+              @click="openDirectProfile"
+            >
+              <TeamsEmblem :team="teamHeader.team" :size="28" />
+            </NuxtLink>
             <div class="min-w-0">
               <div class="flex min-w-0 items-center gap-2">
                 <NuxtLink
-                  v-if="directPeer"
-                  :to="directPeer.profile"
+                  v-if="headerLink"
+                  :to="headerLink"
                   class="truncate rounded-sm text-xs font-semibold text-foreground underline-offset-2 transition-colors duration-150 hover:text-[hsl(var(--tac-amber))] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] motion-reduce:transition-none"
                   @click="openDirectProfile"
                 >
@@ -1199,22 +1312,28 @@ function handlePopOut() {
                   {{ activeTab ? getRoomSubtitle(activeTab) : "" }}
                 </span>
                 <button
+                  v-if="!activeTeamLost"
                   type="button"
                   class="text-[10px] text-zinc-400 underline-offset-2"
                   :class="
-                    activeParticipantsCount
+                    stripParticipants.length
                       ? 'hover:text-zinc-200 hover:underline cursor-pointer'
                       : 'cursor-default opacity-60'
                   "
                   @click="
-                    activeParticipantsCount &&
+                    stripParticipants.length &&
                     (isParticipantsOpen = !isParticipantsOpen)
                   "
                 >
                   {{
-                    $t("layouts.chat_panel.participants_in_chat", {
-                      count: activeParticipantsCount,
-                    })
+                    teamMembers.length
+                      ? $t("layouts.chat_panel.members_here", {
+                          here: activeParticipantsCount,
+                          total: teamMembers.length,
+                        })
+                      : $t("layouts.chat_panel.participants_in_chat", {
+                          count: activeParticipantsCount,
+                        })
                   }}
                 </button>
               </div>
@@ -1301,12 +1420,12 @@ function handlePopOut() {
           leave-to-class="chat-fold-collapsed"
         >
           <div
-            v-if="isParticipantsOpen && activeParticipants.length"
+            v-if="isParticipantsOpen && stripParticipants.length"
             class="shrink-0 grid grid-rows-[1fr]"
           >
             <div class="min-h-0">
               <ChatParticipants
-                :participants="activeParticipants"
+                :participants="stripParticipants"
                 variant="pills"
                 class="px-3 py-2 border-b border-zinc-800/60 bg-zinc-950/80 text-[11px] text-zinc-200"
               />
@@ -1335,32 +1454,50 @@ function handlePopOut() {
         </div>
 
         <div class="flex-1 min-h-0 flex flex-col">
-          <ChatLobby
-            v-for="tab in tabs"
-            :key="tab.id"
-            :ref="(lobby) => (lobbies[tab.id] = lobby as any)"
-            v-show="tab.id === activeChatId"
-            :instance="tab.instance"
-            :type="tab.type"
-            :lobby-id="tab.lobbyId"
-            :team-lobby-id="teamLobbyIdFor(tab)"
-            :tab-id="tab.id"
-            :frameless="true"
-            :is-global-context="true"
-            :hide-participants-summary="true"
-            :can-send="!awaitingReply(tab)"
-            :readonly-hint="
-              awaitingReply(tab)
-                ? $t('layouts.chat_panel.requests.awaiting_reply', {
-                    name: tab.label,
+          <Empty
+            v-if="activeTeamLost"
+            class="min-h-0 flex-1 text-muted-foreground"
+          >
+            <div class="space-y-1">
+              <p class="text-sm font-medium">
+                {{
+                  $t("chat.team_room.removed_title", {
+                    team: activeTab?.label,
                   })
-                : undefined
-            "
-            :disable-auto-focus-on-activate="isMobile"
-            :is-active-tab="
-              tab.id === activeChatId && isSidebarOpen && isTabActive
-            "
-          />
+                }}
+              </p>
+              <p class="text-xs text-muted-foreground/80">
+                {{ $t("chat.team_room.removed_description") }}
+              </p>
+            </div>
+          </Empty>
+          <template v-for="tab in tabs" :key="tab.id">
+            <ChatLobby
+              v-if="!isLostTeamRoom(tab)"
+              :ref="(lobby) => (lobbies[tab.id] = lobby as any)"
+              v-show="tab.id === activeChatId"
+              :instance="tab.instance"
+              :type="tab.type"
+              :lobby-id="tab.lobbyId"
+              :team-lobby-id="teamLobbyIdFor(tab)"
+              :tab-id="tab.id"
+              :frameless="true"
+              :is-global-context="true"
+              :hide-participants-summary="true"
+              :can-send="!awaitingReply(tab)"
+              :readonly-hint="
+                awaitingReply(tab)
+                  ? $t('layouts.chat_panel.requests.awaiting_reply', {
+                      name: tab.label,
+                    })
+                  : undefined
+              "
+              :disable-auto-focus-on-activate="isMobile"
+              :is-active-tab="
+                tab.id === activeChatId && isSidebarOpen && isTabActive
+              "
+            />
+          </template>
         </div>
       </div>
       <div v-else key="empty" class="h-full flex flex-col">

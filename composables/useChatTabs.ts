@@ -153,6 +153,17 @@ export function useChatTabs() {
     };
   }
 
+  function setLabel(id: string, label: string) {
+    const idx = findTabIndex(id);
+    if (idx === -1 || tabsRef.value[idx].label === label) {
+      return;
+    }
+    tabsRef.value[idx] = {
+      ...tabsRef.value[idx],
+      label,
+    };
+  }
+
   function incrementUnread(id: string, messageId?: string) {
     if (messageId) {
       let counted = unreadMessageIds.get(id);
@@ -325,6 +336,7 @@ export function useChatTabs() {
     closeTab,
     setActiveTab,
     setPinned,
+    setLabel,
     setTabPosition,
     incrementUnread,
     decrementUnread,

@@ -2346,14 +2346,15 @@
           "direct_title": "Direct Messages",
           "direct_description": "Direct messages are stored durably rather than expiring with the rest of chat. Set the number of days to keep them, or 0 to keep them forever.",
           "ttl_match": "Match chat",
-          "ttl_match_team": "Team chat",
+          "ttl_match_team": "Match team chat",
           "ttl_matchmaking": "Matchmaking lobby chat",
           "ttl_tournament": "Tournament chat",
           "ttl_organizers": "Organizer chat",
           "ttl_draft": "Draft lobby chat",
+          "ttl_team": "Team chat",
           "retention_direct_days": "Keep direct messages for (days)",
           "attachments_title": "Attachments",
-          "attachments_description": "Players can attach up to 4 images or videos to a message in lobby, tournament, organizer, draft and direct chat. A file is deleted when its room's messages expire, when its direct message is pruned, or as soon as its message is deleted.",
+          "attachments_description": "Players can attach up to 4 images or videos to a message in lobby, tournament, organizer, draft, team and direct chat. A file is deleted when its room's messages expire, when its direct message is pruned, or as soon as its message is deleted.",
           "attachment_max_mb": "Largest file (MB)",
           "attachment_daily_mb": "Uploads per player per day (MB)",
           "attachment_daily_mb_hint": "Counted over the last 24 hours, including files that were removed.",
@@ -6912,6 +6913,7 @@
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} in chat",
+      "members_here": "{here} of {total} here",
       "pop_out_tooltip": "Pop out to window",
       "close_tooltip": "Close conversation",
       "no_chats_title": "No chats yet",
@@ -8400,7 +8402,8 @@
         "no_matches": "No matches yet",
         "founded": "Founded {date}",
         "all_awards": "Show all awards",
-        "team_actions": "Team actions"
+        "team_actions": "Team actions",
+        "team_chat": "Team Chat"
       },
       "stage": {
         "live": "Live now",
@@ -10388,7 +10391,8 @@
         "tournament": "Drop to send in the tournament chat",
         "organizers": "Drop to send in the organizers' chat",
         "draft": "Drop to send in the draft lobby",
-        "direct": "Drop to send in this conversation"
+        "direct": "Drop to send in this conversation",
+        "team": "Drop to send in the team chat"
       },
       "drop_hint": "Images and videos, up to {count} at a time",
       "rejected_type": "{name} can't be attached. Only images and videos can.",
@@ -10447,6 +10451,14 @@
       "too_many": "A message can tag up to {max} players.",
       "organizer": "Organizer",
       "tagged_you": "{count} message tags you | {count} messages tag you"
+    },
+    "team_room": {
+      "empty_hint": "Only {team}'s players and owner can read this.",
+      "removed_title": "You're no longer on {team}",
+      "removed_description": "This chat has closed. It leaves your list when you switch rooms.",
+      "forbidden_title": "You can't open this chat",
+      "forbidden_description": "Only {team}'s players and owner can read it.",
+      "forbidden_description_unnamed": "Only this team's players and owner can read it."
     }
   },
   "charts": {

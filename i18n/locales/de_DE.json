@@ -2346,14 +2346,15 @@
           "direct_title": "Direktnachrichten",
           "direct_description": "Direktnachrichten werden dauerhaft gespeichert, statt mit dem übrigen Chat abzulaufen. Lege die Anzahl der Tage fest, die sie aufbewahrt werden, oder 0, um sie dauerhaft zu behalten.",
           "ttl_match": "Match-Chat",
-          "ttl_match_team": "Team-Chat",
+          "ttl_match_team": "Team-Chat im Match",
           "ttl_matchmaking": "Matchmaking-Lobby-Chat",
           "ttl_tournament": "Turnier-Chat",
           "ttl_organizers": "Organisatoren-Chat",
           "ttl_draft": "Draft-Lobby-Chat",
+          "ttl_team": "Team-Chat",
           "retention_direct_days": "Direktnachrichten aufbewahren für (Tage)",
           "attachments_title": "Anhänge",
-          "attachments_description": "Spieler können in Lobby-, Turnier-, Organisatoren-, Draft- und Direktchats bis zu 4 Bilder oder Videos an eine Nachricht anhängen. Eine Datei wird gelöscht, wenn die Nachrichten ihres Raums ablaufen, wenn ihre Direktnachricht bereinigt wird oder sobald ihre Nachricht gelöscht wird.",
+          "attachments_description": "Spieler können in Lobby-, Turnier-, Organisatoren-, Draft-, Team- und Direktchats bis zu 4 Bilder oder Videos an eine Nachricht anhängen. Eine Datei wird gelöscht, wenn die Nachrichten ihres Raums ablaufen, wenn ihre Direktnachricht bereinigt wird oder sobald ihre Nachricht gelöscht wird.",
           "attachment_max_mb": "Größte Datei (MB)",
           "attachment_daily_mb": "Uploads pro Spieler und Tag (MB)",
           "attachment_daily_mb_hint": "Gezählt über die letzten 24 Stunden, einschließlich entfernter Dateien.",
@@ -6910,6 +6911,7 @@
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} im Chat",
+      "members_here": "{here} von {total} hier",
       "pop_out_tooltip": "In eigenem Fenster öffnen",
       "close_tooltip": "Unterhaltung schließen",
       "no_chats_title": "Noch keine Chats",
@@ -8398,7 +8400,8 @@
         "no_matches": "Noch keine Matches",
         "founded": "Gegründet {date}",
         "all_awards": "Alle Auszeichnungen anzeigen",
-        "team_actions": "Team-Aktionen"
+        "team_actions": "Team-Aktionen",
+        "team_chat": "Team-Chat"
       },
       "stage": {
         "live": "Jetzt live",
@@ -10384,7 +10387,8 @@
         "tournament": "Ablegen, um im Turnierchat zu senden",
         "organizers": "Ablegen, um im Organisatoren-Chat zu senden",
         "draft": "Ablegen, um in der Draft-Lobby zu senden",
-        "direct": "Ablegen, um in dieser Unterhaltung zu senden"
+        "direct": "Ablegen, um in dieser Unterhaltung zu senden",
+        "team": "Ablegen, um im Team-Chat zu senden"
       },
       "drop_hint": "Bilder und Videos, bis zu {count} auf einmal",
       "rejected_type": "{name} kann nicht angehängt werden. Nur Bilder und Videos sind möglich.",
@@ -10443,6 +10447,14 @@
       "too_many": "Eine Nachricht kann höchstens {max} Spieler markieren.",
       "organizer": "Veranstalter",
       "tagged_you": "{count} Nachricht markiert dich | {count} Nachrichten markieren dich"
+    },
+    "team_room": {
+      "empty_hint": "Nur die Spieler und der Besitzer von {team} können das lesen.",
+      "removed_title": "Du bist nicht mehr bei {team}",
+      "removed_description": "Dieser Chat ist geschlossen. Er verschwindet aus deiner Liste, wenn du den Raum wechselst.",
+      "forbidden_title": "Du kannst diesen Chat nicht öffnen",
+      "forbidden_description": "Nur die Spieler und der Besitzer von {team} können ihn lesen.",
+      "forbidden_description_unnamed": "Nur die Spieler und der Besitzer dieses Teams können ihn lesen."
     }
   },
   "charts": {

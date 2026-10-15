@@ -99,6 +99,18 @@ describe("chat settings", () => {
     );
   });
 
+  it("keeps team chat for 30 days by default", async () => {
+    const wrapper = await mountPage();
+
+    await (wrapper.vm as any).updateSettings();
+
+    expect(saved()).toEqual(
+      expect.arrayContaining([
+        { name: "public.chat_ttl_team", value: "2592000" },
+      ]),
+    );
+  });
+
   it("reads each room's retention back as a duration", async () => {
     useApplicationSettingsStore().settings = [
       { name: "public.chat_ttl_match", value: "5400" },
@@ -116,7 +128,8 @@ describe("chat settings", () => {
 
     expect(field("Organizer chat")).toContain("90 days");
     expect(field("Tournament chat")).toContain("7 days");
-    expect(field("Team chat")).toContain("1 hour");
+    expect(field("Match team chat")).toContain("1 hour");
+    expect(field("Team chat")).toContain("30 days");
     expect(field("Match chat")).toContain("90 minutes");
     expect(field("Draft lobby chat")).not.toMatch(/\d+ \w+/);
   });

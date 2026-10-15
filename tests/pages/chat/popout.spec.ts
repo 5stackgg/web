@@ -174,3 +174,47 @@ describe("chat pop-out read state", () => {
     expect(read).toHaveBeenCalledWith("match_team", "popout-read:l-1");
   });
 });
+
+describe("chat pop-out team room", () => {
+  const TEAM = "6f1c1c1e-5b1a-4c55-9a51-111111111111";
+
+  afterEach(() => {
+    graphql.queryData = {};
+  });
+
+  it("opens the room of a team the player is on, under the team's name", async () => {
+    useAuthStore().me = {
+      steam_id: ME,
+      role: "user",
+      teams: [{ id: TEAM, name: "Northwind", role: "Member" }],
+    } as any;
+
+    const wrapper = await mountPopout(`team:${TEAM}`);
+    setBlocks();
+    await flushPromises();
+
+    expect(wrapper.find("h1").text()).toBe("Northwind");
+    expect(wrapper.findComponent(ChatLobby).props("type")).toBe("team");
+  });
+
+  it("says who can read it instead of opening a team room the player is not on", async () => {
+    useAuthStore().me = {
+      steam_id: ME,
+      role: "administrator",
+      teams: [],
+    } as any;
+    graphql.queryData = { teams_by_pk: { id: TEAM, name: "Northwind" } };
+    const read = vi.spyOn(socket, "markLobbyRead");
+
+    const wrapper = await mountPopout(`team:${TEAM}`);
+    setBlocks();
+    await flushPromises();
+
+    expect(wrapper.findComponent(ChatLobby).exists()).toBe(false);
+    expect(wrapper.text()).toContain("You can't open this chat");
+    expect(wrapper.text()).toContain(
+      "Only Northwind's players and owner can read it.",
+    );
+    expect(read).not.toHaveBeenCalled();
+  });
+});

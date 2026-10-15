@@ -5,6 +5,8 @@ export interface ChatParticipant {
   steam_id?: string;
   name?: string;
   avatar_url?: string | null;
+  // Can read the room, but is not in it right now.
+  away?: boolean;
 }
 
 export default {
@@ -55,6 +57,7 @@ export default {
         profileRoute(participant)
           ? 'transition-colors hover:text-[hsl(var(--tac-amber))]'
           : '',
+        participant.away ? 'opacity-50' : '',
       ]"
     >
       <img

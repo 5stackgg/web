@@ -90,10 +90,10 @@ interface LobbyState {
 
 export type ChatType =
   | "match"
-  // One side of a match, keyed `${matchId}:${lineupId}`. There is no room for
-  // a real team: the API's enum has one, but nothing ever opened it and the
-  // join switch has no case for it, so asking would only be refused.
+  // One side of a match, keyed `${matchId}:${lineupId}`.
   | "match_team"
+  // A team's permanent room, keyed by the team's id.
+  | "team"
   | "matchmaking"
   | "organizers"
   | "tournament"
@@ -152,7 +152,8 @@ export class Socket extends EventEmitter {
   // block has committed, but not what is already on its way or held here.
   private hiddenAuthors: ReadonlySet<string> = new Set<string>();
   // Moderators are still sent a blocked player's lines and reactions in group
-  // rooms, so they can moderate them. A conversation stays closed for everyone.
+  // rooms, so they can moderate them. A conversation and a team's room, which
+  // staff do not moderate, stay closed for everyone.
   private hidesAuthorsInGroups = true;
   // The api answers a request it failed to carry out with nothing at all.
   private static readonly REQUEST_TIMEOUT_MS = 8000;
@@ -481,7 +482,11 @@ export class Socket extends EventEmitter {
   }
 
   private authorsHiddenIn(lobby: LobbyState): ReadonlySet<string> {
-    if (lobby.type === "direct" || this.hidesAuthorsInGroups) {
+    if (
+      lobby.type === "direct" ||
+      lobby.type === "team" ||
+      this.hidesAuthorsInGroups
+    ) {
       return this.hiddenAuthors;
     }
 

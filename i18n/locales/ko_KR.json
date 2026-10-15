@@ -2346,14 +2346,15 @@
           "direct_title": "다이렉트 메시지",
           "direct_description": "다이렉트 메시지는 다른 채팅과 함께 만료되지 않고 영구적으로 저장됩니다. 보관할 일수를 입력하거나, 0을 입력하면 계속 보관합니다.",
           "ttl_match": "경기 채팅",
-          "ttl_match_team": "팀 채팅",
+          "ttl_match_team": "경기 팀 채팅",
           "ttl_matchmaking": "매치메이킹 로비 채팅",
           "ttl_tournament": "토너먼트 채팅",
           "ttl_organizers": "주최자 채팅",
           "ttl_draft": "드래프트 로비 채팅",
+          "ttl_team": "팀 채팅",
           "retention_direct_days": "다이렉트 메시지 보관 기간(일)",
           "attachments_title": "첨부 파일",
-          "attachments_description": "플레이어는 로비, 토너먼트, 운영진, 드래프트, 다이렉트 채팅에서 메시지에 이미지나 동영상을 최대 4개까지 첨부할 수 있습니다. 파일은 해당 방의 메시지가 만료될 때, 해당 다이렉트 메시지가 보관 기간에 따라 정리될 때, 또는 메시지가 삭제되는 즉시 삭제됩니다.",
+          "attachments_description": "플레이어는 로비, 토너먼트, 운영진, 드래프트, 팀, 다이렉트 채팅에서 메시지에 이미지나 동영상을 최대 4개까지 첨부할 수 있습니다. 파일은 해당 방의 메시지가 만료될 때, 해당 다이렉트 메시지가 보관 기간에 따라 정리될 때, 또는 메시지가 삭제되는 즉시 삭제됩니다.",
           "attachment_max_mb": "최대 파일 크기 (MB)",
           "attachment_daily_mb": "플레이어당 하루 업로드 (MB)",
           "attachment_daily_mb_hint": "제거한 파일을 포함해 최근 24시간을 기준으로 계산합니다.",
@@ -6910,6 +6911,7 @@
     "chat_panel": {
       "default_title": "채팅",
       "participants_in_chat": "채팅 참여자 {count}명",
+      "members_here": "{total}명 중 {here}명 접속 중",
       "pop_out_tooltip": "새 창으로 열기",
       "close_tooltip": "대화 닫기",
       "no_chats_title": "채팅 없음",
@@ -8398,7 +8400,8 @@
         "no_matches": "아직 경기가 없습니다",
         "founded": "{date} 창단",
         "all_awards": "모든 어워드 보기",
-        "team_actions": "팀 작업"
+        "team_actions": "팀 작업",
+        "team_chat": "팀 채팅"
       },
       "stage": {
         "live": "라이브 중",
@@ -10384,7 +10387,8 @@
         "tournament": "놓아서 토너먼트 채팅에 보내기",
         "organizers": "놓아서 운영진 채팅에 보내기",
         "draft": "놓아서 드래프트 로비에 보내기",
-        "direct": "놓아서 이 대화에 보내기"
+        "direct": "놓아서 이 대화에 보내기",
+        "team": "놓아서 팀 채팅에 보내기"
       },
       "drop_hint": "이미지와 동영상, 한 번에 최대 {count}개",
       "rejected_type": "{name}은(는) 첨부할 수 없습니다. 이미지와 동영상만 첨부할 수 있습니다.",
@@ -10443,6 +10447,14 @@
       "too_many": "한 메시지에서는 최대 {max}명까지만 멘션할 수 있습니다.",
       "organizer": "주최자",
       "tagged_you": "나를 멘션한 메시지 {count}개 | 나를 멘션한 메시지 {count}개"
+    },
+    "team_room": {
+      "empty_hint": "{team}의 선수와 소유자만 읽을 수 있습니다.",
+      "removed_title": "더 이상 {team} 소속이 아닙니다",
+      "removed_description": "이 채팅은 종료되었습니다. 다른 방으로 이동하면 목록에서 사라집니다.",
+      "forbidden_title": "이 채팅을 열 수 없습니다",
+      "forbidden_description": "{team}의 선수와 소유자만 읽을 수 있습니다.",
+      "forbidden_description_unnamed": "이 팀의 선수와 소유자만 읽을 수 있습니다."
     }
   },
   "charts": {

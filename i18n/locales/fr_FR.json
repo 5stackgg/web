@@ -2346,14 +2346,15 @@
           "direct_title": "Messages privés",
           "direct_description": "Les messages privés sont stockés durablement au lieu d'expirer avec le reste du chat. Indiquez le nombre de jours de conservation, ou 0 pour les garder indéfiniment.",
           "ttl_match": "Chat de match",
-          "ttl_match_team": "Chat d'équipe",
+          "ttl_match_team": "Chat d'équipe en match",
           "ttl_matchmaking": "Chat du lobby de matchmaking",
           "ttl_tournament": "Chat de tournoi",
           "ttl_organizers": "Chat des organisateurs",
           "ttl_draft": "Chat du lobby de draft",
+          "ttl_team": "Chat d'équipe",
           "retention_direct_days": "Conserver les messages privés pendant (jours)",
           "attachments_title": "Pièces jointes",
-          "attachments_description": "Les joueurs peuvent joindre jusqu'à 4 images ou vidéos à un message dans les chats de lobby, de tournoi, des organisateurs, de draft et les messages directs. Un fichier est supprimé quand les messages de son salon expirent, quand son message direct est purgé, ou dès que son message est supprimé.",
+          "attachments_description": "Les joueurs peuvent joindre jusqu'à 4 images ou vidéos à un message dans les chats de lobby, de tournoi, des organisateurs, de draft, d'équipe et les messages directs. Un fichier est supprimé quand les messages de son salon expirent, quand son message direct est purgé, ou dès que son message est supprimé.",
           "attachment_max_mb": "Fichier le plus lourd (Mo)",
           "attachment_daily_mb": "Envois par joueur et par jour (Mo)",
           "attachment_daily_mb_hint": "Compté sur les dernières 24 heures, fichiers retirés compris.",
@@ -6910,6 +6911,7 @@
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} dans le chat",
+      "members_here": "{here} sur {total} ici",
       "pop_out_tooltip": "Ouvrir dans une fenêtre",
       "close_tooltip": "Fermer la conversation",
       "no_chats_title": "Aucun chat pour l'instant",
@@ -8398,7 +8400,8 @@
         "no_matches": "Aucun match pour l'instant",
         "founded": "Fondée le {date}",
         "all_awards": "Voir toutes les récompenses",
-        "team_actions": "Actions de l'équipe"
+        "team_actions": "Actions de l'équipe",
+        "team_chat": "Chat d'équipe"
       },
       "stage": {
         "live": "En direct",
@@ -10384,7 +10387,8 @@
         "tournament": "Déposez pour envoyer dans le chat du tournoi",
         "organizers": "Déposez pour envoyer dans le chat des organisateurs",
         "draft": "Déposez pour envoyer dans le lobby de draft",
-        "direct": "Déposez pour envoyer dans cette conversation"
+        "direct": "Déposez pour envoyer dans cette conversation",
+        "team": "Déposez pour envoyer dans le chat d'équipe"
       },
       "drop_hint": "Images et vidéos, jusqu'à {count} à la fois",
       "rejected_type": "{name} ne peut pas être joint. Seules les images et les vidéos peuvent l'être.",
@@ -10443,6 +10447,14 @@
       "too_many": "Un message peut mentionner au maximum {max} joueurs.",
       "organizer": "Organisateur",
       "tagged_you": "{count} message vous mentionne | {count} messages vous mentionnent"
+    },
+    "team_room": {
+      "empty_hint": "Seuls les joueurs et le propriétaire de {team} peuvent lire ceci.",
+      "removed_title": "Vous ne faites plus partie de {team}",
+      "removed_description": "Ce chat est fermé. Il quittera votre liste quand vous changerez de salon.",
+      "forbidden_title": "Vous ne pouvez pas ouvrir ce chat",
+      "forbidden_description": "Seuls les joueurs et le propriétaire de {team} peuvent le lire.",
+      "forbidden_description_unnamed": "Seuls les joueurs et le propriétaire de cette équipe peuvent le lire."
     }
   },
   "charts": {

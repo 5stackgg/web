@@ -12,6 +12,7 @@ import { useI18n } from "vue-i18n";
 import { Spinner } from "~/components/ui/spinner";
 import VetoCrest from "~/components/match/VetoCrest.vue";
 import VetoRail from "~/components/match/VetoRail.vue";
+import VetoPlates from "~/components/match/VetoPlates.vue";
 import { useCountdown } from "~/composables/useCountdown";
 import {
   SCOUT_EVEN_POINTS,
@@ -60,6 +61,8 @@ const props = withDefaults(
     // When the server is ready, hand the maps and the order of play over to
     // the page around the board.
     handOff?: boolean;
+    // The decider's sides are won in a knife round.
+    knifeRound?: boolean;
   }>(),
   {
     pickingLineup: null,
@@ -72,6 +75,7 @@ const props = withDefaults(
     scouting: null,
     start: null,
     handOff: false,
+    knifeRound: false,
   },
 );
 
@@ -673,8 +677,10 @@ const scoutView = computed(() => {
     const wide = isWide(id);
     const open = status === "open";
 
-    // Who is stronger here, at the top of every open map.
-    const edge = open && !wide ? edgeOf(id) : null;
+    // Who is stronger here, at the top of every open map, and still on the
+    // maps that will be played once they are picked (the edge alone there).
+    const played = status === "Pick" || status === "Decider";
+    const edge = (open && !wide) || played ? edgeOf(id) : null;
 
     // On a narrow open map: their likely move now, or a habit.
     let chip: ScoutChip | null = null;
@@ -711,7 +717,7 @@ const scoutView = computed(() => {
     // On the open map: both sides' records, and the habit spelled out.
     let rows: ScoutRow[] = [];
     let line: { kind: string; text: string } | null = null;
-    if (wide && (open || (done.value && status !== "Ban"))) {
+    if (wide && open) {
       const order: (1 | 2)[] = viewerLineup.value === 2 ? [2, 1] : [1, 2];
       rows = order
         .filter((lineup) => scoutOf(lineup))
@@ -727,7 +733,7 @@ const scoutView = computed(() => {
           row.ahead = row.pct === best;
         });
       }
-      const habit = open ? habitOf(id) : null;
+      const habit = habitOf(id);
       line = habit
         ? {
             kind: habit.kind,
@@ -806,6 +812,12 @@ const startMaps = computed(() =>
   })),
 );
 const knife = computed(() => startMaps.value.some((map) => !map.sides));
+// Each map's edge on its panel, when scouting has something to say about it.
+function startEdge(itemId: string) {
+  if (!scoutOn.value || !scoutLoaded.value) return null;
+  const edge = edgeOf(itemId);
+  return edge.tone === "few" ? null : edge;
+}
 
 const startLine = computed(() => {
   const phase = props.start?.phase;
@@ -827,8 +839,24 @@ const startLine = computed(() => {
     : t("match.veto.start.ready_first", { map });
 });
 
-const sideIconShort = (side: VetoStartSide) =>
-  sideIcon(side === "CT" ? "CT" : "TERRORIST");
+// On the finished board each map to be played shows its teams the way the
+// start will: who starts on which side, or a knife round for the decider.
+// Undefined where there is nothing to show.
+function doneSides(
+  id: string,
+): { 1: VetoStartSide; 2: VetoStartSide } | null | undefined {
+  if (!done.value || isRegion.value) return undefined;
+  const st = stateOf(id);
+  if (st.status === "Decider") {
+    return props.knifeRound ? null : { 1: "CT", 2: "T" };
+  }
+  if (st.status !== "Pick" || !st.side?.lineup) return undefined;
+  const chooser: VetoStartSide = st.side.side === "CT" ? "CT" : "T";
+  const picker: VetoStartSide = chooser === "CT" ? "T" : "CT";
+  return st.side.lineup === 1
+    ? { 1: chooser, 2: picker }
+    : { 1: picker, 2: chooser };
+}
 
 // The panels sit over the stage and the series, across the board (down it
 // on a phone).
@@ -876,10 +904,9 @@ async function grow(animate: boolean) {
   if (!area) return;
   const reduced = !!window.matchMedia?.("(prefers-reduced-motion: reduce)")
     ?.matches;
-  if (!animate || reduced || typeof area.animate !== "function") {
-    shown.value = startMaps.value.map((_, i) => i);
-    return;
-  }
+  // The words come up with their map, not after it lands.
+  shown.value = startMaps.value.map((_, i) => i);
+  if (!animate || reduced || typeof area.animate !== "function") return;
   panels().forEach((panel, i) => {
     panel
       .animate(
@@ -894,10 +921,7 @@ async function grow(animate: boolean) {
           fill: "backwards",
         },
       )
-      .finished.then(() => {
-        shown.value = [...shown.value, i];
-      })
-      .catch(() => {});
+      .finished.catch(() => {});
   });
 }
 
@@ -1119,6 +1143,7 @@ onBeforeUnmount(() => {
                   scoutView.get(item.id)!.edge || scoutView.get(item.id)!.chip
                 "
                 class="vb-tag"
+                :class="{ 'is-bare': stateOf(item.id).status !== 'open' }"
               >
                 <span
                   v-if="scoutView.get(item.id)!.edge"
@@ -1231,7 +1256,13 @@ onBeforeUnmount(() => {
               <img v-if="!isRegion && item.patch" :src="item.patch" alt="" />
               <span class="vb-name">{{ item.label }}</span>
             </div>
-            <div v-if="isWide(item.id)" class="vb-act">
+            <VetoPlates
+              v-if="doneSides(item.id) !== undefined"
+              :sides="doneSides(item.id)!"
+              :lineups="lineups"
+              :viewer="viewerLineup"
+            />
+            <div v-else-if="isWide(item.id)" class="vb-act">
               <button
                 v-if="wideCopy(item.id).cta"
                 type="button"
@@ -1338,26 +1369,39 @@ onBeforeUnmount(() => {
           }"
         >
           <div class="shade" />
+          <!-- The edge first, where it sits on the board; the map's number
+               to the right, beside who picked it. -->
           <div class="top reveal">
-            <span class="n" :class="{ 'is-decider': map.decider }">{{
-              map.label
-            }}</span>
+            <span
+              v-if="startEdge(map.itemId)"
+              class="vb-edge tabular-nums"
+              :data-tone="startEdge(map.itemId)!.tone"
+              :title="startEdge(map.itemId)!.title"
+            >
+              <VetoCrest
+                v-if="startEdge(map.itemId)!.lineup"
+                :lineup="lineups[startEdge(map.itemId)!.lineup! - 1]"
+                :size="15"
+              />
+              {{ startEdge(map.itemId)!.text }}
+            </span>
+            <span class="n">{{ map.label }}</span>
             <VetoCrest
               v-if="map.pickedBy"
               class="by-sm"
               :lineup="lineups[map.pickedBy - 1]"
               :size="22"
             />
+            <VetoCrest
+              v-if="map.pickedBy"
+              class="by"
+              :lineup="lineups[map.pickedBy - 1]"
+              :size="44"
+              :title="
+                t('match.veto.picked_by', { team: lineupName(map.pickedBy) })
+              "
+            />
           </div>
-          <VetoCrest
-            v-if="map.pickedBy"
-            class="by reveal"
-            :lineup="lineups[map.pickedBy - 1]"
-            :size="44"
-            :title="
-              t('match.veto.picked_by', { team: lineupName(map.pickedBy) })
-            "
-          />
           <div class="reveal">
             <div class="nm up">
               <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
@@ -1369,42 +1413,11 @@ onBeforeUnmount(() => {
               <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
               <span>{{ map.item?.label }}</span>
             </div>
-            <div class="plates">
-              <template v-if="map.sides">
-                <div
-                  v-for="lineup in [1, 2] as const"
-                  :key="lineup"
-                  class="plate"
-                  :class="{ 'is-you': viewerLineup === lineup }"
-                  :title="`${lineupName(lineup)} · ${t('match.veto.start.starts', { side: map.sides[lineup] })}`"
-                >
-                  <VetoCrest :lineup="lineups[lineup - 1]" :size="26" />
-                  <b>{{ lineupName(lineup) }}</b>
-                  <img
-                    class="side"
-                    :src="sideIconShort(map.sides[lineup])"
-                    :alt="map.sides[lineup]"
-                  />
-                </div>
-              </template>
-              <div v-else class="plate is-knife">
-                <span class="vs"
-                  ><VetoCrest
-                    :lineup="lineups[0]"
-                    :size="22"
-                    :class="{ 'is-mine': viewerLineup === 1 }" />{{
-                    t("common.vs")
-                  }}<VetoCrest
-                    :lineup="lineups[1]"
-                    :size="22"
-                    :class="{ 'is-mine': viewerLineup === 2 }"
-                /></span>
-                <span class="tx"
-                  ><b>{{ t("match.veto.start.knife") }}</b
-                  ><small>{{ t("match.veto.start.knife_line") }}</small></span
-                >
-              </div>
-            </div>
+            <VetoPlates
+              :sides="map.sides"
+              :lineups="lineups"
+              :viewer="viewerLineup"
+            />
           </div>
         </div>
       </div>
@@ -1427,7 +1440,7 @@ onBeforeUnmount(() => {
   --vb-ct: hsl(212 70% 70%);
   --vb-t: hsl(38 85% 62%);
   --vb-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  container-type: inline-size;
+  container: vb / inline-size;
   display: grid;
   /* minmax(0, …): an auto column grows to the rail's min-content, and a best
      of five's eleven steps pushed the board past its column. */
@@ -1508,13 +1521,16 @@ onBeforeUnmount(() => {
   gap: 4px;
   aspect-ratio: 16 / 7;
   max-width: 100%;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
 }
 .vb-stage.is-region {
   aspect-ratio: 16 / 5.5;
 }
+/* Each slice is a container, as each start panel is, so the team plates fit
+   the map they sit on. */
 .vb-slice {
+  container: panel / size;
   position: relative;
   flex: var(--g) 1 0;
   min-width: 0;
@@ -1525,10 +1541,10 @@ onBeforeUnmount(() => {
   transition: flex-grow 460ms var(--vb-ease);
 }
 .vb-slice:first-child {
-  border-radius: 16px 0 0 16px;
+  border-radius: 12px 0 0 12px;
 }
 .vb-slice:last-child {
-  border-radius: 0 16px 16px 0;
+  border-radius: 0 12px 12px 0;
 }
 .vb-slice::after {
   content: "";
@@ -1616,12 +1632,6 @@ onBeforeUnmount(() => {
 }
 .vb-slice[data-status="Ban"] .vb-badge {
   color: var(--vb-ban);
-}
-.vb-slice[data-status="Pick"] .vb-badge {
-  color: var(--vb-pick);
-}
-.vb-slice[data-status="Decider"] .vb-badge {
-  color: var(--vb-decider);
 }
 .vb-slice.is-thin .vb-badge {
   display: none;
@@ -1800,20 +1810,30 @@ onBeforeUnmount(() => {
 .vb-slice[data-status="Pick"]:not(.is-wide) .vb-vname {
   color: hsl(0 0% 100% / 0.7);
 }
+/* What a map became is a flat bar of colour along its foot; it does not
+   follow the stage's rounded corners. */
+.vb-slice::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  height: 3px;
+  pointer-events: none;
+  background: var(--vb-foot, transparent);
+}
+.vb-slice[data-status="Ban"] {
+  --vb-foot: var(--vb-ban);
+}
+.vb-slice[data-status="Pick"] {
+  --vb-foot: var(--vb-pick);
+}
+.vb-slice[data-status="Decider"] {
+  --vb-foot: var(--vb-decider);
+}
 .vb-slice[data-status="Ban"]::after {
-  box-shadow:
-    inset 0 -3px 0 var(--vb-ban),
-    inset 0 0 0 1px hsl(0 0% 100% / 0.04);
-}
-.vb-slice[data-status="Pick"]::after {
-  box-shadow:
-    inset 0 -3px 0 var(--vb-pick),
-    inset 0 0 0 1px hsl(0 0% 100% / 0.06);
-}
-.vb-slice[data-status="Decider"]::after {
-  box-shadow:
-    inset 0 -3px 0 var(--vb-decider),
-    inset 0 0 0 1px hsl(0 0% 100% / 0.06);
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.04);
 }
 .vb-slice.is-live {
   cursor: pointer;
@@ -2061,6 +2081,10 @@ onBeforeUnmount(() => {
   font-weight: 700;
   white-space: nowrap;
 }
+.vb-edge[data-tone="you"],
+.vb-edge[data-tone="them"] {
+  padding-left: 6px;
+}
 .vb-edge[data-tone="you"] {
   color: var(--vb-pick);
   box-shadow: inset 0 0 0 1px hsl(var(--success) / 0.45);
@@ -2081,7 +2105,36 @@ onBeforeUnmount(() => {
 }
 /* Edge and habit on one map share one box, the same width on every map, so
    they line up across the pool. */
-.vb-tag {
+/* On a picked map the edge stands alone, first, where it sits on an open
+   map; the map's number moves to the right. */
+.vb-tag.is-bare {
+  display: contents;
+}
+.vb-tag.is-bare > .vb-edge {
+  order: -1;
+}
+.vb-slice.is-wide .vb-badge {
+  margin-left: auto;
+}
+.vb-slice.is-wide .vb-top > .veto-crest {
+  order: 2;
+}
+/* An edge on its own (a picked map, a start panel) is a chip of its own,
+   as tall as the label beside it. */
+.vb-tag.is-bare > .vb-edge,
+.st-panel .top .vb-edge {
+  height: 20px;
+  padding: 0 8px;
+  gap: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  line-height: 1;
+}
+.vb-tag.is-bare > .vb-edge[data-tone="side"],
+.st-panel .top .vb-edge[data-tone="side"] {
+  padding-left: 3px;
+}
+.vb-tag:not(.is-bare) {
   display: flex;
   flex-direction: column;
   width: min(100%, 132px);
@@ -2089,18 +2142,18 @@ onBeforeUnmount(() => {
   border-radius: 6px;
   background: rgb(0 0 0 / 0.62);
 }
-.vb-tag > .vb-edge,
-.vb-tag > .vb-habit {
+.vb-tag:not(.is-bare) > .vb-edge,
+.vb-tag:not(.is-bare) > .vb-habit {
   justify-content: center;
   max-width: none;
   padding: 2px 4px;
   background: none;
   box-shadow: none;
 }
-.vb-tag > .vb-edge {
+.vb-tag:not(.is-bare) > .vb-edge {
   font-size: 15px;
 }
-.vb-tag > .vb-habit {
+.vb-tag:not(.is-bare) > .vb-habit {
   margin-top: 2px;
   padding-top: 4px;
   border-top: 1px solid hsl(0 0% 100% / 0.1);
@@ -2167,10 +2220,10 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 .vb-slice:first-child .vb-likely {
-  border-radius: 13px 2px 2px 13px;
+  border-radius: 9px 2px 2px 9px;
 }
 .vb-slice:last-child .vb-likely {
-  border-radius: 2px 13px 13px 2px;
+  border-radius: 2px 9px 9px 2px;
 }
 /* Both sides' records sit at the top of the open map, above its name. */
 .vb-slice.is-wide .vb-top {
@@ -2354,20 +2407,21 @@ onBeforeUnmount(() => {
   left: 10px;
   right: 10px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
   min-width: 0;
   font-size: 12px;
   font-weight: 600;
 }
 .st-panel .top .n {
-  padding: 1px 7px;
-  border-radius: 4px;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 5px;
   background: rgb(0 0 0 / 0.6);
   white-space: nowrap;
-}
-.st-panel .top .n.is-decider {
-  color: var(--vb-decider);
 }
 /* Who picked the map: their crest, large, in the top corner (beside the
    label on a phone's short panels, where the corner holds the name). */
@@ -2375,9 +2429,6 @@ onBeforeUnmount(() => {
   display: none;
 }
 .st-panel .by {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   box-shadow:
     0 6px 18px rgb(0 0 0 / 0.45),
     0 0 0 1px rgb(255 255 255 / 0.18);
@@ -2415,88 +2466,29 @@ onBeforeUnmount(() => {
 .st-panel .nm.up {
   display: none;
 }
-/* Each team on a small plate: crest, name, and the side it starts on. */
-.st-panel .plates {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 6px;
-}
-.plate {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  padding: 7px 8px;
-  border-radius: 8px;
-  background: rgb(10 10 14 / 0.6);
-  backdrop-filter: blur(6px);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
-}
-/* Yours sits a step brighter, as your moves do on the rail. */
-.plate.is-you {
-  background: rgb(60 60 70 / 0.78);
-}
-.plate.is-you .veto-crest,
-.plate .veto-crest.is-mine {
-  box-shadow: 0 0 0 2px var(--vb-amber);
-}
-.plate > b,
-.plate .tx b {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-}
-.plate .side {
-  width: 24px;
-  height: 24px;
-  flex: none;
-  margin-left: auto;
-  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 0.5));
-}
-.plate .tx {
-  display: grid;
-  min-width: 0;
-  line-height: 1.2;
-}
-.plate .tx small {
-  white-space: nowrap;
-  font-size: 11px;
-  font-weight: 600;
-  color: hsl(0 0% 100% / 0.75);
-}
-.plate.is-knife {
-  grid-column: 1 / -1;
-}
-.plate.is-knife .vs {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: var(--vb-muted);
-}
-/* A best of three's panels: the plate drops the name, crest and side stay. */
-@container panel (max-width: 300px) {
-  .plate > b {
+/* A narrow map's words sit closer to its edges, so the team plates fit,
+   and its picker's crest comes down to the small one. */
+@container panel (max-width: 240px) {
+  .vb-open {
+    left: 10px;
+    right: 10px;
+    bottom: 12px;
+  }
+  .st-panel .by {
     display: none;
   }
-}
-/* Narrow panels (best of five): stacked plates. */
-@container panel (max-width: 200px) {
-  .st-panel .plates {
-    grid-template-columns: minmax(0, 1fr);
+  .st-panel .top .by-sm {
+    display: grid;
   }
+}
+/* Narrow panels (best of five). */
+@container panel (max-width: 200px) {
   .st-panel .nm span {
     font-size: 16px;
   }
   .st-panel .nm img {
     width: 22px;
     height: 22px;
-  }
-  .plate.is-knife .tx small {
-    display: none;
   }
 }
 /* Short panels (rows on a phone): the name moves up beside the label. */
@@ -2510,6 +2502,9 @@ onBeforeUnmount(() => {
   }
   .st-panel .top .by-sm {
     display: grid;
+  }
+  .st-panel .top .n {
+    margin-left: 0;
   }
   .st-panel .nm.up {
     position: absolute;
@@ -2528,7 +2523,7 @@ onBeforeUnmount(() => {
 }
 
 /* ---------- phones: the stage turns on its side ---------- */
-@container (max-width: 560px) {
+@container vb (max-width: 560px) {
   .vb-status {
     height: 42px;
     gap: 8px;
@@ -2552,10 +2547,10 @@ onBeforeUnmount(() => {
     height: 340px;
   }
   .vb-slice:first-child {
-    border-radius: 14px 14px 0 0;
+    border-radius: 12px 12px 0 0;
   }
   .vb-slice:last-child {
-    border-radius: 0 0 14px 14px;
+    border-radius: 0 0 12px 12px;
   }
   .vb-pingfill {
     top: 0;
@@ -2684,10 +2679,10 @@ onBeforeUnmount(() => {
     font-size: 11px;
   }
   .vb-slice:first-child .vb-likely {
-    border-radius: 13px 13px 2px 2px;
+    border-radius: 9px 9px 2px 2px;
   }
   .vb-slice:last-child .vb-likely {
-    border-radius: 2px 2px 13px 13px;
+    border-radius: 2px 2px 9px 9px;
   }
 }
 

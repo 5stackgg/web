@@ -26,6 +26,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
           :scouting="scoutingView"
           :start="start"
           :hand-off="handOff"
+          :knife-round="!!match.options.knife_round"
           @confirm="onConfirm"
           @handoff="onHandoff"
         />

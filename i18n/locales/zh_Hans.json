@@ -1770,6 +1770,9 @@
         "matchmaking": "匹配",
         "update_success": "个人资料已更新",
         "discord": {
+          "title": "Discord",
+          "description": "比赛时自动移入你队伍的语音频道",
+          "linked": "已关联",
           "unlink": "取消关联 Discord",
           "link": "关联 Discord",
           "unlink_dialog": {

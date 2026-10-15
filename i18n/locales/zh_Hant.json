@@ -1770,6 +1770,9 @@
         "matchmaking": "配對",
         "update_success": "個人資料已更新",
         "discord": {
+          "title": "Discord",
+          "description": "比賽時自動移入你隊伍的語音頻道",
+          "linked": "已連結",
           "unlink": "取消連結 Discord",
           "link": "連結 Discord",
           "unlink_dialog": {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -7,30 +6,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { generateMutation } from "~/graphql/graphqlGen";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Link, Unlink } from "lucide-vue-next";
-import { toast } from "@/components/ui/toast";
 import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
 
 const { t: $t } = useI18n();
-
-const hasDiscordLinked = computed(() => useAuthStore().hasDiscordLinked);
-const supportsDiscordBot = computed(
-  () => useApplicationSettingsStore().supportsDiscordBot,
-);
-
-const showUnlinkDiscordDialog = ref(false);
 
 const navItems = computed(() => {
   const items: { path: string; label: string }[] = [
@@ -103,32 +81,6 @@ watch(
     }
   },
 );
-
-function linkDiscord() {
-  if (hasDiscordLinked.value) return;
-  window.location.href = `https://${useRuntimeConfig().public.webDomain}/auth/discord?redirect=${encodeURIComponent(window.location.toString())}`;
-}
-
-async function unlinkDiscord() {
-  const { $apollo } = useNuxtApp();
-  await ($apollo as any).mutate({
-    mutation: generateMutation({
-      unlinkDiscord: [
-        {},
-        {
-          success: true,
-        },
-      ],
-    }),
-  });
-
-  showUnlinkDiscordDialog.value = false;
-  useAuthStore().getMe();
-
-  toast({
-    title: $t("pages.settings.account.discord.unlinked"),
-  });
-}
 </script>
 
 <template>
@@ -173,28 +125,7 @@ async function unlinkDiscord() {
           :items="navItems"
           :active-path="resolvedPath"
           :aria-label="$t('ui.tooltips.settings_section')"
-        >
-          <template #actions>
-            <Button
-              v-if="hasDiscordLinked"
-              variant="ghost"
-              class="w-full justify-start px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
-              @click.stop.prevent="showUnlinkDiscordDialog = true"
-            >
-              <Unlink class="mr-2 h-4 w-4" />
-              {{ $t("pages.settings.account.discord.unlink") }}
-            </Button>
-            <Button
-              v-else-if="supportsDiscordBot"
-              variant="ghost"
-              class="w-full justify-start px-3 text-left text-muted-foreground transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
-              @click="linkDiscord"
-            >
-              <Link class="mr-2 h-4 w-4" />
-              {{ $t("pages.settings.account.discord.link") }}
-            </Button>
-          </template>
-        </SettingsSideTabs>
+        />
       </aside>
       <!-- Every account page is a narrow form, so the measure is applied here
            rather than asking each one to wrap itself in SettingsPage. -->
@@ -206,26 +137,4 @@ async function unlinkDiscord() {
       </div>
     </div>
   </div>
-
-  <AlertDialog :open="showUnlinkDiscordDialog">
-    <AlertDialogTrigger asChild> </AlertDialogTrigger>
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{{
-          $t("pages.settings.account.discord.unlink_dialog.title")
-        }}</AlertDialogTitle>
-        <AlertDialogDescription>
-          {{ $t("pages.settings.account.discord.unlink_dialog.description") }}
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel @click="showUnlinkDiscordDialog = false">
-          {{ $t("common.cancel") }}
-        </AlertDialogCancel>
-        <AlertDialogAction @click="unlinkDiscord" variant="destructive">
-          {{ $t("pages.settings.account.discord.unlink_dialog.confirm") }}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
 </template>

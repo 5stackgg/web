@@ -961,6 +961,11 @@ export class Socket extends EventEmitter {
 
     if (messages) {
       lobby.messages.value = messages;
+      this.emitToLobbyInstances(
+        lobby,
+        "lobby:edited",
+        messages.find((message) => message?.id === edit.id),
+      );
     }
   }
 

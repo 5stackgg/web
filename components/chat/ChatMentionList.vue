@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { AtSign, CornerDownLeft, LoaderCircle } from "lucide-vue-next";
+import { AtSign, CornerDownLeft } from "lucide-vue-next";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Spinner } from "~/components/ui/spinner";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import {
   MAX_CHAT_MENTIONS,
@@ -11,6 +13,7 @@ import {
 } from "~/utilities/chatMentions";
 
 const props = defineProps<{
+  listId: string;
   state: ChatMentionListState;
   rows: RankedMentionCandidate<ChatMentionCandidate>[];
   activeIndex: number;
@@ -27,7 +30,7 @@ const { t } = useI18n();
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 
 function avatar(candidate: ChatMentionCandidate) {
-  return resolveAvatarUrl(candidate.avatar_url, apiDomain.value);
+  return resolveAvatarUrl(candidate.avatar_url, apiDomain.value) ?? undefined;
 }
 
 function initials(name: string) {
@@ -61,6 +64,7 @@ function parts({ candidate, start, length }: (typeof props.rows)[number]) {
 
 <template>
   <div
+    :id="listId"
     data-chat-mention-list
     role="listbox"
     :aria-label="$t('chat.mentions.list')"
@@ -77,9 +81,7 @@ function parts({ candidate, start, length }: (typeof props.rows)[number]) {
       class="flex items-center gap-2 px-2 py-1.5 text-xs text-muted-foreground"
       aria-live="polite"
     >
-      <LoaderCircle
-        class="size-3.5 shrink-0 animate-spin motion-reduce:animate-none"
-      />
+      <Spinner class="size-3.5 shrink-0 motion-reduce:animate-none" />
       {{ $t("chat.mentions.finding") }}
     </div>
     <div
@@ -98,6 +100,7 @@ function parts({ candidate, start, length }: (typeof props.rows)[number]) {
       <!-- mousedown is held back so the caret stays in the message box. -->
       <button
         v-for="(row, index) in rows"
+        :id="`${listId}-option-${index}`"
         :key="row.candidate.steam_id"
         type="button"
         role="option"
@@ -111,17 +114,14 @@ function parts({ candidate, start, length }: (typeof props.rows)[number]) {
         @click="$emit('pick', index)"
         @pointermove="$emit('hover', index)"
       >
-        <span
-          class="grid size-5 shrink-0 place-items-center overflow-hidden rounded-full bg-muted text-[0.5rem] font-bold text-foreground/80"
-        >
-          <img
+        <Avatar class="h-5 w-5 text-[0.5rem] font-bold">
+          <AvatarImage
             v-if="avatar(row.candidate)"
             :src="avatar(row.candidate)!"
             alt=""
-            class="size-full object-cover"
           />
-          <template v-else>{{ initials(row.candidate.name) }}</template>
-        </span>
+          <AvatarFallback>{{ initials(row.candidate.name) }}</AvatarFallback>
+        </Avatar>
         <span class="min-w-0 flex-1 truncate text-xs">
           <span class="text-foreground/80">{{ parts(row).before }}</span>
           <b class="font-semibold text-foreground">{{ parts(row).match }}</b>

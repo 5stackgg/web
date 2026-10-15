@@ -7,6 +7,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { newestMessageIdsFrom } from "~/utilities/chatLobbyMessages";
 import { mentionsViewer } from "~/utilities/chatMentions";
+import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
 import socket, {
   type ChatType,
   type Lobby,
@@ -16,6 +17,8 @@ import socket, {
 // Live match chat relays every in-game console line to players who are
 // already reading it in game, so it never counts toward the hub badge.
 const UNCOUNTED_CHAT_TYPES: ChatType[] = ["match", "match_team"];
+
+const TEAM_ROOM = "team";
 
 function messageTime(message: any) {
   const at = Date.parse(message?.timestamp ?? "");
@@ -66,7 +69,11 @@ export function useChatTabSetup() {
     setMentions,
     noteActivity,
   } = useChatTabs();
-  const { hydrate: hydrateReadState, isUnread } = useChatReadState();
+  const {
+    hydrate: hydrateReadState,
+    afterHydrated,
+    isUnread,
+  } = useChatReadState();
 
   const matchLobbyStore = useMatchLobbyStore();
   const authStore = useAuthStore();
@@ -91,7 +98,7 @@ export function useChatTabSetup() {
       }
       // Ahead of the on-screen check, which counts an open room as read even
       // while the browser tab is hidden.
-      useTabFlash().signalChat(tab.type, message);
+      useTabFlash().signalChat(tab.type, message, authStore.me?.steam_id);
 
       if (isChatTabOnScreen(tab.id)) {
         return;
@@ -105,6 +112,8 @@ export function useChatTabSetup() {
         incrementMention(tab.id, message.id);
       }
     });
+
+    lobby.on("lobby:edited", (message: any) => untagIfEdited(tab, message));
 
     lobby.on("lobby:deleted", ({ message }: LobbyMessageDeleted) => {
       if (message?.id) {
@@ -149,73 +158,172 @@ export function useChatTabSetup() {
         noteActivity(tab.id, newest);
       }
 
-      if (isChatTabOnScreen(tab.id)) {
-        setUnread(tab.id, 0);
-        setMentions(tab.id, []);
-        return;
-      }
+      afterHydrated(tab.id, () => recountHistory(tab, messages ?? []));
+    });
+  }
 
-      const unread = (messages ?? []).filter((message) =>
-        isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id),
-      );
+  function recountHistory(tab: ChatTab, messages: any[]) {
+    const counted = !UNCOUNTED_CHAT_TYPES.includes(tab.type);
 
-      setMentions(
-        tab.id,
-        unread
-          .filter((message) => mentionsViewer(message, authStore.me?.steam_id))
-          .map((message) => message?.id)
-          .filter(Boolean),
-      );
+    if (isChatTabOnScreen(tab.id)) {
+      setUnread(tab.id, 0);
+      setMentions(tab.id, []);
+      return;
+    }
 
-      if (!counted) {
-        setUnread(tab.id, 0);
-        return;
-      }
+    const unread = messages.filter((message) =>
+      isUnread(tab.type, tab.lobbyId, message, authStore.me?.steam_id),
+    );
 
-      if (tab.type === "direct") {
-        const count = unreadCounts.value[tab.id] ?? 0;
+    setMentions(
+      tab.id,
+      unread
+        .filter((message) => mentionsViewer(message, authStore.me?.steam_id))
+        .map((message) => message?.id)
+        .filter(Boolean),
+    );
 
-        setUnread(
-          tab.id,
-          count,
-          newestMessageIdsFrom(messages ?? [], count, authStore.me?.steam_id),
-        );
-        return;
-      }
+    if (!counted) {
+      setUnread(tab.id, 0);
+      return;
+    }
+
+    if (tab.type === "direct") {
+      const count = unreadCounts.value[tab.id] ?? 0;
 
       setUnread(
         tab.id,
-        unread.length,
-        unread.map((message) => message?.id).filter(Boolean),
+        count,
+        newestMessageIdsFrom(messages, count, authStore.me?.steam_id),
       );
+      return;
+    }
+
+    setUnread(
+      tab.id,
+      unread.length,
+      unread.map((message) => message?.id).filter(Boolean),
+    );
+  }
+
+  function untagIfEdited(tab: ChatTab, message: any) {
+    if (message?.id && !mentionsViewer(message, authStore.me?.steam_id)) {
+      decrementMention(tab.id, message.id);
+    }
+  }
+
+  // The match tab carries its side's team room too, but only for tags: team
+  // chatter is relayed from the game like the rest of match chat.
+  function trackTeamMentions(tab: ChatTab, lobby: Lobby, teamLobbyId: string) {
+    lobby.on("lobby:chat", (message: any) => {
+      if (
+        !message?.id ||
+        !mentionsViewer(message, authStore.me?.steam_id) ||
+        String(message?.from?.steam_id) === String(authStore.me?.steam_id)
+      ) {
+        return;
+      }
+
+      useTabFlash().signalChat(tab.type, message, authStore.me?.steam_id);
+
+      if (!isChatTabOnScreen(tab.id)) {
+        incrementMention(tab.id, message.id, TEAM_ROOM);
+      }
     });
+
+    lobby.on("lobby:edited", (message: any) => untagIfEdited(tab, message));
+
+    lobby.on("lobby:deleted", ({ message }: LobbyMessageDeleted) => {
+      if (message?.id) {
+        decrementMention(tab.id, message.id);
+      }
+    });
+
+    lobby.on("lobby:messages", (messages: any[]) => {
+      afterHydrated(`${tab.id}|${TEAM_ROOM}`, () => {
+        setMentions(
+          tab.id,
+          isChatTabOnScreen(tab.id)
+            ? []
+            : (messages ?? [])
+                .filter(
+                  (message) =>
+                    isUnread(
+                      "match_team",
+                      teamLobbyId,
+                      message,
+                      authStore.me?.steam_id,
+                    ) && mentionsViewer(message, authStore.me?.steam_id),
+                )
+                .map((message) => message?.id)
+                .filter(Boolean),
+          TEAM_ROOM,
+        );
+      });
+    });
+  }
+
+  function teamLobbyIdFor(tab: ChatTab) {
+    if (tab.type !== "match") {
+      return undefined;
+    }
+
+    return matchTeamLobbyId(
+      (matchLobbyStore.myMatches as any[])?.find(
+        (match) => match.id === tab.lobbyId,
+      ),
+      authStore.me?.steam_id,
+    );
   }
 
   function syncPersistentChatJoins() {
     const activeIds = new Set(tabs.value.map((tab) => tab.id));
 
     for (const tab of tabs.value) {
-      if (persistentLobbies.has(tab.id)) {
+      if (!persistentLobbies.has(tab.id)) {
+        const lobby = socket.joinLobby(
+          `chat-tab-setup:${tab.id}`,
+          tab.type,
+          tab.lobbyId,
+        );
+
+        trackUnread(tab, lobby);
+        persistentLobbies.set(tab.id, lobby);
+      }
+
+      const teamLobbyId = teamLobbyIdFor(tab);
+
+      if (!teamLobbyId) {
         continue;
       }
 
-      const lobby = socket.joinLobby(
-        `chat-tab-setup:${tab.id}`,
-        tab.type,
-        tab.lobbyId,
-      );
+      const teamKey = `${tab.id}|${TEAM_ROOM}:${teamLobbyId}`;
+      activeIds.add(teamKey);
 
-      trackUnread(tab, lobby);
-      persistentLobbies.set(tab.id, lobby);
+      if (!persistentLobbies.has(teamKey)) {
+        const lobby = socket.joinLobby(
+          `chat-tab-setup:${teamKey}`,
+          "match_team",
+          teamLobbyId,
+        );
+
+        trackTeamMentions(tab, lobby, teamLobbyId);
+        persistentLobbies.set(teamKey, lobby);
+      }
     }
 
-    for (const [tabId, lobby] of persistentLobbies.entries()) {
-      if (activeIds.has(tabId)) {
+    for (const [key, lobby] of persistentLobbies.entries()) {
+      if (activeIds.has(key)) {
         continue;
       }
 
       lobby.leave();
-      persistentLobbies.delete(tabId);
+      persistentLobbies.delete(key);
+
+      const [tabId, room] = key.split("|");
+      if (room) {
+        setMentions(tabId, [], TEAM_ROOM);
+      }
     }
   }
 
@@ -376,4 +484,8 @@ export function useChatTabSetup() {
   );
 
   watch(tabs, syncPersistentChatJoins, { immediate: true, deep: true });
+
+  watch(() => matchLobbyStore.myMatches, syncPersistentChatJoins, {
+    deep: true,
+  });
 }

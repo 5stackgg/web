@@ -145,8 +145,6 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
           </button>
         </div>
       </Fold>
-      <!-- Typing @ in a group room offers its members. Arrows move, Enter or
-           Tab takes one, Esc leaves the text as typed. -->
       <Fold :open="mentionState !== null">
         <div
           :class="
@@ -154,6 +152,7 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
           "
         >
           <ChatMentionList
+            :list-id="mentionListId"
             :state="mentionState ?? 'empty'"
             :rows="mentionRows"
             :active-index="mentionIndex"
@@ -203,6 +202,11 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                 data-lpignore="true"
                 data-bwignore="true"
                 data-form-type="other"
+                role="combobox"
+                aria-autocomplete="list"
+                :aria-expanded="mentionState !== null ? 'true' : 'false'"
+                :aria-controls="mentionState !== null ? mentionListId : undefined"
+                :aria-activedescendant="activeMentionOptionId"
                 :class="[
                   'min-h-0 resize-none py-1.5 leading-snug',
                   variant === 'global'
@@ -337,7 +341,6 @@ export default {
       type: Object as PropType<{ type: string; id: string } | null>,
       default: null,
     },
-    // The room whose members @ offers. Null where nobody can be tagged.
     mentionRoom: {
       type: Object as PropType<{ type: string; id: string } | null>,
       default: null,
@@ -366,10 +369,10 @@ export default {
         this.trackMentionCaret();
       });
     },
-    // Once per @ typed, so a list that failed to load is asked for again on
-    // the next one rather than on every keystroke.
-    "mentionTarget.start"(start: number | null | undefined) {
-      if (typeof start === "number" && this.mentionRoom) {
+    // Once per @ typed and per room, so a list that failed to load is asked
+    // for again on the next one rather than on every keystroke.
+    mentionLoadKey(key: string | null) {
+      if (key && this.mentionRoom) {
         void this.mentionCandidates.load(
           this.mentionRoom.type,
           this.mentionRoom.id,
@@ -395,6 +398,7 @@ export default {
     return {
       mediaConfig,
       mentionCandidates: useChatMentionCandidates(),
+      mentionListId: `chat-mentions-${Math.random().toString(36).slice(2, 10)}`,
       // Where the caret was last seen, which is what decides whether an @ is
       // being typed. Null until the box has been typed or clicked in.
       mentionCaret: null as number | null,
@@ -508,6 +512,18 @@ export default {
         this.roomMentionCandidates?.members ?? [],
         this.mentionTarget.query,
       );
+    },
+    mentionLoadKey(): string | null {
+      if (!this.mentionTarget || !this.mentionRoom) {
+        return null;
+      }
+
+      return `${this.mentionRoom.type}:${this.mentionRoom.id}:${this.mentionTarget.start}`;
+    },
+    activeMentionOptionId(): string | undefined {
+      return this.mentionState === "rows"
+        ? `${this.mentionListId}-option-${this.mentionIndex}`
+        : undefined;
     },
     mentionRowKey(): string {
       return this.mentionRows
@@ -673,6 +689,10 @@ export default {
       );
     },
     onTab(event: KeyboardEvent) {
+      if (event.isComposing) {
+        return;
+      }
+
       if (this.mentionState === "rows") {
         event.preventDefault();
         this.pickMention(this.mentionIndex);
@@ -687,7 +707,7 @@ export default {
       this.runGifCommand();
     },
     onArrowDown(event: KeyboardEvent) {
-      if (this.mentionState !== "rows") {
+      if (this.mentionState !== "rows" || event.isComposing) {
         return;
       }
 
@@ -696,7 +716,7 @@ export default {
     },
     // Up from an empty box picks up the last line sent, to fix it.
     onArrowUp(event: KeyboardEvent) {
-      if (this.mentionState === "rows") {
+      if (this.mentionState === "rows" && !event.isComposing) {
         event.preventDefault();
         this.mentionIndex =
           (this.mentionIndex - 1 + this.mentionRows.length) %

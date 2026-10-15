@@ -30,10 +30,12 @@ const activityAtRef = ref<Record<string, number>>({});
 // than the read cursor too, but no badge counted it.
 const unreadMessageIds = new Map<string, Set<string>>();
 const MAX_UNREAD_MESSAGE_IDS = 200;
-// Unread lines that tag this player, per room, kept apart from the unread
-// count: a match room's chatter is never counted, but a tag in it is.
+// Unread lines that tag this player, per tab, kept apart from the unread
+// count: a match room's chatter is never counted, but a tag in it is. A tab can
+// hold more than one room (a match and its team room), and each room's history
+// recounts only its own.
 const mentionCountsRef = ref<Record<string, number>>({});
-const mentionMessageIds = new Map<string, Set<string>>();
+const mentionMessageIds = new Map<string, Map<string, Set<string>>>();
 const activeTabIdRef = ref<string | null>(null);
 
 export function useChatTabs() {
@@ -189,52 +191,69 @@ export function useChatTabs() {
       unreadCountsRef.value[id] = 0;
     }
 
-    setMentions(id, []);
+    mentionMessageIds.delete(id);
+    countMentions(id);
   }
 
-  function incrementMention(id: string, messageId: string) {
-    let counted = mentionMessageIds.get(id);
-    if (!counted) {
-      counted = new Set();
-      mentionMessageIds.set(id, counted);
+  function countMentions(id: string) {
+    let total = 0;
+    for (const counted of mentionMessageIds.get(id)?.values() ?? []) {
+      total += counted.size;
     }
 
-    if (counted.has(messageId)) {
+    if (total > 0 || mentionCountsRef.value[id]) {
+      mentionCountsRef.value[id] = total;
+    }
+  }
+
+  function incrementMention(id: string, messageId: string, room = "") {
+    const rooms = mentionMessageIds.get(id) ?? new Map<string, Set<string>>();
+    mentionMessageIds.set(id, rooms);
+
+    if ([...rooms.values()].some((counted) => counted.has(messageId))) {
       return false;
     }
 
+    const counted = rooms.get(room) ?? new Set<string>();
+    rooms.set(room, counted);
     counted.add(messageId);
     if (counted.size > MAX_UNREAD_MESSAGE_IDS) {
       const [oldest] = counted;
       counted.delete(oldest);
     }
 
-    mentionCountsRef.value[id] = counted.size;
+    countMentions(id);
     return true;
   }
 
   function decrementMention(id: string, messageId: string) {
-    if (!mentionMessageIds.get(id)?.delete(messageId)) {
+    const rooms = mentionMessageIds.get(id)?.values() ?? [];
+
+    if (![...rooms].some((counted) => counted.delete(messageId))) {
       return;
     }
 
-    mentionCountsRef.value[id] = mentionMessageIds.get(id)?.size ?? 0;
+    countMentions(id);
   }
 
-  // A recount from the room's history replaces what was counted live.
-  function setMentions(id: string, messageIds: string[]) {
+  // A recount from one room's history replaces what was counted live there.
+  function setMentions(id: string, messageIds: string[], room = "") {
+    const rooms = mentionMessageIds.get(id) ?? new Map<string, Set<string>>();
     const counted = new Set(messageIds.slice(-MAX_UNREAD_MESSAGE_IDS));
 
-    if (counted.size === 0) {
-      mentionMessageIds.delete(id);
-      if (mentionCountsRef.value[id]) {
-        mentionCountsRef.value[id] = 0;
-      }
-      return;
+    if (counted.size > 0) {
+      rooms.set(room, counted);
+    } else {
+      rooms.delete(room);
     }
 
-    mentionMessageIds.set(id, counted);
-    mentionCountsRef.value[id] = counted.size;
+    if (rooms.size > 0) {
+      mentionMessageIds.set(id, rooms);
+    } else {
+      mentionMessageIds.delete(id);
+    }
+
+    countMentions(id);
   }
 
   // A recount that names its messages replaces what the badge counted. Without

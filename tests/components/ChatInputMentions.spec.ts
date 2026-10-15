@@ -48,8 +48,8 @@ async function typeText(wrapper: Wrapper, text: string) {
   await flushPromises();
 }
 
-async function press(wrapper: Wrapper, key: string) {
-  await wrapper.get("textarea").trigger("keydown", { key });
+async function press(wrapper: Wrapper, key: string, init = {}) {
+  await wrapper.get("textarea").trigger("keydown", { key, ...init });
   await flushPromises();
 }
 
@@ -67,6 +67,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 describe("ChatInput mentions", () => {
@@ -93,7 +94,7 @@ describe("ChatInput mentions", () => {
     expect(rows(wrapper)[1].text()).toContain("Organizer");
   });
 
-  it("asks for a room's members once per session", async () => {
+  it("asks for a room's members once while the list is fresh", async () => {
     const wrapper = await mountInput();
 
     await typeText(wrapper, "@k");
@@ -242,6 +243,94 @@ describe("ChatInput mentions", () => {
         description: "A message can tag up to 10 players.",
         variant: "destructive",
       }),
+    );
+  });
+
+  it("sends only the longer of two names that start alike", async () => {
+    fetchMembers.mockResolvedValue({
+      members: [
+        member("76561198000000011", "Big"),
+        member("76561198000000012", "Big Bob"),
+      ],
+    });
+    const wrapper = await mountInput();
+
+    await typeText(wrapper, "@");
+    await typeText(wrapper, "@Big Bob gg");
+    await press(wrapper, "Enter");
+
+    expect(wrapper.emitted("sendMessage")).toEqual([
+      ["@Big Bob gg", undefined, { mentions: ["76561198000000012"] }],
+    ]);
+  });
+
+  it("asks for the room's members again once the list is a minute old", async () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(1_000_000);
+    const wrapper = await mountInput();
+
+    await typeText(wrapper, "@k");
+    await typeText(wrapper, "hi");
+    now.mockReturnValue(1_000_000 + 30_000);
+    await typeText(wrapper, "@k");
+
+    expect(fetchMembers).toHaveBeenCalledTimes(1);
+
+    await typeText(wrapper, "hi");
+    now.mockReturnValue(1_000_000 + 61_000);
+    await typeText(wrapper, "@k");
+
+    expect(fetchMembers).toHaveBeenCalledTimes(2);
+    expect(rows(wrapper).length).toBeGreaterThan(0);
+  });
+
+  it("loads the other room's members when the destination changes with the list open", async () => {
+    const wrapper = await mountInput("match");
+
+    await typeText(wrapper, "@ka");
+    await wrapper.setProps({
+      mentionRoom: { type: "match_team", id: `team-${counter}` },
+    });
+    await flushPromises();
+
+    expect(fetchMembers).toHaveBeenLastCalledWith(
+      expect.stringMatching(/\/chat\/rooms\/match_team\/team-\d+\/members$/),
+      expect.anything(),
+    );
+    expect(rows(wrapper).length).toBeGreaterThan(0);
+  });
+
+  it("leaves Tab and the arrows to an input method that is composing", async () => {
+    const wrapper = await mountInput();
+
+    await typeText(wrapper, "@ka");
+    await press(wrapper, "ArrowDown", { isComposing: true });
+    await press(wrapper, "Tab", { isComposing: true });
+
+    expect(rows(wrapper)[0].attributes("aria-selected")).toBe("true");
+    expect(textarea(wrapper).value).toBe("@ka");
+  });
+
+  it("reads to a screen reader as a combobox with the active option", async () => {
+    const wrapper = await mountInput();
+    const field = () => wrapper.get("textarea");
+
+    expect(field().attributes("role")).toBe("combobox");
+    expect(field().attributes("aria-expanded")).toBe("false");
+
+    await typeText(wrapper, "@ka");
+
+    const listId = list(wrapper).attributes("id");
+    expect(listId).toBeTruthy();
+    expect(field().attributes("aria-controls")).toBe(listId);
+    expect(field().attributes("aria-expanded")).toBe("true");
+    expect(field().attributes("aria-activedescendant")).toBe(
+      rows(wrapper)[0].attributes("id"),
+    );
+
+    await press(wrapper, "ArrowDown");
+
+    expect(field().attributes("aria-activedescendant")).toBe(
+      rows(wrapper)[1].attributes("id"),
     );
   });
 

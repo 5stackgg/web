@@ -160,6 +160,10 @@ watch(
 
     if (value && value !== previous && currentTab.value) {
       socket.markLobbyRead(currentTab.value.type, currentTab.value.lobbyId);
+
+      if (teamLobbyId.value) {
+        socket.markLobbyRead("match_team", teamLobbyId.value);
+      }
     }
   },
   { immediate: true },

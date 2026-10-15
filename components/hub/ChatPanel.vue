@@ -288,6 +288,11 @@ watch(
     const tab = orderedTabs.value.find((entry) => entry.id === id);
     if (tab) {
       socket.markLobbyRead(tab.type, tab.lobbyId);
+
+      const teamLobbyId = teamLobbyIdFor(tab);
+      if (teamLobbyId) {
+        socket.markLobbyRead("match_team", teamLobbyId);
+      }
     }
   },
   { immediate: true },

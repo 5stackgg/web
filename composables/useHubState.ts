@@ -54,7 +54,9 @@ export function useHubState() {
   function defaultHub(): Hub {
     if (hasNotifications.value) return "notifications";
     if (hasLobbyInvites.value) return "lobby";
-    if (totalUnread.value > 0 || totalMentions.value > 0) return "chat";
+    if (totalUnread.value > 0 || totalMentions.value > 0) {
+      return "chat";
+    }
     if (hasSocialInvites.value) return "social";
     return "social";
   }

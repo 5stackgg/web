@@ -8,17 +8,27 @@ import { useChatTabs } from "~/composables/useChatTabs";
 import { useInvites } from "~/composables/useInvites";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { badgePopTransition, formatBadgeCount } from "~/utilities/badgeCount";
+import { chatBadgeFor } from "~/utilities/chatBadges";
 
 const { openLastOrDefaultHub } = useHubState();
-const { totalUnread } = useChatTabs();
+const { tabs, unreadCounts, mentionCounts } = useChatTabs();
 const { unreadNotificationCount } = useNotificationBadge();
 const { pendingFriends } = useInvites();
 
-const unreadCount = computed(
+const chatBadge = computed(() =>
+  chatBadgeFor(tabs.value, unreadCounts.value, mentionCounts.value),
+);
+
+// Red for what needs you, the dock's rule: chatter shows in white only while
+// nothing else is waiting.
+const urgentCount = computed(
   () =>
-    totalUnread.value +
     unreadNotificationCount.value +
-    (pendingFriends.value?.length ?? 0),
+    (pendingFriends.value?.length ?? 0) +
+    (chatBadge.value?.tone === "red" ? chatBadge.value.count : 0),
+);
+const unreadCount = computed(() =>
+  urgentCount.value > 0 ? urgentCount.value : (chatBadge.value?.count ?? 0),
 );
 const badgeLabel = computed(() => formatBadgeCount(unreadCount.value));
 
@@ -55,7 +65,12 @@ watch(unreadNotificationCount, (count, previous) => {
           @animationend="ringing = 0"
         />
         <span
-          class="relative inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+          class="relative inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full px-0.5 text-[0.55rem] font-bold leading-none shadow-sm ring-1 ring-background transition-colors duration-200 motion-reduce:transition-none"
+          :class="
+            urgentCount > 0
+              ? 'bg-red-500 text-white'
+              : 'bg-zinc-50 text-zinc-950'
+          "
         >
           <AnimatedStat :value="badgeLabel" />
         </span>

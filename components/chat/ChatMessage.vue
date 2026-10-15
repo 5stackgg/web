@@ -28,7 +28,6 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       ]"
     ></span>
 
-    <!-- A line that tags you gets the team rail's shape, in red. -->
     <span
       v-if="mentionsMe && !isTeamMessage"
       data-chat-mentions-me
@@ -271,7 +270,6 @@ export default {
     hasText() {
       return !!this.message?.message?.trim();
     },
-    // Only the tags the api accepted are drawn; any other @name is text.
     messageSegments() {
       return mentionSegments(
         this.message?.message ?? "",

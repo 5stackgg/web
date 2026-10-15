@@ -6,10 +6,13 @@ export type ChatMentionCandidatesStatus = "loading" | "ready" | "failed";
 interface RoomCandidates {
   status: ChatMentionCandidatesStatus;
   members: ChatMentionCandidate[];
+  loadedAt?: number;
 }
 
-// Asked for the first time @ is typed in a room and kept for the session. A
-// failed load is asked for again on the next @.
+// A room fills up while it is open, so a list older than this is asked for
+// again on the next @, and shown as it was until the answer arrives.
+const FRESH_MS = 60_000;
+
 const rooms = ref<Record<string, RoomCandidates>>({});
 const loading = new Set<string>();
 
@@ -26,13 +29,21 @@ export function useChatMentionCandidates() {
 
   async function load(type: string, id: string) {
     const key = roomKey(type, id);
+    const current = rooms.value[key];
 
-    if (rooms.value[key]?.status === "ready" || loading.has(key)) {
+    if (
+      loading.has(key) ||
+      (current?.status === "ready" &&
+        Date.now() - (current.loadedAt ?? 0) < FRESH_MS)
+    ) {
       return;
     }
 
     loading.add(key);
-    set(key, { status: "loading", members: [] });
+
+    if (current?.status !== "ready") {
+      set(key, { status: "loading", members: [] });
+    }
 
     try {
       const { members } = await $fetch<{ members: ChatMentionCandidate[] }>(
@@ -46,9 +57,12 @@ export function useChatMentionCandidates() {
           ...member,
           steam_id: String(member.steam_id),
         })),
+        loadedAt: Date.now(),
       });
     } catch {
-      set(key, { status: "failed", members: [] });
+      if (current?.status !== "ready") {
+        set(key, { status: "failed", members: [] });
+      }
     } finally {
       loading.delete(key);
     }

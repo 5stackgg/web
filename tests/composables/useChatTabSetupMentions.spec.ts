@@ -35,6 +35,12 @@ const line = (
 });
 
 const room = (type: ChatType, id: string) => ({
+  edited: (messageId: string, message: string) =>
+    socket.emit(`lobby:${type}:${id}:edited`, {
+      id: messageId,
+      message,
+      edited_at: at(30),
+    }),
   history: (messages: LobbyMessage[]) =>
     socket.emit(`lobby:${type}:${id}:messages`, { messages }),
   live: (message: LobbyMessage) =>
@@ -57,7 +63,14 @@ beforeEach(async () => {
   vi.spyOn(console, "info").mockImplementation(() => {});
   useChatTabs().clearAll();
   useMatchLobbyStore().chatTournaments = [{ id: tournamentId, name: "Cup" }];
-  useMatchLobbyStore().myMatches = [{ id: matchId, label: "A vs B" }] as any;
+  useMatchLobbyStore().myMatches = [
+    {
+      id: matchId,
+      label: "A vs B",
+      lineup_1: { id: "lineup-1", is_on_lineup: true },
+      lineup_2: { id: "lineup-2", is_on_lineup: false },
+    },
+  ] as any;
   useRightSidebar().setRightSidebarOpen(false);
   useAuthStore().me = { steam_id: ME, role: "user" } as any;
   vi.stubGlobal(
@@ -66,6 +79,10 @@ beforeEach(async () => {
       threads: [
         { thread: chatThreadKey("tournament", tournamentId), lastReadAt: at(1) },
         { thread: chatThreadKey("match", matchId), lastReadAt: at(1) },
+        {
+          thread: chatThreadKey("match_team", `${matchId}:lineup-1`),
+          lastReadAt: at(1),
+        },
       ],
     }),
   );
@@ -135,6 +152,62 @@ describe("useChatTabSetup mentions", () => {
 
     expect(mentions(`match:${matchId}`)).toBe(2);
     expect(unread(`match:${matchId}`)).toBe(0);
+  });
+
+  it("counts a tag in my side's team room on the match tab", () => {
+    const team = room("match_team", `${matchId}:lineup-1`);
+
+    team.live(line("team-tag", 5, [ME]));
+    team.history([line("team-tag", 5, [ME]), line("old-team-tag", 0, [ME])]);
+    room("match", matchId).live(line("match-tag", 6, [ME]));
+
+    expect(mentions(`match:${matchId}`)).toBe(2);
+
+    useChatTabs().resetUnread(`match:${matchId}`);
+
+    expect(mentions(`match:${matchId}`)).toBe(0);
+  });
+
+  it("takes a tag off when an edit removes it", () => {
+    room("tournament", tournamentId).live(line("tag", 5, [ME, THIRD]));
+
+    room("tournament", tournamentId).edited("tag", "line tag, no one tagged");
+
+    expect(mentions(tournamentTab())).toBe(0);
+  });
+
+  it("waits for the read state before counting tags from history", async () => {
+    unmount?.();
+    let answer: (value: unknown) => void = () => {};
+    vi.stubGlobal(
+      "$fetch",
+      vi.fn(() => new Promise((resolve) => (answer = resolve))),
+    );
+    const wrapper = await mountSuspended(
+      defineComponent({
+        setup() {
+          useChatTabSetup();
+          return () => h("div");
+        },
+      }),
+    );
+    unmount = () => wrapper.unmount();
+
+    room("tournament", tournamentId).history([
+      line("read-tag", 2, [ME]),
+      line("unread-tag", 8, [ME]),
+    ]);
+
+    expect(mentions(tournamentTab())).toBe(0);
+
+    answer({
+      threads: [
+        { thread: chatThreadKey("tournament", tournamentId), lastReadAt: at(5) },
+      ],
+    });
+    await flushPromises();
+
+    expect(mentions(tournamentTab())).toBe(1);
   });
 
   it("never counts a line of my own", () => {

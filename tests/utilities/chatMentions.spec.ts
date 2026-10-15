@@ -5,6 +5,7 @@ import {
   hasMention,
   insertMention,
   MAX_CHAT_MENTIONS,
+  mentionedNames,
   mentionedSteamIds,
   mentionQuery,
   mentionSegments,
@@ -19,6 +20,7 @@ const KASPR = { steam_id: "76561198000000003", name: "kaspr" };
 const KAI = { steam_id: "76561198000000004", name: "kai" };
 const KALANI = { steam_id: "76561198000000005", name: "Kalani" };
 const BIG_BOB = { steam_id: "76561198000000006", name: "Big Bob" };
+const BIG = { steam_id: "76561198000000007", name: "Big" };
 
 describe("chatMentions", () => {
   it("allows ten tags, as the api does", () => {
@@ -102,6 +104,27 @@ describe("chatMentions", () => {
     });
   });
 
+  describe("mentionedNames, which must agree with ChatService.mentionedNames", () => {
+    const tagged = (text: string, names: string[]) => [
+      ...mentionedNames(text, names),
+    ];
+
+    it("gives an @ to the longest name that starts there", () => {
+      expect(tagged("gg @Big Bob", ["Big", "Big Bob"])).toEqual(["Big Bob"]);
+      expect(tagged("@Big Bob and @Big", ["Big Bob", "Big"]).sort()).toEqual(
+        ["Big", "Big Bob"],
+      );
+      expect(tagged("@kairo @kai", ["kai", "kairo"]).sort()).toEqual([
+        "kai",
+        "kairo",
+      ]);
+    });
+
+    it("never finds an empty name", () => {
+      expect(tagged("@ hi", [""])).toEqual([]);
+    });
+  });
+
   it("knows when a message tags the viewer", () => {
     expect(mentionsViewer({ mentions: [KAIRO] }, KAIRO.steam_id)).toBe(true);
     expect(mentionsViewer({ mentions: [KAIRO] }, ME)).toBe(false);
@@ -114,6 +137,9 @@ describe("chatMentions", () => {
       KASPR,
     ]);
     expect(mentionsStillIn("check-in", [KAIRO])).toBeUndefined();
+    expect(mentionsStillIn("@Big Bob only", [BIG, BIG_BOB])).toEqual([
+      BIG_BOB,
+    ]);
     expect(mentionsStillIn("check-in", undefined)).toBeUndefined();
   });
 
@@ -214,6 +240,18 @@ describe("chatMentions", () => {
       expect(mentionedSteamIds("@kairo hi", [twin], [KAIRO, twin])).toEqual([
         twin.steam_id,
       ]);
+    });
+
+    it("does not take a member whose name only starts a longer one", () => {
+      expect(mentionedSteamIds("@Big Bob gg", [], [BIG, BIG_BOB])).toEqual([
+        BIG_BOB.steam_id,
+      ]);
+      expect(mentionedSteamIds("@Big Bob gg", [BIG, BIG_BOB], [])).toEqual([
+        BIG_BOB.steam_id,
+      ]);
+      expect(
+        mentionedSteamIds("@Big Bob and @Big", [], [BIG, BIG_BOB]).sort(),
+      ).toEqual([BIG_BOB.steam_id, BIG.steam_id].sort());
     });
 
     it("counts each player once", () => {

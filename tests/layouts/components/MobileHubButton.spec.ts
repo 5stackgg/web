@@ -63,6 +63,21 @@ function badge(wrapper: Awaited<ReturnType<typeof mountButton>>) {
   return wrapper.find("span.bg-red-500");
 }
 
+function freshBadge(wrapper: Awaited<ReturnType<typeof mountButton>>) {
+  return wrapper.find("span.bg-zinc-50");
+}
+
+function openRoom(id: string, type: "matchmaking" | "match" | "direct") {
+  useChatTabs().openTab({
+    id,
+    label: id,
+    instance: type,
+    type,
+    lobbyId: id,
+    activate: false,
+  });
+}
+
 function ring(wrapper: Awaited<ReturnType<typeof mountButton>>) {
   return wrapper.find("span.bg-red-400");
 }
@@ -77,7 +92,9 @@ describe("MobileHubButton", () => {
     );
   });
 
-  it("adds chat unread across tabs to unread notifications", async () => {
+  it("counts notifications and direct messages in red, leaving room chatter out", async () => {
+    openRoom("lobby", "matchmaking");
+    openRoom("direct:1", "direct");
     const { setUnread } = useChatTabs();
     setUnread("lobby", 2);
     setUnread("direct:1", 3);
@@ -85,19 +102,33 @@ describe("MobileHubButton", () => {
 
     const wrapper = await mountButton();
 
-    expect(badge(wrapper).text()).toBe("9");
+    expect(badge(wrapper).text()).toBe("7");
     expect(wrapper.find("button").attributes("aria-label")).toBe(
-      "Toggle Right Sidebar (9 unread)",
+      "Toggle Right Sidebar (7 unread)",
     );
   });
 
-  it("counts chat alone when there are no notifications", async () => {
+  it("shows room chatter alone in white", async () => {
+    openRoom("lobby", "matchmaking");
     useChatTabs().setUnread("lobby", 1);
 
     const wrapper = await mountButton();
 
-    expect(badge(wrapper).text()).toBe("1");
+    expect(badge(wrapper).exists()).toBe(false);
+    expect(freshBadge(wrapper).text()).toBe("1");
     expect(ring(wrapper).exists()).toBe(false);
+  });
+
+  it("turns red for a tag, even in a match room whose chatter is never counted", async () => {
+    openRoom("lobby", "matchmaking");
+    openRoom("match:1", "match");
+    useChatTabs().setUnread("lobby", 3);
+    useChatTabs().incrementMention("match:1", "tagged");
+
+    const wrapper = await mountButton();
+
+    expect(badge(wrapper).text()).toBe("1");
+    expect(freshBadge(wrapper).exists()).toBe(false);
   });
 
   it("sits still on notifications that were already unread", async () => {
@@ -124,17 +155,19 @@ describe("MobileHubButton", () => {
   });
 
   it("pops the badge in when a message arrives", async () => {
+    openRoom("lobby", "matchmaking");
     const wrapper = await mountButton();
-    expect(badge(wrapper).exists()).toBe(false);
+    expect(freshBadge(wrapper).exists()).toBe(false);
 
     useChatTabs().incrementUnread("lobby");
     await flushPromises();
 
-    expect(badge(wrapper).text()).toBe("1");
+    expect(freshBadge(wrapper).text()).toBe("1");
   });
 
   it("caps the badge at 100+", async () => {
-    useChatTabs().setUnread("lobby", 99);
+    openRoom("direct:1", "direct");
+    useChatTabs().setUnread("direct:1", 99);
     hub.notifications = 2;
 
     const wrapper = await mountButton();
@@ -146,11 +179,12 @@ describe("MobileHubButton", () => {
   });
 
   it("shows exactly 100 without the cap", async () => {
+    openRoom("lobby", "matchmaking");
     useChatTabs().setUnread("lobby", 100);
 
     const wrapper = await mountButton();
 
-    expect(badge(wrapper).text()).toBe("100");
+    expect(freshBadge(wrapper).text()).toBe("100");
   });
 
   it("opens the hub on click", async () => {
@@ -169,11 +203,12 @@ describe("MobileHubButton", () => {
       pendingFriend(DANA, DANA),
       pendingFriend(EVAN, ME),
     ] as any;
+    openRoom("lobby", "matchmaking");
     useChatTabs().setUnread("lobby", 1);
 
     const wrapper = await mountButton();
 
-    expect(badge(wrapper).text()).toBe("2");
+    expect(badge(wrapper).text()).toBe("1");
     expect(ring(wrapper).exists()).toBe(false);
   });
 });

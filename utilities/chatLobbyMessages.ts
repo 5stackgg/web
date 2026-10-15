@@ -124,6 +124,12 @@ function keepNewerEdit(
     edited_at: held.edited_at,
   };
 
+  if (held.mentions) {
+    kept.mentions = held.mentions;
+  } else {
+    delete kept.mentions;
+  }
+
   if (held.__edited_locally) {
     kept.__edited_locally = true;
   }

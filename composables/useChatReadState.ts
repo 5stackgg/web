@@ -9,9 +9,15 @@ import { chatThreadKey } from "~/utilities/chatThread";
 // shipped -- which also means it stays right as new messages arrive without
 // asking the server again.
 const cursors = ref<Record<string, string>>({});
+// Counting a room's history before the cursors arrive counts every line in it
+// as unread, so a recount waits for them, the latest one per room.
+const hydrated = ref(false);
+const waiting = new Map<string, () => void>();
 
 export function useChatReadState() {
   async function hydrate() {
+    hydrated.value = false;
+
     try {
       const { threads } = await $fetch<{
         threads: Array<{ thread: string; lastReadAt: string }>;
@@ -27,7 +33,24 @@ export function useChatReadState() {
     } catch {
       // Badges fall back to counting from this session only, which is what
       // they did before there was a cursor at all.
+    } finally {
+      hydrated.value = true;
+
+      const recounts = [...waiting.values()];
+      waiting.clear();
+      for (const recount of recounts) {
+        recount();
+      }
     }
+  }
+
+  function afterHydrated(key: string, recount: () => void) {
+    if (hydrated.value) {
+      recount();
+      return;
+    }
+
+    waiting.set(key, recount);
   }
 
   // Called alongside socket.markLobbyRead so the badge clears immediately
@@ -65,5 +88,5 @@ export function useChatReadState() {
     return new Date(message?.timestamp ?? 0).getTime() > readAt;
   }
 
-  return { cursors, hydrate, isUnread, markRead, setCursor };
+  return { cursors, hydrate, afterHydrated, isUnread, markRead, setCursor };
 }

@@ -10,6 +10,7 @@ import {
   isTabFlashEnabled,
   type TabFlashKind,
 } from "~/composables/useTabFlashSettings";
+import { mentionsViewer, type ChatMention } from "~/utilities/chatMentions";
 
 // Most urgent first: the title names the top kind that has anything waiting.
 const PRIORITY: TabFlashKind[] = ["admin_call", "match_found", "chat", "bell"];
@@ -305,9 +306,18 @@ function signal(kind: TabFlashKind, key?: string) {
 // source, which covers APIs that predate `source`.
 function signalChat(
   roomType: string,
-  message?: { id?: string; source?: string } | null,
+  message?: {
+    id?: string;
+    source?: string;
+    mentions?: ChatMention[] | null;
+  } | null,
+  viewerSteamId?: string | null,
 ) {
-  if (message?.source === "game" || roomType === "match") {
+  if (message?.source === "game") {
+    return;
+  }
+
+  if (roomType === "match" && !mentionsViewer(message, viewerSteamId)) {
     return;
   }
 

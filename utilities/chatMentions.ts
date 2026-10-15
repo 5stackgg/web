@@ -65,21 +65,31 @@ export function chatRoomTakesMentions(type: string | null | undefined) {
 }
 
 export function hasMention(text: string, name: string) {
-  if (!name) {
-    return false;
-  }
+  return mentionedNames(text, [name]).has(name);
+}
 
-  for (
-    let index = text.indexOf(`@${name}`);
-    index !== -1;
-    index = text.indexOf(`@${name}`, index + 1)
-  ) {
-    if (mentionAt(text, index, name)) {
-      return true;
+// Mirrors ChatService.mentionedNames: each @ belongs to the longest of the
+// names that fits there, so "@Big Bob" tags Big Bob and not Big as well.
+export function mentionedNames(text: string, names: string[]): Set<string> {
+  const longestFirst = [...new Set(names)]
+    .filter((name) => name.length > 0)
+    .sort((a, b) => b.length - a.length);
+  const found = new Set<string>();
+  let index = text.indexOf("@");
+
+  while (index !== -1) {
+    const name = longestFirst.find((candidate) =>
+      mentionAt(text, index, candidate),
+    );
+
+    if (name) {
+      found.add(name);
     }
+
+    index = text.indexOf("@", index + (name ? name.length + 1 : 1));
   }
 
-  return false;
+  return found;
 }
 
 export function mentionsViewer(
@@ -100,7 +110,11 @@ export function mentionsStillIn(
   text: string,
   mentions: ChatMention[] | null | undefined,
 ): ChatMention[] | undefined {
-  const kept = (mentions ?? []).filter(({ name }) => hasMention(text, name));
+  const tagged = mentionedNames(
+    text,
+    (mentions ?? []).map(({ name }) => name),
+  );
+  const kept = (mentions ?? []).filter(({ name }) => tagged.has(name));
 
   return kept.length > 0 ? kept : undefined;
 }
@@ -246,18 +260,22 @@ export function mentionedSteamIds(
   picks: ChatMention[],
   candidates: ChatMention[],
 ): string[] {
+  const tagged = mentionedNames(
+    text,
+    [...picks, ...candidates].map(({ name }) => name),
+  );
   const steamIds = new Set<string>();
   const pickedNames = new Set<string>();
 
   for (const pick of picks) {
-    if (hasMention(text, pick.name)) {
+    if (tagged.has(pick.name)) {
       steamIds.add(String(pick.steam_id));
       pickedNames.add(pick.name);
     }
   }
 
   for (const candidate of candidates) {
-    if (!pickedNames.has(candidate.name) && hasMention(text, candidate.name)) {
+    if (!pickedNames.has(candidate.name) && tagged.has(candidate.name)) {
       steamIds.add(String(candidate.steam_id));
     }
   }

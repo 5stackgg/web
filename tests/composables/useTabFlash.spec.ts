@@ -215,6 +215,34 @@ describe("useTabFlash title", () => {
     expect(document.title).toBe("(1) New message");
   });
 
+  it("still flashes for a match room line that tags you", () => {
+    setVisibility("hidden");
+    const flash = useTabFlash();
+    const me = "76561198000000001";
+
+    flash.signalChat(
+      "match",
+      {
+        id: "tagged-elsewhere",
+        source: "web",
+        mentions: [{ steam_id: "76561198000000002", name: "kairo" }],
+      },
+      me,
+    );
+    expect(document.title).toBe(BASE_TITLE);
+
+    flash.signalChat(
+      "match",
+      {
+        id: "tagged-me",
+        source: "web",
+        mentions: [{ steam_id: me, name: "kappa" }],
+      },
+      me,
+    );
+    expect(document.title).toBe("(1) New message");
+  });
+
   it("drops a cleared kind and stops once nothing is left", () => {
     setVisibility("hidden");
     const flash = useTabFlash();

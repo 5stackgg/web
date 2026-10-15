@@ -527,6 +527,13 @@ export default {
 
         if (thread && thread !== previous) {
           socket.markLobbyRead("match", this.match.id);
+
+          if (this.myLineupId) {
+            socket.markLobbyRead(
+              "match_team",
+              `${this.match.id}:${this.myLineupId}`,
+            );
+          }
         }
       },
     },

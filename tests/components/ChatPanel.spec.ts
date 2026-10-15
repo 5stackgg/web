@@ -6,12 +6,14 @@ import ChatPanel from "~/components/hub/ChatPanel.vue";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useIncomingDirectMessages } from "~/composables/useIncomingDirectMessages";
 import { directTabId } from "~/composables/useDirectMessages";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 
 const socketMock = vi.hoisted(() => {
   const handlers = new Map<string, Set<(data: any) => void>>();
 
   return {
     handlers,
+    markLobbyRead: vi.fn(),
     emit(event: string, data: unknown) {
       for (const handler of handlers.get(event) ?? []) {
         handler(data);
@@ -37,7 +39,7 @@ vi.mock("~/web-sockets/Socket", async (importOriginal) => ({
     },
     joinLobby: () => ({ messages: [], on() {}, leave() {} }),
     hidesAuthor: () => false,
-    markLobbyRead() {},
+    markLobbyRead: socketMock.markLobbyRead,
     lobbyMessages: () => [],
   },
 }));
@@ -74,6 +76,7 @@ function incoming() {
 
 beforeEach(() => {
   socketMock.handlers.clear();
+  socketMock.markLobbyRead.mockClear();
   useChatTabs().clearAll();
   useAuthStore().me = { steam_id: ME } as any;
   vi.stubGlobal("$fetch", vi.fn().mockResolvedValue({ conversations: [] }));
@@ -292,5 +295,38 @@ describe("ChatPanel rail badges", () => {
     const direct = badgeOf(wrapper, DIRECT);
     expect(direct.attributes("data-tone")).toBe("red");
     expect(direct.text()).toBe("1");
+  });
+});
+
+describe("ChatPanel reading a match", () => {
+  afterEach(() => {
+    useMatchLobbyStore().myMatches = [];
+  });
+
+  it("marks its team room read along with it", async () => {
+    useMatchLobbyStore().myMatches = [
+      {
+        id: "m-1",
+        label: "A vs B",
+        lineup_1: { id: "l-1", is_on_lineup: true },
+        lineup_2: { id: "l-2", is_on_lineup: false },
+      },
+    ] as any;
+    useChatTabs().openTab({
+      id: "match:m-1",
+      label: "A vs B",
+      instance: "match",
+      type: "match",
+      lobbyId: "m-1",
+      pinned: true,
+    });
+
+    await mountPanel(true);
+
+    expect(socketMock.markLobbyRead).toHaveBeenCalledWith("match", "m-1");
+    expect(socketMock.markLobbyRead).toHaveBeenCalledWith(
+      "match_team",
+      "m-1:l-1",
+    );
   });
 });

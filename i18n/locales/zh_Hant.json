@@ -3602,9 +3602,10 @@
         "save": "儲存",
         "edit": "編輯",
         "edited": "已編輯",
+        "edited_at": "編輯於 {date}",
         "delete": "刪除",
         "copy_link": "複製連結",
-        "more_actions": "留言操作",
+        "more_actions": "{name} 的留言操作",
         "hide": "隱藏…",
         "restore": "還原",
         "hidden_badge": "已隱藏",
@@ -3625,8 +3626,7 @@
           "closed": "留言已關閉。文章發布後 7 天內可以留言。",
           "not_verified": "只有已驗證的玩家可以留言和 +1。",
           "banned": "你已被封禁，無法留言。",
-          "gagged": "你已被禁言，無法留言。",
-          "muted": "你已被語音禁言，無法留言。"
+          "gagged": "你已被禁言，無法留言。"
         },
         "empty_open": "還沒有留言。來發表第一則吧。",
         "empty_closed": "這篇文章沒有留言",

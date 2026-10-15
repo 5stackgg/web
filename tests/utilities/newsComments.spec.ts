@@ -44,14 +44,14 @@ describe("news comment rules the page mirrors", () => {
     ).toBe(0);
   });
 
-  it("names the sanction that keeps a player from writing, a ban first", () => {
+  it("names the sanction that keeps a player from writing, a ban first, and never a voice mute", () => {
     expect(newsCommentSanction({ is_banned: true, is_gagged: true })).toBe(
       "banned",
     );
     expect(newsCommentSanction({ is_gagged: true, is_muted: true })).toBe(
       "gagged",
     );
-    expect(newsCommentSanction({ is_muted: true })).toBe("muted");
+    expect(newsCommentSanction({ is_muted: true })).toBeNull();
     expect(newsCommentSanction(null)).toBeNull();
   });
 
@@ -69,7 +69,6 @@ describe("news comment rules the page mirrors", () => {
       "not_verified",
       "banned",
       "gagged",
-      "muted",
       "not_found",
       "closed",
       "empty",

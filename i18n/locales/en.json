@@ -3602,9 +3602,10 @@
         "save": "Save",
         "edit": "Edit",
         "edited": "edited",
+        "edited_at": "Edited {date}",
         "delete": "Delete",
         "copy_link": "Copy Link",
-        "more_actions": "Comment actions",
+        "more_actions": "Actions for {name}'s comment",
         "hide": "Hide…",
         "restore": "Restore",
         "hidden_badge": "Hidden",
@@ -3625,8 +3626,7 @@
           "closed": "Comments are closed. Posts take comments for 7 days after they're published.",
           "not_verified": "Only verified players can comment and +1.",
           "banned": "You're banned and can't comment.",
-          "gagged": "You're gagged and can't comment.",
-          "muted": "You're muted and can't comment."
+          "gagged": "You're gagged and can't comment."
         },
         "empty_open": "No comments yet. Be the first.",
         "empty_closed": "No comments on this post",

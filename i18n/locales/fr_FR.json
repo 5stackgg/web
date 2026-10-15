@@ -3602,9 +3602,10 @@
         "save": "Enregistrer",
         "edit": "Modifier",
         "edited": "modifié",
+        "edited_at": "Modifié le {date}",
         "delete": "Supprimer",
         "copy_link": "Copier le lien",
-        "more_actions": "Actions du commentaire",
+        "more_actions": "Actions pour le commentaire de {name}",
         "hide": "Masquer…",
         "restore": "Restaurer",
         "hidden_badge": "Masqué",
@@ -3625,8 +3626,7 @@
           "closed": "Les commentaires sont fermés. Les posts acceptent les commentaires pendant 7 jours après leur publication.",
           "not_verified": "Seuls les joueurs vérifiés peuvent commenter et mettre +1.",
           "banned": "Vous êtes banni et ne pouvez pas commenter.",
-          "gagged": "Vous êtes bâillonné et ne pouvez pas commenter.",
-          "muted": "Vous êtes mute et ne pouvez pas commenter."
+          "gagged": "Vous êtes bâillonné et ne pouvez pas commenter."
         },
         "empty_open": "Aucun commentaire pour l'instant. Soyez le premier.",
         "empty_closed": "Aucun commentaire sur ce post",

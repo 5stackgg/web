@@ -3602,9 +3602,10 @@
         "save": "Speichern",
         "edit": "Bearbeiten",
         "edited": "bearbeitet",
+        "edited_at": "Bearbeitet am {date}",
         "delete": "Löschen",
         "copy_link": "Link kopieren",
-        "more_actions": "Kommentaraktionen",
+        "more_actions": "Aktionen für den Kommentar von {name}",
         "hide": "Ausblenden…",
         "restore": "Wiederherstellen",
         "hidden_badge": "Ausgeblendet",
@@ -3625,8 +3626,7 @@
           "closed": "Die Kommentare sind geschlossen. Beiträge nehmen 7 Tage nach der Veröffentlichung Kommentare an.",
           "not_verified": "Nur verifizierte Spieler können kommentieren und +1 geben.",
           "banned": "Du bist gebannt und kannst nicht kommentieren.",
-          "gagged": "Du bist im Chat gesperrt und kannst nicht kommentieren.",
-          "muted": "Du bist gemutet und kannst nicht kommentieren."
+          "gagged": "Du bist im Chat gesperrt und kannst nicht kommentieren."
         },
         "empty_open": "Noch keine Kommentare. Sei der Erste.",
         "empty_closed": "Keine Kommentare zu diesem Beitrag",

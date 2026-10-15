@@ -21,6 +21,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { HeightSwap } from "~/components/ui/transitions";
 import TimeAgo from "~/components/TimeAgo.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import NewsCommentComposer from "~/components/news/NewsCommentComposer.vue";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { dateLocale } from "~/utilities/dateLocale";
@@ -58,7 +59,7 @@ const emit = defineEmits<{
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 
-const author = computed(() => props.comment.author);
+const author = computed(() => props.comment.author?.[0] ?? null);
 const avatar = computed(() =>
   author.value
     ? resolveAvatarUrl(
@@ -71,7 +72,7 @@ const avatar = computed(() =>
 const mine = computed(
   () =>
     !!props.viewer.steamId &&
-    String(props.comment.author_steam_id) === props.viewer.steamId,
+    String(author.value?.steam_id) === props.viewer.steamId,
 );
 const deleted = computed(() => !!props.comment.deleted_at);
 const hidden = computed(() => !!props.comment.hidden_at);
@@ -169,19 +170,38 @@ const fullDate = (value: string) =>
           >
             {{ author.name }}
           </NuxtLink>
-          <span
-            class="text-xs text-muted-foreground"
-            :title="fullDate(comment.created_at)"
-          >
-            <TimeAgo :date="comment.created_at" hide-icon />
-          </span>
-          <span
+          <FiveStackToolTip as-child :delay-duration="120" side="top">
+            <template #trigger>
+              <span
+                tabindex="0"
+                class="rounded-sm text-xs text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <TimeAgo :date="comment.created_at" hide-icon />
+              </span>
+            </template>
+            {{ fullDate(comment.created_at) }}
+          </FiveStackToolTip>
+          <FiveStackToolTip
             v-if="comment.edited_at"
-            class="text-xs text-muted-foreground"
-            :title="fullDate(comment.edited_at)"
+            as-child
+            :delay-duration="120"
+            side="top"
           >
-            · {{ $t("pages.news.comments.edited") }}
-          </span>
+            <template #trigger>
+              <span
+                tabindex="0"
+                class="rounded-sm text-xs text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                data-testid="news-comment-edited"
+              >
+                · {{ $t("pages.news.comments.edited") }}
+              </span>
+            </template>
+            {{
+              $t("pages.news.comments.edited_at", {
+                date: fullDate(comment.edited_at),
+              })
+            }}
+          </FiveStackToolTip>
           <span
             v-if="hidden"
             class="self-center rounded-sm border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 py-px font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
@@ -197,7 +217,11 @@ const fullDate = (value: string) =>
               variant="ghost"
               size="icon"
               class="-mr-2 -mt-1 h-7 w-7 text-muted-foreground [&_svg]:size-4"
-              :aria-label="$t('pages.news.comments.more_actions')"
+              :aria-label="
+                $t('pages.news.comments.more_actions', {
+                  name: author?.name ?? '',
+                })
+              "
               data-testid="news-comment-menu"
             >
               <MoreVertical />
@@ -284,32 +308,46 @@ const fullDate = (value: string) =>
           v-if="editing !== comment.id && !hidden"
           class="col-start-2 col-end-[-1] -ml-2 flex flex-wrap items-center gap-1"
         >
-          <button
-            type="button"
-            class="inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-xs tabular-nums transition-colors duration-150 disabled:cursor-default [&_svg]:h-3.5 [&_svg]:w-3.5"
-            :class="[
-              vote.voted
-                ? 'bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-                : 'text-muted-foreground',
-              canVote && !vote.voted
-                ? 'hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-[hsl(var(--tac-amber))]'
-                : '',
-              !canVote ? 'opacity-50' : '',
-            ]"
-            :disabled="!canVote || vote.busy"
-            :aria-pressed="vote.voted"
-            :title="mine ? $t('pages.news.comments.own_vote') : undefined"
-            :aria-label="
-              $t('pages.news.comments.plus_one_label', {
-                count: vote.vote_count,
-              })
-            "
-            data-testid="news-comment-vote"
-            @click="emit('vote', comment)"
+          <FiveStackToolTip
+            as-child
+            :disabled="!mine"
+            :delay-duration="200"
+            side="top"
           >
-            <ThumbsUp />
-            +1 · {{ vote.vote_count }}
-          </button>
+            <template #trigger>
+              <span
+                class="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                :tabindex="mine ? 0 : undefined"
+              >
+                <button
+                  type="button"
+                  class="inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-xs tabular-nums transition-colors duration-150 disabled:pointer-events-none [&_svg]:h-3.5 [&_svg]:w-3.5"
+                  :class="[
+                    vote.voted
+                      ? 'bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                      : 'text-muted-foreground',
+                    canVote && !vote.voted
+                      ? 'hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-[hsl(var(--tac-amber))]'
+                      : '',
+                    !canVote ? 'opacity-50' : '',
+                  ]"
+                  :disabled="!canVote || vote.busy"
+                  :aria-pressed="vote.voted"
+                  :aria-label="
+                    $t('pages.news.comments.plus_one_label', {
+                      count: vote.vote_count,
+                    })
+                  "
+                  data-testid="news-comment-vote"
+                  @click="emit('vote', comment)"
+                >
+                  <ThumbsUp />
+                  +1 · {{ vote.vote_count }}
+                </button>
+              </span>
+            </template>
+            {{ $t("pages.news.comments.own_vote") }}
+          </FiveStackToolTip>
           <button
             v-if="viewer.canWrite && !threadRemoved"
             type="button"

@@ -15,7 +15,6 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { FadeSwap } from "~/components/ui/transitions";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -24,6 +23,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { toast } from "@/components/ui/toast";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import NewsComment from "~/components/news/NewsComment.vue";
 import NewsCommentComposer from "~/components/news/NewsCommentComposer.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -200,8 +200,6 @@ function showMore() {
   subscribe();
 }
 
-// A notification links to #comment-<id>: page through until it is on screen,
-// then bring it into view and mark it for a moment.
 async function reveal() {
   const id = revealing;
   if (!id) {
@@ -350,24 +348,27 @@ async function moderate(work: () => Promise<unknown>) {
   }
 }
 
-function confirmHide() {
+async function confirmHide() {
   const comment = hideTarget.value;
+  const reason = hideReason.value;
   if (!comment) {
     return;
   }
-  void moderate(() => api.setHidden(comment.id, true, hideReason.value));
+  await moderate(() => api.setHidden(comment.id, true, reason));
+  hideTarget.value = null;
 }
 
 function restore(comment: Comment) {
   void moderate(() => api.setHidden(comment.id, false));
 }
 
-function confirmDelete() {
+async function confirmDelete() {
   const comment = deleteTarget.value;
   if (!comment) {
     return;
   }
-  void moderate(() => api.remove(comment.id));
+  await moderate(() => api.remove(comment.id));
+  deleteTarget.value = null;
 }
 
 function copyLink(comment: Comment) {
@@ -414,7 +415,7 @@ onBeforeUnmount(() => {
 <template>
   <section
     v-if="available"
-    id="comments"
+    id="news-comments"
     class="mx-auto mt-11 grid max-w-[66rem] scroll-mt-24 gap-4"
     :aria-label="$t('pages.news.comments.title')"
     data-testid="news-comments"
@@ -427,7 +428,7 @@ onBeforeUnmount(() => {
         class="font-mono text-[0.65rem] tabular-nums tracking-normal text-muted-foreground/70"
         data-testid="news-comments-count"
       >
-        {{ count }}
+        <AnimatedStat :value="count" />
       </span>
     </h2>
 
@@ -580,13 +581,13 @@ onBeforeUnmount(() => {
         />
         <AlertDialogFooter>
           <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction
-            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          <Button
+            variant="destructive"
             data-testid="news-comment-hide-confirm"
             @click="confirmHide"
           >
             {{ $t("pages.news.comments.hide_dialog.action") }}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -603,13 +604,13 @@ onBeforeUnmount(() => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction
-            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          <Button
+            variant="destructive"
             data-testid="news-comment-delete-confirm"
             @click="confirmDelete"
           >
             {{ $t("pages.news.comments.delete") }}
-          </AlertDialogAction>
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

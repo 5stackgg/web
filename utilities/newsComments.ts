@@ -11,7 +11,6 @@ const NEWS_COMMENT_ERROR_KEYS: Record<string, string> = {
   news_comment_not_verified: "pages.news.comments.read_only.not_verified",
   news_comment_banned: "pages.news.comments.read_only.banned",
   news_comment_gagged: "pages.news.comments.read_only.gagged",
-  news_comment_muted: "pages.news.comments.read_only.muted",
   news_comment_closed: "pages.news.comments.read_only.closed",
   news_comment_own_vote: "pages.news.comments.own_vote",
   news_comment_not_found: "pages.news.comments.errors.not_found",
@@ -36,7 +35,6 @@ export type NewsCommentAuthor = {
 export type NewsComment = {
   id: string;
   parent_id: string | null;
-  author_steam_id: string;
   vote_count: number;
   created_at: string;
   edited_at: string | null;
@@ -47,7 +45,7 @@ export type NewsComment = {
   hidden_by_name?: string | null;
   text: string | null;
   viewer_voted: boolean;
-  author: NewsCommentAuthor | null;
+  author: NewsCommentAuthor[];
   replies?: NewsComment[];
 };
 
@@ -58,7 +56,7 @@ export type NewsCommentViewer = {
   canTakeBackVote: boolean;
 };
 
-export type NewsCommentSanction = "banned" | "gagged" | "muted";
+export type NewsCommentSanction = "banned" | "gagged";
 
 export function newsCommentErrorKey(message?: string | null): string {
   return (
@@ -86,8 +84,6 @@ export function newsCommentsOpen(
   return closesAt !== null && now < closesAt;
 }
 
-// Whole minutes left to edit, 0 once the window has passed or the comment was
-// removed.
 export function newsCommentEditMinutesLeft(
   comment: Pick<NewsComment, "created_at" | "deleted_at" | "hidden_at">,
   now = Date.now(),
@@ -107,7 +103,6 @@ export function newsCommentSanction(
     | {
         is_banned?: boolean | null;
         is_gagged?: boolean | null;
-        is_muted?: boolean | null;
       }
     | null
     | undefined,
@@ -117,9 +112,6 @@ export function newsCommentSanction(
   }
   if (me?.is_gagged) {
     return "gagged";
-  }
-  if (me?.is_muted) {
-    return "muted";
   }
   return null;
 }

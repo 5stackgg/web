@@ -3,6 +3,8 @@ import { flushPromises } from "@vue/test-utils";
 import { mockNuxtImport, mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
 import NewsComments from "~/components/news/NewsComments.vue";
+import NewsComment from "~/components/news/NewsComment.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 
 const graphql = vi.hoisted(() => ({
@@ -69,7 +71,6 @@ const comment = (over: Record<string, unknown> = {}) => {
   return {
     id,
     parent_id: null,
-    author_steam_id: BOB,
     vote_count: 0,
     created_at: minutesAgo(60),
     edited_at: null,
@@ -78,7 +79,7 @@ const comment = (over: Record<string, unknown> = {}) => {
     hidden_at: null,
     text: `comment ${seq}`,
     viewer_voted: false,
-    author: author(BOB, "bob"),
+    author: [author(BOB, "bob")],
     replies: [],
     ...over,
   };
@@ -162,7 +163,6 @@ describe("news comments", () => {
   it.each([
     [{ role: "user" }, "Only verified players can comment and +1."],
     [{ is_gagged: true }, "You're gagged and can't comment."],
-    [{ is_muted: true }, "You're muted and can't comment."],
     [{ is_banned: true }, "You're banned and can't comment."],
   ])("tells %o why they can't write", async (over, line) => {
     signIn(over);
@@ -173,6 +173,17 @@ describe("news comments", () => {
     expect(
       find(wrapper, "news-comment-vote").attributes("disabled"),
     ).toBeDefined();
+  });
+
+  it("lets a muted player write, since a mute only covers voice", async () => {
+    signIn({ is_muted: true });
+    const wrapper = await mountComments([comment()]);
+
+    expect(find(wrapper, "news-comments-read-only").exists()).toBe(false);
+    expect(find(wrapper, "news-comment-input").exists()).toBe(true);
+    expect(
+      find(wrapper, "news-comment-vote").attributes("disabled"),
+    ).toBeUndefined();
   });
 
   it("closes the box for everyone 7 days after the post is published", async () => {
@@ -221,8 +232,7 @@ describe("news comments", () => {
       data: { postNewsComment: { id: "new", parent_id: "top" } },
     });
     const reply = comment({
-      author_steam_id: ADA,
-      author: author(ADA, "ada"),
+      author: [author(ADA, "ada")],
       text: "agreed",
     });
     const top = comment({ replies: [reply] });
@@ -337,13 +347,11 @@ describe("news comments", () => {
   it("offers Edit on your own comment only while its 10 minutes last", async () => {
     signIn();
     const fresh = comment({
-      author_steam_id: ME,
-      author: author(ME, "me"),
+      author: [author(ME, "me")],
       created_at: minutesAgo(4),
     });
     const old = comment({
-      author_steam_id: ME,
-      author: author(ME, "me"),
+      author: [author(ME, "me")],
       created_at: minutesAgo(11),
     });
     const wrapper = await mountComments([fresh, old]);
@@ -439,11 +447,94 @@ describe("news comments", () => {
     );
   });
 
-  it("shows the live count of comments", async () => {
+  it("shows the live count of comments as an animated stat", async () => {
     const wrapper = await mountComments([comment(), comment()], undefined);
     push([comment(), comment()], 5);
     await flushPromises();
 
-    expect(find(wrapper, "news-comments-count").text()).toBe("5");
+    const count = find(wrapper, "news-comments-count");
+    expect(count.text()).toBe("5");
+    expect(count.findComponent(AnimatedStat).exists()).toBe(true);
+  });
+
+  it("gives the section an id no article heading can share", async () => {
+    const wrapper = await mountComments();
+
+    expect(find(wrapper, "news-comments").attributes("id")).toBe(
+      "news-comments",
+    );
+  });
+
+  it("hides a comment with the reason given once the moderator confirms", async () => {
+    signIn({ role: "moderator" });
+    graphql.mutate.mockResolvedValue({
+      data: { setNewsCommentHidden: { id: "x" } },
+    });
+    const target = comment({ text: "cheap boosting here" });
+    const wrapper = await mountComments([target]);
+
+    wrapper.findComponent(NewsComment).vm.$emit("hide", target);
+    await flushPromises();
+
+    const reason = document.querySelector<HTMLInputElement>(
+      '[data-testid="news-comment-hide-reason"]',
+    )!;
+    reason.value = "link spam";
+    reason.dispatchEvent(new Event("input"));
+    await flushPromises();
+    document
+      .querySelector<HTMLElement>('[data-testid="news-comment-hide-confirm"]')!
+      .click();
+    await flushPromises();
+
+    expect(graphql.mutate).toHaveBeenCalledTimes(1);
+    expect(graphql.mutate.mock.calls[0][0].variables).toEqual({
+      id: target.id,
+      hidden: true,
+      reason: "link spam",
+    });
+  });
+
+  it("deletes a comment once its author confirms", async () => {
+    signIn();
+    graphql.mutate.mockResolvedValue({
+      data: { deleteNewsComment: { success: true } },
+    });
+    const target = comment({ author: [author(ME, "me")] });
+    const wrapper = await mountComments([target]);
+
+    wrapper.findComponent(NewsComment).vm.$emit("delete", target);
+    await flushPromises();
+    document
+      .querySelector<HTMLElement>(
+        '[data-testid="news-comment-delete-confirm"]',
+      )!
+      .click();
+    await flushPromises();
+
+    expect(graphql.mutate).toHaveBeenCalledTimes(1);
+    expect(graphql.mutate.mock.calls[0][0].variables).toEqual({
+      id: target.id,
+    });
+  });
+
+  it("says why your own comment can't take a +1 to a keyboard and a tap, and names whose comment each menu is for", async () => {
+    signIn();
+    const own = comment({ author: [author(ME, "me")] });
+    const wrapper = await mountComments([own, comment()]);
+
+    const ownVote = wrapper.find(
+      `[data-comment-id="${own.id}"] [data-testid="news-comment-vote"]`,
+    );
+    expect(ownVote.attributes("disabled")).toBeDefined();
+    expect(ownVote.attributes("title")).toBeUndefined();
+    expect(ownVote.element.parentElement!.getAttribute("tabindex")).toBe("0");
+
+    expect(
+      wrapper
+        .findAll('[data-testid="news-comment-menu"]')
+        .map((menu) => menu.attributes("aria-label")),
+    ).toEqual(["Actions for me's comment", "Actions for bob's comment"]);
+    expect(wrapper.find("[data-comment-id] [title]").exists()).toBe(false);
   });
 });

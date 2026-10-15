@@ -3602,9 +3602,10 @@
         "save": "Kaydet",
         "edit": "Düzenle",
         "edited": "düzenlendi",
+        "edited_at": "{date} tarihinde düzenlendi",
         "delete": "Sil",
         "copy_link": "Bağlantıyı kopyala",
-        "more_actions": "Yorum işlemleri",
+        "more_actions": "{name} adlı oyuncunun yorumu için işlemler",
         "hide": "Gizle…",
         "restore": "Geri yükle",
         "hidden_badge": "Gizli",
@@ -3625,8 +3626,7 @@
           "closed": "Yorumlar kapandı. Gönderiler yayımlandıktan sonra 7 gün boyunca yorum alır.",
           "not_verified": "Yalnızca doğrulanmış oyuncular yorum yapıp +1 verebilir.",
           "banned": "Banlısın, yorum yapamazsın.",
-          "gagged": "Sohbetin kapatıldı, yorum yapamazsın.",
-          "muted": "Sesli sohbetin kapatıldı, yorum yapamazsın."
+          "gagged": "Sohbetin kapatıldı, yorum yapamazsın."
         },
         "empty_open": "Henüz yorum yok. İlk yorumu sen yap.",
         "empty_closed": "Bu gönderide yorum yok",

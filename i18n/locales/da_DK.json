@@ -3602,9 +3602,10 @@
         "save": "Gem",
         "edit": "Redigér",
         "edited": "redigeret",
+        "edited_at": "Redigeret {date}",
         "delete": "Slet",
         "copy_link": "Kopiér link",
-        "more_actions": "Kommentarhandlinger",
+        "more_actions": "Handlinger for {name}s kommentar",
         "hide": "Skjul…",
         "restore": "Gendan",
         "hidden_badge": "Skjult",
@@ -3625,8 +3626,7 @@
           "closed": "Kommentarerne er lukket. Indlæg tager imod kommentarer i 7 dage efter udgivelsen.",
           "not_verified": "Kun verificerede spillere kan kommentere og give +1.",
           "banned": "Du er udelukket og kan ikke kommentere.",
-          "gagged": "Din chat er lukket, så du kan ikke kommentere.",
-          "muted": "Du er mutet og kan ikke kommentere."
+          "gagged": "Din chat er lukket, så du kan ikke kommentere."
         },
         "empty_open": "Ingen kommentarer endnu. Vær den første.",
         "empty_closed": "Ingen kommentarer på dette indlæg",

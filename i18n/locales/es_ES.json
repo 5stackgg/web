@@ -3602,9 +3602,10 @@
         "save": "Guardar",
         "edit": "Editar",
         "edited": "editado",
+        "edited_at": "Editado el {date}",
         "delete": "Eliminar",
         "copy_link": "Copiar enlace",
-        "more_actions": "Acciones del comentario",
+        "more_actions": "Acciones del comentario de {name}",
         "hide": "Ocultar…",
         "restore": "Restaurar",
         "hidden_badge": "Oculto",
@@ -3625,8 +3626,7 @@
           "closed": "Los comentarios están cerrados. Las entradas admiten comentarios durante 7 días tras su publicación.",
           "not_verified": "Solo los jugadores verificados pueden comentar y dar +1.",
           "banned": "Estás baneado y no puedes comentar.",
-          "gagged": "Estás silenciado en el chat y no puedes comentar.",
-          "muted": "Estás silenciado en el chat de voz y no puedes comentar."
+          "gagged": "Estás silenciado en el chat y no puedes comentar."
         },
         "empty_open": "Aún no hay comentarios. Sé el primero.",
         "empty_closed": "No hay comentarios en esta entrada",

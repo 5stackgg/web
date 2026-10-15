@@ -3602,9 +3602,10 @@
         "save": "保存",
         "edit": "编辑",
         "edited": "已编辑",
+        "edited_at": "编辑于 {date}",
         "delete": "删除",
         "copy_link": "复制链接",
-        "more_actions": "评论操作",
+        "more_actions": "{name} 的评论操作",
         "hide": "隐藏…",
         "restore": "恢复",
         "hidden_badge": "已隐藏",
@@ -3625,8 +3626,7 @@
           "closed": "评论已关闭。文章发布后 7 天内可以评论。",
           "not_verified": "只有认证玩家可以评论和 +1。",
           "banned": "你已被封禁，无法评论。",
-          "gagged": "你已被禁言，无法评论。",
-          "muted": "你已被语音禁言，无法评论。"
+          "gagged": "你已被禁言，无法评论。"
         },
         "empty_open": "还没有评论。来发表第一条吧。",
         "empty_closed": "这篇文章没有评论",

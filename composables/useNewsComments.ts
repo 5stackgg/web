@@ -8,7 +8,6 @@ import type { NewsComment } from "~/utilities/newsComments";
 const fields = (staff: boolean) => `
   id
   parent_id
-  author_steam_id
   vote_count
   created_at
   edited_at

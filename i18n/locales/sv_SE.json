@@ -3602,9 +3602,10 @@
         "save": "Spara",
         "edit": "Redigera",
         "edited": "redigerad",
+        "edited_at": "Redigerad {date}",
         "delete": "Ta bort",
         "copy_link": "Kopiera länk",
-        "more_actions": "Kommentarsåtgärder",
+        "more_actions": "Åtgärder för {name}s kommentar",
         "hide": "Dölj…",
         "restore": "Återställ",
         "hidden_badge": "Dold",
@@ -3625,8 +3626,7 @@
           "closed": "Kommentarerna är stängda. Inlägg tar emot kommentarer i 7 dagar efter publicering.",
           "not_verified": "Endast verifierade spelare kan kommentera och ge +1.",
           "banned": "Du är bannad och kan inte kommentera.",
-          "gagged": "Din chatt är avstängd och du kan inte kommentera.",
-          "muted": "Din röstchatt är avstängd och du kan inte kommentera."
+          "gagged": "Din chatt är avstängd och du kan inte kommentera."
         },
         "empty_open": "Inga kommentarer än. Bli den första.",
         "empty_closed": "Inga kommentarer på det här inlägget",

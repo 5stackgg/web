@@ -3189,6 +3189,11 @@
               "description": "Ein Team hat einen erforderlichen Turnier-Check-in verpasst. Wird nur beim Eintritt geprüft, ein Spieler in einem laufenden Bracket behält also seinen Platz."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto-Scouting",
+          "description": "Zeigt während eines Map-Vetos die Bilanz jeder Seite auf jeder Map, die üblichen Bans und Picks der Gegenseite und ihren wahrscheinlichen nächsten Zug. Team-Matches nutzen die Historie des Teams; Pick-up-Games die eigenen Matches der Spieler und die bisherigen Vetos des Captains. Es ist für jeden Modus aktiv, bis du es hier ausschaltest.",
+          "updated": "Veto-Scouting aktualisiert"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "{side} bestätigen",
       "your_side_on": "Deine Startseite auf {map}",
       "their_side_on": "{team} wählt eine Seite auf {map}",
-      "not_set": "Nicht festgelegt"
+      "not_set": "Nicht festgelegt",
+      "scout": {
+        "you": "Du",
+        "no_games": "Keine Matches",
+        "usually_bans": "Bannt meist",
+        "usually_picks": "Pickt meist",
+        "likely_ban": "Ban erwartet",
+        "likely_pick": "Pick erwartet",
+        "team_bans": "{team} bannt sie in {n} von {of} Vetos",
+        "team_picks": "{team} pickt sie in {n} von {of} Vetos",
+        "captain_bans": "{captain} bannt sie als Captain in {n} von {of} Vetos",
+        "captain_picks": "{captain} pickt sie als Captain in {n} von {of} Vetos",
+        "players_note": "Je Seite die fünf Spieler mit ihren eigenen Matches auf dieser Map",
+        "record": "{team}: {wins} gewonnen, {losses} verloren auf dieser Map",
+        "edge": "Vorteil",
+        "edge_key": "die stärkere Seite auf jeder Map und um wie viele Punkte ihre Siegquote höher ist",
+        "too_few": "— unter {n} Matches",
+        "players_games": "Eigene Matches der Spieler",
+        "even": "Gleichauf",
+        "edge_ahead": "{team}: Siegquote hier {points} Punkte höher",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Siegquoten innerhalb von {points} Punkten",
+        "edge_few": "Zu wenige Matches hier für einen Vorteil",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} Matches",
+        "win_rate_on": "Siegquote auf {map}",
+        "edge_key_you": "um wie viele Punkte deine Siegquote auf jeder Map über (+) oder unter (−) ihrer liegt",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "blättern",
+        "choose": "wählen",
+        "clear": "aufheben"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "Einladung zurückziehen",
       "invite_to_draft": "Zum Draft einladen",
       "invite_sent": "{name} in deinen Draft eingeladen",
-      "picks_first": "{name} pickt zuerst",
       "match_starting": "Match startet — Server bootet",
       "no_regions_available_description": "In keiner Game-Server-Region sind Server verfügbar. Der Draft kann erst starten, wenn ein Server online geht — melde dich bei einem Admin.",
       "assign_all": "Alle Spieler zuweisen",

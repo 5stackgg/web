@@ -3189,6 +3189,11 @@
               "description": "Un team ha saltato un check-in obbligatorio del torneo. Viene verificato solo all'ingresso, quindi un giocatore già in un bracket in corso mantiene il suo posto."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Scouting del veto",
+          "description": "Durante il veto delle mappe, mostra il bilancio di ogni lato su ogni mappa, i ban e i pick abituali dell'altro lato e la sua probabile prossima mossa. Le partite di squadra usano lo storico della squadra; le pick-up usano le partite dei giocatori stessi e i veti passati del capitano. È attivo per ogni modalità finché non lo disattivi qui.",
+          "updated": "Scouting del veto aggiornato"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "Conferma {side}",
       "your_side_on": "Il tuo lato iniziale su {map}",
       "their_side_on": "{team} sceglie il lato su {map}",
-      "not_set": "Da definire"
+      "not_set": "Da definire",
+      "scout": {
+        "you": "Tu",
+        "no_games": "Nessuna partita",
+        "usually_bans": "Banna spesso",
+        "usually_picks": "Sceglie spesso",
+        "likely_ban": "Ban probabile",
+        "likely_pick": "Pick probabile",
+        "team_bans": "{team} la banna in {n} veti su {of}",
+        "team_picks": "{team} la sceglie in {n} veti su {of}",
+        "captain_bans": "{captain} la banna in {n} veti su {of} da capitano",
+        "captain_picks": "{captain} la sceglie in {n} veti su {of} da capitano",
+        "players_note": "I cinque giocatori di ogni lato, con le loro partite su questa mappa",
+        "record": "{team}: {wins} vinte, {losses} perse su questa mappa",
+        "edge": "Vantaggio",
+        "edge_key": "il lato più forte su ogni mappa e di quanti punti è più alta la sua percentuale di vittorie",
+        "too_few": "— meno di {n} partite",
+        "players_games": "Partite dei giocatori stessi",
+        "even": "Pari",
+        "edge_ahead": "{team}: percentuale vittorie più alta di {points} punti qui",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Percentuali vittorie entro {points} punti",
+        "edge_few": "Troppo poche partite qui per calcolare un vantaggio",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} partite",
+        "win_rate_on": "Percentuale vittorie su {map}",
+        "edge_key_you": "di quanti punti la tua percentuale di vittorie è sopra (+) o sotto (−) la loro su ogni mappa",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "sfoglia",
+        "choose": "scegli",
+        "clear": "azzera"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "Annulla invito",
       "invite_to_draft": "Invita al draft",
       "invite_sent": "Hai invitato {name} al tuo draft",
-      "picks_first": "{name} sceglie per primo",
       "match_starting": "Avvio match — avvio server in corso",
       "no_regions_available_description": "Nessuna regione ha server disponibili. Il draft non può iniziare finché un server non torna online — contatta un amministratore.",
       "assign_all": "Assegna tutti i giocatori",

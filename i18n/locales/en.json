@@ -3189,6 +3189,11 @@
               "description": "A team missed a required tournament check-in. Checked on the way in only, so a player already in a running bracket keeps their place."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto scouting",
+          "description": "During a map veto, show each side's record on every map, the other side's usual bans and picks, and their likely next move. Team matches use the team's history; pickups use the players' own games and the captain's past vetoes. It is on for every mode until you switch it off here.",
+          "updated": "Veto scouting updated"
         }
       },
       "language": {
@@ -9546,7 +9551,40 @@
       "confirm_side": "Confirm {side}",
       "your_side_on": "Your starting side on {map}",
       "their_side_on": "{team} picks a side on {map}",
-      "not_set": "Not set"
+      "not_set": "Not set",
+      "scout": {
+        "you": "You",
+        "no_games": "No games",
+        "usually_bans": "Usually bans",
+        "usually_picks": "Usually picks",
+        "likely_ban": "Likely ban",
+        "likely_pick": "Likely pick",
+        "team_bans": "{team} ban it in {n} of {of} vetoes",
+        "team_picks": "{team} pick it in {n} of {of} vetoes",
+        "captain_bans": "{captain} bans it in {n} of {of} vetoes as captain",
+        "captain_picks": "{captain} picks it in {n} of {of} vetoes as captain",
+        "players_note": "Each side's five players, their own games on this map",
+        "record": "{team}: {wins} won, {losses} lost on this map",
+        "edge": "Edge",
+        "edge_key": "the stronger side on each map, and how many points higher its win rate is",
+        "too_few": "— under {n} games",
+        "players_games": "Players' own games",
+        "even": "Even",
+        "edge_ahead": "{team} win here {points} points more often",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Win rates within {points} points",
+        "edge_few": "Too few games here for an edge",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} games",
+        "win_rate_on": "Win rate on {map}",
+        "edge_key_you": "how many points your win rate is above (+) or below (−) theirs on each map",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "browse",
+        "choose": "choose",
+        "clear": "clear"
+      }
     }
   },
   "ui": {
@@ -11004,7 +11042,6 @@
       "cancel_invite": "Cancel Invite",
       "invite_to_draft": "Invite to Draft",
       "invite_sent": "Invited {name} to your draft",
-      "picks_first": "{name} picks first",
       "match_starting": "Match Starting — Booting Server",
       "no_regions_available_description": "No game server regions have servers available. The draft cannot start until a server comes online — contact an administrator.",
       "assign_all": "Assign All Players",

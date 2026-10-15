@@ -3189,6 +3189,11 @@
               "description": "Et hold missede et påkrævet turnerings-check-in. Tjekkes kun ved indgangen, så en spiller, der allerede er i en igangværende bracket, beholder sin plads."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto-scouting",
+          "description": "Vis under et bane-veto hver sides resultater på hver bane, modstanderens sædvanlige bans og picks og deres sandsynlige næste træk. Holdkampe bruger holdets historik; pick-up-kampe bruger spillernes egne kampe og anførerens tidligere vetoer. Det er slået til for alle tilstande, indtil du slår det fra her.",
+          "updated": "Veto-scouting opdateret"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "Bekræft {side}",
       "your_side_on": "Din startside på {map}",
       "their_side_on": "{team} vælger side på {map}",
-      "not_set": "Ikke valgt"
+      "not_set": "Ikke valgt",
+      "scout": {
+        "you": "Dig",
+        "no_games": "Ingen kampe",
+        "usually_bans": "Banner typisk",
+        "usually_picks": "Picker typisk",
+        "likely_ban": "Forventet ban",
+        "likely_pick": "Forventet pick",
+        "team_bans": "{team} banner den i {n} af {of} vetoer",
+        "team_picks": "{team} picker den i {n} af {of} vetoer",
+        "captain_bans": "{captain} banner den i {n} af {of} vetoer som anfører",
+        "captain_picks": "{captain} picker den i {n} af {of} vetoer som anfører",
+        "players_note": "Hver sides fem spillere, deres egne kampe på denne bane",
+        "record": "{team}: {wins} vundet, {losses} tabt på denne bane",
+        "edge": "Fordel",
+        "edge_key": "den stærkeste side på hver bane, og hvor mange point højere dens sejrsrate er",
+        "too_few": "— under {n} kampe",
+        "players_games": "Spillernes egne kampe",
+        "even": "Lige",
+        "edge_ahead": "{team}: sejrsrate her {points} point højere",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Sejrsrater inden for {points} point",
+        "edge_few": "For få kampe her til at vise en fordel",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} kampe",
+        "win_rate_on": "Sejrsrate på {map}",
+        "edge_key_you": "hvor mange point din sejrsrate ligger over (+) eller under (−) deres på hver bane",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "bladr",
+        "choose": "vælg",
+        "clear": "ryd"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "Annullér invitation",
       "invite_to_draft": "Invitér til draft",
       "invite_sent": "Inviterede {name} til din draft",
-      "picks_first": "{name} vælger først",
       "match_starting": "Kampen starter — serveren booter",
       "no_regions_available_description": "Ingen game server-regioner har ledige servere. Draften kan ikke starte, før en server kommer online — kontakt en administrator.",
       "assign_all": "Fordel alle spillere",

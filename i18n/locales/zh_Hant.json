@@ -3189,6 +3189,11 @@
               "description": "隊伍錯過了賽事的必要報到。僅在進入時檢查，因此已經在進行中的對戰表裡的玩家會保留位置。"
             }
           }
+        },
+        "veto_scouting": {
+          "title": "BP 情報",
+          "description": "地圖 BP 期間，顯示雙方在每張地圖上的戰績、對方常用的禁用與選擇，以及其可能的下一步。戰隊比賽使用戰隊的歷史紀錄；路人局使用玩家自己的比賽與隊長過往的 BP。所有模式均預設開啟，可在此處關閉。",
+          "updated": "BP 情報已更新"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "確認 {side}",
       "your_side_on": "你在 {map} 的開局陣營",
       "their_side_on": "{team} 正在為 {map} 選擇陣營",
-      "not_set": "待定"
+      "not_set": "待定",
+      "scout": {
+        "you": "你",
+        "no_games": "尚無比賽",
+        "usually_bans": "常禁用",
+        "usually_picks": "常選擇",
+        "likely_ban": "可能禁用",
+        "likely_pick": "可能選擇",
+        "team_bans": "{team} 在 {of} 次 BP 中 {n} 次禁用此圖",
+        "team_picks": "{team} 在 {of} 次 BP 中 {n} 次選擇此圖",
+        "captain_bans": "{captain} 以隊長身分在 {of} 次 BP 中 {n} 次禁用此圖",
+        "captain_picks": "{captain} 以隊長身分在 {of} 次 BP 中 {n} 次選擇此圖",
+        "players_note": "雙方各五名玩家在此地圖上的個人比賽",
+        "record": "{team}：此地圖 {wins} 勝 {losses} 負",
+        "edge": "優勢",
+        "edge_key": "每張地圖上較強的一方，以及其勝率高出多少個百分點",
+        "too_few": "— 少於 {n} 場比賽",
+        "players_games": "玩家自己的比賽",
+        "even": "持平",
+        "edge_ahead": "{team}：此圖勝率高出 {points} 個百分點",
+        "edge_short": "{team} +{points}",
+        "edge_even": "勝率相差不超過 {points} 個百分點",
+        "edge_few": "此圖比賽太少，無法判斷優勢",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}：{n} 場比賽",
+        "win_rate_on": "{map} 勝率",
+        "edge_key_you": "每張地圖上你的勝率比對方高 (+) 或低 (−) 多少個百分點",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "瀏覽",
+        "choose": "選擇",
+        "clear": "清除"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "取消邀請",
       "invite_to_draft": "邀請加入選人",
       "invite_sent": "已邀請 {name} 加入您的選人房",
-      "picks_first": "{name} 先選",
       "match_starting": "比賽開始 — 啟動伺服器中",
       "no_regions_available_description": "沒有任何遊戲伺服器地區有可用伺服器。在伺服器上線前無法開始選人——請聯絡管理員。",
       "assign_all": "分配所有玩家",

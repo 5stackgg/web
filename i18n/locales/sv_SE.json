@@ -3189,6 +3189,11 @@
               "description": "Ett lag missade en obligatorisk turneringsincheckning. Kontrolleras bara vid ingången, så en spelare som redan är i ett pågående slutspelsträd behåller sin plats."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto-scouting",
+          "description": "Visa under ett kartveto varje sidas facit på varje karta, motståndarens vanliga bann och val och deras troliga nästa drag. Lagmatcher använder lagets historik; pick-up-matcher använder spelarnas egna matcher och lagkaptenens tidigare veton. Det är på för alla lägen tills du stänger av det här.",
+          "updated": "Veto-scouting uppdaterad"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "Bekräfta {side}",
       "your_side_on": "Din startsida på {map}",
       "their_side_on": "{team} väljer sida på {map}",
-      "not_set": "Inte vald"
+      "not_set": "Inte vald",
+      "scout": {
+        "you": "Du",
+        "no_games": "Inga matcher",
+        "usually_bans": "Brukar banna",
+        "usually_picks": "Brukar välja",
+        "likely_ban": "Trolig bann",
+        "likely_pick": "Troligt val",
+        "team_bans": "{team} bannar den i {n} av {of} veton",
+        "team_picks": "{team} väljer den i {n} av {of} veton",
+        "captain_bans": "{captain} bannar den i {n} av {of} veton som lagkapten",
+        "captain_picks": "{captain} väljer den i {n} av {of} veton som lagkapten",
+        "players_note": "Varje sidas fem spelare, deras egna matcher på den här kartan",
+        "record": "{team}: {wins} vunna, {losses} förlorade på den här kartan",
+        "edge": "Fördel",
+        "edge_key": "den starkare sidan på varje karta och hur många procentenheter högre dess vinstandel är",
+        "too_few": "— under {n} matcher",
+        "players_games": "Spelarnas egna matcher",
+        "even": "Jämnt",
+        "edge_ahead": "{team}: vinstandel här {points} procentenheter högre",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Vinstandelar inom {points} procentenheter",
+        "edge_few": "För få matcher här för en fördel",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} matcher",
+        "win_rate_on": "Vinstandel på {map}",
+        "edge_key_you": "hur många procentenheter din vinstandel ligger över (+) eller under (−) deras på varje karta",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "bläddra",
+        "choose": "välj",
+        "clear": "rensa"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "Avbryt inbjudan",
       "invite_to_draft": "Bjud in till draft",
       "invite_sent": "Bjöd in {name} till din draft",
-      "picks_first": "{name} väljer först",
       "match_starting": "Matchen startar — startar server",
       "no_regions_available_description": "Inga spelserverregioner har lediga servrar. Draften kan inte starta förrän en server kommer online — kontakta en administratör.",
       "assign_all": "Tilldela alla spelare",

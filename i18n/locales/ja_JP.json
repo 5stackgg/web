@@ -3189,6 +3189,11 @@
               "description": "チームが必須のトーナメントチェックインを逃しました。参加時にのみ判定されるため、進行中のブラケットにいるプレイヤーはその場所を保持します。"
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto スカウティング",
+          "description": "マップ Veto 中に、各マップでの両サイドの戦績、相手サイドがよく BAN・Pick するマップ、次の一手の予想を表示します。チームマッチではチームの履歴を、ピックアップマッチでは各プレイヤー自身の試合とキャプテンの過去の Veto を使います。ここでオフにするまで、すべてのモードでオンになっています。",
+          "updated": "Veto スカウティングを更新しました"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "{side} を確定",
       "your_side_on": "{map} でのあなたの開始サイド",
       "their_side_on": "{team} が {map} のサイドを選択中",
-      "not_set": "未定"
+      "not_set": "未定",
+      "scout": {
+        "you": "あなた",
+        "no_games": "試合なし",
+        "usually_bans": "よく BAN",
+        "usually_picks": "よく Pick",
+        "likely_ban": "BAN 予想",
+        "likely_pick": "Pick 予想",
+        "team_bans": "{team} は {of} 回の Veto のうち {n} 回 BAN",
+        "team_picks": "{team} は {of} 回の Veto のうち {n} 回 Pick",
+        "captain_bans": "{captain} はキャプテンとして {of} 回の Veto のうち {n} 回 BAN",
+        "captain_picks": "{captain} はキャプテンとして {of} 回の Veto のうち {n} 回 Pick",
+        "players_note": "各サイドの 5 人それぞれの、このマップでの試合",
+        "record": "{team}：このマップで {wins}勝 {losses}敗",
+        "edge": "優位",
+        "edge_key": "各マップで優勢なサイドと、その勝率が何ポイント高いか",
+        "too_few": "— {n} 試合未満",
+        "players_games": "プレイヤー自身の試合",
+        "even": "互角",
+        "edge_ahead": "{team}：ここでの勝率が {points} ポイント高い",
+        "edge_short": "{team} +{points}",
+        "edge_even": "勝率の差が {points} ポイント以内",
+        "edge_few": "試合数が少なく、ここでは優位を出せません",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}：{n} 試合",
+        "win_rate_on": "{map} での勝率",
+        "edge_key_you": "各マップで、あなたの勝率が相手より何ポイント上 (+) か下 (−) か",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "移動",
+        "choose": "選択",
+        "clear": "解除"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "招待を取り消す",
       "invite_to_draft": "ドラフトに招待",
       "invite_sent": "{name} をドラフトに招待しました",
-      "picks_first": "{name} が先に指名します",
       "match_starting": "試合開始 — サーバー起動中",
       "no_regions_available_description": "利用可能なサーバーがあるリージョンはありません。サーバーがオンラインになるまでドラフトは開始できません。管理者にお問い合わせください。",
       "assign_all": "全員を割り当て",

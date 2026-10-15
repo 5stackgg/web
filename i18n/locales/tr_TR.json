@@ -3189,6 +3189,11 @@
               "description": "Bir takım zorunlu turnuva katılım onayını kaçırdı. Yalnızca girişte kontrol edilir, dolayısıyla devam eden bir eşleşme tablosundaki oyuncu yerini korur."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "Veto analizi",
+          "description": "Harita vetosu sırasında her tarafın her haritadaki sonuçlarını, rakibin her zamanki ban ve pick'lerini ve olası sonraki hamlesini göster. Takım maçları takımın geçmişini kullanır; pick-up maçları oyuncuların kendi maçlarını ve kaptanın önceki vetolarını kullanır. Buradan kapatana kadar tüm modlarda açıktır.",
+          "updated": "Veto analizi güncellendi"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "{side} tarafını onayla",
       "your_side_on": "{map} haritasında başlangıç tarafın",
       "their_side_on": "{team}, {map} haritasında taraf seçiyor",
-      "not_set": "Belirlenmedi"
+      "not_set": "Belirlenmedi",
+      "scout": {
+        "you": "Sen",
+        "no_games": "Maç yok",
+        "usually_bans": "Genelde banlar",
+        "usually_picks": "Genelde seçer",
+        "likely_ban": "Olası ban",
+        "likely_pick": "Olası pick",
+        "team_bans": "{team}, {of} vetoda {n} kez bu haritayı banladı",
+        "team_picks": "{team}, {of} vetoda {n} kez bu haritayı seçti",
+        "captain_bans": "{captain}, kaptan olarak {of} vetoda {n} kez bu haritayı banladı",
+        "captain_picks": "{captain}, kaptan olarak {of} vetoda {n} kez bu haritayı seçti",
+        "players_note": "Her tarafın beş oyuncusu, bu haritadaki kendi maçları",
+        "record": "{team}: bu haritada {wins} galibiyet, {losses} mağlubiyet",
+        "edge": "Üstünlük",
+        "edge_key": "her haritada güçlü olan taraf ve galibiyet oranının kaç puan yüksek olduğu",
+        "too_few": "— {n} maçtan az",
+        "players_games": "Oyuncuların kendi maçları",
+        "even": "Denk",
+        "edge_ahead": "{team}: burada galibiyet oranı {points} puan daha yüksek",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Galibiyet oranları arasında en fazla {points} puan fark var",
+        "edge_few": "Üstünlük için burada yeterince maç yok",
+        "rate_line": "{team} %{rate}",
+        "games_line": "{team}: {n} maç",
+        "win_rate_on": "{map} haritasında galibiyet oranı",
+        "edge_key_you": "her haritada galibiyet oranının onlarınkinden kaç puan yüksek (+) ya da düşük (−) olduğu",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "gezin",
+        "choose": "seç",
+        "clear": "temizle"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "Daveti İptal Et",
       "invite_to_draft": "Seçime Davet Et",
       "invite_sent": "{name} seçimine davet edildi",
-      "picks_first": "İlk seçimi {name} yapıyor",
       "match_starting": "Maç Başlıyor — Sunucu Açılıyor",
       "no_regions_available_description": "Hiçbir sunucu bölgesinde kullanılabilir sunucu yok. Bir sunucu çevrimiçi olmadan seçim başlayamaz — bir yöneticiye ulaş.",
       "assign_all": "Tüm Oyuncuları Ata",

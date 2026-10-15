@@ -3189,6 +3189,11 @@
               "description": "팀이 필수 토너먼트 체크인을 놓쳤습니다. 진입할 때만 확인하므로 이미 진행 중인 대진표에 있는 플레이어는 자리를 유지합니다."
             }
           }
+        },
+        "veto_scouting": {
+          "title": "밴픽 스카우팅",
+          "description": "맵 밴픽 중에 각 맵에서 양 진영의 전적, 상대 진영이 주로 밴·픽하는 맵, 예상되는 다음 선택을 보여줍니다. 팀 매치는 팀 기록을, 픽업 매치는 플레이어 개인의 경기와 팀장의 이전 밴픽을 사용합니다. 여기서 끄기 전까지 모든 모드에서 켜져 있습니다.",
+          "updated": "밴픽 스카우팅이 업데이트되었습니다"
         }
       },
       "language": {
@@ -9544,7 +9549,40 @@
       "confirm_side": "{side} 확정",
       "your_side_on": "{map}의 내 시작 진영",
       "their_side_on": "{team}이(가) {map} 진영 선택 중",
-      "not_set": "미정"
+      "not_set": "미정",
+      "scout": {
+        "you": "나",
+        "no_games": "경기 없음",
+        "usually_bans": "주로 밴",
+        "usually_picks": "주로 픽",
+        "likely_ban": "밴 예상",
+        "likely_pick": "픽 예상",
+        "team_bans": "{team}이(가) 밴픽 {of}회 중 {n}회 밴",
+        "team_picks": "{team}이(가) 밴픽 {of}회 중 {n}회 픽",
+        "captain_bans": "{captain} 님이 팀장으로서 밴픽 {of}회 중 {n}회 밴",
+        "captain_picks": "{captain} 님이 팀장으로서 밴픽 {of}회 중 {n}회 픽",
+        "players_note": "각 진영 5명의 이 맵 개인 경기 기록",
+        "record": "{team}: 이 맵에서 {wins}승 {losses}패",
+        "edge": "우위",
+        "edge_key": "각 맵에서 더 강한 진영과 그 승률이 몇 %p 더 높은지",
+        "too_few": "— {n}경기 미만",
+        "players_games": "플레이어 개인 경기",
+        "even": "호각",
+        "edge_ahead": "{team}: 이 맵 승률 {points}%p 높음",
+        "edge_short": "{team} +{points}",
+        "edge_even": "승률 차이 {points}%p 이내",
+        "edge_few": "경기 수가 너무 적어 우위를 계산할 수 없음",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n}경기",
+        "win_rate_on": "{map} 승률",
+        "edge_key_you": "각 맵에서 내 승률이 상대보다 몇 %p 높은지 (+) 낮은지 (−)",
+        "edge_short_behind": "{team} −{points}"
+      },
+      "keys": {
+        "browse": "탐색",
+        "choose": "선택",
+        "clear": "해제"
+      }
     }
   },
   "ui": {
@@ -10999,7 +11037,6 @@
       "cancel_invite": "초대 취소",
       "invite_to_draft": "드래프트에 초대",
       "invite_sent": "{name}님을 드래프트에 초대했습니다",
-      "picks_first": "{name}님이 먼저 픽합니다",
       "match_starting": "매치 시작 중 — 서버 부팅 중",
       "no_regions_available_description": "사용 가능한 게임 서버 지역이 없습니다. 서버가 온라인 상태가 될 때까지 드래프트를 시작할 수 없습니다 — 관리자에게 문의하세요.",
       "assign_all": "모든 플레이어 배정",

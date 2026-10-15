@@ -29,6 +29,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
           :deadline="vetoPickDeadline"
           :total="match.options.veto_pick_timeout"
           :best-of="bestOf"
+          :scouting="scoutingView"
           @confirm="onConfirm"
         />
       </div>
@@ -52,6 +53,9 @@ import { toast } from "@/components/ui/toast";
 import mapLabel from "~/utilities/mapLabel";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
 import { lineupSlot, vetoLineups } from "~/utilities/vetoLineups";
+import { loadVetoScouting } from "~/utilities/loadVetoScouting";
+import type { ScoutLineup } from "~/utilities/vetoScouting";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   props: {
@@ -114,6 +118,7 @@ export default {
     return {
       submitting: false,
       picks: undefined,
+      scouting: null as [ScoutLineup | null, ScoutLineup | null] | null,
       playTickSound: useSound().playTickSound,
       playMatchFoundSound: useSound().playMatchFoundSound,
     };
@@ -127,6 +132,23 @@ export default {
         }
 
         this.playMatchFoundSound();
+      },
+    },
+    // History does not change during a veto, so it loads once per veto.
+    scoutingKey: {
+      immediate: true,
+      async handler(key) {
+        this.scouting = null;
+        if (!key) {
+          return;
+        }
+        const scouting = await loadVetoScouting(
+          this.match,
+          this.mapPool.map((map: any) => map.id),
+        );
+        if (key === this.scoutingKey) {
+          this.scouting = scouting;
+        }
       },
     },
     picks: {
@@ -280,6 +302,55 @@ export default {
     },
     lineups() {
       return vetoLineups(this.match, this.$t);
+    },
+    scoutingEnabled() {
+      return useApplicationSettingsStore().vetoScoutingEnabled(
+        this.match.options?.type,
+      );
+    },
+    scoutingKey() {
+      if (!this.scoutingEnabled || !this.mapPool.length) {
+        return null;
+      }
+      return [
+        this.match.id,
+        this.match.lineup_1_id,
+        this.match.lineup_2_id,
+        ...this.mapPool.map((map: any) => map.id),
+      ].join("|");
+    },
+    // The lineup you play on, so your side reads "You" and you see the other
+    // side's habits.
+    viewerLineup(): 1 | 2 | null {
+      const steamId = useAuthStore().me?.steam_id;
+      if (!steamId) {
+        return null;
+      }
+      const on = (lineup: any) =>
+        (lineup?.lineup_players ?? []).some(
+          (member: any) => String(member.steam_id) === String(steamId),
+        );
+      if (on(this.match.lineup_1)) {
+        return 1;
+      }
+      if (on(this.match.lineup_2)) {
+        return 2;
+      }
+      return null;
+    },
+    // On from the first frame, so the board keeps its height while the
+    // history loads; dropped only when there turns out to be none.
+    scoutingView() {
+      if (!this.scoutingKey) {
+        return null;
+      }
+      if (this.scouting && !this.scouting.some(Boolean)) {
+        return null;
+      }
+      return {
+        lineups: this.scouting ?? ([null, null] as [null, null]),
+        viewer: this.viewerLineup,
+      };
     },
     steps() {
       const picks = this.picks ?? [];

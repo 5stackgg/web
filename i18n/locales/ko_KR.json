@@ -1770,6 +1770,9 @@
         "matchmaking": "매치메이킹",
         "update_success": "프로필 업데이트됨",
         "discord": {
+          "title": "Discord",
+          "description": "매치 시 팀 음성 채널로 자동 이동합니다",
+          "linked": "연동됨",
           "unlink": "Discord 연동 해제",
           "link": "Discord 연동",
           "unlink_dialog": {

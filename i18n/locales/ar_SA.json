@@ -1770,6 +1770,9 @@
         "matchmaking": "Matchmaking",
         "update_success": "تم تحديث الملف الشخصي",
         "discord": {
+          "title": "Discord",
+          "description": "انتقل تلقائيًا إلى القناة الصوتية لفريقك في المباريات",
+          "linked": "مرتبط",
           "unlink": "افصل Discord",
           "link": "اربط Discord",
           "unlink_dialog": {

@@ -1770,6 +1770,9 @@
         "matchmaking": "Matchmaking",
         "update_success": "Profil mis à jour",
         "discord": {
+          "title": "Discord",
+          "description": "Soyez déplacé dans le salon vocal de votre équipe pendant les matchs",
+          "linked": "Lié",
           "unlink": "Délier Discord",
           "link": "Lier Discord",
           "unlink_dialog": {

@@ -1770,6 +1770,9 @@
         "matchmaking": "Matchmaking",
         "update_success": "Updated Profile",
         "discord": {
+          "title": "Discord",
+          "description": "Get moved into your team's voice channel for matches",
+          "linked": "Linked",
           "unlink": "Unlink Discord",
           "link": "Link Discord",
           "unlink_dialog": {

@@ -1770,6 +1770,9 @@
         "matchmaking": "Matchmaking",
         "update_success": "Profil opdateret",
         "discord": {
+          "title": "Discord",
+          "description": "Bliv flyttet til dit holds stemmekanal til kampe",
+          "linked": "Tilknyttet",
           "unlink": "Fjern Discord",
           "link": "Tilknyt Discord",
           "unlink_dialog": {

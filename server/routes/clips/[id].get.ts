@@ -68,7 +68,9 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (!clip || !clip.download_url) {
+  // Asked with the admin secret, so this sees every clip and its signed links.
+  // Only a public clip's links may go out to whoever fetches this page.
+  if (!clip || clip.visibility !== "public" || !clip.download_url) {
     return sendRedirect(event, fallback, 302);
   }
 

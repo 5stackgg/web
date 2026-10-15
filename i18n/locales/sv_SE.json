@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "Servern är offline",
       "booting": "Servern startar",
-      "booting_line": "Startar din matchserver",
       "assign": "Tilldela matchserver",
       "select": "Välj en server",
       "dedicated": "Dedikerade servrar",

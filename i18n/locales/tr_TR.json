@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "Sunucu çevrimdışı.",
       "booting": "Sunucu açılıyor",
-      "booting_line": "Maç sunucun başlatılıyor",
       "assign": "Maç sunucusu ata",
       "select": "Sunucu seç",
       "dedicated": "Özel sunucular",

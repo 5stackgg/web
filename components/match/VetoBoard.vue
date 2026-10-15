@@ -1118,7 +1118,7 @@ onBeforeUnmount(() => {
     <!-- One line through the veto: your turn changes its colour and words,
          never its height. Once the veto is done it folds away. -->
     <Transition name="vb-status">
-      <div v-if="!done" class="vb-status" aria-live="polite">
+      <div v-if="!done && !start" class="vb-status" aria-live="polite">
         <VetoCrest
           v-if="actingLineup"
           :lineup="lineups[actingLineup - 1]"
@@ -1149,8 +1149,11 @@ onBeforeUnmount(() => {
       </div>
     </Transition>
 
+    <!-- A page opened on the start has the maps before the veto's moves
+         arrive; the order of play fades in with them. -->
     <VetoRail
       ref="railRef"
+      :class="{ 'vb-rail-hold': !!start && !recordCount }"
       :kind="kind"
       :items="items"
       :steps="steps"
@@ -1707,6 +1710,12 @@ onBeforeUnmount(() => {
   height: 46px;
   padding: 0 4px 2px;
   min-width: 0;
+}
+.vb > .vr {
+  transition: opacity 200ms ease;
+}
+.vb > .vr.vb-rail-hold {
+  opacity: 0;
 }
 .vb-status-leave-active {
   overflow: hidden;

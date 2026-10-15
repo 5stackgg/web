@@ -416,8 +416,9 @@ export default {
       if (this.startPhase) {
         return true;
       }
+      // The finished veto stays up, once its moves have arrived.
       if (!this.stage && this.regionSet && vetoMapsSet(this.match)) {
-        return true;
+        return this.picks !== undefined;
       }
       return (
         this.regionSet &&

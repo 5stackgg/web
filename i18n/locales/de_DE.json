@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "Server ist offline",
       "booting": "Server startet",
-      "booting_line": "Dein Match-Server wird gestartet",
       "assign": "Match-Server zuweisen",
       "select": "Server wählen",
       "dedicated": "Dedicated Server",

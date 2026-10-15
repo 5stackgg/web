@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "服务器离线！",
       "booting": "服务器启动中",
-      "booting_line": "正在启动你的比赛服务器",
       "assign": "分配比赛服务器",
       "select": "选择服务器",
       "dedicated": "专用服务器",

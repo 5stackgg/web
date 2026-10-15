@@ -56,13 +56,15 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
       <!-- Booting and connect share one card, the size of the join row, so
            one turns into the other where it stands. -->
       <div v-else-if="showBooting" key="booting">
-        <div class="qmc-card">
+        <div class="qmc-card" :style="posterStyle">
           <div class="qmc-boot">
-            <Spinner class="qmc-boot-icon" />
-            <span class="qmc-boot-text">
-              <b>{{ $t("match.server.booting") }}</b>
-              <span>{{ $t("match.server.booting_line") }}</span>
-            </span>
+            <div class="qmc-glass">
+              <Spinner class="qmc-boot-icon" />
+              <span class="qmc-boot-text">
+                <b>{{ $t("match.veto.start.booting") }}</b>
+                <span>{{ $t("match.veto.start.booting_line") }}</span>
+              </span>
+            </div>
           </div>
           <p
             v-if="match.server_error"
@@ -74,10 +76,10 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
       </div>
 
       <div v-else-if="showConnect" key="connect">
-        <div class="qmc-card flex items-center gap-2">
+        <div class="qmc-card flex items-center gap-2" :style="posterStyle">
           <ClipBoard
             :data="match.connection_string"
-            class="shrink-0 p-3 h-12 w-12 connect-action"
+            class="qmc-copy shrink-0 p-3 h-12 w-12 connect-action"
             :class="{
               grow: !match.connection_link,
             }"
@@ -125,22 +127,51 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 </template>
 
 <style scoped>
-/* The same card the veto's start stage shows the server's state in. */
+/* The map being played, as the veto's start panels show it, with the
+   server's state on glass over it; the join row takes the same card. */
 .qmc-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: 12px;
   border-radius: 12px;
+  background-color: hsl(var(--popover));
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    inset 0 0 0 1px hsl(0 0% 100% / 0.1),
+    0 12px 32px rgb(0 0 0 / 0.35);
+}
+.qmc-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    hsl(240 10% 4% / 0.82),
+    hsl(240 10% 4% / 0.45)
+  );
+}
+.qmc-boot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+}
+.qmc-glass {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 16px 6px 12px;
+  border-radius: 10px;
   background: hsl(240 10% 4% / 0.72);
   backdrop-filter: blur(10px);
   box-shadow:
     inset 0 0 0 1px hsl(0 0% 100% / 0.12),
     0 12px 32px rgb(0 0 0 / 0.45);
-}
-.qmc-boot {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-height: 48px;
-  padding: 0 6px;
 }
 .qmc-boot-icon {
   flex: none;
@@ -158,13 +189,22 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* Both lines fit the join row's 48px, so the swap moves nothing. */
 .qmc-boot-text b {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
+  line-height: 1.2;
 }
 .qmc-boot-text span {
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.2;
   color: hsl(0 0% 100% / 0.72);
+}
+.qmc-copy {
+  border-color: transparent;
+  background: hsl(240 10% 4% / 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.12);
 }
 .qmc-join {
   font-weight: 700;
@@ -244,6 +284,14 @@ export default {
   computed: {
     isLive() {
       return this.match.status === e_match_status_enum.Live;
+    },
+    posterStyle() {
+      const maps = this.match.match_maps ?? [];
+      const map = (maps.find((entry: any) => entry.is_current_map) ?? maps[0])
+        ?.map;
+      return map?.poster
+        ? { backgroundImage: `url("${map.poster}")` }
+        : undefined;
     },
     isAssignedOnDemandServerBooting() {
       return (

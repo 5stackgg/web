@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "서버가 오프라인입니다",
       "booting": "서버 부팅 중",
-      "booting_line": "매치 서버를 시작하는 중",
       "assign": "매치 서버 지정",
       "select": "서버 선택",
       "dedicated": "데디케이티드 서버",

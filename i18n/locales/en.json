@@ -9335,7 +9335,6 @@
     "server": {
       "offline": "Server is offline!",
       "booting": "Server Booting",
-      "booting_line": "Starting your match server",
       "assign": "Assign Match Server",
       "select": "Select a server",
       "dedicated": "Dedicated Servers",

@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "サーバーがオフラインです！",
       "booting": "サーバー起動中",
-      "booting_line": "試合サーバーを起動しています",
       "assign": "マッチサーバーを割り当て",
       "select": "サーバーを選択",
       "dedicated": "専用サーバー",

@@ -471,6 +471,21 @@ describe("VetoBoard start", () => {
     expect(wrapper.find(".vb-scoutkey").exists()).toBe(false);
   });
 
+  it("says nothing about a turn while the moves of a finished veto load", async () => {
+    const wrapper = await mount({
+      steps: steps([]),
+      viewer: 1,
+      scouting: null,
+      start: { phase: "booting", maps },
+    });
+
+    expect(wrapper.find(".vb-status").exists()).toBe(false);
+    expect(wrapper.find(".vr").classes()).toContain("vb-rail-hold");
+
+    await wrapper.setProps({ steps: done });
+    expect(wrapper.find(".vr").classes()).not.toContain("vb-rail-hold");
+  });
+
   it("folds the maps away as soon as the server is ready", async () => {
     const wrapper = await mount({
       steps: done,

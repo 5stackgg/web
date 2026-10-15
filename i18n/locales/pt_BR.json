@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "Servidor está offline!",
       "booting": "Servidor Iniciando",
-      "booting_line": "Iniciando o servidor da sua partida",
       "assign": "Definir Servidor",
       "select": "Selecione o Servidor",
       "dedicated": "Servidores Dedicados",

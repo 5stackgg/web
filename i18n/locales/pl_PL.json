@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "Serwer jest offline",
       "booting": "Uruchamianie serwera",
-      "booting_line": "Uruchamianie serwera meczu",
       "assign": "Przypisz serwer meczu",
       "select": "Wybierz serwer",
       "dedicated": "Serwery dedykowane",

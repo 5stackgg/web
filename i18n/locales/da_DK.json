@@ -9333,7 +9333,6 @@
     "server": {
       "offline": "Serveren er offline",
       "booting": "Serveren starter op",
-      "booting_line": "Starter din kampserver",
       "assign": "Tildel kampserver",
       "select": "Vælg en server",
       "dedicated": "Dedikerede servere",

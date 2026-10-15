@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Actualités"
             },
+            "news_replies": {
+              "title": "Réponses aux commentaires"
+            },
             "staff_moderation": {
               "title": "Modération"
             },
@@ -2200,6 +2203,11 @@
               "title": "Articles d'actualité",
               "description": "Un nouvel article a été publié.",
               "example": "Notes de patch : mode Rush"
+            },
+            "NewsCommentReply": {
+              "title": "Réponses à vos commentaires",
+              "description": "Quelqu'un a répondu à votre commentaire sur un article d'actualité.",
+              "example": "kairo a répondu à votre commentaire"
             },
             "MatchSupport": {
               "title": "Assistance de match",
@@ -3584,6 +3592,71 @@
         "list_item": "Élément de liste",
         "quote": "Citation",
         "code": "code"
+      },
+      "comments": {
+        "title": "Commentaires",
+        "placeholder": "Ajouter un commentaire",
+        "post": "Publier le commentaire",
+        "reply": "Répondre",
+        "reply_placeholder": "Répondre à {name}",
+        "save": "Enregistrer",
+        "edit": "Modifier",
+        "edited": "modifié",
+        "delete": "Supprimer",
+        "copy_link": "Copier le lien",
+        "more_actions": "Actions du commentaire",
+        "hide": "Masquer…",
+        "restore": "Restaurer",
+        "hidden_badge": "Masqué",
+        "hidden_by": "Masqué par {name}",
+        "hidden_by_reason": "Masqué par {name} · motif : {reason}",
+        "deleted": "Ce commentaire a été supprimé.",
+        "removed_by_staff": "Retiré par la modération.",
+        "own_vote": "Vous ne pouvez pas mettre +1 à votre propre commentaire.",
+        "plus_one_label": "+1, {count} pour l'instant",
+        "minutes": "{count} min",
+        "edit_minutes_left": "Encore {count} min pour modifier",
+        "characters_left": "{count} caractère restant | {count} caractères restants",
+        "open_days": "Ouvert encore {count} jour | Ouvert encore {count} jours",
+        "open_hours": "Ouvert encore {count} heure | Ouvert encore {count} heures",
+        "sign_in_prompt": "Connectez-vous pour participer à la discussion.",
+        "sign_in": "Se connecter",
+        "read_only": {
+          "closed": "Les commentaires sont fermés. Les posts acceptent les commentaires pendant 7 jours après leur publication.",
+          "not_verified": "Seuls les joueurs vérifiés peuvent commenter et mettre +1.",
+          "banned": "Vous êtes banni et ne pouvez pas commenter.",
+          "gagged": "Vous êtes bâillonné et ne pouvez pas commenter.",
+          "muted": "Vous êtes mute et ne pouvez pas commenter."
+        },
+        "empty_open": "Aucun commentaire pour l'instant. Soyez le premier.",
+        "empty_closed": "Aucun commentaire sur ce post",
+        "load_failed": "Impossible de charger les commentaires.",
+        "try_again": "Réessayer",
+        "show_more": "Afficher plus de commentaires",
+        "hide_dialog": {
+          "title": "Masquer ce commentaire ?",
+          "description": "Les lecteurs verront « Retiré par la modération. » Les réponses restent à leur place. Vous pourrez le restaurer plus tard.",
+          "reason": "Motif (facultatif)",
+          "action": "Masquer"
+        },
+        "delete_dialog": {
+          "title": "Supprimer ce commentaire ?",
+          "description": "Cette action est irréversible. Les réponses restent à leur place."
+        },
+        "errors": {
+          "title": "Action impossible",
+          "generic": "Une erreur est survenue. Veuillez réessayer.",
+          "not_found": "Ce commentaire ou ce post n'existe plus.",
+          "empty": "Écrivez d'abord quelque chose.",
+          "too_long": "Un commentaire peut compter jusqu'à 2 000 caractères.",
+          "parent_removed": "Ce commentaire a été retiré, il n'accepte plus de réponses.",
+          "rate_limited": "Vous allez trop vite. Attendez une minute et réessayez.",
+          "daily_limit": "Vous avez atteint la limite de commentaires du jour.",
+          "not_yours": "Vous ne pouvez modifier que vos propres commentaires.",
+          "edit_window": "Un commentaire ne peut être modifié que pendant 10 minutes.",
+          "removed": "Ce commentaire a été retiré.",
+          "staff_only": "Seuls les modérateurs peuvent faire cela."
+        }
       }
     },
     "seasons": {

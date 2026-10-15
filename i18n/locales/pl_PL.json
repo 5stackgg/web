@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Aktualności"
             },
+            "news_replies": {
+              "title": "Odpowiedzi na komentarze"
+            },
             "staff_moderation": {
               "title": "Moderacja"
             },
@@ -2200,6 +2203,11 @@
               "title": "Artykuły",
               "description": "Opublikowano nowy artykuł.",
               "example": "Lista zmian: tryb Rush"
+            },
+            "NewsCommentReply": {
+              "title": "Odpowiedzi na Twoje komentarze",
+              "description": "Ktoś odpowiedział na Twój komentarz pod wpisem w aktualnościach.",
+              "example": "kairo odpowiedział na Twój komentarz"
             },
             "MatchSupport": {
               "title": "Pomoc w meczu",
@@ -3584,6 +3592,71 @@
         "list_item": "Element listy",
         "quote": "Cytat",
         "code": "kod"
+      },
+      "comments": {
+        "title": "Komentarze",
+        "placeholder": "Dodaj komentarz",
+        "post": "Opublikuj komentarz",
+        "reply": "Odpowiedz",
+        "reply_placeholder": "Odpowiedz {name}",
+        "save": "Zapisz",
+        "edit": "Edytuj",
+        "edited": "edytowano",
+        "delete": "Usuń",
+        "copy_link": "Kopiuj link",
+        "more_actions": "Akcje komentarza",
+        "hide": "Ukryj…",
+        "restore": "Przywróć",
+        "hidden_badge": "Ukryty",
+        "hidden_by": "Ukryte przez {name}",
+        "hidden_by_reason": "Ukryte przez {name} · powód: {reason}",
+        "deleted": "Ten komentarz został usunięty.",
+        "removed_by_staff": "Usunięte przez moderację.",
+        "own_vote": "Nie możesz dać +1 własnemu komentarzowi.",
+        "plus_one_label": "+1, na razie {count}",
+        "minutes": "{count} min",
+        "edit_minutes_left": "Zostało {count} min na edycję",
+        "characters_left": "Został {count} znak | Zostało {count} znaków",
+        "open_days": "Otwarte jeszcze przez {count} dzień | Otwarte jeszcze przez {count} dni",
+        "open_hours": "Otwarte jeszcze przez {count} godzinę | Otwarte jeszcze przez {count} godzin",
+        "sign_in_prompt": "Zaloguj się, aby dołączyć do rozmowy.",
+        "sign_in": "Zaloguj się",
+        "read_only": {
+          "closed": "Komentarze są zamknięte. Wpisy przyjmują komentarze przez 7 dni od publikacji.",
+          "not_verified": "Tylko zweryfikowani gracze mogą komentować i dawać +1.",
+          "banned": "Masz bana i nie możesz komentować.",
+          "gagged": "Masz zablokowany czat i nie możesz komentować.",
+          "muted": "Masz wyciszony czat głosowy i nie możesz komentować."
+        },
+        "empty_open": "Brak komentarzy. Bądź pierwszy.",
+        "empty_closed": "Brak komentarzy pod tym wpisem",
+        "load_failed": "Nie udało się wczytać komentarzy.",
+        "try_again": "Spróbuj ponownie",
+        "show_more": "Pokaż więcej komentarzy",
+        "hide_dialog": {
+          "title": "Ukryć ten komentarz?",
+          "description": "Czytelnicy zobaczą „Usunięte przez moderację.” Odpowiedzi zostaną na swoim miejscu. Możesz go później przywrócić.",
+          "reason": "Powód (opcjonalnie)",
+          "action": "Ukryj"
+        },
+        "delete_dialog": {
+          "title": "Usunąć ten komentarz?",
+          "description": "Tego nie można cofnąć. Odpowiedzi zostaną na swoim miejscu."
+        },
+        "errors": {
+          "title": "Nie udało się",
+          "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+          "not_found": "Ten komentarz lub wpis już nie istnieje.",
+          "empty": "Najpierw coś napisz.",
+          "too_long": "Komentarz może mieć maksymalnie 2000 znaków.",
+          "parent_removed": "Ten komentarz został usunięty, więc nie można na niego odpowiedzieć.",
+          "rate_limited": "Za szybko. Odczekaj minutę i spróbuj ponownie.",
+          "daily_limit": "Osiągnięto dzisiejszy limit komentarzy.",
+          "not_yours": "Możesz zmieniać tylko własne komentarze.",
+          "edit_window": "Komentarz można edytować tylko przez 10 minut.",
+          "removed": "Ten komentarz został usunięty.",
+          "staff_only": "Tylko moderatorzy mogą to zrobić."
+        }
       }
     },
     "seasons": {

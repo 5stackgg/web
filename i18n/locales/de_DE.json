@@ -1973,6 +1973,9 @@
             "news": {
               "title": "News"
             },
+            "news_replies": {
+              "title": "Antworten auf Kommentare"
+            },
             "staff_moderation": {
               "title": "Moderation"
             },
@@ -2200,6 +2203,11 @@
               "title": "News-Artikel",
               "description": "Ein neuer Artikel wurde veröffentlicht.",
               "example": "Patch Notes: Rush-Modus"
+            },
+            "NewsCommentReply": {
+              "title": "Antworten auf deine Kommentare",
+              "description": "Jemand hat auf deinen Kommentar zu einem News-Beitrag geantwortet.",
+              "example": "kairo hat auf deinen Kommentar geantwortet"
             },
             "MatchSupport": {
               "title": "Match-Unterstützung",
@@ -3584,6 +3592,71 @@
         "list_item": "Listenpunkt",
         "quote": "Zitat",
         "code": "Code"
+      },
+      "comments": {
+        "title": "Kommentare",
+        "placeholder": "Kommentar schreiben",
+        "post": "Kommentar posten",
+        "reply": "Antworten",
+        "reply_placeholder": "{name} antworten",
+        "save": "Speichern",
+        "edit": "Bearbeiten",
+        "edited": "bearbeitet",
+        "delete": "Löschen",
+        "copy_link": "Link kopieren",
+        "more_actions": "Kommentaraktionen",
+        "hide": "Ausblenden…",
+        "restore": "Wiederherstellen",
+        "hidden_badge": "Ausgeblendet",
+        "hidden_by": "Ausgeblendet von {name}",
+        "hidden_by_reason": "Ausgeblendet von {name} · Grund: {reason}",
+        "deleted": "Dieser Kommentar wurde gelöscht.",
+        "removed_by_staff": "Von der Moderation entfernt.",
+        "own_vote": "Du kannst deinem eigenen Kommentar kein +1 geben.",
+        "plus_one_label": "+1, bisher {count}",
+        "minutes": "{count} Min.",
+        "edit_minutes_left": "Noch {count} Min. zum Bearbeiten",
+        "characters_left": "Noch {count} Zeichen | Noch {count} Zeichen",
+        "open_days": "Noch {count} Tag offen | Noch {count} Tage offen",
+        "open_hours": "Noch {count} Stunde offen | Noch {count} Stunden offen",
+        "sign_in_prompt": "Melde dich an, um mitzureden.",
+        "sign_in": "Anmelden",
+        "read_only": {
+          "closed": "Die Kommentare sind geschlossen. Beiträge nehmen 7 Tage nach der Veröffentlichung Kommentare an.",
+          "not_verified": "Nur verifizierte Spieler können kommentieren und +1 geben.",
+          "banned": "Du bist gebannt und kannst nicht kommentieren.",
+          "gagged": "Du bist im Chat gesperrt und kannst nicht kommentieren.",
+          "muted": "Du bist gemutet und kannst nicht kommentieren."
+        },
+        "empty_open": "Noch keine Kommentare. Sei der Erste.",
+        "empty_closed": "Keine Kommentare zu diesem Beitrag",
+        "load_failed": "Die Kommentare konnten nicht geladen werden.",
+        "try_again": "Erneut versuchen",
+        "show_more": "Weitere Kommentare anzeigen",
+        "hide_dialog": {
+          "title": "Diesen Kommentar ausblenden?",
+          "description": "Leser sehen \"Von der Moderation entfernt.\" Antworten bleiben, wo sie sind. Du kannst ihn später wiederherstellen.",
+          "reason": "Grund (optional)",
+          "action": "Ausblenden"
+        },
+        "delete_dialog": {
+          "title": "Diesen Kommentar löschen?",
+          "description": "Das kann nicht rückgängig gemacht werden. Antworten bleiben, wo sie sind."
+        },
+        "errors": {
+          "title": "Das hat nicht geklappt",
+          "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+          "not_found": "Dieser Kommentar oder Beitrag existiert nicht mehr.",
+          "empty": "Schreib zuerst etwas.",
+          "too_long": "Ein Kommentar darf höchstens 2.000 Zeichen lang sein.",
+          "parent_removed": "Dieser Kommentar wurde entfernt, darauf kann nicht mehr geantwortet werden.",
+          "rate_limited": "Du bist zu schnell. Warte eine Minute und versuche es erneut.",
+          "daily_limit": "Du hast dein Kommentarlimit für heute erreicht.",
+          "not_yours": "Du kannst nur deine eigenen Kommentare ändern.",
+          "edit_window": "Ein Kommentar kann nur 10 Minuten lang bearbeitet werden.",
+          "removed": "Dieser Kommentar wurde entfernt.",
+          "staff_only": "Das können nur Moderatoren."
+        }
       }
     },
     "seasons": {

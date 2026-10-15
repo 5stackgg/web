@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Nyheter"
             },
+            "news_replies": {
+              "title": "Svar på kommentarer"
+            },
             "staff_moderation": {
               "title": "Moderering"
             },
@@ -2200,6 +2203,11 @@
               "title": "Nyhetsartiklar",
               "description": "En ny artikel publicerades.",
               "example": "Patchanteckningar: Rush-läge"
+            },
+            "NewsCommentReply": {
+              "title": "Svar på dina kommentarer",
+              "description": "Någon svarade på din kommentar på ett nyhetsinlägg.",
+              "example": "kairo svarade på din kommentar"
             },
             "MatchSupport": {
               "title": "Matchassistans",
@@ -3584,6 +3592,71 @@
         "list_item": "Listpunkt",
         "quote": "Citat",
         "code": "kod"
+      },
+      "comments": {
+        "title": "Kommentarer",
+        "placeholder": "Skriv en kommentar",
+        "post": "Publicera kommentar",
+        "reply": "Svara",
+        "reply_placeholder": "Svara {name}",
+        "save": "Spara",
+        "edit": "Redigera",
+        "edited": "redigerad",
+        "delete": "Ta bort",
+        "copy_link": "Kopiera länk",
+        "more_actions": "Kommentarsåtgärder",
+        "hide": "Dölj…",
+        "restore": "Återställ",
+        "hidden_badge": "Dold",
+        "hidden_by": "Dold av {name}",
+        "hidden_by_reason": "Dold av {name} · anledning: {reason}",
+        "deleted": "Den här kommentaren har tagits bort.",
+        "removed_by_staff": "Borttagen av moderatorer.",
+        "own_vote": "Du kan inte ge din egen kommentar +1.",
+        "plus_one_label": "+1, {count} hittills",
+        "minutes": "{count} min",
+        "edit_minutes_left": "{count} min kvar att redigera",
+        "characters_left": "{count} tecken kvar | {count} tecken kvar",
+        "open_days": "Öppen {count} dag till | Öppen {count} dagar till",
+        "open_hours": "Öppen {count} timme till | Öppen {count} timmar till",
+        "sign_in_prompt": "Logga in för att delta i samtalet.",
+        "sign_in": "Logga in",
+        "read_only": {
+          "closed": "Kommentarerna är stängda. Inlägg tar emot kommentarer i 7 dagar efter publicering.",
+          "not_verified": "Endast verifierade spelare kan kommentera och ge +1.",
+          "banned": "Du är bannad och kan inte kommentera.",
+          "gagged": "Din chatt är avstängd och du kan inte kommentera.",
+          "muted": "Din röstchatt är avstängd och du kan inte kommentera."
+        },
+        "empty_open": "Inga kommentarer än. Bli den första.",
+        "empty_closed": "Inga kommentarer på det här inlägget",
+        "load_failed": "Kommentarerna kunde inte laddas.",
+        "try_again": "Försök igen",
+        "show_more": "Visa fler kommentarer",
+        "hide_dialog": {
+          "title": "Dölj den här kommentaren?",
+          "description": "Läsare ser \"Borttagen av moderatorer.\" Svaren ligger kvar där de är. Du kan återställa den senare.",
+          "reason": "Anledning (valfritt)",
+          "action": "Dölj"
+        },
+        "delete_dialog": {
+          "title": "Ta bort den här kommentaren?",
+          "description": "Det går inte att ångra. Eventuella svar ligger kvar där de är."
+        },
+        "errors": {
+          "title": "Det gick inte",
+          "generic": "Något gick fel. Försök igen.",
+          "not_found": "Den kommentaren eller det inlägget finns inte längre.",
+          "empty": "Skriv något först.",
+          "too_long": "En kommentar får vara högst 2 000 tecken.",
+          "parent_removed": "Den kommentaren har tagits bort, så den kan inte besvaras.",
+          "rate_limited": "Du går för fort fram. Vänta en minut och försök igen.",
+          "daily_limit": "Du har nått dagens gräns för kommentarer.",
+          "not_yours": "Du kan bara ändra dina egna kommentarer.",
+          "edit_window": "En kommentar kan bara redigeras i 10 minuter.",
+          "removed": "Den kommentaren har tagits bort.",
+          "staff_only": "Bara moderatorer kan göra det."
+        }
       }
     },
     "seasons": {

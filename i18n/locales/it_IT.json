@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Notizie"
             },
+            "news_replies": {
+              "title": "Risposte ai commenti"
+            },
             "staff_moderation": {
               "title": "Moderazione"
             },
@@ -2200,6 +2203,11 @@
               "title": "Articoli di notizie",
               "description": "È stato pubblicato un nuovo articolo.",
               "example": "Note della patch: modalità Rush"
+            },
+            "NewsCommentReply": {
+              "title": "Risposte ai tuoi commenti",
+              "description": "Qualcuno ha risposto al tuo commento su un post delle notizie.",
+              "example": "kairo ha risposto al tuo commento"
             },
             "MatchSupport": {
               "title": "Assistenza partita",
@@ -3584,6 +3592,71 @@
         "list_item": "Voce di elenco",
         "quote": "Citazione",
         "code": "codice"
+      },
+      "comments": {
+        "title": "Commenti",
+        "placeholder": "Aggiungi un commento",
+        "post": "Pubblica commento",
+        "reply": "Rispondi",
+        "reply_placeholder": "Rispondi a {name}",
+        "save": "Salva",
+        "edit": "Modifica",
+        "edited": "modificato",
+        "delete": "Elimina",
+        "copy_link": "Copia link",
+        "more_actions": "Azioni del commento",
+        "hide": "Nascondi…",
+        "restore": "Ripristina",
+        "hidden_badge": "Nascosto",
+        "hidden_by": "Nascosto da {name}",
+        "hidden_by_reason": "Nascosto da {name} · motivo: {reason}",
+        "deleted": "Questo commento è stato eliminato.",
+        "removed_by_staff": "Rimosso dai moderatori.",
+        "own_vote": "Non puoi dare +1 al tuo commento.",
+        "plus_one_label": "+1, {count} finora",
+        "minutes": "{count} min",
+        "edit_minutes_left": "Ancora {count} min per modificare",
+        "characters_left": "{count} carattere rimasto | {count} caratteri rimasti",
+        "open_days": "Aperto ancora per {count} giorno | Aperto ancora per {count} giorni",
+        "open_hours": "Aperto ancora per {count} ora | Aperto ancora per {count} ore",
+        "sign_in_prompt": "Accedi per partecipare alla conversazione.",
+        "sign_in": "Accedi",
+        "read_only": {
+          "closed": "I commenti sono chiusi. I post accettano commenti per 7 giorni dalla pubblicazione.",
+          "not_verified": "Solo i giocatori verificati possono commentare e dare +1.",
+          "banned": "Sei bannato e non puoi commentare.",
+          "gagged": "Sei silenziato in chat e non puoi commentare.",
+          "muted": "Sei silenziato in voce e non puoi commentare."
+        },
+        "empty_open": "Ancora nessun commento. Scrivi il primo.",
+        "empty_closed": "Nessun commento su questo post",
+        "load_failed": "Impossibile caricare i commenti.",
+        "try_again": "Riprova",
+        "show_more": "Mostra altri commenti",
+        "hide_dialog": {
+          "title": "Nascondere questo commento?",
+          "description": "I lettori vedranno \"Rimosso dai moderatori.\" Le risposte restano al loro posto. Puoi ripristinarlo in seguito.",
+          "reason": "Motivo (facoltativo)",
+          "action": "Nascondi"
+        },
+        "delete_dialog": {
+          "title": "Eliminare questo commento?",
+          "description": "L'operazione non può essere annullata. Le risposte restano al loro posto."
+        },
+        "errors": {
+          "title": "Impossibile completare l'azione",
+          "generic": "Qualcosa è andato storto. Riprova.",
+          "not_found": "Quel commento o post non esiste più.",
+          "empty": "Scrivi prima qualcosa.",
+          "too_long": "Un commento può contenere al massimo 2.000 caratteri.",
+          "parent_removed": "Quel commento è stato rimosso, quindi non accetta risposte.",
+          "rate_limited": "Stai andando troppo veloce. Aspetta un minuto e riprova.",
+          "daily_limit": "Hai raggiunto il limite di commenti di oggi.",
+          "not_yours": "Puoi modificare solo i tuoi commenti.",
+          "edit_window": "Un commento si può modificare solo per 10 minuti.",
+          "removed": "Quel commento è stato rimosso.",
+          "staff_only": "Solo i moderatori possono farlo."
+        }
       }
     },
     "seasons": {

@@ -1973,6 +1973,9 @@
             "news": {
               "title": "News"
             },
+            "news_replies": {
+              "title": "Comment replies"
+            },
             "staff_moderation": {
               "title": "Moderation"
             },
@@ -2200,6 +2203,11 @@
               "title": "News articles",
               "description": "A new article was published.",
               "example": "Patch notes: Rush mode"
+            },
+            "NewsCommentReply": {
+              "title": "Replies to your comments",
+              "description": "Someone replied to your comment on a news post.",
+              "example": "kairo replied to your comment"
             },
             "MatchSupport": {
               "title": "Match assistance",
@@ -3584,6 +3592,71 @@
         "list_item": "List item",
         "quote": "Quote",
         "code": "code"
+      },
+      "comments": {
+        "title": "Comments",
+        "placeholder": "Add a comment",
+        "post": "Post Comment",
+        "reply": "Reply",
+        "reply_placeholder": "Reply to {name}",
+        "save": "Save",
+        "edit": "Edit",
+        "edited": "edited",
+        "delete": "Delete",
+        "copy_link": "Copy Link",
+        "more_actions": "Comment actions",
+        "hide": "Hide…",
+        "restore": "Restore",
+        "hidden_badge": "Hidden",
+        "hidden_by": "Hidden by {name}",
+        "hidden_by_reason": "Hidden by {name} · reason: {reason}",
+        "deleted": "This comment was deleted.",
+        "removed_by_staff": "Removed by staff.",
+        "own_vote": "You can't +1 your own comment.",
+        "plus_one_label": "+1, {count} so far",
+        "minutes": "{count} min",
+        "edit_minutes_left": "{count} min left to edit",
+        "characters_left": "{count} character left | {count} characters left",
+        "open_days": "Open for {count} more day | Open for {count} more days",
+        "open_hours": "Open for {count} more hour | Open for {count} more hours",
+        "sign_in_prompt": "Sign in to join the conversation.",
+        "sign_in": "Sign In",
+        "read_only": {
+          "closed": "Comments are closed. Posts take comments for 7 days after they're published.",
+          "not_verified": "Only verified players can comment and +1.",
+          "banned": "You're banned and can't comment.",
+          "gagged": "You're gagged and can't comment.",
+          "muted": "You're muted and can't comment."
+        },
+        "empty_open": "No comments yet. Be the first.",
+        "empty_closed": "No comments on this post",
+        "load_failed": "Comments couldn't be loaded.",
+        "try_again": "Try Again",
+        "show_more": "Show More Comments",
+        "hide_dialog": {
+          "title": "Hide this comment?",
+          "description": "Readers will see \"Removed by staff.\" Replies stay where they are. You can restore it later.",
+          "reason": "Reason (optional)",
+          "action": "Hide"
+        },
+        "delete_dialog": {
+          "title": "Delete this comment?",
+          "description": "This can't be undone. Any replies stay where they are."
+        },
+        "errors": {
+          "title": "Couldn't do that",
+          "generic": "Something went wrong. Please try again.",
+          "not_found": "That comment or post is no longer there.",
+          "empty": "Write something first.",
+          "too_long": "A comment can be up to 2,000 characters.",
+          "parent_removed": "That comment was removed, so it can't take replies.",
+          "rate_limited": "You're going too fast. Wait a minute and try again.",
+          "daily_limit": "You've reached today's comment limit.",
+          "not_yours": "You can only change your own comments.",
+          "edit_window": "A comment can only be edited for 10 minutes.",
+          "removed": "That comment was removed.",
+          "staff_only": "Only moderators can do that."
+        }
       }
     },
     "seasons": {

@@ -1973,6 +1973,9 @@
             "news": {
               "title": "ニュース"
             },
+            "news_replies": {
+              "title": "コメントへの返信"
+            },
             "staff_moderation": {
               "title": "モデレーション"
             },
@@ -2200,6 +2203,11 @@
               "title": "ニュース記事",
               "description": "新しい記事が公開されました。",
               "example": "パッチノート：Rushモード"
+            },
+            "NewsCommentReply": {
+              "title": "あなたのコメントへの返信",
+              "description": "ニュース投稿のあなたのコメントに誰かが返信しました。",
+              "example": "kairo さんがあなたのコメントに返信しました"
             },
             "MatchSupport": {
               "title": "試合サポート",
@@ -3584,6 +3592,71 @@
         "list_item": "リスト項目",
         "quote": "引用",
         "code": "コード"
+      },
+      "comments": {
+        "title": "コメント",
+        "placeholder": "コメントを追加",
+        "post": "コメントを投稿",
+        "reply": "返信",
+        "reply_placeholder": "{name} さんに返信",
+        "save": "保存",
+        "edit": "編集",
+        "edited": "編集済み",
+        "delete": "削除",
+        "copy_link": "リンクをコピー",
+        "more_actions": "コメントの操作",
+        "hide": "非表示にする…",
+        "restore": "復元",
+        "hidden_badge": "非表示",
+        "hidden_by": "{name} が非表示にしました",
+        "hidden_by_reason": "{name} が非表示にしました · 理由: {reason}",
+        "deleted": "このコメントは削除されました。",
+        "removed_by_staff": "運営により削除されました。",
+        "own_vote": "自分のコメントには +1 できません。",
+        "plus_one_label": "+1、現在 {count}",
+        "minutes": "{count} 分",
+        "edit_minutes_left": "編集できるのはあと {count} 分",
+        "characters_left": "残り {count} 文字 | 残り {count} 文字",
+        "open_days": "あと {count} 日間受付中 | あと {count} 日間受付中",
+        "open_hours": "あと {count} 時間受付中 | あと {count} 時間受付中",
+        "sign_in_prompt": "サインインして会話に参加しましょう。",
+        "sign_in": "サインイン",
+        "read_only": {
+          "closed": "コメントの受付は終了しました。投稿は公開から 7 日間コメントを受け付けます。",
+          "not_verified": "コメントと +1 は認証済みプレイヤーのみ可能です。",
+          "banned": "BAN されているため、コメントできません。",
+          "gagged": "発言禁止中のため、コメントできません。",
+          "muted": "ミュート中のため、コメントできません。"
+        },
+        "empty_open": "まだコメントはありません。最初のコメントを書きましょう。",
+        "empty_closed": "この投稿にはコメントがありません",
+        "load_failed": "コメントを読み込めませんでした。",
+        "try_again": "再試行",
+        "show_more": "コメントをさらに表示",
+        "hide_dialog": {
+          "title": "このコメントを非表示にしますか？",
+          "description": "読者には「運営により削除されました。」と表示されます。返信はそのまま残ります。後で復元できます。",
+          "reason": "理由（任意）",
+          "action": "非表示にする"
+        },
+        "delete_dialog": {
+          "title": "このコメントを削除しますか？",
+          "description": "元に戻すことはできません。返信はそのまま残ります。"
+        },
+        "errors": {
+          "title": "実行できませんでした",
+          "generic": "問題が発生しました。もう一度お試しください。",
+          "not_found": "そのコメントまたは投稿はもう存在しません。",
+          "empty": "まず何か書いてください。",
+          "too_long": "コメントは最大 2,000 文字までです。",
+          "parent_removed": "そのコメントは削除されたため、返信できません。",
+          "rate_limited": "操作が速すぎます。1 分待ってからもう一度お試しください。",
+          "daily_limit": "今日のコメント上限に達しました。",
+          "not_yours": "変更できるのは自分のコメントだけです。",
+          "edit_window": "コメントを編集できるのは 10 分間だけです。",
+          "removed": "そのコメントは削除されました。",
+          "staff_only": "この操作はモデレーターのみ可能です。"
+        }
       }
     },
     "seasons": {

@@ -1973,6 +1973,9 @@
             "news": {
               "title": "Notícias"
             },
+            "news_replies": {
+              "title": "Respostas a comentários"
+            },
             "staff_moderation": {
               "title": "Moderação"
             },
@@ -2200,6 +2203,11 @@
               "title": "Artigos de notícias",
               "description": "Um novo artigo foi publicado.",
               "example": "Notas de atualização: modo Rush"
+            },
+            "NewsCommentReply": {
+              "title": "Respostas aos seus comentários",
+              "description": "Alguém respondeu ao seu comentário em uma notícia.",
+              "example": "kairo respondeu ao seu comentário"
             },
             "MatchSupport": {
               "title": "Assistência em partida",
@@ -3584,6 +3592,71 @@
         "list_item": "Item de lista",
         "quote": "Citação",
         "code": "código"
+      },
+      "comments": {
+        "title": "Comentários",
+        "placeholder": "Adicione um comentário",
+        "post": "Publicar comentário",
+        "reply": "Responder",
+        "reply_placeholder": "Responder a {name}",
+        "save": "Salvar",
+        "edit": "Editar",
+        "edited": "editado",
+        "delete": "Excluir",
+        "copy_link": "Copiar link",
+        "more_actions": "Ações do comentário",
+        "hide": "Ocultar…",
+        "restore": "Restaurar",
+        "hidden_badge": "Oculto",
+        "hidden_by": "Ocultado por {name}",
+        "hidden_by_reason": "Ocultado por {name} · motivo: {reason}",
+        "deleted": "Este comentário foi excluído.",
+        "removed_by_staff": "Removido pela moderação.",
+        "own_vote": "Você não pode dar +1 no seu próprio comentário.",
+        "plus_one_label": "+1, {count} até agora",
+        "minutes": "{count} min",
+        "edit_minutes_left": "{count} min restantes para editar",
+        "characters_left": "{count} caractere restante | {count} caracteres restantes",
+        "open_days": "Aberto por mais {count} dia | Aberto por mais {count} dias",
+        "open_hours": "Aberto por mais {count} hora | Aberto por mais {count} horas",
+        "sign_in_prompt": "Entre para participar da conversa.",
+        "sign_in": "Entrar",
+        "read_only": {
+          "closed": "Os comentários estão fechados. As postagens aceitam comentários por 7 dias após a publicação.",
+          "not_verified": "Somente jogadores verificados podem comentar e dar +1.",
+          "banned": "Você está banido e não pode comentar.",
+          "gagged": "Você está censurado no chat e não pode comentar.",
+          "muted": "Você está mutado no chat de voz e não pode comentar."
+        },
+        "empty_open": "Ainda não há comentários. Seja o primeiro.",
+        "empty_closed": "Nenhum comentário nesta postagem",
+        "load_failed": "Não foi possível carregar os comentários.",
+        "try_again": "Tentar novamente",
+        "show_more": "Mostrar mais comentários",
+        "hide_dialog": {
+          "title": "Ocultar este comentário?",
+          "description": "Os leitores verão \"Removido pela moderação.\" As respostas continuam onde estão. Você pode restaurá-lo depois.",
+          "reason": "Motivo (opcional)",
+          "action": "Ocultar"
+        },
+        "delete_dialog": {
+          "title": "Excluir este comentário?",
+          "description": "Isso não pode ser desfeito. As respostas continuam onde estão."
+        },
+        "errors": {
+          "title": "Não foi possível fazer isso",
+          "generic": "Algo deu errado. Tente novamente.",
+          "not_found": "Esse comentário ou postagem não existe mais.",
+          "empty": "Escreva algo primeiro.",
+          "too_long": "Um comentário pode ter até 2.000 caracteres.",
+          "parent_removed": "Esse comentário foi removido e não aceita respostas.",
+          "rate_limited": "Você está indo rápido demais. Espere um minuto e tente novamente.",
+          "daily_limit": "Você atingiu o limite de comentários de hoje.",
+          "not_yours": "Você só pode alterar seus próprios comentários.",
+          "edit_window": "Um comentário só pode ser editado por 10 minutos.",
+          "removed": "Esse comentário foi removido.",
+          "staff_only": "Somente moderadores podem fazer isso."
+        }
       }
     },
     "seasons": {

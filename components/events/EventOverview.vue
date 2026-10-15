@@ -19,6 +19,7 @@ import type { Clip } from "~/types/clip";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
+import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 import {
   daysUntil,
   formatEventRange,
@@ -212,10 +213,49 @@ const liveTournaments = computed(() =>
     (tournament: any) => tournamentStatusVariant(tournament.status) === "live",
   ),
 );
+// Fetched once per finished tournament rather than selected in the event
+// subscription, which Hasura re-runs every second for every viewer.
+const podiums = ref<Record<string, unknown>>({});
+watch(
+  () =>
+    tournaments.value
+      .filter(
+        (tournament: any) =>
+          tournament.status === "Finished" && !(tournament.id in podiums.value),
+      )
+      .map((tournament: any) => tournament.id as string),
+  (ids) => {
+    for (const id of ids) {
+      podiums.value = { ...podiums.value, [id]: null };
+      apolloClient
+        .query({
+          query: tournamentPodiumQuery,
+          variables: { tournamentId: id },
+          context: { optional: true },
+        })
+        .then(({ data }) => {
+          podiums.value = {
+            ...podiums.value,
+            [id]: (data as any)?.tournaments_by_pk?.podium ?? null,
+          };
+        })
+        .catch(() => {});
+    }
+  },
+  { immediate: true },
+);
+
 const otherTournaments = computed(() =>
-  tournaments.value.filter(
-    (tournament: any) => tournamentStatusVariant(tournament.status) !== "live",
-  ),
+  tournaments.value
+    .filter(
+      (tournament: any) =>
+        tournamentStatusVariant(tournament.status) !== "live",
+    )
+    .map((tournament: any) =>
+      podiums.value[tournament.id]
+        ? { ...tournament, podium: podiums.value[tournament.id] }
+        : tournament,
+    ),
 );
 
 // "Sign up" only while something is open; "Champions" only once every one

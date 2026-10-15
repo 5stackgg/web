@@ -490,7 +490,6 @@ import { $, order_by, e_player_roles_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleEventFields } from "~/graphql/simpleEventFields";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
-import { schemaHasField } from "~/utilities/schemaHasType";
 import { toast } from "@/components/ui/toast";
 
 const deleteEventMutation = generateMutation({
@@ -504,85 +503,81 @@ const deleteEventMutation = generateMutation({
   ],
 });
 
-// An api before api#588 has no tournaments.podium.
-function eventSubscription(withPodium: boolean) {
-  return typedGql("subscription")({
-    events_by_pk: [
-      { id: $("eventId", "uuid!") },
-      {
-        ...simpleEventFields,
-        tournaments: [
-          {},
-          {
-            tournament_id: true,
-            // The full card field set: the event's tournaments render with the
-            // same TournamentCard the /tournaments and /watch lists use.
-            tournament: {
-              ...simpleTournamentFields,
-              ...(withPodium ? ({ podium: true } as any) : {}),
-              status: true,
-              teams: [
-                {},
-                {
-                  id: true,
-                  name: true,
-                  team_id: true,
-                  team: {
-                    id: true,
-                    name: true,
-                    short_name: true,
-                    avatar_url: true,
-                  },
-                },
-              ],
-            },
-          },
-        ],
-        teams: [
-          {},
-          {
-            team_id: true,
-            team: {
-              id: true,
-              name: true,
-              short_name: true,
-              avatar_url: true,
-            },
-          },
-        ],
-        media: [
-          { order_by: [{ created_at: order_by.desc }] },
-          {
-            id: true,
-            filename: true,
-            mime_type: true,
-            title: true,
-            thumbnail_filename: true,
-            external_url: true,
-            size: true,
-            created_at: true,
-            uploader_steam_id: true,
-            uploader: { name: true },
-            players: [
+const eventSubscription = typedGql("subscription")({
+  events_by_pk: [
+    { id: $("eventId", "uuid!") },
+    {
+      ...simpleEventFields,
+      tournaments: [
+        {},
+        {
+          tournament_id: true,
+          // The full card field set: the event's tournaments render with the
+          // same TournamentCard the /tournaments and /watch lists use.
+          tournament: {
+            ...simpleTournamentFields,
+            status: true,
+            teams: [
               {},
               {
-                steam_id: true,
-                player: { steam_id: true, name: true, avatar_url: true },
+                id: true,
+                name: true,
+                team_id: true,
+                team: {
+                  id: true,
+                  name: true,
+                  short_name: true,
+                  avatar_url: true,
+                },
               },
             ],
           },
-        ],
-        players: [
-          {},
-          {
-            steam_id: true,
-            player: { steam_id: true, name: true, avatar_url: true },
+        },
+      ],
+      teams: [
+        {},
+        {
+          team_id: true,
+          team: {
+            id: true,
+            name: true,
+            short_name: true,
+            avatar_url: true,
           },
-        ],
-      },
-    ],
-  });
-}
+        },
+      ],
+      media: [
+        { order_by: [{ created_at: order_by.desc }] },
+        {
+          id: true,
+          filename: true,
+          mime_type: true,
+          title: true,
+          thumbnail_filename: true,
+          external_url: true,
+          size: true,
+          created_at: true,
+          uploader_steam_id: true,
+          uploader: { name: true },
+          players: [
+            {},
+            {
+              steam_id: true,
+              player: { steam_id: true, name: true, avatar_url: true },
+            },
+          ],
+        },
+      ],
+      players: [
+        {},
+        {
+          steam_id: true,
+          player: { steam_id: true, name: true, avatar_url: true },
+        },
+      ],
+    },
+  ],
+});
 
 // One rating pass over every participant (no round minimum), ordered by
 // value: feeds the overview's "For you" stats, the top-5 preview, and the
@@ -636,19 +631,7 @@ export default {
       highlightsCount: 0,
       deleteEventDialog: false,
       deletingEvent: false,
-      tournamentPodium: null as boolean | null,
     };
-  },
-  created() {
-    if (typeof window === "undefined") {
-      this.tournamentPodium = false;
-      return;
-    }
-    schemaHasField(this.$apollo.getClient(), "tournaments", "podium").then(
-      (has) => {
-        this.tournamentPodium = has;
-      },
-    );
   },
   unmounted() {
     useEventContext().value = null;
@@ -682,12 +665,7 @@ export default {
     },
     $subscribe: {
       events_by_pk: {
-        query(this: any) {
-          return eventSubscription(this.tournamentPodium === true);
-        },
-        skip(this: any) {
-          return this.tournamentPodium === null;
-        },
+        query: () => eventSubscription,
         variables(this: any) {
           const eventId = this.$route.params.eventId;
           // A malformed id errors the subscription, which (without the error

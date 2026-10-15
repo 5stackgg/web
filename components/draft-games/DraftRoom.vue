@@ -936,7 +936,7 @@ const start = () => {
           <div :key="stage" class="space-y-4">
             <div
               v-if="inVeto"
-              class="veto-stage rounded-xl border border-[hsl(var(--tac-amber)/0.25)] bg-card/40 p-6 [backdrop-filter:blur(8px)]"
+              class="veto-stage rounded-xl border border-border bg-card/40 p-6 [backdrop-filter:blur(8px)]"
             >
               <MatchRegionVeto
                 :match="match"

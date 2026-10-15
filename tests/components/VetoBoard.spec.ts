@@ -432,7 +432,7 @@ describe("VetoBoard start", () => {
     });
 
     expect(wrapper.find(".st-boot b").text()).toBe("Server booting");
-    expect(wrapper.find(".vb-lead").text()).toBe("Veto complete");
+    expect(wrapper.find(".vb-status").exists()).toBe(false);
     expect(wrapper.find(".st-area").classes()).toContain("is-starting");
     // The start's key takes over the scouting key's line.
     expect(wrapper.findAll(".vb-scoutkey")).toHaveLength(1);

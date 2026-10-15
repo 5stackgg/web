@@ -1115,37 +1115,39 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="vb" :class="{ 'is-live': live }" :data-act="step?.type">
-    <!-- One line in every state: your turn changes its colour and words, never
-         its height. -->
-    <div class="vb-status" aria-live="polite">
-      <VetoCrest
-        v-if="actingLineup"
-        :lineup="lineups[actingLineup - 1]"
-        :size="24"
-        :title="lineupName(actingLineup)"
-      />
-      <span class="vb-lead" :class="{ 'is-you': mine }" :title="lead">{{
-        lead
-      }}</span>
-      <span class="vb-line" :title="line">{{ line }}</span>
-      <span v-if="keys && mine" class="vb-keys"
-        ><kbd>←</kbd><kbd>→</kbd> {{ t("match.veto.keys.browse") }} ·
-        <kbd>Enter</kbd> {{ t("match.veto.keys.choose") }} · <kbd>Esc</kbd>
-        {{ t("match.veto.keys.clear") }}</span
-      >
-      <span v-else class="vb-step tabular-nums">{{ stepCount }}</span>
-      <span
-        class="vb-clock tabular-nums"
-        :class="{ 'is-urgent': timed && urgent }"
-        >{{ timed ? `${seconds}s` : "" }}</span
-      >
-      <span
-        class="vb-bar"
-        :class="{ 'is-other': timed && !mine, 'is-urgent': timed && urgent }"
-      >
-        <i :style="{ transform: `scaleX(${timed ? fraction : 0})` }" />
-      </span>
-    </div>
+    <!-- One line through the veto: your turn changes its colour and words,
+         never its height. Once the veto is done it folds away. -->
+    <Transition name="vb-status">
+      <div v-if="!done" class="vb-status" aria-live="polite">
+        <VetoCrest
+          v-if="actingLineup"
+          :lineup="lineups[actingLineup - 1]"
+          :size="24"
+          :title="lineupName(actingLineup)"
+        />
+        <span class="vb-lead" :class="{ 'is-you': mine }" :title="lead">{{
+          lead
+        }}</span>
+        <span class="vb-line" :title="line">{{ line }}</span>
+        <span v-if="keys && mine" class="vb-keys"
+          ><kbd>←</kbd><kbd>→</kbd> {{ t("match.veto.keys.browse") }} ·
+          <kbd>Enter</kbd> {{ t("match.veto.keys.choose") }} · <kbd>Esc</kbd>
+          {{ t("match.veto.keys.clear") }}</span
+        >
+        <span v-else class="vb-step tabular-nums">{{ stepCount }}</span>
+        <span
+          class="vb-clock tabular-nums"
+          :class="{ 'is-urgent': timed && urgent }"
+          >{{ timed ? `${seconds}s` : "" }}</span
+        >
+        <span
+          class="vb-bar"
+          :class="{ 'is-other': timed && !mine, 'is-urgent': timed && urgent }"
+        >
+          <i :style="{ transform: `scaleX(${timed ? fraction : 0})` }" />
+        </span>
+      </div>
+    </Transition>
 
     <VetoRail
       ref="railRef"
@@ -1189,7 +1191,7 @@ onBeforeUnmount(() => {
       <div
         ref="stageEl"
         class="vb-stage"
-        :class="{ 'is-region': isRegion }"
+        :class="{ 'is-region': isRegion, 'is-yours': mine }"
         :style="stageVars"
         :tabindex="live ? 0 : undefined"
         @pointermove="onPointerMove"
@@ -1705,6 +1707,18 @@ onBeforeUnmount(() => {
   height: 46px;
   padding: 0 4px 2px;
   min-width: 0;
+}
+.vb-status-leave-active {
+  overflow: hidden;
+  transition:
+    height 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms ease;
+}
+.vb-status-leave-to {
+  height: 0;
+  margin-bottom: -10px;
+  opacity: 0;
 }
 .vb-lead {
   flex: none;
@@ -2845,9 +2859,16 @@ onBeforeUnmount(() => {
   color: hsl(var(--foreground));
   box-shadow: inset 0 0 0 1px hsl(var(--muted-foreground) / 0.4);
 }
+/* Your turn: the maps themselves are outlined in gold, where your eyes
+   already are. */
+.vb-stage {
+  outline: 2px solid transparent;
+  outline-offset: 3px;
+  transition: outline-color 240ms var(--vb-ease);
+}
+.vb-stage.is-yours,
 .vb-stage:focus-visible {
-  outline: 2px solid var(--vb-amber);
-  outline-offset: 2px;
+  outline-color: var(--vb-amber);
 }
 
 /* ---------- the start: the series grows into the maps ---------- */

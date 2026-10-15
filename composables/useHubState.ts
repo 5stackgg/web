@@ -4,6 +4,8 @@ import { useRightSidebar } from "@/composables/useRightSidebar";
 import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
 import { useChatTabs } from "~/composables/useChatTabs";
+import { chatTabQuiet } from "~/composables/useChatRoomSettings";
+import { chatBadgeFor } from "~/utilities/chatBadges";
 import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 
 type Hub =
@@ -49,12 +51,19 @@ export function useHubState() {
   const isMobile = useMediaQuery(SIDEBAR_MOBILE_QUERY);
   const { hasNotifications } = useNotificationBadge();
   const { hasLobbyInvites, hasSocialInvites } = useInvites();
-  const { totalUnread, totalMentions } = useChatTabs();
+  const { tabs, unreadCounts, mentionCounts } = useChatTabs();
 
   function defaultHub(): Hub {
     if (hasNotifications.value) return "notifications";
     if (hasLobbyInvites.value) return "lobby";
-    if (totalUnread.value > 0 || totalMentions.value > 0) {
+    if (
+      chatBadgeFor(
+        tabs.value,
+        unreadCounts.value,
+        mentionCounts.value,
+        chatTabQuiet,
+      )
+    ) {
       return "chat";
     }
     if (hasSocialInvites.value) return "social";

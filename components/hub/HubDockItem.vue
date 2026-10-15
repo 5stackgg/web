@@ -19,8 +19,8 @@ const props = withDefaults(
     disabled?: boolean;
     badge?: string | null;
     // red: needs an answer. fresh: new since you last looked, not urgent.
-    // neutral: a standing count.
-    badgeTone?: "red" | "fresh" | "neutral";
+    // neutral: a standing count. muted: new in a room you muted.
+    badgeTone?: "red" | "fresh" | "neutral" | "muted";
     // The count is of messages that tag you.
     badgeMention?: boolean;
     pip?: boolean;

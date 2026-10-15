@@ -9,6 +9,7 @@ import { pageChatFocus } from "~/composables/useChatPresence";
 import { chatThreadKey } from "~/utilities/chatThread";
 import { SIDEBAR_MOBILE_QUERY } from "~/components/ui/sidebar/utils";
 import { useChatReadState } from "~/composables/useChatReadState";
+import { chatRoomRings } from "~/composables/useChatRoomSettings";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -123,7 +124,15 @@ export function useChatTabSetup() {
       }
       // Ahead of the on-screen check, which counts an open room as read even
       // while the browser tab is hidden.
-      useTabFlash().signalChat(tab.type, message, authStore.me?.steam_id);
+      if (
+        chatRoomRings(
+          tab.type,
+          tab.lobbyId,
+          mentionsViewer(message, authStore.me?.steam_id),
+        )
+      ) {
+        useTabFlash().signalChat(tab.type, message, authStore.me?.steam_id);
+      }
 
       if (isChatTabOnScreen(tab.id)) {
         return;
@@ -258,7 +267,9 @@ export function useChatTabSetup() {
         return;
       }
 
-      useTabFlash().signalChat(tab.type, message, authStore.me?.steam_id);
+      if (chatRoomRings("match_team", teamLobbyId, true)) {
+        useTabFlash().signalChat(tab.type, message, authStore.me?.steam_id);
+      }
 
       if (!isChatTabOnScreen(tab.id)) {
         incrementMention(tab.id, message.id, MATCH_TEAM_ROOM);

@@ -139,12 +139,7 @@ import {
                 {{ $t("chat.no_messages_yet", "No messages yet") }}
               </p>
               <p class="text-xs text-muted-foreground/80">
-                {{
-                  $t(
-                    "chat.start_the_conversation",
-                    "Say something to start the conversation.",
-                  )
-                }}
+                {{ emptyHint }}
               </p>
             </div>
           </Empty>
@@ -349,12 +344,7 @@ import {
               {{ $t("chat.no_messages_yet", "No messages yet") }}
             </p>
             <p class="text-xs text-muted-foreground/80">
-              {{
-                $t(
-                  "chat.start_the_conversation",
-                  "Say something to start the conversation.",
-                )
-              }}
+              {{ emptyHint }}
             </p>
           </div>
         </Empty>
@@ -470,6 +460,7 @@ import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useChatAttachmentConfig } from "~/composables/useChatAttachmentConfig";
 import { chatRoomTakesAttachments } from "~/utilities/chatAttachments";
 import { chatRoomTakesMentions } from "~/utilities/chatMentions";
+import { canModerateTeamChat, chatTeam } from "~/utilities/teamChat";
 import mapLabel from "~/utilities/mapLabel";
 
 const { rightSidebarOpen } = useRightSidebar();
@@ -536,6 +527,8 @@ export default {
           "match",
           // One side of a match, keyed `${matchId}:${lineupId}`.
           "match_team",
+          // A team's permanent room, keyed by the team's id.
+          "team",
           "matchmaking",
           "organizers",
           "tournament",
@@ -674,11 +667,31 @@ export default {
       });
     },
     // A conversation between two people is theirs; the api refuses to moderate
-    // one, even for an administrator.
+    // one, even for an administrator. A team's room is the team's own to
+    // moderate, and a site role counts for nothing there.
     canModerate() {
+      if (this.type === "team") {
+        return canModerateTeamChat(this.team, useAuthStore().me?.steam_id);
+      }
+
       return (
         this.type !== "direct" &&
         useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
+      );
+    },
+    team() {
+      return this.type === "team"
+        ? chatTeam(useAuthStore().me?.teams, this.lobbyId)
+        : null;
+    },
+    emptyHint() {
+      if (this.team) {
+        return this.$t("chat.team_room.empty_hint", { team: this.team.name });
+      }
+
+      return this.$t(
+        "chat.start_the_conversation",
+        "Say something to start the conversation.",
       );
     },
     // One object per room, kept for as long as the rooms are, so handing it to

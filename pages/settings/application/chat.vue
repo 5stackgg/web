@@ -219,6 +219,7 @@ const ROOMS = [
   { key: "chat_ttl_draft", label: "ttl_draft", fallback: 3600 },
   { key: "chat_ttl_tournament", label: "ttl_tournament", fallback: 604800 },
   { key: "chat_ttl_organizers", label: "ttl_organizers", fallback: 7776000 },
+  { key: "chat_ttl_team", label: "ttl_team", fallback: 2592000 },
 ];
 
 const RETENTION_UNITS = [

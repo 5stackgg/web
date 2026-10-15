@@ -2338,14 +2338,15 @@
           "direct_title": "ダイレクトメッセージ",
           "direct_description": "ダイレクトメッセージは他のチャットと一緒に期限切れにならず、永続的に保存されます。保持する日数を指定するか、0を指定すると無期限に保存します。",
           "ttl_match": "試合チャット",
-          "ttl_match_team": "チームチャット",
+          "ttl_match_team": "試合のチームチャット",
           "ttl_matchmaking": "マッチメイキングロビーのチャット",
           "ttl_tournament": "トーナメントチャット",
           "ttl_organizers": "主催者チャット",
           "ttl_draft": "ドラフトロビーのチャット",
+          "ttl_team": "チームチャット",
           "retention_direct_days": "ダイレクトメッセージの保持日数",
           "attachments_title": "添付ファイル",
-          "attachments_description": "プレイヤーはロビー、トーナメント、運営、ドラフト、ダイレクトの各チャットで、1 メッセージに画像または動画を 4 件まで添付できます。ファイルは、そのルームのメッセージの期限が切れたとき、そのダイレクトメッセージが保持期間で削除されたとき、またはメッセージが削除された時点で削除されます。",
+          "attachments_description": "プレイヤーはロビー、トーナメント、運営、ドラフト、チーム、ダイレクトの各チャットで、1 メッセージに画像または動画を 4 件まで添付できます。ファイルは、そのルームのメッセージの期限が切れたとき、そのダイレクトメッセージが保持期間で削除されたとき、またはメッセージが削除された時点で削除されます。",
           "attachment_max_mb": "最大ファイルサイズ (MB)",
           "attachment_daily_mb": "プレイヤーごとの 1 日のアップロード量 (MB)",
           "attachment_daily_mb_hint": "削除したファイルも含め、直近 24 時間で計算されます。",
@@ -6837,6 +6838,7 @@
     "chat_panel": {
       "default_title": "チャット",
       "participants_in_chat": "チャット参加者 {count} 人",
+      "members_here": "{total} 人中 {here} 人がここにいます",
       "pop_out_tooltip": "ウィンドウとして切り離す",
       "close_tooltip": "会話を閉じる",
       "no_chats_title": "チャットはまだありません",
@@ -8325,7 +8327,8 @@
         "no_matches": "まだ試合がありません",
         "founded": "{date}に設立",
         "all_awards": "すべてのアワードを表示",
-        "team_actions": "チーム操作"
+        "team_actions": "チーム操作",
+        "team_chat": "チームチャット"
       },
       "stage": {
         "live": "ライブ中",
@@ -10311,7 +10314,8 @@
         "tournament": "ドロップしてトーナメントチャットに送信",
         "organizers": "ドロップして運営チャットに送信",
         "draft": "ドロップしてドラフトロビーに送信",
-        "direct": "ドロップしてこの会話に送信"
+        "direct": "ドロップしてこの会話に送信",
+        "team": "ドロップしてチームチャットに送信"
       },
       "drop_hint": "画像と動画、一度に {count} 件まで",
       "rejected_type": "{name} は添付できません。添付できるのは画像と動画のみです。",
@@ -10370,6 +10374,14 @@
       "too_many": "1 つのメッセージでメンションできるのは最大 {max} 人です。",
       "organizer": "主催者",
       "tagged_you": "あなたへのメンションが {count} 件あります | あなたへのメンションが {count} 件あります"
+    },
+    "team_room": {
+      "empty_hint": "{team} の選手とオーナーだけが読めます。",
+      "removed_title": "あなたはもう {team} のメンバーではありません",
+      "removed_description": "このチャットは終了しました。別のルームに切り替えると一覧から消えます。",
+      "forbidden_title": "このチャットは開けません",
+      "forbidden_description": "{team} の選手とオーナーだけが読めます。",
+      "forbidden_description_unnamed": "このチームの選手とオーナーだけが読めます。"
     }
   },
   "charts": {

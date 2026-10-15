@@ -15,6 +15,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import { newestMessageIdsFrom } from "~/utilities/chatLobbyMessages";
 import { mentionsViewer } from "~/utilities/chatMentions";
 import { matchTeamLobbyId } from "~/utilities/matchTeamLobby";
+import { chatTeam, teamChatTab } from "~/utilities/teamChat";
 import socket, {
   type ChatType,
   type Lobby,
@@ -80,9 +81,11 @@ export function useChatTabSetup() {
   const {
     tabs,
     unreadCounts,
+    activeTabId,
     openTab,
     closeTab,
     setPinned,
+    setLabel,
     incrementUnread,
     decrementUnread,
     setUnread,
@@ -387,6 +390,38 @@ export function useChatTabSetup() {
     }
   }
 
+  // `me.teams` is the api's rule for who reads a team's room, so it is the
+  // list of rooms. A room the player is removed from while reading it stays on
+  // screen, saying so, until they move to another room.
+  function ensureTeamChatTabs() {
+    const teams = authStore.me?.teams;
+
+    if (!teams) {
+      return;
+    }
+
+    for (const team of teams) {
+      const tab = teamChatTab(team);
+
+      if (tabs.value.some(({ id }) => id === tab.id)) {
+        setLabel(tab.id, tab.label);
+        continue;
+      }
+
+      openTab({ ...tab, activate: false });
+    }
+
+    for (const tab of [...tabs.value]) {
+      if (
+        tab.type === "team" &&
+        !chatTeam(teams, tab.lobbyId) &&
+        !isChatTabOnScreen(tab.id)
+      ) {
+        closeTab(tab.id);
+      }
+    }
+  }
+
   function ensureDefaultTabs() {
     const me = authStore.me;
     if (me?.current_lobby_id) {
@@ -480,6 +515,19 @@ export function useChatTabSetup() {
     },
     { immediate: true, deep: true },
   );
+
+  watch(() => authStore.me?.teams, ensureTeamChatTabs, {
+    immediate: true,
+    deep: true,
+  });
+
+  watch(activeTabId, (_, previous) => {
+    const left = tabs.value.find(({ id }) => id === previous);
+
+    if (left?.type === "team" && !chatTeam(authStore.me?.teams, left.lobbyId)) {
+      closeTab(left.id);
+    }
+  });
 
   watch(
     () => matchLobbyStore.currentMatch,

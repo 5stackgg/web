@@ -36,7 +36,7 @@ const t = (key: string, params?: Record<string, unknown>) =>
   params ? `${key} ${JSON.stringify(params)}` : key;
 
 describe("which rooms take attachments", () => {
-  it.each(["matchmaking", "tournament", "organizers", "draft", "direct"])(
+  it.each(["matchmaking", "tournament", "organizers", "draft", "direct", "team"])(
     "lets %s attach",
     (type) => {
       expect(chatRoomTakesAttachments(type)).toBe(true);

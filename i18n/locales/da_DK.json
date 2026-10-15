@@ -2338,14 +2338,15 @@
           "direct_title": "Private beskeder",
           "direct_description": "Private beskeder gemmes varigt i stedet for at udløbe sammen med resten af chatten. Angiv antal dage, de skal gemmes, eller 0 for at beholde dem for altid.",
           "ttl_match": "Kampchat",
-          "ttl_match_team": "Holdchat",
+          "ttl_match_team": "Holdchat i kampe",
           "ttl_matchmaking": "Chat i matchmaking-lobby",
           "ttl_tournament": "Turneringschat",
           "ttl_organizers": "Arrangørchat",
           "ttl_draft": "Chat i draft-lobby",
+          "ttl_team": "Holdchat",
           "retention_direct_days": "Gem private beskeder i (dage)",
           "attachments_title": "Vedhæftninger",
-          "attachments_description": "Spillere kan vedhæfte op til 4 billeder eller videoer til en besked i lobby-, turnerings-, arrangør-, draft- og direkte chats. En fil slettes, når beskederne i dens rum udløber, når dens direkte besked ryddes op, eller så snart dens besked slettes.",
+          "attachments_description": "Spillere kan vedhæfte op til 4 billeder eller videoer til en besked i lobby-, turnerings-, arrangør-, draft-, hold- og direkte chats. En fil slettes, når beskederne i dens rum udløber, når dens direkte besked ryddes op, eller så snart dens besked slettes.",
           "attachment_max_mb": "Største fil (MB)",
           "attachment_daily_mb": "Uploads pr. spiller pr. dag (MB)",
           "attachment_daily_mb_hint": "Tælles over de seneste 24 timer, inklusive fjernede filer.",
@@ -6837,6 +6838,7 @@
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} i chatten",
+      "members_here": "{here} af {total} her",
       "pop_out_tooltip": "Åbn i nyt vindue",
       "close_tooltip": "Luk samtale",
       "no_chats_title": "Ingen chats endnu",
@@ -8325,7 +8327,8 @@
         "no_matches": "Ingen kampe endnu",
         "founded": "Grundlagt {date}",
         "all_awards": "Vis alle priser",
-        "team_actions": "Holdhandlinger"
+        "team_actions": "Holdhandlinger",
+        "team_chat": "Holdchat"
       },
       "stage": {
         "live": "Live nu",
@@ -10311,7 +10314,8 @@
         "tournament": "Slip for at sende i turneringschatten",
         "organizers": "Slip for at sende i arrangørchatten",
         "draft": "Slip for at sende i draft-lobbyen",
-        "direct": "Slip for at sende i denne samtale"
+        "direct": "Slip for at sende i denne samtale",
+        "team": "Slip for at sende i holdchatten"
       },
       "drop_hint": "Billeder og videoer, op til {count} ad gangen",
       "rejected_type": "{name} kan ikke vedhæftes. Kun billeder og videoer kan.",
@@ -10370,6 +10374,14 @@
       "too_many": "En besked kan tagge op til {max} spillere.",
       "organizer": "Arrangør",
       "tagged_you": "{count} besked tagger dig | {count} beskeder tagger dig"
+    },
+    "team_room": {
+      "empty_hint": "Kun spillerne og ejeren af {team} kan læse dette.",
+      "removed_title": "Du er ikke længere på {team}",
+      "removed_description": "Denne chat er lukket. Den forsvinder fra din liste, når du skifter rum.",
+      "forbidden_title": "Du kan ikke åbne denne chat",
+      "forbidden_description": "Kun spillerne og ejeren af {team} kan læse den.",
+      "forbidden_description_unnamed": "Kun holdets spillere og ejer kan læse den."
     }
   },
   "charts": {

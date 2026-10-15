@@ -2338,14 +2338,15 @@
           "direct_title": "私信",
           "direct_description": "私信会长期保存，不会随其他聊天一起过期。请输入保留天数，或输入 0 表示永久保留。",
           "ttl_match": "比赛聊天",
-          "ttl_match_team": "战队聊天",
+          "ttl_match_team": "比赛战队聊天",
           "ttl_matchmaking": "匹配大厅聊天",
           "ttl_tournament": "锦标赛聊天",
           "ttl_organizers": "主办方聊天",
           "ttl_draft": "选人大厅聊天",
+          "ttl_team": "战队聊天",
           "retention_direct_days": "私信保留天数",
           "attachments_title": "附件",
-          "attachments_description": "玩家可以在大厅、锦标赛、组织者、选人和私信聊天中，为一条消息附加最多 4 张图片或视频。当文件所在房间的消息过期或其私信被保留期清理时，文件会被删除；消息被删除时，文件会立即删除。",
+          "attachments_description": "玩家可以在大厅、锦标赛、组织者、选人、战队和私信聊天中，为一条消息附加最多 4 张图片或视频。当文件所在房间的消息过期或其私信被保留期清理时，文件会被删除；消息被删除时，文件会立即删除。",
           "attachment_max_mb": "最大文件 (MB)",
           "attachment_daily_mb": "每位玩家每日上传量 (MB)",
           "attachment_daily_mb_hint": "按最近 24 小时计算，包括已移除的文件。",
@@ -6837,6 +6838,7 @@
     "chat_panel": {
       "default_title": "聊天",
       "participants_in_chat": "{count} 人在聊天",
+      "members_here": "{total} 人中有 {here} 人在此",
       "pop_out_tooltip": "弹出到窗口",
       "close_tooltip": "关闭会话",
       "no_chats_title": "暂无聊天",
@@ -8325,7 +8327,8 @@
         "no_matches": "暂无比赛",
         "founded": "成立于 {date}",
         "all_awards": "显示全部奖项",
-        "team_actions": "队伍操作"
+        "team_actions": "队伍操作",
+        "team_chat": "战队聊天"
       },
       "stage": {
         "live": "正在直播",
@@ -10311,7 +10314,8 @@
         "tournament": "松开以发送到锦标赛聊天",
         "organizers": "松开以发送到组织者聊天",
         "draft": "松开以发送到选人大厅",
-        "direct": "松开以发送到此对话"
+        "direct": "松开以发送到此对话",
+        "team": "松开以发送到战队聊天"
       },
       "drop_hint": "图片和视频，一次最多 {count} 个",
       "rejected_type": "无法附加 {name}。只能附加图片和视频。",
@@ -10370,6 +10374,14 @@
       "too_many": "一条消息最多只能提及 {max} 名玩家。",
       "organizer": "主办方",
       "tagged_you": "{count} 条消息提到了你 | {count} 条消息提到了你"
+    },
+    "team_room": {
+      "empty_hint": "只有 {team} 的队员和所有者可以阅读。",
+      "removed_title": "你已不在 {team} 中",
+      "removed_description": "此聊天已关闭。切换到其他房间后，它会从你的列表中移除。",
+      "forbidden_title": "你无法打开此聊天",
+      "forbidden_description": "只有 {team} 的队员和所有者可以阅读。",
+      "forbidden_description_unnamed": "只有该战队的队员和所有者可以阅读。"
     }
   },
   "charts": {

@@ -2338,14 +2338,15 @@
           "direct_title": "Direktmeddelanden",
           "direct_description": "Direktmeddelanden lagras varaktigt i stället för att förfalla med resten av chatten. Ange antal dagar de ska sparas, eller 0 för att behålla dem för alltid.",
           "ttl_match": "Matchchatt",
-          "ttl_match_team": "Lagchatt",
+          "ttl_match_team": "Lagchatt i matcher",
           "ttl_matchmaking": "Chatt i matchmaking-lobby",
           "ttl_tournament": "Turneringschatt",
           "ttl_organizers": "Arrangörschatt",
           "ttl_draft": "Chatt i draftlobby",
+          "ttl_team": "Lagchatt",
           "retention_direct_days": "Spara direktmeddelanden i (dagar)",
           "attachments_title": "Bilagor",
-          "attachments_description": "Spelare kan bifoga upp till 4 bilder eller videor till ett meddelande i lobby-, turnerings-, arrangörs-, draft- och direktchattar. En fil raderas när meddelandena i dess rum löper ut, när dess direktmeddelande rensas bort eller så fort dess meddelande raderas.",
+          "attachments_description": "Spelare kan bifoga upp till 4 bilder eller videor till ett meddelande i lobby-, turnerings-, arrangörs-, draft-, lag- och direktchattar. En fil raderas när meddelandena i dess rum löper ut, när dess direktmeddelande rensas bort eller så fort dess meddelande raderas.",
           "attachment_max_mb": "Största fil (MB)",
           "attachment_daily_mb": "Uppladdningar per spelare och dag (MB)",
           "attachment_daily_mb_hint": "Räknas över de senaste 24 timmarna, inklusive borttagna filer.",
@@ -6837,6 +6838,7 @@
     "chat_panel": {
       "default_title": "Chatt",
       "participants_in_chat": "{count} i chatten",
+      "members_here": "{here} av {total} här",
       "pop_out_tooltip": "Öppna i eget fönster",
       "close_tooltip": "Stäng konversation",
       "no_chats_title": "Inga chattar än",
@@ -8325,7 +8327,8 @@
         "no_matches": "Inga matcher än",
         "founded": "Grundat {date}",
         "all_awards": "Visa alla utmärkelser",
-        "team_actions": "Lagåtgärder"
+        "team_actions": "Lagåtgärder",
+        "team_chat": "Lagchatt"
       },
       "stage": {
         "live": "Live nu",
@@ -10311,7 +10314,8 @@
         "tournament": "Släpp för att skicka i turneringschatten",
         "organizers": "Släpp för att skicka i arrangörschatten",
         "draft": "Släpp för att skicka i draftlobbyn",
-        "direct": "Släpp för att skicka i den här konversationen"
+        "direct": "Släpp för att skicka i den här konversationen",
+        "team": "Släpp för att skicka i lagchatten"
       },
       "drop_hint": "Bilder och videor, upp till {count} åt gången",
       "rejected_type": "{name} kan inte bifogas. Bara bilder och videor kan det.",
@@ -10370,6 +10374,14 @@
       "too_many": "Ett meddelande kan tagga högst {max} spelare.",
       "organizer": "Arrangör",
       "tagged_you": "{count} meddelande taggar dig | {count} meddelanden taggar dig"
+    },
+    "team_room": {
+      "empty_hint": "Bara spelarna och ägaren av {team} kan läsa det här.",
+      "removed_title": "Du är inte längre med i {team}",
+      "removed_description": "Den här chatten är stängd. Den försvinner från din lista när du byter rum.",
+      "forbidden_title": "Du kan inte öppna den här chatten",
+      "forbidden_description": "Bara spelarna och ägaren av {team} kan läsa den.",
+      "forbidden_description_unnamed": "Bara lagets spelare och ägare kan läsa den."
     }
   },
   "charts": {

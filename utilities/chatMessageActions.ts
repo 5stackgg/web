@@ -72,7 +72,8 @@ export function heldChatReactions(
 //
 // A sanction is on the author, not the line, so it needs neither an id nor a
 // source -- only someone other than the viewer, ranked below them, to put it
-// on.
+// on. A team's room is moderated by the team, not by staff: deleting is all
+// its admins get.
 //
 // A line that is only files or a GIF has no text to edit, and the api refuses
 // an edit that would leave it empty.
@@ -115,6 +116,7 @@ export function chatMessagePermissions({
       canModerate &&
       outranksAuthor &&
       roomType !== "direct" &&
+      roomType !== "team" &&
       !!message?.from?.steam_id &&
       !isOwnChatMessage(message, viewerSteamId),
   };

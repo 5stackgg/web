@@ -16,7 +16,11 @@ import {
   Lock,
   X,
 } from "lucide-vue-next";
-import { e_player_roles_enum } from "~/generated/zeus";
+import {
+  e_match_types_enum,
+  e_player_roles_enum,
+  e_timeout_settings_enum,
+} from "~/generated/zeus";
 import { useQuery } from "@vue/apollo-composable";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import matchOptionsValidator from "~/utilities/match-options-validator";
@@ -387,10 +391,29 @@ watch(
   },
 );
 
-const discardEdits = () => {
+// A quick-hosted room has no match options row: the api spawns its match on
+// the matchmaking defaults for the room's type, so the form starts from those.
+const seedOptions = () => {
   if (props.initial?.options) {
     setupOptions(form, props.initial.options);
+    return;
   }
+  if (props.initial?.type) {
+    form.setValues({
+      type: props.initial.type,
+      mr: props.initial.type === e_match_types_enum.Competitive ? "12" : "8",
+      best_of: "1",
+      knife_round: true,
+      overtime: true,
+      map_veto: true,
+      timeout_setting: e_timeout_settings_enum.Admin,
+      regions: props.initial.regions ?? [],
+    });
+  }
+};
+
+const discardEdits = () => {
+  seedOptions();
   mode.value = source?.mode || "Pug";
   access.value = source?.access || "Friends";
   requireApproval.value = source?.require_approval ?? false;
@@ -483,9 +506,7 @@ watch(matchType, () => {
   }
 });
 
-if (props.initial?.options) {
-  setupOptions(form, props.initial.options);
-}
+seedOptions();
 
 if (props.editing && props.initial?.options?.map_pool?.type === "Custom") {
   const customMapIds = (props.initial.options.map_pool.maps || []).map(

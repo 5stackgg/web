@@ -222,7 +222,7 @@ onUnmounted(() => rankSub?.unsubscribe());
             <MatchInfo
               :match="match"
               :camera-ready="cameraReady"
-              :hide-booting="vetoStageUp"
+              :hide-booting="vetoStageUp || vetoArriving"
             ></MatchInfo>
           </PageTransition>
 

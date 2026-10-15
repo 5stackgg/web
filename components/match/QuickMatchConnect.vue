@@ -150,8 +150,8 @@ export default {
       required: true,
     },
     // The surrounding UI shows the server starting (the veto's start stage):
-    // no booting spinner here, and the connect box waits until that hands
-    // over, so it arrives with the page's map cards.
+    // no booting spinner here, and the connect box waits until the maps have
+    // landed in the page's cards, so it arrives on its own beat.
     hideBooting: {
       type: Boolean,
       default: false,

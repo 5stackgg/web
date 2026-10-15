@@ -85,6 +85,42 @@ describe("chat settings", () => {
     );
   });
 
+  it("keeps organizer chat for 90 days by default", async () => {
+    const wrapper = await mountPage();
+
+    await (wrapper.vm as any).updateSettings();
+
+    expect(saved()).toEqual(
+      expect.arrayContaining([
+        { name: "public.chat_ttl_organizers", value: "7776000" },
+        { name: "public.chat_ttl_tournament", value: "604800" },
+        { name: "public.chat_ttl_match", value: "3600" },
+      ]),
+    );
+  });
+
+  it("reads each room's retention back as a duration", async () => {
+    useApplicationSettingsStore().settings = [
+      { name: "public.chat_ttl_match", value: "5400" },
+      { name: "public.chat_ttl_draft", value: "0" },
+    ];
+    const wrapper = await mountPage();
+    await flushPromises();
+
+    const field = (label: string) => {
+      const element = wrapper
+        .findAll("label")
+        .find((candidate) => candidate.text() === label);
+      return element?.element.closest("div")?.textContent ?? "";
+    };
+
+    expect(field("Organizer chat")).toContain("90 days");
+    expect(field("Tournament chat")).toContain("7 days");
+    expect(field("Team chat")).toContain("1 hour");
+    expect(field("Match chat")).toContain("90 minutes");
+    expect(field("Draft lobby chat")).not.toMatch(/\d+ \w+/);
+  });
+
   it("loads what the operator set", async () => {
     useApplicationSettingsStore().settings = [
       { name: "chat_attachment_daily_mb", value: "250" },

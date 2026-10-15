@@ -8862,9 +8862,6 @@
       "clears_match_winner": "To usunie też zwycięzcę meczu."
     },
     "region_veto": {
-      "ban_label": "Ban",
-      "banning": "banuje region",
-      "confirm_ban": "Potwierdź ban",
       "server_region": "Region serwera",
       "select_region": "Wybierz region",
       "no_regions_available": "Brak dostępnych regionów",
@@ -8900,17 +8897,7 @@
     },
     "decider": "Decydująca mapa",
     "map_veto": {
-      "is_picking": "wybiera",
-      "pick": "Pick",
-      "confirm": "Potwierdź {type}",
-      "your_turn": "Twoja kolej",
-      "headline_side": "Wybierz stronę na start",
-      "headline_pick": "Wybierz mapę",
-      "headline_ban": "Zbanuj mapę",
-      "side_on_map": "{team} · pierwsza połowa na {map}",
-      "side_for_map": "Strona dotyczy tej mapy",
-      "side_role_ct": "Obrona",
-      "side_role_t": "Atak"
+      "pick": "Pick"
     },
     "map_lineup": {
       "picked": "Wybrane"
@@ -9510,6 +9497,54 @@
         "no_detonation": "brak lądowania",
         "no_detonation_hint": "Demo nigdy nie powiązało detonacji z tym rzutem, więc miejsce lądowania nie zostało zapisane."
       }
+    },
+    "veto": {
+      "your_turn": "Twoja kolej",
+      "ban_map": "Zbanuj mapę",
+      "pick_map": "Wybierz mapę",
+      "ban_region": "Zbanuj region",
+      "banning_map": "Banuje mapę",
+      "picking_map": "Wybiera mapę",
+      "banning_region": "Banuje region",
+      "pick_side": "Wybierz stronę startową na mapie {map}",
+      "picking_side": "Wybiera stronę na mapie {map}",
+      "decider": "Decydująca mapa",
+      "decider_line": "Ustalanie ostatniej mapy",
+      "last_region": "Ostatni pozostały region",
+      "last_region_line": "Ustawianie regionu serwera",
+      "complete": "Veto zakończone",
+      "complete_line": "Mapy są ustalone",
+      "region_set": "Region ustawiony",
+      "order": "Kolejność",
+      "steps": {
+        "Ban": "Ban",
+        "Pick": "Pick",
+        "Side": "Strona",
+        "Decider": "Decydująca",
+        "Region": "Region"
+      },
+      "ban_n": "Ban {n}",
+      "map_n": "Mapa {n}",
+      "decider_map_n": "Decydująca · Mapa {n}",
+      "the_map": "Mapa",
+      "server_region": "Region serwera",
+      "choose": "Kliknij, aby wybrać",
+      "choose_with_ping": "Twój ping {ping} ms · kliknij, aby wybrać",
+      "cta_ban": "Zbanuj {map}",
+      "cta_pick": "Wybierz {map}",
+      "banned_it": "Zbanowane przez {team}",
+      "picked_it": "Wybrana przez {team} · Mapa {n}",
+      "picked_by": "Wybrana przez {team}",
+      "map_n_starts": "Mapa {n} · {team} zaczyna po stronie {side}",
+      "decider_last": "Mapa {n} · ostatnia pozostała mapa",
+      "bo1_last": "Gracie na ostatniej pozostałej mapie",
+      "start_side": "Zacznij po stronie {side}",
+      "defend_first": "Najpierw obrona",
+      "attack_first": "Najpierw atak",
+      "confirm_side": "Potwierdź {side}",
+      "your_side_on": "Twoja strona startowa na mapie {map}",
+      "their_side_on": "{team} wybiera stronę na mapie {map}",
+      "not_set": "Nie ustalono"
     }
   },
   "ui": {

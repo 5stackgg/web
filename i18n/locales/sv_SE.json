@@ -8862,9 +8862,6 @@
       "clears_match_winner": "Det tar också bort matchvinnaren."
     },
     "region_veto": {
-      "ban_label": "Banna",
-      "banning": "bannar en region",
-      "confirm_ban": "Bekräfta bann",
       "server_region": "Serverregion",
       "select_region": "Välj en region",
       "no_regions_available": "Inga regioner tillgängliga",
@@ -8900,17 +8897,7 @@
     },
     "decider": "Avgörare",
     "map_veto": {
-      "is_picking": "väljer en",
-      "pick": "Välj",
-      "confirm": "Bekräfta {type}",
-      "your_turn": "Din tur",
-      "headline_side": "Välj din startsida",
-      "headline_pick": "Välj en karta",
-      "headline_ban": "Banna en karta",
-      "side_on_map": "{team} · första halvlek på {map}",
-      "side_for_map": "Sidan gäller den här kartan",
-      "side_role_ct": "Försvara",
-      "side_role_t": "Anfalla"
+      "pick": "Välj"
     },
     "map_lineup": {
       "picked": "Vald"
@@ -9510,6 +9497,54 @@
         "no_detonation": "ingen landning",
         "no_detonation_hint": "Demon kopplade aldrig en detonation till det här kastet, så var det tog vägen registrerades aldrig."
       }
+    },
+    "veto": {
+      "your_turn": "Din tur",
+      "ban_map": "Banna en karta",
+      "pick_map": "Välj en karta",
+      "ban_region": "Banna en region",
+      "banning_map": "Bannar en karta",
+      "picking_map": "Väljer en karta",
+      "banning_region": "Bannar en region",
+      "pick_side": "Välj din startsida på {map}",
+      "picking_side": "Väljer sida på {map}",
+      "decider": "Avgörare",
+      "decider_line": "Sista kartan låses",
+      "last_region": "Sista regionen kvar",
+      "last_region_line": "Serverregionen sätts",
+      "complete": "Veto klart",
+      "complete_line": "Kartorna är låsta",
+      "region_set": "Region satt",
+      "order": "Ordning",
+      "steps": {
+        "Ban": "Bann",
+        "Pick": "Val",
+        "Side": "Sida",
+        "Decider": "Avgörare",
+        "Region": "Region"
+      },
+      "ban_n": "Bann {n}",
+      "map_n": "Karta {n}",
+      "decider_map_n": "Avgörare · Karta {n}",
+      "the_map": "Kartan",
+      "server_region": "Serverregion",
+      "choose": "Klicka för att välja",
+      "choose_with_ping": "Din ping {ping} ms · klicka för att välja",
+      "cta_ban": "Banna {map}",
+      "cta_pick": "Välj {map}",
+      "banned_it": "{team} bannade den",
+      "picked_it": "{team} valde den · Karta {n}",
+      "picked_by": "Vald av {team}",
+      "map_n_starts": "Karta {n} · {team} börjar på {side}",
+      "decider_last": "Karta {n} · sista kartan kvar",
+      "bo1_last": "Sista kartan kvar är den ni spelar",
+      "start_side": "Börja på {side}",
+      "defend_first": "Försvara först",
+      "attack_first": "Anfalla först",
+      "confirm_side": "Bekräfta {side}",
+      "your_side_on": "Din startsida på {map}",
+      "their_side_on": "{team} väljer sida på {map}",
+      "not_set": "Inte vald"
     }
   },
   "ui": {

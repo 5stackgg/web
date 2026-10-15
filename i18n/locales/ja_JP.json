@@ -8862,9 +8862,6 @@
       "clears_match_winner": "これにより試合の勝者も解除されます。"
     },
     "region_veto": {
-      "ban_label": "Ban",
-      "banning": "がリージョンを Ban 中",
-      "confirm_ban": "Ban を確定",
       "server_region": "サーバーリージョン",
       "select_region": "リージョンを選択",
       "no_regions_available": "利用可能なリージョンなし",
@@ -8900,17 +8897,7 @@
     },
     "decider": "決着マップ",
     "map_veto": {
-      "is_picking": "が選択中：",
-      "pick": "Pick",
-      "confirm": "{type} を確定",
-      "your_turn": "あなたの番",
-      "headline_side": "開始サイドを選択",
-      "headline_pick": "マップを選択",
-      "headline_ban": "マップを BAN",
-      "side_on_map": "{team} · {map} の前半",
-      "side_for_map": "サイドはこのマップに適用されます",
-      "side_role_ct": "防衛",
-      "side_role_t": "攻撃"
+      "pick": "Pick"
     },
     "map_lineup": {
       "picked": "Pick 済み"
@@ -9510,6 +9497,54 @@
         "no_detonation": "着弾なし",
         "no_detonation_hint": "デモがこの投げに爆発を対応付けていないため、どこに落ちたかは記録されていません。"
       }
+    },
+    "veto": {
+      "your_turn": "あなたの番",
+      "ban_map": "マップを BAN",
+      "pick_map": "マップを選択",
+      "ban_region": "リージョンを BAN",
+      "banning_map": "マップを BAN 中",
+      "picking_map": "マップを選択中",
+      "banning_region": "リージョンを BAN 中",
+      "pick_side": "{map} の開始サイドを選択",
+      "picking_side": "{map} のサイドを選択中",
+      "decider": "決着マップ",
+      "decider_line": "最後のマップを確定中",
+      "last_region": "最後のリージョン",
+      "last_region_line": "サーバーリージョンを設定中",
+      "complete": "Veto 完了",
+      "complete_line": "マップが確定しました",
+      "region_set": "リージョン確定",
+      "order": "進行順",
+      "steps": {
+        "Ban": "BAN",
+        "Pick": "Pick",
+        "Side": "サイド",
+        "Decider": "決着",
+        "Region": "リージョン"
+      },
+      "ban_n": "BAN {n}",
+      "map_n": "マップ {n}",
+      "decider_map_n": "決着 · マップ {n}",
+      "the_map": "マップ",
+      "server_region": "サーバーリージョン",
+      "choose": "クリックして選択",
+      "choose_with_ping": "Ping {ping} ms · クリックして選択",
+      "cta_ban": "{map} を BAN",
+      "cta_pick": "{map} を Pick",
+      "banned_it": "{team} が BAN",
+      "picked_it": "{team} が Pick · マップ {n}",
+      "picked_by": "{team} が Pick",
+      "map_n_starts": "マップ {n} · {team} は {side} スタート",
+      "decider_last": "マップ {n} · 最後に残ったマップ",
+      "bo1_last": "最後に残ったマップでプレイします",
+      "start_side": "{side} スタート",
+      "defend_first": "先に防衛",
+      "attack_first": "先に攻撃",
+      "confirm_side": "{side} を確定",
+      "your_side_on": "{map} でのあなたの開始サイド",
+      "their_side_on": "{team} が {map} のサイドを選択中",
+      "not_set": "未定"
     }
   },
   "ui": {

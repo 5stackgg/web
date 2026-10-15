@@ -8862,9 +8862,6 @@
       "clears_match_winner": "這也會清除比賽勝者。"
     },
     "region_veto": {
-      "ban_label": "禁用",
-      "banning": "正在禁用地區",
-      "confirm_ban": "確認禁用",
       "server_region": "伺服器地區",
       "select_region": "選擇地區",
       "no_regions_available": "無可用地區",
@@ -8900,17 +8897,7 @@
     },
     "decider": "決勝圖",
     "map_veto": {
-      "is_picking": "正在選擇",
-      "pick": "選擇",
-      "confirm": "確認 {type}",
-      "your_turn": "輪到你了",
-      "headline_side": "選擇你的開局陣營",
-      "headline_pick": "選擇一張地圖",
-      "headline_ban": "禁用一張地圖",
-      "side_on_map": "{team} · {map} 上半場",
-      "side_for_map": "該陣營選擇適用於這張地圖",
-      "side_role_ct": "防守",
-      "side_role_t": "進攻"
+      "pick": "選擇"
     },
     "map_lineup": {
       "picked": "已選"
@@ -9510,6 +9497,54 @@
         "no_detonation": "無落點",
         "no_detonation_hint": "Demo 沒有把爆炸與這次投擲關聯起來，因此它最終落在哪裡從未被記錄。"
       }
+    },
+    "veto": {
+      "your_turn": "輪到你了",
+      "ban_map": "禁用一張地圖",
+      "pick_map": "選擇一張地圖",
+      "ban_region": "禁用一個地區",
+      "banning_map": "正在禁用地圖",
+      "picking_map": "正在選擇地圖",
+      "banning_region": "正在禁用地區",
+      "pick_side": "選擇你在 {map} 的開局陣營",
+      "picking_side": "正在為 {map} 選擇陣營",
+      "decider": "決勝圖",
+      "decider_line": "正在鎖定最後一張地圖",
+      "last_region": "最後一個地區",
+      "last_region_line": "正在設定伺服器地區",
+      "complete": "BP 完成",
+      "complete_line": "地圖已鎖定",
+      "region_set": "地區已確定",
+      "order": "BP 順序",
+      "steps": {
+        "Ban": "禁用",
+        "Pick": "選擇",
+        "Side": "陣營",
+        "Decider": "決勝圖",
+        "Region": "地區"
+      },
+      "ban_n": "禁用 {n}",
+      "map_n": "地圖 {n}",
+      "decider_map_n": "決勝圖 · 地圖 {n}",
+      "the_map": "地圖",
+      "server_region": "伺服器地區",
+      "choose": "點擊選擇",
+      "choose_with_ping": "你的延遲 {ping} ms · 點擊選擇",
+      "cta_ban": "禁用 {map}",
+      "cta_pick": "選擇 {map}",
+      "banned_it": "{team} 已禁用",
+      "picked_it": "{team} 已選擇 · 地圖 {n}",
+      "picked_by": "由 {team} 選擇",
+      "map_n_starts": "地圖 {n} · {team} 於 {side} 方開始",
+      "decider_last": "地圖 {n} · 最後剩下的地圖",
+      "bo1_last": "最後剩下的地圖就是比賽地圖",
+      "start_side": "{side} 方開局",
+      "defend_first": "先防守",
+      "attack_first": "先進攻",
+      "confirm_side": "確認 {side}",
+      "your_side_on": "你在 {map} 的開局陣營",
+      "their_side_on": "{team} 正在為 {map} 選擇陣營",
+      "not_set": "待定"
     }
   },
   "ui": {

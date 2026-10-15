@@ -8862,9 +8862,6 @@
       "clears_match_winner": "سيؤدي هذا أيضًا إلى إزالة الفائز بالمباراة."
     },
     "region_veto": {
-      "ban_label": "حظر",
-      "banning": "يحظر منطقة",
-      "confirm_ban": "أكّد الحظر",
       "server_region": "منطقة السيرفر",
       "select_region": "اختر منطقة",
       "no_regions_available": "لا توجد مناطق متاحة",
@@ -8900,17 +8897,7 @@
     },
     "decider": "الخريطة الحاسمة",
     "map_veto": {
-      "is_picking": "يختار",
-      "pick": "اختيار",
-      "confirm": "أكّد {type}",
-      "your_turn": "دورك",
-      "headline_side": "اختر جانب البداية",
-      "headline_pick": "اختر خريطة",
-      "headline_ban": "احظر خريطة",
-      "side_on_map": "{team} · الشوط الأول على {map}",
-      "side_for_map": "الجانب يخص هذه الخريطة",
-      "side_role_ct": "الدفاع",
-      "side_role_t": "الهجوم"
+      "pick": "اختيار"
     },
     "map_lineup": {
       "picked": "مختارة"
@@ -9510,6 +9497,54 @@
         "no_detonation": "بلا موضع سقوط",
         "no_detonation_hint": "لم يربط التسجيل أي انفجار بهذه الرمية، فلم يُسجَّل أين انتهت."
       }
+    },
+    "veto": {
+      "your_turn": "دورك",
+      "ban_map": "احظر خريطة",
+      "pick_map": "اختر خريطة",
+      "ban_region": "احظر منطقة",
+      "banning_map": "يحظر خريطة",
+      "picking_map": "يختار خريطة",
+      "banning_region": "يحظر منطقة",
+      "pick_side": "اختر جانب البداية على {map}",
+      "picking_side": "يختار جانبًا على {map}",
+      "decider": "الخريطة الحاسمة",
+      "decider_line": "تثبيت الخريطة الأخيرة",
+      "last_region": "آخر منطقة متبقية",
+      "last_region_line": "تحديد منطقة السيرفر",
+      "complete": "اكتمل الـ Veto",
+      "complete_line": "تم تثبيت الخرائط",
+      "region_set": "تم تحديد المنطقة",
+      "order": "ترتيب الأدوار",
+      "steps": {
+        "Ban": "حظر",
+        "Pick": "اختيار",
+        "Side": "الجانب",
+        "Decider": "الحاسمة",
+        "Region": "المنطقة"
+      },
+      "ban_n": "حظر {n}",
+      "map_n": "الخريطة {n}",
+      "decider_map_n": "الحاسمة · الخريطة {n}",
+      "the_map": "الخريطة",
+      "server_region": "منطقة السيرفر",
+      "choose": "انقر للاختيار",
+      "choose_with_ping": "البنق لديك {ping} ms · انقر للاختيار",
+      "cta_ban": "احظر {map}",
+      "cta_pick": "اختر {map}",
+      "banned_it": "حظرها {team}",
+      "picked_it": "اختارها {team} · الخريطة {n}",
+      "picked_by": "اختيار {team}",
+      "map_n_starts": "الخريطة {n} · {team} يبدأ على {side}",
+      "decider_last": "الخريطة {n} · آخر خريطة متبقية",
+      "bo1_last": "آخر خريطة متبقية هي التي ستلعبونها",
+      "start_side": "ابدأ على {side}",
+      "defend_first": "الدفاع أولًا",
+      "attack_first": "الهجوم أولًا",
+      "confirm_side": "أكّد {side}",
+      "your_side_on": "جانب بدايتك على {map}",
+      "their_side_on": "{team} يختار جانبًا على {map}",
+      "not_set": "غير محدد"
     }
   },
   "ui": {

@@ -8862,9 +8862,6 @@
       "clears_match_winner": "Bu, maçın kazananını da kaldırır."
     },
     "region_veto": {
-      "ban_label": "Ban",
-      "banning": "bölge banlıyor",
-      "confirm_ban": "Banı Onayla",
       "server_region": "Sunucu Bölgesi",
       "select_region": "Bölge Seç",
       "no_regions_available": "Kullanılabilir bölge yok",
@@ -8900,17 +8897,7 @@
     },
     "decider": "Karar Haritası",
     "map_veto": {
-      "is_picking": "harita seçiyor",
-      "pick": "Pick",
-      "confirm": "{type} Onayla",
-      "your_turn": "Sıra Sende",
-      "headline_side": "Başlangıç tarafını seç",
-      "headline_pick": "Bir harita seç",
-      "headline_ban": "Bir haritayı yasakla",
-      "side_on_map": "{team} · {map} haritasında ilk yarı",
-      "side_for_map": "Taraf bu harita için",
-      "side_role_ct": "Savun",
-      "side_role_t": "Saldır"
+      "pick": "Pick"
     },
     "map_lineup": {
       "picked": "Seçildi"
@@ -9510,6 +9497,54 @@
         "no_detonation": "düşüş yok",
         "no_detonation_hint": "Demo bu atışla hiçbir patlamayı eşleştirmedi, yani nerede bittiği hiç kaydedilmedi."
       }
+    },
+    "veto": {
+      "your_turn": "Sıra sende",
+      "ban_map": "Bir haritayı banla",
+      "pick_map": "Bir harita seç",
+      "ban_region": "Bir bölgeyi banla",
+      "banning_map": "Harita banlıyor",
+      "picking_map": "Harita seçiyor",
+      "banning_region": "Bölge banlıyor",
+      "pick_side": "{map} haritasında başlangıç tarafını seç",
+      "picking_side": "{map} haritasında taraf seçiyor",
+      "decider": "Karar haritası",
+      "decider_line": "Son harita belirleniyor",
+      "last_region": "Kalan son bölge",
+      "last_region_line": "Sunucu bölgesi belirleniyor",
+      "complete": "Veto tamamlandı",
+      "complete_line": "Haritalar belirlendi",
+      "region_set": "Bölge belirlendi",
+      "order": "Veto sırası",
+      "steps": {
+        "Ban": "Ban",
+        "Pick": "Pick",
+        "Side": "Taraf",
+        "Decider": "Karar",
+        "Region": "Bölge"
+      },
+      "ban_n": "Ban {n}",
+      "map_n": "Harita {n}",
+      "decider_map_n": "Karar · Harita {n}",
+      "the_map": "Harita",
+      "server_region": "Sunucu bölgesi",
+      "choose": "Seçmek için tıkla",
+      "choose_with_ping": "Pingin {ping} ms · seçmek için tıkla",
+      "cta_ban": "Banla: {map}",
+      "cta_pick": "Seç: {map}",
+      "banned_it": "{team} banladı",
+      "picked_it": "{team} seçti · Harita {n}",
+      "picked_by": "Seçen: {team}",
+      "map_n_starts": "Harita {n} · {team}, {side} tarafında başlıyor",
+      "decider_last": "Harita {n} · kalan son harita",
+      "bo1_last": "Kalan son harita oynanır",
+      "start_side": "{side} tarafında başla",
+      "defend_first": "Önce savun",
+      "attack_first": "Önce saldır",
+      "confirm_side": "{side} tarafını onayla",
+      "your_side_on": "{map} haritasında başlangıç tarafın",
+      "their_side_on": "{team}, {map} haritasında taraf seçiyor",
+      "not_set": "Belirlenmedi"
     }
   },
   "ui": {

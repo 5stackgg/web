@@ -8862,9 +8862,6 @@
       "clears_match_winner": "Esto también quita al ganador de la partida."
     },
     "region_veto": {
-      "ban_label": "Banear",
-      "banning": "está baneando una región",
-      "confirm_ban": "Confirmar baneo",
       "server_region": "Región del servidor",
       "select_region": "Selecciona una región",
       "no_regions_available": "No hay regiones disponibles",
@@ -8900,17 +8897,7 @@
     },
     "decider": "Decisivo",
     "map_veto": {
-      "is_picking": "está eligiendo un",
-      "pick": "Elegir",
-      "confirm": "Confirmar {type}",
-      "your_turn": "Tu turno",
-      "headline_side": "Elige tu bando inicial",
-      "headline_pick": "Elige un mapa",
-      "headline_ban": "Veta un mapa",
-      "side_on_map": "{team} · primera mitad en {map}",
-      "side_for_map": "El bando es para este mapa",
-      "side_role_ct": "Defender",
-      "side_role_t": "Atacar"
+      "pick": "Elegir"
     },
     "map_lineup": {
       "picked": "Elegido"
@@ -9510,6 +9497,54 @@
         "no_detonation": "sin caída",
         "no_detonation_hint": "La demo nunca emparejó una detonación con este lanzamiento, así que dónde acabó no se llegó a registrar."
       }
+    },
+    "veto": {
+      "your_turn": "Tu turno",
+      "ban_map": "Banea un mapa",
+      "pick_map": "Elige un mapa",
+      "ban_region": "Banea una región",
+      "banning_map": "Baneando un mapa",
+      "picking_map": "Eligiendo un mapa",
+      "banning_region": "Baneando una región",
+      "pick_side": "Elige tu bando inicial en {map}",
+      "picking_side": "Eligiendo bando en {map}",
+      "decider": "Decisivo",
+      "decider_line": "Fijando el último mapa",
+      "last_region": "Última región restante",
+      "last_region_line": "Fijando la región del servidor",
+      "complete": "Veto completado",
+      "complete_line": "Los mapas están fijados",
+      "region_set": "Región fijada",
+      "order": "Orden",
+      "steps": {
+        "Ban": "Baneo",
+        "Pick": "Elección",
+        "Side": "Bando",
+        "Decider": "Decisivo",
+        "Region": "Región"
+      },
+      "ban_n": "Baneo {n}",
+      "map_n": "Mapa {n}",
+      "decider_map_n": "Decisivo · Mapa {n}",
+      "the_map": "El mapa",
+      "server_region": "Región del servidor",
+      "choose": "Haz clic para elegir",
+      "choose_with_ping": "Tu ping {ping} ms · haz clic para elegir",
+      "cta_ban": "Banear {map}",
+      "cta_pick": "Elegir {map}",
+      "banned_it": "Baneo de {team}",
+      "picked_it": "{team} lo eligió · Mapa {n}",
+      "picked_by": "Elegido por {team}",
+      "map_n_starts": "Mapa {n} · {team} empieza en {side}",
+      "decider_last": "Mapa {n} · el último mapa que queda",
+      "bo1_last": "Se juega el último mapa que quede",
+      "start_side": "Empezar en {side}",
+      "defend_first": "Defender primero",
+      "attack_first": "Atacar primero",
+      "confirm_side": "Confirmar {side}",
+      "your_side_on": "Tu bando inicial en {map}",
+      "their_side_on": "{team} elige bando en {map}",
+      "not_set": "Sin definir"
     }
   },
   "ui": {

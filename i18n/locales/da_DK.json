@@ -8862,9 +8862,6 @@
       "clears_match_winner": "Det fjerner også kampvinderen."
     },
     "region_veto": {
-      "ban_label": "Ban",
-      "banning": "banner en region",
-      "confirm_ban": "Bekræft ban",
       "server_region": "Serverregion",
       "select_region": "Vælg en region",
       "no_regions_available": "Ingen regioner tilgængelige",
@@ -8900,17 +8897,7 @@
     },
     "decider": "Decider",
     "map_veto": {
-      "is_picking": "picker et",
-      "pick": "Pick",
-      "confirm": "Bekræft {type}",
-      "your_turn": "Din tur",
-      "headline_side": "Vælg din startside",
-      "headline_pick": "Vælg en bane",
-      "headline_ban": "Ban en bane",
-      "side_on_map": "{team} · første halvleg på {map}",
-      "side_for_map": "Siden gælder denne bane",
-      "side_role_ct": "Forsvar",
-      "side_role_t": "Angrib"
+      "pick": "Pick"
     },
     "map_lineup": {
       "picked": "Picket"
@@ -9510,6 +9497,54 @@
         "no_detonation": "ingen landing",
         "no_detonation_hint": "Demoen koblede aldrig en detonation til dette kast, så hvor det endte, blev aldrig registreret."
       }
+    },
+    "veto": {
+      "your_turn": "Din tur",
+      "ban_map": "Ban en bane",
+      "pick_map": "Vælg en bane",
+      "ban_region": "Ban en region",
+      "banning_map": "Banner en bane",
+      "picking_map": "Picker en bane",
+      "banning_region": "Banner en region",
+      "pick_side": "Vælg din startside på {map}",
+      "picking_side": "Vælger side på {map}",
+      "decider": "Decider",
+      "decider_line": "Den sidste bane låses fast",
+      "last_region": "Sidste region tilbage",
+      "last_region_line": "Serverregionen sættes",
+      "complete": "Veto færdig",
+      "complete_line": "Banerne er låst",
+      "region_set": "Region sat",
+      "order": "Rækkefølge",
+      "steps": {
+        "Ban": "Ban",
+        "Pick": "Pick",
+        "Side": "Side",
+        "Decider": "Decider",
+        "Region": "Region"
+      },
+      "ban_n": "Ban {n}",
+      "map_n": "Bane {n}",
+      "decider_map_n": "Decider · Bane {n}",
+      "the_map": "Banen",
+      "server_region": "Serverregion",
+      "choose": "Klik for at vælge",
+      "choose_with_ping": "Din ping {ping} ms · klik for at vælge",
+      "cta_ban": "Ban {map}",
+      "cta_pick": "Pick {map}",
+      "banned_it": "{team} bannede den",
+      "picked_it": "{team} pickede den · Bane {n}",
+      "picked_by": "Picket af {team}",
+      "map_n_starts": "Bane {n} · {team} starter på {side}",
+      "decider_last": "Bane {n} · den sidste bane tilbage",
+      "bo1_last": "Den sidste bane tilbage er den, I spiller",
+      "start_side": "Start på {side}",
+      "defend_first": "Forsvar først",
+      "attack_first": "Angrib først",
+      "confirm_side": "Bekræft {side}",
+      "your_side_on": "Din startside på {map}",
+      "their_side_on": "{team} vælger side på {map}",
+      "not_set": "Ikke valgt"
     }
   },
   "ui": {

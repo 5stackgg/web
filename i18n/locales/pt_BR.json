@@ -8862,9 +8862,6 @@
       "clears_match_winner": "Isso também remove o vencedor da partida."
     },
     "region_veto": {
-      "ban_label": "Vetando Região/Local",
-      "banning": "está",
-      "confirm_ban": "Confirmar veto",
       "server_region": "Região/Local do Servidor",
       "select_region": "Selecionar Região/Local",
       "no_regions_available": "Nenhuma região/local disponível no momento.",
@@ -8900,17 +8897,7 @@
     },
     "decider": "Mapa Decisivo",
     "map_veto": {
-      "is_picking": "está realizando a seguinte ação:",
-      "pick": "Pick*",
-      "confirm": "Confirmar {type}",
-      "your_turn": "Sua vez",
-      "headline_side": "Escolha seu lado inicial",
-      "headline_pick": "Escolha um mapa",
-      "headline_ban": "Bana um mapa",
-      "side_on_map": "{team} · primeiro tempo em {map}",
-      "side_for_map": "O lado vale para este mapa",
-      "side_role_ct": "Defender",
-      "side_role_t": "Atacar"
+      "pick": "Pick*"
     },
     "map_lineup": {
       "picked": "Escolhido"
@@ -9510,6 +9497,54 @@
         "no_detonation": "sem queda",
         "no_detonation_hint": "A demo nunca associou uma detonação a este arremesso, então onde ele parou nunca foi registrado."
       }
+    },
+    "veto": {
+      "your_turn": "Sua vez",
+      "ban_map": "Bana um mapa",
+      "pick_map": "Escolha um mapa",
+      "ban_region": "Bana uma região",
+      "banning_map": "Banindo um mapa",
+      "picking_map": "Escolhendo um mapa",
+      "banning_region": "Banindo uma região",
+      "pick_side": "Escolha seu lado inicial em {map}",
+      "picking_side": "Escolhendo o lado em {map}",
+      "decider": "Decisivo",
+      "decider_line": "Definindo o último mapa",
+      "last_region": "Última região restante",
+      "last_region_line": "Definindo a região do servidor",
+      "complete": "Veto concluído",
+      "complete_line": "Os mapas estão definidos",
+      "region_set": "Região definida",
+      "order": "Ordem do veto",
+      "steps": {
+        "Ban": "Ban",
+        "Pick": "Pick",
+        "Side": "Lado",
+        "Decider": "Decisivo",
+        "Region": "Região"
+      },
+      "ban_n": "Ban {n}",
+      "map_n": "Mapa {n}",
+      "decider_map_n": "Decisivo · Mapa {n}",
+      "the_map": "O mapa",
+      "server_region": "Região do servidor",
+      "choose": "Clique para escolher",
+      "choose_with_ping": "Seu ping {ping} ms · clique para escolher",
+      "cta_ban": "Banir {map}",
+      "cta_pick": "Escolher {map}",
+      "banned_it": "Ban de {team}",
+      "picked_it": "Escolhido por {team} · Mapa {n}",
+      "picked_by": "Escolhido por {team}",
+      "map_n_starts": "Mapa {n} · {team} começa como {side}",
+      "decider_last": "Mapa {n} · o último mapa restante",
+      "bo1_last": "O último mapa restante é o que vocês jogam",
+      "start_side": "Começar como {side}",
+      "defend_first": "Defender primeiro",
+      "attack_first": "Atacar primeiro",
+      "confirm_side": "Confirmar {side}",
+      "your_side_on": "Seu lado inicial em {map}",
+      "their_side_on": "{team} escolhe o lado em {map}",
+      "not_set": "A definir"
     }
   },
   "ui": {

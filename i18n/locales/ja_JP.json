@@ -9563,7 +9563,20 @@
         "captain_picks": "{captain} はキャプテンとして {of} 回の Veto のうち {n} 回 Pick",
         "players_note": "各サイドの 5 人それぞれの、このマップでの試合",
         "record": "{team}：このマップで {wins}勝 {losses}敗",
-        "your_record": "ここでのあなたの戦績：{wins}–{losses}"
+        "edge": "優位",
+        "edge_key": "各マップで優勢なサイドと、その勝率が何ポイント高いか",
+        "too_few": "— {n} 試合未満",
+        "players_games": "プレイヤー自身の試合",
+        "even": "互角",
+        "edge_ahead": "{team}：ここでの勝率が {points} ポイント高い",
+        "edge_short": "{team} +{points}",
+        "edge_even": "勝率の差が {points} ポイント以内",
+        "edge_few": "試合数が少なく、ここでは優位を出せません",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}：{n} 試合",
+        "win_rate_on": "{map} での勝率",
+        "edge_key_you": "各マップで、あなたの勝率が相手より何ポイント上 (+) か下 (−) か",
+        "edge_short_behind": "{team} −{points}"
       },
       "keys": {
         "browse": "移動",

@@ -9563,7 +9563,20 @@
         "captain_picks": "{captain} la choisit dans {n} vetos sur {of} en tant que capitaine",
         "players_note": "Les cinq joueurs de chaque camp, avec leurs propres matchs sur cette map",
         "record": "{team} : {wins} gagnés, {losses} perdus sur cette map",
-        "your_record": "Votre bilan ici : {wins}–{losses}"
+        "edge": "Avantage",
+        "edge_key": "le camp le plus fort sur chaque map, et de combien de points son taux de victoire est supérieur",
+        "too_few": "— moins de {n} matchs",
+        "players_games": "Matchs personnels des joueurs",
+        "even": "Égalité",
+        "edge_ahead": "{team} : taux de victoire supérieur de {points} points ici",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Taux de victoire à {points} points ou moins d'écart",
+        "edge_few": "Trop peu de matchs ici pour mesurer un avantage",
+        "rate_line": "{team} {rate} %",
+        "games_line": "{team} : {n} matchs",
+        "win_rate_on": "Taux de victoire sur {map}",
+        "edge_key_you": "de combien de points votre taux de victoire est au-dessus (+) ou en dessous (−) du leur sur chaque map",
+        "edge_short_behind": "{team} −{points}"
       },
       "keys": {
         "browse": "parcourir",

@@ -9563,7 +9563,20 @@
         "captain_picks": "{captain} lo elige en {n} de {of} vetos como capitán",
         "players_note": "Los cinco jugadores de cada bando, con sus propias partidas en este mapa",
         "record": "{team}: {wins} ganadas, {losses} perdidas en este mapa",
-        "your_record": "Tu balance aquí: {wins}–{losses}"
+        "edge": "Ventaja",
+        "edge_key": "el bando más fuerte en cada mapa y cuántos puntos más alta es su tasa de victoria",
+        "too_few": "— menos de {n} partidas",
+        "players_games": "Partidas propias de los jugadores",
+        "even": "Igualado",
+        "edge_ahead": "{team}: tasa de victoria {points} puntos más alta aquí",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Tasas de victoria a {points} puntos o menos",
+        "edge_few": "Muy pocas partidas aquí para medir la ventaja",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} partidas",
+        "win_rate_on": "Tasa de victoria en {map}",
+        "edge_key_you": "cuántos puntos está tu tasa de victoria por encima (+) o por debajo (−) de la suya en cada mapa",
+        "edge_short_behind": "{team} −{points}"
       },
       "keys": {
         "browse": "navegar",

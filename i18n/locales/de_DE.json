@@ -9563,7 +9563,20 @@
         "captain_picks": "{captain} pickt sie als Captain in {n} von {of} Vetos",
         "players_note": "Je Seite die fünf Spieler mit ihren eigenen Matches auf dieser Map",
         "record": "{team}: {wins} gewonnen, {losses} verloren auf dieser Map",
-        "your_record": "Deine Bilanz hier: {wins}–{losses}"
+        "edge": "Vorteil",
+        "edge_key": "die stärkere Seite auf jeder Map und um wie viele Punkte ihre Siegquote höher ist",
+        "too_few": "— unter {n} Matches",
+        "players_games": "Eigene Matches der Spieler",
+        "even": "Gleichauf",
+        "edge_ahead": "{team}: Siegquote hier {points} Punkte höher",
+        "edge_short": "{team} +{points}",
+        "edge_even": "Siegquoten innerhalb von {points} Punkten",
+        "edge_few": "Zu wenige Matches hier für einen Vorteil",
+        "rate_line": "{team} {rate}%",
+        "games_line": "{team}: {n} Matches",
+        "win_rate_on": "Siegquote auf {map}",
+        "edge_key_you": "um wie viele Punkte deine Siegquote auf jeder Map über (+) oder unter (−) ihrer liegt",
+        "edge_short_behind": "{team} −{points}"
       },
       "keys": {
         "browse": "blättern",

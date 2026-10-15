@@ -494,6 +494,7 @@ export default {
     // The placements the podium shows, where a shared 3rd is two teams on
     // the same step. Optional, so an api without the field falls back.
     podiumSteps: {
+      fetchPolicy: "cache-first",
       query: tournamentPodiumQuery,
       variables: function () {
         return { tournamentId: (this as any).tournament?.id };

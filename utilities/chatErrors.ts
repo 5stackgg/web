@@ -4,7 +4,7 @@ import { MAX_CHAT_MENTIONS } from "~/utilities/chatMentions";
 
 // Echoed by the api on `chat:ack` and `chat:error`. An api that predates it
 // sends none, and only ever answered sends.
-export type ChatAction = "send" | "delete" | "edit" | "react";
+export type ChatAction = "send" | "delete" | "edit" | "react" | "history";
 
 export interface ChatError {
   code: string;

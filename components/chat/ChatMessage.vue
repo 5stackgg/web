@@ -29,16 +29,18 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
     ></span>
 
     <span
-      v-if="mentionsMe && !isTeamMessage"
+      v-if="mentionLit"
       data-chat-mentions-me
-      class="pointer-events-none absolute inset-y-0 left-0 w-[2px] rounded-full bg-destructive/70"
+      class="pointer-events-none absolute inset-y-0 left-0 w-[2px] rounded-full bg-[hsl(var(--tac-amber)/0.75)]"
     ></span>
 
     <!-- Grouped lines carry no name and no time, which is what makes a run
          readable -- but the time still has to be recoverable, so it comes back
-         in the gutter the avatar left empty, on hover. -->
+         in the gutter the avatar left empty, on hover. A line that opens on
+         media has filled that gutter, so it goes without. -->
     <span
-      v-if="!showMeta"
+      v-if="!showMeta && !mediaLeads"
+      data-chat-clock
       class="pointer-events-none absolute left-0 w-12 pr-2 text-right font-mono text-[10px] leading-snug text-muted-foreground/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
       :style="{ top: `calc(${padTopRem}rem + 1px)` }"
     >
@@ -110,11 +112,11 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
             ><span
               v-if="segment.mention"
               :data-chat-mention="segment.self ? 'self' : 'other'"
-              class="rounded-sm px-0.5 font-semibold"
+              class="font-semibold"
               :class="
                 segment.self
-                  ? 'bg-destructive/20 text-destructive'
-                  : 'bg-muted/70 text-foreground'
+                  ? 'rounded-sm bg-[hsl(var(--tac-amber)/0.18)] px-0.5 text-[hsl(var(--tac-amber))]'
+                  : 'text-[hsl(var(--tac-amber))]'
               "
               >{{ segment.text }}</span
             ><template v-else>{{ segment.text }}</template></template
@@ -138,7 +140,17 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           {{ $t("chat.edited_at", { time: editedAtLabel }) }}
         </FiveStackToolTip>
       </p>
-      <ChatMessageMedia v-if="hasMedia" :message="message" />
+      <!-- Media takes the whole width of the line, under the avatar, so a GIF
+           in a narrow panel isn't held to the text column. With only the name
+           above it, it drops clear of the avatar first. -->
+      <div
+        v-if="hasMedia"
+        data-chat-media
+        class="-ml-10"
+        :class="{ 'pt-[1.125rem]': showMeta && mediaLeads }"
+      >
+        <ChatMessageMedia :message="message" />
+      </div>
       <ChatMessageReactions
         :message="message"
         :room="room"
@@ -182,6 +194,7 @@ import {
 } from "~/utilities/chatMessageActions";
 import { outranksPlayer } from "~/utilities/sanctionAuthority";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
+import { useChatReadState } from "~/composables/useChatReadState";
 import { mentionSegments, mentionsViewer } from "~/utilities/chatMentions";
 
 export default {
@@ -280,8 +293,25 @@ export default {
     mentionsMe() {
       return mentionsViewer(this.message, this.viewerSteamId);
     },
+    // The whole line is lit only until the room has been seen with it in;
+    // after that the tag alone marks it.
+    mentionLit() {
+      return (
+        this.mentionsMe &&
+        !this.isTeamMessage &&
+        !!this.room &&
+        useChatReadState().isUnseen(
+          this.room.type,
+          this.room.id,
+          this.message?.timestamp,
+        )
+      );
+    },
     hasMedia() {
       return (this.message?.attachments?.length ?? 0) > 0 || !!this.message?.gif;
+    },
+    mediaLeads() {
+      return this.hasMedia && !this.hasText && !this.editing;
     },
     viewerSteamId() {
       return useAuthStore().me?.steam_id ?? null;
@@ -369,7 +399,7 @@ export default {
     // have to match it can never drift apart.
     padTopRem() {
       if (!this.isTeamMessage) {
-        return this.mentionsMe ? 0.25 : 0;
+        return this.mentionLit ? 0.25 : 0;
       }
 
       if (this.startsTeamRun) {
@@ -395,9 +425,9 @@ export default {
         classes.push("pr-7");
       }
 
-      if (!this.isTeamMessage && this.mentionsMe) {
+      if (this.mentionLit) {
         classes.push(
-          "rounded-sm bg-destructive/[0.06] pb-1.5 before:inset-0",
+          "rounded-sm bg-[hsl(var(--tac-amber)/0.07)] pb-1.5 before:inset-0",
           this.isSameSender && this.isCloseTogether ? "mt-1" : "mt-3",
         );
         if (!this.reservesActions) {

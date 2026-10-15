@@ -13,10 +13,18 @@ const cursors = ref<Record<string, string>>({});
 // as unread, so a recount waits for them, the latest one per room.
 const hydrated = ref(false);
 const waiting = new Map<string, () => void>();
+// How far each thread has been seen, which is what a line tagging the viewer
+// stays lit against. Unlike the cursor it holds still while the room is open --
+// the cursor moves the moment a line is read, so a mention would go dark as it
+// arrived -- and moves on only when the room is left. Nothing is lit until the
+// server has said where each thread was left, or every old tag would light up.
+const seenUntil = ref<Record<string, number>>({});
+const seenHydrated = ref(false);
 
 export function useChatReadState() {
   async function hydrate() {
     hydrated.value = false;
+    seenHydrated.value = false;
 
     try {
       const { threads } = await $fetch<{
@@ -26,10 +34,14 @@ export function useChatReadState() {
       });
 
       const next: Record<string, string> = {};
+      const seen: Record<string, number> = {};
       for (const { thread, lastReadAt } of threads) {
         next[thread] = lastReadAt;
+        seen[thread] = new Date(lastReadAt).getTime();
       }
       cursors.value = next;
+      seenUntil.value = seen;
+      seenHydrated.value = true;
     } catch {
       // Badges fall back to counting from this session only, which is what
       // they did before there was a cursor at all.
@@ -88,5 +100,35 @@ export function useChatReadState() {
     return new Date(message?.timestamp ?? 0).getTime() > readAt;
   }
 
-  return { cursors, hydrate, afterHydrated, isUnread, markRead, setCursor };
+  // Up to the latest line the room had on screen when it was left.
+  function markSeen(type: string, lobbyId: string, at: number) {
+    const thread = chatThreadKey(type, lobbyId);
+
+    if (!(at > (seenUntil.value[thread] ?? 0))) {
+      return;
+    }
+
+    seenUntil.value = { ...seenUntil.value, [thread]: at };
+  }
+
+  function isUnseen(type: string, lobbyId: string, timestamp?: string) {
+    if (!seenHydrated.value) {
+      return false;
+    }
+
+    const seen = seenUntil.value[chatThreadKey(type, lobbyId)] ?? 0;
+
+    return new Date(timestamp ?? 0).getTime() > seen;
+  }
+
+  return {
+    cursors,
+    hydrate,
+    afterHydrated,
+    isUnread,
+    markRead,
+    setCursor,
+    markSeen,
+    isUnseen,
+  };
 }

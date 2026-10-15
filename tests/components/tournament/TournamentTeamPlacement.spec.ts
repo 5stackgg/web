@@ -117,3 +117,11 @@ describe("TournamentTeam placement badge", () => {
     );
   });
 });
+
+describe("TournamentTeam podium query", () => {
+  it("reads the podium from the cache once any team card has asked for it", () => {
+    expect((TournamentTeam as any).apollo.podiumSteps.fetchPolicy).toBe(
+      "cache-first",
+    );
+  });
+});

@@ -50,6 +50,18 @@ function ratio(media: { width?: number; height?: number }) {
     : "4 / 3";
 }
 
+function singleStyle(media: { width?: number; height?: number }) {
+  const width =
+    media.width && media.height
+      ? Math.min(
+          media.width,
+          Math.round((SINGLE_MAX_HEIGHT * media.width) / media.height),
+        )
+      : 340;
+
+  return { aspectRatio: ratio(media), width: "100%", maxWidth: `${width}px` };
+}
+
 const single = computed(() => {
   const [image] = images.value;
 
@@ -57,18 +69,7 @@ const single = computed(() => {
     return null;
   }
 
-  const width =
-    image.width && image.height
-      ? Math.min(
-          image.width,
-          Math.round((SINGLE_MAX_HEIGHT * image.width) / image.height),
-        )
-      : 340;
-
-  return {
-    image,
-    style: { aspectRatio: ratio(image), width: "100%", maxWidth: `${width}px` },
-  };
+  return { image, style: singleStyle(image) };
 });
 
 const viewing = ref<ChatAttachment | null>(null);
@@ -191,8 +192,8 @@ const tileClasses =
     <div
       v-if="gif"
       :data-gif-id="gif.id"
-      class="relative w-full max-w-[260px] overflow-hidden rounded-lg border border-border/40"
-      :style="{ aspectRatio: ratio(gif) }"
+      class="relative overflow-hidden rounded-lg border border-border/40"
+      :style="singleStyle(gif)"
     >
       <FadeImage
         :src="chatGifUrl(gif.id, 'full', still)"

@@ -130,8 +130,10 @@ import {
             :message-room="messageRoom"
             :can-moderate="canModerate"
             :can-post="canSend"
+            :history="history"
             @bottom-state-change="handleBottomStateChange"
             @edit-last-end="focusComposer"
+            @load-older="loadOlder"
           />
           <Empty v-else class="flex-1 text-muted-foreground">
             <div class="space-y-1">
@@ -335,8 +337,10 @@ import {
           :message-room="messageRoom"
           :can-moderate="canModerate"
           :can-post="canSend"
+          :history="history"
           @bottom-state-change="handleBottomStateChange"
           @edit-last-end="focusComposer"
+          @load-older="loadOlder"
         />
         <Empty v-else key="empty" class="min-h-0 flex-1 text-muted-foreground">
           <div class="space-y-1">
@@ -448,6 +452,7 @@ import socket, { chatMessageKey, chatMessageTime } from "~/web-sockets/Socket";
 import type {
   ChatType,
   Lobby,
+  LobbyHistory,
   LobbyMessage,
   LobbyMessageDeleted,
 } from "~/web-sockets/Socket";
@@ -464,6 +469,7 @@ import {
   mentionsViewer,
 } from "~/utilities/chatMentions";
 import { chatRoomRings } from "~/composables/useChatRoomSettings";
+import { useChatReadState } from "~/composables/useChatReadState";
 import { canModerateTeamChat, chatTeam } from "~/utilities/teamChat";
 import mapLabel from "~/utilities/mapLabel";
 
@@ -474,6 +480,7 @@ interface ChatMessagesRef {
   scrollToBottom: (force?: boolean) => void;
   scrollToNewDivider?: () => void;
   editLast?: () => void;
+  markPageLanded?: () => void;
 }
 
 const NO_MESSAGES: LobbyMessage[] = [];
@@ -631,6 +638,10 @@ export default {
     tracksReadPosition() {
       return this.isGlobalContext || this.isMerged;
     },
+    // On screen and in front. Going out of this is leaving the room.
+    viewing() {
+      return this.isActiveTab && this.visible && !this.isMinimized;
+    },
     // Read straight off the lobby: the message list belongs to the lobby, and
     // every widget on it renders the same one.
     //
@@ -669,6 +680,31 @@ export default {
           (a.__channel === "team" ? 1 : 0) - (b.__channel === "team" ? 1 : 0)
         );
       });
+    },
+    // The rooms on screen, which a scroll to the top pages back through.
+    visibleLobbies(): Lobby[] {
+      if (!this.isMerged) {
+        return this.lobby ? [this.lobby] : [];
+      }
+
+      return [
+        this.channelVisible("everyone") ? this.lobby : undefined,
+        this.channelVisible("team") ? this.teamLobby : undefined,
+      ].filter((lobby): lobby is Lobby => !!lobby);
+    },
+    history(): LobbyHistory {
+      const states = this.visibleLobbies
+        .map((lobby) => lobby.history)
+        .filter((state): state is NonNullable<LobbyHistory> => !!state);
+
+      if (states.length === 0) {
+        return null;
+      }
+
+      return {
+        more: states.some((state) => state.more),
+        loading: states.some((state) => state.loading),
+      };
     },
     // A conversation between two people is theirs; the api refuses to moderate
     // one, even for an administrator. A team's room is the team's own to
@@ -912,6 +948,19 @@ export default {
     },
   },
   methods: {
+    // Everything the room had on screen when it was left has been seen, so a
+    // line tagging the viewer is plain the next time it opens. Team lines are
+    // never lit, so only the main room is kept.
+    markSeen(lobbyId: string) {
+      let latest = 0;
+      for (const message of this.messages) {
+        if ((message.__channel ?? "everyone") === "everyone") {
+          latest = Math.max(latest, chatMessageTime(message));
+        }
+      }
+
+      useChatReadState().markSeen(this.type, lobbyId, latest);
+    },
     // The (type, id) pair a destination resolves to. Sending is nothing more
     // than choosing between them.
     channelVisible(channel: "everyone" | "team") {
@@ -972,6 +1021,29 @@ export default {
       ).length;
 
       return index + earlier;
+    },
+    loadOlder() {
+      for (const lobby of this.visibleLobbies) {
+        void lobby.loadOlder();
+      }
+    },
+    // The "New" line is a count from the top, so lines landing above it would
+    // otherwise push it up onto them. An older page is read already.
+    handleOlderMessages(
+      older: LobbyMessage[],
+      channel: "everyone" | "team",
+    ) {
+      if (!this.channelVisible(channel)) {
+        return;
+      }
+
+      if (this.lastReadMessageCount > 0) {
+        this.lastReadMessageCount += older.length;
+      }
+
+      (
+        this.$refs.chatMessagesRef as ChatMessagesRef | undefined
+      )?.markPageLanded?.();
     },
     // The "New" line is a count from the top, so a line removed above it would
     // otherwise drag it down onto a message that was already read.
@@ -1201,6 +1273,11 @@ export default {
         this.showParticipants = false;
       }
     },
+    viewing(viewing: boolean, wasViewing: boolean) {
+      if (wasViewing && !viewing) {
+        this.markSeen(this.lobbyId);
+      }
+    },
     // Showing a room again is what clears its mark -- the messages it was
     // holding are on screen the moment the filter widens.
     viewFilter: {
@@ -1214,7 +1291,11 @@ export default {
     },
     lobbyId: {
       immediate: true,
-      handler() {
+      handler(_lobbyId: string, previous?: string) {
+        if (previous && this.viewing) {
+          this.markSeen(previous);
+        }
+
         this.lobby?.leave();
 
         const lobby = socket.joinLobby(
@@ -1240,6 +1321,10 @@ export default {
 
         lobby.on("lobby:deleted", (deleted: LobbyMessageDeleted) => {
           this.handleDeletedMessage(deleted, "everyone");
+        });
+
+        lobby.on("lobby:older", (older: LobbyMessage[]) => {
+          this.handleOlderMessages(older, "everyone");
         });
       },
     },
@@ -1277,6 +1362,10 @@ export default {
 
         lobby.on("lobby:deleted", (deleted: LobbyMessageDeleted) => {
           this.handleDeletedMessage(deleted, "team");
+        });
+
+        lobby.on("lobby:older", (older: LobbyMessage[]) => {
+          this.handleOlderMessages(older, "team");
         });
       },
     },
@@ -1335,6 +1424,10 @@ export default {
     window.addEventListener("dragleave", this.onWindowDragLeave);
   },
   beforeUnmount() {
+    if (this.viewing) {
+      this.markSeen(this.lobbyId);
+    }
+
     this.lobby?.leave();
     this.teamLobby?.leave();
     window.removeEventListener("drop", this.resetDrag);

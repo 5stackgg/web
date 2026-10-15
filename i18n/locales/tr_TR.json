@@ -10350,6 +10350,9 @@
     "start_the_conversation": "Sohbeti başlatmak için bir şeyler yaz.",
     "jump_to_new": "Yeniye atla",
     "new_messages": "Yeni mesajlar",
+    "loading_older": "Eski mesajlar yükleniyor…",
+    "no_older_messages": "Daha eski mesaj yok",
+    "older_messages": "Eski mesajlar",
     "organizers": {
       "title": "Organizatör Sohbeti",
       "no_access": "Bu sayfaya erişimin yok.",

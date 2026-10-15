@@ -10350,6 +10350,9 @@
     "start_the_conversation": "Napisz coś, żeby zacząć rozmowę",
     "jump_to_new": "Przejdź do nowych",
     "new_messages": "Nowe wiadomości",
+    "loading_older": "Wczytywanie starszych wiadomości…",
+    "no_older_messages": "Brak starszych wiadomości",
+    "older_messages": "Starsze wiadomości",
     "organizers": {
       "title": "Czat organizatorów",
       "no_access": "Nie masz dostępu do tej strony",

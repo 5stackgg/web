@@ -144,6 +144,19 @@ describe("ChatMessageMedia", () => {
 
     expect(gif.text()).toContain("GIF");
     expect(gif.attributes("style")).toContain("aspect-ratio: 480 / 270");
+    expect(gif.attributes("style")).toContain("max-width: 480px");
+  });
+
+  it("holds a tall GIF to the same height as a tall image", async () => {
+    const wrapper = await mountSuspended(ChatMessageMedia, {
+      props: {
+        message: message({ gif: { id: "abc123", width: 270, height: 480 } }),
+      },
+    });
+
+    expect(wrapper.get("[data-gif-id='abc123']").attributes("style")).toContain(
+      "max-width: 169px",
+    );
   });
 });
 
@@ -166,5 +179,42 @@ describe("ChatMessage with media", () => {
 
     expect(wrapper.text()).toContain("our smokes for B");
     expect(wrapper.find("[data-attachment-id='0b7d6c1e-1111-4a2b-9c3d-00000000000a']").exists()).toBe(true);
+  });
+
+  it("runs media under the avatar, dropping clear of it when only the name is above", async () => {
+    const gif = { id: "abc123", width: 480, height: 270 };
+    const gifOnly = await mountSuspended(ChatMessage, {
+      props: { message: message({ gif }) },
+    });
+    const withText = await mountSuspended(ChatMessage, {
+      props: { message: message({ message: "gg", gif }) },
+    });
+
+    expect(gifOnly.get("[data-chat-media]").classes()).toEqual(
+      expect.arrayContaining(["-ml-10", "pt-[1.125rem]"]),
+    );
+    expect(withText.get("[data-chat-media]").classes()).toContain("-ml-10");
+    expect(withText.get("[data-chat-media]").classes()).not.toContain(
+      "pt-[1.125rem]",
+    );
+  });
+
+  it("drops the hover time from a grouped line that opens on media", async () => {
+    const previousMessage = message({ id: "m-0", message: "first" });
+    const gifLine = await mountSuspended(ChatMessage, {
+      props: {
+        previousMessage,
+        message: message({ gif: { id: "abc123", width: 480, height: 270 } }),
+      },
+    });
+    const textLine = await mountSuspended(ChatMessage, {
+      props: { previousMessage, message: message({ message: "second" }) },
+    });
+
+    expect(gifLine.find("[data-chat-clock]").exists()).toBe(false);
+    expect(gifLine.find("[data-chat-media]").classes()).not.toContain(
+      "pt-[1.125rem]",
+    );
+    expect(textLine.find("[data-chat-clock]").exists()).toBe(true);
   });
 });

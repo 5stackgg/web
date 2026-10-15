@@ -1,8 +1,10 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import {
+  scoutEdge,
   scoutHabit,
   scoutLikely,
+  scoutRate,
   type ScoutLineup,
 } from "~/utilities/vetoScouting";
 
@@ -81,5 +83,54 @@ describe("scoutLikely", () => {
     expect(
       scoutLikely(lineup(2, { train: { bans: 2 } }), "Ban", ["train"]),
     ).toBeNull();
+  });
+});
+
+describe("scoutRate", () => {
+  it("is the share of games won", () => {
+    expect(scoutRate({ wins: 9, played: 12, bans: 0, picks: 0 })).toBe(75);
+  });
+
+  it("says nothing under three games, so 1-0 is not 100%", () => {
+    expect(scoutRate({ wins: 1, played: 1, bans: 0, picks: 0 })).toBeNull();
+    expect(scoutRate({ wins: 2, played: 2, bans: 0, picks: 0 })).toBeNull();
+    expect(scoutRate(undefined)).toBeNull();
+  });
+});
+
+describe("scoutEdge", () => {
+  const played = (wins: number, games: number): ScoutLineup => ({
+    source: "team",
+    owner: "",
+    vetoes: 0,
+    maps: { mirage: { wins, played: games, bans: 0, picks: 0 } },
+  });
+
+  it("names the stronger side and by how many points", () => {
+    expect(scoutEdge([played(9, 12), played(5, 10)], "mirage")).toEqual({
+      kind: "ahead",
+      lineup: 1,
+      points: 25,
+    });
+    expect(scoutEdge([played(2, 10), played(7, 9)], "mirage")).toEqual({
+      kind: "ahead",
+      lineup: 2,
+      points: 58,
+    });
+  });
+
+  it("calls it even within five points", () => {
+    expect(scoutEdge([played(5, 10), played(6, 11)], "mirage")).toEqual({
+      kind: "even",
+    });
+  });
+
+  it("has no edge when either side has too few games", () => {
+    expect(scoutEdge([played(2, 2), played(5, 10)], "mirage")).toEqual({
+      kind: "few",
+    });
+    expect(scoutEdge([null, played(5, 10)], "mirage")).toEqual({
+      kind: "few",
+    });
   });
 });

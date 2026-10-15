@@ -48,11 +48,18 @@ const scout = (
 
 const scouting = {
   lineups: [
-    scout("Buttah Boyz", { mirage: { wins: 9, played: 12 } }),
+    scout("Buttah Boyz", {
+      mirage: { wins: 9, played: 12 },
+      nuke: { wins: 2, played: 10 },
+      dust2: { wins: 5, played: 10 },
+      inferno: { wins: 2, played: 2 },
+    }),
     scout("Night Owls", {
       mirage: { wins: 5, played: 10 },
+      nuke: { wins: 7, played: 9, picks: 7 },
+      dust2: { wins: 6, played: 11 },
+      inferno: { wins: 5, played: 10 },
       train: { bans: 9 },
-      nuke: { picks: 7 },
     }),
   ] as [ScoutLineup, ScoutLineup],
   viewer: 1 as const,
@@ -76,14 +83,26 @@ function mount(
 const slice = (wrapper: any, id: string) => wrapper.find(`[data-item="${id}"]`);
 
 describe("VetoBoard scouting", () => {
-  it("shows your win rate and their habits on the open maps", async () => {
+  it("shows the edge and their habits on the open maps", async () => {
     const wrapper = await mount({
       steps: steps([]),
       pickingLineup: 1,
       isPicking: true,
     });
 
-    expect(slice(wrapper, "mirage").find(".vb-rate").text()).toBe("75%");
+    const edge = (id: string) => slice(wrapper, id).find(".vb-edge");
+    // 75% against 50%: yours, by 25. No crest: the sign says whose.
+    expect(edge("mirage").text()).toBe("+25");
+    expect(edge("mirage").attributes("data-tone")).toBe("you");
+    // 20% against 78%: theirs, so it counts against you.
+    expect(edge("nuke").text()).toBe("−58");
+    expect(edge("nuke").attributes("data-tone")).toBe("them");
+    // 50% against 55%: within five points.
+    expect(edge("dust2").text()).toBe("Even");
+    // Two games are too few for a rate.
+    expect(edge("inferno").text()).toBe("—");
+
+    expect(wrapper.find(".vb-scoutkey").text()).toContain("Edge");
     expect(slice(wrapper, "train").find(".vb-habit").text()).toContain(
       "Usually bans",
     );
@@ -92,6 +111,31 @@ describe("VetoBoard scouting", () => {
     );
     // It is your turn, so nothing guesses at your move.
     expect(wrapper.find(".vb-likely").exists()).toBe(false);
+  });
+
+  it("names the stronger side by its crest when you are watching", async () => {
+    const wrapper = await mount({
+      steps: steps([]),
+      pickingLineup: 1,
+      isPicking: false,
+      scouting: { ...scouting, viewer: null },
+    });
+
+    const nuke = slice(wrapper, "nuke").find(".vb-edge");
+    expect(nuke.text()).toMatch(/^NO\s*\+58$/);
+    expect(nuke.attributes("data-tone")).toBe("side");
+  });
+
+  it("keeps the key line while the history loads", async () => {
+    const wrapper = await mount({
+      steps: steps([]),
+      pickingLineup: 1,
+      isPicking: true,
+      scouting: { lineups: [null, null], viewer: 1 },
+    });
+
+    expect(wrapper.find(".vb-scoutkey").exists()).toBe(true);
+    expect(wrapper.find(".vb-edge").exists()).toBe(false);
   });
 
   it("outlines their likely move while they are on the clock", async () => {
@@ -131,7 +175,8 @@ describe("VetoBoard scouting", () => {
       scouting: null,
     });
 
-    expect(wrapper.find(".vb-rate").exists()).toBe(false);
+    expect(wrapper.find(".vb-scoutkey").exists()).toBe(false);
+    expect(wrapper.find(".vb-edge").exists()).toBe(false);
     expect(wrapper.find(".vb-habit").exists()).toBe(false);
   });
 });

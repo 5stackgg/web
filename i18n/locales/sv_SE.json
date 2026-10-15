@@ -7263,6 +7263,7 @@
     "results_section": {
       "no_data": "INGEN DATA",
       "mvp": "MEST VÄRDEFULLA SPELARE",
+      "mvp_picked": "Utvald av arrangörerna",
       "mvp_tooltip": {
         "title": "Så väljs MVP",
         "rule": "Spelaren i det vinnande laget med högst genomsnittlig impact över alla turneringens matcher.",
@@ -7270,7 +7271,9 @@
         "avg_impact": "Snitt-impact",
         "matches": "Matcher",
         "next_best": "Näst bäst: {name}",
-        "manual": "Utvald av turneringsarrangören."
+        "manual": "Utvald av turneringsarrangören.",
+        "picked": "Utvald av arrangörerna.",
+        "automatic_pick": "Automatiskt val: {name}"
       }
     },
     "swiss": {
@@ -7783,6 +7786,41 @@
       "hint": "Dela ut en utmärkelse utanför slutspelsberäkningen.",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first."
+    },
+    "mvp_pick": {
+      "title": "Turneringens MVP",
+      "hint_automatic": "Väljs automatiskt när turneringen är slut. Du kan ändra det.",
+      "hint_organizer": "Du väljer MVP för den här turneringen.",
+      "awards_off": "Utmärkelser är avstängda, så det finns ingen MVP",
+      "not_finished": "MVP väljs när turneringen är slut",
+      "none_yet": "Ingen MVP än. Välj en bland det vinnande lagets spelare.",
+      "pick": "Välj MVP",
+      "change": "Byt MVP",
+      "suggested": "Föreslagen",
+      "picked_by_organizers": "Utvald av arrangörer",
+      "impact_value": "impact {value}",
+      "matches_count": "{count} match | {count} matcher",
+      "switch_label": "Jag väljer MVP själv",
+      "switch_hint": "Välj inte en automatiskt för den här turneringen.",
+      "history": "Historik",
+      "history_picked_by": "vald av {name}",
+      "history_automatic": "vald automatiskt",
+      "dialog_title_pick": "Välj Turneringens MVP",
+      "dialog_title_change": "Byt Turneringens MVP",
+      "dialog_description": "Spelare i {team} som spelade, högst genomsnittlig impact först.",
+      "dialog_description_fallback": "Det vinnande lagets spelare som spelade, högst genomsnittlig impact först.",
+      "column_player": "Spelare",
+      "column_impact": "Impact",
+      "column_matches": "Matcher",
+      "no_candidates": "Ingen i det vinnande laget har en bedömd match än.",
+      "note_label": "Anteckning (valfri)",
+      "continue": "Fortsätt",
+      "confirm_title": "Gör {name} till Turneringens MVP?",
+      "confirm_replaces_automatic": "{name} valdes automatiskt. De förlorar MVP-utmärkelsen och behåller sin medalj för 1:a plats.",
+      "confirm_replaces_pick": "{name} valdes av arrangörerna. De förlorar MVP-utmärkelsen och behåller sin medalj för 1:a plats.",
+      "confirm_keeps": "{name} förblir MVP, nu som arrangörernas val.",
+      "confirm_gets": "{name} får utmärkelsen och dess avisering.",
+      "confirm": "Bekräfta MVP"
     },
     "teams_filter": {
       "all": "Alla",

@@ -7263,6 +7263,7 @@
     "results_section": {
       "no_data": "无数据",
       "mvp": "最有价值玩家",
+      "mvp_picked": "由主办方选定",
       "mvp_tooltip": {
         "title": "MVP 评选方式",
         "rule": "冠军队伍中，在本次赛事所有比赛里平均影响力最高的选手。",
@@ -7270,7 +7271,9 @@
         "avg_impact": "平均影响力",
         "matches": "场次",
         "next_best": "次佳：{name}",
-        "manual": "由赛事主办方选定。"
+        "manual": "由赛事主办方选定。",
+        "picked": "由主办方选定。",
+        "automatic_pick": "自动选择：{name}"
       }
     },
     "swiss": {
@@ -7783,6 +7786,41 @@
       "hint": "在对阵计算之外单独颁发奖项。",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first."
+    },
+    "mvp_pick": {
+      "title": "赛事 MVP",
+      "hint_automatic": "赛事结束时自动选出，你可以更改。",
+      "hint_organizer": "本赛事的 MVP 由你来选。",
+      "awards_off": "奖项已关闭，因此没有 MVP",
+      "not_finished": "MVP 将在赛事结束时选出",
+      "none_yet": "尚无 MVP。请从冠军队伍的选手中选择一位。",
+      "pick": "选择 MVP",
+      "change": "更改 MVP",
+      "suggested": "推荐",
+      "picked_by_organizers": "主办方选定",
+      "impact_value": "影响力 {value}",
+      "matches_count": "{count} 场比赛 | {count} 场比赛",
+      "switch_label": "我自己选择 MVP",
+      "switch_hint": "本赛事不自动选择 MVP。",
+      "history": "历史",
+      "history_picked_by": "由 {name} 选定",
+      "history_automatic": "自动选定",
+      "dialog_title_pick": "选择赛事 MVP",
+      "dialog_title_change": "更改赛事 MVP",
+      "dialog_description": "{team} 中上场的选手，按平均影响力从高到低排列。",
+      "dialog_description_fallback": "冠军队伍中上场的选手，按平均影响力从高到低排列。",
+      "column_player": "选手",
+      "column_impact": "影响力",
+      "column_matches": "比赛",
+      "no_candidates": "冠军队伍中还没有人有已评分的比赛。",
+      "note_label": "备注（可选）",
+      "continue": "继续",
+      "confirm_title": "将 {name} 设为赛事 MVP？",
+      "confirm_replaces_automatic": "{name} 是自动选出的。他将失去 MVP 奖项，但保留第一名奖牌。",
+      "confirm_replaces_pick": "{name} 是主办方选定的。他将失去 MVP 奖项，但保留第一名奖牌。",
+      "confirm_keeps": "{name} 仍是 MVP，现在为主办方选定。",
+      "confirm_gets": "{name} 将获得该奖项及其通知。",
+      "confirm": "确认 MVP"
     },
     "teams_filter": {
       "all": "全部",

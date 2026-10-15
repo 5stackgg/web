@@ -1160,6 +1160,7 @@ export default {
                 team_id: true,
                 source: true,
                 note: true,
+                awarded_by_steam_id: true,
                 award_id: true,
                 award: {
                   id: true,

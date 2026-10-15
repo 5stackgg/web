@@ -7263,6 +7263,7 @@
     "results_section": {
       "no_data": "SEM DADOS",
       "mvp": "DESTAQUE (MVP)",
+      "mvp_picked": "Escolhido pelos organizadores",
       "mvp_tooltip": {
         "title": "Como o MVP é escolhido",
         "rule": "O jogador da equipe vencedora com o maior impacto médio em todas as partidas do torneio.",
@@ -7270,7 +7271,9 @@
         "avg_impact": "Impacto médio",
         "matches": "Partidas",
         "next_best": "Próximo melhor: {name}",
-        "manual": "Escolhido pelo organizador do torneio."
+        "manual": "Escolhido pelo organizador do torneio.",
+        "picked": "Escolhido pelos organizadores.",
+        "automatic_pick": "Escolha automática: {name}"
       }
     },
     "swiss": {
@@ -7783,6 +7786,41 @@
       "hint": "Conceda um troféu fora do cálculo da chave.",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first."
+    },
+    "mvp_pick": {
+      "title": "MVP do torneio",
+      "hint_automatic": "Escolhido automaticamente quando o torneio termina. Você pode alterá-lo.",
+      "hint_organizer": "Você escolhe o MVP deste torneio.",
+      "awards_off": "As premiações estão desativadas, então não há MVP",
+      "not_finished": "O MVP é escolhido quando o torneio termina",
+      "none_yet": "Ainda não há MVP. Escolha um entre os jogadores do time vencedor.",
+      "pick": "Escolher MVP",
+      "change": "Alterar MVP",
+      "suggested": "Sugerido",
+      "picked_by_organizers": "Escolhido pelos organizadores",
+      "impact_value": "impacto {value}",
+      "matches_count": "{count} partida | {count} partidas",
+      "switch_label": "Vou escolher o MVP eu mesmo",
+      "switch_hint": "Não escolher um automaticamente neste torneio.",
+      "history": "Histórico",
+      "history_picked_by": "escolhido por {name}",
+      "history_automatic": "escolhido automaticamente",
+      "dialog_title_pick": "Escolher o MVP do Torneio",
+      "dialog_title_change": "Alterar o MVP do Torneio",
+      "dialog_description": "Jogadores de {team} que jogaram, com maior impacto médio primeiro.",
+      "dialog_description_fallback": "Jogadores do time vencedor que jogaram, com maior impacto médio primeiro.",
+      "column_player": "Jogador",
+      "column_impact": "Impacto",
+      "column_matches": "Partidas",
+      "no_candidates": "Ninguém do time vencedor tem uma partida avaliada ainda.",
+      "note_label": "Nota (opcional)",
+      "continue": "Continuar",
+      "confirm_title": "Tornar {name} o MVP do Torneio?",
+      "confirm_replaces_automatic": "{name} foi escolhido automaticamente. Perde o prêmio de MVP e mantém a medalha de 1º lugar.",
+      "confirm_replaces_pick": "{name} foi escolhido pelos organizadores. Perde o prêmio de MVP e mantém a medalha de 1º lugar.",
+      "confirm_keeps": "{name} continua MVP, agora como escolha dos organizadores.",
+      "confirm_gets": "{name} recebe o prêmio e a notificação.",
+      "confirm": "Confirmar MVP"
     },
     "teams_filter": {
       "all": "Todos",

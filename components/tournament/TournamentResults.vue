@@ -360,12 +360,26 @@ function playerAvatarSrc(player: {
                     </p>
                   </template>
                   <template v-else>
-                    <p>
-                      {{ $t("tournament.results_section.mvp_tooltip.rule") }}
-                    </p>
-                    <p class="text-muted-foreground">
-                      {{ $t("tournament.results_section.mvp_tooltip.impact") }}
-                    </p>
+                    <template v-if="mvpPicked">
+                      <p>
+                        {{
+                          $t("tournament.results_section.mvp_tooltip.picked")
+                        }}
+                      </p>
+                      <p v-if="mvp.note" class="italic text-muted-foreground">
+                        “{{ mvp.note }}”
+                      </p>
+                    </template>
+                    <template v-else>
+                      <p>
+                        {{ $t("tournament.results_section.mvp_tooltip.rule") }}
+                      </p>
+                      <p class="text-muted-foreground">
+                        {{
+                          $t("tournament.results_section.mvp_tooltip.impact")
+                        }}
+                      </p>
+                    </template>
                     <dl
                       v-if="mvpImpact"
                       class="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 border-t border-border/60 pt-2 font-mono tabular-nums"
@@ -383,13 +397,30 @@ function playerAvatarSrc(player: {
                       >
                         {{ mvpImpact.avg.toFixed(2) }}
                       </dd>
-                      <dt class="text-muted-foreground">
-                        {{
-                          $t("tournament.results_section.mvp_tooltip.matches")
-                        }}
-                      </dt>
-                      <dd class="text-right">{{ mvpImpact.matches }}</dd>
-                      <template v-if="mvpImpact.nextBest">
+                      <template v-if="!mvpPicked">
+                        <dt class="text-muted-foreground">
+                          {{
+                            $t(
+                              "tournament.results_section.mvp_tooltip.matches",
+                            )
+                          }}
+                        </dt>
+                        <dd class="text-right">{{ mvpImpact.matches }}</dd>
+                      </template>
+                      <template v-else-if="mvpImpact.automatic">
+                        <dt class="min-w-0 truncate text-muted-foreground">
+                          {{
+                            $t(
+                              "tournament.results_section.mvp_tooltip.automatic_pick",
+                              { name: mvpImpact.automatic.name },
+                            )
+                          }}
+                        </dt>
+                        <dd class="text-right">
+                          {{ mvpImpact.automatic.avg.toFixed(2) }}
+                        </dd>
+                      </template>
+                      <template v-if="!mvpPicked && mvpImpact.nextBest">
                         <dt class="min-w-0 truncate text-muted-foreground">
                           {{
                             $t(
@@ -421,6 +452,9 @@ function playerAvatarSrc(player: {
               class="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
               ↳ {{ mvpTeamName }}
+              <template v-if="mvpPicked">
+                · {{ $t("tournament.results_section.mvp_picked") }}
+              </template>
             </div>
           </div>
         </div>
@@ -864,6 +898,12 @@ export default {
       const awards = (this.tournament as any)?.awards || [];
       return awards.find((t: any) => t.placement === 0) || null;
     },
+    // An organizer's pick takes the calculated MVP slot and is told apart by
+    // who picked it; a hand grant (source manual) predates picks.
+    mvpPicked() {
+      const mvp = this.mvp as any;
+      return mvp?.source === "tournament" && !!mvp?.awarded_by_steam_id;
+    },
     hasAwards() {
       return (
         (this as any).podium.some((entry: any) => entry.hasAward) ||
@@ -913,8 +953,9 @@ export default {
       if (this.mvp?.player_steam_id) ids.add(String(this.mvp.player_steam_id));
       return Array.from(ids);
     },
-    // Ranks the winning roster the way calculate_tournament_awards does:
-    // average impact (a missing value counts as 1.0), then total impact.
+    // Ranks the winning roster the way tournament_mvp_candidates does:
+    // average impact (a missing value counts as 1.0), then total impact, then
+    // steam id.
     mvpImpact() {
       const mvpSteamId = this.mvp?.player_steam_id;
       if (!mvpSteamId) return null;
@@ -932,23 +973,30 @@ export default {
         steamId,
         ...entry,
         avg: entry.total / entry.matches,
-      })).sort((a, b) => b.avg - a.avg || b.total - a.total);
+      })).sort(
+        (a, b) =>
+          b.avg - a.avg ||
+          b.total - a.total ||
+          a.steamId.localeCompare(b.steamId),
+      );
 
       const mine = ranked.find((e) => e.steamId === String(mvpSteamId));
       if (!mine) return null;
 
+      const nameOf = (steamId: string) =>
+        (this as any).mvpRoster.find(
+          (r: any) => String(r.player_steam_id) === steamId,
+        )?.player?.name || steamId;
+
       const next = ranked.find((e) => e.steamId !== mine.steamId);
-      const nextPlayer = next
-        ? (this as any).mvpRoster.find(
-            (r: any) => String(r.player_steam_id) === next.steamId,
-          )?.player
-        : null;
+      const automatic = ranked[0];
 
       return {
         avg: mine.avg,
         matches: mine.matches,
-        nextBest: next
-          ? { avg: next.avg, name: nextPlayer?.name || next.steamId }
+        nextBest: next ? { avg: next.avg, name: nameOf(next.steamId) } : null,
+        automatic: automatic
+          ? { avg: automatic.avg, name: nameOf(automatic.steamId) }
           : null,
       };
     },

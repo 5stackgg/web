@@ -7263,6 +7263,7 @@
     "results_section": {
       "no_data": "KEINE DATEN",
       "mvp": "MOST VALUABLE PLAYER",
+      "mvp_picked": "Von den Veranstaltern ausgewählt",
       "mvp_tooltip": {
         "title": "So wird der MVP bestimmt",
         "rule": "Der Spieler des Siegerteams mit dem höchsten durchschnittlichen Impact über alle Spiele des Turniers.",
@@ -7270,7 +7271,9 @@
         "avg_impact": "Ø Impact",
         "matches": "Spiele",
         "next_best": "Nächstbester: {name}",
-        "manual": "Vom Turnierveranstalter ausgewählt."
+        "manual": "Vom Turnierveranstalter ausgewählt.",
+        "picked": "Von den Veranstaltern ausgewählt.",
+        "automatic_pick": "Automatische Wahl: {name}"
       }
     },
     "swiss": {
@@ -7783,6 +7786,41 @@
       "hint": "Vergib eine Auszeichnung außerhalb der Bracket-Berechnung.",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first."
+    },
+    "mvp_pick": {
+      "title": "Turnier-MVP",
+      "hint_automatic": "Wird automatisch gewählt, wenn das Turnier endet. Du kannst ihn ändern.",
+      "hint_organizer": "Du wählst den MVP für dieses Turnier.",
+      "awards_off": "Auszeichnungen sind deaktiviert, daher gibt es keinen MVP",
+      "not_finished": "Der MVP wird gewählt, wenn das Turnier endet",
+      "none_yet": "Noch kein MVP. Wähle einen Spieler des Siegerteams.",
+      "pick": "MVP Wählen",
+      "change": "MVP Ändern",
+      "suggested": "Vorgeschlagen",
+      "picked_by_organizers": "Von Veranstaltern gewählt",
+      "impact_value": "Impact {value}",
+      "matches_count": "{count} Match | {count} Matches",
+      "switch_label": "Ich wähle den MVP selbst",
+      "switch_hint": "Für dieses Turnier keinen automatisch wählen.",
+      "history": "Verlauf",
+      "history_picked_by": "gewählt von {name}",
+      "history_automatic": "automatisch gewählt",
+      "dialog_title_pick": "Turnier-MVP Wählen",
+      "dialog_title_change": "Turnier-MVP Ändern",
+      "dialog_description": "Spieler von {team}, die gespielt haben, höchster Ø-Impact zuerst.",
+      "dialog_description_fallback": "Spieler des Siegerteams, die gespielt haben, höchster Ø-Impact zuerst.",
+      "column_player": "Spieler",
+      "column_impact": "Impact",
+      "column_matches": "Matches",
+      "no_candidates": "Noch niemand im Siegerteam hat ein bewertetes Match.",
+      "note_label": "Notiz (optional)",
+      "continue": "Weiter",
+      "confirm_title": "{name} zum Turnier-MVP Machen?",
+      "confirm_replaces_automatic": "{name} wurde automatisch gewählt. Er verliert die MVP-Auszeichnung und behält seine Medaille für Platz 1.",
+      "confirm_replaces_pick": "{name} wurde von den Veranstaltern gewählt. Er verliert die MVP-Auszeichnung und behält seine Medaille für Platz 1.",
+      "confirm_keeps": "{name} bleibt MVP, jetzt als Wahl der Veranstalter.",
+      "confirm_gets": "{name} erhält die Auszeichnung und die zugehörige Benachrichtigung.",
+      "confirm": "MVP Bestätigen"
     },
     "teams_filter": {
       "all": "Alle",

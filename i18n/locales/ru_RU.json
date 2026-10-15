@@ -7263,6 +7263,7 @@
     "results_section": {
       "no_data": "НЕТ ДАННЫХ",
       "mvp": "САМЫЙ ЦЕННЫЙ ИГРОК",
+      "mvp_picked": "Выбран организаторами",
       "mvp_tooltip": {
         "title": "Как выбирается MVP",
         "rule": "Игрок команды-победителя с самым высоким средним влиянием во всех матчах турнира.",
@@ -7270,7 +7271,9 @@
         "avg_impact": "Ср. влияние",
         "matches": "Матчи",
         "next_best": "Следующий: {name}",
-        "manual": "Выбран организатором турнира."
+        "manual": "Выбран организатором турнира.",
+        "picked": "Выбран организаторами.",
+        "automatic_pick": "Автоматический выбор: {name}"
       }
     },
     "swiss": {
@@ -7783,6 +7786,41 @@
       "hint": "Вручи награду вне расчёта по турнирной сетке.",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first."
+    },
+    "mvp_pick": {
+      "title": "MVP турнира",
+      "hint_automatic": "Выбирается автоматически по окончании турнира. Вы можете его изменить.",
+      "hint_organizer": "MVP этого турнира выбираете вы.",
+      "awards_off": "Награды отключены, поэтому MVP нет",
+      "not_finished": "MVP выбирается по окончании турнира",
+      "none_yet": "MVP пока нет. Выберите одного из игроков команды-победителя.",
+      "pick": "Выбрать MVP",
+      "change": "Изменить MVP",
+      "suggested": "Рекомендуемый",
+      "picked_by_organizers": "Выбран организаторами",
+      "impact_value": "влияние {value}",
+      "matches_count": "{count} матч | {count} матчей",
+      "switch_label": "Я выберу MVP сам",
+      "switch_hint": "Не выбирать автоматически в этом турнире.",
+      "history": "История",
+      "history_picked_by": "выбрал {name}",
+      "history_automatic": "выбран автоматически",
+      "dialog_title_pick": "Выбрать MVP Турнира",
+      "dialog_title_change": "Изменить MVP Турнира",
+      "dialog_description": "Игроки {team}, которые играли, по убыванию среднего влияния.",
+      "dialog_description_fallback": "Игроки команды-победителя, которые играли, по убыванию среднего влияния.",
+      "column_player": "Игрок",
+      "column_impact": "Влияние",
+      "column_matches": "Матчи",
+      "no_candidates": "Ни у кого из команды-победителя пока нет оценённого матча.",
+      "note_label": "Заметка (необязательно)",
+      "continue": "Продолжить",
+      "confirm_title": "Сделать {name} MVP Турнира?",
+      "confirm_replaces_automatic": "{name} был выбран автоматически. Он теряет награду MVP и сохраняет медаль за 1-е место.",
+      "confirm_replaces_pick": "{name} был выбран организаторами. Он теряет награду MVP и сохраняет медаль за 1-е место.",
+      "confirm_keeps": "{name} остаётся MVP, теперь по выбору организаторов.",
+      "confirm_gets": "{name} получит награду и уведомление о ней.",
+      "confirm": "Подтвердить MVP"
     },
     "teams_filter": {
       "all": "Все",

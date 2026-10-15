@@ -7265,6 +7265,7 @@
     "results_section": {
       "no_data": "NO DATA",
       "mvp": "MOST VALUABLE PLAYER",
+      "mvp_picked": "Picked by the organizers",
       "mvp_tooltip": {
         "title": "How the MVP is chosen",
         "rule": "The player on the winning team with the highest average impact across every match of the tournament.",
@@ -7272,7 +7273,9 @@
         "avg_impact": "Avg impact",
         "matches": "Matches",
         "next_best": "Next best: {name}",
-        "manual": "Hand-picked by the tournament organizer."
+        "manual": "Hand-picked by the tournament organizer.",
+        "picked": "Picked by the organizers.",
+        "automatic_pick": "Automatic pick: {name}"
       }
     },
     "swiss": {
@@ -7785,6 +7788,41 @@
       "hint": "Grant an award outside of the bracket calculation.",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award to grant first."
+    },
+    "mvp_pick": {
+      "title": "Tournament MVP",
+      "hint_automatic": "Picked automatically when the tournament finishes. You can change it.",
+      "hint_organizer": "You pick the MVP for this tournament.",
+      "awards_off": "Awards are off, so there's no MVP",
+      "not_finished": "The MVP is picked when the tournament finishes",
+      "none_yet": "No MVP yet. Pick one from the winning team's players.",
+      "pick": "Pick MVP",
+      "change": "Change MVP",
+      "suggested": "Suggested",
+      "picked_by_organizers": "Picked by organizers",
+      "impact_value": "impact {value}",
+      "matches_count": "{count} match | {count} matches",
+      "switch_label": "I'll pick the MVP myself",
+      "switch_hint": "Don't pick one automatically for this tournament.",
+      "history": "History",
+      "history_picked_by": "picked by {name}",
+      "history_automatic": "picked automatically",
+      "dialog_title_pick": "Pick the Tournament MVP",
+      "dialog_title_change": "Change the Tournament MVP",
+      "dialog_description": "{team} players who played, best average impact first.",
+      "dialog_description_fallback": "The winning team's players who played, best average impact first.",
+      "column_player": "Player",
+      "column_impact": "Impact",
+      "column_matches": "Matches",
+      "no_candidates": "No one on the winning team has a rated match yet.",
+      "note_label": "Note (optional)",
+      "continue": "Continue",
+      "confirm_title": "Make {name} the Tournament MVP?",
+      "confirm_replaces_automatic": "{name} was picked automatically. They lose the MVP award and keep their 1st place medal.",
+      "confirm_replaces_pick": "{name} was picked by the organizers. They lose the MVP award and keep their 1st place medal.",
+      "confirm_keeps": "{name} stays the MVP, now as the organizers' pick.",
+      "confirm_gets": "{name} gets the award and its notification.",
+      "confirm": "Confirm MVP"
     },
     "teams_filter": {
       "all": "All",

@@ -7263,6 +7263,7 @@
     "results_section": {
       "no_data": "データなし",
       "mvp": "MVP",
+      "mvp_picked": "主催者が選出",
       "mvp_tooltip": {
         "title": "MVP の選出方法",
         "rule": "優勝チームの中で、大会の全試合を通じて平均インパクトが最も高いプレイヤー。",
@@ -7270,7 +7271,9 @@
         "avg_impact": "平均インパクト",
         "matches": "試合数",
         "next_best": "次点: {name}",
-        "manual": "大会主催者が選出しました。"
+        "manual": "大会主催者が選出しました。",
+        "picked": "主催者が選出しました。",
+        "automatic_pick": "自動選出: {name}"
       }
     },
     "swiss": {
@@ -7783,6 +7786,41 @@
       "hint": "ブラケットの集計とは別にアワードを付与します。",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first."
+    },
+    "mvp_pick": {
+      "title": "大会MVP",
+      "hint_automatic": "大会終了時に自動で選ばれます。変更できます。",
+      "hint_organizer": "この大会のMVPはあなたが選びます。",
+      "awards_off": "アワードがオフのため、MVPはありません",
+      "not_finished": "MVPは大会終了時に選ばれます",
+      "none_yet": "まだMVPがいません。優勝チームの選手から選んでください。",
+      "pick": "MVPを選ぶ",
+      "change": "MVPを変更",
+      "suggested": "おすすめ",
+      "picked_by_organizers": "主催者が選出",
+      "impact_value": "インパクト {value}",
+      "matches_count": "{count} 試合 | {count} 試合",
+      "switch_label": "MVPは自分で選ぶ",
+      "switch_hint": "この大会ではMVPを自動で選ばない。",
+      "history": "履歴",
+      "history_picked_by": "{name} が選出",
+      "history_automatic": "自動で選出",
+      "dialog_title_pick": "大会MVPを選ぶ",
+      "dialog_title_change": "大会MVPを変更",
+      "dialog_description": "出場した {team} の選手。平均インパクトの高い順。",
+      "dialog_description_fallback": "出場した優勝チームの選手。平均インパクトの高い順。",
+      "column_player": "選手",
+      "column_impact": "インパクト",
+      "column_matches": "試合数",
+      "no_candidates": "優勝チームにはまだ評価済みの試合がある選手がいません。",
+      "note_label": "メモ（任意）",
+      "continue": "続ける",
+      "confirm_title": "{name} を大会MVPにしますか？",
+      "confirm_replaces_automatic": "{name} は自動で選ばれました。MVPアワードを失いますが、1位のメダルはそのままです。",
+      "confirm_replaces_pick": "{name} は主催者が選びました。MVPアワードを失いますが、1位のメダルはそのままです。",
+      "confirm_keeps": "{name} は引き続きMVPです。今後は主催者の選出になります。",
+      "confirm_gets": "{name} にアワードと通知が届きます。",
+      "confirm": "MVPを確定"
     },
     "teams_filter": {
       "all": "すべて",

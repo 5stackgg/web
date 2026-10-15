@@ -7263,6 +7263,7 @@
     "results_section": {
       "no_data": "لا توجد بيانات",
       "mvp": "أفضل لاعب",
+      "mvp_picked": "اختاره المنظمون",
       "mvp_tooltip": {
         "title": "كيف يتم اختيار أفضل لاعب",
         "rule": "لاعب الفريق الفائز صاحب أعلى متوسط تأثير عبر جميع مباريات البطولة.",
@@ -7270,7 +7271,9 @@
         "avg_impact": "متوسط التأثير",
         "matches": "المباريات",
         "next_best": "التالي: {name}",
-        "manual": "اختاره منظم البطولة."
+        "manual": "اختاره منظم البطولة.",
+        "picked": "اختاره المنظمون.",
+        "automatic_pick": "الاختيار التلقائي: {name}"
       }
     },
     "swiss": {
@@ -7783,6 +7786,41 @@
       "hint": "امنح كأسًا خارج حساب شجرة البطولة.",
       "no_participants": "Teams must register before awards can be granted.",
       "no_awards": "Create an award in the catalog first."
+    },
+    "mvp_pick": {
+      "title": "أفضل لاعب في البطولة",
+      "hint_automatic": "يُختار تلقائيًا عند انتهاء البطولة. يمكنك تغييره.",
+      "hint_organizer": "أنت من يختار أفضل لاعب في هذه البطولة.",
+      "awards_off": "الجوائز متوقفة، لذا لا يوجد أفضل لاعب",
+      "not_finished": "يُختار أفضل لاعب عند انتهاء البطولة",
+      "none_yet": "لا يوجد أفضل لاعب بعد. اختر واحدًا من لاعبي الفريق الفائز.",
+      "pick": "اختر أفضل لاعب",
+      "change": "تغيير أفضل لاعب",
+      "suggested": "مقترح",
+      "picked_by_organizers": "اختاره المنظمون",
+      "impact_value": "التأثير {value}",
+      "matches_count": "{count} مباراة | {count} مباريات",
+      "switch_label": "سأختار أفضل لاعب بنفسي",
+      "switch_hint": "لا تختر واحدًا تلقائيًا لهذه البطولة.",
+      "history": "السجل",
+      "history_picked_by": "اختاره {name}",
+      "history_automatic": "اختير تلقائيًا",
+      "dialog_title_pick": "اختيار أفضل لاعب في البطولة",
+      "dialog_title_change": "تغيير أفضل لاعب في البطولة",
+      "dialog_description": "لاعبو {team} الذين شاركوا، الأعلى متوسط تأثير أولًا.",
+      "dialog_description_fallback": "لاعبو الفريق الفائز الذين شاركوا، الأعلى متوسط تأثير أولًا.",
+      "column_player": "اللاعب",
+      "column_impact": "التأثير",
+      "column_matches": "المباريات",
+      "no_candidates": "لا أحد في الفريق الفائز لديه مباراة مُقيَّمة بعد.",
+      "note_label": "ملاحظة (اختياري)",
+      "continue": "متابعة",
+      "confirm_title": "هل تجعل {name} أفضل لاعب في البطولة؟",
+      "confirm_replaces_automatic": "اختير {name} تلقائيًا. سيفقد جائزة أفضل لاعب ويحتفظ بميدالية المركز الأول.",
+      "confirm_replaces_pick": "اختار المنظمون {name}. سيفقد جائزة أفضل لاعب ويحتفظ بميدالية المركز الأول.",
+      "confirm_keeps": "يبقى {name} أفضل لاعب، والآن باختيار المنظمين.",
+      "confirm_gets": "يحصل {name} على الجائزة وإشعارها.",
+      "confirm": "تأكيد أفضل لاعب"
     },
     "teams_filter": {
       "all": "الكل",

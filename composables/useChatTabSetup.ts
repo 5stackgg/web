@@ -1,6 +1,12 @@
 import { watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
+import {
+  MATCH_TEAM_ROOM,
+  useChatTabs,
+  type ChatTab,
+} from "~/composables/useChatTabs";
+import { pageChatFocus } from "~/composables/useChatPresence";
+import { chatThreadKey } from "~/utilities/chatThread";
 import { useChatReadState } from "~/composables/useChatReadState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -17,8 +23,6 @@ import socket, {
 // Live match chat relays every in-game console line to players who are
 // already reading it in game, so it never counts toward the hub badge.
 const UNCOUNTED_CHAT_TYPES: ChatType[] = ["match", "match_team"];
-
-const TEAM_ROOM = "team";
 
 function messageTime(message: any) {
   const at = Date.parse(message?.timestamp ?? "");
@@ -46,11 +50,19 @@ export function tournamentChatTab(tournament: {
 const persistentLobbies = new Map<string, Lobby>();
 
 export function isChatTabOnScreen(tabId: string) {
-  return (
-    useChatTabs().activeTabId.value === tabId &&
+  const { activeTabId, tabs } = useChatTabs();
+
+  if (
+    activeTabId.value === tabId &&
     useRightSidebar().rightSidebarOpen.value &&
     currentHub() === "chat"
-  );
+  ) {
+    return true;
+  }
+
+  const tab = tabs.value.find(({ id }) => id === tabId);
+
+  return !!tab && pageChatFocus() === chatThreadKey(tab.type, tab.lobbyId);
 }
 
 export function useChatTabSetup() {
@@ -163,6 +175,10 @@ export function useChatTabSetup() {
   }
 
   function recountHistory(tab: ChatTab, messages: any[]) {
+    if (!isOpen(tab)) {
+      return;
+    }
+
     const counted = !UNCOUNTED_CHAT_TYPES.includes(tab.type);
 
     if (isChatTabOnScreen(tab.id)) {
@@ -206,6 +222,11 @@ export function useChatTabSetup() {
     );
   }
 
+  // A recount waiting on the read state can outlive its tab.
+  function isOpen(tab: ChatTab) {
+    return tabs.value.some(({ id }) => id === tab.id);
+  }
+
   function untagIfEdited(tab: ChatTab, message: any) {
     if (message?.id && !mentionsViewer(message, authStore.me?.steam_id)) {
       decrementMention(tab.id, message.id);
@@ -227,7 +248,7 @@ export function useChatTabSetup() {
       useTabFlash().signalChat(tab.type, message, authStore.me?.steam_id);
 
       if (!isChatTabOnScreen(tab.id)) {
-        incrementMention(tab.id, message.id, TEAM_ROOM);
+        incrementMention(tab.id, message.id, MATCH_TEAM_ROOM);
       }
     });
 
@@ -240,7 +261,11 @@ export function useChatTabSetup() {
     });
 
     lobby.on("lobby:messages", (messages: any[]) => {
-      afterHydrated(`${tab.id}|${TEAM_ROOM}`, () => {
+      afterHydrated(`${tab.id}|${MATCH_TEAM_ROOM}`, () => {
+        if (!isOpen(tab)) {
+          return;
+        }
+
         setMentions(
           tab.id,
           isChatTabOnScreen(tab.id)
@@ -257,7 +282,7 @@ export function useChatTabSetup() {
                 )
                 .map((message) => message?.id)
                 .filter(Boolean),
-          TEAM_ROOM,
+          MATCH_TEAM_ROOM,
         );
       });
     });
@@ -297,7 +322,7 @@ export function useChatTabSetup() {
         continue;
       }
 
-      const teamKey = `${tab.id}|${TEAM_ROOM}:${teamLobbyId}`;
+      const teamKey = `${tab.id}|${MATCH_TEAM_ROOM}:${teamLobbyId}`;
       activeIds.add(teamKey);
 
       if (!persistentLobbies.has(teamKey)) {
@@ -322,7 +347,7 @@ export function useChatTabSetup() {
 
       const [tabId, room] = key.split("|");
       if (room) {
-        setMentions(tabId, [], TEAM_ROOM);
+        setMentions(tabId, [], MATCH_TEAM_ROOM);
       }
     }
   }

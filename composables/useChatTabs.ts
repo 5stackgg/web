@@ -36,6 +36,9 @@ const MAX_UNREAD_MESSAGE_IDS = 200;
 // recounts only its own.
 const mentionCountsRef = ref<Record<string, number>>({});
 const mentionMessageIds = new Map<string, Map<string, Set<string>>>();
+
+// Where a match tab counts the tags from its side's team room.
+export const MATCH_TEAM_ROOM = "team";
 const activeTabIdRef = ref<string | null>(null);
 
 export function useChatTabs() {
@@ -206,6 +209,33 @@ export function useChatTabs() {
     }
   }
 
+  // A room marked read from anywhere -- the hub, the match page, the pop-out --
+  // takes its count off the tab that carries it.
+  function clearRoom(type: string, lobbyId: string) {
+    if (type === "match_team") {
+      const [matchId] = lobbyId.split(":");
+
+      for (const tab of tabsRef.value) {
+        if (tab.type === "match" && tab.lobbyId === matchId) {
+          setMentions(tab.id, [], MATCH_TEAM_ROOM);
+        }
+      }
+      return;
+    }
+
+    for (const tab of tabsRef.value) {
+      if (tab.type !== type || tab.lobbyId !== lobbyId) {
+        continue;
+      }
+
+      unreadMessageIds.delete(tab.id);
+      if (unreadCountsRef.value[tab.id]) {
+        unreadCountsRef.value[tab.id] = 0;
+      }
+      setMentions(tab.id, []);
+    }
+  }
+
   function incrementMention(id: string, messageId: string, room = "") {
     const rooms = mentionMessageIds.get(id) ?? new Map<string, Set<string>>();
     mentionMessageIds.set(id, rooms);
@@ -303,6 +333,7 @@ export function useChatTabs() {
     incrementMention,
     decrementMention,
     setMentions,
+    clearRoom,
     noteActivity,
     clearAll,
   };

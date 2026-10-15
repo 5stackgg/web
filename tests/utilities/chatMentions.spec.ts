@@ -42,7 +42,7 @@ describe("chatMentions", () => {
     expect(chatRoomTakesMentions("direct")).toBe(false);
   });
 
-  describe("hasMention, which must agree with ChatService.mentionIn", () => {
+  describe("hasMention, which must agree with ChatService.mentionedNames", () => {
     it.each([
       ["@kairo hi", true],
       ["hi @kairo", true],

@@ -202,7 +202,6 @@ const fieldName = `chat-message-${Math.random().toString(36).slice(2, 10)}`;
                 data-lpignore="true"
                 data-bwignore="true"
                 data-form-type="other"
-                role="combobox"
                 aria-autocomplete="list"
                 :aria-expanded="mentionState !== null ? 'true' : 'false'"
                 :aria-controls="mentionState !== null ? mentionListId : undefined"
@@ -739,7 +738,11 @@ export default {
       this.$emit("edit-last");
     },
     onEscape(event: KeyboardEvent) {
-      if (this.mentionTarget && this.mentionState !== null) {
+      if (
+        this.mentionTarget &&
+        this.mentionState !== null &&
+        !event.isComposing
+      ) {
         event.preventDefault();
         event.stopPropagation();
         this.mentionClosedAt = this.mentionTarget.start;

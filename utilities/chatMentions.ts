@@ -37,7 +37,7 @@ export interface RankedMentionCandidate<T extends ChatMention = ChatMention> {
   length: number;
 }
 
-// Mirrors ChatService.mentionIn: an @ that does not follow a letter or digit,
+// Mirrors ChatService.mentionAt: an @ that does not follow a letter or digit,
 // and a name that does not run on into one.
 const WORD = /[\p{L}\p{N}_]/u;
 

@@ -520,6 +520,9 @@ export default {
     // told the server nothing -- so reading a match chat here left the badge up
     // everywhere else and kept the phone buzzing for messages already on
     // screen.
+    myLineupId() {
+      this.markTeamRoomRead();
+    },
     chatThread: {
       immediate: true,
       handler(thread, previous) {
@@ -527,13 +530,7 @@ export default {
 
         if (thread && thread !== previous) {
           socket.markLobbyRead("match", this.match.id);
-
-          if (this.myLineupId) {
-            socket.markLobbyRead(
-              "match_team",
-              `${this.match.id}:${this.myLineupId}`,
-            );
-          }
+          this.markTeamRoomRead();
         }
       },
     },
@@ -1079,6 +1076,14 @@ export default {
     },
   },
   methods: {
+    markTeamRoomRead() {
+      if (this.chatThread && this.myLineupId) {
+        socket.markLobbyRead(
+          "match_team",
+          `${this.match.id}:${this.myLineupId}`,
+        );
+      }
+    },
     showsLiveStreamBlock(streams: unknown[]) {
       return (
         this.showLiveStreams &&

@@ -5,6 +5,7 @@ import ChatPopout from "~/pages/chat/[tabId].vue";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import { directRoomId } from "~/composables/useDirectMessages";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import socket, { type LobbyMessage } from "~/web-sockets/Socket";
 
 const graphql = vi.hoisted(() => ({
@@ -122,5 +123,32 @@ describe("chat pop-out", () => {
     await flushPromises();
 
     expect(wrapper.findComponent(ChatLobby).exists()).toBe(true);
+  });
+});
+
+describe("chat pop-out read state", () => {
+  afterEach(() => {
+    useMatchLobbyStore().myMatches = [];
+  });
+
+  it("marks the match's team room read once the lineup is known", async () => {
+    const read = vi.spyOn(socket, "markLobbyRead");
+    useMatchLobbyStore().myMatches = [];
+
+    await mountPopout("match:popout-read");
+
+    expect(read).toHaveBeenCalledWith("match", "popout-read");
+    expect(read).not.toHaveBeenCalledWith("match_team", expect.anything());
+
+    useMatchLobbyStore().myMatches = [
+      {
+        id: "popout-read",
+        lineup_1: { id: "l-1", is_on_lineup: true },
+        lineup_2: { id: "l-2", is_on_lineup: false },
+      },
+    ] as any;
+    await flushPromises();
+
+    expect(read).toHaveBeenCalledWith("match_team", "popout-read:l-1");
   });
 });

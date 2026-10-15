@@ -299,6 +299,15 @@ describe("ChatInput mentions", () => {
     expect(rows(wrapper).length).toBeGreaterThan(0);
   });
 
+  it("leaves Escape to an input method that is composing", async () => {
+    const wrapper = await mountInput();
+
+    await typeText(wrapper, "@ka");
+    await press(wrapper, "Escape", { isComposing: true });
+
+    expect(list(wrapper).exists()).toBe(true);
+  });
+
   it("leaves Tab and the arrows to an input method that is composing", async () => {
     const wrapper = await mountInput();
 
@@ -310,11 +319,12 @@ describe("ChatInput mentions", () => {
     expect(textarea(wrapper).value).toBe("@ka");
   });
 
-  it("reads to a screen reader as a combobox with the active option", async () => {
+  it("points a screen reader at the list and its active option", async () => {
     const wrapper = await mountInput();
     const field = () => wrapper.get("textarea");
 
-    expect(field().attributes("role")).toBe("combobox");
+    expect(field().attributes("role")).toBeUndefined();
+    expect(field().attributes("aria-autocomplete")).toBe("list");
     expect(field().attributes("aria-expanded")).toBe("false");
 
     await typeText(wrapper, "@ka");

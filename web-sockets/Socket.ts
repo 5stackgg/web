@@ -2,6 +2,7 @@ import EventEmitter from "eventemitter3";
 import { shallowRef, type ShallowRef } from "vue";
 import { toast } from "@/components/ui/toast";
 import { useChatReadState } from "~/composables/useChatReadState";
+import { useChatTabs } from "~/composables/useChatTabs";
 import {
   toastChatError,
   type ChatAction,
@@ -753,6 +754,7 @@ export class Socket extends EventEmitter {
   // the next history snapshot puts straight back.
   public markLobbyRead(type: ChatType, id: string) {
     useChatReadState().markRead(type, id);
+    useChatTabs().clearRoom(type, id);
 
     this.event(`lobby:read`, {
       id,

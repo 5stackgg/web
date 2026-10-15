@@ -153,17 +153,23 @@ useChatPresence();
 // a player blocked while it was open.
 useChatBlocks();
 
+// The team room is known only once the match is, which can be after the
+// thread.
 watch(
-  thread,
-  (value, previous) => {
+  [thread, teamLobbyId],
+  ([value, team], [previous, previousTeam] = []) => {
     setPageChatFocus(value);
 
-    if (value && value !== previous && currentTab.value) {
-      socket.markLobbyRead(currentTab.value.type, currentTab.value.lobbyId);
+    if (!value || !currentTab.value) {
+      return;
+    }
 
-      if (teamLobbyId.value) {
-        socket.markLobbyRead("match_team", teamLobbyId.value);
-      }
+    if (value !== previous) {
+      socket.markLobbyRead(currentTab.value.type, currentTab.value.lobbyId);
+    }
+
+    if (team && (team !== previousTeam || value !== previous)) {
+      socket.markLobbyRead("match_team", team);
     }
   },
   { immediate: true },

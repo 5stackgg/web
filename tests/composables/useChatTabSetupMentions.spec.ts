@@ -8,6 +8,7 @@ import { useRightSidebar } from "~/composables/useRightSidebar";
 import { setActiveHub } from "~/composables/useHubState";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { chatThreadKey } from "~/utilities/chatThread";
+import { setPageChatFocus } from "~/composables/useChatPresence";
 import socket, { type ChatType, type LobbyMessage } from "~/web-sockets/Socket";
 
 const ME = "76561198000000001";
@@ -208,6 +209,61 @@ describe("useChatTabSetup mentions", () => {
     await flushPromises();
 
     expect(mentions(tournamentTab())).toBe(1);
+  });
+
+  it("clears a room's tags wherever it is marked read, the match page included", () => {
+    room("match", matchId).live(line("match-tag", 5, [ME]));
+    room("match_team", `${matchId}:lineup-1`).live(line("team-tag", 6, [ME]));
+    room("tournament", tournamentId).live(line("cup-tag", 7, [ME]));
+
+    socket.markLobbyRead("match_team", `${matchId}:lineup-1`);
+    expect(mentions(`match:${matchId}`)).toBe(1);
+
+    socket.markLobbyRead("match", matchId);
+    expect(mentions(`match:${matchId}`)).toBe(0);
+    expect(mentions(tournamentTab())).toBe(1);
+  });
+
+  it("counts nothing while a page shows the room", () => {
+    setPageChatFocus(chatThreadKey("match", matchId));
+
+    try {
+      room("match", matchId).live(line("seen-on-page", 5, [ME]));
+    } finally {
+      setPageChatFocus(null);
+    }
+
+    expect(mentions(`match:${matchId}`)).toBe(0);
+  });
+
+  it("forgets a recount queued for a tab that has since closed", async () => {
+    unmount?.();
+    let answer: (value: unknown) => void = () => {};
+    vi.stubGlobal(
+      "$fetch",
+      vi.fn(() => new Promise((resolve) => (answer = resolve))),
+    );
+    const wrapper = await mountSuspended(
+      defineComponent({
+        setup() {
+          useChatTabSetup();
+          return () => h("div");
+        },
+      }),
+    );
+    unmount = () => wrapper.unmount();
+
+    room("tournament", tournamentId).history([line("unread-tag", 8, [ME])]);
+    useChatTabs().closeTab(tournamentTab());
+    answer({ threads: [] });
+    await flushPromises();
+
+    expect(useChatTabs().unreadCounts.value).not.toHaveProperty(
+      tournamentTab(),
+    );
+    expect(useChatTabs().mentionCounts.value).not.toHaveProperty(
+      tournamentTab(),
+    );
   });
 
   it("never counts a line of my own", () => {

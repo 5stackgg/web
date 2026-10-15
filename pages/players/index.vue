@@ -51,6 +51,8 @@ import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import DeferredLoading from "~/components/common/DeferredLoading.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { Skeleton } from "~/components/ui/skeleton";
+import TwitchIcon from "~/components/icons/TwitchIcon.vue";
+import { badgePopTransition } from "~/utilities/badgeCount";
 import {
   filterTriggerBase,
   filterTriggerIdle,
@@ -282,6 +284,15 @@ import {
             />
             <FilterToggle v-model="onlyOnline" :label="$t('common.online')" />
             <FilterToggle
+              v-if="supportsTwitch"
+              v-model="onlyLiveOnTwitch"
+              :label="$t('twitch.live_on_twitch')"
+            >
+              <template #icon>
+                <TwitchIcon class="h-3.5 w-3.5 shrink-0" />
+              </template>
+            </FilterToggle>
+            <FilterToggle
               v-model="onlyRegistered"
               :label="$t('search.registered')"
             />
@@ -467,10 +478,22 @@ import {
                   class="contents"
                 >
                   <TableCell class="font-medium">
-                    <PlayerDisplay
-                      :player="player"
-                      :show-elo="false"
-                    ></PlayerDisplay>
+                    <PlayerDisplay :player="player" :show-elo="false">
+                      <template #name-postfix>
+                        <Transition v-bind="badgePopTransition">
+                          <span
+                            v-if="liveSteamIds.has(String(player.steam_id))"
+                            class="inline-flex items-center gap-1 rounded-sm border border-destructive/50 bg-destructive/10 px-1 font-mono text-[0.5rem] font-bold uppercase tracking-[0.14em] text-destructive"
+                            data-test="twitch-live-tag"
+                          >
+                            <span
+                              class="h-1 w-1 rounded-full bg-destructive"
+                            ></span>
+                            {{ $t("twitch.live") }}
+                          </span>
+                        </Transition>
+                      </template>
+                    </PlayerDisplay>
                   </TableCell>
                   <TableCell>{{ player.wins ?? 0 }}</TableCell>
                   <TableCell>{{ player.losses ?? 0 }}</TableCell>
@@ -545,6 +568,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import debounce from "~/utilities/debounce";
+import { useTwitchLiveSteamIds } from "~/composables/useTwitch";
 
 export default {
   data() {
@@ -566,6 +590,9 @@ export default {
       onlyPlayedMatches:
         this.loadFiltersFromStorage().onlyPlayedMatches || false,
       onlyOnline: this.loadFiltersFromStorage().onlyOnline || false,
+      onlyLiveOnTwitch:
+        this.loadFiltersFromStorage().onlyLiveOnTwitch || false,
+      twitchLive: useTwitchLiveSteamIds(),
       onlyRegistered: this.loadFiltersFromStorage().onlyRegistered || false,
       countryPopoverOpen: false,
       rolePopoverOpen: false,
@@ -637,6 +664,16 @@ export default {
     },
     presenceLoaded() {
       return useMatchmakingStore().presenceLoaded as boolean;
+    },
+    supportsTwitch() {
+      return useApplicationSettingsStore().supportsTwitch;
+    },
+    // A filter saved while Twitch was set up is ignored once it is not.
+    liveOnTwitchFilter() {
+      return this.onlyLiveOnTwitch && this.supportsTwitch;
+    },
+    liveSteamIds() {
+      return new Set<string>(this.twitchLive.steamIds);
     },
     eloRange() {
       return [
@@ -741,6 +778,16 @@ export default {
           value: "yes",
           clear: () => {
             this.onlyOnline = false;
+          },
+        });
+      }
+      if (this.liveOnTwitchFilter) {
+        chips.push({
+          id: "live-on-twitch",
+          label: this.$t("twitch.live_on_twitch"),
+          value: "yes",
+          clear: () => {
+            this.onlyLiveOnTwitch = false;
           },
         });
       }
@@ -866,6 +913,21 @@ export default {
       this.resetPage();
       this.onFilterChange();
     },
+    liveOnTwitchFilter() {
+      this.resetPage();
+      this.onFilterChange();
+    },
+    // Like presence: someone going live re-runs the search in place.
+    "twitchLive.steamIds"() {
+      if (this.liveOnTwitchFilter) {
+        this.queueSearch();
+      }
+    },
+    "twitchLive.loaded"() {
+      if (this.liveOnTwitchFilter) {
+        this.queueSearch();
+      }
+    },
     // Presence is pushed in live, so a player going on or offline has to
     // re-run the search while the filter is on. Deliberately not
     // onFilterChange(): that resets to page 1, and someone anywhere on the
@@ -929,6 +991,7 @@ export default {
       });
       this.onlyPlayedMatches = false;
       this.onlyOnline = false;
+      this.onlyLiveOnTwitch = false;
       this.onlyRegistered = false;
       this.sortField = "name";
       this.sortDirection = "asc";
@@ -988,6 +1051,7 @@ export default {
             isMuted: this.form.values.isMuted,
             onlyPlayedMatches: this.onlyPlayedMatches,
             onlyOnline: this.onlyOnline,
+            onlyLiveOnTwitch: this.onlyLiveOnTwitch,
             onlyRegistered: this.onlyRegistered,
             sortField: this.sortField,
             sortDirection: this.sortDirection,
@@ -1126,6 +1190,10 @@ export default {
             online_steam_ids:
               this.onlyOnline && this.presenceLoaded
                 ? this.onlinePlayerSteamIds
+                : undefined,
+            live_steam_ids:
+              this.liveOnTwitchFilter && this.twitchLive.loaded
+                ? this.twitchLive.steamIds
                 : undefined,
             elo_track: "season",
             sort_by: this.getSortBy(),

@@ -6,6 +6,7 @@ import { Cross2Icon } from "@radix-icons/vue";
 import { ArrowUpRight } from "lucide-vue-next";
 import { useMatchPopout } from "~/composables/useMatchPopout";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useTwitchPovGuard } from "~/composables/useTwitch";
 import {
   embedStreamKey,
   liveStreamKey,
@@ -26,6 +27,11 @@ watch(
     if (collides) applicationSettings.setGlobalStream();
   },
   { immediate: true },
+);
+
+useTwitchPovGuard(
+  () => applicationSettings.globalStream as any,
+  () => applicationSettings.setGlobalStream(),
 );
 </script>
 

@@ -2412,6 +2412,24 @@
             "disk_critical_percent_description": "أرسل إشعارًا غير قابل للحذف عند تجاوز استخدام القرص هذه النسبة. اضبطه على 0 للتعطيل."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "تطبيق Twitch",
+          "app_section_description": "يربط اللاعبون Twitch بتسجيل الدخول عبره، مما يثبت أن القناة ملكهم. سجّل تطبيقًا في وحدة تحكم مطوري Twitch وأدخل معرّف العميل والسر الخاصين به. يبقى كل ما يخص Twitch مخفيًا حتى يتم تعيين كليهما.",
+          "redirect_url": "رابط إعادة توجيه OAuth",
+          "redirect_url_description": "أضف هذا الرابط كما هو إلى OAuth Redirect URLs الخاصة بالتطبيق.",
+          "console_link": "افتح وحدة تحكم مطوري Twitch",
+          "client_id": "معرّف العميل",
+          "client_secret": "سر العميل",
+          "client_secret_placeholder": "أدخل سر عميل جديدًا",
+          "secret_set": "تم تعيين سر. أدخل سرًا جديدًا لاستبداله.",
+          "secret_saved": "تم حفظ السر. لا يمكن عرضه مرة أخرى؛ أدخل سرًا جديدًا لاستبداله.",
+          "secret_none": "لم يتم تعيين أي سر.",
+          "secret_unknown": "لا يمكن عرض السر المحفوظ أو التحقق منه هنا. يعمل Twitch بعد حفظ معرّف العميل والسر معًا.",
+          "secret_remove": "إزالة السر",
+          "secret_removed": "تمت إزالة سر عميل Twitch",
+          "updated": "تم تحديث إعدادات Twitch"
+        },
         "game_type_configs": {
           "title": "إعدادات أنواع اللعب",
           "global": "عام",
@@ -12215,5 +12233,43 @@
     },
     "cancelled": "ألغاها المنظم قبل أن تبدأ.",
     "cancelled_min_teams": "لم يسجّل عدد كافٍ من الفرق، لذا أُلغيت."
+  },
+  "twitch": {
+    "live": "مباشر",
+    "live_viewers": "مباشر · {count}",
+    "live_on_twitch": "مباشر على Twitch",
+    "watching": "{count} يشاهدون",
+    "live_for": "مباشر منذ {duration}",
+    "open_on_twitch": "افتح على Twitch",
+    "channel": "قناة Twitch",
+    "play": "شغّل البث",
+    "pov": "منظور {name}",
+    "account": {
+      "title": "Twitch",
+      "description": "اعرض بثك في المباريات التي تلعبها",
+      "link": "اربط Twitch",
+      "unlink": "افصل Twitch",
+      "live_game": "مباشر · {game}",
+      "offline": "غير متصل",
+      "stale": "لم يستجب Twitch لآخر فحص للحالة، لذا قد تكون هذه المعلومات قديمة.",
+      "unavailable": "تعذّر التحقق من ربط Twitch الآن. حاول مرة أخرى لاحقًا.",
+      "linked": "تم ربط Twitch",
+      "link_failed": "تعذّر ربط Twitch",
+      "unlinked": "تم فصل Twitch",
+      "unlink_failed": "تعذّر فصل Twitch. حاول مرة أخرى.",
+      "unlink_dialog": {
+        "title": "افصل حساب Twitch",
+        "description": "سيتوقف ظهور بثك في ملفك الشخصي وفي البحث عن اللاعبين وفي المباريات التي تلعبها. يمكنك ربطه مجددًا في أي وقت.",
+        "confirm": "افصل"
+      },
+      "errors": {
+        "not_configured": "لم يتم إعداد Twitch على هذا الموقع بعد.",
+        "invalid_state": "انتهت صلاحية تسجيل الدخول عبر Twitch أو تم استخدامه بالفعل. حاول مرة أخرى.",
+        "denied": "تم إلغاء تسجيل الدخول عبر Twitch.",
+        "already_linked": "حساب Twitch هذا مرتبط بالفعل بلاعب آخر.",
+        "twitch_unavailable": "لم يستجب Twitch. حاول مرة أخرى بعد قليل.",
+        "unknown": "حدث خطأ ما. حاول مرة أخرى."
+      }
+    }
   }
 }

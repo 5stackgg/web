@@ -24,6 +24,10 @@ import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerTournaments from "~/components/player/PlayerTournaments.vue";
 import PlayerHonorBar from "~/components/player/PlayerHonorBar.vue";
 import PlayerHeroActions from "~/components/player/PlayerHeroActions.vue";
+import PlayerTwitchLink from "~/components/player/PlayerTwitchLink.vue";
+import PlayerTwitchWatchCard from "~/components/player/PlayerTwitchWatchCard.vue";
+import { useTwitchPlayer } from "~/composables/useTwitch";
+import { badgePopTransition } from "~/utilities/badgeCount";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import { Button } from "~/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -721,6 +725,20 @@ const playerIdRef = computed<string | null>(() => {
 });
 
 watch(playerIdRef, () => clearCompareTarget());
+
+const twitchPlaying = ref(false);
+const { stream: twitchStream } = useTwitchPlayer(playerIdRef, {
+  playing: twitchPlaying,
+});
+
+watch(
+  () => twitchStream.value?.is_live,
+  (live) => {
+    if (!live) {
+      twitchPlaying.value = false;
+    }
+  },
+);
 
 // ---- plugin-contributed profile tabs ----------------------------------------
 // A plugin mounted in a tab navigates LOCALLY. Under /apps/<slug> the host's
@@ -2036,208 +2054,226 @@ const playerHeroTeamChipDotClasses =
 <template>
   <div class="flex-grow flex flex-col gap-6 overflow-x-hidden" v-if="player">
     <div class="grid min-w-0 items-stretch gap-4 lg:grid-cols-2 lg:gap-6">
-      <PageTransition>
-        <header :class="playerHeroClasses">
-          <div :class="playerHeroBodyClasses">
-            <div class="shrink-0">
-              <div :class="playerHeroAvatarFrameClasses">
-                <img
-                  v-if="playerAvatarSrc"
-                  :src="playerAvatarSrc"
-                  :alt="player.name"
-                  :class="playerHeroAvatarClasses"
-                />
-                <div v-else :class="playerHeroAvatarPlaceholderClasses">
-                  {{ (player.name || "?").charAt(0).toUpperCase() }}
-                </div>
-                <SanctionStatusBadge
-                  v-if="activeSanctionType"
-                  :type="activeSanctionType"
-                  variant="overlay"
-                />
-              </div>
-            </div>
-
-            <div :class="playerHeroIdentityClasses">
-              <div :class="playerHeroHeadClasses">
-                <h1
-                  :class="[playerHeroNameClasses, playerHeroNameSizeClasses]"
-                >
-                  <span
-                    v-if="showNameGhost"
-                    :class="playerHeroNameGhostClasses"
-                    aria-hidden="true"
-                  >
-                    {{ player.name }}
-                  </span>
-                  <span :class="playerHeroNameMainClasses">{{
-                    player.name
-                  }}</span>
-                </h1>
-              </div>
-
-              <div :class="playerHeroMetaStripClasses">
-                <div :class="playerHeroMetaGroupClasses">
-                  <span :class="playerHeroIdentClasses">
-                    <TimezoneFlag
-                      v-if="player.country"
-                      :country="player.country"
-                      class="h-auto w-[1.2rem] shrink-0"
-                    />
-                    <span :class="playerHeroSteamIdClasses">{{
-                      player.steam_id
-                    }}</span>
-                  </span>
-
-                  <template v-if="player.profile_url">
-                    <a
-                      :href="player.profile_url"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      :class="playerHeroSteamLinkClasses"
-                      :title="$t('ui.tooltips.view_steam_profile')"
-                    >
-                      <SteamIcon class="h-3.5 w-3.5 fill-current" />
-                    </a>
-                  </template>
-
-                  <PlayerVacBadge
-                    v-if="hasSteamBans"
-                    :player="player"
-                    variant="button"
-                    @click="sanctionsSheetOpen = true"
+      <div class="flex min-w-0 flex-col">
+        <PageTransition>
+          <header :class="[playerHeroClasses, 'flex-1']">
+            <div :class="playerHeroBodyClasses">
+              <div class="shrink-0">
+                <div :class="playerHeroAvatarFrameClasses">
+                  <img
+                    v-if="playerAvatarSrc"
+                    :src="playerAvatarSrc"
+                    :alt="player.name"
+                    :class="playerHeroAvatarClasses"
+                  />
+                  <div v-else :class="playerHeroAvatarPlaceholderClasses">
+                    {{ (player.name || "?").charAt(0).toUpperCase() }}
+                  </div>
+                  <SanctionStatusBadge
+                    v-if="activeSanctionType"
+                    :type="activeSanctionType"
+                    variant="overlay"
                   />
                 </div>
-
-                <div
-                  v-if="canEditRole || player.role || player.teams?.length"
-                  :class="[
-                    playerHeroMetaGroupClasses,
-                    canEditRole && !player.teams?.length && 'max-md:hidden',
-                  ]"
-                >
-                  <template v-if="canEditRole || player.role">
-                    <div
-                      v-if="canEditRole"
-                      :class="[
-                        playerHeroInlineRoleWrapClasses,
-                        'max-md:hidden',
-                      ]"
-                    >
-                      <PlayerRoleForm :player="player" />
-                    </div>
-                    <span v-else :class="playerHeroInlineRoleChipClasses">
-                      {{ $t(`player_roles.${player.role || "user"}`) }}
-                    </span>
-                  </template>
-
-                  <template v-if="player?.teams && player.teams.length > 0">
-                    <NuxtLink
-                      v-for="team in player.teams"
-                      :key="team.id"
-                      :to="`/teams/${team.id}`"
-                      :class="playerHeroTeamChipClasses"
-                      :title="team.name"
-                    >
-                      <span :class="playerHeroTeamChipDotClasses"></span>
-                      <span>{{ team.short_name || team.name }}</span>
-                    </NuxtLink>
-                  </template>
-                </div>
               </div>
-            </div>
-          </div>
 
-          <div :class="playerHeroFooterClasses">
-            <div v-if="playerAwards?.length" :class="playerHeroFormClasses">
-              <PlayerHonorBar :awards="playerAwards" />
-            </div>
-
-            <div :class="playerHeroFormClasses">
-              <div class="flex items-center justify-between gap-4">
-                <div class="min-w-0 space-y-2.5">
-                  <span :class="playerHeroFormLabelClasses">
-                    <span :class="playerHeroFormTickClasses"></span>
-                    {{ $t("pages.players.detail.recent_form") }}
-                    <span class="tabular-nums text-foreground/70">
-                      {{ recentForm.wins }}–{{ recentForm.losses }}
-                    </span>
-                    <!-- The ELO those matches moved, muted like the W–L with
-                         only the arrow colored. -->
+              <div :class="playerHeroIdentityClasses">
+                <div :class="playerHeroHeadClasses">
+                  <h1
+                    :class="[playerHeroNameClasses, playerHeroNameSizeClasses]"
+                  >
                     <span
-                      v-if="recentForm.net !== 0"
-                      class="inline-flex items-center gap-1.5 tabular-nums"
-                      :title="
-                        $t('pages.players.detail.recent_form_elo', {
-                          count: RECENT_FORM_COUNT,
-                        })
-                      "
+                      v-if="showNameGhost"
+                      :class="playerHeroNameGhostClasses"
+                      aria-hidden="true"
                     >
-                      <span class="text-muted-foreground/50" aria-hidden="true">
-                        ·
-                      </span>
-                      <span
-                        :class="
-                          recentForm.net > 0
-                            ? 'text-emerald-400'
-                            : 'text-red-400'
-                        "
-                        aria-hidden="true"
-                      >
-                        {{ recentForm.net > 0 ? "▲" : "▼" }}
-                      </span>
-                      <span class="text-foreground/70">
-                        {{ Math.abs(recentForm.net).toLocaleString() }}
-                      </span>
-                      <span>ELO</span>
+                      {{ player.name }}
                     </span>
-                  </span>
-                  <div :class="playerHeroFormDotsClasses">
-                    <span
-                      v-for="dot in recentForm.dots"
-                      :key="dot.key"
-                      :class="[
-                        playerHeroFormDotBaseClasses,
-                        dot.result === 'win'
-                          ? 'bg-emerald-500'
-                          : dot.result === 'loss'
-                            ? 'bg-red-500'
-                            : dot.result === 'tie'
-                              ? 'bg-muted-foreground/40'
-                              : 'border border-foreground/15 bg-transparent',
-                      ]"
-                    ></span>
+                    <span :class="playerHeroNameMainClasses">{{
+                      player.name
+                    }}</span>
+                  </h1>
+                </div>
+
+                <div :class="playerHeroMetaStripClasses">
+                  <div :class="playerHeroMetaGroupClasses">
+                    <span :class="playerHeroIdentClasses">
+                      <TimezoneFlag
+                        v-if="player.country"
+                        :country="player.country"
+                        class="h-auto w-[1.2rem] shrink-0"
+                      />
+                      <span :class="playerHeroSteamIdClasses">{{
+                        player.steam_id
+                      }}</span>
+                    </span>
+
+                    <template v-if="player.profile_url">
+                      <a
+                        :href="player.profile_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        :class="playerHeroSteamLinkClasses"
+                        :title="$t('ui.tooltips.view_steam_profile')"
+                      >
+                        <SteamIcon class="h-3.5 w-3.5 fill-current" />
+                      </a>
+                    </template>
+
+                    <Transition v-bind="badgePopTransition">
+                      <PlayerTwitchLink
+                        v-if="twitchStream"
+                        :stream="twitchStream"
+                      />
+                    </Transition>
+
+                    <PlayerVacBadge
+                      v-if="hasSteamBans"
+                      :player="player"
+                      variant="button"
+                      @click="sanctionsSheetOpen = true"
+                    />
+                  </div>
+
+                  <div
+                    v-if="canEditRole || player.role || player.teams?.length"
+                    :class="[
+                      playerHeroMetaGroupClasses,
+                      canEditRole && !player.teams?.length && 'max-md:hidden',
+                    ]"
+                  >
+                    <template v-if="canEditRole || player.role">
+                      <div
+                        v-if="canEditRole"
+                        :class="[
+                          playerHeroInlineRoleWrapClasses,
+                          'max-md:hidden',
+                        ]"
+                      >
+                        <PlayerRoleForm :player="player" />
+                      </div>
+                      <span v-else :class="playerHeroInlineRoleChipClasses">
+                        {{ $t(`player_roles.${player.role || "user"}`) }}
+                      </span>
+                    </template>
+
+                    <template v-if="player?.teams && player.teams.length > 0">
+                      <NuxtLink
+                        v-for="team in player.teams"
+                        :key="team.id"
+                        :to="`/teams/${team.id}`"
+                        :class="playerHeroTeamChipClasses"
+                        :title="team.name"
+                      >
+                        <span :class="playerHeroTeamChipDotClasses"></span>
+                        <span>{{ team.short_name || team.name }}</span>
+                      </NuxtLink>
+                    </template>
                   </div>
                 </div>
-                <PlayerHeroActions
-                  v-bind="heroActionsBind"
-                  class="shrink-0"
-                  @add="addAsFriend"
-                  @accept="acceptFriendRequest"
-                  @cancel="cancelFriendRequest"
-                  @message="messagePlayer"
-                />
               </div>
             </div>
 
-            <div v-if="isSelfProfile" :class="playerHeroRightActionsClasses">
-              <NuxtLink
-                to="/play"
-                :class="[playerHeroPlayClasses, 'max-md:hidden']"
-              >
-                <span :class="playerHeroPlayInnerClasses">
-                  <PlayIcon :class="playerHeroPlayIconClasses" />
-                  <span>{{ $t("pages.players.detail.play_a_match") }}</span>
-                </span>
-                <span
-                  :class="playerHeroPlayGlowClasses"
-                  aria-hidden="true"
-                ></span>
-              </NuxtLink>
+            <div :class="playerHeroFooterClasses">
+              <div v-if="playerAwards?.length" :class="playerHeroFormClasses">
+                <PlayerHonorBar :awards="playerAwards" />
+              </div>
+
+              <div :class="playerHeroFormClasses">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="min-w-0 space-y-2.5">
+                    <span :class="playerHeroFormLabelClasses">
+                      <span :class="playerHeroFormTickClasses"></span>
+                      {{ $t("pages.players.detail.recent_form") }}
+                      <span class="tabular-nums text-foreground/70">
+                        {{ recentForm.wins }}–{{ recentForm.losses }}
+                      </span>
+                      <!-- The ELO those matches moved, muted like the W–L with
+                           only the arrow colored. -->
+                      <span
+                        v-if="recentForm.net !== 0"
+                        class="inline-flex items-center gap-1.5 tabular-nums"
+                        :title="
+                          $t('pages.players.detail.recent_form_elo', {
+                            count: RECENT_FORM_COUNT,
+                          })
+                        "
+                      >
+                        <span class="text-muted-foreground/50" aria-hidden="true">
+                          ·
+                        </span>
+                        <span
+                          :class="
+                            recentForm.net > 0
+                              ? 'text-emerald-400'
+                              : 'text-red-400'
+                          "
+                          aria-hidden="true"
+                        >
+                          {{ recentForm.net > 0 ? "▲" : "▼" }}
+                        </span>
+                        <span class="text-foreground/70">
+                          {{ Math.abs(recentForm.net).toLocaleString() }}
+                        </span>
+                        <span>ELO</span>
+                      </span>
+                    </span>
+                    <div :class="playerHeroFormDotsClasses">
+                      <span
+                        v-for="dot in recentForm.dots"
+                        :key="dot.key"
+                        :class="[
+                          playerHeroFormDotBaseClasses,
+                          dot.result === 'win'
+                            ? 'bg-emerald-500'
+                            : dot.result === 'loss'
+                              ? 'bg-red-500'
+                              : dot.result === 'tie'
+                                ? 'bg-muted-foreground/40'
+                                : 'border border-foreground/15 bg-transparent',
+                        ]"
+                      ></span>
+                    </div>
+                  </div>
+                  <PlayerHeroActions
+                    v-bind="heroActionsBind"
+                    class="shrink-0"
+                    @add="addAsFriend"
+                    @accept="acceptFriendRequest"
+                    @cancel="cancelFriendRequest"
+                    @message="messagePlayer"
+                  />
+                </div>
+              </div>
+
+              <div v-if="isSelfProfile" :class="playerHeroRightActionsClasses">
+                <NuxtLink
+                  to="/play"
+                  :class="[playerHeroPlayClasses, 'max-md:hidden']"
+                >
+                  <span :class="playerHeroPlayInnerClasses">
+                    <PlayIcon :class="playerHeroPlayIconClasses" />
+                    <span>{{ $t("pages.players.detail.play_a_match") }}</span>
+                  </span>
+                  <span
+                    :class="playerHeroPlayGlowClasses"
+                    aria-hidden="true"
+                  ></span>
+                </NuxtLink>
+              </div>
             </div>
-          </div>
-        </header>
-      </PageTransition>
+          </header>
+        </PageTransition>
+
+        <Fold :open="!!twitchStream?.is_live">
+          <PlayerTwitchWatchCard
+            v-if="twitchStream?.is_live"
+            v-model:playing="twitchPlaying"
+            :stream="twitchStream"
+            class="mt-4 lg:mt-6"
+          />
+        </Fold>
+      </div>
 
       <PageTransition :delay="150">
         <AnimatedCard

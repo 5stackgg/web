@@ -532,6 +532,15 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Derived by the api: true once an administrator has set both Twitch keys.
+    const supportsTwitch = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.supports_twitch",
+        )?.value === "true"
+      );
+    });
+
     const faceitEnabled = computed(() => {
       return (
         settings.value?.find(
@@ -761,6 +770,7 @@ export const useApplicationSettingsStore = defineStore(
       canGrantAwards,
       linkedAccountsEnabled,
       importedHighlightsSupported,
+      supportsTwitch,
       faceitEnabled,
       scrimFinderEnabled,
       pluginsEnabled,

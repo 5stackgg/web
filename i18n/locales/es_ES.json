@@ -2412,6 +2412,24 @@
             "disk_critical_percent_description": "Envía una notificación que no se puede eliminar cuando el uso del disco supera este porcentaje. Ponlo a 0 para desactivarlo."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Aplicación de Twitch",
+          "app_section_description": "Los jugadores vinculan Twitch iniciando sesión con Twitch, lo que demuestra que el canal es suyo. Registra una aplicación en la consola de desarrolladores de Twitch e introduce su ID de cliente y su secreto. Todo lo relacionado con Twitch permanece oculto hasta que ambos estén configurados.",
+          "redirect_url": "URL de Redirección OAuth",
+          "redirect_url_description": "Añade exactamente esta URL a las OAuth Redirect URLs de la aplicación.",
+          "console_link": "Abrir la consola de desarrolladores de Twitch",
+          "client_id": "ID de Cliente",
+          "client_secret": "Secreto de Cliente",
+          "client_secret_placeholder": "Introduce un nuevo secreto de cliente",
+          "secret_set": "Hay un secreto configurado. Introduce uno nuevo para reemplazarlo.",
+          "secret_saved": "Secreto guardado. No se puede volver a mostrar; introduce uno nuevo para reemplazarlo.",
+          "secret_none": "No hay ningún secreto configurado.",
+          "secret_unknown": "Un secreto guardado no se puede mostrar ni comprobar aquí. Twitch se activa cuando hay un ID de cliente y un secreto guardados.",
+          "secret_remove": "Quitar Secreto",
+          "secret_removed": "Secreto de cliente de Twitch eliminado",
+          "updated": "Ajustes de Twitch actualizados"
+        },
         "game_type_configs": {
           "title": "Configuraciones por tipo de partida",
           "global": "Global",
@@ -12215,5 +12233,43 @@
     },
     "cancelled": "El organizador lo canceló antes de empezar.",
     "cancelled_min_teams": "No se inscribieron suficientes equipos, así que se canceló."
+  },
+  "twitch": {
+    "live": "En directo",
+    "live_viewers": "En directo · {count}",
+    "live_on_twitch": "En directo en Twitch",
+    "watching": "{count} viendo",
+    "live_for": "en directo desde hace {duration}",
+    "open_on_twitch": "Abrir en Twitch",
+    "channel": "Canal de Twitch",
+    "play": "Reproducir Emisión",
+    "pov": "POV de {name}",
+    "account": {
+      "title": "Twitch",
+      "description": "Muestra tu emisión en las partidas que juegas",
+      "link": "Vincular Twitch",
+      "unlink": "Desvincular Twitch",
+      "live_game": "En directo · {game}",
+      "offline": "Desconectado",
+      "stale": "Twitch no respondió a la última comprobación de estado, así que esto podría no estar actualizado.",
+      "unavailable": "Ahora mismo no se puede comprobar tu vínculo con Twitch. Inténtalo más tarde.",
+      "linked": "Twitch vinculado",
+      "link_failed": "No se pudo vincular Twitch",
+      "unlinked": "Twitch desvinculado",
+      "unlink_failed": "No se pudo desvincular Twitch. Inténtalo de nuevo.",
+      "unlink_dialog": {
+        "title": "Desvincular Cuenta de Twitch",
+        "description": "Tu emisión dejará de mostrarse en tu perfil, en la búsqueda de jugadores y en las partidas que juegas. Puedes volver a vincularla cuando quieras.",
+        "confirm": "Desvincular"
+      },
+      "errors": {
+        "not_configured": "Twitch todavía no está configurado en este sitio.",
+        "invalid_state": "El inicio de sesión con Twitch caducó o ya se usó. Inténtalo de nuevo.",
+        "denied": "Se canceló el inicio de sesión con Twitch.",
+        "already_linked": "Esa cuenta de Twitch ya está vinculada a otro jugador.",
+        "twitch_unavailable": "Twitch no respondió. Inténtalo de nuevo en un momento.",
+        "unknown": "Algo salió mal. Inténtalo de nuevo."
+      }
+    }
   }
 }

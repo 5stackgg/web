@@ -4,6 +4,10 @@ import { ExternalLink, Square, Volume2, VolumeX } from "lucide-vue-next";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import Fold from "~/components/ui/transitions/Fold.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { badgePopTransition } from "~/utilities/badgeCount";
 </script>
 
 <template>
@@ -72,6 +76,17 @@ import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
         <VolumeX v-if="isMuted" class="size-3.5" />
         <Volume2 v-else class="size-3.5" />
       </button>
+
+      <PageTransition swap :appear="false">
+        <span
+          v-if="selectedPov"
+          :key="selectedPov.id"
+          class="pointer-events-none absolute bottom-2 left-2 z-10 rounded-sm bg-black/60 px-1.5 py-0.5 text-[0.7rem] font-semibold text-white"
+          data-test="stream-pov-label"
+        >
+          {{ selectedPov.title }}
+        </span>
+      </PageTransition>
     </StreamCanvas>
 
     <StreamStoppedBar
@@ -81,38 +96,49 @@ import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
       @watch="resumeStream"
     />
 
-    <div
-      v-if="
-        !inline &&
-        (streams.length > 1 || (showTitle == false && streams.length > 0))
-      "
-      class="flex flex-wrap gap-2"
-    >
-      <Button
-        size="sm"
-        v-for="stream in streams"
-        :key="stream.id"
-        :variant="selectedStream?.id === stream.id ? 'default' : 'outline'"
-        :class="[
-          'flex items-center gap-2',
-          selectedStream?.id === stream.id
-            ? 'bg-primary text-primary-foreground'
-            : '',
-        ]"
-        @click.prevent.stop="
-          globalStream ? setGlobalStream(stream) : selectStream(stream)
-        "
+    <Fold :open="showPicker">
+      <TransitionGroup
+        tag="div"
+        class="flex flex-wrap gap-2"
+        v-bind="badgePopTransition"
       >
-        <component
-          :is="getPlatformIcon(stream.link)"
-          class="h-4 w-4"
-          v-if="getPlatformIcon(stream.link)"
-        />
-        <span class="truncate max-w-[200px]" v-if="showTitle">{{
-          stream.title || stream.link
-        }}</span>
-      </Button>
-    </div>
+        <Button
+          size="sm"
+          v-for="stream in streams"
+          :key="stream.id"
+          :variant="selectedStream?.id === stream.id ? 'default' : 'outline'"
+          :class="[
+            'flex items-center gap-2',
+            selectedStream?.id === stream.id
+              ? 'bg-primary text-primary-foreground'
+              : '',
+          ]"
+          @click.prevent.stop="pickStream(stream)"
+        >
+          <template v-if="stream.is_pov">
+            <Avatar class="h-4 w-4 rounded-sm text-[0.45rem]">
+              <AvatarImage v-if="stream.avatar_url" :src="stream.avatar_url" />
+              <AvatarFallback>{{ povInitials(stream.name) }}</AvatarFallback>
+            </Avatar>
+            <span class="truncate max-w-[200px]">{{ stream.title }}</span>
+            <span
+              class="h-1.5 w-1.5 shrink-0 rounded-full bg-destructive"
+              aria-hidden="true"
+            ></span>
+          </template>
+          <template v-else>
+            <component
+              :is="getPlatformIcon(stream.link)"
+              class="h-4 w-4"
+              v-if="getPlatformIcon(stream.link)"
+            />
+            <span class="truncate max-w-[200px]" v-if="showTitle">{{
+              stream.title || stream.link
+            }}</span>
+          </template>
+        </Button>
+      </TransitionGroup>
+    </Fold>
   </div>
 </template>
 
@@ -125,6 +151,9 @@ interface MatchStream {
   title?: string;
   priority?: number;
   preview: true;
+  is_pov?: boolean;
+  name?: string;
+  avatar_url?: string | null;
 }
 
 import TwitchIcon from "~/components/icons/TwitchIcon.vue";
@@ -135,6 +164,7 @@ import {
   useStoppedStreams,
 } from "~/composables/useStoppedStreams";
 import { isHttpLink } from "~/utilities/httpLink";
+import { isDroppedTwitchPov } from "~/composables/useTwitch";
 
 export default {
   components: {
@@ -182,6 +212,9 @@ export default {
       embedId: null as string | null,
       selectedStream: null as MatchStream | null,
       scoreboardOpen: false,
+      // Only a stream the viewer chose survives a refreshed list; one picked
+      // for them keeps following the first stream, as it always has.
+      pickedByHand: false,
       // Always start muted so browsers actually autoplay. Toggled by
       // the custom mute pill — for Twitch via the SDK's setMuted, for
       // iframe-based embeds (YouTube/Kick/generic) by rebuilding the
@@ -224,8 +257,33 @@ export default {
     supportsVolume() {
       return this.platform === "twitch";
     },
+    showPicker() {
+      return (
+        !this.inline &&
+        (this.streams.length > 1 ||
+          (this.showTitle == false && this.streams.length > 0))
+      );
+    },
+    selectedPov() {
+      return (
+        this.streams.find(
+          (stream) => stream.is_pov && stream.id === this.selectedStream?.id,
+        ) ?? null
+      );
+    },
   },
   methods: {
+    povInitials(name?: string) {
+      return (name || "?").slice(0, 2).toUpperCase();
+    },
+    pickStream(stream: MatchStream) {
+      if (this.globalStream) {
+        this.setGlobalStream(stream);
+        return;
+      }
+      this.pickedByHand = true;
+      this.selectStream(stream);
+    },
     setGlobalStream(stream: MatchStream) {
       this.selectedStream = null;
       useApplicationSettingsStore().setGlobalStream(stream);
@@ -587,6 +645,15 @@ export default {
           this.inline ||
           (!this.setGlobalStreamOnly && !this.globalStream)
         ) {
+          if (
+            this.pickedByHand &&
+            this.selectedStream &&
+            this.streams.some(({ id }) => id === this.selectedStream?.id)
+          ) {
+            return;
+          }
+          this.pickedByHand = false;
+
           const firstStream = this.streams.at(0);
           if (firstStream) {
             this.selectStream(firstStream);
@@ -603,8 +670,12 @@ export default {
     globalStream(next, prev) {
       if (prev && !next && !this.global && !this.setGlobalStreamOnly) {
         if (!this.selectedStream && this.streams && this.streams.length > 0) {
+          const floated = isDroppedTwitchPov(prev)
+            ? undefined
+            : this.streams.find((s) => s.id === prev.id);
+          this.pickedByHand = !!floated;
           const stream =
-            this.streams.find((s) => s.id === prev.id) ?? this.streams.at(0);
+            floated ?? this.streams.find((s) => !isDroppedTwitchPov(s));
           if (stream) {
             this.selectStream(stream);
           }

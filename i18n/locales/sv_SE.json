@@ -2412,6 +2412,24 @@
             "disk_critical_percent_description": "Skicka en icke-borttagningsbar notis när diskanvändningen överstiger denna procentandel. Sätt till 0 för att inaktivera."
           }
         },
+        "twitch": {
+          "title": "Twitch",
+          "app_section": "Twitch-applikation",
+          "app_section_description": "Spelare kopplar Twitch genom att logga in med Twitch, vilket bevisar att kanalen är deras. Registrera en applikation i Twitchs utvecklarkonsol och ange dess klient-ID och hemlighet. Allt som rör Twitch förblir dolt tills båda är angivna.",
+          "redirect_url": "OAuth-omdirigerings-URL",
+          "redirect_url_description": "Lägg till exakt den här URL:en bland applikationens OAuth Redirect URLs.",
+          "console_link": "Öppna Twitchs utvecklarkonsol",
+          "client_id": "Klient-ID",
+          "client_secret": "Klienthemlighet",
+          "client_secret_placeholder": "Ange en ny klienthemlighet",
+          "secret_set": "En hemlighet är angiven. Ange en ny för att ersätta den.",
+          "secret_saved": "Hemligheten är sparad. Den kan inte visas igen; ange en ny för att ersätta den.",
+          "secret_none": "Ingen hemlighet är angiven.",
+          "secret_unknown": "En sparad hemlighet kan inte visas eller kontrolleras här. Twitch slås på när både ett klient-ID och en hemlighet är sparade.",
+          "secret_remove": "Ta Bort Hemlighet",
+          "secret_removed": "Twitch-klienthemligheten togs bort",
+          "updated": "Twitch-inställningarna har uppdaterats"
+        },
         "game_type_configs": {
           "title": "Konfigurationer för speltyper",
           "global": "Global",
@@ -12215,5 +12233,43 @@
     },
     "cancelled": "Arrangören ställde in den innan den startade.",
     "cancelled_min_teams": "För få lag anmälde sig, så den ställdes in."
+  },
+  "twitch": {
+    "live": "Live",
+    "live_viewers": "Live · {count}",
+    "live_on_twitch": "Live på Twitch",
+    "watching": "{count} tittar",
+    "live_for": "live i {duration}",
+    "open_on_twitch": "Öppna på Twitch",
+    "channel": "Twitch-kanal",
+    "play": "Spela Upp Stream",
+    "pov": "{name} POV",
+    "account": {
+      "title": "Twitch",
+      "description": "Visa din stream på matcherna du spelar",
+      "link": "Koppla Twitch",
+      "unlink": "Koppla från Twitch",
+      "live_game": "Live · {game}",
+      "offline": "Offline",
+      "stale": "Twitch svarade inte på den senaste statuskontrollen, så det här kan vara inaktuellt.",
+      "unavailable": "Din Twitch-koppling kan inte kontrolleras just nu. Försök igen senare.",
+      "linked": "Twitch kopplat",
+      "link_failed": "Det gick inte att koppla Twitch",
+      "unlinked": "Twitch frånkopplat",
+      "unlink_failed": "Det gick inte att koppla från Twitch. Försök igen.",
+      "unlink_dialog": {
+        "title": "Koppla Från Twitch-konto",
+        "description": "Din stream visas inte längre på din profil, i spelarsökningen eller på matcherna du spelar. Du kan koppla den igen när som helst.",
+        "confirm": "Koppla från"
+      },
+      "errors": {
+        "not_configured": "Twitch är inte konfigurerat på den här sidan än.",
+        "invalid_state": "Twitch-inloggningen har gått ut eller har redan använts. Försök igen.",
+        "denied": "Twitch-inloggningen avbröts.",
+        "already_linked": "Det Twitch-kontot är redan kopplat till en annan spelare.",
+        "twitch_unavailable": "Twitch svarade inte. Försök igen om en stund.",
+        "unknown": "Något gick fel. Försök igen."
+      }
+    }
   }
 }

@@ -17,6 +17,7 @@ import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
+import MatchTwitchPovs from "~/components/match/MatchTwitchPovs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
@@ -217,10 +218,7 @@ onUnmounted(() => rankSub?.unsubscribe());
       >
         <!-- Left column: match info, chat, maps. On desktop it's the
            first grid column; on mobile it drops below the stream. -->
-        <div
-          class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0"
-          :class="showLiveStreamBlock ? 'order-2 lg:order-none' : ''"
-        >
+        <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
           <PageTransition :delay="100">
             <MatchInfo :match="match" :camera-ready="cameraReady"></MatchInfo>
           </PageTransition>
@@ -367,69 +365,79 @@ onUnmounted(() => rankSub?.unsubscribe());
            get the full WHEP LiveStreamPlayer; embeds stay in
            StreamEmbed) stacked above the scoreboard/tabs. On mobile it
            rises above the left column so the stream leads. -->
-        <div
-          class="min-w-0 flex flex-col gap-4 md:gap-6"
-          :class="showLiveStreamBlock ? 'order-1 lg:order-none' : ''"
+        <MatchTwitchPovs
+          :match="match"
+          :streams="embeddableStreams"
+          v-slot="{ streams: liveEmbedStreams }"
         >
-          <PageTransition v-if="showLiveStreamBlock">
-            <div class="min-w-0 space-y-4">
-              <LiveStreamPlayer
-                v-if="hasGameStreamer"
-                :match-id="match.id"
-                class="max-w-[1500px] w-full"
-              />
-              <StreamEmbed
-                v-if="embeddableStreams.length > 0"
-                :streams="embeddableStreams"
-                :match-id="match.id"
-                class="max-w-[1500px] w-full overflow-x-auto"
-              />
-            </div>
-          </PageTransition>
+          <div
+            class="min-w-0 flex flex-col gap-4 md:gap-6"
+            :class="
+              showsLiveStreamBlock(liveEmbedStreams)
+                ? '-order-1 lg:order-none'
+                : ''
+            "
+          >
+            <PageTransition v-if="showsLiveStreamBlock(liveEmbedStreams)">
+              <div class="min-w-0 space-y-4">
+                <LiveStreamPlayer
+                  v-if="hasGameStreamer"
+                  :match-id="match.id"
+                  class="max-w-[1500px] w-full"
+                />
+                <StreamEmbed
+                  v-if="liveEmbedStreams.length > 0"
+                  :streams="liveEmbedStreams"
+                  :match-id="match.id"
+                  class="max-w-[1500px] w-full overflow-x-auto"
+                />
+              </div>
+            </PageTransition>
 
-          <div class="min-w-0">
-            <PageTransition :delay="100">
-              <template
-                v-if="
-                  regions.length === 0 &&
-                  match.options.region_veto &&
-                  !match.region
-                "
-              >
-                <Alert
-                  variant="destructive"
-                  class="bg-red-600 text-white max-w-md mb-6"
+            <div class="min-w-0">
+              <PageTransition :delay="100">
+                <template
+                  v-if="
+                    regions.length === 0 &&
+                    match.options.region_veto &&
+                    !match.region
+                  "
                 >
-                  <AlertTitle>{{
-                    $t("match.region_veto.no_regions_available")
-                  }}</AlertTitle>
-                  <AlertDescription>
-                    {{
-                      $t("match.region_veto.no_regions_available_description")
-                    }}
-                  </AlertDescription>
-                </Alert>
-              </template>
-            </PageTransition>
+                  <Alert
+                    variant="destructive"
+                    class="bg-red-600 text-white max-w-md mb-6"
+                  >
+                    <AlertTitle>{{
+                      $t("match.region_veto.no_regions_available")
+                    }}</AlertTitle>
+                    <AlertDescription>
+                      {{
+                        $t("match.region_veto.no_regions_available_description")
+                      }}
+                    </AlertDescription>
+                  </Alert>
+                </template>
+              </PageTransition>
 
-            <PageTransition :delay="100">
-              <MatchRegionVeto :match="match" class="pb-6" />
-            </PageTransition>
+              <PageTransition :delay="100">
+                <MatchRegionVeto :match="match" class="pb-6" />
+              </PageTransition>
 
-            <PageTransition :delay="100">
-              <MatchMapVeto :match="match" class="pb-6" />
-            </PageTransition>
+              <PageTransition :delay="100">
+                <MatchMapVeto :match="match" class="pb-6" />
+              </PageTransition>
 
-            <PageTransition :delay="200">
-              <MatchTabs
-                :match="match"
-                :active-map="activeStatsMap"
-                @clear-active-map="activeStatsMap = null"
-                @select-map="activeStatsMap = $event"
-              ></MatchTabs>
-            </PageTransition>
+              <PageTransition :delay="200">
+                <MatchTabs
+                  :match="match"
+                  :active-map="activeStatsMap"
+                  @clear-active-map="activeStatsMap = null"
+                  @select-map="activeStatsMap = $event"
+                ></MatchTabs>
+              </PageTransition>
+            </div>
           </div>
-        </div>
+        </MatchTwitchPovs>
       </div>
 
       <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
@@ -1043,14 +1051,6 @@ export default {
     embeddableStreams() {
       return (this.match?.streams || []).filter((s) => !s.is_game_streamer);
     },
-    showLiveStreamBlock() {
-      return (
-        this.showLiveStreams &&
-        (this.match?.streams?.length || 0) > 0 &&
-        !this.match?.is_in_lineup &&
-        !this.match?.is_coach
-      );
-    },
     showLiveStreams() {
       if (
         [
@@ -1077,6 +1077,14 @@ export default {
     },
   },
   methods: {
+    showsLiveStreamBlock(streams: unknown[]) {
+      return (
+        this.showLiveStreams &&
+        (this.hasGameStreamer || streams.length > 0) &&
+        !this.match?.is_in_lineup &&
+        !this.match?.is_coach
+      );
+    },
     // Injected by the organizer controls, which change fields this half owns
     // and would otherwise not see their own edit until the next status change.
     refetchMatchStatic() {

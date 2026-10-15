@@ -11024,7 +11024,6 @@
       "cancel_invite": "取消邀请",
       "invite_to_draft": "邀请到选秀",
       "invite_sent": "已邀请 {name} 加入您的选秀",
-      "picks_first": "{name} 先选",
       "match_starting": "比赛开始 — 启动服务器",
       "no_regions_available_description": "没有游戏服务器地区有可用服务器。选秀无法开始，直到有服务器上线——请联系管理员。",
       "assign_all": "分配所有玩家",

@@ -11024,7 +11024,6 @@
       "cancel_invite": "Annullér invitation",
       "invite_to_draft": "Invitér til draft",
       "invite_sent": "Inviterede {name} til din draft",
-      "picks_first": "{name} vælger først",
       "match_starting": "Kampen starter — serveren booter",
       "no_regions_available_description": "Ingen game server-regioner har ledige servere. Draften kan ikke starte, før en server kommer online — kontakt en administrator.",
       "assign_all": "Fordel alle spillere",

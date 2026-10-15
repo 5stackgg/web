@@ -11024,7 +11024,6 @@
       "cancel_invite": "招待を取り消す",
       "invite_to_draft": "ドラフトに招待",
       "invite_sent": "{name} をドラフトに招待しました",
-      "picks_first": "{name} が先に指名します",
       "match_starting": "試合開始 — サーバー起動中",
       "no_regions_available_description": "利用可能なサーバーがあるリージョンはありません。サーバーがオンラインになるまでドラフトは開始できません。管理者にお問い合わせください。",
       "assign_all": "全員を割り当て",

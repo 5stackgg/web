@@ -11024,7 +11024,6 @@
       "cancel_invite": "Anuluj zaproszenie",
       "invite_to_draft": "Zaproś do draftu",
       "invite_sent": "Zaproszono {name} do twojego draftu",
-      "picks_first": "{name} wybiera pierwszy",
       "match_starting": "Mecz się rozpoczyna — uruchamianie serwera",
       "no_regions_available_description": "Żaden region serwerów gry nie ma dostępnych serwerów. Draft nie może się rozpocząć, dopóki serwer nie będzie online — skontaktuj się z administratorem",
       "assign_all": "Przypisz wszystkich graczy",

@@ -11024,7 +11024,6 @@
       "cancel_invite": "Daveti İptal Et",
       "invite_to_draft": "Seçime Davet Et",
       "invite_sent": "{name} seçimine davet edildi",
-      "picks_first": "İlk seçimi {name} yapıyor",
       "match_starting": "Maç Başlıyor — Sunucu Açılıyor",
       "no_regions_available_description": "Hiçbir sunucu bölgesinde kullanılabilir sunucu yok. Bir sunucu çevrimiçi olmadan seçim başlayamaz — bir yöneticiye ulaş.",
       "assign_all": "Tüm Oyuncuları Ata",

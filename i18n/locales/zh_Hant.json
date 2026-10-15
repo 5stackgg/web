@@ -11024,7 +11024,6 @@
       "cancel_invite": "取消邀請",
       "invite_to_draft": "邀請加入選人",
       "invite_sent": "已邀請 {name} 加入您的選人房",
-      "picks_first": "{name} 先選",
       "match_starting": "比賽開始 — 啟動伺服器中",
       "no_regions_available_description": "沒有任何遊戲伺服器地區有可用伺服器。在伺服器上線前無法開始選人——請聯絡管理員。",
       "assign_all": "分配所有玩家",

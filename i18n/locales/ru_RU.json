@@ -8862,9 +8862,6 @@
       "clears_match_winner": "Это также сбросит победителя матча."
     },
     "region_veto": {
-      "ban_label": "Бан",
-      "banning": "банит регион",
-      "confirm_ban": "Подтвердить бан",
       "server_region": "Регион сервера",
       "select_region": "Выбрать регион",
       "no_regions_available": "Нет доступных регионов",
@@ -8900,17 +8897,7 @@
     },
     "decider": "Решающая карта",
     "map_veto": {
-      "is_picking": "выбирает",
-      "pick": "Пик",
-      "confirm": "Подтвердить {type}",
-      "your_turn": "Твой ход",
-      "headline_side": "Выбери стартовую сторону",
-      "headline_pick": "Выбери карту",
-      "headline_ban": "Забань карту",
-      "side_on_map": "{team} · первая половина на {map}",
-      "side_for_map": "Сторона выбирается для этой карты",
-      "side_role_ct": "Защита",
-      "side_role_t": "Атака"
+      "pick": "Пик"
     },
     "map_lineup": {
       "picked": "Выбрано"
@@ -9510,6 +9497,54 @@
         "no_detonation": "нет прилёта",
         "no_detonation_hint": "Демо так и не связало с этим броском детонацию, поэтому место прилёта не записано."
       }
+    },
+    "veto": {
+      "your_turn": "Твой ход",
+      "ban_map": "Забань карту",
+      "pick_map": "Выбери карту",
+      "ban_region": "Забань регион",
+      "banning_map": "Банит карту",
+      "picking_map": "Выбирает карту",
+      "banning_region": "Банит регион",
+      "pick_side": "Выбери стартовую сторону на {map}",
+      "picking_side": "Выбирает сторону на {map}",
+      "decider": "Решающая карта",
+      "decider_line": "Фиксируется последняя карта",
+      "last_region": "Остался последний регион",
+      "last_region_line": "Задаётся регион сервера",
+      "complete": "Вето завершено",
+      "complete_line": "Карты зафиксированы",
+      "region_set": "Регион задан",
+      "order": "Порядок вето",
+      "steps": {
+        "Ban": "Бан",
+        "Pick": "Пик",
+        "Side": "Сторона",
+        "Decider": "Решающая",
+        "Region": "Регион"
+      },
+      "ban_n": "Бан {n}",
+      "map_n": "Карта {n}",
+      "decider_map_n": "Решающая · Карта {n}",
+      "the_map": "Карта",
+      "server_region": "Регион сервера",
+      "choose": "Нажми, чтобы выбрать",
+      "choose_with_ping": "Твой пинг {ping} ms · нажми, чтобы выбрать",
+      "cta_ban": "Забанить {map}",
+      "cta_pick": "Выбрать {map}",
+      "banned_it": "Бан от {team}",
+      "picked_it": "{team} выбрала её · Карта {n}",
+      "picked_by": "Выбрала {team}",
+      "map_n_starts": "Карта {n} · {team} начинает за {side}",
+      "decider_last": "Карта {n} · последняя оставшаяся карта",
+      "bo1_last": "Играете на последней оставшейся карте",
+      "start_side": "Начать за {side}",
+      "defend_first": "Сначала защита",
+      "attack_first": "Сначала атака",
+      "confirm_side": "Подтвердить {side}",
+      "your_side_on": "Твоя стартовая сторона на {map}",
+      "their_side_on": "{team} выбирает сторону на {map}",
+      "not_set": "Не выбрано"
     }
   },
   "ui": {

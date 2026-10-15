@@ -8862,9 +8862,6 @@
       "clears_match_winner": "이렇게 하면 매치 승자도 해제됩니다."
     },
     "region_veto": {
-      "ban_label": "밴",
-      "banning": "님이 지역을 밴하는 중",
-      "confirm_ban": "밴 확정",
       "server_region": "서버 지역",
       "select_region": "지역 선택",
       "no_regions_available": "사용 가능한 지역 없음",
@@ -8900,17 +8897,7 @@
     },
     "decider": "데사이더",
     "map_veto": {
-      "is_picking": "님이 픽 중",
-      "pick": "픽",
-      "confirm": "{type} 확정",
-      "your_turn": "내 차례",
-      "headline_side": "시작 진영을 선택하세요",
-      "headline_pick": "맵을 선택하세요",
-      "headline_ban": "맵을 밴하세요",
-      "side_on_map": "{team} · {map} 전반",
-      "side_for_map": "진영은 이 맵에 적용됩니다",
-      "side_role_ct": "수비",
-      "side_role_t": "공격"
+      "pick": "픽"
     },
     "map_lineup": {
       "picked": "픽됨"
@@ -9510,6 +9497,54 @@
         "no_detonation": "낙하 없음",
         "no_detonation_hint": "데모가 이 투척에 폭발을 연결하지 못해, 어디에 떨어졌는지가 기록되지 않았습니다."
       }
+    },
+    "veto": {
+      "your_turn": "내 차례",
+      "ban_map": "맵을 밴하세요",
+      "pick_map": "맵을 선택하세요",
+      "ban_region": "지역을 밴하세요",
+      "banning_map": "맵 밴 중",
+      "picking_map": "맵 픽 중",
+      "banning_region": "지역 밴 중",
+      "pick_side": "{map}의 시작 진영을 선택하세요",
+      "picking_side": "{map} 진영 선택 중",
+      "decider": "데사이더",
+      "decider_line": "마지막 맵 확정 중",
+      "last_region": "마지막 남은 지역",
+      "last_region_line": "서버 지역 설정 중",
+      "complete": "밴픽 완료",
+      "complete_line": "맵이 확정되었습니다",
+      "region_set": "지역 확정",
+      "order": "진행 순서",
+      "steps": {
+        "Ban": "밴",
+        "Pick": "픽",
+        "Side": "진영",
+        "Decider": "데사이더",
+        "Region": "지역"
+      },
+      "ban_n": "밴 {n}",
+      "map_n": "맵 {n}",
+      "decider_map_n": "데사이더 · 맵 {n}",
+      "the_map": "맵",
+      "server_region": "서버 지역",
+      "choose": "클릭해서 선택",
+      "choose_with_ping": "내 핑 {ping} ms · 클릭해서 선택",
+      "cta_ban": "{map} 밴",
+      "cta_pick": "{map} 픽",
+      "banned_it": "{team}이(가) 밴",
+      "picked_it": "{team}이(가) 픽 · 맵 {n}",
+      "picked_by": "{team} 픽",
+      "map_n_starts": "맵 {n} · {team}이(가) {side}로 시작",
+      "decider_last": "맵 {n} · 마지막 남은 맵",
+      "bo1_last": "마지막 남은 맵에서 경기합니다",
+      "start_side": "{side}로 시작",
+      "defend_first": "먼저 수비",
+      "attack_first": "먼저 공격",
+      "confirm_side": "{side} 확정",
+      "your_side_on": "{map}의 내 시작 진영",
+      "their_side_on": "{team}이(가) {map} 진영 선택 중",
+      "not_set": "미정"
     }
   },
   "ui": {

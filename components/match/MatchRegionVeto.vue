@@ -1,18 +1,8 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
-import { Check } from "lucide-vue-next";
-import { Spinner } from "~/components/ui/spinner";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
-import VetoTurnBanner from "~/components/match/VetoTurnBanner.vue";
-import {
-  vetoTileClasses,
-  vetoTileHoverClasses,
-  vetoTileActiveClasses,
-  vetoTileDisabledClasses,
-  vetoTileConfirmOverlayClasses,
-  vetoTileConfirmPillClasses,
-} from "~/utilities/tacticalClasses";
+import VetoBoard from "~/components/match/VetoBoard.vue";
 </script>
 
 <template>
@@ -20,95 +10,19 @@ import {
     v-if="isRegionVeto && (isBanning || canSelectRegion)"
     class="flex flex-col gap-4"
   >
-    <template v-if="match.options.region_veto">
-      <VetoTurnBanner
-        :lineup-name="banningLineupName"
-        :action="$t('match.region_veto.banning')"
-        :pick-label="$t('match.region_veto.ban_label')"
-        pick-variant="destructive"
-        :active="isPicking"
-        :deadline="vetoPickDeadline"
-        :total="match.options.veto_pick_timeout"
-      />
-
-      <div class="container mx-auto px-4">
-        <div class="flex flex-wrap justify-center gap-6">
-          <div
-            v-for="region in regions"
-            :key="region.value"
-            class="relative w-[180px]"
-          >
-            <div
-              @click="
-                isPicking &&
-                !submitting &&
-                form.setFieldValue('region', region.value)
-              "
-              class="h-[180px]"
-              :class="[
-                vetoTileClasses,
-                form.values.region === region.value
-                  ? vetoTileActiveClasses
-                  : isPicking && !submitting && vetoTileHoverClasses,
-                !availableRegions.includes(region.value) &&
-                  vetoTileDisabledClasses,
-                submitting &&
-                  form.values.region !== region.value &&
-                  vetoTileDisabledClasses,
-                !isPicking && 'cursor-default',
-              ]"
-            >
-              <NuxtImg
-                src="/img/maps/screenshots/default.webp"
-                class="w-full h-full object-cover min-w-[150px]"
-                sizes="sm:200px md:400px lg:600"
-              />
-              <div class="absolute inset-0 bg-black/45"></div>
-
-              <div class="absolute inset-x-0 bottom-0 px-2 py-2 text-center">
-                <div class="flex items-center justify-center gap-1.5">
-                  <span
-                    class="inline-block h-2 w-2 rounded-full"
-                    :class="{
-                      'bg-red-500': region.status === 'Offline',
-                      'bg-green-500': region.status === 'Online',
-                      'bg-yellow-500': region.status === 'Partial',
-                    }"
-                  ></span>
-                  <span
-                    class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-white drop-shadow-lg"
-                  >
-                    {{ region.description || region.value }}
-                  </span>
-                </div>
-              </div>
-
-              <Transition
-                enter-active-class="transition-all duration-200 ease-out"
-                leave-active-class="transition-all duration-150 ease-in"
-                enter-from-class="opacity-0 scale-50"
-                enter-to-class="opacity-100 scale-100"
-                leave-from-class="opacity-100 scale-100"
-                leave-to-class="opacity-0 scale-50"
-              >
-                <div
-                  v-if="form.values.region === region.value"
-                  :class="vetoTileConfirmOverlayClasses"
-                  @click.stop="!submitting && vetoPick()"
-                >
-                  <div :class="vetoTileConfirmPillClasses">
-                    <Spinner v-if="submitting" />
-                    <Check v-else class="w-4 h-4" />
-                    <span>{{ $t("match.region_veto.confirm_ban") }}</span>
-                  </div>
-                </div>
-              </Transition>
-            </div>
-          </div>
-        </div>
-      </div>
-      <Separator></Separator>
-    </template>
+    <VetoBoard
+      v-if="match.options.region_veto"
+      kind="region"
+      :items="items"
+      :steps="steps"
+      :lineups="lineups"
+      :picking-lineup="pickingLineup"
+      :is-picking="isPicking"
+      :submitting="submitting"
+      :deadline="vetoPickDeadline"
+      :total="match.options.veto_pick_timeout"
+      @confirm="({ itemId }) => itemId && vetoPick(itemId)"
+    />
     <template v-else-if="canSelectRegion && !match.region">
       <Card class="sm:col-span-4 bg-card/20">
         <CardHeader class="pb-3">
@@ -174,6 +88,7 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import {
   $,
+  order_by,
   e_match_status_enum,
   e_veto_pick_types_enum,
   e_player_roles_enum,
@@ -181,6 +96,9 @@ import {
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useSound } from "~/composables/useSound";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { regionVetoOrder } from "~/utilities/vetoOrder";
+import { lineupSlot, vetoLineups } from "~/utilities/vetoLineups";
 import { isVetoOverrideEnabled } from "~/composables/useVetoOverride";
 import { toast } from "@/components/ui/toast";
 
@@ -211,10 +129,17 @@ export default {
                   _eq: $("matchId", "uuid!"),
                 },
               },
+              order_by: [
+                {
+                  created_at: order_by.asc,
+                },
+              ],
             },
             {
               region: true,
+              type: true,
               auto_picked: true,
+              match_lineup_id: true,
             },
           ],
         }),
@@ -228,10 +153,6 @@ export default {
     isPicking: {
       immediate: true,
       handler(isPicking) {
-        this.form.setValues({
-          region: undefined,
-        });
-
         if (!isPicking) {
           return;
         }
@@ -275,14 +196,51 @@ export default {
         useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
       );
     },
-    banningLineupName() {
-      if (this.match.lineup_1.is_picking_region_veto) {
-        return this.match.lineup_1.name;
+    pickingLineup() {
+      if (this.match.lineup_1?.is_picking_region_veto) {
+        return 1;
       }
-      if (this.match.lineup_2.is_picking_region_veto) {
-        return this.match.lineup_2.name;
+      if (this.match.lineup_2?.is_picking_region_veto) {
+        return 2;
       }
-      return "";
+      return null;
+    },
+    lineups() {
+      return vetoLineups(this.match, this.$t);
+    },
+    items() {
+      const matchmaking = useMatchmakingStore();
+      return this.regions.map((region: any) => {
+        const latency = matchmaking.getRegionlatencyResult(region.value);
+        return {
+          id: region.value,
+          label: region.description || region.value,
+          ping: latency ? Math.round(Number(latency.latency)) : null,
+          serverStatus: region.status,
+        };
+      });
+    },
+    steps() {
+      const picks = this.picks ?? [];
+      return regionVetoOrder(this.regions.length).map((step, index) => {
+        const pick = picks[index];
+        const region = pick
+          ? this.regions.find(
+              ({ value }: { value: string }) =>
+                value.toLowerCase() === pick.region.toLowerCase(),
+            )
+          : null;
+        return {
+          ...step,
+          record: region
+            ? {
+                itemId: region.value,
+                lineup: lineupSlot(this.match, pick.match_lineup_id),
+                auto: pick.auto_picked,
+              }
+            : null,
+        };
+      });
     },
     vetoPickDeadline() {
       if (!this.match.options.veto_pick_timeout) {
@@ -323,23 +281,6 @@ export default {
           is_lan: false,
         };
       });
-    },
-    availableRegions() {
-      return this.regions
-        .filter(({ value }) => {
-          const normalizedValue = value.toLowerCase();
-          if (
-            this.picks.find(({ region }) => {
-              return region.toLowerCase() === normalizedValue;
-            })
-          ) {
-            return false;
-          }
-          return true;
-        })
-        .map(({ value }) => {
-          return value;
-        });
     },
     isBanning() {
       return this.match.options.region_veto && !this.match.region;
@@ -406,12 +347,10 @@ export default {
         this.submitting = false;
       }
     },
-    async vetoPick() {
+    async vetoPick(region: string) {
       if (this.submitting) {
         return;
       }
-
-      let { region } = this.form.values;
 
       this.submitting = true;
 

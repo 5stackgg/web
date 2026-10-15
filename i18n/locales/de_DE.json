@@ -9551,7 +9551,9 @@
         "now": "Du bist hier",
         "unlocks": "Wird hier freigeschaltet",
         "nothing_new": "Hier kommt für dich nichts Neues"
-      }
+      },
+      "show_console": "Konsole und Logs anzeigen",
+      "hide_console": "Konsole und Logs ausblenden"
     },
     "demo_processing_hint": "Die Match-Demo wird vom Gameserver hochgeladen. Statistiken, das 2D-Replay und Highlights folgen, sobald das abgeschlossen ist.",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "Endstand",
-      "winner": "Sieger"
+      "winner": "Sieger",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility vs. Lineups",
@@ -9701,7 +9704,30 @@
         "browse": "blättern",
         "choose": "wählen",
         "clear": "aufheben"
-      }
+      },
+      "yours": {
+        "Ban": "Dein Ban",
+        "Pick": "Dein Pick",
+        "Side": "Deine Seite"
+      },
+      "start": {
+        "heading": "Match startet",
+        "waiting": "Warten auf einen Server",
+        "waiting_line": "Dein Match startet, sobald einer frei ist",
+        "booting": "Server startet",
+        "booting_line": "Dein Match-Server wird gestartet",
+        "ready": "Server bereit",
+        "ready_first": "{map} zuerst",
+        "ready_first_you": "{map} zuerst · du startest auf {side}",
+        "ready_only_you": "{map} · du startest auf {side}",
+        "sides_title": "Startseiten",
+        "sides_key": "CT verteidigt zuerst, T greift zuerst an, zur Halbzeit werden die Seiten getauscht",
+        "knife_key": "Decider-Seiten: Knife-Runde",
+        "starts": "Startet auf {side}",
+        "knife": "Knife-Runde",
+        "knife_line": "Gewinner wählt die Seite"
+      },
+      "map": "Map"
     }
   },
   "ui": {

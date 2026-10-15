@@ -9551,7 +9551,9 @@
         "now": "Du är här",
         "unlocks": "Låses upp här",
         "nothing_new": "Inget nytt för dig här"
-      }
+      },
+      "show_console": "Visa konsol och loggar",
+      "hide_console": "Dölj konsol och loggar"
     },
     "demo_processing_hint": "Matchens demo laddas upp från spelservern. Statistik, 2D-replay och höjdpunkter kommer när den är klar.",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "Slutresultat",
-      "winner": "Vinnare"
+      "winner": "Vinnare",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility mot uppställningar",
@@ -9701,7 +9704,30 @@
         "browse": "bläddra",
         "choose": "välj",
         "clear": "rensa"
-      }
+      },
+      "yours": {
+        "Ban": "Din bann",
+        "Pick": "Ditt val",
+        "Side": "Din sida"
+      },
+      "start": {
+        "heading": "Matchen startar",
+        "waiting": "Väntar på en server",
+        "waiting_line": "Din match startar så fort en är ledig",
+        "booting": "Servern startar",
+        "booting_line": "Startar din matchserver",
+        "ready": "Servern är redo",
+        "ready_first": "{map} först",
+        "ready_first_you": "{map} först · du börjar på {side}",
+        "ready_only_you": "{map} · du börjar på {side}",
+        "sides_title": "Startsidor",
+        "sides_key": "CT försvarar först, T anfaller först, sidorna byts vid halvtid",
+        "knife_key": "Avgörarens sidor: knivrond",
+        "starts": "Börjar på {side}",
+        "knife": "Knivrond",
+        "knife_line": "Vinnaren väljer sida"
+      },
+      "map": "Karta"
     }
   },
   "ui": {

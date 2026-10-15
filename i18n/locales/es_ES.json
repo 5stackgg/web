@@ -9551,7 +9551,9 @@
         "now": "Estás aquí",
         "unlocks": "Se desbloquea aquí",
         "nothing_new": "Nada nuevo para ti aquí"
-      }
+      },
+      "show_console": "Mostrar consola y registros",
+      "hide_console": "Ocultar consola y registros"
     },
     "demo_processing_hint": "La demo de la partida se está subiendo desde el servidor de juego. Las estadísticas, la repetición 2D y los momentos destacados llegan cuando termine.",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "Final",
-      "winner": "Ganador"
+      "winner": "Ganador",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utilidad vs lineups",
@@ -9701,7 +9704,30 @@
         "browse": "navegar",
         "choose": "elegir",
         "clear": "limpiar"
-      }
+      },
+      "yours": {
+        "Ban": "Tu baneo",
+        "Pick": "Tu elección",
+        "Side": "Tu bando"
+      },
+      "start": {
+        "heading": "Empezando la partida",
+        "waiting": "Esperando un servidor",
+        "waiting_line": "Tu partida empieza en cuanto haya uno libre",
+        "booting": "Arrancando servidor",
+        "booting_line": "Arrancando el servidor de tu partida",
+        "ready": "Servidor listo",
+        "ready_first": "{map} primero",
+        "ready_first_you": "{map} primero · empiezas en {side}",
+        "ready_only_you": "{map} · empiezas en {side}",
+        "sides_title": "Bandos iniciales",
+        "sides_key": "CT defiende primero, T ataca primero, los bandos se cambian en el descanso",
+        "knife_key": "Bandos del decisivo: ronda a cuchillo",
+        "starts": "Empieza en {side}",
+        "knife": "Ronda a cuchillo",
+        "knife_line": "El ganador elige bando"
+      },
+      "map": "Mapa"
     }
   },
   "ui": {

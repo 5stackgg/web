@@ -9,14 +9,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
     leave-active-class="veto-collapse"
     leave-to-class="veto-collapse-to"
   >
-    <div
-      v-if="
-        (!match.options.region_veto || match.region) &&
-        match.status === 'Veto' &&
-        match.match_maps.length < bestOf
-      "
-      class="grid grid-rows-[1fr]"
-    >
+    <div v-if="boardUp" class="grid grid-rows-[1fr]">
       <div class="min-h-0">
         <VetoBoard
           kind="map"
@@ -29,8 +22,13 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
           :deadline="vetoPickDeadline"
           :total="match.options.veto_pick_timeout"
           :best-of="bestOf"
+          :viewer="viewerLineup"
           :scouting="scoutingView"
+          :start="start"
+          :hand-off="handOff"
+          :knife-round="!!match.options.knife_round"
           @confirm="onConfirm"
+          @handoff="onHandoff"
         />
       </div>
     </div>
@@ -51,8 +49,16 @@ import { useSound } from "~/composables/useSound";
 import { isVetoOverrideEnabled } from "~/composables/useVetoOverride";
 import { toast } from "@/components/ui/toast";
 import mapLabel from "~/utilities/mapLabel";
-import { mapVetoOrder } from "~/utilities/vetoOrder";
-import { lineupSlot, vetoLineups } from "~/utilities/vetoLineups";
+import { mapVetoSteps, vetoLineups, viewerSlot } from "~/utilities/vetoLineups";
+import {
+  STARTING_STATUSES,
+  vetoMapsSet,
+  vetoStarting,
+  vetoStartMaps,
+  type VetoStart,
+} from "~/utilities/vetoStage";
+import { unfoldHome } from "~/utilities/vetoHandoff";
+import { useVetoHandoff, vetoHandoffPhase } from "~/composables/useVetoHandoff";
 import { loadVetoScouting } from "~/utilities/loadVetoScouting";
 import type { ScoutLineup } from "~/utilities/vetoScouting";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -66,6 +72,13 @@ export default {
     matchId: {
       type: String,
       required: false,
+    },
+    // Once the server is ready the board folds and the page unfolds its map
+    // cards. The draft room has none, so its board stays on the start until
+    // it leaves.
+    handOff: {
+      type: Boolean,
+      default: true,
     },
   },
   apollo: {
@@ -151,6 +164,16 @@ export default {
         }
       },
     },
+    // The start stage holds the page (the map cards and the header's veto
+    // row stay folded) until its maps have flown home.
+    starting: {
+      immediate: true,
+      handler(starting) {
+        if (starting && this.handOff && !this.handoffPhase) {
+          useVetoHandoff().value = { matchId: this.match.id, phase: "stage" };
+        }
+      },
+    },
     picks: {
       handler(currentPicks, oldPicks) {
         if (oldPicks && currentPicks.length > oldPicks.length) {
@@ -164,6 +187,9 @@ export default {
     if (this.submitTimeout) {
       clearTimeout(this.submitTimeout);
     }
+    if (this.handoffPhase === "stage") {
+      useVetoHandoff().value = null;
+    }
   },
   methods: {
     finishSubmitting() {
@@ -172,6 +198,16 @@ export default {
         this.submitTimeout = undefined;
       }
       this.submitting = false;
+    },
+    onHandoff() {
+      const handoff = useVetoHandoff();
+      const matchId = this.match.id;
+      handoff.value = { matchId, phase: "arriving" };
+      void unfoldHome().finally(() => {
+        if (handoff.value?.matchId === matchId) {
+          handoff.value = null;
+        }
+      });
     },
     onConfirm({ itemId, side }: { itemId?: string; side?: string }) {
       if (this.pickType === e_veto_pick_types_enum.Side) {
@@ -322,21 +358,7 @@ export default {
     // The lineup you play on, so your side reads "You" and you see the other
     // side's habits.
     viewerLineup(): 1 | 2 | null {
-      const steamId = useAuthStore().me?.steam_id;
-      if (!steamId) {
-        return null;
-      }
-      const on = (lineup: any) =>
-        (lineup?.lineup_players ?? []).some(
-          (member: any) => String(member.steam_id) === String(steamId),
-        );
-      if (on(this.match.lineup_1)) {
-        return 1;
-      }
-      if (on(this.match.lineup_2)) {
-        return 2;
-      }
-      return null;
+      return viewerSlot(this.match, useAuthStore().me?.steam_id);
     },
     // On from the first frame, so the board keeps its height while the
     // history loads; dropped only when there turns out to be none.
@@ -353,22 +375,46 @@ export default {
       };
     },
     steps() {
-      const picks = this.picks ?? [];
-      return mapVetoOrder(this.bestOf, this.mapPool.length).map(
-        (step, index) => {
-          const pick = picks[index];
-          return {
-            ...step,
-            record: pick
-              ? {
-                  itemId: pick.map.id,
-                  lineup: lineupSlot(this.match, pick.match_lineup_id),
-                  side: pick.side,
-                  auto: pick.auto_picked,
-                }
-              : null,
-          };
-        },
+      return mapVetoSteps(this.match, this.picks ?? []);
+    },
+    handoffPhase() {
+      return vetoHandoffPhase(this.match.id);
+    },
+    starting() {
+      return vetoStarting(this.match);
+    },
+    // After the last pick: the server booting (or waiting for one), then
+    // ready for a beat before the board hands over to the page.
+    startPhase(): VetoStart["phase"] | null {
+      const regionSet = !this.match.options.region_veto || this.match.region;
+      if (!regionSet || !vetoMapsSet(this.match)) {
+        return null;
+      }
+      if (this.starting) {
+        return this.match.status === "WaitingForServer" ? "waiting" : "booting";
+      }
+      const holding = this.handOff
+        ? this.handoffPhase === "stage"
+        : STARTING_STATUSES.includes(this.match.status);
+      return holding ? "ready" : null;
+    },
+    start(): VetoStart | null {
+      if (!this.startPhase) {
+        return null;
+      }
+      return {
+        phase: this.startPhase,
+        maps: vetoStartMaps(this.match, this.picks ?? []),
+      };
+    },
+    boardUp() {
+      if (this.startPhase) {
+        return true;
+      }
+      return (
+        (!this.match.options.region_veto || this.match.region) &&
+        this.match.status === "Veto" &&
+        this.match.match_maps.length < this.bestOf
       );
     },
   },
@@ -376,10 +422,12 @@ export default {
 </script>
 
 <style scoped>
-/* The whole block folds shut when the veto completes -- height, then gone. */
+/* The whole block folds shut when the veto completes -- height, then gone.
+   The page's spacing under it folds too, or it snaps shut at the end. */
 .veto-collapse {
   transition:
     grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.2s ease-in;
 }
 .veto-collapse > * {
@@ -387,6 +435,8 @@ export default {
 }
 .veto-collapse-to {
   grid-template-rows: 0fr;
+  padding-top: 0;
+  padding-bottom: 0;
   opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {

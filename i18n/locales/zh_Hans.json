@@ -9551,7 +9551,9 @@
         "now": "当前阶段",
         "unlocks": "在此解锁",
         "nothing_new": "此阶段没有新操作"
-      }
+      },
+      "show_console": "显示控制台和日志",
+      "hide_console": "隐藏控制台和日志"
     },
     "demo_processing_hint": "比赛 demo 正从游戏服务器上传。完成后就会出现数据、2D 回放和集锦。",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "已结束",
-      "winner": "胜者"
+      "winner": "胜者",
+      "veto": "BP"
     },
     "utility": {
       "title": "道具与点位",
@@ -9701,7 +9704,30 @@
         "browse": "浏览",
         "choose": "选择",
         "clear": "清除"
-      }
+      },
+      "yours": {
+        "Ban": "你的禁用",
+        "Pick": "你的选择",
+        "Side": "你的阵营"
+      },
+      "start": {
+        "heading": "比赛开始",
+        "waiting": "等待服务器",
+        "waiting_line": "有空闲服务器时比赛立即开始",
+        "booting": "服务器启动中",
+        "booting_line": "正在启动你的比赛服务器",
+        "ready": "服务器就绪",
+        "ready_first": "先打 {map}",
+        "ready_first_you": "先打 {map} · 你以 {side} 方开局",
+        "ready_only_you": "{map} · 你以 {side} 方开局",
+        "sides_title": "开局阵营",
+        "sides_key": "CT 先防守，T 先进攻，中场交换阵营",
+        "knife_key": "决胜图阵营：刀战局",
+        "starts": "{side} 方开局",
+        "knife": "刀战局",
+        "knife_line": "胜者选择阵营"
+      },
+      "map": "地图"
     }
   },
   "ui": {

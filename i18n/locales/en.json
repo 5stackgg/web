@@ -9553,7 +9553,9 @@
         "now": "You are here",
         "unlocks": "Unlocks here",
         "nothing_new": "Nothing new for you here"
-      }
+      },
+      "show_console": "Show console and logs",
+      "hide_console": "Hide console and logs"
     },
     "demo_processing_hint": "The match demo is uploading from the game server. Stats, the 2D replay and highlights land once it finishes.",
     "demo_playback": {
@@ -9591,7 +9593,8 @@
     },
     "header": {
       "final": "Final",
-      "winner": "Winner"
+      "winner": "Winner",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility vs Lineups",
@@ -9703,7 +9706,30 @@
         "browse": "browse",
         "choose": "choose",
         "clear": "clear"
-      }
+      },
+      "yours": {
+        "Ban": "Your ban",
+        "Pick": "Your pick",
+        "Side": "Your side"
+      },
+      "start": {
+        "heading": "Match starting",
+        "waiting": "Waiting for a server",
+        "waiting_line": "Your match starts as soon as one is free",
+        "booting": "Server booting",
+        "booting_line": "Starting your match server",
+        "ready": "Server ready",
+        "ready_first": "{map} first",
+        "ready_first_you": "{map} first · you start {side}",
+        "ready_only_you": "{map} · you start {side}",
+        "sides_title": "Starting sides",
+        "sides_key": "CT defends first, T attacks first, sides swap at half time",
+        "knife_key": "Decider sides: knife round",
+        "starts": "Starts {side}",
+        "knife": "Knife round",
+        "knife_line": "Winner picks a side"
+      },
+      "map": "Map"
     }
   },
   "ui": {

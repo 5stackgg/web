@@ -9551,7 +9551,9 @@
         "now": "Vous êtes ici",
         "unlocks": "Se débloque ici",
         "nothing_new": "Rien de nouveau pour vous ici"
-      }
+      },
+      "show_console": "Afficher la console et les journaux",
+      "hide_console": "Masquer la console et les journaux"
     },
     "demo_processing_hint": "La démo du match est en cours de téléversement depuis le serveur de jeu. Les statistiques, la rediffusion 2D et les temps forts arriveront une fois terminé.",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "Score final",
-      "winner": "Vainqueur"
+      "winner": "Vainqueur",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utilitaire vs lineups",
@@ -9701,7 +9704,30 @@
         "browse": "parcourir",
         "choose": "choisir",
         "clear": "effacer"
-      }
+      },
+      "yours": {
+        "Ban": "Votre ban",
+        "Pick": "Votre pick",
+        "Side": "Votre camp"
+      },
+      "start": {
+        "heading": "Match en préparation",
+        "waiting": "En attente d'un serveur",
+        "waiting_line": "Votre match commence dès qu'un serveur est libre",
+        "booting": "Démarrage du serveur",
+        "booting_line": "Démarrage de votre serveur de match",
+        "ready": "Serveur prêt",
+        "ready_first": "{map} en premier",
+        "ready_first_you": "{map} en premier · vous commencez {side}",
+        "ready_only_you": "{map} · vous commencez {side}",
+        "sides_title": "Camps de départ",
+        "sides_key": "CT défend d'abord, T attaque d'abord, les camps s'inversent à la mi-temps",
+        "knife_key": "Camps de la décisive : knife round",
+        "starts": "Commence {side}",
+        "knife": "Knife round",
+        "knife_line": "Le vainqueur choisit son camp"
+      },
+      "map": "Map"
     }
   },
   "ui": {

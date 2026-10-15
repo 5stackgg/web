@@ -9551,7 +9551,9 @@
         "now": "Você está aqui",
         "unlocks": "Desbloqueia aqui",
         "nothing_new": "Nada novo para você aqui"
-      }
+      },
+      "show_console": "Mostrar console e logs",
+      "hide_console": "Ocultar console e logs"
     },
     "demo_processing_hint": "A demo da partida está sendo enviada do servidor de jogo. Estatísticas, replay 2D e destaques ficam disponíveis quando terminar.",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "Encerrada",
-      "winner": "Vencedor"
+      "winner": "Vencedor",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utilitário vs lineups",
@@ -9701,7 +9704,30 @@
         "browse": "navegar",
         "choose": "escolher",
         "clear": "limpar"
-      }
+      },
+      "yours": {
+        "Ban": "Seu ban",
+        "Pick": "Seu pick",
+        "Side": "Seu lado"
+      },
+      "start": {
+        "heading": "Partida iniciando",
+        "waiting": "Aguardando um servidor",
+        "waiting_line": "Sua partida começa assim que um estiver livre",
+        "booting": "Servidor iniciando",
+        "booting_line": "Iniciando o servidor da sua partida",
+        "ready": "Servidor pronto",
+        "ready_first": "{map} primeiro",
+        "ready_first_you": "{map} primeiro · você começa como {side}",
+        "ready_only_you": "{map} · você começa como {side}",
+        "sides_title": "Lados iniciais",
+        "sides_key": "CT defende primeiro, T ataca primeiro, os lados trocam no intervalo",
+        "knife_key": "Lados do decisivo: round faca",
+        "starts": "Começa como {side}",
+        "knife": "Round faca",
+        "knife_line": "O vencedor escolhe o lado"
+      },
+      "map": "Mapa"
     }
   },
   "ui": {

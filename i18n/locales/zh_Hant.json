@@ -9551,7 +9551,9 @@
         "now": "目前階段",
         "unlocks": "在此解鎖",
         "nothing_new": "此階段沒有新操作"
-      }
+      },
+      "show_console": "顯示主控台和日誌",
+      "hide_console": "隱藏主控台和日誌"
     },
     "demo_processing_hint": "比賽 demo 正從遊戲伺服器上傳。完成後就會出現數據、2D 重播與精華片段。",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "已結束",
-      "winner": "勝者"
+      "winner": "勝者",
+      "veto": "BP"
     },
     "utility": {
       "title": "道具與點位",
@@ -9701,7 +9704,30 @@
         "browse": "瀏覽",
         "choose": "選擇",
         "clear": "清除"
-      }
+      },
+      "yours": {
+        "Ban": "你的禁用",
+        "Pick": "你的選擇",
+        "Side": "你的陣營"
+      },
+      "start": {
+        "heading": "比賽開始",
+        "waiting": "等待伺服器",
+        "waiting_line": "有空閒伺服器時比賽立即開始",
+        "booting": "伺服器啟動中",
+        "booting_line": "正在啟動你的比賽伺服器",
+        "ready": "伺服器就緒",
+        "ready_first": "先打 {map}",
+        "ready_first_you": "先打 {map} · 你以 {side} 方開局",
+        "ready_only_you": "{map} · 你以 {side} 方開局",
+        "sides_title": "開局陣營",
+        "sides_key": "CT 先防守，T 先進攻，中場交換陣營",
+        "knife_key": "決勝圖陣營：刀戰局",
+        "starts": "{side} 方開局",
+        "knife": "刀戰局",
+        "knife_line": "勝者選擇陣營"
+      },
+      "map": "地圖"
     }
   },
   "ui": {

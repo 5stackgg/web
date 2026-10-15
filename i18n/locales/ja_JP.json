@@ -9551,7 +9551,9 @@
         "now": "現在地",
         "unlocks": "ここで解放",
         "nothing_new": "ここでは新しい操作はありません"
-      }
+      },
+      "show_console": "コンソールとログを表示",
+      "hide_console": "コンソールとログを隠す"
     },
     "demo_processing_hint": "試合のデモをゲームサーバーからアップロードしています。完了すると統計、2Dリプレイ、ハイライトが表示されます。",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "最終結果",
-      "winner": "勝者"
+      "winner": "勝者",
+      "veto": "Veto"
     },
     "utility": {
       "title": "ユーティリティとラインナップ",
@@ -9701,7 +9704,30 @@
         "browse": "移動",
         "choose": "選択",
         "clear": "解除"
-      }
+      },
+      "yours": {
+        "Ban": "あなたの BAN",
+        "Pick": "あなたの Pick",
+        "Side": "あなたのサイド"
+      },
+      "start": {
+        "heading": "試合開始",
+        "waiting": "サーバー待ち",
+        "waiting_line": "サーバーが空き次第、試合が始まります",
+        "booting": "サーバー起動中",
+        "booting_line": "試合サーバーを起動しています",
+        "ready": "サーバー準備完了",
+        "ready_first": "{map} から開始",
+        "ready_first_you": "{map} から開始 · あなたは {side} スタート",
+        "ready_only_you": "{map} · あなたは {side} スタート",
+        "sides_title": "開始サイド",
+        "sides_key": "CT は先に防衛、T は先に攻撃、ハーフタイムでサイド交代",
+        "knife_key": "決着マップのサイド：ナイフラウンド",
+        "starts": "{side} スタート",
+        "knife": "ナイフラウンド",
+        "knife_line": "勝者がサイドを選択"
+      },
+      "map": "マップ"
     }
   },
   "ui": {

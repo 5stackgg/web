@@ -1,8 +1,18 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRef, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  toRef,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import { Spinner } from "~/components/ui/spinner";
 import VetoCrest from "~/components/match/VetoCrest.vue";
+import VetoRail from "~/components/match/VetoRail.vue";
+import VetoPlates from "~/components/match/VetoPlates.vue";
 import { useCountdown } from "~/composables/useCountdown";
 import {
   SCOUT_EVEN_POINTS,
@@ -18,6 +28,7 @@ import type {
   VetoBoardLineup,
   VetoBoardStep,
 } from "~/utilities/vetoOrder";
+import type { VetoStart, VetoStartSide } from "~/utilities/vetoStage";
 
 // The veto as one fixed-size stage: every map (or region) is a slice of it.
 // The one in play opens wide, bans thin to slivers, picks tuck in and dim, so
@@ -36,12 +47,22 @@ const props = withDefaults(
     deadline?: string | null;
     total?: number;
     bestOf?: number;
+    // The lineup the viewer plays on; their moves sit a step brighter.
+    viewer?: 1 | 2 | null;
     // Each lineup's history and which lineup is yours, when veto scouting is
     // on for this match's mode.
     scouting?: {
       lineups: [ScoutLineup | null, ScoutLineup | null];
       viewer: 1 | 2 | null;
     } | null;
+    // Once the veto is done and the server boots, the series grows over the
+    // pool: each map to be played, large, with the side each team starts on.
+    start?: VetoStart | null;
+    // When the server is ready, hand the maps and the order of play over to
+    // the page around the board.
+    handOff?: boolean;
+    // The decider's sides are won in a knife round.
+    knifeRound?: boolean;
   }>(),
   {
     pickingLineup: null,
@@ -50,17 +71,23 @@ const props = withDefaults(
     deadline: null,
     total: 0,
     bestOf: 1,
+    viewer: null,
     scouting: null,
+    start: null,
+    handOff: false,
+    knifeRound: false,
   },
 );
 
 const emit = defineEmits<{
   confirm: [choice: { itemId?: string; side?: string }];
+  handoff: [];
 }>();
 
 const { t } = useI18n();
 
 const REPLAY_MS = 2600;
+const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 const DEFAULT_POSTER = "/img/maps/screenshots/default.webp";
 
 const isRegion = computed(() => props.kind === "region");
@@ -190,11 +217,13 @@ const focus = computed(() => {
   if (!s) return null;
   if (s.type === "Side") return sideMapId.value;
   if (s.type === "Decider") return available.value[0] ?? null;
+  // Your turn: the map under the pointer opens, even with one chosen; the
+  // chosen one (still outlined) opens again when the pointer leaves.
   if (mine.value) {
-    if (selected.value) return selected.value;
-    return hover.value && available.value.includes(hover.value)
-      ? hover.value
-      : null;
+    if (hover.value && available.value.includes(hover.value)) {
+      return hover.value;
+    }
+    return selected.value;
   }
   return replayId.value;
 });
@@ -213,6 +242,49 @@ function weight(id: string) {
 const isWide = (id: string) =>
   !sideMapId.value &&
   (focus.value === id || (done.value && stateOf(id).status !== "Ban"));
+// A wide map lays out its words at the width it opens to, from the first
+// frame: the map grows over them instead of squeezing them as it widens.
+const stageW = ref(0);
+const stageH = ref(0);
+const stageRow = ref(true);
+// Each map's picture keeps one size whatever its slice's width (its height,
+// on a phone's rows), so a slice opening uncovers more of it instead of
+// zooming it.
+const stageVars = computed(() =>
+  stageRow.value
+    ? {
+        "--pw": stageW.value
+          ? `${Math.round(stageW.value * 0.52)}px`
+          : undefined,
+      }
+    : {
+        "--ph": stageH.value
+          ? `${Math.round(stageH.value * 0.5)}px`
+          : undefined,
+      },
+);
+let stageObserver: ResizeObserver | undefined;
+// The width a map opens to: its share with it open and the rest at rest.
+// The same whether or not it is open right now, so its words keep their
+// layout while it closes too.
+const restWeight = (id: string) => {
+  const status = stateOf(id).status;
+  return status === "Ban" ? 0.42 : status === "Pick" ? 0.68 : 1;
+};
+const openWidth = (id: string) => {
+  if (!stageRow.value || !stageW.value || sideMapId.value) return null;
+  const free = stageW.value - 4 * (props.items.length - 1);
+  if (done.value) {
+    const total = props.items.reduce((sum, item) => sum + weight(item.id), 0);
+    return Math.max(0, (free * weight(id)) / total);
+  }
+  const rest = props.items.reduce(
+    (sum, item) => sum + (item.id === id ? 0 : restWeight(item.id)),
+    0,
+  );
+  return Math.max(0, (free * 4.2) / (rest + 4.2));
+};
+
 const isLive = (id: string) =>
   live.value &&
   (step.value?.type === "Ban" || step.value?.type === "Pick") &&
@@ -228,10 +300,17 @@ function confirm() {
   }
 }
 
-function choose(id: string) {
+// A click chooses a map, and a click on the chosen one lets it go; only its
+// button bans or picks it. By keys, Enter on the chosen map confirms.
+function choose(id: string, by: "click" | "key" = "click") {
   if (!isLive(id)) return;
-  if (selected.value === id) confirm();
-  else selected.value = id;
+  if (selected.value !== id) {
+    selected.value = id;
+  } else if (by === "key") {
+    confirm();
+  } else {
+    selected.value = null;
+  }
 }
 
 function chooseSide(side: string) {
@@ -243,7 +322,7 @@ function chooseSide(side: string) {
 function onKey(event: KeyboardEvent, id: string) {
   if (event.key !== "Enter" && event.key !== " ") return;
   event.preventDefault();
-  choose(id);
+  choose(id, "key");
 }
 
 // Keys: the arrows walk the open maps (or the two sides), Enter chooses and
@@ -335,6 +414,7 @@ const seconds = computed(() => Math.ceil(remaining.value));
 
 /* ---------- copy ---------- */
 const lead = computed(() => {
+  if (props.start) return t(`match.veto.start.${props.start.phase}`);
   const s = step.value;
   if (!s) {
     return isRegion.value
@@ -352,6 +432,7 @@ const lead = computed(() => {
 });
 
 const line = computed(() => {
+  if (props.start) return startLine.value;
   const s = step.value;
   if (!s) return isRegion.value ? "" : t("match.veto.complete_line");
   if (s.type === "Decider") {
@@ -505,7 +586,9 @@ const scoutOn = computed(() => !!props.scouting && !isRegion.value);
 const scoutLoaded = computed(
   () => !!props.scouting?.lineups.some((lineup) => lineup),
 );
-const viewerLineup = computed(() => props.scouting?.viewer ?? null);
+const viewerLineup = computed(
+  () => props.viewer ?? props.scouting?.viewer ?? null,
+);
 const scoutOf = (lineup: 1 | 2) => props.scouting?.lineups[lineup - 1] ?? null;
 // Whose habits you see: the other side's; watching, both.
 const habitLineups = computed<(1 | 2)[]>(() =>
@@ -646,15 +729,19 @@ const scoutView = computed(() => {
     const wide = isWide(id);
     const open = status === "open";
 
-    // Who is stronger here, at the top of every open map.
-    const edge = open && !wide ? edgeOf(id) : null;
+    // Who is stronger here, at the top of every open map, and still on the
+    // maps that will be played once they are picked (the edge alone there).
+    // An open map keeps its edge and its records while it opens and closes;
+    // the page only fades one into the other.
+    const played = status === "Pick" || status === "Decider";
+    const edge = open || played ? edgeOf(id) : null;
 
-    // On a narrow open map: their likely move now, or a habit.
+    // On an open map: their likely move now, or a habit.
     let chip: ScoutChip | null = null;
     const guess = likely.value;
     const isLikely = !!guess && guess.mapId === id && !wide;
-    if (open && !wide) {
-      if (guess && isLikely) {
+    if (open) {
+      if (guess && guess.mapId === id) {
         const kind = guess.type === "Ban" ? "ban" : "pick";
         chip = {
           kind: `likely-${kind}`,
@@ -681,10 +768,10 @@ const scoutView = computed(() => {
       }
     }
 
-    // On the open map: both sides' records, and the habit spelled out.
+    // Both sides' records and the habit spelled out, shown on the open map.
     let rows: ScoutRow[] = [];
     let line: { kind: string; text: string } | null = null;
-    if (wide && (open || (done.value && status !== "Ban"))) {
+    if (open) {
       const order: (1 | 2)[] = viewerLineup.value === 2 ? [2, 1] : [1, 2];
       rows = order
         .filter((lineup) => scoutOf(lineup))
@@ -700,7 +787,7 @@ const scoutView = computed(() => {
           row.ahead = row.pct === best;
         });
       }
-      const habit = open ? habitOf(id) : null;
+      const habit = habitOf(id);
       line = habit
         ? {
             kind: habit.kind,
@@ -734,51 +821,6 @@ function panelEdge(id: string) {
   });
 }
 
-/* ---------- order of play ---------- */
-const railSteps = computed(() =>
-  props.steps.map((s, index) => {
-    const state = s.record ? "done" : index === cursor.value ? "now" : "next";
-    const lineup = s.type === "Decider" ? null : (s.record?.lineup ?? s.lineup);
-    const typeLabel =
-      s.type === "Decider" && isRegion.value
-        ? t("match.veto.steps.Region")
-        : t(`match.veto.steps.${s.type}`);
-    let what = typeLabel;
-    let side: string | null = null;
-    if (s.record) {
-      if (s.type === "Side") {
-        side = s.record.side ?? null;
-        what = sideShort(side);
-      } else {
-        what = label(s.record.itemId);
-      }
-    }
-    const detail = s.record
-      ? s.type === "Side"
-        ? `${sideShort(side)} · ${label(s.record.itemId)}`
-        : label(s.record.itemId)
-      : "";
-    return {
-      key: index,
-      type: s.type,
-      state,
-      you: state === "now" && mine.value,
-      tag: lineup ? props.lineups[lineup - 1].monogram : "",
-      what,
-      side,
-      itemId: s.record?.itemId ?? null,
-      title: [
-        `${index + 1}. ${typeLabel}`,
-        lineupName(lineup),
-        detail,
-        s.record?.auto ? t("match.picks.auto_picked") : "",
-      ]
-        .filter(Boolean)
-        .join(" · "),
-    };
-  }),
-);
-
 /* ---------- series ---------- */
 const series = computed(() => {
   const played = props.steps.filter(
@@ -800,12 +842,242 @@ const series = computed(() => {
             ? t("match.veto.decider_map_n", { n })
             : t("match.veto.map_n", { n }),
       item,
-      tag: st?.lineup ? props.lineups[st.lineup - 1].monogram : "",
+      picker: st?.lineup ?? null,
       starts: st ? pickerStarts(st) : null,
     };
   });
 });
 const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
+
+/* ---------- the start ---------- */
+const item = (id: string) => props.items.find((entry) => entry.id === id);
+
+const startMaps = computed(() =>
+  (props.start?.maps ?? []).map((map, i) => ({
+    ...map,
+    n: i + 1,
+    item: item(map.itemId),
+    label:
+      props.bestOf === 1
+        ? t("match.veto.the_map")
+        : map.decider
+          ? t("match.veto.decider_map_n", { n: i + 1 })
+          : t("match.veto.map_n", { n: i + 1 }),
+  })),
+);
+const knife = computed(() => startMaps.value.some((map) => !map.sides));
+// Each map's edge on its panel, when scouting has something to say about it.
+function startEdge(itemId: string) {
+  if (!scoutOn.value || !scoutLoaded.value) return null;
+  const edge = edgeOf(itemId);
+  return edge.tone === "few" ? null : edge;
+}
+
+const startLine = computed(() => {
+  const phase = props.start?.phase;
+  if (phase !== "ready") {
+    return phase === "waiting"
+      ? t("match.veto.start.waiting_line")
+      : t("match.veto.start.booting_line");
+  }
+  const first = startMaps.value[0];
+  if (!first) return "";
+  const map = first.item?.label ?? "";
+  const side = viewerLineup.value ? first.sides?.[viewerLineup.value] : null;
+  // One map is not "first" of anything.
+  if (startMaps.value.length === 1) {
+    return side ? t("match.veto.start.ready_only_you", { map, side }) : map;
+  }
+  return side
+    ? t("match.veto.start.ready_first_you", { map, side })
+    : t("match.veto.start.ready_first", { map });
+});
+
+// A played map's number, big in the middle of it (on a phone's rows it
+// joins the edge's box instead).
+function bigNumber(id: string) {
+  // Wide only once the veto is done (a pick opening for its replay keeps
+  // the full read).
+  // One map has no order to number.
+  if (props.bestOf === 1 || (isWide(id) && !done.value)) return null;
+  const st = stateOf(id);
+  if (st.status !== "Pick" && st.status !== "Decider") return null;
+  const word =
+    st.status === "Decider" ? t("match.veto.decider") : t("match.veto.map");
+  return { n: st.mapNumber, word };
+}
+
+// On a narrow picked map the map's number joins its edge in one box, as a
+// habit does on an open map (shown there on a phone's rows).
+function kickInBox(id: string) {
+  const status = stateOf(id).status;
+  return (
+    !isWide(id) &&
+    (status === "Pick" || status === "Decider") &&
+    !!scoutView.value.get(id)?.edge
+  );
+}
+
+// On the finished board each map to be played shows its teams the way the
+// start will: who starts on which side, or a knife round for the decider.
+// Undefined where there is nothing to show.
+function doneSides(
+  id: string,
+): { 1: VetoStartSide; 2: VetoStartSide } | null | undefined {
+  if (!done.value || isRegion.value) return undefined;
+  const st = stateOf(id);
+  if (st.status === "Decider") {
+    return props.knifeRound ? null : { 1: "CT", 2: "T" };
+  }
+  if (st.status !== "Pick" || !st.side?.lineup) return undefined;
+  const chooser: VetoStartSide = st.side.side === "CT" ? "CT" : "T";
+  const picker: VetoStartSide = chooser === "CT" ? "T" : "CT";
+  return st.side.lineup === 1
+    ? { 1: chooser, 2: picker }
+    : { 1: picker, 2: chooser };
+}
+
+// The panels sit over the stage and the series, across the board (down it
+// on a phone).
+type Box = { left: number; top: number; width: number; height: number };
+const areaEl = ref<HTMLElement | null>(null);
+const railRef = ref<InstanceType<typeof VetoRail> | null>(null);
+const boxes = ref<Box[]>([]);
+const shown = ref<number[]>([]);
+const px = (rect: Box) => ({
+  left: `${rect.left}px`,
+  top: `${rect.top}px`,
+  width: `${rect.width}px`,
+  height: `${rect.height}px`,
+});
+const panels = () =>
+  Array.from(areaEl.value?.querySelectorAll<HTMLElement>(".st-panel") ?? []);
+
+function fit() {
+  const area = areaEl.value;
+  const n = startMaps.value.length;
+  if (!area || !n) return;
+  const w = area.clientWidth;
+  const h = area.clientHeight;
+  const gap = 4;
+  const across = w > 560;
+  boxes.value = Array.from({ length: n }, (_, i) => {
+    if (across) {
+      const width = (w - gap * (n - 1)) / n;
+      return { left: i * (width + gap), top: 0, width, height: h };
+    }
+    const height = (h - gap * (n - 1)) / n;
+    return { left: 0, top: i * (height + gap), width: w, height };
+  });
+}
+
+const settle = (animations: Animation[]) =>
+  Promise.all(
+    animations.map((animation) => animation.finished.catch(() => {})),
+  );
+
+async function grow(animate: boolean) {
+  fit();
+  await nextTick();
+  const area = areaEl.value;
+  if (!area) return;
+  const reduced = !!window.matchMedia?.("(prefers-reduced-motion: reduce)")
+    ?.matches;
+  // The words come up with their map, not after it lands.
+  shown.value = startMaps.value.map((_, i) => i);
+  if (!animate || reduced || typeof area.animate !== "function") return;
+  panels().forEach((panel, i) => {
+    panel
+      .animate(
+        [
+          { opacity: 0, transform: "translateY(22px) scale(0.97)" },
+          { opacity: 1, transform: "none" },
+        ],
+        {
+          duration: 620,
+          delay: 160 + i * 100,
+          easing: EASE,
+          fill: "backwards",
+        },
+      )
+      .finished.catch(() => {});
+  });
+}
+
+let resize: ResizeObserver | undefined;
+onMounted(() => {
+  if (typeof ResizeObserver !== "undefined" && stageEl.value) {
+    stageObserver = new ResizeObserver(() => {
+      const stage = stageEl.value;
+      if (!stage) return;
+      stageW.value = stage.clientWidth;
+      stageH.value = stage.clientHeight;
+      stageRow.value = getComputedStyle(stage).flexDirection === "row";
+    });
+    stageObserver.observe(stageEl.value);
+  }
+  if (props.start) void grow(false);
+  if (typeof ResizeObserver === "undefined" || !areaEl.value) return;
+  resize = new ResizeObserver(() => {
+    if (props.start) fit();
+  });
+  resize.observe(areaEl.value);
+});
+
+// The veto finishing on screen raises the maps; a page opened mid-boot just
+// shows them.
+watch(
+  () => !!props.start,
+  (on) => {
+    shown.value = [];
+    if (on) void grow(true);
+  },
+);
+
+// Server ready: a beat to read it, the panels let go of their words, and the
+// maps hand over to the page.
+let handTimer: ReturnType<typeof setTimeout> | undefined;
+watch(
+  () => props.start?.phase === "ready" && props.handOff,
+  (go) => {
+    clearTimeout(handTimer);
+    if (!go) return;
+    handTimer = setTimeout(() => {
+      shown.value = [];
+      handTimer = setTimeout(() => void handOffNow(), 260);
+    }, 700);
+  },
+  { immediate: true },
+);
+
+// The maps fold up where they stand; the page unfolds its own cards for them.
+async function handOffNow() {
+  if (typeof areaEl.value?.animate === "function") {
+    await settle(
+      panels().map((panel, i) =>
+        panel.animate(
+          [
+            { clipPath: "inset(0 0 0% 0 round 12px)", opacity: 1 },
+            { clipPath: "inset(0 0 100% 0 round 12px)", opacity: 0.3 },
+          ],
+          {
+            duration: 420,
+            delay: i * 70,
+            easing: "cubic-bezier(0.55, 0, 0.75, 0)",
+            fill: "forwards",
+          },
+        ),
+      ),
+    );
+  }
+  emit("handoff");
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(handTimer);
+  resize?.disconnect();
+  stageObserver?.disconnect();
+});
 </script>
 
 <template>
@@ -819,9 +1091,15 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
         :size="24"
         :title="lineupName(actingLineup)"
       />
-      <span class="vb-lead" :class="{ 'is-you': mine }" :title="lead">{{
-        lead
-      }}</span>
+      <span
+        class="vb-lead"
+        :class="{ 'is-you': mine, 'is-ready': start?.phase === 'ready' }"
+        :title="lead"
+        ><Spinner
+          v-if="start && start.phase !== 'ready'"
+          class="vb-spin h-3.5 w-3.5"
+        />{{ lead }}</span
+      >
       <span class="vb-line" :title="line">{{ line }}</span>
       <span v-if="keys && mine" class="vb-keys"
         ><kbd>←</kbd><kbd>→</kbd> {{ t("match.veto.keys.browse") }} ·
@@ -842,28 +1120,29 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
       </span>
     </div>
 
-    <ol
-      class="vb-rail"
-      :aria-label="t('match.veto.order')"
-      @pointerleave="echo = null"
-    >
-      <li
-        v-for="s in railSteps"
-        :key="s.key"
-        class="vb-railstep"
-        :data-type="s.type"
-        :data-state="s.state"
-        :class="{ 'is-you': s.you }"
-        :title="s.title"
-        @pointerenter="echo = s.itemId"
-      >
-        <img v-if="s.side" class="sd" :src="sideIcon(s.side)" alt="" />
-        <span class="what">{{ s.what }}</span>
-        <span v-if="s.tag" class="who">{{ s.tag }}</span>
-      </li>
-    </ol>
+    <VetoRail
+      ref="railRef"
+      :kind="kind"
+      :items="items"
+      :steps="steps"
+      :lineups="lineups"
+      :viewer="viewerLineup"
+      :your-turn="mine"
+      @echo="echo = $event"
+    />
 
-    <div v-if="scoutOn" class="vb-scoutkey">
+    <!-- The start's key takes the scouting key's line, never a new one: a
+         line added here would push the maps down as they come in. -->
+    <div v-if="start && scoutOn" class="vb-scoutkey">
+      <span class="lead"
+        ><b>{{ t("match.veto.start.sides_title") }}</b> ·
+        {{ t("match.veto.start.sides_key") }}</span
+      >
+      <span v-if="knife" class="fine">{{
+        t("match.veto.start.knife_key")
+      }}</span>
+    </div>
+    <div v-else-if="scoutOn" class="vb-scoutkey">
       <span class="lead"
         ><b>{{ t("match.veto.scout.edge") }}</b> ·
         {{
@@ -879,281 +1158,431 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
       >
     </div>
 
-    <div
-      ref="stageEl"
-      class="vb-stage"
-      :class="{ 'is-region': isRegion }"
-      :tabindex="live ? 0 : undefined"
-      @pointermove="onPointerMove"
-      @pointerleave="onPointerLeave"
-      @pointerdown="keys = false"
-      @keydown="onStageKey"
-      @focusin="onStageFocusIn"
-      @focusout="onStageFocusOut"
-    >
+    <div ref="areaEl" class="st-area" :class="{ 'is-starting': !!start }">
       <div
-        v-for="item in items"
-        :key="item.id"
-        class="vb-slice"
-        :data-item="item.id"
-        :data-status="stateOf(item.id).status"
-        :class="{
-          'is-wide': isWide(item.id),
-          'is-mid': isWide(item.id) && done,
-          'is-thin': weight(item.id) < 0.5,
-          'is-live': isLive(item.id),
-          'is-selected': mine && selected === item.id,
-          'is-siding': sideMapId === item.id,
-          'is-echo': echo === item.id,
-        }"
-        :style="{ '--g': weight(item.id) }"
-        :tabindex="isLive(item.id) ? 0 : -1"
-        :role="isLive(item.id) ? 'button' : undefined"
-        :aria-label="sliceTitle(item.id)"
-        :title="sliceTitle(item.id)"
-        @click="choose(item.id)"
-        @keydown="onKey($event, item.id)"
+        ref="stageEl"
+        class="vb-stage"
+        :class="{ 'is-region': isRegion }"
+        :style="stageVars"
+        :tabindex="live ? 0 : undefined"
+        @pointermove="onPointerMove"
+        @pointerleave="onPointerLeave"
+        @pointerdown="keys = false"
+        @keydown="onStageKey"
+        @focusin="onStageFocusIn"
+        @focusout="onStageFocusOut"
       >
-        <template v-if="!isRegion">
-          <NuxtImg
-            class="vb-poster"
-            :src="item.poster || DEFAULT_POSTER"
-            sizes="400px md:900px"
-            alt=""
-          />
-          <div class="vb-shade" />
-        </template>
-        <template v-else>
-          <div class="vb-regionbg" />
-          <div
-            v-if="item.ping != null"
-            class="vb-pingfill"
-            :style="{ '--q': pingQ(item.ping) }"
-          />
-        </template>
-
         <div
-          v-if="scoutView.get(item.id)?.likely"
-          class="vb-likely"
-          aria-hidden="true"
-        />
-
-        <div class="vb-top">
-          <VetoCrest
-            v-if="stateOf(item.id).lineup"
-            :lineup="lineups[stateOf(item.id).lineup! - 1]"
-          />
-          <span v-if="badge(item.id)" class="vb-badge">{{
-            badge(item.id)
-          }}</span>
-
-          <template v-if="scoutView.get(item.id)">
-            <div
-              v-if="
-                scoutView.get(item.id)!.edge || scoutView.get(item.id)!.chip
-              "
-              class="vb-tag"
-            >
-              <span
-                v-if="scoutView.get(item.id)!.edge"
-                class="vb-edge tabular-nums"
-                :data-tone="scoutView.get(item.id)!.edge!.tone"
-                :title="scoutView.get(item.id)!.edge!.title"
-              >
-                <VetoCrest
-                  v-if="scoutView.get(item.id)!.edge!.lineup"
-                  :lineup="lineups[scoutView.get(item.id)!.edge!.lineup! - 1]"
-                  :size="15"
-                />
-                {{ scoutView.get(item.id)!.edge!.text }}
-              </span>
-              <span
-                v-if="scoutView.get(item.id)!.chip"
-                class="vb-habit"
-                :data-kind="scoutView.get(item.id)!.chip!.kind"
-                :title="scoutView.get(item.id)!.chip!.title"
-              >
-                <VetoCrest
-                  :lineup="lineups[scoutView.get(item.id)!.chip!.lineup - 1]"
-                  :size="14"
-                />
-                <span class="txt">{{
-                  scoutView.get(item.id)!.chip!.text
-                }}</span>
-              </span>
-            </div>
-            <div v-if="scoutView.get(item.id)!.rows.length" class="vb-scout">
-              <div class="vb-scouthead">
-                <b>{{
-                  t("match.veto.scout.win_rate_on", { map: item.label })
-                }}</b>
-                <span>{{ panelEdge(item.id) }}</span>
-              </div>
-              <div
-                v-for="row in scoutView.get(item.id)!.rows"
-                :key="row.lineup"
-                class="vb-rec"
-                :class="{ 'is-ahead': row.ahead, 'is-none': row.pct == null }"
-                :title="
-                  t('match.veto.scout.record', {
-                    team: lineupName(row.lineup),
-                    wins: row.wins,
-                    losses: row.losses,
-                  })
-                "
-              >
-                <VetoCrest :lineup="lineups[row.lineup - 1]" :size="18" />
-                <span class="nm">{{ row.name }}</span>
-                <template v-if="row.pct != null">
-                  <span class="wl tabular-nums"
-                    >{{ row.wins }}–{{ row.losses }}</span
-                  >
-                  <span class="trk"
-                    ><i :style="{ width: `${row.pct}%` }"
-                  /></span>
-                  <span class="pct tabular-nums">{{ row.pct }}%</span>
-                </template>
-                <template v-else-if="row.played">
-                  <span class="wl tabular-nums"
-                    >{{ row.wins }}–{{ row.losses }}</span
-                  >
-                  <span />
-                  <span class="pct">—</span>
-                </template>
-                <template v-else>
-                  <span class="wl">{{ t("match.veto.scout.no_games") }}</span>
-                  <span />
-                  <span class="pct">—</span>
-                </template>
-              </div>
-              <div
-                v-if="scoutView.get(item.id)!.line"
-                class="vb-habitline"
-                :data-kind="scoutView.get(item.id)!.line!.kind"
-              >
-                {{ scoutView.get(item.id)!.line!.text }}
-              </div>
-              <div v-if="scoutPlayersNote" class="vb-scoutnote">
-                {{ t("match.veto.scout.players_note") }}
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <!-- narrow: emblem over a vertical name -->
-        <div class="vb-v">
-          <span
-            v-if="isRegion"
-            class="vb-dot"
-            :data-status="item.serverStatus"
-          />
-          <img
-            v-else-if="item.patch"
-            class="vb-vpatch"
-            :src="item.patch"
-            alt=""
-          />
-          <span class="vb-vname">{{ item.label }}</span>
-          <span v-if="isRegion && item.ping != null" class="vb-vping"
-            ><b class="tabular-nums">{{ item.ping }}</b> ms</span
-          >
-        </div>
-
-        <!-- wide: the full read -->
-        <div class="vb-open">
-          <div class="vb-namerow">
-            <img v-if="!isRegion && item.patch" :src="item.patch" alt="" />
-            <span class="vb-name">{{ item.label }}</span>
-          </div>
-          <div v-if="isWide(item.id)" class="vb-act">
-            <button
-              v-if="wideCopy(item.id).cta"
-              type="button"
-              class="vb-cta tac-amber-cta"
-              :disabled="submitting"
-              @click.stop="confirm"
-            >
-              <Spinner v-if="submitting" class="h-4 w-4" />
-              {{ wideCopy(item.id).cta }}
-            </button>
-            <span v-else class="vb-sub" :data-tone="wideCopy(item.id).tone">{{
-              wideCopy(item.id).sub
-            }}</span>
-          </div>
-        </div>
-
-        <!-- side: the picked map opens across the stage and splits CT / T -->
-        <div
-          v-if="!isRegion && sideMapId === item.id"
-          class="vb-split"
+          v-for="item in items"
+          :key="item.id"
+          class="vb-slice"
+          :data-item="item.id"
+          :data-status="stateOf(item.id).status"
           :class="{
-            'sel-CT': mine && selected === 'CT',
-            'sel-T': mine && selected === 'TERRORIST',
+            'is-wide': isWide(item.id),
+            'is-mid': isWide(item.id) && done,
+            'is-thin': weight(item.id) < 0.5,
+            'is-live': isLive(item.id),
+            'is-selected': mine && selected === item.id,
+            'is-siding': sideMapId === item.id,
+            'is-echo': echo === item.id,
+            'is-sized': !!openWidth(item.id),
           }"
-          @click.stop
+          :style="{
+            '--g': weight(item.id),
+            '--fw': openWidth(item.id) ? `${openWidth(item.id)}px` : undefined,
+          }"
+          :tabindex="isLive(item.id) ? 0 : -1"
+          :role="isLive(item.id) ? 'button' : undefined"
+          :aria-label="sliceTitle(item.id)"
+          @click="choose(item.id)"
+          @keydown="onKey($event, item.id)"
         >
-          <button
-            v-for="side in ['CT', 'TERRORIST']"
-            :key="side"
-            type="button"
-            class="vb-half"
-            :data-side="sideShort(side)"
-            :class="{ 'is-selected': mine && selected === side }"
-            :style="{ backgroundImage: sidePoster }"
-            :disabled="!mine || submitting"
-            @click="chooseSide(side)"
-          >
-            <span class="vb-half-in">
-              <img :src="sideIcon(side)" alt="" />
-              <b>{{ t("match.veto.start_side", { side: sideShort(side) }) }}</b>
-              <small>{{
-                side === "CT"
-                  ? t("match.veto.defend_first")
-                  : t("match.veto.attack_first")
-              }}</small>
-              <span class="vb-cta tac-amber-cta">
-                <Spinner
-                  v-if="submitting && selected === side"
-                  class="h-4 w-4"
-                />
-                {{ t("match.veto.confirm_side", { side: sideShort(side) }) }}
-              </span>
+          <template v-if="!isRegion">
+            <NuxtImg
+              class="vb-poster"
+              :src="item.poster || DEFAULT_POSTER"
+              sizes="400px md:900px"
+              alt=""
+            />
+            <div class="vb-shade" />
+          </template>
+          <template v-else>
+            <div class="vb-regionbg" />
+            <div
+              v-if="item.ping != null"
+              class="vb-pingfill"
+              :style="{ '--q': pingQ(item.ping) }"
+            />
+          </template>
+
+          <div
+            v-if="scoutView.get(item.id)?.likely"
+            class="vb-likely"
+            aria-hidden="true"
+          />
+
+          <div class="vb-top">
+            <span class="vb-id">
+              <VetoCrest
+                v-if="stateOf(item.id).lineup"
+                :lineup="lineups[stateOf(item.id).lineup! - 1]"
+                :size="28"
+              />
             </span>
-          </button>
-          <span class="vb-seam">{{ sideSeam }}</span>
+            <span
+              v-if="
+                badge(item.id) &&
+                stateOf(item.id).status !== 'Ban' &&
+                !kickInBox(item.id)
+              "
+              class="vb-kick"
+              :class="{ 'has-num': !!bigNumber(item.id) }"
+            >
+              <VetoCrest
+                v-if="stateOf(item.id).lineup"
+                :lineup="lineups[stateOf(item.id).lineup! - 1]"
+                :size="24"
+              />
+              <span>{{ badge(item.id) }}</span>
+              <span v-if="stateOf(item.id).lineup" class="by-t"
+                >·
+                {{
+                  t("match.veto.picked_by", {
+                    team: lineupName(stateOf(item.id).lineup),
+                  })
+                }}</span
+              >
+            </span>
+
+            <template v-if="scoutView.get(item.id)">
+              <div
+                v-if="
+                  scoutView.get(item.id)!.edge || scoutView.get(item.id)!.chip
+                "
+                class="vb-tag"
+                :class="{
+                  'is-bare':
+                    stateOf(item.id).status !== 'open' && !kickInBox(item.id),
+                  'is-away':
+                    stateOf(item.id).status === 'open' && isWide(item.id),
+                }"
+              >
+                <span
+                  v-if="scoutView.get(item.id)!.edge"
+                  class="vb-edge tabular-nums"
+                  :data-tone="scoutView.get(item.id)!.edge!.tone"
+                  :title="scoutView.get(item.id)!.edge!.title"
+                >
+                  <VetoCrest
+                    v-if="scoutView.get(item.id)!.edge!.lineup"
+                    :lineup="lineups[scoutView.get(item.id)!.edge!.lineup! - 1]"
+                    :size="22"
+                  />
+                  {{ scoutView.get(item.id)!.edge!.text }}
+                </span>
+                <span
+                  v-if="scoutView.get(item.id)!.chip"
+                  class="vb-habit"
+                  :data-kind="scoutView.get(item.id)!.chip!.kind"
+                  :title="scoutView.get(item.id)!.chip!.title"
+                >
+                  <VetoCrest
+                    :lineup="lineups[scoutView.get(item.id)!.chip!.lineup - 1]"
+                    :size="18"
+                  />
+                  <span class="txt">{{
+                    scoutView.get(item.id)!.chip!.text
+                  }}</span>
+                </span>
+                <span v-if="kickInBox(item.id)" class="vb-krow"
+                  ><VetoCrest
+                    v-if="stateOf(item.id).lineup"
+                    :lineup="lineups[stateOf(item.id).lineup! - 1]"
+                    :size="24"
+                  />{{ badge(item.id) }}</span
+                >
+              </div>
+              <div
+                v-if="scoutView.get(item.id)!.rows.length"
+                class="vb-scout"
+                :class="{ 'is-shown': isWide(item.id) }"
+              >
+                <div class="vb-scouthead">
+                  <b>{{
+                    t("match.veto.scout.win_rate_on", { map: item.label })
+                  }}</b>
+                  <span>{{ panelEdge(item.id) }}</span>
+                </div>
+                <div
+                  v-for="row in scoutView.get(item.id)!.rows"
+                  :key="row.lineup"
+                  class="vb-rec"
+                  :class="{ 'is-ahead': row.ahead, 'is-none': row.pct == null }"
+                  :title="
+                    t('match.veto.scout.record', {
+                      team: lineupName(row.lineup),
+                      wins: row.wins,
+                      losses: row.losses,
+                    })
+                  "
+                >
+                  <VetoCrest :lineup="lineups[row.lineup - 1]" :size="18" />
+                  <span class="nm">{{ row.name }}</span>
+                  <template v-if="row.pct != null">
+                    <span class="wl tabular-nums"
+                      >{{ row.wins }}–{{ row.losses }}</span
+                    >
+                    <span class="trk"
+                      ><i :style="{ width: `${row.pct}%` }"
+                    /></span>
+                    <span class="pct tabular-nums">{{ row.pct }}%</span>
+                  </template>
+                  <template v-else-if="row.played">
+                    <span class="wl tabular-nums"
+                      >{{ row.wins }}–{{ row.losses }}</span
+                    >
+                    <span />
+                    <span class="pct">—</span>
+                  </template>
+                  <template v-else>
+                    <span class="wl">{{ t("match.veto.scout.no_games") }}</span>
+                    <span />
+                    <span class="pct">—</span>
+                  </template>
+                </div>
+                <div
+                  v-if="scoutView.get(item.id)!.line"
+                  class="vb-habitline"
+                  :data-kind="scoutView.get(item.id)!.line!.kind"
+                >
+                  {{ scoutView.get(item.id)!.line!.text }}
+                </div>
+                <div v-if="scoutPlayersNote" class="vb-scoutnote">
+                  {{ t("match.veto.scout.players_note") }}
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- a played map's number, big -->
+          <div v-if="bigNumber(item.id)" class="vb-num" aria-hidden="true">
+            <span class="k">{{ bigNumber(item.id)!.word }}</span>
+            <b class="tabular-nums">{{ bigNumber(item.id)!.n }}</b>
+          </div>
+
+          <!-- narrow: emblem over a vertical name -->
+          <div class="vb-v">
+            <span
+              v-if="isRegion"
+              class="vb-dot"
+              :data-status="item.serverStatus"
+            />
+            <img
+              v-else-if="item.patch"
+              class="vb-vpatch"
+              :src="item.patch"
+              alt=""
+            />
+            <span class="vb-vname">{{ item.label }}</span>
+            <span v-if="isRegion && item.ping != null" class="vb-vping"
+              ><b class="tabular-nums">{{ item.ping }}</b> ms</span
+            >
+          </div>
+
+          <!-- wide: the full read -->
+          <div class="vb-open">
+            <div class="vb-namerow">
+              <img v-if="!isRegion && item.patch" :src="item.patch" alt="" />
+              <span class="vb-name">{{ item.label }}</span>
+            </div>
+            <VetoPlates
+              v-if="doneSides(item.id) !== undefined"
+              :sides="doneSides(item.id)!"
+              :lineups="lineups"
+              :viewer="viewerLineup"
+            />
+            <div v-else-if="isWide(item.id)" class="vb-act">
+              <button
+                v-if="wideCopy(item.id).cta"
+                type="button"
+                class="vb-cta tac-amber-cta"
+                :disabled="submitting"
+                @click.stop="confirm"
+              >
+                <Spinner v-if="submitting" class="h-4 w-4" />
+                {{ wideCopy(item.id).cta }}
+              </button>
+              <span v-else class="vb-sub" :data-tone="wideCopy(item.id).tone">{{
+                wideCopy(item.id).sub
+              }}</span>
+            </div>
+          </div>
+
+          <!-- side: the picked map opens across the stage and splits CT / T -->
+          <div
+            v-if="!isRegion && sideMapId === item.id"
+            class="vb-split"
+            :class="{
+              'sel-CT': mine && selected === 'CT',
+              'sel-T': mine && selected === 'TERRORIST',
+            }"
+            @click.stop
+          >
+            <button
+              v-for="side in ['CT', 'TERRORIST']"
+              :key="side"
+              type="button"
+              class="vb-half"
+              :data-side="sideShort(side)"
+              :class="{ 'is-selected': mine && selected === side }"
+              :style="{ backgroundImage: sidePoster }"
+              :disabled="!mine || submitting"
+              @click="chooseSide(side)"
+            >
+              <span class="vb-half-in">
+                <img :src="sideIcon(side)" alt="" />
+                <b>{{
+                  t("match.veto.start_side", { side: sideShort(side) })
+                }}</b>
+                <small>{{
+                  side === "CT"
+                    ? t("match.veto.defend_first")
+                    : t("match.veto.attack_first")
+                }}</small>
+                <span class="vb-cta tac-amber-cta">
+                  <Spinner
+                    v-if="submitting && selected === side"
+                    class="h-4 w-4"
+                  />
+                  {{ t("match.veto.confirm_side", { side: sideShort(side) }) }}
+                </span>
+              </span>
+            </button>
+            <span class="vb-seam">{{ sideSeam }}</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div v-if="!isRegion" class="vb-series">
-      <div
-        v-for="slot in series"
-        :key="slot.n"
-        class="vb-chip"
-        :class="{ 'is-set': !!slot.item }"
-      >
-        <img
-          v-if="slot.item"
-          class="th"
-          :src="slot.item.poster || DEFAULT_POSTER"
-          alt=""
-        />
-        <span v-else class="th is-empty" />
-        <span class="tx">
-          <span class="n"
-            >{{ slot.label
-            }}<template v-if="slot.tag"> · {{ slot.tag }}</template></span
+      <div v-if="!isRegion" class="vb-series">
+        <div
+          v-for="slot in series"
+          :key="slot.n"
+          class="vb-chip"
+          :class="{ 'is-set': !!slot.item }"
+        >
+          <img
+            v-if="slot.item"
+            class="th"
+            :src="slot.item.poster || DEFAULT_POSTER"
+            alt=""
+          />
+          <span v-else class="th is-empty" />
+          <span class="tx">
+            <span class="n"
+              >{{ slot.label
+              }}<template v-if="slot.picker">
+                ·
+                {{
+                  t("match.veto.picked_by", { team: lineupName(slot.picker) })
+                }}</template
+              ></span
+            >
+            <span class="m">{{
+              slot.item ? slot.item.label : t("match.veto.not_set")
+            }}</span>
+          </span>
+          <span v-if="slot.picker" class="end">
+            <VetoCrest :lineup="lineups[slot.picker - 1]" :size="22" />
+            <img
+              v-if="slot.starts"
+              class="sd"
+              :src="sideIcon(slot.starts === 'CT' ? 'CT' : 'TERRORIST')"
+              :alt="slot.starts"
+            />
+          </span>
+        </div>
+      </div>
+
+      <div v-if="start" class="st-layer">
+        <div
+          v-for="(map, i) in startMaps"
+          :key="map.itemId"
+          class="st-panel"
+          :class="{ 'is-shown': shown.includes(i) }"
+          :style="{
+            '--i': i,
+            ...(boxes[i] ? px(boxes[i]) : {}),
+            backgroundImage: `url('${map.item?.poster || DEFAULT_POSTER}')`,
+          }"
+        >
+          <div class="shade" />
+          <!-- The edge first, where it sits on the board; who picked the map
+               on the right (its number and picker together on a phone's
+               short panels). -->
+          <div class="top reveal">
+            <span
+              v-if="startEdge(map.itemId)"
+              class="vb-edge tabular-nums"
+              :data-tone="startEdge(map.itemId)!.tone"
+              :title="startEdge(map.itemId)!.title"
+            >
+              <VetoCrest
+                v-if="startEdge(map.itemId)!.lineup"
+                :lineup="lineups[startEdge(map.itemId)!.lineup! - 1]"
+                :size="22"
+              />
+              {{ startEdge(map.itemId)!.text }}
+            </span>
+            <VetoCrest
+              v-if="map.pickedBy"
+              class="by-b"
+              :lineup="lineups[map.pickedBy - 1]"
+              :size="28"
+            />
+            <span class="st-kick">
+              <VetoCrest
+                v-if="map.pickedBy"
+                :lineup="lineups[map.pickedBy - 1]"
+                :size="24"
+              />
+              <span>{{ map.label }}</span>
+              <span v-if="map.pickedBy" class="by-t"
+                >·
+                {{
+                  t("match.veto.picked_by", { team: lineupName(map.pickedBy) })
+                }}</span
+              >
+            </span>
+          </div>
+          <div class="reveal">
+            <div class="nm up">
+              <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
+              <span>{{ map.item?.label }}</span>
+            </div>
+          </div>
+          <div
+            v-if="bestOf > 1"
+            class="vb-num st-num reveal"
+            aria-hidden="true"
           >
-          <span class="m">{{
-            slot.item ? slot.item.label : t("match.veto.not_set")
-          }}</span>
-        </span>
-        <img
-          v-if="slot.starts"
-          class="sd"
-          :src="sideIcon(slot.starts === 'CT' ? 'CT' : 'TERRORIST')"
-          :alt="slot.starts"
-        />
+            <span class="k">{{
+              map.decider ? t("match.veto.decider") : t("match.veto.map")
+            }}</span>
+            <b class="tabular-nums">{{ map.n }}</b>
+          </div>
+          <div class="bottom reveal">
+            <div class="nm">
+              <img v-if="map.item?.patch" :src="map.item.patch" alt="" />
+              <span>{{ map.item?.label }}</span>
+            </div>
+            <VetoPlates
+              :sides="map.sides"
+              :lineups="lineups"
+              :viewer="viewerLineup"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1171,8 +1600,10 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   --vb-ban: hsl(var(--destructive));
   --vb-pick: hsl(var(--success));
   --vb-decider: hsl(48 96% 62%);
+  --vb-ct: hsl(212 70% 70%);
+  --vb-t: hsl(38 85% 62%);
   --vb-ease: cubic-bezier(0.16, 1, 0.3, 1);
-  container-type: inline-size;
+  container: vb / inline-size;
   display: grid;
   /* minmax(0, …): an auto column grows to the rail's min-content, and a best
      of five's eleven steps pushed the board past its column. */
@@ -1247,107 +1678,22 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   background: var(--vb-ban);
 }
 
-/* ---------- order of play ---------- */
-.vb-rail {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 4px;
-}
-.vb-railstep {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  height: 32px;
-  padding: 0 9px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  background: var(--vb-surface);
-  color: var(--vb-faint);
-  overflow: hidden;
-  transition:
-    color 240ms var(--vb-ease),
-    background-color 240ms var(--vb-ease),
-    box-shadow 240ms var(--vb-ease);
-}
-.vb-railstep .what {
-  flex: 1 1 0;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.vb-railstep .who {
-  flex: none;
-  font-size: 11px;
-  opacity: 0.8;
-}
-.vb-railstep .sd {
-  width: 14px;
-  height: 14px;
-  flex: none;
-}
-.vb-railstep::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 2px;
-  background: var(--vb-line-2);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 240ms var(--vb-ease);
-}
-.vb-railstep[data-type="Ban"]::after {
-  background: var(--vb-ban);
-}
-.vb-railstep[data-type="Pick"]::after {
-  background: var(--vb-pick);
-}
-.vb-railstep[data-type="Side"]::after {
-  background: var(--vb-muted);
-}
-.vb-railstep[data-type="Decider"]::after {
-  background: var(--vb-decider);
-}
-.vb-railstep[data-state="done"] {
-  color: hsl(var(--foreground));
-  background: var(--vb-surface-2);
-}
-.vb-railstep[data-state="done"]::after {
-  transform: none;
-}
-.vb-railstep[data-state="done"][data-type="Ban"] .what {
-  color: var(--vb-muted);
-}
-.vb-railstep[data-state="now"] {
-  color: hsl(var(--foreground));
-  box-shadow: inset 0 0 0 1px var(--vb-muted);
-}
-.vb-railstep[data-state="now"].is-you {
-  box-shadow: inset 0 0 0 1px var(--vb-amber);
-}
-.vb-railstep[data-state="now"].is-you .what {
-  color: var(--vb-amber);
-  font-weight: 600;
-}
-
 /* ---------- stage ---------- */
 .vb-stage {
   display: flex;
   gap: 4px;
   aspect-ratio: 16 / 7;
   max-width: 100%;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
 }
 .vb-stage.is-region {
   aspect-ratio: 16 / 5.5;
 }
+/* Each slice is a container, as each start panel is, so the team plates fit
+   the map they sit on. */
 .vb-slice {
+  container: panel / size;
   position: relative;
   flex: var(--g) 1 0;
   min-width: 0;
@@ -1355,13 +1701,19 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   overflow: hidden;
   background: var(--vb-surface);
   outline: none;
-  transition: flex-grow 460ms var(--vb-ease);
+  transition: flex-grow 440ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+/* Each map has softly rounded corners of its own, so the outline on the
+   one you choose (or focus) is rounded too; the stage's outer corners stay
+   at 12px. */
+.vb-slice {
+  border-radius: 6px;
 }
 .vb-slice:first-child {
-  border-radius: 16px 0 0 16px;
+  border-radius: 12px 6px 6px 12px;
 }
 .vb-slice:last-child {
-  border-radius: 0 16px 16px 0;
+  border-radius: 6px 12px 12px 6px;
 }
 .vb-slice::after {
   content: "";
@@ -1375,9 +1727,12 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 }
 .vb-poster {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%;
+  left: 50%;
+  width: max(100%, var(--pw, 100%));
+  height: max(100%, var(--ph, 100%));
+  max-width: none;
+  translate: -50% -50%;
   object-fit: cover;
   transition:
     filter 360ms var(--vb-ease),
@@ -1430,34 +1785,15 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   gap: 6px;
   min-width: 0;
 }
+.vb-slice.is-thin .vb-top {
+  left: 4px;
+  right: 4px;
+}
 .vb-slice.is-wide .vb-top {
   left: 12px;
   right: 12px;
   flex-direction: row;
   justify-content: flex-start;
-}
-.vb-badge {
-  max-width: 100%;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: rgb(0 0 0 / 0.6);
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.vb-slice[data-status="Ban"] .vb-badge {
-  color: var(--vb-ban);
-}
-.vb-slice[data-status="Pick"] .vb-badge {
-  color: var(--vb-pick);
-}
-.vb-slice[data-status="Decider"] .vb-badge {
-  color: var(--vb-decider);
-}
-.vb-slice.is-thin .vb-badge {
-  display: none;
 }
 
 .vb-v {
@@ -1470,7 +1806,7 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  transition: opacity 200ms var(--vb-ease);
+  transition: opacity 180ms var(--vb-ease) 60ms;
 }
 .vb-vpatch {
   width: min(30px, 66%);
@@ -1521,7 +1857,7 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   min-width: 0;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 160ms var(--vb-ease);
+  transition: opacity 120ms var(--vb-ease);
 }
 .vb-namerow {
   display: flex;
@@ -1583,13 +1919,24 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   font-weight: 700;
   white-space: nowrap;
 }
+/* In as the map opens, at the width it opens to (so nothing reflows while
+   it grows, it is only uncovered); gone at once when it closes. */
 .vb-slice.is-wide .vb-open {
   opacity: 1;
   pointer-events: auto;
-  transition-delay: 140ms;
+  transition: opacity 140ms var(--vb-ease) 40ms;
+}
+.vb-slice.is-sized .vb-open {
+  right: auto;
+  width: calc(var(--fw) - 40px);
+}
+.vb-slice.is-wide.is-sized .vb-top {
+  right: auto;
+  width: calc(var(--fw) - 24px);
 }
 .vb-slice.is-wide .vb-v {
   opacity: 0;
+  transition: none;
 }
 .vb-slice.is-mid .vb-name {
   font-size: 24px;
@@ -1633,20 +1980,32 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 .vb-slice[data-status="Pick"]:not(.is-wide) .vb-vname {
   color: hsl(0 0% 100% / 0.7);
 }
+/* What a map became is a short tick of colour at its foot, clear of the
+   stage's rounded corners (before the name on a phone's rows). */
+.vb-slice::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 7px;
+  z-index: 4;
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  translate: -50% 0;
+  pointer-events: none;
+  background: var(--vb-foot, transparent);
+}
+.vb-slice[data-status="Ban"] {
+  --vb-foot: var(--vb-ban);
+}
+.vb-slice[data-status="Pick"] {
+  --vb-foot: var(--vb-pick);
+}
+.vb-slice[data-status="Decider"] {
+  --vb-foot: var(--vb-decider);
+}
 .vb-slice[data-status="Ban"]::after {
-  box-shadow:
-    inset 0 -3px 0 var(--vb-ban),
-    inset 0 0 0 1px hsl(0 0% 100% / 0.04);
-}
-.vb-slice[data-status="Pick"]::after {
-  box-shadow:
-    inset 0 -3px 0 var(--vb-pick),
-    inset 0 0 0 1px hsl(0 0% 100% / 0.06);
-}
-.vb-slice[data-status="Decider"]::after {
-  box-shadow:
-    inset 0 -3px 0 var(--vb-decider),
-    inset 0 0 0 1px hsl(0 0% 100% / 0.06);
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.04);
 }
 .vb-slice.is-live {
   cursor: pointer;
@@ -1832,7 +2191,12 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   line-height: 1.2;
 }
 .vb-chip .n {
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 11px;
+}
+.vb-chip.is-set .n {
+  color: hsl(0 0% 100% / 0.72);
 }
 .vb-chip .m {
   overflow: hidden;
@@ -1840,11 +2204,18 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   font-weight: 600;
   color: var(--vb-muted);
 }
+/* Who picked the map, and the side they start on. */
+.vb-chip .end {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
 .vb-chip .sd {
   width: 18px;
   height: 18px;
   flex: none;
-  margin-left: auto;
 }
 .vb-chip.is-set {
   background: var(--vb-surface);
@@ -1894,6 +2265,10 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   font-weight: 700;
   white-space: nowrap;
 }
+.vb-edge[data-tone="you"],
+.vb-edge[data-tone="them"] {
+  padding-left: 6px;
+}
 .vb-edge[data-tone="you"] {
   color: var(--vb-pick);
   box-shadow: inset 0 0 0 1px hsl(var(--success) / 0.45);
@@ -1914,29 +2289,80 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
 }
 /* Edge and habit on one map share one box, the same width on every map, so
    they line up across the pool. */
-.vb-tag {
+/* On a picked map the edge stands alone, first, where it sits on an open
+   map. */
+.vb-tag.is-bare {
+  display: contents;
+}
+.vb-tag.is-bare > .vb-edge {
+  order: -1;
+}
+.vb-id {
+  display: contents;
+}
+.vb-slice.is-wide .vb-id > .veto-crest {
+  order: 2;
+}
+/* An edge on its own (a picked map, a start panel) is a chip of its own,
+   as tall as the crests and labels beside it. */
+.vb-tag.is-bare > .vb-edge,
+.st-panel .top .vb-edge {
+  height: 28px;
+  padding: 0 10px;
+  gap: 5px;
+  border-radius: 6px;
+  font-size: 15px;
+  line-height: 1;
+}
+.vb-tag.is-bare > .vb-edge[data-tone="side"],
+.st-panel .top .vb-edge[data-tone="side"] {
+  padding-left: 3px;
+  gap: 6px;
+}
+.vb-tag:not(.is-bare) {
   display: flex;
   flex-direction: column;
   width: min(100%, 132px);
-  padding: 2px;
+  padding: 0 2px;
   border-radius: 6px;
   background: rgb(0 0 0 / 0.62);
+  transition: opacity 180ms var(--vb-ease) 60ms;
 }
-.vb-tag > .vb-edge,
-.vb-tag > .vb-habit {
+/* On the map you open the edge gives way to the records, and comes back as
+   they fade out. */
+.vb-tag.is-away {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 100ms var(--vb-ease);
+}
+.vb-tag:not(.is-bare) > .vb-edge,
+.vb-tag:not(.is-bare) > .vb-habit {
   justify-content: center;
   max-width: none;
   padding: 2px 4px;
   background: none;
   box-shadow: none;
 }
-.vb-tag > .vb-edge {
+/* Everything at the top of a map is one height: the edge (in its box or on
+   its own), the crests, the map's label. */
+.vb-tag:not(.is-bare) > .vb-edge {
+  height: 28px;
+  padding: 0 4px;
   font-size: 15px;
 }
-.vb-tag > .vb-habit {
-  margin-top: 2px;
-  padding-top: 4px;
-  border-top: 1px solid hsl(0 0% 100% / 0.1);
+.vb-tag:not(.is-bare) > .vb-habit,
+.vb-tag:not(.is-bare) > .vb-krow {
+  padding: 4px 4px 5px;
+  border-top: 1px solid hsl(0 0% 100% / 0.18);
+}
+.vb-krow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .vb-scouthead {
   display: flex;
@@ -1996,28 +2422,41 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   inset: 3px;
   z-index: 4;
   border: 1.5px dashed hsl(0 0% 100% / 0.55);
-  border-radius: 2px;
+  border-radius: 4px;
   pointer-events: none;
 }
 .vb-slice:first-child .vb-likely {
-  border-radius: 13px 2px 2px 13px;
+  border-radius: 9px 4px 4px 9px;
 }
 .vb-slice:last-child .vb-likely {
-  border-radius: 2px 13px 13px 2px;
+  border-radius: 4px 9px 9px 4px;
 }
 /* Both sides' records sit at the top of the open map, above its name. */
 .vb-slice.is-wide .vb-top {
   flex-wrap: wrap;
 }
 .vb-scout {
-  flex-basis: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: min(300px, calc(var(--fw, 324px) - 24px));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms var(--vb-ease);
   display: grid;
   gap: 5px;
-  max-width: 300px;
   padding: 7px 9px;
   border-radius: 8px;
   background: hsl(240 10% 4% / 0.55);
   backdrop-filter: blur(4px);
+}
+.vb-scout.is-shown {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 140ms var(--vb-ease) 40ms;
+}
+.vb-slice:not(.is-wide) .vb-scout {
+  left: 6px;
 }
 .vb-rec {
   display: grid;
@@ -2109,8 +2548,339 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   outline-offset: 2px;
 }
 
+/* ---------- the start: the series grows into the maps ---------- */
+.vb-lead.is-ready {
+  color: var(--vb-pick);
+}
+.vb-lead :deep(.vb-spin) {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+.st-area {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+.st-area > .vb-stage,
+.st-area > .vb-series {
+  transition: opacity 280ms ease;
+}
+.st-area.is-starting > .vb-stage,
+.st-area.is-starting > .vb-series {
+  opacity: 0;
+  pointer-events: none;
+}
+.st-area.is-starting > .vb-series {
+  transition-duration: 160ms;
+}
+.st-layer {
+  position: absolute;
+  inset: 0;
+}
+.st-panel {
+  container: panel / size;
+  position: absolute;
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: var(--vb-surface);
+  background-size: cover;
+  background-position: center;
+}
+.st-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.1);
+  pointer-events: none;
+}
+/* The map stays the picture: only the edges darken, for the words. */
+.st-panel .shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      0deg,
+      hsl(240 10% 4% / 0.88) 0%,
+      hsl(240 10% 4% / 0.35) 34%,
+      transparent 52%
+    ),
+    linear-gradient(180deg, hsl(240 10% 4% / 0.5) 0%, transparent 20%);
+}
+.st-panel .reveal {
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 320ms var(--vb-ease) calc(var(--i) * 70ms),
+    translate 420ms var(--vb-ease) calc(var(--i) * 70ms);
+}
+.st-panel.is-shown .reveal {
+  opacity: 1;
+  translate: none;
+}
+.st-panel .top {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.st-panel .bottom {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  gap: 8px;
+}
+.st-panel .nm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding-left: 2px;
+}
+.st-panel .nm img {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.5));
+}
+.st-panel .nm span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.st-panel .nm.up {
+  display: none;
+}
+/* A narrow map's words sit closer to its edges, so the team plates fit. */
+@container panel (max-width: 240px) {
+  .vb-open {
+    left: 10px;
+    right: 10px;
+    bottom: 12px;
+  }
+}
+/* Narrow panels (best of five). */
+@container panel (max-width: 200px) {
+  .st-panel .nm span {
+    font-size: 16px;
+  }
+  .st-panel .nm img {
+    width: 22px;
+    height: 22px;
+  }
+}
+/* Short panels (rows on a phone): the name moves up beside the label. */
+@container panel (max-height: 170px) {
+  .st-panel .top {
+    right: 45%;
+  }
+  .st-panel .bottom .nm {
+    display: none;
+  }
+  .st-panel .nm.up {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    padding: 0;
+  }
+  .st-panel .nm.up span {
+    font-size: 17px;
+  }
+  .st-panel .nm.up img {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* ---------- the top of each map ---------- */
+/* The edge on the left. On the right: the picker's crest, or on a wide map
+   still in play its number and picker; a played map's number sits big in
+   its middle. */
+.vb-slice:not([data-status="Ban"]) .vb-id {
+  display: none;
+}
+.vb-slice:not(.is-wide)[data-status="Pick"] .vb-id,
+.vb-slice.is-mid[data-status="Pick"] .vb-id {
+  display: contents;
+}
+.vb-slice.is-mid .vb-id > .veto-crest {
+  margin-left: auto;
+}
+.vb-slice.is-mid .vb-top {
+  flex-wrap: nowrap;
+}
+.vb-kick,
+.st-kick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  height: 28px;
+  padding: 0 9px 0 2px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 0.6);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.vb-kick:not(:has(.veto-crest)),
+.st-kick:not(:has(.veto-crest)) {
+  padding-left: 9px;
+}
+.vb-kick .by-t,
+.st-kick .by-t {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: hsl(0 0% 100% / 0.7);
+}
+.vb-slice.is-wide .vb-kick {
+  margin-left: auto;
+}
+.vb-kick.has-num,
+.vb-krow {
+  display: none;
+}
+@container panel (max-width: 240px) {
+  .vb-kick .by-t,
+  .st-kick .by-t {
+    display: none;
+  }
+}
+.vb-num {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46%;
+  translate: 0 -50%;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  pointer-events: none;
+  text-shadow:
+    0 1px 3px rgb(0 0 0 / 0.8),
+    0 2px 14px rgb(0 0 0 / 0.7);
+}
+/* A soft shade behind the number, so it reads on bright map art too. */
+.vb-num::before {
+  content: "";
+  position: absolute;
+  inset: -28px -12px;
+  z-index: -1;
+  background: radial-gradient(
+    closest-side,
+    rgb(0 0 0 / 0.5),
+    rgb(0 0 0 / 0.25) 60%,
+    transparent
+  );
+}
+.vb-num .k {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.85);
+}
+.vb-num b {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 0.9;
+  color: hsl(0 0% 100% / 0.95);
+}
+.vb-slice.is-thin .vb-num {
+  display: none;
+}
+/* The start's panels read the same as the finished board's maps. */
+.st-panel .top .by-b {
+  margin-left: auto;
+}
+.st-panel .top .st-kick {
+  display: none;
+}
+.st-num {
+  top: 44%;
+}
+.st-num.reveal {
+  translate: 0 calc(-50% + 8px);
+}
+.st-panel.is-shown .st-num.reveal {
+  translate: 0 -50%;
+}
+@container panel (max-height: 170px) {
+  .st-num,
+  .st-panel .top .by-b {
+    display: none;
+  }
+  .st-panel .top .st-kick {
+    display: inline-flex;
+  }
+  .st-panel .top .st-kick .by-t {
+    display: none;
+  }
+}
+/* A phone's rows are short: the edge and the map's number sit side by side
+   in the box, the crests stay on the right, and the tick stands before the
+   name. */
+@container vb (max-width: 560px) {
+  .vb-num,
+  .vb-slice:not(.is-wide)[data-status="Pick"] .vb-id,
+  .vb-slice.is-mid[data-status="Pick"] .vb-id {
+    display: none;
+  }
+  .vb-kick.has-num {
+    display: inline-flex;
+  }
+  .vb-krow {
+    display: flex;
+  }
+  .vb-tag:not(.is-bare):has(.vb-krow) {
+    flex-direction: row;
+    width: auto;
+  }
+  .vb-tag:not(.is-bare) > .vb-krow {
+    padding: 0 8px;
+    border-top: 0;
+    border-left: 1px solid hsl(0 0% 100% / 0.18);
+  }
+  .vb-tag:not(.is-bare):has(.vb-krow) > .vb-edge {
+    padding: 0 8px;
+  }
+  .vb-slice.is-thin .vb-top {
+    left: auto;
+    right: 10px;
+  }
+  .vb-slice::before {
+    left: 5px;
+    top: 50%;
+    bottom: auto;
+    width: 3px;
+    height: 14px;
+    translate: 0 -50%;
+  }
+}
+
 /* ---------- phones: the stage turns on its side ---------- */
-@container (max-width: 560px) {
+@container vb (max-width: 560px) {
   .vb-status {
     height: 42px;
     gap: 8px;
@@ -2125,27 +2895,6 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
   .vb-step {
     display: none;
   }
-  .vb-rail {
-    gap: 3px;
-  }
-  .vb-railstep {
-    height: 6px;
-    padding: 0;
-    border-radius: 3px;
-  }
-  .vb-railstep > * {
-    display: none;
-  }
-  .vb-railstep::after {
-    height: 100%;
-  }
-  .vb-railstep[data-state="now"] {
-    box-shadow: none;
-    background: var(--vb-muted);
-  }
-  .vb-railstep[data-state="now"].is-you {
-    background: var(--vb-amber);
-  }
   .vb-stage {
     flex-direction: column;
     aspect-ratio: auto;
@@ -2155,10 +2904,10 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
     height: 340px;
   }
   .vb-slice:first-child {
-    border-radius: 14px 14px 0 0;
+    border-radius: 12px 12px 6px 6px;
   }
   .vb-slice:last-child {
-    border-radius: 0 0 14px 14px;
+    border-radius: 6px 6px 12px 12px;
   }
   .vb-pingfill {
     top: 0;
@@ -2277,6 +3026,9 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
     left: 14px;
     right: 14px;
   }
+  .vb-slice:not(.is-wide) .vb-scout {
+    transition: none;
+  }
   .vb-scout {
     gap: 3px;
     padding: 5px 7px;
@@ -2287,10 +3039,10 @@ const pingQ = (ping: number) => Math.max(0.12, 1 - ping / 170).toFixed(3);
     font-size: 11px;
   }
   .vb-slice:first-child .vb-likely {
-    border-radius: 13px 13px 2px 2px;
+    border-radius: 9px 9px 4px 4px;
   }
   .vb-slice:last-child .vb-likely {
-    border-radius: 2px 2px 13px 13px;
+    border-radius: 4px 4px 9px 9px;
   }
 }
 

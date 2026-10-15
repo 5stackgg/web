@@ -9551,7 +9551,9 @@
         "now": "Buradasın",
         "unlocks": "Burada açılır",
         "nothing_new": "Burada senin için yeni bir şey yok"
-      }
+      },
+      "show_console": "Konsolu ve günlükleri göster",
+      "hide_console": "Konsolu ve günlükleri gizle"
     },
     "demo_processing_hint": "Maç demosu oyun sunucusundan yükleniyor. İstatistikler, 2B tekrar ve öne çıkanlar tamamlandığında gelir.",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "Bitti",
-      "winner": "Kazanan"
+      "winner": "Kazanan",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility ve Dizilimler",
@@ -9701,7 +9704,30 @@
         "browse": "gezin",
         "choose": "seç",
         "clear": "temizle"
-      }
+      },
+      "yours": {
+        "Ban": "Senin banın",
+        "Pick": "Senin pick'in",
+        "Side": "Senin tarafın"
+      },
+      "start": {
+        "heading": "Maç başlıyor",
+        "waiting": "Sunucu bekleniyor",
+        "waiting_line": "Bir sunucu boşalır boşalmaz maçın başlar",
+        "booting": "Sunucu açılıyor",
+        "booting_line": "Maç sunucun başlatılıyor",
+        "ready": "Sunucu hazır",
+        "ready_first": "Önce {map}",
+        "ready_first_you": "Önce {map} · {side} tarafında başlıyorsun",
+        "ready_only_you": "{map} · {side} tarafında başlıyorsun",
+        "sides_title": "Başlangıç tarafları",
+        "sides_key": "CT önce savunur, T önce saldırır, devre arasında taraflar değişir",
+        "knife_key": "Karar haritası tarafları: bıçak raundu",
+        "starts": "{side} tarafında başlıyor",
+        "knife": "Bıçak raundu",
+        "knife_line": "Kazanan tarafı seçer"
+      },
+      "map": "Harita"
     }
   },
   "ui": {

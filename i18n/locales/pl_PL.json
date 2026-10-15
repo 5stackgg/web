@@ -9551,7 +9551,9 @@
         "now": "Jesteś tutaj",
         "unlocks": "Odblokowuje się tutaj",
         "nothing_new": "Nic nowego dla ciebie"
-      }
+      },
+      "show_console": "Pokaż konsolę i logi",
+      "hide_console": "Ukryj konsolę i logi"
     },
     "demo_processing_hint": "Demo meczu jest przesyłane z serwera gry. Statystyki, powtórka 2D i highlighty pojawią się po zakończeniu.",
     "demo_playback": {
@@ -9589,7 +9591,8 @@
     },
     "header": {
       "final": "Koniec",
-      "winner": "Zwycięzca"
+      "winner": "Zwycięzca",
+      "veto": "Veto"
     },
     "utility": {
       "title": "Utility a ustawki",
@@ -9701,7 +9704,30 @@
         "browse": "przeglądaj",
         "choose": "wybierz",
         "clear": "wyczyść"
-      }
+      },
+      "yours": {
+        "Ban": "Twój ban",
+        "Pick": "Twój pick",
+        "Side": "Twoja strona"
+      },
+      "start": {
+        "heading": "Mecz się rozpoczyna",
+        "waiting": "Oczekiwanie na serwer",
+        "waiting_line": "Mecz zacznie się, gdy tylko zwolni się serwer",
+        "booting": "Uruchamianie serwera",
+        "booting_line": "Uruchamianie serwera meczu",
+        "ready": "Serwer gotowy",
+        "ready_first": "Najpierw {map}",
+        "ready_first_you": "Najpierw {map} · zaczynasz po stronie {side}",
+        "ready_only_you": "{map} · zaczynasz po stronie {side}",
+        "sides_title": "Strony startowe",
+        "sides_key": "CT najpierw broni, T najpierw atakuje, strony zmieniają się na przerwie",
+        "knife_key": "Strony na decydującej: knife round",
+        "starts": "Zaczyna po stronie {side}",
+        "knife": "Knife round",
+        "knife_line": "Zwycięzca wybiera stronę"
+      },
+      "map": "Mapa"
     }
   },
   "ui": {

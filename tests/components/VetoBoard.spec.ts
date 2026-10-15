@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import VetoBoard from "~/components/match/VetoBoard.vue";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
-import type { VetoBoardLineup } from "~/utilities/vetoOrder";
+import type { VetoBoardLineup, VetoBoardStep } from "~/utilities/vetoOrder";
 import type { ScoutLineup } from "~/utilities/vetoScouting";
 
 const MAPS = [
@@ -22,7 +22,7 @@ const lineups: [VetoBoardLineup, VetoBoardLineup] = [
 ];
 
 // Steps of a best of three with the first `done` moves made.
-function steps(done: string[]) {
+function steps(done: string[]): VetoBoardStep[] {
   return mapVetoOrder(3, MAPS.length).map((step, index) => ({
     ...step,
     record: done[index]
@@ -201,5 +201,235 @@ describe("VetoBoard keys", () => {
 
     await wrapper.find(".vb-stage").trigger("keydown", { key: "Escape" });
     expect(slice(wrapper, "anubis").classes()).not.toContain("is-wide");
+  });
+});
+
+describe("VetoBoard choosing", () => {
+  it("lets a click take back a choice, and hovering still opens other maps", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await slice(wrapper, "mirage").trigger("click");
+    expect(slice(wrapper, "mirage").classes()).toContain("is-selected");
+    expect(wrapper.find(".vb-cta").text()).toBe("Pick mirage");
+
+    // A second click lets it go; nothing is sent.
+    await slice(wrapper, "mirage").trigger("click");
+    expect(slice(wrapper, "mirage").classes()).not.toContain("is-selected");
+    expect(wrapper.emitted("confirm")).toBeUndefined();
+
+    // Chosen again, the button confirms it.
+    await slice(wrapper, "mirage").trigger("click");
+    await wrapper.find(".vb-cta").trigger("click");
+    expect(wrapper.emitted("confirm")).toEqual([[{ itemId: "mirage" }]]);
+  });
+
+  it("confirms by keys with a second Enter", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await slice(wrapper, "nuke").trigger("keydown", { key: "Enter" });
+    await slice(wrapper, "nuke").trigger("keydown", { key: "Enter" });
+    expect(wrapper.emitted("confirm")).toEqual([[{ itemId: "nuke" }]]);
+  });
+});
+
+describe("VetoBoard your moves", () => {
+  it("lifts your moves and names your turn on the rail", async () => {
+    // Two bans in: Buttah Boyz (1) banned, Night Owls (2) banned, now 1 picks.
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      viewer: 1,
+      scouting: null,
+    });
+
+    const rail = wrapper.findAll(".vb-railstep");
+    expect(rail[0].classes()).toContain("is-mine");
+    expect(rail[1].classes()).not.toContain("is-mine");
+    expect(rail[2].text()).toBe("Your pick");
+  });
+
+  it("lays the order of play out as a ledger for phones", async () => {
+    // Night Owls (2) chose T on the Mirage that Buttah Boyz picked.
+    const done = steps(["train", "dust2", "mirage", "mirage"]);
+    done[3].record = { itemId: "mirage", lineup: 2, side: "T", auto: false };
+    const wrapper = await mount({
+      steps: done,
+      pickingLineup: 2,
+      isPicking: false,
+      viewer: 2,
+      scouting: null,
+    });
+
+    const rows = wrapper.findAll(".vb-ledger .vb-lrow");
+    expect(rows).toHaveLength(2);
+    // Lineup 1 bans, picks, chooses a side, bans; lineup 2 the mirror.
+    expect(rows[0].findAll(".vb-tok")).toHaveLength(4);
+    expect(rows[1].find(".vb-lwho").classes()).toContain("is-mine");
+    expect(rows[1].findAll(".vb-tok")[1].text()).toContain("T");
+    expect(wrapper.find(".vb-ldec").text()).toContain("Decider");
+  });
+});
+
+describe("VetoBoard start", () => {
+  // A best of three done: Mirage picked by Buttah Boyz (1), Nuke by Night
+  // Owls (2), Ancient left as the decider.
+  const done = steps([
+    "train",
+    "dust2",
+    "mirage",
+    "mirage",
+    "nuke",
+    "nuke",
+    "anubis",
+    "inferno",
+    "ancient",
+  ]);
+  const maps = [
+    {
+      itemId: "mirage",
+      decider: false,
+      pickedBy: 1 as const,
+      sides: { 1: "T" as const, 2: "CT" as const },
+    },
+    {
+      itemId: "nuke",
+      decider: false,
+      pickedBy: 2 as const,
+      sides: { 1: "CT" as const, 2: "T" as const },
+    },
+    { itemId: "ancient", decider: true, pickedBy: null, sides: null },
+  ];
+
+  it("raises the maps with the side each team starts on", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 1,
+      start: { phase: "booting", maps },
+    });
+
+    expect(wrapper.find(".vb-lead").text()).toBe("Server booting");
+    expect(wrapper.find(".st-area").classes()).toContain("is-starting");
+    // The start's key takes over the scouting key's line.
+    expect(wrapper.findAll(".vb-scoutkey")).toHaveLength(1);
+    expect(wrapper.find(".vb-scoutkey").text()).toContain("Starting sides");
+    expect(wrapper.find(".vb-scoutkey").text()).toContain("knife round");
+
+    const panels = wrapper.findAll(".st-panel");
+    expect(panels).toHaveLength(3);
+    // Each map's number big in its middle (and in its label on a phone).
+    expect(panels[0].find(".st-num").text()).toBe("Map1");
+    expect(panels[2].find(".st-num").text()).toBe("Decider3");
+    expect(panels[0].find(".st-kick").text()).toContain("Map 1");
+    expect(panels[0].find(".st-kick").text()).toContain("Buttah Boyz");
+    // The picker's crest sits in the corner; the decider has none.
+    expect(panels[0].find(".by-b").text()).toBe("BB");
+    expect(panels[2].find(".by-b").exists()).toBe(false);
+
+    // Each side as its logo; your plate sits a step brighter.
+    const plates = panels[0].findAll(".plate");
+    expect(plates[0].find(".side").attributes("alt")).toBe("T");
+    expect(plates[0].classes()).toContain("is-you");
+    expect(plates[1].find(".side").attributes("alt")).toBe("CT");
+    expect(plates[1].classes()).not.toContain("is-you");
+
+    expect(panels[2].find(".plate.is-knife").text()).toContain("Knife round");
+  });
+
+  it("adds no key line of its own when scouting is off", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 1,
+      scouting: null,
+      start: { phase: "booting", maps },
+    });
+
+    expect(wrapper.find(".vb-scoutkey").exists()).toBe(false);
+  });
+
+  it("names the first map and your side, then hands the maps over", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 1,
+      scouting: null,
+      start: { phase: "booting", maps },
+      handOff: true,
+    });
+
+    await wrapper.setProps({ start: { phase: "ready", maps } });
+    expect(wrapper.find(".vb-lead").text()).toBe("Server ready");
+    expect(wrapper.find(".vb-line").text()).toBe("mirage first · you start T");
+
+    // A beat to read it, then the maps fold and the board hands over.
+    await new Promise((done) => setTimeout(done, 1800));
+    expect(wrapper.emitted("handoff")).toHaveLength(1);
+  });
+
+  it("shows the finished board's maps the way the start will", async () => {
+    const finished = steps([
+      "train",
+      "dust2",
+      "mirage",
+      "mirage",
+      "nuke",
+      "nuke",
+      "anubis",
+      "inferno",
+      "ancient",
+    ]);
+    // Night Owls (2) chose CT on Mirage; Buttah Boyz (1) chose T on Nuke.
+    finished[3].record = { itemId: "mirage", lineup: 2, side: "CT" };
+    finished[5].record = { itemId: "nuke", lineup: 1, side: "TERRORIST" };
+    const wrapper = await mount({
+      steps: finished,
+      viewer: 1,
+      knifeRound: true,
+    });
+
+    const mirage = slice(wrapper, "mirage").findAll(".plate");
+    expect(mirage[0].find(".side").attributes("alt")).toBe("T");
+    expect(mirage[0].classes()).toContain("is-you");
+    expect(mirage[1].find(".side").attributes("alt")).toBe("CT");
+    expect(slice(wrapper, "ancient").find(".plate.is-knife").exists()).toBe(
+      true,
+    );
+    // The decider says so once, in its badge.
+    expect(slice(wrapper, "ancient").find(".vb-sub").exists()).toBe(false);
+    // Each map to be played keeps its edge.
+    expect(slice(wrapper, "mirage").find(".vb-edge").text()).toBe("+25");
+  });
+
+  it("keeps the edge on a map once it is picked", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2", "mirage"]),
+      viewer: 1,
+    });
+
+    expect(slice(wrapper, "mirage").find(".vb-edge").text()).toBe("+25");
+    expect(slice(wrapper, "mirage").find(".vb-habit").exists()).toBe(false);
+  });
+
+  it("does not call the only map of a best of one first", async () => {
+    const wrapper = await mount({
+      steps: done,
+      viewer: 2,
+      scouting: null,
+      bestOf: 1,
+      start: { phase: "ready", maps: [maps[0]] },
+    });
+
+    expect(wrapper.find(".vb-line").text()).toBe("mirage · you start CT");
+    expect(wrapper.find(".st-panel .st-kick").text()).toContain("The map");
+    expect(wrapper.find(".st-num").exists()).toBe(false);
   });
 });

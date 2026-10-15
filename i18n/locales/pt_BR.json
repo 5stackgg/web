@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Scouting de veto",
-          "description": "Durante o veto de mapas, mostra o histórico de cada lado em cada mapa, os bans e picks habituais do adversário e o provável próximo movimento dele. Partidas de time usam o histórico do time; partidas pick-up usam as próprias partidas dos jogadores e os vetos anteriores do capitão. Ative por modo; o veto de uma partida segue o modo dela.",
+          "description": "Durante o veto de mapas, mostra o histórico de cada lado em cada mapa, os bans e picks habituais do adversário e o provável próximo movimento dele. Partidas de time usam o histórico do time; partidas pick-up usam as próprias partidas dos jogadores e os vetos anteriores do capitão. Fica ativado em todos os modos até você desativá-lo aqui.",
           "updated": "Scouting de veto atualizado"
         }
       },

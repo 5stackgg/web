@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Scouting du veto",
-          "description": "Pendant un veto de maps, affiche le bilan de chaque camp sur chaque map, les bans et picks habituels du camp adverse et son prochain choix probable. Les matchs d'équipe utilisent l'historique de l'équipe ; les matchs pick-up utilisent les propres matchs des joueurs et les vetos passés du capitaine. Activez-le par mode ; le veto d'un match suit son mode.",
+          "description": "Pendant un veto de maps, affiche le bilan de chaque camp sur chaque map, les bans et picks habituels du camp adverse et son prochain choix probable. Les matchs d'équipe utilisent l'historique de l'équipe ; les matchs pick-up utilisent les propres matchs des joueurs et les vetos passés du capitaine. Il est activé pour tous les modes jusqu'à ce que vous le désactiviez ici.",
           "updated": "Scouting du veto mis à jour"
         }
       },

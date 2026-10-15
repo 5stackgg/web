@@ -1,3 +1,4 @@
+import { VETO_SCOUTING_MODES } from "~/utilities/vetoScouting";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { ref, computed, watch } from "vue";
 import { e_player_roles_enum, e_match_types_enum } from "~/generated/zeus";
@@ -301,14 +302,15 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    // Veto scouting, switched per matchmaking mode and off by default (an
-    // absent row is off). A match's veto follows its own type.
+    // Veto scouting, switched per matchmaking mode and on by default (only a
+    // "false" row turns it off). A match's veto follows its own type.
     function vetoScoutingEnabled(matchType: string | null | undefined) {
-      if (!matchType) return false;
-      const name = `public.veto_scouting_${matchType.toLowerCase()}`;
+      const mode = matchType?.toLowerCase();
+      if (!mode || !VETO_SCOUTING_MODES.includes(mode)) return false;
+      const name = `public.veto_scouting_${mode}`;
       return (
-        settings.value?.find((setting) => setting.name === name)?.value ===
-        "true"
+        settings.value?.find((setting) => setting.name === name)?.value !==
+        "false"
       );
     }
 

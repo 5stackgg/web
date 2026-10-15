@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Scouting del veto",
-          "description": "Durante el veto de mapas, muestra el balance de cada bando en cada mapa, los baneos y elecciones habituales del rival y su próximo movimiento probable. Las partidas de equipo usan el historial del equipo; las pick-up usan las propias partidas de los jugadores y los vetos anteriores del capitán. Actívalo por modo; el veto de una partida sigue su modo.",
+          "description": "Durante el veto de mapas, muestra el balance de cada bando en cada mapa, los baneos y elecciones habituales del rival y su próximo movimiento probable. Las partidas de equipo usan el historial del equipo; las pick-up usan las propias partidas de los jugadores y los vetos anteriores del capitán. Está activado en todos los modos hasta que lo desactives aquí.",
           "updated": "Scouting del veto actualizado"
         }
       },

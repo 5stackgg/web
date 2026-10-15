@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Scouting veto",
-          "description": "Podczas veto map pokazuje bilans każdej strony na każdej mapie, typowe bany i picki drugiej strony oraz jej prawdopodobny następny ruch. Mecze drużynowe korzystają z historii drużyny; mecze pick-up z własnych meczów graczy i wcześniejszych veto kapitana. Włącza się osobno dla każdego trybu; veto meczu zależy od jego trybu.",
+          "description": "Podczas veto map pokazuje bilans każdej strony na każdej mapie, typowe bany i picki drugiej strony oraz jej prawdopodobny następny ruch. Mecze drużynowe korzystają z historii drużyny; mecze pick-up z własnych meczów graczy i wcześniejszych veto kapitana. Funkcja jest włączona we wszystkich trybach, dopóki jej tu nie wyłączysz.",
           "updated": "Scouting veto zaktualizowany"
         }
       },

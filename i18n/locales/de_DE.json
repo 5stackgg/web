@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Veto-Scouting",
-          "description": "Zeigt während eines Map-Vetos die Bilanz jeder Seite auf jeder Map, die üblichen Bans und Picks der Gegenseite und ihren wahrscheinlichen nächsten Zug. Team-Matches nutzen die Historie des Teams; Pick-up-Games die eigenen Matches der Spieler und die bisherigen Vetos des Captains. Pro Modus einschaltbar; das Veto eines Matches folgt seinem Modus.",
+          "description": "Zeigt während eines Map-Vetos die Bilanz jeder Seite auf jeder Map, die üblichen Bans und Picks der Gegenseite und ihren wahrscheinlichen nächsten Zug. Team-Matches nutzen die Historie des Teams; Pick-up-Games die eigenen Matches der Spieler und die bisherigen Vetos des Captains. Es ist für jeden Modus aktiv, bis du es hier ausschaltest.",
           "updated": "Veto-Scouting aktualisiert"
         }
       },

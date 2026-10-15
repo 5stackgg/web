@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Veto analizi",
-          "description": "Harita vetosu sırasında her tarafın her haritadaki sonuçlarını, rakibin her zamanki ban ve pick'lerini ve olası sonraki hamlesini göster. Takım maçları takımın geçmişini kullanır; pick-up maçları oyuncuların kendi maçlarını ve kaptanın önceki vetolarını kullanır. Her mod için ayrı açılır; bir maçın vetosu modunu izler.",
+          "description": "Harita vetosu sırasında her tarafın her haritadaki sonuçlarını, rakibin her zamanki ban ve pick'lerini ve olası sonraki hamlesini göster. Takım maçları takımın geçmişini kullanır; pick-up maçları oyuncuların kendi maçlarını ve kaptanın önceki vetolarını kullanır. Buradan kapatana kadar tüm modlarda açıktır.",
           "updated": "Veto analizi güncellendi"
         }
       },

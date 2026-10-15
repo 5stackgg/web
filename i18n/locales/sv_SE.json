@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Veto-scouting",
-          "description": "Visa under ett kartveto varje sidas facit på varje karta, motståndarens vanliga bann och val och deras troliga nästa drag. Lagmatcher använder lagets historik; pick-up-matcher använder spelarnas egna matcher och lagkaptenens tidigare veton. Slå på det per läge; en matchs veto följer dess läge.",
+          "description": "Visa under ett kartveto varje sidas facit på varje karta, motståndarens vanliga bann och val och deras troliga nästa drag. Lagmatcher använder lagets historik; pick-up-matcher använder spelarnas egna matcher och lagkaptenens tidigare veton. Det är på för alla lägen tills du stänger av det här.",
           "updated": "Veto-scouting uppdaterad"
         }
       },

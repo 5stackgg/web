@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Scouting del veto",
-          "description": "Durante il veto delle mappe, mostra il bilancio di ogni lato su ogni mappa, i ban e i pick abituali dell'altro lato e la sua probabile prossima mossa. Le partite di squadra usano lo storico della squadra; le pick-up usano le partite dei giocatori stessi e i veti passati del capitano. Attivalo per modalità; il veto di una partita segue la sua modalità.",
+          "description": "Durante il veto delle mappe, mostra il bilancio di ogni lato su ogni mappa, i ban e i pick abituali dell'altro lato e la sua probabile prossima mossa. Le partite di squadra usano lo storico della squadra; le pick-up usano le partite dei giocatori stessi e i veti passati del capitano. È attivo per ogni modalità finché non lo disattivi qui.",
           "updated": "Scouting del veto aggiornato"
         }
       },

@@ -1,7 +1,6 @@
-import { $ } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { teamVetoStatsQuery } from "~/graphql/teamVetoStatsGraphql";
 import type { ScoutLineup, ScoutMap } from "~/utilities/vetoScouting";
 
 // Loads veto scouting for both lineups of a match. A team lineup reads the
@@ -11,10 +10,47 @@ import type { ScoutLineup, ScoutMap } from "~/utilities/vetoScouting";
 
 const emptyMap = (): ScoutMap => ({ wins: 0, played: 0, bans: 0, picks: 0 });
 
+// Recent history only, newest first: it keeps the read small as a team's
+// record grows, and habits should describe how they veto now.
+const HISTORY_PICKS = 400;
+
+const teamHistoryQuery = generateQuery({
+  match_map_veto_picks: [
+    {
+      where: $("where", "match_map_veto_picks_bool_exp!"),
+      order_by: [{ created_at: order_by.desc_nulls_last }],
+      limit: $("limit", "Int!"),
+    },
+    {
+      type: true,
+      map_id: true,
+      match_id: true,
+      match_lineup_id: true,
+      match: {
+        match_maps: [
+          {},
+          {
+            id: true,
+            map_id: true,
+            winning_lineup_id: true,
+          },
+        ],
+      },
+    },
+  ],
+});
+
 async function loadTeam(match: any, lineup: any): Promise<ScoutLineup> {
   const { data } = await getGraphqlClient().query({
-    query: teamVetoStatsQuery,
-    variables: { teamId: lineup.team_id },
+    query: teamHistoryQuery,
+    variables: {
+      where: {
+        // This veto is still being made; it is not history yet.
+        match_id: { _neq: match.id },
+        match_lineup: { team_id: { _eq: lineup.team_id } },
+      },
+      limit: HISTORY_PICKS,
+    },
     fetchPolicy: "network-only",
   });
 
@@ -23,8 +59,7 @@ async function loadTeam(match: any, lineup: any): Promise<ScoutLineup> {
   const counted = new Set<string>();
 
   for (const pick of (data as any)?.match_map_veto_picks ?? []) {
-    // This veto is still being made; it is not history yet.
-    if (!pick.map_id || pick.match_id === match.id) continue;
+    if (!pick.map_id) continue;
     const map = (maps[pick.map_id] ??= emptyMap());
 
     if (pick.type === "Ban" || pick.type === "Pick") {
@@ -76,6 +111,8 @@ const captainVetoesQuery = generateQuery({
   match_map_veto_picks: [
     {
       where: $("where", "match_map_veto_picks_bool_exp!"),
+      order_by: [{ created_at: order_by.desc_nulls_last }],
+      limit: $("limit", "Int!"),
     },
     {
       type: true,
@@ -124,6 +161,7 @@ async function loadPlayers(
                 },
               },
             },
+            limit: HISTORY_PICKS,
           },
           fetchPolicy: "network-only",
         })

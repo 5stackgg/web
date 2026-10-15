@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Veto-scouting",
-          "description": "Vis under et bane-veto hver sides resultater på hver bane, modstanderens sædvanlige bans og picks og deres sandsynlige næste træk. Holdkampe bruger holdets historik; pick-up-kampe bruger spillernes egne kampe og anførerens tidligere vetoer. Slå det til pr. tilstand; en kamps veto følger dens tilstand.",
+          "description": "Vis under et bane-veto hver sides resultater på hver bane, modstanderens sædvanlige bans og picks og deres sandsynlige næste træk. Holdkampe bruger holdets historik; pick-up-kampe bruger spillernes egne kampe og anførerens tidligere vetoer. Det er slået til for alle tilstande, indtil du slår det fra her.",
           "updated": "Veto-scouting opdateret"
         }
       },

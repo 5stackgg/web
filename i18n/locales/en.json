@@ -3192,7 +3192,7 @@
         },
         "veto_scouting": {
           "title": "Veto scouting",
-          "description": "During a map veto, show each side's record on every map, the other side's usual bans and picks, and their likely next move. Team matches use the team's history; pickups use the players' own games and the captain's past vetoes. Switch it on per mode; a match's veto follows its mode.",
+          "description": "During a map veto, show each side's record on every map, the other side's usual bans and picks, and their likely next move. Team matches use the team's history; pickups use the players' own games and the captain's past vetoes. It is on for every mode until you switch it off here.",
           "updated": "Veto scouting updated"
         }
       },

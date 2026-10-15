@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { VETO_SCOUTING_MODES } from "~/utilities/vetoScouting";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -196,7 +197,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         >
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <div
-              v-for="match_type in ['competitive', 'wingman', 'duel', 'rush']"
+              v-for="match_type in VETO_SCOUTING_MODES"
               :key="match_type"
               class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
               @click="toggleVetoScouting(match_type)"
@@ -485,7 +486,7 @@ export default {
         this.settings.find(
           (setting: { name: string; value: string | null }) =>
             setting.name === `public.veto_scouting_${match_type}`,
-        )?.value === "true"
+        )?.value !== "false"
       );
     },
     async toggleVetoScouting(match_type: string) {

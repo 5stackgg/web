@@ -9333,6 +9333,7 @@
     "server": {
       "offline": "サーバーがオフラインです！",
       "booting": "サーバー起動中",
+      "booting_line": "試合サーバーを起動しています",
       "assign": "マッチサーバーを割り当て",
       "select": "サーバーを選択",
       "dedicated": "専用サーバー",
@@ -9659,6 +9660,9 @@
       "twice_pick": "2回クリックで Pick",
       "again_ban": "もう一度 {map} をクリックで BAN · Esc で取り消し",
       "again_pick": "もう一度 {map} をクリックで Pick · Esc で取り消し",
+      "again_side": "もう一度 {side} をクリックで開始 · Esc で取り消し",
+      "side_by_you": "あなたが陣営を選択",
+      "side_by_them": "{team} が陣営を選択",
       "your_ping": "Ping {ping} ms",
       "banned_it": "{team} が BAN",
       "picked_it": "{team} が Pick · マップ {n}",
@@ -9669,9 +9673,6 @@
       "start_side": "{side} スタート",
       "defend_first": "先に防衛",
       "attack_first": "先に攻撃",
-      "confirm_side": "{side} を確定",
-      "your_side_on": "{map} でのあなたの開始サイド",
-      "their_side_on": "{team} が {map} のサイドを選択中",
       "not_set": "未定",
       "scout": {
         "you": "あなた",

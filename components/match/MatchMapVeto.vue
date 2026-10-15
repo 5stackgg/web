@@ -26,6 +26,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
           :scouting="scoutingView"
           :start="start"
           :hand-off="stage"
+          :boot-status="bootStatus"
           :knife-round="!!match.options.knife_round"
           @confirm="onConfirm"
           @handoff="onHandoff"
@@ -76,6 +77,12 @@ export default {
     // folds them into the page's map cards. The draft room leaves for the
     // match page instead, so it keeps the finished veto up until it goes.
     stage: {
+      type: Boolean,
+      default: true,
+    },
+    // The server's state over the maps while it boots; off when the page
+    // shows it where the Join Server button goes.
+    bootStatus: {
       type: Boolean,
       default: true,
     },

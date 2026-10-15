@@ -222,7 +222,7 @@ onUnmounted(() => rankSub?.unsubscribe());
             <MatchInfo
               :match="match"
               :camera-ready="cameraReady"
-              :hide-booting="vetoStageUp || vetoArriving"
+              :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
             ></MatchInfo>
           </PageTransition>
 
@@ -417,7 +417,11 @@ onUnmounted(() => rankSub?.unsubscribe());
               </PageTransition>
 
               <PageTransition :delay="100">
-                <MatchMapVeto :match="match" class="pb-6" />
+                <MatchMapVeto
+                  :match="match"
+                  :boot-status="!bootInSlot"
+                  class="pb-6"
+                />
               </PageTransition>
 
               <PageTransition :delay="200">
@@ -905,6 +909,14 @@ export default {
     },
     vetoArriving() {
       return vetoHandoffPhase(this.match?.id) === "arriving";
+    },
+    // Players see the server boot where its Join Server button will be, so
+    // one turns into the other in place; anyone else sees it over the maps.
+    bootInSlot() {
+      return (
+        !!this.match?.is_in_lineup &&
+        this.match.status === e_match_status_enum.Live
+      );
     },
     mapSlots() {
       if (!this.match || !this.match.options?.best_of) {

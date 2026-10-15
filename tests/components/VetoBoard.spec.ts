@@ -274,6 +274,40 @@ describe("VetoBoard choosing", () => {
     expect(slice(wrapper, "dust2").attributes("data-status")).toBe("Ban");
   });
 
+  it("mounts with a map already open, as on a page opened mid-veto", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2", "mirage"]),
+      pickingLineup: 2,
+      isPicking: true,
+      scouting: null,
+    });
+
+    expect(wrapper.find(".vb-split").exists()).toBe(true);
+    expect(wrapper.find(".vb-sidehead").text()).toContain("mirage");
+  });
+
+  it("shows the move's mark on the map you hover, and lights it once chosen", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await slice(wrapper, "mirage").trigger("pointermove");
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    await nextTick();
+    expect(slice(wrapper, "mirage").find(".vb-mark").exists()).toBe(true);
+    expect(slice(wrapper, "mirage").find(".vb-mark").classes()).not.toContain(
+      "is-armed",
+    );
+
+    await slice(wrapper, "mirage").trigger("click");
+    expect(slice(wrapper, "mirage").find(".vb-mark").classes()).toContain(
+      "is-armed",
+    );
+  });
+
   it("opens the map under the pointer when it is not your turn", async () => {
     const wrapper = await mount({
       steps: steps(["train", "dust2"]),

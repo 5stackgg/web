@@ -9333,6 +9333,7 @@
     "server": {
       "offline": "Servern är offline",
       "booting": "Servern startar",
+      "booting_line": "Startar din matchserver",
       "assign": "Tilldela matchserver",
       "select": "Välj en server",
       "dedicated": "Dedikerade servrar",
@@ -9659,6 +9660,9 @@
       "twice_pick": "klicka två gånger för att välja",
       "again_ban": "Klicka på {map} igen för att banna · Esc för att avbryta",
       "again_pick": "Klicka på {map} igen för att välja · Esc för att avbryta",
+      "again_side": "Klicka på {side} igen för att börja där · Esc för att avbryta",
+      "side_by_you": "Du väljer sida",
+      "side_by_them": "{team} väljer sida",
       "your_ping": "Din ping {ping} ms",
       "banned_it": "{team} bannade den",
       "picked_it": "{team} valde den · Karta {n}",
@@ -9669,9 +9673,6 @@
       "start_side": "Börja på {side}",
       "defend_first": "Försvara först",
       "attack_first": "Anfalla först",
-      "confirm_side": "Bekräfta {side}",
-      "your_side_on": "Din startsida på {map}",
-      "their_side_on": "{team} väljer sida på {map}",
       "not_set": "Inte vald",
       "scout": {
         "you": "Du",

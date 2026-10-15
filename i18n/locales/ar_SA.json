@@ -9333,6 +9333,7 @@
     "server": {
       "offline": "السيرفر غير متصل!",
       "booting": "جارٍ تشغيل السيرفر",
+      "booting_line": "جارٍ تشغيل سيرفر مباراتك",
       "assign": "عيّن سيرفر المباراة",
       "select": "اختر سيرفر",
       "dedicated": "السيرفرات المخصصة",
@@ -9659,6 +9660,9 @@
       "twice_pick": "انقر مرتين للاختيار",
       "again_ban": "انقر على {map} مرة أخرى للحظر · Esc للإلغاء",
       "again_pick": "انقر على {map} مرة أخرى للاختيار · Esc للإلغاء",
+      "again_side": "انقر على {side} مرة أخرى للبدء به · Esc للإلغاء",
+      "side_by_you": "أنت تختار الجهة",
+      "side_by_them": "{team} يختار الجهة",
       "your_ping": "البنق لديك {ping} ms",
       "banned_it": "حظرها {team}",
       "picked_it": "اختارها {team} · الخريطة {n}",
@@ -9669,9 +9673,6 @@
       "start_side": "ابدأ على {side}",
       "defend_first": "الدفاع أولًا",
       "attack_first": "الهجوم أولًا",
-      "confirm_side": "أكّد {side}",
-      "your_side_on": "جانب بدايتك على {map}",
-      "their_side_on": "{team} يختار جانبًا على {map}",
       "not_set": "غير محدد",
       "scout": {
         "you": "أنت",

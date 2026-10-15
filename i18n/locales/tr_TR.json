@@ -9333,6 +9333,7 @@
     "server": {
       "offline": "Sunucu çevrimdışı.",
       "booting": "Sunucu açılıyor",
+      "booting_line": "Maç sunucun başlatılıyor",
       "assign": "Maç sunucusu ata",
       "select": "Sunucu seç",
       "dedicated": "Özel sunucular",
@@ -9659,6 +9660,9 @@
       "twice_pick": "seçmek için iki kez tıkla",
       "again_ban": "Banlamak için {map} üzerine tekrar tıkla · İptal için Esc",
       "again_pick": "Seçmek için {map} üzerine tekrar tıkla · İptal için Esc",
+      "again_side": "{side} tarafından başlamak için tekrar tıkla · İptal için Esc",
+      "side_by_you": "Tarafı sen seçiyorsun",
+      "side_by_them": "Tarafı {team} seçiyor",
       "your_ping": "Pingin {ping} ms",
       "banned_it": "{team} banladı",
       "picked_it": "{team} seçti · Harita {n}",
@@ -9669,9 +9673,6 @@
       "start_side": "{side} tarafında başla",
       "defend_first": "Önce savun",
       "attack_first": "Önce saldır",
-      "confirm_side": "{side} tarafını onayla",
-      "your_side_on": "{map} haritasında başlangıç tarafın",
-      "their_side_on": "{team}, {map} haritasında taraf seçiyor",
       "not_set": "Belirlenmedi",
       "scout": {
         "you": "Sen",

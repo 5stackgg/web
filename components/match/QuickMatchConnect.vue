@@ -53,33 +53,28 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
         </div>
       </div>
 
+      <!-- Booting and connect share one card, the size of the join row, so
+           one turns into the other where it stands. -->
       <div v-else-if="showBooting" key="booting">
-        <div
-          class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10"
-        >
-          <div
-            class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
-          >
-            <div class="flex items-center justify-center gap-3">
-              <Spinner class="shrink-0" />
-              <span class="text-sm font-medium tracking-wide">{{
-                $t("match.server.booting")
-              }}</span>
-            </div>
-            <p
-              v-if="match.server_error"
-              class="max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
-            >
-              {{ match.server_error }}
-            </p>
+        <div class="qmc-card">
+          <div class="qmc-boot">
+            <Spinner class="qmc-boot-icon" />
+            <span class="qmc-boot-text">
+              <b>{{ $t("match.server.booting") }}</b>
+              <span>{{ $t("match.server.booting_line") }}</span>
+            </span>
           </div>
+          <p
+            v-if="match.server_error"
+            class="mt-2 max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
+          >
+            {{ match.server_error }}
+          </p>
         </div>
       </div>
 
       <div v-else-if="showConnect" key="connect">
-        <div
-          class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10"
-        >
+        <div class="qmc-card flex items-center gap-2">
           <ClipBoard
             :data="match.connection_string"
             class="shrink-0 p-3 h-12 w-12 connect-action"
@@ -101,9 +96,11 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
               class="w-full"
               @click="handleClick"
             >
+              <!-- Gold, and ringing until the player is in the game. -->
               <Button
                 variant="outline"
-                class="w-full h-12 connect-action"
+                class="qmc-join tac-amber-cta w-full h-12"
+                :class="{ 'is-calling': isInLineup && !inGame && !isLoading }"
                 :loading="isLoading"
               >
                 <div class="relative flex items-center" v-if="isInLineup">
@@ -126,6 +123,74 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
     </HeightSwap>
   </div>
 </template>
+
+<style scoped>
+/* The same card the veto's start stage shows the server's state in. */
+.qmc-card {
+  padding: 12px;
+  border-radius: 12px;
+  background: hsl(240 10% 4% / 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 0 0 1px hsl(0 0% 100% / 0.12),
+    0 12px 32px rgb(0 0 0 / 0.45);
+}
+.qmc-boot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  padding: 0 6px;
+}
+.qmc-boot-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: hsl(var(--tac-amber));
+}
+.qmc-boot-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.qmc-boot-text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.qmc-boot-text b {
+  font-size: 16px;
+  font-weight: 700;
+}
+.qmc-boot-text span {
+  font-size: 13px;
+  color: hsl(0 0% 100% / 0.72);
+}
+.qmc-join {
+  font-weight: 700;
+}
+.qmc-join.is-calling {
+  animation: qmc-call 1.8s cubic-bezier(0, 0, 0.2, 1) 600ms infinite;
+}
+@keyframes qmc-call {
+  0% {
+    box-shadow:
+      0 0 0 0 hsl(var(--tac-amber) / 0.6),
+      0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
+  }
+  75%,
+  100% {
+    box-shadow:
+      0 0 0 12px hsl(var(--tac-amber) / 0),
+      0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qmc-join.is-calling {
+    animation: none;
+  }
+}
+</style>
 
 <script lang="ts">
 import { ExternalLink, Copy, Tv, AlertTriangle } from "lucide-vue-next";

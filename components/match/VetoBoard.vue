@@ -64,6 +64,9 @@ const props = withDefaults(
     handOff?: boolean;
     // The decider's sides are won in a knife round.
     knifeRound?: boolean;
+    // The server's state over the start's maps (the page may show it
+    // elsewhere).
+    bootStatus?: boolean;
   }>(),
   {
     pickingLineup: null,
@@ -77,6 +80,7 @@ const props = withDefaults(
     start: null,
     handOff: false,
     knifeRound: false,
+    bootStatus: true,
   },
 );
 
@@ -234,11 +238,19 @@ const focus = computed(() => {
   return replayId.value ?? chosen.value;
 });
 
-// The chosen map's button sits in the room its words leave it, below its
-// records and above its name, and shrinks where that room is tight.
+// On your turn the open map shows the mark of the move it would get, so a
+// hover already says ban or pick; choosing the map lights the mark into a
+// button. It sits in the room the map's words leave it, below its records
+// and above its name, and shrinks where that room is tight.
+const markId = computed(() => {
+  const id = focus.value;
+  if (!id) return null;
+  if (isLive(id)) return id;
+  return props.submitting && id === chosen.value ? id : null;
+});
 const armRoom = ref<{ y: number; d: number } | null>(null);
 function placeArm() {
-  const id = chosen.value;
+  const id = markId.value;
   const slice = id
     ? stageEl.value?.querySelector<HTMLElement>(`[data-item="${id}"]`)
     : null;
@@ -256,14 +268,17 @@ function placeArm() {
     d: Math.max(40, Math.min(84, room - 20)),
   };
 }
-watch([chosen, focus], () => nextTick(placeArm));
+watch(markId, () => nextTick(placeArm));
 
 function weight(id: string) {
   const status = stateOf(id).status;
   if (sideMapId.value) {
     return sideMapId.value === id ? 9 : status === "Ban" ? 0.42 : 0.8;
   }
-  if (done.value) return status === "Ban" ? 0.42 : 2.2;
+  // The last move lands with the decider: it opens big for a moment.
+  if (done.value) {
+    return status === "Ban" ? 0.42 : replayId.value === id ? 3.2 : 2.2;
+  }
   if (focus.value === id) return 4.2;
   if (status === "Ban") return 0.42;
   if (status === "Pick") return 0.68;
@@ -321,10 +336,14 @@ const isCramped = (id: string) => {
   return !!width && width < 240;
 };
 
-const isLive = (id: string) =>
-  live.value &&
-  (step.value?.type === "Ban" || step.value?.type === "Pick") &&
-  available.value.includes(id);
+// A declaration, not a const: the open map's mark reads it during setup.
+function isLive(id: string) {
+  return (
+    live.value &&
+    (step.value?.type === "Ban" || step.value?.type === "Pick") &&
+    available.value.includes(id)
+  );
+}
 
 /* ---------- actions ---------- */
 function confirm() {
@@ -476,9 +495,11 @@ const line = computed(() => {
   }
   if (s.type === "Side") {
     const map = label(sideMapId.value);
-    return mine.value
-      ? t("match.veto.pick_side", { map })
-      : t("match.veto.picking_side", { map });
+    if (!mine.value) return t("match.veto.picking_side", { map });
+    if (selected.value) {
+      return t("match.veto.again_side", { side: sideShort(selected.value) });
+    }
+    return t("match.veto.pick_side", { map });
   }
   if (mine.value) {
     const pick = s.type === "Pick";
@@ -598,19 +619,12 @@ function sliceTitle(id: string) {
   return `${label(id)} · ${badge(id)}${who}`;
 }
 
-const sideSeam = computed(() => {
-  const map = label(sideMapId.value);
-  return mine.value
-    ? t("match.veto.your_side_on", { map })
-    : t("match.veto.their_side_on", {
-        team: lineupName(actingLineup.value),
-        map,
-      });
-});
-const sidePoster = computed(() => {
-  const item = props.items.find((entry) => entry.id === sideMapId.value);
-  return `url("${item?.poster || DEFAULT_POSTER}")`;
-});
+const sideItem = computed(() =>
+  props.items.find((entry) => entry.id === sideMapId.value),
+);
+const sidePoster = computed(
+  () => `url("${sideItem.value?.poster || DEFAULT_POSTER}")`,
+);
 
 /* ---------- scouting ---------- */
 const scoutOn = computed(() => !!props.scouting && !isRegion.value);
@@ -1193,7 +1207,7 @@ onBeforeUnmount(() => {
           :data-status="stateOf(item.id).status"
           :class="{
             'is-wide': isWide(item.id),
-            'is-mid': isWide(item.id) && done,
+            'is-mid': isWide(item.id) && done && replayId !== item.id,
             'is-thin': weight(item.id) < 0.5,
             'is-live': isLive(item.id),
             'is-selected': chosen === item.id,
@@ -1201,6 +1215,7 @@ onBeforeUnmount(() => {
             'is-echo': echo === item.id,
             'is-sized': !!openWidth(item.id),
             'is-cramped': isCramped(item.id),
+            'is-landing': done && replayId === item.id,
           }"
           :style="{
             '--g': weight(item.id),
@@ -1220,6 +1235,11 @@ onBeforeUnmount(() => {
               alt=""
             />
             <div class="vb-shade" />
+            <div
+              v-if="done && stateOf(item.id).status === 'Decider'"
+              class="vb-shine"
+              aria-hidden="true"
+            />
           </template>
           <template v-else>
             <div class="vb-regionbg" />
@@ -1238,10 +1258,14 @@ onBeforeUnmount(() => {
 
           <!-- Chosen: the map takes the move's colour and mark; a second
                click on it makes the move. -->
+          <div v-if="chosen === item.id" class="vb-arm" aria-hidden="true" />
           <div
-            v-if="chosen === item.id"
-            class="vb-arm"
-            :class="{ 'is-sending': submitting }"
+            v-if="markId === item.id"
+            class="vb-mark"
+            :class="{
+              'is-armed': chosen === item.id,
+              'is-sending': submitting,
+            }"
             :style="
               armRoom
                 ? { '--arm-y': `${armRoom.y}px`, '--arm-d': `${armRoom.d}px` }
@@ -1453,6 +1477,7 @@ onBeforeUnmount(() => {
             :class="{
               'sel-CT': chosen === 'CT',
               'sel-T': chosen === 'TERRORIST',
+              'is-sending': submitting,
             }"
             @click.stop
           >
@@ -1468,7 +1493,10 @@ onBeforeUnmount(() => {
               @click="chooseSide(side)"
             >
               <span class="vb-half-in">
-                <img :src="sideIcon(side)" alt="" />
+                <span class="vb-side-mark">
+                  <Spinner v-if="submitting && chosen === side" />
+                  <img v-else :src="sideIcon(side)" alt="" />
+                </span>
                 <b>{{
                   t("match.veto.start_side", { side: sideShort(side) })
                 }}</b>
@@ -1477,16 +1505,27 @@ onBeforeUnmount(() => {
                     ? t("match.veto.defend_first")
                     : t("match.veto.attack_first")
                 }}</small>
-                <span class="vb-cta tac-amber-cta">
-                  <Spinner
-                    v-if="submitting && selected === side"
-                    class="h-4 w-4"
-                  />
-                  {{ t("match.veto.confirm_side", { side: sideShort(side) }) }}
-                </span>
               </span>
             </button>
-            <span class="vb-seam">{{ sideSeam }}</span>
+            <span class="vb-sidehead">
+              <img v-if="sideItem?.patch" :src="sideItem.patch" alt="" />
+              {{ sideItem?.label }}
+            </span>
+            <!-- Both teams see the same split, so it says whose call it is. -->
+            <span class="vb-sideby" :class="{ 'is-you': mine }">
+              <VetoCrest
+                v-if="actingLineup"
+                :lineup="lineups[actingLineup - 1]"
+                :size="22"
+              />
+              {{
+                mine
+                  ? t("match.veto.side_by_you")
+                  : t("match.veto.side_by_them", {
+                      team: lineupName(actingLineup),
+                    })
+              }}
+            </span>
           </div>
         </div>
       </div>
@@ -1536,7 +1575,7 @@ onBeforeUnmount(() => {
           v-for="(map, i) in startMaps"
           :key="map.itemId"
           class="st-panel"
-          :class="{ 'is-shown': shown.includes(i) }"
+          :class="{ 'is-shown': shown.includes(i), 'is-decider': map.decider }"
           :style="{
             '--i': i,
             ...(boxes[i] ? px(boxes[i]) : {}),
@@ -1615,7 +1654,8 @@ onBeforeUnmount(() => {
         <div
           class="st-boot"
           :class="{
-            'is-shown': shown.length > 0 && start.phase !== 'ready',
+            'is-shown':
+              bootStatus && shown.length > 0 && start.phase !== 'ready',
             'is-series': startMaps.length > 1,
           }"
           :style="{ '--n': startMaps.length }"
@@ -1867,9 +1907,13 @@ onBeforeUnmount(() => {
   transform: rotate(180deg);
   white-space: nowrap;
 }
+/* Map names read as they do on the match page's map cards: capitals,
+   spaced wide. */
 .vb-vname {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 .vb-vping {
   font-size: 12px;
@@ -1923,10 +1967,11 @@ onBeforeUnmount(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1;
-  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 .vb-act {
   height: 24px;
@@ -1951,19 +1996,6 @@ onBeforeUnmount(() => {
 .vb-sub[data-tone="Decider"] {
   color: var(--vb-decider);
 }
-.vb-cta {
-  height: 36px;
-  padding: 0 16px;
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  gap: 8px;
-  border-width: 1px;
-  border-radius: calc(var(--radius) - 2px);
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-}
 /* In as the map opens, at the width it opens to (so nothing reflows while
    it grows, it is only uncovered); gone at once when it closes. */
 .vb-slice.is-wide .vb-open {
@@ -1984,14 +2016,15 @@ onBeforeUnmount(() => {
   transition: none;
 }
 .vb-slice.is-mid .vb-name {
-  font-size: 24px;
+  font-size: 16px;
 }
 .vb-slice.is-mid .vb-namerow {
   height: 36px;
+  gap: 8px;
 }
 .vb-slice.is-mid .vb-namerow img {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
 }
 .vb-slice.is-mid .vb-act {
   height: 22px;
@@ -2095,8 +2128,14 @@ onBeforeUnmount(() => {
   );
   animation: vb-arm-in 160ms var(--vb-ease);
 }
-/* Its mark becomes a round button: it springs in, pings until it is
-   pressed, lifts under the pointer and sinks when clicked. */
+/* The open map's mark; chosen, a disc springs in behind it and it pings
+   until pressed, lifts under the pointer and sinks when clicked. */
+.vb-mark {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
 .vb-arm-ping,
 .vb-arm-btn {
   position: absolute;
@@ -2111,7 +2150,7 @@ onBeforeUnmount(() => {
   background: var(--vb-arm-deep);
   opacity: 0;
 }
-.vb-slice.is-wide .vb-arm:not(.is-sending) .vb-arm-ping {
+.vb-slice.is-wide .vb-mark.is-armed:not(.is-sending) .vb-arm-ping {
   animation: vb-ping 1.8s cubic-bezier(0, 0, 0.2, 1) 300ms infinite;
 }
 @keyframes vb-ping {
@@ -2126,9 +2165,22 @@ onBeforeUnmount(() => {
   }
 }
 .vb-arm-btn {
+  isolation: isolate;
   display: grid;
   place-items: center;
   color: white;
+  opacity: 0;
+  transition:
+    opacity 140ms var(--vb-ease) 40ms,
+    scale 240ms var(--vb-ease),
+    filter 160ms ease;
+}
+.vb-arm-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
   background: var(--vb-arm-deep);
   box-shadow:
     inset 0 0 0 3px hsl(0 0% 100% / 0.85),
@@ -2137,22 +2189,28 @@ onBeforeUnmount(() => {
   scale: 0.55;
   transition:
     opacity 160ms var(--vb-ease),
-    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    filter 160ms ease;
+    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .vb-arm-btn > svg {
   width: 48%;
   height: 48%;
+  filter: drop-shadow(0 4px 12px rgb(0 0 0 / 0.55));
 }
 .vb-slice.is-wide .vb-arm-btn {
+  opacity: 0.9;
+}
+.vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn {
+  opacity: 1;
+}
+.vb-mark.is-armed .vb-arm-btn::before {
   opacity: 1;
   scale: 1;
 }
-.vb-slice.is-wide:hover .vb-arm-btn {
+.vb-slice.is-wide:hover .vb-mark.is-armed .vb-arm-btn {
   scale: 1.07;
   filter: brightness(1.1);
 }
-.vb-slice.is-wide:active .vb-arm-btn {
+.vb-slice.is-wide:active .vb-mark.is-armed .vb-arm-btn {
   scale: 0.93;
   transition-duration: 80ms;
 }
@@ -2247,50 +2305,144 @@ onBeforeUnmount(() => {
   gap: 4px;
   text-align: center;
 }
+/* Centred in each side's half of the diagonal. */
 .vb-half[data-side="CT"] .vb-half-in {
-  left: 4%;
+  left: 7%;
 }
 .vb-half[data-side="T"] .vb-half-in {
-  right: 4%;
+  right: 7%;
 }
-.vb-half-in img {
+/* The chosen side's logo becomes a round button, as a chosen map's mark
+   does: a second click on the side starts there. */
+.vb-side-mark {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  margin: -14px 0 4px;
+  transition: scale 240ms var(--vb-ease);
+}
+.vb-side-mark > * {
+  position: relative;
   width: 56px;
   height: 56px;
   filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.5));
 }
+.vb-side-mark > svg {
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+.vb-side-mark::before,
+.vb-side-mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--vb-side-deep);
+  opacity: 0;
+}
+.vb-side-mark::before {
+  box-shadow:
+    inset 0 0 0 3px hsl(0 0% 100% / 0.85),
+    0 12px 30px rgb(0 0 0 / 0.5);
+  scale: 0.55;
+  transition:
+    opacity 160ms var(--vb-ease),
+    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.vb-side-mark::after {
+  z-index: -1;
+}
+.vb-half[data-side="CT"] {
+  --vb-side-deep: color-mix(in oklab, var(--vb-ct) 52%, black);
+}
+.vb-half[data-side="T"] {
+  --vb-side-deep: color-mix(in oklab, var(--vb-t) 52%, black);
+}
+.vb-half.is-selected .vb-side-mark::before {
+  opacity: 1;
+  scale: 1;
+}
+.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::after {
+  animation: vb-ping 1.8s cubic-bezier(0, 0, 0.2, 1) 300ms infinite;
+}
+.vb-split:not(.is-sending) .vb-half.is-selected:hover .vb-side-mark {
+  scale: 1.07;
+}
+.vb-split:not(.is-sending) .vb-half.is-selected:active .vb-side-mark {
+  scale: 0.93;
+  transition-duration: 80ms;
+}
 .vb-half-in b {
+  position: relative;
   font-size: 20px;
   font-weight: 800;
 }
 .vb-half-in small {
+  position: relative;
   font-size: 13px;
   color: hsl(0 0% 100% / 0.75);
 }
-.vb-half-in .vb-cta {
-  margin-top: 6px;
-  height: 34px;
-  padding: 0 14px;
-  visibility: hidden;
-}
-.vb-half.is-selected .vb-half-in .vb-cta {
-  visibility: visible;
-}
-.vb-seam {
+/* The map being decided, over the seam at the top. */
+.vb-sidehead {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  top: 14px;
   translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   max-width: 80%;
-  padding: 4px 12px;
+  padding: 6px 16px 6px 8px;
   border-radius: 999px;
-  background: hsl(240 10% 4% / 0.82);
+  background: hsl(240 10% 4% / 0.78);
   box-shadow: 0 0 0 1px hsl(0 0% 100% / 0.12);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
+}
+.vb-sidehead img {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  object-fit: contain;
+}
+.vb-sideby {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 80%;
+  height: 32px;
+  padding: 0 14px 0 5px;
+  border-radius: 999px;
+  background: hsl(240 10% 4% / 0.82);
+  box-shadow: 0 0 0 1px hsl(0 0% 100% / 0.12);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+.vb-sideby.is-you {
+  color: var(--vb-amber);
+  box-shadow: 0 0 0 1px hsl(var(--tac-amber) / 0.45);
+}
+/* Its colour tick would sit under the split. */
+.vb-slice.is-siding::before {
+  display: none;
 }
 
 /* ---------- series ---------- */
@@ -2347,6 +2499,12 @@ onBeforeUnmount(() => {
   text-overflow: ellipsis;
   font-weight: 600;
   color: var(--vb-muted);
+}
+.vb-chip.is-set .m {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 /* Who picked the map, and the side they start on. */
 .vb-chip .end {
@@ -2869,9 +3027,10 @@ onBeforeUnmount(() => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 .st-panel .nm.up {
   display: none;
@@ -2885,7 +3044,7 @@ onBeforeUnmount(() => {
 /* Narrow panels (best of five). */
 @container panel (max-width: 200px) {
   .st-panel .nm span {
-    font-size: 16px;
+    font-size: 14px;
   }
   .st-panel .nm img {
     width: 22px;
@@ -3019,6 +3178,49 @@ onBeforeUnmount(() => {
 .vb-slice.is-thin .vb-num {
   display: none;
 }
+/* The decider is the map the veto leaves: framed and labelled in its gold,
+   with one sweep of light as it lands. */
+.vb-slice[data-status="Decider"].is-wide::after,
+.st-panel.is-decider::after {
+  box-shadow: inset 0 0 0 2px hsl(48 96% 62% / 0.85);
+}
+.vb-slice[data-status="Decider"] .vb-kick,
+.st-panel.is-decider .st-kick {
+  background: var(--vb-decider);
+  color: hsl(240 10% 6%);
+}
+.vb-slice[data-status="Decider"] .vb-num .k,
+.st-panel.is-decider .vb-num .k {
+  color: var(--vb-decider);
+}
+.vb-shine {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.vb-shine::before {
+  content: "";
+  position: absolute;
+  inset: -10% -60%;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    hsl(48 96% 72% / 0.32) 50%,
+    transparent 58%
+  );
+  translate: -70% 0;
+}
+.vb-slice.is-landing .vb-shine::before {
+  animation: vb-shine 1.4s cubic-bezier(0.22, 1, 0.36, 1) 300ms 1 both;
+}
+@keyframes vb-shine {
+  to {
+    translate: 70% 0;
+  }
+}
 /* The start's panels read the same as the finished board's maps. */
 .st-panel .top .by-b {
   margin-left: auto;
@@ -3147,7 +3349,7 @@ onBeforeUnmount(() => {
   .vb-vping {
     writing-mode: horizontal-tb;
     transform: none;
-    font-size: 13px;
+    font-size: 12px;
   }
   .vb-slice.is-thin .vb-vpatch {
     display: none;
@@ -3173,7 +3375,7 @@ onBeforeUnmount(() => {
     bottom: 12px;
   }
   .vb-name {
-    font-size: 26px;
+    font-size: 21px;
   }
   .vb-namerow {
     height: 38px;
@@ -3183,7 +3385,7 @@ onBeforeUnmount(() => {
     height: 32px;
   }
   .vb-slice.is-mid .vb-name {
-    font-size: 18px;
+    font-size: 15px;
   }
   .vb-slice.is-mid .vb-namerow {
     height: 28px;
@@ -3195,20 +3397,32 @@ onBeforeUnmount(() => {
   .vb-half-in {
     width: 42%;
   }
-  .vb-half-in img {
+  .vb-side-mark {
+    width: 56px;
+    height: 56px;
+    margin: -10px 0 4px;
+  }
+  .vb-side-mark > * {
     width: 36px;
     height: 36px;
+  }
+  .vb-side-mark > svg {
+    width: 28px;
+    height: 28px;
+  }
+  .vb-sidehead {
+    top: 10px;
+    font-size: 15px;
+  }
+  .vb-sidehead img {
+    width: 22px;
+    height: 22px;
   }
   .vb-half-in b {
     font-size: 15px;
   }
   .vb-half-in small {
     display: none;
-  }
-  .vb-half-in .vb-cta {
-    height: 30px;
-    padding: 0 10px;
-    font-size: 12px;
   }
   .vb-chip {
     height: 38px;
@@ -3262,7 +3476,8 @@ onBeforeUnmount(() => {
     transition-duration: 1ms !important;
     animation-duration: 1ms !important;
   }
-  .vb-arm-ping {
+  .vb-arm-ping,
+  .vb-side-mark::after {
     display: none;
   }
 }

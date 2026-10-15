@@ -9333,6 +9333,7 @@
     "server": {
       "offline": "Il server è offline",
       "booting": "Avvio server",
+      "booting_line": "Avvio del server del tuo match",
       "assign": "Assegna server match",
       "select": "Seleziona un server",
       "dedicated": "Server dedicati",
@@ -9659,6 +9660,9 @@
       "twice_pick": "due clic per scegliere",
       "again_ban": "Clicca di nuovo su {map} per bannare · Esc per annullare",
       "again_pick": "Clicca di nuovo su {map} per scegliere · Esc per annullare",
+      "again_side": "Clicca di nuovo su {side} per iniziare da lì · Esc per annullare",
+      "side_by_you": "Scegli tu il lato",
+      "side_by_them": "{team} sceglie il lato",
       "your_ping": "Il tuo ping {ping} ms",
       "banned_it": "{team} l'ha bannata",
       "picked_it": "{team} l'ha scelta · Mappa {n}",
@@ -9669,9 +9673,6 @@
       "start_side": "Inizia su {side}",
       "defend_first": "Prima in difesa",
       "attack_first": "Prima in attacco",
-      "confirm_side": "Conferma {side}",
-      "your_side_on": "Il tuo lato iniziale su {map}",
-      "their_side_on": "{team} sceglie il lato su {map}",
       "not_set": "Da definire",
       "scout": {
         "you": "Tu",

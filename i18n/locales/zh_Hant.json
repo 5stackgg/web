@@ -9333,6 +9333,7 @@
     "server": {
       "offline": "伺服器離線！",
       "booting": "伺服器啟動中",
+      "booting_line": "正在啟動你的比賽伺服器",
       "assign": "指派比賽伺服器",
       "select": "選擇伺服器",
       "dedicated": "專用伺服器",
@@ -9659,6 +9660,9 @@
       "twice_pick": "點擊兩次即可選擇",
       "again_ban": "再次點擊 {map} 即可禁用 · 按 Esc 取消",
       "again_pick": "再次點擊 {map} 即可選擇 · 按 Esc 取消",
+      "again_side": "再次點擊 {side} 即從該陣營開始 · 按 Esc 取消",
+      "side_by_you": "由你選擇陣營",
+      "side_by_them": "由 {team} 選擇陣營",
       "your_ping": "你的延遲 {ping} ms",
       "banned_it": "{team} 已禁用",
       "picked_it": "{team} 已選擇 · 地圖 {n}",
@@ -9669,9 +9673,6 @@
       "start_side": "{side} 方開局",
       "defend_first": "先防守",
       "attack_first": "先進攻",
-      "confirm_side": "確認 {side}",
-      "your_side_on": "你在 {map} 的開局陣營",
-      "their_side_on": "{team} 正在為 {map} 選擇陣營",
       "not_set": "待定",
       "scout": {
         "you": "你",

@@ -2338,14 +2338,15 @@
           "direct_title": "Mensajes directos",
           "direct_description": "Los mensajes directos se almacenan de forma duradera en lugar de caducar con el resto del chat. Indica el número de días que se conservan, o 0 para conservarlos siempre.",
           "ttl_match": "Chat de partida",
-          "ttl_match_team": "Chat de equipo",
+          "ttl_match_team": "Chat de equipo en partidas",
           "ttl_matchmaking": "Chat del lobby de emparejamiento",
           "ttl_tournament": "Chat de torneo",
           "ttl_organizers": "Chat de organizadores",
           "ttl_draft": "Chat del lobby de draft",
+          "ttl_team": "Chat de equipo",
           "retention_direct_days": "Conservar los mensajes directos durante (días)",
           "attachments_title": "Adjuntos",
-          "attachments_description": "Los jugadores pueden adjuntar hasta 4 imágenes o vídeos a un mensaje en los chats de lobby, torneo, organizadores, draft y directos. Un archivo se elimina cuando caducan los mensajes de su sala, cuando se depura su mensaje directo o en cuanto se elimina su mensaje.",
+          "attachments_description": "Los jugadores pueden adjuntar hasta 4 imágenes o vídeos a un mensaje en los chats de lobby, torneo, organizadores, draft, equipo y directos. Un archivo se elimina cuando caducan los mensajes de su sala, cuando se depura su mensaje directo o en cuanto se elimina su mensaje.",
           "attachment_max_mb": "Archivo más grande (MB)",
           "attachment_daily_mb": "Subidas por jugador al día (MB)",
           "attachment_daily_mb_hint": "Se cuenta sobre las últimas 24 horas, incluidos los archivos quitados.",
@@ -6837,6 +6838,7 @@
     "chat_panel": {
       "default_title": "Chat",
       "participants_in_chat": "{count} en el chat",
+      "members_here": "{here} de {total} aquí",
       "pop_out_tooltip": "Abrir en una ventana",
       "close_tooltip": "Cerrar conversación",
       "no_chats_title": "Aún no hay chats",
@@ -8325,7 +8327,8 @@
         "no_matches": "Aún no hay partidas",
         "founded": "Fundado el {date}",
         "all_awards": "Ver todos los premios",
-        "team_actions": "Acciones del equipo"
+        "team_actions": "Acciones del equipo",
+        "team_chat": "Chat de equipo"
       },
       "stage": {
         "live": "En directo",
@@ -10311,7 +10314,8 @@
         "tournament": "Suelta para enviar en el chat del torneo",
         "organizers": "Suelta para enviar en el chat de organizadores",
         "draft": "Suelta para enviar en el lobby de draft",
-        "direct": "Suelta para enviar en esta conversación"
+        "direct": "Suelta para enviar en esta conversación",
+        "team": "Suelta para enviar en el chat del equipo"
       },
       "drop_hint": "Imágenes y vídeos, hasta {count} a la vez",
       "rejected_type": "No se puede adjuntar {name}. Solo se pueden adjuntar imágenes y vídeos.",
@@ -10370,6 +10374,14 @@
       "too_many": "Un mensaje puede mencionar como máximo a {max} jugadores.",
       "organizer": "Organizador",
       "tagged_you": "{count} mensaje te menciona | {count} mensajes te mencionan"
+    },
+    "team_room": {
+      "empty_hint": "Solo los jugadores y el propietario de {team} pueden leer esto.",
+      "removed_title": "Ya no estás en {team}",
+      "removed_description": "Este chat se ha cerrado. Saldrá de tu lista cuando cambies de sala.",
+      "forbidden_title": "No puedes abrir este chat",
+      "forbidden_description": "Solo los jugadores y el propietario de {team} pueden leerlo.",
+      "forbidden_description_unnamed": "Solo los jugadores y el propietario de este equipo pueden leerlo."
     }
   },
   "charts": {

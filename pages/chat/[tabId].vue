@@ -17,6 +17,7 @@ import {
   matchTeamLobbyId,
   type MatchLike,
 } from "~/utilities/matchTeamLobby";
+import { chatTeam } from "~/utilities/teamChat";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import socket, { type ChatType } from "~/web-sockets/Socket";
@@ -103,7 +104,53 @@ const blockedPeer = computed(() => {
   return isBlocked(peerSteamId(tab.lobbyId, String(mySteamId)));
 });
 
-const hasTab = computed(() => currentTab.value !== null && !blockedPeer.value);
+// The api's rule, as `me.teams` carries it. Undefined until `me` has loaded,
+// which is no answer yet either way.
+const team = computed(() => {
+  const tab = currentTab.value;
+
+  return tab?.type === "team"
+    ? chatTeam(useAuthStore().me?.teams, tab.lobbyId)
+    : null;
+});
+
+const teamForbidden = computed(
+  () =>
+    currentTab.value?.type === "team" &&
+    Array.isArray(useAuthStore().me?.teams) &&
+    !team.value,
+);
+
+const forbiddenTeamName = ref<string | null>(null);
+
+watch(
+  () => (teamForbidden.value ? currentTab.value?.lobbyId : null),
+  async (teamId) => {
+    forbiddenTeamName.value = null;
+
+    if (!teamId) {
+      return;
+    }
+
+    try {
+      const { data } = await getGraphqlClient().query({
+        query: generateQuery({
+          teams_by_pk: [{ id: teamId }, { id: true, name: true }],
+        } as any),
+      });
+
+      forbiddenTeamName.value = (data as any)?.teams_by_pk?.name ?? null;
+    } catch {
+      // Says who can read it without the name.
+    }
+  },
+  { immediate: true },
+);
+
+const hasTab = computed(
+  () =>
+    currentTab.value !== null && !blockedPeer.value && !teamForbidden.value,
+);
 
 // Same second room the sidebar and the match page offer. This window can be
 // opened cold from a bare URL, so the match is asked for rather than expected
@@ -160,8 +207,11 @@ const teamLobbyId = computed(() => {
   return matchTeamLobbyId(match, useAuthStore().me?.steam_id);
 });
 
-const windowTitle = computed(
-  () => currentTab.value?.label ?? t("chat_page.fallback_title"),
+const tabLabel = computed(
+  () =>
+    team.value?.name ??
+    currentTab.value?.label ??
+    t("chat_page.fallback_title"),
 );
 
 const tabTypeLabel = computed(() => {
@@ -170,7 +220,7 @@ const tabTypeLabel = computed(() => {
 });
 
 useHead({
-  title: windowTitle,
+  title: tabLabel,
 });
 
 function handleBackToHub() {
@@ -186,7 +236,7 @@ function handleBackToHub() {
 // reporter never mounts here. Without its own the server would keep pushing
 // notifications for the very conversation this window exists to display.
 const thread = computed(() =>
-  currentTab.value
+  currentTab.value && !teamForbidden.value
     ? chatThreadKey(currentTab.value.type, currentTab.value.lobbyId)
     : null,
 );
@@ -230,7 +280,7 @@ onUnmounted(() => {
     >
       <div class="min-w-0">
         <h1 class="text-sm font-semibold truncate">
-          {{ currentTab?.label || $t("chat_page.fallback_title") }}
+          {{ tabLabel }}
         </h1>
         <p class="text-[11px] text-muted-foreground truncate">
           <span v-if="currentTab">{{ tabTypeLabel }}</span>
@@ -248,7 +298,24 @@ onUnmounted(() => {
 
     <div class="flex-1 min-h-0 flex flex-col p-2">
       <div
-        v-if="!hasTab"
+        v-if="teamForbidden"
+        class="flex-1 flex items-center justify-center text-sm text-muted-foreground text-center px-4"
+      >
+        <div class="space-y-1.5">
+          <p class="font-medium">{{ $t("chat.team_room.forbidden_title") }}</p>
+          <p class="text-xs">
+            {{
+              forbiddenTeamName
+                ? $t("chat.team_room.forbidden_description", {
+                    team: forbiddenTeamName,
+                  })
+                : $t("chat.team_room.forbidden_description_unnamed")
+            }}
+          </p>
+        </div>
+      </div>
+      <div
+        v-else-if="!hasTab"
         class="flex-1 flex items-center justify-center text-sm text-muted-foreground text-center px-4"
       >
         <div class="space-y-1.5">

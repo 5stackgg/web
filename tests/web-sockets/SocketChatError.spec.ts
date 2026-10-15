@@ -1102,6 +1102,24 @@ describe("Socket hidden authors", () => {
     expect(ids(match.messages)).toEqual(["m1", "m2"]);
   });
 
+  it("hides them from a moderator in a team's room, which staff do not moderate", () => {
+    const team = socket.joinLobby(
+      "socket-spec",
+      "team",
+      "6f1c1c1e-5b1a-4c55-9a51-111111111111",
+    );
+    socket.emit("lobby:team:6f1c1c1e-5b1a-4c55-9a51-111111111111:messages", {
+      messages: [line("t1", 0), by("t2", 1, DANA)],
+    });
+
+    socket.setHiddenAuthors([DANA], { inGroups: false });
+
+    expect(ids(team.messages)).toEqual(["t1"]);
+    expect(ids(match.messages)).toEqual(["m1", "m2", "m3"]);
+
+    team.leave();
+  });
+
   it("rejoins nothing when nobody left the set", () => {
     socket.setHiddenAuthors([DANA]);
     const send = connect();

@@ -54,6 +54,7 @@ import TeamHero from "~/components/team/TeamHero.vue";
 import TeamStage from "~/components/team/TeamStage.vue";
 import TeamResultsTicker from "~/components/team/TeamResultsTicker.vue";
 import TeamOverview from "~/components/team/TeamOverview.vue";
+import TeamChatButton from "~/components/team/TeamChatButton.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -100,6 +101,7 @@ const scrimNeedsCount = computed(
         :matches-count="teamMatches.length"
       >
         <template #actions>
+          <TeamChatButton :team="team" />
           <Button
             v-if="showRequestScrim"
             size="sm"

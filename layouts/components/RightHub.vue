@@ -50,6 +50,9 @@ import HubVoiceBar from "~/components/hub/HubVoiceBar.vue";
 import { formatBadgeCount } from "~/utilities/badgeCount";
 import { chatBadgeFor, chatTabBadge } from "~/utilities/chatBadges";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { chatTeam } from "~/utilities/teamChat";
+import teamAvatar from "~/utilities/teamAvatar";
+import { teamMonogram } from "~/components/watch/watchTicker";
 import SocialPanel from "~/components/hub/SocialPanel.vue";
 import RecentGamesPanel from "~/components/hub/RecentGamesPanel.vue";
 import SidebarChatTab from "~/components/hub/ChatPanel.vue";
@@ -502,6 +505,15 @@ function shortcutDetail(tab: ChatTab) {
   if (tab.type === "tournament") return t("chat_room_subtitles.tournament");
   if (tab.type === "team") return t("chat_room_subtitles.team");
   return null;
+}
+
+function shortcutTeam(tab: ChatTab) {
+  const team = chatTeam(useAuthStore().me?.teams, tab.lobbyId);
+
+  return {
+    logo: teamAvatar(team),
+    monogram: teamMonogram(team?.name ?? tab.label, team?.short_name),
+  };
 }
 
 function shortcutInitials(tab: ChatTab) {
@@ -979,6 +991,21 @@ function onHubTouchEnd(e: TouchEvent) {
                       draggable="false"
                       class="size-full select-none object-cover"
                     />
+                    <span
+                      v-else-if="tab.type === 'team'"
+                      class="grid size-full place-items-center bg-[hsl(var(--tac-amber)/0.14)] text-[0.55rem] font-bold tracking-[0.04em] text-[hsl(var(--tac-amber))]"
+                    >
+                      <img
+                        v-if="shortcutTeam(tab).logo"
+                        :src="shortcutTeam(tab).logo!"
+                        :alt="tab.label"
+                        draggable="false"
+                        class="size-full select-none object-cover"
+                      />
+                      <template v-else>{{
+                        shortcutTeam(tab).monogram
+                      }}</template>
+                    </span>
                     <span
                       v-else
                       class="grid size-full place-items-center bg-[linear-gradient(140deg,#3f3f46,#1f1f23)] text-[0.65rem] font-semibold text-zinc-200"

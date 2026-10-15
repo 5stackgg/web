@@ -6,6 +6,7 @@ export const CHAT_ATTACHMENT_ROOMS = [
   "organizers",
   "draft",
   "direct",
+  "team",
 ] as const;
 
 export type ChatAttachmentKind = "image" | "video";

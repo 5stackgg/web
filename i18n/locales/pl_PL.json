@@ -2338,14 +2338,15 @@
           "direct_title": "Wiadomości prywatne",
           "direct_description": "Wiadomości prywatne są przechowywane trwale, zamiast wygasać razem z resztą czatu. Podaj liczbę dni przechowywania albo 0, aby zachować je na zawsze.",
           "ttl_match": "Czat meczu",
-          "ttl_match_team": "Czat drużyny",
+          "ttl_match_team": "Czat drużyny w meczu",
           "ttl_matchmaking": "Czat lobby dobierania meczów",
           "ttl_tournament": "Czat turnieju",
           "ttl_organizers": "Czat organizatorów",
           "ttl_draft": "Czat lobby draftu",
+          "ttl_team": "Czat drużyny",
           "retention_direct_days": "Przechowuj wiadomości prywatne przez (dni)",
           "attachments_title": "Załączniki",
-          "attachments_description": "Gracze mogą załączyć do 4 obrazów lub filmów do wiadomości na czatach lobby, turnieju, organizatorów, draftu i w wiadomościach prywatnych. Plik jest usuwany, gdy wygasają wiadomości jego pokoju, gdy jego wiadomość prywatna zostaje usunięta przez retencję lub od razu po usunięciu jego wiadomości.",
+          "attachments_description": "Gracze mogą załączyć do 4 obrazów lub filmów do wiadomości na czatach lobby, turnieju, organizatorów, draftu, drużyny i w wiadomościach prywatnych. Plik jest usuwany, gdy wygasają wiadomości jego pokoju, gdy jego wiadomość prywatna zostaje usunięta przez retencję lub od razu po usunięciu jego wiadomości.",
           "attachment_max_mb": "Największy plik (MB)",
           "attachment_daily_mb": "Przesyłanie na gracza dziennie (MB)",
           "attachment_daily_mb_hint": "Liczone z ostatnich 24 godzin, łącznie z usuniętymi plikami.",
@@ -6837,6 +6838,7 @@
     "chat_panel": {
       "default_title": "Czat",
       "participants_in_chat": "{count} na czacie",
+      "members_here": "{here} z {total} tutaj",
       "pop_out_tooltip": "Otwórz w osobnym oknie",
       "close_tooltip": "Zamknij rozmowę",
       "no_chats_title": "Brak czatów",
@@ -8325,7 +8327,8 @@
         "no_matches": "Brak meczów",
         "founded": "Założona {date}",
         "all_awards": "Pokaż wszystkie nagrody",
-        "team_actions": "Akcje drużyny"
+        "team_actions": "Akcje drużyny",
+        "team_chat": "Czat drużyny"
       },
       "stage": {
         "live": "Na żywo",
@@ -10311,7 +10314,8 @@
         "tournament": "Upuść, aby wysłać na czacie turnieju",
         "organizers": "Upuść, aby wysłać na czacie organizatorów",
         "draft": "Upuść, aby wysłać w lobby draftu",
-        "direct": "Upuść, aby wysłać w tej rozmowie"
+        "direct": "Upuść, aby wysłać w tej rozmowie",
+        "team": "Upuść, aby wysłać na czacie drużyny"
       },
       "drop_hint": "Obrazy i filmy, do {count} naraz",
       "rejected_type": "Nie można załączyć {name}. Można załączać tylko obrazy i filmy.",
@@ -10370,6 +10374,14 @@
       "too_many": "Wiadomość może oznaczać maksymalnie {max} graczy.",
       "organizer": "Organizator",
       "tagged_you": "Wiadomości, w których cię oznaczono: {count} | Wiadomości, w których cię oznaczono: {count}"
+    },
+    "team_room": {
+      "empty_hint": "Tylko gracze i właściciel {team} mogą to czytać.",
+      "removed_title": "Nie należysz już do {team}",
+      "removed_description": "Ten czat został zamknięty. Zniknie z twojej listy, gdy przejdziesz do innego pokoju.",
+      "forbidden_title": "Nie możesz otworzyć tego czatu",
+      "forbidden_description": "Tylko gracze i właściciel {team} mogą go czytać.",
+      "forbidden_description_unnamed": "Tylko gracze i właściciel tej drużyny mogą go czytać."
     }
   },
   "charts": {

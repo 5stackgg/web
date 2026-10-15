@@ -7,7 +7,10 @@ import { useAuthStore } from "~/stores/AuthStore";
 
 const graphql = vi.hoisted(() => ({
   available: true,
-  observers: new Map<string, { observer: any; query: string; variables: any }>(),
+  observers: new Map<
+    string,
+    { observer: any; query: string; variables: any }
+  >(),
   mutate: vi.fn(),
 }));
 
@@ -270,6 +273,35 @@ describe("news comments", () => {
     expect(find(wrapper, "news-comment-hidden").exists()).toBe(false);
   });
 
+  it("shows hostile comment text and hide reasons as plain text, never as markup or links", async () => {
+    const hostile =
+      '<script>alert(1)</script><img src=x onerror="alert(2)"> ' +
+      '<a href="javascript:alert(3)">x</a> javascript:alert(4)';
+    signIn({ role: "moderator" });
+    const wrapper = await mountComments([
+      comment({ text: hostile }),
+      comment({
+        hidden_at: minutesAgo(5),
+        text: hostile,
+        hidden_by_name: '<img src=x onerror="alert(5)">',
+        hidden_reason: hostile,
+      }),
+    ]);
+
+    const texts = wrapper.findAll('[data-testid="news-comment-text"]');
+    expect(texts.map((text) => text.text())).toEqual([hostile, hostile]);
+    for (const node of [
+      ...texts,
+      find(wrapper, "news-comment-hidden-by"),
+    ]) {
+      expect(node.findAll("script, img, a, [onerror]")).toHaveLength(0);
+    }
+    expect(find(wrapper, "news-comment-hidden-by").text()).toContain(
+      `reason: ${hostile}`,
+    );
+    expect(document.querySelectorAll("script, img[onerror]")).toHaveLength(0);
+  });
+
   it("shows staff the hidden text, who hid it and why, and asks for the staff fields", async () => {
     signIn({ role: "moderator" });
     const wrapper = await mountComments([
@@ -321,7 +353,9 @@ describe("news comments", () => {
     expect(edits[0].text()).toContain("6 min");
     expect(
       wrapper
-        .find(`[data-comment-id="${fresh.id}"] [data-testid="news-comment-vote"]`)
+        .find(
+          `[data-comment-id="${fresh.id}"] [data-testid="news-comment-vote"]`,
+        )
         .attributes("disabled"),
     ).toBeDefined();
   });

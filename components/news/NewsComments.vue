@@ -122,7 +122,9 @@ const openFor = computed(() => {
   }
   const left = closesAt - now.value;
   if (left >= DAY) {
-    return t("pages.news.comments.open_days", { count: Math.floor(left / DAY) });
+    return t("pages.news.comments.open_days", {
+      count: Math.floor(left / DAY),
+    });
   }
   return t("pages.news.comments.open_hours", {
     count: Math.max(1, Math.ceil(left / HOUR)),
@@ -242,8 +244,8 @@ async function reveal() {
 
 function refusal(error: unknown) {
   const message =
-    (error as { graphQLErrors?: Array<{ message?: string }> })?.graphQLErrors?.[0]
-      ?.message ?? (error as Error)?.message;
+    (error as { graphQLErrors?: Array<{ message?: string }> })
+      ?.graphQLErrors?.[0]?.message ?? (error as Error)?.message;
 
   toast({
     variant: "destructive",

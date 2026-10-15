@@ -93,7 +93,11 @@ const VOTE = gql`
 `;
 
 const HIDE = gql`
-  mutation SetNewsCommentHidden($id: uuid!, $hidden: Boolean!, $reason: String) {
+  mutation SetNewsCommentHidden(
+    $id: uuid!
+    $hidden: Boolean!
+    $reason: String
+  ) {
     setNewsCommentHidden(id: $id, hidden: $hidden, reason: $reason) {
       id
     }
@@ -151,8 +155,11 @@ export function useNewsComments() {
       context: quiet,
     });
 
-    return (data as { postNewsComment: { id: string; parent_id: string | null } })
-      .postNewsComment;
+    return (
+      data as {
+        postNewsComment: { id: string; parent_id: string | null };
+      }
+    ).postNewsComment;
   }
 
   async function edit(id: string, body: string) {
@@ -197,5 +204,13 @@ export function useNewsComments() {
     });
   }
 
-  return { watchThreads, watchCount, post, edit, remove, toggleVote, setHidden };
+  return {
+    watchThreads,
+    watchCount,
+    post,
+    edit,
+    remove,
+    toggleVote,
+    setHidden,
+  };
 }

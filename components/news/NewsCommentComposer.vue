@@ -86,7 +86,9 @@ onMounted(() => {
       <span
         class="font-mono text-[0.6rem] uppercase tracking-[0.14em] tabular-nums"
         :class="
-          remaining < 200 ? 'text-[hsl(var(--tac-amber))]' : 'text-muted-foreground/70'
+          remaining < 200
+            ? 'text-[hsl(var(--tac-amber))]'
+            : 'text-muted-foreground/70'
         "
       >
         {{

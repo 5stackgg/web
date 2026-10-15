@@ -91,7 +91,8 @@ const canVote = computed(
   () =>
     !mine.value &&
     !hidden.value &&
-    (props.viewer.canWrite || (vote.value.voted && props.viewer.canTakeBackVote)),
+    (props.viewer.canWrite ||
+      (vote.value.voted && props.viewer.canTakeBackVote)),
 );
 
 const editMinutes = computed(() =>

@@ -26,11 +26,18 @@ describe("news comment rules the page mirrors", () => {
   });
 
   it("counts down the 10 minutes a comment can be edited, and none once it is removed", () => {
-    const comment = { created_at: ago(4 * 60_000), deleted_at: null, hidden_at: null };
+    const comment = {
+      created_at: ago(4 * 60_000),
+      deleted_at: null,
+      hidden_at: null,
+    };
 
     expect(newsCommentEditMinutesLeft(comment, NOW)).toBe(6);
     expect(
-      newsCommentEditMinutesLeft({ ...comment, created_at: ago(11 * 60_000) }, NOW),
+      newsCommentEditMinutesLeft(
+        { ...comment, created_at: ago(11 * 60_000) },
+        NOW,
+      ),
     ).toBe(0);
     expect(
       newsCommentEditMinutesLeft({ ...comment, hidden_at: ago(0) }, NOW),

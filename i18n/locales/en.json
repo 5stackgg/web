@@ -10328,6 +10328,8 @@
     "start_the_conversation": "Say something to start the conversation.",
     "jump_to_new": "Jump to new",
     "new_messages": "New messages",
+    "loading_older": "Loading older messages…",
+    "no_older_messages": "No older messages",
     "organizers": {
       "title": "Organizer Chat",
       "no_access": "You do not have access to this page.",

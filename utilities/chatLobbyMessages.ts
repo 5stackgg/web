@@ -46,11 +46,15 @@ export function isChatMessageDeleted(
 // live state wins: the snapshot may have been read before it. Were the snapshot
 // the newer one after all, the event for the toggle it saw is still on its way
 // and replaces the state again.
+//
+// `keepOlder` keeps what is older than the snapshot too: pages the reader
+// scrolled back to, which a snapshot of the newest page says nothing about.
 export function mergeChatSnapshot(
   current: LobbyMessage[],
   snapshot: LobbyMessage[] | null | undefined,
   deleted: ReadonlySet<string>,
   reacted: ReadonlySet<string> = new Set(),
+  keepOlder = false,
 ) {
   const edited = new Map<string, LobbyMessage>();
   const live = new Map<string, LobbyMessage>();
@@ -77,13 +81,19 @@ export function mergeChatSnapshot(
     (latest, message) => Math.max(latest, chatMessageTime(message)),
     0,
   );
+  const oldest = history.reduce(
+    (earliest, message) => Math.min(earliest, chatMessageTime(message)),
+    Infinity,
+  );
 
   const merged = history
     .concat(
       current.filter((message) => {
+        const time = chatMessageTime(message);
+
         return (
           !snapshotKeys.has(chatMessageKey(message)) &&
-          chatMessageTime(message) >= newest
+          (time >= newest || (keepOlder && time < oldest))
         );
       }),
     )
@@ -146,6 +156,17 @@ function keepLiveReactions(
   }
 
   return { ...snapshot, reactions: held.reactions };
+}
+
+// An older page, merged in by time. Equal times keep the page ahead, since it
+// was cut from before everything already held.
+export function prependChatHistory(
+  current: LobbyMessage[],
+  older: LobbyMessage[],
+) {
+  return older
+    .concat(current)
+    .sort((a, b) => chatMessageTime(a) - chatMessageTime(b));
 }
 
 export function insertChatMessage(

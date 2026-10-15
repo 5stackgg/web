@@ -8,6 +8,39 @@
         : 'min-h-0 flex-1 overflow-y-auto'
     "
   >
+    <!-- One fixed height whatever it says, so a page landing above never moves
+         the line being read by this row changing too. -->
+    <div
+      v-if="history"
+      class="flex h-7 items-center justify-center text-[11px] text-muted-foreground/70"
+      data-chat-history-edge
+    >
+      <Transition
+        mode="out-in"
+        enter-from-class="opacity-0"
+        enter-active-class="transition-opacity duration-150 ease-out motion-reduce:transition-none"
+        leave-active-class="transition-opacity duration-100 ease-in motion-reduce:transition-none"
+        leave-to-class="opacity-0"
+      >
+        <span
+          v-if="history.loading"
+          key="loading"
+          class="inline-flex items-center gap-1.5"
+        >
+          <Spinner class="h-3 w-3" />
+          {{ $t("chat.loading_older") }}
+        </span>
+        <span
+          v-else-if="!history.more"
+          key="end"
+          class="flex w-full items-center gap-2"
+        >
+          <span class="h-px flex-1 bg-border/60"></span>
+          {{ $t("chat.no_older_messages") }}
+          <span class="h-px flex-1 bg-border/60"></span>
+        </span>
+      </Transition>
+    </div>
     <!-- Changing the filter rewrites nearly every row, and animating those in
          and out against each other put two sets of text on the same pixels.
          The whole list leaves before the replacement arrives instead -- one
@@ -30,7 +63,11 @@
         enter-to-class="opacity-100 translate-y-0"
         leave-active-class="hidden"
       >
-        <div v-for="(message, index) in messages" :key="messageKey(message)">
+        <div
+          v-for="(message, index) in messages"
+          :key="messageKey(message)"
+          :data-chat-key="messageKey(message)"
+        >
           <div
             v-if="
               lastReadCount > 0 &&
@@ -68,13 +105,22 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
+import { Spinner } from "~/components/ui/spinner";
 import { chatMessageKey } from "~/web-sockets/Socket";
 import { chatMessagePermissions } from "~/utilities/chatMessageActions";
-import type { ChatType, LobbyMessage } from "~/web-sockets/Socket";
+import type {
+  ChatType,
+  LobbyHistory,
+  LobbyMessage,
+} from "~/web-sockets/Socket";
+
+// How near the top a scroll has to come to ask for the page before.
+const LOAD_OLDER_WITHIN_PX = 80;
 
 export default {
   components: {
     ChatMessage,
+    Spinner,
   },
   props: {
     messages: {
@@ -117,8 +163,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    // What is left to page back to. Null where the api does not page.
+    history: {
+      type: Object as PropType<LobbyHistory>,
+      default: null,
+    },
   },
-  emits: ["bottom-state-change", "edit-last-end"],
+  emits: ["bottom-state-change", "edit-last-end", "load-older"],
   data() {
     return {
       isAtBottom: false,
@@ -176,7 +227,63 @@ export default {
         const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
         this.isAtBottom = atBottom;
         this.$emit("bottom-state-change", atBottom);
+        this.checkIfNearTop();
       }
+    },
+    // A list too short to scroll is at the top already. One with no height
+    // at all is hidden, and asks for nothing.
+    checkIfNearTop() {
+      const chatMessages = this.$refs.chatMessages as HTMLElement;
+      if (
+        !chatMessages ||
+        !this.history?.more ||
+        this.history.loading ||
+        chatMessages.clientHeight === 0 ||
+        chatMessages.scrollTop > LOAD_OLDER_WITHIN_PX
+      ) {
+        return;
+      }
+
+      this.$emit("load-older");
+    },
+    // The first line whose bottom is on screen, and where it is now.
+    readingAnchor() {
+      const chatMessages = this.$refs.chatMessages as HTMLElement;
+      if (!chatMessages) {
+        return null;
+      }
+
+      const top = chatMessages.getBoundingClientRect().top;
+      for (const element of chatMessages.querySelectorAll<HTMLElement>(
+        "[data-chat-key]",
+      )) {
+        const rect = element.getBoundingClientRect();
+        if (rect.bottom > top) {
+          return { key: element.dataset.chatKey, top: rect.top };
+        }
+      }
+
+      return null;
+    },
+    // Lines landing above the one being read push it down by their height;
+    // scrolling by the same amount leaves it where it was. A browser that
+    // anchored the scroll itself has already put it back, and this moves
+    // nothing.
+    keepReadingAnchor(anchor: { key?: string; top: number } | null) {
+      const chatMessages = this.$refs.chatMessages as HTMLElement;
+      if (!chatMessages || !anchor?.key) {
+        return;
+      }
+
+      const element = chatMessages.querySelector<HTMLElement>(
+        `[data-chat-key="${CSS.escape(anchor.key)}"]`,
+      );
+      if (!element) {
+        return;
+      }
+
+      chatMessages.scrollTop +=
+        element.getBoundingClientRect().top - anchor.top;
     },
     scrollToBottom(force = false) {
       const chatMessages = this.$refs.chatMessages as HTMLElement;
@@ -223,12 +330,27 @@ export default {
           this.editingId = null;
         }
 
+        // Read before the list re-renders: the watcher runs ahead of it.
+        const anchor =
+          prev.length > 0 && !this.isAtBottom ? this.readingAnchor() : null;
+
         this.$nextTick(() => {
+          this.keepReadingAnchor(anchor);
           this.scrollToBottom(prev.length === 0);
           this.checkIfAtBottom();
         });
       },
       deep: true,
+    },
+    // A page that leaves the list still short of the top asks for the next.
+    history(current, previous) {
+      if (
+        current?.more &&
+        !current.loading &&
+        (!previous?.more || previous.loading)
+      ) {
+        this.$nextTick(() => this.checkIfNearTop());
+      }
     },
   },
   mounted() {

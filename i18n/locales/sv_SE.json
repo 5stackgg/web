@@ -10324,6 +10324,8 @@
     "start_the_conversation": "Säg något för att starta konversationen.",
     "jump_to_new": "Hoppa till nya",
     "new_messages": "Nya meddelanden",
+    "loading_older": "Läser in äldre meddelanden…",
+    "no_older_messages": "Inga äldre meddelanden",
     "organizers": {
       "title": "Arrangörschatt",
       "no_access": "Du har inte åtkomst till den här sidan.",

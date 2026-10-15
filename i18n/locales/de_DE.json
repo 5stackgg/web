@@ -10324,6 +10324,8 @@
     "start_the_conversation": "Schreib etwas, um das Gespräch zu starten.",
     "jump_to_new": "Zu neuen springen",
     "new_messages": "Neue Nachrichten",
+    "loading_older": "Ältere Nachrichten werden geladen…",
+    "no_older_messages": "Keine älteren Nachrichten",
     "organizers": {
       "title": "Veranstalter-Chat",
       "no_access": "Du hast keinen Zugriff auf diese Seite.",

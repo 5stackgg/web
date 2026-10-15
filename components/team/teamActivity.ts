@@ -1,5 +1,6 @@
 import cleanMapName from "~/utilities/cleanMapName";
 import {
+  resultStatusLabelKey,
   teamLineupId,
   teamOpponent,
   teamResult,
@@ -17,6 +18,7 @@ export type ActivityEvent =
       matchId: string;
       opponent: { name: string; teamId: string | null };
       score: [number, number] | null;
+      statusLabelKey: string | null;
       context: string[];
       // Public clips from this match, top play first.
       clips: Clip[];
@@ -130,6 +132,7 @@ function resultEvents(
         teamId: opponent?.team_id ?? null,
       },
       score: resultScore(match, teamId),
+      statusLabelKey: resultStatusLabelKey(match.status),
       context: [
         match.tournament_brackets?.[0]?.stage?.tournament?.name ??
           match.options?.type,

@@ -35,6 +35,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import mapLabel from "~/utilities/mapLabel";
+import { RESULT_STATUSES } from "~/utilities/teamResults";
 
 ChartJS.register(
   CategoryScale,
@@ -82,7 +83,7 @@ function buildMatchesWhere(
   range: { since?: string | null; until?: string | null } = props,
 ) {
   const where: Record<string, any> = {
-    status: { _eq: "Finished" },
+    status: { _in: RESULT_STATUSES },
   };
   if (props.source && props.source !== "all") {
     where.source =

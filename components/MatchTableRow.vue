@@ -14,6 +14,11 @@ import { NuxtLink } from "#components";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import mapLabel from "~/utilities/mapLabel";
+import {
+  isEndedWithResult,
+  RESULT_STATUSES,
+  resultStatusLabelKey,
+} from "~/utilities/teamResults";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { eloFields } from "~/graphql/eloFields";
@@ -37,9 +42,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
 
 <template>
   <div
-    v-if="
-      alwaysShow || !compact || match.status === e_match_status_enum.Finished
-    "
+    v-if="alwaysShow || !compact || isEndedWithResult(match.status)"
     :class="[
       'transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full',
       embedded
@@ -75,6 +78,10 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                 count: match.options.best_of,
               })
             }}
+          </span>
+
+          <span v-if="compact && statusLabelKey" :class="matchTypePillClasses">
+            {{ $t(statusLabelKey) }}
           </span>
 
           <span
@@ -147,6 +154,10 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                 count: match.options.best_of,
               })
             }}
+          </span>
+
+          <span v-if="compact && statusLabelKey" :class="matchTypePillClasses">
+            {{ $t(statusLabelKey) }}
           </span>
 
           <span v-if="clipCount > 0" :class="clipPillClasses">
@@ -1235,7 +1246,7 @@ export default {
   mounted() {
     if (
       (this.player as any)?.steam_id &&
-      (this.match as any)?.status === e_match_status_enum.Finished
+      isEndedWithResult((this.match as any)?.status)
     ) {
       // Eager-load the full match_stats row (matchAllMapsStats). One
       // query, all fields — powers the inline Overview readout AND
@@ -1408,7 +1419,7 @@ export default {
     },
     getTeamScore(match: any, lineupId: string): string | number {
       if (
-        match.status !== e_match_status_enum.Finished &&
+        !isEndedWithResult(match.status) &&
         match.status !== e_match_status_enum.Live
       ) {
         return "";
@@ -1470,7 +1481,7 @@ export default {
         return "text-muted-foreground";
       }
 
-      if (this.match.status === e_match_status_enum.Finished) {
+      if (isEndedWithResult(this.match.status)) {
         if (this.playerLineup) {
           if (this.playerLineup === lineupId) {
             return this.didTeamWin(lineupId)
@@ -1554,10 +1565,12 @@ export default {
       return `match-${this.match?.id}-player-${(this.player as any)?.steam_id}-map-${this.selectedMapId ?? "all"}`;
     },
     isStreamableStatus(): boolean {
-      return ![
-        e_match_status_enum.Finished,
-        e_match_status_enum.Cancelled,
-      ].includes(this.match.status);
+      return ![...RESULT_STATUSES, e_match_status_enum.Canceled].includes(
+        this.match.status,
+      );
+    },
+    statusLabelKey(): string | null {
+      return resultStatusLabelKey(this.match?.status);
     },
     clipCount(): number {
       return (this.match?.match_maps || []).reduce(
@@ -1677,7 +1690,7 @@ export default {
       // looks the same as before.
       return Boolean(
         (this.player as any)?.steam_id &&
-          (this.match as any)?.status === e_match_status_enum.Finished,
+          isEndedWithResult((this.match as any)?.status),
       );
     },
     focusPlayerLineupDetailed(): any {

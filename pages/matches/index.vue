@@ -572,6 +572,7 @@ import { matchRowFields } from "~/graphql/simpleMatchFields";
 import { $, e_match_status_enum, order_by } from "~/generated/zeus";
 import { validate as validateUUID } from "uuid";
 import { useAuthStore } from "~/stores/AuthStore";
+import { RESULT_STATUSES } from "~/utilities/teamResults";
 import {
   CalendarDateTime,
   fromDate,
@@ -618,7 +619,7 @@ const statusPresets: Record<string, e_match_status_enum[]> = {
     e_match_status_enum.Scheduled,
     e_match_status_enum.PickingPlayers,
   ],
-  finished: [e_match_status_enum.Finished],
+  finished: RESULT_STATUSES,
 };
 
 interface FilterTeam {

@@ -31,6 +31,7 @@ import { useLiveTeamMatches } from "~/composables/useLiveTeamMatches";
 import { usePerPage } from "~/composables/usePerPage";
 import { useRestoredRefs } from "~/composables/useRestoredState";
 import { schemaHasField } from "~/utilities/schemaHasType";
+import { RESULT_STATUSES } from "~/utilities/teamResults";
 import {
   lastDirectoryResults,
   lastDirectoryRowCount,
@@ -154,7 +155,7 @@ const rowFields = {
     recent_results: {
       matches: [
         {
-          where: { status: { _eq: $("finished", "e_match_status_enum!") } },
+          where: { status: { _in: $("finished", "[e_match_status_enum!]") } },
           order_by: [{ ended_at: order_by.desc_nulls_last }],
           limit: 5,
         },
@@ -226,7 +227,7 @@ async function load() {
     orderBy: ORDER[sort.value],
     limit: mine.value ? 100 : perPage.value,
     offset: mine.value ? 0 : (page.value - 1) * perPage.value,
-    finished: "Finished",
+    finished: RESULT_STATUSES,
   };
   const key = JSON.stringify([hasLastMatchAt.value, variables]);
   const previous = lastDirectoryResults.get(key);

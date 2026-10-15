@@ -147,3 +147,52 @@ describe("MatchTableRow map names", () => {
     },
   );
 });
+
+describe("MatchTableRow forfeits", () => {
+  function forfeit(status = "Forfeit") {
+    return {
+      ...finishedMatch(),
+      status,
+      e_match_status: { description: status },
+      options: { best_of: 3, type: "Competitive" },
+      match_maps: [
+        {
+          id: "mm-1",
+          winning_lineup_id: "lineup-1",
+          lineup_1_score: 13,
+          lineup_2_score: 4,
+          map: {
+            name: "de_mirage",
+            label: "Mirage",
+            patch: null,
+            poster: null,
+          },
+        },
+      ],
+    };
+  }
+
+  it("lists a forfeit in a compact list, labelled, with the winner's score green", async () => {
+    const wrapper = await mountSuspended(MatchTableRow, {
+      props: { match: forfeit(), compact: true },
+    });
+
+    expect(wrapper.text()).toContain("Forfeit");
+    const scores = wrapper.findAll("span.text-2xl");
+    expect(scores.map((score) => score.text())).toEqual(["1", "0"]);
+    expect(scores[0].classes()).toContain("text-green-500");
+    expect(scores[1].classes()).toContain("text-red-500");
+  });
+
+  it("scores and colours a full row's surrender by its winner", async () => {
+    const wrapper = await mountSuspended(MatchTableRow, {
+      props: { match: forfeit("Surrendered") },
+    });
+
+    const [winner, , loser] = wrapper.findAll("div.text-2xl > span");
+    expect(winner.text()).toBe("1");
+    expect(winner.classes()).toContain("text-green-500");
+    expect(loser.text()).toBe("0");
+    expect(loser.classes()).toContain("text-red-500");
+  });
+});

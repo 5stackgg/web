@@ -1,6 +1,7 @@
 import type { WatchStream } from "~/components/watch/streamPlatform";
 import { dateLocale } from "~/utilities/dateLocale";
 import mapLabel from "~/utilities/mapLabel";
+import { resultStatusLabelKey } from "~/utilities/teamResults";
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
 
@@ -165,11 +166,13 @@ function statusLine(
 ): TickerCellModel["status"] {
   if (kind === "result") {
     const bestOf: number = match?.options?.best_of ?? 1;
+    const labelKey = resultStatusLabelKey(match?.status);
+    const detail = labelKey ? t(labelKey) : null;
     if (bestOf > 1) {
       return {
         dot: null,
         text: t("pages.watch.ticker.final_best_of", { count: bestOf }),
-        detail: null,
+        detail,
       };
     }
     return {
@@ -177,7 +180,7 @@ function statusLine(
       text: hasOvertime(match)
         ? t("pages.watch.ticker.final_overtime")
         : t("pages.watch.ticker.final"),
-      detail: null,
+      detail,
     };
   }
 

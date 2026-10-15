@@ -1,7 +1,7 @@
 import { computed, ref, watch, type Ref } from "vue";
 import gql from "graphql-tag";
 import { useApolloClient } from "@vue/apollo-composable";
-import { e_match_status_enum } from "~/generated/zeus";
+import { isEndedWithResult } from "~/utilities/teamResults";
 
 // Every listed player's aggregate and rating for a page of matches in one
 // request; both views are indexed on (steam_id, match_id).
@@ -46,7 +46,9 @@ export function useMatchRowStats(
     const focus = focusSteamId.value;
     const byMatch = new Map<string, Map<string, any>>();
     for (const match of matches.value) {
-      if (match?.status !== e_match_status_enum.Finished) continue;
+      if (!isEndedWithResult(match?.status)) {
+        continue;
+      }
       const players = new Map<string, any>();
       for (const lineup of [match.lineup_1, match.lineup_2]) {
         for (const lp of lineup?.lineup_players ?? []) {

@@ -4,6 +4,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
 import { ChevronLeft, ChevronRight, List } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
+import { RESULT_STATUSES } from "~/utilities/teamResults";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { watchTickerMatchFields } from "~/graphql/watchTickerFields";
 import { teamMatchesFilter } from "~/graphql/teamPulseFields";
@@ -39,7 +40,7 @@ let generation = 0;
 const resultsQuery = generateQuery({
   matches: [
     {
-      where: { status: { _eq: "Finished" }, ...teamMatchesFilter },
+      where: { status: { _in: RESULT_STATUSES }, ...teamMatchesFilter },
       order_by: [{ ended_at: order_by.desc_nulls_last }],
       limit: $("limit", "Int!"),
       offset: $("offset", "Int!"),

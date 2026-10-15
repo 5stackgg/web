@@ -13,6 +13,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useWatchStage } from "~/composables/useWatchStage";
 import { seededSubscribe } from "~/utilities/seededSubscribe";
+import { RESULT_STATUSES } from "~/utilities/teamResults";
 import {
   TICKER_LIVE_STATUSES,
   TICKER_RESULTS_PAGE,
@@ -84,7 +85,7 @@ const resultsQuery = generateQuery({
   matches: [
     {
       where: {
-        status: { _eq: $("status", "e_match_status_enum!") },
+        status: { _in: $("statuses", "[e_match_status_enum!]") },
         source: { _eq: "5stack" },
       },
       order_by: [{ ended_at: order_by.desc_nulls_last }],
@@ -157,7 +158,7 @@ async function loadResults(reset = false) {
     const { data } = await client.query({
       query: resultsQuery,
       variables: {
-        status: "Finished",
+        statuses: RESULT_STATUSES,
         limit: TICKER_RESULTS_PAGE,
         offset: reset ? 0 : results.value.length,
       },
@@ -194,7 +195,11 @@ async function refreshNewestResults() {
   try {
     const { data } = await client.query({
       query: resultsQuery,
-      variables: { status: "Finished", limit: TICKER_RESULTS_PAGE, offset: 0 },
+      variables: {
+        statuses: RESULT_STATUSES,
+        limit: TICKER_RESULTS_PAGE,
+        offset: 0,
+      },
       fetchPolicy: "network-only",
     });
     const known = new Set(results.value.map((m) => m.id));

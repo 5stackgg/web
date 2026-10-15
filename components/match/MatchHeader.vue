@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { e_match_status_enum } from "~/generated/zeus";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { dateLocale } from "~/utilities/dateLocale";
+import { resultStatusLabelKey } from "~/utilities/teamResults";
 import mapLabel from "~/utilities/mapLabel";
 import { teamMonogram } from "~/components/watch/watchTicker";
 
@@ -43,9 +44,13 @@ const isNative = computed(
 );
 const bestOf = computed<number>(() => props.match.options?.best_of ?? 1);
 const maps = computed<any[]>(() => props.match.match_maps ?? []);
-const statusText = computed(
-  () => props.match.e_match_status?.description || props.match.status,
-);
+const statusText = computed(() => {
+  const labelKey = resultStatusLabelKey(props.match.status);
+  if (labelKey) {
+    return t(labelKey);
+  }
+  return props.match.e_match_status?.description || props.match.status;
+});
 
 const statusTone = computed(() => {
   switch (props.match.status) {
@@ -59,6 +64,8 @@ const statusTone = computed(() => {
     case e_match_status_enum.PickingPlayers:
       return "text-[hsl(var(--topnav-accent))]";
     case e_match_status_enum.Finished:
+    case e_match_status_enum.Forfeit:
+    case e_match_status_enum.Surrendered:
       return "text-success";
     default:
       return "text-muted-foreground";

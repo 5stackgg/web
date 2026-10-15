@@ -75,7 +75,10 @@ function rootField(query: any): string | undefined {
   return query.definitions[0]?.selectionSet?.selections[0]?.name?.value;
 }
 
-async function mount(gameServerNodes = nodes) {
+async function mount(
+  gameServerNodes = nodes,
+  props: Record<string, unknown> = {},
+) {
   useApplicationSettingsStore().settings = [
     { name: "public.game_plugins_enabled", value: "false" },
   ];
@@ -93,6 +96,7 @@ async function mount(gameServerNodes = nodes) {
   }));
 
   const wrapper = await mountSuspended(ServerForm, {
+    props,
     attachTo: document.body,
     global: {
       mixins: (useNuxtApp().vueApp as any)._context.mixins,
@@ -125,6 +129,61 @@ describe("ServerForm server type", () => {
     await flushPromises();
 
     expect(radio("kind-valve").getAttribute("data-state")).toBe("checked");
+  });
+
+  it("offers Valve Custom as a preset and saves it with no mode", async () => {
+    const wrapper = await mount();
+
+    radio("kind-valve").click();
+    await flushPromises();
+
+    const custom = Array.from(
+      document.body.querySelectorAll<HTMLButtonElement>(
+        ".server-form-drawer button",
+      ),
+    ).find((button) => button.textContent?.trim() === "Custom")!;
+    custom.click();
+    await flushPromises();
+
+    expect(radio("kind-valve").getAttribute("data-state")).toBe("checked");
+    expect((wrapper.vm as any).resolveTypeAndMode()).toEqual({
+      type: "Custom",
+      game_mode_id: null,
+    });
+  });
+
+  it("reads a saved Custom server with no mode as the Valve Custom preset", async () => {
+    await mount(nodes, {
+      server: {
+        id: "server-1",
+        label: "Prop Hunt",
+        type: "Custom",
+        game_mode_id: null,
+        game: "cs2",
+        port: 27015,
+        tv_port: 27020,
+        max_players: 32,
+        game_server_node_id: "node-1",
+      },
+    });
+
+    expect(radio("kind-valve").getAttribute("data-state")).toBe("checked");
+  });
+
+  it("keeps Custom Presets picked when there is no mode to pick", async () => {
+    const wrapper = await mount();
+    (wrapper.vm as any).gameModes = [];
+    await flushPromises();
+
+    radio("kind-presets").click();
+    await flushPromises();
+
+    expect(radio("kind-presets").getAttribute("data-state")).toBe("checked");
+    expect(document.body.textContent).toContain("No custom modes are enabled.");
+    expect((wrapper.vm as any).resolveTypeAndMode()).toEqual({
+      type: "Custom",
+      game_mode_id: null,
+    });
   });
 
   it("starts a new server on a node when one can take it", async () => {

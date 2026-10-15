@@ -14,6 +14,7 @@ const props = withDefaults(
     delayDuration?: number;
     tapToggle?: boolean;
     interactive?: boolean;
+    disabled?: boolean;
   }>(),
   {
     size: 12,
@@ -21,6 +22,7 @@ const props = withDefaults(
     delayDuration: 0,
     tapToggle: true,
     interactive: false,
+    disabled: false,
   },
 );
 
@@ -37,7 +39,9 @@ const rootEl = ref<HTMLElement | null>(null);
 function onTriggerClick(event: Event) {
   // When the trigger has its own action (e.g. a metric tab that switches the
   // chart), tapping should perform that action only — not pop the tooltip.
-  if (!isTouch.value || !props.tapToggle) return;
+  if (!isTouch.value || !props.tapToggle || props.disabled) {
+    return;
+  }
   // Otherwise the trigger often sits inside an actionable parent (e.g. a
   // sortable table header). On touch the tap should reveal the tooltip only —
   // swallow it so the parent doesn't also sort/navigate.
@@ -78,6 +82,7 @@ onBeforeUnmount(() => {
       :disable-hoverable-content="!interactive"
     >
       <Tooltip
+        :disabled="disabled"
         :open="isTouch ? open : undefined"
         :disable-closing-trigger="isTouch"
         @update:open="onUpdateOpen"

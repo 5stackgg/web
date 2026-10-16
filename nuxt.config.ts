@@ -85,7 +85,7 @@ export default defineNuxtConfig({
               width: 100%;
               height: 100%;
               background-color: hsl(240 10% 3.9%);
-              background-image: url("/topo-preloader.svg");
+              background-image: url("/topo.svg");
               background-size: cover;
               background-position: center;
               background-repeat: no-repeat;

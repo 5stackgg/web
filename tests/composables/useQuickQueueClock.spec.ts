@@ -3,6 +3,7 @@ import { defineComponent, h } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { useQuickQueue } from "~/composables/useQuickQueue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { setApiClockBehindBy } from "../helpers/serverClock";
 
 const Probe = defineComponent({
   setup() {
@@ -13,18 +14,16 @@ const Probe = defineComponent({
 
 describe("useQuickQueue search clock", () => {
   afterEach(() => {
-    const matchmakingStore = useMatchmakingStore();
-    matchmakingStore.serverClockOffsetMs = null;
-    matchmakingStore.joinedMatchmakingQueues = {
+    setApiClockBehindBy(0);
+    useMatchmakingStore().joinedMatchmakingQueues = {
       details: undefined,
       confirmation: undefined,
     };
   });
 
   it("counts the search on the api's clock when the device clock runs ahead", async () => {
-    const matchmakingStore = useMatchmakingStore();
-    matchmakingStore.serverClockOffsetMs = -120_000;
-    matchmakingStore.joinedMatchmakingQueues = {
+    setApiClockBehindBy(120_000);
+    useMatchmakingStore().joinedMatchmakingQueues = {
       details: {
         type: "Competitive",
         regions: ["USE"],

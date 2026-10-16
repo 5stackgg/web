@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toRef } from "vue";
+import { toRef } from "vue";
 import { useCountdown } from "~/composables/useCountdown";
 
 const props = withDefaults(
@@ -21,16 +21,15 @@ const props = withDefaults(
 const RADIUS = 52;
 const CIRC = 2 * Math.PI * RADIUS;
 
-const { remaining, fraction, urgent } = useCountdown(
+const { seconds, urgent, meter } = useCountdown(
   toRef(props, "deadline"),
   toRef(props, "total"),
 );
-
-const dashOffset = computed(() => CIRC * (1 - fraction.value));
 </script>
 
 <template>
   <div
+    ref="meter"
     class="draft-clock relative grid place-items-center"
     :class="{ pulse: pulse }"
     :style="{ '--accent': accent }"
@@ -58,8 +57,8 @@ const dashOffset = computed(() => CIRC * (1 - fraction.value));
         stroke-width="4"
         stroke-linecap="round"
         :stroke-dasharray="CIRC"
-        :stroke-dashoffset="dashOffset"
         :style="{
+          strokeDashoffset: `calc(${CIRC}px * (1 - var(--countdown, 1)))`,
           filter: `drop-shadow(0 0 6px ${urgent ? 'hsl(var(--destructive) / 0.7)' : `hsl(${accent} / 0.7)`})`,
         }"
       />
@@ -73,7 +72,7 @@ const dashOffset = computed(() => CIRC * (1 - fraction.value));
             compact ? 'text-base' : 'text-3xl',
           ]"
         >
-          <template v-if="deadline">{{ Math.ceil(remaining) }}</template>
+          <template v-if="deadline">{{ seconds }}</template>
           <template v-else>—</template>
         </div>
         <div

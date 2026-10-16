@@ -1,30 +1,40 @@
 import { ref, watch, computed, onUnmounted, type Ref } from "vue";
+import { serverNow, useServerClockStore } from "~/stores/ServerClockStore";
 
-// Drives the remaining seconds off requestAnimationFrame rather than
-// setInterval so anything bound to `fraction` interpolates every frame — a
-// one-second tick makes progress rings and bars visibly step.
+// Only the whole seconds are reactive: the share of time left goes to `meter`
+// as --countdown every frame, so a bar or ring bound to it moves smoothly
+// without re-rendering the component that holds it on every frame.
 export function useCountdown(
   deadline: Ref<string | null | undefined>,
   total: Ref<number>,
   urgentAt = 6,
 ) {
-  const remaining = ref(0);
+  const clock = useServerClockStore();
+  const seconds = ref(0);
+  const meter = ref<HTMLElement | SVGElement | null>(null);
   let raf: number | null = null;
 
   const tick = () => {
-    if (!deadline.value) {
-      remaining.value = 0;
-      raf = null;
-      return;
-    }
+    const end = deadline.value ? new Date(deadline.value).getTime() : NaN;
+    const left = Number.isFinite(end)
+      ? Math.max(0, (end - serverNow()) / 1000)
+      : 0;
 
-    const ms = new Date(deadline.value).getTime() - Date.now();
-    remaining.value = Math.max(0, ms / 1000);
-    raf = remaining.value > 0 ? requestAnimationFrame(tick) : null;
+    seconds.value = Math.ceil(left);
+    meter.value?.style.setProperty(
+      "--countdown",
+      String(
+        Number.isFinite(end) && total.value > 0
+          ? Math.min(1, left / total.value)
+          : 1,
+      ),
+    );
+
+    raf = left > 0 ? requestAnimationFrame(tick) : null;
   };
 
   watch(
-    deadline,
+    [deadline, total, () => clock.offsetMs, meter],
     () => {
       if (raf) {
         cancelAnimationFrame(raf);
@@ -40,16 +50,7 @@ export function useCountdown(
     }
   });
 
-  const fraction = computed(() => {
-    if (!deadline.value || total.value <= 0) {
-      return 1;
-    }
-    return Math.max(0, Math.min(1, remaining.value / total.value));
-  });
+  const urgent = computed(() => seconds.value <= urgentAt && seconds.value > 0);
 
-  const urgent = computed(
-    () => remaining.value <= urgentAt && remaining.value > 0,
-  );
-
-  return { remaining, fraction, urgent };
+  return { seconds, urgent, meter };
 }

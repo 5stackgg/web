@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { Pencil, Link2, LogOut, RotateCw, Clock, X } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
+import { serverNow } from "~/stores/ServerClockStore";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/toast";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
@@ -42,11 +43,11 @@ const accepted = computed(() =>
   (props.room.players || []).filter((p: any) => p.status === "Accepted"),
 );
 
-const now = ref(Date.now());
+const now = ref(serverNow());
 let timer: ReturnType<typeof setInterval> | undefined;
 onMounted(() => {
   timer = setInterval(() => {
-    now.value = Date.now();
+    now.value = serverNow();
   }, 1000);
 });
 onUnmounted(() => {

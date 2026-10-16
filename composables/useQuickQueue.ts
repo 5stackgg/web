@@ -57,6 +57,7 @@ export type QuickQueueMode = {
 export function useQuickQueue() {
   const { t, te } = useI18n();
   const matchmakingStore = useMatchmakingStore();
+  const serverClock = useServerClockStore();
 
   // Only accepted lobby members queue -- pending invites don't count, which is
   // how the api sizes the lobby too.
@@ -119,7 +120,7 @@ export function useQuickQueue() {
       0,
       Math.floor(
         (now.value.getTime() +
-          (matchmakingStore.serverClockOffsetMs ?? 0) -
+          (serverClock.offsetMs ?? 0) -
           new Date(joinedAt).getTime()) /
           1000,
       ),

@@ -14,6 +14,7 @@ const src = computed(() =>
   resolveAvatarUrl(
     props.author.custom_avatar_url || props.author.avatar_url,
     apiDomain,
+    64,
   ),
 );
 </script>

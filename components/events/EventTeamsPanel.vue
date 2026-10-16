@@ -7,6 +7,7 @@ import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 defineProps<{
   teams: Array<{
@@ -22,7 +23,7 @@ defineProps<{
 const apiDomain = useRuntimeConfig().public.apiDomain;
 
 function teamAvatar(url?: string | null): string | null {
-  return url ? `https://${apiDomain}/${url}` : null;
+  return resolveAvatarUrl(url, apiDomain, 128);
 }
 function initials(team: { name: string; short_name?: string | null }): string {
   return (team.short_name || team.name || "?").slice(0, 2).toUpperCase();

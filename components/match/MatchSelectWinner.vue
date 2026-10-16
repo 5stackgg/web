@@ -183,11 +183,12 @@ export default {
           name: lineup.name,
           lineup,
           crest:
-            resolveAvatarUrl(lineup.team?.avatar_url, apiDomain) ??
+            resolveAvatarUrl(lineup.team?.avatar_url, apiDomain, 128) ??
             (isPug
               ? resolveAvatarUrl(
                   captain?.custom_avatar_url || captain?.avatar_url,
                   apiDomain,
+                  128,
                 )
               : null),
           monogram: teamMonogram(lineup.name ?? ""),

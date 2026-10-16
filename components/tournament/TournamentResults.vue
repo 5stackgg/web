@@ -31,6 +31,7 @@ function playerAvatarSrc(player: {
   return resolveAvatarUrl(
     player.custom_avatar_url || player.avatar_url,
     apiDomain,
+    64,
   );
 }
 </script>

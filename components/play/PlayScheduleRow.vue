@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import { generateMutation } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import type { ScheduleRowModel } from "~/components/play/scheduleRow";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const props = defineProps<{
   model: ScheduleRowModel;
@@ -15,9 +16,7 @@ const props = defineProps<{
 // Team avatars are stored as paths on the API host.
 const apiDomain = useRuntimeConfig().public.apiDomain;
 function avatarSrc(avatar: string) {
-  return /^https?:\/\//.test(avatar)
-    ? avatar
-    : `https://${apiDomain}/${avatar}`;
+  return resolveAvatarUrl(avatar, apiDomain, 64);
 }
 
 const path = computed(() =>

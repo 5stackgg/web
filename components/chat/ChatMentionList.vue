@@ -30,7 +30,9 @@ const { t } = useI18n();
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 
 function avatar(candidate: ChatMentionCandidate) {
-  return resolveAvatarUrl(candidate.avatar_url, apiDomain.value) ?? undefined;
+  return (
+    resolveAvatarUrl(candidate.avatar_url, apiDomain.value, 64) ?? undefined
+  );
 }
 
 function initials(name: string) {

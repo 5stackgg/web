@@ -78,6 +78,7 @@ const playerOptions = computed<PlayerOption[]>(() => {
       avatarSrc: resolveAvatarUrl(
         c.target?.avatar_url ?? null,
         apiDomain.value,
+        64,
       ),
       side: lineup?.side ?? null,
       teamName: lineup?.lineup?.name ?? null,

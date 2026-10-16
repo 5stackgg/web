@@ -9,6 +9,7 @@ import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.
 import PlayerMatchScoreboard from "~/components/player/PlayerMatchScoreboard.vue";
 import StatLabel from "~/components/common/StatLabel.vue";
 import { kdColor, hltvColor } from "~/utils/statTiers";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 // Shared grid track template — MUST stay in sync with the header row in
 // PlayerMatchesTable.vue so columns line up across every row. Every track
@@ -911,7 +912,7 @@ export default {
       return {
         name,
         shortName: lu.team?.short_name || null,
-        avatarSrc: url ? `https://${this.apiDomain}/${url}` : null,
+        avatarSrc: resolveAvatarUrl(url, this.apiDomain, 64),
       };
     },
     // The lineup the row reads from: the team's in team mode, lineup 1 in a
@@ -1213,7 +1214,7 @@ export default {
   methods: {
     lineupAvatar(lineup: any): string | null {
       const url = lineup?.team?.avatar_url;
-      return url ? `https://${this.apiDomain}/${url}` : null;
+      return resolveAvatarUrl(url, this.apiDomain, 64);
     },
     lineupLost(lineup: any): boolean {
       const winner = this.match?.winning_lineup_id;

@@ -27,6 +27,7 @@ import {
 } from "~/utilities/eventDisplay";
 import { dateLocale } from "~/utilities/dateLocale";
 import { isEndedWithResult } from "~/utilities/teamResults";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 // The overview reorders itself by phase: before the event it sells the event
 // (when, sign-ups, who's going), during it follows the action (live matches,
@@ -336,7 +337,7 @@ function stepProfile(direction: -1 | 1) {
 }
 
 function teamAvatar(url?: string | null): string | null {
-  return url ? `https://${apiDomain}/${url}` : null;
+  return resolveAvatarUrl(url, apiDomain, 128);
 }
 function teamInitials(team: { name: string; short_name?: string | null }) {
   return (team.short_name || team.name || "?").slice(0, 2).toUpperCase();

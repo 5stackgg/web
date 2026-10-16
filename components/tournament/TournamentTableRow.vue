@@ -4,6 +4,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
 import TournamentMapMosaic from "~/components/tournament/TournamentMapMosaic.vue";
 import { Badge } from "~/components/ui/badge";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 </script>
 
 <template>
@@ -160,7 +161,7 @@ export default {
         return null;
       }
 
-      return `https://${useRuntimeConfig().public.apiDomain}/${logo}`;
+      return resolveAvatarUrl(logo, useRuntimeConfig().public.apiDomain, 128);
     },
     bannerUrl() {
       const banner = this.tournament?.banner;
@@ -168,7 +169,7 @@ export default {
         return null;
       }
 
-      return `https://${useRuntimeConfig().public.apiDomain}/${banner}`;
+      return resolveAvatarUrl(banner, useRuntimeConfig().public.apiDomain, 512);
     },
     categories() {
       return this.tournament?.categories || [];

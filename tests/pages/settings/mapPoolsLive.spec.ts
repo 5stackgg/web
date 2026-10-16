@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { print } from "graphql";
 import type { FieldNode, OperationDefinitionNode } from "graphql";
 import MapPoolsPage from "~/pages/settings/application/map-pools/index.vue";
 
@@ -35,14 +36,17 @@ const rootField = (query: any) =>
 
 describe("map pools page", () => {
   let push: Record<string, (data: unknown) => void> = {};
+  let queries: Record<string, string> = {};
   let unmount: (() => void) | null = null;
 
   beforeEach(() => {
     push = {};
+    queries = {};
     const client = (useNuxtApp() as any).$apollo.defaultClient;
 
     vi.spyOn(client, "subscribe").mockImplementation((options: any) => ({
       subscribe(observer: { next: (value: unknown) => void }) {
+        queries[rootField(options.query)] = print(options.query);
         push[rootField(options.query)] = (data) => observer.next({ data });
         return { closed: false, unsubscribe() {} };
       },
@@ -76,6 +80,8 @@ describe("map pools page", () => {
     await flushPromises();
 
     expect(push.map_pools, "map_pools subscription").toBeDefined();
+    expect(queries.map_pools).toMatch(/enabled: \{\s*_eq: true\s*\}/);
+    expect(queries.map_pools).toMatch(/_neq: Custom/);
 
     push.map_pools({ map_pools: [pool("pool-1", ["de_ancient", "de_cache"])] });
     await flushPromises();

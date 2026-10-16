@@ -3,7 +3,7 @@ import { OperationTypeNode, type DocumentNode } from "graphql";
 
 const queries = new WeakMap<DocumentNode, DocumentNode>();
 
-function asQuery(subscription: DocumentNode): DocumentNode {
+export function asQuery(subscription: DocumentNode): DocumentNode {
   let query = queries.get(subscription);
   if (!query) {
     query = {

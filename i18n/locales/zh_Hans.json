@@ -4817,7 +4817,8 @@
       },
       "pool": {
         "modify_maps": "修改池中的地图",
-        "pool_heading": "{type} 地图池"
+        "pool_heading": "{type} 地图池",
+        "auto_update_locked": "{setting}会让此地图池始终与现役图池一致。关闭后即可自行选择地图。"
       },
       "add_new_map": "添加新地图",
       "maps": "可用地图",

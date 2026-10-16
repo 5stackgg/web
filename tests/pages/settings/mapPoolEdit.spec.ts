@@ -27,13 +27,17 @@ const dust2 = map("de_dust2");
 const nuke = map("de_nuke");
 const poseidon = map("de_poseidon");
 
+const pool = (seed: boolean) => ({
+  id: "pool-1",
+  type: "Competitive",
+  seed,
+  enabled: true,
+  maps: [dust2, poseidon],
+});
+
 const answers: Record<string, unknown> = {
   maps: [dust2, nuke],
-  map_pools_by_pk: {
-    id: "pool-1",
-    type: "Competitive",
-    maps: [dust2, poseidon],
-  },
+  map_pools_by_pk: pool(false),
 };
 
 describe("map pool editor", () => {
@@ -78,6 +82,8 @@ describe("map pool editor", () => {
     unmount?.();
     unmount = null;
     vi.restoreAllMocks();
+    answers.map_pools_by_pk = pool(false);
+    useApplicationSettingsStore().settings = [];
   });
 
   async function mountPage() {
@@ -124,5 +130,40 @@ describe("map pool editor", () => {
       .find((body) => body.includes("delete__map_pool("));
     expect(remove).toContain("map-de_dust2");
     expect(remove).not.toContain("map-de_poseidon");
+  });
+
+  const LOCKED =
+    "Automatic Update Map Pools keeps this pool matching Active Duty. Turn it off to choose maps yourself.";
+
+  it("locks a seeded pool while auto-update keeps it in sync, and says why", async () => {
+    answers.map_pools_by_pk = pool(true);
+    useApplicationSettingsStore().settings = [
+      { name: "update_map_pools", value: "true" },
+    ];
+    const wrapper = await mountPage();
+
+    (tile(wrapper, "de_nuke") as HTMLElement).click();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain(LOCKED);
+    expect(tile(wrapper, "de_nuke")!.classList.contains("opacity-40")).toBe(
+      true,
+    );
+  });
+
+  it("leaves a seeded pool editable with auto-update off", async () => {
+    answers.map_pools_by_pk = pool(true);
+    useApplicationSettingsStore().settings = [
+      { name: "update_map_pools", value: "false" },
+    ];
+    const wrapper = await mountPage();
+
+    (tile(wrapper, "de_nuke") as HTMLElement).click();
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain(LOCKED);
+    expect(tile(wrapper, "de_nuke")!.classList.contains("opacity-40")).toBe(
+      false,
+    );
   });
 });

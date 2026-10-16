@@ -4817,7 +4817,8 @@
       },
       "pool": {
         "modify_maps": "Modificar los mapas del pool",
-        "pool_heading": "Pool de {type}"
+        "pool_heading": "Pool de {type}",
+        "auto_update_locked": "{setting} mantiene este grupo igual que Active Duty. Desactívalo para elegir los mapas tú mismo."
       },
       "add_new_map": "Añadir mapa",
       "maps": "Mapas disponibles",

@@ -4817,7 +4817,8 @@
       },
       "pool": {
         "modify_maps": "Havuzdaki haritaları düzenle",
-        "pool_heading": "{type} havuzu"
+        "pool_heading": "{type} havuzu",
+        "auto_update_locked": "{setting} bu havuzu Active Duty ile eşleşik tutar. Haritaları kendiniz seçmek için kapatın."
       },
       "add_new_map": "Yeni harita ekle",
       "maps": "Kullanılabilir haritalar",

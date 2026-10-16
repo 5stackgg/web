@@ -4817,7 +4817,8 @@
       },
       "pool": {
         "modify_maps": "풀에 포함된 맵 수정",
-        "pool_heading": "{type} 풀"
+        "pool_heading": "{type} 풀",
+        "auto_update_locked": "{setting}이(가) 이 풀을 액티브 듀티와 일치하게 유지합니다. 맵을 직접 고르려면 끄세요."
       },
       "add_new_map": "새 맵 추가",
       "maps": "사용 가능한 맵",

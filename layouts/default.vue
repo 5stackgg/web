@@ -83,6 +83,13 @@ useChatBlocks();
 const route = useRoute();
 const authStore = useAuthStore();
 
+// TopNav loads MatchLobbies lazily, and the root Suspense holds the pre-loader
+// until it arrives. Asking for it here, while TopNav's own chunk is still on
+// its way, keeps a signed-in boot from paying for the two one after the other.
+if (authStore.me) {
+  void import("~/layouts/components/MatchLobbies.vue");
+}
+
 const showLeftNav = computed(() => {
   return authStore.isRoleAbove(e_player_roles_enum.match_organizer);
 });
@@ -184,7 +191,7 @@ provide("containContent", containContent);
 
   <EnablePushPrompt v-if="authStore.me" />
 
-  <ActionToasts />
+  <ActionToasts v-if="authStore.me" />
 </template>
 
 <script lang="ts">

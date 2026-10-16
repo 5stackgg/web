@@ -7,6 +7,7 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { usePluginsStore } from "~/stores/Plugins";
 import { pageKeyWithoutTabQuery } from "~/utilities/pageKey";
+import { afterReveal } from "~/utilities/afterReveal";
 
 const MatchmakingConfirm = defineAsyncComponent(
   () => import("~/components/matchmaking/MatchmakingConfirm.vue"),
@@ -27,7 +28,10 @@ const StreamGlobal = defineAsyncComponent(
   () => import("~/components/StreamGlobal.vue"),
 );
 
-polyfillCountryFlagEmojis();
+// Its support probe paints emoji to a canvas and reads the pixels back -- ~76ms
+// of main thread at 4x CPU. Where flags do need polyfilling the webfont loads
+// asynchronously anyway, so nothing on screen waits for it.
+afterReveal(() => polyfillCountryFlagEmojis());
 
 const { brandName } = useBranding();
 const { t } = useI18n();

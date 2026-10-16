@@ -1,0 +1,88 @@
+diff --git a/dist/runtime/messages.js b/dist/runtime/messages.js
+index 42d6dac23f40a0f1fbb94ce72f4501964fa625f0..b37dd7f73fbb4c3aa93fd97120081c386a4e0868 100644
+--- a/dist/runtime/messages.js
++++ b/dist/runtime/messages.js
+@@ -1,3 +1,4 @@
++import { toRaw } from "vue";
+ import { deepCopy, isArray, isFunction, isString, toTypeString } from "@intlify/shared";
+ import { createLogger } from "#nuxt-i18n/logger";
+ const cacheMessages = /* @__PURE__ */ new Map();
+@@ -66,6 +67,17 @@ export async function loadLocale(locale, localeLoaders, setter, nuxt) {
+     __DEBUG__ && logger.warn("Could not find locale file messages for locale code: " + locale);
+     return;
+   }
++  if (loaders.length === 1) {
++    const [loader] = loaders;
++    let message = null;
++    if (cacheMessages && cacheMessages.has(loader.key) && loader.cache) {
++      message = cacheMessages.get(loader.key);
++    } else {
++      message = await nuxt.runWithContext(() => loadMessage(locale, loader, nuxt));
++    }
++    setter(locale, message ?? {});
++    return;
++  }
+   const targetMessage = {};
+   for (const loader of loaders) {
+     let message = null;
+@@ -91,3 +103,16 @@ export async function loadAndSetLocaleMessages(locale, localeLoaders, messages,
+   };
+   await loadLocale(locale, localeLoaders, setter, nuxt);
+ }
++export function createLocaleMessageSetter(composer) {
++  return (locale, message) => {
++    const current = composer.getLocaleMessage(locale);
++    if (current && toRaw(current) === message) {
++      return;
++    }
++    if (current && Object.keys(current).length > 0) {
++      composer.mergeLocaleMessage(locale, message);
++      return;
++    }
++    composer.setLocaleMessage(locale, message);
++  };
++}
+diff --git a/dist/runtime/plugins/i18n.js b/dist/runtime/plugins/i18n.js
+index 3cc82bd0aa1128321934fde5f62480c755e3bd1b..ca795d4c54b7dcb22d3a7c1d8d505b54dd5faf72 100644
+--- a/dist/runtime/plugins/i18n.js
++++ b/dist/runtime/plugins/i18n.js
+@@ -9,7 +9,7 @@ import {
+   parallelPlugin,
+   normalizedLocales
+ } from "#build/i18n.options.mjs";
+-import { loadVueI18nOptions, loadLocale } from "../messages.js";
++import { loadVueI18nOptions, loadLocale, createLocaleMessageSetter } from "../messages.js";
+ import { loadAndSetLocale, detectRedirect, navigate, extendBaseUrl, createNuxtI18nDev } from "../utils.js";
+ import {
+   getLocaleCookie,
+@@ -98,7 +98,7 @@ export default defineNuxtPlugin({
+           __DEBUG__ && logger.log("redirectPath on setLocale", redirectPath);
+           await nuxt.runWithContext(() => navigate({ nuxt, redirectPath, locale, route }, true));
+         };
+-        composer.loadLocaleMessages = async (locale) => await loadLocale(locale, localeLoaders, composer.mergeLocaleMessage.bind(composer), nuxt);
++        composer.loadLocaleMessages = async (locale) => await loadLocale(locale, localeLoaders, createLocaleMessageSetter(composer), nuxt);
+         composer.differentDomains = runtimeI18n.differentDomains;
+         composer.defaultLocale = runtimeI18n.defaultLocale;
+         composer.getBrowserLocale = () => getBrowserLocale();
+diff --git a/dist/runtime/utils.js b/dist/runtime/utils.js
+index a73d788c6629890e8f83fcea8099171b255b5933..8e923560cdb754ee219bca30a346403f17ca86db 100644
+--- a/dist/runtime/utils.js
++++ b/dist/runtime/utils.js
+@@ -12,7 +12,7 @@ import {
+ import { getComposer } from "./compatibility.js";
+ import { getDomainFromLocale, getHost, getLocaleDomain } from "./domain.js";
+ import { detectBrowserLanguage, runtimeDetectBrowserLanguage } from "./internal.js";
+-import { loadAndSetLocaleMessages, loadLocale, loadVueI18nOptions, makeFallbackLocaleCodes } from "./messages.js";
++import { createLocaleMessageSetter, loadAndSetLocaleMessages, loadLocale, loadVueI18nOptions, makeFallbackLocaleCodes } from "./messages.js";
+ import { localePath, switchLocalePath } from "./routing/routing.js";
+ import { createLogger } from "#nuxt-i18n/logger";
+ import { unref } from "vue";
+@@ -61,7 +61,7 @@ export async function loadAndSetLocale(newLocale, initial = false) {
+     return false;
+   }
+   const i18nFallbackLocales = unref(nuxtApp.$i18n.fallbackLocale);
+-  const setter = nuxtApp.$i18n.mergeLocaleMessage.bind(nuxtApp.$i18n);
++  const setter = createLocaleMessageSetter(nuxtApp.$i18n);
+   if (i18nFallbackLocales) {
+     const fallbackLocales = makeFallbackLocaleCodes(i18nFallbackLocales, [newLocale]);
+     await Promise.all(fallbackLocales.map((locale) => loadLocale(locale, localeLoaders, setter, nuxtApp)));

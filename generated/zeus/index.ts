@@ -24724,6 +24724,7 @@ match_veto_picks_aggregate?: [{	/** distinct select on columns */
 	name?:boolean | `@${string}`,
 	patch?:boolean | `@${string}`,
 	poster?:boolean | `@${string}`,
+	seeded?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -24794,6 +24795,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	name?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	patch?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
 	poster?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	seeded?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum_comparison_exp"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>
 };
@@ -24812,6 +24814,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	name?: string | undefined | null | Variable<any, string>,
 	patch?: string | undefined | null | Variable<any, string>,
 	poster?: string | undefined | null | Variable<any, string>,
+	seeded?: boolean | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: string | undefined | null | Variable<any, string>
 };
@@ -24890,6 +24893,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	name?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	patch?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	poster?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	seeded?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	type?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
@@ -24913,6 +24917,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	name?: string | undefined | null | Variable<any, string>,
 	patch?: string | undefined | null | Variable<any, string>,
 	poster?: string | undefined | null | Variable<any, string>,
+	seeded?: boolean | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: string | undefined | null | Variable<any, string>
 };
@@ -24933,6 +24938,7 @@ count?: [{	columns?: Array<ValueTypes["maps_select_column"]> | undefined | null 
 	name?: string | undefined | null | Variable<any, string>,
 	patch?: string | undefined | null | Variable<any, string>,
 	poster?: string | undefined | null | Variable<any, string>,
+	seeded?: boolean | undefined | null | Variable<any, string>,
 	type?: ValueTypes["e_match_types_enum"] | undefined | null | Variable<any, string>,
 	workshop_map_id?: string | undefined | null | Variable<any, string>
 };
@@ -117208,6 +117214,7 @@ match_veto_picks_aggregate?: [{	/** distinct select on columns */
 	name?:boolean | `@${string}`,
 	patch?:boolean | `@${string}`,
 	poster?:boolean | `@${string}`,
+	seeded?:boolean | `@${string}`,
 	type?:boolean | `@${string}`,
 	workshop_map_id?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -117278,6 +117285,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	name?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	patch?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
 	poster?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	seeded?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum_comparison_exp"] | undefined | null,
 	workshop_map_id?: ResolverInputTypes["String_comparison_exp"] | undefined | null
 };
@@ -117296,6 +117304,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -117374,6 +117383,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	name?: ResolverInputTypes["order_by"] | undefined | null,
 	patch?: ResolverInputTypes["order_by"] | undefined | null,
 	poster?: ResolverInputTypes["order_by"] | undefined | null,
+	seeded?: ResolverInputTypes["order_by"] | undefined | null,
 	type?: ResolverInputTypes["order_by"] | undefined | null,
 	workshop_map_id?: ResolverInputTypes["order_by"] | undefined | null
 };
@@ -117397,6 +117407,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -117417,6 +117428,7 @@ count?: [{	columns?: Array<ResolverInputTypes["maps_select_column"]> | undefined
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: ResolverInputTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -207628,6 +207640,7 @@ export type ModelTypes = {
 	name: string,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded: boolean,
 	type: ModelTypes["e_match_types_enum"],
 	workshop_map_id?: string | undefined | null
 };
@@ -207695,6 +207708,7 @@ export type ModelTypes = {
 	name?: ModelTypes["String_comparison_exp"] | undefined | null,
 	patch?: ModelTypes["String_comparison_exp"] | undefined | null,
 	poster?: ModelTypes["String_comparison_exp"] | undefined | null,
+	seeded?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	type?: ModelTypes["e_match_types_enum_comparison_exp"] | undefined | null,
 	workshop_map_id?: ModelTypes["String_comparison_exp"] | undefined | null
 };
@@ -207712,6 +207726,7 @@ export type ModelTypes = {
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: ModelTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -207787,6 +207802,7 @@ export type ModelTypes = {
 	name?: ModelTypes["order_by"] | undefined | null,
 	patch?: ModelTypes["order_by"] | undefined | null,
 	poster?: ModelTypes["order_by"] | undefined | null,
+	seeded?: ModelTypes["order_by"] | undefined | null,
 	type?: ModelTypes["order_by"] | undefined | null,
 	workshop_map_id?: ModelTypes["order_by"] | undefined | null
 };
@@ -207807,6 +207823,7 @@ export type ModelTypes = {
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: ModelTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -207827,6 +207844,7 @@ export type ModelTypes = {
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: ModelTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -290589,6 +290607,7 @@ export type GraphQLTypes = {
 	name: string,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded: boolean,
 	type: GraphQLTypes["e_match_types_enum"],
 	workshop_map_id?: string | undefined | null
 };
@@ -290658,6 +290677,7 @@ export type GraphQLTypes = {
 	name?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	patch?: GraphQLTypes["String_comparison_exp"] | undefined | null,
 	poster?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	seeded?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	type?: GraphQLTypes["e_match_types_enum_comparison_exp"] | undefined | null,
 	workshop_map_id?: GraphQLTypes["String_comparison_exp"] | undefined | null
 };
@@ -290676,6 +290696,7 @@ export type GraphQLTypes = {
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -290754,6 +290775,7 @@ export type GraphQLTypes = {
 	name?: GraphQLTypes["order_by"] | undefined | null,
 	patch?: GraphQLTypes["order_by"] | undefined | null,
 	poster?: GraphQLTypes["order_by"] | undefined | null,
+	seeded?: GraphQLTypes["order_by"] | undefined | null,
 	type?: GraphQLTypes["order_by"] | undefined | null,
 	workshop_map_id?: GraphQLTypes["order_by"] | undefined | null
 };
@@ -290777,6 +290799,7 @@ export type GraphQLTypes = {
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -290797,6 +290820,7 @@ export type GraphQLTypes = {
 	name?: string | undefined | null,
 	patch?: string | undefined | null,
 	poster?: string | undefined | null,
+	seeded?: boolean | undefined | null,
 	type?: GraphQLTypes["e_match_types_enum"] | undefined | null,
 	workshop_map_id?: string | undefined | null
 };
@@ -355786,18 +355810,21 @@ export enum maps_select_column {
 	name = "name",
 	patch = "patch",
 	poster = "poster",
+	seeded = "seeded",
 	type = "type",
 	workshop_map_id = "workshop_map_id"
 }
 /** select "maps_aggregate_bool_exp_bool_and_arguments_columns" columns of table "maps" */
 export enum maps_select_column_maps_aggregate_bool_exp_bool_and_arguments_columns {
 	active_pool = "active_pool",
-	enabled = "enabled"
+	enabled = "enabled",
+	seeded = "seeded"
 }
 /** select "maps_aggregate_bool_exp_bool_or_arguments_columns" columns of table "maps" */
 export enum maps_select_column_maps_aggregate_bool_exp_bool_or_arguments_columns {
 	active_pool = "active_pool",
-	enabled = "enabled"
+	enabled = "enabled",
+	seeded = "seeded"
 }
 /** update columns of table "maps" */
 export enum maps_update_column {
@@ -355809,6 +355836,7 @@ export enum maps_update_column {
 	name = "name",
 	patch = "patch",
 	poster = "poster",
+	seeded = "seeded",
 	type = "type",
 	workshop_map_id = "workshop_map_id"
 }

@@ -11195,6 +11195,7 @@ export const AllTypesProps: Record<string,any> = {
 		name:"String_comparison_exp",
 		patch:"String_comparison_exp",
 		poster:"String_comparison_exp",
+		seeded:"Boolean_comparison_exp",
 		type:"e_match_types_enum_comparison_exp",
 		workshop_map_id:"String_comparison_exp"
 	},
@@ -11246,6 +11247,7 @@ export const AllTypesProps: Record<string,any> = {
 		name:"order_by",
 		patch:"order_by",
 		poster:"order_by",
+		seeded:"order_by",
 		type:"order_by",
 		workshop_map_id:"order_by"
 	},
@@ -59879,6 +59881,7 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		patch:"String",
 		poster:"String",
+		seeded:"Boolean",
 		type:"e_match_types_enum",
 		workshop_map_id:"String"
 	},

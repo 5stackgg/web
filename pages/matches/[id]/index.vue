@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { computed, markRaw, onUnmounted, provide, ref, watch } from "vue";
+import {
+  computed,
+  defineAsyncComponent,
+  markRaw,
+  onUnmounted,
+  provide,
+  ref,
+  watch,
+} from "vue";
 import { useRoute } from "vue-router";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { useMatchClips } from "~/composables/useMatchClips";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
-import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import CameraRequirementOverlay from "~/components/match/CameraRequirementOverlay.vue";
 import MatchHighlightsReel from "~/components/match/MatchHighlightsReel.vue";
@@ -20,7 +27,6 @@ import MatchTwitchPovs from "~/components/match/MatchTwitchPovs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
-import ChatLobby from "~/components/chat/ChatLobby.vue";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
 import { useMatchContext } from "~/composables/useMatchContext";
 
@@ -121,6 +127,12 @@ watch(
   { immediate: true },
 );
 onUnmounted(() => rankSub?.unsubscribe());
+const MatchAdminBottomBar = defineAsyncComponent(
+  () => import("~/components/match/MatchAdminBottomBar.vue"),
+);
+const ChatLobby = defineAsyncComponent(
+  () => import("~/components/chat/ChatLobby.vue"),
+);
 </script>
 
 <template>

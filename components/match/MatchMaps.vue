@@ -398,14 +398,6 @@ export default {
       name,
     ).then((v) => {
       this.mapHasMesh = v;
-      if (v && this.hasDemo && this.hasDemoMetadata && this.fastConnection()) {
-        // Warm the replay's files once the page is quiet.
-        if ("requestIdleCallback" in window) {
-          requestIdleCallback(() => this.prefetchReplay());
-        } else {
-          setTimeout(() => this.prefetchReplay(), 2000);
-        }
-      }
     });
   },
   computed: {
@@ -594,15 +586,6 @@ export default {
       if (popup) {
         popup.focus();
       }
-    },
-    /** Not on metered or slow links: there the files wait for the click. */
-    fastConnection() {
-      const connection = (
-        navigator as Navigator & {
-          connection?: { saveData?: boolean; effectiveType?: string };
-        }
-      ).connection;
-      return !connection?.saveData && !/(^|-)2g|3g/.test(connection?.effectiveType ?? "");
     },
     prefetchReplay() {
       const name = this.matchMap?.map?.name;

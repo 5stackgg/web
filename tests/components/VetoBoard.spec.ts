@@ -315,14 +315,34 @@ describe("VetoBoard choosing", () => {
       isPicking: false,
     });
 
+    // At once: no wait for the pointer to settle.
     await slice(wrapper, "mirage").trigger("pointermove");
-    await new Promise((resolve) => setTimeout(resolve, 120));
-    await nextTick();
 
     expect(slice(wrapper, "mirage").classes()).toContain("is-wide");
     expect(slice(wrapper, "mirage").findAll(".vb-rec")).toHaveLength(2);
     await slice(wrapper, "mirage").trigger("click");
     expect(wrapper.emitted("confirm")).toBeUndefined();
+  });
+
+  it("keeps the open map open while the pointer crosses a banned one", async () => {
+    const wrapper = await mount({
+      steps: steps(["train", "dust2"]),
+      pickingLineup: 1,
+      isPicking: true,
+      scouting: null,
+    });
+
+    await slice(wrapper, "mirage").trigger("pointermove");
+    await slice(wrapper, "dust2").trigger("pointermove");
+
+    expect(slice(wrapper, "mirage").classes()).toContain("is-wide");
+    expect(slice(wrapper, "dust2").classes()).not.toContain("is-wide");
+    expect(slice(wrapper, "dust2").classes()).toContain("is-thin");
+
+    // The next open map takes over the moment the pointer reaches it.
+    await slice(wrapper, "nuke").trigger("pointermove");
+    expect(slice(wrapper, "nuke").classes()).toContain("is-wide");
+    expect(slice(wrapper, "mirage").classes()).not.toContain("is-wide");
   });
 
   it("opens your own move for a moment when it lands", async () => {

@@ -182,8 +182,9 @@ const selected = ref<string | null>(null);
 const hover = ref<string | null>(null);
 const echo = ref<string | null>(null);
 const replayId = ref<string | null>(null);
-let hoverTimer: ReturnType<typeof setTimeout> | undefined;
-let pendingHover: string | null = null;
+// The open map last under the pointer: banned and played maps, and the gaps
+// between maps, leave it as it is.
+let pointerItem: string | null = null;
 let replayTimer: ReturnType<typeof setTimeout> | undefined;
 
 const recordCount = computed(
@@ -199,7 +200,6 @@ watch(recordCount, (now, prev) => {
   if (prev === undefined || now <= prev || now - prev > 2) return;
   const newest = props.steps[now - 1];
   if (!newest?.record || newest.type === "Side") return;
-  clearTimeout(hoverTimer);
   hover.value = null;
   replayId.value = newest.record.itemId;
   clearTimeout(replayTimer);
@@ -207,7 +207,7 @@ watch(recordCount, (now, prev) => {
   if (newest.type === "Decider") return;
   replayTimer = setTimeout(() => {
     replayId.value = null;
-    hover.value = pendingHover;
+    hover.value = pointerItem;
   }, REPLAY_MS);
 });
 // The turn passing clears a choice, except the one being sent: the turn can
@@ -223,7 +223,6 @@ const chosen = computed(() =>
 );
 
 onBeforeUnmount(() => {
-  clearTimeout(hoverTimer);
   clearTimeout(replayTimer);
 });
 
@@ -272,6 +271,15 @@ function placeArm() {
 }
 watch(markId, () => nextTick(placeArm));
 
+// A banned map is one fixed sliver (36px across, a little less tall on a
+// phone's rows) whatever else is open: it never trades width with the map
+// that opens, so nothing about it suggests it can be opened or chosen. Only
+// its replay opens it, and then it is weighted like any open map.
+const THIN_W = 36;
+const isOut = (id: string) => stateOf(id).status === "Ban";
+const isThin = (id: string) =>
+  isOut(id) && !isWide(id) && sideMapId.value !== id;
+
 function weight(id: string) {
   const status = stateOf(id).status;
   if (sideMapId.value) {
@@ -303,6 +311,7 @@ const stageVars = computed(() =>
         "--pw": stageW.value
           ? `${Math.round(stageW.value * 0.52)}px`
           : undefined,
+        "--vb-thin-w": `${THIN_W}px`,
       }
     : {
         "--ph": stageH.value
@@ -314,19 +323,30 @@ let stageObserver: ResizeObserver | undefined;
 // The width a map opens to: its share with it open and the rest at rest.
 // The same whether or not it is open right now, so its words keep their
 // layout while it closes too.
-const restWeight = (id: string) => {
-  const status = stateOf(id).status;
-  return status === "Ban" ? 0.42 : status === "Pick" ? 0.68 : 1;
-};
 const openWidth = (id: string) => {
   if (!stageRow.value || !stageW.value || sideMapId.value) return null;
-  const free = stageW.value - 4 * (props.items.length - 1);
+  // Banned maps hold their own width (a banned map that opens for its replay
+  // is the one that isn't held).
+  const held = props.items.filter(
+    (item) => item.id !== id && isOut(item.id),
+  ).length;
+  const free = stageW.value - 4 * (props.items.length - 1) - held * THIN_W;
   if (done.value) {
-    const total = props.items.reduce((sum, item) => sum + weight(item.id), 0);
+    const total = props.items.reduce(
+      (sum, item) =>
+        sum + (item.id !== id && isOut(item.id) ? 0 : weight(item.id)),
+      0,
+    );
     return Math.max(0, (free * weight(id)) / total);
   }
   const rest = props.items.reduce(
-    (sum, item) => sum + (item.id === id ? 0 : restWeight(item.id)),
+    (sum, item) =>
+      sum +
+      (item.id === id || isOut(item.id)
+        ? 0
+        : stateOf(item.id).status === "Pick"
+          ? 0.68
+          : 1),
     0,
   );
   return Math.max(0, (free * 4.2) / (rest + 4.2));
@@ -386,6 +406,8 @@ function onKey(event: KeyboardEvent, id: string) {
 // then confirms, Esc lets go. The hint shows while you steer by keys.
 const stageEl = ref<HTMLElement | null>(null);
 const keys = ref(false);
+// A map opened by the arrow keys snaps open: no motion on keyboard moves.
+const keyMove = ref(false);
 
 function onStageKey(event: KeyboardEvent) {
   const s = step.value;
@@ -409,6 +431,7 @@ function onStageKey(event: KeyboardEvent) {
   if (forward || back) {
     event.preventDefault();
     keys.value = true;
+    keyMove.value = true;
     const open = available.value;
     if (!open.length) return;
     const at = open.indexOf(selected.value ?? hover.value ?? "");
@@ -442,22 +465,21 @@ function onStageFocusOut(event: FocusEvent) {
   }
 }
 
-// Hover intent: a slice opens once the pointer settles on it, so sweeping
-// across the stage does not ripple every slice open in turn.
+// The map under the pointer opens at once, so a sweep ripples through every
+// map it crosses and turning back never waits. A banned or played map (or the
+// gap between two maps) can't open, so crossing it changes nothing: the map
+// that is open stays open.
 function onPointerMove(event: PointerEvent) {
   if (event.pointerType === "touch") return;
+  keyMove.value = false;
   const el = (event.target as HTMLElement).closest<HTMLElement>("[data-item]");
-  const id = el?.dataset.item ?? null;
-  if (id === pendingHover) return;
-  pendingHover = id;
-  clearTimeout(hoverTimer);
-  hoverTimer = setTimeout(() => {
-    hover.value = id;
-  }, 90);
+  const id = el?.dataset.item;
+  if (!id || id === pointerItem || !available.value.includes(id)) return;
+  pointerItem = id;
+  hover.value = id;
 }
 function onPointerLeave() {
-  clearTimeout(hoverTimer);
-  pendingHover = null;
+  pointerItem = null;
   hover.value = null;
 }
 
@@ -1196,7 +1218,11 @@ onBeforeUnmount(() => {
       <div
         ref="stageEl"
         class="vb-stage"
-        :class="{ 'is-region': isRegion, 'is-yours': mine }"
+        :class="{
+          'is-region': isRegion,
+          'is-yours': mine,
+          'is-keyed': keyMove,
+        }"
         :style="stageVars"
         :tabindex="live ? 0 : undefined"
         @pointermove="onPointerMove"
@@ -1215,7 +1241,7 @@ onBeforeUnmount(() => {
           :class="{
             'is-wide': isWide(item.id),
             'is-mid': isWide(item.id) && done && replayId !== item.id,
-            'is-thin': weight(item.id) < 0.5,
+            'is-thin': isThin(item.id),
             'is-live': isLive(item.id),
             'is-selected': chosen === item.id,
             'is-siding': sideMapId === item.id,
@@ -1826,7 +1852,16 @@ onBeforeUnmount(() => {
   overflow: hidden;
   background: var(--vb-surface);
   outline: none;
-  transition: flex-grow 440ms cubic-bezier(0.25, 1, 0.5, 1);
+  /* Quick and retargetable: a map opening under a fast sweep is overtaken by
+     the next one mid-way instead of finishing first. */
+  transition: flex 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.vb-slice.is-thin {
+  flex: 0 0 var(--vb-thin-w, 30px);
+}
+.vb-stage.is-keyed .vb-slice,
+.vb-stage.is-keyed .vb-slice::before {
+  transition: none;
 }
 /* Each map has softly rounded corners of its own, so the outline on the
    one you choose (or focus) is rounded too; the stage's outer corners stay
@@ -2112,7 +2147,7 @@ onBeforeUnmount(() => {
   translate: -50% 0;
   pointer-events: none;
   background: var(--vb-foot, transparent);
-  transition: width 440ms cubic-bezier(0.25, 1, 0.5, 1);
+  transition: width 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 /* An open map's mark runs the width of its words, and draws back to a tick
    as the map closes. */
@@ -2134,6 +2169,31 @@ onBeforeUnmount(() => {
 .vb-slice.is-live {
   cursor: pointer;
   user-select: none;
+}
+/* On your turn a banned or played map says it can't be taken: the cursor,
+   and a slight lift of its name and emblem under the pointer, nothing that
+   moves. */
+.vb.is-live
+  .vb-slice:is([data-status="Ban"], [data-status="Pick"]):not(.is-wide):not(
+    .is-siding
+  ) {
+  cursor: not-allowed;
+}
+.vb-slice.is-thin :is(.vb-vname, .vb-vpatch) {
+  transition:
+    color 150ms ease-out,
+    opacity 150ms ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .vb-slice.is-thin:hover .vb-vname {
+    color: hsl(0 0% 100% / 0.85);
+  }
+  .vb-slice.is-thin[data-status="Ban"]:hover .vb-vpatch {
+    opacity: 0.7;
+  }
+  .vb-slice.is-thin[data-status="Pick"]:hover .vb-vpatch {
+    opacity: 1;
+  }
 }
 .vb-slice.is-live.is-wide .vb-poster {
   transform: scale(1.03);

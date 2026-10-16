@@ -32,10 +32,15 @@ export function seededSubscribe<T = any>(
   },
 ) {
   let live = false;
+  let seeded: string | undefined;
   const subscription = client.subscribe<T>(options).subscribe({
     next: (result) => {
+      const repeatsSeed =
+        !live && seeded !== undefined && JSON.stringify(result.data) === seeded;
       live = true;
-      observer.next(result);
+      if (!repeatsSeed) {
+        observer.next(result);
+      }
     },
     error: observer.error,
   });
@@ -49,6 +54,7 @@ export function seededSubscribe<T = any>(
     })
     .then(({ data }) => {
       if (data && !live && !subscription.closed) {
+        seeded = JSON.stringify(data);
         observer.next({ data });
       }
     })

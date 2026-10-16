@@ -125,8 +125,12 @@ async function mountMatch(answer: Record<string, unknown>) {
     },
   }));
 
+  vi.spyOn(client, "query").mockImplementation(() => new Promise(() => {}));
+
   vi.spyOn(client, "watchQuery").mockImplementation((options: any) => {
-    const isStatic = operation(options.query).field === "matches_by_pk";
+    const isStatic =
+      operation(options.query).field === "matches_by_pk" &&
+      fieldsOf(options.query).includes("is_organizer");
     const record = {
       matchId: options.variables?.matchId,
       observers: [] as Observer[],

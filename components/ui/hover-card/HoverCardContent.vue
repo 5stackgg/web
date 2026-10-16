@@ -2,7 +2,8 @@
 import type { HoverCardContentProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
-import { HoverCardContent, HoverCardPortal, useForwardProps } from "reka-ui"
+import { HoverCardContent, HoverCardPortal, injectHoverCardRootContext, useForwardProps } from "reka-ui"
+import { ref, watchEffect } from "vue"
 import { cn } from "@/lib/utils"
 
 const props = withDefaults(
@@ -15,10 +16,18 @@ const props = withDefaults(
 const delegatedProps = reactiveOmit(props, "class")
 
 const forwardedProps = useForwardProps(delegatedProps)
+
+const rootContext = injectHoverCardRootContext()
+const opened = ref(false)
+watchEffect(() => {
+  if (props.forceMount || rootContext.open.value) {
+    opened.value = true
+  }
+})
 </script>
 
 <template>
-  <HoverCardPortal>
+  <HoverCardPortal v-if="opened">
     <HoverCardContent
       v-bind="forwardedProps"
       :class="

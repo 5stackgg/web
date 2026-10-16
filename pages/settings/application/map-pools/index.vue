@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { Info, PlusCircle, ArchiveRestore, Trash2 } from "lucide-vue-next";
+import {
+  Info,
+  PlusCircle,
+  ArchiveRestore,
+  Trash2,
+  Lock,
+} from "lucide-vue-next";
 import { Separator } from "~/components/ui/separator";
 import {
   Sheet,
@@ -86,7 +92,13 @@ const { isMobile } = useSidebar();
                 params: { id: pool.id },
               }"
             >
-              {{ $t("common.actions.edit") }}
+              <template v-if="syncing(pool)">
+                <Lock />
+                {{ $t("common.view") }}
+              </template>
+              <template v-else>
+                {{ $t("common.actions.edit") }}
+              </template>
             </NuxtLink>
           </Button>
         </div>
@@ -221,6 +233,7 @@ interface Map {
 interface MapPool {
   id: string;
   type: string;
+  seed?: boolean;
   maps: {
     id: string;
     name: string;
@@ -290,6 +303,7 @@ export default {
             {
               id: true,
               type: true,
+              seed: true,
               maps: [{}, mapFields],
             },
           ],
@@ -301,6 +315,19 @@ export default {
     },
   },
   methods: {
+    syncing(pool: MapPool): boolean {
+      return (
+        !!pool.seed &&
+        this.updateMapPools &&
+        this.maps.some(
+          (map) =>
+            map.type === pool.type &&
+            map.active_pool &&
+            map.enabled &&
+            !map.deleted_at,
+        )
+      );
+    },
     formatDeletedAt(deletedAt: string) {
       return new Date(deletedAt).toLocaleDateString(dateLocale(), {
         dateStyle: "medium",

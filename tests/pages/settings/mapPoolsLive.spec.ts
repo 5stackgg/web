@@ -69,15 +69,21 @@ describe("map pools page", () => {
   afterEach(() => {
     unmount?.();
     unmount = null;
+    useApplicationSettingsStore().settings = [];
     vi.restoreAllMocks();
   });
 
-  it("follows the seed pools live, so an auto-update shows without a reload", async () => {
+  async function mountPage() {
     const wrapper = await mountSuspended(MapPoolsPage, {
       global: { mixins: (useNuxtApp().vueApp as any)._context.mixins },
     });
     unmount = () => wrapper.unmount();
     await flushPromises();
+    return wrapper;
+  }
+
+  it("follows the seed pools live, so an auto-update shows without a reload", async () => {
+    const wrapper = await mountPage();
 
     expect(push.map_pools, "map_pools subscription").toBeDefined();
     expect(queries.map_pools).toMatch(/enabled: \{\s*_eq: true\s*\}/);
@@ -94,5 +100,40 @@ describe("map pools page", () => {
     expect(wrapper.text()).toContain("Overpass");
     expect(wrapper.text()).not.toContain("Cache");
     expect(wrapper.html()).toContain("/map-pools/pool-2");
+  });
+
+  const seeded = (activePool: boolean) => ({
+    maps: [{ ...map("de_ancient"), active_pool: activePool, enabled: true }],
+    map_pools: [{ ...pool("pool-1", ["de_ancient"]), seed: true }],
+  });
+
+  async function poolButton(activePool: boolean) {
+    const wrapper = await mountPage();
+    const { maps, map_pools } = seeded(activePool);
+    push.maps({ maps });
+    push.map_pools({ map_pools });
+    await flushPromises();
+    return () => wrapper.get('a[href$="/map-pools/pool-1"]');
+  }
+
+  it("offers a pool auto-update is syncing as View, with a lock, until auto-update is turned off", async () => {
+    const button = await poolButton(true);
+
+    expect(button().text()).toBe("View");
+    expect(button().find("svg").exists()).toBe(true);
+
+    useApplicationSettingsStore().settings = [
+      { name: "update_map_pools", value: "false" },
+    ];
+    await flushPromises();
+
+    expect(button().text()).toBe("Edit");
+    expect(button().find("svg").exists()).toBe(false);
+  });
+
+  it("offers Edit on a seeded pool whose mode has no active-duty maps to sync", async () => {
+    const button = await poolButton(false);
+
+    expect(button().text()).toBe("Edit");
   });
 });

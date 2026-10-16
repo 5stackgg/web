@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ArrowLeft } from "lucide-vue-next";
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
@@ -6,17 +7,26 @@ import ManageSection from "~/components/common/ManageSection.vue";
 
 <template>
   <PageTransition :delay="0">
-    <ManageSection
-      v-if="map_pools_by_pk"
-      :label="$t('pages.map_pools.pool.modify_maps')"
-    >
-      <MapPoolForm
-        :pool="map_pools_by_pk"
-        :availableMaps="availableMaps"
-        :locked="locked"
-        v-if="map_pools_by_pk && availableMaps"
-      />
-    </ManageSection>
+    <div class="grid gap-4">
+      <NuxtLink
+        to="/settings/application/map-pools"
+        class="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <ArrowLeft class="h-4 w-4" />
+        {{ $t("pages.map_pools.title") }}
+      </NuxtLink>
+      <ManageSection
+        v-if="map_pools_by_pk"
+        :label="$t('pages.map_pools.pool.modify_maps')"
+      >
+        <MapPoolForm
+          :pool="map_pools_by_pk"
+          :availableMaps="availableMaps"
+          :locked="locked"
+          v-if="map_pools_by_pk && availableMaps"
+        />
+      </ManageSection>
+    </div>
   </PageTransition>
 </template>
 

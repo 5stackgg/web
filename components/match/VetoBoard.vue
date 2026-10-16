@@ -2169,6 +2169,24 @@ onBeforeUnmount(() => {
   z-index: 1;
   pointer-events: none;
 }
+/* Chosen, the rest of the map steps back so the button leads: the picture
+   darkens around it and the records dim. */
+.vb-mark.is-armed::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    circle at 50% var(--arm-y, 50%),
+    transparent 0,
+    transparent 60px,
+    rgb(0 0 0 / 0.5) 240px
+  );
+  animation: vb-arm-in 360ms ease both;
+}
+.vb-slice.is-selected .vb-scout.is-shown {
+  opacity: 0.35;
+}
 .vb-arm-ping,
 .vb-arm-btn {
   position: absolute;
@@ -2308,9 +2326,16 @@ onBeforeUnmount(() => {
 .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn {
   opacity: 1;
 }
+/* Chosen, it is a glass of the move's colour; it turns solid once the
+   move is confirmed and on its way. */
 .vb-mark.is-armed .vb-arm-btn::before {
   opacity: 1;
   scale: 1;
+  background: color-mix(in oklab, var(--vb-arm) 34%, transparent);
+  backdrop-filter: blur(6px);
+}
+.vb-mark.is-armed.is-sending .vb-arm-btn::before {
+  background: var(--vb-arm-deep);
 }
 .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn:hover {
   scale: 1.07;
@@ -2545,6 +2570,34 @@ onBeforeUnmount(() => {
 .vb-half.is-selected .vb-side-mark::before {
   opacity: 1;
   scale: 1;
+  background: color-mix(in oklab, var(--vb-side-deep) 45%, transparent);
+  backdrop-filter: blur(6px);
+}
+.vb-split.is-sending .vb-half.is-selected .vb-side-mark::before {
+  background: var(--vb-side-deep);
+}
+/* Short maps (a narrower board) keep the chosen side's tile clear of the
+   map's name. */
+@container panel (max-height: 320px) {
+  .vb-side-mark {
+    --sm: 68px;
+    margin: -10px 0 2px;
+  }
+  .vb-half-in {
+    top: calc(50% + 14px);
+  }
+}
+@container panel (max-height: 290px) {
+  .vb-side-mark {
+    --sm: 60px;
+    margin: -8px 0 2px;
+  }
+  .vb-half-in {
+    top: calc(50% + 12px);
+  }
+  .vb-half-in small {
+    display: none;
+  }
 }
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::after {
   animation: vb-ping-tile 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;

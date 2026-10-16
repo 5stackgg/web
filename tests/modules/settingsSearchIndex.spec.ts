@@ -11,28 +11,27 @@ import {
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
+// Dotless, so scripts/check-translations.js does not read them as app keys.
 const messages = {
-  s: {
-    section: "Section",
-    section_description: "What the section is for",
-    field: "Field",
-    field_description: "What the field does",
-    toggle: "Toggle",
-    toggle_description: "What the toggle does",
-    bare: "Bare",
-    beside_switch: "Beside a switch",
-    stat: "Stat",
-    badge: "Badge",
-    importing: "Importing",
-    drop: "Drop",
-    empty: "Nothing yet",
-    empty_description: "Add one",
-    row: "Row",
-    child: "Child field",
-    child_description: "From a child component",
-    action: "Action",
-    counted: "{count} things",
-  },
+  section: "Section",
+  section_description: "What the section is for",
+  field: "Field",
+  field_description: "What the field does",
+  toggle: "Toggle",
+  toggle_description: "What the toggle does",
+  bare: "Bare",
+  beside_switch: "Beside a switch",
+  stat: "Stat",
+  badge: "Badge",
+  importing: "Importing",
+  drop: "Drop",
+  empty: "Nothing yet",
+  empty_description: "Add one",
+  row: "Row",
+  child: "Child field",
+  child_description: "From a child component",
+  action: "Action",
+  counted: "{count} things",
 };
 
 const fixtures = mkdtempSync(join(tmpdir(), "settings-search-"));
@@ -58,11 +57,11 @@ describe("extractSettingsEntries", () => {
   it("reads a section's title and description, and the fields inside it", () => {
     expect(
       extract(`
-        <SettingsSection id="general" :title="$t('s.section')" :description="$t('s.section_description')">
+        <SettingsSection id="general" :title="$t('section')" :description="$t('section_description')">
           <FormField name="a">
             <FormItem>
-              <FormLabel>{{ $t("s.field") }}</FormLabel>
-              <FormDescription>{{ $t("s.field_description") }}</FormDescription>
+              <FormLabel>{{ $t("field") }}</FormLabel>
+              <FormDescription>{{ $t("field_description") }}</FormDescription>
             </FormItem>
           </FormField>
         </SettingsSection>
@@ -71,14 +70,14 @@ describe("extractSettingsEntries", () => {
       {
         path: "/settings/x",
         section: "general",
-        label: "s.section",
-        description: "s.section_description",
+        label: "section",
+        description: "section_description",
       },
       {
         path: "/settings/x",
         section: "general",
-        label: "s.field",
-        description: "s.field_description",
+        label: "field",
+        description: "field_description",
       },
     ]);
   });
@@ -88,41 +87,41 @@ describe("extractSettingsEntries", () => {
       extract(`
         <div class="flex">
           <div class="space-y-0.5">
-            <p class="text-sm font-medium">{{ $t("s.toggle") }}</p>
-            <p class="text-xs text-muted-foreground">{{ $t("s.toggle_description") }}</p>
+            <p class="text-sm font-medium">{{ $t("toggle") }}</p>
+            <p class="text-xs text-muted-foreground">{{ $t("toggle_description") }}</p>
           </div>
           <Switch />
         </div>
       `),
     ).toEqual([
-      { path: "/settings/x", label: "s.toggle", description: "s.toggle_description" },
+      { path: "/settings/x", label: "toggle", description: "toggle_description" },
     ]);
   });
 
   it("keeps bold text beside a control, and drops bold text on its own", () => {
     const labels = extract(`
-      <div><p class="font-medium">{{ $t("s.beside_switch") }}</p><Switch /></div>
-      <div><p class="font-medium">{{ $t("s.stat") }}</p><span>42</span></div>
-      <FormItem><Label>{{ $t("s.bare") }}</Label></FormItem>
+      <div><p class="font-medium">{{ $t("beside_switch") }}</p><Switch /></div>
+      <div><p class="font-medium">{{ $t("stat") }}</p><span>42</span></div>
+      <FormItem><Label>{{ $t("bare") }}</Label></FormItem>
     `).map((entry) => entry.label);
-    expect(labels).toEqual(["s.beside_switch", "s.bare"]);
+    expect(labels).toEqual(["beside_switch", "bare"]);
   });
 
   it("skips status text: self-toggling badges, ternaries and empty states", () => {
     expect(
       extract(`
         <div>
-          <span v-if="online" class="font-semibold">{{ $t("s.badge") }}</span>
+          <span v-if="online" class="font-semibold">{{ $t("badge") }}</span>
           <Switch />
         </div>
         <div>
-          <p class="font-medium">{{ busy ? $t("s.importing") : $t("s.drop") }}</p>
-          <p class="text-muted-foreground">{{ $t("s.field_description") }}</p>
+          <p class="font-medium">{{ busy ? $t("importing") : $t("drop") }}</p>
+          <p class="text-muted-foreground">{{ $t("field_description") }}</p>
         </div>
-        <div v-if="rows.length"><p class="font-medium" v-for="row in rows">{{ $t("s.row") }}</p></div>
+        <div v-if="rows.length"><p class="font-medium" v-for="row in rows">{{ $t("row") }}</p></div>
         <div v-else>
-          <p class="font-medium">{{ $t("s.empty") }}</p>
-          <p class="text-muted-foreground">{{ $t("s.empty_description") }}</p>
+          <p class="font-medium">{{ $t("empty") }}</p>
+          <p class="text-muted-foreground">{{ $t("empty_description") }}</p>
         </div>
       `),
     ).toEqual([]);
@@ -131,8 +130,8 @@ describe("extractSettingsEntries", () => {
   it("skips buttons and anything with a {placeholder}", () => {
     expect(
       extract(`
-        <Button><span class="font-medium">{{ $t("s.action") }}</span></Button>
-        <FormItem><FormLabel>{{ $t("s.counted", { count }) }}</FormLabel></FormItem>
+        <Button><span class="font-medium">{{ $t("action") }}</span></Button>
+        <FormItem><FormLabel>{{ $t("counted", { count }) }}</FormLabel></FormItem>
       `),
     ).toEqual([]);
   });
@@ -140,12 +139,12 @@ describe("extractSettingsEntries", () => {
   it("reads local components into the section they render in", () => {
     expect(
       extract(
-        `<SettingsSection id="general" :title="$t('s.section')"><ChildFields /></SettingsSection>`,
+        `<SettingsSection id="general" :title="$t('section')"><ChildFields /></SettingsSection>`,
         {
           ChildFields: `
             <FormItem>
-              <FormLabel>{{ $t("s.child") }}</FormLabel>
-              <FormDescription>{{ $t("s.child_description") }}</FormDescription>
+              <FormLabel>{{ $t("child") }}</FormLabel>
+              <FormDescription>{{ $t("child_description") }}</FormDescription>
             </FormItem>
           `,
         },
@@ -153,8 +152,8 @@ describe("extractSettingsEntries", () => {
     ).toContainEqual({
       path: "/settings/x",
       section: "general",
-      label: "s.child",
-      description: "s.child_description",
+      label: "child",
+      description: "child_description",
     });
   });
 });

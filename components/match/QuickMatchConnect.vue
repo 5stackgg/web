@@ -215,13 +215,13 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 @keyframes qmc-call {
   0% {
     box-shadow:
-      0 0 0 0 hsl(var(--tac-amber) / 0.6),
+      0 0 0 0 hsl(var(--tac-amber) / 0.5),
       0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
   }
   75%,
   100% {
     box-shadow:
-      0 0 0 12px hsl(var(--tac-amber) / 0),
+      0 0 0 6px hsl(var(--tac-amber) / 0),
       0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
   }
 }

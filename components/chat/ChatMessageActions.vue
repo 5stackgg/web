@@ -392,7 +392,7 @@ async function deleteMessage() {
         <!-- The overlay hides the chat, so the line being removed is repeated
              here rather than left to memory. -->
         <blockquote
-          class="line-clamp-3 whitespace-pre-wrap break-words rounded-md border border-border/60 bg-card/40 px-3 py-2 text-xs text-muted-foreground"
+          class="line-clamp-3 whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-md border border-border/60 bg-card/40 px-3 py-2 text-xs text-muted-foreground"
         >
           {{ chatMediaLabel(message, $t) }}
         </blockquote>

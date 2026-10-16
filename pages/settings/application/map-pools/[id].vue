@@ -111,13 +111,21 @@ export default {
         return [];
       }
 
-      return this.maps
-        .filter((map) => {
-          return map.type === this.map_pools_by_pk.type;
-        })
-        .sort((a, b) => {
-          return a.name.localeCompare(b.name);
-        });
+      const maps = this.maps.filter((map) => {
+        return map.type === this.map_pools_by_pk.type;
+      });
+
+      // Turning a mode off leaves the map in that mode's pools, so it has to
+      // stay listed here to be removed.
+      for (const map of this.map_pools_by_pk.maps) {
+        if (!maps.some(({ id }) => id === map.id)) {
+          maps.push(map);
+        }
+      }
+
+      return maps.sort((a, b) => {
+        return a.name.localeCompare(b.name);
+      });
     },
   },
 };

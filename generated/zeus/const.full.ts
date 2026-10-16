@@ -50,6 +50,12 @@ export const AllTypesProps: Record<string,any> = {
 	String_comparison_exp:{
 
 	},
+	UtilityDiscoveryAreaInput:{
+
+	},
+	UtilityDiscoveryTechniqueInput:{
+
+	},
 	UtilityPlaybookStepInput:{
 		utility_lineup_id:"uuid"
 	},
@@ -1095,6 +1101,65 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"chat_read_state_inc_input",
 		_set:"chat_read_state_set_input",
 		where:"chat_read_state_bool_exp"
+	},
+	chat_room_settings_aggregate_fields:{
+		count:{
+			columns:"chat_room_settings_select_column"
+		}
+	},
+	chat_room_settings_bool_exp:{
+		_and:"chat_room_settings_bool_exp",
+		_not:"chat_room_settings_bool_exp",
+		_or:"chat_room_settings_bool_exp",
+		mute_minutes:"Int_comparison_exp",
+		muted:"Boolean_comparison_exp",
+		muted_until:"timestamptz_comparison_exp",
+		notify:"String_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		thread:"String_comparison_exp"
+	},
+	chat_room_settings_constraint: "enum" as const,
+	chat_room_settings_inc_input:{
+		steam_id:"bigint"
+	},
+	chat_room_settings_insert_input:{
+		muted_until:"timestamptz",
+		steam_id:"bigint"
+	},
+	chat_room_settings_on_conflict:{
+		constraint:"chat_room_settings_constraint",
+		update_columns:"chat_room_settings_update_column",
+		where:"chat_room_settings_bool_exp"
+	},
+	chat_room_settings_order_by:{
+		mute_minutes:"order_by",
+		muted:"order_by",
+		muted_until:"order_by",
+		notify:"order_by",
+		steam_id:"order_by",
+		thread:"order_by"
+	},
+	chat_room_settings_pk_columns_input:{
+		steam_id:"bigint"
+	},
+	chat_room_settings_select_column: "enum" as const,
+	chat_room_settings_set_input:{
+		muted_until:"timestamptz",
+		steam_id:"bigint"
+	},
+	chat_room_settings_stream_cursor_input:{
+		initial_value:"chat_room_settings_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	chat_room_settings_stream_cursor_value_input:{
+		muted_until:"timestamptz",
+		steam_id:"bigint"
+	},
+	chat_room_settings_update_column: "enum" as const,
+	chat_room_settings_updates:{
+		_inc:"chat_room_settings_inc_input",
+		_set:"chat_room_settings_set_input",
+		where:"chat_room_settings_bool_exp"
 	},
 	clip_render_jobs:{
 		spec:{
@@ -14578,6 +14643,9 @@ export const AllTypesProps: Record<string,any> = {
 		cancelScrimRequest:{
 			request_id:"uuid"
 		},
+		cancelUtilityDiscovery:{
+			discovery_id:"uuid"
+		},
 		cancelUtilityLineupRender:{
 			render_id:"uuid"
 		},
@@ -14647,6 +14715,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		deleteMatch:{
 
+		},
+		deleteNewsComment:{
+			id:"uuid"
 		},
 		deleteNewsPost:{
 			id:"uuid"
@@ -14719,6 +14790,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"chat_read_state_bool_exp"
 		},
 		delete_chat_read_state_by_pk:{
+			steam_id:"bigint"
+		},
+		delete_chat_room_settings:{
+			where:"chat_room_settings_bool_exp"
+		},
+		delete_chat_room_settings_by_pk:{
 			steam_id:"bigint"
 		},
 		delete_clip_render_jobs:{
@@ -15446,6 +15523,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_news_articles_by_pk:{
 			id:"uuid"
 		},
+		delete_news_comments:{
+			where:"news_comments_bool_exp"
+		},
+		delete_news_comments_by_pk:{
+			id:"uuid"
+		},
 		delete_notification_preferences:{
 			where:"notification_preferences_bool_exp"
 		},
@@ -15606,6 +15689,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"player_steam_match_auth_bool_exp"
 		},
 		delete_player_steam_match_auth_by_pk:{
+			steam_id:"bigint"
+		},
+		delete_player_twitch_accounts:{
+			where:"player_twitch_accounts_bool_exp"
+		},
+		delete_player_twitch_accounts_by_pk:{
 			steam_id:"bigint"
 		},
 		delete_player_unused_utility:{
@@ -15839,6 +15928,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_tournament_leaderboard_entries:{
 			where:"tournament_leaderboard_entries_bool_exp"
 		},
+		delete_tournament_mvp_picks:{
+			where:"tournament_mvp_picks_bool_exp"
+		},
+		delete_tournament_mvp_picks_by_pk:{
+			id:"uuid"
+		},
 		delete_tournament_no_shows:{
 			where:"tournament_no_shows_bool_exp"
 		},
@@ -15929,6 +16024,18 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_utility_demo_throws_by_pk:{
 			match_map_demo_id:"uuid"
+		},
+		delete_utility_discoveries:{
+			where:"utility_discoveries_bool_exp"
+		},
+		delete_utility_discoveries_by_pk:{
+			id:"uuid"
+		},
+		delete_utility_discovery_results:{
+			where:"utility_discovery_results_bool_exp"
+		},
+		delete_utility_discovery_results_by_pk:{
+			id:"uuid"
 		},
 		delete_utility_drift_results:{
 			where:"utility_drift_results_bool_exp"
@@ -16038,8 +16145,15 @@ export const AllTypesProps: Record<string,any> = {
 		denyNameChange:{
 			steam_id:"bigint"
 		},
+		discoverUtilityLineups:{
+			area:"UtilityDiscoveryAreaInput",
+			techniques:"UtilityDiscoveryTechniqueInput"
+		},
 		draftTournamentTeams:{
 			tournament_id:"uuid"
+		},
+		editNewsComment:{
+			id:"uuid"
 		},
 		extendTournamentCheckIn:{
 			tournament_id:"uuid"
@@ -16146,6 +16260,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_chat_read_state_one:{
 			object:"chat_read_state_insert_input",
 			on_conflict:"chat_read_state_on_conflict"
+		},
+		insert_chat_room_settings:{
+			objects:"chat_room_settings_insert_input",
+			on_conflict:"chat_room_settings_on_conflict"
+		},
+		insert_chat_room_settings_one:{
+			object:"chat_room_settings_insert_input",
+			on_conflict:"chat_room_settings_on_conflict"
 		},
 		insert_clip_render_jobs:{
 			objects:"clip_render_jobs_insert_input",
@@ -17103,6 +17225,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"news_articles_insert_input",
 			on_conflict:"news_articles_on_conflict"
 		},
+		insert_news_comments:{
+			objects:"news_comments_insert_input",
+			on_conflict:"news_comments_on_conflict"
+		},
+		insert_news_comments_one:{
+			object:"news_comments_insert_input",
+			on_conflict:"news_comments_on_conflict"
+		},
 		insert_notification_preferences:{
 			objects:"notification_preferences_insert_input",
 			on_conflict:"notification_preferences_on_conflict"
@@ -17292,6 +17422,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_player_steam_match_auth_one:{
 			object:"player_steam_match_auth_insert_input",
 			on_conflict:"player_steam_match_auth_on_conflict"
+		},
+		insert_player_twitch_accounts:{
+			objects:"player_twitch_accounts_insert_input",
+			on_conflict:"player_twitch_accounts_on_conflict"
+		},
+		insert_player_twitch_accounts_one:{
+			object:"player_twitch_accounts_insert_input",
+			on_conflict:"player_twitch_accounts_on_conflict"
 		},
 		insert_player_unused_utility:{
 			objects:"player_unused_utility_insert_input",
@@ -17593,6 +17731,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_tournament_leaderboard_entries_one:{
 			object:"tournament_leaderboard_entries_insert_input"
 		},
+		insert_tournament_mvp_picks:{
+			objects:"tournament_mvp_picks_insert_input",
+			on_conflict:"tournament_mvp_picks_on_conflict"
+		},
+		insert_tournament_mvp_picks_one:{
+			object:"tournament_mvp_picks_insert_input",
+			on_conflict:"tournament_mvp_picks_on_conflict"
+		},
 		insert_tournament_no_shows:{
 			objects:"tournament_no_shows_insert_input",
 			on_conflict:"tournament_no_shows_on_conflict"
@@ -17712,6 +17858,22 @@ export const AllTypesProps: Record<string,any> = {
 		insert_utility_demo_throws_one:{
 			object:"utility_demo_throws_insert_input",
 			on_conflict:"utility_demo_throws_on_conflict"
+		},
+		insert_utility_discoveries:{
+			objects:"utility_discoveries_insert_input",
+			on_conflict:"utility_discoveries_on_conflict"
+		},
+		insert_utility_discoveries_one:{
+			object:"utility_discoveries_insert_input",
+			on_conflict:"utility_discoveries_on_conflict"
+		},
+		insert_utility_discovery_results:{
+			objects:"utility_discovery_results_insert_input",
+			on_conflict:"utility_discovery_results_on_conflict"
+		},
+		insert_utility_discovery_results_one:{
+			object:"utility_discovery_results_insert_input",
+			on_conflict:"utility_discovery_results_on_conflict"
 		},
 		insert_utility_drift_results:{
 			objects:"utility_drift_results_insert_input",
@@ -17901,6 +18063,10 @@ export const AllTypesProps: Record<string,any> = {
 		pauseClipRenderBatch:{
 			match_map_id:"uuid"
 		},
+		postNewsComment:{
+			article_id:"uuid",
+			parent_id:"uuid"
+		},
 		previewDraftGame:{
 			draftGameId:"uuid"
 		},
@@ -18037,6 +18203,9 @@ export const AllTypesProps: Record<string,any> = {
 		saveNewsPost:{
 			id:"uuid"
 		},
+		saveUtilityDiscoveryResult:{
+			result_id:"uuid"
+		},
 		saveUtilityLineupFromDemo:{
 			collection_id:"uuid",
 			match_id:"uuid",
@@ -18090,6 +18259,9 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
 		},
+		setNewsCommentHidden:{
+			id:"uuid"
+		},
 		setNewsPostStatus:{
 			id:"uuid"
 		},
@@ -18114,6 +18286,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		setTournamentAward:{
 			award_id:"uuid",
+			tournament_id:"uuid"
+		},
+		setTournamentMvp:{
 			tournament_id:"uuid"
 		},
 		setUtilityPracticeAccess:{
@@ -18191,6 +18366,9 @@ export const AllTypesProps: Record<string,any> = {
 		switchLiveMatch:{
 			from_match_id:"uuid",
 			to_match_id:"uuid"
+		},
+		toggleNewsCommentVote:{
+			id:"uuid"
 		},
 		uninstallGamePlugin:{
 
@@ -18342,6 +18520,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_chat_read_state_many:{
 			updates:"chat_read_state_updates"
+		},
+		update_chat_room_settings:{
+			_inc:"chat_room_settings_inc_input",
+			_set:"chat_room_settings_set_input",
+			where:"chat_room_settings_bool_exp"
+		},
+		update_chat_room_settings_by_pk:{
+			_inc:"chat_room_settings_inc_input",
+			_set:"chat_room_settings_set_input",
+			pk_columns:"chat_room_settings_pk_columns_input"
+		},
+		update_chat_room_settings_many:{
+			updates:"chat_room_settings_updates"
 		},
 		update_clip_render_jobs:{
 			_append:"clip_render_jobs_append_input",
@@ -19896,6 +20087,19 @@ export const AllTypesProps: Record<string,any> = {
 		update_news_articles_many:{
 			updates:"news_articles_updates"
 		},
+		update_news_comments:{
+			_inc:"news_comments_inc_input",
+			_set:"news_comments_set_input",
+			where:"news_comments_bool_exp"
+		},
+		update_news_comments_by_pk:{
+			_inc:"news_comments_inc_input",
+			_set:"news_comments_set_input",
+			pk_columns:"news_comments_pk_columns_input"
+		},
+		update_news_comments_many:{
+			updates:"news_comments_updates"
+		},
 		update_notification_preferences:{
 			_inc:"notification_preferences_inc_input",
 			_set:"notification_preferences_set_input",
@@ -20232,6 +20436,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_player_steam_match_auth_many:{
 			updates:"player_steam_match_auth_updates"
+		},
+		update_player_twitch_accounts:{
+			_inc:"player_twitch_accounts_inc_input",
+			_set:"player_twitch_accounts_set_input",
+			where:"player_twitch_accounts_bool_exp"
+		},
+		update_player_twitch_accounts_by_pk:{
+			_inc:"player_twitch_accounts_inc_input",
+			_set:"player_twitch_accounts_set_input",
+			pk_columns:"player_twitch_accounts_pk_columns_input"
+		},
+		update_player_twitch_accounts_many:{
+			updates:"player_twitch_accounts_updates"
 		},
 		update_player_unused_utility:{
 			_inc:"player_unused_utility_inc_input",
@@ -20728,6 +20945,19 @@ export const AllTypesProps: Record<string,any> = {
 		update_tournament_leaderboard_entries_many:{
 			updates:"tournament_leaderboard_entries_updates"
 		},
+		update_tournament_mvp_picks:{
+			_inc:"tournament_mvp_picks_inc_input",
+			_set:"tournament_mvp_picks_set_input",
+			where:"tournament_mvp_picks_bool_exp"
+		},
+		update_tournament_mvp_picks_by_pk:{
+			_inc:"tournament_mvp_picks_inc_input",
+			_set:"tournament_mvp_picks_set_input",
+			pk_columns:"tournament_mvp_picks_pk_columns_input"
+		},
+		update_tournament_mvp_picks_many:{
+			updates:"tournament_mvp_picks_updates"
+		},
 		update_tournament_no_shows:{
 			_inc:"tournament_no_shows_inc_input",
 			_set:"tournament_no_shows_set_input",
@@ -20925,6 +21155,52 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_utility_demo_throws_many:{
 			updates:"utility_demo_throws_updates"
+		},
+		update_utility_discoveries:{
+			_append:"utility_discoveries_append_input",
+			_delete_at_path:"utility_discoveries_delete_at_path_input",
+			_delete_elem:"utility_discoveries_delete_elem_input",
+			_delete_key:"utility_discoveries_delete_key_input",
+			_inc:"utility_discoveries_inc_input",
+			_prepend:"utility_discoveries_prepend_input",
+			_set:"utility_discoveries_set_input",
+			where:"utility_discoveries_bool_exp"
+		},
+		update_utility_discoveries_by_pk:{
+			_append:"utility_discoveries_append_input",
+			_delete_at_path:"utility_discoveries_delete_at_path_input",
+			_delete_elem:"utility_discoveries_delete_elem_input",
+			_delete_key:"utility_discoveries_delete_key_input",
+			_inc:"utility_discoveries_inc_input",
+			_prepend:"utility_discoveries_prepend_input",
+			_set:"utility_discoveries_set_input",
+			pk_columns:"utility_discoveries_pk_columns_input"
+		},
+		update_utility_discoveries_many:{
+			updates:"utility_discoveries_updates"
+		},
+		update_utility_discovery_results:{
+			_append:"utility_discovery_results_append_input",
+			_delete_at_path:"utility_discovery_results_delete_at_path_input",
+			_delete_elem:"utility_discovery_results_delete_elem_input",
+			_delete_key:"utility_discovery_results_delete_key_input",
+			_inc:"utility_discovery_results_inc_input",
+			_prepend:"utility_discovery_results_prepend_input",
+			_set:"utility_discovery_results_set_input",
+			where:"utility_discovery_results_bool_exp"
+		},
+		update_utility_discovery_results_by_pk:{
+			_append:"utility_discovery_results_append_input",
+			_delete_at_path:"utility_discovery_results_delete_at_path_input",
+			_delete_elem:"utility_discovery_results_delete_elem_input",
+			_delete_key:"utility_discovery_results_delete_key_input",
+			_inc:"utility_discovery_results_inc_input",
+			_prepend:"utility_discovery_results_prepend_input",
+			_set:"utility_discovery_results_set_input",
+			pk_columns:"utility_discovery_results_pk_columns_input"
+		},
+		update_utility_discovery_results_many:{
+			updates:"utility_discovery_results_updates"
 		},
 		update_utility_drift_results:{
 			_inc:"utility_drift_results_inc_input",
@@ -21591,6 +21867,10 @@ export const AllTypesProps: Record<string,any> = {
 		updated_at:"timestamptz",
 		view_count:"bigint"
 	},
+	news_articles_obj_rel_insert_input:{
+		data:"news_articles_insert_input",
+		on_conflict:"news_articles_on_conflict"
+	},
 	news_articles_on_conflict:{
 		constraint:"news_articles_constraint",
 		update_columns:"news_articles_update_column",
@@ -21640,6 +21920,242 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"news_articles_inc_input",
 		_set:"news_articles_set_input",
 		where:"news_articles_bool_exp"
+	},
+	news_comments:{
+		author:{
+			distinct_on:"players_select_column",
+			order_by:"players_order_by",
+			where:"players_bool_exp"
+		},
+		replies:{
+			distinct_on:"news_comments_select_column",
+			order_by:"news_comments_order_by",
+			where:"news_comments_bool_exp"
+		},
+		replies_aggregate:{
+			distinct_on:"news_comments_select_column",
+			order_by:"news_comments_order_by",
+			where:"news_comments_bool_exp"
+		}
+	},
+	news_comments_aggregate_bool_exp:{
+		bool_and:"news_comments_aggregate_bool_exp_bool_and",
+		bool_or:"news_comments_aggregate_bool_exp_bool_or",
+		count:"news_comments_aggregate_bool_exp_count"
+	},
+	news_comments_aggregate_bool_exp_bool_and:{
+		arguments:"news_comments_select_column_news_comments_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"news_comments_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	news_comments_aggregate_bool_exp_bool_or:{
+		arguments:"news_comments_select_column_news_comments_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"news_comments_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	news_comments_aggregate_bool_exp_count:{
+		arguments:"news_comments_select_column",
+		filter:"news_comments_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	news_comments_aggregate_fields:{
+		count:{
+			columns:"news_comments_select_column"
+		}
+	},
+	news_comments_aggregate_order_by:{
+		avg:"news_comments_avg_order_by",
+		count:"order_by",
+		max:"news_comments_max_order_by",
+		min:"news_comments_min_order_by",
+		stddev:"news_comments_stddev_order_by",
+		stddev_pop:"news_comments_stddev_pop_order_by",
+		stddev_samp:"news_comments_stddev_samp_order_by",
+		sum:"news_comments_sum_order_by",
+		var_pop:"news_comments_var_pop_order_by",
+		var_samp:"news_comments_var_samp_order_by",
+		variance:"news_comments_variance_order_by"
+	},
+	news_comments_arr_rel_insert_input:{
+		data:"news_comments_insert_input",
+		on_conflict:"news_comments_on_conflict"
+	},
+	news_comments_avg_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_bool_exp:{
+		_and:"news_comments_bool_exp",
+		_not:"news_comments_bool_exp",
+		_or:"news_comments_bool_exp",
+		article:"news_articles_bool_exp",
+		article_id:"uuid_comparison_exp",
+		author:"players_bool_exp",
+		author_steam_id:"bigint_comparison_exp",
+		body:"String_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		deleted_at:"timestamptz_comparison_exp",
+		deleted_by_staff:"Boolean_comparison_exp",
+		edited_at:"timestamptz_comparison_exp",
+		hidden_at:"timestamptz_comparison_exp",
+		hidden_by_name:"String_comparison_exp",
+		hidden_by_steam_id:"bigint_comparison_exp",
+		hidden_reason:"String_comparison_exp",
+		id:"uuid_comparison_exp",
+		parent_id:"uuid_comparison_exp",
+		replies:"news_comments_bool_exp",
+		replies_aggregate:"news_comments_aggregate_bool_exp",
+		text:"String_comparison_exp",
+		viewer_voted:"Boolean_comparison_exp",
+		visible:"Boolean_comparison_exp",
+		vote_count:"Int_comparison_exp"
+	},
+	news_comments_constraint: "enum" as const,
+	news_comments_inc_input:{
+		author_steam_id:"bigint",
+		hidden_by_steam_id:"bigint"
+	},
+	news_comments_insert_input:{
+		article:"news_articles_obj_rel_insert_input",
+		article_id:"uuid",
+		author_steam_id:"bigint",
+		created_at:"timestamptz",
+		deleted_at:"timestamptz",
+		edited_at:"timestamptz",
+		hidden_at:"timestamptz",
+		hidden_by_steam_id:"bigint",
+		id:"uuid",
+		parent_id:"uuid",
+		replies:"news_comments_arr_rel_insert_input"
+	},
+	news_comments_max_order_by:{
+		article_id:"order_by",
+		author_steam_id:"order_by",
+		body:"order_by",
+		created_at:"order_by",
+		deleted_at:"order_by",
+		edited_at:"order_by",
+		hidden_at:"order_by",
+		hidden_by_steam_id:"order_by",
+		hidden_reason:"order_by",
+		id:"order_by",
+		parent_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_min_order_by:{
+		article_id:"order_by",
+		author_steam_id:"order_by",
+		body:"order_by",
+		created_at:"order_by",
+		deleted_at:"order_by",
+		edited_at:"order_by",
+		hidden_at:"order_by",
+		hidden_by_steam_id:"order_by",
+		hidden_reason:"order_by",
+		id:"order_by",
+		parent_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_on_conflict:{
+		constraint:"news_comments_constraint",
+		update_columns:"news_comments_update_column",
+		where:"news_comments_bool_exp"
+	},
+	news_comments_order_by:{
+		article:"news_articles_order_by",
+		article_id:"order_by",
+		author_aggregate:"players_aggregate_order_by",
+		author_steam_id:"order_by",
+		body:"order_by",
+		created_at:"order_by",
+		deleted_at:"order_by",
+		deleted_by_staff:"order_by",
+		edited_at:"order_by",
+		hidden_at:"order_by",
+		hidden_by_name:"order_by",
+		hidden_by_steam_id:"order_by",
+		hidden_reason:"order_by",
+		id:"order_by",
+		parent_id:"order_by",
+		replies_aggregate:"news_comments_aggregate_order_by",
+		text:"order_by",
+		viewer_voted:"order_by",
+		visible:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_pk_columns_input:{
+		id:"uuid"
+	},
+	news_comments_select_column: "enum" as const,
+	news_comments_select_column_news_comments_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	news_comments_select_column_news_comments_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
+	news_comments_set_input:{
+		article_id:"uuid",
+		author_steam_id:"bigint",
+		created_at:"timestamptz",
+		deleted_at:"timestamptz",
+		edited_at:"timestamptz",
+		hidden_at:"timestamptz",
+		hidden_by_steam_id:"bigint",
+		id:"uuid",
+		parent_id:"uuid"
+	},
+	news_comments_stddev_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_stddev_pop_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_stddev_samp_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_stream_cursor_input:{
+		initial_value:"news_comments_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	news_comments_stream_cursor_value_input:{
+		article_id:"uuid",
+		author_steam_id:"bigint",
+		created_at:"timestamptz",
+		deleted_at:"timestamptz",
+		edited_at:"timestamptz",
+		hidden_at:"timestamptz",
+		hidden_by_steam_id:"bigint",
+		id:"uuid",
+		parent_id:"uuid"
+	},
+	news_comments_sum_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_update_column: "enum" as const,
+	news_comments_updates:{
+		_inc:"news_comments_inc_input",
+		_set:"news_comments_set_input",
+		where:"news_comments_bool_exp"
+	},
+	news_comments_var_pop_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_var_samp_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
+	},
+	news_comments_variance_order_by:{
+		author_steam_id:"order_by",
+		hidden_by_steam_id:"order_by",
+		vote_count:"order_by"
 	},
 	notification_preferences_aggregate_fields:{
 		count:{
@@ -27149,6 +27665,86 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"player_steam_match_auth_set_input",
 		where:"player_steam_match_auth_bool_exp"
 	},
+	player_twitch_accounts_aggregate_fields:{
+		count:{
+			columns:"player_twitch_accounts_select_column"
+		}
+	},
+	player_twitch_accounts_bool_exp:{
+		_and:"player_twitch_accounts_bool_exp",
+		_not:"player_twitch_accounts_bool_exp",
+		_or:"player_twitch_accounts_bool_exp",
+		checked_at:"timestamptz_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		display_name:"String_comparison_exp",
+		game_name:"String_comparison_exp",
+		is_live:"Boolean_comparison_exp",
+		login:"String_comparison_exp",
+		player:"players_bool_exp",
+		started_at:"timestamptz_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		stream_title:"String_comparison_exp",
+		thumbnail_url:"String_comparison_exp",
+		twitch_user_id:"String_comparison_exp",
+		viewer_count:"Int_comparison_exp"
+	},
+	player_twitch_accounts_constraint: "enum" as const,
+	player_twitch_accounts_inc_input:{
+		steam_id:"bigint"
+	},
+	player_twitch_accounts_insert_input:{
+		checked_at:"timestamptz",
+		created_at:"timestamptz",
+		player:"players_obj_rel_insert_input",
+		started_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	player_twitch_accounts_on_conflict:{
+		constraint:"player_twitch_accounts_constraint",
+		update_columns:"player_twitch_accounts_update_column",
+		where:"player_twitch_accounts_bool_exp"
+	},
+	player_twitch_accounts_order_by:{
+		checked_at:"order_by",
+		created_at:"order_by",
+		display_name:"order_by",
+		game_name:"order_by",
+		is_live:"order_by",
+		login:"order_by",
+		player:"players_order_by",
+		started_at:"order_by",
+		steam_id:"order_by",
+		stream_title:"order_by",
+		thumbnail_url:"order_by",
+		twitch_user_id:"order_by",
+		viewer_count:"order_by"
+	},
+	player_twitch_accounts_pk_columns_input:{
+		steam_id:"bigint"
+	},
+	player_twitch_accounts_select_column: "enum" as const,
+	player_twitch_accounts_set_input:{
+		checked_at:"timestamptz",
+		created_at:"timestamptz",
+		started_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	player_twitch_accounts_stream_cursor_input:{
+		initial_value:"player_twitch_accounts_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_twitch_accounts_stream_cursor_value_input:{
+		checked_at:"timestamptz",
+		created_at:"timestamptz",
+		started_at:"timestamptz",
+		steam_id:"bigint"
+	},
+	player_twitch_accounts_update_column: "enum" as const,
+	player_twitch_accounts_updates:{
+		_inc:"player_twitch_accounts_inc_input",
+		_set:"player_twitch_accounts_set_input",
+		where:"player_twitch_accounts_bool_exp"
+	},
 	player_unused_utility_aggregate_bool_exp:{
 		count:"player_unused_utility_aggregate_bool_exp_count"
 	},
@@ -27811,6 +28407,11 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_kills_by_weapon_order_by",
 			where:"player_kills_by_weapon_bool_exp"
 		},
+		live_lineup:{
+			distinct_on:"match_lineup_players_select_column",
+			order_by:"match_lineup_players_order_by",
+			where:"match_lineup_players_bool_exp"
+		},
 		lobby_players:{
 			distinct_on:"lobby_players_select_column",
 			order_by:"lobby_players_order_by",
@@ -28040,6 +28641,28 @@ export const AllTypesProps: Record<string,any> = {
 			columns:"players_select_column"
 		}
 	},
+	players_aggregate_order_by:{
+		avg:"players_avg_order_by",
+		count:"order_by",
+		max:"players_max_order_by",
+		min:"players_min_order_by",
+		stddev:"players_stddev_order_by",
+		stddev_pop:"players_stddev_pop_order_by",
+		stddev_samp:"players_stddev_samp_order_by",
+		sum:"players_sum_order_by",
+		var_pop:"players_var_pop_order_by",
+		var_samp:"players_var_samp_order_by",
+		variance:"players_variance_order_by"
+	},
+	players_avg_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
 	players_bool_exp:{
 		_and:"players_bool_exp",
 		_not:"players_bool_exp",
@@ -28108,6 +28731,7 @@ export const AllTypesProps: Record<string,any> = {
 		language:"String_comparison_exp",
 		last_read_news_at:"timestamptz_comparison_exp",
 		last_sign_in_at:"timestamptz_comparison_exp",
+		live_lineup:"match_lineup_players_bool_exp",
 		lobby_players:"lobby_players_bool_exp",
 		lobby_players_aggregate:"lobby_players_aggregate_bool_exp",
 		losses:"Int_comparison_exp",
@@ -28239,6 +28863,60 @@ export const AllTypesProps: Record<string,any> = {
 		utility_thrown:"player_utility_arr_rel_insert_input",
 		weapon_stats:"player_weapon_stats_v_arr_rel_insert_input"
 	},
+	players_max_order_by:{
+		avatar_url:"order_by",
+		country:"order_by",
+		created_at:"order_by",
+		custom_avatar_url:"order_by",
+		days_since_last_ban:"order_by",
+		discord_id:"order_by",
+		faceit_elo:"order_by",
+		faceit_nickname:"order_by",
+		faceit_player_id:"order_by",
+		faceit_skill_level:"order_by",
+		faceit_updated_at:"order_by",
+		faceit_url:"order_by",
+		game_ban_count:"order_by",
+		language:"order_by",
+		last_read_news_at:"order_by",
+		last_sign_in_at:"order_by",
+		name:"order_by",
+		notification_timezone:"order_by",
+		premier_rank:"order_by",
+		premier_rank_updated_at:"order_by",
+		profile_url:"order_by",
+		roster_image_url:"order_by",
+		steam_bans_checked_at:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
+	players_min_order_by:{
+		avatar_url:"order_by",
+		country:"order_by",
+		created_at:"order_by",
+		custom_avatar_url:"order_by",
+		days_since_last_ban:"order_by",
+		discord_id:"order_by",
+		faceit_elo:"order_by",
+		faceit_nickname:"order_by",
+		faceit_player_id:"order_by",
+		faceit_skill_level:"order_by",
+		faceit_updated_at:"order_by",
+		faceit_url:"order_by",
+		game_ban_count:"order_by",
+		language:"order_by",
+		last_read_news_at:"order_by",
+		last_sign_in_at:"order_by",
+		name:"order_by",
+		notification_timezone:"order_by",
+		premier_rank:"order_by",
+		premier_rank_updated_at:"order_by",
+		profile_url:"order_by",
+		roster_image_url:"order_by",
+		steam_bans_checked_at:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
 	players_obj_rel_insert_input:{
 		data:"players_insert_input",
 		on_conflict:"players_on_conflict"
@@ -28295,6 +28973,7 @@ export const AllTypesProps: Record<string,any> = {
 		language:"order_by",
 		last_read_news_at:"order_by",
 		last_sign_in_at:"order_by",
+		live_lineup_aggregate:"match_lineup_players_aggregate_order_by",
 		lobby_players_aggregate:"lobby_players_aggregate_order_by",
 		losses:"order_by",
 		losses_competitive:"order_by",
@@ -28365,6 +29044,33 @@ export const AllTypesProps: Record<string,any> = {
 		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
 	},
+	players_stddev_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
+	players_stddev_pop_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
+	players_stddev_samp_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
 	players_stream_cursor_input:{
 		initial_value:"players_stream_cursor_value_input",
 		ordering:"cursor_ordering"
@@ -28381,11 +29087,47 @@ export const AllTypesProps: Record<string,any> = {
 		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
 	},
+	players_sum_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
 	players_update_column: "enum" as const,
 	players_updates:{
 		_inc:"players_inc_input",
 		_set:"players_set_input",
 		where:"players_bool_exp"
+	},
+	players_var_pop_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
+	players_var_samp_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
+	players_variance_order_by:{
+		days_since_last_ban:"order_by",
+		faceit_elo:"order_by",
+		faceit_skill_level:"order_by",
+		game_ban_count:"order_by",
+		premier_rank:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
 	},
 	plugin_versions_aggregate_fields:{
 		count:{
@@ -28632,6 +29374,19 @@ export const AllTypesProps: Record<string,any> = {
 			where:"chat_read_state_bool_exp"
 		},
 		chat_read_state_by_pk:{
+			steam_id:"bigint"
+		},
+		chat_room_settings:{
+			distinct_on:"chat_room_settings_select_column",
+			order_by:"chat_room_settings_order_by",
+			where:"chat_room_settings_bool_exp"
+		},
+		chat_room_settings_aggregate:{
+			distinct_on:"chat_room_settings_select_column",
+			order_by:"chat_room_settings_order_by",
+			where:"chat_room_settings_bool_exp"
+		},
+		chat_room_settings_by_pk:{
 			steam_id:"bigint"
 		},
 		checkUtilityOneWay:{
@@ -30312,6 +31067,19 @@ export const AllTypesProps: Record<string,any> = {
 		news_articles_by_pk:{
 			id:"uuid"
 		},
+		news_comments:{
+			distinct_on:"news_comments_select_column",
+			order_by:"news_comments_order_by",
+			where:"news_comments_bool_exp"
+		},
+		news_comments_aggregate:{
+			distinct_on:"news_comments_select_column",
+			order_by:"news_comments_order_by",
+			where:"news_comments_bool_exp"
+		},
+		news_comments_by_pk:{
+			id:"uuid"
+		},
 		notification_preferences:{
 			distinct_on:"notification_preferences_select_column",
 			order_by:"notification_preferences_order_by",
@@ -30692,6 +31460,19 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_match_auth_by_pk:{
 			steam_id:"bigint"
 		},
+		player_twitch_accounts:{
+			distinct_on:"player_twitch_accounts_select_column",
+			order_by:"player_twitch_accounts_order_by",
+			where:"player_twitch_accounts_bool_exp"
+		},
+		player_twitch_accounts_aggregate:{
+			distinct_on:"player_twitch_accounts_select_column",
+			order_by:"player_twitch_accounts_order_by",
+			where:"player_twitch_accounts_bool_exp"
+		},
+		player_twitch_accounts_by_pk:{
+			steam_id:"bigint"
+		},
 		player_unused_utility:{
 			distinct_on:"player_unused_utility_select_column",
 			order_by:"player_unused_utility_order_by",
@@ -30756,6 +31537,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		plugin_versions_by_pk:{
 			runtime:"e_plugin_runtimes_enum"
+		},
+		previewUtilitySmoke:{
+
 		},
 		push_subscriptions:{
 			distinct_on:"push_subscriptions_select_column",
@@ -31115,6 +31899,9 @@ export const AllTypesProps: Record<string,any> = {
 		telemetryStats:{
 
 		},
+		tournamentMvpCandidates:{
+			tournament_id:"uuid"
+		},
 		tournament_awards:{
 			distinct_on:"tournament_awards_select_column",
 			order_by:"tournament_awards_order_by",
@@ -31217,6 +32004,19 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"tournament_leaderboard_entries_select_column",
 			order_by:"tournament_leaderboard_entries_order_by",
 			where:"tournament_leaderboard_entries_bool_exp"
+		},
+		tournament_mvp_picks:{
+			distinct_on:"tournament_mvp_picks_select_column",
+			order_by:"tournament_mvp_picks_order_by",
+			where:"tournament_mvp_picks_bool_exp"
+		},
+		tournament_mvp_picks_aggregate:{
+			distinct_on:"tournament_mvp_picks_select_column",
+			order_by:"tournament_mvp_picks_order_by",
+			where:"tournament_mvp_picks_bool_exp"
+		},
+		tournament_mvp_picks_by_pk:{
+			id:"uuid"
 		},
 		tournament_no_shows:{
 			distinct_on:"tournament_no_shows_select_column",
@@ -31431,6 +32231,32 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		utility_demo_throws_by_pk:{
 			match_map_demo_id:"uuid"
+		},
+		utility_discoveries:{
+			distinct_on:"utility_discoveries_select_column",
+			order_by:"utility_discoveries_order_by",
+			where:"utility_discoveries_bool_exp"
+		},
+		utility_discoveries_aggregate:{
+			distinct_on:"utility_discoveries_select_column",
+			order_by:"utility_discoveries_order_by",
+			where:"utility_discoveries_bool_exp"
+		},
+		utility_discoveries_by_pk:{
+			id:"uuid"
+		},
+		utility_discovery_results:{
+			distinct_on:"utility_discovery_results_select_column",
+			order_by:"utility_discovery_results_order_by",
+			where:"utility_discovery_results_bool_exp"
+		},
+		utility_discovery_results_aggregate:{
+			distinct_on:"utility_discovery_results_select_column",
+			order_by:"utility_discovery_results_order_by",
+			where:"utility_discovery_results_bool_exp"
+		},
+		utility_discovery_results_by_pk:{
+			id:"uuid"
 		},
 		utility_drift_results:{
 			distinct_on:"utility_drift_results_select_column",
@@ -34113,6 +34939,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"chat_read_state_stream_cursor_input",
 			where:"chat_read_state_bool_exp"
 		},
+		chat_room_settings:{
+			distinct_on:"chat_room_settings_select_column",
+			order_by:"chat_room_settings_order_by",
+			where:"chat_room_settings_bool_exp"
+		},
+		chat_room_settings_aggregate:{
+			distinct_on:"chat_room_settings_select_column",
+			order_by:"chat_room_settings_order_by",
+			where:"chat_room_settings_bool_exp"
+		},
+		chat_room_settings_by_pk:{
+			steam_id:"bigint"
+		},
+		chat_room_settings_stream:{
+			cursor:"chat_room_settings_stream_cursor_input",
+			where:"chat_room_settings_bool_exp"
+		},
 		clip_render_jobs:{
 			distinct_on:"clip_render_jobs_select_column",
 			order_by:"clip_render_jobs_order_by",
@@ -36218,6 +37061,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"news_articles_stream_cursor_input",
 			where:"news_articles_bool_exp"
 		},
+		news_comments:{
+			distinct_on:"news_comments_select_column",
+			order_by:"news_comments_order_by",
+			where:"news_comments_bool_exp"
+		},
+		news_comments_aggregate:{
+			distinct_on:"news_comments_select_column",
+			order_by:"news_comments_order_by",
+			where:"news_comments_bool_exp"
+		},
+		news_comments_by_pk:{
+			id:"uuid"
+		},
+		news_comments_stream:{
+			cursor:"news_comments_stream_cursor_input",
+			where:"news_comments_bool_exp"
+		},
 		notification_preferences:{
 			distinct_on:"notification_preferences_select_column",
 			order_by:"notification_preferences_order_by",
@@ -36713,6 +37573,23 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_match_auth_stream:{
 			cursor:"player_steam_match_auth_stream_cursor_input",
 			where:"player_steam_match_auth_bool_exp"
+		},
+		player_twitch_accounts:{
+			distinct_on:"player_twitch_accounts_select_column",
+			order_by:"player_twitch_accounts_order_by",
+			where:"player_twitch_accounts_bool_exp"
+		},
+		player_twitch_accounts_aggregate:{
+			distinct_on:"player_twitch_accounts_select_column",
+			order_by:"player_twitch_accounts_order_by",
+			where:"player_twitch_accounts_bool_exp"
+		},
+		player_twitch_accounts_by_pk:{
+			steam_id:"bigint"
+		},
+		player_twitch_accounts_stream:{
+			cursor:"player_twitch_accounts_stream_cursor_input",
+			where:"player_twitch_accounts_bool_exp"
 		},
 		player_unused_utility:{
 			distinct_on:"player_unused_utility_select_column",
@@ -37391,6 +38268,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"tournament_leaderboard_entries_stream_cursor_input",
 			where:"tournament_leaderboard_entries_bool_exp"
 		},
+		tournament_mvp_picks:{
+			distinct_on:"tournament_mvp_picks_select_column",
+			order_by:"tournament_mvp_picks_order_by",
+			where:"tournament_mvp_picks_bool_exp"
+		},
+		tournament_mvp_picks_aggregate:{
+			distinct_on:"tournament_mvp_picks_select_column",
+			order_by:"tournament_mvp_picks_order_by",
+			where:"tournament_mvp_picks_bool_exp"
+		},
+		tournament_mvp_picks_by_pk:{
+			id:"uuid"
+		},
+		tournament_mvp_picks_stream:{
+			cursor:"tournament_mvp_picks_stream_cursor_input",
+			where:"tournament_mvp_picks_bool_exp"
+		},
 		tournament_no_shows:{
 			distinct_on:"tournament_no_shows_select_column",
 			order_by:"tournament_no_shows_order_by",
@@ -37646,6 +38540,40 @@ export const AllTypesProps: Record<string,any> = {
 		utility_demo_throws_stream:{
 			cursor:"utility_demo_throws_stream_cursor_input",
 			where:"utility_demo_throws_bool_exp"
+		},
+		utility_discoveries:{
+			distinct_on:"utility_discoveries_select_column",
+			order_by:"utility_discoveries_order_by",
+			where:"utility_discoveries_bool_exp"
+		},
+		utility_discoveries_aggregate:{
+			distinct_on:"utility_discoveries_select_column",
+			order_by:"utility_discoveries_order_by",
+			where:"utility_discoveries_bool_exp"
+		},
+		utility_discoveries_by_pk:{
+			id:"uuid"
+		},
+		utility_discoveries_stream:{
+			cursor:"utility_discoveries_stream_cursor_input",
+			where:"utility_discoveries_bool_exp"
+		},
+		utility_discovery_results:{
+			distinct_on:"utility_discovery_results_select_column",
+			order_by:"utility_discovery_results_order_by",
+			where:"utility_discovery_results_bool_exp"
+		},
+		utility_discovery_results_aggregate:{
+			distinct_on:"utility_discovery_results_select_column",
+			order_by:"utility_discovery_results_order_by",
+			where:"utility_discovery_results_bool_exp"
+		},
+		utility_discovery_results_by_pk:{
+			id:"uuid"
+		},
+		utility_discovery_results_stream:{
+			cursor:"utility_discovery_results_stream_cursor_input",
+			where:"utility_discovery_results_bool_exp"
 		},
 		utility_drift_results:{
 			distinct_on:"utility_drift_results_select_column",
@@ -40852,6 +41780,317 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"tournament_leaderboard_entries_set_input",
 		where:"tournament_leaderboard_entries_bool_exp"
 	},
+	tournament_mvp_picks_aggregate_bool_exp:{
+		avg:"tournament_mvp_picks_aggregate_bool_exp_avg",
+		bool_and:"tournament_mvp_picks_aggregate_bool_exp_bool_and",
+		bool_or:"tournament_mvp_picks_aggregate_bool_exp_bool_or",
+		corr:"tournament_mvp_picks_aggregate_bool_exp_corr",
+		count:"tournament_mvp_picks_aggregate_bool_exp_count",
+		covar_samp:"tournament_mvp_picks_aggregate_bool_exp_covar_samp",
+		max:"tournament_mvp_picks_aggregate_bool_exp_max",
+		min:"tournament_mvp_picks_aggregate_bool_exp_min",
+		stddev_samp:"tournament_mvp_picks_aggregate_bool_exp_stddev_samp",
+		sum:"tournament_mvp_picks_aggregate_bool_exp_sum",
+		var_samp:"tournament_mvp_picks_aggregate_bool_exp_var_samp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_avg:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_avg_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_bool_and:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_bool_or:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_corr:{
+		arguments:"tournament_mvp_picks_aggregate_bool_exp_corr_arguments",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_corr_arguments:{
+		X:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_corr_arguments_columns",
+		Y:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_corr_arguments_columns"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_count:{
+		arguments:"tournament_mvp_picks_select_column",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_covar_samp:{
+		arguments:"tournament_mvp_picks_aggregate_bool_exp_covar_samp_arguments",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_covar_samp_arguments:{
+		X:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_covar_samp_arguments_columns",
+		Y:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_covar_samp_arguments_columns"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_max:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_max_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_min:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_min_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_stddev_samp:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_stddev_samp_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_sum:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_sum_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_bool_exp_var_samp:{
+		arguments:"tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_var_samp_arguments_columns",
+		filter:"tournament_mvp_picks_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	tournament_mvp_picks_aggregate_fields:{
+		count:{
+			columns:"tournament_mvp_picks_select_column"
+		}
+	},
+	tournament_mvp_picks_aggregate_order_by:{
+		avg:"tournament_mvp_picks_avg_order_by",
+		count:"order_by",
+		max:"tournament_mvp_picks_max_order_by",
+		min:"tournament_mvp_picks_min_order_by",
+		stddev:"tournament_mvp_picks_stddev_order_by",
+		stddev_pop:"tournament_mvp_picks_stddev_pop_order_by",
+		stddev_samp:"tournament_mvp_picks_stddev_samp_order_by",
+		sum:"tournament_mvp_picks_sum_order_by",
+		var_pop:"tournament_mvp_picks_var_pop_order_by",
+		var_samp:"tournament_mvp_picks_var_samp_order_by",
+		variance:"tournament_mvp_picks_variance_order_by"
+	},
+	tournament_mvp_picks_arr_rel_insert_input:{
+		data:"tournament_mvp_picks_insert_input",
+		on_conflict:"tournament_mvp_picks_on_conflict"
+	},
+	tournament_mvp_picks_avg_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
+	tournament_mvp_picks_bool_exp:{
+		_and:"tournament_mvp_picks_bool_exp",
+		_not:"tournament_mvp_picks_bool_exp",
+		_or:"tournament_mvp_picks_bool_exp",
+		automatic_impact:"float8_comparison_exp",
+		automatic_player:"players_bool_exp",
+		automatic_steam_id:"bigint_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		kept_automatic:"Boolean_comparison_exp",
+		note:"String_comparison_exp",
+		picked_by:"players_bool_exp",
+		picked_by_steam_id:"bigint_comparison_exp",
+		player:"players_bool_exp",
+		player_impact:"float8_comparison_exp",
+		player_steam_id:"bigint_comparison_exp",
+		replaced_player:"players_bool_exp",
+		replaced_steam_id:"bigint_comparison_exp",
+		tournament:"tournaments_bool_exp",
+		tournament_id:"uuid_comparison_exp",
+		tournament_team:"tournament_teams_bool_exp",
+		tournament_team_id:"uuid_comparison_exp"
+	},
+	tournament_mvp_picks_constraint: "enum" as const,
+	tournament_mvp_picks_inc_input:{
+		automatic_impact:"float8",
+		automatic_steam_id:"bigint",
+		picked_by_steam_id:"bigint",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_steam_id:"bigint"
+	},
+	tournament_mvp_picks_insert_input:{
+		automatic_impact:"float8",
+		automatic_player:"players_obj_rel_insert_input",
+		automatic_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		picked_by:"players_obj_rel_insert_input",
+		picked_by_steam_id:"bigint",
+		player:"players_obj_rel_insert_input",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_player:"players_obj_rel_insert_input",
+		replaced_steam_id:"bigint",
+		tournament:"tournaments_obj_rel_insert_input",
+		tournament_id:"uuid",
+		tournament_team:"tournament_teams_obj_rel_insert_input",
+		tournament_team_id:"uuid"
+	},
+	tournament_mvp_picks_max_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		created_at:"order_by",
+		id:"order_by",
+		note:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by",
+		tournament_id:"order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_mvp_picks_min_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		created_at:"order_by",
+		id:"order_by",
+		note:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by",
+		tournament_id:"order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_mvp_picks_on_conflict:{
+		constraint:"tournament_mvp_picks_constraint",
+		update_columns:"tournament_mvp_picks_update_column",
+		where:"tournament_mvp_picks_bool_exp"
+	},
+	tournament_mvp_picks_order_by:{
+		automatic_impact:"order_by",
+		automatic_player:"players_order_by",
+		automatic_steam_id:"order_by",
+		created_at:"order_by",
+		id:"order_by",
+		kept_automatic:"order_by",
+		note:"order_by",
+		picked_by:"players_order_by",
+		picked_by_steam_id:"order_by",
+		player:"players_order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_player:"players_order_by",
+		replaced_steam_id:"order_by",
+		tournament:"tournaments_order_by",
+		tournament_id:"order_by",
+		tournament_team:"tournament_teams_order_by",
+		tournament_team_id:"order_by"
+	},
+	tournament_mvp_picks_pk_columns_input:{
+		id:"uuid"
+	},
+	tournament_mvp_picks_select_column: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_avg_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_corr_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_covar_samp_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_max_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_min_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_stddev_samp_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_sum_arguments_columns: "enum" as const,
+	tournament_mvp_picks_select_column_tournament_mvp_picks_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
+	tournament_mvp_picks_set_input:{
+		automatic_impact:"float8",
+		automatic_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		picked_by_steam_id:"bigint",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_mvp_picks_stddev_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
+	tournament_mvp_picks_stddev_pop_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
+	tournament_mvp_picks_stddev_samp_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
+	tournament_mvp_picks_stream_cursor_input:{
+		initial_value:"tournament_mvp_picks_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	tournament_mvp_picks_stream_cursor_value_input:{
+		automatic_impact:"float8",
+		automatic_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		picked_by_steam_id:"bigint",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_mvp_picks_sum_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
+	tournament_mvp_picks_update_column: "enum" as const,
+	tournament_mvp_picks_updates:{
+		_inc:"tournament_mvp_picks_inc_input",
+		_set:"tournament_mvp_picks_set_input",
+		where:"tournament_mvp_picks_bool_exp"
+	},
+	tournament_mvp_picks_var_pop_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
+	tournament_mvp_picks_var_samp_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
+	tournament_mvp_picks_variance_order_by:{
+		automatic_impact:"order_by",
+		automatic_steam_id:"order_by",
+		picked_by_steam_id:"order_by",
+		player_impact:"order_by",
+		player_steam_id:"order_by",
+		replaced_steam_id:"order_by"
+	},
 	tournament_no_shows_aggregate_fields:{
 		count:{
 			columns:"tournament_no_shows_select_column"
@@ -42388,6 +43627,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"tournament_free_agents_order_by",
 			where:"tournament_free_agents_bool_exp"
 		},
+		mvp_picks:{
+			distinct_on:"tournament_mvp_picks_select_column",
+			order_by:"tournament_mvp_picks_order_by",
+			where:"tournament_mvp_picks_bool_exp"
+		},
+		mvp_picks_aggregate:{
+			distinct_on:"tournament_mvp_picks_select_column",
+			order_by:"tournament_mvp_picks_order_by",
+			where:"tournament_mvp_picks_bool_exp"
+		},
 		organizer_teams:{
 			distinct_on:"tournament_organizer_teams_select_column",
 			order_by:"tournament_organizer_teams_order_by",
@@ -42417,6 +43666,9 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_tournament_player_stats_select_column",
 			order_by:"v_tournament_player_stats_order_by",
 			where:"v_tournament_player_stats_bool_exp"
+		},
+		podium:{
+
 		},
 		prizes:{
 			distinct_on:"tournament_prizes_select_column",
@@ -42593,6 +43845,7 @@ export const AllTypesProps: Record<string,any> = {
 		can_join:"Boolean_comparison_exp",
 		can_open_registration:"Boolean_comparison_exp",
 		can_pause:"Boolean_comparison_exp",
+		can_pick_mvp:"Boolean_comparison_exp",
 		can_resume:"Boolean_comparison_exp",
 		can_review_check_in:"Boolean_comparison_exp",
 		can_setup:"Boolean_comparison_exp",
@@ -42652,8 +43905,11 @@ export const AllTypesProps: Record<string,any> = {
 		min_players_per_lineup:"Int_comparison_exp",
 		min_role:"e_player_roles_enum_comparison_exp",
 		missed_check_in_count:"Int_comparison_exp",
+		mvp_picks:"tournament_mvp_picks_bool_exp",
+		mvp_picks_aggregate:"tournament_mvp_picks_aggregate_bool_exp",
 		name:"String_comparison_exp",
 		options:"match_options_bool_exp",
+		organizer_picks_mvp:"Boolean_comparison_exp",
 		organizer_steam_id:"bigint_comparison_exp",
 		organizer_teams:"tournament_organizer_teams_bool_exp",
 		organizer_teams_aggregate:"tournament_organizer_teams_aggregate_bool_exp",
@@ -42661,6 +43917,7 @@ export const AllTypesProps: Record<string,any> = {
 		organizers_aggregate:"tournament_organizers_aggregate_bool_exp",
 		player_stats:"v_tournament_player_stats_bool_exp",
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_bool_exp",
+		podium:"jsonb_comparison_exp",
 		prizes:"tournament_prizes_bool_exp",
 		prizes_aggregate:"tournament_prizes_aggregate_bool_exp",
 		registration_type:"e_tournament_registration_types_enum_comparison_exp",
@@ -42703,6 +43960,7 @@ export const AllTypesProps: Record<string,any> = {
 		longitude:"float8",
 		match_options_id:"uuid",
 		min_role:"e_player_roles_enum",
+		mvp_picks:"tournament_mvp_picks_arr_rel_insert_input",
 		options:"match_options_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
 		organizer_teams:"tournament_organizer_teams_arr_rel_insert_input",
@@ -42792,6 +44050,7 @@ export const AllTypesProps: Record<string,any> = {
 		can_join:"order_by",
 		can_open_registration:"order_by",
 		can_pause:"order_by",
+		can_pick_mvp:"order_by",
 		can_resume:"order_by",
 		can_review_check_in:"order_by",
 		can_setup:"order_by",
@@ -42849,12 +44108,15 @@ export const AllTypesProps: Record<string,any> = {
 		min_players_per_lineup:"order_by",
 		min_role:"order_by",
 		missed_check_in_count:"order_by",
+		mvp_picks_aggregate:"tournament_mvp_picks_aggregate_order_by",
 		name:"order_by",
 		options:"match_options_order_by",
+		organizer_picks_mvp:"order_by",
 		organizer_steam_id:"order_by",
 		organizer_teams_aggregate:"tournament_organizer_teams_aggregate_order_by",
 		organizers_aggregate:"tournament_organizers_aggregate_order_by",
 		player_stats_aggregate:"v_tournament_player_stats_aggregate_order_by",
+		podium:"order_by",
 		prizes_aggregate:"tournament_prizes_aggregate_order_by",
 		registration_type:"order_by",
 		registration_unlocked:"order_by",
@@ -43438,6 +44700,834 @@ export const AllTypesProps: Record<string,any> = {
 		_inc:"utility_demo_throws_inc_input",
 		_set:"utility_demo_throws_set_input",
 		where:"utility_demo_throws_bool_exp"
+	},
+	utility_discoveries:{
+		area:{
+
+		},
+		results:{
+			distinct_on:"utility_discovery_results_select_column",
+			order_by:"utility_discovery_results_order_by",
+			where:"utility_discovery_results_bool_exp"
+		},
+		results_aggregate:{
+			distinct_on:"utility_discovery_results_select_column",
+			order_by:"utility_discovery_results_order_by",
+			where:"utility_discovery_results_bool_exp"
+		},
+		techniques:{
+
+		}
+	},
+	utility_discoveries_aggregate_fields:{
+		count:{
+			columns:"utility_discoveries_select_column"
+		}
+	},
+	utility_discoveries_append_input:{
+		area:"jsonb",
+		techniques:"jsonb"
+	},
+	utility_discoveries_bool_exp:{
+		_and:"utility_discoveries_bool_exp",
+		_not:"utility_discoveries_bool_exp",
+		_or:"utility_discoveries_bool_exp",
+		area:"jsonb_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		error:"String_comparison_exp",
+		finished_at:"timestamptz_comparison_exp",
+		grenades:"Int_comparison_exp",
+		id:"uuid_comparison_exp",
+		map_name:"String_comparison_exp",
+		mesh_revision:"String_comparison_exp",
+		missed:"Int_comparison_exp",
+		predicted:"Int_comparison_exp",
+		radius:"Float_comparison_exp",
+		requested_by:"players_bool_exp",
+		requested_by_steam_id:"bigint_comparison_exp",
+		results:"utility_discovery_results_bool_exp",
+		results_aggregate:"utility_discovery_results_aggregate_bool_exp",
+		started_at:"timestamptz_comparison_exp",
+		status:"String_comparison_exp",
+		strengths:"String_array_comparison_exp",
+		target_x:"float8_comparison_exp",
+		target_y:"float8_comparison_exp",
+		target_z:"float8_comparison_exp",
+		techniques:"jsonb_comparison_exp",
+		utility_practice_session_id:"uuid_comparison_exp",
+		utility_type:"String_comparison_exp",
+		verified:"Int_comparison_exp"
+	},
+	utility_discoveries_constraint: "enum" as const,
+	utility_discoveries_delete_at_path_input:{
+
+	},
+	utility_discoveries_delete_elem_input:{
+
+	},
+	utility_discoveries_delete_key_input:{
+
+	},
+	utility_discoveries_inc_input:{
+		requested_by_steam_id:"bigint",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8"
+	},
+	utility_discoveries_insert_input:{
+		area:"jsonb",
+		created_at:"timestamptz",
+		finished_at:"timestamptz",
+		id:"uuid",
+		requested_by:"players_obj_rel_insert_input",
+		requested_by_steam_id:"bigint",
+		results:"utility_discovery_results_arr_rel_insert_input",
+		started_at:"timestamptz",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8",
+		techniques:"jsonb",
+		utility_practice_session_id:"uuid"
+	},
+	utility_discoveries_obj_rel_insert_input:{
+		data:"utility_discoveries_insert_input",
+		on_conflict:"utility_discoveries_on_conflict"
+	},
+	utility_discoveries_on_conflict:{
+		constraint:"utility_discoveries_constraint",
+		update_columns:"utility_discoveries_update_column",
+		where:"utility_discoveries_bool_exp"
+	},
+	utility_discoveries_order_by:{
+		area:"order_by",
+		created_at:"order_by",
+		error:"order_by",
+		finished_at:"order_by",
+		grenades:"order_by",
+		id:"order_by",
+		map_name:"order_by",
+		mesh_revision:"order_by",
+		missed:"order_by",
+		predicted:"order_by",
+		radius:"order_by",
+		requested_by:"players_order_by",
+		requested_by_steam_id:"order_by",
+		results_aggregate:"utility_discovery_results_aggregate_order_by",
+		started_at:"order_by",
+		status:"order_by",
+		strengths:"order_by",
+		target_x:"order_by",
+		target_y:"order_by",
+		target_z:"order_by",
+		techniques:"order_by",
+		utility_practice_session_id:"order_by",
+		utility_type:"order_by",
+		verified:"order_by"
+	},
+	utility_discoveries_pk_columns_input:{
+		id:"uuid"
+	},
+	utility_discoveries_prepend_input:{
+		area:"jsonb",
+		techniques:"jsonb"
+	},
+	utility_discoveries_select_column: "enum" as const,
+	utility_discoveries_set_input:{
+		area:"jsonb",
+		created_at:"timestamptz",
+		finished_at:"timestamptz",
+		id:"uuid",
+		requested_by_steam_id:"bigint",
+		started_at:"timestamptz",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8",
+		techniques:"jsonb",
+		utility_practice_session_id:"uuid"
+	},
+	utility_discoveries_stream_cursor_input:{
+		initial_value:"utility_discoveries_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	utility_discoveries_stream_cursor_value_input:{
+		area:"jsonb",
+		created_at:"timestamptz",
+		finished_at:"timestamptz",
+		id:"uuid",
+		requested_by_steam_id:"bigint",
+		started_at:"timestamptz",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8",
+		techniques:"jsonb",
+		utility_practice_session_id:"uuid"
+	},
+	utility_discoveries_update_column: "enum" as const,
+	utility_discoveries_updates:{
+		_append:"utility_discoveries_append_input",
+		_delete_at_path:"utility_discoveries_delete_at_path_input",
+		_delete_elem:"utility_discoveries_delete_elem_input",
+		_delete_key:"utility_discoveries_delete_key_input",
+		_inc:"utility_discoveries_inc_input",
+		_prepend:"utility_discoveries_prepend_input",
+		_set:"utility_discoveries_set_input",
+		where:"utility_discoveries_bool_exp"
+	},
+	utility_discovery_results:{
+		path:{
+
+		}
+	},
+	utility_discovery_results_aggregate_bool_exp:{
+		avg:"utility_discovery_results_aggregate_bool_exp_avg",
+		bool_and:"utility_discovery_results_aggregate_bool_exp_bool_and",
+		bool_or:"utility_discovery_results_aggregate_bool_exp_bool_or",
+		corr:"utility_discovery_results_aggregate_bool_exp_corr",
+		count:"utility_discovery_results_aggregate_bool_exp_count",
+		covar_samp:"utility_discovery_results_aggregate_bool_exp_covar_samp",
+		max:"utility_discovery_results_aggregate_bool_exp_max",
+		min:"utility_discovery_results_aggregate_bool_exp_min",
+		stddev_samp:"utility_discovery_results_aggregate_bool_exp_stddev_samp",
+		sum:"utility_discovery_results_aggregate_bool_exp_sum",
+		var_samp:"utility_discovery_results_aggregate_bool_exp_var_samp"
+	},
+	utility_discovery_results_aggregate_bool_exp_avg:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_avg_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_bool_and:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_bool_or:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_corr:{
+		arguments:"utility_discovery_results_aggregate_bool_exp_corr_arguments",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_corr_arguments:{
+		X:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_corr_arguments_columns",
+		Y:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_corr_arguments_columns"
+	},
+	utility_discovery_results_aggregate_bool_exp_count:{
+		arguments:"utility_discovery_results_select_column",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_covar_samp:{
+		arguments:"utility_discovery_results_aggregate_bool_exp_covar_samp_arguments",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_covar_samp_arguments:{
+		X:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_covar_samp_arguments_columns",
+		Y:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_covar_samp_arguments_columns"
+	},
+	utility_discovery_results_aggregate_bool_exp_max:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_max_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_min:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_min_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_stddev_samp:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_stddev_samp_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_sum:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_sum_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_bool_exp_var_samp:{
+		arguments:"utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_var_samp_arguments_columns",
+		filter:"utility_discovery_results_bool_exp",
+		predicate:"float8_comparison_exp"
+	},
+	utility_discovery_results_aggregate_fields:{
+		count:{
+			columns:"utility_discovery_results_select_column"
+		}
+	},
+	utility_discovery_results_aggregate_order_by:{
+		avg:"utility_discovery_results_avg_order_by",
+		count:"order_by",
+		max:"utility_discovery_results_max_order_by",
+		min:"utility_discovery_results_min_order_by",
+		stddev:"utility_discovery_results_stddev_order_by",
+		stddev_pop:"utility_discovery_results_stddev_pop_order_by",
+		stddev_samp:"utility_discovery_results_stddev_samp_order_by",
+		sum:"utility_discovery_results_sum_order_by",
+		var_pop:"utility_discovery_results_var_pop_order_by",
+		var_samp:"utility_discovery_results_var_samp_order_by",
+		variance:"utility_discovery_results_variance_order_by"
+	},
+	utility_discovery_results_append_input:{
+		path:"jsonb"
+	},
+	utility_discovery_results_arr_rel_insert_input:{
+		data:"utility_discovery_results_insert_input",
+		on_conflict:"utility_discovery_results_on_conflict"
+	},
+	utility_discovery_results_avg_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_bool_exp:{
+		_and:"utility_discovery_results_bool_exp",
+		_not:"utility_discovery_results_bool_exp",
+		_or:"utility_discovery_results_bool_exp",
+		bounces:"Int_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		discovery:"utility_discoveries_bool_exp",
+		discovery_id:"uuid_comparison_exp",
+		distance:"Float_comparison_exp",
+		eye_z:"float8_comparison_exp",
+		flight_time_ms:"Int_comparison_exp",
+		forgiveness:"Float_comparison_exp",
+		grenades:"Int_comparison_exp",
+		id:"uuid_comparison_exp",
+		initial_pos_x:"float8_comparison_exp",
+		initial_pos_y:"float8_comparison_exp",
+		initial_pos_z:"float8_comparison_exp",
+		initial_vel_x:"float8_comparison_exp",
+		initial_vel_y:"float8_comparison_exp",
+		initial_vel_z:"float8_comparison_exp",
+		is_new:"Boolean_comparison_exp",
+		jump_throw:"Boolean_comparison_exp",
+		land_x:"float8_comparison_exp",
+		land_y:"float8_comparison_exp",
+		land_z:"float8_comparison_exp",
+		lineup:"utility_lineups_bool_exp",
+		measured:"Boolean_comparison_exp",
+		move_direction:"String_comparison_exp",
+		move_gait:"String_comparison_exp",
+		path:"jsonb_comparison_exp",
+		pitch:"float8_comparison_exp",
+		predicted_bounces:"Int_comparison_exp",
+		predicted_distance:"Float_comparison_exp",
+		predicted_land_x:"float8_comparison_exp",
+		predicted_land_y:"float8_comparison_exp",
+		predicted_land_z:"float8_comparison_exp",
+		predicted_spread:"Float_comparison_exp",
+		rank:"Int_comparison_exp",
+		stand_x:"float8_comparison_exp",
+		stand_y:"float8_comparison_exp",
+		stand_z:"float8_comparison_exp",
+		status:"String_comparison_exp",
+		strength:"String_comparison_exp",
+		technique:"String_comparison_exp",
+		utility_lineup_id:"uuid_comparison_exp",
+		verified_at:"timestamptz_comparison_exp",
+		yaw:"float8_comparison_exp"
+	},
+	utility_discovery_results_constraint: "enum" as const,
+	utility_discovery_results_delete_at_path_input:{
+
+	},
+	utility_discovery_results_delete_elem_input:{
+
+	},
+	utility_discovery_results_delete_key_input:{
+
+	},
+	utility_discovery_results_inc_input:{
+		eye_z:"float8",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		pitch:"float8",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		yaw:"float8"
+	},
+	utility_discovery_results_insert_input:{
+		created_at:"timestamptz",
+		discovery:"utility_discoveries_obj_rel_insert_input",
+		discovery_id:"uuid",
+		eye_z:"float8",
+		id:"uuid",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		lineup:"utility_lineups_obj_rel_insert_input",
+		path:"jsonb",
+		pitch:"float8",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		utility_lineup_id:"uuid",
+		verified_at:"timestamptz",
+		yaw:"float8"
+	},
+	utility_discovery_results_max_order_by:{
+		bounces:"order_by",
+		created_at:"order_by",
+		discovery_id:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		id:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		move_direction:"order_by",
+		move_gait:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		status:"order_by",
+		strength:"order_by",
+		technique:"order_by",
+		utility_lineup_id:"order_by",
+		verified_at:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_min_order_by:{
+		bounces:"order_by",
+		created_at:"order_by",
+		discovery_id:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		id:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		move_direction:"order_by",
+		move_gait:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		status:"order_by",
+		strength:"order_by",
+		technique:"order_by",
+		utility_lineup_id:"order_by",
+		verified_at:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_on_conflict:{
+		constraint:"utility_discovery_results_constraint",
+		update_columns:"utility_discovery_results_update_column",
+		where:"utility_discovery_results_bool_exp"
+	},
+	utility_discovery_results_order_by:{
+		bounces:"order_by",
+		created_at:"order_by",
+		discovery:"utility_discoveries_order_by",
+		discovery_id:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		id:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		is_new:"order_by",
+		jump_throw:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		lineup:"utility_lineups_order_by",
+		measured:"order_by",
+		move_direction:"order_by",
+		move_gait:"order_by",
+		path:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		status:"order_by",
+		strength:"order_by",
+		technique:"order_by",
+		utility_lineup_id:"order_by",
+		verified_at:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_pk_columns_input:{
+		id:"uuid"
+	},
+	utility_discovery_results_prepend_input:{
+		path:"jsonb"
+	},
+	utility_discovery_results_select_column: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_avg_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_corr_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_covar_samp_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_max_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_min_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_stddev_samp_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_sum_arguments_columns: "enum" as const,
+	utility_discovery_results_select_column_utility_discovery_results_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
+	utility_discovery_results_set_input:{
+		created_at:"timestamptz",
+		discovery_id:"uuid",
+		eye_z:"float8",
+		id:"uuid",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		path:"jsonb",
+		pitch:"float8",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		utility_lineup_id:"uuid",
+		verified_at:"timestamptz",
+		yaw:"float8"
+	},
+	utility_discovery_results_stddev_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_stddev_pop_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_stddev_samp_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_stream_cursor_input:{
+		initial_value:"utility_discovery_results_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	utility_discovery_results_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		discovery_id:"uuid",
+		eye_z:"float8",
+		id:"uuid",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		path:"jsonb",
+		pitch:"float8",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		utility_lineup_id:"uuid",
+		verified_at:"timestamptz",
+		yaw:"float8"
+	},
+	utility_discovery_results_sum_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_update_column: "enum" as const,
+	utility_discovery_results_updates:{
+		_append:"utility_discovery_results_append_input",
+		_delete_at_path:"utility_discovery_results_delete_at_path_input",
+		_delete_elem:"utility_discovery_results_delete_elem_input",
+		_delete_key:"utility_discovery_results_delete_key_input",
+		_inc:"utility_discovery_results_inc_input",
+		_prepend:"utility_discovery_results_prepend_input",
+		_set:"utility_discovery_results_set_input",
+		where:"utility_discovery_results_bool_exp"
+	},
+	utility_discovery_results_var_pop_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_var_samp_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
+	},
+	utility_discovery_results_variance_order_by:{
+		bounces:"order_by",
+		distance:"order_by",
+		eye_z:"order_by",
+		flight_time_ms:"order_by",
+		forgiveness:"order_by",
+		grenades:"order_by",
+		initial_pos_x:"order_by",
+		initial_pos_y:"order_by",
+		initial_pos_z:"order_by",
+		initial_vel_x:"order_by",
+		initial_vel_y:"order_by",
+		initial_vel_z:"order_by",
+		land_x:"order_by",
+		land_y:"order_by",
+		land_z:"order_by",
+		pitch:"order_by",
+		predicted_bounces:"order_by",
+		predicted_distance:"order_by",
+		predicted_land_x:"order_by",
+		predicted_land_y:"order_by",
+		predicted_land_z:"order_by",
+		predicted_spread:"order_by",
+		rank:"order_by",
+		stand_x:"order_by",
+		stand_y:"order_by",
+		stand_z:"order_by",
+		yaw:"order_by"
 	},
 	utility_drift_results_aggregate_bool_exp:{
 		avg:"utility_drift_results_aggregate_bool_exp_avg",
@@ -46526,6 +48616,7 @@ export const AllTypesProps: Record<string,any> = {
 		invite_code:"String_comparison_exp",
 		invites:"utility_practice_invites_bool_exp",
 		invites_aggregate:"utility_practice_invites_aggregate_bool_exp",
+		is_discovery:"Boolean_comparison_exp",
 		is_member:"Boolean_comparison_exp",
 		is_open:"Boolean_comparison_exp",
 		is_render:"Boolean_comparison_exp",
@@ -46644,6 +48735,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		invite_code:"order_by",
 		invites_aggregate:"utility_practice_invites_aggregate_order_by",
+		is_discovery:"order_by",
 		is_member:"order_by",
 		is_open:"order_by",
 		is_render:"order_by",
@@ -50460,6 +52552,7 @@ export const AllTypesProps: Record<string,any> = {
 		data:"v_tournament_player_stats_insert_input"
 	},
 	v_tournament_player_stats_avg_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50473,6 +52566,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"v_tournament_player_stats_bool_exp",
 		_not:"v_tournament_player_stats_bool_exp",
 		_or:"v_tournament_player_stats_bool_exp",
+		adr:"float8_comparison_exp",
 		assists:"Int_comparison_exp",
 		deaths:"Int_comparison_exp",
 		headshot_percentage:"float8_comparison_exp",
@@ -50486,6 +52580,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"uuid_comparison_exp"
 	},
 	v_tournament_player_stats_insert_input:{
+		adr:"float8",
 		headshot_percentage:"float8",
 		kdr:"float8",
 		player:"players_obj_rel_insert_input",
@@ -50494,6 +52589,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	v_tournament_player_stats_max_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50505,6 +52601,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"order_by"
 	},
 	v_tournament_player_stats_min_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50516,6 +52613,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"order_by"
 	},
 	v_tournament_player_stats_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50538,6 +52636,7 @@ export const AllTypesProps: Record<string,any> = {
 	v_tournament_player_stats_select_column_v_tournament_player_stats_aggregate_bool_exp_sum_arguments_columns: "enum" as const,
 	v_tournament_player_stats_select_column_v_tournament_player_stats_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
 	v_tournament_player_stats_stddev_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50548,6 +52647,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	v_tournament_player_stats_stddev_pop_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50558,6 +52658,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	v_tournament_player_stats_stddev_samp_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50572,12 +52673,14 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	v_tournament_player_stats_stream_cursor_value_input:{
+		adr:"float8",
 		headshot_percentage:"float8",
 		kdr:"float8",
 		player_steam_id:"bigint",
 		tournament_id:"uuid"
 	},
 	v_tournament_player_stats_sum_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50588,6 +52691,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	v_tournament_player_stats_var_pop_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50598,6 +52702,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	v_tournament_player_stats_var_samp_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50608,6 +52713,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_steam_id:"order_by"
 	},
 	v_tournament_player_stats_variance_order_by:{
+		adr:"order_by",
 		assists:"order_by",
 		deaths:"order_by",
 		headshot_percentage:"order_by",
@@ -50938,6 +53044,15 @@ export const ReturnTypes: Record<string,any> = {
 	NetworkStats:{
 		nics:"NicStat",
 		time:"timestamp"
+	},
+	NewsCommentOutput:{
+		id:"uuid",
+		parent_id:"uuid"
+	},
+	NewsCommentVoteOutput:{
+		comment_id:"uuid",
+		vote_count:"Int",
+		voted:"Boolean"
 	},
 	NewsPost:{
 		author_steam_id:"String",
@@ -51493,6 +53608,21 @@ export const ReturnTypes: Record<string,any> = {
 		stage_type:"String",
 		will_delete_match:"Boolean"
 	},
+	TournamentMvpCandidate:{
+		adr:"Float",
+		avatar_url:"String",
+		avg_impact:"Float",
+		deaths:"Int",
+		headshot_percentage:"Float",
+		kdr:"Float",
+		kills:"Int",
+		matches:"Int",
+		name:"String",
+		player_steam_id:"String",
+		rank:"Int",
+		total_impact:"Float",
+		tournament_team_id:"uuid"
+	},
 	UtilityBlockingOutput:{
 		degraded:"Boolean",
 		message:"String",
@@ -51508,6 +53638,15 @@ export const ReturnTypes: Record<string,any> = {
 		detail:"String",
 		ready:"Boolean",
 		status:"String"
+	},
+	UtilityDiscoveryOutput:{
+		discovery_id:"uuid",
+		message:"String",
+		predicted:"Int",
+		status:"String"
+	},
+	UtilityDiscoverySaveOutput:{
+		lineup_id:"uuid"
 	},
 	UtilityDriftScanOutput:{
 		lineups:"Int",
@@ -51685,6 +53824,19 @@ export const ReturnTypes: Record<string,any> = {
 		index:"Int",
 		transmittance:"Float",
 		world_blocked:"Boolean"
+	},
+	UtilitySmokePreviewOutput:{
+		den:"String",
+		dx:"Int",
+		dy:"Int",
+		dz:"Int",
+		ox:"Float",
+		oy:"Float",
+		oz:"Float",
+		vs:"Float",
+		x:"Float",
+		y:"Float",
+		z:"Float"
 	},
 	UtilitySolveOutput:{
 		accepted:"Boolean",
@@ -52471,6 +54623,81 @@ export const ReturnTypes: Record<string,any> = {
 		steam_id:"Float"
 	},
 	chat_read_state_variance_fields:{
+		steam_id:"Float"
+	},
+	chat_room_settings:{
+		mute_minutes:"Int",
+		muted:"Boolean",
+		muted_until:"timestamptz",
+		notify:"String",
+		steam_id:"bigint",
+		thread:"String"
+	},
+	chat_room_settings_aggregate:{
+		aggregate:"chat_room_settings_aggregate_fields",
+		nodes:"chat_room_settings"
+	},
+	chat_room_settings_aggregate_fields:{
+		avg:"chat_room_settings_avg_fields",
+		count:"Int",
+		max:"chat_room_settings_max_fields",
+		min:"chat_room_settings_min_fields",
+		stddev:"chat_room_settings_stddev_fields",
+		stddev_pop:"chat_room_settings_stddev_pop_fields",
+		stddev_samp:"chat_room_settings_stddev_samp_fields",
+		sum:"chat_room_settings_sum_fields",
+		var_pop:"chat_room_settings_var_pop_fields",
+		var_samp:"chat_room_settings_var_samp_fields",
+		variance:"chat_room_settings_variance_fields"
+	},
+	chat_room_settings_avg_fields:{
+		mute_minutes:"Float",
+		steam_id:"Float"
+	},
+	chat_room_settings_max_fields:{
+		mute_minutes:"Int",
+		muted_until:"timestamptz",
+		notify:"String",
+		steam_id:"bigint",
+		thread:"String"
+	},
+	chat_room_settings_min_fields:{
+		mute_minutes:"Int",
+		muted_until:"timestamptz",
+		notify:"String",
+		steam_id:"bigint",
+		thread:"String"
+	},
+	chat_room_settings_mutation_response:{
+		affected_rows:"Int",
+		returning:"chat_room_settings"
+	},
+	chat_room_settings_stddev_fields:{
+		mute_minutes:"Float",
+		steam_id:"Float"
+	},
+	chat_room_settings_stddev_pop_fields:{
+		mute_minutes:"Float",
+		steam_id:"Float"
+	},
+	chat_room_settings_stddev_samp_fields:{
+		mute_minutes:"Float",
+		steam_id:"Float"
+	},
+	chat_room_settings_sum_fields:{
+		mute_minutes:"Int",
+		steam_id:"bigint"
+	},
+	chat_room_settings_var_pop_fields:{
+		mute_minutes:"Float",
+		steam_id:"Float"
+	},
+	chat_room_settings_var_samp_fields:{
+		mute_minutes:"Float",
+		steam_id:"Float"
+	},
+	chat_room_settings_variance_fields:{
+		mute_minutes:"Float",
 		steam_id:"Float"
 	},
 	clip_render_jobs:{
@@ -59261,6 +61488,7 @@ export const ReturnTypes: Record<string,any> = {
 		cancelRefreshAllPlayers:"SuccessOutput",
 		cancelReparseAllDemos:"SuccessOutput",
 		cancelScrimRequest:"SuccessOutput",
+		cancelUtilityDiscovery:"SuccessOutput",
 		cancelUtilityLineupRender:"SuccessOutput",
 		changeUtilityPracticeMap:"UtilityPracticeMapChangeOutput",
 		checkIntoMatch:"SuccessOutput",
@@ -59283,6 +61511,7 @@ export const ReturnTypes: Record<string,any> = {
 		deleteAward:"SuccessOutput",
 		deleteClip:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
+		deleteNewsComment:"SuccessOutput",
 		deleteNewsPost:"SuccessOutput",
 		deleteOrphanedDemos:"DeleteOrphansOutput",
 		deleteServerItem:"SuccessOutput",
@@ -59307,6 +61536,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_chat_message_edits_by_pk:"chat_message_edits",
 		delete_chat_read_state:"chat_read_state_mutation_response",
 		delete_chat_read_state_by_pk:"chat_read_state",
+		delete_chat_room_settings:"chat_room_settings_mutation_response",
+		delete_chat_room_settings_by_pk:"chat_room_settings",
 		delete_clip_render_jobs:"clip_render_jobs_mutation_response",
 		delete_clip_render_jobs_by_pk:"clip_render_jobs",
 		delete_custom_pages:"custom_pages_mutation_response",
@@ -59545,6 +61776,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_my_friends:"my_friends_mutation_response",
 		delete_news_articles:"news_articles_mutation_response",
 		delete_news_articles_by_pk:"news_articles",
+		delete_news_comments:"news_comments_mutation_response",
+		delete_news_comments_by_pk:"news_comments",
 		delete_notification_preferences:"notification_preferences_mutation_response",
 		delete_notification_preferences_by_pk:"notification_preferences",
 		delete_notifications:"notifications_mutation_response",
@@ -59592,6 +61825,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_steam_bot_friend_by_pk:"player_steam_bot_friend",
 		delete_player_steam_match_auth:"player_steam_match_auth_mutation_response",
 		delete_player_steam_match_auth_by_pk:"player_steam_match_auth",
+		delete_player_twitch_accounts:"player_twitch_accounts_mutation_response",
+		delete_player_twitch_accounts_by_pk:"player_twitch_accounts",
 		delete_player_unused_utility:"player_unused_utility_mutation_response",
 		delete_player_unused_utility_by_pk:"player_unused_utility",
 		delete_player_utility:"player_utility_mutation_response",
@@ -59666,6 +61901,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournament_invites:"tournament_invites_mutation_response",
 		delete_tournament_invites_by_pk:"tournament_invites",
 		delete_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
+		delete_tournament_mvp_picks:"tournament_mvp_picks_mutation_response",
+		delete_tournament_mvp_picks_by_pk:"tournament_mvp_picks",
 		delete_tournament_no_shows:"tournament_no_shows_mutation_response",
 		delete_tournament_no_shows_by_pk:"tournament_no_shows",
 		delete_tournament_organizer_teams:"tournament_organizer_teams_mutation_response",
@@ -59695,6 +61932,10 @@ export const ReturnTypes: Record<string,any> = {
 		delete_utility_demo_mines_by_pk:"utility_demo_mines",
 		delete_utility_demo_throws:"utility_demo_throws_mutation_response",
 		delete_utility_demo_throws_by_pk:"utility_demo_throws",
+		delete_utility_discoveries:"utility_discoveries_mutation_response",
+		delete_utility_discoveries_by_pk:"utility_discoveries",
+		delete_utility_discovery_results:"utility_discovery_results_mutation_response",
+		delete_utility_discovery_results_by_pk:"utility_discovery_results",
 		delete_utility_drift_results:"utility_drift_results_mutation_response",
 		delete_utility_drift_results_by_pk:"utility_drift_results",
 		delete_utility_drift_scans:"utility_drift_scans_mutation_response",
@@ -59729,7 +61970,9 @@ export const ReturnTypes: Record<string,any> = {
 		delete_v_team_stage_results_by_pk:"v_team_stage_results",
 		denyInvite:"SuccessOutput",
 		denyNameChange:"SuccessOutput",
+		discoverUtilityLineups:"UtilityDiscoveryOutput",
 		draftTournamentTeams:"TournamentDraftOutput",
+		editNewsComment:"NewsCommentOutput",
 		extendTournamentCheckIn:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
 		forkUtilityLineup:"UtilityLineupOutput",
@@ -59758,6 +62001,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_chat_message_edits_one:"chat_message_edits",
 		insert_chat_read_state:"chat_read_state_mutation_response",
 		insert_chat_read_state_one:"chat_read_state",
+		insert_chat_room_settings:"chat_room_settings_mutation_response",
+		insert_chat_room_settings_one:"chat_room_settings",
 		insert_clip_render_jobs:"clip_render_jobs_mutation_response",
 		insert_clip_render_jobs_one:"clip_render_jobs",
 		insert_custom_pages:"custom_pages_mutation_response",
@@ -59998,6 +62243,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_my_friends_one:"my_friends",
 		insert_news_articles:"news_articles_mutation_response",
 		insert_news_articles_one:"news_articles",
+		insert_news_comments:"news_comments_mutation_response",
+		insert_news_comments_one:"news_comments",
 		insert_notification_preferences:"notification_preferences_mutation_response",
 		insert_notification_preferences_one:"notification_preferences",
 		insert_notifications:"notifications_mutation_response",
@@ -60046,6 +62293,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_steam_bot_friend_one:"player_steam_bot_friend",
 		insert_player_steam_match_auth:"player_steam_match_auth_mutation_response",
 		insert_player_steam_match_auth_one:"player_steam_match_auth",
+		insert_player_twitch_accounts:"player_twitch_accounts_mutation_response",
+		insert_player_twitch_accounts_one:"player_twitch_accounts",
 		insert_player_unused_utility:"player_unused_utility_mutation_response",
 		insert_player_unused_utility_one:"player_unused_utility",
 		insert_player_utility:"player_utility_mutation_response",
@@ -60122,6 +62371,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_tournament_invites_one:"tournament_invites",
 		insert_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
 		insert_tournament_leaderboard_entries_one:"tournament_leaderboard_entries",
+		insert_tournament_mvp_picks:"tournament_mvp_picks_mutation_response",
+		insert_tournament_mvp_picks_one:"tournament_mvp_picks",
 		insert_tournament_no_shows:"tournament_no_shows_mutation_response",
 		insert_tournament_no_shows_one:"tournament_no_shows",
 		insert_tournament_organizer_teams:"tournament_organizer_teams_mutation_response",
@@ -60152,6 +62403,10 @@ export const ReturnTypes: Record<string,any> = {
 		insert_utility_demo_mines_one:"utility_demo_mines",
 		insert_utility_demo_throws:"utility_demo_throws_mutation_response",
 		insert_utility_demo_throws_one:"utility_demo_throws",
+		insert_utility_discoveries:"utility_discoveries_mutation_response",
+		insert_utility_discoveries_one:"utility_discoveries",
+		insert_utility_discovery_results:"utility_discovery_results_mutation_response",
+		insert_utility_discovery_results_one:"utility_discovery_results",
 		insert_utility_drift_results:"utility_drift_results_mutation_response",
 		insert_utility_drift_results_one:"utility_drift_results",
 		insert_utility_drift_scans:"utility_drift_scans_mutation_response",
@@ -60208,6 +62463,7 @@ export const ReturnTypes: Record<string,any> = {
 		orphanedDemosScanResult:"OrphanScanResultOutput",
 		pauseClipRenderBatch:"SuccessOutput",
 		pollSteamMatchHistory:"SteamMatchHistoryPollOutput",
+		postNewsComment:"NewsCommentOutput",
 		previewDraftGame:"DraftGamePreviewOutput",
 		previewGameMode:"PreviewGameModeOutput",
 		purgeUtilityLineupSource:"UtilityPurgeOutput",
@@ -60255,6 +62511,7 @@ export const ReturnTypes: Record<string,any> = {
 		sanctionServerPlayer:"SanctionResult",
 		saveAward:"Award",
 		saveNewsPost:"NewsPost",
+		saveUtilityDiscoveryResult:"UtilityDiscoverySaveOutput",
 		saveUtilityLineupFromDemo:"UtilityLineupOutput",
 		saveUtilityLineupFromPractice:"UtilityLineupOutput",
 		saveUtilityPlaybook:"UtilityPlaybookOutput",
@@ -60270,12 +62527,14 @@ export const ReturnTypes: Record<string,any> = {
 		setHudMode:"SuccessOutput",
 		setMapWinner:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
+		setNewsCommentHidden:"NewsCommentOutput",
 		setNewsPostStatus:"NewsPost",
 		setServerAccess:"SuccessOutput",
 		setServerMapRotation:"SuccessOutput",
 		setServerPlugins:"SuccessOutput",
 		setServerSettings:"SuccessOutput",
 		setTournamentAward:"TournamentAward",
+		setTournamentMvp:"SuccessOutput",
 		setUtilityPracticeAccess:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		skipShaders:"SuccessOutput",
@@ -60307,6 +62566,7 @@ export const ReturnTypes: Record<string,any> = {
 		testDownload:"TestDownloadResponse",
 		testFaceitIntegration:"FaceitTestOutput",
 		testUpload:"TestUploadResponse",
+		toggleNewsCommentVote:"NewsCommentVoteOutput",
 		uninstallGamePlugin:"SuccessOutput",
 		unlinkDiscord:"SuccessOutput",
 		unlinkSteamMatchHistory:"SuccessOutput",
@@ -60342,6 +62602,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_chat_read_state:"chat_read_state_mutation_response",
 		update_chat_read_state_by_pk:"chat_read_state",
 		update_chat_read_state_many:"chat_read_state_mutation_response",
+		update_chat_room_settings:"chat_room_settings_mutation_response",
+		update_chat_room_settings_by_pk:"chat_room_settings",
+		update_chat_room_settings_many:"chat_room_settings_mutation_response",
 		update_clip_render_jobs:"clip_render_jobs_mutation_response",
 		update_clip_render_jobs_by_pk:"clip_render_jobs",
 		update_clip_render_jobs_many:"clip_render_jobs_mutation_response",
@@ -60700,6 +62963,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_news_articles:"news_articles_mutation_response",
 		update_news_articles_by_pk:"news_articles",
 		update_news_articles_many:"news_articles_mutation_response",
+		update_news_comments:"news_comments_mutation_response",
+		update_news_comments_by_pk:"news_comments",
+		update_news_comments_many:"news_comments_mutation_response",
 		update_notification_preferences:"notification_preferences_mutation_response",
 		update_notification_preferences_by_pk:"notification_preferences",
 		update_notification_preferences_many:"notification_preferences_mutation_response",
@@ -60771,6 +63037,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_steam_match_auth:"player_steam_match_auth_mutation_response",
 		update_player_steam_match_auth_by_pk:"player_steam_match_auth",
 		update_player_steam_match_auth_many:"player_steam_match_auth_mutation_response",
+		update_player_twitch_accounts:"player_twitch_accounts_mutation_response",
+		update_player_twitch_accounts_by_pk:"player_twitch_accounts",
+		update_player_twitch_accounts_many:"player_twitch_accounts_mutation_response",
 		update_player_unused_utility:"player_unused_utility_mutation_response",
 		update_player_unused_utility_by_pk:"player_unused_utility",
 		update_player_unused_utility_many:"player_unused_utility_mutation_response",
@@ -60883,6 +63152,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournament_invites_many:"tournament_invites_mutation_response",
 		update_tournament_leaderboard_entries:"tournament_leaderboard_entries_mutation_response",
 		update_tournament_leaderboard_entries_many:"tournament_leaderboard_entries_mutation_response",
+		update_tournament_mvp_picks:"tournament_mvp_picks_mutation_response",
+		update_tournament_mvp_picks_by_pk:"tournament_mvp_picks",
+		update_tournament_mvp_picks_many:"tournament_mvp_picks_mutation_response",
 		update_tournament_no_shows:"tournament_no_shows_mutation_response",
 		update_tournament_no_shows_by_pk:"tournament_no_shows",
 		update_tournament_no_shows_many:"tournament_no_shows_mutation_response",
@@ -60927,6 +63199,12 @@ export const ReturnTypes: Record<string,any> = {
 		update_utility_demo_throws:"utility_demo_throws_mutation_response",
 		update_utility_demo_throws_by_pk:"utility_demo_throws",
 		update_utility_demo_throws_many:"utility_demo_throws_mutation_response",
+		update_utility_discoveries:"utility_discoveries_mutation_response",
+		update_utility_discoveries_by_pk:"utility_discoveries",
+		update_utility_discoveries_many:"utility_discoveries_mutation_response",
+		update_utility_discovery_results:"utility_discovery_results_mutation_response",
+		update_utility_discovery_results_by_pk:"utility_discovery_results",
+		update_utility_discovery_results_many:"utility_discovery_results_mutation_response",
 		update_utility_drift_results:"utility_drift_results_mutation_response",
 		update_utility_drift_results_by_pk:"utility_drift_results",
 		update_utility_drift_results_many:"utility_drift_results_mutation_response",
@@ -61290,6 +63568,122 @@ export const ReturnTypes: Record<string,any> = {
 	news_articles_variance_fields:{
 		author_steam_id:"Float",
 		view_count:"Float"
+	},
+	news_comments:{
+		article:"news_articles",
+		article_id:"uuid",
+		author:"players",
+		author_steam_id:"bigint",
+		body:"String",
+		created_at:"timestamptz",
+		deleted_at:"timestamptz",
+		deleted_by_staff:"Boolean",
+		edited_at:"timestamptz",
+		hidden_at:"timestamptz",
+		hidden_by_name:"String",
+		hidden_by_steam_id:"bigint",
+		hidden_reason:"String",
+		id:"uuid",
+		parent_id:"uuid",
+		replies:"news_comments",
+		replies_aggregate:"news_comments_aggregate",
+		text:"String",
+		viewer_voted:"Boolean",
+		visible:"Boolean",
+		vote_count:"Int"
+	},
+	news_comments_aggregate:{
+		aggregate:"news_comments_aggregate_fields",
+		nodes:"news_comments"
+	},
+	news_comments_aggregate_fields:{
+		avg:"news_comments_avg_fields",
+		count:"Int",
+		max:"news_comments_max_fields",
+		min:"news_comments_min_fields",
+		stddev:"news_comments_stddev_fields",
+		stddev_pop:"news_comments_stddev_pop_fields",
+		stddev_samp:"news_comments_stddev_samp_fields",
+		sum:"news_comments_sum_fields",
+		var_pop:"news_comments_var_pop_fields",
+		var_samp:"news_comments_var_samp_fields",
+		variance:"news_comments_variance_fields"
+	},
+	news_comments_avg_fields:{
+		author_steam_id:"Float",
+		hidden_by_steam_id:"Float",
+		vote_count:"Float"
+	},
+	news_comments_max_fields:{
+		article_id:"uuid",
+		author_steam_id:"bigint",
+		body:"String",
+		created_at:"timestamptz",
+		deleted_at:"timestamptz",
+		edited_at:"timestamptz",
+		hidden_at:"timestamptz",
+		hidden_by_name:"String",
+		hidden_by_steam_id:"bigint",
+		hidden_reason:"String",
+		id:"uuid",
+		parent_id:"uuid",
+		text:"String",
+		vote_count:"Int"
+	},
+	news_comments_min_fields:{
+		article_id:"uuid",
+		author_steam_id:"bigint",
+		body:"String",
+		created_at:"timestamptz",
+		deleted_at:"timestamptz",
+		edited_at:"timestamptz",
+		hidden_at:"timestamptz",
+		hidden_by_name:"String",
+		hidden_by_steam_id:"bigint",
+		hidden_reason:"String",
+		id:"uuid",
+		parent_id:"uuid",
+		text:"String",
+		vote_count:"Int"
+	},
+	news_comments_mutation_response:{
+		affected_rows:"Int",
+		returning:"news_comments"
+	},
+	news_comments_stddev_fields:{
+		author_steam_id:"Float",
+		hidden_by_steam_id:"Float",
+		vote_count:"Float"
+	},
+	news_comments_stddev_pop_fields:{
+		author_steam_id:"Float",
+		hidden_by_steam_id:"Float",
+		vote_count:"Float"
+	},
+	news_comments_stddev_samp_fields:{
+		author_steam_id:"Float",
+		hidden_by_steam_id:"Float",
+		vote_count:"Float"
+	},
+	news_comments_sum_fields:{
+		author_steam_id:"bigint",
+		hidden_by_steam_id:"bigint",
+		vote_count:"Int"
+	},
+	news_comments_var_pop_fields:{
+		author_steam_id:"Float",
+		hidden_by_steam_id:"Float",
+		vote_count:"Float"
+	},
+	news_comments_var_samp_fields:{
+		author_steam_id:"Float",
+		hidden_by_steam_id:"Float",
+		vote_count:"Float"
+	},
+	news_comments_variance_fields:{
+		author_steam_id:"Float",
+		hidden_by_steam_id:"Float",
+		vote_count:"Float"
 	},
 	notification_preferences:{
 		channel:"String",
@@ -66338,6 +68732,100 @@ export const ReturnTypes: Record<string,any> = {
 	player_steam_match_auth_variance_fields:{
 		steam_id:"Float"
 	},
+	player_twitch_accounts:{
+		checked_at:"timestamptz",
+		created_at:"timestamptz",
+		display_name:"String",
+		game_name:"String",
+		is_live:"Boolean",
+		login:"String",
+		player:"players",
+		started_at:"timestamptz",
+		steam_id:"bigint",
+		stream_title:"String",
+		thumbnail_url:"String",
+		twitch_user_id:"String",
+		viewer_count:"Int"
+	},
+	player_twitch_accounts_aggregate:{
+		aggregate:"player_twitch_accounts_aggregate_fields",
+		nodes:"player_twitch_accounts"
+	},
+	player_twitch_accounts_aggregate_fields:{
+		avg:"player_twitch_accounts_avg_fields",
+		count:"Int",
+		max:"player_twitch_accounts_max_fields",
+		min:"player_twitch_accounts_min_fields",
+		stddev:"player_twitch_accounts_stddev_fields",
+		stddev_pop:"player_twitch_accounts_stddev_pop_fields",
+		stddev_samp:"player_twitch_accounts_stddev_samp_fields",
+		sum:"player_twitch_accounts_sum_fields",
+		var_pop:"player_twitch_accounts_var_pop_fields",
+		var_samp:"player_twitch_accounts_var_samp_fields",
+		variance:"player_twitch_accounts_variance_fields"
+	},
+	player_twitch_accounts_avg_fields:{
+		steam_id:"Float",
+		viewer_count:"Float"
+	},
+	player_twitch_accounts_max_fields:{
+		checked_at:"timestamptz",
+		created_at:"timestamptz",
+		display_name:"String",
+		game_name:"String",
+		login:"String",
+		started_at:"timestamptz",
+		steam_id:"bigint",
+		stream_title:"String",
+		thumbnail_url:"String",
+		twitch_user_id:"String",
+		viewer_count:"Int"
+	},
+	player_twitch_accounts_min_fields:{
+		checked_at:"timestamptz",
+		created_at:"timestamptz",
+		display_name:"String",
+		game_name:"String",
+		login:"String",
+		started_at:"timestamptz",
+		steam_id:"bigint",
+		stream_title:"String",
+		thumbnail_url:"String",
+		twitch_user_id:"String",
+		viewer_count:"Int"
+	},
+	player_twitch_accounts_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_twitch_accounts"
+	},
+	player_twitch_accounts_stddev_fields:{
+		steam_id:"Float",
+		viewer_count:"Float"
+	},
+	player_twitch_accounts_stddev_pop_fields:{
+		steam_id:"Float",
+		viewer_count:"Float"
+	},
+	player_twitch_accounts_stddev_samp_fields:{
+		steam_id:"Float",
+		viewer_count:"Float"
+	},
+	player_twitch_accounts_sum_fields:{
+		steam_id:"bigint",
+		viewer_count:"Int"
+	},
+	player_twitch_accounts_var_pop_fields:{
+		steam_id:"Float",
+		viewer_count:"Float"
+	},
+	player_twitch_accounts_var_samp_fields:{
+		steam_id:"Float",
+		viewer_count:"Float"
+	},
+	player_twitch_accounts_variance_fields:{
+		steam_id:"Float",
+		viewer_count:"Float"
+	},
 	player_unused_utility:{
 		deleted_at:"timestamptz",
 		match:"matches",
@@ -66697,6 +69185,7 @@ export const ReturnTypes: Record<string,any> = {
 		language:"String",
 		last_read_news_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
+		live_lineup:"match_lineup_players",
 		lobby_players:"lobby_players",
 		lobby_players_aggregate:"lobby_players_aggregate",
 		losses:"Int",
@@ -67202,6 +69691,9 @@ export const ReturnTypes: Record<string,any> = {
 		chat_read_state:"chat_read_state",
 		chat_read_state_aggregate:"chat_read_state_aggregate",
 		chat_read_state_by_pk:"chat_read_state",
+		chat_room_settings:"chat_room_settings",
+		chat_room_settings_aggregate:"chat_room_settings_aggregate",
+		chat_room_settings_by_pk:"chat_room_settings",
 		checkUtilityOneWay:"UtilityOneWayOutput",
 		checkUtilitySightlines:"UtilitySightlineOutput",
 		clip_render_jobs:"clip_render_jobs",
@@ -67600,6 +70092,9 @@ export const ReturnTypes: Record<string,any> = {
 		news_articles:"news_articles",
 		news_articles_aggregate:"news_articles_aggregate",
 		news_articles_by_pk:"news_articles",
+		news_comments:"news_comments",
+		news_comments_aggregate:"news_comments_aggregate",
+		news_comments_by_pk:"news_comments",
 		notification_preferences:"notification_preferences",
 		notification_preferences_aggregate:"notification_preferences_aggregate",
 		notification_preferences_by_pk:"notification_preferences",
@@ -67681,6 +70176,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_match_auth:"player_steam_match_auth",
 		player_steam_match_auth_aggregate:"player_steam_match_auth_aggregate",
 		player_steam_match_auth_by_pk:"player_steam_match_auth",
+		player_twitch_accounts:"player_twitch_accounts",
+		player_twitch_accounts_aggregate:"player_twitch_accounts_aggregate",
+		player_twitch_accounts_by_pk:"player_twitch_accounts",
 		player_unused_utility:"player_unused_utility",
 		player_unused_utility_aggregate:"player_unused_utility_aggregate",
 		player_unused_utility_by_pk:"player_unused_utility",
@@ -67695,6 +70193,7 @@ export const ReturnTypes: Record<string,any> = {
 		plugin_versions:"plugin_versions",
 		plugin_versions_aggregate:"plugin_versions_aggregate",
 		plugin_versions_by_pk:"plugin_versions",
+		previewUtilitySmoke:"UtilitySmokePreviewOutput",
 		push_subscriptions:"push_subscriptions",
 		push_subscriptions_aggregate:"push_subscriptions_aggregate",
 		push_subscriptions_by_pk:"push_subscriptions",
@@ -67779,6 +70278,7 @@ export const ReturnTypes: Record<string,any> = {
 		teams_aggregate:"teams_aggregate",
 		teams_by_pk:"teams",
 		telemetryStats:"TelemetryStats",
+		tournamentMvpCandidates:"TournamentMvpCandidate",
 		tournament_awards:"tournament_awards",
 		tournament_awards_aggregate:"tournament_awards_aggregate",
 		tournament_awards_by_pk:"tournament_awards",
@@ -67802,6 +70302,9 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_invites_by_pk:"tournament_invites",
 		tournament_leaderboard_entries:"tournament_leaderboard_entries",
 		tournament_leaderboard_entries_aggregate:"tournament_leaderboard_entries_aggregate",
+		tournament_mvp_picks:"tournament_mvp_picks",
+		tournament_mvp_picks_aggregate:"tournament_mvp_picks_aggregate",
+		tournament_mvp_picks_by_pk:"tournament_mvp_picks",
 		tournament_no_shows:"tournament_no_shows",
 		tournament_no_shows_aggregate:"tournament_no_shows_aggregate",
 		tournament_no_shows_by_pk:"tournament_no_shows",
@@ -67854,6 +70357,12 @@ export const ReturnTypes: Record<string,any> = {
 		utility_demo_throws:"utility_demo_throws",
 		utility_demo_throws_aggregate:"utility_demo_throws_aggregate",
 		utility_demo_throws_by_pk:"utility_demo_throws",
+		utility_discoveries:"utility_discoveries",
+		utility_discoveries_aggregate:"utility_discoveries_aggregate",
+		utility_discoveries_by_pk:"utility_discoveries",
+		utility_discovery_results:"utility_discovery_results",
+		utility_discovery_results_aggregate:"utility_discovery_results_aggregate",
+		utility_discovery_results_by_pk:"utility_discovery_results",
 		utility_drift_results:"utility_drift_results",
 		utility_drift_results_aggregate:"utility_drift_results_aggregate",
 		utility_drift_results_by_pk:"utility_drift_results",
@@ -69111,6 +71620,10 @@ export const ReturnTypes: Record<string,any> = {
 		chat_read_state_aggregate:"chat_read_state_aggregate",
 		chat_read_state_by_pk:"chat_read_state",
 		chat_read_state_stream:"chat_read_state",
+		chat_room_settings:"chat_room_settings",
+		chat_room_settings_aggregate:"chat_room_settings_aggregate",
+		chat_room_settings_by_pk:"chat_room_settings",
+		chat_room_settings_stream:"chat_room_settings",
 		clip_render_jobs:"clip_render_jobs",
 		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
 		clip_render_jobs_by_pk:"clip_render_jobs",
@@ -69599,6 +72112,10 @@ export const ReturnTypes: Record<string,any> = {
 		news_articles_aggregate:"news_articles_aggregate",
 		news_articles_by_pk:"news_articles",
 		news_articles_stream:"news_articles",
+		news_comments:"news_comments",
+		news_comments_aggregate:"news_comments_aggregate",
+		news_comments_by_pk:"news_comments",
+		news_comments_stream:"news_comments",
 		notification_preferences:"notification_preferences",
 		notification_preferences_aggregate:"notification_preferences_aggregate",
 		notification_preferences_by_pk:"notification_preferences",
@@ -69709,6 +72226,10 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_match_auth_aggregate:"player_steam_match_auth_aggregate",
 		player_steam_match_auth_by_pk:"player_steam_match_auth",
 		player_steam_match_auth_stream:"player_steam_match_auth",
+		player_twitch_accounts:"player_twitch_accounts",
+		player_twitch_accounts_aggregate:"player_twitch_accounts_aggregate",
+		player_twitch_accounts_by_pk:"player_twitch_accounts",
+		player_twitch_accounts_stream:"player_twitch_accounts",
 		player_unused_utility:"player_unused_utility",
 		player_unused_utility_aggregate:"player_unused_utility_aggregate",
 		player_unused_utility_by_pk:"player_unused_utility",
@@ -69865,6 +72386,10 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_leaderboard_entries:"tournament_leaderboard_entries",
 		tournament_leaderboard_entries_aggregate:"tournament_leaderboard_entries_aggregate",
 		tournament_leaderboard_entries_stream:"tournament_leaderboard_entries",
+		tournament_mvp_picks:"tournament_mvp_picks",
+		tournament_mvp_picks_aggregate:"tournament_mvp_picks_aggregate",
+		tournament_mvp_picks_by_pk:"tournament_mvp_picks",
+		tournament_mvp_picks_stream:"tournament_mvp_picks",
 		tournament_no_shows:"tournament_no_shows",
 		tournament_no_shows_aggregate:"tournament_no_shows_aggregate",
 		tournament_no_shows_by_pk:"tournament_no_shows",
@@ -69924,6 +72449,14 @@ export const ReturnTypes: Record<string,any> = {
 		utility_demo_throws_aggregate:"utility_demo_throws_aggregate",
 		utility_demo_throws_by_pk:"utility_demo_throws",
 		utility_demo_throws_stream:"utility_demo_throws",
+		utility_discoveries:"utility_discoveries",
+		utility_discoveries_aggregate:"utility_discoveries_aggregate",
+		utility_discoveries_by_pk:"utility_discoveries",
+		utility_discoveries_stream:"utility_discoveries",
+		utility_discovery_results:"utility_discovery_results",
+		utility_discovery_results_aggregate:"utility_discovery_results_aggregate",
+		utility_discovery_results_by_pk:"utility_discovery_results",
+		utility_discovery_results_stream:"utility_discovery_results",
 		utility_drift_results:"utility_drift_results",
 		utility_drift_results_aggregate:"utility_drift_results_aggregate",
 		utility_drift_results_by_pk:"utility_drift_results",
@@ -71607,6 +74140,137 @@ export const ReturnTypes: Record<string,any> = {
 		rating:"Float",
 		rounds_played:"Float"
 	},
+	tournament_mvp_picks:{
+		automatic_impact:"float8",
+		automatic_player:"players",
+		automatic_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		kept_automatic:"Boolean",
+		note:"String",
+		picked_by:"players",
+		picked_by_steam_id:"bigint",
+		player:"players",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_player:"players",
+		replaced_steam_id:"bigint",
+		tournament:"tournaments",
+		tournament_id:"uuid",
+		tournament_team:"tournament_teams",
+		tournament_team_id:"uuid"
+	},
+	tournament_mvp_picks_aggregate:{
+		aggregate:"tournament_mvp_picks_aggregate_fields",
+		nodes:"tournament_mvp_picks"
+	},
+	tournament_mvp_picks_aggregate_fields:{
+		avg:"tournament_mvp_picks_avg_fields",
+		count:"Int",
+		max:"tournament_mvp_picks_max_fields",
+		min:"tournament_mvp_picks_min_fields",
+		stddev:"tournament_mvp_picks_stddev_fields",
+		stddev_pop:"tournament_mvp_picks_stddev_pop_fields",
+		stddev_samp:"tournament_mvp_picks_stddev_samp_fields",
+		sum:"tournament_mvp_picks_sum_fields",
+		var_pop:"tournament_mvp_picks_var_pop_fields",
+		var_samp:"tournament_mvp_picks_var_samp_fields",
+		variance:"tournament_mvp_picks_variance_fields"
+	},
+	tournament_mvp_picks_avg_fields:{
+		automatic_impact:"Float",
+		automatic_steam_id:"Float",
+		picked_by_steam_id:"Float",
+		player_impact:"Float",
+		player_steam_id:"Float",
+		replaced_steam_id:"Float"
+	},
+	tournament_mvp_picks_max_fields:{
+		automatic_impact:"float8",
+		automatic_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		note:"String",
+		picked_by_steam_id:"bigint",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_mvp_picks_min_fields:{
+		automatic_impact:"float8",
+		automatic_steam_id:"bigint",
+		created_at:"timestamptz",
+		id:"uuid",
+		note:"String",
+		picked_by_steam_id:"bigint",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_steam_id:"bigint",
+		tournament_id:"uuid",
+		tournament_team_id:"uuid"
+	},
+	tournament_mvp_picks_mutation_response:{
+		affected_rows:"Int",
+		returning:"tournament_mvp_picks"
+	},
+	tournament_mvp_picks_stddev_fields:{
+		automatic_impact:"Float",
+		automatic_steam_id:"Float",
+		picked_by_steam_id:"Float",
+		player_impact:"Float",
+		player_steam_id:"Float",
+		replaced_steam_id:"Float"
+	},
+	tournament_mvp_picks_stddev_pop_fields:{
+		automatic_impact:"Float",
+		automatic_steam_id:"Float",
+		picked_by_steam_id:"Float",
+		player_impact:"Float",
+		player_steam_id:"Float",
+		replaced_steam_id:"Float"
+	},
+	tournament_mvp_picks_stddev_samp_fields:{
+		automatic_impact:"Float",
+		automatic_steam_id:"Float",
+		picked_by_steam_id:"Float",
+		player_impact:"Float",
+		player_steam_id:"Float",
+		replaced_steam_id:"Float"
+	},
+	tournament_mvp_picks_sum_fields:{
+		automatic_impact:"float8",
+		automatic_steam_id:"bigint",
+		picked_by_steam_id:"bigint",
+		player_impact:"float8",
+		player_steam_id:"bigint",
+		replaced_steam_id:"bigint"
+	},
+	tournament_mvp_picks_var_pop_fields:{
+		automatic_impact:"Float",
+		automatic_steam_id:"Float",
+		picked_by_steam_id:"Float",
+		player_impact:"Float",
+		player_steam_id:"Float",
+		replaced_steam_id:"Float"
+	},
+	tournament_mvp_picks_var_samp_fields:{
+		automatic_impact:"Float",
+		automatic_steam_id:"Float",
+		picked_by_steam_id:"Float",
+		player_impact:"Float",
+		player_steam_id:"Float",
+		replaced_steam_id:"Float"
+	},
+	tournament_mvp_picks_variance_fields:{
+		automatic_impact:"Float",
+		automatic_steam_id:"Float",
+		picked_by_steam_id:"Float",
+		player_impact:"Float",
+		player_steam_id:"Float",
+		replaced_steam_id:"Float"
+	},
 	tournament_no_shows:{
 		id:"uuid",
 		occurred_at:"timestamptz",
@@ -72408,6 +75072,7 @@ export const ReturnTypes: Record<string,any> = {
 		can_join:"Boolean",
 		can_open_registration:"Boolean",
 		can_pause:"Boolean",
+		can_pick_mvp:"Boolean",
 		can_resume:"Boolean",
 		can_review_check_in:"Boolean",
 		can_setup:"Boolean",
@@ -72467,8 +75132,11 @@ export const ReturnTypes: Record<string,any> = {
 		min_players_per_lineup:"Int",
 		min_role:"e_player_roles_enum",
 		missed_check_in_count:"Int",
+		mvp_picks:"tournament_mvp_picks",
+		mvp_picks_aggregate:"tournament_mvp_picks_aggregate",
 		name:"String",
 		options:"match_options",
+		organizer_picks_mvp:"Boolean",
 		organizer_steam_id:"bigint",
 		organizer_teams:"tournament_organizer_teams",
 		organizer_teams_aggregate:"tournament_organizer_teams_aggregate",
@@ -72476,6 +75144,7 @@ export const ReturnTypes: Record<string,any> = {
 		organizers_aggregate:"tournament_organizers_aggregate",
 		player_stats:"v_tournament_player_stats",
 		player_stats_aggregate:"v_tournament_player_stats_aggregate",
+		podium:"jsonb",
 		prizes:"tournament_prizes",
 		prizes_aggregate:"tournament_prizes_aggregate",
 		registration_type:"e_tournament_registration_types_enum",
@@ -73116,6 +75785,562 @@ export const ReturnTypes: Record<string,any> = {
 		tick:"Float",
 		view_pitch:"Float",
 		view_yaw:"Float"
+	},
+	utility_discoveries:{
+		area:"jsonb",
+		created_at:"timestamptz",
+		error:"String",
+		finished_at:"timestamptz",
+		grenades:"Int",
+		id:"uuid",
+		map_name:"String",
+		mesh_revision:"String",
+		missed:"Int",
+		predicted:"Int",
+		radius:"Float",
+		requested_by:"players",
+		requested_by_steam_id:"bigint",
+		results:"utility_discovery_results",
+		results_aggregate:"utility_discovery_results_aggregate",
+		started_at:"timestamptz",
+		status:"String",
+		strengths:"String",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8",
+		techniques:"jsonb",
+		utility_practice_session_id:"uuid",
+		utility_type:"String",
+		verified:"Int"
+	},
+	utility_discoveries_aggregate:{
+		aggregate:"utility_discoveries_aggregate_fields",
+		nodes:"utility_discoveries"
+	},
+	utility_discoveries_aggregate_fields:{
+		avg:"utility_discoveries_avg_fields",
+		count:"Int",
+		max:"utility_discoveries_max_fields",
+		min:"utility_discoveries_min_fields",
+		stddev:"utility_discoveries_stddev_fields",
+		stddev_pop:"utility_discoveries_stddev_pop_fields",
+		stddev_samp:"utility_discoveries_stddev_samp_fields",
+		sum:"utility_discoveries_sum_fields",
+		var_pop:"utility_discoveries_var_pop_fields",
+		var_samp:"utility_discoveries_var_samp_fields",
+		variance:"utility_discoveries_variance_fields"
+	},
+	utility_discoveries_avg_fields:{
+		grenades:"Float",
+		missed:"Float",
+		predicted:"Float",
+		radius:"Float",
+		requested_by_steam_id:"Float",
+		target_x:"Float",
+		target_y:"Float",
+		target_z:"Float",
+		verified:"Float"
+	},
+	utility_discoveries_max_fields:{
+		created_at:"timestamptz",
+		error:"String",
+		finished_at:"timestamptz",
+		grenades:"Int",
+		id:"uuid",
+		map_name:"String",
+		mesh_revision:"String",
+		missed:"Int",
+		predicted:"Int",
+		radius:"Float",
+		requested_by_steam_id:"bigint",
+		started_at:"timestamptz",
+		status:"String",
+		strengths:"String",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8",
+		utility_practice_session_id:"uuid",
+		utility_type:"String",
+		verified:"Int"
+	},
+	utility_discoveries_min_fields:{
+		created_at:"timestamptz",
+		error:"String",
+		finished_at:"timestamptz",
+		grenades:"Int",
+		id:"uuid",
+		map_name:"String",
+		mesh_revision:"String",
+		missed:"Int",
+		predicted:"Int",
+		radius:"Float",
+		requested_by_steam_id:"bigint",
+		started_at:"timestamptz",
+		status:"String",
+		strengths:"String",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8",
+		utility_practice_session_id:"uuid",
+		utility_type:"String",
+		verified:"Int"
+	},
+	utility_discoveries_mutation_response:{
+		affected_rows:"Int",
+		returning:"utility_discoveries"
+	},
+	utility_discoveries_stddev_fields:{
+		grenades:"Float",
+		missed:"Float",
+		predicted:"Float",
+		radius:"Float",
+		requested_by_steam_id:"Float",
+		target_x:"Float",
+		target_y:"Float",
+		target_z:"Float",
+		verified:"Float"
+	},
+	utility_discoveries_stddev_pop_fields:{
+		grenades:"Float",
+		missed:"Float",
+		predicted:"Float",
+		radius:"Float",
+		requested_by_steam_id:"Float",
+		target_x:"Float",
+		target_y:"Float",
+		target_z:"Float",
+		verified:"Float"
+	},
+	utility_discoveries_stddev_samp_fields:{
+		grenades:"Float",
+		missed:"Float",
+		predicted:"Float",
+		radius:"Float",
+		requested_by_steam_id:"Float",
+		target_x:"Float",
+		target_y:"Float",
+		target_z:"Float",
+		verified:"Float"
+	},
+	utility_discoveries_sum_fields:{
+		grenades:"Int",
+		missed:"Int",
+		predicted:"Int",
+		radius:"Float",
+		requested_by_steam_id:"bigint",
+		target_x:"float8",
+		target_y:"float8",
+		target_z:"float8",
+		verified:"Int"
+	},
+	utility_discoveries_var_pop_fields:{
+		grenades:"Float",
+		missed:"Float",
+		predicted:"Float",
+		radius:"Float",
+		requested_by_steam_id:"Float",
+		target_x:"Float",
+		target_y:"Float",
+		target_z:"Float",
+		verified:"Float"
+	},
+	utility_discoveries_var_samp_fields:{
+		grenades:"Float",
+		missed:"Float",
+		predicted:"Float",
+		radius:"Float",
+		requested_by_steam_id:"Float",
+		target_x:"Float",
+		target_y:"Float",
+		target_z:"Float",
+		verified:"Float"
+	},
+	utility_discoveries_variance_fields:{
+		grenades:"Float",
+		missed:"Float",
+		predicted:"Float",
+		radius:"Float",
+		requested_by_steam_id:"Float",
+		target_x:"Float",
+		target_y:"Float",
+		target_z:"Float",
+		verified:"Float"
+	},
+	utility_discovery_results:{
+		bounces:"Int",
+		created_at:"timestamptz",
+		discovery:"utility_discoveries",
+		discovery_id:"uuid",
+		distance:"Float",
+		eye_z:"float8",
+		flight_time_ms:"Int",
+		forgiveness:"Float",
+		grenades:"Int",
+		id:"uuid",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		is_new:"Boolean",
+		jump_throw:"Boolean",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		lineup:"utility_lineups",
+		measured:"Boolean",
+		move_direction:"String",
+		move_gait:"String",
+		path:"jsonb",
+		pitch:"float8",
+		predicted_bounces:"Int",
+		predicted_distance:"Float",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		predicted_spread:"Float",
+		rank:"Int",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		status:"String",
+		strength:"String",
+		technique:"String",
+		utility_lineup_id:"uuid",
+		verified_at:"timestamptz",
+		yaw:"float8"
+	},
+	utility_discovery_results_aggregate:{
+		aggregate:"utility_discovery_results_aggregate_fields",
+		nodes:"utility_discovery_results"
+	},
+	utility_discovery_results_aggregate_fields:{
+		avg:"utility_discovery_results_avg_fields",
+		count:"Int",
+		max:"utility_discovery_results_max_fields",
+		min:"utility_discovery_results_min_fields",
+		stddev:"utility_discovery_results_stddev_fields",
+		stddev_pop:"utility_discovery_results_stddev_pop_fields",
+		stddev_samp:"utility_discovery_results_stddev_samp_fields",
+		sum:"utility_discovery_results_sum_fields",
+		var_pop:"utility_discovery_results_var_pop_fields",
+		var_samp:"utility_discovery_results_var_samp_fields",
+		variance:"utility_discovery_results_variance_fields"
+	},
+	utility_discovery_results_avg_fields:{
+		bounces:"Float",
+		distance:"Float",
+		eye_z:"Float",
+		flight_time_ms:"Float",
+		forgiveness:"Float",
+		grenades:"Float",
+		initial_pos_x:"Float",
+		initial_pos_y:"Float",
+		initial_pos_z:"Float",
+		initial_vel_x:"Float",
+		initial_vel_y:"Float",
+		initial_vel_z:"Float",
+		land_x:"Float",
+		land_y:"Float",
+		land_z:"Float",
+		pitch:"Float",
+		predicted_bounces:"Float",
+		predicted_distance:"Float",
+		predicted_land_x:"Float",
+		predicted_land_y:"Float",
+		predicted_land_z:"Float",
+		predicted_spread:"Float",
+		rank:"Float",
+		stand_x:"Float",
+		stand_y:"Float",
+		stand_z:"Float",
+		yaw:"Float"
+	},
+	utility_discovery_results_max_fields:{
+		bounces:"Int",
+		created_at:"timestamptz",
+		discovery_id:"uuid",
+		distance:"Float",
+		eye_z:"float8",
+		flight_time_ms:"Int",
+		forgiveness:"Float",
+		grenades:"Int",
+		id:"uuid",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		move_direction:"String",
+		move_gait:"String",
+		pitch:"float8",
+		predicted_bounces:"Int",
+		predicted_distance:"Float",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		predicted_spread:"Float",
+		rank:"Int",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		status:"String",
+		strength:"String",
+		technique:"String",
+		utility_lineup_id:"uuid",
+		verified_at:"timestamptz",
+		yaw:"float8"
+	},
+	utility_discovery_results_min_fields:{
+		bounces:"Int",
+		created_at:"timestamptz",
+		discovery_id:"uuid",
+		distance:"Float",
+		eye_z:"float8",
+		flight_time_ms:"Int",
+		forgiveness:"Float",
+		grenades:"Int",
+		id:"uuid",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		move_direction:"String",
+		move_gait:"String",
+		pitch:"float8",
+		predicted_bounces:"Int",
+		predicted_distance:"Float",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		predicted_spread:"Float",
+		rank:"Int",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		status:"String",
+		strength:"String",
+		technique:"String",
+		utility_lineup_id:"uuid",
+		verified_at:"timestamptz",
+		yaw:"float8"
+	},
+	utility_discovery_results_mutation_response:{
+		affected_rows:"Int",
+		returning:"utility_discovery_results"
+	},
+	utility_discovery_results_stddev_fields:{
+		bounces:"Float",
+		distance:"Float",
+		eye_z:"Float",
+		flight_time_ms:"Float",
+		forgiveness:"Float",
+		grenades:"Float",
+		initial_pos_x:"Float",
+		initial_pos_y:"Float",
+		initial_pos_z:"Float",
+		initial_vel_x:"Float",
+		initial_vel_y:"Float",
+		initial_vel_z:"Float",
+		land_x:"Float",
+		land_y:"Float",
+		land_z:"Float",
+		pitch:"Float",
+		predicted_bounces:"Float",
+		predicted_distance:"Float",
+		predicted_land_x:"Float",
+		predicted_land_y:"Float",
+		predicted_land_z:"Float",
+		predicted_spread:"Float",
+		rank:"Float",
+		stand_x:"Float",
+		stand_y:"Float",
+		stand_z:"Float",
+		yaw:"Float"
+	},
+	utility_discovery_results_stddev_pop_fields:{
+		bounces:"Float",
+		distance:"Float",
+		eye_z:"Float",
+		flight_time_ms:"Float",
+		forgiveness:"Float",
+		grenades:"Float",
+		initial_pos_x:"Float",
+		initial_pos_y:"Float",
+		initial_pos_z:"Float",
+		initial_vel_x:"Float",
+		initial_vel_y:"Float",
+		initial_vel_z:"Float",
+		land_x:"Float",
+		land_y:"Float",
+		land_z:"Float",
+		pitch:"Float",
+		predicted_bounces:"Float",
+		predicted_distance:"Float",
+		predicted_land_x:"Float",
+		predicted_land_y:"Float",
+		predicted_land_z:"Float",
+		predicted_spread:"Float",
+		rank:"Float",
+		stand_x:"Float",
+		stand_y:"Float",
+		stand_z:"Float",
+		yaw:"Float"
+	},
+	utility_discovery_results_stddev_samp_fields:{
+		bounces:"Float",
+		distance:"Float",
+		eye_z:"Float",
+		flight_time_ms:"Float",
+		forgiveness:"Float",
+		grenades:"Float",
+		initial_pos_x:"Float",
+		initial_pos_y:"Float",
+		initial_pos_z:"Float",
+		initial_vel_x:"Float",
+		initial_vel_y:"Float",
+		initial_vel_z:"Float",
+		land_x:"Float",
+		land_y:"Float",
+		land_z:"Float",
+		pitch:"Float",
+		predicted_bounces:"Float",
+		predicted_distance:"Float",
+		predicted_land_x:"Float",
+		predicted_land_y:"Float",
+		predicted_land_z:"Float",
+		predicted_spread:"Float",
+		rank:"Float",
+		stand_x:"Float",
+		stand_y:"Float",
+		stand_z:"Float",
+		yaw:"Float"
+	},
+	utility_discovery_results_sum_fields:{
+		bounces:"Int",
+		distance:"Float",
+		eye_z:"float8",
+		flight_time_ms:"Int",
+		forgiveness:"Float",
+		grenades:"Int",
+		initial_pos_x:"float8",
+		initial_pos_y:"float8",
+		initial_pos_z:"float8",
+		initial_vel_x:"float8",
+		initial_vel_y:"float8",
+		initial_vel_z:"float8",
+		land_x:"float8",
+		land_y:"float8",
+		land_z:"float8",
+		pitch:"float8",
+		predicted_bounces:"Int",
+		predicted_distance:"Float",
+		predicted_land_x:"float8",
+		predicted_land_y:"float8",
+		predicted_land_z:"float8",
+		predicted_spread:"Float",
+		rank:"Int",
+		stand_x:"float8",
+		stand_y:"float8",
+		stand_z:"float8",
+		yaw:"float8"
+	},
+	utility_discovery_results_var_pop_fields:{
+		bounces:"Float",
+		distance:"Float",
+		eye_z:"Float",
+		flight_time_ms:"Float",
+		forgiveness:"Float",
+		grenades:"Float",
+		initial_pos_x:"Float",
+		initial_pos_y:"Float",
+		initial_pos_z:"Float",
+		initial_vel_x:"Float",
+		initial_vel_y:"Float",
+		initial_vel_z:"Float",
+		land_x:"Float",
+		land_y:"Float",
+		land_z:"Float",
+		pitch:"Float",
+		predicted_bounces:"Float",
+		predicted_distance:"Float",
+		predicted_land_x:"Float",
+		predicted_land_y:"Float",
+		predicted_land_z:"Float",
+		predicted_spread:"Float",
+		rank:"Float",
+		stand_x:"Float",
+		stand_y:"Float",
+		stand_z:"Float",
+		yaw:"Float"
+	},
+	utility_discovery_results_var_samp_fields:{
+		bounces:"Float",
+		distance:"Float",
+		eye_z:"Float",
+		flight_time_ms:"Float",
+		forgiveness:"Float",
+		grenades:"Float",
+		initial_pos_x:"Float",
+		initial_pos_y:"Float",
+		initial_pos_z:"Float",
+		initial_vel_x:"Float",
+		initial_vel_y:"Float",
+		initial_vel_z:"Float",
+		land_x:"Float",
+		land_y:"Float",
+		land_z:"Float",
+		pitch:"Float",
+		predicted_bounces:"Float",
+		predicted_distance:"Float",
+		predicted_land_x:"Float",
+		predicted_land_y:"Float",
+		predicted_land_z:"Float",
+		predicted_spread:"Float",
+		rank:"Float",
+		stand_x:"Float",
+		stand_y:"Float",
+		stand_z:"Float",
+		yaw:"Float"
+	},
+	utility_discovery_results_variance_fields:{
+		bounces:"Float",
+		distance:"Float",
+		eye_z:"Float",
+		flight_time_ms:"Float",
+		forgiveness:"Float",
+		grenades:"Float",
+		initial_pos_x:"Float",
+		initial_pos_y:"Float",
+		initial_pos_z:"Float",
+		initial_vel_x:"Float",
+		initial_vel_y:"Float",
+		initial_vel_z:"Float",
+		land_x:"Float",
+		land_y:"Float",
+		land_z:"Float",
+		pitch:"Float",
+		predicted_bounces:"Float",
+		predicted_distance:"Float",
+		predicted_land_x:"Float",
+		predicted_land_y:"Float",
+		predicted_land_z:"Float",
+		predicted_spread:"Float",
+		rank:"Float",
+		stand_x:"Float",
+		stand_y:"Float",
+		stand_z:"Float",
+		yaw:"Float"
 	},
 	utility_drift_results:{
 		created_at:"timestamptz",
@@ -74890,6 +78115,7 @@ export const ReturnTypes: Record<string,any> = {
 		invite_code:"String",
 		invites:"utility_practice_invites",
 		invites_aggregate:"utility_practice_invites_aggregate",
+		is_discovery:"Boolean",
 		is_member:"Boolean",
 		is_open:"Boolean",
 		is_render:"Boolean",
@@ -78971,6 +82197,7 @@ export const ReturnTypes: Record<string,any> = {
 		wins:"Float"
 	},
 	v_tournament_player_stats:{
+		adr:"float8",
 		assists:"Int",
 		deaths:"Int",
 		headshot_percentage:"float8",
@@ -79001,6 +82228,7 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"v_tournament_player_stats_variance_fields"
 	},
 	v_tournament_player_stats_avg_fields:{
+		adr:"Float",
 		assists:"Float",
 		deaths:"Float",
 		headshot_percentage:"Float",
@@ -79011,6 +82239,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	v_tournament_player_stats_max_fields:{
+		adr:"float8",
 		assists:"Int",
 		deaths:"Int",
 		headshot_percentage:"float8",
@@ -79022,6 +82251,7 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	v_tournament_player_stats_min_fields:{
+		adr:"float8",
 		assists:"Int",
 		deaths:"Int",
 		headshot_percentage:"float8",
@@ -79033,6 +82263,7 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	v_tournament_player_stats_stddev_fields:{
+		adr:"Float",
 		assists:"Float",
 		deaths:"Float",
 		headshot_percentage:"Float",
@@ -79043,6 +82274,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	v_tournament_player_stats_stddev_pop_fields:{
+		adr:"Float",
 		assists:"Float",
 		deaths:"Float",
 		headshot_percentage:"Float",
@@ -79053,6 +82285,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	v_tournament_player_stats_stddev_samp_fields:{
+		adr:"Float",
 		assists:"Float",
 		deaths:"Float",
 		headshot_percentage:"Float",
@@ -79063,6 +82296,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	v_tournament_player_stats_sum_fields:{
+		adr:"float8",
 		assists:"Int",
 		deaths:"Int",
 		headshot_percentage:"float8",
@@ -79073,6 +82307,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"bigint"
 	},
 	v_tournament_player_stats_var_pop_fields:{
+		adr:"Float",
 		assists:"Float",
 		deaths:"Float",
 		headshot_percentage:"Float",
@@ -79083,6 +82318,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	v_tournament_player_stats_var_samp_fields:{
+		adr:"Float",
 		assists:"Float",
 		deaths:"Float",
 		headshot_percentage:"Float",
@@ -79093,6 +82329,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	v_tournament_player_stats_variance_fields:{
+		adr:"Float",
 		assists:"Float",
 		deaths:"Float",
 		headshot_percentage:"Float",

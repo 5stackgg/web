@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { X } from "lucide-vue-next";
+import { ArrowLeftRight, Crown, X } from "lucide-vue-next";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import DraftPlayerCard from "~/components/draft-games/DraftPlayerCard.vue";
 import DraftOpenSlot from "~/components/draft-games/DraftOpenSlot.vue";
 
@@ -11,6 +12,11 @@ const props = defineProps<{
   accent: "amber" | "blue";
   active?: boolean;
   removable?: boolean;
+  captainable?: boolean;
+  // Offered on whoever has not checked in once the check-in clock runs out;
+  // the swap only when there is a backup to bring in.
+  noShowActions?: boolean;
+  swapLabel?: string | null;
   selfSteamId?: string;
   addable?: boolean;
   excludeSteamIds?: Array<string>;
@@ -27,6 +33,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: "remove", steamId: string): void;
+  (event: "captain", steamId: string): void;
+  (event: "swap", steamId: string): void;
+  (event: "kick", steamId: string): void;
   (event: "add", steamId: string, player?: { steam_id: string }): void;
   (event: "dragstart", steamId: string): void;
   (event: "dragend"): void;
@@ -70,11 +79,18 @@ const avgElo = computed(() => {
   return Math.round(total / props.players.length);
 });
 
+// The same order the api uses when it hands the match lineup its captain.
 const captainSteamId = computed(() => {
   return [...props.players].sort(
-    (a, b) => (a.pick_order ?? 99) - (b.pick_order ?? 99),
+    (a, b) =>
+      Number(b.is_captain) - Number(a.is_captain) ||
+      (a.pick_order ?? 99) - (b.pick_order ?? 99) ||
+      String(a.joined_at || "").localeCompare(String(b.joined_at || "")),
   )[0]?.steam_id;
 });
+
+const isNoShow = (steamId: string) =>
+  !!props.noShowActions && props.checkInBySteamId?.[steamId] === false;
 
 const isClockSlot = (index: number) =>
   props.clockPick != null && props.upcomingPicks?.[index] === props.clockPick;
@@ -152,15 +168,88 @@ const slots = computed(() => {
       >
         <!-- Fades out rather than vanishing when the lobby locks for check-in. -->
         <template #action>
-          <Transition name="action">
-            <button
-              v-if="removable || player.steam_id === selfSteamId"
-              class="remove-btn grid h-6 w-6 place-items-center rounded-md transition-colors"
-              @click="emit('remove', player.steam_id)"
-            >
-              <X class="h-3.5 w-3.5" />
-            </button>
-          </Transition>
+          <div class="flex items-center gap-0.5">
+            <!-- The tooltip renders display:contents, so the wrapper is the box
+                 the transition animates. -->
+            <Transition name="action">
+              <span
+                v-if="captainable && player.steam_id !== captainSteamId"
+                class="grid"
+              >
+                <FiveStackToolTip
+                  as-child
+                  side="top"
+                  :delay-duration="120"
+                  :tap-toggle="false"
+                >
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="captain-btn grid h-6 w-6 place-items-center rounded-md transition-colors"
+                      :aria-label="$t('draft_games.room.make_captain')"
+                      @click="emit('captain', player.steam_id)"
+                    >
+                      <Crown class="h-3.5 w-3.5" />
+                    </button>
+                  </template>
+                  {{ $t("draft_games.room.make_captain") }}
+                </FiveStackToolTip>
+              </span>
+            </Transition>
+            <Transition name="action">
+              <span v-if="isNoShow(player.steam_id) && swapLabel" class="grid">
+                <FiveStackToolTip
+                  as-child
+                  side="top"
+                  :delay-duration="120"
+                  :tap-toggle="false"
+                >
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="swap-btn grid h-6 w-6 place-items-center rounded-md transition-colors"
+                      :aria-label="swapLabel"
+                      @click="emit('swap', player.steam_id)"
+                    >
+                      <ArrowLeftRight class="h-3.5 w-3.5" />
+                    </button>
+                  </template>
+                  {{ swapLabel }}
+                </FiveStackToolTip>
+              </span>
+            </Transition>
+            <Transition name="action">
+              <span v-if="isNoShow(player.steam_id)" class="grid">
+                <FiveStackToolTip
+                  as-child
+                  side="top"
+                  :delay-duration="120"
+                  :tap-toggle="false"
+                >
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="remove-btn grid h-6 w-6 place-items-center rounded-md transition-colors"
+                      :aria-label="$t('draft_games.room.remove_no_show')"
+                      @click="emit('kick', player.steam_id)"
+                    >
+                      <X class="h-3.5 w-3.5" />
+                    </button>
+                  </template>
+                  {{ $t("draft_games.room.remove_no_show") }}
+                </FiveStackToolTip>
+              </span>
+            </Transition>
+            <Transition name="action">
+              <button
+                v-if="removable || player.steam_id === selfSteamId"
+                class="remove-btn grid h-6 w-6 place-items-center rounded-md transition-colors"
+                @click="emit('remove', player.steam_id)"
+              >
+                <X class="h-3.5 w-3.5" />
+              </button>
+            </Transition>
+          </div>
         </template>
       </DraftPlayerCard>
       </div>
@@ -259,8 +348,19 @@ const slots = computed(() => {
     border-color: hsl(var(--accent) / 0.9);
   }
 }
-.remove-btn {
+.remove-btn,
+.captain-btn {
   color: hsl(var(--muted-foreground));
+}
+.captain-btn:hover {
+  color: hsl(var(--tac-amber));
+  background: hsl(var(--tac-amber) / 0.12);
+}
+.swap-btn {
+  color: hsl(var(--accent));
+}
+.swap-btn:hover {
+  background: hsl(var(--accent) / 0.15);
 }
 .remove-btn:hover {
   color: hsl(var(--destructive));

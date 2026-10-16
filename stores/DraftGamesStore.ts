@@ -265,6 +265,8 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
             // match auto-cancels at cancels_at, so the room has to be able to
             // show how long is left.
             cancels_at: true,
+            // A draft's own check-in clock runs from when the match was made.
+            created_at: true,
             region: true,
             e_region: { description: true },
             is_captain: true,
@@ -705,6 +707,70 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       variables: { draftGameId, steamId },
     });
 
+  // No replacement just takes the no-show out of the match.
+  const replaceNoShow = (
+    draftGameId: string,
+    steamId: string,
+    replacementSteamId?: string | null,
+  ) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation ReplaceDraftNoShow(
+          $draftGameId: uuid!
+          $steamId: String!
+          $replacementSteamId: String
+        ) {
+          replaceDraftNoShow(
+            draftGameId: $draftGameId
+            steamId: $steamId
+            replacementSteamId: $replacementSteamId
+          ) {
+            success
+          }
+        }
+      `,
+      variables: {
+        draftGameId,
+        steamId,
+        replacementSteamId: replacementSteamId ?? null,
+      },
+    });
+
+  // Hands a side's armband to someone already on it; both updates run in one
+  // transaction, so the side is never left with two captains or none.
+  const makeSideCaptain = (
+    draftGameId: string,
+    steamId: string,
+    lineup: number,
+  ) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation MakeDraftSideCaptain(
+          $draftGameId: uuid!
+          $steamId: bigint!
+          $lineup: Int!
+        ) {
+          update_draft_game_players(
+            where: {
+              draft_game_id: { _eq: $draftGameId }
+              lineup: { _eq: $lineup }
+              is_captain: { _eq: true }
+            }
+            _set: { is_captain: false }
+          ) {
+            affected_rows
+          }
+          update_draft_game_players_by_pk(
+            pk_columns: { draft_game_id: $draftGameId, steam_id: $steamId }
+            _set: { is_captain: true }
+          ) {
+            draft_game_id
+          }
+        }
+      `,
+      variables: { draftGameId, steamId, lineup },
+    });
+
   const teamAssign = (
     draftGameId: string,
     steamId: string,
@@ -787,6 +853,8 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     setSlot,
     setCaptain,
     clearCaptain,
+    makeSideCaptain,
+    replaceNoShow,
     approve,
     deny,
   };

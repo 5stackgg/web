@@ -104,6 +104,40 @@ const isCheckIn = computed(
   () => !!props.room.match_id && props.match?.status === "WaitingForCheckIn",
 );
 
+// A draft match gives everyone a minute to check in from when the draft made
+// it. Running out cancels nothing: the host swaps a backup in for whoever is
+// missing, and the match's own auto-cancel stays behind it as the safety net.
+const DRAFT_CHECK_IN_SECONDS = 60;
+
+const checkInEndsAt = computed(() => {
+  const createdAt = props.match?.created_at;
+  if (!isCheckIn.value || !createdAt) {
+    return null;
+  }
+  return new Date(
+    new Date(createdAt).getTime() + DRAFT_CHECK_IN_SECONDS * 1000,
+  ).toISOString();
+});
+
+const { seconds: checkInSeconds } = useCountdown(
+  checkInEndsAt,
+  ref(DRAFT_CHECK_IN_SECONDS),
+);
+
+const checkInWindowOver = computed(
+  () => !!checkInEndsAt.value && checkInSeconds.value === 0,
+);
+
+const checkInDeadline = computed(() =>
+  checkInWindowOver.value ? props.match?.cancels_at : checkInEndsAt.value,
+);
+
+const checkInDeadlineHelp = computed(() =>
+  checkInWindowOver.value
+    ? undefined
+    : t("draft_games.room.check_in_window_help"),
+);
+
 const checkInProgress = computed(() => {
   const map = checkInBySteamId.value;
   if (!map) {
@@ -277,10 +311,17 @@ const showTeamPanels = computed(() =>
   props.room.mode === "Pug" ? hasAssignedTeams.value : true,
 );
 
+// Captain first, then pick order -- the draft's, or the order a Host lobby
+// placed players on the side.
 const startersFor = (lineup: number) =>
   [...props.room.players]
     .filter((p: any) => p.lineup === lineup && p.status !== "Waitlist")
-    .sort((a: any, b: any) => (a.pick_order ?? 0) - (b.pick_order ?? 0));
+    .sort(
+      (a: any, b: any) =>
+        Number(b.is_captain) - Number(a.is_captain) ||
+        (a.pick_order ?? 99) - (b.pick_order ?? 99) ||
+        String(a.joined_at || "").localeCompare(String(b.joined_at || "")),
+    );
 
 const team1 = computed(() => startersFor(1));
 const team2 = computed(() => startersFor(2));
@@ -392,8 +433,11 @@ const confirmKick = () => {
   if (!steamId) {
     return;
   }
+  // Once the match exists, leaving the lobby no longer takes anyone out of it.
   return runGuarded(`kick:${steamId}`, () =>
-    useDraftGamesStore().kick(props.room.id, steamId),
+    isCheckIn.value
+      ? useDraftGamesStore().replaceNoShow(props.room.id, steamId)
+      : useDraftGamesStore().kick(props.room.id, steamId),
   );
 };
 
@@ -660,6 +704,34 @@ const designateCaptain = (steamId: string, lineup: number) =>
     useDraftGamesStore().setCaptain(props.room.id, steamId, lineup),
   );
 
+const canReplaceNoShows = computed(
+  () => checkInWindowOver.value && isOrganizer.value,
+);
+
+// The backups are already in join order, so the first one is next in line.
+const nextBackup = computed(() => waitlist.value[0]);
+
+const swapLabel = computed(() =>
+  nextBackup.value
+    ? t("draft_games.room.swap_in", { name: nextBackup.value.player?.name })
+    : null,
+);
+
+const swapInBackup = (steamId: string) => {
+  const backup = nextBackup.value;
+  if (!backup) {
+    return;
+  }
+  return runGuarded(`swap:${steamId}`, () =>
+    useDraftGamesStore().replaceNoShow(props.room.id, steamId, backup.steam_id),
+  );
+};
+
+const makeSideCaptain = (steamId: string, lineup: number) =>
+  runGuarded(`captain:${steamId}`, () =>
+    useDraftGamesStore().makeSideCaptain(props.room.id, steamId, lineup),
+  );
+
 const onTeamRemove = (steamId: string) => {
   if (isManualCaptains.value) {
     return runGuarded(`captain:${steamId}`, () =>
@@ -923,7 +995,12 @@ const start = () => {
             :class="{ 'is-empty': matchInfoHeight === 0 }"
           >
             <div class="collapse-clip">
-              <MatchInfo :match="match" hide-booting />
+              <MatchInfo
+                :match="match"
+                hide-booting
+                :check-in-deadline="checkInDeadline"
+                :check-in-deadline-help="checkInDeadlineHelp"
+              />
             </div>
           </div>
         </Transition>
@@ -1059,6 +1136,8 @@ const start = () => {
                       <CheckIntoMatch
                         v-if="match"
                         :match="match"
+                        :deadline="checkInDeadline"
+                        :deadline-help="checkInDeadlineHelp"
                         class="w-64"
                       />
                     </div>
@@ -1434,10 +1513,16 @@ const start = () => {
                         :self-steam-id="
                           isHostAssigning ? me?.steam_id : undefined
                         "
+                        :captainable="canAssign"
+                        :no-show-actions="canReplaceNoShows"
+                        :swap-label="swapLabel"
                         :addable="canAssign && !team1Full"
                         :exclude-steam-ids="memberIds"
                         @add="(steamId) => addToTeam(steamId, 1)"
                         @remove="onTeamRemove"
+                        @captain="(steamId) => makeSideCaptain(steamId, 1)"
+                        @swap="swapInBackup"
+                        @kick="kick"
                       />
                       <DraftTeamPanel
                         :title="$t('draft_games.room.team_bravo')"
@@ -1457,10 +1542,16 @@ const start = () => {
                         :self-steam-id="
                           isHostAssigning ? me?.steam_id : undefined
                         "
+                        :captainable="canAssign"
+                        :no-show-actions="canReplaceNoShows"
+                        :swap-label="swapLabel"
                         :addable="canAssign && !team2Full"
                         :exclude-steam-ids="memberIds"
                         @add="(steamId) => addToTeam(steamId, 2)"
                         @remove="onTeamRemove"
+                        @captain="(steamId) => makeSideCaptain(steamId, 2)"
+                        @swap="swapInBackup"
+                        @kick="kick"
                       />
                     </div>
                   </div>
@@ -1660,7 +1751,7 @@ const start = () => {
                             <div
                               class="mt-5 border-t border-dotted border-border/70 pt-4"
                             >
-                              <div class="mb-3 flex items-center gap-2">
+                              <div class="flex items-center gap-2">
                                 <span class="pool-tick"></span>
                                 <h3
                                   class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
@@ -1671,6 +1762,13 @@ const start = () => {
                                   >
                                 </h3>
                               </div>
+                              <!-- Backups were read as match substitutes; they
+                                   only ever take a seat that opens. -->
+                              <p
+                                class="mb-3 mt-1 text-xs text-muted-foreground/70"
+                              >
+                                {{ $t("draft_games.room.backups_hint") }}
+                              </p>
                               <TransitionGroup
                                 name="pool"
                                 tag="div"
@@ -1963,7 +2061,13 @@ const start = () => {
             {{ $t("draft_games.room.kick_confirm_title") }}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t("draft_games.room.kick_confirm_description") }}
+            {{
+              $t(
+                isCheckIn
+                  ? "draft_games.room.remove_no_show_description"
+                  : "draft_games.room.kick_confirm_description",
+              )
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

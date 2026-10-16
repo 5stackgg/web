@@ -26,7 +26,12 @@ import { matchIneligiblePlayers } from "~/utilities/matchIneligiblePlayers";
         class="rounded-xl border border-white/10 bg-background/80 backdrop-blur-sm p-4 flex flex-col gap-3"
       >
         <ScheduleMatch :match="match" v-if="match.can_schedule" />
-        <CheckIntoMatch :match="match" v-if="showCheckInSection" />
+        <CheckIntoMatch
+          v-if="showCheckInSection"
+          :match="match"
+          :deadline="checkInDeadline"
+          :deadline-help="checkInDeadlineHelp"
+        />
       </div>
 
       <div v-else-if="showQuickConnectSection" key="connect">
@@ -84,6 +89,14 @@ export default {
     cameraReady: {
       type: Boolean,
       default: false,
+    },
+    checkInDeadline: {
+      type: String,
+      default: undefined,
+    },
+    checkInDeadlineHelp: {
+      type: String,
+      default: undefined,
     },
   },
   computed: {

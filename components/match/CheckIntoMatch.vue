@@ -20,7 +20,10 @@
           <LucideVideo class="w-4 h-4" />
           <span>{{ $t("camera.setup_before_check_in") }}</span>
           <span class="absolute inset-y-0 right-3 flex items-center">
-            <CheckInDeadline :cancels-at="match.cancels_at" />
+            <CheckInDeadline
+              :cancels-at="checkInDeadline"
+              :help-label="deadlineHelp"
+            />
           </span>
         </button>
 
@@ -50,7 +53,10 @@
             class="absolute inset-y-0 right-3 flex items-center"
             :class="{ invisible: loading }"
           >
-            <CheckInDeadline :cancels-at="match.cancels_at" />
+            <CheckInDeadline
+              :cancels-at="checkInDeadline"
+              :help-label="deadlineHelp"
+            />
           </span>
         </button>
 
@@ -66,7 +72,8 @@
             {{ $t("match.check_in.checked_in") }}
           </Badge>
           <CheckInDeadline
-            :cancels-at="match.cancels_at"
+            :cancels-at="checkInDeadline"
+            :help-label="deadlineHelp"
             variant="standalone"
             checked-in
           />
@@ -135,8 +142,22 @@ export default {
       type: Object,
       required: true,
     },
+    // A draft room runs its own check-in clock in front of the match's
+    // auto-cancel, and says what happens when it runs out.
+    deadline: {
+      type: String,
+      default: undefined,
+    },
+    deadlineHelp: {
+      type: String,
+      default: undefined,
+    },
   },
-  setup(props: { match: Record<string, any> }) {
+  setup(props: {
+    match: Record<string, any>;
+    deadline?: string;
+    deadlineHelp?: string;
+  }) {
     const cameraSetupOpen = ref(false);
     const camera = useCameraSetup(
       () => String(props.match.id),
@@ -171,8 +192,11 @@ export default {
     // space it actually has; the button has to give up that space or a long
     // label (the camera CTA) runs underneath the digits. No deadline, no
     // gutter -- auto-cancellation being off leaves cancels_at null.
+    checkInDeadline() {
+      return this.deadline ?? this.match?.cancels_at;
+    },
     deadlineGutterClasses() {
-      return this.match?.cancels_at ? "pr-[4.75rem]" : "";
+      return this.checkInDeadline ? "pr-[4.75rem]" : "";
     },
     isCheckedIn() {
       return this.isInMatch?.checked_in;

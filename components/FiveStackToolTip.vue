@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { Info } from "lucide-vue-next";
-import { TooltipPortal } from "reka-ui";
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 
 defineOptions({ inheritAttrs: false });
 
@@ -66,7 +65,14 @@ function onDocPointerDown(event: PointerEvent) {
 
 onMounted(() => {
   isTouch.value = window.matchMedia?.("(hover: none)").matches ?? false;
-  document.addEventListener("pointerdown", onDocPointerDown, true);
+});
+
+watch(open, (value) => {
+  if (value) {
+    document.addEventListener("pointerdown", onDocPointerDown, true);
+  } else {
+    document.removeEventListener("pointerdown", onDocPointerDown, true);
+  }
 });
 
 onBeforeUnmount(() => {
@@ -97,15 +103,13 @@ onBeforeUnmount(() => {
             <Info :size="size" v-bind="$attrs"> </Info>
           </slot>
         </TooltipTrigger>
-        <TooltipPortal>
-          <TooltipContent
-            :side="(side as any)"
-            :align="(align as any)"
-            :collision-padding="8"
-          >
-            <slot></slot>
-          </TooltipContent>
-        </TooltipPortal>
+        <TooltipContent
+          :side="(side as any)"
+          :align="(align as any)"
+          :collision-padding="8"
+        >
+          <slot></slot>
+        </TooltipContent>
       </Tooltip>
     </TooltipProvider>
   </span>

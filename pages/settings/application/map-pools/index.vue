@@ -196,7 +196,7 @@ const { isMobile } = useSidebar();
 </template>
 
 <script lang="ts">
-import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
+import { generateSubscription } from "~/graphql/graphqlGen";
 import { e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
@@ -268,33 +268,36 @@ export default {
           this.maps = data.maps;
         },
       },
-    },
-    map_pools: {
-      query: generateQuery({
-        map_pools: [
-          {
-            where: {
-              type: {
-                _neq: e_map_pool_types_enum.Custom,
+      map_pools: {
+        query: generateSubscription({
+          map_pools: [
+            {
+              where: {
+                type: {
+                  _neq: e_map_pool_types_enum.Custom,
+                },
+                enabled: {
+                  _eq: true,
+                },
               },
-              enabled: {
-                _eq: true,
-              },
+              order_by: [
+                {},
+                {
+                  type: order_by.asc,
+                },
+              ],
             },
-            order_by: [
-              {},
-              {
-                type: order_by.asc,
-              },
-            ],
-          },
-          {
-            id: true,
-            type: true,
-            maps: [{}, mapFields],
-          },
-        ],
-      }),
+            {
+              id: true,
+              type: true,
+              maps: [{}, mapFields],
+            },
+          ],
+        }),
+        result: function ({ data }) {
+          this.map_pools = data.map_pools;
+        },
+      },
     },
   },
   methods: {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from "vue";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -21,7 +22,6 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerPendingImports from "~/components/PlayerPendingImports.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";
-import MatchLobbies from "./MatchLobbies.vue";
 import DraftRoomNav from "./DraftRoomNav.vue";
 import SystemStatus from "./SystemStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -180,6 +180,11 @@ const loginButtonClasses =
   "group relative inline-flex items-center gap-[0.45rem] rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.14)_0%,hsl(var(--tac-amber)/0.06)_100%)] px-[0.8rem] py-[0.45rem] font-sans text-[0.68rem] font-bold uppercase tracking-[0.16em] text-topnav-foreground transition-[background-color,color,transform] duration-150 hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.28)_0%,hsl(var(--tac-amber)/0.14)_100%)] active:translate-y-px sm:px-3 sm:py-[0.35rem] sm:text-[0.65rem] sm:tracking-[0.18em]";
 const loginArrowClasses =
   "font-sans text-[hsl(var(--tac-amber))] transition-transform duration-150 group-hover:translate-x-[3px]";
+
+// Signed-in only (it sits under `v-if="me"`), and it carries the lobby, quick
+// queue and player-search UI with it: a visitor who is not signed in never
+// downloads any of that.
+const MatchLobbies = defineAsyncComponent(() => import("./MatchLobbies.vue"));
 </script>
 
 <template>

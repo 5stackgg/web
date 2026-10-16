@@ -15,6 +15,13 @@ const { t } = useI18n();
 const showDemoUpload = ref(false);
 const CHROME_EXTENSION_URL =
   "https://chromewebstore.google.com/detail/ageemiokidibdebopfnfkdkphkadbdeb";
+// The extension's panel-marker content script tags the page when it is
+// installed; there is nothing to offer then.
+const extensionInstalled = ref(false);
+onMounted(() => {
+  extensionInstalled.value =
+    !!document.documentElement.dataset["5stackExtension"];
+});
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerTournaments from "~/components/player/PlayerTournaments.vue";
@@ -3438,12 +3445,18 @@ const AwardComposer = defineAsyncComponent(
               class="flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
             >
               <button
-                v-if="isSelfProfile"
+                v-if="isSelfProfile && (isAdmin || !extensionInstalled)"
                 type="button"
                 class="underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))]"
                 @click="showDemoUpload = true"
               >
-                {{ $t("pages.settings.linked_accounts.import_match") }}
+                {{
+                  $t(
+                    extensionInstalled
+                      ? "pages.settings.linked_accounts.upload_demo"
+                      : "pages.settings.linked_accounts.import_match",
+                  )
+                }}
               </button>
               <span class="flex items-center gap-1.5">
                 <span class="text-[hsl(var(--tac-amber))]">{{
@@ -3467,20 +3480,34 @@ const AwardComposer = defineAsyncComponent(
 
           <!-- Import modal: the extension for everyone on their own profile; the
                .dem upload stays admin-only, as the API gates it. -->
-          <Dialog v-if="isSelfProfile" v-model:open="showDemoUpload">
+          <Dialog
+            v-if="isSelfProfile && (isAdmin || !extensionInstalled)"
+            v-model:open="showDemoUpload"
+          >
             <DialogContent class="sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle>
-                  {{ $t("pages.settings.linked_accounts.import_match") }}
+                  {{
+                    $t(
+                      extensionInstalled
+                        ? "pages.settings.linked_accounts.upload_demo"
+                        : "pages.settings.linked_accounts.import_match",
+                    )
+                  }}
                 </DialogTitle>
                 <DialogDescription>
                   {{
-                    $t("pages.settings.linked_accounts.import_match_description")
+                    $t(
+                      extensionInstalled
+                        ? "pages.settings.linked_accounts.upload_demo_description"
+                        : "pages.settings.linked_accounts.import_match_description",
+                    )
                   }}
                 </DialogDescription>
               </DialogHeader>
               <div class="space-y-4">
                 <div
+                  v-if="!extensionInstalled"
                   class="flex items-center gap-3 rounded-md border border-border bg-muted/20 p-3"
                 >
                   <img
@@ -3514,6 +3541,7 @@ const AwardComposer = defineAsyncComponent(
                 </div>
                 <template v-if="isAdmin">
                   <div
+                    v-if="!extensionInstalled"
                     class="flex items-center gap-3 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
                   >
                     <span class="h-px flex-1 bg-border" />

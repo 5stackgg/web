@@ -10,8 +10,11 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
 
 const { t } = useI18n();
 
-// Demo-upload modal (own profile + admin), opened from a subtle link by matches.
+// Import modal (own profile), opened from a subtle link by matches: the
+// browser extension for everyone, the .dem upload for admins.
 const showDemoUpload = ref(false);
+const CHROME_EXTENSION_URL =
+  "https://chromewebstore.google.com/detail/ageemiokidibdebopfnfkdkphkadbdeb";
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerTournaments from "~/components/player/PlayerTournaments.vue";
@@ -3435,12 +3438,12 @@ const AwardComposer = defineAsyncComponent(
               class="flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
             >
               <button
-                v-if="isSelfProfile && isAdmin"
+                v-if="isSelfProfile"
                 type="button"
                 class="underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))]"
                 @click="showDemoUpload = true"
               >
-                {{ $t("pages.settings.linked_accounts.upload_demo") }}
+                {{ $t("pages.settings.linked_accounts.import_match") }}
               </button>
               <span class="flex items-center gap-1.5">
                 <span class="text-[hsl(var(--tac-amber))]">{{
@@ -3462,20 +3465,64 @@ const AwardComposer = defineAsyncComponent(
             </div>
           </div>
 
-          <!-- Demo upload modal (own profile, admins only — matches API gate). -->
-          <Dialog v-if="isSelfProfile && isAdmin" v-model:open="showDemoUpload">
+          <!-- Import modal: the extension for everyone on their own profile; the
+               .dem upload stays admin-only, as the API gates it. -->
+          <Dialog v-if="isSelfProfile" v-model:open="showDemoUpload">
             <DialogContent class="sm:max-w-lg">
               <DialogHeader>
                 <DialogTitle>
-                  {{ $t("pages.settings.linked_accounts.upload_demo") }}
+                  {{ $t("pages.settings.linked_accounts.import_match") }}
                 </DialogTitle>
                 <DialogDescription>
                   {{
-                    $t("pages.settings.linked_accounts.upload_demo_description")
+                    $t("pages.settings.linked_accounts.import_match_description")
                   }}
                 </DialogDescription>
               </DialogHeader>
-              <DemoUpload />
+              <div class="space-y-4">
+                <div
+                  class="flex items-center gap-3 rounded-md border border-border bg-muted/20 p-3"
+                >
+                  <img
+                    src="/favicon/64.png"
+                    alt=""
+                    class="size-10 shrink-0 rounded-lg"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <div class="text-sm font-semibold">
+                      {{ $t("pages.settings.linked_accounts.extension_title") }}
+                    </div>
+                    <p class="text-xs text-muted-foreground">
+                      {{
+                        $t(
+                          "pages.settings.linked_accounts.extension_description",
+                        )
+                      }}
+                    </p>
+                  </div>
+                  <Button
+                    as="a"
+                    :href="CHROME_EXTENSION_URL"
+                    target="_blank"
+                    rel="noopener"
+                    size="sm"
+                    variant="tactical"
+                    class="shrink-0"
+                  >
+                    {{ $t("pages.settings.linked_accounts.add_to_chrome") }}
+                  </Button>
+                </div>
+                <template v-if="isAdmin">
+                  <div
+                    class="flex items-center gap-3 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+                  >
+                    <span class="h-px flex-1 bg-border" />
+                    {{ $t("pages.settings.linked_accounts.or_upload_demo") }}
+                    <span class="h-px flex-1 bg-border" />
+                  </div>
+                  <DemoUpload />
+                </template>
+              </div>
             </DialogContent>
           </Dialog>
 

@@ -9662,6 +9662,7 @@
       "again_ban": "Click {map} again to ban it · Esc to cancel",
       "again_pick": "Click {map} again to pick it · Esc to cancel",
       "again_side": "Click {side} again to start there · Esc to cancel",
+      "confirm": "Confirm",
       "side_by_you": "You pick the side",
       "side_by_them": "{team} picks the side",
       "your_ping": "Your ping {ping} ms",

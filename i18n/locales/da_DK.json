@@ -9660,6 +9660,7 @@
       "again_ban": "Klik på {map} igen for at banne · Esc for at annullere",
       "again_pick": "Klik på {map} igen for at picke · Esc for at annullere",
       "again_side": "Klik på {side} igen for at starte der · Esc for at annullere",
+      "confirm": "Bekræft",
       "side_by_you": "Du vælger siden",
       "side_by_them": "{team} vælger siden",
       "your_ping": "Din ping {ping} ms",

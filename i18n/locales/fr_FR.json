@@ -9660,6 +9660,7 @@
       "again_ban": "Cliquez encore sur {map} pour bannir · Échap pour annuler",
       "again_pick": "Cliquez encore sur {map} pour choisir · Échap pour annuler",
       "again_side": "Cliquez encore sur {side} pour commencer de ce côté · Échap pour annuler",
+      "confirm": "Confirmer",
       "side_by_you": "Vous choisissez le côté",
       "side_by_them": "{team} choisit le côté",
       "your_ping": "Votre ping {ping} ms",

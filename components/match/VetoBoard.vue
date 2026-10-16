@@ -267,7 +267,9 @@ function placeArm() {
   const room = bottom - top;
   armRoom.value = {
     y: top + room / 2,
-    d: Math.max(40, Math.min(84, room - 20)),
+    // Chosen, it grows 20px taller (a tile with its word), so it keeps
+    // that much more clear of the records and the name.
+    d: Math.max(40, Math.min(84, room - 40)),
   };
 }
 watch(markId, () => nextTick(placeArm));
@@ -1285,6 +1287,7 @@ onBeforeUnmount(() => {
               <Spinner v-if="submitting" />
               <Check v-else-if="step?.type === 'Pick'" />
               <Ban v-else />
+              <span class="vb-arm-word">{{ t("match.veto.confirm") }}</span>
             </span>
           </div>
 
@@ -2170,15 +2173,38 @@ onBeforeUnmount(() => {
   top: var(--arm-y, 50%);
   width: var(--arm-d, 84px);
   height: var(--arm-d, 84px);
-  border-radius: 50%;
+  border-radius: calc(var(--arm-d, 84px) / 2);
   translate: -50% -50%;
+  transition:
+    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+}
+/* Chosen, the circle morphs into a rounded tile: the mark rises and its word,
+   Confirm, comes up under it. */
+.vb-mark.is-armed .vb-arm-ping,
+.vb-mark.is-armed .vb-arm-btn {
+  width: max(calc(var(--arm-d, 84px) + 22px), 100px);
+  height: calc(var(--arm-d, 84px) + 20px);
+  border-radius: 30px;
 }
 .vb-arm-ping {
   background: var(--vb-arm-deep);
   opacity: 0;
 }
 .vb-slice.is-wide .vb-mark.is-armed:not(.is-sending) .vb-arm-ping {
-  animation: vb-ping 1.8s cubic-bezier(0, 0, 0.2, 1) 300ms infinite;
+  animation: vb-ping-tile 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;
+}
+@keyframes vb-ping-tile {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  75%,
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
 }
 @keyframes vb-ping {
   0% {
@@ -2198,6 +2224,9 @@ onBeforeUnmount(() => {
   color: white;
   opacity: 0;
   transition:
+    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
     opacity 140ms var(--vb-ease) 40ms,
     scale 240ms var(--vb-ease),
     filter 160ms ease;
@@ -2207,7 +2236,7 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: 50%;
+  border-radius: inherit;
   background: var(--vb-arm-deep);
   box-shadow:
     inset 0 0 0 3px hsl(0 0% 100% / 0.85),
@@ -2233,13 +2262,44 @@ onBeforeUnmount(() => {
   backdrop-filter: blur(4px);
 }
 .vb-arm-btn > svg {
-  width: 48%;
-  height: 48%;
+  width: calc(var(--arm-d, 84px) * 0.48);
+  height: calc(var(--arm-d, 84px) * 0.48);
   filter: drop-shadow(0 4px 12px rgb(0 0 0 / 0.55));
+  transition:
+    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    translate 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+}
+.vb-mark.is-armed .vb-arm-btn > svg {
+  width: calc(var(--arm-d, 84px) * 0.42);
+  height: calc(var(--arm-d, 84px) * 0.42);
+  translate: 0 -8px;
+}
+.vb-arm-word {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--arm-d, 84px) * 0.14 + 4px);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  translate: 0 5px;
+  transition:
+    opacity 140ms ease,
+    translate 260ms var(--vb-ease);
+}
+.vb-mark.is-armed:not(.is-sending) .vb-arm-word {
+  opacity: 1;
+  translate: none;
+  transition-delay: 200ms;
 }
 .vb-slice.is-wide .vb-arm-btn {
   opacity: 0.9;
-  border-radius: 50%;
   pointer-events: auto;
 }
 .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn {
@@ -3544,6 +3604,10 @@ onBeforeUnmount(() => {
   .vb-arm-ping,
   .vb-side-mark::after {
     display: none;
+  }
+  .vb-arm-btn,
+  .vb-arm-btn > svg {
+    transition-duration: 1ms !important;
   }
 }
 </style>

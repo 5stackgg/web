@@ -9660,6 +9660,7 @@
       "again_ban": "再次點擊 {map} 即可禁用 · 按 Esc 取消",
       "again_pick": "再次點擊 {map} 即可選擇 · 按 Esc 取消",
       "again_side": "再次點擊 {side} 即從該陣營開始 · 按 Esc 取消",
+      "confirm": "確認",
       "side_by_you": "由你選擇陣營",
       "side_by_them": "由 {team} 選擇陣營",
       "your_ping": "你的延遲 {ping} ms",

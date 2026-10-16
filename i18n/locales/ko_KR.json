@@ -9660,6 +9660,7 @@
       "again_ban": "{map}을(를) 한 번 더 클릭하면 밴 · Esc로 취소",
       "again_pick": "{map}을(를) 한 번 더 클릭하면 픽 · Esc로 취소",
       "again_side": "{side}을(를) 한 번 더 클릭하면 시작 · Esc로 취소",
+      "confirm": "확인",
       "side_by_you": "내가 진영을 고릅니다",
       "side_by_them": "{team}이(가) 진영을 고릅니다",
       "your_ping": "내 핑 {ping} ms",

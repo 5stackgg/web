@@ -9660,6 +9660,7 @@
       "again_ban": "もう一度 {map} をクリックで BAN · Esc で取り消し",
       "again_pick": "もう一度 {map} をクリックで Pick · Esc で取り消し",
       "again_side": "もう一度 {side} をクリックで開始 · Esc で取り消し",
+      "confirm": "確定",
       "side_by_you": "あなたが陣営を選択",
       "side_by_them": "{team} が陣営を選択",
       "your_ping": "Ping {ping} ms",

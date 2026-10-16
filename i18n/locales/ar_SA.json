@@ -9660,6 +9660,7 @@
       "again_ban": "انقر على {map} مرة أخرى للحظر · Esc للإلغاء",
       "again_pick": "انقر على {map} مرة أخرى للاختيار · Esc للإلغاء",
       "again_side": "انقر على {side} مرة أخرى للبدء به · Esc للإلغاء",
+      "confirm": "تأكيد",
       "side_by_you": "أنت تختار الجهة",
       "side_by_them": "{team} يختار الجهة",
       "your_ping": "البنق لديك {ping} ms",

@@ -9660,6 +9660,7 @@
       "again_ban": "Banlamak için {map} üzerine tekrar tıkla · İptal için Esc",
       "again_pick": "Seçmek için {map} üzerine tekrar tıkla · İptal için Esc",
       "again_side": "{side} tarafından başlamak için tekrar tıkla · İptal için Esc",
+      "confirm": "Onayla",
       "side_by_you": "Tarafı sen seçiyorsun",
       "side_by_them": "Tarafı {team} seçiyor",
       "your_ping": "Pingin {ping} ms",

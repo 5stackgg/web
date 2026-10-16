@@ -9660,6 +9660,7 @@
       "again_ban": "{map} nochmal klicken zum Bannen · Esc zum Abbrechen",
       "again_pick": "{map} nochmal klicken zum Picken · Esc zum Abbrechen",
       "again_side": "{side} nochmal klicken zum Starten · Esc zum Abbrechen",
+      "confirm": "Bestätigen",
       "side_by_you": "Du wählst die Seite",
       "side_by_them": "{team} wählt die Seite",
       "your_ping": "Dein Ping {ping} ms",

@@ -3,6 +3,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   rmSync,
   writeFileSync,
@@ -84,6 +85,7 @@ describe("build-map-assets", () => {
   const install = join(dir, "install");
   const mapsDir = join(install, "game", "csgo", "maps");
   const exportLog = join(dir, "exports.log");
+  const inputLog = join(dir, "inputs.log");
   const fixtures = join(dir, "fixtures");
   // Stands in for the bundled browser prep: the "core" names the view's size
   // and the callout boxes it was given, so a test can tell what it read.
@@ -110,6 +112,7 @@ describe("build-map-assets", () => {
     S3_ENDPOINT: "s3.example.test",
     CLI: installFakeSourceViewer(dir),
     FAKE_S2V_LOG: exportLog,
+    FAKE_S2V_INPUT_LOG: inputLog,
     PREP_BUNDLE: PREP_V1,
   };
   let bucket: ReturnType<typeof fakeBucket>;
@@ -142,6 +145,7 @@ describe("build-map-assets", () => {
     writeFileSync(join(fixtures, `${map}.nav`), buildNav([area(x)]));
   });
   writeFileSync(join(fixtures, "ents.vents"), '====0====\nclassname   "worldspawn"\n');
+  writeFileSync(join(fixtures, "nested.vpk"), "a map vpk inside an addon vpk");
   // de_alpha carries Valve's baked blast; de_beta, like an old map, none.
   writeFileSync(
     join(fixtures, "de_alpha.vdata"),
@@ -200,6 +204,11 @@ describe("build-map-assets", () => {
       [`maps/${inner}/entities/default_ents.vents`]: join(fixtures, "ents.vents"),
     },
   });
+  // The same, carried inside the item's addon VPK as maps/<inner>.vpk.
+  const nestedPlan = (inner: string) => ({
+    ...workshopPlan(inner),
+    [`maps/${inner}.vpk`]: { [`maps/${inner}.vpk`]: join(fixtures, "nested.vpk") },
+  });
   const workshopDir = join(
     install,
     ...["game", "bin", "linuxsteamrt64", "steamapps", "workshop", "content", "730"],
@@ -227,6 +236,7 @@ describe("build-map-assets", () => {
       args = [] as string[],
       version = "fake-1",
       workshop = {} as Record<string, string>,
+      lists = {} as Record<string, string[]>,
     } = {},
   ) => {
     setInstall(build, vpks);
@@ -235,8 +245,10 @@ describe("build-map-assets", () => {
       writeFileSync(join(workshopDir, file), content);
     }
     rmSync(exportLog, { force: true });
+    rmSync(inputLog, { force: true });
     bucket.puts.length = 0;
     process.env.FAKE_S2V = JSON.stringify(plan(overrides));
+    process.env.FAKE_S2V_LIST = JSON.stringify(lists);
     process.env.FAKE_S2V_VERSION = version;
     const code = await run([
       "--cs2",
@@ -249,12 +261,15 @@ describe("build-map-assets", () => {
     const exported = existsSync(exportLog)
       ? readFileSync(exportLog, "utf8").trim().split("\n").filter(Boolean)
       : [];
+    const inputs = existsSync(inputLog)
+      ? readFileSync(inputLog, "utf8").trim().split("\n").filter(Boolean)
+      : [];
     const exportsOf = (map: string) =>
       exported.filter((f) => f.startsWith(`maps/${map}/`) || f === `maps/${map}.nav`);
     const assetPuts = bucket.puts.filter(
       (k) => !/manifest(\.r\d+)?\.json$/.test(k) && k !== "maps/latest.json",
     );
-    return { code, exportsOf, exported, assetPuts, puts: [...bucket.puts] };
+    return { code, exportsOf, exported, inputs, assetPuts, puts: [...bucket.puts] };
   };
   const manifest = (key: string) => bucket.json(`maps/${key}`);
   const body = (key: string) => gunzipSync(bucket.objects.get(`maps/${key}`)!.body);
@@ -283,7 +298,8 @@ describe("build-map-assets", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
-    for (const key of [...Object.keys(env), "FAKE_S2V", "FAKE_S2V_VERSION"]) {
+    vi.unstubAllEnvs();
+    for (const key of [...Object.keys(env), "FAKE_S2V", "FAKE_S2V_VERSION", "FAKE_S2V_LIST"]) {
       delete process.env[key];
     }
     rmSync(workshopDir, { recursive: true, force: true });
@@ -525,31 +541,80 @@ describe("build-map-assets", () => {
     expect(failed.puts).toEqual([]);
   });
 
-  it("builds the workshop maps the install lacks, under their maps-table names", async () => {
-    const first = await publish("100", {
-      args: [
-        "--workshop-maps",
-        "de_gamma=3000,4000999=4000,de_missing=5000,de_alpha=6000,de_alpha_night=7000,de_bad=x",
-      ],
-      overrides: { ...workshopPlan("de_gamma"), ...workshopPlan("de_inner") },
-      workshop: {
-        "3000/de_gamma.vpk": "gamma vpk",
-        "4000/de_inner.vpk": "inner vpk",
-        "6000/de_alpha.vpk": "workshop alpha",
-        "7000/de_alpha_night.vpk": "night",
+  // How Steam downloads an item: an addon VPK, in one file or as _dir.vpk
+  // with its chunks, carrying the map's own VPK beside its skybox's.
+  const items = {
+    args: [
+      "--workshop-maps",
+      "de_gamma=3000,4000999=4000,de_direct=9000,de_missing=5000," +
+        "de_alpha=6000,de_alpha_night=7000,de_bad=x",
+    ],
+    overrides: {
+      ...nestedPlan("de_gamma"),
+      ...nestedPlan("de_inner"),
+      ...workshopPlan("de_direct"),
+      "maps/de_inner/baked_bomb_damage.vdata_c": {
+        "maps/de_inner/baked_bomb_damage.vdata": join(fixtures, "de_alpha.vdata"),
       },
-    });
+    },
+    workshop: {
+      "3000/3000_dir.vpk": "gamma dir",
+      "3000/3000_000.vpk": "gamma chunk",
+      "4000/4000.vpk": "inner addon",
+      "9000/de_direct.vpk": "direct map vpk",
+      "6000/6000.vpk": "workshop alpha",
+      "7000/7000.vpk": "night",
+    },
+    lists: {
+      "3000_dir.vpk": [
+        "maps/de_gamma.vpk",
+        "maps/de_gamma_cameras.txt",
+        "maps/de_gamma_skybox.vpk",
+      ],
+      "4000.vpk": ["maps/de_inner.vpk", "maps/de_inner_marius_skybox.vpk"],
+      "de_direct.vpk": ["maps/de_direct/world.vwrld_c", "maps/de_direct/world_physics.vmdl_c"],
+    },
+  };
+
+  it("builds the workshop maps the install lacks, from the map VPK each item carries", async () => {
+    const scratch = join(dir, "tmp");
+    mkdirSync(scratch, { recursive: true });
+    vi.stubEnv("TMPDIR", scratch);
+    const first = await publish("100", items);
     expect(first.code).toBe(0);
     const m = manifest("100/manifest.json");
-    expect(Object.keys(m.maps)).toEqual(["4000999", "de_alpha", "de_beta", "de_gamma"]);
+    expect(Object.keys(m.maps)).toEqual([
+      "4000999",
+      "de_alpha",
+      "de_beta",
+      "de_direct",
+      "de_gamma",
+    ]);
     expect(m.maps.de_gamma.source.workshop).toBe("3000");
     expect(m.maps.de_gamma.tri).toBe("100/de_gamma.tri.gz");
-    // Published under its table name, read from the VPK by the name inside it.
+    expect(first.inputs).toEqual(
+      expect.arrayContaining([
+        "3000_dir.vpk maps/de_gamma.vpk",
+        "de_gamma.vpk maps/de_gamma/world_physics.vmdl_c",
+        "de_gamma.vpk maps/de_gamma/world.vwrld_c",
+        "de_gamma.vpk maps/de_gamma/entities/",
+      ]),
+    );
+    expect(first.inputs.filter((line) => line.startsWith("3000_dir.vpk "))).toEqual([
+      "3000_dir.vpk --vpk_list maps/",
+      "3000_dir.vpk maps/de_gamma.vpk",
+    ]);
+    // Published under its table name, read by the name inside the item.
     expect(m.maps["4000999"].tri).toBe("100/4000999.tri.gz");
     expect(m.maps["4000999"].source.workshop).toBe("4000");
-    expect(first.exported).toContain("maps/de_inner/world_physics.vmdl_c");
+    expect(first.inputs).toContain("de_inner.vpk maps/de_inner/world_physics.vmdl_c");
+    expect(m.maps["4000999"].blast).toBe("100/4000999.blast.v2.bin.gz");
+    expect(first.exported).not.toContain("maps/de_inner_marius_skybox.vpk");
+    // An item that is itself a map VPK is read where it is.
+    expect(first.inputs).toContain("de_direct.vpk maps/de_direct/world_physics.vmdl_c");
     // The install's own copy wins over a workshop one.
     expect(m.maps.de_alpha.source).not.toHaveProperty("workshop");
+    expect(readdirSync(scratch).filter((f) => f.startsWith("map-"))).toEqual([]);
 
     // On a node that never downloaded them they keep their published entries.
     const second = await publish("101", {
@@ -559,5 +624,37 @@ describe("build-map-assets", () => {
     expect(second.exported).toEqual([]);
     expect(manifest("101/manifest.json").maps.de_gamma).toEqual(m.maps.de_gamma);
     expect(manifest("101/manifest.json").maps["4000999"]).toEqual(m.maps["4000999"]);
+
+    // The same downloads again are unchanged: nothing is listed or unpacked.
+    const third = await publish("102", items);
+    expect(third.code).toBe(0);
+    const unpacked = /^(3000_dir|4000|de_gamma|de_inner)\.vpk /;
+    expect(third.inputs.filter((line) => unpacked.test(line))).toEqual([]);
+    expect(manifest("102/manifest.json").maps.de_gamma).toEqual(m.maps.de_gamma);
+    expect(manifest("102/manifest.json").maps["4000999"]).toEqual(m.maps["4000999"]);
+  });
+
+  it("picks the map an item of several is named after, failing one that names none", async () => {
+    const lists = { "8000_dir.vpk": ["maps/de_one.vpk", "maps/de_two.vpk"] };
+    const run = await publish("100", {
+      args: ["--workshop-maps", "de_twin=8000,de_one=8100"],
+      overrides: { ...nestedPlan("de_one"), ...nestedPlan("de_two") },
+      workshop: { "8000/8000_dir.vpk": "two maps", "8100/8100_dir.vpk": "two maps" },
+      lists: { ...lists, "8100_dir.vpk": lists["8000_dir.vpk"] },
+    });
+    expect(run.code).toBe(2);
+    const m = manifest("100/manifest.json");
+    expect(m.failed).toEqual(["de_twin"]);
+    expect(m.maps.de_one.tri).toBe("100/de_one.tri.gz");
+    expect(run.inputs.filter((line) => line.startsWith("8100_dir.vpk "))).toEqual([
+      "8100_dir.vpk --vpk_list maps/",
+      "8100_dir.vpk maps/de_one.vpk",
+    ]);
+    expect(run.inputs.filter((line) => line.startsWith("8000_dir.vpk "))).toEqual([
+      "8000_dir.vpk --vpk_list maps/",
+    ]);
+    expect(console.warn).toHaveBeenCalledWith(
+      expect.stringContaining("8000_dir.vpk holds de_one, de_two, none of them de_twin"),
+    );
   });
 });

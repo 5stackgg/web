@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:f
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, afterEach, describe, expect, it } from "vitest";
-import { decompile, missingOutput, tailLines } from "~/scripts/lib-s2v.mjs";
+import { decompile, listVpk, missingOutput, tailLines } from "~/scripts/lib-s2v.mjs";
 import { installFakeSourceViewer } from "../helpers/fakeMapTools";
 
 // What Source2Viewer-CLI 20.0 prints when a render world is over the .glb cap:
@@ -116,5 +116,50 @@ describe("decompile", () => {
     expect(() => run("FAIL")).toThrow(
       "Source2Viewer-CLI failed on maps/de_big/world.vwrld_c (exit 3): simulated export failure",
     );
+  });
+});
+
+describe("listVpk", () => {
+  const dir = mkdtempSync(join(tmpdir(), "lib-s2v-list-"));
+  const cli = installFakeSourceViewer(dir);
+  const vpk = join(dir, "3000_dir.vpk");
+
+  const list = (output: Record<string, unknown> = {}) => {
+    process.env.FAKE_S2V_LIST = JSON.stringify({
+      "3000_dir.vpk": ["maps/de_gamma.vpk", "maps/de_gamma_skybox.vpk", "materials/x.vmat_c"],
+    });
+    process.env.FAKE_S2V_OUTPUT = JSON.stringify(output);
+    return listVpk(cli, vpk, "maps/");
+  };
+
+  afterEach(() => {
+    delete process.env.FAKE_S2V_LIST;
+    delete process.env.FAKE_S2V_OUTPUT;
+  });
+
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  it("gives the paths under the folder, without their CRC and size", () => {
+    expect(list()).toEqual(["maps/de_gamma.vpk", "maps/de_gamma_skybox.vpk"]);
+  });
+
+  it("throws what the CLI said when it lists nothing from a VPK it could not read", () => {
+    process.env.FAKE_S2V_LIST = "{}";
+    process.env.FAKE_S2V_OUTPUT = JSON.stringify({
+      "--vpk_list": {
+        stderr:
+          "File: /w/3000_dir.vpk\n" +
+          "System.IO.EndOfStreamException: Unable to read beyond the end of the stream.\n",
+      },
+    });
+    expect(() => listVpk(cli, vpk, "maps/")).toThrow(
+      "Source2Viewer-CLI could not list 3000_dir.vpk: File: /w/3000_dir.vpk | " +
+        "System.IO.EndOfStreamException: Unable to read beyond the end of the stream.",
+    );
+  });
+
+  it("is an empty folder when the CLI lists nothing and says nothing", () => {
+    process.env.FAKE_S2V_LIST = "{}";
+    expect(listVpk(cli, vpk, "maps/")).toEqual([]);
   });
 });

@@ -4,7 +4,7 @@
 // `.cache/s2v/` unless CLI names one already on disk -- which is how these run
 // in-cluster, where the inventory plugin's model extraction has already put one
 // at /cs2-models/.work/cs2-model-extract/cli/Source2Viewer-CLI.
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import {
   closeSync,
   existsSync,
@@ -17,7 +17,7 @@ import {
   rmSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const cliDir = join(dirname(fileURLToPath(import.meta.url)), "..", ".cache", "s2v");
@@ -147,6 +147,38 @@ export function missingOutput(what, run) {
   return new Error(
     `no ${what} came out (Source2Viewer-CLI ${said ? `said: ${said}` : "printed nothing"})`,
   );
+}
+
+/**
+ * The paths in `vpk` under `prefix`, a folder ending in a slash. A VPK the CLI
+ * cannot read still exits 0, with the exception on stderr, so a listing that
+ * comes back empty beside one is that failure, not an empty folder.
+ */
+export function listVpk(cli, vpk, prefix) {
+  const scratch = mkdtempSync(join(tmpdir(), "s2v-"));
+  try {
+    const run = spawnSync(
+      cli.includes("/") ? resolve(cli) : cli,
+      ["-i", resolve(vpk), "--vpk_list", "--vpk_filepath", prefix],
+      { cwd: scratch, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+    );
+    const paths = (run.stdout ?? "")
+      .split(/\r?\n/)
+      .filter((line) => / CRC:\S+ size:\d+$/.test(line))
+      .map((line) => line.split(" CRC:")[0]);
+    const stderr = tailLines(run.stderr ?? "", STDERR_LINES);
+    const failure =
+      run.error?.message ?? (run.status !== 0 ? `exit ${run.status ?? run.signal}` : null);
+    if (failure || (!paths.length && stderr.length)) {
+      throw new Error(
+        `Source2Viewer-CLI could not list ${basename(vpk)}` +
+          `${failure ? ` (${failure})` : ""}${stderr.length ? `: ${stderr.join(" | ")}` : ""}`,
+      );
+    }
+    return paths;
+  } finally {
+    rmSync(scratch, { recursive: true, force: true });
+  }
 }
 
 /**

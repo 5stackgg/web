@@ -35,7 +35,8 @@
 // game server's workshop downloads: --workshop <dir>, by default
 // <install>/game/bin/linuxsteamrt64/steamapps/workshop/content/730, holding
 // one <id>/ folder per item. A map is published under its maps-table name and
-// read from its VPK under the name inside it. A copy in the install wins over
+// read under the name inside the item, from the map VPK the item's addon VPK
+// carries (unpacked to TMPDIR for the build). A copy in the install wins over
 // a workshop one; `_night` variants are skipped (consumers fold them onto the
 // base map); an item this node never downloaded keeps whatever entry the base
 // manifest has.
@@ -92,12 +93,14 @@ import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
+  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
+import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
@@ -127,7 +130,7 @@ import {
   retryMaps,
   sameContent,
 } from "./lib-manifest.mjs";
-import { resolveCli } from "./lib-s2v.mjs";
+import { decompile, listVpk, missingOutput, resolveCli } from "./lib-s2v.mjs";
 import { loadPrep, makePrep, prepFileName } from "./replay-stage/build-prep.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -238,9 +241,10 @@ function workshopList(text) {
 }
 
 /**
- * The VPK a workshop item was downloaded as, and the map's name inside it:
- * `<root>/<id>/<name>.vpk` when there is one, else the item's only map VPK.
- * null when the item is not there, or holds several VPKs none named `name`.
+ * The VPK a workshop item was downloaded as: `<root>/<id>/<name>.vpk` when
+ * there is one, else the item's only VPK (`<id>.vpk`, or `<id>_dir.vpk` with
+ * its chunks beside it). null when the item is not there, or holds several
+ * VPKs none named `name`.
  */
 export function workshopVpk(root, id, name) {
   const dir = join(root, id);
@@ -251,7 +255,45 @@ export function workshopVpk(root, id, name) {
   const pick =
     vpks.find((f) => f === `${name}.vpk` || f === `${name}_dir.vpk`) ??
     (vpks.length === 1 ? vpks[0] : null);
-  return pick ? { vpk: join(dir, pick), inner: pick.replace(/(_dir)?\.vpk$/, "") } : null;
+  return pick ? { vpk: join(dir, pick) } : null;
+}
+
+/**
+ * The map VPK of a workshop item and the map's name inside it. Steam
+ * downloads an item as an addon VPK that carries the map's own VPK as
+ * maps/<map>.vpk, beside its skybox's, so that one is unpacked into `dir`;
+ * an item that is itself a map VPK is read where it is. The map is the one
+ * named `name`, else the only one that is not a skybox.
+ */
+export function workshopMap(cli, vpk, name, dir) {
+  const maps = [];
+  for (const path of listVpk(cli, vpk, "maps/")) {
+    const nested = /^maps\/([^/]+)\.vpk$/.exec(path)?.[1];
+    const own = /^maps\/([^/]+)\/world_physics\.vmdl_c$/.exec(path)?.[1];
+    if (nested || own) {
+      maps.push({ inner: nested ?? own, nested: Boolean(nested) });
+    }
+  }
+  const playable = maps.filter((m) => !m.inner.includes("skybox"));
+  const pick =
+    maps.find((m) => m.inner === name) ?? (playable.length === 1 ? playable[0] : null);
+  if (!pick) {
+    throw new Error(
+      playable.length
+        ? `${basename(vpk)} holds ${playable.map((m) => m.inner).join(", ")}, none of them ${name}`
+        : `${basename(vpk)} holds no map`,
+    );
+  }
+  if (!pick.nested) {
+    return { vpk, inner: pick.inner };
+  }
+  const file = `maps/${pick.inner}.vpk`;
+  const run = decompile(cli, vpk, file, dir);
+  const unpacked = join(dir, file);
+  if (!existsSync(unpacked)) {
+    throw missingOutput(file, run);
+  }
+  return { vpk: unpacked, inner: pick.inner };
 }
 
 /** Writes `body` raw and gzipped; returns the manifest's `{ file, sha256 }`. */
@@ -376,7 +418,7 @@ async function prepPatch(map, entry, { store, prep, assets, rawDir, filesDir }) 
   };
 }
 
-async function buildMap(map, { from, rawDir, filesDir, cli, pak, prep, assets }) {
+async function buildMap(map, { from, scratch, rawDir, filesDir, cli, pak, prep, assets }) {
   const start = performance.now();
   for (const asset of assets) {
     rmSync(join(filesDir, asset.file(map)), { force: true });
@@ -389,9 +431,13 @@ async function buildMap(map, { from, rawDir, filesDir, cli, pak, prep, assets })
     viewFailed: false,
   };
 
+  let input = from;
   let meshes;
   try {
-    meshes = await extractMap(map, { vpk: from.vpk, inner: from.inner, outDir: rawDir, cli });
+    if (from.workshop) {
+      input = workshopMap(cli, from.vpk, map, scratch);
+    }
+    meshes = await extractMap(map, { vpk: input.vpk, inner: input.inner, outDir: rawDir, cli });
     if (!meshes.tri) {
       throw new Error(`collision mesh over the cap (${meshes.note})`);
     }
@@ -404,7 +450,7 @@ async function buildMap(map, { from, rawDir, filesDir, cli, pak, prep, assets })
 
   let callouts;
   try {
-    callouts = extractCallouts(map, { vpk: from.vpk, inner: from.inner, pak, cli });
+    callouts = extractCallouts(map, { vpk: input.vpk, inner: input.inner, pak, cli });
   } catch (error) {
     callouts = { failed: error.message };
     result.calloutsFailed = true;
@@ -441,8 +487,8 @@ async function buildMap(map, { from, rawDir, filesDir, cli, pak, prep, assets })
   let blasted = false;
   try {
     const blast = extractBlast(map, {
-      vpk: from.vpk,
-      inner: from.inner,
+      vpk: input.vpk,
+      inner: input.inner,
       cli,
       targets: callouts.bombTargets ?? [],
       callouts: callouts.callouts ?? [],
@@ -491,7 +537,7 @@ async function buildMap(map, { from, rawDir, filesDir, cli, pak, prep, assets })
   console.log(
     `${map.padEnd(18)} ${describe(meshes)}; callouts ${calloutNote}; ` +
       `prep ${prepNote}; blast ${blastNote}` +
-      `${from.workshop ? `; workshop ${from.workshop} (${basename(from.vpk)})` : ""}\n` +
+      `${from.workshop ? `; workshop ${from.workshop} (${basename(input.vpk)})` : ""}\n` +
       `${"".padEnd(18)} ${sizes.join(", ")} ` +
       `[${seconds(performance.now() - start)}: ${stages}]`,
   );
@@ -828,11 +874,25 @@ async function build(args) {
       results.push({ map, unchanged: true });
       continue;
     }
-    const result = await buildMap(map, { from, rawDir, filesDir, cli, pak, prep, assets });
-    results.push({
-      ...result,
-      source: { ...source, ...(result.files.prep ? { prep: prep.PREP_VERSION } : {}) },
-    });
+    const scratch = mkdtempSync(join(tmpdir(), `map-${map}-`));
+    try {
+      const result = await buildMap(map, {
+        from,
+        scratch,
+        rawDir,
+        filesDir,
+        cli,
+        pak,
+        prep,
+        assets,
+      });
+      results.push({
+        ...result,
+        source: { ...source, ...(result.files.prep ? { prep: prep.PREP_VERSION } : {}) },
+      });
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+    }
   }
   const attempted = results.filter((r) => !r.unchanged && !r.patch);
   const fresh = attempted.filter((r) => !r.triFailed).length;

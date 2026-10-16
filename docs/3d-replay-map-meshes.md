@@ -217,19 +217,32 @@ For each `name=id`:
   the workshop copy, the assets come from the install's);
 - `_night` variants are skipped, as for the install (consumers fold them
   onto the base map);
-- otherwise `<dir>/<id>/<name>.vpk`, or the item's only map VPK, is built,
-  published under `name` (the maps-table name the consumers look up, which
-  for a map added by hand is its numeric id) and read under the name inside
-  the VPK (its file name);
+- otherwise `<dir>/<id>/<name>.vpk`, or the item's only VPK, is opened.
+  Steam downloads an item as an addon VPK named after its id (`<id>.vpk`, or
+  `<id>_dir.vpk` with `<id>_000.vpk`… beside it), and the map's own VPK is an
+  entry inside it, `maps/<map>.vpk`, next to its skybox's
+  (`maps/de_rooftop_marius_skybox.vpk`). The entry named `name`, else the only
+  one that is not a skybox, is unpacked to TMPDIR for the build (an item that
+  is itself a map VPK is read where it is). The map is published under `name`
+  (the maps-table name the consumers look up, which for a map added by hand is
+  its numeric id) and read under the name inside the item;
 - an item this node never downloaded is skipped and keeps whatever entry
   the base manifest has: it is not dropped. Play the map once on a server on
   that node, or run the build on a node that has it.
 
-`source.vpk_sha256` is then the workshop VPK's hash, so a workshop update
-rebuilds the map at the next run.
+`source.vpk_sha256` is then the hash of the item's VPK (`<id>_dir.vpk`, whose
+directory holds every entry's CRC), so a workshop update rebuilds the map at
+the next run, and an unchanged item is never unpacked.
 
-The lower-level scripts take a single VPK too:
-`node scripts/extract-map-meshes.mjs --vpk <dir>/<id>/<map>.vpk`, and the same
+Prophunt items (Prophunt Inferno, Mirage and Office) are overlays: their map is
+a 12-triangle box plus prop templates, and the world players walk on is the
+stock map's. They build, but what they publish is that box.
+
+The lower-level scripts take a single map VPK too, unpacked first from a
+workshop item:
+`Source2Viewer-CLI -i <dir>/<id>/<id>_dir.vpk --vpk_filepath maps/<map>.vpk -o <out> -d`
+(with `<out>` an existing folder), then
+`node scripts/extract-map-meshes.mjs --vpk <out>/maps/<map>.vpk`, and the same
 for `extract-map-callouts.mjs` and `extract-map-blast.mjs`.
 
 ### Prep

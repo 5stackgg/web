@@ -482,6 +482,32 @@ mark {
   animation: share-flash 600ms ease-out;
 }
 
+/* A setting opened from the settings search: its label lights amber over a
+   faint wash on its row, held long enough for the eye to land, then gone. No
+   outward ring -- the settings pane clips anything drawn past its edge. */
+@keyframes settings-search-hit {
+  0%,
+  45% {
+    background-color: hsl(var(--tac-amber) / 0.08);
+  }
+  100% {
+    background-color: hsl(var(--tac-amber) / 0);
+  }
+}
+@keyframes settings-search-hit-label {
+  0%,
+  45% {
+    color: hsl(var(--tac-amber));
+  }
+}
+.settings-search-hit {
+  border-radius: 0.375rem;
+  animation: settings-search-hit 2.4s ease-out;
+}
+.settings-search-hit-label {
+  animation: settings-search-hit-label 2.4s ease-out;
+}
+
 /* Tab-panel enter fade — matches the app's tab-content transition
    (150ms fade + slight rise). reka keeps every TabsContent mounted and just
    toggles data-state, so the animation is scoped to the active panel: it

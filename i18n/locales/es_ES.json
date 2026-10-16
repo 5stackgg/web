@@ -6525,6 +6525,8 @@
       "title": "Ajustes de la aplicación",
       "description": "Ajustes que afectan a la aplicación.",
       "select_section": "Seleccionar sección",
+      "search_placeholder": "Buscar ajustes",
+      "search_empty": "Ningún ajuste coincide",
       "branding_nav": "Marca",
       "fixtures_nav": "Calendario",
       "groups": {

@@ -6525,6 +6525,8 @@
       "title": "App-Einstellungen",
       "description": "Einstellungen, die die gesamte Anwendung betreffen.",
       "select_section": "Bereich wählen",
+      "search_placeholder": "Einstellungen durchsuchen",
+      "search_empty": "Keine passenden Einstellungen",
       "branding_nav": "Branding",
       "fixtures_nav": "Spielplan",
       "groups": {

@@ -6525,6 +6525,8 @@
       "title": "应用设置",
       "description": "影响应用程序的设置。",
       "select_section": "选择部分",
+      "search_placeholder": "搜索设置",
+      "search_empty": "没有匹配的设置",
       "branding_nav": "品牌",
       "fixtures_nav": "测试数据",
       "groups": {

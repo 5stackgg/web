@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/select";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import SettingsSearch from "~/components/settings/SettingsSearch.vue";
 import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
 import { useSettingsNav } from "~/composables/useSettingsNav";
+import { useSettingsSearchReveal } from "~/composables/useSettingsSearch";
 
 const showSeparators = computed(
   () => useApplicationSettingsStore().showSeparators,
@@ -47,6 +49,7 @@ const selectedPath = computed({
 const contentRow = ref<HTMLElement | null>(null);
 
 useScrollIntoViewOnChange(contentRow, () => route.path);
+useSettingsSearchReveal(contentRow);
 </script>
 
 <template>
@@ -73,9 +76,7 @@ useScrollIntoViewOnChange(contentRow, () => route.path);
       class="flex flex-col space-y-8 lg:min-h-0 lg:flex-1 lg:flex-row lg:space-x-6 lg:space-y-0"
     >
       <PageTransition :delay="100">
-        <aside
-          class="w-full shrink-0 lg:h-full lg:w-auto lg:overflow-y-auto lg:overscroll-contain"
-        >
+        <SettingsSearch class="w-full shrink-0 lg:h-full lg:w-auto">
           <!-- Mobile: single dropdown so all sections are one tap away, no scroll -->
           <div class="lg:hidden">
             <Select v-model="selectedPath">
@@ -115,7 +116,7 @@ useScrollIntoViewOnChange(contentRow, () => route.path);
             :active-path="resolvedPath"
             :aria-label="$t('ui.tooltips.settings_section')"
           />
-        </aside>
+        </SettingsSearch>
       </PageTransition>
       <!-- Keyed on the route so each tab switch mounts a fresh transition and
            re-fires the enter animation; the shell itself stays mounted, so the
@@ -130,6 +131,7 @@ useScrollIntoViewOnChange(contentRow, () => route.path);
         <PageTransition :key="route.path">
           <div
             class="space-y-6 min-w-0 [grid-area:1/1] lg:h-full lg:overflow-y-auto lg:overscroll-contain"
+            :data-settings-pane="route.path"
           >
             <slot />
           </div>

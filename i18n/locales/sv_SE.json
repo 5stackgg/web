@@ -6525,6 +6525,8 @@
       "title": "Applikationsinställningar",
       "description": "Inställningar som påverkar applikationen.",
       "select_section": "Välj avsnitt",
+      "search_placeholder": "Sök i inställningar",
+      "search_empty": "Inga inställningar matchar",
       "branding_nav": "Varumärke",
       "fixtures_nav": "Matcher",
       "groups": {

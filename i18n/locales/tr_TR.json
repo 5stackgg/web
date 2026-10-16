@@ -6525,6 +6525,8 @@
       "title": "Uygulama ayarları",
       "description": "Uygulamayı etkileyen ayarlar.",
       "select_section": "Bölüm seç",
+      "search_placeholder": "Ayarlarda ara",
+      "search_empty": "Eşleşen ayar yok",
       "branding_nav": "Marka",
       "fixtures_nav": "Fikstürler",
       "groups": {

@@ -1271,6 +1271,7 @@ const edgeButton =
                     <NuxtImg
                       v-if="nextClip.thumbnailUrl ?? nextClip.posterUrl"
                       :src="nextClip.thumbnailUrl ?? nextClip.posterUrl ?? ''"
+                      sizes="64px"
                       alt=""
                       class="h-full w-full object-cover"
                     />
@@ -1557,6 +1558,7 @@ const edgeButton =
                   <NuxtImg
                     v-if="q.thumbnailUrl ?? q.posterUrl"
                     :src="q.thumbnailUrl ?? q.posterUrl ?? ''"
+                    sizes="400px"
                     alt=""
                     loading="lazy"
                     class="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-500 motion-safe:group-hover/q:scale-[1.03]"

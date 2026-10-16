@@ -3,6 +3,7 @@ FROM node:24-alpine AS deps
 WORKDIR /opt/5stack
 
 COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn/patches ./.yarn/patches
 
 RUN corepack enable && corepack prepare 
 

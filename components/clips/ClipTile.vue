@@ -267,6 +267,7 @@ const actionClasses = `${actionBase} w-8`;
       <NuxtImg
         v-if="thumbSrc"
         :src="thumbSrc"
+        sizes="400px lg:640px"
         alt=""
         loading="lazy"
         class="absolute inset-0 -z-20 h-full w-full object-cover transition-[transform,opacity] duration-500 motion-safe:group-hover/clip:scale-[1.03]"

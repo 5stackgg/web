@@ -171,14 +171,23 @@ provide("containContent", containContent);
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
-import { getCountryForTimezone } from "countries-and-timezones";
 
 export default {
   watch: {
-    detectedCountry: {
+    steamIdWithoutCountry: {
       immediate: true,
-      async handler() {
-        if (!this.me || this.me.country) {
+      async handler(steamId?: string) {
+        if (!steamId) {
+          return;
+        }
+
+        const { getCountryForTimezone } =
+          await import("countries-and-timezones");
+        const country = getCountryForTimezone(
+          Intl.DateTimeFormat().resolvedOptions().timeZone,
+        );
+
+        if (!country) {
           return;
         }
 
@@ -187,10 +196,10 @@ export default {
             update_players_by_pk: [
               {
                 pk_columns: {
-                  steam_id: this.me.steam_id,
+                  steam_id: steamId,
                 },
                 _set: {
-                  country: this.detectedCountry,
+                  country: country.id,
                 },
               },
               {
@@ -204,17 +213,12 @@ export default {
   },
 
   computed: {
-    me() {
-      return useAuthStore().me;
-    },
-    detectedCountry() {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-      const country = getCountryForTimezone(timezone);
-
-      if (country) {
-        return country.id;
+    steamIdWithoutCountry() {
+      const me = useAuthStore().me;
+      if (!me || me.country) {
+        return;
       }
+      return me.steam_id;
     },
   },
 };

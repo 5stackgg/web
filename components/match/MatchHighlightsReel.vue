@@ -486,6 +486,7 @@ function clipTeamName(c: Clip): string | null {
                 <NuxtImg
                   v-if="clipThumb(c)"
                   :src="clipThumb(c)!"
+                  sizes="400px"
                   alt=""
                   loading="lazy"
                   class="h-full w-full object-cover"

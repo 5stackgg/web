@@ -477,8 +477,6 @@ import { chatThreadKey } from "~/utilities/chatThread";
 import socket from "~/web-sockets/Socket";
 import { vetoBoardUp } from "~/utilities/vetoStage";
 import { vetoHandoffPhase } from "~/composables/useVetoHandoff";
-import { toRaw } from "vue";
-import { asQuery } from "~/utilities/seededSubscribe";
 
 const matchSubscription = typedGql("subscription")({
   matches_by_pk: [
@@ -667,6 +665,27 @@ const matchSubscription = typedGql("subscription")({
   ],
 });
 
+// Check-in and veto for a draft-created match happen in the draft room, so the
+// match page sends you there when a draft lobby exists.
+function draftRoomFor(match: any): string | null {
+  const draftGameId = match.draft_games?.[0]?.id;
+  if (
+    draftGameId &&
+    [e_match_status_enum.WaitingForCheckIn, e_match_status_enum.Veto].includes(
+      match.status,
+    )
+  ) {
+    return draftGameId;
+  }
+  return null;
+}
+
+// Leaving the page (a deleted match, a draft room) is the socket's call alone:
+// navigating from the seed lands mid page transition.
+function seedableMatch(data: Record<string, any>) {
+  return !!data.matches_by_pk && !draftRoomFor(data.matches_by_pk);
+}
+
 export default {
   unmounted() {
     // An out-in page transition unmounts this page only after the next match
@@ -755,7 +774,6 @@ export default {
   data() {
     return {
       matchLive: undefined,
-      matchLiveFor: null as string | null,
       matchStatic: undefined,
       cameraReady: false,
       cameraOverlayDismissed: false,
@@ -765,44 +783,15 @@ export default {
     };
   },
   apollo: {
-    // A subscription's first payload waits on Hasura's next poll, which lands
-    // about a second after the HTTP answer to the same selection would.
-    matchSeed: {
-      query: asQuery(matchSubscription),
-      variables: function (): Record<string, unknown> {
-        return (this as any).matchVariables();
-      },
-      fetchPolicy: "no-cache",
-      manual: true,
-      context: { optional: true },
-      result: function ({ data }: { data: any }) {
-        if (
-          data?.matches_by_pk &&
-          !this.draftRoomFor(data.matches_by_pk) &&
-          this.matchLiveFor !== String(this.$route.params.id)
-        ) {
-          this.setMatchLive(data.matches_by_pk);
-        }
-      },
-      error: () => {},
-    },
     $subscribe: {
       matches_by_pk: {
         variables: function () {
           return this.matchVariables();
         },
         query: matchSubscription,
+        context: { seed: seedableMatch },
         result: function ({ data }) {
-          const matchId = String(this.$route.params.id);
-          const repeatsSeed =
-            this.matchLiveFor !== matchId &&
-            !!data.matches_by_pk &&
-            JSON.stringify(data.matches_by_pk) ===
-              JSON.stringify(toRaw(this.matchLive));
-          this.matchLiveFor = matchId;
-          if (!repeatsSeed) {
-            this.setMatchLive(data.matches_by_pk);
-          }
+          this.setMatchLive(data.matches_by_pk);
         },
       },
     },
@@ -1127,28 +1116,13 @@ export default {
         return;
       }
 
-      const draftGameId = this.draftRoomFor(match);
+      const draftGameId = draftRoomFor(match);
       if (draftGameId) {
         navigateTo(`/draft-room/${draftGameId}`);
         return;
       }
 
       this.matchLive = match;
-    },
-    // Check-in and veto for a draft-created match happen in the draft
-    // room, so the match page sends you there when a draft lobby exists.
-    draftRoomFor(match: any) {
-      const draftGameId = match.draft_games?.[0]?.id;
-      if (
-        draftGameId &&
-        [
-          e_match_status_enum.WaitingForCheckIn,
-          e_match_status_enum.Veto,
-        ].includes(match.status)
-      ) {
-        return draftGameId;
-      }
-      return null;
     },
     markTeamRoomRead() {
       if (this.chatThread && this.myLineupId) {

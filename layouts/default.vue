@@ -7,7 +7,6 @@ import {
   onBeforeUnmount,
   provide,
   ref,
-  watch,
 } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -73,26 +72,23 @@ const showLeftNav = computed(() => {
 // The route on screen, not the one being navigated to: a page leaving keeps
 // its own width while it fades, instead of being laid out again at the next
 // page's (a draft room leaving for the full-width match page ballooned).
+// Nuxt calls page:finish as the old page starts to leave, and
+// page:transition:finish once it has gone (before the new one enters), so
+// the width follows on the second, or on the first when nothing animates.
+const nuxtApp = useNuxtApp();
 const shownRouteName = ref(route.name);
-const unhookPageFinish = useNuxtApp().hook("page:finish", () => {
+const showRoute = () => {
   shownRouteName.value = route.name;
-});
-// Whatever the hook misses (a page kept or nested), the width still follows
-// once the leaving page is gone.
-let shownRouteTimer: ReturnType<typeof setTimeout> | undefined;
-watch(
-  () => route.name,
-  () => {
-    clearTimeout(shownRouteTimer);
-    shownRouteTimer = setTimeout(() => {
-      shownRouteName.value = route.name;
-    }, 600);
-  },
-);
-onBeforeUnmount(() => {
-  unhookPageFinish();
-  clearTimeout(shownRouteTimer);
-});
+};
+const unhooks = [
+  nuxtApp.hook("page:transition:finish", showRoute),
+  nuxtApp.hook("page:finish", () => {
+    if (!(nuxtApp as { _runningTransition?: boolean })._runningTransition) {
+      showRoute();
+    }
+  }),
+];
+onBeforeUnmount(() => unhooks.forEach((unhook) => unhook()));
 
 const containContent = computed(() => {
   const name = shownRouteName.value;

@@ -146,6 +146,8 @@ const { isMobile } = useSidebar();
               :key="map.id"
               :map="map"
               :match-types="matchTypes"
+              :active-duty-locked="updateMapPools"
+              :locked-types="syncingTypes"
             />
           </TableBody>
         </Table>
@@ -226,6 +228,7 @@ interface Map {
   active_pool: boolean;
   workshop_map_id?: string;
   poolTypes: string[];
+  activePoolTypes: string[];
   enabled: boolean;
   deleted_at?: string | null;
 }
@@ -414,11 +417,16 @@ export default {
           uniqueMapsMap.set(map.name, {
             ...map,
             poolTypes: [],
+            activePoolTypes: [],
           });
         }
 
         if (map.enabled) {
           uniqueMapsMap.get(map.name)?.poolTypes.push(map.type);
+        }
+
+        if (map.active_pool) {
+          uniqueMapsMap.get(map.name)?.activePoolTypes.push(map.type);
         }
       }
 
@@ -440,6 +448,11 @@ export default {
             map.label?.toLowerCase()?.includes(this.searchQuery.toLowerCase())
           );
         });
+    },
+    syncingTypes(): string[] {
+      return this.map_pools
+        .filter((pool) => this.syncing(pool))
+        .map((pool) => pool.type);
     },
     settings() {
       return useApplicationSettingsStore().settings;

@@ -32,6 +32,7 @@ import { Button } from "~/components/ui/button";
       <div class="flex items-center gap-2">
         <Switch
           :model-value="map.active_pool"
+          :disabled="activeDutyLocked"
           @update:model-value="toggleActivePool(map)"
         />
         <span>{{ $t("pages.map_pools.active_duty") }}</span>
@@ -46,6 +47,9 @@ import { Button } from "~/components/ui/button";
         >
           <Switch
             :model-value="map.poolTypes.includes(type)"
+            :disabled="
+              lockedTypes.includes(type) && map.activePoolTypes.includes(type)
+            "
             @update:model-value="togglePoolType(map, type)"
           />
           <span>{{ type }}</span>
@@ -100,6 +104,7 @@ interface Map {
   active_pool: boolean;
   workshop_map_id?: string;
   poolTypes: string[];
+  activePoolTypes: string[];
   enabled: boolean;
 }
 
@@ -113,6 +118,14 @@ export default {
     matchTypes: {
       type: Array as () => e_match_types_enum[],
       required: true,
+    },
+    activeDutyLocked: {
+      type: Boolean,
+      default: false,
+    },
+    lockedTypes: {
+      type: Array as () => string[],
+      default: () => [],
     },
   },
   data() {
@@ -160,7 +173,8 @@ export default {
                   type,
                   enabled: true,
                   name: map.name,
-                  active_pool: map.active_pool,
+                  active_pool:
+                    !this.lockedTypes.includes(type) && map.active_pool,
                   workshop_map_id: map.workshop_map_id,
                   poster: map.poster,
                   patch: map.patch,

@@ -2216,7 +2216,20 @@ onBeforeUnmount(() => {
   scale: 0.55;
   transition:
     opacity 160ms var(--vb-ease),
-    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+/* Hovered, not yet chosen: a pale glass disc, so the mark reads as a button
+   before it is clicked. Choosing it turns the disc the move's colour. */
+.vb-slice.is-wide .vb-mark:not(.is-armed) .vb-arm-btn::before {
+  opacity: 1;
+  scale: 1;
+  background: hsl(0 0% 100% / 0.14);
+  box-shadow:
+    inset 0 0 0 2px hsl(0 0% 100% / 0.4),
+    0 12px 30px rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(4px);
 }
 .vb-arm-btn > svg {
   width: 48%;
@@ -2378,7 +2391,21 @@ onBeforeUnmount(() => {
   scale: 0.55;
   transition:
     opacity 160ms var(--vb-ease),
-    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+/* A side under the pointer gets the same pale disc a map's mark does. */
+.vb-split:not(.is-sending)
+  .vb-half:not(.is-selected):not(:disabled):hover
+  .vb-side-mark::before {
+  opacity: 1;
+  scale: 1;
+  background: hsl(0 0% 100% / 0.14);
+  box-shadow:
+    inset 0 0 0 2px hsl(0 0% 100% / 0.4),
+    0 12px 30px rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(4px);
 }
 .vb-side-mark::after {
   z-index: -1;

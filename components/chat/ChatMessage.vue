@@ -117,7 +117,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       />
       <p
         v-else-if="hasText"
-        class="text-[13px] leading-snug break-words whitespace-pre-wrap"
+        class="text-[13px] leading-snug break-words whitespace-pre-wrap [overflow-wrap:anywhere]"
       >
         <span
           ><template v-for="(segment, index) in messageSegments" :key="index"

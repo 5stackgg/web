@@ -257,6 +257,10 @@ export default {
     followLogs: { type: Boolean, default: undefined },
     compact: { type: Boolean, default: false },
     disableRetry: { type: Boolean, default: false },
+    // The caller knows a run of this job is live. A job re-run under the
+    // same name reports the run before it as finished until its new pod
+    // starts, so keep asking until the new pod streams.
+    running: { type: Boolean, default: false },
   },
 
   data() {
@@ -344,6 +348,15 @@ export default {
   },
 
   watch: {
+    running(value: boolean) {
+      if (value) {
+        clearTimeout(this.retryTimeout);
+        socket.event("logs", {
+          tailLines: 250,
+          service: this.service,
+        });
+      }
+    },
     maximized(value: boolean) {
       // In-app fullscreen overlay (teleported to body). Lock page scroll
       // and wire Escape to exit while it's open.
@@ -384,7 +397,7 @@ export default {
               const retryWhileEmpty =
                 jobFinished && this.podCount === 0 && this.emptyRetries < 12;
 
-              if (!jobFinished || retryWhileEmpty) {
+              if (!jobFinished || retryWhileEmpty || this.running) {
                 if (retryWhileEmpty) {
                   this.emptyRetries++;
                 }
@@ -436,7 +449,7 @@ export default {
 
           if (!this.logsByPod[pod]) {
             this.logsByPod[pod] = [];
-            if (!this.activePod) this.activePod = pod;
+            if (!this.activePod || this.running) this.activePod = pod;
           }
 
           this.emptyRetries = 0;

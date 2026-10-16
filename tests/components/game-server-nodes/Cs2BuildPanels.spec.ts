@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import Cs2BuildCard from "~/components/game-server-nodes/Cs2BuildCard.vue";
 import Cs2GamedataPanel from "~/components/game-server-nodes/Cs2GamedataPanel.vue";
@@ -290,6 +291,53 @@ describe("CS2 build panels", () => {
 
     expect(wrapper.find("button").attributes("disabled")).toBeDefined();
     expect(wrapper.text()).not.toContain("No online node is on build");
+  });
+
+  it("keeps the map it is on when the subscription pushes the same run again", async () => {
+    const row = {
+      ...mapAssets,
+      status: "Building",
+      started_at: minutesAgo(1),
+      finished_at: null,
+    };
+    const wrapper = await mountSuspended(Cs2MapAssetsPanel, {
+      props: { buildId: 25537370, row, nodes, canRun: true },
+    });
+    const logs = wrapper.findComponent({ name: "ServiceLogs" });
+    expect(logs.vm.$attrs.running).toBe(true);
+    logs.vm.$emit("line", " [4/8] de_assembly");
+    await nextTick();
+    expect(wrapper.text()).toContain("Building de_assembly");
+
+    await wrapper.setProps({ row: { ...row } });
+    expect(wrapper.text()).toContain("Building de_assembly");
+    expect(wrapper.text()).toContain("3 of 8 maps");
+
+    await wrapper.setProps({ row: { ...row, started_at: minutesAgo(0) } });
+    expect(wrapper.text()).toContain("Waiting for the log");
+  });
+
+  it("says no more than how many maps are done once they are all built", async () => {
+    const wrapper = await mountSuspended(Cs2MapAssetsPanel, {
+      props: {
+        buildId: 25537370,
+        row: {
+          ...mapAssets,
+          status: "Building",
+          started_at: minutesAgo(1),
+          finished_at: null,
+        },
+        nodes,
+        canRun: true,
+      },
+    });
+    const logs = wrapper.findComponent({ name: "ServiceLogs" });
+    logs.vm.$emit("line", " [8/8] de_whistle");
+    logs.vm.$emit("line", " built 8/8 map(s), 0 unchanged");
+    await nextTick();
+
+    expect(wrapper.text()).toContain("8 of 8 maps");
+    expect(wrapper.text()).not.toContain("Waiting for the log");
   });
 
   it("disables a rebuild while one is building without a note under it", async () => {

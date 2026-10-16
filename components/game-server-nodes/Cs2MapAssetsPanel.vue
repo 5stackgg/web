@@ -72,7 +72,7 @@ const running = computed(
 const logService = computed(() => `map-assets:${props.buildId}`);
 const logLines = ref<string[]>([]);
 watch(
-  () => [props.buildId, props.row?.started_at] as const,
+  [() => props.buildId, () => props.row?.started_at],
   () => (logLines.value = []),
 );
 const progress = computed(() =>
@@ -352,7 +352,7 @@ const error = computed(() =>
                 })
               }}
             </template>
-            <template v-else>
+            <template v-else-if="!progress">
               {{ $t("pages.game_server_nodes.cs2_build.waiting_for_log") }}
             </template>
           </span>
@@ -440,6 +440,7 @@ const error = computed(() =>
           <ServiceLogs
             :service="logService"
             :compact="true"
+            :running="running"
             @line="(line: string) => logLines.push(line)"
           />
         </div>

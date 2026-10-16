@@ -2220,9 +2220,10 @@ onBeforeUnmount(() => {
     background-color 200ms ease,
     box-shadow 200ms ease;
 }
-/* Hovered, not yet chosen: a pale glass disc, so the mark reads as a button
-   before it is clicked. Choosing it turns the disc the move's colour. */
-.vb-slice.is-wide .vb-mark:not(.is-armed) .vb-arm-btn::before {
+/* The pointer on the mark itself, not yet chosen: a pale glass disc, so it
+   reads as the button to press. Choosing it turns the disc the move's
+   colour. */
+.vb-slice.is-wide .vb-mark:not(.is-armed) .vb-arm-btn:hover::before {
   opacity: 1;
   scale: 1;
   background: hsl(0 0% 100% / 0.14);
@@ -2238,6 +2239,8 @@ onBeforeUnmount(() => {
 }
 .vb-slice.is-wide .vb-arm-btn {
   opacity: 0.9;
+  border-radius: 50%;
+  pointer-events: auto;
 }
 .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn {
   opacity: 1;
@@ -2246,11 +2249,11 @@ onBeforeUnmount(() => {
   opacity: 1;
   scale: 1;
 }
-.vb-slice.is-wide:hover .vb-mark.is-armed .vb-arm-btn {
+.vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn:hover {
   scale: 1.07;
   filter: brightness(1.1);
 }
-.vb-slice.is-wide:active .vb-mark.is-armed .vb-arm-btn {
+.vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn:active {
   scale: 0.93;
   transition-duration: 80ms;
 }
@@ -2362,6 +2365,7 @@ onBeforeUnmount(() => {
   width: 84px;
   height: 84px;
   margin: -14px 0 4px;
+  border-radius: 50%;
   transition: scale 240ms var(--vb-ease);
 }
 .vb-side-mark > * {
@@ -2395,10 +2399,10 @@ onBeforeUnmount(() => {
     background-color 200ms ease,
     box-shadow 200ms ease;
 }
-/* A side under the pointer gets the same pale disc a map's mark does. */
+/* The pointer on a side's logo gets the same pale disc a map's mark does. */
 .vb-split:not(.is-sending)
-  .vb-half:not(.is-selected):not(:disabled):hover
-  .vb-side-mark::before {
+  .vb-half:not(.is-selected):not(:disabled)
+  .vb-side-mark:hover::before {
   opacity: 1;
   scale: 1;
   background: hsl(0 0% 100% / 0.14);
@@ -2423,10 +2427,10 @@ onBeforeUnmount(() => {
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::after {
   animation: vb-ping 1.8s cubic-bezier(0, 0, 0.2, 1) 300ms infinite;
 }
-.vb-split:not(.is-sending) .vb-half.is-selected:hover .vb-side-mark {
+.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:hover {
   scale: 1.07;
 }
-.vb-split:not(.is-sending) .vb-half.is-selected:active .vb-side-mark {
+.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:active {
   scale: 0.93;
   transition-duration: 80ms;
 }

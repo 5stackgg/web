@@ -1506,6 +1506,9 @@ onBeforeUnmount(() => {
                 <span class="vb-side-mark">
                   <Spinner v-if="submitting && chosen === side" />
                   <img v-else :src="sideIcon(side)" alt="" />
+                  <span class="vb-side-word">{{
+                    t("match.veto.confirm")
+                  }}</span>
                 </span>
                 <b>{{
                   t("match.veto.start_side", { side: sideShort(side) })
@@ -2398,9 +2401,11 @@ onBeforeUnmount(() => {
   .vb-half[data-side="T"] {
   clip-path: polygon(51% 0, 100% 0, 100% 100%, 37% 100%);
 }
+/* A little below the middle: a chosen side's tile grows upward, clear of
+   the map's name. */
 .vb-half-in {
   position: absolute;
-  top: 50%;
+  top: calc(50% + 10px);
   translate: 0 -50%;
   width: 36%;
   display: grid;
@@ -2417,36 +2422,89 @@ onBeforeUnmount(() => {
 }
 /* The chosen side's logo becomes a round button, as a chosen map's mark
    does: a second click on the side starts there. */
+/* A side's logo, and once chosen the same morph a map's mark makes: its
+   disc grows into a tile (upward, so the words under it stay put), the logo
+   rises and Confirm comes up beneath it. */
 .vb-side-mark {
+  --sm: 84px;
   position: relative;
   isolation: isolate;
   display: grid;
   place-items: center;
-  width: 84px;
-  height: 84px;
+  width: var(--sm);
+  height: var(--sm);
   margin: -14px 0 4px;
   border-radius: 50%;
   transition: scale 240ms var(--vb-ease);
 }
-.vb-side-mark > * {
+.vb-side-mark > img,
+.vb-side-mark > svg {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: calc(var(--sm) * 0.667);
+  height: calc(var(--sm) * 0.667);
   filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.5));
+  transition:
+    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    translate 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
 }
 .vb-side-mark > svg {
-  width: 40px;
-  height: 40px;
   color: white;
+}
+.vb-half.is-selected .vb-side-mark > img,
+.vb-half.is-selected .vb-side-mark > svg {
+  width: calc(var(--sm) * 0.5);
+  height: calc(var(--sm) * 0.5);
+  translate: 0 calc(var(--sm) * -0.24);
+}
+.vb-side-word {
+  position: absolute;
+  left: -12px;
+  right: -12px;
+  bottom: 9px;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: white;
+  opacity: 0;
+  translate: 0 5px;
+  transition:
+    opacity 140ms ease,
+    translate 260ms var(--vb-ease);
+}
+.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-word {
+  opacity: 1;
+  translate: none;
+  transition-delay: 200ms;
 }
 .vb-side-mark::before,
 .vb-side-mark::after {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  width: var(--sm);
+  height: var(--sm);
+  translate: -50% -50%;
+  border-radius: calc(var(--sm) / 2);
   background: var(--vb-side-deep);
   opacity: 0;
+  transition:
+    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    top 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+}
+.vb-half.is-selected .vb-side-mark::before,
+.vb-half.is-selected .vb-side-mark::after {
+  width: calc(var(--sm) + 24px);
+  height: calc(var(--sm) + 20px);
+  top: calc(50% - 10px);
+  border-radius: calc(var(--sm) * 0.36);
 }
 .vb-side-mark::before {
   box-shadow:
@@ -2457,7 +2515,11 @@ onBeforeUnmount(() => {
     opacity 160ms var(--vb-ease),
     scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
     background-color 200ms ease,
-    box-shadow 200ms ease;
+    box-shadow 200ms ease,
+    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    top 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
+    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
 }
 /* The pointer on a side's logo gets the same pale disc a map's mark does. */
 .vb-split:not(.is-sending)
@@ -2485,7 +2547,7 @@ onBeforeUnmount(() => {
   scale: 1;
 }
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::after {
-  animation: vb-ping 1.8s cubic-bezier(0, 0, 0.2, 1) 300ms infinite;
+  animation: vb-ping-tile 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;
 }
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:hover {
   scale: 1.07;
@@ -3523,17 +3585,12 @@ onBeforeUnmount(() => {
     width: 42%;
   }
   .vb-side-mark {
-    width: 56px;
-    height: 56px;
+    --sm: 56px;
     margin: -10px 0 4px;
   }
-  .vb-side-mark > * {
-    width: 36px;
-    height: 36px;
-  }
-  .vb-side-mark > svg {
-    width: 28px;
-    height: 28px;
+  .vb-side-word {
+    bottom: 7px;
+    font-size: 9px;
   }
   .vb-sidehead {
     top: 10px;

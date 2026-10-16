@@ -2273,14 +2273,16 @@ onBeforeUnmount(() => {
 /* The pointer on the mark itself, not yet chosen: a pale glass disc, so it
    reads as the button to press. Choosing it turns the disc the move's
    colour. */
-.vb-slice.is-wide .vb-mark:not(.is-armed) .vb-arm-btn:hover::before {
-  opacity: 1;
-  scale: 1;
-  background: hsl(0 0% 100% / 0.14);
-  box-shadow:
-    inset 0 0 0 2px hsl(0 0% 100% / 0.4),
-    0 12px 30px rgb(0 0 0 / 0.35);
-  backdrop-filter: blur(4px);
+@media (hover: hover) and (pointer: fine) {
+  .vb-slice.is-wide .vb-mark:not(.is-armed) .vb-arm-btn:hover::before {
+    opacity: 1;
+    scale: 1;
+    background: hsl(0 0% 100% / 0.14);
+    box-shadow:
+      inset 0 0 0 2px hsl(0 0% 100% / 0.4),
+      0 12px 30px rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(4px);
+  }
 }
 .vb-arm-btn > svg {
   width: calc(var(--arm-d, 84px) * 0.48);
@@ -2337,12 +2339,14 @@ onBeforeUnmount(() => {
 .vb-mark.is-armed.is-sending .vb-arm-btn::before {
   background: var(--vb-arm-deep);
 }
-.vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn:hover {
-  scale: 1.07;
-  filter: brightness(1.1);
+@media (hover: hover) and (pointer: fine) {
+  .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn:hover {
+    scale: 1.07;
+    filter: brightness(1.1);
+  }
 }
 .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn:active {
-  scale: 0.93;
+  scale: 0.96;
   transition-duration: 80ms;
 }
 @keyframes vb-arm-in {
@@ -2547,16 +2551,18 @@ onBeforeUnmount(() => {
     border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
 }
 /* The pointer on a side's logo gets the same pale disc a map's mark does. */
-.vb-split:not(.is-sending)
-  .vb-half:not(.is-selected):not(:disabled)
-  .vb-side-mark:hover::before {
-  opacity: 1;
-  scale: 1;
-  background: hsl(0 0% 100% / 0.14);
-  box-shadow:
-    inset 0 0 0 2px hsl(0 0% 100% / 0.4),
-    0 12px 30px rgb(0 0 0 / 0.35);
-  backdrop-filter: blur(4px);
+@media (hover: hover) and (pointer: fine) {
+  .vb-split:not(.is-sending)
+    .vb-half:not(.is-selected):not(:disabled)
+    .vb-side-mark:hover::before {
+    opacity: 1;
+    scale: 1;
+    background: hsl(0 0% 100% / 0.14);
+    box-shadow:
+      inset 0 0 0 2px hsl(0 0% 100% / 0.4),
+      0 12px 30px rgb(0 0 0 / 0.35);
+    backdrop-filter: blur(4px);
+  }
 }
 .vb-side-mark::after {
   z-index: -1;
@@ -2602,11 +2608,13 @@ onBeforeUnmount(() => {
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::after {
   animation: vb-ping-tile 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;
 }
-.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:hover {
-  scale: 1.07;
+@media (hover: hover) and (pointer: fine) {
+  .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:hover {
+    scale: 1.07;
+  }
 }
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:active {
-  scale: 0.93;
+  scale: 0.96;
   transition-duration: 80ms;
 }
 .vb-half-in b {

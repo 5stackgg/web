@@ -207,27 +207,35 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
   box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.12);
 }
 .qmc-join {
+  position: relative;
   font-weight: 700;
 }
-.qmc-join.is-calling {
+/* The ring is its own layer, grown with transform and faded with opacity,
+   so the pulse never repaints the button. ~6px out on each side. */
+.qmc-join.is-calling::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px hsl(var(--tac-amber) / 0.55);
+  pointer-events: none;
   animation: qmc-call 1.8s cubic-bezier(0, 0, 0.2, 1) 600ms infinite;
 }
 @keyframes qmc-call {
   0% {
-    box-shadow:
-      0 0 0 0 hsl(var(--tac-amber) / 0.5),
-      0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
+    opacity: 1;
+    scale: 1;
   }
   75%,
   100% {
-    box-shadow:
-      0 0 0 6px hsl(var(--tac-amber) / 0),
-      0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
+    opacity: 0;
+    scale: 1.04 1.25;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .qmc-join.is-calling {
+  .qmc-join.is-calling::after {
     animation: none;
+    opacity: 0;
   }
 }
 </style>

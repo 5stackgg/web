@@ -3569,6 +3569,64 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { toast } from "~/components/ui/toast";
 import { canEditPlayerRole } from "~/utilities/playerRoleEdit";
+import { asQuery } from "~/utilities/seededSubscribe";
+
+const playerSubscription = typedGql("subscription")({
+  players_by_pk: [
+    {
+      steam_id: $("playerId", "bigint!"),
+    },
+    {
+      ...playerFields,
+      role: true,
+      profile_url: true,
+      peak_elo: true,
+      teams: [
+        {},
+        {
+          id: true,
+          name: true,
+          short_name: true,
+        },
+      ],
+      wins: true,
+      losses: true,
+      wins_competitive: true,
+      wins_wingman: true,
+      wins_duel: true,
+      wins_rush: true,
+      losses_competitive: true,
+      losses_wingman: true,
+      losses_duel: true,
+      losses_rush: true,
+      faceit_skill_level: true,
+      faceit_elo: true,
+      faceit_url: true,
+      faceit_nickname: true,
+      premier_rank: true,
+      premier_rank_updated_at: true,
+      stats: {
+        kills: true,
+        deaths: true,
+        assists: true,
+        headshot_percentage: true,
+      },
+    },
+  ],
+});
+
+const playerAwardsSubscription = typedGql("subscription")({
+  award_recipients: [
+    {
+      where: {
+        player_steam_id: {
+          _eq: $("steam_id", "bigint"),
+        },
+      },
+    },
+    awardFields,
+  ],
+});
 
 export default {
   apollo: {
@@ -3591,67 +3649,58 @@ export default {
         data.players_by_pk?.allow_message_requests ?? null,
       error: () => {},
     },
+    // A subscription's first payload waits on the socket handshake and Hasura's
+    // first poll -- on a cold load that lands after everything else on the
+    // page. The same selection as a query answers in one HTTP round trip, so
+    // the hero and the awards (which hold back the sections below them) render
+    // from that instead. The subscription stays the live source.
+    playerSeed: {
+      query: asQuery(playerSubscription),
+      variables: function (): Record<string, unknown> {
+        return { playerId: (this as any).playerId };
+      },
+      skip: function () {
+        return !this.playerId;
+      },
+      fetchPolicy: "no-cache",
+      manual: true,
+      context: { optional: true },
+      result: function ({ data }: { data: any }) {
+        if (data && this.playerLiveFor !== this.playerId) {
+          this.setPlayer(data.players_by_pk);
+        }
+      },
+      error: () => {},
+    },
+    playerAwardsSeed: {
+      query: asQuery(playerAwardsSubscription),
+      variables: function (): Record<string, unknown> {
+        return { steam_id: (this as any).playerId };
+      },
+      skip: function () {
+        return !this.playerId;
+      },
+      fetchPolicy: "no-cache",
+      manual: true,
+      context: { optional: true },
+      result: function ({ data }: { data: any }) {
+        if (data && this.awardsLiveFor !== this.playerId) {
+          this.playerAwards = data.award_recipients || [];
+        }
+      },
+      error: () => {},
+    },
     $subscribe: {
       players_by_pk: {
-        query: typedGql("subscription")({
-          players_by_pk: [
-            {
-              steam_id: $("playerId", "bigint!"),
-            },
-            {
-              ...playerFields,
-              role: true,
-              profile_url: true,
-              peak_elo: true,
-              teams: [
-                {},
-                {
-                  id: true,
-                  name: true,
-                  short_name: true,
-                },
-              ],
-              wins: true,
-              losses: true,
-              wins_competitive: true,
-              wins_wingman: true,
-              wins_duel: true,
-              wins_rush: true,
-              losses_competitive: true,
-              losses_wingman: true,
-              losses_duel: true,
-              losses_rush: true,
-              faceit_skill_level: true,
-              faceit_elo: true,
-              faceit_url: true,
-              faceit_nickname: true,
-              premier_rank: true,
-              premier_rank_updated_at: true,
-              stats: {
-                kills: true,
-                deaths: true,
-                assists: true,
-                headshot_percentage: true,
-              },
-            },
-          ],
-        }),
+        query: playerSubscription,
         variables: function () {
           return {
             playerId: this.playerId,
           };
         },
         result: function ({ data }) {
-          this.player = data.players_by_pk;
-          const ctx = usePlayerContext();
-          if (this.player) {
-            ctx.value = {
-              id: String(this.player.steam_id),
-              name: this.player.name,
-            };
-          } else {
-            ctx.value = null;
-          }
+          this.playerLiveFor = this.playerId;
+          this.setPlayer(data.players_by_pk);
         },
       },
       playerTeamMemberships: {
@@ -3704,18 +3753,7 @@ export default {
         },
       },
       playerAwards: {
-        query: typedGql("subscription")({
-          award_recipients: [
-            {
-              where: {
-                player_steam_id: {
-                  _eq: $("steam_id", "bigint"),
-                },
-              },
-            },
-            awardFields,
-          ],
-        }),
+        query: playerAwardsSubscription,
         variables: function () {
           return {
             steam_id: this.playerId,
@@ -3725,6 +3763,7 @@ export default {
           return !this.playerId;
         },
         result: function ({ data }: { data: any }) {
+          this.awardsLiveFor = this.playerId;
           this.playerAwards = data.award_recipients || [];
         },
       },
@@ -3744,6 +3783,8 @@ export default {
   data() {
     return {
       player: undefined,
+      playerLiveFor: null as string | null,
+      awardsLiveFor: null as string | null,
       // null until known; only an explicit false hides the Message button.
       allowsMessageRequests: null as boolean | null,
       playerAwards: undefined,
@@ -4046,6 +4087,18 @@ export default {
     },
   },
   methods: {
+    setPlayer(player: any) {
+      this.player = player;
+      const ctx = usePlayerContext();
+      if (this.player) {
+        ctx.value = {
+          id: String(this.player.steam_id),
+          name: this.player.name,
+        };
+      } else {
+        ctx.value = null;
+      }
+    },
     messagePlayer() {
       if (!this.player?.steam_id) return;
       useDirectMessages().openConversation({

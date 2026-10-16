@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { ArrowRight } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { seededSubscribe } from "~/utilities/seededSubscribe";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import { order_by } from "~/generated/zeus";
@@ -52,38 +53,41 @@ function subscribe() {
   activeSub?.unsubscribe();
   if (!props.steamId) return;
   const sid = String(props.steamId);
-  const obs = getGraphqlClient().subscribe({
-    query: generateSubscription({
-      match_clips: [
-        {
-          where: {
-            target_steam_id: { _eq: sid },
-          },
-          // Newest first, matching "See all" (the browser's default sort).
-          order_by: [{ created_at: order_by.desc }],
-          limit: limit.value,
-        } as any,
-        matchClipFields,
-      ],
-    } as any),
-  });
-  activeSub = obs.subscribe({
-    next: ({ data }: any) => {
-      const next = (data?.match_clips ?? []) as Clip[];
-      // Fewer rows than asked = we've hit the end of the player's clips.
-      reachedEnd.value = next.length < limit.value;
-      clips.value = next;
-      loading.value = false;
-      inFlight.value = false;
-      markResolved();
+  activeSub = seededSubscribe(
+    getGraphqlClient(),
+    {
+      query: generateSubscription({
+        match_clips: [
+          {
+            where: {
+              target_steam_id: { _eq: sid },
+            },
+            // Newest first, matching "See all" (the browser's default sort).
+            order_by: [{ created_at: order_by.desc }],
+            limit: limit.value,
+          } as any,
+          matchClipFields,
+        ],
+      } as any),
     },
-    error: (err: any) => {
-      console.error("[player-highlights] subscription error:", err);
-      loading.value = false;
-      inFlight.value = false;
-      markResolved();
+    {
+      next: ({ data }: any) => {
+        const next = (data?.match_clips ?? []) as Clip[];
+        // Fewer rows than asked = we've hit the end of the player's clips.
+        reachedEnd.value = next.length < limit.value;
+        clips.value = next;
+        loading.value = false;
+        inFlight.value = false;
+        markResolved();
+      },
+      error: (err: any) => {
+        console.error("[player-highlights] subscription error:", err);
+        loading.value = false;
+        inFlight.value = false;
+        markResolved();
+      },
     },
-  });
+  );
 }
 
 watch(

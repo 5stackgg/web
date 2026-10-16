@@ -200,7 +200,7 @@ const typeTileClasses =
 <template>
   <article class="overflow-hidden rounded-lg border border-border bg-card/40">
     <div
-      class="relative isolate flex flex-wrap justify-between gap-x-7 gap-y-4 px-4 sm:px-5"
+      class="group/banner relative isolate flex flex-wrap justify-between gap-x-7 gap-y-4 overflow-hidden px-4 sm:px-5"
       :class="
         compact
           ? 'min-h-[120px] items-center py-4'
@@ -211,7 +211,7 @@ const typeTileClasses =
         v-if="bannerSrc && bannerIsVideo"
         :src="bannerSrc"
         aria-hidden="true"
-        class="absolute inset-0 -z-20 h-full w-full object-cover"
+        class="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-300 group-hover/banner:scale-[1.03] motion-reduce:transition-none"
         preload="metadata"
         muted
         playsinline
@@ -221,10 +221,16 @@ const typeTileClasses =
         :src="bannerSrc"
         alt=""
         loading="lazy"
-        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%]"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%] transition-transform duration-300 group-hover/banner:scale-[1.03] motion-reduce:transition-none"
       />
       <div v-else aria-hidden="true" class="plate absolute inset-0 -z-20"></div>
       <div aria-hidden="true" class="scrim absolute inset-0 -z-10"></div>
+      <NuxtLink
+        :to="eventPath"
+        tabindex="-1"
+        aria-hidden="true"
+        class="absolute inset-0"
+      />
 
       <div
         class="grid min-w-0 max-w-[680px]"

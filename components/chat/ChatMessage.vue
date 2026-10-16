@@ -79,7 +79,10 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         <h4 class="font-semibold truncate max-w-[160px] text-foreground/90">
           {{ message.from.name }}
         </h4>
-        <span class="whitespace-nowrap text-[10px] text-muted-foreground/70">
+        <span
+          v-if="!mediaLeads"
+          class="whitespace-nowrap text-[10px] text-muted-foreground/70"
+        >
           <time-ago :date="message.timestamp" hide-icon></time-ago>
         </span>
         <span
@@ -96,6 +99,15 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         >
           {{ $t("chat.team_tag") }}
         </span>
+      </div>
+      <!-- Under the name rather than beside it when media follows, so the two
+           lines fill the avatar's height and the media can start right after. -->
+      <div
+        v-if="showMeta && mediaLeads"
+        data-chat-media-time
+        class="whitespace-nowrap text-[10px] leading-4 text-muted-foreground/70"
+      >
+        <time-ago :date="message.timestamp" hide-icon></time-ago>
       </div>
       <ChatMessageEditor
         v-if="editing && room"
@@ -142,12 +154,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       </p>
       <!-- Media takes the whole width of the line, under the avatar, so a GIF
            in a narrow panel isn't held to the text column. With only the name
-           above it, it drops clear of the avatar first. -->
+           and time above it, it clears the avatar by a hair. -->
       <div
         v-if="hasMedia"
         data-chat-media
         class="-ml-10"
-        :class="{ 'pt-[1.125rem]': showMeta && mediaLeads }"
+        :class="{ 'pt-1': showMeta && mediaLeads }"
       >
         <ChatMessageMedia :message="message" />
       </div>

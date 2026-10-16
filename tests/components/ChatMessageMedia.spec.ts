@@ -181,7 +181,7 @@ describe("ChatMessage with media", () => {
     expect(wrapper.find("[data-attachment-id='0b7d6c1e-1111-4a2b-9c3d-00000000000a']").exists()).toBe(true);
   });
 
-  it("runs media under the avatar, dropping clear of it when only the name is above", async () => {
+  it("runs media under the avatar, with the time under the name when only the name is above", async () => {
     const gif = { id: "abc123", width: 480, height: 270 };
     const gifOnly = await mountSuspended(ChatMessage, {
       props: { message: message({ gif }) },
@@ -191,12 +191,12 @@ describe("ChatMessage with media", () => {
     });
 
     expect(gifOnly.get("[data-chat-media]").classes()).toEqual(
-      expect.arrayContaining(["-ml-10", "pt-[1.125rem]"]),
+      expect.arrayContaining(["-ml-10", "pt-1"]),
     );
+    expect(gifOnly.find("[data-chat-media-time]").exists()).toBe(true);
     expect(withText.get("[data-chat-media]").classes()).toContain("-ml-10");
-    expect(withText.get("[data-chat-media]").classes()).not.toContain(
-      "pt-[1.125rem]",
-    );
+    expect(withText.get("[data-chat-media]").classes()).not.toContain("pt-1");
+    expect(withText.find("[data-chat-media-time]").exists()).toBe(false);
   });
 
   it("drops the hover time from a grouped line that opens on media", async () => {
@@ -212,9 +212,7 @@ describe("ChatMessage with media", () => {
     });
 
     expect(gifLine.find("[data-chat-clock]").exists()).toBe(false);
-    expect(gifLine.find("[data-chat-media]").classes()).not.toContain(
-      "pt-[1.125rem]",
-    );
+    expect(gifLine.find("[data-chat-media]").classes()).not.toContain("pt-1");
     expect(textLine.find("[data-chat-clock]").exists()).toBe(true);
   });
 });

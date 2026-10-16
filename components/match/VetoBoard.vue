@@ -489,12 +489,12 @@ function onPointerLeave() {
 }
 
 /* ---------- countdown ---------- */
-const { remaining, fraction, urgent } = useCountdown(
-  toRef(props, "deadline"),
-  toRef(props, "total"),
-);
+const {
+  seconds,
+  urgent,
+  meter: countdownMeter,
+} = useCountdown(toRef(props, "deadline"), toRef(props, "total"));
 const timed = computed(() => !!props.deadline && !!actingLineup.value);
-const seconds = computed(() => Math.ceil(remaining.value));
 
 /* ---------- copy ---------- */
 const lead = computed(() => {
@@ -1170,10 +1170,15 @@ onBeforeUnmount(() => {
           >{{ timed ? `${seconds}s` : "" }}</span
         >
         <span
+          ref="countdownMeter"
           class="vb-bar"
-          :class="{ 'is-other': timed && !mine, 'is-urgent': timed && urgent }"
+          :class="{
+            'is-timed': timed,
+            'is-other': timed && !mine,
+            'is-urgent': timed && urgent,
+          }"
         >
-          <i :style="{ transform: `scaleX(${timed ? fraction : 0})` }" />
+          <i />
         </span>
       </div>
     </Transition>
@@ -1824,6 +1829,9 @@ onBeforeUnmount(() => {
   background: var(--vb-amber);
   transform-origin: left;
   transform: scaleX(0);
+}
+.vb-bar.is-timed i {
+  transform: scaleX(var(--countdown, 0));
 }
 .vb-bar.is-other i {
   background: var(--vb-muted);

@@ -830,7 +830,9 @@ export class Socket extends EventEmitter {
       this.unansweredPingAt = now;
     }
 
-    this.connection?.send(JSON.stringify({ event: "ping" }));
+    this.connection?.send(
+      JSON.stringify({ event: "ping", data: { sentAt: Date.now() } }),
+    );
     this.sendPresence();
   }
 
@@ -1351,26 +1353,21 @@ socket.listen(
 socket.listen(
   "matchmaking:details",
   (data: { serverNow?: string } & Record<string, any>) => {
-    const matchmakingStore = useMatchmakingStore();
-    const serverNow = data?.serverNow ? Date.parse(data.serverNow) : NaN;
-    // Time in transit only ever makes a reading smaller, so the largest one
-    // since the socket opened is the truest; a message held back while the
-    // tab slept must not drag the clock behind.
-    if (!Number.isNaN(serverNow)) {
-      const offset = serverNow - Date.now();
-      if (
-        matchmakingStore.serverClockOffsetMs === null ||
-        offset > matchmakingStore.serverClockOffsetMs
-      ) {
-        matchmakingStore.serverClockOffsetMs = offset;
-      }
+    if (data?.serverNow) {
+      useServerClockStore().observe(Date.parse(data.serverNow), Date.now());
     }
-    matchmakingStore.joinedMatchmakingQueues = data;
+    useMatchmakingStore().joinedMatchmakingQueues = data;
   },
 );
 
+socket.listen("pong", (data?: { serverNow?: number; sentAt?: number }) => {
+  if (typeof data?.serverNow === "number") {
+    useServerClockStore().observe(data.serverNow, Date.now(), data.sentAt);
+  }
+});
+
 socket.listen("online", () => {
-  useMatchmakingStore().serverClockOffsetMs = null;
+  useServerClockStore().reconnected();
 });
 
 socket.listen("team-lobby:join", (data) => {});

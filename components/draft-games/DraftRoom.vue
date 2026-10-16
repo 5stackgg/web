@@ -555,7 +555,7 @@ const autoPickName = computed(
 
 const hasPicks = computed(() => (props.room.picks?.length || 0) > 0);
 
-const { remaining: pickRemaining } = useCountdown(
+const { seconds: pickSeconds } = useCountdown(
   computed(() => props.room.pick_deadline),
   ref(30),
 );
@@ -1819,7 +1819,7 @@ const start = () => {
             <span
               class="font-mono text-lg font-bold tabular-nums text-[hsl(var(--tac-amber))]"
             >
-              {{ Math.ceil(pickRemaining) }}
+              {{ pickSeconds }}
             </span>
           </div>
         </Transition>

@@ -125,6 +125,19 @@ afterEach(() => {
 });
 
 describe("Socket pong watchdog", () => {
+  it("says when each ping left, so its pong can time the api's clock", () => {
+    socket.connect();
+    latest().open();
+    const first = Date.now();
+    vi.advanceTimersByTime(HEARTBEAT_MS);
+
+    const sentAt = latest()
+      .sent.filter(({ event }) => event === "ping")
+      .map(({ data }) => (data as { sentAt: number }).sentAt);
+
+    expect(sentAt).toEqual([first, first + HEARTBEAT_MS]);
+  });
+
   it("never reconnects a connection whose api has never answered a ping", () => {
     socket.connect();
     latest().open();

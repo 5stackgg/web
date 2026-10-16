@@ -6,6 +6,7 @@ import MatchmakingConfirm from "~/components/matchmaking/MatchmakingConfirm.vue"
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { fakeServiceWorker } from "../helpers/fakeServiceWorker";
+import { setApiClockBehindBy } from "../helpers/serverClock";
 
 vi.mock("~/composables/useSound", () => ({
   useSound: () => ({
@@ -54,11 +55,11 @@ afterEach(() => {
 
 describe("MatchmakingConfirm countdown", () => {
   afterEach(() => {
-    useMatchmakingStore().serverClockOffsetMs = null;
+    setApiClockBehindBy(0);
   });
 
   it("counts down on the api's clock when the device clock runs ahead", async () => {
-    useMatchmakingStore().serverClockOffsetMs = -120_000;
+    setApiClockBehindBy(120_000);
     setConfirmation(
       confirmation({
         expiresAt: new Date(Date.now() - 120_000 + 30_000).toISOString(),

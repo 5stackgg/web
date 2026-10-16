@@ -156,6 +156,7 @@ import {
 
 <script lang="ts">
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { useServerClockStore } from "~/stores/ServerClockStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import socket from "~/web-sockets/Socket";
@@ -297,7 +298,7 @@ export default {
         this.confirmation.confirmed !== this.confirmation.players
       ) {
         const expiresAt = new Date(this.confirmation.expiresAt).getTime();
-        const now = useMatchmakingStore().serverNow();
+        const now = useServerClockStore().now();
         const difference = Math.max(0, Math.floor((expiresAt - now) / 1000));
 
         this.playCountdownSound();

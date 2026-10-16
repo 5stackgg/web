@@ -204,7 +204,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
               is_in_another_match: true,
               is_in_draft: true,
               // Friend's current live match — drives the inline score preview.
-              player_lineup: [
+              live_lineup: [
                 {
                   limit: 1,
                   where: {

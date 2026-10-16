@@ -47,7 +47,7 @@ export function useFriendStatus(
 
   // Friend's current live match, oriented to their lineup (their score first).
   const currentMatch = computed(() => {
-    const entry = toValue(player)?.player?.player_lineup?.[0];
+    const entry = toValue(player)?.player?.live_lineup?.[0];
     const match = entry?.lineup?.match;
     if (!match) return null;
 

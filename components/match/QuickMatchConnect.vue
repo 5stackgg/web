@@ -53,36 +53,33 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
         </div>
       </div>
 
+      <!-- Booting and connect share one card, the size of the join row, so
+           one turns into the other where it stands. -->
       <div v-else-if="showBooting" key="booting">
-        <div
-          class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10"
-        >
-          <div
-            class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
-          >
-            <div class="flex items-center justify-center gap-3">
-              <Spinner class="shrink-0" />
-              <span class="text-sm font-medium tracking-wide">{{
-                $t("match.server.booting")
-              }}</span>
+        <div class="qmc-card" :style="posterStyle">
+          <div class="qmc-boot">
+            <div class="qmc-glass">
+              <Spinner class="qmc-boot-icon" />
+              <span class="qmc-boot-text">
+                <b>{{ $t("match.veto.start.booting") }}</b>
+                <span>{{ $t("match.veto.start.booting_line") }}</span>
+              </span>
             </div>
-            <p
-              v-if="match.server_error"
-              class="max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
-            >
-              {{ match.server_error }}
-            </p>
           </div>
+          <p
+            v-if="match.server_error"
+            class="mt-2 max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
+          >
+            {{ match.server_error }}
+          </p>
         </div>
       </div>
 
       <div v-else-if="showConnect" key="connect">
-        <div
-          class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10"
-        >
+        <div class="qmc-card flex items-center gap-2" :style="posterStyle">
           <ClipBoard
             :data="match.connection_string"
-            class="shrink-0 p-3 h-12 w-12 connect-action"
+            class="qmc-copy shrink-0 p-3 h-12 w-12 connect-action"
             :class="{
               grow: !match.connection_link,
             }"
@@ -96,10 +93,16 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
             </div>
           </ClipBoard>
           <template v-if="match.connection_link">
-            <a :href="match.connection_link" class="w-full" @click="handleClick">
+            <a
+              :href="match.connection_link"
+              class="w-full"
+              @click="handleClick"
+            >
+              <!-- Gold, and ringing until the player is in the game. -->
               <Button
                 variant="outline"
-                class="w-full h-12 connect-action"
+                class="qmc-join tac-amber-cta w-full h-12"
+                :class="{ 'is-calling': isInLineup && !inGame && !isLoading }"
                 :loading="isLoading"
               >
                 <div class="relative flex items-center" v-if="isInLineup">
@@ -123,6 +126,120 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
   </div>
 </template>
 
+<style scoped>
+/* The map being played, as the veto's start panels show it, with the
+   server's state on glass over it; the join row takes the same card. */
+.qmc-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 12px;
+  border-radius: 12px;
+  background-color: hsl(var(--popover));
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    inset 0 0 0 1px hsl(0 0% 100% / 0.1),
+    0 12px 32px rgb(0 0 0 / 0.35);
+}
+.qmc-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    hsl(240 10% 4% / 0.82),
+    hsl(240 10% 4% / 0.45)
+  );
+}
+.qmc-boot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+}
+.qmc-glass {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 6px 16px 6px 12px;
+  border-radius: 10px;
+  background: hsl(240 10% 4% / 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 0 0 1px hsl(0 0% 100% / 0.12),
+    0 12px 32px rgb(0 0 0 / 0.45);
+}
+.qmc-boot-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: hsl(var(--tac-amber));
+}
+.qmc-boot-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.qmc-boot-text > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Both lines fit the join row's 48px, so the swap moves nothing. */
+.qmc-boot-text b {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.qmc-boot-text span {
+  font-size: 12px;
+  line-height: 1.2;
+  color: hsl(0 0% 100% / 0.72);
+}
+.qmc-copy {
+  border-color: transparent;
+  background: hsl(240 10% 4% / 0.72);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 0 1px hsl(0 0% 100% / 0.12);
+}
+.qmc-join {
+  position: relative;
+  font-weight: 700;
+}
+/* The ring is its own layer, grown with transform and faded with opacity,
+   so the pulse never repaints the button. ~6px out on each side. */
+.qmc-join.is-calling::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px hsl(var(--tac-amber) / 0.55);
+  pointer-events: none;
+  animation: qmc-call 1.8s cubic-bezier(0, 0, 0.2, 1) 600ms infinite;
+}
+@keyframes qmc-call {
+  0% {
+    opacity: 1;
+    scale: 1;
+  }
+  75%,
+  100% {
+    opacity: 0;
+    scale: 1.04 1.25;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qmc-join.is-calling::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+</style>
+
 <script lang="ts">
 import { ExternalLink, Copy, Tv, AlertTriangle } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
@@ -145,8 +262,9 @@ export default {
       type: Object,
       required: true,
     },
-    // Suppress the booting spinner when the surrounding UI already shows a
-    // booting indicator (e.g. the draft room's "Match Starting" panel).
+    // The surrounding UI shows the server starting (the veto's start stage):
+    // no booting spinner here, and the connect box waits until the maps have
+    // landed in the page's cards, so it arrives on its own beat.
     hideBooting: {
       type: Boolean,
       default: false,
@@ -174,6 +292,14 @@ export default {
   computed: {
     isLive() {
       return this.match.status === e_match_status_enum.Live;
+    },
+    posterStyle() {
+      const maps = this.match.match_maps ?? [];
+      const map = (maps.find((entry: any) => entry.is_current_map) ?? maps[0])
+        ?.map;
+      return map?.poster
+        ? { backgroundImage: `url("${map.poster}")` }
+        : undefined;
     },
     isAssignedOnDemandServerBooting() {
       return (
@@ -207,7 +333,11 @@ export default {
       return this.showBootingState;
     },
     showConnect() {
-      return !!this.match.connection_string && this.match.is_server_online;
+      return (
+        !!this.match.connection_string &&
+        this.match.is_server_online &&
+        !this.hideBooting
+      );
     },
     showConnectPanel() {
       return !!this.me && this.isLive && !this.blockedByCamera;

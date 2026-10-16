@@ -627,17 +627,54 @@ const resultText = computed(() =>
           <span v-if="formattedSchedule">{{ formattedSchedule }}</span>
         </span>
 
-        <span
-          v-if="showAutoCancel"
-          class="inline-flex h-7 items-center gap-1.5 text-destructive"
-        >
-          <AlertTriangle class="size-3.5 shrink-0" />
-          {{ $t("match.auto_canceling") }}
-          <TimeAgo :date="match.cancels_at" countdown hide-icon />
-        </span>
+        <!-- It opens its own width, so the centred row eases over to make
+             room instead of jumping. -->
+        <Transition name="hdr-open">
+          <span v-if="showAutoCancel" class="hdr-open">
+            <span class="min-w-0 overflow-hidden">
+              <span
+                class="inline-flex h-7 items-center gap-1.5 whitespace-nowrap text-destructive"
+              >
+                <AlertTriangle class="size-3.5 shrink-0" />
+                {{ $t("match.auto_canceling") }}
+                <TimeAgo :date="match.cancels_at" countdown hide-icon />
+              </span>
+            </span>
+          </span>
+        </Transition>
       </div>
 
       <MatchHeaderVeto :match="match" />
     </div>
   </div>
 </template>
+
+<style scoped>
+.hdr-open {
+  display: inline-grid;
+  grid-template-columns: 1fr;
+}
+.hdr-open-enter-active,
+.hdr-open-leave-active {
+  transition:
+    grid-template-columns 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin-left 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 240ms ease;
+}
+.hdr-open-enter-active {
+  transition-delay: 0ms, 0ms, 120ms;
+}
+/* The row's 8px gap folds in with it. */
+.hdr-open-enter-from,
+.hdr-open-leave-to {
+  grid-template-columns: 0fr;
+  margin-left: -8px;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hdr-open-enter-active,
+  .hdr-open-leave-active {
+    transition-duration: 1ms;
+  }
+}
+</style>

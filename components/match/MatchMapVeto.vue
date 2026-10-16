@@ -25,7 +25,8 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
           :viewer="viewerLineup"
           :scouting="scoutingView"
           :start="start"
-          :hand-off="handOff"
+          :hand-off="stage"
+          :boot-status="bootStatus"
           :knife-round="!!match.options.knife_round"
           @confirm="onConfirm"
           @handoff="onHandoff"
@@ -51,7 +52,6 @@ import { toast } from "@/components/ui/toast";
 import mapLabel from "~/utilities/mapLabel";
 import { mapVetoSteps, vetoLineups, viewerSlot } from "~/utilities/vetoLineups";
 import {
-  STARTING_STATUSES,
   vetoMapsSet,
   vetoStarting,
   vetoStartMaps,
@@ -73,10 +73,16 @@ export default {
       type: String,
       required: false,
     },
-    // Once the server is ready the board folds and the page unfolds its map
-    // cards. The draft room has none, so its board stays on the start until
-    // it leaves.
-    handOff: {
+    // After the veto the board raises the maps while the server boots, then
+    // folds them into the page's map cards. The draft room leaves for the
+    // match page instead, so it keeps the finished veto up until it goes.
+    stage: {
+      type: Boolean,
+      default: true,
+    },
+    // The server's state over the maps while it boots; off when the page
+    // shows it where the Join Server button goes.
+    bootStatus: {
       type: Boolean,
       default: true,
     },
@@ -169,7 +175,7 @@ export default {
     starting: {
       immediate: true,
       handler(starting) {
-        if (starting && this.handOff && !this.handoffPhase) {
+        if (starting && this.stage && !this.handoffPhase) {
           useVetoHandoff().value = { matchId: this.match.id, phase: "stage" };
         }
       },
@@ -386,17 +392,13 @@ export default {
     // After the last pick: the server booting (or waiting for one), then
     // ready for a beat before the board hands over to the page.
     startPhase(): VetoStart["phase"] | null {
-      const regionSet = !this.match.options.region_veto || this.match.region;
-      if (!regionSet || !vetoMapsSet(this.match)) {
+      if (!this.stage || !this.regionSet || !vetoMapsSet(this.match)) {
         return null;
       }
       if (this.starting) {
         return this.match.status === "WaitingForServer" ? "waiting" : "booting";
       }
-      const holding = this.handOff
-        ? this.handoffPhase === "stage"
-        : STARTING_STATUSES.includes(this.match.status);
-      return holding ? "ready" : null;
+      return this.handoffPhase === "stage" ? "ready" : null;
     },
     start(): VetoStart | null {
       if (!this.startPhase) {
@@ -407,12 +409,19 @@ export default {
         maps: vetoStartMaps(this.match, this.picks ?? []),
       };
     },
+    regionSet() {
+      return !this.match.options.region_veto || !!this.match.region;
+    },
     boardUp() {
       if (this.startPhase) {
         return true;
       }
+      // The finished veto stays up, once its moves have arrived.
+      if (!this.stage && this.regionSet && vetoMapsSet(this.match)) {
+        return this.picks !== undefined;
+      }
       return (
-        (!this.match.options.region_veto || this.match.region) &&
+        this.regionSet &&
         this.match.status === "Veto" &&
         this.match.match_maps.length < this.bestOf
       );

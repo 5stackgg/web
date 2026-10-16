@@ -105,16 +105,22 @@ describe("MatchMapVeto start stage", () => {
     expect(useVetoHandoff().value).toBeNull();
   });
 
-  it("holds on ready in the draft room, which has no cards to fly to", async () => {
+  it("keeps the finished veto up in the draft room, which leaves before the server boots", async () => {
     const wrapper = await mountSuspended(MatchMapVeto, {
       props: {
-        match: match({ is_server_online: true }),
+        match: match(),
         matchId: "match-1",
-        handOff: false,
+        stage: false,
       },
     });
 
-    expect(board(wrapper).props("start").phase).toBe("ready");
+    // Not until its moves have arrived.
+    expect(board(wrapper).exists()).toBe(false);
+
+    (wrapper.vm as any).picks = [];
+    await wrapper.vm.$nextTick();
+    expect(board(wrapper).exists()).toBe(true);
+    expect(board(wrapper).props("start")).toBeNull();
     expect(useVetoHandoff().value).toBeNull();
   });
 

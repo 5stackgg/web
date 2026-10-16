@@ -170,7 +170,7 @@ const PRESENCE_FRIEND_SUBSCRIPTION = gql`
 const MY_LIVE_MATCH_SUBSCRIPTION = gql`
   subscription MyLiveMatch($steam_id: bigint!) {
     players_by_pk(steam_id: $steam_id) {
-      player_lineup(
+      live_lineup(
         limit: 1
         where: { lineup: { match: { status: { _eq: Live } } } }
       ) {
@@ -240,7 +240,7 @@ let myMatchSubHandle: { unsubscribe: () => void } | null = null;
 const selfPresencePlayer = computed(() => ({
   last_presence_state: presenceFriend.value?.last_presence_state ?? null,
   player: {
-    player_lineup: myLiveMatchLineup.value ? [myLiveMatchLineup.value] : [],
+    live_lineup: myLiveMatchLineup.value ? [myLiveMatchLineup.value] : [],
   },
 }));
 
@@ -343,7 +343,7 @@ watch(
       .subscribe({
         next: ({ data }: any) => {
           myLiveMatchLineup.value =
-            data?.players_by_pk?.player_lineup?.[0] ?? null;
+            data?.players_by_pk?.live_lineup?.[0] ?? null;
         },
       });
 

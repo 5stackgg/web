@@ -203,6 +203,8 @@ watch(recordCount, (now, prev) => {
   hover.value = null;
   replayId.value = newest.record.itemId;
   clearTimeout(replayTimer);
+  // The decider landing ends the veto: it stays open, the last word.
+  if (newest.type === "Decider") return;
   replayTimer = setTimeout(() => {
     replayId.value = null;
     hover.value = pendingHover;
@@ -1787,16 +1789,18 @@ onBeforeUnmount(() => {
 }
 
 /* ---------- stage ---------- */
+/* 16:7 of the board's width, but never taller than the maps need: a wide
+   column (the match page's) would otherwise stand them half a screen tall. */
 .vb-stage {
   display: flex;
   gap: 4px;
-  aspect-ratio: 16 / 7;
+  height: min(43.75cqw, 380px);
   max-width: 100%;
   border-radius: 12px;
   overflow: hidden;
 }
 .vb-stage.is-region {
-  aspect-ratio: 16 / 5.5;
+  height: min(34.375cqw, 300px);
 }
 /* Each slice is a container, as each start panel is, so the team plates fit
    the map they sit on. */

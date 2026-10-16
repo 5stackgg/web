@@ -185,7 +185,7 @@ watch(
     }
     startRedirect = setTimeout(
       () => navigateTo(`/matches/${match.value.id}`),
-      match.value.options?.map_veto ? 2500 : 0,
+      match.value.options?.map_veto ? 4000 : 0,
     );
   },
 );

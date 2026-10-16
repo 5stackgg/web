@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import TopoBackground from "@/layouts/components/TopoBackground.vue";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { computed, defineAsyncComponent, provide } from "vue";
+import {
+  computed,
+  defineAsyncComponent,
+  onBeforeUnmount,
+  provide,
+  ref,
+  watch,
+} from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -63,12 +70,37 @@ const showLeftNav = computed(() => {
   return authStore.isRoleAbove(e_player_roles_enum.match_organizer);
 });
 
+// The route on screen, not the one being navigated to: a page leaving keeps
+// its own width while it fades, instead of being laid out again at the next
+// page's (a draft room leaving for the full-width match page ballooned).
+const shownRouteName = ref(route.name);
+const unhookPageFinish = useNuxtApp().hook("page:finish", () => {
+  shownRouteName.value = route.name;
+});
+// Whatever the hook misses (a page kept or nested), the width still follows
+// once the leaving page is gone.
+let shownRouteTimer: ReturnType<typeof setTimeout> | undefined;
+watch(
+  () => route.name,
+  () => {
+    clearTimeout(shownRouteTimer);
+    shownRouteTimer = setTimeout(() => {
+      shownRouteName.value = route.name;
+    }, 600);
+  },
+);
+onBeforeUnmount(() => {
+  unhookPageFinish();
+  clearTimeout(shownRouteTimer);
+});
+
 const containContent = computed(() => {
-  if (route.name?.toString().startsWith("settings-application")) {
+  const name = shownRouteName.value;
+  if (name?.toString().startsWith("settings-application")) {
     return false;
   }
 
-  switch (route.name) {
+  switch (name) {
     case "apps-slug":
     case "news-manage-id":
     case "matches-id":

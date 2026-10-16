@@ -183,6 +183,23 @@ describe("MatchForm map pool save", () => {
     );
   });
 
+  it("saves a reordered selection, since the order is the play order without a veto", async () => {
+    const wrapper = await mountForm(match(sharedCustomPool, false));
+    const reordered = sharedCustomPool.maps.map(({ id }) => id).reverse();
+
+    await set(wrapper, "best_of", "3");
+    await set(wrapper, "map_pool", reordered);
+    await save(wrapper);
+
+    const body = sent("insert_map_pools_one")?.body ?? "";
+    const positions = reordered.map((id) => body.indexOf(id));
+    expect(positions.every((position) => position >= 0)).toBe(true);
+    expect([...positions].sort((a, b) => a - b)).toEqual(positions);
+    expect(sent("update_match_options_by_pk")?.variables.map_pool_id).toBe(
+      "new-pool",
+    );
+  });
+
   it("gives a seeded-pool match turned custom its own Custom pool", async () => {
     const wrapper = await mountForm(match(seededPools.Competitive, true));
 

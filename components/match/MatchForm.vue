@@ -401,10 +401,8 @@ export default {
           const currentPool = this.match.options.map_pool;
           const unchanged =
             currentPool.id === mapPoolId &&
-            currentPool.maps
-              .map((map: { id: string }) => map.id)
-              .sort()
-              .join() === [...(form.map_pool ?? [])].sort().join();
+            currentPool.maps.map((map: { id: string }) => map.id).join() ===
+              (form.map_pool ?? []).join();
 
           if (!unchanged) {
             const { data } = await this.$apollo.mutate({

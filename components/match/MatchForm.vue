@@ -395,15 +395,18 @@ export default {
 
         let mapPoolId = form.map_pool_id;
 
-        if (
-          this.match.options.map_pool.type === e_map_pool_types_enum.Custom &&
-          !form.custom_map_pool
-        ) {
-          mapPoolId = form.map_pool_id;
-        }
-
+        // Never rewrite a pool in place: seeded pools are global, and
+        // tournament matches share their tournament's Custom pool.
         if (form.custom_map_pool) {
-          if (!mapPoolId) {
+          const currentPool = this.match.options.map_pool;
+          const unchanged =
+            currentPool.id === mapPoolId &&
+            currentPool.maps
+              .map((map: { id: string }) => map.id)
+              .sort()
+              .join() === [...(form.map_pool ?? [])].sort().join();
+
+          if (!unchanged) {
             const { data } = await this.$apollo.mutate({
               mutation: generateMutation({
                 insert_map_pools_one: [
@@ -426,41 +429,6 @@ export default {
               }),
             });
             mapPoolId = data.insert_map_pools_one.id;
-          } else {
-            await this.$apollo.mutate({
-              mutation: generateMutation({
-                delete__map_pool: [
-                  {
-                    where: {
-                      map_pool_id: {
-                        _eq: mapPoolId,
-                      },
-                    },
-                  },
-                  {
-                    affected_rows: true,
-                  },
-                ],
-              }),
-            });
-
-            await this.$apollo.mutate({
-              mutation: generateMutation({
-                insert__map_pool: [
-                  {
-                    objects: form?.map_pool?.map((map_id) => {
-                      return {
-                        map_id: map_id,
-                        map_pool_id: mapPoolId,
-                      };
-                    }),
-                  },
-                  {
-                    affected_rows: true,
-                  },
-                ],
-              }),
-            });
           }
         }
 

@@ -1728,7 +1728,7 @@ export default {
         // this helps the UI know wether to reset the map pool list or not
         if (
           custom_map_pool &&
-          this.form.values.map_pool_id !== this.defaultMapPool.id
+          this.form.values.map_pool_id !== this.defaultMapPool?.id
         ) {
           return;
         }

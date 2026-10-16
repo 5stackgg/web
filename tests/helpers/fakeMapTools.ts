@@ -9,11 +9,14 @@ import { vi } from "vitest";
 // `{ stdout, stderr, repeat }`, printed before exiting (stdout `repeat`
 // times), with stderr also appended to ./exceptions.txt the way the real CLI
 // logs what it swallows. FAKE_S2V_VERSION is what --version reports; every
-// export is appended to FAKE_S2V_LOG, and the directory it ran in to
-// FAKE_S2V_CWD_LOG, when set.
+// export is appended to FAKE_S2V_LOG, its input VPK's name and the export to
+// FAKE_S2V_INPUT_LOG, and the directory it ran in to FAKE_S2V_CWD_LOG, when
+// set. FAKE_S2V_LIST maps an input VPK's name to the paths --vpk_list prints;
+// a listing is logged to FAKE_S2V_INPUT_LOG as `<vpk> --vpk_list <prefix>` and
+// prints FAKE_S2V_OUTPUT["--vpk_list"] too.
 const FAKE_CLI = `
 import { appendFileSync, copyFileSync, mkdirSync, writeSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 const args = process.argv.slice(2);
 if (args.includes("--version")) {
   console.log("Version: " + (process.env.FAKE_S2V_VERSION ?? "fake-1"));
@@ -21,10 +24,32 @@ if (args.includes("--version")) {
   process.exit(0);
 }
 const at = (flag) => args[args.indexOf(flag) + 1];
+if (args.includes("--vpk_list")) {
+  const prefix = args.includes("--vpk_filepath") ? at("--vpk_filepath") : "";
+  if (process.env.FAKE_S2V_INPUT_LOG) {
+    appendFileSync(
+      process.env.FAKE_S2V_INPUT_LOG,
+      basename(at("-i")) + " --vpk_list " + prefix + "\\n",
+    );
+  }
+  const listing = JSON.parse(process.env.FAKE_S2V_OUTPUT ?? "{}")["--vpk_list"] ?? {};
+  if (listing.stderr) {
+    writeSync(2, listing.stderr);
+    appendFileSync("exceptions.txt", listing.stderr);
+  }
+  const listed = JSON.parse(process.env.FAKE_S2V_LIST ?? "{}")[basename(at("-i"))] ?? [];
+  for (const path of listed.filter((p) => p.startsWith(prefix))) {
+    console.log(path + " CRC:0000000000 size:1");
+  }
+  process.exit(0);
+}
 const filepath = at("--vpk_filepath");
 const format = args.includes("--gltf_export_format") ? at("--gltf_export_format") : null;
 if (process.env.FAKE_S2V_LOG) {
   appendFileSync(process.env.FAKE_S2V_LOG, filepath + "\\n");
+}
+if (process.env.FAKE_S2V_INPUT_LOG) {
+  appendFileSync(process.env.FAKE_S2V_INPUT_LOG, basename(at("-i")) + " " + filepath + "\\n");
 }
 if (process.env.FAKE_S2V_CWD_LOG) {
   appendFileSync(process.env.FAKE_S2V_CWD_LOG, process.cwd() + "\\n");

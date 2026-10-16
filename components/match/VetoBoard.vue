@@ -267,9 +267,7 @@ function placeArm() {
   const room = bottom - top;
   armRoom.value = {
     y: top + room / 2,
-    // Chosen, it grows 20px taller (a tile with its word), so it keeps
-    // that much more clear of the records and the name.
-    d: Math.max(40, Math.min(84, room - 40)),
+    d: Math.max(40, Math.min(84, room - 20)),
   };
 }
 watch(markId, () => nextTick(placeArm));
@@ -1491,35 +1489,44 @@ onBeforeUnmount(() => {
             }"
             @click.stop
           >
-            <button
+            <div
               v-for="side in ['CT', 'TERRORIST']"
               :key="side"
-              type="button"
-              class="vb-half"
+              class="vb-lift"
               :data-side="sideShort(side)"
-              :class="{ 'is-selected': chosen === side }"
-              :style="{ backgroundImage: sidePoster }"
-              :disabled="!mine || submitting"
-              @click="chooseSide(side)"
+              :class="{
+                'is-up': chosen === side,
+                'is-down': !!chosen && chosen !== side,
+              }"
             >
-              <span class="vb-half-in">
-                <span class="vb-side-mark">
-                  <Spinner v-if="submitting && chosen === side" />
-                  <img v-else :src="sideIcon(side)" alt="" />
-                  <span class="vb-side-word">{{
-                    t("match.veto.confirm")
-                  }}</span>
+              <button
+                type="button"
+                class="vb-half"
+                :data-side="sideShort(side)"
+                :class="{ 'is-selected': chosen === side }"
+                :style="{ backgroundImage: sidePoster }"
+                :disabled="!mine || submitting"
+                @click="chooseSide(side)"
+              >
+                <span class="vb-half-in">
+                  <span class="vb-side-mark">
+                    <Spinner v-if="submitting && chosen === side" />
+                    <img v-else :src="sideIcon(side)" alt="" />
+                    <span class="vb-side-word">{{
+                      t("match.veto.confirm")
+                    }}</span>
+                  </span>
+                  <b>{{
+                    t("match.veto.start_side", { side: sideShort(side) })
+                  }}</b>
+                  <small>{{
+                    side === "CT"
+                      ? t("match.veto.defend_first")
+                      : t("match.veto.attack_first")
+                  }}</small>
                 </span>
-                <b>{{
-                  t("match.veto.start_side", { side: sideShort(side) })
-                }}</b>
-                <small>{{
-                  side === "CT"
-                    ? t("match.veto.defend_first")
-                    : t("match.veto.attack_first")
-                }}</small>
-              </span>
-            </button>
+              </button>
+            </div>
             <span class="vb-sidehead">
               <img v-if="sideItem?.patch" :src="sideItem.patch" alt="" />
               {{ sideItem?.label }}
@@ -2187,6 +2194,11 @@ onBeforeUnmount(() => {
 .vb-slice.is-selected .vb-scout.is-shown {
   opacity: 0.35;
 }
+/* The open map's mark sits on a circle. Chosen, the circle turns solid in
+   the move's colour and stretches evenly into a pill: the mark, full size,
+   moves left and a small Confirm comes up on its right, and it pings until
+   pressed. Sent, the word goes and the pill folds back into the circle
+   around the spinner. */
 .vb-arm-ping,
 .vb-arm-btn {
   position: absolute;
@@ -2197,45 +2209,36 @@ onBeforeUnmount(() => {
   border-radius: calc(var(--arm-d, 84px) / 2);
   translate: -50% -50%;
   transition:
-    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+    width 240ms cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 140ms ease-out 40ms,
+    scale 150ms ease-out,
+    filter 150ms ease-out;
 }
-/* Chosen, the circle morphs into a rounded tile: the mark rises and its word,
-   Confirm, comes up under it. */
 .vb-mark.is-armed .vb-arm-ping,
 .vb-mark.is-armed .vb-arm-btn {
-  width: max(calc(var(--arm-d, 84px) + 22px), 100px);
-  height: calc(var(--arm-d, 84px) + 20px);
-  border-radius: 30px;
+  width: calc(var(--arm-d, 84px) + 76px);
+}
+.vb-mark.is-armed.is-sending .vb-arm-ping,
+.vb-mark.is-armed.is-sending .vb-arm-btn {
+  width: var(--arm-d, 84px);
+  transition-delay: 60ms, 40ms, 0ms, 0ms;
 }
 .vb-arm-ping {
   background: var(--vb-arm-deep);
   opacity: 0;
 }
 .vb-slice.is-wide .vb-mark.is-armed:not(.is-sending) .vb-arm-ping {
-  animation: vb-ping-tile 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;
+  animation: vb-ping-pill 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;
 }
-@keyframes vb-ping-tile {
+@keyframes vb-ping-pill {
   0% {
-    opacity: 0.55;
+    opacity: 0.5;
     transform: scale(1);
   }
   75%,
   100% {
     opacity: 0;
-    transform: scale(1.3);
-  }
-}
-@keyframes vb-ping {
-  0% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  75%,
-  100% {
-    opacity: 0;
-    transform: scale(1.8);
+    transform: scale(1.14);
   }
 }
 .vb-arm-btn {
@@ -2244,13 +2247,6 @@ onBeforeUnmount(() => {
   place-items: center;
   color: white;
   opacity: 0;
-  transition:
-    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    opacity 140ms var(--vb-ease) 40ms,
-    scale 240ms var(--vb-ease),
-    filter 160ms ease;
 }
 .vb-arm-btn::before {
   content: "";
@@ -2270,9 +2266,8 @@ onBeforeUnmount(() => {
     background-color 200ms ease,
     box-shadow 200ms ease;
 }
-/* The pointer on the mark itself, not yet chosen: a pale glass disc, so it
-   reads as the button to press. Choosing it turns the disc the move's
-   colour. */
+/* The pointer on the mark itself, not yet chosen: a pale glass circle, so
+   it reads as the button to press. */
 @media (hover: hover) and (pointer: fine) {
   .vb-slice.is-wide .vb-mark:not(.is-armed) .vb-arm-btn:hover::before {
     opacity: 1;
@@ -2288,38 +2283,37 @@ onBeforeUnmount(() => {
   width: calc(var(--arm-d, 84px) * 0.48);
   height: calc(var(--arm-d, 84px) * 0.48);
   filter: drop-shadow(0 4px 12px rgb(0 0 0 / 0.55));
-  transition:
-    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    translate 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+  transition: translate 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 .vb-mark.is-armed .vb-arm-btn > svg {
-  width: calc(var(--arm-d, 84px) * 0.42);
-  height: calc(var(--arm-d, 84px) * 0.42);
-  translate: 0 -8px;
+  translate: -38px 0;
+}
+.vb-mark.is-armed.is-sending .vb-arm-btn > svg {
+  translate: none;
 }
 .vb-arm-word {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(var(--arm-d, 84px) * 0.14 + 4px);
+  top: 50%;
+  left: calc(var(--arm-d, 84px) * 0.9);
   font-size: 10px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.16em;
-  text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
   opacity: 0;
-  translate: 0 5px;
+  translate: -6px -50%;
   transition:
     opacity 140ms ease,
     translate 260ms var(--vb-ease);
 }
 .vb-mark.is-armed:not(.is-sending) .vb-arm-word {
   opacity: 1;
-  translate: none;
-  transition-delay: 200ms;
+  translate: 0 -50%;
+  transition-delay: 120ms;
+}
+.vb-mark.is-armed.is-sending .vb-arm-word {
+  transition-duration: 100ms;
 }
 .vb-slice.is-wide .vb-arm-btn {
   opacity: 0.9;
@@ -2328,20 +2322,13 @@ onBeforeUnmount(() => {
 .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn {
   opacity: 1;
 }
-/* Chosen, it is a glass of the move's colour; it turns solid once the
-   move is confirmed and on its way. */
 .vb-mark.is-armed .vb-arm-btn::before {
   opacity: 1;
   scale: 1;
-  background: color-mix(in oklab, var(--vb-arm) 34%, transparent);
-  backdrop-filter: blur(6px);
-}
-.vb-mark.is-armed.is-sending .vb-arm-btn::before {
-  background: var(--vb-arm-deep);
 }
 @media (hover: hover) and (pointer: fine) {
   .vb-slice.is-wide .vb-mark.is-armed .vb-arm-btn:hover {
-    scale: 1.07;
+    scale: 1.03;
     filter: brightness(1.1);
   }
 }
@@ -2451,11 +2438,13 @@ onBeforeUnmount(() => {
 }
 /* The chosen side's logo becomes a round button, as a chosen map's mark
    does: a second click on the side starts there. */
-/* A side's logo, and once chosen the same morph a map's mark makes: its
-   disc grows into a tile (upward, so the words under it stay put), the logo
-   rises and Confirm comes up beneath it. */
+/* A side's logo sits on a circle. Chosen, it gets a map mark's treatment:
+   the circle turns solid in the side's colour and stretches evenly into a
+   pill, the logo (full size) moving left and Confirm coming up on its right,
+   pinging until pressed. Sent, it folds back around the spinner. */
 .vb-side-mark {
   --sm: 84px;
+  --grow: 70px;
   position: relative;
   isolation: isolate;
   display: grid;
@@ -2472,43 +2461,35 @@ onBeforeUnmount(() => {
   width: calc(var(--sm) * 0.667);
   height: calc(var(--sm) * 0.667);
   filter: drop-shadow(0 6px 14px rgb(0 0 0 / 0.5));
-  transition:
-    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    translate 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+  transition: translate 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 .vb-side-mark > svg {
   color: white;
 }
-.vb-half.is-selected .vb-side-mark > img,
-.vb-half.is-selected .vb-side-mark > svg {
-  width: calc(var(--sm) * 0.5);
-  height: calc(var(--sm) * 0.5);
-  translate: 0 calc(var(--sm) * -0.24);
+.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark > img {
+  translate: calc(var(--grow) / -2) 0;
 }
 .vb-side-word {
   position: absolute;
-  left: -12px;
-  right: -12px;
-  bottom: 9px;
+  top: 50%;
+  left: calc(var(--grow) / -2 + var(--sm) * 0.9 + 4px);
   font-size: 10px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.16em;
-  text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
   color: white;
   opacity: 0;
-  translate: 0 5px;
+  translate: -6px -50%;
   transition:
-    opacity 140ms ease,
-    translate 260ms var(--vb-ease);
+    opacity 100ms ease-out,
+    translate 220ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-word {
   opacity: 1;
-  translate: none;
-  transition-delay: 200ms;
+  translate: 0 -50%;
+  transition-delay: 120ms;
 }
 .vb-side-mark::before,
 .vb-side-mark::after {
@@ -2522,18 +2503,11 @@ onBeforeUnmount(() => {
   border-radius: calc(var(--sm) / 2);
   background: var(--vb-side-deep);
   opacity: 0;
-  transition:
-    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    top 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+  transition: width 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
-.vb-half.is-selected .vb-side-mark::before,
-.vb-half.is-selected .vb-side-mark::after {
-  width: calc(var(--sm) + 24px);
-  height: calc(var(--sm) + 20px);
-  top: calc(50% - 10px);
-  border-radius: calc(var(--sm) * 0.36);
+.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::before,
+.vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::after {
+  width: calc(var(--sm) + var(--grow));
 }
 .vb-side-mark::before {
   box-shadow:
@@ -2545,12 +2519,9 @@ onBeforeUnmount(() => {
     scale 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
     background-color 200ms ease,
     box-shadow 200ms ease,
-    width 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    height 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    top 560ms cubic-bezier(0.34, 1.25, 0.64, 1),
-    border-radius 560ms cubic-bezier(0.34, 1.25, 0.64, 1);
+    width 240ms cubic-bezier(0.32, 0.72, 0, 1);
 }
-/* The pointer on a side's logo gets the same pale disc a map's mark does. */
+/* The pointer on a side's logo gets the same pale circle a map's mark does. */
 @media (hover: hover) and (pointer: fine) {
   .vb-split:not(.is-sending)
     .vb-half:not(.is-selected):not(:disabled)
@@ -2576,14 +2547,9 @@ onBeforeUnmount(() => {
 .vb-half.is-selected .vb-side-mark::before {
   opacity: 1;
   scale: 1;
-  background: color-mix(in oklab, var(--vb-side-deep) 45%, transparent);
-  backdrop-filter: blur(6px);
 }
-.vb-split.is-sending .vb-half.is-selected .vb-side-mark::before {
-  background: var(--vb-side-deep);
-}
-/* Short maps (a narrower board) keep the chosen side's tile clear of the
-   map's name. */
+/* Short maps (a narrower board) keep the side's words clear of the map's
+   name and of whose call it is. */
 @container panel (max-height: 320px) {
   .vb-side-mark {
     --sm: 68px;
@@ -2606,7 +2572,18 @@ onBeforeUnmount(() => {
   }
 }
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark::after {
-  animation: vb-ping-tile 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;
+  animation: vb-ping-side 1.8s cubic-bezier(0, 0, 0.2, 1) 500ms infinite;
+}
+@keyframes vb-ping-side {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  75%,
+  100% {
+    opacity: 0;
+    transform: scale(1.12, 1.2);
+  }
 }
 @media (hover: hover) and (pointer: fine) {
   .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:hover {
@@ -2616,6 +2593,100 @@ onBeforeUnmount(() => {
 .vb-split:not(.is-sending) .vb-half.is-selected .vb-side-mark:active {
   scale: 0.96;
   transition-duration: 80ms;
+}
+/* The chosen side lifts out of the stage as one button: it scales up from
+   where it sits, with a 2px border in the turn's gold that follows the
+   diagonal (four hard offsets of its shape) and a drop shadow, while the
+   other side steps back under a dark layer. */
+.vb-stage:has(.vb-slice.is-siding),
+.vb-slice.is-siding {
+  overflow: visible;
+}
+.vb-slice.is-siding {
+  z-index: 3;
+}
+.vb-lift {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  pointer-events: none;
+  transform-origin: 28% 50%;
+  transition:
+    transform 320ms cubic-bezier(0.34, 1.36, 0.64, 1),
+    filter 320ms ease-out;
+  will-change: transform;
+}
+.vb-lift[data-side="T"] {
+  transform-origin: 72% 50%;
+}
+.vb-lift > .vb-half {
+  pointer-events: auto;
+}
+.vb-lift.is-up {
+  z-index: 2;
+  transform: scale(1.08);
+  filter: drop-shadow(2px 0 0 var(--vb-amber))
+    drop-shadow(-2px 0 0 var(--vb-amber)) drop-shadow(0 2px 0 var(--vb-amber))
+    drop-shadow(0 -2px 0 var(--vb-amber))
+    drop-shadow(0 4px 6px rgb(0 0 0 / 0.39))
+    drop-shadow(0 18px 20px rgb(0 0 0 / 0.65));
+}
+.vb-split:not(.is-sending) .vb-lift.is-up:active,
+.vb-split.is-sending .vb-lift.is-up {
+  transform: scale(1.06);
+}
+.vb-split:not(.is-sending) .vb-lift.is-up:active {
+  transition-duration: 100ms;
+}
+.vb-half::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.42);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease-out;
+}
+.vb-lift.is-down .vb-half::after {
+  opacity: 1;
+}
+.vb-sidehead,
+.vb-sideby {
+  z-index: 4;
+}
+/* The chosen side carries the turn's colour itself, so the gold frame
+   around the maps fades out rather than being half covered. */
+.vb-stage.is-yours:has(.vb-split:is(.sel-CT, .sel-T)) {
+  outline-color: transparent;
+}
+@media (hover: hover) and (pointer: fine) {
+  /* A hint of the lift before choosing. */
+  .vb-split:not(.sel-CT):not(.sel-T)
+    .vb-lift:has(.vb-half:not(:disabled):hover) {
+    transform: scale(1.012);
+  }
+  /* The pointer on the other side: the chosen one settles halfway and its
+     border goes neutral, and the side under the pointer lights back up. */
+  .vb-split:not(.is-sending):has(.vb-lift.is-down .vb-half:not(:disabled):hover)
+    .vb-lift.is-up {
+    transform: scale(1.04);
+    filter: drop-shadow(2px 0 0 hsl(0 0% 100% / 0.3))
+      drop-shadow(-2px 0 0 hsl(0 0% 100% / 0.3))
+      drop-shadow(0 2px 0 hsl(0 0% 100% / 0.3))
+      drop-shadow(0 -2px 0 hsl(0 0% 100% / 0.3))
+      drop-shadow(0 4px 6px rgb(0 0 0 / 0.2))
+      drop-shadow(0 18px 20px rgb(0 0 0 / 0.33));
+    transition:
+      transform 200ms ease-out,
+      filter 200ms ease-out;
+  }
+  .vb-split:not(.is-sending)
+    .vb-lift.is-down
+    .vb-half:not(:disabled):hover::after {
+    opacity: 0.25;
+    transition-duration: 200ms;
+  }
 }
 .vb-half-in b {
   position: relative;

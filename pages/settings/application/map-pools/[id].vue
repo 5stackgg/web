@@ -117,7 +117,10 @@ export default {
       return (
         !!this.map_pools_by_pk?.seed &&
         !!this.map_pools_by_pk?.enabled &&
-        (!setting || setting.value === "true")
+        (!setting || setting.value === "true") &&
+        this.maps.some(
+          (map) => map.type === this.map_pools_by_pk.type && map.active_pool,
+        )
       );
     },
     availableMaps(): Map[] {

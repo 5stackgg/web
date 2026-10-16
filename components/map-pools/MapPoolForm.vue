@@ -67,7 +67,7 @@ import { Info } from "lucide-vue-next";
     <div class="pb-24"></div>
 
     <SettingsSaveBar
-      :dirty="isDirty && (form.values.map_pool?.length ?? 0) > 0"
+      :dirty="!locked && isDirty && (form.values.map_pool?.length ?? 0) > 0"
       :submitting="submitting"
       @save="saveMapPool"
       @discard="discardChanges"
@@ -167,7 +167,7 @@ export default {
       this.form.setFieldValue("map_pool", pool);
     },
     async saveMapPool() {
-      if (this.submitLock) {
+      if (this.locked || this.submitLock) {
         return;
       }
       this.submitLock = true;

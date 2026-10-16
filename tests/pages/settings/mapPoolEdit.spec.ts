@@ -6,6 +6,7 @@ import type { FieldNode, OperationDefinitionNode } from "graphql";
 import MapPoolPage from "~/pages/settings/application/map-pools/[id].vue";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 vi.mock("@/components/ui/toast", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/components/ui/toast")>()),
@@ -82,6 +83,7 @@ describe("map pool editor", () => {
     unmount?.();
     unmount = null;
     vi.restoreAllMocks();
+    answers.maps = [dust2, nuke];
     answers.map_pools_by_pk = pool(false);
     useApplicationSettingsStore().settings = [];
   });
@@ -135,7 +137,14 @@ describe("map pool editor", () => {
   const LOCKED =
     "Automatic Update Map Pools keeps this pool matching Active Duty. Turn it off to choose maps yourself.";
 
+  const autoUpdate = (value: string) => {
+    useApplicationSettingsStore().settings = [
+      { name: "update_map_pools", value },
+    ];
+  };
+
   it("locks a seeded pool while auto-update keeps it in sync, and says why", async () => {
+    answers.maps = [{ ...dust2, active_pool: true }, nuke];
     answers.map_pools_by_pk = pool(true);
     useApplicationSettingsStore().settings = [
       { name: "update_map_pools", value: "true" },
@@ -165,5 +174,38 @@ describe("map pool editor", () => {
     expect(tile(wrapper, "de_nuke")!.classList.contains("opacity-40")).toBe(
       false,
     );
+  });
+
+  it("leaves a seeded pool editable when its mode has no active-duty maps to sync", async () => {
+    answers.map_pools_by_pk = pool(true);
+    autoUpdate("true");
+    const wrapper = await mountPage();
+
+    (tile(wrapper, "de_nuke") as HTMLElement).click();
+    await flushPromises();
+
+    expect(wrapper.text()).not.toContain(LOCKED);
+    expect(tile(wrapper, "de_nuke")!.classList.contains("opacity-40")).toBe(
+      false,
+    );
+  });
+
+  it("won't save an edit made before the lock appeared", async () => {
+    answers.maps = [{ ...dust2, active_pool: true }, nuke];
+    answers.map_pools_by_pk = pool(true);
+    autoUpdate("false");
+    const wrapper = await mountPage();
+
+    (tile(wrapper, "de_nuke") as HTMLElement).click();
+    await flushPromises();
+    expect(wrapper.findComponent(SettingsSaveBar).props("dirty")).toBe(true);
+
+    autoUpdate("true");
+    await flushPromises();
+    await (wrapper.findComponent(MapPoolForm).vm as any).saveMapPool();
+    await flushPromises();
+
+    expect(wrapper.findComponent(SettingsSaveBar).props("dirty")).toBe(false);
+    expect(mutate).not.toHaveBeenCalled();
   });
 });

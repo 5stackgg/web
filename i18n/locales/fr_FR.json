@@ -4818,7 +4818,7 @@
       "pool": {
         "modify_maps": "Modifier les maps du pool",
         "pool_heading": "Pool {type}",
-        "auto_update_locked": "{setting} garde ce pool identique à l'Active duty. Désactivez-le pour choisir les cartes vous-même."
+        "auto_update_locked": "{setting} garde ce pool aligné sur l'Active duty. Désactive-la pour choisir les maps toi-même."
       },
       "add_new_map": "Ajouter une map",
       "maps": "Maps disponibles",

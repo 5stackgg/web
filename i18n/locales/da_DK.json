@@ -4818,7 +4818,7 @@
       "pool": {
         "modify_maps": "Rediger maps i poolen",
         "pool_heading": "{type}-pool",
-        "auto_update_locked": "{setting} holder denne pulje i takt med Active duty. Slå det fra for selv at vælge maps."
+        "auto_update_locked": "{setting} holder denne pool i takt med Active duty. Slå det fra for selv at vælge maps."
       },
       "add_new_map": "Tilføj nyt map",
       "maps": "Tilgængelige maps",

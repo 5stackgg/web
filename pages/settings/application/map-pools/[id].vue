@@ -13,6 +13,7 @@ import ManageSection from "~/components/common/ManageSection.vue";
       <MapPoolForm
         :pool="map_pools_by_pk"
         :availableMaps="availableMaps"
+        :locked="locked"
         v-if="map_pools_by_pk && availableMaps"
       />
     </ManageSection>
@@ -94,6 +95,8 @@ export default {
           {
             id: true,
             type: true,
+            seed: true,
+            enabled: true,
             maps: [{}, mapFields],
           },
         ],
@@ -106,6 +109,20 @@ export default {
     },
   },
   computed: {
+    locked(): boolean {
+      const setting = useApplicationSettingsStore().settings.find(
+        (setting) => setting.name === "update_map_pools",
+      );
+
+      return (
+        !!this.map_pools_by_pk?.seed &&
+        !!this.map_pools_by_pk?.enabled &&
+        (!setting || setting.value === "true") &&
+        this.maps.some(
+          (map) => map.type === this.map_pools_by_pk.type && map.active_pool,
+        )
+      );
+    },
     availableMaps(): Map[] {
       if (!this.map_pools_by_pk) {
         return [];

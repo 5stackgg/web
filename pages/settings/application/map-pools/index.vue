@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { Info, PlusCircle, ArchiveRestore, Trash2 } from "lucide-vue-next";
+import {
+  Info,
+  PlusCircle,
+  ArchiveRestore,
+  Trash2,
+  Lock,
+} from "lucide-vue-next";
 import { Separator } from "~/components/ui/separator";
 import {
   Sheet,
@@ -86,7 +92,13 @@ const { isMobile } = useSidebar();
                 params: { id: pool.id },
               }"
             >
-              {{ $t("common.actions.edit") }}
+              <template v-if="syncing(pool)">
+                <Lock />
+                {{ $t("common.view") }}
+              </template>
+              <template v-else>
+                {{ $t("common.actions.edit") }}
+              </template>
             </NuxtLink>
           </Button>
         </div>
@@ -196,7 +208,7 @@ const { isMobile } = useSidebar();
 </template>
 
 <script lang="ts">
-import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
+import { generateSubscription } from "~/graphql/graphqlGen";
 import { e_map_pool_types_enum, e_match_types_enum } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
@@ -221,6 +233,7 @@ interface Map {
 interface MapPool {
   id: string;
   type: string;
+  seed?: boolean;
   maps: {
     id: string;
     name: string;
@@ -268,36 +281,53 @@ export default {
           this.maps = data.maps;
         },
       },
-    },
-    map_pools: {
-      query: generateQuery({
-        map_pools: [
-          {
-            where: {
-              type: {
-                _neq: e_map_pool_types_enum.Custom,
+      map_pools: {
+        query: generateSubscription({
+          map_pools: [
+            {
+              where: {
+                type: {
+                  _neq: e_map_pool_types_enum.Custom,
+                },
+                enabled: {
+                  _eq: true,
+                },
               },
-              enabled: {
-                _eq: true,
-              },
+              order_by: [
+                {},
+                {
+                  type: order_by.asc,
+                },
+              ],
             },
-            order_by: [
-              {},
-              {
-                type: order_by.asc,
-              },
-            ],
-          },
-          {
-            id: true,
-            type: true,
-            maps: [{}, mapFields],
-          },
-        ],
-      }),
+            {
+              id: true,
+              type: true,
+              seed: true,
+              maps: [{}, mapFields],
+            },
+          ],
+        }),
+        result: function ({ data }) {
+          this.map_pools = data.map_pools;
+        },
+      },
     },
   },
   methods: {
+    syncing(pool: MapPool): boolean {
+      return (
+        !!pool.seed &&
+        this.updateMapPools &&
+        this.maps.some(
+          (map) =>
+            map.type === pool.type &&
+            map.active_pool &&
+            map.enabled &&
+            !map.deleted_at,
+        )
+      );
+    },
     formatDeletedAt(deletedAt: string) {
       return new Date(deletedAt).toLocaleDateString(dateLocale(), {
         dateStyle: "medium",

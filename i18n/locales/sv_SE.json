@@ -4817,7 +4817,8 @@
       },
       "pool": {
         "modify_maps": "Ändra kartor i poolen",
-        "pool_heading": "{type}-pool"
+        "pool_heading": "{type}-pool",
+        "auto_update_locked": "{setting} håller den här poolen i takt med Active duty. Stäng av det för att välja kartor själv."
       },
       "add_new_map": "Lägg till ny karta",
       "maps": "Tillgängliga kartor",

@@ -4817,7 +4817,8 @@
       },
       "pool": {
         "modify_maps": "Modificar mapas na pool",
-        "pool_heading": "{type} Pool"
+        "pool_heading": "{type} Pool",
+        "auto_update_locked": "{setting} mantém esta pool igual à Campanha Ativa. Desative para escolher os mapas você mesmo."
       },
       "add_new_map": "Adicionar um Novo Mapa",
       "maps": "Mapas Disponíveis",

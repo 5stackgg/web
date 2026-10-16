@@ -4817,7 +4817,8 @@
       },
       "pool": {
         "modify_maps": "Zmień mapy w puli",
-        "pool_heading": "Pula {type}"
+        "pool_heading": "Pula {type}",
+        "auto_update_locked": "{setting} utrzymuje tę pulę zgodną z Active Duty. Wyłącz tę opcję, aby samodzielnie wybrać mapy."
       },
       "add_new_map": "Dodaj nową mapę",
       "maps": "Dostępne mapy",

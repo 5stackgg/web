@@ -2,6 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { FormSection } from "~/components/ui/form";
+import { Info } from "lucide-vue-next";
 </script>
 
 <template>
@@ -9,6 +10,13 @@ import { FormSection } from "~/components/ui/form";
     <FormSection :title="$t('pages.map_pools.title')">
       <FormField name="map_pool">
         <FormItem>
+          <p
+            v-if="locked"
+            class="flex items-center gap-2 text-sm text-muted-foreground"
+          >
+            <Info class="h-4 w-4 flex-shrink-0" />
+            {{ lockedHint }}
+          </p>
           <div class="space-y-6">
             <template
               v-for="(maps, type) in {
@@ -30,7 +38,7 @@ import { FormSection } from "~/components/ui/form";
                       @click="updateMapPool(map.id)"
                       :class="{
                         'opacity-40': !form.values.map_pool?.includes(map.id),
-                        'cursor-pointer transform hover:scale-105': true,
+                        'cursor-pointer transform hover:scale-105': !locked,
                       }"
                     >
                       <MapDisplay class="h-[150px]" :map="map">
@@ -59,7 +67,7 @@ import { FormSection } from "~/components/ui/form";
     <div class="pb-24"></div>
 
     <SettingsSaveBar
-      :dirty="isDirty && (form.values.map_pool?.length ?? 0) > 0"
+      :dirty="!locked && isDirty && (form.values.map_pool?.length ?? 0) > 0"
       :submitting="submitting"
       @save="saveMapPool"
       @discard="discardChanges"
@@ -89,6 +97,10 @@ export default {
     availableMaps: {
       type: Array as () => Map[],
       required: true,
+    },
+    locked: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -141,6 +153,10 @@ export default {
       this.populateForm();
     },
     updateMapPool(mapId: string) {
+      if (this.locked) {
+        return;
+      }
+
       const pool = Object.assign([], this.form.values.map_pool);
       if (pool.includes(mapId)) {
         pool.splice(pool.indexOf(mapId), 1);
@@ -151,7 +167,7 @@ export default {
       this.form.setFieldValue("map_pool", pool);
     },
     async saveMapPool() {
-      if (this.submitLock) {
+      if (this.locked || this.submitLock) {
         return;
       }
       this.submitLock = true;
@@ -215,6 +231,11 @@ export default {
     },
   },
   computed: {
+    lockedHint(): string {
+      return this.$t("pages.map_pools.pool.auto_update_locked", {
+        setting: this.$t("pages.settings.application.update_map_pools.title"),
+      });
+    },
     sortedMaps() {
       return {
         workshop: this.availableMaps.filter((map) => map.workshop_map_id),

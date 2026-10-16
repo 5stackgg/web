@@ -1,19 +1,12 @@
 <script lang="ts" setup>
+import { defineAsyncComponent } from "vue";
+import { lazyPanel } from "~/utilities/lazyPanel";
 import { dateLocale } from "~/utilities/dateLocale";
 import { useI18n } from "vue-i18n";
 import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import DemoUpload from "~/components/DemoUpload.vue";
 import PlayerIntroDashboard from "~/components/player/PlayerIntroDashboard.vue";
-import PlayerMapsGrid from "~/components/player/PlayerMapsGrid.vue";
-import PlayerWeaponsTable from "~/components/player/PlayerWeaponsTable.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
-import PlayerPreferredRoles from "~/components/player/PlayerPreferredRoles.vue";
-import PlayerRoleRadar from "~/components/player/PlayerRoleRadar.vue";
-import PlayerPerformanceRating from "~/components/player/PlayerPerformanceRating.vue";
-import PlayerConsistencyChart from "~/components/player/PlayerConsistencyChart.vue";
-import PlayerCareerDuels from "~/components/player/PlayerCareerDuels.vue";
-import PlayerCareerClutches from "~/components/player/PlayerCareerClutches.vue";
-import PlayerCommunityHistory from "~/components/player/PlayerCommunityHistory.vue";
 
 const { t } = useI18n();
 
@@ -28,7 +21,6 @@ import PlayerTwitchLink from "~/components/player/PlayerTwitchLink.vue";
 import PlayerTwitchWatchCard from "~/components/player/PlayerTwitchWatchCard.vue";
 import { useTwitchPlayer } from "~/composables/useTwitch";
 import { badgePopTransition } from "~/utilities/badgeCount";
-import AwardComposer from "~/components/award/AwardComposer.vue";
 import { Button } from "~/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
@@ -98,7 +90,6 @@ import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
-import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
 import PluginRemote from "~/components/plugins/PluginRemote.vue";
 import { usePluginsStore, type Plugin } from "~/stores/Plugins";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -2049,6 +2040,40 @@ const playerHeroTeamChipClasses =
   "inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-card/60 px-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
 const playerHeroTeamChipDotClasses =
   "h-1.5 w-1.5 shrink-0 rounded-full bg-[hsl(var(--tac-amber))]";
+
+const PlayerPerformanceRating = lazyPanel(
+  () => import("~/components/player/PlayerPerformanceRating.vue"),
+);
+const PlayerConsistencyChart = lazyPanel(
+  () => import("~/components/player/PlayerConsistencyChart.vue"),
+);
+const PlayerEloHistoryDialog = lazyPanel(
+  () => import("~/components/PlayerEloHistoryDialog.vue"),
+);
+const PlayerMapsGrid = lazyPanel(
+  () => import("~/components/player/PlayerMapsGrid.vue"),
+);
+const PlayerWeaponsTable = lazyPanel(
+  () => import("~/components/player/PlayerWeaponsTable.vue"),
+);
+const PlayerPreferredRoles = lazyPanel(
+  () => import("~/components/player/PlayerPreferredRoles.vue"),
+);
+const PlayerRoleRadar = lazyPanel(
+  () => import("~/components/player/PlayerRoleRadar.vue"),
+);
+const PlayerCareerDuels = lazyPanel(
+  () => import("~/components/player/PlayerCareerDuels.vue"),
+);
+const PlayerCareerClutches = lazyPanel(
+  () => import("~/components/player/PlayerCareerClutches.vue"),
+);
+const PlayerCommunityHistory = lazyPanel(
+  () => import("~/components/player/PlayerCommunityHistory.vue"),
+);
+const AwardComposer = defineAsyncComponent(
+  () => import("~/components/award/AwardComposer.vue"),
+);
 </script>
 
 <template>

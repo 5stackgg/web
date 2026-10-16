@@ -2,22 +2,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Card, CardContent } from "~/components/ui/card";
 import LineupOverview from "~/components/match/LineupOverview.vue";
-import LineupUtility from "~/components/match/LineupUtility.vue";
-import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
-import LineupAimStats from "~/components/match/LineupAimStats.vue";
-import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
-import LineupBuyTypes from "~/components/match/LineupBuyTypes.vue";
-import LineupClutches from "~/components/match/LineupClutches.vue";
-import LineupRadarComparison from "~/components/match/LineupRadarComparison.vue";
-import MatchTeamStats from "~/components/match/MatchTeamStats.vue";
-import MatchMapAnalysis from "~/components/match/MatchMapAnalysis.vue";
-import MatchEconomyTimeline from "~/components/match/MatchEconomyTimeline.vue";
-import HeadToHead from "~/components/match/HeadToHead.vue";
-import MatchRoles from "~/components/match/MatchRoles.vue";
-import MatchUtilityUtility from "~/components/match/MatchUtilityUtility.vue";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import TableColumnPicker from "~/components/common/TableColumnPicker.vue";
-import MatchChatLog from "~/components/match/MatchChatLog.vue";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import { provideMatchSide } from "~/composables/useMatchSide";
 import {
@@ -40,8 +26,8 @@ const { columnsRef: utilityColumnsRef } = useUtilityColumns();
 const { columnsRef: aimColumnsRef } = useAimColumns();
 const { columnsRef: tradeColumnsRef } = useTradeColumns();
 const { columnsRef: openingDuelsColumnsRef } = useOpeningDuelsColumns();
-import RconCommander from "~/components/servers/RconCommander.vue";
 import { provide, ref } from "vue";
+import { lazyPanel } from "~/utilities/lazyPanel";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
 import {
@@ -51,15 +37,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
-import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Skeleton } from "~/components/ui/skeleton";
-import ServiceLogs from "~/components/ServiceLogs.vue";
 import { e_match_types_enum } from "~/generated/zeus";
-import MatchForm from "~/components/match/MatchForm.vue";
-import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import mapLabel from "~/utilities/mapLabel";
 import {
   MoreVertical,
@@ -80,6 +61,59 @@ import {
 
 const commander = new EventEmitter();
 provide("commander", commander);
+
+const LineupUtility = lazyPanel(
+  () => import("~/components/match/LineupUtility.vue"),
+);
+const LineupTradeStats = lazyPanel(
+  () => import("~/components/match/LineupTradeStats.vue"),
+);
+const LineupAimStats = lazyPanel(
+  () => import("~/components/match/LineupAimStats.vue"),
+);
+const LineupOpeningDuels = lazyPanel(
+  () => import("~/components/match/LineupOpeningDuels.vue"),
+);
+const LineupBuyTypes = lazyPanel(
+  () => import("~/components/match/LineupBuyTypes.vue"),
+);
+const LineupClutches = lazyPanel(
+  () => import("~/components/match/LineupClutches.vue"),
+);
+const LineupRadarComparison = lazyPanel(
+  () => import("~/components/match/LineupRadarComparison.vue"),
+);
+const MatchTeamStats = lazyPanel(
+  () => import("~/components/match/MatchTeamStats.vue"),
+);
+const MatchMapAnalysis = lazyPanel(
+  () => import("~/components/match/MatchMapAnalysis.vue"),
+);
+const MatchEconomyTimeline = lazyPanel(
+  () => import("~/components/match/MatchEconomyTimeline.vue"),
+);
+const HeadToHead = lazyPanel(() => import("~/components/match/HeadToHead.vue"));
+const MatchRoles = lazyPanel(() => import("~/components/match/MatchRoles.vue"));
+const MatchUtilityUtility = lazyPanel(
+  () => import("~/components/match/MatchUtilityUtility.vue"),
+);
+const MatchChatLog = lazyPanel(
+  () => import("~/components/match/MatchChatLog.vue"),
+);
+const RconCommander = lazyPanel(
+  () => import("~/components/servers/RconCommander.vue"),
+);
+const MatchOptionsDisplay = lazyPanel(
+  () => import("~/components/match/MatchOptionsDisplay.vue"),
+);
+const MatchServerRebootControl = lazyPanel(
+  () => import("~/components/match/MatchServerRebootControl.vue"),
+);
+const ServiceLogs = lazyPanel(() => import("~/components/ServiceLogs.vue"));
+const MatchForm = lazyPanel(() => import("~/components/match/MatchForm.vue"));
+const MatchLiveStreams = lazyPanel(
+  () => import("~/components/match/MatchLiveStreams.vue"),
+);
 </script>
 
 <template>

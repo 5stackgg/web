@@ -213,8 +213,12 @@ describe("the Chat Log tab", () => {
     await flushPromises();
 
     expect((wrapper.vm as any).activeTab).toBe("chat-log");
+    // MatchTabs loads this tab lazily, so its stub is built before the real
+    // definition (and its props) has loaded: the value arrives as an attribute.
     expect(
-      wrapper.findComponent(MatchChatLog).props("activeMapId"),
+      wrapper
+        .findComponent({ name: "MatchChatLog" })
+        .attributes("active-map-id"),
     ).toBe("map-2");
   });
 });

@@ -7,6 +7,7 @@ import {
   onBeforeUnmount,
   provide,
   ref,
+  watch,
 } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -52,8 +53,25 @@ const EnablePushPrompt = defineAsyncComponent(
   () => import("~/components/notification/EnablePushPrompt.vue"),
 );
 import { useClipModal } from "~/composables/useClipModal";
+import { useOrphanedScan } from "~/composables/useOrphanedScan";
 
 const { activeClipId } = useClipModal();
+const { dialogOpen: orphanedUploadsOpen } = useOrphanedScan();
+
+// Both render nothing until opened, so neither is downloaded until then. Once
+// opened each stays mounted, so closing still plays its exit transition.
+const clipModalMounted = ref(!!activeClipId.value);
+watch(activeClipId, (id) => {
+  if (id) {
+    clipModalMounted.value = true;
+  }
+});
+const orphanedUploadsMounted = ref(orphanedUploadsOpen.value);
+watch(orphanedUploadsOpen, (open) => {
+  if (open) {
+    orphanedUploadsMounted.value = true;
+  }
+});
 
 useGtm();
 useChatTabSetup();
@@ -160,9 +178,9 @@ provide("containContent", containContent);
 
   <div id="global-chat-container"></div>
 
-  <ClipDetailModal :clip-id="activeClipId" />
+  <ClipDetailModal v-if="clipModalMounted" :clip-id="activeClipId" />
 
-  <OrphanedUploadsDialog />
+  <OrphanedUploadsDialog v-if="orphanedUploadsMounted" />
 
   <EnablePushPrompt v-if="authStore.me" />
 

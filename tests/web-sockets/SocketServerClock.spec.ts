@@ -66,6 +66,13 @@ describe("Socket server clock", () => {
     expect(offset()).toBeLessThan(-119_985);
   });
 
+  it("keeps a pong's timing over a queue update from a pod whose clock is ahead", () => {
+    pong(-120_000);
+    socket.emit("matchmaking:details", details(-118_000));
+
+    expect(offset()).toBeLessThan(-119_985);
+  });
+
   it("keeps how far the api's clock is from a queue update", () => {
     socket.emit("matchmaking:details", details(-120_000));
 

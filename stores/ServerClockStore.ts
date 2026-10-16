@@ -4,9 +4,12 @@ import { computed, ref } from "vue";
 export const useServerClockStore = defineStore("serverClock", () => {
   // How far the api's clock is from this device's, as a range. The api read
   // its clock after a ping left and before the pong came back, so a pong
-  // bounds the offset on both sides; a pushed update only bounds it from
-  // below. Readings narrow the range, and one that falls outside it means
-  // this device's clock moved, so it replaces the range.
+  // bounds the offset on both sides. Readings narrow the range, and one that
+  // falls outside it means this device's clock moved, so it replaces the range.
+  //
+  // A pushed update only bounds it from below, and only counts until a pong
+  // has timed the clock: it can come from another api pod, whose clock sits a
+  // little apart and would knock out the pong's range on every update.
   const low = ref<number | null>(null);
   const high = ref(Infinity);
   const stale = ref(false);
@@ -28,6 +31,10 @@ export const useServerClockStore = defineStore("serverClock", () => {
       Number.isFinite(sentAt) && sentAt! <= receivedAt
         ? serverNow - sentAt!
         : Infinity;
+
+    if (ceiling === Infinity && high.value !== Infinity && !stale.value) {
+      return;
+    }
 
     if (
       low.value === null ||
@@ -51,12 +58,13 @@ export const useServerClockStore = defineStore("serverClock", () => {
     stale.value = true;
   }
 
-  function now(): number {
-    return Date.now() + (offsetMs.value ?? 0);
-  }
-
-  return { offsetMs, observe, reconnected, now };
+  return { offsetMs, observe, reconnected };
 });
+
+// Not a store action: countdowns read it every frame.
+export function serverNow(): number {
+  return Date.now() + (useServerClockStore().offsetMs ?? 0);
+}
 
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useServerClockStore, import.meta.hot));

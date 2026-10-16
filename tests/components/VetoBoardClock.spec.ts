@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { nextTick } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import VetoBoard from "~/components/match/VetoBoard.vue";
 import socket from "~/web-sockets/Socket";
@@ -60,6 +61,32 @@ describe("VetoBoard clock", () => {
     const wrapper = await mount(Date.now() - 120_000 + 20_000);
 
     expect(wrapper.find(".vb-clock").text()).toMatch(/^(19|20)s$/);
+    wrapper.unmount();
+  });
+
+  it("catches up when the api's time lands after the board is up", async () => {
+    setApiClockBehindBy(0);
+    const wrapper = await mount(Date.now() - 120_000 + 20_000);
+    expect(wrapper.find(".vb-clock").text()).toBe("0s");
+
+    setApiClockBehindBy(120_000);
+    await nextTick();
+
+    expect(wrapper.find(".vb-clock").text()).toMatch(/^(19|20)s$/);
+    wrapper.unmount();
+  });
+
+  it("drains the bar by the share of the turn left", async () => {
+    setApiClockBehindBy(120_000);
+
+    const wrapper = await mount(Date.now() - 120_000 + 15_000);
+    await nextTick();
+
+    const bar = wrapper.find(".vb-bar").element as HTMLElement;
+    const share = Number(bar.style.getPropertyValue("--countdown"));
+    expect(bar.classList.contains("is-timed")).toBe(true);
+    expect(share).toBeGreaterThan(0.45);
+    expect(share).toBeLessThanOrEqual(0.5);
     wrapper.unmount();
   });
 

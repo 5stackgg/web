@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { dateLocale } from "~/utilities/dateLocale";
+import { serverNow } from "~/stores/ServerClockStore";
 
 const props = withDefaults(
   defineProps<{
@@ -30,7 +31,7 @@ const { t } = useI18n();
 // One interval per readout. A second is the smallest unit displayed, so
 // anything faster is wasted wake-ups on a surface that can sit open for the
 // full fifteen-minute window.
-const now = ref(Date.now());
+const now = ref(serverNow());
 let ticker: ReturnType<typeof setInterval> | null = null;
 let rollTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -41,7 +42,7 @@ function startTicker(intervalMs: number) {
     clearInterval(ticker);
   }
   ticker = setInterval(() => {
-    now.value = Date.now();
+    now.value = serverNow();
   }, intervalMs);
 }
 

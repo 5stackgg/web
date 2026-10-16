@@ -1,5 +1,5 @@
 import { ref, watch, computed, onUnmounted, type Ref } from "vue";
-import { useServerClockStore } from "~/stores/ServerClockStore";
+import { serverNow, useServerClockStore } from "~/stores/ServerClockStore";
 
 // Only the whole seconds are reactive: the share of time left goes to `meter`
 // as --countdown every frame, so a bar or ring bound to it moves smoothly
@@ -17,7 +17,7 @@ export function useCountdown(
   const tick = () => {
     const end = deadline.value ? new Date(deadline.value).getTime() : NaN;
     const left = Number.isFinite(end)
-      ? Math.max(0, (end - clock.now()) / 1000)
+      ? Math.max(0, (end - serverNow()) / 1000)
       : 0;
 
     seconds.value = Math.ceil(left);

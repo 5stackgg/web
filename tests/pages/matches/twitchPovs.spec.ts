@@ -35,6 +35,17 @@ function field(query: any) {
   return query.definitions[0]?.selectionSet?.selections[0]?.name?.value;
 }
 
+// The permissions half; the live selection also goes out as a query (the seed).
+function isStaticQuery(query: any) {
+  const match = query.definitions[0]?.selectionSet?.selections[0];
+  return (
+    field(query) === "matches_by_pk" &&
+    match.selectionSet.selections.some(
+      (selection: any) => selection.name.value === "is_organizer",
+    )
+  );
+}
+
 function lineup(id: string) {
   return {
     id,
@@ -90,8 +101,10 @@ async function mountMatch(answer: Record<string, unknown>) {
     },
   }));
 
+  vi.spyOn(client, "query").mockImplementation(() => new Promise(() => {}));
+
   vi.spyOn(client, "watchQuery").mockImplementation((options: any) => {
-    const isStatic = field(options.query) === "matches_by_pk";
+    const isStatic = isStaticQuery(options.query);
     const result = () => ({
       loading: false,
       data: isStatic ? { matches_by_pk: staticAnswer } : undefined,

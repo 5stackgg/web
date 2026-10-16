@@ -477,10 +477,203 @@ import { chatThreadKey } from "~/utilities/chatThread";
 import socket from "~/web-sockets/Socket";
 import { vetoBoardUp } from "~/utilities/vetoStage";
 import { vetoHandoffPhase } from "~/composables/useVetoHandoff";
+import { toRaw } from "vue";
+import { asQuery } from "~/utilities/seededSubscribe";
+
+const matchSubscription = typedGql("subscription")({
+  matches_by_pk: [
+    {
+      id: $("matchId", "uuid!"),
+    },
+    {
+      id: true,
+      status: true,
+      source: true,
+      invite_code: true,
+      draft_games: [{}, { id: true }],
+      e_match_status: {
+        description: true,
+      },
+      region: true,
+      e_region: {
+        description: true,
+      },
+      // The viewer's permission and membership fields moved to
+      // `matchStatic`: each is a function call the database re-runs
+      // for this row and this viewer on every tick. That half is
+      // fetched again when `matchStaticKey` changes, when an
+      // organizer control edits the match, and (for
+      // requested_organizer) when the actions menu opens.
+      //
+      // can_start and can_check_in stay here: they read lineup
+      // readiness, which is live. can_start is only costly in the
+      // pre-match states anyway, since it returns on its first status
+      // check once a match is Live or over.
+      can_start: true,
+      can_check_in: true,
+      label: true,
+      organizer_steam_id: true,
+      map_veto_type: true,
+      tournament_brackets: [
+        { limit: 1 },
+        {
+          stage: {
+            tournament: {
+              id: true,
+              name: true,
+              organizers: [{}, { steam_id: true }],
+            },
+          },
+        },
+      ],
+      server_id: true,
+      server_type: true,
+      server_region: true,
+      server_plugin_runtime: true,
+      is_server_online: true,
+      lineup_1_id: true,
+      lineup_2_id: true,
+      winning_lineup_id: true,
+      map_veto_picking_lineup_id: true,
+      region_veto_picking_lineup_id: true,
+      veto_pick_expires_at: true,
+      connection_link: true,
+      connection_string: true,
+      tv_connection_string: true,
+      is_match_server_available: true,
+      cancels_at: true,
+      scheduled_at: true,
+      ended_at: true,
+      server_error: true,
+      options: {
+        ...matchOptionsFields,
+      },
+      region_veto_picks: {
+        type: true,
+        region: true,
+      },
+      match_maps: [
+        {
+          order_by: {
+            order: order_by.asc,
+          },
+        },
+        {
+          id: true,
+          order: true,
+          lineup_1_side: true,
+          lineup_2_side: true,
+          map: mapFields,
+          is_current_map: true,
+          started_at: true,
+          ended_at: true,
+          demo_processing_started_at: true,
+          demos_total_size: true,
+          demos_download_url: true,
+          status: true,
+          lineup_1_score: true,
+          lineup_2_score: true,
+          winning_lineup_id: true,
+          vetos: {
+            side: true,
+            type: true,
+            match_lineup_id: true,
+          },
+          demos: {
+            id: true,
+            size: true,
+            download_url: true,
+            metadata_parsed_at: true,
+            total_ticks: true,
+            geometry_validated: true,
+            created_at: true,
+          },
+          rounds: [
+            {
+              order_by: {
+                round: $("order_by_round", "order_by"),
+              },
+            },
+            {
+              lineup_1_score: true,
+              lineup_2_score: true,
+              lineup_1_money: true,
+              lineup_2_money: true,
+              lineup_1_side: true,
+              lineup_2_side: true,
+              winning_side: true,
+              winning_reason: true,
+              round: true,
+              kills: [
+                {
+                  order_by: {
+                    time: $("order_by_round_kills", "order_by"),
+                  },
+                },
+                {
+                  with: true,
+                  headshot: true,
+                  player: {
+                    steam_id: true,
+                  },
+                  attacked_player: {
+                    steam_id: true,
+                  },
+                },
+              ],
+              assists: [
+                {},
+                {
+                  attacker_steam_id: true,
+                  attacked_steam_id: true,
+                  flash: true,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      lineup_1: [{}, matchLineups],
+      lineup_2: [{}, matchLineups],
+      elo_changes: [{}, eloFields],
+      streams: [
+        {
+          order_by: [
+            {
+              priority: order_by.asc,
+            },
+            {
+              title: order_by.asc,
+            },
+          ],
+        },
+        {
+          id: true,
+          match_id: true,
+          link: true,
+          title: true,
+          priority: true,
+          is_game_streamer: true,
+          is_live: true,
+          mode: true,
+          status: true,
+          stream_url: true,
+          error_message: true,
+          last_status_at: true,
+          status_history: true as any,
+        },
+      ],
+    },
+  ],
+});
 
 export default {
   unmounted() {
-    useMatchContext().value = null;
+    // An out-in page transition unmounts this page only after the next match
+    // page has started, and that page may already have set its own context.
+    if (useMatchContext().value?.id === this.matchLive?.id) {
+      useMatchContext().value = null;
+    }
     setPageChatFocus(null);
   },
   beforeUnmount() {
@@ -562,6 +755,7 @@ export default {
   data() {
     return {
       matchLive: undefined,
+      matchLiveFor: null as string | null,
       matchStatic: undefined,
       cameraReady: false,
       cameraOverlayDismissed: false,
@@ -571,230 +765,44 @@ export default {
     };
   },
   apollo: {
+    // A subscription's first payload waits on Hasura's next poll, which lands
+    // about a second after the HTTP answer to the same selection would.
+    matchSeed: {
+      query: asQuery(matchSubscription),
+      variables: function (): Record<string, unknown> {
+        return (this as any).matchVariables();
+      },
+      fetchPolicy: "no-cache",
+      manual: true,
+      context: { optional: true },
+      result: function ({ data }: { data: any }) {
+        if (
+          data?.matches_by_pk &&
+          !this.draftRoomFor(data.matches_by_pk) &&
+          this.matchLiveFor !== String(this.$route.params.id)
+        ) {
+          this.setMatchLive(data.matches_by_pk);
+        }
+      },
+      error: () => {},
+    },
     $subscribe: {
       matches_by_pk: {
         variables: function () {
-          return {
-            matchId: this.$route.params.id,
-            order_by_name: order_by.asc,
-            order_by_round_kills: order_by.asc,
-            order_by_round: order_by.desc,
-          };
+          return this.matchVariables();
         },
-        query: typedGql("subscription")({
-          matches_by_pk: [
-            {
-              id: $("matchId", "uuid!"),
-            },
-            {
-              id: true,
-              status: true,
-              source: true,
-              invite_code: true,
-              draft_games: [{}, { id: true }],
-              e_match_status: {
-                description: true,
-              },
-              region: true,
-              e_region: {
-                description: true,
-              },
-              // The viewer's permission and membership fields moved to
-              // `matchStatic`: each is a function call the database re-runs
-              // for this row and this viewer on every tick. That half is
-              // fetched again when `matchStaticKey` changes, when an
-              // organizer control edits the match, and (for
-              // requested_organizer) when the actions menu opens.
-              //
-              // can_start and can_check_in stay here: they read lineup
-              // readiness, which is live. can_start is only costly in the
-              // pre-match states anyway, since it returns on its first status
-              // check once a match is Live or over.
-              can_start: true,
-              can_check_in: true,
-              label: true,
-              organizer_steam_id: true,
-              map_veto_type: true,
-              tournament_brackets: [
-                { limit: 1 },
-                {
-                  stage: {
-                    tournament: {
-                      id: true,
-                      name: true,
-                      organizers: [{}, { steam_id: true }],
-                    },
-                  },
-                },
-              ],
-              server_id: true,
-              server_type: true,
-              server_region: true,
-              server_plugin_runtime: true,
-              is_server_online: true,
-              lineup_1_id: true,
-              lineup_2_id: true,
-              winning_lineup_id: true,
-              map_veto_picking_lineup_id: true,
-              region_veto_picking_lineup_id: true,
-              veto_pick_expires_at: true,
-              connection_link: true,
-              connection_string: true,
-              tv_connection_string: true,
-              is_match_server_available: true,
-              cancels_at: true,
-              scheduled_at: true,
-              ended_at: true,
-              server_error: true,
-              options: {
-                ...matchOptionsFields,
-              },
-              region_veto_picks: {
-                type: true,
-                region: true,
-              },
-              match_maps: [
-                {
-                  order_by: {
-                    order: order_by.asc,
-                  },
-                },
-                {
-                  id: true,
-                  order: true,
-                  lineup_1_side: true,
-                  lineup_2_side: true,
-                  map: mapFields,
-                  is_current_map: true,
-                  started_at: true,
-                  ended_at: true,
-                  demo_processing_started_at: true,
-                  demos_total_size: true,
-                  demos_download_url: true,
-                  status: true,
-                  lineup_1_score: true,
-                  lineup_2_score: true,
-                  winning_lineup_id: true,
-                  vetos: {
-                    side: true,
-                    type: true,
-                    match_lineup_id: true,
-                  },
-                  demos: {
-                    id: true,
-                    size: true,
-                    download_url: true,
-                    metadata_parsed_at: true,
-                    total_ticks: true,
-                    geometry_validated: true,
-                    created_at: true,
-                  },
-                  rounds: [
-                    {
-                      order_by: {
-                        round: $("order_by_round", "order_by"),
-                      },
-                    },
-                    {
-                      lineup_1_score: true,
-                      lineup_2_score: true,
-                      lineup_1_money: true,
-                      lineup_2_money: true,
-                      lineup_1_side: true,
-                      lineup_2_side: true,
-                      winning_side: true,
-                      winning_reason: true,
-                      round: true,
-                      kills: [
-                        {
-                          order_by: {
-                            time: $("order_by_round_kills", "order_by"),
-                          },
-                        },
-                        {
-                          with: true,
-                          headshot: true,
-                          player: {
-                            steam_id: true,
-                          },
-                          attacked_player: {
-                            steam_id: true,
-                          },
-                        },
-                      ],
-                      assists: [
-                        {},
-                        {
-                          attacker_steam_id: true,
-                          attacked_steam_id: true,
-                          flash: true,
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-              lineup_1: [{}, matchLineups],
-              lineup_2: [{}, matchLineups],
-              elo_changes: [{}, eloFields],
-              streams: [
-                {
-                  order_by: [
-                    {
-                      priority: order_by.asc,
-                    },
-                    {
-                      title: order_by.asc,
-                    },
-                  ],
-                },
-                {
-                  id: true,
-                  match_id: true,
-                  link: true,
-                  title: true,
-                  priority: true,
-                  is_game_streamer: true,
-                  is_live: true,
-                  mode: true,
-                  status: true,
-                  stream_url: true,
-                  error_message: true,
-                  last_status_at: true,
-                  status_history: true as any,
-                },
-              ],
-            },
-          ],
-        }),
+        query: matchSubscription,
         result: function ({ data }) {
-          const match = data.matches_by_pk;
-
-          if (!match) {
-            // Deleted/gone — leave. Canceling keeps the row, so we stay.
-            if (this.matchLive !== null) {
-              this.matchLive = null;
-              useMatchContext().value = null;
-              navigateTo("/watch");
-            }
-            return;
+          const matchId = String(this.$route.params.id);
+          const repeatsSeed =
+            this.matchLiveFor !== matchId &&
+            !!data.matches_by_pk &&
+            JSON.stringify(data.matches_by_pk) ===
+              JSON.stringify(toRaw(this.matchLive));
+          this.matchLiveFor = matchId;
+          if (!repeatsSeed) {
+            this.setMatchLive(data.matches_by_pk);
           }
-
-          // Check-in and veto for a draft-created match happen in the draft
-          // room, so the match page sends you there when a draft lobby exists.
-          const draftGameId = match.draft_games?.[0]?.id;
-          if (
-            draftGameId &&
-            [
-              e_match_status_enum.WaitingForCheckIn,
-              e_match_status_enum.Veto,
-            ].includes(match.status)
-          ) {
-            navigateTo(`/draft-room/${draftGameId}`);
-            return;
-          }
-
-          this.matchLive = match;
         },
       },
     },
@@ -1100,6 +1108,48 @@ export default {
     },
   },
   methods: {
+    matchVariables() {
+      return {
+        matchId: this.$route.params.id,
+        order_by_name: order_by.asc,
+        order_by_round_kills: order_by.asc,
+        order_by_round: order_by.desc,
+      };
+    },
+    setMatchLive(match: any) {
+      if (!match) {
+        // Deleted/gone — leave. Canceling keeps the row, so we stay.
+        if (this.matchLive !== null) {
+          this.matchLive = null;
+          useMatchContext().value = null;
+          navigateTo("/watch");
+        }
+        return;
+      }
+
+      const draftGameId = this.draftRoomFor(match);
+      if (draftGameId) {
+        navigateTo(`/draft-room/${draftGameId}`);
+        return;
+      }
+
+      this.matchLive = match;
+    },
+    // Check-in and veto for a draft-created match happen in the draft
+    // room, so the match page sends you there when a draft lobby exists.
+    draftRoomFor(match: any) {
+      const draftGameId = match.draft_games?.[0]?.id;
+      if (
+        draftGameId &&
+        [
+          e_match_status_enum.WaitingForCheckIn,
+          e_match_status_enum.Veto,
+        ].includes(match.status)
+      ) {
+        return draftGameId;
+      }
+      return null;
+    },
     markTeamRoomRead() {
       if (this.chatThread && this.myLineupId) {
         socket.markLobbyRead(

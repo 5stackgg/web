@@ -8,6 +8,7 @@ import {
 } from "vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
+import { seededSubscribe } from "~/utilities/seededSubscribe";
 import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 import type { Clip } from "~/types/clip";
 
@@ -33,29 +34,32 @@ export function useMatchClips(
       return;
     }
     loading.value = true;
-    const obs = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        match_clips: [
-          {
-            where: {
-              match_map: { match_id: { _eq: id } },
-            },
-            order_by: topPlayOrderBy,
-          } as any,
-          matchClipFields,
-        ],
-      } as any),
-    });
-    activeSub = obs.subscribe({
-      next: ({ data }: any) => {
-        clips.value = data?.match_clips ?? [];
-        loading.value = false;
+    activeSub = seededSubscribe(
+      getGraphqlClient(),
+      {
+        query: generateSubscription({
+          match_clips: [
+            {
+              where: {
+                match_map: { match_id: { _eq: id } },
+              },
+              order_by: topPlayOrderBy,
+            } as any,
+            matchClipFields,
+          ],
+        } as any),
       },
-      error: (err: any) => {
-        console.error("[useMatchClips] subscription error:", err);
-        loading.value = false;
+      {
+        next: ({ data }: any) => {
+          clips.value = data?.match_clips ?? [];
+          loading.value = false;
+        },
+        error: (err: any) => {
+          console.error("[useMatchClips] subscription error:", err);
+          loading.value = false;
+        },
       },
-    });
+    );
   }
 
   watch(matchId, () => subscribe(), { immediate: true });

@@ -6525,6 +6525,8 @@
       "title": "Configurações do App",
       "description": "Configurações que afetam a aplicação.",
       "select_section": "Selecione uma seção",
+      "search_placeholder": "Pesquisar configurações",
+      "search_empty": "Nenhuma configuração encontrada",
       "branding_nav": "Branding",
       "fixtures_nav": "Fixtures",
       "groups": {

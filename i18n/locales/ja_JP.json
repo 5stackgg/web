@@ -6525,6 +6525,8 @@
       "title": "アプリケーション設定",
       "description": "アプリケーション全体に影響する設定です。",
       "select_section": "セクションを選択",
+      "search_placeholder": "設定を検索",
+      "search_empty": "一致する設定はありません",
       "branding_nav": "ブランディング",
       "fixtures_nav": "対戦カード",
       "groups": {

@@ -6525,6 +6525,8 @@
       "title": "Applikationsindstillinger",
       "description": "Indstillinger der påvirker applikationen.",
       "select_section": "Vælg sektion",
+      "search_placeholder": "Søg i indstillinger",
+      "search_empty": "Ingen indstillinger matcher",
       "branding_nav": "Branding",
       "fixtures_nav": "Kampprogram",
       "groups": {

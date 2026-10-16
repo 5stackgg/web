@@ -6527,6 +6527,8 @@
       "title": "Application Settings",
       "description": "Settings that effect the application.",
       "select_section": "Select section",
+      "search_placeholder": "Search settings",
+      "search_empty": "No settings match",
       "branding_nav": "Branding",
       "fixtures_nav": "Fixtures",
       "groups": {

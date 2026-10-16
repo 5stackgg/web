@@ -6525,6 +6525,8 @@
       "title": "إعدادات التطبيق",
       "description": "إعدادات تؤثر على التطبيق.",
       "select_section": "اختر القسم",
+      "search_placeholder": "ابحث في الإعدادات",
+      "search_empty": "لا توجد إعدادات مطابقة",
       "branding_nav": "الهوية البصرية",
       "fixtures_nav": "جدول المباريات",
       "groups": {

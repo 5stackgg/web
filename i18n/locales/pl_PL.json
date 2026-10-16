@@ -6525,6 +6525,8 @@
       "title": "Ustawienia aplikacji",
       "description": "Ustawienia wpływające na działanie aplikacji.",
       "select_section": "Wybierz sekcję",
+      "search_placeholder": "Szukaj w ustawieniach",
+      "search_empty": "Brak pasujących ustawień",
       "branding_nav": "Branding",
       "fixtures_nav": "Terminarz",
       "groups": {

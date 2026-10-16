@@ -6525,6 +6525,8 @@
       "title": "애플리케이션 설정",
       "description": "애플리케이션에 영향을 주는 설정입니다.",
       "select_section": "섹션 선택",
+      "search_placeholder": "설정 검색",
+      "search_empty": "일치하는 설정이 없습니다",
       "branding_nav": "브랜딩",
       "fixtures_nav": "픽스처",
       "groups": {

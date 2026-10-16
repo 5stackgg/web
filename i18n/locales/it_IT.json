@@ -6525,6 +6525,8 @@
       "title": "Impostazioni applicazione",
       "description": "Impostazioni che influenzano l'applicazione.",
       "select_section": "Seleziona sezione",
+      "search_placeholder": "Cerca nelle impostazioni",
+      "search_empty": "Nessuna impostazione corrispondente",
       "branding_nav": "Branding",
       "fixtures_nav": "Calendario",
       "groups": {

@@ -6525,6 +6525,8 @@
       "title": "Paramètres de l'application",
       "description": "Paramètres qui affectent l'application.",
       "select_section": "Choisir une section",
+      "search_placeholder": "Rechercher un paramètre",
+      "search_empty": "Aucun paramètre ne correspond",
       "branding_nav": "Identité visuelle",
       "fixtures_nav": "Rencontres",
       "groups": {

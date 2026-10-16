@@ -6525,6 +6525,8 @@
       "title": "Настройки приложения",
       "description": "Настройки, влияющие на приложение.",
       "select_section": "Выбери раздел",
+      "search_placeholder": "Поиск по настройкам",
+      "search_empty": "Нет подходящих настроек",
       "branding_nav": "Брендинг",
       "fixtures_nav": "Расписание",
       "groups": {

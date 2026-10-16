@@ -400,6 +400,13 @@ export default defineNuxtConfig({
 
   compatibilityDate: "2024-07-15",
 
+  nitro: {
+    // Brotli at max quality at build time, served as-is by Nitro's static
+    // handler. Cloudflare's on-the-fly brotli came out ~20% larger on our
+    // biggest chunks (entry 437KB -> 343KB, en locale 158KB -> 125KB).
+    compressPublicAssets: { brotli: true, gzip: true },
+  },
+
   vite: {
     optimizeDeps: {
       // graphql (126 requests) and @apollo/client (103) are shipped module by

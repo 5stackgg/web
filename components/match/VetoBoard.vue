@@ -271,12 +271,17 @@ function placeArm() {
 }
 watch(markId, () => nextTick(placeArm));
 
-// A banned map is one fixed sliver (36px across, a little less tall on a
-// phone's rows) whatever else is open: it never trades width with the map
-// that opens, so nothing about it suggests it can be opened or chosen. Only
-// its replay opens it, and then it is weighted like any open map.
+// A map that is out of play -- banned, or picked while the veto runs -- is one
+// fixed sliver (36px across, a little less tall on a phone's rows) whatever
+// else is open: it never trades width with the map that opens, so nothing
+// about it suggests it can be opened or chosen. Only its replay opens it, and
+// then it is weighted like any open map; once the veto is done the picked
+// maps open up as the series.
 const THIN_W = 36;
-const isOut = (id: string) => stateOf(id).status === "Ban";
+const isOut = (id: string) => {
+  const status = stateOf(id).status;
+  return status === "Ban" || (status === "Pick" && !done.value);
+};
 const isThin = (id: string) =>
   isOut(id) && !isWide(id) && sideMapId.value !== id;
 

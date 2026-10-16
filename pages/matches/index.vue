@@ -32,7 +32,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
 const teamAvatar = (t: { avatar_url?: string | null }) =>
-  t.avatar_url ? `https://${apiDomain}/${t.avatar_url}` : null;
+  resolveAvatarUrl(t.avatar_url, apiDomain, 64);
 const playerAvatar = (p: { avatar_url?: string }) => p.avatar_url || null;
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -53,6 +53,7 @@ import {
   createButtonClasses,
   listCreateButtonClasses,
 } from "~/utilities/tacticalClasses";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const auth = useAuthStore();
 // Admin-tier roles see the extended filter set (match-ID search, in-lineup

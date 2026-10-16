@@ -72,7 +72,7 @@ const apiDomain = computed(
   () => useRuntimeConfig().public.apiDomain as string | undefined,
 );
 const avatarSrc = computed(() =>
-  resolveAvatarUrl(player.value?.avatar_url ?? null, apiDomain.value),
+  resolveAvatarUrl(player.value?.avatar_url ?? null, apiDomain.value, 64),
 );
 
 const thumbSrc = computed(() => {

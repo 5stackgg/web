@@ -131,7 +131,7 @@ function subValue(entry: Entry) {
 }
 
 function avatar(entry: Entry) {
-  return resolveAvatarUrl(entry.avatar_url, apiDomain);
+  return resolveAvatarUrl(entry.avatar_url, apiDomain, 64);
 }
 
 async function load() {

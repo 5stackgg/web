@@ -25,7 +25,7 @@ const apiDomain = useRuntimeConfig().public.apiDomain as string;
 const declining = ref<string | null>(null);
 
 function avatar(request: MessageRequest) {
-  return resolveAvatarUrl(request.peer?.avatar_url, apiDomain);
+  return resolveAvatarUrl(request.peer?.avatar_url, apiDomain, 64);
 }
 
 function nameOf(request: MessageRequest) {

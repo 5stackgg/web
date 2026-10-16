@@ -11,6 +11,7 @@ import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer";
 import { useMediaQuery } from "@vueuse/core";
 import debounce from "~/utilities/debounce";
 import { e_team_roles_enum } from "~/generated/zeus";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
 const { height: viewportHeight } = useVisualViewport();
@@ -692,8 +693,7 @@ export default {
       this.localPool = this.localPool.map(merge);
     },
     teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
-      if (!team.avatar_url) return null;
-      return `https://${this.apiDomain}/${team.avatar_url}`;
+      return resolveAvatarUrl(team.avatar_url, this.apiDomain, 64);
     },
     toggleMyTeamsOnly() {
       this.myTeamsOnly = !this.myTeamsOnly;

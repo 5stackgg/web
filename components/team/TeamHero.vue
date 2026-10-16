@@ -17,6 +17,7 @@ import {
 import { resolveAwardTier, type AwardTier } from "~/utilities/awardSeed";
 import { schemaHasField } from "~/utilities/schemaHasType";
 import { dateLocale } from "~/utilities/dateLocale";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const props = defineProps<{
   team: any;
@@ -28,9 +29,7 @@ const { client } = useApolloClient();
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
 const avatarSrc = computed(() =>
-  props.team?.avatar_url
-    ? `https://${apiDomain}/${props.team.avatar_url}`
-    : null,
+  resolveAvatarUrl(props.team?.avatar_url, apiDomain, 256),
 );
 
 // teams.created_at ships with the API ahead of the generated types, so it is

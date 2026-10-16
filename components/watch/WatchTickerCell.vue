@@ -5,6 +5,7 @@ import { Check } from "lucide-vue-next";
 import { NuxtLink } from "#components";
 import type { TickerCellModel } from "~/components/watch/watchTicker";
 import { streamPlatformMeta } from "~/components/watch/streamPlatform";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const props = defineProps<{
   model: TickerCellModel;
@@ -24,7 +25,7 @@ const platform = computed(() => streamPlatformMeta(props.model.streams[0]));
 // Team avatars are stored as paths on the API host.
 const apiDomain = useRuntimeConfig().public.apiDomain;
 function avatarSrc(path: string) {
-  return /^https?:\/\//.test(path) ? path : `https://${apiDomain}/${path}`;
+  return resolveAvatarUrl(path, apiDomain, 64);
 }
 const ariaLabel = computed(() =>
   [

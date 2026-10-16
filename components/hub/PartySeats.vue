@@ -70,6 +70,7 @@ function avatarSrc(player: any) {
   return resolveAvatarUrl(
     player.roster_image_url || player.custom_avatar_url || player.avatar_url,
     apiDomain,
+    64,
   );
 }
 

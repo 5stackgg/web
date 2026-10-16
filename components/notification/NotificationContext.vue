@@ -9,6 +9,7 @@ import NewsPoster from "~/components/news/NewsPoster.vue";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { dateLocale } from "~/utilities/dateLocale";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 // MatchAbandoned carries the abandoned match's id, so it gets the same match
 // preview -- an admin seeing the alert can tell which match it was without
@@ -420,9 +421,7 @@ export default defineComponent({
   },
   methods: {
     teamAvatar(team: any): string | null {
-      return team?.avatar_url
-        ? `https://${this.apiDomain}/${team.avatar_url}`
-        : null;
+      return resolveAvatarUrl(team?.avatar_url, this.apiDomain, 64);
     },
     scrimTime(): string {
       if (!this.scrim?.proposed_scheduled_at) return "";

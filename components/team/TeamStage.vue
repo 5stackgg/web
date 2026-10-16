@@ -25,6 +25,7 @@ import {
 } from "~/utilities/tacticalClasses";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { dateLocale } from "~/utilities/dateLocale";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 // The team's one headline card: the match it's playing, else the next one on
 // the calendar, else what to do about an empty calendar.
@@ -234,7 +235,7 @@ const empty = computed(() => {
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
 function avatarSrc(path: string) {
-  return /^https?:\/\//.test(path) ? path : `https://${apiDomain}/${path}`;
+  return resolveAvatarUrl(path, apiDomain, 128);
 }
 
 const cardClasses =

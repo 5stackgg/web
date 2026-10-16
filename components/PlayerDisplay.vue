@@ -495,7 +495,7 @@ export default {
     },
     playerAvatarSrc() {
       if (this.avatarOverride) {
-        return resolveAvatarUrl(this.avatarOverride, this.apiDomain);
+        return resolveAvatarUrl(this.avatarOverride, this.apiDomain, 256);
       }
       if (!this.player) return null;
       return resolveAvatarUrl(
@@ -503,6 +503,7 @@ export default {
           this.player.custom_avatar_url ||
           this.player.avatar_url,
         this.apiDomain,
+        256,
       );
     },
     isMe() {

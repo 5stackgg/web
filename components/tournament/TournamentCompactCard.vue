@@ -17,6 +17,7 @@ import { tournamentMapPosters } from "~/utilities/tournamentMapPosters";
 import { tournamentPlayerRankLabel } from "~/utilities/tournamentPlayerRank";
 import { tournamentCurrentStage } from "~/utilities/tournamentCurrentStage";
 import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const { t } = useI18n();
 
@@ -47,7 +48,7 @@ const logoUrl = computed(() => {
     return null;
   }
 
-  return `https://${runtimeConfig.public.apiDomain}/${logo}`;
+  return resolveAvatarUrl(logo, runtimeConfig.public.apiDomain, 128);
 });
 
 const bannerUrl = computed(() => {
@@ -56,7 +57,7 @@ const bannerUrl = computed(() => {
     return null;
   }
 
-  return `https://${runtimeConfig.public.apiDomain}/${banner}`;
+  return resolveAvatarUrl(banner, runtimeConfig.public.apiDomain, 1024);
 });
 
 // Bannerless tournaments fall back to their map pool as a skewed mosaic, then

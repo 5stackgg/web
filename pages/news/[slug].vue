@@ -67,7 +67,11 @@ const authorAvatar = computed(() => {
   if (!a) {
     return null;
   }
-  return resolveAvatarUrl(a.custom_avatar_url || a.avatar_url, apiDomain.value);
+  return resolveAvatarUrl(
+    a.custom_avatar_url || a.avatar_url,
+    apiDomain.value,
+    64,
+  );
 });
 
 const shortDate = (value: string | null) =>

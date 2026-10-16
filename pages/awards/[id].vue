@@ -685,7 +685,7 @@ export default {
       return id ? `/teams/${id}` : null;
     },
     teamAvatarFor(row: any): string {
-      return resolveAvatarUrl(row.team?.avatar_url, this.apiDomain) ?? "";
+      return resolveAvatarUrl(row.team?.avatar_url, this.apiDomain, 128) ?? "";
     },
     recipientNameFor(row: any): string {
       if (!row.player_steam_id) return this.teamNameFor(row);

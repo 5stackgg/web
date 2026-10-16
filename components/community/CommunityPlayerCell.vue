@@ -37,7 +37,7 @@ const inGameName = computed(() =>
 );
 
 const avatarSrc = computed(() =>
-  resolveAvatarUrl(props.player?.avatar_url, apiDomain),
+  resolveAvatarUrl(props.player?.avatar_url, apiDomain, 64),
 );
 
 const sanctions = computed(() => activeSanctions(props.player));

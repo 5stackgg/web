@@ -29,6 +29,7 @@ import {
 } from "~/graphql/tournamentInvites";
 import { canSendTournamentInvites } from "~/utilities/tournamentInvites";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 /**
  * The organizer's direct-invite list: address a specific team or a specific
@@ -148,7 +149,7 @@ function teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
   if (!team?.avatar_url) {
     return null;
   }
-  return `https://${apiDomain.value}/${team.avatar_url}`;
+  return resolveAvatarUrl(team.avatar_url, apiDomain.value, 64);
 }
 
 function inviteName(invite: Record<string, any>): string {

@@ -108,6 +108,7 @@ const playerAvatar = (player: any) =>
   resolveAvatarUrl(
     player?.custom_avatar_url || player?.avatar_url,
     apiDomain.value,
+    256,
   );
 
 const teams = computed(() =>
@@ -125,7 +126,7 @@ const teams = computed(() =>
       name,
       teamId: lineup?.team_id ?? null,
       crest:
-        resolveAvatarUrl(lineup?.team?.avatar_url, apiDomain.value) ??
+        resolveAvatarUrl(lineup?.team?.avatar_url, apiDomain.value, 256) ??
         (isPug.value ? playerAvatar(captain) : null),
       monogram: teamMonogram(name),
       roster: players.slice(0, 5).map((member: any) => ({

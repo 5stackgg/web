@@ -71,7 +71,7 @@ watch(query, () => {
 });
 
 function avatar(friend: any) {
-  return resolveAvatarUrl(friend.avatar_url, apiDomain);
+  return resolveAvatarUrl(friend.avatar_url, apiDomain, 64);
 }
 
 function start(friend: any) {

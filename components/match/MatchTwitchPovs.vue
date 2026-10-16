@@ -33,6 +33,7 @@ const povStreams = computed(() =>
     avatar_url: resolveAvatarUrl(
       pov.avatar_url,
       useRuntimeConfig().public.apiDomain,
+      64,
     ),
     is_pov: true,
     preview: true as const,

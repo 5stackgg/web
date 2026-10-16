@@ -580,7 +580,7 @@ const arrivalFace = computed(() => {
   return {
     key: String(friend.steam_id),
     name: friend.name as string,
-    src: resolveAvatarUrl(friend.avatar_url, apiDomain),
+    src: resolveAvatarUrl(friend.avatar_url, apiDomain, 64),
     initials: (friend.name ?? "?").slice(0, 2).toUpperCase(),
   };
 });

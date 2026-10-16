@@ -3,6 +3,7 @@ import { ArrowRight, UsersIcon } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import MapDisplay from "~/components/MapDisplay.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 </script>
 
 <template>
@@ -149,7 +150,11 @@ export default {
       if (!this.tournament?.banner) {
         return null;
       }
-      return `https://${useRuntimeConfig().public.apiDomain}/${this.tournament.banner}`;
+      return resolveAvatarUrl(
+        this.tournament.banner,
+        useRuntimeConfig().public.apiDomain,
+        1024,
+      );
     },
     tournamentTypeDescription() {
       if (!this.tournament?.options?.type || !this.e_match_types?.length) {

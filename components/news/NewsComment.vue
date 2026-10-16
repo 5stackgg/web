@@ -65,6 +65,7 @@ const avatar = computed(() =>
     ? resolveAvatarUrl(
         author.value.custom_avatar_url || author.value.avatar_url,
         apiDomain.value,
+        64,
       )
     : null,
 );

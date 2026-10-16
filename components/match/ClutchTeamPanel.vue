@@ -6,12 +6,12 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 const apiDomain = useRuntimeConfig().public.apiDomain;
 
 function memberAvatarSrc(member: any, override: string | null | undefined) {
-  if (override) return resolveAvatarUrl(override, apiDomain);
+  if (override) return resolveAvatarUrl(override, apiDomain, 64);
   const url =
     member?.player?.roster_image_url ||
     member?.player?.custom_avatar_url ||
     member?.player?.avatar_url;
-  return resolveAvatarUrl(url, apiDomain);
+  return resolveAvatarUrl(url, apiDomain, 64);
 }
 
 function memberName(member: any): string {

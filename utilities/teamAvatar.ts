@@ -6,5 +6,6 @@ export default function teamAvatar(
   return resolveAvatarUrl(
     team?.avatar_url,
     useRuntimeConfig().public.apiDomain as string,
+    256,
   );
 }

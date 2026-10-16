@@ -868,13 +868,14 @@ export default {
         );
         if (!inLineup) continue;
         const override = buildLineupAvatarOverride(lineup)(steamId);
-        if (override) return resolveAvatarUrl(override, apiDomain);
+        if (override) return resolveAvatarUrl(override, apiDomain, 128);
       }
       return resolveAvatarUrl(
         this.member.player.roster_image_url ||
           this.member.player.custom_avatar_url ||
           this.member.player.avatar_url,
         apiDomain,
+        128,
       );
     },
     memberEloChange() {

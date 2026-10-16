@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import type { TournamentPreview } from "~/composables/useTournamentPreview";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 // The tournament page's header and first section, drawn while its queries are
 // in flight. With a preview from the list you came from it already shows the
@@ -9,9 +10,11 @@ import type { TournamentPreview } from "~/composables/useTournamentPreview";
 const props = defineProps<{ preview?: TournamentPreview | null }>();
 
 const bannerSrc = computed(() =>
-  props.preview?.banner
-    ? `https://${useRuntimeConfig().public.apiDomain}/${props.preview.banner}`
-    : null,
+  resolveAvatarUrl(
+    props.preview?.banner,
+    useRuntimeConfig().public.apiDomain,
+    1024,
+  ),
 );
 </script>
 

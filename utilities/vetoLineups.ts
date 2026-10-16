@@ -59,11 +59,12 @@ export function vetoLineups(
     return {
       name,
       crest:
-        resolveAvatarUrl(value?.team?.avatar_url, apiDomain) ??
+        resolveAvatarUrl(value?.team?.avatar_url, apiDomain, 128) ??
         (isPug
           ? resolveAvatarUrl(
               captain?.custom_avatar_url || captain?.avatar_url,
               apiDomain,
+              128,
             )
           : null),
       monogram: teamMonogram(name),

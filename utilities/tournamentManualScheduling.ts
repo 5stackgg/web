@@ -10,12 +10,16 @@ interface SchedulingStage {
   options?: { match_mode?: string | null } | null;
 }
 
-// Mirrors the api: with auto start off, or a stage whose match options are in
-// Admin mode, a bracket only gets a match once an organizer gives it a time.
-// Negotiated scheduling has the captains agree the time instead.
-export function isStageManuallyScheduled(
+interface SchedulingBracket {
+  options?: { match_mode?: string | null } | null;
+}
+
+// Mirrors the api: with auto start off, or match options in Admin mode, a
+// bracket only gets a match once an organizer gives it a time. Negotiated
+// scheduling has the captains agree the time instead.
+function isManual(
   tournament: SchedulingTournament,
-  stage?: SchedulingStage | null,
+  matchMode?: string | null,
 ): boolean {
   if (tournament.scheduling_mode === "negotiated") {
     return false;
@@ -23,9 +27,30 @@ export function isStageManuallyScheduled(
   if (tournament.auto_start === false) {
     return true;
   }
-  return (
-    (stage?.options?.match_mode ?? tournament.options?.match_mode) ===
-    e_match_mode_enum.admin
+  return matchMode === e_match_mode_enum.admin;
+}
+
+export function isStageManuallyScheduled(
+  tournament: SchedulingTournament,
+  stage?: SchedulingStage | null,
+): boolean {
+  return isManual(
+    tournament,
+    stage?.options?.match_mode ?? tournament.options?.match_mode,
+  );
+}
+
+// schedule_tournament_match reads the bracket's own options before the stage's.
+export function isBracketManuallyScheduled(
+  tournament: SchedulingTournament,
+  stage?: SchedulingStage | null,
+  bracket?: SchedulingBracket | null,
+): boolean {
+  return isManual(
+    tournament,
+    bracket?.options?.match_mode ??
+      stage?.options?.match_mode ??
+      tournament.options?.match_mode,
   );
 }
 
@@ -35,7 +60,11 @@ export function adminModeStageOrders(
   },
 ): Array<number> {
   return (tournament.stages ?? [])
-    .filter((stage) => stage.options?.match_mode === e_match_mode_enum.admin)
+    .filter(
+      (stage) =>
+        (stage.options?.match_mode ?? tournament.options?.match_mode) ===
+        e_match_mode_enum.admin,
+    )
     .map((stage) => stage.order ?? 1)
     .sort((a, b) => a - b);
 }

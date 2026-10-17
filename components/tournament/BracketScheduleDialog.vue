@@ -43,9 +43,11 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
           {{ teamNames }}
         </div>
 
-        <div v-if="bracket.scheduled_at" class="text-sm text-green-400">
+        <div v-if="bracket.scheduled_at" class="text-sm text-muted-foreground">
           {{ $t("tournament.bracket.currently_scheduled") }}:
-          <TimeAgo :date="bracket.scheduled_at" />
+          <span class="text-foreground">
+            <TimeAgo :date="bracket.scheduled_at" />
+          </span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -87,10 +89,15 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
         >
           {{ $t("tournament.bracket.clear_schedule") }}
         </Button>
-        <Button variant="outline" @click="scheduleAsap" :disabled="saving">
+        <Button
+          variant="outline"
+          @click="scheduleAsap"
+          :disabled="saving || !!bracket?.match"
+        >
           {{ $t("tournament.bracket.schedule_asap") }}
         </Button>
         <Button
+          variant="tactical"
           @click="saveSchedule"
           :disabled="!startDate || !startTime || saving"
         >
@@ -112,6 +119,7 @@ import {
   getLocalTimeZone,
 } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
+import { serverNow } from "~/stores/ServerClockStore";
 import type { Bracket } from "~/types/tournament";
 
 export default {
@@ -134,6 +142,9 @@ export default {
     };
   },
   computed: {
+    scheduleKey(): string {
+      return `${this.bracket?.id ?? ""}|${this.bracket?.scheduled_at ?? ""}`;
+    },
     teamNames(): string {
       if (!this.bracket) return "";
       const t1 =
@@ -147,9 +158,10 @@ export default {
     },
   },
   watch: {
-    bracket: {
+    scheduleKey: {
       immediate: true,
-      handler(bracket) {
+      handler() {
+        const bracket = this.bracket;
         if (bracket?.scheduled_at) {
           const date = new Date(bracket.scheduled_at);
           this.startDate = toCalendarDate(fromDate(date, getLocalTimeZone()));
@@ -191,7 +203,10 @@ export default {
       await this.setScheduledAt(scheduled_at);
     },
     async scheduleAsap() {
-      await this.setScheduledAt(new Date().toISOString());
+      if (this.bracket?.match) {
+        return;
+      }
+      await this.setScheduledAt(new Date(serverNow()).toISOString());
     },
     async clearSchedule() {
       await this.setScheduledAt(null);

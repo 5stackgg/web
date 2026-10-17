@@ -6,6 +6,7 @@ import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import BracketScheduleDialog from "~/components/tournament/BracketScheduleDialog.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { useAuthStore } from "~/stores/AuthStore";
+import { setApiClockBehindBy } from "../../helpers/serverClock";
 
 const ETA = "2099-10-03T20:00:00.000Z";
 
@@ -38,6 +39,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  setApiClockBehindBy(0);
   unmount?.();
   unmount = undefined;
   vi.restoreAllMocks();
@@ -58,6 +60,7 @@ describe("TournamentMatch on a manually scheduled stage", () => {
         stage: { type: "RoundRobin", options: stageOptions },
         tournament: {
           is_organizer: true,
+          status: "Live",
           scheduling_mode: "auto",
           options: { match_mode: "auto" },
           ...tournament,
@@ -102,13 +105,41 @@ describe("TournamentMatch on a manually scheduled stage", () => {
     expect(wrapper.text()).not.toContain("Awaiting schedule");
     expect(wrapper.findComponent(TimeAgo).exists()).toBe(true);
   });
+
+  it("waits until both teams are in the bracket", async () => {
+    const wrapper = await mountCard({ auto_start: false }, null, {
+      team_2: null,
+    });
+
+    expect(wrapper.text()).not.toContain("Awaiting schedule");
+  });
+
+  it("says nothing while registration is still open", async () => {
+    const wrapper = await mountCard({
+      auto_start: false,
+      status: "RegistrationOpen",
+    });
+
+    expect(wrapper.text()).not.toContain("Awaiting schedule");
+  });
+
+  it("keeps the ETA of a bracket whose own options are Auto on an Admin stage", async () => {
+    const wrapper = await mountCard(
+      { auto_start: true },
+      { match_mode: "admin" },
+      { options: { match_mode: "auto" } },
+    );
+
+    expect(wrapper.text()).not.toContain("Awaiting schedule");
+    expect(wrapper.findComponent(TimeAgo).exists()).toBe(true);
+  });
 });
 
 describe("BracketScheduleDialog", () => {
-  async function mountDialog() {
+  async function mountDialog(card: Record<string, any> = {}) {
     (useNuxtApp() as any).$apollo.mutate = mutate;
     const wrapper = await mountSuspended(BracketScheduleDialog, {
-      props: { open: true, bracket: bracket() },
+      props: { open: true, bracket: bracket(card) },
     });
     unmount = () => wrapper.unmount();
     await flushPromises();
@@ -142,5 +173,56 @@ describe("BracketScheduleDialog", () => {
     expect(scheduledAt).toBeGreaterThanOrEqual(before - 1000);
     expect(scheduledAt).toBeLessThanOrEqual(Date.now() + 1000);
     expect(wrapper.emitted("update:open")).toEqual([[false]]);
+  });
+
+  it("schedules on the api's clock, not this device's", async () => {
+    setApiClockBehindBy(10 * 60_000);
+    const wrapper = await mountDialog();
+
+    await (wrapper.vm as any).scheduleAsap();
+    await flushPromises();
+
+    const sent = print(mutate.mock.calls[0][0].mutation);
+    const scheduledAt = Date.parse(
+      sent.match(/scheduled_at: "([^"]+)"/)?.[1] ?? "",
+    );
+    expect(Math.abs(scheduledAt - (Date.now() - 10 * 60_000))).toBeLessThan(
+      2000,
+    );
+  });
+
+  it("can't schedule ASAP once the bracket has a match", async () => {
+    const wrapper = await mountDialog({ match: { id: "match-1" } });
+
+    const asap = [...document.body.querySelectorAll("button")].find(
+      (button) => button.textContent?.trim() === "ASAP",
+    );
+    expect(asap!.disabled).toBe(true);
+
+    await (wrapper.vm as any).scheduleAsap();
+    await flushPromises();
+    expect(mutate).not.toHaveBeenCalled();
+  });
+
+  it("keeps a picked date and time when the bracket's data refreshes", async () => {
+    const wrapper = await mountDialog();
+    (wrapper.vm as any).startTime = "21:30";
+    await flushPromises();
+
+    await wrapper.setProps({ bracket: bracket() });
+    await flushPromises();
+
+    expect((wrapper.vm as any).startTime).toBe("21:30");
+  });
+
+  it("saves with the app's tactical button and shows no green", async () => {
+    await mountDialog({ scheduled_at: ETA });
+
+    const save = [...document.body.querySelectorAll("button")].find(
+      (button) => button.textContent?.trim() === "Save Schedule",
+    );
+    expect(save!.className).toContain("tac-amber");
+    expect(save!.className).not.toContain("bg-primary");
+    expect(document.body.innerHTML).not.toContain("text-green");
   });
 });

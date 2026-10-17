@@ -172,30 +172,32 @@ import {
                         })
                       }}
                     </template>
-                    <template
-                      v-if="
-                        isStageManuallyScheduled(
-                          tournament,
-                          getFirstStageForTab(stageNumber),
-                        )
-                      "
+                  </span>
+                  <span
+                    v-if="
+                      getFirstStageForTab(stageNumber) &&
+                      isStageManuallyScheduled(
+                        tournament,
+                        getFirstStageForTab(stageNumber),
+                      )
+                    "
+                    class="text-[0.72rem] text-muted-foreground"
+                    data-test="stage-manual-scheduling"
+                  >
+                    <FiveStackToolTip
+                      as-child
+                      :delay-duration="120"
+                      :tap-toggle="false"
                     >
-                      ·
-                      <FiveStackToolTip
-                        as-child
-                        :delay-duration="120"
-                        :tap-toggle="false"
-                      >
-                        <template #trigger>
-                          <span class="cursor-help">
-                            {{ $t("tournament.stage.manual_scheduling") }}
-                          </span>
-                        </template>
-                        <p class="max-w-[16rem]">
-                          {{ $t("tournament.stage.manual_scheduling_hint") }}
-                        </p>
-                      </FiveStackToolTip>
-                    </template>
+                      <template #trigger>
+                        <span class="cursor-help">
+                          {{ $t("tournament.stage.manual_scheduling") }}
+                        </span>
+                      </template>
+                      <p class="max-w-[16rem]">
+                        {{ $t("tournament.stage.manual_scheduling_hint") }}
+                      </p>
+                    </FiveStackToolTip>
                   </span>
                 </div>
               </div>

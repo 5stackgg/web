@@ -127,19 +127,22 @@ async function confirmDelete() {
               <template v-if="(stage.groups ?? 1) > 1">
                 · {{ $t("tournament.manage.groups", { count: stage.groups }) }}
               </template>
-              <template v-if="isStageManuallyScheduled(tournament, stage)">
-                ·
-                <FiveStackToolTip as-child :delay-duration="120">
-                  <template #trigger>
-                    <span class="cursor-help" tabindex="0">
-                      {{ $t("tournament.stage.manual_scheduling") }}
-                    </span>
-                  </template>
-                  <p class="max-w-[16rem]">
-                    {{ $t("tournament.stage.manual_scheduling_hint") }}
-                  </p>
-                </FiveStackToolTip>
-              </template>
+            </span>
+            <span
+              v-if="isStageManuallyScheduled(tournament, stage)"
+              class="text-xs text-muted-foreground"
+              data-test="stage-manual-scheduling"
+            >
+              <FiveStackToolTip as-child :delay-duration="120">
+                <template #trigger>
+                  <span class="cursor-help" tabindex="0">
+                    {{ $t("tournament.stage.manual_scheduling") }}
+                  </span>
+                </template>
+                <p class="max-w-[16rem]">
+                  {{ $t("tournament.stage.manual_scheduling_hint") }}
+                </p>
+              </FiveStackToolTip>
             </span>
           </div>
           <template v-if="!finished">

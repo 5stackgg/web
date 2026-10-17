@@ -1083,7 +1083,11 @@ import { useAuthStore } from "~/stores/AuthStore";
 // into one module, so a module-scope import shadows the computed of the same
 // name when the template resolves it. This returns a boolean, so the template
 // was reading a function -- always truthy, and a v-if that never hid anything.
-import { canSetVetoPickTimeout as allowsVetoPickTimeout } from "~/utilities/setupOptions";
+import {
+  canSetCameraRequired,
+  canSetGameMode,
+  canSetVetoPickTimeout as allowsVetoPickTimeout,
+} from "~/utilities/setupOptions";
 import {
   advancingTeams,
   groupsSplitNextStage,
@@ -1953,7 +1957,116 @@ export default {
       return (data?.tournament_brackets?.length ?? 0) > 0;
     },
     // matchSettingsOnly leaves the row's pool, type and format alone: once the
-    // bracket is drawn the api refuses a stage another pool.
+    // bracket is drawn the api refuses a stage another pool. Columns the role's
+    // match_options permission lacks are left out, as setupOptions does.
+    stageOptionColumns(
+      form: any,
+      matchSettingsOnly: boolean,
+    ): Array<[string, string, unknown]> {
+      const tournamentOptions = this.tournament.options;
+      const canSetOrganizerColumns = useAuthStore().isRoleAbove(
+        e_player_roles_enum.tournament_organizer,
+      );
+      const columns: Array<[string, string, unknown]> = [
+        ["tv_delay", "Int!", form.tv_delay],
+        ["region_veto", "Boolean!", form.region_veto],
+        ["regions", "[String!]!", form.regions || []],
+        ["ready_setting", "e_ready_settings_enum!", form.ready_setting],
+        [
+          "tech_timeout_setting",
+          "e_timeout_settings_enum!",
+          form.tech_timeout_setting,
+        ],
+      ];
+      if (allowsVetoPickTimeout()) {
+        columns.push(["veto_pick_timeout", "Int!", form.veto_pick_timeout]);
+      }
+      if (canSetOrganizerColumns) {
+        columns.push(
+          [
+            "check_in_setting",
+            "e_check_in_settings_enum!",
+            form.check_in_setting,
+          ],
+          ["match_mode", "e_match_mode_enum!", form.match_mode],
+        );
+      }
+      if (matchSettingsOnly) {
+        return columns;
+      }
+      columns.push(
+        ["mr", "Int!", tournamentOptions.mr],
+        ["type", "e_match_types_enum!", tournamentOptions.type],
+        ["best_of", "Int!", tournamentOptions.best_of],
+        ["knife_round", "Boolean!", tournamentOptions.knife_round],
+        ["default_models", "Boolean!", tournamentOptions.default_models],
+        ["overtime", "Boolean!", tournamentOptions.overtime],
+        ["coaches", "Boolean!", tournamentOptions.coaches],
+        [
+          "number_of_substitutes",
+          "Int!",
+          tournamentOptions.number_of_substitutes,
+        ],
+        [
+          "timeout_setting",
+          "e_timeout_settings_enum!",
+          tournamentOptions.timeout_setting,
+        ],
+        ["map_pool_id", "uuid!", tournamentOptions.map_pool.id],
+        [
+          "round_restart_delay",
+          "Int",
+          tournamentOptions.round_restart_delay ?? null,
+        ],
+        [
+          "halftime_pausematch",
+          "Boolean!",
+          tournamentOptions.halftime_pausematch,
+        ],
+        [
+          "prefer_dedicated_server",
+          "Boolean!",
+          tournamentOptions.prefer_dedicated_server,
+        ],
+      );
+      if (canSetCameraRequired()) {
+        columns.push(
+          ["camera_required", "Boolean!", tournamentOptions.camera_required],
+          [
+            "camera_allow_teammates",
+            "Boolean!",
+            tournamentOptions.camera_allow_teammates,
+          ],
+        );
+      }
+      if (canSetGameMode()) {
+        columns.push([
+          "game_mode_id",
+          "uuid",
+          tournamentOptions.game_mode_id ?? null,
+        ]);
+      }
+      if (canSetOrganizerColumns) {
+        columns.push(
+          [
+            "auto_cancellation",
+            "Boolean!",
+            tournamentOptions.auto_cancellation,
+          ],
+          [
+            "auto_cancel_duration",
+            "Int",
+            tournamentOptions.auto_cancel_duration ?? null,
+          ],
+          [
+            "live_match_timeout",
+            "Int",
+            tournamentOptions.live_match_timeout ?? null,
+          ],
+        );
+      }
+      return columns;
+    },
     async updateMatchOptions(
       matchOptionsId: string,
       form: any,
@@ -1962,36 +2075,14 @@ export default {
       if (!this.tournament) {
         throw new Error("Tournament is required");
       }
-      const tournamentOptions = this.tournament.options;
+      const columns = this.stageOptionColumns(form, matchSettingsOnly);
 
       await (this as any).$apollo.mutate({
         variables: {
           id: matchOptionsId,
-          tv_delay: form.tv_delay,
-          ...(allowsVetoPickTimeout()
-            ? { veto_pick_timeout: form.veto_pick_timeout }
-            : {}),
-          region_veto: form.region_veto,
-          regions: form.regions || [],
-          check_in_setting: form.check_in_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          match_mode: form.match_mode,
-          ...(matchSettingsOnly
-            ? {}
-            : {
-                // Keep tournament defaults for all other fields
-                mr: tournamentOptions.mr,
-                type: tournamentOptions.type,
-                best_of: tournamentOptions.best_of,
-                knife_round: tournamentOptions.knife_round,
-                default_models: tournamentOptions.default_models,
-                overtime: tournamentOptions.overtime,
-                coaches: tournamentOptions.coaches,
-                number_of_substitutes: tournamentOptions.number_of_substitutes,
-                timeout_setting: tournamentOptions.timeout_setting,
-                map_pool_id: tournamentOptions.map_pool.id,
-              }),
+          ...Object.fromEntries(
+            columns.map(([name, , value]) => [name, value]),
+          ),
         },
         mutation: generateMutation({
           update_match_options_by_pk: [
@@ -1999,41 +2090,9 @@ export default {
               pk_columns: {
                 id: $("id", "uuid!"),
               },
-              _set: {
-                tv_delay: $("tv_delay", "Int!"),
-                ...(allowsVetoPickTimeout()
-                  ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
-                  : {}),
-                region_veto: $("region_veto", "Boolean!"),
-                regions: $("regions", "[String!]!"),
-                check_in_setting: $(
-                  "check_in_setting",
-                  "e_check_in_settings_enum!",
-                ),
-                ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                tech_timeout_setting: $(
-                  "tech_timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                match_mode: $("match_mode", "e_match_mode_enum!"),
-                ...(matchSettingsOnly
-                  ? {}
-                  : {
-                      mr: $("mr", "Int!"),
-                      type: $("type", "e_match_types_enum!"),
-                      best_of: $("best_of", "Int!"),
-                      knife_round: $("knife_round", "Boolean!"),
-                      default_models: $("default_models", "Boolean!"),
-                      overtime: $("overtime", "Boolean!"),
-                      coaches: $("coaches", "Boolean!"),
-                      number_of_substitutes: $("number_of_substitutes", "Int!"),
-                      timeout_setting: $(
-                        "timeout_setting",
-                        "e_timeout_settings_enum!",
-                      ),
-                      map_pool_id: $("map_pool_id", "uuid!"),
-                    }),
-              },
+              _set: Object.fromEntries(
+                columns.map(([name, type]) => [name, $(name, type as any)]),
+              ) as any,
             },
             {
               id: true,
@@ -2047,67 +2106,21 @@ export default {
       if (!this.tournament) {
         throw new Error("Tournament is required");
       }
-      const tournamentOptions = this.tournament.options;
+      const columns = this.stageOptionColumns(form, false);
 
       const { data } = await (this as any).$apollo.mutate({
-        variables: {
-          tv_delay: form.tv_delay,
-          ...(allowsVetoPickTimeout()
-            ? { veto_pick_timeout: form.veto_pick_timeout }
-            : {}),
-          region_veto: form.region_veto,
-          regions: form.regions || [],
-          check_in_setting: form.check_in_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          match_mode: form.match_mode,
-          // Keep tournament defaults for all other fields
-          mr: tournamentOptions.mr,
-          type: tournamentOptions.type,
-          best_of: tournamentOptions.best_of,
-          knife_round: tournamentOptions.knife_round,
-          default_models: tournamentOptions.default_models,
-          overtime: tournamentOptions.overtime,
-          coaches: tournamentOptions.coaches,
-          number_of_substitutes: tournamentOptions.number_of_substitutes,
-          timeout_setting: tournamentOptions.timeout_setting,
-          map_pool_id: tournamentOptions.map_pool.id,
-        },
+        variables: Object.fromEntries(
+          columns.map(([name, , value]) => [name, value]),
+        ),
         mutation: generateMutation({
           insert_match_options_one: [
             {
               object: {
-                tv_delay: $("tv_delay", "Int!"),
-                ...(allowsVetoPickTimeout()
-                  ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
-                  : {}),
-                region_veto: $("region_veto", "Boolean!"),
-                regions: $("regions", "[String!]!"),
-                check_in_setting: $(
-                  "check_in_setting",
-                  "e_check_in_settings_enum!",
+                ...Object.fromEntries(
+                  columns.map(([name, type]) => [name, $(name, type as any)]),
                 ),
-                ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                tech_timeout_setting: $(
-                  "tech_timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                match_mode: $("match_mode", "e_match_mode_enum!"),
-                mr: $("mr", "Int!"),
-                type: $("type", "e_match_types_enum!"),
-                best_of: $("best_of", "Int!"),
-                knife_round: $("knife_round", "Boolean!"),
-                default_models: $("default_models", "Boolean!"),
-                overtime: $("overtime", "Boolean!"),
-                coaches: $("coaches", "Boolean!"),
-                number_of_substitutes: $("number_of_substitutes", "Int!"),
-                timeout_setting: $(
-                  "timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                map_pool_id: $("map_pool_id", "uuid!"),
                 map_veto: true,
-              },
+              } as any,
             },
             {
               id: true,
@@ -2116,6 +2129,19 @@ export default {
         }),
       });
       return data.insert_match_options_one.id;
+    },
+    async discardOptionsOnFailure<T>(
+      createdOptionsId: string | null,
+      attach: () => Promise<T>,
+    ): Promise<T> {
+      try {
+        return await attach();
+      } catch (error) {
+        if (createdOptionsId) {
+          await this.deleteMatchOptions(createdOptionsId).catch(() => {});
+        }
+        throw error;
+      }
     },
     async deleteMatchOptions(matchOptionsId: string): Promise<void> {
       await (this as any).$apollo.mutate({
@@ -2187,9 +2213,15 @@ export default {
           };
 
           if (this.matchSettingsChanged()) {
-            if (this.stage.options?.id) {
-              await this.updateMatchOptions(this.stage.options.id, form, true);
-            } else if (customAdvancedSettings) {
+            const ownRow = !!this.stage.options?.id;
+            const onlyMatchMode = this.changedFields().every(
+              (key) =>
+                key === "match_mode" || !MATCH_SETTING_FIELDS.includes(key),
+            );
+            if (
+              (!ownRow && customAdvancedSettings) ||
+              (ownRow && !onlyMatchMode)
+            ) {
               if (await this.stageHasDrawnMatches()) {
                 this.stageStarted = true;
                 toast({
@@ -2199,28 +2231,36 @@ export default {
                 });
                 return;
               }
+            }
+            if (ownRow) {
+              await this.updateMatchOptions(this.stage.options.id, form, true);
+            } else if (customAdvancedSettings) {
               lockedSet.match_options_id = await this.createMatchOptions(form);
             }
           }
 
-          await (this as any).$apollo.mutate({
-            variables: {
-              settings: settings,
-            },
-            mutation: generateMutation({
-              update_tournament_stages_by_pk: [
-                {
-                  pk_columns: {
-                    id: this.stage.id,
-                  },
-                  _set: lockedSet,
+          await this.discardOptionsOnFailure(
+            lockedSet.match_options_id ?? null,
+            () =>
+              (this as any).$apollo.mutate({
+                variables: {
+                  settings: settings,
                 },
-                {
-                  __typename: true,
-                },
-              ],
-            }),
-          });
+                mutation: generateMutation({
+                  update_tournament_stages_by_pk: [
+                    {
+                      pk_columns: {
+                        id: this.stage.id,
+                      },
+                      _set: lockedSet,
+                    },
+                    {
+                      __typename: true,
+                    },
+                  ],
+                }),
+              }),
+          );
 
           this.takeSnapshot();
           this.$emit("updated");
@@ -2245,6 +2285,7 @@ export default {
         if (this.stage) {
           // Handle match options for advanced settings
           let matchOptionsId: string | null = null;
+          let createdOptionsId: string | null = null;
 
           if (this.stage.options?.id) {
             if (customAdvancedSettings) {
@@ -2277,6 +2318,7 @@ export default {
           } else {
             if (customAdvancedSettings) {
               matchOptionsId = await this.createMatchOptions(form);
+              createdOptionsId = matchOptionsId;
             }
           }
 
@@ -2317,24 +2359,26 @@ export default {
             updateSet.match_options_id = null;
           }
 
-          await (this as any).$apollo.mutate({
-            variables: {
-              settings: settings,
-            },
-            mutation: generateMutation({
-              update_tournament_stages_by_pk: [
-                {
-                  pk_columns: {
-                    id: this.stage.id,
+          await this.discardOptionsOnFailure(createdOptionsId, () =>
+            (this as any).$apollo.mutate({
+              variables: {
+                settings: settings,
+              },
+              mutation: generateMutation({
+                update_tournament_stages_by_pk: [
+                  {
+                    pk_columns: {
+                      id: this.stage.id,
+                    },
+                    _set: updateSet,
                   },
-                  _set: updateSet,
-                },
-                {
-                  __typename: true,
-                },
-              ],
+                  {
+                    __typename: true,
+                  },
+                ],
+              }),
             }),
-          });
+          );
 
           this.takeSnapshot();
           this.$emit("updated");
@@ -2398,23 +2442,25 @@ export default {
         if (customAdvancedSettings) {
           matchOptionsId = await this.createMatchOptions(form);
 
-          await (this as any).$apollo.mutate({
-            mutation: generateMutation({
-              update_tournament_stages_by_pk: [
-                {
-                  pk_columns: {
-                    id: stageId,
+          await this.discardOptionsOnFailure(matchOptionsId, () =>
+            (this as any).$apollo.mutate({
+              mutation: generateMutation({
+                update_tournament_stages_by_pk: [
+                  {
+                    pk_columns: {
+                      id: stageId,
+                    },
+                    _set: {
+                      match_options_id: matchOptionsId,
+                    } as any,
                   },
-                  _set: {
-                    match_options_id: matchOptionsId,
-                  } as any,
-                },
-                {
-                  __typename: true,
-                },
-              ],
+                  {
+                    __typename: true,
+                  },
+                ],
+              }),
             }),
-          });
+          );
         }
 
         this.$emit("updated", this.order);

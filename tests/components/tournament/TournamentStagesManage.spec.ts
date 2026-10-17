@@ -169,4 +169,33 @@ describe("TournamentStagesManage", () => {
     expect(buttons(wrapper, "Add Another Stage")).toHaveLength(0);
     expect(deletes(wrapper)).toHaveLength(0);
   });
+
+  it("puts Manual scheduling on a line of its own under a stage's team count", async () => {
+    const wrapper = await mountSuspended(TournamentStagesManage, {
+      props: {
+        tournament: {
+          id: "tournament-1",
+          status: "Live",
+          auto_start: true,
+          scheduling_mode: "auto",
+          options: { best_of: 1, match_mode: "auto" },
+          stages: [
+            { ...stage(1, []), options: { match_mode: "admin" } },
+            stage(2, [emptySlot()]),
+          ],
+        },
+      },
+      global: { stubs: { TournamentStageForm: true } },
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+
+    const manual = wrapper.findAll('[data-test="stage-manual-scheduling"]');
+    expect(manual).toHaveLength(1);
+    expect(manual[0].text()).toBe("Manual scheduling");
+    const summary = wrapper
+      .findAll("span")
+      .find((span) => span.text().startsWith("8–8 teams"));
+    expect(summary?.text()).not.toContain("Manual scheduling");
+  });
 });

@@ -34,6 +34,7 @@ export const tournamentBracketStageFields = [
         round: true,
         group: true,
         bye: true,
+        finished: true,
         match_number: true,
         scheduled_at: true,
         scheduled_eta: true,
@@ -42,7 +43,7 @@ export const tournamentBracketStageFields = [
         path: true,
         loser_parent_bracket_id: true,
         match_options_id: true,
-        options: { best_of: true },
+        options: { best_of: true, match_mode: true },
         parent_bracket: bracketRef,
         loser_bracket: bracketRef,
         feeding_brackets: {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   adminModeStageOrders,
+  isBracketManuallyScheduled,
   isStageManuallyScheduled,
 } from "~/utilities/tournamentManualScheduling";
 
@@ -79,5 +80,64 @@ describe("adminModeStageOrders", () => {
 
   it("is empty without stages", () => {
     expect(adminModeStageOrders({})).toEqual([]);
+  });
+
+  it("lists the stages that follow a tournament in Admin mode", () => {
+    expect(
+      adminModeStageOrders({
+        options: { match_mode: "admin" },
+        stages: [
+          { order: 2, options: null },
+          { order: 1, options: null },
+          { order: 3, options: { match_mode: "auto" } },
+        ],
+      }),
+    ).toEqual([1, 2]);
+  });
+});
+
+describe("isBracketManuallyScheduled", () => {
+  it("reads the bracket's own options before the stage's", () => {
+    expect(
+      isBracketManuallyScheduled(
+        tournament(),
+        { options: { match_mode: "admin" } },
+        { options: { match_mode: "auto" } },
+      ),
+    ).toBe(false);
+    expect(
+      isBracketManuallyScheduled(
+        tournament(),
+        { options: { match_mode: "auto" } },
+        { options: { match_mode: "admin" } },
+      ),
+    ).toBe(true);
+  });
+
+  it("falls back to the stage, then the tournament", () => {
+    expect(
+      isBracketManuallyScheduled(
+        tournament(),
+        { options: { match_mode: "admin" } },
+        { options: null },
+      ),
+    ).toBe(true);
+    expect(
+      isBracketManuallyScheduled(
+        tournament({ options: { match_mode: "admin" } }),
+        { options: null },
+        null,
+      ),
+    ).toBe(true);
+  });
+
+  it("leaves negotiated tournaments to the captains", () => {
+    expect(
+      isBracketManuallyScheduled(
+        tournament({ scheduling_mode: "negotiated" }),
+        null,
+        { options: { match_mode: "admin" } },
+      ),
+    ).toBe(false);
   });
 });

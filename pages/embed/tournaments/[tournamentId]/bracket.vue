@@ -146,6 +146,7 @@ export default {
               status: true,
               auto_start: true,
               scheduling_mode: true,
+              options: { match_mode: true },
               stages: [
                 { order_by: [{ order: order_by.asc }] },
                 {
@@ -170,6 +171,7 @@ export default {
                       round: true,
                       group: true,
                       bye: true,
+                      finished: true,
                       match_number: true,
                       scheduled_at: true,
                       scheduled_eta: true,
@@ -178,7 +180,7 @@ export default {
                       path: true,
                       loser_parent_bracket_id: true,
                       match_options_id: true,
-                      options: { best_of: true },
+                      options: { best_of: true, match_mode: true },
                       parent_bracket: {
                         id: true,
                         round: true,

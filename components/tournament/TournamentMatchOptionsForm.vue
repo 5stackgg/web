@@ -373,9 +373,11 @@ export default {
           useApplicationSettingsStore().teamMaxSubs,
         );
         // Negotiated scheduling keeps brackets dormant until a time is agreed.
-        if (this.form.values.negotiated_scheduling) {
-          this.form.setFieldValue("match_mode", "admin");
-        }
+        // Match mode is hidden here, so turning it off has to set it back.
+        this.form.setFieldValue(
+          "match_mode",
+          this.form.values.negotiated_scheduling ? "admin" : "auto",
+        );
         const form = this.form.values;
 
         await this.$apollo.mutate({

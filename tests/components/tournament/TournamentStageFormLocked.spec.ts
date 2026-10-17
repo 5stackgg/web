@@ -131,6 +131,7 @@ async function mountLocked(
   structureLocked: boolean,
   options: Record<string, unknown> | null = null,
   tournamentMaps = 7,
+  tournamentExtras: Record<string, unknown> = {},
 ) {
   const wrapper = await mountSuspended(TournamentStageForm, {
     props: {
@@ -142,6 +143,7 @@ async function mountLocked(
         status: "Paused",
         options: {
           ...tournamentOptions,
+          ...tournamentExtras,
           map_pool: poolOf("pool-1", tournamentMaps),
         },
         stages: [stage(options)],
@@ -298,6 +300,118 @@ describe("TournamentStageForm with the structure locked", () => {
     });
     expect(calls[1].document).toContain("update_tournament_stages_by_pk");
     expect(calls[1].document).toContain('match_options_id: "new-options"');
+  });
+
+  it("carries the tournament's other settings onto the options it gives a drawn stage", async () => {
+    const wrapper = await mountLocked(true, null, 7, {
+      game_mode_id: "game-mode-1",
+      camera_required: true,
+      camera_allow_teammates: true,
+      auto_cancellation: false,
+      auto_cancel_duration: 12,
+      live_match_timeout: 34,
+      round_restart_delay: 5,
+      halftime_pausematch: true,
+      prefer_dedicated_server: true,
+    });
+    const calls = await saveMatchMode(wrapper, "admin");
+
+    expect(calls[0].document).toContain("insert_match_options_one");
+    expect(calls[0].variables).toMatchObject({
+      game_mode_id: "game-mode-1",
+      camera_required: true,
+      camera_allow_teammates: true,
+      auto_cancellation: false,
+      auto_cancel_duration: 12,
+      live_match_timeout: 34,
+      round_restart_delay: 5,
+      halftime_pausematch: true,
+      prefer_dedicated_server: true,
+    });
+  });
+
+  // create_tournaments_role defaults to user, whose match_options permission
+  // has none of these columns; sending one fails the whole save.
+  it("leaves out the columns a plain user's role can't write", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Owner",
+      role: e_player_roles_enum.user,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const wrapper = await mountLocked(true, null, 7, {
+      game_mode_id: "game-mode-1",
+      camera_required: true,
+      auto_cancellation: false,
+    });
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+    await (wrapper.vm as any).updateCreateStage();
+    await flushPromises();
+    const [insert] = sentCalls();
+
+    expect(insert.document).toContain("insert_match_options_one");
+    expect(insert.variables).toMatchObject({ tv_delay: 30 });
+    for (const column of [
+      "match_mode",
+      "check_in_setting",
+      "veto_pick_timeout",
+      "camera_required",
+      "camera_allow_teammates",
+      "game_mode_id",
+      "auto_cancellation",
+      "auto_cancel_duration",
+      "live_match_timeout",
+    ]) {
+      expect(insert.document, column).not.toContain(column);
+      expect(insert.variables, column).not.toHaveProperty(column);
+    }
+  });
+
+  it("refuses a change to its own options once the stage's first match was drawn meanwhile", async () => {
+    const wrapper = await mountLocked(true, {
+      ...tournamentOptions,
+      id: "stage-options-1",
+    });
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+
+    query.mockResolvedValue(aMatch);
+    await (wrapper.vm as any).updateCreateStage();
+    await flushPromises();
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: MATCHES_DRAWN }),
+    );
+  });
+
+  it("deletes the options it created when attaching them to the stage fails", async () => {
+    mutate.mockImplementation(async ({ mutation }: { mutation: any }) => {
+      const document = print(mutation);
+      if (document.includes("insert_match_options_one")) {
+        return { data: { insert_match_options_one: { id: "new-options" } } };
+      }
+      if (document.includes("update_tournament_stages_by_pk")) {
+        throw new Error(
+          "Unable to modify match options for a stage that has already started",
+        );
+      }
+      return { data: {} };
+    });
+    const wrapper = await mountLocked(true);
+    (wrapper.vm as any).form.setFieldValue("match_mode", "admin");
+    await flushPromises();
+
+    await expect((wrapper.vm as any).updateCreateStage()).rejects.toThrow(
+      /already started/,
+    );
+    await flushPromises();
+
+    const deleted = sentCalls().find(({ document }) =>
+      document.includes("delete_match_options_by_pk"),
+    );
+    expect(deleted?.document).toContain('"new-options"');
+    expect(wrapper.emitted("updated")).toBeUndefined();
   });
 
   it("refuses options of its own for a stage whose first match was drawn meanwhile", async () => {

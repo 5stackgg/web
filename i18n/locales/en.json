@@ -5196,7 +5196,7 @@
       "open_plugin": "Open",
       "panel_step_deploy": "Run this on the machine hosting your panel, from your 5stack-panel checkout.",
       "panel_step_dns": "Point the domain it prints at the same address as this panel, and wait for the certificate.",
-      "panel_step_register": "Register it under Settings → Application → Panel Plugins → Add, paste that URL, and press Detect.",
+      "panel_step_register": "Register it under Settings → Application → Panel Plugins: turn on the Panel Plugins switch, then Add Panel Plugin, paste that URL, and press Detect.",
       "installs_everywhere": "Installs on all {count} online nodes.",
       "installed_on": "Installed on {installed} of {total} nodes.",
       "advanced": "Rollout",

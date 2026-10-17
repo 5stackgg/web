@@ -5194,7 +5194,7 @@
       "open_plugin": "Otwórz",
       "panel_step_deploy": "Uruchom to na maszynie hostującej twój panel, z twojego katalogu 5stack-panel.",
       "panel_step_dns": "Skieruj wypisaną domenę na ten sam adres co ten panel i poczekaj na certyfikat.",
-      "panel_step_register": "Zarejestruj ją w Ustawienia → Aplikacja → Wtyczki panelu → Dodaj, wklej ten URL i naciśnij Wykryj.",
+      "panel_step_register": "Zarejestruj ją w Ustawienia → Aplikacja → Wtyczki panelu: włącz Wtyczki panelu, potem Dodaj wtyczkę panelu, wklej ten URL i naciśnij Wykryj.",
       "installs_everywhere": "Instaluje się na wszystkich {count} węzłach online.",
       "installed_on": "Zainstalowana na {installed} z {total} węzłów.",
       "advanced": "Wdrożenie",

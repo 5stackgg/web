@@ -5194,7 +5194,7 @@
       "open_plugin": "Aç",
       "panel_step_deploy": "Bunu panelini barındıran makinede, 5stack-panel kopyandan çalıştır.",
       "panel_step_dns": "Yazdırdığı alan adını bu panelle aynı adrese yönlendir ve sertifikayı bekle.",
-      "panel_step_register": "Ayarlar → Uygulama → Panel Eklentileri → Ekle altında kaydet, o URL'yi yapıştır ve Algıla'ya bas.",
+      "panel_step_register": "Ayarlar → Uygulama → Panel Eklentileri altında Panel Eklentileri'ni aç, sonra Panel Eklentisi Ekle'de o URL'yi yapıştır ve Algıla'ya bas.",
       "installs_everywhere": "Çevrimiçi {count} düğümün tamamına kurulur.",
       "installed_on": "{total} düğümün {installed} tanesine kurulu.",
       "advanced": "Dağıtım",

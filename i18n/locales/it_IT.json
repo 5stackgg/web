@@ -5194,7 +5194,7 @@
       "open_plugin": "Apri",
       "panel_step_deploy": "Esegui questo sulla macchina che ospita il tuo pannello, dal tuo checkout di 5stack-panel.",
       "panel_step_dns": "Punta il dominio che stampa allo stesso indirizzo di questo pannello e attendi il certificato.",
-      "panel_step_register": "Registralo in Impostazioni → Applicazione → Plugin del pannello → Aggiungi, incolla quell'URL e premi Rileva.",
+      "panel_step_register": "Registralo in Impostazioni → Applicazione → Plugin del pannello: attiva Plugin del pannello, poi Aggiungi plugin del pannello, incolla quell'URL e premi Rileva.",
       "installs_everywhere": "Si installa su tutti i {count} nodi online.",
       "installed_on": "Installato su {installed} nodi su {total}.",
       "advanced": "Distribuzione",

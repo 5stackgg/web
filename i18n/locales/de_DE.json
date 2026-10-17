@@ -5194,7 +5194,7 @@
       "open_plugin": "Öffnen",
       "panel_step_deploy": "Führe das auf der Maschine aus, die dein Panel hostet, aus deinem 5stack-panel-Checkout.",
       "panel_step_dns": "Zeige mit der ausgegebenen Domain auf dieselbe Adresse wie dieses Panel und warte auf das Zertifikat.",
-      "panel_step_register": "Registriere es unter Einstellungen → Anwendung → Panel-Plugins → Hinzufügen, füge die URL ein und drücke Erkennen.",
+      "panel_step_register": "Registriere es unter Einstellungen → Anwendung → Panel-Plugins: schalte Panel-Plugins ein, dann Panel-Plugin hinzufügen, füge die URL ein und drücke Erkennen.",
       "installs_everywhere": "Wird auf allen {count} Online-Nodes installiert.",
       "installed_on": "Auf {installed} von {total} Nodes installiert.",
       "advanced": "Rollout",

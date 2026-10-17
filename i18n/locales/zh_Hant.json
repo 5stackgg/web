@@ -5194,7 +5194,7 @@
       "open_plugin": "開啟",
       "panel_step_deploy": "在託管面板的機器上，從你的 5stack-panel 程式碼目錄執行此命令。",
       "panel_step_dns": "把它輸出的網域指向與本面板相同的位址，然後等待憑證簽發。",
-      "panel_step_register": "在 設定 → 應用程式 → 面板外掛 → 新增 中註冊，貼上該 URL 並按「偵測」。",
+      "panel_step_register": "在 設定 → 應用程式 → 面板外掛 中開啟「面板外掛」開關，然後按「新增面板外掛」，貼上該 URL 並按「偵測」。",
       "installs_everywhere": "安裝到全部 {count} 個線上節點。",
       "installed_on": "已安裝在 {total} 個節點中的 {installed} 個。",
       "advanced": "分發",

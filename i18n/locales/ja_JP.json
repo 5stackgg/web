@@ -5194,7 +5194,7 @@
       "open_plugin": "開く",
       "panel_step_deploy": "パネルをホストしているマシン上で、5stack-panel のチェックアウトからこれを実行します。",
       "panel_step_dns": "表示されたドメインをこのパネルと同じアドレスに向け、証明書の発行を待ちます。",
-      "panel_step_register": "設定 → アプリケーション → パネルプラグイン → 追加 で登録し、その URL を貼り付けて「検出」を押します。",
+      "panel_step_register": "設定 → アプリケーション → パネルプラグイン で「パネルプラグイン」をオンにし、「パネルプラグインを追加」でその URL を貼り付けて「検出」を押します。",
       "installs_everywhere": "オンラインの {count} 台すべてのノードにインストールします。",
       "installed_on": "{total} 台中 {installed} 台のノードにインストール済み。",
       "advanced": "ロールアウト",

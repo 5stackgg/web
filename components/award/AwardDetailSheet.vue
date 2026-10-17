@@ -15,7 +15,7 @@ import AwardBadge from "./AwardBadge.vue";
 import AwardGrantInline from "./AwardGrantInline.vue";
 import StatTile from "~/components/admin/StatTile.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
+import LastChanged from "~/components/admin/LastChanged.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
@@ -50,6 +50,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { awardRecipientDetailFields } from "~/graphql/awardFields";
 import { awardLedgerFields } from "~/graphql/awardLedgerFields";
+import { lastChangedKey, useLastChanged } from "~/composables/useLastChanged";
 import {
   automationLabel,
   awardOwner,
@@ -117,6 +118,17 @@ const detail = computed<any>(() => {
   return row && row.id === props.award?.id ? row : null;
 });
 const view = computed<any>(() => detail.value ?? props.award ?? {});
+
+// Who changed it last, once the api stamps that; until then, or for an award
+// not edited since, when it was last saved.
+const { at: stampedAt, by: stampedBy } = useLastChanged(
+  "awards",
+  () => props.award?.id ?? null,
+  () => lastChangedKey("awards", detail.value),
+);
+const changedAt = computed<string | null>(
+  () => stampedAt.value ?? detail.value?.updated_at ?? null,
+);
 
 const tier = computed(() => resolveAwardTier(null, view.value.tier));
 const builtIn = computed(() => isBuiltIn(view.value));
@@ -328,17 +340,7 @@ async function revoke() {
         <SheetDescription class="truncate text-xs">
           {{ subtitle }}
         </SheetDescription>
-        <i18n-t
-          v-if="detail?.updated_at"
-          keypath="admin.last_changed.updated"
-          tag="p"
-          class="text-xs text-muted-foreground/80"
-          data-award-updated
-        >
-          <template #time>
-            <TimeAgo :date="detail.updated_at" hide-icon />
-          </template>
-        </i18n-t>
+        <LastChanged :at="changedAt" :by="stampedBy" data-award-updated />
       </SheetHeader>
 
       <div class="grid flex-1 content-start gap-6 overflow-y-auto px-6 py-5">

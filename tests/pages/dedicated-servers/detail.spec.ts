@@ -69,6 +69,7 @@ async function mountAs(
         ServerForm: true,
         ServerCommunityOverview: true,
         PublicServerView: true,
+        LastChangedFor: true,
       },
     },
   });

@@ -14033,7 +14033,8 @@
       "refresh_now": "立即重新整理"
     },
     "last_changed": {
-      "updated": "更新於 {time}"
+      "updated": "更新於 {time}",
+      "updated_by": "{name} 更新於 {time}"
     }
   }
 }

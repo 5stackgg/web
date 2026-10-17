@@ -37,6 +37,7 @@ import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import StatTile from "~/components/admin/StatTile.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
+import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import { TONE_BORDER, TONE_TEXT } from "~/components/admin/tone";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
@@ -195,6 +196,12 @@ const dangerButtonClasses =
                   >
                     {{ activeSeason.description }}
                   </p>
+
+                  <LastChangedFor
+                    type="seasons"
+                    :row="activeSeason"
+                    class="-mt-2"
+                  />
 
                   <div class="grid gap-2 sm:grid-cols-3">
                     <StatTile

@@ -32,6 +32,7 @@ import InspectorLive from "~/components/game-server-nodes/InspectorLive.vue";
 import InspectorGpu from "~/components/game-server-nodes/InspectorGpu.vue";
 import InspectorNode from "~/components/game-server-nodes/InspectorNode.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
+import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import {
   ChevronDown,
   CircleAlert,
@@ -634,6 +635,7 @@ const CALLOUT_BORDER: Record<string, string> = {
           />
         </span>
       </div>
+      <LastChangedFor type="game_server_nodes" :row="node" class="pl-4" />
     </header>
 
     <div v-if="attention.length" class="px-4 pt-3">

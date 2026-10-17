@@ -14033,7 +14033,8 @@
       "refresh_now": "立即刷新"
     },
     "last_changed": {
-      "updated": "更新于 {time}"
+      "updated": "更新于 {time}",
+      "updated_by": "{name} 更新于 {time}"
     }
   }
 }

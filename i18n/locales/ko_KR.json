@@ -14033,7 +14033,8 @@
       "refresh_now": "지금 새로고침"
     },
     "last_changed": {
-      "updated": "업데이트: {time}"
+      "updated": "업데이트: {time}",
+      "updated_by": "업데이트: {time} ({name})"
     }
   }
 }

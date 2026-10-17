@@ -14039,7 +14039,8 @@
       "refresh_now": "Refresh now"
     },
     "last_changed": {
-      "updated": "Updated {time}"
+      "updated": "Updated {time}",
+      "updated_by": "Updated {time} by {name}"
     }
   }
 }

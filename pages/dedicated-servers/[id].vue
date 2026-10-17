@@ -30,6 +30,7 @@ import PublicServerView from "~/components/servers/PublicServerView.vue";
 import ServerMoveDialog from "~/components/servers/ServerMoveDialog.vue";
 import ServerMigrationPanel from "~/components/servers/ServerMigrationPanel.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
+import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import { useServerMigration } from "~/composables/useServerMigration";
 import { ACTIVE_SERVER_MIGRATION_STATUSES } from "~/types/serverMigration";
 import Clipboard from "~/components/ClipBoard.vue";
@@ -294,6 +295,7 @@ const runtimeOptions = [
               serverNode.label || serverNode.id
             }}</span>
           </NuxtLink>
+          <LastChangedFor type="servers" :row="server" dot />
         </div>
       </header>
     </PageTransition>

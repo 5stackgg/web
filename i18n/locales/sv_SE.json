@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264 är standard för bredast kompatibilitet med webbläsare och enheter, inklusive den snabbaste WebRTC-vägen i alla webbläsare. H.265 (HEVC) är cirka 30 % mindre vid samma kvalitet, men HEVC över WebRTC funkar bara i Safari 17+ — Chrome- och Firefox-tittare faller tillbaka till HLS-vägen. H.265 faller automatiskt tillbaka till H.264 om GPU:n saknar NVENC HEVC.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (rekommenderas)",
+          "video_encoder": "Videokodare",
+          "video_encoder_description": "Auto använder GPU-kodaren och flyttar ett jobb till CPU om GPU-kodaren misslyckas. Endast GPU använder aldrig CPU; jobbet misslyckas i stället. Endast CPU kodar alltid på CPU (H.264, fler CPU-kärnor). Varje jobb behöver fortfarande en GPU-nod för att köra CS2.",
+          "encoder_auto": "Auto (rekommenderas)",
+          "encoder_gpu": "Endast GPU",
+          "encoder_cpu": "Endast CPU",
           "updated": "Streaminginställningarna har uppdaterats"
         },
         "cameras": {
@@ -4250,6 +4255,7 @@
     "gpu_nodes": {
       "title": "GPU-noder",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "Videokodare: {element}",
       "description": "GPU-kapabla spelservernoder som driver livestreamar, demouppspelning och höjdpunktsrendering. Varje GPU kör som mest en konsument åt gången.",
       "metrics": "Mätvärden",
       "meter": {

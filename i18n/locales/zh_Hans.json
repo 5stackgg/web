@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264 是默认选项，可在最广泛的浏览器和设备上兼容，包括在每款浏览器上延迟最低的 WebRTC 路径。H.265 (HEVC) 在同等质量下体积小约 30%，但 HEVC-over-WebRTC 仅支持 Safari 17+——Chrome 和 Firefox 观众将回退到 HLS 路径。如果 GPU 缺少 NVENC HEVC，H.265 将自动回退到 H.264。",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264（推荐）",
+          "video_encoder": "视频编码器",
+          "video_encoder_description": "自动模式使用 GPU 编码器，并在 GPU 编码器失败时将任务切换到 CPU。仅 GPU 模式从不使用 CPU，而是让任务失败。仅 CPU 模式始终使用 CPU 编码（H.264，使用更多 CPU 核心）。所有任务仍然需要 GPU 节点来运行 CS2。",
+          "encoder_auto": "自动（推荐）",
+          "encoder_gpu": "仅 GPU",
+          "encoder_cpu": "仅 CPU",
           "updated": "直播设置已更新"
         },
         "cameras": {
@@ -4250,6 +4255,7 @@
     "gpu_nodes": {
       "title": "GPU 节点",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "视频编码器：{element}",
       "description": "支持 GPU 的游戏服务器节点，托管直播、Demo 回放和高光渲染。每个 GPU 同时最多运行一个任务。",
       "metrics": "指标",
       "meter": {

@@ -3644,7 +3644,6 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { toast } from "~/components/ui/toast";
 import { canEditPlayerRole } from "~/utilities/playerRoleEdit";
-import { asQuery } from "~/utilities/seededSubscribe";
 
 const playerSubscription = typedGql("subscription")({
   players_by_pk: [
@@ -3724,57 +3723,16 @@ export default {
         data.players_by_pk?.allow_message_requests ?? null,
       error: () => {},
     },
-    // A subscription's first payload waits on the socket handshake and Hasura's
-    // first poll -- on a cold load that lands after everything else on the
-    // page. The same selection as a query answers in one HTTP round trip, so
-    // the hero and the awards (which hold back the sections below them) render
-    // from that instead. The subscription stays the live source.
-    playerSeed: {
-      query: asQuery(playerSubscription),
-      variables: function (): Record<string, unknown> {
-        return { playerId: (this as any).playerId };
-      },
-      skip: function () {
-        return !this.playerId;
-      },
-      fetchPolicy: "no-cache",
-      manual: true,
-      context: { optional: true },
-      result: function ({ data }: { data: any }) {
-        if (data && this.playerLiveFor !== this.playerId) {
-          this.setPlayer(data.players_by_pk);
-        }
-      },
-      error: () => {},
-    },
-    playerAwardsSeed: {
-      query: asQuery(playerAwardsSubscription),
-      variables: function (): Record<string, unknown> {
-        return { steam_id: (this as any).playerId };
-      },
-      skip: function () {
-        return !this.playerId;
-      },
-      fetchPolicy: "no-cache",
-      manual: true,
-      context: { optional: true },
-      result: function ({ data }: { data: any }) {
-        if (data && this.awardsLiveFor !== this.playerId) {
-          this.playerAwards = data.award_recipients || [];
-        }
-      },
-      error: () => {},
-    },
     $subscribe: {
       players_by_pk: {
         query: playerSubscription,
+        context: { seed: true },
         variables: function () {
           return {
             playerId: this.playerId,
           };
         },
         result: function ({ data }) {
-          this.playerLiveFor = this.playerId;
           this.setPlayer(data.players_by_pk);
         },
       },
@@ -3829,6 +3787,7 @@ export default {
       },
       playerAwards: {
         query: playerAwardsSubscription,
+        context: { seed: true },
         variables: function () {
           return {
             steam_id: this.playerId,
@@ -3838,7 +3797,6 @@ export default {
           return !this.playerId;
         },
         result: function ({ data }: { data: any }) {
-          this.awardsLiveFor = this.playerId;
           this.playerAwards = data.award_recipients || [];
         },
       },
@@ -3858,8 +3816,6 @@ export default {
   data() {
     return {
       player: undefined,
-      playerLiveFor: null as string | null,
-      awardsLiveFor: null as string | null,
       // null until known; only an explicit false hides the Message button.
       allowsMessageRequests: null as boolean | null,
       playerAwards: undefined,

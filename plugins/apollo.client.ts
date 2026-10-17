@@ -17,6 +17,7 @@ import { isAuthErrorMessage } from "~/graphql/isAuthError";
 import { tournamentInviteErrorKey } from "~/utilities/tournamentInvites";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import { createWatchedGraphqlWsClient } from "~/utilities/graphqlWsWatchdog";
+import { createSeedLink } from "~/graphql/seedLink";
 
 const mergeObjectFields = (
   existing: Record<string, unknown> | undefined,
@@ -149,7 +150,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     httpLink,
   );
 
-  $apollo.defaultClient.setLink(from([errorLink, retryLink, splitLink]));
+  $apollo.defaultClient.setLink(
+    from([errorLink, createSeedLink(httpLink), retryLink, splitLink]),
+  );
   $apollo.defaultClient.defaultOptions = {
     watchQuery: {
       fetchPolicy: "cache-and-network",

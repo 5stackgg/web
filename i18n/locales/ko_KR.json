@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264는 모든 브라우저에서 가장 낮은 지연의 WebRTC 경로를 포함해 가장 폭넓은 브라우저·기기 호환성을 위한 기본값입니다. H.265(HEVC)는 동일 품질에서 약 30% 더 작지만, HEVC over WebRTC는 Safari 17 이상에서만 지원되며 Chrome과 Firefox 시청자는 HLS 경로로 대체됩니다. GPU에 NVENC HEVC가 없으면 H.265는 자동으로 H.264로 대체됩니다.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264(권장)",
+          "video_encoder": "동영상 인코더",
+          "video_encoder_description": "자동은 GPU 인코더를 사용하며 GPU 인코더가 실패하면 작업을 CPU로 전환합니다. GPU만 사용은 CPU를 사용하지 않으며 대신 작업이 실패합니다. CPU만 사용은 항상 CPU에서 인코딩합니다(H.264, 더 많은 CPU 코어 사용). 모든 작업에는 CS2를 실행할 GPU 노드가 필요합니다.",
+          "encoder_auto": "자동(권장)",
+          "encoder_gpu": "GPU만 사용",
+          "encoder_cpu": "CPU만 사용",
           "updated": "스트리밍 설정이 업데이트되었습니다"
         },
         "cameras": {
@@ -4250,6 +4255,7 @@
     "gpu_nodes": {
       "title": "GPU 노드",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "영상 인코더: {element}",
       "description": "라이브 스트림, 데모 재생, 하이라이트 렌더링을 처리하는 GPU 지원 게임 서버 노드입니다. GPU 하나당 동시에 하나의 작업만 처리합니다.",
       "metrics": "메트릭",
       "meter": {

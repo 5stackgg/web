@@ -470,6 +470,21 @@ async function stopGpuSession(nodeId: string) {
                 <Spinner class="w-2.5 h-2.5" />
                 {{ busyByNode[node.id].progress }}
               </span>
+              <span
+                v-if="busyByNode[node.id].encoder"
+                class="gpu-node-task-encoder"
+                :class="{
+                  'gpu-node-task-encoder-warn':
+                    busyByNode[node.id].encoder?.warning,
+                }"
+                :title="
+                  $t('pages.gpu_nodes.encoder_tag_title', {
+                    element: busyByNode[node.id].encoder?.element,
+                  })
+                "
+              >
+                {{ busyByNode[node.id].encoder?.element }}
+              </span>
             </template>
             <Tooltip v-else-if="isBaking(node)">
               <TooltipTrigger as-child>
@@ -845,6 +860,10 @@ async function stopGpuSession(nodeId: string) {
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { Radio, PlayCircle, Film } from "lucide-vue-next";
+import {
+  pickEncoderMarker,
+  type EncoderMarker,
+} from "~/utilities/encoderMarker";
 
 type BusyEntry = {
   kind: "live" | "demo" | "highlights";
@@ -862,6 +881,10 @@ type BusyEntry = {
   // Raw status_history of the current item, fed to BootSequence so
   // any booting pod (render / live / demo) shows the same boot checklist.
   statusHistory?: any[];
+  // Live streams and demo sessions only: the encoder the pod reported with
+  // status=live (pickEncoderMarker), or null when it sent none. CPU records
+  // apply to both vendors. Renders leave it out.
+  encoder?: EncoderMarker | null;
   icon: any;
 };
 
@@ -912,6 +935,7 @@ export default {
           snapshotKind: "live",
           snapshotId: stream.match_id,
           statusHistory: stream.is_live ? undefined : stream.status_history,
+          encoder: pickEncoderMarker(stream.status_history),
           icon: Radio,
         };
       }
@@ -933,6 +957,7 @@ export default {
           snapshotId: session.id,
           statusHistory:
             session.status === "playing" ? undefined : session.status_history,
+          encoder: pickEncoderMarker(session.status_history),
           icon: PlayCircle,
         };
       }
@@ -1458,6 +1483,25 @@ export default {
 }
 .gpu-node-task-ok {
   color: hsl(var(--t-ok));
+}
+/* The encoder reported when a pod went live. The CPU fallback
+   (x264enc) takes the destructive tone: tac-amber already marks the busy
+   pill, and --warning is too dark as text on the card. */
+.gpu-node-task-encoder {
+  flex-shrink: 0;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 9999px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: hsl(var(--muted-foreground));
+}
+.gpu-node-task-encoder-warn {
+  border-color: hsl(var(--destructive) / 0.5);
+  background: hsl(var(--destructive) / 0.12);
+  color: hsl(var(--destructive));
 }
 .gpu-node-ctrls {
   display: flex;

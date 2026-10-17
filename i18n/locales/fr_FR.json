@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264 est le choix par défaut pour la compatibilité navigateurs et appareils la plus large, y compris le chemin WebRTC à plus faible latence sur tous les navigateurs. H.265 (HEVC) est environ 30 % plus léger à qualité équivalente, mais HEVC via WebRTC n'est disponible que sur Safari 17+ — les spectateurs Chrome et Firefox basculent sur le chemin HLS. H.265 retombe automatiquement sur H.264 si le GPU n'a pas NVENC HEVC.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recommandé)",
+          "video_encoder": "Encodeur vidéo",
+          "video_encoder_description": "Auto utilise l’encodeur GPU et bascule une tâche sur le CPU si l’encodeur GPU échoue. GPU uniquement n’utilise jamais le CPU ; la tâche échoue à la place. CPU uniquement encode toujours sur le CPU (H.264, davantage de cœurs CPU). Chaque tâche nécessite toujours un nœud GPU pour exécuter CS2.",
+          "encoder_auto": "Auto (recommandé)",
+          "encoder_gpu": "GPU uniquement",
+          "encoder_cpu": "CPU uniquement",
           "updated": "Paramètres de streaming mis à jour"
         },
         "cameras": {
@@ -4250,6 +4255,7 @@
     "gpu_nodes": {
       "title": "Nœuds GPU",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "Encodeur vidéo : {element}",
       "description": "Nœuds de serveurs de jeu équipés d'un GPU qui hébergent les streams en direct, la lecture des démos et le rendu des highlights. Chaque GPU ne sert qu'un consommateur à la fois.",
       "metrics": "Métriques",
       "meter": {

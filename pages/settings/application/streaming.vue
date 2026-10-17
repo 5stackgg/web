@@ -147,6 +147,38 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
               <FormMessage />
             </FormItem>
           </FormField>
+
+          <FormField v-slot="{ componentField }" name="video_encoder">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.streaming.video_encoder")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.streaming.video_encoder_description",
+                )
+              }}</FormDescription>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="auto">
+                    {{ $t("pages.settings.application.streaming.encoder_auto") }}
+                  </SelectItem>
+                  <SelectItem value="gpu">
+                    {{ $t("pages.settings.application.streaming.encoder_gpu") }}
+                  </SelectItem>
+                  <SelectItem value="cpu">
+                    {{ $t("pages.settings.application.streaming.encoder_cpu") }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </SettingsSection>
 
         <SettingsSection
@@ -213,6 +245,7 @@ export default {
                 .default(e_player_roles_enum.streamer),
             }),
             live_video_codec: z.enum(["h265", "h264"]).default("h264"),
+            video_encoder: z.enum(["auto", "gpu", "cpu"]).default("auto"),
           }),
         ),
       }),
@@ -227,6 +260,14 @@ export default {
             this.form.setFieldValue(
               setting.name,
               setting.value === "h265" ? "h265" : "h264",
+            );
+            continue;
+          }
+          if (setting.name === "video_encoder") {
+            const mode = (setting.value ?? "").trim().toLowerCase();
+            this.form.setFieldValue(
+              setting.name,
+              mode === "gpu" || mode === "cpu" ? mode : "auto",
             );
             continue;
           }
@@ -316,6 +357,10 @@ export default {
                   {
                     name: "live_video_codec",
                     value: this.form.values.live_video_codec ?? "h264",
+                  },
+                  {
+                    name: "video_encoder",
+                    value: this.form.values.video_encoder ?? "auto",
                   },
                 ],
                 on_conflict: {

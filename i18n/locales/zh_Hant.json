@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264 為預設選項，可在最廣泛的瀏覽器與裝置上相容，包括在每款瀏覽器上延遲最低的 WebRTC 路徑。H.265 (HEVC) 在同等品質下體積約小 30%，但 HEVC-over-WebRTC 僅支援 Safari 17+——Chrome 和 Firefox 的觀眾會回退到 HLS 路徑。若 GPU 缺少 NVENC HEVC，H.265 會自動回退到 H.264。",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264（建議）",
+          "video_encoder": "視訊編碼器",
+          "video_encoder_description": "自動模式使用 GPU 編碼器，並在 GPU 編碼器失敗時將工作切換到 CPU。僅 GPU 模式絕不使用 CPU，而是讓工作失敗。僅 CPU 模式一律使用 CPU 編碼（H.264，使用更多 CPU 核心）。所有工作仍然需要 GPU 節點來執行 CS2。",
+          "encoder_auto": "自動（建議）",
+          "encoder_gpu": "僅 GPU",
+          "encoder_cpu": "僅 CPU",
           "updated": "直播設定已更新"
         },
         "cameras": {
@@ -4250,6 +4255,7 @@
     "gpu_nodes": {
       "title": "GPU 節點",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "視訊編碼器：{element}",
       "description": "支援 GPU 的遊戲伺服器節點，用於承載直播、Demo 回放與精華轉檔。每個 GPU 同時最多執行一項工作。",
       "metrics": "指標",
       "meter": {

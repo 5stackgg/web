@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264, her tarayıcıda en düşük gecikmeli WebRTC yolu da dahil olmak üzere en geniş tarayıcı ve cihaz uyumluluğu için varsayılandır. H.265 (HEVC) aynı kalitede yaklaşık %30 daha küçüktür, ancak HEVC-over-WebRTC yalnızca Safari 17+ ile çalışır — Chrome ve Firefox izleyicileri HLS yoluna döner. GPU'da NVENC HEVC yoksa H.265 otomatik olarak H.264'e döner.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (önerilen)",
+          "video_encoder": "Video kodlayıcı",
+          "video_encoder_description": "Otomatik, GPU kodlayıcısını kullanır ve GPU kodlayıcısı başarısız olursa işi CPU’ya geçirir. Yalnızca GPU, CPU’yu hiç kullanmaz; bunun yerine iş başarısız olur. Yalnızca CPU her zaman CPU üzerinde kodlar (H.264, daha fazla CPU çekirdeği). Her işin CS2 çalıştırmak için yine bir GPU düğümüne ihtiyacı vardır.",
+          "encoder_auto": "Otomatik (önerilen)",
+          "encoder_gpu": "Yalnızca GPU",
+          "encoder_cpu": "Yalnızca CPU",
           "updated": "Yayın ayarları güncellendi"
         },
         "cameras": {
@@ -4250,6 +4255,7 @@
     "gpu_nodes": {
       "title": "GPU düğümleri",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "Video kodlayıcı: {element}",
       "description": "Canlı yayın, demo oynatma ve öne çıkan an render'ı barındıran GPU destekli sunucu düğümleri. Her GPU aynı anda en fazla bir tüketici çalıştırır.",
       "metrics": "Metrikler",
       "meter": {

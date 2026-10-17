@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264 が既定で、ブラウザやデバイスの互換性が最も広く、すべてのブラウザで最も低遅延な WebRTC 経路を使えます。H.265 (HEVC) は同等画質で約 30% 小さくなりますが、WebRTC 上の HEVC は Safari 17 以降のみ対応で、Chrome と Firefox の視聴者は HLS 経路にフォールバックします。GPU が NVENC HEVC に非対応の場合、H.265 は自動的に H.264 にフォールバックします。",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264（推奨）",
+          "video_encoder": "映像エンコーダー",
+          "video_encoder_description": "自動は GPU エンコーダーを使用し、GPU エンコーダーが失敗した場合はジョブを CPU に切り替えます。GPU のみは CPU を使用せず、代わりにジョブが失敗します。CPU のみは常に CPU でエンコードします（H.264、より多くの CPU コアを使用）。どのジョブでも CS2 を実行するために GPU ノードが必要です。",
+          "encoder_auto": "自動（推奨）",
+          "encoder_gpu": "GPU のみ",
+          "encoder_cpu": "CPU のみ",
           "updated": "配信設定を更新しました"
         },
         "cameras": {
@@ -4250,6 +4255,7 @@
     "gpu_nodes": {
       "title": "GPU ノード",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "映像エンコーダー: {element}",
       "description": "ライブ配信・デモ再生・ハイライトのレンダリングを担う GPU 対応のゲームサーバーノードです。各 GPU は同時に1つの処理のみ実行します。",
       "metrics": "メトリクス",
       "meter": {

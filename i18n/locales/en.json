@@ -2481,6 +2481,11 @@
           "live_video_codec_description": "H.264 is the default for the broadest browser and device compatibility, including the lowest-latency WebRTC path on every browser. H.265 (HEVC) is ~30% smaller at matched quality, but HEVC-over-WebRTC is Safari 17+ only — Chrome and Firefox viewers fall back to the HLS path. H.265 falls back to H.264 automatically if the GPU lacks NVENC HEVC.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recommended)",
+          "video_encoder": "Video Encoder",
+          "video_encoder_description": "Auto uses the GPU encoder and switches a job to the CPU if the GPU encoder fails. GPU only never uses the CPU; the job fails instead. CPU only always encodes on the CPU (H.264, more CPU cores). Every job still needs a GPU node to run CS2.",
+          "encoder_auto": "Auto (recommended)",
+          "encoder_gpu": "GPU only",
+          "encoder_cpu": "CPU only",
           "updated": "Updated Streaming Settings"
         },
         "cameras": {
@@ -4252,6 +4257,7 @@
     "gpu_nodes": {
       "title": "GPU Nodes",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "Video encoder: {element}",
       "description": "GPU-capable game server nodes that host live streams, demo playback, and highlight renders. Each GPU runs at most one consumer at a time.",
       "metrics": "Metrics",
       "meter": {

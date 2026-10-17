@@ -658,6 +658,7 @@ export default {
               connection_string: true,
               offline_at: true,
               max_players: true,
+              current_match: { id: true },
             },
           ],
         }),
@@ -832,8 +833,8 @@ export default {
     rconOnline() {
       return !!(this.server?.connected && this.server?.rcon_status);
     },
-    // The list row's status: players on it right now is the one live state
-    // this page can see (the roster reports it).
+    // The list row's status: live while a match holds the server or the
+    // roster reports players on it.
     status() {
       const settings = useApplicationSettingsStore();
       return serverStatus(this.server, {

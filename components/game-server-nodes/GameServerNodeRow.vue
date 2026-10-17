@@ -610,7 +610,9 @@ const isSectionExpanded = (section: string) => {
           </template>
 
           <template v-else>
-            <template v-if="gameServerNode.build_id">
+            <template
+              v-if="gameServerNode.build_id || gameServerNode.pin_build_id"
+            >
               <Select
                 :model-value="pinBuildIdForm.values.pin_build_id"
                 @update:model-value="(value) => pinBuildId(value)"
@@ -625,9 +627,14 @@ const isSectionExpanded = (section: string) => {
                         }})</span
                       >
                     </template>
-                    <template v-else>
+                    <template v-else-if="gameServerNode.build_id">
                       <span class="truncate">{{
                         gameServerNode.build_id
+                      }}</span>
+                    </template>
+                    <template v-else>
+                      <span class="truncate text-muted-foreground">{{
+                        updateTargetLabel
                       }}</span>
                     </template>
                     <Pin
@@ -704,6 +711,17 @@ const isSectionExpanded = (section: string) => {
                     : $t("game_server.update_cs")
                 }}
               </FiveStackToolTip>
+
+              <!-- A failed pinned update leaves no install but keeps the pin;
+                   the picker above is the only place to change it. -->
+              <Button
+                v-if="!gameServerNode.build_id && gameServerNode.enabled"
+                size="xs"
+                @click="updateCs"
+                :disabled="!isReachable"
+              >
+                {{ $t("game_server.install_cs") }}
+              </Button>
             </template>
 
             <template v-else>
@@ -1401,7 +1419,14 @@ const isSectionExpanded = (section: string) => {
           </div>
 
           <!-- Game Server Versions Section -->
-          <div class="border rounded-lg" v-if="gameServerNode.build_id">
+          <div
+            class="border rounded-lg"
+            v-if="
+              gameServerNode.build_id ||
+              gameServerNode.pin_build_id ||
+              gameServerNode.update_failed_at
+            "
+          >
             <button
               type="button"
               class="w-full px-3 py-2 flex items-center justify-between hover:bg-muted/50 transition-colors"
@@ -1486,7 +1511,9 @@ const isSectionExpanded = (section: string) => {
                       class="text-muted-foreground"
                     />
                   </button>
-                  <template v-if="gameServerNode.build_id">
+                  <template
+                    v-if="gameServerNode.build_id || gameServerNode.pin_build_id"
+                  >
                     <Select
                       :model-value="pinBuildIdForm.values.pin_build_id"
                       @update:model-value="(value) => pinBuildId(value)"
@@ -1501,9 +1528,14 @@ const isSectionExpanded = (section: string) => {
                               }})</span
                             >
                           </template>
-                          <template v-else>
+                          <template v-else-if="gameServerNode.build_id">
                             <span class="truncate">{{
                               gameServerNode.build_id
+                            }}</span>
+                          </template>
+                          <template v-else>
+                            <span class="truncate text-muted-foreground">{{
+                              updateTargetLabel
                             }}</span>
                           </template>
                           <Pin
@@ -1579,6 +1611,15 @@ const isSectionExpanded = (section: string) => {
                             })
                           : $t("game_server.update_cs")
                       }}
+                    </Button>
+                    <Button
+                      v-if="!gameServerNode.build_id && gameServerNode.enabled"
+                      size="sm"
+                      class="w-full mt-1"
+                      @click="updateCs"
+                      :disabled="!isReachable"
+                    >
+                      {{ $t("game_server.install_cs") }}
                     </Button>
                   </template>
                   <template v-else>

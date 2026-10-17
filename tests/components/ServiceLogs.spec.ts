@@ -83,4 +83,24 @@ describe("ServiceLogs", () => {
     vi.advanceTimersByTime(30_000);
     expect(socket.requests).toHaveLength(1);
   });
+
+  it("keeps live lines in order while an earlier window loads beside them", async () => {
+    const wrapper = await mountSuspended(ServiceLogs, {
+      props: { service: SERVICE, compact: true },
+    });
+    const pod = "map-assets-25966348-new";
+    line(pod, " live 1", 30);
+
+    (wrapper.vm as any).handleLoadMoreLogs({
+      pod,
+      oldestLogTime: new Date("2026-10-16T14:40:30.000Z"),
+    });
+    line(pod, " earlier", 10);
+    line(pod, " live 2", 40);
+    send({ end: true, partial: true });
+
+    expect(
+      (wrapper.vm as any).logsByPod[pod].map((entry: any) => entry.log),
+    ).toEqual([" earlier", " live 1", " live 2"]);
+  });
 });

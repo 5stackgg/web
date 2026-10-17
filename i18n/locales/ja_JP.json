@@ -3414,7 +3414,7 @@
         "upload_demo_description": "CS2の.demファイルをドロップすると試合スタッツをインポートします。試合履歴のリンク有無に関わらず利用できます。",
         "import_match": "試合をインポート",
         "import_match_description": "5Stack以外でプレイした試合を取り込みます。",
-        "extension_title": "Chrome用5Stack",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "FACEITとLeetifyの試合を、それぞれのページからワンクリックでインポートできます。",
         "add_to_chrome": "Chromeに追加",
         "or_upload_demo": "またはデモをアップロード",

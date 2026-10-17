@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   ChevronsUpDownIcon,
+  ChevronRight,
   Cog,
   Logs,
   LineChart,
@@ -8,9 +9,7 @@ import {
   Play,
   Globe,
   CalendarCog,
-  Camera,
   ShieldHalf,
-  ChevronRight,
   Users,
   Radio,
   Home,
@@ -27,7 +26,19 @@ import {
   Leaf,
   Medal,
   CalendarRange,
+  Gamepad2,
+  ShieldCheck,
+  HardDrive,
+  ServerCog,
+  Cpu,
+  MonitorPlay,
+  RadioTower,
 } from "lucide-vue-next";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import { SlideSwap } from "~/components/ui/transitions";
+import LeftNavLink from "~/layouts/components/LeftNavLink.vue";
+import { useNavMode } from "~/composables/useNavMode";
+import type { Component } from "vue";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
@@ -91,6 +102,81 @@ const isLogoRouteActive = computed(() => {
 
   return route.path === logoPath.value;
 });
+// The nav shows one list at a time: Play for the site, Admin for running it.
+const {
+  mode: navMode,
+  setMode: setNavMode,
+  toggle: toggleNavMode,
+} = useNavMode();
+
+// Admin entries come from the Options computed `adminGroups` as keys; the
+// icons live here because only setup bindings reach the template.
+const ADMIN_ICONS: Record<string, Component> = {
+  awards: Medal,
+  seasons: Leaf,
+  alerts: Megaphone,
+  "control-room": MonitorPlay,
+  plugins: LibraryBig,
+  regions: Globe,
+  "app-settings": Cog,
+  "dedicated-servers": HardDrive,
+  "game-server-nodes": ServerCog,
+  "gpu-nodes": Cpu,
+  logs: Logs,
+  metrics: LineChart,
+  "media-server": RadioTower,
+  database: Database,
+  "render-queue": ListVideo,
+};
+
+// Collapsing switches Home | Search from a row to a stack in one layout
+// change; play each button from where it was to where it lands as a
+// transform (read before the patch, play after), so they glide instead of jump.
+const { state: sidebarState } = useSidebar();
+const homeEl = ref<HTMLElement | null>(null);
+const searchEl = ref<HTMLElement | null>(null);
+let headerRects: Array<DOMRect | undefined> | null = null;
+watch(
+  sidebarState,
+  () => {
+    headerRects = [homeEl.value, searchEl.value].map((el) =>
+      el?.getBoundingClientRect(),
+    );
+  },
+  { flush: "pre" },
+);
+watch(
+  sidebarState,
+  async () => {
+    await nextTick();
+    const rects = headerRects;
+    headerRects = null;
+    if (
+      !rects ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+    [homeEl.value, searchEl.value].forEach((el, index) => {
+      const from = rects[index];
+      if (!el || !from || typeof el.animate !== "function") {
+        return;
+      }
+      const to = el.getBoundingClientRect();
+      const dx = from.left - to.left;
+      const dy = from.top - to.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
+        return;
+      }
+      el.animate(
+        [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "none" }],
+        { duration: 240, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+      );
+    });
+  },
+  { flush: "post" },
+);
+
 const swipeStartX = ref(0);
 const swipeStartY = ref(0);
 function onLeftNavTouchStart(e: TouchEvent) {
@@ -115,75 +201,50 @@ function onLeftNavTouchEnd(e: TouchEvent) {
       @touchstart.passive="onLeftNavTouchStart"
       @touchend="onLeftNavTouchEnd"
     >
-      <Transition
-        enter-active-class="[transition:opacity_0.2s_ease,max-height_0.2s_ease,padding_0.2s_ease,margin_0.2s_ease] overflow-hidden"
-        leave-active-class="[transition:opacity_0.2s_ease,max-height_0.2s_ease,padding_0.2s_ease,margin_0.2s_ease] overflow-hidden"
-        enter-from-class="opacity-0 max-h-0 py-0 my-0"
-        leave-to-class="opacity-0 max-h-0 py-0 my-0"
-      >
-        <SidebarHeader v-if="!isMobile && (!isPWA || !sideBarOpen)">
-          <NuxtLink
-            :to="logoPath"
-            class="flex min-w-0 items-center overflow-hidden transition-[gap,padding] duration-200 ease-linear [&.router-link-active]:!bg-transparent [&.router-link-exact-active]:!bg-transparent"
-            :class="{
-              'gap-2 px-2 py-1.5': !isPWA && (isMobile || sideBarOpen),
-              'pointer-events-none cursor-default': isLogoRouteActive,
-            }"
-            :tabindex="isLogoRouteActive ? -1 : undefined"
-            :aria-current="isLogoRouteActive ? 'page' : undefined"
-          >
-            <NuxtImg
-              class="shrink-0 rounded max-w-8 max-h-8"
-              :src="customLogoUrl || '/favicon/64.png'"
-              :alt="customBrandName || $t('layouts.app_nav.brand')"
-            />
-            <Transition
-              mode="out-in"
-              enter-active-class="[transition:opacity_0.15s_ease,max-width_0.2s_ease] overflow-hidden"
-              leave-active-class="[transition:opacity_0.15s_ease,max-width_0.2s_ease] overflow-hidden"
-              enter-from-class="opacity-0 max-w-0"
-              leave-to-class="opacity-0 max-w-0"
-              enter-to-class="max-w-48"
-              leave-from-class="max-w-48"
-            >
-              <span
-                v-if="!isPWA && (isMobile || sideBarOpen)"
-                key="brand"
-                class="font-semibold text-xlg truncate"
-              >
-                {{ customBrandName || $t("layouts.app_nav.brand") }}
-              </span>
-            </Transition>
-          </NuxtLink>
-        </SidebarHeader>
-      </Transition>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu>
-            <SidebarMenuItem
-              v-if="isPWA"
-              :tooltip="$t('layouts.app_nav.tooltips.dashboard')"
-            >
+          <!-- Home | Search on one row; collapsed, they stack as icons. The
+               buttons glide between the two layouts (see homeEl/searchEl).
+               The stack pins left: centred, its target would drift while the
+               sidebar's width is still animating. -->
+          <div
+            class="flex gap-1"
+            :class="
+              isMobile || sideBarOpen
+                ? 'flex-row items-center'
+                : 'flex-col items-start'
+            "
+          >
+            <div ref="homeEl" class="shrink-0">
               <SidebarMenuButton
                 as-child
-                :tooltip="$t('layouts.app_nav.tooltips.dashboard')"
+                class="w-8 justify-center px-0"
+                :tooltip="$t('layouts.app_nav.navigation.home')"
               >
                 <NuxtLink
-                  to="/me"
-                  :class="{
-                    'router-link-active':
-                      $route.path === '/me' ||
-                      ($route.path.startsWith('/players/') &&
-                        $route.params.id === me?.steam_id),
-                  }"
+                  :to="logoPath"
+                  :class="{ 'router-link-active': isLogoRouteActive }"
+                  :aria-label="$t('layouts.app_nav.navigation.home')"
+                  :title="
+                    isMobile || sideBarOpen
+                      ? $t('layouts.app_nav.navigation.home')
+                      : undefined
+                  "
                 >
                   <Home />
-                  {{ $t("layouts.app_nav.navigation.dashboard") }}
                 </NuxtLink>
               </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.navigation.search')">
+            </div>
+            <Separator
+              v-if="isMobile || sideBarOpen"
+              orientation="vertical"
+              class="h-4 shrink-0"
+            />
+            <div
+              ref="searchEl"
+              class="min-w-0"
+              :class="{ 'flex-1': isMobile || sideBarOpen }"
+            >
               <SidebarMenuButton
                 @click="
                   setOpenMobile(false);
@@ -198,877 +259,590 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   <Kbd>K</Kbd>
                 </KbdGroup>
               </SidebarMenuButton>
+            </div>
+          </div>
+
+          <SidebarMenu>
+            <!-- Collapsed to icons, the Play / Admin switch is one toggle. -->
+            <SidebarMenuItem v-if="showNavModes && !(isMobile || sideBarOpen)">
+              <SidebarMenuButton
+                :tooltip="
+                  navMode === 'admin'
+                    ? $t('layouts.app_nav.modes.switch_to_play')
+                    : $t('layouts.app_nav.modes.switch_to_admin')
+                "
+                class="relative"
+                @click="toggleNavMode()"
+              >
+                <Gamepad2 v-if="navMode === 'admin'" />
+                <ShieldCheck v-else />
+                <span
+                  v-if="navMode === 'play' && adminAttentionCount > 0"
+                  class="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                  aria-hidden="true"
+                ></span>
+              </SidebarMenuButton>
             </SidebarMenuItem>
+          </SidebarMenu>
+
+          <AnimatedFilters
+            v-if="showNavModes && (isMobile || sideBarOpen)"
+            class="mt-2"
+            :model-value="navMode"
+            :options="[
+              {
+                key: 'play',
+                label: $t('layouts.app_nav.modes.play'),
+                icon: Gamepad2,
+              },
+              {
+                key: 'admin',
+                label: $t('layouts.app_nav.modes.admin'),
+                icon: ShieldCheck,
+                count: adminAttentionCount || undefined,
+                title:
+                  adminAttentionCount > 0
+                    ? $t(
+                        'layouts.app_nav.modes.attention',
+                        { count: adminAttentionCount },
+                        adminAttentionCount,
+                      )
+                    : undefined,
+              },
+            ]"
+            block
+            square
+            @update:model-value="setNavMode($event as 'play' | 'admin')"
+          />
+        </SidebarGroup>
+
+        <!-- The lists pan the way the Play / Admin tab moved. -->
+        <SlideSwap :index="showNavModes && navMode === 'admin' ? 1 : 0">
+          <div v-if="navMode === 'play' || !showNavModes" key="play">
+            <!-- The everyday doors first, then small groups by intent. -->
+            <SidebarGroup>
+              <SidebarMenu>
+                <Separator v-if="showSeparators" class="mx-4 w-auto" />
+
+                <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.play')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'play' }"
+                      :class="{
+                        'router-link-active': isRouteActive('play'),
+                      }"
+                    >
+                      <Play />
+                      {{ $t("layouts.app_nav.navigation.play") }}
+
+                      <Badge
+                        size="sm"
+                        v-if="playTotalCount > 0"
+                        class="ml-auto"
+                      >
+                        {{ playTotalCount }}
+                      </Badge>
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem
+                  :tooltip="$t('layouts.app_nav.tooltips.watch')"
+                >
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.watch')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'watch' }"
+                      :class="{
+                        'router-link-active': isRouteActive('watch'),
+                      }"
+                    >
+                      <Radio />
+                      {{ $t("layouts.app_nav.navigation.watch") }}
+
+                      <Badge
+                        size="sm"
+                        v-if="liveMatchesCount > 0"
+                        class="ml-auto"
+                      >
+                        {{ liveMatchesCount }}
+                      </Badge>
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.matches')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'matches' }"
+                      :class="{
+                        'router-link-active': isRouteActive('matches'),
+                      }"
+                    >
+                      <CalendarCog />
+                      {{ $t("layouts.app_nav.navigation.matches") }}
+                      <Badge
+                        size="sm"
+                        v-if="managingMatchesCount > 0"
+                        class="ml-auto"
+                      >
+                        {{ managingMatchesCount }}
+                      </Badge>
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
 
             <Separator v-if="showSeparators" class="mx-4 w-auto" />
-
-            <SidebarMenuItem
-              v-if="isMobile && me && !isPWA"
-              :tooltip="$t('layouts.app_nav.navigation.dashboard')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.navigation.dashboard')"
-              >
-                <NuxtLink
-                  to="/me"
-                  :class="{
-                    'router-link-active':
-                      $route.path === '/me' ||
-                      ($route.path.startsWith('/players/') &&
-                        $route.params.id === me?.steam_id),
-                  }"
-                >
-                  <LineChart />
-                  {{ $t("layouts.app_nav.navigation.dashboard") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.play')"
-              >
-                <NuxtLink
-                  :to="{ name: 'play' }"
-                  :class="{
-                    'router-link-active': isRouteActive('play'),
-                  }"
-                >
-                  <Play />
-                  {{ $t("layouts.app_nav.navigation.play") }}
-
-                  <Badge size="sm" v-if="playTotalCount > 0" class="ml-auto">
-                    {{ playTotalCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.watch')">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.watch')"
-              >
-                <NuxtLink
-                  :to="{ name: 'watch' }"
-                  :class="{
-                    'router-link-active': isRouteActive('watch'),
-                  }"
-                >
-                  <Radio />
-                  {{ $t("layouts.app_nav.navigation.watch") }}
-
-                  <Badge size="sm" v-if="liveMatchesCount > 0" class="ml-auto">
-                    {{ liveMatchesCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.utility')">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.utility')"
-              >
-                <NuxtLink
-                  :to="{ name: 'utility' }"
-                  :class="{
-                    'router-link-active': isRouteActive('utility'),
-                  }"
-                >
-                  <HeGrenadeIcon class="size-4" />
-                  {{ $t("layouts.app_nav.navigation.utility") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.matches')"
-              >
-                <NuxtLink
-                  :to="{ name: 'matches' }"
-                  :class="{
-                    'router-link-active': isRouteActive('matches'),
-                  }"
-                >
-                  <CalendarCog />
-                  {{ $t("layouts.app_nav.navigation.matches") }}
-                  <Badge
-                    size="sm"
-                    v-if="managingMatchesCount > 0"
-                    class="ml-auto"
+            <SidebarGroup>
+              <SidebarGroupLabel>{{
+                $t("layouts.app_nav.groups.compete")
+              }}</SidebarGroupLabel>
+              <SidebarMenu>
+                <SidebarMenuItem v-if="showTournamentsLink">
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.tournaments')"
                   >
-                    {{ managingMatchesCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem v-if="showTournamentsLink">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.tournaments')"
-              >
-                <NuxtLink
-                  :to="{ name: 'tournaments' }"
-                  :class="{
-                    'router-link-active':
-                      isRouteActive('tournaments') ||
-                      matchContext?.value?.tournament != null,
-                  }"
-                >
-                  <TournamentBracket />
-                  {{ $t("layouts.app_nav.navigation.tournaments") }}
-                  <Badge
-                    size="sm"
-                    v-if="activeTournamentsCount > 0"
-                    class="ml-auto"
-                  >
-                    {{ activeTournamentsCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <!-- League admins get it before the first season: /league
-                 offers to create one. -->
-            <SidebarMenuItem
-              v-if="leaguesEnabled && (hasLeagueSeason || isAdmin)"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.leagues')"
-              >
-                <NuxtLink
-                  :to="currentLeagueSeasonTo"
-                  :class="{
-                    'router-link-active': isRouteActive('league'),
-                  }"
-                >
-                  <Trophy />
-                  {{ $t("layouts.app_nav.navigation.leagues") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem v-if="showEventsLink">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.events')"
-              >
-                <NuxtLink
-                  :to="{ name: 'events' }"
-                  :class="{
-                    'router-link-active': isRouteActive('events'),
-                  }"
-                >
-                  <CalendarRange />
-                  {{ $t("layouts.app_nav.navigation.events") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.public_servers')"
-              >
-                <NuxtLink
-                  :to="{ name: 'public-servers' }"
-                  :class="{
-                    'router-link-active': isRouteActive('public-servers'),
-                  }"
-                >
-                  <Server />
-                  {{ $t("layouts.app_nav.navigation.public_servers") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <template v-if="pluginGroups.length > 0">
-          <Separator v-if="showSeparators" class="mx-4 w-auto" />
-
-          <SidebarGroup
-            v-for="group in pluginGroups"
-            :key="group.name ?? 'apps'"
-          >
-            <SidebarGroupLabel>{{
-              group.name || $t("layouts.app_nav.plugins.title")
-            }}</SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem v-for="plugin in group.plugins" :key="plugin.id">
-                <SidebarMenuButton as-child :tooltip="plugin.title">
-                  <NuxtLink
-                    :to="`/apps/${plugin.slug}`"
-                    :class="{
-                      // Prefix match: a plugin owns every route under its slug,
-                      // so its own sub-routes keep the nav entry lit.
-                      'router-link-active':
-                        $route.path === `/apps/${plugin.slug}` ||
-                        $route.path.startsWith(`/apps/${plugin.slug}/`),
-                    }"
-                  >
-                    <PluginIcon :name="plugin.icon" class="size-4" />
-                    {{ plugin.title }}
-                  </NuxtLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
-        </template>
-
-        <Separator v-if="showSeparators" class="mx-4 w-auto" />
-
-        <SidebarGroup>
-          <SidebarGroupLabel>{{
-            $t("layouts.app_nav.community.title")
-          }}</SidebarGroupLabel>
-
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.players')"
-              >
-                <NuxtLink
-                  :to="{ name: 'players' }"
-                  :class="{
-                    'router-link-active':
-                      isRouteActive('players') &&
-                      !$route.path.startsWith('/me'),
-                  }"
-                >
-                  <Users />
-                  {{ $t("layouts.app_nav.navigation.players") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.teams')"
-              >
-                <NuxtLink
-                  :to="{ name: 'teams' }"
-                  :class="{
-                    'router-link-active': isRouteActive('teams'),
-                  }"
-                >
-                  <ShieldHalf />
-                  {{ $t("layouts.app_nav.navigation.teams") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.navigation.scrims')"
-              >
-                <NuxtLink
-                  :to="{ name: 'scrims' }"
-                  :class="{
-                    'router-link-active': isRouteActive('scrims'),
-                  }"
-                >
-                  <Swords />
-                  {{ $t("layouts.app_nav.navigation.scrims") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.leaderboard')"
-              >
-                <NuxtLink
-                  :to="{ name: 'leaderboard' }"
-                  :class="{
-                    'router-link-active': isRouteActive('leaderboard'),
-                  }"
-                >
-                  <Trophy />
-                  {{ $t("layouts.app_nav.navigation.leaderboard") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <Separator v-if="showSeparators" class="mx-4 w-auto" />
-
-        <SidebarGroup>
-          <SidebarGroupLabel>{{
-            $t("layouts.app_nav.social.title")
-          }}</SidebarGroupLabel>
-
-          <SidebarMenu>
-            <SidebarMenuItem v-if="showNewsLink">
-              <SidebarMenuButton
-                as-child
-                :tooltip="newsLabel || $t('layouts.app_nav.tooltips.news')"
-              >
-                <NuxtLink
-                  :to="{ name: 'news' }"
-                  :class="{
-                    'router-link-active': isRouteActive('news'),
-                  }"
-                >
-                  <Newspaper />
-                  {{ newsLabel || $t("layouts.app_nav.navigation.news") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              v-if="showHighlightsLink"
-              :tooltip="$t('layouts.app_nav.navigation.highlights')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.navigation.highlights')"
-              >
-                <NuxtLink
-                  :to="{ name: 'highlights' }"
-                  :class="{
-                    'router-link-active': isRouteActive('highlights'),
-                  }"
-                >
-                  <Film />
-                  {{ $t("layouts.app_nav.navigation.highlights") }}
-
-                  <Badge
-                    size="sm"
-                    v-if="isAdmin && renderQueueInFlightCount > 0"
-                    class="ml-auto"
-                  >
-                    {{ renderQueueInFlightCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <Separator
-          v-if="
-            showSeparators && (isAdmin || canManageAwards || canGrantAwards)
-          "
-          class="mx-4 w-auto"
-        />
-
-        <SidebarGroup v-if="isAdmin || canManageAwards || canGrantAwards">
-          <SidebarGroupLabel>{{
-            $t("layouts.app_nav.competition.title")
-          }}</SidebarGroupLabel>
-
-          <SidebarMenu>
-            <SidebarMenuItem
-              v-if="canManageAwards || canGrantAwards"
-              :tooltip="$t('layouts.app_nav.administration.awards')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.administration.awards')"
-              >
-                <NuxtLink
-                  :to="{ name: 'awards' }"
-                  :class="{
-                    'router-link-active': isRouteActive('awards'),
-                  }"
-                >
-                  <Medal />
-                  {{ $t("layouts.app_nav.administration.awards") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <template v-if="isAdmin">
-              <SidebarMenuItem
-                v-if="isAdmin && seasonsEnabled"
-                :tooltip="$t('layouts.app_nav.administration.seasons')"
-              >
-                <SidebarMenuButton
-                  as-child
-                  :tooltip="$t('layouts.app_nav.administration.seasons')"
-                >
-                  <NuxtLink
-                    :to="{ name: 'seasons' }"
-                    :class="{
-                      'router-link-active': isRouteActive('seasons'),
-                    }"
-                  >
-                    <Leaf />
-                    {{ $t("layouts.app_nav.administration.seasons") }}
-                    <AlertTriangle
-                      v-if="seasonsRebuildCount > 0"
-                      class="ml-auto h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                    />
-                  </NuxtLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </template>
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <Separator
-          v-if="showSeparators && (isAdmin || isStreamer)"
-          class="mx-4 w-auto"
-        />
-
-        <SidebarGroup v-if="isAdmin || isStreamer">
-          <SidebarGroupLabel>{{
-            $t("layouts.app_nav.platform.title")
-          }}</SidebarGroupLabel>
-
-          <SidebarMenu>
-            <SidebarMenuItem
-              v-if="isAdmin"
-              :tooltip="$t('layouts.app_nav.tooltips.alerts')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.alerts')"
-              >
-                <NuxtLink
-                  :to="{ name: 'system-alerts' }"
-                  :class="{
-                    'router-link-active': isRouteActive('system-alerts'),
-                  }"
-                >
-                  <Megaphone />
-                  {{ $t("layouts.app_nav.administration.alerts") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.administration.stream_deck')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.administration.stream_deck')"
-              >
-                <NuxtLink
-                  :to="{ name: 'stream-deck' }"
-                  :class="{
-                    'router-link-active': isRouteActive('stream-deck'),
-                  }"
-                >
-                  <Camera />
-                  {{ $t("layouts.app_nav.administration.stream_deck") }}
-                  <Badge size="sm" v-if="activeStreamingMatchesCount > 0">
-                    {{ activeStreamingMatchesCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem
-              v-if="isAdmin && gamePluginsEnabled"
-              :tooltip="$t('layouts.app_nav.platform.plugin_directory')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.platform.plugin_directory')"
-              >
-                <NuxtLink
-                  :to="{ name: 'plugins' }"
-                  :class="{
-                    'router-link-active': isRouteActive('plugins'),
-                  }"
-                >
-                  <LibraryBig />
-                  {{ $t("layouts.app_nav.platform.plugin_directory") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <template v-if="isAdmin">
-              <SidebarMenuItem
-                :tooltip="$t('layouts.app_nav.tooltips.regions')"
-              >
-                <SidebarMenuButton
-                  as-child
-                  :tooltip="$t('layouts.app_nav.tooltips.regions')"
-                >
-                  <NuxtLink
-                    :to="{ name: 'regions' }"
-                    :class="{
-                      'router-link-active': isRouteActive('regions'),
-                    }"
-                  >
-                    <Globe />
-                    {{ $t("layouts.app_nav.administration.regions") }}
-                  </NuxtLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
-              <Collapsible
-                as-child
-                :default-open="true"
-                v-slot="{ open }"
-                v-if="isMobile || sideBarOpen"
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger as-child>
-                    <SidebarMenuButton
-                      :tooltip="$t('layouts.app_nav.tooltips.servers')"
-                    >
-                      <Server />
-                      <span>{{
-                        $t("layouts.app_nav.administration.servers")
-                      }}</span>
-                      <ChevronRight
-                        class="ml-auto transition-transform duration-200"
-                        :class="{
-                          'rotate-90': open,
-                        }"
-                      />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton
-                          as-child
-                          :tooltip="
-                            $t('layouts.app_nav.tooltips.dedicated_servers')
-                          "
-                        >
-                          <NuxtLink
-                            :to="{ name: 'dedicated-servers' }"
-                            :class="{
-                              'router-link-active':
-                                isRouteActive('dedicated-servers'),
-                            }"
-                          >
-                            {{
-                              $t(
-                                "layouts.app_nav.administration.dedicated_servers",
-                              )
-                            }}
-                          </NuxtLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton
-                          as-child
-                          :tooltip="
-                            $t('layouts.app_nav.tooltips.game_server_nodes')
-                          "
-                        >
-                          <NuxtLink
-                            :to="{ name: 'game-server-nodes' }"
-                            :class="{
-                              'router-link-active':
-                                isRouteActive('game-server-nodes'),
-                            }"
-                          >
-                            {{
-                              $t(
-                                "layouts.app_nav.administration.game_server_nodes",
-                              )
-                            }}
-                          </NuxtLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-
-                      <SidebarMenuSubItem>
-                        <SidebarMenuSubButton
-                          as-child
-                          :tooltip="
-                            gpuPoolNeedsAttention
-                              ? gpuPoolTooltip
-                              : $t('layouts.app_nav.tooltips.gpu_nodes')
-                          "
-                        >
-                          <NuxtLink
-                            :to="{ name: 'gpu-nodes' }"
-                            :class="{
-                              'router-link-active': isRouteActive('gpu-nodes'),
-                            }"
-                            class="flex w-full items-center justify-between gap-2"
-                          >
-                            <span>
-                              {{
-                                $t("layouts.app_nav.administration.gpu_nodes")
-                              }}
-                            </span>
-                            <AlertTriangle
-                              v-if="gpuPoolNeedsAttention"
-                              class="w-3.5 h-3.5 text-yellow-500 shrink-0"
-                            />
-                          </NuxtLink>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
-
-              <SidebarMenuItem v-else>
-                <DropdownMenu v-model:open="serversOpened">
-                  <DropdownMenuTrigger as-child>
-                    <SidebarMenuButton
+                    <NuxtLink
+                      :to="{ name: 'tournaments' }"
                       :class="{
-                        'bg-sidebar-accent text-sidebar-accent-foreground':
-                          serversOpened,
+                        'router-link-active':
+                          isRouteActive('tournaments') ||
+                          matchContext?.value?.tournament != null,
+                      }"
+                    >
+                      <TournamentBracket />
+                      {{ $t("layouts.app_nav.navigation.tournaments") }}
+                      <Badge
+                        size="sm"
+                        v-if="activeTournamentsCount > 0"
+                        class="ml-auto"
+                      >
+                        {{ activeTournamentsCount }}
+                      </Badge>
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem
+                  v-if="leaguesEnabled && (hasLeagueSeason || isAdmin)"
+                >
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.leagues')"
+                  >
+                    <NuxtLink
+                      :to="currentLeagueSeasonTo"
+                      :class="{
+                        'router-link-active': isRouteActive('league'),
+                      }"
+                    >
+                      <Trophy />
+                      {{ $t("layouts.app_nav.navigation.leagues") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem v-if="showEventsLink">
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.events')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'events' }"
+                      :class="{
+                        'router-link-active': isRouteActive('events'),
+                      }"
+                    >
+                      <CalendarRange />
+                      {{ $t("layouts.app_nav.navigation.events") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.navigation.scrims')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'scrims' }"
+                      :class="{
+                        'router-link-active': isRouteActive('scrims'),
+                      }"
+                    >
+                      <Swords />
+                      {{ $t("layouts.app_nav.navigation.scrims") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+
+            <Separator v-if="showSeparators" class="mx-4 w-auto" />
+            <SidebarGroup>
+              <SidebarGroupLabel>{{
+                $t("layouts.app_nav.groups.practice")
+              }}</SidebarGroupLabel>
+              <SidebarMenu>
+                <SidebarMenuItem
+                  :tooltip="$t('layouts.app_nav.tooltips.utility')"
+                >
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.utility')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'utility' }"
+                      :class="{
+                        'router-link-active': isRouteActive('utility'),
+                      }"
+                    >
+                      <HeGrenadeIcon class="size-4" />
+                      {{ $t("layouts.app_nav.navigation.utility") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.public_servers')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'public-servers' }"
+                      :class="{
+                        'router-link-active': isRouteActive('public-servers'),
                       }"
                     >
                       <Server />
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    class="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                    :side="isMobile ? 'top' : 'right'"
-                    align="end"
-                    :side-offset="4"
+                      {{ $t("layouts.app_nav.navigation.public_servers") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+
+            <Separator v-if="showSeparators" class="mx-4 w-auto" />
+            <SidebarGroup>
+              <SidebarGroupLabel>{{
+                $t("layouts.app_nav.community.title")
+              }}</SidebarGroupLabel>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.players')"
                   >
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem class="flex gap-2" as-child>
-                        <NuxtLink :to="{ name: 'dedicated-servers' }">
-                          {{
-                            $t(
-                              "layouts.app_nav.administration.dedicated_servers",
-                            )
-                          }}
-                        </NuxtLink>
-                      </DropdownMenuItem>
+                    <NuxtLink
+                      :to="{ name: 'players' }"
+                      :class="{
+                        'router-link-active':
+                          isRouteActive('players') &&
+                          !$route.path.startsWith('/me'),
+                      }"
+                    >
+                      <Users />
+                      {{ $t("layouts.app_nav.navigation.players") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.teams')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'teams' }"
+                      :class="{
+                        'router-link-active': isRouteActive('teams'),
+                      }"
+                    >
+                      <ShieldHalf />
+                      {{ $t("layouts.app_nav.navigation.teams") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.leaderboard')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'leaderboard' }"
+                      :class="{
+                        'router-link-active': isRouteActive('leaderboard'),
+                      }"
+                    >
+                      <Trophy />
+                      {{ $t("layouts.app_nav.navigation.leaderboard") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
 
-                      <DropdownMenuItem class="flex gap-2" as-child>
-                        <NuxtLink :to="{ name: 'game-server-nodes' }">
-                          {{
-                            $t(
-                              "layouts.app_nav.administration.game_server_nodes",
-                            )
-                          }}
-                        </NuxtLink>
-                      </DropdownMenuItem>
+            <template v-if="showNewsLink || showHighlightsLink">
+              <Separator v-if="showSeparators" class="mx-4 w-auto" />
+              <SidebarGroup>
+                <SidebarGroupLabel>{{
+                  $t("layouts.app_nav.groups.media")
+                }}</SidebarGroupLabel>
+                <SidebarMenu>
+                  <SidebarMenuItem
+                    v-if="showHighlightsLink"
+                    :tooltip="$t('layouts.app_nav.navigation.highlights')"
+                  >
+                    <SidebarMenuButton
+                      as-child
+                      :tooltip="$t('layouts.app_nav.navigation.highlights')"
+                    >
+                      <NuxtLink
+                        :to="{ name: 'highlights' }"
+                        :class="{
+                          'router-link-active': isRouteActive('highlights'),
+                        }"
+                      >
+                        <Film />
+                        {{ $t("layouts.app_nav.navigation.highlights") }}
 
-                      <DropdownMenuItem class="flex gap-2" as-child>
-                        <NuxtLink
-                          :to="{ name: 'gpu-nodes' }"
-                          class="flex w-full items-center justify-between gap-2"
+                        <Badge
+                          size="sm"
+                          v-if="isAdmin && renderQueueInFlightCount > 0"
+                          class="ml-auto"
                         >
-                          <span>
-                            {{ $t("layouts.app_nav.administration.gpu_nodes") }}
-                          </span>
-                          <AlertTriangle
-                            v-if="gpuPoolNeedsAttention"
-                            class="w-3.5 h-3.5 text-yellow-500 shrink-0"
-                          />
-                        </NuxtLink>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-
-              <SidebarMenuItem
-                :tooltip="$t('layouts.app_nav.tooltips.app_settings')"
-              >
-                <SidebarMenuButton
-                  as-child
-                  :tooltip="$t('layouts.app_nav.tooltips.app_settings')"
-                >
-                  <NuxtLink
-                    :to="{ name: 'settings-application' }"
-                    :class="{
-                      'router-link-active': isRouteActive(
-                        'settings-application',
-                      ),
-                    }"
-                  >
-                    <Cog />
-                    {{ $t("layouts.app_nav.administration.app_settings") }}
-                  </NuxtLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+                          {{ renderQueueInFlightCount }}
+                        </Badge>
+                      </NuxtLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem v-if="showNewsLink">
+                    <SidebarMenuButton
+                      as-child
+                      :tooltip="
+                        newsLabel || $t('layouts.app_nav.tooltips.news')
+                      "
+                    >
+                      <NuxtLink
+                        :to="{ name: 'news' }"
+                        :class="{
+                          'router-link-active': isRouteActive('news'),
+                        }"
+                      >
+                        <Newspaper />
+                        {{ newsLabel || $t("layouts.app_nav.navigation.news") }}
+                      </NuxtLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroup>
             </template>
-          </SidebarMenu>
-        </SidebarGroup>
 
-        <Separator v-if="showSeparators && isAdmin" class="mx-4 w-auto" />
+            <template v-if="pluginGroups.length > 0">
+              <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
-        <SidebarGroup v-if="isAdmin">
-          <SidebarGroupLabel>{{
-            $t("layouts.app_nav.system.title")
-          }}</SidebarGroupLabel>
-
-          <SidebarMenu>
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.system_logs')"
+              <SidebarGroup
+                v-for="group in pluginGroups"
+                :key="group.name ?? 'apps'"
               >
-                <NuxtLink
-                  :to="{ name: 'system-logs' }"
-                  :class="{
-                    'router-link-active': isRouteActive('system-logs'),
-                  }"
-                >
-                  <Logs />
-                  {{ $t("layouts.app_nav.system.logs") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.system_metrics')"
-              >
-                <NuxtLink
-                  :to="{ name: 'system-metrics' }"
-                  :class="{
-                    'router-link-active': isRouteActive('system-metrics'),
-                  }"
-                >
-                  <LineChart />
-                  {{ $t("layouts.app_nav.system.metrics") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.system_media_server')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.system_media_server')"
-              >
-                <NuxtLink
-                  :to="{ name: 'system-media-server' }"
-                  :class="{
-                    'router-link-active': isRouteActive('system-media-server'),
-                  }"
-                >
-                  <Radio />
-                  {{ $t("layouts.app_nav.system.media_server") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.database')">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.database')"
-              >
-                <NuxtLink
-                  :to="{ name: 'database' }"
-                  :class="{
-                    'router-link-active': isRouteActive('database'),
-                  }"
-                >
-                  <Database />
-                  {{ $t("layouts.app_nav.system.database") }}
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.system.render_queue')"
-            >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.system.render_queue')"
-              >
-                <NuxtLink
-                  :to="{ name: 'system-render-queue' }"
-                  :class="{
-                    'router-link-active': isRouteActive('system-render-queue'),
-                  }"
-                >
-                  <ListVideo />
-                  {{ $t("layouts.app_nav.system.render_queue") }}
-
-                  <Badge
-                    size="sm"
-                    v-if="renderQueueInFlightCount > 0"
-                    class="ml-auto"
+                <SidebarGroupLabel>{{
+                  group.name || $t("layouts.app_nav.plugins.title")
+                }}</SidebarGroupLabel>
+                <SidebarMenu>
+                  <SidebarMenuItem
+                    v-for="plugin in group.plugins"
+                    :key="plugin.id"
                   >
-                    {{ renderQueueInFlightCount }}
-                  </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
+                    <SidebarMenuButton as-child :tooltip="plugin.title">
+                      <NuxtLink
+                        :to="`/apps/${plugin.slug}`"
+                        :class="{
+                          // Prefix match: a plugin owns every route under its slug,
+                          // so its own sub-routes keep the nav entry lit.
+                          'router-link-active':
+                            $route.path === `/apps/${plugin.slug}` ||
+                            $route.path.startsWith(`/apps/${plugin.slug}/`),
+                        }"
+                      >
+                        <PluginIcon :name="plugin.icon" class="size-4" />
+                        {{ plugin.title }}
+                      </NuxtLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroup>
+            </template>
 
-        <SidebarGroup
-          v-if="telemetryStats?.online > 0 && (isMobile || sideBarOpen)"
-        >
-          <NuxtLink
-            :to="{ name: 'fleet-telemetry' }"
-            :title="$t('pages.system_telemetry.title')"
-          >
-            <Badge
-              size="sm"
-              variant="outline"
-              class="p-2 flex items-center gap-2 w-full transition-colors hover:bg-accent hover:text-accent-foreground"
+            <!-- Below three admin pages a mode switch is noise (an
+                   organizer who can only grant awards): they join this list. -->
+            <template v-if="!showNavModes">
+              <SidebarGroup v-for="group in adminGroups" :key="group.key">
+                <Separator v-if="showSeparators" class="mx-4 mb-2 w-auto" />
+                <SidebarGroupLabel>{{ group.label }}</SidebarGroupLabel>
+                <SidebarMenu>
+                  <LeftNavLink
+                    v-for="item in group.items"
+                    :key="item.key"
+                    :to="item.to"
+                    :icon="ADMIN_ICONS[item.key]"
+                    :label="item.label"
+                    :active="item.active"
+                    :badge="item.badge"
+                    :warning="item.warning"
+                  />
+                </SidebarMenu>
+              </SidebarGroup>
+            </template>
+          </div>
+
+          <div v-else key="admin">
+            <SidebarGroup
+              v-if="adminAttentionCount > 0 && (isMobile || sideBarOpen)"
             >
-              <Server class="w-3 h-3" />
-              {{
-                $t("layouts.app_nav.systems_online", telemetryStats.online, {
-                  count: telemetryStats.online,
-                })
-              }}
-            </Badge>
-          </NuxtLink>
-        </SidebarGroup>
+              <p
+                class="flex items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.25)] bg-[hsl(var(--tac-amber)/0.06)] px-2.5 py-2 text-xs text-[hsl(var(--tac-amber))]"
+              >
+                <AlertTriangle class="h-3.5 w-3.5 shrink-0" />
+                {{
+                  $t(
+                    "layouts.app_nav.modes.attention",
+                    { count: adminAttentionCount },
+                    adminAttentionCount,
+                  )
+                }}
+              </p>
+            </SidebarGroup>
+
+            <SidebarGroup v-for="group in adminGroups" :key="group.key">
+              <SidebarGroupLabel>{{ group.label }}</SidebarGroupLabel>
+              <SidebarMenu>
+                <LeftNavLink
+                  v-for="item in group.items"
+                  :key="item.key"
+                  :to="item.to"
+                  :icon="ADMIN_ICONS[item.key]"
+                  :label="item.label"
+                  :active="item.active"
+                  :badge="item.badge"
+                  :warning="item.warning"
+                />
+              </SidebarMenu>
+            </SidebarGroup>
+          </div>
+        </SlideSwap>
       </SidebarContent>
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem
+      <!-- Pinned under the lists, whichever one is showing: the fleet status,
+           then the install prompt. Collapses away when neither applies. -->
+      <div
+        v-if="isMobile || sideBarOpen"
+        class="grid shrink-0 gap-2 px-2 pb-2 empty:hidden"
+      >
+        <NuxtLink
+          v-if="telemetryStats?.online > 0"
+          :to="{ name: 'fleet-telemetry' }"
+          class="flex h-8 items-center gap-2 rounded-md border border-sidebar-border px-2.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+        >
+          <span
+            class="h-1.5 w-1.5 shrink-0 rounded-full bg-success"
+            aria-hidden="true"
+          ></span>
+          <span class="min-w-0 flex-1 truncate tabular-nums">{{
+            $t(
+              "layouts.app_nav.systems_online",
+              { count: telemetryStats.online },
+              telemetryStats.online,
+            )
+          }}</span>
+          <ChevronRight class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        </NuxtLink>
+        <InstallPWA :is-menu-item="false" framed />
+      </div>
+      <SidebarFooter class="gap-1.5 border-t border-sidebar-border">
+        <!-- Expanded, the two outside links share one row, each labelled. -->
+        <div
+          v-if="isMobile || sideBarOpen"
+          class="grid auto-cols-fr grid-flow-col gap-1"
+        >
+          <Button
             v-if="
               me?.role === e_player_roles_enum.administrator && showReportIssue
             "
+            as="a"
+            variant="ghost"
+            size="sm"
+            class="min-w-0 gap-2 text-muted-foreground"
+            :href="githubUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            :title="$t('layouts.app_nav.footer.report_issue')"
           >
-            <SidebarMenuButton
-              as-child
-              :tooltip="$t('layouts.app_nav.tooltips.report_issue')"
-            >
-              <a
-                :href="githubUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <GithubLogoIcon class="w-5 h-5" />
-                {{ $t("layouts.app_nav.footer.report_issue") }}
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+            <GithubLogoIcon class="h-4 w-4 shrink-0" />
+            <span class="truncate">{{
+              $t("layouts.app_nav.footer.report_issue_short")
+            }}</span>
+          </Button>
+          <Button
+            as="a"
+            variant="ghost"
+            size="sm"
+            class="min-w-0 gap-2 text-muted-foreground"
+            :href="inviteLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            :title="$t('layouts.app_nav.footer.join_discord')"
+          >
+            <DiscordLogoIcon class="h-4 w-4 shrink-0" />
+            <span class="truncate">{{
+              $t("layouts.app_nav.footer.discord")
+            }}</span>
+          </Button>
+        </div>
 
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              as-child
-              :tooltip="$t('layouts.app_nav.tooltips.join_discord')"
+        <SidebarMenu>
+          <template v-if="!(isMobile || sideBarOpen)">
+            <SidebarMenuItem
+              v-if="
+                me?.role === e_player_roles_enum.administrator &&
+                showReportIssue
+              "
             >
-              <a
-                :href="inviteLink"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-muted-foreground transition-colors hover:text-foreground"
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.report_issue')"
               >
-                <DiscordLogoIcon class="w-5 h-5" />
-                {{ $t("layouts.app_nav.footer.join_discord") }}
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+                <a
+                  :href="githubUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <GithubLogoIcon class="w-5 h-5" />
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
 
-          <InstallPWA />
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.join_discord')"
+              >
+                <a
+                  :href="inviteLink"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <DiscordLogoIcon class="w-5 h-5" />
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <InstallPWA />
+          </template>
 
           <SidebarMenuItem>
             <ProfileMenu
@@ -1127,7 +901,6 @@ export default {
   },
   data() {
     return {
-      serversOpened: false,
       profileOpened: false,
       showLogoutModal: false,
     };
@@ -1182,6 +955,168 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    // The Admin list. Only match organizers and up see the left nav at all;
+    // an organizer typically gets Awards alone, admins get everything.
+    adminGroups() {
+      const t = (key: string) => this.$t(key) as string;
+      const item = (
+        key: string,
+        name: string,
+        label: string,
+        extra: { badge?: number; warning?: string | null } = {},
+      ) => ({
+        key,
+        to: { name },
+        label,
+        active: this.isRouteActive(name),
+        ...extra,
+      });
+
+      const groups: Array<{ key: string; label: string; items: any[] }> = [];
+
+      const competition = [];
+      if (this.canManageAwards || this.canGrantAwards) {
+        competition.push(
+          item("awards", "awards", t("layouts.app_nav.administration.awards")),
+        );
+      }
+      if (this.isAdmin && this.seasonsEnabled) {
+        competition.push(
+          item(
+            "seasons",
+            "seasons",
+            t("layouts.app_nav.administration.seasons"),
+            {
+              warning:
+                this.seasonsRebuildCount > 0
+                  ? t("layouts.app_nav.modes.seasons_rebuild")
+                  : null,
+            },
+          ),
+        );
+      }
+      if (competition.length > 0) {
+        groups.push({
+          key: "competition",
+          label: t("layouts.app_nav.competition.title"),
+          items: competition,
+        });
+      }
+
+      if (!this.isAdmin) {
+        return groups;
+      }
+
+      groups.push({
+        key: "servers",
+        label: t("layouts.app_nav.administration.servers"),
+        items: [
+          item(
+            "game-server-nodes",
+            "game-server-nodes",
+            t("layouts.app_nav.administration.game_server_nodes"),
+          ),
+          item(
+            "dedicated-servers",
+            "dedicated-servers",
+            t("layouts.app_nav.administration.dedicated_servers"),
+          ),
+          item(
+            "gpu-nodes",
+            "gpu-nodes",
+            t("layouts.app_nav.administration.gpu_nodes"),
+            {
+              warning: this.gpuPoolNeedsAttention ? this.gpuPoolTooltip : null,
+            },
+          ),
+          // Last: the geography servers belong to, set up rather than run.
+          item(
+            "regions",
+            "regions",
+            t("layouts.app_nav.administration.regions"),
+          ),
+        ],
+      });
+      groups.push({
+        key: "media",
+        label: t("layouts.app_nav.groups.media"),
+        items: [
+          item(
+            "control-room",
+            "stream-deck",
+            t("layouts.app_nav.administration.control_room"),
+            { badge: this.activeStreamingMatchesCount },
+          ),
+          item(
+            "media-server",
+            "system-media-server",
+            t("layouts.app_nav.system.media_server"),
+          ),
+          item(
+            "render-queue",
+            "system-render-queue",
+            t("layouts.app_nav.system.render_queue"),
+            { badge: this.renderQueueInFlightCount },
+          ),
+        ],
+      });
+      groups.push({
+        key: "monitoring",
+        label: t("layouts.app_nav.groups.monitoring"),
+        items: [
+          item(
+            "metrics",
+            "system-metrics",
+            t("layouts.app_nav.system.metrics"),
+          ),
+          item("logs", "system-logs", t("layouts.app_nav.system.logs")),
+          item("database", "database", t("layouts.app_nav.system.database")),
+        ],
+      });
+      groups.push({
+        key: "site",
+        label: t("layouts.app_nav.groups.site"),
+        items: [
+          item(
+            "alerts",
+            "system-alerts",
+            t("layouts.app_nav.administration.alerts"),
+          ),
+          ...(this.gamePluginsEnabled
+            ? [
+                item(
+                  "plugins",
+                  "plugins",
+                  t("layouts.app_nav.platform.plugin_directory"),
+                ),
+              ]
+            : []),
+          // App settings is always the last thing in the list.
+          item(
+            "app-settings",
+            "settings-application",
+            t("layouts.app_nav.administration.app_settings"),
+          ),
+        ],
+      });
+      return groups;
+    },
+    // A Play / Admin switch for one or two pages is noise; below three they
+    // join the Play list instead.
+    showNavModes() {
+      const count = (this.adminGroups as Array<{ items: unknown[] }>).reduce(
+        (total, group) => total + group.items.length,
+        0,
+      );
+      return count >= 3;
+    },
+    adminAttentionCount() {
+      return (
+        this.adminGroups as Array<{ items: Array<{ warning?: string | null }> }>
+      )
+        .flatMap((group) => group.items)
+        .filter((entry) => entry.warning).length;
+    },
     gpuPoolNeedsAttention() {
       const h = (this as any).gpuPoolHealth;
       if (!h || h.nodes === 0) {
@@ -1206,15 +1141,6 @@ export default {
         }) as string;
       }
       return "";
-    },
-    customLogoUrl() {
-      const store = useApplicationSettingsStore();
-      return store.logoUrl
-        ? `https://${useRuntimeConfig().public.apiDomain}/branding/logo`
-        : null;
-    },
-    customBrandName() {
-      return useApplicationSettingsStore().brandName;
     },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;

@@ -28,6 +28,20 @@ ChartJS.register(
 </template>
 
 <script lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
+
+// Below this chart width the x axis keeps fewer ticks and day labels
+// (YYYY-MM-DD) shorten to "Aug 12", so they never run into each other.
+const NARROW = 480;
+
+function shortDay(label: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(label)) return label;
+  return new Date(`${label}T00:00:00`).toLocaleDateString(dateLocale(), {
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export default {
   components: {
     Line,
@@ -57,9 +71,22 @@ export default {
   },
   data() {
     return {
-      options: {
+      narrow: false,
+    };
+  },
+  mounted() {
+    const width = (this.$el as HTMLElement | null)?.parentElement?.clientWidth;
+    if (width) this.narrow = width < NARROW;
+  },
+  computed: {
+    options() {
+      const narrow = this.narrow;
+      return {
         responsive: true,
         maintainAspectRatio: false,
+        onResize: (_chart: unknown, size: { width: number }) => {
+          this.narrow = size.width < NARROW;
+        },
         interaction: {
           mode: "index" as const,
           intersect: false,
@@ -102,21 +129,18 @@ export default {
             },
             ticks: {
               autoSkip: true,
-              maxTicksLimit: 8,
+              maxTicksLimit: narrow ? 4 : 8,
+              autoSkipPadding: narrow ? 12 : 3,
               maxRotation: 0,
+              callback(this: any, value: number) {
+                const label = this.getLabelForValue(value);
+                return narrow ? shortDay(label) : label;
+              },
             },
           },
         },
-      },
-    };
-  },
-  methods: {
-    hex2rgba(hex: string, alpha = 1) {
-      const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
-      return `rgba(${r},${g},${b},${alpha})`;
+      };
     },
-  },
-  computed: {
     chartData() {
       return {
         labels: this.labels,
@@ -138,6 +162,12 @@ export default {
           },
         ],
       };
+    },
+  },
+  methods: {
+    hex2rgba(hex: string, alpha = 1) {
+      const [r, g, b] = hex.match(/\w\w/g).map((x) => parseInt(x, 16));
+      return `rgba(${r},${g},${b},${alpha})`;
     },
   },
 };

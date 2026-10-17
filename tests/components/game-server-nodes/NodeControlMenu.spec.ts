@@ -22,7 +22,10 @@ vi.mock("~/components/ui/toast/use-toast", async (importOriginal) => ({
 vi.mock("~/components/ui/popover", async () => {
   const { defineComponent, h } = await import("vue");
   const passthrough = defineComponent({
-    setup: (_, { slots }) => () => h("div", slots.default?.()),
+    setup:
+      (_, { slots }) =>
+      () =>
+        h("div", slots.default?.()),
   });
   return {
     Popover: passthrough,
@@ -37,13 +40,15 @@ vi.mock("~/components/ui/switch", async () => {
     Switch: defineComponent({
       props: { modelValue: Boolean, disabled: Boolean },
       emits: ["update:modelValue"],
-      setup: (props, { emit }) => () =>
-        h("button", {
-          class: "switch",
-          disabled: props.disabled,
-          "data-checked": String(props.modelValue),
-          onClick: () => emit("update:modelValue", !props.modelValue),
-        }),
+      setup:
+        (props, { emit }) =>
+        () =>
+          h("button", {
+            class: "switch",
+            disabled: props.disabled,
+            "data-checked": String(props.modelValue),
+            onClick: () => emit("update:modelValue", !props.modelValue),
+          }),
     }),
   };
 });
@@ -173,5 +178,87 @@ describe("NodeControlMenu scheduling switch", () => {
     expect(hasHint(offline)).toBe(true);
     expect(hasHint(offlineAndOff)).toBe(false);
     expect(hasHint(online)).toBe(false);
+  });
+});
+
+describe("NodeControlMenu GPU workloads", () => {
+  const gpuNode = (fields: Record<string, unknown> = {}) =>
+    node({
+      status: "Online",
+      gpu: true,
+      gpu_streaming_enabled: true,
+      gpu_demos_enabled: true,
+      gpu_rendering_enabled: true,
+      ...fields,
+    });
+
+  beforeEach(() => {
+    toastMock.mockReset();
+    mutate.mockReset().mockResolvedValue({ data: {} });
+  });
+
+  it("shows only the workload switches where the row has its own", async () => {
+    const wrapper = await mountSuspended(NodeControlMenu, {
+      props: { node: gpuNode() as any, workloadsOnly: true },
+    });
+
+    expect(wrapper.find('[data-testid="scheduling-row"]').exists()).toBe(false);
+    expect(wrapper.findAll(".switch")).toHaveLength(3);
+  });
+
+  it("marks the trigger only while a workload is off", async () => {
+    const allOn = await mountSuspended(NodeControlMenu, {
+      props: { node: gpuNode() as any, workloadsOnly: true },
+    });
+    const oneOff = await mountSuspended(NodeControlMenu, {
+      props: {
+        node: gpuNode({ gpu_rendering_enabled: false }) as any,
+        workloadsOnly: true,
+      },
+    });
+    const disabled = await mountSuspended(NodeControlMenu, {
+      props: {
+        node: gpuNode({ enabled: false, gpu_rendering_enabled: false }) as any,
+        workloadsOnly: true,
+      },
+    });
+
+    const dot = '[data-testid="workloads-off-dot"]';
+    expect(allOn.find(dot).exists()).toBe(false);
+    expect(oneOff.find(dot).exists()).toBe(true);
+    expect(disabled.find(dot).exists()).toBe(false);
+    expect(
+      disabled.find('[data-testid="workloads-node-disabled"]').exists(),
+    ).toBe(true);
+  });
+
+  it("puts what is running under its workload", async () => {
+    const wrapper = await mountSuspended(NodeControlMenu, {
+      props: {
+        node: gpuNode() as any,
+        workloadsOnly: true,
+        activity: { demos: "Playing a demo for Mira" },
+      },
+    });
+
+    const live = wrapper.findAll('[data-testid="workload-live"]');
+    expect(live).toHaveLength(1);
+    expect(wrapper.get('[data-testid="workload-demos"]').text()).toContain(
+      "Playing a demo for Mira",
+    );
+  });
+
+  it("switches one workload off", async () => {
+    const wrapper = await mountSuspended(NodeControlMenu, {
+      props: { node: gpuNode() as any, workloadsOnly: true },
+    });
+
+    await wrapper
+      .get('[data-testid="workload-streaming"] .switch')
+      .trigger("click");
+
+    const sent = print(mutate.mock.calls[0][0].mutation);
+    expect(sent).toContain("update_game_server_nodes_by_pk");
+    expect(sent).toContain("gpu_streaming_enabled: false");
   });
 });

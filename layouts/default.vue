@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isAdminRouteName } from "~/composables/useNavMode";
 import TopoBackground from "@/layouts/components/TopoBackground.vue";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import {
@@ -118,9 +119,20 @@ const unhooks = [
 ];
 onBeforeUnmount(() => unhooks.forEach((unhook) => unhook()));
 
+// Admin pages sit left-aligned against the nav, the way application settings
+// always have, capped so tables don't stretch across a wide monitor. Only
+// public pages centre in a column.
+// Game Server Nodes and GPU Nodes cap themselves: their panels dock in the
+// room past the cap.
+const adminContent = computed(
+  () =>
+    isAdminRouteName(shownRouteName.value) &&
+    !["game-server-nodes", "gpu-nodes"].includes(String(shownRouteName.value)),
+);
+
 const containContent = computed(() => {
   const name = shownRouteName.value;
-  if (name?.toString().startsWith("settings-application")) {
+  if (isAdminRouteName(name)) {
     return false;
   }
 
@@ -135,12 +147,6 @@ const containContent = computed(() => {
     case "utility":
     case "utility-map":
     case "map-pools":
-    case "game-server-nodes":
-    case "system-metrics":
-    case "system-logs":
-    case "database":
-    case "game-server-nodes-nodeId-files":
-    case "dedicated-servers-serverId-files":
       return false;
     default:
       return true;
@@ -157,6 +163,7 @@ const isProfileSettings = computed(
 // Provide values to MainContent
 provide("showLeftNav", showLeftNav);
 provide("containContent", containContent);
+provide("adminContent", adminContent);
 </script>
 
 <template>

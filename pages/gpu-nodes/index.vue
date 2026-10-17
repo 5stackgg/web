@@ -1,41 +1,13 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { useI18n } from "vue-i18n";
-import { useNuxtApp } from "#app";
-
-const { t } = useI18n();
+import { ref } from "vue";
+import { Plus, Search, Server, TriangleAlert, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import { Spinner } from "~/components/ui/spinner";
-import { useToast } from "~/components/ui/toast/use-toast";
-import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import NodeGpuMetrics from "~/components/system-metrics/NodeGpuMetrics.vue";
 import {
-  Square,
-  Settings2,
-  Trash2,
-  Plus,
-  KeyRound,
-  ChevronDown,
-  Activity,
-  Flame,
-  AlertTriangle,
-  X,
-  ScrollText,
-} from "lucide-vue-next";
-import ServiceLogs from "~/components/ServiceLogs.vue";
-import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
-import BootSequence from "~/components/match/BootSequence.vue";
-import { Input } from "~/components/ui/input";
-import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "~/components/ui/sheet";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "~/components/ui/input-group";
+import { Sheet, SheetContent, SheetTitle } from "~/components/ui/sheet";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -45,644 +17,480 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { useGpuAvailability } from "~/composables/useGpuAvailability";
-import { generateMutation } from "~/graphql/graphqlGen";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
+import FilterToggle from "~/components/common/FilterToggle.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
+import GpuNodeRow from "~/components/gpu-nodes/GpuNodeRow.vue";
+import GpuNodePanel from "~/components/gpu-nodes/GpuNodePanel.vue";
+import GpuRunningRow from "~/components/gpu-nodes/GpuRunningRow.vue";
+import GpuSteamAccounts from "~/components/gpu-nodes/GpuSteamAccounts.vue";
+import GpuSteamTile from "~/components/gpu-nodes/GpuSteamTile.vue";
+import { gpuName, type GpuSession } from "~/components/gpu-nodes/gpuSessions";
+import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
+import { useGpuNodeActions } from "~/composables/useGpuNodeActions";
 
 definePageMeta({
   middleware: "admin",
 });
 
-const { status: poolStatus } = useGpuAvailability();
-const { toast } = useToast();
-const apolloClient = useNuxtApp().$apollo.defaultClient;
+const { stopSession } = useGpuNodeActions();
 
-const steamPoolTotal = ref(0);
-const steamPoolFree = ref(0);
-const steamPoolLoaded = ref(false);
-let steamPoolSub: { unsubscribe: () => void } | undefined;
-onMounted(() => {
-  steamPoolSub = apolloClient
-    .subscribe({
-      query: typedGql("subscription")({
-        v_steam_account_pool_status: [
-          { limit: 1 } as any,
-          { total_accounts: true, free_accounts: true },
-        ],
-      } as any),
-    })
-    .subscribe({
-      next: ({ data }: any) => {
-        const status = data?.v_steam_account_pool_status?.[0];
-        steamPoolTotal.value = Number(status?.total_accounts ?? 0);
-        steamPoolFree.value = Number(status?.free_accounts ?? 0);
-        steamPoolLoaded.value = true;
-      },
-    });
-});
-onUnmounted(() => {
-  steamPoolSub?.unsubscribe();
-});
-
-const poolSteamAccountsTone = computed(() => {
-  const nodes = poolStatus.value?.registered_gpu_nodes ?? 0;
-  if (nodes === 0) {
-    return "muted";
-  }
-  if (steamPoolTotal.value === 0) {
-    return "warn";
-  }
-  // A pool smaller than the node count can never keep every node busy.
-  if (steamPoolTotal.value < nodes) {
-    return "warn";
-  }
-  if (steamPoolFree.value === 0) {
-    return "warn";
-  }
-  return "ok";
-});
-
-// Collapsible per-node chart drawer. Default closed so the roster
-// scans at a glance; expand to reveal the live GPU/VRAM history.
-const expandedNodeIds = reactive<Record<string, boolean>>({});
-function toggleExpanded(nodeId: string) {
-  expandedNodeIds[nodeId] = !expandedNodeIds[nodeId];
-}
-
-// Shader-bake job logs (live + recent), via the shared ServiceLogs viewer.
-const bakeLogsByNodeId = reactive<Record<string, boolean>>({});
-const bakeLogsLoadingByNodeId = reactive<Record<string, boolean>>({});
-const bakeLogsTimers: Record<string, ReturnType<typeof setTimeout>> = {};
-function toggleBakeLogs(nodeId: string) {
-  const open = !bakeLogsByNodeId[nodeId];
-  bakeLogsByNodeId[nodeId] = open;
-
-  if (bakeLogsTimers[nodeId]) {
-    clearTimeout(bakeLogsTimers[nodeId]);
-    delete bakeLogsTimers[nodeId];
-  }
-
-  if (open) {
-    bakeLogsLoadingByNodeId[nodeId] = true;
-    bakeLogsTimers[nodeId] = setTimeout(() => {
-      bakeLogsLoadingByNodeId[nodeId] = false;
-      delete bakeLogsTimers[nodeId];
-    }, 8000);
-  } else {
-    bakeLogsLoadingByNodeId[nodeId] = false;
-  }
-}
-function onBakeLogsReady(nodeId: string) {
-  bakeLogsLoadingByNodeId[nodeId] = false;
-  if (bakeLogsTimers[nodeId]) {
-    clearTimeout(bakeLogsTimers[nodeId]);
-    delete bakeLogsTimers[nodeId];
-  }
-}
-
-// Two-stage confirm so a stray click can't kill an operator's live
-// match — first click flips the button into "Confirm Stop" for 5s,
-// the second actually fires the mutation. `busyByNodeId` blocks
-// re-entrancy while the request is in flight.
-const confirmStopByNodeId = reactive<Record<string, boolean>>({});
-const busyByNodeId = reactive<Record<string, boolean>>({});
 const cs2OptionsNode = ref<any | null>(null);
-const bakeBusyByNodeId = reactive<Record<string, boolean>>({});
 
-const steamPanelOpen = ref(false);
-const newSteamUsername = ref("");
-const newSteamPassword = ref("");
-const deleteSteamTarget = ref<{ id: string; username: string } | null>(null);
-
-function isBaking(node: any): boolean {
-  const status = node?.shader_bake_status;
-  return status !== null && status !== undefined && status !== "done";
+const stopTarget = ref<GpuSession | null>(null);
+async function confirmStop() {
+  const target = stopTarget.value;
+  if (!target) return;
+  await stopSession(target.nodeId);
+  stopTarget.value = null;
 }
 
-function isOffline(node: any): boolean {
-  return node?.status === "Offline";
+// The Steam account pool's sheet; `add` opens it on the add form.
+const accountsOpen = ref(false);
+const accountsFocusAdd = ref(false);
+function openAccounts(add = false) {
+  accountsFocusAdd.value = add;
+  accountsOpen.value = true;
 }
 
-function bakeErrored(node: any): boolean {
-  return node?.shader_bake_status === "errored";
-}
+const tableHead =
+  "h-9 whitespace-nowrap px-3 text-left text-xs font-medium text-muted-foreground";
 
-// Hasura serializes numeric as a string ("65.62") — coerce before use.
-function bakeProgress(node: any): number | null {
-  const raw = node?.shader_bake_progress;
-  if (raw == null) {
-    return null;
-  }
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : null;
-}
-
-// Raw "compiled / total" pipeline count from the streamer, shown next to
-// the percent so the absolute shader count is visible (game-streamer
-// shader-cache.sh emits this as progress_stage).
-function bakeProgressStage(node: any): string | null {
-  const raw = node?.shader_bake_progress_stage;
-  return typeof raw === "string" && raw.length > 0 ? raw : null;
-}
-
-async function bakeShaders(node: any) {
-  if (bakeBusyByNodeId[node.id]) {
-    return;
-  }
-  bakeBusyByNodeId[node.id] = true;
-  try {
-    await apolloClient.mutate({
-      mutation: generateMutation({
-        bakeShaders: [{ game_server_node_id: node.id }, { success: true }],
-      }),
-    });
-    toast({ title: t("pages.gpu_nodes.bake.started") });
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("pages.gpu_nodes.bake.failed"),
-      description: error?.message,
-    });
-  } finally {
-    bakeBusyByNodeId[node.id] = false;
-  }
-}
-
-async function cancelBakeShaders(node: any) {
-  if (bakeBusyByNodeId[node.id]) {
-    return;
-  }
-  bakeBusyByNodeId[node.id] = true;
-  try {
-    await apolloClient.mutate({
-      mutation: generateMutation({
-        cancelBakeShaders: [
-          { game_server_node_id: node.id },
-          { success: true },
-        ],
-      }),
-    });
-    toast({ title: t("pages.gpu_nodes.bake.cancelled") });
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("pages.gpu_nodes.bake.cancel_failed"),
-      description: error?.message,
-    });
-  } finally {
-    bakeBusyByNodeId[node.id] = false;
-  }
-}
-
-async function submitAddSteamAccount() {
-  if (!newSteamUsername.value || !newSteamPassword.value) {
-    return;
-  }
-  try {
-    await apolloClient.mutate({
-      mutation: generateMutation({
-        insert_steam_accounts_one: [
-          {
-            object: {
-              username: newSteamUsername.value,
-              password: newSteamPassword.value,
-            },
-          },
-          { id: true },
-        ],
-      }),
-    });
-    toast({ title: t("pages.gpu_nodes.steam_pool.added") });
-    newSteamUsername.value = "";
-    newSteamPassword.value = "";
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("pages.gpu_nodes.steam_pool.add_failed"),
-      description: error?.message,
-    });
-  }
-}
-
-async function confirmDeleteSteamAccount() {
-  const target = deleteSteamTarget.value;
-  if (!target) {
-    return;
-  }
-  deleteSteamTarget.value = null;
-  try {
-    await apolloClient.mutate({
-      mutation: generateMutation({
-        delete_steam_accounts_by_pk: [{ id: target.id }, { id: true }],
-      }),
-    });
-    toast({ title: t("pages.gpu_nodes.steam_pool.deleted") });
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("pages.gpu_nodes.steam_pool.delete_failed"),
-      description: error?.message,
-    });
-  }
-}
-
-async function stopGpuSession(nodeId: string) {
-  if (busyByNodeId[nodeId]) return;
-  if (!confirmStopByNodeId[nodeId]) {
-    confirmStopByNodeId[nodeId] = true;
-    setTimeout(() => {
-      confirmStopByNodeId[nodeId] = false;
-    }, 5000);
-    return;
-  }
-  confirmStopByNodeId[nodeId] = false;
-  busyByNodeId[nodeId] = true;
-  try {
-    await apolloClient.mutate({
-      mutation: generateMutation({
-        stopGpuSession: [{ game_server_node_id: nodeId }, { success: true }],
-      }),
-    });
-    toast({ title: t("toasts.gpu_session_stopped") });
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("toasts.stop_gpu_session"),
-      description: error?.message ?? t("toasts.request_failed"),
-    });
-  } finally {
-    busyByNodeId[nodeId] = false;
-  }
-}
+// A sheet opened or closed by a tier change fades in place instead of
+// sliding, so the move between aside and sheet reads as a cross-fade.
+const sheetFade = {
+  "--tw-enter-opacity": "0",
+  "--tw-exit-opacity": "0",
+  "--tw-enter-translate-x": "0px",
+  "--tw-exit-translate-x": "0px",
+};
 </script>
 
 <template>
-  <!-- ===================== HEADER ===================== -->
-  <PageTransition :delay="0">
-    <TacticalPageHeader>
-      <template #title>{{ $t("pages.gpu_nodes.title") }}</template>
-      <template #subtitle>{{ $t("pages.gpu_nodes.description") }}</template>
-      <template #actions>
-        <div class="gpu-stats">
-          <div class="gpu-stat">
-            <span class="gpu-stat-label">{{
-              $t("pages.gpu_nodes.meter.compute")
+  <h1 class="sr-only">{{ $t("pages.gpu_nodes.title") }}</h1>
+
+  <!-- The page caps at 1248px and a GPU's panel docks in the room to its
+       right (two columns when there's room for 624px, one at 392px). With
+       less room it opens as a sheet. -->
+  <div ref="page" class="gpn-page" :data-tier="tier" :data-dock="lastDock">
+    <div class="min-w-0">
+      <!-- ===================== CONTROL ROW ===================== -->
+      <PageTransition :delay="0">
+        <div class="flex flex-wrap items-center gap-2">
+          <InputGroup class="h-8 w-full bg-card/60 sm:w-[300px]">
+            <InputGroupAddon class="pl-2.5">
+              <Search class="h-3.5 w-3.5" />
+            </InputGroupAddon>
+            <InputGroupInput
+              v-model="query"
+              :placeholder="$t('pages.gpu_nodes.search_placeholder')"
+              :aria-label="$t('pages.gpu_nodes.search_placeholder')"
+              autocomplete="off"
+              spellcheck="false"
+              class="h-full text-sm max-md:text-base"
+            />
+            <InputGroupAddon align="inline-end" class="pr-1.5">
+              <button
+                v-if="query"
+                type="button"
+                :aria-label="$t('common.clear')"
+                class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                @click="query = ''"
+              >
+                <X class="h-3.5 w-3.5" />
+              </button>
+            </InputGroupAddon>
+          </InputGroup>
+          <AnimatedFilters v-model="kindFilter" :options="kindOptions" square />
+          <span class="grow" />
+          <FilterMenu
+            :count="activeFilterCount"
+            :active="activeFilterCount > 0"
+            :show-reset="anyFilterActive"
+            content-class="w-64 p-2"
+            @reset="clearAll"
+          >
+            <template v-for="group in filterGroups" :key="group.key">
+              <p
+                class="px-2 pb-1 pt-2 text-[11px] font-medium text-muted-foreground first:pt-0.5"
+              >
+                {{ group.label }}
+              </p>
+              <FilterToggle
+                v-for="option in group.options"
+                :key="option.value"
+                :model-value="filters[group.key] === option.value"
+                :label="option.label"
+                @update:model-value="setFilter(group.key, option.value)"
+              />
+            </template>
+          </FilterMenu>
+        </div>
+      </PageTransition>
+
+      <!-- ===================== KPI TILES ===================== -->
+      <PageTransition :delay="60">
+        <div class="mt-5 grid grid-cols-2 gap-2.5 xl:grid-cols-4">
+          <div
+            class="grid content-start gap-1.5 rounded-md border border-border bg-card/40 px-3.5 py-3"
+          >
+            <span class="text-xs text-muted-foreground">{{
+              $t("pages.gpu_nodes.kpi.gpus_free")
             }}</span>
             <span
-              class="gpu-stat-val"
-              :data-tone="
-                poolStatus && poolStatus.free_gpu_nodes === 0 ? 'warn' : 'ok'
+              class="text-[26px] font-bold leading-none tabular-nums"
+              :class="
+                gpuNodes.length && gpusFree === 0 ? 'text-yellow-500' : ''
               "
             >
-              {{ poolStatus ? poolStatus.free_gpu_nodes : "—"
-              }}<span class="gpu-stat-den"
-                >/{{ poolStatus ? poolStatus.registered_gpu_nodes : "—" }}</span
+              {{ gpusFree
+              }}<small
+                class="ml-1.5 text-sm font-semibold text-muted-foreground"
+                >{{
+                  $t("pages.gpu_nodes.kpi.of_total", { total: gpuNodes.length })
+                }}</small
               >
             </span>
-            <span class="gpu-stat-sub">{{
-              $t("pages.gpu_nodes.stat.available")
-            }}</span>
-          </div>
-
-          <span class="gpu-stat-sep" aria-hidden="true"></span>
-
-          <button
-            type="button"
-            class="gpu-stat gpu-stat-btn"
-            @click="steamPanelOpen = true"
-          >
-            <KeyRound class="w-3.5 h-3.5" />
-            <span class="gpu-stat-label">{{
-              $t("pages.gpu_nodes.steam_pool.title")
-            }}</span>
-            <span class="gpu-stat-val" :data-tone="poolSteamAccountsTone">
-              {{ steamPoolLoaded ? steamPoolFree : "—"
-              }}<span class="gpu-stat-den"
-                >/{{ steamPoolLoaded ? steamPoolTotal : "—" }}</span
-              >
-            </span>
-            <span class="gpu-stat-sub">{{
-              $t("pages.gpu_nodes.stat.available")
-            }}</span>
-          </button>
-        </div>
-      </template>
-    </TacticalPageHeader>
-  </PageTransition>
-
-  <!-- ===================== NODE ROSTER ===================== -->
-  <PageTransition :delay="200" class="mt-5">
-    <div v-if="gpuNodes.length > 0" class="space-y-3">
-      <div
-        v-for="node in gpuNodes"
-        :key="node.id"
-        class="gpu-node"
-        :data-disabled="!node.enabled"
-        :data-busy="!!busyByNode[node.id]"
-      >
-        <!-- Row: status + identity + controls -->
-        <div class="gpu-node-row">
-          <!-- Node control menu -->
-          <NodeControlMenu :node="node" align="start" />
-
-          <!-- Identity -->
-          <div class="gpu-node-id">
-            <div class="gpu-node-name">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <span
-                    class="gpu-led gpu-led-status"
-                    :data-tone="
-                      !node.enabled
-                        ? 'offline'
-                        : isOffline(node)
-                          ? 'bad'
-                          : busyByNode[node.id]
-                            ? 'operational'
-                            : node.status === 'Online' ||
-                                node.status === 'NotAcceptingNewMatches'
-                              ? 'idle'
-                              : 'degraded'
-                    "
-                  >
-                    <span class="gpu-led-ping"></span>
-                    <span class="gpu-led-core"></span>
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{
-                    !node.enabled
-                      ? $t("pages.gpu_nodes.disabled")
-                      : node.e_status?.description || node.status
-                  }}
-                </TooltipContent>
-              </Tooltip>
-              {{
-                node.gpu_info?.[0]?.name || $t("pages.gpu_nodes.gpu_unknown")
-              }}
-              <span v-if="node.gpu_info?.[0]?.memory_mb" class="gpu-node-vram">
-                {{ Math.round(node.gpu_info[0].memory_mb / 1024) }} GB
-              </span>
-              <span class="gpu-node-region">{{
-                node.e_region?.description || node.region || "—"
-              }}</span>
-            </div>
-            <div class="gpu-node-meta">
-              <span class="gpu-node-sub">{{ node.label || node.id }}</span>
-              <span v-if="node.public_ip || node.lan_ip" class="gpu-node-ip">
-                {{ node.lan_ip || node.public_ip }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Current task pill -->
-          <div class="gpu-node-task">
-            <template v-if="busyByNode[node.id]">
-              <component
-                :is="busyByNode[node.id].icon"
-                class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))]"
+            <div
+              v-if="gpuNodes.length"
+              class="flex h-1.5 gap-0.5"
+              aria-hidden="true"
+            >
+              <span
+                v-for="node in gpuNodes"
+                :key="node.id"
+                class="flex-1 rounded-sm transition-colors duration-150"
+                :class="
+                  nodeState(node).group === 'busy'
+                    ? 'bg-[hsl(var(--tac-amber))]'
+                    : nodeState(node).group === 'off'
+                      ? 'bg-muted/50'
+                      : 'bg-muted'
+                "
               />
-              <span class="gpu-node-task-label">{{
-                busyByNode[node.id].label
+            </div>
+          </div>
+
+          <GpuSteamTile
+            :accounts="steamAccounts"
+            :health="health"
+            :loaded="accountsLoaded"
+            @open="openAccounts"
+          />
+
+          <div
+            class="grid content-start gap-1.5 rounded-md border border-border bg-card/40 px-3.5 py-3"
+          >
+            <span class="text-xs text-muted-foreground">{{
+              $t("pages.gpu_nodes.kpi.running")
+            }}</span>
+            <span class="text-[26px] font-bold leading-none tabular-nums">{{
+              kindCounts.live + kindCounts.demo + kindCounts.highlights
+            }}</span>
+            <span class="text-xs tabular-nums text-muted-foreground">{{
+              $t("pages.gpu_nodes.kpi.running_split", {
+                live: kindCounts.live,
+                demo: kindCounts.demo,
+                render: kindCounts.highlights,
+              })
+            }}</span>
+          </div>
+
+          <div
+            class="grid content-start gap-1.5 rounded-md border border-border bg-card/40 px-3.5 py-3"
+          >
+            <span class="text-xs text-muted-foreground">{{
+              $t("pages.gpu_nodes.kpi.waiting")
+            }}</span>
+            <span
+              class="text-[26px] font-bold leading-none tabular-nums"
+              :class="waiting ? 'text-yellow-500' : ''"
+              >{{ waiting }}</span
+            >
+            <span class="flex flex-wrap gap-x-2 text-xs text-muted-foreground">
+              <span>{{
+                waiting
+                  ? $t(`pages.gpu_nodes.wait_reason.${waitReasonKey}`)
+                  : $t("pages.gpu_nodes.kpi.waiting_none")
               }}</span>
               <NuxtLink
-                v-if="busyByNode[node.id].matchId"
-                :to="{
-                  name: 'matches-id',
-                  params: { id: busyByNode[node.id].matchId },
-                }"
-                class="gpu-node-task-sub hover:underline"
+                v-if="waiting"
+                to="/system-render-queue"
+                class="underline decoration-dotted underline-offset-[3px] transition-colors hover:text-[hsl(var(--tac-amber))]"
               >
-                {{ busyByNode[node.id].subline }}
+                {{ $t("pages.gpu_nodes.open_render_queue") }}
               </NuxtLink>
-              <span v-else class="gpu-node-task-sub">{{
-                busyByNode[node.id].subline
-              }}</span>
-              <span
-                v-if="busyByNode[node.id].progress"
-                class="gpu-node-task-state"
-              >
-                <Spinner class="w-2.5 h-2.5" />
-                {{ busyByNode[node.id].progress }}
-              </span>
-            </template>
-            <Tooltip v-else-if="isBaking(node)">
-              <TooltipTrigger as-child>
-                <span class="gpu-node-task-flag">
-                  <AlertTriangle
-                    v-if="bakeErrored(node)"
-                    class="w-3.5 h-3.5 text-[hsl(var(--destructive))]"
-                  />
-                  <Flame
-                    v-else
-                    class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))]"
-                  />
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{
-                  bakeErrored(node)
-                    ? $t("pages.gpu_nodes.bake.stages.errored")
-                    : $t("pages.gpu_nodes.bake.in_progress")
-                }}
-              </TooltipContent>
-            </Tooltip>
-            <span v-else-if="!node.enabled" class="gpu-node-task-idle">
-              {{ $t("pages.gpu_nodes.disabled") }}
-            </span>
-            <span v-else class="gpu-node-task-idle gpu-node-task-ok">
-              {{ $t("pages.gpu_nodes.idle") }}
             </span>
           </div>
-
-          <!-- Controls -->
-          <div
-            class="gpu-node-ctrls"
-            :class="{ 'gpu-node-ctrls-offline': isOffline(node) }"
-          >
-            <button
-              v-if="busyByNode[node.id]"
-              type="button"
-              class="gpu-stop"
-              :data-armed="confirmStopByNodeId[node.id]"
-              :disabled="busyByNodeId[node.id]"
-              @click="stopGpuSession(node.id)"
-            >
-              <Square class="w-3.5 h-3.5" />
-              {{
-                confirmStopByNodeId[node.id]
-                  ? $t("common.confirm")
-                  : $t("pages.gpu_nodes.stop")
-              }}
-            </button>
-
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="gpu-icon-btn"
-                  @click="cs2OptionsNode = node"
-                >
-                  <Settings2 class="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("game_server.edit_cs2_options") }}
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip v-if="!isBaking(node)">
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="gpu-icon-btn"
-                  :disabled="bakeBusyByNodeId[node.id]"
-                  @click="bakeShaders(node)"
-                >
-                  <Spinner v-if="bakeBusyByNodeId[node.id]" />
-                  <Flame v-else class="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("pages.gpu_nodes.bake.help") }}
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip v-else>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="gpu-icon-btn gpu-icon-btn-danger"
-                  :disabled="bakeBusyByNodeId[node.id]"
-                  @click="cancelBakeShaders(node)"
-                >
-                  <Spinner v-if="bakeBusyByNodeId[node.id]" />
-                  <X v-else class="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("pages.gpu_nodes.bake.cancel_help") }}
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="gpu-icon-btn"
-                  :data-open="bakeLogsByNodeId[node.id]"
-                  @click="toggleBakeLogs(node.id)"
-                >
-                  <Spinner v-if="bakeLogsLoadingByNodeId[node.id]" />
-                  <ScrollText v-else class="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("pages.gpu_nodes.bake.logs_help") }}
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="gpu-metrics-toggle"
-                  :data-open="expandedNodeIds[node.id]"
-                  @click="toggleExpanded(node.id)"
-                >
-                  <Activity class="w-3.5 h-3.5" />
-                  <ChevronDown class="w-3 h-3 gpu-metrics-chevron" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("pages.gpu_nodes.metrics") }}
-              </TooltipContent>
-            </Tooltip>
-          </div>
         </div>
+      </PageTransition>
 
-        <div v-if="busyByNode[node.id]" class="gpu-pod-activity">
-          <BootSequence
-            v-if="busyByNode[node.id].statusHistory"
-            :mode="busyByNode[node.id].kind"
-            :histories="[busyByNode[node.id].statusHistory]"
-            :card="false"
-            class="gpu-pod-boot"
-          />
-
-          <div class="gpu-bake-preview gpu-pod-preview">
-            <SnapshotQuickView
-              :kind="busyByNode[node.id].snapshotKind"
-              :id="busyByNode[node.id].snapshotId"
-              :force-empty="busyByNode[node.id].rendering"
-              :empty-label="
-                busyByNode[node.id].kind === 'highlights'
-                  ? $t('match.stream.rendering_highlights')
-                  : ''
-              "
-            />
-          </div>
-        </div>
-
-        <!-- Shader bake pipeline (only while baking) -->
-        <div
-          v-if="isBaking(node)"
-          class="gpu-bake"
-          :class="{ 'is-errored': bakeErrored(node) }"
-        >
-          <div class="gpu-bake-activity">
-            <BootSequence
-              mode="bake"
-              :histories="[node.shader_bake_status_history]"
-              :status="node.shader_bake_status"
-              :progress="bakeProgress(node)"
-              :progress-stage="bakeProgressStage(node)"
-              :card="false"
-              class="gpu-bake-steps"
-            />
-
-            <div class="gpu-bake-preview">
-              <SnapshotQuickView kind="bake" :id="node.id" />
-            </div>
-          </div>
-        </div>
-
-        <!-- Shader-bake job logs (toggle) -->
-        <div
-          v-if="bakeLogsByNodeId[node.id]"
-          class="flex h-72 flex-col overflow-hidden rounded border border-border/60 bg-background/40"
-        >
-          <ServiceLogs
-            class="min-h-0 flex-1"
-            :service="`shader-bake:${node.id}`"
-            :compact="true"
-            :disable-retry="!isBaking(node)"
-            @has-logs="onBakeLogsReady(node.id)"
-          />
-        </div>
-
-        <!-- Inline live bars (always visible) -->
-        <NodeGpuMetrics
-          :node-id="node.id"
-          :node-label="node.label || ''"
-          :show-label="false"
-          :show-quick-stats="true"
-          :show-charts="!!expandedNodeIds[node.id]"
-          :compact-charts="false"
-          class="gpu-node-metrics"
-        />
+      <!-- ===================== POOL WARNING ===================== -->
+      <div
+        v-if="
+          !loading &&
+          accountsLoaded &&
+          (health.key === 'empty' || health.key === 'short')
+        "
+        class="mt-4 flex flex-wrap items-start gap-2.5 rounded-md border border-yellow-500/35 bg-yellow-500/[0.06] px-3 py-2.5 text-[13px]"
+      >
+        <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0 text-yellow-500" />
+        <span class="min-w-[200px] flex-1 text-yellow-100/90">
+          {{
+            health.key === "empty"
+              ? $t("pages.gpu_nodes.steam_pool.empty_warning_title")
+              : $t("pages.gpu_nodes.steam_pool.short_warning_title", {
+                  accounts: health.total,
+                  nodes: health.nodes,
+                })
+          }}
+        </span>
+        <Button size="sm" variant="outline" @click="openAccounts(true)">
+          <Plus class="h-3.5 w-3.5" />
+          {{ $t("pages.gpu_nodes.steam_pool.add_title") }}
+        </Button>
       </div>
+
+      <!-- ===================== SECTIONS ===================== -->
+      <PageTransition :delay="120">
+        <div v-if="!loading" class="mt-8 grid gap-8">
+          <!-- Running now -->
+          <ManageSection
+            :label="$t('pages.gpu_nodes.running_title')"
+            :hint="$t('pages.gpu_nodes.running_hint')"
+          >
+            <SectionEmpty
+              v-if="!gpuNodes.length"
+              class="!min-h-[150px]"
+              :title="$t('pages.gpu_nodes.empty.title')"
+              :description="$t('pages.gpu_nodes.empty.description')"
+            >
+              <Button as-child variant="outline" size="sm">
+                <NuxtLink to="/game-server-nodes">
+                  <Server class="h-3.5 w-3.5" />
+                  {{ $t("pages.gpu_nodes.open_game_server_nodes") }}
+                </NuxtLink>
+              </Button>
+            </SectionEmpty>
+            <SectionEmpty
+              v-else-if="!sessions.length"
+              class="!min-h-[130px]"
+              :title="$t('pages.gpu_nodes.running_empty_title')"
+              :description="$t('pages.gpu_nodes.running_empty_body')"
+            />
+            <SectionEmpty
+              v-else-if="!visibleSessions.length"
+              class="!min-h-[130px]"
+              :title="$t('pages.gpu_nodes.running_no_match')"
+              :description="$t('pages.gpu_nodes.no_match_body')"
+            >
+              <Button variant="outline" size="sm" @click="clearAll">
+                {{ $t("pages.gpu_nodes.clear_all") }}
+              </Button>
+            </SectionEmpty>
+            <div
+              v-else
+              class="overflow-x-auto rounded-md border border-border bg-card/40"
+            >
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-border">
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.workload") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.for") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.gpu_unknown") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.account") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.state") }}
+                    </th>
+                    <th :class="[tableHead, 'text-right']">
+                      {{ $t("pages.gpu_nodes.col.time") }}
+                    </th>
+                    <th :class="tableHead">
+                      <span class="sr-only">{{
+                        $t("common.actions_label")
+                      }}</span>
+                    </th>
+                  </tr>
+                </thead>
+                <TransitionGroup
+                  tag="tbody"
+                  enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+                  enter-from-class="opacity-0 translate-y-1"
+                  leave-active-class="transition-opacity [transition-duration:110ms] ease-in"
+                  leave-to-class="opacity-0"
+                >
+                  <GpuRunningRow
+                    v-for="session in visibleSessions"
+                    :key="session.id"
+                    :session="session"
+                    :node="nodeById(session.nodeId)"
+                    :now="now"
+                    :selected="selectedId === session.nodeId"
+                    @open="openPanel(session.nodeId)"
+                    @stop="stopTarget = session"
+                  />
+                </TransitionGroup>
+              </table>
+            </div>
+          </ManageSection>
+
+          <!-- GPUs -->
+          <ManageSection
+            v-if="gpuNodes.length"
+            :label="$t('pages.gpu_nodes.gpus_title')"
+            :hint="$t('pages.gpu_nodes.gpus_hint')"
+          >
+            <SectionEmpty
+              v-if="!visibleNodes.length"
+              class="!min-h-[130px]"
+              :title="$t('pages.gpu_nodes.gpus_no_match')"
+              :description="$t('pages.gpu_nodes.no_match_body')"
+            >
+              <Button variant="outline" size="sm" @click="clearAll">
+                {{ $t("pages.gpu_nodes.clear_all") }}
+              </Button>
+            </SectionEmpty>
+            <div
+              v-else
+              class="overflow-x-auto rounded-md border border-border bg-card/40"
+            >
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-border">
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.gpu_unknown") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.workloads") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.node") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.state") }}
+                    </th>
+                    <th :class="tableHead">
+                      {{ $t("pages.gpu_nodes.col.load") }}
+                    </th>
+                    <th :class="[tableHead, 'text-right']">
+                      <FiveStackToolTip as-child :delay-duration="120">
+                        <template #trigger>
+                          <span
+                            class="cursor-help underline decoration-dotted decoration-muted-foreground/70 underline-offset-[3px]"
+                            tabindex="0"
+                            >{{ $t("pages.gpu_nodes.col.vram") }}</span
+                          >
+                        </template>
+                        {{ $t("pages.gpu_nodes.col.vram_help") }}
+                      </FiveStackToolTip>
+                    </th>
+                    <th :class="tableHead">
+                      <span class="sr-only">{{
+                        $t("common.actions_label")
+                      }}</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <GpuNodeRow
+                    v-for="node in visibleNodes"
+                    :key="node.id"
+                    :node="node"
+                    :state="nodeState(node)"
+                    :state-label="stateLabel(node)"
+                    :session="sessionByNode[node.id] || null"
+                    :selected="selectedId === node.id"
+                    @open="openPanel(node.id)"
+                    @logs="openPanel(node.id, true)"
+                    @video="cs2OptionsNode = node"
+                  />
+                </tbody>
+              </table>
+            </div>
+          </ManageSection>
+        </div>
+      </PageTransition>
     </div>
 
-    <div v-else-if="!loading" class="gpu-empty">
-      <div class="gpu-empty-title">{{ $t("pages.gpu_nodes.empty.title") }}</div>
-      <p class="gpu-empty-sub">{{ $t("pages.gpu_nodes.empty.description") }}</p>
-    </div>
-  </PageTransition>
+    <Transition :name="tierSwap ? 'gpn-tier' : 'gpn-dock'">
+      <aside
+        v-if="docked"
+        ref="aside"
+        class="gpn-insp"
+        :aria-label="$t(`${INSPECTOR}.details`)"
+      >
+        <Transition
+          name="gpn-swap"
+          mode="out-in"
+          @after-leave="resetPanelScroll"
+        >
+          <GpuNodePanel
+            :key="selectedNode.id"
+            v-model:logs-open="logsOpen"
+            :node="selectedNode"
+            :session="sessionByNode[selectedNode.id] || null"
+            :bake="bakeByNode[selectedNode.id] || null"
+            :state="nodeState(selectedNode)"
+            :state-label="stateLabel(selectedNode)"
+            @close="closePanel"
+            @stop="(session) => (stopTarget = session)"
+            @video="cs2OptionsNode = selectedNode"
+          />
+        </Transition>
+      </aside>
+    </Transition>
+  </div>
+
+  <Sheet :open="sheetOpen" @update:open="(open) => !open && closePanel()">
+    <!-- The panel draws its own close in its sticky header, and opening lands
+         on the title rather than the first control. -->
+    <SheetContent
+      side="right"
+      class="w-full gap-0 overflow-y-auto overscroll-contain bg-[hsl(240_6%_7%)] p-0 sm:max-w-[460px] [&>button:last-child]:hidden"
+      :style="tierSwap ? sheetFade : undefined"
+      @open-auto-focus="onSheetAutoFocus"
+    >
+      <SheetTitle class="sr-only" tabindex="-1" data-gpu-sheet-title>{{
+        selectedNode
+          ? gpuName(selectedNode) || $t("pages.gpu_nodes.gpu_unknown")
+          : $t(`${INSPECTOR}.details`)
+      }}</SheetTitle>
+      <GpuNodePanel
+        v-if="selectedNode"
+        v-model:logs-open="logsOpen"
+        :node="selectedNode"
+        :session="sessionByNode[selectedNode.id] || null"
+        :bake="bakeByNode[selectedNode.id] || null"
+        :state="nodeState(selectedNode)"
+        :state-label="stateLabel(selectedNode)"
+        @close="closePanel"
+        @stop="(session) => (stopTarget = session)"
+        @video="cs2OptionsNode = selectedNode"
+      />
+    </SheetContent>
+  </Sheet>
+
+  <GpuSteamAccounts
+    v-model:open="accountsOpen"
+    :focus-add="accountsFocusAdd"
+    :accounts="steamAccounts"
+    :nodes="gpuNodes"
+    :health="health"
+    :loaded="accountsLoaded"
+  />
 
   <EditCs2Options
     v-if="cs2OptionsNode"
@@ -691,184 +499,56 @@ async function stopGpuSession(nodeId: string) {
     @close="cs2OptionsNode = null"
   />
 
-  <Sheet v-model:open="steamPanelOpen">
-    <SheetContent side="right" class="sm:max-w-md w-full overflow-y-auto">
-      <SheetHeader>
-        <SheetTitle>
-          {{ $t("pages.gpu_nodes.steam_pool.title") }}
-        </SheetTitle>
-        <SheetDescription>
-          {{ $t("pages.gpu_nodes.steam_pool.description") }}
-        </SheetDescription>
-      </SheetHeader>
-
-      <div class="space-y-5 py-4">
-        <div class="space-y-2">
-          <div class="text-xs uppercase tracking-wider text-muted-foreground">
-            {{ $t("pages.gpu_nodes.steam_pool.add_title") }}
-          </div>
-          <Input
-            v-model="newSteamUsername"
-            :placeholder="$t('pages.gpu_nodes.steam_pool.username')"
-            autocomplete="off"
-          />
-          <Input
-            v-model="newSteamPassword"
-            type="password"
-            :placeholder="$t('pages.gpu_nodes.steam_pool.password')"
-            autocomplete="new-password"
-          />
-          <Button
-            class="w-full"
-            :disabled="!newSteamUsername || !newSteamPassword"
-            @click="submitAddSteamAccount"
-          >
-            <Plus class="w-4 h-4 mr-1" />
-            {{ $t("pages.gpu_nodes.steam_pool.add") }}
-          </Button>
-          <p class="text-[0.7rem] text-muted-foreground">
-            {{ $t("pages.gpu_nodes.steam_pool.add_description") }}
-          </p>
-        </div>
-
-        <div class="space-y-2">
-          <div
-            class="flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground"
-          >
-            <span>{{ $t("pages.gpu_nodes.steam_pool.accounts_label") }}</span>
-            <span class="font-mono">
-              {{ freeSteamAccounts }}/{{ steamAccounts.length }}
-              {{ $t("pages.gpu_nodes.stat.available") }}
-            </span>
-          </div>
-          <div
-            v-if="steamAccounts.length === 0"
-            class="rounded-md border border-border/60 bg-card/40 px-3 py-6 text-center text-sm text-muted-foreground"
-          >
-            {{ $t("pages.gpu_nodes.steam_pool.empty") }}
-          </div>
-          <div
-            v-else
-            class="overflow-hidden rounded-md border border-border/60"
-          >
-            <table class="w-full text-sm">
-              <tbody>
-                <tr
-                  v-for="account in steamAccounts"
-                  :key="account.id"
-                  class="border-b border-border/30 last:border-b-0"
-                >
-                  <td class="p-2 font-mono">
-                    <div>{{ account.username }}</div>
-                    <div
-                      v-if="steamAccountClaim(account)"
-                      class="mt-0.5 flex items-center gap-1 text-[10px] font-sans uppercase tracking-wider text-amber-500"
-                    >
-                      <Activity class="w-3 h-3" />
-                      <span>{{
-                        steamClaimPurposeLabel(
-                          steamAccountClaim(account).purpose,
-                        )
-                      }}</span>
-                      <span
-                        v-if="steamAccountClaim(account).node_id"
-                        class="text-muted-foreground normal-case"
-                      >
-                        · {{ steamAccountClaim(account).node_id }}
-                      </span>
-                    </div>
-                    <div
-                      v-else
-                      class="mt-0.5 text-[10px] font-sans uppercase tracking-wider text-muted-foreground"
-                    >
-                      {{ $t("pages.gpu_nodes.steam_pool.idle") }}
-                    </div>
-                  </td>
-                  <td class="p-2 text-right w-10">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      @click="
-                        deleteSteamTarget = {
-                          id: account.id,
-                          username: account.username,
-                        }
-                      "
-                    >
-                      <Trash2 class="w-4 h-4 text-red-500" />
-                    </Button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </SheetContent>
-  </Sheet>
-
   <AlertDialog
-    :open="!!deleteSteamTarget"
-    @update:open="(open) => !open && (deleteSteamTarget = null)"
+    :open="!!stopTarget"
+    @update:open="(open) => !open && (stopTarget = null)"
   >
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>
-          {{
-            $t("pages.gpu_nodes.steam_pool.delete_title", {
-              username: deleteSteamTarget?.username ?? "",
-            })
-          }}
-        </AlertDialogTitle>
+        <AlertDialogTitle>{{ stopCopy(stopTarget).title }}</AlertDialogTitle>
         <AlertDialogDescription>
-          {{ $t("pages.gpu_nodes.steam_pool.delete_description") }}
+          {{ stopCopy(stopTarget).body }}
         </AlertDialogDescription>
       </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel @click="deleteSteamTarget = null">
-          {{ $t("common.cancel") }}
-        </AlertDialogCancel>
-        <!-- Plain button — reka-ui's AlertDialogAction auto-closes (nulling
-             deleteSteamTarget) before the async handler reads it. -->
-        <button
-          type="button"
-          class="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 text-sm font-medium text-white hover:bg-red-700 cursor-pointer"
-          @click="confirmDeleteSteamAccount"
-        >
-          {{ $t("common.delete") }}
-        </button>
+      <AlertDialogFooter class="gap-2">
+        <AlertDialogCancel>{{
+          $t("pages.gpu_nodes.stop_copy.keep")
+        }}</AlertDialogCancel>
+        <!-- Plain button: reka's AlertDialogAction closes (and clears the
+             target) before the stop is sent. -->
+        <Button variant="destructive" @click="confirmStop">
+          {{ stopCopy(stopTarget).action }}
+        </Button>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>
 </template>
 
 <script lang="ts">
+import { dateLocale } from "~/utilities/dateLocale";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { Radio, PlayCircle, Film } from "lucide-vue-next";
+import { observeDockTier, type DockTier } from "~/composables/dockTier";
+import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
+import { useRenderQueueStatusStore } from "~/stores/RenderQueueStatusStore";
+import {
+  buildSessions,
+  gpuNodeState,
+  matchesSearch,
+  nodeMatchesFilters,
+  poolHealth,
+  rendersWaiting,
+  waitReason,
+  type GpuNodeFilters,
+  type GpuSession as Session,
+} from "~/components/gpu-nodes/gpuSessions";
 
-type BusyEntry = {
-  kind: "live" | "demo" | "highlights";
-  label: string;
-  who: string;
-  subline: string;
-  matchId?: string;
-  snapshotKind: "live" | "demo" | "bake" | "clips";
-  snapshotId: string;
-  rendering?: boolean;
-  // One-line state for the active (post-boot) phase only — "Rendering 42%"
-  // / "Uploading". Boot progress is shown by the full BootSequence
-  // checklist instead.
-  progress?: string | null;
-  // Raw status_history of the current item, fed to BootSequence so
-  // any booting pod (render / live / demo) shows the same boot checklist.
-  statusHistory?: any[];
-  icon: any;
-};
+type FilterKey = keyof GpuNodeFilters;
 
 export default {
   data() {
     return {
       loading: true,
+      accountsLoaded: false,
       gpuNodes: [] as any[],
       liveStreams: [] as any[],
       demoSessions: [] as any[],
@@ -884,116 +564,352 @@ export default {
           created_at: string;
         }>;
       }>,
+      query: "",
+      kindFilter: "all",
+      filters: { work: "", kind: "", region: "" } as GpuNodeFilters,
+      now: Date.now(),
+      ticker: null as ReturnType<typeof setInterval> | null,
+      // The GPU whose panel is open, and whether its bake logs are.
+      selectedId: null as string | null,
+      logsOpen: false,
+      tier: "sheet" as DockTier,
+      // The docked width the aside keeps, also while it leaves for a sheet.
+      lastDock: "docked" as Exclude<DockTier, "sheet">,
+      // The panel is moving between aside and sheet: both fade.
+      tierSwap: false,
+      stopTier: null as (() => void) | null,
     };
   },
+  mounted(this: any) {
+    // Renders waiting reads the app-wide render queue count (admins already
+    // hold this subscription; the call is a no-op when it is running).
+    useRenderQueueStatusStore().subscribeToInFlight();
+    this.ticker = setInterval(() => {
+      this.now = Date.now();
+    }, 15 * 1000);
+    this.stopTier = observeDockTier(this.$refs.page, this.onTier);
+    document.addEventListener("keydown", this.onKeydown);
+  },
+  beforeUnmount(this: any) {
+    if (this.ticker) clearInterval(this.ticker);
+    this.stopTier?.();
+    document.removeEventListener("keydown", this.onKeydown);
+  },
+  watch: {
+    gpuNodes(this: any, nodes: any[]) {
+      if (
+        this.selectedId &&
+        !nodes.some((node: any) => node.id === this.selectedId)
+      ) {
+        this.closePanel();
+      }
+    },
+  },
   computed: {
-    busyByNode(): Record<string, BusyEntry> {
-      const map: Record<string, BusyEntry> = {};
-
-      const matchupOf = (m: any) => {
-        const a = m?.lineup_1?.name;
-        const b = m?.lineup_2?.name;
-        return a && b ? `${a} vs ${b}` : null;
-      };
-
-      for (const stream of this.liveStreams) {
-        if (!stream.game_server_node_id) continue;
-        map[stream.game_server_node_id] = {
-          kind: "live",
-          label:
-            stream.mode === "tv"
-              ? this.$t("gpu_pool_status.live_gotv")
-              : this.$t("gpu_pool_status.live_direct"),
-          who:
-            matchupOf(stream.match) || this.$t("gpu_pool_status.live_match"),
-          subline:
-            matchupOf(stream.match) || this.$t("gpu_pool_status.live_match"),
-          matchId: stream.match_id,
-          snapshotKind: "live",
-          snapshotId: stream.match_id,
-          statusHistory: stream.is_live ? undefined : stream.status_history,
-          icon: Radio,
-        };
+    selectedNode(this: any) {
+      return this.nodeById(this.selectedId);
+    },
+    docked(this: any): boolean {
+      return this.tier !== "sheet" && !!this.selectedNode;
+    },
+    sheetOpen(this: any): boolean {
+      return this.tier === "sheet" && !!this.selectedNode;
+    },
+    sessions(this: any): Session[] {
+      return buildSessions({
+        nodes: this.gpuNodes,
+        streams: this.liveStreams,
+        demos: this.demoSessions,
+        renders: this.renderJobs,
+        accounts: this.steamAccounts,
+      });
+    },
+    sessionByNode(this: any): Record<string, Session> {
+      const map: Record<string, Session> = {};
+      for (const session of this.sessions as Session[]) {
+        if (session.kind !== "bake") map[session.nodeId] = session;
       }
-
-      for (const session of this.demoSessions) {
-        if (!session.game_server_node_id) continue;
-        if (map[session.game_server_node_id]) continue;
-        const watcher =
-          session.watcher?.name || this.$t("gpu_pool_status.unknown_user");
-        map[session.game_server_node_id] = {
-          kind: "demo",
-          label: this.$t("gpu_pool_status.demo_playback_label"),
-          who: watcher,
-          subline:
-            matchupOf(session.match) ||
-            this.$t("gpu_pool_status.demo_playback_subline"),
-          matchId: session.match_id,
-          snapshotKind: "demo",
-          snapshotId: session.id,
-          statusHistory:
-            session.status === "playing" ? undefined : session.status_history,
-          icon: PlayCircle,
-        };
-      }
-
-      for (const job of this.renderJobs) {
-        if (!job.game_server_node_id) continue;
-        if (map[job.game_server_node_id]) continue;
-        const who =
-          job.user?.name ||
-          (job.user_steam_id
-            ? this.$t("gpu_pool_status.unknown_user")
-            : this.$t("gpu_pool_status.system_user"));
-        map[job.game_server_node_id] = {
-          kind: "highlights",
-          label: this.$t("gpu_pool_status.highlights_render_label"),
-          who,
-          subline:
-            matchupOf(job.match_map?.match) ||
-            this.$t("gpu_pool_status.highlight_render_subline"),
-          matchId: job.match_map?.match?.id,
-          snapshotKind: "clips",
-          snapshotId: job.id,
-          rendering: job.status === "rendering" || job.status === "uploading",
-          progress: this.renderJobState(job),
-          statusHistory:
-            job.status === "queued" ? job.status_history : undefined,
-          icon: Film,
-        };
-      }
-
       return map;
     },
-    freeSteamAccounts(this: any): number {
-      return this.steamAccounts.filter(
-        (account: any) => (account.claims?.length ?? 0) === 0,
+    bakeByNode(this: any): Record<string, Session> {
+      const map: Record<string, Session> = {};
+      for (const session of this.sessions as Session[]) {
+        if (session.kind === "bake") map[session.nodeId] = session;
+      }
+      return map;
+    },
+    kindCounts(this: any): Record<"live" | "demo" | "highlights", number> {
+      const counts = { live: 0, demo: 0, highlights: 0 };
+      for (const session of this.sessions as Session[]) {
+        if (session.kind !== "bake") counts[session.kind]++;
+      }
+      return counts;
+    },
+    kindOptions(this: any) {
+      const count = (n: number) => n || undefined;
+      return [
+        { key: "all", label: this.$t("common.all") },
+        {
+          key: "live",
+          label: this.$t("pages.gpu_nodes.filter.live"),
+          count: count(this.kindCounts.live),
+        },
+        {
+          key: "demo",
+          label: this.$t("pages.gpu_nodes.filter.demos"),
+          count: count(this.kindCounts.demo),
+        },
+        {
+          key: "highlights",
+          label: this.$t("pages.gpu_nodes.filter.renders"),
+          count: count(this.kindCounts.highlights),
+        },
+      ];
+    },
+    visibleSessions(this: any): Session[] {
+      return (this.sessions as Session[]).filter((session) => {
+        if (this.kindFilter !== "all" && session.kind !== this.kindFilter)
+          return false;
+        const node = this.nodeById(session.nodeId);
+        if (!node) return false;
+        return (
+          nodeMatchesFilters(node, this.filters) &&
+          matchesSearch(this.query, node, session)
+        );
+      });
+    },
+    visibleNodes(this: any): any[] {
+      return this.gpuNodes.filter(
+        (node: any) =>
+          nodeMatchesFilters(node, this.filters) &&
+          matchesSearch(this.query, node, this.sessionByNode[node.id]),
+      );
+    },
+    gpusFree(this: any): number {
+      const status = useGpuPoolStatusStore().status;
+      if (status) return status.free_gpu_nodes;
+      return this.gpuNodes.filter(
+        (node: any) => this.nodeState(node).group === "idle",
       ).length;
+    },
+    health(this: any) {
+      return poolHealth(this.gpuNodes, this.steamAccounts);
+    },
+    waiting(this: any): number {
+      return rendersWaiting(
+        useRenderQueueStatusStore().queuedCount,
+        this.renderJobs,
+      );
+    },
+    waitReasonKey(this: any): string {
+      return waitReason({
+        nodes: this.gpuNodes,
+        sessions: this.sessions,
+        accounts: this.steamAccounts,
+        pausedForMatch:
+          !!useGpuPoolStatusStore().status?.renders_paused_for_active_match,
+      });
+    },
+    filterGroups(this: any) {
+      const regions = new Map<string, string>();
+      let unassigned = false;
+      for (const node of this.gpuNodes) {
+        if (node.region) {
+          regions.set(node.region, node.e_region?.description || node.region);
+        } else {
+          unassigned = true;
+        }
+      }
+      return [
+        {
+          key: "work" as FilterKey,
+          label: this.$t("pages.gpu_nodes.filter.workload_on"),
+          options: [
+            {
+              value: "streaming",
+              label: this.$t("pages.gpu_nodes.workload.streaming"),
+            },
+            {
+              value: "demos",
+              label: this.$t("pages.gpu_nodes.workload.demos"),
+            },
+            {
+              value: "rendering",
+              label: this.$t("pages.gpu_nodes.workload.rendering"),
+            },
+          ],
+        },
+        {
+          key: "kind" as FilterKey,
+          label: this.$t("pages.gpu_nodes.filter.node_type"),
+          options: [
+            { value: "gpu", label: this.$t("pages.gpu_nodes.node_kind.gpu") },
+            {
+              value: "match",
+              label: this.$t("pages.gpu_nodes.node_kind.match"),
+            },
+          ],
+        },
+        {
+          key: "region" as FilterKey,
+          label: this.$t("common.region"),
+          options: [
+            ...[...regions].map(([value, label]) => ({ value, label })),
+            ...(unassigned
+              ? [{ value: "none", label: this.$t("pages.gpu_nodes.no_region") }]
+              : []),
+          ],
+        },
+      ].filter((group) => group.options.length > 0);
+    },
+    activeFilterCount(this: any): number {
+      return Object.values(this.filters).filter(Boolean).length;
+    },
+    anyFilterActive(this: any): boolean {
+      return (
+        this.activeFilterCount > 0 ||
+        this.kindFilter !== "all" ||
+        this.query.trim().length > 0
+      );
     },
   },
   methods: {
-    // Compact header chip for the active (post-boot) render phase only —
-    // "Rendering 42%" / "Uploading". The booting phase is shown in full by
-    // the BootSequence checklist, so nothing is returned there.
-    renderJobState(this: any, job: any): string | null {
-      if (job.status === "rendering") {
-        const n = Number(job.progress);
-        return Number.isFinite(n)
-          ? `${this.$t("render_queue_status.rendering")} ${Math.round(n * 100)}%`
-          : this.$t("render_queue_status.rendering");
-      }
-      if (job.status === "uploading") {
-        return this.$t("render_queue_status.uploading");
-      }
-      return null;
+    openPanel(this: any, id: string, logs = false) {
+      this.tierSwap = false;
+      this.logsOpen = logs;
+      this.selectedId = id;
     },
-    steamAccountClaim(this: any, account: any) {
-      return account?.claims?.[0] ?? null;
+    closePanel(this: any) {
+      this.tierSwap = false;
+      this.selectedId = null;
     },
-    steamClaimPurposeLabel(this: any, purpose: string): string {
-      const key = `pages.gpu_nodes.steam_pool.purpose.${purpose}`;
-      const label = this.$t(key);
-      return label === key ? purpose : label;
+    // The room changed (window, nav or hub): the open panel moves between
+    // the aside and the sheet. Wide and narrow docks share the aside, so that
+    // switch only reflows it, under a fade.
+    onTier(this: any, tier: DockTier) {
+      const was = this.tier;
+      this.tierSwap = !!this.selectedNode;
+      if (tier !== "sheet") {
+        this.lastDock = tier;
+      }
+      this.tier = tier;
+      if (this.selectedNode && was !== "sheet" && tier !== "sheet") {
+        this.$nextTick(() => {
+          const aside = this.$refs.aside as HTMLElement | undefined;
+          if (
+            aside?.animate &&
+            !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ) {
+            aside.animate([{ opacity: 0 }, { opacity: 1 }], {
+              duration: 240,
+              easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+            });
+          }
+        });
+      }
+    },
+    onSheetAutoFocus(event: Event) {
+      event.preventDefault();
+      (event.target as HTMLElement | null)
+        ?.querySelector<HTMLElement>("[data-gpu-sheet-title]")
+        ?.focus();
+    },
+    resetPanelScroll(this: any) {
+      const aside = this.$refs.aside as HTMLElement | undefined;
+      if (aside) aside.scrollTop = 0;
+    },
+    onKeydown(this: any, event: KeyboardEvent) {
+      if (event.key !== "Escape" || !this.docked || event.defaultPrevented)
+        return;
+      const target = event.target as HTMLElement;
+      if (
+        /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) ||
+        target.isContentEditable ||
+        document.querySelector(
+          '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [role="menu"][data-state="open"], [role="listbox"]',
+        )
+      )
+        return;
+      this.closePanel();
+    },
+    nodeById(this: any, id: string | null) {
+      return this.gpuNodes.find((node: any) => node.id === id) ?? null;
+    },
+    nodeState(this: any, node: any) {
+      return gpuNodeState(node, this.sessionByNode[node.id]);
+    },
+    stateLabel(this: any, node: any): string {
+      const state = this.nodeState(node);
+      if (state.key === "offline" && node.offline_at) {
+        const at = new Date(node.offline_at);
+        const recent = Date.now() - at.getTime() < 18 * 3600 * 1000;
+        return this.$t("pages.gpu_nodes.node_state.offline_since", {
+          time: recent
+            ? at.toLocaleTimeString(dateLocale(), {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : at.toLocaleDateString(dateLocale(), {
+                month: "short",
+                day: "numeric",
+              }),
+        });
+      }
+      const shared: Record<string, string> = {
+        disabled: "pages.gpu_nodes.disabled",
+        offline: "common.offline",
+        starting: "pages.gpu_nodes.state.starting",
+        rendering: "render_queue_status.rendering",
+        bake_failed: "pages.gpu_nodes.bake.stages.errored",
+        idle: "pages.gpu_nodes.idle",
+      };
+      return this.$t(
+        shared[state.key] ?? `pages.gpu_nodes.node_state.${state.key}`,
+      );
+    },
+    setFilter(this: any, key: FilterKey, value: string) {
+      this.filters[key] = this.filters[key] === value ? "" : value;
+    },
+    clearAll(this: any) {
+      this.query = "";
+      this.kindFilter = "all";
+      this.filters = { work: "", kind: "", region: "" };
+    },
+    stopCopy(this: any, session: Session | null) {
+      if (!session) return { title: "", body: "", action: "" };
+      const who =
+        session.who ||
+        (session.system
+          ? this.$t("common.system")
+          : this.$t("gpu_pool_status.unknown_user"));
+      if (session.kind === "live") {
+        return {
+          title: this.$t("pages.gpu_nodes.stop_copy.live_title", {
+            matchup: session.matchup || this.$t("gpu_pool_status.live_match"),
+          }),
+          body: this.$t("pages.gpu_nodes.stop_copy.live_body"),
+          action: this.$t("pages.gpu_nodes.stop_copy.live_action"),
+        };
+      }
+      if (session.kind === "demo") {
+        return {
+          title: this.$t("pages.gpu_nodes.stop_copy.demo_title", { who }),
+          body: this.$t("pages.gpu_nodes.stop_copy.demo_body"),
+          action: this.$t("pages.gpu_nodes.stop_copy.demo_action"),
+        };
+      }
+      const pct =
+        session.status === "rendering" && session.progress !== null
+          ? Math.round(session.progress * 100)
+          : null;
+      return {
+        title: this.$t("pages.gpu_nodes.stop_copy.render_title", { who }),
+        body:
+          pct !== null
+            ? this.$t("pages.gpu_nodes.stop_copy.render_body_pct", { pct })
+            : this.$t("pages.gpu_nodes.stop_copy.render_body"),
+        action: this.$t("pages.gpu_nodes.stop_copy.render_action"),
+      };
     },
   },
   apollo: {
@@ -1024,6 +940,8 @@ export default {
               offline_at: true,
               start_port_range: true,
               end_port_range: true,
+              disk_used_percent: true,
+              disk_available_gb: true,
               shader_bake_status: true,
               shader_bake_progress: true,
               shader_bake_progress_stage: true,
@@ -1122,6 +1040,7 @@ export default {
         } as any),
         result(this: any, { data }: any) {
           this.steamAccounts = data?.steam_accounts ?? [];
+          this.accountsLoaded = true;
         },
       },
       clip_render_jobs: {
@@ -1162,493 +1081,98 @@ export default {
 </script>
 
 <style scoped>
-/* ===== Tone tokens (HSL triplets reused by LEDs/bars/stats) ===== */
-.gpu-stats,
-.gpu-node {
-  --t-ok: 142 71% 45%;
-  --t-idle: 35 92% 55%;
-  --t-warn: 38 95% 55%;
-  --t-bad: 0 84% 60%;
+/* The page runs at the admin width (1280 less padding) and a GPU's panel
+   docks in the room to its right, so opening it never squeezes the tables.
+   The columns follow the tier only: in a docked tier the room is there
+   anyway, and in the sheet tier the aside leaving for the sheet fades out
+   past the edge, clipped. */
+.gpn-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1248px) 0px;
+  align-items: start;
+  overflow-x: clip;
+  /* Room for focus rings at the edges, outside the clip. */
+  margin-inline: -6px;
+  padding-inline: 6px;
 }
-
-/* ===== Header stat strip ===== */
-.gpu-stats {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  flex-wrap: wrap;
+.gpn-page[data-tier="docked"] {
+  grid-template-columns: minmax(0, 1248px) 408px;
 }
-.gpu-stat {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.4rem;
+.gpn-page[data-tier="wide"] {
+  grid-template-columns: minmax(0, 1248px) 640px;
 }
-.gpu-stat-label {
-  font-family: ui-monospace, monospace;
-  font-size: 0.58rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: hsl(var(--muted-foreground));
-}
-.gpu-stat-val {
-  font-family: "Oxanium", ui-sans-serif;
-  font-size: 1.15rem;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  color: hsl(var(--foreground));
-}
-.gpu-stat-val[data-tone="ok"] {
-  color: hsl(var(--t-ok));
-}
-.gpu-stat-val[data-tone="warn"] {
-  color: hsl(var(--t-warn));
-}
-.gpu-stat-val[data-tone="amber"] {
-  color: hsl(var(--tac-amber));
-}
-.gpu-stat-den {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: hsl(var(--muted-foreground));
-}
-.gpu-stat-sub {
-  font-family: ui-monospace, monospace;
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: hsl(var(--muted-foreground) / 0.7);
-}
-.gpu-stat-sep {
-  width: 1px;
-  height: 22px;
-  background: hsl(var(--border) / 0.7);
-}
-.gpu-stat-btn {
-  align-items: center;
-  padding: 0.35rem 0.6rem;
+.gpn-insp {
+  position: sticky;
+  top: 0.5rem;
+  width: 392px;
+  max-height: calc(100dvh - 6rem);
+  margin-left: 16px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid hsl(var(--border));
-  border-radius: 0.375rem;
-  background: hsl(var(--card) / 0.5);
-  color: hsl(var(--muted-foreground));
-  transition:
-    border-color 0.15s,
-    color 0.15s;
+  border-radius: 0.75rem;
+  background: hsl(240 6% 7%);
+  scrollbar-width: thin;
+  scrollbar-color: #27272a transparent;
+  container: gpn-insp / inline-size;
 }
-.gpu-stat-btn:hover {
-  border-color: hsl(var(--tac-amber) / 0.55);
+.gpn-page[data-dock="wide"] .gpn-insp {
+  width: 624px;
 }
-.gpu-stat-btn .gpu-stat-val {
-  font-size: 0.95rem;
+.gpn-dock-enter-active {
+  animation: gpn-dock-in 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-
-/* ===== Status LED ===== */
-.gpu-led {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
+.gpn-dock-leave-active {
+  animation: gpn-dock-out 110ms ease-in both;
 }
-.gpu-led-core {
-  position: relative;
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  z-index: 1;
+@keyframes gpn-dock-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
 }
-.gpu-led-ping {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
+@keyframes gpn-dock-out {
+  to {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+}
+.gpn-tier-enter-active {
+  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.gpn-tier-leave-active {
+  transition: opacity 110ms ease-in;
+}
+.gpn-tier-enter-from,
+.gpn-tier-leave-to {
   opacity: 0;
 }
-.gpu-led[data-tone="operational"] .gpu-led-core,
-.gpu-led[data-tone="ok"] .gpu-led-core {
-  background: hsl(var(--t-ok));
-  box-shadow: 0 0 10px hsl(var(--t-ok) / 0.8);
+.gpn-swap-enter-active {
+  transition:
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-.gpu-led[data-tone="operational"] .gpu-led-ping {
-  background: hsl(var(--t-ok));
-  animation: gpu-ping 2.6s ease-in-out infinite;
+.gpn-swap-leave-active {
+  transition: opacity 110ms ease-in;
 }
-.gpu-led[data-tone="idle"] .gpu-led-core {
-  background: hsl(var(--t-ok));
-  box-shadow: 0 0 10px hsl(var(--t-ok) / 0.7);
+.gpn-swap-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
 }
-.gpu-led[data-tone="degraded"] .gpu-led-core,
-.gpu-led[data-tone="warn"] .gpu-led-core {
-  background: hsl(var(--t-warn));
-  box-shadow: 0 0 10px hsl(var(--t-warn) / 0.7);
+.gpn-swap-leave-to {
+  opacity: 0;
 }
-.gpu-led[data-tone="offline"] .gpu-led-core {
-  background: hsl(var(--muted-foreground) / 0.5);
-}
-.gpu-led[data-tone="bad"] .gpu-led-core {
-  background: hsl(var(--t-bad));
-  box-shadow: 0 0 10px hsl(var(--t-bad) / 0.75);
-}
-/* Gentle breathing halo on active nodes only — no frantic expanding
-   ring. Idle/degraded/offline keep a static dot like the game-server
-   nodes page, so only "something is rendering" draws the eye. */
-@keyframes gpu-ping {
-  0%,
-  100% {
-    transform: scale(1.4);
-    opacity: 0.25;
+@media (prefers-reduced-motion: reduce) {
+  .gpn-dock-enter-active,
+  .gpn-dock-leave-active {
+    animation: none;
   }
-  50% {
-    transform: scale(1.9);
-    opacity: 0;
+  .gpn-tier-enter-active,
+  .gpn-tier-leave-active,
+  .gpn-swap-enter-active,
+  .gpn-swap-leave-active {
+    transition: none;
   }
-}
-
-/* ===== Node card ===== */
-.gpu-node {
-  position: relative;
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.6rem;
-  padding: 1rem 1.1rem;
-  background: linear-gradient(
-    180deg,
-    hsl(var(--card) / 0.55) 0%,
-    hsl(var(--card) / 0.2) 100%
-  );
-  backdrop-filter: blur(6px);
-  transition:
-    border-color 0.15s,
-    transform 0.15s;
-}
-.gpu-node[data-busy="true"] {
-  border-color: hsl(var(--tac-amber) / 0.4);
-}
-.gpu-node[data-disabled="true"] {
-  opacity: 0.6;
-}
-.gpu-node-row {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  flex-wrap: wrap;
-}
-.gpu-node-id {
-  min-width: 0;
-  flex: 1 1 200px;
-}
-.gpu-node-name {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: "Oxanium", ui-sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: hsl(var(--foreground));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.gpu-node-region {
-  font-family: ui-monospace, monospace;
-  font-size: 0.55rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: hsl(var(--tac-amber));
-  border: 1px solid hsl(var(--tac-amber) / 0.35);
-  border-radius: 0.25rem;
-  padding: 0.1rem 0.35rem;
-  flex-shrink: 0;
-}
-.gpu-node-vram {
-  font-family: ui-monospace, monospace;
-  font-size: 0.6rem;
-  font-weight: 600;
-  color: hsl(var(--muted-foreground));
-  flex-shrink: 0;
-}
-.gpu-node-meta {
-  display: flex;
-  gap: 0.6rem;
-  margin-top: 0.2rem;
-  font-size: 0.72rem;
-  color: hsl(var(--muted-foreground));
-}
-.gpu-node-sub {
-  font-family: ui-monospace, monospace;
-}
-.gpu-node-ip {
-  font-family: ui-monospace, monospace;
-  font-size: 0.66rem;
-  opacity: 0.7;
-}
-.gpu-node-task {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  flex: 0 1 auto;
-  min-width: 0;
-}
-.gpu-node-task-flag {
-  display: inline-flex;
-  align-items: center;
-}
-.gpu-node-task-label {
-  font-family: ui-monospace, monospace;
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: hsl(var(--tac-amber));
-}
-.gpu-node-task-sub {
-  font-size: 0.75rem;
-  color: hsl(var(--muted-foreground));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 220px;
-}
-.gpu-pod-activity {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
-}
-.gpu-pod-boot {
-  flex: 1 1 18rem;
-  min-width: 0;
-  padding: 0.75rem;
-  border: 1px solid hsl(var(--border) / 0.5);
-  border-radius: 0.5rem;
-  background: hsl(var(--primary) / 0.03);
-}
-/* Snapshot sits on the right beside the boot checklist; the compound
-   selector outranks the later .gpu-bake-preview rule so its top margin
-   resets (the flex parent owns the spacing). */
-.gpu-pod-activity .gpu-pod-preview {
-  flex: 0 1 22rem;
-  min-width: 0;
-  margin-top: 0;
-}
-.gpu-node-task-state {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  flex-shrink: 0;
-  padding: 0.05rem 0.4rem;
-  border: 1px solid hsl(var(--tac-amber) / 0.4);
-  border-radius: 9999px;
-  background: hsl(var(--tac-amber) / 0.12);
-  font-family: ui-monospace, monospace;
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  color: hsl(var(--tac-amber));
-}
-.gpu-node-task-idle {
-  font-family: ui-monospace, monospace;
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: hsl(var(--muted-foreground));
-}
-.gpu-node-task-ok {
-  color: hsl(var(--t-ok));
-}
-.gpu-node-ctrls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-.gpu-node-ctrls-offline {
-  pointer-events: none;
-  opacity: 0.4;
-}
-.gpu-led-status {
-  cursor: pointer;
-  transition: transform 0.15s;
-}
-.gpu-led-status:hover {
-  transform: scale(1.25);
-}
-.gpu-icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.375rem;
-  background: hsl(var(--card) / 0.4);
-  color: hsl(var(--muted-foreground));
-  transition:
-    color 0.15s,
-    border-color 0.15s,
-    transform 0.2s;
-}
-.gpu-icon-btn:hover {
-  color: hsl(var(--tac-amber));
-  border-color: hsl(var(--tac-amber) / 0.5);
-}
-.gpu-metrics-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  height: 28px;
-  padding: 0 0.6rem;
-  border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.375rem;
-  background: hsl(var(--card) / 0.4);
-  font-family: ui-monospace, monospace;
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: hsl(var(--muted-foreground));
-  transition:
-    color 0.15s,
-    border-color 0.15s;
-}
-.gpu-metrics-toggle:hover {
-  color: hsl(var(--tac-amber));
-  border-color: hsl(var(--tac-amber) / 0.5);
-}
-.gpu-metrics-toggle[data-open="true"] {
-  color: hsl(var(--tac-amber));
-  border-color: hsl(var(--tac-amber) / 0.5);
-  background: hsl(var(--tac-amber) / 0.08);
-}
-.gpu-metrics-chevron {
-  transition: transform 0.2s;
-}
-.gpu-metrics-toggle[data-open="true"] .gpu-metrics-chevron {
-  transform: rotate(180deg);
-}
-.gpu-stop {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.3rem 0.6rem;
-  border: 1px solid hsl(var(--t-bad) / 0.5);
-  border-radius: 0.375rem;
-  background: transparent;
-  font-family: ui-monospace, monospace;
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: hsl(var(--t-bad));
-  transition: background 0.15s;
-}
-.gpu-stop:hover {
-  background: hsl(var(--t-bad) / 0.15);
-}
-.gpu-stop[data-armed="true"] {
-  background: hsl(var(--t-bad));
-  color: hsl(0 0% 100%);
-  box-shadow: 0 0 18px hsl(var(--t-bad) / 0.5);
-}
-.gpu-node-metrics {
-  margin-top: 0.9rem;
-  padding-top: 0.9rem;
-  border-top: 1px solid hsl(var(--border) / 0.4);
-}
-
-/* ===== Shader bake pipeline ===== */
-.gpu-bake {
-  --bake-accent: var(--tac-amber);
-  position: relative;
-  margin-top: 0.9rem;
-  padding: 0.85rem 0.95rem 0.95rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  border: 1px solid hsl(var(--bake-accent) / 0.22);
-  border-radius: 0.5rem;
-  background:
-    radial-gradient(
-      120% 140% at 0% 0%,
-      hsl(var(--bake-accent) / 0.07),
-      transparent 55%
-    ),
-    hsl(var(--background) / 0.4);
-  overflow: hidden;
-}
-/* Tactical corner tick (echoes the page header brackets). */
-.gpu-bake::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 14px;
-  height: 14px;
-  border-top: 1px solid hsl(var(--bake-accent) / 0.7);
-  border-left: 1px solid hsl(var(--bake-accent) / 0.7);
-  border-top-left-radius: 0.5rem;
-}
-/* Hairline runner along the top edge. */
-.gpu-bake::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 14px;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    hsl(var(--bake-accent) / 0.55),
-    transparent 70%
-  );
-}
-
-/* Steps on the left, snapshot preview on the right (wraps on narrow). */
-.gpu-bake-activity {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 0.85rem;
-}
-.gpu-bake-steps {
-  flex: 1 1 18rem;
-  min-width: 0;
-}
-.gpu-bake-preview {
-  flex: 0 1 22rem;
-  min-width: 0;
-  max-width: 22rem;
-  border-radius: 0.375rem;
-  overflow: hidden;
-  border: 1px solid hsl(var(--border) / 0.6);
-}
-/* Errored bake — swing the whole panel to destructive. */
-.gpu-bake.is-errored {
-  --bake-accent: var(--destructive);
-}
-
-/* ===== Empty state ===== */
-.gpu-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 4rem 1rem;
-  border: 1px dashed hsl(var(--border));
-  border-radius: 0.6rem;
-  text-align: center;
-}
-.gpu-empty-title {
-  font-family: ui-monospace, monospace;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: hsl(var(--muted-foreground));
-}
-.gpu-empty-sub {
-  max-width: 28rem;
-  font-size: 0.8rem;
-  color: hsl(var(--muted-foreground) / 0.8);
 }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, useId } from "vue";
+import { ref, computed, useId, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   dailyActivity,
@@ -18,14 +18,29 @@ const { t } = useI18n();
 const format = useCommunityFormat();
 const hatchId = `activity-hatch-${useId()}`;
 
-const WIDTH = 640;
+// Drawn at the width it is given rather than scaled up from a fixed viewBox,
+// so the text and bars stay their size on a wide page.
+const MIN_WIDTH = 480;
 const HEIGHT = 230;
 const LEFT = 40;
 const RIGHT = 8;
 const TOP = 26;
 const BOTTOM = 30;
-const PLOT_WIDTH = WIDTH - LEFT - RIGHT;
 const PLOT_HEIGHT = HEIGHT - TOP - BOTTOM;
+
+const frame = ref<HTMLElement | null>(null);
+const width = ref(640);
+const plotWidth = computed(() => width.value - LEFT - RIGHT);
+let observer: ResizeObserver | null = null;
+
+onMounted(() => {
+  if (!frame.value) return;
+  observer = new ResizeObserver(([entry]) => {
+    width.value = Math.max(MIN_WIDTH, Math.round(entry.contentRect.width));
+  });
+  observer.observe(frame.value);
+});
+onBeforeUnmount(() => observer?.disconnect());
 const RADIUS = 4;
 
 const active = ref<number | null>(null);
@@ -38,7 +53,7 @@ const scale = computed(() =>
   niceScale(Math.max(...days.value.map((day) => day.seconds / 3600), 1)),
 );
 
-const band = computed(() => PLOT_WIDTH / Math.max(days.value.length, 1));
+const band = computed(() => plotWidth.value / Math.max(days.value.length, 1));
 const barWidth = computed(() => Math.min(46, band.value * 0.55));
 
 function y(hours: number) {
@@ -114,10 +129,11 @@ function columnLabel(column: (typeof columns.value)[number]) {
 <template>
   <div>
     <div class="relative overflow-x-auto">
-      <div class="relative min-w-[480px]">
+      <div ref="frame" class="relative min-w-[480px]">
         <svg
-          class="block h-auto w-full"
-          :viewBox="`0 0 ${WIDTH} ${HEIGHT}`"
+          class="block w-full"
+          :height="HEIGHT"
+          :viewBox="`0 0 ${width} ${HEIGHT}`"
           role="group"
           :aria-label="
             $t('community.server_page.chart_title', { server: serverLabel })
@@ -138,7 +154,7 @@ function columnLabel(column: (typeof columns.value)[number]) {
           <g v-for="tick in scale.ticks" :key="tick" aria-hidden="true">
             <line
               :x1="LEFT"
-              :x2="WIDTH - RIGHT"
+              :x2="width - RIGHT"
               :y1="y(tick)"
               :y2="y(tick)"
               class="activity-grid"
@@ -225,7 +241,7 @@ function columnLabel(column: (typeof columns.value)[number]) {
           role="tooltip"
           class="pointer-events-none absolute z-10 w-max max-w-[15rem] rounded-md border border-border bg-popover px-2.5 py-1.5 text-xs shadow-lg"
           :style="{
-            left: `${(tooltip.center / WIDTH) * 100}%`,
+            left: `${(tooltip.center / width) * 100}%`,
             top: `${(Math.min(tooltip.top, HEIGHT - BOTTOM) / HEIGHT) * 100}%`,
             transform: 'translate(-50%, calc(-100% - 10px))',
           }"
@@ -299,7 +315,12 @@ function columnLabel(column: (typeof columns.value)[number]) {
 
 .activity-axis {
   fill: hsl(var(--muted-foreground));
-  font: 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font:
+    11px ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
 }
 
 .activity-axis--today {
@@ -308,7 +329,12 @@ function columnLabel(column: (typeof columns.value)[number]) {
 
 .activity-value {
   fill: hsl(var(--foreground));
-  font: 600 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font:
+    600 12px ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
 }
 
 .activity-value--sub {

@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "~/components/ui/collapsible";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,8 +11,11 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
+import SlideSwap from "~/components/ui/transitions/SlideSwap.vue";
 import PluginReadme from "~/components/game-plugins/PluginReadme.vue";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -27,17 +23,21 @@ import {
   ExternalLink,
   AlertTriangle,
   ArrowLeft,
-  LayoutDashboard,
+  ArrowRight,
+  ArrowUpCircle,
+  Ban,
   Check,
   ChevronDown,
-  ArrowRight,
-  Puzzle,
-  Package,
+  CircleAlert,
+  Copy,
   Settings2,
   FolderOpen,
   Download,
+  Hand,
+  LayoutDashboard,
+  Package,
+  Puzzle,
   Wrench,
-  Loader2,
   RefreshCw,
   Pencil,
 } from "lucide-vue-next";
@@ -48,99 +48,156 @@ import {
   SheetHeader,
   SheetTitle,
 } from "~/components/ui/sheet";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { dateLocale } from "~/utilities/dateLocale";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
 definePageMeta({
   middleware: "admin",
 });
+
+const railSection =
+  "grid gap-3 border-t border-border/60 py-4 first:border-t-0 first:pt-0";
+const sectionLabel = [tacticalSectionLabelClasses, "mb-0"];
+const settingRow =
+  "flex items-start justify-between gap-4 border-b border-border/40 py-3 last:border-b-0";
+const goldButton =
+  "w-full bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]";
 </script>
 
 <template>
   <PageTransition :delay="0">
-    <div class="space-y-6 p-4 lg:p-6" v-if="plugin">
-      <NuxtLink to="/plugins">
-        <Button variant="ghost" size="sm" class="gap-2 -ml-2">
+    <div class="space-y-6" v-if="plugin">
+      <Button
+        as-child
+        variant="ghost"
+        size="sm"
+        class="-ml-2 h-8 gap-1.5 text-muted-foreground hover:text-foreground"
+      >
+        <NuxtLink to="/plugins">
           <ArrowLeft class="h-4 w-4" />
           {{ $t("pages.plugins.back") }}
-        </Button>
-      </NuxtLink>
+        </NuxtLink>
+      </Button>
 
-      <div class="flex flex-wrap items-start justify-between gap-4">
-        <div class="space-y-2">
-          <div class="flex items-center gap-2">
-            <h1 class="text-2xl font-semibold tracking-tight">
+      <div class="flex flex-wrap items-start gap-3.5">
+        <span
+          class="grid size-[52px] shrink-0 place-items-center rounded-[10px] border border-border bg-[hsl(240_5%_9%)] text-muted-foreground"
+        >
+          <component :is="kindIcon(plugin.kind)" class="size-[22px]" />
+        </span>
+
+        <div class="grid min-w-[min(100%,260px)] flex-1 gap-1.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <h1 class="text-2xl font-semibold leading-tight tracking-tight">
               {{ plugin.name }}
             </h1>
-            <Badge v-if="installedPage" variant="secondary" class="gap-1">
-              <Check class="h-3 w-3" />
-              {{ $t("pages.plugins.installed") }}
-            </Badge>
-            <Badge v-if="plugin.verified" variant="outline" class="gap-1">
-              <ShieldCheck class="h-3 w-3" />
-              {{ $t("pages.plugins.verified") }}
-            </Badge>
-            <Badge
-              v-if="plugin.source === 'custom'"
-              variant="outline"
-              class="gap-1"
-            >
-              <Wrench class="h-3 w-3" />
-              {{ $t("pages.plugins.custom.badge") }}
-            </Badge>
+            <FiveStackToolTip v-if="plugin.verified" as-child>
+              <template #trigger>
+                <span
+                  tabindex="0"
+                  role="img"
+                  class="inline-flex text-success"
+                  :aria-label="$t('pages.plugins.verified')"
+                >
+                  <ShieldCheck class="h-4 w-4" />
+                </span>
+              </template>
+              {{ $t("pages.plugins.store.verified_hint") }}
+            </FiveStackToolTip>
+            <FiveStackToolTip v-if="plugin.source === 'custom'" as-child>
+              <template #trigger>
+                <span
+                  tabindex="0"
+                  class="inline-flex h-5 items-center gap-1 rounded-md border border-border px-1.5 text-[0.7rem] text-muted-foreground"
+                >
+                  <Wrench class="h-3 w-3" />
+                  {{ $t("pages.plugins.custom.badge") }}
+                </span>
+              </template>
+              {{ $t("pages.plugins.store.custom_hint") }}
+            </FiveStackToolTip>
             <!-- Worth knowing before installing, not only once the toggle is
                  in front of you. -->
-            <Badge
+            <FiveStackToolTip
               v-if="plugin.requires_server_guidelines_disabled"
-              variant="outline"
-              class="gap-1 border-yellow-500/40 text-yellow-300"
+              as-child
             >
-              <AlertTriangle class="h-3 w-3" />
-              {{ $t("pages.plugins.guidelines.badge") }}
-            </Badge>
+              <template #trigger>
+                <span
+                  tabindex="0"
+                  class="inline-flex h-5 items-center gap-1 rounded-md border border-warning/40 bg-warning/10 px-1.5 text-[0.7rem] text-warning"
+                >
+                  <AlertTriangle class="h-3 w-3" />
+                  {{ $t("pages.plugins.guidelines.badge") }}
+                </span>
+              </template>
+              {{ $t("pages.plugins.store.guidelines_hint") }}
+            </FiveStackToolTip>
           </div>
-          <p class="text-sm text-muted-foreground">
+
+          <p class="text-xs text-muted-foreground">
             <a
               v-if="repoUrl"
               :href="repoUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-1 underline-offset-2 hover:underline"
+              class="underline-offset-2 transition-colors hover:text-foreground hover:underline"
             >
               {{ $t("pages.plugins.by", { author: plugin.author }) }}
-              <ExternalLink class="h-3 w-3" />
             </a>
             <template v-else>
               {{ $t("pages.plugins.by", { author: plugin.author }) }}
             </template>
+            <span aria-hidden="true"> · </span>
+            {{ $t(`pages.plugins.detail.kind_${plugin.kind}`) }}
           </p>
+
+          <div class="flex flex-wrap gap-1">
+            <span
+              v-for="variant in readmeVariants"
+              :key="variant.key"
+              class="inline-flex h-5 items-center rounded-md bg-muted/60 px-1.5 text-[0.68rem] text-foreground/80"
+            >
+              {{ variant.label }}
+            </span>
+            <span
+              v-for="tag in (plugin.tags ?? []).slice(0, 8)"
+              :key="tag"
+              class="inline-flex h-5 items-center rounded-md border border-border/60 px-1.5 text-[0.68rem] text-muted-foreground"
+            >
+              {{ tag }}
+            </span>
+          </div>
         </div>
 
-        <a
+        <Button
           v-if="plugin.homepage"
-          :href="plugin.homepage"
-          target="_blank"
-          rel="noopener noreferrer"
+          as-child
+          variant="outline"
+          size="sm"
+          class="h-8 gap-2"
         >
-          <Button variant="outline" class="gap-2">
-            <ExternalLink class="h-4 w-4" />
+          <a :href="plugin.homepage" target="_blank" rel="noopener noreferrer">
+            <ExternalLink class="h-3.5 w-3.5" />
             {{ $t("pages.plugins.source") }}
-          </Button>
-        </a>
+          </a>
+        </Button>
       </div>
 
-      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
-        <div class="min-w-0 space-y-6">
+      <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_330px] lg:items-start">
+        <div class="min-w-0 space-y-4">
           <p class="text-muted-foreground">{{ plugin.description }}</p>
 
           <!-- A plugin built for both frameworks is two repositories with two
                READMEs. Showing only the homepage's one silently hides half the
                documentation, so each variant gets a tab. -->
-          <div v-if="readmeVariants.length > 1" class="flex items-center gap-3">
+          <div
+            v-if="readmeVariants.length > 1"
+            class="flex flex-wrap items-center gap-3"
+          >
             <AnimatedFilters
               v-model="readmeRuntime"
               square
@@ -157,387 +214,565 @@ definePageMeta({
             </a>
           </div>
 
-          <PluginReadme
-            v-if="readme"
-            :content="readme"
-            :format="readmeFormat"
-          />
+          <SlideSwap :index="readmeIndex">
+            <div :key="readmeRuntime || 'readme'">
+              <PluginReadme
+                v-if="readme"
+                :content="readme"
+                :format="readmeFormat"
+              />
 
-          <p
-            v-else-if="readmeLoading"
-            class="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground"
-          >
-            {{ $t("pages.plugins.readme_loading") }}
-          </p>
+              <p
+                v-else-if="readmeLoading"
+                class="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground"
+              >
+                {{ $t("pages.plugins.readme_loading") }}
+              </p>
 
-          <p
-            v-else-if="readmeLoaded"
-            class="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground"
-          >
-            {{ $t("pages.plugins.no_readme") }}
-          </p>
+              <p
+                v-else-if="readmeLoaded"
+                class="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground"
+              >
+                {{ $t("pages.plugins.no_readme") }}
+              </p>
+            </div>
+          </SlideSwap>
         </div>
 
-        <aside class="space-y-4 lg:sticky lg:top-6">
-          <!-- A panel plugin is installed on the machine hosting the panel, not onto
-               a game node, so it gets its own treatment rather than a node list.
-               Installed and not-installed are different states, not one card with a
-               line of text swapped: the old version still read "Install this panel
-               plugin" while telling you it was already installed. -->
-          <!-- Sits in a ~20rem rail, so the actions stack full width: side by side
-               they clipped to "OPEN 5STACK INVEN...". The amber is pulled back to a
-               dot and the one primary button -- a plugin merely being installed is
-               not a condition worth lighting the whole card up for. -->
-          <Card v-if="isPanelPlugin && installedPage" class="overflow-hidden">
+        <aside class="grid lg:sticky lg:top-6">
+          <!-- The install box keeps its frame: it is the one thing on the page
+               that says what this plugin is doing on this deployment. -->
+          <section :class="railSection">
             <div
-              class="flex items-center gap-2 border-b border-border/60 bg-muted/30 px-4 py-2.5"
+              class="grid gap-2.5 rounded-lg border border-border bg-card/40 p-3.5"
             >
-              <span
-                class="h-1.5 w-1.5 shrink-0 rounded-full bg-[hsl(var(--tac-amber))]"
-              ></span>
-              <h3
-                class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                {{ $t("pages.plugins.live_title") }}
-              </h3>
-            </div>
-
-            <CardContent class="flex items-center gap-2.5 p-5 sm:p-5">
-              <NuxtLink
-                :to="`/apps/${installedPage.slug}`"
-                class="group min-w-0 flex-1"
-              >
-                <Button variant="tactical" class="w-full gap-2">
-                  {{ $t("pages.plugins.open_plugin") }}
-                  <ArrowRight
-                    class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
-                  />
-                </Button>
-              </NuxtLink>
-
-              <!-- Icon only, so the row stays one line in the rail. The label still
-                   exists for anyone not looking at it. -->
-              <NuxtLink to="/settings/application/plugins" class="shrink-0">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  :aria-label="$t('pages.plugins.manage')"
-                  :title="$t('pages.plugins.manage')"
-                >
-                  <Settings2 class="h-4 w-4" />
-                </Button>
-              </NuxtLink>
-            </CardContent>
-          </Card>
-
-          <Card v-else-if="isPanelPlugin">
-            <CardHeader>
-              <CardTitle class="flex items-center gap-2 text-base">
-                <LayoutDashboard class="h-4 w-4" />
-                {{ $t("pages.plugins.panel_install_title") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent class="space-y-4">
-              <p class="text-sm text-muted-foreground">
-                {{ $t("pages.plugins.panel_install_hint") }}
-              </p>
-
-              <ol class="space-y-4">
-                <li class="flex gap-3">
-                  <span
-                    class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
-                    >1</span
+              <!-- A panel plugin is installed on the machine hosting the
+                   panel, not onto a game node, so it gets its own treatment
+                   rather than a node list. -->
+              <template v-if="isPanelPlugin && installedPage">
+                <div :class="sectionLabel">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("pages.plugins.live_title") }}
+                </div>
+                <p class="flex items-center gap-1.5 text-sm text-success">
+                  <Check class="h-4 w-4" />
+                  {{ $t("pages.plugins.already_installed") }}
+                </p>
+                <div class="flex items-center gap-2">
+                  <Button as-child size="sm" :class="[goldButton, 'flex-1']">
+                    <NuxtLink :to="`/apps/${installedPage.slug}`">
+                      {{ $t("pages.plugins.open_plugin") }}
+                      <ArrowRight class="h-4 w-4" />
+                    </NuxtLink>
+                  </Button>
+                  <!-- Icon only, so the row stays one line in the rail. -->
+                  <Button
+                    as-child
+                    variant="outline"
+                    size="icon-sm"
+                    :aria-label="$t('pages.plugins.manage')"
+                    :title="$t('pages.plugins.manage')"
                   >
-                  <div class="min-w-0 flex-1 space-y-2">
-                    <p class="text-sm">
+                    <NuxtLink to="/settings/application/plugins">
+                      <Settings2 class="h-4 w-4" />
+                    </NuxtLink>
+                  </Button>
+                </div>
+              </template>
+
+              <template v-else-if="isPanelPlugin">
+                <div :class="sectionLabel">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("pages.plugins.panel_install_title") }}
+                </div>
+                <p class="text-xs text-muted-foreground">
+                  {{ $t("pages.plugins.panel_install_hint") }}
+                </p>
+
+                <ol class="grid gap-3.5">
+                  <li
+                    class="grid grid-cols-[22px_minmax(0,1fr)] gap-2.5 text-sm"
+                  >
+                    <span
+                      class="grid size-[22px] place-items-center rounded-full border border-border font-mono text-[0.68rem] text-muted-foreground"
+                      >1</span
+                    >
+                    <div class="min-w-0">
                       {{ $t("pages.plugins.panel_step_deploy") }}
-                    </p>
-                    <pre
-                      class="overflow-x-auto rounded-md border bg-muted/40 p-3 font-mono text-sm"
-                    ><code>{{ panelInstallCommand }}</code></pre>
-                  </div>
-                </li>
-                <li class="flex gap-3">
-                  <span
-                    class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
-                    >2</span
+                      <div
+                        class="mt-1.5 flex min-w-0 items-center gap-1.5 rounded-md border border-border/60 bg-background/60 py-1.5 pl-2.5 pr-1.5 font-mono text-xs"
+                      >
+                        <code
+                          class="min-w-0 flex-1 overflow-x-auto whitespace-nowrap"
+                          >{{ panelInstallCommand }}</code
+                        >
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          class="size-6 shrink-0 text-muted-foreground"
+                          :aria-label="$t('pages.plugins.detail.copy_command')"
+                          :title="$t('pages.plugins.detail.copy_command')"
+                          @click="copyCommand"
+                        >
+                          <Copy class="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    class="grid grid-cols-[22px_minmax(0,1fr)] gap-2.5 text-sm"
                   >
-                  <p class="flex-1 text-sm">
-                    {{ $t("pages.plugins.panel_step_dns") }}
-                  </p>
-                </li>
-                <li class="flex gap-3">
-                  <span
-                    class="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground"
-                    >3</span
+                    <span
+                      class="grid size-[22px] place-items-center rounded-full border border-border font-mono text-[0.68rem] text-muted-foreground"
+                      >2</span
+                    >
+                    <p>{{ $t("pages.plugins.panel_step_dns") }}</p>
+                  </li>
+                  <li
+                    class="grid grid-cols-[22px_minmax(0,1fr)] gap-2.5 text-sm"
                   >
-                  <p class="flex-1 text-sm">
-                    {{ $t("pages.plugins.panel_step_register") }}
-                  </p>
-                </li>
-              </ol>
+                    <span
+                      class="grid size-[22px] place-items-center rounded-full border border-border font-mono text-[0.68rem] text-muted-foreground"
+                      >3</span
+                    >
+                    <p>{{ $t("pages.plugins.panel_step_register") }}</p>
+                  </li>
+                </ol>
 
-              <a
-                href="https://docs.5stack.gg/plugins/installing"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1 text-sm text-[hsl(var(--tac-amber))] underline-offset-4 hover:underline"
-              >
-                {{ $t("pages.plugins.panel_install_docs") }}
-                <ExternalLink class="h-3 w-3" />
-              </a>
-            </CardContent>
-          </Card>
+                <a
+                  href="https://docs.5stack.gg/plugins/installing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1 text-sm text-[hsl(var(--tac-amber))] underline-offset-4 hover:underline"
+                >
+                  {{ $t("pages.plugins.panel_install_docs") }}
+                  <ExternalLink class="h-3 w-3" />
+                </a>
+              </template>
 
-          <Card v-if="isAdministrator && plugin.kind !== 'panel'">
-            <CardContent class="space-y-3 p-5 sm:p-5">
-              <p
-                v-if="!availableForRuntime"
-                class="text-sm text-muted-foreground"
-              >
-                {{
-                  $t("pages.plugins.unavailable_for_runtime", {
-                    runtime: runtimeLabel,
-                  })
-                }}
-              </p>
+              <template v-if="isAdministrator && plugin.kind !== 'panel'">
+                <div
+                  v-if="plugin.kind === 'bundle'"
+                  class="my-1 h-px bg-border/60"
+                  aria-hidden="true"
+                />
 
-              <p
-                v-else-if="nodes.length === 0"
-                class="text-sm text-muted-foreground"
-              >
-                {{ $t("pages.plugins.no_nodes") }}
-              </p>
+                <p
+                  v-if="!availableForRuntime"
+                  class="flex items-start gap-1.5 text-sm text-muted-foreground"
+                >
+                  <Ban class="mt-0.5 h-4 w-4 shrink-0" />
+                  {{
+                    $t("pages.plugins.unavailable_for_runtime", {
+                      runtime: runtimeLabel,
+                    })
+                  }}
+                </p>
 
-              <template v-else>
-                <div class="space-y-2">
+                <p
+                  v-else-if="nodes.length === 0"
+                  class="text-sm text-muted-foreground"
+                >
+                  {{ $t("pages.plugins.no_nodes") }}
+                </p>
+
+                <template v-else>
                   <!-- Install records intent, and the nodes converge to it on
-                       their own. Once that is on record there is nothing left
-                       to press, so the button becomes the state instead: a
-                       plugin part-way through a rollout is not waiting on the
-                       operator. -->
+                       their own, so this reports where the rollout has got to
+                       instead of a button that has nothing left to do. -->
+                  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                    <span
+                      v-if="rollout.key === 'Failed'"
+                      class="inline-flex items-center gap-1.5 text-sm text-destructive"
+                    >
+                      <CircleAlert class="h-4 w-4" />
+                      <template v-if="failedNodeLabels.length === 1">
+                        {{
+                          $t("pages.plugins.store.failed_on", {
+                            node: failedNodeLabels[0],
+                          })
+                        }}
+                      </template>
+                      <template v-else>
+                        {{
+                          $t(
+                            "pages.plugins.store.failed_on_nodes",
+                            { count: failedNodeLabels.length },
+                            failedNodeLabels.length,
+                          )
+                        }}
+                      </template>
+                    </span>
+                    <span
+                      v-else-if="isRequested && rollout.key === 'Installed'"
+                      class="inline-flex items-center gap-1.5 text-sm text-success"
+                    >
+                      <Check class="h-4 w-4" />
+                      {{ $t("pages.plugins.status.Installed") }}
+                    </span>
+                    <span
+                      v-else-if="isRequested"
+                      class="inline-flex items-center gap-1.5 text-sm tabular-nums text-[hsl(var(--tac-amber))]"
+                    >
+                      <Download class="h-4 w-4" />
+                      {{
+                        $t("pages.plugins.store.installing_on", {
+                          installed: installedNodeCount,
+                          total: nodes.length,
+                        })
+                      }}
+                    </span>
+                    <FiveStackToolTip v-else-if="isManual" as-child>
+                      <template #trigger>
+                        <span
+                          tabindex="0"
+                          class="inline-flex items-center gap-1.5 text-sm text-warning"
+                        >
+                          <Hand class="h-4 w-4" />
+                          {{ $t("pages.plugins.store.found_on_disk") }}
+                        </span>
+                      </template>
+                      {{ $t("pages.plugins.store.found_on_disk_hint") }}
+                    </FiveStackToolTip>
+
+                    <span
+                      v-if="
+                        isRequested &&
+                        ['Installed', 'Failed'].includes(rollout.key)
+                      "
+                      class="text-xs tabular-nums text-muted-foreground"
+                    >
+                      {{
+                        $t("pages.plugins.installed_on", {
+                          installed: installedNodeCount,
+                          total: nodes.length,
+                        })
+                      }}
+                    </span>
+                    <span
+                      v-else-if="isManual"
+                      class="text-xs text-muted-foreground"
+                    >
+                      {{
+                        $t("pages.plugins.detail.manual_on", {
+                          nodes: manualNodeLabels.join(", "),
+                        })
+                      }}
+                    </span>
+                    <span
+                      v-else-if="!isRequested && latestForRuntime"
+                      class="text-xs text-muted-foreground"
+                    >
+                      {{
+                        $t("pages.plugins.detail.latest_for", {
+                          version: latestForRuntime,
+                          runtime: runtimeLabel,
+                        })
+                      }}
+                    </span>
+                  </div>
+
+                  <div
+                    v-if="isRequested"
+                    class="h-1 overflow-hidden rounded-full bg-muted/60"
+                  >
+                    <div
+                      class="h-full origin-left rounded-full motion-reduce:!transition-none"
+                      :class="
+                        rollout.key === 'Failed'
+                          ? 'bg-destructive'
+                          : rollout.key === 'Installed'
+                            ? 'bg-success'
+                            : 'bg-[hsl(var(--tac-amber))]'
+                      "
+                      :style="{
+                        transform: `scaleX(${nodes.length ? installedNodeCount / nodes.length : 0})`,
+                        transition:
+                          'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)',
+                      }"
+                    />
+                  </div>
+
                   <Button
                     v-if="!isRequested"
-                    variant="tactical"
-                    class="w-full gap-2"
+                    size="sm"
+                    :class="goldButton"
                     :loading="busy === ALL_NODES"
                     @click="install()"
                   >
                     <Download class="h-4 w-4" />
-                    {{ $t("pages.plugins.install") }}
-                  </Button>
-
-                  <template v-else>
-                    <div
-                      class="flex items-center justify-center gap-2 rounded-md border px-3 py-2.5 text-sm font-medium"
-                      :class="{
-                        'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]':
-                          ['Installed', 'Installing'].includes(rollout.key),
-                        'border-border/60 text-muted-foreground':
-                          rollout.key === 'Pending',
-                        'border-destructive/40 bg-destructive/10 text-destructive':
-                          rollout.key === 'Failed',
-                      }"
-                    >
-                      <Check
-                        v-if="rollout.key === 'Installed'"
-                        class="h-4 w-4"
-                      />
-                      <Loader2
-                        v-else-if="rollout.key === 'Installing'"
-                        class="h-4 w-4 animate-spin"
-                      />
-                      <AlertTriangle
-                        v-else-if="rollout.key === 'Failed'"
-                        class="h-4 w-4"
-                      />
-                      <Download v-else class="h-4 w-4" />
-                      {{ rollout.label }}
-                    </div>
-
-                    <!-- A failed node is the one case where pressing something
-                         again is the right move: it re-seeds the request and
-                         nudges the node to try the download once more. -->
-                    <Button
-                      v-if="rollout.key === 'Failed'"
-                      variant="tactical"
-                      class="w-full gap-2"
-                      :loading="busy === ALL_NODES"
-                      @click="install()"
-                    >
-                      <RefreshCw class="h-4 w-4" />
-                      {{ $t("pages.plugins.retry") }}
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      class="w-full"
-                      :loading="busy === ALL_NODES"
-                      @click="uninstall()"
-                    >
-                      {{ $t("pages.plugins.uninstall") }}
-                    </Button>
-                  </template>
-
-                  <p
-                    v-if="installedNodeCount > 0"
-                    class="text-center text-xs text-muted-foreground"
-                  >
                     {{
-                      $t("pages.plugins.installed_on", {
-                        installed: installedNodeCount,
-                        total: nodes.length,
+                      isManual
+                        ? $t("pages.plugins.store.manage_here")
+                        : $t("pages.plugins.install")
+                    }}
+                  </Button>
+                  <!-- A failed node is the one case where pressing something
+                       again is the right move: it re-seeds the request and
+                       nudges the node to try the download once more. -->
+                  <Button
+                    v-else-if="rollout.key === 'Failed'"
+                    size="sm"
+                    :class="goldButton"
+                    :loading="busy === ALL_NODES"
+                    @click="retry()"
+                  >
+                    <RefreshCw class="h-4 w-4" />
+                    {{ $t("pages.plugins.retry") }}
+                  </Button>
+                  <Button
+                    v-else-if="updateVersion"
+                    size="sm"
+                    :class="goldButton"
+                    :loading="busy === ALL_NODES"
+                    @click="install(updateVersion)"
+                  >
+                    <ArrowUpCircle class="h-4 w-4" />
+                    {{
+                      $t("pages.plugins.store.update_to", {
+                        version: updateVersion,
+                      })
+                    }}
+                  </Button>
+                  <p v-if="!isRequested" class="text-xs text-muted-foreground">
+                    {{
+                      $t("pages.plugins.installs_everywhere", {
+                        count: onlineNodeCount,
                       })
                     }}
                   </p>
 
-                  <!-- Only an entry this deployment authored can be taken out of
-                       the catalog; a registry one would come back on the next
-                       sync. Removal waits until nothing is installed, so the
-                       files are gone from the nodes before the entry that
-                       describes them is. -->
-                  <template v-if="canRemoveFromCatalog">
-                    <Button
-                      variant="ghost"
-                      class="w-full text-destructive hover:text-destructive"
-                      :loading="removingFromCatalog"
-                      @click="removeFromCatalog()"
+                  <template v-if="isRequested || isManual">
+                    <button
+                      type="button"
+                      class="flex w-full items-center justify-between gap-2 rounded-md border border-border/60 px-2.5 py-2 text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+                      :aria-expanded="showNodes"
+                      @click="showNodes = !showNodes"
                     >
-                      {{ $t("pages.plugins.custom.remove") }}
-                    </Button>
+                      <span>{{ $t("pages.plugins.advanced") }}</span>
+                      <span class="flex items-center gap-1.5">
+                        <!-- The count is the whole point of opening it, so it
+                             shows without having to. -->
+                        <span
+                          class="font-mono tabular-nums"
+                          :class="
+                            installedNodeCount === nodes.length
+                              ? ''
+                              : 'text-[hsl(var(--tac-amber))]'
+                          "
+                        >
+                          {{ installedNodeCount }}/{{ nodes.length }}
+                        </span>
+                        <ChevronDown
+                          class="h-3.5 w-3.5 transition-transform duration-200"
+                          :class="showNodes ? 'rotate-180' : ''"
+                        />
+                      </span>
+                    </button>
+
+                    <Fold :open="showNodes">
+                      <div class="grid gap-2 pt-0.5">
+                        <!-- Per-node rollout, not per-node control: each node
+                             converges on its own schedule, so this reports
+                             where that has got to. -->
+                        <div
+                          class="divide-y divide-border/40 rounded-md border border-border/60"
+                        >
+                          <div
+                            v-for="node in nodes"
+                            :key="node.id"
+                            class="px-3 py-2"
+                          >
+                            <div class="flex items-center gap-2">
+                              <span
+                                class="h-1.5 w-1.5 shrink-0 rounded-full"
+                                :class="nodeDotClass(nodeState(node.id).key)"
+                              ></span>
+
+                              <p
+                                class="min-w-0 flex-1 truncate text-sm"
+                                :title="node.label ?? node.id"
+                              >
+                                {{ node.label ?? node.id }}
+                                <span
+                                  v-if="node.status === 'Offline'"
+                                  class="text-xs text-muted-foreground"
+                                >
+                                  ·
+                                  {{ $t("pages.plugins.detail.node_offline") }}
+                                </span>
+                                <span
+                                  v-else-if="
+                                    node.status === 'NotAcceptingNewMatches'
+                                  "
+                                  class="text-xs text-muted-foreground"
+                                >
+                                  ·
+                                  {{
+                                    $t(
+                                      "pages.plugins.detail.node_not_accepting",
+                                    )
+                                  }}
+                                </span>
+                              </p>
+
+                              <span
+                                class="shrink-0 font-mono text-xs"
+                                :class="nodeTextClass(nodeState(node.id).key)"
+                              >
+                                {{ nodeState(node.id).label }}
+                              </span>
+
+                              <!-- Configs are written per node on the node's
+                                   own volume, so this belongs on the node it
+                                   opens. -->
+                              <Button
+                                v-if="
+                                  ['Installed', 'Manual'].includes(
+                                    nodeState(node.id).key,
+                                  )
+                                "
+                                variant="ghost"
+                                size="icon"
+                                class="h-6 w-6 shrink-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                                :title="$t('pages.plugins.configure_open')"
+                                :aria-label="$t('pages.plugins.configure_open')"
+                                @click="openConfigFiles(node.id)"
+                              >
+                                <FolderOpen class="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
+
+                            <p
+                              v-if="nodeState(node.id).error"
+                              class="mt-1 break-words pl-3.5 font-mono text-[0.7rem] text-destructive/90"
+                            >
+                              {{ nodeState(node.id).error }}
+                            </p>
+
+                            <!-- Without this a node that stopped reporting
+                                 looks identical to one that is up to date. -->
+                            <p
+                              class="mt-0.5 pl-3.5 text-[0.7rem] text-muted-foreground/70"
+                            >
+                              <template v-if="node.plugins_synced_at">
+                                {{ $t("pages.plugins.checked") }}
+                                <TimeAgo
+                                  :date="node.plugins_synced_at"
+                                  hide-icon
+                                  class="text-[0.7rem]"
+                                />
+                              </template>
+                              <template v-else>
+                                {{ $t("pages.plugins.never_checked") }}
+                              </template>
+                            </p>
+                          </div>
+                        </div>
+
+                        <p class="text-xs text-muted-foreground">
+                          {{ $t("pages.plugins.advanced_hint") }}
+                        </p>
+                      </div>
+                    </Fold>
                   </template>
+                </template>
+
+                <div
+                  v-if="isRequested || plugin.source === 'custom'"
+                  class="flex flex-wrap items-center gap-2 pt-0.5"
+                >
+                  <Button
+                    v-if="isRequested"
+                    variant="outline"
+                    size="sm"
+                    class="h-7 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    :loading="busy === ALL_NODES"
+                    @click="uninstall()"
+                  >
+                    {{ $t("pages.plugins.uninstall") }}
+                  </Button>
+
+                  <!-- Only an entry this deployment authored can be taken out
+                       of the catalog; a registry one would come back on the
+                       next sync. Removal waits until nothing is installed, so
+                       the files are gone from the nodes before the entry that
+                       describes them is. -->
+                  <Button
+                    v-if="canRemoveFromCatalog"
+                    variant="ghost"
+                    size="sm"
+                    class="h-7 text-destructive hover:text-destructive"
+                    :loading="removingFromCatalog"
+                    @click="removeFromCatalog()"
+                  >
+                    {{ $t("pages.plugins.custom.remove") }}
+                  </Button>
                   <p
                     v-else-if="plugin.source === 'custom'"
-                    class="text-center text-xs text-muted-foreground"
+                    class="text-xs text-muted-foreground"
                   >
                     {{ $t("pages.plugins.custom.remove_hint") }}
                   </p>
                 </div>
+              </template>
+            </div>
+          </section>
 
-                <!-- Installing tracks the newest release, so the version
-                     running on every node can change with nobody asking for
-                     it. Turning this off freezes the fleet where it is. -->
-                <div
-                  v-if="isRequested"
-                  class="space-y-2 rounded-md border border-border/60 bg-muted/20 p-3"
-                >
-                  <div class="flex items-start justify-between gap-3">
-                    <div class="space-y-0.5">
-                      <p class="text-sm font-medium">
-                        {{ $t("pages.plugins.auto_update.toggle") }}
-                      </p>
-                      <p class="text-xs text-muted-foreground">
-                        {{ $t("pages.plugins.auto_update.hint") }}
-                      </p>
-                    </div>
-                    <Switch
-                      :model-value="autoUpdate"
-                      :disabled="savingAutoUpdate"
-                      @update:model-value="setAutoUpdate"
-                    />
-                  </div>
+          <section
+            v-if="isAdministrator && isRequested && plugin.kind !== 'panel'"
+            :class="railSection"
+          >
+            <div :class="sectionLabel">
+              <span :class="tacticalSectionTickClasses"></span>
+              {{ $t("pages.plugins.detail.rollout_settings") }}
+            </div>
 
-                  <p
-                    v-if="!autoUpdate && pinnedVersion"
-                    class="text-xs text-muted-foreground"
-                  >
+            <div>
+              <!-- Installing tracks the newest release, so the version
+                   running on every node can change with nobody asking for
+                   it. Turning this off freezes the fleet where it is. -->
+              <div :class="settingRow">
+                <div class="space-y-0.5">
+                  <p class="text-sm">
+                    {{ $t("pages.plugins.auto_update.toggle") }}
+                  </p>
+                  <p class="text-xs text-muted-foreground">
                     {{
-                      $t("pages.plugins.auto_update.pinned", {
-                        version: pinnedVersion,
-                      })
+                      !autoUpdate && pinnedVersion
+                        ? $t("pages.plugins.auto_update.pinned", {
+                            version: pinnedVersion,
+                          })
+                        : $t("pages.plugins.auto_update.hint")
                     }}
                   </p>
                 </div>
-
-                <PluginLoadTargets
-                  v-if="isRequested"
-                  :targets="loadTargets"
-                  :disabled="savingLoadTargets"
-                  @update="setLoadTarget"
+                <Switch
+                  :model-value="autoUpdate"
+                  :disabled="savingAutoUpdate"
+                  :aria-label="$t('pages.plugins.auto_update.toggle')"
+                  @update:model-value="setAutoUpdate"
                 />
+              </div>
 
-                <!-- The plugin's own cvars. Exec'd after the type and global
-                     configs on servers that load this plugin, and nowhere
-                     else, so a cosmetics plugin's settings never reach a
-                     server that is not running it. -->
-                <div
-                  v-if="isRequested"
-                  class="space-y-3 rounded-md border border-border/60 bg-muted/20 p-3"
-                >
-                  <div class="space-y-0.5">
-                    <div class="flex items-center gap-1.5">
-                      <p class="text-sm font-medium">
-                        {{ $t("pages.plugins.config.title") }}
-                      </p>
-                      <Tooltip v-if="forcedInCfg.length > 0">
-                        <TooltipTrigger
-                          class="text-[hsl(var(--tac-amber))]"
-                          :aria-label="forcedWarning"
-                        >
-                          <AlertTriangle class="h-3.5 w-3.5" />
-                        </TooltipTrigger>
-                        <TooltipContent class="max-w-xs">
-                          {{ forcedWarning }}
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <p class="text-xs text-muted-foreground">
-                      {{ $t("pages.plugins.config.hint") }}
-                    </p>
-                  </div>
+              <PluginLoadTargets
+                :targets="loadTargets"
+                :disabled="savingLoadTargets"
+                @update="setLoadTarget"
+              />
 
-                  <!-- A preview rather than the editor itself: the rail is
-                       ~20rem wide, which wraps a cvar line three times and
-                       makes the real thing unusable. Editing happens in a
-                       dialog with room for it. -->
-                  <pre
-                    v-if="cfgPreview"
-                    class="max-h-28 overflow-hidden rounded-md border border-border/60 bg-background/60 px-2.5 py-2 font-mono text-[0.7rem] leading-relaxed text-muted-foreground"
-                    >{{ cfgPreview }}</pre>
-                  <p v-else class="text-xs text-muted-foreground">
-                    {{ $t("pages.plugins.config.empty") }}
-                  </p>
-
-                  <p v-if="configPath" class="text-xs text-muted-foreground">
-                    {{
-                      configBaseline === null
-                        ? $t("pages.plugins.config_file.status_shipped", {
-                            file: configTitle,
-                          })
-                        : $t("pages.plugins.config_file.status_custom", {
-                            file: configTitle,
-                          })
-                    }}
-                  </p>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    class="w-full gap-2"
-                    @click="showCfgDialog = true"
-                  >
-                    <Pencil class="h-3.5 w-3.5" />
-                    {{ $t("pages.plugins.config.edit") }}
-                  </Button>
-                </div>
-
-                <!-- Only for a plugin whose catalog entry says it cannot work
-                     otherwise. Everything else stays compliant without the
-                     operator having to think about it. -->
-                <!-- 5stack Ranks turns the same setting off to render ranks
-                     in-game, and the ban it risks is against the Steam account
-                     rather than one server. Once that is on there is nothing
-                     left to decide here, so the switch is replaced by the fact
-                     rather than left sitting there doing nothing. -->
-                <div
-                  v-if="
-                    plugin.requires_server_guidelines_disabled &&
-                    isRequested &&
-                    guidelinesOffForRanks
-                  "
-                  class="rounded-md border border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground"
-                >
+              <!-- Only for a plugin whose catalog entry says it cannot work
+                   otherwise. 5stack Ranks turns the same setting off to render
+                   ranks in-game, and once that is on there is nothing left to
+                   decide here, so the switch gives way to the fact. -->
+              <div
+                v-if="
+                  plugin.requires_server_guidelines_disabled &&
+                  guidelinesOffForRanks
+                "
+                :class="settingRow"
+              >
+                <p class="text-xs text-muted-foreground">
                   {{ $t("pages.plugins.guidelines.already_off") }}
                   <NuxtLink
                     to="/settings/application/matchmaking#ranks"
@@ -545,272 +780,158 @@ definePageMeta({
                   >
                     {{ $t("pages.plugins.guidelines.already_off_link") }}
                   </NuxtLink>
-                </div>
-
-                <div
-                  v-else-if="
-                    plugin.requires_server_guidelines_disabled && isRequested
-                  "
-                  class="space-y-2 rounded-md border border-border/60 bg-muted/20 p-3"
-                >
-                  <div class="flex items-start justify-between gap-3">
-                    <div class="space-y-0.5">
-                      <p class="text-sm font-medium">
-                        {{ $t("pages.plugins.guidelines.toggle") }}
-                      </p>
-                      <p class="text-xs text-muted-foreground">
-                        {{
-                          $t("pages.plugins.guidelines.hint", {
-                            name: plugin.name,
-                          })
-                        }}
-                      </p>
-                    </div>
-                    <Switch
-                      :model-value="disableGuidelines"
-                      :disabled="savingGuidelines"
-                      @update:model-value="setDisableGuidelines"
-                    />
-                  </div>
-
-                  <div
-                    class="flex items-start gap-2 rounded-md border border-yellow-500/40 bg-yellow-500/10 p-2.5 text-xs text-yellow-300"
-                    role="alert"
-                  >
-                    <AlertTriangle class="mt-0.5 h-3 w-3 shrink-0" />
-                    <div>
-                      <p class="font-medium">
-                        {{ $t("pages.plugins.guidelines.warning_title") }}
-                      </p>
-                      <p class="mt-0.5 text-yellow-300/90">
-                        {{ $t("pages.plugins.guidelines.warning_description") }}
-                      </p>
-                      <a
-                        href="https://blog.counter-strike.net/index.php/server_guidelines/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="mt-1 inline-block text-yellow-200 underline hover:text-yellow-100"
-                      >
-                        {{ $t("pages.plugins.guidelines.warning_link_label") }}
-                      </a>
-                    </div>
-                  </div>
-
-                  <p
-                    v-if="!disableGuidelines"
-                    class="text-xs text-muted-foreground"
-                  >
-                    {{ $t("pages.plugins.guidelines.off_hint") }}
-                  </p>
-                </div>
-
-                <Collapsible v-model:open="showNodes">
-                  <!-- A plain button, not the Button component: that centres its
-                       content, which is why the chevron used to sit against the
-                       label instead of at the far edge. -->
-                  <CollapsibleTrigger as-child>
-                    <button
-                      type="button"
-                      class="group flex w-full items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/20 px-3 py-2 transition-colors hover:bg-muted/40"
-                    >
-                      <span
-                        class="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-                      >
-                        {{ $t("pages.plugins.advanced") }}
-                      </span>
-
-                      <span class="flex items-center gap-2">
-                        <!-- The count is the whole point of opening it, so it shows
-                             without having to. -->
-                        <span
-                          class="font-mono text-xs"
-                          :class="
-                            installedNodeCount === nodes.length
-                              ? 'text-muted-foreground'
-                              : 'text-[hsl(var(--tac-amber))]'
-                          "
-                        >
-                          {{ installedNodeCount }}/{{ nodes.length }}
-                        </span>
-                        <ChevronDown
-                          class="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200"
-                          :class="showNodes ? 'rotate-180' : ''"
-                        />
-                      </span>
-                    </button>
-                  </CollapsibleTrigger>
-
-                  <CollapsibleContent class="space-y-2 pt-3">
-                    <!-- Per-node rollout, not per-node control: installing states
-                         intent for the deployment and each node converges on its own
-                         schedule, so this reports where that has got to. -->
-                    <div
-                      class="divide-y divide-border/60 rounded-md border border-border/60"
-                    >
-                      <div
-                        v-for="node in nodes"
-                        :key="node.id"
-                        class="px-3 py-2"
-                      >
-                        <div class="flex items-center gap-2">
-                          <span
-                            class="h-1.5 w-1.5 shrink-0 rounded-full"
-                            :class="{
-                              'bg-[hsl(var(--tac-amber))]':
-                                nodeState(node.id).key === 'Installed',
-                              'animate-pulse bg-[hsl(var(--tac-amber)/0.6)]': [
-                                'Installing',
-                                'Removing',
-                              ].includes(nodeState(node.id).key),
-                              'bg-muted-foreground/60':
-                                nodeState(node.id).key === 'Pending',
-                              'bg-destructive':
-                                nodeState(node.id).key === 'Failed',
-                              'bg-muted-foreground/30':
-                                nodeState(node.id).key === 'NotInstalled',
-                            }"
-                          ></span>
-
-                          <p class="min-w-0 flex-1 truncate text-sm">
-                            {{ node.label ?? node.id }}
-                          </p>
-
-                          <span
-                            class="shrink-0 font-mono text-xs"
-                            :class="{
-                              'text-muted-foreground':
-                                nodeState(node.id).key === 'Installed',
-                              'text-[hsl(var(--tac-amber))]': [
-                                'Installing',
-                                'Removing',
-                              ].includes(nodeState(node.id).key),
-                              'text-destructive':
-                                nodeState(node.id).key === 'Failed',
-                              'text-muted-foreground/50': [
-                                'Pending',
-                                'NotInstalled',
-                              ].includes(nodeState(node.id).key),
-                            }"
-                          >
-                            {{ nodeState(node.id).label }}
-                          </span>
-
-                          <!-- Configs are written per node on the node's own
-                               volume, so this belongs on the node it opens,
-                               rather than in a card that had to pick one. -->
-                          <Button
-                            v-if="nodeState(node.id).key === 'Installed'"
-                            variant="ghost"
-                            size="icon"
-                            class="h-6 w-6 shrink-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                            :title="$t('pages.plugins.configure_open')"
-                            :aria-label="$t('pages.plugins.configure_open')"
-                            @click="openConfigFiles(node.id)"
-                          >
-                            <FolderOpen class="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-
-                        <p
-                          v-if="nodeState(node.id).error"
-                          class="mt-1 break-words pl-3.5 font-mono text-[0.7rem] text-destructive/90"
-                        >
-                          {{ nodeState(node.id).error }}
-                        </p>
-
-                        <!-- Without this a node that stopped reporting looks
-                             identical to one that is up to date. -->
-                        <p
-                          class="mt-0.5 pl-3.5 text-[0.7rem] text-muted-foreground/70"
-                        >
-                          <template v-if="node.plugins_synced_at">
-                            {{ $t("pages.plugins.checked") }}
-                            <TimeAgo
-                              :date="node.plugins_synced_at"
-                              hide-icon
-                              class="text-[0.7rem]"
-                            />
-                          </template>
-                          <template v-else>
-                            {{ $t("pages.plugins.never_checked") }}
-                          </template>
-                        </p>
-                      </div>
-                    </div>
-
-                    <p class="text-xs text-muted-foreground">
-                      {{ $t("pages.plugins.advanced_hint") }}
-                    </p>
-                  </CollapsibleContent>
-                </Collapsible>
-              </template>
-            </CardContent>
-          </Card>
-
-          <section v-if="pairedPlugins.length > 0" class="space-y-3">
-            <h2
-              class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-            >
-              {{ $t("pages.plugins.pairs_with") }}
-            </h2>
-
-            <!-- A pairing is the other half of a working setup, so it gets a real
-                 target rather than a badge that happened to be wrapped in a link. -->
-            <NuxtLink
-              v-for="paired in pairedPlugins"
-              :key="paired.slug"
-              :to="`/plugins/${paired.slug}`"
-              class="group flex items-center gap-3 rounded-lg border border-border/60 bg-muted/20 p-3 transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.45)] hover:bg-[hsl(var(--tac-amber)/0.04)]"
-            >
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-md border border-border/60 bg-background text-muted-foreground transition-colors group-hover:border-[hsl(var(--tac-amber)/0.4)] group-hover:text-[hsl(var(--tac-amber))]"
-              >
-                <component :is="kindIcon(paired.kind)" class="h-4 w-4" />
-              </div>
-
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <span class="truncate text-sm font-medium">{{
-                    paired.name
-                  }}</span>
-                </div>
-                <p class="line-clamp-2 text-xs text-muted-foreground">
-                  {{ paired.description }}
                 </p>
               </div>
 
-              <ArrowRight
-                class="h-4 w-4 shrink-0 text-muted-foreground transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-[hsl(var(--tac-amber))]"
-              />
-            </NuxtLink>
+              <div
+                v-else-if="plugin.requires_server_guidelines_disabled"
+                class="grid gap-2 py-3"
+              >
+                <div class="flex items-start justify-between gap-4">
+                  <div class="space-y-0.5">
+                    <p class="text-sm">
+                      {{ $t("pages.plugins.guidelines.toggle") }}
+                    </p>
+                    <p class="text-xs text-muted-foreground">
+                      {{
+                        disableGuidelines
+                          ? $t("pages.plugins.guidelines.hint", {
+                              name: plugin.name,
+                            })
+                          : $t("pages.plugins.guidelines.off_hint")
+                      }}
+                    </p>
+                  </div>
+                  <Switch
+                    :model-value="disableGuidelines"
+                    :disabled="savingGuidelines"
+                    :aria-label="$t('pages.plugins.guidelines.toggle')"
+                    @update:model-value="setDisableGuidelines"
+                  />
+                </div>
+
+                <div
+                  class="flex items-start gap-2 rounded-md border border-warning/40 bg-warning/10 p-2.5 text-xs text-warning"
+                  role="alert"
+                >
+                  <AlertTriangle class="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                  <div>
+                    <p class="font-medium">
+                      {{ $t("pages.plugins.guidelines.warning_title") }}
+                    </p>
+                    <p class="mt-0.5 opacity-90">
+                      {{ $t("pages.plugins.guidelines.warning_description") }}
+                    </p>
+                    <a
+                      href="https://blog.counter-strike.net/index.php/server_guidelines/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="mt-1 inline-block underline underline-offset-2"
+                    >
+                      {{ $t("pages.plugins.guidelines.warning_link_label") }}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
 
-          <div
-            v-if="plugin.requires_service"
-            class="flex items-start gap-2 rounded-md border border-dashed p-4 text-sm text-muted-foreground"
+          <!-- The plugin's own cvars. Exec'd after the type and global configs
+               on servers that load this plugin, and nowhere else. -->
+          <section
+            v-if="isAdministrator && isRequested && plugin.kind !== 'panel'"
+            :class="railSection"
           >
-            <AlertTriangle class="mt-0.5 h-4 w-4 shrink-0" />
-            <span>
-              {{
-                $t("pages.plugins.requires_service", {
-                  service: plugin.requires_service,
-                })
-              }}
-            </span>
-          </div>
+            <div class="flex items-center justify-between gap-2">
+              <div :class="sectionLabel">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("pages.plugins.config.title") }}
+              </div>
+              <FiveStackToolTip v-if="forcedInCfg.length > 0" as-child>
+                <template #trigger>
+                  <span
+                    tabindex="0"
+                    role="img"
+                    class="inline-flex text-warning"
+                    :aria-label="forcedWarning"
+                  >
+                    <AlertTriangle class="h-3.5 w-3.5" />
+                  </span>
+                </template>
+                <span class="block max-w-xs">{{ forcedWarning }}</span>
+              </FiveStackToolTip>
+            </div>
 
-          <!-- Every player who joins a server running this downloads these,
-               so it is worth knowing before turning it on. -->
-          <div
-            v-if="workshopAddons.length > 0"
-            class="space-y-2 rounded-md border border-dashed p-4 text-sm text-muted-foreground"
+            <!-- A preview rather than the editor itself: a cvar line wraps
+                 three times in the rail. Editing happens in a sheet with
+                 room for it. -->
+            <pre
+              v-if="cfgPreview"
+              class="max-h-28 overflow-hidden rounded-md border border-border/60 bg-background/60 px-2.5 py-2 font-mono text-[0.7rem] leading-relaxed text-muted-foreground"
+              >{{ cfgPreview }}</pre>
+            <p v-else class="text-xs text-muted-foreground">
+              {{ $t("pages.plugins.config.empty") }}
+            </p>
+
+            <p v-if="configPath" class="text-xs text-muted-foreground">
+              {{
+                configBaseline === null
+                  ? $t("pages.plugins.config_file.status_shipped", {
+                      file: configTitle,
+                    })
+                  : $t("pages.plugins.config_file.status_custom", {
+                      file: configTitle,
+                    })
+              }}
+            </p>
+
+            <div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                class="h-8 gap-2"
+                @click="showCfgDialog = true"
+              >
+                <Pencil class="h-3.5 w-3.5" />
+                {{ $t("pages.plugins.config.edit") }}
+              </Button>
+            </div>
+          </section>
+
+          <section
+            v-if="
+              plugin.requires_service ||
+              workshopAddons.length > 0 ||
+              pairedPlugins.length > 0
+            "
+            :class="railSection"
           >
-            <div class="flex items-start gap-2">
-              <Download class="mt-0.5 h-4 w-4 shrink-0" />
-              <div class="space-y-1">
-                <div class="font-medium text-foreground">
+            <div
+              v-if="plugin.requires_service"
+              class="flex items-start gap-2 rounded-md border border-dashed border-border p-3 text-xs text-muted-foreground"
+            >
+              <AlertTriangle class="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <span>
+                {{
+                  $t("pages.plugins.requires_service", {
+                    service: plugin.requires_service,
+                  })
+                }}
+              </span>
+            </div>
+
+            <!-- Every player who joins a server running this downloads these,
+                 so it is worth knowing before turning it on. -->
+            <div
+              v-if="workshopAddons.length > 0"
+              class="flex items-start gap-2 rounded-md border border-dashed border-border p-3 text-xs text-muted-foreground"
+            >
+              <Download class="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              <div class="grid gap-1">
+                <span class="font-semibold text-foreground">
                   {{ $t("pages.plugins.workshop_addons.title") }}
-                </div>
+                </span>
                 <p>
                   {{
                     $t("pages.plugins.workshop_addons.description", {
@@ -818,46 +939,87 @@ definePageMeta({
                     })
                   }}
                 </p>
-              </div>
-            </div>
-            <ul class="space-y-1 pl-6">
-              <li v-for="id in workshopAddons" :key="id">
                 <a
+                  v-for="id in workshopAddons"
+                  :key="id"
                   :href="`https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1 font-mono text-xs underline-offset-2 hover:underline"
+                  class="inline-flex items-center gap-1 font-mono underline-offset-2 hover:underline"
                 >
                   {{ id }}
                   <ExternalLink class="h-3 w-3" />
                 </a>
-              </li>
-            </ul>
-          </div>
+              </div>
+            </div>
 
-          <Card v-if="versions.length > 0">
-            <CardHeader>
-              <CardTitle class="text-base">
-                {{ $t("pages.plugins.releases") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+            <div v-if="pairedPlugins.length > 0" class="grid gap-1.5">
+              <div :class="sectionLabel">
+                <span :class="tacticalSectionTickClasses"></span>
+                {{ $t("pages.plugins.pairs_with") }}
+              </div>
+              <!-- A pairing is the other half of a working setup, so it gets
+                   a real target rather than a badge. -->
+              <NuxtLink
+                v-for="paired in pairedPlugins"
+                :key="paired.slug"
+                :to="`/plugins/${paired.slug}`"
+                class="group flex items-center gap-2.5 rounded-lg border border-border/60 p-2.5 transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.5)]"
+              >
+                <span
+                  class="grid size-[34px] shrink-0 place-items-center rounded-lg border border-border bg-[hsl(240_5%_9%)] text-muted-foreground"
+                >
+                  <component :is="kindIcon(paired.kind)" class="h-4 w-4" />
+                </span>
+                <span class="grid min-w-0 flex-1">
+                  <span class="truncate text-sm font-semibold">{{
+                    paired.name
+                  }}</span>
+                  <span class="truncate text-xs text-muted-foreground">
+                    {{ $t(`pages.plugins.detail.kind_${paired.kind}`) }}
+                  </span>
+                </span>
+                <ArrowRight
+                  class="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 group-hover:translate-x-0.5"
+                />
+              </NuxtLink>
+            </div>
+          </section>
+
+          <section v-if="latestVersions.length > 0" :class="railSection">
+            <div :class="sectionLabel">
+              <span :class="tacticalSectionTickClasses"></span>
+              {{ $t("pages.plugins.releases") }}
+            </div>
+            <div class="overflow-hidden rounded-md border border-border">
               <div
                 v-for="version in latestVersions"
                 :key="`${version.runtime}-${version.version}`"
-                class="flex items-center justify-between gap-4 border-b py-2 last:border-0"
+                class="flex items-center justify-between gap-3 border-b border-border/40 px-3 py-2 last:border-b-0"
               >
-                <div class="flex items-center gap-2">
-                  <span class="font-mono text-sm">{{ version.version }}</span>
-                  <Badge variant="outline" class="text-[0.65rem]">
-                    {{
-                      version.runtime === "swiftlys2"
-                        ? "SwiftlyS2"
-                        : "CounterStrikeSharp"
-                    }}
-                  </Badge>
+                <div class="grid min-w-0 gap-0.5">
+                  <span class="flex flex-wrap items-center gap-1.5">
+                    <span class="font-mono text-xs">{{ version.version }}</span>
+                    <span
+                      v-if="
+                        runningVersions.has(version.version) &&
+                        version.runtime === runtime
+                      "
+                      class="inline-flex h-4 items-center rounded bg-success/15 px-1 text-[0.65rem] text-success"
+                    >
+                      {{ $t("pages.plugins.detail.running") }}
+                    </span>
+                  </span>
+                  <span class="text-[0.7rem] text-muted-foreground">
+                    {{ labelForRuntime(version.runtime) }}
+                    <template v-if="version.runtime === runtime">
+                      · {{ $t("pages.plugins.detail.this_deployment") }}
+                    </template>
+                  </span>
                 </div>
-                <span class="text-xs text-muted-foreground">
+                <span
+                  class="shrink-0 text-xs tabular-nums text-muted-foreground"
+                >
                   {{
                     new Date(version.published_at).toLocaleDateString(
                       dateLocale(),
@@ -865,8 +1027,8 @@ definePageMeta({
                   }}
                 </span>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </section>
         </aside>
       </div>
       <Sheet v-model:open="showCfgDialog">
@@ -1199,6 +1361,7 @@ export default {
               detected: true,
               last_error: true,
               path: true,
+              source: true,
               updated_at: true,
             },
           ],
@@ -1713,6 +1876,16 @@ export default {
         };
       }
 
+      // Dropped in by hand: on disk, but nothing here asked for it.
+      if (install.source === "manual") {
+        return {
+          key: "Manual",
+          label:
+            install.version ?? this.$t("pages.plugins.store.found_on_disk"),
+          error: null,
+        };
+      }
+
       // Present on disk is the one fact worth preferring over the recorded
       // status, because it is observed rather than reported.
       if (install.detected && install.status === "Installed") {
@@ -1735,17 +1908,68 @@ export default {
     installedOn(nodeId: string) {
       return this.nodeState(nodeId).key === "Installed";
     },
-    async install() {
+    // With a version the install is pinned there; without one it follows
+    // every new release.
+    async install(version?: string) {
+      const slug = this.$route.params.slug as string;
+
       await this.run(this.ALL_NODES, () =>
         (this as any).$apollo.mutate({
           mutation: generateMutation({
             installGamePlugin: [
-              { slug: this.$route.params.slug as string },
+              version ? { slug, version } : { slug },
               { success: true },
             ],
           }),
         }),
       );
+    },
+    // A retry that left out the version would quietly move a pinned plugin
+    // onto auto-update.
+    retry() {
+      return this.install(
+        !this.autoUpdate && this.pinnedVersion ? this.pinnedVersion : undefined,
+      );
+    },
+    async copyCommand() {
+      try {
+        await navigator.clipboard.writeText(this.panelInstallCommand);
+        toast({ title: this.$t("pages.plugins.detail.copied") as string });
+      } catch (error) {
+        toast({ title: (error as Error).message, variant: "destructive" });
+      }
+    },
+    nodeDotClass(key: string): string {
+      switch (key) {
+        case "Installed":
+          return "bg-success";
+        case "Installing":
+        case "Removing":
+          return "bg-[hsl(var(--tac-amber))]";
+        case "Failed":
+          return "bg-destructive";
+        case "Manual":
+          return "bg-warning";
+        case "Pending":
+          return "bg-muted-foreground/60";
+        default:
+          return "bg-muted-foreground/30";
+      }
+    },
+    nodeTextClass(key: string): string {
+      switch (key) {
+        case "Installed":
+          return "text-muted-foreground";
+        case "Installing":
+        case "Removing":
+          return "text-[hsl(var(--tac-amber))]";
+        case "Failed":
+          return "text-destructive";
+        case "Manual":
+          return "text-warning";
+        default:
+          return "text-muted-foreground/50";
+      }
     },
     async uninstall() {
       if (this.modesUsing.length > 0) {
@@ -1857,8 +2081,7 @@ export default {
         .filter((name: string) => name.toLowerCase() !== managed)
         .map((name: string) => {
           const cvar = reported.get(name.toLowerCase()) as
-            | Record<string, any>
-            | undefined;
+            Record<string, any> | undefined;
 
           return {
             name,
@@ -2089,6 +2312,85 @@ export default {
         this.plugin?.source === "custom" &&
         !this.isRequested &&
         this.installedNodeCount === 0
+      );
+    },
+    readmeIndex(): number {
+      return Math.max(
+        0,
+        this.readmeVariants.findIndex(
+          (variant: Record<string, any>) => variant.key === this.readmeRuntime,
+        ),
+      );
+    },
+    pluginInstalls(): Array<Record<string, any>> {
+      return this.installs.filter(
+        (entry: Record<string, any>) =>
+          entry.plugin_slug === this.$route.params.slug,
+      );
+    },
+    nodeLabel(): (id: string) => string {
+      const labels = new Map(
+        this.nodes.map((node: Record<string, any>) => [
+          node.id,
+          node.label ?? node.id,
+        ]),
+      );
+      return (id: string) => (labels.get(id) as string) ?? id;
+    },
+    // On disk without being asked for: someone put it there by hand.
+    isManual(): boolean {
+      return (
+        !this.isRequested &&
+        this.pluginInstalls.some(
+          (entry: Record<string, any>) => entry.source === "manual",
+        )
+      );
+    },
+    manualNodeLabels(): Array<string> {
+      return this.pluginInstalls
+        .filter((entry: Record<string, any>) => entry.source === "manual")
+        .map((entry: Record<string, any>) =>
+          this.nodeLabel(entry.game_server_node_id),
+        );
+    },
+    failedNodeLabels(): Array<string> {
+      return this.nodes
+        .filter(
+          (node: Record<string, any>) =>
+            this.nodeState(node.id).key === "Failed",
+        )
+        .map((node: Record<string, any>) => node.label ?? node.id);
+    },
+    onlineNodeCount(): number {
+      return this.nodes.filter((node: Record<string, any>) =>
+        ["Online", "NotAcceptingNewMatches"].includes(node.status),
+      ).length;
+    },
+    latestForRuntime(): string | null {
+      return (
+        this.versions.find(
+          (version: Record<string, any>) => version.runtime === this.runtime,
+        )?.version ?? null
+      );
+    },
+    // Pinned behind the newest release: the one case with something to
+    // update to, since auto-update installs releases on its own.
+    updateVersion(): string | null {
+      if (this.autoUpdate || !this.pinnedVersion || !this.latestForRuntime) {
+        return null;
+      }
+      return this.pinnedVersion === this.latestForRuntime
+        ? null
+        : this.latestForRuntime;
+    },
+    runningVersions(): Set<string> {
+      return new Set(
+        this.pluginInstalls
+          .filter(
+            (entry: Record<string, any>) =>
+              entry.detected && entry.status === "Installed" && entry.version,
+          )
+          .map((entry: Record<string, any>) => entry.version),
       );
     },
     isRequested(): boolean {

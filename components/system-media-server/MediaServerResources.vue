@@ -1,8 +1,93 @@
-<script lang="ts">
+<script setup lang="ts">
 import CpuChart from "~/components/charts/CpuChart.vue";
 import MemoryChart from "~/components/charts/MemoryChart.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
+import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+</script>
+
+<template>
+  <ManageSection
+    :label="$t('pages.system_media_server.resources')"
+    :hint="$t('pages.system_media_server.resources_hint')"
+  >
+    <FadeSwap>
+      <div
+        v-if="!getServiceStats"
+        key="loading"
+        class="grid gap-3 lg:grid-cols-2"
+        aria-busy="true"
+      >
+        <Skeleton v-for="i in 2" :key="i" class="h-[13.5rem] rounded-lg" />
+      </div>
+
+      <div v-else-if="hasSeries" key="charts" class="grid gap-3 lg:grid-cols-2">
+        <div
+          class="grid min-w-0 gap-2.5 rounded-lg border border-border bg-card/20 px-4 pb-3 pt-3.5"
+        >
+          <div class="flex flex-wrap items-baseline gap-x-3">
+            <span class="text-[13px] font-semibold">
+              {{ $t("pages.system_media_server.cpu") }}
+            </span>
+            <span
+              v-if="cpuCores != null"
+              class="ml-auto text-[13px] tabular-nums text-muted-foreground"
+            >
+              {{
+                $t("pages.system_media_server.cores_now", {
+                  cores: cpuCores,
+                })
+              }}
+            </span>
+          </div>
+          <div class="h-40">
+            <CpuChart
+              v-if="mediaServer.cpu?.length"
+              :metrics="mediaServer.cpu"
+            />
+          </div>
+        </div>
+
+        <div
+          class="grid min-w-0 gap-2.5 rounded-lg border border-border bg-card/20 px-4 pb-3 pt-3.5"
+        >
+          <div class="flex flex-wrap items-baseline gap-x-3">
+            <span class="text-[13px] font-semibold">
+              {{ $t("pages.system_media_server.memory") }}
+            </span>
+            <span
+              v-if="memoryNow"
+              class="ml-auto text-[13px] tabular-nums text-muted-foreground"
+            >
+              {{ memoryNow }}
+            </span>
+          </div>
+          <div class="h-40">
+            <MemoryChart
+              v-if="mediaServer.memory?.length"
+              :metrics="mediaServer.memory"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- No pod metrics is not an error worth a red box: the metrics server
+           may simply not be scraping, which is a cluster setting, not a call
+           problem. -->
+      <p
+        v-else
+        key="none"
+        class="rounded-lg border border-dashed border-border px-4 py-3.5 text-[13px] text-muted-foreground"
+      >
+        {{ $t("pages.system_media_server.no_resources") }}
+      </p>
+    </FadeSwap>
+  </ManageSection>
+</template>
+
+<script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
-import { Cpu, MemoryStick } from "lucide-vue-next";
+import { formatBytes } from "~/utilities/formatResourceUsage";
 
 // What the media server pod is costing the box, next to what it is carrying.
 //
@@ -11,7 +96,6 @@ import { Cpu, MemoryStick } from "lucide-vue-next";
 // against System -> Metrics should not have to translate between two visual
 // languages. The only difference is the filter: one pod, not all of them.
 export default {
-  components: { CpuChart, MemoryChart, Cpu, MemoryStick },
   computed: {
     // The deployment is named `mediamtx`; a pod carries a generated suffix, so
     // this matches on the prefix rather than equality.
@@ -26,6 +110,19 @@ export default {
       return (
         !!this.mediaServer?.cpu?.length || !!this.mediaServer?.memory?.length
       );
+    },
+    // Cores in use at the newest sample; `used` is nanocores.
+    cpuCores(): string | null {
+      const last = this.mediaServer?.cpu?.at(-1);
+      const used = Number(last?.used);
+      if (!Number.isFinite(used)) {
+        return null;
+      }
+      return (used / 1_000_000_000).toFixed(2);
+    },
+    memoryNow(): string {
+      const used = Number(this.mediaServer?.memory?.at(-1)?.used);
+      return Number.isFinite(used) && used > 0 ? formatBytes(used) : "";
     },
   },
   apollo: {
@@ -46,40 +143,3 @@ export default {
   },
 };
 </script>
-
-<template>
-  <div v-if="hasSeries" class="grid gap-4 lg:grid-cols-2">
-    <div class="rounded-lg border border-border/60 bg-muted/10 p-3">
-      <div
-        class="mb-2 flex items-center gap-1.5 font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
-      >
-        <Cpu class="h-3 w-3" />
-        {{ $t("pages.system_media_server.cpu") }}
-      </div>
-      <div class="h-40">
-        <CpuChart v-if="mediaServer.cpu?.length" :metrics="mediaServer.cpu" />
-      </div>
-    </div>
-
-    <div class="rounded-lg border border-border/60 bg-muted/10 p-3">
-      <div
-        class="mb-2 flex items-center gap-1.5 font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
-      >
-        <MemoryStick class="h-3 w-3" />
-        {{ $t("pages.system_media_server.memory") }}
-      </div>
-      <div class="h-40">
-        <MemoryChart
-          v-if="mediaServer.memory?.length"
-          :metrics="mediaServer.memory"
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- No pod metrics is not an error worth a red box: the metrics server may
-       simply not be scraping, which is a cluster setting, not a call problem. -->
-  <p v-else class="text-xs text-muted-foreground/70">
-    {{ $t("pages.system_media_server.no_resources") }}
-  </p>
-</template>

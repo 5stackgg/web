@@ -1,5 +1,18 @@
 <script setup lang="ts">
-import { dateLocale } from "~/utilities/dateLocale";
+import {
+  CalendarIcon,
+  CirclePause,
+  History,
+  Infinity as InfinityIcon,
+  Medal,
+  Plus,
+  RotateCcw,
+  Swords,
+  Trash2,
+  TriangleAlert,
+  Trophy,
+} from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Calendar } from "~/components/ui/calendar";
 import {
@@ -7,27 +20,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import {
-  Leaf,
-  CalendarIcon,
-  Plus,
-  RotateCcw,
-  Medal,
-  Ban,
-  Infinity as InfinityIcon,
-  AlertTriangle,
-  ArrowRight,
-  X,
-  Trash2,
-} from "lucide-vue-next";
-import {
-  tacticalCtaButtonClasses,
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-  filterTriggerBase,
-  filterTriggerIdle,
-} from "~/utilities/tacticalClasses";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,9 +30,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { useSeasonBackfill } from "~/composables/useSeasonBackfill";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
+import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import SeasonRebuildProgress from "~/components/seasons/SeasonRebuildProgress.vue";
+import SeasonRebuildButton from "~/components/seasons/SeasonRebuildButton.vue";
+import SeasonCountdown from "~/components/seasons/SeasonCountdown.vue";
+import SeasonCreateForm from "~/components/seasons/SeasonCreateForm.vue";
+import { useSeasonBackfill } from "~/composables/useSeasonBackfill";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
 definePageMeta({
   middleware: "admin",
@@ -48,613 +53,662 @@ definePageMeta({
 
 // Shared singleton; also used from the Options API block via useSeasonBackfill().
 const backfill = useSeasonBackfill();
+const { isRebuilding } = backfill;
 
 const awardComposerSeasonId = ref<string | null>(null);
 function openAwardComposer(seasonId: string) {
   awardComposerSeasonId.value = seasonId;
 }
 
-const { isRebuilding } = backfill;
-
-const actionBtn = [filterTriggerBase, filterTriggerIdle, "h-8"];
-const dangerBtn = [
-  filterTriggerBase,
-  "h-8 border-[hsl(var(--destructive)/0.5)] bg-[hsl(var(--destructive)/0.12)] text-destructive hover:bg-[hsl(var(--destructive)/0.2)]",
-];
-// Prominent amber CTA used when a season's ELO is stale and must be rebuilt.
-const rebuildCta =
-  "inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] px-3 h-8 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.28)] disabled:opacity-40";
+const kpiClasses =
+  "grid min-w-0 gap-1 rounded-lg border border-border bg-card/40 px-3.5 py-3";
+const pillClasses =
+  "inline-flex h-5 items-center gap-1.5 whitespace-nowrap rounded-[5px] border px-1.5 text-[11px] font-semibold";
+const warnBannerClasses =
+  "flex flex-wrap items-center gap-3 rounded-lg border border-warning/35 bg-warning/[0.06] px-3.5 py-2.5 text-[0.8rem]";
 </script>
 
 <template>
+  <h1 class="sr-only">{{ $t("pages.seasons.title") }}</h1>
+
   <PageTransition :delay="0">
-    <div class="container mx-auto max-w-4xl space-y-5 py-6">
-      <!-- ===== Header ===== -->
-      <TacticalPageHeader>
-        <template #description>{{
-          $t("layouts.app_nav.administration.title")
-        }}</template>
-        <template #title>{{ $t("pages.seasons.title") }}</template>
-        <template #subtitle>{{ $t("pages.seasons.description") }}</template>
-        <template #actions>
-          <div
-            class="flex items-center gap-2.5 self-start rounded-md border border-border bg-muted/20 px-3 py-2 [backdrop-filter:blur(6px)]"
-          >
-            <Leaf class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-            <div class="leading-tight">
-              <div
-                class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                {{ $t("pages.seasons.current") }}
-              </div>
-              <div
-                class="font-sans text-sm font-bold uppercase tracking-[0.08em]"
-                :class="
-                  activeSeason
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-muted-foreground'
-                "
-              >
-                {{
-                  activeSeason
-                    ? "S" + pad2(activeSeason.number)
-                    : $t("pages.seasons.off_season")
-                }}
-              </div>
-            </div>
-          </div>
-        </template>
-      </TacticalPageHeader>
-
-      <!-- ===== Create Season ===== -->
-      <section
-        class="relative overflow-hidden rounded-lg border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.2)_100%)] p-5 sm:p-6 [backdrop-filter:blur(6px)]"
-      >
-        <div class="mb-5 flex items-start justify-between gap-4">
-          <span :class="tacticalSectionLabelClasses" class="!mb-0">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("pages.seasons.create_title") }}
+    <div v-if="loaded" class="grid w-full max-w-[880px] gap-5">
+      <Transition name="season-fade">
+        <div v-if="staleOthers.length" :class="warnBannerClasses">
+          <TriangleAlert class="h-4 w-4 shrink-0 text-warning" />
+          <span class="min-w-0 flex-1">
+            {{
+              $t(
+                "pages.seasons.banner.stale",
+                {
+                  seasons: listNames(staleOthers),
+                  count: staleOthers.length,
+                },
+                staleOthers.length,
+              )
+            }}
+            <template v-if="rebuildingSeason">
+              {{
+                $t("pages.seasons.banner.rebuilding_now", {
+                  season: seasonTitle(rebuildingSeason),
+                })
+              }}
+            </template>
           </span>
-          <div
-            class="flex h-11 min-w-[3.25rem] flex-col items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-2 leading-none"
-          >
-            <span
-              class="font-mono text-[0.5rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber)/0.7)]"
-              >NEXT</span
-            >
-            <span
-              class="font-sans text-lg font-bold text-[hsl(var(--tac-amber))] [font-stretch:80%]"
-              >S{{ pad2(previewNumber) }}</span
-            >
-          </div>
+          <SeasonRebuildButton
+            v-if="staleOthers.length === 1"
+            :season-id="staleOthers[0].id"
+            :label="$t('pages.seasons.rebuild_elo')"
+            @rebuild="confirmRebuild(staleOthers[0].id)"
+          />
         </div>
+      </Transition>
 
-        <form @submit.prevent="createSeason" class="space-y-4">
-          <div class="space-y-1.5">
-            <label
-              for="season-desc"
-              class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >{{ $t("pages.seasons.description_label") }}</label
-            >
-            <Input
-              id="season-desc"
-              v-model="newSeasonDescription"
-              :placeholder="$t('pages.seasons.description_placeholder')"
-            />
-          </div>
-          <div class="flex items-stretch gap-2">
-            <div
-              class="flex flex-1 items-stretch overflow-hidden rounded-md border border-border bg-muted/20"
-            >
-              <div class="flex-1">
-                <Popover>
-                  <PopoverTrigger as-child>
-                    <button
-                      type="button"
-                      class="flex w-full flex-col items-start gap-1 px-3 py-2 text-left transition-colors hover:bg-[hsl(var(--tac-amber)/0.06)]"
-                    >
-                      <span
-                        class="font-mono text-[0.52rem] uppercase tracking-[0.22em] text-muted-foreground"
-                        >{{ $t("pages.seasons.start_label") }}</span
-                      >
-                      <span
-                        class="flex items-center gap-1.5 font-mono text-[0.82rem] leading-none"
-                      >
-                        <CalendarIcon
-                          class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                        />
-                        <span
-                          :class="{ 'text-muted-foreground': !newSeasonStart }"
-                          >{{
-                            newSeasonStart
-                              ? formatCalendarDate(newSeasonStart)
-                              : $t("pages.seasons.pick_date")
-                          }}</span
-                        >
-                      </span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent class="w-auto p-0">
-                    <Calendar
-                      :model-value="newSeasonStart"
-                      :is-date-disabled="createStartDisabled"
-                      @update:model-value="onNewSeasonStart"
-                      initial-focus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div
-                class="flex items-center border-x border-border bg-muted/20 px-2 text-[hsl(var(--tac-amber)/0.7)]"
-              >
-                <ArrowRight class="h-3.5 w-3.5" />
-              </div>
-              <div class="flex-1">
-                <Popover>
-                  <PopoverTrigger as-child>
-                    <button
-                      type="button"
-                      class="flex w-full flex-col items-start gap-1 px-3 py-2 text-left transition-colors hover:bg-[hsl(var(--tac-amber)/0.06)]"
-                    >
-                      <span
-                        class="font-mono text-[0.52rem] uppercase tracking-[0.22em] text-muted-foreground"
-                        >{{ $t("pages.seasons.end_label") }}</span
-                      >
-                      <span
-                        class="flex items-center gap-1.5 font-mono text-[0.82rem] leading-none"
-                      >
-                        <InfinityIcon
-                          v-if="!newSeasonEnd"
-                          class="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                        />
-                        <CalendarIcon
-                          v-else
-                          class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
-                        />
-                        <span
-                          :class="{ 'text-muted-foreground': !newSeasonEnd }"
-                          >{{
-                            newSeasonEnd
-                              ? formatCalendarDate(newSeasonEnd)
-                              : $t("pages.seasons.ongoing")
-                          }}</span
-                        >
-                      </span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent class="w-auto p-0">
-                    <Calendar
-                      v-model="newSeasonEnd"
-                      :is-date-disabled="createEndDisabled"
-                      initial-focus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-            <button
-              v-if="newSeasonEnd"
-              type="button"
-              :title="$t('common.clear')"
-              class="flex w-9 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--destructive)/0.5)] hover:text-destructive"
-              @click="newSeasonEnd = undefined"
-            >
-              <X class="h-4 w-4" />
-            </button>
-          </div>
-
-          <p
-            class="flex items-start gap-2 font-mono text-[0.62rem] leading-relaxed tracking-[0.02em] text-muted-foreground"
-          >
-            <span
-              class="mt-[3px] inline-block h-[2px] w-[10px] shrink-0 bg-[hsl(var(--tac-amber)/0.6)]"
-            ></span>
-            {{ $t("pages.seasons.utc_hint") }}
-          </p>
-
-          <p
-            v-if="createError"
-            class="flex items-center gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
-          >
-            <AlertTriangle class="h-4 w-4 shrink-0" />
-            {{ createError }}
-          </p>
-
-          <button
-            type="submit"
-            :class="tacticalCtaButtonClasses"
-            :disabled="!newSeasonStart || creating"
-            class="disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <Plus class="h-4 w-4" />
-            {{ createButtonLabel }}
-          </button>
-        </form>
-      </section>
-
-      <!-- ===== Active Season (hero) ===== -->
+      <!-- What a season is for, before what this one is doing. -->
       <section
-        v-if="activeSeason"
-        class="relative overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.07)_0%,hsl(var(--card)/0.25)_100%)] p-5 sm:p-6 [backdrop-filter:blur(6px)]"
+        class="grid gap-x-6 gap-y-3 border-b border-border/60 pb-5 sm:grid-cols-2"
+        :aria-label="$t('pages.seasons.about.label')"
       >
-        <div class="absolute right-3 top-3 z-[1] flex items-center gap-1.5">
-          <button
-            type="button"
-            :title="$t('awards.composer.grant_here')"
-            :aria-label="$t('awards.composer.grant_here')"
-            class="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
-            @click="openAwardComposer(activeSeason.id)"
-          >
-            <Medal class="h-3.5 w-3.5" />
-          </button>
-          <button
-            type="button"
-            :title="$t('pages.seasons.rebuild')"
-            :disabled="isRebuilding(activeSeason.id)"
-            class="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
-            @click="confirmRebuild(activeSeason.id)"
-          >
-            <RotateCcw class="h-3.5 w-3.5" />
-          </button>
-        </div>
-
-        <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
-          <div
-            class="relative flex h-[4.5rem] w-[4.5rem] shrink-0 flex-col items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.1)]"
-          >
-            <span
-              class="font-mono text-[0.5rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber)/0.75)]"
-              >SEASON</span
-            >
-            <span
-              class="font-sans text-3xl font-bold leading-none text-[hsl(var(--tac-amber))] [font-stretch:80%]"
-              >{{ pad2(activeSeason.number) }}</span
-            >
-          </div>
-
-          <div class="min-w-0 flex-1 space-y-4">
-            <div class="flex flex-wrap items-center gap-2.5">
-              <h2
-                class="m-0 font-sans text-xl font-bold uppercase tracking-[0.03em] [font-stretch:85%]"
-              >
-                {{ seasonTitle(activeSeason) }}
-              </h2>
-              <span
-                class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.14)] px-2.5 py-0.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-              >
-                <span
-                  class="inline-block h-[7px] w-[7px] rotate-45 animate-pulse bg-[hsl(var(--tac-amber))]"
-                ></span>
-                {{ $t("pages.seasons.active") }}
-              </span>
-              <span
-                v-if="activeSeason.needs_rebuild"
-                class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.2)] px-2.5 py-0.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))]"
-              >
-                <AlertTriangle class="h-3 w-3" />
-                {{ $t("pages.seasons.rebuild_required") }}
-              </span>
+        <div
+          v-for="point in [
+            { icon: RotateCcw, key: 'reset' },
+            { icon: Swords, key: 'counts' },
+            { icon: Trophy, key: 'awards' },
+            { icon: History, key: 'history' },
+          ]"
+          :key="point.key"
+          class="flex gap-3"
+        >
+          <component
+            :is="point.icon"
+            class="mt-0.5 size-4 shrink-0 text-[hsl(var(--tac-amber))]"
+          />
+          <div class="min-w-0">
+            <div class="text-sm font-medium">
+              {{ $t(`pages.seasons.about.${point.key}_title`) }}
             </div>
-
-            <Transition
-              enter-active-class="transition-all duration-300 ease-out motion-reduce:!duration-0"
-              enter-from-class="opacity-0 -translate-y-1"
-              enter-to-class="opacity-100 translate-y-0"
-              leave-active-class="transition-all duration-200 ease-in motion-reduce:!duration-0"
-              leave-from-class="opacity-100 translate-y-0"
-              leave-to-class="opacity-0 -translate-y-1"
-            >
-              <div
-                v-if="
-                  activeSeason.needs_rebuild && !isRebuilding(activeSeason.id)
-                "
-                class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] px-3.5 py-3"
-              >
-                <span
-                  class="inline-flex items-start gap-2 font-mono text-[0.64rem] leading-relaxed tracking-[0.02em] text-[hsl(var(--tac-amber))]"
-                >
-                  <AlertTriangle class="mt-[1px] h-4 w-4 shrink-0" />
-                  {{ $t("pages.seasons.needs_rebuild_notice") }}
-                </span>
-                <button
-                  type="button"
-                  :class="rebuildCta"
-                  :disabled="isRebuilding(activeSeason.id)"
-                  @click="confirmRebuild(activeSeason.id)"
-                >
-                  <RotateCcw class="h-3.5 w-3.5" />
-                  {{ $t("pages.seasons.rebuild_elo") }}
-                </button>
-              </div>
-            </Transition>
-
-            <p
-              v-if="activeSeason.description"
-              class="text-sm text-muted-foreground"
-            >
-              {{ activeSeason.description }}
+            <p class="text-[0.8rem] leading-snug text-muted-foreground">
+              {{ $t(`pages.seasons.about.${point.key}_body`) }}
             </p>
-            <div class="space-y-1.5">
-              <div
-                class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
-              >
-                <span>{{ formatDate(activeSeason.starts_at) }}</span>
-                <span
-                  :class="{
-                    'text-[hsl(var(--tac-amber))]': activeSeason.ends_at,
-                  }"
-                  >{{
-                    activeSeason.ends_at
-                      ? formatDate(activeSeason.ends_at)
-                      : $t("pages.seasons.ongoing")
-                  }}</span
-                >
-              </div>
-              <div
-                class="relative h-1.5 w-full overflow-hidden rounded-full bg-muted/40"
-              >
-                <div
-                  v-if="activeSeason.ends_at"
-                  class="absolute inset-y-0 left-0 rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-500"
-                  :style="{ width: (seasonProgress(activeSeason) ?? 0) + '%' }"
-                ></div>
-                <div
-                  v-else
-                  class="absolute inset-y-0 left-0 w-full bg-[linear-gradient(90deg,hsl(var(--tac-amber)/0.5)_0%,hsl(var(--tac-amber)/0.12)_100%)]"
-                ></div>
-              </div>
-            </div>
-            <div
-              v-if="activeSeason.ends_at"
-              class="flex items-baseline gap-2.5"
-            >
-              <span
-                class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
-                >{{ $t("pages.seasons.ends_in_label") }}</span
-              >
-              <span
-                class="font-mono text-2xl font-bold tabular-nums leading-none text-[hsl(var(--tac-amber))]"
-                >{{ countdown(activeSeason.ends_at) }}</span
-              >
-            </div>
-            <div class="flex flex-wrap items-center gap-2 pt-1">
-              <Popover>
-                <PopoverTrigger as-child>
-                  <button type="button" :class="actionBtn">
-                    <CalendarIcon class="h-3.5 w-3.5" />
-                    {{ $t("pages.seasons.change_start") }}
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent class="w-auto p-0">
-                  <Calendar
-                    :model-value="editStartDate"
-                    :is-date-disabled="editStartDisabled"
-                    @update:model-value="
-                      onEditStartDate(activeSeason.id, $event)
-                    "
-                    initial-focus
-                  />
-                </PopoverContent>
-              </Popover>
-              <Popover>
-                <PopoverTrigger as-child>
-                  <button type="button" :class="actionBtn">
-                    <CalendarIcon class="h-3.5 w-3.5" />
-                    {{
-                      activeSeason.ends_at
-                        ? $t("pages.seasons.change_end")
-                        : $t("pages.seasons.set_end")
-                    }}
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent class="w-auto p-0">
-                  <Calendar
-                    :model-value="editEndDate"
-                    :is-date-disabled="editEndDisabled"
-                    @update:model-value="onEditEndDate(activeSeason.id, $event)"
-                    initial-focus
-                  />
-                </PopoverContent>
-              </Popover>
-              <button
-                v-if="activeSeason.ends_at"
-                type="button"
-                :class="actionBtn"
-                @click="makeOngoing(activeSeason.id)"
-              >
-                <InfinityIcon class="h-3.5 w-3.5" />
-                {{ $t("pages.seasons.make_ongoing") }}
-              </button>
-              <button
-                type="button"
-                :class="dangerBtn"
-                @click="endNow(activeSeason.id)"
-              >
-                <Ban class="h-3.5 w-3.5" />
-                {{ $t("pages.seasons.end_now") }}
-              </button>
-              <button
-                type="button"
-                :class="dangerBtn"
-                @click="confirmDelete(activeSeason.id)"
-              >
-                <Trash2 class="h-3.5 w-3.5" />
-                {{ $t("pages.seasons.delete") }}
-              </button>
-            </div>
-
-            <SeasonRebuildProgress :season-id="activeSeason.id" />
           </div>
         </div>
       </section>
 
-      <!-- ===== Ledger (upcoming + past) ===== -->
-      <section
-        v-if="upcomingSeasons.length > 0 || pastSeasons.length > 0"
-        class="relative overflow-hidden rounded-lg border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.5)_0%,hsl(var(--card)/0.2)_100%)] p-5 sm:p-6 [backdrop-filter:blur(6px)]"
-      >
-        <span :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.seasons.ledger_title") }}
-        </span>
+      <div class="grid gap-8">
+        <div>
+          <HeightGlide>
+            <div class="season-swap">
+              <Transition name="season-swap">
+                <div
+                  v-if="activeSeason"
+                  :key="activeSeason.id"
+                  class="grid gap-4"
+                >
+                  <div class="flex flex-wrap items-center gap-2.5">
+                    <h2 class="m-0 text-[26px] font-bold leading-tight">
+                      {{ seasonTitle(activeSeason) }}
+                    </h2>
+                    <span
+                      :class="[
+                        pillClasses,
+                        'border-success/30 bg-success/10 text-success',
+                      ]"
+                    >
+                      <span class="relative inline-flex h-1.5 w-1.5">
+                        <span
+                          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75 motion-reduce:animate-none"
+                        ></span>
+                        <span
+                          class="relative inline-flex h-1.5 w-1.5 rounded-full bg-success"
+                        ></span>
+                      </span>
+                      {{ $t("pages.seasons.active") }}
+                    </span>
+                    <span
+                      v-if="
+                        activeSeason.needs_rebuild &&
+                        !isRebuilding(activeSeason.id)
+                      "
+                      :class="[
+                        pillClasses,
+                        'border-warning/30 bg-warning/10 text-warning',
+                      ]"
+                    >
+                      <TriangleAlert class="h-3 w-3" />
+                      {{ $t("pages.seasons.hero.rebuild_required") }}
+                    </span>
+                  </div>
 
-        <div class="divide-y divide-border/50">
-          <div
-            v-for="season in ledgerSeasons"
-            :key="season.id"
-            class="py-3 first:pt-0 last:pb-0"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-muted/30 font-sans text-xs font-bold text-muted-foreground [font-stretch:85%]"
-              >
-                S{{ pad2(season.number) }}
-              </div>
-
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <span
-                    class="font-sans text-sm font-semibold uppercase tracking-[0.04em]"
-                    >{{ seasonTitle(season) }}</span
+                  <p
+                    v-if="activeSeason.description"
+                    class="-mt-2 max-w-[70ch] text-sm text-muted-foreground"
                   >
+                    {{ activeSeason.description }}
+                  </p>
+
+                  <div class="grid gap-2 sm:grid-cols-3">
+                    <div :class="kpiClasses">
+                      <span class="text-[11.5px] text-muted-foreground">{{
+                        activeSeason.ends_at
+                          ? $t("pages.seasons.hero.ends_in")
+                          : $t("pages.seasons.hero.running_for")
+                      }}</span>
+                      <span class="text-lg font-bold tabular-nums">
+                        <SeasonCountdown
+                          v-if="activeSeason.ends_at"
+                          :ends-at="activeSeason.ends_at"
+                          @elapsed="now = Date.now()"
+                        />
+                        <template v-else>{{
+                          $t(
+                            "pages.seasons.hero.days",
+                            { count: dayOf(activeSeason) },
+                            dayOf(activeSeason),
+                          )
+                        }}</template>
+                      </span>
+                    </div>
+                    <div :class="kpiClasses">
+                      <span class="text-[11.5px] text-muted-foreground">{{
+                        $t("pages.seasons.hero.started")
+                      }}</span>
+                      <span class="text-lg font-bold tabular-nums">{{
+                        formatDate(activeSeason.starts_at)
+                      }}</span>
+                    </div>
+                    <div :class="kpiClasses">
+                      <span class="text-[11.5px] text-muted-foreground">{{
+                        $t("pages.seasons.hero.ends")
+                      }}</span>
+                      <span
+                        v-if="activeSeason.ends_at"
+                        class="text-lg font-bold tabular-nums"
+                        >{{ formatDate(activeSeason.ends_at) }}</span
+                      >
+                      <span
+                        v-else
+                        class="text-lg font-bold text-muted-foreground"
+                        >{{ $t("pages.seasons.ongoing") }}</span
+                      >
+                    </div>
+                  </div>
+
+                  <div v-if="activeSeason.ends_at" class="grid gap-1.5">
+                    <div class="h-1.5 overflow-hidden rounded-full bg-muted/50">
+                      <div
+                        class="h-full origin-left rounded-full bg-[hsl(var(--tac-amber))] transition-transform duration-500 ease-out motion-reduce:transition-none"
+                        :style="{
+                          transform: `scaleX(${(progressOf(activeSeason) ?? 0) / 100})`,
+                        }"
+                      ></div>
+                    </div>
+                    <div
+                      class="flex justify-between text-xs tabular-nums text-muted-foreground"
+                    >
+                      <span>{{
+                        $t("pages.seasons.hero.day_of", {
+                          day: dayOf(activeSeason),
+                          total: lengthOf(activeSeason),
+                        })
+                      }}</span>
+                      <span>{{
+                        $t("pages.seasons.hero.percent_through", {
+                          percent: Math.round(progressOf(activeSeason) ?? 0),
+                        })
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <Transition name="season-fade">
+                    <div
+                      v-if="
+                        activeSeason.needs_rebuild &&
+                        !isRebuilding(activeSeason.id)
+                      "
+                      :class="warnBannerClasses"
+                    >
+                      <TriangleAlert class="h-4 w-4 shrink-0 text-warning" />
+                      <span class="min-w-0 flex-1">{{
+                        $t("pages.seasons.needs_rebuild_notice")
+                      }}</span>
+                      <SeasonRebuildButton
+                        :season-id="activeSeason.id"
+                        :label="$t('pages.seasons.rebuild_elo')"
+                        @rebuild="confirmRebuild(activeSeason.id)"
+                      />
+                    </div>
+                  </Transition>
+
+                  <SeasonRebuildProgress :season-id="activeSeason.id" />
+
+                  <div class="flex flex-wrap gap-2">
+                    <Popover v-model:open="startPickerOpen">
+                      <PopoverTrigger as-child>
+                        <Button variant="outline" size="sm">
+                          <CalendarIcon />
+                          {{ $t("pages.seasons.hero.change_start") }}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent class="w-auto p-0">
+                        <p class="px-3 pt-3 text-xs text-muted-foreground">
+                          {{ $t("pages.seasons.hero.start_caption") }}
+                        </p>
+                        <Calendar
+                          :model-value="editStartDate"
+                          :is-date-disabled="editStartDisabled"
+                          initial-focus
+                          @update:model-value="onEditStartDate"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <Popover v-model:open="endPickerOpen">
+                      <PopoverTrigger as-child>
+                        <Button variant="outline" size="sm">
+                          <CalendarIcon />
+                          {{
+                            activeSeason.ends_at
+                              ? $t("pages.seasons.hero.change_end")
+                              : $t("pages.seasons.hero.set_end")
+                          }}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent class="w-auto p-0">
+                        <p class="px-3 pt-3 text-xs text-muted-foreground">
+                          {{ $t("pages.seasons.hero.end_caption") }}
+                        </p>
+                        <Calendar
+                          :model-value="editEndDate"
+                          :is-date-disabled="editEndDisabled"
+                          initial-focus
+                          @update:model-value="onEditEndDate"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <Button
+                      v-if="activeSeason.ends_at"
+                      variant="outline"
+                      size="sm"
+                      @click="makeOngoing(activeSeason.id)"
+                    >
+                      <InfinityIcon />
+                      {{ $t("pages.seasons.hero.make_ongoing") }}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      @click="openAwardComposer(activeSeason.id)"
+                    >
+                      <Medal />
+                      {{ $t("pages.seasons.hero.grant_award") }}
+                    </Button>
+                    <SeasonRebuildButton
+                      v-if="!activeSeason.needs_rebuild"
+                      variant="ghost"
+                      :season-id="activeSeason.id"
+                      :label="$t('pages.seasons.rebuild_elo')"
+                      @rebuild="confirmRebuild(activeSeason.id)"
+                    />
+                  </div>
+
+                  <div class="rounded-lg border border-destructive/30">
+                    <div class="flex flex-wrap items-center gap-4 px-4 py-3.5">
+                      <div class="min-w-0 flex-1">
+                        <div class="text-sm font-semibold">
+                          {{
+                            $t("pages.seasons.danger.end_title", {
+                              season: seasonTitle(activeSeason),
+                            })
+                          }}
+                        </div>
+                        <p
+                          class="mt-0.5 max-w-[64ch] text-[0.8rem] text-muted-foreground"
+                        >
+                          {{ $t("pages.seasons.danger.end_description") }}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        :class="dangerButtonClasses"
+                        @click="openEndNow(activeSeason)"
+                      >
+                        {{ $t("pages.seasons.danger.end_button") }}
+                      </Button>
+                    </div>
+                    <div
+                      class="flex flex-wrap items-center gap-4 border-t border-destructive/20 px-4 py-3.5"
+                    >
+                      <div class="min-w-0 flex-1">
+                        <div class="text-sm font-semibold">
+                          {{
+                            $t("pages.seasons.danger.delete_title", {
+                              season: seasonTitle(activeSeason),
+                            })
+                          }}
+                        </div>
+                        <p
+                          class="mt-0.5 max-w-[64ch] text-[0.8rem] text-muted-foreground"
+                        >
+                          {{ $t("pages.seasons.danger.delete_description") }}
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        :class="dangerButtonClasses"
+                        @click="confirmDelete(activeSeason)"
+                      >
+                        {{ $t("pages.seasons.danger.delete_button") }}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-else-if="seasons.length" key="off" class="grid gap-3">
+                  <div class="flex flex-wrap items-center gap-2.5">
+                    <h2 class="m-0 text-[26px] font-bold leading-tight">
+                      {{ $t("pages.seasons.off.title") }}
+                    </h2>
+                    <span
+                      :class="[
+                        pillClasses,
+                        'border-warning/30 bg-warning/10 text-warning',
+                      ]"
+                    >
+                      <CirclePause class="h-3 w-3" />
+                      {{ $t("pages.seasons.off.pill") }}
+                    </span>
+                  </div>
+                  <p class="max-w-[66ch] text-sm text-muted-foreground">
+                    {{ offSeasonText }}
+                  </p>
+                </div>
+
+                <SectionEmpty
+                  v-else
+                  key="empty"
+                  :title="$t('pages.seasons.empty_state.title')"
+                  :description="$t('pages.seasons.empty_state.description')"
+                />
+              </Transition>
+            </div>
+          </HeightGlide>
+        </div>
+
+        <!-- ===== Next season ===== -->
+        <ManageSection>
+          <div>
+            <div class="flex min-h-8 items-end justify-between gap-4">
+              <div class="grid gap-1">
+                <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{
+                    seasons.length
+                      ? $t("pages.seasons.next.label")
+                      : $t("pages.seasons.next.first_label")
+                  }}
+                </div>
+                <p
+                  v-if="!nextOpen && nextHintText"
+                  class="text-xs text-muted-foreground/70"
+                >
+                  {{ nextHintText }}
+                </p>
+              </div>
+              <Button
+                v-if="!nextOpen"
+                variant="outline"
+                size="sm"
+                class="shrink-0"
+                @click="scheduleOpen = true"
+              >
+                <Plus />
+                {{
+                  $t("pages.seasons.next.schedule", {
+                    season: $t("pages.seasons.season_number", {
+                      number: seasons.length + 1,
+                    }),
+                  })
+                }}
+              </Button>
+            </div>
+            <Fold :open="nextOpen">
+              <div class="pt-4">
+                <SeasonCreateForm
+                  :seasons="seasons"
+                  :now="now"
+                  :cancelable="!mustPlan"
+                  @created="scheduleOpen = false"
+                  @cancel="scheduleOpen = false"
+                />
+              </div>
+            </Fold>
+          </div>
+        </ManageSection>
+
+        <!-- ===== Ledger (upcoming + past) ===== -->
+        <ManageSection
+          v-if="ledgerSeasons.length"
+          :label="$t('pages.seasons.ledger.label')"
+        >
+          <TransitionGroup tag="div" name="season-row" class="grid">
+            <div
+              v-for="season in ledgerSeasons"
+              :key="season.id"
+              class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3.5 border-b border-border/60 py-3 last:border-b-0"
+            >
+              <span
+                class="grid h-10 w-10 place-items-center rounded-lg border border-border bg-muted/40 text-[12.5px] font-bold tabular-nums text-muted-foreground"
+                :class="{ 'border-dashed': season.__upcoming }"
+                >S{{ season.number ?? "?" }}</span
+              >
+              <div class="grid min-w-0 gap-0.5">
+                <span class="flex flex-wrap items-center gap-2 font-semibold">
+                  {{ seasonTitle(season) }}
                   <span
-                    class="inline-flex items-center gap-1 font-mono text-[0.55rem] uppercase tracking-[0.16em]"
+                    class="text-xs font-medium"
                     :class="
                       season.__upcoming
                         ? 'text-[hsl(var(--tac-amber))]'
-                        : 'text-muted-foreground'
+                        : 'text-muted-foreground/70'
                     "
-                  >
-                    <span
-                      class="inline-block h-[6px] w-[6px] rotate-45"
-                      :class="
-                        season.__upcoming
-                          ? 'bg-[hsl(var(--tac-amber))]'
-                          : 'bg-muted-foreground/50'
-                      "
-                    ></span>
-                    {{
+                    >{{
                       season.__upcoming
                         ? $t("pages.seasons.upcoming")
                         : $t("pages.seasons.ended")
-                    }}
-                  </span>
-                  <span
-                    v-if="season.needs_rebuild"
-                    class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.18)] px-2 py-0.5 font-mono text-[0.5rem] font-semibold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+                    }}</span
                   >
-                    <AlertTriangle class="h-2.5 w-2.5" />
-                    {{ $t("pages.seasons.rebuild_required") }}
+                  <span
+                    v-if="season.needs_rebuild && !isRebuilding(season.id)"
+                    :class="[
+                      pillClasses,
+                      'border-warning/30 bg-warning/10 text-warning',
+                    ]"
+                  >
+                    <TriangleAlert class="h-3 w-3" />
+                    {{ $t("pages.seasons.hero.rebuild_required") }}
                   </span>
-                </div>
-                <p
-                  class="truncate font-mono text-[0.62rem] uppercase tracking-[0.1em] text-muted-foreground"
+                </span>
+                <span
+                  class="truncate text-[0.8rem] tabular-nums text-muted-foreground"
                 >
-                  {{ formatDate(season.starts_at) }} —
+                  {{ formatDate(season.starts_at) }} →
                   {{
                     season.ends_at
                       ? formatDate(season.ends_at)
                       : $t("pages.seasons.ongoing")
-                  }}<template v-if="season.description">
+                  }}
+                  <template v-if="season.ends_at">
+                    · {{ lengthText(season) }}</template
+                  ><template v-if="season.description">
                     · {{ season.description }}</template
                   >
-                </p>
+                </span>
+                <div class="empty:hidden [&>*]:mt-2">
+                  <SeasonRebuildProgress :season-id="season.id" />
+                </div>
               </div>
-              <button
-                v-if="season.needs_rebuild"
-                type="button"
-                :disabled="isRebuilding(season.id)"
-                :class="rebuildCta"
-                class="!h-7 shrink-0 !px-2.5"
-                @click="confirmRebuild(season.id)"
-              >
-                <RotateCcw class="h-3.5 w-3.5" />
-                {{ $t("pages.seasons.rebuild") }}
-              </button>
-              <button
-                v-else
-                type="button"
-                :title="$t('pages.seasons.rebuild')"
-                :disabled="isRebuilding(season.id)"
-                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-40"
-                @click="confirmRebuild(season.id)"
-              >
-                <RotateCcw class="h-3.5 w-3.5" />
-              </button>
-              <button
-                type="button"
-                :title="$t('pages.seasons.delete')"
-                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted/20 text-muted-foreground transition-colors hover:border-[hsl(var(--destructive)/0.5)] hover:text-destructive"
-                @click="confirmDelete(season.id)"
-              >
-                <Trash2 class="h-3.5 w-3.5" />
-              </button>
+              <div class="flex items-center gap-1">
+                <SeasonRebuildButton
+                  v-if="season.needs_rebuild"
+                  size="xs"
+                  :season-id="season.id"
+                  :label="$t('pages.seasons.rebuild')"
+                  @rebuild="confirmRebuild(season.id)"
+                />
+                <SeasonRebuildButton
+                  v-else
+                  icon-only
+                  variant="ghost"
+                  size="icon-sm"
+                  :season-id="season.id"
+                  :label="$t('pages.seasons.rebuild_elo')"
+                  @rebuild="confirmRebuild(season.id)"
+                />
+                <FiveStackToolTip as-child :tap-toggle="false">
+                  <template #trigger>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      class="text-muted-foreground hover:text-destructive"
+                      :aria-label="$t('common.delete')"
+                      @click="confirmDelete(season)"
+                    >
+                      <Trash2 />
+                    </Button>
+                  </template>
+                  {{ $t("common.delete") }}
+                </FiveStackToolTip>
+              </div>
             </div>
-
-            <SeasonRebuildProgress :season-id="season.id" />
-          </div>
-        </div>
-      </section>
-
-      <!-- ===== Empty ===== -->
-      <div
-        v-if="
-          !activeSeason &&
-          upcomingSeasons.length === 0 &&
-          pastSeasons.length === 0
-        "
-        class="relative overflow-hidden rounded-lg border border-dashed border-border/70 bg-muted/10 px-6 py-10 text-center"
-      >
-        <p
-          class="font-mono text-[0.72rem] uppercase tracking-[0.16em] text-muted-foreground"
-        >
-          {{ $t("pages.seasons.empty") }}
-        </p>
+          </TransitionGroup>
+        </ManageSection>
       </div>
-
-      <!-- ===== Rebuild confirm ===== -->
-      <AlertDialog v-model:open="showRebuildConfirm">
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {{ $t("pages.seasons.rebuild_confirm_title") }}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {{ $t("pages.seasons.rebuild_confirm_description") }}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-            <AlertDialogAction @click="doRebuild">
-              {{ $t("pages.seasons.rebuild") }}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog v-model:open="showDeleteConfirm">
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {{ $t("pages.seasons.delete_confirm_title") }}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {{ $t("pages.seasons.delete_confirm_description") }}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-            <AlertDialogAction
-              class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              @click="doDelete"
-            >
-              {{ $t("pages.seasons.delete") }}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   </PageTransition>
+
+  <!-- ===== Rebuild confirm ===== -->
+  <AlertDialog v-model:open="showRebuildConfirm">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{ $t("pages.seasons.rebuild_confirm_title") }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("pages.seasons.rebuild_confirm_description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <AlertDialogAction @click="doRebuild">
+          {{ $t("pages.seasons.rebuild_elo") }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+
+  <!-- ===== Delete confirm ===== -->
+  <AlertDialog v-model:open="deleteOpen">
+    <AlertDialogContent v-if="deleteSeason">
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{
+            $t("pages.seasons.danger.delete_confirm_title", {
+              season: seasonTitle(deleteSeason),
+            })
+          }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("pages.seasons.delete_confirm_description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <!-- Plain Button: AlertDialogAction closes before the delete lands. -->
+        <Button variant="destructive" @click="doDelete">
+          {{
+            $t("pages.seasons.danger.delete_confirm_button", {
+              season: seasonTitle(deleteSeason),
+            })
+          }}
+        </Button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+
+  <!-- ===== End now confirm ===== -->
+  <AlertDialog v-model:open="endOpen">
+    <AlertDialogContent v-if="endSeason">
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{
+            $t("pages.seasons.danger.end_confirm_title", {
+              season: seasonTitle(endSeason),
+            })
+          }}
+        </AlertDialogTitle>
+        <AlertDialogDescription as-child>
+          <div class="grid gap-2.5 text-sm text-muted-foreground">
+            <p>
+              {{
+                endSeason.ends_at
+                  ? $t("pages.seasons.danger.end_confirm_instead", {
+                      today: formatDate(new Date(now).toISOString()),
+                      date: formatDate(endSeason.ends_at),
+                    })
+                  : $t("pages.seasons.danger.end_confirm_today", {
+                      today: formatDate(new Date(now).toISOString()),
+                    })
+              }}
+            </p>
+            <ul class="m-0 grid list-disc gap-1 pl-[18px]">
+              <li>{{ $t("pages.seasons.danger.end_confirm_awards") }}</li>
+              <li>
+                {{
+                  seasonAfterEnd
+                    ? $t("pages.seasons.danger.end_confirm_gap_next", {
+                        season: seasonTitle(seasonAfterEnd),
+                        date: formatDate(seasonAfterEnd.starts_at),
+                      })
+                    : $t("pages.seasons.danger.end_confirm_gap_none")
+                }}
+              </li>
+              <li>{{ $t("pages.seasons.danger.end_confirm_elo") }}</li>
+            </ul>
+          </div>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <label class="grid gap-1.5 text-xs text-muted-foreground">
+        <i18n-t keypath="pages.seasons.danger.type_to_confirm" tag="span">
+          <template #phrase>
+            <b class="font-semibold text-foreground">{{
+              seasonTitle(endSeason)
+            }}</b>
+          </template>
+        </i18n-t>
+        <Input
+          v-model="endTyped"
+          spellcheck="false"
+          :placeholder="seasonTitle(endSeason)"
+          @keydown.enter.prevent="endTypedMatches && endNow()"
+        />
+      </label>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <Button
+          variant="destructive"
+          :disabled="!endTypedMatches"
+          @click="endNow"
+        >
+          {{
+            $t("pages.seasons.danger.end_confirm_button", {
+              season: seasonTitle(endSeason),
+            })
+          }}
+        </Button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 
   <AwardComposer
     v-if="awardComposerSeasonId"
@@ -673,6 +727,19 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { CalendarDate } from "@internationalized/date";
 import { useSeasonBackfill } from "~/composables/useSeasonBackfill";
+import { dateLocale } from "~/utilities/dateLocale";
+import {
+  activeSeason as findActiveSeason,
+  daysUntil,
+  mustPlanNext,
+  nextSeasonHint,
+  overlapsSeason,
+  pastSeasons,
+  seasonDay,
+  seasonLengthDays,
+  seasonProgress,
+  upcomingSeasons,
+} from "~/components/seasons/seasonPhase";
 
 type Season = {
   id: string;
@@ -683,6 +750,19 @@ type Season = {
   created_at: string;
   needs_rebuild: boolean;
 };
+
+type DateValue = { year: number; month: number; day: number };
+
+const toMs = (d: DateValue) => Date.UTC(d.year, d.month - 1, d.day);
+
+function cdFromIso(iso: string): CalendarDate {
+  const d = new Date(iso);
+  return new CalendarDate(
+    d.getUTCFullYear(),
+    d.getUTCMonth() + 1,
+    d.getUTCDate(),
+  );
+}
 
 export default {
   apollo: {
@@ -706,7 +786,7 @@ export default {
         }),
         result: function ({ data }: { data: any }) {
           this.seasons = data.seasons || [];
-          this.updateCreateDefault();
+          this.loaded = true;
         },
       },
     },
@@ -714,87 +794,152 @@ export default {
   data() {
     return {
       seasons: [] as Season[],
-      newSeasonDescription: "",
-      newSeasonStart: undefined as CalendarDate | undefined,
-      newSeasonEnd: undefined as CalendarDate | undefined,
-      creating: false,
-      createError: "",
+      loaded: false,
+      // Day-level clock for status, progress and "day N"; the countdown keeps
+      // its own second-level clock and nudges this one when it runs out.
       now: Date.now(),
       nowTimer: null as ReturnType<typeof setInterval> | null,
-      earliestMatchMs: null as number | null,
+      scheduleOpen: false,
+      startPickerOpen: false,
+      endPickerOpen: false,
       showRebuildConfirm: false,
       rebuildSeasonId: null as string | null,
-      showDeleteConfirm: false,
-      deleteSeasonId: null as string | null,
-      createStartTouched: false,
+      // Snapshots, so a dialog keeps its text while it animates shut.
+      deleteSeason: null as Season | null,
+      deleteOpen: false,
+      endSeason: null as Season | null,
+      endOpen: false,
+      endTyped: "",
+      dangerButtonClasses:
+        "border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive",
     };
   },
   computed: {
     activeSeason(): Season | null {
-      return (
-        this.seasons.find(
-          (s) =>
-            new Date(s.starts_at).getTime() <= this.now &&
-            (!s.ends_at || new Date(s.ends_at).getTime() > this.now),
-        ) || null
-      );
-    },
-    upcomingSeasons(): Season[] {
-      return this.seasons.filter(
-        (s) => new Date(s.starts_at).getTime() > this.now,
-      );
-    },
-    pastSeasons(): Season[] {
-      return this.seasons.filter(
-        (s) => s.ends_at && new Date(s.ends_at).getTime() <= this.now,
-      );
+      return findActiveSeason(this.seasons, this.now);
     },
     ledgerSeasons(): Array<Season & { __upcoming: boolean }> {
       return [
-        ...this.upcomingSeasons.map((s) => ({ ...s, __upcoming: true })),
-        ...this.pastSeasons.map((s) => ({ ...s, __upcoming: false })),
+        ...upcomingSeasons(this.seasons, this.now)
+          .reverse()
+          .map((s) => ({ ...s, __upcoming: true })),
+        ...pastSeasons(this.seasons, this.now).map((s) => ({
+          ...s,
+          __upcoming: false,
+        })),
       ];
+    },
+    mustPlan(): boolean {
+      return mustPlanNext(this.seasons, this.now);
+    },
+    nextOpen(): boolean {
+      return this.scheduleOpen || this.mustPlan;
+    },
+    nextHintText(): string {
+      const hint = nextSeasonHint(this.seasons, this.now);
+      if (!hint) {
+        return "";
+      }
+      const season = this.seasonTitle(hint.season);
+      if (hint.kind === "scheduled") {
+        return this.$t("pages.seasons.next.hint_scheduled", {
+          season,
+          date: this.formatDate(hint.season.starts_at),
+        });
+      }
+      if (hint.kind === "after") {
+        return this.$t("pages.seasons.next.hint_after", {
+          season,
+          date: this.formatDate(hint.season.ends_at as string),
+        });
+      }
+      return this.$t("pages.seasons.next.hint_open_ended", { season });
+    },
+    offSeasonText(): string {
+      const last = pastSeasons(this.seasons, this.now)[0];
+      const next = upcomingSeasons(this.seasons, this.now)[0];
+      const parts: string[] = [];
+      if (last?.ends_at) {
+        parts.push(
+          this.$t("pages.seasons.off.last_ended", {
+            season: this.seasonTitle(last),
+            date: this.formatDate(last.ends_at),
+          }),
+        );
+      }
+      parts.push(this.$t("pages.seasons.off.no_season"));
+      if (next) {
+        const days = daysUntil(next.starts_at, this.now);
+        parts.push(
+          this.$t(
+            "pages.seasons.off.next",
+            {
+              season: this.seasonTitle(next),
+              date: this.formatDate(next.starts_at),
+              count: days,
+            },
+            days,
+          ),
+        );
+      } else {
+        parts.push(this.$t("pages.seasons.off.nothing"));
+      }
+      return parts.join(" ");
+    },
+    staleOthers(): Season[] {
+      return this.seasons.filter(
+        (s) =>
+          s.needs_rebuild &&
+          s.id !== this.activeSeason?.id &&
+          !useSeasonBackfill().isRebuilding(s.id),
+      );
+    },
+    rebuildingSeason(): Season | null {
+      const backfill = useSeasonBackfill();
+      if (!backfill.running.value) {
+        return null;
+      }
+      return (
+        this.seasons.find((s) => s.id === backfill.status.value?.season_id) ||
+        null
+      );
+    },
+    seasonAfterEnd(): Season | null {
+      const season = this.endSeason;
+      if (!season) {
+        return null;
+      }
+      const start = new Date(season.starts_at).getTime();
+      return (
+        [...this.seasons]
+          .filter((s) => new Date(s.starts_at).getTime() > start)
+          .sort(
+            (a, b) =>
+              new Date(a.starts_at).getTime() - new Date(b.starts_at).getTime(),
+          )[0] || null
+      );
+    },
+    endTypedMatches(): boolean {
+      return (
+        !!this.endSeason &&
+        this.endTyped.trim().toLowerCase() ===
+          this.seasonTitle(this.endSeason).toLowerCase()
+      );
     },
     editEndDate(): CalendarDate | undefined {
       const ends = this.activeSeason?.ends_at;
-      if (!ends) return undefined;
-      const d = new Date(ends);
-      return new CalendarDate(
-        d.getUTCFullYear(),
-        d.getUTCMonth() + 1,
-        d.getUTCDate(),
-      );
+      return ends ? cdFromIso(ends) : undefined;
     },
     editStartDate(): CalendarDate | undefined {
       const starts = this.activeSeason?.starts_at;
-      if (!starts) return undefined;
-      const d = new Date(starts);
-      return new CalendarDate(
-        d.getUTCFullYear(),
-        d.getUTCMonth() + 1,
-        d.getUTCDate(),
-      );
-    },
-    previewNumber(): number {
-      if (!this.newSeasonStart) return this.seasons.length + 1;
-      const startMs = this.calendarDateToUtcMs(this.newSeasonStart);
-      return (
-        this.seasons.filter((s) => new Date(s.starts_at).getTime() < startMs)
-          .length + 1
-      );
-    },
-    createButtonLabel(): string {
-      return this.$t("pages.seasons.create_button", {
-        number: this.previewNumber,
-      }) as string;
+      return starts ? cdFromIso(starts) : undefined;
     },
   },
   mounted() {
     this.nowTimer = setInterval(() => {
       this.now = Date.now();
-    }, 1000);
+    }, 30_000);
     void useSeasonBackfill().ensureLoaded();
-    void this.fetchEarliestMatch();
   },
   beforeUnmount() {
     if (this.nowTimer) {
@@ -802,23 +947,21 @@ export default {
     }
   },
   methods: {
-    pad2(n: number | null): string {
-      return n == null ? "—" : String(n).padStart(2, "0");
-    },
-    seasonTitle(season: Season): string {
+    seasonTitle(season: { number: number | null }): string {
       return this.$t("pages.seasons.season_number", {
         number: season.number ?? "?",
       }) as string;
     },
-    seasonProgress(season: Season): number | null {
-      if (!season.ends_at) return null;
-      const start = new Date(season.starts_at).getTime();
-      const end = new Date(season.ends_at).getTime();
-      if (end <= start) return 100;
-      return Math.min(
-        100,
-        Math.max(0, ((this.now - start) / (end - start)) * 100),
-      );
+    listNames(seasons: Season[]): string {
+      const names = seasons.map((s) => this.seasonTitle(s));
+      try {
+        return new Intl.ListFormat(dateLocale(), {
+          style: "long",
+          type: "conjunction",
+        }).format(names);
+      } catch {
+        return names.join(", ");
+      }
     },
     formatDate(date: string | null): string {
       if (!date) return "";
@@ -829,276 +972,116 @@ export default {
         timeZone: "UTC",
       });
     },
-    formatCalendarDate(cd: CalendarDate): string {
-      return this.formatDate(this.calendarDateToUtcIso(cd));
+    progressOf(season: Season): number | null {
+      return seasonProgress(season, this.now);
     },
-    // Date-only, midnight UTC — "no time associated" per the season model.
-    calendarDateToUtcMs(cd: CalendarDate): number {
-      return Date.UTC(cd.year, cd.month - 1, cd.day);
+    dayOf(season: Season): number {
+      return seasonDay(season, this.now);
     },
-    calendarDateToUtcIso(cd: CalendarDate): string {
-      return new Date(this.calendarDateToUtcMs(cd)).toISOString();
+    lengthOf(season: Season): number | null {
+      return seasonLengthDays(season);
     },
-    countdown(endsAt: string): string {
-      const diff = Math.max(
-        0,
-        Math.floor((new Date(endsAt).getTime() - this.now) / 1000),
-      );
-      const days = Math.floor(diff / 86400);
-      const hours = Math.floor((diff % 86400) / 3600);
-      const minutes = Math.floor((diff % 3600) / 60);
-      const seconds = diff % 60;
-      const pad = (n: number) => n.toString().padStart(2, "0");
-      const hms = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-      return days > 0 ? `${days}d ${hms}` : hms;
-    },
-    rangeConflicts(startMs: number, endMs: number): boolean {
-      return this.overlapsOtherSeason(startMs, endMs, null);
-    },
-    dvMs(dv: { year: number; month: number; day: number }): number {
-      return Date.UTC(dv.year, dv.month - 1, dv.day);
-    },
-    overlapsOtherSeason(
-      startMs: number,
-      endMs: number,
-      excludeId: string | null,
-    ): boolean {
-      return this.seasons.some((s) => {
-        if (excludeId && s.id === excludeId) return false;
-        const sStart = new Date(s.starts_at).getTime();
-        const sEnd = s.ends_at ? new Date(s.ends_at).getTime() : Infinity;
-        return startMs < sEnd && sStart < endMs;
-      });
+    lengthText(season: Season): string {
+      const days = seasonLengthDays(season);
+      return days === null
+        ? this.$t("pages.seasons.ongoing")
+        : this.$t("pages.seasons.hero.days", { count: days }, days);
     },
     // The DB exclusion constraint is the backstop; these just guide the pickers.
-    createStartDisabled(dv: { year: number; month: number; day: number }) {
-      const ms = this.dvMs(dv);
-      const endMs = this.newSeasonEnd
-        ? this.calendarDateToUtcMs(this.newSeasonEnd)
-        : ms + 86_400_000;
-      return this.overlapsOtherSeason(ms, endMs, null);
-    },
-    createEndDisabled(dv: { year: number; month: number; day: number }) {
-      if (!this.newSeasonStart) return false;
-      const ms = this.dvMs(dv);
-      const startMs = this.calendarDateToUtcMs(this.newSeasonStart);
-      if (ms <= startMs) return true;
-      return this.overlapsOtherSeason(startMs, ms, null);
-    },
-    editStartDisabled(dv: { year: number; month: number; day: number }) {
+    editStartDisabled(dv: DateValue) {
       if (!this.activeSeason) return false;
-      const ms = this.dvMs(dv);
+      const value = toMs(dv);
       const endMs = this.activeSeason.ends_at
         ? new Date(this.activeSeason.ends_at).getTime()
         : Infinity;
-      if (ms >= endMs) return true;
-      return this.overlapsOtherSeason(ms, endMs, this.activeSeason.id);
+      if (value >= endMs) return true;
+      return overlapsSeason(this.seasons, value, endMs, this.activeSeason.id);
     },
-    editEndDisabled(dv: { year: number; month: number; day: number }) {
+    editEndDisabled(dv: DateValue) {
       if (!this.activeSeason) return false;
-      const ms = this.dvMs(dv);
+      const value = toMs(dv);
       const startMs = new Date(this.activeSeason.starts_at).getTime();
-      if (ms <= startMs) return true;
-      return this.overlapsOtherSeason(startMs, ms, this.activeSeason.id);
+      if (value <= startMs) return true;
+      return overlapsSeason(this.seasons, startMs, value, this.activeSeason.id);
     },
-    async deleteSeason(seasonId: string) {
+    async updateSeason(
+      seasonId: string,
+      set: { starts_at?: string; ends_at?: string | null },
+    ): Promise<boolean> {
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            update_seasons_by_pk: [
+              { pk_columns: { id: seasonId }, _set: set },
+              { id: true },
+            ],
+          }),
+        });
+        return true;
+      } catch {
+        // The app already toasts GraphQL errors.
+        return false;
+      }
+    },
+    async onEditStartDate(cd: CalendarDate | undefined) {
+      this.startPickerOpen = false;
+      if (!cd || !this.activeSeason) return;
+      const iso = new Date(toMs(cd)).toISOString();
+      if (await this.updateSeason(this.activeSeason.id, { starts_at: iso })) {
+        toast({ title: this.$t("pages.seasons.updated") });
+      }
+    },
+    async onEditEndDate(cd: CalendarDate | undefined) {
+      this.endPickerOpen = false;
+      if (!cd || !this.activeSeason) return;
+      const iso = new Date(toMs(cd)).toISOString();
+      if (await this.updateSeason(this.activeSeason.id, { ends_at: iso })) {
+        toast({ title: this.$t("pages.seasons.updated") });
+      }
+    },
+    async makeOngoing(seasonId: string) {
+      if (await this.updateSeason(seasonId, { ends_at: null })) {
+        toast({ title: this.$t("pages.seasons.updated") });
+      }
+    },
+    openEndNow(season: Season) {
+      this.endTyped = "";
+      this.endSeason = season;
+      this.endOpen = true;
+    },
+    async endNow() {
+      const season = this.endSeason;
+      if (!season || !this.endTypedMatches) return;
+      const ended = await this.updateSeason(season.id, {
+        ends_at: new Date().toISOString(),
+      });
+      if (!ended) return;
+      this.endOpen = false;
+      this.now = Date.now();
+      toast({
+        title: this.$t("pages.seasons.danger.ended_toast", {
+          season: this.seasonTitle(season),
+        }),
+      });
+    },
+    confirmDelete(season: Season) {
+      this.deleteSeason = season;
+      this.deleteOpen = true;
+    },
+    async doDelete() {
+      const seasonId = this.deleteSeason?.id;
+      if (!seasonId) return;
       try {
         await (this as any).$apollo.mutate({
           mutation: generateMutation({
             delete_seasons_by_pk: [{ id: seasonId }, { id: true }],
           }),
         });
-        toast({ title: this.$t("pages.seasons.deleted") });
-      } catch (error) {
-        toast({
-          title:
-            (error as Error)?.message || this.$t("pages.seasons.error_generic"),
-          variant: "destructive",
-        });
-      }
-    },
-    confirmDelete(seasonId: string) {
-      this.deleteSeasonId = seasonId;
-      this.showDeleteConfirm = true;
-    },
-    doDelete() {
-      if (this.deleteSeasonId) {
-        void this.deleteSeason(this.deleteSeasonId);
-      }
-      this.showDeleteConfirm = false;
-    },
-    // First season defaults to the earliest match (covers history); later ones
-    // start where the latest ended. Ongoing latest → left empty.
-    cdFromMs(ms: number): CalendarDate {
-      const d = new Date(ms);
-      return new CalendarDate(
-        d.getUTCFullYear(),
-        d.getUTCMonth() + 1,
-        d.getUTCDate(),
-      );
-    },
-    onNewSeasonStart(cd: CalendarDate | undefined) {
-      this.newSeasonStart = cd;
-      this.createStartTouched = true;
-    },
-    updateCreateDefault() {
-      if (this.createStartTouched) return;
-      if (this.seasons.length === 0) {
-        if (this.earliestMatchMs) {
-          this.newSeasonStart = this.cdFromMs(this.earliestMatchMs);
-        }
-        return;
-      }
-      const latest = this.seasons[0];
-      this.newSeasonStart = latest?.ends_at
-        ? this.cdFromMs(new Date(latest.ends_at).getTime())
-        : undefined;
-    },
-    async fetchEarliestMatch() {
-      try {
-        const { data } = await (this as any).$apollo.query({
-          query: typedGql("query")({
-            matches: [
-              {
-                where: { ended_at: { _is_null: false } },
-                order_by: [{ ended_at: order_by.asc }],
-                limit: 1,
-              },
-              { ended_at: true },
-            ],
-          }),
-          fetchPolicy: "no-cache",
-        });
-        const ended = data?.matches?.[0]?.ended_at;
-        this.earliestMatchMs = ended ? new Date(ended).getTime() : null;
-        this.updateCreateDefault();
       } catch {
-        this.earliestMatchMs = null;
-      }
-    },
-    async createSeason() {
-      this.createError = "";
-      if (!this.newSeasonStart || this.creating) {
         return;
       }
-
-      let startMs = this.calendarDateToUtcMs(this.newSeasonStart);
-      const endMs = this.newSeasonEnd
-        ? this.calendarDateToUtcMs(this.newSeasonEnd)
-        : Infinity;
-
-      // The very first season must cover all history: clamp its start to (before)
-      // the earliest recorded match so no past match is left off-season.
-      if (!this.seasons.length && this.earliestMatchMs !== null) {
-        const d = new Date(this.earliestMatchMs);
-        const earliestMidnight = Date.UTC(
-          d.getUTCFullYear(),
-          d.getUTCMonth(),
-          d.getUTCDate(),
-        );
-        if (startMs > earliestMidnight) {
-          startMs = earliestMidnight;
-        }
-      }
-
-      if (endMs <= startMs) {
-        this.createError = this.$t("pages.seasons.error_end_before_start");
-        return;
-      }
-      if (this.rangeConflicts(startMs, endMs)) {
-        this.createError = this.$t("pages.seasons.error_overlap");
-        return;
-      }
-
-      this.creating = true;
-      try {
-        await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            insert_seasons_one: [
-              {
-                object: {
-                  description: this.newSeasonDescription || null,
-                  starts_at: new Date(startMs).toISOString(),
-                  ends_at: this.newSeasonEnd
-                    ? new Date(endMs).toISOString()
-                    : null,
-                },
-              },
-              { id: true },
-            ],
-          }),
-        });
-
-        this.newSeasonDescription = "";
-        this.newSeasonStart = undefined;
-        this.newSeasonEnd = undefined;
-        this.createStartTouched = false;
-
-        toast({ title: this.$t("pages.seasons.created") });
-      } catch (error) {
-        this.createError =
-          (error as Error)?.message || this.$t("pages.seasons.error_generic");
-      } finally {
-        this.creating = false;
-      }
-    },
-    async updateEnds(seasonId: string, endsAt: string | null) {
-      try {
-        await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            update_seasons_by_pk: [
-              {
-                pk_columns: { id: seasonId },
-                _set: { ends_at: endsAt },
-              },
-              { id: true },
-            ],
-          }),
-        });
-        toast({ title: this.$t("pages.seasons.updated") });
-      } catch (error) {
-        toast({
-          title:
-            (error as Error)?.message || this.$t("pages.seasons.error_generic"),
-          variant: "destructive",
-        });
-      }
-    },
-    onEditEndDate(seasonId: string, cd: CalendarDate | undefined) {
-      if (!cd) return;
-      void this.updateEnds(seasonId, this.calendarDateToUtcIso(cd));
-    },
-    async updateStarts(seasonId: string, startsAt: string) {
-      try {
-        await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            update_seasons_by_pk: [
-              {
-                pk_columns: { id: seasonId },
-                _set: { starts_at: startsAt },
-              },
-              { id: true },
-            ],
-          }),
-        });
-        toast({ title: this.$t("pages.seasons.updated") });
-      } catch (error) {
-        toast({
-          title:
-            (error as Error)?.message || this.$t("pages.seasons.error_generic"),
-          variant: "destructive",
-        });
-      }
-    },
-    onEditStartDate(seasonId: string, cd: CalendarDate | undefined) {
-      if (!cd) return;
-      void this.updateStarts(seasonId, this.calendarDateToUtcIso(cd));
-    },
-    endNow(seasonId: string) {
-      void this.updateEnds(seasonId, new Date().toISOString());
-    },
-    makeOngoing(seasonId: string) {
-      void this.updateEnds(seasonId, null);
+      this.deleteOpen = false;
+      toast({ title: this.$t("pages.seasons.deleted") });
     },
     confirmRebuild(seasonId: string) {
       this.rebuildSeasonId = seasonId;
@@ -1113,3 +1096,66 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Running season <-> off-season trade places in one cell: a cross-fade with a
+   4px rise, not a stack. */
+.season-swap {
+  display: grid;
+  min-width: 0;
+}
+.season-swap > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.season-swap-enter-active,
+.season-fade-enter-active {
+  transition:
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.season-swap-leave-active,
+.season-fade-leave-active {
+  transition: opacity 110ms ease-in;
+  pointer-events: none;
+}
+.season-swap-enter-from,
+.season-fade-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.season-swap-leave-to,
+.season-fade-leave-to {
+  opacity: 0;
+}
+
+.season-row-enter-active {
+  transition:
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.season-row-leave-active {
+  transition:
+    opacity 110ms ease-in,
+    transform 110ms ease-in;
+}
+.season-row-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.season-row-leave-to {
+  opacity: 0;
+  transform: translateX(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-swap-enter-active,
+  .season-swap-leave-active,
+  .season-fade-enter-active,
+  .season-fade-leave-active,
+  .season-row-enter-active,
+  .season-row-leave-active {
+    transition-duration: 1ms;
+  }
+}
+</style>

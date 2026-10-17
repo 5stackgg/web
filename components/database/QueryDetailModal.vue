@@ -1,333 +1,304 @@
 <template>
-  <Dialog :open="true" @update:open="(open) => !open && $emit('close')">
-    <DialogContent class="w-[80vw] max-w-none max-h-[90vh] overflow-y-auto">
-      <DialogHeader>
-        <DialogTitle>{{ $t("pages.database.query_detail.title") }}</DialogTitle>
-        <DialogDescription class="sr-only">
-          {{ $t("database_extras.modal_description") }}
-        </DialogDescription>
-      </DialogHeader>
+  <Sheet :open="open" @update:open="onOpenChange">
+    <SheetContent
+      side="right"
+      class="flex w-full flex-col gap-0 overflow-y-auto p-0 sm:max-w-[760px]"
+    >
+      <SheetHeader class="border-b border-border px-6 py-4 text-left">
+        <SheetTitle>{{
+          $t("pages.database.explorer.query_details")
+        }}</SheetTitle>
+        <SheetDescription class="font-mono text-xs">
+          queryid {{ queryid }}
+        </SheetDescription>
+      </SheetHeader>
 
-      <!-- Loading State -->
-      <div v-if="$apollo.queries.queryDetail.loading" class="p-8 text-center">
-        <p class="text-muted-foreground">{{ $t("common.loading") }}</p>
+      <div
+        v-if="$apollo.queries.queryDetail.loading && !queryDetail"
+        class="p-8 text-center text-sm text-muted-foreground"
+      >
+        {{ $t("common.loading") }}
       </div>
 
-      <!-- Content -->
-      <div v-else-if="queryDetail" class="space-y-6">
-        <!-- Query Text -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-sm font-semibold">
-              {{ $t("pages.database.query_detail.query") }}
-            </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              @click="copyToClipboard(queryDetail.query, 'query')"
+      <div v-else-if="queryDetail" class="grid gap-6 px-6 py-5">
+        <section class="grid gap-2">
+          <div class="flex items-center justify-between gap-3">
+            <DbLabel :label="$t('pages.database.columns.query')" />
+            <button
+              type="button"
+              class="inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              @click="copy(queryDetail.query, 'query')"
             >
-              <CopyIcon class="w-4 h-4 mr-2" />
-              {{ $t("pages.database.query_detail.copy") }}
-            </Button>
+              <CopyIcon class="h-3 w-3" />
+              {{ $t("common.copy") }}
+            </button>
           </div>
-          <Card>
-            <CardContent class="pt-6">
-              <pre class="text-xs font-mono whitespace-pre-wrap">{{
-                queryDetail.query
-              }}</pre>
-            </CardContent>
-          </Card>
-        </div>
+          <pre class="db-pre">{{ queryDetail.query }}</pre>
+        </section>
 
-        <!-- Statistics Grid -->
-        <div>
-          <h3 class="text-sm font-semibold mb-3">
-            {{ $t("pages.database.query_detail.statistics") }}
-          </h3>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent class="pt-6">
-                <div class="text-xs text-muted-foreground">
-                  {{ $t("pages.database.query_detail.calls") }}
-                </div>
-                <div class="text-2xl font-bold">
-                  {{ queryDetail.stats.calls.toLocaleString() }}
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent class="pt-6">
-                <div class="text-xs text-muted-foreground">
-                  {{ $t("pages.database.query_detail.avg_time") }}
-                </div>
-                <div class="text-2xl font-bold">
-                  {{ queryDetail.stats.mean_exec_time.toFixed(2) }}ms
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent class="pt-6">
-                <div class="text-xs text-muted-foreground">
-                  {{ $t("pages.database.query_detail.max_time") }}
-                </div>
-                <div class="text-2xl font-bold">
-                  {{ queryDetail.stats.max_exec_time.toFixed(2) }}ms
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent class="pt-6">
-                <div class="text-xs text-muted-foreground">
-                  {{ $t("pages.database.query_detail.total_rows") }}
-                </div>
-                <div class="text-2xl font-bold">
-                  {{ queryDetail.stats.total_rows.toLocaleString() }}
-                </div>
-              </CardContent>
-            </Card>
+        <section class="grid gap-2.5">
+          <DbLabel :label="$t('pages.database.explorer.statistics')" />
+          <div
+            class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5"
+          >
+            <DbTile :label="$t('pages.database.query_performance.calls')">
+              {{ stats.calls.toLocaleString() }}
+            </DbTile>
+            <DbTile
+              :label="$t('pages.database.explorer.avg_time')"
+              :sev="msSeverity(stats.mean_exec_time, threshold)"
+            >
+              <DbSev :sev="msSeverity(stats.mean_exec_time, threshold)">{{
+                formatMs(stats.mean_exec_time)
+              }}</DbSev>
+              <small class="ml-1 text-xs font-medium text-muted-foreground"
+                >ms</small
+              >
+            </DbTile>
+            <DbTile :label="$t('pages.database.explorer.max_time')">
+              {{ formatMs(stats.max_exec_time) }}
+              <small class="ml-1 text-xs font-medium text-muted-foreground"
+                >ms</small
+              >
+            </DbTile>
+            <DbTile :label="$t('pages.database.explorer.total_rows')">
+              {{ formatBig(stats.total_rows) }}
+            </DbTile>
           </div>
-        </div>
+        </section>
 
-        <!-- Execution Times -->
-        <div>
-          <h3 class="text-sm font-semibold mb-3">
-            {{ $t("pages.database.query_detail.execution_times") }}
-          </h3>
-          <Card>
-            <CardContent class="pt-6">
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span class="text-muted-foreground"
-                    >{{ $t("pages.database.query_detail.min") }}:</span
-                  >
-                  <span class="ml-2 font-medium"
-                    >{{ queryDetail.stats.min_exec_time.toFixed(2) }}ms</span
-                  >
-                </div>
-                <div>
-                  <span class="text-muted-foreground"
-                    >{{ $t("pages.database.query_detail.mean") }}:</span
-                  >
-                  <span class="ml-2 font-medium"
-                    >{{ queryDetail.stats.mean_exec_time.toFixed(2) }}ms</span
-                  >
-                </div>
-                <div>
-                  <span class="text-muted-foreground"
-                    >{{ $t("pages.database.query_detail.max") }}:</span
-                  >
-                  <span class="ml-2 font-medium"
-                    >{{ queryDetail.stats.max_exec_time.toFixed(2) }}ms</span
-                  >
-                </div>
-                <div v-if="queryDetail.stats.stddev_exec_time !== null">
-                  <span class="text-muted-foreground"
-                    >{{ $t("pages.database.query_detail.std_dev") }}:</span
-                  >
-                  <span class="ml-2 font-medium"
-                    >{{ queryDetail.stats.stddev_exec_time.toFixed(2) }}ms</span
-                  >
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <section class="grid gap-2">
+          <DbLabel :label="$t('pages.database.explorer.execution_times')" />
+          <div class="relative mt-1 h-[26px]" aria-hidden="true">
+            <span
+              class="absolute inset-x-0 top-3 h-0.5 rounded bg-[hsl(240_4%_18%)]"
+            />
+            <span
+              class="absolute top-[9px] h-2 rounded-[3px] bg-[hsl(var(--tac-amber)/0.25)]"
+              :style="{ left: band.left, right: band.right }"
+            />
+            <span
+              class="absolute left-0 top-1.5 h-3.5 w-0.5 rounded-sm bg-muted-foreground"
+            />
+            <span
+              class="absolute top-1.5 h-3.5 w-[3px] rounded-sm bg-[hsl(var(--tac-amber))]"
+              :style="{ left: band.mean }"
+            />
+            <span
+              class="absolute right-0 top-1.5 h-3.5 w-0.5 rounded-sm bg-muted-foreground"
+            />
+          </div>
+          <div
+            class="flex justify-between gap-3 text-[11px] tabular-nums text-muted-foreground/70"
+          >
+            <span>{{
+              $t("pages.database.explorer.min_value", {
+                ms: formatMs(stats.min_exec_time),
+              })
+            }}</span>
+            <span class="text-center">{{
+              $t("pages.database.explorer.range_hint")
+            }}</span>
+            <span>{{
+              $t("pages.database.explorer.max_value", {
+                ms: formatMs(stats.max_exec_time),
+              })
+            }}</span>
+          </div>
+          <dl class="db-dl">
+            <div>
+              <dt>{{ $t("pages.database.query_detail.min") }}</dt>
+              <dd>{{ formatMs(stats.min_exec_time) }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t("pages.database.query_detail.mean") }}</dt>
+              <dd>{{ formatMs(stats.mean_exec_time) }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t("pages.database.query_detail.max") }}</dt>
+              <dd>{{ formatMs(stats.max_exec_time) }}</dd>
+            </div>
+            <div v-if="stats.stddev_exec_time != null">
+              <dt>{{ $t("pages.database.explorer.std_dev") }}</dt>
+              <dd>{{ formatMs(stats.stddev_exec_time) }}</dd>
+            </div>
+          </dl>
+        </section>
 
-        <!-- Buffer Stats -->
-        <div>
-          <h3 class="text-sm font-semibold mb-3">
-            {{ $t("pages.database.query_detail.buffer_stats") }}
-          </h3>
-          <Card>
-            <CardContent class="pt-6">
-              <div class="grid grid-cols-2 gap-4 text-sm">
-                <div class="space-y-2">
-                  <div>
-                    <span class="text-muted-foreground"
-                      >{{
-                        $t("pages.database.query_detail.shared_blocks_hit")
-                      }}:</span
-                    >
-                    <span class="ml-2 font-medium">{{
-                      queryDetail.stats.shared_blks_hit.toLocaleString()
-                    }}</span>
-                  </div>
-                  <div>
-                    <span class="text-muted-foreground"
-                      >{{
-                        $t("pages.database.query_detail.shared_blocks_read")
-                      }}:</span
-                    >
-                    <span class="ml-2 font-medium">{{
-                      queryDetail.stats.shared_blks_read.toLocaleString()
-                    }}</span>
-                  </div>
-                  <div>
-                    <span class="text-muted-foreground"
-                      >{{
-                        $t("pages.database.query_detail.cache_hit_ratio")
-                      }}:</span
-                    >
-                    <span
-                      class="ml-2 font-medium"
-                      v-if="queryDetail.stats.cache_hit_ratio !== null"
-                    >
-                      {{
-                        (queryDetail.stats.cache_hit_ratio * 100).toFixed(1)
-                      }}%
-                    </span>
-                    <span class="ml-2 text-muted-foreground" v-else>N/A</span>
-                  </div>
-                </div>
-                <div class="space-y-2">
-                  <div>
-                    <span class="text-muted-foreground"
-                      >{{
-                        $t("pages.database.query_detail.local_blocks_hit")
-                      }}:</span
-                    >
-                    <span class="ml-2 font-medium">{{
-                      queryDetail.stats.local_blks_hit.toLocaleString()
-                    }}</span>
-                  </div>
-                  <div>
-                    <span class="text-muted-foreground"
-                      >{{
-                        $t("pages.database.query_detail.local_blocks_read")
-                      }}:</span
-                    >
-                    <span class="ml-2 font-medium">{{
-                      queryDetail.stats.local_blks_read.toLocaleString()
-                    }}</span>
-                  </div>
-                  <div>
-                    <span class="text-muted-foreground"
-                      >{{
-                        $t("pages.database.query_detail.temp_blocks_written")
-                      }}:</span
-                    >
-                    <Badge
-                      v-if="queryDetail.stats.temp_blks_written > 0"
-                      variant="destructive"
-                      class="ml-2"
-                    >
-                      {{ queryDetail.stats.temp_blks_written.toLocaleString() }}
-                    </Badge>
-                    <span v-else class="ml-2 font-medium">{{
-                      queryDetail.stats.temp_blks_written
-                    }}</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <section class="grid gap-2">
+          <DbLabel :label="$t('pages.database.explorer.buffer_statistics')" />
+          <dl class="db-dl">
+            <div>
+              <dt>{{ $t("pages.database.explorer.shared_blocks_hit") }}</dt>
+              <dd>{{ stats.shared_blks_hit.toLocaleString() }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t("pages.database.explorer.shared_blocks_read") }}</dt>
+              <dd>{{ stats.shared_blks_read.toLocaleString() }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t("pages.database.explorer.cache_hit_ratio") }}</dt>
+              <dd>
+                <DbSev :sev="hitSeverity(stats.cache_hit_ratio)">{{
+                  formatPct(stats.cache_hit_ratio) ?? $t("common.na")
+                }}</DbSev>
+              </dd>
+            </div>
+            <div>
+              <dt>{{ $t("pages.database.explorer.local_blocks_hit") }}</dt>
+              <dd>{{ stats.local_blks_hit.toLocaleString() }}</dd>
+            </div>
+            <div>
+              <dt>{{ $t("pages.database.explorer.local_blocks_read") }}</dt>
+              <dd>{{ stats.local_blks_read.toLocaleString() }}</dd>
+            </div>
+            <div>
+              <dt>
+                <DbTerm :tip="$t('pages.database.explorer.temp_blocks_tip')">{{
+                  $t("pages.database.explorer.temp_blocks_written")
+                }}</DbTerm>
+              </dt>
+              <dd>
+                <DbSev :sev="stats.temp_blks_written ? 'bad' : ''">{{
+                  stats.temp_blks_written.toLocaleString()
+                }}</DbSev>
+              </dd>
+            </div>
+          </dl>
+        </section>
 
-        <!-- Explain Plan -->
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-sm font-semibold">
-              {{ $t("pages.database.query_detail.execution_plan") }}
-            </h3>
-            <Button
+        <section class="grid gap-2">
+          <div class="flex items-center justify-between gap-3">
+            <DbLabel :label="$t('pages.database.explorer.execution_plan')" />
+            <button
               v-if="queryDetail.explain_plan"
-              variant="ghost"
-              size="sm"
-              @click="copyToClipboard(queryDetail.explain_plan, 'plan')"
+              type="button"
+              class="inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              @click="copy(queryDetail.explain_plan, 'plan')"
             >
-              <CopyIcon class="w-4 h-4 mr-2" />
-              {{ $t("pages.database.query_detail.copy") }}
-            </Button>
+              <CopyIcon class="h-3 w-3" />
+              {{ $t("common.copy") }}
+            </button>
           </div>
-          <Card v-if="queryDetail.explain_plan">
-            <CardContent class="pt-6">
-              <!-- <AnalyzeQuery
-                :plan="queryDetail.explain_plan"
-                :query="queryDetail.query"
-              /> -->
-              <pre class="text-xs font-mono whitespace-pre-wrap">{{
-                queryDetail.explain_plan
-              }}</pre>
-            </CardContent>
-          </Card>
-          <Card v-else>
-            <CardContent class="pt-6">
-              <p class="text-sm text-muted-foreground">
-                {{ $t("pages.database.query_detail.no_explain_plan") }}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+          <pre v-if="queryDetail.explain_plan" class="db-pre">{{
+            queryDetail.explain_plan
+          }}</pre>
+          <p
+            v-else
+            class="rounded-lg border border-dashed border-border px-3.5 py-3 text-xs text-muted-foreground"
+          >
+            {{ $t("pages.database.explorer.no_plan") }}
+          </p>
+        </section>
       </div>
 
-      <!-- Error State -->
-      <div v-else class="p-8 text-center">
-        <p class="text-muted-foreground">
-          {{ $t("pages.database.query_detail.not_found") }}
-        </p>
+      <div v-else class="p-8 text-center text-sm text-muted-foreground">
+        {{ $t("pages.database.explorer.query_not_found") }}
       </div>
-    </DialogContent>
-  </Dialog>
+    </SheetContent>
+  </Sheet>
 </template>
 
 <script lang="ts">
 import { CopyIcon } from "lucide-vue-next";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import AnalyzeQuery from "./AnalyzeQuery.vue";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/toast";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { generateQuery } from "~/graphql/graphqlGen";
+import DbLabel from "./DbLabel.vue";
+import DbSev from "./DbSev.vue";
+import DbTerm from "./DbTerm.vue";
+import DbTile from "./DbTile.vue";
+import { copyText } from "./dbCopy";
+import {
+  formatBig,
+  formatMs,
+  formatPct,
+  hitSeverity,
+  msSeverity,
+} from "./dbHealth";
 
 export default {
   components: {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    Card,
-    CardContent,
-    Badge,
-    Button,
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
     CopyIcon,
-    AnalyzeQuery,
+    DbLabel,
+    DbSev,
+    DbTerm,
+    DbTile,
   },
   props: {
     queryid: {
       type: String,
       required: true,
     },
+    threshold: {
+      type: Number,
+      default: 1000,
+    },
   },
+  emits: ["close"],
   data() {
     return {
       queryDetail: null as any,
+      open: true,
     };
   },
+  computed: {
+    stats(): any {
+      return this.queryDetail?.stats || {};
+    },
+    // Where min, mean and max sit on a log scale, with mean ± one standard
+    // deviation as the band.
+    band(): { left: string; right: string; mean: string } {
+      const lo = this.stats.min_exec_time || 0;
+      const hi = this.stats.max_exec_time || 0;
+      const mean = this.stats.mean_exec_time || 0;
+      const sd = this.stats.stddev_exec_time || 0;
+      const span = Math.log10(hi + 1) - Math.log10(lo + 1) || 1;
+      const pos = (v: number) =>
+        Math.max(
+          0,
+          Math.min(
+            100,
+            ((Math.log10(v + 1) - Math.log10(lo + 1)) / span) * 100,
+          ),
+        );
+      return {
+        left: `${pos(Math.max(lo, mean - sd))}%`,
+        right: `${100 - pos(Math.min(hi, mean + sd))}%`,
+        mean: `${pos(mean)}%`,
+      };
+    },
+  },
   methods: {
-    async copyToClipboard(text: string, type: string) {
-      try {
-        await navigator.clipboard.writeText(text);
-        toast({
-          title:
-            type === "query"
-              ? this.$t("pages.database.query_detail.query_copied")
-              : this.$t("pages.database.query_detail.plan_copied"),
-        });
-      } catch (error) {
-        console.error("Failed to copy:", error);
-        toast({
-          title: this.$t("pages.database.query_detail.copy_failed"),
-          variant: "destructive",
-        });
-      }
+    formatBig,
+    formatMs,
+    formatPct,
+    hitSeverity,
+    msSeverity,
+    // Let the sheet slide out before the parent unmounts it.
+    onOpenChange(value: boolean) {
+      if (value) return;
+      this.open = false;
+      setTimeout(() => this.$emit("close"), 220);
+    },
+    copy(text: string, type: "query" | "plan") {
+      void copyText(
+        text,
+        type === "query"
+          ? this.$t("pages.database.query_detail.query_copied")
+          : this.$t("pages.database.query_detail.plan_copied"),
+        this.$t("pages.database.query_detail.copy_failed"),
+      );
     },
   },
   apollo: {
@@ -366,3 +337,43 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.db-pre {
+  margin: 0;
+  max-height: 240px;
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  background: hsl(240 6% 4%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: hsl(0 0% 86%);
+}
+.db-dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  column-gap: 24px;
+  margin: 0;
+}
+.db-dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid hsl(var(--border) / 0.6);
+  font-size: 12.5px;
+}
+.db-dl dt {
+  color: hsl(var(--muted-foreground));
+}
+.db-dl dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+</style>

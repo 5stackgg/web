@@ -45,8 +45,8 @@ const { nodes } = useCs2BuildNodes(isTestInstance);
 const now = useNow({ interval: 60_000 });
 const open = ref(false);
 
-// Folded, the card reads as one status: the worst of the two jobs, with the
-// dot pinging while either is still going.
+// Folded, the card is one line: the worst of the two jobs (the dot pings
+// while either is still going), the build, and each job's own state.
 const SEVERITY: Array<Cs2BuildTone> = [
   "destructive",
   "warning",
@@ -55,13 +55,16 @@ const SEVERITY: Array<Cs2BuildTone> = [
   "idle",
 ];
 
+const gamedataStatus = computed(() =>
+  gamedataRunStatus(gamedata.value, now.value.getTime()),
+);
+const mapAssetsStatus = computed(() =>
+  mapAssetsRunStatus(mapAssets.value, now.value.getTime()),
+);
+
 const tones = computed(() => [
-  TONE_BY_GAMEDATA_STATUS[
-    gamedataRunStatus(gamedata.value, now.value.getTime())
-  ],
-  TONE_BY_MAP_ASSETS_STATUS[
-    mapAssetsRunStatus(mapAssets.value, now.value.getTime())
-  ],
+  TONE_BY_GAMEDATA_STATUS[gamedataStatus.value],
+  TONE_BY_MAP_ASSETS_STATUS[mapAssetsStatus.value],
 ]);
 
 const tone = computed(
@@ -89,7 +92,12 @@ const TEXT_TONES: Record<Cs2BuildTone, string> = {
 
 <template>
   <section
-    class="rounded-md border border-border bg-card/40 [backdrop-filter:blur(6px)]"
+    class="rounded-md border bg-card/40 [backdrop-filter:blur(6px)] transition-colors duration-300"
+    :class="
+      isTestInstance && tone === 'destructive'
+        ? 'border-destructive/40'
+        : 'border-border'
+    "
     :aria-label="$t('pages.game_server_nodes.cs2_build.title')"
   >
     <div
@@ -106,19 +114,13 @@ const TEXT_TONES: Record<Cs2BuildTone, string> = {
     </div>
 
     <template v-else>
-      <div class="relative">
+      <div class="flex items-center gap-1 p-1">
         <button
           type="button"
-          class="absolute inset-0 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
-          :class="open ? 'rounded-t-md' : 'rounded-md'"
+          class="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1 rounded px-2.5 py-1.5 text-left text-xs transition-colors duration-150 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
           :aria-expanded="open"
           aria-controls="cs2-build-details"
-          :aria-label="$t('pages.game_server_nodes.cs2_build.summary.expand')"
           @click="open = !open"
-        />
-
-        <div
-          class="pointer-events-none relative flex items-center gap-3 px-3 py-1.5 text-xs"
         >
           <span
             class="inline-flex items-center gap-1.5 font-mono uppercase tracking-[0.16em] text-muted-foreground"
@@ -144,38 +146,57 @@ const TEXT_TONES: Record<Cs2BuildTone, string> = {
               }}
             </span>
           </span>
-
-          <span class="ml-auto inline-flex items-center gap-1">
-            <FiveStackToolTip as-child :tap-toggle="false">
-              <template #trigger>
-                <Button
-                  as-child
-                  variant="ghost"
-                  size="icon-sm"
-                  class="pointer-events-auto h-7 w-7 text-muted-foreground hover:text-foreground"
-                >
-                  <NuxtLink
-                    :to="{
-                      path: '/game-server-nodes/builds',
-                      query: { build: String(currentVersion.build_id) },
-                    }"
-                    :aria-label="
-                      $t('pages.game_server_nodes.cs2_build.history')
-                    "
-                  >
-                    <History />
-                  </NuxtLink>
-                </Button>
-              </template>
-              {{ $t("pages.game_server_nodes.cs2_build.history") }}
-            </FiveStackToolTip>
-            <ChevronDown
-              class="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200"
-              :class="{ 'rotate-180': open }"
-              aria-hidden="true"
-            />
+          <span class="inline-flex items-center gap-1.5">
+            <span v-if="currentVersion.version" class="font-semibold">{{
+              currentVersion.version
+            }}</span>
+            <code class="font-mono text-muted-foreground">{{
+              currentVersion.build_id
+            }}</code>
           </span>
-        </div>
+          <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+            {{ $t("pages.game_server_nodes.cs2_build.gamedata") }}
+            <span class="font-semibold" :class="TEXT_TONES[tones[0]]">{{
+              $t(
+                `pages.game_server_nodes.cs2_build.gamedata_status.${gamedataStatus}`,
+              )
+            }}</span>
+          </span>
+          <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+            {{ $t("pages.game_server_nodes.cs2_build.map_assets") }}
+            <span class="font-semibold" :class="TEXT_TONES[tones[1]]">{{
+              $t(
+                `pages.game_server_nodes.cs2_build.map_assets_status.${mapAssetsStatus}`,
+              )
+            }}</span>
+          </span>
+          <ChevronDown
+            class="build-chev ml-auto h-4 w-4 shrink-0 text-muted-foreground"
+            aria-hidden="true"
+          />
+        </button>
+
+        <FiveStackToolTip as-child :tap-toggle="false">
+          <template #trigger>
+            <Button
+              as-child
+              variant="ghost"
+              size="icon-sm"
+              class="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
+            >
+              <NuxtLink
+                :to="{
+                  path: '/game-server-nodes/builds',
+                  query: { build: String(currentVersion.build_id) },
+                }"
+                :aria-label="$t('pages.game_server_nodes.cs2_build.history')"
+              >
+                <History />
+              </NuxtLink>
+            </Button>
+          </template>
+          {{ $t("pages.game_server_nodes.cs2_build.history") }}
+        </FiveStackToolTip>
       </div>
 
       <Fold :open="open">
@@ -205,3 +226,17 @@ const TEXT_TONES: Record<Cs2BuildTone, string> = {
     </template>
   </section>
 </template>
+
+<style scoped>
+.build-chev {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[aria-expanded="true"] > .build-chev {
+  transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .build-chev {
+    transition: none;
+  }
+}
+</style>

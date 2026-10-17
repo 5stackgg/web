@@ -1,11 +1,10 @@
 <template>
   <div
     v-if="oldestLogTime"
-    class="mb-2 flex items-center gap-2 border-l-2 border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.06)] px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+    class="mb-2 flex items-center gap-2 px-1 text-xs text-muted-foreground"
   >
-    <span class="text-[hsl(var(--tac-amber))]">◢</span>
-    <span>{{ $t("pod_logs.tail_since") }}</span>
-    <span class="normal-case tracking-normal text-foreground">
+    <span>{{ $t("pages.system_logs.since") }}</span>
+    <span class="font-mono text-[11.5px] text-foreground">
       {{ oldestLogTime.toLocaleString(dateLocale()) }}
     </span>
   </div>
@@ -15,34 +14,34 @@
       maximized ? 'min-h-0 flex-1' : fill ? 'lg:min-h-0 lg:flex-1' : '',
     ]"
   >
-  <div
-    ref="scrollContainer"
-    :class="[
-      'overflow-auto whitespace-pre-wrap break-words border border-border/40 bg-[hsl(var(--background)/0.5)] [scrollbar-color:hsl(var(--tac-amber)/0.4)_transparent] [scrollbar-width:thin]',
-      maximized
-        ? 'min-h-0 flex-1'
-        : fill
-          ? 'h-80 lg:h-auto lg:min-h-0 lg:max-h-[70vh] lg:flex-1'
-          : 'max-h-[50vh]',
-    ]"
-    @scroll="handleScroll"
-  >
     <div
-      v-for="(entry, index) in logs"
-      :key="index"
-      class="group flex items-baseline gap-3 border-b border-border/20 px-3 py-[3px] font-mono text-xs hover:bg-[hsl(var(--tac-amber)/0.04)]"
+      ref="scrollContainer"
+      :class="[
+        'overflow-auto whitespace-pre-wrap break-words border border-border/40 bg-[hsl(var(--background)/0.5)] [scrollbar-color:hsl(var(--tac-amber)/0.4)_transparent] [scrollbar-width:thin]',
+        maximized
+          ? 'min-h-0 flex-1'
+          : fill
+            ? 'h-80 lg:h-auto lg:min-h-0 lg:max-h-[70vh] lg:flex-1'
+            : 'max-h-[50vh]',
+      ]"
+      @scroll="handleScroll"
     >
-      <span
-        v-if="showTimestamps"
-        class="shrink-0 select-none border-r border-border/30 pr-3 font-mono text-[10px] tabular-nums text-muted-foreground/70"
+      <div
+        v-for="(entry, index) in logs"
+        :key="index"
+        class="group flex items-baseline gap-3 border-b border-border/20 px-3 py-[3px] font-mono text-xs hover:bg-[hsl(var(--tac-amber)/0.04)]"
       >
-        {{ entry.timestamp }}
-      </span>
-      <span
-        class="min-w-0 flex-1 leading-relaxed"
-        v-html="colorize(entry.log)"
-      />
-    </div>
+        <span
+          v-if="showTimestamps"
+          class="shrink-0 select-none border-r border-border/30 pr-3 font-mono text-[10px] tabular-nums text-muted-foreground/70"
+        >
+          {{ entry.timestamp }}
+        </span>
+        <span
+          class="min-w-0 flex-1 leading-relaxed"
+          v-html="colorize(entry.log)"
+        />
+      </div>
     </div>
 
     <!-- Following is automatic while pinned to the bottom; this only
@@ -55,11 +54,11 @@
     >
       <button
         v-if="!isNearBottom"
-        class="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.18)] px-3 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] shadow-lg backdrop-blur transition-colors hover:bg-[hsl(var(--tac-amber)/0.3)]"
+        class="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(33_40%_12%/0.95)] px-3 py-1.5 text-[12.5px] font-semibold text-[hsl(var(--tac-amber))] shadow-lg transition-colors hover:bg-[hsl(33_50%_16%)]"
         @click="jumpToLive"
       >
-        <PlayIcon class="h-3 w-3" />
-        {{ $t("ui.logs.jump_to_live") }}
+        <ArrowDownToLine class="h-3.5 w-3.5" />
+        {{ $t("pages.system_logs.jump_to_live") }}
       </button>
     </Transition>
   </div>
@@ -67,7 +66,7 @@
 
 <script lang="ts">
 import Convert from "ansi-to-html";
-import { PlayIcon } from "lucide-vue-next";
+import { ArrowDownToLine } from "lucide-vue-next";
 import { dateLocale } from "~/utilities/dateLocale";
 
 const convert = new Convert();
@@ -81,7 +80,7 @@ type LogEntry = {
 };
 
 export default {
-  components: { PlayIcon },
+  components: { ArrowDownToLine },
   emits: ["follow-logs-changed", "load-more-logs"],
   props: {
     pod: {

@@ -1,205 +1,243 @@
 <script setup lang="ts">
-import Pagination from "@/components/Pagination.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import { Plus, Search, X } from "lucide-vue-next";
+import { useMediaQuery } from "@vueuse/core";
+import { Button } from "~/components/ui/button";
 import {
-  tacticalCtaButtonClasses,
-  tacticalHeaderActionClasses,
-} from "~/utilities/tacticalClasses";
-import { Trash2, PlusCircle, Info } from "lucide-vue-next";
-import RegionForm from "~/components/regions/RegionForm.vue";
-import FivestackTooltip from "~/components/FiveStackToolTip.vue";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "~/components/ui/input-group";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "~/components/ui/sheet";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import SlideSwap from "~/components/ui/transitions/SlideSwap.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import RegionForm from "~/components/regions/RegionForm.vue";
+import RegionList from "~/components/regions/RegionList.vue";
+import RegionDetail from "~/components/regions/RegionDetail.vue";
+import {
+  createButtonClasses,
+  listCreateButtonClasses,
+} from "~/utilities/tacticalClasses";
 
 definePageMeta({ middleware: "admin" });
+
+// Below lg the list and the detail don't fit side by side: the detail is
+// pushed over the list and a back button pans back.
+const wide = useMediaQuery("(min-width: 1024px)");
 </script>
 
 <template>
+  <h1 class="sr-only">{{ $t("pages.regions.title") }}</h1>
+
   <PageTransition :delay="0">
-    <TacticalPageHeader inline-actions>
-      <template #title>{{ $t("pages.regions.title") }}</template>
-      <template #subtitle>{{ $t("pages.regions.description") }}</template>
-
-      <template #actions>
-        <button
-          type="button"
-          :class="[
-            tacticalCtaButtonClasses,
-            tacticalHeaderActionClasses,
-            'max-md:aspect-square max-md:!px-0',
-          ]"
-          :title="$t('pages.regions.create')"
-          @click="regionDialogOpen = true"
+    <div class="grid w-full max-w-[64rem] gap-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <InputGroup
+          class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-[18rem]"
         >
-          <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline">{{ $t("pages.regions.create") }}</span>
-        </button>
-      </template>
-    </TacticalPageHeader>
-  </PageTransition>
+          <InputGroupAddon class="pl-2.5">
+            <Search class="size-3.5" />
+          </InputGroupAddon>
+          <InputGroupInput
+            v-model="search"
+            autocomplete="off"
+            :placeholder="$t('pages.regions.search_placeholder')"
+            :aria-label="$t('pages.regions.search_placeholder')"
+            class="h-full text-sm"
+          />
+          <InputGroupAddon v-if="search" align="inline-end" class="pr-2">
+            <button
+              type="button"
+              class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              :aria-label="$t('common.clear')"
+              @click="search = ''"
+            >
+              <X class="size-3.5" />
+            </button>
+          </InputGroupAddon>
+        </InputGroup>
 
-  <PageTransition :delay="100" class="mt-6">
-    <Card variant="gradient" class="p-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ $t("common.name") }}</TableHead>
-            <TableHead>{{ $t("common.status") }}</TableHead>
-            <TableHead>{{
-              $t("pages.regions.table.available_servers")
-            }}</TableHead>
-            <TableHead>{{ $t("common.description") }}</TableHead>
-            <TableHead>
-              <FivestackTooltip>
-                <template #trigger>
-                  <div class="flex items-center gap-2">
-                    <Info class="w-4 h-4" />
-                    {{ $t("pages.regions.table.use_steam_relay") }}
-                  </div>
-                </template>
-                {{ $t("pages.regions.table.use_steam_relay_description") }}
-              </FivestackTooltip>
-            </TableHead>
-            <TableHead>
-              <FivestackTooltip>
-                <template #trigger>
-                  <div class="flex items-center gap-2">
-                    <Info class="w-4 h-4" />
-                    {{ $t("pages.regions.table.use_lan_ip") }}
-                  </div>
-                </template>
-                {{ $t("pages.regions.table.use_lan_ip_description") }}
-              </FivestackTooltip>
-            </TableHead>
-            <TableHead class="w-[100px]"></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="region of regions" :key="region.value">
-            <TableCell>
-              <div class="flex flex-col items-start gap-1">
-                <span>{{ region.value }}</span>
-                <button
-                  type="button"
-                  class="whitespace-nowrap text-xs text-muted-foreground underline hover:text-foreground"
-                  @click="editRegion(region)"
-                >
-                  {{ $t("pages.regions.set_label") }}
-                </button>
-              </div>
-            </TableCell>
-            <TableCell>
-              <span>{{ region.status }}</span>
-            </TableCell>
-            <TableCell>
-              <span
-                >{{ region.available_server_count }} /
-                {{ region.total_server_count }}</span
+        <Button
+          size="sm"
+          :class="[listCreateButtonClasses, 'ml-auto']"
+          :title="$t('pages.regions.create_sheet.title')"
+          @click="createOpen = true"
+        >
+          <Plus class="size-4" />
+          <span class="max-md:sr-only">{{
+            $t("pages.regions.create_sheet.title")
+          }}</span>
+        </Button>
+      </div>
+
+      <FadeSwap>
+        <SectionEmpty
+          v-if="view && view.length === 0"
+          key="empty"
+          :title="$t('pages.regions.empty.title')"
+          :description="$t('pages.regions.empty.description')"
+        >
+          <Button :class="createButtonClasses" @click="createOpen = true">
+            <Plus />
+            {{ $t("pages.regions.create_sheet.title") }}
+          </Button>
+        </SectionEmpty>
+
+        <div
+          v-else-if="wide"
+          key="wide"
+          class="grid min-h-[420px] grid-cols-[17rem_minmax(0,1fr)]"
+        >
+          <RegionList
+            :regions="filtered"
+            :selected-value="selected?.value"
+            @select="select"
+          />
+          <div class="region-swap pl-6">
+            <Transition name="region-swap">
+              <RegionDetail
+                v-if="selected"
+                :key="selected.value"
+                :region="selected"
+                @rename="renameSelected"
+                @set-flag="setSelectedFlag"
+                @delete="confirmDelete"
+              />
+              <SectionEmpty
+                v-else-if="view"
+                key="no-match"
+                class="max-w-[720px] self-start"
+                :title="$t('common.empty_filtered.title')"
+                :description="$t('common.empty_filtered.description')"
               >
-            </TableCell>
-            <TableCell>
-              <span>{{ region.description }}</span>
-            </TableCell>
-            <TableCell>
-              <Switch
-                :model-value="region.steam_relay"
-                @click="toggleSteamRelay(region)"
-              />
-            </TableCell>
-            <TableCell>
-              <Switch
-                :model-value="region.is_lan"
-                @click="toggleIsLan(region)"
-              />
-            </TableCell>
-            <TableCell>
-              <div class="flex justify-end">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  @click="
-                    () => {
-                      regionToDelete = region;
-                      deleteDialogOpen = true;
-                    }
-                  "
-                >
-                  <Trash2 class="w-4 h-4" />
+                <Button variant="outline" size="sm" @click="search = ''">
+                  {{ $t("common.clear") }}
                 </Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Card>
+              </SectionEmpty>
+            </Transition>
+          </div>
+        </div>
+
+        <SlideSwap v-else key="narrow" :index="pushed ? 1 : 0">
+          <RegionDetail
+            v-if="pushed && selected"
+            key="detail"
+            :region="selected"
+            pushed
+            @back="showDetail = false"
+            @rename="renameSelected"
+            @set-flag="setSelectedFlag"
+            @delete="confirmDelete"
+          />
+          <div v-else key="list">
+            <SectionEmpty
+              v-if="filtered && filtered.length === 0"
+              :title="$t('common.empty_filtered.title')"
+              :description="$t('common.empty_filtered.description')"
+            >
+              <Button variant="outline" size="sm" @click="search = ''">
+                {{ $t("common.clear") }}
+              </Button>
+            </SectionEmpty>
+            <RegionList
+              v-else
+              :regions="filtered"
+              :selected-value="selected?.value"
+              @select="select"
+            />
+          </div>
+        </SlideSwap>
+      </FadeSwap>
+    </div>
   </PageTransition>
 
-  <Dialog v-model:open="regionDialogOpen">
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>
-          <template v-if="regionToEdit">{{
-            $t("pages.regions.edit")
-          }}</template>
-          <template v-else>{{ $t("pages.regions.create") }}</template>
-        </DialogTitle>
-      </DialogHeader>
-      <RegionForm @updated="regionDialogOpen = false" :region="regionToEdit" />
-    </DialogContent>
-  </Dialog>
+  <Sheet v-model:open="createOpen">
+    <SheetContent class="w-full overflow-y-auto sm:max-w-md">
+      <SheetHeader>
+        <SheetTitle>{{ $t("pages.regions.create_sheet.title") }}</SheetTitle>
+      </SheetHeader>
+      <div class="py-6">
+        <RegionForm @updated="onCreated" />
+      </div>
+    </SheetContent>
+  </Sheet>
 
-  <Dialog v-model:open="deleteDialogOpen">
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>{{ $t("pages.regions.delete.title") }}</DialogTitle>
-        <DialogDescription>
-          {{ $t("pages.regions.delete.description") }}
-        </DialogDescription>
-      </DialogHeader>
-      <DialogFooter>
-        <Button variant="outline" @click="deleteDialogOpen = false">
-          {{ $t("common.cancel") }}
-        </Button>
+  <AlertDialog v-model:open="deleteOpen">
+    <AlertDialogContent v-if="deleteTarget">
+      <AlertDialogHeader>
+        <AlertDialogTitle>{{
+          $t("pages.regions.delete_dialog.title", {
+            region: labelOf(deleteTarget),
+          })
+        }}</AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("pages.regions.delete_dialog.description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+        <!-- Plain Button, not AlertDialogAction: the action auto-closes the
+             dialog before the mutation lands. -->
         <Button variant="destructive" @click="deleteRegion">
-          {{ $t("common.delete") }}
+          {{ $t("pages.regions.delete_dialog.confirm") }}
         </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-
-  <Pagination
-    :page="page"
-    :per-page="perPage"
-    @page="
-      (_page) => {
-        page = _page;
-      }
-    "
-    :total="server_regions_aggregate.aggregate.count"
-    v-if="server_regions_aggregate"
-  ></Pagination>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts">
-import {
-  generateQuery,
-  generateMutation,
-  generateSubscription,
-} from "~/graphql/graphqlGen";
-import { $ } from "~/generated/zeus";
-
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import { order_by } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
+import {
+  matchesRegionSearch,
+  regionLabel,
+} from "~/components/regions/regionStatus";
+
+type Region = {
+  value: string;
+  description: string | null;
+  status: string | null;
+  steam_relay: boolean;
+  is_lan: boolean;
+  available_server_count: number | null;
+  total_server_count: number | null;
+  game_server_nodes: Array<Record<string, any>>;
+};
+
+type RegionField = "steam_relay" | "is_lan" | "description";
 
 export default {
   data() {
     return {
-      page: 1,
-      perPage: 10,
-      regions: undefined,
-      regionDialogOpen: false,
-      deleteDialogOpen: false,
-      regionToDelete: null,
-      regionToEdit: null,
+      regions: undefined as Region[] | undefined,
+      search: "",
+      selectedValue: null as string | null,
+      showDetail: false,
+      createOpen: false,
+      // A snapshot, so the dialog keeps its text while it animates shut.
+      deleteTarget: null as Region | null,
+      deleteOpen: false,
+      // Switches and renames show their new value at once; the entry is
+      // dropped once the subscription has caught up with the write.
+      overlay: {} as Record<string, Partial<Pick<Region, RegionField>>>,
+      settled: [] as Array<[string, RegionField]>,
     };
   },
   apollo: {
@@ -207,15 +245,7 @@ export default {
       regions: {
         query: generateSubscription({
           server_regions: [
-            {
-              limit: $("limit", "Int!"),
-              offset: $("offset", "Int!"),
-              order_by: [
-                {
-                  value: "asc",
-                },
-              ],
-            },
+            { order_by: [{ value: order_by.asc }] },
             {
               value: true,
               description: true,
@@ -224,97 +254,251 @@ export default {
               steam_relay: true,
               total_server_count: true,
               available_server_count: true,
+              game_server_nodes: [
+                { order_by: [{ label: order_by.asc }, { id: order_by.asc }] },
+                {
+                  id: true,
+                  label: true,
+                  status: true,
+                  offline_at: true,
+                  enabled: true,
+                  available_server_count: true,
+                  total_server_count: true,
+                },
+              ],
             },
           ],
         }),
-        variables: function () {
-          return {
-            limit: this.perPage,
-            offset: (this.page - 1) * this.perPage,
-          };
-        },
-        result: function ({ data }) {
+        result: function ({ data }: { data: any }) {
           this.regions = data.server_regions;
+          for (const [value, field] of this.settled) {
+            this.dropOverlay(value, field);
+          }
+          this.settled = [];
         },
       },
     },
-    server_regions_aggregate: {
-      query: generateQuery({
-        server_regions_aggregate: [
-          {},
-          {
-            aggregate: {
-              count: true,
-            },
-          },
-        ],
-      }),
+  },
+  computed: {
+    view(): Region[] | undefined {
+      return this.regions?.map((region: Region) =>
+        this.overlay[region.value]
+          ? { ...region, ...this.overlay[region.value] }
+          : region,
+      );
+    },
+    filtered(): Region[] | undefined {
+      return this.view?.filter((region: Region) =>
+        matchesRegionSearch(region, this.search),
+      );
+    },
+    // Follows the search: a region the search hides hands the detail to the
+    // first one it shows.
+    selected(): Region | null {
+      const list = this.filtered || [];
+      return (
+        list.find((region: Region) => region.value === this.selectedValue) ||
+        list[0] ||
+        null
+      );
+    },
+    pushed(): boolean {
+      return this.showDetail && !!this.selected;
     },
   },
   methods: {
-    editRegion(region) {
-      this.regionToEdit = region;
-      this.regionDialogOpen = true;
+    labelOf(region: Region): string {
+      return regionLabel(region);
+    },
+    confirmDelete() {
+      if (!this.selected) {
+        return;
+      }
+      this.deleteTarget = this.selected;
+      this.deleteOpen = true;
+    },
+    renameSelected(label: string) {
+      if (this.selected) {
+        void this.rename(this.selected, label);
+      }
+    },
+    setSelectedFlag(field: "steam_relay" | "is_lan", value: boolean) {
+      if (this.selected) {
+        void this.setFlag(this.selected, field, value);
+      }
+    },
+    select(value: string) {
+      this.selectedValue = value;
+      this.showDetail = true;
+    },
+    applyOverlay(value: string, fields: Partial<Pick<Region, RegionField>>) {
+      this.overlay = {
+        ...this.overlay,
+        [value]: { ...this.overlay[value], ...fields },
+      };
+    },
+    dropOverlay(value: string, field: RegionField) {
+      const entry = { ...this.overlay[value] };
+      delete entry[field];
+      const next = { ...this.overlay, [value]: entry };
+      if (Object.keys(entry).length === 0) {
+        delete next[value];
+      }
+      this.overlay = next;
+    },
+    async updateRegion(
+      region: Region,
+      set: Partial<Pick<Region, RegionField>>,
+      shown: Partial<Pick<Region, RegionField>> = set,
+    ): Promise<boolean> {
+      this.applyOverlay(region.value, shown);
+      const keys = Object.keys(shown) as RegionField[];
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_server_regions_by_pk: [
+              { pk_columns: { value: region.value }, _set: set },
+              { value: true },
+            ],
+          }),
+        });
+      } catch {
+        // The app already toasts GraphQL errors; snap back to the real value.
+        keys.forEach((field) => this.dropOverlay(region.value, field));
+        return false;
+      }
+      const live = this.regions?.find(
+        (row: Region) => row.value === region.value,
+      );
+      keys.forEach((field) => {
+        if (live && live[field] === shown[field]) {
+          this.dropOverlay(region.value, field);
+        } else {
+          this.settled.push([region.value, field]);
+        }
+      });
+      return true;
+    },
+    async setFlag(
+      region: Region,
+      field: "steam_relay" | "is_lan",
+      value: boolean,
+    ) {
+      const set = { [field]: value };
+      // The api turns the relay off when LAN only goes on; show that now.
+      const shown =
+        field === "is_lan" && value && region.steam_relay
+          ? { ...set, steam_relay: false }
+          : set;
+      if (!(await this.updateRegion(region, set, shown))) {
+        return;
+      }
+      const key =
+        field === "steam_relay"
+          ? value
+            ? "pages.regions.toasts.relay_on"
+            : "pages.regions.toasts.relay_off"
+          : value
+            ? "pages.regions.toasts.lan_on"
+            : "pages.regions.toasts.lan_off";
+      toast({ title: this.$t(key, { region: regionLabel(region) }) });
+    },
+    async rename(region: Region, label: string) {
+      if (await this.updateRegion(region, { description: label || null })) {
+        toast({ title: this.$t("pages.regions.toasts.label_saved") });
+      }
     },
     async deleteRegion() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_server_regions_by_pk: [
-            {
-              value: this.regionToDelete.value,
-            },
-            {
-              value: true,
-            },
-          ],
-        }),
-      });
+      const target = this.deleteTarget;
+      if (!target) {
+        return;
+      }
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            delete_server_regions_by_pk: [
+              { value: target.value },
+              { value: true },
+            ],
+          }),
+        });
+      } catch {
+        // The app already toasts GraphQL errors (a region matches were played
+        // in is refused by its foreign keys).
+        return;
+      }
 
-      this.deleteDialogOpen = false;
-      this.regionToDelete = null;
-
+      if (this.selected?.value === target.value) {
+        const list = this.filtered || [];
+        const index = list.findIndex(
+          (region: Region) => region.value === target.value,
+        );
+        const neighbour = list[index + 1] || list[index - 1];
+        this.selectedValue = neighbour?.value ?? null;
+        this.showDetail = false;
+      }
+      this.deleteOpen = false;
       toast({
-        title: this.$t("pages.regions.deleted"),
-      });
-    },
-    async toggleSteamRelay(region) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_server_regions_by_pk: [
-            {
-              pk_columns: {
-                value: region.value,
-              },
-              _set: {
-                steam_relay: !region.steam_relay,
-              },
-            },
-            {
-              value: true,
-            },
-          ],
+        title: this.$t("pages.regions.toasts.deleted", {
+          region: regionLabel(target),
         }),
       });
     },
-    async toggleIsLan(region) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_server_regions_by_pk: [
-            {
-              pk_columns: {
-                value: region.value,
-              },
-              _set: {
-                is_lan: !region.is_lan,
-              },
-            },
-            {
-              value: true,
-            },
-          ],
+    onCreated(values?: { value?: string; description?: string }) {
+      this.createOpen = false;
+      if (!values?.value) {
+        return;
+      }
+      if (
+        !matchesRegionSearch(
+          { value: values.value, description: values.description },
+          this.search,
+        )
+      ) {
+        this.search = "";
+      }
+      this.selectedValue = values.value;
+      this.showDetail = true;
+      toast({
+        title: this.$t("pages.regions.toasts.created", {
+          region: values.description?.trim() || values.value,
         }),
       });
     },
   },
 };
 </script>
+
+<style scoped>
+/* The leaving detail and the entering one share one cell, so the swap is a
+   cross-fade in place rather than a stack. */
+.region-swap {
+  display: grid;
+  min-width: 0;
+}
+.region-swap > * {
+  grid-area: 1 / 1;
+}
+.region-swap-enter-active {
+  transition:
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.region-swap-leave-active {
+  transition: opacity 110ms ease-in;
+  pointer-events: none;
+}
+.region-swap-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.region-swap-leave-to {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .region-swap-enter-active,
+  .region-swap-leave-active {
+    transition-duration: 1ms;
+  }
+}
+</style>

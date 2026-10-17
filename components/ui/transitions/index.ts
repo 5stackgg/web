@@ -4,3 +4,4 @@ export { default as HeightSwap } from "./HeightSwap.vue";
 export { default as HeightMorph } from "./HeightMorph.vue";
 export { default as HeightGlide } from "./HeightGlide.vue";
 export { default as Fold } from "./Fold.vue";
+export { default as SlideSwap } from "./SlideSwap.vue";

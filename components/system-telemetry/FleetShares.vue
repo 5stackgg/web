@@ -7,23 +7,25 @@
           <FiveStackToolTip v-if="row.hint">{{ row.hint }}</FiveStackToolTip>
         </span>
         <span class="flex items-baseline gap-2">
-          <span class="font-mono text-sm tabular-nums">
+          <span class="text-sm tabular-nums">
             {{ format(row.value) }}
           </span>
           <span
             v-if="row.share !== null"
-            class="w-11 text-right font-mono text-[0.7rem] tabular-nums text-muted-foreground"
+            class="w-11 text-right text-[0.72rem] tabular-nums text-muted-foreground"
           >
             {{ row.share }}%
           </span>
           <span v-else class="w-11" />
         </span>
       </div>
-      <span class="mt-1.5 block h-2 w-full rounded-full bg-border/50">
+      <span
+        class="mt-1.5 block h-2 w-full overflow-hidden rounded-full bg-muted"
+      >
         <span
-          class="block h-full rounded-full"
+          class="block h-full origin-left rounded-full transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
           :style="{
-            width: `${row.width}%`,
+            transform: `scaleX(${row.width / 100})`,
             background: `hsl(var(--tac-step-${row.tone}))`,
           }"
         />

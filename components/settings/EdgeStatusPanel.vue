@@ -5,11 +5,7 @@ import { Button } from "~/components/ui/button";
 import { dateLocale } from "~/utilities/dateLocale";
 
 export type EdgeStatusState =
-  | "checking"
-  | "online"
-  | "attention"
-  | "offline"
-  | "idle";
+  "checking" | "online" | "attention" | "offline" | "idle";
 
 const props = defineProps<{
   state: EdgeStatusState;
@@ -116,7 +112,8 @@ const checkedTime = computed(() =>
             ]"
             :style="{
               transitionDelay: `${bar * 90}ms`,
-              animationDelay: state === 'checking' ? `${bar * 180}ms` : undefined,
+              animationDelay:
+                state === 'checking' ? `${bar * 180}ms` : undefined,
             }"
           />
         </span>

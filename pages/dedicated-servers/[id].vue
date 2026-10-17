@@ -19,12 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ref, computed } from "vue";
 import { useNow } from "@vueuse/core";
 import RconCommander from "~/components/servers/RconCommander.vue";
@@ -248,7 +243,6 @@ const titleClasses =
             @click="toggleServerEnabled"
           />
         </div>
-
       </header>
     </PageTransition>
 
@@ -370,7 +364,11 @@ const titleClasses =
               <h3 class="text-lg font-semibold">
                 {{ $t("pages.dedicated_servers.detail.server_plugin_config") }}
               </h3>
-              <Button variant="ghost" size="sm" @click="showConfig = !showConfig">
+              <Button
+                variant="ghost"
+                size="sm"
+                @click="showConfig = !showConfig"
+              >
                 <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
                 <EyeOff v-else class="mr-2 h-4 w-4" />
                 {{
@@ -401,8 +399,7 @@ const titleClasses =
             <div v-if="showConfig" class="relative mt-3">
               <pre
                 class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
-                >{{ config }}</pre
-              >
+                >{{ config }}</pre>
               <div class="absolute top-2 right-2">
                 <Clipboard :data="config"></Clipboard>
               </div>
@@ -424,7 +421,6 @@ const titleClasses =
       </Tabs>
     </PageTransition>
 
-
     <ServerMoveDialog
       v-if="isAdmin"
       v-model:open="moveDialog"
@@ -443,7 +439,9 @@ const titleClasses =
             $t("pages.dedicated_servers.detail.delete_confirm.title")
           }}</AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t("pages.dedicated_servers.detail.delete_confirm.description") }}
+            {{
+              $t("pages.dedicated_servers.detail.delete_confirm.description")
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -455,10 +453,11 @@ const titleClasses =
       </AlertDialogContent>
     </AlertDialog>
   </template>
-  <PublicServerView v-else :server-id="(route.params.id as string)" />
+  <PublicServerView v-else :server-id="route.params.id as string" />
 </template>
 
 <script lang="ts">
+import { useServerContext } from "~/composables/useServerContext";
 import { $ } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import {
@@ -541,6 +540,9 @@ export default {
         },
         result: function ({ data }) {
           this.server = data.servers_by_pk;
+          useServerContext().value = this.server
+            ? { id: this.server.id, name: this.server.label || this.server.id }
+            : null;
         },
         // Most of these columns are staff-only, and the public view runs its
         // own subscription.
@@ -549,6 +551,9 @@ export default {
         },
       },
     },
+  },
+  unmounted() {
+    useServerContext().value = null;
   },
   data() {
     return {

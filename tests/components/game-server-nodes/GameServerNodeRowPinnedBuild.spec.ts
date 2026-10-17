@@ -68,6 +68,21 @@ describe("GameServerNodeRow pinned build without an install", () => {
     expect(wrapper.text()).toContain("Install CS2");
   });
 
+  it("keeps the pin and Install CS2 in the narrow layout's versions section", async () => {
+    const wrapper = await mountRow({ build_id: null, pin_build_id: PINNED });
+    const header = wrapper
+      .findAll("button")
+      .find((button) => button.text().includes("Game Server Versions"));
+    expect(header).toBeTruthy();
+    await header!.trigger("click");
+    await flushPromises();
+    const installs = wrapper
+      .findAll("button")
+      .filter((button) => button.text().trim() === "Install CS2");
+    expect(installs).toHaveLength(2);
+    expect(wrapper.text().split(String(PINNED)).length - 1).toBe(2);
+  });
+
   it("shows only the install button with no build and no pin", async () => {
     const wrapper = await mountRow({ build_id: null, pin_build_id: null });
     expect(wrapper.text()).not.toContain(String(PINNED));

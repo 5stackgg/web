@@ -1612,6 +1612,15 @@ const isSectionExpanded = (section: string) => {
                           : $t("game_server.update_cs")
                       }}
                     </Button>
+                    <Button
+                      v-if="!gameServerNode.build_id && gameServerNode.enabled"
+                      size="sm"
+                      class="w-full mt-1"
+                      @click="updateCs"
+                      :disabled="!isReachable"
+                    >
+                      {{ $t("game_server.install_cs") }}
+                    </Button>
                   </template>
                   <template v-else>
                     <Button

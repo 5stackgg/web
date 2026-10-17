@@ -287,6 +287,15 @@ describe("dedicated server header", () => {
     expect(wrapper.find('[data-testid="players-tab-count"]').text()).toBe("2");
   });
 
+  it("says In a match and pings while a match holds the server", async () => {
+    const wrapper = await mountAs("moderator", {
+      server: { current_match: { id: "match-1" } },
+    });
+
+    expect(wrapper.find("header").text()).toContain("In a match");
+    expect(wrapper.find("header").find(".animate-ping").exists()).toBe(true);
+  });
+
   it("keeps stats out of the header", async () => {
     const wrapper = await mountAs("moderator", {
       server: { type: "Casual" },

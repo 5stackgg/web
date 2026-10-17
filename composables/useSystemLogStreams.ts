@@ -11,11 +11,10 @@ import {
 // Several services' log streams merged into one time-ordered list.
 //
 // Requests go out one at a time, each waiting for its tail to land before the
-// next: the api keeps a single log stream per socket today (system.gateway
-// ends the previous stream when a new `logs` request arrives), so asking for
-// all of them at once would cut each tail off before it arrived. Once the api
-// keeps one stream per service, every selected service stays live with no
-// change here.
+// next. The api keeps one live stream per service (and a separate one for an
+// earlier window), so every selected service stays live; an older api kept a
+// single stream per socket and cut each tail off when the next request came,
+// which the one-at-a-time queue still copes with.
 
 const MAX_PER_SERVICE = 2400;
 const TAIL_LINES = 250;

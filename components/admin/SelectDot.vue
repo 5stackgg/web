@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Checkbox } from "~/components/ui/checkbox";
 
-// A row's status dot and its select checkbox share one 16px cell. The
-// checkbox takes the dot's place while the row is hovered or focused, while
-// it is checked, and on every row once anything is selected (`selecting`).
-// The row needs the `group/row` class. Pair with useBulkSelect:
-//   <tr class="group/row" ...>
+// A row's status dot and its select checkbox share one 16px cell. The dot
+// stays put while the row is hovered or open: the checkbox takes its place
+// only while it is checked, on every row once anything is selected
+// (`selecting`, started with ⌘/Ctrl- or Shift-click), and while it has
+// keyboard focus. Pair with useBulkSelect:
+//   <tr ...>
 //     <SelectDot :checked="bulk.isSelected(id)" :selecting="bulk.count.value > 0"
 //       :label="`Select ${name}`" @toggle="bulk.onCheckbox(id, $event)">
 //       <StatusDot tone="ok" />
@@ -33,13 +34,13 @@ function onClick(event: MouseEvent) {
 </script>
 
 <template>
-  <span class="relative grid size-4 shrink-0 place-items-center">
+  <span class="group/sel relative grid size-4 shrink-0 place-items-center">
     <span
       class="grid place-items-center transition-opacity duration-150"
       :class="
         props.checked || props.selecting
           ? 'opacity-0'
-          : '[@media(hover:hover)]:group-hover/row:opacity-0 group-focus-within/row:opacity-0'
+          : 'group-has-[:focus-visible]/sel:opacity-0'
       "
     >
       <slot />
@@ -51,7 +52,7 @@ function onClick(event: MouseEvent) {
       :class="
         props.checked || props.selecting
           ? 'opacity-100'
-          : 'pointer-events-none opacity-0 focus-visible:pointer-events-auto focus-visible:opacity-100 [@media(hover:hover)]:group-hover/row:pointer-events-auto [@media(hover:hover)]:group-hover/row:opacity-100 group-focus-within/row:pointer-events-auto group-focus-within/row:opacity-100'
+          : 'pointer-events-none opacity-0 focus-visible:pointer-events-auto focus-visible:opacity-100'
       "
       @mousedown="onMouseDown"
       @click="onClick"

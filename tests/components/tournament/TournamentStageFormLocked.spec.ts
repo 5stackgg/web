@@ -385,33 +385,31 @@ describe("TournamentStageForm with the structure locked", () => {
     );
   });
 
-  it("deletes the options it created when attaching them to the stage fails", async () => {
-    mutate.mockImplementation(async ({ mutation }: { mutation: any }) => {
-      const document = print(mutation);
-      if (document.includes("insert_match_options_one")) {
-        return { data: { insert_match_options_one: { id: "new-options" } } };
-      }
-      if (document.includes("update_tournament_stages_by_pk")) {
-        throw new Error(
-          "Unable to modify match options for a stage that has already started",
-        );
-      }
-      return { data: {} };
+  // The Check-In field is shown to match organizers, and their match_options
+  // permission has the column; only Match Mode waits for tournament organizer.
+  it("saves a match organizer's Check-In change and leaves Match Mode alone", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Match Organizer",
+      role: e_player_roles_enum.match_organizer,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const wrapper = await mountLocked(true, {
+      ...tournamentOptions,
+      id: "stage-options-1",
     });
-    const wrapper = await mountLocked(true);
-    (wrapper.vm as any).form.setFieldValue("match_mode", "admin");
+    (wrapper.vm as any).form.setFieldValue("check_in_setting", "Admin");
     await flushPromises();
-
-    await expect((wrapper.vm as any).updateCreateStage()).rejects.toThrow(
-      /already started/,
-    );
+    await (wrapper.vm as any).updateCreateStage();
     await flushPromises();
+    const [update] = sentCalls();
 
-    const deleted = sentCalls().find(({ document }) =>
-      document.includes("delete_match_options_by_pk"),
-    );
-    expect(deleted?.document).toContain('"new-options"');
-    expect(wrapper.emitted("updated")).toBeUndefined();
+    expect(update.document).toContain("update_match_options_by_pk");
+    expect(update.variables).toMatchObject({
+      id: "stage-options-1",
+      check_in_setting: "Admin",
+    });
+    expect(update.document).not.toContain("match_mode");
+    expect(update.variables).not.toHaveProperty("match_mode");
   });
 
   it("refuses options of its own for a stage whose first match was drawn meanwhile", async () => {

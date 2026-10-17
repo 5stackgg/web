@@ -4,7 +4,13 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import BracketScheduleDialog from "~/components/tournament/BracketScheduleDialog.vue";
+import SwissBracketViewer from "~/components/tournament/SwissBracketViewer.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import {
+  fromDate,
+  getLocalTimeZone,
+  toCalendarDate,
+} from "@internationalized/date";
 import { useAuthStore } from "~/stores/AuthStore";
 import { setApiClockBehindBy } from "../../helpers/serverClock";
 
@@ -215,6 +221,35 @@ describe("BracketScheduleDialog", () => {
     expect((wrapper.vm as any).startTime).toBe("21:30");
   });
 
+  it("refuses a time that has already passed on the api's clock", async () => {
+    setApiClockBehindBy(-2 * 3600_000);
+    const wrapper = await mountDialog();
+    const inAnHour = new Date(Date.now() + 3600_000);
+    (wrapper.vm as any).startDate = toCalendarDate(
+      fromDate(inAnHour, getLocalTimeZone()),
+    );
+    (wrapper.vm as any).startTime =
+      `${String(inAnHour.getHours()).padStart(2, "0")}:${String(inAnHour.getMinutes()).padStart(2, "0")}`;
+    await flushPromises();
+
+    await (wrapper.vm as any).saveSchedule();
+    await flushPromises();
+
+    expect(mutate).not.toHaveBeenCalled();
+  });
+
+  it("forgets a date and time that weren't saved when it opens again", async () => {
+    const wrapper = await mountDialog();
+    (wrapper.vm as any).startTime = "21:30";
+    await flushPromises();
+
+    await wrapper.setProps({ open: false });
+    await wrapper.setProps({ open: true });
+    await flushPromises();
+
+    expect((wrapper.vm as any).startTime).toBeUndefined();
+  });
+
   it("saves with the app's tactical button and shows no green", async () => {
     await mountDialog({ scheduled_at: ETA });
 
@@ -224,5 +259,47 @@ describe("BracketScheduleDialog", () => {
     expect(save!.className).toContain("tac-amber");
     expect(save!.className).not.toContain("bg-primary");
     expect(document.body.innerHTML).not.toContain("text-green");
+  });
+});
+
+describe("SwissBracketViewer", () => {
+  const swissStage = (card: Record<string, any> = {}) => ({
+    id: "stage-1",
+    type: "Swiss",
+    options: { match_mode: "admin" },
+    brackets: [{ ...bracket(card), group: 0 }],
+  });
+
+  it("opens Schedule Match for a card, following the live bracket", async () => {
+    (useNuxtApp() as any).$apollo.mutate = mutate;
+    const wrapper = await mountSuspended(SwissBracketViewer, {
+      props: {
+        stage: swissStage(),
+        tournament: {
+          is_organizer: true,
+          status: "Live",
+          auto_start: true,
+          scheduling_mode: "auto",
+          options: { match_mode: "auto" },
+        },
+      },
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Awaiting schedule");
+    wrapper
+      .findComponent(TournamentMatch)
+      .vm.$emit("schedule-bracket", swissStage().brackets[0]);
+    await flushPromises();
+
+    const dialog = wrapper.findComponent(BracketScheduleDialog);
+    expect(dialog.props("open")).toBe(true);
+    expect(dialog.props("bracket")?.id).toBe("bracket-1");
+
+    await wrapper.setProps({ stage: swissStage({ match: { id: "match-1" } }) });
+    await flushPromises();
+
+    expect(dialog.props("bracket")?.match?.id).toBe("match-1");
   });
 });

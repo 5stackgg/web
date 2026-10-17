@@ -1981,15 +1981,15 @@ export default {
       if (allowsVetoPickTimeout()) {
         columns.push(["veto_pick_timeout", "Int!", form.veto_pick_timeout]);
       }
+      if (this.canSetCheckInSettings) {
+        columns.push([
+          "check_in_setting",
+          "e_check_in_settings_enum!",
+          form.check_in_setting,
+        ]);
+      }
       if (canSetOrganizerColumns) {
-        columns.push(
-          [
-            "check_in_setting",
-            "e_check_in_settings_enum!",
-            form.check_in_setting,
-          ],
-          ["match_mode", "e_match_mode_enum!", form.match_mode],
-        );
+        columns.push(["match_mode", "e_match_mode_enum!", form.match_mode]);
       }
       if (matchSettingsOnly) {
         return columns;
@@ -2130,19 +2130,6 @@ export default {
       });
       return data.insert_match_options_one.id;
     },
-    async discardOptionsOnFailure<T>(
-      createdOptionsId: string | null,
-      attach: () => Promise<T>,
-    ): Promise<T> {
-      try {
-        return await attach();
-      } catch (error) {
-        if (createdOptionsId) {
-          await this.deleteMatchOptions(createdOptionsId).catch(() => {});
-        }
-        throw error;
-      }
-    },
     async deleteMatchOptions(matchOptionsId: string): Promise<void> {
       await (this as any).$apollo.mutate({
         mutation: generateMutation({
@@ -2239,28 +2226,24 @@ export default {
             }
           }
 
-          await this.discardOptionsOnFailure(
-            lockedSet.match_options_id ?? null,
-            () =>
-              (this as any).$apollo.mutate({
-                variables: {
-                  settings: settings,
+          await (this as any).$apollo.mutate({
+            variables: {
+              settings: settings,
+            },
+            mutation: generateMutation({
+              update_tournament_stages_by_pk: [
+                {
+                  pk_columns: {
+                    id: this.stage.id,
+                  },
+                  _set: lockedSet,
                 },
-                mutation: generateMutation({
-                  update_tournament_stages_by_pk: [
-                    {
-                      pk_columns: {
-                        id: this.stage.id,
-                      },
-                      _set: lockedSet,
-                    },
-                    {
-                      __typename: true,
-                    },
-                  ],
-                }),
-              }),
-          );
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
 
           this.takeSnapshot();
           this.$emit("updated");
@@ -2285,7 +2268,6 @@ export default {
         if (this.stage) {
           // Handle match options for advanced settings
           let matchOptionsId: string | null = null;
-          let createdOptionsId: string | null = null;
 
           if (this.stage.options?.id) {
             if (customAdvancedSettings) {
@@ -2318,7 +2300,6 @@ export default {
           } else {
             if (customAdvancedSettings) {
               matchOptionsId = await this.createMatchOptions(form);
-              createdOptionsId = matchOptionsId;
             }
           }
 
@@ -2359,26 +2340,24 @@ export default {
             updateSet.match_options_id = null;
           }
 
-          await this.discardOptionsOnFailure(createdOptionsId, () =>
-            (this as any).$apollo.mutate({
-              variables: {
-                settings: settings,
-              },
-              mutation: generateMutation({
-                update_tournament_stages_by_pk: [
-                  {
-                    pk_columns: {
-                      id: this.stage.id,
-                    },
-                    _set: updateSet,
+          await (this as any).$apollo.mutate({
+            variables: {
+              settings: settings,
+            },
+            mutation: generateMutation({
+              update_tournament_stages_by_pk: [
+                {
+                  pk_columns: {
+                    id: this.stage.id,
                   },
-                  {
-                    __typename: true,
-                  },
-                ],
-              }),
+                  _set: updateSet,
+                },
+                {
+                  __typename: true,
+                },
+              ],
             }),
-          );
+          });
 
           this.takeSnapshot();
           this.$emit("updated");
@@ -2442,25 +2421,23 @@ export default {
         if (customAdvancedSettings) {
           matchOptionsId = await this.createMatchOptions(form);
 
-          await this.discardOptionsOnFailure(matchOptionsId, () =>
-            (this as any).$apollo.mutate({
-              mutation: generateMutation({
-                update_tournament_stages_by_pk: [
-                  {
-                    pk_columns: {
-                      id: stageId,
-                    },
-                    _set: {
-                      match_options_id: matchOptionsId,
-                    } as any,
+          await (this as any).$apollo.mutate({
+            mutation: generateMutation({
+              update_tournament_stages_by_pk: [
+                {
+                  pk_columns: {
+                    id: stageId,
                   },
-                  {
-                    __typename: true,
-                  },
-                ],
-              }),
+                  _set: {
+                    match_options_id: matchOptionsId,
+                  } as any,
+                },
+                {
+                  __typename: true,
+                },
+              ],
             }),
-          );
+          });
         }
 
         this.$emit("updated", this.order);

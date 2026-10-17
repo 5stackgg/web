@@ -131,6 +131,8 @@ import { mapFields } from "~/graphql/mapGraphql";
 import {
   $,
   e_map_pool_types_enum,
+  e_match_mode_enum,
+  e_player_roles_enum,
   e_tournament_status_enum,
 } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
@@ -143,6 +145,7 @@ import {
 } from "~/utilities/setupOptions";
 import { isTournamentBracketDrawn } from "~/utilities/tournamentBracketDrawn";
 import { adminModeStageOrders } from "~/utilities/tournamentManualScheduling";
+import { useAuthStore } from "~/stores/AuthStore";
 import * as z from "zod";
 
 export default {
@@ -240,8 +243,23 @@ export default {
     mapPoolLocked() {
       return isTournamentBracketDrawn(this.tournament);
     },
+    // Save writes the tournament's match mode from negotiated scheduling for
+    // roles that may write it, so that is the mode its stages will follow.
     stagesOverridingAutoStart(): Array<number> {
-      return adminModeStageOrders(this.tournament);
+      if (
+        !useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
+      ) {
+        return adminModeStageOrders(this.tournament);
+      }
+      return adminModeStageOrders({
+        ...this.tournament,
+        options: {
+          ...this.tournament.options,
+          match_mode: this.form.values.negotiated_scheduling
+            ? e_match_mode_enum.admin
+            : e_match_mode_enum.auto,
+        },
+      });
     },
     substitutesLocked() {
       return (

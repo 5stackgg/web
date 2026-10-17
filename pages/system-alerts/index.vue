@@ -61,8 +61,13 @@ import { systemAlertAdminFields } from "~/graphql/systemAlertsGraphql";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { dateLocale } from "~/utilities/dateLocale";
 import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
+import {
   DAY,
   HOUR,
+  RANGES,
   alertLabel,
   alertState,
   chipMatches,
@@ -116,7 +121,20 @@ const alertById = (id: string | null) =>
 const now = ref(Date.now());
 let ticker: ReturnType<typeof setInterval> | null = null;
 
-const range = ref<RangeKey>("week");
+// The range picked last time comes back; until one is picked, the first load
+// chooses one that shows something.
+const VIEW_KEY = "system-alerts";
+const viewDefaults = () => ({ range: null as RangeKey | null });
+const remembered = readRememberedView(VIEW_KEY, viewDefaults(), {
+  range: (value) =>
+    value === null ||
+    (typeof value === "string" && Object.keys(RANGES).includes(value)),
+});
+const range = ref<RangeKey>(remembered.range ?? "week");
+function pickRange(next: RangeKey) {
+  range.value = next;
+  saveRememberedView(VIEW_KEY, { range: next }, viewDefaults());
+}
 const includeOlder = ref(false);
 const rangeOptions = computed(() =>
   (["day", "week", "month", "quarter"] as RangeKey[]).map((key) => ({
@@ -147,7 +165,7 @@ watch(
 );
 function widen() {
   if (range.value !== "quarter") {
-    range.value = "quarter";
+    pickRange("quarter");
   } else {
     includeOlder.value = true;
   }
@@ -567,7 +585,7 @@ function noteExpiries() {
   }
 }
 
-let rangeChosen = false;
+let rangeChosen = remembered.range !== null;
 
 onMounted(() => {
   ticker = setInterval(() => {
@@ -634,7 +652,7 @@ const fieldLabel = "text-sm font-medium text-foreground";
           :options="rangeOptions"
           square
           class="max-sm:w-max max-sm:max-w-none max-sm:flex-nowrap"
-          @update:model-value="(v) => (range = v as RangeKey)"
+          @update:model-value="(v) => pickRange(v as RangeKey)"
         />
       </div>
       <p

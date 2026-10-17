@@ -19,6 +19,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
 import {
   hostLabel,
   pluginOutdated,
@@ -64,20 +66,10 @@ const showPlayers = computed(
     props.server.enabled && props.server.connected && players.value !== null,
 );
 
-const toneText: Record<string, string> = {
-  ok: "text-foreground",
-  warn: "text-warning",
-  bad: "text-destructive",
-  off: "text-muted-foreground",
-  info: "text-info",
-};
-const toneDot: Record<string, string> = {
-  ok: "bg-success",
-  warn: "bg-warning",
-  bad: "bg-destructive",
-  off: "bg-muted-foreground/60",
-  info: "bg-info",
-};
+// A healthy server's word reads plain; the dot carries the green.
+const wordClass = computed(() =>
+  status.value.tone === "ok" ? "text-foreground" : TONE_TEXT[status.value.tone],
+);
 
 function open(event: MouseEvent) {
   if (
@@ -96,13 +88,13 @@ function go() {
 </script>
 
 <template>
+  <!-- The list's keyboard (roving tabindex, Enter opens) comes in through
+       the parent's rowProps. -->
   <tr
-    class="group/row cursor-pointer border-b border-border/50 transition-colors duration-150 last:border-b-0 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none"
+    class="group/row cursor-pointer border-b border-border/50 transition-colors duration-150 last:border-b-0 hover:bg-muted/40 focus-visible:bg-muted/40 focus-visible:outline-none data-[active=true]:bg-muted/30"
     :class="!server.enabled && 'text-muted-foreground'"
-    tabindex="0"
     :data-server-id="server.id"
     @click="open"
-    @keydown.enter.self="go"
   >
     <td class="px-3 py-2 md:min-w-[240px]">
       <div class="grid min-w-0 gap-0.5">
@@ -129,23 +121,10 @@ function go() {
         <span class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
           <span
             class="inline-flex items-center gap-1.5 whitespace-nowrap text-[0.75rem]"
-            :class="toneText[status.tone]"
+            :class="wordClass"
             :title="tip"
           >
-            <span
-              class="relative inline-flex size-2 shrink-0"
-              aria-hidden="true"
-            >
-              <span
-                v-if="status.live"
-                class="absolute inset-0 animate-ping rounded-full opacity-75 motion-reduce:hidden"
-                :class="toneDot[status.tone]"
-              />
-              <span
-                class="relative size-2 rounded-full"
-                :class="toneDot[status.tone]"
-              />
-            </span>
+            <StatusDot :tone="status.tone" :live="status.live" />
             {{ word }}
           </span>
           <span
@@ -196,7 +175,8 @@ function go() {
       >
       <span
         v-else-if="outdated"
-        class="inline-flex items-center gap-1 font-mono text-xs tabular-nums text-warning"
+        class="inline-flex items-center gap-1 font-mono text-xs tabular-nums"
+        :class="TONE_TEXT.warn"
         :title="
           $t('pages.dedicated_servers.plugin_outdated_tip', {
             version: ctx.currentPluginVersion,

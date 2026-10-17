@@ -7,6 +7,7 @@ import {
   regionMode,
   regionStatusKey,
   regionTone,
+  regionViewValidators,
 } from "~/components/regions/regionStatus";
 
 describe("regionTone / regionStatusKey", () => {
@@ -80,5 +81,15 @@ describe("nodeState", () => {
       "not_accepting",
     );
     expect(nodeState({ status: null, enabled: true })).toBe("offline");
+  });
+});
+
+describe("regionViewValidators", () => {
+  it("restores a search and a region value, or nothing", () => {
+    expect(regionViewValidators.search("eu")).toBe(true);
+    expect(regionViewValidators.search(3)).toBe(false);
+    expect(regionViewValidators.selected("US-EAST")).toBe(true);
+    expect(regionViewValidators.selected(null)).toBe(true);
+    expect(regionViewValidators.selected({})).toBe(false);
   });
 });

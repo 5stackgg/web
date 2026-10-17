@@ -254,7 +254,7 @@ describe("PluginConfigFile", () => {
 
     const back = wrapper
       .findAll("button")
-      .find((button) => button.text() === "Use the Plugin's File");
+      .find((button) => button.text() === "Use the plugin's file");
     await back!.trigger("click");
 
     expect(wrapper.vm.value).toBeNull();

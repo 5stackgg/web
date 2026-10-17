@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { Check, ChevronRight } from "lucide-vue-next";
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { Check, ChevronRight, ListChecks } from "lucide-vue-next";
 import { Fold } from "~/components/ui/transitions";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_TEXT, type Tone } from "~/components/admin/tone";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import type { ServiceRowStats, ServiceStatus } from "./logLines";
 
 const props = defineProps<{
@@ -45,12 +48,50 @@ function sparkPath(values: number[], w = 44, h = 16) {
     .join(" ");
 }
 
-const dotClass: Record<ServiceStatus, string> = {
-  ok: "bg-green-600",
-  warn: "bg-amber-500",
-  bad: "bg-red-600",
-  off: "bg-[hsl(240_4%_30%)]",
+const dotTone: Record<ServiceStatus, Tone> = {
+  ok: "ok",
+  warn: "warn",
+  bad: "bad",
+  off: "off",
 };
+const statusKey: Record<ServiceStatus, string> = {
+  ok: "pages.system_logs.status_ok",
+  warn: "pages.system_logs.status_warn",
+  bad: "pages.system_logs.status_bad",
+  off: "pages.system_logs.status_off",
+};
+
+// Below lg the list folds behind a Services button so the stream isn't
+// pushed below ten rows; the presets stay out.
+const wideQuery =
+  typeof window !== "undefined" && typeof window.matchMedia === "function"
+    ? window.matchMedia("(min-width: 1024px)")
+    : null;
+const wide = ref(wideQuery?.matches ?? true);
+const open = ref(false);
+const onWide = (event: MediaQueryListEvent) => (wide.value = event.matches);
+onMounted(() => wideQuery?.addEventListener("change", onWide));
+onBeforeUnmount(() => wideQuery?.removeEventListener("change", onWide));
+
+// ↑/↓ move between services, Space or Enter toggles the focused one.
+const list = ref<HTMLElement | null>(null);
+const activeId = ref<string | null>(null);
+const keyboard = useListKeyboard({
+  items: () => props.services,
+  getId: (service) => service,
+  activeId,
+  container: list,
+  onOpen: (service) => emit("toggle", service),
+});
+function pickProps(service: string) {
+  const { "aria-selected": _selected, ...rest } = keyboard.rowProps(service);
+  return rest;
+}
+function onListFocusOut(event: FocusEvent) {
+  if (!list.value?.contains(event.relatedTarget as Node | null)) {
+    activeId.value = null;
+  }
+}
 </script>
 
 <template>
@@ -60,6 +101,7 @@ const dotClass: Record<ServiceStatus, string> = {
   >
     <div class="flex items-center gap-2">
       <div
+        v-if="wide"
         class="inline-flex grow items-center gap-2 font-sans text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground"
       >
         <span
@@ -67,10 +109,23 @@ const dotClass: Record<ServiceStatus, string> = {
         />
         {{ $t("pages.system_logs.services") }}
       </div>
-      <span class="inline-flex gap-[3px]">
+      <button
+        v-else
+        type="button"
+        class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-card/60 px-3 text-xs font-medium text-muted-foreground transition-colors duration-150 hover:text-foreground"
+        :aria-expanded="open"
+        @click="open = !open"
+      >
+        <ListChecks class="size-3.5" />
+        {{ $t("pages.system_logs.services") }}
+        <span class="tabular-nums"
+          >· {{ selected.length }}/{{ services.length }}</span
+        >
+      </button>
+      <span class="inline-flex gap-[3px]" :class="!wide && 'ml-auto'">
         <span
           v-if="totals.warn"
-          class="lg-pill is-warn"
+          :class="['lg-pill is-warn', TONE_TEXT.warn]"
           :title="
             $t(
               'pages.system_logs.warnings_loaded',
@@ -107,139 +162,144 @@ const dotClass: Record<ServiceStatus, string> = {
       </button>
     </div>
 
-    <div class="lg-list grid gap-px">
-      <template v-for="service in services" :key="service">
-        <div class="lg-row group/row flex items-center gap-0.5 rounded-md">
-          <button
-            type="button"
-            role="checkbox"
-            class="lg-pick"
-            :aria-checked="selected.includes(service)"
-            @click="emit('toggle', service)"
-          >
-            <span class="lg-cb"><Check class="h-3 w-3" /></span>
-            <span
-              class="inline-block h-2 w-2 shrink-0 rounded-full"
-              :class="dotClass[stats[service]?.status || 'off']"
-            />
-            <span class="grid min-w-0 leading-tight">
-              <b class="truncate text-[13px]">{{ service }}</b>
-              <span
-                v-if="selected.includes(service)"
-                class="flex min-w-0 items-center gap-1.5 whitespace-nowrap"
-              >
-                <small
-                  class="min-w-0 truncate text-[11px] tabular-nums text-muted-foreground/70"
-                >
-                  <template v-if="stats[service]?.streaming">
-                    <template v-if="(pods[service]?.length || 0) > 1"
-                      >{{
-                        $t("pages.system_logs.pod_count", {
-                          count: pods[service].length,
-                        })
-                      }}
-                      ·
-                    </template>
-                    {{
-                      $t("pages.system_logs.per_minute", {
-                        rate: stats[service].rate,
-                      })
-                    }}
-                  </template>
-                  <template v-else>{{ $t("ui.logs.empty") }}</template>
-                </small>
-                <span class="inline-flex gap-[3px]">
-                  <span
-                    v-if="stats[service]?.warn"
-                    class="lg-pill is-warn"
-                    :title="
-                      $t(
-                        'pages.system_logs.warnings_loaded',
-                        { count: stats[service].warn },
-                        stats[service].warn,
-                      )
-                    "
-                    >W {{ stats[service].warn.toLocaleString() }}</span
-                  >
-                  <span
-                    v-if="stats[service]?.error"
-                    class="lg-pill is-error"
-                    :title="
-                      $t(
-                        'pages.system_logs.errors_loaded',
-                        { count: stats[service].error },
-                        stats[service].error,
-                      )
-                    "
-                    >E {{ stats[service].error.toLocaleString() }}</span
-                  >
-                </span>
-              </span>
-            </span>
-            <svg
-              v-if="stats[service]?.streaming"
-              class="lg-spark"
-              width="44"
-              height="16"
-              viewBox="0 0 44 16"
-              aria-hidden="true"
-            >
-              <polyline
-                :points="sparkPath(stats[service].spark)"
-                fill="none"
-                stroke-width="1.25"
-                stroke-linejoin="round"
-                :stroke="
-                  stats[service].status === 'bad'
-                    ? 'hsl(var(--destructive))'
-                    : 'hsl(var(--info))'
-                "
-              />
-            </svg>
-            <span v-else />
-          </button>
-          <button
-            v-if="(pods[service]?.length || 0) > 1"
-            type="button"
-            class="lg-podfold grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            :aria-expanded="openPods.has(service)"
-            :aria-label="$t('pages.system_logs.pods_of', { service })"
-            @click="togglePods(service)"
-          >
-            <ChevronRight
-              class="lg-chev h-3 w-3"
-              :class="openPods.has(service) && 'rotate-90'"
-            />
-          </button>
-          <button
-            type="button"
-            class="lg-only h-7 rounded-md px-2 text-xs text-muted-foreground opacity-0 transition-opacity hover:bg-muted hover:text-foreground focus-visible:opacity-100 group-hover/row:opacity-100"
-            @click="emit('only', service)"
-          >
-            {{ $t("pages.system_logs.only") }}
-          </button>
-        </div>
-        <Fold
-          v-if="(pods[service]?.length || 0) > 1"
-          :open="openPods.has(service)"
-        >
-          <div class="grid gap-px pb-1.5 pl-8">
+    <Fold :open="wide || open">
+      <div ref="list" class="lg-list grid gap-px" @focusout="onListFocusOut">
+        <template v-for="service in services" :key="service">
+          <div class="lg-row group/row flex items-center gap-0.5 rounded-md">
             <button
-              v-for="pod in pods[service]"
-              :key="pod"
+              v-bind="pickProps(service)"
               type="button"
               role="checkbox"
-              class="lg-pod"
-              :aria-checked="!podsOff.includes(pod)"
-              @click="emit('toggle-pod', pod)"
+              class="lg-pick"
+              :aria-checked="selected.includes(service)"
+              @click="emit('toggle', service)"
             >
-              <span class="lg-cb is-small"><Check class="h-2.5 w-2.5" /></span>
-              <span class="truncate font-mono">{{ pod }}</span>
+              <span class="lg-cb"><Check class="h-3 w-3" /></span>
+              <StatusDot
+                :tone="dotTone[stats[service]?.status || 'off']"
+                :label="$t(statusKey[stats[service]?.status || 'off'])"
+              />
+              <span class="grid min-w-0 leading-tight">
+                <b class="truncate text-[13px]">{{ service }}</b>
+                <span
+                  v-if="selected.includes(service)"
+                  class="flex min-w-0 items-center gap-1.5 whitespace-nowrap"
+                >
+                  <small
+                    class="min-w-0 truncate text-[11px] tabular-nums text-muted-foreground/70"
+                  >
+                    <template v-if="stats[service]?.streaming">
+                      <template v-if="(pods[service]?.length || 0) > 1"
+                        >{{
+                          $t("pages.system_logs.pod_count", {
+                            count: pods[service].length,
+                          })
+                        }}
+                        ·
+                      </template>
+                      {{
+                        $t("pages.system_logs.per_minute", {
+                          rate: stats[service].rate,
+                        })
+                      }}
+                    </template>
+                    <template v-else>{{ $t("ui.logs.empty") }}</template>
+                  </small>
+                  <span class="inline-flex gap-[3px]">
+                    <span
+                      v-if="stats[service]?.warn"
+                      :class="['lg-pill is-warn', TONE_TEXT.warn]"
+                      :title="
+                        $t(
+                          'pages.system_logs.warnings_loaded',
+                          { count: stats[service].warn },
+                          stats[service].warn,
+                        )
+                      "
+                      >W {{ stats[service].warn.toLocaleString() }}</span
+                    >
+                    <span
+                      v-if="stats[service]?.error"
+                      class="lg-pill is-error"
+                      :title="
+                        $t(
+                          'pages.system_logs.errors_loaded',
+                          { count: stats[service].error },
+                          stats[service].error,
+                        )
+                      "
+                      >E {{ stats[service].error.toLocaleString() }}</span
+                    >
+                  </span>
+                </span>
+              </span>
+              <svg
+                v-if="stats[service]?.streaming"
+                class="lg-spark"
+                width="44"
+                height="16"
+                viewBox="0 0 44 16"
+                aria-hidden="true"
+              >
+                <polyline
+                  :points="sparkPath(stats[service].spark)"
+                  fill="none"
+                  stroke-width="1.25"
+                  stroke-linejoin="round"
+                  :stroke="
+                    stats[service].status === 'bad'
+                      ? 'hsl(var(--destructive))'
+                      : 'hsl(var(--info))'
+                  "
+                />
+              </svg>
+              <span v-else />
+            </button>
+            <button
+              v-if="(pods[service]?.length || 0) > 1"
+              type="button"
+              class="lg-podfold grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              :aria-expanded="openPods.has(service)"
+              :aria-label="$t('pages.system_logs.pods_of', { service })"
+              @click="togglePods(service)"
+            >
+              <ChevronRight
+                class="lg-chev h-3 w-3"
+                :class="openPods.has(service) && 'rotate-90'"
+              />
+            </button>
+            <button
+              type="button"
+              class="lg-only h-7 rounded-md px-2 text-xs text-muted-foreground opacity-0 transition-opacity hover:bg-muted hover:text-foreground focus-visible:opacity-100 group-hover/row:opacity-100"
+              @click="emit('only', service)"
+            >
+              {{ $t("pages.system_logs.only") }}
             </button>
           </div>
-        </Fold>
-      </template>
-    </div>
+          <Fold
+            v-if="(pods[service]?.length || 0) > 1"
+            :open="openPods.has(service)"
+          >
+            <div class="grid gap-px pb-1.5 pl-8">
+              <button
+                v-for="pod in pods[service]"
+                :key="pod"
+                type="button"
+                role="checkbox"
+                class="lg-pod"
+                :aria-checked="!podsOff.includes(pod)"
+                @click="emit('toggle-pod', pod)"
+              >
+                <span class="lg-cb is-small"
+                  ><Check class="h-2.5 w-2.5"
+                /></span>
+                <span class="truncate font-mono">{{ pod }}</span>
+              </button>
+            </div>
+          </Fold>
+        </template>
+      </div>
+    </Fold>
   </aside>
 </template>
 
@@ -316,12 +376,15 @@ const dotClass: Record<ServiceStatus, string> = {
   white-space: nowrap;
 }
 .lg-pill.is-warn {
-  color: rgb(251 191 36);
-  background: hsl(36 100% 50% / 0.14);
+  background: hsl(var(--warning) / 0.14);
 }
 .lg-pill.is-error {
   color: hsl(var(--destructive));
   background: hsl(var(--destructive) / 0.14);
+}
+.lg-pick:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px hsl(var(--ring));
 }
 .lg-chev {
   transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);

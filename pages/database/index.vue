@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { PanelLeft, Pause, Play, RefreshCw } from "lucide-vue-next";
+import { PanelLeft, Pause, Play } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import LiveStamp from "~/components/admin/LiveStamp.vue";
 import {
   Select,
   SelectContent,
@@ -55,28 +56,12 @@ definePageMeta({
         />
       </div>
 
-      <div class="ml-auto flex items-center gap-1.5">
-        <span
-          class="mr-1 whitespace-nowrap text-xs tabular-nums text-muted-foreground"
-          >{{ updatedLabel }}</span
-        >
-        <FiveStackToolTip as-child :delay-duration="120">
-          <template #trigger>
-            <button
-              type="button"
-              class="grid h-8 w-8 place-items-center rounded-md border border-border bg-muted/30 text-muted-foreground transition-colors hover:text-foreground"
-              :aria-label="$t('pages.database.explorer.refresh_now')"
-              @click="refreshNow"
-            >
-              <RefreshCw
-                :key="spinKey"
-                class="h-3.5 w-3.5"
-                :class="spinKey > 0 && 'db-spin-once'"
-              />
-            </button>
-          </template>
-          {{ $t("pages.database.explorer.refresh_now") }}
-        </FiveStackToolTip>
+      <LiveStamp
+        class="ml-auto"
+        :at="lastUpdated || null"
+        :paused="isPaused"
+        @refresh="refreshNow"
+      >
         <Select v-model="refreshInterval" :disabled="isPaused">
           <SelectTrigger
             class="h-8 w-auto gap-1.5 rounded-md bg-muted/30 px-2.5 text-xs"
@@ -118,7 +103,7 @@ definePageMeta({
               : $t("pages.database.explorer.pause_refreshing")
           }}
         </FiveStackToolTip>
-      </div>
+      </LiveStamp>
     </div>
 
     <div class="grid min-h-[640px] min-w-0 lg:grid-cols-[270px_minmax(0,1fr)]">
@@ -216,6 +201,10 @@ definePageMeta({
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
+import {
   SERVER_LABEL_KEYS,
   SERVER_VIEWS,
   SLOW_THRESHOLDS,
@@ -232,21 +221,45 @@ import {
   type Sev,
 } from "~/components/database/dbHealth";
 
+const INTERVALS = [3, 5, 10, 15, 30, 60];
+
+// The threshold and schemas keep their own keys (the admin home reads the
+// threshold); the rest of the view is remembered here.
+const VIEW_DEFAULTS = {
+  view: "overview",
+  refreshInterval: "5",
+  querySlowOnly: false,
+  querySort: "mean_exec_time",
+};
+
+const VIEW_VALIDATORS = {
+  view: (v: unknown) =>
+    typeof v === "string" &&
+    ((SERVER_VIEWS as readonly string[]).includes(v) ||
+      /^t:[^.]+\.[^.]+$/.test(v)),
+  refreshInterval: (v: unknown) =>
+    typeof v === "string" && INTERVALS.includes(Number(v)),
+  querySort: (v: unknown) => typeof v === "string" && /^[a-z_]+$/.test(v),
+};
+
 export default {
   data() {
+    const remembered = readRememberedView(
+      "database",
+      VIEW_DEFAULTS,
+      VIEW_VALIDATORS,
+    );
     return {
       threshold: readSlowThreshold(),
       schemas: readSchemas() as string[],
-      refreshInterval: "5",
-      intervals: [3, 5, 10, 15, 30, 60],
+      refreshInterval: remembered.refreshInterval,
+      intervals: INTERVALS,
       isPaused: false,
       lastUpdated: 0,
-      now: Date.now(),
-      clock: undefined as ReturnType<typeof setInterval> | undefined,
-      spinKey: 0,
+      rememberedView: remembered.view,
       treeOpen: false,
-      querySlowOnly: false,
-      querySort: "mean_exec_time",
+      querySlowOnly: remembered.querySlowOnly,
+      querySort: remembered.querySort,
       selectedQueryId: null as string | null,
       activeFetchedAt: Date.now(),
 
@@ -266,10 +279,11 @@ export default {
     };
   },
   mounted() {
-    this.clock = setInterval(() => (this.now = Date.now()), 1000);
-  },
-  beforeUnmount() {
-    clearInterval(this.clock);
+    // A bare /database opens where it was left.
+    const { tab, table } = this.$route.query;
+    if (!tab && !table && this.rememberedView !== "overview") {
+      this.go(this.rememberedView, { keepSlowOnly: true });
+    }
   },
   computed: {
     view(): string {
@@ -304,16 +318,13 @@ export default {
     pollMs(): number {
       return this.isPaused ? 0 : parseInt(this.refreshInterval) * 1000;
     },
-    updatedLabel(): string {
-      const s = this.lastUpdated
-        ? Math.max(0, Math.round((this.now - this.lastUpdated) / 1000))
-        : null;
-      const prefix = this.isPaused ? "paused" : "updated";
-      return s === null || s < 2
-        ? this.$t(`pages.database.explorer.${prefix}_just_now`)
-        : this.$t(`pages.database.explorer.${prefix}_seconds_ago`, {
-            seconds: s,
-          });
+    viewSnapshot(): typeof VIEW_DEFAULTS {
+      return {
+        view: this.view,
+        refreshInterval: this.refreshInterval,
+        querySlowOnly: this.querySlowOnly,
+        querySort: this.querySort,
+      };
     },
     currentLabel(): string {
       if (this.view.startsWith("t:")) return this.view.slice(2);
@@ -454,9 +465,12 @@ export default {
     view() {
       this.treeOpen = false;
     },
+    viewSnapshot(snapshot: typeof VIEW_DEFAULTS) {
+      saveRememberedView("database", snapshot, VIEW_DEFAULTS);
+    },
   },
   methods: {
-    go(key: string) {
+    go(key: string, options: { keepSlowOnly?: boolean } = {}) {
       const query: Record<string, string> = {};
       for (const [k, v] of Object.entries(this.$route.query)) {
         if (k !== "tab" && k !== "table" && typeof v === "string") {
@@ -468,7 +482,7 @@ export default {
       } else if (key !== "overview") {
         query.tab = key;
       }
-      if (key !== "queries") {
+      if (key !== "queries" && !options.keepSlowOnly) {
         this.querySlowOnly = false;
       }
       void this.$router.replace({ query });
@@ -487,10 +501,9 @@ export default {
     },
     togglePause() {
       this.isPaused = !this.isPaused;
-      if (!this.isPaused) this.refreshNow(false);
+      if (!this.isPaused) this.refreshNow();
     },
-    refreshNow(spin = true) {
-      if (spin) this.spinKey++;
+    refreshNow() {
       const queries = this.$apollo.queries as Record<string, any>;
       for (const name of Object.keys(queries)) {
         const q = queries[name];
@@ -880,21 +893,10 @@ export default {
 .db-swap-to {
   opacity: 0;
 }
-.db-spin-once {
-  animation: db-spin 600ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes db-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .db-swap-enter,
   .db-swap-leave {
     transition: none;
-  }
-  .db-spin-once {
-    animation: none;
   }
 }
 </style>

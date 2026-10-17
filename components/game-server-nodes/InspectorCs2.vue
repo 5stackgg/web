@@ -31,10 +31,10 @@ import {
 } from "~/components/game-server-nodes/nodeInspector";
 import {
   INSPECTOR,
-  TONE_TEXT,
   updateTarget,
   versionShort,
 } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
 import { relativeTime } from "~/components/game-server-nodes/nodeFormat";
 import { dateLocale } from "~/utilities/dateLocale";
 

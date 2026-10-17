@@ -41,29 +41,29 @@
           <div
             class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5"
           >
-            <DbTile :label="$t('pages.database.query_performance.calls')">
-              {{ stats.calls.toLocaleString() }}
-            </DbTile>
-            <DbTile
+            <StatTile
+              :label="$t('pages.database.query_performance.calls')"
+              :value="stats.calls.toLocaleString()"
+            />
+            <StatTile
               :label="$t('pages.database.explorer.avg_time')"
-              :sev="msSeverity(stats.mean_exec_time, threshold)"
+              :tone="msSeverity(stats.mean_exec_time, threshold) || undefined"
             >
               <DbSev :sev="msSeverity(stats.mean_exec_time, threshold)">{{
                 formatMs(stats.mean_exec_time)
               }}</DbSev>
-              <small class="ml-1 text-xs font-medium text-muted-foreground"
-                >ms</small
-              >
-            </DbTile>
-            <DbTile :label="$t('pages.database.explorer.max_time')">
-              {{ formatMs(stats.max_exec_time) }}
-              <small class="ml-1 text-xs font-medium text-muted-foreground"
-                >ms</small
-              >
-            </DbTile>
-            <DbTile :label="$t('pages.database.explorer.total_rows')">
-              {{ formatBig(stats.total_rows) }}
-            </DbTile>
+              <template #aside>ms</template>
+            </StatTile>
+            <StatTile
+              :label="$t('pages.database.explorer.max_time')"
+              :value="formatMs(stats.max_exec_time)"
+            >
+              <template #aside>ms</template>
+            </StatTile>
+            <StatTile
+              :label="$t('pages.database.explorer.total_rows')"
+              :value="formatBig(stats.total_rows)"
+            />
           </div>
         </section>
 
@@ -183,10 +183,7 @@
           <pre v-if="queryDetail.explain_plan" class="db-pre">{{
             queryDetail.explain_plan
           }}</pre>
-          <p
-            v-else
-            class="rounded-lg border border-dashed border-border px-3.5 py-3 text-xs text-muted-foreground"
-          >
+          <p v-else class="text-xs text-muted-foreground">
             {{ $t("pages.database.explorer.no_plan") }}
           </p>
         </section>
@@ -212,7 +209,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import DbLabel from "./DbLabel.vue";
 import DbSev from "./DbSev.vue";
 import DbTerm from "./DbTerm.vue";
-import DbTile from "./DbTile.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import { copyText } from "./dbCopy";
 import {
   formatBig,
@@ -233,7 +230,7 @@ export default {
     DbLabel,
     DbSev,
     DbTerm,
-    DbTile,
+    StatTile,
   },
   props: {
     queryid: {

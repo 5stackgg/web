@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import type { Tone } from "~/components/admin/tone";
 import {
   nodeStatus,
   type NodeLike,
@@ -9,9 +10,13 @@ import {
 } from "~/components/game-server-nodes/nodeState";
 import { clockLabel } from "~/components/game-server-nodes/nodeFormat";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
+import { isBaking } from "~/components/gpu-nodes/gpuSessions";
 
 const props = withDefaults(
-  defineProps<{ node: NodeLike; side?: "top" | "right" | "bottom" | "left" }>(),
+  defineProps<{
+    node: NodeLike & { shader_bake_status?: string | null };
+    side?: "top" | "right" | "bottom" | "left";
+  }>(),
   { side: "right" },
 );
 
@@ -19,16 +24,24 @@ const { t } = useI18n();
 
 const status = computed(() => nodeStatus(props.node));
 
-// The ping is only for a node that is up and taking work.
-const DOT: Record<NodeStatus, string> = {
-  online: "bg-success",
-  not_accepting: "bg-[hsl(var(--tac-amber))]",
-  setup: "bg-info",
-  offline: "bg-destructive",
-  disabled: "bg-muted-foreground/40",
+const TONE: Record<NodeStatus, Tone> = {
+  online: "ok",
+  not_accepting: "warn",
+  setup: "info",
+  offline: "bad",
+  disabled: "off",
 };
 
-const label = computed(() => {
+// The ping is for work running on the node right now: a CS2 update or a
+// shader bake. Online alone is a still dot.
+const updating = computed(
+  () => status.value !== "offline" && !!props.node.update_status,
+);
+const baking = computed(
+  () => status.value !== "offline" && isBaking(props.node),
+);
+
+const statusLabel = computed(() => {
   switch (status.value) {
     case "online":
       return t("common.online");
@@ -46,27 +59,23 @@ const label = computed(() => {
       return t("common.disabled");
   }
 });
+
+const label = computed(() =>
+  [
+    statusLabel.value,
+    updating.value ? t(`${INSPECTOR}.chip.updating`) : "",
+    baking.value ? t("pages.gpu_nodes.node_state.baking") : "",
+  ]
+    .filter(Boolean)
+    .join(" · "),
+);
 </script>
 
 <template>
-  <FiveStackToolTip as-child :delay-duration="120" :side="side">
-    <template #trigger>
-      <span
-        class="relative flex h-2 w-2 shrink-0"
-        role="img"
-        tabindex="-1"
-        :aria-label="label"
-      >
-        <span
-          v-if="status === 'online'"
-          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden"
-        ></span>
-        <span
-          class="relative inline-flex h-2 w-2 rounded-full transition-colors duration-300"
-          :class="DOT[status]"
-        ></span>
-      </span>
-    </template>
-    {{ label }}
-  </FiveStackToolTip>
+  <StatusDot
+    :tone="TONE[status]"
+    :live="updating || baking"
+    :label="label"
+    :side="side"
+  />
 </template>

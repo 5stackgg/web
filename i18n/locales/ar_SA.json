@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "استخدام CPU",
-      "memory_usage": "استخدام الذاكرة",
       "services": "الخدمات",
       "service": "خدمة",
-      "network": "الشبكة",
       "search_services_placeholder": "ابحث في الخدمات أو العقد...",
       "filter_by_node": "صفِّ حسب العقدة",
       "no_services_found": "لا توجد خدمات تطابق عوامل التصفية الحالية",
@@ -1285,7 +1282,6 @@
       "search_placeholder": "ابحث في الخدمات أو العقد",
       "scope_all": "كل الخدمات",
       "scope_attention": "تحتاج إلى انتباه",
-      "live": "مباشر · {time}",
       "live_hint": "ترسل كل عقدة تقريرًا كل 30 ثانية تقريبًا. تحتفظ الصفحة بآخر 90 دقيقة.",
       "filter_group": "عقد السيرفرات",
       "only_online": "العقد المتصلة فقط",
@@ -1416,7 +1412,11 @@
       "warnings": "التحذيرات",
       "warnings_like": "تحذيرات مثل {text}",
       "warnings_loaded": "التحذيرات في النافذة المحمّلة: {count} | التحذيرات في النافذة المحمّلة: {count}",
-      "warnings_word": "تحذيرات"
+      "warnings_word": "تحذيرات",
+      "status_ok": "لا تحذيرات ولا أخطاء في آخر 5 دقائق",
+      "status_warn": "تحذيرات في آخر 5 دقائق",
+      "status_bad": "أخطاء في آخر 5 دقائق",
+      "status_off": "لا مخرجات بعد"
     },
     "system_telemetry": {
       "title": "قياس الأسطول",
@@ -1648,9 +1648,9 @@
         "modes_unranked_caption": "أوضاع مخفية في ردهات الدرافت"
       },
       "jump_to": "انتقل إلى",
-      "updated_just_now": "حُدّث الآن · يتحدّث كل دقيقة",
-      "updated_ago": "حُدّث قبل {seconds} ث · يتحدّث كل دقيقة",
-      "features_title": "الميزات"
+      "features_title": "الميزات",
+      "not_reported_title": "لم يُبلَّغ عنه بعد",
+      "no_activity_hint": "يمتلئ الرسم البياني كلما أبلغت اللوحات عن المباريات التي تستضيفها."
     },
     "tournaments": {
       "title": "البطولات",
@@ -3653,7 +3653,7 @@
         "utility": "رميات الأدوات"
       },
       "ledger": {
-        "search": "ابحث في المقاطع والفرق واللاعبين والرميات",
+        "search": "ابحث في المقاطع والرميات",
         "view": {
           "flight": "قيد التنفيذ",
           "failed": "فشلت",
@@ -3762,7 +3762,8 @@
           "lineups_sub": "إصدار العرض v{version}",
           "render_one": "اعرض واحدًا أولًا",
           "render_one_waiting": "بانتظار انتهاء ذلك العرض. عندما يُبلغ عن الإصدار الحالي، تُفتح إعادة عرض القديمة."
-        }
+        },
+        "updated_ago": "حُدّث منذ {since}"
       }
     },
     "news": {
@@ -3993,10 +3994,8 @@
         "rebuilding_now": "تتم إعادة بناء {season} الآن. تعمل عملية إعادة بناء واحدة فقط في كل مرة."
       },
       "danger": {
-        "end_title": "إنهاء {season} الآن",
         "end_description": "يُغلقه اليوم ويوزّع جوائز الموسم حسب الترتيب النهائي. حتى يبدأ الموسم التالي، لا تُحتسب المباريات لأي موسم.",
         "end_button": "إنهاء الموسم",
-        "delete_title": "حذف {season}",
         "delete_description": "تصبح مبارياته بلا موسم. يُحتفظ بسجل ELO؛ وتُمسح إحصاءات الموسم.",
         "delete_button": "حذف الموسم",
         "end_confirm_title": "إنهاء {season} الآن؟",
@@ -4787,7 +4786,6 @@
         "node": "العقدة",
         "load": "الحمل",
         "vram": "VRAM",
-        "vram_help": "ذاكرة الفيديو المستخدمة على البطاقة",
         "workloads": "أعباء العمل"
       },
       "kind": {
@@ -4820,8 +4818,6 @@
       "sheet": {
         "now": "الآن",
         "shader_cache": "ذاكرة الشيدرات المؤقتة",
-        "video": "إعدادات الفيديو",
-        "video_hint": "تُطبَّق عندما تستضيف هذه العقدة بثًا مباشرًا أو تشغيل ديمو أو تصيير أبرز اللقطات.",
         "idle_ready": "جاهزة للبث المباشر وتشغيل الديمو والتصيير.",
         "unavailable": "لا تتلقى أعمال GPU حتى تُفعَّل وتتصل.",
         "no_metrics": "لا توجد مقاييس GPU ما دامت العقدة معطّلة أو غير متصلة أو قيد الإعداد.",
@@ -4841,6 +4837,33 @@
         "render_body": "سيتوقف ويحرّر الـ GPU.",
         "render_body_pct": "سيتوقف عند {pct}% ويحرّر الـ GPU.",
         "render_action": "أوقف التصيير"
+      },
+      "toggle_gpu_only_help": "يتولى أعمال GPU فقط، دون سيرفرات مباريات. تفعيله يمسح منطقته ومنافذه.",
+      "plate": {
+        "temperature": "درجة الحرارة",
+        "power": "الطاقة",
+        "vram_of": "{used} من {total} GB",
+        "hot": "حرارة مرتفعة، فوق {limit} °C",
+        "too_hot": "ساخنة جدًا، فوق {limit} °C",
+        "no_reading": "لا توجد قراءة مباشرة",
+        "cards": "{count} بطاقة | {count} بطاقات"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "تفعيل البث المباشر",
+          "demos": "تفعيل تشغيل Demo",
+          "rendering": "تفعيل التصيير"
+        },
+        "turn_off": {
+          "streaming": "إيقاف البث المباشر",
+          "demos": "إيقاف تشغيل Demo",
+          "rendering": "إيقاف التصيير"
+        },
+        "confirm_body": {
+          "streaming": "يستمر البث الجاري. لن يستقبل هذا الـ GPU بثًا جديدًا حتى يُعاد تفعيله.",
+          "demos": "يستمر التشغيل الجاري. لن يستقبل هذا الـ GPU عروض Demo جديدة حتى يُعاد تفعيله.",
+          "rendering": "يستمر التصيير الجاري. لن يستقبل هذا الـ GPU مهام تصيير جديدة حتى يُعاد تفعيله."
+        }
       }
     },
     "game_server_nodes": {
@@ -5017,9 +5040,6 @@
         "load": "الحمل"
       },
       "builds": {
-        "title": "سجل إصدارات CS2",
-        "description": "التحقق من Gamedata وبناء أصول الخرائط لكل إصدار من CS2، وما غيّره كل إصدار مقارنة بالإصدار السابق.",
-        "back": "عقد السيرفرات",
         "builds": "الإصدارات",
         "no_builds": "لم يتم التحقق من أي إصدار أو بناؤه بعد.",
         "current": "الحالي",
@@ -5029,7 +5049,8 @@
           "detected": "صدر التحديث",
           "gamedata": "Gamedata",
           "map_assets": "أصول الخرائط"
-        }
+        },
+        "empty_title": "لا توجد إصدارات بعد"
       },
       "max_label": "الحد الأقصى:",
       "ports_label": "المنافذ:",
@@ -5066,7 +5087,6 @@
         "game_server": "سيرفر اللعبة",
         "node_id": "معرّف العقدة",
         "addresses": "IP المحلي / العام",
-        "mode": "الوضع",
         "available_value": "{free} من {total}",
         "control": "التحكم",
         "update_log": "سجل تحديث CS2"
@@ -5121,8 +5141,7 @@
         },
         "load": {
           "mem": "ذاكرة",
-          "disk": "القرص",
-          "gpu": "GPU"
+          "disk": "القرص"
         },
         "disk_tip": "القرص: {used} من {total} مستخدم، {free} متاح",
         "actions_for": "إجراءات {node}",
@@ -5245,7 +5264,8 @@
           "in_out": "داخل {in} · خارج {out}",
           "caption": "آخر ساعة، عيّنة كل 30 ثانية.",
           "starts": "يبدأ السجل عند {time}.",
-          "gaps": "الانقطاعات في الخطوط هي فترات عدم الاتصال."
+          "gaps": "الانقطاعات في الخطوط هي فترات عدم الاتصال.",
+          "cadence": "عيّنة كل {seconds} ثانية."
         },
         "disk": {
           "last_report": "القرص · آخر تقرير",
@@ -5263,10 +5283,7 @@
         },
         "gpu": {
           "video": "إعدادات الفيديو",
-          "custom": "مخصص",
-          "match_server": "سيرفر مباريات",
-          "use_as_match": "استخدام كسيرفر مباريات",
-          "use_as_gpu": "استخدام لـ GPU فقط"
+          "custom": "مخصص"
         },
         "node": {
           "accepting": "يقبل المباريات",
@@ -5293,7 +5310,9 @@
           "from_node": "{count} تحذير من العقدة | {count} تحذيرات من العقدة",
           "docs": "التوثيق",
           "details": "التفاصيل"
-        }
+        },
+        "window_minutes": "آخر {count} دقيقة | آخر {count} دقائق",
+        "window_hours": "آخر {count} ساعة | آخر {count} ساعات"
       }
     },
     "dedicated_servers": {
@@ -5302,9 +5321,7 @@
       "docs_link": "عرض دليل الإعداد",
       "no_servers_title": "لا توجد سيرفرات مخصصة",
       "no_servers": "لم يتم العثور على سيرفرات مخصصة",
-      "create": {
-        "title": "أنشئ سيرفرًا مخصصًا"
-      },
+      "create": {},
       "table": {
         "connection_details": "تفاصيل الاتصال",
         "label": "التسمية",
@@ -5315,7 +5332,6 @@
       },
       "detail": {
         "enabled": "مفعّل",
-        "eyebrow": "سيرفر مخصص",
         "tabs": {
           "overview": "نظرة عامة",
           "players": "اللاعبون",
@@ -5325,14 +5341,9 @@
         },
         "status_label": {
           "connected": "متصل",
-          "disconnected": "غير متصل",
           "hibernating": "في وضع السبات",
-          "no_rcon": "لا يوجد RCON",
-          "version_mismatch": "عدم تطابق الإصدار"
+          "no_rcon": "لا يوجد RCON"
         },
-        "server_plugin_config": "إعدادات إضافة السيرفر",
-        "hide_config": "إخفاء الإعدادات",
-        "show_config": "عرض الإعدادات",
         "config_location": "يجب وضع هذه الإعدادات في:",
         "files": "ملفات",
         "player_management": "إدارة اللاعبين",
@@ -5356,13 +5367,7 @@
           "disconnected": "السيرفر غير متصل",
           "hibernating": "الخادم في وضع السبات حتى يتصل لاعب",
           "no_rcon": "السيرفر متصل لكن RCON غير متاح",
-          "connected": "السيرفر متصل وRCON متاح",
-          "plugin_version_mismatch": "إصدار الإضافة غير محدّث"
-        },
-        "delete_confirm": {
-          "title": "هل أنت متأكد تمامًا؟",
-          "description": "لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف سيرفرك نهائيًا وإزالة البيانات المرتبطة به من سيرفراتنا.",
-          "continue": "متابعة"
+          "connected": "السيرفر متصل وRCON متاح"
         },
         "save_restart": "حفظ وإعادة التشغيل",
         "map_rotation": {
@@ -5481,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "النقل إلى عقدة أخرى",
-          "title": "النقل إلى عقدة أخرى",
           "description": "يتوقف الخادم على {node}، وتُنسخ ملفاته إلى العقدة الجديدة، ثم يعمل مجددًا هناك.",
           "source_offline": "{node} غير متصلة، لذا لا يمكن نسخ ملفات الخادم. سيبدأ على العقدة الجديدة بالإعدادات الافتراضية، وكل ما يبقى على {node} سيظل هناك.",
           "without_files": "النقل بدون ملفات الخادم",
@@ -5490,7 +5493,6 @@
           "no_nodes": "لا توجد عقد سيرفرات أخرى",
           "free_slots": "الخانات الشاغرة: {count}",
           "free_disk": "{size} متاحة",
-          "confirm": "نقل الخادم",
           "started": "جارٍ نقل {server} إلى {node}",
           "warning": {
             "address": "سيحصل الخادم على عنوان جديد على العقدة الجديدة.",
@@ -5506,7 +5508,9 @@
             "updating": "يجري تحديث CS2",
             "no_build": "لم يتم تثبيت {game}",
             "no_slot": "لا توجد خانات خوادم شاغرة"
-          }
+          },
+          "dialog_title": "النقل إلى عقدة أخرى",
+          "confirm_move": "نقل السيرفر"
         },
         "migration": {
           "title": {
@@ -5527,14 +5531,17 @@
           "progress": "{done} من {total} ({percent}%)",
           "without_files": "بدون ملفات",
           "restored": "عاد الخادم إلى {node}.",
-          "cancel": "إلغاء النقل",
           "cancel_requested": "جارٍ إلغاء النقل",
           "dismiss": "إخفاء",
-          "locked": "يتم نقل الخادم إلى عقدة أخرى. حاول مرة أخرى بعد انتهاء النقل."
-        }
+          "locked": "يتم نقل الخادم إلى عقدة أخرى. حاول مرة أخرى بعد انتهاء النقل.",
+          "cancel_move": "إلغاء النقل"
+        },
+        "plugin_tag": "الإضافة v{version}",
+        "plugin_config": "إعدادات إضافة السيرفر",
+        "show_plugin_config": "عرض الإعدادات",
+        "hide_plugin_config": "إخفاء الإعدادات"
       },
       "clear_all": "مسح البحث والفلاتر",
-      "clear_search": "مسح البحث",
       "col_hosting": "الاستضافة",
       "col_players": "اللاعبون",
       "col_plugin": "الإضافة",
@@ -5583,7 +5590,12 @@
       "status_offline_since": "غير متصل منذ {time}",
       "status_playing": "{count} يلعبون",
       "status_plugin_outdated": "الإضافة قديمة",
-      "tip_disabled": "لا يُستخدم للمباريات أو اللعب العام."
+      "tip_disabled": "لا يُستخدم للمباريات أو اللعب العام.",
+      "join_server": "انضم للسيرفر",
+      "new_server": "سيرفر جديد",
+      "create_on_node": "يعمل على {node}",
+      "create_at_host": "يعمل على {address}",
+      "create_pick_place": "اختر مكان تشغيله"
     },
     "public_servers": {
       "title": "السيرفرات العامة",
@@ -6088,8 +6100,6 @@
         "overview": "نظرة عامة",
         "overview_hint": "قاعدة بيانات PostgreSQL · العدّادات منذ آخر إعادة ضبط للإحصائيات",
         "pause_refreshing": "إيقاف التحديث مؤقتًا",
-        "paused_just_now": "متوقف مؤقتًا · حُدّث للتو",
-        "paused_seconds_ago": "متوقف مؤقتًا · حُدّث قبل {seconds} s",
         "pct_of_table": "% من الجدول",
         "pid_actions": "إجراءات الـ pid {pid}",
         "query_details": "تفاصيل الاستعلام",
@@ -6099,7 +6109,6 @@
         "reclaimable": "قابل للاسترجاع",
         "reclaimable_tip": "مُقدَّر من الصفوف الميتة. VACUUM يجعل المساحة قابلة لإعادة الاستخدام؛ فقط VACUUM FULL أو pg_repack يعيدها إلى القرص.",
         "refresh_every": "التحديث كل",
-        "refresh_now": "تحديث الآن",
         "resume_refreshing": "استئناف التحديث",
         "rollbacks_count": "Rollbacks: {count}",
         "running_now": "قيد التشغيل الآن",
@@ -6152,8 +6161,6 @@
         "tuples_read": "صفوف مقروءة",
         "tuples_returned": "صفوف مُعادة",
         "tuples_updated": "صفوف محدّثة",
-        "updated_just_now": "حُدّث للتو",
-        "updated_seconds_ago": "حُدّث قبل {seconds} s",
         "updates": "التحديثات",
         "view_all_slow": "عرض كل الاستعلامات البطيئة",
         "wait_event": "حدث الانتظار",
@@ -6401,7 +6408,6 @@
         "empty_installed_title": "لا شيء مثبّت بعد",
         "empty_installed_hint": "ثبّت إضافة من الكل وستلتقطها كل عقدة.",
         "empty_title": "لا توجد إضافات مطابقة",
-        "show_all": "عرض كل الإضافات",
         "installing_toast": "جارٍ تثبيت {name} على كل عقدة متصلة",
         "retry_toast": "إعادة محاولة {name} على العقد الفاشلة",
         "update_toast": "العقد تثبّت الإصدار {version}؛ ويبقى مثبّتًا عليه."
@@ -6440,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "ابحث في الجوائز",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -6466,7 +6471,6 @@
       "automation_tournament": "أتمتة البطولة",
       "builtin_cant_delete": "لا يمكن حذف الجوائز المدمجة",
       "builtin_note": "مدمجة. تمنحها أتمتة البطولات والمواسم، لذا يمكن تعديلها لكن لا يمكن حذفها.",
-      "clear_search": "مسح البحث",
       "col_award": "الجائزة",
       "col_earned_at": "حُصل عليها في",
       "col_holder": "الحامل",
@@ -6504,8 +6508,6 @@
       "owner_upcoming": "قادم",
       "repeatable": "قابلة للتكرار",
       "revoke_from": "سحب من {name}",
-      "search_placeholder_v2": "ابحث في الجوائز والبطولات والفعاليات",
-      "show_all_kinds": "عرض كل الأنواع",
       "show_more": "عرض المزيد",
       "sort_last_granted": "آخر منح",
       "status": {
@@ -6566,13 +6568,7 @@
         "cameraTalkback": "الرد الصوتي للكاميرا"
       },
       "resources": "استهلاك الموارد",
-      "cpu": "المعالج",
-      "memory": "الذاكرة",
-      "no_resources": "لا توجد بعد مقاييس pod لخادم الوسائط — ربما لا يجمعها خادم المقاييس في العنقود.",
       "legend": "المسار هو خانة بثّ واحدة لها اسم — ميكروفون شخص واحد، أو كاميرا واحدة. و«يبثّ» يحصي ما يرسل وسائط فعليًا الآن؛ وقد يبقى المسار خاملًا بين انضمام أحدهم وبدء بثه. أما الجلسات فهي اتصالات WebRTC، وكل مشاهد للبث يُعد واحدة منها، لذا ترتفع أسرع من غيرها.",
-      "status_reachable_now": "متاح · حُدّث الآن · استعلام كل 10 ث",
-      "status_reachable_ago": "متاح · حُدّث قبل {seconds} ث · استعلام كل 10 ث",
-      "status_unreachable": "غير متاح منذ {time} · إعادة المحاولة كل 10 ث",
       "logs_button": "سجلات mediamtx",
       "tip_publishing": "المسارات التي ترسل وسائط فعلًا الآن. قد يبقى المسار خاملًا بين انضمام شخص ما وبدء بثّه.",
       "tip_paths": "المسار هو خانة بث مسمّاة واحدة — ميكروفون شخص واحد أو كاميرا واحدة.",
@@ -6589,7 +6585,12 @@
       "share_received": "حصة ما وصل",
       "not_in_use": "غير مستخدم الآن: {kinds}",
       "resources_hint": "pod الخاص بـ mediamtx · استعلام كل 30 ث",
-      "cores_now": "{cores} نواة قيد الاستخدام"
+      "cores_now": "{cores} نواة قيد الاستخدام",
+      "status_reachable": "متاح",
+      "status_unreachable_since": "غير متاح منذ {time}",
+      "kinds_unknown_title": "أرقام كل ميزة غير معروفة",
+      "no_resources_title": "لا توجد مقاييس للـ pod بعد",
+      "no_resources_hint": "قد لا يجمع خادم المقاييس في الكتلة بيانات pod الخاص بـ mediamtx."
     },
     "utility": {
       "eyebrow": "مكتبة الأدوات",
@@ -7851,6 +7852,99 @@
         "created_off": "تم إنشاء التنبيه. يبقى متوقفًا حتى تشغّله.",
         "expired": "انتهت صلاحية «{name}» وأُزيل من اللافتة"
       }
+    },
+    "admin_home": {
+      "title": "نظرة عامة",
+      "need_you": "{count} أمر يحتاج إليك | {count} أمور تحتاج إليك",
+      "all_clear": "كل شيء على ما يرام",
+      "all_clear_line": "لا شيء يحتاج إليك الآن.",
+      "live_hint": "تتحدث معظم الأقسام فور تغيرها. تتحدث المقاييس كل 30 ثانية، وقاعدة البيانات كل دقيقة.",
+      "everything_else": "كل ما عدا ذلك",
+      "open": "فتح",
+      "open_area": "فتح {area}",
+      "add_steam_account": "إضافة حساب Steam",
+      "more": "+{count} آخر | +{count} أخرى",
+      "card": {
+        "no_problems": "لا توجد مشكلات",
+        "checking": "جارٍ التحقق…",
+        "none": "لا يوجد بعد",
+        "no_online": "لا توجد عقدة متصلة",
+        "season_starts": "يبدأ الموسم {number} خلال {count} يوم | يبدأ الموسم {number} خلال {count} أيام",
+        "of_online": "من {total} متصلة",
+        "servers_free": "{free} من {capacity} خوادم متاحة",
+        "of_connected": "من {total} متصلة",
+        "offline": "{count} غير متصل | {count} غير متصلة",
+        "of_free": "من {total} متاحة",
+        "accounts_free": "{free} من {total} حسابات Steam متاحة",
+        "in_flight": "قيد التنفيذ",
+        "previews_current": "{current} من {total} معاينات محدثة",
+        "of_within": "من {total} ضمن الحدود",
+        "slow_statements": "استعلام بطيء | استعلامات بطيئة",
+        "threshold": "بطيء فوق {threshold}",
+        "banners_showing": "لافتة معروضة | لافتات معروضة",
+        "installed": "مثبتة",
+        "updates": "{count} تحديث متاح | {count} تحديثات متاحة",
+        "up_to_date": "كلها محدثة",
+        "all_set_up": "تم إعداد كل شيء"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} عقدة غير متصلة | {count} عقد غير متصلة",
+          "cs2_failed": "فشل تحديث CS2 على {count} عقدة | فشل تحديث CS2 على {count} عقد",
+          "overprovisioned": "{count} عقدة تشغّل خوادم أكثر مما يتسع له معالجها | {count} عقد تشغّل خوادم أكثر مما تتسع له معالجاتها",
+          "plugin_unsupported": "الإضافة المثبتة على {count} عقدة لا تدعم إصدار CS2 الخاص بها | الإضافات المثبتة على {count} عقد لا تدعم إصدار CS2 الخاص بها",
+          "disk_full": "قرص {count} عقدة ممتلئ تقريبًا | أقراص {count} عقد ممتلئة تقريبًا",
+          "cpu_governor": "{count} عقدة لا تستخدم منظم المعالج performance | {count} عقد لا تستخدم منظم المعالج performance",
+          "not_ready_region": "{count} عقدة لا يمكنها استضافة المباريات: لا توجد منطقة | {count} عقد لا يمكنها استضافة المباريات: لا توجد منطقة",
+          "not_ready_ports": "{count} عقدة لا يمكنها استضافة المباريات: لا يوجد نطاق منافذ | {count} عقد لا يمكنها استضافة المباريات: لا يوجد نطاق منافذ",
+          "not_ready_cs2": "{count} عقدة لا يمكنها استضافة المباريات: CS2 غير مثبت | {count} عقد لا يمكنها استضافة المباريات: CS2 غير مثبت",
+          "cs2_behind": "تحديث CS2 متاح لـ {count} عقدة | تحديث CS2 متاح لـ {count} عقد",
+          "disk_filling": "قرص {count} عقدة يمتلئ | أقراص {count} عقد تمتلئ",
+          "cpu_slow": "معالج {count} عقدة يعمل بأقل من 3 GHz | معالجات {count} عقد تعمل بأقل من 3 GHz",
+          "cpu_warning": "{count} عقدة تُبلغ عن تحذير في المعالج | {count} عقد تُبلغ عن تحذيرات في المعالج"
+        },
+        "gpus": {
+          "pool_empty": "لا توجد حسابات Steam: لا يمكن لوحدات GPU العرض أو تشغيل العروض أو البث",
+          "pool_short": "مجموعة Steam ينقصها {count} حساب لتغطية كل GPU | مجموعة Steam ينقصها {count} حسابات لتغطية كل GPU",
+          "offline": "{count} وحدة GPU غير متصلة | {count} وحدات GPU غير متصلة",
+          "bake_failed": "فشل تجهيز الشيدرات على {count} وحدة GPU | فشل تجهيز الشيدرات على {count} وحدات GPU",
+          "renders_stuck": "{count} عملية عرض تنتظر ولا توجد وحدة GPU تستقبل العرض | {count} عمليات عرض تنتظر ولا توجد وحدة GPU تستقبل العرض"
+        },
+        "metrics": {
+          "cpu": "{count} عقدة معالجها فوق {threshold}% | {count} عقد معالجها فوق {threshold}%",
+          "memory": "{count} عقدة ذاكرتها فوق {threshold}% | {count} عقد ذاكرتها فوق {threshold}%",
+          "disk": "{count} عقدة لديها قرص فوق {threshold}% | {count} عقد لديها قرص فوق {threshold}%",
+          "gpu_util": "{count} وحدة GPU مشغولة فوق {threshold}% منذ 5 دقائق | {count} وحدات GPU مشغولة فوق {threshold}% منذ 5 دقائق",
+          "gpu_vram": "{count} وحدة GPU ذاكرتها VRAM فوق {threshold}% | {count} وحدات GPU ذاكرتها VRAM فوق {threshold}%",
+          "gpu_temp": "{count} وحدة GPU حرارتها {threshold} °C أو أعلى | {count} وحدات GPU حرارتها {threshold} °C أو أعلى"
+        },
+        "seasons": {
+          "rebuild": "الموسم {number} يحتاج إلى إعادة بناء ELO"
+        },
+        "renders": {
+          "failed": "فشلت {count} عملية عرض خلال اليوم الماضي | فشلت {count} عمليات عرض خلال اليوم الماضي",
+          "behind": "خط العرض متأخر: يصوّر الإصدار v{pipeline} بينما تتوقع الواجهة البرمجية v{version}",
+          "missing": "{count} تشكيلة بلا معاينة | {count} تشكيلات بلا معاينة",
+          "outdated": "معاينة {count} تشكيلة قديمة | معاينات {count} تشكيلات قديمة"
+        },
+        "database": {
+          "locks": "{count} جلسة تنتظر قفلًا | {count} جلسات تنتظر أقفالًا",
+          "running": "{count} استعلام يعمل منذ أكثر من {threshold} | {count} استعلامات تعمل منذ أكثر من {threshold}",
+          "slow": "{count} استعلام يتجاوز متوسطه {threshold} | {count} استعلامات يتجاوز متوسطها {threshold}"
+        },
+        "plugins": {
+          "failed": "فشل نشر {count} إضافة | فشل نشر {count} إضافات",
+          "update": "تحديث متاح لـ {count} إضافة | تحديث متاح لـ {count} إضافات",
+          "manual": "عُثر على {count} إضافة على القرص ولا تُدار من هنا | عُثر على {count} إضافات على القرص ولا تُدار من هنا"
+        },
+        "settings": {
+          "not_set_up": "{count} قسم إعدادات غير مُعد | {count} أقسام إعدادات غير مُعدة"
+        },
+        "servers": {
+          "no_rcon": "{count} خادم لا يستجيب لـ RCON | {count} خوادم لا تستجيب لـ RCON",
+          "plugin_outdated": "{count} خادم يشغّل إضافة قديمة | {count} خوادم تشغّل إضافة قديمة"
+        }
+      }
     }
   },
   "layouts": {
@@ -7995,7 +8089,8 @@
         "seasons": "المواسم",
         "stream_deck": "Stream Deck",
         "awards": "Awards",
-        "control_room": "غرفة التحكم"
+        "control_room": "غرفة التحكم",
+        "overview": "نظرة عامة"
       },
       "modes": {
         "play": "العب",
@@ -8389,7 +8484,6 @@
     "none": "لا يوجد لاعبون متاحون"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "تُربط هذه الملفات بمجلد `csgo` عند تشغيل السيرفر.",
     "any": "أي",
     "remove": "أزل",
     "edit": "عدّل",
@@ -8454,8 +8548,6 @@
     "exit_fullscreen": "إنهاء ملء الشاشة",
     "download": "نزّل",
     "upload": "ارفع",
-    "sort_ascending": "ترتيب تصاعدي",
-    "sort_descending": "ترتيب تنازلي",
     "see_all": "عرض الكل",
     "standby_no_activity": "استعداد · لا نشاط",
     "players": "لاعبين",
@@ -8519,7 +8611,8 @@
     "empty_filtered": {
       "title": "لا شيء يطابق هذه الفلاتر",
       "description": "جرّب مسح الفلاتر أو توسيع البحث."
-    }
+    },
+    "clear_filters": "مسح الفلاتر"
   },
   "global_search": {
     "placeholder": "ابحث عن اللاعبين والصفحات والإعدادات",
@@ -8547,8 +8640,6 @@
   },
   "file_manager": {
     "location": "الموقع",
-    "dedicated_server_files": "ملفات السيرفر المخصص",
-    "game_server_node_files": "ملفات عقدة السيرفرات",
     "loading_server_info": "جاري تحميل معلومات السيرفر...",
     "create_directory": {
       "title": "أنشئ مجلدًا جديدًا",
@@ -11614,10 +11705,6 @@
     "remove_node_confirm_title": "حذف هذه العقدة؟",
     "remove_node_confirm_description": "ستُحذف العقدة وجميع الخوادم المخصصة عليها من 5Stack. لا يمكن التراجع عن ذلك.",
     "remove_ports": "احذف المنافذ",
-    "mode": {
-      "use_as_match": "استخدمها كسيرفر مباريات",
-      "use_as_gpu_only": "استخدمها لـ GPU فقط"
-    },
     "show_update_logs": "اعرض سجلات التحديث",
     "update_failed": "فشل التحديث",
     "update_failed_description": "فشل التحديث الأخير. يتم الاحتفاظ بسجلات التحديث لمدة 24 ساعة.",
@@ -11889,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "الاستخدام",
-    "mount_os": "نظام التشغيل",
-    "mount_demos": "Demos",
-    "total_series": "{label} الإجمالي",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} المتوسط"
   },
@@ -11925,7 +12008,6 @@
       "move_node": "نقل الخادم",
       "valve_preset_group": "إعدادات Valve الجاهزة",
       "custom_mode_group": "الأنماط المخصصة",
-      "edit_mode": "تعديل الوضع",
       "cs2_only": "CS2 فقط",
       "needs_node": "يحتاج إلى عقدة",
       "csgo_valve_only": "سيرفرات CS:GO تشغّل إعدادات Valve الجاهزة فقط. الأنماط المصنّفة والتدريبية والمخصصة تحتاج إلى CS2.",
@@ -11949,9 +12031,9 @@
       "generate": "توليد",
       "port": "منفذ اللعبة",
       "tv_port": "منفذ TV",
-      "create": "أنشئ السيرفر",
       "max_players": "أقصى عدد لاعبين",
-      "max_players_description": "أقصى عدد لاعبين يمكنهم الاتصال بالسيرفر"
+      "max_players_description": "أقصى عدد لاعبين يمكنهم الاتصال بالسيرفر",
+      "edit_mode_link": "تعديل الوضع"
     },
     "rcon": {
       "console_output": "مخرجات الكونسول",
@@ -13782,7 +13864,6 @@
       "unique_24h": "فريدون · 24 س",
       "unique_7d": "فريدون · 7 أيام",
       "sessions_7d": "الجلسات · 7 أيام",
-      "time_played_7d": "وقت اللعب · 7 أيام",
       "avg_session": "متوسط الجلسة",
       "players": "لاعبين",
       "joins": "مرات دخول",
@@ -13794,7 +13875,9 @@
       "empty": "لم يلعب أحد هنا خلال هذه الفترة.",
       "no_matches": "لا يوجد لاعبون يطابقون هذا البحث.",
       "showing": "عرض {shown} من {total}",
-      "load_more": "تحميل المزيد"
+      "last_seen": "آخر ظهور",
+      "time_played_col": "وقت اللعب · 7 أيام",
+      "show_more": "تحميل المزيد"
     },
     "player_tab": {
       "moderator_note": "يرى مشرفو المحتوى أيضًا الأوقات الدقيقة والجلسات والأسماء المستخدمة وعناوين IP.",
@@ -13833,12 +13916,8 @@
       "offline": "غير متصل",
       "map": "الخريطة",
       "community_server": "سيرفر مجتمع",
-      "online_now": "متصل الآن",
-      "players_this_week": "لاعبو هذا الأسبوع",
       "different_players": "لاعبين مختلفين",
-      "hours_this_week": "ساعات هذا الأسبوع",
       "played_by_everyone": "لعبها الجميع",
-      "all_time_players": "لاعبو كل الأوقات",
       "since": "منذ {date}",
       "activity": "النشاط · آخر 7 أيام",
       "activity_description": "إجمالي الساعات التي لعبها الجميع هنا كل يوم. لا تُعرض أوقات اللعب الفردية لأي أحد.",
@@ -13855,7 +13934,13 @@
       "day": "اليوم",
       "player_hours": "ساعات اللاعبين",
       "not_found_title": "السيرفر غير موجود",
-      "not_found_description": "هذا السيرفر غير موجود أو ليس عامًا."
+      "not_found_description": "هذا السيرفر غير موجود أو ليس عامًا.",
+      "tile": {
+        "online_now": "متصل الآن",
+        "players_this_week": "لاعبو هذا الأسبوع",
+        "hours_this_week": "ساعات هذا الأسبوع",
+        "all_time_players": "لاعبو كل الأوقات"
+      }
     }
   },
   "quick_look": {
@@ -13923,6 +14008,32 @@
         "twitch_unavailable": "لم يستجب Twitch. حاول مرة أخرى بعد قليل.",
         "unknown": "حدث خطأ ما. حاول مرة أخرى."
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "مسح البحث"
+    },
+    "sort": {
+      "sorted_ascending": "مرتّب تصاعديًا",
+      "sorted_descending": "مرتّب تنازليًا"
+    },
+    "live_stamp": {
+      "live_at": "مباشر · {time}",
+      "updated_now": "حُدّث للتو",
+      "updated_now_after": "حُدّث للتو",
+      "updated_seconds": "حُدّث قبل {seconds} ث",
+      "updated_seconds_after": "حُدّث قبل {seconds} ث",
+      "updated_minutes": "حُدّث قبل {minutes} د",
+      "updated_minutes_after": "حُدّث قبل {minutes} د",
+      "paused": "متوقف مؤقتًا",
+      "every_seconds": "يتحدّث كل {seconds} ث",
+      "every_minute": "يتحدّث كل دقيقة",
+      "every_minutes": "يتحدّث كل {minutes} د",
+      "refresh_now": "تحديث الآن"
+    },
+    "last_changed": {
+      "updated": "حُدّث {time}"
     }
   }
 }

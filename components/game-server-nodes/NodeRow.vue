@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import SelectDot from "~/components/admin/SelectDot.vue";
 import NodeStatusDot from "~/components/game-server-nodes/NodeStatusDot.vue";
 import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
 import NodeCs2Chip from "~/components/game-server-nodes/NodeCs2Chip.vue";
@@ -50,8 +51,8 @@ import {
 import {
   attentionCopy,
   INSPECTOR,
-  TONE_TEXT,
 } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
 
 export type RowAction =
   "open" | "update" | "rename" | "ports" | "files" | "select" | "remove";
@@ -60,7 +61,8 @@ const props = defineProps<{
   node: NodeLike & Record<string, any>;
   selected: boolean;
   inSelection: boolean;
-  tabbable: boolean;
+  /** Something is selected: every row shows its checkbox. */
+  selecting: boolean;
   gameVersions: Array<Record<string, any>>;
   context: IssueContext;
   diskThresholds: DiskThresholds;
@@ -71,7 +73,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   pick: [id: string, event: MouseEvent | KeyboardEvent];
   action: [action: RowAction, id: string];
-  focusRow: [id: string];
+  select: [id: string, event: MouseEvent];
 }>();
 
 const { t } = useI18n();
@@ -155,11 +157,12 @@ function onMouseDown(event: MouseEvent) {
   }
 }
 
+// Enter belongs to the list keyboard (useListKeyboard); Space opens too.
 function onKeydown(event: KeyboardEvent) {
   if (event.target !== event.currentTarget) {
     return;
   }
-  if (event.key === "Enter" || event.key === " ") {
+  if (event.key === " ") {
     event.preventDefault();
     emit("pick", props.node.id, event);
   }
@@ -168,20 +171,25 @@ function onKeydown(event: KeyboardEvent) {
 
 <template>
   <tr
-    class="gsn-row"
+    class="gsn-row group/row"
     :data-node="node.id"
     :data-off="!node.enabled"
-    :tabindex="tabbable ? 0 : -1"
     :aria-selected="selected"
     @click="onClick"
     @mousedown="onMouseDown"
     @keydown="onKeydown"
-    @focus="emit('focusRow', node.id)"
   >
     <td>
       <div class="flex min-w-0 items-center gap-2.5">
         <NodeControlMenu :node="node" align="start" class="shrink-0" />
-        <NodeStatusDot :node="node" />
+        <SelectDot
+          :checked="inSelection"
+          :selecting="selecting"
+          :label="t('pages.game_server_nodes.row.select', { node: name })"
+          @toggle="(event) => emit('select', node.id, event)"
+        >
+          <NodeStatusDot :node="node" />
+        </SelectDot>
         <div class="grid min-w-0 gap-0.5">
           <span
             class="truncate font-semibold"

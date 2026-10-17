@@ -18,7 +18,6 @@ import {
   Play,
   RotateCcw,
   RotateCw,
-  Search,
   Trash2,
   TriangleAlert,
   X,
@@ -59,11 +58,15 @@ import SlideSwap from "~/components/ui/transitions/SlideSwap.vue";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Skeleton } from "~/components/ui/skeleton";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
+import SortHeader from "~/components/admin/SortHeader.vue";
+import SelectDot from "~/components/admin/SelectDot.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { nextSort } from "~/components/admin/sort";
+import { TONE_TEXT, type Tone } from "~/components/admin/tone";
+import { useBulkSelect } from "~/composables/useBulkSelect";
+import { useListKeyboard } from "~/composables/useListKeyboard";
+import { useRememberedView } from "~/composables/useRememberedView";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -98,6 +101,8 @@ import {
 } from "~/utilities/utilityRenderQueue";
 import {
   CLIP_TERMINAL,
+  LEDGER_SORT_DIRS,
+  LEDGER_SORT_KEYS,
   UTILITY_TERMINAL,
   batchesOf,
   buildLedgerRows,
@@ -106,10 +111,12 @@ import {
   countInView,
   lineupsToRender,
   pageWindow,
+  sortLedgerRows,
   type ClipBatchSummary,
   type LedgerClipJob,
   type LedgerKind,
   type LedgerRow,
+  type LedgerSortKey,
   type LedgerView,
 } from "~/components/render-queue/renderQueueLedger";
 import {
@@ -118,6 +125,8 @@ import {
   clipTitle,
   since,
   statusIcon,
+  statusLive,
+  statusTone,
   statusToneClass,
 } from "~/components/render-queue/renderQueueDisplay";
 import type { UtilityLineupRender } from "~/types/utility";
@@ -145,28 +154,85 @@ const route = useRoute();
 const router = useRouter();
 const { showClip, setClipQueue } = useClipModal();
 
-// In the address (as `tab`, which never remounts the page), so a refresh or
-// a shared link lands on the same list.
+// The list, queues, maps, grouping and sort come back on the next visit.
+const remembered = useRememberedView(
+  "render-queue",
+  {
+    tab: "flight" as LedgerView,
+    kinds: ["clip", "utility"] as LedgerKind[],
+    maps: [] as string[],
+    grouped: true,
+    sortKey: "at" as LedgerSortKey,
+    sortDir: "desc" as "asc" | "desc",
+  },
+  {
+    validate: {
+      tab: (value) => VIEWS.includes(value as LedgerView),
+      kinds: (value) =>
+        Array.isArray(value) &&
+        value.length > 0 &&
+        value.every((kind) => kind === "clip" || kind === "utility"),
+      maps: (value) =>
+        Array.isArray(value) && value.every((name) => typeof name === "string"),
+      sortKey: (value) => LEDGER_SORT_KEYS.includes(value as LedgerSortKey),
+      sortDir: (value) => value === "asc" || value === "desc",
+    },
+  },
+);
+
+// Also in the address (as `tab`, which never remounts the page), so a
+// refresh or a shared link lands on the same list; the address wins.
+const urlView = computed<LedgerView | null>(() =>
+  route.query.tab === "failed"
+    ? "failed"
+    : route.query.tab === "finished"
+      ? "done"
+      : null,
+);
 const view = computed<LedgerView>({
-  get: () =>
-    route.query.tab === "failed"
-      ? "failed"
-      : route.query.tab === "finished"
-        ? "done"
-        : "flight",
+  get: () => urlView.value ?? remembered.tab,
   set: (value) => {
+    remembered.tab = value;
     void router.replace({
       query: { ...route.query, tab: VIEW_QUERY[value] },
     });
   },
 });
+watch(
+  urlView,
+  (value) => {
+    if (value) remembered.tab = value;
+  },
+  { immediate: true },
+);
 const viewIndex = computed(() => VIEWS.indexOf(view.value));
 
 const query = ref("");
-const kindFilter = ref<LedgerKind[]>(["clip", "utility"]);
-const mapFilter = ref<string[]>([]);
-const grouped = ref(true);
+const kindFilter = computed<LedgerKind[]>({
+  get: () => remembered.kinds,
+  set: (value) => (remembered.kinds = value),
+});
+const mapFilter = computed<string[]>({
+  get: () => remembered.maps,
+  set: (value) => (remembered.maps = value),
+});
+const grouped = computed<boolean>({
+  get: () => remembered.grouped,
+  set: (value) => (remembered.grouped = value),
+});
 const page = ref(1);
+
+// History sorts by any column; in flight keeps the order the pods work in.
+const sortable = computed(() => view.value !== "flight");
+function toggleSort(key: string) {
+  const next = nextSort(
+    { key: remembered.sortKey, dir: remembered.sortDir },
+    key as LedgerSortKey,
+    LEDGER_SORT_DIRS,
+  );
+  remembered.sortKey = next.key;
+  remembered.sortDir = next.dir;
+}
 
 // One ticker for the page: elapsed is what tells a stuck queue from a slow
 // one.
@@ -437,8 +503,36 @@ function batchTitle(job: ClipJob): string {
 
 /* ---------------- rows ---------------- */
 
+const presentMaps = computed(() => {
+  const out = new Map<string, string>();
+  for (const job of clipJobs.value) {
+    const name = job.match_map?.map?.name;
+    if (name && !out.has(name)) out.set(name, mapLabel(job.match_map?.map));
+  }
+  for (const render of utilityRenders.value) {
+    if (render.map_name && !out.has(render.map_name)) {
+      out.set(render.map_name, cleanMapName(render.map_name));
+    }
+  }
+  return [...out.entries()]
+    .map(([name, label]) => ({ name, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+});
+
+function rowName(row: Row): string {
+  return row.kind === "clip"
+    ? clipTitle(row.job, t)
+    : (row.render.lineup?.name ?? row.render.utility_lineup_id);
+}
+
 const kinds = computed(() => new Set(kindFilter.value));
-const maps = computed(() => new Set(mapFilter.value));
+// A remembered map with nothing on it any more doesn't filter: it has no
+// chip to turn it off.
+const activeMaps = computed(() => {
+  const present = new Set(presentMaps.value.map((map) => map.name));
+  return mapFilter.value.filter((name) => present.has(name));
+});
+const maps = computed(() => new Set(activeMaps.value));
 
 const rows = computed<Row[]>(() => {
   const list = buildLedgerRows({
@@ -450,7 +544,11 @@ const rows = computed<Row[]>(() => {
     maps: maps.value,
   });
   if (view.value !== "flight") {
-    return list;
+    return sortLedgerRows(
+      list,
+      { key: remembered.sortKey, dir: remembered.sortDir },
+      rowName,
+    );
   }
   // Lineups in the order the pod will film them.
   const order = utilityQueueRows.value;
@@ -502,9 +600,19 @@ watch(pageCount, (count) => {
     page.value = count;
   }
 });
-watch([view, query, kindFilter, mapFilter], () => {
-  page.value = 1;
-});
+watch(
+  [
+    view,
+    query,
+    kindFilter,
+    activeMaps,
+    () => remembered.sortKey,
+    () => remembered.sortDir,
+  ],
+  () => {
+    page.value = 1;
+  },
+);
 
 function goToPage(next: number) {
   page.value = Math.max(1, Math.min(pageCount.value, next));
@@ -569,33 +677,17 @@ const lines = computed<Line[]>(() => {
   return out;
 });
 
-const presentMaps = computed(() => {
-  const out = new Map<string, string>();
-  for (const job of clipJobs.value) {
-    const name = job.match_map?.map?.name;
-    if (name && !out.has(name)) out.set(name, mapLabel(job.match_map?.map));
-  }
-  for (const render of utilityRenders.value) {
-    if (render.map_name && !out.has(render.map_name)) {
-      out.set(render.map_name, cleanMapName(render.map_name));
-    }
-  }
-  return [...out.entries()]
-    .map(([name, label]) => ({ name, label }))
-    .sort((a, b) => a.label.localeCompare(b.label));
-});
-
 const filterCount = computed(
   () =>
     (kindFilter.value.length < 2 ? 1 : 0) +
-    mapFilter.value.length +
+    activeMaps.value.length +
     (grouped.value ? 0 : 1),
 );
 const filtering = computed(
   () =>
     !!query.value.trim() ||
     kindFilter.value.length < 2 ||
-    mapFilter.value.length > 0,
+    activeMaps.value.length > 0,
 );
 
 function toggleKind(kind: LedgerKind) {
@@ -698,7 +790,7 @@ function batchNote(summary: ClipBatchSummary): {
   if (summary.paused) {
     return {
       text: t("pages.render_queue.ledger.batch.paused"),
-      tone: "text-[hsl(var(--tac-amber))]",
+      tone: TONE_TEXT.warn,
     };
   }
   if (
@@ -709,7 +801,7 @@ function batchNote(summary: ClipBatchSummary): {
       text: t("pages.render_queue.ledger.batch.silent", {
         since: since(summary.lastHeardAt, now.value),
       }),
-      tone: "text-warning",
+      tone: TONE_TEXT.warn,
     };
   }
   if (summary.boot) {
@@ -765,100 +857,87 @@ const resumeBlocked = computed(
 );
 
 // What the GPUs are doing, for the queue as a whole.
-const queueStatus = computed<{ key: string; tone: string; count?: number }>(
+const queueStatus = computed<{ key: string; tone: Tone; count?: number }>(
   () => {
     const flying = clipInFlight.value;
     const rendering = flying.filter(
       (job) => job.status === "rendering" || job.status === "uploading",
     ).length;
     if (rendering > 0) {
-      return {
-        key: "rendering",
-        tone: "text-[hsl(var(--tac-amber))]",
-        count: rendering,
-      };
+      return { key: "rendering", tone: "ok", count: rendering };
     }
     if (flying.length > 0 && flying.every((job) => job.paused === true)) {
-      return { key: "paused", tone: "text-[hsl(var(--tac-amber))]" };
+      return { key: "paused", tone: "warn" };
     }
     const s = gpuPool.status;
     if (gpuPool.hasLoaded && s) {
       if (s.total_gpu_nodes === 0) {
-        return { key: "no_gpu_registered", tone: "text-destructive" };
+        return { key: "no_gpu_registered", tone: "bad" };
       }
       if (s.free_gpu_nodes_for_batch === 0 && flying.length > 0) {
         if (s.renders_paused_for_active_match) {
-          return {
-            key: "paused_active_match",
-            tone: "text-[hsl(var(--tac-amber))]",
-          };
+          return { key: "paused_active_match", tone: "warn" };
         }
         if (s.live_in_progress) {
-          return { key: "blocked_live", tone: "text-[hsl(var(--tac-amber))]" };
+          return { key: "blocked_live", tone: "warn" };
         }
         if (s.demo_in_progress) {
-          return { key: "blocked_demo", tone: "text-[hsl(var(--tac-amber))]" };
+          return { key: "blocked_demo", tone: "warn" };
         }
-        return { key: "no_gpu_free", tone: "text-[hsl(var(--tac-amber))]" };
+        return { key: "no_gpu_free", tone: "warn" };
       }
     }
     return flying.length === 0
-      ? { key: "idle", tone: "text-muted-foreground" }
-      : { key: "waiting", tone: "text-muted-foreground" };
+      ? { key: "idle", tone: "off" }
+      : { key: "waiting", tone: "off" };
   },
 );
 
 /* ---------------- selection ---------------- */
 
-const selected = ref<Set<string>>(new Set());
+// The rows on screen in the order they show (batches grouped): ⌘/Ctrl-click
+// toggles a row, Shift-click selects a range, Esc clears. A row that leaves
+// the list (finished, cancelled, another page) leaves the selection too.
+const shownRows = computed<Row[]>(() =>
+  lines.value.flatMap((line) => (line.type === "row" ? [line.row] : [])),
+);
 
-function isSelected(key: string) {
-  return selected.value.has(key);
-}
-
-function setSelected(key: string, on: boolean) {
-  const next = new Set(selected.value);
-  if (on) next.add(key);
-  else next.delete(key);
-  selected.value = next;
-}
-
-const pageKeys = computed(() => pageRows.value.map((row) => row.key));
-const allState = computed<boolean | "indeterminate">(() => {
-  const keys = pageKeys.value;
-  const picked = keys.filter((key) => selected.value.has(key)).length;
-  if (picked === 0) return false;
-  return picked === keys.length ? true : "indeterminate";
-});
+const {
+  count: selectedCount,
+  selectedItems: selectedRows,
+  allState,
+  isSelected,
+  onCheckbox,
+  onRowClick,
+  selectAll,
+  clear: clearSelection,
+} = useBulkSelect({ items: shownRows, getId: (row) => row.key });
 
 function toggleAll(on: boolean | "indeterminate") {
-  const next = new Set(selected.value);
-  for (const key of pageKeys.value) {
-    if (on === true) next.add(key);
-    else next.delete(key);
-  }
-  selected.value = next;
+  if (on === true) selectAll();
+  else clearSelection();
 }
 
-function clearSelection() {
-  selected.value = new Set();
-}
+/* ---------------- keyboard ---------------- */
 
-watch(view, clearSelection);
-
-// A row that left the list (finished, cancelled) leaves the selection too.
-watch(rows, (list) => {
-  if (selected.value.size === 0) return;
-  const present = new Set(list.map((row) => row.key));
-  const next = new Set([...selected.value].filter((key) => present.has(key)));
-  if (next.size !== selected.value.size) {
-    selected.value = next;
-  }
+// ↑/↓ move through the rows, Enter opens the one you're on.
+const activeKey = ref<string | null>(null);
+const listBody = ref<HTMLElement | null>(null);
+const { rowProps } = useListKeyboard({
+  items: shownRows,
+  getId: (row) => row.key,
+  activeId: activeKey,
+  container: listBody,
+  onOpen: (key) => {
+    sheetKey.value = key;
+  },
 });
 
-const selectedRows = computed(() =>
-  rows.value.filter((row) => selected.value.has(row.key)),
-);
+function onRowActivate(row: Row, event: MouseEvent) {
+  activeKey.value = row.key;
+  if (onRowClick(row.key, event)) return;
+  openRow(row);
+}
 
 /* ---------------- mutations ---------------- */
 
@@ -1342,29 +1421,11 @@ function openRow(row: Row) {
 <template>
   <div class="space-y-4">
     <div class="flex flex-wrap items-center gap-2">
-      <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
-        <InputGroupAddon class="pl-2.5">
-          <Search class="h-3.5 w-3.5" />
-        </InputGroupAddon>
-        <InputGroupInput
-          v-model="query"
-          autocomplete="off"
-          :placeholder="$t('pages.render_queue.ledger.search')"
-          :aria-label="$t('pages.render_queue.ledger.search')"
-          class="h-full text-sm"
-        />
-        <InputGroupAddon align="inline-end" class="pr-2">
-          <button
-            v-if="query"
-            type="button"
-            class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            :aria-label="$t('common.reset_filters')"
-            @click="query = ''"
-          >
-            <X class="h-3.5 w-3.5" />
-          </button>
-        </InputGroupAddon>
-      </InputGroup>
+      <AdminSearch
+        v-model="query"
+        shortcut
+        :placeholder="$t('pages.render_queue.ledger.search')"
+      />
 
       <div
         class="max-w-full overflow-x-auto [scrollbar-width:none] max-md:order-last"
@@ -1423,20 +1484,9 @@ function openRow(row: Row) {
 
       <span
         class="ml-auto hidden items-center gap-2 text-[0.8rem] lg:inline-flex"
-        :class="queueStatus.tone"
+        :class="TONE_TEXT[queueStatus.tone]"
       >
-        <span
-          v-if="queueStatus.key === 'rendering'"
-          class="relative inline-flex h-2 w-2"
-          aria-hidden="true"
-        >
-          <span
-            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-          />
-          <span
-            class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
-          />
-        </span>
+        <StatusDot v-if="queueStatus.key === 'rendering'" tone="ok" live />
         <Pause
           v-else-if="queueStatus.key.startsWith('paused')"
           class="h-3.5 w-3.5"
@@ -1516,7 +1566,9 @@ function openRow(row: Row) {
 
           <template v-else>
             <div class="overflow-x-auto rounded-lg border border-border">
-              <table class="w-full min-w-[760px] text-sm">
+              <!-- Below md the status, progress and time fold into the
+                   render cell, so a phone never scrolls sideways. -->
+              <table class="w-full text-sm md:min-w-[760px]">
                 <thead
                   class="border-b border-border bg-muted/20 text-left text-xs text-muted-foreground"
                 >
@@ -1529,26 +1581,51 @@ function openRow(row: Row) {
                         @update:model-value="toggleAll"
                       />
                     </th>
-                    <th class="px-3 py-2 font-medium">
-                      {{ $t("pages.render_queue.ledger.col.render") }}
-                    </th>
-                    <th class="px-3 py-2 font-medium">
-                      {{ $t("common.status") }}
-                    </th>
-                    <th class="px-3 py-2 font-medium">
-                      {{
-                        view === "flight"
-                          ? $t("pages.render_queue.ledger.col.progress")
-                          : $t("pages.render_queue.ledger.col.length")
-                      }}
-                    </th>
-                    <th class="px-3 py-2 text-right font-medium">
-                      {{
-                        view === "flight"
-                          ? $t("pages.render_queue.ledger.col.elapsed")
-                          : $t("pages.render_queue.ledger.col.finished")
-                      }}
-                    </th>
+                    <SortHeader
+                      sort-key="name"
+                      :label="$t('pages.render_queue.ledger.col.render')"
+                      :active="sortable ? remembered.sortKey : null"
+                      :dir="remembered.sortDir"
+                      :disabled="!sortable"
+                      class="px-3 py-2 font-medium"
+                      @sort="toggleSort"
+                    />
+                    <SortHeader
+                      sort-key="status"
+                      :label="$t('common.status')"
+                      :active="sortable ? remembered.sortKey : null"
+                      :dir="remembered.sortDir"
+                      :disabled="!sortable"
+                      class="px-3 py-2 font-medium max-md:hidden"
+                      @sort="toggleSort"
+                    />
+                    <SortHeader
+                      sort-key="length"
+                      :label="
+                        view === 'flight'
+                          ? $t('pages.render_queue.ledger.col.progress')
+                          : $t('pages.render_queue.ledger.col.length')
+                      "
+                      :active="sortable ? remembered.sortKey : null"
+                      :dir="remembered.sortDir"
+                      :disabled="!sortable"
+                      class="px-3 py-2 font-medium max-md:hidden"
+                      @sort="toggleSort"
+                    />
+                    <SortHeader
+                      sort-key="at"
+                      :label="
+                        view === 'flight'
+                          ? $t('pages.render_queue.ledger.col.elapsed')
+                          : $t('pages.render_queue.ledger.col.finished')
+                      "
+                      :active="sortable ? remembered.sortKey : null"
+                      :dir="remembered.sortDir"
+                      :disabled="!sortable"
+                      align="end"
+                      class="px-3 py-2 text-right font-medium max-md:hidden"
+                      @sort="toggleSort"
+                    />
                     <th class="px-3 py-2 text-right">
                       <span class="sr-only">{{
                         $t("pages.render_queue.ledger.col.actions")
@@ -1556,7 +1633,7 @@ function openRow(row: Row) {
                     </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody ref="listBody">
                   <template v-for="line in lines" :key="line.key">
                     <!-- A batch: one pod works through its clips in order. -->
                     <tr
@@ -1756,35 +1833,44 @@ function openRow(row: Row) {
 
                     <tr
                       v-else
-                      class="cursor-pointer border-t border-border/40 transition-colors duration-150 first:border-t-0 hover:bg-muted/20"
+                      v-bind="rowProps(line.row.key)"
+                      class="group/row cursor-pointer border-t border-border/40 outline-none transition-colors duration-150 first:border-t-0 hover:bg-muted/20 focus-visible:bg-muted/30"
                       :class="
                         isSelected(line.row.key)
                           ? 'bg-[hsl(var(--tac-amber)/0.08)] hover:bg-[hsl(var(--tac-amber)/0.12)]'
-                          : ''
+                          : activeKey === line.row.key
+                            ? 'bg-muted/20'
+                            : ''
                       "
-                      @click="openRow(line.row)"
+                      @mousedown="$event.shiftKey && $event.preventDefault()"
+                      @click="onRowActivate(line.row, $event)"
                     >
-                      <td class="w-10 px-3 py-2.5 align-middle" @click.stop>
-                        <Checkbox
-                          :model-value="isSelected(line.row.key)"
-                          class="border-border data-[state=checked]:border-[hsl(var(--tac-amber))] data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=checked]:text-black"
-                          :aria-label="
+                      <!-- The whole cell toggles, so a phone has a target. -->
+                      <td
+                        class="w-10 px-3 py-2.5 align-middle"
+                        @click.stop="onCheckbox(line.row.key, $event)"
+                      >
+                        <SelectDot
+                          :checked="isSelected(line.row.key)"
+                          :selecting="selectedCount > 0"
+                          :label="
                             $t('pages.render_queue.ledger.select', {
-                              name:
-                                line.row.kind === 'clip'
-                                  ? clipTitle(line.row.job, $t)
-                                  : (line.row.render.lineup?.name ??
-                                    line.row.render.utility_lineup_id),
+                              name: rowName(line.row),
                             })
                           "
-                          @update:model-value="
-                            setSelected(line.row.key, $event === true)
-                          "
-                        />
+                          @toggle="onCheckbox(line.row.key, $event)"
+                        >
+                          <StatusDot
+                            :tone="statusTone(line.row.status)"
+                            :live="statusLive(line.row.status)"
+                          />
+                        </SelectDot>
                       </td>
 
                       <!-- Render -->
-                      <td class="max-w-[28rem] px-3 py-2.5 align-middle">
+                      <td
+                        class="px-3 py-2.5 align-middle max-md:w-full max-md:max-w-0 md:max-w-[28rem]"
+                      >
                         <div class="grid min-w-0 gap-0.5">
                           <template v-if="line.row.kind === 'clip'">
                             <span class="flex min-w-0 items-center gap-1.5">
@@ -1893,8 +1979,8 @@ function openRow(row: Row) {
                               class="break-words font-mono text-[0.7rem]"
                               :class="
                                 view === 'flight'
-                                  ? 'text-[hsl(var(--tac-amber))]'
-                                  : 'text-destructive'
+                                  ? TONE_TEXT.warn
+                                  : TONE_TEXT.bad
                               "
                             >
                               {{ line.row.render.error_message }}
@@ -1906,11 +1992,57 @@ function openRow(row: Row) {
                               {{ line.row.render.skip_reason }}
                             </span>
                           </template>
+                          <!-- Phones: status and time under the name. -->
+                          <span
+                            class="flex min-w-0 items-center gap-1.5 text-xs md:hidden"
+                            :class="statusToneClass(line.row.status)"
+                          >
+                            <component
+                              :is="statusIcon(line.row.status)"
+                              class="h-3 w-3 shrink-0"
+                              :class="
+                                line.row.status === 'rendering'
+                                  ? 'animate-spin motion-reduce:animate-none'
+                                  : ''
+                              "
+                            />
+                            <span class="truncate">{{
+                              statusLabel(line.row)
+                            }}</span>
+                            <span
+                              class="shrink-0 tabular-nums text-muted-foreground"
+                            >
+                              ·
+                              <template
+                                v-if="
+                                  view === 'flight' &&
+                                  line.row.status === 'rendering'
+                                "
+                              >
+                                {{
+                                  Math.round(
+                                    progressOf(
+                                      line.row.kind === "clip"
+                                        ? line.row.job.progress
+                                        : line.row.render.progress,
+                                    ) * 100,
+                                  )
+                                }}% ·
+                              </template>
+                              {{
+                                view === "flight"
+                                  ? since(elapsedAt(line.row), now)
+                                  : $t("pages.render_queue.ledger.ago", {
+                                      since: since(line.row.at, now),
+                                    })
+                              }}
+                            </span>
+                          </span>
                         </div>
                       </td>
 
                       <!-- Status: the icon carries the tone, the word the fact. -->
-                      <td class="px-3 py-2.5 align-middle">
+                      <td class="px-3 py-2.5 align-middle max-md:hidden">
                         <span
                           class="inline-flex items-center gap-1.5 whitespace-nowrap"
                           :class="statusToneClass(line.row.status)"
@@ -1920,7 +2052,7 @@ function openRow(row: Row) {
                             class="h-3.5 w-3.5 shrink-0"
                             :class="
                               line.row.status === 'rendering'
-                                ? 'animate-spin'
+                                ? 'animate-spin motion-reduce:animate-none'
                                 : ''
                             "
                           />
@@ -1929,7 +2061,7 @@ function openRow(row: Row) {
                       </td>
 
                       <!-- Progress / length -->
-                      <td class="px-3 py-2.5 align-middle">
+                      <td class="px-3 py-2.5 align-middle max-md:hidden">
                         <template v-if="view === 'flight'">
                           <div
                             v-if="line.row.status === 'rendering'"
@@ -2001,7 +2133,7 @@ function openRow(row: Row) {
 
                       <!-- Elapsed / finished -->
                       <td
-                        class="whitespace-nowrap px-3 py-2.5 text-right align-middle text-xs tabular-nums"
+                        class="whitespace-nowrap px-3 py-2.5 text-right align-middle text-xs tabular-nums max-md:hidden"
                         :class="
                           view === 'flight' && !isLive(line.row)
                             ? 'text-muted-foreground/70'
@@ -2306,7 +2438,7 @@ function openRow(row: Row) {
       leave-to-class="translate-y-1 opacity-0"
     >
       <div
-        v-if="selected.size > 0 || bulk"
+        v-if="selectedCount > 0 || bulk"
         class="sticky bottom-4 z-10 mx-auto flex w-fit max-w-full flex-wrap items-center gap-2.5 rounded-lg border border-border bg-popover py-2 pl-3.5 pr-2 shadow-[0_12px_28px_-10px_rgba(0,0,0,0.9)]"
       >
         <template v-if="bulk">
@@ -2334,8 +2466,8 @@ function openRow(row: Row) {
             {{
               $t(
                 "pages.render_queue.ledger.bulk.selected",
-                { count: selected.size },
-                selected.size,
+                { count: selectedCount },
+                selectedCount,
               )
             }}
           </b>
@@ -2385,6 +2517,7 @@ function openRow(row: Row) {
         !!utilityQueueRows.get(sheetRow.render.id)?.stale
       "
       :coverage-version="coverage?.version ?? null"
+      :now="now"
       :live="sheetRow?.kind === 'utility' && live.has(sheetRow.render.id)"
       :rendering="
         sheetRow?.kind === 'utility' &&

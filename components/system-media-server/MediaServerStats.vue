@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
-import { ChevronRight, Logs, RefreshCw, TriangleAlert } from "lucide-vue-next";
+import { ChevronRight, Logs, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
@@ -9,8 +9,13 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-import MetricSpark from "~/components/system-metrics/MetricSpark.vue";
-import { dateLocale } from "~/utilities/dateLocale";
+import LiveStamp from "~/components/admin/LiveStamp.vue";
+import StatTile from "~/components/admin/StatTile.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
+import NodeSpark from "~/components/game-server-nodes/NodeSpark.vue";
+import type { StatPoint } from "~/components/game-server-nodes/nodeMetrics";
+import { timeLabel } from "~/components/game-server-nodes/nodeFormat";
+import { useRememberedView } from "~/composables/useRememberedView";
 import {
   MEDIA_KINDS,
   kindRows,
@@ -34,18 +39,16 @@ const stats = ref<MediaStats | null>(null);
 const reachable = ref<boolean | null>(null);
 const updatedAt = ref<number | null>(null);
 const downSince = ref<number | null>(null);
-const now = ref(Date.now());
-const howToOpen = ref(false);
+const view = useRememberedView("media-server", { howTo: false });
 
 // Kept while the page is open, for the tiles' lines. The api has no history.
 const history = ref({
-  ready: [] as number[],
-  paths: [] as number[],
-  sessions: [] as Array<number | null>,
+  ready: [] as StatPoint[],
+  paths: [] as StatPoint[],
+  sessions: [] as StatPoint[],
 });
 
 let timer: ReturnType<typeof setTimeout> | null = null;
-let clock: ReturnType<typeof setInterval> | null = null;
 // Bumped by a manual refresh (and on unmount) so a poll already in flight
 // does not schedule a second loop when it lands.
 let generation = 0;
@@ -74,17 +77,21 @@ async function load() {
     stats.value = null;
   }
 
-  now.value = Date.now();
+  const now = Date.now();
   if (reachable.value && stats.value) {
-    updatedAt.value = now.value;
+    updatedAt.value = now;
     downSince.value = null;
+    const point = (v: number | null) => ({ t: now, v });
     history.value = {
-      ready: pushHistory(history.value.ready, stats.value.ready),
-      paths: pushHistory(history.value.paths, stats.value.paths),
-      sessions: pushHistory(history.value.sessions, stats.value.webrtcSessions),
+      ready: pushHistory(history.value.ready, point(stats.value.ready)),
+      paths: pushHistory(history.value.paths, point(stats.value.paths)),
+      sessions: pushHistory(
+        history.value.sessions,
+        point(stats.value.webrtcSessions),
+      ),
     };
   } else if (downSince.value == null) {
-    downSince.value = now.value;
+    downSince.value = now;
   }
 }
 
@@ -111,9 +118,6 @@ async function refresh() {
 }
 
 onMounted(async () => {
-  clock = setInterval(() => {
-    now.value = Date.now();
-  }, 1_000);
   await load();
   schedule();
 });
@@ -124,31 +128,17 @@ onBeforeUnmount(() => {
   if (timer) {
     clearTimeout(timer);
   }
-  if (clock) {
-    clearInterval(clock);
-  }
 });
 
-const hhmm = (value: number) =>
-  new Date(value).toLocaleTimeString(dateLocale(), {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-const statusLine = computed(() => {
-  if (!reachable.value) {
-    return t("pages.system_media_server.status_unreachable", {
-      time: hhmm(downSince.value ?? now.value),
-    });
-  }
-  const seconds = Math.max(
-    0,
-    Math.round((now.value - (updatedAt.value ?? now.value)) / 1000),
-  );
-  return seconds < 2
-    ? t("pages.system_media_server.status_reachable_now")
-    : t("pages.system_media_server.status_reachable_ago", { seconds });
-});
+// "Reachable · updated 5s ago · refreshes every 10 s", or since when it
+// stopped answering. While down there is no fresh reading to date.
+const status = computed(() =>
+  reachable.value
+    ? t("pages.system_media_server.status_reachable")
+    : t("pages.system_media_server.status_unreachable_since", {
+        time: timeLabel(downSince.value ?? Date.now()),
+      }),
+);
 
 const tiles = computed(() => {
   const s = reachable.value ? stats.value : null;
@@ -158,7 +148,7 @@ const tiles = computed(() => {
       label: t("pages.system_media_server.media_server_live"),
       tip: t("pages.system_media_server.tip_publishing"),
       value: s ? s.ready : null,
-      sub:
+      aside:
         s && s.paths
           ? t("pages.system_media_server.of_paths", { count: s.paths }, s.paths)
           : "",
@@ -169,7 +159,7 @@ const tiles = computed(() => {
       label: t("pages.system_media_server.media_server_paths"),
       tip: t("pages.system_media_server.tip_paths"),
       value: s ? s.paths : null,
-      sub: "",
+      aside: "",
       series: history.value.paths,
     },
     {
@@ -178,7 +168,7 @@ const tiles = computed(() => {
       tip: t("pages.system_media_server.tip_sessions"),
       // Null when MediaMTX answered for paths but not for sessions.
       value: s ? s.webrtcSessions : null,
-      sub: "",
+      aside: "",
       series: history.value.sessions,
     },
   ];
@@ -212,32 +202,25 @@ function formatBytes(bytes: number) {
 
 const term =
   "cursor-help underline decoration-dotted decoration-muted-foreground/70 underline-offset-[3px]";
-const sparkMax = (series: Array<number | null>) =>
-  Math.max(1, ...series.filter((v): v is number => v != null)) * 1.15;
+const sparkMax = (series: StatPoint[]) =>
+  Math.max(1, ...series.map((p) => p.v).filter((v): v is number => v != null)) *
+  1.15;
 </script>
 
 <template>
   <ManageSection>
     <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-      <span
+      <LiveStamp
         v-if="reachable !== null"
-        class="inline-flex items-center gap-2 text-[13px] tabular-nums text-muted-foreground"
-        aria-live="polite"
-      >
-        <span v-if="reachable" class="relative flex h-2 w-2 shrink-0">
-          <span
-            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden"
-          />
-          <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
-        </span>
-        <span v-else class="h-2 w-2 shrink-0 rounded-full bg-destructive" />
-        {{ statusLine }}
-      </span>
+        class="min-w-0 max-w-full"
+        :at="reachable ? updatedAt : null"
+        :live="!!reachable"
+        :tone="reachable ? 'ok' : 'bad'"
+        :status="status"
+        :every="POLL_MS"
+        @refresh="refresh"
+      />
       <span class="grow" />
-      <Button variant="ghost" size="sm" @click="refresh">
-        <RefreshCw />
-        {{ $t("common.refresh") }}
-      </Button>
       <Button as-child variant="outline" size="sm">
         <NuxtLink :to="{ path: '/system-logs', query: { tab: 'mediamtx' } }">
           <Logs />
@@ -252,8 +235,8 @@ const sparkMax = (series: Array<number | null>) =>
       v-if="reachable === false"
       class="flex items-start gap-2.5 rounded-lg border border-destructive/40 bg-destructive/10 px-3.5 py-3"
     >
-      <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
-      <p class="text-[13px] leading-snug text-destructive">
+      <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0" :class="TONE_TEXT.bad" />
+      <p class="text-[13px] leading-snug" :class="TONE_TEXT.bad">
         {{ $t("pages.system_media_server.media_server_unreachable") }}
       </p>
     </div>
@@ -271,70 +254,50 @@ const sparkMax = (series: Array<number | null>) =>
     </div>
 
     <div v-else class="grid grid-cols-2 gap-3 sm:grid-cols-3">
-      <div
+      <StatTile
         v-for="tile of tiles"
         :key="tile.key"
-        class="grid min-w-0 gap-1.5 rounded-lg border border-border bg-card/40 px-4 py-3.5 max-sm:odd:last:col-span-2"
+        :label="tile.label"
+        :tip="tile.tip"
+        :value="tile.value"
+        class="max-sm:odd:last:col-span-2"
       >
-        <FiveStackToolTip as-child :delay-duration="0">
-          <template #trigger>
-            <span
-              tabindex="0"
-              class="justify-self-start text-[12.5px] text-muted-foreground"
-              :class="term"
-            >
-              {{ tile.label }}
-            </span>
+        <template v-if="tile.aside" #aside>{{ tile.aside }}</template>
+        <template #sub>
+          <template v-if="tile.value == null">
+            {{
+              reachable
+                ? $t("common.unknown")
+                : $t("pages.system_media_server.unknown_while_unreachable")
+            }}
           </template>
-          <span class="block max-w-[18rem]">{{ tile.tip }}</span>
-        </FiveStackToolTip>
-        <span class="flex items-baseline gap-2 max-sm:flex-wrap">
-          <span
-            v-if="tile.value == null"
-            class="text-3xl font-bold leading-none text-muted-foreground"
-          >
-            —
-          </span>
-          <span v-else class="text-3xl font-bold leading-none tabular-nums">
-            {{ tile.value.toLocaleString() }}
-          </span>
-          <small
-            v-if="tile.sub"
-            class="text-[13px] font-medium text-muted-foreground"
-          >
-            {{ tile.sub }}
-          </small>
-        </span>
-        <span v-if="tile.value == null" class="text-xs text-muted-foreground">
-          {{
-            reachable
-              ? $t("common.unknown")
-              : $t("pages.system_media_server.unknown_while_unreachable")
-          }}
-        </span>
-        <MetricSpark
-          v-else-if="tile.series.length > 1"
-          :values="tile.series"
-          :max="sparkMax(tile.series)"
-          :height="26"
-        />
-      </div>
+          <NodeSpark
+            v-else-if="tile.series.length > 1"
+            class="mt-1"
+            tone="mem"
+            :points="tile.series"
+            :from="tile.series[0].t"
+            :to="tile.series[tile.series.length - 1].t"
+            :max="sparkMax(tile.series)"
+          />
+        </template>
+      </StatTile>
     </div>
 
     <div class="grid justify-items-start">
       <button
         type="button"
         class="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
-        :aria-expanded="howToOpen"
-        @click="howToOpen = !howToOpen"
+        :aria-expanded="view.howTo"
+        @click="view.howTo = !view.howTo"
       >
         <ChevronRight
           class="h-3.5 w-3.5 transition-transform [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
-          :class="howToOpen && 'rotate-90'"
+          :class="view.howTo && 'rotate-90'"
         />
         {{ $t("pages.system_media_server.how_to_read") }}
       </button>
-      <Fold :open="howToOpen">
+      <Fold :open="view.howTo">
         <div
           class="grid max-w-[76ch] gap-2 pt-2 text-[12.5px] leading-relaxed text-muted-foreground"
         >
@@ -351,13 +314,12 @@ const sparkMax = (series: Array<number | null>) =>
         <Skeleton class="h-40 w-full rounded-lg" />
       </div>
 
-      <p
+      <SectionEmpty
         v-else-if="!reachable"
         key="unknown"
-        class="rounded-lg border border-dashed border-border px-4 py-3.5 text-[13px] text-muted-foreground"
-      >
-        {{ $t("pages.system_media_server.kinds_unknown") }}
-      </p>
+        :title="$t('pages.system_media_server.kinds_unknown_title')"
+        :description="$t('pages.system_media_server.kinds_unknown')"
+      />
 
       <SectionEmpty
         v-else-if="!rows.length"
@@ -368,7 +330,9 @@ const sparkMax = (series: Array<number | null>) =>
 
       <div v-else key="table" class="grid gap-2.5">
         <div class="overflow-x-auto rounded-lg border border-border bg-card/20">
-          <table class="w-full min-w-[520px] text-sm">
+          <!-- Phones drop the share bar; its percentage rides under the
+               bytes instead, so nothing scrolls sideways. -->
+          <table class="w-full text-sm md:min-w-[520px]">
             <thead>
               <tr
                 class="border-b border-border text-left text-xs text-muted-foreground"
@@ -400,7 +364,9 @@ const sparkMax = (series: Array<number | null>) =>
                     </span>
                   </FiveStackToolTip>
                 </th>
-                <th class="w-[34%] px-3.5 py-2.5 font-medium">
+                <th
+                  class="hidden w-[34%] px-3.5 py-2.5 font-medium md:table-cell"
+                >
                   {{ $t("pages.system_media_server.share_received") }}
                 </th>
               </tr>
@@ -426,8 +392,11 @@ const sparkMax = (series: Array<number | null>) =>
                 </td>
                 <td class="px-3.5 py-2.5 text-right tabular-nums">
                   {{ formatBytes(row.bytesReceived) }}
+                  <span class="text-xs text-muted-foreground md:hidden">
+                    ({{ Math.round(row.share * 100) }}%)
+                  </span>
                 </td>
-                <td class="px-3.5 py-2.5">
+                <td class="hidden px-3.5 py-2.5 md:table-cell">
                   <div class="flex items-center gap-2.5">
                     <span
                       class="block h-1 grow overflow-hidden rounded-full bg-muted"

@@ -1,38 +1,36 @@
 <template>
-  <div class="flex flex-col h-[calc(100svh-6rem)]">
-    <PageTransition>
-      <PageHeading>
-        <template #title>
-          <span class="capitalize">
-            {{ server?.label }}
-          </span>
-          {{ $t("file_manager.dedicated_server_files") }}
-        </template>
-        <template #description>
-          {{ $t("common.manage_custom_plugins_and_shared_files") }}
-        </template>
-      </PageHeading>
+  <div class="flex h-[calc(100svh-6rem)] min-w-0 flex-col gap-4">
+    <PageTransition :delay="0">
+      <h1 class="flex min-w-0 items-baseline gap-2">
+        <span class="min-w-0 truncate text-xl font-semibold leading-tight">
+          <template v-if="server">{{ server.label }}</template>
+          <Skeleton v-else class="inline-block h-5 w-40 align-middle" />
+        </span>
+        <span class="shrink-0 text-sm text-muted-foreground">{{
+          $t("pages.dedicated_servers.detail.files")
+        }}</span>
+      </h1>
     </PageTransition>
 
-    <PageTransition :delay="100" class="mt-6">
-      <div class="flex-1 min-h-0 overflow-hidden">
-        <Card class="h-full">
-          <p
-            v-if="isMigrating"
-            class="p-8 text-center text-sm text-muted-foreground"
-          >
-            {{ $t("file_manager.server_moving") }}
-          </p>
-          <FileManagerContainer
-            v-else-if="server && nodeId"
-            :key="nodeId"
-            :node-id="nodeId"
-            :server-id="serverId"
-          />
-          <div v-else class="p-8 text-center text-muted-foreground">
-            {{ $t("file_manager.loading_server_info") }}
-          </div>
-        </Card>
+    <PageTransition :delay="60" class="min-h-0 flex-1">
+      <div
+        class="h-full overflow-hidden rounded-md border border-border bg-card/20"
+      >
+        <p
+          v-if="isMigrating"
+          class="p-8 text-center text-sm text-muted-foreground"
+        >
+          {{ $t("file_manager.server_moving") }}
+        </p>
+        <FileManagerContainer
+          v-else-if="server && nodeId"
+          :key="nodeId"
+          :node-id="nodeId"
+          :server-id="serverId"
+        />
+        <p v-else class="p-8 text-center text-sm text-muted-foreground">
+          {{ $t("file_manager.loading_server_info") }}
+        </p>
       </div>
     </PageTransition>
   </div>
@@ -41,8 +39,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { Card } from "@/components/ui/card";
-import PageHeading from "~/components/PageHeading.vue";
+import { Skeleton } from "~/components/ui/skeleton";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { generateQuery } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -112,8 +109,4 @@ onMounted(async () => {
     console.error("Error fetching server:", error);
   }
 });
-
-function navigateBack() {
-  router.back();
-}
 </script>

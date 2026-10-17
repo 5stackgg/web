@@ -38,8 +38,11 @@
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
 
-    --warning: 36 100% 30%;
-    --warning-foreground: 0 0% 100%;
+    /* Warning is a yellow, kept apart from the brand's orange (--tac-amber)
+       and at the same lightness as --success / --info so it reads as text on
+       the dark card background. It used to be 36 100% 30%, a near-brown. */
+    --warning: 46 92% 56%;
+    --warning-foreground: 40 90% 10%;
 
     /* Destructive used to be 0 62.8% 30.6%, which was nearly invisible as
        text. A brighter rose keeps red text on stat tables legible against

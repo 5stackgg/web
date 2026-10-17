@@ -13,10 +13,10 @@ import NodeSpark from "~/components/game-server-nodes/NodeSpark.vue";
 import TweenNumber from "~/components/game-server-nodes/TweenNumber.vue";
 import NodeMetricCharts, {
   type ChartSpec,
+  type ChartTone,
 } from "~/components/game-server-nodes/NodeMetricCharts.vue";
 import {
   isOffline,
-  isReachable,
   type NodeLike,
 } from "~/components/game-server-nodes/nodeState";
 import {
@@ -29,12 +29,16 @@ import {
   latest,
   memorySeries,
   memoryTotalGb,
+  nearestTime,
   networkInSeries,
   networkOutSeries,
   networkSeries,
   niceCeil,
   rangeMinutes,
   sampleInterval,
+  valueAt,
+  vramSeries,
+  vramTotalGb,
   type GapBand,
   type MetricRangeKey,
   type StatPoint,
@@ -47,8 +51,10 @@ import {
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 
 // Live: tiles with sparklines over the last few minutes; a longer range grows
-// them in place into charts with axes and one crosshair. Disk follows in its
-// own block (InspectorDisk).
+// them in place into charts with axes. Both share one crosshair time, read out
+// in the header. Percent tiles are scaled to their max (memory and VRAM to the
+// total) with a dashed line marking it. Disk follows in its own block
+// (InspectorDisk).
 const props = defineProps<{
   node: NodeLike;
   stats: any;
@@ -72,7 +78,6 @@ watch(
 
 const inSetup = computed(() => props.node.status === "Setup");
 const offline = computed(() => isOffline(props.node));
-const reachable = computed(() => isReachable(props.node));
 const grown = computed(() => props.range !== "live");
 
 const cpu = computed(() => cpuSeries(props.stats));
@@ -82,63 +87,88 @@ const netIn = computed(() => networkInSeries(props.stats));
 const netOut = computed(() => networkOutSeries(props.stats));
 const network = computed(() => networkSeries(props.stats));
 const gpu = computed(() => (props.node.gpu ? gpuSeries(props.stats) : []));
+const vram = computed(() => (props.node.gpu ? vramSeries(props.stats) : []));
+const vramTotal = computed(() =>
+  props.node.gpu ? vramTotalGb(props.stats) : null,
+);
 const interval = computed(() =>
   sampleInterval(cpu.value.length ? cpu.value : memory.value),
 );
+
+const ofTotal = (total: number | null) =>
+  total ? t(`${INSPECTOR}.of_total`, { total: formatGb(total) }) : "";
 
 const liveFrom = computed(() => now.value - rangeMinutes("live") * 60_000);
 const tile = (points: Array<StatPoint>) =>
   inWindow(points, liveFrom.value, now.value);
 
-const tiles = computed(() => {
+type Tile = {
+  key: string;
+  label: string;
+  unit: string;
+  value: number | null;
+  suffix: string;
+  points: Array<StatPoint>;
+  max: number;
+  ceiling: boolean;
+  tone: "cpu" | "mem" | "net" | "gpu";
+};
+
+const percentTile = (
+  key: string,
+  label: string,
+  series: Array<StatPoint>,
+  tone: Tile["tone"],
+  unit = "",
+): Tile => ({
+  key,
+  label,
+  unit,
+  value: latest(series),
+  suffix: "%",
+  points: tile(series),
+  max: 100,
+  ceiling: true,
+  tone,
+});
+
+const tiles = computed<Array<Tile>>(() => {
   const list = [
-    {
-      key: "cpu",
-      label: t("pages.system_metrics.cpu_short"),
-      unit: "",
-      value: latest(cpu.value),
-      suffix: "%",
-      points: tile(cpu.value),
-      max: 100,
-      tone: "cpu" as const,
-    },
-    {
-      key: "mem",
-      label: t("pages.system_metrics.memory_short"),
-      unit: memTotal.value
-        ? t(`${INSPECTOR}.of_total`, { total: formatGb(memTotal.value) })
-        : "",
-      value: latest(memory.value),
-      suffix: "%",
-      points: tile(memory.value),
-      max: 100,
-      tone: "mem" as const,
-    },
-    {
-      key: "net",
-      label: t("pages.system_metrics.network_short"),
-      unit: "",
-      value: latest(network.value),
-      suffix: " Mbps",
-      points: tile(network.value),
-      max: niceCeil(
-        Math.max(5, ...tile(network.value).map((point) => point.v ?? 0)),
-      ),
-      tone: "net" as const,
-    },
+    percentTile("cpu", t("pages.system_metrics.cpu_short"), cpu.value, "cpu"),
+    percentTile(
+      "mem",
+      t("pages.system_metrics.memory_short"),
+      memory.value,
+      "mem",
+      ofTotal(memTotal.value),
+    ),
   ];
   if (props.node.gpu) {
-    list.push({
-      key: "gpu",
-      label: "GPU",
-      unit: "",
-      value: latest(gpu.value),
-      suffix: "%",
-      points: tile(gpu.value),
-      max: 100,
-      tone: "gpu" as any,
-    });
+    list.push(percentTile("gpu", "GPU", gpu.value, "gpu"));
+    if (vramTotal.value) {
+      list.push(
+        percentTile(
+          "vram",
+          t("pages.gpu_nodes.col.vram"),
+          vram.value,
+          "gpu",
+          ofTotal(vramTotal.value),
+        ),
+      );
+    }
   }
+  const netPoints = tile(network.value);
+  list.push({
+    key: "net",
+    label: t("pages.system_metrics.network_short"),
+    unit: "",
+    value: latest(network.value),
+    suffix: " Mbps",
+    points: netPoints,
+    max: niceCeil(Math.max(5, ...netPoints.map((point) => point.v ?? 0))),
+    ceiling: false,
+    tone: "net",
+  });
   return list;
 });
 
@@ -178,17 +208,46 @@ const avgPeak = (points: Array<StatPoint>) => {
     : "";
 };
 
+// Memory and VRAM: percent of the total, the axis topped by the total itself.
+const capacityChart = (
+  key: string,
+  label: string,
+  points: Array<StatPoint>,
+  total: number | null,
+  tone: ChartTone,
+): ChartSpec => {
+  const gb = (value: number) => formatGb(((total ?? 0) * value) / 100);
+  const peak = stats(points)?.max;
+  return {
+    key,
+    label,
+    unit: ofTotal(total),
+    height: 44,
+    max: 100,
+    lines: [{ points, tone, area: true }],
+    tick: (value) => (!total ? `${value}%` : value ? gb(value) : "0"),
+    read: ([value]) =>
+      value == null
+        ? "—"
+        : total
+          ? `${gb(value)} (${Math.round(value)}%)`
+          : percent(value),
+    summary:
+      peak != null && total
+        ? t(`${INSPECTOR}.chart.peak`, { peak: gb(peak) })
+        : "",
+  };
+};
+
+// The same order as the tiles, so each grows in place.
 const charts = computed<Array<ChartSpec>>(() => {
   const cpuPoints = win(cpu.value);
-  const memPoints = win(memory.value);
   const inPoints = win(netIn.value);
   const outPoints = win(netOut.value);
-  const total = memTotal.value;
   const netPeak = Math.max(
     stats(inPoints)?.max ?? 0,
     stats(outPoints)?.max ?? 0,
   );
-  const memPeak = stats(memPoints)?.max;
   const list: Array<ChartSpec> = [
     {
       key: "cpu",
@@ -200,53 +259,13 @@ const charts = computed<Array<ChartSpec>>(() => {
       read: ([value]) => percent(value),
       summary: avgPeak(cpuPoints),
     },
-    {
-      key: "mem",
-      label: t("pages.system_metrics.memory_short"),
-      unit: total ? t(`${INSPECTOR}.of_total`, { total: formatGb(total) }) : "",
-      height: 44,
-      max: 100,
-      lines: [{ points: memPoints, tone: "mem", area: true }],
-      tick: (value) => `${value}%`,
-      read: ([value]) =>
-        value == null
-          ? "—"
-          : total
-            ? `${formatGb((value * total) / 100)} (${Math.round(value)}%)`
-            : percent(value),
-      summary:
-        memPeak != null && total
-          ? t(`${INSPECTOR}.chart.peak`, {
-              peak: formatGb((memPeak * total) / 100),
-            })
-          : "",
-    },
-    {
-      key: "net",
-      label: t("pages.system_metrics.network_short"),
-      unit: "Mbps",
-      legend: [
-        { tone: "rx", label: t(`${INSPECTOR}.chart.in`) },
-        { tone: "tx", label: t(`${INSPECTOR}.chart.out`) },
-      ],
-      height: 50,
-      max: niceCeil(Math.max(5, netPeak) * 1.08),
-      lines: [
-        { points: inPoints, tone: "rx", area: true },
-        { points: outPoints, tone: "tx", area: false },
-      ],
-      tick: (value) =>
-        value >= 1000
-          ? `${+(value / 1000).toFixed(1)}k`
-          : String(+value.toFixed(1)),
-      read: ([rx, tx]) =>
-        rx == null
-          ? "—"
-          : t(`${INSPECTOR}.chart.in_out`, { in: mbps(rx), out: mbps(tx) }),
-      summary: netPeak
-        ? t(`${INSPECTOR}.chart.peak`, { peak: mbps(netPeak) })
-        : "",
-    },
+    capacityChart(
+      "mem",
+      t("pages.system_metrics.memory_short"),
+      win(memory.value),
+      memTotal.value,
+      "mem",
+    ),
   ];
   if (props.node.gpu) {
     const gpuPoints = win(gpu.value);
@@ -260,7 +279,44 @@ const charts = computed<Array<ChartSpec>>(() => {
       read: ([value]) => percent(value),
       summary: avgPeak(gpuPoints),
     });
+    if (vramTotal.value) {
+      list.push(
+        capacityChart(
+          "vram",
+          t("pages.gpu_nodes.col.vram"),
+          win(vram.value),
+          vramTotal.value,
+          "gpu",
+        ),
+      );
+    }
   }
+  list.push({
+    key: "net",
+    label: t("pages.system_metrics.network_short"),
+    unit: "Mbps",
+    legend: [
+      { tone: "rx", label: t(`${INSPECTOR}.chart.in`) },
+      { tone: "tx", label: t(`${INSPECTOR}.chart.out`) },
+    ],
+    height: 50,
+    max: niceCeil(Math.max(5, netPeak) * 1.08),
+    lines: [
+      { points: inPoints, tone: "rx", area: true },
+      { points: outPoints, tone: "tx", area: false },
+    ],
+    tick: (value) =>
+      value >= 1000
+        ? `${+(value / 1000).toFixed(1)}k`
+        : String(+value.toFixed(1)),
+    read: ([rx, tx]) =>
+      rx == null
+        ? "—"
+        : t(`${INSPECTOR}.chart.in_out`, { in: mbps(rx), out: mbps(tx) }),
+    summary: netPeak
+      ? t(`${INSPECTOR}.chart.peak`, { peak: mbps(netPeak) })
+      : "",
+  });
   return list;
 });
 
@@ -275,15 +331,42 @@ const bandLabel = (band: GapBand) =>
         duration: durationLabel(band.to - band.from),
       });
 
+// One crosshair time for the tiles (snapped to a sample) and the charts.
 const hoverT = ref<number | null>(null);
 watch(grown, () => (hoverT.value = null));
 
+const tileTimes = computed(() =>
+  tile(cpu.value.length ? cpu.value : memory.value)
+    .filter((point) => point.v != null)
+    .map((point) => point.t),
+);
+
+function onTileHover(time: number | null) {
+  hoverT.value = time == null ? null : nearestTime(tileTimes.value, time);
+}
+
+const tileReadout = (item: Tile) => {
+  const point =
+    hoverT.value == null
+      ? null
+      : valueAt(item.points, hoverT.value, interval.value);
+  return point ? `${Math.round(point.v)}${item.suffix}` : "—";
+};
+
+// What the range covers, from its real window: "Last 10 minutes".
+const windowLabel = computed(() => {
+  const minutes = rangeMinutes(props.range);
+  return minutes % 60 === 0
+    ? t(`${INSPECTOR}.window_hours`, { count: minutes / 60 }, minutes / 60)
+    : t(`${INSPECTOR}.window_minutes`, { count: minutes }, minutes);
+});
+
 const timeText = computed(() => {
   if (hoverT.value == null) {
-    if (reachable.value) {
-      return t(`${INSPECTOR}.now`);
+    if (!offline.value) {
+      return windowLabel.value;
     }
-    return offline.value && props.node.offline_at
+    return grown.value && props.node.offline_at
       ? t(`${INSPECTOR}.last_report`, {
           time: clockLabel(props.node.offline_at),
         })
@@ -297,8 +380,14 @@ const timeText = computed(() => {
     .join(" · ");
 });
 
+const cadence = computed(() =>
+  t(`${INSPECTOR}.chart.cadence`, {
+    seconds: Math.round(interval.value / 1000),
+  }),
+);
+
 const caption = computed(() => {
-  const parts = [t(`${INSPECTOR}.chart.caption`)];
+  const parts = [cadence.value];
   const first = cpu.value.find((point) => point.v != null)?.t;
   if (first != null && first > chartFrom.value + interval.value * 2) {
     parts.push(t(`${INSPECTOR}.chart.starts`, { time: timeLabel(first) }));
@@ -355,7 +444,7 @@ const rangeLabel = (key: MetricRangeKey) =>
     >
       <span>{{ t("common.live") }}</span>
       <span
-        v-if="grown && !inSetup"
+        v-if="!inSetup"
         class="min-w-0 truncate text-xs font-normal tabular-nums text-muted-foreground"
         >{{ timeText }}</span
       >
@@ -394,37 +483,58 @@ const rangeLabel = (key: MetricRangeKey) =>
               })
             }}
           </p>
-          <div
-            v-else
-            class="gsn-tiles grid gap-3.5"
-            :class="tiles.length > 3 ? 'grid-cols-2' : 'grid-cols-3'"
-          >
+          <template v-else>
             <div
-              v-for="item of tiles"
-              :key="item.key"
-              class="grid min-w-0 gap-0.5"
+              class="gsn-tiles grid gap-3.5"
+              :class="tiles.length > 3 ? 'grid-cols-2' : 'grid-cols-3'"
             >
-              <span class="truncate text-[11.5px] text-muted-foreground"
-                >{{ item.label
-                }}<span v-if="item.unit" class="ml-1 text-muted-foreground/60">
-                  {{ item.unit }}</span
-                ></span
+              <div
+                v-for="(item, index) of tiles"
+                :key="item.key"
+                class="grid min-w-0 gap-0.5"
+                :data-wide="
+                  tiles.length % 2 === 1 && index === tiles.length - 1
+                "
               >
-              <span class="mb-1 whitespace-nowrap text-[15px] font-semibold">
-                <TweenNumber
-                  :value="item.value == null ? null : Math.round(item.value)"
-                  :suffix="item.suffix"
+                <span class="truncate text-[11.5px] text-muted-foreground"
+                  >{{ item.label
+                  }}<span
+                    v-if="item.unit"
+                    class="ml-1 text-muted-foreground/60"
+                  >
+                    {{ item.unit }}</span
+                  ></span
+                >
+                <span
+                  class="mb-1 whitespace-nowrap text-[15px] font-semibold tabular-nums"
+                >
+                  <template v-if="hoverT != null">{{
+                    tileReadout(item)
+                  }}</template>
+                  <TweenNumber
+                    v-else
+                    :value="item.value == null ? null : Math.round(item.value)"
+                    :suffix="item.suffix"
+                  />
+                </span>
+                <NodeSpark
+                  :points="item.points"
+                  :from="liveFrom"
+                  :to="now"
+                  :max="item.max"
+                  :tone="item.tone"
+                  :ceiling="item.ceiling"
+                  :crosshair="hoverT"
+                  @hover="onTileHover"
                 />
-              </span>
-              <NodeSpark
-                :points="item.points"
-                :from="liveFrom"
-                :to="now"
-                :max="item.max"
-                :tone="item.tone"
-              />
+              </div>
             </div>
-          </div>
+            <p
+              class="mt-2.5 text-[11.5px] leading-snug text-muted-foreground/60"
+            >
+              {{ cadence }}
+            </p>
+          </template>
         </div>
         <div v-else key="history" class="grid gap-2">
           <p v-if="offline" class="text-xs text-muted-foreground">
@@ -490,10 +600,17 @@ const rangeLabel = (key: MetricRangeKey) =>
   opacity: 0;
   transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-/* Two to a row in the wide panel's narrower column. */
+/* Two to a row in the wide panel's narrower column. A last tile left alone
+   (network) takes the whole row. */
+.gsn-tiles.grid-cols-2 > [data-wide="true"] {
+  grid-column: 1 / -1;
+}
 @container (max-width: 340px) {
   .gsn-tiles {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gsn-tiles > [data-wide="true"] {
+    grid-column: 1 / -1;
   }
 }
 @media (prefers-reduced-motion: reduce) {

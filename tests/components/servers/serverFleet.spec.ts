@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
+import { nextSort } from "~/components/admin/sort";
 import {
   hostKey,
   hostLabel,
+  LEGACY_SERVER_VIEW_KEY,
   matchesServerSearch,
-  readServerView,
-  saveServerView,
-  SERVER_VIEW_STORAGE_KEY,
+  rememberServerView,
+  restoreServerView,
+  SERVER_SORT_NATURAL_DIRS,
+  serverViewDefaults,
   pluginOutdated,
   serverFacetValues,
   serverState,
@@ -138,51 +141,102 @@ describe("facets, search and sort", () => {
       server({ id: "d", label: "A ready" }),
     ];
     expect(
-      sortServers(list, { key: "status", dir: 1 }, ctx).map((s) => s.label),
+      sortServers(list, { key: "status", dir: "asc" }, ctx).map((s) => s.label),
     ).toEqual(["A offline", "A ready", "B ready", "C disabled"]);
     expect(
-      sortServers(list, { key: "server", dir: -1 }, ctx).map((s) => s.label),
+      sortServers(list, { key: "server", dir: "desc" }, ctx).map(
+        (s) => s.label,
+      ),
     ).toEqual(["C disabled", "B ready", "A ready", "A offline"]);
+  });
+
+  it("starts players and plugin largest first", () => {
+    const from = { key: "status" as const, dir: "asc" as const };
+    expect(nextSort(from, "players", SERVER_SORT_NATURAL_DIRS)).toEqual({
+      key: "players",
+      dir: "desc",
+    });
+    expect(nextSort(from, "server", SERVER_SORT_NATURAL_DIRS)).toEqual({
+      key: "server",
+      dir: "asc",
+    });
   });
 });
 
 describe("remembered list view", () => {
-  const defaults = {
-    search: "",
-    facets: { state: ["ready"], type: [], host: [] },
-    sort: { key: "status" as const, dir: 1 as const },
-  };
+  const STORED = "admin-view:dedicated-servers";
+  const facets = (extra: Record<string, string[]> = {}) => ({
+    ...serverViewDefaults().facets,
+    ...extra,
+  });
 
   it("restores the last search, filters and sort", () => {
     localStorage.clear();
-    saveServerView({
+    const view = {
       search: "pistols",
-      facets: { state: ["ready", "disabled"], type: ["Deathmatch"], host: [] },
-      sort: { key: "players", dir: -1 },
-    });
-    expect(readServerView(defaults)).toEqual({
-      search: "pistols",
-      facets: { state: ["ready", "disabled"], type: ["Deathmatch"], host: [] },
-      sort: { key: "players", dir: -1 },
+      facets: facets({ state: ["ready", "disabled"], type: ["Deathmatch"] }),
+      sort: { key: "players" as const, dir: "desc" as const },
+    };
+    rememberServerView(view);
+    expect(restoreServerView()).toEqual(view);
+  });
+
+  it("falls back field by field on anything it can't read", () => {
+    localStorage.clear();
+    expect(restoreServerView()).toEqual(serverViewDefaults());
+    localStorage.setItem(STORED, "{not json");
+    expect(restoreServerView()).toEqual(serverViewDefaults());
+    localStorage.setItem(
+      STORED,
+      JSON.stringify({
+        search: 4,
+        facets: {
+          state: ["ready", "bogus"],
+          gone: ["x"],
+          type: ["Ranked", 4],
+          host: "x",
+        },
+        sort: { key: "nope", dir: "asc" },
+      }),
+    );
+    expect(restoreServerView()).toEqual({
+      search: "",
+      facets: facets({ state: ["ready"], type: ["Ranked"] }),
+      sort: { key: "status", dir: "asc" },
     });
   });
 
-  it("falls back on anything it can't read, and drops unknown groups", () => {
+  it("moves the old dedicated-servers-view over once and drops it", () => {
     localStorage.clear();
-    expect(readServerView(defaults)).toEqual(defaults);
-    localStorage.setItem(SERVER_VIEW_STORAGE_KEY, "{not json");
-    expect(readServerView(defaults)).toEqual(defaults);
     localStorage.setItem(
-      SERVER_VIEW_STORAGE_KEY,
+      LEGACY_SERVER_VIEW_KEY,
       JSON.stringify({
-        facets: { state: "ready", gone: ["x"], type: ["Ranked", 4] },
-        sort: { key: "nope", dir: 1 },
+        search: "fra",
+        facets: { state: ["offline"], type: [], host: [] },
+        sort: { key: "players", dir: -1 },
       }),
     );
-    expect(readServerView(defaults)).toEqual({
-      search: "",
-      facets: { state: ["ready"], type: ["Ranked"], host: [] },
-      sort: { key: "status", dir: 1 },
-    });
+    const restored = {
+      search: "fra",
+      facets: facets({ state: ["offline"] }),
+      sort: { key: "players", dir: "desc" },
+    };
+    expect(restoreServerView()).toEqual(restored);
+    expect(localStorage.getItem(LEGACY_SERVER_VIEW_KEY)).toBeNull();
+    expect(JSON.parse(localStorage.getItem(STORED)!).sort).toEqual(
+      restored.sort,
+    );
+    expect(restoreServerView()).toEqual(restored);
+  });
+
+  it("never lets the old key overwrite a newer view", () => {
+    localStorage.clear();
+    rememberServerView({ ...serverViewDefaults(), search: "new" });
+    localStorage.setItem(
+      LEGACY_SERVER_VIEW_KEY,
+      JSON.stringify({ search: "old" }),
+    );
+    expect(restoreServerView().search).toBe("new");
+    expect(localStorage.getItem(LEGACY_SERVER_VIEW_KEY)).toBeNull();
   });
 });

@@ -66,7 +66,7 @@ function show(bucket: VolumeBucket, event: Event) {
             class="bg-[hsl(240_5%_34%)]"
             :style="{ flexGrow: b.LOG }"
           />
-          <i v-if="b.WARN" class="bg-amber-500" :style="{ flexGrow: b.WARN }" />
+          <i v-if="b.WARN" class="bg-warning" :style="{ flexGrow: b.WARN }" />
           <i
             v-if="b.ERROR"
             class="bg-destructive"
@@ -93,7 +93,7 @@ function show(bucket: VolumeBucket, event: Event) {
             {{ $t("pages.system_logs.errors_word") }}
           </div>
           <div>
-            <span class="lg-key bg-amber-500" /><b>{{
+            <span class="lg-key bg-warning" /><b>{{
               tip.bucket.WARN.toLocaleString()
             }}</b>
             {{ $t("pages.system_logs.warnings_word") }}
@@ -125,7 +125,7 @@ function show(bucket: VolumeBucket, event: Event) {
           }}</span
         >
         <span class="inline-flex items-center gap-1"
-          ><i class="lg-legend bg-amber-500" />{{
+          ><i class="lg-legend bg-warning" />{{
             $t("pages.system_logs.level_warning")
           }}</span
         >

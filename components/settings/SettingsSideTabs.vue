@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { TriangleAlert } from "lucide-vue-next";
 import SettingsStatusChip from "~/components/settings/SettingsStatusChip.vue";
 import type { SettingsItemStatus } from "~/composables/useSettingsStatus";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -172,6 +173,51 @@ onUnmounted(() => {
   window.removeEventListener("resize", updateIndicator);
 });
 
+// ↑/↓ walk the sections shown, Home/End jump, Enter opens one. Focus moves;
+// the page only changes on Enter, so walking past a section with unsaved
+// edits never trips its leave guard.
+const visibleItems = computed(() =>
+  renderGroups.value
+    .flatMap((group) => group.subgroups.flatMap((subgroup) => subgroup.items))
+    .filter((item) => matches(item.path)),
+);
+const focusedPath = ref<string | null>(null);
+const railKeys = useListKeyboard({
+  items: visibleItems,
+  getId: (item) => item.path,
+  activeId: focusedPath,
+  container: navRef,
+  // A real click, so the link navigates and the shell hands the pane back
+  // from search results the way a mouse click does.
+  onOpen: (path) =>
+    navRef.value
+      ?.querySelector<HTMLElement>(`[data-list-row="${CSS.escape(path)}"]`)
+      ?.click(),
+});
+
+// One tab stop: the section being walked, else the open one.
+function tabProps(path: string) {
+  const {
+    "aria-selected": _selected,
+    tabindex: _tabindex,
+    ...rest
+  } = railKeys.rowProps(path);
+  const paths = visibleItems.value.map((item) => item.path);
+  const tabbable =
+    [focusedPath.value, props.activePath].find(
+      (candidate) => !!candidate && paths.includes(candidate),
+    ) ?? paths[0];
+  return { ...rest, tabindex: path === tabbable ? 0 : -1 };
+}
+
+// Keys only belong to the rail while focus is in it.
+function onFocusOut(event: FocusEvent) {
+  const next = event.relatedTarget as Node | null;
+  if (!next || !navRef.value?.contains(next)) {
+    focusedPath.value = null;
+  }
+}
+
 // Folds use the app's one clock; `inert` keeps folded tabs out of the tab
 // order while they are shut.
 const foldClasses =
@@ -183,6 +229,7 @@ const foldClasses =
     ref="navRef"
     :aria-label="ariaLabel"
     class="relative hidden min-w-[12rem] flex-col border-r border-border/70 pr-2 lg:flex lg:min-h-full"
+    @focusout="onFocusOut"
   >
     <div
       class="pointer-events-none absolute right-[-1px] top-0 z-10 w-0.5 rounded-full transition-opacity duration-150 motion-reduce:transition-none"
@@ -284,6 +331,7 @@ const foldClasses =
                       "
                     >
                       <NuxtLink
+                        v-bind="tabProps(item.path)"
                         :to="item.path"
                         :aria-current="
                           item.path === activePath ? 'page' : undefined

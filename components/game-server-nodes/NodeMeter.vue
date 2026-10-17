@@ -59,7 +59,9 @@ const scale = computed(() =>
     transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
     background-color 300ms ease;
 }
-.gsn-meter-fill[data-tone="warn"],
+.gsn-meter-fill[data-tone="warn"] {
+  background: hsl(var(--warning));
+}
 .gsn-meter-fill[data-tone="amber"] {
   background: hsl(var(--tac-amber));
 }

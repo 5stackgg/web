@@ -2,43 +2,27 @@
 import {
   ChevronsUpDownIcon,
   ChevronRight,
-  Cog,
-  Logs,
-  LineChart,
   Server,
   Play,
-  Globe,
   CalendarCog,
   ShieldHalf,
   Users,
   Radio,
   Home,
   Search,
-  Database,
   Trophy,
   Swords,
   Film,
   Newspaper,
-  ListVideo,
   AlertTriangle,
-  Megaphone,
-  LibraryBig,
-  Leaf,
-  Medal,
   CalendarRange,
   Gamepad2,
   ShieldCheck,
-  HardDrive,
-  ServerCog,
-  Cpu,
-  MonitorPlay,
-  RadioTower,
 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { SlideSwap } from "~/components/ui/transitions";
 import LeftNavLink from "~/layouts/components/LeftNavLink.vue";
 import { useNavMode } from "~/composables/useNavMode";
-import type { Component } from "vue";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
@@ -108,26 +92,6 @@ const {
   setMode: setNavMode,
   toggle: toggleNavMode,
 } = useNavMode();
-
-// Admin entries come from the Options computed `adminGroups` as keys; the
-// icons live here because only setup bindings reach the template.
-const ADMIN_ICONS: Record<string, Component> = {
-  awards: Medal,
-  seasons: Leaf,
-  alerts: Megaphone,
-  "control-room": MonitorPlay,
-  plugins: LibraryBig,
-  regions: Globe,
-  "app-settings": Cog,
-  "dedicated-servers": HardDrive,
-  "game-server-nodes": ServerCog,
-  "gpu-nodes": Cpu,
-  logs: Logs,
-  metrics: LineChart,
-  "media-server": RadioTower,
-  database: Database,
-  "render-queue": ListVideo,
-};
 
 // Collapsing switches Home | Search from a row to a stack in one layout
 // change; play each button from where it was to where it lands as a
@@ -678,25 +642,26 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             </template>
 
             <!-- Below three admin pages a mode switch is noise (an
-                   organizer who can only grant awards): they join this list. -->
-            <template v-if="!showNavModes">
-              <SidebarGroup v-for="group in adminGroups" :key="group.key">
-                <Separator v-if="showSeparators" class="mx-4 mb-2 w-auto" />
-                <SidebarGroupLabel>{{ group.label }}</SidebarGroupLabel>
-                <SidebarMenu>
-                  <LeftNavLink
-                    v-for="item in group.items"
-                    :key="item.key"
-                    :to="item.to"
-                    :icon="ADMIN_ICONS[item.key]"
-                    :label="item.label"
-                    :active="item.active"
-                    :badge="item.badge"
-                    :warning="item.warning"
-                  />
-                </SidebarMenu>
-              </SidebarGroup>
-            </template>
+                   organizer with Awards and Control Room): they join this
+                   list as one group, so its labels don't repeat Play's. -->
+            <SidebarGroup v-if="!showNavModes && adminGroups.length">
+              <Separator v-if="showSeparators" class="mx-4 mb-2 w-auto" />
+              <SidebarGroupLabel>{{
+                $t("layouts.app_nav.administration.title")
+              }}</SidebarGroupLabel>
+              <SidebarMenu>
+                <LeftNavLink
+                  v-for="item in adminGroups.flatMap((group) => group.items)"
+                  :key="item.key"
+                  :to="item.to"
+                  :icon="item.icon"
+                  :label="item.label"
+                  :active="item.active"
+                  :badge="item.badge"
+                  :warning="item.warning"
+                />
+              </SidebarMenu>
+            </SidebarGroup>
           </div>
 
           <div v-else key="admin">
@@ -718,13 +683,15 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             </SidebarGroup>
 
             <SidebarGroup v-for="group in adminGroups" :key="group.key">
-              <SidebarGroupLabel>{{ group.label }}</SidebarGroupLabel>
+              <SidebarGroupLabel v-if="group.label">{{
+                group.label
+              }}</SidebarGroupLabel>
               <SidebarMenu>
                 <LeftNavLink
                   v-for="item in group.items"
                   :key="item.key"
                   :to="item.to"
-                  :icon="ADMIN_ICONS[item.key]"
+                  :icon="item.icon"
                   :label="item.label"
                   :active="item.active"
                   :badge="item.badge"
@@ -888,6 +855,12 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import type { Plugin } from "~/stores/Plugins";
+import {
+  adminAccess,
+  adminEntryForRoute,
+  groupAdminEntries,
+  visibleAdminEntries,
+} from "~/composables/adminEntries";
 export default {
   props: {
     isMobile: {
@@ -955,151 +928,42 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    // The Admin list. Only match organizers and up see the left nav at all;
-    // an organizer typically gets Awards alone, admins get everything.
+    // The Admin list, from adminEntries. Only match organizers and up see the
+    // left nav at all; an organizer typically gets Awards (and Control Room)
+    // alone, admins get everything.
     adminGroups() {
-      const t = (key: string) => this.$t(key) as string;
-      const item = (
-        key: string,
-        name: string,
-        label: string,
-        extra: { badge?: number; warning?: string | null } = {},
-      ) => ({
-        key,
-        to: { name },
-        label,
-        active: this.isRouteActive(name),
-        ...extra,
+      const extras: Record<
+        string,
+        { badge?: number; warning?: string | null }
+      > = {
+        seasons: {
+          warning:
+            this.seasonsRebuildCount > 0
+              ? (this.$t("layouts.app_nav.modes.seasons_rebuild") as string)
+              : null,
+        },
+        "gpu-nodes": {
+          warning: this.gpuPoolNeedsAttention ? this.gpuPoolTooltip : null,
+        },
+        "control-room": { badge: this.activeStreamingMatchesCount },
+        "render-queue": { badge: this.renderQueueInFlightCount },
+      };
+      const entries = visibleAdminEntries(adminAccess(), {
+        nav: true,
+        hasRoute: (name) => this.$router.hasRoute(name),
       });
-
-      const groups: Array<{ key: string; label: string; items: any[] }> = [];
-
-      const competition = [];
-      if (this.canManageAwards || this.canGrantAwards) {
-        competition.push(
-          item("awards", "awards", t("layouts.app_nav.administration.awards")),
-        );
-      }
-      if (this.isAdmin && this.seasonsEnabled) {
-        competition.push(
-          item(
-            "seasons",
-            "seasons",
-            t("layouts.app_nav.administration.seasons"),
-            {
-              warning:
-                this.seasonsRebuildCount > 0
-                  ? t("layouts.app_nav.modes.seasons_rebuild")
-                  : null,
-            },
-          ),
-        );
-      }
-      if (competition.length > 0) {
-        groups.push({
-          key: "competition",
-          label: t("layouts.app_nav.competition.title"),
-          items: competition,
-        });
-      }
-
-      if (!this.isAdmin) {
-        return groups;
-      }
-
-      groups.push({
-        key: "servers",
-        label: t("layouts.app_nav.administration.servers"),
-        items: [
-          item(
-            "game-server-nodes",
-            "game-server-nodes",
-            t("layouts.app_nav.administration.game_server_nodes"),
-          ),
-          item(
-            "dedicated-servers",
-            "dedicated-servers",
-            t("layouts.app_nav.administration.dedicated_servers"),
-          ),
-          item(
-            "gpu-nodes",
-            "gpu-nodes",
-            t("layouts.app_nav.administration.gpu_nodes"),
-            {
-              warning: this.gpuPoolNeedsAttention ? this.gpuPoolTooltip : null,
-            },
-          ),
-          // Last: the geography servers belong to, set up rather than run.
-          item(
-            "regions",
-            "regions",
-            t("layouts.app_nav.administration.regions"),
-          ),
-        ],
-      });
-      groups.push({
-        key: "media",
-        label: t("layouts.app_nav.groups.media"),
-        items: [
-          item(
-            "control-room",
-            "stream-deck",
-            t("layouts.app_nav.administration.control_room"),
-            { badge: this.activeStreamingMatchesCount },
-          ),
-          item(
-            "media-server",
-            "system-media-server",
-            t("layouts.app_nav.system.media_server"),
-          ),
-          item(
-            "render-queue",
-            "system-render-queue",
-            t("layouts.app_nav.system.render_queue"),
-            { badge: this.renderQueueInFlightCount },
-          ),
-        ],
-      });
-      groups.push({
-        key: "monitoring",
-        label: t("layouts.app_nav.groups.monitoring"),
-        items: [
-          item(
-            "metrics",
-            "system-metrics",
-            t("layouts.app_nav.system.metrics"),
-          ),
-          item("logs", "system-logs", t("layouts.app_nav.system.logs")),
-          item("database", "database", t("layouts.app_nav.system.database")),
-        ],
-      });
-      groups.push({
-        key: "site",
-        label: t("layouts.app_nav.groups.site"),
-        items: [
-          item(
-            "alerts",
-            "system-alerts",
-            t("layouts.app_nav.administration.alerts"),
-          ),
-          ...(this.gamePluginsEnabled
-            ? [
-                item(
-                  "plugins",
-                  "plugins",
-                  t("layouts.app_nav.platform.plugin_directory"),
-                ),
-              ]
-            : []),
-          // App settings is always the last thing in the list.
-          item(
-            "app-settings",
-            "settings-application",
-            t("layouts.app_nav.administration.app_settings"),
-          ),
-        ],
-      });
-      return groups;
+      return groupAdminEntries(entries).map((group) => ({
+        key: group.id ?? "lead",
+        label: group.labelKey ? (this.$t(group.labelKey) as string) : "",
+        items: group.entries.map((entry) => ({
+          key: entry.id,
+          to: { name: entry.route },
+          icon: entry.icon,
+          label: this.$t(entry.labelKey) as string,
+          active: adminEntryForRoute(this.$route.name) === entry,
+          ...extras[entry.id],
+        })),
+      }));
     },
     // A Play / Admin switch for one or two pages is noise; below three they
     // join the Play list instead.
@@ -1145,9 +1009,6 @@ export default {
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
     },
-    gamePluginsEnabled() {
-      return useApplicationSettingsStore().gamePluginsEnabled;
-    },
     eventsEnabled() {
       return useApplicationSettingsStore().eventsEnabled;
     },
@@ -1165,15 +1026,6 @@ export default {
         group.plugins.push(plugin);
       }
       return groups;
-    },
-    seasonsEnabled() {
-      return useApplicationSettingsStore().seasonsEnabled;
-    },
-    canManageAwards() {
-      return useApplicationSettingsStore().canManageAwards;
-    },
-    canGrantAwards() {
-      return useApplicationSettingsStore().canGrantAwards;
     },
     leaguesEnabled() {
       return useApplicationSettingsStore().leaguesEnabled;
@@ -1201,9 +1053,6 @@ export default {
     },
     myMatches() {
       return useMatchLobbyStore().myMatches;
-    },
-    isStreamer() {
-      return useAuthStore().isStreamer;
     },
     isAdmin() {
       return useAuthStore().isAdmin;

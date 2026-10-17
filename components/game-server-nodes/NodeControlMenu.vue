@@ -1,13 +1,18 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { generateMutation } from "~/graphql/graphqlGen";
+import {
+  nodeModeFields,
+  setNodeFields,
+} from "~/components/game-server-nodes/nodeActions";
 import { Switch } from "~/components/ui/switch";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-import GpuStatusDot from "~/components/gpu-nodes/GpuStatusDot.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
 import type { GpuWorkload } from "~/components/gpu-nodes/gpuSessions";
+import { useWorkloadToggle } from "~/components/gpu-nodes/useWorkloadToggle";
 import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 import {
   Popover,
@@ -21,6 +26,7 @@ import {
   Radio,
   Play,
   Clapperboard,
+  ServerOff,
   TriangleAlert,
 } from "lucide-vue-next";
 
@@ -30,6 +36,7 @@ interface ControlledNode {
   enabled: boolean;
   enabled_for_match_making?: boolean;
   accepting_new_matches: boolean;
+  region?: string | null;
   start_port_range?: number | null;
   end_port_range?: number | null;
   gpu?: boolean;
@@ -42,7 +49,10 @@ const props = withDefaults(
   defineProps<{
     node: ControlledNode;
     align?: "start" | "center" | "end";
-    /** Only the GPU workload switches, where the row has its own enable switch. */
+    /**
+     * Leaves out Enabled and Accepting matches, where the panel has its own
+     * (GPU only and the workload switches stay).
+     */
     workloadsOnly?: boolean;
     /** What the node is running under each workload right now. */
     activity?: Partial<Record<GpuWorkload, string>>;
@@ -57,24 +67,28 @@ const props = withDefaults(
 const { t } = useI18n();
 const { toast } = useToast();
 const { client } = useApolloClient();
+const workloadToggle = useWorkloadToggle();
 
 const hasPorts = computed(() =>
   Boolean(props.node.start_port_range && props.node.end_port_range),
 );
 
-const workloads = computed(() => [
-  {
-    key: "streaming" as const,
-    icon: Radio,
-    on: !!props.node.gpu_streaming_enabled,
-  },
-  { key: "demos" as const, icon: Play, on: !!props.node.gpu_demos_enabled },
-  {
-    key: "rendering" as const,
-    icon: Clapperboard,
-    on: !!props.node.gpu_rendering_enabled,
-  },
-]);
+// The table and inspector chips share these writes, so a toggle in flight
+// shows here too.
+const workloads = computed(() =>
+  [
+    { key: "streaming" as const, icon: Radio },
+    { key: "demos" as const, icon: Play },
+    { key: "rendering" as const, icon: Clapperboard },
+  ].map((workload) => {
+    const saved = !!props.node[`gpu_${workload.key}_enabled`];
+    return {
+      ...workload,
+      on: workloadToggle.shown(props.node.id, workload.key, saved),
+      pending: workloadToggle.isPending(props.node.id, workload.key, saved),
+    };
+  }),
+);
 
 const workloadsOn = computed(
   () => workloads.value.filter((workload) => workload.on).length,
@@ -120,6 +134,10 @@ const schedulingHint = computed(() => {
   }
   return null;
 });
+
+const gpuOnly = computed(
+  () => !!props.node.gpu && !props.node.enabled_for_match_making,
+);
 
 const flagged = computed(
   () => props.node.gpu && props.node.enabled && !allWorkloadsOn.value,
@@ -169,26 +187,40 @@ async function setScheduling(accepting: boolean) {
   }
 }
 
-async function setWorkload(
-  workload: "streaming" | "demos" | "rendering",
-  enabled: boolean,
-) {
+// Same fields and words as the inspector's old mode button: GPU only drops
+// the region and ports with matchmaking.
+// Turning GPU only on drops the region and ports, so it asks first when there
+// is something to lose; turning it back off needs no confirm.
+const confirmingGpuOnly = ref(false);
+function requestGpuOnly(on: boolean) {
+  const loses =
+    !!props.node.region ||
+    !!props.node.start_port_range ||
+    !!props.node.end_port_range;
+  if (on && loses) {
+    confirmingGpuOnly.value = true;
+    return;
+  }
+  void setGpuOnly(on);
+}
+
+async function setGpuOnly(on: boolean) {
+  confirmingGpuOnly.value = false;
   try {
-    await client.mutate({
-      mutation: generateMutation({
-        update_game_server_nodes_by_pk: [
-          {
-            pk_columns: { id: props.node.id },
-            _set: { [`gpu_${workload}_enabled`]: enabled } as any,
-          },
-          { id: true },
-        ],
-      }),
+    await setNodeFields(
+      client,
+      props.node.id,
+      nodeModeFields(on ? "gpu" : "match"),
+    );
+    toast({
+      title: on
+        ? t("game_server.toast.made_gpu_only")
+        : t("game_server.toast.made_match_node"),
     });
   } catch (error: any) {
     toast({
       variant: "destructive",
-      title: t("pages.gpu_nodes.toggle_workload_failed"),
+      title: t("pages.game_server_nodes.toast.save_failed"),
       description: error?.message,
     });
   }
@@ -214,8 +246,8 @@ async function setWorkload(
       </button>
     </PopoverTrigger>
     <PopoverContent :align="align" class="w-[320px] overflow-hidden p-0">
-      <div v-if="!workloadsOnly" class="ncm-list">
-        <label class="ncm-row" :data-on="node.enabled">
+      <div v-if="!workloadsOnly || node.gpu" class="ncm-list">
+        <label v-if="!workloadsOnly" class="ncm-row" :data-on="node.enabled">
           <span class="ncm-ico"><Power class="h-4 w-4" /></span>
           <span class="ncm-text">
             <span class="ncm-name">{{ t("pages.gpu_nodes.enabled") }}</span>
@@ -230,7 +262,48 @@ async function setWorkload(
         </label>
 
         <label
-          v-if="hasPorts && node.enabled_for_match_making"
+          v-if="node.gpu"
+          class="ncm-row"
+          data-testid="gpu-only-row"
+          :data-on="gpuOnly"
+        >
+          <span class="ncm-ico"><ServerOff class="h-4 w-4" /></span>
+          <span class="ncm-text">
+            <span class="ncm-name">{{
+              t("pages.game_server_nodes.gpu_only")
+            }}</span>
+            <span class="ncm-desc">{{
+              t("pages.gpu_nodes.toggle_gpu_only_help")
+            }}</span>
+          </span>
+          <Switch
+            :model-value="gpuOnly || confirmingGpuOnly"
+            @update:model-value="(v) => requestGpuOnly(!!v)"
+          />
+        </label>
+        <div
+          v-if="confirmingGpuOnly"
+          class="flex items-center justify-end gap-2 px-2 pb-2"
+          data-testid="gpu-only-confirm"
+        >
+          <button
+            type="button"
+            class="h-7 rounded-md px-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            @click="confirmingGpuOnly = false"
+          >
+            {{ t("common.cancel") }}
+          </button>
+          <button
+            type="button"
+            class="h-7 rounded-md border border-[hsl(var(--warning)/0.45)] bg-[hsl(var(--warning)/0.1)] px-2.5 text-xs font-medium text-[hsl(var(--warning))] transition-colors hover:bg-[hsl(var(--warning)/0.18)]"
+            @click="setGpuOnly(true)"
+          >
+            {{ t("common.confirm") }}
+          </button>
+        </div>
+
+        <label
+          v-if="!workloadsOnly && hasPorts && node.enabled_for_match_making"
           class="ncm-row"
           data-testid="scheduling-row"
           :data-on="acceptingNewMatches"
@@ -273,7 +346,7 @@ async function setWorkload(
       </div>
 
       <template v-if="node.gpu">
-        <div class="ncm-section" :data-first="workloadsOnly">
+        <div class="ncm-section">
           <span>{{ t("pages.gpu_nodes.workload.section") }}</span>
           <span class="tabular-nums">{{ summary }}</span>
         </div>
@@ -308,14 +381,16 @@ async function setWorkload(
                 data-testid="workload-live"
                 :title="activity[workload.key]"
               >
-                <GpuStatusDot tone="ok" live />
+                <StatusDot tone="ok" live />
                 <span class="truncate">{{ activity[workload.key] }}</span>
               </span>
             </span>
             <Switch
               :model-value="workload.on"
-              :disabled="!node.enabled"
-              @update:model-value="(v) => setWorkload(workload.key, !!v)"
+              :disabled="!node.enabled || workload.pending"
+              @update:model-value="
+                (v) => workloadToggle.setWorkload(node.id, workload.key, !!v)
+              "
             />
           </label>
         </div>
@@ -420,7 +495,7 @@ async function setWorkload(
 .ncm-hint {
   display: inline-flex;
   vertical-align: -0.1em;
-  color: hsl(var(--tac-amber));
+  color: hsl(var(--warning));
   cursor: help;
 }
 .ncm-row[data-on="false"] .ncm-name {
@@ -452,9 +527,6 @@ async function setWorkload(
   font-size: 11px;
   font-weight: 500;
   color: hsl(var(--muted-foreground));
-}
-.ncm-section[data-first="true"] {
-  border-top: 0;
 }
 .ncm-note {
   padding: 0.1rem 0.85rem 0.5rem;

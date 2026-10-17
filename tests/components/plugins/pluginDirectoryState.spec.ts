@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  gridStep,
   installFraction,
   isPluginInstalled,
   latestVersion,
   needsAttention,
+  nodeRolloutTextClass,
+  nodeRolloutTone,
   pluginCardState,
+  pluginViewValidators,
   retryVersion,
   type DirectoryPlugin,
 } from "~/components/plugins/pluginDirectoryState";
@@ -165,5 +169,53 @@ describe("installFraction", () => {
     expect(installFraction(1, 4)).toBe(0.25);
     expect(installFraction(5, 4)).toBe(1);
     expect(installFraction(0, 0)).toBe(0);
+  });
+});
+
+describe("gridStep", () => {
+  // 7 cards, 3 wide:  0 1 2 / 3 4 5 / 6
+  it("steps sideways one card and stops at the ends", () => {
+    expect(gridStep(1, 7, 3, "ArrowRight")).toBe(2);
+    expect(gridStep(2, 7, 3, "ArrowRight")).toBe(3);
+    expect(gridStep(6, 7, 3, "ArrowRight")).toBe(6);
+    expect(gridStep(0, 7, 3, "ArrowLeft")).toBe(0);
+  });
+
+  it("moves a row at a time", () => {
+    expect(gridStep(1, 7, 3, "ArrowDown")).toBe(4);
+    expect(gridStep(4, 7, 3, "ArrowUp")).toBe(1);
+    expect(gridStep(1, 7, 3, "ArrowUp")).toBe(1);
+  });
+
+  it("drops onto a shorter last row, and stays on the last row", () => {
+    expect(gridStep(5, 7, 3, "ArrowDown")).toBe(6);
+    expect(gridStep(6, 7, 3, "ArrowDown")).toBe(6);
+  });
+
+  it("starts at the first card and handles an empty grid", () => {
+    expect(gridStep(-1, 7, 3, "ArrowDown")).toBe(0);
+    expect(gridStep(0, 0, 3, "ArrowDown")).toBe(-1);
+  });
+});
+
+describe("pluginViewValidators", () => {
+  it("never restores the attention tab or an unknown kind", () => {
+    expect(pluginViewValidators.state("installed")).toBe(true);
+    expect(pluginViewValidators.state("attention")).toBe(false);
+    expect(pluginViewValidators.kind("panel")).toBe(true);
+    expect(pluginViewValidators.kind("theme")).toBe(false);
+    expect(pluginViewValidators.verifiedOnly("yes")).toBe(false);
+  });
+});
+
+describe("nodeRolloutTone", () => {
+  it("never reads Manual or Installing as broken", () => {
+    expect(nodeRolloutTone("Installed")).toBe("ok");
+    expect(nodeRolloutTone("Installing")).toBe("amber");
+    expect(nodeRolloutTone("Manual")).toBe("warn");
+    expect(nodeRolloutTone("Failed")).toBe("bad");
+    expect(nodeRolloutTone("Pending")).toBe("off");
+    expect(nodeRolloutTextClass("Installed")).toBe("text-muted-foreground");
+    expect(nodeRolloutTextClass("Manual")).toBe("text-warning");
   });
 });

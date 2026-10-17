@@ -1,12 +1,6 @@
 <script setup lang="ts">
-import { Search, X } from "lucide-vue-next";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { Button } from "~/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
 import {
   Select,
   SelectContent,
@@ -22,7 +16,8 @@ import FilterMenu from "~/components/common/FilterMenu.vue";
 import FilterToggle from "~/components/common/FilterToggle.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
+import LiveStamp from "~/components/admin/LiveStamp.vue";
 import NodeStatsPoller from "~/components/system-metrics/NodeStatsPoller.vue";
 import MetricsAttention from "~/components/system-metrics/MetricsAttention.vue";
 import ServiceMetricsTable from "~/components/system-metrics/ServiceMetricsTable.vue";
@@ -46,54 +41,23 @@ definePageMeta({ middleware: "admin" });
 
     <PageTransition :delay="0">
       <div class="flex flex-wrap items-center gap-2">
-        <InputGroup class="h-8 w-full bg-card/60 sm:w-64">
-          <InputGroupAddon class="pl-2.5">
-            <Search class="h-3.5 w-3.5" />
-          </InputGroupAddon>
-          <InputGroupInput
-            v-model="search"
-            :placeholder="$t('pages.system_metrics.search_placeholder')"
-            :aria-label="$t('pages.system_metrics.search_placeholder')"
-            class="h-full text-sm"
-          />
-          <InputGroupAddon align="inline-end" class="pr-2">
-            <button
-              v-if="search"
-              type="button"
-              class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              :aria-label="$t('common.clear')"
-              @click="search = ''"
-            >
-              <X class="h-3.5 w-3.5" />
-            </button>
-          </InputGroupAddon>
-        </InputGroup>
+        <AdminSearch
+          v-model="search"
+          shortcut
+          :placeholder="$t('pages.system_metrics.search_placeholder')"
+        />
 
         <AnimatedFilters v-model="scope" square :options="scopeOptions" />
 
         <span class="grow" />
 
-        <FiveStackToolTip v-if="updatedAt" as-child :delay-duration="120">
-          <template #trigger>
-            <span
-              tabindex="0"
-              class="inline-flex h-8 items-center gap-2 whitespace-nowrap text-xs tabular-nums text-muted-foreground"
-            >
-              <span class="relative flex h-2 w-2">
-                <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden"
-                />
-                <span
-                  class="relative inline-flex h-2 w-2 rounded-full bg-success"
-                />
-              </span>
-              {{ $t("pages.system_metrics.live", { time: clock(updatedAt) }) }}
-            </span>
-          </template>
-          <span class="block max-w-[16rem]">
-            {{ $t("pages.system_metrics.live_hint") }}
-          </span>
-        </FiveStackToolTip>
+        <LiveStamp
+          :at="updatedAt"
+          live
+          clock
+          :stale-after="75000"
+          :tip="$t('pages.system_metrics.live_hint')"
+        />
 
         <FilterMenu
           :count="filterCount"
@@ -250,7 +214,11 @@ definePageMeta({ middleware: "admin" });
 </template>
 
 <script lang="ts">
-import { dateLocale } from "~/utilities/dateLocale";
+import { nextSort } from "~/components/admin/sort";
+import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
 import {
   collectIssues,
   fleetSummary,
@@ -275,17 +243,28 @@ import {
 // A service on a node the table does not know (the panel's own node, say) is
 // treated as gone once its newest sample is this old.
 const STALE_AFTER_MS = 3 * 60_000;
+const SORT_KEYS: ServiceSortKey[] = ["name", "cpu", "memory", "disk"];
+
+const VIEW_DEFAULTS = {
+  scope: "all" as "all" | "attention",
+  onlyOnline: false,
+  onlyEnabled: false,
+  serviceNode: "__all",
+  sortKey: "cpu" as ServiceSortKey,
+  sortDir: "desc" as "asc" | "desc",
+};
+
+const VIEW_VALIDATORS = {
+  scope: (v: unknown) => v === "all" || v === "attention",
+  sortKey: (v: unknown) => SORT_KEYS.includes(v as ServiceSortKey),
+  sortDir: (v: unknown) => v === "asc" || v === "desc",
+};
 
 export default {
   data() {
     return {
       search: "",
-      scope: "all" as "all" | "attention",
-      onlyOnline: false,
-      onlyEnabled: false,
-      serviceNode: "__all",
-      sortKey: "cpu" as ServiceSortKey,
-      sortDir: "desc" as "asc" | "desc",
+      ...readRememberedView("system-metrics", VIEW_DEFAULTS, VIEW_VALIDATORS),
       nodeStats: {} as Record<string, NodeStats | null>,
       updatedAt: null as number | null,
       logsOpen: false,
@@ -302,13 +281,6 @@ export default {
     nodeName(id: string): string {
       const node = this.nodesById[id];
       return node?.label || id;
-    },
-    clock(t: number) {
-      return new Date(t).toLocaleTimeString(dateLocale(), {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
     },
     serviceOnNode(nodeId: string, test: (name: string) => boolean) {
       return (
@@ -332,12 +304,13 @@ export default {
       this.logsOpen = true;
     },
     setSort(key: ServiceSortKey) {
-      if (this.sortKey === key) {
-        this.sortDir = this.sortDir === "asc" ? "desc" : "asc";
-        return;
-      }
-      this.sortKey = key;
-      this.sortDir = key === "name" ? "asc" : "desc";
+      const next = nextSort({ key: this.sortKey, dir: this.sortDir }, key, {
+        cpu: "desc",
+        memory: "desc",
+        disk: "desc",
+      });
+      this.sortKey = next.key;
+      this.sortDir = next.dir;
     },
     resetNodeFilters() {
       this.onlyOnline = false;
@@ -358,7 +331,32 @@ export default {
       return t == null || (this.updatedAt ?? Date.now()) - t > STALE_AFTER_MS;
     },
   },
+  watch: {
+    viewSnapshot(snapshot: typeof VIEW_DEFAULTS) {
+      saveRememberedView("system-metrics", snapshot, VIEW_DEFAULTS);
+    },
+    // A remembered node that no longer reports falls back to all nodes.
+    serviceNodes(ids: string[]) {
+      if (
+        this.serviceNode !== "__all" &&
+        this.getServiceStats &&
+        !ids.includes(this.serviceNode)
+      ) {
+        this.serviceNode = "__all";
+      }
+    },
+  },
   computed: {
+    viewSnapshot(): typeof VIEW_DEFAULTS {
+      return {
+        scope: this.scope,
+        onlyOnline: this.onlyOnline,
+        onlyEnabled: this.onlyEnabled,
+        serviceNode: this.serviceNode,
+        sortKey: this.sortKey,
+        sortDir: this.sortDir,
+      };
+    },
     nodes(): MetricsNode[] {
       return (this.game_server_nodes as MetricsNode[] | undefined) ?? [];
     },

@@ -20,7 +20,8 @@ import {
   formatGb,
   type MetricRangeKey,
 } from "~/components/game-server-nodes/nodeMetrics";
-import { INSPECTOR, TONE_TEXT } from "~/components/game-server-nodes/nodeCopy";
+import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
 
 // Disk, with room of its own under Live: the used figure, the fill against
 // its thresholds, free space and (when the hour really moved) a trend, then

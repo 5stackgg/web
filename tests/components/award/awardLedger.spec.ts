@@ -4,10 +4,12 @@ import {
   awardFacetValues,
   awardOwner,
   awardStatusKeys,
+  awardViewValidators,
   belongsTo,
   highlightParts,
   matchesKind,
   matchesSearch,
+  ownerIsLive,
   sortAwards,
 } from "~/components/award/awardLedger";
 
@@ -121,6 +123,19 @@ describe("filters and sort", () => {
     ]);
   });
 
+  it("flips a column against its natural direction", () => {
+    expect(sortAwards([c, a, b], "name", "desc").map((x) => x.name)).toEqual([
+      "Clutch",
+      "Bug",
+      "Ace",
+    ]);
+    expect(sortAwards([a, b, c], "holders", "asc").map((x) => x.name)).toEqual([
+      "Clutch",
+      "Bug",
+      "Ace",
+    ]);
+  });
+
   it("marks every search hit", () => {
     expect(highlightParts("Cup of Cups", "cup")).toEqual([
       { text: "Cup", hit: true },
@@ -128,5 +143,48 @@ describe("filters and sort", () => {
       { text: "Cup", hit: true },
       { text: "s", hit: false },
     ]);
+  });
+});
+
+describe("ownerIsLive", () => {
+  it("pings only for a tournament or event underway", () => {
+    const owner = (kind: any, phase: any) => ({
+      kind,
+      phase,
+      id: "x",
+      name: null,
+      number: null,
+      start: null,
+      end: null,
+      to: null,
+    });
+    expect(ownerIsLive(owner("tournament", "live"))).toBe(true);
+    expect(ownerIsLive(owner("event", "live"))).toBe(true);
+    expect(ownerIsLive(owner("league", "live"))).toBe(false);
+    expect(ownerIsLive(owner("season", "live"))).toBe(false);
+    expect(ownerIsLive(owner("tournament", "upcoming"))).toBe(false);
+    expect(ownerIsLive(null)).toBe(false);
+  });
+});
+
+describe("awardViewValidators", () => {
+  it("restores only known sorts, kinds and facet values", () => {
+    expect(awardViewValidators.sort("holders")).toBe(true);
+    expect(awardViewValidators.sort("toString")).toBe(false);
+    expect(awardViewValidators.kind("builtin")).toBe(true);
+    expect(awardViewValidators.kind("everything")).toBe(false);
+    expect(awardViewValidators.dir("up")).toBe(false);
+    expect(
+      awardViewValidators.facets({
+        owner: ["event"],
+        tier: ["gold"],
+        status: [],
+      }),
+    ).toBe(true);
+    expect(
+      awardViewValidators.facets({ owner: ["nope"], tier: [], status: [] }),
+    ).toBe(false);
+    expect(awardViewValidators.facets({ owner: [] })).toBe(false);
+    expect(awardViewValidators.facets(["gold"])).toBe(false);
   });
 });

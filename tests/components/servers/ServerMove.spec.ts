@@ -106,7 +106,11 @@ describe("ServerMoveDialog", () => {
     moveNodes.value = [
       node({ id: "node-a", label: "Node A" }),
       node({ id: "node-b", label: "Node B" }),
-      node({ id: "node-c", label: "Node C", available_dedicated_slot_count: 0 }),
+      node({
+        id: "node-c",
+        label: "Node C",
+        available_dedicated_slot_count: 0,
+      }),
     ];
 
     await mount(ServerMoveDialog, {
@@ -173,11 +177,11 @@ describe("ServerMoveDialog", () => {
       sourceReachable: true,
     });
 
-    expect(buttonNamed("Move Server")!.disabled).toBe(true);
+    expect(buttonNamed("Move server")!.disabled).toBe(true);
 
     radios()[0].click();
     await flushPromises();
-    buttonNamed("Move Server")!.click();
+    buttonNamed("Move server")!.click();
     await flushPromises();
 
     expect(mutate).toHaveBeenCalledTimes(1);
@@ -201,11 +205,13 @@ describe("ServerMoveDialog", () => {
 
     radios()[0].click();
     await flushPromises();
-    expect(buttonNamed("Move Server")!.disabled).toBe(true);
+    expect(buttonNamed("Move server")!.disabled).toBe(true);
 
-    document.body.querySelector<HTMLButtonElement>('[role="checkbox"]')!.click();
+    document.body
+      .querySelector<HTMLButtonElement>('[role="checkbox"]')!
+      .click();
     await flushPromises();
-    buttonNamed("Move Server")!.click();
+    buttonNamed("Move server")!.click();
     await flushPromises();
 
     expect(mutate.mock.calls[0][0].variables).toMatchObject({
@@ -228,7 +234,7 @@ describe("ServerMoveDialog", () => {
 
     radios()[0].click();
     await flushPromises();
-    buttonNamed("Move Server")!.click();
+    buttonNamed("Move server")!.click();
     await flushPromises();
 
     expect(wrapper.emitted("update:open")).toBeUndefined();
@@ -269,7 +275,7 @@ describe("ServerMigrationPanel", () => {
     expect(wrapper.text()).toContain("Moving to Node B");
     expect(wrapper.text()).toContain("(50%)");
 
-    buttonNamed("Cancel Move")!.click();
+    buttonNamed("Cancel move")!.click();
     await flushPromises();
 
     expect(mutate.mock.calls[0][0].variables).toEqual({
@@ -317,7 +323,7 @@ describe("ServerMigrationPanel", () => {
     expect(wrapper.text()).toContain("Move to Node B failed");
     expect(wrapper.text()).toContain("The transfer stalled");
     expect(wrapper.text()).toContain("The server is back on Node A.");
-    expect(buttonNamed("Cancel Move")).toBeUndefined();
+    expect(buttonNamed("Cancel move")).toBeUndefined();
 
     document.body
       .querySelector<HTMLButtonElement>('button[aria-label="Dismiss"]')!

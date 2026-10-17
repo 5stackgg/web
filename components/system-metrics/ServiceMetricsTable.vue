@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import {
-  ArrowDown,
-  ArrowUp,
-  ChevronDown,
-  CircleAlert,
-  Logs,
-  TriangleAlert,
-} from "lucide-vue-next";
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { ChevronDown, CircleAlert, Logs, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import SortHeader from "~/components/admin/SortHeader.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import NodeLoadStack from "~/components/game-server-nodes/NodeLoadStack.vue";
 import NodeSpark from "~/components/game-server-nodes/NodeSpark.vue";
@@ -28,7 +24,7 @@ import {
   type ServiceStat,
 } from "~/components/system-metrics/metricRules";
 
-defineProps<{
+const props = defineProps<{
   rows: ServiceRow[];
   sortKey: ServiceSortKey;
   sortDir: "asc" | "desc";
@@ -39,6 +35,8 @@ const emit = defineEmits<{
   (e: "sort", key: ServiceSortKey): void;
   (e: "logs", service: ServiceStat): void;
 }>();
+
+const { t } = useI18n();
 
 const expanded = ref(new Set<string>());
 
@@ -60,25 +58,52 @@ function toggle(key: string) {
   expanded.value = next;
 }
 
+// ↑/↓ move between services, Enter opens the charts, Esc folds them.
+const wrap = ref<HTMLElement | null>(null);
+const activeId = ref<string | null>(null);
+const { rowProps } = useListKeyboard({
+  items: () => props.rows,
+  getId: (row) => row.key,
+  activeId,
+  container: wrap,
+  onOpen: toggle,
+  onClose: () => {
+    const id = activeId.value;
+    if (id && expanded.value.has(id)) {
+      toggle(id);
+      return true;
+    }
+  },
+});
+
+// aria-expanded already says what the row does.
+function rowAttrs(key: string) {
+  const { "aria-selected": _selected, ...rest } = rowProps(key);
+  return rest;
+}
+
+// Leaving the table hands the arrow keys back to the page.
+function onFocusOut(event: FocusEvent) {
+  const next = event.relatedTarget as Node | null;
+  if (!next || !wrap.value?.contains(next)) {
+    activeId.value = null;
+  }
+}
+
 // CPU, memory share and the node's disk share one Load column; its header
 // sorts by each.
-const METRICS: Array<{
-  key: Exclude<ServiceSortKey, "name">;
-  label: string;
-  hint?: string;
-}> = [
-  { key: "cpu", label: "pages.system_metrics.cpu_short" },
+const loadSecondary = computed(() => [
   {
     key: "memory",
-    label: "pages.system_metrics.memory_short",
-    hint: "pages.system_metrics.services_table.memory_share_hint",
+    label: t("pages.system_metrics.memory_short"),
+    tip: t("pages.system_metrics.services_table.memory_share_hint"),
   },
   {
     key: "disk",
-    label: "pages.system_metrics.services_table.node_disk",
-    hint: "pages.system_metrics.services_table.node_disk_hint",
+    label: t("pages.system_metrics.services_table.node_disk"),
+    tip: t("pages.system_metrics.services_table.node_disk_hint"),
   },
-];
+]);
 
 const hhmm = (t: number | null) =>
   t == null
@@ -116,64 +141,27 @@ const diskSize = (disk: NodeDisk | null): DiskSize | null =>
 
 <template>
   <div class="sm-list">
-    <div class="sm-wrap">
+    <div ref="wrap" class="sm-wrap" @focusout="onFocusOut">
       <table class="sm-table">
         <thead>
           <tr>
-            <th class="sm-c-name">
-              <button
-                type="button"
-                class="sm-sort"
-                :class="sortKey === 'name' && 'text-foreground'"
-                @click="emit('sort', 'name')"
-              >
-                {{ $t("pages.system_metrics.service") }}
-                <component
-                  :is="sortDir === 'asc' ? ArrowUp : ArrowDown"
-                  v-if="sortKey === 'name'"
-                  class="h-3 w-3"
-                />
-              </button>
-            </th>
-            <th class="sm-c-load">
-              <span class="inline-flex items-center">
-                <template v-for="(metric, index) of METRICS" :key="metric.key">
-                  <span v-if="index" class="mx-1.5 text-muted-foreground/40"
-                    >·</span
-                  >
-                  <button
-                    type="button"
-                    class="sm-sort"
-                    :class="sortKey === metric.key && 'text-foreground'"
-                    @click="emit('sort', metric.key)"
-                  >
-                    <FiveStackToolTip
-                      v-if="metric.hint"
-                      as-child
-                      :delay-duration="0"
-                      :tap-toggle="false"
-                    >
-                      <template #trigger>
-                        <span
-                          class="cursor-help underline decoration-dotted decoration-muted-foreground/70 underline-offset-[3px]"
-                        >
-                          {{ $t(metric.label) }}
-                        </span>
-                      </template>
-                      <span class="block max-w-[16rem] text-left font-normal">
-                        {{ $t(metric.hint) }}
-                      </span>
-                    </FiveStackToolTip>
-                    <template v-else>{{ $t(metric.label) }}</template>
-                    <component
-                      :is="sortDir === 'asc' ? ArrowUp : ArrowDown"
-                      v-if="sortKey === metric.key"
-                      class="h-3 w-3"
-                    />
-                  </button>
-                </template>
-              </span>
-            </th>
+            <SortHeader
+              class="sm-c-name"
+              sort-key="name"
+              :label="$t('pages.system_metrics.service')"
+              :active="sortKey"
+              :dir="sortDir"
+              @sort="emit('sort', $event as ServiceSortKey)"
+            />
+            <SortHeader
+              class="sm-c-load"
+              sort-key="cpu"
+              :label="$t('pages.system_metrics.cpu_short')"
+              :secondary="loadSecondary"
+              :active="sortKey"
+              :dir="sortDir"
+              @sort="emit('sort', $event as ServiceSortKey)"
+            />
             <th class="sm-c-spark">
               {{ $t("pages.system_metrics.services_table.cpu_last_30") }}
             </th>
@@ -188,12 +176,11 @@ const diskSize = (disk: NodeDisk | null): DiskSize | null =>
           <template v-for="row in rows" :key="row.key">
             <tr
               class="sm-row"
+              v-bind="rowAttrs(row.key)"
               :data-stale="row.stale"
               :data-open="expanded.has(row.key)"
-              tabindex="0"
               :aria-expanded="expanded.has(row.key)"
               @click="onRowClick($event, row.key)"
-              @keydown.enter.self="toggle(row.key)"
               @keydown.space.self.prevent="toggle(row.key)"
             >
               <!-- The severity rail sits on the first cell: a box-shadow on a
@@ -227,7 +214,8 @@ const diskSize = (disk: NodeDisk | null): DiskSize | null =>
                         />
                         <TriangleAlert
                           v-else
-                          class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+                          class="h-3.5 w-3.5 shrink-0"
+                          :class="TONE_TEXT.warn"
                           :aria-label="$t('system_alerts.types.warning')"
                         />
                       </template>
@@ -358,15 +346,6 @@ const diskSize = (disk: NodeDisk | null): DiskSize | null =>
   color: hsl(var(--muted-foreground));
   white-space: nowrap;
 }
-.sm-sort {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 150ms ease;
-}
-.sm-sort:hover {
-  color: hsl(var(--foreground));
-}
 .sm-row {
   cursor: pointer;
 }
@@ -407,7 +386,7 @@ const diskSize = (disk: NodeDisk | null): DiskSize | null =>
   box-shadow: inset 2px 0 0 hsl(var(--destructive));
 }
 .sm-row td[data-rail="warning"] {
-  box-shadow: inset 2px 0 0 hsl(var(--tac-amber));
+  box-shadow: inset 2px 0 0 hsl(var(--warning));
 }
 .sm-chev {
   transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);

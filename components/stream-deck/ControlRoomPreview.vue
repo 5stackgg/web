@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Lock, Server, ServerOff } from "lucide-vue-next";
 import mapLabel from "~/utilities/mapLabel";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_TEXT, type Tone } from "~/components/admin/tone";
 import {
   currentMapFor,
   matchReadiness,
@@ -104,24 +106,25 @@ const statusLabel = computed(() => {
   return s;
 });
 
-const statusDot = computed(() => {
+// Veto is the match setting up, not a warning; only a live match pings.
+const statusTone = computed<Tone>(() => {
   const s = props.match.status;
-  if (s === "Live") return "bg-success";
-  if (s === "Veto") return "bg-[hsl(var(--tac-amber))]";
-  if (s === "WaitingForServer") return "bg-warning";
-  return "bg-muted-foreground/50";
+  if (s === "Live") return "ok";
+  if (s === "Veto") return "info";
+  if (s === "WaitingForServer") return "warn";
+  return "off";
 });
 
 const server = computed(() => {
   const m = props.match;
   if (!m.server_id)
-    return { text: t("stream_deck.no_server"), tone: "text-destructive" };
+    return { text: t("stream_deck.no_server"), tone: TONE_TEXT.bad };
   const region = m.server_region || t("stream_deck.server_assigned");
   return m.is_server_online
-    ? { text: region, tone: "text-muted-foreground" }
+    ? { text: region, tone: TONE_TEXT.off }
     : {
         text: `${region} · ${t("stream_deck.offline")}`,
-        tone: "text-warning",
+        tone: TONE_TEXT.warn,
       };
 });
 </script>
@@ -209,7 +212,7 @@ const server = computed(() => {
     <div
       class="flex min-w-0 items-center gap-1.5 px-0.5 text-xs text-muted-foreground"
     >
-      <span class="size-1.5 shrink-0 rounded-full" :class="statusDot" />
+      <StatusDot :tone="statusTone" :live="isLive" size="sm" />
       <span class="shrink-0">{{ statusLabel }}</span>
       <span class="text-muted-foreground/40">·</span>
       <component

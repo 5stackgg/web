@@ -17,6 +17,12 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import SlideSwap from "~/components/ui/transitions/SlideSwap.vue";
 import PluginReadme from "~/components/game-plugins/PluginReadme.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
+import {
+  nodeRolloutTextClass,
+  nodeRolloutTone,
+} from "~/components/plugins/pluginDirectoryState";
 import { Switch } from "~/components/ui/switch";
 import {
   ShieldCheck,
@@ -50,6 +56,7 @@ import {
 } from "~/components/ui/sheet";
 import { dateLocale } from "~/utilities/dateLocale";
 import {
+  createButtonClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
@@ -63,8 +70,7 @@ const railSection =
 const sectionLabel = [tacticalSectionLabelClasses, "mb-0"];
 const settingRow =
   "flex items-start justify-between gap-4 border-b border-border/40 py-3 last:border-b-0";
-const goldButton =
-  "w-full bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]";
+const goldButton = [createButtonClasses, "w-full"];
 </script>
 
 <template>
@@ -254,8 +260,10 @@ const goldButton =
                   <span :class="tacticalSectionTickClasses"></span>
                   {{ $t("pages.plugins.live_title") }}
                 </div>
-                <p class="flex items-center gap-1.5 text-sm text-success">
-                  <Check class="h-4 w-4" />
+                <p
+                  class="flex items-center gap-1.5 text-sm text-muted-foreground"
+                >
+                  <Check class="h-4 w-4 shrink-0" :class="TONE_TEXT.ok" />
                   {{ $t("pages.plugins.already_installed") }}
                 </p>
                 <div class="flex items-center gap-2">
@@ -405,9 +413,9 @@ const goldButton =
                     </span>
                     <span
                       v-else-if="isRequested && rollout.key === 'Installed'"
-                      class="inline-flex items-center gap-1.5 text-sm text-success"
+                      class="inline-flex items-center gap-1.5 text-sm text-muted-foreground"
                     >
-                      <Check class="h-4 w-4" />
+                      <Check class="h-4 w-4" :class="TONE_TEXT.ok" />
                       {{ $t("pages.plugins.status.Installed") }}
                     </span>
                     <span
@@ -426,7 +434,8 @@ const goldButton =
                       <template #trigger>
                         <span
                           tabindex="0"
-                          class="inline-flex items-center gap-1.5 text-sm text-warning"
+                          class="inline-flex items-center gap-1.5 text-sm"
+                          :class="TONE_TEXT.warn"
                         >
                           <Hand class="h-4 w-4" />
                           {{ $t("pages.plugins.store.found_on_disk") }}
@@ -584,10 +593,17 @@ const goldButton =
                             class="px-3 py-2"
                           >
                             <div class="flex items-center gap-2">
-                              <span
-                                class="h-1.5 w-1.5 shrink-0 rounded-full"
-                                :class="nodeDotClass(nodeState(node.id).key)"
-                              ></span>
+                              <!-- Pings only while the node is installing or
+                                   removing right now. -->
+                              <StatusDot
+                                size="sm"
+                                :tone="nodeRolloutTone(nodeState(node.id).key)"
+                                :live="
+                                  ['Installing', 'Removing'].includes(
+                                    nodeState(node.id).key,
+                                  )
+                                "
+                              />
 
                               <p
                                 class="min-w-0 flex-1 truncate text-sm"
@@ -618,7 +634,9 @@ const goldButton =
 
                               <span
                                 class="shrink-0 font-mono text-xs"
-                                :class="nodeTextClass(nodeState(node.id).key)"
+                                :class="
+                                  nodeRolloutTextClass(nodeState(node.id).key)
+                                "
                               >
                                 {{ nodeState(node.id).label }}
                               </span>
@@ -852,7 +870,8 @@ const goldButton =
                   <span
                     tabindex="0"
                     role="img"
-                    class="inline-flex text-warning"
+                    class="inline-flex"
+                    :class="TONE_TEXT.warn"
                     :aria-label="forcedWarning"
                   >
                     <AlertTriangle class="h-3.5 w-3.5" />
@@ -1094,7 +1113,8 @@ const goldButton =
                 class="flex items-start gap-1.5 text-xs text-muted-foreground"
               >
                 <AlertTriangle
-                  class="mt-0.5 h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
+                  class="mt-0.5 h-3.5 w-3.5 shrink-0"
+                  :class="TONE_TEXT.warn"
                 />
                 {{ forcedWarning }}
               </p>
@@ -1937,38 +1957,6 @@ export default {
         toast({ title: this.$t("pages.plugins.detail.copied") as string });
       } catch (error) {
         toast({ title: (error as Error).message, variant: "destructive" });
-      }
-    },
-    nodeDotClass(key: string): string {
-      switch (key) {
-        case "Installed":
-          return "bg-success";
-        case "Installing":
-        case "Removing":
-          return "bg-[hsl(var(--tac-amber))]";
-        case "Failed":
-          return "bg-destructive";
-        case "Manual":
-          return "bg-warning";
-        case "Pending":
-          return "bg-muted-foreground/60";
-        default:
-          return "bg-muted-foreground/30";
-      }
-    },
-    nodeTextClass(key: string): string {
-      switch (key) {
-        case "Installed":
-          return "text-muted-foreground";
-        case "Installing":
-        case "Removing":
-          return "text-[hsl(var(--tac-amber))]";
-        case "Failed":
-          return "text-destructive";
-        case "Manual":
-          return "text-warning";
-        default:
-          return "text-muted-foreground/50";
       }
     },
     async uninstall() {

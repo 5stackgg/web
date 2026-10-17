@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { ChevronRight, CircleX, TriangleAlert, X } from "lucide-vue-next";
 import { Fold } from "~/components/ui/transitions";
+import { TONE_TEXT } from "~/components/admin/tone";
 import { clockTime, type LogGroup } from "./logLines";
 
 // Repeating warnings and errors behind one line. It never opens by itself.
@@ -47,7 +48,7 @@ const chip = computed(() => {
           <template #count
             ><b
               class="font-bold tabular-nums"
-              :class="hasErrors ? 'text-destructive' : 'text-amber-400'"
+              :class="hasErrors ? TONE_TEXT.bad : TONE_TEXT.warn"
               >{{ groups.length }}</b
             ></template
           >
@@ -96,7 +97,7 @@ const chip = computed(() => {
               :class="
                 g.level === 'ERROR'
                   ? 'border-destructive/30 bg-destructive/15 text-destructive'
-                  : 'border-amber-500/30 bg-amber-500/15 text-amber-400'
+                  : 'border-warning/30 bg-warning/15 text-warning'
               "
             >
               <CircleX v-if="g.level === 'ERROR'" class="h-3 w-3" />

@@ -1,4 +1,15 @@
 <script setup lang="ts">
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  shallowRef,
+  watch,
+} from "vue";
+import { useI18n } from "vue-i18n";
+import { useApolloClient, useSubscription } from "@vue/apollo-composable";
 import NodeTable from "~/components/game-server-nodes/NodeTable.vue";
 import NodeInspector from "~/components/game-server-nodes/NodeInspector.vue";
 import NodeBulkBar from "~/components/game-server-nodes/NodeBulkBar.vue";
@@ -6,6 +17,7 @@ import NodeStatsPoll from "~/components/game-server-nodes/NodeStatsPoll.vue";
 import NodeRemoveDialog from "~/components/game-server-nodes/NodeRemoveDialog.vue";
 import SetupDialog from "~/components/game-server-nodes/SetupDialog.vue";
 import Cs2BuildCard from "~/components/game-server-nodes/Cs2BuildCard.vue";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
 import FilterToggle from "~/components/common/FilterToggle.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
@@ -14,8 +26,6 @@ import DeferredLoading from "~/components/common/DeferredLoading.vue";
 import {
   Plus,
   Info,
-  Search,
-  X,
   Globe,
   ChevronDown,
   Check,
@@ -23,11 +33,6 @@ import {
   CircleDot,
   WifiOff,
 } from "lucide-vue-next";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
 import {
   Popover,
   PopoverContent,
@@ -37,6 +42,7 @@ import { Sheet, SheetContent, SheetTitle } from "~/components/ui/sheet";
 import { Button } from "~/components/ui/button";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import { PageTransition, FadeSwap } from "~/components/ui/transitions";
+import { toast } from "@/components/ui/toast";
 import {
   createButtonClasses,
   listCreateButtonClasses,
@@ -45,8 +51,45 @@ import {
   filterTriggerActive,
   filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { order_by } from "~/generated/zeus";
+import { generateMutation } from "~/graphql/graphqlGen";
+import {
+  filterNodes,
+  fleetSummary,
+  isReachable,
+  maxServers,
+  nodeSettings,
+  type NodeFilters,
+} from "~/components/game-server-nodes/nodeState";
+import {
+  linkedNodeId,
+  needsAttention,
+} from "~/components/game-server-nodes/nodeInspector";
+import type { MetricRangeKey } from "~/components/game-server-nodes/nodeMetrics";
+import { updateGame } from "~/components/game-server-nodes/nodeActions";
+import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
+import { nextSort, type SortDir } from "~/components/admin/sort";
+import { observeDockTier, type DockTier } from "~/composables/dockTier";
+import { useBulkSelect } from "~/composables/useBulkSelect";
+import { useListKeyboard } from "~/composables/useListKeyboard";
+import { useRememberedView } from "~/composables/useRememberedView";
 
 definePageMeta({ middleware: "admin" });
+
+// The fleet is a handful of machines an admin runs, so the page loads all of
+// it once and filters, sorts and sums on the client. A row opens the node in
+// the inspector docked beside the table, or in a sheet when the room right of
+// the capped table is too small (see dockTier). Ticking rows (the checkbox,
+// or Cmd/Ctrl- and Shift-click) selects several and the inspector becomes
+// the bulk panel. The pick lives in component state only: an in-page query
+// key would remount the page. ?node= is read once, on load, as a deep link.
+
+const { t } = useI18n();
+const route = useRoute();
+const { client } = useApolloClient();
+const settingsStore = useApplicationSettingsStore();
 
 const kbdClasses =
   "inline-grid h-[18px] min-w-[18px] place-items-center rounded border border-border px-1 font-mono text-[10.5px] text-muted-foreground";
@@ -59,6 +102,603 @@ const sheetFade = {
   "--tw-enter-translate-x": "0px",
   "--tw-exit-translate-x": "0px",
 };
+
+const page = ref<HTMLElement | null>(null);
+const list = ref<HTMLElement | null>(null);
+const aside = ref<HTMLElement | null>(null);
+
+// ---- data ----
+
+const versionsSub = useSubscription(
+  typedGql("subscription")({
+    game_versions: [
+      { order_by: [{ updated_at: order_by.desc }] },
+      {
+        build_id: true,
+        version: true,
+        description: true,
+        updated_at: true,
+        current: true,
+      },
+    ],
+  }),
+);
+const gameVersions = computed<Array<Record<string, any>>>(
+  () => (versionsSub.result.value as any)?.game_versions ?? [],
+);
+
+const pluginsSub = useSubscription(
+  typedGql("subscription")({
+    plugin_versions: [
+      { order_by: [{ published_at: order_by.desc }] },
+      {
+        version: true,
+        runtime: true,
+        min_game_build_id: true,
+        published_at: true,
+      },
+    ],
+  }),
+);
+const pluginVersions = computed<Array<Record<string, any>>>(
+  () => (pluginsSub.result.value as any)?.plugin_versions ?? [],
+);
+
+const regionsSub = useSubscription(
+  typedGql("subscription")({
+    server_regions: [{}, { value: true, description: true }],
+  }),
+);
+const serverRegions = computed<Array<{ value: string; description?: string }>>(
+  () => (regionsSub.result.value as any)?.server_regions ?? [],
+);
+
+const nodesSub = useSubscription(
+  typedGql("subscription")({
+    game_server_nodes: [
+      { order_by: [{ label: order_by.asc }, { id: order_by.asc }] },
+      {
+        id: true,
+        label: true,
+        status: true,
+        region: true,
+        enabled: true,
+        enabled_for_match_making: true,
+        accepting_new_matches: true,
+        build_id: true,
+        csgo_build_id: true,
+        pin_build_id: true,
+        pin_plugin_version: true,
+        pin_plugin_runtime: true,
+        plugin_supported: true,
+        lan_ip: true,
+        public_ip: true,
+        start_port_range: true,
+        end_port_range: true,
+        supports_low_latency: true,
+        supports_cpu_pinning: true,
+        update_status: true,
+        update_failed_at: true,
+        gpu: true,
+        gpu_info: true,
+        gpu_streaming_enabled: true,
+        gpu_demos_enabled: true,
+        gpu_rendering_enabled: true,
+        shader_bake_status: true,
+        cs2_video_settings: true,
+        cpu_sockets: true,
+        cpu_governor_info: true,
+        cpu_frequency_info: true,
+        cpu_cores_per_socket: true,
+        cpu_threads_per_core: true,
+        cpu_warnings: true,
+        offline_at: true,
+        e_region: {
+          description: true,
+        },
+        e_status: {
+          description: true,
+        },
+        total_server_count: true,
+        available_server_count: true,
+        demo_network_limiter: true,
+        disk_available_gb: true,
+        disk_used_percent: true,
+      } as any,
+    ],
+  }),
+);
+const nodes = computed<Array<Record<string, any>>>(
+  () => (nodesSub.result.value as any)?.game_server_nodes ?? [],
+);
+const loading = ref(true);
+nodesSub.onResult(() => (loading.value = false));
+nodesSub.onError(() => (loading.value = false));
+
+// ---- the view: search, filters, sort and display, as the admin left them ----
+
+const view = useRememberedView(
+  "game-server-nodes",
+  {
+    query: "",
+    regions: [] as Array<string>,
+    onlyEnabled: false,
+    hideOffline: false,
+    attentionOnly: false,
+    sortDir: "asc" as SortDir,
+    displayMetrics: true,
+  },
+  {
+    validate: {
+      regions: (value) =>
+        Array.isArray(value) &&
+        value.every((region) => typeof region === "string"),
+      sortDir: (value) => value === "asc" || value === "desc",
+    },
+  },
+);
+
+// A remembered region that no longer exists would hide every node.
+watch(serverRegions, (regions) => {
+  if (!regions.length || !view.regions.length) {
+    return;
+  }
+  const known = new Set(regions.map((region) => region.value));
+  const kept = view.regions.filter((region) => known.has(region));
+  if (kept.length !== view.regions.length) {
+    view.regions = kept;
+  }
+});
+
+const currentGameVersion = computed(() =>
+  gameVersions.value.find((version) => version.current === true),
+);
+const supportsGameServerNodes = computed(
+  () => settingsStore.supportsGameServerNodes,
+);
+const settings = computed(() => nodeSettings(settingsStore.settings));
+const pinning = computed(() => settings.value.pinning);
+const issueContext = computed(() => ({
+  currentBuildId: currentGameVersion.value?.build_id ?? null,
+  maxServers: (node: any) => maxServers(node, settings.value.pinning),
+  diskThresholds: settings.value.disk,
+}));
+const summary = computed(() =>
+  fleetSummary(nodes.value as any, issueContext.value),
+);
+
+const scopeOptions = computed(() => [
+  { key: "all", label: t("common.all") },
+  {
+    key: "attention",
+    label: t("pages.system_metrics.scope_attention"),
+    count: summary.value.attention || undefined,
+  },
+]);
+
+const filters = computed<NodeFilters>(() => ({
+  query: view.query,
+  regions: view.regions,
+  onlyEnabled: view.onlyEnabled,
+  hideOffline: view.hideOffline,
+  sort: view.sortDir,
+}));
+
+const visibleNodes = computed<Array<Record<string, any>>>(() => {
+  const shown = filterNodes(nodes.value as any, filters.value);
+  return view.attentionOnly
+    ? shown.filter((node) => needsAttention(node, issueContext.value))
+    : shown;
+});
+
+const optionsActiveCount = computed(
+  () => (view.onlyEnabled ? 1 : 0) + (view.hideOffline ? 1 : 0),
+);
+const hasActiveFilters = computed(
+  () =>
+    view.query !== "" ||
+    view.regions.length > 0 ||
+    view.onlyEnabled ||
+    view.hideOffline ||
+    view.attentionOnly ||
+    view.sortDir !== "asc",
+);
+
+function resetFilters() {
+  view.query = "";
+  view.regions = [];
+  view.onlyEnabled = false;
+  view.hideOffline = false;
+  view.attentionOnly = false;
+  view.sortDir = "asc";
+}
+
+function toggleRegion(value: string) {
+  view.regions = view.regions.includes(value)
+    ? view.regions.filter((region) => region !== value)
+    : [...view.regions, value];
+}
+
+function onSort(key: string) {
+  view.sortDir = nextSort({ key: "node", dir: view.sortDir }, key).dir;
+}
+
+// ---- live stats ----
+
+const nodeStats = shallowRef<Record<string, any>>({});
+function onStats(id: string, stats: any) {
+  nodeStats.value = {
+    ...nodeStats.value,
+    [id]: stats ? Object.freeze(stats) : null,
+  };
+}
+
+// ---- the inspector and the selection ----
+
+const pickedId = ref<string | null>(null);
+const swapAnimate = ref(true);
+const edgeGlide = ref(false);
+const tier = ref<DockTier>("sheet");
+// The docked width the aside keeps, also while it leaves for a sheet.
+const lastDock = ref<Exclude<DockTier, "sheet">>("docked");
+// The panel is moving between aside and sheet: both fade.
+const tierSwap = ref(false);
+const metricsRange = ref<MetricRangeKey>("live");
+const request = ref<{
+  nodeId: string;
+  kind: "rename" | "ports";
+  n: number;
+} | null>(null);
+const removeTarget = ref<Record<string, any> | null>(null);
+const removeOpen = ref(false);
+const setupGameServer = ref<Record<string, any> | null>(null);
+const showSetupDialog = ref(false);
+const modifierKey = ref("Ctrl");
+
+// Rows that leave the list leave the selection, so bulk actions only reach
+// rows the admin can see.
+const bulk = useBulkSelect({
+  items: visibleNodes,
+  getId: (node) => node.id,
+  escape: false,
+});
+const multiIds = computed(() => [...bulk.selected.value]);
+const isMulti = computed(() => bulk.count.value > 1);
+const selectedNodes = bulk.selectedItems;
+
+const pickedNode = computed(
+  () => nodes.value.find((node) => node.id === pickedId.value) ?? null,
+);
+const inspecting = computed(() => isMulti.value || !!pickedNode.value);
+const docked = computed(() => tier.value !== "sheet" && inspecting.value);
+const sheetOpen = computed(() => tier.value === "sheet" && inspecting.value);
+
+// CPU and memory for every row that shows load; the inspected node gets the
+// full set (disks, network, GPUs) for its Live section.
+const polls = computed(() => {
+  const inspected =
+    !isMulti.value && pickedNode.value?.status !== "Setup"
+      ? pickedId.value
+      : null;
+  const ids = view.displayMetrics
+    ? visibleNodes.value
+        .filter((node) => isReachable(node as any))
+        .map((node) => node.id)
+    : [];
+  if (inspected && !ids.includes(inspected)) {
+    ids.push(inspected);
+  }
+  return ids.map((id) => ({ id, full: id === inspected }));
+});
+
+function pick(
+  id: string,
+  { kbd = false, instant = false, wasMulti = isMulti.value } = {},
+) {
+  tierSwap.value = false;
+  const opening = !inspecting.value;
+  if (pickedId.value === id && !wasMulti) {
+    return;
+  }
+  // A rename or ports request belongs to the node it was made on.
+  request.value = null;
+  swapAnimate.value = !kbd && !instant;
+  edgeGlide.value = !kbd && !instant && !opening && !wasMulti;
+  pickedId.value = id;
+}
+
+// The selection drives the panel: two or more rows is the bulk panel, one
+// row is that node's inspector, and clearing a bulk selection closes it.
+// Sync, so openNode and closeInspector can clear it without the follow-up.
+let quiet = false;
+function quietly(change: () => void) {
+  quiet = true;
+  try {
+    change();
+  } finally {
+    quiet = false;
+  }
+}
+watch(
+  bulk.selected,
+  (next, prev) => {
+    if (quiet) {
+      return;
+    }
+    if (next.size === 1 && prev.size !== 1) {
+      pick([...next][0], { wasMulti: prev.size > 1 });
+    } else if (next.size === 0 && prev.size > 1) {
+      closeInspector();
+    } else if (next.size > 1 && prev.size < 2) {
+      tierSwap.value = false;
+      request.value = null;
+      swapAnimate.value = true;
+    }
+  },
+  { flush: "sync" },
+);
+
+// One node, opened by a click, Enter or its menu: leaves any selection.
+function openNode(
+  id: string,
+  options: { kbd?: boolean; instant?: boolean } = {},
+) {
+  const wasMulti = isMulti.value;
+  quietly(() => bulk.clear());
+  pick(id, { ...options, wasMulti });
+}
+
+// A selection started while a node is open takes that node along.
+function seedSelection(id: string) {
+  const open = pickedId.value;
+  if (
+    !bulk.count.value &&
+    open &&
+    open !== id &&
+    visibleNodes.value.some((node) => node.id === open)
+  ) {
+    bulk.toggle(open, true);
+  }
+}
+
+function onRowPick(id: string, event: MouseEvent | KeyboardEvent) {
+  if (
+    event instanceof MouseEvent &&
+    (event.metaKey || event.ctrlKey || event.shiftKey)
+  ) {
+    seedSelection(id);
+    bulk.onRowClick(id, event);
+    return;
+  }
+  openNode(id, { kbd: event instanceof KeyboardEvent });
+}
+
+function onRowSelect(id: string, event: MouseEvent) {
+  seedSelection(id);
+  bulk.onCheckbox(id, event);
+}
+
+function unpick(id: string) {
+  bulk.toggle(id, false);
+}
+
+function rowElement(id: string): HTMLElement | null {
+  return (
+    list.value?.querySelector<HTMLElement>(
+      `tr[data-node="${CSS.escape(id)}"]`,
+    ) ?? null
+  );
+}
+
+function closeInspector() {
+  const was = pickedId.value;
+  const hadFocus = !!aside.value?.contains(document.activeElement);
+  tierSwap.value = false;
+  quietly(() => bulk.clear());
+  pickedId.value = null;
+  if (hadFocus && was) {
+    nextTick(() => rowElement(was)?.focus({ preventScroll: true }));
+  }
+}
+
+function resetInspectorScroll() {
+  if (aside.value) {
+    aside.value.scrollTop = 0;
+  }
+}
+
+function onSheetAutoFocus(event: Event) {
+  event.preventDefault();
+  (event.target as HTMLElement | null)
+    ?.querySelector<HTMLElement>("[data-node-sheet-title]")
+    ?.focus();
+}
+
+watch(nodes, (all) => {
+  if (pickedId.value && !all.some((node) => node.id === pickedId.value)) {
+    pickedId.value = null;
+  }
+  readLink();
+});
+
+// ---- keyboard: ↑/↓ walk the rows (the open inspector follows), Enter opens,
+// Esc closes. The page is the list, so the keys work from the inspector too.
+
+const activeNodeId = ref<string | null>(null);
+const keyboardRow = computed<string | null>({
+  get: () => activeNodeId.value ?? pickedId.value,
+  set: (id) => {
+    activeNodeId.value = id;
+    if (id && pickedNode.value && !isMulti.value) {
+      pick(id, { kbd: true });
+    }
+  },
+});
+const listKeys = useListKeyboard({
+  items: visibleNodes,
+  getId: (node) => node.id,
+  activeId: keyboardRow,
+  container: page,
+  onOpen: (id) => openNode(id, { kbd: true }),
+  onClose: () => {
+    if (!inspecting.value) {
+      return false;
+    }
+    closeInspector();
+    return true;
+  },
+});
+
+// The row's own focus marks it active without moving the inspector: a click
+// opens the node itself. aria-selected stays the pick's.
+function rowAttrs(id: string) {
+  const {
+    "aria-selected": _selected,
+    onFocus: _focus,
+    ...attrs
+  } = listKeys.rowProps(id);
+  return {
+    ...attrs,
+    onFocus: (event: FocusEvent) => {
+      if (event.target === event.currentTarget) {
+        activeNodeId.value = id;
+      }
+    },
+  };
+}
+
+// ---- row actions ----
+
+async function onRowAction(action: string, id: string) {
+  const node = nodes.value.find((entry) => entry.id === id);
+  if (!node) {
+    return;
+  }
+  switch (action) {
+    case "open":
+      openNode(id);
+      return;
+    case "select":
+      seedSelection(id);
+      bulk.toggle(id);
+      return;
+    case "rename":
+    case "ports":
+      openNode(id, { instant: true });
+      request.value = {
+        nodeId: id,
+        kind: action,
+        n: (request.value?.n ?? 0) + 1,
+      };
+      return;
+    case "files":
+      openFiles(id);
+      return;
+    case "remove":
+      askRemove(id);
+      return;
+    case "update":
+      try {
+        await updateGame(client, id);
+        toast({ title: t("game_server.toast.cs_updating") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: t("pages.game_server_nodes.toast.save_failed"),
+          description: error?.message,
+        });
+      }
+  }
+}
+
+function openFiles(id: string) {
+  useFilePopout().openFiles({ scope: "node", id });
+}
+
+function askRemove(id: string) {
+  removeTarget.value = nodes.value.find((node) => node.id === id) ?? null;
+  removeOpen.value = !!removeTarget.value;
+}
+
+// A deep link from another page (/game-server-nodes?node=<id>), read once the
+// nodes have arrived. Never written back: the query key would remount the
+// page. The remembered view never restores a pick; the link or a click does.
+let linkRead = false;
+function readLink() {
+  if (linkRead || !nodes.value.length) {
+    return;
+  }
+  linkRead = true;
+  const id = linkedNodeId(route.query.node, nodes.value as any);
+  if (!id) {
+    return;
+  }
+  if (!visibleNodes.value.some((node) => node.id === id)) {
+    resetFilters();
+  }
+  pick(id, { instant: true });
+  nextTick(() =>
+    requestAnimationFrame(() =>
+      rowElement(id)?.scrollIntoView({ block: "center" }),
+    ),
+  );
+}
+
+// The room changed (window, nav or hub): the open panel moves between the
+// aside and the sheet, keeping its pick and range. Wide and narrow docks
+// share the aside, so that switch only reflows it, under a fade.
+function onTier(next: DockTier) {
+  const was = tier.value;
+  tierSwap.value = inspecting.value;
+  // A remounted inspector would replay it.
+  request.value = null;
+  if (next !== "sheet") {
+    lastDock.value = next;
+  }
+  tier.value = next;
+  if (inspecting.value && was !== "sheet" && next !== "sheet") {
+    nextTick(() => {
+      if (
+        aside.value?.animate &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        aside.value.animate([{ opacity: 0 }, { opacity: 1 }], {
+          duration: 240,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        });
+      }
+    });
+  }
+}
+
+async function createGameServerNode() {
+  const { data } = await client.mutate({
+    mutation: generateMutation({
+      setupGameServer: {
+        link: true,
+        gameServerId: true,
+      },
+    }),
+  });
+  setupGameServer.value = data.setupGameServer;
+  showSetupDialog.value = true;
+}
+
+function closeSetupDialog() {
+  showSetupDialog.value = false;
+  setTimeout(() => {
+    setupGameServer.value = null;
+  }, 300);
+}
+
+let stopTier: (() => void) | null = null;
+onMounted(() => {
+  modifierKey.value = /Mac|iP/.test(navigator.platform || "") ? "⌘" : "Ctrl";
+  if (page.value) {
+    stopTier = observeDockTier(page.value, onTier);
+  }
+});
+onBeforeUnmount(() => stopTier?.());
 </script>
 
 <template>
@@ -151,42 +791,18 @@ const sheetFade = {
             <div v-else key="nodes" class="grid gap-2.5">
               <!-- Control row -->
               <div class="gsn-cap flex flex-wrap items-center gap-2">
-                <InputGroup
-                  class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-[18rem]"
-                >
-                  <InputGroupAddon class="pl-2.5">
-                    <Search class="h-3.5 w-3.5" />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    :model-value="query"
-                    :placeholder="$t(`${INSPECTOR}.search_placeholder`)"
-                    :aria-label="$t(`${INSPECTOR}.search_placeholder`)"
-                    autocomplete="off"
-                    spellcheck="false"
-                    class="h-full text-sm"
-                    @update:model-value="
-                      (value) => (query = String(value ?? ''))
-                    "
-                  />
-                  <InputGroupAddon align="inline-end" class="pr-2">
-                    <button
-                      v-if="query"
-                      type="button"
-                      class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                      :aria-label="$t('common.clear')"
-                      @click="query = ''"
-                    >
-                      <X class="h-3.5 w-3.5" />
-                    </button>
-                  </InputGroupAddon>
-                </InputGroup>
+                <AdminSearch
+                  v-model="view.query"
+                  :placeholder="$t(`${INSPECTOR}.search_placeholder`)"
+                  shortcut
+                />
 
                 <AnimatedFilters
-                  :model-value="attentionOnly ? 'attention' : 'all'"
+                  :model-value="view.attentionOnly ? 'attention' : 'all'"
                   square
                   :options="scopeOptions"
                   @update:model-value="
-                    (value) => (attentionOnly = value === 'attention')
+                    (value) => (view.attentionOnly = value === 'attention')
                   "
                 />
 
@@ -196,15 +812,18 @@ const sheetFade = {
                       type="button"
                       :class="[
                         filterTriggerBase,
-                        regions.length
+                        view.regions.length
                           ? filterTriggerActive
                           : filterTriggerIdle,
                       ]"
                     >
                       <Globe class="h-3.5 w-3.5" />
                       {{ $t("common.region") }}
-                      <span v-if="regions.length" :class="filterBadgeClasses">
-                        {{ regions.length }}
+                      <span
+                        v-if="view.regions.length"
+                        :class="filterBadgeClasses"
+                      >
+                        {{ view.regions.length }}
                       </span>
                       <ChevronDown class="h-3 w-3 opacity-50" />
                     </button>
@@ -224,7 +843,7 @@ const sheetFade = {
                       type="button"
                       class="flex w-full items-center justify-between rounded-sm px-2 py-1.5 text-xs transition-colors hover:bg-muted/50"
                       :class="
-                        regions.includes(region.value)
+                        view.regions.includes(region.value)
                           ? 'text-[hsl(var(--tac-amber))]'
                           : 'text-foreground/90'
                       "
@@ -232,7 +851,7 @@ const sheetFade = {
                     >
                       <span>{{ region.description || region.value }}</span>
                       <Check
-                        v-if="regions.includes(region.value)"
+                        v-if="view.regions.includes(region.value)"
                         class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
                       />
                     </button>
@@ -249,16 +868,16 @@ const sheetFade = {
                   @reset="resetFilters"
                 >
                   <FilterToggle
-                    :model-value="onlyEnabled"
+                    :model-value="view.onlyEnabled"
                     :label="$t('pages.game_server_nodes.filters.only_enabled')"
-                    @update:model-value="(value) => (onlyEnabled = value)"
+                    @update:model-value="(value) => (view.onlyEnabled = value)"
                   >
                     <template #icon><CircleDot class="h-3.5 w-3.5" /></template>
                   </FilterToggle>
                   <FilterToggle
-                    :model-value="hideOffline"
+                    :model-value="view.hideOffline"
                     :label="$t('pages.game_server_nodes.filters.hide_offline')"
-                    @update:model-value="(value) => (hideOffline = value)"
+                    @update:model-value="(value) => (view.hideOffline = value)"
                   >
                     <template #icon><WifiOff class="h-3.5 w-3.5" /></template>
                   </FilterToggle>
@@ -268,11 +887,13 @@ const sheetFade = {
                     >{{ $t("common.view") }}</span
                   >
                   <FilterToggle
-                    :model-value="displayMetrics"
+                    :model-value="view.displayMetrics"
                     :label="
                       $t('pages.game_server_nodes.filters.display_metrics')
                     "
-                    @update:model-value="setDisplayMetrics"
+                    @update:model-value="
+                      (value) => (view.displayMetrics = value)
+                    "
                   >
                     <template #icon><Activity class="h-3.5 w-3.5" /></template>
                   </FilterToggle>
@@ -336,7 +957,8 @@ const sheetFade = {
                 </i18n-t>
                 <span
                   v-if="summary.attention > 0"
-                  class="tabular-nums text-[hsl(var(--tac-amber))]"
+                  class="tabular-nums"
+                  :class="TONE_TEXT.warn"
                   >{{
                     $t(
                       "pages.game_server_nodes.summary.attention",
@@ -381,18 +1003,18 @@ const sheetFade = {
                       :nodes="visibleNodes"
                       :picked-id="pickedId"
                       :multi-ids="multiIds"
-                      :focus-id="focusId"
                       :edge-glide="edgeGlide"
-                      :sort="sortDirection"
+                      :sort="view.sortDir"
+                      :row-attrs="rowAttrs"
                       :game-versions="gameVersions"
                       :context="issueContext"
                       :disk-thresholds="issueContext.diskThresholds"
                       :stats="nodeStats"
-                      :show-load="displayMetrics"
+                      :show-load="view.displayMetrics"
                       @pick="onRowPick"
+                      @select="onRowSelect"
                       @action="onRowAction"
-                      @focus-row="(id) => (focusId = id)"
-                      @sort="toggleSortDirection"
+                      @sort="onSort"
                     />
 
                     <SectionEmpty
@@ -452,7 +1074,7 @@ const sheetFade = {
             @update:range="(value) => (metricsRange = value)"
             @close="closeInspector"
             @remove="askRemove(pickedNode.id)"
-            @files="openFiles({ scope: 'node', id: pickedNode.id })"
+            @files="openFiles(pickedNode.id)"
           />
         </Transition>
       </aside>
@@ -498,7 +1120,7 @@ const sheetFade = {
         @update:range="(value) => (metricsRange = value)"
         @close="closeInspector"
         @remove="askRemove(pickedNode.id)"
-        @files="openFiles({ scope: 'node', id: pickedNode.id })"
+        @files="openFiles(pickedNode.id)"
       />
     </SheetContent>
   </Sheet>
@@ -516,688 +1138,6 @@ const sheetFade = {
     @close="closeSetupDialog"
   />
 </template>
-
-<script lang="ts">
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { order_by } from "~/generated/zeus";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { toast } from "@/components/ui/toast";
-import {
-  filterNodes,
-  fleetSummary,
-  isReachable,
-  maxServers,
-  nodeSettings,
-  type NodeFilters,
-} from "~/components/game-server-nodes/nodeState";
-import {
-  idRange,
-  linkedNodeId,
-  needsAttention,
-} from "~/components/game-server-nodes/nodeInspector";
-import type { MetricRangeKey } from "~/components/game-server-nodes/nodeMetrics";
-import { updateGame } from "~/components/game-server-nodes/nodeActions";
-import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
-import { observeDockTier, type DockTier } from "~/composables/dockTier";
-
-const FILTERS_KEY = "game-server-nodes-filters";
-
-function savedFilters(): Record<string, any> {
-  if (!import.meta.client) {
-    return {};
-  }
-  try {
-    return JSON.parse(localStorage.getItem(FILTERS_KEY) || "{}") || {};
-  } catch {
-    return {};
-  }
-}
-
-// The fleet is a handful of machines an admin runs, so the page loads all of
-// it once and filters, sorts and sums on the client. A row opens the node in
-// the inspector docked beside the table, or in a sheet when the room right of
-// the capped table is too small (see dockTier); Cmd/Ctrl- or Shift-click
-// picks several and the inspector becomes the bulk panel. The pick lives in
-// component state only: an in-page query key would remount the page. ?node=
-// is read once, on load, as a deep link.
-export default {
-  data() {
-    const saved = savedFilters();
-    return {
-      gameVersions: [] as Array<Record<string, any>>,
-      pluginVersions: [] as Array<Record<string, any>>,
-      serverRegions: [] as Array<{ value: string; description?: string }>,
-      nodes: [] as Array<Record<string, any>>,
-      loading: true,
-      setupGameServer: null as Record<string, any> | null,
-      showSetupDialog: false,
-      displayMetrics: true,
-      query: (saved.name as string) || "",
-      regions: (saved.regions as Array<string>) || [],
-      onlyEnabled: !!saved.onlyEnabled,
-      hideOffline: !!saved.hideOffline,
-      attentionOnly: !!saved.attentionOnly,
-      sortDirection: (saved.sortDirection as "asc" | "desc") || "asc",
-      // The inspector
-      pickedId: null as string | null,
-      multiIds: [] as Array<string>,
-      focusId: null as string | null,
-      anchorId: null as string | null,
-      swapAnimate: true,
-      edgeGlide: false,
-      tier: "sheet" as DockTier,
-      // The docked width the aside keeps, also while it leaves for a sheet.
-      lastDock: "docked" as Exclude<DockTier, "sheet">,
-      // The panel is moving between aside and sheet: both fade.
-      tierSwap: false,
-      stopTier: null as (() => void) | null,
-      metricsRange: "live" as MetricRangeKey,
-      request: null as {
-        nodeId: string;
-        kind: "rename" | "ports";
-        n: number;
-      } | null,
-      nodeStats: {} as Record<string, any>,
-      removeTarget: null as Record<string, any> | null,
-      removeOpen: false,
-      linkRead: false,
-      modifierKey: "Ctrl",
-    };
-  },
-  apollo: {
-    $subscribe: {
-      game_versions: {
-        query: typedGql("subscription")({
-          game_versions: [
-            { order_by: [{ updated_at: order_by.desc }] },
-            {
-              build_id: true,
-              version: true,
-              description: true,
-              updated_at: true,
-              current: true,
-            },
-          ],
-        }),
-        result(this: any, { data }: any) {
-          this.gameVersions = data.game_versions;
-        },
-      },
-      plugin_versions: {
-        query: typedGql("subscription")({
-          plugin_versions: [
-            { order_by: [{ published_at: order_by.desc }] },
-            {
-              version: true,
-              runtime: true,
-              min_game_build_id: true,
-              published_at: true,
-            },
-          ],
-        }),
-        result(this: any, { data }: any) {
-          this.pluginVersions = data.plugin_versions;
-        },
-      },
-      server_regions: {
-        query: typedGql("subscription")({
-          server_regions: [{}, { value: true, description: true }],
-        }),
-        result(this: any, { data }: any) {
-          this.serverRegions = data.server_regions || [];
-        },
-      },
-      game_server_nodes: {
-        query: typedGql("subscription")({
-          game_server_nodes: [
-            { order_by: [{ label: order_by.asc }, { id: order_by.asc }] },
-            {
-              id: true,
-              label: true,
-              status: true,
-              region: true,
-              enabled: true,
-              enabled_for_match_making: true,
-              accepting_new_matches: true,
-              build_id: true,
-              csgo_build_id: true,
-              pin_build_id: true,
-              pin_plugin_version: true,
-              pin_plugin_runtime: true,
-              plugin_supported: true,
-              lan_ip: true,
-              public_ip: true,
-              start_port_range: true,
-              end_port_range: true,
-              supports_low_latency: true,
-              supports_cpu_pinning: true,
-              update_status: true,
-              update_failed_at: true,
-              gpu: true,
-              gpu_info: true,
-              gpu_streaming_enabled: true,
-              gpu_demos_enabled: true,
-              gpu_rendering_enabled: true,
-              cs2_video_settings: true,
-              cpu_sockets: true,
-              cpu_governor_info: true,
-              cpu_frequency_info: true,
-              cpu_cores_per_socket: true,
-              cpu_threads_per_core: true,
-              cpu_warnings: true,
-              offline_at: true,
-              e_region: {
-                description: true,
-              },
-              e_status: {
-                description: true,
-              },
-              total_server_count: true,
-              available_server_count: true,
-              demo_network_limiter: true,
-              disk_available_gb: true,
-              disk_used_percent: true,
-            } as any,
-          ],
-        }),
-        result(this: any, { data }: any) {
-          this.loading = false;
-          this.nodes = data.game_server_nodes;
-        },
-        error(this: any) {
-          this.loading = false;
-        },
-      },
-    },
-  },
-  computed: {
-    currentGameVersion(): Record<string, any> | undefined {
-      return this.gameVersions.find((version) => version.current === true);
-    },
-    supportsGameServerNodes(): boolean {
-      return useApplicationSettingsStore().supportsGameServerNodes;
-    },
-    settings() {
-      return nodeSettings(useApplicationSettingsStore().settings);
-    },
-    pinning(): any {
-      return this.settings.pinning;
-    },
-    issueContext(): any {
-      const { pinning, disk } = this.settings;
-      return {
-        currentBuildId: this.currentGameVersion?.build_id ?? null,
-        maxServers: (node: any) => maxServers(node, pinning),
-        diskThresholds: disk,
-      };
-    },
-    summary() {
-      return fleetSummary(this.nodes as any, this.issueContext);
-    },
-    scopeOptions(): Array<{ key: string; label: string; count?: number }> {
-      return [
-        { key: "all", label: this.$t("common.all") },
-        {
-          key: "attention",
-          label: this.$t("pages.system_metrics.scope_attention"),
-          count: this.summary.attention || undefined,
-        },
-      ];
-    },
-    filters(): NodeFilters {
-      return {
-        query: this.query,
-        regions: this.regions,
-        onlyEnabled: this.onlyEnabled,
-        hideOffline: this.hideOffline,
-        sort: this.sortDirection,
-      };
-    },
-    visibleNodes(): Array<Record<string, any>> {
-      const list = filterNodes(this.nodes as any, this.filters);
-      return this.attentionOnly
-        ? list.filter((node) => needsAttention(node, this.issueContext))
-        : list;
-    },
-    pickedNode(): Record<string, any> | null {
-      return this.nodes.find((node) => node.id === this.pickedId) ?? null;
-    },
-    isMulti(): boolean {
-      return this.multiIds.length > 1;
-    },
-    // Bulk actions only reach rows the admin can see.
-    selectedNodes(): Array<Record<string, any>> {
-      return this.visibleNodes.filter((node) =>
-        this.multiIds.includes(node.id),
-      );
-    },
-    inspecting(): boolean {
-      return this.isMulti || !!this.pickedNode;
-    },
-    docked(): boolean {
-      return this.tier !== "sheet" && this.inspecting;
-    },
-    sheetOpen(): boolean {
-      return this.tier === "sheet" && this.inspecting;
-    },
-    // CPU and memory for every row that shows load; the inspected node gets
-    // the full set (disks, network, GPUs) for its Live section.
-    polls(): Array<{ id: string; full: boolean }> {
-      const inspected =
-        !this.isMulti && this.pickedNode?.status !== "Setup"
-          ? this.pickedId
-          : null;
-      const ids = this.displayMetrics
-        ? this.visibleNodes
-            .filter((node) => isReachable(node as any))
-            .map((node) => node.id)
-        : [];
-      if (inspected && !ids.includes(inspected)) {
-        ids.push(inspected);
-      }
-      return ids.map((id) => ({ id, full: id === inspected }));
-    },
-    optionsActiveCount(): number {
-      return (this.onlyEnabled ? 1 : 0) + (this.hideOffline ? 1 : 0);
-    },
-    hasActiveFilters(): boolean {
-      return (
-        this.query !== "" ||
-        this.regions.length > 0 ||
-        this.onlyEnabled ||
-        this.hideOffline ||
-        this.attentionOnly ||
-        this.sortDirection !== "asc"
-      );
-    },
-  },
-  watch: {
-    filters: {
-      deep: true,
-      handler() {
-        this.saveFiltersToStorage();
-      },
-    },
-    attentionOnly() {
-      this.saveFiltersToStorage();
-    },
-    nodes(nodes: Array<Record<string, any>>) {
-      const ids = new Set(nodes.map((node) => node.id));
-      if (this.multiIds.some((id) => !ids.has(id))) {
-        const left = this.multiIds.filter((id) => ids.has(id));
-        this.multiIds = left.length > 1 ? left : [];
-        if (left.length === 1) {
-          this.pickedId = left[0];
-        }
-      }
-      if (this.pickedId && !ids.has(this.pickedId)) {
-        this.pickedId = null;
-      }
-      this.readLink();
-    },
-  },
-  methods: {
-    saveFiltersToStorage() {
-      try {
-        localStorage.setItem(
-          FILTERS_KEY,
-          JSON.stringify({
-            name: this.query,
-            regions: this.regions,
-            onlyEnabled: this.onlyEnabled,
-            hideOffline: this.hideOffline,
-            attentionOnly: this.attentionOnly,
-            sortDirection: this.sortDirection,
-            sortField: "label",
-          }),
-        );
-      } catch {
-        // storage can be unavailable (private mode); filters just don't stick
-      }
-    },
-    resetFilters() {
-      this.query = "";
-      this.regions = [];
-      this.onlyEnabled = false;
-      this.hideOffline = false;
-      this.attentionOnly = false;
-      this.sortDirection = "asc";
-    },
-    toggleRegion(value: string) {
-      this.regions = this.regions.includes(value)
-        ? this.regions.filter((region) => region !== value)
-        : [...this.regions, value];
-    },
-    toggleSortDirection() {
-      this.sortDirection = this.sortDirection === "desc" ? "asc" : "desc";
-    },
-    setDisplayMetrics(value: boolean) {
-      this.displayMetrics = value;
-      try {
-        localStorage.setItem("displayMetrics", String(value));
-      } catch {
-        // see saveFiltersToStorage
-      }
-    },
-    onStats(id: string, stats: any) {
-      this.nodeStats = {
-        ...this.nodeStats,
-        [id]: stats ? Object.freeze(stats) : null,
-      };
-    },
-
-    // ---- picking ----
-    pick(id: string, { kbd = false, instant = false } = {}) {
-      this.focusId = id;
-      this.anchorId = id;
-      const wasMulti = this.isMulti;
-      const opening = !this.inspecting;
-      this.multiIds = [];
-      this.tierSwap = false;
-      if (this.pickedId === id && !wasMulti) {
-        return;
-      }
-      // A rename or ports request belongs to the node it was made on.
-      this.request = null;
-      this.swapAnimate = !kbd && !instant;
-      this.edgeGlide = !kbd && !instant && !opening && !wasMulti;
-      this.pickedId = id;
-    },
-    multiPick(id: string, range: boolean) {
-      const ids = this.visibleNodes.map((node) => node.id);
-      const set = new Set(
-        this.isMulti ? this.multiIds : this.pickedId ? [this.pickedId] : [],
-      );
-      if (range) {
-        const from = this.anchorId || this.pickedId || this.focusId || id;
-        idRange(ids, from, id).forEach((value) => set.add(value));
-      } else {
-        if (set.has(id)) {
-          set.delete(id);
-        } else {
-          set.add(id);
-        }
-        this.anchorId = id;
-      }
-      if (set.size < 2) {
-        const [only] = [...set];
-        if (only) {
-          this.pick(only);
-        } else {
-          this.closeInspector();
-        }
-        return;
-      }
-      this.swapAnimate = !this.isMulti;
-      this.multiIds = ids.filter((value) => set.has(value));
-      this.pickedId = set.has(id)
-        ? id
-        : this.multiIds[this.multiIds.length - 1];
-      this.focusId = id;
-    },
-    unpick(id: string) {
-      const left = this.multiIds.filter((value) => value !== id);
-      if (left.length < 2) {
-        if (left[0]) {
-          this.pick(left[0]);
-        } else {
-          this.closeInspector();
-        }
-        return;
-      }
-      this.multiIds = left;
-      if (this.pickedId === id) {
-        this.pickedId = left[left.length - 1];
-      }
-    },
-    onSheetAutoFocus(event: Event) {
-      event.preventDefault();
-      (event.target as HTMLElement | null)
-        ?.querySelector<HTMLElement>("[data-node-sheet-title]")
-        ?.focus();
-    },
-    closeInspector() {
-      const was = this.pickedId;
-      const aside = this.$refs.aside as HTMLElement | undefined;
-      const hadFocus = !!aside?.contains(document.activeElement);
-      this.tierSwap = false;
-      this.pickedId = null;
-      this.multiIds = [];
-      if (hadFocus && was) {
-        this.$nextTick(() =>
-          this.rowElement(was)?.focus({ preventScroll: true }),
-        );
-      }
-    },
-    rowElement(id: string): HTMLElement | null {
-      return (
-        (this.$refs.list as HTMLElement | undefined)?.querySelector(
-          `tr[data-node="${CSS.escape(id)}"]`,
-        ) ?? null
-      );
-    },
-    move(delta: number) {
-      const ids = this.visibleNodes.map((node) => node.id);
-      if (!ids.length) {
-        return;
-      }
-      const current = this.pickedId || this.focusId;
-      let index = current ? ids.indexOf(current) : -1;
-      index =
-        index < 0
-          ? delta > 0
-            ? 0
-            : ids.length - 1
-          : Math.min(ids.length - 1, Math.max(0, index + delta));
-      const id = ids[index];
-      this.focusId = id;
-      if (this.pickedId) {
-        this.pick(id, { kbd: true });
-      }
-      this.$nextTick(() => {
-        const row = this.rowElement(id);
-        row?.focus({ preventScroll: true });
-        row?.scrollIntoView({ block: "nearest" });
-      });
-    },
-    resetInspectorScroll() {
-      const aside = this.$refs.aside as HTMLElement | undefined;
-      if (aside) {
-        aside.scrollTop = 0;
-      }
-    },
-    onRowPick(id: string, event: MouseEvent | KeyboardEvent) {
-      if (
-        event instanceof MouseEvent &&
-        (event.metaKey || event.ctrlKey || event.shiftKey)
-      ) {
-        this.multiPick(id, event.shiftKey);
-        return;
-      }
-      this.pick(id, { kbd: event instanceof KeyboardEvent });
-    },
-    async onRowAction(action: string, id: string) {
-      const node = this.nodes.find((entry) => entry.id === id);
-      if (!node) {
-        return;
-      }
-      switch (action) {
-        case "open":
-          this.pick(id);
-          return;
-        case "select":
-          this.multiPick(id, false);
-          return;
-        case "rename":
-        case "ports":
-          this.pick(id, { instant: true });
-          this.request = {
-            nodeId: id,
-            kind: action,
-            n: (this.request?.n ?? 0) + 1,
-          };
-          return;
-        case "files":
-          useFilePopout().openFiles({ scope: "node", id });
-          return;
-        case "remove":
-          this.askRemove(id);
-          return;
-        case "update":
-          try {
-            await updateGame(this.$apollo as any, id);
-            toast({ title: this.$t("game_server.toast.cs_updating") });
-          } catch (error: any) {
-            toast({
-              variant: "destructive",
-              title: this.$t("pages.game_server_nodes.toast.save_failed"),
-              description: error?.message,
-            });
-          }
-      }
-    },
-    openFiles(target: { scope: "node"; id: string }) {
-      useFilePopout().openFiles(target);
-    },
-    askRemove(id: string) {
-      this.removeTarget = this.nodes.find((node) => node.id === id) ?? null;
-      this.removeOpen = !!this.removeTarget;
-    },
-    // A deep link from another page (/game-server-nodes?node=<id>), read once
-    // the nodes have arrived. Never written back: the query key would remount
-    // the page.
-    readLink() {
-      if (this.linkRead || !this.nodes.length) {
-        return;
-      }
-      this.linkRead = true;
-      const id = linkedNodeId(this.$route.query.node, this.nodes);
-      if (!id) {
-        return;
-      }
-      if (!this.visibleNodes.some((node) => node.id === id)) {
-        this.resetFilters();
-      }
-      this.pick(id, { instant: true });
-      this.$nextTick(() =>
-        requestAnimationFrame(() =>
-          this.rowElement(id)?.scrollIntoView({ block: "center" }),
-        ),
-      );
-    },
-    onKeydown(event: KeyboardEvent) {
-      if (
-        event.defaultPrevented ||
-        event.metaKey ||
-        event.ctrlKey ||
-        event.altKey
-      ) {
-        return;
-      }
-      const target = event.target as HTMLElement;
-      if (
-        /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) ||
-        target.isContentEditable
-      ) {
-        return;
-      }
-      if (
-        document.querySelector(
-          '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [role="menu"][data-state="open"], [role="listbox"]',
-        )
-      ) {
-        return;
-      }
-      const list = this.$refs.list as HTMLElement | undefined;
-      const aside = this.$refs.aside as HTMLElement | undefined;
-      const inList = !!list?.contains(target);
-      const inAside = !!aside?.contains(target);
-      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-        if (
-          !inList &&
-          !inAside &&
-          !(target === document.body && this.pickedId)
-        ) {
-          return;
-        }
-        event.preventDefault();
-        this.move(event.key === "ArrowDown" ? 1 : -1);
-      } else if (event.key === "Escape" && this.docked) {
-        this.closeInspector();
-      }
-    },
-    // The room changed (window, nav or hub): the open panel moves between
-    // the aside and the sheet, keeping its pick and range. Wide and narrow
-    // docks share the aside, so that switch only reflows it, under a fade.
-    onTier(tier: DockTier) {
-      const was = this.tier;
-      this.tierSwap = this.inspecting;
-      // A remounted inspector would replay it.
-      this.request = null;
-      if (tier !== "sheet") {
-        this.lastDock = tier;
-      }
-      this.tier = tier;
-      if (this.inspecting && was !== "sheet" && tier !== "sheet") {
-        this.$nextTick(() => {
-          const aside = this.$refs.aside as HTMLElement | undefined;
-          if (
-            aside?.animate &&
-            !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ) {
-            aside.animate([{ opacity: 0 }, { opacity: 1 }], {
-              duration: 240,
-              easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-            });
-          }
-        });
-      }
-    },
-    async createGameServerNode() {
-      const { data } = await this.$apollo.mutate({
-        mutation: generateMutation({
-          setupGameServer: {
-            link: true,
-            gameServerId: true,
-          },
-        }),
-      });
-
-      this.setupGameServer = data.setupGameServer;
-      this.showSetupDialog = true;
-    },
-    closeSetupDialog() {
-      this.showSetupDialog = false;
-      setTimeout(() => {
-        this.setupGameServer = null;
-      }, 300);
-    },
-  },
-  created() {
-    if (import.meta.client) {
-      try {
-        // On unless the admin switched it off.
-        this.displayMetrics =
-          localStorage.getItem("displayMetrics") !== "false";
-      } catch {
-        // see saveFiltersToStorage
-      }
-    }
-  },
-  mounted() {
-    this.modifierKey = /Mac|iP/.test(navigator.platform || "") ? "⌘" : "Ctrl";
-    this.stopTier = observeDockTier(
-      this.$refs.page as HTMLElement,
-      this.onTier,
-    );
-    document.addEventListener("keydown", this.onKeydown);
-  },
-  beforeUnmount() {
-    this.stopTier?.();
-    document.removeEventListener("keydown", this.onKeydown);
-  },
-};
-</script>
 
 <style scoped>
 /* The page runs at the admin width (1280 less padding) and the inspector

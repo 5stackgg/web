@@ -22,7 +22,9 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { TONE_BG, TONE_BORDER, TONE_TEXT } from "~/components/admin/tone";
 import { pluginAuthorUrl } from "~/utilities/pluginAuthor";
+import { createButtonClasses } from "~/utilities/tacticalClasses";
 import {
   installFraction,
   pluginRuntimes,
@@ -36,6 +38,8 @@ const props = defineProps<{
   runtime: string;
   panelRoute?: string | null;
   busy?: boolean;
+  /** The directory's list keyboard: roving tabindex and focus on the link. */
+  linkProps?: Record<string, unknown>;
 }>();
 
 const emit = defineEmits<{
@@ -79,6 +83,7 @@ function confirmInstall() {
     class="group relative grid grid-rows-[auto_auto_1fr_auto] gap-2.5 rounded-lg border border-border bg-card/40 p-4 transition-[border-color,transform] duration-150 ease-out hover:-translate-y-px hover:border-[hsl(240_4%_26%)] motion-reduce:hover:translate-y-0"
   >
     <NuxtLink
+      v-bind="linkProps"
       :to="`/plugins/${plugin.slug}`"
       class="absolute inset-0 z-[1] rounded-[inherit] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
       :aria-label="$t('pages.plugins.store.open_aria', { name: plugin.name })"
@@ -103,7 +108,8 @@ function confirmInstall() {
               <span
                 tabindex="0"
                 role="img"
-                class="pointer-events-auto mt-0.5 inline-flex shrink-0 text-success"
+                class="pointer-events-auto mt-0.5 inline-flex shrink-0"
+                :class="TONE_TEXT.ok"
                 :aria-label="$t('pages.plugins.verified')"
               >
                 <ShieldCheck class="h-4 w-4" />
@@ -133,7 +139,8 @@ function confirmInstall() {
             <template #trigger>
               <span
                 tabindex="0"
-                class="pointer-events-auto inline-flex h-5 items-center gap-1 rounded-md border border-warning/40 bg-warning/10 px-1.5 text-[0.7rem] text-warning"
+                class="pointer-events-auto inline-flex h-5 items-center gap-1 rounded-md border bg-warning/10 px-1.5 text-[0.7rem]"
+                :class="[TONE_BORDER.warn, TONE_TEXT.warn]"
               >
                 <TriangleAlert class="h-3 w-3" />
                 {{ $t("pages.plugins.guidelines.badge") }}
@@ -190,7 +197,7 @@ function confirmInstall() {
         <span
           class="inline-flex flex-1 items-center gap-1.5 text-muted-foreground"
         >
-          <Check class="h-3.5 w-3.5 text-success" />
+          <Check class="h-3.5 w-3.5" :class="TONE_TEXT.ok" />
           {{ $t("pages.plugins.store.on_panel") }}
         </span>
         <Button
@@ -256,7 +263,8 @@ function confirmInstall() {
             <template #trigger>
               <span
                 tabindex="0"
-                class="inline-flex items-center gap-1.5 text-warning"
+                class="inline-flex items-center gap-1.5"
+                :class="TONE_TEXT.warn"
               >
                 <Hand class="h-3.5 w-3.5" />
                 {{ $t("pages.plugins.store.found_on_disk") }}
@@ -307,7 +315,7 @@ function confirmInstall() {
               </Button>
               <Button
                 size="sm"
-                class="h-7 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]"
+                :class="[createButtonClasses, 'h-7']"
                 @click="confirmInstall"
               >
                 <Download class="h-3.5 w-3.5" />
@@ -319,7 +327,10 @@ function confirmInstall() {
       </template>
 
       <template v-else-if="state.key === 'failed'">
-        <span class="inline-flex flex-1 items-center gap-1.5 text-destructive">
+        <span
+          class="inline-flex flex-1 items-center gap-1.5"
+          :class="TONE_TEXT.bad"
+        >
           <CircleAlert class="h-3.5 w-3.5 shrink-0" />
           <template v-if="state.nodes.length === 1">
             {{ $t("pages.plugins.store.failed_on", { node: state.nodes[0] }) }}
@@ -351,7 +362,8 @@ function confirmInstall() {
 
       <div v-else-if="state.key === 'installing'" class="grid flex-1 gap-1.5">
         <span
-          class="inline-flex items-center gap-1.5 tabular-nums text-[hsl(var(--tac-amber))]"
+          class="inline-flex items-center gap-1.5 tabular-nums"
+          :class="TONE_TEXT.amber"
         >
           <Download class="h-3.5 w-3.5" />
           <template v-if="state.target > 0">
@@ -368,7 +380,8 @@ function confirmInstall() {
         </span>
         <div class="h-1 overflow-hidden rounded-full bg-muted/60">
           <div
-            class="h-full origin-left rounded-full bg-[hsl(var(--tac-amber))] motion-reduce:!transition-none"
+            class="h-full origin-left rounded-full motion-reduce:!transition-none"
+            :class="TONE_BG.amber"
             :style="{
               transform: `scaleX(${meter})`,
               transition: 'transform 240ms cubic-bezier(0.16, 1, 0.3, 1)',
@@ -405,7 +418,7 @@ function confirmInstall() {
         <span
           class="inline-flex flex-1 items-center gap-1.5 text-muted-foreground"
         >
-          <Check class="h-3.5 w-3.5 text-success" />
+          <Check class="h-3.5 w-3.5" :class="TONE_TEXT.ok" />
           {{ $t("pages.plugins.installed") }}
           <span class="font-mono text-xs text-muted-foreground">{{
             state.version

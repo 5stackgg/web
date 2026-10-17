@@ -2,10 +2,11 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import SortHeader from "~/components/admin/SortHeader.vue";
+import type { SortDir } from "~/components/admin/sort";
 import NodeRow, {
   type RowAction,
 } from "~/components/game-server-nodes/NodeRow.vue";
-import { ArrowDown, ArrowUp } from "lucide-vue-next";
 import type {
   DiskThresholds,
   IssueContext,
@@ -15,14 +16,14 @@ import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 
 // The calm table: one row per node, no expansion. The picked row wears one
 // amber edge that glides to the next row picked by click and snaps for the
-// keyboard.
+// keyboard. `rowAttrs` carries the list keyboard's roving tabindex.
 const props = defineProps<{
   nodes: Array<NodeLike & Record<string, any>>;
   pickedId: string | null;
   multiIds: Array<string>;
-  focusId: string | null;
   edgeGlide: boolean;
-  sort: "asc" | "desc";
+  sort: SortDir;
+  rowAttrs: (id: string) => Record<string, unknown>;
   gameVersions: Array<Record<string, any>>;
   context: IssueContext;
   diskThresholds: DiskThresholds;
@@ -32,9 +33,9 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   pick: [id: string, event: MouseEvent | KeyboardEvent];
+  select: [id: string, event: MouseEvent];
   action: [action: RowAction, id: string];
-  focusRow: [id: string];
-  sort: [];
+  sort: [key: string];
 }>();
 
 const { t } = useI18n();
@@ -46,12 +47,6 @@ const isSelected = (id: string) =>
   props.multiIds.length > 1
     ? props.multiIds.includes(id)
     : id === props.pickedId;
-
-const tabbableId = () => {
-  const ids = props.nodes.map((node) => node.id);
-  const preferred = props.focusId || props.pickedId;
-  return preferred && ids.includes(preferred) ? preferred : (ids[0] ?? null);
-};
 
 const reduced = () =>
   window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
@@ -118,22 +113,13 @@ onBeforeUnmount(() => observer?.disconnect());
       <table class="gsn-table">
         <thead>
           <tr>
-            <th>
-              <button
-                type="button"
-                class="inline-flex items-center gap-1 transition-colors hover:text-foreground"
-                :aria-label="
-                  sort === 'desc'
-                    ? t('common.sort_ascending')
-                    : t('common.sort_descending')
-                "
-                @click="emit('sort')"
-              >
-                {{ t("pages.game_server_nodes.table.node") }}
-                <ArrowUp v-if="sort === 'desc'" class="h-3 w-3" />
-                <ArrowDown v-else class="h-3 w-3" />
-              </button>
-            </th>
+            <SortHeader
+              sort-key="node"
+              :label="t('pages.game_server_nodes.table.node')"
+              active="node"
+              :dir="sort"
+              @sort="(key) => emit('sort', key)"
+            />
             <th class="gsn-c-load">
               {{ t("pages.game_server_nodes.table.load") }}
             </th>
@@ -168,17 +154,18 @@ onBeforeUnmount(() => observer?.disconnect());
             v-for="node of nodes"
             :key="node.id"
             :node="node"
+            v-bind="rowAttrs(node.id)"
             :selected="isSelected(node.id)"
             :in-selection="multiIds.includes(node.id)"
-            :tabbable="node.id === tabbableId()"
+            :selecting="multiIds.length > 0"
             :game-versions="gameVersions"
             :context="context"
             :disk-thresholds="diskThresholds"
             :stats="stats[node.id]"
             :show-load="showLoad"
             @pick="(id, event) => emit('pick', id, event)"
+            @select="(id, event) => emit('select', id, event)"
             @action="(action, id) => emit('action', action, id)"
-            @focus-row="(id) => emit('focusRow', id)"
           />
         </tbody>
       </table>

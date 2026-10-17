@@ -1,5 +1,12 @@
 import { dateLocale } from "~/utilities/dateLocale";
 import type { FacetSelection } from "~/components/admin/facets";
+import type { SortDir, SortState } from "~/components/admin/sort";
+import {
+  readRememberedView,
+  rememberedViewStorageKey,
+  saveRememberedView,
+  type ViewValidators,
+} from "~/composables/useRememberedView";
 
 export const SERVER_PAGE_SIZE = 25;
 
@@ -38,7 +45,7 @@ export type ServerStatus = {
   sub?: [string, Record<string, unknown>?];
 };
 
-// Mirrors ServerStatus.vue: only Ranked servers on the app's runtime are held
+// Only Ranked servers on the app's runtime are held
 // to the current plugin version.
 export function pluginOutdated(server: any, ctx: FleetContext): boolean {
   if (server?.type !== "Ranked" || !ctx.currentPluginVersion) return false;
@@ -237,9 +244,15 @@ const SERVER_SORT_KEYS = [
   "enabled",
 ] as const;
 export type ServerSortKey = (typeof SERVER_SORT_KEYS)[number];
-export type ServerSort = { key: ServerSortKey; dir: 1 | -1 };
+export type ServerSort = SortState<ServerSortKey>;
 
-export const SERVER_VIEW_STORAGE_KEY = "dedicated-servers-view";
+/** Players and plugin versions start largest first. */
+export const SERVER_SORT_NATURAL_DIRS: Partial<Record<ServerSortKey, SortDir>> =
+  { players: "desc", plugin: "desc" };
+
+/** The list's remembered view: `admin-view:dedicated-servers`. */
+export const SERVER_VIEW_KEY = "dedicated-servers";
+export const LEGACY_SERVER_VIEW_KEY = "dedicated-servers-view";
 
 export type ServerView = {
   search: string;
@@ -247,43 +260,111 @@ export type ServerView = {
   sort: ServerSort;
 };
 
-/**
- * The list's last search, filters and sort, so a refresh or a return lands
- * where the admin left it. Anything unreadable falls back to `defaults`, and
- * only the facet groups `defaults` knows are restored.
- */
-export function readServerView(defaults: ServerView): ServerView {
-  try {
-    const raw = JSON.parse(
-      localStorage.getItem(SERVER_VIEW_STORAGE_KEY) || "null",
-    );
-    if (!raw || typeof raw !== "object") return defaults;
-    const facets: FacetSelection = { ...defaults.facets };
-    for (const key of Object.keys(facets)) {
-      const values = raw.facets?.[key];
-      if (Array.isArray(values)) {
-        facets[key] = values.filter((v: unknown) => typeof v === "string");
-      }
-    }
-    const sort =
-      SERVER_SORT_KEYS.includes(raw.sort?.key) &&
-      (raw.sort.dir === 1 || raw.sort.dir === -1)
-        ? { key: raw.sort.key, dir: raw.sort.dir }
-        : defaults.sort;
-    return {
-      search: typeof raw.search === "string" ? raw.search : defaults.search,
-      facets,
-      sort,
-    };
-  } catch {
-    return defaults;
+export const serverViewDefaults = (): ServerView => ({
+  search: "",
+  facets: {
+    state: [...DEFAULT_SERVER_STATES],
+    type: [],
+    region: [],
+    host: [],
+    plugin: [],
+  },
+  sort: { key: "status", dir: "asc" },
+});
+
+const isRecord = (value: unknown): value is Record<string, any> =>
+  !!value && typeof value === "object" && !Array.isArray(value);
+
+const serverViewValidators: ViewValidators<ServerView> = {
+  search: (value) => typeof value === "string",
+  facets: isRecord,
+  sort: (value) =>
+    isRecord(value) &&
+    (SERVER_SORT_KEYS as readonly unknown[]).includes(value.key) &&
+    (value.dir === "asc" || value.dir === "desc"),
+};
+
+// Only the groups the defaults name, each a list of strings; a status the
+// list doesn't know is dropped.
+function cleanFacets(
+  facets: FacetSelection,
+  defaults: FacetSelection,
+): FacetSelection {
+  const clean: FacetSelection = {};
+  for (const [group, fallback] of Object.entries(defaults)) {
+    const values = (facets as Record<string, unknown>)[group];
+    clean[group] = Array.isArray(values)
+      ? values.filter(
+          (value): value is string =>
+            typeof value === "string" &&
+            (group !== "state" ||
+              (SERVER_STATES as readonly string[]).includes(value)),
+        )
+      : [...fallback];
   }
+  return clean;
 }
 
-export function saveServerView(view: ServerView) {
+/**
+ * Moves a view saved under the old `dedicated-servers-view` key (sort
+ * direction 1 / -1) to the remembered-view store, once, and drops the old key.
+ */
+export function migrateServerView() {
+  let legacy: string | null;
   try {
-    localStorage.setItem(SERVER_VIEW_STORAGE_KEY, JSON.stringify(view));
+    legacy = localStorage.getItem(LEGACY_SERVER_VIEW_KEY);
+  } catch {
+    return;
+  }
+  if (legacy === null) return;
+  try {
+    if (
+      localStorage.getItem(rememberedViewStorageKey(SERVER_VIEW_KEY)) === null
+    ) {
+      const raw = JSON.parse(legacy);
+      if (isRecord(raw)) {
+        const sort = isRecord(raw.sort)
+          ? {
+              key: raw.sort.key,
+              dir:
+                raw.sort.dir === -1
+                  ? "desc"
+                  : raw.sort.dir === 1
+                    ? "asc"
+                    : raw.sort.dir,
+            }
+          : raw.sort;
+        saveRememberedView(
+          SERVER_VIEW_KEY,
+          { ...raw, sort } as ServerView,
+          serverViewDefaults(),
+        );
+      }
+    }
   } catch {}
+  try {
+    localStorage.removeItem(LEGACY_SERVER_VIEW_KEY);
+  } catch {}
+}
+
+/**
+ * The list's last search, filters and sort, so a refresh or a return lands
+ * where the admin left it. Each field is validated; anything unreadable falls
+ * back to its default.
+ */
+export function restoreServerView(): ServerView {
+  migrateServerView();
+  const defaults = serverViewDefaults();
+  const view = readRememberedView(
+    SERVER_VIEW_KEY,
+    defaults,
+    serverViewValidators,
+  );
+  return { ...view, facets: cleanFacets(view.facets, defaults.facets) };
+}
+
+export function rememberServerView(view: ServerView) {
+  saveRememberedView(SERVER_VIEW_KEY, view, serverViewDefaults());
 }
 
 export function sortServers(
@@ -291,6 +372,7 @@ export function sortServers(
   sort: ServerSort,
   ctx: FleetContext,
 ): any[] {
+  const sign = sort.dir === "asc" ? 1 : -1;
   const value = (server: any): string | number => {
     switch (sort.key) {
       case "status":
@@ -316,8 +398,7 @@ export function sortServers(
     const y = value(b);
     const order = x < y ? -1 : x > y ? 1 : 0;
     return (
-      order * sort.dir ||
-      String(a.label ?? "").localeCompare(String(b.label ?? ""))
+      order * sign || String(a.label ?? "").localeCompare(String(b.label ?? ""))
     );
   });
 }

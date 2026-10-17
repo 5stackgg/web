@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU Kullanımı",
-      "memory_usage": "Bellek Kullanımı",
       "services": "Servisler",
       "service": "Servis",
-      "network": "Ağ",
       "search_services_placeholder": "Servis veya düğüm ara...",
       "filter_by_node": "Düğüme göre filtrele",
       "no_services_found": "Mevcut filtrelerine uyan servis yok.",
@@ -1285,7 +1282,6 @@
       "search_placeholder": "Servis veya düğüm ara",
       "scope_all": "Tüm servisler",
       "scope_attention": "İlgi gerekiyor",
-      "live": "Canlı · {time}",
       "live_hint": "Her düğüm yaklaşık 30 saniyede bir rapor gönderir. Sayfa son 90 dakikayı tutar.",
       "filter_group": "Sunucu düğümleri",
       "only_online": "Yalnızca çevrimiçi düğümler",
@@ -1416,7 +1412,11 @@
       "warnings": "Uyarılar",
       "warnings_like": "{text} benzeri uyarılar",
       "warnings_loaded": "Yüklenen aralıkta {count} uyarı | Yüklenen aralıkta {count} uyarı",
-      "warnings_word": "uyarı"
+      "warnings_word": "uyarı",
+      "status_ok": "Son 5 dakikada uyarı veya hata yok",
+      "status_warn": "Son 5 dakikada uyarılar var",
+      "status_bad": "Son 5 dakikada hatalar var",
+      "status_off": "Henüz çıktı yok"
     },
     "system_telemetry": {
       "title": "Filo Telemetrisi",
@@ -1648,9 +1648,9 @@
         "modes_unranked_caption": "draft lobilerinde gizlenen modlar"
       },
       "jump_to": "Şuraya git",
-      "updated_just_now": "Az önce güncellendi · her dakika yenilenir",
-      "updated_ago": "{seconds} sn önce güncellendi · her dakika yenilenir",
-      "features_title": "Özellikler"
+      "features_title": "Özellikler",
+      "not_reported_title": "Henüz bildirilmedi",
+      "no_activity_hint": "Paneller barındırdıkları maçları bildirdikçe grafik dolar."
     },
     "tournaments": {
       "title": "Turnuvalar",
@@ -3653,7 +3653,7 @@
         "utility": "Ekipman dizilimleri"
       },
       "ledger": {
-        "search": "Klip, takım, oyuncu, dizilim ara",
+        "search": "Klip ve dizilim ara",
         "view": {
           "flight": "Sürüyor",
           "failed": "Başarısız",
@@ -3762,7 +3762,8 @@
           "lineups_sub": "İşleme sürümü v{version}",
           "render_one": "Önce birini işle",
           "render_one_waiting": "Bu işlemenin bitmesi bekleniyor. Güncel sürümü bildirdiğinde Eskileri yeniden işle açılır."
-        }
+        },
+        "updated_ago": "{since} önce güncellendi"
       }
     },
     "news": {
@@ -3993,10 +3994,8 @@
         "rebuilding_now": "{season} şu anda yeniden oluşturuluyor. Aynı anda yalnızca bir yeniden oluşturma çalışır."
       },
       "danger": {
-        "end_title": "{season} şimdi bitir",
         "end_description": "Bugün kapatır ve sezon ödüllerini son sıralamaya göre dağıtır. Sonraki sezon başlayana kadar maçlar hiçbir sezona sayılmaz.",
         "end_button": "Sezonu bitir",
-        "delete_title": "{season} sil",
         "delete_description": "Maçları sezonsuz kalır. ELO geçmişi korunur; sezon bazlı istatistikler temizlenir.",
         "delete_button": "Sezonu sil",
         "end_confirm_title": "{season} şimdi bitirilsin mi?",
@@ -4787,7 +4786,6 @@
         "node": "Düğüm",
         "load": "Yük",
         "vram": "VRAM",
-        "vram_help": "Kartta kullanılan video belleği",
         "workloads": "İş yükleri"
       },
       "kind": {
@@ -4820,8 +4818,6 @@
       "sheet": {
         "now": "Şimdi",
         "shader_cache": "Shader önbelleği",
-        "video": "Video ayarları",
-        "video_hint": "Bu düğüm canlı yayın, demo oynatma ya da öne çıkan an render'ı barındırdığında uygulanır.",
         "idle_ready": "Canlı yayınlar, demo oynatma ve render'lar için hazır.",
         "unavailable": "Etkinleştirilip çevrimiçi olana kadar GPU işi almaz.",
         "no_metrics": "Düğüm devre dışı, çevrimdışı ya da kurulumdayken GPU metriği yok.",
@@ -4841,6 +4837,33 @@
         "render_body": "Durur ve GPU'yu boşaltır.",
         "render_body_pct": "%{pct} noktasında durur ve GPU'yu boşaltır.",
         "render_action": "Render'ı durdur"
+      },
+      "toggle_gpu_only_help": "Yalnızca GPU işi alır, maç sunucusu çalıştırmaz. Açmak bölgesini ve portlarını temizler.",
+      "plate": {
+        "temperature": "Sıcaklık",
+        "power": "Güç",
+        "vram_of": "{used} / {total} GB",
+        "hot": "Isınıyor, {limit} °C üzerinde",
+        "too_hot": "Çok sıcak, {limit} °C üzerinde",
+        "no_reading": "Canlı ölçüm yok",
+        "cards": "{count} kart | {count} kart"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "Canlı yayını aç",
+          "demos": "Demo oynatmayı aç",
+          "rendering": "Render'ı aç"
+        },
+        "turn_off": {
+          "streaming": "Canlı yayını kapat",
+          "demos": "Demo oynatmayı kapat",
+          "rendering": "Render'ı kapat"
+        },
+        "confirm_body": {
+          "streaming": "Süren yayın devam eder. Yeniden açılana kadar bu GPU yeni yayın almaz.",
+          "demos": "Süren oynatma devam eder. Yeniden açılana kadar bu GPU yeni demo almaz.",
+          "rendering": "Süren render devam eder. Yeniden açılana kadar bu GPU yeni render almaz."
+        }
       }
     },
     "game_server_nodes": {
@@ -5017,9 +5040,6 @@
         "load": "Yük"
       },
       "builds": {
-        "title": "CS2 Sürüm Geçmişi",
-        "description": "Her CS2 sürümü için gamedata doğrulaması ve harita varlığı oluşturma işlemleri ile her birinin bir önceki sürüme göre neyi değiştirdiği.",
-        "back": "Sunucu Düğümleri",
         "builds": "Sürümler",
         "no_builds": "Henüz hiçbir sürüm doğrulanmadı veya oluşturulmadı.",
         "current": "Güncel",
@@ -5029,7 +5049,8 @@
           "detected": "Güncelleme yayınlandı",
           "gamedata": "Gamedata",
           "map_assets": "Harita varlıkları"
-        }
+        },
+        "empty_title": "Henüz sürüm yok"
       },
       "max_label": "Maks:",
       "ports_label": "Portlar:",
@@ -5066,7 +5087,6 @@
         "game_server": "Oyun sunucusu",
         "node_id": "Düğüm ID",
         "addresses": "LAN / genel IP",
-        "mode": "Mod",
         "available_value": "{total} içinden {free}",
         "control": "Kontrol",
         "update_log": "CS2 güncelleme günlüğü"
@@ -5121,8 +5141,7 @@
         },
         "load": {
           "mem": "Bellek",
-          "disk": "Disk",
-          "gpu": "GPU"
+          "disk": "Disk"
         },
         "disk_tip": "Disk: {total} alanın {used} kadarı dolu, {free} boş",
         "actions_for": "{node} için işlemler",
@@ -5245,7 +5264,8 @@
           "in_out": "Gelen {in} · Giden {out}",
           "caption": "Son bir saat, her 30 saniyede bir örnek.",
           "starts": "Geçmiş {time} saatinde başlıyor.",
-          "gaps": "Çizgilerdeki kesintiler çevrimdışı süreyi gösterir."
+          "gaps": "Çizgilerdeki kesintiler çevrimdışı süreyi gösterir.",
+          "cadence": "Her {seconds} saniyede bir örnek."
         },
         "disk": {
           "last_report": "Disk · son rapor",
@@ -5263,10 +5283,7 @@
         },
         "gpu": {
           "video": "Video ayarları",
-          "custom": "Özel",
-          "match_server": "Maç sunucusu",
-          "use_as_match": "Maç sunucusu olarak kullan",
-          "use_as_gpu": "Yalnızca GPU olarak kullan"
+          "custom": "Özel"
         },
         "node": {
           "accepting": "Maç kabul ediyor",
@@ -5293,7 +5310,9 @@
           "from_node": "Düğümden {count} uyarı | Düğümden {count} uyarı",
           "docs": "Belgeler",
           "details": "Ayrıntılar"
-        }
+        },
+        "window_minutes": "Son {count} dakika | Son {count} dakika",
+        "window_hours": "Son {count} saat | Son {count} saat"
       }
     },
     "dedicated_servers": {
@@ -5302,9 +5321,7 @@
       "docs_link": "Kurulum kılavuzunu görüntüle",
       "no_servers_title": "Özel sunucu yok",
       "no_servers": "Özel sunucu bulunamadı.",
-      "create": {
-        "title": "Özel sunucu oluştur"
-      },
+      "create": {},
       "table": {
         "connection_details": "Bağlantı bilgileri",
         "label": "Etiket",
@@ -5315,7 +5332,6 @@
       },
       "detail": {
         "enabled": "Etkin",
-        "eyebrow": "Özel sunucu",
         "tabs": {
           "overview": "Genel Bakış",
           "players": "Oyuncular",
@@ -5325,14 +5341,9 @@
         },
         "status_label": {
           "connected": "Bağlı",
-          "disconnected": "Bağlı değil",
           "hibernating": "Uykuda",
-          "no_rcon": "RCON yok",
-          "version_mismatch": "Sürüm uyuşmazlığı"
+          "no_rcon": "RCON yok"
         },
-        "server_plugin_config": "Sunucu eklenti yapılandırması",
-        "hide_config": "Yapılandırmayı gizle",
-        "show_config": "Yapılandırmayı göster",
         "config_location": "Bu yapılandırma şuraya yerleştirilmeli:",
         "files": "Dosyalar",
         "player_management": "Oyuncu yönetimi",
@@ -5356,13 +5367,7 @@
           "disconnected": "Sunucu bağlı değil",
           "hibernating": "Bir oyuncu bağlanana kadar sunucu uykuda",
           "no_rcon": "Sunucu bağlı ama RCON kullanılamıyor",
-          "connected": "Sunucu bağlı ve RCON kullanılabilir",
-          "plugin_version_mismatch": "eklenti sürümü güncel değil"
-        },
-        "delete_confirm": {
-          "title": "Tamamen emin misin",
-          "description": "Bu işlem geri alınamaz. Sunucun kalıcı olarak silinecek ve ilişkili veriler sunucularımızdan kaldırılacak.",
-          "continue": "Devam et"
+          "connected": "Sunucu bağlı ve RCON kullanılabilir"
         },
         "save_restart": "Kaydet ve Yeniden Başlat",
         "map_rotation": {
@@ -5481,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "Başka Düğüme Taşı",
-          "title": "Başka Düğüme Taşı",
           "description": "Sunucu {node} düğümünde durdurulur, dosyaları yeni düğüme kopyalanır ve orada yeniden başlatılır.",
           "source_offline": "{node} düğümü çevrimdışı olduğu için sunucunun dosyaları kopyalanamıyor. Sunucu yeni düğümde varsayılan ayarlarla başlayacak ve {node} düğümünde kalan her şey orada kalacak.",
           "without_files": "Sunucunun dosyaları olmadan taşı",
@@ -5490,7 +5493,6 @@
           "no_nodes": "Başka oyun sunucusu düğümü yok",
           "free_slots": "Boş slot: {count}",
           "free_disk": "{size} boş",
-          "confirm": "Sunucuyu Taşı",
           "started": "{server}, {node} düğümüne taşınıyor",
           "warning": {
             "address": "Sunucu yeni düğümde yeni bir adres alır.",
@@ -5506,7 +5508,9 @@
             "updating": "CS2 güncelleniyor",
             "no_build": "{game} yüklü değil",
             "no_slot": "Boş sunucu slotu yok"
-          }
+          },
+          "dialog_title": "Başka düğüme taşı",
+          "confirm_move": "Sunucuyu taşı"
         },
         "migration": {
           "title": {
@@ -5527,14 +5531,17 @@
           "progress": "{done} / {total} (%{percent})",
           "without_files": "dosyalar olmadan",
           "restored": "Sunucu yeniden {node} düğümünde.",
-          "cancel": "Taşımayı İptal Et",
           "cancel_requested": "Taşıma iptal ediliyor",
           "dismiss": "Kapat",
-          "locked": "Sunucu başka bir düğüme taşınıyor. Taşıma bittikten sonra tekrar dene."
-        }
+          "locked": "Sunucu başka bir düğüme taşınıyor. Taşıma bittikten sonra tekrar dene.",
+          "cancel_move": "Taşımayı iptal et"
+        },
+        "plugin_tag": "Eklenti v{version}",
+        "plugin_config": "Sunucu eklenti yapılandırması",
+        "show_plugin_config": "Yapılandırmayı göster",
+        "hide_plugin_config": "Yapılandırmayı gizle"
       },
       "clear_all": "Aramayı ve filtreleri temizle",
-      "clear_search": "Aramayı temizle",
       "col_hosting": "Barındırma",
       "col_players": "Oyuncular",
       "col_plugin": "Eklenti",
@@ -5583,7 +5590,12 @@
       "status_offline_since": "{time} itibarıyla çevrimdışı",
       "status_playing": "{count} oynuyor",
       "status_plugin_outdated": "Eklenti eski",
-      "tip_disabled": "Maçlar veya herkese açık oyun için kullanılmaz."
+      "tip_disabled": "Maçlar veya herkese açık oyun için kullanılmaz.",
+      "join_server": "Sunucuya katıl",
+      "new_server": "Yeni sunucu",
+      "create_on_node": "{node} üzerinde çalışır",
+      "create_at_host": "{address} adresinde çalışır",
+      "create_pick_place": "Nerede çalışacağını seçin"
     },
     "public_servers": {
       "title": "Herkese açık sunucular",
@@ -6088,8 +6100,6 @@
         "overview": "Genel bakış",
         "overview_hint": "PostgreSQL veritabanı · son istatistik sıfırlamasından beri sayaçlar",
         "pause_refreshing": "Yenilemeyi duraklat",
-        "paused_just_now": "Duraklatıldı · az önce güncellendi",
-        "paused_seconds_ago": "Duraklatıldı · {seconds}s önce güncellendi",
         "pct_of_table": "Tablonun %'si",
         "pid_actions": "pid {pid} için işlemler",
         "query_details": "Sorgu detayları",
@@ -6099,7 +6109,6 @@
         "reclaimable": "Geri kazanılabilir",
         "reclaimable_tip": "Ölü satırlardan tahmin edilir. VACUUM bu alanı yeniden kullanılabilir yapar; diske yalnızca VACUUM FULL veya pg_repack geri verir.",
         "refresh_every": "Yenileme sıklığı",
-        "refresh_now": "Şimdi yenile",
         "resume_refreshing": "Yenilemeyi sürdür",
         "rollbacks_count": "{count} rollback",
         "running_now": "Şu anda çalışıyor",
@@ -6152,8 +6161,6 @@
         "tuples_read": "Okunan satır",
         "tuples_returned": "Döndürülen satır",
         "tuples_updated": "Güncellenen satır",
-        "updated_just_now": "Az önce güncellendi",
-        "updated_seconds_ago": "{seconds}s önce güncellendi",
         "updates": "Güncellemeler",
         "view_all_slow": "Tüm yavaş sorguları gör",
         "wait_event": "Bekleme olayı",
@@ -6401,7 +6408,6 @@
         "empty_installed_title": "Henüz bir şey yüklenmedi",
         "empty_installed_hint": "Tümü sekmesinden bir eklenti yükleyin, her düğüm onu alır.",
         "empty_title": "Eşleşen eklenti yok",
-        "show_all": "Tüm eklentileri göster",
         "installing_toast": "{name} tüm çevrim içi düğümlere yükleniyor",
         "retry_toast": "{name} başarısız düğümlerde yeniden deneniyor",
         "update_toast": "Düğümler {version} sürümünü yüklüyor; bu sürüme sabit kalır."
@@ -6440,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "Ödül ara",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -6466,7 +6471,6 @@
       "automation_tournament": "Turnuva otomasyonu",
       "builtin_cant_delete": "Yerleşik ödüller silinemez",
       "builtin_note": "Yerleşik. Turnuva ve sezon otomasyonu bunu dağıtır; düzenlenebilir ama silinemez.",
-      "clear_search": "Aramayı temizle",
       "col_award": "Ödül",
       "col_earned_at": "Kazanıldığı yer",
       "col_holder": "Sahibi",
@@ -6504,8 +6508,6 @@
       "owner_upcoming": "Yakında",
       "repeatable": "Tekrarlanabilir",
       "revoke_from": "{name} kişisinden geri al",
-      "search_placeholder_v2": "Ödül, turnuva, etkinlik ara",
-      "show_all_kinds": "Tüm türleri göster",
       "show_more": "Daha fazla göster",
       "sort_last_granted": "Son verilme",
       "status": {
@@ -6566,13 +6568,7 @@
         "cameraTalkback": "Kamera geri konuşma"
       },
       "resources": "Kaynak kullanımı",
-      "cpu": "CPU",
-      "memory": "Bellek",
-      "no_resources": "Medya sunucusu için henüz pod ölçümü yok — kümenin metrics sunucusu onu toplamıyor olabilir.",
       "legend": "Yol, adlandırılmış tek bir yayın yuvasıdır — bir kişinin mikrofonu ya da bir kamera. «Yayınlıyor», şu anda gerçekten medya gönderenleri sayar; bir yol, biri katıldıktan sonra görüntüsü açılana kadar boşta durabilir. Oturumlar WebRTC bağlantılarıdır ve bir yayının her izleyicisi bunlardan biridir, bu yüzden diğerlerinden daha hızlı artar.",
-      "status_reachable_now": "Erişilebilir · az önce güncellendi · 10 sn'de bir sorgulanır",
-      "status_reachable_ago": "Erişilebilir · {seconds} sn önce güncellendi · 10 sn'de bir sorgulanır",
-      "status_unreachable": "{time} itibarıyla erişilemiyor · 10 sn'de bir yeniden deneniyor",
       "logs_button": "mediamtx günlükleri",
       "tip_publishing": "Şu anda gerçekten medya gönderen yollar. Biri katıldıktan sonra yayını başlayana kadar yol boşta bekleyebilir.",
       "tip_paths": "Yol, adlandırılmış tek bir yayın yuvasıdır — bir kişinin mikrofonu ya da bir kamera.",
@@ -6589,7 +6585,12 @@
       "share_received": "Gelen veri payı",
       "not_in_use": "Şu anda kullanılmıyor: {kinds}",
       "resources_hint": "mediamtx pod'u · 30 sn'de bir sorgulanır",
-      "cores_now": "{cores} çekirdek kullanımda"
+      "cores_now": "{cores} çekirdek kullanımda",
+      "status_reachable": "Erişilebilir",
+      "status_unreachable_since": "{time} itibarıyla erişilemiyor",
+      "kinds_unknown_title": "Özellik başına sayılar bilinmiyor",
+      "no_resources_title": "Henüz pod metriği yok",
+      "no_resources_hint": "Kümenin metrik sunucusu mediamtx pod'unu toplamıyor olabilir."
     },
     "utility": {
       "eyebrow": "Utility Kütüphanesi",
@@ -7851,6 +7852,99 @@
         "created_off": "Uyarı oluşturuldu. Sen açana kadar kapalı kalır.",
         "expired": "‘{name}’ süresi doldu ve banner'dan kaldırıldı"
       }
+    },
+    "admin_home": {
+      "title": "Genel bakış",
+      "need_you": "{count} konu ilgilenmenizi bekliyor | {count} konu ilgilenmenizi bekliyor",
+      "all_clear": "Her şey yolunda",
+      "all_clear_line": "Şu anda ilgilenmeniz gereken bir şey yok.",
+      "live_hint": "Çoğu alan değiştiği anda güncellenir. Metrikler 30 saniyede bir, veritabanı dakikada bir yenilenir.",
+      "everything_else": "Diğer her şey",
+      "open": "Aç",
+      "open_area": "{area} sayfasını aç",
+      "add_steam_account": "Steam hesabı ekle",
+      "more": "+{count} daha | +{count} daha",
+      "card": {
+        "no_problems": "Sorun yok",
+        "checking": "Kontrol ediliyor…",
+        "none": "Henüz yok",
+        "no_online": "Çevrimiçi düğüm yok",
+        "season_starts": "{number}. sezon {count} gün sonra başlıyor | {number}. sezon {count} gün sonra başlıyor",
+        "of_online": "/ {total} çevrimiçi",
+        "servers_free": "{capacity} sunucudan {free} tanesi boş",
+        "of_connected": "/ {total} bağlı",
+        "offline": "{count} çevrimdışı | {count} çevrimdışı",
+        "of_free": "/ {total} boş",
+        "accounts_free": "{total} Steam hesabından {free} tanesi boş",
+        "in_flight": "işleniyor",
+        "previews_current": "{total} önizlemeden {current} tanesi güncel",
+        "of_within": "/ {total} sınırlar içinde",
+        "slow_statements": "yavaş sorgu | yavaş sorgu",
+        "threshold": "{threshold} üzeri yavaş",
+        "banners_showing": "banner gösteriliyor | banner gösteriliyor",
+        "installed": "yüklü",
+        "updates": "{count} güncelleme mevcut | {count} güncelleme mevcut",
+        "up_to_date": "Hepsi güncel",
+        "all_set_up": "Hepsi ayarlandı"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} düğüm çevrimdışı | {count} düğüm çevrimdışı",
+          "cs2_failed": "{count} düğümde CS2 güncellemesi başarısız oldu | {count} düğümde CS2 güncellemesi başarısız oldu",
+          "overprovisioned": "{count} düğüm, CPU'sunun kaldırabileceğinden fazla sunucu çalıştırıyor | {count} düğüm, CPU'larının kaldırabileceğinden fazla sunucu çalıştırıyor",
+          "plugin_unsupported": "{count} düğümün sabitlenmiş eklentisi CS2 sürümünü desteklemiyor | {count} düğümün sabitlenmiş eklentisi CS2 sürümünü desteklemiyor",
+          "disk_full": "{count} düğümün diski neredeyse dolu | {count} düğümün diski neredeyse dolu",
+          "cpu_governor": "{count} düğüm performance CPU yöneticisini kullanmıyor | {count} düğüm performance CPU yöneticisini kullanmıyor",
+          "not_ready_region": "{count} düğüm maç barındıramıyor: bölge yok | {count} düğüm maç barındıramıyor: bölge yok",
+          "not_ready_ports": "{count} düğüm maç barındıramıyor: port aralığı yok | {count} düğüm maç barındıramıyor: port aralığı yok",
+          "not_ready_cs2": "{count} düğüm maç barındıramıyor: CS2 yüklü değil | {count} düğüm maç barındıramıyor: CS2 yüklü değil",
+          "cs2_behind": "{count} düğüm için CS2 güncellemesi mevcut | {count} düğüm için CS2 güncellemesi mevcut",
+          "disk_filling": "{count} düğümün diski doluyor | {count} düğümün diski doluyor",
+          "cpu_slow": "{count} düğümün CPU'su 3 GHz altında çalışıyor | {count} düğümün CPU'su 3 GHz altında çalışıyor",
+          "cpu_warning": "{count} düğüm CPU uyarısı bildiriyor | {count} düğüm CPU uyarısı bildiriyor"
+        },
+        "gpus": {
+          "pool_empty": "Steam hesabı yok: GPU'lar işleme, demo oynatma veya yayın yapamıyor",
+          "pool_short": "Steam havuzunda GPU başına bir hesap için {count} hesap eksik | Steam havuzunda GPU başına bir hesap için {count} hesap eksik",
+          "offline": "{count} GPU çevrimdışı | {count} GPU çevrimdışı",
+          "bake_failed": "{count} GPU'da shader hazırlama başarısız oldu | {count} GPU'da shader hazırlama başarısız oldu",
+          "renders_stuck": "{count} işleme bekliyor ve işleme alan GPU yok | {count} işleme bekliyor ve işleme alan GPU yok"
+        },
+        "metrics": {
+          "cpu": "{count} düğümde CPU %{threshold} üzerinde | {count} düğümde CPU %{threshold} üzerinde",
+          "memory": "{count} düğümde bellek %{threshold} üzerinde | {count} düğümde bellek %{threshold} üzerinde",
+          "disk": "{count} düğümde disk %{threshold} üzerinde | {count} düğümde disk %{threshold} üzerinde",
+          "gpu_util": "{count} GPU 5 dakikadır %{threshold} üzerinde meşgul | {count} GPU 5 dakikadır %{threshold} üzerinde meşgul",
+          "gpu_vram": "{count} GPU'da VRAM %{threshold} üzerinde | {count} GPU'da VRAM %{threshold} üzerinde",
+          "gpu_temp": "{count} GPU {threshold} °C veya daha sıcak | {count} GPU {threshold} °C veya daha sıcak"
+        },
+        "seasons": {
+          "rebuild": "{number}. sezonun ELO'su yeniden hesaplanmalı"
+        },
+        "renders": {
+          "failed": "Son bir günde {count} işleme başarısız oldu | Son bir günde {count} işleme başarısız oldu",
+          "behind": "İşleme hattı geride: v{pipeline} çekiyor, API v{version} bekliyor",
+          "missing": "{count} dizilimin önizlemesi yok | {count} dizilimin önizlemesi yok",
+          "outdated": "{count} dizilim önizlemesi güncel değil | {count} dizilim önizlemesi güncel değil"
+        },
+        "database": {
+          "locks": "{count} oturum bir kilidi bekliyor | {count} oturum kilitleri bekliyor",
+          "running": "{count} sorgu {threshold} süresinden uzun çalışıyor | {count} sorgu {threshold} süresinden uzun çalışıyor",
+          "slow": "{count} sorgunun ortalaması {threshold} üzerinde | {count} sorgunun ortalaması {threshold} üzerinde"
+        },
+        "plugins": {
+          "failed": "{count} eklenti dağıtılamadı | {count} eklenti dağıtılamadı",
+          "update": "{count} eklenti için güncelleme mevcut | {count} eklenti için güncelleme mevcut",
+          "manual": "Diskte burada yönetilmeyen {count} eklenti bulundu | Diskte burada yönetilmeyen {count} eklenti bulundu"
+        },
+        "settings": {
+          "not_set_up": "{count} ayar bölümü ayarlanmadı | {count} ayar bölümü ayarlanmadı"
+        },
+        "servers": {
+          "no_rcon": "{count} sunucu RCON'a yanıt vermiyor | {count} sunucu RCON'a yanıt vermiyor",
+          "plugin_outdated": "{count} sunucu eski bir eklenti çalıştırıyor | {count} sunucu eski bir eklenti çalıştırıyor"
+        }
+      }
     }
   },
   "layouts": {
@@ -7995,7 +8089,8 @@
         "seasons": "Sezonlar",
         "stream_deck": "Yayın paneli",
         "awards": "Awards",
-        "control_room": "Kontrol Odası"
+        "control_room": "Kontrol Odası",
+        "overview": "Genel bakış"
       },
       "modes": {
         "play": "Oyna",
@@ -8389,7 +8484,6 @@
     "none": "Uygun oyuncu yok"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "Bu dosyalar sunucu başlatıldığında `csgo` dizinine bağlanır.",
     "any": "Herhangi",
     "remove": "Kaldır",
     "edit": "Düzenle",
@@ -8454,8 +8548,6 @@
     "exit_fullscreen": "Tam ekrandan çık",
     "download": "İndir",
     "upload": "Yükle",
-    "sort_ascending": "Artan sırala",
-    "sort_descending": "Azalan sırala",
     "see_all": "Tümünü gör",
     "standby_no_activity": "BEKLEMEDE · ETKİNLİK YOK",
     "players": "oyuncu",
@@ -8519,7 +8611,8 @@
     "empty_filtered": {
       "title": "Bu filtrelere uyan bir şey yok",
       "description": "Filtreleri temizlemeyi veya aramayı genişletmeyi dene."
-    }
+    },
+    "clear_filters": "Filtreleri temizle"
   },
   "global_search": {
     "placeholder": "Oyuncu, sayfa ve ayar ara",
@@ -8547,8 +8640,6 @@
   },
   "file_manager": {
     "location": "Konum",
-    "dedicated_server_files": "Özel sunucu dosyaları",
-    "game_server_node_files": "Sunucu düğümü dosyaları",
     "loading_server_info": "Sunucu bilgisi yükleniyor...",
     "create_directory": {
       "title": "Yeni dizin oluştur",
@@ -11614,10 +11705,6 @@
     "remove_node_confirm_title": "Bu düğüm kaldırılsın mı?",
     "remove_node_confirm_description": "Düğüm ve üzerindeki tüm özel sunucular 5Stack'ten kaldırılacak. Bu işlem geri alınamaz.",
     "remove_ports": "Portları kaldır",
-    "mode": {
-      "use_as_match": "Maç sunucusu olarak kullan",
-      "use_as_gpu_only": "Yalnızca GPU olarak kullan"
-    },
     "show_update_logs": "Güncelleme günlüklerini göster",
     "update_failed": "Güncelleme Başarısız",
     "update_failed_description": "Son güncelleme başarısız oldu. Güncelleme günlükleri 24 saat saklanır.",
@@ -11889,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "Kullanım",
-    "mount_os": "İşletim Sistemi",
-    "mount_demos": "Demolar",
-    "total_series": "{label} toplam",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} ort."
   },
@@ -11925,7 +12008,6 @@
       "move_node": "Sunucuyu Taşı",
       "valve_preset_group": "Valve ön ayarları",
       "custom_mode_group": "Özel modlar",
-      "edit_mode": "Modu düzenle",
       "cs2_only": "Yalnızca CS2",
       "needs_node": "Düğüm gerekir",
       "csgo_valve_only": "CS:GO sunucuları yalnızca Valve ön ayarlarını çalıştırır. Ranked, antrenman ve özel modlar CS2 gerektirir.",
@@ -11949,9 +12031,9 @@
       "generate": "Üret",
       "port": "Oyun Portu",
       "tv_port": "TV Portu",
-      "create": "Sunucu oluştur",
       "max_players": "Maksimum Oyuncu",
-      "max_players_description": "Sunucuya bağlanabilecek maksimum oyuncu sayısı"
+      "max_players_description": "Sunucuya bağlanabilecek maksimum oyuncu sayısı",
+      "edit_mode_link": "Modu düzenle"
     },
     "rcon": {
       "console_output": "Konsol Çıktısı",
@@ -13782,7 +13864,6 @@
       "unique_24h": "Tekil · 24 sa",
       "unique_7d": "Tekil · 7 g",
       "sessions_7d": "Oturumlar · 7 g",
-      "time_played_7d": "Oynama Süresi · 7 g",
       "avg_session": "Ort. Oturum",
       "players": "oyuncu",
       "joins": "giriş",
@@ -13794,7 +13875,9 @@
       "empty": "Bu aralıkta burada kimse oynamadı.",
       "no_matches": "Bu aramayla eşleşen oyuncu yok.",
       "showing": "{total} oyuncudan {shown} tanesi gösteriliyor",
-      "load_more": "Daha Fazla Yükle"
+      "last_seen": "Son görülme",
+      "time_played_col": "Oynama süresi · 7 g",
+      "show_more": "Daha fazla yükle"
     },
     "player_tab": {
       "moderator_note": "Moderatörler ayrıca kesin saatleri, oturumları, kullanılan adları ve IP'leri görür.",
@@ -13833,12 +13916,8 @@
       "offline": "Çevrimdışı",
       "map": "harita",
       "community_server": "topluluk sunucusu",
-      "online_now": "Şu An Çevrimiçi",
-      "players_this_week": "Bu Haftaki Oyuncular",
       "different_players": "farklı oyuncu",
-      "hours_this_week": "Bu Haftaki Saatler",
       "played_by_everyone": "herkesin oynadığı",
-      "all_time_players": "Tüm Zamanların Oyuncuları",
       "since": "{date} tarihinden beri",
       "activity": "Etkinlik · Son 7 Gün",
       "activity_description": "Herkesin burada her gün oynadığı toplam saat. Kimsenin bireysel oynama süresi gösterilmez.",
@@ -13855,7 +13934,13 @@
       "day": "Gün",
       "player_hours": "Oyuncu Saatleri",
       "not_found_title": "Sunucu Bulunamadı",
-      "not_found_description": "Bu sunucu yok veya herkese açık değil."
+      "not_found_description": "Bu sunucu yok veya herkese açık değil.",
+      "tile": {
+        "online_now": "Şu an çevrimiçi",
+        "players_this_week": "Bu haftaki oyuncular",
+        "hours_this_week": "Bu haftaki saatler",
+        "all_time_players": "Tüm zamanların oyuncuları"
+      }
     }
   },
   "quick_look": {
@@ -13923,6 +14008,32 @@
         "twitch_unavailable": "Twitch yanıt vermedi. Birazdan tekrar dene.",
         "unknown": "Bir şeyler ters gitti. Tekrar dene."
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "Aramayı temizle"
+    },
+    "sort": {
+      "sorted_ascending": "Artan sırada",
+      "sorted_descending": "Azalan sırada"
+    },
+    "live_stamp": {
+      "live_at": "Canlı · {time}",
+      "updated_now": "Az önce güncellendi",
+      "updated_now_after": "az önce güncellendi",
+      "updated_seconds": "{seconds} sn önce güncellendi",
+      "updated_seconds_after": "{seconds} sn önce güncellendi",
+      "updated_minutes": "{minutes} dk önce güncellendi",
+      "updated_minutes_after": "{minutes} dk önce güncellendi",
+      "paused": "Duraklatıldı",
+      "every_seconds": "{seconds} sn'de bir yenilenir",
+      "every_minute": "her dakika yenilenir",
+      "every_minutes": "{minutes} dk'da bir yenilenir",
+      "refresh_now": "Şimdi yenile"
+    },
+    "last_changed": {
+      "updated": "Güncellendi: {time}"
     }
   }
 }

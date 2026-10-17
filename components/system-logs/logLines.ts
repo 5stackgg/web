@@ -50,6 +50,22 @@ export const PRESETS: Record<string, readonly string[]> = {
   all: SERVICES,
 };
 
+export const LEVEL_FILTERS = ["all", "warn", "error"] as const;
+
+// A remembered selection keeps its order (the last service picked is the one
+// that keeps streaming) but drops anything this page no longer has. Nothing
+// usable left means the Core preset.
+export function rememberedServices(value: unknown): string[] {
+  const known = new Set<string>(SERVICES);
+  const picked = Array.isArray(value)
+    ? [...new Set(value)].filter(
+        (service): service is string =>
+          typeof service === "string" && known.has(service),
+      )
+    : [];
+  return picked.length ? picked : [...PRESETS.core];
+}
+
 // eslint-disable-next-line no-control-regex
 const ANSI = /\x1b\[[0-9;]*[A-Za-z]/g;
 

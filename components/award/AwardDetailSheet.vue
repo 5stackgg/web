@@ -13,6 +13,9 @@ import {
 } from "lucide-vue-next";
 import AwardBadge from "./AwardBadge.vue";
 import AwardGrantInline from "./AwardGrantInline.vue";
+import StatTile from "~/components/admin/StatTile.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
@@ -52,6 +55,7 @@ import {
   awardOwner,
   formatAwardDate,
   isBuiltIn,
+  ownerIsLive,
   ownerLabel,
   ownerStatusText,
 } from "./awardLedger";
@@ -86,6 +90,7 @@ const { result, loading } = useSubscription(
       { id: $("awardId", "uuid!") },
       {
         ...awardLedgerFields,
+        updated_at: true,
         recipients_aggregate: [
           {},
           {
@@ -323,6 +328,17 @@ async function revoke() {
         <SheetDescription class="truncate text-xs">
           {{ subtitle }}
         </SheetDescription>
+        <i18n-t
+          v-if="detail?.updated_at"
+          keypath="admin.last_changed.updated"
+          tag="p"
+          class="text-xs text-muted-foreground/80"
+          data-award-updated
+        >
+          <template #time>
+            <TimeAgo :date="detail.updated_at" hide-icon />
+          </template>
+        </i18n-t>
       </SheetHeader>
 
       <div class="grid flex-1 content-start gap-6 overflow-y-auto px-6 py-5">
@@ -376,16 +392,12 @@ async function revoke() {
                 <span
                   class="inline-flex items-center gap-1.5 whitespace-nowrap text-muted-foreground/80"
                 >
-                  <span
+                  <StatusDot
                     v-if="owner.phase === 'live'"
-                    class="relative inline-flex size-1.5"
-                    aria-hidden="true"
-                  >
-                    <span
-                      class="absolute inset-0 animate-ping rounded-full bg-success opacity-75 motion-reduce:hidden"
-                    />
-                    <span class="relative size-1.5 rounded-full bg-success" />
-                  </span>
+                    tone="ok"
+                    size="sm"
+                    :live="ownerIsLive(owner)"
+                  />
                   {{ ownerStatus }}
                 </span>
               </template>
@@ -403,64 +415,36 @@ async function revoke() {
           </Button>
         </div>
 
-        <dl class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <div
-            class="grid min-w-0 gap-1 rounded-lg border border-border bg-card/40 px-3.5 py-3"
+        <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <StatTile
+            :label="$t('pages.award_detail.total_holders')"
+            :value="stats.grants"
+          />
+          <StatTile
+            :label="$t('pages.award_detail.unique_players')"
+            :value="stats.players"
           >
-            <dt class="text-[0.72rem] text-muted-foreground">
-              {{ $t("pages.award_detail.total_holders") }}
-            </dt>
-            <dd class="text-xl font-bold leading-tight tabular-nums">
-              {{ stats.grants }}
-            </dd>
-          </div>
-          <div
-            class="grid min-w-0 gap-1 rounded-lg border border-border bg-card/40 px-3.5 py-3"
-          >
-            <dt class="text-[0.72rem] text-muted-foreground">
-              {{ $t("pages.award_detail.unique_players") }}
-            </dt>
-            <dd class="text-xl font-bold leading-tight tabular-nums">
-              {{ stats.players }}
-              <span
-                v-if="stats.teams"
-                class="ml-1 text-xs font-medium text-muted-foreground"
-              >
-                ({{
-                  $t(
-                    "pages.awards.team_count",
-                    { count: stats.teams },
-                    stats.teams,
-                  )
-                }})
-              </span>
-            </dd>
-          </div>
-          <div
-            class="grid min-w-0 gap-1 rounded-lg border border-border bg-card/40 px-3.5 py-3"
-          >
-            <dt class="text-[0.72rem] text-muted-foreground">
-              {{ $t("pages.award_detail.first_granted") }}
-            </dt>
-            <dd class="text-sm font-semibold leading-tight tabular-nums">
-              {{
-                stats.first ? formatAwardDate(stats.first) : $t("common.never")
-              }}
-            </dd>
-          </div>
-          <div
-            class="grid min-w-0 gap-1 rounded-lg border border-border bg-card/40 px-3.5 py-3"
-          >
-            <dt class="text-[0.72rem] text-muted-foreground">
-              {{ $t("pages.award_detail.last_granted") }}
-            </dt>
-            <dd class="text-sm font-semibold leading-tight tabular-nums">
-              {{
-                stats.last ? formatAwardDate(stats.last) : $t("common.never")
-              }}
-            </dd>
-          </div>
-        </dl>
+            <template v-if="stats.teams" #aside>
+              ({{
+                $t(
+                  "pages.awards.team_count",
+                  { count: stats.teams },
+                  stats.teams,
+                )
+              }})
+            </template>
+          </StatTile>
+          <StatTile :label="$t('pages.award_detail.first_granted')">
+            <span class="text-sm font-semibold">{{
+              stats.first ? formatAwardDate(stats.first) : $t("common.never")
+            }}</span>
+          </StatTile>
+          <StatTile :label="$t('pages.award_detail.last_granted')">
+            <span class="text-sm font-semibold">{{
+              stats.last ? formatAwardDate(stats.last) : $t("common.never")
+            }}</span>
+          </StatTile>
+        </div>
 
         <section class="grid gap-3" data-award-holders>
           <div class="flex flex-wrap items-center gap-2.5">
@@ -711,20 +695,15 @@ async function revoke() {
           </p>
           <div
             v-else
-            class="flex flex-wrap items-center gap-4 rounded-lg border border-[hsl(var(--destructive)/0.35)] bg-[hsl(var(--destructive)/0.04)] px-4 py-3.5"
+            class="flex items-center justify-between gap-4 border-t border-border/60 pt-5"
           >
-            <div class="grid min-w-0 flex-1 gap-0.5">
-              <span class="text-sm font-semibold">
-                {{ $t("pages.awards.delete_award") }}
-              </span>
-              <span class="text-xs text-muted-foreground">
-                {{ $t("pages.awards.delete_hint") }}
-              </span>
-            </div>
+            <p class="min-w-0 text-xs text-muted-foreground">
+              {{ $t("pages.awards.delete_hint") }}
+            </p>
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
-              class="border-[hsl(var(--destructive)/0.5)] text-destructive hover:bg-[hsl(var(--destructive)/0.12)] hover:text-destructive"
+              class="h-8 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
               @click="emit('delete', view)"
             >
               <Trash2 class="size-3.5" />

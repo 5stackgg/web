@@ -228,14 +228,24 @@ describe("dedicated server header", () => {
 
   it("puts Join right beside the address it connects to", async () => {
     const wrapper = await mountAs("moderator", {
+      server: {
+        connection_string: "connect 10.0.0.5:27015",
+        connection_link: "steam://connect/10.0.0.5:27015",
+      },
+    });
+
+    const join = wrapper.find('[data-testid="join-server"]');
+    expect(join.exists()).toBe(true);
+    expect(join.attributes("href")).toBe("steam://connect/10.0.0.5:27015");
+    expect(join.element.parentElement?.textContent).toContain("10.0.0.5:27015");
+  });
+
+  it("has no Join without a link to launch", async () => {
+    const wrapper = await mountAs("moderator", {
       server: { connection_string: "connect 10.0.0.5:27015" },
     });
 
-    const join = wrapper.find("quick-server-connect-stub");
-    expect(join.exists()).toBe(true);
-    expect(join.element.parentElement?.textContent).toContain(
-      "10.0.0.5:27015",
-    );
+    expect(wrapper.find('[data-testid="join-server"]').exists()).toBe(false);
   });
 
   // Online and the week's players live on the Overview tab and the plugin's
@@ -255,6 +265,25 @@ describe("dedicated server header", () => {
     const wrapper = await mountAs("administrator");
 
     expect(wrapper.find("header").text()).toContain("10.0.0.5:27015");
+  });
+
+  // The ping is for a server in use right now; an idle or hibernating one
+  // gets a still dot.
+  it("pings the status dot only while players are on", async () => {
+    const wrapper = await mountAs("moderator");
+    const header = () => wrapper.find("header");
+
+    expect(header().text()).toContain("Connected");
+    expect(header().find(".animate-ping").exists()).toBe(false);
+
+    wrapper
+      .findComponent({ name: "ServerPlayerManagement" })
+      .vm.$emit("status", { count: 2, live: true });
+    await flushPromises();
+
+    expect(header().text()).toContain("2 playing");
+    expect(header().find(".animate-ping").exists()).toBe(true);
+    expect(wrapper.find('[data-testid="players-tab-count"]').text()).toBe("2");
   });
 
   it("keeps stats out of the header", async () => {

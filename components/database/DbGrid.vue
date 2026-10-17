@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import SortHeader from "~/components/admin/SortHeader.vue";
+import { nextSort } from "~/components/admin/sort";
 
 import type { DbGridColumn } from "./dbHealth";
 
@@ -52,14 +53,13 @@ const sorted = computed(() => {
   });
 });
 
+// Numbers start largest first, text A to Z.
 function toggle(col: DbGridColumn) {
-  if (col.sortable === false) return;
-  if (sort.value === col.key) {
-    dir.value = dir.value === "asc" ? "desc" : "asc";
-    return;
-  }
-  sort.value = col.key;
-  dir.value = col.num ? "desc" : "asc";
+  const next = nextSort({ key: sort.value, dir: dir.value }, col.key, {
+    [col.key]: col.num ? "desc" : "asc",
+  });
+  sort.value = next.key;
+  dir.value = next.dir;
 }
 
 function onRowClick(event: MouseEvent, row: any) {
@@ -82,12 +82,6 @@ onMounted(() => {
   observer.observe(tableRef.value);
 });
 onBeforeUnmount(() => observer?.disconnect());
-
-function ariaSort(col: DbGridColumn) {
-  if (col.sortable === false) return undefined;
-  if (sort.value !== col.key) return "none";
-  return dir.value === "asc" ? "ascending" : "descending";
-}
 </script>
 
 <template>
@@ -103,47 +97,27 @@ function ariaSort(col: DbGridColumn) {
     <table ref="tableRef" class="w-full border-collapse text-[12.5px]">
       <thead>
         <tr>
-          <th
+          <SortHeader
             v-for="col in columns"
             :key="col.key"
+            :sort-key="col.key"
+            :label="col.label"
+            :tip="col.tip"
+            :active="sort"
+            :dir="dir"
+            :align="col.num ? 'end' : 'start'"
+            :disabled="col.sortable === false"
             :class="[
               col.num ? 'text-right' : 'text-left',
               fitColumns && !col.wrap && 'is-fit',
-              col.sortable !== false && 'is-sortable',
-              sort === col.key && 'is-sorted',
             ]"
             :style="
               col.minWidth ? { minWidth: `${col.minWidth}px` } : undefined
             "
-            :aria-sort="ariaSort(col)"
-            @click="toggle(col)"
+            @sort="toggle(col)"
           >
-            <span :class="col.srOnly ? 'sr-only' : ''">
-              <FiveStackToolTip
-                v-if="col.tip"
-                as-child
-                side="bottom"
-                :delay-duration="120"
-              >
-                <template #trigger>
-                  <span
-                    class="cursor-help underline decoration-dotted decoration-muted-foreground/70 underline-offset-[3px]"
-                    >{{ col.label }}</span
-                  >
-                </template>
-                <span class="block max-w-[240px] text-xs leading-snug">{{
-                  col.tip
-                }}</span>
-              </FiveStackToolTip>
-              <template v-else>{{ col.label }}</template>
-            </span>
-            <span
-              v-if="sort === col.key"
-              aria-hidden="true"
-              class="ml-1 text-[10px] text-[hsl(var(--tac-amber))]"
-              >{{ dir === "asc" ? "▲" : "▼" }}</span
-            >
-          </th>
+            <span v-if="col.srOnly" class="sr-only">{{ col.label }}</span>
+          </SortHeader>
         </tr>
       </thead>
       <tbody>
@@ -195,14 +169,6 @@ th {
   color: hsl(var(--muted-foreground));
   white-space: nowrap;
   transition: color 150ms ease;
-}
-th.is-sortable {
-  cursor: pointer;
-  user-select: none;
-}
-th.is-sortable:hover,
-th.is-sorted {
-  color: hsl(var(--foreground));
 }
 td {
   padding: 7px 10px;

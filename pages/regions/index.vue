@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { Plus, Search, X } from "lucide-vue-next";
+import { Plus } from "lucide-vue-next";
 import { useMediaQuery } from "@vueuse/core";
 import { Button } from "~/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
 import {
   Sheet,
   SheetContent,
@@ -47,30 +43,11 @@ const wide = useMediaQuery("(min-width: 1024px)");
   <PageTransition :delay="0">
     <div class="grid w-full max-w-[64rem] gap-4">
       <div class="flex flex-wrap items-center gap-2">
-        <InputGroup
-          class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-[18rem]"
-        >
-          <InputGroupAddon class="pl-2.5">
-            <Search class="size-3.5" />
-          </InputGroupAddon>
-          <InputGroupInput
-            v-model="search"
-            autocomplete="off"
-            :placeholder="$t('pages.regions.search_placeholder')"
-            :aria-label="$t('pages.regions.search_placeholder')"
-            class="h-full text-sm"
-          />
-          <InputGroupAddon v-if="search" align="inline-end" class="pr-2">
-            <button
-              type="button"
-              class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              :aria-label="$t('common.clear')"
-              @click="search = ''"
-            >
-              <X class="size-3.5" />
-            </button>
-          </InputGroupAddon>
-        </InputGroup>
+        <AdminSearch
+          v-model="search"
+          shortcut
+          :placeholder="$t('pages.regions.search_placeholder')"
+        />
 
         <Button
           size="sm"
@@ -107,6 +84,7 @@ const wide = useMediaQuery("(min-width: 1024px)");
             :regions="filtered"
             :selected-value="selected?.value"
             @select="select"
+            @move="selectedValue = $event"
           />
           <div class="region-swap pl-6">
             <Transition name="region-swap">
@@ -126,7 +104,7 @@ const wide = useMediaQuery("(min-width: 1024px)");
                 :description="$t('common.empty_filtered.description')"
               >
                 <Button variant="outline" size="sm" @click="search = ''">
-                  {{ $t("common.clear") }}
+                  {{ $t("common.clear_filters") }}
                 </Button>
               </SectionEmpty>
             </Transition>
@@ -151,7 +129,7 @@ const wide = useMediaQuery("(min-width: 1024px)");
               :description="$t('common.empty_filtered.description')"
             >
               <Button variant="outline" size="sm" @click="search = ''">
-                {{ $t("common.clear") }}
+                {{ $t("common.clear_filters") }}
               </Button>
             </SectionEmpty>
             <RegionList
@@ -159,6 +137,7 @@ const wide = useMediaQuery("(min-width: 1024px)");
               :regions="filtered"
               :selected-value="selected?.value"
               @select="select"
+              @move="selectedValue = $event"
             />
           </div>
         </SlideSwap>
@@ -208,7 +187,13 @@ import { toast } from "@/components/ui/toast";
 import {
   matchesRegionSearch,
   regionLabel,
+  regionViewDefaults,
+  regionViewValidators,
 } from "~/components/regions/regionStatus";
+import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
 
 type Region = {
   value: string;
@@ -225,10 +210,16 @@ type RegionField = "steam_relay" | "is_lan" | "description";
 
 export default {
   data() {
+    // Back where it was left: the same search and the same region open.
+    const view = readRememberedView(
+      "regions",
+      regionViewDefaults(),
+      regionViewValidators,
+    );
     return {
       regions: undefined as Region[] | undefined,
-      search: "",
-      selectedValue: null as string | null,
+      search: view.search,
+      selectedValue: view.selected,
       showDetail: false,
       createOpen: false,
       // A snapshot, so the dialog keeps its text while it animates shut.
@@ -279,7 +270,19 @@ export default {
       },
     },
   },
+  watch: {
+    rememberedView() {
+      saveRememberedView(
+        "regions",
+        { search: this.search, selected: this.selectedValue },
+        regionViewDefaults(),
+      );
+    },
+  },
   computed: {
+    rememberedView(): string {
+      return JSON.stringify([this.search, this.selectedValue]);
+    },
     view(): Region[] | undefined {
       return this.regions?.map((region: Region) =>
         this.overlay[region.value]

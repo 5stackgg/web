@@ -5,14 +5,13 @@ import { useI18n } from "vue-i18n";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import DbGrid from "./DbGrid.vue";
 import DbPidMenu from "./DbPidMenu.vue";
 import DbQueryCell from "./DbQueryCell.vue";
 import DbRunning from "./DbRunning.vue";
 import DbSev from "./DbSev.vue";
 import DbStatePill from "./DbStatePill.vue";
-import DbTerm from "./DbTerm.vue";
-import DbTile from "./DbTile.vue";
 import { lockWaitCount, type DbGridColumn } from "./dbHealth";
 
 const props = defineProps<{ db: Record<string, any> }>();
@@ -90,33 +89,33 @@ const allDir = ref<"asc" | "desc">("asc");
 <template>
   <div class="grid gap-6">
     <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5">
-      <DbTile :label="$t('pages.database.connections.total')">
-        {{ stats ? stats.total.toLocaleString() : "—" }}
-      </DbTile>
-      <DbTile :label="$t('pages.database.connections.active')">
-        {{ stats ? stats.active.toLocaleString() : "—" }}
-      </DbTile>
-      <DbTile :label="$t('pages.database.connections.idle')">
-        {{ stats ? stats.idle.toLocaleString() : "—" }}
-      </DbTile>
-      <DbTile :sev="stats?.idle_in_transaction && longIdleTxn ? 'warn' : ''">
-        <template #label>
-          <DbTerm :tip="$t('pages.database.explorer.idle_in_txn_tip')">{{
-            $t("pages.database.explorer.idle_in_txn")
-          }}</DbTerm>
-        </template>
-        {{ stats ? stats.idle_in_transaction.toLocaleString() : "—" }}
-      </DbTile>
-      <DbTile :sev="lockWaits ? 'bad' : ''">
-        <template #label>
-          <DbTerm :tip="$t('pages.database.explorer.waiting_tip')">{{
-            $t("pages.database.connections.waiting")
-          }}</DbTerm>
-        </template>
+      <StatTile
+        :label="$t('pages.database.connections.total')"
+        :value="stats?.total ?? null"
+      />
+      <StatTile
+        :label="$t('pages.database.connections.active')"
+        :value="stats?.active ?? null"
+      />
+      <StatTile
+        :label="$t('pages.database.connections.idle')"
+        :value="stats?.idle ?? null"
+      />
+      <StatTile
+        :label="$t('pages.database.explorer.idle_in_txn')"
+        :tip="$t('pages.database.explorer.idle_in_txn_tip')"
+        :value="stats?.idle_in_transaction ?? null"
+        :tone="stats?.idle_in_transaction && longIdleTxn ? 'warn' : undefined"
+      />
+      <StatTile
+        :label="$t('pages.database.connections.waiting')"
+        :tip="$t('pages.database.explorer.waiting_tip')"
+        :tone="lockWaits ? 'bad' : undefined"
+      >
         <DbSev :sev="lockWaits ? 'bad' : ''">{{
           lockWaits.toLocaleString()
         }}</DbSev>
-      </DbTile>
+      </StatTile>
     </div>
 
     <ManageSection :label="$t('pages.database.explorer.by_state')">

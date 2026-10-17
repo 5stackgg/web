@@ -8,9 +8,14 @@ import {
   lineupsToRender,
   pageWindow,
   rowInView,
+  sortLedgerRows,
   type LedgerClipJob,
   type LedgerUtilityRender,
 } from "~/components/render-queue/renderQueueLedger";
+import {
+  statusLive,
+  statusTone,
+} from "~/components/render-queue/renderQueueDisplay";
 
 const NOW = Date.parse("2026-10-16T12:00:00Z");
 const iso = (minutesAgo: number) =>
@@ -246,5 +251,86 @@ describe("pageWindow", () => {
   it("elides the middle of a long run", () => {
     expect(pageWindow(1, 3)).toEqual([1, 2, 3]);
     expect(pageWindow(5, 10)).toEqual([1, null, 4, 5, 6, null, 10]);
+  });
+});
+
+describe("sortLedgerRows", () => {
+  const rows = buildLedgerRows({
+    clipJobs: [
+      clip({
+        id: "a",
+        status: "done",
+        clip_id: "x",
+        last_status_at: iso(30),
+        spec: { title: "Bravo", duration_ms: 9000 },
+      }),
+      clip({
+        id: "b",
+        status: "error",
+        last_status_at: iso(10),
+        spec: { title: "alpha" },
+      }),
+    ],
+    utilityRenders: [
+      render({
+        id: "u",
+        status: "done",
+        last_status_at: iso(20),
+        duration_ms: 4000,
+        lineup: { name: "Charlie" },
+      }),
+    ],
+    view: "done",
+  }).concat(
+    buildLedgerRows({
+      clipJobs: [
+        clip({
+          id: "b",
+          status: "error",
+          last_status_at: iso(10),
+          spec: { title: "alpha" },
+        }),
+      ],
+      utilityRenders: [],
+      view: "failed",
+    }),
+  );
+  const name = (row: (typeof rows)[number]) =>
+    row.kind === "clip"
+      ? (row.job.spec?.title ?? "")
+      : (row.render.lineup?.name ?? "");
+  const keys = (list: typeof rows) => list.map((row) => row.key);
+
+  it("sorts by name, status and finished", () => {
+    expect(
+      keys(sortLedgerRows(rows, { key: "name", dir: "asc" }, name)),
+    ).toEqual(["clip:b", "clip:a", "utility:u"]);
+    expect(
+      keys(sortLedgerRows(rows, { key: "at", dir: "desc" }, name)),
+    ).toEqual(["clip:b", "utility:u", "clip:a"]);
+    expect(
+      keys(sortLedgerRows(rows, { key: "status", dir: "asc" }, name)),
+    ).toEqual(["utility:u", "clip:a", "clip:b"]);
+  });
+
+  it("keeps rows without a length last in either direction", () => {
+    expect(
+      keys(sortLedgerRows(rows, { key: "length", dir: "desc" }, name)),
+    ).toEqual(["clip:a", "utility:u", "clip:b"]);
+    expect(
+      keys(sortLedgerRows(rows, { key: "length", dir: "asc" }, name)),
+    ).toEqual(["utility:u", "clip:a", "clip:b"]);
+  });
+});
+
+describe("statusTone", () => {
+  it("pings only what is happening now", () => {
+    expect(statusTone("rendering")).toBe("ok");
+    expect(statusTone("uploading")).toBe("info");
+    expect(statusTone("missing")).toBe("bad");
+    expect(statusTone("queued")).toBe("off");
+    expect(statusLive("rendering")).toBe(true);
+    expect(statusLive("queued")).toBe(false);
+    expect(statusLive("done")).toBe(false);
   });
 });

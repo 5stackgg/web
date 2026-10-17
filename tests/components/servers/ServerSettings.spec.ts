@@ -64,15 +64,15 @@ describe("ServerSettings", () => {
   it("offers rotation, plugins and access on a node server", async () => {
     const wrapper = await mountConsole("node-a");
 
-    expect(wrapper.text()).toContain("Map Rotation");
+    expect(wrapper.text()).toContain("Map rotation");
     expect(wrapper.text()).toContain("Plugins");
     expect(wrapper.text()).toContain("Access");
-    expect(wrapper.text()).toContain("Player Management");
+    expect(wrapper.text()).toContain("Player management");
   });
 
   // The install steps moved out of the roster's popover into their own
   // section, mounted only while it is the open one.
-  it("opens the Player Management section from its deep link", async () => {
+  it("opens the Player management section from its deep link", async () => {
     const wrapper = await mountConsole(
       null,
       "/?settings=player-management",
@@ -85,7 +85,7 @@ describe("ServerSettings", () => {
   });
 
   // Rotation and plugins reach the server in its pod spec; an external server
-  // has none, but its Player Management plugin still enforces access.
+  // has none, but its Player management plugin still enforces access.
   it("offers only access on an external server", async () => {
     const wrapper = await mountConsole(null);
 
@@ -168,7 +168,7 @@ describe("ServerSettings", () => {
     const wrapper = await mountConsole("node-a");
 
     expect(wrapper.find('[aria-current="page"]').text()).toBe("General");
-    expect(wrapper.text()).toContain("Server Label");
+    expect(wrapper.text()).toContain("Server label");
     expect(wrapper.find('[data-testid="delete-server"]').isVisible()).toBe(
       false,
     );
@@ -179,7 +179,7 @@ describe("ServerSettings", () => {
 
     const tabs = wrapper.findAll("nav a");
     const last = tabs[tabs.length - 1];
-    expect(last.text()).toBe("Delete Server");
+    expect(last.text()).toBe("Delete server");
     expect(last.attributes("data-settings-tab-tone")).toBe("danger");
     expect(last.attributes("aria-current")).toBe("page");
 
@@ -202,7 +202,7 @@ describe("ServerSettings", () => {
     unmount = () => wrapper.unmount();
 
     expect(wrapper.text()).toContain("General");
-    expect(wrapper.text()).not.toContain("Map Rotation");
+    expect(wrapper.text()).not.toContain("Map rotation");
     expect(wrapper.find("#server-access-restricted").exists()).toBe(false);
   });
 });

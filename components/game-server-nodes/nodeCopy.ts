@@ -3,7 +3,6 @@
 import {
   warningInfo,
   type AttentionItem,
-  type AttentionTone,
   type NodeWarning,
 } from "~/components/game-server-nodes/nodeInspector";
 import type { NodeLike } from "~/components/game-server-nodes/nodeState";
@@ -168,10 +167,3 @@ export function attentionCopy(
       };
   }
 }
-
-export const TONE_TEXT: Record<AttentionTone | "off", string> = {
-  bad: "text-destructive",
-  warn: "text-[hsl(var(--tac-amber))]",
-  info: "text-info",
-  off: "text-muted-foreground",
-};

@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import RegionListItem from "~/components/regions/RegionListItem.vue";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 
 const props = defineProps<{
   regions?: Array<{
@@ -16,7 +17,43 @@ const props = defineProps<{
   selectedValue?: string | null;
 }>();
 
-defineEmits<{ (e: "select", value: string): void }>();
+const emit = defineEmits<{
+  (e: "select", value: string): void;
+  /** ↑/↓ moved to a region: show it, without pushing the detail on phones. */
+  (e: "move", value: string): void;
+}>();
+
+// ↑/↓ walk the regions and the detail follows; Enter opens the one picked
+// (on phones that pushes its detail over the list).
+const activeValue = ref<string | null>(null);
+const keys = useListKeyboard({
+  items: () => props.regions ?? [],
+  getId: (region) => region.value,
+  activeId: activeValue,
+  onOpen: (value) => emit("select", value),
+});
+
+watch(activeValue, (value) => {
+  if (value && value !== props.selectedValue) {
+    emit("move", value);
+  }
+});
+
+// Tab lands on the region being shown; a nav button carries aria-current,
+// not aria-selected.
+function rowProps(value: string) {
+  const {
+    "aria-selected": _selected,
+    tabindex: _tabindex,
+    ...rest
+  } = keys.rowProps(value);
+  const values = (props.regions ?? []).map((region) => region.value);
+  const tabbable =
+    [activeValue.value, props.selectedValue].find(
+      (candidate) => !!candidate && values.includes(candidate),
+    ) ?? values[0];
+  return { ...rest, tabindex: value === tabbable ? 0 : -1 };
+}
 
 // The settings rail's indicator: an amber bar on the right hairline that
 // glides to the picked row. It jumps (no glide) on first placement, when the
@@ -99,6 +136,7 @@ onUnmounted(() => {
         v-for="region in regions"
         :key="region.value"
         :region="region"
+        v-bind="rowProps(region.value)"
         :current="region.value === selectedValue"
         @select="$emit('select', region.value)"
       />

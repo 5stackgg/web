@@ -92,7 +92,7 @@ const pill =
           state === 'failed'
             ? 'border-destructive/30 bg-destructive/10 text-destructive'
             : state === 'behind'
-              ? 'border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
+              ? 'border-warning/30 bg-warning/10 text-warning'
               : 'border-border bg-muted/40 text-muted-foreground',
         ]"
       >

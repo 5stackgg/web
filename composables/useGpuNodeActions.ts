@@ -4,15 +4,14 @@ import { useNuxtApp } from "#app";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 
-export type GpuWorkloadKey = "streaming" | "demos" | "rendering";
-
 // Shared by the page, its rows and the node sheet, so a bake started in one
 // shows busy in the others.
 const bakeBusy = reactive<Record<string, boolean>>({});
 
 /**
  * Every write the GPU nodes page makes: node switches (the same mutations as
- * NodeControlMenu), shader bakes, stopping a session and the Steam pool.
+ * NodeControlMenu; workloads go through useWorkloadToggle), shader bakes,
+ * stopping a session and the Steam pool.
  * Each resolves after the request, so a ui Button awaiting it spins.
  */
 export function useGpuNodeActions() {
@@ -70,24 +69,6 @@ export function useGpuNodeActions() {
     }
   }
 
-  const setWorkload = (
-    nodeId: string,
-    workload: GpuWorkloadKey,
-    enabled: boolean,
-  ) =>
-    run(
-      {
-        update_game_server_nodes_by_pk: [
-          {
-            pk_columns: { id: nodeId },
-            _set: { [`gpu_${workload}_enabled`]: enabled },
-          },
-          { id: true },
-        ],
-      },
-      t("pages.gpu_nodes.toggle_workload_failed"),
-    );
-
   async function bakeShaders(nodeId: string) {
     if (bakeBusy[nodeId]) return;
     bakeBusy[nodeId] = true;
@@ -142,7 +123,6 @@ export function useGpuNodeActions() {
     bakeBusy,
     setEnabled,
     setScheduling,
-    setWorkload,
     bakeShaders,
     cancelBake,
     stopSession,

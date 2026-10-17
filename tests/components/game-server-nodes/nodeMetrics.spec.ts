@@ -9,9 +9,13 @@ import {
   inWindow,
   latest,
   lineSegments,
+  nearestTime,
   networkSeries,
   rangeMinutes,
   sampleInterval,
+  valueAt,
+  vramSeries,
+  vramTotalGb,
   type StatPoint,
 } from "~/components/game-server-nodes/nodeMetrics";
 
@@ -163,5 +167,74 @@ describe("disk trend", () => {
       fullInHours: null,
       soon: false,
     });
+  });
+});
+
+describe("vram", () => {
+  const sample = (
+    i: number,
+    devices: Array<Record<string, unknown>> | null,
+  ) => ({
+    time: new Date(at(i)).toISOString(),
+    devices,
+  });
+
+  it("reads video memory in use as a percent of every card's total", () => {
+    const stats = {
+      gpu: [
+        sample(0, [{ memory_mb: 8192, memory_used_mb: 2048 }]),
+        sample(1, [
+          { memory_mb: 8192, memory_used_mb: 4096 },
+          { memory_mb: 8192, memory_used_mb: 8192 },
+        ]),
+      ],
+    };
+    expect(vramSeries(stats)).toEqual([
+      { t: at(0), v: 25 },
+      { t: at(1), v: 75 },
+    ]);
+  });
+
+  it("leaves a gap for a sample without readings instead of a zero", () => {
+    const stats = {
+      gpu: [
+        sample(0, null),
+        sample(1, [{ memory_mb: 8192, memory_used_mb: null }]),
+      ],
+    };
+    expect(vramSeries(stats)).toEqual([
+      { t: at(0), v: null },
+      { t: at(1), v: null },
+    ]);
+  });
+
+  it("totals the cards in the newest sample that reports them, in GB", () => {
+    const stats = {
+      gpu: [
+        sample(0, [{ memory_mb: 8192 }, { memory_mb: 16384 }]),
+        sample(1, []),
+      ],
+    };
+    expect(vramTotalGb(stats)).toBe(24);
+    expect(vramTotalGb({ gpu: [] })).toBeNull();
+    expect(vramTotalGb(null)).toBeNull();
+  });
+});
+
+describe("crosshair", () => {
+  it("reads the nearest sample within half an interval", () => {
+    const series: Array<StatPoint> = [
+      { t: at(0), v: 10 },
+      { t: at(1), v: null },
+      { t: at(2), v: 30 },
+    ];
+    expect(valueAt(series, at(0) + 5_000, S)).toEqual({ t: at(0), v: 10 });
+    expect(valueAt(series, at(2) - 10_000, S)).toEqual({ t: at(2), v: 30 });
+    expect(valueAt(series, at(1), S)).toBeNull();
+  });
+
+  it("snaps to the nearest time", () => {
+    expect(nearestTime([at(0), at(1), at(2)], at(1) + 20_000)).toBe(at(2));
+    expect(nearestTime([], at(1))).toBeNull();
   });
 });

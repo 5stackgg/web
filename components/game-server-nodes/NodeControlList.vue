@@ -131,7 +131,7 @@ async function setScheduling(enabled: boolean) {
           >
             <template #trigger>
               <span
-                class="inline-flex text-[hsl(var(--tac-amber))]"
+                class="inline-flex text-warning"
                 tabindex="0"
                 role="img"
                 :aria-label="t('pages.gpu_nodes.scheduling_offline_hint')"

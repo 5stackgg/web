@@ -153,11 +153,16 @@ const containContent = computed(() => {
   }
 });
 
+// The settings shells follow the page on screen, like the width: switching
+// them the moment navigation starts drew the App Settings shell in the
+// leaving page's centred column, then snapped it left once the width caught up.
 const isApplicationSettings = computed(() =>
-  route.path.startsWith("/settings/application"),
+  String(shownRouteName.value ?? "").startsWith("settings-application"),
 );
 const isProfileSettings = computed(
-  () => route.path.startsWith("/settings") && !isApplicationSettings.value,
+  () =>
+    String(shownRouteName.value ?? "").startsWith("settings") &&
+    !isApplicationSettings.value,
 );
 
 // Provide values to MainContent

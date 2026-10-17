@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   Archive,
@@ -12,10 +12,11 @@ import {
   ListTree,
   Lock,
   Plug,
-  Search,
   TriangleAlert,
   Zap,
 } from "lucide-vue-next";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import SchemaSelector from "./SchemaSelector.vue";
 import {
   SERVER_LABEL_KEYS,
@@ -143,6 +144,46 @@ function toggleSchema(schema: string) {
   collapsed.value = next;
 }
 
+// ↑/↓ walk every item the tree shows, Enter opens it.
+const nav = ref<HTMLElement | null>(null);
+const activeId = ref<string | null>(null);
+const itemIds = computed(() => [
+  ...(find.value.trim() ? [] : serverItems.value.map((item) => item.key)),
+  ...groups.value.flatMap((group) =>
+    group.open ? group.rows.map((tb: any) => `t:${tb.key}`) : [],
+  ),
+]);
+const { rowProps } = useListKeyboard({
+  items: itemIds,
+  getId: (id) => id,
+  activeId,
+  container: nav,
+  onOpen: (id) => emit("go", id),
+});
+
+// Tab lands on the open item; aria-current already marks it.
+function itemProps(id: string) {
+  const { "aria-selected": _selected, ...rest } = rowProps(id);
+  if (!activeId.value && itemIds.value.includes(props.current)) {
+    rest.tabindex = id === props.current ? 0 : -1;
+  }
+  return rest;
+}
+
+// Leaving the tree hands the arrow keys back to the page.
+function onFocusOut(event: FocusEvent) {
+  const next = event.relatedTarget as Node | null;
+  if (!next || !nav.value?.contains(next)) {
+    activeId.value = null;
+  }
+}
+
+watch(itemIds, (ids) => {
+  if (activeId.value && !ids.includes(activeId.value)) {
+    activeId.value = null;
+  }
+});
+
 const badgeTitle = computed(() =>
   t("pages.database.explorer.over_threshold", {
     threshold: thresholdLabel(props.threshold),
@@ -152,24 +193,17 @@ const badgeTitle = computed(() =>
 
 <template>
   <nav
+    ref="nav"
     class="flex min-h-0 min-w-0 flex-col border-b border-border lg:border-b-0 lg:border-r lg:border-border/70"
     :aria-label="$t('pages.database.explorer.objects')"
+    @focusout="onFocusOut"
   >
     <div class="grid gap-2 border-b border-border/60 pb-2.5 lg:pr-3">
-      <label class="relative block">
-        <Search
-          class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/70"
-        />
-        <input
-          v-model="find"
-          type="text"
-          autocomplete="off"
-          spellcheck="false"
-          class="h-8 w-full rounded-md border border-border bg-[hsl(240_6%_6%)] pl-8 pr-2.5 text-[13px] outline-none placeholder:text-muted-foreground/60 focus-visible:ring-1 focus-visible:ring-ring"
-          :placeholder="$t('pages.database.explorer.find_table')"
-          :aria-label="$t('pages.database.explorer.find_table')"
-        />
-      </label>
+      <AdminSearch
+        v-model="find"
+        shortcut
+        :placeholder="$t('pages.database.explorer.find_table')"
+      />
       <SchemaSelector
         :model-value="schemas"
         class="w-full max-w-none justify-between"
@@ -190,6 +224,7 @@ const badgeTitle = computed(() =>
           :key="item.key"
           type="button"
           class="db-tree-item"
+          v-bind="itemProps(item.key)"
           :aria-current="current === item.key ? 'true' : undefined"
           @click="emit('go', item.key)"
         >
@@ -204,7 +239,7 @@ const badgeTitle = computed(() =>
               :class="
                 item.badge.tone === 'bad'
                   ? 'bg-destructive/15 text-destructive'
-                  : 'bg-amber-500/15 text-amber-400'
+                  : 'bg-warning/15 text-warning'
               "
               :title="
                 item.key === 'queries' || item.key === 'connections'
@@ -242,6 +277,7 @@ const badgeTitle = computed(() =>
             :key="tb.key"
             type="button"
             class="db-tree-item is-table"
+            v-bind="itemProps(`t:${tb.key}`)"
             :aria-current="current === `t:${tb.key}` ? 'true' : undefined"
             :title="tb.key"
             @click="emit('go', `t:${tb.key}`)"
@@ -253,7 +289,7 @@ const badgeTitle = computed(() =>
               />
               <TriangleAlert
                 v-else-if="tableSev[tb.key] === 'warn'"
-                class="h-3 w-3 text-amber-400"
+                class="h-3 w-3 text-warning"
               />
               <Clock
                 v-else-if="tb.hyper"
@@ -313,6 +349,10 @@ const badgeTitle = computed(() =>
 .db-tree-item:hover {
   background: hsl(240 4% 9%);
   color: hsl(var(--foreground));
+}
+.db-tree-item:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 1px hsl(var(--ring));
 }
 .db-tree-item[aria-current="true"] {
   background: hsl(240 4% 11%);

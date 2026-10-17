@@ -128,6 +128,41 @@ export const gpuSeries = (stats: any) =>
       : null;
   });
 
+// Video memory in use as a percent of the cards' total, over the devices
+// that report both.
+export const vramSeries = (stats: any) =>
+  series(stats?.gpu, (sample) => {
+    let used = 0;
+    let total = 0;
+    for (const device of sample?.devices ?? []) {
+      if (
+        typeof device?.memory_mb === "number" &&
+        device.memory_mb > 0 &&
+        typeof device?.memory_used_mb === "number"
+      ) {
+        used += device.memory_used_mb;
+        total += device.memory_mb;
+      }
+    }
+    return total ? clampPercent((used / total) * 100) : null;
+  });
+
+// memory_mb is MiB, summed over the cards in the newest sample that has any.
+export function vramTotalGb(stats: any): number | null {
+  const samples = Array.isArray(stats?.gpu) ? stats.gpu : [];
+  for (let index = samples.length - 1; index >= 0; index--) {
+    const mb = (samples[index]?.devices ?? []).reduce(
+      (sum: number, device: any) =>
+        sum + (typeof device?.memory_mb === "number" ? device.memory_mb : 0),
+      0,
+    );
+    if (mb > 0) {
+      return mb / 1024;
+    }
+  }
+  return null;
+}
+
 const diskPercentOf = (disk: any) => {
   const percent = parseFloat(String(disk?.usedPercent ?? "").replace("%", ""));
   if (Number.isFinite(percent)) {
@@ -192,6 +227,35 @@ export const gapThreshold = (interval: number) => interval * 2.5;
 
 export function inWindow(points: Array<StatPoint>, from: number, to: number) {
   return points.filter((point) => point.t >= from && point.t <= to);
+}
+
+// The sample a crosshair at t reads: the nearest one within half an interval.
+export function valueAt(
+  points: Array<StatPoint>,
+  t: number,
+  interval = sampleInterval(points),
+): { t: number; v: number } | null {
+  let best: { t: number; v: number } | null = null;
+  for (const point of points) {
+    if (
+      point.v != null &&
+      Math.abs(point.t - t) <= interval / 2 &&
+      (!best || Math.abs(point.t - t) < Math.abs(best.t - t))
+    ) {
+      best = { t: point.t, v: point.v };
+    }
+  }
+  return best;
+}
+
+export function nearestTime(times: Array<number>, t: number): number | null {
+  let best: number | null = null;
+  for (const time of times) {
+    if (best == null || Math.abs(time - t) < Math.abs(best - t)) {
+      best = time;
+    }
+  }
+  return best;
 }
 
 // The runs a line is drawn in: it breaks at a missing value and wherever two

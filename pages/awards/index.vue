@@ -1,10 +1,6 @@
 <script setup lang="ts">
+import { getCurrentInstance, ref } from "vue";
 import { Button } from "~/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
   AlertDialog,
@@ -20,6 +16,8 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import FacetRail from "~/components/admin/FacetRail.vue";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
+import SortHeader from "~/components/admin/SortHeader.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import AwardDetailSheet from "~/components/award/AwardDetailSheet.vue";
 import AwardLedgerRow from "~/components/award/AwardLedgerRow.vue";
@@ -28,7 +26,8 @@ import {
   createButtonClasses,
   listCreateButtonClasses,
 } from "~/utilities/tacticalClasses";
-import { Info, Plus, Search, X } from "lucide-vue-next";
+import { Info, Plus } from "lucide-vue-next";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 
 // Gated by public.create_awards_role / public.grant_awards_role rather than a
 // flat admin check, so lowering either setting actually opens the page. Wait
@@ -47,6 +46,18 @@ watch(
   },
   { immediate: true },
 );
+
+// ↑/↓ walk the ledger, Enter opens the award's sheet. The rows live in the
+// Options half; they are read lazily, after data() exists.
+const instance = getCurrentInstance();
+const page = () => instance?.proxy as any;
+const activeAwardId = ref<string | null>(null);
+const ledgerKeys = useListKeyboard({
+  items: () => page()?.pagedAwards ?? [],
+  getId: (award: any) => award.id,
+  activeId: activeAwardId,
+  onOpen: (id) => page()?.openDetailById(id),
+});
 </script>
 
 <template>
@@ -58,30 +69,11 @@ watch(
         v-if="loadingAwards || awards.length"
         class="flex flex-wrap items-center gap-2"
       >
-        <InputGroup
-          class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-[16rem]"
-        >
-          <InputGroupAddon class="pl-2.5">
-            <Search class="size-3.5" />
-          </InputGroupAddon>
-          <InputGroupInput
-            v-model="search"
-            autocomplete="off"
-            :placeholder="$t('pages.awards.search_placeholder_v2')"
-            :aria-label="$t('pages.awards.search_placeholder')"
-            class="h-full text-sm"
-          />
-          <InputGroupAddon v-if="search" align="inline-end" class="pr-2">
-            <button
-              type="button"
-              class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              :aria-label="$t('pages.awards.clear_search')"
-              @click="search = ''"
-            >
-              <X class="size-3.5" />
-            </button>
-          </InputGroupAddon>
-        </InputGroup>
+        <AdminSearch
+          v-model="search"
+          shortcut
+          :placeholder="$t('pages.awards.search_placeholder')"
+        />
 
         <div class="max-w-full overflow-x-auto [scrollbar-width:none]">
           <AnimatedFilters v-model="kind" square :options="kindOptions" />
@@ -137,29 +129,8 @@ watch(
             :title="$t('pages.awards.no_matches_title')"
             :description="$t('pages.awards.no_matches')"
           >
-            <Button
-              v-if="hasFacets"
-              variant="outline"
-              size="sm"
-              @click="clearFacets"
-            >
-              {{ $t("pages.awards.clear_filters") }}
-            </Button>
-            <Button
-              v-if="kind !== 'all'"
-              variant="outline"
-              size="sm"
-              @click="kind = 'all'"
-            >
-              {{ $t("pages.awards.show_all_kinds") }}
-            </Button>
-            <Button
-              v-if="search"
-              variant="ghost"
-              size="sm"
-              @click="search = ''"
-            >
-              {{ $t("pages.awards.clear_search") }}
+            <Button variant="outline" size="sm" @click="clearFilters">
+              {{ $t("common.clear_filters") }}
             </Button>
           </SectionEmpty>
 
@@ -180,57 +151,38 @@ watch(
                   'sticky top-0 z-[3] rounded-t-lg border-b border-border bg-background px-3 py-2.5 text-[0.72rem] font-medium text-muted-foreground',
                 ]"
               >
-                <span role="columnheader" :aria-sort="ariaSort('name')">
-                  <button
-                    type="button"
-                    class="award-sort"
-                    :data-active="sort === 'name'"
-                    @click="sortBy('name')"
-                  >
-                    {{ $t("pages.awards.col_award") }}
-                    <span v-if="sort === 'name'" aria-hidden="true">{{
-                      sortReverse ? "▼" : "▲"
-                    }}</span>
-                  </button>
-                </span>
+                <SortHeader
+                  as="span"
+                  sort-key="name"
+                  :label="$t('pages.awards.col_award')"
+                  :active="sort"
+                  :dir="dir"
+                  @sort="sortBy"
+                />
                 <span role="columnheader" class="max-md:hidden">{{
                   $t("pages.awards.facet_belongs_to")
                 }}</span>
                 <span role="columnheader">{{ $t("pages.awards.tier") }}</span>
-                <span
-                  role="columnheader"
+                <SortHeader
+                  as="span"
                   class="text-right"
-                  :aria-sort="ariaSort('holders')"
-                >
-                  <button
-                    type="button"
-                    class="award-sort"
-                    :data-active="sort === 'holders'"
-                    @click="sortBy('holders')"
-                  >
-                    <span v-if="sort === 'holders'" aria-hidden="true">{{
-                      sortReverse ? "▲" : "▼"
-                    }}</span>
-                    {{ $t("pages.awards.col_holders") }}
-                  </button>
-                </span>
-                <span
-                  role="columnheader"
+                  align="end"
+                  sort-key="holders"
+                  :label="$t('pages.awards.col_holders')"
+                  :active="sort"
+                  :dir="dir"
+                  @sort="sortBy"
+                />
+                <SortHeader
+                  as="span"
                   class="text-right max-md:hidden"
-                  :aria-sort="ariaSort('last')"
-                >
-                  <button
-                    type="button"
-                    class="award-sort"
-                    :data-active="sort === 'last'"
-                    @click="sortBy('last')"
-                  >
-                    <span v-if="sort === 'last'" aria-hidden="true">{{
-                      sortReverse ? "▲" : "▼"
-                    }}</span>
-                    {{ $t("pages.awards.sort_last_granted") }}
-                  </button>
-                </span>
+                  align="end"
+                  sort-key="last"
+                  :label="$t('pages.awards.sort_last_granted')"
+                  :active="sort"
+                  :dir="dir"
+                  @sort="sortBy"
+                />
                 <span role="columnheader">
                   <span class="sr-only">{{ $t("common.actions_label") }}</span>
                 </span>
@@ -257,6 +209,7 @@ watch(
                 <AwardLedgerRow
                   v-for="(award, index) in pagedAwards"
                   :key="`${epoch}:${award.id}`"
+                  v-bind="ledgerKeys.rowProps(award.id)"
                   :award="award"
                   :query="search"
                   :can-manage="canManage"
@@ -360,6 +313,11 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { awardLedgerFields } from "~/graphql/awardLedgerFields";
 import { TIER_PALETTES } from "~/utilities/awardSeed";
 import { toast } from "@/components/ui/toast";
+import { nextSort, type SortDir } from "~/components/admin/sort";
+import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
 import {
   facetHits,
   matchesFacets,
@@ -367,9 +325,15 @@ import {
   type FacetSelection,
 } from "~/components/admin/facets";
 import {
+  AWARD_OWNER_VALUES,
   AWARD_PAGE_SIZE,
+  AWARD_SORT_DIRS,
+  AWARD_STATUS_VALUES,
   AWARD_TIERS,
   awardFacetValues,
+  awardViewDefaults,
+  awardViewValidators,
+  emptyAwardFacets,
   awardOwner,
   holderCount,
   matchesKind,
@@ -380,27 +344,29 @@ import {
   type AwardSort,
 } from "~/components/award/awardLedger";
 
-const OWNER_VALUES = ["global", "tournament", "event", "league", "season"];
-const STATUS_VALUES = ["recent", "never", "open", "finished"];
-const emptyFacets = (): FacetSelection => ({ owner: [], tier: [], status: [] });
-
 export default {
   data() {
+    // The ledger opens the way it was left: search, kind, sort and facets.
+    const view = readRememberedView(
+      "awards",
+      awardViewDefaults(),
+      awardViewValidators,
+    );
     return {
       awards: [] as any[],
       loadingAwards: true,
-      search: "",
-      kind: "all" as string,
-      sort: "last" as string,
-      sortReverse: false,
-      facets: emptyFacets(),
+      search: view.search,
+      kind: view.kind as string,
+      sort: view.sort as AwardSort,
+      dir: view.dir as SortDir,
+      facets: view.facets as FacetSelection,
       // What the table shows lags the controls by the 110ms the rows take to
       // fade out, so the old set leaves before the new one rises in.
       applied: {
-        kind: "all" as AwardKind,
-        sort: "last" as AwardSort,
-        sortReverse: false,
-        facets: emptyFacets(),
+        kind: view.kind,
+        sort: view.sort,
+        dir: view.dir,
+        facets: JSON.parse(JSON.stringify(view.facets)) as FacetSelection,
       },
       rowsFading: false,
       fadeTimer: null as ReturnType<typeof setTimeout> | null,
@@ -447,6 +413,19 @@ export default {
       (this as any).limit = AWARD_PAGE_SIZE;
       (this as any).animateRows = false;
     },
+    viewSignature() {
+      saveRememberedView(
+        "awards",
+        {
+          search: this.search,
+          kind: this.kind as AwardKind,
+          sort: this.sort,
+          dir: this.dir,
+          facets: this.facets as any,
+        },
+        awardViewDefaults(),
+      );
+    },
   },
   computed: {
     canManage(): boolean {
@@ -463,17 +442,10 @@ export default {
       ];
     },
     filterSignature(): string {
-      return JSON.stringify([
-        this.kind,
-        this.sort,
-        this.sortReverse,
-        this.facets,
-      ]);
+      return JSON.stringify([this.kind, this.sort, this.dir, this.facets]);
     },
-    hasFacets(): boolean {
-      return Object.values(this.facets as FacetSelection).some(
-        (values) => values.length > 0,
-      );
+    viewSignature(): string {
+      return JSON.stringify([this.filterSignature, this.search]);
     },
     // The owner's name is searchable too ("Frostbite" finds its awards).
     ownerLabels(): Map<string, string> {
@@ -512,7 +484,7 @@ export default {
         {
           key: "owner",
           label: String(this.$t("pages.awards.facet_belongs_to")),
-          options: OWNER_VALUES.map((value) =>
+          options: AWARD_OWNER_VALUES.map((value) =>
             option(
               "owner",
               value,
@@ -535,7 +507,7 @@ export default {
         {
           key: "status",
           label: String(this.$t("common.status")),
-          options: STATUS_VALUES.map((value) =>
+          options: AWARD_STATUS_VALUES.map((value) =>
             option(
               "status",
               value,
@@ -547,7 +519,7 @@ export default {
     },
     visibleAwards(): any[] {
       const now = Date.now();
-      const { kind, sort, sortReverse, facets } = this.applied;
+      const { kind, sort, dir, facets } = this.applied;
       return sortAwards(
         (this.searched as any[]).filter(
           (award) =>
@@ -557,7 +529,7 @@ export default {
             ),
         ),
         sort,
-        sortReverse,
+        dir,
       );
     },
     pagedAwards(): any[] {
@@ -574,25 +546,20 @@ export default {
     },
   },
   methods: {
-    sortBy(key: AwardSort) {
-      if (this.sort === key) {
-        this.sortReverse = !this.sortReverse;
-        return;
-      }
-      this.sort = key;
-      this.sortReverse = false;
-    },
-    ariaSort(key: AwardSort) {
-      if (this.sort !== key) return "none";
-      // Name sorts A–Z first; holders and last granted sort largest first.
-      const ascending = (key === "name") !== this.sortReverse;
-      return ascending ? "ascending" : "descending";
+    sortBy(key: string) {
+      const next = nextSort(
+        { key: this.sort, dir: this.dir },
+        key as AwardSort,
+        AWARD_SORT_DIRS,
+      );
+      this.sort = next.key;
+      this.dir = next.dir;
     },
     applyFilters() {
       const next = {
         kind: this.kind as AwardKind,
         sort: this.sort as AwardSort,
-        sortReverse: this.sortReverse as boolean,
+        dir: this.dir as SortDir,
         facets: JSON.parse(JSON.stringify(this.facets)) as FacetSelection,
       };
       const reduced = window.matchMedia?.(
@@ -620,8 +587,10 @@ export default {
       this.animateRows = true;
       this.limit += AWARD_PAGE_SIZE;
     },
-    clearFacets() {
-      this.facets = emptyFacets();
+    clearFilters() {
+      this.search = "";
+      this.kind = "all";
+      this.facets = emptyAwardFacets();
     },
     openCreate() {
       this.editAward = null;
@@ -638,6 +607,10 @@ export default {
     openDetail(award: any) {
       this.detailId = award.id;
       this.detailOpen = true;
+    },
+    openDetailById(id: string) {
+      const award = this.awards.find((row: any) => row.id === id);
+      if (award) this.openDetail(award);
     },
     async removeAward() {
       const award = this.deleteTarget;
@@ -672,20 +645,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.award-sort {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  transition: color 150ms ease;
-}
-.award-sort:hover,
-.award-sort[data-active="true"] {
-  color: hsl(var(--foreground));
-}
-.award-sort > span {
-  font-size: 10px;
-  color: hsl(var(--tac-amber));
-}
-</style>

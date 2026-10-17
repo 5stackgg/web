@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU 使用率",
-      "memory_usage": "内存使用率",
       "services": "服务",
       "service": "服务",
-      "network": "网络",
       "search_services_placeholder": "搜索服务或节点...",
       "filter_by_node": "按节点筛选",
       "no_services_found": "没有服务符合您当前的筛选条件。",
@@ -1285,7 +1282,6 @@
       "search_placeholder": "搜索服务或节点",
       "scope_all": "所有服务",
       "scope_attention": "需要关注",
-      "live": "实时 · {time}",
       "live_hint": "每个节点大约每 30 秒上报一次。本页保留最近 90 分钟。",
       "filter_group": "游戏服务器节点",
       "only_online": "仅在线节点",
@@ -1416,7 +1412,11 @@
       "warnings": "警告",
       "warnings_like": "类似 {text} 的警告",
       "warnings_loaded": "已加载时段内有 {count} 条警告 | 已加载时段内有 {count} 条警告",
-      "warnings_word": "警告"
+      "warnings_word": "警告",
+      "status_ok": "最近 5 分钟没有警告或错误",
+      "status_warn": "最近 5 分钟有警告",
+      "status_bad": "最近 5 分钟有错误",
+      "status_off": "暂无输出"
     },
     "system_telemetry": {
       "title": "集群遥测",
@@ -1648,9 +1648,9 @@
         "modes_unranked_caption": "在选人大厅中隐藏的模式"
       },
       "jump_to": "跳转到",
-      "updated_just_now": "刚刚更新 · 每分钟刷新",
-      "updated_ago": "{seconds} 秒前更新 · 每分钟刷新",
-      "features_title": "功能"
+      "features_title": "功能",
+      "not_reported_title": "尚未上报",
+      "no_activity_hint": "随着面板上报其托管的比赛，图表会逐渐填满。"
     },
     "tournaments": {
       "title": "赛事",
@@ -3653,7 +3653,7 @@
         "utility": "道具点位"
       },
       "ledger": {
-        "search": "搜索片段、战队、选手、点位",
+        "search": "搜索片段和点位",
         "view": {
           "flight": "进行中",
           "failed": "失败",
@@ -3762,7 +3762,8 @@
           "lineups_sub": "渲染版本 v{version}",
           "render_one": "先渲染一个",
           "render_one_waiting": "正在等待该渲染完成。报告当前版本后，即可使用“重新渲染过时项”。"
-        }
+        },
+        "updated_ago": "{since}前更新"
       }
     },
     "news": {
@@ -3993,10 +3994,8 @@
         "rebuilding_now": "{season} 正在重建。同一时间只能运行一个重建。"
       },
       "danger": {
-        "end_title": "立即结束 {season}",
         "end_description": "今天结束该赛季，并按最终排名发放赛季奖项。在下个赛季开始前，比赛不计入任何赛季。",
         "end_button": "结束赛季",
-        "delete_title": "删除 {season}",
         "delete_description": "其比赛将不属于任何赛季。ELO 历史会保留；按赛季统计的数据会被清除。",
         "delete_button": "删除赛季",
         "end_confirm_title": "立即结束 {season}？",
@@ -4787,7 +4786,6 @@
         "node": "节点",
         "load": "负载",
         "vram": "VRAM",
-        "vram_help": "显卡已用显存",
         "workloads": "工作负载"
       },
       "kind": {
@@ -4820,8 +4818,6 @@
       "sheet": {
         "now": "当前",
         "shader_cache": "着色器缓存",
-        "video": "视频设置",
-        "video_hint": "当此节点承载直播、录像回放或高光渲染时生效。",
         "idle_ready": "可以承担直播、录像回放和渲染。",
         "unavailable": "在启用并上线之前不接收 GPU 任务。",
         "no_metrics": "节点被禁用、离线或设置中时没有 GPU 指标。",
@@ -4841,6 +4837,33 @@
         "render_body": "它会停止并释放 GPU。",
         "render_body_pct": "它会在 {pct}% 处停止并释放 GPU。",
         "render_action": "停止渲染"
+      },
+      "toggle_gpu_only_help": "只接 GPU 任务，不运行比赛服务器。开启后会清除其区域和端口。",
+      "plate": {
+        "temperature": "温度",
+        "power": "功耗",
+        "vram_of": "{used} / {total} GB",
+        "hot": "温度偏高，超过 {limit} °C",
+        "too_hot": "温度过高，超过 {limit} °C",
+        "no_reading": "暂无实时读数",
+        "cards": "{count} 张卡 | {count} 张卡"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "开启直播",
+          "demos": "开启 Demo 回放",
+          "rendering": "开启渲染"
+        },
+        "turn_off": {
+          "streaming": "关闭直播",
+          "demos": "关闭 Demo 回放",
+          "rendering": "关闭渲染"
+        },
+        "confirm_body": {
+          "streaming": "正在进行的直播会继续。重新开启前，这块 GPU 不再接收新的直播。",
+          "demos": "正在进行的回放会继续。重新开启前，这块 GPU 不再接收新的 Demo。",
+          "rendering": "正在进行的渲染会继续。重新开启前，这块 GPU 不再接收新的渲染。"
+        }
       }
     },
     "game_server_nodes": {
@@ -5017,9 +5040,6 @@
         "load": "负载"
       },
       "builds": {
-        "title": "CS2 版本历史",
-        "description": "每个 CS2 版本的游戏数据验证和地图资源构建，以及各版本相对于上一版本的变更。",
-        "back": "游戏服务器节点",
         "builds": "版本",
         "no_builds": "尚无任何版本经过验证或构建。",
         "current": "当前",
@@ -5029,7 +5049,8 @@
           "detected": "更新发布",
           "gamedata": "游戏数据",
           "map_assets": "地图资源"
-        }
+        },
+        "empty_title": "暂无版本"
       },
       "max_label": "最大：",
       "ports_label": "端口：",
@@ -5066,7 +5087,6 @@
         "game_server": "游戏服务器",
         "node_id": "节点 ID",
         "addresses": "局域网 / 公网 IP",
-        "mode": "模式",
         "available_value": "{free} / {total}",
         "control": "控制",
         "update_log": "CS2 更新日志"
@@ -5121,8 +5141,7 @@
         },
         "load": {
           "mem": "内存",
-          "disk": "磁盘",
-          "gpu": "GPU"
+          "disk": "磁盘"
         },
         "disk_tip": "磁盘：已用 {used} / {total}，可用 {free}",
         "actions_for": "{node} 的操作",
@@ -5245,7 +5264,8 @@
           "in_out": "入 {in} · 出 {out}",
           "caption": "最近一小时，每 30 秒一个采样。",
           "starts": "历史记录从 {time} 开始。",
-          "gaps": "线条中断处为离线时间。"
+          "gaps": "线条中断处为离线时间。",
+          "cadence": "每 {seconds} 秒一个采样。"
         },
         "disk": {
           "last_report": "磁盘 · 最后报告",
@@ -5263,10 +5283,7 @@
         },
         "gpu": {
           "video": "视频设置",
-          "custom": "自定义",
-          "match_server": "比赛服务器",
-          "use_as_match": "用作比赛服务器",
-          "use_as_gpu": "仅用作 GPU"
+          "custom": "自定义"
         },
         "node": {
           "accepting": "接受比赛",
@@ -5293,7 +5310,9 @@
           "from_node": "来自节点的 {count} 条警告 | 来自节点的 {count} 条警告",
           "docs": "文档",
           "details": "详情"
-        }
+        },
+        "window_minutes": "最近 {count} 分钟 | 最近 {count} 分钟",
+        "window_hours": "最近 {count} 小时 | 最近 {count} 小时"
       }
     },
     "dedicated_servers": {
@@ -5302,9 +5321,7 @@
       "docs_link": "查看设置指南",
       "no_servers_title": "无专用服务器",
       "no_servers": "未找到专用服务器。",
-      "create": {
-        "title": "创建专用服务器"
-      },
+      "create": {},
       "table": {
         "connection_details": "连接详情",
         "label": "标签",
@@ -5315,7 +5332,6 @@
       },
       "detail": {
         "enabled": "已启用",
-        "eyebrow": "专用服务器",
         "tabs": {
           "overview": "概览",
           "players": "玩家",
@@ -5325,14 +5341,9 @@
         },
         "status_label": {
           "connected": "已连接",
-          "disconnected": "已断开",
           "hibernating": "休眠中",
-          "no_rcon": "无 RCON",
-          "version_mismatch": "版本不匹配"
+          "no_rcon": "无 RCON"
         },
-        "server_plugin_config": "服务器插件配置",
-        "hide_config": "隐藏配置",
-        "show_config": "显示配置",
         "config_location": "此配置应放置在：",
         "files": "文件",
         "player_management": "玩家管理",
@@ -5356,13 +5367,7 @@
           "disconnected": "服务器已断开",
           "hibernating": "服务器处于休眠状态，直到有玩家连接",
           "no_rcon": "服务器已连接但 RCON 不可用",
-          "connected": "服务器已连接且 RCON 可用",
-          "plugin_version_mismatch": "插件版本不是最新"
-        },
-        "delete_confirm": {
-          "title": "您确定吗？",
-          "description": "此操作无法撤销。这将永久删除您的服务器并从我们的服务器中移除相关数据。",
-          "continue": "继续"
+          "connected": "服务器已连接且 RCON 可用"
         },
         "save_restart": "保存并重启",
         "map_rotation": {
@@ -5481,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "迁移到其他节点",
-          "title": "迁移到其他节点",
           "description": "服务器会在 {node} 上停止，其文件将复制到新节点，然后在新节点上重新启动。",
           "source_offline": "{node} 已离线，因此无法复制服务器文件。服务器将以默认设置在新节点上启动，留在 {node} 上的内容将保留在原处。",
           "without_files": "迁移时不带服务器文件",
@@ -5490,7 +5493,6 @@
           "no_nodes": "没有其他游戏服务器节点",
           "free_slots": "空闲槽位：{count}",
           "free_disk": "可用 {size}",
-          "confirm": "迁移服务器",
           "started": "正在将 {server} 迁移到 {node}",
           "warning": {
             "address": "服务器在新节点上会获得新的地址。",
@@ -5506,7 +5508,9 @@
             "updating": "正在更新 CS2",
             "no_build": "未安装 {game}",
             "no_slot": "没有空闲的服务器槽位"
-          }
+          },
+          "dialog_title": "迁移到其他节点",
+          "confirm_move": "迁移服务器"
         },
         "migration": {
           "title": {
@@ -5527,14 +5531,17 @@
           "progress": "{done} / {total} ({percent}%)",
           "without_files": "不含文件",
           "restored": "服务器已回到 {node}。",
-          "cancel": "取消迁移",
           "cancel_requested": "正在取消迁移",
           "dismiss": "关闭",
-          "locked": "服务器正在迁移到另一个节点。迁移完成后请重试。"
-        }
+          "locked": "服务器正在迁移到另一个节点。迁移完成后请重试。",
+          "cancel_move": "取消迁移"
+        },
+        "plugin_tag": "插件 v{version}",
+        "plugin_config": "服务器插件配置",
+        "show_plugin_config": "显示配置",
+        "hide_plugin_config": "隐藏配置"
       },
       "clear_all": "清除搜索和筛选",
-      "clear_search": "清除搜索",
       "col_hosting": "托管",
       "col_players": "玩家",
       "col_plugin": "插件",
@@ -5583,7 +5590,12 @@
       "status_offline_since": "自 {time} 起离线",
       "status_playing": "{count} 人在玩",
       "status_plugin_outdated": "插件过旧",
-      "tip_disabled": "不用于比赛或公开游戏。"
+      "tip_disabled": "不用于比赛或公开游戏。",
+      "join_server": "加入服务器",
+      "new_server": "新服务器",
+      "create_on_node": "运行于 {node}",
+      "create_at_host": "运行于 {address}",
+      "create_pick_place": "选择运行位置"
     },
     "public_servers": {
       "title": "公共服务器",
@@ -6088,8 +6100,6 @@
         "overview": "概览",
         "overview_hint": "PostgreSQL 数据库 · 自上次统计重置以来的计数",
         "pause_refreshing": "暂停刷新",
-        "paused_just_now": "已暂停 · 刚刚更新",
-        "paused_seconds_ago": "已暂停 · {seconds}s 前更新",
         "pct_of_table": "表占比 %",
         "pid_actions": "pid {pid} 的操作",
         "query_details": "查询详情",
@@ -6099,7 +6109,6 @@
         "reclaimable": "可回收",
         "reclaimable_tip": "根据死行估算。VACUUM 可使这部分空间被重新利用；只有 VACUUM FULL 或 pg_repack 才能将其归还给磁盘。",
         "refresh_every": "刷新间隔",
-        "refresh_now": "立即刷新",
         "resume_refreshing": "恢复刷新",
         "rollbacks_count": "{count} 次回滚",
         "running_now": "正在运行",
@@ -6152,8 +6161,6 @@
         "tuples_read": "读取行数",
         "tuples_returned": "返回行数",
         "tuples_updated": "更新行数",
-        "updated_just_now": "刚刚更新",
-        "updated_seconds_ago": "{seconds}s 前更新",
         "updates": "更新",
         "view_all_slow": "查看所有慢查询",
         "wait_event": "等待事件",
@@ -6401,7 +6408,6 @@
         "empty_installed_title": "尚未安装任何内容",
         "empty_installed_hint": "在“全部”中安装插件，每个节点都会获取它。",
         "empty_title": "没有匹配的插件",
-        "show_all": "显示所有插件",
         "installing_toast": "正在所有在线节点上安装 {name}",
         "retry_toast": "正在失败的节点上重试 {name}",
         "update_toast": "节点正在安装 {version}；它会保持固定在该版本。"
@@ -6440,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "搜索奖项",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -6466,7 +6471,6 @@
       "automation_tournament": "锦标赛自动颁发",
       "builtin_cant_delete": "内置奖项无法删除",
       "builtin_note": "内置奖项。由锦标赛和赛季自动颁发，可以编辑但无法删除。",
-      "clear_search": "清除搜索",
       "col_award": "奖项",
       "col_earned_at": "获得于",
       "col_holder": "获得者",
@@ -6504,8 +6508,6 @@
       "owner_upcoming": "即将开始",
       "repeatable": "可重复颁发",
       "revoke_from": "从 {name} 收回",
-      "search_placeholder_v2": "搜索奖项、锦标赛、活动",
-      "show_all_kinds": "显示所有类型",
       "show_more": "显示更多",
       "sort_last_granted": "最近颁发",
       "status": {
@@ -6566,13 +6568,7 @@
         "cameraTalkback": "摄像头回传对讲"
       },
       "resources": "资源使用情况",
-      "cpu": "CPU",
-      "memory": "内存",
-      "no_resources": "还没有媒体服务器的 Pod 指标，可能是集群的 metrics server 没有采集它。",
       "legend": "一个路径就是一个具名的流位置，可能是某个人的麦克风，或一台摄像头。「推流中」统计的是此刻真正在发送媒体的路径；从有人加入到画面真正上线之间，路径可能处于空闲状态。会话是 WebRTC 连接，每一位观众都算一个，因此增长得比其他数字快。",
-      "status_reachable_now": "可连接 · 刚刚更新 · 每 10 秒查询",
-      "status_reachable_ago": "可连接 · {seconds} 秒前更新 · 每 10 秒查询",
-      "status_unreachable": "自 {time} 起无法连接 · 每 10 秒重试",
       "logs_button": "mediamtx 日志",
       "tip_publishing": "此刻真正在发送媒体的路径。从有人加入到其画面或声音开始传输之前，路径可能处于空闲状态。",
       "tip_paths": "路径是一个命名的推流位置——一个人的麦克风，或一台摄像头。",
@@ -6589,7 +6585,12 @@
       "share_received": "接收量占比",
       "not_in_use": "当前未使用：{kinds}",
       "resources_hint": "mediamtx Pod · 每 30 秒查询",
-      "cores_now": "使用中 {cores} 核"
+      "cores_now": "使用中 {cores} 核",
+      "status_reachable": "可连接",
+      "status_unreachable_since": "自 {time} 起无法连接",
+      "kinds_unknown_title": "各功能数字未知",
+      "no_resources_title": "暂无 Pod 指标",
+      "no_resources_hint": "集群的指标服务器可能没有采集 mediamtx Pod。"
     },
     "utility": {
       "eyebrow": "道具库",
@@ -7851,6 +7852,99 @@
         "created_off": "公告已创建，在你开启前保持关闭。",
         "expired": "“{name}”已过期，已从横幅中移除"
       }
+    },
+    "admin_home": {
+      "title": "概览",
+      "need_you": "{count} 项需要你处理 | {count} 项需要你处理",
+      "all_clear": "一切正常",
+      "all_clear_line": "目前没有需要你处理的事项。",
+      "live_hint": "大多数区域会在变化时立即更新。指标每 30 秒刷新一次，数据库每分钟刷新一次。",
+      "everything_else": "其他",
+      "open": "打开",
+      "open_area": "打开{area}",
+      "add_steam_account": "添加 Steam 账号",
+      "more": "另外 {count} 个 | 另外 {count} 个",
+      "card": {
+        "no_problems": "没有问题",
+        "checking": "正在检查…",
+        "none": "暂无",
+        "no_online": "没有在线节点",
+        "season_starts": "第 {number} 赛季将在 {count} 天后开始 | 第 {number} 赛季将在 {count} 天后开始",
+        "of_online": "/ {total} 在线",
+        "servers_free": "{capacity} 台服务器中 {free} 台空闲",
+        "of_connected": "/ {total} 已连接",
+        "offline": "{count} 个离线 | {count} 个离线",
+        "of_free": "/ {total} 空闲",
+        "accounts_free": "{total} 个 Steam 账号中 {free} 个空闲",
+        "in_flight": "进行中",
+        "previews_current": "{total} 个预览中 {current} 个为最新",
+        "of_within": "/ {total} 在限制内",
+        "slow_statements": "条慢查询 | 条慢查询",
+        "threshold": "超过 {threshold} 视为慢",
+        "banners_showing": "个横幅显示中 | 个横幅显示中",
+        "installed": "个已安装",
+        "updates": "{count} 个可用更新 | {count} 个可用更新",
+        "up_to_date": "全部为最新",
+        "all_set_up": "全部已设置"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} 个节点离线 | {count} 个节点离线",
+          "cs2_failed": "{count} 个节点的 CS2 更新失败 | {count} 个节点的 CS2 更新失败",
+          "overprovisioned": "{count} 个节点运行的服务器超出其 CPU 的承载能力 | {count} 个节点运行的服务器超出其 CPU 的承载能力",
+          "plugin_unsupported": "{count} 个节点固定的插件不支持其 CS2 版本 | {count} 个节点固定的插件不支持其 CS2 版本",
+          "disk_full": "{count} 个节点的磁盘快满了 | {count} 个节点的磁盘快满了",
+          "cpu_governor": "{count} 个节点未使用 performance CPU 调速器 | {count} 个节点未使用 performance CPU 调速器",
+          "not_ready_region": "{count} 个节点无法承载比赛：没有区域 | {count} 个节点无法承载比赛：没有区域",
+          "not_ready_ports": "{count} 个节点无法承载比赛：没有端口范围 | {count} 个节点无法承载比赛：没有端口范围",
+          "not_ready_cs2": "{count} 个节点无法承载比赛：未安装 CS2 | {count} 个节点无法承载比赛：未安装 CS2",
+          "cs2_behind": "{count} 个节点有可用的 CS2 更新 | {count} 个节点有可用的 CS2 更新",
+          "disk_filling": "{count} 个节点的磁盘正在变满 | {count} 个节点的磁盘正在变满",
+          "cpu_slow": "{count} 个节点的 CPU 低于 3 GHz | {count} 个节点的 CPU 低于 3 GHz",
+          "cpu_warning": "{count} 个节点报告了 CPU 警告 | {count} 个节点报告了 CPU 警告"
+        },
+        "gpus": {
+          "pool_empty": "没有 Steam 账号：GPU 无法渲染、播放录像或直播",
+          "pool_short": "Steam 账号池距每个 GPU 一个还差 {count} 个账号 | Steam 账号池距每个 GPU 一个还差 {count} 个账号",
+          "offline": "{count} 个 GPU 离线 | {count} 个 GPU 离线",
+          "bake_failed": "{count} 个 GPU 的着色器烘焙失败 | {count} 个 GPU 的着色器烘焙失败",
+          "renders_stuck": "{count} 个渲染任务正在等待，但没有 GPU 接收渲染 | {count} 个渲染任务正在等待，但没有 GPU 接收渲染"
+        },
+        "metrics": {
+          "cpu": "{count} 个节点的 CPU 超过 {threshold}% | {count} 个节点的 CPU 超过 {threshold}%",
+          "memory": "{count} 个节点的内存超过 {threshold}% | {count} 个节点的内存超过 {threshold}%",
+          "disk": "{count} 个节点有磁盘超过 {threshold}% | {count} 个节点有磁盘超过 {threshold}%",
+          "gpu_util": "{count} 个 GPU 已连续 5 分钟占用超过 {threshold}% | {count} 个 GPU 已连续 5 分钟占用超过 {threshold}%",
+          "gpu_vram": "{count} 个 GPU 的显存超过 {threshold}% | {count} 个 GPU 的显存超过 {threshold}%",
+          "gpu_temp": "{count} 个 GPU 温度达到 {threshold} °C 或更高 | {count} 个 GPU 温度达到 {threshold} °C 或更高"
+        },
+        "seasons": {
+          "rebuild": "第 {number} 赛季需要重建 ELO"
+        },
+        "renders": {
+          "failed": "过去一天有 {count} 个渲染失败 | 过去一天有 {count} 个渲染失败",
+          "behind": "渲染管线落后了：当前录制 v{pipeline}，API 期望 v{version}",
+          "missing": "{count} 个道具点位没有预览 | {count} 个道具点位没有预览",
+          "outdated": "{count} 个道具点位预览已过时 | {count} 个道具点位预览已过时"
+        },
+        "database": {
+          "locks": "{count} 个会话正在等待锁 | {count} 个会话正在等待锁",
+          "running": "{count} 个查询已运行超过 {threshold} | {count} 个查询已运行超过 {threshold}",
+          "slow": "{count} 条语句平均耗时超过 {threshold} | {count} 条语句平均耗时超过 {threshold}"
+        },
+        "plugins": {
+          "failed": "{count} 个插件部署失败 | {count} 个插件部署失败",
+          "update": "{count} 个插件有可用更新 | {count} 个插件有可用更新",
+          "manual": "在磁盘上发现 {count} 个未在此管理的插件 | 在磁盘上发现 {count} 个未在此管理的插件"
+        },
+        "settings": {
+          "not_set_up": "{count} 个设置部分尚未设置 | {count} 个设置部分尚未设置"
+        },
+        "servers": {
+          "no_rcon": "{count} 台服务器未响应 RCON | {count} 台服务器未响应 RCON",
+          "plugin_outdated": "{count} 台服务器运行的插件已过时 | {count} 台服务器运行的插件已过时"
+        }
+      }
     }
   },
   "layouts": {
@@ -7995,7 +8089,8 @@
         "seasons": "赛季",
         "stream_deck": "直播控制台",
         "awards": "Awards",
-        "control_room": "控制室"
+        "control_room": "控制室",
+        "overview": "概览"
       },
       "modes": {
         "play": "游戏",
@@ -8389,7 +8484,6 @@
     "none": "无可用玩家"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "这些文件在服务器启动时挂载到 `csgo` 目录。",
     "any": "任何",
     "remove": "移除",
     "edit": "编辑",
@@ -8454,8 +8548,6 @@
     "exit_fullscreen": "退出全屏",
     "download": "下载",
     "upload": "上传",
-    "sort_ascending": "升序排序",
-    "sort_descending": "降序排序",
     "see_all": "查看全部",
     "standby_no_activity": "待命 · 无活动",
     "players": "玩家",
@@ -8519,7 +8611,8 @@
     "empty_filtered": {
       "title": "没有符合这些筛选条件的内容",
       "description": "请尝试清除筛选条件或扩大搜索范围。"
-    }
+    },
+    "clear_filters": "清除筛选"
   },
   "global_search": {
     "placeholder": "搜索玩家、页面和设置",
@@ -8547,8 +8640,6 @@
   },
   "file_manager": {
     "location": "位置",
-    "dedicated_server_files": "专用服务器文件",
-    "game_server_node_files": "游戏服务器节点文件",
     "loading_server_info": "加载服务器信息...",
     "create_directory": {
       "title": "创建新目录",
@@ -11614,10 +11705,6 @@
     "remove_node_confirm_title": "移除此节点？",
     "remove_node_confirm_description": "该节点及其上的所有专用服务器都将从 5Stack 中移除。此操作无法撤销。",
     "remove_ports": "移除端口",
-    "mode": {
-      "use_as_match": "用作比赛服务器",
-      "use_as_gpu_only": "仅用作 GPU"
-    },
     "show_update_logs": "显示更新日志",
     "update_failed": "更新失败",
     "update_failed_description": "上次更新失败。更新日志保留 24 小时。",
@@ -11889,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "使用量",
-    "mount_os": "操作系统",
-    "mount_demos": "Demo",
-    "total_series": "{label} 合计",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} 平均"
   },
@@ -11925,7 +12008,6 @@
       "move_node": "迁移服务器",
       "valve_preset_group": "Valve 预设",
       "custom_mode_group": "自定义模式",
-      "edit_mode": "编辑模式",
       "cs2_only": "仅限 CS2",
       "needs_node": "需要节点",
       "csgo_valve_only": "CS:GO 服务器只能运行 Valve 预设。排位、练习和自定义模式需要 CS2。",
@@ -11949,9 +12031,9 @@
       "generate": "生成",
       "port": "游戏端口",
       "tv_port": "TV 端口",
-      "create": "创建服务器",
       "max_players": "最大玩家数",
-      "max_players_description": "可以连接到服务器的最大玩家数"
+      "max_players_description": "可以连接到服务器的最大玩家数",
+      "edit_mode_link": "编辑模式"
     },
     "rcon": {
       "console_output": "控制台输出",
@@ -13782,7 +13864,6 @@
       "unique_24h": "独立玩家 · 24 小时",
       "unique_7d": "独立玩家 · 7 天",
       "sessions_7d": "会话 · 7 天",
-      "time_played_7d": "游戏时长 · 7 天",
       "avg_session": "平均会话",
       "players": "名玩家",
       "joins": "次加入",
@@ -13794,7 +13875,9 @@
       "empty": "此时间段内没有人在这里玩过。",
       "no_matches": "没有符合搜索条件的玩家。",
       "showing": "显示 {shown} / {total}",
-      "load_more": "加载更多"
+      "last_seen": "最后在线",
+      "time_played_col": "游戏时长 · 7 天",
+      "show_more": "加载更多"
     },
     "player_tab": {
       "moderator_note": "版主还能看到准确时间、会话、使用过的名称和 IP。",
@@ -13833,12 +13916,8 @@
       "offline": "离线",
       "map": "地图",
       "community_server": "社区服务器",
-      "online_now": "当前在线",
-      "players_this_week": "本周玩家",
       "different_players": "名不同玩家",
-      "hours_this_week": "本周时长",
       "played_by_everyone": "所有人合计",
-      "all_time_players": "历史玩家",
       "since": "自 {date} 起",
       "activity": "活跃度 · 过去 7 天",
       "activity_description": "每天所有人在这里游戏的总时长。不显示任何人的个人游戏时间。",
@@ -13855,7 +13934,13 @@
       "day": "日期",
       "player_hours": "玩家时长",
       "not_found_title": "未找到服务器",
-      "not_found_description": "此服务器不存在或未公开。"
+      "not_found_description": "此服务器不存在或未公开。",
+      "tile": {
+        "online_now": "当前在线",
+        "players_this_week": "本周玩家",
+        "hours_this_week": "本周时长",
+        "all_time_players": "历史玩家"
+      }
     }
   },
   "quick_look": {
@@ -13923,6 +14008,32 @@
         "twitch_unavailable": "Twitch 没有响应。请稍后再试。",
         "unknown": "出了点问题。请重试。"
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "清除搜索"
+    },
+    "sort": {
+      "sorted_ascending": "已升序排列",
+      "sorted_descending": "已降序排列"
+    },
+    "live_stamp": {
+      "live_at": "实时 · {time}",
+      "updated_now": "刚刚更新",
+      "updated_now_after": "刚刚更新",
+      "updated_seconds": "{seconds} 秒前更新",
+      "updated_seconds_after": "{seconds} 秒前更新",
+      "updated_minutes": "{minutes} 分钟前更新",
+      "updated_minutes_after": "{minutes} 分钟前更新",
+      "paused": "已暂停",
+      "every_seconds": "每 {seconds} 秒刷新",
+      "every_minute": "每分钟刷新",
+      "every_minutes": "每 {minutes} 分钟刷新",
+      "refresh_now": "立即刷新"
+    },
+    "last_changed": {
+      "updated": "更新于 {time}"
     }
   }
 }

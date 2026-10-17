@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU-användning",
-      "memory_usage": "Minnesanvändning",
       "services": "Tjänster",
       "service": "Tjänst",
-      "network": "Nätverk",
       "search_services_placeholder": "Sök tjänster eller noder...",
       "filter_by_node": "Filtrera efter nod",
       "no_services_found": "Inga tjänster matchar dina aktuella filter.",
@@ -1285,7 +1282,6 @@
       "search_placeholder": "Sök tjänster eller noder",
       "scope_all": "Alla tjänster",
       "scope_attention": "Behöver åtgärd",
-      "live": "Live · {time}",
       "live_hint": "Varje nod rapporterar ungefär var 30:e sekund. Sidan sparar de senaste 90 minuterna.",
       "filter_group": "Spelservernoder",
       "only_online": "Endast noder online",
@@ -1416,7 +1412,11 @@
       "warnings": "Varningar",
       "warnings_like": "Varningar som {text}",
       "warnings_loaded": "{count} varning i det inlästa intervallet | {count} varningar i det inlästa intervallet",
-      "warnings_word": "varningar"
+      "warnings_word": "varningar",
+      "status_ok": "Inga varningar eller fel de senaste 5 minuterna",
+      "status_warn": "Varningar de senaste 5 minuterna",
+      "status_bad": "Fel de senaste 5 minuterna",
+      "status_off": "Ingen utdata än"
     },
     "system_telemetry": {
       "title": "Flottelemetri",
@@ -1648,9 +1648,9 @@
         "modes_unranked_caption": "lägen dolda i draft-lobbyer"
       },
       "jump_to": "Hoppa till",
-      "updated_just_now": "Uppdaterad nyss · uppdateras varje minut",
-      "updated_ago": "Uppdaterad för {seconds} s sedan · uppdateras varje minut",
-      "features_title": "Funktioner"
+      "features_title": "Funktioner",
+      "not_reported_title": "Inte rapporterat än",
+      "no_activity_hint": "Diagrammet fylls på i takt med att paneler rapporterar matcherna de kör."
     },
     "tournaments": {
       "title": "Turneringar",
@@ -3653,7 +3653,7 @@
         "utility": "Utility-uppställningar"
       },
       "ledger": {
-        "search": "Sök klipp, lag, spelare, uppställningar",
+        "search": "Sök klipp och uppställningar",
         "view": {
           "flight": "Pågår",
           "failed": "Misslyckade",
@@ -3762,7 +3762,8 @@
           "lineups_sub": "Renderingsversion v{version}",
           "render_one": "Rendera en först",
           "render_one_waiting": "Väntar på att den renderingen blir klar. När den rapporterar den aktuella versionen låses Rendera om föråldrade upp."
-        }
+        },
+        "updated_ago": "Uppdaterad för {since} sedan"
       }
     },
     "news": {
@@ -3993,10 +3994,8 @@
         "rebuilding_now": "{season} byggs om nu. Bara en ombyggnad körs åt gången."
       },
       "danger": {
-        "end_title": "Avsluta {season} nu",
         "end_description": "Stänger den i dag och delar ut säsongsutmärkelser efter sluttabellen. Tills nästa säsong börjar räknas matcher inte till någon säsong.",
         "end_button": "Avsluta säsong",
-        "delete_title": "Ta bort {season}",
         "delete_description": "Dess matcher hamnar utanför säsong. ELO-historiken behålls; statistik per säsong rensas.",
         "delete_button": "Ta bort säsong",
         "end_confirm_title": "Avsluta {season} nu?",
@@ -4787,7 +4786,6 @@
         "node": "Nod",
         "load": "Belastning",
         "vram": "VRAM",
-        "vram_help": "Videominne som används på kortet",
         "workloads": "Arbetslaster"
       },
       "kind": {
@@ -4820,8 +4818,6 @@
       "sheet": {
         "now": "Nu",
         "shader_cache": "Shader-cache",
-        "video": "Videoinställningar",
-        "video_hint": "Används när den här noden kör en livestream, en demouppspelning eller en höjdpunktsrendering.",
         "idle_ready": "Redo för livestreams, demouppspelning och renderingar.",
         "unavailable": "Tar inget GPU-arbete förrän den är aktiverad och online.",
         "no_metrics": "Inga GPU-mätvärden medan noden är avaktiverad, offline eller konfigureras.",
@@ -4841,6 +4837,33 @@
         "render_body": "Den stoppas och frigör GPU:n.",
         "render_body_pct": "Den stoppas vid {pct} % och frigör GPU:n.",
         "render_action": "Stoppa rendering"
+      },
+      "toggle_gpu_only_help": "Tar bara GPU-arbete, inga matchservrar. När det slås på rensas region och portar.",
+      "plate": {
+        "temperature": "Temperatur",
+        "power": "Effekt",
+        "vram_of": "{used} av {total} GB",
+        "hot": "Går varm, över {limit} °C",
+        "too_hot": "För varm, över {limit} °C",
+        "no_reading": "Ingen livemätning",
+        "cards": "{count} kort | {count} kort"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "Slå på livestreaming",
+          "demos": "Slå på demouppspelning",
+          "rendering": "Slå på rendering"
+        },
+        "turn_off": {
+          "streaming": "Stäng av livestreaming",
+          "demos": "Stäng av demouppspelning",
+          "rendering": "Stäng av rendering"
+        },
+        "confirm_body": {
+          "streaming": "Strömmen fortsätter. Den här GPU:n tar inga nya strömmar förrän det slås på igen.",
+          "demos": "Uppspelningen fortsätter. Den här GPU:n tar inga nya demos förrän det slås på igen.",
+          "rendering": "Renderingen fortsätter. Den här GPU:n tar inga nya renderingar förrän det slås på igen."
+        }
       }
     },
     "game_server_nodes": {
@@ -5017,9 +5040,6 @@
         "load": "Belastning"
       },
       "builds": {
-        "title": "CS2-buildhistorik",
-        "description": "Gamedata-validering och byggen av karttillgångar för varje CS2-build, och vad varje build ändrade jämfört med den föregående.",
-        "back": "Spelservernoder",
         "builds": "Builds",
         "no_builds": "Ingen build har validerats eller byggts än.",
         "current": "Aktuell",
@@ -5029,7 +5049,8 @@
           "detected": "Uppdatering släppt",
           "gamedata": "Gamedata",
           "map_assets": "Karttillgångar"
-        }
+        },
+        "empty_title": "Inga builds än"
       },
       "max_label": "Max:",
       "ports_label": "Portar:",
@@ -5066,7 +5087,6 @@
         "game_server": "Spelserver",
         "node_id": "Nod-ID",
         "addresses": "LAN / publik IP",
-        "mode": "Läge",
         "available_value": "{free} av {total}",
         "control": "Styrning",
         "update_log": "CS2-uppdateringslogg"
@@ -5121,8 +5141,7 @@
         },
         "load": {
           "mem": "Minne",
-          "disk": "Disk",
-          "gpu": "GPU"
+          "disk": "Disk"
         },
         "disk_tip": "Disk: {used} av {total} används, {free} ledigt",
         "actions_for": "Åtgärder för {node}",
@@ -5245,7 +5264,8 @@
           "in_out": "In {in} · Ut {out}",
           "caption": "Senaste timmen, ett mätvärde var 30:e sekund.",
           "starts": "Historiken börjar {time}.",
-          "gaps": "Avbrott i linjerna är tid offline."
+          "gaps": "Avbrott i linjerna är tid offline.",
+          "cadence": "Ett mätvärde var {seconds}:e sekund."
         },
         "disk": {
           "last_report": "Disk · senaste rapport",
@@ -5263,10 +5283,7 @@
         },
         "gpu": {
           "video": "Videoinställningar",
-          "custom": "Anpassad",
-          "match_server": "Matchserver",
-          "use_as_match": "Använd som matchserver",
-          "use_as_gpu": "Använd endast som GPU"
+          "custom": "Anpassad"
         },
         "node": {
           "accepting": "Tar emot matcher",
@@ -5293,7 +5310,9 @@
           "from_node": "{count} varning från noden | {count} varningar från noden",
           "docs": "Dokumentation",
           "details": "Detaljer"
-        }
+        },
+        "window_minutes": "Senaste {count} minuten | Senaste {count} minuterna",
+        "window_hours": "Senaste {count} timmen | Senaste {count} timmarna"
       }
     },
     "dedicated_servers": {
@@ -5302,9 +5321,7 @@
       "docs_link": "Se installationsguiden",
       "no_servers_title": "Inga dedikerade servrar",
       "no_servers": "Inga dedikerade servrar hittades.",
-      "create": {
-        "title": "Skapa dedikerad server"
-      },
+      "create": {},
       "table": {
         "connection_details": "Anslutningsdetaljer",
         "label": "Etikett",
@@ -5315,7 +5332,6 @@
       },
       "detail": {
         "enabled": "Aktiverad",
-        "eyebrow": "Dedikerad server",
         "tabs": {
           "overview": "Översikt",
           "players": "Spelare",
@@ -5325,14 +5341,9 @@
         },
         "status_label": {
           "connected": "Ansluten",
-          "disconnected": "Frånkopplad",
           "hibernating": "I viloläge",
-          "no_rcon": "Ingen RCON",
-          "version_mismatch": "Versionsavvikelse"
+          "no_rcon": "Ingen RCON"
         },
-        "server_plugin_config": "Serverplugin-konfiguration",
-        "hide_config": "Dölj konfiguration",
-        "show_config": "Visa konfiguration",
         "config_location": "Denna konfiguration ska placeras i:",
         "files": "Filer",
         "player_management": "Spelarhantering",
@@ -5356,13 +5367,7 @@
           "disconnected": "Servern är frånkopplad",
           "hibernating": "Servern är i viloläge tills en spelare ansluter",
           "no_rcon": "Servern är ansluten men RCON är inte tillgängligt",
-          "connected": "Servern är ansluten och RCON är tillgängligt",
-          "plugin_version_mismatch": "pluginversionen är inte uppdaterad"
-        },
-        "delete_confirm": {
-          "title": "Är du helt säker?",
-          "description": "Detta går inte att ångra. Servern tas bort permanent tillsammans med tillhörande data från våra servrar.",
-          "continue": "Fortsätt"
+          "connected": "Servern är ansluten och RCON är tillgängligt"
         },
         "save_restart": "Spara och starta om",
         "map_rotation": {
@@ -5481,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "Flytta till en annan nod",
-          "title": "Flytta till en annan nod",
           "description": "Servern stoppas på {node}, dess filer kopieras till den nya noden och den startas igen där.",
           "source_offline": "{node} är offline, så serverns filer kan inte kopieras. Den startar på den nya noden med standardinställningar, och allt som finns kvar på {node} stannar där.",
           "without_files": "Flytta utan serverns filer",
@@ -5490,7 +5493,6 @@
           "no_nodes": "Det finns inga andra spelservernoder",
           "free_slots": "Lediga platser: {count}",
           "free_disk": "{size} ledigt",
-          "confirm": "Flytta server",
           "started": "Flyttar {server} till {node}",
           "warning": {
             "address": "Servern får en ny adress på den nya noden.",
@@ -5506,7 +5508,9 @@
             "updating": "Uppdaterar CS2",
             "no_build": "{game} är inte installerat",
             "no_slot": "Inga lediga serverplatser"
-          }
+          },
+          "dialog_title": "Flytta till en annan nod",
+          "confirm_move": "Flytta server"
         },
         "migration": {
           "title": {
@@ -5527,14 +5531,17 @@
           "progress": "{done} av {total} ({percent}%)",
           "without_files": "utan filer",
           "restored": "Servern är tillbaka på {node}.",
-          "cancel": "Avbryt flytt",
           "cancel_requested": "Avbryter flytten",
           "dismiss": "Stäng",
-          "locked": "Servern flyttas till en annan nod. Försök igen när flytten är klar."
-        }
+          "locked": "Servern flyttas till en annan nod. Försök igen när flytten är klar.",
+          "cancel_move": "Avbryt flytt"
+        },
+        "plugin_tag": "Plugin v{version}",
+        "plugin_config": "Serverplugin-konfiguration",
+        "show_plugin_config": "Visa konfiguration",
+        "hide_plugin_config": "Dölj konfiguration"
       },
       "clear_all": "Rensa sökning och filter",
-      "clear_search": "Rensa sökning",
       "col_hosting": "Hosting",
       "col_players": "Spelare",
       "col_plugin": "Plugin",
@@ -5583,7 +5590,12 @@
       "status_offline_since": "Offline sedan {time}",
       "status_playing": "{count} spelar",
       "status_plugin_outdated": "Plugin föråldrad",
-      "tip_disabled": "Används inte för matcher eller öppet spel."
+      "tip_disabled": "Används inte för matcher eller öppet spel.",
+      "join_server": "Gå med i server",
+      "new_server": "Ny server",
+      "create_on_node": "Körs på {node}",
+      "create_at_host": "Körs på {address}",
+      "create_pick_place": "Välj var den körs"
     },
     "public_servers": {
       "title": "Publika servrar",
@@ -6088,8 +6100,6 @@
         "overview": "Översikt",
         "overview_hint": "PostgreSQL-databas · räknare sedan statistiken senast nollställdes",
         "pause_refreshing": "Pausa uppdateringen",
-        "paused_just_now": "Pausad · uppdaterad nyss",
-        "paused_seconds_ago": "Pausad · uppdaterad för {seconds}s sedan",
         "pct_of_table": "% av tabell",
         "pid_actions": "Åtgärder för pid {pid}",
         "query_details": "Frågedetaljer",
@@ -6099,7 +6109,6 @@
         "reclaimable": "Återvinningsbart",
         "reclaimable_tip": "Uppskattat utifrån döda tupler. VACUUM gör utrymmet återanvändbart; bara VACUUM FULL eller pg_repack lämnar tillbaka det till disken.",
         "refresh_every": "Uppdatera var",
-        "refresh_now": "Uppdatera nu",
         "resume_refreshing": "Återuppta uppdateringen",
         "rollbacks_count": "{count} rollbacks",
         "running_now": "Körs nu",
@@ -6152,8 +6161,6 @@
         "tuples_read": "Lästa tupler",
         "tuples_returned": "Returnerade tupler",
         "tuples_updated": "Uppdaterade tupler",
-        "updated_just_now": "Uppdaterad nyss",
-        "updated_seconds_ago": "Uppdaterad för {seconds}s sedan",
         "updates": "Uppdateringar",
         "view_all_slow": "Visa alla långsamma frågor",
         "wait_event": "Väntehändelse",
@@ -6401,7 +6408,6 @@
         "empty_installed_title": "Inget installerat ännu",
         "empty_installed_hint": "Installera ett tillägg från Alla så hämtar varje nod det.",
         "empty_title": "Inga tillägg matchar",
-        "show_all": "Visa alla tillägg",
         "installing_toast": "Installerar {name} på alla noder online",
         "retry_toast": "Försöker {name} igen på noderna som misslyckades",
         "update_toast": "Noderna installerar {version}; den förblir låst där."
@@ -6440,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "Sök utmärkelser",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -6466,7 +6471,6 @@
       "automation_tournament": "Turneringsautomatik",
       "builtin_cant_delete": "Inbyggda utmärkelser kan inte tas bort",
       "builtin_note": "Inbyggd. Turnerings- och säsongsautomatiken delar ut den, så den kan redigeras men inte tas bort.",
-      "clear_search": "Rensa sökning",
       "col_award": "Utmärkelse",
       "col_earned_at": "Förtjänad vid",
       "col_holder": "Innehavare",
@@ -6504,8 +6508,6 @@
       "owner_upcoming": "Kommande",
       "repeatable": "Kan upprepas",
       "revoke_from": "Återkalla från {name}",
-      "search_placeholder_v2": "Sök utmärkelser, turneringar, evenemang",
-      "show_all_kinds": "Visa alla typer",
       "show_more": "Visa fler",
       "sort_last_granted": "Senast utdelad",
       "status": {
@@ -6566,13 +6568,7 @@
         "cameraTalkback": "Kamera-talkback"
       },
       "resources": "Resursanvändning",
-      "cpu": "CPU",
-      "memory": "Minne",
-      "no_resources": "Inga poddmätvärden för medieservern än — klustrets metrics-server kanske inte samlar in den.",
       "legend": "En sökväg är en namngiven strömplats — en persons mikrofon, eller en kamera. «Sänder» räknar dem som faktiskt skickar media just nu; en sökväg kan stå stilla mellan att någon ansluter och att flödet kommer igång. Sessioner är WebRTC-anslutningar, och varje tittare på en sändning är en av dem, så de stiger snabbare än de andra.",
-      "status_reachable_now": "Nåbar · uppdaterad nyss · frågar var 10:e s",
-      "status_reachable_ago": "Nåbar · uppdaterad för {seconds} s sedan · frågar var 10:e s",
-      "status_unreachable": "Inte nåbar sedan {time} · försöker igen var 10:e s",
       "logs_button": "mediamtx-loggar",
       "tip_publishing": "Sökvägar som faktiskt skickar media just nu. En sökväg kan stå tom mellan att någon ansluter och att deras ström kommer igång.",
       "tip_paths": "En sökväg är en namngiven strömplats — en persons mikrofon eller en kamera.",
@@ -6589,7 +6585,12 @@
       "share_received": "Andel av det som kommer in",
       "not_in_use": "Används inte just nu: {kinds}",
       "resources_hint": "mediamtx-pod · frågar var 30:e s",
-      "cores_now": "{cores} kärnor används"
+      "cores_now": "{cores} kärnor används",
+      "status_reachable": "Nåbar",
+      "status_unreachable_since": "Inte nåbar sedan {time}",
+      "kinds_unknown_title": "Siffror per funktion okända",
+      "no_resources_title": "Inga pod-mätvärden än",
+      "no_resources_hint": "Klustrets metrics-server samlar kanske inte in mediamtx-podden."
     },
     "utility": {
       "eyebrow": "Utility-bibliotek",
@@ -7851,6 +7852,99 @@
         "created_off": "Avisering skapad. Den är av tills du slår på den.",
         "expired": "”{name}” gick ut och visas inte längre"
       }
+    },
+    "admin_home": {
+      "title": "Översikt",
+      "need_you": "{count} sak behöver dig | {count} saker behöver dig",
+      "all_clear": "Allt är lugnt",
+      "all_clear_line": "Inget behöver dig just nu.",
+      "live_hint": "De flesta områden uppdateras så fort de ändras. Mätvärden var 30:e sekund, databasen varje minut.",
+      "everything_else": "Allt annat",
+      "open": "Öppna",
+      "open_area": "Öppna {area}",
+      "add_steam_account": "Lägg till Steam-konto",
+      "more": "+{count} till | +{count} till",
+      "card": {
+        "no_problems": "Inga problem",
+        "checking": "Kontrollerar…",
+        "none": "Inga ännu",
+        "no_online": "Ingen nod online",
+        "season_starts": "Säsong {number} börjar om {count} dag | Säsong {number} börjar om {count} dagar",
+        "of_online": "av {total} online",
+        "servers_free": "{free} av {capacity} servrar lediga",
+        "of_connected": "av {total} anslutna",
+        "offline": "{count} offline | {count} offline",
+        "of_free": "av {total} lediga",
+        "accounts_free": "{free} av {total} Steam-konton lediga",
+        "in_flight": "pågår",
+        "previews_current": "{current} av {total} förhandsvisningar aktuella",
+        "of_within": "av {total} inom gränserna",
+        "slow_statements": "långsam fråga | långsamma frågor",
+        "threshold": "Långsam över {threshold}",
+        "banners_showing": "banner visas | banners visas",
+        "installed": "installerade",
+        "updates": "{count} uppdatering tillgänglig | {count} uppdateringar tillgängliga",
+        "up_to_date": "Allt är uppdaterat",
+        "all_set_up": "Allt är konfigurerat"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} nod är offline | {count} noder är offline",
+          "cs2_failed": "CS2-uppdateringen misslyckades på {count} nod | CS2-uppdateringen misslyckades på {count} noder",
+          "overprovisioned": "{count} nod kör fler servrar än dess CPU har plats för | {count} noder kör fler servrar än deras CPU:er har plats för",
+          "plugin_unsupported": "Det fästa pluginet på {count} nod stöder inte dess CS2-build | De fästa pluginen på {count} noder stöder inte deras CS2-build",
+          "disk_full": "Disken på {count} nod är nästan full | Diskarna på {count} noder är nästan fulla",
+          "cpu_governor": "{count} nod använder inte CPU-governorn performance | {count} noder använder inte CPU-governorn performance",
+          "not_ready_region": "{count} nod kan inte vara värd för matcher: ingen region | {count} noder kan inte vara värd för matcher: ingen region",
+          "not_ready_ports": "{count} nod kan inte vara värd för matcher: inget portintervall | {count} noder kan inte vara värd för matcher: inget portintervall",
+          "not_ready_cs2": "{count} nod kan inte vara värd för matcher: CS2 är inte installerat | {count} noder kan inte vara värd för matcher: CS2 är inte installerat",
+          "cs2_behind": "CS2-uppdatering tillgänglig för {count} nod | CS2-uppdatering tillgänglig för {count} noder",
+          "disk_filling": "Disken på {count} nod börjar bli full | Diskarna på {count} noder börjar bli fulla",
+          "cpu_slow": "CPU:n på {count} nod körs under 3 GHz | CPU:erna på {count} noder körs under 3 GHz",
+          "cpu_warning": "{count} nod rapporterar en CPU-varning | {count} noder rapporterar CPU-varningar"
+        },
+        "gpus": {
+          "pool_empty": "Inga Steam-konton: GPU:er kan inte rendera, spela upp demos eller streama",
+          "pool_short": "Steam-poolen saknar {count} konto för att ha ett per GPU | Steam-poolen saknar {count} konton för att ha ett per GPU",
+          "offline": "{count} GPU är offline | {count} GPU:er är offline",
+          "bake_failed": "Shader-bakningen misslyckades på {count} GPU | Shader-bakningen misslyckades på {count} GPU:er",
+          "renders_stuck": "{count} rendering väntar och ingen GPU tar emot renderingar | {count} renderingar väntar och ingen GPU tar emot renderingar"
+        },
+        "metrics": {
+          "cpu": "{count} nod har CPU över {threshold} % | {count} noder har CPU över {threshold} %",
+          "memory": "{count} nod har minne över {threshold} % | {count} noder har minne över {threshold} %",
+          "disk": "{count} nod har en disk över {threshold} % | {count} noder har en disk över {threshold} %",
+          "gpu_util": "{count} GPU har varit över {threshold} % belastad i 5 minuter | {count} GPU:er har varit över {threshold} % belastade i 5 minuter",
+          "gpu_vram": "{count} GPU har VRAM över {threshold} % | {count} GPU:er har VRAM över {threshold} %",
+          "gpu_temp": "{count} GPU är {threshold} °C eller varmare | {count} GPU:er är {threshold} °C eller varmare"
+        },
+        "seasons": {
+          "rebuild": "Säsong {number} behöver en ELO-omräkning"
+        },
+        "renders": {
+          "failed": "{count} rendering misslyckades det senaste dygnet | {count} renderingar misslyckades det senaste dygnet",
+          "behind": "Renderingspipelinen ligger efter: den filmar v{pipeline}, API:et förväntar sig v{version}",
+          "missing": "{count} lineup saknar förhandsvisning | {count} lineups saknar förhandsvisning",
+          "outdated": "{count} lineup-förhandsvisning är inaktuell | {count} lineup-förhandsvisningar är inaktuella"
+        },
+        "database": {
+          "locks": "{count} session väntar på ett lås | {count} sessioner väntar på lås",
+          "running": "{count} fråga har körts i över {threshold} | {count} frågor har körts i över {threshold}",
+          "slow": "{count} fråga tar i snitt över {threshold} | {count} frågor tar i snitt över {threshold}"
+        },
+        "plugins": {
+          "failed": "{count} plugin kunde inte rullas ut | {count} plugin kunde inte rullas ut",
+          "update": "Uppdatering tillgänglig för {count} plugin | Uppdatering tillgänglig för {count} plugin",
+          "manual": "{count} plugin hittades på disken och hanteras inte här | {count} plugin hittades på disken och hanteras inte här"
+        },
+        "settings": {
+          "not_set_up": "{count} inställningsavsnitt är inte konfigurerat | {count} inställningsavsnitt är inte konfigurerade"
+        },
+        "servers": {
+          "no_rcon": "{count} server svarar inte på RCON | {count} servrar svarar inte på RCON",
+          "plugin_outdated": "{count} server kör ett inaktuellt plugin | {count} servrar kör ett inaktuellt plugin"
+        }
+      }
     }
   },
   "layouts": {
@@ -7995,7 +8089,8 @@
         "seasons": "Säsonger",
         "stream_deck": "Stream Deck",
         "awards": "Awards",
-        "control_room": "Kontrollrum"
+        "control_room": "Kontrollrum",
+        "overview": "Översikt"
       },
       "modes": {
         "play": "Spela",
@@ -8389,7 +8484,6 @@
     "none": "Inga spelare tillgängliga"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "Dessa filer monteras i `csgo`-katalogen när servern startas.",
     "any": "Valfri",
     "remove": "Ta bort",
     "edit": "Redigera",
@@ -8454,8 +8548,6 @@
     "exit_fullscreen": "Avsluta helskärm",
     "download": "Ladda ner",
     "upload": "Ladda upp",
-    "sort_ascending": "Sortera stigande",
-    "sort_descending": "Sortera fallande",
     "see_all": "Se alla",
     "standby_no_activity": "STANDBY · INGEN AKTIVITET",
     "players": "spelare",
@@ -8519,7 +8611,8 @@
     "empty_filtered": {
       "title": "Inget matchar dessa filter",
       "description": "Prova att rensa filtren eller bredda sökningen."
-    }
+    },
+    "clear_filters": "Rensa filter"
   },
   "global_search": {
     "placeholder": "Sök spelare, sidor och inställningar",
@@ -8547,8 +8640,6 @@
   },
   "file_manager": {
     "location": "Plats",
-    "dedicated_server_files": "Filer för dedikerad server",
-    "game_server_node_files": "Filer för spelservernod",
     "loading_server_info": "Läser in serverinformation...",
     "create_directory": {
       "title": "Skapa ny katalog",
@@ -11614,10 +11705,6 @@
     "remove_node_confirm_title": "Ta bort den här noden?",
     "remove_node_confirm_description": "Noden och alla dedikerade servrar på den tas bort från 5Stack. Det går inte att ångra.",
     "remove_ports": "Ta bort portar",
-    "mode": {
-      "use_as_match": "Använd som matchserver",
-      "use_as_gpu_only": "Använd endast som GPU"
-    },
     "show_update_logs": "Visa uppdateringsloggar",
     "update_failed": "Uppdateringen misslyckades",
     "update_failed_description": "Den senaste uppdateringen misslyckades. Uppdateringsloggar sparas i 24 timmar.",
@@ -11889,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "Användning",
-    "mount_os": "OS",
-    "mount_demos": "Demos",
-    "total_series": "{label} totalt",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} snitt"
   },
@@ -11925,7 +12008,6 @@
       "move_node": "Flytta server",
       "valve_preset_group": "Valve-förval",
       "custom_mode_group": "Anpassade lägen",
-      "edit_mode": "Redigera läge",
       "cs2_only": "Endast CS2",
       "needs_node": "Kräver en nod",
       "csgo_valve_only": "CS:GO-servrar kör bara Valve-förval. Rankade lägen, träning och anpassade lägen kräver CS2.",
@@ -11949,9 +12031,9 @@
       "generate": "Generera",
       "port": "Spelport",
       "tv_port": "TV-port",
-      "create": "Skapa server",
       "max_players": "Max antal spelare",
-      "max_players_description": "Det maximala antalet spelare som kan ansluta till servern"
+      "max_players_description": "Det maximala antalet spelare som kan ansluta till servern",
+      "edit_mode_link": "Redigera läge"
     },
     "rcon": {
       "console_output": "Konsolutdata",
@@ -13782,7 +13864,6 @@
       "unique_24h": "Unika · 24 h",
       "unique_7d": "Unika · 7 d",
       "sessions_7d": "Sessioner · 7 d",
-      "time_played_7d": "Speltid · 7 d",
       "avg_session": "Snittsession",
       "players": "spelare",
       "joins": "anslutningar",
@@ -13794,7 +13875,9 @@
       "empty": "Ingen har spelat här under den här perioden.",
       "no_matches": "Inga spelare matchar sökningen.",
       "showing": "Visar {shown} av {total}",
-      "load_more": "Ladda Fler"
+      "last_seen": "Senast sedd",
+      "time_played_col": "Speltid · 7 d",
+      "show_more": "Ladda fler"
     },
     "player_tab": {
       "moderator_note": "Moderatorer ser även exakta tider, sessioner, använda namn och IP-adresser.",
@@ -13833,12 +13916,8 @@
       "offline": "Offline",
       "map": "karta",
       "community_server": "communityserver",
-      "online_now": "Online Nu",
-      "players_this_week": "Spelare Den Här Veckan",
       "different_players": "olika spelare",
-      "hours_this_week": "Timmar Den Här Veckan",
       "played_by_everyone": "spelade av alla",
-      "all_time_players": "Spelare Totalt",
       "since": "sedan {date}",
       "activity": "Aktivitet · Senaste 7 Dagarna",
       "activity_description": "Totalt antal timmar som alla spelade här varje dag. Ingens individuella speltider visas.",
@@ -13855,7 +13934,13 @@
       "day": "Dag",
       "player_hours": "Spelartimmar",
       "not_found_title": "Servern Hittades Inte",
-      "not_found_description": "Den här servern finns inte eller är inte offentlig."
+      "not_found_description": "Den här servern finns inte eller är inte offentlig.",
+      "tile": {
+        "online_now": "Online nu",
+        "players_this_week": "Spelare den här veckan",
+        "hours_this_week": "Timmar den här veckan",
+        "all_time_players": "Spelare totalt"
+      }
     }
   },
   "quick_look": {
@@ -13923,6 +14008,32 @@
         "twitch_unavailable": "Twitch svarade inte. Försök igen om en stund.",
         "unknown": "Något gick fel. Försök igen."
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "Rensa sökning"
+    },
+    "sort": {
+      "sorted_ascending": "Sorterad stigande",
+      "sorted_descending": "Sorterad fallande"
+    },
+    "live_stamp": {
+      "live_at": "Live · {time}",
+      "updated_now": "Uppdaterad nyss",
+      "updated_now_after": "uppdaterad nyss",
+      "updated_seconds": "Uppdaterad för {seconds} s sedan",
+      "updated_seconds_after": "uppdaterad för {seconds} s sedan",
+      "updated_minutes": "Uppdaterad för {minutes} min sedan",
+      "updated_minutes_after": "uppdaterad för {minutes} min sedan",
+      "paused": "Pausad",
+      "every_seconds": "uppdateras var {seconds}:e s",
+      "every_minute": "uppdateras varje minut",
+      "every_minutes": "uppdateras var {minutes}:e min",
+      "refresh_now": "Uppdatera nu"
+    },
+    "last_changed": {
+      "updated": "Uppdaterad {time}"
     }
   }
 }

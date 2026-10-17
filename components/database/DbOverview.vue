@@ -5,10 +5,10 @@ import { useI18n } from "vue-i18n";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import DbGrid from "./DbGrid.vue";
 import DbBar from "./DbBar.vue";
 import DbSev from "./DbSev.vue";
-import DbTile from "./DbTile.vue";
 import DbSlowBand from "./DbSlowBand.vue";
 import SchemaSelector from "./SchemaSelector.vue";
 import {
@@ -98,19 +98,19 @@ const columns = computed<DbGridColumn[]>(() => [
     />
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5">
-      <DbTile
+      <StatTile
         :label="$t('pages.database.explorer.cache_hit_ratio')"
-        :sev="hitSeverity(stats?.cache_hit_ratio)"
+        :tone="hitSeverity(stats?.cache_hit_ratio) || undefined"
       >
         <DbSev :sev="hitSeverity(stats?.cache_hit_ratio)">{{
           formatPct(stats?.cache_hit_ratio) ?? "—"
         }}</DbSev>
-      </DbTile>
-      <DbTile
+      </StatTile>
+      <StatTile
         :label="$t('pages.database.tabs.connections')"
-        :sev="lockWaits ? 'bad' : ''"
+        :value="conn?.total ?? null"
+        :tone="lockWaits ? 'bad' : undefined"
       >
-        {{ conn ? conn.total.toLocaleString() : "—" }}
         <template v-if="conn" #sub>
           {{
             $t("pages.database.explorer.active_waiting", {
@@ -119,9 +119,11 @@ const columns = computed<DbGridColumn[]>(() => [
             })
           }}
         </template>
-      </DbTile>
-      <DbTile :label="$t('pages.database.explorer.size_on_disk')">
-        {{ storage ? formatSize(storage.total_database_size) : "—" }}
+      </StatTile>
+      <StatTile
+        :label="$t('pages.database.explorer.size_on_disk')"
+        :value="storage ? formatSize(storage.total_database_size) : null"
+      >
         <template v-if="storage" #sub>
           {{
             $t("pages.database.explorer.in_indexes", {
@@ -129,15 +131,18 @@ const columns = computed<DbGridColumn[]>(() => [
             })
           }}
         </template>
-      </DbTile>
-      <DbTile :label="$t('pages.database.explorer.reclaimable')">
-        {{ storage ? formatSize(storage.estimated_reclaimable_space) : "—" }}
-        <template #sub>{{
-          $t("pages.database.storage.from_dead_tuples")
-        }}</template>
-      </DbTile>
-      <DbTile :label="$t('pages.database.locks.commits')">
-        {{ stats ? formatBig(stats.xact_commit) : "—" }}
+      </StatTile>
+      <StatTile
+        :label="$t('pages.database.explorer.reclaimable')"
+        :value="
+          storage ? formatSize(storage.estimated_reclaimable_space) : null
+        "
+        :sub="$t('pages.database.storage.from_dead_tuples')"
+      />
+      <StatTile
+        :label="$t('pages.database.locks.commits')"
+        :value="stats ? formatBig(stats.xact_commit) : null"
+      >
         <template v-if="stats" #sub>
           {{
             $t("pages.database.explorer.rollbacks_count", {
@@ -145,15 +150,15 @@ const columns = computed<DbGridColumn[]>(() => [
             })
           }}
         </template>
-      </DbTile>
-      <DbTile
+      </StatTile>
+      <StatTile
         :label="$t('pages.database.locks.deadlocks')"
-        :sev="stats?.deadlocks ? 'warn' : ''"
+        :tone="stats?.deadlocks ? 'warn' : undefined"
       >
         <DbSev :sev="stats?.deadlocks ? 'warn' : ''">{{
           stats ? stats.deadlocks.toLocaleString() : "—"
         }}</DbSev>
-      </DbTile>
+      </StatTile>
     </div>
 
     <ManageSection

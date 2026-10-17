@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
-import {
-  ArrowUpRight,
-  Flame,
-  ScrollText,
-  Settings2,
-  SlidersHorizontal,
-  Square,
-  X,
-} from "lucide-vue-next";
+import { ArrowUpRight, Flame, ScrollText, Square, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
@@ -20,31 +12,27 @@ import InspectorLive from "~/components/game-server-nodes/InspectorLive.vue";
 import NodeStatsPoll from "~/components/game-server-nodes/NodeStatsPoll.vue";
 import type { MetricRangeKey } from "~/components/game-server-nodes/nodeMetrics";
 import NodeControlList from "~/components/game-server-nodes/NodeControlList.vue";
-import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
+import InspectorGpu from "~/components/game-server-nodes/InspectorGpu.vue";
 import GpuKindIcon from "~/components/gpu-nodes/GpuKindIcon.vue";
 import GpuSessionState from "~/components/gpu-nodes/GpuSessionState.vue";
-import GpuStatusDot from "~/components/gpu-nodes/GpuStatusDot.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
 import {
   bakeFailed,
   gpuName,
   isBaking,
   isMatchNode,
   nodeName,
-  workloadActivity,
   type GpuNodeState,
   type GpuSession,
 } from "~/components/gpu-nodes/gpuSessions";
-import {
-  GPU_WORKLOADS,
-  workloadsOff,
-} from "~/components/game-server-nodes/nodeInspector";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 import { useGpuNodeActions } from "~/composables/useGpuNodeActions";
 
 // Everything about one GPU, docked beside the tables (or in a sheet when
 // there's no room). Docked wide, what it is doing now and its load take a
-// left column that stays in view; the node, its switches, the shader cache
-// and video settings run on the right. Anywhere narrower it is one column.
+// left column that stays in view; the node and its switches, the GPU section
+// the Game Server Nodes inspector shows (workloads, cards, video settings) and
+// the shader cache run on the right. Anywhere narrower it is one column.
 const props = defineProps<{
   node: any;
   session: GpuSession | null;
@@ -66,13 +54,7 @@ const emit = defineEmits<{
   (e: "video"): void;
 }>();
 
-const { t } = useI18n();
 const actions = useGpuNodeActions();
-
-const activity = computed(() => workloadActivity(props.session, t));
-const workloadsOn = computed(
-  () => GPU_WORKLOADS.length - workloadsOff(props.node).length,
-);
 
 const reachable = computed(
   () =>
@@ -125,7 +107,7 @@ onBeforeUnmount(() => headerObserver?.disconnect());
       class="sticky top-0 z-[3] grid gap-0.5 border-b border-border bg-[hsl(240_6%_7%)] py-3 pl-4 pr-3"
     >
       <div class="flex min-w-0 items-center gap-2">
-        <GpuStatusDot v-if="state" :tone="state.tone" :live="state.live" />
+        <StatusDot v-if="state" :tone="state.tone" :live="state.live" />
         <h2 class="min-w-0 flex-1 truncate text-base font-bold">
           {{ gpuName(node) || $t("pages.gpu_nodes.gpu_unknown") }}
         </h2>
@@ -290,38 +272,6 @@ onBeforeUnmount(() => headerObserver?.disconnect());
 
           <NodeControlList :node="node" />
 
-          <div
-            class="flex min-h-10 items-center gap-3"
-            :class="!node.enabled && 'opacity-60'"
-          >
-            <span
-              class="inline-grid h-7 w-7 shrink-0 place-items-center rounded-md border"
-              :class="
-                workloadsOn > 0
-                  ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border text-muted-foreground'
-              "
-              ><SlidersHorizontal class="h-3.5 w-3.5"
-            /></span>
-            <span class="min-w-0 flex-1">
-              <span class="block text-[13px]">{{
-                $t("pages.gpu_nodes.workload.section")
-              }}</span>
-              <span class="block text-xs tabular-nums text-muted-foreground">{{
-                $t("pages.gpu_nodes.workload.summary", {
-                  on: workloadsOn,
-                  total: GPU_WORKLOADS.length,
-                })
-              }}</span>
-            </span>
-            <NodeControlMenu
-              :node="node"
-              workloads-only
-              align="end"
-              :activity="activity"
-            />
-          </div>
-
           <div class="gpn-kv">
             <span class="gpn-k">{{ $t("pages.gpu_nodes.col.node") }}</span>
             <div class="gpn-v">
@@ -379,13 +329,16 @@ onBeforeUnmount(() => headerObserver?.disconnect());
                 >{{ $t(`${INSPECTOR}.node.ips_pending`) }}</span
               >
             </div>
-
-            <template v-if="vramGb">
-              <span class="gpn-k">{{ $t("pages.gpu_nodes.col.vram") }}</span>
-              <div class="gpn-v tabular-nums">{{ vramGb }} GB</div>
-            </template>
           </div>
         </section>
+
+        <InspectorGpu
+          :node="node"
+          :stats="liveStats"
+          :session="session"
+          :bake="bake"
+          @edit-video="emit('video')"
+        />
 
         <section class="grid gap-2.5 p-4">
           <div class="flex min-h-7 flex-wrap items-center gap-2">
@@ -460,26 +413,6 @@ onBeforeUnmount(() => headerObserver?.disconnect());
               />
             </div>
           </Fold>
-        </section>
-
-        <section class="grid gap-2.5 p-4">
-          <div class="flex min-h-7 items-center gap-2">
-            <h3 class="grow text-[13px] font-semibold">
-              {{ $t("pages.gpu_nodes.sheet.video") }}
-            </h3>
-            <Button
-              size="xs"
-              variant="outline"
-              class="h-7 gap-1.5 text-xs"
-              @click="emit('video')"
-            >
-              <Settings2 class="h-3 w-3" />
-              {{ $t("game_server.edit_cs2_options") }}
-            </Button>
-          </div>
-          <p class="text-xs text-muted-foreground">
-            {{ $t("pages.gpu_nodes.sheet.video_hint") }}
-          </p>
         </section>
       </div>
     </div>

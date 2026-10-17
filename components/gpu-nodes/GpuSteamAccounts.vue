@@ -226,7 +226,7 @@ watch(
             </div>
             <span
               class="text-xs tabular-nums"
-              :class="warn ? 'text-yellow-500' : 'text-muted-foreground'"
+              :class="warn ? 'text-warning' : 'text-muted-foreground'"
             >
               {{ healthText }}
             </span>

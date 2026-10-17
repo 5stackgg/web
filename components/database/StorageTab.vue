@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import {
   Select,
   SelectContent,
@@ -13,8 +14,6 @@ import {
 import DbBar from "./DbBar.vue";
 import DbGrid from "./DbGrid.vue";
 import DbSev from "./DbSev.vue";
-import DbTerm from "./DbTerm.vue";
-import DbTile from "./DbTile.vue";
 import SchemaSelector from "./SchemaSelector.vue";
 import { deadSeverity, formatSize, type DbGridColumn } from "./dbHealth";
 
@@ -85,26 +84,26 @@ const columns = computed<DbGridColumn[]>(() => [
 <template>
   <div class="grid gap-6">
     <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5">
-      <DbTile :label="$t('pages.database.explorer.total_size')">
-        {{ summary ? formatSize(summary.total_database_size) : "—" }}
-      </DbTile>
-      <DbTile :label="$t('pages.database.explorer.table_size')">
-        {{ summary ? formatSize(summary.total_table_size) : "—" }}
-      </DbTile>
-      <DbTile :label="$t('pages.database.explorer.index_size')">
-        {{ summary ? formatSize(summary.total_indexes_size) : "—" }}
-      </DbTile>
-      <DbTile>
-        <template #label>
-          <DbTerm :tip="$t('pages.database.explorer.reclaimable_tip')">{{
-            $t("pages.database.explorer.reclaimable")
-          }}</DbTerm>
-        </template>
-        {{ summary ? formatSize(summary.estimated_reclaimable_space) : "—" }}
-        <template #sub>{{
-          $t("pages.database.storage.from_dead_tuples")
-        }}</template>
-      </DbTile>
+      <StatTile
+        :label="$t('pages.database.explorer.total_size')"
+        :value="summary ? formatSize(summary.total_database_size) : null"
+      />
+      <StatTile
+        :label="$t('pages.database.explorer.table_size')"
+        :value="summary ? formatSize(summary.total_table_size) : null"
+      />
+      <StatTile
+        :label="$t('pages.database.explorer.index_size')"
+        :value="summary ? formatSize(summary.total_indexes_size) : null"
+      />
+      <StatTile
+        :label="$t('pages.database.explorer.reclaimable')"
+        :tip="$t('pages.database.explorer.reclaimable_tip')"
+        :value="
+          summary ? formatSize(summary.estimated_reclaimable_space) : null
+        "
+        :sub="$t('pages.database.storage.from_dead_tuples')"
+      />
     </div>
 
     <ManageSection :label="$t('pages.database.explorer.table_storage')">

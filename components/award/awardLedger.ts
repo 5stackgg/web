@@ -1,5 +1,6 @@
 import { resolveAwardTier } from "~/utilities/awardSeed";
 import { dateLocale } from "~/utilities/dateLocale";
+import type { SortDir } from "~/components/admin/sort";
 
 export const AWARD_PAGE_SIZE = 30;
 export const AWARD_RECENT_MS = 90 * 24 * 60 * 60 * 1000;
@@ -15,6 +16,62 @@ export type AwardOwnerPhase = "live" | "upcoming" | "finished" | "gone";
 export type AwardBelongs = "builtin" | "global" | AwardOwnerKind;
 export type AwardKind = "all" | "custom" | "builtin";
 export type AwardSort = "last" | "holders" | "name";
+
+/** Each column's first direction: name A–Z, most holders, most recent. */
+export const AWARD_SORT_DIRS: Record<AwardSort, SortDir> = {
+  name: "asc",
+  holders: "desc",
+  last: "desc",
+};
+
+export const AWARD_OWNER_VALUES = [
+  "global",
+  "tournament",
+  "event",
+  "league",
+  "season",
+];
+export const AWARD_STATUS_VALUES = ["recent", "never", "open", "finished"];
+
+export type AwardFacets = { owner: string[]; tier: string[]; status: string[] };
+
+export const emptyAwardFacets = (): AwardFacets => ({
+  owner: [],
+  tier: [],
+  status: [],
+});
+
+/** What the ledger remembers between visits. */
+export const awardViewDefaults = () => ({
+  search: "",
+  kind: "all" as AwardKind,
+  sort: "last" as AwardSort,
+  dir: "desc" as SortDir,
+  facets: emptyAwardFacets(),
+});
+
+const listOf = (allowed: string[]) => (value: unknown) =>
+  Array.isArray(value) && value.every((entry) => allowed.includes(entry));
+
+export const awardViewValidators = {
+  search: (value: unknown) => typeof value === "string",
+  kind: (value: unknown) =>
+    value === "all" || value === "custom" || value === "builtin",
+  sort: (value: unknown) =>
+    typeof value === "string" && Object.keys(AWARD_SORT_DIRS).includes(value),
+  dir: (value: unknown) => value === "asc" || value === "desc",
+  facets: (value: unknown) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return false;
+    }
+    const facets = value as Record<string, unknown>;
+    return (
+      listOf(AWARD_OWNER_VALUES)(facets.owner) &&
+      listOf(AWARD_TIERS)(facets.tier) &&
+      listOf(AWARD_STATUS_VALUES)(facets.status)
+    );
+  },
+};
 
 export type AwardOwner = {
   kind: AwardOwnerKind;
@@ -182,13 +239,13 @@ const byName = (a: any, b: any) =>
   String(a?.name ?? "").localeCompare(String(b?.name ?? ""));
 
 /**
- * Each column sorts its natural way first (name A–Z, most holders, most
- * recently granted); `reverse` flips it, as a second click on the header does.
+ * Sorts by a column in `dir`; ties fall back to the name. Without `dir` the
+ * column sorts its natural way (AWARD_SORT_DIRS).
  */
 export function sortAwards(
   list: any[],
   sort: AwardSort,
-  reverse = false,
+  dir: SortDir = AWARD_SORT_DIRS[sort],
 ): any[] {
   const sorted = [...list];
   if (sort === "name") sorted.sort(byName);
@@ -200,7 +257,7 @@ export function sortAwards(
         (lastGrantedAt(b) ?? 0) - (lastGrantedAt(a) ?? 0) || byName(a, b),
     );
   }
-  return reverse ? sorted.reverse() : sorted;
+  return dir === AWARD_SORT_DIRS[sort] ? sorted : sorted.reverse();
 }
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
@@ -222,6 +279,17 @@ export function ownerLabel(owner: AwardOwner | null, t: Translate): string {
     return t("pages.awards.season_label", { number: owner.number });
   }
   return owner.name ?? t("pages.awards.scope_gone");
+}
+
+/**
+ * The owner is happening right now: a tournament or event underway. A league
+ * or season running for weeks is active, not live, so its dot stays still.
+ */
+export function ownerIsLive(owner: AwardOwner | null): boolean {
+  return (
+    owner?.phase === "live" &&
+    (owner.kind === "tournament" || owner.kind === "event")
+  );
 }
 
 export function ownerStatusText(

@@ -1,6 +1,7 @@
 // What the GPU nodes page derives from its subscriptions: who is on each GPU
 // right now, the node's state, the Steam account pool's health and the
 // filters. Pure, so it can be tested without a socket.
+import { shortGpuName } from "~/components/gpu-nodes/gpuDevices";
 
 export type GpuSessionKind = "live" | "demo" | "highlights" | "bake";
 
@@ -400,10 +401,7 @@ export function gpuName(node: any): string | null {
 
 /** "NVIDIA GeForce RTX 4080 SUPER" → "RTX 4080 SUPER". */
 export function gpuShortName(node: any): string | null {
-  const name = gpuName(node);
-  return name
-    ? name.replace(/^NVIDIA\s+/, "").replace(/^GeForce\s+/, "")
-    : null;
+  return shortGpuName(gpuName(node));
 }
 
 export function matchesSearch(
@@ -499,4 +497,87 @@ export function steamTileStatus(health: GpuPoolHealth): SteamTileStatus {
   if (health.key === "no_nodes") return "no_nodes";
   if (health.key === "short") return "short";
   return health.free === 0 ? "busy" : "enough";
+}
+
+export type GpuSortKey = "gpu" | "node" | "state";
+type SortDir = "asc" | "desc";
+
+const GROUP_ORDER: Record<GpuNodeState["group"], number> = {
+  busy: 0,
+  idle: 1,
+  off: 2,
+};
+
+/**
+ * The GPUs table in the order its header asks for: by card name, by node, or
+ * by state (busy, then idle, then off). Ties fall back to the node's name.
+ */
+export function sortGpuNodes<T>(
+  nodes: readonly T[],
+  key: GpuSortKey,
+  dir: SortDir,
+  stateOf: (node: T) => GpuNodeState,
+): T[] {
+  const sign = dir === "asc" ? 1 : -1;
+  const byName = (a: T, b: T) => nodeName(a).localeCompare(nodeName(b));
+  return [...nodes].sort((a, b) => {
+    let diff = 0;
+    if (key === "state") {
+      diff = GROUP_ORDER[stateOf(a).group] - GROUP_ORDER[stateOf(b).group];
+    } else if (key === "gpu") {
+      diff = (gpuName(a) ?? "").localeCompare(gpuName(b) ?? "");
+    } else {
+      diff = byName(a, b);
+    }
+    return diff * sign || byName(a, b);
+  });
+}
+
+/** The GPU page's remembered view: search, filters and sort. */
+export type GpuView = {
+  query: string;
+  kindFilter: string;
+  filters: GpuNodeFilters;
+  sort: GpuSortKey;
+  dir: SortDir;
+};
+
+export const gpuViewDefaults = (): GpuView => ({
+  query: "",
+  kindFilter: "all",
+  filters: { work: "", kind: "", region: "" },
+  sort: "gpu",
+  dir: "asc",
+});
+
+const oneOf =
+  (...values: unknown[]) =>
+  (value: unknown) =>
+    values.includes(value);
+
+export const gpuViewValidators = {
+  kindFilter: oneOf("all", "live", "demo", "highlights"),
+  filters: (value: unknown) => {
+    const filters = value as Partial<GpuNodeFilters> | null;
+    return (
+      !!filters &&
+      typeof filters === "object" &&
+      oneOf("", "streaming", "demos", "rendering")(filters.work) &&
+      oneOf("", "gpu", "match")(filters.kind) &&
+      typeof filters.region === "string"
+    );
+  },
+  sort: oneOf("gpu", "node", "state"),
+  dir: oneOf("asc", "desc"),
+};
+
+/**
+ * A remembered region filter only holds while a GPU is still in it (or, for
+ * "none", while one has no region); otherwise it would hide every GPU.
+ */
+export function regionFilterHolds(region: string, nodes: any[]): boolean {
+  if (!region) return true;
+  return region === "none"
+    ? nodes.some((node) => !node.region)
+    : nodes.some((node) => node.region === region);
 }

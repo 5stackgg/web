@@ -382,18 +382,13 @@ onBeforeUnmount(() => {
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("community.recent.title") }}
       </h3>
-      <span
-        v-if="retentionDays"
-        class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground"
-      >
+      <span v-if="retentionDays" class="text-xs text-muted-foreground">
         {{ $t("community.recent.retention", { days: retentionDays }) }}
       </span>
     </div>
 
-    <div
-      class="border border-border p-3 [background:linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.22)_100%)] max-sm:p-2"
-    >
-      <div class="mb-2 flex flex-wrap items-center gap-2">
+    <div>
+      <div class="mb-2.5 flex flex-wrap items-center gap-2">
         <div class="relative min-w-0 flex-[1_1_220px]">
           <Search
             class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
@@ -410,7 +405,7 @@ onBeforeUnmount(() => {
         <AnimatedFilters v-model="windowKey" square :options="windowOptions" />
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto rounded-md border border-border bg-card/20">
         <table class="w-full min-w-[820px] table-fixed border-collapse text-sm">
           <colgroup>
             <col />
@@ -422,24 +417,24 @@ onBeforeUnmount(() => {
           </colgroup>
           <thead>
             <tr
-              class="whitespace-nowrap border-b border-border font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              class="whitespace-nowrap border-b border-border text-[0.72rem] text-muted-foreground"
             >
-              <th class="px-2 py-2.5 text-left font-semibold">
+              <th class="px-3 py-2.5 text-left font-medium">
                 {{ $t("community.recent.player") }}
               </th>
-              <th class="px-2 py-2.5 text-left font-semibold">
-                {{ $t("community.last_seen") }}
+              <th class="px-3 py-2.5 text-left font-medium">
+                {{ $t("community.recent.last_seen") }}
               </th>
-              <th class="px-2 py-2.5 text-right font-semibold">
+              <th class="px-3 py-2.5 text-right font-medium">
                 {{ $t("community.recent.sessions_7d") }}
               </th>
-              <th class="px-2 py-2.5 text-right font-semibold">
-                {{ $t("community.recent.time_played_7d") }}
+              <th class="px-3 py-2.5 text-right font-medium">
+                {{ $t("community.recent.time_played_col") }}
               </th>
-              <th class="px-2 py-2.5 text-left font-semibold">
+              <th class="px-3 py-2.5 text-left font-medium">
                 {{ $t("community.ip.label") }}
               </th>
-              <th class="px-2 py-2.5">
+              <th class="px-3 py-2.5">
                 <span class="sr-only">{{ $t("community.actions") }}</span>
               </th>
             </tr>
@@ -453,10 +448,10 @@ onBeforeUnmount(() => {
             <tr
               v-for="row in displayRows"
               :key="row.steamId"
-              class="border-b border-border"
+              class="border-b border-border/50 last:border-b-0"
               :data-steam-id="row.steamId"
             >
-              <td class="px-2 py-2">
+              <td class="px-3 py-2">
                 <CommunityPlayerCell
                   :steam-id="row.steamId"
                   :name="row.name"
@@ -464,7 +459,7 @@ onBeforeUnmount(() => {
                   :dim="!row.online"
                 />
               </td>
-              <td class="px-2 py-2">
+              <td class="px-3 py-2">
                 <span
                   v-if="row.online"
                   class="inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-success"
@@ -481,16 +476,16 @@ onBeforeUnmount(() => {
                   {{ format.ago(row.last_seen_at, { now: now.getTime() }) }}
                 </time>
               </td>
-              <td class="px-2 py-2 text-right font-mono tabular-nums">
+              <td class="px-3 py-2 text-right font-mono tabular-nums">
                 {{ format.count(row.sessions) }}
               </td>
-              <td class="px-2 py-2 text-right font-mono tabular-nums">
+              <td class="px-3 py-2 text-right font-mono tabular-nums">
                 {{ format.played(row.seconds_played) }}
               </td>
-              <td class="min-w-0 px-2 py-2">
+              <td class="min-w-0 px-3 py-2">
                 <CommunityIp :ip="row.ip" :others="row.others" scope="week" />
               </td>
-              <td class="px-2 py-2">
+              <td class="px-3 py-2">
                 <div class="flex items-center justify-end gap-2">
                   <SanctionPlayer :player="row.target" :server-id="serverId" />
                   <CommunityPlayerMenu
@@ -534,7 +529,7 @@ onBeforeUnmount(() => {
           :disabled="refreshing"
           @click="loadMore"
         >
-          {{ $t("community.recent.load_more") }}
+          {{ $t("community.recent.show_more") }}
         </Button>
       </div>
     </div>

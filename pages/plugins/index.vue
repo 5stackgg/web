@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getCurrentInstance, onBeforeUnmount, onMounted, ref } from "vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
@@ -10,11 +11,7 @@ import PluginStoreCard from "~/components/plugins/PluginStoreCard.vue";
 import AddCustomPluginForm from "~/components/game-plugins/AddCustomPluginForm.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
 import {
   Sheet,
   SheetContent,
@@ -22,8 +19,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from "~/components/ui/sheet";
-import { Search, Plus, X } from "lucide-vue-next";
+import { Plus } from "lucide-vue-next";
 import { listCreateButtonClasses } from "~/utilities/tacticalClasses";
+import { useListKeyboard } from "~/composables/useListKeyboard";
+import {
+  gridStep,
+  type GridKey,
+} from "~/components/plugins/pluginDirectoryState";
 
 definePageMeta({
   middleware: "admin",
@@ -32,6 +34,75 @@ definePageMeta({
   // remounts on every tab, which reads as a flash.
   persistQueryKeys: ["kind"],
 });
+
+// The cards are a grid: ←/→ step a card, ↑/↓ a row, Home/End jump, Enter
+// opens the plugin. The list keyboard owns focus, Home/End and Enter; the two
+// axes are added here, ahead of its ↑/↓. The cards live in the Options half
+// and are read lazily, after data() exists.
+const instance = getCurrentInstance();
+const page = () => instance?.proxy as any;
+const grid = ref<HTMLElement | null>(null);
+const activeSlug = ref<string | null>(null);
+const cardKeys = useListKeyboard({
+  items: () => page()?.filtered ?? [],
+  getId: (plugin: Record<string, any>) => plugin.slug,
+  activeId: activeSlug,
+  onOpen: (slug) => navigateTo(`/plugins/${slug}`),
+});
+
+function cardProps(slug: string) {
+  const { "aria-selected": _selected, ...rest } = cardKeys.rowProps(slug);
+  return rest;
+}
+
+const GRID_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+const OVERLAY_OPEN =
+  '[role="dialog"][data-state="open"], [role="alertdialog"][data-state="open"], [role="menu"][data-state="open"], [role="listbox"]';
+
+function onGridKeydown(event: KeyboardEvent) {
+  if (
+    !GRID_KEYS.includes(event.key) ||
+    event.defaultPrevented ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.altKey ||
+    event.shiftKey ||
+    document.querySelector(OVERLAY_OPEN)
+  ) {
+    return;
+  }
+  const target = event.target as HTMLElement | null;
+  const onCard = !!target?.dataset?.listRow && !!grid.value?.contains(target);
+  const onBody = (!target || target === document.body) && !!activeSlug.value;
+  if (!onCard && !onBody) {
+    return;
+  }
+  const cards = Array.from(
+    grid.value?.querySelectorAll<HTMLElement>("[data-list-row]") ?? [],
+  );
+  const ids = cards.map((card) => card.dataset.listRow as string);
+  const firstTop = cards[0]?.getBoundingClientRect().top ?? 0;
+  const columns = cards.filter(
+    (card) => Math.abs(card.getBoundingClientRect().top - firstTop) < 2,
+  ).length;
+  const next = gridStep(
+    activeSlug.value ? ids.indexOf(activeSlug.value) : -1,
+    ids.length,
+    columns,
+    event.key as GridKey,
+  );
+  if (next < 0) {
+    return;
+  }
+  event.preventDefault();
+  activeSlug.value = ids[next];
+  cardKeys.focusRow(ids[next]);
+}
+
+onMounted(() => document.addEventListener("keydown", onGridKeydown, true));
+onBeforeUnmount(() =>
+  document.removeEventListener("keydown", onGridKeydown, true),
+);
 </script>
 
 <template>
@@ -39,29 +110,11 @@ definePageMeta({
 
   <PageTransition :delay="0">
     <div class="flex flex-wrap items-center gap-2">
-      <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
-        <InputGroupAddon class="pl-2.5">
-          <Search class="h-3.5 w-3.5" />
-        </InputGroupAddon>
-        <InputGroupInput
-          v-model="search"
-          autocomplete="off"
-          :placeholder="$t('pages.plugins.search')"
-          :aria-label="$t('pages.plugins.search')"
-          class="h-full text-sm"
-        />
-        <InputGroupAddon align="inline-end" class="pr-2">
-          <button
-            v-if="search"
-            type="button"
-            class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            :aria-label="$t('common.reset_filters')"
-            @click="search = ''"
-          >
-            <X class="h-3.5 w-3.5" />
-          </button>
-        </InputGroupAddon>
-      </InputGroup>
+      <AdminSearch
+        v-model="search"
+        shortcut
+        :placeholder="$t('pages.plugins.search')"
+      />
 
       <div
         class="max-w-full overflow-x-auto [scrollbar-width:none] max-md:order-last"
@@ -150,18 +203,20 @@ definePageMeta({
         "
       >
         <Button size="sm" variant="outline" @click="clearFilters">
-          {{ $t("pages.plugins.store.show_all") }}
+          {{ $t("common.clear_filters") }}
         </Button>
       </SectionEmpty>
 
       <div
         v-else
+        ref="grid"
         :key="`grid-${state}-${kind}-${verifiedOnly}`"
         class="grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))]"
       >
         <PluginStoreCard
           v-for="plugin in filtered"
           :key="plugin.slug"
+          :link-props="cardProps(plugin.slug)"
           :plugin="plugin"
           :state="cardStates[plugin.slug]"
           :runtime="runtime"
@@ -196,25 +251,37 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "~/components/ui/toast";
 import {
+  PLUGIN_KINDS,
   isPluginInstalled,
   needsAttention,
   pluginCardState,
+  pluginViewDefaults,
+  pluginViewValidators,
   retryVersion,
   runtimeLabel,
   type DesiredInstall,
   type PluginCardState,
 } from "~/components/plugins/pluginDirectoryState";
+import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
 
-const KINDS = ["game", "panel", "bundle"];
 const ONLINE = new Set(["Online", "NotAcceptingNewMatches"]);
 
 export default {
   data() {
+    // The directory opens the way it was left: search, tab and filters.
+    const view = readRememberedView(
+      "plugins",
+      pluginViewDefaults(),
+      pluginViewValidators,
+    );
     return {
-      search: "",
-      kind: "all",
-      state: "all",
-      verifiedOnly: false,
+      search: view.search,
+      kind: view.kind,
+      state: view.state,
+      verifiedOnly: view.verifiedOnly,
       adding: false,
       busy: null as string | null,
       pluginsLoaded: false,
@@ -228,8 +295,12 @@ export default {
   created() {
     const kind = this.$route.query.kind;
 
-    if (typeof kind === "string" && KINDS.includes(kind)) {
+    // A linked kind wins over the remembered one; a remembered one goes
+    // into the URL so the view stays linkable.
+    if (typeof kind === "string" && PLUGIN_KINDS.includes(kind)) {
       this.kind = kind;
+    } else if (this.kind !== "all") {
+      void this.$router.replace({ query: { kind: this.kind } });
     }
   },
   watch: {
@@ -237,6 +308,18 @@ export default {
       void this.$router.replace({
         query: value === "all" ? {} : { kind: value },
       });
+    },
+    viewSignature() {
+      saveRememberedView(
+        "plugins",
+        {
+          search: this.search,
+          state: this.state,
+          kind: this.kind,
+          verifiedOnly: this.verifiedOnly,
+        },
+        pluginViewDefaults(),
+      );
     },
     // The attention tab only exists while something needs it; once the last
     // failure clears, the list it was showing is gone with it.
@@ -425,6 +508,14 @@ export default {
     },
   },
   computed: {
+    viewSignature(): string {
+      return JSON.stringify([
+        this.search,
+        this.state,
+        this.kind,
+        this.verifiedOnly,
+      ]);
+    },
     runtime(): string {
       return useApplicationSettingsStore().gameServerPluginRuntime;
     },
@@ -503,7 +594,7 @@ export default {
     kindOptions(): Array<{ key: string; label: string }> {
       const present = new Set(this.plugins.map((plugin) => plugin.kind));
 
-      return KINDS.filter((kind) => present.has(kind)).map((kind) => ({
+      return PLUGIN_KINDS.filter((kind) => present.has(kind)).map((kind) => ({
         key: kind,
         label: this.$t(`pages.plugins.kinds.${kind}`) as string,
       }));

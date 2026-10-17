@@ -6,11 +6,10 @@ import { Check, Hourglass } from "lucide-vue-next";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import DbGrid from "./DbGrid.vue";
 import DbQueryCell from "./DbQueryCell.vue";
 import DbSev from "./DbSev.vue";
-import DbTerm from "./DbTerm.vue";
-import DbTile from "./DbTile.vue";
 import SchemaSelector from "./SchemaSelector.vue";
 import {
   deadSeverity,
@@ -152,33 +151,35 @@ const countKeys = [
         }}</span>
       </template>
       <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5">
-        <DbTile
+        <StatTile
           :label="$t('pages.database.explorer.cache_hit_ratio')"
-          :sev="hitSeverity(stats?.cache_hit_ratio)"
+          :tone="hitSeverity(stats?.cache_hit_ratio) || undefined"
         >
           <DbSev :sev="hitSeverity(stats?.cache_hit_ratio)">{{
             formatPct(stats?.cache_hit_ratio) ?? "—"
           }}</DbSev>
-        </DbTile>
-        <DbTile :label="$t('pages.database.explorer.active_backends')">
-          {{ stats ? stats.numbackends.toLocaleString() : "—" }}
-        </DbTile>
-        <DbTile :label="$t('pages.database.locks.commits')">
-          {{ stats ? formatBig(stats.xact_commit) : "—" }}
-        </DbTile>
-        <DbTile :label="$t('pages.database.locks.rollbacks')">
-          {{ stats ? formatBig(stats.xact_rollback) : "—" }}
-        </DbTile>
-        <DbTile :sev="stats?.deadlocks ? 'warn' : ''">
-          <template #label>
-            <DbTerm :tip="$t('pages.database.explorer.deadlocks_tip')">{{
-              $t("pages.database.locks.deadlocks")
-            }}</DbTerm>
-          </template>
+        </StatTile>
+        <StatTile
+          :label="$t('pages.database.explorer.active_backends')"
+          :value="stats?.numbackends ?? null"
+        />
+        <StatTile
+          :label="$t('pages.database.locks.commits')"
+          :value="stats ? formatBig(stats.xact_commit) : null"
+        />
+        <StatTile
+          :label="$t('pages.database.locks.rollbacks')"
+          :value="stats ? formatBig(stats.xact_rollback) : null"
+        />
+        <StatTile
+          :label="$t('pages.database.locks.deadlocks')"
+          :tip="$t('pages.database.explorer.deadlocks_tip')"
+          :tone="stats?.deadlocks ? 'warn' : undefined"
+        >
           <DbSev :sev="stats?.deadlocks ? 'warn' : ''">{{
             stats ? stats.deadlocks.toLocaleString() : "—"
           }}</DbSev>
-        </DbTile>
+        </StatTile>
       </div>
       <dl
         v-if="facts.length"

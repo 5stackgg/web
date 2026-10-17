@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, toRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  Download,
-  FileDown,
-  Maximize2,
-  Minimize2,
-  Search,
-} from "lucide-vue-next";
+import { Download, FileDown, Maximize2, Minimize2 } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -23,6 +18,7 @@ import LogVolumeStrip from "~/components/system-logs/LogVolumeStrip.vue";
 import LogRepeats from "~/components/system-logs/LogRepeats.vue";
 import LogStream from "~/components/system-logs/LogStream.vue";
 import {
+  LEVEL_FILTERS,
   PRESETS,
   SERVICES,
   countLevels,
@@ -30,6 +26,7 @@ import {
   hourMinute,
   levelMatches,
   ratePerMinute,
+  rememberedServices,
   serviceStatus,
   signatureOf,
   sparkBuckets,
@@ -46,6 +43,7 @@ import {
   useSystemLogStreams,
 } from "~/composables/useSystemLogStreams";
 import { getQueryString } from "~/composables/useRouteTab";
+import { useRememberedView } from "~/composables/useRememberedView";
 
 definePageMeta({ middleware: "admin" });
 
@@ -67,27 +65,55 @@ function requestedService() {
     : null;
 }
 
+// The services you picked, the level and timestamps come back next visit.
+// Follow isn't kept: scrolling flips it, and a page that opens paused reads
+// as broken. A deep link still opens on its one service without replacing
+// what you picked.
+const view = useRememberedView(
+  "system-logs",
+  {
+    services: [...PRESETS.core] as string[],
+    level: "all" as LevelFilter,
+    timestamps: true,
+  },
+  {
+    validate: {
+      level: (value) => (LEVEL_FILTERS as readonly unknown[]).includes(value),
+    },
+  },
+);
+
 const selected = ref<string[]>(
-  requestedService() ? [requestedService() as string] : [...PRESETS.core],
+  requestedService()
+    ? [requestedService() as string]
+    : rememberedServices(view.services),
 );
 const selectedSet = computed(() => new Set(selected.value));
 const podsOff = ref<string[]>([]);
 const podsOffSet = computed(() => new Set(podsOff.value));
-const level = ref<LevelFilter>("all");
+const level = toRef(view, "level");
 const query = ref("");
 const debouncedQuery = ref("");
 const sigFilter = ref<string | null>(null);
 const follow = ref(true);
-const showTs = ref(true);
+const showTs = toRef(view, "timestamps");
 const maximized = ref(false);
-const searchInput = ref<HTMLInputElement | null>(null);
 const streamRef = ref<InstanceType<typeof LogStream> | null>(null);
 
 let queryTimer: ReturnType<typeof setTimeout> | undefined;
 watch(query, (value) => {
   clearTimeout(queryTimer);
+  if (!value.trim()) {
+    debouncedQuery.value = "";
+    return;
+  }
   queryTimer = setTimeout(() => (debouncedQuery.value = value.trim()), 90);
 });
+
+function pick(services: string[]) {
+  selected.value = services;
+  view.services = [...services];
+}
 
 watch(
   selected,
@@ -219,15 +245,17 @@ const emptyKind = computed(() => {
 });
 
 function toggleService(service: string) {
-  selected.value = selectedSet.value.has(service)
-    ? selected.value.filter((s) => s !== service)
-    : [...selected.value, service];
+  pick(
+    selectedSet.value.has(service)
+      ? selected.value.filter((s) => s !== service)
+      : [...selected.value, service],
+  );
 }
 function onlyService(service: string) {
-  selected.value = [service];
+  pick([service]);
 }
 function applyPreset(key: string) {
-  selected.value = [...(PRESETS[key] || PRESETS.core)];
+  pick([...(PRESETS[key] || PRESETS.core)]);
 }
 function togglePod(pod: string) {
   podsOff.value = podsOffSet.value.has(pod)
@@ -235,7 +263,7 @@ function togglePod(pod: string) {
     : [...podsOff.value, pod];
 }
 function showOnlyFromTag(service: string) {
-  selected.value = [service];
+  pick([service]);
   toast({ title: t("pages.system_logs.showing_only", { service }) });
 }
 function clearFilters() {
@@ -287,28 +315,12 @@ async function downloadFull(service: string) {
 }
 
 function onKeydown(event: KeyboardEvent) {
-  const target = event.target as HTMLElement | null;
-  const typing = !!target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName);
-  if (event.key === "/" && !typing && !target?.isContentEditable) {
-    event.preventDefault();
-    searchInput.value?.focus();
-    searchInput.value?.select();
-    return;
-  }
   if (
     event.key === "Escape" &&
     maximized.value &&
     !document.querySelector('[role="menu"], [role="dialog"]')
   ) {
     maximized.value = false;
-  }
-}
-
-function onSearchKeydown(event: KeyboardEvent) {
-  if (event.key === "Escape" && query.value) {
-    event.stopPropagation();
-    query.value = "";
-    debouncedQuery.value = "";
   }
 }
 
@@ -364,27 +376,11 @@ onBeforeUnmount(() => {
           "
         >
           <div class="flex min-w-0 flex-wrap items-center gap-2">
-            <label class="relative block w-full sm:w-[300px]">
-              <Search
-                class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/70"
-              />
-              <input
-                ref="searchInput"
-                v-model="query"
-                type="text"
-                autocomplete="off"
-                spellcheck="false"
-                class="h-8 w-full rounded-md border border-border bg-[hsl(240_6%_6%)] pl-8 pr-8 text-[13px] outline-none placeholder:text-muted-foreground/60 focus-visible:ring-1 focus-visible:ring-ring"
-                :placeholder="$t('pages.system_logs.filter_lines')"
-                :aria-label="$t('pages.system_logs.filter_lines')"
-                @keydown="onSearchKeydown"
-              />
-              <span
-                class="pointer-events-none absolute right-2 top-1/2 inline-grid h-[18px] min-w-[18px] -translate-y-1/2 place-items-center rounded border border-border px-1 font-mono text-[10.5px] text-muted-foreground"
-                aria-hidden="true"
-                >/</span
-              >
-            </label>
+            <AdminSearch
+              v-model="query"
+              :placeholder="$t('pages.system_logs.filter_lines')"
+              shortcut
+            />
             <AnimatedFilters v-model="level" square :options="levelOptions" />
 
             <div class="ml-auto flex items-center gap-3">

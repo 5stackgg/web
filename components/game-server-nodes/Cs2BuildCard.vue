@@ -5,6 +5,8 @@ import { ChevronDown, History } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { Button } from "~/components/ui/button";
 import { Fold } from "~/components/ui/transitions";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import type { Tone } from "~/components/admin/tone";
 import Cs2BuildVersion from "~/components/game-server-nodes/Cs2BuildVersion.vue";
 import Cs2GamedataPanel from "~/components/game-server-nodes/Cs2GamedataPanel.vue";
 import Cs2MapAssetsPanel from "~/components/game-server-nodes/Cs2MapAssetsPanel.vue";
@@ -73,17 +75,17 @@ const tone = computed(
 
 const running = computed(() => tones.value.includes("running"));
 
-const DOT_TONES: Record<Cs2BuildTone, string> = {
-  success: "bg-success",
-  warning: "bg-[hsl(var(--tac-amber))]",
-  destructive: "bg-destructive",
-  running: "bg-info",
-  idle: "bg-muted-foreground/40",
+const DOT_TONES: Record<Cs2BuildTone, Tone> = {
+  success: "ok",
+  warning: "warn",
+  destructive: "bad",
+  running: "info",
+  idle: "off",
 };
 
 const TEXT_TONES: Record<Cs2BuildTone, string> = {
   success: "text-success",
-  warning: "text-[hsl(var(--tac-amber))]",
+  warning: "text-warning",
   destructive: "text-destructive",
   running: "text-info",
   idle: "text-muted-foreground",
@@ -129,17 +131,7 @@ const TEXT_TONES: Record<Cs2BuildTone, string> = {
             {{ $t("pages.game_server_nodes.cs2_build.title") }}
           </span>
           <span class="inline-flex items-center gap-2">
-            <span class="relative flex h-1.5 w-1.5 shrink-0">
-              <span
-                v-if="running"
-                class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"
-                :class="DOT_TONES[tone]"
-              />
-              <span
-                class="relative inline-flex h-1.5 w-1.5 rounded-full"
-                :class="DOT_TONES[tone]"
-              />
-            </span>
+            <StatusDot :tone="DOT_TONES[tone]" :live="running" size="sm" />
             <span class="font-semibold" :class="TEXT_TONES[tone]">
               {{
                 $t(`pages.game_server_nodes.cs2_build.summary.status.${tone}`)

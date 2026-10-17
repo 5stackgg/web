@@ -54,6 +54,7 @@ export type LedgerUtilityRender = {
   status: string;
   last_status_at: string | null;
   created_at: string;
+  duration_ms?: number | string | null;
   lineup?: { name?: string | null } | null;
 };
 
@@ -222,6 +223,58 @@ export function buildLedgerRows<
 
   // In flight keeps queue order; history reads newest first.
   return input.view === "flight" ? out : out.sort((a, b) => b.at - a.at);
+}
+
+export type LedgerSortKey = "name" | "status" | "length" | "at";
+export const LEDGER_SORT_KEYS: readonly LedgerSortKey[] = [
+  "name",
+  "status",
+  "length",
+  "at",
+];
+// Names read A to Z first; length and finished read largest/newest first.
+export const LEDGER_SORT_DIRS: Partial<Record<LedgerSortKey, "asc" | "desc">> =
+  { length: "desc", at: "desc" };
+
+function rowLength(row: LedgerRow): number | null {
+  const ms = Number(
+    row.kind === "clip" ? row.job.spec?.duration_ms : row.render.duration_ms,
+  );
+  return Number.isFinite(ms) && ms > 0 ? ms : null;
+}
+
+// History sorted by a column. Rows without a length sit last either way;
+// ties fall back to newest first.
+export function sortLedgerRows<R extends LedgerRow>(
+  rows: readonly R[],
+  sort: { key: LedgerSortKey; dir: "asc" | "desc" },
+  nameOf: (row: R) => string,
+): R[] {
+  const sign = sort.dir === "asc" ? 1 : -1;
+  const compare = (a: R, b: R): number => {
+    switch (sort.key) {
+      case "name":
+        return sign * nameOf(a).localeCompare(nameOf(b));
+      case "status":
+        return sign * a.status.localeCompare(b.status);
+      case "length": {
+        const la = rowLength(a);
+        const lb = rowLength(b);
+        if (la === null || lb === null) {
+          return la === lb ? 0 : la === null ? 1 : -1;
+        }
+        return sign * (la - lb);
+      }
+      default:
+        return sign * (a.at - b.at);
+    }
+  };
+  return [...rows].sort(
+    (a, b) =>
+      compare(a, b) ||
+      b.at - a.at ||
+      (a.key < b.key ? -1 : a.key > b.key ? 1 : 0),
+  );
 }
 
 export function countInView(

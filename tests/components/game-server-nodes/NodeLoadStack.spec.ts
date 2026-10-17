@@ -34,16 +34,13 @@ describe("NodeLoadStack", () => {
     expect(line(wrapper, "cpu").value.classes()).not.toContain(
       "text-destructive",
     );
-    expect(has(wrapper, "gpu")).toBe(false);
   });
 
   it("tints the value at warn and turns the meter critical at 85%", async () => {
     const wrapper = await mountStack({ cpu: 72, memory: 90 });
 
     expect(line(wrapper, "cpu").tone).toBe("warn");
-    expect(line(wrapper, "cpu").value.classes().join(" ")).toContain(
-      "tac-amber",
-    );
+    expect(line(wrapper, "cpu").value.classes()).toContain("text-warning");
     expect(line(wrapper, "memory").tone).toBe("bad");
     expect(line(wrapper, "memory").value.classes()).toContain(
       "text-destructive",
@@ -82,22 +79,13 @@ describe("NodeLoadStack", () => {
       live: false,
       cpu: 50,
       memory: 50,
-      gpu: 50,
       disk: disk(40),
     });
     expect(has(offline, "cpu")).toBe(false);
-    expect(has(offline, "gpu")).toBe(false);
     expect(has(offline, "disk")).toBe(true);
 
     const empty = await mountStack({ live: false });
     expect(empty.text()).toBe("—");
-  });
-
-  it("adds a GPU line in its own colour when a GPU reading is passed", async () => {
-    const wrapper = await mountStack({ cpu: 10, memory: 10, gpu: null });
-
-    expect(line(wrapper, "gpu").metric).toBe("gpu");
-    expect(line(wrapper, "gpu").value.text()).toBe("—");
   });
 
   it("shows a decimal under 10% when precise", async () => {

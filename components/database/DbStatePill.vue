@@ -9,7 +9,7 @@ defineProps<{ state: string | null | undefined }>();
       state === 'active'
         ? 'border-info/30 bg-info/10 text-info'
         : state === 'idle in transaction'
-          ? 'border-amber-500/30 bg-amber-500/10 text-amber-400'
+          ? 'border-warning/30 bg-warning/10 text-warning'
           : 'border-border bg-[hsl(240_4%_10%)] text-muted-foreground'
     "
   >

@@ -66,15 +66,14 @@ import {
 } from "~/components/game-server-nodes/nodeInspector";
 import type { MetricRangeKey } from "~/components/game-server-nodes/nodeMetrics";
 import {
-  nodeModeFields,
   setNodeFields,
   updateGame,
 } from "~/components/game-server-nodes/nodeActions";
 import {
   attentionCopy,
   INSPECTOR,
-  TONE_TEXT,
 } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
 
 // One node, docked beside the table (or in a sheet when there's no room): a
 // sticky header with the node's one next step, a callout for what is wrong,
@@ -340,20 +339,6 @@ async function clearPorts() {
   }
 }
 
-async function setMode(mode: "match" | "gpu") {
-  try {
-    await setNodeFields(client, props.node.id, nodeModeFields(mode));
-    toast({
-      title:
-        mode === "gpu"
-          ? t("game_server.toast.made_gpu_only")
-          : t("game_server.toast.made_match_node"),
-    });
-  } catch (error: any) {
-    failed(error);
-  }
-}
-
 async function enable() {
   try {
     await setNodeFields(client, props.node.id, { enabled: true });
@@ -461,7 +446,7 @@ onBeforeUnmount(() => headerObserver?.disconnect());
 
 const CALLOUT_BORDER: Record<string, string> = {
   bad: "border-destructive/30",
-  warn: "border-[hsl(var(--tac-amber)/0.3)]",
+  warn: "border-warning/30",
   info: "border-border/60",
   off: "border-border/60",
 };
@@ -775,7 +760,6 @@ const CALLOUT_BORDER: Record<string, string> = {
           v-if="node.gpu"
           :node="node"
           :stats="stats"
-          @mode="setMode"
           @edit-video="editVideo = true"
         />
       </div>

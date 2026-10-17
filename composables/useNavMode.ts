@@ -1,36 +1,16 @@
 import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
+import { adminEntryForRoute } from "~/composables/adminEntries";
 
 export type NavMode = "play" | "admin";
 
-// Route names (and their children) that live in the left nav's Admin list.
-// Opening one flips the nav to Admin; any other page flips it back to Play.
-const ADMIN_ROUTES = [
-  "awards",
-  "seasons",
-  "system-alerts",
-  "stream-deck",
-  "plugins",
-  "regions",
-  "settings-application",
-  "dedicated-servers",
-  "game-server-nodes",
-  "gpu-nodes",
-  "system-logs",
-  "system-metrics",
-  "system-media-server",
-  "database",
-  "system-render-queue",
-  "fleet-telemetry",
-];
-
+// Opening an admin page flips the nav to Admin; any other page flips it back
+// to Play. The pages come from adminEntries (the Overview at `admin` too),
+// matched by exact route name; only entries marked `children` also claim
+// their `<route>-*` routes, so the public /awards/[id] (`awards-id`) stays in
+// Play.
 export function isAdminRouteName(name: unknown): boolean {
-  if (typeof name !== "string") {
-    return false;
-  }
-  return ADMIN_ROUTES.some(
-    (route) => name === route || name.startsWith(`${route}-`),
-  );
+  return !!adminEntryForRoute(name);
 }
 
 const mode = ref<NavMode>("play");

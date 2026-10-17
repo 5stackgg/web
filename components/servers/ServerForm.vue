@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { Fold } from "~/components/ui/transitions";
 import {
   FormControl,
@@ -63,10 +62,9 @@ const gameOptions = [
   { key: "csgo", label: "CS:GO" },
 ];
 
-const subLabelClasses =
-  "font-mono text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground";
+const subLabelClasses = "text-xs font-medium text-muted-foreground";
 const tagClasses =
-  "inline-flex items-center gap-1 whitespace-nowrap rounded-sm border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase leading-none tracking-[0.12em] text-muted-foreground";
+  "inline-flex items-center gap-1 whitespace-nowrap rounded-md border border-border px-1.5 py-0.5 text-[0.65rem] font-medium leading-none text-muted-foreground";
 const noteClasses =
   "flex items-start gap-2.5 rounded-md bg-muted/40 px-3 py-2.5 text-sm text-muted-foreground";
 const iconBoxClasses =
@@ -226,7 +224,7 @@ const iconBoxClasses =
              nodes through the move dialog. -->
         <template v-if="server">
           <div
-            class="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border bg-muted/20 px-4 py-3"
+            class="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-md border bg-muted/20 px-4 py-3"
           >
             <span
               :class="iconBoxClasses"
@@ -547,10 +545,10 @@ const iconBoxClasses =
               <NuxtLink
                 v-if="isAdmin && isCustomModeSelected"
                 :to="editModeLink"
-                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+                class="text-xs text-muted-foreground underline decoration-dotted underline-offset-2 transition-colors hover:text-foreground"
                 data-testid="edit-game-mode"
               >
-                {{ $t("server.form.edit_mode") }}
+                {{ $t("server.form.edit_mode_link") }}
               </NuxtLink>
             </div>
             <RadioGroup
@@ -751,15 +749,20 @@ const iconBoxClasses =
       </div>
     </FormSection>
 
-    <Button
+    <!-- A create flow keeps its action in view the whole way down, like the
+         other create forms: the bar is up from the start and saves once. -->
+    <SettingsSaveBar
       v-if="!server"
-      type="submit"
-      :disabled="Object.keys(form.errors).length > 0"
-      :loading="submitting"
-      :class="[tacticalCtaButtonClasses, 'w-full justify-center']"
-    >
-      {{ $t("server.form.create") }}
-    </Button>
+      force-visible
+      hide-discard
+      :valid="!formHasErrors"
+      :invalid="formHasErrors"
+      :submitting="submitting"
+      :title="$t('pages.dedicated_servers.new_server')"
+      :description="createSummary"
+      :action-label="$t('pages.dedicated_servers.create_server')"
+      @save="updateCreateServer"
+    />
 
     <SettingsSaveBar
       v-else
@@ -1131,6 +1134,28 @@ export default {
     hosting(): string {
       return this.useGameServerNode ? "node" : "external";
     },
+    formHasErrors(): boolean {
+      return Object.keys(this.form.errors).length > 0;
+    },
+    // The create bar's second line: where the new server is going to run.
+    createSummary(): string {
+      const values = this.form.values;
+      if (values.use_game_server_node) {
+        const node = this.nodeOptions.find(
+          (option) => option.id === values.game_server_node_id,
+        );
+        return node
+          ? this.$t("pages.dedicated_servers.create_on_node", {
+              node: node.name,
+            })
+          : this.$t("pages.dedicated_servers.create_pick_place");
+      }
+      return values.host
+        ? this.$t("pages.dedicated_servers.create_at_host", {
+            address: `${values.host}:${values.port ?? 27015}`,
+          })
+        : this.$t("pages.dedicated_servers.create_pick_place");
+    },
     // Every node is listed, with the reason one can't take this server --
     // the same checks the move dialog makes, plus GPU-only nodes, which have
     // no region or game ports.
@@ -1485,7 +1510,7 @@ export default {
     },
     tileClass(selected: boolean, disabled = false): Array<string> {
       return [
-        "flex rounded-lg border transition-colors",
+        "flex rounded-md border transition-colors",
         disabled
           ? "cursor-not-allowed opacity-50"
           : selected

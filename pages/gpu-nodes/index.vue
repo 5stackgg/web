@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { Plus, Search, Server, TriangleAlert, X } from "lucide-vue-next";
+import { getCurrentInstance, ref, watch } from "vue";
+import { Plus, Server, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
 import { Sheet, SheetContent, SheetTitle } from "~/components/ui/sheet";
 import {
   AlertDialog,
@@ -23,7 +18,9 @@ import FilterMenu from "~/components/common/FilterMenu.vue";
 import FilterToggle from "~/components/common/FilterToggle.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
+import SortHeader from "~/components/admin/SortHeader.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
 import GpuNodeRow from "~/components/gpu-nodes/GpuNodeRow.vue";
 import GpuNodePanel from "~/components/gpu-nodes/GpuNodePanel.vue";
@@ -33,10 +30,52 @@ import GpuSteamTile from "~/components/gpu-nodes/GpuSteamTile.vue";
 import { gpuName, type GpuSession } from "~/components/gpu-nodes/gpuSessions";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 import { useGpuNodeActions } from "~/composables/useGpuNodeActions";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 
 definePageMeta({
   middleware: "admin",
 });
+
+// ↑/↓ walk a table's rows, Enter opens the GPU's panel, Esc closes it. Each
+// table keeps its own active row, so only one answers the keys. The rows live
+// in the Options half; they are read lazily, after data() exists.
+const instance = getCurrentInstance();
+const vm = () => instance?.proxy as any;
+const activeGpuId = ref<string | null>(null);
+const activeSessionId = ref<string | null>(null);
+watch(activeGpuId, (id) => {
+  if (id) activeSessionId.value = null;
+});
+watch(activeSessionId, (id) => {
+  if (id) activeGpuId.value = null;
+});
+const closeFromKeys = () => vm()?.closePanelFromKeys() === true;
+
+const gpuKeys = useListKeyboard<any>({
+  items: () => vm()?.sortedNodes ?? [],
+  getId: (node) => node.id,
+  activeId: activeGpuId,
+  onOpen: (id) => vm()?.openPanel(id),
+  onClose: closeFromKeys,
+});
+const sessionKeys = useListKeyboard<any>({
+  items: () => vm()?.visibleSessions ?? [],
+  getId: (session) => session.id,
+  activeId: activeSessionId,
+  onOpen: (id) => {
+    const session = (vm()?.visibleSessions ?? []).find(
+      (entry: GpuSession) => entry.id === id,
+    );
+    if (session) vm()?.openPanel(session.nodeId);
+  },
+  onClose: closeFromKeys,
+});
+
+// The roving tabindex; aria-selected stays the open panel's.
+function rowAttrs(keys: typeof gpuKeys, id: string) {
+  const { "aria-selected": _selected, ...attrs } = keys.rowProps(id);
+  return attrs;
+}
 
 const { stopSession } = useGpuNodeActions();
 
@@ -82,30 +121,11 @@ const sheetFade = {
       <!-- ===================== CONTROL ROW ===================== -->
       <PageTransition :delay="0">
         <div class="flex flex-wrap items-center gap-2">
-          <InputGroup class="h-8 w-full bg-card/60 sm:w-[300px]">
-            <InputGroupAddon class="pl-2.5">
-              <Search class="h-3.5 w-3.5" />
-            </InputGroupAddon>
-            <InputGroupInput
-              v-model="query"
-              :placeholder="$t('pages.gpu_nodes.search_placeholder')"
-              :aria-label="$t('pages.gpu_nodes.search_placeholder')"
-              autocomplete="off"
-              spellcheck="false"
-              class="h-full text-sm max-md:text-base"
-            />
-            <InputGroupAddon align="inline-end" class="pr-1.5">
-              <button
-                v-if="query"
-                type="button"
-                :aria-label="$t('common.clear')"
-                class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                @click="query = ''"
-              >
-                <X class="h-3.5 w-3.5" />
-              </button>
-            </InputGroupAddon>
-          </InputGroup>
+          <AdminSearch
+            v-model="query"
+            :placeholder="$t('pages.gpu_nodes.search_placeholder')"
+            shortcut
+          />
           <AnimatedFilters v-model="kindFilter" :options="kindOptions" square />
           <span class="grow" />
           <FilterMenu
@@ -136,45 +156,31 @@ const sheetFade = {
       <!-- ===================== KPI TILES ===================== -->
       <PageTransition :delay="60">
         <div class="mt-5 grid grid-cols-2 gap-2.5 xl:grid-cols-4">
-          <div
-            class="grid content-start gap-1.5 rounded-md border border-border bg-card/40 px-3.5 py-3"
+          <StatTile
+            :label="$t('pages.gpu_nodes.kpi.gpus_free')"
+            :value="gpusFree"
+            :tone="gpuNodes.length && gpusFree === 0 ? 'warn' : undefined"
           >
-            <span class="text-xs text-muted-foreground">{{
-              $t("pages.gpu_nodes.kpi.gpus_free")
-            }}</span>
-            <span
-              class="text-[26px] font-bold leading-none tabular-nums"
-              :class="
-                gpuNodes.length && gpusFree === 0 ? 'text-yellow-500' : ''
-              "
-            >
-              {{ gpusFree
-              }}<small
-                class="ml-1.5 text-sm font-semibold text-muted-foreground"
-                >{{
-                  $t("pages.gpu_nodes.kpi.of_total", { total: gpuNodes.length })
-                }}</small
-              >
-            </span>
-            <div
-              v-if="gpuNodes.length"
-              class="flex h-1.5 gap-0.5"
-              aria-hidden="true"
-            >
-              <span
-                v-for="node in gpuNodes"
-                :key="node.id"
-                class="flex-1 rounded-sm transition-colors duration-150"
-                :class="
-                  nodeState(node).group === 'busy'
-                    ? 'bg-[hsl(var(--tac-amber))]'
-                    : nodeState(node).group === 'off'
-                      ? 'bg-muted/50'
-                      : 'bg-muted'
-                "
-              />
-            </div>
-          </div>
+            <template #aside>{{
+              $t("pages.gpu_nodes.kpi.of_total", { total: gpuNodes.length })
+            }}</template>
+            <template v-if="gpuNodes.length" #sub>
+              <span class="flex h-1.5 gap-0.5" aria-hidden="true">
+                <span
+                  v-for="node in gpuNodes"
+                  :key="node.id"
+                  class="flex-1 rounded-sm transition-colors duration-150"
+                  :class="
+                    nodeState(node).group === 'busy'
+                      ? 'bg-[hsl(var(--tac-amber))]'
+                      : nodeState(node).group === 'off'
+                        ? 'bg-muted/50'
+                        : 'bg-muted'
+                  "
+                />
+              </span>
+            </template>
+          </StatTile>
 
           <GpuSteamTile
             :accounts="steamAccounts"
@@ -183,50 +189,43 @@ const sheetFade = {
             @open="openAccounts"
           />
 
-          <div
-            class="grid content-start gap-1.5 rounded-md border border-border bg-card/40 px-3.5 py-3"
+          <StatTile
+            :label="$t('pages.gpu_nodes.kpi.running')"
+            :value="kindCounts.live + kindCounts.demo + kindCounts.highlights"
           >
-            <span class="text-xs text-muted-foreground">{{
-              $t("pages.gpu_nodes.kpi.running")
-            }}</span>
-            <span class="text-[26px] font-bold leading-none tabular-nums">{{
-              kindCounts.live + kindCounts.demo + kindCounts.highlights
-            }}</span>
-            <span class="text-xs tabular-nums text-muted-foreground">{{
-              $t("pages.gpu_nodes.kpi.running_split", {
-                live: kindCounts.live,
-                demo: kindCounts.demo,
-                render: kindCounts.highlights,
-              })
-            }}</span>
-          </div>
-
-          <div
-            class="grid content-start gap-1.5 rounded-md border border-border bg-card/40 px-3.5 py-3"
-          >
-            <span class="text-xs text-muted-foreground">{{
-              $t("pages.gpu_nodes.kpi.waiting")
-            }}</span>
-            <span
-              class="text-[26px] font-bold leading-none tabular-nums"
-              :class="waiting ? 'text-yellow-500' : ''"
-              >{{ waiting }}</span
-            >
-            <span class="flex flex-wrap gap-x-2 text-xs text-muted-foreground">
-              <span>{{
-                waiting
-                  ? $t(`pages.gpu_nodes.wait_reason.${waitReasonKey}`)
-                  : $t("pages.gpu_nodes.kpi.waiting_none")
+            <template #sub>
+              <span class="tabular-nums">{{
+                $t("pages.gpu_nodes.kpi.running_split", {
+                  live: kindCounts.live,
+                  demo: kindCounts.demo,
+                  render: kindCounts.highlights,
+                })
               }}</span>
-              <NuxtLink
-                v-if="waiting"
-                to="/system-render-queue"
-                class="underline decoration-dotted underline-offset-[3px] transition-colors hover:text-[hsl(var(--tac-amber))]"
-              >
-                {{ $t("pages.gpu_nodes.open_render_queue") }}
-              </NuxtLink>
-            </span>
-          </div>
+            </template>
+          </StatTile>
+
+          <StatTile
+            :label="$t('pages.gpu_nodes.kpi.waiting')"
+            :value="waiting"
+            :tone="waiting ? 'warn' : undefined"
+          >
+            <template #sub>
+              <span class="flex flex-wrap gap-x-2">
+                <span>{{
+                  waiting
+                    ? $t(`pages.gpu_nodes.wait_reason.${waitReasonKey}`)
+                    : $t("pages.gpu_nodes.kpi.waiting_none")
+                }}</span>
+                <NuxtLink
+                  v-if="waiting"
+                  to="/system-render-queue"
+                  class="underline decoration-dotted underline-offset-[3px] transition-colors hover:text-[hsl(var(--tac-amber))]"
+                >
+                  {{ $t("pages.gpu_nodes.open_render_queue") }}
+                </NuxtLink>
+              </span>
+            </template>
+          </StatTile>
         </div>
       </PageTransition>
 
@@ -237,10 +236,10 @@ const sheetFade = {
           accountsLoaded &&
           (health.key === 'empty' || health.key === 'short')
         "
-        class="mt-4 flex flex-wrap items-start gap-2.5 rounded-md border border-yellow-500/35 bg-yellow-500/[0.06] px-3 py-2.5 text-[13px]"
+        class="mt-4 flex flex-wrap items-start gap-2.5 rounded-md border border-[hsl(var(--warning)/0.4)] bg-[hsl(var(--warning)/0.08)] px-3 py-2.5 text-[13px]"
       >
-        <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0 text-yellow-500" />
-        <span class="min-w-[200px] flex-1 text-yellow-100/90">
+        <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+        <span class="min-w-[200px] flex-1">
           {{
             health.key === "empty"
               ? $t("pages.gpu_nodes.steam_pool.empty_warning_title")
@@ -335,6 +334,7 @@ const sheetFade = {
                   <GpuRunningRow
                     v-for="session in visibleSessions"
                     :key="session.id"
+                    v-bind="rowAttrs(sessionKeys, session.id)"
                     :session="session"
                     :node="nodeById(session.nodeId)"
                     :now="now"
@@ -365,37 +365,40 @@ const sheetFade = {
             </SectionEmpty>
             <div
               v-else
-              class="overflow-x-auto rounded-md border border-border bg-card/40"
+              class="gpn-gpus overflow-x-auto rounded-md border border-border bg-card/40"
             >
               <table class="w-full text-sm">
                 <thead>
                   <tr class="border-b border-border">
-                    <th :class="tableHead">
-                      {{ $t("pages.gpu_nodes.gpu_unknown") }}
-                    </th>
+                    <SortHeader
+                      sort-key="gpu"
+                      :label="$t('pages.gpu_nodes.gpu_unknown')"
+                      :active="sort"
+                      :dir="dir"
+                      :class="tableHead"
+                      @sort="onSort"
+                    />
                     <th :class="tableHead">
                       {{ $t("pages.gpu_nodes.col.workloads") }}
                     </th>
-                    <th :class="tableHead">
-                      {{ $t("pages.gpu_nodes.col.node") }}
-                    </th>
-                    <th :class="tableHead">
-                      {{ $t("pages.gpu_nodes.col.state") }}
-                    </th>
+                    <SortHeader
+                      sort-key="node"
+                      :label="$t('pages.gpu_nodes.col.node')"
+                      :active="sort"
+                      :dir="dir"
+                      :class="tableHead"
+                      @sort="onSort"
+                    />
+                    <SortHeader
+                      sort-key="state"
+                      :label="$t('pages.gpu_nodes.col.state')"
+                      :active="sort"
+                      :dir="dir"
+                      :class="tableHead"
+                      @sort="onSort"
+                    />
                     <th :class="tableHead">
                       {{ $t("pages.gpu_nodes.col.load") }}
-                    </th>
-                    <th :class="[tableHead, 'text-right']">
-                      <FiveStackToolTip as-child :delay-duration="120">
-                        <template #trigger>
-                          <span
-                            class="cursor-help underline decoration-dotted decoration-muted-foreground/70 underline-offset-[3px]"
-                            tabindex="0"
-                            >{{ $t("pages.gpu_nodes.col.vram") }}</span
-                          >
-                        </template>
-                        {{ $t("pages.gpu_nodes.col.vram_help") }}
-                      </FiveStackToolTip>
                     </th>
                     <th :class="tableHead">
                       <span class="sr-only">{{
@@ -406,8 +409,9 @@ const sheetFade = {
                 </thead>
                 <tbody>
                   <GpuNodeRow
-                    v-for="node in visibleNodes"
+                    v-for="node in sortedNodes"
                     :key="node.id"
+                    v-bind="rowAttrs(gpuKeys, node.id)"
                     :node="node"
                     :state="nodeState(node)"
                     :state-label="stateLabel(node)"
@@ -527,25 +531,45 @@ const sheetFade = {
 <script lang="ts">
 import { dateLocale } from "~/utilities/dateLocale";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { nextSort } from "~/components/admin/sort";
+import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
 import { observeDockTier, type DockTier } from "~/composables/dockTier";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 import { useRenderQueueStatusStore } from "~/stores/RenderQueueStatusStore";
 import {
   buildSessions,
   gpuNodeState,
+  gpuViewDefaults,
+  gpuViewValidators,
   matchesSearch,
   nodeMatchesFilters,
   poolHealth,
+  regionFilterHolds,
   rendersWaiting,
+  sortGpuNodes,
   waitReason,
   type GpuNodeFilters,
   type GpuSession as Session,
+  type GpuSortKey,
+  type GpuView,
 } from "~/components/gpu-nodes/gpuSessions";
 
 type FilterKey = keyof GpuNodeFilters;
 
+const VIEW_KEY = "gpu-nodes";
+
 export default {
   data() {
+    // The page opens the way it was left: search, filters and sort. Never
+    // the open panel; a click decides that.
+    const view = readRememberedView<GpuView>(
+      VIEW_KEY,
+      gpuViewDefaults(),
+      gpuViewValidators,
+    );
     return {
       loading: true,
       accountsLoaded: false,
@@ -564,9 +588,13 @@ export default {
           created_at: string;
         }>;
       }>,
-      query: "",
-      kindFilter: "all",
-      filters: { work: "", kind: "", region: "" } as GpuNodeFilters,
+      query: view.query,
+      kindFilter: view.kindFilter,
+      filters: view.filters,
+      sort: view.sort,
+      dir: view.dir,
+      // The remembered region is checked against the first GPU list.
+      regionChecked: false,
       now: Date.now(),
       ticker: null as ReturnType<typeof setInterval> | null,
       // The GPU whose panel is open, and whether its bake logs are.
@@ -603,6 +631,25 @@ export default {
       ) {
         this.closePanel();
       }
+      if (!this.regionChecked && !this.loading) {
+        this.regionChecked = true;
+        if (!regionFilterHolds(this.filters.region, nodes)) {
+          this.filters = { ...this.filters, region: "" };
+        }
+      }
+    },
+    viewSignature(this: any) {
+      saveRememberedView<GpuView>(
+        VIEW_KEY,
+        {
+          query: this.query,
+          kindFilter: this.kindFilter,
+          filters: this.filters,
+          sort: this.sort,
+          dir: this.dir,
+        },
+        gpuViewDefaults(),
+      );
     },
   },
   computed: {
@@ -684,6 +731,20 @@ export default {
           nodeMatchesFilters(node, this.filters) &&
           matchesSearch(this.query, node, this.sessionByNode[node.id]),
       );
+    },
+    sortedNodes(this: any): any[] {
+      return sortGpuNodes(this.visibleNodes, this.sort, this.dir, (node) =>
+        this.nodeState(node),
+      );
+    },
+    viewSignature(this: any): string {
+      return JSON.stringify([
+        this.query,
+        this.kindFilter,
+        this.filters,
+        this.sort,
+        this.dir,
+      ]);
     },
     gpusFree(this: any): number {
       const status = useGpuPoolStatusStore().status;
@@ -782,6 +843,20 @@ export default {
     closePanel(this: any) {
       this.tierSwap = false;
       this.selectedId = null;
+    },
+    // Esc from a table row: true when there was a panel to close.
+    closePanelFromKeys(this: any): boolean {
+      if (!this.selectedNode) return false;
+      this.closePanel();
+      return true;
+    },
+    onSort(this: any, key: string) {
+      const next = nextSort<GpuSortKey>(
+        { key: this.sort, dir: this.dir },
+        key as GpuSortKey,
+      );
+      this.sort = next.key;
+      this.dir = next.dir;
     },
     // The room changed (window, nav or hub): the open panel moves between
     // the aside and the sheet. Wide and narrow docks share the aside, so that
@@ -1100,6 +1175,11 @@ export default {
 }
 .gpn-page[data-tier="wide"] {
   grid-template-columns: minmax(0, 1248px) 640px;
+}
+/* The GPUs table: its workload chips drop their labels when a docked panel
+   squeezes it (WorkloadChips). */
+.gpn-gpus {
+  container: gpn-gpus / inline-size;
 }
 .gpn-insp {
   position: sticky;

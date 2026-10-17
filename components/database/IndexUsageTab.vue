@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { Search } from "lucide-vue-next";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import {
@@ -112,20 +112,10 @@ const columns = computed<DbGridColumn[]>(() => [
           </SelectItem>
         </SelectContent>
       </Select>
-      <label class="relative block w-full sm:w-[260px]">
-        <Search
-          class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/70"
-        />
-        <input
-          v-model="search"
-          type="text"
-          autocomplete="off"
-          spellcheck="false"
-          class="h-8 w-full rounded-md border border-border bg-[hsl(240_6%_6%)] pl-8 pr-2.5 text-[13px] outline-none placeholder:text-muted-foreground/60 focus-visible:ring-1 focus-visible:ring-ring"
-          :placeholder="$t('pages.database.explorer.search_indexes')"
-          :aria-label="$t('pages.database.explorer.search_indexes')"
-        />
-      </label>
+      <AdminSearch
+        v-model="search"
+        :placeholder="$t('pages.database.explorer.search_indexes')"
+      />
       <AnimatedFilters v-model="usage" square :options="usageOptions" />
       <SchemaSelector
         class="ml-auto"

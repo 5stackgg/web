@@ -5,12 +5,13 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import ManageSection from "~/components/common/ManageSection.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
 import {
   nodeState,
   nodeStateKey,
   nodeStateTone,
   regionLabel,
-  toneDotClasses,
 } from "~/components/regions/regionStatus";
 
 type RegionNode = {
@@ -193,17 +194,12 @@ function finishRename(save: boolean) {
                 <td class="whitespace-nowrap px-3 py-2.5">
                   <span
                     class="inline-flex items-center gap-1.5"
-                    :class="{
-                      'text-destructive':
-                        nodeStateTone[nodeState(node)] === 'bad',
-                      'text-muted-foreground':
-                        nodeStateTone[nodeState(node)] === 'off',
-                    }"
+                    :class="
+                      ['bad', 'off'].includes(nodeStateTone[nodeState(node)]) &&
+                      TONE_TEXT[nodeStateTone[nodeState(node)]]
+                    "
                   >
-                    <span
-                      class="h-2 w-2 rounded-full"
-                      :class="toneDotClasses[nodeStateTone[nodeState(node)]]"
-                    ></span>
+                    <StatusDot :tone="nodeStateTone[nodeState(node)]" />
                     {{ $t(nodeStateKey[nodeState(node)]) }}
                   </span>
                 </td>

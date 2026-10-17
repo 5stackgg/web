@@ -68,6 +68,10 @@ import BroadcastDeck from "~/components/stream-deck/BroadcastDeck.vue";
 import ControlRoomPreview from "~/components/stream-deck/ControlRoomPreview.vue";
 import StopBroadcastDialog from "~/components/stream-deck/StopBroadcastDialog.vue";
 import OnAirClock from "~/components/stream-deck/OnAirClock.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_BORDER, TONE_TEXT, type Tone } from "~/components/admin/tone";
+import { useRememberedView } from "~/composables/useRememberedView";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { e_match_status_enum } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
@@ -282,10 +286,19 @@ const previews = computed(() =>
 );
 
 // ---- Preview selection + take ----
-const selectedId = ref<string | null>(null);
+// The picked preview survives a refresh while that match is still live.
+const view = useRememberedView(
+  "control-room",
+  { selected: null as string | null },
+  { validate: { selected: (v) => v === null || typeof v === "string" } },
+);
+const selectedId = ref<string | null>(view.selected);
+watch(selectedId, (id) => (view.selected = id));
 watch(
   [liveMatches, onAirIds],
   () => {
+    // Before the first push the remembered pick has nothing to match.
+    if (!liveMatchesLoaded.value) return;
     if (
       selectedId.value &&
       liveMatches.value.some((m) => m.id === selectedId.value)
@@ -312,6 +325,23 @@ const block = computed<TakeBlock | null>(() =>
       })
     : null,
 );
+
+// ↑/↓ walk the previews, Enter picks one (the same as a click).
+const activePreviewId = ref<string | null>(null);
+const { rowProps } = useListKeyboard({
+  items: previews,
+  getId: (m: LiveMatch) => m.id,
+  activeId: activePreviewId,
+  onOpen: (id) => (selectedId.value = id),
+});
+// A preview is a toggle button: aria-pressed says it's picked, so the
+// listbox-style aria-selected stays off it.
+function previewRowProps(id: string) {
+  const props: Record<string, unknown> = { ...rowProps(id) };
+  delete props["aria-selected"];
+  return props;
+}
+
 function blockText(reason: TakeBlock): string {
   if (reason === "no_free_gpu") {
     return busyReason.value || t("pages.control_room.reasons.no_free_gpu");
@@ -515,6 +545,13 @@ watch(programPaused, () => {
   whepPhase.value = null;
 });
 
+const gpuTone = computed<Tone>(() =>
+  gpuTotal.value === 0 ? "bad" : !hasFreeGpu.value ? "warn" : "ok",
+);
+const capacityTone = computed<Tone>(() =>
+  isAtCapacity.value ? "warn" : "off",
+);
+
 const chipClasses =
   "inline-flex h-8 items-center gap-1.5 rounded-md border px-2.5 text-xs font-semibold tabular-nums transition-colors duration-150";
 const toolButton =
@@ -534,11 +571,7 @@ const toolButton =
           $t("stream_deck.off_air")
         }}</template>
         <span v-else-if="isLive" class="inline-flex min-w-0 items-center gap-2">
-          <span class="relative h-2 w-2 shrink-0 rounded-full bg-destructive">
-            <span
-              class="absolute left-0 h-2 w-2 animate-ping rounded-full bg-red-400 opacity-75"
-            />
-          </span>
+          <StatusDot tone="bad" live />
           <span class="font-semibold text-foreground">{{
             $t("pages.control_room.on_air")
           }}</span>
@@ -569,11 +602,9 @@ const toolButton =
               to="/gpu-nodes"
               :class="[
                 chipClasses,
-                gpuTotal === 0
-                  ? 'border-destructive/40 text-destructive hover:bg-destructive/10'
-                  : !hasFreeGpu
-                    ? 'border-warning/40 text-warning hover:bg-warning/10'
-                    : 'border-success/35 text-success hover:bg-success/10',
+                TONE_BORDER[gpuTone],
+                TONE_TEXT[gpuTone],
+                'hover:bg-muted/40',
               ]"
             >
               <Cpu class="size-3.5" />
@@ -601,9 +632,8 @@ const toolButton =
         <span
           :class="[
             chipClasses,
-            isAtCapacity
-              ? 'border-warning/40 text-warning'
-              : 'border-border text-muted-foreground',
+            TONE_BORDER[capacityTone],
+            TONE_TEXT[capacityTone],
           ]"
         >
           <Radio class="size-3.5" />
@@ -1045,7 +1075,7 @@ const toolButton =
             </div>
             <p
               class="text-xs leading-snug"
-              :class="block ? 'text-warning' : 'text-muted-foreground'"
+              :class="block ? TONE_TEXT.warn : TONE_TEXT.off"
             >
               {{
                 block
@@ -1085,6 +1115,7 @@ const toolButton =
               :match="m"
               :selected="selectedId === m.id"
               :on-air="onAirStateFor(m.id)"
+              v-bind="previewRowProps(m.id)"
               @select="selectedId = m.id"
             />
           </TransitionGroup>

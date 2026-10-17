@@ -8,6 +8,7 @@ import {
   Upload,
 } from "lucide-vue-next";
 import type { LedgerClipJob } from "~/components/render-queue/renderQueueLedger";
+import { TONE_TEXT, type Tone } from "~/components/admin/tone";
 
 type Translate = (key: string, named?: Record<string, unknown>) => string;
 
@@ -60,22 +61,29 @@ export function logService(name: string | null | undefined): string | null {
   return name;
 }
 
-export function statusToneClass(status: string): string {
+// Rendering and uploading are happening right now (the dot pings); the
+// rest are still.
+export function statusTone(status: string): Tone {
   switch (status) {
     case "rendering":
-      return "text-[hsl(var(--tac-amber))]";
-    case "uploading":
-      return "text-info";
     case "done":
-      return "text-success";
+      return "ok";
+    case "uploading":
+      return "info";
     case "error":
     case "missing":
-      return "text-destructive";
-    case "cancelled":
-      return "text-muted-foreground/70";
+      return "bad";
     default:
-      return "text-muted-foreground";
+      return "off";
   }
+}
+
+export function statusLive(status: string): boolean {
+  return status === "rendering" || status === "uploading";
+}
+
+export function statusToneClass(status: string): string {
+  return TONE_TEXT[statusTone(status)];
 }
 
 export function statusIcon(status: string) {

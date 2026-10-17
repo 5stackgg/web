@@ -1,4 +1,6 @@
-export type Tone = "ok" | "warn" | "bad" | "off";
+import type { Tone as AdminTone } from "~/components/admin/tone";
+
+export type Tone = Extract<AdminTone, "ok" | "warn" | "bad" | "off">;
 
 // region_status() in the api: "Disabled" means no enabled node or dedicated
 // server takes matches there, which reads as "No servers", not as an outage.
@@ -104,9 +106,13 @@ export const nodeStateKey: Record<NodeState, string> = {
   disabled: "common.disabled",
 };
 
-export const toneDotClasses: Record<Tone, string> = {
-  ok: "bg-success",
-  warn: "bg-warning",
-  bad: "bg-destructive",
-  off: "bg-muted-foreground/40",
+/** What the regions page remembers: the search and the region it showed. */
+export const regionViewDefaults = () => ({
+  search: "",
+  selected: null as string | null,
+});
+
+export const regionViewValidators = {
+  search: (value: unknown) => typeof value === "string",
+  selected: (value: unknown) => value === null || typeof value === "string",
 };

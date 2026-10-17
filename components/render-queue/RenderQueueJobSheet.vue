@@ -35,8 +35,10 @@ import {
   clipDuration,
   clipTitle,
   logService,
+  since,
   statusToneClass,
 } from "~/components/render-queue/renderQueueDisplay";
+import { TONE_BG, TONE_TEXT } from "~/components/admin/tone";
 
 const open = defineModel<boolean>("open", { default: false });
 
@@ -50,6 +52,8 @@ const props = defineProps<{
   live?: boolean;
   rendering?: boolean;
   busy?: boolean;
+  /** The page's clock, for "Updated 4m ago". */
+  now: number;
 }>();
 
 const emit = defineEmits<{
@@ -164,17 +168,25 @@ const history = computed(() => {
     let tone = "bg-muted-foreground/50";
     if (last) {
       const status = props.row?.status ?? "";
+      // The step it is on now carries the accent.
       tone =
         status === "done"
-          ? "bg-success"
+          ? TONE_BG.ok
           : status === "error" || status === "missing"
-            ? "bg-destructive"
+            ? TONE_BG.bad
             : terminal.value
               ? "bg-muted-foreground/50"
-              : "bg-[hsl(var(--tac-amber))]";
+              : TONE_BG.amber;
     }
     return { ...entry, tone, last };
   });
+});
+
+// Neither table has updated_at: the last status change is the last change.
+const updatedAt = computed(() => {
+  const target = job.value ?? render.value;
+  const at = Date.parse(target?.last_status_at ?? target?.created_at ?? "");
+  return Number.isFinite(at) ? at : 0;
 });
 
 const service = computed(() =>
@@ -204,6 +216,16 @@ const canRerender = computed(
         <SheetHeader class="pr-8">
           <SheetTitle class="break-words">{{ title }}</SheetTitle>
           <SheetDescription v-if="subtitle">{{ subtitle }}</SheetDescription>
+          <p
+            v-if="updatedAt"
+            class="text-xs tabular-nums text-muted-foreground"
+          >
+            {{
+              $t("pages.render_queue.ledger.updated_ago", {
+                since: since(updatedAt, now),
+              })
+            }}
+          </p>
         </SheetHeader>
 
         <div class="mt-5 grid gap-5">
@@ -270,11 +292,7 @@ const canRerender = computed(
           <p
             v-if="job?.error_message || render?.error_message"
             class="break-words font-mono text-xs"
-            :class="
-              render && !terminal
-                ? 'text-[hsl(var(--tac-amber))]'
-                : 'text-destructive'
-            "
+            :class="render && !terminal ? TONE_TEXT.warn : TONE_TEXT.bad"
           >
             {{ job?.error_message ?? render?.error_message }}
           </p>
@@ -324,6 +342,12 @@ const canRerender = computed(
               class="grid grid-cols-[max-content_minmax(0,1fr)] gap-x-4 gap-y-1.5 text-sm"
             >
               <template v-if="job">
+                <template v-if="job.user?.name">
+                  <dt class="text-muted-foreground">
+                    {{ $t("pages.utility.drift.requested_by") }}
+                  </dt>
+                  <dd class="min-w-0 truncate">{{ job.user.name }}</dd>
+                </template>
                 <dt class="text-muted-foreground">
                   {{ $t("pages.render_queue.ledger.player") }}
                 </dt>

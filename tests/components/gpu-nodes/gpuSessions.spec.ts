@@ -6,11 +6,14 @@ import {
   formatElapsed,
   gpuNodeState,
   gpuShortName,
+  gpuViewValidators,
   matchesSearch,
   nodeMatchesFilters,
   poolHealth,
+  regionFilterHolds,
   rendersWaiting,
   sessionWorkload,
+  sortGpuNodes,
   steamTileStatus,
   waitReason,
   workloadActivity,
@@ -417,5 +420,76 @@ describe("Steam accounts tile", () => {
     expect(steamTileStatus(poolHealth(nodes, [free]))).toBe("short");
     expect(steamTileStatus(poolHealth([node("a")], [held]))).toBe("busy");
     expect(steamTileStatus(poolHealth(nodes, [free, held]))).toBe("enough");
+  });
+});
+
+describe("GPUs table sort", () => {
+  const card = (id: string, name: string, enabled = true) =>
+    node(id, { enabled, gpu_info: [{ name }] });
+  const nodes = [
+    card("delta", "NVIDIA GeForce RTX 3060"),
+    card("alpha", "NVIDIA GeForce RTX 4080 SUPER", false),
+    card("charlie", "NVIDIA GeForce RTX 3060"),
+  ];
+  const stateOf = (entry: any) => gpuNodeState(entry, null);
+  const ids = (list: any[]) => list.map((entry) => entry.id);
+
+  it("orders by card name, ties by node", () => {
+    expect(ids(sortGpuNodes(nodes, "gpu", "asc", stateOf))).toEqual([
+      "charlie",
+      "delta",
+      "alpha",
+    ]);
+    expect(ids(sortGpuNodes(nodes, "gpu", "desc", stateOf))).toEqual([
+      "alpha",
+      "charlie",
+      "delta",
+    ]);
+  });
+
+  it("orders by node, and by state with idle before off", () => {
+    expect(ids(sortGpuNodes(nodes, "node", "asc", stateOf))).toEqual([
+      "alpha",
+      "charlie",
+      "delta",
+    ]);
+    expect(ids(sortGpuNodes(nodes, "state", "asc", stateOf))).toEqual([
+      "charlie",
+      "delta",
+      "alpha",
+    ]);
+  });
+
+  it("leaves the list it was given alone", () => {
+    const before = ids(nodes);
+    sortGpuNodes(nodes, "node", "desc", stateOf);
+    expect(ids(nodes)).toEqual(before);
+  });
+});
+
+describe("remembered view", () => {
+  it("only takes values the page offers", () => {
+    expect(gpuViewValidators.kindFilter("demo")).toBe(true);
+    expect(gpuViewValidators.kindFilter("bake")).toBe(false);
+    expect(gpuViewValidators.sort("state")).toBe(true);
+    expect(gpuViewValidators.sort("load")).toBe(false);
+    expect(gpuViewValidators.dir("desc")).toBe(true);
+    expect(
+      gpuViewValidators.filters({ work: "demos", kind: "", region: "eu" }),
+    ).toBe(true);
+    expect(
+      gpuViewValidators.filters({ work: "mining", kind: "", region: "" }),
+    ).toBe(false);
+    expect(gpuViewValidators.filters({ work: "", kind: "" })).toBe(false);
+    expect(gpuViewValidators.filters(null)).toBe(false);
+  });
+
+  it("drops a region filter no GPU is in any more", () => {
+    const nodes = [node("a"), node("b", { region: null })];
+    expect(regionFilterHolds("", nodes)).toBe(true);
+    expect(regionFilterHolds("US-EAST", nodes)).toBe(true);
+    expect(regionFilterHolds("none", nodes)).toBe(true);
+    expect(regionFilterHolds("EU-WEST", nodes)).toBe(false);
+    expect(regionFilterHolds("none", [node("a")])).toBe(false);
   });
 });

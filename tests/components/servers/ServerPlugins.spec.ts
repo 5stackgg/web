@@ -62,7 +62,7 @@ describe("ServerPlugins", () => {
     expect(rows(wrapper)).toHaveLength(2);
     expect(rows(wrapper)[0]).toContain("Loads");
     expect(rows(wrapper)[0]).toContain("Switched on for this server");
-    expect(rows(wrapper)[1]).toContain("Not Loaded");
+    expect(rows(wrapper)[1]).toContain("Not loaded");
   });
 
   it("shows the rotation plugin loading for a server with a rotation", async () => {
@@ -123,7 +123,7 @@ describe("ServerPlugins per-server plugin settings", () => {
 
     const wrapper = await mountCard();
     const configure = wrapper.findAll(
-      'button[aria-label="Configure for This Server"]',
+      'button[aria-label="Configure for this server"]',
     );
 
     expect(configure).toHaveLength(1);
@@ -160,7 +160,7 @@ describe("ServerPlugins per-server plugin settings", () => {
 
     const wrapper = await mountCard();
     await wrapper
-      .find('button[aria-label="Configure for This Server"]')
+      .find('button[aria-label="Configure for this server"]')
       .trigger("click");
 
     const { default: PluginConfigPanel } =

@@ -1,3 +1,5 @@
+import { TONE_TEXT, type Tone } from "~/components/admin/tone";
+
 export type DirectoryPluginVersion = {
   runtime: string;
   version: string;
@@ -161,4 +163,81 @@ export function installFraction(installed: number, target: number): number {
     return 0;
   }
   return Math.max(0, Math.min(1, installed / target));
+}
+
+export const PLUGIN_KINDS = ["game", "panel", "bundle"];
+
+/**
+ * What the directory remembers between visits. The attention tab is left out:
+ * it only exists while something is failing.
+ */
+export const pluginViewDefaults = () => ({
+  search: "",
+  state: "all",
+  kind: "all",
+  verifiedOnly: false,
+});
+
+export const pluginViewValidators = {
+  search: (value: unknown) => typeof value === "string",
+  state: (value: unknown) =>
+    value === "all" || value === "installed" || value === "available",
+  kind: (value: unknown) =>
+    value === "all" ||
+    (typeof value === "string" && PLUGIN_KINDS.includes(value)),
+  verifiedOnly: (value: unknown) => typeof value === "boolean",
+};
+
+export type GridKey = "ArrowLeft" | "ArrowRight" | "ArrowUp" | "ArrowDown";
+
+/**
+ * Where an arrow key lands in a grid of `count` cards laid out `columns`
+ * wide: ←/→ step one card, ↑/↓ one row. Down from a row with nothing under
+ * it lands on the last card when a shorter last row exists; otherwise the
+ * key has nowhere to go and the index stays.
+ */
+export function gridStep(
+  index: number,
+  count: number,
+  columns: number,
+  key: GridKey,
+): number {
+  if (count === 0) return -1;
+  if (index < 0) return 0;
+  const last = count - 1;
+  const cols = Math.max(1, columns);
+  switch (key) {
+    case "ArrowLeft":
+      return Math.max(0, index - 1);
+    case "ArrowRight":
+      return Math.min(last, index + 1);
+    case "ArrowUp":
+      return index - cols >= 0 ? index - cols : index;
+    case "ArrowDown":
+      if (index + cols <= last) return index + cols;
+      return Math.floor(index / cols) < Math.floor(last / cols) ? last : index;
+  }
+}
+
+/** A node's rollout state as a tone: installing pings amber, Manual warns. */
+export function nodeRolloutTone(key: string): Tone {
+  switch (key) {
+    case "Installed":
+      return "ok";
+    case "Installing":
+    case "Removing":
+      return "amber";
+    case "Failed":
+      return "bad";
+    case "Manual":
+      return "warn";
+    default:
+      return "off";
+  }
+}
+
+export function nodeRolloutTextClass(key: string): string {
+  if (key === "Installed") return "text-muted-foreground";
+  const tone = nodeRolloutTone(key);
+  return tone === "off" ? "text-muted-foreground/50" : TONE_TEXT[tone];
 }

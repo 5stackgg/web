@@ -6,6 +6,8 @@ import {
   highlight,
   insertSorted,
   parseMessage,
+  PRESETS,
+  rememberedServices,
   serviceStatus,
   signatureOf,
   toLogLine,
@@ -226,5 +228,21 @@ describe("merging and triage", () => {
       { text: "rcon", hit: true },
       { text: " retry", hit: false },
     ]);
+  });
+});
+
+describe("rememberedServices", () => {
+  it("keeps the stored order and drops services the page no longer has", () => {
+    expect(rememberedServices(["redis", "gone", "api", "redis", 3])).toEqual([
+      "redis",
+      "api",
+    ]);
+  });
+
+  it("falls back to Core when nothing usable is stored", () => {
+    expect(rememberedServices([])).toEqual([...PRESETS.core]);
+    expect(rememberedServices(["gone"])).toEqual([...PRESETS.core]);
+    expect(rememberedServices("api")).toEqual([...PRESETS.core]);
+    expect(rememberedServices(null)).toEqual([...PRESETS.core]);
   });
 });

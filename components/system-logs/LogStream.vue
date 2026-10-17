@@ -4,6 +4,7 @@ import { computed, nextTick, ref, watch, type Directive } from "vue";
 import { useI18n } from "vue-i18n";
 import { ArrowDownToLine, Copy, Filter, WifiOff } from "lucide-vue-next";
 import { toast } from "~/components/ui/toast";
+import StatusDot from "~/components/admin/StatusDot.vue";
 import { clockTime, highlight, type LogLine } from "./logLines";
 import type { LogFlush } from "~/composables/useSystemLogStreams";
 
@@ -281,22 +282,18 @@ const tagTitle = (service: string) => {
         </button>
       </template>
       <span class="ml-auto inline-flex items-center gap-[7px] tabular-nums">
+        <!-- The ring only while the tail is following: holding still is
+             not live. -->
         <template v-if="live === 'live'">
-          <span class="relative inline-block h-2 w-2 rounded-full bg-green-600">
-            <span
-              class="absolute inset-0 animate-ping rounded-full bg-green-500 opacity-75"
-            />
-          </span>
+          <StatusDot tone="ok" :live="follow" />
           {{ $t("pages.system_logs.live_rate", { rate }) }}
         </template>
         <template v-else-if="live === 'reconnecting'">
-          <span class="inline-block h-2 w-2 rounded-full bg-amber-500" />
+          <StatusDot tone="warn" />
           {{ $t("pages.system_logs.reconnecting") }}
         </template>
         <template v-else>
-          <span
-            class="inline-block h-2 w-2 rounded-full bg-[hsl(240_4%_30%)]"
-          />
+          <StatusDot tone="off" />
           {{ $t("pages.system_logs.waiting_for_output") }}
         </template>
       </span>
@@ -304,7 +301,7 @@ const tagTitle = (service: string) => {
 
     <div
       v-if="offline"
-      class="flex items-center gap-2 border-b border-amber-500/25 bg-amber-500/10 px-3 py-2 text-[12.5px] text-amber-400"
+      class="flex items-center gap-2 border-b border-warning/25 bg-warning/10 px-3 py-2 text-[12.5px] text-warning"
     >
       <WifiOff class="h-3.5 w-3.5 shrink-0" />
       {{ $t("pages.system_logs.connection_lost") }}
@@ -543,10 +540,10 @@ const tagTitle = (service: string) => {
   color: hsl(var(--muted-foreground));
 }
 .lv-warn {
-  background: hsl(36 100% 50% / 0.045);
+  background: hsl(var(--warning) / 0.045);
 }
 .lv-warn .lg-lv {
-  color: rgb(251 191 36);
+  color: hsl(var(--warning));
 }
 .lv-error {
   background: hsl(0 82% 62% / 0.07);

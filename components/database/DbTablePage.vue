@@ -14,12 +14,11 @@ import {
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import DbGrid from "./DbGrid.vue";
 import DbLabel from "./DbLabel.vue";
 import DbQueryCell from "./DbQueryCell.vue";
 import DbSev from "./DbSev.vue";
-import DbTerm from "./DbTerm.vue";
-import DbTile from "./DbTile.vue";
 import { copyText } from "./dbCopy";
 import {
   deadFraction,
@@ -240,7 +239,7 @@ const maintenance = computed(() => {
             :class="
               tableSev === 'bad'
                 ? 'border-destructive/30 bg-destructive/15 text-destructive'
-                : 'border-amber-500/30 bg-amber-500/15 text-amber-400'
+                : 'border-warning/30 bg-warning/15 text-warning'
             "
           >
             <CircleAlert v-if="tableSev === 'bad'" class="h-3 w-3" />
@@ -281,19 +280,25 @@ const maintenance = computed(() => {
     </div>
 
     <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5">
-      <DbTile :label="$t('pages.database.explorer.total_size')">
-        {{ formatSize(table.total_size) }}
+      <StatTile
+        :label="$t('pages.database.explorer.total_size')"
+        :value="formatSize(table.total_size)"
+      >
         <template #sub>{{
           $t("pages.database.explorer.table_and_indexes", {
             table: formatSize(table.table_size),
             indexes: formatSize(table.indexes_size),
           })
         }}</template>
-      </DbTile>
-      <DbTile :label="$t('pages.database.explorer.live_tuples')">
-        {{ (table.n_live_tup || 0).toLocaleString() }}
-      </DbTile>
-      <DbTile :label="$t('pages.database.explorer.dead_tuples')" :sev="dead">
+      </StatTile>
+      <StatTile
+        :label="$t('pages.database.explorer.live_tuples')"
+        :value="(table.n_live_tup || 0).toLocaleString()"
+      />
+      <StatTile
+        :label="$t('pages.database.explorer.dead_tuples')"
+        :tone="dead || undefined"
+      >
         <DbSev :sev="dead">{{
           (table.n_dead_tup || 0).toLocaleString()
         }}</DbSev>
@@ -310,10 +315,10 @@ const maintenance = computed(() => {
             })
           }}
         </template>
-      </DbTile>
-      <DbTile
+      </StatTile>
+      <StatTile
         :label="$t('pages.database.explorer.cache_hit')"
-        :sev="hitSeverity(table.cache_hit_ratio)"
+        :tone="hitSeverity(table.cache_hit_ratio) || undefined"
       >
         <DbSev :sev="hitSeverity(table.cache_hit_ratio)">{{
           formatPct(table.cache_hit_ratio) ?? $t("common.na")
@@ -323,22 +328,20 @@ const maintenance = computed(() => {
             count: formatBig(table.heap_blks_read),
           })
         }}</template>
-      </DbTile>
-      <DbTile>
-        <template #label>
-          <DbTerm :tip="$t('pages.database.explorer.index_scans_tip')">{{
-            $t("pages.database.explorer.index_scans")
-          }}</DbTerm>
-        </template>
-        {{
-          indexScanShare == null ? "—" : `${Math.round(indexScanShare * 100)}%`
-        }}
+      </StatTile>
+      <StatTile
+        :label="$t('pages.database.explorer.index_scans')"
+        :tip="$t('pages.database.explorer.index_scans_tip')"
+        :value="
+          indexScanShare == null ? null : `${Math.round(indexScanShare * 100)}%`
+        "
+      >
         <template v-if="table.seq_scan != null" #sub>{{
           $t("pages.database.explorer.sequential_count", {
             count: formatBig(table.seq_scan),
           })
         }}</template>
-      </DbTile>
+      </StatTile>
     </div>
 
     <div

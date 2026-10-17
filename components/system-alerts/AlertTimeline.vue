@@ -6,6 +6,7 @@ import { Info, TriangleAlert, OctagonAlert, Lock } from "lucide-vue-next";
 import { Switch } from "~/components/ui/switch";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { dateLocale } from "~/utilities/dateLocale";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import {
   alertLabel,
   alertState,
@@ -248,6 +249,24 @@ function endLabel(view: TimelineAlert) {
     : t("pages.system_alerts.no_end");
 }
 
+// ↑/↓ walk the lanes, Enter opens one in the editor.
+const activeLane = ref<string | null>(null);
+const laneKeys = useListKeyboard({
+  items: () => lanes.value.filter((lane) => !lane.isDraft),
+  getId: (lane) => lane.id,
+  activeId: activeLane,
+  onOpen: (id) => emit("open", id),
+});
+
+function laneProps(lane: Lane) {
+  if (lane.isDraft) {
+    return {};
+  }
+  // A lane is a button: it says which alert is open with aria-current.
+  const { "aria-selected": _selected, ...rest } = laneKeys.rowProps(lane.id);
+  return rest;
+}
+
 function onLaneKey(event: KeyboardEvent, lane: Lane) {
   if (event.target !== event.currentTarget || lane.isDraft) return;
   if (event.key === "Enter" || event.key === " ") {
@@ -290,9 +309,9 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
             off: !lane.isDraft && alertState(lane.alert, now) !== 'live',
             draft: lane.isDraft,
           }"
+          v-bind="laneProps(lane)"
           :aria-current="lane.isEditing ? 'true' : undefined"
           :role="lane.isDraft ? undefined : 'button'"
-          :tabindex="lane.isDraft ? undefined : 0"
           @click="!lane.isDraft && emit('open', lane.id)"
           @keydown="onLaneKey($event, lane)"
         >
@@ -468,11 +487,13 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
   box-shadow: inset 0 0 0 1px hsl(var(--ring));
 }
 .tl-lane:hover,
+.tl-lane[data-active="true"],
 .tl-lane[aria-current="true"] {
   background-color: hsl(var(--muted) / 0.35);
 }
 /* The sticky label stays opaque so the bars never show through it. */
 .tl-lane:hover .tl-lab,
+.tl-lane[data-active="true"] .tl-lab,
 .tl-lane[aria-current="true"] .tl-lab {
   background:
     linear-gradient(hsl(var(--muted) / 0.35), hsl(var(--muted) / 0.35)),

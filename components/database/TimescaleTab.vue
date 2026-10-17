@@ -6,9 +6,9 @@ import { Check, CircleX, Loader } from "lucide-vue-next";
 import ManageSection from "~/components/common/ManageSection.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import StatTile from "~/components/admin/StatTile.vue";
 import DbGrid from "./DbGrid.vue";
 import DbSev from "./DbSev.vue";
-import DbTile from "./DbTile.vue";
 import type { DbGridColumn } from "./dbHealth";
 
 const props = defineProps<{ db: Record<string, any> }>();
@@ -63,23 +63,25 @@ const jobDir = ref<"asc" | "desc">("asc");
   />
   <div v-else class="grid gap-6">
     <div class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2.5">
-      <DbTile :label="$t('pages.database.timescale.hypertables')">
-        {{ ts.hypertables.length }}
-      </DbTile>
-      <DbTile :label="$t('pages.database.explorer.total_chunks')">
-        {{ (ts.chunks_count || 0).toLocaleString() }}
-      </DbTile>
-      <DbTile
+      <StatTile
+        :label="$t('pages.database.timescale.hypertables')"
+        :value="ts.hypertables.length"
+      />
+      <StatTile
+        :label="$t('pages.database.explorer.total_chunks')"
+        :value="(ts.chunks_count || 0).toLocaleString()"
+      />
+      <StatTile
         :label="$t('pages.database.explorer.background_jobs')"
-        :sev="failed ? 'bad' : ''"
+        :value="ts.jobs.length"
+        :tone="failed ? 'bad' : undefined"
       >
-        {{ ts.jobs.length }}
         <template v-if="failed" #sub>
           <DbSev sev="bad">{{
             $t("pages.database.explorer.n_failed", { count: failed })
           }}</DbSev>
         </template>
-      </DbTile>
+      </StatTile>
     </div>
 
     <ManageSection :label="$t('pages.database.timescale.hypertables')">

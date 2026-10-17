@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { ArrowDown, ArrowUp, BookOpen, Plus, Search, X } from "lucide-vue-next";
+import { getCurrentInstance, onMounted, ref } from "vue";
+import { BookOpen, Plus } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "~/components/ui/input-group";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
   AlertDialog,
@@ -18,11 +14,13 @@ import {
 } from "~/components/ui/alert-dialog";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
+import SortHeader from "~/components/admin/SortHeader.vue";
 import Pagination from "~/components/Pagination.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import FacetRail from "~/components/admin/FacetRail.vue";
 import ServerFleetRow from "~/components/servers/ServerFleetRow.vue";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import {
   createButtonClasses,
   listCreateButtonClasses,
@@ -33,6 +31,21 @@ definePageMeta({ middleware: "admin" });
 const SETUP_URL = "https://docs.5stack.gg/servers/dedicated-servers/";
 
 const { openFiles } = useFilePopout();
+
+// ↑/↓ walk the rows on this page, Enter opens the server. The rows live in
+// the Options half; they're read through the proxy only once mounted, since a
+// setup-time read would break that data.
+const instance = getCurrentInstance();
+const isMounted = ref(false);
+onMounted(() => (isMounted.value = true));
+const activeServerId = ref<string | null>(null);
+const { rowProps } = useListKeyboard<any>({
+  items: () =>
+    isMounted.value ? ((instance?.proxy as any)?.pagedServers ?? []) : [],
+  getId: (server) => server.id,
+  activeId: activeServerId,
+  onOpen: (id) => navigateTo(`/dedicated-servers/${id}`),
+});
 </script>
 
 <template>
@@ -41,30 +54,11 @@ const { openFiles } = useFilePopout();
   <PageTransition>
     <div class="grid gap-4">
       <div class="flex flex-wrap items-center gap-2">
-        <InputGroup
-          class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-[18rem]"
-        >
-          <InputGroupAddon class="pl-2.5">
-            <Search class="size-3.5" />
-          </InputGroupAddon>
-          <InputGroupInput
-            v-model="search"
-            autocomplete="off"
-            :placeholder="$t('pages.dedicated_servers.search_placeholder')"
-            :aria-label="$t('pages.dedicated_servers.search_placeholder')"
-            class="h-full text-sm"
-          />
-          <InputGroupAddon v-if="search" align="inline-end" class="pr-2">
-            <button
-              type="button"
-              class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              :aria-label="$t('pages.dedicated_servers.clear_search')"
-              @click="search = ''"
-            >
-              <X class="size-3.5" />
-            </button>
-          </InputGroupAddon>
-        </InputGroup>
+        <AdminSearch
+          v-model="search"
+          :placeholder="$t('pages.dedicated_servers.search_placeholder')"
+          shortcut
+        />
 
         <Button as-child variant="ghost" size="sm" class="ml-auto h-8">
           <a :href="SETUP_URL" target="_blank" rel="noopener noreferrer">
@@ -175,74 +169,34 @@ const { openFiles } = useFilePopout();
               <table class="w-full text-[0.8125rem] md:min-w-[760px]">
                 <thead>
                   <tr class="text-left text-[0.72rem] text-muted-foreground">
-                    <th
+                    <!-- Status lives under each server's address; it sorts
+                         from the Server header. -->
+                    <SortHeader
                       v-for="column in columns"
                       :key="column.key"
+                      :sort-key="column.key"
+                      :label="column.label"
+                      :tip="
+                        column.key === 'ports'
+                          ? $t('pages.dedicated_servers.ports_tip')
+                          : undefined
+                      "
+                      :secondary="
+                        column.key === 'server'
+                          ? [{ key: 'status', label: $t('common.status') }]
+                          : []
+                      "
+                      :active="sort.key"
+                      :dir="sort.dir"
+                      :align="column.right ? 'end' : 'start'"
                       class="sticky top-0 z-[2] whitespace-nowrap border-b border-border bg-background px-3 py-2.5 font-medium"
                       :class="[
                         column.right && 'text-right',
                         column.key === 'server' ? 'md:min-w-[240px]' : 'w-px',
                         !column.phone && 'max-md:hidden',
                       ]"
-                      :aria-sort="
-                        applied.sort.key === column.key
-                          ? applied.sort.dir > 0
-                            ? 'ascending'
-                            : 'descending'
-                          : 'none'
-                      "
-                    >
-                      <button
-                        type="button"
-                        class="inline-flex items-center gap-1 transition-colors duration-150 hover:text-foreground"
-                        :class="sort.key === column.key && 'text-foreground'"
-                        @click="sortBy(column.key)"
-                      >
-                        <FiveStackToolTip
-                          v-if="column.key === 'ports'"
-                          as-child
-                          :tap-toggle="false"
-                        >
-                          <template #trigger>
-                            <span
-                              class="cursor-help underline decoration-muted-foreground/70 decoration-dotted underline-offset-[3px]"
-                              >{{ column.label }}</span
-                            >
-                          </template>
-                          {{ $t("pages.dedicated_servers.ports_tip") }}
-                        </FiveStackToolTip>
-                        <template v-else>{{ column.label }}</template>
-                        <ArrowUp
-                          v-if="sort.key === column.key && sort.dir > 0"
-                          class="size-3"
-                        />
-                        <ArrowDown
-                          v-else-if="sort.key === column.key"
-                          class="size-3"
-                        />
-                      </button>
-                      <!-- Status lives under each server's address now; it
-                           still sorts from here. -->
-                      <template v-if="column.key === 'server'">
-                        <span class="mx-1.5 text-muted-foreground/40">·</span>
-                        <button
-                          type="button"
-                          class="inline-flex items-center gap-1 transition-colors duration-150 hover:text-foreground"
-                          :class="sort.key === 'status' && 'text-foreground'"
-                          @click="sortBy('status')"
-                        >
-                          {{ $t("common.status") }}
-                          <ArrowUp
-                            v-if="sort.key === 'status' && sort.dir > 0"
-                            class="size-3"
-                          />
-                          <ArrowDown
-                            v-else-if="sort.key === 'status'"
-                            class="size-3"
-                          />
-                        </button>
-                      </template>
-                    </th>
+                      @sort="sortBy"
+                    />
                     <th
                       class="sticky top-0 z-[2] w-12 border-b border-border bg-background px-2 py-2.5"
                     >
@@ -265,6 +219,7 @@ const { openFiles } = useFilePopout();
                     :key="server.id"
                     :server="server"
                     :ctx="fleetCtx"
+                    v-bind="rowProps(server.id)"
                     can-files
                     @toggle-enabled="toggleEnabled(server)"
                     @delete="deleteTarget = server"
@@ -346,16 +301,18 @@ import {
   type FacetGroup,
   type FacetSelection,
 } from "~/components/admin/facets";
+import { nextSort } from "~/components/admin/sort";
 import {
-  DEFAULT_SERVER_STATES,
   SERVER_PAGE_SIZE,
+  SERVER_SORT_NATURAL_DIRS,
   SERVER_STATES,
   hostLabel,
   matchesServerSearch,
-  readServerView,
-  saveServerView,
+  rememberServerView,
+  restoreServerView,
   serverAddress,
   serverFacetValues,
+  serverViewDefaults,
   sortServers,
   versionRank,
   type FleetContext,
@@ -363,32 +320,20 @@ import {
   type ServerSortKey,
 } from "~/components/servers/serverFleet";
 
-const defaultFacets = (): FacetSelection => ({
-  state: [...DEFAULT_SERVER_STATES],
-  type: [],
-  region: [],
-  host: [],
-  plugin: [],
-});
-
 export default {
   data() {
-    const view = readServerView({
-      search: "",
-      facets: defaultFacets(),
-      sort: { key: "status", dir: 1 },
-    });
+    const view = restoreServerView();
     return {
       servers: [] as any[],
       loading: true,
       search: view.search,
       facets: view.facets,
-      sort: view.sort as ServerSort,
+      sort: view.sort,
       // The table lags the controls by the moment its rows take to fade out.
       applied: {
         search: view.search,
         facets: JSON.parse(JSON.stringify(view.facets)) as FacetSelection,
-        sort: { ...view.sort } as ServerSort,
+        sort: { ...view.sort },
       },
       rowsFading: false,
       fadeTimer: null as ReturnType<typeof setTimeout> | null,
@@ -526,7 +471,7 @@ export default {
       ];
     },
     facetDefaults(): FacetSelection {
-      return defaultFacets();
+      return serverViewDefaults().facets;
     },
     facetSignature(): string {
       return JSON.stringify([this.facets, this.sort]);
@@ -694,7 +639,7 @@ export default {
       }, out);
     },
     remember() {
-      saveServerView({
+      rememberServerView({
         search: this.search,
         facets: this.facets,
         sort: this.sort,
@@ -719,10 +664,11 @@ export default {
       });
     },
     sortBy(key: ServerSortKey) {
-      this.sort =
-        this.sort.key === key
-          ? { key, dir: this.sort.dir > 0 ? -1 : 1 }
-          : { key, dir: 1 };
+      this.sort = nextSort(
+        this.sort as ServerSort,
+        key,
+        SERVER_SORT_NATURAL_DIRS,
+      );
     },
     showDisabled() {
       this.facets = {
@@ -732,7 +678,7 @@ export default {
     },
     clearAll() {
       this.search = "";
-      this.facets = defaultFacets();
+      this.facets = serverViewDefaults().facets;
     },
     async copyAddress(address: string) {
       try {

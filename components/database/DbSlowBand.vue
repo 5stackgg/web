@@ -58,7 +58,7 @@ const longest = computed(() => stats.value.run[0]);
         :class="
           bad
             ? 'border-destructive/40 bg-destructive/[0.06]'
-            : 'border-amber-500/35 bg-amber-500/[0.06]'
+            : 'border-warning/35 bg-warning/[0.06]'
         "
       >
         <div class="flex items-start gap-2.5">
@@ -66,10 +66,7 @@ const longest = computed(() => stats.value.run[0]);
             v-if="bad"
             class="mt-0.5 h-4 w-4 shrink-0 text-destructive"
           />
-          <TriangleAlert
-            v-else
-            class="mt-0.5 h-4 w-4 shrink-0 text-amber-400"
-          />
+          <TriangleAlert v-else class="mt-0.5 h-4 w-4 shrink-0 text-warning" />
           <p
             class="text-[13.5px] leading-normal [&_b]:font-bold [&_b]:tabular-nums"
           >
@@ -127,7 +124,7 @@ const longest = computed(() => stats.value.run[0]);
           </p>
         </div>
 
-        <div v-if="stats.max.length" class="grid border-t border-amber-500/20">
+        <div v-if="stats.max.length" class="grid border-t border-warning/20">
           <div
             v-for="q in stats.max.slice(0, 3)"
             :key="q.queryid"
@@ -138,7 +135,7 @@ const longest = computed(() => stats.value.run[0]);
                 v-if="msSeverity(q.mean_exec_time, threshold) === 'bad'"
                 class="h-3 w-3 text-destructive"
               />
-              <TriangleAlert v-else class="h-3 w-3 text-amber-400" />
+              <TriangleAlert v-else class="h-3 w-3 text-warning" />
             </span>
             <code
               class="min-w-0 truncate font-mono text-[11.5px] text-foreground/85"
@@ -189,7 +186,7 @@ const longest = computed(() => stats.value.run[0]);
           <div class="-mb-1.5 text-[11.5px] text-muted-foreground">
             {{ $t("pages.database.explorer.running_now") }}
           </div>
-          <div class="grid border-t border-amber-500/20">
+          <div class="grid border-t border-warning/20">
             <div
               v-for="c in stats.run.slice(0, 5)"
               :key="c.pid"
@@ -200,7 +197,7 @@ const longest = computed(() => stats.value.run[0]);
                   v-if="runSeverity(c.duration_seconds, threshold) === 'bad'"
                   class="h-3 w-3 text-destructive"
                 />
-                <TriangleAlert v-else class="h-3 w-3 text-amber-400" />
+                <TriangleAlert v-else class="h-3 w-3 text-warning" />
               </span>
               <code
                 class="min-w-0 truncate font-mono text-[11.5px] text-foreground/85"

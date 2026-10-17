@@ -29,6 +29,7 @@ import {
 } from "~/components/ui/sheet";
 import { toast } from "~/components/ui/toast";
 import { useUtilityRenderCoverage } from "~/composables/useUtilityRenderCoverage";
+import { TONE_TEXT } from "~/components/admin/tone";
 import type { UtilityRenderCoverage as Coverage } from "~/types/utility";
 
 type BulkScope = "missing" | "outdated";
@@ -59,12 +60,12 @@ const stats = computed(() =>
         {
           key: "missing",
           value: props.coverage.missing,
-          tone: props.coverage.missing ? "text-destructive" : "",
+          tone: props.coverage.missing ? TONE_TEXT.bad : "",
         },
         {
           key: "outdated",
           value: props.coverage.outdated,
-          tone: props.coverage.outdated ? "text-warning" : "",
+          tone: props.coverage.outdated ? TONE_TEXT.warn : "",
         },
         { key: "unrenderable", value: props.coverage.unrenderable, tone: "" },
         { key: "queued", value: props.coverage.queued, tone: "" },

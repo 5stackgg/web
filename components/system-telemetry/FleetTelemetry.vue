@@ -16,23 +16,28 @@ import FleetMeter from "./FleetMeter.vue";
 import FleetShares from "./FleetShares.vue";
 import FleetReadout from "./FleetReadout.vue";
 import FleetSection from "./FleetSection.vue";
+import FleetCount from "./FleetCount.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import LiveStamp from "~/components/admin/LiveStamp.vue";
+import StatTile from "~/components/admin/StatTile.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
-// Stat cards are the only frames on the page; sections are split by hairlines.
+// Stat tiles and chart cards are the only frames on the page; sections are
+// split by hairlines.
 const card =
   "flex min-w-0 flex-col gap-4 rounded-lg border border-border bg-card/40 p-4";
 const cardTitle = "flex items-center gap-1.5 text-[13.5px] font-semibold";
-const cardKicker = "text-[13px] font-medium text-muted-foreground";
-const cardTotal = "mt-1.5 text-3xl font-bold leading-none tabular-nums";
+// What hangs under a stat tile's number: its bar, then its readouts.
+const tileBody = "mt-2 grid gap-4 text-foreground";
 const cardChips =
-  "mt-auto flex flex-wrap gap-x-6 gap-y-3 border-t border-border/60 pt-3.5";
-const notReported =
-  "rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground";
+  "flex flex-wrap gap-x-6 gap-y-3 border-t border-border/60 pt-3.5";
+const delta = "font-semibold tabular-nums";
 </script>
 
 <template>
@@ -47,18 +52,7 @@ const notReported =
         square
         :options="fleetFilterOptions"
       />
-      <span
-        v-if="updatedAt"
-        class="inline-flex items-center gap-2 text-[12.5px] tabular-nums text-muted-foreground"
-      >
-        <span class="relative flex h-2 w-2 shrink-0">
-          <span
-            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden"
-          />
-          <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
-        </span>
-        {{ updatedLabel }}
-      </span>
+      <LiveStamp v-if="updatedAt" :at="updatedAt" live :every="60_000" />
       <span class="grow" />
       <DropdownMenu v-if="telemetryStats">
         <DropdownMenuTrigger as-child>
@@ -140,9 +134,7 @@ const notReported =
               </span>
               <span aria-hidden="true">·</span>
               <span>
-                <span
-                  class="font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
-                >
+                <span :class="[delta, TONE_TEXT.amber]">
                   +{{ format(totals?.matchesWeek ?? 0) }}
                 </span>
                 {{ $t("pages.system_telemetry.totals.last_7d") }}
@@ -193,21 +185,19 @@ const notReported =
             <span class="text-[12.5px] text-muted-foreground">
               {{ $t("pages.system_telemetry.activity.matches") }}
             </span>
-            <div class="h-56 min-w-0 lg:h-64">
+            <div v-if="activity.length" class="h-56 min-w-0 lg:h-64">
               <FleetTelemetryChart
-                v-if="activity.length"
                 :labels="activityLabels"
                 :values="activityMatches"
                 :color="matchesColor"
                 :label="$t('pages.system_telemetry.activity.matches_unit')"
               />
-              <div
-                v-else
-                class="flex h-full items-center justify-center rounded-lg border border-dashed border-border/60 text-sm text-muted-foreground"
-              >
-                {{ $t("pages.system_telemetry.no_data") }}
-              </div>
             </div>
+            <SectionEmpty
+              v-else
+              :title="$t('pages.system_telemetry.no_data')"
+              :description="$t('pages.system_telemetry.no_activity_hint')"
+            />
           </div>
         </section>
 
@@ -278,32 +268,27 @@ const notReported =
           :hint="$t('pages.system_telemetry.totals.self_reported')"
         >
           <div class="grid gap-3 lg:grid-cols-2">
-            <div v-for="item of capacityCards" :key="item.key" :class="card">
-              <div class="flex items-start justify-between gap-4">
-                <div>
-                  <span :class="cardTitle">
-                    {{ item.label }}
-                    <FiveStackToolTip
-                      v-if="item.hint"
-                      class="text-muted-foreground"
-                    >
-                      <span class="block max-w-[20rem]">{{ item.hint }}</span>
-                    </FiveStackToolTip>
-                  </span>
-                  <div :class="cardTotal">{{ format(item.total) }}</div>
+            <StatTile
+              v-for="item of capacityCards"
+              :key="item.key"
+              :label="item.label"
+              :tip="item.hint"
+            >
+              <FleetCount :value="item.total" />
+              <template #sub>
+                <div :class="tileBody">
+                  <FleetMeter :segments="item.segments" :subset="item.subset" />
+                  <div v-if="item.chips.length" :class="cardChips">
+                    <FleetReadout
+                      v-for="chip of item.chips"
+                      :key="chip.label"
+                      :label="chip.label"
+                      :value="chip.value"
+                    />
+                  </div>
                 </div>
-                <div v-if="item.chips.length" class="flex gap-5">
-                  <FleetReadout
-                    v-for="chip of item.chips"
-                    :key="chip.label"
-                    :label="chip.label"
-                    :value="chip.value"
-                  />
-                </div>
-              </div>
-
-              <FleetMeter :segments="item.segments" :subset="item.subset" />
-            </div>
+              </template>
+            </StatTile>
           </div>
         </FleetSection>
 
@@ -397,34 +382,21 @@ const notReported =
               />
             </div>
 
-            <div :class="card">
-              <span :class="cardTitle">
-                {{ $t("pages.system_telemetry.totals.completion") }}
-                <FiveStackToolTip class="text-muted-foreground">
-                  <span class="block max-w-[20rem]">
-                    {{ $t("pages.system_telemetry.totals.completion_hint") }}
-                  </span>
-                </FiveStackToolTip>
-              </span>
-
-              <template v-if="outcomesReported">
-                <div class="text-3xl font-bold leading-none tabular-nums">
-                  {{ completionRate }}%
+            <StatTile
+              :label="$t('pages.system_telemetry.totals.completion')"
+              :tip="$t('pages.system_telemetry.totals.completion_hint')"
+              :value="outcomesReported ? completionRate : null"
+              suffix="%"
+            >
+              <template #sub>
+                <div v-if="outcomesReported" :class="tileBody">
+                  <FleetMeter :segments="outcomeSegments" />
                 </div>
-                <FleetMeter :segments="outcomeSegments" />
-              </template>
-
-              <div v-else>
-                <div
-                  class="text-3xl font-bold leading-none text-muted-foreground"
-                >
-                  —
-                </div>
-                <p class="mt-2 text-xs text-muted-foreground">
+                <p v-else class="mt-1">
                   {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
                 </p>
-              </div>
-            </div>
+              </template>
+            </StatTile>
           </div>
         </FleetSection>
 
@@ -434,28 +406,33 @@ const notReported =
           :label="$t('pages.system_telemetry.totals.competition')"
           :hint="$t('pages.system_telemetry.totals.competition_hint')"
         >
-          <div v-if="!competitionReported" :class="notReported">
-            {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
-          </div>
+          <SectionEmpty
+            v-if="!competitionReported"
+            :title="$t('pages.system_telemetry.not_reported_title')"
+            :description="$t('pages.system_telemetry.totals.not_reported_hint')"
+          />
 
           <div v-else class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-            <div v-for="item of competitionCards" :key="item.key" :class="card">
-              <div>
-                <span :class="cardKicker">{{ item.label }}</span>
-                <div :class="cardTotal">{{ format(item.total) }}</div>
-              </div>
-
-              <FleetMeter v-if="item.segments" :segments="item.segments" />
-
-              <div :class="cardChips">
-                <FleetReadout
-                  v-for="chip of item.chips"
-                  :key="chip.label"
-                  :label="chip.label"
-                  :value="chip.value"
-                />
-              </div>
-            </div>
+            <StatTile
+              v-for="item of competitionCards"
+              :key="item.key"
+              :label="item.label"
+            >
+              <FleetCount :value="item.total" />
+              <template #sub>
+                <div :class="tileBody">
+                  <FleetMeter v-if="item.segments" :segments="item.segments" />
+                  <div :class="cardChips">
+                    <FleetReadout
+                      v-for="chip of item.chips"
+                      :key="chip.label"
+                      :label="chip.label"
+                      :value="chip.value"
+                    />
+                  </div>
+                </div>
+              </template>
+            </StatTile>
           </div>
         </FleetSection>
 
@@ -465,50 +442,44 @@ const notReported =
           :label="$t('pages.system_telemetry.utility.title')"
           :hint="$t('pages.system_telemetry.utility.hint')"
         >
-          <div v-if="!utilityReported" :class="notReported">
-            {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
-          </div>
+          <SectionEmpty
+            v-if="!utilityReported"
+            :title="$t('pages.system_telemetry.not_reported_title')"
+            :description="$t('pages.system_telemetry.totals.not_reported_hint')"
+          />
 
           <div v-else class="grid gap-3 lg:grid-cols-3">
-            <div :class="card">
-              <div>
-                <span :class="cardKicker">
-                  {{ $t("pages.system_telemetry.utility.lineups") }}
+            <StatTile :label="$t('pages.system_telemetry.utility.lineups')">
+              <FleetCount :value="utility?.lineups ?? 0" />
+              <template #sub>
+                <span :class="[delta, TONE_TEXT.amber]">
+                  +{{ format(utility?.week ?? 0) }}
                 </span>
-                <div :class="cardTotal">
-                  {{ format(utility?.lineups ?? 0) }}
-                </div>
-                <div class="mt-2 text-[13.5px] text-muted-foreground">
-                  <span
-                    class="font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
-                  >
-                    +{{ format(utility?.week ?? 0) }}
-                  </span>
-                  {{ $t("pages.system_telemetry.totals.last_7d") }}
-                </div>
-              </div>
+                {{ $t("pages.system_telemetry.totals.last_7d") }}
+                <div :class="tileBody">
+                  <FleetMeter :segments="utilityVisibility" />
 
-              <FleetMeter :segments="utilityVisibility" />
-
-              <div :class="cardChips">
-                <FleetReadout
-                  :label="$t('pages.system_telemetry.utility.authors')"
-                  :value="utility?.authors ?? 0"
-                  :hint="$t('pages.system_telemetry.utility.authors_hint')"
-                />
-                <FleetReadout
-                  :label="$t('pages.system_telemetry.utility.maps')"
-                  :value="utility?.maps ?? 0"
-                />
-                <FleetReadout
-                  :label="$t('pages.system_telemetry.utility.archived')"
-                  :value="utility?.archived ?? 0"
-                  :caption="
-                    $t('pages.system_telemetry.utility.archived_caption')
-                  "
-                />
-              </div>
-            </div>
+                  <div :class="cardChips">
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.authors')"
+                      :value="utility?.authors ?? 0"
+                      :hint="$t('pages.system_telemetry.utility.authors_hint')"
+                    />
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.maps')"
+                      :value="utility?.maps ?? 0"
+                    />
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.archived')"
+                      :value="utility?.archived ?? 0"
+                      :caption="
+                        $t('pages.system_telemetry.utility.archived_caption')
+                      "
+                    />
+                  </div>
+                </div>
+              </template>
+            </StatTile>
 
             <div :class="card">
               <span :class="cardTitle">
@@ -540,49 +511,51 @@ const notReported =
               />
             </div>
 
-            <div :class="card">
-              <div>
-                <span :class="cardKicker">
-                  {{ $t("pages.system_telemetry.utility.sessions") }}
-                </span>
-                <div :class="cardTotal">
-                  {{ format(utility?.sessions ?? 0) }}
-                </div>
-                <div class="mt-2 text-xs text-muted-foreground">
-                  {{
-                    $t("pages.system_telemetry.utility.hit_rate", {
-                      percent: utilityHitRate,
-                    })
-                  }}
-                </div>
-              </div>
+            <StatTile :label="$t('pages.system_telemetry.utility.sessions')">
+              <FleetCount :value="utility?.sessions ?? 0" />
+              <template #sub>
+                {{
+                  $t("pages.system_telemetry.utility.hit_rate", {
+                    percent: utilityHitRate,
+                  })
+                }}
+                <div :class="tileBody">
+                  <FleetMeter :segments="utilityAccuracy" />
 
-              <FleetMeter :segments="utilityAccuracy" />
-
-              <div :class="cardChips">
-                <FleetReadout
-                  :label="$t('pages.system_telemetry.utility.practicing')"
-                  :value="utility?.practicing ?? 0"
-                  :hint="$t('pages.system_telemetry.utility.practicing_hint')"
-                />
-                <FleetReadout
-                  :label="$t('pages.system_telemetry.utility.hosts')"
-                  :value="utility?.hosts ?? 0"
-                />
-                <FleetReadout
-                  :label="$t('pages.system_telemetry.utility.sessions_week')"
-                  :value="utility?.sessionsWeek ?? 0"
-                  :caption="$t('pages.system_telemetry.totals.last_7d')"
-                />
-                <FleetReadout
-                  :label="$t('pages.system_telemetry.utility.sessions_failed')"
-                  :value="utility?.sessionsFailed ?? 0"
-                  :hint="
-                    $t('pages.system_telemetry.utility.sessions_failed_hint')
-                  "
-                />
-              </div>
-            </div>
+                  <div :class="cardChips">
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.practicing')"
+                      :value="utility?.practicing ?? 0"
+                      :hint="
+                        $t('pages.system_telemetry.utility.practicing_hint')
+                      "
+                    />
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.hosts')"
+                      :value="utility?.hosts ?? 0"
+                    />
+                    <FleetReadout
+                      :label="
+                        $t('pages.system_telemetry.utility.sessions_week')
+                      "
+                      :value="utility?.sessionsWeek ?? 0"
+                      :caption="$t('pages.system_telemetry.totals.last_7d')"
+                    />
+                    <FleetReadout
+                      :label="
+                        $t('pages.system_telemetry.utility.sessions_failed')
+                      "
+                      :value="utility?.sessionsFailed ?? 0"
+                      :hint="
+                        $t(
+                          'pages.system_telemetry.utility.sessions_failed_hint',
+                        )
+                      "
+                    />
+                  </div>
+                </div>
+              </template>
+            </StatTile>
 
             <div :class="[card, 'grid grid-cols-2']">
               <FleetReadout
@@ -744,7 +717,9 @@ const notReported =
               <div
                 class="overflow-x-auto rounded-lg border border-border bg-card/20"
               >
-                <table class="w-full min-w-[560px] text-sm">
+                <!-- Phones keep the counts and drop the bars, so nothing
+                     scrolls sideways. -->
+                <table class="w-full text-sm md:min-w-[560px]">
                   <thead>
                     <tr
                       class="border-b border-border text-left text-xs text-muted-foreground"
@@ -797,7 +772,7 @@ const notReported =
                         </span>
                         <span v-else class="flex items-center gap-2">
                           <span
-                            class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-muted"
+                            class="hidden h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-muted md:block"
                           >
                             <span
                               class="block h-full rounded-full bg-[hsl(var(--tac-step-2))]"
@@ -835,7 +810,7 @@ const notReported =
                         </span>
                         <span v-else class="flex items-center gap-2">
                           <span
-                            class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-muted"
+                            class="hidden h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-muted md:block"
                           >
                             <span
                               class="block h-full rounded-full bg-muted-foreground/60"
@@ -934,10 +909,22 @@ import {
   FLEET_MATCHES_CHART_COLORS,
   FLEET_INSTALLS_CHART_COLORS,
 } from "~/utilities/chartColors";
+import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
 
 // A real em dash, not the entity: a mustache renders text, so "&mdash;" here
 // would put those eight characters on the page.
 const NO_METRIC = "—";
+
+// The scope survives a refresh or a return. Options state rather than the
+// composable: script-setup bindings are not reachable from `this`.
+const VIEW_KEY = "fleet-telemetry";
+const VIEW_DEFAULTS = { scope: "all" };
+const VIEW_VALIDATE = {
+  scope: (value: unknown) => value === "all" || value === "self_hosted",
+};
 
 export default {
   apollo: {
@@ -1103,7 +1090,6 @@ export default {
       pollInterval: 60 * 1000,
       result(this: any) {
         this.updatedAt = Date.now();
-        this.now = Date.now();
         this.switching = false;
       },
       error(this: any) {
@@ -1114,10 +1100,9 @@ export default {
   data() {
     return {
       NO_METRIC,
-      fleetFilter: "all",
+      fleetFilter: readRememberedView(VIEW_KEY, VIEW_DEFAULTS, VIEW_VALIDATE)
+        .scope,
       updatedAt: null as number | null,
-      now: Date.now(),
-      clock: undefined as ReturnType<typeof setInterval> | undefined,
       // The fleet toggle refetches; the report dims until the answer lands
       // and its numbers glide to the new values.
       switching: false,
@@ -1125,7 +1110,8 @@ export default {
     };
   },
   watch: {
-    fleetFilter() {
+    fleetFilter(scope: string) {
+      saveRememberedView(VIEW_KEY, { scope }, VIEW_DEFAULTS);
       this.switching = true;
       // A scope already in the cache answers before this watcher runs, so
       // there is no result left to clear the dim.
@@ -1135,14 +1121,6 @@ export default {
         }
       });
     },
-  },
-  mounted() {
-    this.clock = setInterval(() => {
-      this.now = Date.now();
-    }, 5_000);
-  },
-  beforeUnmount() {
-    clearInterval(this.clock);
   },
   methods: {
     // Runs once the menu has closed: handing focus back to the trigger
@@ -1209,15 +1187,6 @@ export default {
     },
   },
   computed: {
-    updatedLabel(): string {
-      const seconds = Math.max(
-        0,
-        Math.round((this.now - (this.updatedAt ?? this.now)) / 1000),
-      );
-      return seconds < 5
-        ? this.$t("pages.system_telemetry.updated_just_now")
-        : this.$t("pages.system_telemetry.updated_ago", { seconds });
-    },
     jumpSections(): Array<{ id: string; label: string }> {
       const t = (key: string) => this.$t(`pages.system_telemetry.${key}`);
       return [

@@ -123,7 +123,9 @@ defineExpose({ clear });
     <div
       class="flex max-w-[calc(var(--settings-measure)+0.875rem)] flex-wrap items-center gap-2 pb-5 lg:pl-3"
     >
-      <InputGroup class="h-8 min-w-[200px] flex-1 bg-card/60">
+      <!-- AdminSearch's width; its own input stays, since it is the
+           combobox the results hang off (role, activedescendant). -->
+      <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-[18rem]">
         <InputGroupAddon class="pl-2.5">
           <Search class="h-3.5 w-3.5" />
         </InputGroupAddon>

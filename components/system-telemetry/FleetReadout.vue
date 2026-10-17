@@ -23,20 +23,18 @@
       class="mt-1 flex items-center gap-2 font-bold leading-none"
       :class="[
         large ? 'text-3xl' : 'text-xl',
-        unavailable ? 'text-muted-foreground' : '',
+        unavailable ? 'text-muted-foreground' : 'text-foreground',
       ]"
     >
-      <span
+      <!-- Reporting within the hour is a state, not something happening
+           this second: a still dot. -->
+      <StatusDot
         v-if="live && !unavailable && value > 0"
-        class="relative flex h-2 w-2 shrink-0"
-        :title="$t('pages.system_telemetry.installs.live')"
-      >
-        <span
-          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden"
-        />
-        <span class="relative inline-flex h-2 w-2 rounded-full bg-success" />
-      </span>
-      {{ unavailable ? "—" : format(shown) }}
+        tone="ok"
+        :label="$t('pages.system_telemetry.installs.live')"
+      />
+      <template v-if="unavailable">—</template>
+      <FleetCount v-else :value="value" />
     </div>
 
     <div v-if="caption" class="mt-1 text-[0.72rem] text-muted-foreground/80">
@@ -47,58 +45,26 @@
 
 <script setup lang="ts">
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-</script>
+import StatusDot from "~/components/admin/StatusDot.vue";
+import FleetCount from "./FleetCount.vue";
 
-<script lang="ts">
-export default {
-  props: {
-    label: { type: String, required: true },
-    value: { type: Number, default: 0 },
-    caption: { type: String, default: "" },
-    hint: { type: String, default: "" },
-    live: { type: Boolean, default: false },
-    large: { type: Boolean, default: false },
-    unavailable: { type: Boolean, default: false },
+withDefaults(
+  defineProps<{
+    label: string;
+    value?: number;
+    caption?: string;
+    hint?: string;
+    live?: boolean;
+    large?: boolean;
+    unavailable?: boolean;
+  }>(),
+  {
+    value: 0,
+    caption: "",
+    hint: "",
+    live: false,
+    large: false,
+    unavailable: false,
   },
-  data() {
-    return {
-      shown: this.value ?? 0,
-      frame: 0,
-    };
-  },
-  watch: {
-    // A new answer (the minute poll, or the fleet toggle) glides from the old
-    // number instead of snapping, so the eye can follow what moved.
-    value(to: number) {
-      cancelAnimationFrame(this.frame);
-      const from = this.shown;
-      if (
-        from === to ||
-        document.hidden ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
-        this.shown = to ?? 0;
-        return;
-      }
-      const start = performance.now();
-      const step = () => {
-        const p = Math.min(1, Math.max(0, (performance.now() - start) / 600));
-        const eased = 1 - Math.pow(1 - p, 3);
-        this.shown = Math.round(from + (to - from) * eased);
-        if (p < 1) {
-          this.frame = requestAnimationFrame(step);
-        }
-      };
-      this.frame = requestAnimationFrame(step);
-    },
-  },
-  beforeUnmount() {
-    cancelAnimationFrame(this.frame);
-  },
-  methods: {
-    format(value: number) {
-      return (value ?? 0).toLocaleString();
-    },
-  },
-};
+);
 </script>

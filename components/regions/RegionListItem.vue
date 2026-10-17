@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
 import {
   regionLabel,
   regionMode,
   regionStatusKey,
   regionTone,
-  toneDotClasses,
 } from "~/components/regions/regionStatus";
 
 const props = defineProps<{
@@ -31,7 +31,7 @@ const mode = computed(() => regionMode(props.region));
   <button
     type="button"
     :aria-current="current"
-    class="relative z-[1] grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2.5 rounded-md px-3 py-2 text-left transition-colors duration-150"
+    class="relative z-[1] grid w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2.5 rounded-md px-3 py-2 text-left outline-none transition-colors duration-150 focus-visible:ring-1 focus-visible:ring-ring"
     :class="
       current
         ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground hover:bg-[hsl(var(--tac-amber)/0.08)]'
@@ -39,10 +39,8 @@ const mode = computed(() => regionMode(props.region));
     "
     @click="$emit('select')"
   >
-    <span
-      class="inline-block h-2 w-2 shrink-0 rounded-full"
-      :class="toneDotClasses[regionTone(region.status)]"
-    >
+    <span class="inline-flex shrink-0">
+      <StatusDot :tone="regionTone(region.status)" />
       <span class="sr-only">{{ $t(regionStatusKey(region.status)) }}</span>
     </span>
 

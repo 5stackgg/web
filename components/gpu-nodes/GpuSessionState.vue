@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useBootProgress } from "~/composables/useBootProgress";
-import GpuStatusDot from "~/components/gpu-nodes/GpuStatusDot.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
 import type { GpuSession } from "~/components/gpu-nodes/gpuSessions";
 
 // One line of where a GPU session is: its boot step while it starts, then
@@ -95,7 +95,7 @@ const step = computed(() => {
       v-else-if="session.kind === 'live' || session.kind === 'demo'"
       class="inline-flex items-center gap-1.5 whitespace-nowrap text-[hsl(var(--success))]"
     >
-      <GpuStatusDot tone="ok" live />
+      <StatusDot tone="ok" live />
       {{
         session.kind === "live"
           ? $t("common.live")

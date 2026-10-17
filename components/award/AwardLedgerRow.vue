@@ -3,6 +3,7 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Ellipsis, Lock, Medal, Pencil, Trash2, Users } from "lucide-vue-next";
 import AwardBadge from "./AwardBadge.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +24,7 @@ import {
   lastGrantedAt,
   ownerLabel,
   ownerStatusText,
+  ownerIsLive,
 } from "./awardLedger";
 
 const props = withDefaults(
@@ -87,7 +89,7 @@ function onRowClick(event: MouseEvent) {
     role="row"
     :class="[
       awardLedgerColumns,
-      'award-row cursor-pointer border-b border-border/50 px-3 py-2 transition-colors duration-150 last:border-b-0 hover:bg-muted/40',
+      'award-row cursor-pointer border-b border-border/50 px-3 py-2 outline-none transition-colors duration-150 last:border-b-0 hover:bg-muted/40 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-ring data-[active=true]:bg-muted/40',
       stagger !== null && 'award-row-in',
     ]"
     :style="stagger !== null ? { '--i': Math.min(stagger, 14) } : undefined"
@@ -180,20 +182,16 @@ function onRowClick(event: MouseEvent) {
         <span
           class="inline-flex items-center gap-1.5 whitespace-nowrap text-[0.72rem] text-muted-foreground/80"
         >
-          <span
+          <StatusDot
             v-if="owner.phase === 'live'"
-            class="relative inline-flex size-1.5 shrink-0"
-            aria-hidden="true"
-          >
-            <span
-              class="absolute inset-0 animate-ping rounded-full bg-success opacity-75 motion-reduce:hidden"
-            />
-            <span class="relative size-1.5 rounded-full bg-success" />
-          </span>
-          <span
+            tone="ok"
+            size="sm"
+            :live="ownerIsLive(owner)"
+          />
+          <StatusDot
             v-else-if="owner.phase === 'upcoming'"
-            class="size-1.5 shrink-0 rounded-full bg-[hsl(var(--tac-amber))]"
-            aria-hidden="true"
+            tone="amber"
+            size="sm"
           />
           {{ ownerStatus }}
         </span>

@@ -10,6 +10,7 @@ import {
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
 import NodeSpark from "~/components/game-server-nodes/NodeSpark.vue";
 import TweenNumber from "~/components/game-server-nodes/TweenNumber.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
@@ -289,8 +290,8 @@ const rowLeave =
                   class="col-span-2 inline-flex items-center gap-1.5 whitespace-nowrap text-[12.5px] font-semibold md:col-span-1"
                   :class="
                     issue.severity === 'critical'
-                      ? 'text-destructive'
-                      : 'text-[hsl(var(--tac-amber))]'
+                      ? TONE_TEXT.bad
+                      : TONE_TEXT.warn
                   "
                 >
                   <CircleAlert

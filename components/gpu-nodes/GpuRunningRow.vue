@@ -47,10 +47,8 @@ function onRowClick(event: MouseEvent) {
 <template>
   <tr
     class="gpn-row cursor-pointer border-b border-border/60 transition-colors duration-150 last:border-0 hover:bg-muted/30 focus-visible:bg-muted/30 focus-visible:outline-none"
-    tabindex="0"
     :aria-selected="selected"
     @click="onRowClick"
-    @keydown.enter.self="emit('open')"
   >
     <td class="px-3 py-2.5">
       <span class="inline-flex items-center gap-2 whitespace-nowrap">

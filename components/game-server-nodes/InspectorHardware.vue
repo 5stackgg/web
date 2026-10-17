@@ -14,9 +14,9 @@ import {
 } from "~/components/game-server-nodes/nodeInspector";
 import {
   INSPECTOR,
-  TONE_TEXT,
   warningTitle,
 } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
 
 // Hardware: the CPU on one line, its facts in a grid with the docs a tap
 // away, then the GPU's model and anything the node warned about (a short

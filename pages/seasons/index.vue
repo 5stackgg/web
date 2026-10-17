@@ -2,6 +2,7 @@
 import {
   CalendarIcon,
   CirclePause,
+  CircleStop,
   History,
   Infinity as InfinityIcon,
   Medal,
@@ -34,6 +35,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
+import StatTile from "~/components/admin/StatTile.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_BORDER, TONE_TEXT } from "~/components/admin/tone";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
@@ -60,12 +64,24 @@ function openAwardComposer(seasonId: string) {
   awardComposerSeasonId.value = seasonId;
 }
 
-const kpiClasses =
-  "grid min-w-0 gap-1 rounded-lg border border-border bg-card/40 px-3.5 py-3";
 const pillClasses =
   "inline-flex h-5 items-center gap-1.5 whitespace-nowrap rounded-[5px] border px-1.5 text-[11px] font-semibold";
-const warnBannerClasses =
-  "flex flex-wrap items-center gap-3 rounded-lg border border-warning/35 bg-warning/[0.06] px-3.5 py-2.5 text-[0.8rem]";
+const warnPillClasses = [
+  pillClasses,
+  TONE_BORDER.warn,
+  TONE_TEXT.warn,
+  "bg-warning/10",
+];
+const warnBannerClasses = [
+  "flex flex-wrap items-center gap-3 rounded-lg border bg-warning/[0.06] px-3.5 py-2.5 text-[0.8rem]",
+  TONE_BORDER.warn,
+];
+// Quiet danger rows, the way Regions and Alerts end: a hairline, what it
+// does, and a ghost red button that confirms in a dialog.
+const dangerRowClasses =
+  "flex items-center justify-between gap-4 border-t border-border/60 pt-4";
+const dangerButtonClasses =
+  "h-8 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive";
 </script>
 
 <template>
@@ -75,7 +91,7 @@ const warnBannerClasses =
     <div v-if="loaded" class="grid w-full max-w-[880px] gap-5">
       <Transition name="season-fade">
         <div v-if="staleOthers.length" :class="warnBannerClasses">
-          <TriangleAlert class="h-4 w-4 shrink-0 text-warning" />
+          <TriangleAlert class="h-4 w-4 shrink-0" :class="TONE_TEXT.warn" />
           <span class="min-w-0 flex-1">
             {{
               $t(
@@ -148,20 +164,17 @@ const warnBannerClasses =
                     <h2 class="m-0 text-[26px] font-bold leading-tight">
                       {{ seasonTitle(activeSeason) }}
                     </h2>
+                    <!-- Active for weeks, not happening this second: a still
+                         dot, no ping. -->
                     <span
                       :class="[
                         pillClasses,
-                        'border-success/30 bg-success/10 text-success',
+                        TONE_BORDER.ok,
+                        TONE_TEXT.ok,
+                        'bg-success/10',
                       ]"
                     >
-                      <span class="relative inline-flex h-1.5 w-1.5">
-                        <span
-                          class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75 motion-reduce:animate-none"
-                        ></span>
-                        <span
-                          class="relative inline-flex h-1.5 w-1.5 rounded-full bg-success"
-                        ></span>
-                      </span>
+                      <StatusDot tone="ok" size="sm" />
                       {{ $t("pages.seasons.active") }}
                     </span>
                     <span
@@ -169,10 +182,7 @@ const warnBannerClasses =
                         activeSeason.needs_rebuild &&
                         !isRebuilding(activeSeason.id)
                       "
-                      :class="[
-                        pillClasses,
-                        'border-warning/30 bg-warning/10 text-warning',
-                      ]"
+                      :class="warnPillClasses"
                     >
                       <TriangleAlert class="h-3 w-3" />
                       {{ $t("pages.seasons.hero.rebuild_required") }}
@@ -187,50 +197,38 @@ const warnBannerClasses =
                   </p>
 
                   <div class="grid gap-2 sm:grid-cols-3">
-                    <div :class="kpiClasses">
-                      <span class="text-[11.5px] text-muted-foreground">{{
+                    <StatTile
+                      :label="
                         activeSeason.ends_at
-                          ? $t("pages.seasons.hero.ends_in")
-                          : $t("pages.seasons.hero.running_for")
-                      }}</span>
-                      <span class="text-lg font-bold tabular-nums">
-                        <SeasonCountdown
-                          v-if="activeSeason.ends_at"
-                          :ends-at="activeSeason.ends_at"
-                          @elapsed="now = Date.now()"
-                        />
-                        <template v-else>{{
-                          $t(
-                            "pages.seasons.hero.days",
-                            { count: dayOf(activeSeason) },
-                            dayOf(activeSeason),
-                          )
-                        }}</template>
-                      </span>
-                    </div>
-                    <div :class="kpiClasses">
-                      <span class="text-[11.5px] text-muted-foreground">{{
-                        $t("pages.seasons.hero.started")
-                      }}</span>
-                      <span class="text-lg font-bold tabular-nums">{{
-                        formatDate(activeSeason.starts_at)
-                      }}</span>
-                    </div>
-                    <div :class="kpiClasses">
-                      <span class="text-[11.5px] text-muted-foreground">{{
-                        $t("pages.seasons.hero.ends")
-                      }}</span>
-                      <span
+                          ? $t('pages.seasons.hero.ends_in')
+                          : $t('pages.seasons.hero.running_for')
+                      "
+                    >
+                      <SeasonCountdown
                         v-if="activeSeason.ends_at"
-                        class="text-lg font-bold tabular-nums"
-                        >{{ formatDate(activeSeason.ends_at) }}</span
-                      >
-                      <span
-                        v-else
-                        class="text-lg font-bold text-muted-foreground"
-                        >{{ $t("pages.seasons.ongoing") }}</span
-                      >
-                    </div>
+                        :ends-at="activeSeason.ends_at"
+                        @elapsed="now = Date.now()"
+                      />
+                      <template v-else>{{
+                        $t(
+                          "pages.seasons.hero.days",
+                          { count: dayOf(activeSeason) },
+                          dayOf(activeSeason),
+                        )
+                      }}</template>
+                    </StatTile>
+                    <StatTile
+                      :label="$t('pages.seasons.hero.started')"
+                      :value="formatDate(activeSeason.starts_at)"
+                    />
+                    <StatTile :label="$t('pages.seasons.hero.ends')">
+                      <template v-if="activeSeason.ends_at">{{
+                        formatDate(activeSeason.ends_at)
+                      }}</template>
+                      <span v-else class="text-muted-foreground">{{
+                        $t("pages.seasons.ongoing")
+                      }}</span>
+                    </StatTile>
                   </div>
 
                   <div v-if="activeSeason.ends_at" class="grid gap-1.5">
@@ -267,7 +265,10 @@ const warnBannerClasses =
                       "
                       :class="warnBannerClasses"
                     >
-                      <TriangleAlert class="h-4 w-4 shrink-0 text-warning" />
+                      <TriangleAlert
+                        class="h-4 w-4 shrink-0"
+                        :class="TONE_TEXT.warn"
+                      />
                       <span class="min-w-0 flex-1">{{
                         $t("pages.seasons.needs_rebuild_notice")
                       }}</span>
@@ -350,54 +351,36 @@ const warnBannerClasses =
                     />
                   </div>
 
-                  <div class="rounded-lg border border-destructive/30">
-                    <div class="flex flex-wrap items-center gap-4 px-4 py-3.5">
-                      <div class="min-w-0 flex-1">
-                        <div class="text-sm font-semibold">
-                          {{
-                            $t("pages.seasons.danger.end_title", {
-                              season: seasonTitle(activeSeason),
-                            })
-                          }}
-                        </div>
-                        <p
-                          class="mt-0.5 max-w-[64ch] text-[0.8rem] text-muted-foreground"
-                        >
-                          {{ $t("pages.seasons.danger.end_description") }}
-                        </p>
-                      </div>
+                  <div class="grid gap-4 pt-1">
+                    <div :class="dangerRowClasses">
+                      <p
+                        class="min-w-0 max-w-[64ch] text-xs text-muted-foreground"
+                      >
+                        {{ $t("pages.seasons.danger.end_description") }}
+                      </p>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         :class="dangerButtonClasses"
                         @click="openEndNow(activeSeason)"
                       >
+                        <CircleStop class="size-3.5" />
                         {{ $t("pages.seasons.danger.end_button") }}
                       </Button>
                     </div>
-                    <div
-                      class="flex flex-wrap items-center gap-4 border-t border-destructive/20 px-4 py-3.5"
-                    >
-                      <div class="min-w-0 flex-1">
-                        <div class="text-sm font-semibold">
-                          {{
-                            $t("pages.seasons.danger.delete_title", {
-                              season: seasonTitle(activeSeason),
-                            })
-                          }}
-                        </div>
-                        <p
-                          class="mt-0.5 max-w-[64ch] text-[0.8rem] text-muted-foreground"
-                        >
-                          {{ $t("pages.seasons.danger.delete_description") }}
-                        </p>
-                      </div>
+                    <div :class="dangerRowClasses">
+                      <p
+                        class="min-w-0 max-w-[64ch] text-xs text-muted-foreground"
+                      >
+                        {{ $t("pages.seasons.danger.delete_description") }}
+                      </p>
                       <Button
-                        variant="outline"
+                        variant="ghost"
                         size="sm"
                         :class="dangerButtonClasses"
                         @click="confirmDelete(activeSeason)"
                       >
+                        <Trash2 class="size-3.5" />
                         {{ $t("pages.seasons.danger.delete_button") }}
                       </Button>
                     </div>
@@ -409,12 +392,7 @@ const warnBannerClasses =
                     <h2 class="m-0 text-[26px] font-bold leading-tight">
                       {{ $t("pages.seasons.off.title") }}
                     </h2>
-                    <span
-                      :class="[
-                        pillClasses,
-                        'border-warning/30 bg-warning/10 text-warning',
-                      ]"
-                    >
+                    <span :class="warnPillClasses">
                       <CirclePause class="h-3 w-3" />
                       {{ $t("pages.seasons.off.pill") }}
                     </span>
@@ -509,7 +487,7 @@ const warnBannerClasses =
                     class="text-xs font-medium"
                     :class="
                       season.__upcoming
-                        ? 'text-[hsl(var(--tac-amber))]'
+                        ? TONE_TEXT.amber
                         : 'text-muted-foreground/70'
                     "
                     >{{
@@ -520,10 +498,7 @@ const warnBannerClasses =
                   >
                   <span
                     v-if="season.needs_rebuild && !isRebuilding(season.id)"
-                    :class="[
-                      pillClasses,
-                      'border-warning/30 bg-warning/10 text-warning',
-                    ]"
+                    :class="warnPillClasses"
                   >
                     <TriangleAlert class="h-3 w-3" />
                     {{ $t("pages.seasons.hero.rebuild_required") }}
@@ -810,8 +785,6 @@ export default {
       endSeason: null as Season | null,
       endOpen: false,
       endTyped: "",
-      dangerButtonClasses:
-        "border-destructive/50 text-destructive hover:bg-destructive/10 hover:text-destructive",
     };
   },
   computed: {

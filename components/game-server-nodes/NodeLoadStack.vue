@@ -13,21 +13,21 @@ import {
   type DiskThresholds,
 } from "~/components/game-server-nodes/nodeState";
 import { formatGb } from "~/components/game-server-nodes/nodeMetrics";
-import { INSPECTOR, TONE_TEXT } from "~/components/game-server-nodes/nodeCopy";
+import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
 
 type LoadTone = "ok" | "warn" | "bad";
-type LineKey = "cpu" | "memory" | "disk" | "gpu";
+type LineKey = "cpu" | "memory" | "disk";
 
-// CPU, memory and disk as compact lines (label, meter, value), plus the GPU's
-// load when one is given. Each meter wears its metric's chart colour; warn
-// tints the value, critical turns the meter red. Off `live`, only the disk
+// CPU, memory and disk as compact lines (label, meter, value). Each meter
+// wears its metric's chart colour; warn tints the value, critical turns the
+// meter red. Off `live`, only the disk
 // shows. A `<key>-tip` slot puts a tooltip on that line; the disk has one.
 const props = withDefaults(
   defineProps<{
     cpu?: number | null;
     memory?: number | null;
     disk?: DiskSize | null;
-    gpu?: number | null;
     diskThresholds?: DiskThresholds;
     live?: boolean;
     cpuTone?: LoadTone;
@@ -39,7 +39,6 @@ const props = withDefaults(
     cpu: null,
     memory: null,
     disk: null,
-    gpu: undefined,
     diskThresholds: () => DEFAULT_DISK_THRESHOLDS,
     live: true,
     cpuTone: undefined,
@@ -60,7 +59,7 @@ const decimals = (value: number | null) =>
 const lines = computed(() => {
   const out: Array<{
     key: LineKey;
-    metric: "cpu" | "mem" | "disk" | "gpu";
+    metric: "cpu" | "mem" | "disk";
     label: string;
     value: number | null;
     decimals: number;
@@ -94,16 +93,6 @@ const lines = computed(() => {
       value: props.disk.percent,
       decimals: 0,
       tone: diskLevel(props.disk.percent, props.diskThresholds) ?? "ok",
-    });
-  }
-  if (props.live && props.gpu !== undefined) {
-    out.push({
-      key: "gpu",
-      metric: "gpu",
-      label: t(`${INSPECTOR}.load.gpu`),
-      value: props.gpu,
-      decimals: 0,
-      tone: loadTone(props.gpu),
     });
   }
   return out;

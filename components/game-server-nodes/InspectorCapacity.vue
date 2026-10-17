@@ -29,7 +29,8 @@ import {
   portsError,
   serversFit,
 } from "~/components/game-server-nodes/nodeInspector";
-import { INSPECTOR, TONE_TEXT } from "~/components/game-server-nodes/nodeCopy";
+import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
+import { TONE_TEXT } from "~/components/admin/tone";
 
 // Capacity: region, the port range with its inline editor, how full the node
 // is and how many servers its CPU has room for.

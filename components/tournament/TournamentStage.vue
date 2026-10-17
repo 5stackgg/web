@@ -33,9 +33,6 @@ import {
           :value="`group-${division}`"
           class="inline-flex items-center gap-2 !px-4 !py-2 !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
         >
-          <span class="font-mono text-xs opacity-70 tabular-nums">
-            {{ String(division).padStart(2, "0") }}
-          </span>
           <span class="font-semibold text-sm uppercase tracking-[0.04em]">
             {{
               $t("tournament.stage.group", { group: getGroupDisplay(division) })

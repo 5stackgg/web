@@ -48,6 +48,7 @@ import {
   isNegotiableBracket,
   type NegotiationWindow,
 } from "~/utilities/bracketNegotiation";
+import { isBracketManuallyScheduled } from "~/utilities/tournamentManualScheduling";
 import {
   isEndedWithResult,
   resultStatusLabelKey,
@@ -69,16 +70,19 @@ const props = defineProps<{
     };
     options?: {
       best_of?: number;
+      match_mode?: string | null;
     };
     windows?: NegotiationWindow[] | null;
   };
   tournament?: {
     is_organizer?: boolean;
     status?: string;
+    auto_start?: boolean | null;
     scheduling_mode?: string | null;
     league_season_division?: { id?: string } | null;
     options?: {
       best_of?: number;
+      match_mode?: string | null;
     };
   };
 }>();
@@ -485,6 +489,24 @@ const hasProblemStatus = (bracket: Bracket): boolean => {
     e_match_status_enum.WaitingForServer,
   ].includes(status);
 };
+
+const AWAITING_SCHEDULE_STATUSES: Array<string> = [
+  e_tournament_status_enum.RegistrationClosed,
+  e_tournament_status_enum.CheckInReview,
+  e_tournament_status_enum.Live,
+  e_tournament_status_enum.Paused,
+];
+
+const isAwaitingSchedule = (bracket: Bracket): boolean =>
+  !bracket.bye &&
+  !bracket.finished &&
+  !bracket.match &&
+  !bracket.scheduled_at &&
+  !!bracket.team_1 &&
+  !!bracket.team_2 &&
+  !!props.tournament?.status &&
+  AWAITING_SCHEDULE_STATUSES.includes(props.tournament.status) &&
+  isBracketManuallyScheduled(props.tournament, props.stage, bracket);
 
 const isActiveMatch = (bracket: Bracket): boolean => {
   const status = bracket.match?.status as e_match_status_enum | undefined;
@@ -945,6 +967,9 @@ const shouldShowCrossBracketDestination = (
             </span>
             <MatchMapDots :match="bracket.match" />
           </template>
+          <span v-else-if="isAwaitingSchedule(bracket)">
+            {{ $t("tournament.bracket.awaiting_schedule") }}
+          </span>
           <span
             v-else-if="
               !isNegotiableBracket(props.tournament, bracket) &&

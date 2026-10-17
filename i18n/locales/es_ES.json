@@ -7441,7 +7441,8 @@
       "discord_notifications_description": "Activa las notificaciones de Discord para los cambios de estado de las partidas de este torneo. Si está desactivado, solo se envían notificaciones del panel.",
       "auto_start": {
         "label": "Inicio automático",
-        "description": "Si está activado, las partidas del torneo se programan automáticamente. Si está desactivado, un organizador debe programar cada partida manualmente."
+        "description": "Si está activado, las partidas del torneo se programan automáticamente. Si está desactivado, un organizador debe programar cada partida manualmente.",
+        "overridden": "La fase {stages} usa el modo de partida Admin, así que un organizador programa cada una de sus partidas. | Las fases {stages} usan el modo de partida Admin, así que un organizador programa cada una de sus partidas."
       },
       "negotiated_scheduling": {
         "label": "Programación negociada",
@@ -7452,7 +7453,6 @@
         "description": "Los equipos pueden incluir suplentes en su roster y alinearlos además de los titulares. Si se desactiva, los rosters y las partidas se limitan a la alineación titular.",
         "locked": "Los suplentes no se pueden desactivar una vez cerradas las inscripciones."
       },
-      "map_pool_locked_label": "Tipo de partida y pool de mapas",
       "map_pool_locked": "El tipo de partida y el pool de mapas se bloquean una vez generado el cuadro.",
       "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta tus cambios de tipo de partida y pool de mapas y luego guarda de nuevo.",
       "logo": {
@@ -7556,11 +7556,14 @@
       "decider_best_of": "Desempate por el 3.er puesto",
       "advanced_settings": "Ajustes avanzados de fase",
       "teams_count": "{count} equipos",
+      "manual_scheduling": "Programación manual",
+      "manual_scheduling_hint": "Las partidas de esta fase solo empiezan cuando un organizador las programa.",
       "structure_locked_label": "Tipo, equipos y grupos",
-      "structure_locked": "El tipo, los equipos y los grupos se bloquean una vez generado el cuadro. El best of aún se puede cambiar.",
+      "structure_locked": "El tipo, los equipos y los grupos se bloquean una vez generado el cuadro.",
       "match_settings_locked_label": "Ajustes de partida",
-      "match_settings_locked": "Los ajustes de partida se bloquean una vez generado el cuadro.",
-      "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta tus cambios de tipo, equipos, grupos o ajustes de partida y luego guarda el best of.",
+      "match_settings_locked": "Los ajustes de partida se bloquean cuando esta fase tiene partidas.",
+      "match_settings_locked_match_mode": "Los ajustes de partida se bloquean cuando esta fase tiene partidas. El modo de partida aún se puede cambiar.",
+      "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta los cambios que ahora están bloqueados y vuelve a guardar.",
       "final_map_advantage": {
         "label": "Ventaja de mapa en la final",
         "description": "Ventaja en mapas con la que el equipo del cuadro de ganadores llega a la gran final. Debe ser menor que los mapas necesarios para ganar."
@@ -7570,6 +7573,8 @@
       "schedule_title": "Programar partida",
       "currently_scheduled": "Programada actualmente",
       "save_schedule": "Guardar horario",
+      "awaiting_schedule": "Pendiente de programar",
+      "schedule_now": "Ahora",
       "clear_schedule": "Borrar",
       "past_time_error": "La hora programada debe ser futura",
       "fit_to_view": "Ajustar a la vista",

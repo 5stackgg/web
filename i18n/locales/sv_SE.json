@@ -7441,7 +7441,8 @@
       "discord_notifications_description": "Aktivera Discord-notiser för matchstatusändringar i denna turnering. Är detta av skickas endast panelnotiser.",
       "auto_start": {
         "label": "Autostart",
-        "description": "Är detta aktiverat schemaläggs turneringsmatcher automatiskt. Är det inaktiverat måste en arrangör schemalägga varje match manuellt."
+        "description": "Är detta aktiverat schemaläggs turneringsmatcher automatiskt. Är det inaktiverat måste en arrangör schemalägga varje match manuellt.",
+        "overridden": "Fas {stages} använder matchläget Admin, så en arrangör schemalägger var och en av dess matcher. | Faserna {stages} använder matchläget Admin, så en arrangör schemalägger var och en av deras matcher."
       },
       "negotiated_scheduling": {
         "label": "Förhandlad schemaläggning",
@@ -7452,7 +7453,6 @@
         "description": "Lag kan ha reserver i truppen och ställa upp dem utöver startuppställningen. När det är avstängt begränsas trupper och matcher till startuppställningen.",
         "locked": "Reserver kan inte stängas av när anmälan har stängt."
       },
-      "map_pool_locked_label": "Matchtyp och kartpool",
       "map_pool_locked": "Matchtyp och kartpool är låsta när slutspelsträdet har skapats.",
       "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta dina ändringar av matchtyp och kartpool och spara sedan igen.",
       "logo": {
@@ -7556,11 +7556,14 @@
       "decider_best_of": "Avgörande för tredjeplatsen",
       "advanced_settings": "Avancerade fasinställningar",
       "teams_count": "{count} lag",
+      "manual_scheduling": "Manuell schemaläggning",
+      "manual_scheduling_hint": "Matcherna i den här fasen startar först när en arrangör schemalägger dem.",
       "structure_locked_label": "Typ, lag och grupper",
-      "structure_locked": "Typ, lag och grupper är låsta när slutspelsträdet har skapats. Best of kan fortfarande ändras.",
+      "structure_locked": "Typ, lag och grupper är låsta när slutspelsträdet har skapats.",
       "match_settings_locked_label": "Matchinställningar",
-      "match_settings_locked": "Matchinställningarna är låsta när slutspelsträdet har skapats.",
-      "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta dina ändringar av typ, lag, grupper eller matchinställningar och spara sedan best of.",
+      "match_settings_locked": "Matchinställningarna är låsta när den här fasen har matcher.",
+      "match_settings_locked_match_mode": "Matchinställningarna är låsta när den här fasen har matcher. Matchläget kan fortfarande ändras.",
+      "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta ändringarna som nu är låsta och spara igen.",
       "final_map_advantage": {
         "label": "Kartfördel i final",
         "description": "Kartpoängsförsprång som vinnarträdets lag tar med sig in i finalen. Måste vara lägre än antalet kartor som krävs för vinst."
@@ -7570,6 +7573,8 @@
       "schedule_title": "Schemalägg match",
       "currently_scheduled": "Aktuell schemaläggning",
       "save_schedule": "Spara schema",
+      "awaiting_schedule": "Väntar på schema",
+      "schedule_now": "Nu",
       "clear_schedule": "Rensa",
       "past_time_error": "Den schemalagda tiden måste ligga i framtiden",
       "fit_to_view": "Anpassa till vy",

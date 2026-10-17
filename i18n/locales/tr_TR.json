@@ -7441,7 +7441,8 @@
       "discord_notifications_description": "Bu turnuvada maç durumu değişiklikleri için Discord bildirimlerini etkinleştir. Kapalıyken yalnızca panel bildirimleri gönderilir.",
       "auto_start": {
         "label": "Otomatik Başlatma",
-        "description": "Etkinleştirildiğinde turnuva maçları otomatik olarak planlanır. Devre dışı bırakıldığında bir organizatör her maçı elle planlamalıdır."
+        "description": "Etkinleştirildiğinde turnuva maçları otomatik olarak planlanır. Devre dışı bırakıldığında bir organizatör her maçı elle planlamalıdır.",
+        "overridden": "Etap {stages} Yönetici maç modunu kullanıyor, bu yüzden her maçını bir organizatör planlar. | Etaplar {stages} Yönetici maç modunu kullanıyor, bu yüzden her maçlarını bir organizatör planlar."
       },
       "negotiated_scheduling": {
         "label": "Anlaşmalı Planlama",
@@ -7452,7 +7453,6 @@
         "description": "Takımlar başlangıç kadrosunun ötesinde yedekleri kadroya ekleyip oynatabilir. Kapalıyken kadrolar ve maçlar başlangıç kadrosuyla sınırlıdır.",
         "locked": "Kayıtlar kapandıktan sonra yedekler kapatılamaz."
       },
-      "map_pool_locked_label": "Maç türü ve harita havuzu",
       "map_pool_locked": "Fikstür çekildikten sonra maç türü ve harita havuzu kilitlenir.",
       "drawn_while_editing": "Sen düzenlerken fikstür çekildi. Maç türü ve harita havuzundaki değişikliklerini at, sonra yeniden kaydet.",
       "logo": {
@@ -7556,11 +7556,14 @@
       "decider_best_of": "3.lük Belirleyici",
       "advanced_settings": "Gelişmiş Etap Ayarları",
       "teams_count": "{count} takım",
+      "manual_scheduling": "Elle planlama",
+      "manual_scheduling_hint": "Bu etaptaki maçlar ancak bir organizatör planladığında başlar.",
       "structure_locked_label": "Tür, takımlar ve gruplar",
-      "structure_locked": "Fikstür çekildikten sonra tür, takımlar ve gruplar kilitlenir. Maç serisi formatı hâlâ değiştirilebilir.",
+      "structure_locked": "Fikstür çekildikten sonra tür, takımlar ve gruplar kilitlenir.",
       "match_settings_locked_label": "Maç ayarları",
-      "match_settings_locked": "Fikstür çekildikten sonra maç ayarları kilitlenir.",
-      "drawn_while_editing": "Sen düzenlerken fikstür çekildi. Tür, takım, grup veya maç ayarlarındaki değişikliklerini at, sonra maç serisi formatını kaydet.",
+      "match_settings_locked": "Bu etapta maç oluştuğunda maç ayarları kilitlenir.",
+      "match_settings_locked_match_mode": "Bu etapta maç oluştuğunda maç ayarları kilitlenir. Maç modu hâlâ değiştirilebilir.",
+      "drawn_while_editing": "Sen düzenlerken fikstür çekildi. Artık kilitli olan değişiklikleri at, sonra tekrar kaydet.",
       "final_map_advantage": {
         "label": "Final Harita Avantajı",
         "description": "Üst tablo takımının büyük finale taşıdığı harita avantajı. Galibiyet için gereken harita sayısının altında kalmalı."
@@ -7570,6 +7573,8 @@
       "schedule_title": "Maç Planla",
       "currently_scheduled": "Şu anda planlanan",
       "save_schedule": "Planı Kaydet",
+      "awaiting_schedule": "Planlanmayı bekliyor",
+      "schedule_now": "Şimdi",
       "clear_schedule": "Temizle",
       "past_time_error": "Planlanan saat gelecekte olmalı",
       "fit_to_view": "Ekrana sığdır",

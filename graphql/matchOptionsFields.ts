@@ -25,6 +25,7 @@ export const matchOptionsFields = Selector("match_options")({
   camera_required: true,
   camera_allow_teammates: true,
   game_mode_id: true,
+  prefer_dedicated_server: true,
   number_of_substitutes: true,
   timeout_setting: true,
   tech_timeout_setting: true,

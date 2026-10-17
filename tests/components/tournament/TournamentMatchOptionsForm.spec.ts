@@ -90,7 +90,133 @@ describe("TournamentMatchOptionsForm substitutes switch", () => {
   });
 });
 
-const LOCKED_LABEL = "Match type and map pool";
+describe("TournamentMatchOptionsForm auto start", () => {
+  let unmount: (() => void) | null = null;
+
+  afterEach(() => {
+    unmount?.();
+    unmount = null;
+    useAuthStore().me = undefined;
+  });
+
+  async function autoStartRow(overrides: Record<string, unknown>) {
+    const wrapper = await mountSuspended(TournamentMatchOptionsForm, {
+      props: { tournament: { ...tournament("Live"), ...overrides } },
+      global: {
+        stubs: {
+          MatchOptions: { template: "<div><slot /></div>" },
+          SettingsSaveBar: true,
+        },
+      },
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+
+    const row = wrapper
+      .findAll("div.flex.flex-row")
+      .find((div) => div.text().includes("Auto Start"));
+    expect(row).toBeDefined();
+    return row!;
+  }
+
+  const stage = (order: number, match_mode: string | null) => ({
+    id: `stage-${order}`,
+    order,
+    options: match_mode ? { id: `options-${order}`, match_mode } : null,
+  });
+
+  it("names the stage whose Admin match mode keeps its matches waiting", async () => {
+    const row = await autoStartRow({
+      stages: [stage(1, "admin"), stage(2, null)],
+    });
+
+    expect(row.text()).toContain(
+      "Stage 1 uses Admin match mode, so an organizer schedules each of its matches.",
+    );
+  });
+
+  it("names every stage that overrides it", async () => {
+    const row = await autoStartRow({
+      stages: [stage(3, "admin"), stage(2, "auto"), stage(1, "admin")],
+    });
+
+    expect(row.text()).toContain(
+      "Stages 1, 3 use Admin match mode, so an organizer schedules each of their matches.",
+    );
+  });
+
+  it("keeps its own description when no stage overrides it", async () => {
+    const row = await autoStartRow({
+      stages: [stage(1, "auto"), stage(2, null)],
+    });
+
+    expect(row.text()).toContain(
+      "When enabled, tournament matches are automatically scheduled.",
+    );
+  });
+
+  it("names the stages that follow a tournament in Admin mode when this role's save can't change it", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Owner",
+      role: e_player_roles_enum.user,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const row = await autoStartRow({
+      options: { ...tournament("Live").options, match_mode: "admin" },
+      stages: [stage(1, null), stage(2, null)],
+    });
+
+    expect(row.text()).toContain(
+      "Stages 1, 2 use Admin match mode, so an organizer schedules each of their matches.",
+    );
+  });
+
+  // Save writes the hidden match mode back to auto once negotiated scheduling
+  // is off, and the api moves every stage row still holding Admin with it, so
+  // naming those stages would promise what saving undoes.
+  it("doesn't name stages that follow the Admin mode a tournament organizer's save sets back to auto", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Organizer",
+      role: e_player_roles_enum.tournament_organizer,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const row = await autoStartRow({
+      options: { ...tournament("Live").options, match_mode: "admin" },
+      stages: [stage(1, null), stage(2, "admin")],
+    });
+
+    expect(row.text()).not.toContain("Admin match mode");
+    expect(row.text()).toContain(
+      "When enabled, tournament matches are automatically scheduled.",
+    );
+  });
+
+  it("still names a stage whose own Admin row differs from the tournament's mode", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Organizer",
+      role: e_player_roles_enum.tournament_organizer,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const row = await autoStartRow({
+      options: { ...tournament("Live").options, match_mode: "auto" },
+      stages: [stage(1, null), stage(2, "admin")],
+    });
+
+    expect(row.text()).toContain(
+      "Stage 2 uses Admin match mode, so an organizer schedules each of its matches.",
+    );
+  });
+
+  it("keeps its own description while it is off", async () => {
+    const row = await autoStartRow({
+      auto_start: false,
+      stages: [stage(1, "admin")],
+    });
+
+    expect(row.text()).not.toContain("Admin match mode");
+  });
+});
+
 const LOCKED = "Match type and map pool are locked once the bracket is drawn.";
 const GAME_MODE = "6426e1b6-1e09-4f51-95c0-8fd312dc0b82";
 const DRAWN_WHILE_EDITING =
@@ -233,7 +359,6 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
       locked,
     );
     expect(wrapper.find(`[aria-label="${LOCKED}"]`).exists()).toBe(locked);
-    expect(wrapper.text().includes(LOCKED_LABEL)).toBe(locked);
   }
 
   async function clickMap(wrapper: Wrapper, label: string) {
@@ -589,6 +714,7 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
       camera_required: false,
       camera_allow_teammates: false,
       game_mode_id: GAME_MODE,
+      prefer_dedicated_server: false,
       map_pool: { ...customPool, e_type: { description: "Custom" } },
     };
     const wrapper = await mountForm({
@@ -603,6 +729,54 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
     expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
       tv_delay: 30,
       game_mode_id: GAME_MODE,
+    });
+  });
+
+  // Match mode is hidden on this form and only negotiated scheduling sets it,
+  // so it used to stay Admin after negotiated scheduling was turned off.
+  it("hands the match mode back to auto when negotiated scheduling is turned off", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Organizer",
+      role: e_player_roles_enum.administrator,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const negotiated = drawable("Setup");
+    const wrapper = await mountForm({
+      ...negotiated,
+      auto_start: false,
+      scheduling_mode: "negotiated",
+      options: { ...negotiated.options, match_mode: "admin" },
+    });
+    (wrapper.vm as any).form.setFieldValue("negotiated_scheduling", false);
+    await flushPromises();
+
+    await save(wrapper);
+
+    expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
+      match_mode: "auto",
+    });
+  });
+
+  it("keeps Admin match mode while negotiated scheduling stays on", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Organizer",
+      role: e_player_roles_enum.administrator,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const negotiated = drawable("Setup");
+    const wrapper = await mountForm({
+      ...negotiated,
+      auto_start: false,
+      scheduling_mode: "negotiated",
+      options: { ...negotiated.options, match_mode: "admin" },
+    });
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+
+    await save(wrapper);
+
+    expect(sent("update_match_options_by_pk")?.variables).toMatchObject({
+      match_mode: "admin",
     });
   });
 

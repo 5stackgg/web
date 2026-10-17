@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
+import BracketScheduleDialog from "~/components/tournament/BracketScheduleDialog.vue";
 import { useBracketView } from "~/composables/useBracketView";
+import type { Bracket } from "~/types/tournament";
 import { Badge } from "~/components/ui/badge";
 import { isEndedWithResult } from "~/utilities/teamResults";
 
@@ -43,6 +45,21 @@ const bracketContent = ref<HTMLElement | null>(null);
 
 const { autoFit, manualZoom } = useBracketView();
 const effectiveZoom = computed(() => (autoFit.value ? 0.75 : manualZoom.value));
+
+const scheduleDialogOpen = ref(false);
+const selectedBracketId = ref<string | null>(null);
+
+const selectedBracket = computed<Bracket | null>(
+  () =>
+    (props.stage?.brackets ?? []).find(
+      (bracket: Bracket) => bracket.id === selectedBracketId.value,
+    ) ?? null,
+);
+
+const handleScheduleBracket = (bracket: Bracket) => {
+  selectedBracketId.value = bracket.id;
+  scheduleDialogOpen.value = true;
+};
 
 // Calculate team records from brackets (final records)
 const teamRecords = computed(() => {
@@ -560,6 +577,7 @@ const getBackgroundColor = (wins: number, losses: number) => {
                     :brackets="[bracket]"
                     :stage="stage"
                     :tournament="tournament"
+                    @schedule-bracket="handleScheduleBracket"
                   />
                 </div>
               </div>
@@ -695,5 +713,11 @@ const getBackgroundColor = (wins: number, losses: number) => {
         </div>
       </div>
     </div>
+
+    <BracketScheduleDialog
+      :open="scheduleDialogOpen"
+      :bracket="selectedBracket"
+      @update:open="scheduleDialogOpen = $event"
+    />
   </div>
 </template>

@@ -601,9 +601,10 @@ export default {
           "number_of_substitutes",
           useApplicationSettingsStore().teamMaxSubs,
         );
-        if (this.form.values.negotiated_scheduling) {
-          this.form.setFieldValue("match_mode", "admin");
-        }
+        this.form.setFieldValue(
+          "match_mode",
+          this.form.values.negotiated_scheduling ? "admin" : "auto",
+        );
         const form = this.form.values;
 
         const { data } = await this.$apollo.mutate({

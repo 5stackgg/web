@@ -40,7 +40,7 @@ import {
   Split,
   RotateCw,
   Shuffle,
-  TriangleAlert,
+  Lock,
 } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
@@ -73,13 +73,13 @@ import { $ } from "~/generated/zeus";
         <FiveStackToolTip as-child :delay-duration="120">
           <template #trigger>
             <span
-              class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+              class="inline-flex cursor-help text-muted-foreground"
               tabindex="0"
               role="img"
               :aria-label="$t('tournament.stage.structure_locked')"
               @click.prevent
             >
-              <TriangleAlert class="h-3.5 w-3.5" />
+              <Lock class="h-3 w-3" />
             </span>
           </template>
           <p class="max-w-[16rem]">
@@ -551,7 +551,7 @@ import { $ } from "~/generated/zeus";
           </Card>
           </Fold>
 
-          <Fold :open="structureLocked">
+          <Fold :open="matchSettingsLocked">
             <div
               class="flex items-center gap-1.5 text-xs text-muted-foreground"
             >
@@ -561,26 +561,26 @@ import { $ } from "~/generated/zeus";
               <FiveStackToolTip as-child :delay-duration="120">
                 <template #trigger>
                   <span
-                    class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                    class="inline-flex cursor-help text-muted-foreground"
                     tabindex="0"
                     role="img"
-                    :aria-label="$t('tournament.stage.match_settings_locked')"
+                    :aria-label="matchSettingsLockedReason"
                     @click.prevent
                   >
-                    <TriangleAlert class="h-3.5 w-3.5" />
+                    <Lock class="h-3 w-3" />
                   </span>
                 </template>
                 <p class="max-w-[16rem]">
-                  {{ $t("tournament.stage.match_settings_locked") }}
+                  {{ matchSettingsLockedReason }}
                 </p>
               </FiveStackToolTip>
             </div>
           </Fold>
 
           <fieldset
-            :disabled="structureLocked"
+            :disabled="matchSettingsLocked"
             class="flex min-w-0 flex-col gap-4 transition-opacity duration-200 motion-reduce:transition-none"
-            :class="structureLocked && 'pointer-events-none opacity-50'"
+            :class="matchSettingsLocked && 'pointer-events-none opacity-50'"
           >
           <!-- TV Delay -->
           <Card>
@@ -978,12 +978,19 @@ import { $ } from "~/generated/zeus";
                   <FormMessage />
                 </FormItem>
               </FormField>
+            </div>
+          </Card>
+          </fieldset>
 
-              <FormField
-                v-if="canSetMatchMode"
-                v-slot="{ componentField }"
-                name="match_mode"
-              >
+          <fieldset
+            v-if="canSetMatchMode"
+            :disabled="matchModeLocked"
+            class="flex min-w-0 flex-col gap-4 transition-opacity duration-200 motion-reduce:transition-none"
+            :class="matchModeLocked && 'pointer-events-none opacity-50'"
+          >
+          <Card>
+            <div class="p-4">
+              <FormField v-slot="{ componentField }" name="match_mode">
                 <FormItem>
                   <SettingHeader>{{
                     $t("match.options.advanced.match_mode.label")
@@ -1076,7 +1083,11 @@ import { useAuthStore } from "~/stores/AuthStore";
 // into one module, so a module-scope import shadows the computed of the same
 // name when the template resolves it. This returns a boolean, so the template
 // was reading a function -- always truthy, and a v-if that never hid anything.
-import { canSetVetoPickTimeout as allowsVetoPickTimeout } from "~/utilities/setupOptions";
+import {
+  canSetCameraRequired,
+  canSetGameMode,
+  canSetVetoPickTimeout as allowsVetoPickTimeout,
+} from "~/utilities/setupOptions";
 import {
   advancingTeams,
   groupsSplitNextStage,
@@ -1100,6 +1111,18 @@ interface EnumSetting {
   value: string;
   display: string;
 }
+
+const MATCH_SETTING_FIELDS = [
+  "tv_delay",
+  "veto_pick_timeout",
+  "lan",
+  "region_veto",
+  "regions",
+  "check_in_setting",
+  "ready_setting",
+  "tech_timeout_setting",
+  "match_mode",
+];
 
 export default {
   emits: ["updated"],
@@ -1153,6 +1176,7 @@ export default {
       baseline: null as string | null,
       isDirty: false,
       showAdvancedSettings: false,
+      stageStarted: true,
       advHeight: "0px",
       select_single_region: null as string | null,
       lastVetoPickTimeout: 0,
@@ -1271,6 +1295,12 @@ export default {
   watch: {
     showAdvancedSettings(open) {
       this.animateAdvanced(open);
+    },
+    stageStartedKey: {
+      immediate: true,
+      handler() {
+        void this.refreshStageStarted();
+      },
     },
     stage: {
       immediate: true,
@@ -1523,6 +1553,20 @@ export default {
         e_player_roles_enum.tournament_organizer,
       );
     },
+    stageStartedKey(): string | null {
+      return this.structureLocked && this.stage?.id ? this.stage.id : null;
+    },
+    matchSettingsLocked(): boolean {
+      return this.structureLocked && this.stageStarted;
+    },
+    matchModeLocked(): boolean {
+      return this.matchSettingsLocked && !this.stage?.options?.id;
+    },
+    matchSettingsLockedReason(): string {
+      return this.matchModeLocked || !this.canSetMatchMode
+        ? this.$t("tournament.stage.match_settings_locked")
+        : this.$t("tournament.stage.match_settings_locked_match_mode");
+    },
     matchModeSettings(): EnumSetting[] {
       return [
         {
@@ -1535,8 +1579,8 @@ export default {
         },
       ];
     },
-    // A locked save leaves the stage's options row alone, so a stage still
-    // holding a pool of its own goes on playing that one.
+    // A locked save never moves the stage's options row to another pool, so a
+    // stage still holding a pool of its own goes on playing that one.
     keptOwnMapPool(): any {
       const pool = this.structureLocked ? this.stage?.options?.map_pool : null;
       return pool && pool.id !== this.tournament?.options?.map_pool?.id
@@ -1709,18 +1753,45 @@ export default {
     discardChanges() {
       this.populateStage(this.stage);
     },
-    structureChanged(): boolean {
+    changedFields(): Array<string> {
       if (this.baseline === null) {
-        return false;
+        return [];
       }
       const before = JSON.parse(this.baseline).values;
       const after = this.form.values;
       const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
-      return [...keys].some(
-        (key) =>
-          key !== "default_best_of" &&
-          JSON.stringify(before[key]) !== JSON.stringify(after[key]),
+      return [...keys].filter(
+        (key) => JSON.stringify(before[key]) !== JSON.stringify(after[key]),
       );
+    },
+    editableWhileLocked(): Array<string> {
+      if (!this.matchSettingsLocked) {
+        return ["default_best_of", ...MATCH_SETTING_FIELDS];
+      }
+      if (!this.matchModeLocked) {
+        return ["default_best_of", "match_mode"];
+      }
+      return ["default_best_of"];
+    },
+    structureChanged(): boolean {
+      const editable = this.editableWhileLocked();
+      return this.changedFields().some((key) => !editable.includes(key));
+    },
+    matchSettingsChanged(): boolean {
+      return this.changedFields().some((key) =>
+        MATCH_SETTING_FIELDS.includes(key),
+      );
+    },
+    async refreshStageStarted() {
+      if (!this.stageStartedKey) {
+        this.stageStarted = true;
+        return;
+      }
+      try {
+        this.stageStarted = await this.stageHasDrawnMatches();
+      } catch {
+        this.stageStarted = true;
+      }
     },
     animateAdvanced(open: boolean) {
       const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
@@ -1885,39 +1956,133 @@ export default {
       });
       return (data?.tournament_brackets?.length ?? 0) > 0;
     },
+    // matchSettingsOnly leaves the row's pool, type and format alone: once the
+    // bracket is drawn the api refuses a stage another pool. Columns the role's
+    // match_options permission lacks are left out, as setupOptions does.
+    stageOptionColumns(
+      form: any,
+      matchSettingsOnly: boolean,
+    ): Array<[string, string, unknown]> {
+      const tournamentOptions = this.tournament.options;
+      const canSetOrganizerColumns = useAuthStore().isRoleAbove(
+        e_player_roles_enum.tournament_organizer,
+      );
+      const columns: Array<[string, string, unknown]> = [
+        ["tv_delay", "Int!", form.tv_delay],
+        ["region_veto", "Boolean!", form.region_veto],
+        ["regions", "[String!]!", form.regions || []],
+        ["ready_setting", "e_ready_settings_enum!", form.ready_setting],
+        [
+          "tech_timeout_setting",
+          "e_timeout_settings_enum!",
+          form.tech_timeout_setting,
+        ],
+      ];
+      if (allowsVetoPickTimeout()) {
+        columns.push(["veto_pick_timeout", "Int!", form.veto_pick_timeout]);
+      }
+      if (this.canSetCheckInSettings) {
+        columns.push([
+          "check_in_setting",
+          "e_check_in_settings_enum!",
+          form.check_in_setting,
+        ]);
+      }
+      if (canSetOrganizerColumns) {
+        columns.push(["match_mode", "e_match_mode_enum!", form.match_mode]);
+      }
+      if (matchSettingsOnly) {
+        return columns;
+      }
+      columns.push(
+        ["mr", "Int!", tournamentOptions.mr],
+        ["type", "e_match_types_enum!", tournamentOptions.type],
+        ["best_of", "Int!", tournamentOptions.best_of],
+        ["knife_round", "Boolean!", tournamentOptions.knife_round],
+        ["default_models", "Boolean!", tournamentOptions.default_models],
+        ["overtime", "Boolean!", tournamentOptions.overtime],
+        ["coaches", "Boolean!", tournamentOptions.coaches],
+        [
+          "number_of_substitutes",
+          "Int!",
+          tournamentOptions.number_of_substitutes,
+        ],
+        [
+          "timeout_setting",
+          "e_timeout_settings_enum!",
+          tournamentOptions.timeout_setting,
+        ],
+        ["map_pool_id", "uuid!", tournamentOptions.map_pool.id],
+        [
+          "round_restart_delay",
+          "Int",
+          tournamentOptions.round_restart_delay ?? null,
+        ],
+        [
+          "halftime_pausematch",
+          "Boolean!",
+          tournamentOptions.halftime_pausematch,
+        ],
+        [
+          "prefer_dedicated_server",
+          "Boolean!",
+          tournamentOptions.prefer_dedicated_server,
+        ],
+      );
+      if (canSetCameraRequired()) {
+        columns.push(
+          ["camera_required", "Boolean!", tournamentOptions.camera_required],
+          [
+            "camera_allow_teammates",
+            "Boolean!",
+            tournamentOptions.camera_allow_teammates,
+          ],
+        );
+      }
+      if (canSetGameMode()) {
+        columns.push([
+          "game_mode_id",
+          "uuid",
+          tournamentOptions.game_mode_id ?? null,
+        ]);
+      }
+      if (canSetOrganizerColumns) {
+        columns.push(
+          [
+            "auto_cancellation",
+            "Boolean!",
+            tournamentOptions.auto_cancellation,
+          ],
+          [
+            "auto_cancel_duration",
+            "Int",
+            tournamentOptions.auto_cancel_duration ?? null,
+          ],
+          [
+            "live_match_timeout",
+            "Int",
+            tournamentOptions.live_match_timeout ?? null,
+          ],
+        );
+      }
+      return columns;
+    },
     async updateMatchOptions(
       matchOptionsId: string,
       form: any,
+      matchSettingsOnly = false,
     ): Promise<string> {
       if (!this.tournament) {
         throw new Error("Tournament is required");
       }
-      const tournamentOptions = this.tournament.options;
+      const columns = this.stageOptionColumns(form, matchSettingsOnly);
 
       await (this as any).$apollo.mutate({
         variables: {
           id: matchOptionsId,
-          tv_delay: form.tv_delay,
-          ...(allowsVetoPickTimeout()
-            ? { veto_pick_timeout: form.veto_pick_timeout }
-            : {}),
-          region_veto: form.region_veto,
-          regions: form.regions || [],
-          check_in_setting: form.check_in_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          match_mode: form.match_mode,
-          // Keep tournament defaults for all other fields
-          mr: tournamentOptions.mr,
-          type: tournamentOptions.type,
-          best_of: tournamentOptions.best_of,
-          knife_round: tournamentOptions.knife_round,
-          default_models: tournamentOptions.default_models,
-          overtime: tournamentOptions.overtime,
-          coaches: tournamentOptions.coaches,
-          number_of_substitutes: tournamentOptions.number_of_substitutes,
-          timeout_setting: tournamentOptions.timeout_setting,
-          map_pool_id: tournamentOptions.map_pool.id,
+          ...Object.fromEntries(
+            columns.map(([name, , value]) => [name, value]),
+          ),
         },
         mutation: generateMutation({
           update_match_options_by_pk: [
@@ -1925,37 +2090,9 @@ export default {
               pk_columns: {
                 id: $("id", "uuid!"),
               },
-              _set: {
-                tv_delay: $("tv_delay", "Int!"),
-                ...(allowsVetoPickTimeout()
-                  ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
-                  : {}),
-                region_veto: $("region_veto", "Boolean!"),
-                regions: $("regions", "[String!]!"),
-                check_in_setting: $(
-                  "check_in_setting",
-                  "e_check_in_settings_enum!",
-                ),
-                ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                tech_timeout_setting: $(
-                  "tech_timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                match_mode: $("match_mode", "e_match_mode_enum!"),
-                mr: $("mr", "Int!"),
-                type: $("type", "e_match_types_enum!"),
-                best_of: $("best_of", "Int!"),
-                knife_round: $("knife_round", "Boolean!"),
-                default_models: $("default_models", "Boolean!"),
-                overtime: $("overtime", "Boolean!"),
-                coaches: $("coaches", "Boolean!"),
-                number_of_substitutes: $("number_of_substitutes", "Int!"),
-                timeout_setting: $(
-                  "timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                map_pool_id: $("map_pool_id", "uuid!"),
-              },
+              _set: Object.fromEntries(
+                columns.map(([name, type]) => [name, $(name, type as any)]),
+              ) as any,
             },
             {
               id: true,
@@ -1969,67 +2106,21 @@ export default {
       if (!this.tournament) {
         throw new Error("Tournament is required");
       }
-      const tournamentOptions = this.tournament.options;
+      const columns = this.stageOptionColumns(form, false);
 
       const { data } = await (this as any).$apollo.mutate({
-        variables: {
-          tv_delay: form.tv_delay,
-          ...(allowsVetoPickTimeout()
-            ? { veto_pick_timeout: form.veto_pick_timeout }
-            : {}),
-          region_veto: form.region_veto,
-          regions: form.regions || [],
-          check_in_setting: form.check_in_setting,
-          ready_setting: form.ready_setting,
-          tech_timeout_setting: form.tech_timeout_setting,
-          match_mode: form.match_mode,
-          // Keep tournament defaults for all other fields
-          mr: tournamentOptions.mr,
-          type: tournamentOptions.type,
-          best_of: tournamentOptions.best_of,
-          knife_round: tournamentOptions.knife_round,
-          default_models: tournamentOptions.default_models,
-          overtime: tournamentOptions.overtime,
-          coaches: tournamentOptions.coaches,
-          number_of_substitutes: tournamentOptions.number_of_substitutes,
-          timeout_setting: tournamentOptions.timeout_setting,
-          map_pool_id: tournamentOptions.map_pool.id,
-        },
+        variables: Object.fromEntries(
+          columns.map(([name, , value]) => [name, value]),
+        ),
         mutation: generateMutation({
           insert_match_options_one: [
             {
               object: {
-                tv_delay: $("tv_delay", "Int!"),
-                ...(allowsVetoPickTimeout()
-                  ? { veto_pick_timeout: $("veto_pick_timeout", "Int!") }
-                  : {}),
-                region_veto: $("region_veto", "Boolean!"),
-                regions: $("regions", "[String!]!"),
-                check_in_setting: $(
-                  "check_in_setting",
-                  "e_check_in_settings_enum!",
+                ...Object.fromEntries(
+                  columns.map(([name, type]) => [name, $(name, type as any)]),
                 ),
-                ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                tech_timeout_setting: $(
-                  "tech_timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                match_mode: $("match_mode", "e_match_mode_enum!"),
-                mr: $("mr", "Int!"),
-                type: $("type", "e_match_types_enum!"),
-                best_of: $("best_of", "Int!"),
-                knife_round: $("knife_round", "Boolean!"),
-                default_models: $("default_models", "Boolean!"),
-                overtime: $("overtime", "Boolean!"),
-                coaches: $("coaches", "Boolean!"),
-                number_of_substitutes: $("number_of_substitutes", "Int!"),
-                timeout_setting: $(
-                  "timeout_setting",
-                  "e_timeout_settings_enum!",
-                ),
-                map_pool_id: $("map_pool_id", "uuid!"),
                 map_veto: true,
-              },
+              } as any,
             },
             {
               id: true,
@@ -2103,6 +2194,38 @@ export default {
             return;
           }
 
+          const lockedSet: any = {
+            default_best_of: parseInt(form.default_best_of),
+            settings: $("settings", "jsonb"),
+          };
+
+          if (this.matchSettingsChanged()) {
+            const ownRow = !!this.stage.options?.id;
+            const onlyMatchMode = this.changedFields().every(
+              (key) =>
+                key === "match_mode" || !MATCH_SETTING_FIELDS.includes(key),
+            );
+            if (
+              (!ownRow && customAdvancedSettings) ||
+              (ownRow && !onlyMatchMode)
+            ) {
+              if (await this.stageHasDrawnMatches()) {
+                this.stageStarted = true;
+                toast({
+                  variant: "destructive",
+                  title: this.$t("common.error"),
+                  description: this.$t("tournament.stage.match_settings_drawn"),
+                });
+                return;
+              }
+            }
+            if (ownRow) {
+              await this.updateMatchOptions(this.stage.options.id, form, true);
+            } else if (customAdvancedSettings) {
+              lockedSet.match_options_id = await this.createMatchOptions(form);
+            }
+          }
+
           await (this as any).$apollo.mutate({
             variables: {
               settings: settings,
@@ -2113,10 +2236,7 @@ export default {
                   pk_columns: {
                     id: this.stage.id,
                   },
-                  _set: {
-                    default_best_of: parseInt(form.default_best_of),
-                    settings: $("settings", "jsonb"),
-                  },
+                  _set: lockedSet,
                 },
                 {
                   __typename: true,

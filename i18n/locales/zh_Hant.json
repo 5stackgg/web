@@ -7441,7 +7441,8 @@
       "discord_notifications_description": "啟用此賽事中比賽狀態變更的 Discord 通知。關閉時，僅傳送面板通知。",
       "auto_start": {
         "label": "自動開始",
-        "description": "啟用時，賽事比賽會自動排程。停用時，主辦方必須手動安排每場比賽。"
+        "description": "啟用時，賽事比賽會自動排程。停用時，主辦方必須手動安排每場比賽。",
+        "overridden": "第 {stages} 階段使用「管理」比賽模式，因此每場比賽都由主辦者安排。 | 第 {stages} 階段使用「管理」比賽模式，因此每場比賽都由主辦者安排。"
       },
       "negotiated_scheduling": {
         "label": "協商排程",
@@ -7452,7 +7453,6 @@
         "description": "隊伍可以在先發陣容之外登記並派出替補。關閉後，名單與比賽僅限先發陣容。",
         "locked": "報名截止後無法關閉替補。"
       },
-      "map_pool_locked_label": "比賽類型和地圖池",
       "map_pool_locked": "對陣圖產生後，比賽類型和地圖池將被鎖定。",
       "drawn_while_editing": "你編輯期間對陣圖已產生。請捨棄對比賽類型和地圖池的變更，然後重新儲存。",
       "logo": {
@@ -7556,11 +7556,14 @@
       "decider_best_of": "季軍賽賽制",
       "advanced_settings": "進階階段設定",
       "teams_count": "{count} 支隊伍",
+      "manual_scheduling": "手動安排",
+      "manual_scheduling_hint": "此階段的比賽要等主辦者安排後才會開始。",
       "structure_locked_label": "類型、隊伍和小組",
-      "structure_locked": "對陣圖產生後，類型、隊伍和小組將被鎖定。賽制仍可變更。",
+      "structure_locked": "對陣圖產生後，類型、隊伍和小組將被鎖定。",
       "match_settings_locked_label": "比賽設定",
-      "match_settings_locked": "對陣圖產生後，比賽設定將被鎖定。",
-      "drawn_while_editing": "你編輯期間對陣圖已產生。請捨棄對類型、隊伍、小組或比賽設定的變更，然後儲存賽制。",
+      "match_settings_locked": "此階段產生比賽後，比賽設定將被鎖定。",
+      "match_settings_locked_match_mode": "此階段產生比賽後，比賽設定將被鎖定。比賽模式仍可變更。",
+      "drawn_while_editing": "你編輯期間對陣圖已產生。請捨棄現已鎖定的變更，然後重新儲存。",
       "final_map_advantage": {
         "label": "決賽地圖優勢",
         "description": "勝者組隊伍帶入總決賽的地圖分領先優勢。必須低於獲勝所需的地圖數。"
@@ -7570,6 +7573,8 @@
       "schedule_title": "安排比賽",
       "currently_scheduled": "目前已排程",
       "save_schedule": "儲存排程",
+      "awaiting_schedule": "等待安排",
+      "schedule_now": "現在",
       "clear_schedule": "清除",
       "past_time_error": "排程時間必須在未來",
       "fit_to_view": "符合檢視",

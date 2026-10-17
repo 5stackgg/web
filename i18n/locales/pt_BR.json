@@ -7441,7 +7441,8 @@
       "discord_notifications_description": "Habilitar notificações do Discord para status de partidas neste torneio.",
       "auto_start": {
         "label": "Auto Iniciar",
-        "description": "Quando habilitado, as partidas do torneio são automaticamente agendadas. Quando desabilitado, um organizador precisa agendar as partidas manualmente."
+        "description": "Quando habilitado, as partidas do torneio são automaticamente agendadas. Quando desabilitado, um organizador precisa agendar as partidas manualmente.",
+        "overridden": "A fase {stages} usa o modo de partida Admin, então um organizador agenda cada uma das suas partidas. | As fases {stages} usam o modo de partida Admin, então um organizador agenda cada uma das suas partidas."
       },
       "negotiated_scheduling": {
         "label": "Agendamento Negociado",
@@ -7452,7 +7453,6 @@
         "description": "As equipes podem inscrever e escalar reservas além dos titulares. Quando desativado, elencos e partidas ficam limitados aos titulares.",
         "locked": "As reservas não podem ser desativadas depois que as inscrições forem encerradas."
       },
-      "map_pool_locked_label": "Tipo de partida e map pool",
       "map_pool_locked": "O tipo de partida e o map pool ficam bloqueados depois que o chaveamento é gerado.",
       "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações de tipo de partida e map pool e depois salve novamente.",
       "logo": {
@@ -7556,11 +7556,14 @@
       "decider_best_of": "Decisão de 3º Lugar - Melhor De",
       "advanced_settings": "Configurações Avançadas de Fase",
       "teams_count": "{count} equipes",
+      "manual_scheduling": "Agendamento manual",
+      "manual_scheduling_hint": "As partidas desta fase só começam quando um organizador as agenda.",
       "structure_locked_label": "Tipo, times e grupos",
-      "structure_locked": "Tipo, times e grupos ficam bloqueados depois que o chaveamento é gerado. O formato Melhor De ainda pode mudar.",
+      "structure_locked": "Tipo, times e grupos ficam bloqueados depois que o chaveamento é gerado.",
       "match_settings_locked_label": "Configurações da partida",
-      "match_settings_locked": "As configurações da partida ficam bloqueadas depois que o chaveamento é gerado.",
-      "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações de tipo, times, grupos ou configurações da partida e depois salve o formato Melhor De.",
+      "match_settings_locked": "As configurações da partida ficam bloqueadas quando esta fase tem partidas.",
+      "match_settings_locked_match_mode": "As configurações da partida ficam bloqueadas quando esta fase tem partidas. O modo de partida ainda pode mudar.",
+      "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações que agora estão bloqueadas e salve novamente.",
       "final_map_advantage": {
         "label": "Vantagem de Mapa na Final",
         "description": "Vantagem em pontos de mapa que a equipe da chave dos vencedores leva para a grande final. Deve ficar abaixo do número de mapas necessários para vencer."
@@ -7570,6 +7573,8 @@
       "schedule_title": "Agendar Partida",
       "currently_scheduled": "Atualmente Agendado",
       "save_schedule": "Salvar Agendamento",
+      "awaiting_schedule": "Aguardando agendamento",
+      "schedule_now": "Agora",
       "clear_schedule": "Limpar",
       "past_time_error": "O horário agendado deve estar no futuro",
       "fit_to_view": "Ajustar à visualização",

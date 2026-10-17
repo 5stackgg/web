@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { TriangleAlert } from "lucide-vue-next";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
-import { Fold } from "~/components/ui/transitions";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 import SettingHeader from "~/components/match/SettingHeader.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
@@ -17,6 +14,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       :hide-match-mode="true"
       :lock-substitutes="true"
       :lock-map-pool="mapPoolLocked"
+      :lock-map-pool-reason="$t('tournament.form.map_pool_locked')"
     >
       <FormField v-slot="{ value, handleChange }" name="negotiated_scheduling">
         <FormItem>
@@ -59,7 +57,13 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                 $t("tournament.form.auto_start.label")
               }}</SettingHeader>
               <FormDescription>{{
-                $t("tournament.form.auto_start.description")
+                value && stagesOverridingAutoStart.length
+                  ? $t(
+                      "tournament.form.auto_start.overridden",
+                      { stages: stagesOverridingAutoStart.join(", ") },
+                      stagesOverridingAutoStart.length,
+                    )
+                  : $t("tournament.form.auto_start.description")
               }}</FormDescription>
             </div>
             <FormControl>
@@ -107,28 +111,6 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           </div>
         </FormItem>
       </FormField>
-
-      <Fold :open="mapPoolLocked">
-        <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span>{{ $t("tournament.form.map_pool_locked_label") }}</span>
-          <FiveStackToolTip as-child :delay-duration="120">
-            <template #trigger>
-              <span
-                class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
-                tabindex="0"
-                role="img"
-                :aria-label="$t('tournament.form.map_pool_locked')"
-                @click.prevent
-              >
-                <TriangleAlert class="h-3.5 w-3.5" />
-              </span>
-            </template>
-            <p class="max-w-[16rem]">
-              {{ $t("tournament.form.map_pool_locked") }}
-            </p>
-          </FiveStackToolTip>
-        </div>
-      </Fold>
     </MatchOptions>
 
     <div class="pb-24"></div>
@@ -149,6 +131,8 @@ import { mapFields } from "~/graphql/mapGraphql";
 import {
   $,
   e_map_pool_types_enum,
+  e_match_mode_enum,
+  e_player_roles_enum,
   e_tournament_status_enum,
 } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
@@ -160,6 +144,8 @@ import {
   setupOptionsSetMutation,
 } from "~/utilities/setupOptions";
 import { isTournamentBracketDrawn } from "~/utilities/tournamentBracketDrawn";
+import { adminModeStageOrders } from "~/utilities/tournamentManualScheduling";
+import { useAuthStore } from "~/stores/AuthStore";
 import * as z from "zod";
 
 export default {
@@ -256,6 +242,29 @@ export default {
   computed: {
     mapPoolLocked() {
       return isTournamentBracketDrawn(this.tournament);
+    },
+    // Save writes the tournament's match mode from negotiated scheduling for
+    // roles that may write it, and the api carries that change to every stage
+    // row still holding the old mode, so those stages follow it too.
+    stagesOverridingAutoStart(): Array<number> {
+      if (
+        !useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
+      ) {
+        return adminModeStageOrders(this.tournament);
+      }
+      const stored = this.tournament.options?.match_mode;
+      const written = this.form.values.negotiated_scheduling
+        ? e_match_mode_enum.admin
+        : e_match_mode_enum.auto;
+      return adminModeStageOrders({
+        ...this.tournament,
+        options: { ...this.tournament.options, match_mode: written },
+        stages: (this.tournament.stages ?? []).map((stage: any) =>
+          stage.options?.match_mode === stored
+            ? { ...stage, options: { ...stage.options, match_mode: written } }
+            : stage,
+        ),
+      });
     },
     substitutesLocked() {
       return (
@@ -387,9 +396,11 @@ export default {
           useApplicationSettingsStore().teamMaxSubs,
         );
         // Negotiated scheduling keeps brackets dormant until a time is agreed.
-        if (this.form.values.negotiated_scheduling) {
-          this.form.setFieldValue("match_mode", "admin");
-        }
+        // Match mode is hidden here, so turning it off has to set it back.
+        this.form.setFieldValue(
+          "match_mode",
+          this.form.values.negotiated_scheduling ? "admin" : "auto",
+        );
         const form = this.form.values;
 
         await this.$apollo.mutate({

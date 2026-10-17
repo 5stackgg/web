@@ -34,7 +34,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { client } = useApolloClient();
-const { stageMatchId, setStage } = useWatchStage();
+const { stageMatchId } = useWatchStage();
 
 const live = ref<any[]>([]);
 const upcoming = ref<any[]>([]);
@@ -348,13 +348,6 @@ function scrollRight() {
   scrollRow.value?.scrollByDirection("right");
   if (!scrollRow.value?.state.canScrollRight) loadMore();
 }
-
-function stageMatch(matchId: string) {
-  setStage(matchId);
-  document
-    .getElementById("watch-stage")
-    ?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
 </script>
 
 <template>
@@ -459,12 +452,10 @@ function stageMatch(matchId: string) {
                 <WatchTickerCell
                   v-if="item.type === 'cell'"
                   :model="item.model"
-                  :streamable="streamableMatchIds.includes(item.model.id)"
                   :staged="
                     streamableMatchIds.includes(item.model.id) &&
                     stageMatchId === item.model.id
                   "
-                  @stage="stageMatch"
                 />
                 <div
                   v-else-if="item.type === 'divider'"

@@ -3,6 +3,7 @@ import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
 import WatchTicker from "~/components/watch/WatchTicker.vue";
+import { useWatchStage } from "~/composables/useWatchStage";
 
 const { subscriptions, queries } = vi.hoisted(() => ({
   subscriptions: [] as Array<{ variables: any; next: (result: any) => void }>,
@@ -55,10 +56,20 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   }),
 }));
 
-async function mountTicker(live: any[] = []) {
+async function mountTicker(
+  live: any[] = [],
+  streamableMatchIds: string[] = [],
+) {
   const wrapper = await mountSuspended(WatchTicker, {
-    props: { streamableMatchIds: [] },
-    global: { stubs: { NuxtLink: { template: "<a><slot /></a>" } } },
+    props: { streamableMatchIds },
+    global: {
+      stubs: {
+        NuxtLink: {
+          props: ["to"],
+          template: '<a :data-to="JSON.stringify(to)"><slot /></a>',
+        },
+      },
+    },
   });
   for (const sub of subscriptions) {
     sub.next({ data: { matches: sub.variables.statuses ? live : [] } });
@@ -116,6 +127,29 @@ describe("WatchTicker", () => {
     expect(results?.query).toContain(
       "_or: [{status: {_eq: Finished}}, {status: {_in: [Forfeit, Surrendered]}, winning_lineup_id: {_is_null: false}}]",
     );
+  });
+
+  it("links a streamed live match to its match page", async () => {
+    useWatchStage().setStage("m1");
+    const wrapper = await mountTicker(
+      [
+        {
+          ...finished("m1", new Date().toISOString()),
+          status: "Live",
+          ended_at: null,
+          winning_lineup_id: null,
+          streams: [{ id: "s1", link: "https://twitch.tv/x" }],
+        },
+      ],
+      ["m1"],
+    );
+    const cell = wrapper.find('a[aria-current="true"]');
+
+    expect(cell.text()).toContain("On stage");
+    expect(JSON.parse(cell.attributes("data-to")!)).toEqual({
+      name: "matches-id",
+      params: { id: "m1" },
+    });
   });
 
   it("shows placeholders and runs no queries for a new server", async () => {

@@ -186,6 +186,34 @@ describe("TournamentMatch on a manually scheduled stage", () => {
       expect(wrapper.text()).toContain("Awaiting schedule");
     });
 
+    it("doesn't flash an ETA the api just moved to its own now", async () => {
+      vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
+      const wrapper = await mountPlayerCard({
+        scheduled_eta: minutesFromNow(-60),
+      });
+      expect(wrapper.text()).toContain("Awaiting schedule");
+
+      vi.advanceTimersByTime(9_000);
+      await wrapper.setProps({
+        brackets: [
+          bracket({ scheduled_eta: new Date(Date.now() - 500).toISOString() }),
+        ],
+      });
+      await flushPromises();
+
+      expect(wrapper.text()).toContain("Awaiting schedule");
+    });
+
+    it("shows the ETA when the page doesn't say who organizes it", async () => {
+      const wrapper = await mountCard(
+        { is_organizer: undefined, auto_start: true },
+        { match_mode: "admin" },
+        { scheduled_eta: ETA },
+      );
+
+      expect(wrapper.findComponent(TimeAgo).props("date")).toBe(ETA);
+    });
+
     it("switches to awaiting a schedule when the ETA passes while the page is open", async () => {
       vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
       const wrapper = await mountPlayerCard({

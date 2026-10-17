@@ -139,6 +139,94 @@ describe("TournamentMatch on a manually scheduled stage", () => {
     expect(wrapper.text()).not.toContain("Awaiting schedule");
     expect(wrapper.findComponent(TimeAgo).exists()).toBe(true);
   });
+
+  describe("for someone who doesn't organize the tournament", () => {
+    const minutesFromNow = (minutes: number) =>
+      new Date(Date.now() + minutes * 60_000).toISOString();
+
+    const mountPlayerCard = (card: Record<string, any>) =>
+      mountCard(
+        { is_organizer: false, auto_start: true },
+        { match_mode: "admin" },
+        card,
+      );
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("shows the ETA while it is still ahead", async () => {
+      const wrapper = await mountPlayerCard({ scheduled_eta: ETA });
+
+      expect(wrapper.text()).not.toContain("Awaiting schedule");
+      expect(wrapper.findComponent(TimeAgo).props("date")).toBe(ETA);
+    });
+
+    it("says it is awaiting a schedule once the ETA has passed", async () => {
+      const wrapper = await mountPlayerCard({
+        scheduled_eta: minutesFromNow(-20),
+      });
+
+      expect(wrapper.text()).toContain("Awaiting schedule");
+      expect(wrapper.findComponent(TimeAgo).exists()).toBe(false);
+    });
+
+    it("says it is awaiting a schedule when there is no ETA", async () => {
+      const wrapper = await mountPlayerCard({ scheduled_eta: null });
+
+      expect(wrapper.text()).toContain("Awaiting schedule");
+    });
+
+    it("judges the ETA on the api's clock, not this device's", async () => {
+      setApiClockBehindBy(-2 * 60 * 60_000);
+      const wrapper = await mountPlayerCard({
+        scheduled_eta: minutesFromNow(60),
+      });
+
+      expect(wrapper.text()).toContain("Awaiting schedule");
+    });
+
+    it("doesn't flash an ETA the api just moved to its own now", async () => {
+      vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
+      const wrapper = await mountPlayerCard({
+        scheduled_eta: minutesFromNow(-60),
+      });
+      expect(wrapper.text()).toContain("Awaiting schedule");
+
+      vi.advanceTimersByTime(9_000);
+      await wrapper.setProps({
+        brackets: [
+          bracket({ scheduled_eta: new Date(Date.now() - 500).toISOString() }),
+        ],
+      });
+      await flushPromises();
+
+      expect(wrapper.text()).toContain("Awaiting schedule");
+    });
+
+    it("shows the ETA when the page doesn't say who organizes it", async () => {
+      const wrapper = await mountCard(
+        { is_organizer: undefined, auto_start: true },
+        { match_mode: "admin" },
+        { scheduled_eta: ETA },
+      );
+
+      expect(wrapper.findComponent(TimeAgo).props("date")).toBe(ETA);
+    });
+
+    it("switches to awaiting a schedule when the ETA passes while the page is open", async () => {
+      vi.useFakeTimers({ toFake: ["setInterval", "clearInterval", "Date"] });
+      const wrapper = await mountPlayerCard({
+        scheduled_eta: new Date(Date.now() + 15_000).toISOString(),
+      });
+      expect(wrapper.text()).not.toContain("Awaiting schedule");
+
+      vi.advanceTimersByTime(20_000);
+      await flushPromises();
+
+      expect(wrapper.text()).toContain("Awaiting schedule");
+    });
+  });
 });
 
 describe("BracketScheduleDialog", () => {

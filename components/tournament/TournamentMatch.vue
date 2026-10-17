@@ -43,6 +43,7 @@ import {
 } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useServerClockStore } from "~/stores/ServerClockStore";
 import type { Bracket } from "~/types/tournament";
 import {
   isNegotiableBracket,
@@ -497,6 +498,18 @@ const AWAITING_SCHEDULE_STATUSES: Array<string> = [
   e_tournament_status_enum.Paused,
 ];
 
+const etaClock = useEtaClock();
+const serverClock = useServerClockStore();
+
+// The api rewrites a passed ETA to its own now on every match change, and that
+// can land up to a tick after etaClock last moved; one tick of margin keeps it
+// from reading as still ahead.
+const isEtaAhead = (bracket: Bracket): boolean =>
+  !!bracket.scheduled_eta &&
+  Date.parse(bracket.scheduled_eta) >
+    etaClock.value.getTime() + (serverClock.offsetMs ?? 0) + ETA_TICK_MS;
+
+// Organizers keep the to-do: they are the ones who schedule the match.
 const isAwaitingSchedule = (bracket: Bracket): boolean =>
   !bracket.bye &&
   !bracket.finished &&
@@ -506,7 +519,8 @@ const isAwaitingSchedule = (bracket: Bracket): boolean =>
   !!bracket.team_2 &&
   !!props.tournament?.status &&
   AWAITING_SCHEDULE_STATUSES.includes(props.tournament.status) &&
-  isBracketManuallyScheduled(props.tournament, props.stage, bracket);
+  isBracketManuallyScheduled(props.tournament, props.stage, bracket) &&
+  (!!props.tournament.is_organizer || !isEtaAhead(bracket));
 
 const isActiveMatch = (bracket: Bracket): boolean => {
   const status = bracket.match?.status as e_match_status_enum | undefined;
@@ -900,6 +914,16 @@ const shouldShowCrossBracketDestination = (
   if (!dest?.id) return false;
   return !isSameViewerGroup(dest.group, bracket.group);
 };
+</script>
+
+<script lang="ts">
+import { createSharedComposable, useNow } from "@vueuse/core";
+
+const ETA_TICK_MS = 10_000;
+
+const useEtaClock = createSharedComposable(() =>
+  useNow({ interval: ETA_TICK_MS }),
+);
 </script>
 
 <template>

@@ -6693,7 +6693,6 @@
         "alerts": "إدارة بانرات التنبيه على مستوى الموقع",
         "report_issue": "أبلغ عن مشكلة",
         "join_discord": "انضم إلى Discord",
-        "search_players": "ابحث عن لاعبين",
         "leagues": "الدوري",
         "events": "الفعاليات",
         "system_media_server": "خادم الوسائط",
@@ -7159,11 +7158,18 @@
       "description": "جرّب مسح الفلاتر أو توسيع البحث."
     }
   },
-  "spotlight_search": {
-    "placeholder": "ابحث عن لاعبين...",
+  "global_search": {
+    "placeholder": "ابحث عن اللاعبين والصفحات والإعدادات",
+    "pages": "الصفحات",
+    "players": "اللاعبون",
     "searching": "جاري البحث...",
     "no_players_found": "لا يوجد لاعبون",
-    "start_typing": "ابدأ الكتابة للبحث عن لاعبين"
+    "no_results": "لا توجد نتائج",
+    "hints": {
+      "navigate": "للتنقل",
+      "open": "للفتح",
+      "close": "للإغلاق"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "تعذّر تحميل المجلد",

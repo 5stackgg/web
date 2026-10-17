@@ -14,10 +14,12 @@ import { DiscordLogoIcon } from "@radix-icons/vue";
 import {
   ChevronsUpDown,
   CheckCircle2,
+  Search,
 } from "lucide-vue-next";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
+import { useGlobalSearchOpen } from "~/composables/useGlobalSearchOpen";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PlayerPendingImports from "~/components/PlayerPendingImports.vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -35,6 +37,7 @@ const { isMobile } = useSidebar();
 const { brandName, logoUrl } = useBranding();
 const matchmakingStore = useMatchmakingStore();
 const { openMatchReadyModal } = useMatchReadyModal();
+const globalSearchOpen = useGlobalSearchOpen();
 // Genuine matchmaking ready-check only. Active matches (Veto/Live/etc.) are
 // already surfaced by the lineup pills in <MatchLobbies>, so we don't duplicate
 // them as a top-nav check-in banner.
@@ -176,6 +179,8 @@ const heroSubtitleClasses =
 const topNavRightClasses = "flex shrink-0 items-center gap-1 sm:gap-2";
 const profileButtonClasses =
   "inline-flex shrink-0 items-center gap-1 rounded-md border border-transparent bg-transparent px-[0.2rem] py-[0.35rem] sm:gap-1.5 sm:px-[0.6rem] text-topnav-foreground transition-[background-color,border-color,color] duration-150 hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
+const searchButtonClasses =
+  "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-topnav-foreground transition-colors duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
 const loginButtonClasses =
   "group relative inline-flex items-center gap-[0.45rem] rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.14)_0%,hsl(var(--tac-amber)/0.06)_100%)] px-[0.8rem] py-[0.45rem] font-sans text-[0.68rem] font-bold uppercase tracking-[0.16em] text-topnav-foreground transition-[background-color,color,transform] duration-150 hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.28)_0%,hsl(var(--tac-amber)/0.14)_100%)] active:translate-y-px sm:px-3 sm:py-[0.35rem] sm:text-[0.65rem] sm:tracking-[0.18em]";
 const loginArrowClasses =
@@ -703,6 +708,15 @@ const MatchLobbies = defineAsyncComponent(() => import("./MatchLobbies.vue"));
             <span v-if="pendingCheckIn" class="tabular-nums">
               {{ pendingCheckIn.confirmed }}/{{ pendingCheckIn.players }}
             </span>
+          </button>
+          <button
+            type="button"
+            :class="searchButtonClasses"
+            :aria-label="$t('layouts.app_nav.navigation.search')"
+            :title="$t('layouts.app_nav.navigation.search')"
+            @click="globalSearchOpen = true"
+          >
+            <Search class="h-4 w-4" />
           </button>
           <DraftRoomNav v-if="!isMobile" />
           <MatchLobbies v-if="!isMobile" />

@@ -8,7 +8,6 @@ import MatchLobbies from "./MatchLobbies.vue";
 import UtilityPracticeNav from "~/components/utility/UtilityPracticeNav.vue";
 import DraftRoomNav from "./DraftRoomNav.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
-import SpotlightPlayerSearch from "~/components/SpotlightPlayerSearch.vue";
 import MobileHubButton from "./MobileHubButton.vue";
 
 const { isMobile } = useSidebar();
@@ -26,8 +25,6 @@ const { isMobile } = useSidebar();
       </div>
 
       <div class="flex items-center gap-4 shrink-0">
-        <SpotlightPlayerSearch v-if="me" />
-
         <UtilityPracticeNav v-if="!isMobile" />
 
         <DraftRoomNav v-if="!isMobile"></DraftRoomNav>
@@ -47,9 +44,6 @@ const { isMobile } = useSidebar();
 <script lang="ts">
 export default {
   computed: {
-    me() {
-      return useAuthStore().me;
-    },
     isAdmin() {
       return useAuthStore().isAdmin;
     },

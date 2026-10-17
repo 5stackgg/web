@@ -24,6 +24,14 @@ const MAX_HITS = 40;
 const target = ref<SettingsSearchHit>();
 
 /**
+ * Marks a setting to be revealed once its page has rendered it. A fresh object
+ * each time, so opening the same result twice reveals twice.
+ */
+export function selectSetting(hit: SettingsSearchHit | undefined) {
+  target.value = hit && { ...hit };
+}
+
+/**
  * Searches the application settings index (built from the settings pages by
  * modules/settings-search) in the active locale. A page's name is searchable
  * on every setting it holds, so "discord webhook" narrows to Discord's webhooks.
@@ -107,12 +115,7 @@ export function useSettingsSearch() {
     return [...groups.values()];
   }
 
-  // A fresh object each time, so opening the same result twice reveals twice.
-  function select(hit: SettingsSearchHit | undefined) {
-    target.value = hit && { ...hit };
-  }
-
-  return { search, select };
+  return { search, select: selectSetting };
 }
 
 // Pages render their settings once their data arrives, so the label is waited
@@ -190,52 +193,58 @@ function reveal(pane: HTMLElement, hit: SettingsSearchHit) {
 /**
  * Brings the setting a search result was opened for into view once its page
  * has rendered it, and marks it. `container` holds the settings panes, each
- * tagged with `data-settings-pane` set to its route.
+ * tagged with `data-settings-pane` set to its route. A result opened from
+ * outside the settings is picked up when the shell mounts.
  */
 export function useSettingsSearchReveal(container: Ref<HTMLElement | null>) {
   let stop: (() => void) | undefined;
 
-  watch(
-    target,
-    (hit) => {
+  function open(hit: SettingsSearchHit | undefined) {
+    stop?.();
+    if (!hit || !container.value) {
+      return;
+    }
+
+    const pane = () =>
+      container.value?.querySelector<HTMLElement>(
+        `[data-settings-pane="${hit.path}"]`,
+      );
+    // Handled once, so a later visit to the settings does not reveal it again.
+    const done = () => {
       stop?.();
-      if (!hit || !container.value) {
-        return;
+      if (target.value === hit) {
+        target.value = undefined;
       }
+    };
+    const attempt = () => {
+      const current = pane();
+      if (current && reveal(current, hit)) {
+        done();
+      }
+    };
 
-      const pane = () =>
-        container.value?.querySelector<HTMLElement>(
-          `[data-settings-pane="${hit.path}"]`,
-        );
-      const attempt = () => {
-        const current = pane();
-        if (current && reveal(current, hit)) {
-          stop?.();
-        }
-      };
+    const observer = new MutationObserver(attempt);
+    // Never rendered, most likely behind a switch that is off: its section
+    // is the nearest place to land.
+    const timeout = setTimeout(() => {
+      const section =
+        hit.section && pane()?.querySelector(`#${CSS.escape(hit.section)}`);
+      if (section) {
+        bringIntoView(section, "start");
+      }
+      done();
+    }, REVEAL_TIMEOUT);
+    stop = () => {
+      observer.disconnect();
+      clearTimeout(timeout);
+      stop = undefined;
+    };
 
-      const observer = new MutationObserver(attempt);
-      // Never rendered, most likely behind a switch that is off: its section
-      // is the nearest place to land.
-      const timeout = setTimeout(() => {
-        const section =
-          hit.section && pane()?.querySelector(`#${CSS.escape(hit.section)}`);
-        if (section) {
-          bringIntoView(section, "start");
-        }
-        stop?.();
-      }, REVEAL_TIMEOUT);
-      stop = () => {
-        observer.disconnect();
-        clearTimeout(timeout);
-        stop = undefined;
-      };
+    observer.observe(container.value, { childList: true, subtree: true });
+    attempt();
+  }
 
-      observer.observe(container.value, { childList: true, subtree: true });
-      attempt();
-    },
-    { flush: "post" },
-  );
-
+  watch(target, open, { flush: "post" });
+  onMounted(() => open(target.value));
   onBeforeUnmount(() => stop?.());
 }

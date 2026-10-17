@@ -6693,7 +6693,6 @@
         "alerts": "Керуй банерами сповіщень на всьому сайті",
         "report_issue": "Повідомити про проблему",
         "join_discord": "Приєднайся до нашого Discord",
-        "search_players": "Пошук гравців",
         "leagues": "Ліга",
         "events": "Івенти",
         "system_media_server": "Медіасервер",
@@ -7159,11 +7158,18 @@
       "description": "Скиньте фільтри або розширте пошук."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Пошук гравців...",
+  "global_search": {
+    "placeholder": "Пошук гравців, сторінок і налаштувань",
+    "pages": "Сторінки",
+    "players": "Гравці",
     "searching": "Пошук...",
     "no_players_found": "Гравців не знайдено",
-    "start_typing": "Почни вводити текст для пошуку гравців"
+    "no_results": "Нічого не знайдено",
+    "hints": {
+      "navigate": "для навігації",
+      "open": "щоб відкрити",
+      "close": "щоб закрити"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Не вдалося завантажити директорію",

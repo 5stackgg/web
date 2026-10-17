@@ -7,42 +7,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
+import { useAccountSettingsNav } from "~/composables/useSettingsNav";
+import { useSettingsSearchReveal } from "~/composables/useSettingsSearch";
 
-const { t: $t } = useI18n();
-
-const navItems = computed(() => {
-  const items: { path: string; label: string }[] = [
-    {
-      path: "/settings",
-      label: $t("pages.settings.account.my_account"),
-    },
-    {
-      path: "/settings/matchmaking",
-      label: $t("pages.settings.account.matchmaking"),
-    },
-    {
-      path: "/settings/linked-accounts",
-      label: $t("pages.settings.account.linked_accounts"),
-    },
-    {
-      path: "/settings/blocked-players",
-      label: $t("pages.settings.account.blocked_players"),
-    },
-    {
-      path: "/settings/notifications",
-      label: $t("pages.settings.notifications.title"),
-    },
-    {
-      path: "/settings/voice",
-      label: $t("pages.settings.account.voice"),
-    },
-    {
-      path: "/settings/api-keys",
-      label: $t("pages.settings.account.api_keys"),
-    },
-  ];
-  return items;
-});
+const { items: navItems } = useAccountSettingsNav();
 
 const route = useRoute();
 const router = useRouter();
@@ -67,6 +35,7 @@ const selectedPath = computed({
 const contentRow = ref<HTMLElement | null>(null);
 
 useScrollIntoViewOnChange(contentRow, () => route.path);
+useSettingsSearchReveal(contentRow);
 
 // The content pane owns its own scroll at lg, so a section switch has to be
 // sent back to the top by hand -- unlike the application shell, this pane is
@@ -131,6 +100,7 @@ watch(
            rather than asking each one to wrap itself in SettingsPage. -->
       <div
         ref="contentPane"
+        :data-settings-pane="route.path"
         class="settings-measure min-w-0 flex-1 space-y-6 lg:h-full lg:overflow-y-auto lg:overscroll-contain"
       >
         <slot />

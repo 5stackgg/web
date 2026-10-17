@@ -6693,7 +6693,6 @@
         "alerts": "管理全站公告横幅",
         "report_issue": "报告问题",
         "join_discord": "加入我们的 Discord",
-        "search_players": "搜索玩家",
         "leagues": "联赛",
         "events": "活动",
         "system_media_server": "媒体服务器",
@@ -7159,11 +7158,18 @@
       "description": "请尝试清除筛选条件或扩大搜索范围。"
     }
   },
-  "spotlight_search": {
-    "placeholder": "搜索玩家...",
+  "global_search": {
+    "placeholder": "搜索玩家、页面和设置",
+    "pages": "页面",
+    "players": "玩家",
     "searching": "搜索中...",
     "no_players_found": "未找到玩家",
-    "start_typing": "开始输入以搜索玩家"
+    "no_results": "无结果",
+    "hints": {
+      "navigate": "导航",
+      "open": "打开",
+      "close": "关闭"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "加载目录失败",

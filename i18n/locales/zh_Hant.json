@@ -6693,7 +6693,6 @@
         "alerts": "管理全站公告橫幅",
         "report_issue": "回報問題",
         "join_discord": "加入我們的 Discord",
-        "search_players": "搜尋玩家",
         "leagues": "聯賽",
         "events": "活動",
         "system_media_server": "媒體伺服器",
@@ -7159,11 +7158,18 @@
       "description": "請嘗試清除篩選條件或擴大搜尋範圍。"
     }
   },
-  "spotlight_search": {
-    "placeholder": "搜尋玩家...",
+  "global_search": {
+    "placeholder": "搜尋玩家、頁面和設定",
+    "pages": "頁面",
+    "players": "玩家",
     "searching": "搜尋中...",
     "no_players_found": "找不到玩家",
-    "start_typing": "開始輸入以搜尋玩家"
+    "no_results": "沒有結果",
+    "hints": {
+      "navigate": "導覽",
+      "open": "開啟",
+      "close": "關閉"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "載入目錄失敗",

@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { TriangleAlert } from "lucide-vue-next";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
-import { Fold } from "~/components/ui/transitions";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
 import SettingHeader from "~/components/match/SettingHeader.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
@@ -17,6 +14,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       :hide-match-mode="true"
       :lock-substitutes="true"
       :lock-map-pool="mapPoolLocked"
+      :lock-map-pool-reason="$t('tournament.form.map_pool_locked')"
     >
       <FormField v-slot="{ value, handleChange }" name="negotiated_scheduling">
         <FormItem>
@@ -59,7 +57,13 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                 $t("tournament.form.auto_start.label")
               }}</SettingHeader>
               <FormDescription>{{
-                $t("tournament.form.auto_start.description")
+                value && stagesOverridingAutoStart.length
+                  ? $t(
+                      "tournament.form.auto_start.overridden",
+                      { stages: stagesOverridingAutoStart.join(", ") },
+                      stagesOverridingAutoStart.length,
+                    )
+                  : $t("tournament.form.auto_start.description")
               }}</FormDescription>
             </div>
             <FormControl>
@@ -107,28 +111,6 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
           </div>
         </FormItem>
       </FormField>
-
-      <Fold :open="mapPoolLocked">
-        <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <span>{{ $t("tournament.form.map_pool_locked_label") }}</span>
-          <FiveStackToolTip as-child :delay-duration="120">
-            <template #trigger>
-              <span
-                class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
-                tabindex="0"
-                role="img"
-                :aria-label="$t('tournament.form.map_pool_locked')"
-                @click.prevent
-              >
-                <TriangleAlert class="h-3.5 w-3.5" />
-              </span>
-            </template>
-            <p class="max-w-[16rem]">
-              {{ $t("tournament.form.map_pool_locked") }}
-            </p>
-          </FiveStackToolTip>
-        </div>
-      </Fold>
     </MatchOptions>
 
     <div class="pb-24"></div>
@@ -160,6 +142,7 @@ import {
   setupOptionsSetMutation,
 } from "~/utilities/setupOptions";
 import { isTournamentBracketDrawn } from "~/utilities/tournamentBracketDrawn";
+import { adminModeStageOrders } from "~/utilities/tournamentManualScheduling";
 import * as z from "zod";
 
 export default {
@@ -256,6 +239,9 @@ export default {
   computed: {
     mapPoolLocked() {
       return isTournamentBracketDrawn(this.tournament);
+    },
+    stagesOverridingAutoStart(): Array<number> {
+      return adminModeStageOrders(this.tournament);
     },
     substitutesLocked() {
       return (

@@ -3,7 +3,7 @@ import MapDisplay from "~/components/MapDisplay.vue";
 import { FormControl } from "~/components/ui/form";
 import { HeightSwap, Fold } from "~/components/ui/transitions";
 import { Separator } from "~/components/ui/separator";
-import { Info, ExternalLink } from "lucide-vue-next";
+import { Info, ExternalLink, Lock } from "lucide-vue-next";
 import {
   Check,
   ChevronsUpDown,
@@ -33,7 +33,31 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 
         <FormField v-slot="{ componentField }" name="type">
           <FormItem>
-            <SettingHeader>{{ $t("match.options.type.label") }}</SettingHeader>
+            <SettingHeader>
+              <span class="inline-flex items-center gap-1.5">
+                {{ $t("match.options.type.label") }}
+                <FiveStackToolTip
+                  v-if="lockMapPool && lockMapPoolReason"
+                  as-child
+                  :delay-duration="120"
+                >
+                  <template #trigger>
+                    <span
+                      class="inline-flex cursor-help text-muted-foreground"
+                      tabindex="0"
+                      role="img"
+                      :aria-label="lockMapPoolReason"
+                      @click.prevent
+                    >
+                      <Lock class="h-3 w-3" />
+                    </span>
+                  </template>
+                  <p class="max-w-[16rem] normal-case tracking-normal">
+                    {{ lockMapPoolReason }}
+                  </p>
+                </FiveStackToolTip>
+              </span>
+            </SettingHeader>
             <AnimatedFilters
               :model-value="componentField.modelValue"
               :options="
@@ -1529,6 +1553,11 @@ export default {
       required: false,
       type: Boolean,
       default: false,
+    },
+    lockMapPoolReason: {
+      required: false,
+      type: String,
+      default: "",
     },
   },
   apollo: {

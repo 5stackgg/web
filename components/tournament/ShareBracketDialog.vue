@@ -195,9 +195,8 @@ const openUrl = (url: string) => {
                 :data-active="selectedStageOrder === stage.order"
                 @click="selectedStageOrder = stage.order"
               >
-                <span class="font-mono mr-2 text-xs opacity-70">
-                  {{ String(stage.order).padStart(2, "0") }}
-                </span>
+                {{ $t("tournament.stage.stage_tab", { stage: stage.order }) }}
+                ·
                 {{ stage.e_tournament_stage_type?.description || stage.type }}
               </button>
             </div>

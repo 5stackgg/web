@@ -87,6 +87,9 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
         >
           {{ $t("tournament.bracket.clear_schedule") }}
         </Button>
+        <Button variant="outline" @click="scheduleAsap" :disabled="saving">
+          {{ $t("tournament.bracket.schedule_asap") }}
+        </Button>
         <Button
           @click="saveSchedule"
           :disabled="!startDate || !startTime || saving"
@@ -185,38 +188,25 @@ export default {
         });
         return;
       }
-      this.saving = true;
-      try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_tournament_brackets_by_pk: [
-              {
-                _set: { scheduled_at: scheduled_at },
-                pk_columns: { id: this.bracket.id },
-              },
-              { id: true, scheduled_at: true },
-            ],
-          }),
-        });
-        this.$emit("update:open", false);
-      } catch {
-        toast({
-          title: this.$t("error.generic"),
-          variant: "destructive",
-        });
-      } finally {
-        this.saving = false;
-      }
+      await this.setScheduledAt(scheduled_at);
+    },
+    async scheduleAsap() {
+      await this.setScheduledAt(new Date().toISOString());
     },
     async clearSchedule() {
-      if (!this.bracket) return;
+      await this.setScheduledAt(null);
+    },
+    async setScheduledAt(scheduled_at: string | null) {
+      if (!this.bracket || this.saving) {
+        return;
+      }
       this.saving = true;
       try {
         await this.$apollo.mutate({
           mutation: generateMutation({
             update_tournament_brackets_by_pk: [
               {
-                _set: { scheduled_at: null },
+                _set: { scheduled_at },
                 pk_columns: { id: this.bracket.id },
               },
               { id: true, scheduled_at: true },

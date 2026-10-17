@@ -7441,7 +7441,8 @@
       "discord_notifications_description": "Active les notifications Discord pour les changements de statut des matchs de ce tournoi. Si désactivé, seules les notifications du panneau sont envoyées.",
       "auto_start": {
         "label": "Démarrage auto",
-        "description": "Une fois activé, les matchs du tournoi sont planifiés automatiquement. Si désactivé, un organisateur doit planifier chaque match manuellement."
+        "description": "Une fois activé, les matchs du tournoi sont planifiés automatiquement. Si désactivé, un organisateur doit planifier chaque match manuellement.",
+        "overridden": "La phase {stages} utilise le mode de match Admin, donc un organisateur planifie chacun de ses matchs. | Les phases {stages} utilisent le mode de match Admin, donc un organisateur planifie chacun de leurs matchs."
       },
       "negotiated_scheduling": {
         "label": "Planification négociée",
@@ -7452,7 +7453,6 @@
         "description": "Les équipes peuvent inscrire et aligner des remplaçants en plus des titulaires. Désactivé, les rosters et les matchs sont limités aux titulaires.",
         "locked": "Les remplaçants ne peuvent plus être désactivés une fois les inscriptions closes."
       },
-      "map_pool_locked_label": "Type de match et map pool",
       "map_pool_locked": "Le type de match et le map pool sont verrouillés une fois l'arbre tiré.",
       "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule tes changements de type de match et de map pool, puis enregistre à nouveau.",
       "logo": {
@@ -7556,11 +7556,14 @@
       "decider_best_of": "Match pour la 3e place",
       "advanced_settings": "Paramètres avancés de la phase",
       "teams_count": "{count} équipes",
+      "manual_scheduling": "Planification manuelle",
+      "manual_scheduling_hint": "Les matchs de cette phase ne commencent qu'une fois planifiés par un organisateur.",
       "structure_locked_label": "Type, équipes et groupes",
-      "structure_locked": "Le type, les équipes et les groupes sont verrouillés une fois l'arbre tiré. Le best of peut encore changer.",
+      "structure_locked": "Le type, les équipes et les groupes sont verrouillés une fois l'arbre tiré.",
       "match_settings_locked_label": "Paramètres de match",
-      "match_settings_locked": "Les paramètres de match sont verrouillés une fois l'arbre tiré.",
-      "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule tes changements de type, d'équipes, de groupes ou de paramètres de match, puis enregistre le best of.",
+      "match_settings_locked": "Les paramètres de match sont verrouillés dès que cette phase a des matchs.",
+      "match_settings_locked_match_mode": "Les paramètres de match sont verrouillés dès que cette phase a des matchs. Le mode de match peut encore changer.",
+      "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule les changements désormais verrouillés, puis enregistre à nouveau.",
       "final_map_advantage": {
         "label": "Avantage de map en finale",
         "description": "Avance en points de map dont bénéficie l'équipe du bracket des vainqueurs en grande finale. Doit rester inférieure au nombre de maps nécessaires pour gagner."
@@ -7570,6 +7573,8 @@
       "schedule_title": "Planifier le match",
       "currently_scheduled": "Actuellement planifié",
       "save_schedule": "Enregistrer",
+      "awaiting_schedule": "En attente de planification",
+      "schedule_asap": "Dès que possible",
       "clear_schedule": "Effacer",
       "past_time_error": "L'horaire planifié doit être dans le futur",
       "fit_to_view": "Ajuster à l'écran",

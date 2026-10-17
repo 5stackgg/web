@@ -90,7 +90,80 @@ describe("TournamentMatchOptionsForm substitutes switch", () => {
   });
 });
 
-const LOCKED_LABEL = "Match type and map pool";
+describe("TournamentMatchOptionsForm auto start", () => {
+  let unmount: (() => void) | null = null;
+
+  afterEach(() => {
+    unmount?.();
+    unmount = null;
+  });
+
+  async function autoStartRow(overrides: Record<string, unknown>) {
+    const wrapper = await mountSuspended(TournamentMatchOptionsForm, {
+      props: { tournament: { ...tournament("Live"), ...overrides } },
+      global: {
+        stubs: {
+          MatchOptions: { template: "<div><slot /></div>" },
+          SettingsSaveBar: true,
+        },
+      },
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+
+    const row = wrapper
+      .findAll("div.flex.flex-row")
+      .find((div) => div.text().includes("Auto Start"));
+    expect(row).toBeDefined();
+    return row!;
+  }
+
+  const stage = (order: number, match_mode: string | null) => ({
+    id: `stage-${order}`,
+    order,
+    options: match_mode ? { id: `options-${order}`, match_mode } : null,
+  });
+
+  it("names the stage whose Admin match mode keeps its matches waiting", async () => {
+    const row = await autoStartRow({
+      stages: [stage(1, "admin"), stage(2, null)],
+    });
+
+    expect(row.text()).toContain(
+      "Stage 1 uses Admin match mode, so an organizer schedules each of its matches.",
+    );
+  });
+
+  it("names every stage that overrides it", async () => {
+    const row = await autoStartRow({
+      stages: [stage(3, "admin"), stage(2, "auto"), stage(1, "admin")],
+    });
+
+    expect(row.text()).toContain(
+      "Stages 1, 3 use Admin match mode, so an organizer schedules each of their matches.",
+    );
+  });
+
+  it("keeps its own description when no stage overrides it", async () => {
+    const row = await autoStartRow({
+      stages: [stage(1, "auto"), stage(2, null)],
+    });
+
+    expect(row.text()).toContain(
+      "When enabled, tournament matches are automatically scheduled.",
+    );
+  });
+
+  it("keeps its own description while it is off", async () => {
+    const row = await autoStartRow({
+      auto_start: false,
+      stages: [stage(1, "admin")],
+    });
+
+    expect(row.text()).not.toContain("Admin match mode");
+  });
+});
+
 const LOCKED = "Match type and map pool are locked once the bracket is drawn.";
 const GAME_MODE = "6426e1b6-1e09-4f51-95c0-8fd312dc0b82";
 const DRAWN_WHILE_EDITING =
@@ -233,7 +306,6 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
       locked,
     );
     expect(wrapper.find(`[aria-label="${LOCKED}"]`).exists()).toBe(locked);
-    expect(wrapper.text().includes(LOCKED_LABEL)).toBe(locked);
   }
 
   async function clickMap(wrapper: Wrapper, label: string) {

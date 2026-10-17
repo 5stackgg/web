@@ -13,12 +13,15 @@ vi.mock("@/components/ui/toast", async (importOriginal) => ({
   toast: toastMock,
 }));
 
-const LOCKED =
-  "Type, teams and groups are locked once the bracket is drawn. Best-of can still change.";
+const LOCKED = "Type, teams and groups are locked once the bracket is drawn.";
 const MATCH_SETTINGS_LOCKED =
-  "Match settings are locked once the bracket is drawn.";
+  "Match settings are locked once this stage has matches.";
+const MATCH_SETTINGS_LOCKED_BUT_MODE =
+  "Match settings are locked once this stage has matches. Match mode can still change.";
 const DRAWN_WHILE_EDITING =
-  "The bracket was drawn while you were editing. Discard your changes to type, teams, groups or match settings, then save the best-of.";
+  "The bracket was drawn while you were editing. Discard the changes that are now locked, then save again.";
+const MATCHES_DRAWN =
+  "This stage's matches are already drawn, so its match settings can't change.";
 
 const tournamentOptions = {
   id: "options-1",
@@ -78,6 +81,10 @@ const stage = (options: Record<string, unknown> | null) => ({
 
 let unmount: (() => void) | null = null;
 let mutate: ReturnType<typeof vi.fn>;
+let query: ReturnType<typeof vi.fn>;
+
+const noMatches = { data: { tournament_brackets: [] } };
+const aMatch = { data: { tournament_brackets: [{ id: "bracket-1" }] } };
 
 beforeEach(() => {
   useAuthStore().me = {
@@ -88,9 +95,15 @@ beforeEach(() => {
   // Under mountSuspended this component's `this.$apollo` is the nuxt
   // `{ clients, defaultClient }` object, not vue-apollo's, so the form's
   // `this.$apollo.mutate` is given one here.
-  mutate = vi.fn().mockResolvedValue({ data: {} });
+  mutate = vi.fn(async ({ mutation }: { mutation: any }) =>
+    print(mutation).includes("insert_match_options_one")
+      ? { data: { insert_match_options_one: { id: "new-options" } } }
+      : { data: {} },
+  );
+  query = vi.fn().mockResolvedValue(noMatches);
   toastMock.mockClear();
   (useNuxtApp() as any).$apollo.mutate = mutate;
+  (useNuxtApp() as any).$apollo.query = query;
 });
 
 afterEach(() => {
@@ -98,6 +111,7 @@ afterEach(() => {
   unmount = null;
   useAuthStore().me = undefined;
   delete (useNuxtApp() as any).$apollo.mutate;
+  delete (useNuxtApp() as any).$apollo.query;
 });
 
 const poolOf = (id: string, count: number) => ({
@@ -140,16 +154,43 @@ async function mountLocked(
   return wrapper;
 }
 
-async function saveBestOf(wrapper: Awaited<ReturnType<typeof mountLocked>>) {
+type Wrapper = Awaited<ReturnType<typeof mountLocked>>;
+
+const sentCalls = () =>
+  mutate.mock.calls.map(([options]: any) => ({
+    document: print(options.mutation),
+    variables: options.variables,
+  }));
+
+async function saveBestOf(wrapper: Wrapper) {
   (wrapper.vm as any).form.setFieldValue("default_best_of", "3");
   await flushPromises();
   await (wrapper.vm as any).updateCreateStage();
   await flushPromises();
-  return mutate.mock.calls.map(([options]: any) => ({
-    document: print(options.mutation),
-    variables: options.variables,
-  }));
+  return sentCalls();
 }
+
+async function saveMatchMode(wrapper: Wrapper, mode: string) {
+  (wrapper.vm as any).form.setFieldValue("match_mode", mode);
+  await flushPromises();
+  await (wrapper.vm as any).updateCreateStage();
+  await flushPromises();
+  return sentCalls();
+}
+
+const disabledFieldsetWith = (wrapper: Wrapper, text: string) =>
+  wrapper
+    .findAll("fieldset[disabled]")
+    .some((fieldset) => fieldset.text().includes(text));
+
+const matchModeFieldset = (wrapper: Wrapper) =>
+  wrapper
+    .findAll("fieldset")
+    .find(
+      (fieldset) =>
+        fieldset.text().includes("Match Mode") &&
+        !fieldset.text().includes("TV Delay"),
+    );
 
 describe("TournamentStageForm with the structure locked", () => {
   it("disables the type, team counts and groups and says why", async () => {
@@ -165,21 +206,126 @@ describe("TournamentStageForm with the structure locked", () => {
     expect(wrapper.find(`[aria-label="${LOCKED}"]`).exists()).toBe(true);
   });
 
-  it("says the match settings are locked too", async () => {
+  it("leaves the match settings open while the stage has no matches", async () => {
     const wrapper = await mountLocked(true);
-    const matchSettings = wrapper.find(
-      `[aria-label="${MATCH_SETTINGS_LOCKED}"]`,
-    );
 
-    expect(matchSettings.exists()).toBe(true);
+    expect(query).toHaveBeenCalled();
+    expect(disabledFieldsetWith(wrapper, "TV Delay")).toBe(false);
+    expect(matchModeFieldset(wrapper)?.attributes("disabled")).toBeUndefined();
+    expect(
+      wrapper.find(`[aria-label="${MATCH_SETTINGS_LOCKED}"]`).exists(),
+    ).toBe(false);
+  });
+
+  it("locks the match settings once the stage has a match, and says why", async () => {
+    query.mockResolvedValue(aMatch);
+    const wrapper = await mountLocked(true);
+
+    expect(
+      wrapper.find(`[aria-label="${MATCH_SETTINGS_LOCKED}"]`).exists(),
+    ).toBe(true);
     expect(
       wrapper.find("fieldset[disabled]").element.textContent,
     ).not.toContain("TV Delay");
+    expect(disabledFieldsetWith(wrapper, "TV Delay")).toBe(true);
+    expect(matchModeFieldset(wrapper)?.attributes("disabled")).toBeDefined();
+  });
+
+  it("keeps the match mode of a started stage with its own options editable", async () => {
+    query.mockResolvedValue(aMatch);
+    const wrapper = await mountLocked(true, {
+      ...tournamentOptions,
+      id: "stage-options-1",
+      match_mode: "admin",
+    });
+
     expect(
-      wrapper
-        .findAll("fieldset[disabled]")
-        .some((fieldset) => fieldset.text().includes("TV Delay")),
+      wrapper.find(`[aria-label="${MATCH_SETTINGS_LOCKED_BUT_MODE}"]`).exists(),
     ).toBe(true);
+    expect(disabledFieldsetWith(wrapper, "TV Delay")).toBe(true);
+    expect(matchModeFieldset(wrapper)?.attributes("disabled")).toBeUndefined();
+  });
+
+  it("switches a drawn stage's own options to Auto in place and keeps its pool", async () => {
+    const wrapper = await mountLocked(true, {
+      ...ownPoolOptions(7),
+      match_mode: "admin",
+    });
+    const calls = await saveMatchMode(wrapper, "auto");
+
+    expect(toastMock).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(2);
+    expect(calls[0].document).toContain("update_match_options_by_pk");
+    expect(calls[0].variables).toMatchObject({
+      id: "stage-options-1",
+      match_mode: "auto",
+    });
+    expect(calls[0].variables).not.toHaveProperty("map_pool_id");
+    expect(calls[0].variables).not.toHaveProperty("type");
+    expect(calls[1].document).toContain("update_tournament_stages_by_pk");
+    expect(calls[1].document).not.toContain("match_options_id");
+    expect(wrapper.emitted("updated")).toHaveLength(1);
+  });
+
+  it("switches the match mode of a started stage with its own options", async () => {
+    query.mockResolvedValue(aMatch);
+    const wrapper = await mountLocked(true, {
+      ...tournamentOptions,
+      id: "stage-options-1",
+      match_mode: "admin",
+    });
+    const calls = await saveMatchMode(wrapper, "auto");
+
+    expect(toastMock).not.toHaveBeenCalled();
+    expect(calls[0].variables).toMatchObject({
+      id: "stage-options-1",
+      match_mode: "auto",
+    });
+    expect(wrapper.emitted("updated")).toHaveLength(1);
+  });
+
+  it("gives a drawn stage with no matches options of its own on the tournament's pool", async () => {
+    const wrapper = await mountLocked(true);
+    const calls = await saveMatchMode(wrapper, "admin");
+
+    expect(toastMock).not.toHaveBeenCalled();
+    expect(calls).toHaveLength(2);
+    expect(calls[0].document).toContain("insert_match_options_one");
+    expect(calls[0].variables).toMatchObject({
+      match_mode: "admin",
+      map_pool_id: "pool-1",
+      type: "Competitive",
+    });
+    expect(calls[1].document).toContain("update_tournament_stages_by_pk");
+    expect(calls[1].document).toContain('match_options_id: "new-options"');
+  });
+
+  it("refuses options of its own for a stage whose first match was drawn meanwhile", async () => {
+    const wrapper = await mountLocked(true);
+    query.mockResolvedValue(aMatch);
+    const calls = await saveMatchMode(wrapper, "admin");
+
+    expect(calls).toHaveLength(0);
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: MATCHES_DRAWN }),
+    );
+    expect(wrapper.emitted("updated")).toBeUndefined();
+  });
+
+  it("refuses a match settings change made before the stage started", async () => {
+    const wrapper = await mountLocked(true);
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+
+    query.mockResolvedValue(aMatch);
+    await (wrapper.vm as any).refreshStageStarted();
+    await (wrapper.vm as any).updateCreateStage();
+    await flushPromises();
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({ description: DRAWN_WHILE_EDITING }),
+    );
   });
 
   it("keeps the default best-of editable", async () => {

@@ -39,6 +39,7 @@ import BracketFollowSelect from "~/components/tournament/BracketFollowSelect.vue
 import { ref } from "vue";
 import { e_tournament_status_enum as StatusEnum } from "~/generated/zeus";
 import { useBracketView } from "~/composables/useBracketView";
+import { isStageManuallyScheduled } from "~/utilities/tournamentManualScheduling";
 
 const shareDialogOpen = ref(false);
 const viewMode = ref<"split" | "scroll">("split");
@@ -136,11 +137,6 @@ import {
               class="group/stg relative inline-flex items-center gap-2 !pl-[0.85rem] !pr-3 !py-3 min-w-[200px] min-h-[72px] shrink-0 !h-auto !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
             >
               <div class="flex items-center gap-3 flex-1 min-w-0">
-                <div
-                  class="font-mono text-xl font-bold tabular-nums leading-none text-[hsl(var(--tac-amber)/0.4)] group-data-[state=active]/stg:text-[hsl(var(--tac-amber))]"
-                >
-                  {{ stageNumber.toString().padStart(2, "0") }}
-                </div>
                 <div class="flex flex-col gap-[0.1rem] min-w-0 text-left">
                   <span
                     class="block truncate pr-7 font-sans text-[0.85rem] font-semibold tracking-[0.04em] uppercase leading-[1.1]"
@@ -175,6 +171,30 @@ import {
                           count: getFirstStageForTab(stageNumber).max_teams,
                         })
                       }}
+                    </template>
+                    <template
+                      v-if="
+                        isStageManuallyScheduled(
+                          tournament,
+                          getFirstStageForTab(stageNumber),
+                        )
+                      "
+                    >
+                      ·
+                      <FiveStackToolTip
+                        as-child
+                        :delay-duration="120"
+                        :tap-toggle="false"
+                      >
+                        <template #trigger>
+                          <span class="cursor-help">
+                            {{ $t("tournament.stage.manual_scheduling") }}
+                          </span>
+                        </template>
+                        <p class="max-w-[16rem]">
+                          {{ $t("tournament.stage.manual_scheduling_hint") }}
+                        </p>
+                      </FiveStackToolTip>
                     </template>
                   </span>
                 </div>

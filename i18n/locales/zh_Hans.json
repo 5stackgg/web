@@ -7441,7 +7441,8 @@
       "discord_notifications_description": "启用此赛事中比赛状态变更的 Discord 通知。关闭时，仅发送面板通知。",
       "auto_start": {
         "label": "自动开始",
-        "description": "启用时，赛事比赛会自动安排。禁用时，组织者必须手动安排每场比赛。"
+        "description": "启用时，赛事比赛会自动安排。禁用时，组织者必须手动安排每场比赛。",
+        "overridden": "第 {stages} 阶段使用“管理”比赛模式，因此每场比赛都由组织者安排。 | 第 {stages} 阶段使用“管理”比赛模式，因此每场比赛都由组织者安排。"
       },
       "negotiated_scheduling": {
         "label": "协商安排",
@@ -7452,7 +7453,6 @@
         "description": "队伍可以在首发阵容之外登记并派出替补。关闭后，阵容和比赛仅限首发阵容。",
         "locked": "报名截止后无法关闭替补。"
       },
-      "map_pool_locked_label": "比赛类型和地图池",
       "map_pool_locked": "对阵图生成后，比赛类型和地图池将被锁定。",
       "drawn_while_editing": "你编辑期间对阵图已生成。请放弃对比赛类型和地图池的更改，然后重新保存。",
       "logo": {
@@ -7556,11 +7556,14 @@
       "decider_best_of": "季军赛最好",
       "advanced_settings": "高级阶段设置",
       "teams_count": "{count} 支队伍",
+      "manual_scheduling": "手动安排",
+      "manual_scheduling_hint": "此阶段的比赛要等组织者安排后才会开始。",
       "structure_locked_label": "类型、队伍和小组",
-      "structure_locked": "对阵图生成后，类型、队伍和小组将被锁定。赛制仍可更改。",
+      "structure_locked": "对阵图生成后，类型、队伍和小组将被锁定。",
       "match_settings_locked_label": "比赛设置",
-      "match_settings_locked": "对阵图生成后，比赛设置将被锁定。",
-      "drawn_while_editing": "你编辑期间对阵图已生成。请放弃对类型、队伍、小组或比赛设置的更改，然后保存赛制。",
+      "match_settings_locked": "此阶段产生比赛后，比赛设置将被锁定。",
+      "match_settings_locked_match_mode": "此阶段产生比赛后，比赛设置将被锁定。比赛模式仍可更改。",
+      "drawn_while_editing": "你编辑期间对阵图已生成。请放弃现已锁定的更改，然后重新保存。",
       "final_map_advantage": {
         "label": "决赛地图优势",
         "description": "胜者组队伍带入总决赛的地图分优势。必须小于取胜所需的地图数。"
@@ -7570,6 +7573,8 @@
       "schedule_title": "安排比赛",
       "currently_scheduled": "当前已安排",
       "save_schedule": "保存安排",
+      "awaiting_schedule": "等待安排",
+      "schedule_asap": "尽快",
       "clear_schedule": "清除",
       "past_time_error": "安排的时间必须在未来",
       "fit_to_view": "适应视图",

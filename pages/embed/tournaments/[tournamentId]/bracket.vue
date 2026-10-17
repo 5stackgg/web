@@ -144,6 +144,8 @@ export default {
               id: true,
               name: true,
               status: true,
+              auto_start: true,
+              scheduling_mode: true,
               stages: [
                 { order_by: [{ order: order_by.asc }] },
                 {

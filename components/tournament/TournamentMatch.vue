@@ -48,6 +48,7 @@ import {
   isNegotiableBracket,
   type NegotiationWindow,
 } from "~/utilities/bracketNegotiation";
+import { isStageManuallyScheduled } from "~/utilities/tournamentManualScheduling";
 import {
   isEndedWithResult,
   resultStatusLabelKey,
@@ -69,16 +70,19 @@ const props = defineProps<{
     };
     options?: {
       best_of?: number;
+      match_mode?: string | null;
     };
     windows?: NegotiationWindow[] | null;
   };
   tournament?: {
     is_organizer?: boolean;
     status?: string;
+    auto_start?: boolean | null;
     scheduling_mode?: string | null;
     league_season_division?: { id?: string } | null;
     options?: {
       best_of?: number;
+      match_mode?: string | null;
     };
   };
 }>();
@@ -485,6 +489,14 @@ const hasProblemStatus = (bracket: Bracket): boolean => {
     e_match_status_enum.WaitingForServer,
   ].includes(status);
 };
+
+const isAwaitingSchedule = (bracket: Bracket): boolean =>
+  !bracket.bye &&
+  !bracket.finished &&
+  !bracket.match &&
+  !bracket.scheduled_at &&
+  !!props.tournament &&
+  isStageManuallyScheduled(props.tournament, props.stage);
 
 const isActiveMatch = (bracket: Bracket): boolean => {
   const status = bracket.match?.status as e_match_status_enum | undefined;
@@ -945,6 +957,9 @@ const shouldShowCrossBracketDestination = (
             </span>
             <MatchMapDots :match="bracket.match" />
           </template>
+          <span v-else-if="isAwaitingSchedule(bracket)">
+            {{ $t("tournament.bracket.awaiting_schedule") }}
+          </span>
           <span
             v-else-if="
               !isNegotiableBracket(props.tournament, bracket) &&

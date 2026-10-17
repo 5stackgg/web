@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { Pencil, Plus, Trash2, Lock, TriangleAlert } from "lucide-vue-next";
+import { Pencil, Plus, Trash2, Lock } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   AlertDialog,
@@ -20,6 +20,7 @@ import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_tournament_status_enum } from "~/generated/zeus";
 import { isTournamentBracketDrawn } from "~/utilities/tournamentBracketDrawn";
+import { isStageManuallyScheduled } from "~/utilities/tournamentManualScheduling";
 
 const props = defineProps<{ tournament: Record<string, any> }>();
 
@@ -125,6 +126,19 @@ async function confirmDelete() {
               }}
               <template v-if="(stage.groups ?? 1) > 1">
                 · {{ $t("tournament.manage.groups", { count: stage.groups }) }}
+              </template>
+              <template v-if="isStageManuallyScheduled(tournament, stage)">
+                ·
+                <FiveStackToolTip as-child :delay-duration="120">
+                  <template #trigger>
+                    <span class="cursor-help" tabindex="0">
+                      {{ $t("tournament.stage.manual_scheduling") }}
+                    </span>
+                  </template>
+                  <p class="max-w-[16rem]">
+                    {{ $t("tournament.stage.manual_scheduling_hint") }}
+                  </p>
+                </FiveStackToolTip>
               </template>
             </span>
           </div>
@@ -234,13 +248,13 @@ async function confirmDelete() {
               <FiveStackToolTip as-child :delay-duration="120">
                 <template #trigger>
                   <span
-                    class="inline-flex cursor-help text-[hsl(var(--tac-amber))]"
+                    class="inline-flex cursor-help text-muted-foreground"
                     tabindex="0"
                     role="img"
                     :aria-label="$t('tournament.manage.stages_drawn')"
                     @click.prevent
                   >
-                    <TriangleAlert class="h-4 w-4" />
+                    <Lock class="h-3.5 w-3.5" />
                   </span>
                 </template>
                 <p class="max-w-[16rem]">

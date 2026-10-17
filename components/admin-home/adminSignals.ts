@@ -229,6 +229,18 @@ const NODE_MESSAGE: Record<string, string> = {
 export const nodeLink = (id: string) =>
   `/game-server-nodes?node=${encodeURIComponent(id)}`;
 
+/** GPU Nodes with that GPU's panel open. */
+export const gpuNodeLink = (id: string) =>
+  `${AREA_ROUTES.gpus}?node=${encodeURIComponent(id)}`;
+
+/** System Metrics with its services narrowed to the node. */
+export const metricsNodeLink = (id: string) =>
+  `${AREA_ROUTES.metrics}?node=${encodeURIComponent(id)}`;
+
+/** The database explorer with one statement's detail open. */
+export const queryLink = (queryid: string) =>
+  `${AREA_ROUTES.database}?tab=queries&query=${encodeURIComponent(queryid)}`;
+
 /**
  * The nodes console's attention items, one row per kind of problem across the
  * fleet. A GPU-only node that drops offline is the GPU page's to report.
@@ -381,7 +393,7 @@ export function gpuSignals(input: GpuInput): Signal[] {
   const subject = (node: any) => ({
     id: node.id,
     label: nameOf(node),
-    to: area,
+    to: gpuNodeLink(node.id),
     weight: 0,
   });
   for (const node of nodes) {
@@ -477,7 +489,7 @@ export function metricSignals(
           ? `${gpuShort(issue.gpuName) || `GPU ${issue.gpuIndex}`} · ${nodeName(issue.nodeId)}`
           : nodeName(issue.nodeId),
         detail: `${Math.round(value)}${issue.kind === "gpu_temp" ? " °C" : "%"}`,
-        to: gpu ? AREA_ROUTES.gpus : nodeLink(issue.nodeId),
+        to: gpu ? gpuNodeLink(issue.nodeId) : nodeLink(issue.nodeId),
         weight: value,
       },
       { threshold: issue.threshold ?? 0 },
@@ -489,15 +501,25 @@ export function metricSignals(
   );
   return collect(buckets, order).map((key) => {
     const bucket = buckets.get(key)!;
+    const kind = key.split(":")[0];
     const sig = signal(
       "metrics",
       key,
       bucket,
-      `${MSG}.metrics.${key.split(":")[0]}`,
+      `${MSG}.metrics.${kind}`,
       AREA_ROUTES.metrics,
     );
-    // The page shows the spark and the logs; a node link alone would skip them.
-    return { ...sig, to: AREA_ROUTES.metrics };
+    // One GPU: its panel, which charts it live. One node: Metrics, where its
+    // row has the spark and the logs and the services on it are listed.
+    const only = bucket.subjects.length === 1 ? bucket.subjects[0] : null;
+    return {
+      ...sig,
+      to: !only
+        ? AREA_ROUTES.metrics
+        : kind.startsWith("gpu_")
+          ? only.to!
+          : metricsNodeLink(only.id),
+    };
   });
 }
 
@@ -647,7 +669,8 @@ export function dbSignals(input: {
       message: `${MSG}.database.running`,
       count: slow.run.length,
       params: { threshold: label },
-      to: AREA_ROUTES.database,
+      // Connections lists the active queries, longest first.
+      to: `${AREA_ROUTES.database}?tab=connections`,
     });
   }
   if (slow.avg.length) {
@@ -660,7 +683,10 @@ export function dbSignals(input: {
       message: `${MSG}.database.slow`,
       count: slow.avg.length,
       params: { threshold: label },
-      to: `${AREA_ROUTES.database}?tab=queries`,
+      to:
+        slow.avg.length === 1
+          ? queryLink(slow.avg[0].queryid)
+          : `${AREA_ROUTES.database}?tab=queries&slow=1`,
     });
   }
   return out;
@@ -749,7 +775,7 @@ export function pluginSignals(
       key,
       buckets.get(key)!,
       `${MSG}.plugins.${key}`,
-      AREA_ROUTES.plugins,
+      `${AREA_ROUTES.plugins}?tab=attention`,
     ),
   );
 }

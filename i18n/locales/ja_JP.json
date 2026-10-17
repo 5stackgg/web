@@ -7851,6 +7851,15 @@
         "created_showing": "アラートを作成しました。現在表示中です。",
         "created_off": "アラートを作成しました。オンにするまで表示されません。",
         "expired": "「{name}」は期限切れになり、バナーから消えました"
+      },
+      "period": {
+        "estimated": "推定：オン/オフ履歴の記録開始前のデータ",
+        "on": "{time}にオン",
+        "on_by": "{time}に{name}がオン",
+        "off": "{time}にオフ",
+        "off_by": "{time}に{name}がオフ",
+        "showing_now": "現在表示中",
+        "duration": "表示時間：{duration}"
       }
     },
     "admin_home": {

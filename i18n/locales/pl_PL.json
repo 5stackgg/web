@@ -7851,6 +7851,15 @@
         "created_showing": "Alert utworzony. Jest już wyświetlany.",
         "created_off": "Alert utworzony. Pozostaje wyłączony, dopóki go nie włączysz.",
         "expired": "„{name}” wygasł i zniknął z banera"
+      },
+      "period": {
+        "estimated": "Szacunkowo: sprzed zapisywania historii włączeń i wyłączeń",
+        "on": "Włączony {time}",
+        "on_by": "Włączony {time} przez {name}",
+        "off": "Wyłączony {time}",
+        "off_by": "Wyłączony {time} przez {name}",
+        "showing_now": "Wyświetlany teraz",
+        "duration": "Wyświetlany przez {duration}"
       }
     },
     "admin_home": {

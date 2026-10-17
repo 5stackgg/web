@@ -7851,6 +7851,15 @@
         "created_showing": "公告已建立，現在正在顯示。",
         "created_off": "公告已建立，在你開啟前保持關閉。",
         "expired": "「{name}」已過期，已從橫幅中移除"
+      },
+      "period": {
+        "estimated": "估算：來自開始記錄開關歷史之前",
+        "on": "{time} 已開啟",
+        "on_by": "{time} 由 {name} 開啟",
+        "off": "{time} 已關閉",
+        "off_by": "{time} 由 {name} 關閉",
+        "showing_now": "正在顯示",
+        "duration": "顯示了 {duration}"
       }
     },
     "admin_home": {

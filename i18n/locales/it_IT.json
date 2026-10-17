@@ -7851,6 +7851,15 @@
         "created_showing": "Avviso creato. Ora è visibile.",
         "created_off": "Avviso creato. Resta disattivato finché non lo attivi.",
         "expired": "«{name}» è scaduto e non è più visibile"
+      },
+      "period": {
+        "estimated": "Stimato: da prima che venisse salvata la cronologia di attivazione",
+        "on": "Attivato {time}",
+        "on_by": "Attivato {time} da {name}",
+        "off": "Disattivato {time}",
+        "off_by": "Disattivato {time} da {name}",
+        "showing_now": "Visibile ora",
+        "duration": "Visibile per {duration}"
       }
     },
     "admin_home": {

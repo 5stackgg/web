@@ -4,13 +4,16 @@ import {
   alertSignals,
   areaTone,
   dbSignals,
+  gpuNodeLink,
   gpuSignals,
   groupSignals,
   metricSignals,
+  metricsNodeLink,
   needCount,
   nodeLink,
   nodeSignals,
   pluginSignals,
+  queryLink,
   renderSignals,
   serverSignals,
   settingsSignals,
@@ -227,6 +230,7 @@ describe("nodeSignals", () => {
       nameOf,
     });
     expect(offline.key).toBe("gpus:offline");
+    expect(offline.to).toBe("/gpu-nodes?node=gpu-1");
   });
 
   it("splits disks by how full they are, fullest first", () => {
@@ -319,6 +323,32 @@ describe("gpuSignals", () => {
     ]);
   });
 
+  it("opens the GPU's panel when one is hit, the page when several are", () => {
+    const failed = { shader_bake_status: "errored" };
+    const [one] = gpuSignals({
+      nodes: [gpu("g1", failed), gpu("g2")],
+      accounts: [{ username: "a" }, { username: "b" }],
+      waiting: 0,
+      nameOf,
+    });
+    expect(one.key).toBe("gpus:bake_failed");
+    expect(one.to).toBe(gpuNodeLink("g1"));
+    expect(one.subjects[0].to).toBe("/gpu-nodes?node=g1");
+
+    const [both] = gpuSignals({
+      nodes: [gpu("g1", failed), gpu("g2", failed)],
+      accounts: [{ username: "a" }, { username: "b" }],
+      waiting: 0,
+      nameOf,
+    });
+    expect(both.count).toBe(2);
+    expect(both.to).toBe("/gpu-nodes");
+    expect(both.subjects.map((s) => s.to)).toEqual([
+      "/gpu-nodes?node=g1",
+      "/gpu-nodes?node=g2",
+    ]);
+  });
+
   it("says nothing without GPU nodes", () => {
     expect(gpuSignals({ nodes: [], accounts: [], waiting: 0, nameOf })).toEqual(
       [],
@@ -356,8 +386,28 @@ describe("metricSignals", () => {
       ["metrics:disk:danger", "danger", 1],
       ["metrics:memory:warning", "warning", 1],
     ]);
-    expect(signals[0].to).toBe("/system-metrics");
+    expect(signals[0].to).toBe(metricsNodeLink("n2"));
+    expect(signals[0].to).toBe("/system-metrics?node=n2");
     expect(signals[1].params).toEqual({ threshold: 75 });
+  });
+
+  it("sends one GPU to its panel and several nodes to the page", () => {
+    const signals = metricSignals(
+      [
+        issue({ kind: "gpu_temp", severity: "warning", gpuIndex: 0 }),
+        issue({ kind: "cpu", nodeId: "n1" }),
+        issue({ kind: "cpu", nodeId: "n2" }),
+      ],
+      new Set(),
+      (id) => id,
+    );
+    const temp = signals.find((s) => s.key === "metrics:gpu_temp:warning")!;
+    expect(temp.to).toBe(gpuNodeLink("n1"));
+    expect(temp.subjects[0].to).toBe("/gpu-nodes?node=n1");
+    const cpu = signals.find((s) => s.key === "metrics:cpu:danger")!;
+    expect(cpu.count).toBe(2);
+    expect(cpu.to).toBe("/system-metrics");
+    expect(cpu.subjects[0].to).toBe(nodeLink("n1"));
   });
 });
 
@@ -426,6 +476,33 @@ describe("dbSignals", () => {
       ["database:locks", "danger", 1],
       ["database:slow", "danger", 1],
     ]);
+    expect(signals[0].to).toBe("/database?tab=locks");
+    expect(signals[1].to).toBe(queryLink("1"));
+    expect(signals[1].to).toBe("/database?tab=queries&query=1");
+  });
+
+  it("opens slow-only for several slow statements and Connections for running ones", () => {
+    const stat = (queryid: string) => ({
+      queryid,
+      query: "",
+      calls: 10,
+      mean_exec_time: 2_000,
+      max_exec_time: 3_000,
+      total_exec_time: 1,
+    });
+    const signals = dbSignals({
+      queries: [stat("-42"), stat("7")],
+      active: [
+        { pid: 9, state: "active", duration_seconds: 5, query: "select 1" },
+      ],
+      locks: [],
+      threshold: 1000,
+    });
+    expect(signals.map((s) => [s.key, s.to])).toEqual([
+      ["database:running", "/database?tab=connections"],
+      ["database:slow", "/database?tab=queries&slow=1"],
+    ]);
+    expect(queryLink("-42")).toBe("/database?tab=queries&query=-42");
   });
 });
 
@@ -485,6 +562,26 @@ describe("alerts, settings, plugins and servers", () => {
     ]);
     expect(signals[1].subjects[0].detail).toBe("1.5.0 → 1.5.1");
     expect(signals[0].to).toBe("/plugins/a");
+  });
+
+  it("sends several plugins with one problem to the attention tab", () => {
+    const versions = [
+      { runtime: "swiftlys2", version: "1.5.1", published_at: "2026-06-29" },
+    ];
+    const [failed] = pluginSignals(
+      [
+        { slug: "a", kind: "game", install_state: "Failed", versions },
+        { slug: "b", kind: "game", install_state: "Failed", versions },
+      ],
+      [],
+      "swiftlys2",
+    );
+    expect(failed.count).toBe(2);
+    expect(failed.to).toBe("/plugins?tab=attention");
+    expect(failed.subjects.map((s) => s.to)).toEqual([
+      "/plugins/a",
+      "/plugins/b",
+    ]);
   });
 
   it("splits dedicated servers needing attention by reason", () => {

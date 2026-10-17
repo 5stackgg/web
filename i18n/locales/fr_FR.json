@@ -7851,6 +7851,15 @@
         "created_showing": "Alerte créée. Elle est affichée maintenant.",
         "created_off": "Alerte créée. Elle reste désactivée jusqu'à ce que tu l'actives.",
         "expired": "« {name} » a expiré et n'est plus affichée"
+      },
+      "period": {
+        "estimated": "Estimé : antérieur à l'enregistrement de l'historique d'activation",
+        "on": "Activée {time}",
+        "on_by": "Activée {time} par {name}",
+        "off": "Désactivée {time}",
+        "off_by": "Désactivée {time} par {name}",
+        "showing_now": "Affichée maintenant",
+        "duration": "Affichée pendant {duration}"
       }
     },
     "admin_home": {

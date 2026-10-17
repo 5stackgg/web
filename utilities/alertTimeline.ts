@@ -1,12 +1,13 @@
-// Pure rules behind the Alerts timeline: an alert's state, where its bar
-// starts and ends, how a quick "show it again" picks its end time, and the
+// Pure rules behind the Alerts timeline: an alert's state, where its bars
+// start and end, how a quick "show it again" picks its end time, and the
 // time window each range shows.
 //
-// system_alerts has no starts_at column. A showing alert's bar starts at
-// updated_at -- the page only stamps updated_at when an alert goes up or comes
-// down -- falling back to created_at. An alert that's off shows from
-// created_at to when it was turned off (updated_at), since when it last went
-// up is no longer known.
+// With on/off history (system_alert_activations) every period an alert was on
+// is its own segment. Without it -- an api that doesn't serve the table yet --
+// a showing alert's bar starts at updated_at (the page only stamps updated_at
+// when an alert goes up or comes down), falling back to created_at, and an
+// alert that's off shows from created_at to when it was turned off
+// (updated_at), since when it last went up isn't known.
 
 export const MINUTE = 60_000;
 export const HOUR = 60 * MINUTE;
@@ -145,6 +146,22 @@ export type Bars = {
   end: { x: number; open: boolean } | null;
 };
 
+// A stretch of time as a segment, clipped to the window; anything with
+// length stays at least a sliver wide.
+function spanOf(
+  window: [number, number],
+  from: number,
+  to: number,
+  tone: Segment["tone"],
+  open = false,
+): Segment {
+  const [t0, t1] = window;
+  const X = (t: number) => Math.max(0, Math.min(1, (t - t0) / (t1 - t0)));
+  const x = X(from);
+  const w = to <= from ? 0 : Math.max(0.006, X(to) - x);
+  return { x, w, tone, open };
+}
+
 // `draft` draws a not-yet-created alert going up now; `editing` turns the
 // part ahead of Now amber and adds the end marker.
 export function barsOf(
@@ -161,11 +178,7 @@ export function barsOf(
     to: number,
     tone: Segment["tone"],
     open = false,
-  ): Segment => {
-    const x = X(from);
-    const w = to <= from ? 0 : Math.max(0.006, X(to) - x);
-    return { x, w, tone, open };
-  };
+  ): Segment => spanOf(window, from, to, tone, open);
   const nil = (tone: Segment["tone"]): Segment => seg(now, now, tone);
 
   if (opts.draft) {
@@ -211,6 +224,202 @@ export function barsOf(
     ],
     end: opts.editing ? { x: open ? 1 : X(end), open } : null,
   };
+}
+
+// ---- On/off history ----
+
+export type AlertActor = {
+  name: string | null;
+  steam_id: string | number;
+} | null;
+
+// A row of system_alert_activations: one period an alert was on.
+// `estimated` rows were backfilled from created/updated for alerts turned
+// off before the table existed.
+export type AlertActivation = {
+  alert_id: string;
+  started_at: string;
+  ended_at: string | null;
+  estimated: boolean;
+  started_by?: AlertActor;
+  ended_by?: AlertActor;
+};
+
+export type Period = {
+  key: string;
+  start: number;
+  // An open period ends at Now, or at expires_at when that came first:
+  // nothing flips is_active when an alert expires.
+  end: number;
+  open: boolean;
+  expired: boolean;
+  estimated: boolean;
+  startedBy: AlertActor;
+  endedBy: AlertActor;
+};
+
+export function groupActivations(
+  rows: AlertActivation[],
+): Map<string, AlertActivation[]> {
+  const out = new Map<string, AlertActivation[]>();
+  for (const row of rows) {
+    const list = out.get(row.alert_id);
+    if (list) list.push(row);
+    else out.set(row.alert_id, [row]);
+  }
+  return out;
+}
+
+// Two rows for the same start: a recorded row beats a backfilled one, then
+// the one that ran longer.
+function mergePeriods(a: Period, b: Period): Period {
+  const keep =
+    a.estimated !== b.estimated ? (a.estimated ? b : a) : b.end > a.end ? b : a;
+  const other = keep === a ? b : a;
+  return {
+    ...keep,
+    startedBy: keep.startedBy ?? other.startedBy,
+    endedBy:
+      keep.endedBy ??
+      (!keep.open && other.end === keep.end ? other.endedBy : null),
+  };
+}
+
+// The alert's periods that reach into the window, oldest first. A showing
+// alert with no open period (the row not in yet, or never backfilled) gets
+// one estimated from when it last went up.
+export function periodsOf(
+  alert: TimelineAlert,
+  rows: AlertActivation[],
+  window: [number, number],
+  now: number,
+): Period[] {
+  const [t0, t1] = window;
+  const exp = toMs(alert.expires_at);
+  const openEnd = (start: number) =>
+    Math.max(start, Math.min(now, exp ?? Infinity));
+  const expired = exp !== null && exp <= now;
+  const byStart = new Map<number, Period>();
+
+  for (const row of rows) {
+    const start = toMs(row.started_at);
+    if (row.alert_id !== alert.id || start === null) continue;
+    const ended = toMs(row.ended_at);
+    const period: Period = {
+      key: String(start),
+      start,
+      end: ended === null ? openEnd(start) : Math.max(start, ended),
+      open: ended === null,
+      expired: ended === null && expired,
+      estimated: !!row.estimated,
+      startedBy: row.started_by ?? null,
+      endedBy: row.ended_by ?? null,
+    };
+    const seen = byStart.get(start);
+    byStart.set(start, seen ? mergePeriods(seen, period) : period);
+  }
+
+  const periods = [...byStart.values()];
+  if (alert.is_active && !periods.some((p) => p.open)) {
+    const start = startOf(alert);
+    periods.push({
+      key: "estimate",
+      start,
+      end: openEnd(start),
+      open: true,
+      expired,
+      estimated: true,
+      startedBy: null,
+      endedBy: null,
+    });
+  }
+  return periods
+    .filter((p) => p.start < t1 && p.end > t0)
+    .sort((a, b) => a.start - b.start);
+}
+
+export type PeriodSegment = Segment & { key: string; period: Period };
+
+export type HistoryBars = {
+  periods: PeriodSegment[];
+  // The stretch ahead of Now and the end marker, as barsOf draws them: the
+  // schedule, not history.
+  ahead: Segment;
+  end: Bars["end"];
+};
+
+// Closed periods are grey like an alert that's off; the open one keeps the
+// severity colour while showing and dims once expired.
+export function historyBarsOf(
+  alert: TimelineAlert,
+  periods: Period[],
+  window: [number, number],
+  now: number,
+  opts: { editing?: boolean } = {},
+): HistoryBars {
+  const state = alertState(alert, now);
+  const plain = barsOf(alert, window, now, opts);
+  return {
+    periods: periods.map((period) => ({
+      ...spanOf(
+        window,
+        period.start,
+        period.end,
+        !period.open || state === "off"
+          ? "off"
+          : period.expired
+            ? "gone"
+            : "past",
+      ),
+      key: period.key,
+      period,
+    })),
+    ahead: plain.segments[1],
+    end: plain.end,
+  };
+}
+
+// `rows` is null while the api doesn't serve on/off history: the lane falls
+// back to the created/updated estimate. Drafts have no history yet.
+export type LaneBars =
+  { kind: "estimate"; bars: Bars } | { kind: "history"; bars: HistoryBars };
+
+export function laneBarsOf(
+  alert: TimelineAlert,
+  rows: AlertActivation[] | null,
+  window: [number, number],
+  now: number,
+  opts: { draft?: boolean; editing?: boolean } = {},
+): LaneBars {
+  if (!rows || opts.draft) {
+    return { kind: "estimate", bars: barsOf(alert, window, now, opts) };
+  }
+  return {
+    kind: "history",
+    bars: historyBarsOf(
+      alert,
+      periodsOf(alert, rows, window, now),
+      window,
+      now,
+      opts,
+    ),
+  };
+}
+
+// With history, a lane belongs in the window when a period reaches into it
+// (a showing alert always has one) or it was created inside it (an alert
+// never turned on).
+export function inWindowOf(
+  alert: TimelineAlert,
+  rows: AlertActivation[] | null,
+  window: [number, number],
+  now: number,
+): boolean {
+  if (!rows) return inWindow(alert, window[0]);
+  return (
+    periodsOf(alert, rows, window, now).length > 0 ||
+    (toMs(alert.created_at) ?? 0) >= window[0]
+  );
 }
 
 // Showing first, then off, then expired; newest first within each.

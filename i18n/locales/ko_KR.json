@@ -7851,6 +7851,15 @@
         "created_showing": "알림을 만들었습니다. 지금 표시 중입니다.",
         "created_off": "알림을 만들었습니다. 켤 때까지 꺼져 있습니다.",
         "expired": "‘{name}’ 알림이 만료되어 배너에서 사라졌습니다"
+      },
+      "period": {
+        "estimated": "추정: 켜기/끄기 기록이 저장되기 전 데이터",
+        "on": "{time} 켜짐",
+        "on_by": "{time} {name} 님이 켬",
+        "off": "{time} 꺼짐",
+        "off_by": "{time} {name} 님이 끔",
+        "showing_now": "현재 표시 중",
+        "duration": "{duration} 동안 표시됨"
       }
     },
     "admin_home": {

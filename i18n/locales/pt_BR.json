@@ -7851,6 +7851,15 @@
         "created_showing": "Alerta criado. Já está sendo exibido.",
         "created_off": "Alerta criado. Fica desativado até você ativá-lo.",
         "expired": "\"{name}\" expirou e saiu do banner"
+      },
+      "period": {
+        "estimated": "Estimado: de antes de o histórico de ativação ser salvo",
+        "on": "Ativado {time}",
+        "on_by": "Ativado {time} por {name}",
+        "off": "Desativado {time}",
+        "off_by": "Desativado {time} por {name}",
+        "showing_now": "Exibindo agora",
+        "duration": "Exibido por {duration}"
       }
     },
     "admin_home": {

@@ -277,14 +277,19 @@ export default {
       pluginViewDefaults(),
       pluginViewValidators,
     );
+    // The attention tab is never remembered, but a link may open it (the
+    // admin home's ?tab=attention): every plugin it counted, so no filter
+    // left on from last time hides one. Applied here, not saved.
+    const attention = this.$route.query.tab === "attention";
     return {
-      search: view.search,
-      kind: view.kind,
-      state: view.state,
-      verifiedOnly: view.verifiedOnly,
+      search: attention ? "" : view.search,
+      kind: attention ? "all" : view.kind,
+      state: attention ? "attention" : view.state,
+      verifiedOnly: attention ? false : view.verifiedOnly,
       adding: false,
       busy: null as string | null,
       pluginsLoaded: false,
+      desiredLoaded: false,
       plugins: [] as Array<Record<string, any>>,
       installedPages: [] as Array<Record<string, any>>,
       desired: [] as Array<DesiredInstall>,
@@ -293,14 +298,16 @@ export default {
     };
   },
   created() {
-    const kind = this.$route.query.kind;
+    const { kind, tab } = this.$route.query;
 
     // A linked kind wins over the remembered one; a remembered one goes
-    // into the URL so the view stays linkable.
+    // into the URL so the view stays linkable. The tab link has been read.
     if (typeof kind === "string" && PLUGIN_KINDS.includes(kind)) {
       this.kind = kind;
-    } else if (this.kind !== "all") {
-      void this.$router.replace({ query: { kind: this.kind } });
+    } else if (this.kind !== "all" || tab !== undefined) {
+      void this.$router.replace({
+        query: this.kind === "all" ? {} : { kind: this.kind },
+      });
     }
   },
   watch: {
@@ -325,6 +332,12 @@ export default {
     // failure clears, the list it was showing is gone with it.
     attentionCount(count: number) {
       if (count === 0 && this.state === "attention") {
+        this.state = "all";
+      }
+    },
+    // Linked to it with nothing left to attend to.
+    attentionKnown(known: boolean) {
+      if (known && this.attentionCount === 0 && this.state === "attention") {
         this.state = "all";
       }
     },
@@ -380,6 +393,7 @@ export default {
         }),
         result: function ({ data }: { data: Record<string, any> }) {
           this.desired = data?.game_plugin_installs ?? [];
+          this.desiredLoaded = true;
         },
       },
       // Bounded by plugins times nodes. Only read to name the node a rollout
@@ -568,6 +582,10 @@ export default {
       return this.plugins.filter((plugin) =>
         needsAttention(this.cardStates[plugin.slug]),
       ).length;
+    },
+    // An update needs the pinned version, so the count waits for both.
+    attentionKnown(): boolean {
+      return this.pluginsLoaded && this.desiredLoaded;
     },
     nothingInstalled(): boolean {
       return this.state === "installed" && this.installedSlugs.size === 0;

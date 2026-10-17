@@ -7851,6 +7851,15 @@
         "created_showing": "Hinweis erstellt. Er wird jetzt angezeigt.",
         "created_off": "Hinweis erstellt. Er bleibt aus, bis du ihn einschaltest.",
         "expired": "„{name}“ ist abgelaufen und wird nicht mehr angezeigt"
+      },
+      "period": {
+        "estimated": "Geschätzt: aus der Zeit, bevor der Ein-/Aus-Verlauf gespeichert wurde",
+        "on": "Eingeschaltet {time}",
+        "on_by": "Eingeschaltet {time} von {name}",
+        "off": "Ausgeschaltet {time}",
+        "off_by": "Ausgeschaltet {time} von {name}",
+        "showing_now": "Wird gerade angezeigt",
+        "duration": "Angezeigt für {duration}"
       }
     },
     "admin_home": {

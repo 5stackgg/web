@@ -3414,7 +3414,7 @@
         "upload_demo_description": "أفلت ملف ‎.dem الخاص بـ CS2 لاستيراد إحصائيات المباراة. يعمل سواء كان سجل مبارياتك مرتبطًا أم لا.",
         "import_match": "استيراد مباراة",
         "import_match_description": "أضف المباريات التي لعبتها خارج 5Stack.",
-        "extension_title": "5Stack لمتصفح Chrome",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "استورد مبارياتك على FACEIT وLeetify بنقرة واحدة من صفحاتها مباشرة.",
         "add_to_chrome": "إضافة إلى Chrome",
         "or_upload_demo": "أو ارفع ملف ديمو",

@@ -3414,7 +3414,7 @@
         "upload_demo_description": "CS2 .dem 파일을 놓으면 매치 통계를 가져옵니다. 매치 기록 연결 여부와 관계없이 작동합니다.",
         "import_match": "경기 가져오기",
         "import_match_description": "5Stack 밖에서 플레이한 경기를 가져옵니다.",
-        "extension_title": "Chrome용 5Stack",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "FACEIT와 Leetify 경기를 해당 페이지에서 바로 한 번의 클릭으로 가져오세요.",
         "add_to_chrome": "Chrome에 추가",
         "or_upload_demo": "또는 데모 업로드",

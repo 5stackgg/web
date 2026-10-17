@@ -3414,7 +3414,7 @@
         "upload_demo_description": "Maç istatistiklerini içe aktarmak için bir CS2 .dem dosyası bırak. Maç geçmişin bağlı olsun olmasın çalışır.",
         "import_match": "Maç içe aktar",
         "import_match_description": "5Stack dışında oynadığın maçları getir.",
-        "extension_title": "Chrome için 5Stack",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "FACEIT ve Leetify maçlarını kendi sayfalarından tek tıkla içe aktar.",
         "add_to_chrome": "Chrome'a ekle",
         "or_upload_demo": "Ya da bir demo yükle",

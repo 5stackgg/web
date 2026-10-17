@@ -3414,7 +3414,7 @@
         "upload_demo_description": "Smid en CS2 .dem-fil ind for at importere kampstatistikken. Virker uanset om din kamphistorik er forbundet.",
         "import_match": "Importér en kamp",
         "import_match_description": "Hent kampe ind, som du har spillet uden for 5Stack.",
-        "extension_title": "5Stack til Chrome",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "Importér dine FACEIT- og Leetify-kampe med ét klik direkte fra deres sider.",
         "add_to_chrome": "Føj til Chrome",
         "or_upload_demo": "Eller upload en demo",

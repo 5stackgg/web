@@ -3414,7 +3414,7 @@
         "upload_demo_description": "拖入 CS2 .dem 檔案即可匯入比賽數據。無論是否已連結比賽紀錄皆可使用。",
         "import_match": "匯入比賽",
         "import_match_description": "匯入你在 5Stack 之外進行的比賽。",
-        "extension_title": "5Stack Chrome 擴充功能",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "在 FACEIT 與 Leetify 頁面上一鍵匯入你的比賽。",
         "add_to_chrome": "加到 Chrome",
         "or_upload_demo": "或上傳錄影",

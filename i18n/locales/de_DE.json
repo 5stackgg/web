@@ -3414,7 +3414,7 @@
         "upload_demo_description": "Zieh eine CS2-.dem-Datei hier rein, um die Match-Statistiken zu importieren. Funktioniert auch ohne verknüpften Match-Verlauf.",
         "import_match": "Match importieren",
         "import_match_description": "Hol dir Matches, die du außerhalb von 5Stack gespielt hast.",
-        "extension_title": "5Stack für Chrome",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "Importiere deine FACEIT- und Leetify-Matches mit einem Klick direkt von ihren Seiten.",
         "add_to_chrome": "Zu Chrome hinzufügen",
         "or_upload_demo": "Oder eine Demo hochladen",

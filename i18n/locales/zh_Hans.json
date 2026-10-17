@@ -7574,7 +7574,7 @@
       "currently_scheduled": "当前已安排",
       "save_schedule": "保存安排",
       "awaiting_schedule": "等待安排",
-      "schedule_asap": "尽快",
+      "schedule_now": "现在",
       "clear_schedule": "清除",
       "past_time_error": "安排的时间必须在未来",
       "fit_to_view": "适应视图",

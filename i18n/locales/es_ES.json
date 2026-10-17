@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Programada actualmente",
       "save_schedule": "Guardar horario",
       "awaiting_schedule": "Pendiente de programar",
-      "schedule_asap": "Cuanto antes",
+      "schedule_now": "Ahora",
       "clear_schedule": "Borrar",
       "past_time_error": "La hora programada debe ser futura",
       "fit_to_view": "Ajustar a la vista",

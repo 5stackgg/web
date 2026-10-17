@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Aktualnie zaplanowano",
       "save_schedule": "Zapisz harmonogram",
       "awaiting_schedule": "Czeka na termin",
-      "schedule_asap": "Jak najszybciej",
+      "schedule_now": "Teraz",
       "clear_schedule": "Wyczyść",
       "past_time_error": "Zaplanowany czas musi być w przyszłości",
       "fit_to_view": "Dopasuj do widoku",

@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Aktuelt planlagt",
       "save_schedule": "Gem tidspunkt",
       "awaiting_schedule": "Afventer planlægning",
-      "schedule_asap": "Snarest",
+      "schedule_now": "Nu",
       "clear_schedule": "Ryd",
       "past_time_error": "Tidspunktet skal ligge i fremtiden",
       "fit_to_view": "Tilpas til visning",

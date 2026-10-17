@@ -91,10 +91,10 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
         </Button>
         <Button
           variant="outline"
-          @click="scheduleAsap"
+          @click="scheduleNow"
           :disabled="saving || !!bracket?.match"
         >
-          {{ $t("tournament.bracket.schedule_asap") }}
+          {{ $t("tournament.bracket.schedule_now") }}
         </Button>
         <Button
           variant="tactical"
@@ -210,7 +210,7 @@ export default {
       }
       await this.setScheduledAt(scheduled_at);
     },
-    async scheduleAsap() {
+    async scheduleNow() {
       if (this.bracket?.match) {
         return;
       }

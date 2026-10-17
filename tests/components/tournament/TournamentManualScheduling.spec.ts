@@ -152,21 +152,35 @@ describe("BracketScheduleDialog", () => {
     return wrapper;
   }
 
-  it("offers ASAP without picking a date or time", async () => {
+  it("offers Now without picking a date or time", async () => {
     await mountDialog();
 
-    const asap = [...document.body.querySelectorAll("button")].find(
-      (button) => button.textContent?.trim() === "ASAP",
+    const nowButton = [...document.body.querySelectorAll("button")].find(
+      (button) => button.textContent?.trim() === "Now",
     );
-    expect(asap, "ASAP button").toBeDefined();
-    expect(asap!.disabled).toBe(false);
+    expect(nowButton, "Now button").toBeDefined();
+    expect(nowButton!.disabled).toBe(false);
+  });
+
+  it("sizes Now the same as Save Schedule", async () => {
+    await mountDialog();
+
+    const buttons = [...document.body.querySelectorAll("button")];
+    const nowButton = buttons.find(
+      (button) => button.textContent?.trim() === "Now",
+    );
+    const save = buttons.find(
+      (button) => button.textContent?.trim() === "Save Schedule",
+    );
+    expect(nowButton!.className).toContain("h-9");
+    expect(save!.className).toContain("h-9");
   });
 
   it("schedules the bracket for now and closes", async () => {
     const wrapper = await mountDialog();
     const before = Date.now();
 
-    await (wrapper.vm as any).scheduleAsap();
+    await (wrapper.vm as any).scheduleNow();
     await flushPromises();
 
     expect(mutate).toHaveBeenCalledTimes(1);
@@ -185,7 +199,7 @@ describe("BracketScheduleDialog", () => {
     setApiClockBehindBy(10 * 60_000);
     const wrapper = await mountDialog();
 
-    await (wrapper.vm as any).scheduleAsap();
+    await (wrapper.vm as any).scheduleNow();
     await flushPromises();
 
     const sent = print(mutate.mock.calls[0][0].mutation);
@@ -197,15 +211,15 @@ describe("BracketScheduleDialog", () => {
     );
   });
 
-  it("can't schedule ASAP once the bracket has a match", async () => {
+  it("can't use Now once the bracket has a match", async () => {
     const wrapper = await mountDialog({ match: { id: "match-1" } });
 
-    const asap = [...document.body.querySelectorAll("button")].find(
-      (button) => button.textContent?.trim() === "ASAP",
+    const nowButton = [...document.body.querySelectorAll("button")].find(
+      (button) => button.textContent?.trim() === "Now",
     );
-    expect(asap!.disabled).toBe(true);
+    expect(nowButton!.disabled).toBe(true);
 
-    await (wrapper.vm as any).scheduleAsap();
+    await (wrapper.vm as any).scheduleNow();
     await flushPromises();
     expect(mutate).not.toHaveBeenCalled();
   });

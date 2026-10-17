@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Actuellement planifié",
       "save_schedule": "Enregistrer",
       "awaiting_schedule": "En attente de planification",
-      "schedule_asap": "Dès que possible",
+      "schedule_now": "Maintenant",
       "clear_schedule": "Effacer",
       "past_time_error": "L'horaire planifié doit être dans le futur",
       "fit_to_view": "Ajuster à l'écran",

@@ -7574,7 +7574,7 @@
       "currently_scheduled": "目前已排程",
       "save_schedule": "儲存排程",
       "awaiting_schedule": "等待安排",
-      "schedule_asap": "盡快",
+      "schedule_now": "現在",
       "clear_schedule": "清除",
       "past_time_error": "排程時間必須在未來",
       "fit_to_view": "符合檢視",

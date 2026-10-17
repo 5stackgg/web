@@ -7574,7 +7574,7 @@
       "currently_scheduled": "현재 예약됨",
       "save_schedule": "일정 저장",
       "awaiting_schedule": "예약 대기 중",
-      "schedule_asap": "즉시",
+      "schedule_now": "지금",
       "clear_schedule": "지우기",
       "past_time_error": "예약 시간은 미래여야 합니다",
       "fit_to_view": "화면에 맞추기",

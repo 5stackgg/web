@@ -7574,7 +7574,7 @@
       "currently_scheduled": "現在のスケジュール",
       "save_schedule": "スケジュールを保存",
       "awaiting_schedule": "スケジュール待ち",
-      "schedule_asap": "今すぐ",
+      "schedule_now": "今すぐ",
       "clear_schedule": "クリア",
       "past_time_error": "スケジュール時刻は未来の時刻にしてください",
       "fit_to_view": "画面に合わせる",

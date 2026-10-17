@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Attualmente pianificato",
       "save_schedule": "Salva pianificazione",
       "awaiting_schedule": "In attesa di pianificazione",
-      "schedule_asap": "Subito",
+      "schedule_now": "Ora",
       "clear_schedule": "Cancella",
       "past_time_error": "L'orario pianificato deve essere nel futuro",
       "fit_to_view": "Adatta alla vista",

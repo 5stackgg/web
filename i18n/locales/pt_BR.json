@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Atualmente Agendado",
       "save_schedule": "Salvar Agendamento",
       "awaiting_schedule": "Aguardando agendamento",
-      "schedule_asap": "O quanto antes",
+      "schedule_now": "Agora",
       "clear_schedule": "Limpar",
       "past_time_error": "O horário agendado deve estar no futuro",
       "fit_to_view": "Ajustar à visualização",

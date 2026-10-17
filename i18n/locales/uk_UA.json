@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Зараз заплановано",
       "save_schedule": "Зберегти розклад",
       "awaiting_schedule": "Очікує призначення",
-      "schedule_asap": "Якнайшвидше",
+      "schedule_now": "Зараз",
       "clear_schedule": "Очистити",
       "past_time_error": "Запланований час має бути в майбутньому",
       "fit_to_view": "Вмістити у вікно",

@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Aktuell schemaläggning",
       "save_schedule": "Spara schema",
       "awaiting_schedule": "Väntar på schema",
-      "schedule_asap": "Snarast",
+      "schedule_now": "Nu",
       "clear_schedule": "Rensa",
       "past_time_error": "Den schemalagda tiden måste ligga i framtiden",
       "fit_to_view": "Anpassa till vy",

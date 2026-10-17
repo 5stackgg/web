@@ -7576,7 +7576,7 @@
       "currently_scheduled": "Currently scheduled",
       "save_schedule": "Save Schedule",
       "awaiting_schedule": "Awaiting schedule",
-      "schedule_asap": "ASAP",
+      "schedule_now": "Now",
       "clear_schedule": "Clear",
       "past_time_error": "Scheduled time must be in the future",
       "fit_to_view": "Fit to view",

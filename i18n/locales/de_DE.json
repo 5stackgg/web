@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Aktuell angesetzt",
       "save_schedule": "Termin speichern",
       "awaiting_schedule": "Wartet auf Termin",
-      "schedule_asap": "Sofort",
+      "schedule_now": "Jetzt",
       "clear_schedule": "Leeren",
       "past_time_error": "Der angesetzte Zeitpunkt muss in der Zukunft liegen",
       "fit_to_view": "Einpassen",

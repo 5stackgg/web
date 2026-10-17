@@ -7574,7 +7574,7 @@
       "currently_scheduled": "Текущее время",
       "save_schedule": "Сохранить время",
       "awaiting_schedule": "Ждёт назначения",
-      "schedule_asap": "Как можно скорее",
+      "schedule_now": "Сейчас",
       "clear_schedule": "Очистить",
       "past_time_error": "Время матча должно быть в будущем",
       "fit_to_view": "Вписать в экран",

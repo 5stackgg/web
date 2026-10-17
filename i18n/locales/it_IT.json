@@ -7447,7 +7447,8 @@
       "discord_notifications_description": "Attiva le notifiche Discord per i cambi di stato dei match in questo torneo. Se disattivate, vengono inviate solo notifiche a pannello.",
       "auto_start": {
         "label": "Avvio automatico",
-        "description": "Se attivo, i match del torneo vengono pianificati automaticamente. Se disattivo, un organizzatore deve pianificare ogni match manualmente."
+        "description": "Se attivo, i match del torneo vengono pianificati automaticamente. Se disattivo, un organizzatore deve pianificare ogni match manualmente.",
+        "overridden": "La fase {stages} usa la modalità match Admin, quindi un organizzatore pianifica ogni suo match. | Le fasi {stages} usano la modalità match Admin, quindi un organizzatore pianifica ogni loro match."
       },
       "negotiated_scheduling": {
         "label": "Pianificazione concordata",
@@ -7458,7 +7459,6 @@
         "description": "I team possono inserire nel roster e schierare riserve oltre ai titolari. Se disattivato, roster e match sono limitati ai titolari.",
         "locked": "Le riserve non possono essere disattivate dopo la chiusura delle iscrizioni."
       },
-      "map_pool_locked_label": "Tipo di match e map pool",
       "map_pool_locked": "Il tipo di match e il map pool sono bloccati dopo la generazione del tabellone.",
       "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche a tipo di match e map pool, poi salva di nuovo.",
       "logo": {
@@ -7562,11 +7562,14 @@
       "decider_best_of": "Decider per il 3° posto",
       "advanced_settings": "Impostazioni avanzate della fase",
       "teams_count": "{count} team",
+      "manual_scheduling": "Pianificazione manuale",
+      "manual_scheduling_hint": "I match di questa fase iniziano solo quando un organizzatore li pianifica.",
       "structure_locked_label": "Tipo, squadre e gironi",
-      "structure_locked": "Tipo, squadre e gironi sono bloccati dopo la generazione del tabellone. Il formato Best Of si può ancora cambiare.",
+      "structure_locked": "Tipo, squadre e gironi sono bloccati dopo la generazione del tabellone.",
       "match_settings_locked_label": "Impostazioni match",
-      "match_settings_locked": "Le impostazioni match sono bloccate dopo la generazione del tabellone.",
-      "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche a tipo, squadre, gironi o impostazioni match, poi salva il formato Best Of.",
+      "match_settings_locked": "Le impostazioni match sono bloccate quando questa fase ha dei match.",
+      "match_settings_locked_match_mode": "Le impostazioni match sono bloccate quando questa fase ha dei match. La modalità match si può ancora cambiare.",
+      "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche ora bloccate, poi salva di nuovo.",
       "final_map_advantage": {
         "label": "Vantaggio mappe finale",
         "description": "Vantaggio in punti mappa che il team dell'upper bracket porta nella finale. Deve restare sotto le mappe necessarie per vincere."
@@ -7576,6 +7579,8 @@
       "schedule_title": "Pianifica match",
       "currently_scheduled": "Attualmente pianificato",
       "save_schedule": "Salva pianificazione",
+      "awaiting_schedule": "In attesa di pianificazione",
+      "schedule_now": "Ora",
       "clear_schedule": "Cancella",
       "past_time_error": "L'orario pianificato deve essere nel futuro",
       "fit_to_view": "Adatta alla vista",

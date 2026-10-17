@@ -7449,7 +7449,8 @@
       "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent.",
       "auto_start": {
         "label": "Auto Start",
-        "description": "When enabled, tournament matches are automatically scheduled. When disabled, an organizer must schedule each match manually."
+        "description": "When enabled, tournament matches are automatically scheduled. When disabled, an organizer must schedule each match manually.",
+        "overridden": "Stage {stages} uses Admin match mode, so an organizer schedules each of its matches. | Stages {stages} use Admin match mode, so an organizer schedules each of their matches."
       },
       "negotiated_scheduling": {
         "label": "Negotiated Scheduling",
@@ -7460,7 +7461,6 @@
         "description": "Teams can roster and field substitutes beyond the starting lineup. When disabled, rosters and matches are limited to the starting lineup.",
         "locked": "Substitutes can't be turned off once registration has closed."
       },
-      "map_pool_locked_label": "Match type and map pool",
       "map_pool_locked": "Match type and map pool are locked once the bracket is drawn.",
       "drawn_while_editing": "The bracket was drawn while you were editing. Discard your changes to match type and map pool, then save again.",
       "logo": {
@@ -7564,11 +7564,14 @@
       "decider_best_of": "3rd Place Decider",
       "advanced_settings": "Advanced Stage Settings",
       "teams_count": "{count} teams",
+      "manual_scheduling": "Manual scheduling",
+      "manual_scheduling_hint": "Matches in this stage only start once an organizer schedules them.",
       "structure_locked_label": "Type, teams and groups",
-      "structure_locked": "Type, teams and groups are locked once the bracket is drawn. Best-of can still change.",
+      "structure_locked": "Type, teams and groups are locked once the bracket is drawn.",
       "match_settings_locked_label": "Match settings",
-      "match_settings_locked": "Match settings are locked once the bracket is drawn.",
-      "drawn_while_editing": "The bracket was drawn while you were editing. Discard your changes to type, teams, groups or match settings, then save the best-of.",
+      "match_settings_locked": "Match settings are locked once this stage has matches.",
+      "match_settings_locked_match_mode": "Match settings are locked once this stage has matches. Match mode can still change.",
+      "drawn_while_editing": "The bracket was drawn while you were editing. Discard the changes that are now locked, then save again.",
       "final_map_advantage": {
         "label": "Final Map Advantage",
         "description": "Map-point head start the winner-bracket team carries into the grand final. Must stay below the maps needed to win."
@@ -7578,6 +7581,8 @@
       "schedule_title": "Schedule Match",
       "currently_scheduled": "Currently scheduled",
       "save_schedule": "Save Schedule",
+      "awaiting_schedule": "Awaiting schedule",
+      "schedule_now": "Now",
       "clear_schedule": "Clear",
       "past_time_error": "Scheduled time must be in the future",
       "fit_to_view": "Fit to view",

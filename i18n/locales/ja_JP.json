@@ -7447,7 +7447,8 @@
       "discord_notifications_description": "このトーナメントの試合ステータス変更を Discord で通知します。オフの場合はパネル通知のみ送信されます。",
       "auto_start": {
         "label": "自動開始",
-        "description": "有効にすると、トーナメントの試合が自動でスケジュールされます。無効の場合は主催者が各試合を手動でスケジュールする必要があります。"
+        "description": "有効にすると、トーナメントの試合が自動でスケジュールされます。無効の場合は主催者が各試合を手動でスケジュールする必要があります。",
+        "overridden": "ステージ {stages} は試合モード「管理者」のため、各試合は主催者がスケジュールします。 | ステージ {stages} は試合モード「管理者」のため、各試合は主催者がスケジュールします。"
       },
       "negotiated_scheduling": {
         "label": "日程調整制",
@@ -7458,7 +7459,6 @@
         "description": "チームはスタメン以外に控えをロスターに登録し、出場させることができます。無効にすると、ロスターと試合はスタメンのみに制限されます。",
         "locked": "登録締め切り後は控えを無効にできません。"
       },
-      "map_pool_locked_label": "試合形式とマッププール",
       "map_pool_locked": "ブラケット作成後は試合形式とマッププールがロックされます。",
       "drawn_while_editing": "編集中にブラケットが作成されました。試合形式とマッププールの変更を破棄してから、もう一度保存してください。",
       "logo": {
@@ -7562,11 +7562,14 @@
       "decider_best_of": "3位決定戦",
       "advanced_settings": "ステージ詳細設定",
       "teams_count": "{count} チーム",
+      "manual_scheduling": "手動スケジュール",
+      "manual_scheduling_hint": "このステージの試合は、主催者がスケジュールするまで開始されません。",
       "structure_locked_label": "形式・チーム数・グループ",
-      "structure_locked": "ブラケット作成後は形式・チーム数・グループがロックされます。Best Of は引き続き変更できます。",
+      "structure_locked": "ブラケット作成後は形式・チーム数・グループがロックされます。",
       "match_settings_locked_label": "試合設定",
-      "match_settings_locked": "ブラケット作成後は試合設定がロックされます。",
-      "drawn_while_editing": "編集中にブラケットが作成されました。形式・チーム数・グループ・試合設定の変更を破棄してから Best Of を保存してください。",
+      "match_settings_locked": "このステージに試合ができると試合設定がロックされます。",
+      "match_settings_locked_match_mode": "このステージに試合ができると試合設定がロックされます。試合モードは引き続き変更できます。",
+      "drawn_while_editing": "編集中にブラケットが作成されました。ロックされた変更を破棄してから、もう一度保存してください。",
       "final_map_advantage": {
         "label": "決勝マップアドバンテージ",
         "description": "上位ブラケットのチームがグランドファイナルに持ち込むマップポイントのリード。勝利に必要なマップ数未満にする必要があります。"
@@ -7576,6 +7579,8 @@
       "schedule_title": "試合をスケジュール",
       "currently_scheduled": "現在のスケジュール",
       "save_schedule": "スケジュールを保存",
+      "awaiting_schedule": "スケジュール待ち",
+      "schedule_now": "今すぐ",
       "clear_schedule": "クリア",
       "past_time_error": "スケジュール時刻は未来の時刻にしてください",
       "fit_to_view": "画面に合わせる",

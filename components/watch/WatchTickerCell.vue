@@ -2,21 +2,15 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { Check } from "lucide-vue-next";
-import { NuxtLink } from "#components";
 import type { TickerCellModel } from "~/components/watch/watchTicker";
 import { streamPlatformMeta } from "~/components/watch/streamPlatform";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const props = defineProps<{
   model: TickerCellModel;
-  // A live match the stage can show: the cell swaps it onto the stage
-  // instead of linking to the match page.
-  streamable?: boolean;
-  // Named so it can't collide with the `@stage` listener (`onStage`).
+  // The live match currently on the /watch stage.
   staged?: boolean;
 }>();
-
-defineEmits<{ (e: "stage", matchId: string): void }>();
 
 const { t } = useI18n();
 
@@ -59,17 +53,11 @@ const checkInWidth = computed(() =>
 </script>
 
 <template>
-  <component
-    :is="streamable ? 'button' : NuxtLink"
-    v-bind="
-      streamable
-        ? { type: 'button' }
-        : { to: { name: 'matches-id', params: { id: model.id } } }
-    "
+  <NuxtLink
+    :to="{ name: 'matches-id', params: { id: model.id } }"
     :class="cellClasses"
     :aria-label="ariaLabel"
     :aria-current="staged ? 'true' : undefined"
-    @click="streamable && $emit('stage', model.id)"
   >
     <span
       class="flex h-4 items-center justify-between gap-2 text-xs text-muted-foreground"
@@ -209,5 +197,5 @@ const checkInWidth = computed(() =>
         :style="{ width: checkInWidth }"
       ></span>
     </span>
-  </component>
+  </NuxtLink>
 </template>

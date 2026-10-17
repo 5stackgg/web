@@ -7447,7 +7447,8 @@
       "discord_notifications_description": "Slå Discord-notifikationer til for ændringer i kampstatus i denne turnering. Når det er slået fra, sendes kun notifikationer i panelet.",
       "auto_start": {
         "label": "Autostart",
-        "description": "Når det er slået til, planlægges turneringens kampe automatisk. Når det er slået fra, skal en arrangør planlægge hver kamp manuelt."
+        "description": "Når det er slået til, planlægges turneringens kampe automatisk. Når det er slået fra, skal en arrangør planlægge hver kamp manuelt.",
+        "overridden": "Fase {stages} bruger kamptilstanden Admin, så en arrangør planlægger hver af dens kampe. | Faserne {stages} bruger kamptilstanden Admin, så en arrangør planlægger hver af deres kampe."
       },
       "negotiated_scheduling": {
         "label": "Aftalt planlægning",
@@ -7458,7 +7459,6 @@
         "description": "Hold kan have reserver i truppen og stille med dem ud over startopstillingen. Når det er slået fra, er trupper og kampe begrænset til startopstillingen.",
         "locked": "Reserver kan ikke slås fra, når tilmeldingen er lukket."
       },
-      "map_pool_locked_label": "Kamptype og map pool",
       "map_pool_locked": "Kamptype og map pool er låst, når turneringstræet er lavet.",
       "drawn_while_editing": "Turneringstræet blev lavet, mens du redigerede. Kassér dine ændringer af kamptype og map pool, og gem så igen.",
       "logo": {
@@ -7562,11 +7562,14 @@
       "decider_best_of": "Bronzekamp",
       "advanced_settings": "Avancerede faseindstillinger",
       "teams_count": "{count} hold",
+      "manual_scheduling": "Manuel planlægning",
+      "manual_scheduling_hint": "Kampe i denne fase starter først, når en arrangør planlægger dem.",
       "structure_locked_label": "Type, hold og grupper",
-      "structure_locked": "Type, hold og grupper er låst, når turneringstræet er lavet. Best of kan stadig ændres.",
+      "structure_locked": "Type, hold og grupper er låst, når turneringstræet er lavet.",
       "match_settings_locked_label": "Kampindstillinger",
-      "match_settings_locked": "Kampindstillingerne er låst, når turneringstræet er lavet.",
-      "drawn_while_editing": "Turneringstræet blev lavet, mens du redigerede. Kassér dine ændringer af type, hold, grupper eller kampindstillinger, og gem så best of.",
+      "match_settings_locked": "Kampindstillingerne er låst, når denne fase har kampe.",
+      "match_settings_locked_match_mode": "Kampindstillingerne er låst, når denne fase har kampe. Kamptilstanden kan stadig ændres.",
+      "drawn_while_editing": "Turneringstræet blev lavet, mens du redigerede. Kassér de ændringer, der nu er låst, og gem igen.",
       "final_map_advantage": {
         "label": "Mapfordel i finalen",
         "description": "Forspring i map-point, som holdet fra winner bracket tager med i grand final. Skal være mindre end antallet af maps, der kræves for at vinde."
@@ -7576,6 +7579,8 @@
       "schedule_title": "Planlæg kamp",
       "currently_scheduled": "Aktuelt planlagt",
       "save_schedule": "Gem tidspunkt",
+      "awaiting_schedule": "Afventer planlægning",
+      "schedule_now": "Nu",
       "clear_schedule": "Ryd",
       "past_time_error": "Tidspunktet skal ligge i fremtiden",
       "fit_to_view": "Tilpas til visning",

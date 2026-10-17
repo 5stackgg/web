@@ -7447,7 +7447,8 @@
       "discord_notifications_description": "Aktiviere Discord-Benachrichtigungen für Änderungen des Match-Status in diesem Turnier. Wenn deaktiviert, werden nur Panel-Benachrichtigungen gesendet.",
       "auto_start": {
         "label": "Auto-Start",
-        "description": "Wenn aktiviert, werden Turnier-Matches automatisch angesetzt. Wenn deaktiviert, muss ein Veranstalter jedes Match manuell ansetzen."
+        "description": "Wenn aktiviert, werden Turnier-Matches automatisch angesetzt. Wenn deaktiviert, muss ein Veranstalter jedes Match manuell ansetzen.",
+        "overridden": "Stage {stages} nutzt den Match-Modus Admin, daher setzt ein Veranstalter jedes ihrer Matches an. | Die Stages {stages} nutzen den Match-Modus Admin, daher setzt ein Veranstalter jedes ihrer Matches an."
       },
       "negotiated_scheduling": {
         "label": "Abgestimmte Terminierung",
@@ -7458,7 +7459,6 @@
         "description": "Teams können Ersatzspieler über die Startaufstellung hinaus ins Roster aufnehmen und einsetzen. Wenn deaktiviert, sind Roster und Matches auf die Startaufstellung beschränkt.",
         "locked": "Ersatzspieler können nach Ende der Anmeldung nicht mehr deaktiviert werden."
       },
-      "map_pool_locked_label": "Match-Typ und Map-Pool",
       "map_pool_locked": "Match-Typ und Map-Pool sind gesperrt, sobald der Turnierbaum gezogen ist.",
       "drawn_while_editing": "Der Turnierbaum wurde gezogen, während du bearbeitet hast. Verwirf deine Änderungen an Match-Typ und Map-Pool und speichere dann erneut.",
       "logo": {
@@ -7562,11 +7562,14 @@
       "decider_best_of": "Entscheidung um Platz 3",
       "advanced_settings": "Erweiterte Stage-Einstellungen",
       "teams_count": "{count} Teams",
+      "manual_scheduling": "Manuelle Ansetzung",
+      "manual_scheduling_hint": "Matches dieser Stage starten erst, wenn ein Veranstalter sie ansetzt.",
       "structure_locked_label": "Typ, Teams und Gruppen",
-      "structure_locked": "Typ, Teams und Gruppen sind gesperrt, sobald der Turnierbaum gezogen ist. Best Of lässt sich weiterhin ändern.",
+      "structure_locked": "Typ, Teams und Gruppen sind gesperrt, sobald der Turnierbaum gezogen ist.",
       "match_settings_locked_label": "Match-Einstellungen",
-      "match_settings_locked": "Die Match-Einstellungen sind gesperrt, sobald der Turnierbaum gezogen ist.",
-      "drawn_while_editing": "Der Turnierbaum wurde gezogen, während du bearbeitet hast. Verwirf deine Änderungen an Typ, Teams, Gruppen oder Match-Einstellungen und speichere dann das Best Of.",
+      "match_settings_locked": "Die Match-Einstellungen sind gesperrt, sobald diese Stage Matches hat.",
+      "match_settings_locked_match_mode": "Die Match-Einstellungen sind gesperrt, sobald diese Stage Matches hat. Der Match-Modus lässt sich weiterhin ändern.",
+      "drawn_while_editing": "Der Turnierbaum wurde gezogen, während du bearbeitet hast. Verwirf die Änderungen, die jetzt gesperrt sind, und speichere erneut.",
       "final_map_advantage": {
         "label": "Map-Vorteil im Finale",
         "description": "Vorsprung an Map-Punkten, den das Team aus dem Winner-Bracket ins Grand Final mitnimmt. Muss unter der Anzahl der zum Sieg nötigen Maps bleiben."
@@ -7576,6 +7579,8 @@
       "schedule_title": "Match ansetzen",
       "currently_scheduled": "Aktuell angesetzt",
       "save_schedule": "Termin speichern",
+      "awaiting_schedule": "Wartet auf Termin",
+      "schedule_now": "Jetzt",
       "clear_schedule": "Leeren",
       "past_time_error": "Der angesetzte Zeitpunkt muss in der Zukunft liegen",
       "fit_to_view": "Einpassen",

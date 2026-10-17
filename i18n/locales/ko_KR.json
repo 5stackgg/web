@@ -7447,7 +7447,8 @@
       "discord_notifications_description": "이 토너먼트의 매치 상태 변경에 대한 Discord 알림을 활성화합니다. 끄면 패널 알림만 전송됩니다.",
       "auto_start": {
         "label": "자동 시작",
-        "description": "활성화하면 토너먼트 매치가 자동으로 예약됩니다. 비활성화하면 주최자가 각 매치를 직접 예약해야 합니다."
+        "description": "활성화하면 토너먼트 매치가 자동으로 예약됩니다. 비활성화하면 주최자가 각 매치를 직접 예약해야 합니다.",
+        "overridden": "스테이지 {stages}은(는) 매치 모드가 관리자이므로 주최자가 각 매치를 예약합니다. | 스테이지 {stages}은(는) 매치 모드가 관리자이므로 주최자가 각 매치를 예약합니다."
       },
       "negotiated_scheduling": {
         "label": "협의 일정 조율",
@@ -7458,7 +7459,6 @@
         "description": "팀이 주전 외에 교체 선수를 로스터에 등록하고 출전시킬 수 있습니다. 비활성화하면 로스터와 경기가 주전 라인업으로 제한됩니다.",
         "locked": "등록이 마감된 후에는 교체 선수를 끌 수 없습니다."
       },
-      "map_pool_locked_label": "매치 유형과 맵 풀",
       "map_pool_locked": "대진표가 만들어지면 매치 유형과 맵 풀이 잠깁니다.",
       "drawn_while_editing": "수정하는 동안 대진표가 만들어졌습니다. 매치 유형과 맵 풀 변경 사항을 취소한 뒤 다시 저장하세요.",
       "logo": {
@@ -7562,11 +7562,14 @@
       "decider_best_of": "3위 결정전 승수제",
       "advanced_settings": "스테이지 고급 설정",
       "teams_count": "{count}팀",
+      "manual_scheduling": "수동 예약",
+      "manual_scheduling_hint": "이 스테이지의 매치는 주최자가 예약해야 시작됩니다.",
       "structure_locked_label": "유형, 팀, 그룹",
-      "structure_locked": "대진표가 만들어지면 유형, 팀, 그룹이 잠깁니다. 승수제는 계속 바꿀 수 있습니다.",
+      "structure_locked": "대진표가 만들어지면 유형, 팀, 그룹이 잠깁니다.",
       "match_settings_locked_label": "매치 설정",
-      "match_settings_locked": "대진표가 만들어지면 매치 설정이 잠깁니다.",
-      "drawn_while_editing": "수정하는 동안 대진표가 만들어졌습니다. 유형, 팀, 그룹, 매치 설정 변경 사항을 취소한 뒤 승수제를 저장하세요.",
+      "match_settings_locked": "이 스테이지에 매치가 생기면 매치 설정이 잠깁니다.",
+      "match_settings_locked_match_mode": "이 스테이지에 매치가 생기면 매치 설정이 잠깁니다. 매치 모드는 계속 바꿀 수 있습니다.",
+      "drawn_while_editing": "수정하는 동안 대진표가 만들어졌습니다. 이제 잠긴 변경 사항을 취소한 뒤 다시 저장하세요.",
       "final_map_advantage": {
         "label": "결승 맵 어드밴티지",
         "description": "승자조 팀이 그랜드 파이널에 진출할 때 갖는 맵 점수 어드밴티지입니다. 우승에 필요한 맵 수보다 적어야 합니다."
@@ -7576,6 +7579,8 @@
       "schedule_title": "매치 예약",
       "currently_scheduled": "현재 예약됨",
       "save_schedule": "일정 저장",
+      "awaiting_schedule": "예약 대기 중",
+      "schedule_now": "지금",
       "clear_schedule": "지우기",
       "past_time_error": "예약 시간은 미래여야 합니다",
       "fit_to_view": "화면에 맞추기",

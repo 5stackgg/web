@@ -7447,7 +7447,8 @@
       "discord_notifications_description": "Włącz powiadomienia Discord o zmianach statusu meczów w tym turnieju. Gdy wyłączone, wysyłane są tylko powiadomienia w panelu.",
       "auto_start": {
         "label": "Automatyczny start",
-        "description": "Gdy włączone, mecze turnieju są planowane automatycznie. Gdy wyłączone, organizator musi zaplanować każdy mecz ręcznie."
+        "description": "Gdy włączone, mecze turnieju są planowane automatycznie. Gdy wyłączone, organizator musi zaplanować każdy mecz ręcznie.",
+        "overridden": "Etap {stages} używa trybu meczu Admin, więc organizator planuje każdy jego mecz. | Etapy {stages} używają trybu meczu Admin, więc organizator planuje każdy ich mecz."
       },
       "negotiated_scheduling": {
         "label": "Negocjowane planowanie",
@@ -7458,7 +7459,6 @@
         "description": "Drużyny mogą dodawać do składu i wystawiać rezerwowych poza podstawowym składem. Po wyłączeniu składy i mecze są ograniczone do składu podstawowego.",
         "locked": "Po zamknięciu zapisów nie można wyłączyć rezerwowych."
       },
-      "map_pool_locked_label": "Typ meczu i map pool",
       "map_pool_locked": "Typ meczu i map pool są zablokowane po utworzeniu drabinki.",
       "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany typu meczu i map poolu, a potem zapisz ponownie.",
       "logo": {
@@ -7562,11 +7562,14 @@
       "decider_best_of": "Mecz decydujący o 3. miejscu",
       "advanced_settings": "Zaawansowane ustawienia etapu",
       "teams_count": "{count} drużyn",
+      "manual_scheduling": "Planowanie ręczne",
+      "manual_scheduling_hint": "Mecze tego etapu zaczynają się dopiero, gdy organizator je zaplanuje.",
       "structure_locked_label": "Typ, drużyny i grupy",
-      "structure_locked": "Typ, drużyny i grupy są zablokowane po utworzeniu drabinki. Format meczu nadal można zmienić.",
+      "structure_locked": "Typ, drużyny i grupy są zablokowane po utworzeniu drabinki.",
       "match_settings_locked_label": "Ustawienia meczu",
-      "match_settings_locked": "Ustawienia meczu są zablokowane po utworzeniu drabinki.",
-      "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany typu, drużyn, grup lub ustawień meczu, a potem zapisz format meczu.",
+      "match_settings_locked": "Ustawienia meczu są zablokowane, gdy ten etap ma już mecze.",
+      "match_settings_locked_match_mode": "Ustawienia meczu są zablokowane, gdy ten etap ma już mecze. Tryb meczu nadal można zmienić.",
+      "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany, które są teraz zablokowane, i zapisz ponownie.",
       "final_map_advantage": {
         "label": "Przewaga mapowa w finale",
         "description": "Przewaga punktowa na mapach, którą drużyna z górnej drabinki przenosi do wielkiego finału. Musi być mniejsza od liczby map potrzebnych do wygranej."
@@ -7576,6 +7579,8 @@
       "schedule_title": "Zaplanuj mecz",
       "currently_scheduled": "Aktualnie zaplanowano",
       "save_schedule": "Zapisz harmonogram",
+      "awaiting_schedule": "Czeka na termin",
+      "schedule_now": "Teraz",
       "clear_schedule": "Wyczyść",
       "past_time_error": "Zaplanowany czas musi być w przyszłości",
       "fit_to_view": "Dopasuj do widoku",

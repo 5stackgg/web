@@ -43,9 +43,11 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
           {{ teamNames }}
         </div>
 
-        <div v-if="bracket.scheduled_at" class="text-sm text-green-400">
+        <div v-if="bracket.scheduled_at" class="text-sm text-muted-foreground">
           {{ $t("tournament.bracket.currently_scheduled") }}:
-          <TimeAgo :date="bracket.scheduled_at" />
+          <span class="text-foreground">
+            <TimeAgo :date="bracket.scheduled_at" />
+          </span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -88,6 +90,14 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
           {{ $t("tournament.bracket.clear_schedule") }}
         </Button>
         <Button
+          variant="outline"
+          @click="scheduleNow"
+          :disabled="saving || !!bracket?.match"
+        >
+          {{ $t("tournament.bracket.schedule_now") }}
+        </Button>
+        <Button
+          variant="tactical"
           @click="saveSchedule"
           :disabled="!startDate || !startTime || saving"
         >
@@ -109,6 +119,7 @@ import {
   getLocalTimeZone,
 } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
+import { serverNow } from "~/stores/ServerClockStore";
 import type { Bracket } from "~/types/tournament";
 
 export default {
@@ -131,6 +142,9 @@ export default {
     };
   },
   computed: {
+    scheduleKey(): string {
+      return `${this.bracket?.id ?? ""}|${this.bracket?.scheduled_at ?? ""}`;
+    },
     teamNames(): string {
       if (!this.bracket) return "";
       const t1 =
@@ -144,21 +158,30 @@ export default {
     },
   },
   watch: {
-    bracket: {
+    scheduleKey: {
       immediate: true,
-      handler(bracket) {
-        if (bracket?.scheduled_at) {
-          const date = new Date(bracket.scheduled_at);
-          this.startDate = toCalendarDate(fromDate(date, getLocalTimeZone()));
-          this.startTime = `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
-        } else {
-          this.startDate = undefined;
-          this.startTime = undefined;
-        }
+      handler() {
+        this.resetPicked();
       },
+    },
+    open(open: boolean) {
+      if (open) {
+        this.resetPicked();
+      }
     },
   },
   methods: {
+    resetPicked() {
+      const bracket = this.bracket;
+      if (bracket?.scheduled_at) {
+        const date = new Date(bracket.scheduled_at);
+        this.startDate = toCalendarDate(fromDate(date, getLocalTimeZone()));
+        this.startTime = `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+      } else {
+        this.startDate = undefined;
+        this.startTime = undefined;
+      }
+    },
     checkDate({
       day,
       month,
@@ -178,11 +201,26 @@ export default {
       const scheduled_at = new Date(
         `${this.startDate} ${this.startTime}`,
       ).toISOString();
-      if (new Date(scheduled_at) <= new Date()) {
+      if (Date.parse(scheduled_at) <= serverNow()) {
         toast({
           title: this.$t("tournament.bracket.past_time_error"),
           variant: "destructive",
         });
+        return;
+      }
+      await this.setScheduledAt(scheduled_at);
+    },
+    async scheduleNow() {
+      if (this.bracket?.match) {
+        return;
+      }
+      await this.setScheduledAt(new Date(serverNow()).toISOString());
+    },
+    async clearSchedule() {
+      await this.setScheduledAt(null);
+    },
+    async setScheduledAt(scheduled_at: string | null) {
+      if (!this.bracket || this.saving) {
         return;
       }
       this.saving = true;
@@ -191,32 +229,7 @@ export default {
           mutation: generateMutation({
             update_tournament_brackets_by_pk: [
               {
-                _set: { scheduled_at: scheduled_at },
-                pk_columns: { id: this.bracket.id },
-              },
-              { id: true, scheduled_at: true },
-            ],
-          }),
-        });
-        this.$emit("update:open", false);
-      } catch {
-        toast({
-          title: this.$t("error.generic"),
-          variant: "destructive",
-        });
-      } finally {
-        this.saving = false;
-      }
-    },
-    async clearSchedule() {
-      if (!this.bracket) return;
-      this.saving = true;
-      try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_tournament_brackets_by_pk: [
-              {
-                _set: { scheduled_at: null },
+                _set: { scheduled_at },
                 pk_columns: { id: this.bracket.id },
               },
               { id: true, scheduled_at: true },

@@ -6693,7 +6693,6 @@
         "alerts": "Site genelindeki uyarı banner'larını yönet",
         "report_issue": "Sorun bildir",
         "join_discord": "Discord'umuza katıl",
-        "search_players": "Oyuncu ara",
         "leagues": "Lig",
         "events": "Etkinlikler",
         "system_media_server": "Medya sunucusu",
@@ -7159,11 +7158,18 @@
       "description": "Filtreleri temizlemeyi veya aramayı genişletmeyi dene."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Oyuncu ara...",
+  "global_search": {
+    "placeholder": "Oyuncu, sayfa ve ayar ara",
+    "pages": "Sayfalar",
+    "players": "Oyuncular",
     "searching": "Aranıyor...",
     "no_players_found": "Oyuncu bulunamadı",
-    "start_typing": "Oyuncu aramak için yazmaya başla"
+    "no_results": "Sonuç yok",
+    "hints": {
+      "navigate": "gezinmek için",
+      "open": "açmak için",
+      "close": "kapatmak için"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Dizin yüklenemedi",

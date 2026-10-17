@@ -42,8 +42,10 @@ import Logout from "./Logout.vue";
 import { useMatchContext } from "~/composables/useMatchContext";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useGlobalSearchOpen } from "~/composables/useGlobalSearchOpen";
 
 const { setOpenMobile, isMobile } = useSidebar();
+const globalSearchOpen = useGlobalSearchOpen();
 const route = useRoute();
 const authStore = useAuthStore();
 const {
@@ -181,15 +183,13 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem
-              :tooltip="$t('layouts.app_nav.tooltips.search_players')"
-            >
+            <SidebarMenuItem :tooltip="$t('layouts.app_nav.navigation.search')">
               <SidebarMenuButton
                 @click="
                   setOpenMobile(false);
-                  triggerSpotlightSearch();
+                  globalSearchOpen = true;
                 "
-                :tooltip="$t('layouts.app_nav.tooltips.search_players')"
+                :tooltip="$t('layouts.app_nav.navigation.search')"
               >
                 <Search />
                 <span>{{ $t("layouts.app_nav.navigation.search") }}</span>
@@ -1176,15 +1176,6 @@ export default {
     isRouteActive(route: string) {
       const name = this.$route.name as string;
       return name === route || name?.startsWith(`${route}-`);
-    },
-    triggerSpotlightSearch() {
-      const event = new KeyboardEvent("keydown", {
-        key: "k",
-        metaKey: this.isMac,
-        ctrlKey: !this.isMac,
-        bubbles: true,
-      });
-      window.dispatchEvent(event);
     },
   },
   computed: {

@@ -6693,7 +6693,6 @@
         "alerts": "Administrer sitedækkende advarselsbannere",
         "report_issue": "Rapportér et problem",
         "join_discord": "Join vores Discord",
-        "search_players": "Søg spillere",
         "leagues": "Liga",
         "events": "Events",
         "system_media_server": "Medieserver",
@@ -7159,11 +7158,18 @@
       "description": "Prøv at rydde filtrene eller udvide din søgning."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Søg spillere...",
+  "global_search": {
+    "placeholder": "Søg efter spillere, sider og indstillinger",
+    "pages": "Sider",
+    "players": "Spillere",
     "searching": "Søger...",
     "no_players_found": "Ingen spillere fundet",
-    "start_typing": "Begynd at skrive for at søge spillere"
+    "no_results": "Ingen resultater",
+    "hints": {
+      "navigate": "for at navigere",
+      "open": "for at åbne",
+      "close": "for at lukke"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Mappen kunne ikke indlæses",

@@ -6693,7 +6693,6 @@
         "alerts": "サイト全体のアラートバナーを管理",
         "report_issue": "問題を報告",
         "join_discord": "Discordに参加",
-        "search_players": "プレイヤーを検索",
         "leagues": "リーグ",
         "events": "イベント",
         "system_media_server": "メディアサーバー",
@@ -7159,11 +7158,18 @@
       "description": "フィルターを解除するか、検索条件を広げてください。"
     }
   },
-  "spotlight_search": {
-    "placeholder": "プレイヤーを検索...",
+  "global_search": {
+    "placeholder": "プレイヤー、ページ、設定を検索",
+    "pages": "ページ",
+    "players": "プレイヤー",
     "searching": "検索中...",
     "no_players_found": "プレイヤーが見つかりません",
-    "start_typing": "入力してプレイヤーを検索"
+    "no_results": "結果がありません",
+    "hints": {
+      "navigate": "で移動",
+      "open": "で開く",
+      "close": "で閉じる"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "ディレクトリを読み込めませんでした。",

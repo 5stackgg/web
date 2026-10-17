@@ -6693,7 +6693,6 @@
         "alerts": "Управление баннерами оповещений сайта",
         "report_issue": "Сообщить о проблеме",
         "join_discord": "Присоединиться к Discord",
-        "search_players": "Поиск игроков",
         "leagues": "Лига",
         "events": "События",
         "system_media_server": "Медиасервер",
@@ -7159,11 +7158,18 @@
       "description": "Сбросьте фильтры или расширьте поиск."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Поиск игроков…",
+  "global_search": {
+    "placeholder": "Поиск игроков, страниц и настроек",
+    "pages": "Страницы",
+    "players": "Игроки",
     "searching": "Идёт поиск…",
     "no_players_found": "Игроки не найдены",
-    "start_typing": "Начни вводить, чтобы найти игроков"
+    "no_results": "Ничего не найдено",
+    "hints": {
+      "navigate": "для навигации",
+      "open": "чтобы открыть",
+      "close": "чтобы закрыть"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Не удалось загрузить директорию",

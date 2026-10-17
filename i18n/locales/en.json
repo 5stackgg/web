@@ -6695,7 +6695,6 @@
         "alerts": "Manage site-wide alert banners",
         "report_issue": "Report an Issue",
         "join_discord": "Join our Discord",
-        "search_players": "Search Players",
         "leagues": "League",
         "events": "Events",
         "system_media_server": "Media Server",
@@ -7161,11 +7160,18 @@
       "description": "Try clearing filters or widening your search."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Search players...",
+  "global_search": {
+    "placeholder": "Search players, pages and settings",
+    "pages": "Pages",
+    "players": "Players",
     "searching": "Searching...",
     "no_players_found": "No players found",
-    "start_typing": "Start typing to search players"
+    "no_results": "No results",
+    "hints": {
+      "navigate": "to navigate",
+      "open": "to open",
+      "close": "to close"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Failed to load directory",

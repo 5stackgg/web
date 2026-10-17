@@ -38,6 +38,9 @@ const ProfileSettingsShell = defineAsyncComponent(
 const ClipDetailModal = defineAsyncComponent(
   () => import("~/components/clips/ClipDetailModal.vue"),
 );
+const GlobalSearch = defineAsyncComponent(
+  () => import("~/components/GlobalSearch.vue"),
+);
 const ActionToasts = defineAsyncComponent(
   () => import("~/components/notification/ActionToasts.vue"),
 );
@@ -182,6 +185,8 @@ provide("containContent", containContent);
   </SidebarProvider>
 
   <VoiceHost v-if="authStore.me" />
+
+  <GlobalSearch v-if="authStore.me" />
 
   <div id="global-chat-container"></div>
 

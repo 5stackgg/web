@@ -41,6 +41,8 @@ const SKIP = new Set([
 ]);
 const LABELS = new Set(["FormLabel", "SettingHeader", "Label"]);
 const LABEL_TEXT = new Set(["p", "span", "h2", "h3", "h4", "label", "dt"]);
+const HEADINGS = new Set(["h3", "h4"]);
+const SECTIONS = new Set(["SettingsSection", "FormSection"]);
 const CONTROLS = new Set([
   "Switch",
   "Checkbox",
@@ -115,32 +117,35 @@ function firstKey(node: Node): string | undefined {
   }
 }
 
-// Hand-rolled labels are bold text. One that toggles itself with v-if is a
-// status badge (Online / Needs 2FA), not the name of a setting.
+// Hand-rolled labels are bold text or a heading. One that toggles itself with
+// v-if is a status badge (Online / Needs 2FA), not the name of a setting.
 function isTextLabel(node: Node) {
   const classes = attr(node, "class") ?? "";
   return (
     LABEL_TEXT.has(node.tag!) &&
-    /\bfont-(medium|semibold)\b/.test(classes) &&
+    (HEADINGS.has(node.tag!) || /\bfont-(medium|semibold)\b/.test(classes)) &&
     !/\btext-destructive\b/.test(classes) &&
     !isConditional(node)
   );
 }
 
 // A v-if chain on a count switches between a list and its empty state;
-// list rows are data and the empty state is a placeholder, so neither branch
-// holds a setting.
+// list rows are data and the empty state is a placeholder, so no branch from
+// the count onwards holds a setting.
 function listChains(children: Node[]) {
   let list = false;
   return children.map((child) => {
     if (child.type !== ELEMENT) {
       return false;
     }
-    const condition = directive(child, "if");
-    if (condition) {
-      list = /\.length\b|[=!]==?\s*0\b/.test(condition.exp?.content ?? "");
-    } else if (!directive(child, "else-if") && !directive(child, "else")) {
+    const condition = directive(child, "if") ?? directive(child, "else-if");
+    if (!condition && !directive(child, "else")) {
       list = false;
+    }
+    if (condition) {
+      list =
+        (list && !directive(child, "if")) ||
+        /\.length\b|[=!]==?\s*0\b/.test(condition.exp?.content ?? "");
     }
     return list;
   });
@@ -240,7 +245,7 @@ export function extractSettingsEntries(
           (prop) => prop.type === ATTRIBUTE && prop.name === "id",
         )?.value?.content ?? section;
 
-      if (node.tag === "SettingsSection") {
+      if (SECTIONS.has(node.tag!)) {
         const label = keyIn(attr(node, "title"));
         if (label) {
           push(
@@ -310,12 +315,13 @@ export function extractSettingsEntries(
   };
 }
 
-export const SETTINGS_PAGES_DIR = "pages/settings/application";
+export const SETTINGS_PAGES_DIR = "pages/settings";
 export const SETTINGS_LOCALE_FILE = "i18n/locales/en.json";
 
 /**
- * Every application settings page, read into one index. `files` is what it was
- * read from, so a dev server knows which edits mean rebuilding it.
+ * Every settings page, account and application, read into one index. `files`
+ * is what it was read from, so a dev server knows which edits mean rebuilding
+ * it.
  */
 export function buildSettingsSearchIndex(rootDir: string) {
   const pagesDir = join(rootDir, SETTINGS_PAGES_DIR);
@@ -325,14 +331,14 @@ export function buildSettingsSearchIndex(rootDir: string) {
   const files = new Set([localeFile]);
 
   for (const file of readdirSync(pagesDir, { recursive: true }) as string[]) {
-    // The section index only redirects, and a [param] page has no fixed URL.
-    const route = file.replace(/(^|\/)index\.vue$|\.vue$/, "");
-    if (!file.endsWith(".vue") || !route || file.includes("[")) {
+    // A [param] page has no fixed URL.
+    if (!file.endsWith(".vue") || file.includes("[")) {
       continue;
     }
+    const route = file.replace(/(^|\/)index\.vue$|\.vue$/, "");
     const page = extractSettingsEntries(
       rootDir,
-      `/${SETTINGS_PAGES_DIR.replace(/^pages\//, "")}/${route}`,
+      `/settings${route && `/${route}`}`,
       join(pagesDir, file),
       messages,
     );

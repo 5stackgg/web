@@ -6693,7 +6693,6 @@
         "alerts": "Hantera globala varningsbanners",
         "report_issue": "Rapportera ett problem",
         "join_discord": "Gå med i vår Discord",
-        "search_players": "Sök spelare",
         "leagues": "Liga",
         "events": "Event",
         "system_media_server": "Medieserver",
@@ -7159,11 +7158,18 @@
       "description": "Prova att rensa filtren eller bredda sökningen."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Sök spelare...",
+  "global_search": {
+    "placeholder": "Sök spelare, sidor och inställningar",
+    "pages": "Sidor",
+    "players": "Spelare",
     "searching": "Söker...",
     "no_players_found": "Inga spelare hittades",
-    "start_typing": "Börja skriv för att söka spelare"
+    "no_results": "Inga resultat",
+    "hints": {
+      "navigate": "för att navigera",
+      "open": "för att öppna",
+      "close": "för att stänga"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Det gick inte att läsa in katalogen",

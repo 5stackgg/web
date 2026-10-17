@@ -276,3 +276,37 @@ export function useSettingsNav() {
 
   return { groups, items };
 }
+
+const ACCOUNT_SETTINGS_NAV: SettingsNavItem[] = [
+  { path: "/settings", labelKey: "pages.settings.account.my_account" },
+  {
+    path: "/settings/matchmaking",
+    labelKey: "pages.settings.account.matchmaking",
+  },
+  {
+    path: "/settings/linked-accounts",
+    labelKey: "pages.settings.account.linked_accounts",
+  },
+  {
+    path: "/settings/blocked-players",
+    labelKey: "pages.settings.account.blocked_players",
+  },
+  {
+    path: "/settings/notifications",
+    labelKey: "pages.settings.notifications.title",
+  },
+  { path: "/settings/voice", labelKey: "pages.settings.account.voice" },
+  { path: "/settings/api-keys", labelKey: "pages.settings.account.api_keys" },
+];
+
+/** Localized nav for a player's own account settings. */
+export function useAccountSettingsNav() {
+  const { t } = useI18n();
+  const items = computed(() =>
+    ACCOUNT_SETTINGS_NAV.map((item) => ({
+      path: item.path,
+      label: t(item.labelKey),
+    })),
+  );
+  return { items };
+}

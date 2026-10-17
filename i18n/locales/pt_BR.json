@@ -6693,7 +6693,6 @@
         "alerts": "Alertas",
         "report_issue": "Reportar Problema",
         "join_discord": "Nosso Discord",
-        "search_players": "Procurar Jogadores",
         "leagues": "Liga",
         "events": "Eventos",
         "system_media_server": "Servidor de Mídia",
@@ -7159,11 +7158,18 @@
       "description": "Tente limpar os filtros ou ampliar a busca."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Procurar jogadores...",
+  "global_search": {
+    "placeholder": "Buscar jogadores, páginas e configurações",
+    "pages": "Páginas",
+    "players": "Jogadores",
     "searching": "Procurando...",
     "no_players_found": "Nenhum jogador encontrado",
-    "start_typing": "Comece a digitar para procurar jogadores"
+    "no_results": "Nenhum resultado",
+    "hints": {
+      "navigate": "para navegar",
+      "open": "para abrir",
+      "close": "para fechar"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Falha ao carregar diretório",

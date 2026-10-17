@@ -6693,7 +6693,6 @@
         "alerts": "Seitenweite Alert-Banner verwalten",
         "report_issue": "Problem melden",
         "join_discord": "Tritt unserem Discord bei",
-        "search_players": "Spieler suchen",
         "leagues": "Liga",
         "events": "Events",
         "system_media_server": "Medienserver",
@@ -7159,11 +7158,18 @@
       "description": "Setze die Filter zurück oder erweitere deine Suche."
     }
   },
-  "spotlight_search": {
-    "placeholder": "Spieler suchen...",
+  "global_search": {
+    "placeholder": "Spieler, Seiten und Einstellungen suchen",
+    "pages": "Seiten",
+    "players": "Spieler",
     "searching": "Suche läuft...",
     "no_players_found": "Keine Spieler gefunden",
-    "start_typing": "Tippe los, um Spieler zu suchen"
+    "no_results": "Keine Ergebnisse",
+    "hints": {
+      "navigate": "zum Navigieren",
+      "open": "zum Öffnen",
+      "close": "zum Schließen"
+    }
   },
   "file_manager_store": {
     "load_directory_failed": "Verzeichnis konnte nicht geladen werden",

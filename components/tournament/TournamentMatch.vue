@@ -43,6 +43,7 @@ import {
 } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useServerClockStore } from "~/stores/ServerClockStore";
 import type { Bracket } from "~/types/tournament";
 import {
   isNegotiableBracket,
@@ -497,6 +498,16 @@ const AWAITING_SCHEDULE_STATUSES: Array<string> = [
   e_tournament_status_enum.Paused,
 ];
 
+const etaClock = useEtaClock();
+const serverClock = useServerClockStore();
+
+const isEtaAhead = (bracket: Bracket): boolean =>
+  !!bracket.scheduled_eta &&
+  Date.parse(bracket.scheduled_eta) >
+    etaClock.value.getTime() + (serverClock.offsetMs ?? 0);
+
+// Organizers are the ones who schedule the match, so they always get the
+// to-do; everyone else keeps the estimate until it has passed.
 const isAwaitingSchedule = (bracket: Bracket): boolean =>
   !bracket.bye &&
   !bracket.finished &&
@@ -506,7 +517,8 @@ const isAwaitingSchedule = (bracket: Bracket): boolean =>
   !!bracket.team_2 &&
   !!props.tournament?.status &&
   AWAITING_SCHEDULE_STATUSES.includes(props.tournament.status) &&
-  isBracketManuallyScheduled(props.tournament, props.stage, bracket);
+  isBracketManuallyScheduled(props.tournament, props.stage, bracket) &&
+  (!!props.tournament.is_organizer || !isEtaAhead(bracket));
 
 const isActiveMatch = (bracket: Bracket): boolean => {
   const status = bracket.match?.status as e_match_status_enum | undefined;
@@ -900,6 +912,13 @@ const shouldShowCrossBracketDestination = (
   if (!dest?.id) return false;
   return !isSameViewerGroup(dest.group, bracket.group);
 };
+</script>
+
+<script lang="ts">
+import { createSharedComposable, useNow } from "@vueuse/core";
+
+// One timer for every round on the page, at TimeAgo's minute cadence.
+const useEtaClock = createSharedComposable(() => useNow({ interval: 10_000 }));
 </script>
 
 <template>

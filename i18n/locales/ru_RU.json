@@ -14033,7 +14033,8 @@
       "refresh_now": "Обновить сейчас"
     },
     "last_changed": {
-      "updated": "Обновлено {time}"
+      "updated": "Обновлено {time}",
+      "updated_by": "Обновлено {time} пользователем {name}"
     }
   }
 }

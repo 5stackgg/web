@@ -48,6 +48,7 @@ import DateTimePicker from "~/components/common/DateTimePicker.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import SystemAlertBannerItem from "~/components/SystemAlertBannerItem.vue";
 import AlertTimeline from "~/components/system-alerts/AlertTimeline.vue";
+import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import {
   listCreateButtonClasses,
   createButtonClasses,
@@ -781,6 +782,11 @@ const fieldLabel = "text-sm font-medium text-foreground";
             }}</template>
             <template v-else>{{ $t("pages.system_alerts.new_hint") }}</template>
           </SheetDescription>
+          <LastChangedFor
+            v-if="editingAlert"
+            type="system_alerts"
+            :row="editingAlert"
+          />
         </div>
         <div class="flex shrink-0 items-center gap-2 pt-0.5">
           <Label

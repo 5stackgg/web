@@ -14033,7 +14033,8 @@
       "refresh_now": "Odśwież teraz"
     },
     "last_changed": {
-      "updated": "Zaktualizowano {time}"
+      "updated": "Zaktualizowano {time}",
+      "updated_by": "Zaktualizowano {time} przez {name}"
     }
   }
 }

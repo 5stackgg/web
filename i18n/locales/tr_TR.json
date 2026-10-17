@@ -14033,7 +14033,8 @@
       "refresh_now": "Şimdi yenile"
     },
     "last_changed": {
-      "updated": "Güncellendi: {time}"
+      "updated": "Güncellendi: {time}",
+      "updated_by": "{name} tarafından güncellendi: {time}"
     }
   }
 }

@@ -6,6 +6,7 @@ import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import ManageSection from "~/components/common/ManageSection.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
+import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import { TONE_TEXT } from "~/components/admin/tone";
 import {
   nodeState,
@@ -242,29 +243,32 @@ function finishRename(save: boolean) {
       <div
         class="flex items-center justify-between gap-4 border-t border-border/60 pt-5"
       >
-        <Input
-          v-if="editing"
-          ref="input"
-          v-model="draft"
-          autocomplete="off"
-          class="h-8 w-[min(280px,100%)]"
-          :placeholder="region.value"
-          :aria-label="$t('pages.regions.detail.label_aria')"
-          @keydown.enter.prevent="finishRename(true)"
-          @keydown.esc.stop.prevent="finishRename(false)"
-          @blur="finishRename(true)"
-        />
-        <p v-else class="min-w-0 text-xs text-muted-foreground">
-          {{
-            nodes.length
-              ? $t(
-                  "pages.regions.detail.delete_hint_nodes",
-                  { count: nodes.length },
-                  nodes.length,
-                )
-              : $t("pages.regions.detail.delete_hint_empty")
-          }}
-        </p>
+        <div class="grid min-w-0 flex-1 justify-items-start gap-1">
+          <Input
+            v-if="editing"
+            ref="input"
+            v-model="draft"
+            autocomplete="off"
+            class="h-8 w-[min(280px,100%)]"
+            :placeholder="region.value"
+            :aria-label="$t('pages.regions.detail.label_aria')"
+            @keydown.enter.prevent="finishRename(true)"
+            @keydown.esc.stop.prevent="finishRename(false)"
+            @blur="finishRename(true)"
+          />
+          <p v-else class="min-w-0 text-xs text-muted-foreground">
+            {{
+              nodes.length
+                ? $t(
+                    "pages.regions.detail.delete_hint_nodes",
+                    { count: nodes.length },
+                    nodes.length,
+                  )
+                : $t("pages.regions.detail.delete_hint_empty")
+            }}
+          </p>
+          <LastChangedFor type="server_regions" :row="region" />
+        </div>
         <div class="flex shrink-0 items-center gap-1">
           <Button
             v-if="!editing"

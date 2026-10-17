@@ -14033,7 +14033,8 @@
       "refresh_now": "Jetzt aktualisieren"
     },
     "last_changed": {
-      "updated": "Aktualisiert {time}"
+      "updated": "Aktualisiert {time}",
+      "updated_by": "Aktualisiert {time} von {name}"
     }
   }
 }

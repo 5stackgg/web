@@ -16,6 +16,7 @@ import InspectorGpu from "~/components/game-server-nodes/InspectorGpu.vue";
 import GpuKindIcon from "~/components/gpu-nodes/GpuKindIcon.vue";
 import GpuSessionState from "~/components/gpu-nodes/GpuSessionState.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
+import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import {
   bakeFailed,
   gpuName,
@@ -133,6 +134,7 @@ onBeforeUnmount(() => headerObserver?.disconnect());
           · <span class="tabular-nums">{{ vramGb }} GB</span></template
         >
       </div>
+      <LastChangedFor type="game_server_nodes" :row="node" class="pl-4" />
     </header>
 
     <div class="gpn-cols">

@@ -14033,7 +14033,8 @@
       "refresh_now": "تحديث الآن"
     },
     "last_changed": {
-      "updated": "حُدّث {time}"
+      "updated": "حُدّث {time}",
+      "updated_by": "حُدّث {time} بواسطة {name}"
     }
   }
 }

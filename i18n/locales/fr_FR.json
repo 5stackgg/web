@@ -5194,7 +5194,7 @@
       "open_plugin": "Ouvrir",
       "panel_step_deploy": "Lance ceci sur la machine qui héberge ton panel, depuis ton dépôt 5stack-panel.",
       "panel_step_dns": "Fais pointer le domaine affiché vers la même adresse que ce panel, puis attends le certificat.",
-      "panel_step_register": "Enregistre-le dans Paramètres → Application → Plugins du panel → Ajouter, colle cette URL et appuie sur Détecter.",
+      "panel_step_register": "Enregistre-le dans Paramètres → Application → Plugins du panel : active Plugins du panel, puis Ajouter un plugin du panel, colle cette URL et appuie sur Détecter.",
       "installs_everywhere": "S'installe sur les {count} nœuds en ligne.",
       "installed_on": "Installé sur {installed} nœuds sur {total}.",
       "advanced": "Déploiement",

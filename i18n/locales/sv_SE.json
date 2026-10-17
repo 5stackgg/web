@@ -5194,7 +5194,7 @@
       "open_plugin": "Öppna",
       "panel_step_deploy": "Kör det här på maskinen som hostar din panel, från din 5stack-panel-utcheckning.",
       "panel_step_dns": "Peka domänen som skrivs ut mot samma adress som den här panelen och vänta på certifikatet.",
-      "panel_step_register": "Registrera det under Inställningar → Applikation → Paneltillägg → Lägg till, klistra in den URL:en och tryck på Identifiera.",
+      "panel_step_register": "Registrera det under Inställningar → Applikation → Paneltillägg: slå på Paneltillägg, välj Lägg till paneltillägg, klistra in den URL:en och tryck på Identifiera.",
       "installs_everywhere": "Installeras på alla {count} noder som är online.",
       "installed_on": "Installerat på {installed} av {total} noder.",
       "advanced": "Utrullning",

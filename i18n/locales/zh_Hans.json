@@ -5194,7 +5194,7 @@
       "open_plugin": "打开",
       "panel_step_deploy": "在托管面板的机器上，从你的 5stack-panel 代码目录运行此命令。",
       "panel_step_dns": "把它输出的域名指向与本面板相同的地址，然后等待证书签发。",
-      "panel_step_register": "在 设置 → 应用 → 面板插件 → 添加 中注册，粘贴该 URL 并点击「检测」。",
+      "panel_step_register": "在 设置 → 应用 → 面板插件 中打开「面板插件」开关，然后点击「添加面板插件」，粘贴该 URL 并点击「检测」。",
       "installs_everywhere": "安装到全部 {count} 个在线节点。",
       "installed_on": "已安装在 {total} 个节点中的 {installed} 个。",
       "advanced": "分发",

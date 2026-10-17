@@ -5194,7 +5194,7 @@
       "open_plugin": "열기",
       "panel_step_deploy": "패널을 호스팅하는 머신에서 5stack-panel 체크아웃으로 이 명령을 실행하세요.",
       "panel_step_dns": "출력된 도메인을 이 패널과 같은 주소로 향하게 하고 인증서 발급을 기다리세요.",
-      "panel_step_register": "설정 → 애플리케이션 → 패널 플러그인 → 추가에서 등록하고, 해당 URL을 붙여넣은 뒤 감지를 누르세요.",
+      "panel_step_register": "설정 → 애플리케이션 → 패널 플러그인에서 패널 플러그인을 켜고, 패널 플러그인 추가에서 해당 URL을 붙여넣은 뒤 감지를 누르세요.",
       "installs_everywhere": "온라인 노드 {count}개 전체에 설치합니다.",
       "installed_on": "노드 {total}개 중 {installed}개에 설치됨.",
       "advanced": "롤아웃",

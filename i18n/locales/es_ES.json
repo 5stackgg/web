@@ -5194,7 +5194,7 @@
       "open_plugin": "Abrir",
       "panel_step_deploy": "Ejecuta esto en la máquina que aloja tu panel, desde tu copia de 5stack-panel.",
       "panel_step_dns": "Apunta el dominio que imprime a la misma dirección que este panel y espera al certificado.",
-      "panel_step_register": "Regístralo en Ajustes → Aplicación → Plugins del panel → Añadir, pega esa URL y pulsa Detectar.",
+      "panel_step_register": "Regístralo en Ajustes → Aplicación → Plugins del panel: activa Plugins del panel, luego Añadir plugin del panel, pega esa URL y pulsa Detectar.",
       "installs_everywhere": "Se instala en los {count} nodos en línea.",
       "installed_on": "Instalado en {installed} de {total} nodos.",
       "advanced": "Despliegue",

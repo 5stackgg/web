@@ -5194,7 +5194,7 @@
       "open_plugin": "Åbn",
       "panel_step_deploy": "Kør dette på maskinen der hoster dit panel, fra dit 5stack-panel-checkout.",
       "panel_step_dns": "Peg det domæne, den udskriver, mod samme adresse som dette panel, og vent på certifikatet.",
-      "panel_step_register": "Registrér det under Indstillinger → Applikation → Panel-plugins → Tilføj, indsæt den URL og tryk Detektér.",
+      "panel_step_register": "Registrér det under Indstillinger → Applikation → Panel-plugins: slå Panel-plugins til, tryk Tilføj panel-plugin, indsæt den URL og tryk Detektér.",
       "installs_everywhere": "Installeres på alle {count} online noder.",
       "installed_on": "Installeret på {installed} af {total} noder.",
       "advanced": "Udrulning",

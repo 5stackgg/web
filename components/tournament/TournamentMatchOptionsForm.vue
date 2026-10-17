@@ -244,21 +244,26 @@ export default {
       return isTournamentBracketDrawn(this.tournament);
     },
     // Save writes the tournament's match mode from negotiated scheduling for
-    // roles that may write it, so that is the mode its stages will follow.
+    // roles that may write it, and the api carries that change to every stage
+    // row still holding the old mode, so those stages follow it too.
     stagesOverridingAutoStart(): Array<number> {
       if (
         !useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ) {
         return adminModeStageOrders(this.tournament);
       }
+      const stored = this.tournament.options?.match_mode;
+      const written = this.form.values.negotiated_scheduling
+        ? e_match_mode_enum.admin
+        : e_match_mode_enum.auto;
       return adminModeStageOrders({
         ...this.tournament,
-        options: {
-          ...this.tournament.options,
-          match_mode: this.form.values.negotiated_scheduling
-            ? e_match_mode_enum.admin
-            : e_match_mode_enum.auto,
-        },
+        options: { ...this.tournament.options, match_mode: written },
+        stages: (this.tournament.stages ?? []).map((stage: any) =>
+          stage.options?.match_mode === stored
+            ? { ...stage, options: { ...stage.options, match_mode: written } }
+            : stage,
+        ),
       });
     },
     substitutesLocked() {

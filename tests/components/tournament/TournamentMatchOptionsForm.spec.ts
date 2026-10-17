@@ -172,7 +172,8 @@ describe("TournamentMatchOptionsForm auto start", () => {
   });
 
   // Save writes the hidden match mode back to auto once negotiated scheduling
-  // is off, so naming those stages would promise what saving undoes.
+  // is off, and the api moves every stage row still holding Admin with it, so
+  // naming those stages would promise what saving undoes.
   it("doesn't name stages that follow the Admin mode a tournament organizer's save sets back to auto", async () => {
     useAuthStore().me = {
       steam_id: "76561198000000001",
@@ -181,6 +182,23 @@ describe("TournamentMatchOptionsForm auto start", () => {
     } as ReturnType<typeof useAuthStore>["me"];
     const row = await autoStartRow({
       options: { ...tournament("Live").options, match_mode: "admin" },
+      stages: [stage(1, null), stage(2, "admin")],
+    });
+
+    expect(row.text()).not.toContain("Admin match mode");
+    expect(row.text()).toContain(
+      "When enabled, tournament matches are automatically scheduled.",
+    );
+  });
+
+  it("still names a stage whose own Admin row differs from the tournament's mode", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      name: "Organizer",
+      role: e_player_roles_enum.tournament_organizer,
+    } as ReturnType<typeof useAuthStore>["me"];
+    const row = await autoStartRow({
+      options: { ...tournament("Live").options, match_mode: "auto" },
       stages: [stage(1, null), stage(2, "admin")],
     });
 

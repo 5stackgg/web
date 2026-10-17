@@ -7,6 +7,8 @@ import {
   keyForSlot,
 } from "~/utilities/streamerSpecSlots";
 import CameraFeed from "~/components/match/CameraFeed.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_BG, TONE_TEXT } from "~/components/admin/tone";
 import { useMatchCameraStatus } from "~/composables/useMatchCameraStatus";
 
 const { t } = useI18n();
@@ -254,9 +256,14 @@ function sideClasses(side: "T" | "CT", isActive: boolean, isFlash: boolean) {
 // operator's mental model from the in-game tally matches the deck.
 function healthColor(h: number): string {
   if (h <= 0) return "bg-zinc-700";
-  if (h < 25) return "bg-red-500";
-  if (h < 60) return "bg-amber-400";
-  return "bg-emerald-400";
+  if (h < 25) return TONE_BG.bad;
+  if (h < 60) return TONE_BG.warn;
+  return TONE_BG.ok;
+}
+function healthText(h: number): string {
+  if (h < 25) return TONE_TEXT.bad;
+  if (h < 60) return TONE_TEXT.warn;
+  return "text-foreground/65";
 }
 // scaleX, not width: GSI lands every second, and a width transition on
 // ten bars is a layout pass per frame for every hit taken.
@@ -413,12 +420,14 @@ function press(s: PaddedSlot) {
                   ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
                   : 'w-5 bg-foreground/10',
               ]"
-              :title="s.isPlaceholder
-                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
-                : $t('stream_deck.spectator.slot_key', {
-                    slot: s.uiSlot,
-                    key: keyForSlot(s.slot),
-                  })"
+              :title="
+                s.isPlaceholder
+                  ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                  : $t('stream_deck.spectator.slot_key', {
+                      slot: s.uiSlot,
+                      key: keyForSlot(s.slot),
+                    })
+              "
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -438,10 +447,12 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through' : '',
               ]"
             >
-              {{ s.isPlaceholder
+              {{
+                s.isPlaceholder
                   ? "—"
                   : (s.name ??
-                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
+                    $t("stream_deck.spectator.slot", { slot: s.slot }))
+              }}
             </span>
             <!-- Inline pills get the same health bar as a thin sliver
                    at the bottom edge of the pill. -->
@@ -504,12 +515,14 @@ function press(s: PaddedSlot) {
                     ? 'bg-blue-500/30 text-blue-100'
                     : 'bg-amber-500/30 text-amber-100',
               ]"
-              :title="s.isPlaceholder
-                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
-                : $t('stream_deck.spectator.slot_key', {
-                    slot: s.uiSlot,
-                    key: keyForSlot(s.slot),
-                  })"
+              :title="
+                s.isPlaceholder
+                  ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                  : $t('stream_deck.spectator.slot_key', {
+                      slot: s.uiSlot,
+                      key: keyForSlot(s.slot),
+                    })
+              "
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -529,11 +542,7 @@ function press(s: PaddedSlot) {
               :class="[
                 'absolute top-1 right-1.5 font-mono tabular-nums leading-none',
                 compact ? 'text-[0.55rem]' : 'text-[0.65rem]',
-                s.health < 25
-                  ? 'text-red-300'
-                  : s.health < 60
-                    ? 'text-amber-200'
-                    : 'text-foreground/65',
+                healthText(s.health),
               ]"
               aria-hidden="true"
             >
@@ -550,30 +559,31 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
               ]"
             >
-              {{ s.isPlaceholder
+              {{
+                s.isPlaceholder
                   ? "—"
                   : (s.name ??
-                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
+                    $t("stream_deck.spectator.slot", { slot: s.slot }))
+              }}
             </span>
-
 
             <!-- Camera trouble marker. Sits above the health rail so it never
                  collides with the slot key or the health number. -->
             <span
               v-if="cameraAlert(s.steam_id)"
-              class="absolute bottom-2 right-1.5 z-10 inline-flex h-1.5 w-1.5 rounded-full"
-              :class="
-                cameraAlert(s.steam_id) === 'stalled'
-                  ? 'bg-destructive animate-pulse'
-                  : 'bg-muted-foreground/60'
-              "
+              class="absolute bottom-2 right-1.5 z-10 inline-flex"
               :title="
                 cameraAlert(s.steam_id) === 'stalled'
                   ? t('camera.tile.stalled')
                   : t('camera.offline')
               "
               aria-hidden="true"
-            ></span>
+            >
+              <StatusDot
+                :tone="cameraAlert(s.steam_id) === 'stalled' ? 'bad' : 'off'"
+                size="sm"
+              />
+            </span>
             <!-- Footer health rail — thicker than inline so the bar
                    reads as a chunk of UI, not a hairline. Shrinks
                    smoothly on damage. -->
@@ -707,12 +717,14 @@ function press(s: PaddedSlot) {
                   ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
                   : 'w-5 bg-foreground/10',
               ]"
-              :title="s.isPlaceholder
-                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
-                : $t('stream_deck.spectator.slot_key', {
-                    slot: s.uiSlot,
-                    key: keyForSlot(s.slot),
-                  })"
+              :title="
+                s.isPlaceholder
+                  ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                  : $t('stream_deck.spectator.slot_key', {
+                      slot: s.uiSlot,
+                      key: keyForSlot(s.slot),
+                    })
+              "
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -732,10 +744,12 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through' : '',
               ]"
             >
-              {{ s.isPlaceholder
+              {{
+                s.isPlaceholder
                   ? "—"
                   : (s.name ??
-                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
+                    $t("stream_deck.spectator.slot", { slot: s.slot }))
+              }}
             </span>
             <span
               v-if="s.alive"
@@ -789,12 +803,14 @@ function press(s: PaddedSlot) {
                     ? 'bg-blue-500/30 text-blue-100'
                     : 'bg-amber-500/30 text-amber-100',
               ]"
-              :title="s.isPlaceholder
-                ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
-                : $t('stream_deck.spectator.slot_key', {
-                    slot: s.uiSlot,
-                    key: keyForSlot(s.slot),
-                  })"
+              :title="
+                s.isPlaceholder
+                  ? $t('stream_deck.spectator.slot', { slot: s.uiSlot })
+                  : $t('stream_deck.spectator.slot_key', {
+                      slot: s.uiSlot,
+                      key: keyForSlot(s.slot),
+                    })
+              "
             >
               <Bot
                 v-if="autodirectorOn && slotIsActive(s)"
@@ -811,11 +827,7 @@ function press(s: PaddedSlot) {
               :class="[
                 'absolute top-1 right-1.5 font-mono tabular-nums leading-none',
                 compact ? 'text-[0.55rem]' : 'text-[0.65rem]',
-                s.health < 25
-                  ? 'text-red-300'
-                  : s.health < 60
-                    ? 'text-amber-200'
-                    : 'text-foreground/65',
+                healthText(s.health),
               ]"
               aria-hidden="true"
             >
@@ -830,30 +842,31 @@ function press(s: PaddedSlot) {
                 !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
               ]"
             >
-              {{ s.isPlaceholder
+              {{
+                s.isPlaceholder
                   ? "—"
                   : (s.name ??
-                      $t("stream_deck.spectator.slot", { slot: s.slot })) }}
+                    $t("stream_deck.spectator.slot", { slot: s.slot }))
+              }}
             </span>
-
 
             <!-- Camera trouble marker. Sits above the health rail so it never
                  collides with the slot key or the health number. -->
             <span
               v-if="cameraAlert(s.steam_id)"
-              class="absolute bottom-2 right-1.5 z-10 inline-flex h-1.5 w-1.5 rounded-full"
-              :class="
-                cameraAlert(s.steam_id) === 'stalled'
-                  ? 'bg-destructive animate-pulse'
-                  : 'bg-muted-foreground/60'
-              "
+              class="absolute bottom-2 right-1.5 z-10 inline-flex"
               :title="
                 cameraAlert(s.steam_id) === 'stalled'
                   ? t('camera.tile.stalled')
                   : t('camera.offline')
               "
               aria-hidden="true"
-            ></span>
+            >
+              <StatusDot
+                :tone="cameraAlert(s.steam_id) === 'stalled' ? 'bad' : 'off'"
+                size="sm"
+              />
+            </span>
             <span
               v-if="s.alive"
               :class="[

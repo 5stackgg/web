@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { Download, Eye, EyeOff, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
@@ -87,8 +87,13 @@ const config = computed(() =>
   }),
 );
 
+const runtimeOptions = [
+  { key: "swiftlys2", label: "SwiftlyS2" },
+  { key: "counterstrikesharp", label: "CounterStrikeSharp" },
+];
+
 const stepClasses =
-  "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 font-mono text-[0.65rem] text-muted-foreground";
+  "mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border border-border/60 text-[0.65rem] tabular-nums text-muted-foreground";
 </script>
 
 <template>
@@ -109,19 +114,23 @@ const stepClasses =
 
     <div v-else class="rounded-md border border-border bg-muted/20 p-4">
       <div
-        class="flex items-center gap-2 font-mono text-[0.65rem] font-bold uppercase tracking-[0.18em]"
+        class="flex items-center gap-2 text-sm font-semibold"
         :class="
-          plugin.active.value ? 'text-success' : 'text-[hsl(var(--tac-amber))]'
+          plugin.active.value
+            ? 'text-foreground'
+            : 'text-[hsl(var(--tac-amber))]'
         "
       >
         <span
           v-if="plugin.active.value"
-          class="h-1.5 w-1.5 shrink-0 rounded-full bg-success"
+          class="size-2 shrink-0 rounded-full bg-success"
         />
         <TriangleAlert v-else class="h-3.5 w-3.5 shrink-0" />
         {{
           plugin.active.value
-            ? $t("pages.dedicated_servers.detail.player_management_plugin.active")
+            ? $t(
+                "pages.dedicated_servers.detail.player_management_plugin.active",
+              )
             : $t(
                 "pages.dedicated_servers.detail.player_management_plugin.not_detected_title",
               )
@@ -129,7 +138,7 @@ const stepClasses =
       </div>
       <p
         v-if="plugin.versionLabel.value"
-        class="mt-1.5 font-mono text-xs text-muted-foreground"
+        class="mt-1.5 text-xs tabular-nums text-muted-foreground"
       >
         {{ plugin.versionLabel.value }}
         <template v-if="plugin.runtimeLabel.value">
@@ -158,10 +167,7 @@ const stepClasses =
     </div>
 
     <div v-if="canInstall" class="rounded-md border border-border p-4">
-      <div
-        class="mb-4 inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
-      >
-        <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]" />
+      <div class="mb-4 text-sm font-semibold">
         {{
           $t(
             "pages.dedicated_servers.detail.player_management_plugin.install_steps",
@@ -179,14 +185,12 @@ const stepClasses =
                 )
               }}
             </p>
-            <Tabs v-model="installRuntime" :scroll-floor="false">
-              <TabsList>
-                <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
-                <TabsTrigger value="counterstrikesharp">
-                  CounterStrikeSharp
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <AnimatedFilters
+              v-model="installRuntime"
+              square
+              class="w-fit"
+              :options="runtimeOptions"
+            />
             <Button as-child variant="outline" size="sm">
               <a :href="downloadUrl" target="_blank" rel="noopener noreferrer">
                 <Download class="mr-2 h-4 w-4" />
@@ -232,12 +236,12 @@ const stepClasses =
               :aria-expanded="showConfig"
               @click="showConfig = !showConfig"
             >
-              <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
-              <EyeOff v-else class="mr-2 h-4 w-4" />
+              <Eye v-if="!showConfig" class="size-3.5" />
+              <EyeOff v-else class="size-3.5" />
               {{
                 showConfig
-                  ? $t("pages.dedicated_servers.detail.hide_config")
-                  : $t("pages.dedicated_servers.detail.show_config")
+                  ? $t("pages.dedicated_servers.detail.hide_plugin_config")
+                  : $t("pages.dedicated_servers.detail.show_plugin_config")
               }}
             </Button>
             <div v-if="showConfig" class="relative">

@@ -4,12 +4,6 @@ import { useI18n } from "vue-i18n";
 import gql from "graphql-tag";
 import { RefreshCw, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { toast } from "@/components/ui/toast";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
@@ -69,9 +63,7 @@ const pluginActive = plugin.active;
 // can open; a server on a node gets the plugin baked into its image.
 const canOpenInstall = computed(
   () =>
-    authStore.isAdmin &&
-    !pluginActive.value &&
-    props.gameServerNodeId === null,
+    authStore.isAdmin && !pluginActive.value && props.gameServerNodeId === null,
 );
 
 const notDetectedMessage = computed(() => {
@@ -442,7 +434,6 @@ watch(
   },
 );
 
-
 const SERVER_LAST_SEEN_QUERY = gql`
   query ServerLastSeen($serverId: uuid!) {
     server_recent_players(
@@ -543,7 +534,7 @@ onBeforeUnmount(() => {
           {{ $t("community.online_now") }}
         </h3>
         <span
-          class="font-mono text-xs tabular-nums text-muted-foreground"
+          class="text-xs tabular-nums text-muted-foreground"
           data-testid="roster-count"
         >
           {{ rows.length
@@ -559,7 +550,7 @@ onBeforeUnmount(() => {
           <template #trigger>
             <Button
               variant="outline"
-              size="icon"
+              size="icon-sm"
               :as="canOpenInstall ? 'button' : 'span'"
               :tabindex="canOpenInstall ? undefined : 0"
               :aria-label="pluginWarning.join(' ')"
@@ -578,16 +569,19 @@ onBeforeUnmount(() => {
         <FiveStackToolTip v-if="rosterLive" as-child :delay-duration="120">
           <template #trigger>
             <span
-              class="inline-flex h-9 items-center gap-2 px-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.18em] text-success"
+              class="inline-flex h-8 items-center gap-2 px-1 text-xs text-muted-foreground"
               tabindex="0"
               data-testid="roster-live"
             >
-              <span class="relative flex h-2 w-2 shrink-0">
+              <!-- Pings only while someone is on: a live feed of an empty
+                   server is not live activity. -->
+              <span class="relative flex size-2 shrink-0">
                 <span
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60 motion-reduce:animate-none"
+                  v-if="rows.length"
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden"
                 />
                 <span
-                  class="relative inline-flex h-2 w-2 rounded-full bg-success"
+                  class="relative inline-flex size-2 rounded-full bg-success"
                 />
               </span>
               {{ $t("community.roster.live") }}
@@ -595,31 +589,28 @@ onBeforeUnmount(() => {
           </template>
           {{ $t("community.roster.live_description") }}
         </FiveStackToolTip>
-        <TooltipProvider v-else>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <Button
-                variant="outline"
-                size="icon"
-                :disabled="loading || !online"
-                :aria-label="$t('common.refresh')"
-                @click="fetchRoster"
-              >
-                <RefreshCw
-                  class="h-4 w-4"
-                  :class="loading && 'animate-spin motion-reduce:animate-none'"
-                />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>{{ $t("common.refresh") }}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <FiveStackToolTip v-else as-child :delay-duration="300">
+          <template #trigger>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              class="text-muted-foreground"
+              :disabled="loading || !online"
+              :aria-label="$t('common.refresh')"
+              @click="fetchRoster"
+            >
+              <RefreshCw
+                class="size-4"
+                :class="loading && 'animate-spin motion-reduce:animate-none'"
+              />
+            </Button>
+          </template>
+          {{ $t("common.refresh") }}
+        </FiveStackToolTip>
       </div>
     </div>
 
-    <div
-      class="border border-border px-3 [background:linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.22)_100%)] max-sm:px-2"
-    >
+    <div class="rounded-md border border-border bg-card/20 px-3 max-sm:px-2">
       <div
         v-if="listReady"
         class="relative"
@@ -643,7 +634,7 @@ onBeforeUnmount(() => {
             />
             <div class="font-mono text-xs tabular-nums whitespace-nowrap">
               <span
-                class="mb-0.5 block text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                class="mb-0.5 block font-sans text-[0.7rem] text-muted-foreground"
               >
                 {{ $t("community.roster.connected") }}
               </span>
@@ -656,7 +647,7 @@ onBeforeUnmount(() => {
             </div>
             <div class="min-w-0 font-mono text-xs">
               <span
-                class="mb-0.5 block text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                class="mb-0.5 block font-sans text-[0.7rem] text-muted-foreground"
               >
                 {{ $t("community.ip.label") }}
               </span>
@@ -759,8 +750,8 @@ onBeforeUnmount(() => {
   left: 0;
   right: 0;
   transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+    opacity 110ms ease-in,
+    transform 110ms ease-in;
 }
 
 .roster-row-leave-to {
@@ -769,7 +760,7 @@ onBeforeUnmount(() => {
 }
 
 .roster-row-move {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -58,9 +58,9 @@ describe("useGlobalSearch", () => {
     const search = await searchAs("administrator");
     expect(search("veto pick timer").application[0]).toMatchObject({
       path: "/settings/application/matchmaking",
-      label: "Veto Pick Timer",
+      label: "Veto pick timer",
       page: "Matchmaking",
-      hit: { section: "matchmaking", label: "Veto Pick Timer" },
+      hit: { section: "matchmaking", label: "Veto pick timer" },
     });
   });
 

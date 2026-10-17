@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU 使用率",
-      "memory_usage": "内存使用率",
       "services": "服务",
       "service": "服务",
-      "network": "网络",
       "search_services_placeholder": "搜索服务或节点...",
       "filter_by_node": "按节点筛选",
       "no_services_found": "没有服务符合您当前的筛选条件。",
@@ -1281,11 +1278,145 @@
       "disk_short": "磁盘",
       "network_short": "网络",
       "no_nodes_found": "没有游戏服务器节点符合您当前的筛选条件。",
-      "only_online_nodes": "仅显示在线节点"
+      "only_online_nodes": "仅显示在线节点",
+      "search_placeholder": "搜索服务或节点",
+      "scope_all": "所有服务",
+      "scope_attention": "需要关注",
+      "live_hint": "每个节点大约每 30 秒上报一次。本页保留最近 90 分钟。",
+      "filter_group": "游戏服务器节点",
+      "only_online": "仅在线节点",
+      "only_enabled": "仅已启用节点",
+      "no_nodes_title": "没有游戏服务器节点",
+      "no_nodes_hint": "设置一个游戏服务器节点以增加比赛容量。",
+      "setup_node": "设置节点",
+      "services_reporting": "{count} 个正在上报",
+      "all_nodes": "所有节点",
+      "no_services_title": "没有服务在上报",
+      "no_services_hint": "节点发送 Pod 指标后，服务会显示在这里。",
+      "no_attention_title": "没有需要关注的服务",
+      "no_attention_hint": "所有服务都在限制范围内。",
+      "no_match_title": "没有匹配的服务",
+      "no_match_hint": "没有符合搜索、节点或筛选条件的结果。",
+      "clear_filters": "清除筛选",
+      "logs_for": "{name} 的日志",
+      "logs_sheet_sub": "日志 · {node}",
+      "open_logs_page": "在日志页面打开",
+      "attention": {
+        "problems": "{count} 个问题 | {count} 个问题",
+        "nodes_ok": "{count} 个节点正常 | {count} 个节点正常",
+        "critical_count": "{count} 个严重 | {count} 个严重",
+        "warning_count": "{count} 个警告 | {count} 个警告",
+        "thresholds": "阈值",
+        "thresholds_hint": "节点：CPU、内存或磁盘达到 75% 为警告，达到 90% 为严重。GPU：使用率 90% 持续 5 分钟或显存 90% 为严重，85 °C 为警告。在服务表中，占用所在节点一半内存的服务也算严重。",
+        "all_clear": "没有需要关注的项目",
+        "all_clear_hint": "所有在线节点和 GPU 都在限制范围内。",
+        "issue_cpu": "{node} CPU 为 {value}",
+        "issue_memory": "{node} 内存为 {value}",
+        "issue_disk": "{node} 磁盘为 {value}",
+        "issue_cpu_warning": "{node} 报告有一台受 CPU 限制的游戏服务器",
+        "issue_gpu_util": "{node} 上的 {gpu} 为 {value}",
+        "issue_gpu_vram": "{node} 上的 {gpu} 显存为 {value}",
+        "issue_gpu_temp": "{node} 上的 {gpu} 为 {value}",
+        "cores": "{count} 核 | {count} 核",
+        "above_for": "已超过 {threshold}% 达 {minutes} 分钟",
+        "above_now": "自上次采样起超过 {threshold}%",
+        "used_of": "{used} / {total}",
+        "gpu_usage": "使用率 {value}",
+        "last_30": "最近 30 分钟",
+        "open_node": "打开节点",
+        "nodes": "节点",
+        "gpus": "GPU",
+        "nodes_all_fine": "{count} 个节点在线且在限制范围内 | 全部 {count} 个节点在线且在限制范围内",
+        "nodes_fine": "{total} 个节点中有 {fine} 个在线且在限制范围内",
+        "need_attention": "{count} 个需要关注 | {count} 个需要关注",
+        "offline": "{count} 个离线",
+        "view_nodes": "在游戏服务器节点中查看全部",
+        "gpus_none_online": "没有在线的 GPU",
+        "gpus_all_fine": "{count} 个 GPU 在限制范围内 | {count} 个 GPU 在限制范围内",
+        "gpus_fine": "{total} 个 GPU 中有 {fine} 个在限制范围内",
+        "gpus_offline": "{count} 个位于离线节点 | {count} 个位于离线节点",
+        "view_gpus": "在 GPU 节点中查看"
+      },
+      "services_table": {
+        "actions": "操作",
+        "last_seen": "最后在线 {time}",
+        "node_disk": "节点磁盘",
+        "node_disk_hint": "服务不会上报自己的磁盘用量。这里显示的是每个服务所在节点上最满的磁盘：达到 75% 为警告，达到 90% 为严重。",
+        "cpu_last_30": "CPU，最近 30 分钟",
+        "of_node": "占节点 %",
+        "memory_share_hint": "服务占节点总内存的比例，使用量见提示。占用节点一半内存的服务为严重。"
+      }
     },
     "system_logs": {
       "follow_logs": "实时跟踪日志",
-      "timestamps": "时间戳"
+      "timestamps": "时间戳",
+      "bar_label": "{time}，{total} 行，{warnings} 条警告，{errors} 条错误",
+      "clear_filters": "清除筛选",
+      "connection_lost": "连接已断开。正在重新连接——日志流将从此处显示的最后一行之后继续。",
+      "container": "容器",
+      "copy_line": "复制此行",
+      "download": "下载日志",
+      "download_failed": "无法下载 {service} 的完整日志",
+      "errors": "错误",
+      "errors_like": "类似 {text} 的错误",
+      "errors_loaded": "已加载时段内有 {count} 条错误 | 已加载时段内有 {count} 条错误",
+      "errors_word": "错误",
+      "exit_full_screen": "退出全屏（Esc）",
+      "filter_lines": "筛选日志行",
+      "follow": "实时跟踪",
+      "full_logs_of": "完整日志 · {service}",
+      "full_screen": "全屏",
+      "jump_to_live": "跳转到最新",
+      "level_error": "错误",
+      "level_log": "日志",
+      "level_warning": "警告",
+      "line_copied": "已复制此行",
+      "live_rate": "实时 · {rate}/min",
+      "load_hour_before": "加载前一小时",
+      "loading_earlier": "加载中…",
+      "log_lines": "日志行",
+      "log_lines_word": "日志行",
+      "minutes_per_bar": "{time} · 每柱 {minutes} min",
+      "n_new": "新增 {count} 条",
+      "no_match_hint": "已加载时段内没有符合这些筛选条件的内容。可加载前一小时，或放宽级别。",
+      "no_match_title": "没有匹配的行",
+      "no_repeating": "没有重复出现的警告或错误",
+      "no_services_hint": "选择一个或多个服务，将其日志合并为一个流。",
+      "no_services_title": "未选择服务",
+      "node": "节点",
+      "nothing_at": "{time} 没有符合当前筛选条件的内容",
+      "now": "现在",
+      "only": "仅此",
+      "only_context": "仅 {context}",
+      "per_minute": "{rate}/min",
+      "pod": "Pod",
+      "pod_count": "{count} 个 Pod",
+      "pods_of": "{service} 的 Pod",
+      "preset_all": "全部",
+      "preset_core": "核心",
+      "preset_match": "比赛流程",
+      "preset_media": "媒体",
+      "reconnecting": "正在重新连接…",
+      "repeating": "{count} 条重复出现的警告与错误 | {count} 条重复出现的警告与错误",
+      "services": "服务",
+      "show_core": "显示核心服务",
+      "show_every_line": "显示所有行",
+      "show_in_stream": "在日志流中显示",
+      "show_only": "仅显示 {service}",
+      "showing": "显示中",
+      "showing_only": "当前仅显示 {service}",
+      "since": "起始时间",
+      "start_of_logs": "已加载日志的开头",
+      "time": "时间",
+      "waiting_for_output": "等待输出 · 每 5s 重新请求一次",
+      "warnings": "警告",
+      "warnings_like": "类似 {text} 的警告",
+      "warnings_loaded": "已加载时段内有 {count} 条警告 | 已加载时段内有 {count} 条警告",
+      "warnings_word": "警告",
+      "status_ok": "最近 5 分钟没有警告或错误",
+      "status_warn": "最近 5 分钟有警告",
+      "status_bad": "最近 5 分钟有错误",
+      "status_off": "暂无输出"
     },
     "system_telemetry": {
       "title": "集群遥测",
@@ -1515,7 +1646,11 @@
         "modes_caption": "已定义",
         "modes_unranked": "不适用于选人",
         "modes_unranked_caption": "在选人大厅中隐藏的模式"
-      }
+      },
+      "jump_to": "跳转到",
+      "features_title": "功能",
+      "not_reported_title": "尚未上报",
+      "no_activity_hint": "随着面板上报其托管的比赛，图表会逐渐填满。"
     },
     "tournaments": {
       "title": "赛事",
@@ -3516,6 +3651,119 @@
       "tabs": {
         "highlights": "集锦",
         "utility": "道具点位"
+      },
+      "ledger": {
+        "search": "搜索片段和点位",
+        "view": {
+          "flight": "进行中",
+          "failed": "失败",
+          "done": "已完成"
+        },
+        "filter": {
+          "queue": "队列",
+          "map": "地图",
+          "group": "按批次分组进行中的任务"
+        },
+        "retry_all": "全部重试失败项（{count}）",
+        "empty": {
+          "all": "高光片段和点位预览在启动、渲染和上传期间会显示在这里。",
+          "flight_title": "没有进行中的任务",
+          "failed_title": "没有失败的任务",
+          "done_title": "没有已完成的任务",
+          "flight": "新的高光批次和点位预览会显示在这里。",
+          "failed": "列表中的所有渲染都已顺利完成。",
+          "done": "已完成的渲染会显示在这里。",
+          "filtered": "试试清除搜索或筛选条件。"
+        },
+        "select_all": "全选",
+        "select": "选择 {name}",
+        "col": {
+          "render": "渲染",
+          "progress": "进度",
+          "length": "时长",
+          "elapsed": "已用时间",
+          "finished": "完成于",
+          "actions": "操作"
+        },
+        "batch": {
+          "done_of": "已完成 {done}/{total}",
+          "failed": "{count} 个失败 | {count} 个失败",
+          "paused": "已暂停",
+          "silent": "其 Pod 已 {since} 无响应",
+          "booting": "Pod 启动中",
+          "booting_pct": "Pod 启动 {pct}%",
+          "waiting_gpu": "正在等待空闲 GPU"
+        },
+        "pod_on": "在 {map}",
+        "lineup_on": "点位 · {map}",
+        "missing_clip": "缺失：片段在上传后丢失",
+        "ago": "{since}前",
+        "more": "更多操作",
+        "open_details": "打开详情",
+        "cancel_batch": "取消批次",
+        "pages": "分页",
+        "silent": "无响应",
+        "history": "状态记录",
+        "clip": "片段",
+        "player": "选手",
+        "round": "回合",
+        "kills": "击杀",
+        "segments": "分段",
+        "job_id": "任务 ID",
+        "lineup_id": "点位 ID",
+        "render_job": "渲染任务",
+        "no_job": "暂无",
+        "logs": "日志",
+        "bulk": {
+          "selected": "已选择 {count} 项 | 已选择 {count} 项",
+          "cancel": "取消所选",
+          "retry": "重试所选",
+          "requeue": "重新排队所选",
+          "clear": "清除选择",
+          "requeueing": "正在重新排队",
+          "cancelling": "正在取消",
+          "progress": "{label} {done}/{total}"
+        },
+        "toast": {
+          "requeued": "已重新排队 {count} 个渲染 | 已重新排队 {count} 个渲染",
+          "cancelled": "已取消 {count} 个渲染 | 已取消 {count} 个渲染",
+          "not_done": "{count} 个未成功 | {count} 个未成功",
+          "clip_requeued": "片段已重新排队",
+          "clip_not_requeued": "无法重新排队该片段",
+          "batch_requeued": "批次已重新排队",
+          "batch_cancelled": "批次已取消",
+          "batch_not_cancelled": "无法取消该批次",
+          "cleared": "已清除完成的渲染"
+        },
+        "confirm": {
+          "cancel_title": "取消 {count} 个渲染？ | 取消 {count} 个渲染？",
+          "cancel_body": "它们会在当前位置停止，不会完成。已完成的片段和预览不受影响。",
+          "cancel_batches": "片段按批次取消，因此每个所选片段所在批次的其余部分也会停止。",
+          "keep": "继续渲染",
+          "cancel_action": "取消渲染",
+          "batch_title": "取消 {name}？",
+          "batch_body": "未完成的片段不会被渲染。已完成的片段保留在高光时刻中。",
+          "clear_title": "清除已完成的渲染？",
+          "clear_body": "这会将已完成的渲染从队列中移除。已渲染的片段保留在高光时刻中，预览保留在各自的点位上。"
+        },
+        "coverage": {
+          "current": "{count} 个最新",
+          "missing": "{count} 个缺失",
+          "outdated": "{count} 个过时",
+          "unrenderable": "{count} 个无法拍摄",
+          "queued": "{count} 个在队列中",
+          "lineups": "点位",
+          "rerender_outdated": "重新渲染过时项",
+          "render_missing": "渲染缺失项",
+          "confirm_missing_title": "渲染缺失的预览？",
+          "confirm_outdated_title": "重新渲染过时的预览？",
+          "confirm_queue": "加入渲染队列",
+          "lineups_title": "需要渲染的点位",
+          "lineups_sub": "渲染版本 v{version}",
+          "render_one": "先渲染一个",
+          "render_one_waiting": "正在等待该渲染完成。报告当前版本后，即可使用“重新渲染过时项”。"
+        },
+        "updated_ago": "{since}前更新"
       }
     },
     "news": {
@@ -3714,7 +3962,92 @@
       "backfill_cancel_requested": "已请求取消",
       "backfill_canceled_title": "赛季补录已取消",
       "backfill_complete_title": "赛季补录已完成",
-      "backfill_complete_desc": "已重建 {completed} / {total} 场比赛（{failed} 场失败）。"
+      "backfill_complete_desc": "已重建 {completed} / {total} 场比赛（{failed} 场失败）。",
+      "hero": {
+        "rebuild_required": "需要重建",
+        "ends_in": "距结束",
+        "running_for": "已进行",
+        "days": "{count} 天 | {count} 天",
+        "started": "开始",
+        "ends": "结束",
+        "day_of": "第 {day} 天，共 {total} 天",
+        "percent_through": "已过 {percent}%",
+        "change_start": "修改开始日期",
+        "change_end": "修改结束日期",
+        "set_end": "设置结束日期",
+        "make_ongoing": "改为持续进行",
+        "grant_award": "授予奖项",
+        "one_rebuild": "同一时间只能运行一个重建。",
+        "start_caption": "UTC，00:00 开始。",
+        "end_caption": "UTC，当天 00:00 结束。"
+      },
+      "off": {
+        "title": "休赛期",
+        "pill": "没有进行中的赛季",
+        "last_ended": "{season} 已于 {date} 结束。",
+        "no_season": "现在进行的比赛不计入任何赛季。",
+        "next": "{season} 将于 {date}（{count} 天后）开始，并将常规比赛 ELO 重置为 5000。 | {season} 将于 {date}（{count} 天后）开始，并将常规比赛 ELO 重置为 5000。",
+        "nothing": "尚未安排任何赛季。"
+      },
+      "banner": {
+        "stale": "{seasons} 的 ELO 已过期，重建前排名不准确。 | {seasons} 的 ELO 已过期，重建前排名不准确。",
+        "rebuilding_now": "{season} 正在重建。同一时间只能运行一个重建。"
+      },
+      "danger": {
+        "end_description": "今天结束该赛季，并按最终排名发放赛季奖项。在下个赛季开始前，比赛不计入任何赛季。",
+        "end_button": "结束赛季",
+        "delete_description": "其比赛将不属于任何赛季。ELO 历史会保留；按赛季统计的数据会被清除。",
+        "delete_button": "删除赛季",
+        "end_confirm_title": "立即结束 {season}？",
+        "end_confirm_instead": "将于今天（{today}）结束，而不是 {date}。",
+        "end_confirm_today": "将于今天（{today}）结束。",
+        "end_confirm_awards": "赛季奖项按最终排名发放：赛季冠军、亚军、季军和赛季 MVP。",
+        "end_confirm_gap_next": "在 {season} 于 {date} 开始前，比赛不计入任何赛季。",
+        "end_confirm_gap_none": "在你创建下个赛季前，比赛不计入任何赛季。",
+        "end_confirm_elo": "下个赛季开始时，常规比赛 ELO 将重新从 5000 开始。",
+        "type_to_confirm": "输入 {phrase} 以确认",
+        "end_confirm_button": "结束 {season}",
+        "ended_toast": "{season} 已结束。正在按最终排名发放赛季奖项。",
+        "delete_confirm_title": "删除 {season}？",
+        "delete_confirm_button": "删除 {season}"
+      },
+      "next": {
+        "label": "下个赛季",
+        "first_label": "第一个赛季",
+        "schedule": "安排 {season}",
+        "hint_scheduled": "{season} 定于 {date}。",
+        "hint_after": "{season} 于 {date} 结束。之后没有安排。",
+        "hint_open_ended": "{season} 没有结束日期，因此需要先设置结束日期才能安排下个赛季。",
+        "blocked": "{season} 没有结束日期，之后的任何赛季都会与其重叠。请先设置它的结束日期。",
+        "first_season_hint": "第一个赛季从你最早记录的比赛（{date}）开始，确保没有过去的比赛落在赛季之外。"
+      },
+      "form": {
+        "start_date": "开始日期",
+        "end_date": "结束日期"
+      },
+      "ledger": {
+        "label": "赛季记录"
+      },
+      "rebuild_progress": {
+        "label": "正在重建 ELO · {completed} / {total} 场比赛",
+        "failed": "{count} 个失败 | {count} 个失败",
+        "canceling": "正在取消"
+      },
+      "empty_state": {
+        "title": "还没有赛季",
+        "description": "赛季开始时会将常规比赛 ELO 重置为 5000。第一个赛季从你最早记录的比赛开始。"
+      },
+      "about": {
+        "label": "赛季的作用",
+        "reset_title": "全新的天梯",
+        "reset_body": "赛季开始时，常规比赛 ELO 重置为 5,000，所有人从同一起点开始攀升。",
+        "counts_title": "每场比赛都计入",
+        "counts_body": "在开始和结束日期之间进行的比赛计入该赛季的天梯和统计。赛季之间的比赛不计入任何赛季。",
+        "awards_title": "结束时颁奖",
+        "awards_body": "根据最终天梯颁发赛季冠军、亚军、季军和赛季 MVP。",
+        "history_title": "永久保留",
+        "history_body": "已结束的赛季保留其排名，玩家可以在个人资料中与过往赛季进行比较。"
+      }
     },
     "regions": {
       "title": "地区",
@@ -3733,7 +4066,58 @@
         "title": "删除地区",
         "description": "您确定要删除此地区吗？此操作无法撤销。"
       },
-      "deleted": "已删除地区"
+      "deleted": "已删除地区",
+      "list": {
+        "label": "地区",
+        "flag_relay": "中继",
+        "flag_lan": "仅限 LAN"
+      },
+      "status": {
+        "online": "在线",
+        "partial": "部分节点离线",
+        "offline": "离线",
+        "disabled": "无服务器"
+      },
+      "detail": {
+        "label_aria": "地区标签",
+        "nodes_label": "节点",
+        "servers_free": "{total} 台服务器中 {free} 台空闲",
+        "col_node": "节点",
+        "col_free": "空闲",
+        "col_servers": "服务器",
+        "no_nodes_title": "此地区没有节点",
+        "no_nodes_hint": "在 {page} 页面设置节点所属地区。",
+        "relay_title": "使用 Steam 中继",
+        "relay_description": "玩家通过 Steam 中继连接，游戏服务器的 IP 保持隐藏。",
+        "relay_lan_description": "仅限 LAN 的地区直接连接玩家，因此中继保持关闭。",
+        "lan_title": "仅限 LAN",
+        "lan_description": "玩家必须从局域网 IP 连接。用于线下活动。",
+        "delete_title": "删除地区",
+        "delete_hint_nodes": "请先将其 {count} 个节点移到其他地区。 | 请先将其 {count} 个节点移到其他地区。",
+        "delete_hint_empty": "没有分配任何内容。"
+      },
+      "delete_dialog": {
+        "title": "删除 {region}？",
+        "description": "没有节点使用此地区。进行过比赛的地区无法删除。此操作无法撤销。",
+        "confirm": "删除地区"
+      },
+      "create_sheet": {
+        "title": "创建地区"
+      },
+      "toasts": {
+        "created": "已创建 {region}",
+        "deleted": "已删除 {region}",
+        "label_saved": "标签已保存",
+        "relay_on": "已为 {region} 开启 Steam 中继",
+        "relay_off": "已为 {region} 关闭 Steam 中继",
+        "lan_on": "已为 {region} 开启仅限 LAN",
+        "lan_off": "已为 {region} 关闭仅限 LAN"
+      },
+      "empty": {
+        "title": "还没有地区",
+        "description": "地区按位置对游戏服务器节点进行分组。玩家在匹配中选择偏好的地区。"
+      },
+      "search_placeholder": "搜索地区"
     },
     "players": {
       "title": "玩家",
@@ -4279,7 +4663,13 @@
         "demos": "Demo 回放",
         "demos_desc": "按需 Demo 回放",
         "rendering": "渲染",
-        "rendering_desc": "高光 & 集锦渲染"
+        "rendering_desc": "高光 & 集锦渲染",
+        "summary": "{total} 项中 {on} 项已开启",
+        "node_disabled": "此节点已禁用，不会承接 GPU 工作。",
+        "now_streaming": "正在直播 {matchup}",
+        "now_demo": "正在为 {who} 播放录像",
+        "now_render": "正在为 {who} 渲染高光",
+        "now_render_pct": "正在为 {who} 渲染高光 · {pct}%"
       },
       "bake": {
         "help": "预热此节点的 Vulkan 着色器缓存，使首场比赛启动更顺畅。",
@@ -4292,7 +4682,11 @@
         "in_progress": "预热进行中",
         "stages": {
           "errored": "预热失败"
-        }
+        },
+        "action": "编译着色器",
+        "cancel": "取消编译",
+        "logs": "编译日志",
+        "hide_logs": "隐藏日志"
       },
       "empty": {
         "title": "无 GPU 节点",
@@ -4322,9 +4716,155 @@
           "demo": "Demo 回放",
           "highlights": "高光时刻",
           "bake": "着色器预热"
-        }
+        },
+        "add_account": "添加账户",
+        "col_account": "账户",
+        "col_holding": "占用",
+        "col_since": "开始于",
+        "delete_action": "删除账户",
+        "empty_title": "还没有 Steam 账户",
+        "empty_body": "渲染、录像回放和直播观战运行时各需要一个账户。",
+        "free": "空闲",
+        "free_of": "{total} 个中 {free} 个空闲",
+        "health_no_nodes": "还没有 GPU 节点",
+        "health_empty": "为空。添加账户之前，渲染和直播观战都会失败。",
+        "health_short": "还差 {count} 个。所有账户都在使用时，部分 GPU 会闲置。",
+        "health_enough": "足够每块 GPU 使用",
+        "name": "Steam 账户",
+        "manage": "管理 Steam 账户"
       },
-      "stop": "停止"
+      "stop": "停止",
+      "search_placeholder": "搜索比赛、观众、GPU、账户",
+      "open_render_queue": "打开渲染队列",
+      "running_title": "正在运行",
+      "running_hint": "每块 GPU 同一时间只服务一个任务",
+      "running_empty_title": "没有正在使用的 GPU",
+      "running_empty_body": "直播、录像回放和高光渲染运行时会显示在这里。",
+      "running_no_match": "没有匹配的会话",
+      "no_match_body": "换个搜索词，或清除筛选条件。",
+      "clear_all": "清除搜索和筛选",
+      "open_game_server_nodes": "打开游戏服务器节点",
+      "gpus_title": "GPU",
+      "gpus_hint": "GPU 节点是配备 GPU 的游戏服务器节点",
+      "gpus_no_match": "没有匹配的 GPU 节点",
+      "no_region": "无区域",
+      "more_for": "{node} 的更多操作",
+      "open_details": "打开详情",
+      "open_in_nodes": "在游戏服务器节点中打开",
+      "accept_matches": "接受新比赛",
+      "stop_accepting": "停止接受比赛",
+      "filter": {
+        "live": "直播",
+        "demos": "录像",
+        "renders": "渲染",
+        "workload_on": "已开启的工作负载",
+        "node_type": "节点类型"
+      },
+      "kpi": {
+        "gpus_free": "空闲 GPU",
+        "of_total": "/ {total}",
+        "running": "正在运行",
+        "running_split": "直播 {live} · 录像 {demo} · 渲染 {render}",
+        "waiting": "等待中的渲染",
+        "waiting_none": "队列为空",
+        "accounts_split": "使用中 {used} · 空闲 {free}",
+        "accounts_short": "每个 GPU 配一个还差 {count} 个",
+        "accounts_busy": "全部在使用中。新工作会等待空闲账户。"
+      },
+      "wait_reason": {
+        "no_accounts": "账户池中没有 Steam 账户",
+        "paused_for_match": "比赛直播期间暂停",
+        "no_account_free": "正在等待 Steam 账户",
+        "no_gpu_free": "正在等待空闲 GPU"
+      },
+      "col": {
+        "workload": "工作负载",
+        "for": "对象",
+        "account": "Steam 账户",
+        "state": "状态",
+        "time": "时长",
+        "node": "节点",
+        "load": "负载",
+        "vram": "VRAM",
+        "workloads": "工作负载"
+      },
+      "kind": {
+        "live_tv": "直播 (GOTV)",
+        "live_direct": "直播 (直连)",
+        "demo": "录像回放",
+        "highlights": "高光渲染",
+        "bake": "着色器预编译"
+      },
+      "who": {
+        "spectators": "观众",
+        "warming_cache": "正在预热 Vulkan 缓存"
+      },
+      "state": {
+        "starting": "启动中",
+        "playing": "播放中",
+        "failed": "失败"
+      },
+      "node_state": {
+        "setup": "设置中",
+        "streaming": "直播中",
+        "playing": "正在回放录像",
+        "baking": "正在编译着色器",
+        "offline_since": "自 {time} 起离线"
+      },
+      "node_kind": {
+        "gpu": "仅 GPU",
+        "match": "比赛 + GPU"
+      },
+      "sheet": {
+        "now": "当前",
+        "shader_cache": "着色器缓存",
+        "idle_ready": "可以承担直播、录像回放和渲染。",
+        "unavailable": "在启用并上线之前不接收 GPU 任务。",
+        "no_metrics": "节点被禁用、离线或设置中时没有 GPU 指标。",
+        "bake_failed_hint": "上次编译失败。请重试，或查看日志。",
+        "cache_warm": "已预热",
+        "never_baked": "从未编译。此节点上的第一次直播会边运行边编译着色器。"
+      },
+      "stop_copy": {
+        "keep": "继续运行",
+        "live_title": "要停止 {matchup} 的直播吗？",
+        "live_body": "观众将失去直播画面。比赛本身会继续进行。",
+        "live_action": "停止直播",
+        "demo_title": "要停止 {who} 的录像回放吗？",
+        "demo_body": "其播放器将关闭。有空闲 GPU 后可以重新开始。",
+        "demo_action": "停止回放",
+        "render_title": "要停止为 {who} 进行的高光渲染吗？",
+        "render_body": "它会停止并释放 GPU。",
+        "render_body_pct": "它会在 {pct}% 处停止并释放 GPU。",
+        "render_action": "停止渲染"
+      },
+      "toggle_gpu_only_help": "只接 GPU 任务，不运行比赛服务器。开启后会清除其区域和端口。",
+      "plate": {
+        "temperature": "温度",
+        "power": "功耗",
+        "vram_of": "{used} / {total} GB",
+        "hot": "温度偏高，超过 {limit} °C",
+        "too_hot": "温度过高，超过 {limit} °C",
+        "no_reading": "暂无实时读数",
+        "cards": "{count} 张卡 | {count} 张卡"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "开启直播",
+          "demos": "开启 Demo 回放",
+          "rendering": "开启渲染"
+        },
+        "turn_off": {
+          "streaming": "关闭直播",
+          "demos": "关闭 Demo 回放",
+          "rendering": "关闭渲染"
+        },
+        "confirm_body": {
+          "streaming": "正在进行的直播会继续。重新开启前，这块 GPU 不再接收新的直播。",
+          "demos": "正在进行的回放会继续。重新开启前，这块 GPU 不再接收新的 Demo。",
+          "rendering": "正在进行的渲染会继续。重新开启前，这块 GPU 不再接收新的渲染。"
+        }
+      }
     },
     "game_server_nodes": {
       "title": "游戏服务器节点",
@@ -4492,12 +5032,14 @@
         "no_nodes": "无游戏服务器节点",
         "supports_low_latency": "支持低延迟",
         "supports_cpu_pinning": "支持 CPU 亲和性",
-        "cpu_governor": "CPU 调度策略"
+        "cpu_governor": "CPU 调度策略",
+        "servers": "服务器",
+        "servers_tooltip": "空闲服务器，括号内为总数",
+        "cs2_build": "CS2 版本",
+        "plugin": "插件",
+        "load": "负载"
       },
       "builds": {
-        "title": "CS2 版本历史",
-        "description": "每个 CS2 版本的游戏数据验证和地图资源构建，以及各版本相对于上一版本的变更。",
-        "back": "游戏服务器节点",
         "builds": "版本",
         "no_builds": "尚无任何版本经过验证或构建。",
         "current": "当前",
@@ -4507,11 +5049,271 @@
           "detected": "更新发布",
           "gamedata": "游戏数据",
           "map_assets": "地图资源"
-        }
+        },
+        "empty_title": "暂无版本"
       },
       "max_label": "最大：",
       "ports_label": "端口：",
-      "cpu_hardware": "CPU 与硬件"
+      "cpu_hardware": "CPU 与硬件",
+      "gpu_only": "仅 GPU",
+      "create_node": "创建游戏服务器节点",
+      "search_placeholder": "按名称或 ID 搜索",
+      "filters": {
+        "only_enabled": "仅启用节点",
+        "hide_offline": "隐藏离线节点",
+        "display_metrics": "显示指标"
+      },
+      "empty": {
+        "title": "暂无游戏服务器节点",
+        "description": "节点是为 5Stack 运行 CS2 服务器的机器。在其上运行安装脚本后，它就会出现在这里。",
+        "guide": "阅读安装指南"
+      },
+      "summary": {
+        "nodes": "{count} 个节点 | {count} 个节点",
+        "online": "{count} 个在线",
+        "free": "{total} 台服务器中 {free} 台空闲",
+        "attention": "{count} 个需要处理 | {count} 个需要处理",
+        "updating": "{count} 个正在更新"
+      },
+      "row": {
+        "select": "选择 {node}",
+        "select_all": "选择所有节点",
+        "servers_tip": "{total} 台中 {free} 台空闲 · 最多 {max} 台",
+        "not_installed": "未安装"
+      },
+      "detail": {
+        "hardware_pending": "节点连接后会上报硬件信息。",
+        "disk_value": "已用 {percent}%，剩余 {free} GB",
+        "game_server": "游戏服务器",
+        "node_id": "节点 ID",
+        "addresses": "局域网 / 公网 IP",
+        "available_value": "{free} / {total}",
+        "control": "控制",
+        "update_log": "CS2 更新日志"
+      },
+      "metrics": {
+        "setup": "节点连接后会显示指标。",
+        "offline": "节点离线时没有实时数据。"
+      },
+      "toast": {
+        "region_updated": "地区已更新",
+        "save_failed": "无法保存更改"
+      },
+      "bulk": {
+        "selected": "已选择 {count} 个",
+        "progress": "{done} / {total}",
+        "move_region": "移动到地区",
+        "enable": "启用",
+        "disable": "停用",
+        "updating": "正在 {count} 个节点上更新 CS2 | 正在 {count} 个节点上更新 CS2",
+        "moved": "已将 {count} 个节点移至 {region} | 已将 {count} 个节点移至 {region}",
+        "unassigned": "已清除 {count} 个节点的地区 | 已清除 {count} 个节点的地区",
+        "enabled": "已启用 {count} 个节点 | 已启用 {count} 个节点",
+        "disabled": "已停用 {count} 个节点 | 已停用 {count} 个节点",
+        "failed": "{count} 个失败 | {count} 个失败"
+      },
+      "inspector": {
+        "status": {
+          "setup": "等待连接",
+          "offline_since": "自 {time} 起离线",
+          "not_accepting": "在线，不接受新比赛"
+        },
+        "search_placeholder": "按名称、ID 或 IP 搜索",
+        "keys": {
+          "move": "移动",
+          "select": "点击以多选",
+          "close": "关闭",
+          "idle": "选择一个节点查看详情"
+        },
+        "details": "节点详情",
+        "capacity_tip": "其端口允许的总数中空闲的服务器数，下方为端口范围。",
+        "cap_free": "{total} 个中 {free} 个空闲",
+        "cap_no_ports": "无端口",
+        "chip": {
+          "updating": "更新中",
+          "updating_pct": "更新中 {percent}%",
+          "failed": "更新失败",
+          "behind": "版本落后",
+          "pinned": "已固定",
+          "failed_tip": "更新到 {target} 失败（{ago}），仍为 {version}。",
+          "behind_tip": "当前为 {version}，请更新到 {target}。",
+          "pinned_tip": "固定在 {version}"
+        },
+        "load": {
+          "mem": "内存",
+          "disk": "磁盘"
+        },
+        "disk_tip": "磁盘：已用 {used} / {total}，可用 {free}",
+        "actions_for": "{node} 的操作",
+        "menu": {
+          "select": "选择以批量操作",
+          "deselect": "从所选中移除",
+          "rename": "编辑标签"
+        },
+        "more": "另外 {count} 项",
+        "remove": "移除节点",
+        "remove_text": "从 5Stack 中移除该节点及其上的所有专用服务器。",
+        "rename": "重命名 {node}",
+        "label": "节点标签",
+        "close": "关闭详情",
+        "close_hint": "关闭 (Esc)",
+        "step": {
+          "enable": "启用节点",
+          "retry_update": "重试更新",
+          "assign_region": "分配区域",
+          "set_ports": "设置端口",
+          "change_plugin": "更换插件",
+          "edit_ports": "编辑端口",
+          "open_files": "打开文件"
+        },
+        "attention": {
+          "setup": "在机器上运行安装脚本，连接后即显示为在线。",
+          "offline": "重新连接之前不会在此安排比赛。",
+          "update_failed_title": "CS2 更新失败（{ago}）",
+          "update_failed": "更新日志保留 24 小时。",
+          "overprovisioned": "端口上有 {total} 台服务器，但 CPU 只能容纳 {max} 台。",
+          "plugin": "固定的插件不支持版本 {build}。",
+          "not_ready_title": "暂时无法承载比赛",
+          "not_ready": "还需要{list}。",
+          "behind_title": "CS2 {version} 版本落后",
+          "behind": "请更新到 {target}。",
+          "cpu_title": "CPU 频率 {ghz} GHz",
+          "cpu": "低于 3 GHz 可能影响 CS2 服务器性能。",
+          "governor_title": "CPU 调速器为 {governor}",
+          "disk_title": "磁盘已用 {percent}%",
+          "disk": "可用 {free}。",
+          "cpu_warning": "由节点报告。",
+          "workloads_title": "部分 GPU 工作负载已关闭",
+          "workloads": "{list}已关闭。",
+          "disabled": "关闭期间不执行 GPU 任务，也不安排比赛。"
+        },
+        "need": {
+          "region": "区域",
+          "ports": "端口",
+          "cs2": "CS2"
+        },
+        "sections": {
+          "cs2": "CS2 与插件"
+        },
+        "capacity": {
+          "gpu_only": "仅 GPU，因此不承载比赛。可在 GPU 中切换回来。",
+          "max_servers": "最大服务器数",
+          "max_tip": "{threads} 个 CPU 线程，减去 1 个留给系统",
+          "max_tip_pinning": "{threads} 个 CPU 线程，减去 1 个留给系统，每台服务器 {per} 个",
+          "max_tip_pending": "节点连接后根据 CPU 计算",
+          "below": "低于端口上的 {total} 台",
+          "servers_no_ports": "设置端口以承载服务器",
+          "servers_disabled": "禁用期间无",
+          "servers_offline": "离线期间未知"
+        },
+        "ports": {
+          "tip": "转发到此节点的端口范围，每台服务器使用两个端口。",
+          "not_set": "未设置",
+          "need_region": "设置端口前请先分配区域。",
+          "start": "起始端口",
+          "end": "结束端口",
+          "hint": "30000 到 32767 之间，每台服务器使用两个端口。",
+          "fit": "此范围可容纳 {count} 台服务器。 | 此范围可容纳 {count} 台服务器。",
+          "fit_over": "可容纳 {count} 台，但 CPU 只能容纳 {max} 台。",
+          "error_range": "端口必须在 30000 到 32767 之间。",
+          "error_order": "结束端口必须比起始端口至少大 2。",
+          "save": "保存端口",
+          "remove": "移除端口"
+        },
+        "cs2": {
+          "setup": "节点连接后安装 CS2。",
+          "gpu_only": "仅 GPU 节点不运行 CS2 服务器。",
+          "to": "至 {version}",
+          "plugin_unsupported": "不支持",
+          "update_log": "更新日志",
+          "behind_line": "版本 {build}，更新到 {target}",
+          "failed_line": "{ago} · 仍在版本 {build}",
+          "build_line": "版本 {build}",
+          "on_build": "（版本 {build}）",
+          "pinning_unsupported": "不支持固定版本"
+        },
+        "hardware": {
+          "cores": "核心",
+          "sockets": "（{count} 个插槽） | （{count} 个插槽）",
+          "threads": "线程/核心",
+          "threads_total": "（共 {count} 个）",
+          "governor": "调速器",
+          "low_latency": "低延迟",
+          "pinning": "CPU 绑定",
+          "supported": "支持",
+          "governor_tip": "CPU 调整频率的方式。performance 调速器让核心保持全速，推荐用于 CS2。",
+          "latency_tip": "低延迟内核可减少游戏服务器的调度抖动。",
+          "pinning_tip": "将每台服务器绑定到专属 CPU 核心，避免服务器之间争用。"
+        },
+        "range_label": "指标时间范围",
+        "range": {
+          "1h": "1 小时"
+        },
+        "of_total": "/ {total}",
+        "now": "现在",
+        "last_report": "最后报告 {time}",
+        "live_offline": "离线期间没有实时数据。最后报告时间 {time}。",
+        "history_offline": "离线期间没有实时数据。历史记录截至 {time}。",
+        "offline_for": "离线 {duration}",
+        "chart": {
+          "label": "指标历史。左右方向键按时间移动，按住 Shift 每次移动十格。",
+          "avg_peak": "平均 {avg}% · 峰值 {peak}%",
+          "peak": "峰值 {peak}",
+          "in": "入",
+          "out": "出",
+          "in_out": "入 {in} · 出 {out}",
+          "caption": "最近一小时，每 30 秒一个采样。",
+          "starts": "历史记录从 {time} 开始。",
+          "gaps": "线条中断处为离线时间。",
+          "cadence": "每 {seconds} 秒一个采样。"
+        },
+        "disk": {
+          "last_report": "磁盘 · 最后报告",
+          "filling_up": "即将用满",
+          "almost_full": "几乎已满",
+          "used_of": "{used} / {total}",
+          "thresholds": "{warning}% 时警告，{critical}% 时告警",
+          "free": "可用 {free}",
+          "up": "最近一小时增加 {amount}",
+          "down": "最近一小时减少 {amount}",
+          "flat": "最近一小时几乎没有变化",
+          "full_hours": "约 {count} 小时后用满",
+          "full_days": "约 {count} 天后用满 | 约 {count} 天后用满",
+          "of_used": "/ {total} 已用"
+        },
+        "gpu": {
+          "video": "视频设置",
+          "custom": "自定义"
+        },
+        "node": {
+          "accepting": "接受比赛",
+          "accepting_setup": "连接后可用。",
+          "accepting_no_ports": "请先设置端口。",
+          "limiter": "录像限速",
+          "limiter_tip": "录像网络限速：从此节点下载录像文件的速度上限。",
+          "copy_id": "复制节点 ID",
+          "ips_pending": "连接后显示"
+        },
+        "bulk": {
+          "title": "已选择 {count} 个节点 | 已选择 {count} 个节点",
+          "hint": "{modifier}+点击一行以添加或移除，Shift+点击选择范围",
+          "apply": "应用到全部",
+          "note": "更新 CS2 会跳过离线、已是最新或正在更新的节点。仅 GPU 节点不保留区域。",
+          "selected": "已选择",
+          "drop": "从所选中移除 {node}",
+          "clear": "清除选择"
+        },
+        "warning": {
+          "lowlatency": "旧版 lowlatency 内核",
+          "constrained": "{name} 受 CPU 限制",
+          "governor": "启用 CPU 绑定时调速器为 {governor}",
+          "from_node": "来自节点的 {count} 条警告 | 来自节点的 {count} 条警告",
+          "docs": "文档",
+          "details": "详情"
+        },
+        "window_minutes": "最近 {count} 分钟 | 最近 {count} 分钟",
+        "window_hours": "最近 {count} 小时 | 最近 {count} 小时"
+      }
     },
     "dedicated_servers": {
       "title": "专用服务器",
@@ -4519,9 +5321,7 @@
       "docs_link": "查看设置指南",
       "no_servers_title": "无专用服务器",
       "no_servers": "未找到专用服务器。",
-      "create": {
-        "title": "创建专用服务器"
-      },
+      "create": {},
       "table": {
         "connection_details": "连接详情",
         "label": "标签",
@@ -4532,7 +5332,6 @@
       },
       "detail": {
         "enabled": "已启用",
-        "eyebrow": "专用服务器",
         "tabs": {
           "overview": "概览",
           "players": "玩家",
@@ -4542,14 +5341,9 @@
         },
         "status_label": {
           "connected": "已连接",
-          "disconnected": "已断开",
           "hibernating": "休眠中",
-          "no_rcon": "无 RCON",
-          "version_mismatch": "版本不匹配"
+          "no_rcon": "无 RCON"
         },
-        "server_plugin_config": "服务器插件配置",
-        "hide_config": "隐藏配置",
-        "show_config": "显示配置",
         "config_location": "此配置应放置在：",
         "files": "文件",
         "player_management": "玩家管理",
@@ -4573,13 +5367,7 @@
           "disconnected": "服务器已断开",
           "hibernating": "服务器处于休眠状态，直到有玩家连接",
           "no_rcon": "服务器已连接但 RCON 不可用",
-          "connected": "服务器已连接且 RCON 可用",
-          "plugin_version_mismatch": "插件版本不是最新"
-        },
-        "delete_confirm": {
-          "title": "您确定吗？",
-          "description": "此操作无法撤销。这将永久删除您的服务器并从我们的服务器中移除相关数据。",
-          "continue": "继续"
+          "connected": "服务器已连接且 RCON 可用"
         },
         "save_restart": "保存并重启",
         "map_rotation": {
@@ -4698,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "迁移到其他节点",
-          "title": "迁移到其他节点",
           "description": "服务器会在 {node} 上停止，其文件将复制到新节点，然后在新节点上重新启动。",
           "source_offline": "{node} 已离线，因此无法复制服务器文件。服务器将以默认设置在新节点上启动，留在 {node} 上的内容将保留在原处。",
           "without_files": "迁移时不带服务器文件",
@@ -4707,7 +5493,6 @@
           "no_nodes": "没有其他游戏服务器节点",
           "free_slots": "空闲槽位：{count}",
           "free_disk": "可用 {size}",
-          "confirm": "迁移服务器",
           "started": "正在将 {server} 迁移到 {node}",
           "warning": {
             "address": "服务器在新节点上会获得新的地址。",
@@ -4723,7 +5508,9 @@
             "updating": "正在更新 CS2",
             "no_build": "未安装 {game}",
             "no_slot": "没有空闲的服务器槽位"
-          }
+          },
+          "dialog_title": "迁移到其他节点",
+          "confirm_move": "迁移服务器"
         },
         "migration": {
           "title": {
@@ -4744,12 +5531,71 @@
           "progress": "{done} / {total} ({percent}%)",
           "without_files": "不含文件",
           "restored": "服务器已回到 {node}。",
-          "cancel": "取消迁移",
           "cancel_requested": "正在取消迁移",
           "dismiss": "关闭",
-          "locked": "服务器正在迁移到另一个节点。迁移完成后请重试。"
-        }
-      }
+          "locked": "服务器正在迁移到另一个节点。迁移完成后请重试。",
+          "cancel_move": "取消迁移"
+        },
+        "plugin_tag": "插件 v{version}",
+        "plugin_config": "服务器插件配置",
+        "show_plugin_config": "显示配置",
+        "hide_plugin_config": "隐藏配置"
+      },
+      "clear_all": "清除搜索和筛选",
+      "col_hosting": "托管",
+      "col_players": "玩家",
+      "col_plugin": "插件",
+      "col_ports": "端口",
+      "col_server": "服务器",
+      "copied": "已复制 {value}",
+      "copy_address": "复制地址",
+      "create_server": "创建服务器",
+      "delete_body_external": "它将从 5Stack 中移除，不再接收比赛。机器本身会继续运行。此操作无法撤销。",
+      "delete_body_node": "它将从 5Stack 中移除，并在 {node} 上关闭。此操作无法撤销。",
+      "delete_server": "删除服务器",
+      "delete_title": "删除 {label}？",
+      "deleted_toast": "已删除 {label}",
+      "disable_server": "停用服务器",
+      "disabled_hidden": "已隐藏 {count} 台停用服务器 | 已隐藏 {count} 台停用服务器",
+      "disabled_toast": "已停用 {label}。它将不再接收比赛和公开游戏。",
+      "empty_title": "还没有专用服务器",
+      "enable_server": "启用服务器",
+      "enabled_for": "已启用：{label}",
+      "enabled_toast": "已启用 {label}",
+      "external": "外部",
+      "facet_host": "主机",
+      "filter_label": "筛选服务器",
+      "more_for": "{label} 的更多操作",
+      "node_tag": "节点",
+      "open": "打开",
+      "open_console": "打开控制台",
+      "open_node": "在游戏服务器节点中打开",
+      "page_of": "第 {page} / {pages} 页",
+      "plugin_current": "v{version}（当前）",
+      "plugin_outdated_tip": "插件版本不是最新。当前版本为 v{version}。",
+      "ports_tip": "游戏端口（TV 端口）",
+      "search_placeholder": "搜索名称、地址、主机",
+      "servers_word": "台服务器 | 台服务器",
+      "setup_guide": "设置指南",
+      "show_them": "显示",
+      "states": {
+        "attention": "需要处理",
+        "offline": "离线",
+        "inuse": "使用中",
+        "ready": "就绪",
+        "hibernating": "休眠中",
+        "disabled": "已停用"
+      },
+      "status_in_match": "比赛中",
+      "status_offline_since": "自 {time} 起离线",
+      "status_playing": "{count} 人在玩",
+      "status_plugin_outdated": "插件过旧",
+      "tip_disabled": "不用于比赛或公开游戏。",
+      "join_server": "加入服务器",
+      "new_server": "新服务器",
+      "create_on_node": "运行于 {node}",
+      "create_at_host": "运行于 {address}",
+      "create_pick_place": "选择运行位置"
     },
     "public_servers": {
       "title": "公共服务器",
@@ -5113,6 +5959,216 @@
         "execution_plan": "执行计划",
         "no_explain_plan": "无法为此查询生成 EXPLAIN 计划",
         "not_found": "未找到查询详情"
+      },
+      "explorer": {
+        "active_backends": "活跃后端",
+        "active_queries": "活跃查询",
+        "active_queries_hint": "所有非空闲会话，按耗时从长到短排列",
+        "active_waiting": "{active} 个活跃 · {waiting} 个等待中",
+        "activity": "活动",
+        "all_connections": "所有连接",
+        "all_indexes_scanned": "所有索引都已被扫描",
+        "all_indexes_scanned_hint": "自统计数据重置以来，当前选择中没有未被使用的索引。",
+        "all_statements": "所有语句",
+        "avg_ms": "平均 {ms} ms",
+        "avg_ms_col": "平均 (ms)",
+        "avg_time": "平均时间",
+        "back_to_overview": "返回概览",
+        "background_jobs": "后台任务",
+        "blocks_hit": "块命中",
+        "blocks_read": "块读取",
+        "buffer_statistics": "缓冲区统计",
+        "by_state": "按状态",
+        "cache_hit": "缓存命中",
+        "cache_hit_pct": "缓存命中率 %",
+        "cache_hit_ratio": "缓存命中率",
+        "calls_count": "{count} 次调用 | {count} 次调用",
+        "conflicts": "冲突",
+        "copy_name": "复制名称",
+        "copy_query": "复制查询",
+        "copy_statement": "复制 {sql}",
+        "count": "数量",
+        "current_locks": "当前锁",
+        "database_statistics": "数据库统计",
+        "dead_pct": "死行 %",
+        "dead_pct_tip": "死行占表中全部行的比例。当表中死行超过 10,000 行时会被标记。",
+        "dead_share": "{pct}% 的行为死行 · 约 {size}",
+        "dead_tuple_size": "死行大小",
+        "dead_tuples": "死行数",
+        "deadlocks_tip": "自上次重置统计数据以来的计数。",
+        "deletes": "删除",
+        "every_seconds": "每 {seconds}s",
+        "every_table": "所有表",
+        "every_table_hint": "大小、膨胀和缓存集中展示。点击某一行即可打开。",
+        "execution_plan": "执行计划",
+        "execution_times": "执行时间（ms）",
+        "fetched": "已获取",
+        "filter_query_text": "按查询文本筛选",
+        "find_schema": "查找模式",
+        "find_table": "查找表或索引",
+        "heap_hits": "堆命中",
+        "heap_reads": "堆读取",
+        "heap_reads_count": "{count} 次堆读取",
+        "held_none_waiting": "持有 {count} 个，无等待 | 持有 {count} 个，无等待",
+        "hot_count": "{count} 次 HOT",
+        "hot_updates": "HOT 更新",
+        "hot_updates_tip": "无需改动任何索引的更新。",
+        "hypertable_name": "超表名称",
+        "hypertable_note": "行存储在 {schema} 下的数据块中，因此该父表本身不报告任何行。",
+        "hypertable_tag": "超表",
+        "idle_in_txn": "事务中空闲",
+        "idle_in_txn_tip": "保持事务打开却什么都不做。这会阻止 VACUUM 清理，并可能持有锁。",
+        "idx_scans": "索引扫描",
+        "idx_scans_fetched": "索引扫描（获取行数）",
+        "idx_tup_fetch": "索引获取行数",
+        "in_indexes": "索引占 {size}",
+        "index_hits": "索引命中",
+        "index_io": "索引 I/O",
+        "index_reads": "索引读取",
+        "index_scans": "索引扫描",
+        "index_scans_tip": "使用索引而非读取整张表的扫描所占比例。",
+        "index_size": "索引大小",
+        "index_usage": "索引使用",
+        "indexes": "索引",
+        "indexes_hint": "使用情况与缓存命中一并展示",
+        "inserts": "插入",
+        "io": "I/O",
+        "io_buffers": "I/O 与缓冲区",
+        "job_id": "任务 ID",
+        "job_type": "任务类型",
+        "last_analyze": "上次 ANALYZE",
+        "last_autoanalyze": "上次自动 ANALYZE",
+        "last_autovacuum": "上次自动 VACUUM",
+        "last_run_status": "上次运行",
+        "last_vacuum": "上次 VACUUM",
+        "live": "活跃",
+        "live_tuples": "活跃行数",
+        "local": "本地",
+        "local_blocks_hit": "本地块命中",
+        "local_blocks_read": "本地块读取",
+        "lock_type": "锁类型",
+        "locks_on_table": "此表上的锁",
+        "locks_transactions": "锁与事务",
+        "maintenance": "维护",
+        "max_ms_col": "最大 (ms)",
+        "max_ms_paren": "（最大 {ms}）",
+        "max_time": "最大时间",
+        "max_value": "最大 {ms}",
+        "min_calls": "最小调用次数",
+        "min_value": "最小 {ms}",
+        "n_failed": "{count} 次失败",
+        "n_of_m_statements": "{m} 条语句中的 {n} 条",
+        "n_waiting": "{count} 个等待中",
+        "name_copied": "表名已复制",
+        "needs_attention": "需要关注",
+        "never_scanned": "从未扫描",
+        "next_start": "下次运行",
+        "no_active_hint": "所有连接都处于空闲状态。",
+        "no_backups_hint": "首次计划运行后，备份将显示在这里。",
+        "no_backups_title": "无数据库备份",
+        "no_connections_hint": "当前没有任何客户端连接到此数据库。",
+        "no_indexes": "无索引",
+        "no_indexes_hint": "此表没有索引，因此每次读取都会扫描整张表。",
+        "no_indexes_hyper": "超表的索引位于其各个数据块上。",
+        "no_jobs_hint": "TimescaleDB 没有计划任务。",
+        "no_jobs_title": "无后台任务",
+        "no_locks_hint": "当前没有任何锁被持有。",
+        "no_locks_on_table": "当前此表上没有任何锁。",
+        "no_plan": "无法为此查询生成执行计划。",
+        "no_reads_hint": "所选模式没有读取记录。",
+        "no_schemas": "无模式",
+        "no_schemas_hint": "至少选择一个模式以查看其中的表。",
+        "no_schemas_title": "未选择模式",
+        "no_slow_hint": "自统计数据重置以来，没有语句的平均或峰值超过 {threshold}。",
+        "no_slow_title": "无慢语句",
+        "no_statements_for_table": "没有已记录的语句提及此表名。",
+        "no_statements_match": "没有匹配的语句",
+        "no_statements_match_hint": "调用至少 {min} 次的语句中没有与筛选条件匹配的。",
+        "no_statements_yet": "pg_stat_statements 尚未记录任何内容。",
+        "no_stats_hint": "pg_stat_statements 会随应用执行查询而积累数据，并在其统计数据重置时清空。",
+        "no_table_matches": "没有与“{find}”匹配的表或索引。",
+        "no_tables_hint": "所选模式中没有表。",
+        "no_tables_title": "无表",
+        "no_timescale_title": "无 TimescaleDB 数据",
+        "nothing_matches": "当前选择中没有匹配项。",
+        "objects": "数据库对象",
+        "off": "关",
+        "on": "开",
+        "on_disk": "磁盘占用 {size}",
+        "open_connections": "打开的连接",
+        "over_threshold": "超过 {threshold}",
+        "overview": "概览",
+        "overview_hint": "PostgreSQL 数据库 · 自上次统计重置以来的计数",
+        "pause_refreshing": "暂停刷新",
+        "pct_of_table": "表占比 %",
+        "pid_actions": "pid {pid} 的操作",
+        "query_details": "查询详情",
+        "query_not_found": "未找到查询详情",
+        "query_performance": "查询性能",
+        "range_hint": "对数刻度 · 色带为均值 ± 标准差",
+        "reclaimable": "可回收",
+        "reclaimable_tip": "根据死行估算。VACUUM 可使这部分空间被重新利用；只有 VACUUM FULL 或 pg_repack 才能将其归还给磁盘。",
+        "refresh_every": "刷新间隔",
+        "resume_refreshing": "恢复刷新",
+        "rollbacks_count": "{count} 次回滚",
+        "running_now": "正在运行",
+        "scans": "扫描",
+        "schema_count": "{count} 个模式 | {count} 个模式",
+        "search_indexes": "搜索索引",
+        "seq_scans": "顺序扫描",
+        "seq_scans_read": "顺序扫描（读取行数）",
+        "seq_tup_read": "顺序读取行数",
+        "sequential_count": "{count} 次顺序扫描",
+        "server": "服务器",
+        "share_of_time": "时间占比",
+        "share_of_time_tip": "此语句的总执行时间占所有列出语句总执行时间的比例。",
+        "shared_blocks_hit": "共享块命中",
+        "shared_blocks_read": "共享块读取",
+        "size": "大小",
+        "size_on_disk": "磁盘占用",
+        "slow_avg": "{count} 条语句平均超过 {threshold} | {count} 条语句平均超过 {threshold}",
+        "slow_avg_none": "没有语句平均超过 {threshold}",
+        "slow_max": "{count} 条语句至少有一次超过 {threshold} | {count} 条语句至少有一次超过 {threshold}",
+        "slow_over": "慢于",
+        "slow_running_many": "当前有 {count} 个查询运行超过 {threshold}，最长 {duration}",
+        "slow_running_one": "当前有 1 个查询已运行 {duration}",
+        "slow_threshold": "慢查询阈值",
+        "started": "开始时间",
+        "statement_copied": "语句已复制到剪贴板",
+        "statements_to_run": "需自行执行的语句",
+        "statements_touching": "涉及此表的语句",
+        "statements_touching_hint": "来自 pg_stat_statements，按表名匹配。超过 {threshold} 的排在前面。",
+        "statistics": "统计",
+        "std_dev": "标准差",
+        "table_and_indexes": "表 {table} · 索引 {indexes}",
+        "table_io": "表 I/O",
+        "table_maintenance": "表维护",
+        "table_not_found": "未找到表",
+        "table_not_found_hint": "它可能已被删除，或其模式未被选中。",
+        "table_size": "表大小",
+        "table_storage": "表存储",
+        "temp_blocks": "临时块",
+        "temp_blocks_tip": "由于 work_mem 不足以完成排序或哈希而溢出到磁盘的块。",
+        "temp_blocks_written": "临时块写入",
+        "terminate_warning": "终止会结束该会话并回滚其事务。",
+        "total_chunks": "总数据块数",
+        "total_rows": "总行数",
+        "total_size": "总大小",
+        "total_time": "总时间",
+        "tuples_deleted": "删除行数",
+        "tuples_fetched": "获取行数",
+        "tuples_inserted": "插入行数",
+        "tuples_read": "读取行数",
+        "tuples_returned": "返回行数",
+        "tuples_updated": "更新行数",
+        "updates": "更新",
+        "view_all_slow": "查看所有慢查询",
+        "wait_event": "等待事件",
+        "wait_event_type": "等待事件类型",
+        "waiting_on_lock": "正在等待锁",
+        "waiting_tip": "正在等待锁的会话。",
+        "worth_a_look": "值得一看",
+        "zero_unused": "0 · 未使用"
       }
     },
     "events": {
@@ -5321,6 +6377,54 @@
         "tournaments_hint": "作为锦标赛对阵一部分进行的比赛，无论是否计入排位。",
         "custom": "自定义比赛",
         "custom_hint": "其余所有：不计入任何统计的比赛。"
+      },
+      "store": {
+        "open_aria": "打开 {name}",
+        "verified_hint": "已由注册表维护者验证",
+        "custom_hint": "在此添加，尚无人审核。",
+        "guidelines_hint": "加载它的服务器在启动时会关闭 Valve 服务器准则。",
+        "on_panel": "已在你的面板上",
+        "panel_host": "部署在你的面板主机上",
+        "set_up": "设置",
+        "no_build": "没有 {runtime} 版本",
+        "only": "仅限 {runtimes}",
+        "add_node": "添加一个游戏服务器节点即可安装",
+        "found_on_disk": "在磁盘上发现",
+        "found_on_disk_hint": "手动放置。无论何种模式，都会在每台服务器上加载。",
+        "manage_here": "在此管理",
+        "install_title": "安装 {name} {version}",
+        "failed_on": "在 {node} 上失败",
+        "failed_on_nodes": "在 {count} 个节点上失败 | 在 {count} 个节点上失败",
+        "install_failed": "安装失败",
+        "installing_on": "正在 {total} 个节点中的 {installed} 个上安装",
+        "waiting_nodes": "正在等待在线节点",
+        "pinned_at": "固定在 {version}",
+        "update_to": "更新到 {version}",
+        "filter_kind": "类型",
+        "filter_review": "审核",
+        "verified_only": "仅已验证",
+        "runtime": "运行时",
+        "needs_attention": "需要处理",
+        "empty_installed_title": "尚未安装任何内容",
+        "empty_installed_hint": "在“全部”中安装插件，每个节点都会获取它。",
+        "empty_title": "没有匹配的插件",
+        "installing_toast": "正在所有在线节点上安装 {name}",
+        "retry_toast": "正在失败的节点上重试 {name}",
+        "update_toast": "节点正在安装 {version}；它会保持固定在该版本。"
+      },
+      "detail": {
+        "kind_game": "游戏服务器插件",
+        "kind_panel": "面板插件",
+        "kind_bundle": "游戏服务器与面板套件",
+        "copy_command": "复制命令",
+        "copied": "命令已复制",
+        "manual_on": "位于 {nodes}，不受 5Stack 管理",
+        "latest_for": "{runtime} 的最新版本 {version}",
+        "node_offline": "离线",
+        "node_not_accepting": "不接受比赛",
+        "rollout_settings": "发布设置",
+        "running": "运行中",
+        "this_deployment": "此部署"
       }
     },
     "awards": {
@@ -5342,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "搜索奖项",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -5362,7 +6465,66 @@
       "group_custom_tournament_awards": "自定义锦标赛奖项",
       "group_custom_event_awards": "自定义活动奖项",
       "group_custom_season_awards": "自定义赛季奖项",
-      "group_custom_league_awards": "自定义联赛奖项"
+      "group_custom_league_awards": "自定义联赛奖项",
+      "already_holds": "{name} 已拥有 {award}，且该奖项不允许重复颁发。",
+      "automation_season": "赛季自动颁发",
+      "automation_tournament": "锦标赛自动颁发",
+      "builtin_cant_delete": "内置奖项无法删除",
+      "builtin_note": "内置奖项。由锦标赛和赛季自动颁发，可以编辑但无法删除。",
+      "col_award": "奖项",
+      "col_earned_at": "获得于",
+      "col_holder": "获得者",
+      "col_holders": "获得者",
+      "days_ago": "{count} 天前",
+      "delete_award": "删除奖项",
+      "delete_body": "{count} 次颁发将一并删除，并从获得者的荣誉中移除。此操作无法撤销。 | {count} 次颁发将一并删除，并从所有获得者的荣誉中移除。此操作无法撤销。",
+      "delete_body_none": "尚无人获得。此操作无法撤销。",
+      "delete_hint": "将其连同所有颁发记录从每位获得者的荣誉中移除。",
+      "delete_title": "删除 {name}？",
+      "deleted_toast": "已删除 {name}",
+      "edit_award": "编辑奖项",
+      "facet_belongs_to": "所属",
+      "filter_label": "筛选奖项",
+      "grant_only_hint": "你可以颁发奖项。创建和编辑奖项需要奖项管理员角色。",
+      "grant_short": "颁发",
+      "granted_toast": "已将 {award} 颁发给 {name}",
+      "kind_custom": "自定义",
+      "more_for": "{name} 的更多操作",
+      "once_per_holder": "每位获得者一次",
+      "open_holders": "查看获得者",
+      "owner_deleted": "所属已删除",
+      "owner_ended": "{date} 结束",
+      "owner_finished": "{date} 已结束",
+      "owner_kind": {
+        "global": "通用",
+        "tournament": "锦标赛",
+        "event": "活动",
+        "league": "联赛赛季",
+        "season": "赛季"
+      },
+      "owner_live": "正在直播",
+      "owner_running": "进行中",
+      "owner_starts": "{date} 开始",
+      "owner_upcoming": "即将开始",
+      "repeatable": "可重复颁发",
+      "revoke_from": "从 {name} 收回",
+      "show_more": "显示更多",
+      "sort_last_granted": "最近颁发",
+      "status": {
+        "recent": "最近 90 天内颁发",
+        "never": "从未颁发",
+        "open": "所属进行中或即将开始",
+        "finished": "所属已结束"
+      },
+      "team_count": "{count} 支队伍 | {count} 支队伍",
+      "tiers": {
+        "mvp": "MVP",
+        "gold": "金",
+        "silver": "银",
+        "bronze": "铜",
+        "special": "特别"
+      },
+      "today": "今天"
     },
     "award_detail": {
       "not_found_title": "未找到奖项",
@@ -5406,10 +6568,29 @@
         "cameraTalkback": "摄像头回传对讲"
       },
       "resources": "资源使用情况",
-      "cpu": "CPU",
-      "memory": "内存",
-      "no_resources": "还没有媒体服务器的 Pod 指标，可能是集群的 metrics server 没有采集它。",
-      "legend": "一个路径就是一个具名的流位置，可能是某个人的麦克风，或一台摄像头。「推流中」统计的是此刻真正在发送媒体的路径；从有人加入到画面真正上线之间，路径可能处于空闲状态。会话是 WebRTC 连接，每一位观众都算一个，因此增长得比其他数字快。"
+      "legend": "一个路径就是一个具名的流位置，可能是某个人的麦克风，或一台摄像头。「推流中」统计的是此刻真正在发送媒体的路径；从有人加入到画面真正上线之间，路径可能处于空闲状态。会话是 WebRTC 连接，每一位观众都算一个，因此增长得比其他数字快。",
+      "logs_button": "mediamtx 日志",
+      "tip_publishing": "此刻真正在发送媒体的路径。从有人加入到其画面或声音开始传输之前，路径可能处于空闲状态。",
+      "tip_paths": "路径是一个命名的推流位置——一个人的麦克风，或一台摄像头。",
+      "tip_sessions": "WebRTC 连接。流的每位观众都占一个，所以它比其他数字涨得更快。",
+      "of_paths": "/ {count} 条路径 | / {count} 条路径",
+      "unknown_while_unreachable": "无法连接时未知",
+      "how_to_read": "如何解读这些数字",
+      "by_feature": "按功能",
+      "kinds_unknown": "在媒体服务器重新响应之前，各功能的数字未知。",
+      "idle_title": "当前没有任何推流",
+      "idle_hint": "当比赛直播、选手摄像头或语音大厅开始时，这里会出现对应的行。",
+      "received": "已接收",
+      "received_hint": "当前打开的路径上收到的字节数，每条路径从打开时开始计算。关闭的路径会带走它的字节数。",
+      "share_received": "接收量占比",
+      "not_in_use": "当前未使用：{kinds}",
+      "resources_hint": "mediamtx Pod · 每 30 秒查询",
+      "cores_now": "使用中 {cores} 核",
+      "status_reachable": "可连接",
+      "status_unreachable_since": "自 {time} 起无法连接",
+      "kinds_unknown_title": "各功能数字未知",
+      "no_resources_title": "暂无 Pod 指标",
+      "no_resources_hint": "集群的指标服务器可能没有采集 mediamtx Pod。"
     },
     "utility": {
       "eyebrow": "道具库",
@@ -6390,8 +7571,8 @@
           "map_filter": "按地图筛选",
           "render_missing": "渲染缺少的 ({total})",
           "rerender_outdated": "重新渲染过旧的 ({total})",
-          "pipeline_behind": "渲染 Pod 落后于此 API",
-          "pipeline_behind_hint": "当前使用的渲染 Pod 以版本 {pipeline} 录制，低于此 API 期望的版本 {version}。在更新 game-server 和 game-streamer 镜像之前，重新渲染无法让预览变为最新。",
+          "pipeline_behind": "上次渲染使用了旧版本",
+          "pipeline_behind_hint": "上次完成的渲染使用版本 {pipeline} 拍摄，而此 API 期望版本 {version}。渲染 Pod 启动时会拉取最新镜像，所以请先渲染一个阵容。它以版本 {version} 完成后，即可使用“重新渲染过时项”。",
           "load_failed": "无法加载预览覆盖情况",
           "confirm_missing_title": "渲染缺少的预览？",
           "confirm_missing": "将为 {count} 个没有预览的点位排队渲染。 | 将为 {count} 个没有预览的点位排队渲染。",
@@ -6521,6 +7702,249 @@
         "recent": "你最近的搜索",
         "recent_counts": "{predicted} 个中命中 {verified} 个"
       }
+    },
+    "control_room": {
+      "on_air": "播出中",
+      "off_air_hint": "当前没有直播。选择一场进行中的比赛来开始直播。",
+      "starting": "启动中",
+      "program": "节目",
+      "preview": "预览",
+      "take": "切出",
+      "take_pick": "选择一个预览来切到播出。",
+      "take_already": "{match} 已在播出。",
+      "take_go_live": "直播 {match}",
+      "take_switch": "切换到 {match}",
+      "take_more": "更多启动方式",
+      "take_start_hint": "占用一块空闲 GPU 并启动一个 Pod，约需一分钟。",
+      "take_switch_hint": "复用正在运行的 Pod。画面会在几秒内切换。",
+      "go_live": "开始直播",
+      "start_tv": "以电视模式启动（延时）",
+      "tv_delayed": "电视（延时）",
+      "tv_delay": "电视延时",
+      "full_deck": "完整控制台",
+      "open_focus_window": "打开专注窗口",
+      "ready": "就绪",
+      "not_ready": "未就绪",
+      "you_are_playing": "你正在参加这场比赛",
+      "no_live_matches_hint": "比赛一开始，预览监视器就会出现在这里。",
+      "started_live": "正在开始 {match} 的直播。Pod 将在一两分钟内启动。",
+      "started_tv": "正在开始 {match} 的延时电视直播。Pod 将在一两分钟内启动。",
+      "stopped": "直播已停止。GPU 已空闲。",
+      "capacity": "{n} / {max} 路直播 | {n} / {max} 路直播",
+      "gpu": {
+        "none": "没有 GPU 节点",
+        "busy": "没有空闲 GPU · {total} 块中 {busy} 块忙碌",
+        "free": "{total} 块 GPU 中 {free} 块空闲 | {total} 块 GPU 中 {free} 块空闲",
+        "hint": "GPU 池。打开 GPU 节点页面。"
+      },
+      "status": {
+        "veto": "BP",
+        "spinning_up": "服务器启动中",
+        "check_in": "签到"
+      },
+      "reasons": {
+        "veto": "地图 BP 进行中。请等待比赛开始。",
+        "waiting_for_server": "正在启动服务器。请等待比赛开始。",
+        "check_in": "选手正在签到。请等待比赛开始。",
+        "not_live": "请等待比赛开始。",
+        "no_server": "这场比赛没有分配服务器。",
+        "server_offline": "服务器离线。正在等待它恢复在线。",
+        "no_gpu_nodes": "没有已注册的 GPU 节点。",
+        "no_free_gpu": "没有空闲 GPU。",
+        "at_capacity": "已达上限。停止直播，或将其切换到这场比赛。"
+      },
+      "deck": {
+        "sheet_description": "直播控制。与专注窗口相同的控制台。",
+        "not_on_air": "未在播出",
+        "not_on_air_hint": "这场比赛没有正在进行的直播。请从控制室开始。",
+        "keys_on": "此处可使用 1–0、← →、空格和 Tab 键",
+        "keys_off": "点击控制台以使用键盘",
+        "match_page": "比赛页面",
+        "paused": "正在完整控制台中显示",
+        "paused_hint": "控制台打开时，此处的预览会暂停。"
+      },
+      "stop": {
+        "title": "停止直播？",
+        "description": "Pod 将关闭，{match} 的直播会对所有观众结束。GPU 将回到池中。",
+        "keep": "继续直播",
+        "confirm": "停止直播"
+      }
+    },
+    "system_alerts": {
+      "alert": "公告",
+      "now": "现在",
+      "create": "创建公告",
+      "empty": "还没有公告",
+      "hint": "点击公告即可编辑。",
+      "new_alert": "新公告",
+      "edit_alert": "编辑公告",
+      "new_hint": "创建后，访客会在每个页面看到它。",
+      "created_at": "创建于 {time}",
+      "showing": "显示中",
+      "showing_named": "显示中：{name}",
+      "turn_off": "关闭",
+      "show_now": "立即显示",
+      "locked": "访客无法关闭此横幅",
+      "can_close": "访客可以关闭",
+      "ends": "结束",
+      "ends_at": "{time}结束",
+      "no_end": "不结束",
+      "older": "更早的公告不在此时间范围内。",
+      "show_quarter": "显示过去 3 个月",
+      "show_older": "显示更早的公告",
+      "preview_caption": "每个页面顶部",
+      "delete": "删除公告",
+      "delete_hint": "将永久删除。",
+      "range": {
+        "day": "过去一天",
+        "week": "过去一周",
+        "month": "过去一个月",
+        "quarter": "过去 3 个月"
+      },
+      "summary": {
+        "showing": "{count} 条横幅正在每个页面显示 | {count} 条横幅正在每个页面显示",
+        "locked": "{count} 条无法关闭 | {count} 条无法关闭",
+        "none": "没有正在显示的横幅"
+      },
+      "lane": {
+        "draft": "草稿 · 尚未创建",
+        "unsaved": "未保存的更改",
+        "showing_ends": "显示中 · {time}结束",
+        "showing_no_end": "显示中 · 不结束",
+        "expired": "{time}已过期",
+        "turned_off": "{time}已关闭",
+        "off_created": "已关闭 · {time}创建"
+      },
+      "tip": {
+        "created": "创建于 {time}",
+        "up_since": "自 {time} 起显示",
+        "ends": "{time} 结束",
+        "until_off": "直到被关闭",
+        "ended": "{time} 已结束",
+        "turned_off": "{time} 已关闭",
+        "off_now": "当前已关闭",
+        "draft": "创建后立即显示"
+      },
+      "sections": {
+        "message": "消息",
+        "display": "显示",
+        "schedule": "时间安排"
+      },
+      "chips": {
+        "none": "不结束",
+        "hour": "1 小时",
+        "six_hours": "6 小时",
+        "day": "24 小时",
+        "three_days": "3 天"
+      },
+      "schedule": {
+        "no_end": "没有结束时间。在你关闭之前会一直显示。",
+        "ends": "{time} 结束（{relative}）",
+        "ended": "{time} 已结束（{relative}）"
+      },
+      "toast": {
+        "turned_off": "已关闭“{name}”",
+        "showing_ends": "正在显示“{name}” · {time}结束",
+        "showing_no_end": "正在显示“{name}” · 不结束",
+        "change_end": "更改结束时间",
+        "restored": "已恢复“{name}”",
+        "created_showing": "公告已创建，现在正在显示。",
+        "created_off": "公告已创建，在你开启前保持关闭。",
+        "expired": "“{name}”已过期，已从横幅中移除"
+      }
+    },
+    "admin_home": {
+      "title": "概览",
+      "need_you": "{count} 项需要你处理 | {count} 项需要你处理",
+      "all_clear": "一切正常",
+      "all_clear_line": "目前没有需要你处理的事项。",
+      "live_hint": "大多数区域会在变化时立即更新。指标每 30 秒刷新一次，数据库每分钟刷新一次。",
+      "everything_else": "其他",
+      "open": "打开",
+      "open_area": "打开{area}",
+      "add_steam_account": "添加 Steam 账号",
+      "more": "另外 {count} 个 | 另外 {count} 个",
+      "card": {
+        "no_problems": "没有问题",
+        "checking": "正在检查…",
+        "none": "暂无",
+        "no_online": "没有在线节点",
+        "season_starts": "第 {number} 赛季将在 {count} 天后开始 | 第 {number} 赛季将在 {count} 天后开始",
+        "of_online": "/ {total} 在线",
+        "servers_free": "{capacity} 台服务器中 {free} 台空闲",
+        "of_connected": "/ {total} 已连接",
+        "offline": "{count} 个离线 | {count} 个离线",
+        "of_free": "/ {total} 空闲",
+        "accounts_free": "{total} 个 Steam 账号中 {free} 个空闲",
+        "in_flight": "进行中",
+        "previews_current": "{total} 个预览中 {current} 个为最新",
+        "of_within": "/ {total} 在限制内",
+        "slow_statements": "条慢查询 | 条慢查询",
+        "threshold": "超过 {threshold} 视为慢",
+        "banners_showing": "个横幅显示中 | 个横幅显示中",
+        "installed": "个已安装",
+        "updates": "{count} 个可用更新 | {count} 个可用更新",
+        "up_to_date": "全部为最新",
+        "all_set_up": "全部已设置"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} 个节点离线 | {count} 个节点离线",
+          "cs2_failed": "{count} 个节点的 CS2 更新失败 | {count} 个节点的 CS2 更新失败",
+          "overprovisioned": "{count} 个节点运行的服务器超出其 CPU 的承载能力 | {count} 个节点运行的服务器超出其 CPU 的承载能力",
+          "plugin_unsupported": "{count} 个节点固定的插件不支持其 CS2 版本 | {count} 个节点固定的插件不支持其 CS2 版本",
+          "disk_full": "{count} 个节点的磁盘快满了 | {count} 个节点的磁盘快满了",
+          "cpu_governor": "{count} 个节点未使用 performance CPU 调速器 | {count} 个节点未使用 performance CPU 调速器",
+          "not_ready_region": "{count} 个节点无法承载比赛：没有区域 | {count} 个节点无法承载比赛：没有区域",
+          "not_ready_ports": "{count} 个节点无法承载比赛：没有端口范围 | {count} 个节点无法承载比赛：没有端口范围",
+          "not_ready_cs2": "{count} 个节点无法承载比赛：未安装 CS2 | {count} 个节点无法承载比赛：未安装 CS2",
+          "cs2_behind": "{count} 个节点有可用的 CS2 更新 | {count} 个节点有可用的 CS2 更新",
+          "disk_filling": "{count} 个节点的磁盘正在变满 | {count} 个节点的磁盘正在变满",
+          "cpu_slow": "{count} 个节点的 CPU 低于 3 GHz | {count} 个节点的 CPU 低于 3 GHz",
+          "cpu_warning": "{count} 个节点报告了 CPU 警告 | {count} 个节点报告了 CPU 警告"
+        },
+        "gpus": {
+          "pool_empty": "没有 Steam 账号：GPU 无法渲染、播放录像或直播",
+          "pool_short": "Steam 账号池距每个 GPU 一个还差 {count} 个账号 | Steam 账号池距每个 GPU 一个还差 {count} 个账号",
+          "offline": "{count} 个 GPU 离线 | {count} 个 GPU 离线",
+          "bake_failed": "{count} 个 GPU 的着色器烘焙失败 | {count} 个 GPU 的着色器烘焙失败",
+          "renders_stuck": "{count} 个渲染任务正在等待，但没有 GPU 接收渲染 | {count} 个渲染任务正在等待，但没有 GPU 接收渲染"
+        },
+        "metrics": {
+          "cpu": "{count} 个节点的 CPU 超过 {threshold}% | {count} 个节点的 CPU 超过 {threshold}%",
+          "memory": "{count} 个节点的内存超过 {threshold}% | {count} 个节点的内存超过 {threshold}%",
+          "disk": "{count} 个节点有磁盘超过 {threshold}% | {count} 个节点有磁盘超过 {threshold}%",
+          "gpu_util": "{count} 个 GPU 已连续 5 分钟占用超过 {threshold}% | {count} 个 GPU 已连续 5 分钟占用超过 {threshold}%",
+          "gpu_vram": "{count} 个 GPU 的显存超过 {threshold}% | {count} 个 GPU 的显存超过 {threshold}%",
+          "gpu_temp": "{count} 个 GPU 温度达到 {threshold} °C 或更高 | {count} 个 GPU 温度达到 {threshold} °C 或更高"
+        },
+        "seasons": {
+          "rebuild": "第 {number} 赛季需要重建 ELO"
+        },
+        "renders": {
+          "failed": "过去一天有 {count} 个渲染失败 | 过去一天有 {count} 个渲染失败",
+          "behind": "渲染管线落后了：当前录制 v{pipeline}，API 期望 v{version}",
+          "missing": "{count} 个道具点位没有预览 | {count} 个道具点位没有预览",
+          "outdated": "{count} 个道具点位预览已过时 | {count} 个道具点位预览已过时"
+        },
+        "database": {
+          "locks": "{count} 个会话正在等待锁 | {count} 个会话正在等待锁",
+          "running": "{count} 个查询已运行超过 {threshold} | {count} 个查询已运行超过 {threshold}",
+          "slow": "{count} 条语句平均耗时超过 {threshold} | {count} 条语句平均耗时超过 {threshold}"
+        },
+        "plugins": {
+          "failed": "{count} 个插件部署失败 | {count} 个插件部署失败",
+          "update": "{count} 个插件有可用更新 | {count} 个插件有可用更新",
+          "manual": "在磁盘上发现 {count} 个未在此管理的插件 | 在磁盘上发现 {count} 个未在此管理的插件"
+        },
+        "settings": {
+          "not_set_up": "{count} 个设置部分尚未设置 | {count} 个设置部分尚未设置"
+        },
+        "servers": {
+          "no_rcon": "{count} 台服务器未响应 RCON | {count} 台服务器未响应 RCON",
+          "plugin_outdated": "{count} 台服务器运行的插件已过时 | {count} 台服务器运行的插件已过时"
+        }
+      }
     }
   },
   "layouts": {
@@ -6545,6 +7969,19 @@
         "theme": "外观",
         "developer": "开发者",
         "players_teams": "平台"
+      },
+      "status": {
+        "not_set_up": "未设置",
+        "job_elo": "ELO {pct}%",
+        "job_reindex": "重建索引 {pct}%",
+        "job_reparse": "重新解析 {pct}%",
+        "filter_attention": "需处理"
+      },
+      "search": {
+        "results": "{count} 个匹配的设置 | {count} 个匹配的设置",
+        "clear": "清除搜索",
+        "no_match_title": "没有与“{query}”匹配的设置",
+        "no_match_body": "搜索会读取所有分区中设置的名称和说明。试试一个词，例如“角色”或“ELO”。"
       }
     },
     "system_update": {
@@ -6616,6 +8053,7 @@
       "brand": "5stack",
       "systems_online": "{count} 个系统在线 | {count} 个系统在线",
       "navigation": {
+        "home": "首页",
         "dashboard": "我的数据",
         "play": "游戏",
         "watch": "观战",
@@ -6650,7 +8088,24 @@
         "alerts": "公告",
         "seasons": "赛季",
         "stream_deck": "直播控制台",
-        "awards": "Awards"
+        "awards": "Awards",
+        "control_room": "控制室",
+        "overview": "概览"
+      },
+      "modes": {
+        "play": "游戏",
+        "admin": "管理",
+        "switch_to_play": "切换到游戏",
+        "switch_to_admin": "切换到管理",
+        "attention": "{count} 项需要处理 | {count} 项需要处理",
+        "seasons_rebuild": "需要重建"
+      },
+      "groups": {
+        "compete": "竞技",
+        "practice": "练习",
+        "media": "媒体",
+        "monitoring": "监控",
+        "site": "站点"
       },
       "system": {
         "title": "系统",
@@ -6668,7 +8123,9 @@
       },
       "footer": {
         "report_issue": "报告问题",
-        "join_discord": "加入我们的 Discord"
+        "report_issue_short": "报告问题",
+        "join_discord": "加入我们的 Discord",
+        "discord": "Discord"
       },
       "tooltips": {
         "dashboard": "我的数据",
@@ -7027,7 +8484,6 @@
     "none": "无可用玩家"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "这些文件在服务器启动时挂载到 `csgo` 目录。",
     "any": "任何",
     "remove": "移除",
     "edit": "编辑",
@@ -7051,7 +8507,8 @@
       "unsaved_changes": "有未保存的更改",
       "review_and_save": "检查您的编辑，然后保存",
       "has_errors": "无效设置",
-      "resolve_errors": "修复高亮显示的字段以保存"
+      "resolve_errors": "修复高亮显示的字段以保存",
+      "leave_blocked": "离开前请保存或放弃更改"
     },
     "error": "错误",
     "enabled": "已启用",
@@ -7091,8 +8548,6 @@
     "exit_fullscreen": "退出全屏",
     "download": "下载",
     "upload": "上传",
-    "sort_ascending": "升序排序",
-    "sort_descending": "降序排序",
     "see_all": "查看全部",
     "standby_no_activity": "待命 · 无活动",
     "players": "玩家",
@@ -7156,7 +8611,8 @@
     "empty_filtered": {
       "title": "没有符合这些筛选条件的内容",
       "description": "请尝试清除筛选条件或扩大搜索范围。"
-    }
+    },
+    "clear_filters": "清除筛选"
   },
   "global_search": {
     "placeholder": "搜索玩家、页面和设置",
@@ -7184,8 +8640,6 @@
   },
   "file_manager": {
     "location": "位置",
-    "dedicated_server_files": "专用服务器文件",
-    "game_server_node_files": "游戏服务器节点文件",
     "loading_server_info": "加载服务器信息...",
     "create_directory": {
       "title": "创建新目录",
@@ -10251,10 +11705,6 @@
     "remove_node_confirm_title": "移除此节点？",
     "remove_node_confirm_description": "该节点及其上的所有专用服务器都将从 5Stack 中移除。此操作无法撤销。",
     "remove_ports": "移除端口",
-    "mode": {
-      "use_as_match": "用作比赛服务器",
-      "use_as_gpu_only": "仅用作 GPU"
-    },
     "show_update_logs": "显示更新日志",
     "update_failed": "更新失败",
     "update_failed_description": "上次更新失败。更新日志保留 24 小时。",
@@ -10526,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "使用量",
-    "mount_os": "操作系统",
-    "mount_demos": "Demo",
-    "total_series": "{label} 合计",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} 平均"
   },
@@ -10562,7 +12008,6 @@
       "move_node": "迁移服务器",
       "valve_preset_group": "Valve 预设",
       "custom_mode_group": "自定义模式",
-      "edit_mode": "编辑模式",
       "cs2_only": "仅限 CS2",
       "needs_node": "需要节点",
       "csgo_valve_only": "CS:GO 服务器只能运行 Valve 预设。排位、练习和自定义模式需要 CS2。",
@@ -10586,9 +12031,9 @@
       "generate": "生成",
       "port": "游戏端口",
       "tv_port": "TV 端口",
-      "create": "创建服务器",
       "max_players": "最大玩家数",
-      "max_players_description": "可以连接到服务器的最大玩家数"
+      "max_players_description": "可以连接到服务器的最大玩家数",
+      "edit_mode_link": "编辑模式"
     },
     "rcon": {
       "console_output": "控制台输出",
@@ -10611,6 +12056,13 @@
   "components": {
     "map_pools": {
       "view_on_steam": "在 Steam 上查看"
+    },
+    "facet_rail": {
+      "clear_all": "全部清除",
+      "none": "无",
+      "remove": "移除 {label}",
+      "show_all": "显示全部 {count} 项",
+      "show_fewer": "收起"
     }
   },
   "map_pools": {
@@ -12412,7 +13864,6 @@
       "unique_24h": "独立玩家 · 24 小时",
       "unique_7d": "独立玩家 · 7 天",
       "sessions_7d": "会话 · 7 天",
-      "time_played_7d": "游戏时长 · 7 天",
       "avg_session": "平均会话",
       "players": "名玩家",
       "joins": "次加入",
@@ -12424,7 +13875,9 @@
       "empty": "此时间段内没有人在这里玩过。",
       "no_matches": "没有符合搜索条件的玩家。",
       "showing": "显示 {shown} / {total}",
-      "load_more": "加载更多"
+      "last_seen": "最后在线",
+      "time_played_col": "游戏时长 · 7 天",
+      "show_more": "加载更多"
     },
     "player_tab": {
       "moderator_note": "版主还能看到准确时间、会话、使用过的名称和 IP。",
@@ -12463,12 +13916,8 @@
       "offline": "离线",
       "map": "地图",
       "community_server": "社区服务器",
-      "online_now": "当前在线",
-      "players_this_week": "本周玩家",
       "different_players": "名不同玩家",
-      "hours_this_week": "本周时长",
       "played_by_everyone": "所有人合计",
-      "all_time_players": "历史玩家",
       "since": "自 {date} 起",
       "activity": "活跃度 · 过去 7 天",
       "activity_description": "每天所有人在这里游戏的总时长。不显示任何人的个人游戏时间。",
@@ -12485,7 +13934,13 @@
       "day": "日期",
       "player_hours": "玩家时长",
       "not_found_title": "未找到服务器",
-      "not_found_description": "此服务器不存在或未公开。"
+      "not_found_description": "此服务器不存在或未公开。",
+      "tile": {
+        "online_now": "当前在线",
+        "players_this_week": "本周玩家",
+        "hours_this_week": "本周时长",
+        "all_time_players": "历史玩家"
+      }
     }
   },
   "quick_look": {
@@ -12553,6 +14008,32 @@
         "twitch_unavailable": "Twitch 没有响应。请稍后再试。",
         "unknown": "出了点问题。请重试。"
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "清除搜索"
+    },
+    "sort": {
+      "sorted_ascending": "已升序排列",
+      "sorted_descending": "已降序排列"
+    },
+    "live_stamp": {
+      "live_at": "实时 · {time}",
+      "updated_now": "刚刚更新",
+      "updated_now_after": "刚刚更新",
+      "updated_seconds": "{seconds} 秒前更新",
+      "updated_seconds_after": "{seconds} 秒前更新",
+      "updated_minutes": "{minutes} 分钟前更新",
+      "updated_minutes_after": "{minutes} 分钟前更新",
+      "paused": "已暂停",
+      "every_seconds": "每 {seconds} 秒刷新",
+      "every_minute": "每分钟刷新",
+      "every_minutes": "每 {minutes} 分钟刷新",
+      "refresh_now": "立即刷新"
+    },
+    "last_changed": {
+      "updated": "更新于 {time}"
     }
   }
 }

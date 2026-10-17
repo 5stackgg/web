@@ -138,7 +138,7 @@ describe("game modes page", () => {
     await card(wrapper, "chaos").find("h3 button").trigger("click");
     await flushPromises();
 
-    expect(document.body.textContent).toContain("Edit Game Mode");
+    expect(document.body.textContent).toContain("Edit game mode");
   });
 
   it("starts a new mode from the dashed tile", async () => {
@@ -147,6 +147,6 @@ describe("game modes page", () => {
     await wrapper.find('[data-testid="new-mode"]').trigger("click");
     await flushPromises();
 
-    expect(document.body.textContent).toContain("New Game Mode");
+    expect(document.body.textContent).toContain("New game mode");
   });
 });

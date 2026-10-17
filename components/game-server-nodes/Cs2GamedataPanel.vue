@@ -2,13 +2,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useNow } from "@vueuse/core";
-import {
-  AlertTriangle,
-  Check,
-  Clock,
-  ShieldCheck,
-  X,
-} from "lucide-vue-next";
+import { AlertTriangle, Check, Clock, ShieldCheck, X } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { Spinner } from "~/components/ui/spinner";
 import Cs2BuildStatusPanel from "~/components/game-server-nodes/Cs2BuildStatusPanel.vue";
@@ -115,7 +109,7 @@ const chips = computed(() => {
 
 const CHIP_TONES: Record<Cs2BuildTone, string> = {
   success: "bg-success/10 text-success",
-  warning: "bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]",
+  warning: "bg-warning/10 text-warning",
   destructive: "bg-destructive/10 text-destructive",
   running: "bg-info/10 text-info",
   idle: "bg-muted/40 text-muted-foreground",
@@ -123,7 +117,7 @@ const CHIP_TONES: Record<Cs2BuildTone, string> = {
 
 const TEXT_TONES: Record<Cs2BuildTone, string> = {
   success: "text-success",
-  warning: "text-[hsl(var(--tac-amber))]",
+  warning: "text-warning",
   destructive: "text-destructive",
   running: "text-info",
   idle: "text-muted-foreground",
@@ -140,7 +134,10 @@ const RUNTIME_LABELS: Record<string, string> = {
 const runtimeLabel = (runtimes: Array<string>) =>
   runtimes.map((runtime) => RUNTIME_LABELS[runtime] ?? runtime).join(", ");
 
-const countLabel = (row: { previousCount: number | null; count: number | null }) => {
+const countLabel = (row: {
+  previousCount: number | null;
+  count: number | null;
+}) => {
   if (row.previousCount === null && row.count === null) {
     return "";
   }
@@ -171,7 +168,9 @@ const error = computed(() =>
 
 const node = computed(
   () =>
-    props.row?.game_server_node?.label || props.row?.game_server_node?.id || null,
+    props.row?.game_server_node?.label ||
+    props.row?.game_server_node?.id ||
+    null,
 );
 </script>
 
@@ -198,19 +197,11 @@ const node = computed(
       <template v-if="row">
         <template v-if="running || status === 'stale'">
           <span>{{ $t("pages.game_server_nodes.cs2_build.started") }}</span>
-          <TimeAgo
-            v-if="row.started_at"
-            :date="row.started_at"
-            hide-icon
-          />
+          <TimeAgo v-if="row.started_at" :date="row.started_at" hide-icon />
         </template>
         <template v-else>
           <span>{{ $t("pages.game_server_nodes.cs2_build.validated") }}</span>
-          <TimeAgo
-            v-if="row.validated_at"
-            :date="row.validated_at"
-            hide-icon
-          />
+          <TimeAgo v-if="row.validated_at" :date="row.validated_at" hide-icon />
           <template v-if="took">
             <span>·</span>
             <span>{{

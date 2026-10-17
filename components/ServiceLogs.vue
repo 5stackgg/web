@@ -478,6 +478,8 @@ export default {
 
   unmounted() {
     clearTimeout(this.retryTimeout);
+    // Otherwise the api keeps following this service until the socket closes.
+    socket.event("logs:stop", { service: this.service });
     this.logListener?.stop();
     this.onlineListener?.stop();
     document.body.classList.remove("overflow-hidden");

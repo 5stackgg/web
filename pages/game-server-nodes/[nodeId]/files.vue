@@ -1,24 +1,23 @@
 <template>
-  <div class="flex flex-col h-[calc(100svh-6rem)]">
-    <PageTransition>
-      <PageHeading>
-        <template #title>
-          <span class="capitalize">
-            {{ node?.label || nodeId }}
-          </span>
-          {{ $t("file_manager.game_server_node_files") }}
-        </template>
-        <template #description>
-          {{ $t("common.manage_custom_plugins_and_shared_files") }}
-        </template>
-      </PageHeading>
+  <div class="flex h-[calc(100svh-6rem)] min-w-0 flex-col gap-4">
+    <PageTransition :delay="0">
+      <h1 class="flex min-w-0 items-baseline gap-2">
+        <span
+          class="min-w-0 truncate text-xl font-semibold leading-tight"
+          :class="!node?.label && 'font-mono text-base font-medium'"
+          >{{ node?.label || nodeId }}</span
+        >
+        <span class="shrink-0 text-sm text-muted-foreground">{{
+          $t("game_server.files")
+        }}</span>
+      </h1>
     </PageTransition>
 
-    <PageTransition :delay="100" class="mt-6">
-      <div class="flex-1 min-h-0 overflow-hidden">
-        <Card class="h-full">
-          <FileManagerContainer :node-id="nodeId" :open-path="openPath" />
-        </Card>
+    <PageTransition :delay="60" class="min-h-0 flex-1">
+      <div
+        class="h-full overflow-hidden rounded-md border border-border bg-card/20"
+      >
+        <FileManagerContainer :node-id="nodeId" :open-path="openPath" />
       </div>
     </PageTransition>
   </div>
@@ -27,8 +26,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
-import { Card } from "@/components/ui/card";
-import PageHeading from "~/components/PageHeading.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FileManagerContainer from "~/components/file-manager/FileManagerContainer.vue";
 import { generateQuery } from "~/graphql/graphqlGen";

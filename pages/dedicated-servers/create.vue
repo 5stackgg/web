@@ -6,8 +6,10 @@ definePageMeta({ middleware: "admin" });
 </script>
 
 <template>
-  <h1 class="sr-only">{{ $t("pages.dedicated_servers.create.title") }}</h1>
-  <PageTransition class="mx-auto w-full max-w-2xl">
-    <server-form></server-form>
+  <h1 class="sr-only">{{ $t("pages.dedicated_servers.create_server") }}</h1>
+  <!-- Left-aligned like the rest of admin; the bottom room keeps the last
+       field clear of the floating create bar. -->
+  <PageTransition class="w-full max-w-3xl pb-28">
+    <ServerForm />
   </PageTransition>
 </template>

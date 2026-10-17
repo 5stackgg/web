@@ -13,10 +13,14 @@ withDefaults(
     // lives in a tooltip. Anywhere with room -- a settings card, say -- wants
     // the words, at every width.
     showLabel?: boolean;
+    // Full-width, in the amber frame the Create Lobby button wears: for the
+    // left nav, where it sits on its own under the fleet status.
+    framed?: boolean;
   }>(),
   {
     isMenuItem: true,
     showLabel: false,
+    framed: false,
   },
 );
 
@@ -45,6 +49,24 @@ const { canInstall, manualInstall, showInstructions, install } =
         </SidebarMenuButton>
       </SidebarMenuItem>
     </template>
+    <div
+      v-else-if="framed"
+      class="relative flex rounded-md shadow-[0_4px_14px_-8px_hsl(var(--tac-amber)/0.3)] transition-shadow duration-300 hover:shadow-[0_6px_18px_-8px_hsl(var(--tac-amber)/0.4)]"
+    >
+      <span
+        aria-hidden="true"
+        class="tac-amber-frame pointer-events-none absolute inset-0 rounded-md"
+      ></span>
+      <Button
+        variant="ghost"
+        size="sm"
+        class="w-full text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]"
+        @click="install"
+      >
+        <MonitorDown />
+        {{ $t("pwa.install.button") }}
+      </Button>
+    </div>
     <template v-else>
       <FiveStackToolTip v-if="!isMobile && !showLabel">
         <template #trigger>

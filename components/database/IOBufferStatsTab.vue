@@ -1,315 +1,172 @@
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import DbGrid from "./DbGrid.vue";
+import DbSev from "./DbSev.vue";
+import SchemaSelector from "./SchemaSelector.vue";
+import {
+  formatBig,
+  formatPct,
+  hitSeverity,
+  type DbGridColumn,
+} from "./dbHealth";
+
+const props = defineProps<{ db: Record<string, any> }>();
+const emit = defineEmits<{ (e: "update:schemas", schemas: string[]): void }>();
+const { t } = useI18n();
+
+const view = ref("table");
+const viewOptions = computed(() => [
+  { key: "table", label: t("pages.database.explorer.table_io") },
+  { key: "index", label: t("pages.database.explorer.index_io") },
+]);
+
+const sort = ref("cache_hit_ratio");
+const dir = ref<"asc" | "desc">("asc");
+watch(view, () => {
+  sort.value = "cache_hit_ratio";
+  dir.value = "asc";
+});
+
+const tableRows = computed(() =>
+  props.db.tables.filter(
+    (tb: any) => (tb.heap_blks_hit || 0) + (tb.heap_blks_read || 0) > 0,
+  ),
+);
+const indexRows = computed(() =>
+  props.db.indexes.filter((i: any) => i.idx_blks_hit != null),
+);
+const rows = computed(() =>
+  view.value === "table" ? tableRows.value : indexRows.value,
+);
+
+const columns = computed<DbGridColumn[]>(() =>
+  view.value === "table"
+    ? [
+        { key: "schemaname", label: t("pages.database.columns.schema") },
+        { key: "relname", label: t("pages.database.columns.table") },
+        {
+          key: "heap_blks_hit",
+          label: t("pages.database.explorer.heap_hits"),
+          num: true,
+        },
+        {
+          key: "heap_blks_read",
+          label: t("pages.database.explorer.heap_reads"),
+          num: true,
+        },
+        {
+          key: "idx_blks_hit",
+          label: t("pages.database.explorer.index_hits"),
+          num: true,
+        },
+        {
+          key: "idx_blks_read",
+          label: t("pages.database.explorer.index_reads"),
+          num: true,
+        },
+        {
+          key: "cache_hit_ratio",
+          label: t("pages.database.explorer.cache_hit_pct"),
+          num: true,
+        },
+      ]
+    : [
+        { key: "schemaname", label: t("pages.database.columns.schema") },
+        { key: "tablename", label: t("pages.database.columns.table") },
+        { key: "indexname", label: t("pages.database.columns.index") },
+        {
+          key: "idx_blks_hit",
+          label: t("pages.database.explorer.blocks_hit"),
+          num: true,
+        },
+        {
+          key: "idx_blks_read",
+          label: t("pages.database.explorer.blocks_read"),
+          num: true,
+        },
+        {
+          key: "cache_hit_ratio",
+          label: t("pages.database.explorer.cache_hit_pct"),
+          num: true,
+        },
+      ],
+);
+const numKeys = [
+  "heap_blks_hit",
+  "heap_blks_read",
+  "idx_blks_hit",
+  "idx_blks_read",
+];
+const cellSlot = (key: string) => `cell-${key}`;
+</script>
+
 <template>
-  <div class="space-y-4">
-    <Tabs default-value="table" class="w-full">
-      <div class="flex items-end justify-between gap-4 flex-wrap">
-        <TabsList>
-          <TabsTrigger value="table">{{
-            $t("pages.database.io.tabs.table_io")
-          }}</TabsTrigger>
-          <TabsTrigger value="index">{{
-            $t("pages.database.io.tabs.index_io")
-          }}</TabsTrigger>
-        </TabsList>
+  <div class="grid gap-4">
+    <div class="flex flex-wrap items-center gap-2">
+      <AnimatedFilters v-model="view" square :options="viewOptions" />
+      <SchemaSelector
+        class="ml-auto"
+        :model-value="db.schemas"
+        @update:model-value="emit('update:schemas', $event)"
+      />
+    </div>
 
-        <!-- Schema Selector -->
-        <div class="flex items-center gap-2">
-          <Label class="text-xs text-muted-foreground whitespace-nowrap">{{
-            $t("pages.database.columns.schema")
-          }}</Label>
-          <SchemaSelector @change="handleSchemaChange" class="w-40" />
-        </div>
-      </div>
-
-      <TabsContent value="table" class="space-y-6">
-        <!-- Table I/O Stats -->
-        <div>
-          <h3 class="text-lg font-semibold mb-3">
-            {{ $t("pages.database.io.table_io_stats") }}
-          </h3>
-          <Card>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{{
-                    $t("pages.database.columns.schema")
-                  }}</TableHead>
-                  <TableHead>{{
-                    $t("pages.database.columns.table")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.heap_hits")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.heap_reads")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.index_hits")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.index_reads")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.cache_hit_pct")
-                  }}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow
-                  v-for="table in tableIOStats"
-                  :key="`${table.schemaname}.${table.relname}`"
-                >
-                  <TableCell class="text-xs">{{ table.schemaname }}</TableCell>
-                  <TableCell class="font-mono text-xs">{{
-                    table.relname
-                  }}</TableCell>
-                  <TableCell class="text-right">{{
-                    table.heap_blks_hit.toLocaleString()
-                  }}</TableCell>
-                  <TableCell class="text-right">
-                    <Badge v-if="table.heap_blks_read > 0" variant="secondary">
-                      {{ table.heap_blks_read.toLocaleString() }}
-                    </Badge>
-                    <span v-else class="text-muted-foreground">0</span>
-                  </TableCell>
-                  <TableCell class="text-right">{{
-                    table.idx_blks_hit.toLocaleString()
-                  }}</TableCell>
-                  <TableCell class="text-right">
-                    <Badge v-if="table.idx_blks_read > 0" variant="secondary">
-                      {{ table.idx_blks_read.toLocaleString() }}
-                    </Badge>
-                    <span v-else class="text-muted-foreground">0</span>
-                  </TableCell>
-                  <TableCell class="text-right">
-                    <Badge
-                      v-if="table.cache_hit_ratio !== null"
-                      :variant="getCacheHitVariant(table.cache_hit_ratio)"
-                    >
-                      {{ (table.cache_hit_ratio * 100).toFixed(1) }}%
-                    </Badge>
-                    <span v-else class="text-muted-foreground">N/A</span>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-            <Empty v-if="tableIOStats.length === 0">
-              <p class="text-muted-foreground">
-                {{ $t("pages.database.io.no_table_stats") }}
-              </p>
-            </Empty>
-          </Card>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="index" class="space-y-6">
-        <!-- Index I/O Stats -->
-        <div>
-          <h3 class="text-lg font-semibold mb-3">
-            {{ $t("pages.database.io.index_io_stats") }}
-          </h3>
-          <Card>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{{
-                    $t("pages.database.columns.schema")
-                  }}</TableHead>
-                  <TableHead>{{
-                    $t("pages.database.columns.table")
-                  }}</TableHead>
-                  <TableHead>{{
-                    $t("pages.database.columns.index")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.blocks_hit")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.blocks_read")
-                  }}</TableHead>
-                  <TableHead class="text-right">{{
-                    $t("pages.database.io.cache_hit_pct")
-                  }}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow
-                  v-for="index in indexIOStats"
-                  :key="`${index.schemaname}.${index.indexname}`"
-                >
-                  <TableCell class="text-xs">{{ index.schemaname }}</TableCell>
-                  <TableCell class="font-mono text-xs">{{
-                    index.tablename
-                  }}</TableCell>
-                  <TableCell class="font-mono text-xs">{{
-                    index.indexname
-                  }}</TableCell>
-                  <TableCell class="text-right">{{
-                    index.idx_blks_hit.toLocaleString()
-                  }}</TableCell>
-                  <TableCell class="text-right">
-                    <Badge v-if="index.idx_blks_read > 0" variant="secondary">
-                      {{ index.idx_blks_read.toLocaleString() }}
-                    </Badge>
-                    <span v-else class="text-muted-foreground">0</span>
-                  </TableCell>
-                  <TableCell class="text-right">
-                    <Badge
-                      :variant="
-                        getCacheHitVariant(calculateCacheHitRatio(index))
-                      "
-                    >
-                      {{
-                        calculateCacheHitRatio(index) !== null
-                          ? (calculateCacheHitRatio(index)! * 100).toFixed(1) +
-                            "%"
-                          : "N/A"
-                      }}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-            <Empty v-if="indexIOStats.length === 0">
-              <p class="text-muted-foreground">
-                {{ $t("pages.database.io.no_index_io_stats") }}
-              </p>
-            </Empty>
-          </Card>
-        </div>
-      </TabsContent>
-    </Tabs>
+    <SectionEmpty
+      v-if="db.schemas.length === 0"
+      :title="$t('pages.database.explorer.no_schemas_title')"
+      :description="$t('pages.database.explorer.no_schemas_hint')"
+    />
+    <SectionEmpty
+      v-else-if="!rows.length"
+      :title="
+        view === 'table'
+          ? $t('pages.database.io.no_table_stats')
+          : $t('pages.database.io.no_index_io_stats')
+      "
+      :description="$t('pages.database.explorer.no_reads_hint')"
+    />
+    <DbGrid
+      v-else
+      :key="view"
+      v-model:sort="sort"
+      v-model:dir="dir"
+      :rows="rows"
+      :columns="columns"
+      :row-key="
+        (r) => (view === 'table' ? r.key : `${r.schemaname}.${r.indexname}`)
+      "
+      :max-height="560"
+    >
+      <template #cell-schemaname="{ row }">
+        <span class="font-mono text-[11.5px] text-muted-foreground/70">{{
+          row.schemaname
+        }}</span>
+      </template>
+      <template #cell-relname="{ row }">
+        <span class="font-mono text-[11.5px]">{{ row.relname }}</span>
+      </template>
+      <template #cell-tablename="{ row }">
+        <span class="font-mono text-[11.5px]">{{ row.tablename }}</span>
+      </template>
+      <template #cell-indexname="{ row }">
+        <span class="font-mono text-[11.5px]">{{ row.indexname }}</span>
+      </template>
+      <template v-for="key in numKeys" #[cellSlot(key)]="{ row }">{{
+        formatBig(row[key])
+      }}</template>
+      <template #cell-cache_hit_ratio="{ row }">
+        <DbSev
+          v-if="row.cache_hit_ratio != null"
+          :sev="hitSeverity(row.cache_hit_ratio)"
+          >{{ formatPct(row.cache_hit_ratio) }}</DbSev
+        >
+        <span v-else class="text-muted-foreground/60">{{
+          $t("common.na")
+        }}</span>
+      </template>
+    </DbGrid>
   </div>
 </template>
-
-<script lang="ts">
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Empty } from "@/components/ui/empty";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { generateQuery } from "~/graphql/graphqlGen";
-import SchemaSelector from "./SchemaSelector.vue";
-
-export default {
-  components: {
-    Card,
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-    Empty,
-    Badge,
-    Label,
-    SchemaSelector,
-  },
-  inject: ["pollInterval", "refreshTrigger"],
-  data() {
-    return {
-      tableIOStats: [] as any[],
-      indexIOStats: [] as any[],
-      selectedSchemas: ["public"] as string[],
-    };
-  },
-  methods: {
-    handleSchemaChange(schemas: string[]) {
-      this.selectedSchemas = schemas;
-      if (this.$apollo.queries.tableIOStats) {
-        this.$apollo.queries.tableIOStats.refetch();
-      }
-      if (this.$apollo.queries.indexIOStats) {
-        this.$apollo.queries.indexIOStats.refetch();
-      }
-    },
-    getCacheHitVariant(ratio: number | null) {
-      if (ratio === null) return "secondary";
-      if (ratio < 0.8) return "destructive";
-      if (ratio < 0.95) return "secondary";
-      return "default";
-    },
-    calculateCacheHitRatio(index: any): number | null {
-      const total = index.idx_blks_hit + index.idx_blks_read;
-      if (total === 0) return null;
-      return index.idx_blks_hit / total;
-    },
-  },
-  apollo: {
-    tableIOStats: {
-      query() {
-        return generateQuery({
-          getTableIOStats: [
-            this.selectedSchemas.length > 0
-              ? { schemas: this.selectedSchemas }
-              : {},
-            {
-              schemaname: true,
-              relname: true,
-              heap_blks_read: true,
-              heap_blks_hit: true,
-              idx_blks_read: true,
-              idx_blks_hit: true,
-              cache_hit_ratio: true,
-            },
-          ],
-        });
-      },
-      update: (data: any) => data.getTableIOStats,
-      pollInterval() {
-        return this.pollInterval();
-      },
-      skip() {
-        return this.selectedSchemas.length === 0;
-      },
-    },
-    indexIOStats: {
-      query() {
-        return generateQuery({
-          getIndexIOStats: [
-            this.selectedSchemas.length > 0
-              ? { schemas: this.selectedSchemas }
-              : {},
-            {
-              schemaname: true,
-              tablename: true,
-              indexname: true,
-              idx_blks_read: true,
-              idx_blks_hit: true,
-            },
-          ],
-        });
-      },
-      update: (data: any) => data.getIndexIOStats,
-      pollInterval() {
-        return this.pollInterval();
-      },
-      skip() {
-        return this.selectedSchemas.length === 0;
-      },
-    },
-  },
-  watch: {
-    refreshTrigger() {
-      // Refetch when manual refresh is triggered
-      if (this.$apollo.queries.tableIOStats) {
-        this.$apollo.queries.tableIOStats.refetch();
-      }
-      if (this.$apollo.queries.indexIOStats) {
-        this.$apollo.queries.indexIOStats.refetch();
-      }
-    },
-  },
-};
-</script>

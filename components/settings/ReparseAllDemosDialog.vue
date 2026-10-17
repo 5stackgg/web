@@ -46,10 +46,14 @@ function close(value: boolean) {
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
           <LucideRefreshCw class="h-4 w-4" />
-          {{ $t("pages.settings.application.demo_settings.reparse_confirm_title") }}
+          {{
+            $t("pages.settings.application.demo_settings.reparse_confirm_title")
+          }}
         </DialogTitle>
         <DialogDescription>
-          {{ $t("pages.settings.application.demo_settings.reparse_confirm_body") }}
+          {{
+            $t("pages.settings.application.demo_settings.reparse_confirm_body")
+          }}
         </DialogDescription>
       </DialogHeader>
 
@@ -62,10 +66,14 @@ function close(value: boolean) {
           />
           <div class="flex flex-col gap-1 text-sm">
             <span class="font-semibold text-destructive">{{
-              $t("pages.settings.application.demo_settings.reparse_warning_title")
+              $t(
+                "pages.settings.application.demo_settings.reparse_warning_title",
+              )
             }}</span>
             <span class="text-muted-foreground">{{
-              $t("pages.settings.application.demo_settings.reparse_warning_body")
+              $t(
+                "pages.settings.application.demo_settings.reparse_warning_body",
+              )
             }}</span>
           </div>
         </div>
@@ -76,7 +84,9 @@ function close(value: boolean) {
           >
             <span class="flex items-center gap-2">
               <Spinner class="h-4 w-4" />
-              {{ $t("pages.settings.application.demo_settings.reparse_running") }}
+              {{
+                $t("pages.settings.application.demo_settings.reparse_running")
+              }}
             </span>
             <span class="text-muted-foreground">
               {{ status?.completed ?? 0 }} / {{ status?.total ?? 0 }} ({{
@@ -133,7 +143,9 @@ function close(value: boolean) {
             <Spinner v-if="starting" class="h-4 w-4" />
             <LucideRefreshCw v-else class="h-4 w-4" />
             {{
-              $t("pages.settings.application.demo_settings.reparse_confirm_action")
+              $t(
+                "pages.settings.application.demo_settings.reparse_confirm_action",
+              )
             }}
           </Button>
         </div>

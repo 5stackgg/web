@@ -138,7 +138,7 @@ export default {
           }),
         });
 
-        this.$emit("updated");
+        this.$emit("updated", { ...this.form.values });
       } finally {
         this.submitLock = false;
         this.submitting = false;

@@ -247,7 +247,9 @@ async function confirmBulk() {
 const finishedRow = (wrapper: any, name: string) =>
   wrapper
     .findAll("li")
-    .find((item: any) => item.find("a").exists() && item.find("a").text() === name);
+    .find(
+      (item: any) => item.find("a").exists() && item.find("a").text() === name,
+    );
 
 describe("UtilityRenderQueuePanel", () => {
   it("marks the render that is the lineup's preview as live", async () => {
@@ -259,7 +261,9 @@ describe("UtilityRenderQueuePanel", () => {
     expect(live).toHaveLength(2);
     expect(live[0].find("a").text()).toBe("Lineup l-1");
     expect(
-      wrapper.findAll("li").filter((item) => item.text().includes("Failed"))[0]
+      wrapper
+        .findAll("li")
+        .filter((item) => item.text().includes("Failed"))[0]
         .text(),
     ).not.toContain("Live");
   });
@@ -276,7 +280,9 @@ describe("UtilityRenderQueuePanel", () => {
 
     const free = finishedRow(wrapper, "Lineup l-1");
     expect(
-      free.find("button[aria-label='Re-render preview']").attributes("disabled"),
+      free
+        .find("button[aria-label='Re-render preview']")
+        .attributes("disabled"),
     ).toBeUndefined();
   });
 
@@ -349,10 +355,10 @@ describe("UtilityRenderQueuePanel coverage", () => {
 
     const warning = wrapper.find("[data-coverage-behind]");
     expect(warning.attributes("aria-label")).toContain(
-      "The render pod in use films version 1, older than the version 2 this API expects",
+      "The last finished render was filmed at version 1; this API expects version 2",
     );
     expect(warning.attributes("aria-label")).toContain(
-      "until the game-server and game-streamer images are updated",
+      "render one lineup first",
     );
     expect(bulk(wrapper, "outdated").attributes("disabled")).toBeDefined();
     expect(bulk(wrapper, "missing").attributes("disabled")).toBeUndefined();
@@ -821,9 +827,9 @@ describe("UtilityRenderQueuePanel queue", () => {
     const wrapper = await mountPanel();
 
     expect(
-      queueRow(wrapper, "m-1").find("[data-queue-stale]").attributes(
-        "aria-label",
-      ),
+      queueRow(wrapper, "m-1")
+        .find("[data-queue-stale]")
+        .attributes("aria-label"),
     ).toBe("Silent for 2m");
     expect(queueRow(wrapper, "m-2").find("[data-queue-stale]").exists()).toBe(
       false,
@@ -836,23 +842,19 @@ describe("UtilityRenderQueuePanel queue", () => {
   });
 
   it("gives a map change five minutes before marking it", async () => {
-    rows.inFlight = [
-      queued("n-1", "de_nuke", [["changing_map:de_nuke", 120]]),
-    ];
+    rows.inFlight = [queued("n-1", "de_nuke", [["changing_map:de_nuke", 120]])];
     const wrapper = await mountPanel();
     expect(queueRow(wrapper, "n-1").find("[data-queue-stale]").exists()).toBe(
       false,
     );
     wrapper.unmount();
 
-    rows.inFlight = [
-      queued("n-2", "de_nuke", [["changing_map:de_nuke", 360]]),
-    ];
+    rows.inFlight = [queued("n-2", "de_nuke", [["changing_map:de_nuke", 360]])];
     const later = await mountPanel();
     expect(
-      queueRow(later, "n-2").find("[data-queue-stale]").attributes(
-        "aria-label",
-      ),
+      queueRow(later, "n-2")
+        .find("[data-queue-stale]")
+        .attributes("aria-label"),
     ).toBe("Silent for 6m");
     expect(statusOf(later, "n-2")).toBe("Changing map to Nuke");
   });

@@ -135,7 +135,7 @@ describe("map pool editor", () => {
   });
 
   const LOCKED =
-    "Automatic Update Map Pools keeps this pool matching Active Duty. Turn it off to choose maps yourself.";
+    "Automatic update map pools keeps this pool matching Active Duty. Turn it off to choose maps yourself.";
 
   const autoUpdate = (value: string) => {
     useApplicationSettingsStore().settings = [

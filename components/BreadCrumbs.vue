@@ -3,19 +3,8 @@
 <template>
   <Breadcrumb class="hidden md:flex capitalize min-w-0 flex-1">
     <BreadcrumbList class="flex-nowrap min-w-0">
-      <BreadcrumbItem class="shrink-0">
-        <BreadcrumbLink as-child>
-          <NuxtLink
-            :to="{ name: 'play' }"
-            class="inline-flex h-7 items-center rounded-md px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
-          >
-            {{ $t("breadcrumbs.dashboard") }}
-          </NuxtLink>
-        </BreadcrumbLink>
-      </BreadcrumbItem>
-
       <template v-for="(crumb, index) in crumbs" :key="index">
-        <BreadcrumbSeparator class="shrink-0" />
+        <BreadcrumbSeparator v-if="index > 0" class="shrink-0" />
 
         <BreadcrumbItem
           :class="index === crumbs.length - 1 ? 'min-w-0' : 'shrink-0'"
@@ -30,7 +19,7 @@
                   : '',
               ]"
             >
-              {{ crumb.text.replace("-", " ") }}
+              {{ crumb.text }}
             </NuxtLink>
           </BreadcrumbLink>
         </BreadcrumbItem>
@@ -48,6 +37,7 @@ import { useTeamContext } from "~/composables/useTeamContext";
 import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 import { useSeasonContext } from "~/composables/useSeasonContext";
 import { useAwardContext } from "~/composables/useAwardContext";
+import { useServerContext } from "~/composables/useServerContext";
 import cleanMapName from "~/utilities/cleanMapName";
 import { e_player_roles_enum } from "~/generated/zeus";
 
@@ -69,6 +59,7 @@ export default {
       const drc = useDraftRoomContext();
       const sc = useSeasonContext();
       const ac = useAwardContext();
+      const serverc = useServerContext();
       const breadcrumbs: Array<{
         text: string;
         to: string;
@@ -190,6 +181,19 @@ export default {
           return;
         }
 
+        // A dedicated server's crumb is its label, never its uuid.
+        if (
+          segments[0] === "dedicated-servers" &&
+          index === 1 &&
+          segment !== "create"
+        ) {
+          if (serverc.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({ text: serverc.value.name, to: path });
+          return;
+        }
+
         // /utility/<map>: the segment is the map's file name, and every other
         // surface -- the board title, the picker, the practice dialog -- shows
         // the title. Named routes only, so /utility/lineup/<id> is untouched.
@@ -208,6 +212,23 @@ export default {
         if (segments[0] === "system-render-queue" && index === 0) {
           breadcrumbs.push({
             text: this.$t("pages.highlights.render_queue"),
+            to: path,
+          });
+          return;
+        }
+
+        if (segments[0] === "gpu-nodes" && index === 0) {
+          breadcrumbs.push({
+            text: this.$t("layouts.app_nav.administration.gpu_nodes"),
+            to: path,
+          });
+          return;
+        }
+
+        // The page was renamed; its route still reads stream-deck.
+        if (segments[0] === "stream-deck" && index === 0) {
+          breadcrumbs.push({
+            text: this.$t("layouts.app_nav.administration.control_room"),
             to: path,
           });
           return;
@@ -252,8 +273,9 @@ export default {
           }
         }
 
+        // A raw route segment reads as words; names above keep their dashes.
         breadcrumbs.push({
-          text: segment,
+          text: segment.replace(/-/g, " "),
           to: path,
         });
       });

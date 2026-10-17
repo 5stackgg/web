@@ -72,9 +72,7 @@ const metricOptions = computed(() => [
 
 // Follows the board on screen, not the toggle, so values never switch metric
 // before the rows they belong to have arrived.
-const byTime = computed(
-  () => (shown.value?.metric ?? metric.value) === "time",
-);
+const byTime = computed(() => (shown.value?.metric ?? metric.value) === "time");
 
 const shownPeriod = computed(() => shown.value?.period ?? period.value);
 
@@ -238,7 +236,7 @@ const gridClasses =
       <div
         role="row"
         :class="gridClasses"
-        class="h-9 border-b border-border font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+        class="h-9 border-b border-border text-[0.72rem] font-medium text-muted-foreground"
       >
         <span role="columnheader">#</span>
         <span role="columnheader">{{ $t("community.recent.player") }}</span>
@@ -300,7 +298,7 @@ const gridClasses =
             </NuxtLink>
             <span
               v-if="isMe(entry)"
-              class="shrink-0 rounded-sm bg-[hsl(var(--tac-amber))] px-1 py-0.5 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em] text-[hsl(var(--tac-amber-foreground))]"
+              class="shrink-0 rounded-md bg-[hsl(var(--tac-amber))] px-1.5 py-0.5 text-[0.65rem] font-semibold leading-none text-[hsl(var(--tac-amber-foreground))]"
             >
               {{ $t("community.leaderboard.you") }}
             </span>
@@ -343,7 +341,7 @@ const gridClasses =
       >
         <div v-if="pinned" data-testid="leaderboard-pinned">
           <div
-            class="grid h-6 place-items-center border-y border-border font-mono text-[0.7rem] tracking-[0.3em] text-muted-foreground"
+            class="grid h-6 place-items-center border-y border-border text-[0.7rem] tracking-[0.3em] text-muted-foreground"
             aria-hidden="true"
           >
             · · ·
@@ -382,7 +380,7 @@ const gridClasses =
                 {{ pinned.name }}
               </NuxtLink>
               <span
-                class="shrink-0 rounded-sm bg-[hsl(var(--tac-amber))] px-1 py-0.5 font-mono text-[0.55rem] font-bold uppercase leading-none tracking-[0.12em] text-[hsl(var(--tac-amber-foreground))]"
+                class="shrink-0 rounded-md bg-[hsl(var(--tac-amber))] px-1.5 py-0.5 text-[0.65rem] font-semibold leading-none text-[hsl(var(--tac-amber-foreground))]"
               >
                 {{ $t("community.leaderboard.you") }}
               </span>

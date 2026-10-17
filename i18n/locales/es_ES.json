@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "Uso de CPU",
-      "memory_usage": "Uso de memoria",
       "services": "Servicios",
       "service": "Servicio",
-      "network": "Red",
       "search_services_placeholder": "Buscar servicios o nodos...",
       "filter_by_node": "Filtrar por nodo",
       "no_services_found": "Ningún servicio coincide con tus filtros actuales.",
@@ -1281,11 +1278,145 @@
       "disk_short": "Discos",
       "network_short": "Red",
       "no_nodes_found": "Ningún nodo de servidores coincide con tus filtros actuales.",
-      "only_online_nodes": "Solo nodos en línea"
+      "only_online_nodes": "Solo nodos en línea",
+      "search_placeholder": "Buscar servicios o nodos",
+      "scope_all": "Todos los servicios",
+      "scope_attention": "Requiere atención",
+      "live_hint": "Cada nodo informa aproximadamente cada 30 segundos. La página conserva los últimos 90 minutos.",
+      "filter_group": "Nodos de servidores",
+      "only_online": "Solo nodos en línea",
+      "only_enabled": "Solo nodos activados",
+      "no_nodes_title": "No hay nodos de servidores",
+      "no_nodes_hint": "Configura un nodo de servidor para añadir capacidad de partidas.",
+      "setup_node": "Configurar un nodo",
+      "services_reporting": "{count} informando",
+      "all_nodes": "Todos los nodos",
+      "no_services_title": "Ningún servicio está informando",
+      "no_services_hint": "Los servicios aparecen aquí cuando un nodo envía métricas de pods.",
+      "no_attention_title": "Ningún servicio requiere atención",
+      "no_attention_hint": "Todos los servicios están dentro de los límites.",
+      "no_match_title": "Ningún servicio coincide",
+      "no_match_hint": "Nada coincide con tu búsqueda, nodo o filtros.",
+      "clear_filters": "Borrar filtros",
+      "logs_for": "Logs de {name}",
+      "logs_sheet_sub": "Logs · {node}",
+      "open_logs_page": "Abrir en la página de Logs",
+      "attention": {
+        "problems": "{count} problema | {count} problemas",
+        "nodes_ok": "{count} nodo bien | {count} nodos bien",
+        "critical_count": "{count} crítico | {count} críticos",
+        "warning_count": "{count} aviso | {count} avisos",
+        "thresholds": "Umbrales",
+        "thresholds_hint": "Nodos: aviso desde el 75 %, crítico desde el 90 % de CPU, memoria o disco. GPU: crítico al 90 % de uso durante 5 minutos o al 90 % de VRAM, aviso a 85 °C. En la tabla de servicios, un servicio que ocupa la mitad de la memoria de su nodo también es crítico.",
+        "all_clear": "Nada requiere atención",
+        "all_clear_hint": "Todos los nodos en línea y las GPU están dentro de los límites.",
+        "issue_cpu": "CPU de {node} al {value}",
+        "issue_memory": "Memoria de {node} al {value}",
+        "issue_disk": "Disco de {node} al {value}",
+        "issue_cpu_warning": "{node} informa de un servidor de juego limitado por CPU",
+        "issue_gpu_util": "{gpu} en {node} al {value}",
+        "issue_gpu_vram": "VRAM de {gpu} en {node} al {value}",
+        "issue_gpu_temp": "{gpu} en {node} a {value}",
+        "cores": "{count} núcleo | {count} núcleos",
+        "above_for": "por encima del {threshold} % durante {minutes} min",
+        "above_now": "por encima del {threshold} % desde la última muestra",
+        "used_of": "{used} de {total}",
+        "gpu_usage": "{value} de uso",
+        "last_30": "Últimos 30 min",
+        "open_node": "Abrir nodo",
+        "nodes": "Nodos",
+        "gpus": "GPU",
+        "nodes_all_fine": "{count} nodo en línea y dentro de los límites | Los {count} nodos en línea y dentro de los límites",
+        "nodes_fine": "{fine} de {total} nodos en línea y dentro de los límites",
+        "need_attention": "{count} requiere atención | {count} requieren atención",
+        "offline": "{count} sin conexión",
+        "view_nodes": "Ver todos en Nodos de servidores",
+        "gpus_none_online": "Ninguna GPU en línea",
+        "gpus_all_fine": "{count} GPU dentro de los límites | {count} GPU dentro de los límites",
+        "gpus_fine": "{fine} de {total} GPU dentro de los límites",
+        "gpus_offline": "{count} en un nodo sin conexión | {count} en nodos sin conexión",
+        "view_gpus": "Ver en Nodos GPU"
+      },
+      "services_table": {
+        "actions": "Acciones",
+        "last_seen": "Visto por última vez {time}",
+        "node_disk": "Disco del nodo",
+        "node_disk_hint": "Los servicios no informan de su propio uso de disco. Este es el disco más lleno del nodo en el que se ejecuta cada servicio: aviso desde el 75 %, crítico desde el 90 %.",
+        "cpu_last_30": "CPU, últimos 30 min",
+        "of_node": "% del nodo",
+        "memory_share_hint": "Porcentaje de la RAM total del nodo que ocupa el servicio, con la memoria en uso en su descripción emergente. Un servicio que ocupa la mitad de la memoria de un nodo es crítico."
+      }
     },
     "system_logs": {
       "follow_logs": "Seguir logs",
-      "timestamps": "Marcas de tiempo"
+      "timestamps": "Marcas de tiempo",
+      "bar_label": "{time}, {total} líneas, {warnings} advertencias, {errors} errores",
+      "clear_filters": "Quitar filtros",
+      "connection_lost": "Conexión perdida. Reconectando — el stream continúa tras la última línea mostrada aquí.",
+      "container": "Contenedor",
+      "copy_line": "Copiar línea",
+      "download": "Descargar logs",
+      "download_failed": "No se han podido descargar los logs completos de {service}",
+      "errors": "Errores",
+      "errors_like": "Errores como {text}",
+      "errors_loaded": "{count} error en el intervalo cargado | {count} errores en el intervalo cargado",
+      "errors_word": "errores",
+      "exit_full_screen": "Salir de pantalla completa (Esc)",
+      "filter_lines": "Filtrar líneas",
+      "follow": "Seguir",
+      "full_logs_of": "Logs completos · {service}",
+      "full_screen": "Pantalla completa",
+      "jump_to_live": "Ir al directo",
+      "level_error": "Error",
+      "level_log": "Log",
+      "level_warning": "Advertencia",
+      "line_copied": "Línea copiada",
+      "live_rate": "En directo · {rate}/min",
+      "load_hour_before": "Cargar la hora anterior",
+      "loading_earlier": "Cargando…",
+      "log_lines": "Líneas de log",
+      "log_lines_word": "líneas de log",
+      "minutes_per_bar": "{time} · {minutes} min por barra",
+      "n_new": "{count} nuevas",
+      "no_match_hint": "Nada en el intervalo cargado coincide con estos filtros. Carga la hora anterior o amplía el nivel.",
+      "no_match_title": "Ninguna línea coincide",
+      "no_repeating": "No hay advertencias ni errores repetidos",
+      "no_services_hint": "Elige uno o más servicios para combinar sus logs en un solo stream.",
+      "no_services_title": "No hay servicios seleccionados",
+      "node": "Nodo",
+      "nothing_at": "Nada a las {time} coincide con los filtros actuales",
+      "now": "ahora",
+      "only": "Solo",
+      "only_context": "Solo {context}",
+      "per_minute": "{rate}/min",
+      "pod": "Pod",
+      "pod_count": "{count} pods",
+      "pods_of": "Pods de {service}",
+      "preset_all": "Todos",
+      "preset_core": "Núcleo",
+      "preset_match": "Flujo de partida",
+      "preset_media": "Multimedia",
+      "reconnecting": "Reconectando…",
+      "repeating": "{count} advertencia o error repetido | {count} advertencias y errores repetidos",
+      "services": "Servicios",
+      "show_core": "Mostrar servicios principales",
+      "show_every_line": "Mostrar todas las líneas",
+      "show_in_stream": "Mostrarlos en el stream",
+      "show_only": "Mostrar solo {service}",
+      "showing": "Mostrando",
+      "showing_only": "Mostrando solo {service}",
+      "since": "Desde",
+      "start_of_logs": "Inicio de los logs cargados",
+      "time": "Hora",
+      "waiting_for_output": "Esperando salida · se vuelve a consultar cada 5 s",
+      "warnings": "Advertencias",
+      "warnings_like": "Advertencias como {text}",
+      "warnings_loaded": "{count} advertencia en el intervalo cargado | {count} advertencias en el intervalo cargado",
+      "warnings_word": "advertencias",
+      "status_ok": "Sin avisos ni errores en los últimos 5 minutos",
+      "status_warn": "Avisos en los últimos 5 minutos",
+      "status_bad": "Errores en los últimos 5 minutos",
+      "status_off": "Todavía sin salida"
     },
     "system_telemetry": {
       "title": "Telemetría de la flota",
@@ -1515,7 +1646,11 @@
         "modes_caption": "definidos",
         "modes_unranked": "No aptos para draft",
         "modes_unranked_caption": "modos ocultos en las salas de draft"
-      }
+      },
+      "jump_to": "Ir a",
+      "features_title": "Funciones",
+      "not_reported_title": "Aún no reportado",
+      "no_activity_hint": "El gráfico se completa a medida que los paneles reportan las partidas que alojan."
     },
     "tournaments": {
       "title": "Torneos",
@@ -3516,6 +3651,119 @@
       "tabs": {
         "highlights": "Destacados",
         "utility": "Lineups de utilidad"
+      },
+      "ledger": {
+        "search": "Buscar clips y lineups",
+        "view": {
+          "flight": "En curso",
+          "failed": "Fallidos",
+          "done": "Terminados"
+        },
+        "filter": {
+          "queue": "Cola",
+          "map": "Mapa",
+          "group": "Agrupar en curso por lote"
+        },
+        "retry_all": "Reintentar todos los fallidos ({count})",
+        "empty": {
+          "all": "Los clips de highlights y las vistas previas de lineups aparecen aquí mientras arrancan, se renderizan y se suben.",
+          "flight_title": "Nada en curso",
+          "failed_title": "Nada ha fallado",
+          "done_title": "Nada terminado",
+          "flight": "Los nuevos lotes de highlights y vistas previas de lineups aparecen aquí.",
+          "failed": "Todos los renders de la lista terminaron sin problemas.",
+          "done": "Los renders terminados aparecen aquí.",
+          "filtered": "Prueba a borrar la búsqueda o los filtros."
+        },
+        "select_all": "Seleccionar todo",
+        "select": "Seleccionar {name}",
+        "col": {
+          "render": "Render",
+          "progress": "Progreso",
+          "length": "Duración",
+          "elapsed": "Transcurrido",
+          "finished": "Terminado",
+          "actions": "Acciones"
+        },
+        "batch": {
+          "done_of": "{done} de {total} hechos",
+          "failed": "{count} fallido | {count} fallidos",
+          "paused": "en pausa",
+          "silent": "sin noticias de su pod desde hace {since}",
+          "booting": "pod arrancando",
+          "booting_pct": "arranque del pod {pct}%",
+          "waiting_gpu": "esperando una GPU libre"
+        },
+        "pod_on": "en {map}",
+        "lineup_on": "Lineup · {map}",
+        "missing_clip": "Falta: el clip se perdió tras la subida",
+        "ago": "hace {since}",
+        "more": "Más acciones",
+        "open_details": "Abrir detalles",
+        "cancel_batch": "Cancelar lote",
+        "pages": "Páginas",
+        "silent": "Sin respuesta",
+        "history": "Historial de estado",
+        "clip": "Clip",
+        "player": "Jugador",
+        "round": "Ronda",
+        "kills": "Bajas",
+        "segments": "Segmentos",
+        "job_id": "ID del trabajo",
+        "lineup_id": "ID del lineup",
+        "render_job": "Trabajo de render",
+        "no_job": "Ninguno todavía",
+        "logs": "Registros",
+        "bulk": {
+          "selected": "{count} seleccionado | {count} seleccionados",
+          "cancel": "Cancelar selección",
+          "retry": "Reintentar selección",
+          "requeue": "Volver a encolar selección",
+          "clear": "Quitar selección",
+          "requeueing": "Volviendo a encolar",
+          "cancelling": "Cancelando",
+          "progress": "{label} {done} de {total}"
+        },
+        "toast": {
+          "requeued": "{count} render vuelto a encolar | {count} renders vueltos a encolar",
+          "cancelled": "{count} render cancelado | {count} renders cancelados",
+          "not_done": "{count} no se completó | {count} no se completaron",
+          "clip_requeued": "Clip vuelto a encolar",
+          "clip_not_requeued": "No se pudo volver a encolar ese clip",
+          "batch_requeued": "Lote vuelto a encolar",
+          "batch_cancelled": "Lote cancelado",
+          "batch_not_cancelled": "No se pudo cancelar ese lote",
+          "cleared": "Renders terminados borrados"
+        },
+        "confirm": {
+          "cancel_title": "¿Cancelar {count} render? | ¿Cancelar {count} renders?",
+          "cancel_body": "Se detienen donde están y no terminarán. Los clips y vistas previas terminados no se tocan.",
+          "cancel_batches": "Los clips se cancelan por lote, así que también se detiene el resto del lote de cada clip seleccionado.",
+          "keep": "Seguir renderizando",
+          "cancel_action": "Cancelar renders",
+          "batch_title": "¿Cancelar {name}?",
+          "batch_body": "Los clips que no han terminado no se renderizarán. Los clips terminados se quedan en Highlights.",
+          "clear_title": "¿Borrar los renders terminados?",
+          "clear_body": "Esto quita los renders terminados de la cola. Los clips renderizados se quedan en Highlights y las vistas previas en sus lineups."
+        },
+        "coverage": {
+          "current": "{count} al día",
+          "missing": "{count} faltan",
+          "outdated": "{count} desactualizados",
+          "unrenderable": "{count} no se pueden grabar",
+          "queued": "{count} en cola",
+          "lineups": "Lineups",
+          "rerender_outdated": "Volver a renderizar desactualizados",
+          "render_missing": "Renderizar los que faltan",
+          "confirm_missing_title": "¿Renderizar las vistas previas que faltan?",
+          "confirm_outdated_title": "¿Volver a renderizar las vistas previas desactualizadas?",
+          "confirm_queue": "Encolar renders",
+          "lineups_title": "Lineups que necesitan un render",
+          "lineups_sub": "Versión de render v{version}",
+          "render_one": "Renderiza una primero",
+          "render_one_waiting": "Esperando a que termine ese render. Cuando informe la versión actual, se desbloquea Volver a renderizar desactualizadas."
+        },
+        "updated_ago": "Actualizado hace {since}"
       }
     },
     "news": {
@@ -3714,7 +3962,92 @@
       "backfill_cancel_requested": "Cancelación solicitada",
       "backfill_canceled_title": "Reconstrucción de la temporada cancelada",
       "backfill_complete_title": "Reconstrucción de la temporada completada",
-      "backfill_complete_desc": "Se han reconstruido {completed} de {total} partidas ({failed} con errores)."
+      "backfill_complete_desc": "Se han reconstruido {completed} de {total} partidas ({failed} con errores).",
+      "hero": {
+        "rebuild_required": "Requiere reconstrucción",
+        "ends_in": "Termina en",
+        "running_for": "Lleva en curso",
+        "days": "{count} día | {count} días",
+        "started": "Empezó",
+        "ends": "Termina",
+        "day_of": "Día {day} de {total}",
+        "percent_through": "{percent} % completado",
+        "change_start": "Cambiar inicio",
+        "change_end": "Cambiar fecha de fin",
+        "set_end": "Fijar fecha de fin",
+        "make_ongoing": "Hacer indefinida",
+        "grant_award": "Otorgar premio",
+        "one_rebuild": "Solo se ejecuta una reconstrucción a la vez.",
+        "start_caption": "UTC, empieza a las 00:00.",
+        "end_caption": "UTC, termina a las 00:00 de ese día."
+      },
+      "off": {
+        "title": "Fuera de temporada",
+        "pill": "No hay ninguna temporada en curso",
+        "last_ended": "{season} terminó el {date}.",
+        "no_season": "Las partidas jugadas ahora no cuentan para ninguna temporada.",
+        "next": "{season} empieza el {date}, dentro de {count} día, y restablece el ELO de partidas normales a 5000. | {season} empieza el {date}, dentro de {count} días, y restablece el ELO de partidas normales a 5000.",
+        "nothing": "Todavía no hay nada programado."
+      },
+      "banner": {
+        "stale": "{seasons} tiene el ELO desactualizado, así que su clasificación es incorrecta hasta reconstruirla. | {seasons} tienen el ELO desactualizado, así que sus clasificaciones son incorrectas hasta reconstruirlas.",
+        "rebuilding_now": "{season} se está reconstruyendo ahora. Solo se ejecuta una reconstrucción a la vez."
+      },
+      "danger": {
+        "end_description": "La cierra hoy y entrega los premios de temporada según la clasificación final. Hasta que empiece la siguiente temporada, las partidas no cuentan para ninguna.",
+        "end_button": "Terminar temporada",
+        "delete_description": "Sus partidas pasan a no tener temporada. El historial de ELO se conserva; las estadísticas por temporada se borran.",
+        "delete_button": "Eliminar temporada",
+        "end_confirm_title": "¿Terminar {season} ahora?",
+        "end_confirm_instead": "Se cierra hoy, {today}, en lugar del {date}.",
+        "end_confirm_today": "Se cierra hoy, {today}.",
+        "end_confirm_awards": "Los premios de temporada se entregan según la clasificación final: Campeón de temporada, Subcampeón, Tercer puesto y MVP de temporada.",
+        "end_confirm_gap_next": "Hasta que {season} empiece el {date}, las partidas no cuentan para ninguna temporada.",
+        "end_confirm_gap_none": "Hasta que crees la siguiente temporada, las partidas no cuentan para ninguna temporada.",
+        "end_confirm_elo": "El ELO de partidas normales vuelve a empezar en 5000 cuando comienza la siguiente temporada.",
+        "type_to_confirm": "Escribe {phrase} para confirmar",
+        "end_confirm_button": "Terminar {season}",
+        "ended_toast": "{season} terminada. Los premios de temporada se están entregando según su clasificación final.",
+        "delete_confirm_title": "¿Eliminar {season}?",
+        "delete_confirm_button": "Eliminar {season}"
+      },
+      "next": {
+        "label": "Siguiente temporada",
+        "first_label": "Primera temporada",
+        "schedule": "Programar {season}",
+        "hint_scheduled": "{season} está programada para el {date}.",
+        "hint_after": "{season} termina el {date}. No hay nada programado después.",
+        "hint_open_ended": "{season} no tiene fecha de fin, así que la siguiente temporada necesita una primero.",
+        "blocked": "{season} no tiene fecha de fin, así que cualquier temporada posterior se solaparía. Fija primero su fecha de fin.",
+        "first_season_hint": "La primera temporada empieza en tu partida registrada más antigua, el {date}, para que ninguna partida pasada quede fuera de temporada."
+      },
+      "form": {
+        "start_date": "Fecha de inicio",
+        "end_date": "Fecha de fin"
+      },
+      "ledger": {
+        "label": "Registro de temporadas"
+      },
+      "rebuild_progress": {
+        "label": "Reconstruyendo ELO · {completed} de {total} partidas",
+        "failed": "{count} fallida | {count} fallidas",
+        "canceling": "Cancelando"
+      },
+      "empty_state": {
+        "title": "Aún no hay temporadas",
+        "description": "Una temporada restablece el ELO de partidas normales a 5000 al empezar. La primera empieza en tu partida registrada más antigua."
+      },
+      "about": {
+        "label": "Qué hace una temporada",
+        "reset_title": "Una clasificación nueva",
+        "reset_body": "El ELO de las partidas normales se reinicia a 5.000 al empezar una temporada, así todos suben desde el mismo punto.",
+        "counts_title": "Cada partida cuenta",
+        "counts_body": "Las partidas jugadas entre sus fechas de inicio y fin cuentan para su clasificación y estadísticas. Las partidas entre temporadas no cuentan para ninguna.",
+        "awards_title": "Premios al terminar",
+        "awards_body": "Campeón de temporada, Subcampeón, Tercer puesto y MVP de temporada se entregan según la clasificación final.",
+        "history_title": "Queda en el historial",
+        "history_body": "Las temporadas terminadas conservan su clasificación y los jugadores pueden compararse con una temporada pasada desde su perfil."
+      }
     },
     "regions": {
       "title": "Regiones",
@@ -3733,7 +4066,58 @@
         "title": "Eliminar región",
         "description": "¿Seguro que quieres eliminar esta región? No se puede deshacer."
       },
-      "deleted": "Región eliminada"
+      "deleted": "Región eliminada",
+      "list": {
+        "label": "Regiones",
+        "flag_relay": "Relay",
+        "flag_lan": "Solo LAN"
+      },
+      "status": {
+        "online": "En línea",
+        "partial": "Algunos nodos sin conexión",
+        "offline": "Sin conexión",
+        "disabled": "Sin servidores"
+      },
+      "detail": {
+        "label_aria": "Etiqueta de la región",
+        "nodes_label": "Nodos",
+        "servers_free": "{free} de {total} servidores libres",
+        "col_node": "Nodo",
+        "col_free": "Libres",
+        "col_servers": "Servidores",
+        "no_nodes_title": "No hay nodos en esta región",
+        "no_nodes_hint": "Asigna la región de un nodo en la página {page}.",
+        "relay_title": "Usar el relay de Steam",
+        "relay_description": "Los jugadores se conectan a través del relay de Steam, así las IP de los servidores de juego quedan ocultas.",
+        "relay_lan_description": "Las regiones solo LAN conectan a los jugadores directamente, así que el relay queda desactivado.",
+        "lan_title": "Solo LAN",
+        "lan_description": "Los jugadores deben conectarse desde una IP de LAN. Para eventos presenciales.",
+        "delete_title": "Eliminar región",
+        "delete_hint_nodes": "Primero mueve su {count} nodo a otra región. | Primero mueve sus {count} nodos a otra región.",
+        "delete_hint_empty": "No tiene nada asignado."
+      },
+      "delete_dialog": {
+        "title": "¿Eliminar {region}?",
+        "description": "Ningún nodo usa esta región. Una región en la que se han jugado partidas no se puede eliminar. Esto no se puede deshacer.",
+        "confirm": "Eliminar región"
+      },
+      "create_sheet": {
+        "title": "Crear región"
+      },
+      "toasts": {
+        "created": "{region} creada",
+        "deleted": "{region} eliminada",
+        "label_saved": "Etiqueta guardada",
+        "relay_on": "Relay de Steam activado para {region}",
+        "relay_off": "Relay de Steam desactivado para {region}",
+        "lan_on": "Solo LAN activado para {region}",
+        "lan_off": "Solo LAN desactivado para {region}"
+      },
+      "empty": {
+        "title": "Aún no hay regiones",
+        "description": "Las regiones agrupan tus nodos de servidores de juego por ubicación. Los jugadores eligen sus regiones preferidas en el matchmaking."
+      },
+      "search_placeholder": "Buscar regiones"
     },
     "players": {
       "title": "Jugadores",
@@ -4279,7 +4663,13 @@
         "demos": "Reproducción de demos",
         "demos_desc": "Repetición de demos bajo demanda",
         "rendering": "Renderizado",
-        "rendering_desc": "Renders de highlights y clips"
+        "rendering_desc": "Renders de highlights y clips",
+        "summary": "{on} de {total} activadas",
+        "node_disabled": "Este nodo está desactivado, así que no acepta trabajo de GPU.",
+        "now_streaming": "Retransmitiendo {matchup}",
+        "now_demo": "Reproduciendo una demo para {who}",
+        "now_render": "Renderizando highlights para {who}",
+        "now_render_pct": "Renderizando highlights para {who} · {pct}%"
       },
       "bake": {
         "help": "Precompila la caché de shaders de Vulkan de este nodo para que la primera partida arranque en caliente.",
@@ -4292,7 +4682,11 @@
         "in_progress": "Precompilación en curso",
         "stages": {
           "errored": "Fallo en la precompilación"
-        }
+        },
+        "action": "Compilar shaders",
+        "cancel": "Cancelar compilación",
+        "logs": "Registros de compilación",
+        "hide_logs": "Ocultar registros"
       },
       "empty": {
         "title": "Sin nodos GPU",
@@ -4322,9 +4716,155 @@
           "demo": "Reproducción de demos",
           "highlights": "Highlights",
           "bake": "Precompilar shaders"
-        }
+        },
+        "add_account": "Añadir cuenta",
+        "col_account": "Cuenta",
+        "col_holding": "Ocupada por",
+        "col_since": "Desde",
+        "delete_action": "Eliminar cuenta",
+        "empty_title": "Aún no hay cuentas de Steam",
+        "empty_body": "Los renders, la reproducción de demos y el modo espectador en directo necesitan una cada uno mientras se ejecutan.",
+        "free": "Libre",
+        "free_of": "{free} de {total} libres",
+        "health_no_nodes": "Aún no hay nodos GPU",
+        "health_empty": "Vacío. Los renders y el modo espectador en directo fallan hasta que añadas una.",
+        "health_short": "Faltan {count}. Algunas GPU quedan inactivas cuando todas las cuentas están en uso.",
+        "health_enough": "Suficientes para cada GPU",
+        "name": "Cuentas de Steam",
+        "manage": "Gestionar cuentas de Steam"
       },
-      "stop": "Detener"
+      "stop": "Detener",
+      "search_placeholder": "Buscar partida, espectador, GPU, cuenta",
+      "open_render_queue": "Abrir cola de renderizado",
+      "running_title": "En curso",
+      "running_hint": "Un consumidor por GPU a la vez",
+      "running_empty_title": "Ninguna GPU está en uso",
+      "running_empty_body": "Las retransmisiones en directo, la reproducción de demos y los renders de highlights aparecen aquí mientras se ejecutan.",
+      "running_no_match": "Ninguna sesión coincide",
+      "no_match_body": "Prueba otra búsqueda o borra los filtros.",
+      "clear_all": "Borrar búsqueda y filtros",
+      "open_game_server_nodes": "Abrir nodos de servidor de juego",
+      "gpus_title": "GPU",
+      "gpus_hint": "Los nodos GPU son nodos de servidor de juego con GPU",
+      "gpus_no_match": "Ningún nodo GPU coincide",
+      "no_region": "Sin región",
+      "more_for": "Más para {node}",
+      "open_details": "Abrir detalles",
+      "open_in_nodes": "Abrir en nodos de servidor de juego",
+      "accept_matches": "Aceptar nuevas partidas",
+      "stop_accepting": "Dejar de aceptar partidas",
+      "filter": {
+        "live": "Directo",
+        "demos": "Demos",
+        "renders": "Renders",
+        "workload_on": "Carga activada",
+        "node_type": "Tipo de nodo"
+      },
+      "kpi": {
+        "gpus_free": "GPU libres",
+        "of_total": "de {total}",
+        "running": "En curso",
+        "running_split": "{live} directo · {demo} demo · {render} render",
+        "waiting": "Renders en espera",
+        "waiting_none": "No hay nada en cola",
+        "accounts_split": "{used} en uso · {free} libres",
+        "accounts_short": "Faltan {count} para cubrir cada GPU",
+        "accounts_busy": "Todas en uso. El trabajo nuevo espera a que se libere una."
+      },
+      "wait_reason": {
+        "no_accounts": "No hay cuentas de Steam en el pool",
+        "paused_for_match": "En pausa mientras hay una partida en directo",
+        "no_account_free": "Esperando una cuenta de Steam",
+        "no_gpu_free": "Esperando una GPU libre"
+      },
+      "col": {
+        "workload": "Carga de trabajo",
+        "for": "Para",
+        "account": "Cuenta de Steam",
+        "state": "Estado",
+        "time": "Tiempo",
+        "node": "Nodo",
+        "load": "Uso",
+        "vram": "VRAM",
+        "workloads": "Cargas de trabajo"
+      },
+      "kind": {
+        "live_tv": "Retransmisión en directo (GOTV)",
+        "live_direct": "Retransmisión en directo (directa)",
+        "demo": "Reproducción de demo",
+        "highlights": "Render de highlights",
+        "bake": "Precompilación de shaders"
+      },
+      "who": {
+        "spectators": "Espectadores",
+        "warming_cache": "Precalentando la caché de Vulkan"
+      },
+      "state": {
+        "starting": "Iniciando",
+        "playing": "Reproduciendo",
+        "failed": "Error"
+      },
+      "node_state": {
+        "setup": "Configurando",
+        "streaming": "Retransmitiendo",
+        "playing": "Reproduciendo una demo",
+        "baking": "Compilando shaders",
+        "offline_since": "Sin conexión desde las {time}"
+      },
+      "node_kind": {
+        "gpu": "Solo GPU",
+        "match": "Partida + GPU"
+      },
+      "sheet": {
+        "now": "Ahora",
+        "shader_cache": "Caché de shaders",
+        "idle_ready": "Listo para retransmisiones en directo, reproducción de demos y renders.",
+        "unavailable": "No acepta trabajo de GPU hasta que esté activado y en línea.",
+        "no_metrics": "No hay métricas de GPU mientras el nodo está desactivado, sin conexión o configurándose.",
+        "bake_failed_hint": "La última compilación falló. Vuelve a intentarlo o revisa los registros.",
+        "cache_warm": "Precalentada",
+        "never_baked": "Nunca compilada. La primera retransmisión en este nodo compila los shaders sobre la marcha."
+      },
+      "stop_copy": {
+        "keep": "Dejar en marcha",
+        "live_title": "¿Detener la retransmisión en directo de {matchup}?",
+        "live_body": "Los espectadores pierden la retransmisión. La partida sigue jugándose.",
+        "live_action": "Detener retransmisión",
+        "demo_title": "¿Detener la reproducción de demo de {who}?",
+        "demo_body": "Su reproductor se cierra. Podrá volver a iniciarla cuando haya una GPU libre.",
+        "demo_action": "Detener reproducción",
+        "render_title": "¿Detener el render de highlights de {who}?",
+        "render_body": "Se detiene y libera la GPU.",
+        "render_body_pct": "Se detiene al {pct} % y libera la GPU.",
+        "render_action": "Detener render"
+      },
+      "toggle_gpu_only_help": "Solo acepta trabajo de GPU, sin servidores de partidas. Al activarlo se borran su región y sus puertos.",
+      "plate": {
+        "temperature": "Temperatura",
+        "power": "Consumo",
+        "vram_of": "{used} de {total} GB",
+        "hot": "Temperatura alta, más de {limit} °C",
+        "too_hot": "Demasiado caliente, más de {limit} °C",
+        "no_reading": "Sin lectura en directo",
+        "cards": "{count} tarjeta | {count} tarjetas"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "Activar la retransmisión en directo",
+          "demos": "Activar la reproducción de demos",
+          "rendering": "Activar el renderizado"
+        },
+        "turn_off": {
+          "streaming": "Desactivar la retransmisión en directo",
+          "demos": "Desactivar la reproducción de demos",
+          "rendering": "Desactivar el renderizado"
+        },
+        "confirm_body": {
+          "streaming": "La retransmisión sigue en curso. Esta GPU no acepta nuevas retransmisiones hasta que se vuelva a activar.",
+          "demos": "La reproducción sigue en curso. Esta GPU no acepta nuevas demos hasta que se vuelva a activar.",
+          "rendering": "El renderizado sigue en curso. Esta GPU no acepta nuevos renders hasta que se vuelva a activar."
+        }
+      }
     },
     "game_server_nodes": {
       "title": "Nodos de servidores",
@@ -4492,12 +5032,14 @@
         "no_nodes": "Sin nodos de servidores",
         "supports_low_latency": "Admite baja latencia",
         "supports_cpu_pinning": "Admite fijación de CPU",
-        "cpu_governor": "Gobernador de CPU"
+        "cpu_governor": "Gobernador de CPU",
+        "servers": "Servidores",
+        "servers_tooltip": "Servidores libres; el total, entre paréntesis",
+        "cs2_build": "Build de CS2",
+        "plugin": "Plugin",
+        "load": "Carga"
       },
       "builds": {
-        "title": "Historial de builds de CS2",
-        "description": "Validación del gamedata y generación de recursos de mapas para cada build de CS2, y qué cambió cada una respecto a la build anterior.",
-        "back": "Nodos de servidores",
         "builds": "Builds",
         "no_builds": "Aún no se ha validado ni generado ninguna build.",
         "current": "Actual",
@@ -4507,11 +5049,271 @@
           "detected": "Actualización publicada",
           "gamedata": "Gamedata",
           "map_assets": "Recursos de mapas"
-        }
+        },
+        "empty_title": "Aún no hay builds"
       },
       "max_label": "Máx.:",
       "ports_label": "Puertos:",
-      "cpu_hardware": "CPU y hardware"
+      "cpu_hardware": "CPU y hardware",
+      "gpu_only": "Solo GPU",
+      "create_node": "Crear nodo de servidores",
+      "search_placeholder": "Buscar por nombre o ID",
+      "filters": {
+        "only_enabled": "Solo nodos activados",
+        "hide_offline": "Ocultar nodos desconectados",
+        "display_metrics": "Mostrar métricas"
+      },
+      "empty": {
+        "title": "No hay nodos de servidores",
+        "description": "Un nodo es una máquina que ejecuta servidores de CS2 para 5Stack. Ejecuta el script de instalación en ella y aparecerá aquí.",
+        "guide": "Leer la guía de instalación"
+      },
+      "summary": {
+        "nodes": "{count} nodo | {count} nodos",
+        "online": "{count} en línea",
+        "free": "{free} de {total} servidores libres",
+        "attention": "{count} requiere atención | {count} requieren atención",
+        "updating": "{count} actualizándose"
+      },
+      "row": {
+        "select": "Seleccionar {node}",
+        "select_all": "Seleccionar todos los nodos",
+        "servers_tip": "{free} de {total} libres · capacidad para {max}",
+        "not_installed": "No instalado"
+      },
+      "detail": {
+        "hardware_pending": "El hardware se informa cuando el nodo se conecta.",
+        "disk_value": "{percent}% usado, {free} GB libres",
+        "game_server": "Servidor de juego",
+        "node_id": "ID del nodo",
+        "addresses": "IP LAN / pública",
+        "available_value": "{free} de {total}",
+        "control": "Control",
+        "update_log": "Registro de actualización de CS2"
+      },
+      "metrics": {
+        "setup": "Las métricas aparecen cuando el nodo se conecta.",
+        "offline": "Sin datos en vivo mientras el nodo está desconectado."
+      },
+      "toast": {
+        "region_updated": "Región actualizada",
+        "save_failed": "No se pudo guardar el cambio"
+      },
+      "bulk": {
+        "selected": "Seleccionados: {count}",
+        "progress": "{done} de {total}",
+        "move_region": "Mover a región",
+        "enable": "Activar",
+        "disable": "Desactivar",
+        "updating": "Actualizando CS2 en {count} nodo | Actualizando CS2 en {count} nodos",
+        "moved": "{count} nodo movido a {region} | {count} nodos movidos a {region}",
+        "unassigned": "Región quitada de {count} nodo | Región quitada de {count} nodos",
+        "enabled": "{count} nodo activado | {count} nodos activados",
+        "disabled": "{count} nodo desactivado | {count} nodos desactivados",
+        "failed": "{count} falló | {count} fallaron"
+      },
+      "inspector": {
+        "status": {
+          "setup": "Esperando conexión",
+          "offline_since": "Sin conexión desde {time}",
+          "not_accepting": "En línea, no acepta partidas nuevas"
+        },
+        "search_placeholder": "Buscar por nombre, ID o IP",
+        "keys": {
+          "move": "moverse",
+          "select": "clic para seleccionar varios",
+          "close": "cerrar",
+          "idle": "Selecciona un nodo para ver sus detalles"
+        },
+        "details": "Detalles del nodo",
+        "capacity_tip": "Servidores libres del total que permiten sus puertos. El rango de puertos va debajo.",
+        "cap_free": "{free} de {total} libres",
+        "cap_no_ports": "Sin puertos",
+        "chip": {
+          "updating": "Actualizando",
+          "updating_pct": "Actualizando {percent}%",
+          "failed": "Error al actualizar",
+          "behind": "Desactualizado",
+          "pinned": "Fijado",
+          "failed_tip": "La actualización a {target} falló {ago}. Sigue en {version}.",
+          "behind_tip": "En {version}. Actualiza a {target}.",
+          "pinned_tip": "Fijado en {version}"
+        },
+        "load": {
+          "mem": "Mem.",
+          "disk": "Disco"
+        },
+        "disk_tip": "Disco: {used} de {total} usados, {free} libres",
+        "actions_for": "Acciones de {node}",
+        "menu": {
+          "select": "Seleccionar para acciones en lote",
+          "deselect": "Quitar de la selección",
+          "rename": "Editar etiqueta"
+        },
+        "more": "{count} más",
+        "remove": "Eliminar nodo",
+        "remove_text": "Elimina el nodo y todos sus servidores dedicados de 5Stack.",
+        "rename": "Renombrar {node}",
+        "label": "Etiqueta del nodo",
+        "close": "Cerrar detalles",
+        "close_hint": "Cerrar (Esc)",
+        "step": {
+          "enable": "Activar nodo",
+          "retry_update": "Reintentar actualización",
+          "assign_region": "Asignar región",
+          "set_ports": "Definir puertos",
+          "change_plugin": "Cambiar plugin",
+          "edit_ports": "Editar puertos",
+          "open_files": "Abrir archivos"
+        },
+        "attention": {
+          "setup": "Ejecuta el script de instalación en la máquina. Aparecerá en línea cuando se conecte.",
+          "offline": "No se programan partidas aquí hasta que vuelva a conectarse.",
+          "update_failed_title": "La actualización de CS2 falló {ago}",
+          "update_failed": "Los registros de actualización se guardan 24 horas.",
+          "overprovisioned": "{total} servidores en sus puertos, pero la CPU tiene capacidad para {max}.",
+          "plugin": "El plugin fijado no admite la build {build}.",
+          "not_ready_title": "Aún no puede alojar partidas",
+          "not_ready": "Necesita {list}.",
+          "behind_title": "CS2 {version} está desactualizado",
+          "behind": "Actualiza a {target}.",
+          "cpu_title": "CPU a {ghz} GHz",
+          "cpu": "Menos de 3 GHz puede perjudicar el rendimiento del servidor de CS2.",
+          "governor_title": "El governor de la CPU es {governor}",
+          "disk_title": "Disco al {percent}%",
+          "disk": "{free} libres.",
+          "cpu_warning": "Informado por el nodo.",
+          "workloads_title": "Algunas cargas de GPU están desactivadas",
+          "workloads": "{list} desactivado.",
+          "disabled": "Sin trabajo de GPU ni programación de partidas mientras esté desactivado."
+        },
+        "need": {
+          "region": "una región",
+          "ports": "puertos",
+          "cs2": "CS2"
+        },
+        "sections": {
+          "cs2": "CS2 y plugins"
+        },
+        "capacity": {
+          "gpu_only": "Solo GPU, así que no aloja partidas. Cámbialo en GPU.",
+          "max_servers": "Máx. servidores",
+          "max_tip": "{threads} hilos de CPU, menos 1 reservado al sistema",
+          "max_tip_pinning": "{threads} hilos de CPU, menos 1 reservado al sistema, {per} por servidor",
+          "max_tip_pending": "Se calcula a partir de la CPU cuando el nodo se conecta",
+          "below": "Por debajo de los {total} de sus puertos",
+          "servers_no_ports": "Define puertos para alojar servidores",
+          "servers_disabled": "Ninguno mientras esté desactivado",
+          "servers_offline": "Desconocido mientras esté sin conexión"
+        },
+        "ports": {
+          "tip": "El rango de puertos redirigido a este nodo. Cada servidor usa dos puertos.",
+          "not_set": "Sin definir",
+          "need_region": "Asigna una región antes de definir los puertos.",
+          "start": "Puerto inicial",
+          "end": "Puerto final",
+          "hint": "Entre 30000 y 32767. Cada servidor usa dos puertos.",
+          "fit": "Cabe {count} servidor en este rango. | Caben {count} servidores en este rango.",
+          "fit_over": "Caben {count} servidores, pero la CPU tiene capacidad para {max}.",
+          "error_range": "Los puertos deben estar entre 30000 y 32767.",
+          "error_order": "El puerto final debe superar al inicial en al menos 2.",
+          "save": "Guardar puertos",
+          "remove": "Quitar puertos"
+        },
+        "cs2": {
+          "setup": "Instala CS2 cuando el nodo se conecte.",
+          "gpu_only": "Los nodos solo GPU no ejecutan servidores de CS2.",
+          "to": "a {version}",
+          "plugin_unsupported": "No compatible",
+          "update_log": "Registro de actualización",
+          "behind_line": "build {build}, actualizar a {target}",
+          "failed_line": "{ago} · sigue en la build {build}",
+          "build_line": "build {build}",
+          "on_build": "en la build {build}",
+          "pinning_unsupported": "No admite fijar la versión"
+        },
+        "hardware": {
+          "cores": "Núcleos",
+          "sockets": "({count} zócalo) | ({count} zócalos)",
+          "threads": "Hilos/núcleo",
+          "threads_total": "({count} en total)",
+          "governor": "Governor",
+          "low_latency": "Baja latencia",
+          "pinning": "Fijación de CPU",
+          "supported": "Compatible",
+          "governor_tip": "Cómo ajusta la CPU su frecuencia. El governor performance mantiene los núcleos a toda velocidad y es el recomendado para CS2.",
+          "latency_tip": "Un kernel de baja latencia reduce el jitter de planificación de los servidores de juego.",
+          "pinning_tip": "Fija cada servidor a sus propios núcleos para que no compitan por ellos."
+        },
+        "range_label": "Rango de métricas",
+        "range": {
+          "1h": "1 h"
+        },
+        "of_total": "de {total}",
+        "now": "Ahora",
+        "last_report": "Último informe {time}",
+        "live_offline": "Sin datos en vivo mientras esté sin conexión. Último informe a las {time}.",
+        "history_offline": "Sin datos en vivo mientras esté sin conexión. El historial llega hasta las {time}.",
+        "offline_for": "Sin conexión {duration}",
+        "chart": {
+          "label": "Historial de métricas. Las flechas izquierda y derecha recorren el tiempo; con Shift, de diez en diez.",
+          "avg_peak": "media {avg}% · pico {peak}%",
+          "peak": "pico {peak}",
+          "in": "Entrada",
+          "out": "Salida",
+          "in_out": "Entrada {in} · Salida {out}",
+          "caption": "Última hora, una muestra cada 30 segundos.",
+          "starts": "El historial empieza a las {time}.",
+          "gaps": "Los cortes en las líneas son tiempo sin conexión.",
+          "cadence": "Una muestra cada {seconds} segundos."
+        },
+        "disk": {
+          "last_report": "Disco · último informe",
+          "filling_up": "Llenándose",
+          "almost_full": "Casi lleno",
+          "used_of": "{used} de {total}",
+          "thresholds": "Avisa al {warning}%, alerta al {critical}%",
+          "free": "{free} libres",
+          "up": "Subió {amount} en la última hora",
+          "down": "Bajó {amount} en la última hora",
+          "flat": "Sin cambios reales en la última hora",
+          "full_hours": "lleno en unas {count} h",
+          "full_days": "lleno en {count} día aprox. | lleno en unos {count} días",
+          "of_used": "de {total} usados"
+        },
+        "gpu": {
+          "video": "Ajustes de vídeo",
+          "custom": "Personalizado"
+        },
+        "node": {
+          "accepting": "Acepta partidas",
+          "accepting_setup": "Disponible cuando se conecte.",
+          "accepting_no_ports": "Define primero los puertos.",
+          "limiter": "Limitador de demos",
+          "limiter_tip": "Limitador de red de demos: el límite de velocidad para descargar demos desde este nodo.",
+          "copy_id": "Copiar ID del nodo",
+          "ips_pending": "Se informa cuando se conecte"
+        },
+        "bulk": {
+          "title": "{count} nodo seleccionado | {count} nodos seleccionados",
+          "hint": "{modifier}+clic en una fila para añadirla o quitarla, Shift+clic para un rango",
+          "apply": "Aplicar a todos",
+          "note": "Actualizar CS2 omite los nodos sin conexión, al día o que ya se están actualizando. Los nodos solo GPU no tienen región.",
+          "selected": "Seleccionados",
+          "drop": "Quitar {node} de la selección",
+          "clear": "Borrar selección"
+        },
+        "warning": {
+          "lowlatency": "Kernel lowlatency obsoleto",
+          "constrained": "{name} está limitado por la CPU",
+          "governor": "Governor en {governor} con la fijación de CPU activada",
+          "from_node": "{count} aviso del nodo | {count} avisos del nodo",
+          "docs": "Documentación",
+          "details": "Detalles"
+        },
+        "window_minutes": "Último {count} minuto | Últimos {count} minutos",
+        "window_hours": "Última {count} hora | Últimas {count} horas"
+      }
     },
     "dedicated_servers": {
       "title": "Servidores dedicados",
@@ -4519,9 +5321,7 @@
       "docs_link": "Ver guía de configuración",
       "no_servers_title": "Sin servidores dedicados",
       "no_servers": "No se han encontrado servidores dedicados.",
-      "create": {
-        "title": "Crear servidor dedicado"
-      },
+      "create": {},
       "table": {
         "connection_details": "Datos de conexión",
         "label": "Etiqueta",
@@ -4532,7 +5332,6 @@
       },
       "detail": {
         "enabled": "Activado",
-        "eyebrow": "Servidor dedicado",
         "tabs": {
           "overview": "Resumen",
           "players": "Jugadores",
@@ -4542,14 +5341,9 @@
         },
         "status_label": {
           "connected": "Conectado",
-          "disconnected": "Desconectado",
           "hibernating": "Hibernando",
-          "no_rcon": "Sin RCON",
-          "version_mismatch": "Versión incompatible"
+          "no_rcon": "Sin RCON"
         },
-        "server_plugin_config": "Configuración del plugin del servidor",
-        "hide_config": "Ocultar configuración",
-        "show_config": "Mostrar configuración",
         "config_location": "Esta configuración debe colocarse en:",
         "files": "Archivos",
         "player_management": "Gestión de jugadores",
@@ -4573,13 +5367,7 @@
           "disconnected": "El servidor está desconectado",
           "hibernating": "El servidor está hibernando hasta que se conecte un jugador",
           "no_rcon": "El servidor está conectado, pero RCON no está disponible",
-          "connected": "El servidor está conectado y RCON está disponible",
-          "plugin_version_mismatch": "la versión del plugin no está actualizada"
-        },
-        "delete_confirm": {
-          "title": "¿Seguro que quieres continuar?",
-          "description": "Esta acción no se puede deshacer. Se eliminará permanentemente tu servidor y se borrarán los datos asociados de nuestros servidores.",
-          "continue": "Continuar"
+          "connected": "El servidor está conectado y RCON está disponible"
         },
         "save_restart": "Guardar y reiniciar",
         "map_rotation": {
@@ -4698,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "Mover a otro nodo",
-          "title": "Mover a otro nodo",
           "description": "El servidor se detiene en {node}, sus archivos se copian al nuevo nodo y vuelve a arrancar allí.",
           "source_offline": "{node} está desconectado, así que no se pueden copiar los archivos del servidor. Arrancará en el nuevo nodo con la configuración predeterminada, y lo que quede en {node} se quedará allí.",
           "without_files": "Mover sin los archivos del servidor",
@@ -4707,7 +5493,6 @@
           "no_nodes": "No hay otros nodos de servidores",
           "free_slots": "Espacios libres: {count}",
           "free_disk": "{size} libres",
-          "confirm": "Mover servidor",
           "started": "Moviendo {server} a {node}",
           "warning": {
             "address": "El servidor tendrá una nueva dirección en el nuevo nodo.",
@@ -4723,7 +5508,9 @@
             "updating": "Actualizando CS2",
             "no_build": "{game} no está instalado",
             "no_slot": "No hay espacios de servidor libres"
-          }
+          },
+          "dialog_title": "Mover a otro nodo",
+          "confirm_move": "Mover servidor"
         },
         "migration": {
           "title": {
@@ -4744,12 +5531,71 @@
           "progress": "{done} de {total} ({percent}%)",
           "without_files": "sin archivos",
           "restored": "El servidor vuelve a estar en {node}.",
-          "cancel": "Cancelar traslado",
           "cancel_requested": "Cancelando el traslado",
           "dismiss": "Descartar",
-          "locked": "El servidor se está moviendo a otro nodo. Inténtalo de nuevo cuando termine el traslado."
-        }
-      }
+          "locked": "El servidor se está moviendo a otro nodo. Inténtalo de nuevo cuando termine el traslado.",
+          "cancel_move": "Cancelar traslado"
+        },
+        "plugin_tag": "Plugin v{version}",
+        "plugin_config": "Configuración del plugin del servidor",
+        "show_plugin_config": "Mostrar configuración",
+        "hide_plugin_config": "Ocultar configuración"
+      },
+      "clear_all": "Borrar búsqueda y filtros",
+      "col_hosting": "Alojamiento",
+      "col_players": "Jugadores",
+      "col_plugin": "Plugin",
+      "col_ports": "Puertos",
+      "col_server": "Servidor",
+      "copied": "{value} copiado",
+      "copy_address": "Copiar dirección",
+      "create_server": "Crear servidor",
+      "delete_body_external": "Se quita de 5Stack y deja de recibir partidas. La máquina sigue funcionando. No se puede deshacer.",
+      "delete_body_node": "Se quita de 5Stack y se apaga en {node}. No se puede deshacer.",
+      "delete_server": "Eliminar servidor",
+      "delete_title": "¿Eliminar {label}?",
+      "deleted_toast": "{label} eliminado",
+      "disable_server": "Desactivar servidor",
+      "disabled_hidden": "{count} desactivado oculto | {count} desactivados ocultos",
+      "disabled_toast": "{label} desactivado. Deja de recibir partidas y juego público.",
+      "empty_title": "Aún no hay servidores dedicados",
+      "enable_server": "Activar servidor",
+      "enabled_for": "Activado: {label}",
+      "enabled_toast": "{label} activado",
+      "external": "Externo",
+      "facet_host": "Host",
+      "filter_label": "Filtrar servidores",
+      "more_for": "Más para {label}",
+      "node_tag": "nodo",
+      "open": "Abrir",
+      "open_console": "Abrir consola",
+      "open_node": "Abrir en nodos de servidores de juego",
+      "page_of": "Página {page} de {pages}",
+      "plugin_current": "v{version} (actual)",
+      "plugin_outdated_tip": "La versión del plugin no está al día. La actual es v{version}.",
+      "ports_tip": "Puerto de juego (puerto TV)",
+      "search_placeholder": "Buscar nombre, dirección, host",
+      "servers_word": "servidor | servidores",
+      "setup_guide": "Guía de configuración",
+      "show_them": "Mostrarlos",
+      "states": {
+        "attention": "Requiere atención",
+        "offline": "Desconectado",
+        "inuse": "En uso",
+        "ready": "Listo",
+        "hibernating": "En hibernación",
+        "disabled": "Desactivado"
+      },
+      "status_in_match": "En una partida",
+      "status_offline_since": "Desconectado desde las {time}",
+      "status_playing": "{count} jugando",
+      "status_plugin_outdated": "Plugin desactualizado",
+      "tip_disabled": "No se usa para partidas ni juego público.",
+      "join_server": "Entrar al servidor",
+      "new_server": "Nuevo servidor",
+      "create_on_node": "Se ejecuta en {node}",
+      "create_at_host": "Se ejecuta en {address}",
+      "create_pick_place": "Elige dónde se ejecuta"
     },
     "public_servers": {
       "title": "Servidores públicos",
@@ -5113,6 +5959,216 @@
         "execution_plan": "Plan de ejecución",
         "no_explain_plan": "No se ha podido generar el plan EXPLAIN para esta consulta",
         "not_found": "No se han encontrado los detalles de la consulta"
+      },
+      "explorer": {
+        "active_backends": "Backends activos",
+        "active_queries": "Consultas activas",
+        "active_queries_hint": "Cada sesión que no está inactiva, la más larga primero",
+        "active_waiting": "{active} activas · {waiting} en espera",
+        "activity": "Actividad",
+        "all_connections": "Todas las conexiones",
+        "all_indexes_scanned": "Todos los índices se han escaneado",
+        "all_indexes_scanned_hint": "Ningún índice de esta selección ha quedado sin usar desde que se restablecieron las estadísticas.",
+        "all_statements": "Todas las sentencias",
+        "avg_ms": "media {ms} ms",
+        "avg_ms_col": "Media (ms)",
+        "avg_time": "Tiempo medio",
+        "back_to_overview": "Volver al resumen",
+        "background_jobs": "Trabajos en segundo plano",
+        "blocks_hit": "Bloques acertados",
+        "blocks_read": "Bloques leídos",
+        "buffer_statistics": "Estadísticas de búfer",
+        "by_state": "Por estado",
+        "cache_hit": "Aciertos de caché",
+        "cache_hit_pct": "% aciertos caché",
+        "cache_hit_ratio": "Ratio de aciertos de caché",
+        "calls_count": "{count} llamada | {count} llamadas",
+        "conflicts": "Conflictos",
+        "copy_name": "Copiar nombre",
+        "copy_query": "Copiar consulta",
+        "copy_statement": "Copiar {sql}",
+        "count": "Cantidad",
+        "current_locks": "Bloqueos actuales",
+        "database_statistics": "Estadísticas de la base de datos",
+        "dead_pct": "% muertas",
+        "dead_pct_tip": "Filas muertas como proporción de todas las filas de la tabla. Se marca cuando una tabla supera las 10.000 filas muertas.",
+        "dead_share": "{pct} % de filas muertas · unos {size}",
+        "dead_tuple_size": "Tamaño de tuplas muertas",
+        "dead_tuples": "Tuplas muertas",
+        "deadlocks_tip": "Contados desde el último restablecimiento de las estadísticas.",
+        "deletes": "Eliminaciones",
+        "every_seconds": "Cada {seconds} s",
+        "every_table": "Todas las tablas",
+        "every_table_hint": "Tamaño, bloat y caché en un solo lugar. Haz clic en una fila para abrirla.",
+        "execution_plan": "Plan de ejecución",
+        "execution_times": "Tiempos de ejecución (ms)",
+        "fetched": "Obtenidas",
+        "filter_query_text": "Filtrar por texto de la consulta",
+        "find_schema": "Buscar un esquema",
+        "find_table": "Buscar una tabla o índice",
+        "heap_hits": "Aciertos de heap",
+        "heap_reads": "Lecturas de heap",
+        "heap_reads_count": "{count} lecturas de heap",
+        "held_none_waiting": "{count} retenido, ninguno en espera | {count} retenidos, ninguno en espera",
+        "hot_count": "{count} HOT",
+        "hot_updates": "Actualizaciones HOT",
+        "hot_updates_tip": "Actualizaciones que no necesitaron tocar ningún índice.",
+        "hypertable_name": "Nombre de la hypertable",
+        "hypertable_note": "Las filas están en chunks bajo {schema}, así que esta tabla padre no informa de filas propias.",
+        "hypertable_tag": "hypertable",
+        "idle_in_txn": "Inactiva en transacción",
+        "idle_in_txn_tip": "Mantiene una transacción abierta sin hacer nada. Impide que vacuum limpie y puede retener bloqueos.",
+        "idx_scans": "Escaneos de índice",
+        "idx_scans_fetched": "Escaneos de índice (tuplas obtenidas)",
+        "idx_tup_fetch": "Tuplas de índice obtenidas",
+        "in_indexes": "{size} en índices",
+        "index_hits": "Aciertos de índice",
+        "index_io": "E/S de índices",
+        "index_reads": "Lecturas de índice",
+        "index_scans": "Escaneos de índice",
+        "index_scans_tip": "Proporción de escaneos que usaron un índice en lugar de leer toda la tabla.",
+        "index_size": "Tamaño del índice",
+        "index_usage": "Uso de índices",
+        "indexes": "Índices",
+        "indexes_hint": "Uso y aciertos de caché juntos",
+        "inserts": "Inserciones",
+        "io": "E/S",
+        "io_buffers": "E/S y búferes",
+        "job_id": "ID del trabajo",
+        "job_type": "Tipo de trabajo",
+        "last_analyze": "Último analyze",
+        "last_autoanalyze": "Último autoanalyze",
+        "last_autovacuum": "Último autovacuum",
+        "last_run_status": "Última ejecución",
+        "last_vacuum": "Último vacuum",
+        "live": "Vivas",
+        "live_tuples": "Tuplas vivas",
+        "local": "local",
+        "local_blocks_hit": "Bloques locales acertados",
+        "local_blocks_read": "Bloques locales leídos",
+        "lock_type": "Tipo de bloqueo",
+        "locks_on_table": "Bloqueos en esta tabla",
+        "locks_transactions": "Bloqueos y transacciones",
+        "maintenance": "Mantenimiento",
+        "max_ms_col": "Máx. (ms)",
+        "max_ms_paren": "(máx. {ms})",
+        "max_time": "Tiempo máx.",
+        "max_value": "máx. {ms}",
+        "min_calls": "Llamadas mín.",
+        "min_value": "mín. {ms}",
+        "n_failed": "{count} fallidos",
+        "n_of_m_statements": "{n} de {m} sentencias",
+        "n_waiting": "{count} en espera",
+        "name_copied": "Nombre de la tabla copiado",
+        "needs_attention": "Requiere atención",
+        "never_scanned": "Nunca escaneado",
+        "next_start": "Próxima ejecución",
+        "no_active_hint": "Todas las conexiones están inactivas.",
+        "no_backups_hint": "Las copias de seguridad aparecerán aquí tras la primera ejecución programada.",
+        "no_backups_title": "No hay copias de seguridad de la base de datos",
+        "no_connections_hint": "No hay nada conectado a esta base de datos.",
+        "no_indexes": "Sin índices",
+        "no_indexes_hint": "Esta tabla no tiene índices, así que cada lectura recorre la tabla entera.",
+        "no_indexes_hyper": "Los índices de una hypertable están en cada uno de sus chunks.",
+        "no_jobs_hint": "TimescaleDB no tiene trabajos programados.",
+        "no_jobs_title": "No hay trabajos en segundo plano",
+        "no_locks_hint": "Ahora mismo nadie tiene un bloqueo.",
+        "no_locks_on_table": "Ahora mismo nadie tiene un bloqueo sobre ella.",
+        "no_plan": "No se ha podido generar un plan de ejecución para esta consulta.",
+        "no_reads_hint": "Los esquemas seleccionados no tienen lecturas registradas.",
+        "no_schemas": "Sin esquemas",
+        "no_schemas_hint": "Elige al menos un esquema para ver sus tablas.",
+        "no_schemas_title": "No hay esquemas seleccionados",
+        "no_slow_hint": "Nada ha superado {threshold} de media ni de pico desde que se restablecieron las estadísticas.",
+        "no_slow_title": "No hay sentencias lentas",
+        "no_statements_for_table": "Ninguna sentencia registrada menciona esta tabla.",
+        "no_statements_match": "Ninguna sentencia coincide",
+        "no_statements_match_hint": "Nada llamado al menos {min} veces coincide con el filtro.",
+        "no_statements_yet": "pg_stat_statements aún no ha registrado nada.",
+        "no_stats_hint": "pg_stat_statements se llena a medida que la app ejecuta consultas y se vacía cuando se restablecen sus estadísticas.",
+        "no_table_matches": "Ninguna tabla ni índice coincide con «{find}».",
+        "no_tables_hint": "Los esquemas seleccionados no tienen tablas.",
+        "no_tables_title": "No hay tablas",
+        "no_timescale_title": "Sin datos de TimescaleDB",
+        "nothing_matches": "Nada en esta selección coincide.",
+        "objects": "Objetos de la base de datos",
+        "off": "No",
+        "on": "Sí",
+        "on_disk": "{size} en disco",
+        "open_connections": "Conexiones abiertas",
+        "over_threshold": "Más de {threshold}",
+        "overview": "Resumen",
+        "overview_hint": "Base de datos PostgreSQL · contadores desde el último restablecimiento de estadísticas",
+        "pause_refreshing": "Pausar actualización",
+        "pct_of_table": "% de la tabla",
+        "pid_actions": "Acciones para el pid {pid}",
+        "query_details": "Detalles de la consulta",
+        "query_not_found": "No se han encontrado los detalles de la consulta",
+        "query_performance": "Rendimiento de consultas",
+        "range_hint": "Escala logarítmica · la banda es la media ± desv. típica",
+        "reclaimable": "Recuperable",
+        "reclaimable_tip": "Estimado a partir de las tuplas muertas. VACUUM lo hace reutilizable; solo VACUUM FULL o pg_repack lo devuelve al disco.",
+        "refresh_every": "Actualizar cada",
+        "resume_refreshing": "Reanudar actualización",
+        "rollbacks_count": "{count} rollbacks",
+        "running_now": "En ejecución",
+        "scans": "Escaneos",
+        "schema_count": "{count} esquema | {count} esquemas",
+        "search_indexes": "Buscar índices",
+        "seq_scans": "Escaneos sec.",
+        "seq_scans_read": "Escaneos sec. (tuplas leídas)",
+        "seq_tup_read": "Tuplas leídas (sec.)",
+        "sequential_count": "{count} secuenciales",
+        "server": "Servidor",
+        "share_of_time": "Proporción de tiempo",
+        "share_of_time_tip": "Tiempo total de ejecución de esta sentencia como proporción del de todas las sentencias listadas.",
+        "shared_blocks_hit": "Bloques compartidos acertados",
+        "shared_blocks_read": "Bloques compartidos leídos",
+        "size": "Tamaño",
+        "size_on_disk": "Tamaño en disco",
+        "slow_avg": "{count} sentencia supera {threshold} de media | {count} sentencias superan {threshold} de media",
+        "slow_avg_none": "Ninguna sentencia supera {threshold} de media",
+        "slow_max": "{count} superó {threshold} al menos una vez | {count} superaron {threshold} al menos una vez",
+        "slow_over": "Lenta desde",
+        "slow_running_many": "{count} consultas llevan más de {threshold} en ejecución, la más larga {duration}",
+        "slow_running_one": "1 consulta lleva {duration} en ejecución",
+        "slow_threshold": "Umbral de consulta lenta",
+        "started": "Inicio",
+        "statement_copied": "Sentencia copiada al portapapeles",
+        "statements_to_run": "Sentencias para ejecutar tú mismo",
+        "statements_touching": "Sentencias que la usan",
+        "statements_touching_hint": "De pg_stat_statements, buscando por el nombre de la tabla. Primero las de más de {threshold}.",
+        "statistics": "Estadísticas",
+        "std_dev": "Desv. típica",
+        "table_and_indexes": "{table} tabla · {indexes} índices",
+        "table_io": "E/S de tablas",
+        "table_maintenance": "Mantenimiento de tablas",
+        "table_not_found": "No se ha encontrado la tabla",
+        "table_not_found_hint": "Puede que se haya eliminado o que su esquema no esté seleccionado.",
+        "table_size": "Tamaño de la tabla",
+        "table_storage": "Almacenamiento de tablas",
+        "temp_blocks": "Bloques temp.",
+        "temp_blocks_tip": "Bloques volcados a disco porque work_mem era demasiado pequeño para una ordenación o un hash.",
+        "temp_blocks_written": "Bloques temp. escritos",
+        "terminate_warning": "Terminar cierra la sesión y revierte su transacción.",
+        "total_chunks": "Chunks totales",
+        "total_rows": "Filas totales",
+        "total_size": "Tamaño total",
+        "total_time": "Tiempo total",
+        "tuples_deleted": "Tuplas eliminadas",
+        "tuples_fetched": "Tuplas obtenidas",
+        "tuples_inserted": "Tuplas insertadas",
+        "tuples_read": "Tuplas leídas",
+        "tuples_returned": "Tuplas devueltas",
+        "tuples_updated": "Tuplas actualizadas",
+        "updates": "Actualizaciones",
+        "view_all_slow": "Ver todas las consultas lentas",
+        "wait_event": "Evento de espera",
+        "wait_event_type": "Tipo de evento de espera",
+        "waiting_on_lock": "esperando un bloqueo",
+        "waiting_tip": "Sesiones esperando un bloqueo.",
+        "worth_a_look": "Merece un vistazo",
+        "zero_unused": "0 · sin usar"
       }
     },
     "events": {
@@ -5321,6 +6377,54 @@
         "tournaments_hint": "Partidas jugadas dentro de un cuadro de torneo, clasificatorias o no.",
         "custom": "Partidas personalizadas",
         "custom_hint": "Todo lo demás: partidas que no cuentan para nada."
+      },
+      "store": {
+        "open_aria": "Abrir {name}",
+        "verified_hint": "Verificado por los mantenedores del registro",
+        "custom_hint": "Añadido aquí. Nadie lo ha revisado.",
+        "guidelines_hint": "Los servidores que lo cargan arrancan con las directrices de servidor de Valve desactivadas.",
+        "on_panel": "En tu panel",
+        "panel_host": "Desplegado en el host de tu panel",
+        "set_up": "Configurar",
+        "no_build": "Sin compilación para {runtime}",
+        "only": "Solo {runtimes}",
+        "add_node": "Añade un nodo de servidor de juego para instalarlo",
+        "found_on_disk": "Encontrado en disco",
+        "found_on_disk_hint": "Colocado a mano. Se carga en todos los servidores sea cual sea el modo.",
+        "manage_here": "Gestionarlo aquí",
+        "install_title": "Instalar {name} {version}",
+        "failed_on": "Falló en {node}",
+        "failed_on_nodes": "Falló en {count} nodo | Falló en {count} nodos",
+        "install_failed": "La instalación falló",
+        "installing_on": "Instalando en {installed} de {total} nodos",
+        "waiting_nodes": "Esperando un nodo en línea",
+        "pinned_at": "Fijado en {version}",
+        "update_to": "Actualizar a {version}",
+        "filter_kind": "Tipo",
+        "filter_review": "Revisión",
+        "verified_only": "Solo verificados",
+        "runtime": "Entorno",
+        "needs_attention": "Requiere atención",
+        "empty_installed_title": "Aún no hay nada instalado",
+        "empty_installed_hint": "Instala un plugin desde Todos y cada nodo lo recogerá.",
+        "empty_title": "Ningún plugin coincide",
+        "installing_toast": "Instalando {name} en todos los nodos en línea",
+        "retry_toast": "Reintentando {name} en los nodos que fallaron",
+        "update_toast": "Los nodos están instalando {version}; seguirá fijado ahí."
+      },
+      "detail": {
+        "kind_game": "Plugin de servidor de juego",
+        "kind_panel": "Plugin de panel",
+        "kind_bundle": "Paquete de servidor de juego y panel",
+        "copy_command": "Copiar comando",
+        "copied": "Comando copiado",
+        "manual_on": "En {nodes}, no gestionado por 5Stack",
+        "latest_for": "Última {version} para {runtime}",
+        "node_offline": "desconectado",
+        "node_not_accepting": "no acepta partidas",
+        "rollout_settings": "Ajustes de despliegue",
+        "running": "En ejecución",
+        "this_deployment": "este despliegue"
       }
     },
     "awards": {
@@ -5342,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "Buscar premios",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -5362,7 +6465,66 @@
       "group_custom_tournament_awards": "Premios de torneo personalizados",
       "group_custom_event_awards": "Premios de evento personalizados",
       "group_custom_season_awards": "Premios de temporada personalizados",
-      "group_custom_league_awards": "Premios de liga personalizados"
+      "group_custom_league_awards": "Premios de liga personalizados",
+      "already_holds": "{name} ya tiene {award} y no admite repetirse.",
+      "automation_season": "Automatización de temporada",
+      "automation_tournament": "Automatización de torneo",
+      "builtin_cant_delete": "Los premios integrados no se pueden eliminar",
+      "builtin_note": "Integrado. La automatización de torneos y temporadas lo entrega, así que se puede editar pero no eliminar.",
+      "col_award": "Premio",
+      "col_earned_at": "Obtenido en",
+      "col_holder": "Titular",
+      "col_holders": "Titulares",
+      "days_ago": "hace {count} d",
+      "delete_award": "Eliminar premio",
+      "delete_body": "Se va con él {count} entrega y desaparece de los Honores de su titular. No se puede deshacer. | Se van con él {count} entregas y desaparece de los Honores de todos sus titulares. No se puede deshacer.",
+      "delete_body_none": "Nadie lo tiene todavía. No se puede deshacer.",
+      "delete_hint": "Lo quita, junto con todas sus entregas, de los Honores de todos sus titulares.",
+      "delete_title": "¿Eliminar {name}?",
+      "deleted_toast": "{name} eliminado",
+      "edit_award": "Editar premio",
+      "facet_belongs_to": "Pertenece a",
+      "filter_label": "Filtrar premios",
+      "grant_only_hint": "Puedes entregar premios. Crearlos y editarlos requiere el rol de gestor de premios.",
+      "grant_short": "Entregar",
+      "granted_toast": "{award} entregado a {name}",
+      "kind_custom": "Personalizado",
+      "more_for": "Más para {name}",
+      "once_per_holder": "Una vez por titular",
+      "open_holders": "Abrir titulares",
+      "owner_deleted": "Propietario eliminado",
+      "owner_ended": "Terminó {date}",
+      "owner_finished": "Finalizó {date}",
+      "owner_kind": {
+        "global": "General",
+        "tournament": "Torneo",
+        "event": "Evento",
+        "league": "Temporada de liga",
+        "season": "Temporada"
+      },
+      "owner_live": "En directo",
+      "owner_running": "En curso",
+      "owner_starts": "Empieza {date}",
+      "owner_upcoming": "Próximamente",
+      "repeatable": "Repetible",
+      "revoke_from": "Retirar a {name}",
+      "show_more": "Mostrar más",
+      "sort_last_granted": "Última entrega",
+      "status": {
+        "recent": "Entregado en los últimos 90 días",
+        "never": "Nunca entregado",
+        "open": "Propietario en curso o próximo",
+        "finished": "Propietario finalizado"
+      },
+      "team_count": "{count} equipo | {count} equipos",
+      "tiers": {
+        "mvp": "MVP",
+        "gold": "Oro",
+        "silver": "Plata",
+        "bronze": "Bronce",
+        "special": "Especial"
+      },
+      "today": "Hoy"
     },
     "award_detail": {
       "not_found_title": "Premio no encontrado",
@@ -5406,10 +6568,29 @@
         "cameraTalkback": "Retorno de cámara"
       },
       "resources": "Uso de recursos",
-      "cpu": "CPU",
-      "memory": "Memoria",
-      "no_resources": "Todavía no hay métricas de pod para el servidor multimedia; puede que el servidor de métricas del clúster no lo esté recogiendo.",
-      "legend": "Una ruta es una plaza de stream con nombre: el micrófono de una persona, o una cámara. «Publicando» cuenta las que están enviando medios ahora mismo; una ruta puede estar inactiva entre que alguien se une y su señal arranca. Las sesiones son conexiones WebRTC, y cada espectador de un stream es una, así que sube más deprisa que las demás."
+      "legend": "Una ruta es una plaza de stream con nombre: el micrófono de una persona, o una cámara. «Publicando» cuenta las que están enviando medios ahora mismo; una ruta puede estar inactiva entre que alguien se une y su señal arranca. Las sesiones son conexiones WebRTC, y cada espectador de un stream es una, así que sube más deprisa que las demás.",
+      "logs_button": "Logs de mediamtx",
+      "tip_publishing": "Rutas que están enviando contenido ahora mismo. Una ruta puede quedar inactiva entre que alguien se une y su señal empieza.",
+      "tip_paths": "Una ruta es un espacio de stream con nombre: el micrófono de una persona o una cámara.",
+      "tip_sessions": "Conexiones WebRTC. Cada espectador de un stream es una de ellas, así que sube más rápido que las demás.",
+      "of_paths": "de {count} ruta | de {count} rutas",
+      "unknown_while_unreachable": "Desconocido mientras no responda",
+      "how_to_read": "Cómo leer estas cifras",
+      "by_feature": "Por función",
+      "kinds_unknown": "Las cifras por función son desconocidas hasta que el servidor de medios vuelva a responder.",
+      "idle_title": "Nada está emitiendo ahora mismo",
+      "idle_hint": "Aquí aparecen filas cuando empieza un stream de partida, una cámara de jugador o una sala de voz.",
+      "received": "Recibido",
+      "received_hint": "Bytes recibidos en las rutas abiertas ahora, cada una contada desde que se abrió. Una ruta que se cierra se lleva sus bytes.",
+      "share_received": "Proporción de lo recibido",
+      "not_in_use": "Sin uso ahora mismo: {kinds}",
+      "resources_hint": "Pod de mediamtx · consulta cada 30 s",
+      "cores_now": "{cores} núcleos en uso",
+      "status_reachable": "Accesible",
+      "status_unreachable_since": "Inaccesible desde las {time}",
+      "kinds_unknown_title": "Cifras por función desconocidas",
+      "no_resources_title": "Aún no hay métricas del pod",
+      "no_resources_hint": "Puede que el servidor de métricas del clúster no esté recogiendo datos del pod de mediamtx."
     },
     "utility": {
       "eyebrow": "Biblioteca de utilidad",
@@ -6390,8 +7571,8 @@
           "map_filter": "Filtrar por mapa",
           "render_missing": "Renderizar las que faltan ({total})",
           "rerender_outdated": "Volver a renderizar las desactualizadas ({total})",
-          "pipeline_behind": "El pod de renderizado va por detrás de esta API",
-          "pipeline_behind_hint": "El pod de renderizado en uso graba la versión {pipeline}, anterior a la versión {version} que espera esta API. Volver a renderizar no pondrá al día las vistas previas hasta que se actualicen las imágenes de game-server y game-streamer.",
+          "pipeline_behind": "El último render usó una versión anterior",
+          "pipeline_behind_hint": "El último render terminado se grabó con la versión {pipeline}; esta API espera la versión {version}. Los pods de render descargan la imagen más reciente al arrancar, así que renderiza primero un lineup. Cuando termine con la versión {version}, se desbloquea Volver a renderizar desactualizadas.",
           "load_failed": "No se pudo cargar la cobertura de vistas previas",
           "confirm_missing_title": "¿Renderizar las vistas previas que faltan?",
           "confirm_missing": "Esto pone en cola un render para {count} lineup sin vista previa. | Esto pone en cola un render para {count} lineups sin vista previa.",
@@ -6521,6 +7702,249 @@
         "recent": "Tus búsquedas recientes",
         "recent_counts": "{verified} acertados de {predicted}"
       }
+    },
+    "control_room": {
+      "on_air": "En el aire",
+      "off_air_hint": "No hay ninguna emisión en curso. Elige un partido en directo para iniciar una.",
+      "starting": "Iniciando",
+      "program": "Programa",
+      "preview": "Vista previa",
+      "take": "Pasar al aire",
+      "take_pick": "Elige una vista previa para ponerla en el aire.",
+      "take_already": "{match} ya está en el aire.",
+      "take_go_live": "Emitir en directo {match}",
+      "take_switch": "Cambiar a {match}",
+      "take_more": "Más formas de iniciar",
+      "take_start_hint": "Usa una GPU libre y arranca un pod, alrededor de un minuto.",
+      "take_switch_hint": "Reutiliza el pod en marcha. La señal cambia en unos segundos.",
+      "go_live": "Emitir en directo",
+      "start_tv": "Iniciar como TV (en diferido)",
+      "tv_delayed": "TV (en diferido)",
+      "tv_delay": "Diferido de TV",
+      "full_deck": "Panel completo",
+      "open_focus_window": "Abrir la ventana de control",
+      "ready": "Listo",
+      "not_ready": "No está listo",
+      "you_are_playing": "Juegas en este partido",
+      "no_live_matches_hint": "Los monitores de vista previa aparecen aquí en cuanto un partido empieza.",
+      "started_live": "Iniciando un directo de {match}. El pod arranca en uno o dos minutos.",
+      "started_tv": "Iniciando una emisión de TV en diferido de {match}. El pod arranca en uno o dos minutos.",
+      "stopped": "Emisión detenida. La GPU está libre.",
+      "capacity": "{n} de {max} emisión | {n} de {max} emisiones",
+      "gpu": {
+        "none": "Sin nodos GPU",
+        "busy": "Sin GPU libre · {busy} de {total} ocupadas",
+        "free": "{free} de {total} GPU libre | {free} de {total} GPU libres",
+        "hint": "Grupo de GPU. Abre la página de nodos GPU."
+      },
+      "status": {
+        "veto": "Veto",
+        "spinning_up": "Arrancando servidor",
+        "check_in": "Check-in"
+      },
+      "reasons": {
+        "veto": "Veto de mapas en curso. Espera a que el partido empiece.",
+        "waiting_for_server": "Se está arrancando un servidor. Espera a que el partido empiece.",
+        "check_in": "Los jugadores están haciendo check-in. Espera a que el partido empiece.",
+        "not_live": "Espera a que el partido empiece.",
+        "no_server": "Este partido no tiene servidor asignado.",
+        "server_offline": "El servidor está desconectado. Esperando a que vuelva.",
+        "no_gpu_nodes": "No hay nodos GPU registrados.",
+        "no_free_gpu": "No hay GPU libre.",
+        "at_capacity": "Capacidad completa. Detén la emisión o cámbiala a este partido."
+      },
+      "deck": {
+        "sheet_description": "Controles de emisión. El mismo panel que la ventana de control.",
+        "not_on_air": "Fuera del aire",
+        "not_on_air_hint": "Este partido no tiene ninguna emisión en curso. Inicia una desde la sala de control.",
+        "keys_on": "Las teclas 1–0, ← →, Espacio y Tab funcionan aquí",
+        "keys_off": "Haz clic en el panel para usar el teclado",
+        "match_page": "Página del partido",
+        "paused": "Se muestra en el panel completo",
+        "paused_hint": "La vista previa se pausa aquí mientras el panel está abierto."
+      },
+      "stop": {
+        "title": "¿Detener la emisión?",
+        "description": "El pod se apaga y la emisión de {match} termina para todos los espectadores. La GPU vuelve al grupo.",
+        "keep": "Seguir emitiendo",
+        "confirm": "Detener emisión"
+      }
+    },
+    "system_alerts": {
+      "alert": "Alerta",
+      "now": "Ahora",
+      "create": "Crear alerta",
+      "empty": "Aún no hay alertas",
+      "hint": "Haz clic en una alerta para editarla.",
+      "new_alert": "Nueva alerta",
+      "edit_alert": "Editar alerta",
+      "new_hint": "Los visitantes la verán en todas las páginas en cuanto la crees.",
+      "created_at": "Creada {time}",
+      "showing": "Visible",
+      "showing_named": "Visible: {name}",
+      "turn_off": "Desactivar",
+      "show_now": "Mostrar ahora",
+      "locked": "Los visitantes no pueden cerrar este banner",
+      "can_close": "Los visitantes pueden cerrarla",
+      "ends": "Termina",
+      "ends_at": "Termina {time}",
+      "no_end": "Sin fin",
+      "older": "Las alertas más antiguas no están en este periodo.",
+      "show_quarter": "Mostrar los últimos 3 meses",
+      "show_older": "Mostrar alertas más antiguas",
+      "preview_caption": "Arriba en todas las páginas",
+      "delete": "Eliminar alerta",
+      "delete_hint": "La elimina para siempre.",
+      "range": {
+        "day": "Último día",
+        "week": "Última semana",
+        "month": "Último mes",
+        "quarter": "Últimos 3 meses"
+      },
+      "summary": {
+        "showing": "{count} banner visible en todas las páginas | {count} banners visibles en todas las páginas",
+        "locked": "{count} no se puede cerrar | {count} no se pueden cerrar",
+        "none": "No se muestra ningún banner"
+      },
+      "lane": {
+        "draft": "Borrador · aún no creada",
+        "unsaved": "Cambios sin guardar",
+        "showing_ends": "Visible · termina {time}",
+        "showing_no_end": "Visible · sin fin",
+        "expired": "Caducó {time}",
+        "turned_off": "Desactivada {time}",
+        "off_created": "Desactivada · creada {time}"
+      },
+      "tip": {
+        "created": "Creada {time}",
+        "up_since": "Visible desde {time}",
+        "ends": "termina {time}",
+        "until_off": "hasta que se desactive",
+        "ended": "terminó {time}",
+        "turned_off": "desactivada {time}",
+        "off_now": "desactivada ahora",
+        "draft": "Se muestra en cuanto la crees"
+      },
+      "sections": {
+        "message": "Mensaje",
+        "display": "Visualización",
+        "schedule": "Programación"
+      },
+      "chips": {
+        "none": "Sin fin",
+        "hour": "1 hora",
+        "six_hours": "6 horas",
+        "day": "24 horas",
+        "three_days": "3 días"
+      },
+      "schedule": {
+        "no_end": "Sin hora de fin. Seguirá visible hasta que la desactives.",
+        "ends": "Termina {time} ({relative})",
+        "ended": "Terminó {time} ({relative})"
+      },
+      "toast": {
+        "turned_off": "«{name}» desactivada",
+        "showing_ends": "«{name}» visible · termina {time}",
+        "showing_no_end": "«{name}» visible · sin fin",
+        "change_end": "Cambiar hora de fin",
+        "restored": "«{name}» restaurada",
+        "created_showing": "Alerta creada. Ya se está mostrando.",
+        "created_off": "Alerta creada. Seguirá desactivada hasta que la actives.",
+        "expired": "«{name}» caducó y dejó de mostrarse"
+      }
+    },
+    "admin_home": {
+      "title": "Resumen",
+      "need_you": "{count} cosa te necesita | {count} cosas te necesitan",
+      "all_clear": "Todo en orden",
+      "all_clear_line": "Ahora mismo nada te necesita.",
+      "live_hint": "La mayoría de las áreas se actualizan en cuanto cambian. Las métricas cada 30 segundos y la base de datos cada minuto.",
+      "everything_else": "Todo lo demás",
+      "open": "Abrir",
+      "open_area": "Abrir {area}",
+      "add_steam_account": "Añadir cuenta de Steam",
+      "more": "+{count} más | +{count} más",
+      "card": {
+        "no_problems": "Sin problemas",
+        "checking": "Comprobando…",
+        "none": "Ninguno aún",
+        "no_online": "Ningún nodo en línea",
+        "season_starts": "La temporada {number} empieza en {count} día | La temporada {number} empieza en {count} días",
+        "of_online": "de {total} en línea",
+        "servers_free": "{free} de {capacity} servidores libres",
+        "of_connected": "de {total} conectados",
+        "offline": "{count} sin conexión | {count} sin conexión",
+        "of_free": "de {total} libres",
+        "accounts_free": "{free} de {total} cuentas de Steam libres",
+        "in_flight": "en curso",
+        "previews_current": "{current} de {total} vistas previas al día",
+        "of_within": "de {total} dentro de los límites",
+        "slow_statements": "consulta lenta | consultas lentas",
+        "threshold": "Lenta a partir de {threshold}",
+        "banners_showing": "banner visible | banners visibles",
+        "installed": "instalados",
+        "updates": "{count} actualización disponible | {count} actualizaciones disponibles",
+        "up_to_date": "Todo al día",
+        "all_set_up": "Todo configurado"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} nodo está sin conexión | {count} nodos están sin conexión",
+          "cs2_failed": "La actualización de CS2 falló en {count} nodo | La actualización de CS2 falló en {count} nodos",
+          "overprovisioned": "{count} nodo ejecuta más servidores de los que admite su CPU | {count} nodos ejecutan más servidores de los que admiten sus CPU",
+          "plugin_unsupported": "El plugin fijado de {count} nodo no admite su build de CS2 | Los plugins fijados de {count} nodos no admiten su build de CS2",
+          "disk_full": "El disco de {count} nodo está casi lleno | Los discos de {count} nodos están casi llenos",
+          "cpu_governor": "{count} nodo no usa el gobernador de CPU performance | {count} nodos no usan el gobernador de CPU performance",
+          "not_ready_region": "{count} nodo no puede alojar partidas: sin región | {count} nodos no pueden alojar partidas: sin región",
+          "not_ready_ports": "{count} nodo no puede alojar partidas: sin rango de puertos | {count} nodos no pueden alojar partidas: sin rango de puertos",
+          "not_ready_cs2": "{count} nodo no puede alojar partidas: CS2 no está instalado | {count} nodos no pueden alojar partidas: CS2 no está instalado",
+          "cs2_behind": "Actualización de CS2 disponible para {count} nodo | Actualización de CS2 disponible para {count} nodos",
+          "disk_filling": "El disco de {count} nodo se está llenando | Los discos de {count} nodos se están llenando",
+          "cpu_slow": "La CPU de {count} nodo funciona por debajo de 3 GHz | Las CPU de {count} nodos funcionan por debajo de 3 GHz",
+          "cpu_warning": "{count} nodo informa de una advertencia de CPU | {count} nodos informan de advertencias de CPU"
+        },
+        "gpus": {
+          "pool_empty": "No hay cuentas de Steam: las GPU no pueden renderizar, reproducir demos ni transmitir",
+          "pool_short": "Al grupo de Steam le falta {count} cuenta para tener una por GPU | Al grupo de Steam le faltan {count} cuentas para tener una por GPU",
+          "offline": "{count} GPU está sin conexión | {count} GPU están sin conexión",
+          "bake_failed": "La precompilación de shaders falló en {count} GPU | La precompilación de shaders falló en {count} GPU",
+          "renders_stuck": "{count} renderizado espera y ninguna GPU acepta renderizados | {count} renderizados esperan y ninguna GPU acepta renderizados"
+        },
+        "metrics": {
+          "cpu": "{count} nodo tiene la CPU por encima del {threshold}% | {count} nodos tienen la CPU por encima del {threshold}%",
+          "memory": "{count} nodo tiene la memoria por encima del {threshold}% | {count} nodos tienen la memoria por encima del {threshold}%",
+          "disk": "{count} nodo tiene un disco por encima del {threshold}% | {count} nodos tienen un disco por encima del {threshold}%",
+          "gpu_util": "{count} GPU lleva 5 minutos por encima del {threshold}% de uso | {count} GPU llevan 5 minutos por encima del {threshold}% de uso",
+          "gpu_vram": "{count} GPU tiene la VRAM por encima del {threshold}% | {count} GPU tienen la VRAM por encima del {threshold}%",
+          "gpu_temp": "{count} GPU está a {threshold} °C o más | {count} GPU están a {threshold} °C o más"
+        },
+        "seasons": {
+          "rebuild": "La temporada {number} necesita reconstruir el ELO"
+        },
+        "renders": {
+          "failed": "{count} renderizado falló en el último día | {count} renderizados fallaron en el último día",
+          "behind": "El pipeline de renderizado va atrasado: graba v{pipeline} y la API espera v{version}",
+          "missing": "{count} lineup no tiene vista previa | {count} lineups no tienen vista previa",
+          "outdated": "{count} vista previa de lineup está desactualizada | {count} vistas previas de lineups están desactualizadas"
+        },
+        "database": {
+          "locks": "{count} sesión espera un bloqueo | {count} sesiones esperan bloqueos",
+          "running": "{count} consulta lleva más de {threshold} en ejecución | {count} consultas llevan más de {threshold} en ejecución",
+          "slow": "{count} consulta tarda de media más de {threshold} | {count} consultas tardan de media más de {threshold}"
+        },
+        "plugins": {
+          "failed": "{count} plugin no se pudo desplegar | {count} plugins no se pudieron desplegar",
+          "update": "Actualización disponible para {count} plugin | Actualización disponible para {count} plugins",
+          "manual": "Se encontró {count} plugin en disco que no se gestiona aquí | Se encontraron {count} plugins en disco que no se gestionan aquí"
+        },
+        "settings": {
+          "not_set_up": "{count} sección de ajustes no está configurada | {count} secciones de ajustes no están configuradas"
+        },
+        "servers": {
+          "no_rcon": "{count} servidor no responde a RCON | {count} servidores no responden a RCON",
+          "plugin_outdated": "{count} servidor usa un plugin desactualizado | {count} servidores usan un plugin desactualizado"
+        }
+      }
     }
   },
   "layouts": {
@@ -6545,6 +7969,19 @@
         "theme": "Apariencia",
         "developer": "Desarrollo",
         "players_teams": "Plataforma"
+      },
+      "status": {
+        "not_set_up": "Sin configurar",
+        "job_elo": "ELO {pct}%",
+        "job_reindex": "Reindexado {pct}%",
+        "job_reparse": "Reanálisis {pct}%",
+        "filter_attention": "Atención"
+      },
+      "search": {
+        "results": "{count} ajuste coincidente | {count} ajustes coincidentes",
+        "clear": "Borrar búsqueda",
+        "no_match_title": "Ningún ajuste coincide con «{query}»",
+        "no_match_body": "La búsqueda lee los nombres y descripciones de los ajustes de todas las secciones. Prueba con una palabra, como «rol» o «ELO»."
       }
     },
     "system_update": {
@@ -6616,6 +8053,7 @@
       "brand": "5stack",
       "systems_online": "{count} sistema en línea | {count} sistemas en línea",
       "navigation": {
+        "home": "Inicio",
         "dashboard": "Mis estadísticas",
         "play": "Jugar",
         "watch": "Ver",
@@ -6650,7 +8088,24 @@
         "alerts": "Avisos",
         "seasons": "Temporadas",
         "stream_deck": "Stream Deck",
-        "awards": "Awards"
+        "awards": "Awards",
+        "control_room": "Sala de control",
+        "overview": "Resumen"
+      },
+      "modes": {
+        "play": "Jugar",
+        "admin": "Admin",
+        "switch_to_play": "Cambiar a Jugar",
+        "switch_to_admin": "Cambiar a Admin",
+        "attention": "{count} requiere atención | {count} requieren atención",
+        "seasons_rebuild": "Requiere reconstrucción"
+      },
+      "groups": {
+        "compete": "Competir",
+        "practice": "Práctica",
+        "media": "Multimedia",
+        "monitoring": "Monitorización",
+        "site": "Sitio"
       },
       "system": {
         "title": "Sistema",
@@ -6668,7 +8123,9 @@
       },
       "footer": {
         "report_issue": "Reportar un problema",
-        "join_discord": "Únete a nuestro Discord"
+        "report_issue_short": "Reportar error",
+        "join_discord": "Únete a nuestro Discord",
+        "discord": "Discord"
       },
       "tooltips": {
         "dashboard": "Mis estadísticas",
@@ -7027,7 +8484,6 @@
     "none": "No hay jugadores disponibles"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "Estos archivos se montan en el directorio `csgo` al arrancar el servidor.",
     "any": "Cualquiera",
     "remove": "Quitar",
     "edit": "Editar",
@@ -7051,7 +8507,8 @@
       "unsaved_changes": "Cambios sin guardar",
       "review_and_save": "Revisa tus cambios y guarda",
       "has_errors": "Ajustes no válidos",
-      "resolve_errors": "Corrige los campos marcados para guardar"
+      "resolve_errors": "Corrige los campos marcados para guardar",
+      "leave_blocked": "Guarda o descarta antes de salir"
     },
     "error": "Error",
     "enabled": "Activado",
@@ -7091,8 +8548,6 @@
     "exit_fullscreen": "Salir de pantalla completa",
     "download": "Descargar",
     "upload": "Subir",
-    "sort_ascending": "Orden ascendente",
-    "sort_descending": "Orden descendente",
     "see_all": "Ver todo",
     "standby_no_activity": "EN ESPERA · SIN ACTIVIDAD",
     "players": "jugadores",
@@ -7156,7 +8611,8 @@
     "empty_filtered": {
       "title": "Nada coincide con estos filtros",
       "description": "Prueba a quitar filtros o ampliar la búsqueda."
-    }
+    },
+    "clear_filters": "Borrar filtros"
   },
   "global_search": {
     "placeholder": "Buscar jugadores, páginas y ajustes",
@@ -7184,8 +8640,6 @@
   },
   "file_manager": {
     "location": "Ubicación",
-    "dedicated_server_files": "Archivos del servidor dedicado",
-    "game_server_node_files": "Archivos del nodo de servidores",
     "loading_server_info": "Cargando información del servidor...",
     "create_directory": {
       "title": "Crear directorio",
@@ -10251,10 +11705,6 @@
     "remove_node_confirm_title": "¿Eliminar este nodo?",
     "remove_node_confirm_description": "El nodo y todos sus servidores dedicados se eliminarán de 5Stack. Esta acción no se puede deshacer.",
     "remove_ports": "Eliminar puertos",
-    "mode": {
-      "use_as_match": "Usar como servidor de partidas",
-      "use_as_gpu_only": "Usar solo como GPU"
-    },
     "show_update_logs": "Ver registros de actualización",
     "update_failed": "Actualización fallida",
     "update_failed_description": "La última actualización falló. Los registros de actualización se conservan durante 24 horas.",
@@ -10526,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "Uso",
-    "mount_os": "SO",
-    "mount_demos": "Demos",
-    "total_series": "{label} total",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} med."
   },
@@ -10562,7 +12008,6 @@
       "move_node": "Mover servidor",
       "valve_preset_group": "Preajustes de Valve",
       "custom_mode_group": "Modos personalizados",
-      "edit_mode": "Editar modo",
       "cs2_only": "Solo CS2",
       "needs_node": "Necesita un nodo",
       "csgo_valve_only": "Los servidores de CS:GO solo ejecutan preajustes de Valve. Los modos ranked, de práctica y personalizados necesitan CS2.",
@@ -10586,9 +12031,9 @@
       "generate": "Generar",
       "port": "Puerto de juego",
       "tv_port": "Puerto TV",
-      "create": "Crear servidor",
       "max_players": "Jugadores máx.",
-      "max_players_description": "Número máximo de jugadores que pueden conectarse al servidor"
+      "max_players_description": "Número máximo de jugadores que pueden conectarse al servidor",
+      "edit_mode_link": "Editar modo"
     },
     "rcon": {
       "console_output": "Salida de consola",
@@ -10611,6 +12056,13 @@
   "components": {
     "map_pools": {
       "view_on_steam": "Ver en Steam"
+    },
+    "facet_rail": {
+      "clear_all": "Quitar todos",
+      "none": "ninguno",
+      "remove": "Quitar {label}",
+      "show_all": "Mostrar los {count}",
+      "show_fewer": "Mostrar menos"
     }
   },
   "map_pools": {
@@ -12412,7 +13864,6 @@
       "unique_24h": "Únicos · 24 h",
       "unique_7d": "Únicos · 7 d",
       "sessions_7d": "Sesiones · 7 d",
-      "time_played_7d": "Tiempo Jugado · 7 d",
       "avg_session": "Sesión Media",
       "players": "jugadores",
       "joins": "entradas",
@@ -12424,7 +13875,9 @@
       "empty": "Nadie ha jugado aquí en este periodo.",
       "no_matches": "Ningún jugador coincide con esa búsqueda.",
       "showing": "Mostrando {shown} de {total}",
-      "load_more": "Cargar Más"
+      "last_seen": "Última vez visto",
+      "time_played_col": "Tiempo jugado · 7 d",
+      "show_more": "Cargar más"
     },
     "player_tab": {
       "moderator_note": "Los moderadores también ven horas exactas, sesiones, nombres usados e IP.",
@@ -12463,12 +13916,8 @@
       "offline": "Desconectado",
       "map": "mapa",
       "community_server": "servidor de la comunidad",
-      "online_now": "En Línea Ahora",
-      "players_this_week": "Jugadores Esta Semana",
       "different_players": "jugadores distintos",
-      "hours_this_week": "Horas Esta Semana",
       "played_by_everyone": "jugadas entre todos",
-      "all_time_players": "Jugadores Totales",
       "since": "desde el {date}",
       "activity": "Actividad · Últimos 7 Días",
       "activity_description": "Horas totales que todos jugaron aquí cada día. No se muestran tiempos de juego individuales.",
@@ -12485,7 +13934,13 @@
       "day": "Día",
       "player_hours": "Horas de Juego",
       "not_found_title": "Servidor No Encontrado",
-      "not_found_description": "Este servidor no existe o no es público."
+      "not_found_description": "Este servidor no existe o no es público.",
+      "tile": {
+        "online_now": "En línea ahora",
+        "players_this_week": "Jugadores esta semana",
+        "hours_this_week": "Horas esta semana",
+        "all_time_players": "Jugadores totales"
+      }
     }
   },
   "quick_look": {
@@ -12553,6 +14008,32 @@
         "twitch_unavailable": "Twitch no respondió. Inténtalo de nuevo en un momento.",
         "unknown": "Algo salió mal. Inténtalo de nuevo."
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "Borrar búsqueda"
+    },
+    "sort": {
+      "sorted_ascending": "Orden ascendente",
+      "sorted_descending": "Orden descendente"
+    },
+    "live_stamp": {
+      "live_at": "En directo · {time}",
+      "updated_now": "Actualizado ahora mismo",
+      "updated_now_after": "actualizado ahora mismo",
+      "updated_seconds": "Actualizado hace {seconds} s",
+      "updated_seconds_after": "actualizado hace {seconds} s",
+      "updated_minutes": "Actualizado hace {minutes} min",
+      "updated_minutes_after": "actualizado hace {minutes} min",
+      "paused": "En pausa",
+      "every_seconds": "se actualiza cada {seconds} s",
+      "every_minute": "se actualiza cada minuto",
+      "every_minutes": "se actualiza cada {minutes} min",
+      "refresh_now": "Actualizar ahora"
+    },
+    "last_changed": {
+      "updated": "Actualizado {time}"
     }
   }
 }

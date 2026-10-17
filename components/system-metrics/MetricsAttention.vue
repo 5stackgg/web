@@ -129,9 +129,6 @@ function hintOf(issue: MetricIssue) {
   return parts.filter(Boolean).join(" · ");
 }
 
-const titleKey = (issue: MetricIssue) =>
-  `pages.system_metrics.attention.issue_${issue.kind}`;
-
 const nodesLine = computed(() => {
   const s = props.summary;
   return s.fine === s.total
@@ -308,7 +305,7 @@ const rowLeave =
 
                 <div class="min-w-0">
                   <i18n-t
-                    :keypath="titleKey(issue)"
+                    :keypath="`pages.system_metrics.attention.issue_${issue.kind}`"
                     tag="div"
                     scope="global"
                     class="text-[13.5px] [overflow-wrap:anywhere]"

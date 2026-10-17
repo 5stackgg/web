@@ -1188,20 +1188,50 @@ export default {
   },
   computed: {
     jumpSections(): Array<{ id: string; label: string }> {
-      const t = (key: string) => this.$t(`pages.system_telemetry.${key}`);
       return [
-        { id: "fleet-panels", label: t("installs.title") },
-        { id: "fleet-infra", label: t("totals.infrastructure") },
-        { id: "fleet-matches", label: t("totals.match_volume") },
-        { id: "fleet-competition", label: t("totals.competition") },
-        { id: "fleet-utility", label: t("utility.title") },
-        { id: "fleet-community", label: t("totals.community") },
-        { id: "fleet-distribution", label: t("distribution.title") },
+        {
+          id: "fleet-panels",
+          label: this.$t("pages.system_telemetry.installs.title"),
+        },
+        {
+          id: "fleet-infra",
+          label: this.$t("pages.system_telemetry.totals.infrastructure"),
+        },
+        {
+          id: "fleet-matches",
+          label: this.$t("pages.system_telemetry.totals.match_volume"),
+        },
+        {
+          id: "fleet-competition",
+          label: this.$t("pages.system_telemetry.totals.competition"),
+        },
+        {
+          id: "fleet-utility",
+          label: this.$t("pages.system_telemetry.utility.title"),
+        },
+        {
+          id: "fleet-community",
+          label: this.$t("pages.system_telemetry.totals.community"),
+        },
+        {
+          id: "fleet-distribution",
+          label: this.$t("pages.system_telemetry.distribution.title"),
+        },
         ...(this.featureGroups.length
-          ? [{ id: "fleet-features", label: t("features_title") }]
+          ? [
+              {
+                id: "fleet-features",
+                label: this.$t("pages.system_telemetry.features_title"),
+              },
+            ]
           : []),
         ...(this.pluginsReported > 0
-          ? [{ id: "fleet-plugins", label: t("plugins.title") }]
+          ? [
+              {
+                id: "fleet-plugins",
+                label: this.$t("pages.system_telemetry.plugins.title"),
+              },
+            ]
           : []),
       ];
     },

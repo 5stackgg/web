@@ -1,24 +1,23 @@
 <template>
   <Popover>
     <PopoverTrigger as-child>
-      <Button variant="outline" class="justify-between w-full h-10">
-        <span v-if="selectedSchemas.length === 0" class="text-muted-foreground">
-          {{ $t("pages.database.filters.select_schemas") }}
-        </span>
-        <span v-else-if="selectedSchemas.length === 1">
-          {{ selectedSchemas[0] }}
-        </span>
-        <span v-else>
-          {{ selectedSchemas.length }}
-          {{ $t("pages.database.filters.schemas_selected") }}
-        </span>
-        <ChevronDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </Button>
+      <button
+        type="button"
+        :class="[
+          filterTriggerBase,
+          isDefault ? filterTriggerIdle : filterTriggerActive,
+          'max-w-[220px]',
+        ]"
+      >
+        <Layers class="h-3.5 w-3.5 shrink-0" />
+        <span class="truncate normal-case tracking-normal">{{ label }}</span>
+        <ChevronDown class="h-3 w-3 shrink-0 opacity-60" />
+      </button>
     </PopoverTrigger>
-    <PopoverContent class="w-[200px] p-0">
+    <PopoverContent align="end" class="w-[240px] p-0">
       <Command>
         <CommandInput
-          :placeholder="$t('pages.database.filters.search_schemas')"
+          :placeholder="$t('pages.database.explorer.find_schema')"
         />
         <CommandEmpty>{{
           $t("pages.database.filters.no_schemas")
@@ -31,10 +30,10 @@
               :value="schema"
               @select="toggleSchema(schema)"
             >
-              <div class="flex items-center pointer-events-none mr-2">
-                <Checkbox :model-value="selectedSchemas.includes(schema)" />
+              <div class="pointer-events-none mr-2 flex items-center">
+                <Checkbox :model-value="modelValue.includes(schema)" />
               </div>
-              {{ schema }}
+              <span class="font-mono text-xs">{{ schema }}</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>
@@ -44,8 +43,7 @@
 </template>
 
 <script lang="ts">
-import { ChevronDownIcon } from "lucide-vue-next";
-import { Button } from "@/components/ui/button";
+import { ChevronDown, Layers } from "lucide-vue-next";
 import {
   Popover,
   PopoverContent,
@@ -61,10 +59,16 @@ import {
 } from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
 import { generateQuery } from "~/graphql/graphqlGen";
+import {
+  filterTriggerActive,
+  filterTriggerBase,
+  filterTriggerIdle,
+} from "~/utilities/tacticalClasses";
 
+// Which schemas the explorer reads. The page owns the choice and remembers
+// it; every selector on the page shows and changes the same list.
 export default {
   components: {
-    Button,
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -75,70 +79,48 @@ export default {
     CommandItem,
     CommandList,
     Checkbox,
-    ChevronDownIcon,
+    ChevronDown,
+    Layers,
   },
+  props: {
+    modelValue: {
+      type: Array as () => string[],
+      required: true,
+    },
+  },
+  emits: ["update:modelValue"],
   data() {
     return {
       availableSchemas: [] as string[],
-      selectedSchemas: [] as string[],
+      filterTriggerActive,
+      filterTriggerBase,
+      filterTriggerIdle,
     };
   },
-  mounted() {
-    // Load selected schemas from localStorage
-    this.loadFromLocalStorage();
-
-    // Emit initial value to parent
-    this.$nextTick(() => {
-      this.$emit("change", this.selectedSchemas);
-    });
-
-    // Listen for changes from other tabs
-    window.addEventListener("storage", this.handleStorageChange);
-  },
-  beforeUnmount() {
-    window.removeEventListener("storage", this.handleStorageChange);
+  computed: {
+    isDefault(): boolean {
+      return this.modelValue.length === 1 && this.modelValue[0] === "public";
+    },
+    label(): string {
+      if (this.modelValue.length === 0) {
+        return this.$t("pages.database.explorer.no_schemas");
+      }
+      if (this.modelValue.length === 1) {
+        return this.modelValue[0];
+      }
+      return this.$t(
+        "pages.database.explorer.schema_count",
+        { count: this.modelValue.length },
+        this.modelValue.length,
+      );
+    },
   },
   methods: {
-    loadFromLocalStorage() {
-      const saved = localStorage.getItem("database-selected-schemas");
-      if (saved) {
-        try {
-          this.selectedSchemas = JSON.parse(saved);
-        } catch (e) {
-          this.selectedSchemas = ["public"];
-        }
-      } else {
-        this.selectedSchemas = ["public"];
-        localStorage.setItem(
-          "database-selected-schemas",
-          JSON.stringify(this.selectedSchemas),
-        );
-      }
-    },
-    handleStorageChange(event: StorageEvent) {
-      if (event.key === "database-selected-schemas" && event.newValue) {
-        try {
-          this.selectedSchemas = JSON.parse(event.newValue);
-          this.$emit("change", this.selectedSchemas);
-        } catch (e) {
-          // Invalid JSON, ignore
-        }
-      }
-    },
     toggleSchema(schema: string) {
-      const index = this.selectedSchemas.indexOf(schema);
-      if (index > -1) {
-        this.selectedSchemas.splice(index, 1);
-      } else {
-        this.selectedSchemas.push(schema);
-      }
-      // Save to localStorage
-      localStorage.setItem(
-        "database-selected-schemas",
-        JSON.stringify(this.selectedSchemas),
-      );
-      // Emit change event
-      this.$emit("change", this.selectedSchemas);
+      const next = this.modelValue.includes(schema)
+        ? this.modelValue.filter((s) => s !== schema)
+        : [...this.modelValue, schema];
+      this.$emit("update:modelValue", next);
     },
   },
   apollo: {
@@ -147,7 +129,6 @@ export default {
         getSchemas: true,
       }),
       update: (data: any) => data.getSchemas || [],
-      pollInterval: 0, // Only fetch once
     },
   },
 };

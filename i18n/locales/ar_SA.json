@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "استخدام CPU",
-      "memory_usage": "استخدام الذاكرة",
       "services": "الخدمات",
       "service": "خدمة",
-      "network": "الشبكة",
       "search_services_placeholder": "ابحث في الخدمات أو العقد...",
       "filter_by_node": "صفِّ حسب العقدة",
       "no_services_found": "لا توجد خدمات تطابق عوامل التصفية الحالية",
@@ -1281,11 +1278,145 @@
       "disk_short": "الأقراص",
       "network_short": "الشبكة",
       "no_nodes_found": "لا توجد عقد سيرفرات تطابق عوامل التصفية الحالية",
-      "only_online_nodes": "العقد المتصلة فقط"
+      "only_online_nodes": "العقد المتصلة فقط",
+      "search_placeholder": "ابحث في الخدمات أو العقد",
+      "scope_all": "كل الخدمات",
+      "scope_attention": "تحتاج إلى انتباه",
+      "live_hint": "ترسل كل عقدة تقريرًا كل 30 ثانية تقريبًا. تحتفظ الصفحة بآخر 90 دقيقة.",
+      "filter_group": "عقد السيرفرات",
+      "only_online": "العقد المتصلة فقط",
+      "only_enabled": "العقد المفعّلة فقط",
+      "no_nodes_title": "لا توجد عقد سيرفرات",
+      "no_nodes_hint": "جهّز عقدة سيرفر لزيادة سعة المباريات.",
+      "setup_node": "جهّز عقدة",
+      "services_reporting": "{count} ترسل تقارير",
+      "all_nodes": "كل العقد",
+      "no_services_title": "لا توجد خدمات ترسل تقارير",
+      "no_services_hint": "تظهر الخدمات هنا عندما ترسل عقدة مقاييس الـ pod.",
+      "no_attention_title": "لا توجد خدمة تحتاج إلى انتباه",
+      "no_attention_hint": "كل الخدمات ضمن الحدود.",
+      "no_match_title": "لا توجد خدمات مطابقة",
+      "no_match_hint": "لا شيء يطابق البحث أو العقدة أو الفلاتر.",
+      "clear_filters": "مسح الفلاتر",
+      "logs_for": "سجلات {name}",
+      "logs_sheet_sub": "السجلات · {node}",
+      "open_logs_page": "افتح في صفحة السجلات",
+      "attention": {
+        "problems": "{count} مشكلة | {count} مشاكل",
+        "nodes_ok": "{count} عقدة سليمة | {count} عقد سليمة",
+        "critical_count": "{count} حرجة | {count} حرجة",
+        "warning_count": "{count} تحذير | {count} تحذيرات",
+        "thresholds": "الحدود",
+        "thresholds_hint": "العقد: تحذير من 75% وحرج من 90% للمعالج أو الذاكرة أو القرص. وحدات GPU: حرج عند استخدام 90% لمدة 5 دقائق أو 90% من ذاكرة الفيديو، وتحذير عند 85 °C. في جدول الخدمات، تُعدّ الخدمة التي تستهلك نصف ذاكرة عقدتها حرجة أيضًا.",
+        "all_clear": "لا شيء يحتاج إلى انتباه",
+        "all_clear_hint": "كل العقد المتصلة ووحدات GPU ضمن الحدود.",
+        "issue_cpu": "المعالج في {node} عند {value}",
+        "issue_memory": "الذاكرة في {node} عند {value}",
+        "issue_disk": "القرص في {node} عند {value}",
+        "issue_cpu_warning": "{node} يبلّغ عن سيرفر لعبة محدود المعالج",
+        "issue_gpu_util": "{gpu} في {node} عند {value}",
+        "issue_gpu_vram": "ذاكرة الفيديو لـ {gpu} في {node} عند {value}",
+        "issue_gpu_temp": "{gpu} في {node} عند {value}",
+        "cores": "{count} نواة | {count} أنوية",
+        "above_for": "فوق {threshold}% منذ {minutes} دقيقة",
+        "above_now": "فوق {threshold}% منذ آخر عينة",
+        "used_of": "{used} من {total}",
+        "gpu_usage": "استخدام {value}",
+        "last_30": "آخر 30 دقيقة",
+        "open_node": "افتح العقدة",
+        "nodes": "العقد",
+        "gpus": "وحدات GPU",
+        "nodes_all_fine": "{count} عقدة متصلة وضمن الحدود | كل العقد الـ {count} متصلة وضمن الحدود",
+        "nodes_fine": "{fine} من {total} عقد متصلة وضمن الحدود",
+        "need_attention": "{count} تحتاج إلى انتباه | {count} تحتاج إلى انتباه",
+        "offline": "{count} غير متصلة",
+        "view_nodes": "عرض الكل في عقد السيرفرات",
+        "gpus_none_online": "لا توجد GPU متصلة",
+        "gpus_all_fine": "{count} GPU ضمن الحدود | {count} GPU ضمن الحدود",
+        "gpus_fine": "{fine} من {total} GPU ضمن الحدود",
+        "gpus_offline": "{count} على عقدة غير متصلة | {count} على عقد غير متصلة",
+        "view_gpus": "عرض في عقد GPU"
+      },
+      "services_table": {
+        "actions": "الإجراءات",
+        "last_seen": "آخر ظهور {time}",
+        "node_disk": "قرص العقدة",
+        "node_disk_hint": "لا تبلّغ الخدمات عن استخدامها للقرص. هذا هو أكثر الأقراص امتلاءً في العقدة التي تعمل عليها كل خدمة: تحذير من 75% وحرج من 90%.",
+        "cpu_last_30": "المعالج، آخر 30 دقيقة",
+        "of_node": "% من العقدة",
+        "memory_share_hint": "نسبة ما تستهلكه الخدمة من إجمالي ذاكرة العقدة، والكمية المستخدمة في التلميح. الخدمة التي تستهلك نصف ذاكرة العقدة حرجة."
+      }
     },
     "system_logs": {
       "follow_logs": "تتبّع السجلات",
-      "timestamps": "الطوابع الزمنية"
+      "timestamps": "الطوابع الزمنية",
+      "bar_label": "{time}، الأسطر: {total}، التحذيرات: {warnings}، الأخطاء: {errors}",
+      "clear_filters": "مسح عوامل التصفية",
+      "connection_lost": "انقطع الاتصال. جارٍ إعادة الاتصال — سيُستأنف البث بعد آخر سطر معروض هنا.",
+      "container": "الحاوية",
+      "copy_line": "نسخ السطر",
+      "download": "تنزيل السجلات",
+      "download_failed": "تعذّر تنزيل السجلات الكاملة لـ {service}",
+      "errors": "الأخطاء",
+      "errors_like": "أخطاء مثل {text}",
+      "errors_loaded": "الأخطاء في النافذة المحمّلة: {count} | الأخطاء في النافذة المحمّلة: {count}",
+      "errors_word": "أخطاء",
+      "exit_full_screen": "الخروج من ملء الشاشة (Esc)",
+      "filter_lines": "تصفية الأسطر",
+      "follow": "متابعة",
+      "full_logs_of": "السجلات الكاملة · {service}",
+      "full_screen": "ملء الشاشة",
+      "jump_to_live": "انتقل للمباشر",
+      "level_error": "خطأ",
+      "level_log": "سجل",
+      "level_warning": "تحذير",
+      "line_copied": "تم نسخ السطر",
+      "live_rate": "مباشر · {rate}/min",
+      "load_hour_before": "تحميل الساعة السابقة",
+      "loading_earlier": "جارٍ التحميل…",
+      "log_lines": "أسطر السجل",
+      "log_lines_word": "أسطر السجل",
+      "minutes_per_bar": "{time} · {minutes} min لكل عمود",
+      "n_new": "جديدة: {count}",
+      "no_match_hint": "لا شيء في النافذة المحمّلة يطابق عوامل التصفية هذه. حمّل الساعة السابقة أو وسّع المستوى.",
+      "no_match_title": "لا توجد أسطر مطابقة",
+      "no_repeating": "لا توجد تحذيرات أو أخطاء متكررة",
+      "no_services_hint": "اختر خدمة أو أكثر لدمج سجلاتها في بث واحد.",
+      "no_services_title": "لم يتم تحديد خدمات",
+      "node": "العقدة",
+      "nothing_at": "لا شيء عند {time} يطابق عوامل التصفية الحالية",
+      "now": "الآن",
+      "only": "فقط",
+      "only_context": "{context} فقط",
+      "per_minute": "{rate}/min",
+      "pod": "Pod",
+      "pod_count": "Pods: {count}",
+      "pods_of": "Pods الخاصة بـ {service}",
+      "preset_all": "الكل",
+      "preset_core": "الأساسية",
+      "preset_match": "سير المباراة",
+      "preset_media": "الوسائط",
+      "reconnecting": "جارٍ إعادة الاتصال…",
+      "repeating": "تحذيرات أو أخطاء متكررة: {count} | تحذيرات وأخطاء متكررة: {count}",
+      "services": "الخدمات",
+      "show_core": "إظهار الخدمات الأساسية",
+      "show_every_line": "إظهار كل الأسطر",
+      "show_in_stream": "إظهارها في البث",
+      "show_only": "إظهار {service} فقط",
+      "showing": "معروضة",
+      "showing_only": "يتم عرض {service} فقط",
+      "since": "منذ",
+      "start_of_logs": "بداية السجلات المحمّلة",
+      "time": "الوقت",
+      "waiting_for_output": "بانتظار المخرجات · إعادة المحاولة كل 5 s",
+      "warnings": "التحذيرات",
+      "warnings_like": "تحذيرات مثل {text}",
+      "warnings_loaded": "التحذيرات في النافذة المحمّلة: {count} | التحذيرات في النافذة المحمّلة: {count}",
+      "warnings_word": "تحذيرات",
+      "status_ok": "لا تحذيرات ولا أخطاء في آخر 5 دقائق",
+      "status_warn": "تحذيرات في آخر 5 دقائق",
+      "status_bad": "أخطاء في آخر 5 دقائق",
+      "status_off": "لا مخرجات بعد"
     },
     "system_telemetry": {
       "title": "قياس الأسطول",
@@ -1515,7 +1646,11 @@
         "modes_caption": "مُعرّفة",
         "modes_unranked": "غير مناسب للدرافت",
         "modes_unranked_caption": "أوضاع مخفية في ردهات الدرافت"
-      }
+      },
+      "jump_to": "انتقل إلى",
+      "features_title": "الميزات",
+      "not_reported_title": "لم يُبلَّغ عنه بعد",
+      "no_activity_hint": "يمتلئ الرسم البياني كلما أبلغت اللوحات عن المباريات التي تستضيفها."
     },
     "tournaments": {
       "title": "البطولات",
@@ -3516,6 +3651,119 @@
       "tabs": {
         "highlights": "اللقطات المميزة",
         "utility": "رميات الأدوات"
+      },
+      "ledger": {
+        "search": "ابحث في المقاطع والرميات",
+        "view": {
+          "flight": "قيد التنفيذ",
+          "failed": "فشلت",
+          "done": "مكتملة"
+        },
+        "filter": {
+          "queue": "قائمة الانتظار",
+          "map": "الخريطة",
+          "group": "تجميع الجارية حسب الدفعة"
+        },
+        "retry_all": "إعادة محاولة كل الفاشلة ({count})",
+        "empty": {
+          "all": "تظهر مقاطع أبرز اللقطات ومعاينات الرميات هنا أثناء تشغيلها وعرضها ورفعها.",
+          "flight_title": "لا شيء قيد التنفيذ",
+          "failed_title": "لا شيء فشل",
+          "done_title": "لا شيء مكتمل",
+          "flight": "تظهر هنا دفعات أبرز اللقطات الجديدة ومعاينات الرميات.",
+          "failed": "اكتمل كل عرض في القائمة دون أخطاء.",
+          "done": "تظهر هنا عمليات العرض المكتملة.",
+          "filtered": "جرّب مسح البحث أو عوامل التصفية."
+        },
+        "select_all": "تحديد الكل",
+        "select": "تحديد {name}",
+        "col": {
+          "render": "العرض",
+          "progress": "التقدم",
+          "length": "المدة",
+          "elapsed": "المنقضي",
+          "finished": "اكتمل",
+          "actions": "الإجراءات"
+        },
+        "batch": {
+          "done_of": "اكتمل {done} من {total}",
+          "failed": "فشل {count} | فشل {count}",
+          "paused": "متوقفة مؤقتًا",
+          "silent": "لا أخبار من الـ pod منذ {since}",
+          "booting": "الـ pod قيد الإقلاع",
+          "booting_pct": "إقلاع الـ pod {pct}%",
+          "waiting_gpu": "بانتظار وحدة GPU متاحة"
+        },
+        "pod_on": "على {map}",
+        "lineup_on": "رمية · {map}",
+        "missing_clip": "مفقود: ضاع المقطع بعد الرفع",
+        "ago": "منذ {since}",
+        "more": "إجراءات أخرى",
+        "open_details": "فتح التفاصيل",
+        "cancel_batch": "إلغاء الدفعة",
+        "pages": "الصفحات",
+        "silent": "صامت",
+        "history": "سجل الحالة",
+        "clip": "المقطع",
+        "player": "اللاعب",
+        "round": "الجولة",
+        "kills": "عمليات القتل",
+        "segments": "المقاطع الجزئية",
+        "job_id": "معرّف المهمة",
+        "lineup_id": "معرّف الرمية",
+        "render_job": "مهمة العرض",
+        "no_job": "لا شيء بعد",
+        "logs": "السجلات",
+        "bulk": {
+          "selected": "تم تحديد {count} | تم تحديد {count}",
+          "cancel": "إلغاء المحدد",
+          "retry": "إعادة محاولة المحدد",
+          "requeue": "إعادة المحدد إلى قائمة الانتظار",
+          "clear": "مسح التحديد",
+          "requeueing": "جارٍ الإعادة إلى قائمة الانتظار",
+          "cancelling": "جارٍ الإلغاء",
+          "progress": "{label} {done} من {total}"
+        },
+        "toast": {
+          "requeued": "أُعيد {count} عرضًا إلى قائمة الانتظار | أُعيد {count} عرضًا إلى قائمة الانتظار",
+          "cancelled": "أُلغي {count} عرضًا | أُلغي {count} عرضًا",
+          "not_done": "لم ينجح {count} | لم ينجح {count}",
+          "clip_requeued": "أُعيد المقطع إلى قائمة الانتظار",
+          "clip_not_requeued": "تعذّرت إعادة المقطع إلى قائمة الانتظار",
+          "batch_requeued": "أُعيدت الدفعة إلى قائمة الانتظار",
+          "batch_cancelled": "أُلغيت الدفعة",
+          "batch_not_cancelled": "تعذّر إلغاء الدفعة",
+          "cleared": "تم مسح عمليات العرض المكتملة"
+        },
+        "confirm": {
+          "cancel_title": "إلغاء {count} عرضًا؟ | إلغاء {count} عرضًا؟",
+          "cancel_body": "ستتوقف حيث هي ولن تكتمل. لن تتأثر المقاطع والمعاينات المكتملة.",
+          "cancel_batches": "تُلغى المقاطع حسب الدفعة، لذا تتوقف بقية دفعة كل مقطع محدد أيضًا.",
+          "keep": "متابعة العرض",
+          "cancel_action": "إلغاء العروض",
+          "batch_title": "إلغاء {name}؟",
+          "batch_body": "لن تُعرض المقاطع غير المكتملة. تبقى المقاطع المكتملة في أبرز اللقطات.",
+          "clear_title": "مسح عمليات العرض المكتملة؟",
+          "clear_body": "يزيل هذا عمليات العرض المكتملة من قائمة الانتظار. تبقى المقاطع المعروضة في أبرز اللقطات وتبقى المعاينات على رمياتها."
+        },
+        "coverage": {
+          "current": "{count} محدّثة",
+          "missing": "{count} مفقودة",
+          "outdated": "{count} قديمة",
+          "unrenderable": "{count} لا يمكن تصويرها",
+          "queued": "{count} في قائمة الانتظار",
+          "lineups": "الرميات",
+          "rerender_outdated": "إعادة عرض القديمة",
+          "render_missing": "عرض المفقودة",
+          "confirm_missing_title": "عرض المعاينات المفقودة؟",
+          "confirm_outdated_title": "إعادة عرض المعاينات القديمة؟",
+          "confirm_queue": "إضافة العروض إلى قائمة الانتظار",
+          "lineups_title": "رميات تحتاج إلى عرض",
+          "lineups_sub": "إصدار العرض v{version}",
+          "render_one": "اعرض واحدًا أولًا",
+          "render_one_waiting": "بانتظار انتهاء ذلك العرض. عندما يُبلغ عن الإصدار الحالي، تُفتح إعادة عرض القديمة."
+        },
+        "updated_ago": "حُدّث منذ {since}"
       }
     },
     "news": {
@@ -3714,7 +3962,92 @@
       "backfill_cancel_requested": "تم طلب الإلغاء",
       "backfill_canceled_title": "تم إلغاء إعادة بناء الموسم",
       "backfill_complete_title": "اكتملت إعادة بناء الموسم",
-      "backfill_complete_desc": "تمت إعادة بناء {completed} من {total} مباراة ({failed} فشلت)."
+      "backfill_complete_desc": "تمت إعادة بناء {completed} من {total} مباراة ({failed} فشلت).",
+      "hero": {
+        "rebuild_required": "يلزم إعادة البناء",
+        "ends_in": "ينتهي خلال",
+        "running_for": "مستمر منذ",
+        "days": "{count} يوم | {count} أيام",
+        "started": "بدأ",
+        "ends": "ينتهي",
+        "day_of": "اليوم {day} من {total}",
+        "percent_through": "مضى {percent}%",
+        "change_start": "تغيير البداية",
+        "change_end": "تغيير تاريخ النهاية",
+        "set_end": "تعيين تاريخ النهاية",
+        "make_ongoing": "جعله مستمرًا",
+        "grant_award": "منح جائزة",
+        "one_rebuild": "تعمل عملية إعادة بناء واحدة فقط في كل مرة.",
+        "start_caption": "بتوقيت UTC، يبدأ عند 00:00.",
+        "end_caption": "بتوقيت UTC، ينتهي عند 00:00 في ذلك اليوم."
+      },
+      "off": {
+        "title": "خارج الموسم",
+        "pill": "لا يوجد موسم جارٍ",
+        "last_ended": "انتهى {season} في {date}.",
+        "no_season": "المباريات التي تُلعب الآن لا تُحتسب لأي موسم.",
+        "next": "يبدأ {season} في {date}، بعد {count} يوم، ويعيد ELO للمباريات العادية إلى 5000. | يبدأ {season} في {date}، بعد {count} أيام، ويعيد ELO للمباريات العادية إلى 5000.",
+        "nothing": "لم تتم جدولة أي شيء بعد."
+      },
+      "banner": {
+        "stale": "{seasons}: قيم ELO قديمة، لذا الترتيب غير صحيح حتى إعادة البناء. | {seasons}: قيم ELO قديمة، لذا الترتيب غير صحيح حتى إعادة البناء.",
+        "rebuilding_now": "تتم إعادة بناء {season} الآن. تعمل عملية إعادة بناء واحدة فقط في كل مرة."
+      },
+      "danger": {
+        "end_description": "يُغلقه اليوم ويوزّع جوائز الموسم حسب الترتيب النهائي. حتى يبدأ الموسم التالي، لا تُحتسب المباريات لأي موسم.",
+        "end_button": "إنهاء الموسم",
+        "delete_description": "تصبح مبارياته بلا موسم. يُحتفظ بسجل ELO؛ وتُمسح إحصاءات الموسم.",
+        "delete_button": "حذف الموسم",
+        "end_confirm_title": "إنهاء {season} الآن؟",
+        "end_confirm_instead": "سينتهي اليوم، {today}، بدلًا من {date}.",
+        "end_confirm_today": "سينتهي اليوم، {today}.",
+        "end_confirm_awards": "تُمنح جوائز الموسم حسب الترتيب النهائي: بطل الموسم، الوصيف، المركز الثالث، وأفضل لاعب في الموسم.",
+        "end_confirm_gap_next": "حتى يبدأ {season} في {date}، لا تُحتسب المباريات لأي موسم.",
+        "end_confirm_gap_none": "حتى تنشئ الموسم التالي، لا تُحتسب المباريات لأي موسم.",
+        "end_confirm_elo": "يبدأ ELO للمباريات العادية من 5000 مجددًا عند بدء الموسم التالي.",
+        "type_to_confirm": "اكتب {phrase} للتأكيد",
+        "end_confirm_button": "إنهاء {season}",
+        "ended_toast": "انتهى {season}. يجري توزيع جوائز الموسم حسب الترتيب النهائي.",
+        "delete_confirm_title": "حذف {season}؟",
+        "delete_confirm_button": "حذف {season}"
+      },
+      "next": {
+        "label": "الموسم التالي",
+        "first_label": "الموسم الأول",
+        "schedule": "جدولة {season}",
+        "hint_scheduled": "{season} مجدول في {date}.",
+        "hint_after": "ينتهي {season} في {date}. لا شيء مجدول بعده.",
+        "hint_open_ended": "لا يوجد تاريخ نهاية لـ {season}، لذا يحتاج الموسم التالي إلى تحديده أولًا.",
+        "blocked": "لا يوجد تاريخ نهاية لـ {season}، لذا سيتداخل معه أي موسم لاحق. عيّن تاريخ نهايته أولًا.",
+        "first_season_hint": "يبدأ الموسم الأول من أقدم مباراة مسجلة لديك، {date}، حتى لا تبقى أي مباراة سابقة خارج المواسم."
+      },
+      "form": {
+        "start_date": "تاريخ البداية",
+        "end_date": "تاريخ النهاية"
+      },
+      "ledger": {
+        "label": "سجل المواسم"
+      },
+      "rebuild_progress": {
+        "label": "جارٍ إعادة بناء ELO · {completed} من {total} مباراة",
+        "failed": "فشل {count} | فشل {count}",
+        "canceling": "جارٍ الإلغاء"
+      },
+      "empty_state": {
+        "title": "لا توجد مواسم بعد",
+        "description": "يعيد الموسم ELO للمباريات العادية إلى 5000 عند بدايته. يبدأ الأول من أقدم مباراة مسجلة لديك."
+      },
+      "about": {
+        "label": "ما الذي يفعله الموسم",
+        "reset_title": "ترتيب جديد",
+        "reset_body": "يُعاد تعيين ELO للمباريات العادية إلى 5,000 عند بدء الموسم، فيبدأ الجميع الصعود من النقطة نفسها.",
+        "counts_title": "كل مباراة تُحتسب",
+        "counts_body": "المباريات التي تُلعب بين تاريخ بدايته ونهايته تُحتسب في ترتيبه وإحصاءاته. المباريات بين المواسم لا تُحتسب لأي موسم.",
+        "awards_title": "جوائز عند انتهائه",
+        "awards_body": "تُمنح جوائز بطل الموسم والوصيف والمركز الثالث وأفضل لاعب في الموسم من الترتيب النهائي.",
+        "history_title": "محفوظ في السجل",
+        "history_body": "تحتفظ المواسم المنتهية بترتيبها، ويمكن للاعبين المقارنة بموسم سابق من ملفهم الشخصي."
+      }
     },
     "regions": {
       "title": "المناطق",
@@ -3733,7 +4066,58 @@
         "title": "حذف المنطقة",
         "description": "هل تريد حذف هذه المنطقة؟ لا يمكن التراجع عن هذا الإجراء."
       },
-      "deleted": "تم حذف المنطقة"
+      "deleted": "تم حذف المنطقة",
+      "list": {
+        "label": "المناطق",
+        "flag_relay": "Relay",
+        "flag_lan": "LAN فقط"
+      },
+      "status": {
+        "online": "متصل",
+        "partial": "بعض العقد غير متصلة",
+        "offline": "غير متصل",
+        "disabled": "لا توجد خوادم"
+      },
+      "detail": {
+        "label_aria": "تسمية المنطقة",
+        "nodes_label": "العقد",
+        "servers_free": "{free} من {total} خوادم متاحة",
+        "col_node": "العقدة",
+        "col_free": "متاحة",
+        "col_servers": "الخوادم",
+        "no_nodes_title": "لا توجد عقد في هذه المنطقة",
+        "no_nodes_hint": "عيّن منطقة العقدة من صفحة {page}.",
+        "relay_title": "استخدام Steam Relay",
+        "relay_description": "يتصل اللاعبون عبر Relay من Steam، فتبقى عناوين IP لخوادم اللعب مخفية.",
+        "relay_lan_description": "مناطق LAN فقط توصل اللاعبين مباشرة، لذا يبقى Relay متوقفًا.",
+        "lan_title": "LAN فقط",
+        "lan_description": "يجب أن يتصل اللاعبون من عنوان IP محلي (LAN). للفعاليات الحضورية.",
+        "delete_title": "حذف المنطقة",
+        "delete_hint_nodes": "انقل عقدتها الـ {count} إلى منطقة أخرى أولًا. | انقل عقدها الـ {count} إلى منطقة أخرى أولًا.",
+        "delete_hint_empty": "لا شيء مُسند إليها."
+      },
+      "delete_dialog": {
+        "title": "حذف {region}؟",
+        "description": "لا توجد عقد تستخدم هذه المنطقة. لا يمكن حذف منطقة لُعبت فيها مباريات. لا يمكن التراجع عن ذلك.",
+        "confirm": "حذف المنطقة"
+      },
+      "create_sheet": {
+        "title": "إنشاء منطقة"
+      },
+      "toasts": {
+        "created": "تم إنشاء {region}",
+        "deleted": "تم حذف {region}",
+        "label_saved": "تم حفظ التسمية",
+        "relay_on": "تم تشغيل Steam Relay لـ {region}",
+        "relay_off": "تم إيقاف Steam Relay لـ {region}",
+        "lan_on": "تم تشغيل LAN فقط لـ {region}",
+        "lan_off": "تم إيقاف LAN فقط لـ {region}"
+      },
+      "empty": {
+        "title": "لا توجد مناطق بعد",
+        "description": "تجمع المناطق عقد خوادم اللعب حسب الموقع. يختار اللاعبون مناطقهم المفضلة في المطابقة."
+      },
+      "search_placeholder": "ابحث في المناطق"
     },
     "players": {
       "title": "اللاعبون",
@@ -4279,7 +4663,13 @@
         "demos": "تشغيل Demo",
         "demos_desc": "إعادة تشغيل Demo عند الطلب",
         "rendering": "التصيير",
-        "rendering_desc": "تصيير أبرز اللقطات والمقاطع"
+        "rendering_desc": "تصيير أبرز اللقطات والمقاطع",
+        "summary": "{on} من {total} مفعّلة",
+        "node_disabled": "هذه العقدة معطّلة، لذا لا تستقبل أي عمل GPU.",
+        "now_streaming": "يبث {matchup}",
+        "now_demo": "يشغّل ديمو لـ {who}",
+        "now_render": "يصيّر أبرز اللقطات لـ {who}",
+        "now_render_pct": "يصيّر أبرز اللقطات لـ {who} · {pct}%"
       },
       "bake": {
         "help": "جهّز ذاكرة Vulkan shader لهذه العقدة مسبقًا لتبدأ أول مباراة جاهزة.",
@@ -4292,7 +4682,11 @@
         "in_progress": "التجهيز المسبق جارٍ",
         "stages": {
           "errored": "تعذّر التجهيز"
-        }
+        },
+        "action": "جمّع الشيدرات",
+        "cancel": "ألغِ التجميع",
+        "logs": "سجلات التجميع",
+        "hide_logs": "أخفِ السجلات"
       },
       "empty": {
         "title": "لا توجد عقد GPU",
@@ -4322,9 +4716,155 @@
           "demo": "تشغيل Demo",
           "highlights": "أبرز اللقطات",
           "bake": "تجهيز shader"
-        }
+        },
+        "add_account": "أضف حسابًا",
+        "col_account": "الحساب",
+        "col_holding": "مشغول بـ",
+        "col_since": "منذ",
+        "delete_action": "احذف الحساب",
+        "empty_title": "لا توجد حسابات Steam بعد",
+        "empty_body": "يحتاج كل من التصيير وتشغيل الديمو والمشاهدة المباشرة إلى حساب أثناء التشغيل.",
+        "free": "متاح",
+        "free_of": "{free} من {total} متاحة",
+        "health_no_nodes": "لا توجد عقد GPU بعد",
+        "health_empty": "فارغة. يفشل التصيير والمشاهدة المباشرة حتى تضيف حسابًا.",
+        "health_short": "ينقص {count}. تبقى بعض وحدات GPU خاملة عندما تكون كل الحسابات مستخدمة.",
+        "health_enough": "تكفي لكل GPU",
+        "name": "حسابات Steam",
+        "manage": "إدارة حسابات Steam"
       },
-      "stop": "أوقف"
+      "stop": "أوقف",
+      "search_placeholder": "ابحث عن مباراة أو مشاهد أو GPU أو حساب",
+      "open_render_queue": "افتح قائمة التصيير",
+      "running_title": "قيد التشغيل الآن",
+      "running_hint": "مستهلك واحد لكل GPU في الوقت نفسه",
+      "running_empty_title": "لا يوجد GPU قيد الاستخدام",
+      "running_empty_body": "تظهر هنا البثوث المباشرة وتشغيل الديمو وتصيير أبرز اللقطات أثناء تشغيلها.",
+      "running_no_match": "لا توجد جلسات مطابقة",
+      "no_match_body": "جرّب بحثًا آخر أو امسح عوامل التصفية.",
+      "clear_all": "امسح البحث وعوامل التصفية",
+      "open_game_server_nodes": "افتح عقد خوادم اللعب",
+      "gpus_title": "وحدات GPU",
+      "gpus_hint": "عقد GPU هي عقد خوادم لعب مزوّدة بـ GPU",
+      "gpus_no_match": "لا توجد عقد GPU مطابقة",
+      "no_region": "بلا منطقة",
+      "more_for": "المزيد لـ {node}",
+      "open_details": "افتح التفاصيل",
+      "open_in_nodes": "افتح في عقد خوادم اللعب",
+      "accept_matches": "اقبل مباريات جديدة",
+      "stop_accepting": "أوقف قبول المباريات",
+      "filter": {
+        "live": "مباشر",
+        "demos": "ديمو",
+        "renders": "تصيير",
+        "workload_on": "عبء العمل مفعّل",
+        "node_type": "نوع العقدة"
+      },
+      "kpi": {
+        "gpus_free": "وحدات GPU متاحة",
+        "of_total": "من {total}",
+        "running": "قيد التشغيل الآن",
+        "running_split": "مباشر: {live} · ديمو: {demo} · تصيير: {render}",
+        "waiting": "تصيير في الانتظار",
+        "waiting_none": "لا شيء في القائمة",
+        "accounts_split": "{used} قيد الاستخدام · {free} متاحة",
+        "accounts_short": "تحتاج {count} إضافية لتغطية كل GPU",
+        "accounts_busy": "كلها قيد الاستخدام. ينتظر العمل الجديد حسابًا متاحًا."
+      },
+      "wait_reason": {
+        "no_accounts": "لا توجد حسابات Steam في المجموعة",
+        "paused_for_match": "متوقف مؤقتًا أثناء مباراة مباشرة",
+        "no_account_free": "بانتظار حساب Steam",
+        "no_gpu_free": "بانتظار GPU متاح"
+      },
+      "col": {
+        "workload": "عبء العمل",
+        "for": "لمن",
+        "account": "حساب Steam",
+        "state": "الحالة",
+        "time": "المدة",
+        "node": "العقدة",
+        "load": "الحمل",
+        "vram": "VRAM",
+        "workloads": "أعباء العمل"
+      },
+      "kind": {
+        "live_tv": "بث مباشر (GOTV)",
+        "live_direct": "بث مباشر (مباشر)",
+        "demo": "تشغيل الديمو",
+        "highlights": "تصيير أبرز اللقطات",
+        "bake": "تجميع الشيدرات مسبقًا"
+      },
+      "who": {
+        "spectators": "المشاهدون",
+        "warming_cache": "يجهّز ذاكرة Vulkan المؤقتة"
+      },
+      "state": {
+        "starting": "قيد البدء",
+        "playing": "قيد التشغيل",
+        "failed": "فشل"
+      },
+      "node_state": {
+        "setup": "قيد الإعداد",
+        "streaming": "يبث",
+        "playing": "يشغّل ديمو",
+        "baking": "يجمّع الشيدرات",
+        "offline_since": "غير متصل منذ {time}"
+      },
+      "node_kind": {
+        "gpu": "GPU فقط",
+        "match": "مباراة + GPU"
+      },
+      "sheet": {
+        "now": "الآن",
+        "shader_cache": "ذاكرة الشيدرات المؤقتة",
+        "idle_ready": "جاهزة للبث المباشر وتشغيل الديمو والتصيير.",
+        "unavailable": "لا تتلقى أعمال GPU حتى تُفعَّل وتتصل.",
+        "no_metrics": "لا توجد مقاييس GPU ما دامت العقدة معطّلة أو غير متصلة أو قيد الإعداد.",
+        "bake_failed_hint": "فشل التجميع الأخير. أعد المحاولة أو اقرأ السجلات.",
+        "cache_warm": "جاهزة",
+        "never_baked": "لم تُجمَّع قط. أول بث على هذه العقدة يجمّع الشيدرات أثناء التشغيل."
+      },
+      "stop_copy": {
+        "keep": "أبقِه يعمل",
+        "live_title": "إيقاف البث المباشر لـ {matchup}؟",
+        "live_body": "سيفقد المشاهدون البث. المباراة نفسها تستمر.",
+        "live_action": "أوقف البث",
+        "demo_title": "إيقاف تشغيل الديمو لـ {who}؟",
+        "demo_body": "سيُغلق المشغّل. يمكن تشغيله مجددًا عندما يتوفر GPU.",
+        "demo_action": "أوقف التشغيل",
+        "render_title": "إيقاف تصيير أبرز اللقطات لـ {who}؟",
+        "render_body": "سيتوقف ويحرّر الـ GPU.",
+        "render_body_pct": "سيتوقف عند {pct}% ويحرّر الـ GPU.",
+        "render_action": "أوقف التصيير"
+      },
+      "toggle_gpu_only_help": "يتولى أعمال GPU فقط، دون سيرفرات مباريات. تفعيله يمسح منطقته ومنافذه.",
+      "plate": {
+        "temperature": "درجة الحرارة",
+        "power": "الطاقة",
+        "vram_of": "{used} من {total} GB",
+        "hot": "حرارة مرتفعة، فوق {limit} °C",
+        "too_hot": "ساخنة جدًا، فوق {limit} °C",
+        "no_reading": "لا توجد قراءة مباشرة",
+        "cards": "{count} بطاقة | {count} بطاقات"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "تفعيل البث المباشر",
+          "demos": "تفعيل تشغيل Demo",
+          "rendering": "تفعيل التصيير"
+        },
+        "turn_off": {
+          "streaming": "إيقاف البث المباشر",
+          "demos": "إيقاف تشغيل Demo",
+          "rendering": "إيقاف التصيير"
+        },
+        "confirm_body": {
+          "streaming": "يستمر البث الجاري. لن يستقبل هذا الـ GPU بثًا جديدًا حتى يُعاد تفعيله.",
+          "demos": "يستمر التشغيل الجاري. لن يستقبل هذا الـ GPU عروض Demo جديدة حتى يُعاد تفعيله.",
+          "rendering": "يستمر التصيير الجاري. لن يستقبل هذا الـ GPU مهام تصيير جديدة حتى يُعاد تفعيله."
+        }
+      }
     },
     "game_server_nodes": {
       "title": "عقد السيرفرات",
@@ -4492,12 +5032,14 @@
         "no_nodes": "لا توجد عقد سيرفرات",
         "supports_low_latency": "يدعم زمن الاستجابة المنخفض",
         "supports_cpu_pinning": "يدعم تثبيت CPU",
-        "cpu_governor": "منظّم CPU"
+        "cpu_governor": "منظّم CPU",
+        "servers": "السيرفرات",
+        "servers_tooltip": "السيرفرات المتاحة، والإجمالي بين قوسين",
+        "cs2_build": "إصدار CS2",
+        "plugin": "الإضافة",
+        "load": "الحمل"
       },
       "builds": {
-        "title": "سجل إصدارات CS2",
-        "description": "التحقق من Gamedata وبناء أصول الخرائط لكل إصدار من CS2، وما غيّره كل إصدار مقارنة بالإصدار السابق.",
-        "back": "عقد السيرفرات",
         "builds": "الإصدارات",
         "no_builds": "لم يتم التحقق من أي إصدار أو بناؤه بعد.",
         "current": "الحالي",
@@ -4507,11 +5049,271 @@
           "detected": "صدر التحديث",
           "gamedata": "Gamedata",
           "map_assets": "أصول الخرائط"
-        }
+        },
+        "empty_title": "لا توجد إصدارات بعد"
       },
       "max_label": "الحد الأقصى:",
       "ports_label": "المنافذ:",
-      "cpu_hardware": "CPU والعتاد"
+      "cpu_hardware": "CPU والعتاد",
+      "gpu_only": "GPU فقط",
+      "create_node": "أنشئ عقدة سيرفرات",
+      "search_placeholder": "ابحث بالاسم أو المعرّف",
+      "filters": {
+        "only_enabled": "العقد المفعّلة فقط",
+        "hide_offline": "إخفاء العقد غير المتصلة",
+        "display_metrics": "عرض المقاييس"
+      },
+      "empty": {
+        "title": "لا توجد عقد سيرفرات",
+        "description": "العقدة جهاز يشغّل سيرفرات CS2 لـ 5Stack. شغّل سكربت الإعداد عليه وسيظهر هنا.",
+        "guide": "اقرأ دليل الإعداد"
+      },
+      "summary": {
+        "nodes": "{count} عقدة | {count} عقد",
+        "online": "{count} متصلة",
+        "free": "{free} من {total} سيرفر متاح",
+        "attention": "{count} تحتاج إلى انتباه | {count} تحتاج إلى انتباه",
+        "updating": "{count} قيد التحديث"
+      },
+      "row": {
+        "select": "تحديد {node}",
+        "select_all": "تحديد كل العقد",
+        "servers_tip": "{free} من {total} متاح · تتسع لـ {max}",
+        "not_installed": "غير مثبّت"
+      },
+      "detail": {
+        "hardware_pending": "تظهر معلومات العتاد بعد اتصال العقدة.",
+        "disk_value": "مستخدم {percent}%، والمتاح {free} GB",
+        "game_server": "سيرفر اللعبة",
+        "node_id": "معرّف العقدة",
+        "addresses": "IP المحلي / العام",
+        "available_value": "{free} من {total}",
+        "control": "التحكم",
+        "update_log": "سجل تحديث CS2"
+      },
+      "metrics": {
+        "setup": "تظهر المقاييس بعد اتصال العقدة.",
+        "offline": "لا توجد بيانات مباشرة أثناء انقطاع العقدة."
+      },
+      "toast": {
+        "region_updated": "تم تحديث المنطقة",
+        "save_failed": "تعذّر حفظ التغيير"
+      },
+      "bulk": {
+        "selected": "تم تحديد {count}",
+        "progress": "{done} من {total}",
+        "move_region": "نقل إلى منطقة",
+        "enable": "تفعيل",
+        "disable": "تعطيل",
+        "updating": "جارٍ تحديث CS2 على {count} عقدة | جارٍ تحديث CS2 على {count} عقد",
+        "moved": "تم نقل {count} عقدة إلى {region} | تم نقل {count} عقد إلى {region}",
+        "unassigned": "تمت إزالة المنطقة من {count} عقدة | تمت إزالة المنطقة من {count} عقد",
+        "enabled": "تم تفعيل {count} عقدة | تم تفعيل {count} عقد",
+        "disabled": "تم تعطيل {count} عقدة | تم تعطيل {count} عقد",
+        "failed": "فشل {count} | فشل {count}"
+      },
+      "inspector": {
+        "status": {
+          "setup": "بانتظار الاتصال",
+          "offline_since": "غير متصلة منذ {time}",
+          "not_accepting": "متصلة، لا تقبل مباريات جديدة"
+        },
+        "search_placeholder": "ابحث بالاسم أو المعرّف أو IP",
+        "keys": {
+          "move": "تنقّل",
+          "select": "انقر لتحديد عدة عقد",
+          "close": "إغلاق",
+          "idle": "اختر عقدة لعرض تفاصيلها"
+        },
+        "details": "تفاصيل العقدة",
+        "capacity_tip": "السيرفرات المتاحة من إجمالي ما تسمح به منافذها. نطاق المنافذ أسفلها.",
+        "cap_free": "{free} من {total} متاحة",
+        "cap_no_ports": "لا منافذ",
+        "chip": {
+          "updating": "جارٍ التحديث",
+          "updating_pct": "جارٍ التحديث {percent}%",
+          "failed": "فشل التحديث",
+          "behind": "متأخر",
+          "pinned": "مثبّت",
+          "failed_tip": "فشل التحديث إلى {target} {ago}. لا يزال على {version}.",
+          "behind_tip": "على {version}. حدّث إلى {target}.",
+          "pinned_tip": "مثبّت على {version}"
+        },
+        "load": {
+          "mem": "ذاكرة",
+          "disk": "القرص"
+        },
+        "disk_tip": "القرص: {used} من {total} مستخدم، {free} متاح",
+        "actions_for": "إجراءات {node}",
+        "menu": {
+          "select": "تحديد لإجراءات جماعية",
+          "deselect": "إزالة من التحديد",
+          "rename": "تعديل التسمية"
+        },
+        "more": "{count} أخرى",
+        "remove": "إزالة العقدة",
+        "remove_text": "يزيل العقدة وكل سيرفر مخصص عليها من 5Stack.",
+        "rename": "إعادة تسمية {node}",
+        "label": "تسمية العقدة",
+        "close": "إغلاق التفاصيل",
+        "close_hint": "إغلاق (Esc)",
+        "step": {
+          "enable": "تفعيل العقدة",
+          "retry_update": "إعادة محاولة التحديث",
+          "assign_region": "تعيين منطقة",
+          "set_ports": "تعيين المنافذ",
+          "change_plugin": "تغيير الإضافة",
+          "edit_ports": "تعديل المنافذ",
+          "open_files": "فتح الملفات"
+        },
+        "attention": {
+          "setup": "شغّل سكربت الإعداد على الجهاز. ستظهر متصلة بمجرد اتصالها.",
+          "offline": "لن تُجدول مباريات هنا حتى تعاود الاتصال.",
+          "update_failed_title": "فشل تحديث CS2 {ago}",
+          "update_failed": "تُحفظ سجلات التحديث لمدة 24 ساعة.",
+          "overprovisioned": "{total} سيرفر على منافذها، لكن المعالج يتسع لـ {max} فقط.",
+          "plugin": "الإضافة المثبّتة لا تدعم الإصدار {build}.",
+          "not_ready_title": "لا يمكنها استضافة مباريات بعد",
+          "not_ready": "تحتاج إلى {list}.",
+          "behind_title": "CS2 {version} متأخر",
+          "behind": "حدّث إلى {target}.",
+          "cpu_title": "المعالج بسرعة {ghz} GHz",
+          "cpu": "أقل من 3 GHz قد يضر بأداء سيرفر CS2.",
+          "governor_title": "حاكم المعالج هو {governor}",
+          "disk_title": "القرص ممتلئ بنسبة {percent}%",
+          "disk": "{free} متاح.",
+          "cpu_warning": "أبلغت عنه العقدة.",
+          "workloads_title": "بعض أحمال GPU متوقفة",
+          "workloads": "{list} متوقف.",
+          "disabled": "لا عمل GPU ولا جدولة مباريات أثناء إيقافها."
+        },
+        "need": {
+          "region": "منطقة",
+          "ports": "منافذ",
+          "cs2": "CS2"
+        },
+        "sections": {
+          "cs2": "CS2 والإضافات"
+        },
+        "capacity": {
+          "gpu_only": "مخصصة لـ GPU فقط، لذا لا تستضيف مباريات. أعدها من قسم GPU.",
+          "max_servers": "الحد الأقصى للسيرفرات",
+          "max_tip": "{threads} خيط معالج، ناقص 1 محجوز للنظام",
+          "max_tip_pinning": "{threads} خيط معالج، ناقص 1 محجوز للنظام، {per} لكل سيرفر",
+          "max_tip_pending": "يُحسب من المعالج بعد اتصال العقدة",
+          "below": "أقل من {total} على منافذها",
+          "servers_no_ports": "عيّن المنافذ لاستضافة السيرفرات",
+          "servers_disabled": "لا شيء أثناء التعطيل",
+          "servers_offline": "غير معروف أثناء عدم الاتصال"
+        },
+        "ports": {
+          "tip": "نطاق المنافذ المُعاد توجيهها إلى هذه العقدة. يستخدم كل سيرفر منفذين.",
+          "not_set": "غير معيّن",
+          "need_region": "عيّن منطقة قبل تعيين المنافذ.",
+          "start": "منفذ البداية",
+          "end": "منفذ النهاية",
+          "hint": "بين 30000 و32767. يستخدم كل سيرفر منفذين.",
+          "fit": "يتسع هذا النطاق لـ {count} سيرفر. | يتسع هذا النطاق لـ {count} سيرفر.",
+          "fit_over": "يتسع لـ {count} سيرفر، لكن المعالج يتسع لـ {max} فقط.",
+          "error_range": "يجب أن تكون المنافذ بين 30000 و32767.",
+          "error_order": "يجب أن يزيد منفذ النهاية عن منفذ البداية بمقدار 2 على الأقل.",
+          "save": "حفظ المنافذ",
+          "remove": "إزالة المنافذ"
+        },
+        "cs2": {
+          "setup": "ثبّت CS2 بعد اتصال العقدة.",
+          "gpu_only": "عقد GPU فقط لا تشغّل سيرفرات CS2.",
+          "to": "إلى {version}",
+          "plugin_unsupported": "غير مدعوم",
+          "update_log": "سجل التحديث",
+          "behind_line": "الإصدار {build}، حدّث إلى {target}",
+          "failed_line": "{ago} · لا يزال على الإصدار {build}",
+          "build_line": "الإصدار {build}",
+          "on_build": "على الإصدار {build}",
+          "pinning_unsupported": "التثبيت غير مدعوم"
+        },
+        "hardware": {
+          "cores": "الأنوية",
+          "sockets": "({count} مقبس) | ({count} مقابس)",
+          "threads": "خيوط/نواة",
+          "threads_total": "({count} إجمالًا)",
+          "governor": "الحاكم",
+          "low_latency": "زمن استجابة منخفض",
+          "pinning": "تثبيت المعالج",
+          "supported": "مدعوم",
+          "governor_tip": "طريقة ضبط المعالج لسرعته. يُبقي حاكم الأداء الأنوية بأقصى سرعة وهو المستحسن لـ CS2.",
+          "latency_tip": "تقلل نواة زمن الاستجابة المنخفض تذبذب الجدولة لسيرفرات الألعاب.",
+          "pinning_tip": "يثبّت كل سيرفر على أنويته الخاصة كي لا تتنافس السيرفرات عليها."
+        },
+        "range_label": "نطاق المقاييس",
+        "range": {
+          "1h": "1 س"
+        },
+        "of_total": "من {total}",
+        "now": "الآن",
+        "last_report": "آخر تقرير {time}",
+        "live_offline": "لا بيانات مباشرة أثناء عدم الاتصال. آخر تقرير في {time}.",
+        "history_offline": "لا بيانات مباشرة أثناء عدم الاتصال. يمتد السجل حتى {time}.",
+        "offline_for": "غير متصلة {duration}",
+        "chart": {
+          "label": "سجل المقاييس. تتنقل مفاتيح الأسهم يمينًا ويسارًا عبر الوقت، ومع Shift بعشر خطوات.",
+          "avg_peak": "المتوسط {avg}% · الذروة {peak}%",
+          "peak": "الذروة {peak}",
+          "in": "داخل",
+          "out": "خارج",
+          "in_out": "داخل {in} · خارج {out}",
+          "caption": "آخر ساعة، عيّنة كل 30 ثانية.",
+          "starts": "يبدأ السجل عند {time}.",
+          "gaps": "الانقطاعات في الخطوط هي فترات عدم الاتصال.",
+          "cadence": "عيّنة كل {seconds} ثانية."
+        },
+        "disk": {
+          "last_report": "القرص · آخر تقرير",
+          "filling_up": "يمتلئ",
+          "almost_full": "ممتلئ تقريبًا",
+          "used_of": "{used} من {total}",
+          "thresholds": "تحذير عند {warning}%، وتنبيه عند {critical}%",
+          "free": "{free} متاح",
+          "up": "زاد {amount} خلال الساعة الأخيرة",
+          "down": "نقص {amount} خلال الساعة الأخيرة",
+          "flat": "لا تغيير يُذكر خلال الساعة الأخيرة",
+          "full_hours": "يمتلئ خلال {count} س تقريبًا",
+          "full_days": "يمتلئ خلال {count} يوم تقريبًا | يمتلئ خلال {count} أيام تقريبًا",
+          "of_used": "من {total} مستخدمة"
+        },
+        "gpu": {
+          "video": "إعدادات الفيديو",
+          "custom": "مخصص"
+        },
+        "node": {
+          "accepting": "يقبل المباريات",
+          "accepting_setup": "متاح بعد الاتصال.",
+          "accepting_no_ports": "عيّن المنافذ أولًا.",
+          "limiter": "محدّد العروض",
+          "limiter_tip": "محدّد شبكة العروض: حد السرعة لتنزيل ملفات العروض من هذه العقدة.",
+          "copy_id": "نسخ معرّف العقدة",
+          "ips_pending": "يُبلّغ عنه بعد الاتصال"
+        },
+        "bulk": {
+          "title": "تم تحديد {count} عقدة | تم تحديد {count} عقد",
+          "hint": "{modifier} مع النقر على صف لإضافته أو إزالته، وShift مع النقر لنطاق",
+          "apply": "تطبيق على الكل",
+          "note": "يتخطى تحديث CS2 العقد غير المتصلة أو المحدّثة أو الجاري تحديثها. عقد GPU فقط لا تحتفظ بمنطقة.",
+          "selected": "المحدد",
+          "drop": "إزالة {node} من التحديد",
+          "clear": "مسح التحديد"
+        },
+        "warning": {
+          "lowlatency": "نواة lowlatency القديمة",
+          "constrained": "{name} مقيّد بالمعالج",
+          "governor": "الحاكم {governor} مع تفعيل تثبيت المعالج",
+          "from_node": "{count} تحذير من العقدة | {count} تحذيرات من العقدة",
+          "docs": "التوثيق",
+          "details": "التفاصيل"
+        },
+        "window_minutes": "آخر {count} دقيقة | آخر {count} دقائق",
+        "window_hours": "آخر {count} ساعة | آخر {count} ساعات"
+      }
     },
     "dedicated_servers": {
       "title": "السيرفرات المخصصة",
@@ -4519,9 +5321,7 @@
       "docs_link": "عرض دليل الإعداد",
       "no_servers_title": "لا توجد سيرفرات مخصصة",
       "no_servers": "لم يتم العثور على سيرفرات مخصصة",
-      "create": {
-        "title": "أنشئ سيرفرًا مخصصًا"
-      },
+      "create": {},
       "table": {
         "connection_details": "تفاصيل الاتصال",
         "label": "التسمية",
@@ -4532,7 +5332,6 @@
       },
       "detail": {
         "enabled": "مفعّل",
-        "eyebrow": "سيرفر مخصص",
         "tabs": {
           "overview": "نظرة عامة",
           "players": "اللاعبون",
@@ -4542,14 +5341,9 @@
         },
         "status_label": {
           "connected": "متصل",
-          "disconnected": "غير متصل",
           "hibernating": "في وضع السبات",
-          "no_rcon": "لا يوجد RCON",
-          "version_mismatch": "عدم تطابق الإصدار"
+          "no_rcon": "لا يوجد RCON"
         },
-        "server_plugin_config": "إعدادات إضافة السيرفر",
-        "hide_config": "إخفاء الإعدادات",
-        "show_config": "عرض الإعدادات",
         "config_location": "يجب وضع هذه الإعدادات في:",
         "files": "ملفات",
         "player_management": "إدارة اللاعبين",
@@ -4573,13 +5367,7 @@
           "disconnected": "السيرفر غير متصل",
           "hibernating": "الخادم في وضع السبات حتى يتصل لاعب",
           "no_rcon": "السيرفر متصل لكن RCON غير متاح",
-          "connected": "السيرفر متصل وRCON متاح",
-          "plugin_version_mismatch": "إصدار الإضافة غير محدّث"
-        },
-        "delete_confirm": {
-          "title": "هل أنت متأكد تمامًا؟",
-          "description": "لا يمكن التراجع عن هذا الإجراء. سيؤدي ذلك إلى حذف سيرفرك نهائيًا وإزالة البيانات المرتبطة به من سيرفراتنا.",
-          "continue": "متابعة"
+          "connected": "السيرفر متصل وRCON متاح"
         },
         "save_restart": "حفظ وإعادة التشغيل",
         "map_rotation": {
@@ -4698,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "النقل إلى عقدة أخرى",
-          "title": "النقل إلى عقدة أخرى",
           "description": "يتوقف الخادم على {node}، وتُنسخ ملفاته إلى العقدة الجديدة، ثم يعمل مجددًا هناك.",
           "source_offline": "{node} غير متصلة، لذا لا يمكن نسخ ملفات الخادم. سيبدأ على العقدة الجديدة بالإعدادات الافتراضية، وكل ما يبقى على {node} سيظل هناك.",
           "without_files": "النقل بدون ملفات الخادم",
@@ -4707,7 +5493,6 @@
           "no_nodes": "لا توجد عقد سيرفرات أخرى",
           "free_slots": "الخانات الشاغرة: {count}",
           "free_disk": "{size} متاحة",
-          "confirm": "نقل الخادم",
           "started": "جارٍ نقل {server} إلى {node}",
           "warning": {
             "address": "سيحصل الخادم على عنوان جديد على العقدة الجديدة.",
@@ -4723,7 +5508,9 @@
             "updating": "يجري تحديث CS2",
             "no_build": "لم يتم تثبيت {game}",
             "no_slot": "لا توجد خانات خوادم شاغرة"
-          }
+          },
+          "dialog_title": "النقل إلى عقدة أخرى",
+          "confirm_move": "نقل السيرفر"
         },
         "migration": {
           "title": {
@@ -4744,12 +5531,71 @@
           "progress": "{done} من {total} ({percent}%)",
           "without_files": "بدون ملفات",
           "restored": "عاد الخادم إلى {node}.",
-          "cancel": "إلغاء النقل",
           "cancel_requested": "جارٍ إلغاء النقل",
           "dismiss": "إخفاء",
-          "locked": "يتم نقل الخادم إلى عقدة أخرى. حاول مرة أخرى بعد انتهاء النقل."
-        }
-      }
+          "locked": "يتم نقل الخادم إلى عقدة أخرى. حاول مرة أخرى بعد انتهاء النقل.",
+          "cancel_move": "إلغاء النقل"
+        },
+        "plugin_tag": "الإضافة v{version}",
+        "plugin_config": "إعدادات إضافة السيرفر",
+        "show_plugin_config": "عرض الإعدادات",
+        "hide_plugin_config": "إخفاء الإعدادات"
+      },
+      "clear_all": "مسح البحث والفلاتر",
+      "col_hosting": "الاستضافة",
+      "col_players": "اللاعبون",
+      "col_plugin": "الإضافة",
+      "col_ports": "المنافذ",
+      "col_server": "السيرفر",
+      "copied": "تم نسخ {value}",
+      "copy_address": "نسخ العنوان",
+      "create_server": "إنشاء سيرفر",
+      "delete_body_external": "سيُزال من 5Stack ويتوقف عن تلقي المباريات. يبقى الجهاز نفسه قيد التشغيل. لا يمكن التراجع عن هذا.",
+      "delete_body_node": "سيُزال من 5Stack ويُوقف على {node}. لا يمكن التراجع عن هذا.",
+      "delete_server": "حذف السيرفر",
+      "delete_title": "حذف {label}؟",
+      "deleted_toast": "تم حذف {label}",
+      "disable_server": "تعطيل السيرفر",
+      "disabled_hidden": "{count} معطّل مخفي | {count} معطّلة مخفية",
+      "disabled_toast": "تم تعطيل {label}. لن يستقبل مباريات أو لعبًا عامًا.",
+      "empty_title": "لا توجد سيرفرات مخصصة بعد",
+      "enable_server": "تفعيل السيرفر",
+      "enabled_for": "مفعّل: {label}",
+      "enabled_toast": "تم تفعيل {label}",
+      "external": "خارجي",
+      "facet_host": "المضيف",
+      "filter_label": "تصفية السيرفرات",
+      "more_for": "المزيد لـ {label}",
+      "node_tag": "عقدة",
+      "open": "فتح",
+      "open_console": "فتح الكونسول",
+      "open_node": "فتح في عقد سيرفرات اللعب",
+      "page_of": "الصفحة {page} من {pages}",
+      "plugin_current": "v{version} (الحالي)",
+      "plugin_outdated_tip": "إصدار الإضافة غير محدّث. الإصدار الحالي هو v{version}.",
+      "ports_tip": "منفذ اللعبة (منفذ TV)",
+      "search_placeholder": "ابحث بالاسم أو العنوان أو المضيف",
+      "servers_word": "سيرفر | سيرفرات",
+      "setup_guide": "دليل الإعداد",
+      "show_them": "إظهارها",
+      "states": {
+        "attention": "يحتاج إلى انتباه",
+        "offline": "غير متصل",
+        "inuse": "قيد الاستخدام",
+        "ready": "جاهز",
+        "hibernating": "في السبات",
+        "disabled": "معطّل"
+      },
+      "status_in_match": "في مباراة",
+      "status_offline_since": "غير متصل منذ {time}",
+      "status_playing": "{count} يلعبون",
+      "status_plugin_outdated": "الإضافة قديمة",
+      "tip_disabled": "لا يُستخدم للمباريات أو اللعب العام.",
+      "join_server": "انضم للسيرفر",
+      "new_server": "سيرفر جديد",
+      "create_on_node": "يعمل على {node}",
+      "create_at_host": "يعمل على {address}",
+      "create_pick_place": "اختر مكان تشغيله"
     },
     "public_servers": {
       "title": "السيرفرات العامة",
@@ -5113,6 +5959,216 @@
         "execution_plan": "خطة التنفيذ",
         "no_explain_plan": "تعذّر توليد خطة EXPLAIN لهذا الاستعلام",
         "not_found": "لم يتم العثور على تفاصيل الاستعلام"
+      },
+      "explorer": {
+        "active_backends": "العمليات النشطة",
+        "active_queries": "الاستعلامات النشطة",
+        "active_queries_hint": "كل جلسة غير خاملة، الأطول أولًا",
+        "active_waiting": "{active} نشطة · {waiting} بانتظار",
+        "activity": "النشاط",
+        "all_connections": "كل الاتصالات",
+        "all_indexes_scanned": "تم مسح كل الفهارس",
+        "all_indexes_scanned_hint": "لم يبقَ أي فهرس في هذا التحديد دون استخدام منذ إعادة ضبط الإحصائيات.",
+        "all_statements": "كل العبارات",
+        "avg_ms": "المتوسط {ms} ms",
+        "avg_ms_col": "المتوسط (ms)",
+        "avg_time": "متوسط الوقت",
+        "back_to_overview": "العودة إلى النظرة العامة",
+        "background_jobs": "المهام الخلفية",
+        "blocks_hit": "كتل مُصابة",
+        "blocks_read": "كتل مقروءة",
+        "buffer_statistics": "إحصائيات المخازن",
+        "by_state": "حسب الحالة",
+        "cache_hit": "إصابة الكاش",
+        "cache_hit_pct": "% إصابة الكاش",
+        "cache_hit_ratio": "نسبة إصابة الكاش",
+        "calls_count": "الاستدعاءات: {count} | الاستدعاءات: {count}",
+        "conflicts": "التعارضات",
+        "copy_name": "نسخ الاسم",
+        "copy_query": "نسخ الاستعلام",
+        "copy_statement": "نسخ {sql}",
+        "count": "العدد",
+        "current_locks": "الأقفال الحالية",
+        "database_statistics": "إحصائيات قاعدة البيانات",
+        "dead_pct": "% الميتة",
+        "dead_pct_tip": "الصفوف الميتة كنسبة من كل صفوف الجدول. يُعلَّم الجدول عندما يتجاوز 10,000 صف ميت.",
+        "dead_share": "{pct}% من الصفوف ميتة · نحو {size}",
+        "dead_tuple_size": "حجم الصفوف الميتة",
+        "dead_tuples": "صفوف ميتة",
+        "deadlocks_tip": "محسوبة منذ آخر إعادة ضبط للإحصائيات.",
+        "deletes": "عمليات الحذف",
+        "every_seconds": "كل {seconds} s",
+        "every_table": "كل الجداول",
+        "every_table_hint": "الحجم والتضخم والكاش في مكان واحد. انقر على صف لفتحه.",
+        "execution_plan": "خطة التنفيذ",
+        "execution_times": "أوقات التنفيذ (ms)",
+        "fetched": "مجلوبة",
+        "filter_query_text": "تصفية حسب نص الاستعلام",
+        "find_schema": "ابحث عن مخطط",
+        "find_table": "ابحث عن جدول أو فهرس",
+        "heap_hits": "إصابات Heap",
+        "heap_reads": "قراءات Heap",
+        "heap_reads_count": "قراءات Heap: {count}",
+        "held_none_waiting": "محتجزة: {count}، لا شيء بانتظار | محتجزة: {count}، لا شيء بانتظار",
+        "hot_count": "{count} HOT",
+        "hot_updates": "تحديثات HOT",
+        "hot_updates_tip": "تحديثات لم تحتج إلى لمس أي فهرس.",
+        "hypertable_name": "اسم Hypertable",
+        "hypertable_note": "الصفوف موجودة في أجزاء ضمن {schema}، لذا لا يُظهر هذا الجدول الأصل أي صفوف خاصة به.",
+        "hypertable_tag": "hypertable",
+        "idle_in_txn": "خامل في معاملة",
+        "idle_in_txn_tip": "يُبقي معاملة مفتوحة دون أن يفعل شيئًا. هذا يمنع vacuum من التنظيف وقد يحتجز أقفالًا.",
+        "idx_scans": "مسوح الفهرس",
+        "idx_scans_fetched": "مسوح الفهرس (صفوف مجلوبة)",
+        "idx_tup_fetch": "صفوف مجلوبة من الفهرس",
+        "in_indexes": "{size} في الفهارس",
+        "index_hits": "إصابات الفهرس",
+        "index_io": "I/O الفهارس",
+        "index_reads": "قراءات الفهرس",
+        "index_scans": "مسوح الفهرس",
+        "index_scans_tip": "نسبة المسوح التي استخدمت فهرسًا بدل قراءة الجدول بأكمله.",
+        "index_size": "حجم الفهرس",
+        "index_usage": "استخدام الفهارس",
+        "indexes": "الفهارس",
+        "indexes_hint": "الاستخدام وإصابات الكاش معًا",
+        "inserts": "الإدراجات",
+        "io": "I/O",
+        "io_buffers": "I/O والمخازن",
+        "job_id": "معرّف المهمة",
+        "job_type": "نوع المهمة",
+        "last_analyze": "آخر Analyze",
+        "last_autoanalyze": "آخر Autoanalyze",
+        "last_autovacuum": "آخر Autovacuum",
+        "last_run_status": "آخر تشغيل",
+        "last_vacuum": "آخر Vacuum",
+        "live": "حية",
+        "live_tuples": "صفوف حية",
+        "local": "محلي",
+        "local_blocks_hit": "كتل محلية مُصابة",
+        "local_blocks_read": "كتل محلية مقروءة",
+        "lock_type": "نوع القفل",
+        "locks_on_table": "الأقفال على هذا الجدول",
+        "locks_transactions": "الأقفال والمعاملات",
+        "maintenance": "الصيانة",
+        "max_ms_col": "الأقصى (ms)",
+        "max_ms_paren": "(الأقصى {ms})",
+        "max_time": "أقصى وقت",
+        "max_value": "الأقصى {ms}",
+        "min_calls": "أقل عدد استدعاءات",
+        "min_value": "الأدنى {ms}",
+        "n_failed": "فشل: {count}",
+        "n_of_m_statements": "{n} من {m} عبارة",
+        "n_waiting": "بانتظار: {count}",
+        "name_copied": "تم نسخ اسم الجدول",
+        "needs_attention": "يحتاج إلى انتباه",
+        "never_scanned": "لم يُمسح قط",
+        "next_start": "التشغيل التالي",
+        "no_active_hint": "كل الاتصالات خاملة.",
+        "no_backups_hint": "ستظهر النسخ الاحتياطية هنا بعد أول تشغيل مجدول.",
+        "no_backups_title": "لا توجد نسخ احتياطية لقاعدة البيانات",
+        "no_connections_hint": "لا شيء متصل بقاعدة البيانات هذه.",
+        "no_indexes": "لا توجد فهارس",
+        "no_indexes_hint": "لا يحتوي هذا الجدول على فهارس، لذا تمسح كل قراءة الجدول بأكمله.",
+        "no_indexes_hyper": "فهارس الـ hypertable موجودة على كل جزء من أجزائه.",
+        "no_jobs_hint": "لا توجد مهام مجدولة في TimescaleDB.",
+        "no_jobs_title": "لا توجد مهام خلفية",
+        "no_locks_hint": "لا شيء يحتجز قفلًا الآن.",
+        "no_locks_on_table": "لا شيء يحتجز قفلًا عليه الآن.",
+        "no_plan": "تعذّر توليد خطة تنفيذ لهذا الاستعلام.",
+        "no_reads_hint": "لا توجد قراءات مسجلة في المخططات المحددة.",
+        "no_schemas": "لا توجد مخططات",
+        "no_schemas_hint": "اختر مخططًا واحدًا على الأقل لعرض جداوله.",
+        "no_schemas_title": "لم يتم تحديد مخططات",
+        "no_slow_hint": "لم يتجاوز أي شيء {threshold} في المتوسط أو الذروة منذ إعادة ضبط الإحصائيات.",
+        "no_slow_title": "لا توجد عبارات بطيئة",
+        "no_statements_for_table": "لا توجد عبارة مسجلة تذكر هذا الجدول.",
+        "no_statements_match": "لا توجد عبارات مطابقة",
+        "no_statements_match_hint": "لا شيء استُدعي {min} مرة على الأقل يطابق عامل التصفية.",
+        "no_statements_yet": "لم يسجّل pg_stat_statements أي شيء بعد.",
+        "no_stats_hint": "يمتلئ pg_stat_statements أثناء تنفيذ التطبيق للاستعلامات، ويُفرَّغ عند إعادة ضبط إحصائياته.",
+        "no_table_matches": "لا يوجد جدول أو فهرس يطابق «{find}».",
+        "no_tables_hint": "لا توجد جداول في المخططات المحددة.",
+        "no_tables_title": "لا توجد جداول",
+        "no_timescale_title": "لا توجد بيانات TimescaleDB",
+        "nothing_matches": "لا شيء في هذا التحديد يطابق.",
+        "objects": "كائنات قاعدة البيانات",
+        "off": "معطّل",
+        "on": "مفعّل",
+        "on_disk": "{size} على القرص",
+        "open_connections": "الاتصالات المفتوحة",
+        "over_threshold": "أكثر من {threshold}",
+        "overview": "نظرة عامة",
+        "overview_hint": "قاعدة بيانات PostgreSQL · العدّادات منذ آخر إعادة ضبط للإحصائيات",
+        "pause_refreshing": "إيقاف التحديث مؤقتًا",
+        "pct_of_table": "% من الجدول",
+        "pid_actions": "إجراءات الـ pid {pid}",
+        "query_details": "تفاصيل الاستعلام",
+        "query_not_found": "لم يتم العثور على تفاصيل الاستعلام",
+        "query_performance": "أداء الاستعلامات",
+        "range_hint": "مقياس لوغاريتمي · الشريط هو المتوسط ± الانحراف المعياري",
+        "reclaimable": "قابل للاسترجاع",
+        "reclaimable_tip": "مُقدَّر من الصفوف الميتة. VACUUM يجعل المساحة قابلة لإعادة الاستخدام؛ فقط VACUUM FULL أو pg_repack يعيدها إلى القرص.",
+        "refresh_every": "التحديث كل",
+        "resume_refreshing": "استئناف التحديث",
+        "rollbacks_count": "Rollbacks: {count}",
+        "running_now": "قيد التشغيل الآن",
+        "scans": "المسوح",
+        "schema_count": "المخططات: {count} | المخططات: {count}",
+        "search_indexes": "ابحث في الفهارس",
+        "seq_scans": "مسوح تسلسلية",
+        "seq_scans_read": "مسوح تسلسلية (صفوف مقروءة)",
+        "seq_tup_read": "صفوف مقروءة تسلسليًا",
+        "sequential_count": "تسلسلية: {count}",
+        "server": "السيرفر",
+        "share_of_time": "حصة الوقت",
+        "share_of_time_tip": "إجمالي وقت تنفيذ هذه العبارة كنسبة من إجمالي وقت كل العبارات المعروضة.",
+        "shared_blocks_hit": "كتل مشتركة مُصابة",
+        "shared_blocks_read": "كتل مشتركة مقروءة",
+        "size": "الحجم",
+        "size_on_disk": "الحجم على القرص",
+        "slow_avg": "عبارات متوسطها أكثر من {threshold}: {count} | عبارات متوسطها أكثر من {threshold}: {count}",
+        "slow_avg_none": "لا توجد عبارة متوسطها أكثر من {threshold}",
+        "slow_max": "تجاوزت {threshold} مرة واحدة على الأقل: {count} | تجاوزت {threshold} مرة واحدة على الأقل: {count}",
+        "slow_over": "بطيء فوق",
+        "slow_running_many": "استعلامات تعمل الآن لأكثر من {threshold}: {count}، أطولها {duration}",
+        "slow_running_one": "استعلام واحد يعمل منذ {duration}",
+        "slow_threshold": "حد الاستعلام البطيء",
+        "started": "بدأ",
+        "statement_copied": "تم نسخ العبارة إلى الحافظة",
+        "statements_to_run": "عبارات لتشغيلها بنفسك",
+        "statements_touching": "العبارات التي تمسّه",
+        "statements_touching_hint": "من pg_stat_statements، بمطابقة اسم الجدول. ما يتجاوز {threshold} أولًا.",
+        "statistics": "الإحصائيات",
+        "std_dev": "الانحراف المعياري",
+        "table_and_indexes": "الجدول {table} · الفهارس {indexes}",
+        "table_io": "I/O الجداول",
+        "table_maintenance": "صيانة الجداول",
+        "table_not_found": "لم يتم العثور على الجدول",
+        "table_not_found_hint": "ربما حُذف، أو أن مخططه غير محدد.",
+        "table_size": "حجم الجدول",
+        "table_storage": "تخزين الجداول",
+        "temp_blocks": "كتل مؤقتة",
+        "temp_blocks_tip": "كتل نُقلت إلى القرص لأن work_mem كان أصغر من اللازم لعملية فرز أو hash.",
+        "temp_blocks_written": "كتل مؤقتة مكتوبة",
+        "terminate_warning": "الإنهاء يُغلق الجلسة ويتراجع عن معاملتها.",
+        "total_chunks": "إجمالي الأجزاء",
+        "total_rows": "إجمالي الصفوف",
+        "total_size": "الحجم الكلي",
+        "total_time": "إجمالي الوقت",
+        "tuples_deleted": "صفوف محذوفة",
+        "tuples_fetched": "صفوف مجلوبة",
+        "tuples_inserted": "صفوف مُدرجة",
+        "tuples_read": "صفوف مقروءة",
+        "tuples_returned": "صفوف مُعادة",
+        "tuples_updated": "صفوف محدّثة",
+        "updates": "التحديثات",
+        "view_all_slow": "عرض كل الاستعلامات البطيئة",
+        "wait_event": "حدث الانتظار",
+        "wait_event_type": "نوع حدث الانتظار",
+        "waiting_on_lock": "بانتظار قفل",
+        "waiting_tip": "جلسات بانتظار قفل.",
+        "worth_a_look": "يستحق نظرة",
+        "zero_unused": "0 · غير مستخدم"
       }
     },
     "events": {
@@ -5321,6 +6377,54 @@
         "tournaments_hint": "المباريات التي تُلعب ضمن جدول بطولة، مصنّفة كانت أم لا.",
         "custom": "المباريات المخصّصة",
         "custom_hint": "كل ما عدا ذلك: مباريات لا تُحتسب في أي شيء."
+      },
+      "store": {
+        "open_aria": "فتح {name}",
+        "verified_hint": "تم التحقق منه من قبل مشرفي السجل",
+        "custom_hint": "أُضيف هنا. لم يراجعه أحد.",
+        "guidelines_hint": "الخوادم التي تحمّله تبدأ مع إيقاف إرشادات خوادم Valve.",
+        "on_panel": "على لوحتك",
+        "panel_host": "منشور على مضيف لوحتك",
+        "set_up": "إعداد",
+        "no_build": "لا يوجد إصدار لـ {runtime}",
+        "only": "{runtimes} فقط",
+        "add_node": "أضف عقدة خادم ألعاب لتثبيته",
+        "found_on_disk": "موجود على القرص",
+        "found_on_disk_hint": "أُضيف يدويًا. يُحمَّل على كل خادم بغض النظر عن الوضع.",
+        "manage_here": "إدارته من هنا",
+        "install_title": "تثبيت {name} {version}",
+        "failed_on": "فشل على {node}",
+        "failed_on_nodes": "فشل على {count} عقد | فشل على {count} عقد",
+        "install_failed": "فشل التثبيت",
+        "installing_on": "جارٍ التثبيت على {installed} من {total} عقد",
+        "waiting_nodes": "بانتظار عقدة متصلة",
+        "pinned_at": "مثبّت على الإصدار {version}",
+        "update_to": "التحديث إلى {version}",
+        "filter_kind": "النوع",
+        "filter_review": "المراجعة",
+        "verified_only": "الموثّقة فقط",
+        "runtime": "بيئة التشغيل",
+        "needs_attention": "يحتاج إلى انتباه",
+        "empty_installed_title": "لا شيء مثبّت بعد",
+        "empty_installed_hint": "ثبّت إضافة من الكل وستلتقطها كل عقدة.",
+        "empty_title": "لا توجد إضافات مطابقة",
+        "installing_toast": "جارٍ تثبيت {name} على كل عقدة متصلة",
+        "retry_toast": "إعادة محاولة {name} على العقد الفاشلة",
+        "update_toast": "العقد تثبّت الإصدار {version}؛ ويبقى مثبّتًا عليه."
+      },
+      "detail": {
+        "kind_game": "إضافة خادم ألعاب",
+        "kind_panel": "إضافة لوحة",
+        "kind_bundle": "حزمة خادم ألعاب ولوحة",
+        "copy_command": "نسخ الأمر",
+        "copied": "تم نسخ الأمر",
+        "manual_on": "على {nodes}، لا يديره 5Stack",
+        "latest_for": "أحدث إصدار {version} لـ {runtime}",
+        "node_offline": "غير متصل",
+        "node_not_accepting": "لا يقبل مباريات",
+        "rollout_settings": "إعدادات النشر",
+        "running": "قيد التشغيل",
+        "this_deployment": "هذا النشر"
       }
     },
     "awards": {
@@ -5342,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "ابحث في الجوائز",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -5362,7 +6465,66 @@
       "group_custom_tournament_awards": "جوائز بطولة مخصصة",
       "group_custom_event_awards": "جوائز فعالية مخصصة",
       "group_custom_season_awards": "جوائز موسم مخصصة",
-      "group_custom_league_awards": "جوائز دوري مخصصة"
+      "group_custom_league_awards": "جوائز دوري مخصصة",
+      "already_holds": "{name} يحمل {award} بالفعل، ولا تسمح بالتكرار.",
+      "automation_season": "أتمتة الموسم",
+      "automation_tournament": "أتمتة البطولة",
+      "builtin_cant_delete": "لا يمكن حذف الجوائز المدمجة",
+      "builtin_note": "مدمجة. تمنحها أتمتة البطولات والمواسم، لذا يمكن تعديلها لكن لا يمكن حذفها.",
+      "col_award": "الجائزة",
+      "col_earned_at": "حُصل عليها في",
+      "col_holder": "الحامل",
+      "col_holders": "الحاملون",
+      "days_ago": "قبل {count} ي",
+      "delete_award": "حذف الجائزة",
+      "delete_body": "سيُحذف معها {count} منح، وتختفي من أوسمة حاملها. لا يمكن التراجع عن هذا. | ستُحذف معها {count} منح، وتختفي من أوسمة كل حامل. لا يمكن التراجع عن هذا.",
+      "delete_body_none": "لا أحد يحملها بعد. لا يمكن التراجع عن هذا.",
+      "delete_hint": "تُزيلها مع كل منح لها من أوسمة كل حامل.",
+      "delete_title": "حذف {name}؟",
+      "deleted_toast": "تم حذف {name}",
+      "edit_award": "تعديل الجائزة",
+      "facet_belongs_to": "تابعة لـ",
+      "filter_label": "تصفية الجوائز",
+      "grant_only_hint": "يمكنك منح الجوائز. إنشاؤها وتعديلها يتطلبان دور مديري الجوائز.",
+      "grant_short": "منح",
+      "granted_toast": "تم منح {award} إلى {name}",
+      "kind_custom": "مخصصة",
+      "more_for": "المزيد لـ {name}",
+      "once_per_holder": "مرة واحدة لكل حامل",
+      "open_holders": "عرض الحاملين",
+      "owner_deleted": "المالك محذوف",
+      "owner_ended": "انتهى {date}",
+      "owner_finished": "انتهت {date}",
+      "owner_kind": {
+        "global": "عامة",
+        "tournament": "بطولة",
+        "event": "فعالية",
+        "league": "موسم دوري",
+        "season": "موسم"
+      },
+      "owner_live": "مباشر الآن",
+      "owner_running": "جارٍ",
+      "owner_starts": "يبدأ {date}",
+      "owner_upcoming": "قادم",
+      "repeatable": "قابلة للتكرار",
+      "revoke_from": "سحب من {name}",
+      "show_more": "عرض المزيد",
+      "sort_last_granted": "آخر منح",
+      "status": {
+        "recent": "مُنحت خلال آخر 90 يومًا",
+        "never": "لم تُمنح قط",
+        "open": "المالك جارٍ أو قادم",
+        "finished": "المالك انتهى"
+      },
+      "team_count": "{count} فريق | {count} فرق",
+      "tiers": {
+        "mvp": "MVP",
+        "gold": "ذهبية",
+        "silver": "فضية",
+        "bronze": "برونزية",
+        "special": "خاصة"
+      },
+      "today": "اليوم"
     },
     "award_detail": {
       "not_found_title": "الجائزة غير موجودة",
@@ -5406,10 +6568,29 @@
         "cameraTalkback": "الرد الصوتي للكاميرا"
       },
       "resources": "استهلاك الموارد",
-      "cpu": "المعالج",
-      "memory": "الذاكرة",
-      "no_resources": "لا توجد بعد مقاييس pod لخادم الوسائط — ربما لا يجمعها خادم المقاييس في العنقود.",
-      "legend": "المسار هو خانة بثّ واحدة لها اسم — ميكروفون شخص واحد، أو كاميرا واحدة. و«يبثّ» يحصي ما يرسل وسائط فعليًا الآن؛ وقد يبقى المسار خاملًا بين انضمام أحدهم وبدء بثه. أما الجلسات فهي اتصالات WebRTC، وكل مشاهد للبث يُعد واحدة منها، لذا ترتفع أسرع من غيرها."
+      "legend": "المسار هو خانة بثّ واحدة لها اسم — ميكروفون شخص واحد، أو كاميرا واحدة. و«يبثّ» يحصي ما يرسل وسائط فعليًا الآن؛ وقد يبقى المسار خاملًا بين انضمام أحدهم وبدء بثه. أما الجلسات فهي اتصالات WebRTC، وكل مشاهد للبث يُعد واحدة منها، لذا ترتفع أسرع من غيرها.",
+      "logs_button": "سجلات mediamtx",
+      "tip_publishing": "المسارات التي ترسل وسائط فعلًا الآن. قد يبقى المسار خاملًا بين انضمام شخص ما وبدء بثّه.",
+      "tip_paths": "المسار هو خانة بث مسمّاة واحدة — ميكروفون شخص واحد أو كاميرا واحدة.",
+      "tip_sessions": "اتصالات WebRTC. كل مشاهد لبثّ هو اتصال منها، لذلك يرتفع هذا الرقم أسرع من غيره.",
+      "of_paths": "من أصل {count} مسار | من أصل {count} مسارات",
+      "unknown_while_unreachable": "غير معروف أثناء عدم الإتاحة",
+      "how_to_read": "كيف تقرأ هذه الأرقام",
+      "by_feature": "حسب الميزة",
+      "kinds_unknown": "أرقام كل ميزة غير معروفة حتى يستجيب سيرفر الوسائط مجددًا.",
+      "idle_title": "لا شيء يُبث الآن",
+      "idle_hint": "تظهر الصفوف هنا عندما يبدأ بث مباراة أو كاميرا لاعب أو ردهة صوتية.",
+      "received": "المستلَم",
+      "received_hint": "البايتات المستلمة على المسارات المفتوحة الآن، محسوبة لكل مسار منذ فتحه. المسار الذي يُغلق يأخذ بايتاته معه.",
+      "share_received": "حصة ما وصل",
+      "not_in_use": "غير مستخدم الآن: {kinds}",
+      "resources_hint": "pod الخاص بـ mediamtx · استعلام كل 30 ث",
+      "cores_now": "{cores} نواة قيد الاستخدام",
+      "status_reachable": "متاح",
+      "status_unreachable_since": "غير متاح منذ {time}",
+      "kinds_unknown_title": "أرقام كل ميزة غير معروفة",
+      "no_resources_title": "لا توجد مقاييس للـ pod بعد",
+      "no_resources_hint": "قد لا يجمع خادم المقاييس في الكتلة بيانات pod الخاص بـ mediamtx."
     },
     "utility": {
       "eyebrow": "مكتبة الأدوات",
@@ -6390,8 +7571,8 @@
           "map_filter": "تصفية حسب الخريطة",
           "render_missing": "تصيير الناقصة ({total})",
           "rerender_outdated": "إعادة تصيير القديمة ({total})",
-          "pipeline_behind": "حاوية التصيير أقدم من هذه الواجهة",
-          "pipeline_behind_hint": "حاوية التصيير المستخدمة تصوّر بالإصدار {pipeline}، وهو أقدم من الإصدار {version} الذي تتوقعه هذه الواجهة. إعادة التصيير لن تحدّث المعاينات حتى تُحدَّث صور game-server و game-streamer.",
+          "pipeline_behind": "آخر عرض استخدم إصدارًا أقدم",
+          "pipeline_behind_hint": "آخر عرض مكتمل صُوّر بالإصدار {pipeline}، بينما تتوقع هذه الواجهة الإصدار {version}. تسحب حاويات العرض أحدث صورة عند بدئها، لذا اعرض تشكيلة واحدة أولًا. عندما ينتهي بالإصدار {version}، تُفتح إعادة عرض القديمة.",
           "load_failed": "تعذّر تحميل تغطية المعاينات",
           "confirm_missing_title": "تصيير المعاينات الناقصة؟",
           "confirm_missing": "سيُضاف إلى الطابور تصيير لـ {count} رمية بلا معاينة. | سيُضاف إلى الطابور تصيير لـ {count} رمية بلا معاينة.",
@@ -6521,6 +7702,249 @@
         "recent": "عمليات بحثك الأخيرة",
         "recent_counts": "أصابت {verified} من {predicted}"
       }
+    },
+    "control_room": {
+      "on_air": "على الهواء",
+      "off_air_hint": "لا يوجد بث حاليًا. اختر مباراة مباشرة لبدء بث.",
+      "starting": "جارٍ البدء",
+      "program": "البرنامج",
+      "preview": "المعاينة",
+      "take": "إلى الهواء",
+      "take_pick": "اختر معاينة لعرضها على الهواء.",
+      "take_already": "{match} على الهواء بالفعل.",
+      "take_go_live": "ابدأ البث المباشر لـ {match}",
+      "take_switch": "التبديل إلى {match}",
+      "take_more": "طرق أخرى للبدء",
+      "take_start_hint": "يستخدم وحدة GPU متاحة ويشغّل Pod، حوالي دقيقة.",
+      "take_switch_hint": "يعيد استخدام الـ Pod الذي يعمل. تتبدّل الصورة خلال ثوانٍ.",
+      "go_live": "ابدأ البث المباشر",
+      "start_tv": "ابدأ كبث تلفزيوني (مؤجّل)",
+      "tv_delayed": "تلفزيوني (مؤجّل)",
+      "tv_delay": "تأخير تلفزيوني",
+      "full_deck": "لوحة التحكم الكاملة",
+      "open_focus_window": "افتح نافذة التركيز",
+      "ready": "جاهز",
+      "not_ready": "غير جاهز",
+      "you_are_playing": "أنت تلعب في هذه المباراة",
+      "no_live_matches_hint": "تظهر شاشات المعاينة هنا بمجرد أن تبدأ مباراة.",
+      "started_live": "جارٍ بدء بث مباشر لـ {match}. يعمل الـ Pod خلال دقيقة أو دقيقتين.",
+      "started_tv": "جارٍ بدء بث تلفزيوني مؤجّل لـ {match}. يعمل الـ Pod خلال دقيقة أو دقيقتين.",
+      "stopped": "توقّف البث. وحدة GPU متاحة.",
+      "capacity": "{n} من {max} بث | {n} من {max} بثوث",
+      "gpu": {
+        "none": "لا توجد عُقد GPU",
+        "busy": "لا توجد GPU متاحة · {busy} من {total} مشغولة",
+        "free": "{free} من {total} GPU متاحة | {free} من {total} GPU متاحة",
+        "hint": "مجموعة GPU. افتح صفحة عُقد GPU."
+      },
+      "status": {
+        "veto": "الفيتو",
+        "spinning_up": "جارٍ تشغيل الخادم",
+        "check_in": "تسجيل الحضور"
+      },
+      "reasons": {
+        "veto": "اختيار الخرائط جارٍ. انتظر حتى تبدأ المباراة.",
+        "waiting_for_server": "جارٍ تشغيل خادم. انتظر حتى تبدأ المباراة.",
+        "check_in": "اللاعبون يسجّلون حضورهم. انتظر حتى تبدأ المباراة.",
+        "not_live": "انتظر حتى تبدأ المباراة.",
+        "no_server": "لم يُخصَّص خادم لهذه المباراة.",
+        "server_offline": "الخادم غير متصل. بانتظار عودته.",
+        "no_gpu_nodes": "لا توجد عُقد GPU مسجّلة.",
+        "no_free_gpu": "لا توجد GPU متاحة.",
+        "at_capacity": "تم بلوغ الحد الأقصى. أوقف البث أو بدّله إلى هذه المباراة."
+      },
+      "deck": {
+        "sheet_description": "أدوات التحكم في البث. نفس لوحة نافذة التركيز.",
+        "not_on_air": "ليس على الهواء",
+        "not_on_air_hint": "لا يوجد بث لهذه المباراة. ابدأ بثًا من غرفة التحكم.",
+        "keys_on": "المفاتيح 1–0 و← → والمسافة وTab تعمل هنا",
+        "keys_off": "انقر على اللوحة لاستخدام لوحة المفاتيح",
+        "match_page": "صفحة المباراة",
+        "paused": "معروض في لوحة التحكم الكاملة",
+        "paused_hint": "تتوقف المعاينة هنا مؤقتًا أثناء فتح اللوحة."
+      },
+      "stop": {
+        "title": "إيقاف البث؟",
+        "description": "سيتوقف الـ Pod وينتهي بث {match} لكل المشاهدين. تعود وحدة GPU إلى المجموعة.",
+        "keep": "متابعة البث",
+        "confirm": "إيقاف البث"
+      }
+    },
+    "system_alerts": {
+      "alert": "التنبيه",
+      "now": "الآن",
+      "create": "إنشاء تنبيه",
+      "empty": "لا توجد تنبيهات بعد",
+      "hint": "انقر على تنبيه لتعديله.",
+      "new_alert": "تنبيه جديد",
+      "edit_alert": "تعديل التنبيه",
+      "new_hint": "يراه الزوار في كل صفحة بمجرد إنشائه.",
+      "created_at": "أُنشئ {time}",
+      "showing": "معروض",
+      "showing_named": "معروض: {name}",
+      "turn_off": "إيقاف",
+      "show_now": "اعرضه الآن",
+      "locked": "لا يمكن للزوار إغلاق هذه اللافتة",
+      "can_close": "يمكن للزوار إغلاقه",
+      "ends": "ينتهي",
+      "ends_at": "ينتهي {time}",
+      "no_end": "بلا نهاية",
+      "older": "التنبيهات الأقدم ليست ضمن هذه الفترة.",
+      "show_quarter": "عرض آخر 3 أشهر",
+      "show_older": "عرض التنبيهات الأقدم",
+      "preview_caption": "أعلى كل صفحة",
+      "delete": "حذف التنبيه",
+      "delete_hint": "يحذفه نهائيًا.",
+      "range": {
+        "day": "آخر يوم",
+        "week": "آخر أسبوع",
+        "month": "آخر شهر",
+        "quarter": "آخر 3 أشهر"
+      },
+      "summary": {
+        "showing": "{count} لافتة معروضة في كل صفحة | {count} لافتات معروضة في كل صفحة",
+        "locked": "{count} لا يمكن إغلاقها | {count} لا يمكن إغلاقها",
+        "none": "لا توجد لافتة معروضة"
+      },
+      "lane": {
+        "draft": "مسودة · لم يُنشأ بعد",
+        "unsaved": "تغييرات غير محفوظة",
+        "showing_ends": "معروض · ينتهي {time}",
+        "showing_no_end": "معروض · بلا نهاية",
+        "expired": "انتهت صلاحيته {time}",
+        "turned_off": "أُوقف {time}",
+        "off_created": "متوقف · أُنشئ {time}"
+      },
+      "tip": {
+        "created": "أُنشئ {time}",
+        "up_since": "معروض منذ {time}",
+        "ends": "ينتهي {time}",
+        "until_off": "حتى يتم إيقافه",
+        "ended": "انتهى {time}",
+        "turned_off": "أُوقف {time}",
+        "off_now": "متوقف الآن",
+        "draft": "يظهر بمجرد إنشائه"
+      },
+      "sections": {
+        "message": "الرسالة",
+        "display": "العرض",
+        "schedule": "الجدولة"
+      },
+      "chips": {
+        "none": "بلا نهاية",
+        "hour": "ساعة واحدة",
+        "six_hours": "6 ساعات",
+        "day": "24 ساعة",
+        "three_days": "3 أيام"
+      },
+      "schedule": {
+        "no_end": "لا يوجد وقت انتهاء. يبقى معروضًا حتى توقفه.",
+        "ends": "ينتهي {time} ({relative})",
+        "ended": "انتهى {time} ({relative})"
+      },
+      "toast": {
+        "turned_off": "تم إيقاف «{name}»",
+        "showing_ends": "«{name}» معروض · ينتهي {time}",
+        "showing_no_end": "«{name}» معروض · بلا نهاية",
+        "change_end": "تغيير وقت الانتهاء",
+        "restored": "تمت استعادة «{name}»",
+        "created_showing": "تم إنشاء التنبيه. إنه معروض الآن.",
+        "created_off": "تم إنشاء التنبيه. يبقى متوقفًا حتى تشغّله.",
+        "expired": "انتهت صلاحية «{name}» وأُزيل من اللافتة"
+      }
+    },
+    "admin_home": {
+      "title": "نظرة عامة",
+      "need_you": "{count} أمر يحتاج إليك | {count} أمور تحتاج إليك",
+      "all_clear": "كل شيء على ما يرام",
+      "all_clear_line": "لا شيء يحتاج إليك الآن.",
+      "live_hint": "تتحدث معظم الأقسام فور تغيرها. تتحدث المقاييس كل 30 ثانية، وقاعدة البيانات كل دقيقة.",
+      "everything_else": "كل ما عدا ذلك",
+      "open": "فتح",
+      "open_area": "فتح {area}",
+      "add_steam_account": "إضافة حساب Steam",
+      "more": "+{count} آخر | +{count} أخرى",
+      "card": {
+        "no_problems": "لا توجد مشكلات",
+        "checking": "جارٍ التحقق…",
+        "none": "لا يوجد بعد",
+        "no_online": "لا توجد عقدة متصلة",
+        "season_starts": "يبدأ الموسم {number} خلال {count} يوم | يبدأ الموسم {number} خلال {count} أيام",
+        "of_online": "من {total} متصلة",
+        "servers_free": "{free} من {capacity} خوادم متاحة",
+        "of_connected": "من {total} متصلة",
+        "offline": "{count} غير متصل | {count} غير متصلة",
+        "of_free": "من {total} متاحة",
+        "accounts_free": "{free} من {total} حسابات Steam متاحة",
+        "in_flight": "قيد التنفيذ",
+        "previews_current": "{current} من {total} معاينات محدثة",
+        "of_within": "من {total} ضمن الحدود",
+        "slow_statements": "استعلام بطيء | استعلامات بطيئة",
+        "threshold": "بطيء فوق {threshold}",
+        "banners_showing": "لافتة معروضة | لافتات معروضة",
+        "installed": "مثبتة",
+        "updates": "{count} تحديث متاح | {count} تحديثات متاحة",
+        "up_to_date": "كلها محدثة",
+        "all_set_up": "تم إعداد كل شيء"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} عقدة غير متصلة | {count} عقد غير متصلة",
+          "cs2_failed": "فشل تحديث CS2 على {count} عقدة | فشل تحديث CS2 على {count} عقد",
+          "overprovisioned": "{count} عقدة تشغّل خوادم أكثر مما يتسع له معالجها | {count} عقد تشغّل خوادم أكثر مما تتسع له معالجاتها",
+          "plugin_unsupported": "الإضافة المثبتة على {count} عقدة لا تدعم إصدار CS2 الخاص بها | الإضافات المثبتة على {count} عقد لا تدعم إصدار CS2 الخاص بها",
+          "disk_full": "قرص {count} عقدة ممتلئ تقريبًا | أقراص {count} عقد ممتلئة تقريبًا",
+          "cpu_governor": "{count} عقدة لا تستخدم منظم المعالج performance | {count} عقد لا تستخدم منظم المعالج performance",
+          "not_ready_region": "{count} عقدة لا يمكنها استضافة المباريات: لا توجد منطقة | {count} عقد لا يمكنها استضافة المباريات: لا توجد منطقة",
+          "not_ready_ports": "{count} عقدة لا يمكنها استضافة المباريات: لا يوجد نطاق منافذ | {count} عقد لا يمكنها استضافة المباريات: لا يوجد نطاق منافذ",
+          "not_ready_cs2": "{count} عقدة لا يمكنها استضافة المباريات: CS2 غير مثبت | {count} عقد لا يمكنها استضافة المباريات: CS2 غير مثبت",
+          "cs2_behind": "تحديث CS2 متاح لـ {count} عقدة | تحديث CS2 متاح لـ {count} عقد",
+          "disk_filling": "قرص {count} عقدة يمتلئ | أقراص {count} عقد تمتلئ",
+          "cpu_slow": "معالج {count} عقدة يعمل بأقل من 3 GHz | معالجات {count} عقد تعمل بأقل من 3 GHz",
+          "cpu_warning": "{count} عقدة تُبلغ عن تحذير في المعالج | {count} عقد تُبلغ عن تحذيرات في المعالج"
+        },
+        "gpus": {
+          "pool_empty": "لا توجد حسابات Steam: لا يمكن لوحدات GPU العرض أو تشغيل العروض أو البث",
+          "pool_short": "مجموعة Steam ينقصها {count} حساب لتغطية كل GPU | مجموعة Steam ينقصها {count} حسابات لتغطية كل GPU",
+          "offline": "{count} وحدة GPU غير متصلة | {count} وحدات GPU غير متصلة",
+          "bake_failed": "فشل تجهيز الشيدرات على {count} وحدة GPU | فشل تجهيز الشيدرات على {count} وحدات GPU",
+          "renders_stuck": "{count} عملية عرض تنتظر ولا توجد وحدة GPU تستقبل العرض | {count} عمليات عرض تنتظر ولا توجد وحدة GPU تستقبل العرض"
+        },
+        "metrics": {
+          "cpu": "{count} عقدة معالجها فوق {threshold}% | {count} عقد معالجها فوق {threshold}%",
+          "memory": "{count} عقدة ذاكرتها فوق {threshold}% | {count} عقد ذاكرتها فوق {threshold}%",
+          "disk": "{count} عقدة لديها قرص فوق {threshold}% | {count} عقد لديها قرص فوق {threshold}%",
+          "gpu_util": "{count} وحدة GPU مشغولة فوق {threshold}% منذ 5 دقائق | {count} وحدات GPU مشغولة فوق {threshold}% منذ 5 دقائق",
+          "gpu_vram": "{count} وحدة GPU ذاكرتها VRAM فوق {threshold}% | {count} وحدات GPU ذاكرتها VRAM فوق {threshold}%",
+          "gpu_temp": "{count} وحدة GPU حرارتها {threshold} °C أو أعلى | {count} وحدات GPU حرارتها {threshold} °C أو أعلى"
+        },
+        "seasons": {
+          "rebuild": "الموسم {number} يحتاج إلى إعادة بناء ELO"
+        },
+        "renders": {
+          "failed": "فشلت {count} عملية عرض خلال اليوم الماضي | فشلت {count} عمليات عرض خلال اليوم الماضي",
+          "behind": "خط العرض متأخر: يصوّر الإصدار v{pipeline} بينما تتوقع الواجهة البرمجية v{version}",
+          "missing": "{count} تشكيلة بلا معاينة | {count} تشكيلات بلا معاينة",
+          "outdated": "معاينة {count} تشكيلة قديمة | معاينات {count} تشكيلات قديمة"
+        },
+        "database": {
+          "locks": "{count} جلسة تنتظر قفلًا | {count} جلسات تنتظر أقفالًا",
+          "running": "{count} استعلام يعمل منذ أكثر من {threshold} | {count} استعلامات تعمل منذ أكثر من {threshold}",
+          "slow": "{count} استعلام يتجاوز متوسطه {threshold} | {count} استعلامات يتجاوز متوسطها {threshold}"
+        },
+        "plugins": {
+          "failed": "فشل نشر {count} إضافة | فشل نشر {count} إضافات",
+          "update": "تحديث متاح لـ {count} إضافة | تحديث متاح لـ {count} إضافات",
+          "manual": "عُثر على {count} إضافة على القرص ولا تُدار من هنا | عُثر على {count} إضافات على القرص ولا تُدار من هنا"
+        },
+        "settings": {
+          "not_set_up": "{count} قسم إعدادات غير مُعد | {count} أقسام إعدادات غير مُعدة"
+        },
+        "servers": {
+          "no_rcon": "{count} خادم لا يستجيب لـ RCON | {count} خوادم لا تستجيب لـ RCON",
+          "plugin_outdated": "{count} خادم يشغّل إضافة قديمة | {count} خوادم تشغّل إضافة قديمة"
+        }
+      }
     }
   },
   "layouts": {
@@ -6545,6 +7969,19 @@
         "theme": "المظهر",
         "developer": "المطوّر",
         "players_teams": "المنصة"
+      },
+      "status": {
+        "not_set_up": "غير مُعدّ",
+        "job_elo": "ELO {pct}%",
+        "job_reindex": "إعادة الفهرسة {pct}%",
+        "job_reparse": "إعادة التحليل {pct}%",
+        "filter_attention": "تنبيه"
+      },
+      "search": {
+        "results": "إعدادات مطابقة: {count} | إعدادات مطابقة: {count}",
+        "clear": "مسح البحث",
+        "no_match_title": "لا توجد إعدادات تطابق “{query}”",
+        "no_match_body": "يبحث في أسماء الإعدادات وأوصافها في كل الأقسام. جرّب كلمة واحدة، مثل “دور” أو “ELO”."
       }
     },
     "system_update": {
@@ -6616,6 +8053,7 @@
       "brand": "5stack",
       "systems_online": "{count} نظام متصل | {count} أنظمة متصلة",
       "navigation": {
+        "home": "الرئيسية",
         "dashboard": "إحصائياتي",
         "play": "العب",
         "watch": "شاهد",
@@ -6650,7 +8088,24 @@
         "alerts": "التنبيهات",
         "seasons": "المواسم",
         "stream_deck": "Stream Deck",
-        "awards": "Awards"
+        "awards": "Awards",
+        "control_room": "غرفة التحكم",
+        "overview": "نظرة عامة"
+      },
+      "modes": {
+        "play": "العب",
+        "admin": "الإدارة",
+        "switch_to_play": "التبديل إلى اللعب",
+        "switch_to_admin": "التبديل إلى الإدارة",
+        "attention": "{count} يحتاج إلى مراجعة | {count} تحتاج إلى مراجعة",
+        "seasons_rebuild": "يلزم إعادة البناء"
+      },
+      "groups": {
+        "compete": "المنافسة",
+        "practice": "التدريب",
+        "media": "الوسائط",
+        "monitoring": "المراقبة",
+        "site": "الموقع"
       },
       "system": {
         "title": "النظام",
@@ -6668,7 +8123,9 @@
       },
       "footer": {
         "report_issue": "أبلغ عن مشكلة",
-        "join_discord": "انضم إلى Discord"
+        "report_issue_short": "الإبلاغ عن مشكلة",
+        "join_discord": "انضم إلى Discord",
+        "discord": "Discord"
       },
       "tooltips": {
         "dashboard": "إحصائياتي",
@@ -7027,7 +8484,6 @@
     "none": "لا يوجد لاعبون متاحون"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "تُربط هذه الملفات بمجلد `csgo` عند تشغيل السيرفر.",
     "any": "أي",
     "remove": "أزل",
     "edit": "عدّل",
@@ -7051,7 +8507,8 @@
       "unsaved_changes": "تغييرات غير محفوظة",
       "review_and_save": "راجع تعديلاتك ثم احفظ",
       "has_errors": "إعدادات غير صالحة",
-      "resolve_errors": "صحّح الحقول المميزة للحفظ"
+      "resolve_errors": "صحّح الحقول المميزة للحفظ",
+      "leave_blocked": "احفظ التغييرات أو تجاهلها قبل المغادرة"
     },
     "error": "خطأ",
     "enabled": "مفعّل",
@@ -7091,8 +8548,6 @@
     "exit_fullscreen": "إنهاء ملء الشاشة",
     "download": "نزّل",
     "upload": "ارفع",
-    "sort_ascending": "ترتيب تصاعدي",
-    "sort_descending": "ترتيب تنازلي",
     "see_all": "عرض الكل",
     "standby_no_activity": "استعداد · لا نشاط",
     "players": "لاعبين",
@@ -7156,7 +8611,8 @@
     "empty_filtered": {
       "title": "لا شيء يطابق هذه الفلاتر",
       "description": "جرّب مسح الفلاتر أو توسيع البحث."
-    }
+    },
+    "clear_filters": "مسح الفلاتر"
   },
   "global_search": {
     "placeholder": "ابحث عن اللاعبين والصفحات والإعدادات",
@@ -7184,8 +8640,6 @@
   },
   "file_manager": {
     "location": "الموقع",
-    "dedicated_server_files": "ملفات السيرفر المخصص",
-    "game_server_node_files": "ملفات عقدة السيرفرات",
     "loading_server_info": "جاري تحميل معلومات السيرفر...",
     "create_directory": {
       "title": "أنشئ مجلدًا جديدًا",
@@ -10251,10 +11705,6 @@
     "remove_node_confirm_title": "حذف هذه العقدة؟",
     "remove_node_confirm_description": "ستُحذف العقدة وجميع الخوادم المخصصة عليها من 5Stack. لا يمكن التراجع عن ذلك.",
     "remove_ports": "احذف المنافذ",
-    "mode": {
-      "use_as_match": "استخدمها كسيرفر مباريات",
-      "use_as_gpu_only": "استخدمها لـ GPU فقط"
-    },
     "show_update_logs": "اعرض سجلات التحديث",
     "update_failed": "فشل التحديث",
     "update_failed_description": "فشل التحديث الأخير. يتم الاحتفاظ بسجلات التحديث لمدة 24 ساعة.",
@@ -10526,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "الاستخدام",
-    "mount_os": "نظام التشغيل",
-    "mount_demos": "Demos",
-    "total_series": "{label} الإجمالي",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} المتوسط"
   },
@@ -10562,7 +12008,6 @@
       "move_node": "نقل الخادم",
       "valve_preset_group": "إعدادات Valve الجاهزة",
       "custom_mode_group": "الأنماط المخصصة",
-      "edit_mode": "تعديل الوضع",
       "cs2_only": "CS2 فقط",
       "needs_node": "يحتاج إلى عقدة",
       "csgo_valve_only": "سيرفرات CS:GO تشغّل إعدادات Valve الجاهزة فقط. الأنماط المصنّفة والتدريبية والمخصصة تحتاج إلى CS2.",
@@ -10586,9 +12031,9 @@
       "generate": "توليد",
       "port": "منفذ اللعبة",
       "tv_port": "منفذ TV",
-      "create": "أنشئ السيرفر",
       "max_players": "أقصى عدد لاعبين",
-      "max_players_description": "أقصى عدد لاعبين يمكنهم الاتصال بالسيرفر"
+      "max_players_description": "أقصى عدد لاعبين يمكنهم الاتصال بالسيرفر",
+      "edit_mode_link": "تعديل الوضع"
     },
     "rcon": {
       "console_output": "مخرجات الكونسول",
@@ -10611,6 +12056,13 @@
   "components": {
     "map_pools": {
       "view_on_steam": "اعرض على Steam"
+    },
+    "facet_rail": {
+      "clear_all": "مسح الكل",
+      "none": "لا شيء",
+      "remove": "إزالة {label}",
+      "show_all": "عرض الكل ({count})",
+      "show_fewer": "عرض أقل"
     }
   },
   "map_pools": {
@@ -12412,7 +13864,6 @@
       "unique_24h": "فريدون · 24 س",
       "unique_7d": "فريدون · 7 أيام",
       "sessions_7d": "الجلسات · 7 أيام",
-      "time_played_7d": "وقت اللعب · 7 أيام",
       "avg_session": "متوسط الجلسة",
       "players": "لاعبين",
       "joins": "مرات دخول",
@@ -12424,7 +13875,9 @@
       "empty": "لم يلعب أحد هنا خلال هذه الفترة.",
       "no_matches": "لا يوجد لاعبون يطابقون هذا البحث.",
       "showing": "عرض {shown} من {total}",
-      "load_more": "تحميل المزيد"
+      "last_seen": "آخر ظهور",
+      "time_played_col": "وقت اللعب · 7 أيام",
+      "show_more": "تحميل المزيد"
     },
     "player_tab": {
       "moderator_note": "يرى مشرفو المحتوى أيضًا الأوقات الدقيقة والجلسات والأسماء المستخدمة وعناوين IP.",
@@ -12463,12 +13916,8 @@
       "offline": "غير متصل",
       "map": "الخريطة",
       "community_server": "سيرفر مجتمع",
-      "online_now": "متصل الآن",
-      "players_this_week": "لاعبو هذا الأسبوع",
       "different_players": "لاعبين مختلفين",
-      "hours_this_week": "ساعات هذا الأسبوع",
       "played_by_everyone": "لعبها الجميع",
-      "all_time_players": "لاعبو كل الأوقات",
       "since": "منذ {date}",
       "activity": "النشاط · آخر 7 أيام",
       "activity_description": "إجمالي الساعات التي لعبها الجميع هنا كل يوم. لا تُعرض أوقات اللعب الفردية لأي أحد.",
@@ -12485,7 +13934,13 @@
       "day": "اليوم",
       "player_hours": "ساعات اللاعبين",
       "not_found_title": "السيرفر غير موجود",
-      "not_found_description": "هذا السيرفر غير موجود أو ليس عامًا."
+      "not_found_description": "هذا السيرفر غير موجود أو ليس عامًا.",
+      "tile": {
+        "online_now": "متصل الآن",
+        "players_this_week": "لاعبو هذا الأسبوع",
+        "hours_this_week": "ساعات هذا الأسبوع",
+        "all_time_players": "لاعبو كل الأوقات"
+      }
     }
   },
   "quick_look": {
@@ -12553,6 +14008,32 @@
         "twitch_unavailable": "لم يستجب Twitch. حاول مرة أخرى بعد قليل.",
         "unknown": "حدث خطأ ما. حاول مرة أخرى."
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "مسح البحث"
+    },
+    "sort": {
+      "sorted_ascending": "مرتّب تصاعديًا",
+      "sorted_descending": "مرتّب تنازليًا"
+    },
+    "live_stamp": {
+      "live_at": "مباشر · {time}",
+      "updated_now": "حُدّث للتو",
+      "updated_now_after": "حُدّث للتو",
+      "updated_seconds": "حُدّث قبل {seconds} ث",
+      "updated_seconds_after": "حُدّث قبل {seconds} ث",
+      "updated_minutes": "حُدّث قبل {minutes} د",
+      "updated_minutes_after": "حُدّث قبل {minutes} د",
+      "paused": "متوقف مؤقتًا",
+      "every_seconds": "يتحدّث كل {seconds} ث",
+      "every_minute": "يتحدّث كل دقيقة",
+      "every_minutes": "يتحدّث كل {minutes} د",
+      "refresh_now": "تحديث الآن"
+    },
+    "last_changed": {
+      "updated": "حُدّث {time}"
     }
   }
 }

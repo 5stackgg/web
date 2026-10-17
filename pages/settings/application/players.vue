@@ -6,7 +6,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Progress } from "@/components/ui/progress";
-import { AlertTriangle, X } from "lucide-vue-next";
+import { X } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import { useI18n } from "vue-i18n";
 import gql from "graphql-tag";
@@ -239,305 +239,275 @@ async function doScanSteamBans() {
           />
         </form>
 
-        <section id="danger-zone" class="scroll-mt-4">
-          <div class="rounded-lg border border-destructive/40 bg-destructive/5">
-            <div class="p-6 space-y-6">
-              <div class="flex items-start gap-3">
-                <AlertTriangle class="h-5 w-5 shrink-0 text-destructive" />
-                <div class="min-w-0 flex-1 space-y-0.5">
-                  <h3
-                    class="text-sm font-semibold uppercase tracking-wider text-destructive"
-                  >
+        <SettingsSection
+          id="danger-zone"
+          :title="$t('pages.settings.application.players.danger_zone_title')"
+          :description="
+            $t('pages.settings.application.players.danger_zone_description')
+          "
+        >
+          <div class="divide-y divide-border">
+            <div class="space-y-3 pb-4">
+              <div class="flex items-start justify-between gap-4">
+                <div class="min-w-0 space-y-0.5">
+                  <p class="text-sm font-medium">
                     {{
-                      $t("pages.settings.application.players.danger_zone_title")
+                      $t(
+                        "pages.settings.application.players.recompute_elo_title",
+                      )
                     }}
-                  </h3>
+                  </p>
                   <p class="text-sm text-muted-foreground">
                     {{
                       $t(
-                        "pages.settings.application.players.danger_zone_description",
+                        "pages.settings.application.players.recompute_elo_description",
                       )
                     }}
                   </p>
                 </div>
-              </div>
-
-              <div class="border-t border-destructive/20 pt-4 space-y-3">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="min-w-0 space-y-0.5">
-                    <p class="text-sm font-medium">
-                      {{
-                        $t(
-                          "pages.settings.application.players.recompute_elo_title",
-                        )
-                      }}
-                    </p>
-                    <p class="text-sm text-muted-foreground">
-                      {{
-                        $t(
-                          "pages.settings.application.players.recompute_elo_description",
-                        )
-                      }}
-                    </p>
-                  </div>
-                  <div class="shrink-0 flex items-center gap-2">
-                    <Button
-                      v-if="eloRunning"
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      :disabled="eloCanceling"
-                      class="flex items-center gap-2"
-                      @click="cancelRecompute"
-                    >
-                      <Spinner v-if="eloCanceling" class="h-4 w-4" />
-                      <X v-else class="h-4 w-4" />
-                      {{
-                        $t("pages.settings.application.players.cancel_button")
-                      }}
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      :disabled="eloStarting || eloRunning"
-                      class="flex items-center gap-2"
-                      @click="showEloDialog = true"
-                    >
-                      <Spinner
-                        v-if="eloStarting || eloRunning"
-                        class="h-4 w-4"
-                      />
-                      {{
-                        eloStarting || eloRunning
-                          ? $t(
-                              "pages.settings.application.players.recomputing_elo",
-                            )
-                          : $t(
-                              "pages.settings.application.players.recompute_elo_button",
-                            )
-                      }}
-                    </Button>
-                  </div>
-                </div>
-
-                <div
-                  v-if="eloStatus && (eloRunning || eloStatus.finished_at)"
-                  class="space-y-1"
-                >
-                  <Progress v-if="eloRunning" :model-value="eloProgress" />
-                  <div
-                    class="flex items-center justify-between gap-2 text-xs text-muted-foreground"
+                <div class="shrink-0 flex items-center gap-2">
+                  <Button
+                    v-if="eloRunning"
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    :disabled="eloCanceling"
+                    class="flex items-center gap-2"
+                    @click="cancelRecompute"
                   >
-                    <span v-if="eloRunning">
-                      {{
-                        $t(
-                          "pages.settings.application.players.progress_running",
-                          {
-                            processed: eloStatus.completed,
-                            total: eloStatus.total,
-                            percent: eloProgress,
-                          },
-                        )
-                      }}
-                      <template v-if="eloStatus.failed">
-                        ·
-                        {{
-                          $t(
-                            "pages.settings.application.players.progress_failed_count",
-                            { failed: eloStatus.failed },
-                          )
-                        }}
-                      </template>
-                    </span>
-                    <span v-else-if="eloStatus.canceled">
-                      {{
-                        $t(
-                          "pages.settings.application.players.progress_canceled",
-                          {
-                            completed: eloStatus.completed,
-                            total: eloStatus.total,
-                          },
-                        )
-                      }}
-                    </span>
-                    <span v-else>
-                      {{
-                        $t(
-                          "pages.settings.application.players.progress_completed",
-                          { total: eloStatus.completed },
-                        )
-                      }}
-                    </span>
-                    <span v-if="eloRunning && eloEta">
-                      {{
-                        $t("pages.settings.application.players.progress_eta", {
-                          eta: eloEta,
-                        })
-                      }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="border-t border-destructive/20 pt-4 space-y-3">
-                <div class="flex items-start justify-between gap-4">
-                  <div class="min-w-0 space-y-0.5">
-                    <p class="text-sm font-medium">
-                      {{
-                        $t(
-                          "pages.settings.application.players.refresh_all_title",
-                        )
-                      }}
-                    </p>
-                    <p class="text-sm text-muted-foreground">
-                      {{
-                        $t(
-                          "pages.settings.application.players.refresh_all_description",
-                        )
-                      }}
-                    </p>
-                  </div>
-                  <div class="shrink-0 flex items-center gap-2">
-                    <Button
-                      v-if="reindexRunning"
-                      type="button"
-                      size="sm"
-                      variant="ghost"
-                      :disabled="reindexCanceling"
-                      class="flex items-center gap-2"
-                      @click="cancelReindex"
-                    >
-                      <Spinner v-if="reindexCanceling" class="h-4 w-4" />
-                      <X v-else class="h-4 w-4" />
-                      {{
-                        $t("pages.settings.application.players.cancel_button")
-                      }}
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      :disabled="reindexStarting || reindexRunning"
-                      class="flex items-center gap-2"
-                      @click="showRefreshDialog = true"
-                    >
-                      <Spinner
-                        v-if="reindexStarting || reindexRunning"
-                        class="h-4 w-4"
-                      />
-                      {{
-                        reindexStarting || reindexRunning
-                          ? $t("pages.settings.application.players.refreshing")
-                          : $t(
-                              "pages.settings.application.players.refresh_button",
-                            )
-                      }}
-                    </Button>
-                  </div>
-                </div>
-
-                <div
-                  v-if="
-                    reindexStatus &&
-                    (reindexRunning || reindexStatus.finished_at)
-                  "
-                  class="space-y-1"
-                >
-                  <Progress
-                    v-if="reindexRunning"
-                    :model-value="reindexProgress"
-                  />
-                  <div
-                    class="flex items-center justify-between gap-2 text-xs text-muted-foreground"
+                    <Spinner v-if="eloCanceling" class="h-4 w-4" />
+                    <X v-else class="h-4 w-4" />
+                    {{ $t("pages.settings.application.players.cancel_button") }}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    :disabled="eloStarting || eloRunning"
+                    class="flex items-center gap-2"
+                    @click="showEloDialog = true"
                   >
-                    <span v-if="reindexRunning">
-                      {{
-                        $t(
-                          "pages.settings.application.players.progress_running",
-                          {
-                            processed: reindexStatus.completed,
-                            total: reindexStatus.total,
-                            percent: reindexProgress,
-                          },
-                        )
-                      }}
-                      <template v-if="reindexStatus.failed">
-                        ·
-                        {{
-                          $t(
-                            "pages.settings.application.players.progress_failed_count",
-                            { failed: reindexStatus.failed },
+                    <Spinner v-if="eloStarting || eloRunning" class="h-4 w-4" />
+                    {{
+                      eloStarting || eloRunning
+                        ? $t(
+                            "pages.settings.application.players.recomputing_elo",
                           )
-                        }}
-                      </template>
-                    </span>
-                    <span v-else-if="reindexStatus.canceled">
-                      {{
-                        $t(
-                          "pages.settings.application.players.progress_canceled",
-                          {
-                            completed: reindexStatus.completed,
-                            total: reindexStatus.total,
-                          },
-                        )
-                      }}
-                    </span>
-                    <span v-else>
-                      {{
-                        $t(
-                          "pages.settings.application.players.progress_completed",
-                          { total: reindexStatus.completed },
-                        )
-                      }}
-                    </span>
-                    <span v-if="reindexRunning && reindexEta">
-                      {{
-                        $t("pages.settings.application.players.progress_eta", {
-                          eta: reindexEta,
-                        })
-                      }}
-                    </span>
-                  </div>
+                        : $t(
+                            "pages.settings.application.players.recompute_elo_button",
+                          )
+                    }}
+                  </Button>
                 </div>
               </div>
 
               <div
-                class="flex items-start justify-between gap-4 border-t border-destructive/20 pt-4"
+                v-if="eloStatus && (eloRunning || eloStatus.finished_at)"
+                class="space-y-1"
               >
+                <Progress v-if="eloRunning" :model-value="eloProgress" />
+                <div
+                  class="flex items-center justify-between gap-2 text-xs text-muted-foreground"
+                >
+                  <span v-if="eloRunning">
+                    {{
+                      $t(
+                        "pages.settings.application.players.progress_running",
+                        {
+                          processed: eloStatus.completed,
+                          total: eloStatus.total,
+                          percent: eloProgress,
+                        },
+                      )
+                    }}
+                    <template v-if="eloStatus.failed">
+                      ·
+                      {{
+                        $t(
+                          "pages.settings.application.players.progress_failed_count",
+                          { failed: eloStatus.failed },
+                        )
+                      }}
+                    </template>
+                  </span>
+                  <span v-else-if="eloStatus.canceled">
+                    {{
+                      $t(
+                        "pages.settings.application.players.progress_canceled",
+                        {
+                          completed: eloStatus.completed,
+                          total: eloStatus.total,
+                        },
+                      )
+                    }}
+                  </span>
+                  <span v-else>
+                    {{
+                      $t(
+                        "pages.settings.application.players.progress_completed",
+                        { total: eloStatus.completed },
+                      )
+                    }}
+                  </span>
+                  <span v-if="eloRunning && eloEta">
+                    {{
+                      $t("pages.settings.application.players.progress_eta", {
+                        eta: eloEta,
+                      })
+                    }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-3 py-4">
+              <div class="flex items-start justify-between gap-4">
                 <div class="min-w-0 space-y-0.5">
                   <p class="text-sm font-medium">
                     {{
-                      $t("pages.settings.application.players.scan_bans_title")
+                      $t("pages.settings.application.players.refresh_all_title")
                     }}
                   </p>
                   <p class="text-sm text-muted-foreground">
                     {{
                       $t(
-                        "pages.settings.application.players.scan_bans_description",
+                        "pages.settings.application.players.refresh_all_description",
                       )
                     }}
                   </p>
                 </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  :disabled="scanning"
-                  class="shrink-0 flex items-center gap-2"
-                  @click="showScanDialog = true"
+                <div class="shrink-0 flex items-center gap-2">
+                  <Button
+                    v-if="reindexRunning"
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    :disabled="reindexCanceling"
+                    class="flex items-center gap-2"
+                    @click="cancelReindex"
+                  >
+                    <Spinner v-if="reindexCanceling" class="h-4 w-4" />
+                    <X v-else class="h-4 w-4" />
+                    {{ $t("pages.settings.application.players.cancel_button") }}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    :disabled="reindexStarting || reindexRunning"
+                    class="flex items-center gap-2"
+                    @click="showRefreshDialog = true"
+                  >
+                    <Spinner
+                      v-if="reindexStarting || reindexRunning"
+                      class="h-4 w-4"
+                    />
+                    {{
+                      reindexStarting || reindexRunning
+                        ? $t("pages.settings.application.players.refreshing")
+                        : $t(
+                            "pages.settings.application.players.refresh_button",
+                          )
+                    }}
+                  </Button>
+                </div>
+              </div>
+
+              <div
+                v-if="
+                  reindexStatus && (reindexRunning || reindexStatus.finished_at)
+                "
+                class="space-y-1"
+              >
+                <Progress
+                  v-if="reindexRunning"
+                  :model-value="reindexProgress"
+                />
+                <div
+                  class="flex items-center justify-between gap-2 text-xs text-muted-foreground"
                 >
-                  <Spinner v-if="scanning" class="h-4 w-4" />
-                  {{
-                    scanning
-                      ? $t("pages.settings.application.players.scanning")
-                      : $t("pages.settings.application.players.scan_button")
-                  }}
-                </Button>
+                  <span v-if="reindexRunning">
+                    {{
+                      $t(
+                        "pages.settings.application.players.progress_running",
+                        {
+                          processed: reindexStatus.completed,
+                          total: reindexStatus.total,
+                          percent: reindexProgress,
+                        },
+                      )
+                    }}
+                    <template v-if="reindexStatus.failed">
+                      ·
+                      {{
+                        $t(
+                          "pages.settings.application.players.progress_failed_count",
+                          { failed: reindexStatus.failed },
+                        )
+                      }}
+                    </template>
+                  </span>
+                  <span v-else-if="reindexStatus.canceled">
+                    {{
+                      $t(
+                        "pages.settings.application.players.progress_canceled",
+                        {
+                          completed: reindexStatus.completed,
+                          total: reindexStatus.total,
+                        },
+                      )
+                    }}
+                  </span>
+                  <span v-else>
+                    {{
+                      $t(
+                        "pages.settings.application.players.progress_completed",
+                        { total: reindexStatus.completed },
+                      )
+                    }}
+                  </span>
+                  <span v-if="reindexRunning && reindexEta">
+                    {{
+                      $t("pages.settings.application.players.progress_eta", {
+                        eta: reindexEta,
+                      })
+                    }}
+                  </span>
+                </div>
               </div>
             </div>
+
+            <div class="flex items-start justify-between gap-4 pt-4">
+              <div class="min-w-0 space-y-0.5">
+                <p class="text-sm font-medium">
+                  {{ $t("pages.settings.application.players.scan_bans_title") }}
+                </p>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.players.scan_bans_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                :disabled="scanning"
+                class="shrink-0 flex items-center gap-2"
+                @click="showScanDialog = true"
+              >
+                <Spinner v-if="scanning" class="h-4 w-4" />
+                {{
+                  scanning
+                    ? $t("pages.settings.application.players.scanning")
+                    : $t("pages.settings.application.players.scan_button")
+                }}
+              </Button>
+            </div>
           </div>
-        </section>
+        </SettingsSection>
 
         <AlertDialog v-model:open="showEloDialog">
           <AlertDialogContent>

@@ -1,80 +1,69 @@
 <template>
-  <div>
-    <Card>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{
-              $t("pages.settings.application.db_backups.name")
-            }}</TableHead>
-            <TableHead class="text-right">{{
-              $t("pages.settings.application.db_backups.size")
-            }}</TableHead>
-            <TableHead>{{
-              $t("pages.settings.application.db_backups.created_at")
-            }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody v-if="backups.length">
-          <TableRow v-for="backup in backups" :key="backup.id">
-            <TableCell>{{ backup.name }}</TableCell>
-            <TableCell class="text-right tabular-nums">{{
-              formatBytes(backup.size)
-            }}</TableCell>
-            <TableCell>{{
-              new Date(backup.created_at).toLocaleString(dateLocale())
-            }}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      <Empty v-if="backups.length === 0">
-        <p class="text-muted-foreground">
-          {{ $t("pages.database.backups.no_backups") }}
-        </p>
-      </Empty>
-    </Card>
-  </div>
+  <SectionEmpty
+    v-if="loaded && backups.length === 0"
+    :title="$t('pages.database.explorer.no_backups_title')"
+    :description="$t('pages.database.explorer.no_backups_hint')"
+  />
+  <DbGrid
+    v-else-if="backups.length"
+    v-model:sort="sort"
+    v-model:dir="dir"
+    :rows="backups"
+    :columns="columns"
+    :row-key="(r) => r.id"
+  >
+    <template #cell-name="{ row }">
+      <span class="font-mono text-[11.5px]">{{ row.name }}</span>
+    </template>
+    <template #cell-size="{ row }">{{ formatSize(row.size) }}</template>
+    <template #cell-created_at="{ row }">
+      {{ new Date(row.created_at).toLocaleString(dateLocale()) }}
+      <span class="text-muted-foreground/70">
+        · <TimeAgo :date="row.created_at" hide-icon
+      /></span>
+    </template>
+  </DbGrid>
 </template>
 
 <script lang="ts">
-import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Empty } from "@/components/ui/empty";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import TimeAgo from "~/components/TimeAgo.vue";
+import DbGrid from "./DbGrid.vue";
 import { generateSubscription } from "~/graphql/graphqlGen";
-import formatBytes from "~/utilities/formatBytes";
 import { dateLocale } from "~/utilities/dateLocale";
+import { formatSize, type DbGridColumn } from "./dbHealth";
+
+type Backup = { id: string; name: string; size: number; created_at: string };
 
 export default {
-  components: {
-    Card,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-    Empty,
-  },
-  inject: ["pollInterval", "refreshTrigger"],
+  components: { SectionEmpty, TimeAgo, DbGrid },
   data() {
     return {
-      backups: [] as Array<{
-        id: string;
-        name: string;
-        size: number;
-        created_at: string;
-      }>,
+      backups: [] as Backup[],
+      loaded: false,
+      sort: "created_at",
+      dir: "desc" as "asc" | "desc",
     };
   },
+  computed: {
+    columns(): DbGridColumn[] {
+      return [
+        { key: "name", label: this.$t("common.name") },
+        {
+          key: "size",
+          label: this.$t("pages.settings.application.db_backups.size"),
+          num: true,
+        },
+        {
+          key: "created_at",
+          label: this.$t("pages.settings.application.db_backups.created_at"),
+          value: (r: Backup) => Date.parse(r.created_at),
+        },
+      ];
+    },
+  },
   methods: {
-    formatBytes,
+    formatSize,
     dateLocale,
   },
   apollo: {
@@ -91,29 +80,11 @@ export default {
             },
           ],
         }),
-        result: function ({
-          data,
-        }: {
-          data: {
-            db_backups: Array<{
-              id: string;
-              name: string;
-              size: number;
-              created_at: string;
-            }>;
-          };
-        }) {
+        result({ data }: { data: { db_backups: Backup[] } }) {
           this.backups = data.db_backups;
+          this.loaded = true;
         },
       },
-    },
-  },
-  watch: {
-    refreshTrigger() {
-      // Refetch when manual refresh is triggered
-      if (this.$apollo.queries.backups) {
-        this.$apollo.queries.backups.refetch();
-      }
     },
   },
 };

@@ -140,7 +140,7 @@ function callsOf(name: string) {
 }
 
 function loadMoreButton(wrapper: Awaited<ReturnType<typeof mountCard>>) {
-  return wrapper.findAll("button").find((b) => b.text() === "Load More");
+  return wrapper.findAll("button").find((b) => b.text() === "Load more");
 }
 
 beforeEach(() => {
@@ -171,7 +171,7 @@ describe("ServerRecentPlayers", () => {
 
     const headers = wrapper.findAll("th").map((th) => th.text());
     expect(headers).toContain("Sessions · 7d");
-    expect(headers).toContain("Time Played · 7d");
+    expect(headers).toContain("Time played · 7d");
 
     const rows = wrapper.findAll("tr[data-steam-id]");
     expect(rows[0].text()).toContain("Online");

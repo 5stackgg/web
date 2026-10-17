@@ -30,7 +30,7 @@ describe("useSettingsSearch", () => {
       (group) => group.path === "/settings/application/matchmaking",
     );
     expect(matchmaking?.hits.map((hit) => hit.label)).toContain(
-      "Veto Pick Timer",
+      "Veto pick timer",
     );
   });
 

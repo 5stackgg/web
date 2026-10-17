@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU-forbrug",
-      "memory_usage": "Hukommelsesforbrug",
       "services": "Tjenester",
       "service": "Tjeneste",
-      "network": "Netværk",
       "search_services_placeholder": "Søg tjenester eller noder...",
       "filter_by_node": "Filtrér efter node",
       "no_services_found": "Ingen tjenester matcher dine filtre.",
@@ -1281,11 +1278,145 @@
       "disk_short": "Diske",
       "network_short": "Netværk",
       "no_nodes_found": "Ingen game server nodes matcher dine filtre.",
-      "only_online_nodes": "Kun online noder"
+      "only_online_nodes": "Kun online noder",
+      "search_placeholder": "Søg i tjenester eller noder",
+      "scope_all": "Alle tjenester",
+      "scope_attention": "Kræver opmærksomhed",
+      "live_hint": "Hver node rapporterer cirka hvert 30. sekund. Siden gemmer de seneste 90 minutter.",
+      "filter_group": "Game server nodes",
+      "only_online": "Kun online noder",
+      "only_enabled": "Kun aktiverede noder",
+      "no_nodes_title": "Ingen game server nodes",
+      "no_nodes_hint": "Opsæt en game server node for at få kapacitet til flere kampe.",
+      "setup_node": "Opsæt en node",
+      "services_reporting": "{count} rapporterer",
+      "all_nodes": "Alle noder",
+      "no_services_title": "Ingen tjenester rapporterer",
+      "no_services_hint": "Tjenester vises her, når en node sender pod-målinger.",
+      "no_attention_title": "Ingen tjeneste kræver opmærksomhed",
+      "no_attention_hint": "Alle tjenester er inden for grænserne.",
+      "no_match_title": "Ingen tjenester matcher",
+      "no_match_hint": "Intet matcher din søgning, node eller dine filtre.",
+      "clear_filters": "Ryd filtre",
+      "logs_for": "Logs for {name}",
+      "logs_sheet_sub": "Logs · {node}",
+      "open_logs_page": "Åbn på siden Logs",
+      "attention": {
+        "problems": "{count} problem | {count} problemer",
+        "nodes_ok": "{count} node i orden | {count} noder i orden",
+        "critical_count": "{count} kritisk | {count} kritiske",
+        "warning_count": "{count} advarsel | {count} advarsler",
+        "thresholds": "Grænser",
+        "thresholds_hint": "Noder: advarsel fra 75 %, kritisk fra 90 % CPU, hukommelse eller disk. GPU'er: kritisk ved 90 % forbrug i 5 minutter eller 90 % VRAM, advarsel ved 85 °C. I tjenestetabellen er en tjeneste, der bruger halvdelen af nodens hukommelse, også kritisk.",
+        "all_clear": "Intet kræver opmærksomhed",
+        "all_clear_hint": "Alle online noder og GPU'er er inden for grænserne.",
+        "issue_cpu": "{node} CPU på {value}",
+        "issue_memory": "{node} hukommelse på {value}",
+        "issue_disk": "{node} disk på {value}",
+        "issue_cpu_warning": "{node} melder om en CPU-begrænset spilserver",
+        "issue_gpu_util": "{gpu} på {node} ved {value}",
+        "issue_gpu_vram": "{gpu} VRAM på {node} ved {value}",
+        "issue_gpu_temp": "{gpu} på {node} ved {value}",
+        "cores": "{count} kerne | {count} kerner",
+        "above_for": "over {threshold} % i {minutes} min",
+        "above_now": "over {threshold} % siden seneste måling",
+        "used_of": "{used} af {total}",
+        "gpu_usage": "{value} forbrug",
+        "last_30": "Seneste 30 min",
+        "open_node": "Åbn node",
+        "nodes": "Noder",
+        "gpus": "GPU'er",
+        "nodes_all_fine": "{count} node online og inden for grænserne | Alle {count} noder online og inden for grænserne",
+        "nodes_fine": "{fine} af {total} noder online og inden for grænserne",
+        "need_attention": "{count} kræver opmærksomhed | {count} kræver opmærksomhed",
+        "offline": "{count} offline",
+        "view_nodes": "Se alle under Game server nodes",
+        "gpus_none_online": "Ingen GPU online",
+        "gpus_all_fine": "{count} GPU inden for grænserne | {count} GPU'er inden for grænserne",
+        "gpus_fine": "{fine} af {total} GPU'er inden for grænserne",
+        "gpus_offline": "{count} på en offline node | {count} på offline noder",
+        "view_gpus": "Se under GPU-noder"
+      },
+      "services_table": {
+        "actions": "Handlinger",
+        "last_seen": "Sidst set {time}",
+        "node_disk": "Nodens disk",
+        "node_disk_hint": "Tjenester rapporterer ikke deres eget diskforbrug. Dette er den fyldeste disk på den node, hver tjeneste kører på: advarsel fra 75 %, kritisk fra 90 %.",
+        "cpu_last_30": "CPU, seneste 30 min",
+        "of_node": "% af noden",
+        "memory_share_hint": "Tjenestens andel af nodens samlede RAM, med mængden i brug i værktøjstippet. En tjeneste, der bruger halvdelen af en nodes hukommelse, er kritisk."
+      }
     },
     "system_logs": {
       "follow_logs": "Følg logs",
-      "timestamps": "Tidsstempler"
+      "timestamps": "Tidsstempler",
+      "bar_label": "{time}, {total} linjer, {warnings} advarsler, {errors} fejl",
+      "clear_filters": "Ryd filtre",
+      "connection_lost": "Forbindelsen blev afbrudt. Genopretter — streamen fortsætter efter den sidste linje, der vises her.",
+      "container": "Container",
+      "copy_line": "Kopiér linje",
+      "download": "Download logs",
+      "download_failed": "Kunne ikke downloade de fulde logs for {service}",
+      "errors": "Fejl",
+      "errors_like": "Fejl som {text}",
+      "errors_loaded": "{count} fejl i det indlæste vindue | {count} fejl i det indlæste vindue",
+      "errors_word": "fejl",
+      "exit_full_screen": "Afslut fuld skærm (Esc)",
+      "filter_lines": "Filtrer linjer",
+      "follow": "Følg",
+      "full_logs_of": "Fulde logs · {service}",
+      "full_screen": "Fuld skærm",
+      "jump_to_live": "Hop til live",
+      "level_error": "Fejl",
+      "level_log": "Log",
+      "level_warning": "Advarsel",
+      "line_copied": "Linje kopieret",
+      "live_rate": "Live · {rate}/min",
+      "load_hour_before": "Indlæs timen før",
+      "loading_earlier": "Indlæser…",
+      "log_lines": "Loglinjer",
+      "log_lines_word": "loglinjer",
+      "minutes_per_bar": "{time} · {minutes} min pr. søjle",
+      "n_new": "{count} nye",
+      "no_match_hint": "Intet i det indlæste vindue matcher disse filtre. Indlæs timen før, eller udvid niveauet.",
+      "no_match_title": "Ingen linjer matcher",
+      "no_repeating": "Ingen gentagne advarsler eller fejl",
+      "no_services_hint": "Vælg en eller flere tjenester for at samle deres logs i én stream.",
+      "no_services_title": "Ingen tjenester valgt",
+      "node": "Node",
+      "nothing_at": "Intet kl. {time} matcher de aktuelle filtre",
+      "now": "nu",
+      "only": "Kun",
+      "only_context": "Kun {context}",
+      "per_minute": "{rate}/min",
+      "pod": "Pod",
+      "pod_count": "{count} pods",
+      "pods_of": "Pods for {service}",
+      "preset_all": "Alle",
+      "preset_core": "Kerne",
+      "preset_match": "Kampforløb",
+      "preset_media": "Medier",
+      "reconnecting": "Genopretter forbindelse…",
+      "repeating": "{count} gentagen advarsel eller fejl | {count} gentagne advarsler og fejl",
+      "services": "Tjenester",
+      "show_core": "Vis kernetjenester",
+      "show_every_line": "Vis alle linjer",
+      "show_in_stream": "Vis disse i streamen",
+      "show_only": "Vis kun {service}",
+      "showing": "Vises",
+      "showing_only": "Viser kun {service}",
+      "since": "Siden",
+      "start_of_logs": "Starten af de indlæste logs",
+      "time": "Tid",
+      "waiting_for_output": "Venter på output · spørger igen hver 5 s",
+      "warnings": "Advarsler",
+      "warnings_like": "Advarsler som {text}",
+      "warnings_loaded": "{count} advarsel i det indlæste vindue | {count} advarsler i det indlæste vindue",
+      "warnings_word": "advarsler",
+      "status_ok": "Ingen advarsler eller fejl de sidste 5 minutter",
+      "status_warn": "Advarsler de sidste 5 minutter",
+      "status_bad": "Fejl de sidste 5 minutter",
+      "status_off": "Intet output endnu"
     },
     "system_telemetry": {
       "title": "Flådetelemetri",
@@ -1515,7 +1646,11 @@
         "modes_caption": "defineret",
         "modes_unranked": "Ikke draft-egnet",
         "modes_unranked_caption": "tilstande skjult i draft-lobbyer"
-      }
+      },
+      "jump_to": "Gå til",
+      "features_title": "Funktioner",
+      "not_reported_title": "Ikke rapporteret endnu",
+      "no_activity_hint": "Grafen fyldes ud, efterhånden som paneler rapporterer de kampe, de afvikler."
     },
     "tournaments": {
       "title": "Turneringer",
@@ -3516,6 +3651,119 @@
       "tabs": {
         "highlights": "Highlights",
         "utility": "Utility-opstillinger"
+      },
+      "ledger": {
+        "search": "Søg i klip og opstillinger",
+        "view": {
+          "flight": "I gang",
+          "failed": "Fejlede",
+          "done": "Færdige"
+        },
+        "filter": {
+          "queue": "Kø",
+          "map": "Bane",
+          "group": "Gruppér igangværende efter batch"
+        },
+        "retry_all": "Prøv alle fejlede igen ({count})",
+        "empty": {
+          "all": "Highlight-klip og forhåndsvisninger af opstillinger vises her, mens de starter, renderes og uploades.",
+          "flight_title": "Intet i gang",
+          "failed_title": "Intet fejlede",
+          "done_title": "Intet færdigt",
+          "flight": "Nye highlight-batches og forhåndsvisninger af opstillinger vises her.",
+          "failed": "Alle renderinger på listen blev færdige uden fejl.",
+          "done": "Færdige renderinger vises her.",
+          "filtered": "Prøv at rydde søgningen eller filtrene."
+        },
+        "select_all": "Vælg alle",
+        "select": "Vælg {name}",
+        "col": {
+          "render": "Rendering",
+          "progress": "Fremskridt",
+          "length": "Længde",
+          "elapsed": "Forløbet",
+          "finished": "Færdig",
+          "actions": "Handlinger"
+        },
+        "batch": {
+          "done_of": "{done} af {total} færdige",
+          "failed": "{count} fejlede | {count} fejlede",
+          "paused": "sat på pause",
+          "silent": "intet nyt fra dens pod i {since}",
+          "booting": "pod starter",
+          "booting_pct": "pod-start {pct}%",
+          "waiting_gpu": "venter på en ledig GPU"
+        },
+        "pod_on": "på {map}",
+        "lineup_on": "Opstilling · {map}",
+        "missing_clip": "Mangler: klippet gik tabt efter upload",
+        "ago": "for {since} siden",
+        "more": "Flere handlinger",
+        "open_details": "Åbn detaljer",
+        "cancel_batch": "Annuller batch",
+        "pages": "Sider",
+        "silent": "Tavs",
+        "history": "Statushistorik",
+        "clip": "Klip",
+        "player": "Spiller",
+        "round": "Runde",
+        "kills": "Drab",
+        "segments": "Segmenter",
+        "job_id": "Job-ID",
+        "lineup_id": "Opstillings-ID",
+        "render_job": "Renderjob",
+        "no_job": "Ingen endnu",
+        "logs": "Logs",
+        "bulk": {
+          "selected": "{count} valgt | {count} valgt",
+          "cancel": "Annuller valgte",
+          "retry": "Prøv valgte igen",
+          "requeue": "Sæt valgte i kø igen",
+          "clear": "Ryd valg",
+          "requeueing": "Sætter i kø igen",
+          "cancelling": "Annullerer",
+          "progress": "{label} {done} af {total}"
+        },
+        "toast": {
+          "requeued": "{count} rendering sat i kø igen | {count} renderinger sat i kø igen",
+          "cancelled": "{count} rendering annulleret | {count} renderinger annulleret",
+          "not_done": "{count} gik ikke igennem | {count} gik ikke igennem",
+          "clip_requeued": "Klip sat i kø igen",
+          "clip_not_requeued": "Klippet kunne ikke sættes i kø igen",
+          "batch_requeued": "Batch sat i kø igen",
+          "batch_cancelled": "Batch annulleret",
+          "batch_not_cancelled": "Batchen kunne ikke annulleres",
+          "cleared": "Færdige renderinger ryddet"
+        },
+        "confirm": {
+          "cancel_title": "Annuller {count} rendering? | Annuller {count} renderinger?",
+          "cancel_body": "De stopper, hvor de er, og bliver ikke færdige. Færdige klip og forhåndsvisninger røres ikke.",
+          "cancel_batches": "Klip annulleres pr. batch, så resten af hvert valgt klips batch stopper også.",
+          "keep": "Bliv ved med at rendere",
+          "cancel_action": "Annuller renderinger",
+          "batch_title": "Annuller {name}?",
+          "batch_body": "Klip, der ikke er færdige, bliver ikke renderet. Færdige klip bliver i Highlights.",
+          "clear_title": "Ryd færdige renderinger?",
+          "clear_body": "Dette fjerner færdige renderinger fra køen. Renderede klip bliver i Highlights, og forhåndsvisninger bliver på deres opstillinger."
+        },
+        "coverage": {
+          "current": "{count} opdaterede",
+          "missing": "{count} mangler",
+          "outdated": "{count} forældede",
+          "unrenderable": "{count} kan ikke filmes",
+          "queued": "{count} i kø",
+          "lineups": "Opstillinger",
+          "rerender_outdated": "Render forældede igen",
+          "render_missing": "Render manglende",
+          "confirm_missing_title": "Render manglende forhåndsvisninger?",
+          "confirm_outdated_title": "Render forældede forhåndsvisninger igen?",
+          "confirm_queue": "Sæt renderinger i kø",
+          "lineups_title": "Opstillinger, der mangler en rendering",
+          "lineups_sub": "Renderversion v{version}",
+          "render_one": "Render én først",
+          "render_one_waiting": "Venter på, at den rendering bliver færdig. Når den melder den nuværende version, låses Genrender forældede op."
+        },
+        "updated_ago": "Opdateret for {since} siden"
       }
     },
     "news": {
@@ -3714,7 +3962,92 @@
       "backfill_cancel_requested": "Annullering anmodet",
       "backfill_canceled_title": "Sæson-backfill annulleret",
       "backfill_complete_title": "Sæson-backfill fuldført",
-      "backfill_complete_desc": "Genopbyggede {completed} af {total} kampe ({failed} mislykkedes)."
+      "backfill_complete_desc": "Genopbyggede {completed} af {total} kampe ({failed} mislykkedes).",
+      "hero": {
+        "rebuild_required": "Kræver genopbygning",
+        "ends_in": "Slutter om",
+        "running_for": "Kørt i",
+        "days": "{count} dag | {count} dage",
+        "started": "Startede",
+        "ends": "Slutter",
+        "day_of": "Dag {day} af {total}",
+        "percent_through": "{percent} % gennemført",
+        "change_start": "Skift start",
+        "change_end": "Skift slutdato",
+        "set_end": "Angiv slutdato",
+        "make_ongoing": "Gør løbende",
+        "grant_award": "Tildel pris",
+        "one_rebuild": "Kun én genopbygning kører ad gangen.",
+        "start_caption": "UTC, starter kl. 00:00.",
+        "end_caption": "UTC, slutter kl. 00:00 den dag."
+      },
+      "off": {
+        "title": "Uden for sæson",
+        "pill": "Ingen sæson kører",
+        "last_ended": "{season} sluttede {date}.",
+        "no_season": "Kampe spillet nu tæller ikke med i nogen sæson.",
+        "next": "{season} starter {date}, om {count} dag, og nulstiller ELO for almindelige kampe til 5000. | {season} starter {date}, om {count} dage, og nulstiller ELO for almindelige kampe til 5000.",
+        "nothing": "Intet er planlagt endnu."
+      },
+      "banner": {
+        "stale": "{seasons} har forældet ELO, så stillingen er forkert, indtil den genopbygges. | {seasons} har forældet ELO, så stillingerne er forkerte, indtil de genopbygges.",
+        "rebuilding_now": "{season} genopbygges nu. Kun én genopbygning kører ad gangen."
+      },
+      "danger": {
+        "end_description": "Lukker den i dag og uddeler sæsonpriser efter den endelige stilling. Indtil næste sæson starter, tæller kampe ikke med i nogen sæson.",
+        "end_button": "Afslut sæson",
+        "delete_description": "Dens kampe kommer uden for sæson. ELO-historikken bevares; statistik pr. sæson ryddes.",
+        "delete_button": "Slet sæson",
+        "end_confirm_title": "Afslut {season} nu?",
+        "end_confirm_instead": "Den lukker i dag, {today}, i stedet for {date}.",
+        "end_confirm_today": "Den lukker i dag, {today}.",
+        "end_confirm_awards": "Sæsonpriser uddeles efter den endelige stilling: Sæsonmester, Nummer to, Nummer tre og Sæsonens MVP.",
+        "end_confirm_gap_next": "Indtil {season} starter {date}, tæller kampe ikke med i nogen sæson.",
+        "end_confirm_gap_none": "Indtil du opretter næste sæson, tæller kampe ikke med i nogen sæson.",
+        "end_confirm_elo": "ELO for almindelige kampe starter forfra på 5000, når næste sæson begynder.",
+        "type_to_confirm": "Skriv {phrase} for at bekræfte",
+        "end_confirm_button": "Afslut {season}",
+        "ended_toast": "{season} afsluttet. Sæsonpriserne uddeles efter den endelige stilling.",
+        "delete_confirm_title": "Slet {season}?",
+        "delete_confirm_button": "Slet {season}"
+      },
+      "next": {
+        "label": "Næste sæson",
+        "first_label": "Første sæson",
+        "schedule": "Planlæg {season}",
+        "hint_scheduled": "{season} er planlagt til {date}.",
+        "hint_after": "{season} slutter {date}. Intet er planlagt efter den.",
+        "hint_open_ended": "{season} har ingen slutdato, så næste sæson kræver en først.",
+        "blocked": "{season} har ingen slutdato, så enhver senere sæson ville overlappe den. Angiv dens slutdato først.",
+        "first_season_hint": "Den første sæson starter ved din tidligste registrerede kamp, {date}, så ingen tidligere kamp står uden for sæson."
+      },
+      "form": {
+        "start_date": "Startdato",
+        "end_date": "Slutdato"
+      },
+      "ledger": {
+        "label": "Sæsonlog"
+      },
+      "rebuild_progress": {
+        "label": "Genopbygger ELO · {completed} af {total} kampe",
+        "failed": "{count} mislykkedes | {count} mislykkedes",
+        "canceling": "Annullerer"
+      },
+      "empty_state": {
+        "title": "Ingen sæsoner endnu",
+        "description": "En sæson nulstiller ELO for almindelige kampe til 5000, når den starter. Den første starter ved din tidligste registrerede kamp."
+      },
+      "about": {
+        "label": "Hvad en sæson gør",
+        "reset_title": "En frisk rangliste",
+        "reset_body": "ELO for almindelige kampe nulstilles til 5.000, når en sæson starter, så alle klatrer fra samme sted.",
+        "counts_title": "Hver kamp tæller",
+        "counts_body": "Kampe spillet mellem start- og slutdatoen tæller med i dens rangliste og statistik. Kampe mellem sæsoner tæller ikke med nogen steder.",
+        "awards_title": "Priser når den slutter",
+        "awards_body": "Sæsonmester, Andenplads, Tredjeplads og Sæsonens MVP uddeles ud fra den endelige rangliste.",
+        "history_title": "Gemt i historikken",
+        "history_body": "Afsluttede sæsoner beholder deres stilling, og spillere kan sammenligne med en tidligere sæson fra deres profil."
+      }
     },
     "regions": {
       "title": "Regioner",
@@ -3733,7 +4066,58 @@
         "title": "Slet region",
         "description": "Vil du slette denne region? Handlingen kan ikke fortrydes."
       },
-      "deleted": "Region slettet"
+      "deleted": "Region slettet",
+      "list": {
+        "label": "Regioner",
+        "flag_relay": "Relay",
+        "flag_lan": "Kun LAN"
+      },
+      "status": {
+        "online": "Online",
+        "partial": "Nogle noder offline",
+        "offline": "Offline",
+        "disabled": "Ingen servere"
+      },
+      "detail": {
+        "label_aria": "Regionens etiket",
+        "nodes_label": "Noder",
+        "servers_free": "{free} af {total} servere ledige",
+        "col_node": "Node",
+        "col_free": "Ledige",
+        "col_servers": "Servere",
+        "no_nodes_title": "Ingen noder i denne region",
+        "no_nodes_hint": "Angiv en nodes region på siden {page}.",
+        "relay_title": "Brug Steam-relay",
+        "relay_description": "Spillere forbinder via Steams relay, så spilservernes IP-adresser forbliver skjulte.",
+        "relay_lan_description": "Regioner med kun LAN forbinder spillere direkte, så relay forbliver slået fra.",
+        "lan_title": "Kun LAN",
+        "lan_description": "Spillere skal forbinde fra en LAN-IP. Til fysiske events.",
+        "delete_title": "Slet region",
+        "delete_hint_nodes": "Flyt først dens {count} node til en anden region. | Flyt først dens {count} noder til en anden region.",
+        "delete_hint_empty": "Intet er tildelt den."
+      },
+      "delete_dialog": {
+        "title": "Slet {region}?",
+        "description": "Ingen noder bruger denne region. En region, hvor der er spillet kampe, kan ikke slettes. Dette kan ikke fortrydes.",
+        "confirm": "Slet region"
+      },
+      "create_sheet": {
+        "title": "Opret region"
+      },
+      "toasts": {
+        "created": "{region} oprettet",
+        "deleted": "{region} slettet",
+        "label_saved": "Etiket gemt",
+        "relay_on": "Steam-relay til for {region}",
+        "relay_off": "Steam-relay fra for {region}",
+        "lan_on": "Kun LAN til for {region}",
+        "lan_off": "Kun LAN fra for {region}"
+      },
+      "empty": {
+        "title": "Ingen regioner endnu",
+        "description": "Regioner grupperer dine spilserver-noder efter placering. Spillere vælger deres foretrukne regioner i matchmaking."
+      },
+      "search_placeholder": "Søg i regioner"
     },
     "players": {
       "title": "Spillere",
@@ -4279,7 +4663,13 @@
         "demos": "Demoafspilning",
         "demos_desc": "Demo-replay on demand",
         "rendering": "Rendering",
-        "rendering_desc": "Highlight- og klip-renders"
+        "rendering_desc": "Highlight- og klip-renders",
+        "summary": "{on} af {total} slået til",
+        "node_disabled": "Noden er deaktiveret og tager ingen GPU-opgaver.",
+        "now_streaming": "Streamer {matchup}",
+        "now_demo": "Afspiller en demo for {who}",
+        "now_render": "Renderer highlights for {who}",
+        "now_render_pct": "Renderer highlights for {who} · {pct}%"
       },
       "bake": {
         "help": "Bag nodens Vulkan-shadercache på forhånd, så første kamp starter varm.",
@@ -4292,7 +4682,11 @@
         "in_progress": "Prebake i gang",
         "stages": {
           "errored": "Bake fejlede"
-        }
+        },
+        "action": "Bag shaders",
+        "cancel": "Annullér bagning",
+        "logs": "Bagningslogs",
+        "hide_logs": "Skjul logs"
       },
       "empty": {
         "title": "Ingen GPU-noder",
@@ -4322,9 +4716,155 @@
           "demo": "Demoafspilning",
           "highlights": "Highlights",
           "bake": "Shader-bake"
-        }
+        },
+        "add_account": "Tilføj konto",
+        "col_account": "Konto",
+        "col_holding": "Bruges til",
+        "col_since": "Siden",
+        "delete_action": "Slet konto",
+        "empty_title": "Ingen Steam-konti endnu",
+        "empty_body": "Renders, demo-afspilning og live-tilskuervisning bruger hver én, mens de kører.",
+        "free": "Ledig",
+        "free_of": "{free} af {total} ledige",
+        "health_no_nodes": "Ingen GPU-noder endnu",
+        "health_empty": "Tom. Renders og live-tilskuervisning fejler, indtil du tilføjer en.",
+        "health_short": "Mangler {count}. Nogle GPU'er står ubrugte, når alle konti er i brug.",
+        "health_enough": "Nok til alle GPU'er",
+        "name": "Steam-konti",
+        "manage": "Administrer Steam-konti"
       },
-      "stop": "Stop"
+      "stop": "Stop",
+      "search_placeholder": "Søg kamp, seer, GPU, konto",
+      "open_render_queue": "Åbn render-kø",
+      "running_title": "Kører nu",
+      "running_hint": "Én forbruger pr. GPU ad gangen",
+      "running_empty_title": "Ingen GPU er i brug",
+      "running_empty_body": "Livestreams, demo-afspilning og highlight-renders vises her, mens de kører.",
+      "running_no_match": "Ingen sessioner matcher",
+      "no_match_body": "Prøv en anden søgning, eller ryd filtrene.",
+      "clear_all": "Ryd søgning og filtre",
+      "open_game_server_nodes": "Åbn gameserver-noder",
+      "gpus_title": "GPU'er",
+      "gpus_hint": "GPU-noder er gameserver-noder med en GPU",
+      "gpus_no_match": "Ingen GPU-noder matcher",
+      "no_region": "Ingen region",
+      "more_for": "Mere for {node}",
+      "open_details": "Åbn detaljer",
+      "open_in_nodes": "Åbn i gameserver-noder",
+      "accept_matches": "Tag imod nye kampe",
+      "stop_accepting": "Stop med at tage imod kampe",
+      "filter": {
+        "live": "Live",
+        "demos": "Demoer",
+        "renders": "Renders",
+        "workload_on": "Arbejdsopgave slået til",
+        "node_type": "Nodetype"
+      },
+      "kpi": {
+        "gpus_free": "Ledige GPU'er",
+        "of_total": "af {total}",
+        "running": "Kører nu",
+        "running_split": "{live} live · {demo} demo · {render} render",
+        "waiting": "Ventende renders",
+        "waiting_none": "Intet i køen",
+        "accounts_split": "{used} i brug · {free} ledige",
+        "accounts_short": "Mangler {count} mere til hver GPU",
+        "accounts_busy": "Alle er i brug. Nye opgaver venter på en ledig."
+      },
+      "wait_reason": {
+        "no_accounts": "Ingen Steam-konti i puljen",
+        "paused_for_match": "Sat på pause, mens en kamp er live",
+        "no_account_free": "Venter på en Steam-konto",
+        "no_gpu_free": "Venter på en ledig GPU"
+      },
+      "col": {
+        "workload": "Arbejdsopgave",
+        "for": "For",
+        "account": "Steam-konto",
+        "state": "Status",
+        "time": "Tid",
+        "node": "Node",
+        "load": "Belastning",
+        "vram": "VRAM",
+        "workloads": "Arbejdsopgaver"
+      },
+      "kind": {
+        "live_tv": "Livestream (GOTV)",
+        "live_direct": "Livestream (direkte)",
+        "demo": "Demo-afspilning",
+        "highlights": "Highlight-render",
+        "bake": "Shader-forbagning"
+      },
+      "who": {
+        "spectators": "Tilskuere",
+        "warming_cache": "Varmer Vulkan-cachen op"
+      },
+      "state": {
+        "starting": "Starter",
+        "playing": "Afspiller",
+        "failed": "Mislykkedes"
+      },
+      "node_state": {
+        "setup": "Sættes op",
+        "streaming": "Streamer",
+        "playing": "Afspiller en demo",
+        "baking": "Bager shaders",
+        "offline_since": "Offline siden {time}"
+      },
+      "node_kind": {
+        "gpu": "Kun GPU",
+        "match": "Kamp + GPU"
+      },
+      "sheet": {
+        "now": "Nu",
+        "shader_cache": "Shader-cache",
+        "idle_ready": "Klar til livestreams, demo-afspilning og renders.",
+        "unavailable": "Tager ikke GPU-arbejde, før den er slået til og online.",
+        "no_metrics": "Ingen GPU-målinger, mens noden er slået fra, offline eller ved at blive sat op.",
+        "bake_failed_hint": "Den seneste bagning mislykkedes. Prøv igen, eller læs logs.",
+        "cache_warm": "Varm",
+        "never_baked": "Aldrig bagt. Den første stream på denne node kompilerer shaders undervejs."
+      },
+      "stop_copy": {
+        "keep": "Lad den køre",
+        "live_title": "Stop livestreamen af {matchup}?",
+        "live_body": "Seerne mister streamen. Selve kampen fortsætter.",
+        "live_action": "Stop stream",
+        "demo_title": "Stop {who}s demo-afspilning?",
+        "demo_body": "Afspilleren lukker. Den kan startes igen, når en GPU er ledig.",
+        "demo_action": "Stop afspilning",
+        "render_title": "Stop highlight-renderen for {who}?",
+        "render_body": "Den stopper og frigør GPU'en.",
+        "render_body_pct": "Den stopper ved {pct} % og frigør GPU'en.",
+        "render_action": "Stop render"
+      },
+      "toggle_gpu_only_help": "Tager kun GPU-arbejde, ingen kampservere. Når den slås til, ryddes dens region og porte.",
+      "plate": {
+        "temperature": "Temperatur",
+        "power": "Strømforbrug",
+        "vram_of": "{used} af {total} GB",
+        "hot": "Kører varmt, over {limit} °C",
+        "too_hot": "For varm, over {limit} °C",
+        "no_reading": "Ingen live-måling",
+        "cards": "{count} kort | {count} kort"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "Slå live streaming til",
+          "demos": "Slå demoafspilning til",
+          "rendering": "Slå rendering til"
+        },
+        "turn_off": {
+          "streaming": "Slå live streaming fra",
+          "demos": "Slå demoafspilning fra",
+          "rendering": "Slå rendering fra"
+        },
+        "confirm_body": {
+          "streaming": "Streamen kører videre. Denne GPU tager ingen nye streams, før den slås til igen.",
+          "demos": "Afspilningen kører videre. Denne GPU tager ingen nye demoer, før den slås til igen.",
+          "rendering": "Renderingen kører videre. Denne GPU tager ingen nye renders, før den slås til igen."
+        }
+      }
     },
     "game_server_nodes": {
       "title": "Game server nodes",
@@ -4492,12 +5032,14 @@
         "no_nodes": "Ingen game server nodes",
         "supports_low_latency": "Understøtter lav latency",
         "supports_cpu_pinning": "Understøtter CPU-pinning",
-        "cpu_governor": "CPU-governor"
+        "cpu_governor": "CPU-governor",
+        "servers": "Servere",
+        "servers_tooltip": "Ledige servere, total i parentes",
+        "cs2_build": "CS2-build",
+        "plugin": "Plugin",
+        "load": "Belastning"
       },
       "builds": {
-        "title": "CS2-buildhistorik",
-        "description": "Gamedata-validering og builds af kortressourcer for hver CS2-build, og hvad hver enkelt ændrede i forhold til den forrige build.",
-        "back": "Game server nodes",
         "builds": "Builds",
         "no_builds": "Ingen build er valideret eller bygget endnu.",
         "current": "Aktuel",
@@ -4507,11 +5049,271 @@
           "detected": "Opdatering udgivet",
           "gamedata": "Gamedata",
           "map_assets": "Kortressourcer"
-        }
+        },
+        "empty_title": "Ingen builds endnu"
       },
       "max_label": "Maks.:",
       "ports_label": "Porte:",
-      "cpu_hardware": "CPU og hardware"
+      "cpu_hardware": "CPU og hardware",
+      "gpu_only": "Kun GPU",
+      "create_node": "Opret game server node",
+      "search_placeholder": "Søg efter navn eller ID",
+      "filters": {
+        "only_enabled": "Kun aktive noder",
+        "hide_offline": "Skjul offline noder",
+        "display_metrics": "Vis metrikker"
+      },
+      "empty": {
+        "title": "Ingen game server nodes",
+        "description": "En node er en maskine, der kører CS2-servere for 5Stack. Kør setup-scriptet på den, så dukker den op her.",
+        "guide": "Læs opsætningsguiden"
+      },
+      "summary": {
+        "nodes": "{count} node | {count} noder",
+        "online": "{count} online",
+        "free": "{free} af {total} servere ledige",
+        "attention": "{count} kræver opmærksomhed | {count} kræver opmærksomhed",
+        "updating": "{count} opdateres"
+      },
+      "row": {
+        "select": "Vælg {node}",
+        "select_all": "Vælg alle noder",
+        "servers_tip": "{free} af {total} ledige · plads til {max}",
+        "not_installed": "Ikke installeret"
+      },
+      "detail": {
+        "hardware_pending": "Hardware rapporteres, når noden har forbindelse.",
+        "disk_value": "{percent}% brugt, {free} GB ledig",
+        "game_server": "Game server",
+        "node_id": "Node-ID",
+        "addresses": "LAN / offentlig IP",
+        "available_value": "{free} af {total}",
+        "control": "Styring",
+        "update_log": "CS2-opdateringslog"
+      },
+      "metrics": {
+        "setup": "Metrikker vises, når noden har forbindelse.",
+        "offline": "Ingen live-data, mens noden er offline."
+      },
+      "toast": {
+        "region_updated": "Region opdateret",
+        "save_failed": "Ændringen kunne ikke gemmes"
+      },
+      "bulk": {
+        "selected": "{count} valgt",
+        "progress": "{done} af {total}",
+        "move_region": "Flyt til region",
+        "enable": "Aktivér",
+        "disable": "Deaktivér",
+        "updating": "Opdaterer CS2 på {count} node | Opdaterer CS2 på {count} noder",
+        "moved": "Flyttede {count} node til {region} | Flyttede {count} noder til {region}",
+        "unassigned": "Fjernede regionen fra {count} node | Fjernede regionen fra {count} noder",
+        "enabled": "Aktiverede {count} node | Aktiverede {count} noder",
+        "disabled": "Deaktiverede {count} node | Deaktiverede {count} noder",
+        "failed": "{count} mislykkedes | {count} mislykkedes"
+      },
+      "inspector": {
+        "status": {
+          "setup": "Venter på forbindelse",
+          "offline_since": "Offline siden {time}",
+          "not_accepting": "Online, tager ikke imod nye kampe"
+        },
+        "search_placeholder": "Søg efter navn, ID eller IP",
+        "keys": {
+          "move": "flyt",
+          "select": "klik for at vælge flere",
+          "close": "luk",
+          "idle": "Vælg en node for at se detaljer"
+        },
+        "details": "Nodedetaljer",
+        "capacity_tip": "Ledige servere ud af det samlede antal, dens porte tillader. Portintervallet står nedenunder.",
+        "cap_free": "{free} af {total} ledige",
+        "cap_no_ports": "Ingen porte",
+        "chip": {
+          "updating": "Opdaterer",
+          "updating_pct": "Opdaterer {percent}%",
+          "failed": "Opdatering mislykkedes",
+          "behind": "Bagud",
+          "pinned": "Fastlåst",
+          "failed_tip": "Opdatering til {target} mislykkedes {ago}. Stadig på {version}.",
+          "behind_tip": "På {version}. Opdater til {target}.",
+          "pinned_tip": "Fastlåst til {version}"
+        },
+        "load": {
+          "mem": "Hukom.",
+          "disk": "Disk"
+        },
+        "disk_tip": "Disk: {used} af {total} brugt, {free} ledig",
+        "actions_for": "Handlinger for {node}",
+        "menu": {
+          "select": "Vælg til massehandlinger",
+          "deselect": "Fjern fra markering",
+          "rename": "Rediger navn"
+        },
+        "more": "{count} mere",
+        "remove": "Fjern node",
+        "remove_text": "Fjerner noden og alle dedikerede servere på den fra 5Stack.",
+        "rename": "Omdøb {node}",
+        "label": "Nodens navn",
+        "close": "Luk detaljer",
+        "close_hint": "Luk (Esc)",
+        "step": {
+          "enable": "Aktivér node",
+          "retry_update": "Prøv opdatering igen",
+          "assign_region": "Tildel region",
+          "set_ports": "Angiv porte",
+          "change_plugin": "Skift plugin",
+          "edit_ports": "Rediger porte",
+          "open_files": "Åbn filer"
+        },
+        "attention": {
+          "setup": "Kør opsætningsscriptet på maskinen. Den vises som online, når den forbinder.",
+          "offline": "Der planlægges ingen kampe her, før den forbinder igen.",
+          "update_failed_title": "CS2-opdatering mislykkedes {ago}",
+          "update_failed": "Opdateringslogs gemmes i 24 timer.",
+          "overprovisioned": "{total} servere på dens porte, men CPU'en har plads til {max}.",
+          "plugin": "Det fastlåste plugin understøtter ikke build {build}.",
+          "not_ready_title": "Kan ikke være vært for kampe endnu",
+          "not_ready": "Mangler {list}.",
+          "behind_title": "CS2 {version} er bagud",
+          "behind": "Opdater til {target}.",
+          "cpu_title": "CPU kører {ghz} GHz",
+          "cpu": "Under 3 GHz kan skade CS2-serverens ydelse.",
+          "governor_title": "CPU-governor er {governor}",
+          "disk_title": "Disken er {percent}% fuld",
+          "disk": "{free} ledig.",
+          "cpu_warning": "Rapporteret af noden.",
+          "workloads_title": "Nogle GPU-opgaver er slået fra",
+          "workloads": "{list} slået fra.",
+          "disabled": "Intet GPU-arbejde og ingen kampplanlægning, mens den er slået fra."
+        },
+        "need": {
+          "region": "en region",
+          "ports": "porte",
+          "cs2": "CS2"
+        },
+        "sections": {
+          "cs2": "CS2 og plugins"
+        },
+        "capacity": {
+          "gpu_only": "Kun GPU, så den er ikke vært for kampe. Skift tilbage under GPU.",
+          "max_servers": "Maks. servere",
+          "max_tip": "{threads} CPU-tråde, minus 1 til systemet",
+          "max_tip_pinning": "{threads} CPU-tråde, minus 1 til systemet, {per} pr. server",
+          "max_tip_pending": "Beregnes ud fra CPU'en, når noden forbinder",
+          "below": "Under de {total} på dens porte",
+          "servers_no_ports": "Angiv porte for at være vært for servere",
+          "servers_disabled": "Ingen, mens den er deaktiveret",
+          "servers_offline": "Ukendt, mens den er offline"
+        },
+        "ports": {
+          "tip": "Portintervallet, der videresendes til denne node. Hver server bruger to porte.",
+          "not_set": "Ikke angivet",
+          "need_region": "Tildel en region, før du angiver porte.",
+          "start": "Startport",
+          "end": "Slutport",
+          "hint": "Mellem 30000 og 32767. Hver server bruger to porte.",
+          "fit": "{count} server passer i dette interval. | {count} servere passer i dette interval.",
+          "fit_over": "{count} servere passer, men CPU'en har plads til {max}.",
+          "error_range": "Portene skal ligge mellem 30000 og 32767.",
+          "error_order": "Slutporten skal ligge mindst 2 over startporten.",
+          "save": "Gem porte",
+          "remove": "Fjern porte"
+        },
+        "cs2": {
+          "setup": "Installer CS2, når noden forbinder.",
+          "gpu_only": "Rene GPU-noder kører ikke CS2-servere.",
+          "to": "til {version}",
+          "plugin_unsupported": "Ikke understøttet",
+          "update_log": "Opdateringslog",
+          "behind_line": "build {build}, opdater til {target}",
+          "failed_line": "{ago} · stadig på build {build}",
+          "build_line": "build {build}",
+          "on_build": "på build {build}",
+          "pinning_unsupported": "Fastlåsning understøttes ikke"
+        },
+        "hardware": {
+          "cores": "Kerner",
+          "sockets": "({count} sokkel) | ({count} sokler)",
+          "threads": "Tråde/kerne",
+          "threads_total": "({count} i alt)",
+          "governor": "Governor",
+          "low_latency": "Lav latens",
+          "pinning": "CPU-pinning",
+          "supported": "Understøttet",
+          "governor_tip": "Hvordan CPU'en skalerer sin clock. Performance-governor holder kernerne på fuld fart og anbefales til CS2.",
+          "latency_tip": "En low-latency-kerne mindsker planlægningsjitter for spilservere.",
+          "pinning_tip": "Låser hver server til sine egne CPU-kerner, så serverne ikke konkurrerer om dem."
+        },
+        "range_label": "Interval for målinger",
+        "range": {
+          "1h": "1 t"
+        },
+        "of_total": "af {total}",
+        "now": "Nu",
+        "last_report": "Seneste rapport {time}",
+        "live_offline": "Ingen live-data, mens den er offline. Seneste rapport kl. {time}.",
+        "history_offline": "Ingen live-data, mens den er offline. Historikken går til {time}.",
+        "offline_for": "Offline {duration}",
+        "chart": {
+          "label": "Målingshistorik. Venstre og højre pil går gennem tiden, Shift går ti ad gangen.",
+          "avg_peak": "gns. {avg}% · top {peak}%",
+          "peak": "top {peak}",
+          "in": "Ind",
+          "out": "Ud",
+          "in_out": "Ind {in} · Ud {out}",
+          "caption": "Seneste time, en måling hvert 30. sekund.",
+          "starts": "Historikken starter kl. {time}.",
+          "gaps": "Brud i linjerne er tid offline.",
+          "cadence": "En måling hvert {seconds}. sekund."
+        },
+        "disk": {
+          "last_report": "Disk · seneste rapport",
+          "filling_up": "Fyldes op",
+          "almost_full": "Næsten fuld",
+          "used_of": "{used} af {total}",
+          "thresholds": "Advarer ved {warning}%, alarmerer ved {critical}%",
+          "free": "{free} ledig",
+          "up": "Op med {amount} den seneste time",
+          "down": "Ned med {amount} den seneste time",
+          "flat": "Ingen reel ændring den seneste time",
+          "full_hours": "fuld om ca. {count} t",
+          "full_days": "fuld om ca. {count} dag | fuld om ca. {count} dage",
+          "of_used": "af {total} brugt"
+        },
+        "gpu": {
+          "video": "Videoindstillinger",
+          "custom": "Tilpasset"
+        },
+        "node": {
+          "accepting": "Tager imod kampe",
+          "accepting_setup": "Tilgængelig, når den forbinder.",
+          "accepting_no_ports": "Angiv porte først.",
+          "limiter": "Demo-begrænser",
+          "limiter_tip": "Demo-netværksbegrænser: hastighedsgrænsen for download af demofiler fra denne node.",
+          "copy_id": "Kopiér node-ID",
+          "ips_pending": "Rapporteres, når den forbinder"
+        },
+        "bulk": {
+          "title": "{count} node valgt | {count} noder valgt",
+          "hint": "{modifier}-klik på en række for at tilføje eller fjerne den, Shift-klik for et interval",
+          "apply": "Anvend på alle",
+          "note": "Opdater CS2 springer noder over, der er offline, opdaterede eller allerede opdaterer. Rene GPU-noder har ingen region.",
+          "selected": "Valgt",
+          "drop": "Fjern {node} fra markeringen",
+          "clear": "Ryd markering"
+        },
+        "warning": {
+          "lowlatency": "Ældre lowlatency-kerne",
+          "constrained": "{name} er CPU-begrænset",
+          "governor": "Governor er {governor} med CPU-pinning slået til",
+          "from_node": "{count} advarsel fra noden | {count} advarsler fra noden",
+          "docs": "Dokumentation",
+          "details": "Detaljer"
+        },
+        "window_minutes": "Seneste {count} minut | Seneste {count} minutter",
+        "window_hours": "Seneste {count} time | Seneste {count} timer"
+      }
     },
     "dedicated_servers": {
       "title": "Dedikerede servere",
@@ -4519,9 +5321,7 @@
       "docs_link": "Se opsætningsguide",
       "no_servers_title": "Ingen dedikerede servere",
       "no_servers": "Ingen dedikerede servere fundet.",
-      "create": {
-        "title": "Opret dedikeret server"
-      },
+      "create": {},
       "table": {
         "connection_details": "Forbindelsesdetaljer",
         "label": "Label",
@@ -4532,7 +5332,6 @@
       },
       "detail": {
         "enabled": "Aktiv",
-        "eyebrow": "Dedikeret server",
         "tabs": {
           "overview": "Oversigt",
           "players": "Spillere",
@@ -4542,14 +5341,9 @@
         },
         "status_label": {
           "connected": "Forbundet",
-          "disconnected": "Afbrudt",
           "hibernating": "I dvale",
-          "no_rcon": "Ingen RCON",
-          "version_mismatch": "Versionsuoverensstemmelse"
+          "no_rcon": "Ingen RCON"
         },
-        "server_plugin_config": "Konfiguration af serverplugin",
-        "hide_config": "Skjul konfiguration",
-        "show_config": "Vis konfiguration",
         "config_location": "Denne konfiguration skal placeres i:",
         "files": "Filer",
         "player_management": "Spillerstyring",
@@ -4573,13 +5367,7 @@
           "disconnected": "Serveren er afbrudt",
           "hibernating": "Serveren er i dvale, indtil en spiller forbinder",
           "no_rcon": "Serveren er forbundet, men RCON er ikke tilgængelig",
-          "connected": "Serveren er forbundet, og RCON er tilgængelig",
-          "plugin_version_mismatch": "pluginversionen er ikke opdateret"
-        },
-        "delete_confirm": {
-          "title": "Slet serveren?",
-          "description": "Handlingen kan ikke fortrydes. Serveren slettes permanent, og tilhørende data fjernes fra vores servere.",
-          "continue": "Fortsæt"
+          "connected": "Serveren er forbundet, og RCON er tilgængelig"
         },
         "save_restart": "Gem og genstart",
         "map_rotation": {
@@ -4698,8 +5486,6 @@
           }
         },
         "move": {
-          "menu": "Flyt til en anden node",
-          "title": "Flyt til en anden node",
           "description": "Serveren stopper på {node}, dens filer kopieres til den nye node, og den starter igen der.",
           "source_offline": "{node} er offline, så serverens filer kan ikke kopieres. Den starter på den nye node med standardindstillinger, og alt, der er tilbage på {node}, bliver liggende der.",
           "without_files": "Flyt uden serverens filer",
@@ -4707,7 +5493,6 @@
           "no_nodes": "Der er ingen andre game server noder",
           "free_slots": "Ledige pladser: {count}",
           "free_disk": "{size} ledig",
-          "confirm": "Flyt server",
           "started": "Flytter {server} til {node}",
           "warning": {
             "address": "Serveren får en ny adresse på den nye node.",
@@ -4723,7 +5508,9 @@
             "updating": "Opdaterer CS2",
             "no_build": "{game} er ikke installeret",
             "no_slot": "Ingen ledige serverpladser"
-          }
+          },
+          "dialog_title": "Flyt til en anden node",
+          "confirm_move": "Flyt server"
         },
         "migration": {
           "title": {
@@ -4744,12 +5531,71 @@
           "progress": "{done} af {total} ({percent}%)",
           "without_files": "uden filer",
           "restored": "Serveren er tilbage på {node}.",
-          "cancel": "Annuller flytning",
           "cancel_requested": "Annullerer flytningen",
           "dismiss": "Luk",
-          "locked": "Serveren flyttes til en anden node. Prøv igen, når flytningen er færdig."
-        }
-      }
+          "locked": "Serveren flyttes til en anden node. Prøv igen, når flytningen er færdig.",
+          "cancel_move": "Annuller flytning"
+        },
+        "plugin_tag": "Plugin v{version}",
+        "plugin_config": "Konfiguration af serverplugin",
+        "show_plugin_config": "Vis konfiguration",
+        "hide_plugin_config": "Skjul konfiguration"
+      },
+      "clear_all": "Ryd søgning og filtre",
+      "col_hosting": "Hosting",
+      "col_players": "Spillere",
+      "col_plugin": "Plugin",
+      "col_ports": "Porte",
+      "col_server": "Server",
+      "copied": "{value} kopieret",
+      "copy_address": "Kopiér adresse",
+      "create_server": "Opret server",
+      "delete_body_external": "Den fjernes fra 5Stack og får ikke flere kampe. Selve maskinen kører videre. Det kan ikke fortrydes.",
+      "delete_body_node": "Den fjernes fra 5Stack og lukkes ned på {node}. Det kan ikke fortrydes.",
+      "delete_server": "Slet server",
+      "delete_title": "Slet {label}?",
+      "deleted_toast": "{label} slettet",
+      "disable_server": "Deaktiver server",
+      "disabled_hidden": "{count} deaktiveret skjult | {count} deaktiverede skjult",
+      "disabled_toast": "{label} deaktiveret. Den tager ikke længere kampe og offentligt spil.",
+      "empty_title": "Ingen dedikerede servere endnu",
+      "enable_server": "Aktivér server",
+      "enabled_for": "Aktiveret: {label}",
+      "enabled_toast": "{label} aktiveret",
+      "external": "Ekstern",
+      "facet_host": "Vært",
+      "filter_label": "Filtrer servere",
+      "more_for": "Mere for {label}",
+      "node_tag": "node",
+      "open": "Åbn",
+      "open_console": "Åbn konsol",
+      "open_node": "Åbn i spilservernoder",
+      "page_of": "Side {page} af {pages}",
+      "plugin_current": "v{version} (aktuel)",
+      "plugin_outdated_tip": "Pluginversionen er ikke opdateret. v{version} er den aktuelle.",
+      "ports_tip": "Spilport (TV-port)",
+      "search_placeholder": "Søg navn, adresse, vært",
+      "servers_word": "server | servere",
+      "setup_guide": "Opsætningsguide",
+      "show_them": "Vis dem",
+      "states": {
+        "attention": "Kræver opmærksomhed",
+        "offline": "Offline",
+        "inuse": "I brug",
+        "ready": "Klar",
+        "hibernating": "I dvale",
+        "disabled": "Deaktiveret"
+      },
+      "status_in_match": "I en kamp",
+      "status_offline_since": "Offline siden {time}",
+      "status_playing": "{count} spiller",
+      "status_plugin_outdated": "Plugin forældet",
+      "tip_disabled": "Bruges ikke til kampe eller offentligt spil.",
+      "join_server": "Tilslut server",
+      "new_server": "Ny server",
+      "create_on_node": "Kører på {node}",
+      "create_at_host": "Kører på {address}",
+      "create_pick_place": "Vælg, hvor den kører"
     },
     "public_servers": {
       "title": "Offentlige servere",
@@ -5113,6 +5959,216 @@
         "execution_plan": "Eksekveringsplan",
         "no_explain_plan": "EXPLAIN-plan kunne ikke genereres for denne query",
         "not_found": "Query-detaljer blev ikke fundet"
+      },
+      "explorer": {
+        "active_backends": "Aktive backends",
+        "active_queries": "Aktive queries",
+        "active_queries_hint": "Alle sessioner, der ikke er inaktive, længste først",
+        "active_waiting": "{active} aktive · {waiting} venter",
+        "activity": "Aktivitet",
+        "all_connections": "Alle forbindelser",
+        "all_indexes_scanned": "Alle indekser er blevet scannet",
+        "all_indexes_scanned_hint": "Intet indeks i denne udvælgelse har været ubrugt, siden statistikken blev nulstillet.",
+        "all_statements": "Alle statements",
+        "avg_ms": "gns. {ms} ms",
+        "avg_ms_col": "Gns. (ms)",
+        "avg_time": "Gns. tid",
+        "back_to_overview": "Tilbage til oversigt",
+        "background_jobs": "Baggrundsjobs",
+        "blocks_hit": "Blok-hits",
+        "blocks_read": "Blokke læst",
+        "buffer_statistics": "Bufferstatistik",
+        "by_state": "Efter tilstand",
+        "cache_hit": "Cache hit",
+        "cache_hit_pct": "Cache hit-%",
+        "cache_hit_ratio": "Cache hit-ratio",
+        "calls_count": "{count} kald | {count} kald",
+        "conflicts": "Konflikter",
+        "copy_name": "Kopiér navn",
+        "copy_query": "Kopiér query",
+        "copy_statement": "Kopiér {sql}",
+        "count": "Antal",
+        "current_locks": "Aktuelle locks",
+        "database_statistics": "Databasestatistik",
+        "dead_pct": "Døde %",
+        "dead_pct_tip": "Døde rækker som andel af alle tabellens rækker. Markeres, når en tabel har mere end 10.000 døde rækker.",
+        "dead_share": "{pct} % af rækkerne døde · ca. {size}",
+        "dead_tuple_size": "Størrelse på døde tupler",
+        "dead_tuples": "Døde tupler",
+        "deadlocks_tip": "Talt siden statistikken sidst blev nulstillet.",
+        "deletes": "Sletninger",
+        "every_seconds": "Hver {seconds} s",
+        "every_table": "Alle tabeller",
+        "every_table_hint": "Størrelse, bloat og cache samlet ét sted. Klik på en række for at åbne den.",
+        "execution_plan": "Eksekveringsplan",
+        "execution_times": "Eksekveringstider (ms)",
+        "fetched": "Hentet",
+        "filter_query_text": "Filtrer efter query-tekst",
+        "find_schema": "Find et schema",
+        "find_table": "Find en tabel eller et indeks",
+        "heap_hits": "Heap-hits",
+        "heap_reads": "Heap-læsninger",
+        "heap_reads_count": "{count} heap-læsninger",
+        "held_none_waiting": "{count} holdt, ingen venter | {count} holdt, ingen venter",
+        "hot_count": "{count} HOT",
+        "hot_updates": "HOT-opdateringer",
+        "hot_updates_tip": "Opdateringer, der ikke behøvede at røre noget indeks.",
+        "hypertable_name": "Hypertable-navn",
+        "hypertable_note": "Rækkerne ligger i chunks under {schema}, så denne overordnede tabel rapporterer ingen egne rækker.",
+        "hypertable_tag": "hypertable",
+        "idle_in_txn": "Inaktiv i transaktion",
+        "idle_in_txn_tip": "Holder en transaktion åben uden at lave noget. Det forhindrer vacuum i at rydde op og kan holde på locks.",
+        "idx_scans": "Indeksscanninger",
+        "idx_scans_fetched": "Indeksscanninger (hentede tupler)",
+        "idx_tup_fetch": "Hentede indekstupler",
+        "in_indexes": "{size} i indekser",
+        "index_hits": "Indeks-hits",
+        "index_io": "Indeks-I/O",
+        "index_reads": "Indekslæsninger",
+        "index_scans": "Indeksscanninger",
+        "index_scans_tip": "Andel af scanninger, der brugte et indeks i stedet for at læse hele tabellen.",
+        "index_size": "Indeksstørrelse",
+        "index_usage": "Indeksbrug",
+        "indexes": "Indekser",
+        "indexes_hint": "Brug og cache-hits samlet",
+        "inserts": "Indsættelser",
+        "io": "I/O",
+        "io_buffers": "I/O og buffere",
+        "job_id": "Job-ID",
+        "job_type": "Jobtype",
+        "last_analyze": "Seneste analyze",
+        "last_autoanalyze": "Seneste autoanalyze",
+        "last_autovacuum": "Seneste autovacuum",
+        "last_run_status": "Seneste kørsel",
+        "last_vacuum": "Seneste vacuum",
+        "live": "Levende",
+        "live_tuples": "Levende tupler",
+        "local": "lokal",
+        "local_blocks_hit": "Local blocks hit",
+        "local_blocks_read": "Local blocks læst",
+        "lock_type": "Lock-type",
+        "locks_on_table": "Locks på denne tabel",
+        "locks_transactions": "Locks og transaktioner",
+        "maintenance": "Vedligeholdelse",
+        "max_ms_col": "Maks. (ms)",
+        "max_ms_paren": "(maks. {ms})",
+        "max_time": "Maks. tid",
+        "max_value": "maks. {ms}",
+        "min_calls": "Min. kald",
+        "min_value": "min. {ms}",
+        "n_failed": "{count} fejlede",
+        "n_of_m_statements": "{n} af {m} statements",
+        "n_waiting": "{count} venter",
+        "name_copied": "Tabelnavn kopieret",
+        "needs_attention": "Kræver opmærksomhed",
+        "never_scanned": "Aldrig scannet",
+        "next_start": "Næste kørsel",
+        "no_active_hint": "Alle forbindelser er inaktive.",
+        "no_backups_hint": "Backups vises her efter den første planlagte kørsel.",
+        "no_backups_title": "Ingen databasebackups",
+        "no_connections_hint": "Intet er forbundet til denne database.",
+        "no_indexes": "Ingen indekser",
+        "no_indexes_hint": "Tabellen har ingen indekser, så hver læsning scanner hele tabellen.",
+        "no_indexes_hyper": "En hypertables indekser ligger på hver af dens chunks.",
+        "no_jobs_hint": "TimescaleDB har ingen planlagte jobs.",
+        "no_jobs_title": "Ingen baggrundsjobs",
+        "no_locks_hint": "Intet holder et lock lige nu.",
+        "no_locks_on_table": "Intet holder et lock på den lige nu.",
+        "no_plan": "Der kunne ikke genereres en eksekveringsplan for denne query.",
+        "no_reads_hint": "De valgte schemas har ingen registrerede læsninger.",
+        "no_schemas": "Ingen schemas",
+        "no_schemas_hint": "Vælg mindst ét schema for at se dets tabeller.",
+        "no_schemas_title": "Ingen schemas valgt",
+        "no_slow_hint": "Intet har i gennemsnit eller på sit højeste ligget over {threshold}, siden statistikken blev nulstillet.",
+        "no_slow_title": "Ingen langsomme statements",
+        "no_statements_for_table": "Intet registreret statement nævner denne tabel.",
+        "no_statements_match": "Ingen statements matcher",
+        "no_statements_match_hint": "Intet, der er kaldt mindst {min} gange, matcher filteret.",
+        "no_statements_yet": "pg_stat_statements har ikke registreret noget endnu.",
+        "no_stats_hint": "pg_stat_statements fyldes op, mens appen kører queries, og tømmes, når statistikken nulstilles.",
+        "no_table_matches": "Ingen tabel eller indeks matcher «{find}».",
+        "no_tables_hint": "De valgte schemas har ingen tabeller.",
+        "no_tables_title": "Ingen tabeller",
+        "no_timescale_title": "Ingen TimescaleDB-data",
+        "nothing_matches": "Intet i denne udvælgelse matcher.",
+        "objects": "Databaseobjekter",
+        "off": "Fra",
+        "on": "Til",
+        "on_disk": "{size} på disk",
+        "open_connections": "Åbne forbindelser",
+        "over_threshold": "Over {threshold}",
+        "overview": "Oversigt",
+        "overview_hint": "PostgreSQL-database · tællere siden seneste nulstilling af statistik",
+        "pause_refreshing": "Sæt opdatering på pause",
+        "pct_of_table": "% af tabel",
+        "pid_actions": "Handlinger for pid {pid}",
+        "query_details": "Query-detaljer",
+        "query_not_found": "Query-detaljer blev ikke fundet",
+        "query_performance": "Query-ydelse",
+        "range_hint": "Logaritmisk skala · båndet er middel ± std.afv.",
+        "reclaimable": "Genvindbar",
+        "reclaimable_tip": "Estimeret ud fra døde tupler. VACUUM gør pladsen genbrugelig; kun VACUUM FULL eller pg_repack giver den tilbage til disken.",
+        "refresh_every": "Opdater hver",
+        "resume_refreshing": "Genoptag opdatering",
+        "rollbacks_count": "{count} rollbacks",
+        "running_now": "Kører nu",
+        "scans": "Scanninger",
+        "schema_count": "{count} schema | {count} schemas",
+        "search_indexes": "Søg indekser",
+        "seq_scans": "Seq-scanninger",
+        "seq_scans_read": "Seq-scanninger (læste tupler)",
+        "seq_tup_read": "Læste seq-tupler",
+        "sequential_count": "{count} sekventielle",
+        "server": "Server",
+        "share_of_time": "Andel af tid",
+        "share_of_time_tip": "Dette statements samlede eksekveringstid som andel af alle viste statements.",
+        "shared_blocks_hit": "Shared blocks hit",
+        "shared_blocks_read": "Shared blocks læst",
+        "size": "Størrelse",
+        "size_on_disk": "Størrelse på disk",
+        "slow_avg": "{count} statement ligger i gennemsnit over {threshold} | {count} statements ligger i gennemsnit over {threshold}",
+        "slow_avg_none": "Intet statement ligger i gennemsnit over {threshold}",
+        "slow_max": "{count} kørte over {threshold} mindst én gang | {count} kørte over {threshold} mindst én gang",
+        "slow_over": "Langsom over",
+        "slow_running_many": "{count} queries kører lige nu over {threshold}, længste {duration}",
+        "slow_running_one": "1 query har kørt i {duration}",
+        "slow_threshold": "Grænse for langsomme queries",
+        "started": "Startet",
+        "statement_copied": "Statement kopieret til udklipsholderen",
+        "statements_to_run": "Statements, du selv kan køre",
+        "statements_touching": "Statements, der rører den",
+        "statements_touching_hint": "Fra pg_stat_statements, matchet på tabelnavnet. Over {threshold} først.",
+        "statistics": "Statistik",
+        "std_dev": "Std.afv.",
+        "table_and_indexes": "{table} tabel · {indexes} indekser",
+        "table_io": "Tabel-I/O",
+        "table_maintenance": "Tabelvedligeholdelse",
+        "table_not_found": "Tabellen blev ikke fundet",
+        "table_not_found_hint": "Den kan være slettet, eller dens schema er ikke valgt.",
+        "table_size": "Tabelstørrelse",
+        "table_storage": "Tabellagring",
+        "temp_blocks": "Temp-blokke",
+        "temp_blocks_tip": "Blokke skrevet til disk, fordi work_mem var for lille til en sortering eller hash.",
+        "temp_blocks_written": "Temp-blokke skrevet",
+        "terminate_warning": "Afslutning lukker sessionen og ruller dens transaktion tilbage.",
+        "total_chunks": "Chunks i alt",
+        "total_rows": "Rækker i alt",
+        "total_size": "Samlet størrelse",
+        "total_time": "Samlet tid",
+        "tuples_deleted": "Slettede tupler",
+        "tuples_fetched": "Hentede tupler",
+        "tuples_inserted": "Indsatte tupler",
+        "tuples_read": "Læste tupler",
+        "tuples_returned": "Returnerede tupler",
+        "tuples_updated": "Opdaterede tupler",
+        "updates": "Opdateringer",
+        "view_all_slow": "Se alle langsomme queries",
+        "wait_event": "Wait event",
+        "wait_event_type": "Wait event-type",
+        "waiting_on_lock": "venter på et lock",
+        "waiting_tip": "Sessioner, der venter på et lock.",
+        "worth_a_look": "Værd at kigge på",
+        "zero_unused": "0 · ubrugt"
       }
     },
     "events": {
@@ -5321,6 +6377,54 @@
         "tournaments_hint": "Kampe spillet som en del af en turneringsplan, rangerede eller ej.",
         "custom": "Brugerdefinerede kampe",
         "custom_hint": "Alt andet: kampe der ikke tæller med nogen steder."
+      },
+      "store": {
+        "open_aria": "Åbn {name}",
+        "verified_hint": "Verificeret af registrets vedligeholdere",
+        "custom_hint": "Tilføjet her. Ingen har gennemgået det.",
+        "guidelines_hint": "Servere, der indlæser det, starter med Valves serverretningslinjer slået fra.",
+        "on_panel": "På dit panel",
+        "panel_host": "Udrullet på din panelvært",
+        "set_up": "Opsæt",
+        "no_build": "Intet {runtime}-build",
+        "only": "Kun {runtimes}",
+        "add_node": "Tilføj en spilservernode for at installere det",
+        "found_on_disk": "Fundet på disken",
+        "found_on_disk_hint": "Lagt ind manuelt. Det indlæses på alle servere uanset tilstand.",
+        "manage_here": "Administrer det her",
+        "install_title": "Installer {name} {version}",
+        "failed_on": "Fejlede på {node}",
+        "failed_on_nodes": "Fejlede på {count} node | Fejlede på {count} noder",
+        "install_failed": "Installation fejlede",
+        "installing_on": "Installerer på {installed} af {total} noder",
+        "waiting_nodes": "Venter på en online node",
+        "pinned_at": "Fastlåst på {version}",
+        "update_to": "Opdater til {version}",
+        "filter_kind": "Type",
+        "filter_review": "Gennemgang",
+        "verified_only": "Kun verificerede",
+        "runtime": "Runtime",
+        "needs_attention": "Kræver opmærksomhed",
+        "empty_installed_title": "Intet installeret endnu",
+        "empty_installed_hint": "Installer et plugin fra Alle, så henter alle noder det.",
+        "empty_title": "Ingen plugins matcher",
+        "installing_toast": "Installerer {name} på alle online noder",
+        "retry_toast": "Prøver {name} igen på de fejlede noder",
+        "update_toast": "Noderne installerer {version}; det forbliver fastlåst der."
+      },
+      "detail": {
+        "kind_game": "Spilserver-plugin",
+        "kind_panel": "Panel-plugin",
+        "kind_bundle": "Pakke med spilserver og panel",
+        "copy_command": "Kopiér kommando",
+        "copied": "Kommando kopieret",
+        "manual_on": "På {nodes}, ikke administreret af 5Stack",
+        "latest_for": "Seneste {version} til {runtime}",
+        "node_offline": "offline",
+        "node_not_accepting": "tager ikke imod kampe",
+        "rollout_settings": "Udrulningsindstillinger",
+        "running": "Kører",
+        "this_deployment": "denne udrulning"
       }
     },
     "awards": {
@@ -5342,11 +6446,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "Søg i trofæer",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -5362,7 +6465,66 @@
       "group_custom_tournament_awards": "Brugerdefinerede turneringspriser",
       "group_custom_event_awards": "Brugerdefinerede begivenhedspriser",
       "group_custom_season_awards": "Brugerdefinerede sæsonpriser",
-      "group_custom_league_awards": "Brugerdefinerede ligapriser"
+      "group_custom_league_awards": "Brugerdefinerede ligapriser",
+      "already_holds": "{name} har allerede {award}, og den kan ikke tildeles flere gange.",
+      "automation_season": "Sæsonautomatik",
+      "automation_tournament": "Turneringsautomatik",
+      "builtin_cant_delete": "Indbyggede trofæer kan ikke slettes",
+      "builtin_note": "Indbygget. Turnerings- og sæsonautomatikken uddeler det, så det kan redigeres, men ikke slettes.",
+      "col_award": "Trofæ",
+      "col_earned_at": "Optjent ved",
+      "col_holder": "Indehaver",
+      "col_holders": "Indehavere",
+      "days_ago": "for {count} d. siden",
+      "delete_award": "Slet trofæ",
+      "delete_body": "{count} tildeling forsvinder med det, og det fjernes fra indehaverens Udmærkelser. Det kan ikke fortrydes. | {count} tildelinger forsvinder med det, og det fjernes fra alle indehaveres Udmærkelser. Det kan ikke fortrydes.",
+      "delete_body_none": "Ingen har det endnu. Det kan ikke fortrydes.",
+      "delete_hint": "Fjerner det og alle tildelinger af det fra alle indehaveres Udmærkelser.",
+      "delete_title": "Slet {name}?",
+      "deleted_toast": "{name} slettet",
+      "edit_award": "Rediger trofæ",
+      "facet_belongs_to": "Hører til",
+      "filter_label": "Filtrer trofæer",
+      "grant_only_hint": "Du kan tildele trofæer. Oprettelse og redigering kræver rollen som trofæansvarlig.",
+      "grant_short": "Tildel",
+      "granted_toast": "{award} tildelt {name}",
+      "kind_custom": "Brugerdefineret",
+      "more_for": "Mere for {name}",
+      "once_per_holder": "Én gang pr. indehaver",
+      "open_holders": "Åbn indehavere",
+      "owner_deleted": "Ejer slettet",
+      "owner_ended": "Sluttede {date}",
+      "owner_finished": "Afsluttet {date}",
+      "owner_kind": {
+        "global": "Generelt",
+        "tournament": "Turnering",
+        "event": "Event",
+        "league": "Ligasæson",
+        "season": "Sæson"
+      },
+      "owner_live": "Live nu",
+      "owner_running": "I gang",
+      "owner_starts": "Starter {date}",
+      "owner_upcoming": "Kommende",
+      "repeatable": "Kan gentages",
+      "revoke_from": "Fratag {name}",
+      "show_more": "Vis flere",
+      "sort_last_granted": "Senest tildelt",
+      "status": {
+        "recent": "Tildelt inden for de sidste 90 dage",
+        "never": "Aldrig tildelt",
+        "open": "Ejer i gang eller kommende",
+        "finished": "Ejer afsluttet"
+      },
+      "team_count": "{count} hold | {count} hold",
+      "tiers": {
+        "mvp": "MVP",
+        "gold": "Guld",
+        "silver": "Sølv",
+        "bronze": "Bronze",
+        "special": "Special"
+      },
+      "today": "I dag"
     },
     "award_detail": {
       "not_found_title": "Pris ikke fundet",
@@ -5406,10 +6568,29 @@
         "cameraTalkback": "Kamera-talkback"
       },
       "resources": "Ressourceforbrug",
-      "cpu": "CPU",
-      "memory": "Hukommelse",
-      "no_resources": "Endnu ingen pod-metrikker for medieserveren — klyngens metrics-server henter den måske ikke.",
-      "legend": "En sti er én navngiven stream-plads — én persons mikrofon eller ét kamera. «Sender» tæller dem, der rent faktisk sender medier lige nu; en sti kan stå tom mellem at nogen kommer ind, og at feedet kommer op. Sessioner er WebRTC-forbindelser, og hver seer af en stream er én af dem, så de stiger hurtigere end de andre."
+      "legend": "En sti er én navngiven stream-plads — én persons mikrofon eller ét kamera. «Sender» tæller dem, der rent faktisk sender medier lige nu; en sti kan stå tom mellem at nogen kommer ind, og at feedet kommer op. Sessioner er WebRTC-forbindelser, og hver seer af en stream er én af dem, så de stiger hurtigere end de andre.",
+      "logs_button": "mediamtx-logs",
+      "tip_publishing": "Stier, der sender medier lige nu. En sti kan stå ubrugt, fra nogen deltager, til deres feed kommer op.",
+      "tip_paths": "En sti er én navngivet streamplads — én persons mikrofon eller ét kamera.",
+      "tip_sessions": "WebRTC-forbindelser. Hver seer af en stream er én af dem, så tallet stiger hurtigere end de andre.",
+      "of_paths": "af {count} sti | af {count} stier",
+      "unknown_while_unreachable": "Ukendt, mens den er utilgængelig",
+      "how_to_read": "Sådan læser du tallene",
+      "by_feature": "Efter funktion",
+      "kinds_unknown": "Tal pr. funktion er ukendte, indtil medieserveren svarer igen.",
+      "idle_title": "Intet sender lige nu",
+      "idle_hint": "Rækker vises her, når en spilstream, et spillerkamera eller en stemmelobby starter.",
+      "received": "Modtaget",
+      "received_hint": "Bytes modtaget på de stier, der er åbne nu, hver talt fra den blev åbnet. En sti, der lukker, tager sine bytes med sig.",
+      "share_received": "Andel af det modtagne",
+      "not_in_use": "Ikke i brug lige nu: {kinds}",
+      "resources_hint": "mediamtx-pod · henter hvert 30. s",
+      "cores_now": "{cores} kerner i brug",
+      "status_reachable": "Tilgængelig",
+      "status_unreachable_since": "Utilgængelig siden {time}",
+      "kinds_unknown_title": "Tal pr. funktion er ukendte",
+      "no_resources_title": "Ingen pod-målinger endnu",
+      "no_resources_hint": "Klyngens metrics-server indsamler måske ikke data fra mediamtx-pod'en."
     },
     "utility": {
       "eyebrow": "Utility-bibliotek",
@@ -6390,8 +7571,8 @@
           "map_filter": "Filtrér efter bane",
           "render_missing": "Gengiv manglende ({total})",
           "rerender_outdated": "Gengiv forældede igen ({total})",
-          "pipeline_behind": "Render-podden er bagud i forhold til denne API",
-          "pipeline_behind_hint": "Den render-pod, der bruges, optager version {pipeline}, som er ældre end den version {version}, denne API forventer. En ny gengivelse bringer ikke forhåndsvisningerne ajour, før game-server- og game-streamer-imagene er opdateret.",
+          "pipeline_behind": "Seneste rendering brugte en ældre version",
+          "pipeline_behind_hint": "Den seneste færdige rendering blev filmet med version {pipeline}; dette API forventer version {version}. Render-pods henter det nyeste image, når de starter, så render én lineup først. Når den er færdig med version {version}, låses Genrender forældede op.",
           "load_failed": "Kunne ikke hente dækningen af forhåndsvisninger",
           "confirm_missing_title": "Gengiv manglende forhåndsvisninger?",
           "confirm_missing": "Dette sætter en gengivelse i kø for {count} opstilling uden forhåndsvisning. | Dette sætter en gengivelse i kø for {count} opstillinger uden forhåndsvisning.",
@@ -6521,6 +7702,249 @@
         "recent": "Dine seneste søgninger",
         "recent_counts": "{verified} af {predicted} landede"
       }
+    },
+    "control_room": {
+      "on_air": "I luften",
+      "off_air_hint": "Der kører ingen udsendelse. Vælg en livekamp for at starte en.",
+      "starting": "Starter",
+      "program": "Program",
+      "preview": "Forhåndsvisning",
+      "take": "Send",
+      "take_pick": "Vælg en forhåndsvisning for at sende den.",
+      "take_already": "{match} sendes allerede.",
+      "take_go_live": "Gå live med {match}",
+      "take_switch": "Skift til {match}",
+      "take_more": "Flere måder at starte på",
+      "take_start_hint": "Bruger en ledig GPU og starter en pod, cirka et minut.",
+      "take_switch_hint": "Genbruger den kørende pod. Feedet skifter om få sekunder.",
+      "go_live": "Gå live",
+      "start_tv": "Start som TV (forsinket)",
+      "tv_delayed": "TV (forsinket)",
+      "tv_delay": "TV-forsinkelse",
+      "full_deck": "Hele panelet",
+      "open_focus_window": "Åbn fokusvinduet",
+      "ready": "Klar",
+      "not_ready": "Ikke klar",
+      "you_are_playing": "Du spiller i denne kamp",
+      "no_live_matches_hint": "Forhåndsskærme vises her, så snart en kamp går live.",
+      "started_live": "Starter en livestream af {match}. Pod'en starter om et par minutter.",
+      "started_tv": "Starter en forsinket TV-stream af {match}. Pod'en starter om et par minutter.",
+      "stopped": "Udsendelsen er stoppet. GPU'en er ledig.",
+      "capacity": "{n} af {max} stream | {n} af {max} streams",
+      "gpu": {
+        "none": "Ingen GPU-noder",
+        "busy": "Ingen ledig GPU · {busy} af {total} optaget",
+        "free": "{free} af {total} GPU ledig | {free} af {total} GPU'er ledige",
+        "hint": "GPU-pulje. Åbn siden GPU-noder."
+      },
+      "status": {
+        "veto": "Veto",
+        "spinning_up": "Server starter",
+        "check_in": "Check-in"
+      },
+      "reasons": {
+        "veto": "Mapveto er i gang. Vent til kampen går live.",
+        "waiting_for_server": "En server starter. Vent til kampen går live.",
+        "check_in": "Spillerne checker ind. Vent til kampen går live.",
+        "not_live": "Vent til kampen går live.",
+        "no_server": "Der er ikke tildelt en server til denne kamp.",
+        "server_offline": "Serveren er offline. Venter på, at den kommer tilbage.",
+        "no_gpu_nodes": "Der er ingen registrerede GPU-noder.",
+        "no_free_gpu": "Ingen ledig GPU.",
+        "at_capacity": "Fuld kapacitet. Stop udsendelsen, eller skift den til denne kamp."
+      },
+      "deck": {
+        "sheet_description": "Udsendelseskontroller. Samme panel som fokusvinduet.",
+        "not_on_air": "Ikke i luften",
+        "not_on_air_hint": "Der kører ingen udsendelse for denne kamp. Start en fra kontrolrummet.",
+        "keys_on": "Tasterne 1–0, ← →, Mellemrum og Tab virker her",
+        "keys_off": "Klik i panelet for at bruge tastaturet",
+        "match_page": "Kampside",
+        "paused": "Vises i hele panelet",
+        "paused_hint": "Forhåndsvisningen her er sat på pause, mens panelet er åbent."
+      },
+      "stop": {
+        "title": "Stop udsendelsen?",
+        "description": "Pod'en lukkes ned, og streamen af {match} slutter for alle seere. GPU'en går tilbage til puljen.",
+        "keep": "Fortsæt streaming",
+        "confirm": "Stop udsendelse"
+      }
+    },
+    "system_alerts": {
+      "alert": "Advarsel",
+      "now": "Nu",
+      "create": "Opret advarsel",
+      "empty": "Ingen advarsler endnu",
+      "hint": "Klik på en advarsel for at redigere den.",
+      "new_alert": "Ny advarsel",
+      "edit_alert": "Rediger advarsel",
+      "new_hint": "Besøgende ser den på alle sider, så snart du opretter den.",
+      "created_at": "Oprettet {time}",
+      "showing": "Vises",
+      "showing_named": "Vises: {name}",
+      "turn_off": "Slå fra",
+      "show_now": "Vis nu",
+      "locked": "Besøgende kan ikke lukke dette banner",
+      "can_close": "Besøgende kan lukke den",
+      "ends": "Slutter",
+      "ends_at": "Slutter {time}",
+      "no_end": "Ingen slutning",
+      "older": "Ældre advarsler er ikke i dette tidsrum.",
+      "show_quarter": "Vis de seneste 3 måneder",
+      "show_older": "Vis ældre advarsler",
+      "preview_caption": "Øverst på alle sider",
+      "delete": "Slet advarsel",
+      "delete_hint": "Fjerner den for altid.",
+      "range": {
+        "day": "Seneste døgn",
+        "week": "Seneste uge",
+        "month": "Seneste måned",
+        "quarter": "Seneste 3 måneder"
+      },
+      "summary": {
+        "showing": "{count} banner vises på alle sider | {count} bannere vises på alle sider",
+        "locked": "{count} kan ikke lukkes | {count} kan ikke lukkes",
+        "none": "Intet banner vises"
+      },
+      "lane": {
+        "draft": "Kladde · ikke oprettet endnu",
+        "unsaved": "Ikke-gemte ændringer",
+        "showing_ends": "Vises · slutter {time}",
+        "showing_no_end": "Vises · ingen slutning",
+        "expired": "Udløb {time}",
+        "turned_off": "Slået fra {time}",
+        "off_created": "Fra · oprettet {time}"
+      },
+      "tip": {
+        "created": "Oprettet {time}",
+        "up_since": "Vist siden {time}",
+        "ends": "slutter {time}",
+        "until_off": "indtil den slås fra",
+        "ended": "sluttede {time}",
+        "turned_off": "slået fra {time}",
+        "off_now": "fra nu",
+        "draft": "Vises, så snart du opretter den"
+      },
+      "sections": {
+        "message": "Besked",
+        "display": "Visning",
+        "schedule": "Tidsplan"
+      },
+      "chips": {
+        "none": "Ingen slutning",
+        "hour": "1 time",
+        "six_hours": "6 timer",
+        "day": "24 timer",
+        "three_days": "3 dage"
+      },
+      "schedule": {
+        "no_end": "Intet sluttidspunkt. Den vises, indtil du slår den fra.",
+        "ends": "Slutter {time} ({relative})",
+        "ended": "Sluttede {time} ({relative})"
+      },
+      "toast": {
+        "turned_off": "”{name}” slået fra",
+        "showing_ends": "”{name}” vises · slutter {time}",
+        "showing_no_end": "”{name}” vises · ingen slutning",
+        "change_end": "Skift sluttidspunkt",
+        "restored": "”{name}” gendannet",
+        "created_showing": "Advarsel oprettet. Den vises nu.",
+        "created_off": "Advarsel oprettet. Den er slået fra, indtil du slår den til.",
+        "expired": "”{name}” udløb og vises ikke længere"
+      }
+    },
+    "admin_home": {
+      "title": "Oversigt",
+      "need_you": "{count} ting kræver dig | {count} ting kræver dig",
+      "all_clear": "Alt er i orden",
+      "all_clear_line": "Intet kræver dig lige nu.",
+      "live_hint": "De fleste områder opdateres, så snart de ændrer sig. Målinger opdateres hvert 30. sekund, databasen hvert minut.",
+      "everything_else": "Alt andet",
+      "open": "Åbn",
+      "open_area": "Åbn {area}",
+      "add_steam_account": "Tilføj Steam-konto",
+      "more": "+{count} mere | +{count} mere",
+      "card": {
+        "no_problems": "Ingen problemer",
+        "checking": "Kontrollerer…",
+        "none": "Ingen endnu",
+        "no_online": "Ingen node online",
+        "season_starts": "Sæson {number} starter om {count} dag | Sæson {number} starter om {count} dage",
+        "of_online": "af {total} online",
+        "servers_free": "{free} af {capacity} servere ledige",
+        "of_connected": "af {total} forbundet",
+        "offline": "{count} offline | {count} offline",
+        "of_free": "af {total} ledige",
+        "accounts_free": "{free} af {total} Steam-konti ledige",
+        "in_flight": "i gang",
+        "previews_current": "{current} af {total} forhåndsvisninger er aktuelle",
+        "of_within": "af {total} inden for grænserne",
+        "slow_statements": "langsom forespørgsel | langsomme forespørgsler",
+        "threshold": "Langsom over {threshold}",
+        "banners_showing": "banner vises | bannere vises",
+        "installed": "installeret",
+        "updates": "{count} opdatering tilgængelig | {count} opdateringer tilgængelige",
+        "up_to_date": "Alt er opdateret",
+        "all_set_up": "Alt er sat op"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} node er offline | {count} noder er offline",
+          "cs2_failed": "CS2-opdatering mislykkedes på {count} node | CS2-opdatering mislykkedes på {count} noder",
+          "overprovisioned": "{count} node kører flere servere, end dens CPU har plads til | {count} noder kører flere servere, end deres CPU'er har plads til",
+          "plugin_unsupported": "Det fastlåste plugin på {count} node understøtter ikke dens CS2-build | De fastlåste plugins på {count} noder understøtter ikke deres CS2-build",
+          "disk_full": "Disken på {count} node er næsten fuld | Diskene på {count} noder er næsten fulde",
+          "cpu_governor": "{count} node kører ikke med CPU-governoren performance | {count} noder kører ikke med CPU-governoren performance",
+          "not_ready_region": "{count} node kan ikke afvikle kampe: ingen region | {count} noder kan ikke afvikle kampe: ingen region",
+          "not_ready_ports": "{count} node kan ikke afvikle kampe: intet portinterval | {count} noder kan ikke afvikle kampe: intet portinterval",
+          "not_ready_cs2": "{count} node kan ikke afvikle kampe: CS2 er ikke installeret | {count} noder kan ikke afvikle kampe: CS2 er ikke installeret",
+          "cs2_behind": "CS2-opdatering tilgængelig for {count} node | CS2-opdatering tilgængelig for {count} noder",
+          "disk_filling": "Disken på {count} node er ved at blive fyldt | Diskene på {count} noder er ved at blive fyldt",
+          "cpu_slow": "CPU'en på {count} node kører under 3 GHz | CPU'erne på {count} noder kører under 3 GHz",
+          "cpu_warning": "{count} node rapporterer en CPU-advarsel | {count} noder rapporterer CPU-advarsler"
+        },
+        "gpus": {
+          "pool_empty": "Ingen Steam-konti: GPU'er kan ikke rendere, afspille demoer eller streame",
+          "pool_short": "Steam-puljen mangler {count} konto for at have én pr. GPU | Steam-puljen mangler {count} konti for at have én pr. GPU",
+          "offline": "{count} GPU er offline | {count} GPU'er er offline",
+          "bake_failed": "Shader-bake mislykkedes på {count} GPU | Shader-bake mislykkedes på {count} GPU'er",
+          "renders_stuck": "{count} rendering venter, og ingen GPU tager renderinger | {count} renderinger venter, og ingen GPU tager renderinger"
+        },
+        "metrics": {
+          "cpu": "{count} node har CPU over {threshold}% | {count} noder har CPU over {threshold}%",
+          "memory": "{count} node har hukommelse over {threshold}% | {count} noder har hukommelse over {threshold}%",
+          "disk": "{count} node har en disk over {threshold}% | {count} noder har en disk over {threshold}%",
+          "gpu_util": "{count} GPU har været over {threshold}% belastet i 5 minutter | {count} GPU'er har været over {threshold}% belastet i 5 minutter",
+          "gpu_vram": "{count} GPU har VRAM over {threshold}% | {count} GPU'er har VRAM over {threshold}%",
+          "gpu_temp": "{count} GPU er på {threshold} °C eller varmere | {count} GPU'er er på {threshold} °C eller varmere"
+        },
+        "seasons": {
+          "rebuild": "Sæson {number} skal have genberegnet ELO"
+        },
+        "renders": {
+          "failed": "{count} rendering mislykkedes det seneste døgn | {count} renderinger mislykkedes det seneste døgn",
+          "behind": "Render-pipelinen er bagud: den filmer v{pipeline}, API'et forventer v{version}",
+          "missing": "{count} lineup har ingen forhåndsvisning | {count} lineups har ingen forhåndsvisning",
+          "outdated": "{count} lineup-forhåndsvisning er forældet | {count} lineup-forhåndsvisninger er forældede"
+        },
+        "database": {
+          "locks": "{count} session venter på en lås | {count} sessioner venter på låse",
+          "running": "{count} forespørgsel har kørt i over {threshold} | {count} forespørgsler har kørt i over {threshold}",
+          "slow": "{count} forespørgsel tager i snit over {threshold} | {count} forespørgsler tager i snit over {threshold}"
+        },
+        "plugins": {
+          "failed": "{count} plugin kunne ikke rulles ud | {count} plugins kunne ikke rulles ud",
+          "update": "Opdatering tilgængelig for {count} plugin | Opdatering tilgængelig for {count} plugins",
+          "manual": "{count} plugin blev fundet på disken og styres ikke herfra | {count} plugins blev fundet på disken og styres ikke herfra"
+        },
+        "settings": {
+          "not_set_up": "{count} indstillingssektion er ikke sat op | {count} indstillingssektioner er ikke sat op"
+        },
+        "servers": {
+          "no_rcon": "{count} server svarer ikke på RCON | {count} servere svarer ikke på RCON",
+          "plugin_outdated": "{count} server kører et forældet plugin | {count} servere kører et forældet plugin"
+        }
+      }
     }
   },
   "layouts": {
@@ -6545,6 +7969,19 @@
         "theme": "Udseende",
         "developer": "Udvikler",
         "players_teams": "Platform"
+      },
+      "status": {
+        "not_set_up": "Ikke sat op",
+        "job_elo": "ELO {pct}%",
+        "job_reindex": "Genindeksering {pct}%",
+        "job_reparse": "Genparsing {pct}%",
+        "filter_attention": "Kræver handling"
+      },
+      "search": {
+        "results": "{count} matchende indstilling | {count} matchende indstillinger",
+        "clear": "Ryd søgning",
+        "no_match_title": "Ingen indstillinger matcher “{query}”",
+        "no_match_body": "Søgningen læser navne og beskrivelser på indstillinger i alle sektioner. Prøv ét ord, fx “rolle” eller “ELO”."
       }
     },
     "system_update": {
@@ -6616,6 +8053,7 @@
       "brand": "5stack",
       "systems_online": "{count} system online | {count} systemer online",
       "navigation": {
+        "home": "Hjem",
         "dashboard": "Mine stats",
         "play": "Spil",
         "watch": "Se med",
@@ -6650,7 +8088,24 @@
         "alerts": "Advarsler",
         "seasons": "Sæsoner",
         "stream_deck": "Stream Deck",
-        "awards": "Awards"
+        "awards": "Awards",
+        "control_room": "Kontrolrum",
+        "overview": "Oversigt"
+      },
+      "modes": {
+        "play": "Spil",
+        "admin": "Admin",
+        "switch_to_play": "Skift til Spil",
+        "switch_to_admin": "Skift til Admin",
+        "attention": "{count} kræver opmærksomhed | {count} kræver opmærksomhed",
+        "seasons_rebuild": "Skal genopbygges"
+      },
+      "groups": {
+        "compete": "Konkurrer",
+        "practice": "Træning",
+        "media": "Medier",
+        "monitoring": "Overvågning",
+        "site": "Websted"
       },
       "system": {
         "title": "System",
@@ -6668,7 +8123,9 @@
       },
       "footer": {
         "report_issue": "Rapportér et problem",
-        "join_discord": "Join vores Discord"
+        "report_issue_short": "Rapportér fejl",
+        "join_discord": "Join vores Discord",
+        "discord": "Discord"
       },
       "tooltips": {
         "dashboard": "Mine stats",
@@ -7027,7 +8484,6 @@
     "none": "Ingen spillere tilgængelige"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "Disse filer mountes i `csgo`-mappen, når serveren startes.",
     "any": "Alle",
     "remove": "Fjern",
     "edit": "Rediger",
@@ -7051,7 +8507,8 @@
       "unsaved_changes": "Ugemte ændringer",
       "review_and_save": "Gennemgå dine ændringer, og gem",
       "has_errors": "Ugyldige indstillinger",
-      "resolve_errors": "Ret de markerede felter for at gemme"
+      "resolve_errors": "Ret de markerede felter for at gemme",
+      "leave_blocked": "Gem eller kassér, før du går"
     },
     "error": "Fejl",
     "enabled": "Aktiveret",
@@ -7091,8 +8548,6 @@
     "exit_fullscreen": "Afslut fuld skærm",
     "download": "Download",
     "upload": "Upload",
-    "sort_ascending": "Sortér stigende",
-    "sort_descending": "Sortér faldende",
     "see_all": "Se alle",
     "standby_no_activity": "STANDBY · INGEN AKTIVITET",
     "players": "spillere",
@@ -7156,7 +8611,8 @@
     "empty_filtered": {
       "title": "Intet matcher disse filtre",
       "description": "Prøv at rydde filtrene eller udvide din søgning."
-    }
+    },
+    "clear_filters": "Ryd filtre"
   },
   "global_search": {
     "placeholder": "Søg efter spillere, sider og indstillinger",
@@ -7184,8 +8640,6 @@
   },
   "file_manager": {
     "location": "Placering",
-    "dedicated_server_files": "Filer på dedikeret server",
-    "game_server_node_files": "Filer på game server node",
     "loading_server_info": "Indlæser serveroplysninger...",
     "create_directory": {
       "title": "Opret ny mappe",
@@ -10251,10 +11705,6 @@
     "remove_node_confirm_title": "Fjern denne node?",
     "remove_node_confirm_description": "Noden og alle dedikerede servere på den fjernes fra 5Stack. Det kan ikke fortrydes.",
     "remove_ports": "Fjern porte",
-    "mode": {
-      "use_as_match": "Brug som kampserver",
-      "use_as_gpu_only": "Brug kun som GPU"
-    },
     "show_update_logs": "Vis opdateringslogs",
     "update_failed": "Opdatering mislykkedes",
     "update_failed_description": "Den seneste opdatering mislykkedes. Opdateringslogs gemmes i 24 timer.",
@@ -10526,10 +11976,6 @@
     }
   },
   "charts": {
-    "usage": "Forbrug",
-    "mount_os": "OS",
-    "mount_demos": "Demoer",
-    "total_series": "{label} i alt",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} gns."
   },
@@ -10562,7 +12008,6 @@
       "move_node": "Flyt server",
       "valve_preset_group": "Valve-presets",
       "custom_mode_group": "Tilpassede tilstande",
-      "edit_mode": "Rediger tilstand",
       "cs2_only": "Kun CS2",
       "needs_node": "Kræver en node",
       "csgo_valve_only": "CS:GO-servere kører kun Valve-presets. Ranked, træning og tilpassede tilstande kræver CS2.",
@@ -10586,9 +12031,9 @@
       "generate": "Generér",
       "port": "Spilport",
       "tv_port": "TV-port",
-      "create": "Opret server",
       "max_players": "Maks. spillere",
-      "max_players_description": "Det maksimale antal spillere, der kan forbinde til serveren"
+      "max_players_description": "Det maksimale antal spillere, der kan forbinde til serveren",
+      "edit_mode_link": "Rediger tilstand"
     },
     "rcon": {
       "console_output": "Konsoloutput",
@@ -10611,6 +12056,13 @@
   "components": {
     "map_pools": {
       "view_on_steam": "Vis på Steam"
+    },
+    "facet_rail": {
+      "clear_all": "Ryd alle",
+      "none": "ingen",
+      "remove": "Fjern {label}",
+      "show_all": "Vis alle {count}",
+      "show_fewer": "Vis færre"
     }
   },
   "map_pools": {
@@ -12412,7 +13864,6 @@
       "unique_24h": "Unikke · 24 t",
       "unique_7d": "Unikke · 7 d",
       "sessions_7d": "Sessioner · 7 d",
-      "time_played_7d": "Spilletid · 7 d",
       "avg_session": "Gns. Session",
       "players": "spillere",
       "joins": "tilslutninger",
@@ -12424,7 +13875,9 @@
       "empty": "Ingen har spillet her i denne periode.",
       "no_matches": "Ingen spillere matcher søgningen.",
       "showing": "Viser {shown} af {total}",
-      "load_more": "Indlæs Flere"
+      "last_seen": "Sidst set",
+      "time_played_col": "Spilletid · 7 d",
+      "show_more": "Indlæs flere"
     },
     "player_tab": {
       "moderator_note": "Moderatorer ser også præcise tidspunkter, sessioner, brugte navne og IP-adresser.",
@@ -12463,12 +13916,8 @@
       "offline": "Offline",
       "map": "bane",
       "community_server": "community-server",
-      "online_now": "Online Nu",
-      "players_this_week": "Spillere Denne Uge",
       "different_players": "forskellige spillere",
-      "hours_this_week": "Timer Denne Uge",
       "played_by_everyone": "spillet af alle",
-      "all_time_players": "Spillere I Alt",
       "since": "siden {date}",
       "activity": "Aktivitet · Seneste 7 Dage",
       "activity_description": "Samlede timer alle har spillet her hver dag. Ingen individuelle spilletider vises.",
@@ -12485,7 +13934,13 @@
       "day": "Dag",
       "player_hours": "Spillertimer",
       "not_found_title": "Server Ikke Fundet",
-      "not_found_description": "Denne server findes ikke eller er ikke offentlig."
+      "not_found_description": "Denne server findes ikke eller er ikke offentlig.",
+      "tile": {
+        "online_now": "Online nu",
+        "players_this_week": "Spillere denne uge",
+        "hours_this_week": "Timer denne uge",
+        "all_time_players": "Spillere i alt"
+      }
     }
   },
   "quick_look": {
@@ -12553,6 +14008,32 @@
         "twitch_unavailable": "Twitch svarede ikke. Prøv igen om lidt.",
         "unknown": "Noget gik galt. Prøv igen."
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "Ryd søgning"
+    },
+    "sort": {
+      "sorted_ascending": "Sorteret stigende",
+      "sorted_descending": "Sorteret faldende"
+    },
+    "live_stamp": {
+      "live_at": "Live · {time}",
+      "updated_now": "Opdateret lige nu",
+      "updated_now_after": "opdateret lige nu",
+      "updated_seconds": "Opdateret for {seconds} s siden",
+      "updated_seconds_after": "opdateret for {seconds} s siden",
+      "updated_minutes": "Opdateret for {minutes} min. siden",
+      "updated_minutes_after": "opdateret for {minutes} min. siden",
+      "paused": "Sat på pause",
+      "every_seconds": "opdateres hvert {seconds}. s",
+      "every_minute": "opdateres hvert minut",
+      "every_minutes": "opdateres hvert {minutes}. min.",
+      "refresh_now": "Opdater nu"
+    },
+    "last_changed": {
+      "updated": "Opdateret {time}"
     }
   }
 }

@@ -9,7 +9,11 @@ const props = withDefaults(
     tone: Cs2BuildTone;
     status: string;
     running?: boolean;
-    stats?: Array<{ label: string; value: number | string; tone?: Cs2BuildTone }>;
+    stats?: Array<{
+      label: string;
+      value: number | string;
+      tone?: Cs2BuildTone;
+    }>;
     listClass?: string;
   }>(),
   {
@@ -19,34 +23,36 @@ const props = withDefaults(
   },
 );
 
-const TONES: Record<Cs2BuildTone, { text: string; pill: string; rail: string }> =
-  {
-    success: {
-      text: "text-success",
-      pill: "border-success/30 bg-success/10 text-success",
-      rail: "bg-success",
-    },
-    warning: {
-      text: "text-[hsl(var(--tac-amber))]",
-      pill: "border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]",
-      rail: "bg-[hsl(var(--tac-amber))]",
-    },
-    destructive: {
-      text: "text-destructive",
-      pill: "border-destructive/30 bg-destructive/10 text-destructive",
-      rail: "bg-destructive",
-    },
-    running: {
-      text: "text-info",
-      pill: "border-info/30 bg-info/10 text-info",
-      rail: "bg-info",
-    },
-    idle: {
-      text: "text-muted-foreground",
-      pill: "border-border bg-muted/30 text-muted-foreground",
-      rail: "bg-muted-foreground/30",
-    },
-  };
+const TONES: Record<
+  Cs2BuildTone,
+  { text: string; pill: string; rail: string }
+> = {
+  success: {
+    text: "text-success",
+    pill: "border-success/30 bg-success/10 text-success",
+    rail: "bg-success",
+  },
+  warning: {
+    text: "text-warning",
+    pill: "border-warning/30 bg-warning/10 text-warning",
+    rail: "bg-warning",
+  },
+  destructive: {
+    text: "text-destructive",
+    pill: "border-destructive/30 bg-destructive/10 text-destructive",
+    rail: "bg-destructive",
+  },
+  running: {
+    text: "text-info",
+    pill: "border-info/30 bg-info/10 text-info",
+    rail: "bg-info",
+  },
+  idle: {
+    text: "text-muted-foreground",
+    pill: "border-border bg-muted/30 text-muted-foreground",
+    rail: "bg-muted-foreground/30",
+  },
+};
 
 const tone = computed(() => TONES[props.tone]);
 
@@ -70,7 +76,9 @@ const statTone = (value?: Cs2BuildTone) =>
       </div>
       <div class="flex min-w-0 flex-1 flex-col">
         <span class="text-sm font-semibold">{{ title }}</span>
-        <span class="truncate text-xs text-muted-foreground">{{ subtitle }}</span>
+        <span class="truncate text-xs text-muted-foreground">{{
+          subtitle
+        }}</span>
       </div>
       <span
         class="inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium"
@@ -95,10 +103,7 @@ const statTone = (value?: Cs2BuildTone) =>
       <div class="tac-scan-sweep h-full" />
     </div>
 
-    <div
-      v-if="stats.length"
-      class="grid grid-cols-2 gap-2 sm:grid-cols-4"
-    >
+    <div v-if="stats.length" class="grid grid-cols-2 gap-2 sm:grid-cols-4">
       <div
         v-for="stat of stats"
         :key="stat.label"

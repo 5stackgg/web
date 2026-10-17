@@ -42,13 +42,13 @@ const heroClasses =
   "relative flex min-w-0 max-w-full flex-wrap items-end gap-x-6 gap-y-4 border border-border px-6 pb-6 pt-5 max-sm:p-4 [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
 
 const statusBaseClasses =
-  "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
+  "inline-flex h-6 items-center gap-2 rounded-md border px-2 text-xs font-medium tabular-nums";
 
 const chipClasses =
-  "inline-flex items-center px-[0.7rem] py-[0.25rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground";
+  "inline-flex h-6 items-center rounded-md border border-border bg-muted/40 px-2 text-xs font-medium text-muted-foreground";
 
 const titleClasses =
-  "relative m-0 font-sans font-bold [font-stretch:80%] text-[clamp(1.6rem,4vw,2.6rem)] leading-[0.95] tracking-[0.02em] uppercase break-words bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
+  "m-0 text-[clamp(1.5rem,2.6vw,2rem)] font-bold leading-tight [overflow-wrap:anywhere]";
 
 const onlineNow = computed(() => info.value?.players ?? 0);
 
@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
   <div class="flex flex-col gap-5">
     <PageTransition :delay="0">
       <nav
-        class="flex items-center gap-2 font-mono text-xs text-muted-foreground"
+        class="flex items-center gap-2 text-xs text-muted-foreground"
         :aria-label="$t('community.server_page.breadcrumb')"
       >
         <NuxtLink
@@ -142,12 +142,15 @@ onBeforeUnmount(() => {
                 :class="[
                   statusBaseClasses,
                   server.connected
-                    ? 'border-[hsl(var(--success)/0.5)] bg-[hsl(var(--success)/0.15)] text-success'
-                    : 'border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-destructive',
+                    ? 'border-[hsl(var(--success)/0.35)] text-foreground'
+                    : 'border-destructive/40 text-destructive',
                 ]"
                 data-testid="server-status"
               >
-                <span class="h-2 w-2 rounded-full bg-current" />
+                <span
+                  class="size-2 rounded-full"
+                  :class="server.connected ? 'bg-success' : 'bg-destructive'"
+                />
                 <template v-if="server.connected">
                   {{ $t("community.server_page.online") }}
                   <template v-if="server.max_players">
@@ -170,7 +173,7 @@ onBeforeUnmount(() => {
             </div>
             <h1 :class="titleClasses">{{ server.label }}</h1>
             <div
-              class="mt-2.5 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-xs text-muted-foreground"
+              class="mt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground"
             >
               <span v-if="mapName">
                 {{ $t("community.server_page.map") }}

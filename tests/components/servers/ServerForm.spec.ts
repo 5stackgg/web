@@ -195,7 +195,7 @@ describe("ServerForm server type", () => {
   it("picks the first custom mode when its tile is clicked", async () => {
     const wrapper = await mount();
 
-    radio("kind-presets").closest<HTMLElement>("div.rounded-lg")!.click();
+    radio("kind-presets").closest<HTMLElement>("div.rounded-md")!.click();
     await flushPromises();
 
     expect((wrapper.vm as any).form.values.type).toBe(modes[0].id);
@@ -308,7 +308,7 @@ describe("ServerForm server type", () => {
 
     form.setFieldValue("region", "lv");
     await flushPromises();
-    expect(form.values.label).toBe("LV Ranked Server");
+    expect(form.values.label).toBe("LV Ranked server");
 
     const label = document.body.querySelector<HTMLInputElement>(
       'input[data-1p-ignore]:not([type="password"])',
@@ -365,7 +365,7 @@ describe("ServerForm server type", () => {
 
     const { valid, errors } = await form.validate();
     expect(valid).toBe(false);
-    expect(errors.game_server_node_id).toBe("Select Game Server Node");
+    expect(errors.game_server_node_id).toBe("Select game server node");
   });
 
   it("keeps password managers off the server's secrets", async () => {

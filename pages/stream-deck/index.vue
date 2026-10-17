@@ -4,50 +4,99 @@ import {
   computed,
   ref,
   shallowRef,
+  watch,
+  nextTick,
   onMounted,
   onBeforeUnmount,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { useApolloClient } from "@vue/apollo-composable";
-
-const { t } = useI18n();
-import { useStreamerStore } from "~/stores/StreamerStore";
-import { useGpuAvailability } from "~/composables/useGpuAvailability";
-import { useToast } from "~/components/ui/toast/use-toast";
-import { Button } from "~/components/ui/button";
-import { Switch } from "~/components/ui/switch";
-import { Label } from "~/components/ui/label";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import gql from "graphql-tag";
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Square,
   ExternalLink,
   PictureInPicture2,
   X,
   Cpu,
-  ArrowRightLeft,
   Play,
-  Server,
-  ServerOff,
+  Radio,
   Tv,
-  Dot,
   RefreshCw,
+  SlidersHorizontal,
+  Bot,
 } from "lucide-vue-next";
-import gql from "graphql-tag";
+import { useStreamerStore } from "~/stores/StreamerStore";
+import { useGpuAvailability } from "~/composables/useGpuAvailability";
+import { useStreamerPopout } from "~/composables/useStreamerPopout";
+import {
+  useWhepStatusCopy,
+  type WhepPhase,
+} from "~/composables/useWhepStatusCopy";
+import { useToast } from "~/components/ui/toast/use-toast";
+import { Button } from "~/components/ui/button";
+import { Switch } from "~/components/ui/switch";
+import { Label } from "~/components/ui/label";
+import { Skeleton } from "~/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "~/components/ui/sheet";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
+import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
+import StreamBootStatus from "~/components/match/StreamBootStatus.vue";
+import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
+import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
+import BroadcastDeck from "~/components/stream-deck/BroadcastDeck.vue";
+import ControlRoomPreview from "~/components/stream-deck/ControlRoomPreview.vue";
+import StopBroadcastDialog from "~/components/stream-deck/StopBroadcastDialog.vue";
+import OnAirClock from "~/components/stream-deck/OnAirClock.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import { TONE_BORDER, TONE_TEXT, type Tone } from "~/components/admin/tone";
+import { useRememberedView } from "~/composables/useRememberedView";
+import { useListKeyboard } from "~/composables/useListKeyboard";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
-import { Spinner } from "~/components/ui/spinner";
 import { e_match_status_enum } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
-import mapLabel from "~/utilities/mapLabel";
-import StreamCanvas from "~/components/match/StreamCanvas.vue";
-import BootSequence from "~/components/match/BootSequence.vue";
-import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
-import MatchTableRow from "~/components/MatchTableRow.vue";
-import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
-import { useStreamerPopout } from "~/composables/useStreamerPopout";
+import {
+  createButtonClasses,
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+import {
+  defaultPreview,
+  sortPreviews,
+  takeBlock,
+  takeMode,
+  wentLiveAt,
+  type TakeBlock,
+} from "~/utilities/controlRoom";
+
+definePageMeta({
+  middleware: "streamer",
+});
+
+const { t, te } = useI18n();
+const { toast } = useToast();
+const { client: apolloClient } = useApolloClient();
+const { copyFor } = useWhepStatusCopy();
 
 const {
   status: gpuPoolStatus,
@@ -65,20 +114,11 @@ const {
   closePopout,
 } = useStreamerPopout();
 
-definePageMeta({
-  middleware: "streamer",
-});
-
-const { toast } = useToast();
-const { client: apolloClient } = useApolloClient();
-
-// `busy` is the only piece of UI state kept locally — autodirector
-// state lives on the match_streams row now and rides the Hasura
-// subscription, so multiple casters on the same match see the same
-// toggle without bespoke broadcast logic.
+// `busy` is the only control state kept locally -- autodirector lives on the
+// match_streams row and rides the subscription, so every caster on the match
+// sees the same toggle.
 type MatchControlState = {
   busy: boolean;
-  mode?: "live" | "tv";
   action?: string;
 };
 const controlState = reactive<Record<string, MatchControlState>>({});
@@ -90,25 +130,18 @@ function ensureState(matchId: string): MatchControlState {
   return controlState[matchId];
 }
 
-// Read-only variant for templates. ensureState() WRITES controlState, which is
-// illegal during render (mutating a tracked dep mid-render → redundant render
-// passes, and it ran 6-8×/tile). Reading controlState[id] still tracks the key,
-// so a later ensureState() create from an action still triggers an update.
+// Read-only for templates: ensureState() writes, which is illegal during
+// render. Reading controlState[id] still tracks the key.
 function cs(matchId: string): MatchControlState {
   return controlState[matchId] ?? { busy: false };
 }
 
-// Read the persisted autodirector flag off the streams row. Defaults
-// to true to match the cs2 autoexec, which is what the pod actually
-// runs with on first launch.
+// Defaults to on, like the cs2 autoexec the pod launches with.
 function isAutodirector(stream: any): boolean {
   return stream?.autodirector !== false;
 }
 
-// Subscription lives on the global StreamerStore so the sidebar badge
-// and this page share one socket. The store's subscription is normally
-// kicked off in AuthStore on login (gated to streamer role), but call
-// it here too as a safety net for cold-start navigations.
+// One socket shared with the nav badge (StreamerStore).
 const streamerStore = useStreamerStore();
 streamerStore.subscribeToLiveStreams();
 const {
@@ -119,17 +152,6 @@ const {
   isAtCapacity,
 } = storeToRefs(streamerStore);
 
-// Live matches board — every match the deck can target. Kept on the
-// page (not in the store) because nothing else needs it; one socket,
-// one consumer. The `streams` aggregate lets each tile know whether
-// it's the one the active pod is bound to without a second join.
-type LiveMatchMap = {
-  id: string;
-  lineup_1_score: number;
-  lineup_2_score: number;
-  map: { name: string | null; label: string | null } | null;
-};
-
 type LiveMatch = {
   id: string;
   status: string;
@@ -137,17 +159,15 @@ type LiveMatch = {
   server_id: string | null;
   is_server_online: boolean | null;
   server_region: string | null;
-  match_maps: LiveMatchMap[];
+  is_in_lineup?: boolean | null;
+  is_coach?: boolean | null;
+  match_maps: any[];
   lineup_1: { id: string; name: string | null } | null;
   lineup_2: { id: string; name: string | null } | null;
   [key: string]: any;
 };
 
-// shallowRef: subscription replaces the whole list every push; we never
-// mutate individual rows. A typical instance can have dozens of live /
-// veto / waiting matches each carrying nested lineup + map data, so
-// deep reactivity on every nested field would be a constant tax on
-// every tick.
+// shallowRef: the subscription replaces the whole list every push.
 const liveMatches = shallowRef<LiveMatch[]>([]);
 const liveMatchesLoaded = ref(false);
 let liveMatchesSub: { unsubscribe: () => void } | undefined;
@@ -172,16 +192,13 @@ onMounted(() => {
           {
             ...simpleMatchFields,
             current_match_map_id: true,
-            // Computed fields, not the `server` join — guest's filter
-            // on `servers` requires connection_string IS NOT NULL,
-            // which hides assigned-but-not-yet-connected servers.
+            // Computed fields, not the `server` join: guest's filter on
+            // `servers` hides assigned-but-not-yet-connected servers.
             server_id: true,
             is_server_online: true,
             server_region: true,
-            // Anti-cheat: a rostered player/coach (even an admin) must
-            // never see the feed of a match they're in. Per-session
-            // computed fields — used to gate the preview so we NEVER
-            // connect and hit the server-side 401.
+            // Anti-cheat: a rostered player/coach must never see the feed of
+            // a match they're in.
             is_in_lineup: true,
             is_coach: true,
           },
@@ -190,11 +207,8 @@ onMounted(() => {
     })
     .subscribe({
       next: ({ data }: any) => {
-        // Hasura pushes the WHOLE list on any field change to any match. Reuse the
-        // previous object ref for rows whose content is unchanged, so the keyed
-        // v-for skips re-rendering their (heavy) MatchTableRow tile — only the
-        // match that actually changed gets a new ref and re-renders. The
-        // per-match JSON compare is trivial next to re-rendering dozens of tiles.
+        // Hasura pushes the whole list on any change. Keep the old object for
+        // rows that didn't change so their tiles skip re-rendering.
         const incoming = (data?.matches ?? []) as LiveMatch[];
         const prevById = new Map(liveMatches.value.map((m) => [m.id, m]));
         liveMatches.value = incoming.map((m) => {
@@ -204,7 +218,7 @@ onMounted(() => {
         liveMatchesLoaded.value = true;
       },
       error: (err: any) => {
-        console.error("[stream-deck] live matches subscription error", err);
+        console.error("[control-room] live matches subscription error", err);
       },
     });
 });
@@ -213,20 +227,19 @@ onBeforeUnmount(() => {
   liveMatchesSub?.unsubscribe();
 });
 
-// Map match_id → active stream row for quick tile lookup. Multiple
-// rows on a single match are not currently produced by the api, but
-// .find() vs .reduce() costs nothing here and is robust to drift.
-const streamByMatchId = computed(() => {
-  const out: Record<string, any> = {};
-  for (const s of liveStreams.value) {
-    if (s?.match_id) out[s.match_id] = s;
-  }
-  return out;
-});
+const activeStream = computed(() => liveStreams.value[0] ?? null);
+const activeMatchId = computed<string | null>(
+  () => activeStream.value?.match_id ?? null,
+);
+const onAirIds = computed(
+  () =>
+    new Set<string>(
+      liveStreams.value.map((s: any) => s.match_id).filter(Boolean),
+    ),
+);
+const isLive = computed(() => !!activeStream.value?.is_live);
+const isErrored = computed(() => activeStream.value?.status === "errored");
 
-// Match ids where the signed-in viewer is rostered (player or coach)
-// and therefore must not see the live feed. Sourced from the board
-// subscription's per-session computed fields.
 const blockedMatchIds = computed(() => {
   const out = new Set<string>();
   for (const m of liveMatches.value) {
@@ -234,39 +247,129 @@ const blockedMatchIds = computed(() => {
   }
   return out;
 });
-const canViewMatch = (matchId: string | null | undefined) =>
-  !matchId || !blockedMatchIds.value.has(matchId);
-
-const activeStream = computed(() => liveStreams.value[0] ?? null);
-const activeMatchId = computed(() => activeStream.value?.match_id ?? null);
-const activeMatchIds = computed(
-  () => new Set(liveStreams.value.map((s: any) => s.match_id).filter(Boolean)),
+const canViewProgram = computed(
+  () => !activeMatchId.value || !blockedMatchIds.value.has(activeMatchId.value),
 );
-const isActiveMatch = (matchId: string) => activeMatchIds.value.has(matchId);
 
-// `action` is a stable id, not copy -- the template compares against it to pick
-// which button shows a spinner. The toast title is translated from it separately
-// so the two never drift.
+function nameOf(
+  m: {
+    lineup_1?: { name?: string | null } | null;
+    lineup_2?: { name?: string | null } | null;
+  } | null,
+): string {
+  return `${m?.lineup_1?.name ?? t("common.team_a")} ${t("common.vs")} ${m?.lineup_2?.name ?? t("common.team_b")}`;
+}
+
+const programName = computed(() =>
+  activeStream.value ? nameOf(activeStream.value.match) : "",
+);
+
+const stageLabel = computed(() => {
+  const s = activeStream.value?.status as string | undefined;
+  if (!s) return t("live_stages.booting");
+  return te(`live_stages.${s}`) ? t(`live_stages.${s}`) : s;
+});
+
+const liveSince = computed(() => wentLiveAt(activeStream.value));
+
+function onAirStateFor(
+  matchId: string,
+): "live" | "starting" | "stopped" | null {
+  const s = liveStreams.value.find((x: any) => x.match_id === matchId);
+  if (!s) return null;
+  if (s.is_live) return "live";
+  return s.status === "errored" ? "stopped" : "starting";
+}
+
+const previews = computed(() =>
+  sortPreviews(liveMatches.value, onAirIds.value),
+);
+
+// ---- Preview selection + take ----
+// The picked preview survives a refresh while that match is still live.
+const view = useRememberedView(
+  "control-room",
+  { selected: null as string | null },
+  { validate: { selected: (v) => v === null || typeof v === "string" } },
+);
+const selectedId = ref<string | null>(view.selected);
+watch(selectedId, (id) => (view.selected = id));
+watch(
+  [liveMatches, onAirIds],
+  () => {
+    // Before the first push the remembered pick has nothing to match.
+    if (!liveMatchesLoaded.value) return;
+    if (
+      selectedId.value &&
+      liveMatches.value.some((m) => m.id === selectedId.value)
+    ) {
+      return;
+    }
+    selectedId.value = defaultPreview(liveMatches.value, onAirIds.value);
+  },
+  { immediate: true },
+);
+const selectedMatch = computed(
+  () => liveMatches.value.find((m) => m.id === selectedId.value) ?? null,
+);
+const mode = computed(() => takeMode(!!activeStream.value, isAtCapacity.value));
+const block = computed<TakeBlock | null>(() =>
+  selectedMatch.value
+    ? takeBlock({
+        match: selectedMatch.value,
+        mode: mode.value,
+        gpuTotal: gpuTotal.value,
+        gpuPoolReady: gpuPoolReady.value,
+        hasFreeGpu: hasFreeGpu.value,
+        atCapacity: isAtCapacity.value,
+      })
+    : null,
+);
+
+// ↑/↓ walk the previews, Enter picks one (the same as a click).
+const activePreviewId = ref<string | null>(null);
+const { rowProps } = useListKeyboard({
+  items: previews,
+  getId: (m: LiveMatch) => m.id,
+  activeId: activePreviewId,
+  onOpen: (id) => (selectedId.value = id),
+});
+// A preview is a toggle button: aria-pressed says it's picked, so the
+// listbox-style aria-selected stays off it.
+function previewRowProps(id: string) {
+  const props: Record<string, unknown> = { ...rowProps(id) };
+  delete props["aria-selected"];
+  return props;
+}
+
+function blockText(reason: TakeBlock): string {
+  if (reason === "no_free_gpu") {
+    return busyReason.value || t("pages.control_room.reasons.no_free_gpu");
+  }
+  return t(`pages.control_room.reasons.${reason}`);
+}
+
+// `action` is a stable id, not copy: it picks the toast title.
 async function runMutation(
   matchId: string,
   action: string,
   build: () => Record<string, unknown>,
   params?: Record<string, unknown>,
-) {
+): Promise<boolean> {
   const state = ensureState(matchId);
-  if (state.busy) return;
+  if (state.busy) return false;
   state.busy = true;
   state.action = action;
   try {
-    await apolloClient.mutate({
-      mutation: generateMutation(build()),
-    });
+    await apolloClient.mutate({ mutation: generateMutation(build()) });
+    return true;
   } catch (error: any) {
     toast({
       variant: "destructive",
       title: t(`stream_deck.actions.${action}`, params ?? {}),
       description: error?.message ?? t("toasts.request_failed"),
     });
+    return false;
   } finally {
     state.busy = false;
     state.action = undefined;
@@ -284,8 +387,14 @@ function specClick(matchId: string, button: "left" | "right") {
   );
 }
 
+async function setAutodirector(matchId: string, enabled: boolean) {
+  await runMutation(matchId, "spec_autodirector", () => ({
+    specAutodirector: [{ match_id: matchId, enabled }, { success: true }],
+  }));
+}
+
 async function specSlot(matchId: string, slot: number) {
-  const stream = liveStreams.value.find((s) => s.match_id === matchId);
+  const stream = liveStreams.value.find((s: any) => s.match_id === matchId);
   if (stream && isAutodirector(stream)) {
     await setAutodirector(matchId, false);
   }
@@ -299,42 +408,20 @@ async function specSlot(matchId: string, slot: number) {
   );
 }
 
-const confirmStop = reactive<Record<string, boolean>>({});
-function stopLive(matchId: string) {
-  if (!confirmStop[matchId]) {
-    confirmStop[matchId] = true;
-    setTimeout(() => {
-      confirmStop[matchId] = false;
-    }, 5000);
-    return;
-  }
-  confirmStop[matchId] = false;
-  return runMutation(matchId, "stop_live", () => ({
-    stopLive: [{ match_id: matchId }, { success: true }],
+async function startLive(matchId: string, streamMode: "live" | "tv") {
+  const match = liveMatches.value.find((m) => m.id === matchId);
+  const started = await runMutation(matchId, "start_live", () => ({
+    startLive: [{ match_id: matchId, mode: streamMode }, { success: true }],
   }));
-}
-
-async function setAutodirector(matchId: string, enabled: boolean) {
-  // No optimistic local state — the API persists the flag on
-  // match_streams.autodirector and the Hasura subscription pushes the
-  // updated row back, which the template reads via isAutodirector().
-  await runMutation(matchId, "spec_autodirector", () => ({
-    specAutodirector: [{ match_id: matchId, enabled }, { success: true }],
-  }));
-}
-
-async function startLive(matchId: string, mode: "live" | "tv") {
-  const state = ensureState(matchId);
-  if (state.busy) {
-    return;
-  }
-  state.mode = mode;
-  try {
-    await runMutation(matchId, "start_live", () => ({
-      startLive: [{ match_id: matchId, mode }, { success: true }],
-    }));
-  } finally {
-    state.mode = undefined;
+  if (started) {
+    toast({
+      title: t(
+        streamMode === "tv"
+          ? "pages.control_room.started_tv"
+          : "pages.control_room.started_live",
+        { match: nameOf(match ?? null) },
+      ),
+    });
   }
 }
 
@@ -348,7 +435,6 @@ async function reconnectLive(matchId: string) {
   });
 }
 
-// Operator skip of the shader compile during boot — per active stream.
 const skippingShaders = ref<Record<string, boolean>>({});
 async function onSkipShaders(matchId: string) {
   if (skippingShaders.value[matchId]) return;
@@ -362,40 +448,20 @@ async function onSkipShaders(matchId: string) {
   }
 }
 
-type DeckReady = {
-  ready: boolean;
-  reason: string | null;
-};
-function deckReadiness(m: LiveMatch): DeckReady {
-  if (m.status !== "Live") {
-    return {
-      ready: false,
-      reason: t("stream_deck.match_status_wait", {
-        status: m.status.toLowerCase(),
-      }),
-    };
+const stopOpen = ref(false);
+async function stopProgram() {
+  const id = activeMatchId.value;
+  if (!id) return;
+  const stopped = await runMutation(id, "stop_live", () => ({
+    stopLive: [{ match_id: id }, { success: true }],
+  }));
+  if (stopped) {
+    toast({ title: t("pages.control_room.stopped") });
   }
-  if (!m.server_id) {
-    return { ready: false, reason: t("stream_deck.no_server_assigned") };
-  }
-  if (m.is_server_online !== true) {
-    return {
-      ready: false,
-      reason: t("stream_deck.server_offline_waiting"),
-    };
-  }
-  return { ready: true, reason: null };
 }
 
-function serverLabel(m: LiveMatch): string {
-  if (!m.server_id) return t("stream_deck.no_server");
-  return m.server_region || t("stream_deck.server_assigned");
-}
-
-// Hot-swap: keep the running pod, point it at a different match.
-// Hand-written gql tag because the mutation isn't in the generated
-// zeus types yet (regen Hasura metadata to pick it up). Done this way
-// so the page compiles without forcing a codegen step first.
+// Hot swap: keep the running pod, point it at another match. Hand-written
+// gql because the mutation isn't in the generated zeus types yet.
 const SWITCH_LIVE_MATCH_MUTATION = gql`
   mutation SwitchLiveMatch(
     $from_match_id: uuid!
@@ -413,26 +479,13 @@ const SWITCH_LIVE_MATCH_MUTATION = gql`
 `;
 
 const switching = ref<string | null>(null);
-async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
-  const target = liveMatches.value.find((m) => m.id === toMatchId);
-  if (target) {
-    const { ready, reason } = deckReadiness(target);
-    if (!ready) {
-      toast({
-        variant: "destructive",
-        title: t("toasts.cant_switch"),
-        description: reason ?? t("toasts.destination_not_ready"),
-      });
-      return;
-    }
-  }
+async function switchTo(toMatchId: string) {
   const fromMatchId = activeMatchId.value;
   if (!fromMatchId) {
-    await startLive(toMatchId, mode);
+    await startLive(toMatchId, "live");
     return;
   }
-  if (fromMatchId === toMatchId) return;
-  if (switching.value) return;
+  if (fromMatchId === toMatchId || switching.value) return;
   switching.value = toMatchId;
   try {
     await apolloClient.mutate({
@@ -440,7 +493,7 @@ async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
       variables: {
         from_match_id: fromMatchId,
         to_match_id: toMatchId,
-        mode,
+        mode: activeStream.value?.mode === "tv" ? "tv" : "live",
       },
     });
     toast({
@@ -458,739 +511,679 @@ async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
   }
 }
 
-const STATUS_LABELS = computed<Record<string, string>>(() => ({
-  launching_steam: t("live_stages.launching_steam"),
-  logging_in: t("live_stages.logging_in"),
-  downloading_cs2: t("live_stages.downloading_cs2"),
-  launching_cs2: t("live_stages.launching_cs2"),
-  connecting_to_game: t("stream_deck_status.connecting_to_game_short"),
-  starting_capture: t("stream_deck_status.starting_capture"),
-  errored: t("stream_deck_status.errored"),
-  live: t("stream_deck_status.live_short"),
-}));
-
-function statusBadgeLabel(stream: any) {
-  if (stream.is_live) return t("stream_deck_status.live");
-  const s = stream?.status as string | undefined;
-  if (!s) return t("stream_deck_status.booting");
-  return (STATUS_LABELS.value[s] ?? s).toUpperCase();
+function take() {
+  const match = selectedMatch.value;
+  if (!match || block.value) return;
+  return mode.value === "switch"
+    ? switchTo(match.id)
+    : startLive(match.id, "live");
 }
 
-// Resolve the live map for a tile. Prefer current_match_map_id; fall
-// back to the last map with any scored round so a paused/just-finished
-// match still shows the latest scoreline.
-function currentMapFor(m: LiveMatch): LiveMatchMap | null {
-  if (!m.match_maps?.length) return null;
-  if (m.current_match_map_id) {
-    const found = m.match_maps.find((mm) => mm.id === m.current_match_map_id);
-    if (found) return found;
-  }
-  // Last scored map — iterate backwards in place (no array copy/reverse alloc).
-  for (let i = m.match_maps.length - 1; i >= 0; i--) {
-    const mm = m.match_maps[i];
-    if ((mm.lineup_1_score ?? 0) + (mm.lineup_2_score ?? 0) > 0) return mm;
-  }
-  return null;
+// ---- Full deck sheet ----
+const deckOpen = ref(false);
+const deckRef = ref<InstanceType<typeof BroadcastDeck> | null>(null);
+function focusDeck(event: Event) {
+  event.preventDefault();
+  nextTick(() => deckRef.value?.focus());
 }
+watch(activeMatchId, (id) => {
+  if (!id) deckOpen.value = false;
+});
 
-function liveRoundScore(m: LiveMatch): { l: number; r: number } | null {
-  const cm = currentMapFor(m);
-  if (!cm) return null;
-  return { l: cm.lineup_1_score ?? 0, r: cm.lineup_2_score ?? 0 };
-}
+// The program pauses its own player while the focus window or the deck sheet
+// shows the same stream: two WebRTC players double upstream bandwidth.
+const popoutOpen = computed(
+  () => !!activeMatchId.value && isPopoutOpen(activeMatchId.value),
+);
+const programPaused = computed(
+  () => isLive.value && (popoutOpen.value || deckOpen.value),
+);
 
-function currentMapName(m: LiveMatch): string | null {
-  return mapLabel(currentMapFor(m)?.map) || null;
-}
+const whepPhase = ref<WhepPhase | null>(null);
+// The player unmounts while paused; its last phase must not outlive it.
+watch(programPaused, () => {
+  whepPhase.value = null;
+});
 
-function matchStatusLabel(m: LiveMatch): string {
-  if (m.status === "Live") return t("stream_deck_status.live");
-  if (m.status === "Veto") return t("stream_deck_status.veto");
-  if (m.status === "WaitingForServer")
-    return t("stream_deck_status.spinning_up");
-  if (m.status === "WaitingForCheckIn") return t("stream_deck_status.check_in");
-  return m.status.toUpperCase();
-}
+const gpuTone = computed<Tone>(() =>
+  gpuTotal.value === 0 ? "bad" : !hasFreeGpu.value ? "warn" : "ok",
+);
+const capacityTone = computed<Tone>(() =>
+  isAtCapacity.value ? "warn" : "off",
+);
+
+const chipClasses =
+  "inline-flex h-8 items-center gap-1.5 rounded-md border px-2.5 text-xs font-semibold tabular-nums transition-colors duration-150";
+const toolButton =
+  "h-8 gap-1.5 rounded-md border-border bg-transparent px-2.5 text-xs font-medium";
 </script>
 
 <template>
+  <h1 class="sr-only">
+    {{ $t("layouts.app_nav.administration.control_room") }}
+  </h1>
+
   <PageTransition :delay="0">
-    <TacticalPageHeader>
-      <template #title>{{ $t("stream_deck.page_title") }}</template>
-      <template #subtitle>{{ $t("stream_deck.page_description") }}</template>
-      <template #actions>
-        <NuxtLink
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <p class="min-w-0 text-sm text-muted-foreground" aria-live="polite">
+        <template v-if="!hasLoaded">&nbsp;</template>
+        <template v-else-if="!activeStream">{{
+          $t("stream_deck.off_air")
+        }}</template>
+        <span v-else-if="isLive" class="inline-flex min-w-0 items-center gap-2">
+          <StatusDot tone="bad" live />
+          <span class="font-semibold text-foreground">{{
+            $t("pages.control_room.on_air")
+          }}</span>
+          <span class="truncate">· {{ programName }}</span>
+          <span v-if="liveSince">· <OnAirClock :since="liveSince" /></span>
+        </span>
+        <span v-else-if="isErrored" class="truncate">
+          <span class="text-destructive">{{ $t("match.stream.stopped") }}</span>
+          · {{ programName }}
+        </span>
+        <span v-else class="truncate">
+          {{ $t("pages.control_room.starting") }} · {{ programName }} ·
+          {{ stageLabel }}
+        </span>
+      </p>
+
+      <span class="grow" />
+
+      <div class="flex flex-wrap items-center gap-2">
+        <FiveStackToolTip
           v-if="gpuPoolReady"
-          to="/gpu-nodes"
-          :class="[
-            'inline-flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] backdrop-blur-sm transition-colors',
-            gpuTotal === 0
-              ? 'border-destructive/45 bg-destructive/10 text-destructive hover:bg-destructive/15'
-              : !hasFreeGpu
-                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.22)]'
-                : 'border-emerald-700/45 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/15',
-          ]"
-          :title="busyReason || $t('stream_deck.gpu_pool_hint')"
+          as-child
+          :delay-duration="200"
+          :tap-toggle="false"
         >
-          <Cpu class="size-3.5" />
-          <span class="font-semibold">GPU</span>
-          <span class="opacity-60">·</span>
-          <span class="tabular-nums">{{ gpuFree }}/{{ gpuTotal }}</span>
-        </NuxtLink>
-
-        <!-- Capacity readout. Reads n / max from StreamerStore so once
-             the backend exposes a real cap (gpu nodes × credentials)
-             this number scales without any template change. -->
-        <div
-          :class="[
-            'inline-flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] backdrop-blur-sm',
-            isAtCapacity
-              ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
-              : 'border-border/70 bg-card/40 text-muted-foreground',
-          ]"
-        >
-          <span class="opacity-70">{{ $t("stream_deck.capacity") }}</span>
-          <span class="font-semibold tabular-nums text-foreground">
-            {{ activeStreamingMatchesCount }}
-            <span class="opacity-40">/</span>
-            {{ maxStreams }}
-          </span>
-          <span
-            v-if="isAtCapacity"
-            class="text-[0.6rem] tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-          >
-            • {{ $t("stream_deck.full") }}
-          </span>
-        </div>
-      </template>
-    </TacticalPageHeader>
-  </PageTransition>
-
-  <PageTransition :delay="100">
-    <!-- Single root child for <Transition> — multiple siblings here
-         confuse Vue's animation pass and produce a flicker / empty
-         top region during the v-if swap from skeleton → cards. -->
-    <div class="mt-6 space-y-8">
-      <!-- ============ ON-AIR (active stream) ============ -->
-      <!-- Empty state — only after the first subscription result so
-           we don't briefly flash "Off air" when streams are present. -->
-      <div
-        v-if="hasLoaded && liveStreams.length === 0"
-        class="relative rounded-xl border border-dashed border-border/70 bg-card/30 p-10 text-center overflow-hidden"
-      >
-        <div
-          class="pointer-events-none absolute inset-0 opacity-40"
-          style="
-            background-image: radial-gradient(
-              circle at 50% 0%,
-              hsl(var(--tac-amber) / 0.08),
-              transparent 60%
-            );
-          "
-        />
-        <p
-          class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
-        >
-          {{ $t("stream_deck.off_air") }}
-        </p>
-        <p class="mt-1 text-sm text-muted-foreground/80">
-          {{ $t("stream_deck.off_air_description") }}
-        </p>
-      </div>
-
-      <!-- Stream cards (existing design — kept intact) -->
-      <article
-        v-for="stream in liveStreams"
-        :key="stream.id"
-        class="relative overflow-hidden rounded-xl border border-border/70 bg-card/40 backdrop-blur-sm"
-      >
-        <!-- Status accent strip on the left -->
-        <div
-          :class="[
-            'absolute inset-y-0 left-0 w-[3px]',
-            stream.is_live
-              ? 'bg-destructive shadow-[0_0_12px_hsl(var(--destructive)/0.7)]'
-              : stream.status === 'errored'
-                ? 'bg-destructive'
-                : 'bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_hsl(var(--tac-amber)/0.5)]',
-          ]"
-        />
-
-        <div class="p-5 space-y-4">
-          <!-- Header -->
-          <header class="flex flex-wrap items-start justify-between gap-3">
-            <div class="min-w-0 flex items-center gap-3">
-              <span
-                v-if="stream.is_live"
-                class="inline-flex items-center gap-1.5 rounded-sm border border-destructive/60 bg-destructive/15 px-2 py-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
-              >
-                <span
-                  class="size-1.5 rounded-full bg-destructive shadow-[0_0_8px_hsl(var(--destructive))] animate-ping-slow"
-                />
-                {{ $t("stream_deck.on_air") }}
-              </span>
-              <span
-                v-else
-                class="inline-flex items-center gap-1.5 rounded-sm border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-2 py-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
-              >
-                <span
-                  class="size-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
-                />
-                {{ statusBadgeLabel(stream) }}
-              </span>
-              <NuxtLink
-                :to="`/matches/${stream.match_id}`"
-                class="text-base font-semibold tracking-tight truncate hover:text-[hsl(var(--tac-amber))] transition-colors"
-              >
-                {{ stream.match?.lineup_1?.name ?? $t("common.team_a") }}
-                <span class="mx-1 text-muted-foreground/60 font-light">{{
-                  $t("common.vs")
-                }}</span>
-                {{ stream.match?.lineup_2?.name ?? $t("common.team_b") }}
-              </NuxtLink>
-            </div>
-
-            <div class="flex items-center gap-3 flex-shrink-0">
-              <div class="flex items-center gap-2">
-                <Label
-                  :for="`autodirector-${stream.id}`"
-                  class="text-[0.7rem] uppercase tracking-[0.16em] text-muted-foreground"
-                >
-                  {{ $t("stream_deck.auto_director") }}
-                </Label>
-                <Switch
-                  :id="`autodirector-${stream.id}`"
-                  :model-value="isAutodirector(stream)"
-                  :disabled="!stream.is_live || cs(stream.match_id).busy"
-                  @update:model-value="
-                    (v: boolean) => setAutodirector(stream.match_id, v)
-                  "
-                />
-              </div>
-
-              <!-- Tactical control bar — segmented action group with
-                 consistent mono-uppercase labels and a single shared
-                 chrome. Replaces three mismatched shadcn buttons that
-                 felt visually competitive. -->
-              <div
-                class="inline-flex items-stretch overflow-hidden rounded-md border border-border/70 bg-card/40 backdrop-blur-sm"
-              >
-                <!-- Control (open popout) — primary -->
-                <button
-                  v-if="!isPopoutOpen(stream.match_id)"
-                  type="button"
-                  class="group inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/90 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-                  @click="openPopout(stream.match_id)"
-                >
-                  <ExternalLink class="size-3.5" />
-                  {{ $t("stream_deck.control") }}
-                </button>
-
-                <!-- Popout open: focus + close as paired buttons -->
-                <template v-else>
-                  <button
-                    type="button"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors"
-                    @click="focusPopout(stream.match_id)"
-                  >
-                    <PictureInPicture2 class="size-3.5" />
-                    {{ $t("stream_deck.in_window") }}
-                  </button>
-                  <div class="w-px bg-border/70" />
-                  <button
-                    type="button"
-                    :aria-label="$t('ui.close_popout')"
-                    :title="$t('ui.close_popout')"
-                    class="inline-flex items-center justify-center px-2.5 py-1.5 text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-colors"
-                    @click="closePopout(stream.match_id)"
-                  >
-                    <X class="size-3.5" />
-                  </button>
-                </template>
-
-                <div class="w-px bg-border/70" />
-
-                <button
-                  type="button"
-                  :disabled="cs(stream.match_id).busy || !stream.is_live"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  :title="$t('replay_extras.reissue_connect')"
-                  @click="reconnectLive(stream.match_id)"
-                >
-                  <Spinner
-                    v-if="
-                      cs(stream.match_id).busy &&
-                      cs(stream.match_id).action === 'reconnect'
-                    "
-                  />
-                  <RefreshCw v-else class="size-3.5" />
-                  {{ $t("stream_deck.reconnect") }}
-                </button>
-
-                <div class="w-px bg-border/70" />
-
-                <!-- Stop — armed state turns the whole button red. The
-                   icon flips from outlined Square to filled-glow when
-                   armed so the eye registers the change before the
-                   label does. -->
-                <button
-                  type="button"
-                  :disabled="cs(stream.match_id).busy"
-                  :class="[
-                    'inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
-                    confirmStop[stream.match_id]
-                      ? 'bg-destructive text-destructive-foreground shadow-[inset_0_0_0_1px_hsl(var(--destructive)),0_0_18px_hsl(var(--destructive)/0.5)]'
-                      : 'text-destructive hover:bg-destructive/15',
-                  ]"
-                  @click="stopLive(stream.match_id)"
-                >
-                  <Spinner
-                    v-if="
-                      cs(stream.match_id).busy &&
-                      cs(stream.match_id).action === 'stop_live'
-                    "
-                  />
-                  <Square
-                    v-else
-                    :class="[
-                      'size-3.5',
-                      confirmStop[stream.match_id] ? 'fill-current' : '',
-                    ]"
-                  />
-                  {{
-                    confirmStop[stream.match_id]
-                      ? $t("common.confirm")
-                      : $t("stream_deck.stop")
-                  }}
-                </button>
-              </div>
-            </div>
-          </header>
-
-          <!-- Preview + controls — same layout in every state so the
-             card doesn't grow when the stream transitions
-             booting → live. The video container always reserves an
-             aspect-video slot; only the contents inside it swap.
-             items-start (not items-stretch) so the controls column
-             never forces the aspect-video container taller — when
-             that happens, aspect-ratio recomputes width from the
-             forced height and the video bleeds into the right column.
-             Controls use self-stretch + h-full to match video height
-             instead. -->
-          <div
-            class="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start"
-          >
-            <!-- Rostered player/coach: never connect the feed (anti-cheat). -->
-            <div
-              v-if="!canViewMatch(stream.match_id)"
-              class="flex aspect-video w-full flex-col items-center justify-center gap-3 rounded-md border border-border/60 bg-black px-6 text-center"
-            >
-              <p
-                class="font-mono text-[0.75rem] font-semibold uppercase tracking-[0.22em] text-white/90"
-              >
-                {{ $t("match.stream.access_denied") }}
-              </p>
-              <p
-                class="max-w-xs text-[0.7rem] leading-relaxed text-muted-foreground"
-              >
-                {{ $t("match.stream.access_denied_hint") }}
-              </p>
-            </div>
-
-            <StreamCanvas
-              v-else
-              :stream="stream"
-              :is-live="!!stream.is_live"
-              mode="live"
-              :header-label="$t('live_stages.stream_boot')"
-              :show-boot="true"
-              class="group aspect-video w-full overflow-hidden rounded-md border border-border/60"
-            >
-              <!-- Boot stepper with Skip control (page is streamer+). -->
-              <template #boot>
-                <BootSequence
-                  mode="live"
-                  :status="stream.status ?? 'booting'"
-                  :error-message="stream.error_message ?? null"
-                  :last-status-at="stream.last_status_at ?? null"
-                  :histories="[stream.status_history ?? []]"
-                  :header-label="$t('live_stages.stream_boot')"
-                  :can-skip="true"
-                  :skipping="!!skippingShaders[stream.match_id]"
-                  @skip="onSkipShaders(stream.match_id)"
-                />
-              </template>
-
-              <template
-                v-if="stream.is_live && isPopoutOpen(stream.match_id)"
-                #video
-              >
-                <div
-                  class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4"
-                >
-                  <PictureInPicture2
-                    class="size-7 text-[hsl(var(--tac-amber))]"
-                  />
-                  <p
-                    class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-                  >
-                    {{ $t("stream_deck.playing_in_popout") }}
-                  </p>
-                  <p class="text-xs text-muted-foreground/70 max-w-[24ch]">
-                    {{ $t("stream_deck.preview_paused") }}
-                  </p>
-                  <button
-                    type="button"
-                    class="mt-1 inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
-                    @click="focusPopout(stream.match_id)"
-                  >
-                    <PictureInPicture2 class="size-3" />
-                    {{ $t("stream_deck.bring_window_to_front") }}
-                  </button>
-                </div>
-              </template>
-
-              <div
-                v-if="stream.is_live"
-                class="absolute bottom-3 left-12 z-10 pointer-events-none opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150"
-              >
-                <StreamViewerBadge :match-id="stream.match_id" size="md" />
-              </div>
-            </StreamCanvas>
-
-            <!-- self-stretch + h-full so the controls column expands to
-               the video's aspect-video height (set by its left peer),
-               keeping the slot-grid bottom aligned with the bottom of
-               the video without forcing the video to grow. -->
-            <div
+          <template #trigger>
+            <NuxtLink
+              to="/gpu-nodes"
               :class="[
-                'flex flex-col gap-3 min-h-0 lg:h-full lg:self-stretch transition-opacity',
-                !stream.is_live || isAutodirector(stream) ? 'opacity-50' : '',
+                chipClasses,
+                TONE_BORDER[gpuTone],
+                TONE_TEXT[gpuTone],
+                'hover:bg-muted/40',
               ]"
             >
-              <!-- Cycle row -->
-              <div>
-                <span
-                  class="mb-1.5 block font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-                >
-                  {{ $t("stream_deck.cycle") }}
-                </span>
-                <div class="grid grid-cols-2 gap-1.5">
+              <Cpu class="size-3.5" />
+              <template v-if="gpuTotal === 0">{{
+                $t("pages.control_room.gpu.none")
+              }}</template>
+              <template v-else-if="!hasFreeGpu">{{
+                $t("pages.control_room.gpu.busy", {
+                  busy: gpuTotal - gpuFree,
+                  total: gpuTotal,
+                })
+              }}</template>
+              <template v-else>{{
+                $t(
+                  "pages.control_room.gpu.free",
+                  { free: gpuFree, total: gpuTotal },
+                  gpuTotal,
+                )
+              }}</template>
+            </NuxtLink>
+          </template>
+          {{ busyReason || $t("pages.control_room.gpu.hint") }}
+        </FiveStackToolTip>
+
+        <span
+          :class="[
+            chipClasses,
+            TONE_BORDER[capacityTone],
+            TONE_TEXT[capacityTone],
+          ]"
+        >
+          <Radio class="size-3.5" />
+          {{
+            $t(
+              "pages.control_room.capacity",
+              { n: activeStreamingMatchesCount, max: maxStreams },
+              maxStreams,
+            )
+          }}
+          <template v-if="isAtCapacity"
+            >· {{ $t("stream_deck.full") }}</template
+          >
+        </span>
+      </div>
+    </div>
+  </PageTransition>
+
+  <PageTransition :delay="80">
+    <div
+      class="mt-5 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)]"
+    >
+      <!-- ============ PROGRAM ============ -->
+      <section class="grid min-w-0 gap-3">
+        <div class="flex min-h-6 flex-wrap items-center gap-x-3 gap-y-1">
+          <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+            <span :class="tacticalSectionTickClasses" />
+            {{ $t("pages.control_room.program") }}
+          </div>
+          <template v-if="activeStream">
+            <NuxtLink
+              :to="`/matches/${activeMatchId}`"
+              class="min-w-0 truncate text-[0.95rem] font-semibold text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
+            >
+              {{ programName }}
+            </NuxtLink>
+            <span class="text-xs text-muted-foreground">{{
+              activeStream.mode === "tv"
+                ? $t("pages.control_room.tv_delayed")
+                : $t("common.live")
+            }}</span>
+          </template>
+        </div>
+
+        <FadeSwap>
+          <Skeleton
+            v-if="!hasLoaded"
+            key="loading"
+            class="aspect-video w-full rounded-lg"
+          />
+          <div
+            v-else-if="!activeStream"
+            key="off"
+            class="flex aspect-video w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-6 text-center"
+          >
+            <p class="text-[0.95rem] font-semibold text-foreground">
+              {{ $t("stream_deck.off_air") }}
+            </p>
+            <p class="max-w-sm text-sm text-muted-foreground">
+              {{ $t("pages.control_room.off_air_hint") }}
+            </p>
+          </div>
+          <div
+            v-else-if="!canViewProgram"
+            key="denied"
+            class="flex aspect-video w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-black px-6 text-center"
+          >
+            <p class="text-[0.95rem] font-semibold text-foreground">
+              {{ $t("match.stream.access_denied") }}
+            </p>
+            <p class="max-w-xs text-sm text-muted-foreground">
+              {{ $t("match.stream.access_denied_hint") }}
+            </p>
+          </div>
+          <StreamCanvas
+            v-else
+            :key="`program-${activeStream.id}`"
+            :stream="activeStream"
+            :is-live="isLive"
+            mode="live"
+            :show-boot="true"
+            class="group aspect-video w-full overflow-hidden rounded-lg border transition-[border-color] duration-200"
+            :class="isLive ? 'border-destructive/55' : 'border-border'"
+            @phase="whepPhase = $event"
+          >
+            <template v-if="programPaused" #video>
+              <div
+                class="flex h-full flex-col items-center justify-center gap-1.5 bg-background px-6 text-center"
+              >
+                <p class="text-[0.95rem] font-semibold text-foreground">
+                  {{
+                    deckOpen
+                      ? $t("pages.control_room.deck.paused")
+                      : $t("stream_deck.playing_in_popout")
+                  }}
+                </p>
+                <p class="max-w-sm text-sm text-muted-foreground">
+                  {{
+                    deckOpen
+                      ? $t("pages.control_room.deck.paused_hint")
+                      : $t("stream_deck.preview_paused")
+                  }}
+                </p>
+                <div v-if="!deckOpen" class="mt-2 flex flex-wrap gap-2">
                   <Button
-                    variant="secondary"
+                    variant="outline"
                     size="sm"
-                    :disabled="
-                      !stream.is_live ||
-                      cs(stream.match_id).busy ||
-                      isAutodirector(stream)
-                    "
-                    @click="specClick(stream.match_id, 'right')"
+                    :class="toolButton"
+                    @click="focusPopout(activeMatchId!)"
                   >
-                    <ChevronLeft class="size-4" />
-                    {{ $t("stream_deck.prev") }}
+                    <PictureInPicture2 class="size-3.5" />
+                    {{ $t("stream_deck.bring_window_to_front") }}
                   </Button>
                   <Button
-                    variant="secondary"
+                    variant="ghost"
                     size="sm"
-                    :disabled="
-                      !stream.is_live ||
-                      cs(stream.match_id).busy ||
-                      isAutodirector(stream)
-                    "
-                    @click="specClick(stream.match_id, 'left')"
+                    class="h-8 px-2.5 text-xs"
+                    @click="closePopout(activeMatchId!)"
                   >
-                    {{ $t("stream_deck.next") }}
-                    <ChevronRight class="size-4" />
+                    {{ $t("ui.close_popout") }}
                   </Button>
-                </div>
-              </div>
-
-              <!-- Observer target — same CT/T grid driven by GSI as the
-                 focus popout. cs2 itself decides who's on which side at
-                 halftime + every OT swap, so labels and click targets
-                 stay in lockstep with what the broadcast is actually
-                 rendering. `min-h-0` on the parent flex column lets
-                 this section shrink instead of overflowing. -->
-              <div class="flex flex-1 flex-col min-h-0">
-                <div class="mb-1.5 flex items-center justify-between">
-                  <span
-                    class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-                  >
-                    {{ $t("stream_deck.observer_target") }}
-                  </span>
-                  <button
-                    type="button"
-                    class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
-                    @click="openPopout(stream.match_id)"
-                  >
-                    {{ $t("stream_deck.use_keyboard") }} →
-                  </button>
-                </div>
-                <SpectatorGrid
-                  :match-id="stream.match_id"
-                  :is-live="!!stream.is_live"
-                  :match-type="stream.match?.options?.type"
-                  :controls-active="
-                    !!stream.is_live && !cs(stream.match_id).busy
-                  "
-                  :autodirector-on="isAutodirector(stream)"
-                  compact
-                  @press-slot="
-                    (slot: number) => specSlot(stream.match_id, slot)
-                  "
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- ============ LIVE MATCHES BOARD ============ -->
-      <!-- Multi-tile board of every live match the deck can target. A
-           click on a non-active tile either:
-             • starts a fresh stream (no pod up), or
-             • calls switchLiveMatch (pod up, swap match in place).
-           The active tile keeps a glow + "Bound" badge so the operator
-           always knows which match is currently consuming the GPU. -->
-      <section>
-        <div class="flex items-end justify-between gap-3 mb-3 px-px">
-          <div class="flex items-baseline gap-3">
-            <h2
-              class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.28em] text-foreground"
-            >
-              {{ $t("stream_deck.live_matches") }}
-            </h2>
-            <span
-              class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
-            >
-              {{ $t("stream_deck.match_count", { count: liveMatches.length }) }}
-            </span>
-          </div>
-          <span
-            v-if="activeStream"
-            class="hidden sm:inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <ArrowRightLeft class="size-3" />
-            {{ $t("stream_deck.click_another_match") }}
-          </span>
-        </div>
-
-        <!-- Empty list — loaded but nothing live. -->
-        <div
-          v-if="liveMatchesLoaded && liveMatches.length === 0"
-          class="rounded-xl border border-dashed border-border/60 bg-card/20 p-8 text-center"
-        >
-          <p
-            class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            {{ $t("stream_deck.no_live_matches") }}
-          </p>
-          <p class="mt-1 text-sm text-muted-foreground/70">
-            {{ $t("stream_deck.tiles_hint") }}
-          </p>
-        </div>
-
-        <div
-          v-else
-          class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 [grid-auto-rows:1fr]"
-        >
-          <article
-            v-for="m in liveMatches"
-            :key="m.id"
-            :class="[
-              'group relative overflow-hidden rounded-xl border bg-card transition-colors duration-200 flex flex-col',
-              activeMatchId === m.id
-                ? 'border-destructive/40'
-                : switching === m.id
-                  ? 'border-[hsl(var(--tac-amber)/0.45)]'
-                  : 'border-border hover:border-primary/30 hover:bg-muted/20',
-            ]"
-          >
-
-            <template v-if="activeMatchId === m.id">
-              <div
-                class="relative flex items-center justify-between gap-2 border-b border-border/50 px-3 py-2"
-              >
-                <span
-                  :class="[
-                    'inline-flex items-center gap-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.22em]',
-                    m.status === 'Live'
-                      ? 'text-destructive'
-                      : 'text-[hsl(var(--tac-amber))]',
-                  ]"
-                >
-                  <span
-                    :class="[
-                      'size-1.5 rounded-full',
-                      m.status === 'Live'
-                        ? 'bg-destructive shadow-[0_0_6px_hsl(var(--destructive))]'
-                        : 'bg-[hsl(var(--tac-amber))]',
-                    ]"
-                  />
-                  {{ matchStatusLabel(m) }}
-                </span>
-
-                <span
-                  v-if="currentMapName(m)"
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground truncate"
-                  :title="currentMapName(m)!"
-                >
-                  {{ currentMapName(m) }}
-                </span>
-              </div>
-
-              <div
-                class="relative flex flex-1 flex-col justify-center px-4 py-3"
-              >
-                <div
-                  class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 min-w-0"
-                >
-                  <div class="min-w-0 text-right">
-                    <p class="truncate text-sm font-semibold leading-snug">
-                      {{ m.lineup_1?.name ?? $t("common.team_a") }}
-                    </p>
-                  </div>
-
-                  <div
-                    v-if="liveRoundScore(m)"
-                    class="flex items-baseline gap-2 font-mono tabular-nums"
-                  >
-                    <span
-                      :class="[
-                        'text-2xl font-bold leading-none',
-                        liveRoundScore(m)!.l > liveRoundScore(m)!.r
-                          ? 'text-foreground'
-                          : 'text-muted-foreground/80',
-                      ]"
-                    >
-                      {{ liveRoundScore(m)!.l }}
-                    </span>
-                    <span class="text-xs text-muted-foreground/50">·</span>
-                    <span
-                      :class="[
-                        'text-2xl font-bold leading-none',
-                        liveRoundScore(m)!.r > liveRoundScore(m)!.l
-                          ? 'text-foreground'
-                          : 'text-muted-foreground/80',
-                      ]"
-                    >
-                      {{ liveRoundScore(m)!.r }}
-                    </span>
-                  </div>
-                  <div
-                    v-else
-                    class="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/60"
-                  >
-                    {{ $t("common.vs") }}
-                  </div>
-
-                  <div class="min-w-0 text-left">
-                    <p class="truncate text-sm font-semibold leading-snug">
-                      {{ m.lineup_2?.name ?? $t("common.team_b") }}
-                    </p>
-                  </div>
                 </div>
               </div>
             </template>
 
-            <MatchTableRow
-              v-else
-              :match="m"
-              compact
-              always-show
-              embedded
-              hide-overview
-              hide-stream-button
-              class="relative flex-1"
+            <template #status="{ phase, message, retry }">
+              <StreamMatchCard :match-id="activeMatchId">
+                <StreamStatusPanel
+                  :title="copyFor(phase).title"
+                  :hint="phase === 'failed' ? message : copyFor(phase).hint"
+                  :tone="copyFor(phase).tone"
+                  :progress="copyFor(phase).progress"
+                >
+                  <template v-if="phase === 'failed'" #actions>
+                    <Button size="sm" @click="retry">
+                      {{ $t("match.stream.try_again") }}
+                    </Button>
+                  </template>
+                </StreamStatusPanel>
+              </StreamMatchCard>
+            </template>
+
+            <template
+              #boot="{ status, errorMessage, lastStatusAt, statusHistory }"
+            >
+              <StreamMatchCard :match-id="activeMatchId">
+                <StreamBootStatus
+                  mode="live"
+                  :status="status"
+                  :error-message="errorMessage"
+                  :last-status-at="lastStatusAt"
+                  :histories="[statusHistory]"
+                  :title="$t('match.stream.starting')"
+                  :failed-title="$t('match.stream.stopped')"
+                  show-stage
+                  can-skip
+                  :skipping="!!skippingShaders[activeMatchId!]"
+                  @skip="onSkipShaders(activeMatchId!)"
+                >
+                  <template v-if="isErrored" #actions>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      @click="reconnectLive(activeMatchId!)"
+                    >
+                      <RefreshCw class="size-3.5" />
+                      {{ $t("stream_deck.reconnect") }}
+                    </Button>
+                    <Button size="sm" variant="ghost" @click="stopOpen = true">
+                      {{ $t("stream_deck.stop") }}
+                    </Button>
+                  </template>
+                </StreamBootStatus>
+              </StreamMatchCard>
+            </template>
+
+            <StreamLiveTag
+              v-if="isLive"
+              :match-id="activeMatchId!"
+              :dim="!!whepPhase || programPaused"
+              class="absolute left-3 top-3 z-10"
             />
-
-            <div
-              :class="[
-                'relative flex items-center justify-center gap-1.5 border-t border-border/50 px-3 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]',
-                !m.server_id
-                  ? 'text-destructive/80'
-                  : m.is_server_online
-                    ? 'text-emerald-500/80'
-                    : 'text-[hsl(var(--tac-amber))]/80',
-              ]"
+            <span
+              v-if="isLive && activeStream.mode === 'tv'"
+              class="pointer-events-none absolute right-3 top-3 z-10 rounded-[3px] bg-background/85 px-2 py-1 text-[0.7rem] text-foreground"
             >
-              <component
-                :is="!m.server_id ? ServerOff : Server"
-                class="size-3 opacity-70"
-              />
-              <span class="truncate max-w-[24ch]">
-                {{ serverLabel(m) }}
-                <template v-if="m.server_id && !m.is_server_online">
-                  · {{ $t("stream_deck.offline") }}
-                </template>
-              </span>
+              {{ $t("pages.control_room.tv_delay") }}
+            </span>
+            <!-- While live the lower third stays out of the picture until the
+                 pointer is on the monitor: the program shows what's on air,
+                 and the broadcast HUD sits under it. -->
+            <div
+              v-if="isLive && !programPaused && !whepPhase"
+              class="pointer-events-none absolute inset-0 z-[5] opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+            >
+              <StreamMatchCard :match-id="activeMatchId" :backdrop="false" />
             </div>
+          </StreamCanvas>
+        </FadeSwap>
 
-            <!-- CTA row — every match tile either opens its broadcast
-                 controls (if it's already an active stream) or starts
-                 a new pod. Capacity is pool-gated; multiple streams
-                 can run in parallel. "Switch" lives inside each active
-                 stream's broadcast controls, not as a cross-tile CTA. -->
-            <div
-              class="relative border-t border-border/50 bg-background/30 px-3 py-2"
-            >
-              <NuxtLink
-                v-if="isActiveMatch(m.id)"
-                :to="`/stream-deck/${m.id}`"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-border bg-background/40 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-foreground/90 transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
+        <template v-if="activeStream">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex h-8 items-center gap-2 pr-1">
+              <Label
+                :for="`autodirector-${activeStream.id}`"
+                class="text-sm font-normal text-muted-foreground"
               >
-                <Dot class="size-4" />
-                {{ $t("stream_deck.open_broadcast_controls") }}
-              </NuxtLink>
-
-              <div v-else class="flex gap-1.5">
-                <button
-                  type="button"
-                  :disabled="
-                    cs(m.id).busy ||
-                    !hasFreeGpu ||
-                    gpuTotal === 0 ||
-                    !deckReadiness(m).ready
-                  "
-                  class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  :title="
-                    deckReadiness(m).reason ||
-                    (!hasFreeGpu
-                      ? busyReason || $t('stream_deck.no_free_gpu')
-                      : $t('stream_deck.start_live_hint'))
-                  "
-                  @click="startLive(m.id, 'live')"
-                >
-                  <Spinner v-if="cs(m.id).busy && cs(m.id).mode === 'live'" />
-                  <Play v-else class="size-3.5" />
-                  {{ $t("common.live") }}
-                </button>
-                <button
-                  type="button"
-                  :disabled="
-                    cs(m.id).busy ||
-                    !hasFreeGpu ||
-                    gpuTotal === 0 ||
-                    !deckReadiness(m).ready
-                  "
-                  class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-border/60 bg-card/40 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  :title="
-                    deckReadiness(m).reason ||
-                    (!hasFreeGpu
-                      ? busyReason || $t('stream_deck.no_free_gpu')
-                      : $t('stream_deck.start_tv_hint'))
-                  "
-                  @click="startLive(m.id, 'tv')"
-                >
-                  <Spinner v-if="cs(m.id).busy && cs(m.id).mode === 'tv'" />
-                  <Tv v-else class="size-3.5" />
-                  {{ $t("streams.mode_tv") }}
-                </button>
-              </div>
+                {{ $t("stream_deck.auto_director") }}
+              </Label>
+              <Switch
+                :id="`autodirector-${activeStream.id}`"
+                :model-value="isAutodirector(activeStream)"
+                :disabled="!isLive || cs(activeMatchId!).busy"
+                @update:model-value="
+                  (v: boolean) => setAutodirector(activeMatchId!, v)
+                "
+              />
             </div>
-          </article>
-        </div>
+            <div class="flex gap-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                :class="toolButton"
+                :disabled="
+                  !isLive ||
+                  cs(activeMatchId!).busy ||
+                  isAutodirector(activeStream)
+                "
+                @click="void specClick(activeMatchId!, 'right')"
+              >
+                <ChevronLeft class="size-3.5" />
+                {{ $t("stream_deck.prev") }}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                :class="toolButton"
+                :disabled="
+                  !isLive ||
+                  cs(activeMatchId!).busy ||
+                  isAutodirector(activeStream)
+                "
+                @click="void specClick(activeMatchId!, 'left')"
+              >
+                {{ $t("stream_deck.next") }}
+                <ChevronRight class="size-3.5" />
+              </Button>
+            </div>
+
+            <span class="grow" />
+
+            <template v-if="popoutOpen">
+              <Button
+                variant="outline"
+                size="sm"
+                :class="[
+                  toolButton,
+                  'border-[hsl(var(--tac-amber)/0.45)] text-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))]',
+                ]"
+                @click="focusPopout(activeMatchId!)"
+              >
+                <PictureInPicture2 class="size-3.5" />
+                {{ $t("stream_deck.in_window") }}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                class="text-muted-foreground"
+                :title="$t('ui.close_popout')"
+                :aria-label="$t('ui.close_popout')"
+                @click="closePopout(activeMatchId!)"
+              >
+                <X class="size-3.5" />
+              </Button>
+            </template>
+            <Button
+              v-else
+              variant="outline"
+              size="sm"
+              :class="toolButton"
+              :title="$t('pages.control_room.open_focus_window')"
+              @click="openPopout(activeMatchId!)"
+            >
+              <ExternalLink class="size-3.5" />
+              {{ $t("stream_deck.control") }}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              :class="toolButton"
+              @click="deckOpen = true"
+            >
+              <SlidersHorizontal class="size-3.5" />
+              {{ $t("pages.control_room.full_deck") }}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              :class="toolButton"
+              :disabled="(!isLive && !isErrored) || cs(activeMatchId!).busy"
+              :title="$t('replay_extras.reissue_connect')"
+              @click="reconnectLive(activeMatchId!)"
+            >
+              <RefreshCw class="size-3.5" />
+              {{ $t("stream_deck.reconnect") }}
+            </Button>
+            <span class="w-1.5" aria-hidden="true" />
+            <Button
+              variant="outline"
+              size="sm"
+              :class="[
+                toolButton,
+                'border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive',
+              ]"
+              :disabled="cs(activeMatchId!).busy"
+              @click="stopOpen = true"
+            >
+              <Square class="size-3.5" />
+              {{ $t("stream_deck.stop") }}
+            </Button>
+          </div>
+
+          <div
+            v-if="isLive && isAutodirector(activeStream)"
+            class="flex items-start gap-2 rounded-lg border border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.06)] px-3 py-2 text-[0.8rem] text-foreground"
+          >
+            <Bot class="mt-0.5 size-4 shrink-0 text-[hsl(var(--tac-amber))]" />
+            <p>
+              <span class="font-semibold">{{
+                $t("stream_deck.autodirector_on")
+              }}</span>
+              {{ $t("stream_deck.autodirector_hint") }}
+            </p>
+          </div>
+
+          <SpectatorGrid
+            :match-id="activeMatchId!"
+            :is-live="isLive"
+            :match-type="activeStream.match?.options?.type"
+            :controls-active="isLive && !cs(activeMatchId!).busy"
+            :autodirector-on="isAutodirector(activeStream)"
+            compact
+            @press-slot="(slot: number) => specSlot(activeMatchId!, slot)"
+          />
+        </template>
       </section>
+
+      <!-- ============ PREVIEW ============ -->
+      <aside class="grid min-w-0 gap-3">
+        <div class="flex min-h-6 items-center justify-between gap-3">
+          <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+            <span :class="tacticalSectionTickClasses" />
+            {{ $t("pages.control_room.preview") }}
+          </div>
+          <span
+            v-if="liveMatches.length"
+            class="text-xs tabular-nums text-muted-foreground"
+          >
+            {{
+              $t(
+                "stream_deck.match_count",
+                { count: liveMatches.length },
+                liveMatches.length,
+              )
+            }}
+          </span>
+        </div>
+
+        <div
+          v-if="liveMatches.length"
+          class="grid gap-2 rounded-lg border border-border bg-card/40 p-3"
+        >
+          <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+            <span :class="tacticalSectionTickClasses" />
+            {{ $t("pages.control_room.take") }}
+          </div>
+          <p v-if="!selectedMatch" class="text-xs text-muted-foreground">
+            {{ $t("pages.control_room.take_pick") }}
+          </p>
+          <p
+            v-else-if="onAirIds.has(selectedMatch.id)"
+            class="text-xs text-muted-foreground"
+          >
+            {{
+              $t("pages.control_room.take_already", {
+                match: nameOf(selectedMatch),
+              })
+            }}
+          </p>
+          <template v-else>
+            <div class="flex">
+              <Button
+                size="sm"
+                :class="[
+                  createButtonClasses,
+                  'min-w-0 flex-1 justify-center',
+                  mode === 'start' ? 'rounded-r-none' : '',
+                ]"
+                :disabled="!!block || !!switching"
+                @click="take"
+              >
+                <span class="truncate">{{
+                  mode === "switch"
+                    ? $t("pages.control_room.take_switch", {
+                        match: nameOf(selectedMatch),
+                      })
+                    : $t("pages.control_room.take_go_live", {
+                        match: nameOf(selectedMatch),
+                      })
+                }}</span>
+              </Button>
+              <DropdownMenu v-if="mode === 'start'">
+                <DropdownMenuTrigger as-child>
+                  <Button
+                    size="sm"
+                    :class="[
+                      createButtonClasses,
+                      'w-8 rounded-l-none border-l border-black/20 px-0',
+                    ]"
+                    :disabled="!!block"
+                    :aria-label="$t('pages.control_room.take_more')"
+                  >
+                    <ChevronDown class="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" class="w-56">
+                  <DropdownMenuItem
+                    @select="startLive(selectedMatch.id, 'live')"
+                  >
+                    <Play class="size-4" />
+                    {{ $t("pages.control_room.go_live") }}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem @select="startLive(selectedMatch.id, 'tv')">
+                    <Tv class="size-4" />
+                    {{ $t("pages.control_room.start_tv") }}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <p
+              class="text-xs leading-snug"
+              :class="block ? TONE_TEXT.warn : TONE_TEXT.off"
+            >
+              {{
+                block
+                  ? blockText(block)
+                  : mode === "switch"
+                    ? $t("pages.control_room.take_switch_hint")
+                    : $t("pages.control_room.take_start_hint")
+              }}
+            </p>
+          </template>
+        </div>
+
+        <FadeSwap>
+          <div v-if="!liveMatchesLoaded" key="loading" class="grid gap-4">
+            <Skeleton
+              v-for="n in 3"
+              :key="n"
+              class="aspect-video w-full rounded-lg"
+            />
+          </div>
+          <SectionEmpty
+            v-else-if="!liveMatches.length"
+            key="empty"
+            :title="$t('stream_deck.no_live_matches')"
+            :description="$t('pages.control_room.no_live_matches_hint')"
+          />
+          <TransitionGroup
+            v-else
+            key="list"
+            tag="div"
+            name="cr-tile"
+            class="grid gap-4 max-lg:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]"
+          >
+            <ControlRoomPreview
+              v-for="m in previews"
+              :key="m.id"
+              :match="m"
+              :selected="selectedId === m.id"
+              :on-air="onAirStateFor(m.id)"
+              v-bind="previewRowProps(m.id)"
+              @select="selectedId = m.id"
+            />
+          </TransitionGroup>
+        </FadeSwap>
+      </aside>
     </div>
   </PageTransition>
+
+  <Sheet v-model:open="deckOpen">
+    <SheetContent
+      class="flex w-full flex-col gap-0 overflow-y-auto sm:max-w-4xl"
+      @open-auto-focus="focusDeck"
+    >
+      <SheetHeader class="pr-8 text-left">
+        <SheetTitle class="truncate text-base font-semibold">{{
+          programName
+        }}</SheetTitle>
+        <SheetDescription>{{
+          $t("pages.control_room.deck.sheet_description")
+        }}</SheetDescription>
+      </SheetHeader>
+      <BroadcastDeck
+        v-if="activeMatchId"
+        ref="deckRef"
+        :key="activeMatchId"
+        :match-id="activeMatchId"
+        variant="sheet"
+        class="mt-5"
+        @stopped="deckOpen = false"
+      />
+    </SheetContent>
+  </Sheet>
+
+  <StopBroadcastDialog
+    v-model:open="stopOpen"
+    :match-name="programName"
+    :stop="stopProgram"
+  />
 </template>
+
+<style scoped>
+/* A tile entering or leaving the preview column: 4px rise and fade on the
+   one clock; the others glide into place. */
+.cr-tile-enter-active {
+  transition:
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cr-tile-leave-active {
+  transition:
+    opacity 110ms ease-in,
+    transform 110ms ease-in;
+}
+.cr-tile-enter-from {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.cr-tile-leave-to {
+  opacity: 0;
+}
+.cr-tile-move {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-tile-enter-active,
+  .cr-tile-leave-active,
+  .cr-tile-move {
+    transition: none;
+  }
+}
+</style>

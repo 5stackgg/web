@@ -197,7 +197,11 @@ describe("CS2 build panels", () => {
           },
           results: {
             warnings: [
-              { set: "upstream-swiftly", signature: "CBaseEntity_Use", count: 2 },
+              {
+                set: "upstream-swiftly",
+                signature: "CBaseEntity_Use",
+                count: 2,
+              },
             ],
           },
         },
@@ -356,7 +360,9 @@ describe("CS2 build panels", () => {
     });
 
     expect(wrapper.text()).toContain("Building");
-    expect(wrapper.text()).not.toContain("A build is already queued or running");
+    expect(wrapper.text()).not.toContain(
+      "A build is already queued or running",
+    );
     expect(wrapper.find("button").attributes("disabled")).toBeDefined();
   });
 });
@@ -373,7 +379,7 @@ describe("CS2 build card", () => {
       },
     });
 
-  it("starts folded behind one status, the worst of both jobs", async () => {
+  it("starts folded to one line: the worst status, the build and each job", async () => {
     useRuntimeConfig().public.webDomain = "5stack.gg";
     runs.gamedata = {
       ...gamedata,
@@ -392,13 +398,15 @@ describe("CS2 build card", () => {
     expect(toggle.attributes("aria-expanded")).toBe("false");
     expect(text).toContain("Needs attention");
     expect(wrapper.find(".animate-ping").exists()).toBe(true);
-    expect(text).not.toContain("25537370");
+    expect(text).toContain("public");
+    expect(text).toContain("25537370");
+    expect(text).toContain("Gamedata Warning");
+    expect(text).toContain("Map assets Building");
     expect(text).not.toContain("Re-validate");
 
     await toggle.trigger("click");
 
     expect(toggle.attributes("aria-expanded")).toBe("true");
-    expect(wrapper.text()).toContain("25537370");
     expect(wrapper.text()).toContain("Re-validate");
   });
 

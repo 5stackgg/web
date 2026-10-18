@@ -2594,6 +2594,11 @@
             "mode_note": "vinder"
           }
         },
+        "encoding": {
+          "title": "Videokodning",
+          "description": "Vælg GPU-kodning med CPU som reserve, kun GPU eller kun CPU. AMD eller NVIDIA registreres på hver GPU-node. Gælder nye livestreams, demoer, højdepunkter og utility-videoer.",
+          "updated": "Indstillinger for videokodning opdateret"
+        },
         "streaming": {
           "title": "Streaming",
           "access_section": "Tilskueradgang",

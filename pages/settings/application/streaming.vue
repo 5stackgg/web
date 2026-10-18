@@ -5,6 +5,7 @@ import { ExternalLink } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
+import VideoEncoderField from "~/components/settings/VideoEncoderField.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
 </script>
@@ -119,6 +120,13 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
           id="encoding"
           :title="$t('pages.settings.application.streaming.encoding_section')"
         >
+          <NuxtLink
+            to="/settings/application/encoding"
+            class="inline-flex text-sm font-medium text-primary hover:underline"
+          >
+            {{ $t("pages.settings.application.encoding.title") }}
+          </NuxtLink>
+
           <FormField v-slot="{ componentField }" name="live_video_codec">
             <FormItem>
               <FormLabel>{{
@@ -148,37 +156,7 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
             </FormItem>
           </FormField>
 
-          <FormField v-slot="{ componentField }" name="video_encoder">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.streaming.video_encoder")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.streaming.video_encoder_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="auto">
-                    {{ $t("pages.settings.application.streaming.encoder_auto") }}
-                  </SelectItem>
-                  <SelectItem value="gpu">
-                    {{ $t("pages.settings.application.streaming.encoder_gpu") }}
-                  </SelectItem>
-                  <SelectItem value="cpu">
-                    {{ $t("pages.settings.application.streaming.encoder_cpu") }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+          <VideoEncoderField />
         </SettingsSection>
 
         <SettingsSection

@@ -2594,6 +2594,11 @@
             "mode_note": "vinner"
           }
         },
+        "encoding": {
+          "title": "Videokodning",
+          "description": "Välj GPU-kodning med CPU som reserv, endast GPU eller endast CPU. AMD eller NVIDIA identifieras på varje GPU-nod. Gäller nya liveströmmar, demon, höjdpunkter och utility-videor.",
+          "updated": "Inställningar för videokodning uppdaterade"
+        },
         "streaming": {
           "title": "Streaming",
           "access_section": "Åskådaråtkomst",

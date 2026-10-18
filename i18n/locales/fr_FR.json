@@ -2594,6 +2594,11 @@
             "mode_note": "l'emporte"
           }
         },
+        "encoding": {
+          "title": "Encodage vidéo",
+          "description": "Choisissez le GPU avec repli sur le CPU, le GPU uniquement ou le CPU uniquement. AMD ou NVIDIA est détecté sur chaque nœud GPU. S'applique aux nouveaux directs, démos, temps forts et vidéos utilitaires.",
+          "updated": "Paramètres d'encodage vidéo mis à jour"
+        },
         "streaming": {
           "title": "Streaming",
           "access_section": "Accès spectateur",

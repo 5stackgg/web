@@ -70,6 +70,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         labelKey: "layouts.application_settings.groups.content_media",
         items: [
           {
+            path: "/settings/application/encoding",
+            labelKey: "pages.settings.application.encoding.title",
+            order: -1,
+          },
+          {
             path: "/settings/application/news",
             labelKey: "pages.settings.application.news.title",
             order: 0,

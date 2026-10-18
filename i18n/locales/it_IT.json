@@ -2594,6 +2594,11 @@
             "mode_note": "prevale"
           }
         },
+        "encoding": {
+          "title": "Codifica video",
+          "description": "Scegli la codifica GPU con ripiego sulla CPU, solo GPU o solo CPU. AMD o NVIDIA viene rilevato su ogni nodo GPU. Si applica a nuove dirette, demo, highlight e video delle utilità.",
+          "updated": "Impostazioni di codifica video aggiornate"
+        },
         "streaming": {
           "title": "Streaming",
           "access_section": "Accesso spettatori",

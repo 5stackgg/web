@@ -2594,6 +2594,11 @@
             "mode_note": "优先级最高"
           }
         },
+        "encoding": {
+          "title": "视频编码",
+          "description": "选择支持 CPU 回退的 GPU 编码、仅 GPU 或仅 CPU。每个 GPU 节点会检测 AMD 或 NVIDIA。适用于新建的直播、演示、精彩集锦和道具视频。",
+          "updated": "视频编码设置已更新"
+        },
         "streaming": {
           "title": "直播",
           "access_section": "观战权限",

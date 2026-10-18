@@ -2594,6 +2594,11 @@
             "mode_note": "최우선"
           }
         },
+        "encoding": {
+          "title": "비디오 인코딩",
+          "description": "CPU 대체를 허용하는 GPU 인코딩, GPU 전용 또는 CPU 전용을 선택하세요. 각 GPU 노드에서 AMD 또는 NVIDIA가 감지됩니다. 새 실시간 방송, 데모, 하이라이트 및 유틸리티 영상에 적용됩니다.",
+          "updated": "비디오 인코딩 설정을 업데이트했습니다"
+        },
         "streaming": {
           "title": "스트리밍",
           "access_section": "관전자 접근",

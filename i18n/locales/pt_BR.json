@@ -2594,6 +2594,11 @@
             "mode_note": "prevalece"
           }
         },
+        "encoding": {
+          "title": "Codificação de vídeo",
+          "description": "Escolha GPU com CPU como alternativa, somente GPU ou somente CPU. AMD ou NVIDIA é detectada em cada nó GPU. Aplica-se a novas transmissões, demos, destaques e vídeos de utilitários.",
+          "updated": "Configurações de codificação de vídeo atualizadas"
+        },
         "streaming": {
           "title": "Streaming",
           "access_section": "Acesso de Espectador",

@@ -2594,6 +2594,11 @@
             "mode_note": "setzt sich durch"
           }
         },
+        "encoding": {
+          "title": "Videokodierung",
+          "description": "Wähle GPU-Kodierung mit CPU-Ausweichmodus, nur GPU oder nur CPU. AMD oder NVIDIA wird auf jedem GPU-Knoten erkannt. Gilt für neue Livestreams, Demos, Highlights und Utility-Videos.",
+          "updated": "Einstellungen zur Videokodierung aktualisiert"
+        },
         "streaming": {
           "title": "Streaming",
           "access_section": "Zuschauer-Zugriff",

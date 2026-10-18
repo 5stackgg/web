@@ -2594,6 +2594,11 @@
             "mode_note": "最優先"
           }
         },
+        "encoding": {
+          "title": "動画エンコード",
+          "description": "CPU フォールバック付き GPU、GPU のみ、CPU のみから選択します。各 GPU ノードで AMD または NVIDIA を自動検出します。新しいライブ配信、デモ、ハイライト、ユーティリティ動画に適用されます。",
+          "updated": "動画エンコード設定を更新しました"
+        },
         "streaming": {
           "title": "配信",
           "access_section": "観戦者アクセス",

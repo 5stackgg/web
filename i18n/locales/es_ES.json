@@ -2594,6 +2594,11 @@
             "mode_note": "prevalece"
           }
         },
+        "encoding": {
+          "title": "Codificación de vídeo",
+          "description": "Elige codificación GPU con respaldo CPU, solo GPU o solo CPU. AMD o NVIDIA se detecta en cada nodo GPU. Se aplica a nuevas emisiones, demos, momentos destacados y vídeos de utilidad.",
+          "updated": "Ajustes de codificación de vídeo actualizados"
+        },
         "streaming": {
           "title": "Retransmisión",
           "access_section": "Acceso de espectadores",

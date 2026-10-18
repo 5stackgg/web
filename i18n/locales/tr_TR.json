@@ -2594,6 +2594,11 @@
             "mode_note": "önceliklidir"
           }
         },
+        "encoding": {
+          "title": "Video Kodlama",
+          "description": "CPU yedekli GPU kodlamasını, yalnızca GPU'yu veya yalnızca CPU'yu seçin. Her GPU düğümünde AMD veya NVIDIA algılanır. Yeni canlı yayınlar, demolar, öne çıkanlar ve ekipman videoları için geçerlidir.",
+          "updated": "Video kodlama ayarları güncellendi"
+        },
         "streaming": {
           "title": "Yayın",
           "access_section": "İzleyici erişimi",

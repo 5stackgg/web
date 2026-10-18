@@ -2594,6 +2594,11 @@
             "mode_note": "優先權最高"
           }
         },
+        "encoding": {
+          "title": "影片編碼",
+          "description": "選擇支援 CPU 備援的 GPU 編碼、僅 GPU 或僅 CPU。每個 GPU 節點會偵測 AMD 或 NVIDIA。適用於新建的直播、示範、精彩片段和道具影片。",
+          "updated": "影片編碼設定已更新"
+        },
         "streaming": {
           "title": "直播",
           "access_section": "觀戰權限",

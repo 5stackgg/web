@@ -2594,6 +2594,11 @@
             "mode_note": "wins"
           }
         },
+        "encoding": {
+          "title": "Video Encoding",
+          "description": "Choose GPU encoding with CPU fallback, GPU only, or CPU only. AMD or NVIDIA is detected on each GPU node. Applies to new live streams, demos, highlights and utility videos.",
+          "updated": "Updated Video Encoding Settings"
+        },
         "streaming": {
           "title": "Streaming",
           "access_section": "Spectator access",

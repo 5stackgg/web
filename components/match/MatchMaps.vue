@@ -7,12 +7,14 @@ import {
   Download,
   ChevronRight,
   ChevronLeft,
+  History,
   PlayCircle,
   RefreshCw,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import TimeAgo from "~/components/TimeAgo.vue";
 import MatchSelectMapWinner from "~/components/match/MatchSelectMapWinner.vue";
+import MatchRestoreRoundDialog from "~/components/match/MatchRestoreRoundDialog.vue";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
@@ -74,6 +76,22 @@ import mapLabel from "~/utilities/mapLabel";
       </div>
       <!-- Status badge + demo controls top-right -->
       <div class="absolute top-2 right-2 z-10 flex items-center gap-1.5">
+        <Tooltip v-if="canRestoreRound">
+          <TooltipTrigger as-child>
+            <Button
+              size="xs"
+              variant="ghost"
+              class="inline-flex h-6 w-6 p-0 text-white/70 hover:text-white"
+              :aria-label="$t('match.recovery.restore.title')"
+              @click.stop="restoreOpen = true"
+            >
+              <History class="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>{{
+            $t("match.recovery.restore.title")
+          }}</TooltipContent>
+        </Tooltip>
         <Badge
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
           :variant="matchMap.is_current_map ? 'destructive' : 'secondary'"
@@ -345,6 +363,11 @@ import mapLabel from "~/utilities/mapLabel";
         />
       </div>
     </div>
+    <MatchRestoreRoundDialog
+      v-if="canRestoreRound || restoreOpen"
+      v-model:open="restoreOpen"
+      :match="match"
+    />
   </div>
 </template>
 
@@ -383,6 +406,7 @@ export default {
       isParsingDemo: false,
       mapHasMesh: true,
       mapHasRadar: true,
+      restoreOpen: false,
     };
   },
   mounted() {
@@ -401,6 +425,15 @@ export default {
     });
   },
   computed: {
+    canRestoreRound() {
+      return (
+        this.match.is_organizer &&
+        this.matchMap.is_current_map &&
+        this.match.status === e_match_status_enum.Live &&
+        this.match.options?.type !== "Rush" &&
+        ["Warmup", "Live", "Overtime", "Paused"].includes(this.matchMap.status)
+      );
+    },
     // Anchored on the server's own timestamp, so a refresh keeps counting from
     // when processing actually began rather than restarting at page load.
     // The upload is elapsed time, not a countdown: it depends on transfer

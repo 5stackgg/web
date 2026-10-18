@@ -221,6 +221,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         labelKey: "layouts.application_settings.groups.infrastructure",
         items: [
           {
+            path: "/settings/application/updates",
+            labelKey: "pages.settings.application.updates.title",
+            order: -1,
+          },
+          {
             path: "/settings/application/servers",
             labelKey: "pages.settings.application.servers.title",
           },

@@ -1,5 +1,17 @@
 <script lang="ts" setup>
 import { AlertCircle } from "lucide-vue-next";
+import { toast } from "@/components/ui/toast";
+import { generateMutation } from "~/graphql/graphqlGen";
+import { useApolloClient } from "@vue/apollo-composable";
+
+const { client } = useApolloClient();
+const { t } = useI18n();
+async function updateServices() {
+  await client.mutate({
+    mutation: generateMutation({ updateServices: { success: true } }),
+  });
+  toast({ title: t("layouts.system_update.updating") });
+}
 </script>
 
 <template>
@@ -9,80 +21,77 @@ import { AlertCircle } from "lucide-vue-next";
         <Button variant="ghost" size="icon" class="flex items-center">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <AlertCircle class="h-4 w-4 animate-pulse text-orange-500" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <span>{{ $t("layouts.system_update.title") }}</span>
-              </TooltipContent>
+              <TooltipTrigger
+                ><AlertCircle class="h-4 w-4 animate-pulse text-orange-500"
+              /></TooltipTrigger>
+              <TooltipContent>{{
+                $t("layouts.system_update.title")
+              }}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent class="max-w-md">
+      <AlertDialogContent class="max-w-2xl">
         <AlertDialogHeader>
-          <AlertDialogTitle class="text-2xl font-bold">
-            {{ $t("layouts.system_update.title") }}
-          </AlertDialogTitle>
+          <AlertDialogTitle class="text-2xl font-bold">{{
+            $t("layouts.system_update.title")
+          }}</AlertDialogTitle>
           <AlertDialogDescription>
             <div class="flex flex-col space-y-4">
-              <template v-if="hasServiceUpdate">
-                <p class="text-gray-600 mb-2">
-                  {{ $t("layouts.system_update.description") }}
-                </p>
-
-                <div>
-                  <ul class="list-disc list-inside mt-2 space-y-1">
-                    <template
-                      v-for="update in updates"
-                      :key="`${update.service}-${update.pod}`"
-                    >
-                      <li
-                        class="flex items-center"
-                        v-if="update.service !== 'panel'"
-                      >
-                        <span class="mr-2">•</span>
-                        {{
-                          update.plugin
-                            ? `${update.plugin} (${update.service})`
-                            : update.service
-                        }}
-                      </li>
-                    </template>
-                  </ul>
-                </div>
-              </template>
-
-              <div
-                v-if="hasPanelUpdate"
-                class="flex flex-col space-y-4 text-sm text-gray-500 italic"
-              >
-                {{ $t("layouts.system_update.panel_update") }}
-
-                <code
-                  class="block bg-gray-800 p-2 rounded font-mono text-sm"
+              <p>{{ $t("layouts.system_update.description") }}</p>
+              <ul class="space-y-3">
+                <li
+                  v-for="update in updates"
+                  :key="update.service + '-' + (update.pod || '')"
+                  class="space-y-1"
                 >
-                  git pull && ./update.sh
-                </code>
-              </div>
-
-              <p>
-                {{ $t("layouts.system_update.note") }}
-
-                <a
-                  href="https://docs.5stack.gg/common-issues/system-not-updating"
-                  target="_blank"
-                  class="text-blue-500"
-                >
-                  {{ $t("layouts.system_update.fix_link") }}
-                </a>
+                  <span class="font-medium">{{
+                    update.plugin
+                      ? update.plugin + " (" + update.service + ")"
+                      : update.service
+                  }}</span>
+                  <div
+                    class="break-all text-xs text-muted-foreground"
+                    v-if="update.currentVersion"
+                  >
+                    {{
+                      $t("pages.settings.application.updates.installed_build")
+                    }}: {{ update.currentImage || "" }}
+                    {{ update.currentVersion }}
+                  </div>
+                  <div
+                    class="break-all text-xs text-muted-foreground"
+                    v-if="update.newVersion"
+                  >
+                    {{
+                      $t("pages.settings.application.updates.selected_build")
+                    }}:
+                    {{
+                      update.targetImage ||
+                      (update.repository
+                        ? update.repository + "@" + update.ref
+                        : "")
+                    }}
+                    {{ update.newVersion }}
+                  </div>
+                </li>
+              </ul>
+              <p v-if="hasPanelUpdate">
+                {{ $t("pages.settings.application.updates.apply_description") }}
               </p>
+              <NuxtLink
+                to="/settings/application/updates"
+                class="text-primary underline"
+              >
+                {{ $t("pages.settings.application.updates.title") }}
+              </NuxtLink>
+              <p>{{ $t("layouts.system_update.note") }}</p>
             </div>
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter class="space-x-2">
           <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction @click="updateServices">{{
+          <AlertDialogAction v-if="hasServiceUpdate" @click="updateServices">{{
             $t("common.update")
           }}</AlertDialogAction>
         </AlertDialogFooter>
@@ -92,38 +101,21 @@ import { AlertCircle } from "lucide-vue-next";
 </template>
 
 <script lang="ts">
-import { toast } from "@/components/ui/toast";
-import { generateMutation } from "~/graphql/graphqlGen";
-
 export default {
-  methods: {
-    async updateServices() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          updateServices: {
-            success: true,
-          },
-        }),
-      });
-
-      toast({
-        title: this.$t("layouts.system_update.updating"),
-      });
-    },
-  },
   computed: {
     updates() {
-      const updates = useApplicationSettingsStore().settings?.find(
-        ({ name }) => {
-          return name === "updates";
-        },
+      const value = useApplicationSettingsStore().settings?.find(
+        ({ name }) => name === "updates",
       )?.value;
-
-      if (!updates) {
+      if (!value) return [];
+      try {
+        const rows = JSON.parse(value);
+        return Array.isArray(rows)
+          ? rows.filter((row) => row && typeof row.service === "string")
+          : [];
+      } catch {
         return [];
       }
-
-      return JSON.parse(updates);
     },
     hasServiceUpdate() {
       return this.updates.some((update) => update.service !== "panel");

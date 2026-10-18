@@ -1,10 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import { provideApolloClient } from "@vue/apollo-composable";
 import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
 import ClipEditorBar from "~/components/clips/ClipEditorBar.vue";
 import RenderHighlightForPlayerDialog from "~/components/match/RenderHighlightForPlayerDialog.vue";
-import HighlightsSettings from "~/pages/settings/application/highlights.vue";
+import EncodingSettings from "~/pages/settings/application/encoding.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
 import { useClipEditor } from "~/composables/useClipEditor";
@@ -134,7 +135,7 @@ describe("clip render requests", () => {
   });
 });
 
-describe("highlights settings page", () => {
+describe("video encoding settings page", () => {
   afterEach(() => {
     unmount?.();
     unmount = null;
@@ -143,13 +144,14 @@ describe("highlights settings page", () => {
   });
 
   const mountPage = async () => {
+    provideApolloClient((useNuxtApp() as any).$apollo.defaultClient);
     mutate = vi.fn().mockResolvedValue({ data: {} });
     vi.spyOn(
       (useNuxtApp() as any).$apollo.defaultClient,
       "mutate",
     ).mockImplementation(mutate);
 
-    const wrapper = await mountSuspended(HighlightsSettings, {
+    const wrapper = await mountSuspended(EncodingSettings, {
       global: {
         mixins: (useNuxtApp().vueApp as any)._context.mixins,
         stubs: { StorageBreakdown: true, OrphanedUploadsButton: true },
@@ -165,19 +167,18 @@ describe("highlights settings page", () => {
         name.includes("clip_fps") || name.includes("clip_resolution"),
     );
 
-  it("loads and saves the admin-only clip settings", async () => {
+  it("loads admin-only clip settings without rewriting unchanged values", async () => {
     useApplicationSettingsStore().settings = [
       { name: "clip_fps", value: "30" },
       { name: "clip_resolution", value: "720p" },
     ];
     const wrapper = await mountPage();
+    expect((wrapper.vm as any).form.values.clip_fps).toBe("30");
+    expect((wrapper.vm as any).form.values.clip_resolution).toBe("720p");
 
     await (wrapper.vm as any).updateSettings();
 
-    expect(saved()).toEqual([
-      { name: "clip_fps", value: "30" },
-      { name: "clip_resolution", value: "720p" },
-    ]);
+    expect(mutate).not.toHaveBeenCalled();
   });
 
   it("binds the clip fields to the admin-only names", async () => {

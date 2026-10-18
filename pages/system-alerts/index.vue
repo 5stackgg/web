@@ -58,7 +58,11 @@ import {
 import { order_by } from "@/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
-import { systemAlertAdminFields } from "~/graphql/systemAlertsGraphql";
+import {
+  systemAlertActivationsSubscription,
+  systemAlertAdminFields,
+} from "~/graphql/systemAlertsGraphql";
+import { schemaHasField } from "~/utilities/schemaHasType";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { dateLocale } from "~/utilities/dateLocale";
 import {
@@ -77,6 +81,8 @@ import {
   roundTo5Minutes,
   showingSummary,
   toMs,
+  windowOf,
+  type AlertActivation,
   type AlertType,
   type RangeKey,
   type TimelineAlert,
@@ -588,7 +594,61 @@ function noteExpiries() {
 
 let rangeChosen = remembered.range !== null;
 
+// On/off history: null until the api serves system_alert_activations (web
+// can deploy first), and the timeline keeps estimating from created/updated.
+const activations = ref<AlertActivation[] | null>(null);
+const historyGate = ref<"checking" | "off" | "on">("checking");
+const historyLoaded = ref(false);
+// Hold the skeleton until the bars can be drawn from the right source.
+const waiting = computed(
+  () =>
+    !loaded.value ||
+    (alerts.value.length > 0 &&
+      historyGate.value !== "off" &&
+      !historyLoaded.value),
+);
+
+// Periods reaching into the range; picking another range subscribes again.
+// In between the window only slides forward with Now: new periods start
+// before its end, and ones that slide out are dropped when drawn.
+function watchActivations(key: RangeKey) {
+  const [from, to] = windowOf(key, Date.now());
+  useSubscriptionManager().subscribe(
+    "system-alerts:activations",
+    getGraphqlClient()
+      .subscribe({
+        query: systemAlertActivationsSubscription(iso(from), iso(to)),
+        context: { optional: true },
+      })
+      .subscribe({
+        next: ({ data }) => {
+          activations.value =
+            ((data as any)?.system_alert_activations as AlertActivation[]) ??
+            [];
+          historyLoaded.value = true;
+        },
+        // A stream that fails first keeps the estimate; one that dies later
+        // keeps the periods it last had.
+        error: () => {
+          historyLoaded.value = true;
+        },
+      }),
+  );
+}
+watch(
+  () => (historyGate.value === "on" && loaded.value ? range.value : null),
+  (key) => {
+    if (key) watchActivations(key);
+  },
+);
+
 onMounted(() => {
+  schemaHasField(getGraphqlClient(), "system_alerts", "activations").then(
+    (has) => {
+      historyGate.value = has ? "on" : "off";
+    },
+  );
+
   ticker = setInterval(() => {
     now.value = Date.now();
     noteExpiries();
@@ -633,6 +693,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (ticker) clearInterval(ticker);
   useSubscriptionManager().unsubscribe("system-alerts:admin");
+  useSubscriptionManager().unsubscribe("system-alerts:activations");
 });
 
 const fieldLabel = "text-sm font-medium text-foreground";
@@ -705,7 +766,7 @@ const fieldLabel = "text-sm font-medium text-foreground";
   <PageTransition :delay="60" class="mt-5">
     <FadeSwap>
       <div
-        v-if="!loaded"
+        v-if="waiting"
         key="loading"
         class="grid gap-px overflow-hidden rounded-lg border border-border"
       >
@@ -741,6 +802,7 @@ const fieldLabel = "text-sm font-medium text-foreground";
       <div v-else key="timeline" class="grid gap-2">
         <AlertTimeline
           :alerts="view"
+          :activations="activations"
           :now="now"
           :range="range"
           :include-older="includeOlder"

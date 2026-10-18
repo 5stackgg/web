@@ -3777,9 +3777,7 @@
           "confirm_outdated_title": "Wyrenderować nieaktualne podglądy ponownie?",
           "confirm_queue": "Dodaj rendery do kolejki",
           "lineups_title": "Ustawki, które potrzebują renderu",
-          "lineups_sub": "Wersja renderu v{version}",
-          "render_one": "Najpierw wyrenderuj jeden",
-          "render_one_waiting": "Czekam, aż to renderowanie się skończy. Gdy zgłosi aktualną wersję, Renderuj nieaktualne zostanie odblokowane."
+          "lineups_sub": "Wersja renderu v{version}"
         },
         "updated_ago": "Zaktualizowano {since} temu"
       }
@@ -7590,8 +7588,6 @@
           "map_filter": "Filtruj według mapy",
           "render_missing": "Renderuj brakujące ({total})",
           "rerender_outdated": "Renderuj nieaktualne ponownie ({total})",
-          "pipeline_behind": "Ostatnie renderowanie użyło starszej wersji",
-          "pipeline_behind_hint": "Ostatnie ukończone renderowanie nagrano w wersji {pipeline}; to API oczekuje wersji {version}. Pody renderujące pobierają najnowszy obraz przy starcie, więc najpierw wyrenderuj jeden lineup. Gdy skończy się w wersji {version}, Renderuj nieaktualne zostanie odblokowane.",
           "load_failed": "Nie udało się wczytać pokrycia podglądami",
           "confirm_missing_title": "Renderować brakujące podglądy?",
           "confirm_missing": "To doda do kolejki render dla {count} ustawki bez podglądu. | To doda do kolejki render dla {count} ustawek bez podglądu.",
@@ -7870,6 +7866,15 @@
         "created_showing": "Alert utworzony. Jest już wyświetlany.",
         "created_off": "Alert utworzony. Pozostaje wyłączony, dopóki go nie włączysz.",
         "expired": "„{name}” wygasł i zniknął z banera"
+      },
+      "period": {
+        "estimated": "Szacunkowo: sprzed zapisywania historii włączeń i wyłączeń",
+        "on": "Włączony {time}",
+        "on_by": "Włączony {time} przez {name}",
+        "off": "Wyłączony {time}",
+        "off_by": "Wyłączony {time} przez {name}",
+        "showing_now": "Wyświetlany teraz",
+        "duration": "Wyświetlany przez {duration}"
       }
     },
     "admin_home": {
@@ -7942,7 +7947,6 @@
         },
         "renders": {
           "failed": "{count} render nie powiódł się w ciągu ostatniej doby | {count} renderów nie powiodło się w ciągu ostatniej doby",
-          "behind": "Pipeline renderowania jest w tyle: nagrywa v{pipeline}, API oczekuje v{version}",
           "missing": "{count} lineup nie ma podglądu | {count} lineupów nie ma podglądu",
           "outdated": "{count} podgląd lineupu jest nieaktualny | {count} podglądów lineupów jest nieaktualnych"
         },

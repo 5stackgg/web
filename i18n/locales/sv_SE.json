@@ -3777,9 +3777,7 @@
           "confirm_outdated_title": "Rendera föråldrade förhandsvisningar igen?",
           "confirm_queue": "Köa renderingar",
           "lineups_title": "Uppställningar som behöver en rendering",
-          "lineups_sub": "Renderingsversion v{version}",
-          "render_one": "Rendera en först",
-          "render_one_waiting": "Väntar på att den renderingen blir klar. När den rapporterar den aktuella versionen låses Rendera om föråldrade upp."
+          "lineups_sub": "Renderingsversion v{version}"
         },
         "updated_ago": "Uppdaterad för {since} sedan"
       }
@@ -7590,8 +7588,6 @@
           "map_filter": "Filtrera på bana",
           "render_missing": "Rendera saknade ({total})",
           "rerender_outdated": "Rendera om föråldrade ({total})",
-          "pipeline_behind": "Senaste renderingen använde en äldre version",
-          "pipeline_behind_hint": "Den senaste färdiga renderingen filmades med version {pipeline}; detta API förväntar sig version {version}. Render-poddar hämtar den senaste avbildningen när de startar, så rendera en lineup först. När den är klar med version {version} låses Rendera om föråldrade upp.",
           "load_failed": "Kunde inte läsa in täckningen av förhandsvisningar",
           "confirm_missing_title": "Rendera saknade förhandsvisningar?",
           "confirm_missing": "Det här köar en rendering för {count} uppställning utan förhandsvisning. | Det här köar en rendering för {count} uppställningar utan förhandsvisning.",
@@ -7870,6 +7866,15 @@
         "created_showing": "Avisering skapad. Den visas nu.",
         "created_off": "Avisering skapad. Den är av tills du slår på den.",
         "expired": "”{name}” gick ut och visas inte längre"
+      },
+      "period": {
+        "estimated": "Uppskattat: från innan på/av-historiken sparades",
+        "on": "Påslagen {time}",
+        "on_by": "Påslagen {time} av {name}",
+        "off": "Avstängd {time}",
+        "off_by": "Avstängd {time} av {name}",
+        "showing_now": "Visas nu",
+        "duration": "Visades i {duration}"
       }
     },
     "admin_home": {
@@ -7942,7 +7947,6 @@
         },
         "renders": {
           "failed": "{count} rendering misslyckades det senaste dygnet | {count} renderingar misslyckades det senaste dygnet",
-          "behind": "Renderingspipelinen ligger efter: den filmar v{pipeline}, API:et förväntar sig v{version}",
           "missing": "{count} lineup saknar förhandsvisning | {count} lineups saknar förhandsvisning",
           "outdated": "{count} lineup-förhandsvisning är inaktuell | {count} lineup-förhandsvisningar är inaktuella"
         },

@@ -280,6 +280,20 @@ export const SERVER_LABEL_KEYS: Record<string, string> = {
   backups: "pages.database.tabs.backups",
 };
 
+// Keys a link (the admin home's) sets for one visit and the page then drops.
+export const LINK_KEYS = ["query", "slow"];
+
+// ?query=<queryid> opens that statement's detail; ?slow=1 on the queries tab
+// shows only the slow ones, whatever view was remembered.
+export function explorerLink(query: Record<string, unknown>) {
+  const read = (value: unknown) => (Array.isArray(value) ? value[0] : value);
+  const queryid = read(query.query);
+  return {
+    queryid: typeof queryid === "string" && queryid ? queryid : null,
+    slowOnly: read(query.tab) === "queries" && read(query.slow) === "1",
+  };
+}
+
 export const thresholdLabel = (ms: number) =>
   ms >= 1000 ? `${ms / 1000} s` : `${ms} ms`;
 

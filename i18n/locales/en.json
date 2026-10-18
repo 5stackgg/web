@@ -3777,9 +3777,7 @@
           "confirm_outdated_title": "Re-render outdated previews?",
           "confirm_queue": "Queue renders",
           "lineups_title": "Lineups that need a render",
-          "lineups_sub": "Render version v{version}",
-          "render_one": "Render one first",
-          "render_one_waiting": "Waiting for that render to finish. Once it reports the current version, Re-render outdated unlocks."
+          "lineups_sub": "Render version v{version}"
         },
         "updated_ago": "Updated {since} ago"
       }
@@ -7592,8 +7590,6 @@
           "map_filter": "Filter by map",
           "render_missing": "Render Missing ({total})",
           "rerender_outdated": "Re-render Outdated ({total})",
-          "pipeline_behind": "The last render used an older version",
-          "pipeline_behind_hint": "The last finished render was filmed at version {pipeline}; this API expects version {version}. Render pods pull the newest image when they start, so render one lineup first. Once it finishes at version {version}, Re-render outdated unlocks.",
           "load_failed": "Could not load preview coverage",
           "confirm_missing_title": "Render Missing Previews?",
           "confirm_missing": "This queues a render for {count} lineup that has no preview. | This queues a render for {count} lineups that have no preview.",
@@ -7872,6 +7868,15 @@
         "created_showing": "Alert created. It's showing now.",
         "created_off": "Alert created. It's off until you turn it on.",
         "expired": "‘{name}’ expired and left the banner"
+      },
+      "period": {
+        "estimated": "Estimated: from before on/off history was kept",
+        "on": "Turned on {time}",
+        "on_by": "Turned on {time} by {name}",
+        "off": "Turned off {time}",
+        "off_by": "Turned off {time} by {name}",
+        "showing_now": "Showing now",
+        "duration": "Shown for {duration}"
       }
     },
     "admin_home": {
@@ -7944,7 +7949,6 @@
         },
         "renders": {
           "failed": "{count} render failed in the last day | {count} renders failed in the last day",
-          "behind": "The render pipeline is behind: it films v{pipeline}, the api expects v{version}",
           "missing": "{count} lineup has no preview | {count} lineups have no preview",
           "outdated": "{count} lineup preview is outdated | {count} lineup previews are outdated"
         },

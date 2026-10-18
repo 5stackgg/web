@@ -589,6 +589,40 @@ export function lastSampleTime(service: ServiceStat): number | null {
   return Number.isFinite(t) ? t : null;
 }
 
+// ---- deep links ----
+
+export type MetricsLink = { node: string | null; service: string | null };
+
+const queryString = (value: unknown): string | null => {
+  const first = Array.isArray(value) ? value[0] : value;
+  return typeof first === "string" && first ? first : null;
+};
+
+// ?node=<id> narrows the services to a node; ?service=<name> (with the node
+// when the name runs on several) opens that service's row.
+export function metricsLink(
+  query: Record<string, unknown>,
+): MetricsLink | null {
+  const node = queryString(query.node);
+  const service = queryString(query.service);
+  return node || service ? { node, service } : null;
+}
+
+export function linkedServiceKey(
+  rows: Array<{ key: string; service: { node: string; name: string } }>,
+  link: MetricsLink | null,
+): string | null {
+  if (!link?.service) {
+    return null;
+  }
+  const row = rows.find(
+    (entry) =>
+      entry.service.name === link.service &&
+      (!link.node || entry.service.node === link.node),
+  );
+  return row?.key ?? null;
+}
+
 // The Logs page only has tabs for these; every other service still streams in
 // the sheet, it just has no tab to hand off to.
 export const LOG_TABS = [

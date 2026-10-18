@@ -6,8 +6,10 @@ import {
   cpuPercent,
   fleetSummary,
   level,
+  linkedServiceKey,
   logTabFor,
   memoryShareLevel,
+  metricsLink,
   nodeDisk,
   nodeIssues,
   serviceCpuSpark,
@@ -314,5 +316,34 @@ describe("services table cells", () => {
       "7c1e2a90",
     );
     expect(shortNodeId("5stack-panel")).toBe("5stack-panel");
+  });
+});
+
+describe("deep links", () => {
+  it("reads a node and a service from the query", () => {
+    expect(metricsLink({ node: "n1" })).toEqual({ node: "n1", service: null });
+    expect(metricsLink({ service: ["api", "web"], node: "" })).toEqual({
+      node: null,
+      service: "api",
+    });
+    expect(metricsLink({ tab: "x" })).toBeNull();
+    expect(metricsLink({})).toBeNull();
+  });
+
+  it("finds the linked service on its node, or the first by that name", () => {
+    const rows = [
+      { key: "n1|api", service: { node: "n1", name: "api" } },
+      { key: "n1|connector", service: { node: "n1", name: "connector" } },
+      { key: "n2|connector", service: { node: "n2", name: "connector" } },
+    ];
+    expect(linkedServiceKey(rows, { node: "n2", service: "connector" })).toBe(
+      "n2|connector",
+    );
+    expect(linkedServiceKey(rows, { node: null, service: "connector" })).toBe(
+      "n1|connector",
+    );
+    expect(linkedServiceKey(rows, { node: "n2", service: "api" })).toBeNull();
+    expect(linkedServiceKey(rows, { node: "n1", service: null })).toBeNull();
+    expect(linkedServiceKey(rows, null)).toBeNull();
   });
 });

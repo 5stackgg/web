@@ -23,7 +23,12 @@ import MetricsAttention from "~/components/system-metrics/MetricsAttention.vue";
 import ServiceMetricsTable from "~/components/system-metrics/ServiceMetricsTable.vue";
 import ServiceLogsSheet from "~/components/system-metrics/ServiceLogsSheet.vue";
 
-definePageMeta({ middleware: "admin" });
+definePageMeta({
+  middleware: "admin",
+  // A link's ?node= and ?service= are read and then dropped from the URL:
+  // without this the page key changes and the whole route remounts.
+  persistQueryKeys: ["node", "service"],
+});
 </script>
 
 <template>
@@ -198,8 +203,10 @@ definePageMeta({ middleware: "admin" });
             :sort-key="sortKey"
             :sort-dir="sortDir"
             :now="updatedAt ?? Date.now()"
+            :reveal="revealKey"
             @sort="setSort"
             @logs="openLogs"
+            @revealed="linked = null"
           />
         </FadeSwap>
       </ManageSection>
@@ -224,6 +231,8 @@ import {
   fleetSummary,
   isOnline,
   lastSampleTime,
+  linkedServiceKey,
+  metricsLink,
   nodeDisk,
   serviceCpu,
   serviceCpuSpark,
@@ -233,6 +242,7 @@ import {
   shortNodeId,
   warnedServer,
   type MetricIssue,
+  type MetricsLink,
   type MetricsNode,
   type NodeStats,
   type ServiceRow,
@@ -262,14 +272,35 @@ const VIEW_VALIDATORS = {
 
 export default {
   data() {
+    const view = readRememberedView(
+      "system-metrics",
+      VIEW_DEFAULTS,
+      VIEW_VALIDATORS,
+    );
+    // A link (the admin home's) opens on every service of its node, whatever
+    // filters were left on, for this visit only: nothing here is remembered.
+    const linked = metricsLink(this.$route.query);
     return {
       search: "",
-      ...readRememberedView("system-metrics", VIEW_DEFAULTS, VIEW_VALIDATORS),
+      ...view,
+      ...(linked && {
+        scope: "all" as const,
+        onlyOnline: false,
+        onlyEnabled: false,
+        serviceNode: linked.node ?? "__all",
+      }),
+      linked: linked as MetricsLink | null,
       nodeStats: {} as Record<string, NodeStats | null>,
       updatedAt: null as number | null,
       logsOpen: false,
       logsTarget: null as ServiceStat | null,
     };
+  },
+  mounted() {
+    if (this.linked) {
+      const { node: _node, service: _service, ...rest } = this.$route.query;
+      void this.$router.replace({ query: rest });
+    }
   },
   methods: {
     onNodeStats(nodeId: string, stats: NodeStats | null) {
@@ -422,6 +453,10 @@ export default {
           spark: serviceCpuSpark(service),
         };
       });
+    },
+    // The linked service's row, once the table has it.
+    revealKey(): string | null {
+      return linkedServiceKey(this.allRows, this.linked);
     },
     attentionCount(): number {
       return this.allRows.filter((row) => !row.stale && row.severity).length;

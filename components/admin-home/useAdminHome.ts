@@ -247,7 +247,6 @@ const coverageQuery = generateQuery({
     { map_name: $("map_name", "String") },
     {
       version: true,
-      pipeline_version: true,
       total: true,
       current: true,
       missing: true,

@@ -28,3 +28,27 @@ export function absoluteTime(ms: number): string {
     minute: "2-digit",
   });
 }
+
+// How long a period lasted: "45 min", "3 hr 20 min", "2 days 4 hr".
+export function durationText(ms: number): string {
+  const unit = (value: number, unit: "minute" | "hour" | "day") =>
+    new Intl.NumberFormat(dateLocale(), {
+      style: "unit",
+      unit,
+      unitDisplay: "short",
+    }).format(value);
+  const pair = (
+    big: number,
+    bigUnit: "hour" | "day",
+    small: number,
+    smallUnit: "minute" | "hour",
+  ) =>
+    small
+      ? `${unit(big, bigUnit)} ${unit(small, smallUnit)}`
+      : unit(big, bigUnit);
+  const minutes = Math.max(1, Math.round(ms / MINUTE));
+  if (minutes < 60) return unit(minutes, "minute");
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return pair(hours, "hour", minutes % 60, "minute");
+  return pair(Math.floor(hours / 24), "day", hours % 24, "hour");
+}

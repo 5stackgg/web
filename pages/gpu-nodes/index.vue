@@ -34,6 +34,9 @@ import { useListKeyboard } from "~/composables/useListKeyboard";
 
 definePageMeta({
   middleware: "admin",
+  // A link's ?node= is read and then dropped from the URL: without this the
+  // page key changes and the whole route remounts.
+  persistQueryKeys: ["node"],
 });
 
 // ↑/↓ walk a table's rows, Enter opens the GPU's panel, Esc closes it. Each
@@ -537,6 +540,7 @@ import {
   saveRememberedView,
 } from "~/composables/useRememberedView";
 import { observeDockTier, type DockTier } from "~/composables/dockTier";
+import { linkedNodeId } from "~/components/game-server-nodes/nodeInspector";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 import { useRenderQueueStatusStore } from "~/stores/RenderQueueStatusStore";
 import {
@@ -606,6 +610,9 @@ export default {
       // The panel is moving between aside and sheet: both fade.
       tierSwap: false,
       stopTier: null as (() => void) | null,
+      // A link from another page (/gpu-nodes?node=<id>, the admin home's),
+      // held until the GPUs are in.
+      linkedNode: (this.$route.query.node ?? null) as unknown,
     };
   },
   mounted(this: any) {
@@ -617,6 +624,12 @@ export default {
     }, 15 * 1000);
     this.stopTier = observeDockTier(this.$refs.page, this.onTier);
     document.addEventListener("keydown", this.onKeydown);
+    // Read once: a reload doesn't open the panel again.
+    if (this.linkedNode !== null) {
+      const { node: _node, ...rest } = this.$route.query;
+      void this.$router.replace({ query: rest });
+    }
+    this.readNodeLink();
   },
   beforeUnmount(this: any) {
     if (this.ticker) clearInterval(this.ticker);
@@ -637,6 +650,7 @@ export default {
           this.filters = { ...this.filters, region: "" };
         }
       }
+      this.readNodeLink();
     },
     viewSignature(this: any) {
       saveRememberedView<GpuView>(
@@ -835,6 +849,25 @@ export default {
     },
   },
   methods: {
+    // The linked GPU's panel opens once the GPUs are in and the dock tier is
+    // known (docked or a sheet, by the room there is).
+    readNodeLink(this: any) {
+      if (this.linkedNode === null || this.loading || !this.$refs.page) return;
+      const id = linkedNodeId(this.linkedNode, this.gpuNodes);
+      this.linkedNode = null;
+      if (!id) return;
+      if (!this.visibleNodes.some((node: any) => node.id === id)) {
+        this.clearAll();
+      }
+      this.openPanel(id);
+      this.$nextTick(() =>
+        requestAnimationFrame(() =>
+          (this.$refs.page as HTMLElement | undefined)
+            ?.querySelector(`.gpn-gpus [data-list-row="${CSS.escape(id)}"]`)
+            ?.scrollIntoView({ block: "center" }),
+        ),
+      );
+    },
     openPanel(this: any, id: string, logs = false) {
       this.tierSwap = false;
       this.logsOpen = logs;

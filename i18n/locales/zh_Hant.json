@@ -3777,9 +3777,7 @@
           "confirm_outdated_title": "要重新算繪過時的預覽嗎？",
           "confirm_queue": "加入算繪佇列",
           "lineups_title": "需要算繪的點位",
-          "lineups_sub": "算繪版本 v{version}",
-          "render_one": "先算繪一個",
-          "render_one_waiting": "正在等待該算繪完成。回報目前版本後，即可使用「重新算繪過時項目」。"
+          "lineups_sub": "算繪版本 v{version}"
         },
         "updated_ago": "{since}前更新"
       }
@@ -7590,8 +7588,6 @@
           "map_filter": "依地圖篩選",
           "render_missing": "算繪缺少的 ({total})",
           "rerender_outdated": "重新算繪過舊的 ({total})",
-          "pipeline_behind": "上次算繪使用了舊版本",
-          "pipeline_behind_hint": "上次完成的算繪以版本 {pipeline} 拍攝，而此 API 預期版本 {version}。算繪 Pod 啟動時會拉取最新映像，所以請先算繪一個陣容。它以版本 {version} 完成後，即可使用「重新算繪過時項目」。",
           "load_failed": "無法載入預覽涵蓋情況",
           "confirm_missing_title": "算繪缺少的預覽？",
           "confirm_missing": "將為 {count} 個沒有預覽的點位排入算繪。 | 將為 {count} 個沒有預覽的點位排入算繪。",
@@ -7870,6 +7866,15 @@
         "created_showing": "公告已建立，現在正在顯示。",
         "created_off": "公告已建立，在你開啟前保持關閉。",
         "expired": "「{name}」已過期，已從橫幅中移除"
+      },
+      "period": {
+        "estimated": "估算：來自開始記錄開關歷史之前",
+        "on": "{time} 已開啟",
+        "on_by": "{time} 由 {name} 開啟",
+        "off": "{time} 已關閉",
+        "off_by": "{time} 由 {name} 關閉",
+        "showing_now": "正在顯示",
+        "duration": "顯示了 {duration}"
       }
     },
     "admin_home": {
@@ -7942,7 +7947,6 @@
         },
         "renders": {
           "failed": "過去一天有 {count} 個算繪失敗 | 過去一天有 {count} 個算繪失敗",
-          "behind": "算繪管線落後了：目前錄製 v{pipeline}，API 預期 v{version}",
           "missing": "{count} 個道具點位沒有預覽 | {count} 個道具點位沒有預覽",
           "outdated": "{count} 個道具點位預覽已過時 | {count} 個道具點位預覽已過時"
         },

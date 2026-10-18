@@ -232,8 +232,6 @@ export type UtilityRenderGap = {
 export type UtilityRenderCoverage = {
   /** The render version this api expects. */
   version: number;
-  /** What the last finished render reported; null until one has. */
-  pipeline_version: number | null;
   total: number;
   current: number;
   missing: number;

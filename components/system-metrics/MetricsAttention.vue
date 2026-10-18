@@ -350,11 +350,13 @@ const rowLeave =
                 <div class="flex items-center justify-end gap-1">
                   <Button as-child variant="outline" size="sm">
                     <NuxtLink
-                      :to="
-                        issue.gpuIndex != null
-                          ? '/gpu-nodes'
-                          : '/game-server-nodes'
-                      "
+                      :to="{
+                        path:
+                          issue.gpuIndex != null
+                            ? '/gpu-nodes'
+                            : '/game-server-nodes',
+                        query: { node: issue.nodeId },
+                      }"
                     >
                       {{ $t("pages.system_metrics.attention.open_node") }}
                     </NuxtLink>

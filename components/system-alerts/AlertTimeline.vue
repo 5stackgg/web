@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { absoluteTime, relativeTime } from "~/utilities/alertTimeFormat";
+import {
+  absoluteTime,
+  durationText,
+  relativeTime,
+} from "~/utilities/alertTimeFormat";
 import { computed, ref, watch, type Component } from "vue";
 import { useI18n } from "vue-i18n";
 import { Info, TriangleAlert, OctagonAlert, Lock } from "lucide-vue-next";
@@ -10,25 +14,35 @@ import { useListKeyboard } from "~/composables/useListKeyboard";
 import {
   alertLabel,
   alertState,
-  barsOf,
-  inWindow,
+  groupActivations,
+  inWindowOf,
+  laneBarsOf,
   sortAlerts,
   startOf,
   ticksOf,
   toMs,
   windowOf,
+  type AlertActivation,
   type AlertType,
+  type Bars,
+  type HistoryBars,
+  type Period,
   type RangeKey,
+  type Segment,
   type TimelineAlert,
 } from "~/utilities/alertTimeline";
 
 // One lane per alert: a label column (severity, title, state line and the
-// Showing switch) and a bar from when it went up to when it ends -- or to
-// Now and fading on when it has no end. The alert open in the editor draws
-// the part ahead of Now in amber, with a dashed marker on the end time
-// being picked.
+// Showing switch) and its bars. With on/off history every period it was on
+// is a segment with its own tooltip, estimated ones hatched; without it, one
+// bar from when it went up to when it ends. Either way a showing alert runs
+// on past Now to its end time, fading on when it has no end, and the alert
+// open in the editor draws that part in amber, with a dashed marker on the
+// end time being picked.
 const props = defineProps<{
   alerts: TimelineAlert[];
+  // null: the api doesn't serve on/off history yet.
+  activations: AlertActivation[] | null;
   now: number;
   range: RangeKey;
   includeOlder: boolean;
@@ -115,6 +129,12 @@ watch(
   },
 );
 
+const rowsById = computed(() =>
+  props.activations ? groupActivations(props.activations) : null,
+);
+const rowsOf = (id: string) =>
+  rowsById.value ? (rowsById.value.get(id) ?? []) : null;
+
 const visible = computed(() => {
   const byId = new Map(props.alerts.map((a) => [a.id, a]));
   const sorted = order.value
@@ -122,7 +142,7 @@ const visible = computed(() => {
     .filter((a): a is TimelineAlert => !!a);
   return props.includeOlder
     ? sorted
-    : sorted.filter((a) => inWindow(a, win.value[0]));
+    : sorted.filter((a) => inWindowOf(a, rowsOf(a.id), win.value, props.now));
 });
 const hasOlder = computed(() => visible.value.length < props.alerts.length);
 
@@ -135,7 +155,9 @@ type Lane = {
   sub: string;
   showing: boolean;
   tip: string;
-  bars: ReturnType<typeof barsOf>;
+  // One of the two: the created/updated estimate, or on/off history.
+  bars: Bars | null;
+  history: HistoryBars | null;
 };
 
 function rel(ms: number) {
@@ -192,6 +214,12 @@ function tipFor(view: TimelineAlert): string {
   ].join(" · ");
 }
 
+function drawn(lane: ReturnType<typeof laneBarsOf>) {
+  return lane.kind === "history"
+    ? { bars: null, history: lane.bars }
+    : { bars: lane.bars, history: null };
+}
+
 const lanes = computed<Lane[]>(() => {
   const out: Lane[] = [];
   if (props.draft) {
@@ -205,7 +233,7 @@ const lanes = computed<Lane[]>(() => {
       sub: t("pages.system_alerts.lane.draft"),
       showing: false,
       tip: t("pages.system_alerts.tip.draft"),
-      bars: barsOf(d, win.value, props.now, { draft: true }),
+      ...drawn(laneBarsOf(d, null, win.value, props.now, { draft: true })),
     });
   }
   for (const a of visible.value) {
@@ -221,7 +249,9 @@ const lanes = computed<Lane[]>(() => {
       // The switch follows the saved row, not the form.
       showing: alertState(a, props.now) === "live",
       tip: tipFor(view),
-      bars: barsOf(view, win.value, props.now, { editing }),
+      ...drawn(
+        laneBarsOf(view, rowsOf(a.id), win.value, props.now, { editing }),
+      ),
     });
   }
   return out;
@@ -232,6 +262,44 @@ function segStyle(seg: { x: number; w: number }, type: AlertType) {
     "--c": `hsl(${severity[type].bar})`,
     transform: `translateX(${(seg.x * 100).toFixed(3)}%) scaleX(${seg.w.toFixed(4)})`,
   };
+}
+
+// The hatch tile is divided by the bar's own scaleX so its stripes keep
+// their size at any length.
+function periodStyle(seg: Segment, type: AlertType) {
+  return { ...segStyle(seg, type), "--w": Math.max(seg.w, 0.001).toFixed(4) };
+}
+
+// Start, end (or Showing now), how long, and who turned it on and off.
+function periodLines(period: Period, view: TimelineAlert): string[] {
+  const start = abs(period.start);
+  const end = abs(period.end);
+  const on = period.startedBy?.name
+    ? t("pages.system_alerts.period.on_by", {
+        time: start,
+        name: period.startedBy.name,
+      })
+    : t("pages.system_alerts.period.on", { time: start });
+  let off: string;
+  if (!period.open || alertState(view, props.now) === "off") {
+    off = period.endedBy?.name
+      ? t("pages.system_alerts.period.off_by", {
+          time: end,
+          name: period.endedBy.name,
+        })
+      : t("pages.system_alerts.period.off", { time: end });
+  } else if (period.expired) {
+    off = t("pages.system_alerts.lane.expired", { time: end });
+  } else {
+    off = t("pages.system_alerts.period.showing_now");
+  }
+  return [
+    on,
+    off,
+    t("pages.system_alerts.period.duration", {
+      duration: durationText(period.end - period.start),
+    }),
+  ];
 }
 
 function capStyle(end: { x: number; open: boolean }) {
@@ -372,7 +440,12 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
             </span>
           </div>
 
-          <FiveStackToolTip as-child :delay-duration="250" :tap-toggle="false">
+          <FiveStackToolTip
+            v-if="lane.bars"
+            as-child
+            :delay-duration="250"
+            :tap-toggle="false"
+          >
             <template #trigger>
               <div class="tl-track">
                 <div class="tl-layer">
@@ -400,6 +473,75 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
             </template>
             {{ lane.tip }}
           </FiveStackToolTip>
+
+          <div v-else-if="lane.history" class="tl-track tl-hist">
+            <div class="tl-layer">
+              <FiveStackToolTip
+                v-for="seg in lane.history.periods"
+                :key="seg.key"
+                as-child
+                :delay-duration="120"
+              >
+                <template #trigger>
+                  <i
+                    class="tl-bar"
+                    :class="[
+                      seg.tone,
+                      { est: seg.period.estimated, nil: seg.w === 0 },
+                    ]"
+                    :style="periodStyle(seg, lane.alert.type)"
+                  />
+                </template>
+                <span class="grid gap-0.5 tabular-nums">
+                  <span
+                    v-if="seg.period.estimated"
+                    class="text-muted-foreground"
+                    >{{ $t("pages.system_alerts.period.estimated") }}</span
+                  >
+                  <span
+                    v-for="(line, i) in periodLines(seg.period, lane.alert)"
+                    :key="i"
+                    >{{ line }}</span
+                  >
+                </span>
+              </FiveStackToolTip>
+              <FiveStackToolTip
+                as-child
+                :delay-duration="120"
+                :disabled="lane.history.ahead.w === 0"
+              >
+                <template #trigger>
+                  <i
+                    class="tl-bar"
+                    :class="[
+                      lane.history.ahead.tone,
+                      {
+                        nil: lane.history.ahead.w === 0,
+                        open: lane.history.ahead.open,
+                      },
+                    ]"
+                    :style="segStyle(lane.history.ahead, lane.alert.type)"
+                  />
+                </template>
+                <span class="tabular-nums">{{ endLabel(lane.alert) }}</span>
+              </FiveStackToolTip>
+            </div>
+            <div
+              v-if="lane.history.end"
+              class="tl-cap"
+              :style="capStyle(lane.history.end)"
+            >
+              <i class="tl-capl" />
+              <span
+                class="tl-capt"
+                :class="{
+                  l: lane.history.end.open || lane.history.end.x > 0.72,
+                }"
+                >{{ endLabel(lane.alert) }}</span
+              >
+            </div>
+            <i class="tl-now" :style="{ left: pct(now) }" aria-hidden="true" />
+          </div>
         </div>
       </TransitionGroup>
 
@@ -595,6 +737,42 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
 .tl-bar.nil {
   opacity: 0;
 }
+/* Periods are hoverable: a taller hit area than the 14px bar. */
+.tl-hist .tl-bar::before {
+  content: "";
+  position: absolute;
+  inset: -8px 0;
+}
+/* Estimated periods (backfilled from before on/off history was kept) are
+   hatched over a fainter fill. */
+.tl-bar.est {
+  --hatch: color-mix(in hsl, var(--c) 50%, transparent);
+  background-color: color-mix(in hsl, var(--c) 10%, transparent);
+  background-image: linear-gradient(
+    to top right,
+    var(--hatch) 25%,
+    transparent 25% 50%,
+    var(--hatch) 50% 75%,
+    transparent 75%
+  );
+  background-size: calc(6px / var(--w)) 6px;
+}
+.tl-bar.est.off {
+  --hatch: hsl(var(--muted-foreground) / 0.4);
+  background-color: hsl(var(--muted-foreground) / 0.08);
+}
+/* Phones hide the shared Now line with the axis; each slim track marks its
+   own. */
+.tl-now {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: hsl(var(--tac-amber) / 0.85);
+  pointer-events: none;
+  z-index: 2;
+}
 .tl-cap {
   position: absolute;
   inset: 0;
@@ -670,6 +848,23 @@ function onLaneKey(event: KeyboardEvent, lane: Lane) {
   }
   .tl-lab {
     border-right: 0;
+  }
+  /* With on/off history a lane keeps a slim track under its label, Now
+     marked on it. */
+  .tl-track.tl-hist {
+    display: block;
+    height: 16px;
+    margin: -2px 12px 8px;
+  }
+  .tl-hist .tl-bar {
+    height: 8px;
+    margin-top: -4px;
+  }
+  .tl-hist .tl-now {
+    display: block;
+  }
+  .tl-hist .tl-cap {
+    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {

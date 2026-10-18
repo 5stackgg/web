@@ -3787,9 +3787,7 @@
           "confirm_outdated_title": "重新渲染过时的预览？",
           "confirm_queue": "加入渲染队列",
           "lineups_title": "需要渲染的点位",
-          "lineups_sub": "渲染版本 v{version}",
-          "render_one": "先渲染一个",
-          "render_one_waiting": "正在等待该渲染完成。报告当前版本后，即可使用“重新渲染过时项”。"
+          "lineups_sub": "渲染版本 v{version}"
         },
         "updated_ago": "{since}前更新"
       }
@@ -7599,8 +7597,6 @@
           "map_filter": "按地图筛选",
           "render_missing": "渲染缺少的 ({total})",
           "rerender_outdated": "重新渲染过旧的 ({total})",
-          "pipeline_behind": "上次渲染使用了旧版本",
-          "pipeline_behind_hint": "上次完成的渲染使用版本 {pipeline} 拍摄，而此 API 期望版本 {version}。渲染 Pod 启动时会拉取最新镜像，所以请先渲染一个阵容。它以版本 {version} 完成后，即可使用“重新渲染过时项”。",
           "load_failed": "无法加载预览覆盖情况",
           "confirm_missing_title": "渲染缺少的预览？",
           "confirm_missing": "将为 {count} 个没有预览的点位排队渲染。 | 将为 {count} 个没有预览的点位排队渲染。",
@@ -7879,6 +7875,15 @@
         "created_showing": "公告已创建，现在正在显示。",
         "created_off": "公告已创建，在你开启前保持关闭。",
         "expired": "“{name}”已过期，已从横幅中移除"
+      },
+      "period": {
+        "estimated": "估算：来自开始记录开关历史之前",
+        "on": "{time} 已开启",
+        "on_by": "{time} 由 {name} 开启",
+        "off": "{time} 已关闭",
+        "off_by": "{time} 由 {name} 关闭",
+        "showing_now": "正在显示",
+        "duration": "显示了 {duration}"
       }
     },
     "admin_home": {
@@ -7951,7 +7956,6 @@
         },
         "renders": {
           "failed": "过去一天有 {count} 个渲染失败 | 过去一天有 {count} 个渲染失败",
-          "behind": "渲染管线落后了：当前录制 v{pipeline}，API 期望 v{version}",
           "missing": "{count} 个道具点位没有预览 | {count} 个道具点位没有预览",
           "outdated": "{count} 个道具点位预览已过时 | {count} 个道具点位预览已过时"
         },

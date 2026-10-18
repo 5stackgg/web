@@ -3787,9 +3787,7 @@
           "confirm_outdated_title": "¿Volver a renderizar las vistas previas desactualizadas?",
           "confirm_queue": "Encolar renders",
           "lineups_title": "Lineups que necesitan un render",
-          "lineups_sub": "Versión de render v{version}",
-          "render_one": "Renderiza una primero",
-          "render_one_waiting": "Esperando a que termine ese render. Cuando informe la versión actual, se desbloquea Volver a renderizar desactualizadas."
+          "lineups_sub": "Versión de render v{version}"
         },
         "updated_ago": "Actualizado hace {since}"
       }
@@ -7599,8 +7597,6 @@
           "map_filter": "Filtrar por mapa",
           "render_missing": "Renderizar las que faltan ({total})",
           "rerender_outdated": "Volver a renderizar las desactualizadas ({total})",
-          "pipeline_behind": "El último render usó una versión anterior",
-          "pipeline_behind_hint": "El último render terminado se grabó con la versión {pipeline}; esta API espera la versión {version}. Los pods de render descargan la imagen más reciente al arrancar, así que renderiza primero un lineup. Cuando termine con la versión {version}, se desbloquea Volver a renderizar desactualizadas.",
           "load_failed": "No se pudo cargar la cobertura de vistas previas",
           "confirm_missing_title": "¿Renderizar las vistas previas que faltan?",
           "confirm_missing": "Esto pone en cola un render para {count} lineup sin vista previa. | Esto pone en cola un render para {count} lineups sin vista previa.",
@@ -7879,6 +7875,15 @@
         "created_showing": "Alerta creada. Ya se está mostrando.",
         "created_off": "Alerta creada. Seguirá desactivada hasta que la actives.",
         "expired": "«{name}» caducó y dejó de mostrarse"
+      },
+      "period": {
+        "estimated": "Estimado: de antes de que se guardara el historial de activación",
+        "on": "Activada {time}",
+        "on_by": "Activada {time} por {name}",
+        "off": "Desactivada {time}",
+        "off_by": "Desactivada {time} por {name}",
+        "showing_now": "Visible ahora",
+        "duration": "Visible durante {duration}"
       }
     },
     "admin_home": {
@@ -7951,7 +7956,6 @@
         },
         "renders": {
           "failed": "{count} renderizado falló en el último día | {count} renderizados fallaron en el último día",
-          "behind": "El pipeline de renderizado va atrasado: graba v{pipeline} y la API espera v{version}",
           "missing": "{count} lineup no tiene vista previa | {count} lineups no tienen vista previa",
           "outdated": "{count} vista previa de lineup está desactualizada | {count} vistas previas de lineups están desactualizadas"
         },

@@ -3787,9 +3787,7 @@
           "confirm_outdated_title": "Eski önizlemeler yeniden işlensin mi?",
           "confirm_queue": "İşlemeleri kuyruğa al",
           "lineups_title": "İşleme gereken dizilimler",
-          "lineups_sub": "İşleme sürümü v{version}",
-          "render_one": "Önce birini işle",
-          "render_one_waiting": "Bu işlemenin bitmesi bekleniyor. Güncel sürümü bildirdiğinde Eskileri yeniden işle açılır."
+          "lineups_sub": "İşleme sürümü v{version}"
         },
         "updated_ago": "{since} önce güncellendi"
       }
@@ -7599,8 +7597,6 @@
           "map_filter": "Haritaya göre filtrele",
           "render_missing": "Eksikleri render et ({total})",
           "rerender_outdated": "Eski sürümleri yeniden render et ({total})",
-          "pipeline_behind": "Son işleme daha eski bir sürüm kullandı",
-          "pipeline_behind_hint": "Son tamamlanan işleme {pipeline} sürümüyle çekildi; bu API {version} sürümünü bekliyor. İşleme pod'ları başlarken en yeni imajı çeker, bu yüzden önce bir dizilimi işleyin. {version} sürümüyle bittiğinde Eskileri yeniden işle açılır.",
           "load_failed": "Önizleme kapsamı yüklenemedi",
           "confirm_missing_title": "Eksik önizlemeler render edilsin mi?",
           "confirm_missing": "Önizlemesi olmayan {count} dizilim için render sıraya alınır. | Önizlemesi olmayan {count} dizilim için render sıraya alınır.",
@@ -7879,6 +7875,15 @@
         "created_showing": "Uyarı oluşturuldu. Şu an gösteriliyor.",
         "created_off": "Uyarı oluşturuldu. Sen açana kadar kapalı kalır.",
         "expired": "‘{name}’ süresi doldu ve banner'dan kaldırıldı"
+      },
+      "period": {
+        "estimated": "Tahmini: açma/kapatma geçmişi tutulmadan önceki dönemden",
+        "on": "Açıldı {time}",
+        "on_by": "{name} tarafından açıldı: {time}",
+        "off": "Kapatıldı {time}",
+        "off_by": "{name} tarafından kapatıldı: {time}",
+        "showing_now": "Şu anda gösteriliyor",
+        "duration": "Gösterim süresi: {duration}"
       }
     },
     "admin_home": {
@@ -7951,7 +7956,6 @@
         },
         "renders": {
           "failed": "Son bir günde {count} işleme başarısız oldu | Son bir günde {count} işleme başarısız oldu",
-          "behind": "İşleme hattı geride: v{pipeline} çekiyor, API v{version} bekliyor",
           "missing": "{count} dizilimin önizlemesi yok | {count} dizilimin önizlemesi yok",
           "outdated": "{count} dizilim önizlemesi güncel değil | {count} dizilim önizlemesi güncel değil"
         },

@@ -97,13 +97,14 @@ export function panelUpdateCommand(source: UpdateSource) {
     panel.repository +
     ".git' '" +
     panel.ref +
-    "'\n" +
-    "git checkout --detach FETCH_HEAD\n" +
+    "' &&\n" +
+    "git cat-file -e 'FETCH_HEAD:utils/update_source.sh' &&\n" +
+    "git checkout --detach FETCH_HEAD &&\n" +
     "git config 5stack.update-source-repository '" +
     panel.repository +
-    "'\n" +
+    "' &&\n" +
     "git config 5stack.update-source-ref '" +
     panel.ref +
-    "'\n./update.sh"
+    "' &&\n./update.sh"
   );
 }

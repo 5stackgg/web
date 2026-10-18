@@ -3360,7 +3360,7 @@
           "installed_build": "Installed build",
           "selected_build": "Selected build",
           "apply": "Apply a source change",
-          "apply_description": "Run the panel updater from the selected checkout to apply source changes. Missing builds remain unavailable; another source is never substituted.",
+          "apply_description": "Run the panel updater from the selected checkout to apply source changes. The selected panel ref must include build-source updater support. Missing builds remain unavailable; another source is never substituted.",
           "service": "Service",
           "current": "Up to date",
           "pinned": "Pinned",

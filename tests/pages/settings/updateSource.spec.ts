@@ -154,6 +154,8 @@ describe("selected update commands", () => {
     );
     expect(command).toContain("git config 5stack.update-source-ref 'beta'");
     expect(command).not.toContain("git pull");
+    expect(command).toContain("git cat-file -e 'FETCH_HEAD:utils/update_source.sh' &&");
+    expect(command.split("\n").slice(0,-1).every(line => line.endsWith("&&"))).toBe(true);
   });
   it.each(["beta;id", "-other", "../main", "main/", "main.lock", "main'$(id)"])(
     "never renders an unsafe ref %p",

@@ -167,7 +167,7 @@ describe("dedicated video encoding settings", () => {
     await trigger.trigger("pointerdown", { button: 0, pointerType: "mouse" });
     await flushPromises();
     const content = document.getElementById(
-      trigger.attributes("aria-controls"),
+      trigger.attributes("aria-controls")!,
     )!;
     const options = Array.from(
       content.querySelectorAll<HTMLElement>('[role="option"]'),

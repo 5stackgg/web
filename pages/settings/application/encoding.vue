@@ -2,7 +2,6 @@
 import { useApolloClient } from "@vue/apollo-composable";
 import { useForm } from "vee-validate";
 import { z } from "zod";
-import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "~/components/ui/toast";
@@ -38,8 +37,16 @@ const storedValues = computed(() => {
     clip_resolution: rows.clip_resolution === "720p" ? "720p" : "1080p",
   } satisfies Values;
 });
-const form = useForm({
-  validationSchema: toTypedSchema(schema),
+const form = useForm<Values>({
+  validationSchema: Object.fromEntries(
+    Object.entries(schema.shape).map(([name, field]) => [
+      name,
+      (value: unknown) => {
+        const result = field.safeParse(value);
+        return result.success || result.error.issues[0].message;
+      },
+    ]),
+  ),
   initialValues: storedValues.value,
 });
 // Reconcile only the field that changed in the subscription. Updates to access,

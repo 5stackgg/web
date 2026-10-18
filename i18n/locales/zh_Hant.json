@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU 使用率",
-      "memory_usage": "記憶體使用率",
       "services": "服務",
       "service": "服務",
-      "network": "網路",
       "search_services_placeholder": "搜尋服務或節點...",
       "filter_by_node": "依節點篩選",
       "no_services_found": "沒有服務符合您目前的篩選條件。",
@@ -1281,11 +1278,145 @@
       "disk_short": "磁碟",
       "network_short": "網路",
       "no_nodes_found": "沒有遊戲伺服器節點符合您目前的篩選條件。",
-      "only_online_nodes": "僅顯示線上節點"
+      "only_online_nodes": "僅顯示線上節點",
+      "search_placeholder": "搜尋服務或節點",
+      "scope_all": "所有服務",
+      "scope_attention": "需要關注",
+      "live_hint": "每個節點大約每 30 秒回報一次。本頁保留最近 90 分鐘。",
+      "filter_group": "遊戲伺服器節點",
+      "only_online": "僅線上節點",
+      "only_enabled": "僅已啟用節點",
+      "no_nodes_title": "沒有遊戲伺服器節點",
+      "no_nodes_hint": "設定一個遊戲伺服器節點以增加比賽容量。",
+      "setup_node": "設定節點",
+      "services_reporting": "{count} 個正在回報",
+      "all_nodes": "所有節點",
+      "no_services_title": "沒有服務在回報",
+      "no_services_hint": "節點傳送 Pod 指標後，服務會顯示在這裡。",
+      "no_attention_title": "沒有需要關注的服務",
+      "no_attention_hint": "所有服務都在限制範圍內。",
+      "no_match_title": "沒有符合的服務",
+      "no_match_hint": "沒有符合搜尋、節點或篩選條件的結果。",
+      "clear_filters": "清除篩選",
+      "logs_for": "{name} 的日誌",
+      "logs_sheet_sub": "日誌 · {node}",
+      "open_logs_page": "在日誌頁面開啟",
+      "attention": {
+        "problems": "{count} 個問題 | {count} 個問題",
+        "nodes_ok": "{count} 個節點正常 | {count} 個節點正常",
+        "critical_count": "{count} 個嚴重 | {count} 個嚴重",
+        "warning_count": "{count} 個警告 | {count} 個警告",
+        "thresholds": "閾值",
+        "thresholds_hint": "節點：CPU、記憶體或磁碟達到 75% 為警告，達到 90% 為嚴重。GPU：使用率 90% 持續 5 分鐘或顯示記憶體 90% 為嚴重，85 °C 為警告。在服務表中，佔用所在節點一半記憶體的服務也算嚴重。",
+        "all_clear": "沒有需要關注的項目",
+        "all_clear_hint": "所有線上節點和 GPU 都在限制範圍內。",
+        "issue_cpu": "{node} CPU 為 {value}",
+        "issue_memory": "{node} 記憶體為 {value}",
+        "issue_disk": "{node} 磁碟為 {value}",
+        "issue_cpu_warning": "{node} 回報有一台受 CPU 限制的遊戲伺服器",
+        "issue_gpu_util": "{node} 上的 {gpu} 為 {value}",
+        "issue_gpu_vram": "{node} 上的 {gpu} 顯示記憶體為 {value}",
+        "issue_gpu_temp": "{node} 上的 {gpu} 為 {value}",
+        "cores": "{count} 核 | {count} 核",
+        "above_for": "已超過 {threshold}% 達 {minutes} 分鐘",
+        "above_now": "自上次取樣起超過 {threshold}%",
+        "used_of": "{used} / {total}",
+        "gpu_usage": "使用率 {value}",
+        "last_30": "最近 30 分鐘",
+        "open_node": "開啟節點",
+        "nodes": "節點",
+        "gpus": "GPU",
+        "nodes_all_fine": "{count} 個節點在線且在限制範圍內 | 全部 {count} 個節點在線且在限制範圍內",
+        "nodes_fine": "{total} 個節點中有 {fine} 個在線且在限制範圍內",
+        "need_attention": "{count} 個需要關注 | {count} 個需要關注",
+        "offline": "{count} 個離線",
+        "view_nodes": "在遊戲伺服器節點中查看全部",
+        "gpus_none_online": "沒有線上的 GPU",
+        "gpus_all_fine": "{count} 個 GPU 在限制範圍內 | {count} 個 GPU 在限制範圍內",
+        "gpus_fine": "{total} 個 GPU 中有 {fine} 個在限制範圍內",
+        "gpus_offline": "{count} 個位於離線節點 | {count} 個位於離線節點",
+        "view_gpus": "在 GPU 節點中查看"
+      },
+      "services_table": {
+        "actions": "操作",
+        "last_seen": "最後上線 {time}",
+        "node_disk": "節點磁碟",
+        "node_disk_hint": "服務不會回報自己的磁碟用量。這裡顯示的是每個服務所在節點上最滿的磁碟：達到 75% 為警告，達到 90% 為嚴重。",
+        "cpu_last_30": "CPU，最近 30 分鐘",
+        "of_node": "佔節點 %",
+        "memory_share_hint": "服務佔節點總記憶體的比例，使用量見提示。佔用節點一半記憶體的服務為嚴重。"
+      }
     },
     "system_logs": {
       "follow_logs": "即時追蹤日誌",
-      "timestamps": "時間戳記"
+      "timestamps": "時間戳記",
+      "bar_label": "{time}，{total} 行，{warnings} 則警告，{errors} 則錯誤",
+      "clear_filters": "清除篩選",
+      "connection_lost": "連線中斷。正在重新連線——串流將從此處顯示的最後一行之後接續。",
+      "container": "容器",
+      "copy_line": "複製此行",
+      "download": "下載日誌",
+      "download_failed": "無法下載 {service} 的完整日誌",
+      "errors": "錯誤",
+      "errors_like": "類似 {text} 的錯誤",
+      "errors_loaded": "已載入時段內有 {count} 則錯誤 | 已載入時段內有 {count} 則錯誤",
+      "errors_word": "錯誤",
+      "exit_full_screen": "結束全螢幕（Esc）",
+      "filter_lines": "篩選日誌行",
+      "follow": "即時追蹤",
+      "full_logs_of": "完整日誌 · {service}",
+      "full_screen": "全螢幕",
+      "jump_to_live": "跳至最新",
+      "level_error": "錯誤",
+      "level_log": "日誌",
+      "level_warning": "警告",
+      "line_copied": "已複製此行",
+      "live_rate": "即時 · {rate}/min",
+      "load_hour_before": "載入前一小時",
+      "loading_earlier": "載入中…",
+      "log_lines": "日誌行",
+      "log_lines_word": "日誌行",
+      "minutes_per_bar": "{time} · 每長條 {minutes} min",
+      "n_new": "新增 {count} 則",
+      "no_match_hint": "已載入時段內沒有符合這些篩選條件的內容。請載入前一小時，或放寬等級。",
+      "no_match_title": "沒有符合的行",
+      "no_repeating": "沒有重複出現的警告或錯誤",
+      "no_services_hint": "選擇一或多個服務，將其日誌合併為單一串流。",
+      "no_services_title": "未選擇服務",
+      "node": "節點",
+      "nothing_at": "{time} 沒有符合目前篩選條件的內容",
+      "now": "現在",
+      "only": "僅此",
+      "only_context": "僅 {context}",
+      "per_minute": "{rate}/min",
+      "pod": "Pod",
+      "pod_count": "{count} 個 Pod",
+      "pods_of": "{service} 的 Pod",
+      "preset_all": "全部",
+      "preset_core": "核心",
+      "preset_match": "比賽流程",
+      "preset_media": "媒體",
+      "reconnecting": "正在重新連線…",
+      "repeating": "{count} 則重複出現的警告與錯誤 | {count} 則重複出現的警告與錯誤",
+      "services": "服務",
+      "show_core": "顯示核心服務",
+      "show_every_line": "顯示所有行",
+      "show_in_stream": "在串流中顯示",
+      "show_only": "僅顯示 {service}",
+      "showing": "顯示中",
+      "showing_only": "目前僅顯示 {service}",
+      "since": "起始時間",
+      "start_of_logs": "已載入日誌的開頭",
+      "time": "時間",
+      "waiting_for_output": "等待輸出 · 每 5s 重新查詢一次",
+      "warnings": "警告",
+      "warnings_like": "類似 {text} 的警告",
+      "warnings_loaded": "已載入時段內有 {count} 則警告 | 已載入時段內有 {count} 則警告",
+      "warnings_word": "警告",
+      "status_ok": "最近 5 分鐘沒有警告或錯誤",
+      "status_warn": "最近 5 分鐘有警告",
+      "status_bad": "最近 5 分鐘有錯誤",
+      "status_off": "尚無輸出"
     },
     "system_telemetry": {
       "title": "機群遙測",
@@ -1515,7 +1646,11 @@
         "modes_caption": "已定義",
         "modes_unranked": "不適用於選人",
         "modes_unranked_caption": "在選人大廳中隱藏的模式"
-      }
+      },
+      "jump_to": "跳至",
+      "features_title": "功能",
+      "not_reported_title": "尚未回報",
+      "no_activity_hint": "隨著面板回報其託管的比賽，圖表會逐漸填滿。"
     },
     "tournaments": {
       "title": "賽事",
@@ -3284,7 +3419,7 @@
         "upload_demo_description": "拖入 CS2 .dem 檔案即可匯入比賽數據。無論是否已連結比賽紀錄皆可使用。",
         "import_match": "匯入比賽",
         "import_match_description": "匯入你在 5Stack 之外進行的比賽。",
-        "extension_title": "5Stack Chrome 擴充功能",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "在 FACEIT 與 Leetify 頁面上一鍵匯入你的比賽。",
         "add_to_chrome": "加到 Chrome",
         "or_upload_demo": "或上傳錄影",
@@ -3521,6 +3656,119 @@
       "tabs": {
         "highlights": "精華",
         "utility": "道具點位"
+      },
+      "ledger": {
+        "search": "搜尋片段和點位",
+        "view": {
+          "flight": "進行中",
+          "failed": "失敗",
+          "done": "已完成"
+        },
+        "filter": {
+          "queue": "佇列",
+          "map": "地圖",
+          "group": "依批次將進行中的項目分組"
+        },
+        "retry_all": "全部重試失敗項目（{count}）",
+        "empty": {
+          "all": "精華片段和點位預覽在啟動、算繪和上傳期間會顯示在這裡。",
+          "flight_title": "沒有進行中的項目",
+          "failed_title": "沒有失敗的項目",
+          "done_title": "沒有已完成的項目",
+          "flight": "新的精華批次和點位預覽會顯示在這裡。",
+          "failed": "清單中的所有算繪都已順利完成。",
+          "done": "已完成的算繪會顯示在這裡。",
+          "filtered": "試著清除搜尋或篩選條件。"
+        },
+        "select_all": "全選",
+        "select": "選取 {name}",
+        "col": {
+          "render": "算繪",
+          "progress": "進度",
+          "length": "長度",
+          "elapsed": "已經過",
+          "finished": "完成於",
+          "actions": "操作"
+        },
+        "batch": {
+          "done_of": "已完成 {done}/{total}",
+          "failed": "{count} 個失敗 | {count} 個失敗",
+          "paused": "已暫停",
+          "silent": "其 Pod 已 {since} 沒有回應",
+          "booting": "Pod 啟動中",
+          "booting_pct": "Pod 啟動 {pct}%",
+          "waiting_gpu": "正在等待空閒 GPU"
+        },
+        "pod_on": "在 {map}",
+        "lineup_on": "點位 · {map}",
+        "missing_clip": "遺失：片段在上傳後遺失",
+        "ago": "{since}前",
+        "more": "更多操作",
+        "open_details": "開啟詳細資訊",
+        "cancel_batch": "取消批次",
+        "pages": "分頁",
+        "silent": "沒有回應",
+        "history": "狀態紀錄",
+        "clip": "片段",
+        "player": "選手",
+        "round": "回合",
+        "kills": "擊殺",
+        "segments": "分段",
+        "job_id": "工作 ID",
+        "lineup_id": "點位 ID",
+        "render_job": "算繪工作",
+        "no_job": "尚無",
+        "logs": "記錄",
+        "bulk": {
+          "selected": "已選取 {count} 項 | 已選取 {count} 項",
+          "cancel": "取消所選項目",
+          "retry": "重試所選項目",
+          "requeue": "將所選項目重新排入佇列",
+          "clear": "清除選取",
+          "requeueing": "正在重新排入佇列",
+          "cancelling": "正在取消",
+          "progress": "{label} {done}/{total}"
+        },
+        "toast": {
+          "requeued": "已將 {count} 個算繪重新排入佇列 | 已將 {count} 個算繪重新排入佇列",
+          "cancelled": "已取消 {count} 個算繪 | 已取消 {count} 個算繪",
+          "not_done": "{count} 個未成功 | {count} 個未成功",
+          "clip_requeued": "片段已重新排入佇列",
+          "clip_not_requeued": "無法將該片段重新排入佇列",
+          "batch_requeued": "批次已重新排入佇列",
+          "batch_cancelled": "批次已取消",
+          "batch_not_cancelled": "無法取消該批次",
+          "cleared": "已清除完成的算繪"
+        },
+        "confirm": {
+          "cancel_title": "要取消 {count} 個算繪嗎？ | 要取消 {count} 個算繪嗎？",
+          "cancel_body": "它們會停在目前的位置，不會完成。已完成的片段和預覽不受影響。",
+          "cancel_batches": "片段是以批次為單位取消，因此每個所選片段所在批次的其餘部分也會停止。",
+          "keep": "繼續算繪",
+          "cancel_action": "取消算繪",
+          "batch_title": "要取消 {name} 嗎？",
+          "batch_body": "尚未完成的片段不會被算繪。已完成的片段會保留在精華時刻中。",
+          "clear_title": "要清除已完成的算繪嗎？",
+          "clear_body": "這會將已完成的算繪從佇列中移除。已算繪的片段會保留在精華時刻中，預覽則保留在各自的點位上。"
+        },
+        "coverage": {
+          "current": "{count} 個最新",
+          "missing": "{count} 個缺少",
+          "outdated": "{count} 個過時",
+          "unrenderable": "{count} 個無法拍攝",
+          "queued": "{count} 個在佇列中",
+          "lineups": "點位",
+          "rerender_outdated": "重新算繪過時項目",
+          "render_missing": "算繪缺少的項目",
+          "confirm_missing_title": "要算繪缺少的預覽嗎？",
+          "confirm_outdated_title": "要重新算繪過時的預覽嗎？",
+          "confirm_queue": "加入算繪佇列",
+          "lineups_title": "需要算繪的點位",
+          "lineups_sub": "算繪版本 v{version}",
+          "render_one": "先算繪一個",
+          "render_one_waiting": "正在等待該算繪完成。回報目前版本後，即可使用「重新算繪過時項目」。"
+        },
+        "updated_ago": "{since}前更新"
       }
     },
     "news": {
@@ -3719,7 +3967,92 @@
       "backfill_cancel_requested": "已要求取消",
       "backfill_canceled_title": "賽季回補已取消",
       "backfill_complete_title": "賽季回補已完成",
-      "backfill_complete_desc": "已重建 {completed} / {total} 場比賽（{failed} 場失敗）。"
+      "backfill_complete_desc": "已重建 {completed} / {total} 場比賽（{failed} 場失敗）。",
+      "hero": {
+        "rebuild_required": "需要重建",
+        "ends_in": "距結束",
+        "running_for": "已進行",
+        "days": "{count} 天 | {count} 天",
+        "started": "開始",
+        "ends": "結束",
+        "day_of": "第 {day} 天，共 {total} 天",
+        "percent_through": "已過 {percent}%",
+        "change_start": "修改開始日期",
+        "change_end": "修改結束日期",
+        "set_end": "設定結束日期",
+        "make_ongoing": "改為持續進行",
+        "grant_award": "頒發獎項",
+        "one_rebuild": "同一時間只能執行一個重建。",
+        "start_caption": "UTC，00:00 開始。",
+        "end_caption": "UTC，當天 00:00 結束。"
+      },
+      "off": {
+        "title": "休賽期",
+        "pill": "沒有進行中的賽季",
+        "last_ended": "{season} 已於 {date} 結束。",
+        "no_season": "現在進行的比賽不計入任何賽季。",
+        "next": "{season} 將於 {date}（{count} 天後）開始，並將一般比賽 ELO 重設為 5000。 | {season} 將於 {date}（{count} 天後）開始，並將一般比賽 ELO 重設為 5000。",
+        "nothing": "尚未安排任何賽季。"
+      },
+      "banner": {
+        "stale": "{seasons} 的 ELO 已過期，重建前排名不正確。 | {seasons} 的 ELO 已過期，重建前排名不正確。",
+        "rebuilding_now": "{season} 正在重建。同一時間只能執行一個重建。"
+      },
+      "danger": {
+        "end_description": "今天結束該賽季，並依最終排名頒發賽季獎項。在下個賽季開始前，比賽不計入任何賽季。",
+        "end_button": "結束賽季",
+        "delete_description": "其比賽將不屬於任何賽季。ELO 歷史會保留；各賽季統計會被清除。",
+        "delete_button": "刪除賽季",
+        "end_confirm_title": "要立即結束 {season} 嗎？",
+        "end_confirm_instead": "將於今天（{today}）結束，而非 {date}。",
+        "end_confirm_today": "將於今天（{today}）結束。",
+        "end_confirm_awards": "賽季獎項依最終排名頒發：賽季冠軍、亞軍、季軍與賽季 MVP。",
+        "end_confirm_gap_next": "在 {season} 於 {date} 開始前，比賽不計入任何賽季。",
+        "end_confirm_gap_none": "在你建立下個賽季前，比賽不計入任何賽季。",
+        "end_confirm_elo": "下個賽季開始時，一般比賽 ELO 會重新從 5000 開始。",
+        "type_to_confirm": "輸入 {phrase} 以確認",
+        "end_confirm_button": "結束 {season}",
+        "ended_toast": "{season} 已結束。正在依最終排名頒發賽季獎項。",
+        "delete_confirm_title": "要刪除 {season} 嗎？",
+        "delete_confirm_button": "刪除 {season}"
+      },
+      "next": {
+        "label": "下個賽季",
+        "first_label": "第一個賽季",
+        "schedule": "安排 {season}",
+        "hint_scheduled": "{season} 預定於 {date}。",
+        "hint_after": "{season} 於 {date} 結束。之後沒有安排。",
+        "hint_open_ended": "{season} 沒有結束日期，因此需要先設定結束日期才能安排下個賽季。",
+        "blocked": "{season} 沒有結束日期，之後的任何賽季都會與其重疊。請先設定它的結束日期。",
+        "first_season_hint": "第一個賽季從你最早記錄的比賽（{date}）開始，確保沒有過去的比賽落在賽季之外。"
+      },
+      "form": {
+        "start_date": "開始日期",
+        "end_date": "結束日期"
+      },
+      "ledger": {
+        "label": "賽季紀錄"
+      },
+      "rebuild_progress": {
+        "label": "正在重建 ELO · {completed} / {total} 場比賽",
+        "failed": "{count} 個失敗 | {count} 個失敗",
+        "canceling": "正在取消"
+      },
+      "empty_state": {
+        "title": "還沒有賽季",
+        "description": "賽季開始時會將一般比賽 ELO 重設為 5000。第一個賽季從你最早記錄的比賽開始。"
+      },
+      "about": {
+        "label": "賽季的作用",
+        "reset_title": "全新的天梯",
+        "reset_body": "賽季開始時，一般比賽 ELO 重設為 5,000，所有人從同一起點開始攀升。",
+        "counts_title": "每場比賽都計入",
+        "counts_body": "在開始與結束日期之間進行的比賽計入該賽季的天梯與統計。賽季之間的比賽不計入任何賽季。",
+        "awards_title": "結束時頒獎",
+        "awards_body": "依據最終天梯頒發賽季冠軍、亞軍、季軍與賽季 MVP。",
+        "history_title": "永久保留",
+        "history_body": "已結束的賽季保留其排名，玩家可以在個人檔案中與過往賽季比較。"
+      }
     },
     "regions": {
       "title": "地區",
@@ -3738,7 +4071,58 @@
         "title": "刪除地區",
         "description": "您確定要刪除此地區嗎？此操作無法復原。"
       },
-      "deleted": "已刪除地區"
+      "deleted": "已刪除地區",
+      "list": {
+        "label": "地區",
+        "flag_relay": "中繼",
+        "flag_lan": "僅限 LAN"
+      },
+      "status": {
+        "online": "線上",
+        "partial": "部分節點離線",
+        "offline": "離線",
+        "disabled": "沒有伺服器"
+      },
+      "detail": {
+        "label_aria": "地區標籤",
+        "nodes_label": "節點",
+        "servers_free": "{total} 台伺服器中 {free} 台空閒",
+        "col_node": "節點",
+        "col_free": "空閒",
+        "col_servers": "伺服器",
+        "no_nodes_title": "此地區沒有節點",
+        "no_nodes_hint": "請在 {page} 頁面設定節點所屬地區。",
+        "relay_title": "使用 Steam 中繼",
+        "relay_description": "玩家透過 Steam 中繼連線，遊戲伺服器的 IP 會保持隱藏。",
+        "relay_lan_description": "僅限 LAN 的地區會直接連線玩家，因此中繼保持關閉。",
+        "lan_title": "僅限 LAN",
+        "lan_description": "玩家必須從區域網路 IP 連線。適用於實體活動。",
+        "delete_title": "刪除地區",
+        "delete_hint_nodes": "請先將其 {count} 個節點移到其他地區。 | 請先將其 {count} 個節點移到其他地區。",
+        "delete_hint_empty": "沒有指派任何項目。"
+      },
+      "delete_dialog": {
+        "title": "要刪除 {region} 嗎？",
+        "description": "沒有節點使用此地區。曾進行比賽的地區無法刪除。此操作無法復原。",
+        "confirm": "刪除地區"
+      },
+      "create_sheet": {
+        "title": "建立地區"
+      },
+      "toasts": {
+        "created": "已建立 {region}",
+        "deleted": "已刪除 {region}",
+        "label_saved": "標籤已儲存",
+        "relay_on": "已為 {region} 開啟 Steam 中繼",
+        "relay_off": "已為 {region} 關閉 Steam 中繼",
+        "lan_on": "已為 {region} 開啟僅限 LAN",
+        "lan_off": "已為 {region} 關閉僅限 LAN"
+      },
+      "empty": {
+        "title": "還沒有地區",
+        "description": "地區會依位置將遊戲伺服器節點分組。玩家會在配對中選擇偏好的地區。"
+      },
+      "search_placeholder": "搜尋地區"
     },
     "players": {
       "title": "玩家",
@@ -4285,7 +4669,13 @@
         "demos": "Demo 回放",
         "demos_desc": "隨選 Demo 回放",
         "rendering": "轉檔渲染",
-        "rendering_desc": "精華 & 剪輯轉檔"
+        "rendering_desc": "精華 & 剪輯轉檔",
+        "summary": "{total} 項中 {on} 項已開啟",
+        "node_disabled": "此節點已停用，不會承接 GPU 工作。",
+        "now_streaming": "正在直播 {matchup}",
+        "now_demo": "正在為 {who} 播放回放",
+        "now_render": "正在為 {who} 轉檔精華",
+        "now_render_pct": "正在為 {who} 轉檔精華 · {pct}%"
       },
       "bake": {
         "help": "預先建立此節點的 Vulkan 著色器快取，讓首場比賽啟動更順暢。",
@@ -4298,7 +4688,11 @@
         "in_progress": "預先建置進行中",
         "stages": {
           "errored": "預先建置失敗"
-        }
+        },
+        "action": "編譯著色器",
+        "cancel": "取消編譯",
+        "logs": "編譯記錄",
+        "hide_logs": "隱藏記錄"
       },
       "empty": {
         "title": "無 GPU 節點",
@@ -4328,9 +4722,155 @@
           "demo": "Demo 回放",
           "highlights": "精華時刻",
           "bake": "著色器預先建置"
-        }
+        },
+        "add_account": "新增帳號",
+        "col_account": "帳號",
+        "col_holding": "佔用",
+        "col_since": "開始於",
+        "delete_action": "刪除帳號",
+        "empty_title": "還沒有 Steam 帳號",
+        "empty_body": "轉檔、回放播放與即時觀戰執行時各需要一個帳號。",
+        "free": "閒置",
+        "free_of": "{total} 個中有 {free} 個閒置",
+        "health_no_nodes": "還沒有 GPU 節點",
+        "health_empty": "是空的。新增帳號之前，轉檔與即時觀戰都會失敗。",
+        "health_short": "還差 {count} 個。所有帳號都在使用時，部分 GPU 會閒置。",
+        "health_enough": "足夠每張 GPU 使用",
+        "name": "Steam 帳號",
+        "manage": "管理 Steam 帳號"
       },
-      "stop": "停止"
+      "stop": "停止",
+      "search_placeholder": "搜尋比賽、觀眾、GPU、帳號",
+      "open_render_queue": "開啟轉檔佇列",
+      "running_title": "正在執行",
+      "running_hint": "每張 GPU 同一時間只服務一項工作",
+      "running_empty_title": "沒有使用中的 GPU",
+      "running_empty_body": "直播、回放播放和精華轉檔執行時會顯示在這裡。",
+      "running_no_match": "沒有符合的工作階段",
+      "no_match_body": "換個搜尋字詞，或清除篩選條件。",
+      "clear_all": "清除搜尋與篩選",
+      "open_game_server_nodes": "開啟遊戲伺服器節點",
+      "gpus_title": "GPU",
+      "gpus_hint": "GPU 節點是配備 GPU 的遊戲伺服器節點",
+      "gpus_no_match": "沒有符合的 GPU 節點",
+      "no_region": "無區域",
+      "more_for": "{node} 的更多操作",
+      "open_details": "開啟詳細資料",
+      "open_in_nodes": "在遊戲伺服器節點中開啟",
+      "accept_matches": "接受新比賽",
+      "stop_accepting": "停止接受比賽",
+      "filter": {
+        "live": "直播",
+        "demos": "回放",
+        "renders": "轉檔",
+        "workload_on": "已開啟的工作負載",
+        "node_type": "節點類型"
+      },
+      "kpi": {
+        "gpus_free": "閒置 GPU",
+        "of_total": "/ {total}",
+        "running": "正在執行",
+        "running_split": "直播 {live} · 回放 {demo} · 轉檔 {render}",
+        "waiting": "等待中的轉檔",
+        "waiting_none": "佇列是空的",
+        "accounts_split": "使用中 {used} · 閒置 {free}",
+        "accounts_short": "每個 GPU 配一個還差 {count} 個",
+        "accounts_busy": "全部使用中。新工作會等待閒置帳號。"
+      },
+      "wait_reason": {
+        "no_accounts": "帳號池中沒有 Steam 帳號",
+        "paused_for_match": "比賽直播期間暫停",
+        "no_account_free": "正在等待 Steam 帳號",
+        "no_gpu_free": "正在等待閒置 GPU"
+      },
+      "col": {
+        "workload": "工作負載",
+        "for": "對象",
+        "account": "Steam 帳號",
+        "state": "狀態",
+        "time": "時長",
+        "node": "節點",
+        "load": "負載",
+        "vram": "VRAM",
+        "workloads": "工作負載"
+      },
+      "kind": {
+        "live_tv": "直播 (GOTV)",
+        "live_direct": "直播 (直連)",
+        "demo": "回放播放",
+        "highlights": "精華轉檔",
+        "bake": "著色器預先編譯"
+      },
+      "who": {
+        "spectators": "觀眾",
+        "warming_cache": "正在預熱 Vulkan 快取"
+      },
+      "state": {
+        "starting": "啟動中",
+        "playing": "播放中",
+        "failed": "失敗"
+      },
+      "node_state": {
+        "setup": "設定中",
+        "streaming": "直播中",
+        "playing": "正在播放回放",
+        "baking": "正在編譯著色器",
+        "offline_since": "自 {time} 起離線"
+      },
+      "node_kind": {
+        "gpu": "僅 GPU",
+        "match": "比賽 + GPU"
+      },
+      "sheet": {
+        "now": "目前",
+        "shader_cache": "著色器快取",
+        "idle_ready": "可以負責直播、回放播放與轉檔。",
+        "unavailable": "在啟用並上線之前不接收 GPU 工作。",
+        "no_metrics": "節點停用、離線或設定中時沒有 GPU 指標。",
+        "bake_failed_hint": "上次編譯失敗。請重試，或查看記錄。",
+        "cache_warm": "已預熱",
+        "never_baked": "從未編譯。此節點上的第一次直播會邊執行邊編譯著色器。"
+      },
+      "stop_copy": {
+        "keep": "繼續執行",
+        "live_title": "要停止 {matchup} 的直播嗎？",
+        "live_body": "觀眾將失去直播畫面。比賽本身會繼續進行。",
+        "live_action": "停止直播",
+        "demo_title": "要停止 {who} 的回放播放嗎？",
+        "demo_body": "其播放器將關閉。有閒置 GPU 後可以重新開始。",
+        "demo_action": "停止播放",
+        "render_title": "要停止為 {who} 進行的精華轉檔嗎？",
+        "render_body": "它會停止並釋放 GPU。",
+        "render_body_pct": "它會在 {pct}% 處停止並釋放 GPU。",
+        "render_action": "停止轉檔"
+      },
+      "toggle_gpu_only_help": "只接 GPU 工作，不執行比賽伺服器。開啟後會清除其區域與連接埠。",
+      "plate": {
+        "temperature": "溫度",
+        "power": "功耗",
+        "vram_of": "{used} / {total} GB",
+        "hot": "溫度偏高，超過 {limit} °C",
+        "too_hot": "溫度過高，超過 {limit} °C",
+        "no_reading": "暫無即時讀數",
+        "cards": "{count} 張卡 | {count} 張卡"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "開啟直播",
+          "demos": "開啟 Demo 回放",
+          "rendering": "開啟轉檔渲染"
+        },
+        "turn_off": {
+          "streaming": "關閉直播",
+          "demos": "關閉 Demo 回放",
+          "rendering": "關閉轉檔渲染"
+        },
+        "confirm_body": {
+          "streaming": "進行中的直播會繼續。重新開啟前，這張 GPU 不再接收新的直播。",
+          "demos": "進行中的回放會繼續。重新開啟前，這張 GPU 不再接收新的 Demo。",
+          "rendering": "進行中的轉檔渲染會繼續。重新開啟前，這張 GPU 不再接收新的轉檔渲染工作。"
+        }
+      }
     },
     "game_server_nodes": {
       "title": "遊戲伺服器節點",
@@ -4498,12 +5038,14 @@
         "no_nodes": "無遊戲伺服器節點",
         "supports_low_latency": "支援低延遲",
         "supports_cpu_pinning": "支援 CPU 綁定",
-        "cpu_governor": "CPU 排程策略"
+        "cpu_governor": "CPU 排程策略",
+        "servers": "伺服器",
+        "servers_tooltip": "空閒伺服器，括號內為總數",
+        "cs2_build": "CS2 版本",
+        "plugin": "外掛",
+        "load": "負載"
       },
       "builds": {
-        "title": "CS2 版本歷史",
-        "description": "每個 CS2 版本的遊戲資料驗證與地圖資源建置，以及各版本相較於上一版本的變更。",
-        "back": "遊戲伺服器節點",
         "builds": "版本",
         "no_builds": "尚無任何版本經過驗證或建置。",
         "current": "目前",
@@ -4513,11 +5055,271 @@
           "detected": "更新發佈",
           "gamedata": "遊戲資料",
           "map_assets": "地圖資源"
-        }
+        },
+        "empty_title": "尚無版本"
       },
       "max_label": "最大：",
       "ports_label": "連接埠：",
-      "cpu_hardware": "CPU 與硬體"
+      "cpu_hardware": "CPU 與硬體",
+      "gpu_only": "僅 GPU",
+      "create_node": "建立遊戲伺服器節點",
+      "search_placeholder": "依名稱或 ID 搜尋",
+      "filters": {
+        "only_enabled": "僅顯示已啟用節點",
+        "hide_offline": "隱藏離線節點",
+        "display_metrics": "顯示指標"
+      },
+      "empty": {
+        "title": "尚無遊戲伺服器節點",
+        "description": "節點是為 5Stack 執行 CS2 伺服器的機器。在其上執行安裝指令碼後，就會出現在這裡。",
+        "guide": "閱讀安裝指南"
+      },
+      "summary": {
+        "nodes": "{count} 個節點 | {count} 個節點",
+        "online": "{count} 個在線",
+        "free": "{total} 台伺服器中 {free} 台空閒",
+        "attention": "{count} 個需要處理 | {count} 個需要處理",
+        "updating": "{count} 個正在更新"
+      },
+      "row": {
+        "select": "選取 {node}",
+        "select_all": "選取所有節點",
+        "servers_tip": "{total} 台中 {free} 台空閒 · 最多 {max} 台",
+        "not_installed": "未安裝"
+      },
+      "detail": {
+        "hardware_pending": "節點連線後會回報硬體資訊。",
+        "disk_value": "已用 {percent}%，剩餘 {free} GB",
+        "game_server": "遊戲伺服器",
+        "node_id": "節點 ID",
+        "addresses": "區域網路 / 公用 IP",
+        "available_value": "{free} / {total}",
+        "control": "控制",
+        "update_log": "CS2 更新記錄"
+      },
+      "metrics": {
+        "setup": "節點連線後會顯示指標。",
+        "offline": "節點離線時沒有即時資料。"
+      },
+      "toast": {
+        "region_updated": "地區已更新",
+        "save_failed": "無法儲存變更"
+      },
+      "bulk": {
+        "selected": "已選取 {count} 個",
+        "progress": "{done} / {total}",
+        "move_region": "移至地區",
+        "enable": "啟用",
+        "disable": "停用",
+        "updating": "正在 {count} 個節點上更新 CS2 | 正在 {count} 個節點上更新 CS2",
+        "moved": "已將 {count} 個節點移至 {region} | 已將 {count} 個節點移至 {region}",
+        "unassigned": "已清除 {count} 個節點的地區 | 已清除 {count} 個節點的地區",
+        "enabled": "已啟用 {count} 個節點 | 已啟用 {count} 個節點",
+        "disabled": "已停用 {count} 個節點 | 已停用 {count} 個節點",
+        "failed": "{count} 個失敗 | {count} 個失敗"
+      },
+      "inspector": {
+        "status": {
+          "setup": "等待連線",
+          "offline_since": "自 {time} 起離線",
+          "not_accepting": "上線中，不接受新比賽"
+        },
+        "search_placeholder": "依名稱、ID 或 IP 搜尋",
+        "keys": {
+          "move": "移動",
+          "select": "點擊以多選",
+          "close": "關閉",
+          "idle": "選擇一個節點查看詳情"
+        },
+        "details": "節點詳情",
+        "capacity_tip": "其連接埠允許的總數中閒置的伺服器數，下方為連接埠範圍。",
+        "cap_free": "{total} 個中 {free} 個閒置",
+        "cap_no_ports": "無連接埠",
+        "chip": {
+          "updating": "更新中",
+          "updating_pct": "更新中 {percent}%",
+          "failed": "更新失敗",
+          "behind": "版本落後",
+          "pinned": "已固定",
+          "failed_tip": "更新到 {target} 失敗（{ago}），仍為 {version}。",
+          "behind_tip": "目前為 {version}，請更新到 {target}。",
+          "pinned_tip": "固定在 {version}"
+        },
+        "load": {
+          "mem": "記憶體",
+          "disk": "磁碟"
+        },
+        "disk_tip": "磁碟：已用 {used} / {total}，可用 {free}",
+        "actions_for": "{node} 的操作",
+        "menu": {
+          "select": "選取以批次操作",
+          "deselect": "從選取中移除",
+          "rename": "編輯標籤"
+        },
+        "more": "另外 {count} 項",
+        "remove": "移除節點",
+        "remove_text": "從 5Stack 移除該節點及其上的所有專用伺服器。",
+        "rename": "重新命名 {node}",
+        "label": "節點標籤",
+        "close": "關閉詳情",
+        "close_hint": "關閉 (Esc)",
+        "step": {
+          "enable": "啟用節點",
+          "retry_update": "重試更新",
+          "assign_region": "指派區域",
+          "set_ports": "設定連接埠",
+          "change_plugin": "更換外掛",
+          "edit_ports": "編輯連接埠",
+          "open_files": "開啟檔案"
+        },
+        "attention": {
+          "setup": "在機器上執行安裝指令碼，連線後即顯示為上線。",
+          "offline": "重新連線之前不會在此安排比賽。",
+          "update_failed_title": "CS2 更新失敗（{ago}）",
+          "update_failed": "更新記錄保留 24 小時。",
+          "overprovisioned": "連接埠上有 {total} 台伺服器，但 CPU 只能容納 {max} 台。",
+          "plugin": "固定的外掛不支援版本 {build}。",
+          "not_ready_title": "暫時無法承載比賽",
+          "not_ready": "還需要{list}。",
+          "behind_title": "CS2 {version} 版本落後",
+          "behind": "請更新到 {target}。",
+          "cpu_title": "CPU 頻率 {ghz} GHz",
+          "cpu": "低於 3 GHz 可能影響 CS2 伺服器效能。",
+          "governor_title": "CPU 調速器為 {governor}",
+          "disk_title": "磁碟已用 {percent}%",
+          "disk": "可用 {free}。",
+          "cpu_warning": "由節點回報。",
+          "workloads_title": "部分 GPU 工作負載已關閉",
+          "workloads": "{list}已關閉。",
+          "disabled": "關閉期間不執行 GPU 工作，也不安排比賽。"
+        },
+        "need": {
+          "region": "區域",
+          "ports": "連接埠",
+          "cs2": "CS2"
+        },
+        "sections": {
+          "cs2": "CS2 與外掛"
+        },
+        "capacity": {
+          "gpu_only": "僅 GPU，因此不承載比賽。可在 GPU 中切換回來。",
+          "max_servers": "最大伺服器數",
+          "max_tip": "{threads} 個 CPU 執行緒，扣除 1 個保留給系統",
+          "max_tip_pinning": "{threads} 個 CPU 執行緒，扣除 1 個保留給系統，每台伺服器 {per} 個",
+          "max_tip_pending": "節點連線後依 CPU 計算",
+          "below": "低於連接埠上的 {total} 台",
+          "servers_no_ports": "設定連接埠以承載伺服器",
+          "servers_disabled": "停用期間無",
+          "servers_offline": "離線期間未知"
+        },
+        "ports": {
+          "tip": "轉發到此節點的連接埠範圍，每台伺服器使用兩個連接埠。",
+          "not_set": "未設定",
+          "need_region": "設定連接埠前請先指派區域。",
+          "start": "起始連接埠",
+          "end": "結束連接埠",
+          "hint": "介於 30000 到 32767，每台伺服器使用兩個連接埠。",
+          "fit": "此範圍可容納 {count} 台伺服器。 | 此範圍可容納 {count} 台伺服器。",
+          "fit_over": "可容納 {count} 台，但 CPU 只能容納 {max} 台。",
+          "error_range": "連接埠必須介於 30000 到 32767。",
+          "error_order": "結束連接埠必須比起始連接埠至少大 2。",
+          "save": "儲存連接埠",
+          "remove": "移除連接埠"
+        },
+        "cs2": {
+          "setup": "節點連線後安裝 CS2。",
+          "gpu_only": "僅 GPU 節點不執行 CS2 伺服器。",
+          "to": "至 {version}",
+          "plugin_unsupported": "不支援",
+          "update_log": "更新記錄",
+          "behind_line": "版本 {build}，更新至 {target}",
+          "failed_line": "{ago} · 仍在版本 {build}",
+          "build_line": "版本 {build}",
+          "on_build": "（版本 {build}）",
+          "pinning_unsupported": "不支援鎖定版本"
+        },
+        "hardware": {
+          "cores": "核心",
+          "sockets": "（{count} 個插槽） | （{count} 個插槽）",
+          "threads": "執行緒/核心",
+          "threads_total": "（共 {count} 個）",
+          "governor": "調速器",
+          "low_latency": "低延遲",
+          "pinning": "CPU 綁定",
+          "supported": "支援",
+          "governor_tip": "CPU 調整頻率的方式。performance 調速器讓核心保持全速，建議用於 CS2。",
+          "latency_tip": "低延遲核心可減少遊戲伺服器的排程抖動。",
+          "pinning_tip": "將每台伺服器綁定到專屬 CPU 核心，避免伺服器之間爭用。"
+        },
+        "range_label": "指標時間範圍",
+        "range": {
+          "1h": "1 小時"
+        },
+        "of_total": "/ {total}",
+        "now": "現在",
+        "last_report": "最後回報 {time}",
+        "live_offline": "離線期間沒有即時資料。最後回報時間 {time}。",
+        "history_offline": "離線期間沒有即時資料。歷史記錄截至 {time}。",
+        "offline_for": "離線 {duration}",
+        "chart": {
+          "label": "指標歷史。左右方向鍵依時間移動，按住 Shift 每次移動十格。",
+          "avg_peak": "平均 {avg}% · 峰值 {peak}%",
+          "peak": "峰值 {peak}",
+          "in": "入",
+          "out": "出",
+          "in_out": "入 {in} · 出 {out}",
+          "caption": "最近一小時，每 30 秒一個取樣。",
+          "starts": "歷史記錄從 {time} 開始。",
+          "gaps": "線條中斷處為離線時間。",
+          "cadence": "每 {seconds} 秒一個取樣。"
+        },
+        "disk": {
+          "last_report": "磁碟 · 最後回報",
+          "filling_up": "即將用滿",
+          "almost_full": "幾乎已滿",
+          "used_of": "{used} / {total}",
+          "thresholds": "{warning}% 時警告，{critical}% 時告警",
+          "free": "可用 {free}",
+          "up": "最近一小時增加 {amount}",
+          "down": "最近一小時減少 {amount}",
+          "flat": "最近一小時幾乎沒有變化",
+          "full_hours": "約 {count} 小時後用滿",
+          "full_days": "約 {count} 天後用滿 | 約 {count} 天後用滿",
+          "of_used": "/ {total} 已用"
+        },
+        "gpu": {
+          "video": "視訊設定",
+          "custom": "自訂"
+        },
+        "node": {
+          "accepting": "接受比賽",
+          "accepting_setup": "連線後可用。",
+          "accepting_no_ports": "請先設定連接埠。",
+          "limiter": "錄影限速",
+          "limiter_tip": "錄影網路限速：從此節點下載錄影檔案的速度上限。",
+          "copy_id": "複製節點 ID",
+          "ips_pending": "連線後顯示"
+        },
+        "bulk": {
+          "title": "已選取 {count} 個節點 | 已選取 {count} 個節點",
+          "hint": "{modifier}+點擊一列以新增或移除，Shift+點擊選取範圍",
+          "apply": "套用到全部",
+          "note": "更新 CS2 會略過離線、已是最新或正在更新的節點。僅 GPU 節點不保留區域。",
+          "selected": "已選取",
+          "drop": "從選取中移除 {node}",
+          "clear": "清除選取"
+        },
+        "warning": {
+          "lowlatency": "舊版 lowlatency 核心",
+          "constrained": "{name} 受 CPU 限制",
+          "governor": "啟用 CPU 綁定時調速器為 {governor}",
+          "from_node": "來自節點的 {count} 則警告 | 來自節點的 {count} 則警告",
+          "docs": "文件",
+          "details": "詳細資訊"
+        },
+        "window_minutes": "最近 {count} 分鐘 | 最近 {count} 分鐘",
+        "window_hours": "最近 {count} 小時 | 最近 {count} 小時"
+      }
     },
     "dedicated_servers": {
       "title": "專用伺服器",
@@ -4525,9 +5327,7 @@
       "docs_link": "查看設定指南",
       "no_servers_title": "無專用伺服器",
       "no_servers": "找不到專用伺服器。",
-      "create": {
-        "title": "建立專用伺服器"
-      },
+      "create": {},
       "table": {
         "connection_details": "連線詳情",
         "label": "標籤",
@@ -4538,7 +5338,6 @@
       },
       "detail": {
         "enabled": "已啟用",
-        "eyebrow": "專用伺服器",
         "tabs": {
           "overview": "概覽",
           "players": "玩家",
@@ -4548,14 +5347,9 @@
         },
         "status_label": {
           "connected": "已連線",
-          "disconnected": "已中斷連線",
           "hibernating": "休眠中",
-          "no_rcon": "無 RCON",
-          "version_mismatch": "版本不符"
+          "no_rcon": "無 RCON"
         },
-        "server_plugin_config": "伺服器外掛設定",
-        "hide_config": "隱藏設定",
-        "show_config": "顯示設定",
         "config_location": "此設定應放置於：",
         "files": "檔案",
         "player_management": "玩家管理",
@@ -4579,13 +5373,7 @@
           "disconnected": "伺服器已中斷連線",
           "hibernating": "伺服器處於休眠狀態，直到有玩家連線",
           "no_rcon": "伺服器已連線，但 RCON 無法使用",
-          "connected": "伺服器已連線且 RCON 可用",
-          "plugin_version_mismatch": "外掛版本不是最新"
-        },
-        "delete_confirm": {
-          "title": "您確定嗎？",
-          "description": "此操作無法復原。這將永久刪除您的伺服器，並從我們的伺服器移除相關資料。",
-          "continue": "繼續"
+          "connected": "伺服器已連線且 RCON 可用"
         },
         "save_restart": "儲存並重新啟動",
         "map_rotation": {
@@ -4704,8 +5492,6 @@
           }
         },
         "move": {
-          "menu": "遷移至其他節點",
-          "title": "遷移至其他節點",
           "description": "伺服器會在 {node} 上停止，其檔案將複製到新節點，然後在新節點上重新啟動。",
           "source_offline": "{node} 已離線，因此無法複製伺服器檔案。伺服器將以預設設定在新節點上啟動，留在 {node} 上的內容將保留在原處。",
           "without_files": "遷移時不帶伺服器檔案",
@@ -4713,7 +5499,6 @@
           "no_nodes": "沒有其他遊戲伺服器節點",
           "free_slots": "可用名額：{count}",
           "free_disk": "可用 {size}",
-          "confirm": "遷移伺服器",
           "started": "正在將 {server} 遷移至 {node}",
           "warning": {
             "address": "伺服器在新節點上會取得新的位址。",
@@ -4729,7 +5514,9 @@
             "updating": "正在更新 CS2",
             "no_build": "未安裝 {game}",
             "no_slot": "沒有可用的伺服器名額"
-          }
+          },
+          "dialog_title": "遷移至其他節點",
+          "confirm_move": "遷移伺服器"
         },
         "migration": {
           "title": {
@@ -4750,12 +5537,71 @@
           "progress": "{done} / {total} ({percent}%)",
           "without_files": "不含檔案",
           "restored": "伺服器已回到 {node}。",
-          "cancel": "取消遷移",
           "cancel_requested": "正在取消遷移",
           "dismiss": "關閉",
-          "locked": "伺服器正在遷移到另一個節點。遷移完成後請重試。"
-        }
-      }
+          "locked": "伺服器正在遷移到另一個節點。遷移完成後請重試。",
+          "cancel_move": "取消遷移"
+        },
+        "plugin_tag": "外掛 v{version}",
+        "plugin_config": "伺服器外掛設定",
+        "show_plugin_config": "顯示設定",
+        "hide_plugin_config": "隱藏設定"
+      },
+      "clear_all": "清除搜尋與篩選",
+      "col_hosting": "託管",
+      "col_players": "玩家",
+      "col_plugin": "外掛",
+      "col_ports": "連接埠",
+      "col_server": "伺服器",
+      "copied": "已複製 {value}",
+      "copy_address": "複製位址",
+      "create_server": "建立伺服器",
+      "delete_body_external": "它將從 5Stack 移除，不再接收比賽。機器本身會繼續運作。此操作無法復原。",
+      "delete_body_node": "它將從 5Stack 移除，並在 {node} 上關閉。此操作無法復原。",
+      "delete_server": "刪除伺服器",
+      "delete_title": "刪除 {label}？",
+      "deleted_toast": "已刪除 {label}",
+      "disable_server": "停用伺服器",
+      "disabled_hidden": "已隱藏 {count} 台停用伺服器 | 已隱藏 {count} 台停用伺服器",
+      "disabled_toast": "已停用 {label}。它將不再接收比賽與公開遊戲。",
+      "empty_title": "尚無專用伺服器",
+      "enable_server": "啟用伺服器",
+      "enabled_for": "已啟用：{label}",
+      "enabled_toast": "已啟用 {label}",
+      "external": "外部",
+      "facet_host": "主機",
+      "filter_label": "篩選伺服器",
+      "more_for": "{label} 的更多操作",
+      "node_tag": "節點",
+      "open": "開啟",
+      "open_console": "開啟主控台",
+      "open_node": "在遊戲伺服器節點中開啟",
+      "page_of": "第 {page} / {pages} 頁",
+      "plugin_current": "v{version}（目前）",
+      "plugin_outdated_tip": "外掛版本不是最新。目前版本為 v{version}。",
+      "ports_tip": "遊戲連接埠（TV 連接埠）",
+      "search_placeholder": "搜尋名稱、位址、主機",
+      "servers_word": "台伺服器 | 台伺服器",
+      "setup_guide": "設定指南",
+      "show_them": "顯示",
+      "states": {
+        "attention": "需要處理",
+        "offline": "離線",
+        "inuse": "使用中",
+        "ready": "就緒",
+        "hibernating": "休眠中",
+        "disabled": "已停用"
+      },
+      "status_in_match": "比賽中",
+      "status_offline_since": "自 {time} 起離線",
+      "status_playing": "{count} 人在玩",
+      "status_plugin_outdated": "外掛過舊",
+      "tip_disabled": "不用於比賽或公開遊戲。",
+      "join_server": "加入伺服器",
+      "new_server": "新伺服器",
+      "create_on_node": "執行於 {node}",
+      "create_at_host": "執行於 {address}",
+      "create_pick_place": "選擇執行位置"
     },
     "public_servers": {
       "title": "公開伺服器",
@@ -5119,6 +5965,216 @@
         "execution_plan": "執行計畫",
         "no_explain_plan": "無法為此查詢產生 EXPLAIN 計畫",
         "not_found": "找不到查詢詳情"
+      },
+      "explorer": {
+        "active_backends": "使用中後端",
+        "active_queries": "使用中查詢",
+        "active_queries_hint": "所有非閒置的工作階段，依時間由長至短排列",
+        "active_waiting": "{active} 個使用中 · {waiting} 個等待中",
+        "activity": "活動",
+        "all_connections": "所有連線",
+        "all_indexes_scanned": "所有索引皆已掃描",
+        "all_indexes_scanned_hint": "自統計資料重設以來，此選取範圍內沒有未使用的索引。",
+        "all_statements": "所有陳述式",
+        "avg_ms": "平均 {ms} ms",
+        "avg_ms_col": "平均 (ms)",
+        "avg_time": "平均時間",
+        "back_to_overview": "返回總覽",
+        "background_jobs": "背景工作",
+        "blocks_hit": "區塊命中",
+        "blocks_read": "區塊讀取",
+        "buffer_statistics": "緩衝區統計",
+        "by_state": "依狀態",
+        "cache_hit": "快取命中",
+        "cache_hit_pct": "快取命中率 %",
+        "cache_hit_ratio": "快取命中率",
+        "calls_count": "{count} 次呼叫 | {count} 次呼叫",
+        "conflicts": "衝突",
+        "copy_name": "複製名稱",
+        "copy_query": "複製查詢",
+        "copy_statement": "複製 {sql}",
+        "count": "數量",
+        "current_locks": "目前鎖定",
+        "database_statistics": "資料庫統計",
+        "dead_pct": "無效列 %",
+        "dead_pct_tip": "無效列占資料表全部列數的比例。資料表的無效列超過 10,000 列時會被標示。",
+        "dead_share": "{pct}% 的列為無效列 · 約 {size}",
+        "dead_tuple_size": "無效列大小",
+        "dead_tuples": "無效列數",
+        "deadlocks_tip": "自上次重設統計資料以來的計數。",
+        "deletes": "刪除",
+        "every_seconds": "每 {seconds}s",
+        "every_table": "所有資料表",
+        "every_table_hint": "大小、膨脹與快取集中呈現。點選任一列即可開啟。",
+        "execution_plan": "執行計畫",
+        "execution_times": "執行時間（ms）",
+        "fetched": "已擷取",
+        "filter_query_text": "依查詢文字篩選",
+        "find_schema": "尋找綱要",
+        "find_table": "尋找資料表或索引",
+        "heap_hits": "堆積命中",
+        "heap_reads": "堆積讀取",
+        "heap_reads_count": "{count} 次堆積讀取",
+        "held_none_waiting": "持有 {count} 個，無等待 | 持有 {count} 個，無等待",
+        "hot_count": "{count} 次 HOT",
+        "hot_updates": "HOT 更新",
+        "hot_updates_tip": "不需更動任何索引的更新。",
+        "hypertable_name": "超級資料表名稱",
+        "hypertable_note": "資料列存放於 {schema} 下的資料區塊中，因此此父資料表本身不會回報任何列。",
+        "hypertable_tag": "超級資料表",
+        "idle_in_txn": "交易中閒置",
+        "idle_in_txn_tip": "保持交易開啟卻未執行任何動作。這會阻止 VACUUM 進行清理，並可能持有鎖定。",
+        "idx_scans": "索引掃描",
+        "idx_scans_fetched": "索引掃描（擷取列數）",
+        "idx_tup_fetch": "索引擷取列數",
+        "in_indexes": "索引占 {size}",
+        "index_hits": "索引命中",
+        "index_io": "索引 I/O",
+        "index_reads": "索引讀取",
+        "index_scans": "索引掃描",
+        "index_scans_tip": "使用索引而非讀取整個資料表的掃描所占比例。",
+        "index_size": "索引大小",
+        "index_usage": "索引使用",
+        "indexes": "索引",
+        "indexes_hint": "使用情形與快取命中一併呈現",
+        "inserts": "插入",
+        "io": "I/O",
+        "io_buffers": "I/O 與緩衝區",
+        "job_id": "工作 ID",
+        "job_type": "工作類型",
+        "last_analyze": "上次 ANALYZE",
+        "last_autoanalyze": "上次自動 ANALYZE",
+        "last_autovacuum": "上次自動 VACUUM",
+        "last_run_status": "上次執行",
+        "last_vacuum": "上次 VACUUM",
+        "live": "有效",
+        "live_tuples": "有效列數",
+        "local": "本機",
+        "local_blocks_hit": "本機區塊命中",
+        "local_blocks_read": "本機區塊讀取",
+        "lock_type": "鎖定類型",
+        "locks_on_table": "此資料表上的鎖定",
+        "locks_transactions": "鎖定與交易",
+        "maintenance": "維護",
+        "max_ms_col": "最長 (ms)",
+        "max_ms_paren": "（最長 {ms}）",
+        "max_time": "最長時間",
+        "max_value": "最長 {ms}",
+        "min_calls": "最少呼叫次數",
+        "min_value": "最短 {ms}",
+        "n_failed": "{count} 次失敗",
+        "n_of_m_statements": "{m} 個陳述式中的 {n} 個",
+        "n_waiting": "{count} 個等待中",
+        "name_copied": "已複製資料表名稱",
+        "needs_attention": "需要注意",
+        "never_scanned": "從未掃描",
+        "next_start": "下次執行",
+        "no_active_hint": "所有連線皆處於閒置狀態。",
+        "no_backups_hint": "首次排程執行後，備份將顯示於此。",
+        "no_backups_title": "無資料庫備份",
+        "no_connections_hint": "目前沒有任何用戶端連線到此資料庫。",
+        "no_indexes": "無索引",
+        "no_indexes_hint": "此資料表沒有索引，因此每次讀取都會掃描整個資料表。",
+        "no_indexes_hyper": "超級資料表的索引位於其各個資料區塊上。",
+        "no_jobs_hint": "TimescaleDB 沒有排程工作。",
+        "no_jobs_title": "無背景工作",
+        "no_locks_hint": "目前沒有任何鎖定。",
+        "no_locks_on_table": "目前此資料表上沒有任何鎖定。",
+        "no_plan": "無法為此查詢產生執行計畫。",
+        "no_reads_hint": "所選綱要沒有讀取紀錄。",
+        "no_schemas": "無綱要",
+        "no_schemas_hint": "請至少選擇一個綱要以檢視其資料表。",
+        "no_schemas_title": "未選擇綱要",
+        "no_slow_hint": "自統計資料重設以來，沒有任何陳述式的平均或峰值超過 {threshold}。",
+        "no_slow_title": "無慢速陳述式",
+        "no_statements_for_table": "沒有已記錄的陳述式提及此資料表名稱。",
+        "no_statements_match": "沒有符合的陳述式",
+        "no_statements_match_hint": "呼叫至少 {min} 次的陳述式中，沒有符合篩選條件的項目。",
+        "no_statements_yet": "pg_stat_statements 尚未記錄任何內容。",
+        "no_stats_hint": "pg_stat_statements 會隨應用程式執行查詢而累積資料，並在其統計資料重設時清空。",
+        "no_table_matches": "沒有符合「{find}」的資料表或索引。",
+        "no_tables_hint": "所選綱要中沒有資料表。",
+        "no_tables_title": "無資料表",
+        "no_timescale_title": "無 TimescaleDB 資料",
+        "nothing_matches": "此選取範圍內沒有符合的項目。",
+        "objects": "資料庫物件",
+        "off": "關閉",
+        "on": "開啟",
+        "on_disk": "磁碟上 {size}",
+        "open_connections": "開啟的連線",
+        "over_threshold": "超過 {threshold}",
+        "overview": "總覽",
+        "overview_hint": "PostgreSQL 資料庫 · 自上次統計重設以來的計數",
+        "pause_refreshing": "暫停重新整理",
+        "pct_of_table": "資料表占比 %",
+        "pid_actions": "pid {pid} 的動作",
+        "query_details": "查詢詳情",
+        "query_not_found": "找不到查詢詳情",
+        "query_performance": "查詢效能",
+        "range_hint": "對數刻度 · 色帶為平均值 ± 標準差",
+        "reclaimable": "可回收",
+        "reclaimable_tip": "根據無效列估算。VACUUM 可讓這些空間重新使用；只有 VACUUM FULL 或 pg_repack 才能將其歸還給磁碟。",
+        "refresh_every": "重新整理間隔",
+        "resume_refreshing": "繼續重新整理",
+        "rollbacks_count": "{count} 次復原",
+        "running_now": "正在執行",
+        "scans": "掃描",
+        "schema_count": "{count} 個綱要 | {count} 個綱要",
+        "search_indexes": "搜尋索引",
+        "seq_scans": "循序掃描",
+        "seq_scans_read": "循序掃描（讀取列數）",
+        "seq_tup_read": "循序讀取列數",
+        "sequential_count": "{count} 次循序掃描",
+        "server": "伺服器",
+        "share_of_time": "時間占比",
+        "share_of_time_tip": "此陳述式的總執行時間占所有列出陳述式總執行時間的比例。",
+        "shared_blocks_hit": "共用區塊命中",
+        "shared_blocks_read": "共用區塊讀取",
+        "size": "大小",
+        "size_on_disk": "磁碟大小",
+        "slow_avg": "{count} 個陳述式平均超過 {threshold} | {count} 個陳述式平均超過 {threshold}",
+        "slow_avg_none": "沒有陳述式平均超過 {threshold}",
+        "slow_max": "{count} 個陳述式至少一次超過 {threshold} | {count} 個陳述式至少一次超過 {threshold}",
+        "slow_over": "慢於",
+        "slow_running_many": "目前有 {count} 個查詢執行超過 {threshold}，最長 {duration}",
+        "slow_running_one": "目前有 1 個查詢已執行 {duration}",
+        "slow_threshold": "慢速查詢門檻",
+        "started": "開始時間",
+        "statement_copied": "陳述式已複製到剪貼簿",
+        "statements_to_run": "需自行執行的陳述式",
+        "statements_touching": "涉及此資料表的陳述式",
+        "statements_touching_hint": "來自 pg_stat_statements，依資料表名稱比對。超過 {threshold} 者優先列出。",
+        "statistics": "統計",
+        "std_dev": "標準差",
+        "table_and_indexes": "資料表 {table} · 索引 {indexes}",
+        "table_io": "資料表 I/O",
+        "table_maintenance": "資料表維護",
+        "table_not_found": "找不到資料表",
+        "table_not_found_hint": "它可能已被刪除，或未選取其綱要。",
+        "table_size": "資料表大小",
+        "table_storage": "資料表儲存空間",
+        "temp_blocks": "暫存區塊",
+        "temp_blocks_tip": "因 work_mem 不足以完成排序或雜湊而溢寫到磁碟的區塊。",
+        "temp_blocks_written": "暫存區塊寫入",
+        "terminate_warning": "終止會結束此工作階段並復原其交易。",
+        "total_chunks": "資料區塊總數",
+        "total_rows": "總列數",
+        "total_size": "總大小",
+        "total_time": "總時間",
+        "tuples_deleted": "刪除列數",
+        "tuples_fetched": "擷取列數",
+        "tuples_inserted": "插入列數",
+        "tuples_read": "讀取列數",
+        "tuples_returned": "傳回列數",
+        "tuples_updated": "更新列數",
+        "updates": "更新",
+        "view_all_slow": "檢視所有慢速查詢",
+        "wait_event": "等待事件",
+        "wait_event_type": "等待事件類型",
+        "waiting_on_lock": "正在等待鎖定",
+        "waiting_tip": "正在等待鎖定的工作階段。",
+        "worth_a_look": "值得一看",
+        "zero_unused": "0 · 未使用"
       }
     },
     "events": {
@@ -5327,6 +6383,54 @@
         "tournaments_hint": "在錦標賽對戰表中進行的比賽，無論是否計入排名。",
         "custom": "自訂比賽",
         "custom_hint": "其餘所有：不計入任何紀錄的比賽。"
+      },
+      "store": {
+        "open_aria": "開啟 {name}",
+        "verified_hint": "已由登錄檔維護者驗證",
+        "custom_hint": "在此新增，尚無人審核。",
+        "guidelines_hint": "載入它的伺服器在啟動時會關閉 Valve 伺服器準則。",
+        "on_panel": "已在你的面板上",
+        "panel_host": "部署在你的面板主機上",
+        "set_up": "設定",
+        "no_build": "沒有 {runtime} 版本",
+        "only": "僅限 {runtimes}",
+        "add_node": "新增一個遊戲伺服器節點即可安裝",
+        "found_on_disk": "在磁碟上發現",
+        "found_on_disk_hint": "手動放置。無論何種模式，都會在每台伺服器上載入。",
+        "manage_here": "在此管理",
+        "install_title": "安裝 {name} {version}",
+        "failed_on": "在 {node} 上失敗",
+        "failed_on_nodes": "在 {count} 個節點上失敗 | 在 {count} 個節點上失敗",
+        "install_failed": "安裝失敗",
+        "installing_on": "正在 {total} 個節點中的 {installed} 個上安裝",
+        "waiting_nodes": "正在等待線上節點",
+        "pinned_at": "固定在 {version}",
+        "update_to": "更新到 {version}",
+        "filter_kind": "類型",
+        "filter_review": "審核",
+        "verified_only": "僅已驗證",
+        "runtime": "執行環境",
+        "needs_attention": "需要處理",
+        "empty_installed_title": "尚未安裝任何內容",
+        "empty_installed_hint": "在「全部」中安裝外掛，每個節點都會取得它。",
+        "empty_title": "沒有符合的外掛",
+        "installing_toast": "正在所有線上節點上安裝 {name}",
+        "retry_toast": "正在失敗的節點上重試 {name}",
+        "update_toast": "節點正在安裝 {version}；它會維持固定在該版本。"
+      },
+      "detail": {
+        "kind_game": "遊戲伺服器外掛",
+        "kind_panel": "面板外掛",
+        "kind_bundle": "遊戲伺服器與面板套件",
+        "copy_command": "複製指令",
+        "copied": "指令已複製",
+        "manual_on": "位於 {nodes}，不受 5Stack 管理",
+        "latest_for": "{runtime} 的最新版本 {version}",
+        "node_offline": "離線",
+        "node_not_accepting": "不接受比賽",
+        "rollout_settings": "發布設定",
+        "running": "執行中",
+        "this_deployment": "此部署"
       }
     },
     "awards": {
@@ -5348,11 +6452,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "搜尋獎項",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -5368,7 +6471,66 @@
       "group_custom_tournament_awards": "自訂錦標賽獎項",
       "group_custom_event_awards": "自訂活動獎項",
       "group_custom_season_awards": "自訂賽季獎項",
-      "group_custom_league_awards": "自訂聯賽獎項"
+      "group_custom_league_awards": "自訂聯賽獎項",
+      "already_holds": "{name} 已擁有 {award}，且此獎項不允許重複頒發。",
+      "automation_season": "賽季自動頒發",
+      "automation_tournament": "錦標賽自動頒發",
+      "builtin_cant_delete": "內建獎項無法刪除",
+      "builtin_note": "內建獎項。由錦標賽與賽季自動頒發，可以編輯但無法刪除。",
+      "col_award": "獎項",
+      "col_earned_at": "獲得於",
+      "col_holder": "獲得者",
+      "col_holders": "獲得者",
+      "days_ago": "{count} 天前",
+      "delete_award": "刪除獎項",
+      "delete_body": "{count} 次頒發將一併刪除，並從獲得者的榮譽中移除。此操作無法復原。 | {count} 次頒發將一併刪除，並從所有獲得者的榮譽中移除。此操作無法復原。",
+      "delete_body_none": "尚無人獲得。此操作無法復原。",
+      "delete_hint": "將其連同所有頒發紀錄從每位獲得者的榮譽中移除。",
+      "delete_title": "刪除 {name}？",
+      "deleted_toast": "已刪除 {name}",
+      "edit_award": "編輯獎項",
+      "facet_belongs_to": "所屬",
+      "filter_label": "篩選獎項",
+      "grant_only_hint": "你可以頒發獎項。建立與編輯獎項需要獎項管理員角色。",
+      "grant_short": "頒發",
+      "granted_toast": "已將 {award} 頒發給 {name}",
+      "kind_custom": "自訂",
+      "more_for": "{name} 的更多操作",
+      "once_per_holder": "每位獲得者一次",
+      "open_holders": "查看獲得者",
+      "owner_deleted": "所屬已刪除",
+      "owner_ended": "{date} 結束",
+      "owner_finished": "{date} 已結束",
+      "owner_kind": {
+        "global": "一般",
+        "tournament": "錦標賽",
+        "event": "活動",
+        "league": "聯賽賽季",
+        "season": "賽季"
+      },
+      "owner_live": "正在直播",
+      "owner_running": "進行中",
+      "owner_starts": "{date} 開始",
+      "owner_upcoming": "即將開始",
+      "repeatable": "可重複頒發",
+      "revoke_from": "從 {name} 收回",
+      "show_more": "顯示更多",
+      "sort_last_granted": "最近頒發",
+      "status": {
+        "recent": "最近 90 天內頒發",
+        "never": "從未頒發",
+        "open": "所屬進行中或即將開始",
+        "finished": "所屬已結束"
+      },
+      "team_count": "{count} 支隊伍 | {count} 支隊伍",
+      "tiers": {
+        "mvp": "MVP",
+        "gold": "金",
+        "silver": "銀",
+        "bronze": "銅",
+        "special": "特別"
+      },
+      "today": "今天"
     },
     "award_detail": {
       "not_found_title": "找不到獎項",
@@ -5412,10 +6574,29 @@
         "cameraTalkback": "攝影機回話"
       },
       "resources": "資源使用量",
-      "cpu": "CPU",
-      "memory": "記憶體",
-      "no_resources": "尚未取得媒體伺服器的 Pod 指標，可能是叢集的 metrics server 沒有在收集它。",
-      "legend": "一個路徑就是一個具名的串流位置，可能是某個人的麥克風，或一台攝影機。「推流中」計算的是此刻實際在傳送媒體的路徑；從有人加入到畫面真正上線之間，路徑可能是閒置的。工作階段是 WebRTC 連線，每一位觀眾都算一個，因此增加得比其他數字快。"
+      "legend": "一個路徑就是一個具名的串流位置，可能是某個人的麥克風，或一台攝影機。「推流中」計算的是此刻實際在傳送媒體的路徑；從有人加入到畫面真正上線之間，路徑可能是閒置的。工作階段是 WebRTC 連線，每一位觀眾都算一個，因此增加得比其他數字快。",
+      "logs_button": "mediamtx 日誌",
+      "tip_publishing": "此刻真正在傳送媒體的路徑。從有人加入到其畫面或聲音開始傳輸之前，路徑可能處於閒置狀態。",
+      "tip_paths": "路徑是一個具名的推流位置——一個人的麥克風，或一台攝影機。",
+      "tip_sessions": "WebRTC 連線。串流的每位觀眾都佔一個，所以它比其他數字漲得更快。",
+      "of_paths": "/ {count} 條路徑 | / {count} 條路徑",
+      "unknown_while_unreachable": "無法連線時未知",
+      "how_to_read": "如何解讀這些數字",
+      "by_feature": "依功能",
+      "kinds_unknown": "在媒體伺服器重新回應之前，各功能的數字未知。",
+      "idle_title": "目前沒有任何推流",
+      "idle_hint": "當比賽直播、選手攝影機或語音大廳開始時，這裡會出現對應的列。",
+      "received": "已接收",
+      "received_hint": "目前開啟的路徑上收到的位元組數，每條路徑從開啟時開始計算。關閉的路徑會帶走它的位元組數。",
+      "share_received": "接收量佔比",
+      "not_in_use": "目前未使用：{kinds}",
+      "resources_hint": "mediamtx Pod · 每 30 秒查詢",
+      "cores_now": "使用中 {cores} 核",
+      "status_reachable": "可連線",
+      "status_unreachable_since": "自 {time} 起無法連線",
+      "kinds_unknown_title": "各功能數字未知",
+      "no_resources_title": "尚無 Pod 指標",
+      "no_resources_hint": "叢集的指標伺服器可能沒有收集 mediamtx Pod。"
     },
     "utility": {
       "eyebrow": "道具庫",
@@ -6396,8 +7577,8 @@
           "map_filter": "依地圖篩選",
           "render_missing": "算繪缺少的 ({total})",
           "rerender_outdated": "重新算繪過舊的 ({total})",
-          "pipeline_behind": "算繪 Pod 落後於此 API",
-          "pipeline_behind_hint": "目前使用的算繪 Pod 以版本 {pipeline} 錄製，低於此 API 預期的版本 {version}。在更新 game-server 與 game-streamer 映像檔之前，重新算繪無法讓預覽變為最新。",
+          "pipeline_behind": "上次算繪使用了舊版本",
+          "pipeline_behind_hint": "上次完成的算繪以版本 {pipeline} 拍攝，而此 API 預期版本 {version}。算繪 Pod 啟動時會拉取最新映像，所以請先算繪一個陣容。它以版本 {version} 完成後，即可使用「重新算繪過時項目」。",
           "load_failed": "無法載入預覽涵蓋情況",
           "confirm_missing_title": "算繪缺少的預覽？",
           "confirm_missing": "將為 {count} 個沒有預覽的點位排入算繪。 | 將為 {count} 個沒有預覽的點位排入算繪。",
@@ -6527,6 +7708,249 @@
         "recent": "你最近的搜尋",
         "recent_counts": "{predicted} 個中命中 {verified} 個"
       }
+    },
+    "control_room": {
+      "on_air": "播出中",
+      "off_air_hint": "目前沒有直播。選擇一場進行中的比賽來開始直播。",
+      "starting": "啟動中",
+      "program": "節目",
+      "preview": "預覽",
+      "take": "切出",
+      "take_pick": "選擇一個預覽來切到播出。",
+      "take_already": "{match} 已在播出。",
+      "take_go_live": "直播 {match}",
+      "take_switch": "切換到 {match}",
+      "take_more": "更多啟動方式",
+      "take_start_hint": "佔用一張閒置 GPU 並啟動一個 Pod，約需一分鐘。",
+      "take_switch_hint": "重複使用正在執行的 Pod。畫面會在幾秒內切換。",
+      "go_live": "開始直播",
+      "start_tv": "以電視模式啟動（延遲）",
+      "tv_delayed": "電視（延遲）",
+      "tv_delay": "電視延遲",
+      "full_deck": "完整控制台",
+      "open_focus_window": "開啟專注視窗",
+      "ready": "就緒",
+      "not_ready": "未就緒",
+      "you_are_playing": "你正在參加這場比賽",
+      "no_live_matches_hint": "比賽一開始，預覽監看畫面就會出現在這裡。",
+      "started_live": "正在開始 {match} 的直播。Pod 將在一兩分鐘內啟動。",
+      "started_tv": "正在開始 {match} 的延遲電視直播。Pod 將在一兩分鐘內啟動。",
+      "stopped": "直播已停止。GPU 已閒置。",
+      "capacity": "{n} / {max} 路直播 | {n} / {max} 路直播",
+      "gpu": {
+        "none": "沒有 GPU 節點",
+        "busy": "沒有閒置 GPU · {total} 張中 {busy} 張忙碌",
+        "free": "{total} 張 GPU 中 {free} 張閒置 | {total} 張 GPU 中 {free} 張閒置",
+        "hint": "GPU 池。開啟 GPU 節點頁面。"
+      },
+      "status": {
+        "veto": "BP",
+        "spinning_up": "伺服器啟動中",
+        "check_in": "報到"
+      },
+      "reasons": {
+        "veto": "地圖 BP 進行中。請等待比賽開始。",
+        "waiting_for_server": "正在啟動伺服器。請等待比賽開始。",
+        "check_in": "選手正在報到。請等待比賽開始。",
+        "not_live": "請等待比賽開始。",
+        "no_server": "這場比賽沒有分配伺服器。",
+        "server_offline": "伺服器離線。正在等待它恢復上線。",
+        "no_gpu_nodes": "沒有已註冊的 GPU 節點。",
+        "no_free_gpu": "沒有閒置 GPU。",
+        "at_capacity": "已達上限。停止直播，或將其切換到這場比賽。"
+      },
+      "deck": {
+        "sheet_description": "直播控制。與專注視窗相同的控制台。",
+        "not_on_air": "未在播出",
+        "not_on_air_hint": "這場比賽沒有正在進行的直播。請從控制室開始。",
+        "keys_on": "此處可使用 1–0、← →、空白鍵和 Tab 鍵",
+        "keys_off": "點擊控制台以使用鍵盤",
+        "match_page": "比賽頁面",
+        "paused": "正在完整控制台中顯示",
+        "paused_hint": "控制台開啟時，此處的預覽會暫停。"
+      },
+      "stop": {
+        "title": "停止直播？",
+        "description": "Pod 將關閉，{match} 的直播會對所有觀眾結束。GPU 將回到池中。",
+        "keep": "繼續直播",
+        "confirm": "停止直播"
+      }
+    },
+    "system_alerts": {
+      "alert": "公告",
+      "now": "現在",
+      "create": "建立公告",
+      "empty": "還沒有公告",
+      "hint": "點擊公告即可編輯。",
+      "new_alert": "新公告",
+      "edit_alert": "編輯公告",
+      "new_hint": "建立後，訪客會在每個頁面看到它。",
+      "created_at": "建立於 {time}",
+      "showing": "顯示中",
+      "showing_named": "顯示中：{name}",
+      "turn_off": "關閉",
+      "show_now": "立即顯示",
+      "locked": "訪客無法關閉此橫幅",
+      "can_close": "訪客可以關閉",
+      "ends": "結束",
+      "ends_at": "{time}結束",
+      "no_end": "不結束",
+      "older": "更早的公告不在此時間範圍內。",
+      "show_quarter": "顯示過去 3 個月",
+      "show_older": "顯示更早的公告",
+      "preview_caption": "每個頁面頂端",
+      "delete": "刪除公告",
+      "delete_hint": "將永久刪除。",
+      "range": {
+        "day": "過去一天",
+        "week": "過去一週",
+        "month": "過去一個月",
+        "quarter": "過去 3 個月"
+      },
+      "summary": {
+        "showing": "{count} 則橫幅正在每個頁面顯示 | {count} 則橫幅正在每個頁面顯示",
+        "locked": "{count} 則無法關閉 | {count} 則無法關閉",
+        "none": "沒有正在顯示的橫幅"
+      },
+      "lane": {
+        "draft": "草稿 · 尚未建立",
+        "unsaved": "未儲存的變更",
+        "showing_ends": "顯示中 · {time}結束",
+        "showing_no_end": "顯示中 · 不結束",
+        "expired": "{time}已過期",
+        "turned_off": "{time}已關閉",
+        "off_created": "已關閉 · {time}建立"
+      },
+      "tip": {
+        "created": "建立於 {time}",
+        "up_since": "自 {time} 起顯示",
+        "ends": "{time} 結束",
+        "until_off": "直到被關閉",
+        "ended": "{time} 已結束",
+        "turned_off": "{time} 已關閉",
+        "off_now": "目前已關閉",
+        "draft": "建立後立即顯示"
+      },
+      "sections": {
+        "message": "訊息",
+        "display": "顯示",
+        "schedule": "排程"
+      },
+      "chips": {
+        "none": "不結束",
+        "hour": "1 小時",
+        "six_hours": "6 小時",
+        "day": "24 小時",
+        "three_days": "3 天"
+      },
+      "schedule": {
+        "no_end": "沒有結束時間。在你關閉之前會一直顯示。",
+        "ends": "{time} 結束（{relative}）",
+        "ended": "{time} 已結束（{relative}）"
+      },
+      "toast": {
+        "turned_off": "已關閉「{name}」",
+        "showing_ends": "正在顯示「{name}」 · {time}結束",
+        "showing_no_end": "正在顯示「{name}」 · 不結束",
+        "change_end": "變更結束時間",
+        "restored": "已還原「{name}」",
+        "created_showing": "公告已建立，現在正在顯示。",
+        "created_off": "公告已建立，在你開啟前保持關閉。",
+        "expired": "「{name}」已過期，已從橫幅中移除"
+      }
+    },
+    "admin_home": {
+      "title": "概覽",
+      "need_you": "{count} 項需要你處理 | {count} 項需要你處理",
+      "all_clear": "一切正常",
+      "all_clear_line": "目前沒有需要你處理的事項。",
+      "live_hint": "大多數區域會在變化時立即更新。指標每 30 秒重新整理一次，資料庫每分鐘重新整理一次。",
+      "everything_else": "其他",
+      "open": "開啟",
+      "open_area": "開啟{area}",
+      "add_steam_account": "新增 Steam 帳號",
+      "more": "另外 {count} 個 | 另外 {count} 個",
+      "card": {
+        "no_problems": "沒有問題",
+        "checking": "正在檢查…",
+        "none": "暫無",
+        "no_online": "沒有在線節點",
+        "season_starts": "第 {number} 賽季將在 {count} 天後開始 | 第 {number} 賽季將在 {count} 天後開始",
+        "of_online": "/ {total} 在線",
+        "servers_free": "{capacity} 台伺服器中 {free} 台空閒",
+        "of_connected": "/ {total} 已連線",
+        "offline": "{count} 個離線 | {count} 個離線",
+        "of_free": "/ {total} 空閒",
+        "accounts_free": "{total} 個 Steam 帳號中 {free} 個空閒",
+        "in_flight": "進行中",
+        "previews_current": "{total} 個預覽中 {current} 個為最新",
+        "of_within": "/ {total} 在限制內",
+        "slow_statements": "條慢查詢 | 條慢查詢",
+        "threshold": "超過 {threshold} 視為慢",
+        "banners_showing": "個橫幅顯示中 | 個橫幅顯示中",
+        "installed": "個已安裝",
+        "updates": "{count} 個可用更新 | {count} 個可用更新",
+        "up_to_date": "全部為最新",
+        "all_set_up": "全部已設定"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} 個節點離線 | {count} 個節點離線",
+          "cs2_failed": "{count} 個節點的 CS2 更新失敗 | {count} 個節點的 CS2 更新失敗",
+          "overprovisioned": "{count} 個節點執行的伺服器超出其 CPU 的承載能力 | {count} 個節點執行的伺服器超出其 CPU 的承載能力",
+          "plugin_unsupported": "{count} 個節點固定的外掛不支援其 CS2 版本 | {count} 個節點固定的外掛不支援其 CS2 版本",
+          "disk_full": "{count} 個節點的磁碟快滿了 | {count} 個節點的磁碟快滿了",
+          "cpu_governor": "{count} 個節點未使用 performance CPU 調速器 | {count} 個節點未使用 performance CPU 調速器",
+          "not_ready_region": "{count} 個節點無法承載比賽：沒有區域 | {count} 個節點無法承載比賽：沒有區域",
+          "not_ready_ports": "{count} 個節點無法承載比賽：沒有連接埠範圍 | {count} 個節點無法承載比賽：沒有連接埠範圍",
+          "not_ready_cs2": "{count} 個節點無法承載比賽：未安裝 CS2 | {count} 個節點無法承載比賽：未安裝 CS2",
+          "cs2_behind": "{count} 個節點有可用的 CS2 更新 | {count} 個節點有可用的 CS2 更新",
+          "disk_filling": "{count} 個節點的磁碟正在變滿 | {count} 個節點的磁碟正在變滿",
+          "cpu_slow": "{count} 個節點的 CPU 低於 3 GHz | {count} 個節點的 CPU 低於 3 GHz",
+          "cpu_warning": "{count} 個節點回報了 CPU 警告 | {count} 個節點回報了 CPU 警告"
+        },
+        "gpus": {
+          "pool_empty": "沒有 Steam 帳號：GPU 無法算繪、播放錄影或直播",
+          "pool_short": "Steam 帳號池距每個 GPU 一個還差 {count} 個帳號 | Steam 帳號池距每個 GPU 一個還差 {count} 個帳號",
+          "offline": "{count} 個 GPU 離線 | {count} 個 GPU 離線",
+          "bake_failed": "{count} 個 GPU 的著色器烘焙失敗 | {count} 個 GPU 的著色器烘焙失敗",
+          "renders_stuck": "{count} 個算繪工作正在等待，但沒有 GPU 接收算繪 | {count} 個算繪工作正在等待，但沒有 GPU 接收算繪"
+        },
+        "metrics": {
+          "cpu": "{count} 個節點的 CPU 超過 {threshold}% | {count} 個節點的 CPU 超過 {threshold}%",
+          "memory": "{count} 個節點的記憶體超過 {threshold}% | {count} 個節點的記憶體超過 {threshold}%",
+          "disk": "{count} 個節點有磁碟超過 {threshold}% | {count} 個節點有磁碟超過 {threshold}%",
+          "gpu_util": "{count} 個 GPU 已連續 5 分鐘使用率超過 {threshold}% | {count} 個 GPU 已連續 5 分鐘使用率超過 {threshold}%",
+          "gpu_vram": "{count} 個 GPU 的顯示記憶體超過 {threshold}% | {count} 個 GPU 的顯示記憶體超過 {threshold}%",
+          "gpu_temp": "{count} 個 GPU 溫度達到 {threshold} °C 或更高 | {count} 個 GPU 溫度達到 {threshold} °C 或更高"
+        },
+        "seasons": {
+          "rebuild": "第 {number} 賽季需要重建 ELO"
+        },
+        "renders": {
+          "failed": "過去一天有 {count} 個算繪失敗 | 過去一天有 {count} 個算繪失敗",
+          "behind": "算繪管線落後了：目前錄製 v{pipeline}，API 預期 v{version}",
+          "missing": "{count} 個道具點位沒有預覽 | {count} 個道具點位沒有預覽",
+          "outdated": "{count} 個道具點位預覽已過時 | {count} 個道具點位預覽已過時"
+        },
+        "database": {
+          "locks": "{count} 個工作階段正在等待鎖定 | {count} 個工作階段正在等待鎖定",
+          "running": "{count} 個查詢已執行超過 {threshold} | {count} 個查詢已執行超過 {threshold}",
+          "slow": "{count} 條陳述式平均耗時超過 {threshold} | {count} 條陳述式平均耗時超過 {threshold}"
+        },
+        "plugins": {
+          "failed": "{count} 個外掛部署失敗 | {count} 個外掛部署失敗",
+          "update": "{count} 個外掛有可用更新 | {count} 個外掛有可用更新",
+          "manual": "在磁碟上發現 {count} 個未在此管理的外掛 | 在磁碟上發現 {count} 個未在此管理的外掛"
+        },
+        "settings": {
+          "not_set_up": "{count} 個設定區段尚未設定 | {count} 個設定區段尚未設定"
+        },
+        "servers": {
+          "no_rcon": "{count} 台伺服器未回應 RCON | {count} 台伺服器未回應 RCON",
+          "plugin_outdated": "{count} 台伺服器執行的外掛已過時 | {count} 台伺服器執行的外掛已過時"
+        }
+      }
     }
   },
   "layouts": {
@@ -6551,6 +7975,19 @@
         "theme": "外觀",
         "developer": "開發者",
         "players_teams": "平台"
+      },
+      "status": {
+        "not_set_up": "未設定",
+        "job_elo": "ELO {pct}%",
+        "job_reindex": "重建索引 {pct}%",
+        "job_reparse": "重新解析 {pct}%",
+        "filter_attention": "需處理"
+      },
+      "search": {
+        "results": "{count} 個符合的設定 | {count} 個符合的設定",
+        "clear": "清除搜尋",
+        "no_match_title": "沒有符合「{query}」的設定",
+        "no_match_body": "搜尋會讀取所有區塊中設定的名稱與說明。試試一個詞，例如「角色」或「ELO」。"
       }
     },
     "system_update": {
@@ -6622,6 +8059,7 @@
       "brand": "5stack",
       "systems_online": "{count} 個系統上線 | {count} 個系統上線",
       "navigation": {
+        "home": "首頁",
         "dashboard": "我的數據",
         "play": "遊玩",
         "watch": "觀戰",
@@ -6656,7 +8094,24 @@
         "alerts": "公告",
         "seasons": "賽季",
         "stream_deck": "直播控制台",
-        "awards": "Awards"
+        "awards": "Awards",
+        "control_room": "控制室",
+        "overview": "概覽"
+      },
+      "modes": {
+        "play": "遊玩",
+        "admin": "管理",
+        "switch_to_play": "切換到遊玩",
+        "switch_to_admin": "切換到管理",
+        "attention": "{count} 項需要處理 | {count} 項需要處理",
+        "seasons_rebuild": "需要重建"
+      },
+      "groups": {
+        "compete": "競技",
+        "practice": "練習",
+        "media": "媒體",
+        "monitoring": "監控",
+        "site": "網站"
       },
       "system": {
         "title": "系統",
@@ -6674,7 +8129,9 @@
       },
       "footer": {
         "report_issue": "回報問題",
-        "join_discord": "加入我們的 Discord"
+        "report_issue_short": "回報問題",
+        "join_discord": "加入我們的 Discord",
+        "discord": "Discord"
       },
       "tooltips": {
         "dashboard": "我的數據",
@@ -7033,7 +8490,6 @@
     "none": "無可用玩家"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "這些檔案會在伺服器啟動時掛載到 `csgo` 目錄。",
     "any": "任何",
     "remove": "移除",
     "edit": "編輯",
@@ -7057,7 +8513,8 @@
       "unsaved_changes": "有未儲存的變更",
       "review_and_save": "檢查您的編輯，然後儲存",
       "has_errors": "設定無效",
-      "resolve_errors": "修正標示的欄位以儲存"
+      "resolve_errors": "修正標示的欄位以儲存",
+      "leave_blocked": "離開前請儲存或捨棄變更"
     },
     "error": "錯誤",
     "enabled": "已啟用",
@@ -7097,8 +8554,6 @@
     "exit_fullscreen": "離開全螢幕",
     "download": "下載",
     "upload": "上傳",
-    "sort_ascending": "遞增排序",
-    "sort_descending": "遞減排序",
     "see_all": "查看全部",
     "standby_no_activity": "待命 · 無活動",
     "players": "玩家",
@@ -7162,7 +8617,8 @@
     "empty_filtered": {
       "title": "沒有符合這些篩選條件的內容",
       "description": "請嘗試清除篩選條件或擴大搜尋範圍。"
-    }
+    },
+    "clear_filters": "清除篩選"
   },
   "global_search": {
     "placeholder": "搜尋玩家、頁面和設定",
@@ -7190,8 +8646,6 @@
   },
   "file_manager": {
     "location": "位置",
-    "dedicated_server_files": "專用伺服器檔案",
-    "game_server_node_files": "遊戲伺服器節點檔案",
     "loading_server_info": "載入伺服器資訊...",
     "create_directory": {
       "title": "建立新目錄",
@@ -10257,10 +11711,6 @@
     "remove_node_confirm_title": "移除此節點？",
     "remove_node_confirm_description": "該節點及其上的所有專用伺服器都將從 5Stack 中移除。此操作無法復原。",
     "remove_ports": "移除連接埠",
-    "mode": {
-      "use_as_match": "用作比賽伺服器",
-      "use_as_gpu_only": "僅用作 GPU"
-    },
     "show_update_logs": "顯示更新紀錄",
     "update_failed": "更新失敗",
     "update_failed_description": "上次更新失敗。更新紀錄保留 24 小時。",
@@ -10532,10 +11982,6 @@
     }
   },
   "charts": {
-    "usage": "使用量",
-    "mount_os": "作業系統",
-    "mount_demos": "Demo",
-    "total_series": "{label} 總計",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} 平均"
   },
@@ -10568,7 +12014,6 @@
       "move_node": "遷移伺服器",
       "valve_preset_group": "Valve 預設",
       "custom_mode_group": "自訂模式",
-      "edit_mode": "編輯模式",
       "cs2_only": "僅限 CS2",
       "needs_node": "需要節點",
       "csgo_valve_only": "CS:GO 伺服器只能執行 Valve 預設。排名、練習和自訂模式需要 CS2。",
@@ -10592,9 +12037,9 @@
       "generate": "產生",
       "port": "遊戲連接埠",
       "tv_port": "TV 連接埠",
-      "create": "建立伺服器",
       "max_players": "最大玩家數",
-      "max_players_description": "可連線至伺服器的最大玩家數"
+      "max_players_description": "可連線至伺服器的最大玩家數",
+      "edit_mode_link": "編輯模式"
     },
     "rcon": {
       "console_output": "主控台輸出",
@@ -10617,6 +12062,13 @@
   "components": {
     "map_pools": {
       "view_on_steam": "在 Steam 上檢視"
+    },
+    "facet_rail": {
+      "clear_all": "全部清除",
+      "none": "無",
+      "remove": "移除 {label}",
+      "show_all": "顯示全部 {count} 項",
+      "show_fewer": "收合"
     }
   },
   "map_pools": {
@@ -12418,7 +13870,6 @@
       "unique_24h": "不重複玩家 · 24 小時",
       "unique_7d": "不重複玩家 · 7 天",
       "sessions_7d": "工作階段 · 7 天",
-      "time_played_7d": "遊戲時數 · 7 天",
       "avg_session": "平均工作階段",
       "players": "名玩家",
       "joins": "次加入",
@@ -12430,7 +13881,9 @@
       "empty": "此時段內沒有人在這裡玩過。",
       "no_matches": "沒有符合搜尋條件的玩家。",
       "showing": "顯示 {shown} / {total}",
-      "load_more": "載入更多"
+      "last_seen": "最後上線",
+      "time_played_col": "遊戲時數 · 7 天",
+      "show_more": "載入更多"
     },
     "player_tab": {
       "moderator_note": "版主還能看到確切時間、工作階段、使用過的名稱和 IP。",
@@ -12469,12 +13922,8 @@
       "offline": "離線",
       "map": "地圖",
       "community_server": "社群伺服器",
-      "online_now": "目前線上",
-      "players_this_week": "本週玩家",
       "different_players": "名不同玩家",
-      "hours_this_week": "本週時數",
       "played_by_everyone": "所有人合計",
-      "all_time_players": "歷來玩家",
       "since": "自 {date} 起",
       "activity": "活躍度 · 過去 7 天",
       "activity_description": "每天所有人在這裡遊戲的總時數。不會顯示任何人的個人遊戲時間。",
@@ -12491,7 +13940,13 @@
       "day": "日期",
       "player_hours": "玩家時數",
       "not_found_title": "找不到伺服器",
-      "not_found_description": "此伺服器不存在或未公開。"
+      "not_found_description": "此伺服器不存在或未公開。",
+      "tile": {
+        "online_now": "目前線上",
+        "players_this_week": "本週玩家",
+        "hours_this_week": "本週時數",
+        "all_time_players": "歷來玩家"
+      }
     }
   },
   "quick_look": {
@@ -12559,6 +14014,33 @@
         "twitch_unavailable": "Twitch 沒有回應。請稍後再試。",
         "unknown": "發生了一些問題。請重試。"
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "清除搜尋"
+    },
+    "sort": {
+      "sorted_ascending": "已遞增排序",
+      "sorted_descending": "已遞減排序"
+    },
+    "live_stamp": {
+      "live_at": "即時 · {time}",
+      "updated_now": "剛剛更新",
+      "updated_now_after": "剛剛更新",
+      "updated_seconds": "{seconds} 秒前更新",
+      "updated_seconds_after": "{seconds} 秒前更新",
+      "updated_minutes": "{minutes} 分鐘前更新",
+      "updated_minutes_after": "{minutes} 分鐘前更新",
+      "paused": "已暫停",
+      "every_seconds": "每 {seconds} 秒重新整理",
+      "every_minute": "每分鐘重新整理",
+      "every_minutes": "每 {minutes} 分鐘重新整理",
+      "refresh_now": "立即重新整理"
+    },
+    "last_changed": {
+      "updated": "更新於 {time}",
+      "updated_by": "{name} 更新於 {time}"
     }
   }
 }

@@ -64,9 +64,13 @@ function close(value: boolean) {
             <LucideRefreshCw v-else class="h-4 w-4" />
             {{
               scanning
-                ? $t("pages.settings.application.demo_settings.orphaned_scanning_short")
+                ? $t(
+                    "pages.settings.application.demo_settings.orphaned_scanning_short",
+                  )
                 : result?.found
-                  ? $t("pages.settings.application.demo_settings.orphaned_rescan")
+                  ? $t(
+                      "pages.settings.application.demo_settings.orphaned_rescan",
+                    )
                   : $t(
                       "pages.settings.application.demo_settings.orphaned_scan_now",
                     )
@@ -93,13 +97,17 @@ function close(value: boolean) {
         </div>
 
         <p v-else-if="!result?.found" class="text-sm text-muted-foreground">
-          {{ $t("pages.settings.application.demo_settings.orphaned_no_results") }}
+          {{
+            $t("pages.settings.application.demo_settings.orphaned_no_results")
+          }}
         </p>
 
         <template v-else>
           <p class="text-xs text-muted-foreground">
             {{
-              $t("pages.settings.application.demo_settings.orphaned_last_scanned")
+              $t(
+                "pages.settings.application.demo_settings.orphaned_last_scanned",
+              )
             }}:
             {{
               result.scanned_at
@@ -125,7 +133,9 @@ function close(value: boolean) {
             <div class="rounded-md border p-3">
               <div class="text-xs text-muted-foreground">
                 {{
-                  $t("pages.settings.application.demo_settings.orphaned_tracked")
+                  $t(
+                    "pages.settings.application.demo_settings.orphaned_tracked",
+                  )
                 }}
               </div>
               <div class="text-lg font-semibold">
@@ -142,7 +152,9 @@ function close(value: boolean) {
             >
               <div class="text-xs text-muted-foreground">
                 {{
-                  $t("pages.settings.application.demo_settings.orphaned_orphaned")
+                  $t(
+                    "pages.settings.application.demo_settings.orphaned_orphaned",
+                  )
                 }}
               </div>
               <div
@@ -175,7 +187,6 @@ function close(value: boolean) {
               </div>
             </div>
           </div>
-
 
           <template v-if="result.orphan_objects > 0">
             <div class="text-sm font-medium">

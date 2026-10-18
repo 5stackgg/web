@@ -15,7 +15,8 @@ type Stage = { state: StageState; detail?: string };
 
 const { client } = useApolloClient();
 const { t } = useI18n();
-const key = (name: string) => `pages.settings.application.demo_settings.${name}`;
+const key = (name: string) =>
+  `pages.settings.application.demo_settings.${name}`;
 
 const workerUrl = computed(
   () =>
@@ -239,7 +240,9 @@ const lastRunTime = computed(() =>
       >
         <Play class="size-3.5" />
         {{
-          lastRun ? $t(key("storage_check_rerun")) : $t(key("storage_check_run"))
+          lastRun
+            ? $t(key("storage_check_rerun"))
+            : $t(key("storage_check_run"))
         }}
       </Button>
     </div>

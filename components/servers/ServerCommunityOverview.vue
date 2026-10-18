@@ -11,7 +11,6 @@ import {
 } from "~/graphql/communityGraphql";
 import { useCommunityFormat } from "~/composables/useCommunityFormat";
 import {
-  tacticalSectionDescriptionClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
@@ -63,28 +62,28 @@ const maxPlayers = computed(
 const tiles = computed(() => [
   {
     key: "online",
-    label: t("community.server_page.online_now"),
+    label: t("community.server_page.tile.online_now"),
     value: format.count(onlineNow.value),
     suffix: maxPlayers.value ? `/ ${maxPlayers.value}` : null,
     sub: t("community.recent.players"),
   },
   {
     key: "week-players",
-    label: t("community.server_page.players_this_week"),
+    label: t("community.server_page.tile.players_this_week"),
     value: format.count(stats.value?.week_players),
     suffix: null,
     sub: t("community.server_page.different_players"),
   },
   {
     key: "week-hours",
-    label: t("community.server_page.hours_this_week"),
+    label: t("community.server_page.tile.hours_this_week"),
     value: format.hours(stats.value?.week_seconds),
     suffix: null,
     sub: t("community.server_page.played_by_everyone"),
   },
   {
     key: "all-time",
-    label: t("community.server_page.all_time_players"),
+    label: t("community.server_page.tile.all_time_players"),
     value: format.count(stats.value?.all_time_players),
     suffix: null,
     sub: stats.value?.tracked_since
@@ -159,47 +158,48 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
+  <div class="grid gap-8">
     <div class="grid grid-cols-2 gap-2.5 md:grid-cols-4">
       <div
         v-for="tile in tiles"
         :key="tile.key"
-        class="min-w-0 rounded-md border border-border bg-card/40 p-3"
+        class="grid min-w-0 content-start gap-1.5 rounded-md border border-border bg-card/40 px-3.5 py-3"
         :data-tile="tile.key"
       >
-        <div
-          class="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-        >
+        <span class="truncate text-xs text-muted-foreground">
           {{ tile.label }}
-        </div>
-        <div class="mt-2 text-[1.6rem] font-bold leading-none tabular-nums">
+        </span>
+        <span class="text-[26px] font-bold leading-none tabular-nums">
           <AnimatedStat :value="tile.value" />
           <small
             v-if="tile.suffix"
-            class="ml-1 text-[0.95rem] font-semibold text-muted-foreground"
+            class="ml-1.5 text-sm font-semibold text-muted-foreground"
             >{{ tile.suffix }}</small
           >
-        </div>
-        <div class="mt-1.5 font-mono text-[0.7rem] text-muted-foreground">
+        </span>
+        <span class="truncate text-xs text-muted-foreground/80">
           {{ tile.sub }}
-        </div>
+        </span>
       </div>
     </div>
 
-    <section aria-labelledby="server-activity" class="tac-section-sep">
-      <h2 id="server-activity" :class="[tacticalSectionLabelClasses, 'mb-1']">
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("community.server_page.activity") }}
-      </h2>
-      <p :class="tacticalSectionDescriptionClasses">
-        {{ $t("community.server_page.activity_description") }}
-      </p>
-      <div class="rounded-lg border border-border px-4 py-3.5">
-        <ServerActivityChart
-          :hourly="stats?.hourly ?? []"
-          :server-label="label"
-        />
+    <section
+      aria-labelledby="server-activity"
+      class="tac-section-sep grid gap-4"
+    >
+      <div class="grid gap-1">
+        <h2 id="server-activity" :class="[tacticalSectionLabelClasses, 'mb-0']">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("community.server_page.activity") }}
+        </h2>
+        <p class="text-xs text-muted-foreground/70">
+          {{ $t("community.server_page.activity_description") }}
+        </p>
       </div>
+      <ServerActivityChart
+        :hourly="stats?.hourly ?? []"
+        :server-label="label"
+      />
     </section>
 
     <div class="tac-section-sep">

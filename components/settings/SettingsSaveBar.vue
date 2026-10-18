@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import { onBeforeRouteLeave } from "vue-router";
+import { SETTINGS_LEAVE_GUARD } from "~/composables/useSettingsLeaveGuard";
 
 /**
  * Floating "command bar" that docks to the bottom-center of the viewport
@@ -67,6 +69,36 @@ const dirty = computed(() => {
   if (!props.form) return !!props.dirty;
   if (baseline.value === null) return false;
   return serialize() !== baseline.value;
+});
+
+// Under a leave guard, unsaved edits keep the user on the page: the route
+// change is refused and the bar shakes and says why, until they save or
+// discard. A save in flight may navigate on its own, so it goes through.
+const blocked = ref(false);
+const panelRef = ref<HTMLElement | null>(null);
+
+if (inject(SETTINGS_LEAVE_GUARD, false)) {
+  onBeforeRouteLeave(() => {
+    if (!dirty.value || props.submitting) return true;
+    blocked.value = true;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      panelRef.value?.animate(
+        [
+          { transform: "translateX(0)" },
+          { transform: "translateX(-6px)" },
+          { transform: "translateX(5px)" },
+          { transform: "translateX(-3px)" },
+          { transform: "translateX(0)" },
+        ],
+        { duration: 320, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+      );
+    }
+    return false;
+  });
+}
+
+watch(dirty, (value) => {
+  if (!value) blocked.value = false;
 });
 
 const hasErrors = computed(() => {
@@ -155,12 +187,10 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 <template>
   <Teleport to="body" :disabled="contained">
     <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 translate-y-8"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 translate-y-8"
+      enter-active-class="transition-[opacity,transform] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+      enter-from-class="opacity-0 translate-y-6 motion-reduce:translate-y-0"
+      leave-active-class="transition-[opacity,transform] [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+      leave-to-class="opacity-0 translate-y-6 motion-reduce:translate-y-0"
       @enter="onBarEnter"
     >
       <div
@@ -182,48 +212,34 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
         "
       >
         <div
-          class="save-bar pointer-events-auto flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 backdrop-blur-xl transition-[border-color,box-shadow] duration-300 sm:gap-4 sm:px-4"
+          ref="panelRef"
+          class="save-bar pointer-events-auto flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 backdrop-blur-xl transition-colors duration-150 sm:gap-4 sm:px-4"
           :class="[
             contained ? '' : 'max-w-xl',
-            hasErrors
-              ? 'border-destructive/40 shadow-[0_0_0_1px_hsl(var(--destructive)/0.15),0_18px_40px_-12px_hsl(var(--destructive)/0.4),0_8px_24px_-8px_rgba(0,0,0,0.6)]'
-              : 'border-[hsl(var(--tac-amber)/0.4)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.15),0_18px_40px_-12px_hsl(var(--tac-amber)/0.5),0_8px_24px_-8px_rgba(0,0,0,0.6)]',
+            hasErrors || blocked
+              ? 'border-destructive/40'
+              : 'border-[hsl(var(--tac-amber)/0.4)]',
           ]"
         >
-          <!-- live status indicator -->
+          <!-- status dot: static, amber while unsaved, red when it can't save -->
           <span
-            class="relative ml-1 flex h-2.5 w-2.5 shrink-0 items-center justify-center"
-          >
-            <Transition
-              enter-active-class="transition-opacity duration-300"
-              leave-active-class="transition-opacity duration-200"
-              enter-from-class="opacity-0"
-              leave-to-class="!opacity-0"
-            >
-              <span
-                v-if="!hasErrors"
-                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-60"
-              />
-            </Transition>
-            <span
-              class="relative inline-flex h-2.5 w-2.5 rounded-full transition-colors duration-300"
-              :class="
-                hasErrors
-                  ? 'bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.8)]'
-                  : 'bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.85)]'
-              "
-            />
-          </span>
+            class="ml-1 h-2 w-2 shrink-0 rounded-full transition-colors duration-150"
+            :class="
+              hasErrors || blocked
+                ? 'bg-destructive'
+                : 'bg-[hsl(var(--tac-amber))]'
+            "
+          />
 
           <!-- status text -->
           <div class="flex min-w-0 flex-1 flex-col leading-tight">
-            <span
-              class="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-foreground"
-            >
+            <span class="text-[13px] font-semibold text-foreground">
               {{
                 hasErrors
                   ? $t("common.save_bar.has_errors")
-                  : title || $t("common.save_bar.unsaved_changes")
+                  : blocked
+                    ? $t("common.save_bar.leave_blocked")
+                    : title || $t("common.save_bar.unsaved_changes")
               }}
             </span>
             <span class="truncate text-xs text-muted-foreground">
@@ -288,13 +304,9 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 </template>
 
 <style scoped>
+/* Depth from a darker fill and one plain shadow; no colored glow. */
 .save-bar {
-  background-color: hsl(var(--background) / 0.82);
-  /* faint amber wash bleeding up from the bar's accent edge */
-  background-image: radial-gradient(
-    120% 140% at 50% 130%,
-    hsl(var(--tac-amber) / 0.08),
-    transparent 70%
-  );
+  background-color: hsl(var(--background) / 0.88);
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.85);
 }
 </style>

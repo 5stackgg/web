@@ -43,9 +43,11 @@ const fields: Array<{
 </script>
 
 <template>
-  <div class="space-y-3 rounded-md border border-border/60 bg-muted/20 p-3">
-    <div class="space-y-0.5">
-      <p class="text-sm font-medium">{{ $t("pages.plugins.load.title") }}</p>
+  <!-- Rows in the rail's settings list: a heading row, then one indented row
+       per kind of match, each with its own switch. -->
+  <div class="border-b border-border/40 last:border-b-0">
+    <div class="space-y-0.5 pb-1 pt-3">
+      <p class="text-sm">{{ $t("pages.plugins.load.title") }}</p>
       <p class="text-xs text-muted-foreground">
         {{ $t("pages.plugins.load.description") }}
       </p>
@@ -54,15 +56,16 @@ const fields: Array<{
     <div
       v-for="field in fields"
       :key="field.key"
-      class="flex items-start justify-between gap-3"
+      class="flex items-start justify-between gap-4 border-b border-border/40 py-2.5 pl-3.5 last:border-b-0"
     >
       <div class="space-y-0.5">
-        <p class="text-sm">{{ $t(field.label) }}</p>
+        <p class="text-[0.8rem]">{{ $t(field.label) }}</p>
         <p class="text-xs text-muted-foreground">{{ $t(field.hint) }}</p>
       </div>
       <Switch
         :model-value="props.targets[field.key]"
         :disabled="props.disabled"
+        :aria-label="$t(field.label)"
         @update:model-value="emit('update', field.key, $event)"
       />
     </div>

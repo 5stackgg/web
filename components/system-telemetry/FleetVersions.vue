@@ -2,13 +2,13 @@
   <div class="flex h-full flex-col gap-5">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <div class="flex items-center gap-1.5 text-sm">
+        <div class="flex items-center gap-1.5 text-[13.5px] font-semibold">
           {{ $t("pages.system_telemetry.distribution.versions") }}
           <FiveStackToolTip>
             {{ $t("pages.system_telemetry.distribution.versions_hint") }}
           </FiveStackToolTip>
         </div>
-        <div class="mt-2 text-3xl font-semibold leading-none">
+        <div class="mt-2 text-3xl font-bold leading-none">
           {{ current ? `${currentShare}%` : "—" }}
         </div>
         <div class="mt-1 text-[0.72rem] text-muted-foreground">
@@ -17,9 +17,7 @@
       </div>
 
       <div v-if="behind" class="text-right">
-        <div
-          class="font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-        >
+        <div class="text-xs text-muted-foreground">
           {{ $t("pages.system_telemetry.distribution.behind") }}
         </div>
         <div class="mt-1 text-xl font-semibold leading-none">
@@ -38,7 +36,7 @@
       >
         <span class="flex min-w-0 items-center gap-2">
           <span
-            class="shrink-0 rounded-[3px] px-1.5 py-0.5 font-sans text-[0.58rem] uppercase tracking-[0.12em]"
+            class="shrink-0 rounded-[3px] px-1.5 py-0.5 text-[0.68rem]"
             :class="
               row.isCurrent
                 ? 'bg-[hsl(var(--tac-step-1)/0.18)] text-[hsl(var(--tac-step-1))]'
@@ -51,7 +49,7 @@
             {{ row.short }}
           </span>
         </span>
-        <span class="shrink-0 font-mono tabular-nums">
+        <span class="shrink-0 tabular-nums">
           {{ format(row.installs) }}
         </span>
       </li>

@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { toast } from "@/components/ui/toast";
+import { createButtonClasses } from "~/utilities/tacticalClasses";
 import { useServerMoveNodes } from "~/composables/useServerMigration";
 import {
   MOVE_DEDICATED_SERVER_MUTATION,
@@ -204,7 +205,7 @@ async function move() {
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
           <ArrowRightLeft class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-          {{ $t("pages.dedicated_servers.detail.move.title") }}
+          {{ $t("pages.dedicated_servers.detail.move.dialog_title") }}
         </DialogTitle>
         <DialogDescription>
           {{
@@ -242,9 +243,7 @@ async function move() {
       </div>
 
       <div class="flex flex-col gap-2">
-        <span
-          class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-        >
+        <span class="flex items-center gap-2 text-xs text-muted-foreground">
           <Server class="h-3.5 w-3.5" />
           {{ $t("pages.dedicated_servers.detail.move.target") }}
         </span>
@@ -273,9 +272,7 @@ async function move() {
             />
             <span class="flex min-w-0 flex-col">
               <span class="truncate text-sm">{{ option.label }}</span>
-              <span
-                class="truncate font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
-              >
+              <span class="truncate text-xs text-muted-foreground">
                 {{ option.detail }}
               </span>
             </span>
@@ -301,7 +298,9 @@ async function move() {
           class="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground"
           aria-hidden="true"
         />
-        <ul class="flex flex-col gap-1 text-xs leading-relaxed text-muted-foreground">
+        <ul
+          class="flex flex-col gap-1 text-xs leading-relaxed text-muted-foreground"
+        >
           <li v-for="warning of warnings" :key="warning">
             {{ warning }}
           </li>
@@ -312,9 +311,9 @@ async function move() {
         <Button variant="ghost" @click="emit('update:open', false)">
           {{ $t("common.cancel") }}
         </Button>
-        <Button variant="tactical" :disabled="!canMove" @click="move">
-          <ArrowRightLeft class="mr-1 h-4 w-4" />
-          {{ $t("pages.dedicated_servers.detail.move.confirm") }}
+        <Button :class="createButtonClasses" :disabled="!canMove" @click="move">
+          <ArrowRightLeft class="size-4" />
+          {{ $t("pages.dedicated_servers.detail.move.confirm_move") }}
         </Button>
       </DialogFooter>
     </DialogContent>

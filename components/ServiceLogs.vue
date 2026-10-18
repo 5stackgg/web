@@ -267,6 +267,11 @@ export default {
     return {
       logsByPod: {} as Record<string, LogEntry[]>,
       gettingSinceLogs: false,
+      // The window being loaded ends here; the live stream keeps running
+      // alongside it, so only older lines belong to the earlier page.
+      sinceUntil: null as Date | null,
+      // The service this panel last asked the api to stream.
+      streamedService: "",
       activePod: "",
       _timestamps: true,
       _followLogs: true,
@@ -330,6 +335,7 @@ export default {
 
       const start = new Date(oldestLogTime);
       start.setMinutes(start.getMinutes() - 60);
+      this.sinceUntil = new Date(oldestLogTime);
 
       socket.event("logs", {
         service: this.service,
@@ -384,6 +390,12 @@ export default {
         let partial: Record<string, any[]> = {};
 
         this.logListener?.stop();
+        // The api keeps one stream per service, so the one this panel showed
+        // before keeps running unless it is stopped.
+        if (this.streamedService && this.streamedService !== this.service) {
+          socket.event("logs:stop", { service: this.streamedService });
+        }
+        this.streamedService = this.service;
 
         this.logListener = socket.listen(`logs:${this.service}`, (raw) => {
           const log = JSON.parse(raw);
@@ -413,6 +425,7 @@ export default {
 
             if (log.partial) {
               this.gettingSinceLogs = false;
+              this.sinceUntil = null;
               for (const pod in partial) {
                 this.logsByPod[pod].unshift(...partial[pod]);
                 delete partial[pod];
@@ -425,7 +438,10 @@ export default {
             return;
           }
 
-          if (this.gettingSinceLogs) {
+          if (
+            this.gettingSinceLogs &&
+            (!this.sinceUntil || new Date(log.timestamp) < this.sinceUntil)
+          ) {
             if (!partial[log.pod]) {
               partial[log.pod] = [];
             }
@@ -478,6 +494,8 @@ export default {
 
   unmounted() {
     clearTimeout(this.retryTimeout);
+    // Otherwise the api keeps following this service until the socket closes.
+    socket.event("logs:stop", { service: this.service });
     this.logListener?.stop();
     this.onlineListener?.stop();
     document.body.classList.remove("overflow-hidden");

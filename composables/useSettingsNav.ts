@@ -11,6 +11,8 @@ import { useI18n } from "vue-i18n";
  * Subgroups keep each bucket scannable.
  */
 
+export type SettingsJob = "elo" | "reindex" | "reparse";
+
 export interface SettingsNavItem {
   path: string;
   labelKey: string;
@@ -18,6 +20,10 @@ export interface SettingsNavItem {
   dev?: boolean;
   /** Lower sorts first; unset items fall back to alphabetical order. */
   order?: number;
+  /** A setting the api derives as "true" once the section is set up. */
+  requires?: string;
+  /** Background jobs started from this section; the rail shows their progress. */
+  jobs?: SettingsJob[];
 }
 
 export interface SettingsNavSubgroup {
@@ -41,6 +47,7 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             path: "/settings/application/players",
             labelKey: "pages.players.title",
             order: 0,
+            jobs: ["elo", "reindex"],
           },
           {
             path: "/settings/application/teams",
@@ -81,6 +88,7 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             path: "/settings/application/demo-settings",
             labelKey: "pages.settings.application.demo_settings.title",
             order: 3,
+            jobs: ["reparse"],
           },
           {
             path: "/settings/application/highlights",
@@ -106,6 +114,7 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
             path: "/settings/application/twitch",
             labelKey: "pages.settings.application.twitch.title",
             order: 1,
+            requires: "public.supports_twitch",
           },
           {
             path: "/settings/application/linked-accounts",
@@ -259,6 +268,8 @@ export function useSettingsNav() {
               path: item.path,
               label: t(item.labelKey),
               order: item.order ?? 999,
+              requires: item.requires,
+              jobs: item.jobs,
             }))
             .sort(
               (a, b) => a.order - b.order || a.label.localeCompare(b.label),

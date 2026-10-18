@@ -1,325 +1,193 @@
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+import AdminSearch from "~/components/admin/AdminSearch.vue";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import DbBar from "./DbBar.vue";
+import DbGrid from "./DbGrid.vue";
+import DbSev from "./DbSev.vue";
+import SchemaSelector from "./SchemaSelector.vue";
+import { formatBig, formatSize, type DbGridColumn } from "./dbHealth";
+
+const props = defineProps<{ db: Record<string, any> }>();
+const emit = defineEmits<{
+  (e: "go", key: string): void;
+  (e: "update:schemas", schemas: string[]): void;
+}>();
+const { t } = useI18n();
+
+// reka reserves "" for the placeholder, so "all tables" needs a real value.
+const ALL = "__all__";
+const table = ref(ALL);
+const search = ref("");
+const usage = ref("all");
+const usageOptions = computed(() => [
+  { key: "all", label: t("common.all") },
+  { key: "unused", label: t("pages.database.explorer.never_scanned") },
+]);
+
+const sort = ref("idx_scan");
+const dir = ref<"asc" | "desc">("asc");
+watch(usage, (value) => {
+  sort.value = value === "unused" ? "index_size" : "idx_scan";
+  dir.value = value === "unused" ? "desc" : "asc";
+});
+
+const tables = computed(() =>
+  [...new Set(props.db.indexes.map((i: any) => i.tablename as string))].sort(),
+);
+
+const rows = computed(() => {
+  const q = search.value.trim().toLowerCase();
+  return props.db.indexes.filter(
+    (i: any) =>
+      (table.value === ALL || i.tablename === table.value) &&
+      (!q || i.indexname.toLowerCase().includes(q)) &&
+      (usage.value !== "unused" || i.idx_scan === 0),
+  );
+});
+
+const columns = computed<DbGridColumn[]>(() => [
+  { key: "schemaname", label: t("pages.database.columns.schema") },
+  { key: "tablename", label: t("pages.database.columns.table") },
+  { key: "indexname", label: t("pages.database.columns.index") },
+  {
+    key: "idx_scan",
+    label: t("pages.database.explorer.index_scans"),
+    num: true,
+  },
+  {
+    key: "idx_tup_read",
+    label: t("pages.database.explorer.tuples_read"),
+    num: true,
+  },
+  {
+    key: "idx_tup_fetch",
+    label: t("pages.database.explorer.tuples_fetched"),
+    num: true,
+  },
+  {
+    key: "index_size",
+    label: t("pages.database.explorer.index_size"),
+    num: true,
+  },
+  {
+    key: "table_size",
+    label: t("pages.database.explorer.table_size"),
+    num: true,
+  },
+  {
+    key: "ratio",
+    label: t("pages.database.explorer.pct_of_table"),
+    num: true,
+    value: (r) => (r.table_size ? r.index_size / r.table_size : null),
+  },
+]);
+</script>
+
 <template>
-  <div class="space-y-6">
-    <!-- Filters -->
-    <div class="flex gap-4">
-      <div class="flex-1 space-y-2">
-        <Label for="schema-filter" class="text-sm">{{
-          $t("pages.database.columns.schema")
-        }}</Label>
-        <SchemaSelector id="schema-filter" @change="handleSchemaChange" />
-      </div>
-      <div class="flex-1 space-y-2">
-        <Label for="table-filter" class="text-sm">{{
-          $t("pages.database.columns.table")
-        }}</Label>
-        <Popover>
-          <PopoverTrigger as-child>
-            <Button
-              id="table-filter"
-              variant="outline"
-              class="justify-between w-full h-10"
-            >
-              <span v-if="!selectedTable" class="text-muted-foreground">
-                {{ $t("database_extras.all_tables") }}
-              </span>
-              <span v-else>
-                {{ selectedTable }}
-              </span>
-              <ChevronDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent class="w-[200px] p-0">
-            <Command>
-              <CommandInput
-                :placeholder="
-                  $t('pages.database.query_performance.search_tables')
-                "
-              />
-              <CommandEmpty>{{ $t("common.no_tables_found") }}</CommandEmpty>
-              <CommandList>
-                <CommandGroup>
-                  <CommandItem
-                    value="__all__"
-                    @select="selectedTable = undefined"
-                  >
-                    {{ $t("database_extras.all_tables") }}
-                  </CommandItem>
-                  <CommandItem
-                    v-for="table in availableTables"
-                    :key="table"
-                    :value="table"
-                    @select="selectedTable = table"
-                  >
-                    {{ table }}
-                  </CommandItem>
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
-      <div class="flex-1 space-y-2">
-        <Label for="index-filter" class="text-sm">{{
-          $t("pages.database.columns.index")
-        }}</Label>
-        <Input
-          id="index-filter"
-          v-model="indexFilter"
-          :placeholder="$t('pages.database.query_performance.search_indexes')"
-          class="w-full"
-        />
-      </div>
+  <div class="grid gap-4">
+    <div class="flex min-w-0 flex-wrap items-center gap-2">
+      <Select v-model="table">
+        <SelectTrigger
+          class="h-8 w-auto min-w-[160px] max-w-[240px] rounded-md bg-muted/30 px-2.5 text-xs"
+          :aria-label="$t('pages.database.columns.table')"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem :value="ALL">{{
+            $t("database_extras.all_tables")
+          }}</SelectItem>
+          <SelectItem v-for="name in tables" :key="name" :value="name">
+            <span class="font-mono text-xs">{{ name }}</span>
+          </SelectItem>
+        </SelectContent>
+      </Select>
+      <AdminSearch
+        v-model="search"
+        :placeholder="$t('pages.database.explorer.search_indexes')"
+      />
+      <AnimatedFilters v-model="usage" square :options="usageOptions" />
+      <SchemaSelector
+        class="ml-auto"
+        :model-value="db.schemas"
+        @update:model-value="emit('update:schemas', $event)"
+      />
     </div>
 
-    <!-- Index Usage Stats -->
-    <div>
-      <h3 class="text-lg font-semibold mb-3">
-        {{ $t("pages.database.index_usage.title") }}
-      </h3>
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>{{
-                $t("pages.database.index_usage.schema")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.database.index_usage.table")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.database.index_usage.index")
-              }}</TableHead>
-              <TableHead class="text-right">{{
-                $t("pages.database.index_usage.index_scans")
-              }}</TableHead>
-              <TableHead class="text-right">{{
-                $t("pages.database.index_usage.tuples_read")
-              }}</TableHead>
-              <TableHead class="text-right">{{
-                $t("pages.database.index_usage.tuples_fetched")
-              }}</TableHead>
-              <TableHead class="text-right">{{
-                $t("pages.database.index_usage.index_size")
-              }}</TableHead>
-              <TableHead class="text-right">{{
-                $t("pages.database.index_usage.table_size")
-              }}</TableHead>
-              <TableHead class="text-right">{{
-                $t("pages.database.index_usage.size_ratio")
-              }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow
-              v-for="index in filteredIndexStats"
-              :key="`${index.schemaname}.${index.indexname}`"
-            >
-              <TableCell class="text-xs">{{ index.schemaname }}</TableCell>
-              <TableCell class="font-mono text-xs">{{
-                index.tablename
-              }}</TableCell>
-              <TableCell class="font-mono text-xs">{{
-                index.indexname
-              }}</TableCell>
-              <TableCell class="text-right">
-                <Badge v-if="index.idx_scan === 0" variant="destructive">
-                  {{ index.idx_scan.toLocaleString() }}
-                </Badge>
-                <span v-else>{{ index.idx_scan.toLocaleString() }}</span>
-              </TableCell>
-              <TableCell class="text-right">{{
-                index.idx_tup_read.toLocaleString()
-              }}</TableCell>
-              <TableCell class="text-right">{{
-                index.idx_tup_fetch.toLocaleString()
-              }}</TableCell>
-              <TableCell class="text-right text-xs">{{
-                formatBytes(index.index_size)
-              }}</TableCell>
-              <TableCell class="text-right text-xs">{{
-                formatBytes(index.table_size)
-              }}</TableCell>
-              <TableCell class="text-right">
-                <Badge
-                  :variant="
-                    getSizeRatioVariant(index.index_size, index.table_size)
-                  "
-                >
-                  {{ getSizeRatioPercent(index.index_size, index.table_size) }}%
-                </Badge>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Empty v-if="filteredIndexStats.length === 0">
-          <p class="text-muted-foreground">
-            {{ $t("pages.database.index_usage.no_stats") }}
-          </p>
-        </Empty>
-      </Card>
-    </div>
+    <SectionEmpty
+      v-if="db.schemas.length === 0"
+      :title="$t('pages.database.explorer.no_schemas_title')"
+      :description="$t('pages.database.explorer.no_schemas_hint')"
+    />
+    <SectionEmpty
+      v-else-if="!rows.length && usage === 'unused'"
+      :title="$t('pages.database.explorer.all_indexes_scanned')"
+      :description="$t('pages.database.explorer.all_indexes_scanned_hint')"
+    />
+    <SectionEmpty
+      v-else-if="!rows.length"
+      :title="$t('pages.database.index_usage.no_stats')"
+      :description="$t('pages.database.explorer.nothing_matches')"
+    />
+    <DbGrid
+      v-else
+      v-model:sort="sort"
+      v-model:dir="dir"
+      :rows="rows"
+      :columns="columns"
+      :row-key="(r) => `${r.schemaname}.${r.indexname}`"
+      :max-height="560"
+      clickable
+      @row-click="(r) => emit('go', `t:${r.schemaname}.${r.tablename}`)"
+    >
+      <template #cell-schemaname="{ row }">
+        <span class="font-mono text-[11.5px] text-muted-foreground/70">{{
+          row.schemaname
+        }}</span>
+      </template>
+      <template #cell-tablename="{ row }">
+        <span class="font-mono text-[11.5px]">{{ row.tablename }}</span>
+      </template>
+      <template #cell-indexname="{ row }">
+        <span class="font-mono text-[11.5px]">{{ row.indexname }}</span>
+      </template>
+      <template #cell-idx_scan="{ row }">
+        <DbSev v-if="row.idx_scan === 0" sev="bad">{{
+          $t("pages.database.explorer.zero_unused")
+        }}</DbSev>
+        <template v-else>{{ (row.idx_scan || 0).toLocaleString() }}</template>
+      </template>
+      <template #cell-idx_tup_read="{ row }">{{
+        formatBig(row.idx_tup_read)
+      }}</template>
+      <template #cell-idx_tup_fetch="{ row }">{{
+        formatBig(row.idx_tup_fetch)
+      }}</template>
+      <template #cell-index_size="{ row }">{{
+        formatSize(row.index_size)
+      }}</template>
+      <template #cell-table_size="{ row }">{{
+        formatSize(row.table_size)
+      }}</template>
+      <template #cell-ratio="{ row }">
+        <template v-if="row.table_size">
+          <DbBar
+            :value="row.index_size / row.table_size"
+            :label="`${((row.index_size / row.table_size) * 100).toFixed(0)}%`"
+          />
+        </template>
+        <span v-else class="text-muted-foreground/60">—</span>
+      </template>
+    </DbGrid>
   </div>
 </template>
-
-<script lang="ts">
-import { ChevronDownIcon } from "lucide-vue-next";
-import { Card } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Empty } from "@/components/ui/empty";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { generateQuery } from "~/graphql/graphqlGen";
-import SchemaSelector from "./SchemaSelector.vue";
-
-export default {
-  components: {
-    Card,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-    Empty,
-    Badge,
-    Input,
-    Label,
-    Button,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    ChevronDownIcon,
-    SchemaSelector,
-  },
-  inject: ["pollInterval", "refreshTrigger"],
-  data() {
-    return {
-      indexStats: [] as any[],
-      selectedSchemas: ["public"] as string[],
-      selectedTable: undefined as string | undefined,
-      indexFilter: "",
-    };
-  },
-  computed: {
-    availableTables() {
-      const tables = new Set(
-        this.indexStats.map((stat: any) => stat.tablename),
-      );
-      return Array.from(tables).sort();
-    },
-    filteredIndexStats() {
-      let filtered = this.indexStats;
-
-      // Filter by table name
-      if (this.selectedTable) {
-        filtered = filtered.filter(
-          (stat: any) => stat.tablename === this.selectedTable,
-        );
-      }
-
-      // Filter by index name
-      if (this.indexFilter) {
-        const indexFilterLower = this.indexFilter.toLowerCase();
-        filtered = filtered.filter((stat: any) =>
-          stat.indexname.toLowerCase().includes(indexFilterLower),
-        );
-      }
-
-      return filtered;
-    },
-  },
-  methods: {
-    handleSchemaChange(schemas: string[]) {
-      this.selectedSchemas = schemas;
-      if (this.$apollo.queries.indexStats) {
-        this.$apollo.queries.indexStats.refetch();
-      }
-    },
-    formatBytes(bytes: number): string {
-      if (bytes === 0) return "0 B";
-      const k = 1024;
-      const sizes = ["B", "KB", "MB", "GB", "TB"];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-    },
-    getSizeRatioPercent(indexSize: number, tableSize: number): string {
-      if (tableSize === 0) return "0.0";
-      const ratio = (indexSize / tableSize) * 100;
-      return ratio.toFixed(1);
-    },
-    getSizeRatioVariant(indexSize: number, tableSize: number): string {
-      if (tableSize === 0) return "secondary";
-      const ratio = (indexSize / tableSize) * 100;
-      if (ratio > 100) return "destructive"; // Index larger than table
-      if (ratio > 50) return "secondary"; // Index is more than 50% of table size
-      return "default";
-    },
-  },
-  apollo: {
-    indexStats: {
-      query() {
-        return generateQuery({
-          getIndexStats: [
-            this.selectedSchemas.length > 0
-              ? { schemas: this.selectedSchemas }
-              : {},
-            {
-              schemaname: true,
-              tablename: true,
-              indexname: true,
-              idx_scan: true,
-              idx_tup_read: true,
-              idx_tup_fetch: true,
-              index_size: true,
-              table_size: true,
-            },
-          ],
-        });
-      },
-      update: (data: any) => data.getIndexStats,
-      pollInterval() {
-        return this.pollInterval();
-      },
-      skip() {
-        return this.selectedSchemas.length === 0;
-      },
-    },
-  },
-  watch: {
-    refreshTrigger() {
-      // Refetch when manual refresh is triggered
-      if (this.$apollo.queries.indexStats) {
-        this.$apollo.queries.indexStats.refetch();
-      }
-    },
-  },
-};
-</script>

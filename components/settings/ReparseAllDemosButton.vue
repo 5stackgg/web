@@ -38,7 +38,9 @@ onMounted(() => {
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom" class="max-w-[18rem]">
-          {{ $t("pages.settings.application.demo_settings.reparse_warning_title") }}
+          {{
+            $t("pages.settings.application.demo_settings.reparse_warning_title")
+          }}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

@@ -52,8 +52,12 @@ onBeforeUnmount(() => {
 const containContent =
   inject<ReturnType<typeof computed<boolean>>>("containContent");
 
+const adminContent =
+  inject<ReturnType<typeof computed<boolean>>>("adminContent");
+
 // Get computed values
 const containContentValue = computed(() => containContent?.value ?? true);
+const adminContentValue = computed(() => adminContent?.value ?? false);
 
 // Owns the app-wide scroll floor: any surface that shrinks page content (tab
 // strips, filters) calls capture() and this wrapper reserves the height so the
@@ -88,10 +92,12 @@ useScrollRestorationAnchor(pageScroller, scrollFloorRootEl);
           <SystemAlertBanner />
           <div
             ref="scrollFloorRootEl"
-            class="mx-auto p-2 sm:p-4 w-full self-center"
-            :class="{
-              'lg:max-w-7xl': containContentValue,
-            }"
+            class="p-2 sm:p-4 w-full"
+            :class="
+              adminContentValue
+                ? 'mr-auto self-start lg:max-w-[1280px]'
+                : ['mx-auto self-center', containContentValue && 'lg:max-w-7xl']
+            "
             :style="
               scrollFloorMinHeight
                 ? { minHeight: scrollFloorMinHeight + 'px' }

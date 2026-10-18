@@ -75,9 +75,9 @@ describe("ServerPlayerManagementPlugin", () => {
 
     expect(wrapper.text()).not.toContain("not detected");
     expect(wrapper.text()).not.toContain("plugin active");
-    expect(
-      wrapper.find('[data-testid="plugin-status-loading"]').exists(),
-    ).toBe(true);
+    expect(wrapper.find('[data-testid="plugin-status-loading"]').exists()).toBe(
+      true,
+    );
   });
 
   it("shows an active plugin's version, framework and last check-in", async () => {
@@ -127,7 +127,7 @@ describe("ServerPlayerManagementPlugin", () => {
 
     const show = wrapper
       .findAll("button")
-      .find((button) => button.text() === "Show Config");
+      .find((button) => button.text() === "Show config");
     await show!.trigger("click");
 
     expect(wrapper.find("pre").text()).toContain('"PlayerManagement"');

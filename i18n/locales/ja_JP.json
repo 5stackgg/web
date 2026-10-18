@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU使用率",
-      "memory_usage": "メモリ使用率",
       "services": "サービス",
       "service": "サービス",
-      "network": "ネットワーク",
       "search_services_placeholder": "サービスまたはノードを検索...",
       "filter_by_node": "ノードで絞り込み",
       "no_services_found": "現在のフィルターに一致するサービスがありません。",
@@ -1281,11 +1278,145 @@
       "disk_short": "ディスク",
       "network_short": "ネットワーク",
       "no_nodes_found": "現在のフィルターに一致するゲームサーバーノードがありません。",
-      "only_online_nodes": "オンラインのノードのみ"
+      "only_online_nodes": "オンラインのノードのみ",
+      "search_placeholder": "サービスまたはノードを検索",
+      "scope_all": "すべてのサービス",
+      "scope_attention": "要対応",
+      "live_hint": "各ノードは約30秒ごとに報告します。このページは直近90分を保持します。",
+      "filter_group": "ゲームサーバーノード",
+      "only_online": "オンラインのノードのみ",
+      "only_enabled": "有効なノードのみ",
+      "no_nodes_title": "ゲームサーバーノードがありません",
+      "no_nodes_hint": "ゲームサーバーノードを設定して、試合の受け入れ枠を増やしましょう。",
+      "setup_node": "ノードを設定",
+      "services_reporting": "{count} 件が報告中",
+      "all_nodes": "すべてのノード",
+      "no_services_title": "報告中のサービスはありません",
+      "no_services_hint": "ノードが Pod のメトリクスを送信すると、ここにサービスが表示されます。",
+      "no_attention_title": "要対応のサービスはありません",
+      "no_attention_hint": "すべてのサービスが上限内です。",
+      "no_match_title": "一致するサービスはありません",
+      "no_match_hint": "検索、ノード、フィルターに一致するものはありません。",
+      "clear_filters": "フィルターをクリア",
+      "logs_for": "{name} のログ",
+      "logs_sheet_sub": "ログ · {node}",
+      "open_logs_page": "ログページで開く",
+      "attention": {
+        "problems": "{count} 件の問題 | {count} 件の問題",
+        "nodes_ok": "{count} ノード正常 | {count} ノード正常",
+        "critical_count": "重大 {count} 件 | 重大 {count} 件",
+        "warning_count": "警告 {count} 件 | 警告 {count} 件",
+        "thresholds": "しきい値",
+        "thresholds_hint": "ノード: CPU、メモリ、ディスクが75%から警告、90%から重大。GPU: 使用率90%が5分続くか VRAM 90%で重大、85 °Cで警告。サービス表では、ノードのメモリの半分を使うサービスも重大です。",
+        "all_clear": "要対応の項目はありません",
+        "all_clear_hint": "オンラインのノードと GPU はすべて上限内です。",
+        "issue_cpu": "{node} の CPU が {value}",
+        "issue_memory": "{node} のメモリが {value}",
+        "issue_disk": "{node} のディスクが {value}",
+        "issue_cpu_warning": "{node} が CPU 制限のゲームサーバーを報告しています",
+        "issue_gpu_util": "{node} の {gpu} が {value}",
+        "issue_gpu_vram": "{node} の {gpu} の VRAM が {value}",
+        "issue_gpu_temp": "{node} の {gpu} が {value}",
+        "cores": "{count} コア | {count} コア",
+        "above_for": "{minutes} 分間 {threshold}% を超過",
+        "above_now": "前回のサンプルから {threshold}% を超過",
+        "used_of": "{total} 中 {used}",
+        "gpu_usage": "使用率 {value}",
+        "last_30": "直近30分",
+        "open_node": "ノードを開く",
+        "nodes": "ノード",
+        "gpus": "GPU",
+        "nodes_all_fine": "{count} ノードがオンラインで上限内 | {count} ノードすべてがオンラインで上限内",
+        "nodes_fine": "{total} ノード中 {fine} ノードがオンラインで上限内",
+        "need_attention": "{count} 件が要対応 | {count} 件が要対応",
+        "offline": "{count} 件オフライン",
+        "view_nodes": "ゲームサーバーノードですべて表示",
+        "gpus_none_online": "オンラインの GPU はありません",
+        "gpus_all_fine": "{count} 基の GPU が上限内 | {count} 基の GPU が上限内",
+        "gpus_fine": "{total} 基中 {fine} 基の GPU が上限内",
+        "gpus_offline": "{count} 基がオフラインのノード上 | {count} 基がオフラインのノード上",
+        "view_gpus": "GPU ノードで表示"
+      },
+      "services_table": {
+        "actions": "操作",
+        "last_seen": "最終確認 {time}",
+        "node_disk": "ノードのディスク",
+        "node_disk_hint": "サービスは自身のディスク使用量を報告しません。これは各サービスが動いているノードで最も使用率の高いディスクです。75%から警告、90%から重大。",
+        "cpu_last_30": "CPU、直近30分",
+        "of_node": "ノード比 %",
+        "memory_share_hint": "ノードの総 RAM のうちサービスが使う割合。使用量はツールチップに表示されます。ノードのメモリの半分を使うサービスは重大です。"
+      }
     },
     "system_logs": {
       "follow_logs": "ログを追跡",
-      "timestamps": "タイムスタンプ"
+      "timestamps": "タイムスタンプ",
+      "bar_label": "{time}、{total} 行、警告 {warnings} 件、エラー {errors} 件",
+      "clear_filters": "フィルターをクリア",
+      "connection_lost": "接続が切れました。再接続しています — ストリームはここに表示されている最後の行の続きから再開します。",
+      "container": "コンテナ",
+      "copy_line": "行をコピー",
+      "download": "ログをダウンロード",
+      "download_failed": "{service} の全ログをダウンロードできませんでした",
+      "errors": "エラー",
+      "errors_like": "{text} に類似するエラー",
+      "errors_loaded": "読み込み範囲内のエラー {count} 件 | 読み込み範囲内のエラー {count} 件",
+      "errors_word": "件のエラー",
+      "exit_full_screen": "全画面表示を終了（Esc）",
+      "filter_lines": "行を絞り込み",
+      "follow": "追跡",
+      "full_logs_of": "全ログ · {service}",
+      "full_screen": "全画面表示",
+      "jump_to_live": "最新へ移動",
+      "level_error": "エラー",
+      "level_log": "ログ",
+      "level_warning": "警告",
+      "line_copied": "行をコピーしました",
+      "live_rate": "ライブ · {rate}/min",
+      "load_hour_before": "その前の 1 時間を読み込む",
+      "loading_earlier": "読み込み中…",
+      "log_lines": "ログ行",
+      "log_lines_word": "行のログ",
+      "minutes_per_bar": "{time} · 1 本あたり {minutes} min",
+      "n_new": "新着 {count} 件",
+      "no_match_hint": "読み込み範囲内にこれらのフィルターに一致する行はありません。その前の 1 時間を読み込むか、レベルの範囲を広げてください。",
+      "no_match_title": "一致する行はありません",
+      "no_repeating": "繰り返し発生している警告やエラーはありません",
+      "no_services_hint": "1 つ以上のサービスを選ぶと、それらのログを 1 つのストリームにまとめて表示します。",
+      "no_services_title": "サービスが選択されていません",
+      "node": "ノード",
+      "nothing_at": "{time} に現在のフィルターと一致するものはありません",
+      "now": "現在",
+      "only": "単独表示",
+      "only_context": "{context} のみ",
+      "per_minute": "{rate}/min",
+      "pod": "Pod",
+      "pod_count": "{count} Pod",
+      "pods_of": "{service} の Pod",
+      "preset_all": "すべて",
+      "preset_core": "コア",
+      "preset_match": "試合フロー",
+      "preset_media": "メディア",
+      "reconnecting": "再接続中…",
+      "repeating": "繰り返し発生している警告・エラー {count} 件 | 繰り返し発生している警告・エラー {count} 件",
+      "services": "サービス",
+      "show_core": "コアサービスを表示",
+      "show_every_line": "すべての行を表示",
+      "show_in_stream": "ストリームに表示",
+      "show_only": "{service} のみ表示",
+      "showing": "表示中",
+      "showing_only": "{service} のみ表示中",
+      "since": "開始時刻",
+      "start_of_logs": "読み込んだログの先頭",
+      "time": "時刻",
+      "waiting_for_output": "出力を待機中 · 5s ごとに再確認",
+      "warnings": "警告",
+      "warnings_like": "{text} に類似する警告",
+      "warnings_loaded": "読み込み範囲内の警告 {count} 件 | 読み込み範囲内の警告 {count} 件",
+      "warnings_word": "件の警告",
+      "status_ok": "直近5分間に警告やエラーはありません",
+      "status_warn": "直近5分間に警告あり",
+      "status_bad": "直近5分間にエラーあり",
+      "status_off": "まだ出力がありません"
     },
     "system_telemetry": {
       "title": "フリート テレメトリ",
@@ -1515,7 +1646,11 @@
         "modes_caption": "定義済み",
         "modes_unranked": "ドラフト非対応",
         "modes_unranked_caption": "ドラフトロビーに表示されないモード"
-      }
+      },
+      "jump_to": "移動",
+      "features_title": "機能",
+      "not_reported_title": "まだ報告されていません",
+      "no_activity_hint": "パネルがホストした試合を報告するにつれて、グラフが埋まっていきます。"
     },
     "tournaments": {
       "title": "トーナメント",
@@ -3284,7 +3419,7 @@
         "upload_demo_description": "CS2の.demファイルをドロップすると試合スタッツをインポートします。試合履歴のリンク有無に関わらず利用できます。",
         "import_match": "試合をインポート",
         "import_match_description": "5Stack以外でプレイした試合を取り込みます。",
-        "extension_title": "Chrome用5Stack",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "FACEITとLeetifyの試合を、それぞれのページからワンクリックでインポートできます。",
         "add_to_chrome": "Chromeに追加",
         "or_upload_demo": "またはデモをアップロード",
@@ -3521,6 +3656,119 @@
       "tabs": {
         "highlights": "ハイライト",
         "utility": "ユーティリティのラインナップ"
+      },
+      "ledger": {
+        "search": "クリップとラインナップを検索",
+        "view": {
+          "flight": "処理中",
+          "failed": "失敗",
+          "done": "完了"
+        },
+        "filter": {
+          "queue": "キュー",
+          "map": "マップ",
+          "group": "処理中をバッチごとにまとめる"
+        },
+        "retry_all": "失敗をすべて再試行 ({count})",
+        "empty": {
+          "all": "ハイライトのクリップとラインナップのプレビューは、起動・レンダリング・アップロードの間ここに表示されます。",
+          "flight_title": "処理中のものはありません",
+          "failed_title": "失敗はありません",
+          "done_title": "完了したものはありません",
+          "flight": "新しいハイライトのバッチやラインナップのプレビューがここに表示されます。",
+          "failed": "リストのレンダリングはすべて問題なく完了しました。",
+          "done": "完了したレンダリングがここに表示されます。",
+          "filtered": "検索やフィルターをクリアしてみてください。"
+        },
+        "select_all": "すべて選択",
+        "select": "{name} を選択",
+        "col": {
+          "render": "レンダリング",
+          "progress": "進捗",
+          "length": "長さ",
+          "elapsed": "経過",
+          "finished": "完了",
+          "actions": "操作"
+        },
+        "batch": {
+          "done_of": "{total} 件中 {done} 件完了",
+          "failed": "{count} 件失敗 | {count} 件失敗",
+          "paused": "一時停止中",
+          "silent": "ポッドから {since} 応答なし",
+          "booting": "ポッド起動中",
+          "booting_pct": "ポッド起動 {pct}%",
+          "waiting_gpu": "空き GPU を待機中"
+        },
+        "pod_on": "{map} で撮影中",
+        "lineup_on": "ラインナップ · {map}",
+        "missing_clip": "欠落: アップロード後にクリップが失われました",
+        "ago": "{since}前",
+        "more": "その他の操作",
+        "open_details": "詳細を開く",
+        "cancel_batch": "バッチをキャンセル",
+        "pages": "ページ",
+        "silent": "応答なし",
+        "history": "ステータス履歴",
+        "clip": "クリップ",
+        "player": "プレイヤー",
+        "round": "ラウンド",
+        "kills": "キル",
+        "segments": "セグメント",
+        "job_id": "ジョブ ID",
+        "lineup_id": "ラインナップ ID",
+        "render_job": "レンダリングジョブ",
+        "no_job": "まだありません",
+        "logs": "ログ",
+        "bulk": {
+          "selected": "{count} 件選択中 | {count} 件選択中",
+          "cancel": "選択をキャンセル",
+          "retry": "選択を再試行",
+          "requeue": "選択を再キュー",
+          "clear": "選択を解除",
+          "requeueing": "再キュー中",
+          "cancelling": "キャンセル中",
+          "progress": "{label} {done} / {total}"
+        },
+        "toast": {
+          "requeued": "{count} 件のレンダリングを再キューしました | {count} 件のレンダリングを再キューしました",
+          "cancelled": "{count} 件のレンダリングをキャンセルしました | {count} 件のレンダリングをキャンセルしました",
+          "not_done": "{count} 件は処理されませんでした | {count} 件は処理されませんでした",
+          "clip_requeued": "クリップを再キューしました",
+          "clip_not_requeued": "クリップを再キューできませんでした",
+          "batch_requeued": "バッチを再キューしました",
+          "batch_cancelled": "バッチをキャンセルしました",
+          "batch_not_cancelled": "バッチをキャンセルできませんでした",
+          "cleared": "完了したレンダリングを消去しました"
+        },
+        "confirm": {
+          "cancel_title": "{count} 件のレンダリングをキャンセルしますか? | {count} 件のレンダリングをキャンセルしますか?",
+          "cancel_body": "その場で停止し、完了しません。完了済みのクリップとプレビューには影響しません。",
+          "cancel_batches": "クリップはバッチ単位でキャンセルされるため、選択した各クリップのバッチの残りも停止します。",
+          "keep": "レンダリングを続ける",
+          "cancel_action": "レンダリングをキャンセル",
+          "batch_title": "{name} をキャンセルしますか?",
+          "batch_body": "完了していないクリップはレンダリングされません。完了したクリップはハイライトに残ります。",
+          "clear_title": "完了したレンダリングを消去しますか?",
+          "clear_body": "完了したレンダリングをキューから外します。レンダリング済みのクリップはハイライトに、プレビューは各ラインナップに残ります。"
+        },
+        "coverage": {
+          "current": "最新 {count} 件",
+          "missing": "欠落 {count} 件",
+          "outdated": "古い {count} 件",
+          "unrenderable": "撮影不可 {count} 件",
+          "queued": "キュー内 {count} 件",
+          "lineups": "ラインナップ",
+          "rerender_outdated": "古いものを再レンダリング",
+          "render_missing": "欠落分をレンダリング",
+          "confirm_missing_title": "欠落しているプレビューをレンダリングしますか?",
+          "confirm_outdated_title": "古いプレビューを再レンダリングしますか?",
+          "confirm_queue": "レンダリングをキューに追加",
+          "lineups_title": "レンダリングが必要なラインナップ",
+          "lineups_sub": "レンダリングバージョン v{version}",
+          "render_one": "まず1件レンダリング",
+          "render_one_waiting": "そのレンダリングの完了を待っています。現在のバージョンが報告されると「古いものを再レンダリング」が使えるようになります。"
+        },
+        "updated_ago": "{since}前に更新"
       }
     },
     "news": {
@@ -3719,7 +3967,92 @@
       "backfill_cancel_requested": "キャンセルをリクエストしました",
       "backfill_canceled_title": "シーズンの再構築をキャンセルしました",
       "backfill_complete_title": "シーズンの再構築が完了しました",
-      "backfill_complete_desc": "{total}試合中{completed}試合を再構築しました（{failed}件失敗）。"
+      "backfill_complete_desc": "{total}試合中{completed}試合を再構築しました（{failed}件失敗）。",
+      "hero": {
+        "rebuild_required": "再構築が必要",
+        "ends_in": "終了まで",
+        "running_for": "経過",
+        "days": "{count}日 | {count}日",
+        "started": "開始",
+        "ends": "終了",
+        "day_of": "{total}日中{day}日目",
+        "percent_through": "{percent}% 経過",
+        "change_start": "開始日を変更",
+        "change_end": "終了日を変更",
+        "set_end": "終了日を設定",
+        "make_ongoing": "無期限にする",
+        "grant_award": "アワードを付与",
+        "one_rebuild": "再構築は一度に1つだけ実行されます。",
+        "start_caption": "UTC、00:00 開始。",
+        "end_caption": "UTC、その日の 00:00 に終了。"
+      },
+      "off": {
+        "title": "オフシーズン",
+        "pill": "進行中のシーズンはありません",
+        "last_ended": "{season}は{date}に終了しました。",
+        "no_season": "現在プレイされた試合はどのシーズンにも含まれません。",
+        "next": "{season}は{date}（{count}日後）に開始し、通常試合のELOを5000にリセットします。 | {season}は{date}（{count}日後）に開始し、通常試合のELOを5000にリセットします。",
+        "nothing": "まだ何も予定されていません。"
+      },
+      "banner": {
+        "stale": "{seasons}のELOが古いため、再構築するまで順位が正しくありません。 | {seasons}のELOが古いため、再構築するまで順位が正しくありません。",
+        "rebuilding_now": "{season}は現在再構築中です。再構築は一度に1つだけ実行されます。"
+      },
+      "danger": {
+        "end_description": "今日で終了し、最終順位に基づいてシーズンアワードを付与します。次のシーズンが始まるまで、試合はどのシーズンにも含まれません。",
+        "end_button": "シーズンを終了",
+        "delete_description": "試合はどのシーズンにも属さなくなります。ELO履歴は残り、シーズン別の統計は消去されます。",
+        "delete_button": "シーズンを削除",
+        "end_confirm_title": "{season}を今すぐ終了しますか？",
+        "end_confirm_instead": "{date}ではなく、今日（{today}）で終了します。",
+        "end_confirm_today": "今日（{today}）で終了します。",
+        "end_confirm_awards": "シーズンアワードは最終順位に基づいて付与されます：シーズンチャンピオン、準優勝、3位、シーズンMVP。",
+        "end_confirm_gap_next": "{season}が{date}に始まるまで、試合はどのシーズンにも含まれません。",
+        "end_confirm_gap_none": "次のシーズンを作成するまで、試合はどのシーズンにも含まれません。",
+        "end_confirm_elo": "次のシーズンが始まると、通常試合のELOは再び5000からスタートします。",
+        "type_to_confirm": "確認のため {phrase} と入力してください",
+        "end_confirm_button": "{season}を終了",
+        "ended_toast": "{season}を終了しました。最終順位に基づいてシーズンアワードを付与しています。",
+        "delete_confirm_title": "{season}を削除しますか？",
+        "delete_confirm_button": "{season}を削除"
+      },
+      "next": {
+        "label": "次のシーズン",
+        "first_label": "最初のシーズン",
+        "schedule": "{season}を予定",
+        "hint_scheduled": "{season}は{date}に予定されています。",
+        "hint_after": "{season}は{date}に終了します。その後の予定はありません。",
+        "hint_open_ended": "{season}には終了日がないため、次のシーズンの前に終了日が必要です。",
+        "blocked": "{season}には終了日がないため、以降のシーズンはすべて重複します。先に終了日を設定してください。",
+        "first_season_hint": "最初のシーズンは記録上最も古い試合（{date}）から始まるため、過去の試合がシーズン外になることはありません。"
+      },
+      "form": {
+        "start_date": "開始日",
+        "end_date": "終了日"
+      },
+      "ledger": {
+        "label": "シーズン台帳"
+      },
+      "rebuild_progress": {
+        "label": "ELOを再構築中 · {total}試合中{completed}試合",
+        "failed": "{count}件失敗 | {count}件失敗",
+        "canceling": "キャンセル中"
+      },
+      "empty_state": {
+        "title": "シーズンはまだありません",
+        "description": "シーズンが始まると通常試合のELOは5000にリセットされます。最初のシーズンは記録上最も古い試合から始まります。"
+      },
+      "about": {
+        "label": "シーズンの役割",
+        "reset_title": "まっさらなランキング",
+        "reset_body": "シーズン開始時に通常マッチの ELO が 5,000 にリセットされ、全員が同じ地点から上を目指します。",
+        "counts_title": "すべての試合が対象",
+        "counts_body": "開始日から終了日までに行われた試合が、そのシーズンのランキングと統計に反映されます。シーズン間の試合はどのシーズンにも含まれません。",
+        "awards_title": "終了時にアワード",
+        "awards_body": "最終ランキングに基づき、シーズンチャンピオン、準優勝、3位、シーズンMVPが贈られます。",
+        "history_title": "記録として残る",
+        "history_body": "終了したシーズンの順位は保存され、プレイヤーはプロフィールから過去のシーズンと比較できます。"
+      }
     },
     "regions": {
       "title": "リージョン",
@@ -3738,7 +4071,58 @@
         "title": "リージョンを削除",
         "description": "このリージョンを削除してもよろしいですか？この操作は取り消せません。"
       },
-      "deleted": "リージョンを削除しました"
+      "deleted": "リージョンを削除しました",
+      "list": {
+        "label": "リージョン",
+        "flag_relay": "リレー",
+        "flag_lan": "LAN のみ"
+      },
+      "status": {
+        "online": "オンライン",
+        "partial": "一部のノードがオフライン",
+        "offline": "オフライン",
+        "disabled": "サーバーなし"
+      },
+      "detail": {
+        "label_aria": "リージョンのラベル",
+        "nodes_label": "ノード",
+        "servers_free": "{total} 台中 {free} 台が空き",
+        "col_node": "ノード",
+        "col_free": "空き",
+        "col_servers": "サーバー",
+        "no_nodes_title": "このリージョンにノードはありません",
+        "no_nodes_hint": "ノードのリージョンは {page} ページで設定します。",
+        "relay_title": "Steam リレーを使用",
+        "relay_description": "プレイヤーは Steam のリレー経由で接続するため、ゲームサーバーの IP は公開されません。",
+        "relay_lan_description": "LAN 専用リージョンはプレイヤーを直接接続するため、リレーはオフのままです。",
+        "lan_title": "LAN のみ",
+        "lan_description": "プレイヤーは LAN の IP から接続する必要があります。対面イベント向けです。",
+        "delete_title": "リージョンを削除",
+        "delete_hint_nodes": "先にこのリージョンの {count} 台のノードを別のリージョンへ移動してください。 | 先にこのリージョンの {count} 台のノードを別のリージョンへ移動してください。",
+        "delete_hint_empty": "何も割り当てられていません。"
+      },
+      "delete_dialog": {
+        "title": "{region} を削除しますか？",
+        "description": "このリージョンを使っているノードはありません。試合が行われたリージョンは削除できません。この操作は元に戻せません。",
+        "confirm": "リージョンを削除"
+      },
+      "create_sheet": {
+        "title": "リージョンを作成"
+      },
+      "toasts": {
+        "created": "{region} を作成しました",
+        "deleted": "{region} を削除しました",
+        "label_saved": "ラベルを保存しました",
+        "relay_on": "{region} の Steam リレーをオンにしました",
+        "relay_off": "{region} の Steam リレーをオフにしました",
+        "lan_on": "{region} の LAN のみをオンにしました",
+        "lan_off": "{region} の LAN のみをオフにしました"
+      },
+      "empty": {
+        "title": "リージョンはまだありません",
+        "description": "リージョンはゲームサーバーノードを場所ごとにまとめます。プレイヤーはマッチメイキングで希望のリージョンを選びます。"
+      },
+      "search_placeholder": "リージョンを検索"
     },
     "players": {
       "title": "プレイヤー",
@@ -4285,7 +4669,13 @@
         "demos": "デモ再生",
         "demos_desc": "オンデマンドのデモ再生",
         "rendering": "レンダリング",
-        "rendering_desc": "ハイライト・クリップのレンダリング"
+        "rendering_desc": "ハイライト・クリップのレンダリング",
+        "summary": "{total} 件中 {on} 件がオン",
+        "node_disabled": "このノードは無効のため、GPU の作業を受けません。",
+        "now_streaming": "{matchup} を配信中",
+        "now_demo": "{who} のデモを再生中",
+        "now_render": "{who} のハイライトをレンダリング中",
+        "now_render_pct": "{who} のハイライトをレンダリング中 · {pct}%"
       },
       "bake": {
         "help": "このノードの Vulkan シェーダーキャッシュを事前生成し、最初の試合から万全の状態で始められるようにします。",
@@ -4298,7 +4688,11 @@
         "in_progress": "事前生成を実行中",
         "stages": {
           "errored": "シェーダー生成でエラーが発生しました"
-        }
+        },
+        "action": "シェーダーをコンパイル",
+        "cancel": "コンパイルをキャンセル",
+        "logs": "コンパイルのログ",
+        "hide_logs": "ログを隠す"
       },
       "empty": {
         "title": "GPU ノードなし",
@@ -4328,9 +4722,155 @@
           "demo": "デモ再生",
           "highlights": "ハイライト",
           "bake": "シェーダー生成"
-        }
+        },
+        "add_account": "アカウントを追加",
+        "col_account": "アカウント",
+        "col_holding": "使用中",
+        "col_since": "開始",
+        "delete_action": "アカウントを削除",
+        "empty_title": "Steam アカウントはまだありません",
+        "empty_body": "レンダリング、デモ再生、ライブ観戦は実行中にそれぞれ 1 つ使用します。",
+        "free": "空き",
+        "free_of": "{total} 件中 {free} 件が空き",
+        "health_no_nodes": "GPU ノードはまだありません",
+        "health_empty": "空です。追加するまでレンダリングとライブ観戦は失敗します。",
+        "health_short": "{count} 件不足しています。すべてのアカウントが使用中だと一部の GPU が遊びます。",
+        "health_enough": "すべての GPU に足りています",
+        "name": "Steam アカウント",
+        "manage": "Steam アカウントを管理"
       },
-      "stop": "停止"
+      "stop": "停止",
+      "search_placeholder": "試合、視聴者、GPU、アカウントを検索",
+      "open_render_queue": "レンダーキューを開く",
+      "running_title": "実行中",
+      "running_hint": "1 つの GPU で同時に動くのは 1 件のみ",
+      "running_empty_title": "使用中の GPU はありません",
+      "running_empty_body": "ライブ配信、デモ再生、ハイライトのレンダリングは実行中ここに表示されます。",
+      "running_no_match": "一致するセッションはありません",
+      "no_match_body": "別の検索を試すか、フィルターをクリアしてください。",
+      "clear_all": "検索とフィルターをクリア",
+      "open_game_server_nodes": "ゲームサーバーノードを開く",
+      "gpus_title": "GPU",
+      "gpus_hint": "GPU ノードは GPU を搭載したゲームサーバーノードです",
+      "gpus_no_match": "一致する GPU ノードはありません",
+      "no_region": "リージョンなし",
+      "more_for": "{node} のその他の操作",
+      "open_details": "詳細を開く",
+      "open_in_nodes": "ゲームサーバーノードで開く",
+      "accept_matches": "新しい試合を受け付ける",
+      "stop_accepting": "試合の受け付けを停止",
+      "filter": {
+        "live": "ライブ",
+        "demos": "デモ",
+        "renders": "レンダー",
+        "workload_on": "有効なワークロード",
+        "node_type": "ノードの種類"
+      },
+      "kpi": {
+        "gpus_free": "空き GPU",
+        "of_total": "/ {total}",
+        "running": "実行中",
+        "running_split": "ライブ {live} · デモ {demo} · レンダー {render}",
+        "waiting": "待機中のレンダー",
+        "waiting_none": "キューは空です",
+        "accounts_split": "使用中 {used} · 空き {free}",
+        "accounts_short": "GPU ごとに 1 つにはあと {count} 件必要",
+        "accounts_busy": "すべて使用中です。新しい作業は空きを待ちます。"
+      },
+      "wait_reason": {
+        "no_accounts": "プールに Steam アカウントがありません",
+        "paused_for_match": "試合のライブ中は一時停止",
+        "no_account_free": "Steam アカウントの空きを待機中",
+        "no_gpu_free": "GPU の空きを待機中"
+      },
+      "col": {
+        "workload": "ワークロード",
+        "for": "対象",
+        "account": "Steam アカウント",
+        "state": "状態",
+        "time": "経過時間",
+        "node": "ノード",
+        "load": "負荷",
+        "vram": "VRAM",
+        "workloads": "ワークロード"
+      },
+      "kind": {
+        "live_tv": "ライブ配信 (GOTV)",
+        "live_direct": "ライブ配信 (直接)",
+        "demo": "デモ再生",
+        "highlights": "ハイライトのレンダリング",
+        "bake": "シェーダーの事前コンパイル"
+      },
+      "who": {
+        "spectators": "観戦者",
+        "warming_cache": "Vulkan キャッシュを準備中"
+      },
+      "state": {
+        "starting": "起動中",
+        "playing": "再生中",
+        "failed": "失敗"
+      },
+      "node_state": {
+        "setup": "セットアップ中",
+        "streaming": "配信中",
+        "playing": "デモを再生中",
+        "baking": "シェーダーをコンパイル中",
+        "offline_since": "{time} からオフライン"
+      },
+      "node_kind": {
+        "gpu": "GPU のみ",
+        "match": "試合 + GPU"
+      },
+      "sheet": {
+        "now": "現在",
+        "shader_cache": "シェーダーキャッシュ",
+        "idle_ready": "ライブ配信、デモ再生、レンダリングの準備ができています。",
+        "unavailable": "有効かつオンラインになるまで GPU の処理を受け付けません。",
+        "no_metrics": "ノードが無効、オフライン、セットアップ中の間は GPU メトリクスがありません。",
+        "bake_failed_hint": "前回のコンパイルに失敗しました。再試行するか、ログを確認してください。",
+        "cache_warm": "準備済み",
+        "never_baked": "未コンパイルです。このノードの最初の配信が実行しながらシェーダーをコンパイルします。"
+      },
+      "stop_copy": {
+        "keep": "実行を続ける",
+        "live_title": "{matchup} のライブ配信を停止しますか？",
+        "live_body": "視聴者は配信を見られなくなります。試合自体は続きます。",
+        "live_action": "配信を停止",
+        "demo_title": "{who} のデモ再生を停止しますか？",
+        "demo_body": "プレーヤーが閉じます。GPU が空き次第、再開できます。",
+        "demo_action": "再生を停止",
+        "render_title": "{who} のハイライトのレンダリングを停止しますか？",
+        "render_body": "停止して GPU を解放します。",
+        "render_body_pct": "{pct}% の時点で停止して GPU を解放します。",
+        "render_action": "レンダリングを停止"
+      },
+      "toggle_gpu_only_help": "GPUの処理のみを受け付け、試合サーバーは動かしません。オンにするとリージョンとポートが消去されます。",
+      "plate": {
+        "temperature": "温度",
+        "power": "電力",
+        "vram_of": "{used} / {total} GB",
+        "hot": "高温（{limit} °C 超）",
+        "too_hot": "過熱（{limit} °C 超）",
+        "no_reading": "ライブの計測値なし",
+        "cards": "{count} 枚 | {count} 枚"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "ライブ配信をオンにする",
+          "demos": "デモ再生をオンにする",
+          "rendering": "レンダリングをオンにする"
+        },
+        "turn_off": {
+          "streaming": "ライブ配信をオフにする",
+          "demos": "デモ再生をオフにする",
+          "rendering": "レンダリングをオフにする"
+        },
+        "confirm_body": {
+          "streaming": "実行中の配信はそのまま続きます。再びオンにするまで、この GPU は新しい配信を受け付けません。",
+          "demos": "実行中の再生はそのまま続きます。再びオンにするまで、この GPU は新しいデモを受け付けません。",
+          "rendering": "実行中のレンダリングはそのまま続きます。再びオンにするまで、この GPU は新しいレンダリングを受け付けません。"
+        }
+      }
     },
     "game_server_nodes": {
       "title": "ゲームサーバーノード",
@@ -4498,12 +5038,14 @@
         "no_nodes": "ゲームサーバーノードなし",
         "supports_low_latency": "低遅延対応",
         "supports_cpu_pinning": "CPUピニング対応",
-        "cpu_governor": "CPUガバナー"
+        "cpu_governor": "CPUガバナー",
+        "servers": "サーバー",
+        "servers_tooltip": "空きサーバー数（括弧内は合計）",
+        "cs2_build": "CS2ビルド",
+        "plugin": "プラグイン",
+        "load": "負荷"
       },
       "builds": {
-        "title": "CS2ビルド履歴",
-        "description": "各CS2ビルドのゲームデータ検証とマップアセットのビルド、および前のビルドからの変更点。",
-        "back": "ゲームサーバーノード",
         "builds": "ビルド",
         "no_builds": "検証またはビルドされたビルドはまだありません。",
         "current": "現在",
@@ -4513,11 +5055,271 @@
           "detected": "アップデート公開",
           "gamedata": "ゲームデータ",
           "map_assets": "マップアセット"
-        }
+        },
+        "empty_title": "ビルドはまだありません"
       },
       "max_label": "最大:",
       "ports_label": "ポート:",
-      "cpu_hardware": "CPU・ハードウェア"
+      "cpu_hardware": "CPU・ハードウェア",
+      "gpu_only": "GPU専用",
+      "create_node": "ゲームサーバーノードを作成",
+      "search_placeholder": "名前またはIDで検索",
+      "filters": {
+        "only_enabled": "有効なノードのみ",
+        "hide_offline": "オフラインノードを非表示",
+        "display_metrics": "メトリクスを表示"
+      },
+      "empty": {
+        "title": "ゲームサーバーノードがありません",
+        "description": "ノードは5StackのCS2サーバーを動かすマシンです。セットアップスクリプトを実行すると、ここに表示されます。",
+        "guide": "セットアップガイドを読む"
+      },
+      "summary": {
+        "nodes": "{count}台のノード | {count}台のノード",
+        "online": "{count}台オンライン",
+        "free": "{total}台中{free}台のサーバーが空き",
+        "attention": "{count}台が要対応 | {count}台が要対応",
+        "updating": "{count}台を更新中"
+      },
+      "row": {
+        "select": "{node}を選択",
+        "select_all": "すべてのノードを選択",
+        "servers_tip": "{total}台中{free}台が空き · 最大{max}台",
+        "not_installed": "未インストール"
+      },
+      "detail": {
+        "hardware_pending": "ハードウェア情報はノードの接続後に表示されます。",
+        "disk_value": "{percent}%使用、空き{free} GB",
+        "game_server": "ゲームサーバー",
+        "node_id": "ノードID",
+        "addresses": "LAN / パブリックIP",
+        "available_value": "{total}中{free}",
+        "control": "コントロール",
+        "update_log": "CS2更新ログ"
+      },
+      "metrics": {
+        "setup": "メトリクスはノードの接続後に表示されます。",
+        "offline": "ノードがオフラインの間はライブデータがありません。"
+      },
+      "toast": {
+        "region_updated": "リージョンを更新しました",
+        "save_failed": "変更を保存できませんでした"
+      },
+      "bulk": {
+        "selected": "{count}件選択中",
+        "progress": "{done} / {total}",
+        "move_region": "リージョンへ移動",
+        "enable": "有効化",
+        "disable": "無効化",
+        "updating": "{count}台のノードでCS2を更新中 | {count}台のノードでCS2を更新中",
+        "moved": "{count}台のノードを{region}へ移動しました | {count}台のノードを{region}へ移動しました",
+        "unassigned": "{count}台のノードのリージョンを解除しました | {count}台のノードのリージョンを解除しました",
+        "enabled": "{count}台のノードを有効化しました | {count}台のノードを有効化しました",
+        "disabled": "{count}台のノードを無効化しました | {count}台のノードを無効化しました",
+        "failed": "{count}件失敗 | {count}件失敗"
+      },
+      "inspector": {
+        "status": {
+          "setup": "接続待ち",
+          "offline_since": "{time}からオフライン",
+          "not_accepting": "オンライン、新規マッチは受け付けていません"
+        },
+        "search_placeholder": "名前、ID、IPで検索",
+        "keys": {
+          "move": "移動",
+          "select": "クリックで複数選択",
+          "close": "閉じる",
+          "idle": "ノードを選択すると詳細が表示されます"
+        },
+        "details": "ノードの詳細",
+        "capacity_tip": "ポートで許可された総数のうち空いているサーバー数。下にポート範囲が表示されます。",
+        "cap_free": "{total}台中{free}台が空き",
+        "cap_no_ports": "ポートなし",
+        "chip": {
+          "updating": "更新中",
+          "updating_pct": "更新中 {percent}%",
+          "failed": "更新に失敗",
+          "behind": "古いバージョン",
+          "pinned": "固定",
+          "failed_tip": "{target}への更新に失敗しました（{ago}）。現在も{version}です。",
+          "behind_tip": "現在は{version}です。{target}に更新してください。",
+          "pinned_tip": "{version}に固定"
+        },
+        "load": {
+          "mem": "メモリ",
+          "disk": "ディスク"
+        },
+        "disk_tip": "ディスク: {total}中{used}使用、空き{free}",
+        "actions_for": "{node}の操作",
+        "menu": {
+          "select": "一括操作の対象にする",
+          "deselect": "選択から外す",
+          "rename": "ラベルを編集"
+        },
+        "more": "他{count}件",
+        "remove": "ノードを削除",
+        "remove_text": "このノードとその上のすべての専用サーバーを5Stackから削除します。",
+        "rename": "{node}の名前を変更",
+        "label": "ノードのラベル",
+        "close": "詳細を閉じる",
+        "close_hint": "閉じる (Esc)",
+        "step": {
+          "enable": "ノードを有効化",
+          "retry_update": "更新を再試行",
+          "assign_region": "リージョンを割り当て",
+          "set_ports": "ポートを設定",
+          "change_plugin": "プラグインを変更",
+          "edit_ports": "ポートを編集",
+          "open_files": "ファイルを開く"
+        },
+        "attention": {
+          "setup": "マシンでセットアップスクリプトを実行してください。接続されるとオンラインになります。",
+          "offline": "再接続するまでここにマッチは割り当てられません。",
+          "update_failed_title": "CS2の更新に失敗しました（{ago}）",
+          "update_failed": "更新ログは24時間保存されます。",
+          "overprovisioned": "ポート上に{total}台のサーバーがありますが、CPUの余裕は{max}台分です。",
+          "plugin": "固定されたプラグインはビルド{build}に対応していません。",
+          "not_ready_title": "まだマッチをホストできません",
+          "not_ready": "{list}が必要です。",
+          "behind_title": "CS2 {version}は古いバージョンです",
+          "behind": "{target}に更新してください。",
+          "cpu_title": "CPUは{ghz} GHz",
+          "cpu": "3 GHz未満ではCS2サーバーの性能が落ちることがあります。",
+          "governor_title": "CPUガバナーは{governor}です",
+          "disk_title": "ディスク使用率{percent}%",
+          "disk": "空き{free}。",
+          "cpu_warning": "ノードからの報告です。",
+          "workloads_title": "一部のGPUワークロードがオフです",
+          "workloads": "{list}がオフです。",
+          "disabled": "オフの間はGPU処理もマッチの割り当ても行われません。"
+        },
+        "need": {
+          "region": "リージョン",
+          "ports": "ポート",
+          "cs2": "CS2"
+        },
+        "sections": {
+          "cs2": "CS2とプラグイン"
+        },
+        "capacity": {
+          "gpu_only": "GPU専用のためマッチはホストしません。GPUセクションで戻せます。",
+          "max_servers": "最大サーバー数",
+          "max_tip": "CPUスレッド{threads}、うち1つはシステム用",
+          "max_tip_pinning": "CPUスレッド{threads}、うち1つはシステム用、サーバーごとに{per}",
+          "max_tip_pending": "ノードが接続されるとCPUから算出されます",
+          "below": "ポート上の{total}台を下回っています",
+          "servers_no_ports": "サーバーをホストするにはポートを設定してください",
+          "servers_disabled": "無効の間はなし",
+          "servers_offline": "オフラインの間は不明"
+        },
+        "ports": {
+          "tip": "このノードに転送されるポート範囲。サーバー1台につき2ポートを使います。",
+          "not_set": "未設定",
+          "need_region": "ポートを設定する前にリージョンを割り当ててください。",
+          "start": "開始ポート",
+          "end": "終了ポート",
+          "hint": "30000〜32767の範囲。サーバー1台につき2ポートを使います。",
+          "fit": "この範囲に{count}台のサーバーが収まります。 | この範囲に{count}台のサーバーが収まります。",
+          "fit_over": "{count}台収まりますが、CPUの余裕は{max}台分です。",
+          "error_range": "ポートは30000〜32767の範囲で指定してください。",
+          "error_order": "終了ポートは開始ポートより2以上大きくしてください。",
+          "save": "ポートを保存",
+          "remove": "ポートを削除"
+        },
+        "cs2": {
+          "setup": "ノードが接続されたらCS2をインストールしてください。",
+          "gpu_only": "GPU専用ノードではCS2サーバーは動きません。",
+          "to": "→ {version}",
+          "plugin_unsupported": "非対応",
+          "update_log": "更新ログ",
+          "behind_line": "ビルド {build}、{target} に更新",
+          "failed_line": "{ago} · まだビルド {build}",
+          "build_line": "ビルド {build}",
+          "on_build": "(ビルド {build})",
+          "pinning_unsupported": "固定に非対応"
+        },
+        "hardware": {
+          "cores": "コア",
+          "sockets": "（{count}ソケット） | （{count}ソケット）",
+          "threads": "スレッド/コア",
+          "threads_total": "（合計{count}）",
+          "governor": "ガバナー",
+          "low_latency": "低レイテンシ",
+          "pinning": "CPUピニング",
+          "supported": "対応",
+          "governor_tip": "CPUがクロックを調整する方式です。performanceガバナーはコアを最大速度に保ち、CS2に推奨されます。",
+          "latency_tip": "低レイテンシカーネルはゲームサーバーのスケジューリングの揺らぎを抑えます。",
+          "pinning_tip": "各サーバーを専用のCPUコアに固定し、サーバー同士で取り合わないようにします。"
+        },
+        "range_label": "メトリクスの期間",
+        "range": {
+          "1h": "1時間"
+        },
+        "of_total": "/ {total}",
+        "now": "現在",
+        "last_report": "最終報告 {time}",
+        "live_offline": "オフラインの間はライブデータがありません。最終報告は{time}です。",
+        "history_offline": "オフラインの間はライブデータがありません。履歴は{time}までです。",
+        "offline_for": "オフライン {duration}",
+        "chart": {
+          "label": "メトリクスの履歴。左右の矢印キーで時間を移動、Shiftで10ずつ移動します。",
+          "avg_peak": "平均 {avg}% · ピーク {peak}%",
+          "peak": "ピーク {peak}",
+          "in": "受信",
+          "out": "送信",
+          "in_out": "受信 {in} · 送信 {out}",
+          "caption": "直近1時間、30秒ごとのサンプル。",
+          "starts": "履歴は{time}から始まります。",
+          "gaps": "線の途切れはオフラインの時間です。",
+          "cadence": "{seconds}秒ごとのサンプル。"
+        },
+        "disk": {
+          "last_report": "ディスク · 最終報告",
+          "filling_up": "残り少なめ",
+          "almost_full": "ほぼ満杯",
+          "used_of": "{used} / {total}",
+          "thresholds": "{warning}%で警告、{critical}%でアラート",
+          "free": "空き {free}",
+          "up": "直近1時間で{amount}増加",
+          "down": "直近1時間で{amount}減少",
+          "flat": "直近1時間でほぼ変化なし",
+          "full_hours": "約{count}時間で満杯",
+          "full_days": "約{count}日で満杯 | 約{count}日で満杯",
+          "of_used": "/ {total} 使用"
+        },
+        "gpu": {
+          "video": "映像設定",
+          "custom": "カスタム"
+        },
+        "node": {
+          "accepting": "マッチを受け付ける",
+          "accepting_setup": "接続されると使えます。",
+          "accepting_no_ports": "先にポートを設定してください。",
+          "limiter": "デモ制限",
+          "limiter_tip": "デモのネットワーク制限：このノードからのデモファイルのダウンロード速度の上限です。",
+          "copy_id": "ノードIDをコピー",
+          "ips_pending": "接続されると表示されます"
+        },
+        "bulk": {
+          "title": "{count}台のノードを選択中 | {count}台のノードを選択中",
+          "hint": "{modifier}+クリックで行を追加・解除、Shift+クリックで範囲選択",
+          "apply": "すべてに適用",
+          "note": "CS2の更新はオフライン、最新、更新中のノードをスキップします。GPU専用ノードはリージョンを持ちません。",
+          "selected": "選択中",
+          "drop": "{node}を選択から外す",
+          "clear": "選択を解除"
+        },
+        "warning": {
+          "lowlatency": "旧式の lowlatency カーネル",
+          "constrained": "{name} は CPU が不足しています",
+          "governor": "CPUピニング有効時のガバナーが {governor}",
+          "from_node": "ノードからの警告 {count} 件 | ノードからの警告 {count} 件",
+          "docs": "ドキュメント",
+          "details": "詳細"
+        },
+        "window_minutes": "直近{count}分 | 直近{count}分",
+        "window_hours": "直近{count}時間 | 直近{count}時間"
+      }
     },
     "dedicated_servers": {
       "title": "専用サーバー",
@@ -4525,9 +5327,7 @@
       "docs_link": "セットアップガイドを見る",
       "no_servers_title": "専用サーバーなし",
       "no_servers": "専用サーバーが見つかりませんでした。",
-      "create": {
-        "title": "専用サーバーを作成"
-      },
+      "create": {},
       "table": {
         "connection_details": "接続情報",
         "label": "ラベル",
@@ -4538,7 +5338,6 @@
       },
       "detail": {
         "enabled": "有効",
-        "eyebrow": "専用サーバー",
         "tabs": {
           "overview": "概要",
           "players": "プレイヤー",
@@ -4548,14 +5347,9 @@
         },
         "status_label": {
           "connected": "接続済み",
-          "disconnected": "切断",
           "hibernating": "休止中",
-          "no_rcon": "RCONなし",
-          "version_mismatch": "バージョン不一致"
+          "no_rcon": "RCONなし"
         },
-        "server_plugin_config": "サーバープラグイン設定",
-        "hide_config": "設定を隠す",
-        "show_config": "設定を表示",
         "config_location": "この設定は次の場所に配置してください:",
         "files": "ファイル",
         "player_management": "プレイヤー管理",
@@ -4579,13 +5373,7 @@
           "disconnected": "サーバーは切断されています",
           "hibernating": "プレイヤーが接続するまでサーバーは休止中です",
           "no_rcon": "サーバーは接続していますがRCONが利用できません",
-          "connected": "サーバーは接続しておりRCONも利用可能です",
-          "plugin_version_mismatch": "プラグインが最新バージョンではありません"
-        },
-        "delete_confirm": {
-          "title": "本当によろしいですか？",
-          "description": "この操作は取り消せません。サーバーおよび関連データが完全に削除されます。",
-          "continue": "続行"
+          "connected": "サーバーは接続しておりRCONも利用可能です"
         },
         "save_restart": "保存して再起動",
         "map_rotation": {
@@ -4704,8 +5492,6 @@
           }
         },
         "move": {
-          "menu": "別のノードへ移動",
-          "title": "別のノードへ移動",
           "description": "サーバーは{node}上で停止し、ファイルが新しいノードにコピーされた後、そこで再び起動します。",
           "source_offline": "{node}がオフラインのため、サーバーのファイルをコピーできません。新しいノードではデフォルト設定で起動し、{node}に残ったものはそのまま残ります。",
           "without_files": "サーバーのファイルなしで移動",
@@ -4713,7 +5499,6 @@
           "no_nodes": "他のゲームサーバーノードがありません",
           "free_slots": "空きスロット: {count}",
           "free_disk": "空き {size}",
-          "confirm": "サーバーを移動",
           "started": "{server}を{node}へ移動しています",
           "warning": {
             "address": "新しいノードではサーバーのアドレスが変わります。",
@@ -4729,7 +5514,9 @@
             "updating": "CS2を更新中",
             "no_build": "{game}がインストールされていません",
             "no_slot": "空きサーバースロットがありません"
-          }
+          },
+          "dialog_title": "別のノードへ移動",
+          "confirm_move": "サーバーを移動"
         },
         "migration": {
           "title": {
@@ -4750,12 +5537,71 @@
           "progress": "{done} / {total} ({percent}%)",
           "without_files": "ファイルなし",
           "restored": "サーバーは{node}に戻りました。",
-          "cancel": "移動をキャンセル",
           "cancel_requested": "移動をキャンセルしています",
           "dismiss": "閉じる",
-          "locked": "サーバーを別のノードへ移動中です。移動が完了してからもう一度お試しください。"
-        }
-      }
+          "locked": "サーバーを別のノードへ移動中です。移動が完了してからもう一度お試しください。",
+          "cancel_move": "移動をキャンセル"
+        },
+        "plugin_tag": "プラグイン v{version}",
+        "plugin_config": "サーバープラグイン設定",
+        "show_plugin_config": "設定を表示",
+        "hide_plugin_config": "設定を隠す"
+      },
+      "clear_all": "検索とフィルターをクリア",
+      "col_hosting": "ホスティング",
+      "col_players": "プレイヤー",
+      "col_plugin": "プラグイン",
+      "col_ports": "ポート",
+      "col_server": "サーバー",
+      "copied": "{value}をコピーしました",
+      "copy_address": "アドレスをコピー",
+      "create_server": "サーバーを作成",
+      "delete_body_external": "5Stackから削除され、試合が割り当てられなくなります。マシン自体は動き続けます。元に戻せません。",
+      "delete_body_node": "5Stackから削除され、{node}上で停止されます。元に戻せません。",
+      "delete_server": "サーバーを削除",
+      "delete_title": "{label}を削除しますか？",
+      "deleted_toast": "{label}を削除しました",
+      "disable_server": "サーバーを無効化",
+      "disabled_hidden": "無効なサーバー{count}台を非表示 | 無効なサーバー{count}台を非表示",
+      "disabled_toast": "{label}を無効化しました。試合と公開プレイを受け付けなくなります。",
+      "empty_title": "専用サーバーはまだありません",
+      "enable_server": "サーバーを有効化",
+      "enabled_for": "有効: {label}",
+      "enabled_toast": "{label}を有効化しました",
+      "external": "外部",
+      "facet_host": "ホスト",
+      "filter_label": "サーバーを絞り込む",
+      "more_for": "{label}のその他の操作",
+      "node_tag": "ノード",
+      "open": "開く",
+      "open_console": "コンソールを開く",
+      "open_node": "ゲームサーバーノードで開く",
+      "page_of": "{page} / {pages}ページ",
+      "plugin_current": "v{version}（最新）",
+      "plugin_outdated_tip": "プラグインが最新ではありません。最新はv{version}です。",
+      "ports_tip": "ゲームポート（TVポート）",
+      "search_placeholder": "名前、アドレス、ホストを検索",
+      "servers_word": "台 | 台",
+      "setup_guide": "セットアップガイド",
+      "show_them": "表示する",
+      "states": {
+        "attention": "要対応",
+        "offline": "オフライン",
+        "inuse": "使用中",
+        "ready": "準備完了",
+        "hibernating": "休止中",
+        "disabled": "無効"
+      },
+      "status_in_match": "試合中",
+      "status_offline_since": "{time}からオフライン",
+      "status_playing": "{count}人がプレイ中",
+      "status_plugin_outdated": "プラグインが古い",
+      "tip_disabled": "試合や公開プレイには使われません。",
+      "join_server": "サーバーに参加",
+      "new_server": "新しいサーバー",
+      "create_on_node": "{node} で稼働",
+      "create_at_host": "{address} で稼働",
+      "create_pick_place": "稼働場所を選択"
     },
     "public_servers": {
       "title": "パブリックサーバー",
@@ -5119,6 +5965,216 @@
         "execution_plan": "実行プラン",
         "no_explain_plan": "このクエリのEXPLAINプランを生成できませんでした",
         "not_found": "クエリ詳細が見つかりません"
+      },
+      "explorer": {
+        "active_backends": "アクティブバックエンド",
+        "active_queries": "アクティブなクエリ",
+        "active_queries_hint": "アイドル以外のすべてのセッション（実行時間の長い順）",
+        "active_waiting": "アクティブ {active} · 待機中 {waiting}",
+        "activity": "アクティビティ",
+        "all_connections": "すべての接続",
+        "all_indexes_scanned": "すべてのインデックスがスキャンされています",
+        "all_indexes_scanned_hint": "統計のリセット以降、この選択範囲で未使用のままのインデックスはありません。",
+        "all_statements": "すべてのステートメント",
+        "avg_ms": "平均 {ms} ms",
+        "avg_ms_col": "平均（ms）",
+        "avg_time": "平均時間",
+        "back_to_overview": "概要に戻る",
+        "background_jobs": "バックグラウンドジョブ",
+        "blocks_hit": "ブロックヒット数",
+        "blocks_read": "ブロック読み取り数",
+        "buffer_statistics": "バッファ統計",
+        "by_state": "状態別",
+        "cache_hit": "キャッシュヒット",
+        "cache_hit_pct": "キャッシュヒット %",
+        "cache_hit_ratio": "キャッシュヒット率",
+        "calls_count": "{count} 回の呼び出し | {count} 回の呼び出し",
+        "conflicts": "競合",
+        "copy_name": "名前をコピー",
+        "copy_query": "クエリをコピー",
+        "copy_statement": "{sql} をコピー",
+        "count": "件数",
+        "current_locks": "現在のロック",
+        "database_statistics": "データベース統計",
+        "dead_pct": "デッド %",
+        "dead_pct_tip": "テーブル内の全行に占めるデッド行の割合。デッド行が 10,000 行を超えると警告されます。",
+        "dead_share": "行の {pct}% がデッド · 約 {size}",
+        "dead_tuple_size": "デッドタプルサイズ",
+        "dead_tuples": "デッドタプル数",
+        "deadlocks_tip": "統計の前回リセット以降の件数です。",
+        "deletes": "削除",
+        "every_seconds": "{seconds}s ごと",
+        "every_table": "すべてのテーブル",
+        "every_table_hint": "サイズ・肥大化・キャッシュを一か所で確認できます。行をクリックすると開きます。",
+        "execution_plan": "実行プラン",
+        "execution_times": "実行時間（ms）",
+        "fetched": "取得数",
+        "filter_query_text": "クエリテキストで絞り込み",
+        "find_schema": "スキーマを検索",
+        "find_table": "テーブルまたはインデックスを検索",
+        "heap_hits": "ヒープヒット数",
+        "heap_reads": "ヒープ読み取り数",
+        "heap_reads_count": "ヒープ読み取り {count} 回",
+        "held_none_waiting": "{count} 件保持中、待機なし | {count} 件保持中、待機なし",
+        "hot_count": "{count} HOT",
+        "hot_updates": "HOT 更新",
+        "hot_updates_tip": "どのインデックスにも触れずに済んだ更新。",
+        "hypertable_name": "ハイパーテーブル名",
+        "hypertable_note": "行は {schema} 配下のチャンクに格納されるため、この親テーブル自体には行がありません。",
+        "hypertable_tag": "ハイパーテーブル",
+        "idle_in_txn": "トランザクション内アイドル",
+        "idle_in_txn_tip": "何もせずにトランザクションを開いたままにしています。VACUUM によるクリーンアップを妨げ、ロックを保持し続けることがあります。",
+        "idx_scans": "インデックススキャン数",
+        "idx_scans_fetched": "インデックススキャン数（取得タプル数）",
+        "idx_tup_fetch": "インデックス取得タプル数",
+        "in_indexes": "インデックス {size}",
+        "index_hits": "インデックスヒット数",
+        "index_io": "インデックス I/O",
+        "index_reads": "インデックス読み取り数",
+        "index_scans": "インデックススキャン",
+        "index_scans_tip": "テーブル全体を読む代わりにインデックスを使ったスキャンの割合。",
+        "index_size": "インデックスサイズ",
+        "index_usage": "インデックス使用状況",
+        "indexes": "インデックス",
+        "indexes_hint": "使用状況とキャッシュヒットをまとめて表示",
+        "inserts": "挿入",
+        "io": "I/O",
+        "io_buffers": "I/O・バッファ",
+        "job_id": "ジョブID",
+        "job_type": "ジョブ種別",
+        "last_analyze": "最終ANALYZE",
+        "last_autoanalyze": "最終自動ANALYZE",
+        "last_autovacuum": "最終自動VACUUM",
+        "last_run_status": "最終実行",
+        "last_vacuum": "最終VACUUM",
+        "live": "有効",
+        "live_tuples": "有効タプル数",
+        "local": "ローカル",
+        "local_blocks_hit": "ローカルブロックヒット数",
+        "local_blocks_read": "ローカルブロック読み取り数",
+        "lock_type": "ロック種別",
+        "locks_on_table": "このテーブルのロック",
+        "locks_transactions": "ロック・トランザクション",
+        "maintenance": "メンテナンス",
+        "max_ms_col": "最大（ms）",
+        "max_ms_paren": "（最大 {ms}）",
+        "max_time": "最大時間",
+        "max_value": "最大 {ms}",
+        "min_calls": "最小呼び出し数",
+        "min_value": "最小 {ms}",
+        "n_failed": "{count} 件失敗",
+        "n_of_m_statements": "{m} 件中 {n} 件のステートメント",
+        "n_waiting": "{count} 件待機中",
+        "name_copied": "テーブル名をコピーしました",
+        "needs_attention": "要対応",
+        "never_scanned": "未スキャン",
+        "next_start": "次回実行",
+        "no_active_hint": "すべての接続がアイドル状態です。",
+        "no_backups_hint": "最初のスケジュール実行後、ここにバックアップが表示されます。",
+        "no_backups_title": "データベースバックアップはありません",
+        "no_connections_hint": "このデータベースへの接続はありません。",
+        "no_indexes": "インデックスなし",
+        "no_indexes_hint": "このテーブルにはインデックスがないため、読み取りのたびにテーブル全体をスキャンします。",
+        "no_indexes_hyper": "ハイパーテーブルのインデックスは各チャンク上にあります。",
+        "no_jobs_hint": "TimescaleDB にスケジュール済みのジョブはありません。",
+        "no_jobs_title": "バックグラウンドジョブはありません",
+        "no_locks_hint": "現在保持されているロックはありません。",
+        "no_locks_on_table": "現在このテーブルに保持されているロックはありません。",
+        "no_plan": "このクエリの実行プランを生成できませんでした。",
+        "no_reads_hint": "選択したスキーマには読み取りの記録がありません。",
+        "no_schemas": "スキーマなし",
+        "no_schemas_hint": "テーブルを表示するには、スキーマを 1 つ以上選択してください。",
+        "no_schemas_title": "スキーマが選択されていません",
+        "no_slow_hint": "統計のリセット以降、平均またはピークで {threshold} を超えたものはありません。",
+        "no_slow_title": "遅いステートメントはありません",
+        "no_statements_for_table": "このテーブル名を含む記録済みステートメントはありません。",
+        "no_statements_match": "一致するステートメントはありません",
+        "no_statements_match_hint": "{min} 回以上呼び出されたもののうち、フィルターに一致するものはありません。",
+        "no_statements_yet": "pg_stat_statements にはまだ記録がありません。",
+        "no_stats_hint": "pg_stat_statements はアプリがクエリを実行するにつれて蓄積され、統計をリセットすると空になります。",
+        "no_table_matches": "「{find}」に一致するテーブルまたはインデックスはありません。",
+        "no_tables_hint": "選択したスキーマにはテーブルがありません。",
+        "no_tables_title": "テーブルなし",
+        "no_timescale_title": "TimescaleDBデータなし",
+        "nothing_matches": "この選択範囲に一致するものはありません。",
+        "objects": "データベースオブジェクト",
+        "off": "オフ",
+        "on": "オン",
+        "on_disk": "ディスク上 {size}",
+        "open_connections": "開いている接続",
+        "over_threshold": "{threshold} 超",
+        "overview": "概要",
+        "overview_hint": "PostgreSQL データベース · 統計の前回リセット以降のカウンター",
+        "pause_refreshing": "更新を一時停止",
+        "pct_of_table": "テーブル比 %",
+        "pid_actions": "pid {pid} の操作",
+        "query_details": "クエリ詳細",
+        "query_not_found": "クエリ詳細が見つかりません",
+        "query_performance": "クエリパフォーマンス",
+        "range_hint": "対数スケール · 帯は平均 ± 標準偏差",
+        "reclaimable": "回収可能",
+        "reclaimable_tip": "デッドタプルからの推定値。VACUUM で再利用可能になりますが、ディスクに返却されるのは VACUUM FULL または pg_repack を実行した場合のみです。",
+        "refresh_every": "更新間隔",
+        "resume_refreshing": "更新を再開",
+        "rollbacks_count": "ロールバック {count} 件",
+        "running_now": "実行中",
+        "scans": "スキャン数",
+        "schema_count": "{count} スキーマ | {count} スキーマ",
+        "search_indexes": "インデックスを検索",
+        "seq_scans": "順次スキャン数",
+        "seq_scans_read": "順次スキャン数（読み取りタプル数）",
+        "seq_tup_read": "順次読み取りタプル数",
+        "sequential_count": "順次 {count} 回",
+        "server": "サーバー",
+        "share_of_time": "時間の割合",
+        "share_of_time_tip": "一覧内の全ステートメントの合計実行時間に占める、このステートメントの合計実行時間の割合。",
+        "shared_blocks_hit": "共有ブロックヒット数",
+        "shared_blocks_read": "共有ブロック読み取り数",
+        "size": "サイズ",
+        "size_on_disk": "ディスク上のサイズ",
+        "slow_avg": "{count} 件のステートメントが平均 {threshold} 超 | {count} 件のステートメントが平均 {threshold} 超",
+        "slow_avg_none": "平均 {threshold} を超えるステートメントはありません",
+        "slow_max": "{count} 件が少なくとも 1 回 {threshold} を超過 | {count} 件が少なくとも 1 回 {threshold} を超過",
+        "slow_over": "低速しきい値",
+        "slow_running_many": "{count} 件のクエリが {threshold} 超で実行中、最長 {duration}",
+        "slow_running_one": "1 件のクエリが {duration} 実行中",
+        "slow_threshold": "スロークエリのしきい値",
+        "started": "開始",
+        "statement_copied": "ステートメントをクリップボードにコピーしました",
+        "statements_to_run": "手動で実行するステートメント",
+        "statements_touching": "このテーブルに関わるステートメント",
+        "statements_touching_hint": "pg_stat_statements からテーブル名で照合。{threshold} 超のものを先頭に表示。",
+        "statistics": "統計",
+        "std_dev": "標準偏差",
+        "table_and_indexes": "テーブル {table} · インデックス {indexes}",
+        "table_io": "テーブル I/O",
+        "table_maintenance": "テーブルメンテナンス",
+        "table_not_found": "テーブルが見つかりません",
+        "table_not_found_hint": "削除されたか、スキーマが選択されていない可能性があります。",
+        "table_size": "テーブルサイズ",
+        "table_storage": "テーブルストレージ",
+        "temp_blocks": "一時ブロック",
+        "temp_blocks_tip": "ソートやハッシュに work_mem が足りず、ディスクに書き出されたブロック。",
+        "temp_blocks_written": "書き込み一時ブロック数",
+        "terminate_warning": "終了するとセッションが切断され、そのトランザクションはロールバックされます。",
+        "total_chunks": "総チャンク数",
+        "total_rows": "合計行数",
+        "total_size": "合計サイズ",
+        "total_time": "合計時間",
+        "tuples_deleted": "削除タプル数",
+        "tuples_fetched": "取得タプル数",
+        "tuples_inserted": "挿入タプル数",
+        "tuples_read": "読み取りタプル数",
+        "tuples_returned": "返却タプル数",
+        "tuples_updated": "更新タプル数",
+        "updates": "更新",
+        "view_all_slow": "遅いクエリをすべて表示",
+        "wait_event": "待機イベント",
+        "wait_event_type": "待機イベント種別",
+        "waiting_on_lock": "ロック待ち",
+        "waiting_tip": "ロック待ちのセッション。",
+        "worth_a_look": "要確認",
+        "zero_unused": "0 · 未使用"
       }
     },
     "events": {
@@ -5327,6 +6383,54 @@
         "tournaments_hint": "トーナメント表の一部として行われる試合。ランク戦かどうかは問いません。",
         "custom": "カスタム試合",
         "custom_hint": "それ以外すべて: 何にも影響しない試合です。"
+      },
+      "store": {
+        "open_aria": "{name} を開く",
+        "verified_hint": "レジストリの管理者が検証済み",
+        "custom_hint": "ここで追加されました。誰もレビューしていません。",
+        "guidelines_hint": "これを読み込むサーバーは Valve のサーバーガイドラインを無効にして起動します。",
+        "on_panel": "パネルに導入済み",
+        "panel_host": "パネルのホストにデプロイ",
+        "set_up": "セットアップ",
+        "no_build": "{runtime} 向けのビルドなし",
+        "only": "{runtimes} のみ",
+        "add_node": "インストールするにはゲームサーバーノードを追加してください",
+        "found_on_disk": "ディスク上で検出",
+        "found_on_disk_hint": "手動で配置されています。モードに関係なくすべてのサーバーで読み込まれます。",
+        "manage_here": "ここで管理する",
+        "install_title": "{name} {version} をインストール",
+        "failed_on": "{node} で失敗",
+        "failed_on_nodes": "{count} ノードで失敗 | {count} ノードで失敗",
+        "install_failed": "インストールに失敗しました",
+        "installing_on": "{total} ノード中 {installed} ノードにインストール中",
+        "waiting_nodes": "オンラインのノードを待機中",
+        "pinned_at": "{version} に固定",
+        "update_to": "{version} に更新",
+        "filter_kind": "種類",
+        "filter_review": "レビュー",
+        "verified_only": "検証済みのみ",
+        "runtime": "ランタイム",
+        "needs_attention": "要対応",
+        "empty_installed_title": "まだ何もインストールされていません",
+        "empty_installed_hint": "「すべて」からプラグインをインストールすると、すべてのノードに反映されます。",
+        "empty_title": "一致するプラグインはありません",
+        "installing_toast": "{name} をすべてのオンラインノードにインストールしています",
+        "retry_toast": "失敗したノードで {name} を再試行しています",
+        "update_toast": "ノードが {version} をインストールしています。このバージョンに固定されたままです。"
+      },
+      "detail": {
+        "kind_game": "ゲームサーバープラグイン",
+        "kind_panel": "パネルプラグイン",
+        "kind_bundle": "ゲームサーバーとパネルのバンドル",
+        "copy_command": "コマンドをコピー",
+        "copied": "コマンドをコピーしました",
+        "manual_on": "{nodes} 上にあり、5Stack で管理されていません",
+        "latest_for": "{runtime} 向けの最新 {version}",
+        "node_offline": "オフライン",
+        "node_not_accepting": "試合を受け付けていません",
+        "rollout_settings": "ロールアウト設定",
+        "running": "実行中",
+        "this_deployment": "このデプロイ"
       }
     },
     "awards": {
@@ -5348,11 +6452,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "アワードを検索",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -5368,7 +6471,66 @@
       "group_custom_tournament_awards": "カスタムトーナメントアワード",
       "group_custom_event_awards": "カスタムイベントアワード",
       "group_custom_season_awards": "カスタムシーズンアワード",
-      "group_custom_league_awards": "カスタムリーグアワード"
+      "group_custom_league_awards": "カスタムリーグアワード",
+      "already_holds": "{name}はすでに{award}を保持しており、重複付与はできません。",
+      "automation_season": "シーズン自動付与",
+      "automation_tournament": "トーナメント自動付与",
+      "builtin_cant_delete": "組み込みアワードは削除できません",
+      "builtin_note": "組み込み。トーナメントとシーズンの自動処理が付与するため、編集はできますが削除はできません。",
+      "col_award": "アワード",
+      "col_earned_at": "獲得場所",
+      "col_holder": "保持者",
+      "col_holders": "保持者",
+      "days_ago": "{count}日前",
+      "delete_award": "アワードを削除",
+      "delete_body": "{count}件の付与も削除され、保持者の栄誉から消えます。元に戻せません。 | {count}件の付与も削除され、すべての保持者の栄誉から消えます。元に戻せません。",
+      "delete_body_none": "まだ誰も保持していません。元に戻せません。",
+      "delete_hint": "すべての付与とともに、すべての保持者の栄誉から削除します。",
+      "delete_title": "{name}を削除しますか？",
+      "deleted_toast": "{name}を削除しました",
+      "edit_award": "アワードを編集",
+      "facet_belongs_to": "所属",
+      "filter_label": "アワードを絞り込む",
+      "grant_only_hint": "アワードを付与できます。作成と編集にはアワード管理者のロールが必要です。",
+      "grant_short": "付与",
+      "granted_toast": "{name}に{award}を付与しました",
+      "kind_custom": "カスタム",
+      "more_for": "{name}のその他の操作",
+      "once_per_holder": "保持者ごとに1回",
+      "open_holders": "保持者を開く",
+      "owner_deleted": "所有元が削除済み",
+      "owner_ended": "{date}に終了",
+      "owner_finished": "{date}に終了",
+      "owner_kind": {
+        "global": "一般",
+        "tournament": "トーナメント",
+        "event": "イベント",
+        "league": "リーグシーズン",
+        "season": "シーズン"
+      },
+      "owner_live": "ライブ中",
+      "owner_running": "開催中",
+      "owner_starts": "{date}開始",
+      "owner_upcoming": "開催予定",
+      "repeatable": "繰り返し付与可",
+      "revoke_from": "{name}から取り消す",
+      "show_more": "さらに表示",
+      "sort_last_granted": "最終付与",
+      "status": {
+        "recent": "過去90日以内に付与",
+        "never": "未付与",
+        "open": "所有元が開催中または予定",
+        "finished": "所有元が終了"
+      },
+      "team_count": "{count}チーム | {count}チーム",
+      "tiers": {
+        "mvp": "MVP",
+        "gold": "ゴールド",
+        "silver": "シルバー",
+        "bronze": "ブロンズ",
+        "special": "スペシャル"
+      },
+      "today": "今日"
     },
     "award_detail": {
       "not_found_title": "アワードが見つかりません",
@@ -5412,10 +6574,29 @@
         "cameraTalkback": "カメラのトークバック"
       },
       "resources": "リソース使用状況",
-      "cpu": "CPU",
-      "memory": "メモリ",
-      "no_resources": "メディアサーバーのPodメトリクスはまだありません。クラスターのメトリクスサーバーが収集していない可能性があります。",
-      "legend": "パスとは名前の付いた配信枠1つのことで、誰かのマイク1本、あるいはカメラ1台にあたります。「配信中」は実際に今メディアを送っているものを数えます。誰かが参加してから映像が立ち上がるまでの間、パスは空のままになることがあります。セッションはWebRTC接続で、配信の視聴者1人ごとに1つ数えるため、ほかの数値より速く増えます。"
+      "legend": "パスとは名前の付いた配信枠1つのことで、誰かのマイク1本、あるいはカメラ1台にあたります。「配信中」は実際に今メディアを送っているものを数えます。誰かが参加してから映像が立ち上がるまでの間、パスは空のままになることがあります。セッションはWebRTC接続で、配信の視聴者1人ごとに1つ数えるため、ほかの数値より速く増えます。",
+      "logs_button": "mediamtx のログ",
+      "tip_publishing": "いま実際にメディアを送信しているパス。参加してから映像や音声が届くまでの間、パスが待機状態になることがあります。",
+      "tip_paths": "パスは名前付きのストリーム枠です。1人分のマイク、またはカメラ1台に相当します。",
+      "tip_sessions": "WebRTC 接続。配信の視聴者1人ごとに1つずつ増えるため、他の数値より速く伸びます。",
+      "of_paths": "/ {count} パス | / {count} パス",
+      "unknown_while_unreachable": "接続不可の間は不明",
+      "how_to_read": "数値の読み方",
+      "by_feature": "機能別",
+      "kinds_unknown": "メディアサーバーが再び応答するまで、機能別の数値は不明です。",
+      "idle_title": "現在配信中のものはありません",
+      "idle_hint": "試合配信、プレイヤーカメラ、ボイスロビーが始まるとここに行が表示されます。",
+      "received": "受信量",
+      "received_hint": "いま開いているパスで受信したバイト数です。各パスが開いた時点から数えます。閉じたパスの分は含まれなくなります。",
+      "share_received": "受信量の内訳",
+      "not_in_use": "現在未使用: {kinds}",
+      "resources_hint": "mediamtx の Pod · 30秒ごとに確認",
+      "cores_now": "{cores} コア使用中",
+      "status_reachable": "接続可能",
+      "status_unreachable_since": "{time} から接続不可",
+      "kinds_unknown_title": "機能別の数値は不明",
+      "no_resources_title": "Pod のメトリクスはまだありません",
+      "no_resources_hint": "クラスターのメトリクスサーバーが mediamtx の Pod を収集していない可能性があります。"
     },
     "utility": {
       "eyebrow": "ユーティリティライブラリ",
@@ -6396,8 +7577,8 @@
           "map_filter": "マップで絞り込む",
           "render_missing": "未作成をレンダリング ({total})",
           "rerender_outdated": "旧バージョンを再レンダリング ({total})",
-          "pipeline_behind": "レンダーポッドがこの API より古いです",
-          "pipeline_behind_hint": "使用中のレンダーポッドはバージョン {pipeline} で撮影しており、この API が想定するバージョン {version} より古いものです。game-server と game-streamer のイメージを更新するまで、再レンダリングしてもプレビューは最新になりません。",
+          "pipeline_behind": "前回のレンダリングは古いバージョンでした",
+          "pipeline_behind_hint": "前回完了したレンダリングはバージョン {pipeline} で撮影されましたが、この API はバージョン {version} を想定しています。レンダリング用ポッドは起動時に最新イメージを取得するため、まず1件のラインナップをレンダリングしてください。バージョン {version} で完了すると「古いものを再レンダリング」が使えるようになります。",
           "load_failed": "プレビューのカバー状況を読み込めませんでした",
           "confirm_missing_title": "未作成のプレビューをレンダリングしますか？",
           "confirm_missing": "プレビューのないラインナップ {count} 件のレンダリングをキューに追加します。 | プレビューのないラインナップ {count} 件のレンダリングをキューに追加します。",
@@ -6527,6 +7708,249 @@
         "recent": "最近の検索",
         "recent_counts": "{predicted} 件中 {verified} 件成功"
       }
+    },
+    "control_room": {
+      "on_air": "オンエア中",
+      "off_air_hint": "配信は行われていません。ライブ中の試合を選んで配信を始めてください。",
+      "starting": "起動中",
+      "program": "プログラム",
+      "preview": "プレビュー",
+      "take": "テイク",
+      "take_pick": "オンエアするプレビューを選んでください。",
+      "take_already": "{match} はすでにオンエア中です。",
+      "take_go_live": "{match} をライブ配信",
+      "take_switch": "{match} に切り替え",
+      "take_more": "その他の開始方法",
+      "take_start_hint": "空いている GPU を使って Pod を起動します（約 1 分）。",
+      "take_switch_hint": "稼働中の Pod を再利用します。数秒で映像が切り替わります。",
+      "go_live": "ライブ配信",
+      "start_tv": "TV として開始（ディレイ）",
+      "tv_delayed": "TV（ディレイ）",
+      "tv_delay": "TV ディレイ",
+      "full_deck": "フルデッキ",
+      "open_focus_window": "フォーカスウィンドウを開く",
+      "ready": "準備完了",
+      "not_ready": "準備中",
+      "you_are_playing": "あなたはこの試合に出場しています",
+      "no_live_matches_hint": "試合がライブになると、ここにプレビューモニターが表示されます。",
+      "started_live": "{match} のライブ配信を開始しています。Pod は 1〜2 分で起動します。",
+      "started_tv": "{match} のディレイ付き TV 配信を開始しています。Pod は 1〜2 分で起動します。",
+      "stopped": "配信を停止しました。GPU は空いています。",
+      "capacity": "{n} / {max} 配信 | {n} / {max} 配信",
+      "gpu": {
+        "none": "GPU ノードなし",
+        "busy": "空き GPU なし · {total} 台中 {busy} 台使用中",
+        "free": "{total} 台中 {free} 台の GPU が空き | {total} 台中 {free} 台の GPU が空き",
+        "hint": "GPU プール。GPU ノードのページを開きます。"
+      },
+      "status": {
+        "veto": "ピック／バン",
+        "spinning_up": "サーバー起動中",
+        "check_in": "チェックイン"
+      },
+      "reasons": {
+        "veto": "マップのピック／バン中です。試合がライブになるまでお待ちください。",
+        "waiting_for_server": "サーバーを起動中です。試合がライブになるまでお待ちください。",
+        "check_in": "プレイヤーがチェックイン中です。試合がライブになるまでお待ちください。",
+        "not_live": "試合がライブになるまでお待ちください。",
+        "no_server": "この試合にはサーバーが割り当てられていません。",
+        "server_offline": "サーバーがオフラインです。オンラインに戻るのを待っています。",
+        "no_gpu_nodes": "登録されている GPU ノードがありません。",
+        "no_free_gpu": "空いている GPU がありません。",
+        "at_capacity": "上限に達しています。配信を停止するか、この試合に切り替えてください。"
+      },
+      "deck": {
+        "sheet_description": "配信コントロール。フォーカスウィンドウと同じデッキです。",
+        "not_on_air": "オンエアしていません",
+        "not_on_air_hint": "この試合の配信は行われていません。コントロールルームから開始してください。",
+        "keys_on": "ここでは 1〜0、← →、Space、Tab キーが使えます",
+        "keys_off": "キーボードを使うにはデッキをクリックしてください",
+        "match_page": "試合ページ",
+        "paused": "フルデッキで表示中",
+        "paused_hint": "デッキを開いている間、ここのプレビューは一時停止します。"
+      },
+      "stop": {
+        "title": "配信を停止しますか？",
+        "description": "Pod が停止し、{match} の配信は視聴中の全員に対して終了します。GPU はプールに戻ります。",
+        "keep": "配信を続ける",
+        "confirm": "配信を停止"
+      }
+    },
+    "system_alerts": {
+      "alert": "アラート",
+      "now": "現在",
+      "create": "アラートを作成",
+      "empty": "アラートはまだありません",
+      "hint": "アラートをクリックすると編集できます。",
+      "new_alert": "新しいアラート",
+      "edit_alert": "アラートを編集",
+      "new_hint": "作成するとすぐに、訪問者はすべてのページでこのアラートを見られます。",
+      "created_at": "{time} に作成",
+      "showing": "表示中",
+      "showing_named": "表示中: {name}",
+      "turn_off": "オフにする",
+      "show_now": "今すぐ表示",
+      "locked": "訪問者はこのバナーを閉じられません",
+      "can_close": "訪問者が閉じられる",
+      "ends": "終了",
+      "ends_at": "{time} に終了",
+      "no_end": "終了なし",
+      "older": "これより古いアラートはこの期間に含まれません。",
+      "show_quarter": "過去 3 か月を表示",
+      "show_older": "古いアラートを表示",
+      "preview_caption": "すべてのページの上部",
+      "delete": "アラートを削除",
+      "delete_hint": "完全に削除します。",
+      "range": {
+        "day": "過去 1 日",
+        "week": "過去 1 週間",
+        "month": "過去 1 か月",
+        "quarter": "過去 3 か月"
+      },
+      "summary": {
+        "showing": "{count} 件のバナーを全ページに表示中 | {count} 件のバナーを全ページに表示中",
+        "locked": "{count} 件は閉じられません | {count} 件は閉じられません",
+        "none": "表示中のバナーはありません"
+      },
+      "lane": {
+        "draft": "下書き · まだ作成されていません",
+        "unsaved": "未保存の変更",
+        "showing_ends": "表示中 · {time}に終了",
+        "showing_no_end": "表示中 · 終了なし",
+        "expired": "{time}に期限切れ",
+        "turned_off": "{time}にオフ",
+        "off_created": "オフ · {time}に作成"
+      },
+      "tip": {
+        "created": "{time} に作成",
+        "up_since": "{time} から表示中",
+        "ends": "{time} に終了",
+        "until_off": "オフにするまで",
+        "ended": "{time} に終了済み",
+        "turned_off": "{time} にオフ",
+        "off_now": "現在オフ",
+        "draft": "作成するとすぐに表示されます"
+      },
+      "sections": {
+        "message": "メッセージ",
+        "display": "表示",
+        "schedule": "スケジュール"
+      },
+      "chips": {
+        "none": "終了なし",
+        "hour": "1 時間",
+        "six_hours": "6 時間",
+        "day": "24 時間",
+        "three_days": "3 日"
+      },
+      "schedule": {
+        "no_end": "終了時刻はありません。オフにするまで表示されます。",
+        "ends": "{time} に終了（{relative}）",
+        "ended": "{time} に終了済み（{relative}）"
+      },
+      "toast": {
+        "turned_off": "「{name}」をオフにしました",
+        "showing_ends": "「{name}」を表示中 · {time}に終了",
+        "showing_no_end": "「{name}」を表示中 · 終了なし",
+        "change_end": "終了時刻を変更",
+        "restored": "「{name}」を元に戻しました",
+        "created_showing": "アラートを作成しました。現在表示中です。",
+        "created_off": "アラートを作成しました。オンにするまで表示されません。",
+        "expired": "「{name}」は期限切れになり、バナーから消えました"
+      }
+    },
+    "admin_home": {
+      "title": "概要",
+      "need_you": "{count} 件の対応が必要です | {count} 件の対応が必要です",
+      "all_clear": "問題なし",
+      "all_clear_line": "今は対応が必要なものはありません。",
+      "live_hint": "ほとんどの項目は変化した瞬間に更新されます。メトリクスは 30 秒ごと、データベースは 1 分ごとに更新されます。",
+      "everything_else": "その他",
+      "open": "開く",
+      "open_area": "{area} を開く",
+      "add_steam_account": "Steam アカウントを追加",
+      "more": "ほか {count} 件 | ほか {count} 件",
+      "card": {
+        "no_problems": "問題なし",
+        "checking": "確認中…",
+        "none": "まだありません",
+        "no_online": "オンラインのノードはありません",
+        "season_starts": "シーズン {number} は {count} 日後に開始 | シーズン {number} は {count} 日後に開始",
+        "of_online": "/ {total} オンライン",
+        "servers_free": "{capacity} 台中 {free} 台のサーバーが空き",
+        "of_connected": "/ {total} 接続中",
+        "offline": "{count} 台オフライン | {count} 台オフライン",
+        "of_free": "/ {total} 空き",
+        "accounts_free": "Steam アカウント {total} 件中 {free} 件が空き",
+        "in_flight": "処理中",
+        "previews_current": "プレビュー {total} 件中 {current} 件が最新",
+        "of_within": "/ {total} 制限内",
+        "slow_statements": "件の遅いクエリ | 件の遅いクエリ",
+        "threshold": "{threshold} 超で遅いと判定",
+        "banners_showing": "件のバナーを表示中 | 件のバナーを表示中",
+        "installed": "件インストール済み",
+        "updates": "{count} 件の更新があります | {count} 件の更新があります",
+        "up_to_date": "すべて最新",
+        "all_set_up": "すべて設定済み"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "{count} 台のノードがオフラインです | {count} 台のノードがオフラインです",
+          "cs2_failed": "{count} 台のノードで CS2 の更新に失敗しました | {count} 台のノードで CS2 の更新に失敗しました",
+          "overprovisioned": "{count} 台のノードが CPU の許容数を超えるサーバーを実行しています | {count} 台のノードが CPU の許容数を超えるサーバーを実行しています",
+          "plugin_unsupported": "{count} 台のノードで固定中のプラグインが CS2 ビルドに対応していません | {count} 台のノードで固定中のプラグインが CS2 ビルドに対応していません",
+          "disk_full": "{count} 台のノードのディスクがほぼ満杯です | {count} 台のノードのディスクがほぼ満杯です",
+          "cpu_governor": "{count} 台のノードが CPU ガバナー performance ではありません | {count} 台のノードが CPU ガバナー performance ではありません",
+          "not_ready_region": "{count} 台のノードで試合をホストできません: リージョン未設定 | {count} 台のノードで試合をホストできません: リージョン未設定",
+          "not_ready_ports": "{count} 台のノードで試合をホストできません: ポート範囲未設定 | {count} 台のノードで試合をホストできません: ポート範囲未設定",
+          "not_ready_cs2": "{count} 台のノードで試合をホストできません: CS2 未インストール | {count} 台のノードで試合をホストできません: CS2 未インストール",
+          "cs2_behind": "{count} 台のノードで CS2 の更新があります | {count} 台のノードで CS2 の更新があります",
+          "disk_filling": "{count} 台のノードのディスクが埋まりつつあります | {count} 台のノードのディスクが埋まりつつあります",
+          "cpu_slow": "{count} 台のノードの CPU が 3 GHz 未満で動作しています | {count} 台のノードの CPU が 3 GHz 未満で動作しています",
+          "cpu_warning": "{count} 台のノードが CPU の警告を報告しています | {count} 台のノードが CPU の警告を報告しています"
+        },
+        "gpus": {
+          "pool_empty": "Steam アカウントがありません: GPU はレンダリング、デモ再生、配信ができません",
+          "pool_short": "Steam プールは GPU ごとに 1 つに対して {count} アカウント不足しています | Steam プールは GPU ごとに 1 つに対して {count} アカウント不足しています",
+          "offline": "{count} 台の GPU がオフラインです | {count} 台の GPU がオフラインです",
+          "bake_failed": "{count} 台の GPU でシェーダーのベイクに失敗しました | {count} 台の GPU でシェーダーのベイクに失敗しました",
+          "renders_stuck": "{count} 件のレンダリングが待機中ですが、受け付けている GPU がありません | {count} 件のレンダリングが待機中ですが、受け付けている GPU がありません"
+        },
+        "metrics": {
+          "cpu": "{count} 台のノードで CPU が {threshold}% を超えています | {count} 台のノードで CPU が {threshold}% を超えています",
+          "memory": "{count} 台のノードでメモリが {threshold}% を超えています | {count} 台のノードでメモリが {threshold}% を超えています",
+          "disk": "{count} 台のノードでディスクが {threshold}% を超えています | {count} 台のノードでディスクが {threshold}% を超えています",
+          "gpu_util": "{count} 台の GPU が 5 分間 {threshold}% を超えて稼働しています | {count} 台の GPU が 5 分間 {threshold}% を超えて稼働しています",
+          "gpu_vram": "{count} 台の GPU で VRAM が {threshold}% を超えています | {count} 台の GPU で VRAM が {threshold}% を超えています",
+          "gpu_temp": "{count} 台の GPU が {threshold} °C 以上です | {count} 台の GPU が {threshold} °C 以上です"
+        },
+        "seasons": {
+          "rebuild": "シーズン {number} は ELO の再構築が必要です"
+        },
+        "renders": {
+          "failed": "過去 1 日で {count} 件のレンダリングが失敗しました | 過去 1 日で {count} 件のレンダリングが失敗しました",
+          "behind": "レンダーパイプラインが遅れています: v{pipeline} で撮影中、API は v{version} を想定しています",
+          "missing": "{count} 件のラインナップにプレビューがありません | {count} 件のラインナップにプレビューがありません",
+          "outdated": "{count} 件のラインナッププレビューが古くなっています | {count} 件のラインナッププレビューが古くなっています"
+        },
+        "database": {
+          "locks": "{count} 件のセッションがロック待ちです | {count} 件のセッションがロック待ちです",
+          "running": "{count} 件のクエリが {threshold} 以上実行中です | {count} 件のクエリが {threshold} 以上実行中です",
+          "slow": "{count} 件のクエリの平均が {threshold} を超えています | {count} 件のクエリの平均が {threshold} を超えています"
+        },
+        "plugins": {
+          "failed": "{count} 件のプラグインの展開に失敗しました | {count} 件のプラグインの展開に失敗しました",
+          "update": "{count} 件のプラグインに更新があります | {count} 件のプラグインに更新があります",
+          "manual": "ここで管理されていないプラグインが {count} 件ディスク上で見つかりました | ここで管理されていないプラグインが {count} 件ディスク上で見つかりました"
+        },
+        "settings": {
+          "not_set_up": "{count} 件の設定セクションが未設定です | {count} 件の設定セクションが未設定です"
+        },
+        "servers": {
+          "no_rcon": "{count} 台のサーバーが RCON に応答しません | {count} 台のサーバーが RCON に応答しません",
+          "plugin_outdated": "{count} 台のサーバーが古いプラグインを使用しています | {count} 台のサーバーが古いプラグインを使用しています"
+        }
+      }
     }
   },
   "layouts": {
@@ -6551,6 +7975,19 @@
         "theme": "外観",
         "developer": "開発者",
         "players_teams": "プラットフォーム"
+      },
+      "status": {
+        "not_set_up": "未設定",
+        "job_elo": "ELO {pct}%",
+        "job_reindex": "再インデックス {pct}%",
+        "job_reparse": "再解析 {pct}%",
+        "filter_attention": "要対応"
+      },
+      "search": {
+        "results": "一致する設定 {count} 件 | 一致する設定 {count} 件",
+        "clear": "検索をクリア",
+        "no_match_title": "「{query}」に一致する設定はありません",
+        "no_match_body": "すべてのセクションの設定名と説明を検索します。「ロール」や「ELO」のように1語で試してください。"
       }
     },
     "system_update": {
@@ -6622,6 +8059,7 @@
       "brand": "5stack",
       "systems_online": "{count} 件のシステムがオンライン | {count} 件のシステムがオンライン",
       "navigation": {
+        "home": "ホーム",
         "dashboard": "マイスタッツ",
         "play": "プレイ",
         "watch": "観戦",
@@ -6656,7 +8094,24 @@
         "alerts": "アラート",
         "seasons": "シーズン",
         "stream_deck": "ストリームデッキ",
-        "awards": "Awards"
+        "awards": "Awards",
+        "control_room": "コントロールルーム",
+        "overview": "概要"
+      },
+      "modes": {
+        "play": "プレイ",
+        "admin": "管理",
+        "switch_to_play": "プレイに切り替え",
+        "switch_to_admin": "管理に切り替え",
+        "attention": "{count} 件の対応が必要 | {count} 件の対応が必要",
+        "seasons_rebuild": "再構築が必要"
+      },
+      "groups": {
+        "compete": "競技",
+        "practice": "練習",
+        "media": "メディア",
+        "monitoring": "監視",
+        "site": "サイト"
       },
       "system": {
         "title": "システム",
@@ -6674,7 +8129,9 @@
       },
       "footer": {
         "report_issue": "問題を報告",
-        "join_discord": "Discordに参加"
+        "report_issue_short": "問題を報告",
+        "join_discord": "Discordに参加",
+        "discord": "Discord"
       },
       "tooltips": {
         "dashboard": "マイスタッツ",
@@ -7033,7 +8490,6 @@
     "none": "利用可能なプレイヤーがいません"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "これらのファイルは、サーバー起動時に`csgo`ディレクトリにマウントされます。",
     "any": "指定なし",
     "remove": "削除",
     "edit": "編集",
@@ -7057,7 +8513,8 @@
       "unsaved_changes": "未保存の変更",
       "review_and_save": "編集内容を確認してから保存してください",
       "has_errors": "無効な設定",
-      "resolve_errors": "保存するにはハイライトされた項目を修正してください"
+      "resolve_errors": "保存するにはハイライトされた項目を修正してください",
+      "leave_blocked": "移動する前に保存するか破棄してください"
     },
     "error": "エラー",
     "enabled": "有効",
@@ -7097,8 +8554,6 @@
     "exit_fullscreen": "フルスクリーンを終了",
     "download": "ダウンロード",
     "upload": "アップロード",
-    "sort_ascending": "昇順で並べ替え",
-    "sort_descending": "降順で並べ替え",
     "see_all": "すべて見る",
     "standby_no_activity": "STANDBY・NO ACTIVITY",
     "players": "プレイヤー",
@@ -7162,7 +8617,8 @@
     "empty_filtered": {
       "title": "条件に一致する項目はありません",
       "description": "フィルターを解除するか、検索条件を広げてください。"
-    }
+    },
+    "clear_filters": "フィルターをクリア"
   },
   "global_search": {
     "placeholder": "プレイヤー、ページ、設定を検索",
@@ -7190,8 +8646,6 @@
   },
   "file_manager": {
     "location": "場所",
-    "dedicated_server_files": "専用サーバーファイル",
-    "game_server_node_files": "ゲームサーバーノードファイル",
     "loading_server_info": "サーバー情報を読み込み中...",
     "create_directory": {
       "title": "新規ディレクトリを作成",
@@ -10257,10 +11711,6 @@
     "remove_node_confirm_title": "このノードを削除しますか？",
     "remove_node_confirm_description": "このノードと、そこにあるすべての専用サーバーが5Stackから削除されます。この操作は元に戻せません。",
     "remove_ports": "ポートを削除",
-    "mode": {
-      "use_as_match": "試合サーバーとして使用",
-      "use_as_gpu_only": "GPU 専用として使用"
-    },
     "show_update_logs": "更新ログを表示",
     "update_failed": "更新失敗",
     "update_failed_description": "前回の更新に失敗しました。更新ログは24時間保持されます。",
@@ -10532,10 +11982,6 @@
     }
   },
   "charts": {
-    "usage": "使用量",
-    "mount_os": "OS",
-    "mount_demos": "デモ",
-    "total_series": "{label} 合計",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} 平均"
   },
@@ -10568,7 +12014,6 @@
       "move_node": "サーバーを移動",
       "valve_preset_group": "Valve プリセット",
       "custom_mode_group": "カスタムモード",
-      "edit_mode": "モードを編集",
       "cs2_only": "CS2 のみ",
       "needs_node": "ノードが必要",
       "csgo_valve_only": "CS:GO サーバーは Valve プリセットのみ実行できます。ランク、練習、カスタムモードには CS2 が必要です。",
@@ -10592,9 +12037,9 @@
       "generate": "生成",
       "port": "ゲームポート",
       "tv_port": "TV ポート",
-      "create": "サーバーを作成",
       "max_players": "最大プレイヤー数",
-      "max_players_description": "サーバーに接続できるプレイヤーの上限数"
+      "max_players_description": "サーバーに接続できるプレイヤーの上限数",
+      "edit_mode_link": "モードを編集"
     },
     "rcon": {
       "console_output": "コンソール出力",
@@ -10617,6 +12062,13 @@
   "components": {
     "map_pools": {
       "view_on_steam": "Steam で表示"
+    },
+    "facet_rail": {
+      "clear_all": "すべてクリア",
+      "none": "該当なし",
+      "remove": "{label}を外す",
+      "show_all": "{count}件すべて表示",
+      "show_fewer": "表示を減らす"
     }
   },
   "map_pools": {
@@ -12418,7 +13870,6 @@
       "unique_24h": "ユニーク · 24時間",
       "unique_7d": "ユニーク · 7日",
       "sessions_7d": "セッション · 7日",
-      "time_played_7d": "プレイ時間 · 7日",
       "avg_session": "平均セッション",
       "players": "人",
       "joins": "回の参加",
@@ -12430,7 +13881,9 @@
       "empty": "この期間にここでプレイした人はいません。",
       "no_matches": "検索に一致するプレイヤーはいません。",
       "showing": "{total}件中{shown}件を表示",
-      "load_more": "さらに読み込む"
+      "last_seen": "最終確認",
+      "time_played_col": "プレイ時間 · 7日",
+      "show_more": "さらに読み込む"
     },
     "player_tab": {
       "moderator_note": "モデレーターには正確な時刻、セッション、使用した名前、IPも表示されます。",
@@ -12469,12 +13922,8 @@
       "offline": "オフライン",
       "map": "マップ",
       "community_server": "コミュニティサーバー",
-      "online_now": "現在オンライン",
-      "players_this_week": "今週のプレイヤー",
       "different_players": "人のプレイヤー",
-      "hours_this_week": "今週の時間",
       "played_by_everyone": "全員の合計",
-      "all_time_players": "全期間のプレイヤー",
       "since": "{date}から",
       "activity": "アクティビティ · 過去7日間",
       "activity_description": "全員がここで毎日プレイした合計時間です。個人のプレイ時間は表示されません。",
@@ -12491,7 +13940,13 @@
       "day": "日",
       "player_hours": "プレイヤー時間",
       "not_found_title": "サーバーが見つかりません",
-      "not_found_description": "このサーバーは存在しないか、公開されていません。"
+      "not_found_description": "このサーバーは存在しないか、公開されていません。",
+      "tile": {
+        "online_now": "現在オンライン",
+        "players_this_week": "今週のプレイヤー",
+        "hours_this_week": "今週の時間",
+        "all_time_players": "全期間のプレイヤー"
+      }
     }
   },
   "quick_look": {
@@ -12559,6 +14014,33 @@
         "twitch_unavailable": "Twitch から応答がありません。少し待ってからもう一度お試しください。",
         "unknown": "問題が発生しました。もう一度お試しください。"
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "検索をクリア"
+    },
+    "sort": {
+      "sorted_ascending": "昇順で並べ替え済み",
+      "sorted_descending": "降順で並べ替え済み"
+    },
+    "live_stamp": {
+      "live_at": "ライブ · {time}",
+      "updated_now": "たった今更新",
+      "updated_now_after": "たった今更新",
+      "updated_seconds": "{seconds}秒前に更新",
+      "updated_seconds_after": "{seconds}秒前に更新",
+      "updated_minutes": "{minutes}分前に更新",
+      "updated_minutes_after": "{minutes}分前に更新",
+      "paused": "一時停止中",
+      "every_seconds": "{seconds}秒ごとに更新",
+      "every_minute": "1分ごとに更新",
+      "every_minutes": "{minutes}分ごとに更新",
+      "refresh_now": "今すぐ更新"
+    },
+    "last_changed": {
+      "updated": "更新: {time}",
+      "updated_by": "更新: {time}（{name}）"
     }
   }
 }

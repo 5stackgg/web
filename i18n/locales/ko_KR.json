@@ -1266,11 +1266,8 @@
   },
   "pages": {
     "system_metrics": {
-      "cpu_usage": "CPU 사용률",
-      "memory_usage": "메모리 사용률",
       "services": "서비스",
       "service": "서비스",
-      "network": "네트워크",
       "search_services_placeholder": "서비스 또는 노드 검색...",
       "filter_by_node": "노드로 필터링",
       "no_services_found": "현재 필터에 맞는 서비스가 없습니다.",
@@ -1281,11 +1278,145 @@
       "disk_short": "디스크",
       "network_short": "네트워크",
       "no_nodes_found": "현재 필터에 맞는 게임 서버 노드가 없습니다.",
-      "only_online_nodes": "온라인 노드만"
+      "only_online_nodes": "온라인 노드만",
+      "search_placeholder": "서비스 또는 노드 검색",
+      "scope_all": "모든 서비스",
+      "scope_attention": "확인 필요",
+      "live_hint": "각 노드는 약 30초마다 보고합니다. 이 페이지는 최근 90분을 보관합니다.",
+      "filter_group": "게임 서버 노드",
+      "only_online": "온라인 노드만",
+      "only_enabled": "활성화된 노드만",
+      "no_nodes_title": "게임 서버 노드가 없습니다",
+      "no_nodes_hint": "게임 서버 노드를 설정해 경기 수용량을 늘리세요.",
+      "setup_node": "노드 설정",
+      "services_reporting": "{count}개 보고 중",
+      "all_nodes": "모든 노드",
+      "no_services_title": "보고 중인 서비스가 없습니다",
+      "no_services_hint": "노드가 파드 메트릭을 보내면 여기에 서비스가 표시됩니다.",
+      "no_attention_title": "확인이 필요한 서비스가 없습니다",
+      "no_attention_hint": "모든 서비스가 한도 이내입니다.",
+      "no_match_title": "일치하는 서비스가 없습니다",
+      "no_match_hint": "검색어, 노드 또는 필터와 일치하는 항목이 없습니다.",
+      "clear_filters": "필터 지우기",
+      "logs_for": "{name} 로그",
+      "logs_sheet_sub": "로그 · {node}",
+      "open_logs_page": "로그 페이지에서 열기",
+      "attention": {
+        "problems": "문제 {count}개 | 문제 {count}개",
+        "nodes_ok": "정상 노드 {count}개 | 정상 노드 {count}개",
+        "critical_count": "긴급 {count}개 | 긴급 {count}개",
+        "warning_count": "경고 {count}개 | 경고 {count}개",
+        "thresholds": "임계값",
+        "thresholds_hint": "노드: CPU, 메모리, 디스크가 75%부터 경고, 90%부터 긴급. GPU: 사용률 90%가 5분간 이어지거나 VRAM 90%이면 긴급, 85 °C이면 경고. 서비스 표에서는 노드 메모리의 절반을 차지하는 서비스도 긴급입니다.",
+        "all_clear": "확인이 필요한 항목이 없습니다",
+        "all_clear_hint": "모든 온라인 노드와 GPU가 한도 이내입니다.",
+        "issue_cpu": "{node} CPU {value}",
+        "issue_memory": "{node} 메모리 {value}",
+        "issue_disk": "{node} 디스크 {value}",
+        "issue_cpu_warning": "{node}에서 CPU가 부족한 게임 서버를 보고했습니다",
+        "issue_gpu_util": "{node}의 {gpu} {value}",
+        "issue_gpu_vram": "{node}의 {gpu} VRAM {value}",
+        "issue_gpu_temp": "{node}의 {gpu} {value}",
+        "cores": "코어 {count}개 | 코어 {count}개",
+        "above_for": "{minutes}분째 {threshold}% 초과",
+        "above_now": "마지막 샘플부터 {threshold}% 초과",
+        "used_of": "{total} 중 {used}",
+        "gpu_usage": "사용률 {value}",
+        "last_30": "최근 30분",
+        "open_node": "노드 열기",
+        "nodes": "노드",
+        "gpus": "GPU",
+        "nodes_all_fine": "노드 {count}개 온라인, 한도 이내 | 노드 {count}개 모두 온라인, 한도 이내",
+        "nodes_fine": "노드 {total}개 중 {fine}개 온라인, 한도 이내",
+        "need_attention": "{count}개 확인 필요 | {count}개 확인 필요",
+        "offline": "{count}개 오프라인",
+        "view_nodes": "게임 서버 노드에서 모두 보기",
+        "gpus_none_online": "온라인 GPU 없음",
+        "gpus_all_fine": "GPU {count}개 한도 이내 | GPU {count}개 한도 이내",
+        "gpus_fine": "GPU {total}개 중 {fine}개 한도 이내",
+        "gpus_offline": "{count}개는 오프라인 노드에 있음 | {count}개는 오프라인 노드에 있음",
+        "view_gpus": "GPU 노드에서 보기"
+      },
+      "services_table": {
+        "actions": "작업",
+        "last_seen": "마지막 확인 {time}",
+        "node_disk": "노드 디스크",
+        "node_disk_hint": "서비스는 자체 디스크 사용량을 보고하지 않습니다. 각 서비스가 실행 중인 노드에서 가장 많이 찬 디스크입니다. 75%부터 경고, 90%부터 긴급.",
+        "cpu_last_30": "CPU, 최근 30분",
+        "of_node": "노드 대비 %",
+        "memory_share_hint": "서비스가 차지하는 노드 전체 RAM 비율이며, 사용량은 툴팁에 표시됩니다. 노드 메모리의 절반을 차지하는 서비스는 긴급입니다."
+      }
     },
     "system_logs": {
       "follow_logs": "로그 실시간 보기",
-      "timestamps": "타임스탬프"
+      "timestamps": "타임스탬프",
+      "bar_label": "{time}, {total}줄, 경고 {warnings}개, 오류 {errors}개",
+      "clear_filters": "필터 지우기",
+      "connection_lost": "연결이 끊어졌습니다. 다시 연결하는 중입니다 — 스트림은 여기 표시된 마지막 줄 다음부터 이어집니다.",
+      "container": "컨테이너",
+      "copy_line": "줄 복사",
+      "download": "로그 다운로드",
+      "download_failed": "{service}의 전체 로그를 다운로드하지 못했습니다",
+      "errors": "오류",
+      "errors_like": "{text} 같은 오류",
+      "errors_loaded": "불러온 구간의 오류 {count}개 | 불러온 구간의 오류 {count}개",
+      "errors_word": "오류",
+      "exit_full_screen": "전체 화면 종료 (Esc)",
+      "filter_lines": "줄 필터",
+      "follow": "추적",
+      "full_logs_of": "전체 로그 · {service}",
+      "full_screen": "전체 화면",
+      "jump_to_live": "실시간으로 이동",
+      "level_error": "오류",
+      "level_log": "로그",
+      "level_warning": "경고",
+      "line_copied": "줄이 복사되었습니다",
+      "live_rate": "실시간 · {rate}/min",
+      "load_hour_before": "이전 1시간 불러오기",
+      "loading_earlier": "불러오는 중…",
+      "log_lines": "로그 줄",
+      "log_lines_word": "로그 줄",
+      "minutes_per_bar": "{time} · 막대당 {minutes} min",
+      "n_new": "새 줄 {count}개",
+      "no_match_hint": "불러온 구간에서 이 필터와 일치하는 줄이 없습니다. 이전 1시간을 불러오거나 레벨 범위를 넓혀 보세요.",
+      "no_match_title": "일치하는 줄 없음",
+      "no_repeating": "반복되는 경고나 오류 없음",
+      "no_services_hint": "서비스를 하나 이상 선택하면 해당 로그를 하나의 스트림으로 합쳐 보여 줍니다.",
+      "no_services_title": "선택된 서비스 없음",
+      "node": "노드",
+      "nothing_at": "{time}에 현재 필터와 일치하는 항목이 없습니다",
+      "now": "지금",
+      "only": "단독 표시",
+      "only_context": "{context}만",
+      "per_minute": "{rate}/min",
+      "pod": "파드",
+      "pod_count": "파드 {count}개",
+      "pods_of": "{service}의 파드",
+      "preset_all": "전체",
+      "preset_core": "코어",
+      "preset_match": "매치 흐름",
+      "preset_media": "미디어",
+      "reconnecting": "다시 연결하는 중…",
+      "repeating": "반복되는 경고 또는 오류 {count}개 | 반복되는 경고 및 오류 {count}개",
+      "services": "서비스",
+      "show_core": "코어 서비스 표시",
+      "show_every_line": "모든 줄 표시",
+      "show_in_stream": "스트림에 표시",
+      "show_only": "{service}만 표시",
+      "showing": "표시 중",
+      "showing_only": "{service}만 표시 중",
+      "since": "시작 시각",
+      "start_of_logs": "불러온 로그의 시작",
+      "time": "시각",
+      "waiting_for_output": "출력 대기 중 · 5s마다 다시 확인",
+      "warnings": "경고",
+      "warnings_like": "{text} 같은 경고",
+      "warnings_loaded": "불러온 구간의 경고 {count}개 | 불러온 구간의 경고 {count}개",
+      "warnings_word": "경고",
+      "status_ok": "최근 5분간 경고나 오류 없음",
+      "status_warn": "최근 5분간 경고 있음",
+      "status_bad": "최근 5분간 오류 있음",
+      "status_off": "아직 출력 없음"
     },
     "system_telemetry": {
       "title": "플릿 텔레메트리",
@@ -1515,7 +1646,11 @@
         "modes_caption": "정의됨",
         "modes_unranked": "드래프트 비대응",
         "modes_unranked_caption": "드래프트 로비에서 숨겨진 모드"
-      }
+      },
+      "jump_to": "바로 가기",
+      "features_title": "기능",
+      "not_reported_title": "아직 보고되지 않음",
+      "no_activity_hint": "패널이 호스팅한 경기를 보고하면 차트가 채워집니다."
     },
     "tournaments": {
       "title": "토너먼트",
@@ -3284,7 +3419,7 @@
         "upload_demo_description": "CS2 .dem 파일을 놓으면 매치 통계를 가져옵니다. 매치 기록 연결 여부와 관계없이 작동합니다.",
         "import_match": "경기 가져오기",
         "import_match_description": "5Stack 밖에서 플레이한 경기를 가져옵니다.",
-        "extension_title": "Chrome용 5Stack",
+        "extension_title": "5Stack Match Importer",
         "extension_description": "FACEIT와 Leetify 경기를 해당 페이지에서 바로 한 번의 클릭으로 가져오세요.",
         "add_to_chrome": "Chrome에 추가",
         "or_upload_demo": "또는 데모 업로드",
@@ -3521,6 +3656,119 @@
       "tabs": {
         "highlights": "하이라이트",
         "utility": "유틸리티 라인업"
+      },
+      "ledger": {
+        "search": "클립 및 라인업 검색",
+        "view": {
+          "flight": "진행 중",
+          "failed": "실패",
+          "done": "완료"
+        },
+        "filter": {
+          "queue": "대기열",
+          "map": "맵",
+          "group": "진행 중 항목을 배치별로 묶기"
+        },
+        "retry_all": "실패 항목 모두 재시도 ({count})",
+        "empty": {
+          "all": "하이라이트 클립과 라인업 미리보기는 시작, 렌더링, 업로드하는 동안 여기에 표시됩니다.",
+          "flight_title": "진행 중인 항목이 없습니다",
+          "failed_title": "실패한 항목이 없습니다",
+          "done_title": "완료된 항목이 없습니다",
+          "flight": "새 하이라이트 배치와 라인업 미리보기가 여기에 표시됩니다.",
+          "failed": "목록의 모든 렌더링이 문제없이 완료되었습니다.",
+          "done": "완료된 렌더링이 여기에 표시됩니다.",
+          "filtered": "검색어나 필터를 지워 보세요."
+        },
+        "select_all": "모두 선택",
+        "select": "{name} 선택",
+        "col": {
+          "render": "렌더링",
+          "progress": "진행률",
+          "length": "길이",
+          "elapsed": "경과",
+          "finished": "완료",
+          "actions": "작업"
+        },
+        "batch": {
+          "done_of": "{total}개 중 {done}개 완료",
+          "failed": "{count}개 실패 | {count}개 실패",
+          "paused": "일시 중지됨",
+          "silent": "{since} 동안 포드 응답 없음",
+          "booting": "포드 부팅 중",
+          "booting_pct": "포드 부팅 {pct}%",
+          "waiting_gpu": "사용 가능한 GPU 대기 중"
+        },
+        "pod_on": "{map}에서",
+        "lineup_on": "라인업 · {map}",
+        "missing_clip": "누락: 업로드 후 클립이 사라졌습니다",
+        "ago": "{since} 전",
+        "more": "추가 작업",
+        "open_details": "세부 정보 열기",
+        "cancel_batch": "배치 취소",
+        "pages": "페이지",
+        "silent": "응답 없음",
+        "history": "상태 기록",
+        "clip": "클립",
+        "player": "플레이어",
+        "round": "라운드",
+        "kills": "킬",
+        "segments": "세그먼트",
+        "job_id": "작업 ID",
+        "lineup_id": "라인업 ID",
+        "render_job": "렌더링 작업",
+        "no_job": "아직 없음",
+        "logs": "로그",
+        "bulk": {
+          "selected": "{count}개 선택됨 | {count}개 선택됨",
+          "cancel": "선택 항목 취소",
+          "retry": "선택 항목 재시도",
+          "requeue": "선택 항목 다시 대기열에 추가",
+          "clear": "선택 해제",
+          "requeueing": "다시 대기열에 추가하는 중",
+          "cancelling": "취소하는 중",
+          "progress": "{label} {done}/{total}"
+        },
+        "toast": {
+          "requeued": "렌더링 {count}개를 다시 대기열에 추가했습니다 | 렌더링 {count}개를 다시 대기열에 추가했습니다",
+          "cancelled": "렌더링 {count}개를 취소했습니다 | 렌더링 {count}개를 취소했습니다",
+          "not_done": "{count}개는 처리되지 않았습니다 | {count}개는 처리되지 않았습니다",
+          "clip_requeued": "클립을 다시 대기열에 추가했습니다",
+          "clip_not_requeued": "클립을 다시 대기열에 추가하지 못했습니다",
+          "batch_requeued": "배치를 다시 대기열에 추가했습니다",
+          "batch_cancelled": "배치를 취소했습니다",
+          "batch_not_cancelled": "배치를 취소하지 못했습니다",
+          "cleared": "완료된 렌더링을 지웠습니다"
+        },
+        "confirm": {
+          "cancel_title": "렌더링 {count}개를 취소할까요? | 렌더링 {count}개를 취소할까요?",
+          "cancel_body": "현재 위치에서 멈추며 완료되지 않습니다. 완료된 클립과 미리보기는 영향을 받지 않습니다.",
+          "cancel_batches": "클립은 배치 단위로 취소되므로 선택한 각 클립의 배치 나머지도 함께 멈춥니다.",
+          "keep": "렌더링 계속하기",
+          "cancel_action": "렌더링 취소",
+          "batch_title": "{name}을(를) 취소할까요?",
+          "batch_body": "완료되지 않은 클립은 렌더링되지 않습니다. 완료된 클립은 하이라이트에 남습니다.",
+          "clear_title": "완료된 렌더링을 지울까요?",
+          "clear_body": "완료된 렌더링을 대기열에서 제거합니다. 렌더링된 클립은 하이라이트에, 미리보기는 각 라인업에 남습니다."
+        },
+        "coverage": {
+          "current": "최신 {count}개",
+          "missing": "누락 {count}개",
+          "outdated": "오래됨 {count}개",
+          "unrenderable": "촬영 불가 {count}개",
+          "queued": "대기열 {count}개",
+          "lineups": "라인업",
+          "rerender_outdated": "오래된 항목 다시 렌더링",
+          "render_missing": "누락된 항목 렌더링",
+          "confirm_missing_title": "누락된 미리보기를 렌더링할까요?",
+          "confirm_outdated_title": "오래된 미리보기를 다시 렌더링할까요?",
+          "confirm_queue": "렌더링 대기열에 추가",
+          "lineups_title": "렌더링이 필요한 라인업",
+          "lineups_sub": "렌더링 버전 v{version}",
+          "render_one": "먼저 하나 렌더링",
+          "render_one_waiting": "해당 렌더링이 끝나기를 기다리는 중입니다. 현재 버전이 보고되면 오래된 항목 다시 렌더링이 열립니다."
+        },
+        "updated_ago": "{since} 전 업데이트됨"
       }
     },
     "news": {
@@ -3719,7 +3967,92 @@
       "backfill_cancel_requested": "취소가 요청되었습니다",
       "backfill_canceled_title": "시즌 재계산이 취소되었습니다",
       "backfill_complete_title": "시즌 재계산이 완료되었습니다",
-      "backfill_complete_desc": "{total}개 매치 중 {completed}개를 재계산했습니다 ({failed}개 실패)."
+      "backfill_complete_desc": "{total}개 매치 중 {completed}개를 재계산했습니다 ({failed}개 실패).",
+      "hero": {
+        "rebuild_required": "재계산 필요",
+        "ends_in": "종료까지",
+        "running_for": "진행 기간",
+        "days": "{count}일 | {count}일",
+        "started": "시작",
+        "ends": "종료",
+        "day_of": "{total}일 중 {day}일차",
+        "percent_through": "{percent}% 진행",
+        "change_start": "시작일 변경",
+        "change_end": "종료일 변경",
+        "set_end": "종료일 설정",
+        "make_ongoing": "무기한으로 변경",
+        "grant_award": "상 수여",
+        "one_rebuild": "재계산은 한 번에 하나만 실행됩니다.",
+        "start_caption": "UTC, 00:00에 시작.",
+        "end_caption": "UTC, 해당 날짜 00:00에 종료."
+      },
+      "off": {
+        "title": "비시즌",
+        "pill": "진행 중인 시즌 없음",
+        "last_ended": "{season}이(가) {date}에 종료되었습니다.",
+        "no_season": "지금 플레이한 매치는 어떤 시즌에도 집계되지 않습니다.",
+        "next": "{season}은(는) {date}, {count}일 후에 시작되며 일반 매치 ELO를 5000으로 초기화합니다. | {season}은(는) {date}, {count}일 후에 시작되며 일반 매치 ELO를 5000으로 초기화합니다.",
+        "nothing": "아직 예정된 시즌이 없습니다."
+      },
+      "banner": {
+        "stale": "{seasons}의 ELO가 오래되어 재계산 전까지 순위가 정확하지 않습니다. | {seasons}의 ELO가 오래되어 재계산 전까지 순위가 정확하지 않습니다.",
+        "rebuilding_now": "{season}을(를) 지금 재계산하고 있습니다. 재계산은 한 번에 하나만 실행됩니다."
+      },
+      "danger": {
+        "end_description": "오늘 종료하고 최종 순위에 따라 시즌 상을 수여합니다. 다음 시즌이 시작될 때까지 매치는 어떤 시즌에도 집계되지 않습니다.",
+        "end_button": "시즌 종료",
+        "delete_description": "해당 매치는 시즌에 속하지 않게 됩니다. ELO 기록은 유지되고 시즌별 통계는 지워집니다.",
+        "delete_button": "시즌 삭제",
+        "end_confirm_title": "{season}을(를) 지금 종료할까요?",
+        "end_confirm_instead": "{date} 대신 오늘({today}) 종료됩니다.",
+        "end_confirm_today": "오늘({today}) 종료됩니다.",
+        "end_confirm_awards": "시즌 상은 최종 순위에 따라 수여됩니다: 시즌 챔피언, 준우승, 3위, 시즌 MVP.",
+        "end_confirm_gap_next": "{season}이(가) {date}에 시작될 때까지 매치는 어떤 시즌에도 집계되지 않습니다.",
+        "end_confirm_gap_none": "다음 시즌을 만들 때까지 매치는 어떤 시즌에도 집계되지 않습니다.",
+        "end_confirm_elo": "다음 시즌이 시작되면 일반 매치 ELO가 다시 5000부터 시작됩니다.",
+        "type_to_confirm": "확인하려면 {phrase}을(를) 입력하세요",
+        "end_confirm_button": "{season} 종료",
+        "ended_toast": "{season}이(가) 종료되었습니다. 최종 순위에 따라 시즌 상을 수여하고 있습니다.",
+        "delete_confirm_title": "{season}을(를) 삭제할까요?",
+        "delete_confirm_button": "{season} 삭제"
+      },
+      "next": {
+        "label": "다음 시즌",
+        "first_label": "첫 시즌",
+        "schedule": "{season} 예약",
+        "hint_scheduled": "{season}은(는) {date}에 예정되어 있습니다.",
+        "hint_after": "{season}은(는) {date}에 종료됩니다. 이후 예정된 시즌이 없습니다.",
+        "hint_open_ended": "{season}에 종료일이 없어 다음 시즌을 만들려면 먼저 종료일이 필요합니다.",
+        "blocked": "{season}에 종료일이 없어 이후 시즌은 모두 겹칩니다. 먼저 종료일을 설정하세요.",
+        "first_season_hint": "첫 시즌은 기록된 가장 이른 매치({date})부터 시작하므로 지난 매치가 시즌 밖에 남지 않습니다."
+      },
+      "form": {
+        "start_date": "시작일",
+        "end_date": "종료일"
+      },
+      "ledger": {
+        "label": "시즌 원장"
+      },
+      "rebuild_progress": {
+        "label": "ELO 재계산 중 · {total}개 매치 중 {completed}개",
+        "failed": "{count}개 실패 | {count}개 실패",
+        "canceling": "취소 중"
+      },
+      "empty_state": {
+        "title": "아직 시즌이 없습니다",
+        "description": "시즌이 시작되면 일반 매치 ELO가 5000으로 초기화됩니다. 첫 시즌은 기록된 가장 이른 매치부터 시작합니다."
+      },
+      "about": {
+        "label": "시즌의 역할",
+        "reset_title": "새로운 래더",
+        "reset_body": "시즌이 시작되면 일반 매치 ELO가 5,000으로 초기화되어 모두가 같은 지점에서 올라갑니다.",
+        "counts_title": "모든 매치가 반영됩니다",
+        "counts_body": "시작일과 종료일 사이에 치른 매치가 해당 시즌의 래더와 통계에 반영됩니다. 시즌 사이의 매치는 어느 시즌에도 포함되지 않습니다.",
+        "awards_title": "종료 시 시상",
+        "awards_body": "최종 래더를 기준으로 시즌 챔피언, 준우승, 3위, 시즌 MVP가 수여됩니다.",
+        "history_title": "기록으로 남습니다",
+        "history_body": "종료된 시즌은 순위가 유지되며, 플레이어는 프로필에서 지난 시즌과 비교할 수 있습니다."
+      }
     },
     "regions": {
       "title": "지역",
@@ -3738,7 +4071,58 @@
         "title": "지역 삭제",
         "description": "정말 이 지역을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
       },
-      "deleted": "지역이 삭제되었습니다"
+      "deleted": "지역이 삭제되었습니다",
+      "list": {
+        "label": "지역",
+        "flag_relay": "릴레이",
+        "flag_lan": "LAN 전용"
+      },
+      "status": {
+        "online": "온라인",
+        "partial": "일부 노드 오프라인",
+        "offline": "오프라인",
+        "disabled": "서버 없음"
+      },
+      "detail": {
+        "label_aria": "지역 라벨",
+        "nodes_label": "노드",
+        "servers_free": "서버 {total}대 중 {free}대 사용 가능",
+        "col_node": "노드",
+        "col_free": "여유",
+        "col_servers": "서버",
+        "no_nodes_title": "이 지역에 노드가 없습니다",
+        "no_nodes_hint": "노드의 지역은 {page} 페이지에서 설정하세요.",
+        "relay_title": "Steam 릴레이 사용",
+        "relay_description": "플레이어가 Steam 릴레이를 통해 접속하므로 게임 서버 IP가 숨겨집니다.",
+        "relay_lan_description": "LAN 전용 지역은 플레이어를 직접 연결하므로 릴레이가 꺼진 상태로 유지됩니다.",
+        "lan_title": "LAN 전용",
+        "lan_description": "플레이어는 LAN IP에서 접속해야 합니다. 오프라인 이벤트용입니다.",
+        "delete_title": "지역 삭제",
+        "delete_hint_nodes": "먼저 이 지역의 노드 {count}개를 다른 지역으로 옮기세요. | 먼저 이 지역의 노드 {count}개를 다른 지역으로 옮기세요.",
+        "delete_hint_empty": "할당된 항목이 없습니다."
+      },
+      "delete_dialog": {
+        "title": "{region}을(를) 삭제할까요?",
+        "description": "이 지역을 사용하는 노드가 없습니다. 경기가 진행된 지역은 삭제할 수 없습니다. 이 작업은 되돌릴 수 없습니다.",
+        "confirm": "지역 삭제"
+      },
+      "create_sheet": {
+        "title": "지역 만들기"
+      },
+      "toasts": {
+        "created": "{region} 생성됨",
+        "deleted": "{region} 삭제됨",
+        "label_saved": "라벨 저장됨",
+        "relay_on": "{region}의 Steam 릴레이 켜짐",
+        "relay_off": "{region}의 Steam 릴레이 꺼짐",
+        "lan_on": "{region}의 LAN 전용 켜짐",
+        "lan_off": "{region}의 LAN 전용 꺼짐"
+      },
+      "empty": {
+        "title": "아직 지역이 없습니다",
+        "description": "지역은 게임 서버 노드를 위치별로 묶습니다. 플레이어는 매치메이킹에서 선호하는 지역을 고릅니다."
+      },
+      "search_placeholder": "지역 검색"
     },
     "players": {
       "title": "플레이어",
@@ -4285,7 +4669,13 @@
         "demos": "데모 재생",
         "demos_desc": "요청 시 데모 리플레이",
         "rendering": "렌더링",
-        "rendering_desc": "하이라이트 및 클립 렌더링"
+        "rendering_desc": "하이라이트 및 클립 렌더링",
+        "summary": "{total}개 중 {on}개 켜짐",
+        "node_disabled": "이 노드는 비활성화되어 GPU 작업을 받지 않습니다.",
+        "now_streaming": "{matchup} 스트리밍 중",
+        "now_demo": "{who}의 데모 재생 중",
+        "now_render": "{who}의 하이라이트 렌더링 중",
+        "now_render_pct": "{who}의 하이라이트 렌더링 중 · {pct}%"
       },
       "bake": {
         "help": "이 노드의 Vulkan 셰이더 캐시를 미리 빌드해 첫 매치가 지연 없이 시작되도록 합니다.",
@@ -4298,7 +4688,11 @@
         "in_progress": "사전 빌드 진행 중",
         "stages": {
           "errored": "빌드 실패"
-        }
+        },
+        "action": "셰이더 컴파일",
+        "cancel": "컴파일 취소",
+        "logs": "컴파일 로그",
+        "hide_logs": "로그 숨기기"
       },
       "empty": {
         "title": "GPU 노드 없음",
@@ -4328,9 +4722,155 @@
           "demo": "데모 재생",
           "highlights": "하이라이트",
           "bake": "셰이더 빌드"
-        }
+        },
+        "add_account": "계정 추가",
+        "col_account": "계정",
+        "col_holding": "사용 중",
+        "col_since": "시작",
+        "delete_action": "계정 삭제",
+        "empty_title": "아직 Steam 계정이 없습니다",
+        "empty_body": "렌더링, 데모 재생, 실시간 관전은 실행되는 동안 각각 계정 하나가 필요합니다.",
+        "free": "사용 가능",
+        "free_of": "{total}개 중 {free}개 사용 가능",
+        "health_no_nodes": "아직 GPU 노드가 없습니다",
+        "health_empty": "비어 있습니다. 계정을 추가할 때까지 렌더링과 실시간 관전이 실패합니다.",
+        "health_short": "{count}개 부족합니다. 모든 계정이 사용 중이면 일부 GPU가 놀게 됩니다.",
+        "health_enough": "모든 GPU에 충분합니다",
+        "name": "Steam 계정",
+        "manage": "Steam 계정 관리"
       },
-      "stop": "정지"
+      "stop": "정지",
+      "search_placeholder": "경기, 시청자, GPU, 계정 검색",
+      "open_render_queue": "렌더 대기열 열기",
+      "running_title": "실행 중",
+      "running_hint": "GPU 하나당 동시에 하나의 작업만",
+      "running_empty_title": "사용 중인 GPU가 없습니다",
+      "running_empty_body": "라이브 스트림, 데모 재생, 하이라이트 렌더링은 실행되는 동안 여기에 표시됩니다.",
+      "running_no_match": "일치하는 세션이 없습니다",
+      "no_match_body": "다른 검색어를 시도하거나 필터를 지우세요.",
+      "clear_all": "검색 및 필터 지우기",
+      "open_game_server_nodes": "게임 서버 노드 열기",
+      "gpus_title": "GPU",
+      "gpus_hint": "GPU 노드는 GPU가 있는 게임 서버 노드입니다",
+      "gpus_no_match": "일치하는 GPU 노드가 없습니다",
+      "no_region": "지역 없음",
+      "more_for": "{node} 더 보기",
+      "open_details": "세부 정보 열기",
+      "open_in_nodes": "게임 서버 노드에서 열기",
+      "accept_matches": "새 경기 받기",
+      "stop_accepting": "경기 받기 중지",
+      "filter": {
+        "live": "라이브",
+        "demos": "데모",
+        "renders": "렌더",
+        "workload_on": "작업 켜짐",
+        "node_type": "노드 유형"
+      },
+      "kpi": {
+        "gpus_free": "사용 가능한 GPU",
+        "of_total": "/ {total}",
+        "running": "실행 중",
+        "running_split": "라이브 {live} · 데모 {demo} · 렌더 {render}",
+        "waiting": "대기 중인 렌더",
+        "waiting_none": "대기열이 비어 있습니다",
+        "accounts_split": "사용 중 {used} · 사용 가능 {free}",
+        "accounts_short": "GPU마다 하나씩 쓰려면 {count}개 더 필요",
+        "accounts_busy": "모두 사용 중입니다. 새 작업은 빈 계정을 기다립니다."
+      },
+      "wait_reason": {
+        "no_accounts": "풀에 Steam 계정이 없습니다",
+        "paused_for_match": "경기가 라이브인 동안 일시 중지됨",
+        "no_account_free": "Steam 계정을 기다리는 중",
+        "no_gpu_free": "사용 가능한 GPU를 기다리는 중"
+      },
+      "col": {
+        "workload": "작업",
+        "for": "대상",
+        "account": "Steam 계정",
+        "state": "상태",
+        "time": "시간",
+        "node": "노드",
+        "load": "부하",
+        "vram": "VRAM",
+        "workloads": "작업"
+      },
+      "kind": {
+        "live_tv": "라이브 스트림 (GOTV)",
+        "live_direct": "라이브 스트림 (직접)",
+        "demo": "데모 재생",
+        "highlights": "하이라이트 렌더링",
+        "bake": "셰이더 사전 컴파일"
+      },
+      "who": {
+        "spectators": "관전자",
+        "warming_cache": "Vulkan 캐시 준비 중"
+      },
+      "state": {
+        "starting": "시작 중",
+        "playing": "재생 중",
+        "failed": "실패"
+      },
+      "node_state": {
+        "setup": "설정 중",
+        "streaming": "스트리밍 중",
+        "playing": "데모 재생 중",
+        "baking": "셰이더 컴파일 중",
+        "offline_since": "{time}부터 오프라인"
+      },
+      "node_kind": {
+        "gpu": "GPU 전용",
+        "match": "경기 + GPU"
+      },
+      "sheet": {
+        "now": "현재",
+        "shader_cache": "셰이더 캐시",
+        "idle_ready": "라이브 스트림, 데모 재생, 렌더링을 처리할 준비가 되었습니다.",
+        "unavailable": "활성화되고 온라인이 될 때까지 GPU 작업을 받지 않습니다.",
+        "no_metrics": "노드가 비활성화, 오프라인 또는 설정 중인 동안에는 GPU 지표가 없습니다.",
+        "bake_failed_hint": "마지막 컴파일이 실패했습니다. 다시 시도하거나 로그를 확인하세요.",
+        "cache_warm": "준비됨",
+        "never_baked": "컴파일한 적이 없습니다. 이 노드의 첫 스트림이 진행하면서 셰이더를 컴파일합니다."
+      },
+      "stop_copy": {
+        "keep": "계속 실행",
+        "live_title": "{matchup} 라이브 스트림을 중지할까요?",
+        "live_body": "시청자는 스트림을 볼 수 없게 됩니다. 경기 자체는 계속됩니다.",
+        "live_action": "스트림 중지",
+        "demo_title": "{who}의 데모 재생을 중지할까요?",
+        "demo_body": "플레이어가 닫힙니다. GPU가 비면 다시 시작할 수 있습니다.",
+        "demo_action": "재생 중지",
+        "render_title": "{who}의 하이라이트 렌더링을 중지할까요?",
+        "render_body": "중지되고 GPU가 해제됩니다.",
+        "render_body_pct": "{pct}%에서 중지되고 GPU가 해제됩니다.",
+        "render_action": "렌더링 중지"
+      },
+      "toggle_gpu_only_help": "GPU 작업만 받고 매치 서버는 실행하지 않습니다. 켜면 리전과 포트가 지워집니다.",
+      "plate": {
+        "temperature": "온도",
+        "power": "전력",
+        "vram_of": "{used} / {total} GB",
+        "hot": "고온, {limit} °C 초과",
+        "too_hot": "과열, {limit} °C 초과",
+        "no_reading": "실시간 측정값 없음",
+        "cards": "카드 {count}개 | 카드 {count}개"
+      },
+      "chips": {
+        "turn_on": {
+          "streaming": "라이브 스트리밍 켜기",
+          "demos": "데모 재생 켜기",
+          "rendering": "렌더링 켜기"
+        },
+        "turn_off": {
+          "streaming": "라이브 스트리밍 끄기",
+          "demos": "데모 재생 끄기",
+          "rendering": "렌더링 끄기"
+        },
+        "confirm_body": {
+          "streaming": "진행 중인 스트림은 계속됩니다. 다시 켤 때까지 이 GPU는 새 스트림을 받지 않습니다.",
+          "demos": "진행 중인 재생은 계속됩니다. 다시 켤 때까지 이 GPU는 새 데모를 받지 않습니다.",
+          "rendering": "진행 중인 렌더는 계속됩니다. 다시 켤 때까지 이 GPU는 새 렌더를 받지 않습니다."
+        }
+      }
     },
     "game_server_nodes": {
       "title": "게임 서버 노드",
@@ -4498,12 +5038,14 @@
         "no_nodes": "게임 서버 노드 없음",
         "supports_low_latency": "저지연 지원",
         "supports_cpu_pinning": "CPU 고정 지원",
-        "cpu_governor": "CPU 거버너"
+        "cpu_governor": "CPU 거버너",
+        "servers": "서버",
+        "servers_tooltip": "사용 가능한 서버, 괄호 안은 전체",
+        "cs2_build": "CS2 빌드",
+        "plugin": "플러그인",
+        "load": "부하"
       },
       "builds": {
-        "title": "CS2 빌드 기록",
-        "description": "모든 CS2 빌드의 게임 데이터 검증과 맵 에셋 빌드, 그리고 각 빌드에서 이전 빌드 대비 무엇이 바뀌었는지 보여 줍니다.",
-        "back": "게임 서버 노드",
         "builds": "빌드",
         "no_builds": "아직 검증되거나 빌드된 빌드가 없습니다.",
         "current": "현재",
@@ -4513,11 +5055,271 @@
           "detected": "업데이트 출시",
           "gamedata": "게임 데이터",
           "map_assets": "맵 에셋"
-        }
+        },
+        "empty_title": "아직 빌드가 없습니다"
       },
       "max_label": "최대:",
       "ports_label": "포트:",
-      "cpu_hardware": "CPU 및 하드웨어"
+      "cpu_hardware": "CPU 및 하드웨어",
+      "gpu_only": "GPU 전용",
+      "create_node": "게임 서버 노드 생성",
+      "search_placeholder": "이름 또는 ID로 검색",
+      "filters": {
+        "only_enabled": "활성화된 노드만",
+        "hide_offline": "오프라인 노드 숨기기",
+        "display_metrics": "지표 표시"
+      },
+      "empty": {
+        "title": "게임 서버 노드가 없습니다",
+        "description": "노드는 5Stack용 CS2 서버를 실행하는 머신입니다. 설치 스크립트를 실행하면 여기에 표시됩니다.",
+        "guide": "설치 가이드 읽기"
+      },
+      "summary": {
+        "nodes": "노드 {count}개 | 노드 {count}개",
+        "online": "{count}개 온라인",
+        "free": "서버 {total}개 중 {free}개 사용 가능",
+        "attention": "{count}개 확인 필요 | {count}개 확인 필요",
+        "updating": "{count}개 업데이트 중"
+      },
+      "row": {
+        "select": "{node} 선택",
+        "select_all": "모든 노드 선택",
+        "servers_tip": "{total}개 중 {free}개 사용 가능 · 최대 {max}개",
+        "not_installed": "설치되지 않음"
+      },
+      "detail": {
+        "hardware_pending": "노드가 연결되면 하드웨어 정보가 표시됩니다.",
+        "disk_value": "{percent}% 사용, {free} GB 남음",
+        "game_server": "게임 서버",
+        "node_id": "노드 ID",
+        "addresses": "LAN / 공인 IP",
+        "available_value": "{total}개 중 {free}개",
+        "control": "제어",
+        "update_log": "CS2 업데이트 로그"
+      },
+      "metrics": {
+        "setup": "노드가 연결되면 지표가 표시됩니다.",
+        "offline": "노드가 오프라인인 동안에는 실시간 데이터가 없습니다."
+      },
+      "toast": {
+        "region_updated": "지역이 업데이트되었습니다",
+        "save_failed": "변경 사항을 저장하지 못했습니다"
+      },
+      "bulk": {
+        "selected": "{count}개 선택됨",
+        "progress": "{done} / {total}",
+        "move_region": "지역으로 이동",
+        "enable": "활성화",
+        "disable": "비활성화",
+        "updating": "노드 {count}개에서 CS2 업데이트 중 | 노드 {count}개에서 CS2 업데이트 중",
+        "moved": "노드 {count}개를 {region}(으)로 이동했습니다 | 노드 {count}개를 {region}(으)로 이동했습니다",
+        "unassigned": "노드 {count}개의 지역을 해제했습니다 | 노드 {count}개의 지역을 해제했습니다",
+        "enabled": "노드 {count}개를 활성화했습니다 | 노드 {count}개를 활성화했습니다",
+        "disabled": "노드 {count}개를 비활성화했습니다 | 노드 {count}개를 비활성화했습니다",
+        "failed": "{count}개 실패 | {count}개 실패"
+      },
+      "inspector": {
+        "status": {
+          "setup": "연결 대기 중",
+          "offline_since": "{time}부터 오프라인",
+          "not_accepting": "온라인, 새 매치를 받지 않음"
+        },
+        "search_placeholder": "이름, ID 또는 IP로 검색",
+        "keys": {
+          "move": "이동",
+          "select": "클릭하여 여러 개 선택",
+          "close": "닫기",
+          "idle": "노드를 선택하면 세부 정보가 표시됩니다"
+        },
+        "details": "노드 세부 정보",
+        "capacity_tip": "포트가 허용하는 전체 중 비어 있는 서버 수. 아래에 포트 범위가 표시됩니다.",
+        "cap_free": "{total}개 중 {free}개 비어 있음",
+        "cap_no_ports": "포트 없음",
+        "chip": {
+          "updating": "업데이트 중",
+          "updating_pct": "업데이트 중 {percent}%",
+          "failed": "업데이트 실패",
+          "behind": "구버전",
+          "pinned": "고정됨",
+          "failed_tip": "{target}(으)로 업데이트 실패({ago}). 여전히 {version}입니다.",
+          "behind_tip": "현재 {version}. {target}(으)로 업데이트하세요.",
+          "pinned_tip": "{version}에 고정됨"
+        },
+        "load": {
+          "mem": "메모리",
+          "disk": "디스크"
+        },
+        "disk_tip": "디스크: {total} 중 {used} 사용, {free} 여유",
+        "actions_for": "{node} 작업",
+        "menu": {
+          "select": "일괄 작업용으로 선택",
+          "deselect": "선택에서 제외",
+          "rename": "라벨 편집"
+        },
+        "more": "{count}개 더",
+        "remove": "노드 제거",
+        "remove_text": "노드와 그 위의 모든 전용 서버를 5Stack에서 제거합니다.",
+        "rename": "{node} 이름 변경",
+        "label": "노드 라벨",
+        "close": "세부 정보 닫기",
+        "close_hint": "닫기 (Esc)",
+        "step": {
+          "enable": "노드 활성화",
+          "retry_update": "업데이트 재시도",
+          "assign_region": "리전 지정",
+          "set_ports": "포트 설정",
+          "change_plugin": "플러그인 변경",
+          "edit_ports": "포트 편집",
+          "open_files": "파일 열기"
+        },
+        "attention": {
+          "setup": "머신에서 설정 스크립트를 실행하세요. 연결되면 온라인으로 표시됩니다.",
+          "offline": "다시 연결될 때까지 이곳에 매치가 배정되지 않습니다.",
+          "update_failed_title": "CS2 업데이트 실패 ({ago})",
+          "update_failed": "업데이트 로그는 24시간 동안 보관됩니다.",
+          "overprovisioned": "포트에 서버 {total}개가 있지만 CPU는 {max}개만 감당할 수 있습니다.",
+          "plugin": "고정된 플러그인이 빌드 {build}을(를) 지원하지 않습니다.",
+          "not_ready_title": "아직 매치를 호스팅할 수 없습니다",
+          "not_ready": "{list}이(가) 필요합니다.",
+          "behind_title": "CS2 {version}은(는) 구버전입니다",
+          "behind": "{target}(으)로 업데이트하세요.",
+          "cpu_title": "CPU {ghz}GHz",
+          "cpu": "3GHz 미만이면 CS2 서버 성능이 떨어질 수 있습니다.",
+          "governor_title": "CPU 거버너가 {governor}입니다",
+          "disk_title": "디스크 {percent}% 사용",
+          "disk": "{free} 여유.",
+          "cpu_warning": "노드가 보고한 내용입니다.",
+          "workloads_title": "일부 GPU 작업이 꺼져 있습니다",
+          "workloads": "{list} 꺼짐.",
+          "disabled": "꺼져 있는 동안 GPU 작업과 매치 배정이 없습니다."
+        },
+        "need": {
+          "region": "리전",
+          "ports": "포트",
+          "cs2": "CS2"
+        },
+        "sections": {
+          "cs2": "CS2 및 플러그인"
+        },
+        "capacity": {
+          "gpu_only": "GPU 전용이라 매치를 호스팅하지 않습니다. GPU에서 다시 전환하세요.",
+          "max_servers": "최대 서버 수",
+          "max_tip": "CPU 스레드 {threads}개, 시스템용 1개 제외",
+          "max_tip_pinning": "CPU 스레드 {threads}개, 시스템용 1개 제외, 서버당 {per}개",
+          "max_tip_pending": "노드가 연결되면 CPU를 기준으로 계산됩니다",
+          "below": "포트의 {total}개보다 적음",
+          "servers_no_ports": "서버를 호스팅하려면 포트를 설정하세요",
+          "servers_disabled": "비활성화 상태에서는 없음",
+          "servers_offline": "오프라인 상태에서는 알 수 없음"
+        },
+        "ports": {
+          "tip": "이 노드로 포워딩되는 포트 범위입니다. 서버마다 포트 2개를 사용합니다.",
+          "not_set": "설정 안 됨",
+          "need_region": "포트를 설정하기 전에 리전을 지정하세요.",
+          "start": "시작 포트",
+          "end": "끝 포트",
+          "hint": "30000~32767 사이. 서버마다 포트 2개를 사용합니다.",
+          "fit": "이 범위에 서버 {count}개가 들어갑니다. | 이 범위에 서버 {count}개가 들어갑니다.",
+          "fit_over": "서버 {count}개가 들어가지만 CPU는 {max}개만 감당할 수 있습니다.",
+          "error_range": "포트는 30000~32767 사이여야 합니다.",
+          "error_order": "끝 포트는 시작 포트보다 2 이상 커야 합니다.",
+          "save": "포트 저장",
+          "remove": "포트 제거"
+        },
+        "cs2": {
+          "setup": "노드가 연결되면 CS2를 설치하세요.",
+          "gpu_only": "GPU 전용 노드는 CS2 서버를 실행하지 않습니다.",
+          "to": "→ {version}",
+          "plugin_unsupported": "지원 안 됨",
+          "update_log": "업데이트 로그",
+          "behind_line": "빌드 {build}, {target}(으)로 업데이트",
+          "failed_line": "{ago} · 아직 빌드 {build}",
+          "build_line": "빌드 {build}",
+          "on_build": "(빌드 {build})",
+          "pinning_unsupported": "고정 미지원"
+        },
+        "hardware": {
+          "cores": "코어",
+          "sockets": "({count}소켓) | ({count}소켓)",
+          "threads": "스레드/코어",
+          "threads_total": "(총 {count}개)",
+          "governor": "거버너",
+          "low_latency": "저지연",
+          "pinning": "CPU 고정",
+          "supported": "지원됨",
+          "governor_tip": "CPU가 클럭을 조절하는 방식입니다. performance 거버너는 코어를 최대 속도로 유지하며 CS2에 권장됩니다.",
+          "latency_tip": "저지연 커널은 게임 서버의 스케줄링 지터를 줄여 줍니다.",
+          "pinning_tip": "각 서버를 전용 CPU 코어에 고정해 서버끼리 경쟁하지 않게 합니다."
+        },
+        "range_label": "지표 기간",
+        "range": {
+          "1h": "1시간"
+        },
+        "of_total": "/ {total}",
+        "now": "지금",
+        "last_report": "마지막 보고 {time}",
+        "live_offline": "오프라인 상태에서는 실시간 데이터가 없습니다. 마지막 보고: {time}.",
+        "history_offline": "오프라인 상태에서는 실시간 데이터가 없습니다. 기록은 {time}까지입니다.",
+        "offline_for": "오프라인 {duration}",
+        "chart": {
+          "label": "지표 기록. 왼쪽/오른쪽 화살표로 시간을 이동하고 Shift를 누르면 10칸씩 이동합니다.",
+          "avg_peak": "평균 {avg}% · 최고 {peak}%",
+          "peak": "최고 {peak}",
+          "in": "수신",
+          "out": "송신",
+          "in_out": "수신 {in} · 송신 {out}",
+          "caption": "최근 1시간, 30초마다 샘플.",
+          "starts": "기록은 {time}부터 시작됩니다.",
+          "gaps": "선이 끊긴 부분은 오프라인 시간입니다.",
+          "cadence": "{seconds}초마다 샘플."
+        },
+        "disk": {
+          "last_report": "디스크 · 마지막 보고",
+          "filling_up": "채워지는 중",
+          "almost_full": "거의 가득 참",
+          "used_of": "{used} / {total}",
+          "thresholds": "{warning}%에서 경고, {critical}%에서 알림",
+          "free": "{free} 여유",
+          "up": "최근 1시간 동안 {amount} 증가",
+          "down": "최근 1시간 동안 {amount} 감소",
+          "flat": "최근 1시간 동안 거의 변화 없음",
+          "full_hours": "약 {count}시간 후 가득 참",
+          "full_days": "약 {count}일 후 가득 참 | 약 {count}일 후 가득 참",
+          "of_used": "/ {total} 사용"
+        },
+        "gpu": {
+          "video": "비디오 설정",
+          "custom": "사용자 지정"
+        },
+        "node": {
+          "accepting": "매치 수락",
+          "accepting_setup": "연결되면 사용할 수 있습니다.",
+          "accepting_no_ports": "먼저 포트를 설정하세요.",
+          "limiter": "데모 제한",
+          "limiter_tip": "데모 네트워크 제한: 이 노드에서 데모 파일을 내려받을 때의 속도 제한입니다.",
+          "copy_id": "노드 ID 복사",
+          "ips_pending": "연결되면 표시됩니다"
+        },
+        "bulk": {
+          "title": "노드 {count}개 선택됨 | 노드 {count}개 선택됨",
+          "hint": "{modifier}+클릭으로 행을 추가하거나 빼고, Shift+클릭으로 범위 선택",
+          "apply": "모두에 적용",
+          "note": "CS2 업데이트는 오프라인이거나 최신이거나 이미 업데이트 중인 노드를 건너뜁니다. GPU 전용 노드는 리전을 갖지 않습니다.",
+          "selected": "선택됨",
+          "drop": "선택에서 {node} 제외",
+          "clear": "선택 해제"
+        },
+        "warning": {
+          "lowlatency": "레거시 lowlatency 커널",
+          "constrained": "{name}의 CPU가 부족합니다",
+          "governor": "CPU 고정 사용 중 거버너가 {governor}",
+          "from_node": "노드 경고 {count}개 | 노드 경고 {count}개",
+          "docs": "문서",
+          "details": "세부 정보"
+        },
+        "window_minutes": "최근 {count}분 | 최근 {count}분",
+        "window_hours": "최근 {count}시간 | 최근 {count}시간"
+      }
     },
     "dedicated_servers": {
       "title": "데디케이티드 서버",
@@ -4525,9 +5327,7 @@
       "docs_link": "설정 가이드 보기",
       "no_servers_title": "데디케이티드 서버 없음",
       "no_servers": "데디케이티드 서버를 찾을 수 없습니다.",
-      "create": {
-        "title": "데디케이티드 서버 생성"
-      },
+      "create": {},
       "table": {
         "connection_details": "연결 정보",
         "label": "라벨",
@@ -4538,7 +5338,6 @@
       },
       "detail": {
         "enabled": "활성화",
-        "eyebrow": "데디케이티드 서버",
         "tabs": {
           "overview": "개요",
           "players": "플레이어",
@@ -4548,14 +5347,9 @@
         },
         "status_label": {
           "connected": "연결됨",
-          "disconnected": "연결 끊김",
           "hibernating": "절전 중",
-          "no_rcon": "RCON 없음",
-          "version_mismatch": "버전 불일치"
+          "no_rcon": "RCON 없음"
         },
-        "server_plugin_config": "서버 플러그인 설정",
-        "hide_config": "설정 숨기기",
-        "show_config": "설정 보기",
         "config_location": "이 설정 파일은 다음 위치에 두어야 합니다:",
         "files": "파일",
         "player_management": "플레이어 관리",
@@ -4579,13 +5373,7 @@
           "disconnected": "서버 연결이 끊겼습니다",
           "hibernating": "플레이어가 접속할 때까지 서버가 절전 상태입니다",
           "no_rcon": "서버는 연결되었지만 RCON을 사용할 수 없습니다",
-          "connected": "서버가 연결되었으며 RCON을 사용할 수 있습니다",
-          "plugin_version_mismatch": "플러그인 버전이 최신이 아닙니다"
-        },
-        "delete_confirm": {
-          "title": "정말 진행하시겠습니까?",
-          "description": "이 작업은 되돌릴 수 없습니다. 서버가 영구적으로 삭제되며 관련 데이터가 서버에서 제거됩니다.",
-          "continue": "계속"
+          "connected": "서버가 연결되었으며 RCON을 사용할 수 있습니다"
         },
         "save_restart": "저장 후 재시작",
         "map_rotation": {
@@ -4704,8 +5492,6 @@
           }
         },
         "move": {
-          "menu": "다른 노드로 이동",
-          "title": "다른 노드로 이동",
           "description": "{node}에서 서버가 중지되고, 파일이 새 노드로 복사된 뒤 그곳에서 다시 시작됩니다.",
           "source_offline": "{node}이(가) 오프라인이라 서버 파일을 복사할 수 없습니다. 새 노드에서 기본 설정으로 시작되며, {node}에 남은 항목은 그대로 유지됩니다.",
           "without_files": "서버 파일 없이 이동",
@@ -4713,7 +5499,6 @@
           "no_nodes": "다른 게임 서버 노드가 없습니다",
           "free_slots": "빈 슬롯: {count}",
           "free_disk": "{size} 여유",
-          "confirm": "서버 이동",
           "started": "{server}을(를) {node}(으)로 이동하는 중",
           "warning": {
             "address": "새 노드에서는 서버에 새 주소가 부여됩니다.",
@@ -4729,7 +5514,9 @@
             "updating": "CS2 업데이트 중",
             "no_build": "{game}이(가) 설치되어 있지 않음",
             "no_slot": "빈 서버 슬롯 없음"
-          }
+          },
+          "dialog_title": "다른 노드로 이동",
+          "confirm_move": "서버 이동"
         },
         "migration": {
           "title": {
@@ -4750,12 +5537,71 @@
           "progress": "{done} / {total} ({percent}%)",
           "without_files": "파일 없이",
           "restored": "서버가 {node}(으)로 돌아왔습니다.",
-          "cancel": "이동 취소",
           "cancel_requested": "이동 취소 중",
           "dismiss": "닫기",
-          "locked": "서버를 다른 노드로 이동하는 중입니다. 이동이 끝난 후 다시 시도하세요."
-        }
-      }
+          "locked": "서버를 다른 노드로 이동하는 중입니다. 이동이 끝난 후 다시 시도하세요.",
+          "cancel_move": "이동 취소"
+        },
+        "plugin_tag": "플러그인 v{version}",
+        "plugin_config": "서버 플러그인 설정",
+        "show_plugin_config": "설정 보기",
+        "hide_plugin_config": "설정 숨기기"
+      },
+      "clear_all": "검색 및 필터 지우기",
+      "col_hosting": "호스팅",
+      "col_players": "플레이어",
+      "col_plugin": "플러그인",
+      "col_ports": "포트",
+      "col_server": "서버",
+      "copied": "{value} 복사됨",
+      "copy_address": "주소 복사",
+      "create_server": "서버 만들기",
+      "delete_body_external": "5Stack에서 제거되어 더 이상 매치를 받지 않습니다. 장비 자체는 계속 실행됩니다. 되돌릴 수 없습니다.",
+      "delete_body_node": "5Stack에서 제거되고 {node}에서 종료됩니다. 되돌릴 수 없습니다.",
+      "delete_server": "서버 삭제",
+      "delete_title": "{label}을(를) 삭제할까요?",
+      "deleted_toast": "{label} 삭제됨",
+      "disable_server": "서버 비활성화",
+      "disabled_hidden": "비활성 서버 {count}개 숨김 | 비활성 서버 {count}개 숨김",
+      "disabled_toast": "{label} 비활성화됨. 더 이상 매치와 공개 플레이를 받지 않습니다.",
+      "empty_title": "아직 데디케이티드 서버가 없습니다",
+      "enable_server": "서버 활성화",
+      "enabled_for": "활성: {label}",
+      "enabled_toast": "{label} 활성화됨",
+      "external": "외부",
+      "facet_host": "호스트",
+      "filter_label": "서버 필터",
+      "more_for": "{label} 더보기",
+      "node_tag": "노드",
+      "open": "열기",
+      "open_console": "콘솔 열기",
+      "open_node": "게임 서버 노드에서 열기",
+      "page_of": "{pages}페이지 중 {page}페이지",
+      "plugin_current": "v{version} (최신)",
+      "plugin_outdated_tip": "플러그인 버전이 최신이 아닙니다. 최신 버전은 v{version}입니다.",
+      "ports_tip": "게임 포트 (TV 포트)",
+      "search_placeholder": "이름, 주소, 호스트 검색",
+      "servers_word": "개 서버 | 개 서버",
+      "setup_guide": "설정 가이드",
+      "show_them": "표시하기",
+      "states": {
+        "attention": "확인 필요",
+        "offline": "오프라인",
+        "inuse": "사용 중",
+        "ready": "준비됨",
+        "hibernating": "절전 중",
+        "disabled": "비활성"
+      },
+      "status_in_match": "매치 중",
+      "status_offline_since": "{time}부터 오프라인",
+      "status_playing": "{count}명 플레이 중",
+      "status_plugin_outdated": "플러그인 구버전",
+      "tip_disabled": "매치나 공개 플레이에 사용되지 않습니다.",
+      "join_server": "서버 참가",
+      "new_server": "새 서버",
+      "create_on_node": "{node}에서 실행",
+      "create_at_host": "{address}에서 실행",
+      "create_pick_place": "실행할 위치를 선택하세요"
     },
     "public_servers": {
       "title": "퍼블릭 서버",
@@ -5119,6 +5965,216 @@
         "execution_plan": "실행 계획",
         "no_explain_plan": "이 쿼리에 대한 EXPLAIN 계획을 생성할 수 없습니다",
         "not_found": "쿼리 상세 정보를 찾을 수 없습니다"
+      },
+      "explorer": {
+        "active_backends": "활성 백엔드",
+        "active_queries": "실행 중인 쿼리",
+        "active_queries_hint": "유휴 상태가 아닌 모든 세션 (오래 실행된 순)",
+        "active_waiting": "활성 {active} · 대기 {waiting}",
+        "activity": "활동",
+        "all_connections": "전체 연결",
+        "all_indexes_scanned": "모든 인덱스가 스캔되었습니다",
+        "all_indexes_scanned_hint": "통계가 초기화된 이후 이 선택 범위에서 사용되지 않은 인덱스가 없습니다.",
+        "all_statements": "전체 구문",
+        "avg_ms": "평균 {ms} ms",
+        "avg_ms_col": "평균 (ms)",
+        "avg_time": "평균 시간",
+        "back_to_overview": "개요로 돌아가기",
+        "background_jobs": "백그라운드 작업",
+        "blocks_hit": "블록 히트",
+        "blocks_read": "블록 읽기",
+        "buffer_statistics": "버퍼 통계",
+        "by_state": "상태별",
+        "cache_hit": "캐시 히트",
+        "cache_hit_pct": "캐시 히트 %",
+        "cache_hit_ratio": "캐시 히트율",
+        "calls_count": "{count}회 호출 | {count}회 호출",
+        "conflicts": "충돌",
+        "copy_name": "이름 복사",
+        "copy_query": "쿼리 복사",
+        "copy_statement": "{sql} 복사",
+        "count": "개수",
+        "current_locks": "현재 잠금",
+        "database_statistics": "데이터베이스 통계",
+        "dead_pct": "데드 %",
+        "dead_pct_tip": "테이블의 전체 행 중 데드 행이 차지하는 비율입니다. 데드 행이 10,000개를 넘으면 표시됩니다.",
+        "dead_share": "행의 {pct}%가 데드 · 약 {size}",
+        "dead_tuple_size": "데드 튜플 크기",
+        "dead_tuples": "데드 튜플",
+        "deadlocks_tip": "통계가 마지막으로 초기화된 이후의 횟수입니다.",
+        "deletes": "삭제",
+        "every_seconds": "{seconds}s마다",
+        "every_table": "전체 테이블",
+        "every_table_hint": "크기, 블로트, 캐시를 한곳에서 확인하세요. 행을 클릭하면 열립니다.",
+        "execution_plan": "실행 계획",
+        "execution_times": "실행 시간 (ms)",
+        "fetched": "가져옴",
+        "filter_query_text": "쿼리 텍스트로 필터",
+        "find_schema": "스키마 찾기",
+        "find_table": "테이블 또는 인덱스 찾기",
+        "heap_hits": "힙 히트",
+        "heap_reads": "힙 읽기",
+        "heap_reads_count": "힙 읽기 {count}회",
+        "held_none_waiting": "{count}개 보유, 대기 없음 | {count}개 보유, 대기 없음",
+        "hot_count": "{count} HOT",
+        "hot_updates": "HOT 업데이트",
+        "hot_updates_tip": "인덱스를 전혀 건드리지 않아도 된 업데이트입니다.",
+        "hypertable_name": "하이퍼테이블 이름",
+        "hypertable_note": "행은 {schema} 아래의 청크에 저장되므로 이 부모 테이블 자체에는 행이 표시되지 않습니다.",
+        "hypertable_tag": "하이퍼테이블",
+        "idle_in_txn": "트랜잭션 내 유휴",
+        "idle_in_txn_tip": "아무 작업 없이 트랜잭션을 열어 둔 상태입니다. VACUUM의 정리 작업을 막고 잠금을 계속 보유할 수 있습니다.",
+        "idx_scans": "인덱스 스캔",
+        "idx_scans_fetched": "인덱스 스캔 (가져온 튜플)",
+        "idx_tup_fetch": "가져온 인덱스 튜플",
+        "in_indexes": "인덱스 {size}",
+        "index_hits": "인덱스 히트",
+        "index_io": "인덱스 I/O",
+        "index_reads": "인덱스 읽기",
+        "index_scans": "인덱스 스캔",
+        "index_scans_tip": "테이블 전체를 읽는 대신 인덱스를 사용한 스캔의 비율입니다.",
+        "index_size": "인덱스 크기",
+        "index_usage": "인덱스 사용량",
+        "indexes": "인덱스",
+        "indexes_hint": "사용량과 캐시 히트를 함께 표시",
+        "inserts": "삽입",
+        "io": "I/O",
+        "io_buffers": "I/O 및 버퍼",
+        "job_id": "작업 ID",
+        "job_type": "작업 유형",
+        "last_analyze": "마지막 ANALYZE",
+        "last_autoanalyze": "마지막 자동 ANALYZE",
+        "last_autovacuum": "마지막 자동 VACUUM",
+        "last_run_status": "마지막 실행",
+        "last_vacuum": "마지막 VACUUM",
+        "live": "라이브",
+        "live_tuples": "라이브 튜플",
+        "local": "로컬",
+        "local_blocks_hit": "로컬 블록 히트",
+        "local_blocks_read": "로컬 블록 읽기",
+        "lock_type": "잠금 유형",
+        "locks_on_table": "이 테이블의 잠금",
+        "locks_transactions": "잠금 및 트랜잭션",
+        "maintenance": "유지보수",
+        "max_ms_col": "최대 (ms)",
+        "max_ms_paren": "(최대 {ms})",
+        "max_time": "최대 시간",
+        "max_value": "최대 {ms}",
+        "min_calls": "최소 호출 수",
+        "min_value": "최소 {ms}",
+        "n_failed": "{count}개 실패",
+        "n_of_m_statements": "구문 {m}개 중 {n}개",
+        "n_waiting": "{count}개 대기 중",
+        "name_copied": "테이블 이름이 복사되었습니다",
+        "needs_attention": "조치 필요",
+        "never_scanned": "스캔된 적 없음",
+        "next_start": "다음 실행",
+        "no_active_hint": "모든 연결이 유휴 상태입니다.",
+        "no_backups_hint": "첫 예약 실행 후 백업이 여기에 표시됩니다.",
+        "no_backups_title": "데이터베이스 백업 없음",
+        "no_connections_hint": "이 데이터베이스에 연결된 것이 없습니다.",
+        "no_indexes": "인덱스 없음",
+        "no_indexes_hint": "이 테이블에는 인덱스가 없어 모든 읽기가 테이블 전체를 스캔합니다.",
+        "no_indexes_hyper": "하이퍼테이블의 인덱스는 각 청크에 있습니다.",
+        "no_jobs_hint": "TimescaleDB에 예약된 작업이 없습니다.",
+        "no_jobs_title": "백그라운드 작업 없음",
+        "no_locks_hint": "현재 보유 중인 잠금이 없습니다.",
+        "no_locks_on_table": "현재 이 테이블에 보유 중인 잠금이 없습니다.",
+        "no_plan": "이 쿼리의 실행 계획을 생성할 수 없습니다.",
+        "no_reads_hint": "선택한 스키마에 기록된 읽기가 없습니다.",
+        "no_schemas": "스키마 없음",
+        "no_schemas_hint": "테이블을 보려면 스키마를 하나 이상 선택하세요.",
+        "no_schemas_title": "선택된 스키마 없음",
+        "no_slow_hint": "통계가 초기화된 이후 평균 또는 최대 실행 시간이 {threshold} 초과인 항목이 없습니다.",
+        "no_slow_title": "느린 구문 없음",
+        "no_statements_for_table": "이 테이블 이름이 포함된 기록된 구문이 없습니다.",
+        "no_statements_match": "일치하는 구문 없음",
+        "no_statements_match_hint": "{min}회 이상 호출된 항목 중 필터와 일치하는 것이 없습니다.",
+        "no_statements_yet": "pg_stat_statements에 아직 기록된 내용이 없습니다.",
+        "no_stats_hint": "pg_stat_statements는 앱이 쿼리를 실행하면서 채워지며, 통계가 초기화되면 비워집니다.",
+        "no_table_matches": "“{find}”에 일치하는 테이블 또는 인덱스가 없습니다.",
+        "no_tables_hint": "선택한 스키마에 테이블이 없습니다.",
+        "no_tables_title": "테이블 없음",
+        "no_timescale_title": "TimescaleDB 데이터 없음",
+        "nothing_matches": "이 선택 범위에서 일치하는 항목이 없습니다.",
+        "objects": "데이터베이스 객체",
+        "off": "꺼짐",
+        "on": "켜짐",
+        "on_disk": "디스크 {size}",
+        "open_connections": "열린 연결",
+        "over_threshold": "{threshold} 초과",
+        "overview": "개요",
+        "overview_hint": "PostgreSQL 데이터베이스 · 마지막 통계 초기화 이후 카운터",
+        "pause_refreshing": "새로고침 일시정지",
+        "pct_of_table": "테이블 대비 %",
+        "pid_actions": "pid {pid} 작업",
+        "query_details": "쿼리 상세 정보",
+        "query_not_found": "쿼리 상세 정보를 찾을 수 없습니다",
+        "query_performance": "쿼리 성능",
+        "range_hint": "로그 스케일 · 띠는 평균 ± 표준편차",
+        "reclaimable": "회수 가능",
+        "reclaimable_tip": "데드 튜플로부터 추정한 값입니다. VACUUM은 이 공간을 재사용 가능하게 만들며, 디스크에 반환하는 것은 VACUUM FULL 또는 pg_repack뿐입니다.",
+        "refresh_every": "새로고침 간격",
+        "resume_refreshing": "새로고침 재개",
+        "rollbacks_count": "롤백 {count}회",
+        "running_now": "실행 중",
+        "scans": "스캔",
+        "schema_count": "스키마 {count}개 | 스키마 {count}개",
+        "search_indexes": "인덱스 검색",
+        "seq_scans": "순차 스캔",
+        "seq_scans_read": "순차 스캔 (읽은 튜플)",
+        "seq_tup_read": "순차 읽기 튜플",
+        "sequential_count": "순차 {count}회",
+        "server": "서버",
+        "share_of_time": "시간 비중",
+        "share_of_time_tip": "나열된 모든 구문의 총 실행 시간 중 이 구문이 차지하는 비율입니다.",
+        "shared_blocks_hit": "공유 블록 히트",
+        "shared_blocks_read": "공유 블록 읽기",
+        "size": "크기",
+        "size_on_disk": "디스크 크기",
+        "slow_avg": "구문 {count}개의 평균이 {threshold} 초과 | 구문 {count}개의 평균이 {threshold} 초과",
+        "slow_avg_none": "평균이 {threshold} 초과인 구문이 없습니다",
+        "slow_max": "{count}개가 한 번 이상 {threshold} 초과 | {count}개가 한 번 이상 {threshold} 초과",
+        "slow_over": "느림 기준",
+        "slow_running_many": "쿼리 {count}개가 {threshold} 넘게 실행 중, 최장 {duration}",
+        "slow_running_one": "쿼리 1개가 {duration} 동안 실행 중",
+        "slow_threshold": "느린 쿼리 임계값",
+        "started": "시작",
+        "statement_copied": "구문이 클립보드에 복사되었습니다",
+        "statements_to_run": "직접 실행할 구문",
+        "statements_touching": "이 테이블과 관련된 구문",
+        "statements_touching_hint": "pg_stat_statements에서 테이블 이름으로 매칭했습니다. {threshold} 초과 항목이 먼저 표시됩니다.",
+        "statistics": "통계",
+        "std_dev": "표준편차",
+        "table_and_indexes": "테이블 {table} · 인덱스 {indexes}",
+        "table_io": "테이블 I/O",
+        "table_maintenance": "테이블 유지보수",
+        "table_not_found": "테이블을 찾을 수 없습니다",
+        "table_not_found_hint": "삭제되었거나 해당 스키마가 선택되지 않았을 수 있습니다.",
+        "table_size": "테이블 크기",
+        "table_storage": "테이블 스토리지",
+        "temp_blocks": "임시 블록",
+        "temp_blocks_tip": "정렬이나 해시에 work_mem이 부족해 디스크로 넘친 블록입니다.",
+        "temp_blocks_written": "기록된 임시 블록",
+        "terminate_warning": "종료하면 세션이 끝나고 해당 트랜잭션이 롤백됩니다.",
+        "total_chunks": "전체 청크",
+        "total_rows": "총 행 수",
+        "total_size": "전체 크기",
+        "total_time": "총 시간",
+        "tuples_deleted": "삭제된 튜플",
+        "tuples_fetched": "가져온 튜플",
+        "tuples_inserted": "삽입된 튜플",
+        "tuples_read": "읽은 튜플",
+        "tuples_returned": "반환된 튜플",
+        "tuples_updated": "업데이트된 튜플",
+        "updates": "업데이트",
+        "view_all_slow": "느린 쿼리 모두 보기",
+        "wait_event": "대기 이벤트",
+        "wait_event_type": "대기 이벤트 유형",
+        "waiting_on_lock": "잠금 대기 중",
+        "waiting_tip": "잠금을 기다리는 세션입니다.",
+        "worth_a_look": "확인 권장",
+        "zero_unused": "0 · 미사용"
       }
     },
     "events": {
@@ -5327,6 +6383,54 @@
         "tournaments_hint": "토너먼트 대진의 일부로 치르는 경기로, 랭크 여부는 상관없습니다.",
         "custom": "커스텀 경기",
         "custom_hint": "그 밖의 모든 것: 어디에도 반영되지 않는 경기입니다."
+      },
+      "store": {
+        "open_aria": "{name} 열기",
+        "verified_hint": "레지스트리 관리자가 검증함",
+        "custom_hint": "여기에서 추가되었습니다. 아무도 검토하지 않았습니다.",
+        "guidelines_hint": "이 플러그인을 불러오는 서버는 Valve 서버 가이드라인이 꺼진 상태로 시작합니다.",
+        "on_panel": "패널에 설치됨",
+        "panel_host": "패널 호스트에 배포됨",
+        "set_up": "설정",
+        "no_build": "{runtime} 빌드 없음",
+        "only": "{runtimes} 전용",
+        "add_node": "설치하려면 게임 서버 노드를 추가하세요",
+        "found_on_disk": "디스크에서 발견됨",
+        "found_on_disk_hint": "수동으로 넣은 플러그인입니다. 모드와 상관없이 모든 서버에서 불러옵니다.",
+        "manage_here": "여기에서 관리",
+        "install_title": "{name} {version} 설치",
+        "failed_on": "{node}에서 실패",
+        "failed_on_nodes": "노드 {count}개에서 실패 | 노드 {count}개에서 실패",
+        "install_failed": "설치 실패",
+        "installing_on": "노드 {total}개 중 {installed}개에 설치 중",
+        "waiting_nodes": "온라인 노드를 기다리는 중",
+        "pinned_at": "{version}에 고정됨",
+        "update_to": "{version}(으)로 업데이트",
+        "filter_kind": "종류",
+        "filter_review": "검토",
+        "verified_only": "검증된 항목만",
+        "runtime": "런타임",
+        "needs_attention": "확인 필요",
+        "empty_installed_title": "아직 설치된 항목이 없습니다",
+        "empty_installed_hint": "전체에서 플러그인을 설치하면 모든 노드가 가져갑니다.",
+        "empty_title": "일치하는 플러그인이 없습니다",
+        "installing_toast": "모든 온라인 노드에 {name} 설치 중",
+        "retry_toast": "실패한 노드에서 {name} 다시 시도 중",
+        "update_toast": "노드가 {version}을(를) 설치하고 있습니다. 해당 버전에 고정된 상태로 유지됩니다."
+      },
+      "detail": {
+        "kind_game": "게임 서버 플러그인",
+        "kind_panel": "패널 플러그인",
+        "kind_bundle": "게임 서버 및 패널 번들",
+        "copy_command": "명령어 복사",
+        "copied": "명령어를 복사했습니다",
+        "manual_on": "{nodes}에 있으며 5Stack이 관리하지 않음",
+        "latest_for": "{runtime}용 최신 {version}",
+        "node_offline": "오프라인",
+        "node_not_accepting": "매치를 받지 않음",
+        "rollout_settings": "배포 설정",
+        "running": "실행 중",
+        "this_deployment": "이 배포"
       }
     },
     "awards": {
@@ -5348,11 +6452,10 @@
       "delete": "Delete",
       "built_in_hint": "Required by tournament automation; cannot be deleted",
       "no_awards_title": "No awards yet",
-      "search_placeholder": "Search awards",
+      "search_placeholder": "어워드 검색",
       "all_tiers": "All",
       "no_matches_title": "No matching awards",
       "no_matches": "No award matches the current filters.",
-      "clear_filters": "Clear filters",
       "scope_global": "General",
       "scope_tournament": "Tournament",
       "scope_event": "Event",
@@ -5368,7 +6471,66 @@
       "group_custom_tournament_awards": "커스텀 토너먼트 어워드",
       "group_custom_event_awards": "커스텀 이벤트 어워드",
       "group_custom_season_awards": "커스텀 시즌 어워드",
-      "group_custom_league_awards": "커스텀 리그 어워드"
+      "group_custom_league_awards": "커스텀 리그 어워드",
+      "already_holds": "{name}님은 이미 {award}을(를) 보유하고 있으며, 중복 수여가 허용되지 않습니다.",
+      "automation_season": "시즌 자동 수여",
+      "automation_tournament": "토너먼트 자동 수여",
+      "builtin_cant_delete": "기본 제공 어워드는 삭제할 수 없습니다",
+      "builtin_note": "기본 제공. 토너먼트와 시즌 자동 처리가 수여하므로 편집은 가능하지만 삭제할 수는 없습니다.",
+      "col_award": "어워드",
+      "col_earned_at": "획득처",
+      "col_holder": "보유자",
+      "col_holders": "보유자",
+      "days_ago": "{count}일 전",
+      "delete_award": "어워드 삭제",
+      "delete_body": "수여 {count}건도 함께 삭제되며, 보유자의 영예에서 사라집니다. 되돌릴 수 없습니다. | 수여 {count}건도 함께 삭제되며, 모든 보유자의 영예에서 사라집니다. 되돌릴 수 없습니다.",
+      "delete_body_none": "아직 보유자가 없습니다. 되돌릴 수 없습니다.",
+      "delete_hint": "모든 수여와 함께 모든 보유자의 영예에서 제거합니다.",
+      "delete_title": "{name}을(를) 삭제할까요?",
+      "deleted_toast": "{name} 삭제됨",
+      "edit_award": "어워드 편집",
+      "facet_belongs_to": "소속",
+      "filter_label": "어워드 필터",
+      "grant_only_hint": "어워드를 수여할 수 있습니다. 생성과 편집에는 어워드 관리자 역할이 필요합니다.",
+      "grant_short": "수여",
+      "granted_toast": "{name}님에게 {award} 수여됨",
+      "kind_custom": "사용자 지정",
+      "more_for": "{name} 더보기",
+      "once_per_holder": "보유자당 1회",
+      "open_holders": "보유자 열기",
+      "owner_deleted": "소유자 삭제됨",
+      "owner_ended": "{date} 종료",
+      "owner_finished": "{date} 종료",
+      "owner_kind": {
+        "global": "일반",
+        "tournament": "토너먼트",
+        "event": "이벤트",
+        "league": "리그 시즌",
+        "season": "시즌"
+      },
+      "owner_live": "지금 라이브",
+      "owner_running": "진행 중",
+      "owner_starts": "{date} 시작",
+      "owner_upcoming": "예정",
+      "repeatable": "반복 수여 가능",
+      "revoke_from": "{name}에게서 회수",
+      "show_more": "더 보기",
+      "sort_last_granted": "최근 수여",
+      "status": {
+        "recent": "최근 90일 내 수여",
+        "never": "수여된 적 없음",
+        "open": "소유자 진행 중 또는 예정",
+        "finished": "소유자 종료"
+      },
+      "team_count": "{count}개 팀 | {count}개 팀",
+      "tiers": {
+        "mvp": "MVP",
+        "gold": "골드",
+        "silver": "실버",
+        "bronze": "브론즈",
+        "special": "스페셜"
+      },
+      "today": "오늘"
     },
     "award_detail": {
       "not_found_title": "수상 항목을 찾을 수 없습니다",
@@ -5412,10 +6574,29 @@
         "cameraTalkback": "카메라 토크백"
       },
       "resources": "리소스 사용량",
-      "cpu": "CPU",
-      "memory": "메모리",
-      "no_resources": "미디어 서버의 파드 지표가 아직 없습니다. 클러스터의 메트릭 서버가 수집하지 않고 있을 수 있습니다.",
-      "legend": "경로란 이름이 붙은 스트림 슬롯 하나로, 한 사람의 마이크 또는 카메라 하나에 해당합니다. 「송출 중」은 지금 실제로 미디어를 보내고 있는 것을 셉니다. 누군가 참여한 뒤 영상이 올라오기 전까지 경로는 비어 있을 수 있습니다. 세션은 WebRTC 연결이며 방송 시청자 한 명이 하나씩 차지하므로 다른 수치보다 빠르게 늘어납니다."
+      "legend": "경로란 이름이 붙은 스트림 슬롯 하나로, 한 사람의 마이크 또는 카메라 하나에 해당합니다. 「송출 중」은 지금 실제로 미디어를 보내고 있는 것을 셉니다. 누군가 참여한 뒤 영상이 올라오기 전까지 경로는 비어 있을 수 있습니다. 세션은 WebRTC 연결이며 방송 시청자 한 명이 하나씩 차지하므로 다른 수치보다 빠르게 늘어납니다.",
+      "logs_button": "mediamtx 로그",
+      "tip_publishing": "지금 실제로 미디어를 보내고 있는 경로입니다. 누군가 참여한 뒤 피드가 올라오기 전까지 경로가 대기 상태일 수 있습니다.",
+      "tip_paths": "경로는 이름이 붙은 스트림 슬롯 하나입니다. 한 사람의 마이크나 카메라 한 대에 해당합니다.",
+      "tip_sessions": "WebRTC 연결입니다. 스트림 시청자 한 명마다 하나씩이라 다른 값보다 빠르게 늘어납니다.",
+      "of_paths": "/ 경로 {count}개 | / 경로 {count}개",
+      "unknown_while_unreachable": "연결 불가 동안 알 수 없음",
+      "how_to_read": "이 숫자를 읽는 방법",
+      "by_feature": "기능별",
+      "kinds_unknown": "미디어 서버가 다시 응답할 때까지 기능별 수치는 알 수 없습니다.",
+      "idle_title": "지금 송출 중인 것이 없습니다",
+      "idle_hint": "경기 스트림, 선수 카메라, 음성 로비가 시작되면 여기에 행이 표시됩니다.",
+      "received": "수신량",
+      "received_hint": "지금 열려 있는 경로에서 받은 바이트로, 각 경로가 열린 시점부터 셉니다. 닫힌 경로의 바이트는 함께 빠집니다.",
+      "share_received": "수신량 비중",
+      "not_in_use": "현재 사용하지 않음: {kinds}",
+      "resources_hint": "mediamtx 파드 · 30초마다 확인",
+      "cores_now": "코어 {cores}개 사용 중",
+      "status_reachable": "연결 가능",
+      "status_unreachable_since": "{time}부터 연결 불가",
+      "kinds_unknown_title": "기능별 수치를 알 수 없음",
+      "no_resources_title": "아직 파드 메트릭이 없습니다",
+      "no_resources_hint": "클러스터의 메트릭 서버가 mediamtx 파드를 수집하지 않고 있을 수 있습니다."
     },
     "utility": {
       "eyebrow": "유틸리티 라이브러리",
@@ -6396,8 +7577,8 @@
           "map_filter": "맵으로 필터",
           "render_missing": "없는 미리보기 렌더링 ({total})",
           "rerender_outdated": "구버전 다시 렌더링 ({total})",
-          "pipeline_behind": "렌더 파드가 이 API보다 뒤처져 있습니다",
-          "pipeline_behind_hint": "사용 중인 렌더 파드는 버전 {pipeline}(으)로 촬영하며, 이 API가 기대하는 버전 {version}보다 오래되었습니다. game-server와 game-streamer 이미지를 업데이트하기 전에는 다시 렌더링해도 미리보기가 최신이 되지 않습니다.",
+          "pipeline_behind": "마지막 렌더링이 이전 버전을 사용했습니다",
+          "pipeline_behind_hint": "마지막으로 완료된 렌더링은 버전 {pipeline}(으)로 촬영되었지만 이 API는 버전 {version}을(를) 기대합니다. 렌더 포드는 시작할 때 최신 이미지를 받으므로 먼저 라인업 하나를 렌더링하세요. 버전 {version}(으)로 완료되면 오래된 항목 다시 렌더링이 열립니다.",
           "load_failed": "미리보기 현황을 불러오지 못했습니다",
           "confirm_missing_title": "없는 미리보기를 렌더링할까요?",
           "confirm_missing": "미리보기가 없는 라인업 {count}개의 렌더링을 대기열에 추가합니다. | 미리보기가 없는 라인업 {count}개의 렌더링을 대기열에 추가합니다.",
@@ -6527,6 +7708,249 @@
         "recent": "최근 검색",
         "recent_counts": "{predicted}개 중 {verified}개 성공"
       }
+    },
+    "control_room": {
+      "on_air": "송출 중",
+      "off_air_hint": "진행 중인 방송이 없습니다. 라이브 경기를 선택해 방송을 시작하세요.",
+      "starting": "시작 중",
+      "program": "프로그램",
+      "preview": "미리보기",
+      "take": "송출",
+      "take_pick": "송출할 미리보기를 선택하세요.",
+      "take_already": "{match} 경기는 이미 송출 중입니다.",
+      "take_go_live": "{match} 라이브 송출",
+      "take_switch": "{match}(으)로 전환",
+      "take_more": "다른 시작 방법",
+      "take_start_hint": "빈 GPU를 사용해 Pod를 시작합니다. 약 1분 걸립니다.",
+      "take_switch_hint": "실행 중인 Pod를 재사용합니다. 몇 초 안에 화면이 전환됩니다.",
+      "go_live": "라이브 송출",
+      "start_tv": "TV로 시작 (지연)",
+      "tv_delayed": "TV (지연)",
+      "tv_delay": "TV 지연",
+      "full_deck": "전체 데크",
+      "open_focus_window": "포커스 창 열기",
+      "ready": "준비됨",
+      "not_ready": "준비 안 됨",
+      "you_are_playing": "이 경기에 참가 중입니다",
+      "no_live_matches_hint": "경기가 라이브가 되면 여기에 미리보기 모니터가 나타납니다.",
+      "started_live": "{match} 라이브 스트림을 시작합니다. Pod는 1~2분 안에 부팅됩니다.",
+      "started_tv": "{match} 지연 TV 스트림을 시작합니다. Pod는 1~2분 안에 부팅됩니다.",
+      "stopped": "방송을 중지했습니다. GPU가 비었습니다.",
+      "capacity": "스트림 {n}/{max} | 스트림 {n}/{max}",
+      "gpu": {
+        "none": "GPU 노드 없음",
+        "busy": "빈 GPU 없음 · {total}개 중 {busy}개 사용 중",
+        "free": "GPU {total}개 중 {free}개 사용 가능 | GPU {total}개 중 {free}개 사용 가능",
+        "hint": "GPU 풀. GPU 노드 페이지를 엽니다."
+      },
+      "status": {
+        "veto": "밴픽",
+        "spinning_up": "서버 시작 중",
+        "check_in": "체크인"
+      },
+      "reasons": {
+        "veto": "맵 밴픽이 진행 중입니다. 경기가 라이브가 될 때까지 기다리세요.",
+        "waiting_for_server": "서버를 시작하는 중입니다. 경기가 라이브가 될 때까지 기다리세요.",
+        "check_in": "선수들이 체크인 중입니다. 경기가 라이브가 될 때까지 기다리세요.",
+        "not_live": "경기가 라이브가 될 때까지 기다리세요.",
+        "no_server": "이 경기에 배정된 서버가 없습니다.",
+        "server_offline": "서버가 오프라인입니다. 다시 온라인이 되기를 기다리는 중입니다.",
+        "no_gpu_nodes": "등록된 GPU 노드가 없습니다.",
+        "no_free_gpu": "빈 GPU가 없습니다.",
+        "at_capacity": "최대 용량입니다. 방송을 중지하거나 이 경기로 전환하세요."
+      },
+      "deck": {
+        "sheet_description": "방송 컨트롤. 포커스 창과 같은 데크입니다.",
+        "not_on_air": "송출 중 아님",
+        "not_on_air_hint": "이 경기는 진행 중인 방송이 없습니다. 컨트롤 룸에서 시작하세요.",
+        "keys_on": "여기서 1–0, ← →, Space, Tab 키를 사용할 수 있습니다",
+        "keys_off": "키보드를 쓰려면 데크를 클릭하세요",
+        "match_page": "경기 페이지",
+        "paused": "전체 데크에 표시 중",
+        "paused_hint": "데크가 열려 있는 동안 이곳의 미리보기는 일시 정지됩니다."
+      },
+      "stop": {
+        "title": "방송을 중지할까요?",
+        "description": "Pod가 종료되고 {match} 스트림이 모든 시청자에게서 끝납니다. GPU는 풀로 돌아갑니다.",
+        "keep": "계속 송출",
+        "confirm": "방송 중지"
+      }
+    },
+    "system_alerts": {
+      "alert": "알림",
+      "now": "지금",
+      "create": "알림 만들기",
+      "empty": "아직 알림이 없습니다",
+      "hint": "알림을 클릭해 편집하세요.",
+      "new_alert": "새 알림",
+      "edit_alert": "알림 편집",
+      "new_hint": "만드는 즉시 방문자가 모든 페이지에서 볼 수 있습니다.",
+      "created_at": "{time} 생성",
+      "showing": "표시 중",
+      "showing_named": "표시 중: {name}",
+      "turn_off": "끄기",
+      "show_now": "지금 표시",
+      "locked": "방문자가 이 배너를 닫을 수 없습니다",
+      "can_close": "방문자가 닫을 수 있음",
+      "ends": "종료",
+      "ends_at": "{time} 종료",
+      "no_end": "종료 없음",
+      "older": "이보다 오래된 알림은 이 기간에 없습니다.",
+      "show_quarter": "최근 3개월 보기",
+      "show_older": "이전 알림 보기",
+      "preview_caption": "모든 페이지 상단",
+      "delete": "알림 삭제",
+      "delete_hint": "영구적으로 삭제합니다.",
+      "range": {
+        "day": "최근 1일",
+        "week": "최근 1주",
+        "month": "최근 1개월",
+        "quarter": "최근 3개월"
+      },
+      "summary": {
+        "showing": "모든 페이지에 배너 {count}개 표시 중 | 모든 페이지에 배너 {count}개 표시 중",
+        "locked": "{count}개는 닫을 수 없음 | {count}개는 닫을 수 없음",
+        "none": "표시 중인 배너가 없습니다"
+      },
+      "lane": {
+        "draft": "초안 · 아직 만들지 않음",
+        "unsaved": "저장하지 않은 변경 사항",
+        "showing_ends": "표시 중 · {time} 종료",
+        "showing_no_end": "표시 중 · 종료 없음",
+        "expired": "{time} 만료",
+        "turned_off": "{time} 꺼짐",
+        "off_created": "꺼짐 · {time} 생성"
+      },
+      "tip": {
+        "created": "{time} 생성",
+        "up_since": "{time}부터 표시 중",
+        "ends": "{time} 종료",
+        "until_off": "끌 때까지",
+        "ended": "{time} 종료됨",
+        "turned_off": "{time} 꺼짐",
+        "off_now": "현재 꺼짐",
+        "draft": "만드는 즉시 표시됩니다"
+      },
+      "sections": {
+        "message": "메시지",
+        "display": "표시",
+        "schedule": "일정"
+      },
+      "chips": {
+        "none": "종료 없음",
+        "hour": "1시간",
+        "six_hours": "6시간",
+        "day": "24시간",
+        "three_days": "3일"
+      },
+      "schedule": {
+        "no_end": "종료 시간이 없습니다. 끌 때까지 계속 표시됩니다.",
+        "ends": "{time} 종료 ({relative})",
+        "ended": "{time} 종료됨 ({relative})"
+      },
+      "toast": {
+        "turned_off": "‘{name}’ 끔",
+        "showing_ends": "‘{name}’ 표시 중 · {time} 종료",
+        "showing_no_end": "‘{name}’ 표시 중 · 종료 없음",
+        "change_end": "종료 시간 변경",
+        "restored": "‘{name}’ 복원함",
+        "created_showing": "알림을 만들었습니다. 지금 표시 중입니다.",
+        "created_off": "알림을 만들었습니다. 켤 때까지 꺼져 있습니다.",
+        "expired": "‘{name}’ 알림이 만료되어 배너에서 사라졌습니다"
+      }
+    },
+    "admin_home": {
+      "title": "개요",
+      "need_you": "{count}개 항목에 조치가 필요합니다 | {count}개 항목에 조치가 필요합니다",
+      "all_clear": "모두 정상",
+      "all_clear_line": "지금은 조치가 필요한 항목이 없습니다.",
+      "live_hint": "대부분의 영역은 변경되는 즉시 업데이트됩니다. 메트릭은 30초마다, 데이터베이스는 1분마다 새로 고칩니다.",
+      "everything_else": "기타 전체",
+      "open": "열기",
+      "open_area": "{area} 열기",
+      "add_steam_account": "Steam 계정 추가",
+      "more": "외 {count}개 | 외 {count}개",
+      "card": {
+        "no_problems": "문제 없음",
+        "checking": "확인 중…",
+        "none": "아직 없음",
+        "no_online": "온라인 노드 없음",
+        "season_starts": "시즌 {number} 시작까지 {count}일 | 시즌 {number} 시작까지 {count}일",
+        "of_online": "/ {total} 온라인",
+        "servers_free": "서버 {capacity}대 중 {free}대 사용 가능",
+        "of_connected": "/ {total} 연결됨",
+        "offline": "{count}대 오프라인 | {count}대 오프라인",
+        "of_free": "/ {total} 사용 가능",
+        "accounts_free": "Steam 계정 {total}개 중 {free}개 사용 가능",
+        "in_flight": "진행 중",
+        "previews_current": "미리보기 {total}개 중 {current}개 최신",
+        "of_within": "/ {total} 한도 내",
+        "slow_statements": "개의 느린 쿼리 | 개의 느린 쿼리",
+        "threshold": "{threshold} 초과 시 느림",
+        "banners_showing": "개의 배너 표시 중 | 개의 배너 표시 중",
+        "installed": "개 설치됨",
+        "updates": "업데이트 {count}개 있음 | 업데이트 {count}개 있음",
+        "up_to_date": "모두 최신",
+        "all_set_up": "모두 설정됨"
+      },
+      "signal": {
+        "nodes": {
+          "offline": "노드 {count}개가 오프라인입니다 | 노드 {count}개가 오프라인입니다",
+          "cs2_failed": "노드 {count}개에서 CS2 업데이트 실패 | 노드 {count}개에서 CS2 업데이트 실패",
+          "overprovisioned": "노드 {count}개가 CPU 허용량보다 많은 서버를 실행 중입니다 | 노드 {count}개가 CPU 허용량보다 많은 서버를 실행 중입니다",
+          "plugin_unsupported": "노드 {count}개의 고정된 플러그인이 해당 CS2 빌드를 지원하지 않습니다 | 노드 {count}개의 고정된 플러그인이 해당 CS2 빌드를 지원하지 않습니다",
+          "disk_full": "노드 {count}개의 디스크가 거의 가득 찼습니다 | 노드 {count}개의 디스크가 거의 가득 찼습니다",
+          "cpu_governor": "노드 {count}개가 performance CPU 거버너를 사용하지 않습니다 | 노드 {count}개가 performance CPU 거버너를 사용하지 않습니다",
+          "not_ready_region": "노드 {count}개가 경기를 호스팅할 수 없습니다: 지역 없음 | 노드 {count}개가 경기를 호스팅할 수 없습니다: 지역 없음",
+          "not_ready_ports": "노드 {count}개가 경기를 호스팅할 수 없습니다: 포트 범위 없음 | 노드 {count}개가 경기를 호스팅할 수 없습니다: 포트 범위 없음",
+          "not_ready_cs2": "노드 {count}개가 경기를 호스팅할 수 없습니다: CS2 미설치 | 노드 {count}개가 경기를 호스팅할 수 없습니다: CS2 미설치",
+          "cs2_behind": "노드 {count}개에 CS2 업데이트가 있습니다 | 노드 {count}개에 CS2 업데이트가 있습니다",
+          "disk_filling": "노드 {count}개의 디스크가 차오르고 있습니다 | 노드 {count}개의 디스크가 차오르고 있습니다",
+          "cpu_slow": "노드 {count}개의 CPU가 3 GHz 미만으로 동작합니다 | 노드 {count}개의 CPU가 3 GHz 미만으로 동작합니다",
+          "cpu_warning": "노드 {count}개가 CPU 경고를 보고했습니다 | 노드 {count}개가 CPU 경고를 보고했습니다"
+        },
+        "gpus": {
+          "pool_empty": "Steam 계정이 없습니다: GPU가 렌더링, 데모 재생, 스트리밍을 할 수 없습니다",
+          "pool_short": "Steam 풀에 GPU당 1개를 채우려면 계정 {count}개가 부족합니다 | Steam 풀에 GPU당 1개를 채우려면 계정 {count}개가 부족합니다",
+          "offline": "GPU {count}개가 오프라인입니다 | GPU {count}개가 오프라인입니다",
+          "bake_failed": "GPU {count}개에서 셰이더 베이크 실패 | GPU {count}개에서 셰이더 베이크 실패",
+          "renders_stuck": "렌더 {count}개가 대기 중이지만 렌더를 받는 GPU가 없습니다 | 렌더 {count}개가 대기 중이지만 렌더를 받는 GPU가 없습니다"
+        },
+        "metrics": {
+          "cpu": "노드 {count}개의 CPU가 {threshold}%를 넘었습니다 | 노드 {count}개의 CPU가 {threshold}%를 넘었습니다",
+          "memory": "노드 {count}개의 메모리가 {threshold}%를 넘었습니다 | 노드 {count}개의 메모리가 {threshold}%를 넘었습니다",
+          "disk": "노드 {count}개의 디스크가 {threshold}%를 넘었습니다 | 노드 {count}개의 디스크가 {threshold}%를 넘었습니다",
+          "gpu_util": "GPU {count}개가 5분 동안 {threshold}% 넘게 사용 중입니다 | GPU {count}개가 5분 동안 {threshold}% 넘게 사용 중입니다",
+          "gpu_vram": "GPU {count}개의 VRAM이 {threshold}%를 넘었습니다 | GPU {count}개의 VRAM이 {threshold}%를 넘었습니다",
+          "gpu_temp": "GPU {count}개가 {threshold} °C 이상입니다 | GPU {count}개가 {threshold} °C 이상입니다"
+        },
+        "seasons": {
+          "rebuild": "시즌 {number}의 ELO를 다시 계산해야 합니다"
+        },
+        "renders": {
+          "failed": "지난 하루 동안 렌더 {count}개가 실패했습니다 | 지난 하루 동안 렌더 {count}개가 실패했습니다",
+          "behind": "렌더 파이프라인이 뒤처져 있습니다: v{pipeline}로 촬영 중이며 API는 v{version}을 기대합니다",
+          "missing": "라인업 {count}개에 미리보기가 없습니다 | 라인업 {count}개에 미리보기가 없습니다",
+          "outdated": "라인업 미리보기 {count}개가 오래되었습니다 | 라인업 미리보기 {count}개가 오래되었습니다"
+        },
+        "database": {
+          "locks": "세션 {count}개가 잠금을 기다리고 있습니다 | 세션 {count}개가 잠금을 기다리고 있습니다",
+          "running": "쿼리 {count}개가 {threshold} 넘게 실행 중입니다 | 쿼리 {count}개가 {threshold} 넘게 실행 중입니다",
+          "slow": "쿼리 {count}개의 평균이 {threshold}를 넘었습니다 | 쿼리 {count}개의 평균이 {threshold}를 넘었습니다"
+        },
+        "plugins": {
+          "failed": "플러그인 {count}개의 배포에 실패했습니다 | 플러그인 {count}개의 배포에 실패했습니다",
+          "update": "플러그인 {count}개에 업데이트가 있습니다 | 플러그인 {count}개에 업데이트가 있습니다",
+          "manual": "여기서 관리하지 않는 플러그인 {count}개가 디스크에서 발견되었습니다 | 여기서 관리하지 않는 플러그인 {count}개가 디스크에서 발견되었습니다"
+        },
+        "settings": {
+          "not_set_up": "설정 섹션 {count}개가 설정되지 않았습니다 | 설정 섹션 {count}개가 설정되지 않았습니다"
+        },
+        "servers": {
+          "no_rcon": "서버 {count}대가 RCON에 응답하지 않습니다 | 서버 {count}대가 RCON에 응답하지 않습니다",
+          "plugin_outdated": "서버 {count}대가 오래된 플러그인을 사용 중입니다 | 서버 {count}대가 오래된 플러그인을 사용 중입니다"
+        }
+      }
     }
   },
   "layouts": {
@@ -6551,6 +7975,19 @@
         "theme": "테마",
         "developer": "개발자",
         "players_teams": "플랫폼"
+      },
+      "status": {
+        "not_set_up": "설정 안 됨",
+        "job_elo": "ELO {pct}%",
+        "job_reindex": "재색인 {pct}%",
+        "job_reparse": "재분석 {pct}%",
+        "filter_attention": "확인 필요"
+      },
+      "search": {
+        "results": "일치하는 설정 {count}개 | 일치하는 설정 {count}개",
+        "clear": "검색 지우기",
+        "no_match_title": "“{query}”와 일치하는 설정이 없습니다",
+        "no_match_body": "모든 섹션의 설정 이름과 설명에서 검색합니다. “역할”이나 “ELO”처럼 한 단어로 검색해 보세요."
       }
     },
     "system_update": {
@@ -6622,6 +8059,7 @@
       "brand": "5stack",
       "systems_online": "{count}개 시스템 온라인 | {count}개 시스템 온라인",
       "navigation": {
+        "home": "홈",
         "dashboard": "내 통계",
         "play": "플레이",
         "watch": "시청",
@@ -6656,7 +8094,24 @@
         "alerts": "알림 배너",
         "seasons": "시즌",
         "stream_deck": "스트림 덱",
-        "awards": "Awards"
+        "awards": "Awards",
+        "control_room": "컨트롤 룸",
+        "overview": "개요"
+      },
+      "modes": {
+        "play": "플레이",
+        "admin": "관리",
+        "switch_to_play": "플레이로 전환",
+        "switch_to_admin": "관리로 전환",
+        "attention": "{count}개 확인 필요 | {count}개 확인 필요",
+        "seasons_rebuild": "재구성 필요"
+      },
+      "groups": {
+        "compete": "경쟁",
+        "practice": "연습",
+        "media": "미디어",
+        "monitoring": "모니터링",
+        "site": "사이트"
       },
       "system": {
         "title": "시스템",
@@ -6674,7 +8129,9 @@
       },
       "footer": {
         "report_issue": "문제 신고",
-        "join_discord": "Discord 참여"
+        "report_issue_short": "문제 신고",
+        "join_discord": "Discord 참여",
+        "discord": "Discord"
       },
       "tooltips": {
         "dashboard": "내 통계",
@@ -7033,7 +8490,6 @@
     "none": "사용 가능한 플레이어 없음"
   },
   "common": {
-    "manage_custom_plugins_and_shared_files": "이 파일들은 서버가 시작될 때 `csgo` 디렉터리에 마운트됩니다.",
     "any": "전체",
     "remove": "제거",
     "edit": "편집",
@@ -7057,7 +8513,8 @@
       "unsaved_changes": "저장하지 않은 변경사항",
       "review_and_save": "변경사항을 확인한 후 저장하세요",
       "has_errors": "잘못된 설정",
-      "resolve_errors": "저장하려면 강조 표시된 필드를 수정하세요"
+      "resolve_errors": "저장하려면 강조 표시된 필드를 수정하세요",
+      "leave_blocked": "나가기 전에 저장하거나 취소하세요"
     },
     "error": "오류",
     "enabled": "활성화됨",
@@ -7097,8 +8554,6 @@
     "exit_fullscreen": "전체화면 종료",
     "download": "다운로드",
     "upload": "업로드",
-    "sort_ascending": "오름차순 정렬",
-    "sort_descending": "내림차순 정렬",
     "see_all": "전체 보기",
     "standby_no_activity": "대기 중 · 활동 없음",
     "players": "플레이어",
@@ -7162,7 +8617,8 @@
     "empty_filtered": {
       "title": "필터와 일치하는 항목이 없습니다",
       "description": "필터를 지우거나 검색 범위를 넓혀 보세요."
-    }
+    },
+    "clear_filters": "필터 지우기"
   },
   "global_search": {
     "placeholder": "플레이어, 페이지, 설정 검색",
@@ -7190,8 +8646,6 @@
   },
   "file_manager": {
     "location": "위치",
-    "dedicated_server_files": "데디케이티드 서버 파일",
-    "game_server_node_files": "게임 서버 노드 파일",
     "loading_server_info": "서버 정보를 불러오는 중...",
     "create_directory": {
       "title": "새 디렉터리 생성",
@@ -10257,10 +11711,6 @@
     "remove_node_confirm_title": "이 노드를 제거할까요?",
     "remove_node_confirm_description": "노드와 해당 노드의 모든 전용 서버가 5Stack에서 제거됩니다. 이 작업은 되돌릴 수 없습니다.",
     "remove_ports": "포트 제거",
-    "mode": {
-      "use_as_match": "매치 서버로 사용",
-      "use_as_gpu_only": "GPU 전용으로 사용"
-    },
     "show_update_logs": "업데이트 로그 보기",
     "update_failed": "업데이트 실패",
     "update_failed_description": "마지막 업데이트가 실패했습니다. 업데이트 로그는 24시간 동안 보관됩니다.",
@@ -10532,10 +11982,6 @@
     }
   },
   "charts": {
-    "usage": "사용량",
-    "mount_os": "OS",
-    "mount_demos": "데모",
-    "total_series": "{label} 합계",
     "gpu_index": "GPU {index}",
     "series_avg": "{label} 평균"
   },
@@ -10568,7 +12014,6 @@
       "move_node": "서버 이동",
       "valve_preset_group": "Valve 프리셋",
       "custom_mode_group": "커스텀 모드",
-      "edit_mode": "모드 편집",
       "cs2_only": "CS2 전용",
       "needs_node": "노드 필요",
       "csgo_valve_only": "CS:GO 서버는 Valve 프리셋만 실행합니다. 랭크, 연습, 커스텀 모드는 CS2가 필요합니다.",
@@ -10592,9 +12037,9 @@
       "generate": "생성",
       "port": "게임 포트",
       "tv_port": "TV 포트",
-      "create": "서버 생성",
       "max_players": "최대 인원",
-      "max_players_description": "서버에 접속할 수 있는 최대 플레이어 수"
+      "max_players_description": "서버에 접속할 수 있는 최대 플레이어 수",
+      "edit_mode_link": "모드 편집"
     },
     "rcon": {
       "console_output": "콘솔 출력",
@@ -10617,6 +12062,13 @@
   "components": {
     "map_pools": {
       "view_on_steam": "Steam에서 보기"
+    },
+    "facet_rail": {
+      "clear_all": "모두 지우기",
+      "none": "없음",
+      "remove": "{label} 제거",
+      "show_all": "{count}개 모두 보기",
+      "show_fewer": "간단히 보기"
     }
   },
   "map_pools": {
@@ -12418,7 +13870,6 @@
       "unique_24h": "고유 · 24시간",
       "unique_7d": "고유 · 7일",
       "sessions_7d": "세션 · 7일",
-      "time_played_7d": "플레이 시간 · 7일",
       "avg_session": "평균 세션",
       "players": "명",
       "joins": "회 접속",
@@ -12430,7 +13881,9 @@
       "empty": "이 기간에 여기서 플레이한 사람이 없습니다.",
       "no_matches": "검색과 일치하는 플레이어가 없습니다.",
       "showing": "{total}명 중 {shown}명 표시",
-      "load_more": "더 불러오기"
+      "last_seen": "마지막 접속",
+      "time_played_col": "플레이 시간 · 7일",
+      "show_more": "더 불러오기"
     },
     "player_tab": {
       "moderator_note": "모더레이터는 정확한 시간, 세션, 사용한 이름, IP도 볼 수 있습니다.",
@@ -12469,12 +13922,8 @@
       "offline": "오프라인",
       "map": "맵",
       "community_server": "커뮤니티 서버",
-      "online_now": "현재 온라인",
-      "players_this_week": "이번 주 플레이어",
       "different_players": "명의 플레이어",
-      "hours_this_week": "이번 주 시간",
       "played_by_everyone": "전체 플레이 합계",
-      "all_time_players": "전체 기간 플레이어",
       "since": "{date}부터",
       "activity": "활동 · 최근 7일",
       "activity_description": "모두가 매일 여기서 플레이한 총 시간입니다. 개인별 플레이 시간은 표시되지 않습니다.",
@@ -12491,7 +13940,13 @@
       "day": "날짜",
       "player_hours": "플레이어 시간",
       "not_found_title": "서버를 찾을 수 없음",
-      "not_found_description": "이 서버가 존재하지 않거나 공개되어 있지 않습니다."
+      "not_found_description": "이 서버가 존재하지 않거나 공개되어 있지 않습니다.",
+      "tile": {
+        "online_now": "현재 온라인",
+        "players_this_week": "이번 주 플레이어",
+        "hours_this_week": "이번 주 시간",
+        "all_time_players": "전체 기간 플레이어"
+      }
     }
   },
   "quick_look": {
@@ -12559,6 +14014,33 @@
         "twitch_unavailable": "Twitch가 응답하지 않습니다. 잠시 후 다시 시도하세요.",
         "unknown": "문제가 발생했습니다. 다시 시도하세요."
       }
+    }
+  },
+  "admin": {
+    "search": {
+      "clear": "검색 지우기"
+    },
+    "sort": {
+      "sorted_ascending": "오름차순 정렬됨",
+      "sorted_descending": "내림차순 정렬됨"
+    },
+    "live_stamp": {
+      "live_at": "라이브 · {time}",
+      "updated_now": "방금 업데이트됨",
+      "updated_now_after": "방금 업데이트됨",
+      "updated_seconds": "{seconds}초 전 업데이트됨",
+      "updated_seconds_after": "{seconds}초 전 업데이트됨",
+      "updated_minutes": "{minutes}분 전 업데이트됨",
+      "updated_minutes_after": "{minutes}분 전 업데이트됨",
+      "paused": "일시 중지됨",
+      "every_seconds": "{seconds}초마다 새로고침",
+      "every_minute": "1분마다 새로고침",
+      "every_minutes": "{minutes}분마다 새로고침",
+      "refresh_now": "지금 새로고침"
+    },
+    "last_changed": {
+      "updated": "업데이트: {time}",
+      "updated_by": "업데이트: {time} ({name})"
     }
   }
 }

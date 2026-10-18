@@ -1,99 +1,165 @@
 <script setup lang="ts">
+import { ChevronDown, List } from "lucide-vue-next";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import { Button } from "~/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import FleetTelemetryChart from "./FleetTelemetryChart.vue";
 import FleetDistribution from "./FleetDistribution.vue";
 import FleetVersions from "./FleetVersions.vue";
 import FleetMeter from "./FleetMeter.vue";
 import FleetShares from "./FleetShares.vue";
 import FleetReadout from "./FleetReadout.vue";
+import FleetSection from "./FleetSection.vue";
+import FleetCount from "./FleetCount.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import LiveStamp from "~/components/admin/LiveStamp.vue";
+import StatTile from "~/components/admin/StatTile.vue";
+import { TONE_TEXT } from "~/components/admin/tone";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
+
+// Stat tiles and chart cards are the only frames on the page; sections are
+// split by hairlines.
+const card =
+  "flex min-w-0 flex-col gap-4 rounded-lg border border-border bg-card/40 p-4";
+const cardTitle = "flex items-center gap-1.5 text-[13.5px] font-semibold";
+// What hangs under a stat tile's number: its bar, then its readouts.
+const tileBody = "mt-2 grid gap-4 text-foreground";
+const cardChips =
+  "flex flex-wrap gap-x-6 gap-y-3 border-t border-border/60 pt-3.5";
+const delta = "font-semibold tabular-nums";
 </script>
 
 <template>
-  <div class="space-y-8">
-    <div v-if="!telemetryStats" class="space-y-8">
-      <Skeleton class="h-64 w-full rounded-xl" />
-      <div class="grid gap-4 lg:grid-cols-2">
-        <Skeleton v-for="i in 2" :key="i" class="h-48 w-full rounded-lg" />
-      </div>
+  <div class="grid gap-7">
+    <!-- 5stack.gg reports like any other panel, and it is the largest install
+         on the page. Setting it aside is the only view that answers what
+         everybody else is running. -->
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <AnimatedFilters
+        v-if="telemetryStats"
+        v-model="fleetFilter"
+        square
+        :options="fleetFilterOptions"
+      />
+      <LiveStamp v-if="updatedAt" :at="updatedAt" live :every="60_000" />
+      <span class="grow" />
+      <DropdownMenu v-if="telemetryStats">
+        <DropdownMenuTrigger as-child>
+          <Button variant="outline" size="sm">
+            <List />
+            {{ $t("pages.system_telemetry.jump_to") }}
+            <ChevronDown class="opacity-60" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          class="w-52"
+          @close-auto-focus="onJumpMenuClosed"
+        >
+          <DropdownMenuItem
+            v-for="section of jumpSections"
+            :key="section.id"
+            @select="pendingJump = section.id"
+          >
+            {{ section.label }}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
 
-    <template v-else>
-      <!-- 5stack.gg reports like any other panel, and it is the largest install
-           on the page. Setting it aside is the only view that answers what
-           everybody else is running. -->
-      <div class="flex justify-end">
-        <AnimatedFilters
-          v-model="fleetFilter"
-          square
-          :options="fleetFilterOptions"
-        />
+    <FadeSwap>
+      <div
+        v-if="!telemetryStats"
+        key="loading"
+        class="grid gap-7"
+        aria-busy="true"
+      >
+        <Skeleton class="h-60 w-full rounded-lg" />
+        <div class="grid gap-3 lg:grid-cols-2">
+          <Skeleton v-for="i in 2" :key="i" class="h-48 w-full rounded-lg" />
+        </div>
       </div>
 
-      <!-- One number leads the page, with its own 90-day shape beside it.
-           Everything below is detail hung off these two. -->
-      <section
-        class="relative overflow-hidden rounded-xl border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
+      <div
+        v-else
+        key="report"
+        class="grid gap-8 transition-opacity motion-reduce:transition-none"
+        :class="
+          switching
+            ? 'opacity-45 [transition-duration:110ms] ease-in'
+            : '[transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]'
+        "
+        :aria-busy="switching"
       >
-        <span aria-hidden="true" class="fleet-masthead-grid" />
-        <span aria-hidden="true" class="fleet-masthead-glow" />
-
-        <div
-          class="relative grid gap-6 p-5 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-8 lg:p-6"
+        <!-- One number leads the page, with its own 90-day shape beside it.
+             Everything below is detail hung off these two. -->
+        <section
+          class="grid gap-8 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]"
         >
-          <div class="flex flex-col justify-between gap-5">
-            <div>
-              <div
-                class="flex items-center gap-1.5 font-sans text-[0.66rem] uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                {{ $t("pages.system_telemetry.totals.maps_played") }}
-                <FiveStackToolTip>
+          <div>
+            <div
+              class="flex items-center gap-1 text-[12.5px] text-muted-foreground"
+            >
+              {{ $t("pages.system_telemetry.totals.maps_played") }}
+              <FiveStackToolTip>
+                <span class="block max-w-[20rem]">
                   {{ $t("pages.system_telemetry.totals.hosted_hint") }}
-                </FiveStackToolTip>
-              </div>
-              <div class="mt-2 text-5xl font-semibold leading-none sm:text-6xl">
-                {{ format(totals?.mapsPlayed ?? 0) }}
-              </div>
-              <div class="mt-2.5 flex flex-wrap items-center gap-x-2 text-sm">
-                <span class="font-mono">
+                </span>
+              </FiveStackToolTip>
+            </div>
+            <div
+              class="mt-2 text-5xl font-bold leading-none tracking-tight tabular-nums sm:text-[3.5rem]"
+            >
+              {{ format(totals?.mapsPlayed ?? 0) }}
+            </div>
+            <div
+              class="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13.5px] text-muted-foreground"
+            >
+              <span>
+                <span class="font-semibold tabular-nums text-foreground">
                   {{ format(totals?.matches ?? 0) }}
                 </span>
-                <span class="text-muted-foreground">
-                  {{ $t("pages.system_telemetry.activity.matches_unit") }}
+                {{ $t("pages.system_telemetry.activity.matches_unit") }}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>
+                <span :class="[delta, TONE_TEXT.amber]">
+                  +{{ format(totals?.matchesWeek ?? 0) }}
                 </span>
-                <span class="flex items-center gap-2 text-muted-foreground">
-                  <span class="text-border">·</span>
-                  <span class="font-mono text-[hsl(var(--tac-amber))]">
-                    +{{ format(totals?.matchesWeek ?? 0) }}
-                  </span>
-                  {{ $t("pages.system_telemetry.totals.last_7d") }}
-                </span>
-                <span
-                  v-if="mapsPerPlayer"
-                  class="flex items-center gap-1 text-muted-foreground"
-                >
-                  <span class="text-border">·</span>
+                {{ $t("pages.system_telemetry.totals.last_7d") }}
+              </span>
+              <template v-if="mapsPerPlayer">
+                <span aria-hidden="true">·</span>
+                <span class="inline-flex items-center gap-1">
                   {{
                     $t("pages.system_telemetry.totals.maps_per_player", {
                       maps: mapsPerPlayer,
                     })
                   }}
                   <FiveStackToolTip>
-                    {{
-                      $t("pages.system_telemetry.totals.maps_per_player_hint")
-                    }}
+                    <span class="block max-w-[20rem]">
+                      {{
+                        $t("pages.system_telemetry.totals.maps_per_player_hint")
+                      }}
+                    </span>
                   </FiveStackToolTip>
                 </span>
-              </div>
+              </template>
             </div>
 
             <div
-              class="grid grid-cols-2 gap-x-4 gap-y-4 border-t border-border/60 pt-4"
+              class="mt-5 grid grid-cols-2 gap-4 border-t border-border/60 pt-4"
             >
               <FleetReadout
                 :label="$t('pages.system_telemetry.installs.online')"
@@ -115,203 +181,169 @@ import {
             </div>
           </div>
 
-          <div class="flex min-w-0 flex-col">
-            <div
-              class="mb-2 font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-            >
+          <div class="grid min-w-0 content-start gap-2.5">
+            <span class="text-[12.5px] text-muted-foreground">
               {{ $t("pages.system_telemetry.activity.matches") }}
-            </div>
-            <div class="h-52 min-w-0 lg:h-full lg:min-h-[13rem]">
+            </span>
+            <div v-if="activity.length" class="h-56 min-w-0 lg:h-64">
               <FleetTelemetryChart
-                v-if="activity.length"
                 :labels="activityLabels"
                 :values="activityMatches"
                 :color="matchesColor"
                 :label="$t('pages.system_telemetry.activity.matches_unit')"
               />
-              <div
-                v-else
-                class="flex h-full items-center justify-center text-sm text-muted-foreground"
-              >
-                {{ $t("pages.system_telemetry.no_data") }}
-              </div>
             </div>
+            <SectionEmpty
+              v-else
+              :title="$t('pages.system_telemetry.no_data')"
+              :description="$t('pages.system_telemetry.no_activity_hint')"
+            />
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- PANELS -->
-      <section class="space-y-3">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.installs.title") }}
-        </div>
-
-        <div class="grid gap-4 lg:grid-cols-2">
-          <div
-            class="flex flex-col justify-between gap-5 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div>
-              <div class="flex items-center gap-1.5 text-sm">
+        <!-- PANELS -->
+        <FleetSection
+          id="fleet-panels"
+          :label="$t('pages.system_telemetry.installs.title')"
+        >
+          <div class="grid gap-3 lg:grid-cols-2">
+            <div :class="card">
+              <span :class="cardTitle">
                 {{ $t("pages.system_telemetry.installs.recency") }}
-                <FiveStackToolTip>
-                  {{ $t("pages.system_telemetry.installs.recency_hint") }}
+                <FiveStackToolTip class="text-muted-foreground">
+                  <span class="block max-w-[20rem]">
+                    {{ $t("pages.system_telemetry.installs.recency_hint") }}
+                  </span>
                 </FiveStackToolTip>
-              </div>
-              <div class="mt-4">
-                <FleetMeter :segments="recencySegments" />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 border-t border-border/60 pt-4">
-              <FleetReadout
-                :label="$t('pages.system_telemetry.installs.new_30d')"
-                :value="installs?.new30d ?? 0"
-              />
-              <FleetReadout
-                :label="$t('pages.system_telemetry.installs.retained_180d')"
-                :value="installs?.retained180d ?? 0"
-                :hint="$t('pages.system_telemetry.installs.retained_180d_hint')"
-              />
-              <FleetReadout
-                :label="$t('pages.system_telemetry.installs.reporting')"
-                :value="totals?.panels ?? 0"
-                :hint="$t('pages.system_telemetry.installs.reporting_hint')"
-              />
-            </div>
-          </div>
-
-          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
-            <div class="text-sm">
-              {{ $t("pages.system_telemetry.growth.title") }}
-            </div>
-            <div class="mt-3 h-44">
-              <FleetTelemetryChart
-                v-if="growth.length"
-                type="bar"
-                :labels="growthLabels"
-                :values="growthValues"
-                :color="installsColor"
-                :label="$t('pages.system_telemetry.growth.unit')"
-              />
-              <div
-                v-else
-                class="flex h-full items-center justify-center text-sm text-muted-foreground"
-              >
-                {{ $t("pages.system_telemetry.no_data") }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CAPACITY -->
-      <section class="space-y-3">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.totals.infrastructure") }}
-          <FiveStackToolTip>
-            {{ $t("pages.system_telemetry.totals.self_reported") }}
-          </FiveStackToolTip>
-        </div>
-
-        <div class="grid gap-4 lg:grid-cols-2">
-          <div
-            v-for="card of capacityCards"
-            :key="card.key"
-            class="flex flex-col gap-5 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <div
-                  class="flex items-center gap-1 font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  {{ card.label }}
-                  <FiveStackToolTip v-if="card.hint">
-                    {{ card.hint }}
-                  </FiveStackToolTip>
-                </div>
-                <div class="mt-1 text-3xl font-semibold leading-none">
-                  {{ format(card.total) }}
-                </div>
-              </div>
-              <div v-if="card.chips.length" class="flex gap-4 sm:gap-5">
+              </span>
+              <FleetMeter :segments="recencySegments" />
+              <div :class="cardChips">
                 <FleetReadout
-                  v-for="chip of card.chips"
-                  :key="chip.label"
-                  :label="chip.label"
-                  :value="chip.value"
+                  :label="$t('pages.system_telemetry.installs.new_30d')"
+                  :value="installs?.new30d ?? 0"
+                />
+                <FleetReadout
+                  :label="$t('pages.system_telemetry.installs.retained_180d')"
+                  :value="installs?.retained180d ?? 0"
+                  :hint="
+                    $t('pages.system_telemetry.installs.retained_180d_hint')
+                  "
+                />
+                <FleetReadout
+                  :label="$t('pages.system_telemetry.installs.reporting')"
+                  :value="totals?.panels ?? 0"
+                  :hint="$t('pages.system_telemetry.installs.reporting_hint')"
                 />
               </div>
             </div>
 
-            <FleetMeter :segments="card.segments" :subset="card.subset" />
+            <div :class="card">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.growth.title") }}
+              </span>
+              <div class="h-44">
+                <FleetTelemetryChart
+                  v-if="growth.length"
+                  type="bar"
+                  :labels="growthLabels"
+                  :values="growthValues"
+                  :color="installsColor"
+                  :label="$t('pages.system_telemetry.growth.unit')"
+                />
+                <div
+                  v-else
+                  class="flex h-full items-center justify-center text-sm text-muted-foreground"
+                >
+                  {{ $t("pages.system_telemetry.no_data") }}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </FleetSection>
 
-      <!-- MATCHES -->
-      <section class="space-y-3">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.totals.match_volume") }}
-          <FiveStackToolTip>
-            {{ $t("pages.system_telemetry.totals.hosted_hint") }}
-          </FiveStackToolTip>
-        </div>
+        <!-- CAPACITY -->
+        <FleetSection
+          id="fleet-infra"
+          :label="$t('pages.system_telemetry.totals.infrastructure')"
+          :hint="$t('pages.system_telemetry.totals.self_reported')"
+        >
+          <div class="grid gap-3 lg:grid-cols-2">
+            <StatTile
+              v-for="item of capacityCards"
+              :key="item.key"
+              :label="item.label"
+              :tip="item.hint"
+            >
+              <FleetCount :value="item.total" />
+              <template #sub>
+                <div :class="tileBody">
+                  <FleetMeter :segments="item.segments" :subset="item.subset" />
+                  <div v-if="item.chips.length" :class="cardChips">
+                    <FleetReadout
+                      v-for="chip of item.chips"
+                      :key="chip.label"
+                      :label="chip.label"
+                      :value="chip.value"
+                    />
+                  </div>
+                </div>
+              </template>
+            </StatTile>
+          </div>
+        </FleetSection>
 
-        <div class="grid gap-4 lg:grid-cols-3">
-          <div
-            class="flex flex-col justify-between gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div>
-              <div class="text-sm">
+        <!-- MATCHES -->
+        <FleetSection
+          id="fleet-matches"
+          :label="$t('pages.system_telemetry.totals.match_volume')"
+          :hint="$t('pages.system_telemetry.totals.hosted_hint')"
+        >
+          <div class="grid gap-3 lg:grid-cols-3">
+            <div :class="card">
+              <span :class="cardTitle">
                 {{ $t("pages.system_telemetry.totals.hosted_windows") }}
-              </div>
-              <div class="mt-3">
-                <FleetDistribution
-                  bare
-                  scale="max"
-                  :items="matchWindows"
-                  label-field="label"
-                  value-field="value"
-                  :color="matchesColor"
+              </span>
+              <FleetDistribution
+                bare
+                scale="max"
+                :items="matchWindows"
+                label-field="label"
+                value-field="value"
+                :color="matchesColor"
+              />
+              <div :class="cardChips">
+                <FleetReadout
+                  :label="$t('pages.system_telemetry.totals.matches_created')"
+                  :value="totals?.matchesCreated ?? 0"
+                  :caption="
+                    $t('pages.system_telemetry.totals.matches_created_caption')
+                  "
+                />
+                <FleetReadout
+                  :label="$t('pages.system_telemetry.totals.matches_live')"
+                  :value="totals?.matchesLive ?? 0"
+                  :caption="
+                    $t('pages.system_telemetry.totals.matches_live_caption')
+                  "
+                  :unavailable="!outcomesReported"
+                  :hint="
+                    outcomesReported
+                      ? ''
+                      : $t('pages.system_telemetry.totals.not_reported_hint')
+                  "
                 />
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 border-t border-border/60 pt-4">
-              <FleetReadout
-                :label="$t('pages.system_telemetry.totals.matches_created')"
-                :value="totals?.matchesCreated ?? 0"
-                :caption="
-                  $t('pages.system_telemetry.totals.matches_created_caption')
-                "
-              />
-              <FleetReadout
-                :label="$t('pages.system_telemetry.totals.matches_live')"
-                :value="totals?.matchesLive ?? 0"
-                :caption="
-                  $t('pages.system_telemetry.totals.matches_live_caption')
-                "
-                :unavailable="!outcomesReported"
-                :hint="
-                  outcomesReported
-                    ? ''
-                    : $t('pages.system_telemetry.totals.not_reported_hint')
-                "
-              />
-            </div>
-          </div>
-
-          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
-            <div class="flex items-center gap-1.5 text-sm">
-              {{ $t("pages.system_telemetry.composition.by_type") }}
-              <FiveStackToolTip>
-                {{ $t("pages.system_telemetry.composition.hint") }}
-              </FiveStackToolTip>
-            </div>
-            <div class="mt-3">
+            <div :class="card">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.composition.by_type") }}
+                <FiveStackToolTip class="text-muted-foreground">
+                  <span class="block max-w-[20rem]">
+                    {{ $t("pages.system_telemetry.composition.hint") }}
+                  </span>
+                </FiveStackToolTip>
+              </span>
               <FleetDistribution
                 bare
                 :items="matchTypes"
@@ -320,13 +352,11 @@ import {
                 :color="matchesColor"
               />
             </div>
-          </div>
 
-          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
-            <div class="text-sm">
-              {{ $t("pages.system_telemetry.composition.by_source") }}
-            </div>
-            <div class="mt-3">
+            <div :class="card">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.composition.by_source") }}
+              </span>
               <FleetDistribution
                 bare
                 :items="matchSources"
@@ -336,14 +366,12 @@ import {
               />
             </div>
           </div>
-        </div>
 
-        <div class="grid gap-4 lg:grid-cols-2">
-          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
-            <div class="text-sm">
-              {{ $t("pages.system_telemetry.totals.matches_imported") }}
-            </div>
-            <div class="mt-3">
+          <div class="grid gap-3 lg:grid-cols-2">
+            <div :class="card">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.totals.matches_imported") }}
+              </span>
               <FleetDistribution
                 bare
                 scale="max"
@@ -353,156 +381,110 @@ import {
                 :color="importedColor"
               />
             </div>
-          </div>
 
-          <div
-            class="flex flex-col justify-between gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div>
-              <div class="flex items-center gap-1.5 text-sm">
-                {{ $t("pages.system_telemetry.totals.completion") }}
-                <FiveStackToolTip>
-                  {{ $t("pages.system_telemetry.totals.completion_hint") }}
-                </FiveStackToolTip>
-              </div>
-
-              <template v-if="outcomesReported">
-                <div class="mt-2 text-3xl font-semibold leading-none">
-                  {{ completionRate }}%
-                </div>
-                <div class="mt-4">
+            <StatTile
+              :label="$t('pages.system_telemetry.totals.completion')"
+              :tip="$t('pages.system_telemetry.totals.completion_hint')"
+              :value="outcomesReported ? completionRate : null"
+              suffix="%"
+            >
+              <template #sub>
+                <div v-if="outcomesReported" :class="tileBody">
                   <FleetMeter :segments="outcomeSegments" />
                 </div>
-              </template>
-
-              <div v-else class="mt-2">
-                <div
-                  class="text-3xl font-semibold leading-none text-muted-foreground"
-                >
-                  —
-                </div>
-                <p class="mt-2 text-[0.72rem] text-muted-foreground">
+                <p v-else class="mt-1">
                   {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
                 </p>
-              </div>
-            </div>
+              </template>
+            </StatTile>
           </div>
-        </div>
-      </section>
+        </FleetSection>
 
-      <!-- COMPETITION -->
-      <section class="space-y-3">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.totals.competition") }}
-          <FiveStackToolTip>
-            {{ $t("pages.system_telemetry.totals.competition_hint") }}
-          </FiveStackToolTip>
-        </div>
-
-        <div
-          v-if="!competitionReported"
-          class="rounded-lg border border-border/60 bg-card/40 p-4 text-sm text-muted-foreground"
+        <!-- COMPETITION -->
+        <FleetSection
+          id="fleet-competition"
+          :label="$t('pages.system_telemetry.totals.competition')"
+          :hint="$t('pages.system_telemetry.totals.competition_hint')"
         >
-          {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
-        </div>
+          <SectionEmpty
+            v-if="!competitionReported"
+            :title="$t('pages.system_telemetry.not_reported_title')"
+            :description="$t('pages.system_telemetry.totals.not_reported_hint')"
+          />
 
-        <div v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <div
-            v-for="card of competitionCards"
-            :key="card.key"
-            class="flex flex-col gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div>
-              <div
-                class="font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                {{ card.label }}
-              </div>
-              <div class="mt-1 text-3xl font-semibold leading-none">
-                {{ format(card.total) }}
-              </div>
-            </div>
-
-            <FleetMeter v-if="card.segments" :segments="card.segments" />
-
-            <div class="mt-auto flex flex-wrap gap-x-5 gap-y-3">
-              <FleetReadout
-                v-for="chip of card.chips"
-                :key="chip.label"
-                :label="chip.label"
-                :value="chip.value"
-              />
-            </div>
+          <div v-else class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <StatTile
+              v-for="item of competitionCards"
+              :key="item.key"
+              :label="item.label"
+            >
+              <FleetCount :value="item.total" />
+              <template #sub>
+                <div :class="tileBody">
+                  <FleetMeter v-if="item.segments" :segments="item.segments" />
+                  <div :class="cardChips">
+                    <FleetReadout
+                      v-for="chip of item.chips"
+                      :key="chip.label"
+                      :label="chip.label"
+                      :value="chip.value"
+                    />
+                  </div>
+                </div>
+              </template>
+            </StatTile>
           </div>
-        </div>
-      </section>
+        </FleetSection>
 
-      <!-- UTILITY -->
-      <section class="space-y-3">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.utility.title") }}
-          <FiveStackToolTip>
-            {{ $t("pages.system_telemetry.utility.hint") }}
-          </FiveStackToolTip>
-        </div>
-
-        <div
-          v-if="!utilityReported"
-          class="rounded-lg border border-border/60 bg-card/40 p-4 text-sm text-muted-foreground"
+        <!-- UTILITY -->
+        <FleetSection
+          id="fleet-utility"
+          :label="$t('pages.system_telemetry.utility.title')"
+          :hint="$t('pages.system_telemetry.utility.hint')"
         >
-          {{ $t("pages.system_telemetry.totals.not_reported_hint") }}
-        </div>
+          <SectionEmpty
+            v-if="!utilityReported"
+            :title="$t('pages.system_telemetry.not_reported_title')"
+            :description="$t('pages.system_telemetry.totals.not_reported_hint')"
+          />
 
-        <div v-else class="grid gap-4 lg:grid-cols-3">
-          <div
-            class="flex flex-col gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div>
-              <div
-                class="font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                {{ $t("pages.system_telemetry.utility.lineups") }}
-              </div>
-              <div class="mt-1 text-3xl font-semibold leading-none">
-                {{ format(utility?.lineups ?? 0) }}
-              </div>
-              <div class="mt-2 flex flex-wrap items-center gap-x-2 text-sm">
-                <span class="font-mono text-[hsl(var(--tac-amber))]">
+          <div v-else class="grid gap-3 lg:grid-cols-3">
+            <StatTile :label="$t('pages.system_telemetry.utility.lineups')">
+              <FleetCount :value="utility?.lineups ?? 0" />
+              <template #sub>
+                <span :class="[delta, TONE_TEXT.amber]">
                   +{{ format(utility?.week ?? 0) }}
                 </span>
-                <span class="text-muted-foreground">
-                  {{ $t("pages.system_telemetry.totals.last_7d") }}
-                </span>
-              </div>
-            </div>
+                {{ $t("pages.system_telemetry.totals.last_7d") }}
+                <div :class="tileBody">
+                  <FleetMeter :segments="utilityVisibility" />
 
-            <FleetMeter :segments="utilityVisibility" />
+                  <div :class="cardChips">
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.authors')"
+                      :value="utility?.authors ?? 0"
+                      :hint="$t('pages.system_telemetry.utility.authors_hint')"
+                    />
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.maps')"
+                      :value="utility?.maps ?? 0"
+                    />
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.archived')"
+                      :value="utility?.archived ?? 0"
+                      :caption="
+                        $t('pages.system_telemetry.utility.archived_caption')
+                      "
+                    />
+                  </div>
+                </div>
+              </template>
+            </StatTile>
 
-            <div class="mt-auto flex flex-wrap gap-x-5 gap-y-3">
-              <FleetReadout
-                :label="$t('pages.system_telemetry.utility.authors')"
-                :value="utility?.authors ?? 0"
-                :hint="$t('pages.system_telemetry.utility.authors_hint')"
-              />
-              <FleetReadout
-                :label="$t('pages.system_telemetry.utility.maps')"
-                :value="utility?.maps ?? 0"
-              />
-              <FleetReadout
-                :label="$t('pages.system_telemetry.utility.archived')"
-                :value="utility?.archived ?? 0"
-                :caption="$t('pages.system_telemetry.utility.archived_caption')"
-              />
-            </div>
-          </div>
-
-          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
-            <div class="text-sm">
-              {{ $t("pages.system_telemetry.utility.by_type") }}
-            </div>
-            <div class="mt-3">
+            <div :class="card">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.utility.by_type") }}
+              </span>
               <FleetDistribution
                 bare
                 :items="utilityTypeItems"
@@ -510,16 +492,16 @@ import {
                 value-field="value"
               />
             </div>
-          </div>
 
-          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
-            <div class="flex items-center gap-1.5 text-sm">
-              {{ $t("pages.system_telemetry.utility.by_source") }}
-              <FiveStackToolTip>
-                {{ $t("pages.system_telemetry.utility.by_source_hint") }}
-              </FiveStackToolTip>
-            </div>
-            <div class="mt-3">
+            <div :class="card">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.utility.by_source") }}
+                <FiveStackToolTip class="text-muted-foreground">
+                  <span class="block max-w-[20rem]">
+                    {{ $t("pages.system_telemetry.utility.by_source_hint") }}
+                  </span>
+                </FiveStackToolTip>
+              </span>
               <FleetDistribution
                 bare
                 :items="utilitySourceItems"
@@ -528,202 +510,178 @@ import {
                 :color="installsColor"
               />
             </div>
-          </div>
 
-          <div
-            class="flex flex-col gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div>
-              <div
-                class="font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                {{ $t("pages.system_telemetry.utility.sessions") }}
-              </div>
-              <div class="mt-1 text-3xl font-semibold leading-none">
-                {{ format(utility?.sessions ?? 0) }}
-              </div>
-              <div class="mt-2 text-sm text-muted-foreground">
+            <StatTile :label="$t('pages.system_telemetry.utility.sessions')">
+              <FleetCount :value="utility?.sessions ?? 0" />
+              <template #sub>
                 {{
                   $t("pages.system_telemetry.utility.hit_rate", {
                     percent: utilityHitRate,
                   })
                 }}
-              </div>
-            </div>
+                <div :class="tileBody">
+                  <FleetMeter :segments="utilityAccuracy" />
 
-            <FleetMeter :segments="utilityAccuracy" />
+                  <div :class="cardChips">
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.practicing')"
+                      :value="utility?.practicing ?? 0"
+                      :hint="
+                        $t('pages.system_telemetry.utility.practicing_hint')
+                      "
+                    />
+                    <FleetReadout
+                      :label="$t('pages.system_telemetry.utility.hosts')"
+                      :value="utility?.hosts ?? 0"
+                    />
+                    <FleetReadout
+                      :label="
+                        $t('pages.system_telemetry.utility.sessions_week')
+                      "
+                      :value="utility?.sessionsWeek ?? 0"
+                      :caption="$t('pages.system_telemetry.totals.last_7d')"
+                    />
+                    <FleetReadout
+                      :label="
+                        $t('pages.system_telemetry.utility.sessions_failed')
+                      "
+                      :value="utility?.sessionsFailed ?? 0"
+                      :hint="
+                        $t(
+                          'pages.system_telemetry.utility.sessions_failed_hint',
+                        )
+                      "
+                    />
+                  </div>
+                </div>
+              </template>
+            </StatTile>
 
-            <div class="mt-auto flex flex-wrap gap-x-5 gap-y-3">
+            <div :class="[card, 'grid grid-cols-2']">
               <FleetReadout
-                :label="$t('pages.system_telemetry.utility.practicing')"
-                :value="utility?.practicing ?? 0"
-                :hint="$t('pages.system_telemetry.utility.practicing_hint')"
+                :label="$t('pages.system_telemetry.utility.verified')"
+                :value="utility?.verified ?? 0"
+                :hint="$t('pages.system_telemetry.utility.verified_hint')"
               />
               <FleetReadout
-                :label="$t('pages.system_telemetry.utility.hosts')"
-                :value="utility?.hosts ?? 0"
+                :label="$t('pages.system_telemetry.utility.pending_review')"
+                :value="utility?.pendingReview ?? 0"
+                :hint="$t('pages.system_telemetry.utility.pending_review_hint')"
               />
               <FleetReadout
-                :label="$t('pages.system_telemetry.utility.sessions_week')"
-                :value="utility?.sessionsWeek ?? 0"
-                :caption="$t('pages.system_telemetry.totals.last_7d')"
+                :label="$t('pages.system_telemetry.utility.previews')"
+                :value="utility?.previews ?? 0"
+                :caption="$t('pages.system_telemetry.utility.previews_caption')"
               />
               <FleetReadout
-                :label="$t('pages.system_telemetry.utility.sessions_failed')"
-                :value="utility?.sessionsFailed ?? 0"
-                :hint="
-                  $t('pages.system_telemetry.utility.sessions_failed_hint')
+                :label="$t('pages.system_telemetry.utility.mastered')"
+                :value="utility?.mastered ?? 0"
+                :hint="$t('pages.system_telemetry.utility.mastered_hint')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.favorites')"
+                :value="utility?.favorites ?? 0"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.votes')"
+                :value="utility?.votes ?? 0"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.collections')"
+                :value="utility?.collections ?? 0"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.playbooks')"
+                :value="utility?.playbooks ?? 0"
+                :caption="
+                  $t('pages.system_telemetry.utility.playbook_steps', {
+                    steps: format(utility?.playbookSteps ?? 0),
+                  })
                 "
               />
             </div>
-          </div>
 
-          <div
-            class="grid grid-cols-2 gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.verified')"
-              :value="utility?.verified ?? 0"
-              :hint="$t('pages.system_telemetry.utility.verified_hint')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.pending_review')"
-              :value="utility?.pendingReview ?? 0"
-              :hint="$t('pages.system_telemetry.utility.pending_review_hint')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.previews')"
-              :value="utility?.previews ?? 0"
-              :caption="$t('pages.system_telemetry.utility.previews_caption')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.mastered')"
-              :value="utility?.mastered ?? 0"
-              :hint="$t('pages.system_telemetry.utility.mastered_hint')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.favorites')"
-              :value="utility?.favorites ?? 0"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.votes')"
-              :value="utility?.votes ?? 0"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.collections')"
-              :value="utility?.collections ?? 0"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.playbooks')"
-              :value="utility?.playbooks ?? 0"
-              :caption="
-                $t('pages.system_telemetry.utility.playbook_steps', {
-                  steps: format(utility?.playbookSteps ?? 0),
-                })
-              "
-            />
-          </div>
-
-          <div
-            class="grid grid-cols-2 gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.demo_throws')"
-              :value="utility?.demoThrows ?? 0"
-              :hint="$t('pages.system_telemetry.utility.demo_throws_hint')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.demos_mined')"
-              :value="utility?.demosMined ?? 0"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.meta_lineups')"
-              :value="utility?.metaLineups ?? 0"
-              :hint="$t('pages.system_telemetry.utility.meta_lineups_hint')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.drift_scans')"
-              :value="utility?.driftScans ?? 0"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.drift_flagged')"
-              :value="utility?.driftFlagged ?? 0"
-              :hint="$t('pages.system_telemetry.utility.drift_flagged_hint')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.utility.repairs')"
-              :value="utility?.repairs ?? 0"
-            />
-          </div>
-        </div>
-      </section>
-
-      <!-- COMMUNITY -->
-      <section class="space-y-3">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.totals.community") }}
-          <FiveStackToolTip>
-            {{ $t("pages.system_telemetry.totals.community_hint") }}
-          </FiveStackToolTip>
-        </div>
-
-        <div class="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-          <div class="rounded-lg border border-border/60 bg-card/40 p-4">
-            <div class="flex items-center gap-1.5 text-sm">
-              {{ $t("pages.system_telemetry.totals.player_base") }}
-              <FiveStackToolTip>
-                {{ $t("pages.system_telemetry.totals.player_base_hint") }}
-              </FiveStackToolTip>
+            <div :class="[card, 'grid grid-cols-2']">
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.demo_throws')"
+                :value="utility?.demoThrows ?? 0"
+                :hint="$t('pages.system_telemetry.utility.demo_throws_hint')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.demos_mined')"
+                :value="utility?.demosMined ?? 0"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.meta_lineups')"
+                :value="utility?.metaLineups ?? 0"
+                :hint="$t('pages.system_telemetry.utility.meta_lineups_hint')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.drift_scans')"
+                :value="utility?.driftScans ?? 0"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.drift_flagged')"
+                :value="utility?.driftFlagged ?? 0"
+                :hint="$t('pages.system_telemetry.utility.drift_flagged_hint')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.utility.repairs')"
+                :value="utility?.repairs ?? 0"
+              />
             </div>
-            <div class="mt-4">
+          </div>
+        </FleetSection>
+
+        <!-- COMMUNITY -->
+        <FleetSection
+          id="fleet-community"
+          :label="$t('pages.system_telemetry.totals.community')"
+          :hint="$t('pages.system_telemetry.totals.community_hint')"
+        >
+          <div class="grid gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+            <div :class="card">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.totals.player_base") }}
+                <FiveStackToolTip class="text-muted-foreground">
+                  <span class="block max-w-[20rem]">
+                    {{ $t("pages.system_telemetry.totals.player_base_hint") }}
+                  </span>
+                </FiveStackToolTip>
+              </span>
               <FleetShares :rows="playerBase" />
             </div>
+
+            <div :class="card">
+              <FleetReadout
+                large
+                :label="$t('pages.system_telemetry.totals.teams')"
+                :value="totals?.teams ?? 0"
+                :caption="$t('pages.system_telemetry.totals.all_time')"
+              />
+              <FleetReadout
+                large
+                :label="$t('pages.system_telemetry.totals.players_active_7d')"
+                :value="totals?.playersActive7d ?? 0"
+                :caption="$t('pages.system_telemetry.totals.last_7d')"
+              />
+            </div>
           </div>
+        </FleetSection>
 
-          <div
-            class="flex flex-col gap-4 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <FleetReadout
-              large
-              :label="$t('pages.system_telemetry.totals.teams')"
-              :value="totals?.teams ?? 0"
-              :caption="$t('pages.system_telemetry.totals.all_time')"
-            />
-            <FleetReadout
-              large
-              :label="$t('pages.system_telemetry.totals.players_active_7d')"
-              :value="totals?.playersActive7d ?? 0"
-              :caption="$t('pages.system_telemetry.totals.last_7d')"
-            />
-          </div>
-        </div>
-      </section>
+        <!-- FLEET DISTRIBUTION -->
+        <FleetSection
+          id="fleet-distribution"
+          :label="$t('pages.system_telemetry.distribution.title')"
+          :hint="$t('pages.system_telemetry.distribution.hint')"
+        >
+          <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+            <div :class="[card, 'lg:col-span-2']">
+              <FleetVersions :versions="telemetryStats?.versions ?? []" />
+            </div>
 
-      <!-- FLEET DISTRIBUTION -->
-      <section class="space-y-3">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.distribution.title") }}
-          <FiveStackToolTip>
-            {{ $t("pages.system_telemetry.distribution.hint") }}
-          </FiveStackToolTip>
-        </div>
-
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <div
-            class="rounded-lg border border-border/60 bg-card/40 p-4 lg:col-span-2"
-          >
-            <FleetVersions :versions="telemetryStats?.versions ?? []" />
-          </div>
-
-          <div
-            v-for="panel of distributions"
-            :key="panel.key"
-            class="rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <div class="text-sm">{{ panel.title }}</div>
-            <div class="mt-3">
+            <div v-for="panel of distributions" :key="panel.key" :class="card">
+              <span :class="cardTitle">{{ panel.title }}</span>
               <FleetDistribution
                 bare
                 :items="panel.items"
@@ -734,239 +692,215 @@ import {
               />
             </div>
           </div>
-        </div>
-      </section>
+        </FleetSection>
 
-      <!-- Split by what the flag actually is: an adoption rate for something
-           nobody can switch reads as broken, and so does "0 panels using" for
-           something nothing counts. -->
-      <section
-        v-for="group of featureGroups"
-        :key="group.key"
-        class="space-y-3"
-      >
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ group.title }}
-          <FiveStackToolTip>{{ group.hint }}</FiveStackToolTip>
-        </div>
-
-        <div
-          class="overflow-x-auto rounded-lg border border-border/60 bg-card/40"
-        >
-          <table class="w-full min-w-[560px] text-sm">
-            <thead>
-              <tr
-                class="border-b border-border/60 text-left font-sans text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                <th class="py-2.5 pl-4 pr-4 font-normal">
-                  {{ $t("pages.system_telemetry.features.feature") }}
-                </th>
-                <th v-if="group.showFlag" class="py-2.5 pr-4 font-normal">
-                  {{ group.flagLabel }}
-                </th>
-                <th class="py-2.5 pr-4 font-normal">
-                  {{ $t("pages.system_telemetry.features.panels_using") }}
-                </th>
-                <th class="py-2.5 pr-4 text-right font-normal">
-                  {{ $t("pages.system_telemetry.features.total") }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="feature of group.features"
-                :key="feature.key"
-                class="border-b border-border/30 last:border-0"
-              >
-                <td
-                  class="py-2 pl-4 pr-4 font-medium"
-                  :class="feature.reporting ? '' : 'text-muted-foreground'"
-                >
-                  <span class="flex items-center gap-1.5">
-                    {{ featureLabel(feature.key) }}
-                    <FiveStackToolTip v-if="!feature.reporting">
-                      {{
-                        $t("pages.system_telemetry.totals.not_reported_hint")
-                      }}
-                    </FiveStackToolTip>
-                  </span>
-                </td>
-                <td v-if="group.showFlag" class="py-2 pr-4">
-                  <span v-if="!feature.reporting" class="text-muted-foreground">
-                    {{ NO_METRIC }}
-                  </span>
-                  <span v-else class="flex items-center gap-2">
-                    <span
-                      class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-border/60"
-                    >
-                      <span
-                        class="block h-full rounded-full bg-[hsl(var(--tac-step-2))]"
-                        :style="{
-                          width: `${percent(feature.enabled, feature.flagged)}%`,
-                        }"
-                      />
-                    </span>
-                    <span class="font-mono tabular-nums text-muted-foreground">
-                      {{ feature.enabled }}/{{ feature.flagged }}
-                    </span>
-                  </span>
-                </td>
-                <td class="py-2 pr-4">
-                  <span v-if="!feature.reporting" class="text-muted-foreground">
-                    {{ NO_METRIC }}
-                  </span>
-                  <span
-                    v-else-if="!feature.counted"
-                    class="text-muted-foreground"
-                  >
-                    {{ NO_METRIC }}
-                    <FiveStackToolTip>
-                      {{ $t("pages.system_telemetry.features.no_metric_hint") }}
-                    </FiveStackToolTip>
-                  </span>
-                  <span v-else class="flex items-center gap-2">
-                    <span
-                      class="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-border/60"
-                    >
-                      <span
-                        class="block h-full rounded-full bg-muted-foreground/60"
-                        :style="{
-                          width: `${percent(feature.installsUsing, feature.counted)}%`,
-                        }"
-                      />
-                    </span>
-                    <span class="font-mono tabular-nums text-muted-foreground">
-                      {{ feature.installsUsing }}/{{ feature.counted }}
-                    </span>
-                  </span>
-                </td>
-                <td class="py-2 pr-4 text-right font-mono tabular-nums">
-                  <span
-                    v-if="!feature.reporting || !feature.counted"
-                    class="text-muted-foreground"
-                  >
-                    {{ NO_METRIC }}
-                  </span>
-                  <template v-else>{{ format(feature.total) }}</template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="space-y-3" v-if="pluginsReported > 0">
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses" />
-          {{ $t("pages.system_telemetry.plugins.title") }}
-          <FiveStackToolTip>
-            {{
-              $t("pages.system_telemetry.plugins.hint", {
-                panels: pluginsReported,
-              })
-            }}
-          </FiveStackToolTip>
-        </div>
-
-        <div class="grid gap-4 lg:grid-cols-3">
-          <div
-            class="flex flex-col justify-between gap-4 rounded-lg border border-border/60 bg-card/40 p-4 lg:col-span-2"
-          >
-            <div>
-              <div class="text-sm">
-                {{ $t("pages.system_telemetry.plugins.most_installed") }}
+        <!-- Split by what the flag actually is: an adoption rate for something
+             nobody can switch reads as broken, and so does "0 panels using"
+             for something nothing counts. -->
+        <FleetSection v-if="featureGroups.length" id="fleet-features">
+          <div class="grid gap-7">
+            <div
+              v-for="group of featureGroups"
+              :key="group.key"
+              class="grid gap-3"
+            >
+              <div class="flex items-center gap-1.5">
+                <h2 :class="[tacticalSectionLabelClasses, 'mb-0']">
+                  <span :class="tacticalSectionTickClasses" />
+                  {{ group.title }}
+                </h2>
+                <FiveStackToolTip class="text-muted-foreground">
+                  <span class="block max-w-[20rem]">{{ group.hint }}</span>
+                </FiveStackToolTip>
               </div>
-              <div class="mt-3">
-                <FleetDistribution
-                  bare
-                  scale="max"
-                  :items="topPlugins"
-                  label-field="label"
-                  value-field="value"
-                />
+
+              <div
+                class="overflow-x-auto rounded-lg border border-border bg-card/20"
+              >
+                <!-- Phones keep the counts and drop the bars, so nothing
+                     scrolls sideways. -->
+                <table class="w-full text-sm md:min-w-[560px]">
+                  <thead>
+                    <tr
+                      class="border-b border-border text-left text-xs text-muted-foreground"
+                    >
+                      <th class="py-2.5 pl-4 pr-4 font-medium">
+                        {{ $t("pages.system_telemetry.features.feature") }}
+                      </th>
+                      <th v-if="group.showFlag" class="py-2.5 pr-4 font-medium">
+                        {{ group.flagLabel }}
+                      </th>
+                      <th class="py-2.5 pr-4 font-medium">
+                        {{ $t("pages.system_telemetry.features.panels_using") }}
+                      </th>
+                      <th class="py-2.5 pr-4 text-right font-medium">
+                        {{ $t("pages.system_telemetry.features.total") }}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="feature of group.features"
+                      :key="feature.key"
+                      class="border-b border-border/40 last:border-0"
+                    >
+                      <td
+                        class="py-2 pl-4 pr-4 font-medium"
+                        :class="
+                          feature.reporting ? '' : 'text-muted-foreground'
+                        "
+                      >
+                        <span class="flex items-center gap-1.5">
+                          {{ featureLabel(feature.key) }}
+                          <FiveStackToolTip v-if="!feature.reporting">
+                            <span class="block max-w-[20rem]">
+                              {{
+                                $t(
+                                  "pages.system_telemetry.totals.not_reported_hint",
+                                )
+                              }}
+                            </span>
+                          </FiveStackToolTip>
+                        </span>
+                      </td>
+                      <td v-if="group.showFlag" class="py-2 pr-4">
+                        <span
+                          v-if="!feature.reporting"
+                          class="text-muted-foreground"
+                        >
+                          {{ NO_METRIC }}
+                        </span>
+                        <span v-else class="flex items-center gap-2">
+                          <span
+                            class="hidden h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-muted md:block"
+                          >
+                            <span
+                              class="block h-full rounded-full bg-[hsl(var(--tac-step-2))]"
+                              :style="{
+                                width: `${percent(feature.enabled, feature.flagged)}%`,
+                              }"
+                            />
+                          </span>
+                          <span class="tabular-nums text-muted-foreground">
+                            {{ feature.enabled }}/{{ feature.flagged }}
+                          </span>
+                        </span>
+                      </td>
+                      <td class="py-2 pr-4">
+                        <span
+                          v-if="!feature.reporting"
+                          class="text-muted-foreground"
+                        >
+                          {{ NO_METRIC }}
+                        </span>
+                        <span
+                          v-else-if="!feature.counted"
+                          class="inline-flex items-center gap-1.5 text-muted-foreground"
+                        >
+                          {{ NO_METRIC }}
+                          <FiveStackToolTip>
+                            <span class="block max-w-[20rem]">
+                              {{
+                                $t(
+                                  "pages.system_telemetry.features.no_metric_hint",
+                                )
+                              }}
+                            </span>
+                          </FiveStackToolTip>
+                        </span>
+                        <span v-else class="flex items-center gap-2">
+                          <span
+                            class="hidden h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-muted md:block"
+                          >
+                            <span
+                              class="block h-full rounded-full bg-muted-foreground/60"
+                              :style="{
+                                width: `${percent(feature.installsUsing, feature.counted)}%`,
+                              }"
+                            />
+                          </span>
+                          <span class="tabular-nums text-muted-foreground">
+                            {{ feature.installsUsing }}/{{ feature.counted }}
+                          </span>
+                        </span>
+                      </td>
+                      <td class="py-2 pr-4 text-right tabular-nums">
+                        <span
+                          v-if="!feature.reporting || !feature.counted"
+                          class="text-muted-foreground"
+                        >
+                          {{ NO_METRIC }}
+                        </span>
+                        <template v-else>{{ format(feature.total) }}</template>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-
-            <p
-              v-if="topPlugins.length === 0"
-              class="text-sm text-muted-foreground"
-            >
-              {{ $t("pages.system_telemetry.plugins.none") }}
-            </p>
           </div>
+        </FleetSection>
 
-          <div
-            class="grid grid-cols-2 gap-3 rounded-lg border border-border/60 bg-card/40 p-4"
-          >
-            <FleetReadout
-              :label="$t('pages.system_telemetry.plugins.requested')"
-              :value="totals?.pluginsRequested ?? 0"
-              :caption="$t('pages.system_telemetry.plugins.requested_caption')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.plugins.manual')"
-              :value="totals?.pluginsManual ?? 0"
-              :caption="$t('pages.system_telemetry.plugins.manual_caption')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.plugins.modes')"
-              :value="totals?.gameModes ?? 0"
-              :caption="$t('pages.system_telemetry.plugins.modes_caption')"
-            />
-            <FleetReadout
-              :label="$t('pages.system_telemetry.plugins.modes_unranked')"
-              :value="totals?.gameModesUnranked ?? 0"
-              :caption="
-                $t('pages.system_telemetry.plugins.modes_unranked_caption')
-              "
-            />
+        <FleetSection
+          v-if="pluginsReported > 0"
+          id="fleet-plugins"
+          :label="$t('pages.system_telemetry.plugins.title')"
+          :hint="
+            $t('pages.system_telemetry.plugins.hint', {
+              panels: pluginsReported,
+            })
+          "
+        >
+          <div class="grid gap-3 lg:grid-cols-3">
+            <div :class="[card, 'lg:col-span-2']">
+              <span :class="cardTitle">
+                {{ $t("pages.system_telemetry.plugins.most_installed") }}
+              </span>
+              <FleetDistribution
+                v-if="topPlugins.length"
+                bare
+                scale="max"
+                :items="topPlugins"
+                label-field="label"
+                value-field="value"
+              />
+              <p v-else class="text-sm text-muted-foreground">
+                {{ $t("pages.system_telemetry.plugins.none") }}
+              </p>
+            </div>
+
+            <div :class="[card, 'grid grid-cols-2']">
+              <FleetReadout
+                :label="$t('pages.system_telemetry.plugins.requested')"
+                :value="totals?.pluginsRequested ?? 0"
+                :caption="
+                  $t('pages.system_telemetry.plugins.requested_caption')
+                "
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.plugins.manual')"
+                :value="totals?.pluginsManual ?? 0"
+                :caption="$t('pages.system_telemetry.plugins.manual_caption')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.plugins.modes')"
+                :value="totals?.gameModes ?? 0"
+                :caption="$t('pages.system_telemetry.plugins.modes_caption')"
+              />
+              <FleetReadout
+                :label="$t('pages.system_telemetry.plugins.modes_unranked')"
+                :value="totals?.gameModesUnranked ?? 0"
+                :caption="
+                  $t('pages.system_telemetry.plugins.modes_unranked_caption')
+                "
+              />
+            </div>
           </div>
-        </div>
-      </section>
-    </template>
+        </FleetSection>
+      </div>
+    </FadeSwap>
   </div>
 </template>
-
-<style scoped>
-/* Faint survey grid, faded out from the top-left so the hero number sits on
-   plain surface and the texture only shows at the edges. */
-.fleet-masthead-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(hsl(var(--border) / 0.55) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--border) / 0.55) 1px, transparent 1px);
-  background-size: 34px 34px;
-  -webkit-mask-image: radial-gradient(
-    120% 100% at 0% 0%,
-    transparent 30%,
-    black 100%
-  );
-  mask-image: radial-gradient(120% 100% at 0% 0%, transparent 30%, black 100%);
-  pointer-events: none;
-}
-
-.fleet-masthead-glow {
-  position: absolute;
-  top: -40%;
-  left: -10%;
-  width: 40rem;
-  height: 30rem;
-  background: radial-gradient(
-    closest-side,
-    hsl(var(--tac-amber) / 0.12),
-    transparent
-  );
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .animate-ping {
-    animation: none;
-  }
-}
-</style>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
@@ -975,10 +909,22 @@ import {
   FLEET_MATCHES_CHART_COLORS,
   FLEET_INSTALLS_CHART_COLORS,
 } from "~/utilities/chartColors";
+import {
+  readRememberedView,
+  saveRememberedView,
+} from "~/composables/useRememberedView";
 
 // A real em dash, not the entity: a mustache renders text, so "&mdash;" here
 // would put those eight characters on the page.
 const NO_METRIC = "—";
+
+// The scope survives a refresh or a return. Options state rather than the
+// composable: script-setup bindings are not reachable from `this`.
+const VIEW_KEY = "fleet-telemetry";
+const VIEW_DEFAULTS = { scope: "all" };
+const VIEW_VALIDATE = {
+  scope: (value: unknown) => value === "all" || value === "self_hosted",
+};
 
 export default {
   apollo: {
@@ -1042,6 +988,14 @@ export default {
               scrimRequests: true,
               events: true,
               eventTeams: true,
+              // Read by the Plugins section; it never rendered while these
+              // were missing from the selection.
+              pluginsReported: true,
+              pluginsBySlug: true,
+              pluginsRequested: true,
+              pluginsManual: true,
+              gameModes: true,
+              gameModesUnranked: true,
             },
             utility: {
               reported: true,
@@ -1134,15 +1088,62 @@ export default {
         };
       },
       pollInterval: 60 * 1000,
+      result(this: any) {
+        this.updatedAt = Date.now();
+        this.switching = false;
+      },
+      error(this: any) {
+        this.switching = false;
+      },
     },
   },
   data() {
     return {
       NO_METRIC,
-      fleetFilter: "all",
+      fleetFilter: readRememberedView(VIEW_KEY, VIEW_DEFAULTS, VIEW_VALIDATE)
+        .scope,
+      updatedAt: null as number | null,
+      // The fleet toggle refetches; the report dims until the answer lands
+      // and its numbers glide to the new values.
+      switching: false,
+      pendingJump: null as string | null,
     };
   },
+  watch: {
+    fleetFilter(scope: string) {
+      saveRememberedView(VIEW_KEY, { scope }, VIEW_DEFAULTS);
+      this.switching = true;
+      // A scope already in the cache answers before this watcher runs, so
+      // there is no result left to clear the dim.
+      this.$nextTick(() => {
+        if (!this.$apollo.queries.telemetryStats?.loading) {
+          this.switching = false;
+        }
+      });
+    },
+  },
   methods: {
+    // Runs once the menu has closed: handing focus back to the trigger
+    // would scroll the page straight back up, so focus lands on the section
+    // instead -- which is also where a keyboard user wants it.
+    onJumpMenuClosed(event: Event) {
+      const id = this.pendingJump;
+      this.pendingJump = null;
+      const target = id ? document.getElementById(id) : null;
+      if (!target) {
+        return;
+      }
+      event.preventDefault();
+      const reduce = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      target.scrollIntoView({
+        behavior: reduce ? "auto" : "smooth",
+        block: "start",
+      });
+      target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+    },
     format(value: number) {
       return (value ?? 0).toLocaleString();
     },
@@ -1186,6 +1187,54 @@ export default {
     },
   },
   computed: {
+    jumpSections(): Array<{ id: string; label: string }> {
+      return [
+        {
+          id: "fleet-panels",
+          label: this.$t("pages.system_telemetry.installs.title"),
+        },
+        {
+          id: "fleet-infra",
+          label: this.$t("pages.system_telemetry.totals.infrastructure"),
+        },
+        {
+          id: "fleet-matches",
+          label: this.$t("pages.system_telemetry.totals.match_volume"),
+        },
+        {
+          id: "fleet-competition",
+          label: this.$t("pages.system_telemetry.totals.competition"),
+        },
+        {
+          id: "fleet-utility",
+          label: this.$t("pages.system_telemetry.utility.title"),
+        },
+        {
+          id: "fleet-community",
+          label: this.$t("pages.system_telemetry.totals.community"),
+        },
+        {
+          id: "fleet-distribution",
+          label: this.$t("pages.system_telemetry.distribution.title"),
+        },
+        ...(this.featureGroups.length
+          ? [
+              {
+                id: "fleet-features",
+                label: this.$t("pages.system_telemetry.features_title"),
+              },
+            ]
+          : []),
+        ...(this.pluginsReported > 0
+          ? [
+              {
+                id: "fleet-plugins",
+                label: this.$t("pages.system_telemetry.plugins.title"),
+              },
+            ]
+          : []),
+      ];
+    },
     pluginsReported(): number {
       return (this.totals as Record<string, any>)?.pluginsReported ?? 0;
     },

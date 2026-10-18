@@ -22,7 +22,10 @@ vi.mock("~/components/ui/toast/use-toast", async (importOriginal) => ({
 vi.mock("~/components/ui/popover", async () => {
   const { defineComponent, h } = await import("vue");
   const passthrough = defineComponent({
-    setup: (_, { slots }) => () => h("div", slots.default?.()),
+    setup:
+      (_, { slots }) =>
+      () =>
+        h("div", slots.default?.()),
   });
   return {
     Popover: passthrough,
@@ -37,13 +40,15 @@ vi.mock("~/components/ui/switch", async () => {
     Switch: defineComponent({
       props: { modelValue: Boolean, disabled: Boolean },
       emits: ["update:modelValue"],
-      setup: (props, { emit }) => () =>
-        h("button", {
-          class: "switch",
-          disabled: props.disabled,
-          "data-checked": String(props.modelValue),
-          onClick: () => emit("update:modelValue", !props.modelValue),
-        }),
+      setup:
+        (props, { emit }) =>
+        () =>
+          h("button", {
+            class: "switch",
+            disabled: props.disabled,
+            "data-checked": String(props.modelValue),
+            onClick: () => emit("update:modelValue", !props.modelValue),
+          }),
     }),
   };
 });
@@ -173,5 +178,197 @@ describe("NodeControlMenu scheduling switch", () => {
     expect(hasHint(offline)).toBe(true);
     expect(hasHint(offlineAndOff)).toBe(false);
     expect(hasHint(online)).toBe(false);
+  });
+});
+
+describe("NodeControlMenu GPU workloads", () => {
+  const gpuNode = (fields: Record<string, unknown> = {}) =>
+    node({
+      status: "Online",
+      gpu: true,
+      gpu_streaming_enabled: true,
+      gpu_demos_enabled: true,
+      gpu_rendering_enabled: true,
+      ...fields,
+    });
+
+  beforeEach(() => {
+    toastMock.mockReset();
+    mutate.mockReset().mockResolvedValue({ data: {} });
+  });
+
+  it("leaves Enabled and scheduling to a panel that has its own", async () => {
+    const wrapper = await mountSuspended(NodeControlMenu, {
+      props: { node: gpuNode() as any, workloadsOnly: true },
+    });
+
+    expect(wrapper.find('[data-testid="scheduling-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="gpu-only-row"]').exists()).toBe(true);
+    expect(wrapper.findAll(".switch")).toHaveLength(4);
+  });
+
+  it("marks the trigger only while a workload is off", async () => {
+    const allOn = await mountSuspended(NodeControlMenu, {
+      props: { node: gpuNode() as any, workloadsOnly: true },
+    });
+    const oneOff = await mountSuspended(NodeControlMenu, {
+      props: {
+        node: gpuNode({ gpu_rendering_enabled: false }) as any,
+        workloadsOnly: true,
+      },
+    });
+    const disabled = await mountSuspended(NodeControlMenu, {
+      props: {
+        node: gpuNode({ enabled: false, gpu_rendering_enabled: false }) as any,
+        workloadsOnly: true,
+      },
+    });
+
+    const dot = '[data-testid="workloads-off-dot"]';
+    expect(allOn.find(dot).exists()).toBe(false);
+    expect(oneOff.find(dot).exists()).toBe(true);
+    expect(disabled.find(dot).exists()).toBe(false);
+    expect(
+      disabled.find('[data-testid="workloads-node-disabled"]').exists(),
+    ).toBe(true);
+  });
+
+  it("puts what is running under its workload", async () => {
+    const wrapper = await mountSuspended(NodeControlMenu, {
+      props: {
+        node: gpuNode() as any,
+        workloadsOnly: true,
+        activity: { demos: "Playing a demo for Mira" },
+      },
+    });
+
+    const live = wrapper.findAll('[data-testid="workload-live"]');
+    expect(live).toHaveLength(1);
+    expect(wrapper.get('[data-testid="workload-demos"]').text()).toContain(
+      "Playing a demo for Mira",
+    );
+  });
+
+  it("switches one workload off", async () => {
+    const wrapper = await mountSuspended(NodeControlMenu, {
+      props: { node: gpuNode() as any, workloadsOnly: true },
+    });
+
+    await wrapper
+      .get('[data-testid="workload-streaming"] .switch')
+      .trigger("click");
+
+    const sent = print(mutate.mock.calls[0][0].mutation);
+    expect(sent).toContain("update_game_server_nodes_by_pk");
+    expect(sent).toContain("gpu_streaming_enabled: false");
+  });
+});
+
+describe("NodeControlMenu GPU only", () => {
+  const gpuNode = (fields: Record<string, unknown> = {}) =>
+    node({ status: "Online", gpu: true, ...fields });
+
+  // Turning GPU only on asks first when the node has a region or ports.
+  const confirmGpuOnly = async (row: { element: Element }) => {
+    const button = row.element.parentElement!.querySelector(
+      '[data-testid="gpu-only-confirm"] button:last-child',
+    ) as HTMLButtonElement | null;
+    button?.click();
+    await flushPromises();
+  };
+
+  const gpuOnlyRow = async (
+    fields: Record<string, unknown>,
+    workloadsOnly = false,
+  ) => {
+    const wrapper = await mountSuspended(NodeControlMenu, {
+      props: { node: gpuNode(fields) as any, workloadsOnly },
+    });
+    return wrapper.find('[data-testid="gpu-only-row"]');
+  };
+
+  beforeEach(() => {
+    toastMock.mockReset();
+    mutate.mockReset().mockResolvedValue({ data: {} });
+  });
+
+  it("is offered only on a node with a GPU, in both lists", async () => {
+    const plain = await mountSuspended(NodeControlMenu, {
+      props: { node: node({ status: "Online" }) as any },
+    });
+
+    expect(plain.find('[data-testid="gpu-only-row"]').exists()).toBe(false);
+    expect((await gpuOnlyRow({})).exists()).toBe(true);
+    expect((await gpuOnlyRow({}, true)).exists()).toBe(true);
+  });
+
+  it("reads on when the node takes no matches", async () => {
+    const matchNode = await gpuOnlyRow({ enabled_for_match_making: true });
+    const gpuOnly = await gpuOnlyRow({ enabled_for_match_making: false });
+
+    expect(matchNode.get(".switch").attributes("data-checked")).toBe("false");
+    expect(gpuOnly.get(".switch").attributes("data-checked")).toBe("true");
+  });
+
+  it("asks before turning it on, and sends nothing until confirmed", async () => {
+    const row = await gpuOnlyRow({
+      enabled_for_match_making: true,
+      region: "us-east",
+      start_port_range: 30020,
+      end_port_range: 30038,
+    });
+
+    await row.get(".switch").trigger("click");
+    await flushPromises();
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(
+      row.element.parentElement!.querySelector(
+        '[data-testid="gpu-only-confirm"]',
+      ),
+    ).not.toBeNull();
+  });
+
+  it("turning it on drops matchmaking, the region and the ports", async () => {
+    const row = await gpuOnlyRow({ enabled_for_match_making: true });
+
+    await row.get(".switch").trigger("click");
+    await flushPromises();
+    await confirmGpuOnly(row);
+
+    const sent = print(mutate.mock.calls[0][0].mutation);
+    expect(sent).toContain("update_game_server_nodes_by_pk");
+    expect(sent).toContain("enabled_for_match_making: false");
+    expect(sent).toContain("region: null");
+    expect(sent).toContain("start_port_range: null");
+    expect(sent).toContain("end_port_range: null");
+    expect(toastMock).toHaveBeenCalledTimes(1);
+    expect(toastMock.mock.calls[0][0].variant).toBeUndefined();
+  });
+
+  it("turning it off makes it a match server again", async () => {
+    const row = await gpuOnlyRow({ enabled_for_match_making: false });
+
+    await row.get(".switch").trigger("click");
+
+    const sent = print(mutate.mock.calls[0][0].mutation);
+    expect(sent).toContain("enabled_for_match_making: true");
+    expect(sent).not.toContain("region");
+  });
+
+  it("says so when the change fails", async () => {
+    mutate.mockRejectedValue(new Error("permission denied"));
+    const row = await gpuOnlyRow({ enabled_for_match_making: true });
+
+    await row.get(".switch").trigger("click");
+    await flushPromises();
+    await confirmGpuOnly(row);
+
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variant: "destructive",
+        description: "permission denied",
+      }),
+    );
   });
 });

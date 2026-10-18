@@ -4,20 +4,9 @@ import {
   BookOpen,
   CalendarCog,
   CalendarRange,
-  Camera,
-  Cog,
-  Database,
   Film,
-  Globe,
-  HardDrive,
-  LibraryBig,
   LifeBuoy,
   LineChart,
-  ListVideo,
-  Logs,
-  Leaf,
-  Medal,
-  Megaphone,
   Newspaper,
   Play,
   Plus,
@@ -33,6 +22,11 @@ import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import HeGrenadeIcon from "~/components/icons/HeGrenadeIcon.vue";
 import PluginIcon from "~/components/plugins/PluginIcon.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
+import {
+  adminAccess,
+  adminGroupLabelKey,
+  visibleAdminEntries,
+} from "~/composables/adminEntries";
 
 export type AppSection = {
   id: string;
@@ -57,6 +51,7 @@ export function useAppSections() {
   const plugins = usePluginsStore();
   const { hasContent } = useSiteContent();
   const { currentSeasonTo, currentSeason } = useCurrentLeagueSeason();
+  const router = useRouter();
 
   return computed(() => {
     const me = !!authStore.me;
@@ -67,10 +62,6 @@ export function useAppSections() {
 
     const community = t("layouts.app_nav.community.title");
     const social = t("layouts.app_nav.social.title");
-    const competition = t("layouts.app_nav.competition.title");
-    const platform = t("layouts.app_nav.platform.title");
-    const servers = t("layouts.app_nav.administration.servers");
-    const system = t("layouts.app_nav.system.title");
     const support = t("layouts.top_nav.support_menu");
 
     const sections: (AppSection | false)[] = [
@@ -185,121 +176,18 @@ export function useAppSections() {
         iconProps: { name: plugin.icon },
         group: plugin.nav_group || t("layouts.app_nav.plugins.title"),
       })),
-      (settings.canManageAwards || settings.canGrantAwards) && {
-        id: "awards",
-        label: t("layouts.app_nav.administration.awards"),
-        to: { name: "awards" },
-        icon: Medal,
-        group: competition,
-      },
-      admin &&
-        settings.seasonsEnabled && {
-          id: "seasons",
-          label: t("layouts.app_nav.administration.seasons"),
-          to: { name: "seasons" },
-          icon: Leaf,
-          group: competition,
-        },
-      admin && {
-        id: "system-alerts",
-        label: t("layouts.app_nav.administration.alerts"),
-        to: { name: "system-alerts" },
-        icon: Megaphone,
-        group: platform,
-      },
-      above(e_player_roles_enum.streamer) && {
-        id: "stream-deck",
-        label: t("layouts.app_nav.administration.stream_deck"),
-        to: { name: "stream-deck" },
-        icon: Camera,
-        group: platform,
-      },
-      admin &&
-        settings.gamePluginsEnabled && {
-          id: "plugins",
-          label: t("layouts.app_nav.platform.plugin_directory"),
-          to: { name: "plugins" },
-          icon: LibraryBig,
-          group: platform,
-        },
-      admin && {
-        id: "regions",
-        label: t("layouts.app_nav.administration.regions"),
-        to: { name: "regions" },
-        icon: Globe,
-        group: platform,
-      },
-      admin && {
-        id: "settings-application",
-        label: t("layouts.app_nav.administration.app_settings"),
-        to: { name: "settings-application" },
-        icon: Cog,
-        group: platform,
-      },
-      admin && {
-        id: "dedicated-servers",
-        label: t("layouts.app_nav.administration.dedicated_servers"),
-        to: { name: "dedicated-servers" },
-        icon: Server,
-        group: servers,
-      },
-      admin && {
-        id: "game-server-nodes",
-        label: t("layouts.app_nav.administration.game_server_nodes"),
-        to: { name: "game-server-nodes" },
-        icon: Server,
-        group: servers,
-      },
-      admin && {
-        id: "gpu-nodes",
-        label: t("layouts.app_nav.administration.gpu_nodes"),
-        to: { name: "gpu-nodes" },
-        icon: Server,
-        group: servers,
-      },
-      admin && {
-        id: "system-logs",
-        label: t("layouts.app_nav.system.logs"),
-        to: { name: "system-logs" },
-        icon: Logs,
-        group: system,
-      },
-      admin && {
-        id: "system-metrics",
-        label: t("layouts.app_nav.system.metrics"),
-        to: { name: "system-metrics" },
-        icon: LineChart,
-        group: system,
-      },
-      admin && {
-        id: "system-media-server",
-        label: t("layouts.app_nav.system.media_server"),
-        to: { name: "system-media-server" },
-        icon: Radio,
-        group: system,
-      },
-      admin && {
-        id: "database",
-        label: t("layouts.app_nav.system.database"),
-        to: { name: "database" },
-        icon: Database,
-        group: system,
-      },
-      admin && {
-        id: "system-render-queue",
-        label: t("layouts.app_nav.system.render_queue"),
-        to: { name: "system-render-queue" },
-        icon: ListVideo,
-        group: system,
-      },
-      admin &&
-        useRuntimeConfig().public.webDomain === "5stack.gg" && {
-          id: "fleet-telemetry",
-          label: t("pages.system_telemetry.title"),
-          to: { name: "fleet-telemetry" },
-          icon: HardDrive,
-          group: system,
-        },
+      // Admin pages: labels, icons, groups, order and gates from adminEntries,
+      // the same list the left nav's Admin list reads.
+      ...visibleAdminEntries(adminAccess(), {
+        hasRoute: (name) => router.hasRoute(name),
+      }).map((entry) => ({
+        id: entry.route,
+        label: t(entry.labelKey),
+        to: { name: entry.route },
+        icon: entry.icon,
+        group: t(adminGroupLabelKey(entry.group)),
+        keywords: entry.keywordKeys?.map((key) => t(key)).join(" "),
+      })),
       me && {
         id: "settings",
         label: t("layouts.account_settings.title"),

@@ -157,7 +157,7 @@ describe("ServerMapRotation", () => {
     expect(items[1]).toContain("Ancient");
     expect(items[1]).toContain("de_ancient");
     expect(wrapper.text()).not.toContain("No map rotation plugin is installed");
-    expect(wrapper.text()).not.toContain("Boots First");
+    expect(wrapper.text()).not.toContain("Boots first");
   });
 
   it("marks the first map as the boot map when played in order", async () => {
@@ -165,7 +165,7 @@ describe("ServerMapRotation", () => {
 
     const wrapper = await mountCard();
 
-    expect(wrapper.findAll("li[data-rotation-row]")[0].text()).toContain("Boots First");
+    expect(wrapper.findAll("li[data-rotation-row]")[0].text()).toContain("Boots first");
   });
 
   // The api skips a plugin that is only placed by hand, failed, or switched
@@ -219,7 +219,7 @@ describe("ServerMapRotation", () => {
     const wrapper = await mountCard();
     const addAll = wrapper
       .findAll("button")
-      .filter((button) => button.text() === "Add All");
+      .filter((button) => button.text() === "Add all");
     await addAll[1].trigger("click");
 
     expect(ids(wrapper)).toEqual(["m1", "m2", "m3", "m5"]);

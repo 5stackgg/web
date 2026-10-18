@@ -163,7 +163,7 @@ const chips = computed(() => {
 
 const CHIP_TONES: Record<Cs2BuildTone, string> = {
   success: "bg-success/10 text-success",
-  warning: "bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]",
+  warning: "bg-warning/10 text-warning",
   destructive: "bg-destructive/10 text-destructive",
   running: "bg-info/10 text-info",
   idle: "bg-muted/40 text-muted-foreground",
@@ -171,7 +171,7 @@ const CHIP_TONES: Record<Cs2BuildTone, string> = {
 
 const TEXT_TONES: Record<Cs2BuildTone, string> = {
   success: "text-success",
-  warning: "text-[hsl(var(--tac-amber))]",
+  warning: "text-warning",
   destructive: "text-destructive",
   running: "text-info",
   idle: "text-muted-foreground",
@@ -230,7 +230,9 @@ const startedAt = computed(() =>
 
 const node = computed(
   () =>
-    props.row?.game_server_node?.label || props.row?.game_server_node?.id || null,
+    props.row?.game_server_node?.label ||
+    props.row?.game_server_node?.id ||
+    null,
 );
 
 const manifestUrl = computed(() =>
@@ -269,19 +271,11 @@ const error = computed(() =>
       <template v-if="row">
         <template v-if="running || status === 'stale'">
           <span>{{ $t("pages.game_server_nodes.cs2_build.started") }}</span>
-          <TimeAgo
-            v-if="startedAt"
-            :date="startedAt"
-            hide-icon
-          />
+          <TimeAgo v-if="startedAt" :date="startedAt" hide-icon />
         </template>
         <template v-else>
           <span>{{ $t("pages.game_server_nodes.cs2_build.finished") }}</span>
-          <TimeAgo
-            v-if="row.finished_at"
-            :date="row.finished_at"
-            hide-icon
-          />
+          <TimeAgo v-if="row.finished_at" :date="row.finished_at" hide-icon />
           <template v-if="took">
             <span>·</span>
             <span>{{
@@ -457,8 +451,7 @@ const error = computed(() =>
         </summary>
         <pre
           class="mt-2 max-h-60 overflow-auto whitespace-pre-wrap break-words font-mono text-[0.65rem] text-muted-foreground"
-          >{{ error }}</pre
-        >
+          >{{ error }}</pre>
       </details>
     </template>
 

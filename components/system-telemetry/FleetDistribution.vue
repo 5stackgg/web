@@ -11,7 +11,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
             <TimezoneFlag v-if="flags" :country="row.label" class="shrink-0" />
             <span class="truncate">{{ row.label }}</span>
           </span>
-          <span class="shrink-0 font-mono tabular-nums">
+          <span class="shrink-0 tabular-nums">
             {{ format(row.value) }}
             <span
               v-if="scale === 'total'"
@@ -22,11 +22,14 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
           </span>
         </div>
         <span
-          class="mt-1 block h-1.5 w-full overflow-hidden rounded-full bg-border/60"
+          class="mt-1 block h-1.5 w-full overflow-hidden rounded-full bg-muted"
         >
           <span
-            class="block h-full rounded-full"
-            :style="{ width: `${row.share}%`, backgroundColor: color }"
+            class="block h-full origin-left rounded-full transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+            :style="{
+              transform: `scaleX(${row.share / 100})`,
+              backgroundColor: color,
+            }"
           />
         </span>
       </li>

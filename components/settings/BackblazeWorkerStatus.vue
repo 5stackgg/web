@@ -11,7 +11,8 @@ import {
 } from "~/utilities/backblazeWorkerHealth";
 
 const { t } = useI18n();
-const key = (name: string) => `pages.settings.application.demo_settings.${name}`;
+const key = (name: string) =>
+  `pages.settings.application.demo_settings.${name}`;
 
 const workerUrl = computed(
   () =>

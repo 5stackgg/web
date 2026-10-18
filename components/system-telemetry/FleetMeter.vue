@@ -5,7 +5,7 @@
            segments: the gaps claim their pixels first and the segments split
            what is left, so the bar stays exactly full width at any segment
            count. -->
-      <div class="flex h-2.5 w-full gap-[2px]">
+      <div class="flex h-2.5 w-full gap-[2px] overflow-hidden rounded-full">
         <span
           v-for="segment of drawn"
           :key="segment.label"
@@ -23,9 +23,9 @@
            saturated fills reads as a crack rather than as separation. Its
            length is a magnitude, not a position: which of the bands the subset
            falls in is not something a panel reports. -->
-      <div v-if="drawnSubset" class="h-[3px] w-full">
+      <div v-if="drawnSubset" class="mt-0.5 h-[3px] w-full">
         <span
-          class="block h-full min-w-[3px]"
+          class="block h-full min-w-[3px] rounded-full"
           :style="{
             width: `${drawnSubset.width}%`,
             background: drawnSubset.color,
@@ -43,15 +43,18 @@
       >
         <span
           class="shrink-0"
-          :class="entry.subset ? 'h-[3px] w-2.5' : 'h-2 w-2'"
+          :class="
+            entry.subset
+              ? 'h-[3px] w-2.5 rounded-full'
+              : 'h-2 w-2 rounded-[2px]'
+          "
           :style="{ background: entry.color }"
         />
         <span class="text-muted-foreground">{{ entry.label }}</span>
-        <span class="font-mono tabular-nums">{{ formatted(entry.value) }}</span>
-        <span
-          v-if="entry.subset"
-          class="font-mono tabular-nums text-muted-foreground"
-        >
+        <span class="font-semibold tabular-nums">{{
+          formatted(entry.value)
+        }}</span>
+        <span v-if="entry.subset" class="tabular-nums text-muted-foreground">
           {{ entry.share }}%
         </span>
       </li>

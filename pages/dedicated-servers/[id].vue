@@ -2,10 +2,15 @@
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { FolderOpen } from "lucide-vue-next";
+import {
+  ExternalLink,
+  Eye,
+  EyeOff,
+  FolderOpen,
+  TriangleAlert,
+} from "lucide-vue-next";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -13,19 +18,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/tabs";
-import { ref, computed } from "vue";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { ref, computed, onBeforeUnmount } from "vue";
 import { useNow } from "@vueuse/core";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
@@ -35,20 +29,19 @@ import ServerCommunityOverview from "~/components/servers/ServerCommunityOvervie
 import PublicServerView from "~/components/servers/PublicServerView.vue";
 import ServerMoveDialog from "~/components/servers/ServerMoveDialog.vue";
 import ServerMigrationPanel from "~/components/servers/ServerMigrationPanel.vue";
+import StatusDot from "~/components/admin/StatusDot.vue";
+import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import { useServerMigration } from "~/composables/useServerMigration";
 import { ACTIVE_SERVER_MIGRATION_STATUSES } from "~/types/serverMigration";
-import { Eye, EyeOff } from "lucide-vue-next";
 import Clipboard from "~/components/ClipBoard.vue";
-import ServerStatus from "~/components/servers/ServerStatus.vue";
-import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import ManageSection from "~/components/common/ManageSection.vue";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { Fold } from "~/components/ui/transitions";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
-import {
-  tacticalTabsListClasses,
-  tacticalTabsTriggerClasses,
-} from "~/utilities/tacticalClasses";
 
 const { openFiles } = useFilePopout();
 
@@ -107,155 +100,210 @@ const visibleMigration = computed(() => {
   return latest;
 });
 
-const heroClasses =
-  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)]";
+// A launched Steam link takes a few seconds to hand over; the button holds
+// its spinner meanwhile, as QuickServerConnect does.
+const joining = ref(false);
+let joinTimer: ReturnType<typeof setTimeout> | null = null;
+function onJoin() {
+  joining.value = true;
+  if (joinTimer) clearTimeout(joinTimer);
+  joinTimer = setTimeout(() => (joining.value = false), 10_000);
+}
+onBeforeUnmount(() => {
+  if (joinTimer) clearTimeout(joinTimer);
+});
 
-const statusBaseClasses =
-  "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
-
-const statusTierClasses: Record<string, string> = {
-  connected:
-    "bg-[hsl(var(--success)/0.15)] border-[hsl(var(--success)/0.5)] text-success",
-  warning:
-    "bg-[hsl(var(--tac-amber)/0.12)] border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]",
-  hibernating:
-    "bg-[hsl(var(--info)/0.12)] border-[hsl(var(--info)/0.5)] text-[hsl(var(--info))]",
-  disconnected:
-    "bg-[hsl(var(--destructive)/0.15)] border-[hsl(var(--destructive)/0.6)] text-destructive",
+const toneText: Record<string, string> = {
+  ok: "text-foreground",
+  warn: "text-warning",
+  bad: "text-destructive",
+  off: "text-muted-foreground",
+  info: "text-info",
 };
 
 const chipClasses =
-  "inline-flex items-center px-[0.7rem] py-[0.25rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground";
+  "inline-flex h-5 max-w-full items-center gap-1 rounded-md border border-border bg-muted/40 px-1.5 text-[0.7rem] font-medium text-muted-foreground";
 
-const tabCountClasses =
-  "inline-flex h-4 min-w-[1.1rem] items-center justify-center rounded-sm px-1 font-sans text-[0.6rem] font-bold leading-none tracking-normal tabular-nums";
-
-const titleClasses =
-  "relative m-0 font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.5rem)] leading-[0.95] tracking-[0.02em] uppercase break-words bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
+const runtimeOptions = [
+  { key: "swiftlys2", label: "SwiftlyS2" },
+  { key: "counterstrikesharp", label: "CounterStrikeSharp" },
+];
 </script>
+
 <template>
   <template v-if="canManage">
     <PageTransition :delay="0">
-      <header v-if="server" :class="heroClasses">
-        <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-4">
-          <span :class="[statusBaseClasses, statusTierClasses[statusTier]]">
-            <ServerStatus :server="server" />
-            {{ statusLabel }}
-          </span>
-
-          <span :class="chipClasses">{{ server.region }}</span>
-          <span v-if="server.type" :class="chipClasses">{{ server.type }}</span>
-          <span
-            v-if="server.plugin_version || pluginVersionMismatch"
-            :class="[
-              chipClasses,
-              'gap-1 normal-case tracking-[0.06em]',
-              pluginVersionMismatch &&
-                'border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]',
-            ]"
-            :title="$t('common.plugin_version')"
-          >
-            {{
-              server.plugin_version
-                ? `v${server.plugin_version}`
-                : $t("pages.dedicated_servers.detail.plugin_version_unknown")
-            }}
-            <template v-if="pluginVersionMismatch && currentPluginVersion">
-              <span aria-hidden="true">&rarr;</span>
-              <a
-                :href="pluginReleaseLink"
-                target="_blank"
-                rel="noopener"
-                class="underline underline-offset-2 hover:text-foreground"
-              >
-                v{{ currentPluginVersion }}
-              </a>
-            </template>
-          </span>
-          <span v-if="isAdmin && serverNode" :class="chipClasses">
-            {{ serverNode.label || serverNode.id }}
-          </span>
-
-          <div v-if="isManager" class="inline-flex items-center gap-2 ml-auto">
-            <div class="inline-flex items-center gap-2 mr-1 max-sm:hidden">
-              <Switch
-                :model-value="server.enabled"
-                :disabled="isMigrating"
-                @click="toggleServerEnabled"
-              />
-              <Label
-                class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-              >
-                {{ $t("pages.dedicated_servers.detail.enabled") }}
-              </Label>
-            </div>
-
-            <TooltipProvider v-if="isAdmin && server?.game_server_node_id">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    :disabled="isMigrating"
-                    :aria-label="$t('pages.dedicated_servers.detail.files')"
-                    @click="openFiles({ scope: 'server', id: server.id })"
-                  >
-                    <FolderOpen class="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{ $t("pages.dedicated_servers.detail.files") }}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-[0.4rem] min-w-0">
-          <span
-            class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
-          >
-            {{ $t("pages.dedicated_servers.detail.eyebrow") }}
-          </span>
-          <h1 :class="titleClasses">{{ server.label }}</h1>
-          <div
-            class="flex min-w-0 flex-wrap items-center gap-2 font-mono text-[0.8rem] tracking-[0.05em] text-muted-foreground"
-          >
-            <span class="min-w-0 truncate">
-              {{ shownAddress }}
-            </span>
-            <QuickServerConnect
-              v-if="server.connection_string"
-              :server="server"
-              highlight
+      <header v-if="server" class="grid min-w-0 gap-1.5">
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2.5">
+          <div class="flex min-w-[min(100%,14rem)] flex-1 items-center gap-2.5">
+            <StatusDot
+              :tone="status.tone"
+              :live="status.live"
+              :label="statusTip"
+              side="bottom"
             />
-            <Clipboard v-else :data="shownAddress" />
+            <h1
+              class="min-w-0 truncate text-xl font-semibold leading-tight tracking-tight"
+            >
+              {{ server.label }}
+            </h1>
+          </div>
+
+          <div class="flex min-w-0 flex-wrap items-center gap-2">
+            <span
+              class="inline-flex min-w-0 items-center gap-0.5 font-mono text-xs text-muted-foreground"
+            >
+              <span class="min-w-0 truncate">{{ shownAddress }}</span>
+              <Clipboard
+                :data="server.connection_string || shownAddress"
+                class="h-8 w-8 shrink-0 border-transparent bg-transparent shadow-none hover:bg-muted [&_svg]:size-3.5"
+                :aria-label="$t('pages.dedicated_servers.copy_address')"
+              />
+            </span>
+            <Button
+              v-if="server.connection_string && server.connection_link"
+              as="a"
+              :href="server.connection_link"
+              size="sm"
+              variant="outline"
+              class="srv-primary"
+              :loading="joining"
+              data-testid="join-server"
+              @click="onJoin"
+            >
+              <ExternalLink class="size-3.5" />
+              {{ $t("pages.dedicated_servers.join_server") }}
+            </Button>
+
+            <template v-if="isManager">
+              <span class="mx-1 h-5 w-px bg-border" aria-hidden="true" />
+              <div class="inline-flex h-8 items-center gap-2">
+                <Switch
+                  id="server-enabled"
+                  :model-value="server.enabled"
+                  :disabled="isMigrating"
+                  @click="toggleServerEnabled"
+                />
+                <Label
+                  for="server-enabled"
+                  class="text-xs font-normal text-muted-foreground"
+                >
+                  {{ $t("pages.dedicated_servers.detail.enabled") }}
+                </Label>
+              </div>
+            </template>
+
+            <FiveStackToolTip
+              v-if="isManager && isAdmin && server.game_server_node_id"
+              as-child
+              :delay-duration="300"
+              side="bottom"
+            >
+              <template #trigger>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  class="shrink-0 text-muted-foreground"
+                  :disabled="isMigrating"
+                  :aria-label="$t('pages.dedicated_servers.detail.files')"
+                  @click="openFiles({ scope: 'server', id: server.id })"
+                >
+                  <FolderOpen class="size-4" />
+                </Button>
+              </template>
+              {{ $t("pages.dedicated_servers.detail.files") }}
+            </FiveStackToolTip>
           </div>
         </div>
 
         <div
-          v-if="isManager"
-          class="sm:hidden mt-4 pt-4 border-t border-border flex items-center justify-between"
+          class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5 pl-[1.125rem] text-xs text-muted-foreground"
         >
-          <Label
-            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+          <span
+            class="inline-flex items-center whitespace-nowrap"
+            :class="toneText[status.tone]"
           >
-            {{ $t("pages.dedicated_servers.detail.enabled") }}
-          </Label>
-          <Switch
-            :model-value="server.enabled"
-            :disabled="isMigrating"
-            @click="toggleServerEnabled"
-          />
+            {{ statusWord }}
+          </span>
+          <span v-if="statusSub" class="whitespace-nowrap tabular-nums">
+            · {{ statusSub }}
+          </span>
+          <span aria-hidden="true" class="text-muted-foreground/50">·</span>
+          <span :class="chipClasses" :title="$t('common.region')">{{
+            server.region
+          }}</span>
+          <span v-if="server.type" :class="chipClasses">{{ typeLabel }}</span>
+          <FiveStackToolTip
+            v-if="pluginVersionMismatch"
+            as-child
+            :delay-duration="300"
+          >
+            <template #trigger>
+              <span
+                :class="chipClasses"
+                class="border-warning/40 font-mono tabular-nums text-warning"
+                tabindex="0"
+              >
+                <TriangleAlert class="size-3 shrink-0" />
+                {{
+                  server.plugin_version
+                    ? $t("pages.dedicated_servers.detail.plugin_tag", {
+                        version: server.plugin_version,
+                      })
+                    : $t(
+                        "pages.dedicated_servers.detail.plugin_version_unknown",
+                      )
+                }}
+                <template v-if="currentPluginVersion">
+                  <span aria-hidden="true">&rarr;</span>
+                  <a
+                    :href="pluginReleaseLink"
+                    target="_blank"
+                    rel="noopener"
+                    class="underline decoration-dotted underline-offset-2 hover:text-foreground"
+                  >
+                    v{{ currentPluginVersion }}
+                  </a>
+                </template>
+              </span>
+            </template>
+            {{
+              $t("pages.dedicated_servers.plugin_outdated_tip", {
+                version: currentPluginVersion,
+              })
+            }}
+          </FiveStackToolTip>
+          <span
+            v-else-if="server.plugin_version"
+            :class="chipClasses"
+            class="font-mono tabular-nums"
+          >
+            {{
+              $t("pages.dedicated_servers.detail.plugin_tag", {
+                version: server.plugin_version,
+              })
+            }}
+          </span>
+          <NuxtLink
+            v-if="isAdmin && serverNode"
+            to="/game-server-nodes"
+            :class="chipClasses"
+            class="font-mono transition-colors duration-150 hover:text-foreground"
+            :title="$t('pages.dedicated_servers.open_node')"
+          >
+            <span class="truncate">{{
+              serverNode.label || serverNode.id
+            }}</span>
+          </NuxtLink>
+          <LastChangedFor type="servers" :row="server" dot />
         </div>
-
       </header>
     </PageTransition>
 
     <PageTransition
       v-if="server && isAdmin && visibleMigration"
       :delay="50"
-      class="mt-6"
+      class="mt-5"
     >
       <ServerMigrationPanel
         :server-id="server.id"
@@ -267,163 +315,181 @@ const titleClasses =
     <PageTransition v-if="server" :delay="100" class="mt-4">
       <Tabs v-model="activeTab" :scroll-floor="false">
         <div
-          class="sticky top-0 z-20 -mx-1 bg-background/85 px-1 py-2 backdrop-blur-sm"
+          class="sticky top-0 z-20 -mx-1 bg-background/90 px-1 backdrop-blur-sm"
         >
-          <TabsList
-            variant="underline"
-            :class="[
-              tacticalTabsListClasses,
-              'h-auto max-w-full justify-start overflow-x-auto',
-            ]"
-          >
-            <TabsTrigger
-              v-for="tab in tabs"
-              :key="tab.key"
-              :value="tab.key"
-              :class="tacticalTabsTriggerClasses"
+          <div class="overflow-x-auto border-b border-border/60">
+            <TabsList
+              variant="underline"
+              class="h-auto flex-nowrap justify-start"
             >
-              {{ tab.label }}
-              <span
-                v-if="tab.key === 'players' && rosterStatus"
-                :class="[
-                  tabCountClasses,
-                  rosterStatus.count
-                    ? 'bg-[hsl(var(--tac-amber))] text-black'
-                    : 'bg-muted text-muted-foreground',
-                ]"
-                data-testid="players-tab-count"
+              <TabsTrigger
+                v-for="tab in tabs"
+                :key="tab.key"
+                :value="tab.key"
+                class="py-2"
               >
-                {{ rosterStatus.count }}
-              </span>
-            </TabsTrigger>
-          </TabsList>
+                {{ tab.label }}
+                <span
+                  v-if="tab.key === 'players' && rosterStatus"
+                  class="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[0.65rem] font-semibold tabular-nums"
+                  :class="
+                    rosterStatus.count
+                      ? 'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))]'
+                      : 'bg-muted text-muted-foreground'
+                  "
+                  data-testid="players-tab-count"
+                >
+                  {{ rosterStatus.count }}
+                </span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </div>
 
-        <TabsContent
-          v-if="isCommunityServer"
-          value="overview"
-          force-mount
-          class="mt-4 data-[state=inactive]:hidden"
-        >
-          <ServerCommunityOverview
-            :server-id="server.id"
-            :label="server.label"
-            :max-players="server.max_players"
-          />
-        </TabsContent>
-
-        <TabsContent
-          value="players"
-          force-mount
-          class="mt-4 grid gap-8 data-[state=inactive]:hidden"
-        >
-          <ServerPlayerManagement
-            :server-id="server.id"
-            :game-server-node-id="server.game_server_node_id"
-            :max-players="server.max_players"
-            :online="rconOnline"
-            @roster-change="rosterRevision++"
-            @status="rosterStatus = $event"
-          />
-          <ServerRecentPlayers
-            v-if="isCommunityServer"
-            :server-id="server.id"
-            :roster-revision="rosterRevision"
-          />
-        </TabsContent>
-
-        <TabsContent
-          value="console"
-          force-mount
-          class="mt-4 data-[state=inactive]:hidden"
-        >
-          <RconCommander
-            :server-id="server.id"
-            :online="rconOnline"
-            :plugin-runtime="server.plugin_runtime"
-          />
-        </TabsContent>
-
-        <TabsContent
-          v-if="showsLogs"
-          value="logs"
-          force-mount
-          class="mt-4 data-[state=inactive]:hidden"
-        >
-          <ServiceLogs
-            :service="`dedicated-server-${server.id}`"
-            :compact="true"
-          />
-        </TabsContent>
-
-        <TabsContent
-          v-if="showsSettings"
-          value="settings"
-          force-mount
-          class="mt-4 grid gap-8 data-[state=inactive]:hidden"
-        >
-          <div
-            v-if="showsPluginConfig"
-            class="rounded-lg border border-border bg-muted/30 p-4"
-          >
-            <div class="flex items-center justify-between">
-              <h3 class="text-lg font-semibold">
-                {{ $t("pages.dedicated_servers.detail.server_plugin_config") }}
-              </h3>
-              <Button variant="ghost" size="sm" @click="showConfig = !showConfig">
-                <Eye v-if="!showConfig" class="mr-2 h-4 w-4" />
-                <EyeOff v-else class="mr-2 h-4 w-4" />
-                {{
-                  showConfig
-                    ? $t("pages.dedicated_servers.detail.hide_config")
-                    : $t("pages.dedicated_servers.detail.show_config")
-                }}
-              </Button>
+        <!-- Every panel stays mounted (the console keeps its history, the
+             roster feeds the tab count and the header), so this pans them
+             like SlideSwap does instead of swapping keyed views. -->
+        <div class="srv-panels mt-5">
+          <Transition v-if="isCommunityServer" :name="panName">
+            <div v-show="activeTab === 'overview'">
+              <TabsContent value="overview" force-mount class="mt-0">
+                <ServerCommunityOverview
+                  :server-id="server.id"
+                  :label="server.label"
+                  :max-players="server.max_players"
+                />
+              </TabsContent>
             </div>
+          </Transition>
 
-            <Tabs v-model="configRuntime" :scroll-floor="false" class="mt-3">
-              <TabsList>
-                <TabsTrigger value="swiftlys2">SwiftlyS2</TabsTrigger>
-                <TabsTrigger value="counterstrikesharp">
-                  CounterStrikeSharp
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            <p class="mt-2 text-sm text-muted-foreground">
-              {{ $t("pages.dedicated_servers.detail.config_location") }}
-              <code class="rounded bg-secondary px-1.5 py-0.5 text-xs">
-                {{ configPath }}
-              </code>
-              <Clipboard :data="configPath" />
-            </p>
-
-            <div v-if="showConfig" class="relative mt-3">
-              <pre
-                class="bg-secondary p-4 rounded-lg text-sm font-mono whitespace-pre-wrap w-full"
-                >{{ config }}</pre
-              >
-              <div class="absolute top-2 right-2">
-                <Clipboard :data="config"></Clipboard>
-              </div>
+          <Transition :name="panName">
+            <div v-show="activeTab === 'players'">
+              <TabsContent value="players" force-mount class="mt-0 grid gap-8">
+                <ServerPlayerManagement
+                  :server-id="server.id"
+                  :game-server-node-id="server.game_server_node_id"
+                  :max-players="server.max_players"
+                  :online="rconOnline"
+                  @roster-change="rosterRevision++"
+                  @status="rosterStatus = $event"
+                />
+                <ServerRecentPlayers
+                  v-if="isCommunityServer"
+                  :server-id="server.id"
+                  :roster-revision="rosterRevision"
+                />
+              </TabsContent>
             </div>
-          </div>
+          </Transition>
 
-          <!-- csgo servers load no framework plugins, so only a community CS2
-               server gets the rotation, plugin and access sections. -->
-          <ServerSettings
-            :server="server"
-            :api-password="apiPassword"
-            :community="hasServerSettings"
-            :can-move="!!migratingServer?.game_server_node_id && !isMigrating"
-            :locked="isMigrating"
-            @move="moveDialog = true"
-            @delete="deleteServerAlertDialog = true"
-          />
-        </TabsContent>
+          <Transition :name="panName">
+            <div v-show="activeTab === 'console'">
+              <TabsContent value="console" force-mount class="mt-0">
+                <RconCommander
+                  :server-id="server.id"
+                  :online="rconOnline"
+                  :plugin-runtime="server.plugin_runtime"
+                />
+              </TabsContent>
+            </div>
+          </Transition>
+
+          <Transition v-if="showsLogs" :name="panName">
+            <div v-show="activeTab === 'logs'">
+              <TabsContent value="logs" force-mount class="mt-0">
+                <ServiceLogs
+                  :service="`dedicated-server-${server.id}`"
+                  :compact="true"
+                />
+              </TabsContent>
+            </div>
+          </Transition>
+
+          <Transition v-if="showsSettings" :name="panName">
+            <div v-show="activeTab === 'settings'">
+              <TabsContent value="settings" force-mount class="mt-0">
+                <ManageSection
+                  v-if="showsPluginConfig"
+                  :label="$t('pages.dedicated_servers.detail.plugin_config')"
+                >
+                  <template #action>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      class="h-8"
+                      :aria-expanded="showConfig"
+                      @click="showConfig = !showConfig"
+                    >
+                      <EyeOff v-if="showConfig" class="size-3.5" />
+                      <Eye v-else class="size-3.5" />
+                      {{
+                        showConfig
+                          ? $t(
+                              "pages.dedicated_servers.detail.hide_plugin_config",
+                            )
+                          : $t(
+                              "pages.dedicated_servers.detail.show_plugin_config",
+                            )
+                      }}
+                    </Button>
+                  </template>
+
+                  <div class="grid max-w-3xl gap-3">
+                    <AnimatedFilters
+                      v-model="configRuntime"
+                      square
+                      class="w-fit"
+                      :options="runtimeOptions"
+                    />
+                    <p
+                      class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground"
+                    >
+                      {{ $t("pages.dedicated_servers.detail.config_location") }}
+                      <span class="inline-flex min-w-0 items-center gap-0.5">
+                        <code
+                          class="min-w-0 break-all rounded-md bg-muted/60 px-1.5 py-0.5 font-mono text-xs text-foreground"
+                          >{{ configPath }}</code
+                        >
+                        <Clipboard
+                          :data="configPath"
+                          class="h-7 w-7 shrink-0 border-transparent bg-transparent shadow-none hover:bg-muted [&_svg]:size-3.5"
+                        />
+                      </span>
+                    </p>
+                    <Fold :open="showConfig">
+                      <div class="relative">
+                        <pre
+                          class="w-full whitespace-pre-wrap break-all rounded-md border border-border bg-muted/30 p-4 pr-12 font-mono text-xs leading-relaxed"
+                          >{{ config }}</pre>
+                        <Clipboard
+                          :data="config"
+                          class="absolute right-2 top-2 h-8 w-8 border-transparent bg-transparent shadow-none hover:bg-muted [&_svg]:size-3.5"
+                        />
+                      </div>
+                    </Fold>
+                  </div>
+                </ManageSection>
+
+                <!-- csgo servers load no framework plugins, so only a community CS2
+                     server gets the rotation, plugin and access sections. -->
+                <ServerSettings
+                  class="tac-section-sep"
+                  :server="server"
+                  :api-password="apiPassword"
+                  :community="hasServerSettings"
+                  :can-move="
+                    !!migratingServer?.game_server_node_id && !isMigrating
+                  "
+                  :locked="isMigrating"
+                  @move="moveDialog = true"
+                  @delete="deleteServerAlertDialog = true"
+                />
+              </TabsContent>
+            </div>
+          </Transition>
+        </div>
       </Tabs>
     </PageTransition>
-
 
     <ServerMoveDialog
       v-if="isAdmin"
@@ -440,25 +506,85 @@ const titleClasses =
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{{
-            $t("pages.dedicated_servers.detail.delete_confirm.title")
+            $t("pages.dedicated_servers.delete_title", {
+              label: server?.label ?? "",
+            })
           }}</AlertDialogTitle>
           <AlertDialogDescription>
-            {{ $t("pages.dedicated_servers.detail.delete_confirm.description") }}
+            {{
+              server?.game_server_node_id
+                ? $t("pages.dedicated_servers.delete_body_node", {
+                    node: serverNode?.label || server.game_server_node_id,
+                  })
+                : $t("pages.dedicated_servers.delete_body_external")
+            }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
-          <AlertDialogAction @click="deleteServer">{{
-            $t("pages.dedicated_servers.detail.delete_confirm.continue")
-          }}</AlertDialogAction>
+          <!-- Plain button: AlertDialogAction closes before the mutation runs. -->
+          <Button variant="destructive" @click="deleteServer">
+            {{ $t("pages.dedicated_servers.delete_server") }}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   </template>
-  <PublicServerView v-else :server-id="(route.params.id as string)" />
+  <PublicServerView v-else :server-id="route.params.id as string" />
 </template>
 
+<style scoped>
+.srv-primary {
+  flex: none;
+  gap: 6px;
+  border-color: hsl(var(--tac-amber) / 0.55);
+  background: hsl(var(--tac-amber) / 0.12);
+  color: hsl(var(--tac-amber));
+}
+.srv-primary:hover {
+  background: hsl(var(--tac-amber) / 0.2);
+  color: hsl(var(--tac-amber));
+}
+/* SlideSwap's pan on kept-mounted panels: the tab to the right brings its
+   panel in from the right while the old one leaves left, as one strip. */
+.srv-panels {
+  display: grid;
+  overflow-x: clip;
+}
+.srv-panels > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.srv-pan-next-enter-active,
+.srv-pan-next-leave-active,
+.srv-pan-prev-enter-active,
+.srv-pan-prev-leave-active {
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.srv-pan-next-leave-active,
+.srv-pan-prev-leave-active {
+  pointer-events: none;
+}
+.srv-pan-next-enter-from,
+.srv-pan-prev-leave-to {
+  transform: translateX(100%);
+}
+.srv-pan-next-leave-to,
+.srv-pan-prev-enter-from {
+  transform: translateX(-100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .srv-pan-next-enter-active,
+  .srv-pan-next-leave-active,
+  .srv-pan-prev-enter-active,
+  .srv-pan-prev-leave-active {
+    transition: none;
+  }
+}
+</style>
+
 <script lang="ts">
+import { useServerContext } from "~/composables/useServerContext";
 import { $ } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import {
@@ -472,6 +598,7 @@ import { connectAddress } from "~/utilities/connectAddress";
 import { effectivePluginRuntime } from "~/constants/rconCommands";
 import { pluginReleaseUrl } from "~/constants/gameServerReleases";
 import type { ServerRosterStatus } from "~/types/serverOverview";
+import { serverStatus, serverType } from "~/components/servers/serverFleet";
 
 // Literals, not the generated enum: a type added by a migration is absent
 // from ~/generated/zeus until codegen has run against a migrated database.
@@ -531,6 +658,7 @@ export default {
               connection_string: true,
               offline_at: true,
               max_players: true,
+              current_match: { id: true },
             },
           ],
         }),
@@ -541,6 +669,9 @@ export default {
         },
         result: function ({ data }) {
           this.server = data.servers_by_pk;
+          useServerContext().value = this.server
+            ? { id: this.server.id, name: this.server.label || this.server.id }
+            : null;
         },
         // Most of these columns are staff-only, and the public view runs its
         // own subscription.
@@ -549,6 +680,9 @@ export default {
         },
       },
     },
+  },
+  unmounted() {
+    useServerContext().value = null;
   },
   data() {
     return {
@@ -559,7 +693,19 @@ export default {
       deleteServerAlertDialog: false,
       rosterRevision: 0,
       rosterStatus: null as ServerRosterStatus | null,
+      panDirection: "next" as "next" | "prev",
     };
+  },
+  watch: {
+    // Pre-flush, so the panels pan the way this change went.
+    activeTab: {
+      handler(next: string, previous: string) {
+        const index = (key: string) =>
+          this.tabs.findIndex((tab: { key: string }) => tab.key === key);
+        this.panDirection = index(next) >= index(previous) ? "next" : "prev";
+      },
+      flush: "pre",
+    },
   },
   computed: {
     // Not named connectAddress: an import in this block is a template binding
@@ -687,38 +833,35 @@ export default {
     rconOnline() {
       return !!(this.server?.connected && this.server?.rcon_status);
     },
-    statusTier() {
-      if (!this.server?.connected) {
-        return "disconnected";
-      }
-      if (!this.server.rcon_status || this.pluginVersionMismatch) {
-        return "warning";
-      }
-      if (this.server.hibernating) {
-        return "hibernating";
-      }
-      return "connected";
+    // The list row's status: live while a match holds the server or the
+    // roster reports players on it.
+    status() {
+      const settings = useApplicationSettingsStore();
+      return serverStatus(this.server, {
+        currentPluginVersion: settings.currentPluginVersion,
+        pluginRuntime: settings.gameServerPluginRuntime,
+        players: this.rosterStatus
+          ? new Map([[this.server?.id, this.rosterStatus.count]])
+          : undefined,
+        now: Date.now(),
+      });
     },
-    statusLabel() {
-      if (!this.server?.connected) {
-        return this.$t(
-          "pages.dedicated_servers.detail.status_label.disconnected",
-        );
-      }
-      if (!this.server.rcon_status) {
-        return this.$t("pages.dedicated_servers.detail.status_label.no_rcon");
-      }
-      if (this.pluginVersionMismatch) {
-        return this.$t(
-          "pages.dedicated_servers.detail.status_label.version_mismatch",
-        );
-      }
-      if (this.server.hibernating) {
-        return this.$t(
-          "pages.dedicated_servers.detail.status_label.hibernating",
-        );
-      }
-      return this.$t("pages.dedicated_servers.detail.status_label.connected");
+    statusWord(): string {
+      return this.$t(...(this.status.word as [string, any]));
+    },
+    statusTip(): string {
+      return this.$t(...(this.status.tip as [string, any]));
+    },
+    statusSub(): string {
+      return this.status.sub
+        ? this.$t(...(this.status.sub as [string, any]))
+        : "";
+    },
+    typeLabel(): string {
+      return serverType(this.server);
+    },
+    panName(): string {
+      return `srv-pan-${this.panDirection}`;
     },
     configRuntime: {
       get(): string {
@@ -847,6 +990,7 @@ export default {
       });
 
       if (!data?.delete_servers_by_pk) {
+        this.deleteServerAlertDialog = false;
         toast({
           variant: "destructive",
           title: this.$t("common.error"),

@@ -3759,9 +3759,7 @@
           "confirm_outdated_title": "Refaire les aperçus obsolètes ?",
           "confirm_queue": "Mettre les rendus en file",
           "lineups_title": "Lineups qui ont besoin d'un rendu",
-          "lineups_sub": "Version de rendu v{version}",
-          "render_one": "En rendre une d'abord",
-          "render_one_waiting": "En attente de la fin de ce rendu. Dès qu'il indique la version actuelle, « Refaire les rendus obsolètes » se débloque."
+          "lineups_sub": "Version de rendu v{version}"
         },
         "updated_ago": "Mis à jour il y a {since}"
       }
@@ -7571,8 +7569,6 @@
           "map_filter": "Filtrer par carte",
           "render_missing": "Rendre les manquants ({total})",
           "rerender_outdated": "Refaire les obsolètes ({total})",
-          "pipeline_behind": "Le dernier rendu utilisait une version plus ancienne",
-          "pipeline_behind_hint": "Le dernier rendu terminé a été filmé en version {pipeline} ; cette API attend la version {version}. Les pods de rendu récupèrent l'image la plus récente au démarrage : faites d'abord le rendu d'un lineup. Dès qu'il se termine en version {version}, « Refaire les rendus obsolètes » se débloque.",
           "load_failed": "Impossible de charger la couverture des aperçus",
           "confirm_missing_title": "Rendre les aperçus manquants ?",
           "confirm_missing": "Cela met en file un rendu pour {count} lineup sans aperçu. | Cela met en file un rendu pour {count} lineups sans aperçu.",
@@ -7932,7 +7928,6 @@
         },
         "renders": {
           "failed": "{count} rendu a échoué au cours du dernier jour | {count} rendus ont échoué au cours du dernier jour",
-          "behind": "Le pipeline de rendu est en retard : il filme en v{pipeline}, l'API attend la v{version}",
           "missing": "{count} lineup n'a pas d'aperçu | {count} lineups n'ont pas d'aperçu",
           "outdated": "{count} aperçu de lineup est obsolète | {count} aperçus de lineups sont obsolètes"
         },

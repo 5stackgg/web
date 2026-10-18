@@ -72,16 +72,6 @@ const mapLabel = computed(() =>
     : null,
 );
 
-// The pod in use films an older version than the api expects: filming an
-// outdated preview again would write another outdated one. The api refuses
-// it too.
-const behind = computed(
-  () =>
-    !!props.coverage &&
-    props.coverage.pipeline_version !== null &&
-    props.coverage.pipeline_version < props.coverage.version,
-);
-
 const stats = computed(() =>
   (["current", "missing", "outdated", "unrenderable", "queued"] as const).map(
     (key) => ({
@@ -180,10 +170,9 @@ function ask(scope: BulkScope) {
 
 const confirmText = computed(() => {
   const count = props.coverage?.[asked.value] ?? 0;
-  const what = t(
-    `pages.utility.render_queue.coverage.confirm_${asked.value}`,
-    { count },
-  );
+  const what = t(`pages.utility.render_queue.coverage.confirm_${asked.value}`, {
+    count,
+  });
   return mapLabel.value
     ? `${what} ${t("pages.utility.render_queue.coverage.confirm_map", {
         map: mapLabel.value,
@@ -253,17 +242,6 @@ async function renderAll() {
             v{{ coverage.version }}
           </span>
         </span>
-        <UtilityRenderWarn
-          v-if="behind && coverage"
-          data-coverage-behind
-          :title="$t('pages.utility.render_queue.coverage.pipeline_behind')"
-          :note="
-            $t('pages.utility.render_queue.coverage.pipeline_behind_hint', {
-              pipeline: coverage.pipeline_version,
-              version: coverage.version,
-            })
-          "
-        />
         <UtilityRenderWarn
           v-if="failed"
           data-coverage-failed
@@ -337,7 +315,7 @@ async function renderAll() {
           variant="outline"
           data-bulk="outdated"
           class="h-8 font-mono text-[0.62rem] uppercase tracking-[0.14em]"
-          :disabled="!coverage?.outdated || behind"
+          :disabled="!coverage?.outdated"
           @click="ask('outdated')"
         >
           {{

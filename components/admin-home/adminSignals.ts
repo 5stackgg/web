@@ -551,20 +551,11 @@ export function seasonSignals(
 
 export type CoverageCounts = {
   version: number;
-  pipeline_version: number | null;
   total: number;
   current: number;
   missing: number;
   outdated: number;
 };
-
-export function pipelineBehind(coverage: CoverageCounts | null): boolean {
-  return (
-    !!coverage &&
-    coverage.pipeline_version !== null &&
-    coverage.pipeline_version < coverage.version
-  );
-}
 
 export function renderSignals(input: {
   /** Clip renders and lineup renders that failed in the last day. */
@@ -594,20 +585,6 @@ export function renderSignals(input: {
   if (!coverage) {
     return out;
   }
-  const behind = pipelineBehind(coverage);
-  if (behind) {
-    out.push({
-      ...base,
-      key: "renders:behind",
-      severity: "warning",
-      message: `${MSG}.renders.behind`,
-      count: 1,
-      params: {
-        pipeline: coverage.pipeline_version ?? 0,
-        version: coverage.version,
-      },
-    });
-  }
   if (coverage.missing > 0) {
     out.push({
       ...base,
@@ -617,9 +594,7 @@ export function renderSignals(input: {
       count: coverage.missing,
     });
   }
-  // While the pipeline is behind, re-rendering would only write another
-  // outdated preview: the row above is the one to act on.
-  if (coverage.outdated > 0 && !behind) {
+  if (coverage.outdated > 0) {
     out.push({
       ...base,
       key: "renders:outdated",

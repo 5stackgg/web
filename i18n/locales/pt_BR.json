@@ -3759,9 +3759,7 @@
           "confirm_outdated_title": "Renderizar prévias desatualizadas novamente?",
           "confirm_queue": "Colocar renderizações na fila",
           "lineups_title": "Lineups que precisam de renderização",
-          "lineups_sub": "Versão de renderização v{version}",
-          "render_one": "Renderize uma primeiro",
-          "render_one_waiting": "Aguardando esse render terminar. Quando ele informar a versão atual, Renderizar desatualizadas é liberado."
+          "lineups_sub": "Versão de renderização v{version}"
         },
         "updated_ago": "Atualizado há {since}"
       }
@@ -7571,8 +7569,6 @@
           "map_filter": "Filtrar por mapa",
           "render_missing": "Renderizar as que faltam ({total})",
           "rerender_outdated": "Renderizar as desatualizadas de novo ({total})",
-          "pipeline_behind": "O último render usou uma versão anterior",
-          "pipeline_behind_hint": "O último render concluído foi gravado na versão {pipeline}; esta API espera a versão {version}. Os pods de render baixam a imagem mais recente ao iniciar, então renderize um lineup primeiro. Quando ele terminar na versão {version}, Renderizar desatualizadas é liberado.",
           "load_failed": "Não foi possível carregar a cobertura de prévias",
           "confirm_missing_title": "Renderizar as prévias que faltam?",
           "confirm_missing": "Isso coloca na fila uma renderização para {count} lineup sem prévia. | Isso coloca na fila uma renderização para {count} lineups sem prévia.",
@@ -7932,7 +7928,6 @@
         },
         "renders": {
           "failed": "{count} renderização falhou no último dia | {count} renderizações falharam no último dia",
-          "behind": "O pipeline de renderização está atrasado: grava v{pipeline}, a API espera v{version}",
           "missing": "{count} lineup não tem prévia | {count} lineups não têm prévia",
           "outdated": "{count} prévia de lineup está desatualizada | {count} prévias de lineups estão desatualizadas"
         },

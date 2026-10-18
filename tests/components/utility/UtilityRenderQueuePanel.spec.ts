@@ -78,7 +78,6 @@ const GAPS = [
 function coverageOf(extra: Record<string, unknown> = {}) {
   return {
     version: 2,
-    pipeline_version: 2,
     total: 125,
     current: 120,
     missing: 1,
@@ -337,7 +336,6 @@ describe("UtilityRenderQueuePanel coverage", () => {
     expect(bulk(wrapper, "missing").attributes("disabled")).toBeUndefined();
     expect(bulk(wrapper, "outdated").text()).toBe("Re-render Outdated (9)");
     expect(bulk(wrapper, "outdated").attributes("disabled")).toBeUndefined();
-    expect(wrapper.find("[data-coverage-behind]").exists()).toBe(false);
   });
 
   it("holds each button when there is nothing for it to queue", async () => {
@@ -347,29 +345,6 @@ describe("UtilityRenderQueuePanel coverage", () => {
     expect(bulk(wrapper, "missing").text()).toBe("Render Missing (0)");
     expect(bulk(wrapper, "missing").attributes("disabled")).toBeDefined();
     expect(bulk(wrapper, "outdated").attributes("disabled")).toBeDefined();
-  });
-
-  it("warns when the pod films an older version, and holds the re-render", async () => {
-    coverages[""] = coverageOf({ pipeline_version: 1, outdated: 9 });
-    const wrapper = await mountPanel();
-
-    const warning = wrapper.find("[data-coverage-behind]");
-    expect(warning.attributes("aria-label")).toContain(
-      "The last finished render was filmed at version 1; this API expects version 2",
-    );
-    expect(warning.attributes("aria-label")).toContain(
-      "render one lineup first",
-    );
-    expect(bulk(wrapper, "outdated").attributes("disabled")).toBeDefined();
-    expect(bulk(wrapper, "missing").attributes("disabled")).toBeUndefined();
-  });
-
-  it("does not warn before any render has reported a version", async () => {
-    coverages[""] = coverageOf({ pipeline_version: null, outdated: 9 });
-    const wrapper = await mountPanel();
-
-    expect(wrapper.find("[data-coverage-behind]").exists()).toBe(false);
-    expect(bulk(wrapper, "outdated").attributes("disabled")).toBeUndefined();
   });
 
   it("marks the strip when what is missing could not be loaded", async () => {
@@ -455,7 +430,7 @@ describe("UtilityRenderQueuePanel coverage", () => {
   it("shows the api's reason when it refuses", async () => {
     const wrapper = await mountPanel();
     vi.spyOn(useNuxtApp().$apollo.defaultClient, "mutate").mockRejectedValue(
-      new Error("the render pod in use films version 1, older than version 2"),
+      new Error("could not reach the render queue"),
     );
 
     await bulk(wrapper, "outdated").trigger("click");
@@ -463,9 +438,7 @@ describe("UtilityRenderQueuePanel coverage", () => {
     await confirmBulk();
 
     expect(lastToast().title).toBe("Could not queue those renders");
-    expect(lastToast().description).toBe(
-      "the render pod in use films version 1, older than version 2",
-    );
+    expect(lastToast().description).toBe("could not reach the render queue");
     expect(lastToast().variant).toBe("destructive");
   });
 

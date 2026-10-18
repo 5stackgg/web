@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "Video Kodlama",
           "description": "CPU yedekli GPU kodlamasını, yalnızca GPU'yu veya yalnızca CPU'yu seçin. Her GPU düğümünde AMD veya NVIDIA algılanır. Yeni canlı yayınlar, demolar, öne çıkanlar ve ekipman videoları için geçerlidir.",
-          "updated": "Video kodlama ayarları güncellendi"
+          "updated": "Video kodlama ayarları güncellendi",
+          "hardware_description": "AMD VA-API, NVIDIA NVENC kullanır. Bu ilke yakalama ve son MP4 kodlamasını kapsar. Ölçekleme, birleştirme ve ses hâlâ CPU kullanabilir.",
+          "apply_description": "Kaydedilen ayarlar yeni işlere uygulanır. Çalışan işler ve mevcut videolar ayarlarını korur.",
+          "live_section": "Canlı yayınlar ve demo oynatma",
+          "clips_section": "Öne çıkanlar ve ekipman videoları",
+          "live_codec_description": "H.264 en geniş oynatma desteğini sunar. H.265 / HEVC uyumlu GPU ve izleme cihazı gerektirir; bazı tarayıcılar WebRTC yerine HLS gerektirir. CPU kodlaması H.264 kullanır.",
+          "clip_codec_description": "Öne çıkanlara, düzenlenen kliplere ve ekipman videolarına uygulanır. H.264 en geniş desteği sunar. H.265 / HEVC uyumlu GPU ve izleme cihazı gerektirir. CPU kodlaması H.264 kullanır.",
+          "nodes_description": "CS2 render çözünürlüğü ve kullanılabilir işler GPU düğümü başına yapılandırılır.",
+          "save_failed": "Video kodlama ayarları kaydedilemedi. Değişiklikleriniz korunuyor."
         },
         "streaming": {
           "title": "Yayın",

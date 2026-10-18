@@ -5,7 +5,6 @@ import { ExternalLink } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
-import VideoEncoderField from "~/components/settings/VideoEncoderField.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
 </script>
@@ -126,37 +125,6 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
           >
             {{ $t("pages.settings.application.encoding.title") }}
           </NuxtLink>
-
-          <FormField v-slot="{ componentField }" name="live_video_codec">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.streaming.live_video_codec")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.streaming.live_video_codec_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="h265">
-                    {{ $t("pages.settings.application.streaming.codec_h265") }}
-                  </SelectItem>
-                  <SelectItem value="h264">
-                    {{ $t("pages.settings.application.streaming.codec_h264") }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <VideoEncoderField />
         </SettingsSection>
 
         <SettingsSection
@@ -195,7 +163,6 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
         />
       </form>
     </PageTransition>
-
   </SettingsPage>
 </template>
 
@@ -222,8 +189,6 @@ export default {
                 .string()
                 .default(e_player_roles_enum.streamer),
             }),
-            live_video_codec: z.enum(["h265", "h264"]).default("h264"),
-            video_encoder: z.enum(["auto", "gpu", "cpu"]).default("auto"),
           }),
         ),
       }),
@@ -234,22 +199,12 @@ export default {
       immediate: true,
       handler(newVal) {
         for (const setting of newVal) {
-          if (setting.name === "live_video_codec") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "h265" ? "h265" : "h264",
-            );
-            continue;
+          if (
+            setting.name === "public.minimum_role_to_stream" ||
+            setting.name === "public.minimum_role_to_spectate"
+          ) {
+            this.form.setFieldValue(setting.name, setting.value);
           }
-          if (setting.name === "video_encoder") {
-            const mode = (setting.value ?? "").trim().toLowerCase();
-            this.form.setFieldValue(
-              setting.name,
-              mode === "gpu" || mode === "cpu" ? mode : "auto",
-            );
-            continue;
-          }
-          this.form.setFieldValue(setting.name, setting.value);
         }
         this.form.resetForm({ values: this.form.values });
       },
@@ -331,14 +286,6 @@ export default {
                   {
                     name: "public.minimum_role_to_spectate",
                     value: roleToSpectate,
-                  },
-                  {
-                    name: "live_video_codec",
-                    value: this.form.values.live_video_codec ?? "h264",
-                  },
-                  {
-                    name: "video_encoder",
-                    value: this.form.values.video_encoder ?? "auto",
                   },
                 ],
                 on_conflict: {

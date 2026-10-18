@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "Video Encoding",
           "description": "Choose GPU encoding with CPU fallback, GPU only, or CPU only. AMD or NVIDIA is detected on each GPU node. Applies to new live streams, demos, highlights and utility videos.",
-          "updated": "Updated Video Encoding Settings"
+          "updated": "Updated Video Encoding Settings",
+          "hardware_description": "AMD uses VA-API; NVIDIA uses NVENC. This policy covers capture and final MP4 encoding. GPU encoding can still use CPU for scaling, compositing and audio.",
+          "apply_description": "Saved settings apply to new jobs. Running jobs and existing videos keep their current settings.",
+          "live_section": "Live streams & demo playback",
+          "clips_section": "Highlights & utility videos",
+          "live_codec_description": "H.264 offers the widest playback support. H.265 / HEVC needs a compatible GPU and viewing device; some browsers need HLS instead of WebRTC. CPU encoding uses H.264.",
+          "clip_codec_description": "Applies to highlights, edited clips and utility videos. H.264 offers the widest playback support. H.265 / HEVC needs a compatible GPU and viewing device. CPU encoding uses H.264.",
+          "nodes_description": "CS2 render resolution and workload availability are configured per GPU node.",
+          "save_failed": "Could not save video encoding settings. Your changes are still here."
         },
         "streaming": {
           "title": "Streaming",

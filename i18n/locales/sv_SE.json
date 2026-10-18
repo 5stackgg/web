@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "Videokodning",
           "description": "Välj GPU-kodning med CPU som reserv, endast GPU eller endast CPU. AMD eller NVIDIA identifieras på varje GPU-nod. Gäller nya liveströmmar, demon, höjdpunkter och utility-videor.",
-          "updated": "Inställningar för videokodning uppdaterade"
+          "updated": "Inställningar för videokodning uppdaterade",
+          "hardware_description": "AMD använder VA-API; NVIDIA använder NVENC. Policyn gäller inspelning och slutlig MP4-kodning. Skalning, komposition och ljud kan fortfarande använda CPU.",
+          "apply_description": "Sparade inställningar gäller nya jobb. Pågående jobb och befintliga videor behåller sina inställningar.",
+          "live_section": "Liveströmmar och demouppspelning",
+          "clips_section": "Höjdpunkter och utility-videor",
+          "live_codec_description": "H.264 har bredast uppspelningsstöd. H.265 / HEVC kräver kompatibel GPU och visningsenhet; vissa webbläsare behöver HLS i stället för WebRTC. CPU-kodning använder H.264.",
+          "clip_codec_description": "Gäller höjdpunkter, redigerade klipp och utility-videor. H.264 har bredast stöd. H.265 / HEVC kräver kompatibel GPU och visningsenhet. CPU-kodning använder H.264.",
+          "nodes_description": "CS2:s renderingsupplösning och tillgängliga uppgifter ställs in per GPU-nod.",
+          "save_failed": "Det gick inte att spara videoinställningarna. Dina ändringar finns kvar."
         },
         "streaming": {
           "title": "Streaming",

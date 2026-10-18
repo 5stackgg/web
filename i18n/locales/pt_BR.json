@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "Codificação de vídeo",
           "description": "Escolha GPU com CPU como alternativa, somente GPU ou somente CPU. AMD ou NVIDIA é detectada em cada nó GPU. Aplica-se a novas transmissões, demos, destaques e vídeos de utilitários.",
-          "updated": "Configurações de codificação de vídeo atualizadas"
+          "updated": "Configurações de codificação de vídeo atualizadas",
+          "hardware_description": "AMD usa VA-API; NVIDIA usa NVENC. Esta política cobre a captura e a codificação do MP4 final. Escala, composição e áudio ainda podem usar CPU.",
+          "apply_description": "As configurações salvas valem para novas tarefas. Tarefas em andamento e vídeos existentes mantêm suas configurações.",
+          "live_section": "Transmissões e reprodução de demos",
+          "clips_section": "Destaques e vídeos de utilitários",
+          "live_codec_description": "H.264 oferece a maior compatibilidade. H.265 / HEVC exige GPU e dispositivo compatíveis; alguns navegadores precisam de HLS em vez de WebRTC. A codificação CPU usa H.264.",
+          "clip_codec_description": "Aplica-se a destaques, clipes editados e vídeos de utilitários. H.264 oferece a maior compatibilidade. H.265 / HEVC exige GPU e dispositivo compatíveis. A codificação CPU usa H.264.",
+          "nodes_description": "A resolução de renderização do CS2 e as tarefas disponíveis são configuradas por nó GPU.",
+          "save_failed": "Não foi possível salvar as configurações de vídeo. Suas alterações foram mantidas."
         },
         "streaming": {
           "title": "Streaming",

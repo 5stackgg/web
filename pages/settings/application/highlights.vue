@@ -292,88 +292,12 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
             $t('pages.settings.application.demo_settings.render_output_section')
           "
         >
-          <FormField v-slot="{ componentField }" name="clip_video_codec">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.clip_video_codec")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clip_video_codec_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="h265">
-                    {{
-                      $t("pages.settings.application.demo_settings.codec_h265")
-                    }}
-                  </SelectItem>
-                  <SelectItem value="h264">
-                    {{
-                      $t("pages.settings.application.demo_settings.codec_h264")
-                    }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="clip_fps">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.clip_fps")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clip_fps_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="60">60 FPS</SelectItem>
-                  <SelectItem value="30">30 FPS</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="clip_resolution">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.clip_resolution")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clip_resolution_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="1080p">1080p</SelectItem>
-                  <SelectItem value="720p">720p</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+          <NuxtLink
+            to="/settings/application/encoding#clips"
+            class="inline-flex text-sm font-medium text-primary hover:underline"
+          >
+            {{ $t("pages.settings.application.encoding.title") }}
+          </NuxtLink>
         </SettingsSection>
 
         <SettingsSection
@@ -493,9 +417,6 @@ export default {
             auto_clip_default_visibility: z
               .enum(["private", "public"])
               .default("private"),
-            clip_video_codec: z.enum(["h265", "h264"]).default("h264"),
-            clip_fps: z.enum(["30", "60"]).default("60"),
-            clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
           }),
         ),
       }),
@@ -514,30 +435,6 @@ export default {
               continue;
             }
             this.form.setFieldValue(setting.name, parseInt(setting.value));
-            continue;
-          }
-
-          if (setting.name === "clip_video_codec") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "h265" ? "h265" : "h264",
-            );
-            continue;
-          }
-
-          if (setting.name === "clip_fps") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "30" ? "30" : "60",
-            );
-            continue;
-          }
-
-          if (setting.name === "clip_resolution") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "720p" ? "720p" : "1080p",
-            );
             continue;
           }
 
@@ -621,18 +518,6 @@ export default {
                   name: "auto_clip_default_visibility",
                   value:
                     this.form.values.auto_clip_default_visibility ?? "private",
-                },
-                {
-                  name: "clip_video_codec",
-                  value: this.form.values.clip_video_codec ?? "h264",
-                },
-                {
-                  name: "clip_fps",
-                  value: this.form.values.clip_fps ?? "60",
-                },
-                {
-                  name: "clip_resolution",
-                  value: this.form.values.clip_resolution ?? "1080p",
                 },
               ],
               on_conflict: {

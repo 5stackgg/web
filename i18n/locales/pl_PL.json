@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "Kodowanie wideo",
           "description": "Wybierz GPU z awaryjnym użyciem CPU, tylko GPU lub tylko CPU. AMD lub NVIDIA jest wykrywane na każdym węźle GPU. Dotyczy nowych transmisji, dem, skrótów i filmów z granatami.",
-          "updated": "Zaktualizowano ustawienia kodowania wideo"
+          "updated": "Zaktualizowano ustawienia kodowania wideo",
+          "hardware_description": "AMD używa VA-API, a NVIDIA NVENC. Zasada obejmuje przechwytywanie i kodowanie końcowego MP4. Skalowanie, kompozycja i dźwięk nadal mogą używać CPU.",
+          "apply_description": "Zapisane ustawienia dotyczą nowych zadań. Trwające zadania i istniejące filmy zachowują swoje ustawienia.",
+          "live_section": "Transmisje i odtwarzanie dem",
+          "clips_section": "Skróty i filmy z granatami",
+          "live_codec_description": "H.264 zapewnia największą zgodność odtwarzania. H.265 / HEVC wymaga zgodnej karty GPU i urządzenia; niektóre przeglądarki wymagają HLS zamiast WebRTC. Kodowanie CPU używa H.264.",
+          "clip_codec_description": "Dotyczy skrótów, edytowanych klipów i filmów z granatami. H.264 zapewnia największą zgodność odtwarzania. H.265 / HEVC wymaga zgodnej karty GPU i urządzenia. Kodowanie CPU używa H.264.",
+          "nodes_description": "Rozdzielczość renderowania CS2 i dostępne zadania ustawia się dla każdego węzła GPU.",
+          "save_failed": "Nie udało się zapisać ustawień wideo. Twoje zmiany zostały zachowane."
         },
         "streaming": {
           "title": "Streaming",

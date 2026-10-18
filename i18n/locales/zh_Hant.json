@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "影片編碼",
           "description": "選擇支援 CPU 備援的 GPU 編碼、僅 GPU 或僅 CPU。每個 GPU 節點會偵測 AMD 或 NVIDIA。適用於新建的直播、示範、精彩片段和道具影片。",
-          "updated": "影片編碼設定已更新"
+          "updated": "影片編碼設定已更新",
+          "hardware_description": "AMD 使用 VA-API，NVIDIA 使用 NVENC。此原則適用於擷取和最終 MP4 編碼。縮放、合成和音訊仍可能使用 CPU。",
+          "apply_description": "儲存的設定適用於新工作。執行中的工作和現有影片保持原有設定。",
+          "live_section": "直播與示範重播",
+          "clips_section": "精彩片段與道具影片",
+          "live_codec_description": "H.264 的播放相容性最廣。H.265 / HEVC 需要相容的 GPU 和播放裝置；部分瀏覽器需要使用 HLS 而非 WebRTC。CPU 編碼使用 H.264。",
+          "clip_codec_description": "適用於精彩片段、編輯後的片段和道具影片。H.264 的播放相容性最廣。H.265 / HEVC 需要相容的 GPU 和播放裝置。CPU 編碼使用 H.264。",
+          "nodes_description": "CS2 繪製解析度和可用工作在各 GPU 節點上設定。",
+          "save_failed": "無法儲存影片編碼設定。您的修改仍保留於此。"
         },
         "streaming": {
           "title": "直播",

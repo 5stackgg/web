@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "Videokodning",
           "description": "Vælg GPU-kodning med CPU som reserve, kun GPU eller kun CPU. AMD eller NVIDIA registreres på hver GPU-node. Gælder nye livestreams, demoer, højdepunkter og utility-videoer.",
-          "updated": "Indstillinger for videokodning opdateret"
+          "updated": "Indstillinger for videokodning opdateret",
+          "hardware_description": "AMD bruger VA-API; NVIDIA bruger NVENC. Politikken gælder optagelse og endelig MP4-kodning. Skalering, komposition og lyd kan stadig bruge CPU.",
+          "apply_description": "Gemte indstillinger gælder nye jobs. Igangværende jobs og eksisterende videoer beholder deres indstillinger.",
+          "live_section": "Livestreams og demoafspilning",
+          "clips_section": "Højdepunkter og utility-videoer",
+          "live_codec_description": "H.264 har bredest afspilningsunderstøttelse. H.265 / HEVC kræver kompatibel GPU og afspilningsenhed; nogle browsere kræver HLS i stedet for WebRTC. CPU-kodning bruger H.264.",
+          "clip_codec_description": "Gælder højdepunkter, redigerede klip og utility-videoer. H.264 har bredest understøttelse. H.265 / HEVC kræver kompatibel GPU og afspilningsenhed. CPU-kodning bruger H.264.",
+          "nodes_description": "CS2-renderopløsning og tilgængelige opgaver indstilles pr. GPU-node.",
+          "save_failed": "Videoindstillingerne kunne ikke gemmes. Dine ændringer er bevaret."
         },
         "streaming": {
           "title": "Streaming",

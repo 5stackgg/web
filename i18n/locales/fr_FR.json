@@ -2597,7 +2597,15 @@
         "encoding": {
           "title": "Encodage vidéo",
           "description": "Choisissez le GPU avec repli sur le CPU, le GPU uniquement ou le CPU uniquement. AMD ou NVIDIA est détecté sur chaque nœud GPU. S'applique aux nouveaux directs, démos, temps forts et vidéos utilitaires.",
-          "updated": "Paramètres d'encodage vidéo mis à jour"
+          "updated": "Paramètres d'encodage vidéo mis à jour",
+          "hardware_description": "AMD utilise VA-API ; NVIDIA utilise NVENC. Cette règle couvre la capture et l’encodage MP4 final. Le redimensionnement, la composition et l’audio peuvent encore utiliser le CPU.",
+          "apply_description": "Les réglages enregistrés s’appliquent aux nouvelles tâches. Les tâches en cours et vidéos existantes conservent leurs réglages.",
+          "live_section": "Directs et lecture des démos",
+          "clips_section": "Temps forts et vidéos utilitaires",
+          "live_codec_description": "H.264 offre la meilleure compatibilité de lecture. H.265 / HEVC nécessite un GPU et un appareil compatibles ; certains navigateurs utilisent HLS au lieu de WebRTC. L’encodage CPU utilise H.264.",
+          "clip_codec_description": "S’applique aux temps forts, clips modifiés et vidéos utilitaires. H.264 offre la meilleure compatibilité de lecture. H.265 / HEVC nécessite un GPU et un appareil compatibles. L’encodage CPU utilise H.264.",
+          "nodes_description": "La résolution de rendu CS2 et les tâches disponibles se règlent sur chaque nœud GPU.",
+          "save_failed": "Impossible d’enregistrer les réglages vidéo. Vos modifications sont conservées."
         },
         "streaming": {
           "title": "Streaming",

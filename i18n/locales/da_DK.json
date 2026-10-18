@@ -3759,9 +3759,7 @@
           "confirm_outdated_title": "Render forældede forhåndsvisninger igen?",
           "confirm_queue": "Sæt renderinger i kø",
           "lineups_title": "Opstillinger, der mangler en rendering",
-          "lineups_sub": "Renderversion v{version}",
-          "render_one": "Render én først",
-          "render_one_waiting": "Venter på, at den rendering bliver færdig. Når den melder den nuværende version, låses Genrender forældede op."
+          "lineups_sub": "Renderversion v{version}"
         },
         "updated_ago": "Opdateret for {since} siden"
       }
@@ -7571,8 +7569,6 @@
           "map_filter": "Filtrér efter bane",
           "render_missing": "Gengiv manglende ({total})",
           "rerender_outdated": "Gengiv forældede igen ({total})",
-          "pipeline_behind": "Seneste rendering brugte en ældre version",
-          "pipeline_behind_hint": "Den seneste færdige rendering blev filmet med version {pipeline}; dette API forventer version {version}. Render-pods henter det nyeste image, når de starter, så render én lineup først. Når den er færdig med version {version}, låses Genrender forældede op.",
           "load_failed": "Kunne ikke hente dækningen af forhåndsvisninger",
           "confirm_missing_title": "Gengiv manglende forhåndsvisninger?",
           "confirm_missing": "Dette sætter en gengivelse i kø for {count} opstilling uden forhåndsvisning. | Dette sætter en gengivelse i kø for {count} opstillinger uden forhåndsvisning.",
@@ -7932,7 +7928,6 @@
         },
         "renders": {
           "failed": "{count} rendering mislykkedes det seneste døgn | {count} renderinger mislykkedes det seneste døgn",
-          "behind": "Render-pipelinen er bagud: den filmer v{pipeline}, API'et forventer v{version}",
           "missing": "{count} lineup har ingen forhåndsvisning | {count} lineups har ingen forhåndsvisning",
           "outdated": "{count} lineup-forhåndsvisning er forældet | {count} lineup-forhåndsvisninger er forældede"
         },

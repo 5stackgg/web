@@ -3759,9 +3759,7 @@
           "confirm_outdated_title": "오래된 미리보기를 다시 렌더링할까요?",
           "confirm_queue": "렌더링 대기열에 추가",
           "lineups_title": "렌더링이 필요한 라인업",
-          "lineups_sub": "렌더링 버전 v{version}",
-          "render_one": "먼저 하나 렌더링",
-          "render_one_waiting": "해당 렌더링이 끝나기를 기다리는 중입니다. 현재 버전이 보고되면 오래된 항목 다시 렌더링이 열립니다."
+          "lineups_sub": "렌더링 버전 v{version}"
         },
         "updated_ago": "{since} 전 업데이트됨"
       }
@@ -7571,8 +7569,6 @@
           "map_filter": "맵으로 필터",
           "render_missing": "없는 미리보기 렌더링 ({total})",
           "rerender_outdated": "구버전 다시 렌더링 ({total})",
-          "pipeline_behind": "마지막 렌더링이 이전 버전을 사용했습니다",
-          "pipeline_behind_hint": "마지막으로 완료된 렌더링은 버전 {pipeline}(으)로 촬영되었지만 이 API는 버전 {version}을(를) 기대합니다. 렌더 포드는 시작할 때 최신 이미지를 받으므로 먼저 라인업 하나를 렌더링하세요. 버전 {version}(으)로 완료되면 오래된 항목 다시 렌더링이 열립니다.",
           "load_failed": "미리보기 현황을 불러오지 못했습니다",
           "confirm_missing_title": "없는 미리보기를 렌더링할까요?",
           "confirm_missing": "미리보기가 없는 라인업 {count}개의 렌더링을 대기열에 추가합니다. | 미리보기가 없는 라인업 {count}개의 렌더링을 대기열에 추가합니다.",
@@ -7932,7 +7928,6 @@
         },
         "renders": {
           "failed": "지난 하루 동안 렌더 {count}개가 실패했습니다 | 지난 하루 동안 렌더 {count}개가 실패했습니다",
-          "behind": "렌더 파이프라인이 뒤처져 있습니다: v{pipeline}로 촬영 중이며 API는 v{version}을 기대합니다",
           "missing": "라인업 {count}개에 미리보기가 없습니다 | 라인업 {count}개에 미리보기가 없습니다",
           "outdated": "라인업 미리보기 {count}개가 오래되었습니다 | 라인업 미리보기 {count}개가 오래되었습니다"
         },

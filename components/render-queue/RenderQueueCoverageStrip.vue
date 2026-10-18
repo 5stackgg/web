@@ -3,14 +3,10 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useNuxtApp } from "#app";
 import { Clapperboard } from "lucide-vue-next";
-import {
-  renderUtilityLineupPreviewMutation,
-  renderUtilityLineupPreviewsMutation,
-} from "~/graphql/utilityRenderGraphql";
+import { renderUtilityLineupPreviewsMutation } from "~/graphql/utilityRenderGraphql";
 import UtilityRenderCoverage from "~/components/utility/UtilityRenderCoverage.vue";
 import UtilityRenderWarn from "~/components/utility/UtilityRenderWarn.vue";
 import { Button } from "~/components/ui/button";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -44,15 +40,6 @@ const emit = defineEmits<{ (e: "enqueued"): void }>();
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
 
-// The pod in use films an older version than the api expects, so filming an
-// outdated preview again would only write another outdated one.
-const behind = computed(
-  () =>
-    !!props.coverage &&
-    props.coverage.pipeline_version !== null &&
-    props.coverage.pipeline_version < props.coverage.version,
-);
-
 const stats = computed(() =>
   props.coverage
     ? ([
@@ -77,45 +64,6 @@ const confirming = ref<BulkScope | null>(null);
 // The dialog keeps its words while it closes.
 const asked = ref<BulkScope>("missing");
 const queueing = ref(false);
-
-// While the last finished render reports an older version, bulk re-render is
-// refused (here and by the api). Render pods pull the newest image when they
-// start, so the way out is one render: once it finishes at the current
-// version, "Re-render outdated" unlocks.
-const probe = computed(
-  () => props.coverage?.lineups.find((gap) => gap.state === "outdated") ?? null,
-);
-const probing = ref(false);
-
-async function renderOne() {
-  if (!probe.value || probing.value) {
-    return;
-  }
-  probing.value = true;
-  try {
-    const { data } = await nuxtApp.$apollo.defaultClient.mutate({
-      mutation: renderUtilityLineupPreviewMutation,
-      variables: { utility_lineup_id: probe.value.id },
-    });
-    const result = (data as any)?.renderUtilityLineupPreview;
-    toast({
-      title: result?.success
-        ? t("pages.utility.render_queue.requeued")
-        : t("pages.utility.render_queue.not_requeued"),
-      description: result?.reason ?? undefined,
-      variant: result?.success ? undefined : "destructive",
-    });
-  } catch (error: any) {
-    toast({
-      title: t("pages.utility.render_queue.not_requeued"),
-      description: error?.graphQLErrors?.[0]?.message ?? error?.message,
-      variant: "destructive",
-    });
-  } finally {
-    probing.value = false;
-    emit("enqueued");
-  }
-}
 
 function ask(scope: BulkScope) {
   asked.value = scope;
@@ -222,16 +170,6 @@ function onSheetEnqueued() {
     </i18n-t>
 
     <UtilityRenderWarn
-      v-if="behind && coverage"
-      :title="$t('pages.utility.render_queue.coverage.pipeline_behind')"
-      :note="
-        $t('pages.utility.render_queue.coverage.pipeline_behind_hint', {
-          pipeline: coverage.pipeline_version,
-          version: coverage.version,
-        })
-      "
-    />
-    <UtilityRenderWarn
       v-if="failed"
       :title="$t('pages.utility.render_queue.coverage.load_failed')"
     />
@@ -245,39 +183,7 @@ function onSheetEnqueued() {
     >
       {{ $t("pages.render_queue.ledger.coverage.lineups") }}
     </button>
-    <!-- Blocked until one render proves the pods film the current version:
-         offer that one render, and say why on the button itself. -->
-    <FiveStackToolTip
-      v-if="behind && coverage?.outdated"
-      as-child
-      :delay-duration="120"
-    >
-      <template #trigger>
-        <span class="inline-flex" tabindex="-1">
-          <Button
-            size="sm"
-            variant="outline"
-            class="h-7"
-            data-bulk="probe"
-            :disabled="!probe || coverage.queued > 0"
-            :loading="probing"
-            @click="renderOne"
-          >
-            {{ $t("pages.render_queue.ledger.coverage.render_one") }}
-          </Button>
-        </span>
-      </template>
-      <span class="block max-w-[18rem]">{{
-        coverage.queued > 0
-          ? $t("pages.render_queue.ledger.coverage.render_one_waiting")
-          : $t("pages.utility.render_queue.coverage.pipeline_behind_hint", {
-              pipeline: coverage.pipeline_version,
-              version: coverage.version,
-            })
-      }}</span>
-    </FiveStackToolTip>
     <Button
-      v-else
       size="sm"
       variant="outline"
       class="h-7"

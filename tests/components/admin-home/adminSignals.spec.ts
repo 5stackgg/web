@@ -414,7 +414,6 @@ describe("metricSignals", () => {
 describe("renderSignals", () => {
   const coverage = {
     version: 4,
-    pipeline_version: 4,
     total: 100,
     current: 80,
     missing: 5,
@@ -428,18 +427,6 @@ describe("renderSignals", () => {
       "renders:missing",
       "renders:outdated",
     ]);
-  });
-
-  it("points at the pipeline instead of the outdated previews while it is behind", () => {
-    const signals = renderSignals({
-      failed: 0,
-      coverage: { ...coverage, pipeline_version: 3 },
-    });
-    expect(signals.map((s) => s.key)).toEqual([
-      "renders:behind",
-      "renders:missing",
-    ]);
-    expect(signals[0].params).toEqual({ pipeline: 3, version: 4 });
   });
 });
 

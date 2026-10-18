@@ -3759,9 +3759,7 @@
           "confirm_outdated_title": "Veraltete Vorschauen neu rendern?",
           "confirm_queue": "Renderings einreihen",
           "lineups_title": "Lineups, die ein Rendering brauchen",
-          "lineups_sub": "Render-Version v{version}",
-          "render_one": "Erst eine rendern",
-          "render_one_waiting": "Warte, bis dieses Rendern fertig ist. Sobald es die aktuelle Version meldet, wird „Veraltete neu rendern“ freigegeben."
+          "lineups_sub": "Render-Version v{version}"
         },
         "updated_ago": "Vor {since} aktualisiert"
       }
@@ -7571,8 +7569,6 @@
           "map_filter": "Nach Karte filtern",
           "render_missing": "Fehlende rendern ({total})",
           "rerender_outdated": "Veraltete neu rendern ({total})",
-          "pipeline_behind": "Das letzte Rendern nutzte eine ältere Version",
-          "pipeline_behind_hint": "Das letzte fertige Rendern wurde mit Version {pipeline} gefilmt; diese API erwartet Version {version}. Render-Pods ziehen beim Start das neueste Image, also render zuerst ein Lineup. Sobald es mit Version {version} fertig ist, wird „Veraltete neu rendern“ freigegeben.",
           "load_failed": "Vorschau-Abdeckung konnte nicht geladen werden",
           "confirm_missing_title": "Fehlende Vorschauen rendern?",
           "confirm_missing": "Damit wird ein Render für {count} Lineup ohne Vorschau eingereiht. | Damit wird ein Render für {count} Lineups ohne Vorschau eingereiht.",
@@ -7932,7 +7928,6 @@
         },
         "renders": {
           "failed": "{count} Render ist am letzten Tag fehlgeschlagen | {count} Renders sind am letzten Tag fehlgeschlagen",
-          "behind": "Die Render-Pipeline hinkt hinterher: Sie filmt v{pipeline}, die API erwartet v{version}",
           "missing": "{count} Lineup hat keine Vorschau | {count} Lineups haben keine Vorschau",
           "outdated": "{count} Lineup-Vorschau ist veraltet | {count} Lineup-Vorschauen sind veraltet"
         },

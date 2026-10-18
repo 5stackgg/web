@@ -3759,9 +3759,7 @@
           "confirm_outdated_title": "Rifare le anteprime obsolete?",
           "confirm_queue": "Metti in coda i render",
           "lineups_title": "Lineup che hanno bisogno di un render",
-          "lineups_sub": "Versione di render v{version}",
-          "render_one": "Prima renderizzane una",
-          "render_one_waiting": "In attesa che quel render finisca. Quando riporta la versione attuale, Rirenderizza obsolete si sblocca."
+          "lineups_sub": "Versione di render v{version}"
         },
         "updated_ago": "Aggiornato {since} fa"
       }
@@ -7571,8 +7569,6 @@
           "map_filter": "Filtra per mappa",
           "render_missing": "Renderizza le mancanti ({total})",
           "rerender_outdated": "Rifai le obsolete ({total})",
-          "pipeline_behind": "L'ultimo render ha usato una versione precedente",
-          "pipeline_behind_hint": "L'ultimo render completato è stato girato con la versione {pipeline}; questa API si aspetta la versione {version}. I pod di render scaricano l'immagine più recente all'avvio, quindi renderizza prima un lineup. Quando finisce con la versione {version}, Rirenderizza obsolete si sblocca.",
           "load_failed": "Impossibile caricare la copertura delle anteprime",
           "confirm_missing_title": "Renderizzare le anteprime mancanti?",
           "confirm_missing": "Mette in coda un render per {count} lineup senza anteprima. | Mette in coda un render per {count} lineup senza anteprima.",
@@ -7932,7 +7928,6 @@
         },
         "renders": {
           "failed": "{count} render non riuscito nell'ultimo giorno | {count} render non riusciti nell'ultimo giorno",
-          "behind": "La pipeline di rendering è indietro: registra la v{pipeline}, l'API si aspetta la v{version}",
           "missing": "{count} lineup non ha un'anteprima | {count} lineup non hanno un'anteprima",
           "outdated": "{count} anteprima di lineup è obsoleta | {count} anteprime di lineup sono obsolete"
         },

@@ -7851,6 +7851,15 @@
         "created_showing": "Advarsel oprettet. Den vises nu.",
         "created_off": "Advarsel oprettet. Den er slået fra, indtil du slår den til.",
         "expired": "”{name}” udløb og vises ikke længere"
+      },
+      "period": {
+        "estimated": "Anslået: fra før til/fra-historikken blev gemt",
+        "on": "Slået til {time}",
+        "on_by": "Slået til {time} af {name}",
+        "off": "Slået fra {time}",
+        "off_by": "Slået fra {time} af {name}",
+        "showing_now": "Vises nu",
+        "duration": "Vist i {duration}"
       }
     },
     "admin_home": {

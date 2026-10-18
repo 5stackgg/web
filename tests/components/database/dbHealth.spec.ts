@@ -4,6 +4,7 @@ import {
   DEFAULT_SLOW_MS,
   deadFraction,
   deadSeverity,
+  explorerLink,
   hitSeverity,
   lockWaitCount,
   msSeverity,
@@ -179,5 +180,24 @@ describe("tables", () => {
     ).toBe(2);
     expect(lockWaitCount([])).toBe(0);
     expect(lockWaitCount(null)).toBe(0);
+  });
+});
+
+describe("explorerLink", () => {
+  it("opens a statement from ?query=", () => {
+    expect(explorerLink({ tab: "queries", query: "-42" })).toEqual({
+      queryid: "-42",
+      slowOnly: false,
+    });
+    expect(explorerLink({ query: ["7", "8"] }).queryid).toBe("7");
+    expect(explorerLink({ query: "" }).queryid).toBeNull();
+    expect(explorerLink({}).queryid).toBeNull();
+  });
+
+  it("turns slow-only on only for ?slow=1 on the queries tab", () => {
+    expect(explorerLink({ tab: "queries", slow: "1" }).slowOnly).toBe(true);
+    expect(explorerLink({ tab: "locks", slow: "1" }).slowOnly).toBe(false);
+    expect(explorerLink({ tab: "queries", slow: "0" }).slowOnly).toBe(false);
+    expect(explorerLink({ slow: "1" }).slowOnly).toBe(false);
   });
 });

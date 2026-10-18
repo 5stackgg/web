@@ -7851,6 +7851,15 @@
         "created_showing": "Avisering skapad. Den visas nu.",
         "created_off": "Avisering skapad. Den är av tills du slår på den.",
         "expired": "”{name}” gick ut och visas inte längre"
+      },
+      "period": {
+        "estimated": "Uppskattat: från innan på/av-historiken sparades",
+        "on": "Påslagen {time}",
+        "on_by": "Påslagen {time} av {name}",
+        "off": "Avstängd {time}",
+        "off_by": "Avstängd {time} av {name}",
+        "showing_now": "Visas nu",
+        "duration": "Visades i {duration}"
       }
     },
     "admin_home": {

@@ -27,7 +27,8 @@ definePageMeta({
   middleware: "admin",
   // The open table is a place inside the explorer, not another page: without
   // this the page key changes on every pick and the whole route remounts.
-  persistQueryKeys: ["table"],
+  // A link's ?query= and ?slow= are read, then dropped, for the same reason.
+  persistQueryKeys: ["table", "query", "slow"],
 });
 </script>
 
@@ -205,6 +206,7 @@ import {
   saveRememberedView,
 } from "~/composables/useRememberedView";
 import {
+  LINK_KEYS,
   SERVER_LABEL_KEYS,
   SERVER_VIEWS,
   SLOW_THRESHOLDS,
@@ -212,6 +214,7 @@ import {
   relationMatches,
   thresholdLabel,
   cacheRatio,
+  explorerLink,
   readSchemas,
   readSlowThreshold,
   saveSchemas,
@@ -249,6 +252,8 @@ export default {
       VIEW_DEFAULTS,
       VIEW_VALIDATORS,
     );
+    // Applied here, not saved: the link sets this visit, not the next one.
+    const link = explorerLink(this.$route.query);
     return {
       threshold: readSlowThreshold(),
       schemas: readSchemas() as string[],
@@ -258,9 +263,9 @@ export default {
       lastUpdated: 0,
       rememberedView: remembered.view,
       treeOpen: false,
-      querySlowOnly: remembered.querySlowOnly,
-      querySort: remembered.querySort,
-      selectedQueryId: null as string | null,
+      querySlowOnly: link.slowOnly || remembered.querySlowOnly,
+      querySort: link.slowOnly ? "mean_exec_time" : remembered.querySort,
+      selectedQueryId: link.queryid as string | null,
       activeFetchedAt: Date.now(),
 
       queryStats: [] as any[],
@@ -279,10 +284,13 @@ export default {
     };
   },
   mounted() {
-    // A bare /database opens where it was left.
+    // A bare /database opens where it was left. Either way a link's keys
+    // leave the URL.
     const { tab, table } = this.$route.query;
     if (!tab && !table && this.rememberedView !== "overview") {
       this.go(this.rememberedView, { keepSlowOnly: true });
+    } else if (LINK_KEYS.some((key) => key in this.$route.query)) {
+      this.go(this.view, { keepSlowOnly: true });
     }
   },
   computed: {
@@ -473,7 +481,12 @@ export default {
     go(key: string, options: { keepSlowOnly?: boolean } = {}) {
       const query: Record<string, string> = {};
       for (const [k, v] of Object.entries(this.$route.query)) {
-        if (k !== "tab" && k !== "table" && typeof v === "string") {
+        if (
+          k !== "tab" &&
+          k !== "table" &&
+          !LINK_KEYS.includes(k) &&
+          typeof v === "string"
+        ) {
           query[k] = v;
         }
       }

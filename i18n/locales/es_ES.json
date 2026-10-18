@@ -7851,6 +7851,15 @@
         "created_showing": "Alerta creada. Ya se está mostrando.",
         "created_off": "Alerta creada. Seguirá desactivada hasta que la actives.",
         "expired": "«{name}» caducó y dejó de mostrarse"
+      },
+      "period": {
+        "estimated": "Estimado: de antes de que se guardara el historial de activación",
+        "on": "Activada {time}",
+        "on_by": "Activada {time} por {name}",
+        "off": "Desactivada {time}",
+        "off_by": "Desactivada {time} por {name}",
+        "showing_now": "Visible ahora",
+        "duration": "Visible durante {duration}"
       }
     },
     "admin_home": {

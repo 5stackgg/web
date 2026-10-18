@@ -7851,6 +7851,15 @@
         "created_showing": "Uyarı oluşturuldu. Şu an gösteriliyor.",
         "created_off": "Uyarı oluşturuldu. Sen açana kadar kapalı kalır.",
         "expired": "‘{name}’ süresi doldu ve banner'dan kaldırıldı"
+      },
+      "period": {
+        "estimated": "Tahmini: açma/kapatma geçmişi tutulmadan önceki dönemden",
+        "on": "Açıldı {time}",
+        "on_by": "{name} tarafından açıldı: {time}",
+        "off": "Kapatıldı {time}",
+        "off_by": "{name} tarafından kapatıldı: {time}",
+        "showing_now": "Şu anda gösteriliyor",
+        "duration": "Gösterim süresi: {duration}"
       }
     },
     "admin_home": {

@@ -7853,6 +7853,15 @@
         "created_showing": "Alert created. It's showing now.",
         "created_off": "Alert created. It's off until you turn it on.",
         "expired": "‘{name}’ expired and left the banner"
+      },
+      "period": {
+        "estimated": "Estimated: from before on/off history was kept",
+        "on": "Turned on {time}",
+        "on_by": "Turned on {time} by {name}",
+        "off": "Turned off {time}",
+        "off_by": "Turned off {time} by {name}",
+        "showing_now": "Showing now",
+        "duration": "Shown for {duration}"
       }
     },
     "admin_home": {

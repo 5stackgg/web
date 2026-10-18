@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { ChevronDown, CircleAlert, Logs, TriangleAlert } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
@@ -29,11 +29,14 @@ const props = defineProps<{
   sortKey: ServiceSortKey;
   sortDir: "asc" | "desc";
   now: number;
+  // A linked row to open and bring into view once it is in the list.
+  reveal?: string | null;
 }>();
 
 const emit = defineEmits<{
   (e: "sort", key: ServiceSortKey): void;
   (e: "logs", service: ServiceStat): void;
+  (e: "revealed"): void;
 }>();
 
 const { t } = useI18n();
@@ -89,6 +92,26 @@ function onFocusOut(event: FocusEvent) {
     activeId.value = null;
   }
 }
+
+// A linked row (?service=) opens its charts and scrolls into view, once.
+watch(
+  () => [props.reveal, props.rows] as const,
+  ([key, rows]) => {
+    if (!key || !rows.some((row) => row.key === key)) {
+      return;
+    }
+    expanded.value = new Set(expanded.value).add(key);
+    emit("revealed");
+    nextTick(() =>
+      requestAnimationFrame(() =>
+        wrap.value
+          ?.querySelector(`[data-list-row="${CSS.escape(key)}"]`)
+          ?.scrollIntoView({ block: "center" }),
+      ),
+    );
+  },
+  { immediate: true },
+);
 
 // CPU, memory share and the node's disk share one Load column; its header
 // sorts by each.

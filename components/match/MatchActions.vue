@@ -564,6 +564,14 @@ const PAUSE_CLIP_RENDER_BATCH = gql`
   }
 `;
 
+const RESTART_MATCH_MAP = gql`
+  mutation RestartMatchMap($matchId: uuid!) {
+    restartMatchMap(match_id: $matchId) {
+      success
+    }
+  }
+`;
+
 const RESUME_CLIP_RENDER_BATCH = gql`
   mutation ResumeClipRenderBatch($match_map_id: uuid!) {
     resumeClipRenderBatch(match_map_id: $match_map_id) {
@@ -710,6 +718,9 @@ export default {
         case "restore":
           this.restoreOpen = true;
           break;
+        case "restart_map":
+          this.confirmRestartMap();
+          break;
         case "restart":
           this.restartOpen = true;
           break;
@@ -723,6 +734,34 @@ export default {
           await this.reparseAllDemos();
           break;
       }
+    },
+    confirmRestartMap() {
+      this.ask({
+        title: this.$t("match.recovery.restart_map.title"),
+        description: this.$t("match.recovery.restart_map.description"),
+        action: this.$t("match.recovery.restart_map.title"),
+        destructive: true,
+        run: this.restartMatchMap,
+      });
+    },
+    async restartMatchMap() {
+      try {
+        await this.$apollo.mutate({
+          mutation: RESTART_MATCH_MAP,
+          variables: { matchId: this.match.id },
+        });
+      } catch (error) {
+        toast({
+          title: this.$t("match.recovery.restart_map.failed"),
+          description: (error as Error)?.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: this.$t("match.recovery.restart_map.restarted"),
+      });
     },
     openWinnerDialog() {
       this.ask({

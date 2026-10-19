@@ -43,6 +43,7 @@ type RestoreRound = {
   next_lineup_1_side: string | null;
   next_lineup_2_side: string | null;
   has_backup: boolean;
+  undone: boolean;
   players: RestorePlayer[];
 };
 
@@ -92,6 +93,7 @@ const MATCH_RESTORE_ROUNDS = gql`
         next_lineup_1_side
         next_lineup_2_side
         has_backup
+        undone
         players {
           steam_id
           name
@@ -143,18 +145,32 @@ function backupFor(round: number) {
 
 const liveRound = computed(() => data.value?.live_round ?? null);
 
+// Rounds a restore or a map restart undid come after the live round, and can
+// be brought back until the next round is played.
+const lastUndone = computed(
+  () => data.value?.rounds.filter((row) => row.undone).at(-1)?.round ?? 0,
+);
+
 const selectableRounds = computed(() => {
   if (!liveRound.value) {
     return [];
   }
   const rounds: number[] = [];
-  for (let round = 2; round <= liveRound.value; round++) {
+  const last = Math.max(liveRound.value, lastUndone.value + 1);
+  for (let round = 2; round <= last; round++) {
     if (backupFor(round)) {
       rounds.push(round);
     }
   }
   return rounds;
 });
+
+// Going forward undoes a restore or a map restart, so it is never picked for
+// the organizer.
+function defaultRound() {
+  const live = liveRound.value ?? 0;
+  return selectableRounds.value.filter((round) => round <= live).at(-1) ?? null;
+}
 
 async function load() {
   loading.value = true;
@@ -166,7 +182,7 @@ async function load() {
     });
     data.value = result?.getMatchRestoreRounds ?? null;
     if (!selected.value || !selectableRounds.value.includes(selected.value)) {
-      selected.value = selectableRounds.value.at(-1) ?? null;
+      selected.value = defaultRound();
     }
   } catch (error) {
     if (!data.value) {
@@ -218,7 +234,12 @@ onBeforeUnmount(() => clearInterval(reconnectPoll));
 const totalColumns = computed(() => {
   const regulation = (Number(props.match.options?.mr) || 12) * 2;
   const last = data.value?.rounds.at(-1)?.round ?? 0;
-  return Math.max(regulation, liveRound.value ?? last, last);
+  return Math.max(
+    regulation,
+    liveRound.value ?? last,
+    last,
+    selectableRounds.value.at(-1) ?? 0,
+  );
 });
 
 const halftime = computed(() => Number(props.match.options?.mr) || 12);
@@ -252,6 +273,7 @@ const columns = computed(() =>
       row,
       isLive,
       future: !row && !isLive,
+      undone: !!row?.undone && !isLive,
       selectable: selectableRounds.value.includes(round),
     };
   }),
@@ -344,6 +366,7 @@ const preview = computed(() => {
   return {
     round: selected.value,
     isLive: selected.value === liveRound.value,
+    forward: selected.value > (liveRound.value ?? 0),
     backupRound: row.round,
     lineup1Score: row.lineup_1_score,
     lineup2Score: row.lineup_2_score,
@@ -359,7 +382,17 @@ const preview = computed(() => {
 });
 
 function undoLine(round: number) {
-  const lastPlayed = (liveRound.value ?? round) - 1;
+  const live = liveRound.value ?? round;
+  if (round - 1 > live) {
+    return t("match.recovery.restore.redo_rounds", {
+      from: live,
+      to: round - 1,
+    });
+  }
+  if (round > live) {
+    return t("match.recovery.restore.redo_round", { round: live });
+  }
+  const lastPlayed = live - 1;
   if (round > lastPlayed) {
     return t("match.recovery.restore.undo_live");
   }
@@ -403,6 +436,11 @@ const unavailable = computed(() => {
   }
   if (data.value.blocked_reason === "team_member") {
     return t("match.recovery.restore.team_member");
+  }
+  if (data.value.blocked_reason === "not_live_yet") {
+    return data.value.rounds.length > 0
+      ? t("match.recovery.restore.not_live_yet")
+      : t("match.recovery.restore.nothing_yet");
   }
   if (data.value.blocked_reason) {
     return t("match.recovery.restore.not_in_progress");
@@ -533,11 +571,17 @@ async function restore() {
                 <template v-else>
                   <span
                     class="h-5 rounded-[3px]"
-                    :class="cellClass(column.row, 1)"
+                    :class="[
+                      cellClass(column.row, 1),
+                      column.undone && 'opacity-40',
+                    ]"
                   ></span>
                   <span
                     class="h-5 rounded-[3px]"
-                    :class="cellClass(column.row, 2)"
+                    :class="[
+                      cellClass(column.row, 2),
+                      column.undone && 'opacity-40',
+                    ]"
                   ></span>
                 </template>
                 <span
@@ -574,6 +618,12 @@ async function restore() {
               ></span>
               {{ $t("match.recovery.restore.won_t") }}
             </span>
+            <span v-if="lastUndone" class="inline-flex items-center gap-1.5">
+              <span
+                class="h-2.5 w-2.5 rounded-sm bg-sky-500/15 opacity-40 ring-1 ring-inset ring-sky-400/50"
+              ></span>
+              {{ $t("match.recovery.restore.undone") }}
+            </span>
             <span>{{ $t("match.recovery.restore.round_one") }}</span>
           </div>
         </div>
@@ -592,9 +642,13 @@ async function restore() {
                     ? $t("match.recovery.restore.headline_live", {
                         round: preview.round,
                       })
-                    : $t("match.recovery.restore.headline", {
-                        round: preview.round,
-                      })
+                    : preview.forward
+                      ? $t("match.recovery.restore.headline_forward", {
+                          round: preview.round,
+                        })
+                      : $t("match.recovery.restore.headline", {
+                          round: preview.round,
+                        })
                 }}
               </span>
               <span class="text-xs text-muted-foreground">{{

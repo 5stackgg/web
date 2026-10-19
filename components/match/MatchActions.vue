@@ -14,6 +14,10 @@ import {
 import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
+import MatchFixProblemDialog from "~/components/match/MatchFixProblemDialog.vue";
+import MatchRestartDialog from "~/components/match/MatchRestartDialog.vue";
+import MatchRestoreRoundDialog from "~/components/match/MatchRestoreRoundDialog.vue";
+import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
@@ -166,6 +170,19 @@ const menuLabel =
         </MatchDockLabel>
       </button>
 
+      <button
+        v-if="canFixProblems"
+        type="button"
+        :class="dockNeutral"
+        @click="fixOpen = true"
+      >
+        <MatchDockLabel
+          :label="$t('match.recovery.fix.title')"
+          :compact="compact"
+        >
+          <LifeBuoy class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
+      </button>
       <button
         v-if="match.can_cancel"
         type="button"
@@ -513,6 +530,24 @@ const menuLabel =
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <template v-if="dock">
+      <MatchFixProblemDialog
+        v-model:open="fixOpen"
+        :match="match"
+        :can-set-winner="canSetMatchWinner"
+        :can-reboot="canRebootServer"
+        :can-reparse="canReparseDemos"
+        @select="onFixSelect"
+      />
+      <MatchRestoreRoundDialog v-model:open="restoreOpen" :match="match" />
+      <MatchRestartDialog v-model:open="restartOpen" :match="match" />
+      <MatchServerRebootControl
+        v-model:open="rebootOpen"
+        :match="match"
+        variant="dialog"
+      />
+    </template>
   </div>
 </template>
 
@@ -608,6 +643,10 @@ export default {
       cancellingMatch: false,
       deletingMatch: false,
       togglingLive: false,
+      fixOpen: false,
+      restoreOpen: false,
+      restartOpen: false,
+      rebootOpen: false,
     };
   },
   created() {
@@ -664,6 +703,26 @@ export default {
         destructive: true,
         run: this.deleteMatch,
       });
+    },
+    async onFixSelect(action: string) {
+      await this.$nextTick();
+      switch (action) {
+        case "restore":
+          this.restoreOpen = true;
+          break;
+        case "restart":
+          this.restartOpen = true;
+          break;
+        case "winner":
+          this.openWinnerDialog();
+          break;
+        case "reboot":
+          this.rebootOpen = true;
+          break;
+        case "reparse":
+          await this.reparseAllDemos();
+          break;
+      }
     },
     openWinnerDialog() {
       this.ask({
@@ -1157,8 +1216,50 @@ export default {
         this.upcoming.length > 0
       );
     },
+    canFixProblems() {
+      if (!this.dock || !this.match.is_organizer) {
+        return false;
+      }
+      if (
+        [
+          e_match_status_enum.WaitingForCheckIn,
+          e_match_status_enum.Veto,
+          e_match_status_enum.WaitingForServer,
+          e_match_status_enum.Live,
+          e_match_status_enum.Canceled,
+        ].includes(this.match.status)
+      ) {
+        return true;
+      }
+      return (
+        [
+          e_match_status_enum.Finished,
+          e_match_status_enum.Tie,
+          e_match_status_enum.Forfeit,
+          e_match_status_enum.Surrendered,
+        ].includes(this.match.status) &&
+        (this.isBracketMatch || this.canSetMatchWinner || this.canReparseDemos)
+      );
+    },
+    // MatchServerRebootControl's own rule.
+    canRebootServer() {
+      return (
+        !!this.match.is_organizer &&
+        !!this.match.server_id &&
+        this.match.server_type === "On Demand" &&
+        [
+          e_match_status_enum.Live,
+          e_match_status_enum.PickingPlayers,
+          e_match_status_enum.Scheduled,
+          e_match_status_enum.Veto,
+          e_match_status_enum.WaitingForCheckIn,
+          e_match_status_enum.WaitingForServer,
+        ].includes(this.match.status)
+      );
+    },
     hasDockItems() {
       return (
+        this.canFixProblems ||
         !!this.primaryAction ||
         this.match.can_cancel ||
         (this.canDeleteMatch && !this.isBracketMatch) ||

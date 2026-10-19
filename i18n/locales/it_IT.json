@@ -7717,7 +7717,6 @@
       "start_tv": "Avvia come TV (in differita)",
       "tv_delayed": "TV (in differita)",
       "tv_delay": "Differita TV",
-      "full_deck": "Regia completa",
       "open_focus_window": "Apri la finestra di controllo",
       "ready": "Pronto",
       "not_ready": "Non pronto",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Capacità esaurita. Interrompi la trasmissione o passala a questo match."
       },
       "deck": {
-        "sheet_description": "Controlli di trasmissione. La stessa regia della finestra di controllo.",
         "not_on_air": "Non in onda",
-        "not_on_air_hint": "Per questo match non è in corso nessuna trasmissione. Avviane una dalla sala di regia.",
-        "keys_on": "I tasti 1–0, ← →, Spazio e Tab funzionano qui",
-        "keys_off": "Clicca sulla regia per usare la tastiera",
-        "match_page": "Pagina del match",
-        "paused": "Mostrato nella regia completa",
-        "paused_hint": "L'anteprima qui è in pausa finché la regia è aperta."
+        "not_on_air_hint": "Per questo match non è in corso nessuna trasmissione. Avviane una dalla sala di regia."
       },
       "stop": {
         "title": "Interrompere la trasmissione?",

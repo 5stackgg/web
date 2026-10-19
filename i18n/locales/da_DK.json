@@ -7717,7 +7717,6 @@
       "start_tv": "Start som TV (forsinket)",
       "tv_delayed": "TV (forsinket)",
       "tv_delay": "TV-forsinkelse",
-      "full_deck": "Hele panelet",
       "open_focus_window": "Åbn fokusvinduet",
       "ready": "Klar",
       "not_ready": "Ikke klar",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Fuld kapacitet. Stop udsendelsen, eller skift den til denne kamp."
       },
       "deck": {
-        "sheet_description": "Udsendelseskontroller. Samme panel som fokusvinduet.",
         "not_on_air": "Ikke i luften",
-        "not_on_air_hint": "Der kører ingen udsendelse for denne kamp. Start en fra kontrolrummet.",
-        "keys_on": "Tasterne 1–0, ← →, Mellemrum og Tab virker her",
-        "keys_off": "Klik i panelet for at bruge tastaturet",
-        "match_page": "Kampside",
-        "paused": "Vises i hele panelet",
-        "paused_hint": "Forhåndsvisningen her er sat på pause, mens panelet er åbent."
+        "not_on_air_hint": "Der kører ingen udsendelse for denne kamp. Start en fra kontrolrummet."
       },
       "stop": {
         "title": "Stop udsendelsen?",

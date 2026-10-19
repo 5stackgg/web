@@ -5,7 +5,6 @@ import {
   ref,
   shallowRef,
   watch,
-  nextTick,
   onMounted,
   onBeforeUnmount,
 } from "vue";
@@ -26,7 +25,6 @@ import {
   Radio,
   Tv,
   RefreshCw,
-  SlidersHorizontal,
   Bot,
 } from "lucide-vue-next";
 import { useStreamerStore } from "~/stores/StreamerStore";
@@ -47,13 +45,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "~/components/ui/sheet";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
@@ -64,7 +55,6 @@ import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
 import StreamBootStatus from "~/components/match/StreamBootStatus.vue";
 import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
-import BroadcastDeck from "~/components/stream-deck/BroadcastDeck.vue";
 import ControlRoomPreview from "~/components/stream-deck/ControlRoomPreview.vue";
 import StopBroadcastDialog from "~/components/stream-deck/StopBroadcastDialog.vue";
 import OnAirClock from "~/components/stream-deck/OnAirClock.vue";
@@ -519,25 +509,12 @@ function take() {
     : startLive(match.id, "live");
 }
 
-// ---- Full deck sheet ----
-const deckOpen = ref(false);
-const deckRef = ref<InstanceType<typeof BroadcastDeck> | null>(null);
-function focusDeck(event: Event) {
-  event.preventDefault();
-  nextTick(() => deckRef.value?.focus());
-}
-watch(activeMatchId, (id) => {
-  if (!id) deckOpen.value = false;
-});
-
-// The program pauses its own player while the focus window or the deck sheet
-// shows the same stream: two WebRTC players double upstream bandwidth.
+// The program pauses its own player while the focus window shows the same
+// stream: two WebRTC players double upstream bandwidth.
 const popoutOpen = computed(
   () => !!activeMatchId.value && isPopoutOpen(activeMatchId.value),
 );
-const programPaused = computed(
-  () => isLive.value && (popoutOpen.value || deckOpen.value),
-);
+const programPaused = computed(() => isLive.value && popoutOpen.value);
 
 const whepPhase = ref<WhepPhase | null>(null);
 // The player unmounts while paused; its last phase must not outlive it.
@@ -724,20 +701,12 @@ const toolButton =
                 class="flex h-full flex-col items-center justify-center gap-1.5 bg-background px-6 text-center"
               >
                 <p class="text-[0.95rem] font-semibold text-foreground">
-                  {{
-                    deckOpen
-                      ? $t("pages.control_room.deck.paused")
-                      : $t("stream_deck.playing_in_popout")
-                  }}
+                  {{ $t("stream_deck.playing_in_popout") }}
                 </p>
                 <p class="max-w-sm text-sm text-muted-foreground">
-                  {{
-                    deckOpen
-                      ? $t("pages.control_room.deck.paused_hint")
-                      : $t("stream_deck.preview_paused")
-                  }}
+                  {{ $t("stream_deck.preview_paused") }}
                 </p>
-                <div v-if="!deckOpen" class="mt-2 flex flex-wrap gap-2">
+                <div class="mt-2 flex flex-wrap gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -919,15 +888,6 @@ const toolButton =
             >
               <ExternalLink class="size-3.5" />
               {{ $t("stream_deck.control") }}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              :class="toolButton"
-              @click="deckOpen = true"
-            >
-              <SlidersHorizontal class="size-3.5" />
-              {{ $t("pages.control_room.full_deck") }}
             </Button>
             <Button
               variant="outline"
@@ -1123,31 +1083,6 @@ const toolButton =
       </aside>
     </div>
   </PageTransition>
-
-  <Sheet v-model:open="deckOpen">
-    <SheetContent
-      class="flex w-full flex-col gap-0 overflow-y-auto sm:max-w-4xl"
-      @open-auto-focus="focusDeck"
-    >
-      <SheetHeader class="pr-8 text-left">
-        <SheetTitle class="truncate text-base font-semibold">{{
-          programName
-        }}</SheetTitle>
-        <SheetDescription>{{
-          $t("pages.control_room.deck.sheet_description")
-        }}</SheetDescription>
-      </SheetHeader>
-      <BroadcastDeck
-        v-if="activeMatchId"
-        ref="deckRef"
-        :key="activeMatchId"
-        :match-id="activeMatchId"
-        variant="sheet"
-        class="mt-5"
-        @stopped="deckOpen = false"
-      />
-    </SheetContent>
-  </Sheet>
 
   <StopBroadcastDialog
     v-model:open="stopOpen"

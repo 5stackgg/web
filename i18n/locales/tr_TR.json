@@ -7717,7 +7717,6 @@
       "start_tv": "TV olarak başlat (gecikmeli)",
       "tv_delayed": "TV (gecikmeli)",
       "tv_delay": "TV gecikmesi",
-      "full_deck": "Tam panel",
       "open_focus_window": "Odak penceresini aç",
       "ready": "Hazır",
       "not_ready": "Hazır değil",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Kapasite dolu. Yayını durdur ya da bu maça geçir."
       },
       "deck": {
-        "sheet_description": "Yayın kontrolleri. Odak penceresiyle aynı panel.",
         "not_on_air": "Yayında değil",
-        "not_on_air_hint": "Bu maç için çalışan bir yayın yok. Kontrol Odası'ndan başlat.",
-        "keys_on": "1–0, ← →, Boşluk ve Tab tuşları burada çalışır",
-        "keys_off": "Klavyeyi kullanmak için panele tıkla",
-        "match_page": "Maç sayfası",
-        "paused": "Tam panelde gösteriliyor",
-        "paused_hint": "Panel açıkken buradaki önizleme duraklatılır."
+        "not_on_air_hint": "Bu maç için çalışan bir yayın yok. Kontrol Odası'ndan başlat."
       },
       "stop": {
         "title": "Yayın durdurulsun mu?",

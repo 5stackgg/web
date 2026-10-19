@@ -7717,7 +7717,6 @@
       "start_tv": "TV로 시작 (지연)",
       "tv_delayed": "TV (지연)",
       "tv_delay": "TV 지연",
-      "full_deck": "전체 데크",
       "open_focus_window": "포커스 창 열기",
       "ready": "준비됨",
       "not_ready": "준비 안 됨",
@@ -7750,14 +7749,8 @@
         "at_capacity": "최대 용량입니다. 방송을 중지하거나 이 경기로 전환하세요."
       },
       "deck": {
-        "sheet_description": "방송 컨트롤. 포커스 창과 같은 데크입니다.",
         "not_on_air": "송출 중 아님",
-        "not_on_air_hint": "이 경기는 진행 중인 방송이 없습니다. 컨트롤 룸에서 시작하세요.",
-        "keys_on": "여기서 1–0, ← →, Space, Tab 키를 사용할 수 있습니다",
-        "keys_off": "키보드를 쓰려면 데크를 클릭하세요",
-        "match_page": "경기 페이지",
-        "paused": "전체 데크에 표시 중",
-        "paused_hint": "데크가 열려 있는 동안 이곳의 미리보기는 일시 정지됩니다."
+        "not_on_air_hint": "이 경기는 진행 중인 방송이 없습니다. 컨트롤 룸에서 시작하세요."
       },
       "stop": {
         "title": "방송을 중지할까요?",

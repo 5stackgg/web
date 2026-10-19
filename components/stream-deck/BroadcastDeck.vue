@@ -15,8 +15,6 @@ import {
   Trophy,
   RefreshCw,
   Bot,
-  Keyboard,
-  ExternalLink,
 } from "lucide-vue-next";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { Button } from "~/components/ui/button";
@@ -56,25 +54,15 @@ import {
   type SpecSlot,
 } from "~/utilities/streamerSpecSlots";
 
-// The per-match broadcast deck: toolbar, program feed, auto-director note and
-// the observer-target slots. One component for both surfaces -- the focus
-// window (/stream-deck/[matchId], `page`) and the Control Room's sheet
-// (`sheet`) -- so a control added to one is never missing from the other.
-//
-// `page` owns the whole window, so its keys work anywhere. In `sheet` the keys
-// only act while focus is inside the deck, and Tab only holds the scoreboard
-// when the deck itself has focus, so it still moves through the controls.
-const props = withDefaults(
-  defineProps<{
-    matchId: string;
-    variant?: "page" | "sheet";
-  }>(),
-  { variant: "page" },
-);
+// The per-match broadcast deck of the focus window (/stream-deck/[matchId]):
+// toolbar, program feed, auto-director note and the observer-target slots. It
+// owns the whole window, so its keys work anywhere.
+const props = defineProps<{
+  matchId: string;
+}>();
 
 const emit = defineEmits<{
   (e: "switched", matchId: string): void;
-  (e: "stopped"): void;
 }>();
 
 const { t } = useI18n();
@@ -380,10 +368,9 @@ async function switchTo(toMatchId: string) {
 
 const stopOpen = ref(false);
 async function stopLive() {
-  const stopped = await runMutation("stop_live", () => ({
+  await runMutation("stop_live", () => ({
     stopLive: [{ match_id: matchId.value }, { success: true }],
   }));
-  if (stopped) emit("stopped");
 }
 
 function isTypingInForm(target: EventTarget | null) {
@@ -441,18 +428,9 @@ function onFullscreenChange() {
     document.fullscreenElement === deckRoot.value;
 }
 
-function keysActive() {
-  if (props.variant === "page") return true;
-  const root = deckRoot.value;
-  return !!root && root.contains(document.activeElement);
-}
-
-// Window capture phase: runs before the sheet's own Escape handling, so Esc
-// closes the shortcuts overlay instead of the sheet behind it.
 function onKeyDown(e: KeyboardEvent) {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (isTypingInForm(e.target)) return;
-  if (!keysActive()) return;
   if (stopOpen.value || switchOpen.value) return;
 
   if (e.key === "Escape" && shortcutsOpen.value) {
@@ -463,12 +441,6 @@ function onKeyDown(e: KeyboardEvent) {
   }
 
   if (e.key === "Tab") {
-    if (
-      props.variant === "sheet" &&
-      document.activeElement !== deckRoot.value
-    ) {
-      return;
-    }
     e.preventDefault();
     if (!scoreboardHeld) startScoreboardHold();
     return;
@@ -624,12 +596,6 @@ watch(spectatedSteamId, (sid) => {
   }
 });
 
-function focus() {
-  deckRoot.value?.focus({ preventScroll: true });
-}
-
-defineExpose({ focus });
-
 const toolButton =
   "h-8 gap-1.5 rounded-md border-border bg-transparent px-2.5 text-xs font-medium";
 const iconButton = "size-8 rounded-md border-border bg-transparent p-0";
@@ -640,8 +606,7 @@ const onClasses =
 <template>
   <div
     ref="deckRoot"
-    tabindex="-1"
-    class="group/deck relative grid gap-4 rounded-lg outline-none"
+    class="relative grid gap-4 rounded-lg"
     :class="isFullscreen ? 'overflow-y-auto bg-background p-4' : ''"
   >
     <!-- Toolbar -->
@@ -651,13 +616,13 @@ const onClasses =
     >
       <div class="flex h-8 items-center gap-2 pr-1">
         <Label
-          :for="`autodirector-${variant}-${matchId}`"
+          :for="`autodirector-${matchId}`"
           class="text-sm font-normal text-muted-foreground"
         >
           {{ $t("stream_deck.auto_director") }}
         </Label>
         <Switch
-          :id="`autodirector-${variant}-${matchId}`"
+          :id="`autodirector-${matchId}`"
           :model-value="autodirector"
           :disabled="!isLive || busy"
           @update:model-value="(v: boolean) => setAutodirector(v)"
@@ -935,30 +900,6 @@ const onClasses =
           <span :class="tacticalSectionTickClasses" />
           {{ $t("stream_deck.observer_target") }}
         </div>
-        <span
-          v-if="variant === 'sheet'"
-          class="flex items-center gap-1.5 text-xs text-muted-foreground/80"
-        >
-          <Keyboard class="size-3.5" />
-          <span class="hidden group-focus-within/deck:inline">{{
-            $t("pages.control_room.deck.keys_on")
-          }}</span>
-          <span class="group-focus-within/deck:hidden">{{
-            $t("pages.control_room.deck.keys_off")
-          }}</span>
-        </span>
-        <Button
-          v-if="variant === 'sheet'"
-          as-child
-          variant="ghost"
-          size="sm"
-          class="h-8 gap-1.5 px-2.5 text-xs text-muted-foreground hover:text-foreground"
-        >
-          <NuxtLink :to="`/matches/${matchId}`">
-            <ExternalLink class="size-3.5" />
-            {{ $t("pages.control_room.deck.match_page") }}
-          </NuxtLink>
-        </Button>
         <Button
           variant="ghost"
           size="sm"

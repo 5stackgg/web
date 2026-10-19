@@ -7717,7 +7717,6 @@
       "start_tv": "以電視模式啟動（延遲）",
       "tv_delayed": "電視（延遲）",
       "tv_delay": "電視延遲",
-      "full_deck": "完整控制台",
       "open_focus_window": "開啟專注視窗",
       "ready": "就緒",
       "not_ready": "未就緒",
@@ -7750,14 +7749,8 @@
         "at_capacity": "已達上限。停止直播，或將其切換到這場比賽。"
       },
       "deck": {
-        "sheet_description": "直播控制。與專注視窗相同的控制台。",
         "not_on_air": "未在播出",
-        "not_on_air_hint": "這場比賽沒有正在進行的直播。請從控制室開始。",
-        "keys_on": "此處可使用 1–0、← →、空白鍵和 Tab 鍵",
-        "keys_off": "點擊控制台以使用鍵盤",
-        "match_page": "比賽頁面",
-        "paused": "正在完整控制台中顯示",
-        "paused_hint": "控制台開啟時，此處的預覽會暫停。"
+        "not_on_air_hint": "這場比賽沒有正在進行的直播。請從控制室開始。"
       },
       "stop": {
         "title": "停止直播？",

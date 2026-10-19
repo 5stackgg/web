@@ -7719,7 +7719,6 @@
       "start_tv": "Start as TV (delayed)",
       "tv_delayed": "TV (delayed)",
       "tv_delay": "TV delay",
-      "full_deck": "Full deck",
       "open_focus_window": "Open the focus window",
       "ready": "Ready",
       "not_ready": "Not ready",
@@ -7752,14 +7751,8 @@
         "at_capacity": "At capacity. Stop the broadcast or switch it to this match."
       },
       "deck": {
-        "sheet_description": "Broadcast controls. The same deck as the focus window.",
         "not_on_air": "Not on air",
-        "not_on_air_hint": "This match has no broadcast running. Start one from the Control Room.",
-        "keys_on": "Keys 1–0, ← →, Space and Tab work here",
-        "keys_off": "Click the deck to use the keyboard",
-        "match_page": "Match page",
-        "paused": "Showing in the full deck",
-        "paused_hint": "The preview here pauses while the deck is open."
+        "not_on_air_hint": "This match has no broadcast running. Start one from the Control Room."
       },
       "stop": {
         "title": "Stop the broadcast?",

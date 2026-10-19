@@ -7717,7 +7717,6 @@
       "start_tv": "Uruchom jako TV (z opóźnieniem)",
       "tv_delayed": "TV (z opóźnieniem)",
       "tv_delay": "Opóźnienie TV",
-      "full_deck": "Pełny pulpit",
       "open_focus_window": "Otwórz okno sterowania",
       "ready": "Gotowy",
       "not_ready": "Niegotowy",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Limit osiągnięty. Zatrzymaj transmisję albo przełącz ją na ten mecz."
       },
       "deck": {
-        "sheet_description": "Sterowanie transmisją. Ten sam pulpit co w oknie sterowania.",
         "not_on_air": "Poza anteną",
-        "not_on_air_hint": "Dla tego meczu nie trwa żadna transmisja. Uruchom ją z reżyserki.",
-        "keys_on": "Klawisze 1–0, ← →, Spacja i Tab działają tutaj",
-        "keys_off": "Kliknij pulpit, aby używać klawiatury",
-        "match_page": "Strona meczu",
-        "paused": "Wyświetlane w pełnym pulpicie",
-        "paused_hint": "Podgląd jest tu wstrzymany, gdy pulpit jest otwarty."
+        "not_on_air_hint": "Dla tego meczu nie trwa żadna transmisja. Uruchom ją z reżyserki."
       },
       "stop": {
         "title": "Zatrzymać transmisję?",

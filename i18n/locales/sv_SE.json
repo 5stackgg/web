@@ -1850,6 +1850,14 @@
         "col_awards": "Utmärkelser",
         "no_match": "Inget matchar din sökning eller dina filter.",
         "clear_filters": "Rensa filter"
+      },
+      "tournament_teams": {
+        "title": "Turneringslag",
+        "subtitle": "Skapade i en turnering",
+        "search": "Sök lag, turneringar eller spelare…",
+        "search_label": "Sök turneringslag",
+        "col_tournament": "Turnering",
+        "col_status": "Status"
       }
     },
     "settings": {

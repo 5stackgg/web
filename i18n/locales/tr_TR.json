@@ -1850,6 +1850,14 @@
         "col_awards": "Ödüller",
         "no_match": "Aramana veya filtrelerine uyan bir şey yok.",
         "clear_filters": "Filtreleri temizle"
+      },
+      "tournament_teams": {
+        "title": "Turnuva takımları",
+        "subtitle": "Bir turnuva içinde oluşturuldu",
+        "search": "Takım, turnuva veya oyuncu ara…",
+        "search_label": "Turnuva takımlarında ara",
+        "col_tournament": "Turnuva",
+        "col_status": "Durum"
       }
     },
     "settings": {

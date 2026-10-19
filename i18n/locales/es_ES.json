@@ -1850,6 +1850,14 @@
         "col_awards": "Premios",
         "no_match": "Nada coincide con tu búsqueda o tus filtros.",
         "clear_filters": "Borrar filtros"
+      },
+      "tournament_teams": {
+        "title": "Equipos de torneo",
+        "subtitle": "Creados dentro de un torneo",
+        "search": "Buscar equipos, torneos o jugadores…",
+        "search_label": "Buscar equipos de torneo",
+        "col_tournament": "Torneo",
+        "col_status": "Estado"
       }
     },
     "settings": {

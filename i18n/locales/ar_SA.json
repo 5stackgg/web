@@ -1850,6 +1850,14 @@
         "col_awards": "الجوائز",
         "no_match": "لا شيء يطابق بحثك أو عوامل التصفية.",
         "clear_filters": "مسح عوامل التصفية"
+      },
+      "tournament_teams": {
+        "title": "فرق البطولات",
+        "subtitle": "أُنشئت داخل بطولة",
+        "search": "ابحث عن الفرق أو البطولات أو اللاعبين…",
+        "search_label": "البحث في فرق البطولات",
+        "col_tournament": "البطولة",
+        "col_status": "الحالة"
       }
     },
     "settings": {

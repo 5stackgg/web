@@ -1850,6 +1850,14 @@
         "col_awards": "Awards",
         "no_match": "Nothing matches your search or filters.",
         "clear_filters": "Clear filters"
+      },
+      "tournament_teams": {
+        "title": "Tournament teams",
+        "subtitle": "Made inside a tournament",
+        "search": "Search teams, tournaments or players…",
+        "search_label": "Search tournament teams",
+        "col_tournament": "Tournament",
+        "col_status": "Status"
       }
     },
     "settings": {

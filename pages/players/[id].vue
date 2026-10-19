@@ -78,6 +78,7 @@ import {
   Maximize2,
   Calendar as CalendarIcon,
   ChevronDown,
+  Trophy,
 } from "lucide-vue-next";
 import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
@@ -2171,10 +2172,10 @@ const AwardComposer = defineAsyncComponent(
                   </div>
 
                   <div
-                    v-if="canEditRole || player.role || player.teams?.length"
+                    v-if="canEditRole || player.role || heroTeamCount"
                     :class="[
                       playerHeroMetaGroupClasses,
-                      canEditRole && !player.teams?.length && 'max-md:hidden',
+                      canEditRole && !heroTeamCount && 'max-md:hidden',
                     ]"
                   >
                     <template v-if="canEditRole || player.role">
@@ -2204,6 +2205,26 @@ const AwardComposer = defineAsyncComponent(
                         <span>{{ team.short_name || team.name }}</span>
                       </NuxtLink>
                     </template>
+
+                    <NuxtLink
+                      v-for="entry in playerTournamentTeams"
+                      :key="entry.tournament_team.id"
+                      :to="{
+                        name: 'tournaments-tournamentId',
+                        params: { tournamentId: entry.tournament.id },
+                        query: { tab: 'teams' },
+                      }"
+                      :class="playerHeroTeamChipClasses"
+                      :title="`${entry.tournament_team.name} · ${entry.tournament.name}`"
+                    >
+                      <Trophy
+                        class="h-3 w-3 shrink-0 text-[hsl(var(--tac-amber))]"
+                      />
+                      <span>{{
+                        entry.tournament_team.short_name ||
+                        entry.tournament_team.name
+                      }}</span>
+                    </NuxtLink>
                   </div>
                 </div>
               </div>
@@ -3636,7 +3657,7 @@ const AwardComposer = defineAsyncComponent(
 import { Ban, Medal, Pencil, ShieldAlert } from "lucide-vue-next";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import graphqlTag from "graphql-tag";
-import { e_team_roles_enum } from "~/generated/zeus";
+import { e_team_roles_enum, e_tournament_status_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { awardFields } from "~/graphql/awardFields";
@@ -3699,6 +3720,33 @@ const playerAwardsSubscription = typedGql("subscription")({
       },
     },
     awardFields,
+  ],
+});
+
+// A team made with "New team" inside a tournament has no `teams` row, so
+// `players.teams` never includes it.
+const playerTournamentTeamsSubscription = typedGql("subscription")({
+  tournament_team_roster: [
+    {
+      where: {
+        player_steam_id: { _eq: $("steam_id", "bigint") },
+        tournament_team: { team_id: { _is_null: true } },
+        tournament: {
+          status: {
+            _nin: [
+              e_tournament_status_enum.Finished,
+              e_tournament_status_enum.Cancelled,
+              e_tournament_status_enum.CancelledMinTeams,
+            ],
+          },
+        },
+      },
+      order_by: [{ tournament: { start: order_by.asc_nulls_last } }],
+    },
+    {
+      tournament_team: { id: true, name: true, short_name: true },
+      tournament: { id: true, name: true },
+    },
   ],
 });
 
@@ -3800,6 +3848,20 @@ export default {
           this.playerAwards = data.award_recipients || [];
         },
       },
+      playerTournamentTeams: {
+        query: playerTournamentTeamsSubscription,
+        variables: function () {
+          return {
+            steam_id: this.playerId,
+          };
+        },
+        skip: function () {
+          return !this.playerId;
+        },
+        result: function ({ data }: { data: any }) {
+          this.playerTournamentTeams = data.tournament_team_roster || [];
+        },
+      },
     },
   },
   mounted() {
@@ -3841,11 +3903,21 @@ export default {
           viewer_roster: Array<{ role: string }>;
         };
       }>,
+      playerTournamentTeams: [] as Array<{
+        tournament_team: { id: string; name: string; short_name: string | null };
+        tournament: { id: string; name: string };
+      }>,
       editPlayerSheet: false,
       blockDialogOpen: false,
     };
   },
   computed: {
+    heroTeamCount(): number {
+      return (
+        ((this as any).player?.teams?.length ?? 0) +
+        this.playerTournamentTeams.length
+      );
+    },
     heroActionsBind(): Record<string, any> {
       return {
         actions: this.heroActions,

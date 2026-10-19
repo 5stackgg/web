@@ -5,6 +5,7 @@ import TeamsYourTeams from "~/components/teams/TeamsYourTeams.vue";
 import TeamsPlayingNow from "~/components/teams/TeamsPlayingNow.vue";
 import TeamsLookingForScrims from "~/components/teams/TeamsLookingForScrims.vue";
 import TeamsDirectory from "~/components/teams/TeamsDirectory.vue";
+import TeamsTournamentTeams from "~/components/teams/TeamsTournamentTeams.vue";
 import { tacticalSectionSeparatorClasses } from "~/utilities/tacticalClasses";
 import { useAuthStore } from "~/stores/AuthStore";
 
@@ -48,6 +49,10 @@ const directoryFirst = computed(() => !auth.me);
         :class="sectionClasses"
         :show-create="!myTeamIds.length"
       />
+    </PageTransition>
+
+    <PageTransition :delay="200">
+      <TeamsTournamentTeams :class="sectionClasses" />
     </PageTransition>
   </div>
 </template>

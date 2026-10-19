@@ -1850,6 +1850,14 @@
         "col_awards": "獎項",
         "no_match": "沒有符合搜尋或篩選條件的結果。",
         "clear_filters": "清除篩選"
+      },
+      "tournament_teams": {
+        "title": "賽事隊伍",
+        "subtitle": "在賽事內建立",
+        "search": "搜尋隊伍、賽事或玩家…",
+        "search_label": "搜尋賽事隊伍",
+        "col_tournament": "賽事",
+        "col_status": "狀態"
       }
     },
     "settings": {

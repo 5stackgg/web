@@ -1850,6 +1850,14 @@
         "col_awards": "アワード",
         "no_match": "検索や絞り込みに一致するものがありません。",
         "clear_filters": "絞り込みをクリア"
+      },
+      "tournament_teams": {
+        "title": "トーナメントチーム",
+        "subtitle": "トーナメント内で作成",
+        "search": "チーム、トーナメント、プレイヤーを検索…",
+        "search_label": "トーナメントチームを検索",
+        "col_tournament": "トーナメント",
+        "col_status": "ステータス"
       }
     },
     "settings": {

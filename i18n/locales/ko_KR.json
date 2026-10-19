@@ -1850,6 +1850,14 @@
         "col_awards": "어워드",
         "no_match": "검색어나 필터와 일치하는 항목이 없습니다.",
         "clear_filters": "필터 지우기"
+      },
+      "tournament_teams": {
+        "title": "토너먼트 팀",
+        "subtitle": "토너먼트 안에서 만든 팀",
+        "search": "팀, 토너먼트 또는 플레이어 검색…",
+        "search_label": "토너먼트 팀 검색",
+        "col_tournament": "토너먼트",
+        "col_status": "상태"
       }
     },
     "settings": {

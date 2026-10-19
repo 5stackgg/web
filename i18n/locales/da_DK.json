@@ -1850,6 +1850,14 @@
         "col_awards": "Priser",
         "no_match": "Intet matcher din søgning eller dine filtre.",
         "clear_filters": "Ryd filtre"
+      },
+      "tournament_teams": {
+        "title": "Turneringshold",
+        "subtitle": "Oprettet i en turnering",
+        "search": "Søg efter hold, turneringer eller spillere…",
+        "search_label": "Søg i turneringshold",
+        "col_tournament": "Turnering",
+        "col_status": "Status"
       }
     },
     "settings": {

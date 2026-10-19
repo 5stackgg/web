@@ -1850,6 +1850,14 @@
         "col_awards": "Premiações",
         "no_match": "Nada corresponde à sua busca ou aos filtros.",
         "clear_filters": "Limpar filtros"
+      },
+      "tournament_teams": {
+        "title": "Times de torneio",
+        "subtitle": "Criados dentro de um torneio",
+        "search": "Buscar times, torneios ou jogadores…",
+        "search_label": "Buscar times de torneio",
+        "col_tournament": "Torneio",
+        "col_status": "Status"
       }
     },
     "settings": {

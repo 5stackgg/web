@@ -1850,6 +1850,14 @@
         "col_awards": "奖项",
         "no_match": "没有符合搜索或筛选条件的结果。",
         "clear_filters": "清除筛选"
+      },
+      "tournament_teams": {
+        "title": "赛事队伍",
+        "subtitle": "在赛事内创建",
+        "search": "搜索队伍、赛事或玩家…",
+        "search_label": "搜索赛事队伍",
+        "col_tournament": "赛事",
+        "col_status": "状态"
       }
     },
     "settings": {

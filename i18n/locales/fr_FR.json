@@ -1850,6 +1850,14 @@
         "col_awards": "Récompenses",
         "no_match": "Rien ne correspond à ta recherche ou à tes filtres.",
         "clear_filters": "Effacer les filtres"
+      },
+      "tournament_teams": {
+        "title": "Équipes de tournoi",
+        "subtitle": "Créées dans un tournoi",
+        "search": "Rechercher des équipes, tournois ou joueurs…",
+        "search_label": "Rechercher des équipes de tournoi",
+        "col_tournament": "Tournoi",
+        "col_status": "Statut"
       }
     },
     "settings": {

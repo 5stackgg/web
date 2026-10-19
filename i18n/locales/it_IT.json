@@ -1850,6 +1850,14 @@
         "col_awards": "Premi",
         "no_match": "Nulla corrisponde alla tua ricerca o ai filtri.",
         "clear_filters": "Cancella filtri"
+      },
+      "tournament_teams": {
+        "title": "Squadre del torneo",
+        "subtitle": "Create all'interno di un torneo",
+        "search": "Cerca squadre, tornei o giocatori…",
+        "search_label": "Cerca squadre del torneo",
+        "col_tournament": "Torneo",
+        "col_status": "Stato"
       }
     },
     "settings": {

@@ -1850,6 +1850,14 @@
         "col_awards": "Auszeichnungen",
         "no_match": "Nichts passt zu deiner Suche oder deinen Filtern.",
         "clear_filters": "Filter zurücksetzen"
+      },
+      "tournament_teams": {
+        "title": "Turnierteams",
+        "subtitle": "Innerhalb eines Turniers erstellt",
+        "search": "Teams, Turniere oder Spieler suchen…",
+        "search_label": "Turnierteams durchsuchen",
+        "col_tournament": "Turnier",
+        "col_status": "Status"
       }
     },
     "settings": {

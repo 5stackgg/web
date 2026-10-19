@@ -25,6 +25,39 @@ export function canSetGameMode(): boolean {
   return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
 }
 
+// Mirrors the api's match_options_rule_columns() plus best_of. Once a stage
+// has a match the api refuses any change to them, and MatchOptions' watchers
+// can rewrite one on load, so a locked save sends back what is stored.
+const RULE_COLUMNS = [
+  "type",
+  "best_of",
+  "map_veto",
+  "mr",
+  "overtime",
+  "knife_round",
+  "timeout_setting",
+  "tech_timeout_setting",
+  "coaches",
+  "number_of_substitutes",
+  "game_mode_id",
+  "default_models",
+  "halftime_pausematch",
+  "round_restart_delay",
+];
+
+export function keepStoredRules(
+  variables: Record<string, unknown>,
+  stored: Record<string, any>,
+): Record<string, unknown> {
+  const kept = { ...variables };
+  for (const column of RULE_COLUMNS) {
+    if (column in kept) {
+      kept[column] = stored[column] ?? null;
+    }
+  }
+  return kept;
+}
+
 export const setupOptions = (
   form: FormContext<any>,
   options: any,

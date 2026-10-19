@@ -864,3 +864,107 @@ describe("TournamentMatchOptionsForm match type and map pool lock", () => {
     );
   });
 });
+
+describe("TournamentMatchOptionsForm rules lock", () => {
+  const RULES_LOCKED =
+    "A stage playing these settings has matches, so their rules are locked: format, maps, rounds, overtime, timeouts and substitutes. Region, TV delay, check-in and timers can still change.";
+
+  let unmount: (() => void) | null = null;
+  let mutate: ReturnType<typeof vi.fn>;
+
+  const played = (): Bracket => ({
+    team_1: { id: "team-a" },
+    team_2: { id: "team-b" },
+    match: { id: "match-1" },
+  });
+
+  beforeEach(() => {
+    toastMock.mockClear();
+    answerMatchOptionsQueries();
+    mutate = vi.fn().mockResolvedValue({ data: {} });
+    vi.spyOn(
+      (useNuxtApp() as any).$apollo.defaultClient,
+      "mutate",
+    ).mockImplementation(mutate);
+  });
+
+  afterEach(() => {
+    unmount?.();
+    unmount = null;
+    vi.restoreAllMocks();
+  });
+
+  async function mountForm(tournament: Record<string, any>) {
+    const wrapper = await mountSuspended(TournamentMatchOptionsForm, {
+      props: { tournament },
+      global: {
+        mixins: (useNuxtApp().vueApp as any)._context.mixins,
+        stubs: { SettingsSaveBar: true },
+      },
+    });
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+    return wrapper;
+  }
+
+  it("locks the rules once a stage playing them has a match, and says why", async () => {
+    const wrapper = await mountForm(drawable("Live", { brackets: [played()] }));
+
+    expect(wrapper.findComponent(MatchOptions).props("lockRules")).toBe(true);
+    expect(wrapper.find(`[aria-label="${RULES_LOCKED}"]`).exists()).toBe(true);
+  });
+
+  it("leaves them open while only a stage with settings of its own has matches", async () => {
+    const tournament = drawable("Live");
+    const wrapper = await mountForm({
+      ...tournament,
+      stages: [
+        {
+          id: "stage-1",
+          order: 1,
+          options: { id: "stage-options-1" },
+          brackets: [played()],
+        },
+        { id: "stage-2", order: 2, options: null, brackets: [emptySlot()] },
+      ],
+    });
+
+    expect(wrapper.findComponent(MatchOptions).props("lockRules")).toBe(false);
+    expect(wrapper.find(`[aria-label="${RULES_LOCKED}"]`).exists()).toBe(
+      false,
+    );
+  });
+
+  it("sends the stored rules back with a TV delay change", async () => {
+    const tournament = drawable("Live", { brackets: [played()], mr: 15 });
+    const wrapper = await mountForm({
+      ...tournament,
+      options: {
+        ...tournament.options,
+        number_of_substitutes: 3,
+        map_veto: false,
+      },
+    });
+    (wrapper.vm as any).form.setFieldValue("mr", "8");
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+
+    await (wrapper.vm as any).save();
+    await flushPromises();
+
+    const update = mutate.mock.calls
+      .map(([options]: [any]) => ({
+        body: print(options.mutation),
+        variables: options.variables ?? {},
+      }))
+      .find(({ body }) => body.includes("update_match_options_by_pk"));
+    expect(update?.variables).toMatchObject({
+      id: "options-1",
+      tv_delay: 30,
+      mr: 15,
+      number_of_substitutes: 3,
+      map_veto: false,
+      map_pool_id: "custom-pool",
+    });
+  });
+});

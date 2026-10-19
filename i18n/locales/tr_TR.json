@@ -9057,8 +9057,7 @@
       "structure_locked_label": "Tür, takımlar ve gruplar",
       "structure_locked": "Fikstür çekildikten sonra tür, takımlar ve gruplar kilitlenir.",
       "match_settings_locked_label": "Maç ayarları",
-      "match_settings_locked": "Bu etapta maç oluştuğunda maç ayarları kilitlenir.",
-      "match_settings_locked_match_mode": "Bu etapta maç oluştuğunda maç ayarları kilitlenir. Maç modu hâlâ değiştirilebilir.",
+      "match_settings_inherited": "Bu etap turnuvanın ayarlarını kullanıyor. Bunları Maç kuralları bölümünden değiştirin.",
       "drawn_while_editing": "Sen düzenlerken fikstür çekildi. Artık kilitli olan değişiklikleri at, sonra tekrar kaydet.",
       "final_map_advantage": {
         "label": "Final Harita Avantajı",
@@ -10266,6 +10265,12 @@
         "none": "Rekabetçi (mod yok)",
         "description": "Maç sunucusuna bir dizi eklenti ve konsol değişkeni yükler.",
         "unranked_note": "Özel oyun modu kullanan maçlar ELO'ya ve sıralamalara asla sayılmaz."
+      },
+      "rules_locked": {
+        "label": "Kurallar kilitli",
+        "tournament_match": "Bir etaptaki tüm maçlar aynı kurallarla oynanır: format, haritalar, raundlar, uzatma, molalar ve yedekler. Bölge, TV gecikmesi, check-in ve zamanlayıcılar hâlâ değiştirilebilir.",
+        "tournament": "Bu ayarları kullanan bir etapta maçlar var, bu yüzden kurallar kilitli: format, haritalar, raundlar, uzatma, molalar ve yedekler. Bölge, TV gecikmesi, check-in ve zamanlayıcılar hâlâ değiştirilebilir.",
+        "stage": "Bu etapta maç oluştuğunda kilitlenir, böylece içindeki tüm maçlar aynı kurallarla oynanır."
       }
     },
     "schedule": {

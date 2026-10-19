@@ -9057,8 +9057,7 @@
       "structure_locked_label": "Type, hold og grupper",
       "structure_locked": "Type, hold og grupper er låst, når turneringstræet er lavet.",
       "match_settings_locked_label": "Kampindstillinger",
-      "match_settings_locked": "Kampindstillingerne er låst, når denne fase har kampe.",
-      "match_settings_locked_match_mode": "Kampindstillingerne er låst, når denne fase har kampe. Kamptilstanden kan stadig ændres.",
+      "match_settings_inherited": "Denne fase bruger turneringens indstillinger. Ændr dem under Kampregler.",
       "drawn_while_editing": "Turneringstræet blev lavet, mens du redigerede. Kassér de ændringer, der nu er låst, og gem igen.",
       "final_map_advantage": {
         "label": "Mapfordel i finalen",
@@ -10266,6 +10265,12 @@
         "none": "Competitive (ingen tilstand)",
         "description": "Indlæser et sæt plugins og console-variabler på kampserveren.",
         "unranked_note": "Kampe med en tilpasset spiltilstand tæller aldrig med i ELO eller på ranglisterne."
+      },
+      "rules_locked": {
+        "label": "Regler låst",
+        "tournament_match": "Alle kampe i en fase spiller efter de samme regler: format, maps, runder, overtid, timeouts og udskiftere. Region, TV-forsinkelse, check-in og timere kan stadig ændres.",
+        "tournament": "En fase, der spiller med disse indstillinger, har kampe, så reglerne er låst: format, maps, runder, overtid, timeouts og udskiftere. Region, TV-forsinkelse, check-in og timere kan stadig ændres.",
+        "stage": "Låst, når denne fase har kampe, så alle kampe i den spiller efter de samme regler."
       }
     },
     "schedule": {

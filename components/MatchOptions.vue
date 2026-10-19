@@ -31,13 +31,36 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 
         <slot></slot>
 
+        <div
+          v-if="lockRules && lockRulesReason"
+          class="flex items-center gap-1.5 text-xs text-muted-foreground"
+        >
+          <span>{{ $t("match.options.rules_locked.label") }}</span>
+          <FiveStackToolTip as-child :delay-duration="120">
+            <template #trigger>
+              <span
+                class="inline-flex cursor-help text-muted-foreground"
+                tabindex="0"
+                role="img"
+                :aria-label="lockRulesReason"
+                @click.prevent
+              >
+                <Lock class="h-3 w-3" />
+              </span>
+            </template>
+            <p class="max-w-[16rem]">
+              {{ lockRulesReason }}
+            </p>
+          </FiveStackToolTip>
+        </div>
+
         <FormField v-slot="{ componentField }" name="type">
           <FormItem>
             <SettingHeader>
               <span class="inline-flex items-center gap-1.5">
                 {{ $t("match.options.type.label") }}
                 <FiveStackToolTip
-                  v-if="lockMapPool && lockMapPoolReason"
+                  v-if="lockMapPool && lockMapPoolReason && !lockRules"
                   as-child
                   :delay-duration="120"
                 >
@@ -105,9 +128,9 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                     <FormDescription>
                       {{ $t("match.options.best_of.description") }}
                     </FormDescription>
-                    <Select v-bind="componentField" :disabled="isLocked">
+                    <Select v-bind="componentField" :disabled="formatLocked">
                       <FormControl>
-                        <SelectTrigger class="w-full" :disabled="isLocked">
+                        <SelectTrigger class="w-full" :disabled="formatLocked">
                           <SelectValue
                             :placeholder="
                               $t('match.options.best_of.placeholder')
@@ -121,7 +144,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                             :value="bestOf.value"
                             v-for="bestOf in bestOfOptions"
                             :key="bestOf.value"
-                            :disabled="isLocked"
+                            :disabled="formatLocked"
                           >
                             {{ bestOf.display }}
                           </SelectItem>
@@ -138,11 +161,11 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                     :class="
                       forceVeto
                         ? ''
-                        : isLocked
+                        : formatLocked
                           ? 'cursor-not-allowed opacity-60'
                           : 'cursor-pointer'
                     "
-                    @click="!forceVeto && !isLocked && handleChange(!value)"
+                    @click="!forceVeto && !formatLocked && handleChange(!value)"
                   >
                     <div class="flex items-center justify-between gap-4">
                       <SettingHeader>{{ $t("common.map_veto") }}</SettingHeader>
@@ -151,7 +174,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                           class="pointer-events-none"
                           :model-value="value"
                           @update:model-value="handleChange"
-                          :disabled="isLocked"
+                          :disabled="formatLocked"
                           @click.stop
                         />
                       </FormControl>
@@ -437,106 +460,123 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                 <p v-if="isRush" class="text-sm text-muted-foreground">
                   {{ $t("match.options.advanced.rush_fixed_rules") }}
                 </p>
-                <FormField
-                  v-if="!isRush"
-                  v-slot="{ value, handleChange }"
-                  name="overtime"
+                <fieldset
+                  :disabled="lockRules"
+                  class="min-w-0 space-y-6"
+                  :class="lockedRuleClass"
                 >
-                  <FormItem>
-                    <div
-                      class="flex flex-row items-center justify-between cursor-pointer"
-                      @click="handleChange(!value)"
-                    >
-                      <div class="space-y-0.5">
-                        <SettingHeader>{{
-                          $t("match.options.advanced.overtime.label")
-                        }}</SettingHeader>
-                        <FormDescription>
-                          {{
-                            $t("match.options.advanced.overtime.description")
-                          }}
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          class="pointer-events-none"
-                          :model-value="value"
-                          @update:model-value="handleChange"
-                          @click.stop
-                        />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                </FormField>
-
-                <FormField
-                  v-if="!isRush"
-                  v-slot="{ value, handleChange }"
-                  name="knife_round"
-                >
-                  <FormItem>
-                    <div
-                      class="flex flex-row items-center justify-between cursor-pointer"
-                      @click="handleChange(!value)"
-                    >
-                      <div class="space-y-0.5">
-                        <SettingHeader>{{
-                          $t("match.options.advanced.knife_round.label")
-                        }}</SettingHeader>
-                        <FormDescription>
-                          {{
-                            $t("match.options.advanced.knife_round.description")
-                          }}
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          class="pointer-events-none"
-                          :model-value="value"
-                          @update:model-value="handleChange"
-                          @click.stop
-                        />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                </FormField>
-
-                <FormField v-if="!isRush" v-slot="{ componentField }" name="mr">
-                  <FormItem>
-                    <SettingHeader>{{
-                      $t("match.options.advanced.max_rounds.label")
-                    }}</SettingHeader>
-                    <FormDescription>
-                      {{ $t("match.options.advanced.max_rounds.description") }}
-                    </FormDescription>
-                    <Select v-bind="componentField" :disabled="isLive">
-                      <FormControl>
-                        <SelectTrigger :disabled="isLive">
-                          <SelectValue
-                            :placeholder="
-                              $t(
-                                'match.options.advanced.max_rounds.placeholder',
-                              )
-                            "
+                  <FormField
+                    v-if="!isRush"
+                    v-slot="{ value, handleChange }"
+                    name="overtime"
+                  >
+                    <FormItem>
+                      <div
+                        class="flex flex-row items-center justify-between cursor-pointer"
+                        @click="handleChange(!value)"
+                      >
+                        <div class="space-y-0.5">
+                          <SettingHeader>{{
+                            $t("match.options.advanced.overtime.label")
+                          }}</SettingHeader>
+                          <FormDescription>
+                            {{
+                              $t("match.options.advanced.overtime.description")
+                            }}
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            class="pointer-events-none"
+                            :model-value="value"
+                            @update:model-value="handleChange"
+                            @click.stop
                           />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem
-                            :value="rounds"
-                            v-for="rounds in ['8', '12', '15']"
-                            :key="rounds"
-                            :disabled="isLive"
-                          >
-                            {{ rounds }}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
+                        </FormControl>
+                      </div>
+                    </FormItem>
+                  </FormField>
+
+                  <FormField
+                    v-if="!isRush"
+                    v-slot="{ value, handleChange }"
+                    name="knife_round"
+                  >
+                    <FormItem>
+                      <div
+                        class="flex flex-row items-center justify-between cursor-pointer"
+                        @click="handleChange(!value)"
+                      >
+                        <div class="space-y-0.5">
+                          <SettingHeader>{{
+                            $t("match.options.advanced.knife_round.label")
+                          }}</SettingHeader>
+                          <FormDescription>
+                            {{
+                              $t(
+                                "match.options.advanced.knife_round.description",
+                              )
+                            }}
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            class="pointer-events-none"
+                            :model-value="value"
+                            @update:model-value="handleChange"
+                            @click.stop
+                          />
+                        </FormControl>
+                      </div>
+                    </FormItem>
+                  </FormField>
+
+                  <FormField
+                    v-if="!isRush"
+                    v-slot="{ componentField }"
+                    name="mr"
+                  >
+                    <FormItem>
+                      <SettingHeader>{{
+                        $t("match.options.advanced.max_rounds.label")
+                      }}</SettingHeader>
+                      <FormDescription>
+                        {{
+                          $t("match.options.advanced.max_rounds.description")
+                        }}
+                      </FormDescription>
+                      <Select
+                        v-bind="componentField"
+                        :disabled="isLive || lockRules"
+                      >
+                        <FormControl>
+                          <SelectTrigger :disabled="isLive || lockRules">
+                            <SelectValue
+                              :placeholder="
+                                $t(
+                                  'match.options.advanced.max_rounds.placeholder',
+                                )
+                              "
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem
+                              :value="rounds"
+                              v-for="rounds in ['8', '12', '15']"
+                              :key="rounds"
+                              :disabled="isLive || lockRules"
+                            >
+                              {{ rounds }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                </fieldset>
               </div>
             </Card>
 
@@ -781,46 +821,51 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 
             <Card>
               <div class="flex flex-col space-y-3 p-4">
-                <FormField
+                <fieldset
                   v-if="!lockSubstitutes"
-                  v-slot="{ value }"
-                  name="number_of_substitutes"
+                  :disabled="lockRules"
+                  class="min-w-0"
+                  :class="lockedRuleClass"
                 >
-                  <FormItem>
-                    <SettingHeader>{{
-                      $t("match.options.advanced.substitutes.label")
-                    }}</SettingHeader>
-                    <FormDescription>
-                      {{ $t("match.options.advanced.substitutes.description") }}
-                    </FormDescription>
-                    <NumberField
-                      class="gap-2"
-                      :min="0"
-                      :max="5"
-                      :model-value="value"
-                      @update:model-value="
-                        (number_of_substitutes) => {
-                          form.setFieldValue(
-                            'number_of_substitutes',
-                            number_of_substitutes,
-                          );
-                        }
-                      "
-                    >
-                      <NumberFieldContent>
-                        <NumberFieldDecrement />
-                        <FormControl>
-                          <NumberFieldInput />
-                        </FormControl>
-                        <NumberFieldIncrement />
-                      </NumberFieldContent>
-                    </NumberField>
-                    <FormDescription>
-                      {{ $t("match.options.advanced.substitutes.range") }}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
+                  <FormField v-slot="{ value }" name="number_of_substitutes">
+                    <FormItem>
+                      <SettingHeader>{{
+                        $t("match.options.advanced.substitutes.label")
+                      }}</SettingHeader>
+                      <FormDescription>
+                        {{
+                          $t("match.options.advanced.substitutes.description")
+                        }}
+                      </FormDescription>
+                      <NumberField
+                        class="gap-2"
+                        :min="0"
+                        :max="5"
+                        :model-value="value"
+                        @update:model-value="
+                          (number_of_substitutes) => {
+                            form.setFieldValue(
+                              'number_of_substitutes',
+                              number_of_substitutes,
+                            );
+                          }
+                        "
+                      >
+                        <NumberFieldContent>
+                          <NumberFieldDecrement />
+                          <FormControl>
+                            <NumberFieldInput />
+                          </FormControl>
+                          <NumberFieldIncrement />
+                        </NumberFieldContent>
+                      </NumberField>
+                      <FormDescription>
+                        {{ $t("match.options.advanced.substitutes.range") }}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
+                </fieldset>
 
                 <FormField v-slot="{ value }" name="tv_delay">
                   <FormItem>
@@ -913,70 +958,77 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                   </FormItem>
                 </FormField>
 
-                <FormField v-slot="{ value }" name="round_restart_delay">
-                  <FormItem>
-                    <SettingHeader>{{
-                      $t("match.options.advanced.round_restart_delay.label")
-                    }}</SettingHeader>
-                    <NumberField
-                      class="gap-2"
-                      :min="0"
-                      :max="60"
-                      :model-value="value"
-                      @update:model-value="
-                        (delay) => {
-                          form.setFieldValue('round_restart_delay', delay);
-                        }
-                      "
-                    >
-                      <NumberFieldContent>
-                        <NumberFieldDecrement />
-                        <FormControl>
-                          <NumberFieldInput />
-                        </FormControl>
-                        <NumberFieldIncrement />
-                      </NumberFieldContent>
-                    </NumberField>
-                    <FormDescription>
-                      {{
-                        $t("match.options.advanced.round_restart_delay.range")
-                      }}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
-
-                <FormField
-                  v-slot="{ value, handleChange }"
-                  name="halftime_pausematch"
+                <fieldset
+                  :disabled="lockRules"
+                  class="min-w-0 space-y-3"
+                  :class="lockedRuleClass"
                 >
-                  <FormItem>
-                    <div
-                      class="flex flex-row items-center justify-between cursor-pointer"
-                      @click="handleChange(!value)"
-                    >
-                      <div class="space-y-0.5">
-                        <SettingHeader>{{
-                          $t("match.options.advanced.halftime_pausematch.label")
-                        }}</SettingHeader>
-                        <FormDescription>{{
-                          $t(
-                            "match.options.advanced.halftime_pausematch.description",
-                          )
-                        }}</FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          class="pointer-events-none"
-                          :model-value="value"
-                          @update:model-value="handleChange"
-                          @click.stop
-                        />
-                      </FormControl>
-                    </div>
-                  </FormItem>
-                </FormField>
+                  <FormField v-slot="{ value }" name="round_restart_delay">
+                    <FormItem>
+                      <SettingHeader>{{
+                        $t("match.options.advanced.round_restart_delay.label")
+                      }}</SettingHeader>
+                      <NumberField
+                        class="gap-2"
+                        :min="0"
+                        :max="60"
+                        :model-value="value"
+                        @update:model-value="
+                          (delay) => {
+                            form.setFieldValue('round_restart_delay', delay);
+                          }
+                        "
+                      >
+                        <NumberFieldContent>
+                          <NumberFieldDecrement />
+                          <FormControl>
+                            <NumberFieldInput />
+                          </FormControl>
+                          <NumberFieldIncrement />
+                        </NumberFieldContent>
+                      </NumberField>
+                      <FormDescription>
+                        {{
+                          $t("match.options.advanced.round_restart_delay.range")
+                        }}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
 
+                  <FormField
+                    v-slot="{ value, handleChange }"
+                    name="halftime_pausematch"
+                  >
+                    <FormItem>
+                      <div
+                        class="flex flex-row items-center justify-between cursor-pointer"
+                        @click="handleChange(!value)"
+                      >
+                        <div class="space-y-0.5">
+                          <SettingHeader>{{
+                            $t(
+                              "match.options.advanced.halftime_pausematch.label",
+                            )
+                          }}</SettingHeader>
+                          <FormDescription>{{
+                            $t(
+                              "match.options.advanced.halftime_pausematch.description",
+                            )
+                          }}</FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            class="pointer-events-none"
+                            :model-value="value"
+                            @update:model-value="handleChange"
+                            @click.stop
+                          />
+                        </FormControl>
+                      </div>
+                    </FormItem>
+                  </FormField>
+                </fieldset>
               </div>
             </Card>
 
@@ -996,7 +1048,11 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                 </h3>
               </div>
 
-              <div class="space-y-3 p-4">
+              <fieldset
+                :disabled="lockRules"
+                class="min-w-0 space-y-3 p-4"
+                :class="lockedRuleClass"
+              >
                 <FormField v-slot="{ componentField }" name="game_mode_id">
                   <FormItem>
                     <FormControl>
@@ -1037,7 +1093,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                 >
                   {{ $t("match.options.game_mode.unranked_note") }}
                 </p>
-              </div>
+              </fieldset>
             </Card>
 
             <!-- Cameras get their own module rather than another row in the
@@ -1361,7 +1417,11 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
             </Card>
 
             <Card>
-              <div class="flex flex-col space-y-3 p-4">
+              <fieldset
+                :disabled="lockRules"
+                class="flex min-w-0 flex-col space-y-3 p-4"
+                :class="lockedRuleClass"
+              >
                 <FormField v-slot="{ componentField }" name="timeout_setting">
                   <FormItem>
                     <SettingHeader>{{
@@ -1426,35 +1486,43 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                     <FormMessage />
                   </FormItem>
                 </FormField>
-              </div>
+              </fieldset>
             </Card>
 
-            <FormField v-slot="{ value, handleChange }" name="default_models">
-              <FormItem>
-                <Card class="cursor-pointer" @click="handleChange(!value)">
-                  <div class="flex flex-col space-y-3 p-4">
-                    <div class="flex justify-between items-center">
-                      <SettingHeader>{{
-                        $t("match.options.advanced.default_models.label")
-                      }}</SettingHeader>
-                      <FormControl>
-                        <Switch
-                          class="pointer-events-none"
-                          :model-value="value"
-                          @update:model-value="handleChange"
-                          @click.stop
-                        />
-                      </FormControl>
+            <fieldset
+              :disabled="lockRules"
+              class="min-w-0"
+              :class="lockedRuleClass"
+            >
+              <FormField v-slot="{ value, handleChange }" name="default_models">
+                <FormItem>
+                  <Card class="cursor-pointer" @click="handleChange(!value)">
+                    <div class="flex flex-col space-y-3 p-4">
+                      <div class="flex justify-between items-center">
+                        <SettingHeader>{{
+                          $t("match.options.advanced.default_models.label")
+                        }}</SettingHeader>
+                        <FormControl>
+                          <Switch
+                            class="pointer-events-none"
+                            :model-value="value"
+                            @update:model-value="handleChange"
+                            @click.stop
+                          />
+                        </FormControl>
+                      </div>
+                      <FormDescription>
+                        {{
+                          $t(
+                            "match.options.advanced.default_models.description",
+                          )
+                        }}
+                      </FormDescription>
                     </div>
-                    <FormDescription>
-                      {{
-                        $t("match.options.advanced.default_models.description")
-                      }}
-                    </FormDescription>
-                  </div>
-                </Card>
-              </FormItem>
-            </FormField>
+                  </Card>
+                </FormItem>
+              </FormField>
+            </fieldset>
             <slot name="after-advanced"></slot>
           </div>
         </div>
@@ -1559,6 +1627,16 @@ export default {
       type: String,
       default: "",
     },
+    lockRules: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    lockRulesReason: {
+      required: false,
+      type: String,
+      default: "",
+    },
   },
   apollo: {
     gameModes: {
@@ -1649,6 +1727,9 @@ export default {
     forceVeto: {
       immediate: true,
       handler(forceVeto) {
+        if (this.lockRules) {
+          return;
+        }
         if (forceVeto && !this.isRush && this.form.values.map_veto !== true) {
           this.form.setFieldValue("map_veto", true);
         }
@@ -1657,7 +1738,7 @@ export default {
     lockSubstitutes: {
       immediate: true,
       handler(lockSubstitutes) {
-        if (lockSubstitutes) {
+        if (lockSubstitutes && !this.lockRules) {
           this.form.setFieldValue(
             "number_of_substitutes",
             useApplicationSettingsStore().teamMaxSubs,
@@ -1667,7 +1748,7 @@ export default {
     },
     teamMaxSubs: {
       handler(teamMaxSubs) {
-        if (this.lockSubstitutes) {
+        if (this.lockSubstitutes && !this.lockRules) {
           this.form.setFieldValue("number_of_substitutes", teamMaxSubs);
         }
       },
@@ -1675,7 +1756,7 @@ export default {
     defaultMapPool: {
       immediate: true,
       handler(defaultMapPool) {
-        if (!defaultMapPool) {
+        if (!defaultMapPool || this.lockRules) {
           return;
         }
 
@@ -1718,6 +1799,11 @@ export default {
     },
     ["form.values.type"]: {
       handler(type, previousType) {
+        // Locked, the type only changes when the stored options load in, and
+        // their max rounds and maps must not be swapped for the type's defaults.
+        if (this.lockRules) {
+          return;
+        }
         this.form.setFieldValue(
           "mr",
           type === e_match_types_enum.Competitive ? "12" : "8",
@@ -1747,6 +1833,9 @@ export default {
     },
     ["form.values.custom_map_pool"]: {
       handler(custom_map_pool) {
+        if (this.lockRules) {
+          return;
+        }
         // Rush has one map, so its seeded pool is the only pool it plays.
         if (this.isRush) {
           this.form.setFieldValue("map_pool_id", this.defaultMapPool?.id);
@@ -1774,6 +1863,9 @@ export default {
     },
     ["form.values.map_veto"]: {
       handler(mapVeto) {
+        if (this.lockRules) {
+          return;
+        }
         if (this.isRush) {
           this.form.setFieldValue("custom_map_pool", false);
           return;
@@ -1789,7 +1881,7 @@ export default {
     },
     ["form.values.map_pool"]: {
       handler() {
-        if (this.form.values.map_veto) {
+        if (this.lockRules || this.form.values.map_veto) {
           return;
         }
 
@@ -1840,7 +1932,13 @@ export default {
       return !!this.match && this.match.status === e_match_status_enum.Live;
     },
     mapPoolLocked(): boolean {
-      return this.isLocked || this.lockMapPool;
+      return this.isLocked || this.lockMapPool || this.lockRules;
+    },
+    formatLocked(): boolean {
+      return this.isLocked || this.lockRules;
+    },
+    lockedRuleClass(): string {
+      return this.lockRules ? "pointer-events-none opacity-50" : "";
     },
     isRush(): boolean {
       return this.form.values.type === e_match_types_enum.Rush;

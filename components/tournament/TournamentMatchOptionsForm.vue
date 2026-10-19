@@ -15,6 +15,8 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
       :lock-substitutes="true"
       :lock-map-pool="mapPoolLocked"
       :lock-map-pool-reason="$t('tournament.form.map_pool_locked')"
+      :lock-rules="rulesLocked"
+      :lock-rules-reason="$t('match.options.rules_locked.tournament')"
     >
       <FormField v-slot="{ value, handleChange }" name="negotiated_scheduling">
         <FormItem>
@@ -139,6 +141,7 @@ import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { toast } from "@/components/ui/toast";
 import {
+  keepStoredRules,
   setupOptions,
   setupOptionsVariables,
   setupOptionsSetMutation,
@@ -242,6 +245,17 @@ export default {
   computed: {
     mapPoolLocked() {
       return isTournamentBracketDrawn(this.tournament);
+    },
+    // A stage without its own settings plays these, and the api fixes their
+    // rules once such a stage has a match.
+    rulesLocked(): boolean {
+      return (this.tournament.stages ?? []).some(
+        (stage: any) =>
+          !stage.options &&
+          (stage.brackets ?? []).some(
+            (bracket: any) => !bracket.match_options_id && !!bracket.match,
+          ),
+      );
     },
     // Save writes the tournament's match mode from negotiated scheduling for
     // roles that may write it, and the api carries that change to every stage
@@ -454,10 +468,14 @@ export default {
           mapPoolId = data.insert_map_pools_one.id;
         }
 
+        const variables = setupOptionsVariables(form, { mapPoolId });
+
         await this.$apollo.mutate({
           variables: {
             id: this.tournament.options.id,
-            ...setupOptionsVariables(form, { mapPoolId }),
+            ...(this.rulesLocked
+              ? keepStoredRules(variables, this.tournament.options)
+              : variables),
           },
           mutation: generateMutation({
             update_match_options_by_pk: [

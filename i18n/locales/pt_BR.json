@@ -9057,8 +9057,7 @@
       "structure_locked_label": "Tipo, times e grupos",
       "structure_locked": "Tipo, times e grupos ficam bloqueados depois que o chaveamento é gerado.",
       "match_settings_locked_label": "Configurações da partida",
-      "match_settings_locked": "As configurações da partida ficam bloqueadas quando esta fase tem partidas.",
-      "match_settings_locked_match_mode": "As configurações da partida ficam bloqueadas quando esta fase tem partidas. O modo de partida ainda pode mudar.",
+      "match_settings_inherited": "Esta fase usa as configurações do torneio. Altere-as em Regras da partida.",
       "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações que agora estão bloqueadas e salve novamente.",
       "final_map_advantage": {
         "label": "Vantagem de Mapa na Final",
@@ -10266,6 +10265,12 @@
         "none": "Competitivo (sem modo)",
         "description": "Carrega um conjunto de plugins e variáveis de console no servidor da partida.",
         "unranked_note": "Partidas com um modo de jogo personalizado nunca contam para o ELO nem para os rankings."
+      },
+      "rules_locked": {
+        "label": "Regras bloqueadas",
+        "tournament_match": "Todas as partidas de uma fase seguem as mesmas regras: formato, mapas, rounds, prorrogação, pausas e reservas. Região, atraso da TV, check-in e cronômetros ainda podem mudar.",
+        "tournament": "Uma fase que usa estas configurações já tem partidas, então as regras estão bloqueadas: formato, mapas, rounds, prorrogação, pausas e reservas. Região, atraso da TV, check-in e cronômetros ainda podem mudar.",
+        "stage": "Bloqueado quando esta fase tem partidas, para que todas as partidas dela sigam as mesmas regras."
       }
     },
     "schedule": {

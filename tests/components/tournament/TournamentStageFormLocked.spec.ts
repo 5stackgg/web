@@ -15,9 +15,9 @@ vi.mock("@/components/ui/toast", async (importOriginal) => ({
 
 const LOCKED = "Type, teams and groups are locked once the bracket is drawn.";
 const MATCH_SETTINGS_LOCKED =
-  "Match settings are locked once this stage has matches.";
-const MATCH_SETTINGS_LOCKED_BUT_MODE =
-  "Match settings are locked once this stage has matches. Match mode can still change.";
+  "This stage plays the tournament's settings. Change them under Match rules.";
+const STAGE_RULES_LOCKED =
+  "Locked once this stage has matches, so every match in it plays the same rules.";
 const DRAWN_WHILE_EDITING =
   "The bracket was drawn while you were editing. Discard the changes that are now locked, then save again.";
 const MATCHES_DRAWN =
@@ -233,19 +233,30 @@ describe("TournamentStageForm with the structure locked", () => {
     expect(matchModeFieldset(wrapper)?.attributes("disabled")).toBeDefined();
   });
 
-  it("keeps the match mode of a started stage with its own options editable", async () => {
+  it("keeps a started stage's own settings open, except its technical timeouts", async () => {
     query.mockResolvedValue(aMatch);
     const wrapper = await mountLocked(true, {
       ...tournamentOptions,
       id: "stage-options-1",
       match_mode: "admin",
     });
+    const techTimeout = wrapper
+      .findAll("button[role='combobox']")
+      .find((trigger) =>
+        trigger.element
+          .closest("[class*='space-y']")
+          ?.textContent?.includes("Technical Timeout Settings"),
+      );
 
     expect(
-      wrapper.find(`[aria-label="${MATCH_SETTINGS_LOCKED_BUT_MODE}"]`).exists(),
-    ).toBe(true);
-    expect(disabledFieldsetWith(wrapper, "TV Delay")).toBe(true);
+      wrapper.find(`[aria-label="${MATCH_SETTINGS_LOCKED}"]`).exists(),
+    ).toBe(false);
+    expect(disabledFieldsetWith(wrapper, "TV Delay")).toBe(false);
     expect(matchModeFieldset(wrapper)?.attributes("disabled")).toBeUndefined();
+    expect(wrapper.find(`[aria-label="${STAGE_RULES_LOCKED}"]`).exists()).toBe(
+      true,
+    );
+    expect(techTimeout?.attributes("disabled")).toBeDefined();
   });
 
   it("switches a drawn stage's own options to Auto in place and keeps its pool", async () => {
@@ -367,21 +378,44 @@ describe("TournamentStageForm with the structure locked", () => {
     }
   });
 
-  it("refuses a change to its own options once the stage's first match was drawn meanwhile", async () => {
+  it("saves a started stage's own TV delay to its options, which carry it to its upcoming matches", async () => {
+    query.mockResolvedValue(aMatch);
     const wrapper = await mountLocked(true, {
       ...tournamentOptions,
       id: "stage-options-1",
     });
     (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
     await flushPromises();
+    await (wrapper.vm as any).updateCreateStage();
+    await flushPromises();
+    const [update] = sentCalls();
+
+    expect(toastMock).not.toHaveBeenCalled();
+    expect(update.document).toContain("update_match_options_by_pk");
+    expect(update.variables).toMatchObject({
+      id: "stage-options-1",
+      tv_delay: 30,
+    });
+    expect(update.variables).not.toHaveProperty("mr");
+    expect(wrapper.emitted("updated")).toHaveLength(1);
+  });
+
+  it("refuses a technical timeout change made before its stage started", async () => {
+    const wrapper = await mountLocked(true, {
+      ...tournamentOptions,
+      id: "stage-options-1",
+    });
+    (wrapper.vm as any).form.setFieldValue("tech_timeout_setting", "Coach");
+    await flushPromises();
 
     query.mockResolvedValue(aMatch);
+    await (wrapper.vm as any).refreshStageStarted();
     await (wrapper.vm as any).updateCreateStage();
     await flushPromises();
 
     expect(mutate).not.toHaveBeenCalled();
     expect(toastMock).toHaveBeenCalledWith(
-      expect.objectContaining({ description: MATCHES_DRAWN }),
+      expect.objectContaining({ description: DRAWN_WHILE_EDITING }),
     );
   });
 

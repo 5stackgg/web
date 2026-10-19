@@ -6,6 +6,7 @@ import {
   CirclePlus,
   MoreVertical,
   RotateCcw,
+  Settings2,
   TriangleAlert,
   Undo2,
   Calendar as CalendarIcon,
@@ -35,6 +36,7 @@ import { useBracketView } from "~/composables/useBracketView";
 import MatchMapDots from "~/components/match/MatchMapDots.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import BracketNegotiation from "~/components/tournament/BracketNegotiation.vue";
+import BracketMatchSettingsSheet from "~/components/tournament/BracketMatchSettingsSheet.vue";
 import {
   e_match_status_enum,
   e_player_roles_enum,
@@ -200,6 +202,26 @@ const canManageBracketReset = computed(
     !!props.tournament?.is_organizer ||
     authStore.isRoleAbove(e_player_roles_enum.administrator),
 );
+
+// The statuses the api still carries a settings change into.
+const SETTINGS_STATUSES = [
+  e_match_status_enum.PickingPlayers,
+  e_match_status_enum.Scheduled,
+  e_match_status_enum.WaitingForCheckIn,
+  e_match_status_enum.WaitingForServer,
+] as string[];
+
+const canEditMatchSettings = (bracket: Bracket): boolean =>
+  canManageBracketReset.value &&
+  SETTINGS_STATUSES.includes(bracket.match?.status ?? "");
+
+const settingsOpen = ref(false);
+const settingsBracket = ref<Bracket | null>(null);
+
+const openMatchSettings = (bracket: Bracket) => {
+  settingsBracket.value = bracket;
+  settingsOpen.value = true;
+};
 
 const RECREATE_STATUSES = [
   e_tournament_status_enum.RegistrationClosed,
@@ -1026,6 +1048,13 @@ const useEtaClock = createSharedComposable(() =>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" class="w-52">
               <DropdownMenuItem
+                v-if="canEditMatchSettings(bracket)"
+                @click.stop="openMatchSettings(bracket)"
+              >
+                <Settings2 />
+                {{ $t("tournament.page.match_settings") }}
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 class="text-red-300 focus:bg-red-950/50 focus:text-red-200"
                 @click.stop="openResetFlow(bracket)"
               >
@@ -1182,6 +1211,13 @@ const useEtaClock = createSharedComposable(() =>
       </div>
     </div>
   </template>
+
+  <BracketMatchSettingsSheet
+    v-if="settingsBracket?.match"
+    v-model:open="settingsOpen"
+    :match-id="settingsBracket.match.id"
+    :description="`${getTeamName(settingsBracket.team_1)} ${$t('common.vs')} ${getTeamName(settingsBracket.team_2)}`"
+  />
 
   <AlertDialog
     :open="recreateDialogOpen"

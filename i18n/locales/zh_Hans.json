@@ -9057,8 +9057,7 @@
       "structure_locked_label": "类型、队伍和小组",
       "structure_locked": "对阵图生成后，类型、队伍和小组将被锁定。",
       "match_settings_locked_label": "比赛设置",
-      "match_settings_locked": "此阶段产生比赛后，比赛设置将被锁定。",
-      "match_settings_locked_match_mode": "此阶段产生比赛后，比赛设置将被锁定。比赛模式仍可更改。",
+      "match_settings_inherited": "此阶段使用赛事的设置。请在比赛规则中更改。",
       "drawn_while_editing": "你编辑期间对阵图已生成。请放弃现已锁定的更改，然后重新保存。",
       "final_map_advantage": {
         "label": "决赛地图优势",
@@ -10266,6 +10265,12 @@
         "none": "竞技（无模式）",
         "description": "在比赛服务器上加载一组插件和控制台变量。",
         "unranked_note": "使用自定义游戏模式的比赛永远不计入 ELO 或排行榜。"
+      },
+      "rules_locked": {
+        "label": "规则已锁定",
+        "tournament_match": "同一阶段的所有比赛使用相同的规则：赛制、地图、回合数、加时、暂停和替补。地区、TV 延迟、签到和计时器仍可更改。",
+        "tournament": "使用这些设置的阶段已有比赛，因此规则已锁定：赛制、地图、回合数、加时、暂停和替补。地区、TV 延迟、签到和计时器仍可更改。",
+        "stage": "此阶段产生比赛后将被锁定，确保其中所有比赛使用相同的规则。"
       }
     },
     "schedule": {

@@ -948,17 +948,46 @@ import { $ } from "~/generated/zeus";
                 v-slot="{ componentField }"
                 name="tech_timeout_setting"
               >
-                <FormItem>
-                  <SettingHeader>{{
-                    $t("match.options.advanced.timeouts.technical.label")
-                  }}</SettingHeader>
+                <FormItem
+                  :class="stageRulesLocked && 'pointer-events-none opacity-50'"
+                >
+                  <SettingHeader>
+                    <span class="inline-flex items-center gap-1.5">
+                      {{
+                        $t("match.options.advanced.timeouts.technical.label")
+                      }}
+                      <FiveStackToolTip
+                        v-if="stageRulesLocked"
+                        as-child
+                        :delay-duration="120"
+                      >
+                        <template #trigger>
+                          <span
+                            class="pointer-events-auto inline-flex cursor-help text-muted-foreground"
+                            tabindex="0"
+                            role="img"
+                            :aria-label="$t('match.options.rules_locked.stage')"
+                            @click.prevent
+                          >
+                            <Lock class="h-3 w-3" />
+                          </span>
+                        </template>
+                        <p class="max-w-[16rem] normal-case tracking-normal">
+                          {{ $t("match.options.rules_locked.stage") }}
+                        </p>
+                      </FiveStackToolTip>
+                    </span>
+                  </SettingHeader>
                   <FormDescription>{{
                     $t("match.options.advanced.timeouts.technical.description")
                   }}</FormDescription>
                   <FormControl>
-                    <Select v-bind="componentField">
+                    <Select
+                      v-bind="componentField"
+                      :disabled="stageRulesLocked"
+                    >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger :disabled="stageRulesLocked">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
@@ -1556,16 +1585,19 @@ export default {
     stageStartedKey(): string | null {
       return this.structureLocked && this.stage?.id ? this.stage.id : null;
     },
-    matchSettingsLocked(): boolean {
+    stageRulesLocked(): boolean {
       return this.structureLocked && this.stageStarted;
     },
+    // A started stage without its own settings plays the tournament's, which
+    // its matches were cloned from, so only Match rules can still move them.
+    matchSettingsLocked(): boolean {
+      return this.stageRulesLocked && !this.stage?.options?.id;
+    },
     matchModeLocked(): boolean {
-      return this.matchSettingsLocked && !this.stage?.options?.id;
+      return this.matchSettingsLocked;
     },
     matchSettingsLockedReason(): string {
-      return this.matchModeLocked || !this.canSetMatchMode
-        ? this.$t("tournament.stage.match_settings_locked")
-        : this.$t("tournament.stage.match_settings_locked_match_mode");
+      return this.$t("tournament.stage.match_settings_inherited");
     },
     matchModeSettings(): EnumSetting[] {
       return [
@@ -1765,13 +1797,18 @@ export default {
       );
     },
     editableWhileLocked(): Array<string> {
-      if (!this.matchSettingsLocked) {
-        return ["default_best_of", ...MATCH_SETTING_FIELDS];
+      if (this.matchSettingsLocked) {
+        return ["default_best_of"];
       }
-      if (!this.matchModeLocked) {
-        return ["default_best_of", "match_mode"];
+      if (this.stageRulesLocked) {
+        return [
+          "default_best_of",
+          ...MATCH_SETTING_FIELDS.filter(
+            (key) => key !== "tech_timeout_setting",
+          ),
+        ];
       }
-      return ["default_best_of"];
+      return ["default_best_of", ...MATCH_SETTING_FIELDS];
     },
     structureChanged(): boolean {
       const editable = this.editableWhileLocked();
@@ -2201,14 +2238,7 @@ export default {
 
           if (this.matchSettingsChanged()) {
             const ownRow = !!this.stage.options?.id;
-            const onlyMatchMode = this.changedFields().every(
-              (key) =>
-                key === "match_mode" || !MATCH_SETTING_FIELDS.includes(key),
-            );
-            if (
-              (!ownRow && customAdvancedSettings) ||
-              (ownRow && !onlyMatchMode)
-            ) {
+            if (!ownRow && customAdvancedSettings) {
               if (await this.stageHasDrawnMatches()) {
                 this.stageStarted = true;
                 toast({

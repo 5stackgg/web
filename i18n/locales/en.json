@@ -9059,8 +9059,7 @@
       "structure_locked_label": "Type, teams and groups",
       "structure_locked": "Type, teams and groups are locked once the bracket is drawn.",
       "match_settings_locked_label": "Match settings",
-      "match_settings_locked": "Match settings are locked once this stage has matches.",
-      "match_settings_locked_match_mode": "Match settings are locked once this stage has matches. Match mode can still change.",
+      "match_settings_inherited": "This stage plays the tournament's settings. Change them under Match rules.",
       "drawn_while_editing": "The bracket was drawn while you were editing. Discard the changes that are now locked, then save again.",
       "final_map_advantage": {
         "label": "Final Map Advantage",
@@ -10268,6 +10267,12 @@
         "none": "Competitive (no mode)",
         "description": "Loads a set of plugins and console variables on the match server.",
         "unranked_note": "Matches with a custom game mode never count toward ELO or the leaderboards."
+      },
+      "rules_locked": {
+        "label": "Rules locked",
+        "tournament_match": "Every match in a stage plays the same rules: format, maps, rounds, overtime, timeouts and substitutes. Region, TV delay, check-in and timers can still change.",
+        "tournament": "A stage playing these settings has matches, so their rules are locked: format, maps, rounds, overtime, timeouts and substitutes. Region, TV delay, check-in and timers can still change.",
+        "stage": "Locked once this stage has matches, so every match in it plays the same rules."
       }
     },
     "schedule": {

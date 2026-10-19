@@ -7,6 +7,7 @@ import {
   History,
   Power,
   RefreshCw,
+  RotateCcw,
   Trophy,
   UserX,
 } from "lucide-vue-next";
@@ -20,7 +21,7 @@ import {
 import { e_match_status_enum } from "~/generated/zeus";
 
 export type FixProblemAction =
-  "restore" | "restart" | "winner" | "reboot" | "reparse";
+  "restore" | "restart_map" | "restart" | "winner" | "reboot" | "reparse";
 
 type Row = {
   key: FixProblemAction;
@@ -63,6 +64,8 @@ const UNFINISHED = [
 
 const MAP_IN_PROGRESS = ["Warmup", "Live", "Overtime", "Paused"];
 
+const MAP_RESTARTABLE = [...MAP_IN_PROGRESS, "Knife"];
+
 const state = computed(() => {
   const status = props.match.status as string;
   const hasWinner = !!props.match.winning_lineup_id;
@@ -78,6 +81,9 @@ const state = computed(() => {
     mapInProgress:
       status === e_match_status_enum.Live &&
       MAP_IN_PROGRESS.includes(currentMap?.status),
+    mapRestartable:
+      status === e_match_status_enum.Live &&
+      MAP_RESTARTABLE.includes(currentMap?.status),
     rush: props.match.options?.type === "Rush",
     bracket:
       !!props.match.is_tournament_match ||
@@ -106,6 +112,16 @@ const rows = computed<Row[]>(() => {
       action: t("match.recovery.restore.title"),
       blocked,
       primary: !blocked,
+    });
+  }
+
+  if (s.mapRestartable) {
+    rows.push({
+      key: "restart_map",
+      icon: RotateCcw,
+      title: t("match.recovery.fix.restart_map_title"),
+      description: t("match.recovery.fix.restart_map_description"),
+      action: t("match.recovery.restart_map.title"),
     });
   }
 

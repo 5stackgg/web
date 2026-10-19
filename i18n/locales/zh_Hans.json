@@ -11056,6 +11056,8 @@
         "restore_rush": "Rush 比赛无法恢复回合。",
         "restore_over": "地图已经结束。",
         "restore_not_live": "仅在地图进行中可用。",
+        "restart_map_title": "这张地图需要从头开始",
+        "restart_map_description": "回到 0–0 的热身。在下一回合结束前，已打过的回合仍可恢复。",
         "restart_title": "整场比赛需要重打",
         "restart_description": "取消本次比赛，并为双方重新开放签到。",
         "reopen_title": "比赛仍需进行",
@@ -11086,9 +11088,11 @@
         "now": "现在",
         "won_ct": "以 CT 获胜",
         "won_t": "以 T 获胜",
+        "undone": "已撤销，仍可恢复",
         "round_one": "第 1 回合没有备份",
         "headline": "回到第 {round} 回合开始时",
         "headline_live": "从头重打第 {round} 回合",
+        "headline_forward": "前进到第 {round} 回合开始时",
         "previous_round": "第 {round} 回合结束：{team} 以 {side} 获胜 · {reason}",
         "economy_hidden": "你正在参加这场比赛，因此隐藏了玩家的金钱和武器。",
         "bank": "资金 {amount}",
@@ -11104,6 +11108,8 @@
         "undo_live": "只撤销当前回合。",
         "undo_round": "撤销第 {round} 回合和当前回合，包括它们的击杀和伤害。",
         "undo_rounds": "撤销第 {from}–{to} 回合和当前回合，包括它们的击杀和伤害。",
+        "redo_round": "恢复第 {round} 回合，包括它的击杀和伤害。",
+        "redo_rounds": "恢复第 {from}–{to} 回合，包括它们的击杀和伤害。",
         "waiting": "正在等待玩家重新连接（{connected}/{expected}）。未连接：{names}。",
         "everyone_connected": "所有人都已连接",
         "pauses": "加载回合时比赛会暂停。双方准备就绪后继续。",
@@ -11134,6 +11140,12 @@
         "restarted": "比赛已重新开始",
         "result_changed": "胜者已更改",
         "failed": "无法重新开始比赛"
+      },
+      "restart_map": {
+        "title": "重新开始地图",
+        "description": "所有人回到热身，比分回到 0–0。在重新开始后的第一个回合结束前，目前打过的任何回合仍可恢复。",
+        "restarted": "地图已从热身重新开始",
+        "failed": "无法重新开始地图"
       }
     },
     "demo_processing_hint": "比赛 demo 正从游戏服务器上传。完成后就会出现数据、2D 回放和集锦。",

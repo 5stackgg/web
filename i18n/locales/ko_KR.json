@@ -11056,6 +11056,8 @@
         "restore_rush": "Rush 매치에서는 라운드를 복원할 수 없어요.",
         "restore_over": "맵이 모두 끝났어요.",
         "restore_not_live": "맵이 진행 중일 때만 가능해요.",
+        "restart_map_title": "이 맵을 처음부터 다시 해야 해요",
+        "restart_map_description": "0–0 워밍업으로 돌아가요. 다음 라운드가 끝날 때까지 진행한 라운드는 복원할 수 있어요.",
         "restart_title": "매치 전체를 다시 해야 해요",
         "restart_description": "이번 시도를 취소하고 두 팀의 체크인을 다시 열어요.",
         "reopen_title": "매치를 아직 진행해야 해요",
@@ -11086,9 +11088,11 @@
         "now": "현재",
         "won_ct": "CT로 승리",
         "won_t": "T로 승리",
+        "undone": "되돌려졌지만 다시 살릴 수 있어요",
         "round_one": "라운드 1은 백업이 없어요",
         "headline": "라운드 {round} 시작 시점으로 돌아가기",
         "headline_live": "라운드 {round} 처음부터 다시 하기",
+        "headline_forward": "라운드 {round} 시작 시점으로 앞으로 가기",
         "previous_round": "라운드 {round} 종료: {team} {side}로 승리 · {reason}",
         "economy_hidden": "이 매치에서 플레이 중이라 플레이어의 돈과 무기는 숨겨져요.",
         "bank": "팀 자금 {amount}",
@@ -11104,6 +11108,8 @@
         "undo_live": "진행 중인 라운드만 되돌려요.",
         "undo_round": "라운드 {round}와 진행 중인 라운드를 킬과 피해를 포함해 되돌려요.",
         "undo_rounds": "라운드 {from}–{to}와 진행 중인 라운드를 킬과 피해를 포함해 되돌려요.",
+        "redo_round": "라운드 {round}를 킬과 피해를 포함해 다시 살려요.",
+        "redo_rounds": "라운드 {from}–{to}를 킬과 피해를 포함해 다시 살려요.",
         "waiting": "플레이어 재접속을 기다리고 있어요 ({connected}/{expected}). 미접속: {names}.",
         "everyone_connected": "모두 접속해 있어요",
         "pauses": "라운드를 불러오는 동안 매치가 일시정지돼요. 팀이 준비를 완료하면 이어서 진행해요.",
@@ -11134,6 +11140,12 @@
         "restarted": "매치를 다시 시작했어요",
         "result_changed": "승자를 변경했어요",
         "failed": "매치를 다시 시작하지 못했어요"
+      },
+      "restart_map": {
+        "title": "맵 다시 시작",
+        "description": "모두 워밍업으로 돌아가고 점수는 0–0이 돼요. 다시 시작한 뒤 첫 라운드가 끝날 때까지는 지금까지 진행한 어떤 라운드든 복원할 수 있어요.",
+        "restarted": "맵을 워밍업부터 다시 시작했어요",
+        "failed": "맵을 다시 시작하지 못했어요"
       }
     },
     "demo_processing_hint": "경기 데모를 게임 서버에서 업로드하고 있습니다. 완료되면 통계, 2D 리플레이, 하이라이트가 표시됩니다.",

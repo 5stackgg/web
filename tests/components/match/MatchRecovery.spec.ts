@@ -34,7 +34,7 @@ function match(overrides: Record<string, any> = {}) {
   };
 }
 
-function round(number: number, backup = true) {
+function round(number: number, backup = true, undone = false) {
   return {
     round: number,
     lineup_1_score: number,
@@ -48,6 +48,7 @@ function round(number: number, backup = true) {
     next_lineup_1_side: "CT",
     next_lineup_2_side: "TERRORIST",
     has_backup: backup,
+    undone,
     players: [
       {
         steam_id: "1",
@@ -145,6 +146,31 @@ describe("restore round", () => {
     await flushPromises();
 
     expect(sent()[0].variables).toEqual({ matchId: "m-1", round: 11 });
+  });
+
+  it("goes forward again to rounds a restore undid", async () => {
+    await mountRestore(
+      restoreRounds({
+        live_round: 12,
+        rounds: Array.from({ length: 13 }, (_, index) =>
+          round(index + 1, true, index + 1 >= 12),
+        ),
+      }),
+    );
+
+    expect(body().textContent).toContain("Replay round 12 from the start");
+    expect(body().textContent).toContain("Undone, can still be brought back");
+    (body().querySelector('button[aria-label="14"]') as HTMLElement).click();
+    await flushPromises();
+
+    expect(body().textContent).toContain("Forward to the start of round 14");
+    expect(body().textContent).toContain(
+      "Brings back rounds 12–13, with their kills and damage.",
+    );
+    button("Restore to Round 14")!.click();
+    await flushPromises();
+
+    expect(sent()[0].variables).toEqual({ matchId: "m-1", round: 13 });
   });
 
   it("waits for a missing player instead of sending the restore", async () => {
@@ -395,6 +421,33 @@ describe("fix a problem", () => {
     ).toBe(false);
   });
 
+  it("offers to start the map over, even from the knife round", async () => {
+    const live = await rows({});
+    expect(
+      live.find((row) => row.text.includes("This map has to start over"))
+        ?.blocked,
+    ).toBe(false);
+
+    wrapper?.unmount();
+    const knife = await rows({
+      match_maps: [{ id: "map-1", is_current_map: true, status: "Knife" }],
+    });
+    expect(
+      knife.find((row) => row.text.includes("This map has to start over"))
+        ?.blocked,
+    ).toBe(false);
+
+    wrapper?.unmount();
+    const uploading = await rows({
+      match_maps: [
+        { id: "map-1", is_current_map: true, status: "UploadingDemo" },
+      ],
+    });
+    expect(
+      uploading.some((row) => row.text.includes("This map has to start over")),
+    ).toBe(false);
+  });
+
   it("offers to reopen a canceled match", async () => {
     const list = await rows({ status: "Canceled" });
 
@@ -474,6 +527,17 @@ describe("the dock", () => {
     });
 
     expect(actions.canFixProblems).toBe(false);
+  });
+
+  it("restarts the map from warmup once confirmed", async () => {
+    const actions = await mountDock();
+
+    await actions.onFixSelect("restart_map");
+    expect(actions.confirming.title).toBe("Restart Map");
+    await actions.runConfirm();
+
+    expect(sent()[0].document).toContain("restartMatchMap");
+    expect(sent()[0].variables).toEqual({ matchId: "m-1" });
   });
 
   it("opens the restore dialog from Fix a Problem", async () => {

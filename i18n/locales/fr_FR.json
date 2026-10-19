@@ -11056,6 +11056,8 @@
         "restore_rush": "Les matchs Rush ne peuvent pas restaurer de round.",
         "restore_over": "Les maps sont terminées.",
         "restore_not_live": "Uniquement pendant qu'une map est en cours.",
+        "restart_map_title": "Cette map doit recommencer",
+        "restart_map_description": "Retour à l'échauffement à 0–0. Les rounds joués restent restaurables jusqu'à la fin du prochain round.",
         "restart_title": "Le match entier doit être rejoué",
         "restart_description": "Annule cette tentative et rouvre le check-in pour les deux équipes.",
         "reopen_title": "Le match doit encore être joué",
@@ -11086,9 +11088,11 @@
         "now": "Maintenant",
         "won_ct": "Gagné en CT",
         "won_t": "Gagné en T",
+        "undone": "Annulé, peut encore être rétabli",
         "round_one": "Le round 1 n'a pas de sauvegarde",
         "headline": "Retour au début du round {round}",
         "headline_live": "Rejouer le round {round} depuis le début",
+        "headline_forward": "Avancer au début du round {round}",
         "previous_round": "Fin du round {round} : {team} a gagné en {side} · {reason}",
         "economy_hidden": "L'argent et les armes des joueurs sont masqués car vous jouez dans ce match.",
         "bank": "Caisse {amount}",
@@ -11104,6 +11108,8 @@
         "undo_live": "Annule uniquement le round en cours.",
         "undo_round": "Annule le round {round} et le round en cours, y compris leurs kills et leurs dégâts.",
         "undo_rounds": "Annule les rounds {from}–{to} et le round en cours, y compris leurs kills et leurs dégâts.",
+        "redo_round": "Rétablit le round {round}, avec ses kills et ses dégâts.",
+        "redo_rounds": "Rétablit les rounds {from}–{to}, avec leurs kills et leurs dégâts.",
         "waiting": "En attente de la reconnexion des joueurs ({connected}/{expected}). Non connectés : {names}.",
         "everyone_connected": "Tout le monde est connecté",
         "pauses": "Le match est mis en pause pendant le chargement du round. Les équipes se déclarent prêtes pour reprendre.",
@@ -11134,6 +11140,12 @@
         "restarted": "Match redémarré",
         "result_changed": "Vainqueur modifié",
         "failed": "Impossible de redémarrer le match"
+      },
+      "restart_map": {
+        "title": "Redémarrer la map",
+        "description": "Tout le monde revient à l'échauffement et le score repasse à 0–0. Jusqu'à la fin du premier round après le redémarrage, tout round joué jusqu'ici peut encore être restauré.",
+        "restarted": "Map redémarrée depuis l'échauffement",
+        "failed": "Impossible de redémarrer la map"
       }
     },
     "demo_processing_hint": "La démo du match est en cours de téléversement depuis le serveur de jeu. Les statistiques, la rediffusion 2D et les temps forts arriveront une fois terminé.",

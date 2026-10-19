@@ -11056,6 +11056,8 @@
         "restore_rush": "In Rush-Matches können keine Runden wiederhergestellt werden.",
         "restore_over": "Die Maps sind vorbei.",
         "restore_not_live": "Nur während eine Map gespielt wird.",
+        "restart_map_title": "Diese Map muss neu beginnen",
+        "restart_map_description": "Zurück ins Warmup bei 0–0. Die gespielten Runden bleiben wiederherstellbar, bis die nächste Runde endet.",
         "restart_title": "Das ganze Match muss wiederholt werden",
         "restart_description": "Bricht diesen Versuch ab und öffnet den Check-in für beide Teams erneut.",
         "reopen_title": "Das Match muss noch gespielt werden",
@@ -11086,9 +11088,11 @@
         "now": "Jetzt",
         "won_ct": "Als CT gewonnen",
         "won_t": "Als T gewonnen",
+        "undone": "Rückgängig gemacht, kann zurückgeholt werden",
         "round_one": "Runde 1 hat kein Backup",
         "headline": "Zurück zum Beginn von Runde {round}",
         "headline_live": "Runde {round} von vorne spielen",
+        "headline_forward": "Vor zum Beginn von Runde {round}",
         "previous_round": "Runde {round} endete: {team} gewann als {side} · {reason}",
         "economy_hidden": "Geld und Waffen der Spieler sind ausgeblendet, weil du in diesem Match spielst.",
         "bank": "Kasse {amount}",
@@ -11104,6 +11108,8 @@
         "undo_live": "Macht nur die laufende Runde rückgängig.",
         "undo_round": "Macht Runde {round} und die laufende Runde rückgängig, inklusive ihrer Kills und ihres Schadens.",
         "undo_rounds": "Macht die Runden {from}–{to} und die laufende Runde rückgängig, inklusive ihrer Kills und ihres Schadens.",
+        "redo_round": "Holt Runde {round} zurück, mit ihren Kills und ihrem Schaden.",
+        "redo_rounds": "Holt die Runden {from}–{to} zurück, mit ihren Kills und ihrem Schaden.",
         "waiting": "Warte auf die Wiederverbindung der Spieler ({connected}/{expected}). Nicht verbunden: {names}.",
         "everyone_connected": "Alle sind verbunden",
         "pauses": "Das Match pausiert, während die Runde lädt. Die Teams machen sich bereit, um weiterzuspielen.",
@@ -11134,6 +11140,12 @@
         "restarted": "Match neu gestartet",
         "result_changed": "Sieger geändert",
         "failed": "Das Match konnte nicht neu gestartet werden"
+      },
+      "restart_map": {
+        "title": "Map neu starten",
+        "description": "Alle gehen zurück ins Warmup und der Spielstand wird 0–0. Bis die erste Runde nach dem Neustart endet, lässt sich jede bisher gespielte Runde noch wiederherstellen.",
+        "restarted": "Map aus dem Warmup neu gestartet",
+        "failed": "Die Map konnte nicht neu gestartet werden"
       }
     },
     "demo_processing_hint": "Die Match-Demo wird vom Gameserver hochgeladen. Statistiken, das 2D-Replay und Highlights folgen, sobald das abgeschlossen ist.",

@@ -11056,6 +11056,8 @@
         "restore_rush": "Las partidas Rush no pueden restaurar rondas.",
         "restore_over": "Los mapas han terminado.",
         "restore_not_live": "Solo mientras se juega un mapa.",
+        "restart_map_title": "Este mapa tiene que empezar de nuevo",
+        "restart_map_description": "Vuelta al calentamiento con 0–0. Las rondas jugadas se pueden restaurar hasta que termine la siguiente ronda.",
         "restart_title": "Hay que repetir la partida entera",
         "restart_description": "Cancela este intento y vuelve a abrir el check-in para ambos equipos.",
         "reopen_title": "La partida aún tiene que jugarse",
@@ -11086,9 +11088,11 @@
         "now": "Ahora",
         "won_ct": "Ganada como CT",
         "won_t": "Ganada como T",
+        "undone": "Deshecha, aún se puede recuperar",
         "round_one": "La ronda 1 no tiene copia de seguridad",
         "headline": "Volver al inicio de la ronda {round}",
         "headline_live": "Repetir la ronda {round} desde el principio",
+        "headline_forward": "Avanzar al inicio de la ronda {round}",
         "previous_round": "Fin de la ronda {round}: {team} ganó como {side} · {reason}",
         "economy_hidden": "El dinero y las armas de los jugadores están ocultos porque juegas en esta partida.",
         "bank": "Caja {amount}",
@@ -11104,6 +11108,8 @@
         "undo_live": "Deshace solo la ronda en curso.",
         "undo_round": "Deshace la ronda {round} y la ronda en curso, incluidas sus bajas y su daño.",
         "undo_rounds": "Deshace las rondas {from}–{to} y la ronda en curso, incluidas sus bajas y su daño.",
+        "redo_round": "Recupera la ronda {round}, con sus bajas y su daño.",
+        "redo_rounds": "Recupera las rondas {from}–{to}, con sus bajas y su daño.",
         "waiting": "Esperando a que los jugadores se reconecten ({connected}/{expected}). Sin conectar: {names}.",
         "everyone_connected": "Todos están conectados",
         "pauses": "La partida se pausa mientras carga la ronda. Los equipos se marcan como listos para continuar.",
@@ -11134,6 +11140,12 @@
         "restarted": "Partida reiniciada",
         "result_changed": "Ganador cambiado",
         "failed": "No se pudo reiniciar la partida"
+      },
+      "restart_map": {
+        "title": "Reiniciar mapa",
+        "description": "Todos vuelven al calentamiento y el marcador vuelve a 0–0. Hasta que termine la primera ronda tras el reinicio, cualquier ronda jugada hasta ahora se puede restaurar.",
+        "restarted": "Mapa reiniciado desde el calentamiento",
+        "failed": "No se pudo reiniciar el mapa"
       }
     },
     "demo_processing_hint": "La demo de la partida se está subiendo desde el servidor de juego. Las estadísticas, la repetición 2D y los momentos destacados llegan cuando termine.",

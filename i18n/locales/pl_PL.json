@@ -11056,6 +11056,8 @@
         "restore_rush": "W meczach Rush nie można przywracać rund.",
         "restore_over": "Mapy się skończyły.",
         "restore_not_live": "Tylko w trakcie grania mapy.",
+        "restart_map_title": "Tę mapę trzeba zacząć od nowa",
+        "restart_map_description": "Powrót do rozgrzewki przy 0–0. Rozegrane rundy można przywrócić, dopóki nie skończy się następna runda.",
         "restart_title": "Cały mecz trzeba powtórzyć",
         "restart_description": "Anuluje tę próbę i ponownie otwiera check-in dla obu drużyn.",
         "reopen_title": "Mecz nadal trzeba rozegrać",
@@ -11086,9 +11088,11 @@
         "now": "Teraz",
         "won_ct": "Wygrana jako CT",
         "won_t": "Wygrana jako T",
+        "undone": "Cofnięta, nadal można ją przywrócić",
         "round_one": "Runda 1 nie ma kopii zapasowej",
         "headline": "Powrót do początku rundy {round}",
         "headline_live": "Rozegraj rundę {round} od początku",
+        "headline_forward": "Naprzód do początku rundy {round}",
         "previous_round": "Koniec rundy {round}: {team} wygrywa jako {side} · {reason}",
         "economy_hidden": "Pieniądze i broń graczy są ukryte, ponieważ grasz w tym meczu.",
         "bank": "Kasa {amount}",
@@ -11104,6 +11108,8 @@
         "undo_live": "Cofa tylko trwającą rundę.",
         "undo_round": "Cofa rundę {round} i trwającą rundę, razem z ich zabójstwami i obrażeniami.",
         "undo_rounds": "Cofa rundy {from}–{to} i trwającą rundę, razem z ich zabójstwami i obrażeniami.",
+        "redo_round": "Przywraca rundę {round}, razem z jej zabójstwami i obrażeniami.",
+        "redo_rounds": "Przywraca rundy {from}–{to}, razem z ich zabójstwami i obrażeniami.",
         "waiting": "Czekamy, aż gracze połączą się ponownie ({connected}/{expected}). Niepołączeni: {names}.",
         "everyone_connected": "Wszyscy są połączeni",
         "pauses": "Mecz zatrzymuje się na czas wczytywania rundy. Drużyny zgłaszają gotowość, żeby kontynuować.",
@@ -11134,6 +11140,12 @@
         "restarted": "Mecz zrestartowany",
         "result_changed": "Zwycięzca zmieniony",
         "failed": "Nie udało się zrestartować meczu"
+      },
+      "restart_map": {
+        "title": "Zrestartuj mapę",
+        "description": "Wszyscy wracają do rozgrzewki, a wynik wraca do 0–0. Dopóki nie skończy się pierwsza runda po restarcie, każdą dotąd rozegraną rundę nadal można przywrócić.",
+        "restarted": "Mapa zrestartowana od rozgrzewki",
+        "failed": "Nie udało się zrestartować mapy"
       }
     },
     "demo_processing_hint": "Demo meczu jest przesyłane z serwera gry. Statystyki, powtórka 2D i highlighty pojawią się po zakończeniu.",

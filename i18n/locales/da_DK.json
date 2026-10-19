@@ -11056,6 +11056,8 @@
         "restore_rush": "Rush-kampe kan ikke gendanne runder.",
         "restore_over": "Banerne er færdige.",
         "restore_not_live": "Kun mens en bane spilles.",
+        "restart_map_title": "Banen skal startes forfra",
+        "restart_map_description": "Tilbage til opvarmning ved 0–0. De spillede runder kan gendannes, indtil næste runde slutter.",
         "restart_title": "Hele kampen skal spilles om",
         "restart_description": "Annullerer dette forsøg og åbner check-in igen for begge hold.",
         "reopen_title": "Kampen mangler stadig at blive spillet",
@@ -11086,9 +11088,11 @@
         "now": "Nu",
         "won_ct": "Vundet som CT",
         "won_t": "Vundet som T",
+        "undone": "Fortrudt, kan stadig hentes tilbage",
         "round_one": "Runde 1 har ingen sikkerhedskopi",
         "headline": "Tilbage til starten af runde {round}",
         "headline_live": "Spil runde {round} forfra",
+        "headline_forward": "Frem til starten af runde {round}",
         "previous_round": "Runde {round} sluttede: {team} vandt som {side} · {reason}",
         "economy_hidden": "Spillernes penge og våben er skjult, fordi du spiller i denne kamp.",
         "bank": "Kasse {amount}",
@@ -11104,6 +11108,8 @@
         "undo_live": "Fortryder kun den igangværende runde.",
         "undo_round": "Fortryder runde {round} og den igangværende runde, inklusive deres kills og skade.",
         "undo_rounds": "Fortryder runderne {from}–{to} og den igangværende runde, inklusive deres kills og skade.",
+        "redo_round": "Henter runde {round} tilbage, med dens kills og skade.",
+        "redo_rounds": "Henter runderne {from}–{to} tilbage, med deres kills og skade.",
         "waiting": "Venter på, at spillerne forbinder igen ({connected}/{expected}). Ikke forbundet: {names}.",
         "everyone_connected": "Alle er forbundet",
         "pauses": "Kampen sættes på pause, mens runden indlæses. Holdene melder sig klar for at fortsætte.",
@@ -11134,6 +11140,12 @@
         "restarted": "Kampen genstartet",
         "result_changed": "Vinderen ændret",
         "failed": "Kunne ikke genstarte kampen"
+      },
+      "restart_map": {
+        "title": "Genstart bane",
+        "description": "Alle går tilbage til opvarmning, og stillingen bliver 0–0. Indtil den første runde efter genstarten slutter, kan alle runder spillet indtil nu stadig gendannes.",
+        "restarted": "Banen genstartet fra opvarmning",
+        "failed": "Kunne ikke genstarte banen"
       }
     },
     "demo_processing_hint": "Kampens demo uploades fra spilserveren. Statistik, 2D-replay og højdepunkter kommer, når den er færdig.",

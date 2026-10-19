@@ -7717,7 +7717,6 @@
       "start_tv": "Als TV starten (verzögert)",
       "tv_delayed": "TV (verzögert)",
       "tv_delay": "TV-Verzögerung",
-      "full_deck": "Komplettes Pult",
       "open_focus_window": "Fokusfenster öffnen",
       "ready": "Bereit",
       "not_ready": "Nicht bereit",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Kapazität erreicht. Stoppe die Übertragung oder wechsle sie zu diesem Match."
       },
       "deck": {
-        "sheet_description": "Übertragungssteuerung. Dasselbe Pult wie im Fokusfenster.",
         "not_on_air": "Nicht auf Sendung",
-        "not_on_air_hint": "Für dieses Match läuft keine Übertragung. Starte eine im Regieraum.",
-        "keys_on": "Tasten 1–0, ← →, Leertaste und Tab funktionieren hier",
-        "keys_off": "Klicke ins Pult, um die Tastatur zu nutzen",
-        "match_page": "Match-Seite",
-        "paused": "Wird im kompletten Pult angezeigt",
-        "paused_hint": "Die Vorschau pausiert hier, solange das Pult offen ist."
+        "not_on_air_hint": "Für dieses Match läuft keine Übertragung. Starte eine im Regieraum."
       },
       "stop": {
         "title": "Übertragung stoppen?",

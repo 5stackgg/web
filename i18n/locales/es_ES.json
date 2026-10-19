@@ -7717,7 +7717,6 @@
       "start_tv": "Iniciar como TV (en diferido)",
       "tv_delayed": "TV (en diferido)",
       "tv_delay": "Diferido de TV",
-      "full_deck": "Panel completo",
       "open_focus_window": "Abrir la ventana de control",
       "ready": "Listo",
       "not_ready": "No está listo",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Capacidad completa. Detén la emisión o cámbiala a este partido."
       },
       "deck": {
-        "sheet_description": "Controles de emisión. El mismo panel que la ventana de control.",
         "not_on_air": "Fuera del aire",
-        "not_on_air_hint": "Este partido no tiene ninguna emisión en curso. Inicia una desde la sala de control.",
-        "keys_on": "Las teclas 1–0, ← →, Espacio y Tab funcionan aquí",
-        "keys_off": "Haz clic en el panel para usar el teclado",
-        "match_page": "Página del partido",
-        "paused": "Se muestra en el panel completo",
-        "paused_hint": "La vista previa se pausa aquí mientras el panel está abierto."
+        "not_on_air_hint": "Este partido no tiene ninguna emisión en curso. Inicia una desde la sala de control."
       },
       "stop": {
         "title": "¿Detener la emisión?",

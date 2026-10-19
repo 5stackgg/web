@@ -78,7 +78,6 @@ function onSwitched(id: string) {
         <BroadcastDeck
           :key="matchId"
           :match-id="matchId"
-          variant="page"
           @switched="onSwitched"
         />
       </div>

@@ -7717,7 +7717,6 @@
       "start_tv": "Démarrer en TV (différé)",
       "tv_delayed": "TV (différé)",
       "tv_delay": "Différé TV",
-      "full_deck": "Pupitre complet",
       "open_focus_window": "Ouvrir la fenêtre de contrôle",
       "ready": "Prêt",
       "not_ready": "Pas prêt",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Capacité atteinte. Arrête la diffusion ou bascule-la sur ce match."
       },
       "deck": {
-        "sheet_description": "Contrôles de diffusion. Le même pupitre que la fenêtre de contrôle.",
         "not_on_air": "Pas à l'antenne",
-        "not_on_air_hint": "Aucune diffusion n'est en cours pour ce match. Lances-en une depuis la régie.",
-        "keys_on": "Les touches 1–0, ← →, Espace et Tab fonctionnent ici",
-        "keys_off": "Clique dans le pupitre pour utiliser le clavier",
-        "match_page": "Page du match",
-        "paused": "Affiché dans le pupitre complet",
-        "paused_hint": "L'aperçu est en pause ici tant que le pupitre est ouvert."
+        "not_on_air_hint": "Aucune diffusion n'est en cours pour ce match. Lances-en une depuis la régie."
       },
       "stop": {
         "title": "Arrêter la diffusion ?",

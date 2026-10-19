@@ -7717,7 +7717,6 @@
       "start_tv": "Iniciar como TV (com atraso)",
       "tv_delayed": "TV (com atraso)",
       "tv_delay": "Atraso de TV",
-      "full_deck": "Painel completo",
       "open_focus_window": "Abrir a janela de controle",
       "ready": "Pronto",
       "not_ready": "Não está pronto",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Capacidade esgotada. Encerre a transmissão ou troque-a para esta partida."
       },
       "deck": {
-        "sheet_description": "Controles de transmissão. O mesmo painel da janela de controle.",
         "not_on_air": "Fora do ar",
-        "not_on_air_hint": "Esta partida não tem transmissão em andamento. Inicie uma pela sala de controle.",
-        "keys_on": "As teclas 1–0, ← →, Espaço e Tab funcionam aqui",
-        "keys_off": "Clique no painel para usar o teclado",
-        "match_page": "Página da partida",
-        "paused": "Exibindo no painel completo",
-        "paused_hint": "A prévia aqui fica pausada enquanto o painel está aberto."
+        "not_on_air_hint": "Esta partida não tem transmissão em andamento. Inicie uma pela sala de controle."
       },
       "stop": {
         "title": "Encerrar a transmissão?",

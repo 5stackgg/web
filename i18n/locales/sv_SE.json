@@ -7717,7 +7717,6 @@
       "start_tv": "Starta som TV (fördröjd)",
       "tv_delayed": "TV (fördröjd)",
       "tv_delay": "TV-fördröjning",
-      "full_deck": "Hela panelen",
       "open_focus_window": "Öppna fokusfönstret",
       "ready": "Redo",
       "not_ready": "Inte redo",
@@ -7750,14 +7749,8 @@
         "at_capacity": "Full kapacitet. Stoppa sändningen eller byt den till den här matchen."
       },
       "deck": {
-        "sheet_description": "Sändningskontroller. Samma panel som fokusfönstret.",
         "not_on_air": "Inte i sändning",
-        "not_on_air_hint": "Den här matchen har ingen sändning igång. Starta en från kontrollrummet.",
-        "keys_on": "Tangenterna 1–0, ← →, Mellanslag och Tab fungerar här",
-        "keys_off": "Klicka i panelen för att använda tangentbordet",
-        "match_page": "Matchsida",
-        "paused": "Visas i hela panelen",
-        "paused_hint": "Förhandsvisningen pausas här medan panelen är öppen."
+        "not_on_air_hint": "Den här matchen har ingen sändning igång. Starta en från kontrollrummet."
       },
       "stop": {
         "title": "Stoppa sändningen?",

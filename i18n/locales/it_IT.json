@@ -11081,6 +11081,7 @@
         "load_failed": "Impossibile caricare i backup dei round",
         "rush": "I match Rush non possono ripristinare i round.",
         "not_in_progress": "I round si possono ripristinare solo mentre si gioca una mappa.",
+        "not_live_yet": "La mappa non è ancora di nuovo live. Appena lo sarà, qualsiasi round precedente si potrà ripristinare finché non termina il round 1.",
         "team_member": "Fai parte di una delle squadre, quindi un altro organizzatore deve ripristinare i round. I giocatori possono comunque avviare il voto in gioco.",
         "nothing_yet": "Su questa mappa non è ancora finito nessun round, quindi non c'è nulla a cui tornare.",
         "replay_live": "Rigioca il round in corso {round}",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Riavvia mappa",
-        "description": "Tutti tornano al riscaldamento e il punteggio torna sullo 0–0. Finché non termina il primo round dopo il riavvio, qualsiasi round giocato finora si può ancora ripristinare.",
+        "description": "Tutti tornano al riscaldamento e il punteggio torna sullo 0–0. Appena la mappa torna live, qualsiasi round giocato finora si può ancora ripristinare finché non termina il primo round dopo il riavvio.",
         "restarted": "Mappa riavviata dal riscaldamento",
         "failed": "Impossibile riavviare la mappa"
       }

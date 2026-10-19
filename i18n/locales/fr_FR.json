@@ -11081,6 +11081,7 @@
         "load_failed": "Impossible de charger les sauvegardes de round",
         "rush": "Les matchs Rush ne peuvent pas restaurer de round.",
         "not_in_progress": "Les rounds ne peuvent être restaurés que pendant qu'une map est en cours.",
+        "not_live_yet": "La map n'est pas encore repartie en live. Dès qu'elle l'est, tout round précédent peut être restauré jusqu'à la fin du round 1.",
         "team_member": "Vous faites partie d'une des équipes : un autre organisateur doit restaurer les rounds. Les joueurs peuvent toujours lancer le vote en jeu.",
         "nothing_yet": "Aucun round n'est encore terminé sur cette map, il n'y a donc rien à restaurer.",
         "replay_live": "Rejouer le round en cours {round}",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Redémarrer la map",
-        "description": "Tout le monde revient à l'échauffement et le score repasse à 0–0. Jusqu'à la fin du premier round après le redémarrage, tout round joué jusqu'ici peut encore être restauré.",
+        "description": "Tout le monde revient à l'échauffement et le score repasse à 0–0. Dès que la map est de nouveau en live, tout round joué jusqu'ici peut encore être restauré jusqu'à la fin du premier round après le redémarrage.",
         "restarted": "Map redémarrée depuis l'échauffement",
         "failed": "Impossible de redémarrer la map"
       }

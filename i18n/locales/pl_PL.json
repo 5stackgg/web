@@ -11081,6 +11081,7 @@
         "load_failed": "Nie udało się wczytać kopii zapasowych rund",
         "rush": "W meczach Rush nie można przywracać rund.",
         "not_in_progress": "Rundy można przywracać tylko w trakcie grania mapy.",
+        "not_live_yet": "Mapa nie jest jeszcze znowu na żywo. Gdy będzie, każdą wcześniejszą rundę można przywrócić, dopóki nie skończy się runda 1.",
         "team_member": "Należysz do jednej z drużyn, więc rundy musi przywrócić inny organizator. Gracze nadal mogą rozpocząć głosowanie w grze.",
         "nothing_yet": "Na tej mapie nie zakończyła się jeszcze żadna runda, więc nie ma do czego wracać.",
         "replay_live": "Powtórz trwającą rundę {round}",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Zrestartuj mapę",
-        "description": "Wszyscy wracają do rozgrzewki, a wynik wraca do 0–0. Dopóki nie skończy się pierwsza runda po restarcie, każdą dotąd rozegraną rundę nadal można przywrócić.",
+        "description": "Wszyscy wracają do rozgrzewki, a wynik wraca do 0–0. Gdy mapa znowu będzie na żywo, każdą dotąd rozegraną rundę nadal można przywrócić, dopóki nie skończy się pierwsza runda po restarcie.",
         "restarted": "Mapa zrestartowana od rozgrzewki",
         "failed": "Nie udało się zrestartować mapy"
       }

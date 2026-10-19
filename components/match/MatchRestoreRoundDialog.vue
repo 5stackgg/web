@@ -437,6 +437,11 @@ const unavailable = computed(() => {
   if (data.value.blocked_reason === "team_member") {
     return t("match.recovery.restore.team_member");
   }
+  if (data.value.blocked_reason === "not_live_yet") {
+    return data.value.rounds.length > 0
+      ? t("match.recovery.restore.not_live_yet")
+      : t("match.recovery.restore.nothing_yet");
+  }
   if (data.value.blocked_reason) {
     return t("match.recovery.restore.not_in_progress");
   }

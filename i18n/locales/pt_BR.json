@@ -11081,6 +11081,7 @@
         "load_failed": "Não foi possível carregar os backups dos rounds",
         "rush": "Partidas Rush não podem restaurar rounds.",
         "not_in_progress": "Rounds só podem ser restaurados enquanto um mapa está sendo jogado.",
+        "not_live_yet": "O mapa ainda não voltou ao vivo. Assim que voltar, qualquer round anterior pode ser restaurado até o round 1 terminar.",
         "team_member": "Você está em um dos times, então outro organizador precisa restaurar os rounds. Os jogadores ainda podem iniciar a votação no jogo.",
         "nothing_yet": "Nenhum round terminou neste mapa ainda, então não há para onde voltar.",
         "replay_live": "Repetir o round em andamento {round}",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Reiniciar mapa",
-        "description": "Todos voltam ao aquecimento e o placar volta a 0–0. Até o primeiro round depois do reinício terminar, qualquer round jogado até agora ainda pode ser restaurado.",
+        "description": "Todos voltam ao aquecimento e o placar volta a 0–0. Assim que o mapa voltar ao vivo, qualquer round jogado até agora ainda pode ser restaurado até o primeiro round depois do reinício terminar.",
         "restarted": "Mapa reiniciado do aquecimento",
         "failed": "Não foi possível reiniciar o mapa"
       }

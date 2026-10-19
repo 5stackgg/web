@@ -11081,6 +11081,7 @@
         "load_failed": "Kunne ikke indlæse rundernes sikkerhedskopier",
         "rush": "Rush-kampe kan ikke gendanne runder.",
         "not_in_progress": "Runder kan kun gendannes, mens en bane spilles.",
+        "not_live_yet": "Banen er ikke live igen endnu. Når den er, kan enhver tidligere runde gendannes, indtil runde 1 er slut.",
         "team_member": "Du er med på et af holdene, så en anden arrangør skal gendanne runder. Spillerne kan stadig starte afstemningen i spillet.",
         "nothing_yet": "Ingen runde er afsluttet på denne bane endnu, så der er intet at gå tilbage til.",
         "replay_live": "Spil den igangværende runde {round} om",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Genstart bane",
-        "description": "Alle går tilbage til opvarmning, og stillingen bliver 0–0. Indtil den første runde efter genstarten slutter, kan alle runder spillet indtil nu stadig gendannes.",
+        "description": "Alle går tilbage til opvarmning, og stillingen bliver 0–0. Når banen er live igen, kan alle runder spillet indtil nu stadig gendannes, indtil den første runde efter genstarten slutter.",
         "restarted": "Banen genstartet fra opvarmning",
         "failed": "Kunne ikke genstarte banen"
       }

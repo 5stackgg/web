@@ -11081,6 +11081,7 @@
         "load_failed": "Raunt yedekleri yüklenemedi",
         "rush": "Rush maçlarında raunt geri yüklenemez.",
         "not_in_progress": "Rauntlar yalnızca bir harita oynanırken geri yüklenebilir.",
+        "not_live_yet": "Harita henüz yeniden canlı değil. Canlı olduğunda, 1. raunt bitene kadar önceki herhangi bir raunt geri yüklenebilir.",
         "team_member": "Takımlardan birindesin, bu yüzden rauntları başka bir organizatör geri yüklemeli. Oyuncular yine de oyun içi oylamayı başlatabilir.",
         "nothing_yet": "Bu haritada henüz hiçbir raunt bitmedi, geri dönülecek bir yer yok.",
         "replay_live": "Süren raundu tekrar oynat ({round})",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Haritayı Yeniden Başlat",
-        "description": "Herkes ısınmaya döner ve skor 0–0 olur. Yeniden başlatmadan sonraki ilk raunt bitene kadar şimdiye kadar oynanan her raunt hâlâ geri yüklenebilir.",
+        "description": "Herkes ısınmaya döner ve skor 0–0 olur. Harita yeniden canlı olduğunda, yeniden başlatmadan sonraki ilk raunt bitene kadar şimdiye kadar oynanan her raunt hâlâ geri yüklenebilir.",
         "restarted": "Harita ısınmadan yeniden başlatıldı",
         "failed": "Harita yeniden başlatılamadı"
       }

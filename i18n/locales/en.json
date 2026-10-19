@@ -11083,6 +11083,7 @@
         "load_failed": "Couldn't load the round backups",
         "rush": "Rush matches can't restore rounds.",
         "not_in_progress": "Rounds can only be restored while a map is being played.",
+        "not_live_yet": "The map isn't live again yet. Once it is, any earlier round can be restored until round 1 is over.",
         "team_member": "You're on one of the teams, so another organizer has to restore rounds. Players can still call the in-game vote.",
         "nothing_yet": "No round has finished on this map yet, so there's nothing to go back to.",
         "replay_live": "Replay the live round {round}",
@@ -11145,7 +11146,7 @@
       },
       "restart_map": {
         "title": "Restart Map",
-        "description": "Everyone goes back to warmup and the score returns to 0–0. Until the first round after the restart ends, any round played so far can still be restored.",
+        "description": "Everyone goes back to warmup and the score returns to 0–0. Once the map is live again, any round played so far can still be restored until the first round after the restart ends.",
         "restarted": "Map restarted from warmup",
         "failed": "Couldn't restart the map"
       }

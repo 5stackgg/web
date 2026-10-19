@@ -11081,6 +11081,7 @@
         "load_failed": "Die Runden-Backups konnten nicht geladen werden",
         "rush": "In Rush-Matches können keine Runden wiederhergestellt werden.",
         "not_in_progress": "Runden können nur wiederhergestellt werden, während eine Map gespielt wird.",
+        "not_live_yet": "Die Map ist noch nicht wieder live. Sobald sie es ist, lässt sich jede frühere Runde wiederherstellen, bis Runde 1 vorbei ist.",
         "team_member": "Du gehörst zu einem der Teams, deshalb muss ein anderer Organisator Runden wiederherstellen. Die Spieler können weiterhin die Abstimmung im Spiel starten.",
         "nothing_yet": "Auf dieser Map ist noch keine Runde beendet, es gibt also nichts, wohin man zurückkehren kann.",
         "replay_live": "Laufende Runde {round} wiederholen",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Map neu starten",
-        "description": "Alle gehen zurück ins Warmup und der Spielstand wird 0–0. Bis die erste Runde nach dem Neustart endet, lässt sich jede bisher gespielte Runde noch wiederherstellen.",
+        "description": "Alle gehen zurück ins Warmup und der Spielstand wird 0–0. Sobald die Map wieder live ist, lässt sich jede bisher gespielte Runde noch wiederherstellen, bis die erste Runde nach dem Neustart endet.",
         "restarted": "Map aus dem Warmup neu gestartet",
         "failed": "Die Map konnte nicht neu gestartet werden"
       }

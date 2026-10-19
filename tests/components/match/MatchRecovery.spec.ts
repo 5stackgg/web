@@ -173,6 +173,23 @@ describe("restore round", () => {
     expect(sent()[0].variables).toEqual({ matchId: "m-1", round: 13 });
   });
 
+  it("waits for a restarted map to go live before offering its rounds", async () => {
+    await mountRestore(
+      restoreRounds({
+        blocked_reason: "not_live_yet",
+        live_round: 1,
+        rounds: Array.from({ length: 13 }, (_, index) =>
+          round(index + 1, true, true),
+        ),
+      }),
+    );
+
+    expect(body().textContent).toContain(
+      "The map isn't live again yet. Once it is, any earlier round can be restored until round 1 is over.",
+    );
+    expect(button("Restore to Round")).toBeUndefined();
+  });
+
   it("picks nothing after a map restart, so undoing it is a choice", async () => {
     await mountRestore(
       restoreRounds({

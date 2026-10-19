@@ -11081,6 +11081,7 @@
         "load_failed": "Kunde inte läsa in rondernas säkerhetskopior",
         "rush": "Rush-matcher kan inte återställa ronder.",
         "not_in_progress": "Ronder kan bara återställas medan en bana spelas.",
+        "not_live_yet": "Banan är inte live igen än. När den är det går alla tidigare ronder att återställa tills rond 1 är slut.",
         "team_member": "Du är med i ett av lagen, så en annan arrangör måste återställa ronder. Spelarna kan fortfarande starta omröstningen i spelet.",
         "nothing_yet": "Ingen rond har avslutats på den här banan än, så det finns inget att gå tillbaka till.",
         "replay_live": "Spela om den pågående ronden {round}",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Starta om bana",
-        "description": "Alla går tillbaka till uppvärmning och ställningen blir 0–0. Tills den första ronden efter omstarten slutar går alla ronder som spelats hittills fortfarande att återställa.",
+        "description": "Alla går tillbaka till uppvärmning och ställningen blir 0–0. När banan är live igen går alla ronder som spelats hittills fortfarande att återställa tills den första ronden efter omstarten slutar.",
         "restarted": "Banan startades om från uppvärmning",
         "failed": "Kunde inte starta om banan"
       }

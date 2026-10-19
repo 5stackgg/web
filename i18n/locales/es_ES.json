@@ -11081,6 +11081,7 @@
         "load_failed": "No se pudieron cargar las copias de seguridad de las rondas",
         "rush": "Las partidas Rush no pueden restaurar rondas.",
         "not_in_progress": "Las rondas solo se pueden restaurar mientras se juega un mapa.",
+        "not_live_yet": "El mapa aún no está en directo otra vez. Cuando lo esté, cualquier ronda anterior se podrá restaurar hasta que termine la ronda 1.",
         "team_member": "Estás en uno de los equipos, así que otro organizador tiene que restaurar las rondas. Los jugadores aún pueden iniciar la votación en el juego.",
         "nothing_yet": "Todavía no ha terminado ninguna ronda en este mapa, así que no hay a dónde volver.",
         "replay_live": "Repetir la ronda en curso {round}",
@@ -11143,7 +11144,7 @@
       },
       "restart_map": {
         "title": "Reiniciar mapa",
-        "description": "Todos vuelven al calentamiento y el marcador vuelve a 0–0. Hasta que termine la primera ronda tras el reinicio, cualquier ronda jugada hasta ahora se puede restaurar.",
+        "description": "Todos vuelven al calentamiento y el marcador vuelve a 0–0. Cuando el mapa vuelva a estar en directo, cualquier ronda jugada hasta ahora se podrá restaurar hasta que termine la primera ronda tras el reinicio.",
         "restarted": "Mapa reiniciado desde el calentamiento",
         "failed": "No se pudo reiniciar el mapa"
       }

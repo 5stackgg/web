@@ -3850,6 +3850,7 @@ export default {
       },
       playerTournamentTeams: {
         query: playerTournamentTeamsSubscription,
+        context: { seed: true },
         variables: function () {
           return {
             steam_id: this.playerId,

@@ -49,7 +49,7 @@ const listQuery = generateQuery({
   tournament_teams: [
     {
       where: $("where", "tournament_teams_bool_exp!"),
-      order_by: [{ tournament: { start: order_by.desc_nulls_last } }],
+      order_by: $("orderBy", "[tournament_teams_order_by!]"),
       limit: $("limit", "Int!"),
       offset: $("offset", "Int!"),
     },
@@ -81,6 +81,14 @@ const listQuery = generateQuery({
   ],
 } as any);
 
+// Every team in a tournament shares its start, so the id breaks the tie or
+// LIMIT/OFFSET pages repeat some teams and skip others.
+const ORDER = [
+  { tournament: { start: order_by.desc_nulls_last } },
+  { name: order_by.asc },
+  { id: order_by.asc },
+];
+
 const where = computed(() => {
   const and: any[] = [
     { team_id: { _is_null: true } },
@@ -104,19 +112,14 @@ const where = computed(() => {
       { tournament: { name: { _ilike: `%${term}%` } } },
       { roster: { player: { name: { _ilike: `%${term}%` } } } },
     ];
-    if (/^\d{1,19}$/.test(raw)) {
+    if (/^\d{1,18}$/.test(raw)) {
       or.push({ roster: { player_steam_id: { _eq: raw } } });
     }
     and.push({ _or: or });
   }
+  // Not owner or captain: both fall back to the organizer who added the team.
   if (mine.value && auth.me?.steam_id) {
-    and.push({
-      _or: [
-        { owner_steam_id: { _eq: auth.me.steam_id } },
-        { captain_steam_id: { _eq: auth.me.steam_id } },
-        { roster: { player_steam_id: { _eq: auth.me.steam_id } } },
-      ],
-    });
+    and.push({ roster: { player_steam_id: { _eq: auth.me.steam_id } } });
   }
   return { _and: and };
 });
@@ -133,6 +136,7 @@ async function load() {
       query: listQuery,
       variables: {
         where: where.value,
+        orderBy: ORDER,
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
       },
@@ -306,9 +310,14 @@ const chipClasses =
           {{ $t("pages.teams.no_teams_title") }}
         </p>
         <p class="m-0 text-[13px] text-muted-foreground">
-          {{ $t("pages.teams.directory.no_match") }}
+          {{
+            anyFilter
+              ? $t("pages.teams.directory.no_match")
+              : $t("pages.teams.no_teams")
+          }}
         </p>
         <Button
+          v-if="anyFilter"
           size="sm"
           variant="outline"
           class="mt-2 h-8"

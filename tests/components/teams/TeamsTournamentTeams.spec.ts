@@ -36,17 +36,28 @@ const TEAM_X = {
   ],
 };
 
-function respond(teams: unknown[]) {
+function respond(teams: unknown[], count = teams.length) {
   client.query.mockResolvedValue({
     data: {
       tournament_teams: teams,
-      tournament_teams_aggregate: { aggregate: { count: teams.length } },
+      tournament_teams_aggregate: { aggregate: { count } },
     },
   });
 }
 
+function lastVariables() {
+  return client.query.mock.calls.at(-1)?.[0].variables;
+}
+
 function lastWhere() {
-  return client.query.mock.calls.at(-1)?.[0].variables.where;
+  return lastVariables().where;
+}
+
+async function search(wrapper: any, value: string) {
+  await wrapper.find("input").setValue(value);
+  vi.advanceTimersByTime(300);
+  await flushPromises();
+  return lastWhere()._and.find((clause: any) => clause._or);
 }
 
 describe("TeamsTournamentTeams", () => {
@@ -73,6 +84,19 @@ describe("TeamsTournamentTeams", () => {
     );
   });
 
+  it("orders teams of the same tournament by a unique key so pages never overlap", async () => {
+    respond([TEAM_X]);
+
+    await mountSuspended(TeamsTournamentTeams);
+    await flushPromises();
+
+    expect(lastVariables().orderBy).toEqual([
+      { tournament: { start: "desc_nulls_last" } },
+      { name: "asc" },
+      { id: "asc" },
+    ]);
+  });
+
   it("finds a player's tournament teams by steam id", async () => {
     respond([TEAM_X]);
     vi.useFakeTimers();
@@ -80,14 +104,39 @@ describe("TeamsTournamentTeams", () => {
     const wrapper = await mountSuspended(TeamsTournamentTeams);
     await flushPromises();
 
-    await wrapper.find("input").setValue(PLAYER);
-    vi.advanceTimersByTime(300);
-    await flushPromises();
-
-    const search = lastWhere()._and.find((clause: any) => clause._or);
-    expect(search._or).toContainEqual({
+    expect((await search(wrapper, PLAYER))._or).toContainEqual({
       roster: { player_steam_id: { _eq: PLAYER } },
     });
+    expect(
+      JSON.stringify(await search(wrapper, "9999999999999999999")),
+    ).not.toContain("player_steam_id");
+  });
+
+  it("keeps My Teams Only to teams the viewer plays on", async () => {
+    useAuthStore().me = { steam_id: PLAYER } as any;
+    respond([TEAM_X]);
+
+    const wrapper = await mountSuspended(TeamsTournamentTeams);
+    await flushPromises();
+
+    await wrapper.find("button[aria-pressed]").trigger("click");
+    await flushPromises();
+
+    expect(lastWhere()._and).toContainEqual({
+      roster: { player_steam_id: { _eq: PLAYER } },
+    });
+    expect(JSON.stringify(lastWhere())).not.toContain("owner_steam_id");
+    expect(JSON.stringify(lastWhere())).not.toContain("captain_steam_id");
+  });
+
+  it("does not blame filters for an empty page when none are set", async () => {
+    respond([], 11);
+
+    const wrapper = await mountSuspended(TeamsTournamentTeams);
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("No teams found.");
+    expect(wrapper.text()).not.toContain("Clear filters");
   });
 
   it("renders nothing when no tournament has a team of its own", async () => {

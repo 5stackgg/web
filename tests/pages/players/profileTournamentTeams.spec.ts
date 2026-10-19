@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ref } from "vue";
+import { print } from "graphql";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlayerPage from "~/pages/players/[id].vue";
@@ -22,6 +23,9 @@ vi.mock("~/components/ui/sidebar/utils", async (original) => ({
 
 const TARGET = "76561198000123456";
 
+const subscription = () =>
+  (PlayerPage as any).apollo.$subscribe.playerTournamentTeams;
+
 let unmount: (() => void) | undefined;
 
 afterEach(async () => {
@@ -32,6 +36,20 @@ afterEach(async () => {
 });
 
 describe("player profile tournament teams", () => {
+  it("asks for the player's tournament-only teams in tournaments still running", () => {
+    const document = print(subscription().query);
+
+    expect(document).toContain("tournament_team_roster(");
+    expect(document).toMatch(/tournament_team: \{team_id: \{_is_null: true\}\}/);
+    expect(document).toMatch(
+      /status: \{_nin: \[Finished, Cancelled, CancelledMinTeams\]\}/,
+    );
+    expect(subscription().variables.call({ playerId: TARGET })).toEqual({
+      steam_id: TARGET,
+    });
+    expect(subscription().context).toEqual({ seed: true });
+  });
+
   it("shows a team made inside a tournament next to the player's teams", async () => {
     useAuthStore().me = {
       steam_id: "76561198000000001",
@@ -51,12 +69,16 @@ describe("player profile tournament teams", () => {
       role: e_player_roles_enum.user,
       teams: [{ id: "team-1", name: "Blue Rabbits", short_name: "BR" }],
     };
-    (wrapper.vm as any).playerTournamentTeams = [
-      {
-        tournament_team: { id: "tt-1", name: "Team X", short_name: "TX" },
-        tournament: { id: "tour-1", name: "Autumn Cup" },
+    subscription().result.call(wrapper.vm, {
+      data: {
+        tournament_team_roster: [
+          {
+            tournament_team: { id: "tt-1", name: "Team X", short_name: "TX" },
+            tournament: { id: "tour-1", name: "Autumn Cup" },
+          },
+        ],
       },
-    ];
+    });
     await flushPromises();
 
     const links = wrapper

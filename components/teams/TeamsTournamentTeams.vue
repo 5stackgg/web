@@ -123,7 +123,9 @@ const where = computed(() => {
 
 let generation = 0;
 async function load() {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined") {
+    return;
+  }
   const current = ++generation;
   fetching.value = true;
   try {
@@ -136,7 +138,9 @@ async function load() {
       },
       fetchPolicy: "network-only",
     });
-    if (current !== generation) return;
+    if (current !== generation) {
+      return;
+    }
     teams.value = (data as any)?.tournament_teams ?? [];
     total.value =
       (data as any)?.tournament_teams_aggregate?.aggregate?.count ?? 0;
@@ -144,7 +148,9 @@ async function load() {
   } catch (error) {
     console.error("[teams] tournament teams query error", error);
   } finally {
-    if (current === generation) fetching.value = false;
+    if (current === generation) {
+      fetching.value = false;
+    }
   }
 }
 
@@ -158,7 +164,9 @@ watch(
 
 let searchTimer: ReturnType<typeof setTimeout> | null = null;
 watch(search, (value) => {
-  if (searchTimer) clearTimeout(searchTimer);
+  if (searchTimer) {
+    clearTimeout(searchTimer);
+  }
   searchTimer = setTimeout(() => {
     query.value = value;
     page.value = 1;
@@ -168,11 +176,15 @@ watch(mine, () => {
   page.value = 1;
 });
 watch(signedIn, (value) => {
-  if (!value) mine.value = false;
+  if (!value) {
+    mine.value = false;
+  }
 });
 
 onBeforeUnmount(() => {
-  if (searchTimer) clearTimeout(searchTimer);
+  if (searchTimer) {
+    clearTimeout(searchTimer);
+  }
 });
 
 function clearSearch() {

@@ -5190,9 +5190,6 @@
           "ports": "Ports",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 & Plugins"
-        },
         "capacity": {
           "gpu_only": "Nur GPU, hostet also keine Matches. Unter GPU zurückstellen.",
           "max_servers": "Max. Server",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "Installiere CS2, sobald der Node verbunden ist.",
           "gpu_only": "Reine GPU-Nodes betreiben keine CS2-Server.",
-          "to": "auf {version}",
           "plugin_unsupported": "Nicht unterstützt",
           "update_log": "Update-Log",
-          "behind_line": "Build {build}, auf {target} aktualisieren",
-          "failed_line": "{ago} · noch auf Build {build}",
-          "build_line": "Build {build}",
           "on_build": "auf Build {build}",
-          "pinning_unsupported": "Pinning nicht unterstützt"
+          "pinning_unsupported": "Pinning nicht unterstützt",
+          "actions": "CS2-Aktionen",
+          "version": "Version"
         },
         "hardware": {
           "cores": "Kerne",
@@ -5310,7 +5305,33 @@
           "details": "Details"
         },
         "window_minutes": "Letzte {count} Minute | Letzte {count} Minuten",
-        "window_hours": "Letzte {count} Stunde | Letzte {count} Stunden"
+        "window_hours": "Letzte {count} Stunde | Letzte {count} Stunden",
+        "game": {
+          "up_to_date": "Aktuell",
+          "update_available": "Update verfügbar",
+          "updating": "Wird aktualisiert",
+          "updating_to": "Aktualisiert auf {build}",
+          "installing": "Wird installiert",
+          "installing_to": "Installiert {build}",
+          "installed": "Installiert",
+          "build": "Build {build}",
+          "on_update_to": "Auf {build}, Update auf {target}",
+          "still_on": "Noch auf {build}",
+          "watch_log": "Log ansehen",
+          "open_log": "Log öffnen",
+          "last_lines": "Letzte Zeilen des Logs",
+          "retry": "Erneut versuchen"
+        },
+        "csgo": {
+          "legacy": "Legacy",
+          "actions": "CS:GO-Aktionen",
+          "install_hint": "Für Legacy-CS:GO-Server"
+        },
+        "log": {
+          "title_cs2": "CS2-Update-Log",
+          "title_csgo": "CS:GO-Update-Log",
+          "kept": "Logs werden nach jedem Update 7 Tage aufbewahrt"
+        }
       }
     },
     "dedicated_servers": {
@@ -11864,6 +11885,7 @@
     "toast": {
       "cs_updating": "CS2 wird auf der Node aktualisiert",
       "csgo_installing": "CS:GO wird auf der Node installiert",
+      "csgo_updating": "CS:GO wird auf der Node aktualisiert",
       "ports_updated": "Node-Ports aktualisiert",
       "ports_removed": "Node-Ports entfernt",
       "made_gpu_only": "Node auf „nur GPU“ gesetzt",

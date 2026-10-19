@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
+import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import GpuCardBlock from "~/components/gpu-nodes/GpuCardBlock.vue";
 import WorkloadChips from "~/components/gpu-nodes/WorkloadChips.vue";
 import type { NodeLike } from "~/components/game-server-nodes/nodeState";
@@ -118,10 +119,8 @@ const preset = computed(() => {
 
 <template>
   <section class="grid gap-3 p-4">
-    <h3
-      class="flex min-h-7 min-w-0 items-center gap-2 text-[13px] font-semibold"
-    >
-      GPU
+    <div class="flex min-h-7 min-w-0 items-center gap-2">
+      <InspectorLabel>GPU</InspectorLabel>
       <span
         v-if="devices.length > 1"
         class="ml-auto min-w-0 truncate text-xs font-normal text-muted-foreground"
@@ -140,7 +139,7 @@ const preset = computed(() => {
         align="end"
         :activity="activity"
       />
-    </h3>
+    </div>
 
     <WorkloadChips full :node="node as any" :activity="activity" />
 

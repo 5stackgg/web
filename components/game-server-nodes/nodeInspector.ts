@@ -272,6 +272,41 @@ export function updateProgress(status: string | null | undefined) {
   return match ? Math.min(100, Number(match[1])) : null;
 }
 
+// "Downloading depot 2/3 41%" -> "Downloading depot 2/3": the step, with the
+// percentage left to the meter.
+export function updateStep(status: string | null | undefined) {
+  const text = String(status ?? "")
+    .replace(/\s*\d{1,3}(?:\.\d+)?\s*%\s*$/, "")
+    .trim();
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+export type CsgoState =
+  "none" | "updating" | "failed" | "behind" | "current" | "installed";
+
+// CS:GO shows only once it's installed, or while an install of it runs or has
+// failed. "installed" is an install with no latest build to compare against.
+export function csgoState(
+  node: NodeLike,
+  latestBuildId?: number | string | null,
+): CsgoState {
+  if (node.csgo_update_status) {
+    return "updating";
+  }
+  if (node.csgo_update_failed_at) {
+    return "failed";
+  }
+  if (!node.csgo_build_id) {
+    return "none";
+  }
+  if (!latestBuildId) {
+    return "installed";
+  }
+  return String(node.csgo_build_id) === String(latestBuildId)
+    ? "current"
+    : "behind";
+}
+
 export type DiskSize = {
   percent: number;
   freeGb: number | null;

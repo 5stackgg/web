@@ -5190,9 +5190,6 @@
           "ports": "ポート",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2とプラグイン"
-        },
         "capacity": {
           "gpu_only": "GPU専用のためマッチはホストしません。GPUセクションで戻せます。",
           "max_servers": "最大サーバー数",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "ノードが接続されたらCS2をインストールしてください。",
           "gpu_only": "GPU専用ノードではCS2サーバーは動きません。",
-          "to": "→ {version}",
           "plugin_unsupported": "非対応",
           "update_log": "更新ログ",
-          "behind_line": "ビルド {build}、{target} に更新",
-          "failed_line": "{ago} · まだビルド {build}",
-          "build_line": "ビルド {build}",
           "on_build": "(ビルド {build})",
-          "pinning_unsupported": "固定に非対応"
+          "pinning_unsupported": "固定に非対応",
+          "actions": "CS2 の操作",
+          "version": "バージョン"
         },
         "hardware": {
           "cores": "コア",
@@ -5310,7 +5305,33 @@
           "details": "詳細"
         },
         "window_minutes": "直近{count}分 | 直近{count}分",
-        "window_hours": "直近{count}時間 | 直近{count}時間"
+        "window_hours": "直近{count}時間 | 直近{count}時間",
+        "game": {
+          "up_to_date": "最新",
+          "update_available": "更新あり",
+          "updating": "更新中",
+          "updating_to": "{build} に更新中",
+          "installing": "インストール中",
+          "installing_to": "{build} をインストール中",
+          "installed": "インストール済み",
+          "build": "ビルド {build}",
+          "on_update_to": "{build} から {target} に更新",
+          "still_on": "まだ {build}",
+          "watch_log": "ログを見る",
+          "open_log": "ログを開く",
+          "last_lines": "ログの最後の行",
+          "retry": "再試行"
+        },
+        "csgo": {
+          "legacy": "レガシー",
+          "actions": "CS:GO の操作",
+          "install_hint": "レガシー CS:GO サーバー用"
+        },
+        "log": {
+          "title_cs2": "CS2 更新ログ",
+          "title_csgo": "CS:GO 更新ログ",
+          "kept": "ログは更新ごとに 7 日間保存されます"
+        }
       }
     },
     "dedicated_servers": {
@@ -11864,6 +11885,7 @@
     "toast": {
       "cs_updating": "ノード上で CS2 を更新しています。",
       "csgo_installing": "ノード上で CS:GO をインストールしています。",
+      "csgo_updating": "ノード上で CS:GO を更新しています。",
       "ports_updated": "ノードのポートを更新しました",
       "ports_removed": "ノードのポートを削除しました",
       "made_gpu_only": "ノードを GPU 専用に設定しました",

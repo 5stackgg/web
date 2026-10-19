@@ -5190,9 +5190,6 @@
           "ports": "porte",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 og plugins"
-        },
         "capacity": {
           "gpu_only": "Kun GPU, så den er ikke vært for kampe. Skift tilbage under GPU.",
           "max_servers": "Maks. servere",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "Installer CS2, når noden forbinder.",
           "gpu_only": "Rene GPU-noder kører ikke CS2-servere.",
-          "to": "til {version}",
           "plugin_unsupported": "Ikke understøttet",
           "update_log": "Opdateringslog",
-          "behind_line": "build {build}, opdater til {target}",
-          "failed_line": "{ago} · stadig på build {build}",
-          "build_line": "build {build}",
           "on_build": "på build {build}",
-          "pinning_unsupported": "Fastlåsning understøttes ikke"
+          "pinning_unsupported": "Fastlåsning understøttes ikke",
+          "actions": "CS2-handlinger",
+          "version": "Version"
         },
         "hardware": {
           "cores": "Kerner",
@@ -5310,7 +5305,33 @@
           "details": "Detaljer"
         },
         "window_minutes": "Seneste {count} minut | Seneste {count} minutter",
-        "window_hours": "Seneste {count} time | Seneste {count} timer"
+        "window_hours": "Seneste {count} time | Seneste {count} timer",
+        "game": {
+          "up_to_date": "Opdateret",
+          "update_available": "Opdatering tilgængelig",
+          "updating": "Opdaterer",
+          "updating_to": "Opdaterer til {build}",
+          "installing": "Installerer",
+          "installing_to": "Installerer {build}",
+          "installed": "Installeret",
+          "build": "build {build}",
+          "on_update_to": "På {build}, opdater til {target}",
+          "still_on": "Stadig på {build}",
+          "watch_log": "Følg log",
+          "open_log": "Åbn log",
+          "last_lines": "Sidste linjer i loggen",
+          "retry": "Prøv igen"
+        },
+        "csgo": {
+          "legacy": "Legacy",
+          "actions": "CS:GO-handlinger",
+          "install_hint": "Til legacy CS:GO-servere"
+        },
+        "log": {
+          "title_cs2": "CS2-opdateringslog",
+          "title_csgo": "CS:GO-opdateringslog",
+          "kept": "Logs gemmes i 7 dage efter hver opdatering"
+        }
       }
     },
     "dedicated_servers": {
@@ -11864,6 +11885,7 @@
     "toast": {
       "cs_updating": "CS2 opdateres på noden",
       "csgo_installing": "CS:GO installeres på noden",
+      "csgo_updating": "CS:GO opdateres på noden",
       "ports_updated": "Node-porte opdateret",
       "ports_removed": "Node-porte fjernet",
       "made_gpu_only": "Node sat til kun GPU",

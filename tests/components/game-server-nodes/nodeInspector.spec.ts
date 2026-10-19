@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import {
   cs2State,
+  csgoState,
   diskLevel,
   diskSize,
   idRange,
@@ -13,6 +14,7 @@ import {
   readinessNeeds,
   serversFit,
   updateProgress,
+  updateStep,
   warningInfo,
 } from "~/components/game-server-nodes/nodeInspector";
 import type { NodeLike } from "~/components/game-server-nodes/nodeState";
@@ -215,6 +217,48 @@ describe("CS2 state", () => {
     expect(updateProgress("downloading 40%")).toBe(40);
     expect(updateProgress("verifying install")).toBeNull();
     expect(updateProgress(null)).toBeNull();
+  });
+
+  it("reads the step without its percentage", () => {
+    expect(updateStep("Downloading depot 2/3 41%")).toBe(
+      "Downloading depot 2/3",
+    );
+    expect(updateStep("verifying install 49.5%")).toBe("Verifying install");
+    expect(updateStep("Initializing")).toBe("Initializing");
+    expect(updateStep(null)).toBe("");
+  });
+});
+
+describe("CS:GO state", () => {
+  it("stays hidden until CS:GO is installed or being installed", () => {
+    expect(csgoState(node(), 12426148)).toBe("none");
+    expect(csgoState(node({ csgo_update_status: "Initializing" }), null)).toBe(
+      "updating",
+    );
+    expect(
+      csgoState(node({ csgo_update_failed_at: "2026-10-18T10:00:00Z" }), null),
+    ).toBe("failed");
+  });
+
+  it("compares the installed build with the latest one", () => {
+    expect(csgoState(node({ csgo_build_id: 12426148 }), 12426148)).toBe(
+      "current",
+    );
+    expect(csgoState(node({ csgo_build_id: 12426148 }), "12430215")).toBe(
+      "behind",
+    );
+    expect(csgoState(node({ csgo_build_id: 12426148 }), null)).toBe(
+      "installed",
+    );
+  });
+
+  it("reads CS2's update as CS2's only", () => {
+    expect(
+      csgoState(
+        node({ csgo_build_id: 12426148, update_status: "downloading 3%" }),
+        12426148,
+      ),
+    ).toBe("current");
   });
 });
 

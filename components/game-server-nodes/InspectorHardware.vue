@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import { Fold } from "~/components/ui/transitions";
 import { CircleAlert, Info, TriangleAlert } from "lucide-vue-next";
 import {
@@ -104,7 +105,7 @@ const docs = {
 
 <template>
   <section class="grid gap-2.5 p-4">
-    <h3 class="text-[13px] font-semibold">{{ t("game_server.hardware") }}</h3>
+    <InspectorLabel>{{ t("game_server.hardware") }}</InspectorLabel>
 
     <p v-if="pending" class="text-xs text-muted-foreground">
       {{ t("pages.game_server_nodes.detail.hardware_pending") }}

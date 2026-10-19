@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import TweenNumber from "~/components/game-server-nodes/TweenNumber.vue";
+import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import NodeMeter from "~/components/game-server-nodes/NodeMeter.vue";
 import { CircleAlert } from "lucide-vue-next";
 import {
@@ -175,9 +176,9 @@ function onPortsKey(event: KeyboardEvent) {
 
 <template>
   <section class="grid gap-2.5 p-4">
-    <h3 class="text-[13px] font-semibold">
-      {{ t("pages.game_server_nodes.table.capacity") }}
-    </h3>
+    <InspectorLabel>{{
+      t("pages.game_server_nodes.table.capacity")
+    }}</InspectorLabel>
 
     <p v-if="gpuOnly" class="text-xs text-muted-foreground">
       {{ t(`${INSPECTOR}.capacity.gpu_only`) }}

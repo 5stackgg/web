@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import NodeControlList from "~/components/game-server-nodes/NodeControlList.vue";
+import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import { setNodeFields } from "~/components/game-server-nodes/nodeActions";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 
@@ -94,9 +95,9 @@ async function setLimit(value: string) {
     </div>
   </section>
   <section v-else class="grid gap-2.5 p-4">
-    <h3 class="text-[13px] font-semibold">
-      {{ t("pages.game_server_nodes.table.node") }}
-    </h3>
+    <InspectorLabel>{{
+      t("pages.game_server_nodes.table.node")
+    }}</InspectorLabel>
 
     <NodeControlList :node="node as any" />
   </section>

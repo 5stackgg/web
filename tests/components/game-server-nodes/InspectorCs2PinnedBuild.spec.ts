@@ -44,7 +44,7 @@ async function mountCs2(overrides: Record<string, unknown>) {
       pinPlugin: null,
       currentBuildId: 25999999,
       nextStep: null,
-      logOpen: false,
+      csgoShown: false,
     },
   });
   await flushPromises();

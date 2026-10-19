@@ -5190,9 +5190,6 @@
           "ports": "des ports",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 et plugins"
-        },
         "capacity": {
           "gpu_only": "GPU uniquement, il n'héberge donc pas de matchs. Rétablissez-le sous GPU.",
           "max_servers": "Serveurs max.",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "Installez CS2 une fois le nœud connecté.",
           "gpu_only": "Les nœuds GPU uniquement n'exécutent pas de serveurs CS2.",
-          "to": "vers {version}",
           "plugin_unsupported": "Non pris en charge",
           "update_log": "Journal de mise à jour",
-          "behind_line": "build {build}, mettre à jour vers {target}",
-          "failed_line": "{ago} · toujours sur le build {build}",
-          "build_line": "build {build}",
           "on_build": "sur le build {build}",
-          "pinning_unsupported": "Épinglage non pris en charge"
+          "pinning_unsupported": "Épinglage non pris en charge",
+          "actions": "Actions CS2",
+          "version": "Version"
         },
         "hardware": {
           "cores": "Cœurs",
@@ -5310,7 +5305,33 @@
           "details": "Détails"
         },
         "window_minutes": "Depuis {count} minute | Depuis {count} minutes",
-        "window_hours": "Depuis {count} heure | Depuis {count} heures"
+        "window_hours": "Depuis {count} heure | Depuis {count} heures",
+        "game": {
+          "up_to_date": "À jour",
+          "update_available": "Mise à jour disponible",
+          "updating": "Mise à jour",
+          "updating_to": "Mise à jour vers {build}",
+          "installing": "Installation",
+          "installing_to": "Installation de {build}",
+          "installed": "Installé",
+          "build": "build {build}",
+          "on_update_to": "Sur {build}, mettre à jour vers {target}",
+          "still_on": "Toujours sur {build}",
+          "watch_log": "Suivre le journal",
+          "open_log": "Ouvrir le journal",
+          "last_lines": "Dernières lignes du journal",
+          "retry": "Réessayer"
+        },
+        "csgo": {
+          "legacy": "Legacy",
+          "actions": "Actions CS:GO",
+          "install_hint": "Pour les serveurs CS:GO legacy"
+        },
+        "log": {
+          "title_cs2": "Journal de mise à jour CS2",
+          "title_csgo": "Journal de mise à jour CS:GO",
+          "kept": "Les journaux sont conservés 7 jours après chaque mise à jour"
+        }
       }
     },
     "dedicated_servers": {
@@ -11864,6 +11885,7 @@
     "toast": {
       "cs_updating": "CS2 est en cours de mise à jour sur le nœud",
       "csgo_installing": "CS:GO est en cours d'installation sur le nœud",
+      "csgo_updating": "CS:GO est en cours de mise à jour sur le nœud",
       "ports_updated": "Ports du nœud mis à jour",
       "ports_removed": "Ports du nœud supprimés",
       "made_gpu_only": "Nœud passé en GPU uniquement",

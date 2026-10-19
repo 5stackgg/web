@@ -10,6 +10,7 @@ import {
 import { useI18n } from "vue-i18n";
 import { HeightSwap } from "~/components/ui/transitions";
 import NodeSpark from "~/components/game-server-nodes/NodeSpark.vue";
+import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import TweenNumber from "~/components/game-server-nodes/TweenNumber.vue";
 import NodeMetricCharts, {
   type ChartSpec,
@@ -439,10 +440,8 @@ const rangeLabel = (key: MetricRangeKey) =>
 
 <template>
   <section class="grid gap-2.5 p-4">
-    <h3
-      class="flex min-h-7 min-w-0 items-center gap-2 text-[13px] font-semibold"
-    >
-      <span>{{ t("common.live") }}</span>
+    <div class="flex min-h-7 min-w-0 items-center gap-2">
+      <InspectorLabel>{{ t("common.live") }}</InspectorLabel>
       <span
         v-if="!inSetup"
         class="min-w-0 truncate text-xs font-normal tabular-nums text-muted-foreground"
@@ -467,7 +466,7 @@ const rangeLabel = (key: MetricRangeKey) =>
           {{ rangeLabel(option.key) }}
         </button>
       </span>
-    </h3>
+    </div>
 
     <p v-if="inSetup" class="text-xs text-muted-foreground">
       {{ t("pages.game_server_nodes.metrics.setup") }}

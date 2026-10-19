@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { Button } from "~/components/ui/button";
 import NodeMeter from "~/components/game-server-nodes/NodeMeter.vue";
+import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import { CircleAlert, FolderOpen, TriangleAlert } from "lucide-vue-next";
 import {
   isOffline,
@@ -124,13 +125,11 @@ const trend = computed(() => {
     class="mx-4 grid gap-2 border-t border-border/60 pb-4 pt-4"
   >
     <div class="flex min-h-6 min-w-0 items-center gap-2">
-      <h3 class="whitespace-nowrap text-[13px] font-semibold">
-        {{
-          offline
-            ? t(`${INSPECTOR}.disk.last_report`)
-            : t(`${INSPECTOR}.load.disk`)
-        }}
-      </h3>
+      <InspectorLabel>{{
+        offline
+          ? t(`${INSPECTOR}.disk.last_report`)
+          : t(`${INSPECTOR}.load.disk`)
+      }}</InspectorLabel>
       <span
         v-if="tone"
         class="inline-flex items-center gap-1 text-xs font-semibold"

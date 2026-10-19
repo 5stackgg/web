@@ -809,7 +809,12 @@ export default {
       if (this.team.checked_in_at) {
         return "checked_in";
       }
-      return registration.check_in_open ? "waiting" : "missed";
+      if (registration.check_in_open) {
+        return "waiting";
+      }
+      // Same gate as the api's tournament_check_in_window_opened: a team is
+      // only a no-show once a check-in window actually opened.
+      return registration.check_in_ends_at ? "missed" : null;
     },
     checkInLabel() {
       if (this.checkInState === "checked_in") {

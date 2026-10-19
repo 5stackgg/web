@@ -153,7 +153,7 @@ describe("restore round", () => {
     );
 
     expect(body().textContent).toContain(
-      "Waiting for players to reconnect (9/10): osk",
+      "Waiting for players to reconnect (9/10). Not connected: osk.",
     );
     expect(button("Replay Round 14")!.disabled).toBe(true);
   });
@@ -224,6 +224,123 @@ describe("restart match", () => {
     );
     expect(button("Restart Match")).toBeUndefined();
   });
+
+  const finishedRoundRobin = () =>
+    match({
+      status: "Finished",
+      winning_lineup_id: "l-1",
+      is_tournament_match: true,
+    });
+
+  function previewAndStandings(impacts: Array<Record<string, any>> = []) {
+    mutate.mockResolvedValueOnce({
+      data: {
+        PreviewTournamentMatchReset: {
+          impacts: [
+            { is_source: true, will_delete_match: false, stage_type: "Swiss" },
+            ...impacts,
+          ],
+        },
+      },
+    });
+    query.mockResolvedValueOnce({
+      data: {
+        tournament_brackets: [
+          {
+            tournament_team_id_1: "t-1",
+            tournament_team_id_2: "t-2",
+            stage: {
+              type: "Swiss",
+              results: [
+                { tournament_team_id: "t-1", wins: 2, losses: 0 },
+                { tournament_team_id: "t-2", wins: 0, losses: 2 },
+              ],
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  it("replays a finished result, showing what it does to the standings", async () => {
+    previewAndStandings();
+    wrapper = await mountSuspended(MatchRestartDialog, {
+      props: { match: finishedRoundRobin(), open: true },
+    });
+    await flushPromises();
+
+    expect(body().textContent).toContain("2–0 → 1–0");
+    expect(body().textContent).toContain("0–2 → 0–1");
+    button("Restart Match")!.click();
+    await flushPromises();
+
+    expect(sent()[1].document).toContain("ResetTournamentMatch");
+    expect(sent()[1].variables).toEqual({
+      matchId: "m-1",
+      winningLineupId: null,
+      resetStatus: "WaitingForCheckIn",
+    });
+  });
+
+  it("gives the win to the other team without a replay", async () => {
+    previewAndStandings();
+    wrapper = await mountSuspended(MatchRestartDialog, {
+      props: { match: finishedRoundRobin(), open: true },
+    });
+    await flushPromises();
+
+    (
+      body().querySelector('input[type="radio"][value="swap"]') as HTMLElement
+    ).click();
+    await flushPromises();
+
+    expect(body().textContent).toContain("2–0 → 1–1");
+    expect(body().textContent).toContain("0–2 → 1–1");
+    button("Change Winner")!.click();
+    await flushPromises();
+
+    expect(sent()[1].variables).toMatchObject({ winningLineupId: "l-2" });
+  });
+
+  it("warns about playoff matches a final Swiss result already fed", async () => {
+    previewAndStandings([
+      {
+        is_source: false,
+        will_delete_match: true,
+        stage_type: "SingleElimination",
+      },
+    ]);
+    wrapper = await mountSuspended(MatchRestartDialog, {
+      props: { match: finishedRoundRobin(), open: true },
+    });
+    await flushPromises();
+
+    expect(body().textContent).toContain("2–0 → 1–0");
+    expect(body().textContent).toContain(
+      "This also resets 1 later bracket match.",
+    );
+  });
+
+  it("forgets an old refusal once the match can be reopened", async () => {
+    mutate.mockRejectedValueOnce(
+      new Error("the next stage was already seeded from these standings"),
+    );
+    wrapper = await mountSuspended(MatchRestartDialog, {
+      props: { match: finishedRoundRobin(), open: true },
+    });
+    await flushPromises();
+    expect(body().textContent).toContain("This match can't be restarted");
+
+    await wrapper.setProps({ open: false });
+    await wrapper.setProps({
+      match: match({ status: "WaitingForCheckIn" }),
+      open: true,
+    });
+    await flushPromises();
+
+    expect(body().textContent).not.toContain("This match can't be restarted");
+    expect(button("Restart Match")).toBeDefined();
+  });
 });
 
 describe("fix a problem", () => {
@@ -251,9 +368,9 @@ describe("fix a problem", () => {
 
     expect(list[0].text).toContain("A round went wrong");
     expect(list[0].blocked).toBe(false);
-    expect(list.find((row) => row.text.includes("wrong team"))?.blocked).toBe(
-      true,
-    );
+    expect(
+      list.find((row) => row.text.includes("A team can't continue"))?.blocked,
+    ).toBe(false);
   });
 
   it("offers to reopen a canceled match", async () => {
@@ -316,16 +433,25 @@ describe("the dock", () => {
     return wrapper.vm as any;
   }
 
-  it("forfeits to the team the organizer picks", async () => {
+  it("awards a live match through the winner picker", async () => {
     const actions = await mountDock();
 
-    await actions.onFixSelect("forfeit");
+    await actions.onFixSelect("winner");
     expect(actions.confirmOpen).toBe(true);
     actions.confirmChoice = { value: "l-2", label: "Riptide" };
     await actions.runConfirm();
 
-    expect(sent()[0].document).toContain("forfeitMatch");
+    expect(sent()[0].document).toContain("setMatchWinner");
     expect(sent()[0].document).toContain("l-2");
+  });
+
+  it("leaves Fix a Problem off a finished scrim that has nothing to fix", async () => {
+    const actions = await mountDock({
+      status: "Finished",
+      winning_lineup_id: "l-1",
+    });
+
+    expect(actions.canFixProblems).toBe(false);
   });
 
   it("opens the restore dialog from Fix a Problem", async () => {

@@ -716,9 +716,6 @@ export default {
         case "winner":
           this.openWinnerDialog();
           break;
-        case "forfeit":
-          this.confirmForfeit();
-          break;
         case "reboot":
           this.rebootOpen = true;
           break;
@@ -726,48 +723,6 @@ export default {
           await this.reparseAllDemos();
           break;
       }
-    },
-    confirmForfeit() {
-      this.ask({
-        title: this.$t("match.recovery.forfeit.title"),
-        description: this.$t("match.recovery.forfeit.description"),
-        action: this.$t("match.recovery.forfeit.action"),
-        destructive: true,
-        picker: "winner",
-        run: async (choice) => {
-          if (choice) {
-            await this.forfeit(choice.value);
-          }
-        },
-      });
-    },
-    async forfeit(lineupId: string) {
-      try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            forfeitMatch: [
-              {
-                match_id: this.match.id,
-                winning_lineup_id: lineupId,
-              },
-              {
-                success: true,
-              },
-            ],
-          }),
-        });
-      } catch (error) {
-        toast({
-          title: this.$t("match.recovery.forfeit.failed"),
-          description: (error as Error)?.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: this.$t("match.recovery.forfeit.done"),
-      });
     },
     openWinnerDialog() {
       this.ask({
@@ -1262,20 +1217,28 @@ export default {
       );
     },
     canFixProblems() {
-      return (
-        this.dock &&
-        !!this.match.is_organizer &&
+      if (!this.dock || !this.match.is_organizer) {
+        return false;
+      }
+      if (
         [
           e_match_status_enum.WaitingForCheckIn,
           e_match_status_enum.Veto,
           e_match_status_enum.WaitingForServer,
           e_match_status_enum.Live,
           e_match_status_enum.Canceled,
+        ].includes(this.match.status)
+      ) {
+        return true;
+      }
+      return (
+        [
           e_match_status_enum.Finished,
           e_match_status_enum.Tie,
           e_match_status_enum.Forfeit,
           e_match_status_enum.Surrendered,
-        ].includes(this.match.status)
+        ].includes(this.match.status) &&
+        (this.isBracketMatch || this.canSetMatchWinner || this.canReparseDemos)
       );
     },
     // MatchServerRebootControl's own rule.

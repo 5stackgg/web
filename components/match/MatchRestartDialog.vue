@@ -140,7 +140,10 @@ function errorMessage(error: any) {
   );
 }
 
+let previewRequest = 0;
+
 async function loadTournamentPreview() {
+  const request = ++previewRequest;
   loading.value = true;
   blocked.value = null;
   impacts.value = [];
@@ -150,8 +153,14 @@ async function loadTournamentPreview() {
       mutation: PREVIEW_RESET,
       variables: { matchId: props.match.id },
     });
+    if (request !== previewRequest) {
+      return;
+    }
     impacts.value = data?.PreviewTournamentMatchReset?.impacts ?? [];
   } catch (error) {
+    if (request !== previewRequest) {
+      return;
+    }
     const message = errorMessage(error);
     blocked.value = BLOCKED_REASONS[message]
       ? t(BLOCKED_REASONS[message])
@@ -180,20 +189,27 @@ async function loadTournamentPreview() {
       }),
       fetchPolicy: "network-only",
     });
-    bracket.value = (data as any)?.tournament_brackets?.[0] ?? null;
+    if (request === previewRequest) {
+      bracket.value = (data as any)?.tournament_brackets?.[0] ?? null;
+    }
   } finally {
-    loading.value = false;
+    if (request === previewRequest) {
+      loading.value = false;
+    }
   }
 }
 
 watch(
-  () => props.open,
-  (open) => {
+  () => [props.open, mode.value] as const,
+  ([open, current]) => {
     if (!open) {
       return;
     }
     choice.value = "replay";
-    if (mode.value === "tournament") {
+    blocked.value = null;
+    impacts.value = [];
+    bracket.value = null;
+    if (current === "tournament") {
       void loadTournamentPreview();
     }
   },
@@ -377,6 +393,7 @@ async function restart() {
               <input
                 v-model="choice"
                 type="radio"
+                name="restart-choice"
                 value="replay"
                 class="mt-0.5 accent-[hsl(var(--tac-amber))]"
               />
@@ -401,6 +418,7 @@ async function restart() {
               <input
                 v-model="choice"
                 type="radio"
+                name="restart-choice"
                 value="swap"
                 class="mt-0.5 accent-[hsl(var(--tac-amber))]"
               />
@@ -442,7 +460,7 @@ async function restart() {
           </div>
 
           <p
-            v-else-if="downstreamCount > 0"
+            v-if="downstreamCount > 0"
             class="rounded-lg bg-muted/30 px-3.5 py-3 text-sm"
           >
             {{

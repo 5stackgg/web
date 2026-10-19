@@ -20,7 +20,7 @@ import {
 import { e_match_status_enum } from "~/generated/zeus";
 
 export type FixProblemAction =
-  "restore" | "restart" | "forfeit" | "winner" | "reboot" | "reparse";
+  "restore" | "restart" | "winner" | "reboot" | "reparse";
 
 type Row = {
   key: FixProblemAction;
@@ -139,23 +139,14 @@ const rows = computed<Row[]>(() => {
   if (props.canSetWinner && (s.unfinished || s.canceled || s.ended)) {
     rows.push({
       key: "winner",
-      icon: Trophy,
-      title: t("match.recovery.fix.winner_title"),
-      description: t("match.recovery.fix.winner_description"),
+      icon: s.unfinished ? UserX : Trophy,
+      title: s.unfinished
+        ? t("match.recovery.fix.forfeit_title")
+        : t("match.recovery.fix.winner_title"),
+      description: s.unfinished
+        ? t("match.recovery.fix.forfeit_description")
+        : t("match.recovery.fix.winner_description"),
       action: t("match.winner.set"),
-      blocked: s.unfinished
-        ? t("match.recovery.fix.winner_not_yet")
-        : undefined,
-    });
-  }
-
-  if (s.unfinished) {
-    rows.push({
-      key: "forfeit",
-      icon: UserX,
-      title: t("match.recovery.fix.forfeit_title"),
-      description: t("match.recovery.fix.forfeit_description"),
-      action: t("match.recovery.forfeit.action"),
     });
   }
 

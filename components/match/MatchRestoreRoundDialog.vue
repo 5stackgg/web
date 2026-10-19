@@ -158,7 +158,6 @@ const selectableRounds = computed(() => {
 
 async function load() {
   loading.value = true;
-  loadError.value = null;
   try {
     const { data: result } = await nuxtApp.$apollo.defaultClient.query({
       query: MATCH_RESTORE_ROUNDS,
@@ -170,7 +169,9 @@ async function load() {
       selected.value = selectableRounds.value.at(-1) ?? null;
     }
   } catch (error) {
-    loadError.value = errorMessage(error);
+    if (!data.value) {
+      loadError.value = errorMessage(error);
+    }
   } finally {
     loading.value = false;
   }
@@ -181,6 +182,8 @@ watch(
   (open) => {
     if (open) {
       selected.value = null;
+      data.value = null;
+      loadError.value = null;
       void load();
     }
   },
@@ -191,7 +194,10 @@ watch(
 // away doesn't hold a restore up.
 const waiting = computed(
   () =>
-    !!data.value && data.value.connected_players < data.value.expected_players,
+    !!data.value &&
+    data.value.restorable &&
+    !data.value.blocked_reason &&
+    data.value.connected_players < data.value.expected_players,
 );
 
 // The server refuses a restore until everyone is back, so keep checking.
@@ -321,7 +327,7 @@ const preview = computed(() => {
       timeouts: lineup === 1 ? row.lineup_1_timeouts : row.lineup_2_timeouts,
       bank: money(players.reduce((total, player) => total + player.cash, 0)),
       players: players.map((player) => {
-        const weapon = player.weapons.at(-1);
+        const weapon = mainWeapon(player.weapons);
         return {
           ...player,
           cashLabel: money(player.cash),
@@ -364,6 +370,26 @@ function undoLine(round: number) {
     from: round,
     to: lastPlayed,
   });
+}
+
+const NOT_GUNS =
+  /^weapon_(hegrenade|flashbang|smokegrenade|molotov|incgrenade|decoy|c4|taser|healthshot)/;
+const PISTOLS = new Set([
+  "weapon_glock",
+  "weapon_hkp2000",
+  "weapon_usp_silencer",
+  "weapon_p250",
+  "weapon_deagle",
+  "weapon_fiveseven",
+  "weapon_elite",
+  "weapon_tec9",
+  "weapon_cz75a",
+  "weapon_revolver",
+]);
+
+function mainWeapon(weapons: string[]) {
+  const guns = weapons.filter((weapon) => !NOT_GUNS.test(weapon));
+  return guns.find((weapon) => !PISTOLS.has(weapon)) ?? guns[0];
 }
 
 const unavailable = computed(() => {
@@ -414,7 +440,7 @@ async function restore() {
 
 <template>
   <Dialog :open="open" @update:open="(value) => emit('update:open', value)">
-    <DialogContent class="max-w-4xl">
+    <DialogContent class="max-h-[calc(100dvh-2rem)] max-w-4xl overflow-y-auto">
       <DialogHeader>
         <DialogTitle>{{ $t("match.recovery.restore.title") }}</DialogTitle>
         <DialogDescription>
@@ -672,6 +698,11 @@ async function restore() {
                   />
                   <span class="truncate">{{ player.weapon.label }}</span>
                 </span>
+                <span
+                  v-else-if="player.alive"
+                  class="text-xs text-muted-foreground"
+                  >{{ $t("match.recovery.restore.knife_only") }}</span
+                >
                 <span v-else class="text-xs text-muted-foreground/60">{{
                   $t("match.recovery.restore.died")
                 }}</span>

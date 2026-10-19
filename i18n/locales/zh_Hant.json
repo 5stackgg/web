@@ -1860,7 +1860,11 @@
         "col_status": "狀態",
         "running": "進行中",
         "finished": "已結束",
-        "segment_label": "賽事狀態"
+        "segment_label": "賽事狀態",
+        "found_in_running": "進行中賽事中的符合項目: {count}",
+        "found_in_finished": "已結束賽事中的符合項目: {count}",
+        "show_running": "查看進行中",
+        "show_finished": "查看已結束"
       }
     },
     "settings": {

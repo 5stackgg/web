@@ -1860,7 +1860,11 @@
         "col_status": "상태",
         "running": "진행 중",
         "finished": "종료",
-        "segment_label": "토너먼트 상태"
+        "segment_label": "토너먼트 상태",
+        "found_in_running": "진행 중인 토너먼트 결과: {count}",
+        "found_in_finished": "종료된 토너먼트 결과: {count}",
+        "show_running": "진행 중 보기",
+        "show_finished": "종료 보기"
       }
     },
     "settings": {

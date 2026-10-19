@@ -1860,7 +1860,11 @@
         "col_status": "Statut",
         "running": "En cours",
         "finished": "Terminés",
-        "segment_label": "Statut du tournoi"
+        "segment_label": "Statut du tournoi",
+        "found_in_running": "Résultats dans les tournois en cours : {count}",
+        "found_in_finished": "Résultats dans les tournois terminés : {count}",
+        "show_running": "Voir en cours",
+        "show_finished": "Voir terminés"
       }
     },
     "settings": {

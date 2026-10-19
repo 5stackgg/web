@@ -1860,7 +1860,11 @@
         "col_status": "ステータス",
         "running": "開催中",
         "finished": "終了",
-        "segment_label": "トーナメントの状態"
+        "segment_label": "トーナメントの状態",
+        "found_in_running": "開催中のトーナメントで該当: {count}",
+        "found_in_finished": "終了したトーナメントで該当: {count}",
+        "show_running": "開催中を表示",
+        "show_finished": "終了を表示"
       }
     },
     "settings": {

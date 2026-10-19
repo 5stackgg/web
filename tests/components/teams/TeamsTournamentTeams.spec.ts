@@ -120,7 +120,55 @@ describe("TeamsTournamentTeams", () => {
 
     expect(lastWhere()._and).toContainEqual(FINISHED);
     expect(lastWhere()._and).not.toContainEqual(RUNNING);
+  });
+
+  it("goes back to page 1 in one request when the segment changes", async () => {
+    respond([TEAM_X], { running: 30, finished: 5 });
+
+    const wrapper = await mountSuspended(TeamsTournamentTeams);
+    await flushPromises();
+
+    await wrapper
+      .findAll("button")
+      .find((button: any) => button.text() === "3")!
+      .trigger("click");
+    await flushPromises();
+    expect(lastVariables().offset).toBe(20);
+
+    client.query.mockClear();
+    await segmentButton(wrapper, "Finished").trigger("click");
+    await flushPromises();
+
+    expect(client.query).toHaveBeenCalledTimes(1);
     expect(lastVariables().offset).toBe(0);
+    expect(lastWhere()._and).toContainEqual(FINISHED);
+  });
+
+  it("points a search that only matches finished tournaments at Finished", async () => {
+    respond([TEAM_X], { running: 15, finished: 172 });
+    vi.useFakeTimers();
+
+    const wrapper = await mountSuspended(TeamsTournamentTeams);
+    await flushPromises();
+
+    respond([], { running: 0, finished: 2 });
+    await search(wrapper, PLAYER);
+
+    expect(wrapper.text()).toContain("Matches in finished tournaments: 2");
+    expect(wrapper.text()).not.toContain("Clear filters");
+
+    respond([TEAM_X], { running: 0, finished: 2 });
+    await wrapper
+      .findAll("button")
+      .find((button: any) => button.text() === "Show Finished")!
+      .trigger("click");
+    await flushPromises();
+
+    expect(lastWhere()._and).toContainEqual(FINISHED);
+    expect(searchClause(lastWhere())._or).toContainEqual({
+      roster: { player_steam_id: { _eq: PLAYER } },
+    });
+    expect(wrapper.text()).toContain("Team X");
   });
 
   it("orders teams of the same tournament by a unique key so pages never overlap", async () => {

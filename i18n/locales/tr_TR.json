@@ -1860,7 +1860,11 @@
         "col_status": "Durum",
         "running": "Devam eden",
         "finished": "Biten",
-        "segment_label": "Turnuva durumu"
+        "segment_label": "Turnuva durumu",
+        "found_in_running": "Devam eden turnuvalarda sonuç: {count}",
+        "found_in_finished": "Biten turnuvalarda sonuç: {count}",
+        "show_running": "Devam edenleri göster",
+        "show_finished": "Bitenleri göster"
       }
     },
     "settings": {

@@ -3773,11 +3773,10 @@ const playerTournamentTeamsSubscription = typedGql("subscription")({
           },
         },
       },
-      order_by: [{ tournament: { start: order_by.asc_nulls_last } }],
     },
     {
       tournament_team: { id: true, name: true, short_name: true },
-      tournament: { id: true, name: true },
+      tournament: { id: true, name: true, start: true },
     },
   ],
 });
@@ -3892,7 +3891,19 @@ export default {
           return !this.playerId;
         },
         result: function ({ data }: { data: any }) {
-          this.playerTournamentTeams = data.tournament_team_roster || [];
+          // Sorted here, not in order_by: a second order_by key overruns
+          // zeus's type depth, and without the id tie-break the teams behind
+          // +N could swap between polls.
+          this.playerTournamentTeams = [
+            ...(data.tournament_team_roster || []),
+          ].sort((a: any, b: any) => {
+            const left = a.tournament.start ?? "￿";
+            const right = b.tournament.start ?? "￿";
+            if (left !== right) {
+              return left < right ? -1 : 1;
+            }
+            return a.tournament_team.id < b.tournament_team.id ? -1 : 1;
+          });
         },
       },
     },
@@ -3938,7 +3949,7 @@ export default {
       }>,
       playerTournamentTeams: [] as Array<{
         tournament_team: { id: string; name: string; short_name: string | null };
-        tournament: { id: string; name: string };
+        tournament: { id: string; name: string; start: string | null };
       }>,
       editPlayerSheet: false,
       blockDialogOpen: false,

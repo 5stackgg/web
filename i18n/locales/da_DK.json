@@ -1859,8 +1859,12 @@
         "col_tournament": "Turnering",
         "col_status": "Status",
         "running": "I gang",
-        "finished": "Afsluttet",
-        "segment_label": "Turneringsstatus"
+        "finished": "Afsluttede",
+        "segment_label": "Turneringsstatus",
+        "found_in_running": "Resultater i igangværende turneringer: {count}",
+        "found_in_finished": "Resultater i afsluttede turneringer: {count}",
+        "show_running": "Vis igangværende",
+        "show_finished": "Vis afsluttede"
       }
     },
     "settings": {

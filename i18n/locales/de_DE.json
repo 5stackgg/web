@@ -1860,7 +1860,11 @@
         "col_status": "Status",
         "running": "Laufend",
         "finished": "Beendet",
-        "segment_label": "Turnierstatus"
+        "segment_label": "Turnierstatus",
+        "found_in_running": "Treffer in laufenden Turnieren: {count}",
+        "found_in_finished": "Treffer in beendeten Turnieren: {count}",
+        "show_running": "Laufende anzeigen",
+        "show_finished": "Beendete anzeigen"
       }
     },
     "settings": {

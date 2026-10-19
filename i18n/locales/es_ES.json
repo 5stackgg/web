@@ -1860,7 +1860,11 @@
         "col_status": "Estado",
         "running": "En curso",
         "finished": "Finalizados",
-        "segment_label": "Estado del torneo"
+        "segment_label": "Estado del torneo",
+        "found_in_running": "Coincidencias en torneos en curso: {count}",
+        "found_in_finished": "Coincidencias en torneos finalizados: {count}",
+        "show_running": "Ver en curso",
+        "show_finished": "Ver finalizados"
       }
     },
     "settings": {

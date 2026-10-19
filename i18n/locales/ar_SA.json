@@ -1860,7 +1860,11 @@
         "col_status": "الحالة",
         "running": "جارية",
         "finished": "منتهية",
-        "segment_label": "حالة البطولة"
+        "segment_label": "حالة البطولة",
+        "found_in_running": "نتائج في البطولات الجارية: {count}",
+        "found_in_finished": "نتائج في البطولات المنتهية: {count}",
+        "show_running": "عرض الجارية",
+        "show_finished": "عرض المنتهية"
       }
     },
     "settings": {
@@ -4380,7 +4384,7 @@
           "worst_loss": "أكبر خسارة في مباراة",
           "view_match": "اعرض المباراة"
         },
-        "more_tournament_teams": "{count} فريق بطولة آخر | {count} فرق بطولات أخرى"
+        "more_tournament_teams": "فرق بطولات أخرى: {count} | فرق بطولات أخرى: {count}"
       },
       "empty": {
         "title": "لا يوجد لاعبون بعد",

@@ -1860,7 +1860,11 @@
         "col_status": "Status",
         "running": "Trwające",
         "finished": "Zakończone",
-        "segment_label": "Status turnieju"
+        "segment_label": "Status turnieju",
+        "found_in_running": "Wyniki w trwających turniejach: {count}",
+        "found_in_finished": "Wyniki w zakończonych turniejach: {count}",
+        "show_running": "Pokaż trwające",
+        "show_finished": "Pokaż zakończone"
       }
     },
     "settings": {
@@ -4380,7 +4384,7 @@
           "worst_loss": "Najgorsza pojedyncza strata",
           "view_match": "Zobacz mecz"
         },
-        "more_tournament_teams": "{count} kolejna drużyna turniejowa | {count} kolejnych drużyn turniejowych"
+        "more_tournament_teams": "Więcej drużyn turniejowych: {count} | Więcej drużyn turniejowych: {count}"
       },
       "empty": {
         "title": "Brak graczy",

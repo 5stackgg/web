@@ -1860,7 +1860,11 @@
         "col_status": "Status",
         "running": "Running",
         "finished": "Finished",
-        "segment_label": "Tournament status"
+        "segment_label": "Tournament status",
+        "found_in_running": "Matches in running tournaments: {count}",
+        "found_in_finished": "Matches in finished tournaments: {count}",
+        "show_running": "Show Running",
+        "show_finished": "Show Finished"
       }
     },
     "settings": {

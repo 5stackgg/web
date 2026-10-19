@@ -55,6 +55,18 @@ const loaded = ref(false);
 const signedIn = computed(() => !!auth.me);
 const anyFilter = computed(() => !!search.value || mine.value);
 const total = computed(() => counts.value[segment.value]);
+const otherSegment = computed<Segment>(() =>
+  segment.value === "running" ? "finished" : "running",
+);
+const otherCount = computed(() => counts.value[otherSegment.value]);
+
+const segmentModel = computed<Segment>({
+  get: () => segment.value,
+  set: (value) => {
+    segment.value = value;
+    page.value = 1;
+  },
+});
 
 const segmentOptions = computed(() => [
   {
@@ -226,7 +238,7 @@ watch(search, (value) => {
     page.value = 1;
   }, 250);
 });
-watch([mine, segment], () => {
+watch(mine, () => {
   page.value = 1;
 });
 watch(signedIn, (value) => {
@@ -287,7 +299,7 @@ const chipClasses =
         {{ $t("pages.teams.tournament_teams.subtitle") }}
       </span>
       <WatchSegmented
-        v-model="segment"
+        v-model="segmentModel"
         :options="segmentOptions"
         :label="$t('pages.teams.tournament_teams.segment_label')"
       />
@@ -365,14 +377,40 @@ const chipClasses =
           {{ $t("pages.teams.no_teams_title") }}
         </p>
         <p class="m-0 text-[13px] text-muted-foreground">
-          {{
-            anyFilter
-              ? $t("pages.teams.directory.no_match")
-              : $t("pages.teams.no_teams")
-          }}
+          <template v-if="anyFilter && otherCount">
+            {{
+              otherSegment === "finished"
+                ? $t("pages.teams.tournament_teams.found_in_finished", {
+                    count: otherCount,
+                  })
+                : $t("pages.teams.tournament_teams.found_in_running", {
+                    count: otherCount,
+                  })
+            }}
+          </template>
+          <template v-else>
+            {{
+              anyFilter
+                ? $t("pages.teams.directory.no_match")
+                : $t("pages.teams.no_teams")
+            }}
+          </template>
         </p>
         <Button
-          v-if="anyFilter"
+          v-if="otherCount"
+          size="sm"
+          variant="outline"
+          class="mt-2 h-8"
+          @click="segmentModel = otherSegment"
+        >
+          {{
+            otherSegment === "finished"
+              ? $t("pages.teams.tournament_teams.show_finished")
+              : $t("pages.teams.tournament_teams.show_running")
+          }}
+        </Button>
+        <Button
+          v-else-if="anyFilter"
           size="sm"
           variant="outline"
           class="mt-2 h-8"

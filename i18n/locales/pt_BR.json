@@ -1860,7 +1860,11 @@
         "col_status": "Status",
         "running": "Em andamento",
         "finished": "Encerrados",
-        "segment_label": "Status do torneio"
+        "segment_label": "Status do torneio",
+        "found_in_running": "Resultados em torneios em andamento: {count}",
+        "found_in_finished": "Resultados em torneios encerrados: {count}",
+        "show_running": "Ver em andamento",
+        "show_finished": "Ver encerrados"
       }
     },
     "settings": {

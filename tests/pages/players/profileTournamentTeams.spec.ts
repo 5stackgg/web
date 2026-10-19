@@ -107,18 +107,23 @@ describe("player profile tournament teams", () => {
       role: e_player_roles_enum.user,
       teams: [{ id: "team-1", name: "Blue Rabbits", short_name: "BR" }],
     };
-    const entry = (id: string, name: string, shortName: string) => ({
+    const entry = (
+      id: string,
+      name: string,
+      shortName: string,
+      start: string | null,
+    ) => ({
       tournament_team: { id, name, short_name: shortName },
-      tournament: { id: `tour-${id}`, name: `Cup ${id}` },
+      tournament: { id: `tour-${id}`, name: `Cup ${id}`, start },
     });
     subscription().result.call(wrapper.vm, {
       data: {
         tournament_team_roster: [
-          entry("1", "Team X", "TX"),
-          entry("2", "I AM DEV", "IAD"),
-          entry("3", "Pickup 4", "P4"),
-          entry("4", "Grind House", "GH"),
-          entry("5", "Nova Five", "NV5"),
+          entry("5", "Nova Five", "NV5", null),
+          entry("4", "Grind House", "GH", "2026-11-20T18:00:00+00:00"),
+          entry("2", "I AM DEV", "IAD", "2026-10-25T18:00:00+00:00"),
+          entry("3", "Pickup 4", "P4", "2026-10-25T18:00:00+00:00"),
+          entry("1", "Team X", "TX", "2026-10-19T18:00:00+00:00"),
         ],
       },
     });
@@ -130,17 +135,24 @@ describe("player profile tournament teams", () => {
     const tournamentLinks = links.filter(
       (to: any) => to?.name === "tournaments-tournamentId",
     );
+    expect(links.indexOf("/teams/team-1")).toBeGreaterThanOrEqual(0);
     expect(links.indexOf("/teams/team-1")).toBeLessThan(
       links.indexOf(tournamentLinks[0]),
     );
-    expect(tournamentLinks).toHaveLength(5);
+    expect(tournamentLinks.map((to: any) => to.params.tournamentId)).toEqual([
+      "tour-1",
+      "tour-2",
+      "tour-3",
+      "tour-4",
+      "tour-5",
+    ]);
 
-    const text = wrapper.text();
-    expect(text).toContain("TX");
-    expect(text).toContain("P4");
-    expect(text).toContain("+2");
-    expect(text).not.toContain("GH");
-    expect(text).toContain("Grind House");
-    expect(text).toContain("Nova Five");
+    const popover = wrapper.findComponent({ name: "PopoverContent" });
+    expect(popover.text()).toContain("Grind House");
+    expect(popover.text()).toContain("Nova Five");
+    expect(popover.text()).not.toContain("Team X");
+    expect(wrapper.text()).toContain("+2");
+    expect(wrapper.text()).toContain("P4");
+    expect(wrapper.text()).not.toContain("GH");
   });
 });

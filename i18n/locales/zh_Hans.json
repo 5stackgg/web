@@ -1860,7 +1860,11 @@
         "col_status": "状态",
         "running": "进行中",
         "finished": "已结束",
-        "segment_label": "赛事状态"
+        "segment_label": "赛事状态",
+        "found_in_running": "进行中赛事中的匹配: {count}",
+        "found_in_finished": "已结束赛事中的匹配: {count}",
+        "show_running": "查看进行中",
+        "show_finished": "查看已结束"
       }
     },
     "settings": {

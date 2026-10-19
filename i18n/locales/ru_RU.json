@@ -1858,9 +1858,13 @@
         "search_label": "Поиск команд турниров",
         "col_tournament": "Турнир",
         "col_status": "Статус",
-        "running": "Идут",
-        "finished": "Завершены",
-        "segment_label": "Статус турнира"
+        "running": "Текущие",
+        "finished": "Завершённые",
+        "segment_label": "Статус турнира",
+        "found_in_running": "Совпадения в текущих турнирах: {count}",
+        "found_in_finished": "Совпадения в завершённых турнирах: {count}",
+        "show_running": "Показать текущие",
+        "show_finished": "Показать завершённые"
       }
     },
     "settings": {
@@ -4380,7 +4384,7 @@
           "worst_loss": "Худшая потеря за матч",
           "view_match": "Смотреть матч"
         },
-        "more_tournament_teams": "Ещё {count} команда турнира | Ещё {count} команд турниров"
+        "more_tournament_teams": "Ещё команд турниров: {count} | Ещё команд турниров: {count}"
       },
       "empty": {
         "title": "Игроков пока нет",

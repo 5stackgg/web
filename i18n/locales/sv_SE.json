@@ -1860,7 +1860,11 @@
         "col_status": "Status",
         "running": "Pågående",
         "finished": "Avslutade",
-        "segment_label": "Turneringsstatus"
+        "segment_label": "Turneringsstatus",
+        "found_in_running": "Träffar i pågående turneringar: {count}",
+        "found_in_finished": "Träffar i avslutade turneringar: {count}",
+        "show_running": "Visa pågående",
+        "show_finished": "Visa avslutade"
       }
     },
     "settings": {

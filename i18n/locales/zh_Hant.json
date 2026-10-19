@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU 節點",
       "gpu_unknown": "GPU",
-      "description": "支援 GPU 的遊戲伺服器節點，用於承載直播、Demo 回放與精華轉檔。每個 GPU 同時最多執行一項工作。",
+      "description": "支援 GPU 的遊戲伺服器節點，用於承載直播、Demo 回放以及精華與點位預覽轉檔。每個 GPU 同時最多執行一項工作。",
       "metrics": "指標",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "Demo 回放",
         "demos_desc": "隨選 Demo 回放",
         "rendering": "轉檔渲染",
-        "rendering_desc": "精華 & 剪輯轉檔",
+        "rendering_desc": "精華、剪輯 & 點位預覽轉檔",
         "summary": "{total} 項中 {on} 項已開啟",
         "node_disabled": "此節點已停用，不會承接 GPU 工作。",
         "now_streaming": "正在直播 {matchup}",

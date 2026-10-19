@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "Nodos GPU",
       "gpu_unknown": "GPU",
-      "description": "Nodos de servidores con GPU que alojan las retransmisiones en directo, la reproducción de demos y el renderizado de highlights. Cada GPU atiende como máximo a un consumidor a la vez.",
+      "description": "Nodos de servidores con GPU que alojan las retransmisiones en directo, la reproducción de demos y el renderizado de highlights y de vistas previas de lineups. Cada GPU atiende como máximo a un consumidor a la vez.",
       "metrics": "Métricas",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "Reproducción de demos",
         "demos_desc": "Repetición de demos bajo demanda",
         "rendering": "Renderizado",
-        "rendering_desc": "Renders de highlights y clips",
+        "rendering_desc": "Renders de highlights, clips y vistas previas de lineups",
         "summary": "{on} de {total} activadas",
         "node_disabled": "Este nodo está desactivado, así que no acepta trabajo de GPU.",
         "now_streaming": "Retransmitiendo {matchup}",

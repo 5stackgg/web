@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "Nodi GPU",
       "gpu_unknown": "GPU",
-      "description": "Nodi server di gioco con GPU che gestiscono streaming live, riproduzione delle demo e rendering degli highlight. Ogni GPU serve al massimo un consumer alla volta.",
+      "description": "Nodi server di gioco con GPU che gestiscono streaming live, riproduzione delle demo e rendering degli highlight e delle anteprime dei lineup. Ogni GPU serve al massimo un consumer alla volta.",
       "metrics": "Metriche",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "Riproduzione demo",
         "demos_desc": "Replay delle demo on demand",
         "rendering": "Rendering",
-        "rendering_desc": "Rendering di highlight e clip",
+        "rendering_desc": "Rendering di highlight, clip e anteprime dei lineup",
         "summary": "{on} su {total} attivi",
         "node_disabled": "Questo nodo è disattivato, quindi non accetta lavoro GPU.",
         "now_streaming": "Trasmette {matchup}",

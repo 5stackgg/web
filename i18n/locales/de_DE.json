@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU-Nodes",
       "gpu_unknown": "GPU",
-      "description": "GPU-fähige Game-Server-Nodes, die Live-Streams, Demo-Wiedergabe und Highlight-Renders hosten. Jede GPU bedient höchstens einen Verbraucher gleichzeitig.",
+      "description": "GPU-fähige Game-Server-Nodes, die Live-Streams, Demo-Wiedergabe sowie Highlight- und Lineup-Vorschau-Renders hosten. Jede GPU bedient höchstens einen Verbraucher gleichzeitig.",
       "metrics": "Metriken",
       "meter": {
         "compute": "GPUs"
@@ -4661,7 +4661,7 @@
         "demos": "Demo-Wiedergabe",
         "demos_desc": "Demo-Replay auf Abruf",
         "rendering": "Rendering",
-        "rendering_desc": "Highlight- & Clip-Renders",
+        "rendering_desc": "Highlight-, Clip- & Lineup-Vorschau-Renders",
         "summary": "{on} von {total} an",
         "node_disabled": "Dieser Node ist deaktiviert und übernimmt keine GPU-Arbeit.",
         "now_streaming": "Streamt {matchup}",

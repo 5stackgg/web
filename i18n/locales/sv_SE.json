@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU-noder",
       "gpu_unknown": "GPU",
-      "description": "GPU-kapabla spelservernoder som driver livestreamar, demouppspelning och höjdpunktsrendering. Varje GPU kör som mest en konsument åt gången.",
+      "description": "GPU-kapabla spelservernoder som driver livestreamar, demouppspelning och rendering av höjdpunkter och förhandsvisningar av uppställningar. Varje GPU kör som mest en konsument åt gången.",
       "metrics": "Mätvärden",
       "meter": {
         "compute": "GPU:er"
@@ -4661,7 +4661,7 @@
         "demos": "Demouppspelning",
         "demos_desc": "Demoreplay på begäran",
         "rendering": "Rendering",
-        "rendering_desc": "Rendering av höjdpunkter & klipp",
+        "rendering_desc": "Rendering av höjdpunkter, klipp & förhandsvisningar av uppställningar",
         "summary": "{on} av {total} på",
         "node_disabled": "Noden är inaktiverad och tar inget GPU-arbete.",
         "now_streaming": "Streamar {matchup}",

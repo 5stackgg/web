@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "Nós com GPU",
       "gpu_unknown": "GPU desconhecida",
-      "description": "Nós de servidor de jogo com suporte a GPU que hospedam transmissões ao vivo, reprodução de demos e renderização de highlights. Cada GPU executa no máximo um consumidor por vez.",
+      "description": "Nós de servidor de jogo com suporte a GPU que hospedam transmissões ao vivo, reprodução de demos e renderização de highlights e prévias de lineups. Cada GPU executa no máximo um consumidor por vez.",
       "metrics": "Métricas",
       "meter": {
         "compute": "GPUs"
@@ -4661,7 +4661,7 @@
         "demos": "Reprodução de demos",
         "demos_desc": "Replay de demos sob demanda",
         "rendering": "Renderização",
-        "rendering_desc": "Renderização de highlights e clipes",
+        "rendering_desc": "Renderização de highlights, clipes e prévias de lineups",
         "summary": "{on} de {total} ligados",
         "node_disabled": "Este nó está desativado, então não recebe trabalho de GPU.",
         "now_streaming": "Transmitindo {matchup}",

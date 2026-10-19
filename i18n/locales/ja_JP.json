@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU ノード",
       "gpu_unknown": "GPU",
-      "description": "ライブ配信・デモ再生・ハイライトのレンダリングを担う GPU 対応のゲームサーバーノードです。各 GPU は同時に1つの処理のみ実行します。",
+      "description": "ライブ配信・デモ再生・ハイライトとラインナップのプレビューのレンダリングを担う GPU 対応のゲームサーバーノードです。各 GPU は同時に1つの処理のみ実行します。",
       "metrics": "メトリクス",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "デモ再生",
         "demos_desc": "オンデマンドのデモ再生",
         "rendering": "レンダリング",
-        "rendering_desc": "ハイライト・クリップのレンダリング",
+        "rendering_desc": "ハイライト・クリップ・ラインナップのプレビューのレンダリング",
         "summary": "{total} 件中 {on} 件がオン",
         "node_disabled": "このノードは無効のため、GPU の作業を受けません。",
         "now_streaming": "{matchup} を配信中",

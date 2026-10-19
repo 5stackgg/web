@@ -29,6 +29,7 @@ import {
 } from "lucide-vue-next";
 import {
   isGpuOnly,
+  runsCs2,
   isReachable,
   type NodeLike,
 } from "~/components/game-server-nodes/nodeState";
@@ -74,6 +75,7 @@ const valClasses =
 
 const inSetup = computed(() => props.node.status === "Setup");
 const gpuOnly = computed(() => isGpuOnly(props.node));
+const noCs2 = computed(() => !runsCs2(props.node));
 const reachable = computed(() => isReachable(props.node));
 const state = computed(() => cs2State(props.node, props.currentBuildId));
 
@@ -141,7 +143,7 @@ const when = (value: string) =>
     <div class="flex min-h-7 items-center gap-2">
       <InspectorLabel>CS2</InspectorLabel>
       <span class="grow"></span>
-      <DropdownMenu v-if="!inSetup && !gpuOnly">
+      <DropdownMenu v-if="!inSetup && !noCs2">
         <DropdownMenuTrigger as-child>
           <Button
             variant="ghost"
@@ -157,7 +159,7 @@ const when = (value: string) =>
             <ScrollText />
             {{ t(`${INSPECTOR}.cs2.update_log`) }}
           </DropdownMenuItem>
-          <template v-if="!csgoShown">
+          <template v-if="!csgoShown && !gpuOnly">
             <DropdownMenuSeparator />
             <DropdownMenuItem
               class="items-start"
@@ -180,7 +182,7 @@ const when = (value: string) =>
     <p v-if="inSetup" class="text-xs text-muted-foreground">
       {{ t(`${INSPECTOR}.cs2.setup`) }}
     </p>
-    <p v-else-if="gpuOnly" class="text-xs text-muted-foreground">
+    <p v-else-if="noCs2" class="text-xs text-muted-foreground">
       {{ t(`${INSPECTOR}.cs2.gpu_only`) }}
     </p>
 

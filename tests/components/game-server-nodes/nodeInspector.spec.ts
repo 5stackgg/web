@@ -110,6 +110,35 @@ describe("next step", () => {
       ),
     ).toBeNull();
   });
+
+  // Each lineup preview a GPU-only node renders boots a CS2 server on it, and
+  // a fresh one otherwise only gets CS2 when a CS2 update ships.
+  it("installs and updates CS2 on a GPU-only node that renders", () => {
+    const gpuOnly = (fields: Partial<NodeLike> = {}) =>
+      node({
+        gpu: true,
+        enabled_for_match_making: false,
+        region: null,
+        start_port_range: null,
+        end_port_range: null,
+        gpu_rendering_enabled: true,
+        ...fields,
+      });
+
+    expect(nextStep(gpuOnly({ build_id: null }))).toBe("install_cs2");
+    expect(nextStep(gpuOnly(), { currentBuildId: 120 })).toBe("update_cs2");
+    expect(
+      nextStep(gpuOnly({ update_failed_at: "2026-10-16T10:00:00Z" }), {
+        currentBuildId: 120,
+      }),
+    ).toBe("retry_update");
+    expect(nextStep(gpuOnly({ plugin_supported: false }))).toBeNull();
+    expect(
+      nextStep(gpuOnly({ build_id: null, gpu_rendering_enabled: false })),
+    ).toBeNull();
+    expect(cs2State(gpuOnly({ build_id: null }))).toBe("missing");
+    expect(cs2State(gpuOnly({ gpu_rendering_enabled: false }))).toBe("none");
+  });
 });
 
 describe("attention list", () => {

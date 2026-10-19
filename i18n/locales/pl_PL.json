@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "Węzły GPU",
       "gpu_unknown": "GPU",
-      "description": "Węzły serwerów gry z obsługą GPU obsługujące transmisje na żywo, odtwarzanie demo i renderowanie highlightów. Każde GPU obsługuje maksymalnie jedno zadanie naraz.",
+      "description": "Węzły serwerów gry z obsługą GPU obsługujące transmisje na żywo, odtwarzanie demo oraz renderowanie highlightów i podglądów ustawek. Każde GPU obsługuje maksymalnie jedno zadanie naraz.",
       "metrics": "Metryki",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "Odtwarzanie demo",
         "demos_desc": "Odtwarzanie demo na żądanie",
         "rendering": "Renderowanie",
-        "rendering_desc": "Renderowanie highlightów i klipów",
+        "rendering_desc": "Renderowanie highlightów, klipów i podglądów ustawek",
         "summary": "Włączone: {on} z {total}",
         "node_disabled": "Ten węzeł jest wyłączony, więc nie przyjmuje zadań GPU.",
         "now_streaming": "Transmituje {matchup}",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Zainstaluj CS2 po połączeniu węzła.",
-          "gpu_only": "Węzły tylko GPU nie uruchamiają serwerów CS2.",
+          "gpu_only": "Węzły tylko GPU uruchamiają CS2 wyłącznie do nagrywania podglądów ustawek, a Renderowanie jest na tym wyłączone.",
           "plugin_unsupported": "Nieobsługiwany",
           "update_log": "Log aktualizacji",
           "on_build": "na buildzie {build}",

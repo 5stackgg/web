@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "Nœuds GPU",
       "gpu_unknown": "GPU",
-      "description": "Nœuds de serveurs de jeu équipés d'un GPU qui hébergent les streams en direct, la lecture des démos et le rendu des highlights. Chaque GPU ne sert qu'un consommateur à la fois.",
+      "description": "Nœuds de serveurs de jeu équipés d'un GPU qui hébergent les streams en direct, la lecture des démos et le rendu des highlights et des aperçus de lineups. Chaque GPU ne sert qu'un consommateur à la fois.",
       "metrics": "Métriques",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "Lecture de démos",
         "demos_desc": "Replay de démo à la demande",
         "rendering": "Rendu",
-        "rendering_desc": "Rendus de highlights et de clips",
+        "rendering_desc": "Rendus de highlights, de clips et d'aperçus de lineups",
         "summary": "{on} sur {total} activées",
         "node_disabled": "Ce nœud est désactivé : il ne prend aucun travail GPU.",
         "now_streaming": "Diffuse {matchup}",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installez CS2 une fois le nœud connecté.",
-          "gpu_only": "Les nœuds GPU uniquement n'exécutent pas de serveurs CS2.",
+          "gpu_only": "Les nœuds GPU uniquement n'exécutent CS2 que pour filmer les aperçus de lineups, et le Rendu est désactivé sur celui-ci.",
           "plugin_unsupported": "Non pris en charge",
           "update_log": "Journal de mise à jour",
           "on_build": "sur le build {build}",

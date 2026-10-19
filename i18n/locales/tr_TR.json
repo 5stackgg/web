@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU düğümleri",
       "gpu_unknown": "GPU",
-      "description": "Canlı yayın, demo oynatma ve öne çıkan an render'ı barındıran GPU destekli sunucu düğümleri. Her GPU aynı anda en fazla bir tüketici çalıştırır.",
+      "description": "Canlı yayın, demo oynatma ve öne çıkan an ile dizilim önizlemesi render'ını barındıran GPU destekli sunucu düğümleri. Her GPU aynı anda en fazla bir tüketici çalıştırır.",
       "metrics": "Metrikler",
       "meter": {
         "compute": "GPU'lar"
@@ -4661,7 +4661,7 @@
         "demos": "Demo oynatma",
         "demos_desc": "Talep üzerine demo tekrarı",
         "rendering": "Render",
-        "rendering_desc": "Öne çıkan an ve klip render'ları",
+        "rendering_desc": "Öne çıkan an, klip ve dizilim önizlemesi render'ları",
         "summary": "{total} iş yükünden {on} açık",
         "node_disabled": "Bu düğüm devre dışı, bu yüzden GPU işi almaz.",
         "now_streaming": "{matchup} yayınlanıyor",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Düğüm bağlandığında CS2'yi kurun.",
-          "gpu_only": "Yalnızca GPU düğümleri CS2 sunucusu çalıştırmaz.",
+          "gpu_only": "Yalnızca GPU düğümleri CS2'yi sadece dizilim önizlemelerini çekmek için çalıştırır ve bu düğümde Render kapalı.",
           "plugin_unsupported": "Desteklenmiyor",
           "update_log": "Güncelleme günlüğü",
           "on_build": "{build} sürümünde",

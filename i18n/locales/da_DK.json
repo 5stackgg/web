@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU-noder",
       "gpu_unknown": "GPU",
-      "description": "Game server nodes med GPU, som kører live streams, demoafspilning og highlight-renders. Hver GPU kører højst én forbruger ad gangen.",
+      "description": "Game server nodes med GPU, som kører live streams, demoafspilning og renders af highlights og forhåndsvisninger af opstillinger. Hver GPU kører højst én forbruger ad gangen.",
       "metrics": "Målinger",
       "meter": {
         "compute": "GPU'er"
@@ -4661,7 +4661,7 @@
         "demos": "Demoafspilning",
         "demos_desc": "Demo-replay on demand",
         "rendering": "Rendering",
-        "rendering_desc": "Highlight- og klip-renders",
+        "rendering_desc": "Renders af highlights, klip og forhåndsvisninger af opstillinger",
         "summary": "{on} af {total} slået til",
         "node_disabled": "Noden er deaktiveret og tager ingen GPU-opgaver.",
         "now_streaming": "Streamer {matchup}",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installer CS2, når noden forbinder.",
-          "gpu_only": "Rene GPU-noder kører ikke CS2-servere.",
+          "gpu_only": "Rene GPU-noder kører kun CS2 for at optage forhåndsvisninger af opstillinger, og Rendering er slået fra på denne.",
           "plugin_unsupported": "Ikke understøttet",
           "update_log": "Opdateringslog",
           "on_build": "på build {build}",

@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU 节点",
       "gpu_unknown": "GPU",
-      "description": "支持 GPU 的游戏服务器节点，托管直播、Demo 回放和高光渲染。每个 GPU 同时最多运行一个任务。",
+      "description": "支持 GPU 的游戏服务器节点，托管直播、Demo 回放以及高光和点位预览渲染。每个 GPU 同时最多运行一个任务。",
       "metrics": "指标",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "Demo 回放",
         "demos_desc": "按需 Demo 回放",
         "rendering": "渲染",
-        "rendering_desc": "高光 & 集锦渲染",
+        "rendering_desc": "高光、集锦 & 点位预览渲染",
         "summary": "{total} 项中 {on} 项已开启",
         "node_disabled": "此节点已禁用，不会承接 GPU 工作。",
         "now_streaming": "正在直播 {matchup}",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "节点连接后安装 CS2。",
-          "gpu_only": "仅 GPU 节点不运行 CS2 服务器。",
+          "gpu_only": "仅 GPU 节点只为拍摄点位预览运行 CS2，而此节点已关闭渲染。",
           "plugin_unsupported": "不支持",
           "update_log": "更新日志",
           "on_build": "（版本 {build}）",

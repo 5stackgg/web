@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU 노드",
       "gpu_unknown": "GPU",
-      "description": "라이브 스트림, 데모 재생, 하이라이트 렌더링을 처리하는 GPU 지원 게임 서버 노드입니다. GPU 하나당 동시에 하나의 작업만 처리합니다.",
+      "description": "라이브 스트림, 데모 재생, 하이라이트 및 라인업 미리보기 렌더링을 처리하는 GPU 지원 게임 서버 노드입니다. GPU 하나당 동시에 하나의 작업만 처리합니다.",
       "metrics": "메트릭",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "데모 재생",
         "demos_desc": "요청 시 데모 리플레이",
         "rendering": "렌더링",
-        "rendering_desc": "하이라이트 및 클립 렌더링",
+        "rendering_desc": "하이라이트, 클립 및 라인업 미리보기 렌더링",
         "summary": "{total}개 중 {on}개 켜짐",
         "node_disabled": "이 노드는 비활성화되어 GPU 작업을 받지 않습니다.",
         "now_streaming": "{matchup} 스트리밍 중",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "노드가 연결되면 CS2를 설치하세요.",
-          "gpu_only": "GPU 전용 노드는 CS2 서버를 실행하지 않습니다.",
+          "gpu_only": "GPU 전용 노드는 라인업 미리보기를 촬영할 때만 CS2를 실행하며, 이 노드는 렌더링이 꺼져 있습니다.",
           "plugin_unsupported": "지원 안 됨",
           "update_log": "업데이트 로그",
           "on_build": "(빌드 {build})",

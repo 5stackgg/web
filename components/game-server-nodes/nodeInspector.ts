@@ -11,6 +11,7 @@ import {
   isOverprovisioned,
   maxServers,
   nodeIssues,
+  runsCs2,
   type DiskThresholds,
   type IssueContext,
   type NodeLike,
@@ -209,25 +210,32 @@ export function nextStep(
     return "enable";
   }
   const gpuOnly = isGpuOnly(node);
+  const cs2 = runsCs2(node);
+  if (cs2 && node.update_failed_at && !node.update_status) {
+    return "retry_update";
+  }
   if (!gpuOnly) {
-    if (node.update_failed_at && !node.update_status) {
-      return "retry_update";
-    }
     if (!node.region) {
       return "assign_region";
     }
     if (!hasPorts(node)) {
       return "set_ports";
     }
-    if (!node.build_id && !node.update_status) {
-      return "install_cs2";
-    }
-    if (node.build_id && node.plugin_supported === false) {
-      return "change_plugin";
-    }
-    if (!node.update_status && isBuildBehind(node, context.currentBuildId)) {
-      return "update_cs2";
-    }
+  }
+  if (cs2 && !node.build_id && !node.update_status) {
+    return "install_cs2";
+  }
+  if (!gpuOnly && node.build_id && node.plugin_supported === false) {
+    return "change_plugin";
+  }
+  if (
+    cs2 &&
+    !node.update_status &&
+    isBuildBehind(node, context.currentBuildId)
+  ) {
+    return "update_cs2";
+  }
+  if (!gpuOnly) {
     const max = context.maxServers?.(node) ?? maxServers(node);
     if (isOverprovisioned(node, max)) {
       return "edit_ports";
@@ -246,7 +254,7 @@ export function cs2State(
   node: NodeLike,
   currentBuildId?: number | string | null,
 ): Cs2State {
-  if (node.status === "Setup" || isGpuOnly(node)) {
+  if (node.status === "Setup" || !runsCs2(node)) {
     return "none";
   }
   if (node.update_status) {

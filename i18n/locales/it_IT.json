@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "Nodi GPU",
       "gpu_unknown": "GPU",
-      "description": "Nodi server di gioco con GPU che gestiscono streaming live, riproduzione delle demo e rendering degli highlight. Ogni GPU serve al massimo un consumer alla volta.",
+      "description": "Nodi server di gioco con GPU che gestiscono streaming live, riproduzione delle demo e rendering degli highlight e delle anteprime dei lineup. Ogni GPU serve al massimo un consumer alla volta.",
       "metrics": "Metriche",
       "meter": {
         "compute": "GPU"
@@ -4661,7 +4661,7 @@
         "demos": "Riproduzione demo",
         "demos_desc": "Replay delle demo on demand",
         "rendering": "Rendering",
-        "rendering_desc": "Rendering di highlight e clip",
+        "rendering_desc": "Rendering di highlight, clip e anteprime dei lineup",
         "summary": "{on} su {total} attivi",
         "node_disabled": "Questo nodo è disattivato, quindi non accetta lavoro GPU.",
         "now_streaming": "Trasmette {matchup}",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installa CS2 quando il nodo si connette.",
-          "gpu_only": "I nodi solo GPU non eseguono server CS2.",
+          "gpu_only": "I nodi solo GPU eseguono CS2 solo per registrare le anteprime dei lineup, e il Rendering è disattivato su questo.",
           "plugin_unsupported": "Non supportato",
           "update_log": "Log aggiornamento",
           "on_build": "sulla build {build}",

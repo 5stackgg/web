@@ -111,6 +111,29 @@ describe("CS2 section", () => {
     const wrapper = await mountCs2({ csgo_build_id: 12426148 });
     expect(wrapper.text()).not.toContain("CS:GO");
   });
+
+  // Each lineup preview a GPU-only node renders boots a CS2 server on it.
+  it("offers CS2 on a GPU-only node only while it renders", async () => {
+    const gpuOnly = {
+      gpu: true,
+      enabled_for_match_making: false,
+      region: null,
+      build_id: null,
+    };
+    const actions = 'button[aria-label="CS2 actions"]';
+
+    const rendering = await mountCs2({
+      ...gpuOnly,
+      gpu_rendering_enabled: true,
+    });
+    expect(rendering.text()).toContain("Install CS2");
+    expect(rendering.find(actions).exists()).toBe(true);
+
+    const off = await mountCs2({ ...gpuOnly, gpu_rendering_enabled: false });
+    expect(off.text()).toContain("Rendering is off");
+    expect(off.text()).not.toContain("Install CS2");
+    expect(off.find(actions).exists()).toBe(false);
+  });
 });
 
 describe("CS:GO section", () => {

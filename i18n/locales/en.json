@@ -4634,7 +4634,7 @@
     "gpu_nodes": {
       "title": "GPU Nodes",
       "gpu_unknown": "GPU",
-      "description": "GPU-capable game server nodes that host live streams, demo playback, and highlight renders. Each GPU runs at most one consumer at a time.",
+      "description": "GPU-capable game server nodes that host live streams, demo playback, and highlight and lineup preview renders. Each GPU runs at most one consumer at a time.",
       "metrics": "Metrics",
       "meter": {
         "compute": "GPUs"
@@ -4663,7 +4663,7 @@
         "demos": "Demo playback",
         "demos_desc": "On-demand demo replay",
         "rendering": "Rendering",
-        "rendering_desc": "Highlight & clip renders",
+        "rendering_desc": "Highlight, clip & lineup preview renders",
         "summary": "{on} of {total} on",
         "node_disabled": "This node is disabled, so it takes no GPU work.",
         "now_streaming": "Streaming {matchup}",
@@ -5219,7 +5219,7 @@
         },
         "cs2": {
           "setup": "Install CS2 once the node connects.",
-          "gpu_only": "GPU-only nodes don't run CS2 servers.",
+          "gpu_only": "GPU-only nodes run CS2 only to film lineup previews, and Rendering is off on this one.",
           "plugin_unsupported": "Not supported",
           "update_log": "Update log",
           "on_build": "on build {build}",

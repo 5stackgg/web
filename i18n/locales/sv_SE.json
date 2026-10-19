@@ -4632,7 +4632,7 @@
     "gpu_nodes": {
       "title": "GPU-noder",
       "gpu_unknown": "GPU",
-      "description": "GPU-kapabla spelservernoder som driver livestreamar, demouppspelning och höjdpunktsrendering. Varje GPU kör som mest en konsument åt gången.",
+      "description": "GPU-kapabla spelservernoder som driver livestreamar, demouppspelning och rendering av höjdpunkter och förhandsvisningar av uppställningar. Varje GPU kör som mest en konsument åt gången.",
       "metrics": "Mätvärden",
       "meter": {
         "compute": "GPU:er"
@@ -4661,7 +4661,7 @@
         "demos": "Demouppspelning",
         "demos_desc": "Demoreplay på begäran",
         "rendering": "Rendering",
-        "rendering_desc": "Rendering av höjdpunkter & klipp",
+        "rendering_desc": "Rendering av höjdpunkter, klipp & förhandsvisningar av uppställningar",
         "summary": "{on} av {total} på",
         "node_disabled": "Noden är inaktiverad och tar inget GPU-arbete.",
         "now_streaming": "Streamar {matchup}",
@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installera CS2 när noden ansluter.",
-          "gpu_only": "Noder med endast GPU kör inga CS2-servrar.",
+          "gpu_only": "Noder med endast GPU kör CS2 bara för att filma förhandsvisningar av uppställningar, och Rendering är avstängt på den här.",
           "plugin_unsupported": "Stöds inte",
           "update_log": "Uppdateringslogg",
           "on_build": "på build {build}",

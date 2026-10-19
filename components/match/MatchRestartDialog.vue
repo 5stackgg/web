@@ -205,6 +205,7 @@ watch(
     if (!open) {
       return;
     }
+    previewRequest++;
     choice.value = "replay";
     blocked.value = null;
     impacts.value = [];

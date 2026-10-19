@@ -388,7 +388,9 @@ const PISTOLS = new Set([
 ]);
 
 function mainWeapon(weapons: string[]) {
-  const guns = weapons.filter((weapon) => !NOT_GUNS.test(weapon));
+  const guns = weapons.filter(
+    (weapon) => weapon.startsWith("weapon_") && !NOT_GUNS.test(weapon),
+  );
   return guns.find((weapon) => !PISTOLS.has(weapon)) ?? guns[0];
 }
 

@@ -6,8 +6,9 @@ const HEADER = "Third-party software in 5Stack Web";
 const PACKAGES = [{ dir: ".", dev: true }];
 
 // Vite bundles devDependencies into the build, so they are walked too. Only
-// packages that ship nothing into the build are skipped, and optional
-// dependencies are left out because they are platform-specific build binaries.
+// packages that ship nothing into the build are skipped, and so are packages
+// pinned to an os or cpu: they are the platform binaries of build tools, and
+// walking them would make the output depend on the machine that generates it.
 const TOOLING =
   /^(@types\/|@nuxt\/devtools$|@nuxt\/test-utils$|@vue\/test-utils$|@vitejs\/plugin-vue$|vitest$|vue-tsc$|typescript$|prettier$|autoprefixer$|postcss$|postcss-nesting$|esbuild$)/;
 
@@ -65,13 +66,19 @@ while (queue.length > 0) {
   seen.add(dir);
 
   const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+  if (pkg.os || pkg.cpu) {
+    continue;
+  }
   const text = licenseText(dir, pkg);
   if (!byText.has(text)) {
     byText.set(text, new Set());
   }
   byText.get(text).add(pkg.name ?? name);
 
-  for (const dependency of Object.keys(pkg.dependencies ?? {})) {
+  for (const dependency of Object.keys({
+    ...pkg.dependencies,
+    ...pkg.optionalDependencies,
+  })) {
     queue.push([dependency, dir]);
   }
 }

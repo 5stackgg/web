@@ -169,22 +169,74 @@
 
         <section class="grid gap-2">
           <div class="flex items-center justify-between gap-3">
-            <DbLabel :label="$t('pages.database.explorer.execution_plan')" />
+            <div class="flex items-center gap-2">
+              <DbLabel :label="$t('pages.database.explorer.execution_plan')" />
+              <span
+                v-if="planKind"
+                class="rounded bg-muted px-1.5 py-0.5 text-[11px] text-muted-foreground"
+              >
+                {{ planKind }}
+              </span>
+            </div>
             <button
-              v-if="queryDetail.explain_plan"
+              v-if="plan"
               type="button"
               class="inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              @click="copy(queryDetail.explain_plan, 'plan')"
+              @click="copy(plan, 'plan')"
             >
               <CopyIcon class="h-3 w-3" />
               {{ $t("common.copy") }}
             </button>
           </div>
-          <pre v-if="queryDetail.explain_plan" class="db-pre">{{
-            queryDetail.explain_plan
-          }}</pre>
+          <pre v-if="plan" class="db-pre">{{ plan }}</pre>
           <p v-else class="text-xs text-muted-foreground">
             {{ $t("pages.database.explorer.no_plan") }}
+          </p>
+
+          <div v-if="queryDetail.parameters.length" class="mt-2 grid gap-2">
+            <p class="text-xs text-muted-foreground">
+              {{ $t("pages.database.explorer.parameters_hint") }}
+            </p>
+            <label
+              v-for="parameter in queryDetail.parameters"
+              :key="parameter.number"
+              class="grid grid-cols-[140px_minmax(0,1fr)] items-center gap-3"
+            >
+              <span class="truncate font-mono text-xs">
+                ${{ parameter.number }}
+                <span class="text-muted-foreground">{{ parameter.type }}</span>
+              </span>
+              <Input
+                v-model="values[parameter.number]"
+                class="h-8 font-mono text-xs"
+                :placeholder="
+                  parameter.list
+                    ? $t('pages.database.explorer.list_placeholder')
+                    : undefined
+                "
+              />
+            </label>
+          </div>
+
+          <div class="mt-2 flex flex-wrap items-center gap-3">
+            <Button
+              size="sm"
+              variant="outline"
+              :disabled="analyzing"
+              @click="analyze"
+            >
+              {{
+                analyzing
+                  ? $t("pages.database.explorer.analyzing")
+                  : $t("pages.database.explorer.run_analyze")
+              }}
+            </Button>
+            <span class="text-xs text-muted-foreground">
+              {{ $t("pages.database.explorer.analyze_hint") }}
+            </span>
+          </div>
+          <p v-if="analyzeError" class="text-xs text-destructive">
+            {{ analyzeError }}
           </p>
         </section>
       </div>
@@ -197,7 +249,10 @@
 </template>
 
 <script lang="ts">
+import gql from "graphql-tag";
 import { CopyIcon } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 import {
   Sheet,
   SheetContent,
@@ -205,7 +260,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { generateQuery } from "~/graphql/graphqlGen";
 import DbLabel from "./DbLabel.vue";
 import DbSev from "./DbSev.vue";
 import DbTerm from "./DbTerm.vue";
@@ -226,10 +280,12 @@ export default {
     SheetDescription,
     SheetHeader,
     SheetTitle,
+    Button,
     CopyIcon,
     DbLabel,
     DbSev,
     DbTerm,
+    Input,
     StatTile,
   },
   props: {
@@ -247,11 +303,30 @@ export default {
     return {
       queryDetail: null as any,
       open: true,
+      values: {} as Record<number, string>,
+      analysis: null as string | null,
+      analyzing: false,
+      analyzeError: null as string | null,
     };
   },
   computed: {
     stats(): any {
       return this.queryDetail?.stats || {};
+    },
+    plan(): string | null {
+      return this.analysis ?? this.queryDetail?.explain_plan ?? null;
+    },
+    planKind(): string | null {
+      switch (this.analysis ? "analyze" : this.queryDetail?.explain_kind) {
+        case "analyze":
+          return this.$t("pages.database.explorer.plan_analyzed");
+        case "estimate":
+          return this.$t("pages.database.explorer.plan_estimate");
+        case "generic":
+          return this.$t("pages.database.explorer.plan_generic");
+        default:
+          return null;
+      }
     },
     // Where min, mean and max sit on a log scale, with mean ± one standard
     // deviation as the band.
@@ -288,6 +363,49 @@ export default {
       this.open = false;
       setTimeout(() => this.$emit("close"), 220);
     },
+    async analyze() {
+      this.analyzing = true;
+      this.analyzeError = null;
+      try {
+        const { data } = await this.$apollo.query({
+          query: gql`
+            query AnalyzeQuery(
+              $queryid: String!
+              $parameters: [QueryParameterInput!]!
+            ) {
+              analyzeQuery(queryid: $queryid, parameters: $parameters) {
+                explain_plan
+              }
+            }
+          `,
+          variables: {
+            queryid: this.queryid,
+            parameters: this.queryDetail.parameters.map(
+              (parameter: { number: number; list: boolean }) => {
+                const value = this.values[parameter.number] ?? "";
+                return {
+                  number: parameter.number,
+                  values: parameter.list
+                    ? value
+                        .split(",")
+                        .map((item) => item.trim())
+                        .filter(Boolean)
+                    : value
+                      ? [value]
+                      : [],
+                };
+              },
+            ),
+          },
+          fetchPolicy: "no-cache",
+        });
+        this.analysis = data.analyzeQuery.explain_plan;
+      } catch (error) {
+        this.analyzeError = (error as Error).message;
+      } finally {
+        this.analyzing = false;
+      }
+    },
     copy(text: string, type: "query" | "plan") {
       void copyText(
         text,
@@ -299,35 +417,43 @@ export default {
     },
   },
   apollo: {
+    // explain_kind and parameters are newer than the generated client, so a
+    // plain document.
     queryDetail: {
-      query() {
-        return generateQuery({
-          getQueryDetail: [
-            { queryid: this.queryid },
-            {
-              queryid: true,
-              query: true,
-              explain_plan: true,
-              stats: {
-                queryid: true,
-                query: true,
-                calls: true,
-                total_exec_time: true,
-                mean_exec_time: true,
-                stddev_exec_time: true,
-                min_exec_time: true,
-                max_exec_time: true,
-                total_rows: true,
-                shared_blks_hit: true,
-                shared_blks_read: true,
-                cache_hit_ratio: true,
-                temp_blks_written: true,
-                local_blks_hit: true,
-                local_blks_read: true,
-              },
-            },
-          ],
-        });
+      query: gql`
+        query QueryDetail($queryid: String!) {
+          getQueryDetail(queryid: $queryid) {
+            queryid
+            query
+            explain_plan
+            explain_kind
+            parameters {
+              number
+              type
+              list
+            }
+            stats {
+              queryid
+              query
+              calls
+              total_exec_time
+              mean_exec_time
+              stddev_exec_time
+              min_exec_time
+              max_exec_time
+              total_rows
+              shared_blks_hit
+              shared_blks_read
+              cache_hit_ratio
+              temp_blks_written
+              local_blks_hit
+              local_blks_read
+            }
+          }
+        }
+      `,
+      variables() {
+        return { queryid: this.queryid };
       },
       update: (data: any) => data.getQueryDetail,
     },

@@ -1850,6 +1850,21 @@
         "col_awards": "Нагороди",
         "no_match": "Нічого не знайдено за твоїм запитом чи фільтрами.",
         "clear_filters": "Скинути фільтри"
+      },
+      "tournament_teams": {
+        "title": "Команди турнірів",
+        "subtitle": "Створені всередині турніру",
+        "search": "Пошук команд, турнірів або гравців…",
+        "search_label": "Пошук команд турнірів",
+        "col_tournament": "Турнір",
+        "col_status": "Статус",
+        "running": "Поточні",
+        "finished": "Завершені",
+        "segment_label": "Статус турніру",
+        "found_in_running": "Збіги в поточних турнірах: {count}",
+        "found_in_finished": "Збіги в завершених турнірах: {count}",
+        "show_running": "Показати поточні",
+        "show_finished": "Показати завершені"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Найбільший приріст",
           "worst_loss": "Найбільша втрата",
           "view_match": "Переглянути матч"
-        }
+        },
+        "more_tournament_teams": "Ще команд турнірів: {count} | Ще команд турнірів: {count}"
       },
       "empty": {
         "title": "Гравців поки немає",

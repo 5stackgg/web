@@ -1850,6 +1850,21 @@
         "col_awards": "Premiações",
         "no_match": "Nada corresponde à sua busca ou aos filtros.",
         "clear_filters": "Limpar filtros"
+      },
+      "tournament_teams": {
+        "title": "Times de torneio",
+        "subtitle": "Criados dentro de um torneio",
+        "search": "Buscar times, torneios ou jogadores…",
+        "search_label": "Buscar times de torneio",
+        "col_tournament": "Torneio",
+        "col_status": "Status",
+        "running": "Em andamento",
+        "finished": "Encerrados",
+        "segment_label": "Status do torneio",
+        "found_in_running": "Resultados em torneios em andamento: {count}",
+        "found_in_finished": "Resultados em torneios encerrados: {count}",
+        "show_running": "Ver em andamento",
+        "show_finished": "Ver encerrados"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Maior ganho único",
           "worst_loss": "Maior perda única",
           "view_match": "Ver partida"
-        }
+        },
+        "more_tournament_teams": "Mais {count} time de torneio | Mais {count} times de torneio"
       },
       "empty": {
         "title": "Nenhum jogador ainda",

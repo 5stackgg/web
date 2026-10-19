@@ -1850,6 +1850,21 @@
         "col_awards": "Awards",
         "no_match": "Nothing matches your search or filters.",
         "clear_filters": "Clear filters"
+      },
+      "tournament_teams": {
+        "title": "Tournament teams",
+        "subtitle": "Made inside a tournament",
+        "search": "Search teams, tournaments or players…",
+        "search_label": "Search tournament teams",
+        "col_tournament": "Tournament",
+        "col_status": "Status",
+        "running": "Running",
+        "finished": "Finished",
+        "segment_label": "Tournament status",
+        "found_in_running": "Matches in running tournaments: {count}",
+        "found_in_finished": "Matches in finished tournaments: {count}",
+        "show_running": "Show Running",
+        "show_finished": "Show Finished"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Best Single Gain",
           "worst_loss": "Worst Single Loss",
           "view_match": "View match"
-        }
+        },
+        "more_tournament_teams": "{count} more tournament team | {count} more tournament teams"
       },
       "empty": {
         "title": "No players yet",

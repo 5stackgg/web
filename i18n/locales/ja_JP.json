@@ -1850,6 +1850,21 @@
         "col_awards": "アワード",
         "no_match": "検索や絞り込みに一致するものがありません。",
         "clear_filters": "絞り込みをクリア"
+      },
+      "tournament_teams": {
+        "title": "トーナメントチーム",
+        "subtitle": "トーナメント内で作成",
+        "search": "チーム、トーナメント、プレイヤーを検索…",
+        "search_label": "トーナメントチームを検索",
+        "col_tournament": "トーナメント",
+        "col_status": "ステータス",
+        "running": "開催中",
+        "finished": "終了",
+        "segment_label": "トーナメントの状態",
+        "found_in_running": "開催中のトーナメントで該当: {count}",
+        "found_in_finished": "終了したトーナメントで該当: {count}",
+        "show_running": "開催中を表示",
+        "show_finished": "終了を表示"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "最大の上昇",
           "worst_loss": "最大の下落",
           "view_match": "試合を表示"
-        }
+        },
+        "more_tournament_teams": "他 {count} 件のトーナメントチーム | 他 {count} 件のトーナメントチーム"
       },
       "empty": {
         "title": "まだプレイヤーはいません",

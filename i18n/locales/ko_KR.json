@@ -1850,6 +1850,21 @@
         "col_awards": "어워드",
         "no_match": "검색어나 필터와 일치하는 항목이 없습니다.",
         "clear_filters": "필터 지우기"
+      },
+      "tournament_teams": {
+        "title": "토너먼트 팀",
+        "subtitle": "토너먼트 안에서 만든 팀",
+        "search": "팀, 토너먼트 또는 플레이어 검색…",
+        "search_label": "토너먼트 팀 검색",
+        "col_tournament": "토너먼트",
+        "col_status": "상태",
+        "running": "진행 중",
+        "finished": "종료",
+        "segment_label": "토너먼트 상태",
+        "found_in_running": "진행 중인 토너먼트 결과: {count}",
+        "found_in_finished": "종료된 토너먼트 결과: {count}",
+        "show_running": "진행 중 보기",
+        "show_finished": "종료 보기"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "최대 단일 상승폭",
           "worst_loss": "최대 단일 하락폭",
           "view_match": "매치 보기"
-        }
+        },
+        "more_tournament_teams": "토너먼트 팀 {count}개 더 보기 | 토너먼트 팀 {count}개 더 보기"
       },
       "empty": {
         "title": "아직 플레이어가 없습니다",

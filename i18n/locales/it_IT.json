@@ -1850,6 +1850,21 @@
         "col_awards": "Premi",
         "no_match": "Nulla corrisponde alla tua ricerca o ai filtri.",
         "clear_filters": "Cancella filtri"
+      },
+      "tournament_teams": {
+        "title": "Squadre del torneo",
+        "subtitle": "Create all'interno di un torneo",
+        "search": "Cerca squadre, tornei o giocatori…",
+        "search_label": "Cerca squadre del torneo",
+        "col_tournament": "Torneo",
+        "col_status": "Stato",
+        "running": "In corso",
+        "finished": "Conclusi",
+        "segment_label": "Stato del torneo",
+        "found_in_running": "Risultati nei tornei in corso: {count}",
+        "found_in_finished": "Risultati nei tornei conclusi: {count}",
+        "show_running": "Mostra in corso",
+        "show_finished": "Mostra conclusi"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Miglior guadagno singolo",
           "worst_loss": "Peggior perdita singola",
           "view_match": "Vedi match"
-        }
+        },
+        "more_tournament_teams": "{count} altra squadra del torneo | {count} altre squadre del torneo"
       },
       "empty": {
         "title": "Ancora nessun giocatore",

@@ -1850,6 +1850,21 @@
         "col_awards": "Utmärkelser",
         "no_match": "Inget matchar din sökning eller dina filter.",
         "clear_filters": "Rensa filter"
+      },
+      "tournament_teams": {
+        "title": "Turneringslag",
+        "subtitle": "Skapade i en turnering",
+        "search": "Sök lag, turneringar eller spelare…",
+        "search_label": "Sök turneringslag",
+        "col_tournament": "Turnering",
+        "col_status": "Status",
+        "running": "Pågående",
+        "finished": "Avslutade",
+        "segment_label": "Turneringsstatus",
+        "found_in_running": "Träffar i pågående turneringar: {count}",
+        "found_in_finished": "Träffar i avslutade turneringar: {count}",
+        "show_running": "Visa pågående",
+        "show_finished": "Visa avslutade"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Bästa enskilda vinst",
           "worst_loss": "Sämsta enskilda förlust",
           "view_match": "Visa match"
-        }
+        },
+        "more_tournament_teams": "{count} turneringslag till | {count} turneringslag till"
       },
       "empty": {
         "title": "Inga spelare än",

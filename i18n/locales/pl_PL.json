@@ -1850,6 +1850,21 @@
         "col_awards": "Nagrody",
         "no_match": "Nic nie pasuje do wyszukiwania ani filtrów.",
         "clear_filters": "Wyczyść filtry"
+      },
+      "tournament_teams": {
+        "title": "Drużyny turniejowe",
+        "subtitle": "Utworzone w turnieju",
+        "search": "Szukaj drużyn, turniejów lub graczy…",
+        "search_label": "Szukaj drużyn turniejowych",
+        "col_tournament": "Turniej",
+        "col_status": "Status",
+        "running": "Trwające",
+        "finished": "Zakończone",
+        "segment_label": "Status turnieju",
+        "found_in_running": "Wyniki w trwających turniejach: {count}",
+        "found_in_finished": "Wyniki w zakończonych turniejach: {count}",
+        "show_running": "Pokaż trwające",
+        "show_finished": "Pokaż zakończone"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Najlepszy pojedynczy zysk",
           "worst_loss": "Najgorsza pojedyncza strata",
           "view_match": "Zobacz mecz"
-        }
+        },
+        "more_tournament_teams": "Więcej drużyn turniejowych: {count} | Więcej drużyn turniejowych: {count}"
       },
       "empty": {
         "title": "Brak graczy",

@@ -1850,6 +1850,21 @@
         "col_awards": "Ödüller",
         "no_match": "Aramana veya filtrelerine uyan bir şey yok.",
         "clear_filters": "Filtreleri temizle"
+      },
+      "tournament_teams": {
+        "title": "Turnuva takımları",
+        "subtitle": "Bir turnuva içinde oluşturuldu",
+        "search": "Takım, turnuva veya oyuncu ara…",
+        "search_label": "Turnuva takımlarında ara",
+        "col_tournament": "Turnuva",
+        "col_status": "Durum",
+        "running": "Devam eden",
+        "finished": "Biten",
+        "segment_label": "Turnuva durumu",
+        "found_in_running": "Devam eden turnuvalarda sonuç: {count}",
+        "found_in_finished": "Biten turnuvalarda sonuç: {count}",
+        "show_running": "Devam edenleri göster",
+        "show_finished": "Bitenleri göster"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "En yüksek kazanç",
           "worst_loss": "En büyük kayıp",
           "view_match": "Maçı görüntüle"
-        }
+        },
+        "more_tournament_teams": "{count} turnuva takımı daha | {count} turnuva takımı daha"
       },
       "empty": {
         "title": "Henüz oyuncu yok",

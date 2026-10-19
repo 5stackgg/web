@@ -78,6 +78,7 @@ import {
   Maximize2,
   Calendar as CalendarIcon,
   ChevronDown,
+  Trophy,
 } from "lucide-vue-next";
 import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
@@ -2171,10 +2172,10 @@ const AwardComposer = defineAsyncComponent(
                   </div>
 
                   <div
-                    v-if="canEditRole || player.role || player.teams?.length"
+                    v-if="canEditRole || player.role || heroTeamCount"
                     :class="[
                       playerHeroMetaGroupClasses,
-                      canEditRole && !player.teams?.length && 'max-md:hidden',
+                      canEditRole && !heroTeamCount && 'max-md:hidden',
                     ]"
                   >
                     <template v-if="canEditRole || player.role">
@@ -2204,6 +2205,58 @@ const AwardComposer = defineAsyncComponent(
                         <span>{{ team.short_name || team.name }}</span>
                       </NuxtLink>
                     </template>
+
+                    <NuxtLink
+                      v-for="entry in shownTournamentTeams"
+                      :key="entry.tournament_team.id"
+                      :to="tournamentTeamLink(entry)"
+                      :class="playerHeroTeamChipClasses"
+                      :title="`${entry.tournament_team.name} · ${entry.tournament.name}`"
+                    >
+                      <Trophy
+                        class="h-3 w-3 shrink-0 text-[hsl(var(--tac-amber))]"
+                      />
+                      <span>{{
+                        entry.tournament_team.short_name ||
+                        entry.tournament_team.name
+                      }}</span>
+                    </NuxtLink>
+
+                    <Popover v-if="moreTournamentTeams.length">
+                      <PopoverTrigger as-child>
+                        <button
+                          type="button"
+                          :class="playerHeroTeamChipClasses"
+                          :aria-label="
+                            $t(
+                              'pages.players.detail.more_tournament_teams',
+                              moreTournamentTeams.length,
+                            )
+                          "
+                        >
+                          +{{ moreTournamentTeams.length }}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" class="w-72 p-1">
+                        <NuxtLink
+                          v-for="entry in moreTournamentTeams"
+                          :key="entry.tournament_team.id"
+                          :to="tournamentTeamLink(entry)"
+                          class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 transition-colors hover:bg-[hsl(var(--tac-amber)/0.1)]"
+                        >
+                          <Trophy
+                            class="h-3 w-3 shrink-0 text-[hsl(var(--tac-amber))]"
+                          />
+                          <span class="truncate text-sm font-semibold">{{
+                            entry.tournament_team.name
+                          }}</span>
+                          <span
+                            class="ml-auto truncate text-xs text-muted-foreground"
+                            >{{ entry.tournament.name }}</span
+                          >
+                        </NuxtLink>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
               </div>
@@ -3636,7 +3689,7 @@ const AwardComposer = defineAsyncComponent(
 import { Ban, Medal, Pencil, ShieldAlert } from "lucide-vue-next";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import graphqlTag from "graphql-tag";
-import { e_team_roles_enum } from "~/generated/zeus";
+import { e_team_roles_enum, e_tournament_status_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { awardFields } from "~/graphql/awardFields";
@@ -3699,6 +3752,32 @@ const playerAwardsSubscription = typedGql("subscription")({
       },
     },
     awardFields,
+  ],
+});
+
+// A team made with "New team" inside a tournament has no `teams` row, so
+// `players.teams` never includes it.
+const playerTournamentTeamsSubscription = typedGql("subscription")({
+  tournament_team_roster: [
+    {
+      where: {
+        player_steam_id: { _eq: $("steam_id", "bigint") },
+        tournament_team: { team_id: { _is_null: true } },
+        tournament: {
+          status: {
+            _nin: [
+              e_tournament_status_enum.Finished,
+              e_tournament_status_enum.Cancelled,
+              e_tournament_status_enum.CancelledMinTeams,
+            ],
+          },
+        },
+      },
+    },
+    {
+      tournament_team: { id: true, name: true, short_name: true },
+      tournament: { id: true, name: true, start: true },
+    },
   ],
 });
 
@@ -3800,6 +3879,33 @@ export default {
           this.playerAwards = data.award_recipients || [];
         },
       },
+      playerTournamentTeams: {
+        query: playerTournamentTeamsSubscription,
+        context: { seed: true },
+        variables: function () {
+          return {
+            steam_id: this.playerId,
+          };
+        },
+        skip: function () {
+          return !this.playerId;
+        },
+        result: function ({ data }: { data: any }) {
+          // Sorted here, not in order_by: a second order_by key overruns
+          // zeus's type depth, and without the id tie-break the teams behind
+          // +N could swap between polls.
+          this.playerTournamentTeams = [
+            ...(data.tournament_team_roster || []),
+          ].sort((a: any, b: any) => {
+            const left = a.tournament.start ?? "￿";
+            const right = b.tournament.start ?? "￿";
+            if (left !== right) {
+              return left < right ? -1 : 1;
+            }
+            return a.tournament_team.id < b.tournament_team.id ? -1 : 1;
+          });
+        },
+      },
     },
   },
   mounted() {
@@ -3841,11 +3947,27 @@ export default {
           viewer_roster: Array<{ role: string }>;
         };
       }>,
+      playerTournamentTeams: [] as Array<{
+        tournament_team: { id: string; name: string; short_name: string | null };
+        tournament: { id: string; name: string; start: string | null };
+      }>,
       editPlayerSheet: false,
       blockDialogOpen: false,
     };
   },
   computed: {
+    heroTeamCount(): number {
+      return (
+        ((this as any).player?.teams?.length ?? 0) +
+        this.playerTournamentTeams.length
+      );
+    },
+    shownTournamentTeams() {
+      return this.playerTournamentTeams.slice(0, 3);
+    },
+    moreTournamentTeams() {
+      return this.playerTournamentTeams.slice(3);
+    },
     heroActionsBind(): Record<string, any> {
       return {
         actions: this.heroActions,
@@ -4118,6 +4240,13 @@ export default {
     },
   },
   methods: {
+    tournamentTeamLink(entry: { tournament: { id: string } }) {
+      return {
+        name: "tournaments-tournamentId",
+        params: { tournamentId: entry.tournament.id },
+        query: { tab: "teams" },
+      };
+    },
     setPlayer(player: any) {
       this.player = player;
       const ctx = usePlayerContext();

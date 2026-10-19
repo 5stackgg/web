@@ -1850,6 +1850,21 @@
         "col_awards": "奖项",
         "no_match": "没有符合搜索或筛选条件的结果。",
         "clear_filters": "清除筛选"
+      },
+      "tournament_teams": {
+        "title": "赛事队伍",
+        "subtitle": "在赛事内创建",
+        "search": "搜索队伍、赛事或玩家…",
+        "search_label": "搜索赛事队伍",
+        "col_tournament": "赛事",
+        "col_status": "状态",
+        "running": "进行中",
+        "finished": "已结束",
+        "segment_label": "赛事状态",
+        "found_in_running": "进行中赛事中的匹配: {count}",
+        "found_in_finished": "已结束赛事中的匹配: {count}",
+        "show_running": "查看进行中",
+        "show_finished": "查看已结束"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "单次最大增益",
           "worst_loss": "单次最大损失",
           "view_match": "查看比赛"
-        }
+        },
+        "more_tournament_teams": "另外 {count} 支赛事队伍 | 另外 {count} 支赛事队伍"
       },
       "empty": {
         "title": "暂无玩家",

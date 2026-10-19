@@ -1850,6 +1850,21 @@
         "col_awards": "Récompenses",
         "no_match": "Rien ne correspond à ta recherche ou à tes filtres.",
         "clear_filters": "Effacer les filtres"
+      },
+      "tournament_teams": {
+        "title": "Équipes de tournoi",
+        "subtitle": "Créées dans un tournoi",
+        "search": "Rechercher des équipes, tournois ou joueurs…",
+        "search_label": "Rechercher des équipes de tournoi",
+        "col_tournament": "Tournoi",
+        "col_status": "Statut",
+        "running": "En cours",
+        "finished": "Terminés",
+        "segment_label": "Statut du tournoi",
+        "found_in_running": "Résultats dans les tournois en cours : {count}",
+        "found_in_finished": "Résultats dans les tournois terminés : {count}",
+        "show_running": "Voir en cours",
+        "show_finished": "Voir terminés"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Meilleur gain",
           "worst_loss": "Pire perte",
           "view_match": "Voir le match"
-        }
+        },
+        "more_tournament_teams": "{count} autre équipe de tournoi | {count} autres équipes de tournoi"
       },
       "empty": {
         "title": "Aucun joueur pour l'instant",

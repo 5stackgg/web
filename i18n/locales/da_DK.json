@@ -1850,6 +1850,21 @@
         "col_awards": "Priser",
         "no_match": "Intet matcher din søgning eller dine filtre.",
         "clear_filters": "Ryd filtre"
+      },
+      "tournament_teams": {
+        "title": "Turneringshold",
+        "subtitle": "Oprettet i en turnering",
+        "search": "Søg efter hold, turneringer eller spillere…",
+        "search_label": "Søg i turneringshold",
+        "col_tournament": "Turnering",
+        "col_status": "Status",
+        "running": "I gang",
+        "finished": "Afsluttede",
+        "segment_label": "Turneringsstatus",
+        "found_in_running": "Resultater i igangværende turneringer: {count}",
+        "found_in_finished": "Resultater i afsluttede turneringer: {count}",
+        "show_running": "Vis igangværende",
+        "show_finished": "Vis afsluttede"
       }
     },
     "settings": {
@@ -4368,7 +4383,8 @@
           "best_gain": "Største enkeltgevinst",
           "worst_loss": "Største enkelttab",
           "view_match": "Se kamp"
-        }
+        },
+        "more_tournament_teams": "{count} turneringshold mere | {count} turneringshold mere"
       },
       "empty": {
         "title": "Ingen spillere endnu",

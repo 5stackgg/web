@@ -11,10 +11,12 @@ import {
 } from "~/components/ui/popover";
 import { Label } from "~/components/ui/label";
 import {
+  CheckCircle2,
   Minimize,
   Maximize,
   LogOut,
   Trash2,
+  Undo2,
   UserMinus,
   UserPlus,
   Pencil,
@@ -32,6 +34,10 @@ import {
 } from "~/components/ui/alert-dialog";
 import { toast } from "~/components/ui/toast";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+
+// Sized to the badge row it sits in.
+const checkInActionClasses =
+  "h-6 gap-1 px-2 font-mono text-[0.65rem] font-bold uppercase tracking-[0.18em]";
 </script>
 
 <template>
@@ -210,6 +216,65 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
                 <span :key="eligibilityLabel">{{ eligibilityLabel }}</span>
               </Transition>
             </span>
+
+            <span
+              v-if="checkInState"
+              class="inline-flex h-6 items-center gap-[0.4rem] px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
+              :class="{
+                'text-success bg-success/10 border-success/40':
+                  checkInState === 'checked_in',
+                'text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)] border-[hsl(var(--tac-amber)/0.4)]':
+                  checkInState === 'waiting',
+                'text-destructive bg-destructive/10 border-destructive/35':
+                  checkInState === 'missed',
+              }"
+            >
+              <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
+              <Transition
+                mode="out-in"
+                enter-active-class="transition-opacity duration-150 ease-out motion-reduce:!duration-0"
+                leave-active-class="transition-opacity duration-100 ease-in motion-reduce:!duration-0"
+                enter-from-class="opacity-0"
+                leave-to-class="opacity-0"
+              >
+                <span :key="checkInLabel">{{ checkInLabel }}</span>
+              </Transition>
+            </span>
+
+            <template v-if="tournament.is_organizer">
+              <Button
+                v-if="checkInState === 'waiting'"
+                variant="outline"
+                size="sm"
+                :class="checkInActionClasses"
+                @click="setCheckIn(true)"
+              >
+                <CheckCircle2 class="h-3.5 w-3.5" />
+                {{ $t("tournament.check_in.mark_present") }}
+              </Button>
+              <Button
+                v-else-if="
+                  checkInState === 'checked_in' && registration?.check_in_open
+                "
+                variant="outline"
+                size="sm"
+                :class="checkInActionClasses"
+                @click="setCheckIn(false)"
+              >
+                <Undo2 class="h-3.5 w-3.5" />
+                {{ $t("common.undo") }}
+              </Button>
+              <Button
+                v-else-if="checkInState === 'missed'"
+                variant="outline"
+                size="sm"
+                :class="checkInActionClasses"
+                @click="readmit"
+              >
+                <UserPlus class="h-3.5 w-3.5" />
+                {{ $t("tournament.check_in_review.readmit") }}
+              </Button>
+            </template>
 
             <span
               v-if="!canEditSeed && team.seed"
@@ -451,6 +516,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
+import { dateLocale } from "~/utilities/dateLocale";
 
 export default {
   emits: ["toggle-collapsed"],
@@ -637,15 +703,6 @@ export default {
     missingPlayers() {
       return Math.max(0, this.minPlayers - this.team.roster.length);
     },
-    // Same gate as the api's tournament_check_in_window_opened: a team is only
-    // a no-show once a check-in window actually opened.
-    missedCheckIn() {
-      return (
-        !!this.registration?.check_in_required &&
-        !!this.registration?.check_in_ends_at &&
-        !this.team.checked_in_at
-      );
-    },
     eligibilityLabel() {
       if (this.team.eligible_at) {
         return this.$t("tournament.team.eligible");
@@ -656,9 +713,6 @@ export default {
           { count: this.missingPlayers },
           this.missingPlayers,
         );
-      }
-      if (this.missedCheckIn) {
-        return this.$t("tournament.team.missed_check_in");
       }
       return this.$t("tournament.team.not_eligible");
     },
@@ -740,6 +794,44 @@ export default {
     },
     showEligibilityBadge() {
       return !this.hasStarted;
+    },
+    // On the card so everyone can read the field: the panel above the tabs
+    // only lists it to organizers and to teams still waiting to confirm.
+    checkInState(): "checked_in" | "waiting" | "missed" | null {
+      const registration = this.registration;
+      if (
+        !registration?.check_in_required ||
+        !registration.check_in_started ||
+        this.hasStarted
+      ) {
+        return null;
+      }
+      if (this.team.checked_in_at) {
+        return "checked_in";
+      }
+      return registration.check_in_open ? "waiting" : "missed";
+    },
+    checkInLabel() {
+      if (this.checkInState === "checked_in") {
+        return this.$t("tournament.check_in.checked_in_at", {
+          time: new Date(this.team.checked_in_at).toLocaleTimeString(
+            dateLocale(),
+            { hour: "2-digit", minute: "2-digit" },
+          ),
+        });
+      }
+      if (this.checkInState === "missed") {
+        return this.$t("tournament.team.missed_check_in");
+      }
+      if (this.registration?.check_in_setting === "Players") {
+        return this.$t("tournament.check_in.players_progress", {
+          checked: this.team.roster.filter(
+            (member: Record<string, any>) => !!member.checked_in_at,
+          ).length,
+          required: this.minPlayers,
+        });
+      }
+      return this.$t("tournament.check_in.not_checked_in");
     },
     finalPlacement() {
       if (this.tournament.status !== e_tournament_status_enum.Finished) {
@@ -1001,6 +1093,57 @@ export default {
             : blockedKey
               ? this.$t(blockedKey)
               : message,
+          variant: "destructive",
+        });
+      }
+    },
+    // Organizers set it in every mode while the window is open; no re-seed, so
+    // the teams still confirming keep their place.
+    async setCheckIn(checkedIn: boolean) {
+      try {
+        await this.$apollo.mutate({
+          // The action ships with the api change; zeus only types it after
+          // `yarn codegen` has run against that schema.
+          mutation: generateMutation({
+            setTournamentTeamCheckIn: [
+              {
+                tournament_id: this.tournament.id,
+                tournament_team_id: this.team.id,
+                checked_in: checkedIn,
+              },
+              { success: true },
+            ],
+          } as any),
+        });
+      } catch (error: unknown) {
+        toast({
+          title: checkedIn
+            ? this.$t("tournament.check_in.failed")
+            : this.$t("tournament.check_in.undo_failed"),
+          description: error instanceof Error ? error.message : String(error),
+          variant: "destructive",
+        });
+      }
+    },
+    // After the window, a missed team comes back the way the review does it:
+    // stamped and re-seeded.
+    async readmit() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            readmitTournamentTeam: [
+              {
+                tournament_id: this.tournament.id,
+                tournament_team_id: this.team.id,
+              },
+              { success: true },
+            ],
+          }),
+        });
+      } catch (error: unknown) {
+        toast({
+          title: this.$t("tournament.check_in_review.readmit_failed"),
+          description: error instanceof Error ? error.message : String(error),
           variant: "destructive",
         });
       }

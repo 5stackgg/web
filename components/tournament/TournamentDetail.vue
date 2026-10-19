@@ -2010,11 +2010,26 @@ export default {
     incompleteTeams() {
       return this.visibleTeams.filter((team) => !team.eligible_at);
     },
+    // The same span the team cards show their check-in badge in.
+    checkInFilterVisible() {
+      const registration = this.tournamentRegistration;
+      return (
+        registration?.check_in_required === true &&
+        registration?.check_in_started === true &&
+        !this.tournamentHasStarted
+      );
+    },
+    notCheckedInTeams(): Array<Record<string, any>> {
+      return this.visibleTeams.filter(
+        (team: Record<string, any>) => !team.checked_in_at,
+      );
+    },
     // Return type spelled out because `tournament.teams` is `any`: without it
     // the v-for index below widens to `string | number` (the object-iteration
     // signature) and every numeric use of it fails to type-check.
     filteredTeams(): Array<Record<string, any>> {
       if (this.teamFilter === "incomplete") return this.incompleteTeams;
+      if (this.teamFilter === "not_checked_in") return this.notCheckedInTeams;
       if (this.teamFilter === "ready") {
         return this.visibleTeams.filter((team) => !!team.eligible_at);
       }
@@ -2038,6 +2053,15 @@ export default {
           label: this.$t("tournament.teams_filter.incomplete"),
           count: incomplete,
         },
+        ...(this.checkInFilterVisible
+          ? [
+              {
+                key: "not_checked_in",
+                label: this.$t("tournament.teams_filter.not_checked_in"),
+                count: this.notCheckedInTeams.length,
+              },
+            ]
+          : []),
       ];
     },
     teamsPanelTabs() {
@@ -2495,6 +2519,11 @@ export default {
     },
   },
   watch: {
+    checkInFilterVisible(visible) {
+      if (!visible && this.teamFilter === "not_checked_in") {
+        this.teamFilter = "all";
+      }
+    },
     "tournamentLive.can_open_registration"() {
       this.statusMenuNow = Date.now();
     },

@@ -203,12 +203,12 @@ const canManageBracketReset = computed(
     authStore.isRoleAbove(e_player_roles_enum.administrator),
 );
 
-// The statuses the api still carries a settings change into.
+// A match waiting for a server is past its veto; it moves region from its
+// own page's admin menu, which reassigns its server.
 const SETTINGS_STATUSES = [
   e_match_status_enum.PickingPlayers,
   e_match_status_enum.Scheduled,
   e_match_status_enum.WaitingForCheckIn,
-  e_match_status_enum.WaitingForServer,
 ] as string[];
 
 const canEditMatchSettings = (bracket: Bracket): boolean =>

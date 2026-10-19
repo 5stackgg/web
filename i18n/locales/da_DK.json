@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Kamptype og map pool er låst, når turneringstræet er lavet.",
       "drawn_while_editing": "Turneringstræet blev lavet, mens du redigerede. Kassér dine ændringer af kamptype og map pool, og gem så igen.",
+      "rules_drawn_while_editing": "En fase startede, mens du redigerede, så dens regler er låst. Kassér dine ændringer af dem, og gem igen.",
       "logo": {
         "label": "Logo"
       },

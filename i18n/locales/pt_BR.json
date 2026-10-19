@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "O tipo de partida e o map pool ficam bloqueados depois que o chaveamento é gerado.",
       "drawn_while_editing": "O chaveamento foi gerado enquanto você editava. Descarte as alterações de tipo de partida e map pool e depois salve novamente.",
+      "rules_drawn_while_editing": "Uma fase começou enquanto você editava, então as regras dela estão bloqueadas. Descarte suas alterações nelas e salve novamente.",
       "logo": {
         "label": "Logo"
       },

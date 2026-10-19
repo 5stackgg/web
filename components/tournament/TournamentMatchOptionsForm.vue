@@ -142,6 +142,7 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { toast } from "@/components/ui/toast";
 import {
   keepStoredRules,
+  rulesDiffer,
   setupOptions,
   setupOptionsVariables,
   setupOptionsSetMutation,
@@ -252,9 +253,7 @@ export default {
       return (this.tournament.stages ?? []).some(
         (stage: any) =>
           !stage.options &&
-          (stage.brackets ?? []).some(
-            (bracket: any) => !bracket.match_options_id && !!bracket.match,
-          ),
+          (stage.brackets ?? []).some((bracket: any) => !!bracket.match),
       );
     },
     // Save writes the tournament's match mode from negotiated scheduling for
@@ -389,6 +388,17 @@ export default {
           variant: "destructive",
           title: this.$t("common.error"),
           description: this.$t("tournament.form.drawn_while_editing"),
+        });
+        return;
+      }
+
+      // Substitutes follow the platform setting on this form, not the organizer.
+      const { number_of_substitutes, ...edited } = this.form.values;
+      if (this.rulesLocked && rulesDiffer(edited, this.tournament.options)) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: this.$t("tournament.form.rules_drawn_while_editing"),
         });
         return;
       }

@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Matchtyp och kartpool är låsta när slutspelsträdet har skapats.",
       "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta dina ändringar av matchtyp och kartpool och spara sedan igen.",
+      "rules_drawn_while_editing": "En fas startade medan du redigerade, så dess regler är låsta. Ignorera dina ändringar av dem och spara igen.",
       "logo": {
         "label": "Logotyp"
       },

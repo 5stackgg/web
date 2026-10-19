@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "El tipo de partida y el pool de mapas se bloquean una vez generado el cuadro.",
       "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta tus cambios de tipo de partida y pool de mapas y luego guarda de nuevo.",
+      "rules_drawn_while_editing": "Una fase empezó mientras editabas, así que sus reglas están bloqueadas. Descarta tus cambios en ellas y vuelve a guardar.",
       "logo": {
         "label": "Logo"
       },

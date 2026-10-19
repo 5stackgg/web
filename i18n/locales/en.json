@@ -8953,6 +8953,7 @@
       },
       "map_pool_locked": "Match type and map pool are locked once the bracket is drawn.",
       "drawn_while_editing": "The bracket was drawn while you were editing. Discard your changes to match type and map pool, then save again.",
+      "rules_drawn_while_editing": "A stage started while you were editing, so its rules are locked. Discard your changes to them, then save again.",
       "logo": {
         "label": "Logo"
       },

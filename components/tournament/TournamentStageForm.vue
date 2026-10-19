@@ -949,7 +949,7 @@ import { $ } from "~/generated/zeus";
                 name="tech_timeout_setting"
               >
                 <FormItem
-                  :class="stageRulesLocked && 'pointer-events-none opacity-50'"
+                  :class="ownRulesLocked && 'pointer-events-none opacity-50'"
                 >
                   <SettingHeader>
                     <span class="inline-flex items-center gap-1.5">
@@ -957,7 +957,7 @@ import { $ } from "~/generated/zeus";
                         $t("match.options.advanced.timeouts.technical.label")
                       }}
                       <FiveStackToolTip
-                        v-if="stageRulesLocked"
+                        v-if="ownRulesLocked"
                         as-child
                         :delay-duration="120"
                       >
@@ -1596,6 +1596,9 @@ export default {
     matchModeLocked(): boolean {
       return this.matchSettingsLocked;
     },
+    ownRulesLocked(): boolean {
+      return this.stageRulesLocked && !this.matchSettingsLocked;
+    },
     matchSettingsLockedReason(): string {
       return this.$t("tournament.stage.match_settings_inherited");
     },
@@ -2222,6 +2225,13 @@ export default {
         const settings = this.buildSettings();
 
         if (this.stage && this.structureLocked) {
+          if (
+            !this.stageStarted &&
+            this.changedFields().includes("tech_timeout_setting")
+          ) {
+            this.stageStarted = await this.stageHasDrawnMatches();
+          }
+
           if (this.structureChanged()) {
             toast({
               variant: "destructive",

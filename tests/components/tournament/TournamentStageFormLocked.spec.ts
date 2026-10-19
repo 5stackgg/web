@@ -400,7 +400,7 @@ describe("TournamentStageForm with the structure locked", () => {
     expect(wrapper.emitted("updated")).toHaveLength(1);
   });
 
-  it("refuses a technical timeout change made before its stage started", async () => {
+  it("refuses a technical timeout change once its stage started under the open form", async () => {
     const wrapper = await mountLocked(true, {
       ...tournamentOptions,
       id: "stage-options-1",
@@ -409,7 +409,6 @@ describe("TournamentStageForm with the structure locked", () => {
     await flushPromises();
 
     query.mockResolvedValue(aMatch);
-    await (wrapper.vm as any).refreshStageStarted();
     await (wrapper.vm as any).updateCreateStage();
     await flushPromises();
 

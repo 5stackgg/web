@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Typ meczu i map pool są zablokowane po utworzeniu drabinki.",
       "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany typu meczu i map poolu, a potem zapisz ponownie.",
+      "rules_drawn_while_editing": "Etap rozpoczął się podczas edycji, więc jego zasady są zablokowane. Odrzuć zmiany w zasadach i zapisz ponownie.",
       "logo": {
         "label": "Logo"
       },

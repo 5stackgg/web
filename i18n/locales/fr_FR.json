@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Le type de match et le map pool sont verrouillés une fois l'arbre tiré.",
       "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule tes changements de type de match et de map pool, puis enregistre à nouveau.",
+      "rules_drawn_while_editing": "Une phase a commencé pendant votre modification, ses règles sont donc verrouillées. Annulez vos changements sur celles-ci, puis enregistrez à nouveau.",
       "logo": {
         "label": "Logo"
       },

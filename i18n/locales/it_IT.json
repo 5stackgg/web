@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Il tipo di match e il map pool sono bloccati dopo la generazione del tabellone.",
       "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche a tipo di match e map pool, poi salva di nuovo.",
+      "rules_drawn_while_editing": "Una fase è iniziata mentre modificavi, quindi le sue regole sono bloccate. Annulla le modifiche alle regole, poi salva di nuovo.",
       "logo": {
         "label": "Logo"
       },

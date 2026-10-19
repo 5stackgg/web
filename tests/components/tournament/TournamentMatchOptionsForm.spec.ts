@@ -935,7 +935,29 @@ describe("TournamentMatchOptionsForm rules lock", () => {
     );
   });
 
-  it("sends the stored rules back with a TV delay change", async () => {
+  it("refuses a rule changed before a stage started under the open form", async () => {
+    const wrapper = await mountForm(drawable("Live", { brackets: [seated()] }));
+    (wrapper.vm as any).form.setFieldValue("overtime", false);
+    await flushPromises();
+
+    await wrapper.setProps({
+      tournament: drawable("Live", { brackets: [played()] }),
+    });
+    await flushPromises();
+    await (wrapper.vm as any).save();
+    await flushPromises();
+
+    expect(toastMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variant: "destructive",
+        description:
+          "A stage started while you were editing, so its rules are locked. Discard your changes to them, then save again.",
+      }),
+    );
+    expect(mutate).not.toHaveBeenCalled();
+  });
+
+  it("sends the stored rules back with a TV delay change, not the platform's substitutes", async () => {
     const tournament = drawable("Live", { brackets: [played()], mr: 15 });
     const wrapper = await mountForm({
       ...tournament,
@@ -945,7 +967,6 @@ describe("TournamentMatchOptionsForm rules lock", () => {
         map_veto: false,
       },
     });
-    (wrapper.vm as any).form.setFieldValue("mr", "8");
     (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
     await flushPromises();
 

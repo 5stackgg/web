@@ -45,6 +45,18 @@ const RULE_COLUMNS = [
   "round_restart_delay",
 ];
 
+export function rulesDiffer(
+  values: Record<string, unknown>,
+  stored: Record<string, any>,
+): boolean {
+  return RULE_COLUMNS.some(
+    (column) =>
+      column in values &&
+      column in stored &&
+      String(values[column] ?? "") !== String(stored[column] ?? ""),
+  );
+}
+
 export function keepStoredRules(
   variables: Record<string, unknown>,
   stored: Record<string, any>,

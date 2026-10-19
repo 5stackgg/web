@@ -13,6 +13,37 @@ vi.mock("@/components/ui/toast", async (importOriginal) => ({
 let wrapper: Awaited<ReturnType<typeof mountSuspended>> | undefined;
 let query: ReturnType<typeof vi.fn>;
 
+const loadedMatch = {
+  id: "match-1",
+  status: "Scheduled",
+  is_tournament_match: true,
+  lineup_1: { id: "lineup-1", team_id: "team-1" },
+  lineup_2: { id: "lineup-2", team_id: "team-2" },
+  options: {
+    id: "options-1",
+    type: "Competitive",
+    mr: 12,
+    best_of: 1,
+    map_veto: true,
+    tv_delay: 115,
+    veto_pick_timeout: 60,
+    region_veto: true,
+    regions: [],
+    check_in_setting: "Captains",
+    ready_setting: "Players",
+    timeout_setting: "Admin",
+    tech_timeout_setting: "Admin",
+    match_mode: "auto",
+    knife_round: true,
+    default_models: true,
+    overtime: true,
+    coaches: false,
+    number_of_substitutes: 0,
+    map_pool_id: "pool-1",
+    map_pool: { id: "pool-1", type: "Competitive", maps: [] },
+  },
+};
+
 function bracket(status: string) {
   return {
     id: "bracket-1",
@@ -70,7 +101,7 @@ beforeEach(() => {
     steam_id: "76561198000000001",
     role: e_player_roles_enum.user,
   } as any;
-  query = vi.fn().mockResolvedValue({ data: { matches_by_pk: null } });
+  query = vi.fn().mockResolvedValue({ data: { matches_by_pk: loadedMatch } });
   (useNuxtApp() as any).$apollo.query = query;
 });
 
@@ -84,7 +115,7 @@ afterEach(() => {
 });
 
 describe("bracket match settings", () => {
-  it.each(["PickingPlayers", "Scheduled", "WaitingForCheckIn", "WaitingForServer"])(
+  it.each(["PickingPlayers", "Scheduled", "WaitingForCheckIn"])(
     "offers an organizer the settings of a %s match",
     async (status) => {
       await mountCard(status);
@@ -95,7 +126,7 @@ describe("bracket match settings", () => {
     },
   );
 
-  it.each(["Veto", "Live", "Finished"])(
+  it.each(["Veto", "WaitingForServer", "Live", "Finished"])(
     "leaves them to the match page once the match is %s",
     async (status) => {
       await mountCard(status);
@@ -106,17 +137,35 @@ describe("bracket match settings", () => {
     },
   );
 
-  it("opens them beside the bracket, for that match", async () => {
-    await mountCard("Scheduled");
+  async function openSettings() {
     await openMenu();
     menuItem("Match Settings")!.click();
     await flushPromises();
+    return document.body.querySelector('[role="dialog"]');
+  }
 
-    const sheet = document.body.querySelector('[role="dialog"]');
+  it("opens them beside the bracket, for that match, with its rules locked", async () => {
+    await mountCard("Scheduled");
+    const sheet = await openSettings();
+
     expect(sheet?.textContent).toContain("Match Settings");
     expect(sheet?.textContent).toContain("Iron Wolves vs Night Owls");
+    expect(sheet?.textContent).toContain("Rules locked");
     expect(query).toHaveBeenCalledWith(
       expect.objectContaining({ variables: { matchId: "match-1" } }),
     );
+  });
+
+  it("loads the match again each time they open", async () => {
+    await mountCard("Scheduled");
+    const sheet = await openSettings();
+    sheet!
+      .querySelector<HTMLElement>("button.absolute.right-4")!
+      .click();
+    await flushPromises();
+
+    await openSettings();
+
+    expect(query).toHaveBeenCalledTimes(2);
   });
 });

@@ -116,12 +116,32 @@ describe("MatchForm on a tournament match", () => {
     expect(lockedWith(wrapper, "Region Settings")).toBe(false);
   });
 
-  it("shows the stored rules instead of the match type's defaults", async () => {
+  it("keeps the stored pool instead of the match type's seeded one", async () => {
     const wrapper = await mountForm(match(true));
-    const values = (wrapper.vm as any).form.values;
 
-    expect(values.mr).toBe("15");
-    expect(values.map_pool_id).toBe("stale-seed-pool");
+    expect((wrapper.vm as any).form.values.map_pool_id).toBe("stale-seed-pool");
+  });
+
+  it("locks the best-of, map veto and match type too", async () => {
+    const wrapper = await mountForm(match(true));
+    const bestOf = wrapper
+      .findAll("button[role='combobox']")
+      .find((trigger) => trigger.text().includes("Best of 3"));
+    const mapVeto = wrapper
+      .findAll("button[role='switch']")
+      .find((toggle) =>
+        toggle.element.closest(".space-y-2")?.textContent?.includes("Map Veto"),
+      );
+    const types = wrapper
+      .findAll("button")
+      .filter((button) => ["Competitive", "Wingman"].includes(button.text()));
+
+    expect(bestOf?.attributes("disabled")).toBeDefined();
+    expect(mapVeto?.attributes("disabled")).toBeDefined();
+    expect(types.length).toBeGreaterThan(0);
+    for (const type of types) {
+      expect(type.attributes("disabled")).toBeDefined();
+    }
   });
 
   it("sends the stored rules back with a TV delay change, whatever the form holds", async () => {

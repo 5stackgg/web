@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Fikstür çekildikten sonra maç türü ve harita havuzu kilitlenir.",
       "drawn_while_editing": "Sen düzenlerken fikstür çekildi. Maç türü ve harita havuzundaki değişikliklerini at, sonra yeniden kaydet.",
+      "rules_drawn_while_editing": "Siz düzenlerken bir etap başladı, bu yüzden kuralları kilitlendi. Kurallardaki değişikliklerinizi atın, sonra yeniden kaydedin.",
       "logo": {
         "label": "Logo"
       },

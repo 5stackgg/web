@@ -68,6 +68,12 @@ export default {
         this.load();
       },
     },
+    open(open: boolean) {
+      if (open) {
+        this.match = null;
+        this.load();
+      }
+    },
   },
   methods: {
     async load() {

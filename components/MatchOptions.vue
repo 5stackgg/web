@@ -461,19 +461,16 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                   {{ $t("match.options.advanced.rush_fixed_rules") }}
                 </p>
                 <fieldset
+                  v-if="!isRush"
                   :disabled="lockRules"
                   class="min-w-0 space-y-6"
                   :class="lockedRuleClass"
                 >
-                  <FormField
-                    v-if="!isRush"
-                    v-slot="{ value, handleChange }"
-                    name="overtime"
-                  >
+                  <FormField v-slot="{ value, handleChange }" name="overtime">
                     <FormItem>
                       <div
                         class="flex flex-row items-center justify-between cursor-pointer"
-                        @click="handleChange(!value)"
+                        @click="!lockRules && handleChange(!value)"
                       >
                         <div class="space-y-0.5">
                           <SettingHeader>{{
@@ -498,14 +495,13 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                   </FormField>
 
                   <FormField
-                    v-if="!isRush"
                     v-slot="{ value, handleChange }"
                     name="knife_round"
                   >
                     <FormItem>
                       <div
                         class="flex flex-row items-center justify-between cursor-pointer"
-                        @click="handleChange(!value)"
+                        @click="!lockRules && handleChange(!value)"
                       >
                         <div class="space-y-0.5">
                           <SettingHeader>{{
@@ -531,11 +527,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                     </FormItem>
                   </FormField>
 
-                  <FormField
-                    v-if="!isRush"
-                    v-slot="{ componentField }"
-                    name="mr"
-                  >
+                  <FormField v-slot="{ componentField }" name="mr">
                     <FormItem>
                       <SettingHeader>{{
                         $t("match.options.advanced.max_rounds.label")
@@ -1003,7 +995,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                     <FormItem>
                       <div
                         class="flex flex-row items-center justify-between cursor-pointer"
-                        @click="handleChange(!value)"
+                        @click="!lockRules && handleChange(!value)"
                       >
                         <div class="space-y-0.5">
                           <SettingHeader>{{
@@ -1496,7 +1488,10 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
             >
               <FormField v-slot="{ value, handleChange }" name="default_models">
                 <FormItem>
-                  <Card class="cursor-pointer" @click="handleChange(!value)">
+                  <Card
+                    class="cursor-pointer"
+                    @click="!lockRules && handleChange(!value)"
+                  >
                     <div class="flex flex-col space-y-3 p-4">
                       <div class="flex justify-between items-center">
                         <SettingHeader>{{
@@ -1800,7 +1795,7 @@ export default {
     ["form.values.type"]: {
       handler(type, previousType) {
         // Locked, the type only changes when the stored options load in, and
-        // their max rounds and maps must not be swapped for the type's defaults.
+        // their max rounds and maps must not become the type's defaults.
         if (this.lockRules) {
           return;
         }

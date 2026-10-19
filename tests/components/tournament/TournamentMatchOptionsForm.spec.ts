@@ -957,6 +957,47 @@ describe("TournamentMatchOptionsForm rules lock", () => {
     expect(mutate).not.toHaveBeenCalled();
   });
 
+  it("saves a TV delay change on a locked tournament loaded with every column", async () => {
+    const tournament = drawable("Live", { brackets: [played()] });
+    const row = {
+      ...tournament.options,
+      auto_cancellation: true,
+      auto_cancel_duration: null,
+      live_match_timeout: null,
+      round_restart_delay: null,
+      halftime_pausematch: true,
+      camera_required: false,
+      camera_allow_teammates: false,
+      game_mode_id: null,
+      prefer_dedicated_server: false,
+      map_pool: { ...customPool, e_type: { description: "Custom" } },
+    };
+    const wrapper = await mountForm({
+      ...tournament,
+      options: selected(row, matchOptionsFields) as typeof row,
+    });
+    (wrapper.vm as any).form.setFieldValue("tv_delay", 30);
+    await flushPromises();
+
+    await (wrapper.vm as any).save();
+    await flushPromises();
+
+    expect(toastMock).not.toHaveBeenCalledWith(
+      expect.objectContaining({ variant: "destructive" }),
+    );
+    const update = mutate.mock.calls
+      .map(([options]: [any]) => ({
+        body: print(options.mutation),
+        variables: options.variables ?? {},
+      }))
+      .find(({ body }) => body.includes("update_match_options_by_pk"));
+    expect(update?.variables).toMatchObject({
+      tv_delay: 30,
+      halftime_pausematch: true,
+      round_restart_delay: null,
+    });
+  });
+
   it("sends the stored rules back with a TV delay change, not the platform's substitutes", async () => {
     const tournament = drawable("Live", { brackets: [played()], mr: 15 });
     const wrapper = await mountForm({

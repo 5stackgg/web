@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "返回联赛",
       "my_team": "我的队伍",
-      "my_team_hint": "管理您的阵容、邀请以及此赛事的准备状态。",
       "roster_section": "阵容",
       "no_teams_yet": "暂无队伍。",
       "about_section": "简介",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "符合条件",
-      "not_eligible": "不符合条件",
-      "need_players": "还需要 {count} 名玩家 | 还需要 {count} 名玩家",
-      "missed_check_in": "错过签到",
+      "status": {
+        "ready": "已就绪",
+        "not_eligible": "不符合条件",
+        "needs_players": "还需要 {count} 名玩家 | 还需要 {count} 名玩家",
+        "checked_in": "已签到",
+        "not_checked_in": "未签到",
+        "missed": "错过签到"
+      },
       "leave_tournament": "离开赛事",
       "leave_team": "离开队伍",
       "slot": "第 {number} 号位",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "全部",
       "ready": "已就绪",
+      "checked_in": "已签到",
       "incomplete": "人数不足",
       "not_checked_in": "未签到",
+      "missed": "错过",
       "no_matches": "没有符合此筛选条件的战队",
       "collapse": "收起",
-      "expand": "展开",
-      "collapse_all": "全部收起",
-      "expand_all": "全部展开"
+      "expand": "展开"
+    },
+    "teams_ledger": {
+      "search": "搜索队伍或玩家",
+      "seed": "种子",
+      "team": "队伍",
+      "players": "玩家",
+      "status": "状态",
+      "sort_by": "按{column}排序"
     },
     "matches_filter": {
       "live": "进行中",
@@ -9539,10 +9550,12 @@
       "admin_hint": "本赛事中选手无法自行签到。请在窗口关闭前把每支队伍标记为已到场。",
       "check_in": "签到",
       "mark_present": "标记为已到场",
+      "present": "已到场",
+      "absent": "未到场",
+      "present_label": "{team} 已到场",
       "checked_in": "已签到",
       "checked_in_at": "已签到 · {time}",
       "waiting": "等待中",
-      "not_checked_in": "未签到",
       "not_needed": "无需签到",
       "role_captain": "队长",
       "role_starter": "首发",

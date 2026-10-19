@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Назад к лиге",
       "my_team": "Моя команда",
-      "my_team_hint": "Управляй составом, приглашениями и готовностью команды к турниру.",
       "roster_section": "Состав",
       "no_teams_yet": "Пока нет команд",
       "about_section": "О турнире",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Допущена",
-      "not_eligible": "Не допущена",
-      "need_players": "Не хватает игроков: {count} | Не хватает игроков: {count}",
-      "missed_check_in": "Чек-ин пропущен",
+      "status": {
+        "ready": "Готова",
+        "not_eligible": "Не допущена",
+        "needs_players": "Не хватает игроков: {count} | Не хватает игроков: {count}",
+        "checked_in": "Отметилась",
+        "not_checked_in": "Не отметилась",
+        "missed": "Пропустила отметку"
+      },
       "leave_tournament": "Покинуть турнир",
       "leave_team": "Покинуть команду",
       "slot": "Слот {number}",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "Все",
       "ready": "Готовы",
+      "checked_in": "Отметились",
       "incomplete": "Не хватает игроков",
       "not_checked_in": "Не отметились",
+      "missed": "Пропустили",
       "no_matches": "Ни одна команда не подходит под этот фильтр",
       "collapse": "Свернуть",
-      "expand": "Развернуть",
-      "collapse_all": "Свернуть всё",
-      "expand_all": "Развернуть всё"
+      "expand": "Развернуть"
+    },
+    "teams_ledger": {
+      "search": "Поиск команд или игроков",
+      "seed": "Посев",
+      "team": "Команда",
+      "players": "Игроки",
+      "status": "Статус",
+      "sort_by": "Сортировать: {column}"
     },
     "matches_filter": {
       "live": "В эфире",
@@ -9539,10 +9550,12 @@
       "admin_hint": "В этом турнире игроки не могут отметиться сами. Отметь каждую команду как явившуюся до закрытия окна.",
       "check_in": "Отметиться",
       "mark_present": "Отметить как явившуюся",
+      "present": "На месте",
+      "absent": "Отсутствует",
+      "present_label": "{team} на месте",
       "checked_in": "отметился",
       "checked_in_at": "отметился · {time}",
       "waiting": "ожидает",
-      "not_checked_in": "не отметился",
       "not_needed": "не требуется",
       "role_captain": "капитан",
       "role_starter": "основа",

@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "العودة إلى الدوري",
       "my_team": "فريقي",
-      "my_team_hint": "أدر قائمة اللاعبين والدعوات والجاهزية لهذه البطولة.",
       "roster_section": "قائمة اللاعبين",
       "no_teams_yet": "لا توجد فرق بعد",
       "about_section": "نبذة",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "مؤهل",
-      "not_eligible": "غير مؤهل",
-      "need_players": "تحتاج إلى {count} لاعب إضافي | تحتاج إلى {count} لاعبين إضافيين",
-      "missed_check_in": "تأكيد حضور فائت",
+      "status": {
+        "ready": "جاهز",
+        "not_eligible": "غير مؤهل",
+        "needs_players": "يحتاج إلى {count} لاعب | يحتاج إلى {count} لاعبين",
+        "checked_in": "أكد الحضور",
+        "not_checked_in": "لم يؤكد الحضور",
+        "missed": "فاته تأكيد الحضور"
+      },
       "leave_tournament": "غادر البطولة",
       "leave_team": "غادر الفريق",
       "slot": "الخانة {number}",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "الكل",
       "ready": "جاهزة",
+      "checked_in": "أكدوا الحضور",
       "incomplete": "تحتاج لاعبين",
       "not_checked_in": "لم يؤكد الحضور",
+      "missed": "فاتهم",
       "no_matches": "لا توجد فرق تطابق هذا المرشّح",
       "collapse": "طي",
-      "expand": "توسيع",
-      "collapse_all": "طي الكل",
-      "expand_all": "توسيع الكل"
+      "expand": "توسيع"
+    },
+    "teams_ledger": {
+      "search": "ابحث عن فرق أو لاعبين",
+      "seed": "التصنيف",
+      "team": "الفريق",
+      "players": "اللاعبون",
+      "status": "الحالة",
+      "sort_by": "رتّب حسب {column}"
     },
     "matches_filter": {
       "live": "مباشر",
@@ -9539,10 +9550,12 @@
       "admin_hint": "لا يستطيع اللاعبون تأكيد حضورهم بأنفسهم في هذه البطولة. ضع كل فريق كحاضر قبل إغلاق النافذة.",
       "check_in": "أكّد الحضور",
       "mark_present": "ضع كحاضر",
+      "present": "حاضر",
+      "absent": "غائب",
+      "present_label": "{team} حاضر",
       "checked_in": "تم تأكيد الحضور",
       "checked_in_at": "تم تأكيد الحضور · {time}",
       "waiting": "بالانتظار",
-      "not_checked_in": "لم يؤكد الحضور",
       "not_needed": "غير مطلوب",
       "role_captain": "قائد",
       "role_starter": "أساسي",

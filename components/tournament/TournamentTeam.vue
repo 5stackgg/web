@@ -11,16 +11,14 @@ import {
 } from "~/components/ui/popover";
 import { Label } from "~/components/ui/label";
 import {
-  CheckCircle2,
-  Minimize,
-  Maximize,
+  ChevronRight,
   LogOut,
   Trash2,
-  Undo2,
   UserMinus,
   UserPlus,
   Pencil,
 } from "lucide-vue-next";
+import { Switch } from "~/components/ui/switch";
 import { Spinner } from "~/components/ui/spinner";
 import {
   AlertDialog,
@@ -34,339 +32,200 @@ import {
 } from "~/components/ui/alert-dialog";
 import { toast } from "~/components/ui/toast";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { teamLedgerColumns } from "~/components/tournament/teamLedger";
 </script>
 
 <template>
-  <div v-if="team && e_team_roles" class="flex flex-col">
-    <!-- Status on the left, controls on the right. On phones the badges and
-         actions run under the avatar at the card's full width. -->
-    <header
-      class="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-x-3 gap-y-2.5 sm:grid-cols-[auto_minmax(0,1fr)_auto_auto_auto] sm:gap-y-1.5"
+  <div
+    v-if="team && e_team_roles"
+    class="relative"
+    :class="{
+      'before:absolute before:inset-y-0 before:left-0 before:z-10 before:w-[3px] before:bg-[hsl(var(--tac-amber))] before:content-[\'\']':
+        mine,
+    }"
+  >
+    <!-- The whole row toggles for a pointer; the chevron is the control
+         keyboards and screen readers get. -->
+    <div
+      class="grid cursor-pointer grid-cols-[minmax(0,1fr)_auto_1rem] items-center gap-3 px-3 py-2.5 transition-colors duration-150 hover:bg-muted/20 md:min-h-14 md:gap-4 md:px-4 md:py-2"
+      :class="teamLedgerColumns"
+      @click="$emit('toggle')"
     >
-      <div
-        class="col-start-1 row-start-1 h-10 w-10 shrink-0 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden sm:row-span-2 sm:h-12 sm:w-12"
+      <span
+        class="hidden font-mono text-sm tabular-nums text-muted-foreground md:block"
       >
-        <img
-          v-if="teamAvatarSrc"
-          :src="teamAvatarSrc"
-          :alt="displayName"
-          class="h-full w-full object-cover"
-        />
+        {{ team.seed ?? "–" }}
+      </span>
+
+      <span class="flex min-w-0 items-center gap-3">
         <span
-          v-else
-          class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+          class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)]"
         >
-          {{ (displayShortName || displayName || "?").slice(0, 3) }}
-        </span>
-      </div>
-      <h2
-        class="group/identity col-start-2 row-start-1 min-w-0 font-sans text-[1.15rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15] flex items-center gap-2 sm:text-[1.35rem]"
-      >
-        <NuxtLink
-          v-if="team.team?.id"
-          :to="`/teams/${team.team.id}`"
-          class="hover:text-[hsl(var(--tac-amber))] transition-colors"
-        >
-          {{ displayName }}
-        </NuxtLink>
-        <template v-else>
-          {{ displayName }}
-        </template>
-        <span
-          v-if="displayShortName"
-          class="max-sm:hidden px-2 py-[0.1rem] font-mono text-[0.7rem] font-bold tracking-[0.18em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
-        >
-          {{ displayShortName }}
-        </span>
-        <Popover
-          v-if="canEditIdentity"
-          v-model:open="isEditingIdentity"
-          @update:open="onIdentityPopoverToggle"
-        >
-          <PopoverTrigger as-child>
-            <Button
-              variant="ghost"
-              size="icon"
-              class="h-6 w-6 text-muted-foreground hover:text-[hsl(var(--tac-amber))] opacity-0 group-hover/identity:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 data-[state=open]:text-[hsl(var(--tac-amber))] transition-opacity"
-              :title="$t('common.actions.edit')"
-            >
-              <Pencil class="h-3.5 w-3.5" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            :side-offset="8"
-            class="w-[320px] p-0"
-            @open-auto-focus="onIdentityPopoverOpenAutoFocus"
-            @escape-key-down="cancelEditIdentity"
+          <img
+            v-if="teamAvatarSrc"
+            :src="teamAvatarSrc"
+            :alt="displayName"
+            class="h-full w-full object-cover"
+          />
+          <span
+            v-else
+            class="font-mono text-[0.6rem] font-bold uppercase tracking-[0.08em] text-[hsl(var(--tac-amber))]"
           >
-            <form
-              class="flex flex-col gap-3 p-4"
-              @submit.prevent="saveIdentity"
+            {{ (displayShortName || displayName || "?").slice(0, 4) }}
+          </span>
+        </span>
+        <span class="grid min-w-0 gap-0.5">
+          <NuxtLink
+            v-if="team.team?.id"
+            :to="`/teams/${team.team.id}`"
+            class="truncate font-semibold text-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+            @click.stop
+          >
+            {{ displayName }}
+          </NuxtLink>
+          <span v-else class="truncate font-semibold text-foreground">
+            {{ displayName }}
+          </span>
+          <span
+            class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground"
+          >
+            <!-- Without a logo the avatar already shows the tag. -->
+            <span
+              v-if="displayShortName && teamAvatarSrc"
+              class="font-semibold tracking-[0.06em]"
             >
-              <div
-                class="inline-flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground"
+              {{ displayShortName }}
+            </span>
+            <span
+              v-if="mine"
+              class="rounded border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 font-semibold text-[hsl(var(--tac-amber))]"
+            >
+              {{ $t("tournament.page.my_team") }}
+            </span>
+            <!-- Phones fold the status and player count under the name. -->
+            <span
+              v-if="ledgerStatus"
+              class="inline-flex items-center gap-1.5 whitespace-nowrap before:h-1.5 before:w-1.5 before:shrink-0 before:rounded-full before:content-[''] md:hidden"
+              :class="statusToneClasses"
+            >
+              {{ statusLabel }}
+              <time
+                v-if="checkedInClock"
+                class="font-mono text-muted-foreground"
               >
-                <span
-                  class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
-                ></span>
-                {{ $t("team.form.identity") }}
-              </div>
+                {{ checkedInClock }}
+              </time>
+            </span>
+            <span class="font-mono tabular-nums md:hidden">
+              {{ team.roster.length }}/{{ requiredPlayers }}
+            </span>
+          </span>
+        </span>
+      </span>
 
-              <div class="flex flex-col gap-1.5">
-                <Label
-                  for="tournament-team-name"
-                  class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  {{ $t("common.team_name") }}
-                </Label>
-                <Input
-                  id="tournament-team-name"
-                  ref="nameInput"
-                  v-model="editName"
-                  :placeholder="$t('team.form.name_placeholder')"
-                  maxlength="40"
-                  :disabled="savingIdentity"
-                  class="h-9"
-                  @keydown.enter.prevent="saveIdentity"
-                />
-              </div>
+      <span class="hidden items-center gap-2.5 md:flex">
+        <span class="flex items-center">
+          <span
+            v-for="member in faces"
+            :key="member.player.steam_id"
+            :title="member.player.name"
+            class="-ml-1.5 flex h-[1.375rem] w-[1.375rem] items-center justify-center overflow-hidden rounded-full bg-muted text-[0.6rem] font-bold uppercase text-muted-foreground ring-2 ring-background first:ml-0"
+          >
+            <img
+              v-if="playerAvatarSrc(member.player)"
+              :src="playerAvatarSrc(member.player) ?? undefined"
+              alt=""
+              class="h-full w-full object-cover"
+            />
+            <template v-else>{{
+              (member.player.name || "?").slice(0, 1)
+            }}</template>
+          </span>
+          <span
+            v-for="slot in openFaces"
+            :key="`open-${slot}`"
+            class="-ml-1.5 h-[1.375rem] w-[1.375rem] rounded-full border border-dashed border-muted-foreground/50 bg-background first:ml-0"
+          ></span>
+        </span>
+        <span class="font-mono text-xs tabular-nums text-muted-foreground">
+          {{ team.roster.length }}/{{ requiredPlayers }}
+        </span>
+      </span>
 
-              <div class="flex flex-col gap-1.5">
-                <Label
-                  for="tournament-team-tag"
-                  class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  {{ $t("team.form.short_name") }}
-                </Label>
-                <Input
-                  id="tournament-team-tag"
-                  v-model="editShortName"
-                  :placeholder="$t('team.form.short_name')"
-                  maxlength="5"
-                  :disabled="savingIdentity"
-                  class="h-9 uppercase tracking-[0.18em] font-mono"
-                  @input="onShortNameInput"
-                  @keydown.enter.prevent="saveIdentity"
-                />
-              </div>
-
-              <p
-                v-if="identityError"
-                class="font-mono text-[0.65rem] uppercase tracking-[0.15em] text-destructive"
-              >
-                {{ identityError }}
-              </p>
-
-              <div class="flex items-center justify-end gap-2 pt-1">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  :disabled="savingIdentity"
-                  @click="cancelEditIdentity"
-                >
-                  {{ $t("common.cancel") }}
-                </Button>
-                <Button
-                  variant="tactical"
-                  type="submit"
-                  size="sm"
-                  :disabled="!canSaveIdentity"
-                  :loading="savingIdentity"
-                >
-                  <Spinner v-if="savingIdentity" class="mr-1 h-4 w-4" />
-                  {{ $t("common.save") }}
-                </Button>
-              </div>
-            </form>
-          </PopoverContent>
-        </Popover>
-      </h2>
-
-      <div
-        class="col-span-4 col-start-1 row-start-2 flex items-center gap-2 flex-wrap sm:col-span-1 sm:col-start-2"
-      >
+      <span class="hidden min-w-0 md:block">
         <span
-          v-if="finalPlacement"
+          v-if="ledgerStatus"
+          data-team-status
+          class="inline-flex items-center gap-2 whitespace-nowrap text-sm before:h-[7px] before:w-[7px] before:shrink-0 before:rounded-full before:content-['']"
+          :class="statusToneClasses"
+        >
+          {{ statusLabel }}
+          <time
+            v-if="checkedInClock"
+            class="font-mono text-xs text-muted-foreground"
+          >
+            {{ checkedInClock }}
+          </time>
+        </span>
+        <span
+          v-else-if="finalPlacement"
           class="inline-flex h-6 items-center gap-[0.4rem] px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
           :style="placementBadgeStyle"
         >
           <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
           {{ ordinal(finalPlacement) }}
         </span>
+      </span>
 
-        <span
-          v-if="showEligibilityBadge"
-          class="inline-flex h-6 items-center gap-[0.4rem] px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
-          :class="
-            team.eligible_at
-              ? 'text-success bg-success/10 border-success/40'
-              : 'text-destructive bg-destructive/10 border-destructive/35'
-          "
-        >
-          <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
-          <Transition
-            mode="out-in"
-            enter-active-class="transition-opacity duration-150 ease-out motion-reduce:!duration-0"
-            leave-active-class="transition-opacity duration-100 ease-in motion-reduce:!duration-0"
-            enter-from-class="opacity-0"
-            leave-to-class="opacity-0"
-          >
-            <span :key="eligibilityLabel">{{ eligibilityLabel }}</span>
-          </Transition>
-        </span>
-
-        <span
-          v-if="checkInState"
-          class="inline-flex h-6 items-center gap-[0.4rem] whitespace-nowrap px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
-          :class="{
-            'text-success bg-success/10 border-success/40':
-              checkInState === 'checked_in',
-            'text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)] border-[hsl(var(--tac-amber)/0.4)]':
-              checkInState === 'waiting',
-            'text-destructive bg-destructive/10 border-destructive/35':
-              checkInState === 'missed',
-          }"
-        >
-          <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
-          <Transition
-            mode="out-in"
-            enter-active-class="transition-opacity duration-150 ease-out motion-reduce:!duration-0"
-            leave-active-class="transition-opacity duration-100 ease-in motion-reduce:!duration-0"
-            enter-from-class="opacity-0"
-            leave-to-class="opacity-0"
-          >
-            <span :key="checkInLabel">{{ checkInLabel }}</span>
-          </Transition>
-        </span>
-
-        <span
-          v-if="!canEditSeed && team.seed"
-          class="inline-flex h-6 items-center px-2 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
-        >
-          {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
-        </span>
-
+      <span class="flex justify-end" @click.stop>
         <label
-          v-if="canEditSeed"
-          class="group/seed inline-flex h-6 items-center overflow-hidden rounded border border-border bg-muted/30 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-muted-foreground transition-colors focus-within:border-[hsl(var(--tac-amber)/0.6)] hover:border-[hsl(var(--tac-amber)/0.4)]"
+          v-if="checkInControl === 'switch'"
+          class="inline-flex cursor-pointer items-center gap-2 text-xs font-medium"
+          :class="team.checked_in_at ? 'text-success' : 'text-muted-foreground'"
         >
-          <span class="pl-2 pr-[0.45rem]">
-            {{ $t("tournament.team.seed_label") }}
-          </span>
-          <input
-            type="number"
-            min="1"
-            inputmode="numeric"
-            autocomplete="off"
-            placeholder="—"
-            class="seed-input h-full w-9 border-l border-border bg-transparent text-center font-mono text-[0.7rem] font-bold tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 group-focus-within/seed:border-[hsl(var(--tac-amber)/0.6)]"
-            :value="team.seed ?? ''"
-            @input="onSeedChange(($event.target as HTMLInputElement).value)"
+          <Switch
+            :model-value="!!team.checked_in_at"
+            :aria-label="
+              $t('tournament.check_in.present_label', { team: displayName })
+            "
+            class="data-[state=checked]:bg-success"
+            @update:model-value="(value: boolean) => setCheckIn(value)"
           />
+          {{
+            team.checked_in_at
+              ? $t("tournament.check_in.present")
+              : $t("tournament.check_in.absent")
+          }}
         </label>
-      </div>
-
-      <div
-        class="col-start-3 row-start-1 inline-flex h-8 items-center px-[0.7rem] font-mono tabular-nums border border-border rounded bg-muted/20 sm:col-start-4 sm:row-span-2"
-      >
-        <span class="inline-flex items-baseline gap-[0.2rem]">
-          <span class="text-base font-bold text-foreground">
-            {{ team.roster.length }}
-          </span>
-          <span class="text-muted-foreground/50">/</span>
-          <span class="text-[0.85rem] text-muted-foreground">
-            {{ requiredPlayers }}
-          </span>
-        </span>
-      </div>
-
-      <div
-        v-if="hasHeaderActions"
-        class="col-span-4 col-start-1 row-start-3 flex items-center justify-end gap-2 sm:col-span-1 sm:col-start-3 sm:row-span-2 sm:row-start-1 sm:gap-3"
-      >
         <Button
-          v-if="checkInAction === 'mark'"
+          v-else-if="checkInControl === 'readmit'"
           variant="outline"
           size="sm"
-          class="h-8 max-sm:mr-auto"
-          @click="setCheckIn(true)"
-        >
-          <CheckCircle2 class="mr-1.5 h-4 w-4" />
-          {{ $t("tournament.check_in.mark_present") }}
-        </Button>
-        <Button
-          v-else-if="checkInAction === 'undo'"
-          variant="outline"
-          size="sm"
-          class="h-8 max-sm:mr-auto"
-          @click="setCheckIn(false)"
-        >
-          <Undo2 class="mr-1.5 h-4 w-4" />
-          {{ $t("common.undo") }}
-        </Button>
-        <Button
-          v-else-if="checkInAction === 'readmit'"
-          variant="outline"
-          size="sm"
-          class="h-8 max-sm:mr-auto"
+          class="h-8"
           @click="readmit"
         >
           <UserPlus class="mr-1.5 h-4 w-4" />
           {{ $t("tournament.check_in_review.readmit") }}
         </Button>
+      </span>
 
-        <Button
-          v-if="!tournament.is_organizer && canLeaveTournament"
-          variant="outline"
-          size="sm"
-          class="h-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
-          @click="leaveTournament"
-        >
-          <LogOut class="mr-1.5 h-4 w-4" />
-          {{ $t("tournament.team.leave_tournament") }}
-        </Button>
-
-        <Button
-          v-if="tournament.is_organizer && canRemoveTeam"
-          variant="outline"
-          size="icon"
-          class="h-8 w-8 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
-          :title="$t('tournament.tournament_team.remove')"
-          @click="removeTeamDialog = true"
-        >
-          <Trash2 class="h-4 w-4" />
-        </Button>
-      </div>
-
-      <Button
-        v-if="collapsible"
-        variant="outline"
-        size="icon"
-        class="col-start-4 row-start-1 h-8 w-8 sm:col-start-5 sm:row-span-2"
-        :title="
-          collapsed
-            ? $t('tournament.teams_filter.expand')
-            : $t('tournament.teams_filter.collapse')
+      <button
+        type="button"
+        class="flex h-4 w-4 items-center justify-center rounded-sm text-muted-foreground"
+        :aria-expanded="expanded"
+        :aria-label="
+          expanded
+            ? $t('tournament.teams_filter.collapse')
+            : $t('tournament.teams_filter.expand')
         "
-        @click="$emit('toggle-collapsed')"
+        @click.stop="$emit('toggle')"
       >
-        <Transition
-          mode="out-in"
-          enter-active-class="transition-[opacity,transform] duration-150 ease-out motion-reduce:!duration-0"
-          leave-active-class="transition-[opacity,transform] duration-100 ease-in motion-reduce:!duration-0"
-          enter-from-class="opacity-0 scale-90 motion-reduce:scale-100"
-          leave-to-class="opacity-0 scale-90 motion-reduce:scale-100"
-        >
-          <component
-            :is="collapsed ? Maximize : Minimize"
-            :key="collapsed ? 'expand' : 'collapse'"
-            class="h-4 w-4"
-          />
-        </Transition>
-      </Button>
-    </header>
+        <ChevronRight
+          class="h-4 w-4 transition-transform duration-200 ease-out motion-reduce:transition-none"
+          :class="{ 'rotate-90': expanded }"
+        />
+      </button>
+    </div>
 
     <AlertDialog
       :open="removeTeamDialog"
@@ -398,20 +257,15 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
     </AlertDialog>
 
     <Transition name="collapse">
-      <div v-if="team.roster && !collapsed" class="grid grid-rows-[1fr]">
+      <div v-if="team.roster && expanded" class="grid grid-rows-[1fr]">
         <div class="overflow-hidden">
-          <div class="flex flex-col gap-[0.85rem] pt-4">
-            <div
-              class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.24em] uppercase text-muted-foreground"
-            >
-              <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
-              {{ $t("common.player") }}
-            </div>
-
+          <div
+            class="flex flex-col gap-[0.85rem] border-t border-border/60 bg-muted/10 px-3 pb-4 pt-3 md:pl-[4.25rem] md:pr-4"
+          >
             <TransitionGroup
               name="roster-row"
               tag="div"
-              class="relative flex flex-col gap-2"
+              class="relative flex flex-col divide-y divide-border/50"
             >
               <TournamentTeamMemberRow
                 v-for="member in team.roster"
@@ -442,11 +296,6 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
                   @selected="addMember"
                 >
                   <button type="button" class="roster-slot roster-slot--open">
-                    <span class="roster-slot__index font-mono">
-                      {{
-                        (slot + team.roster.length).toString().padStart(2, "0")
-                      }}
-                    </span>
                     <span class="roster-slot__avatar">
                       <UserPlus class="h-4 w-4" />
                     </span>
@@ -457,11 +306,7 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
                 </PlayerSearch>
 
                 <div v-else class="roster-slot">
-                  <span class="roster-slot__index font-mono">
-                    {{
-                      (slot + team.roster.length).toString().padStart(2, "0")
-                    }}
-                  </span>
+                  <span class="roster-slot__avatar"></span>
                   <span class="roster-slot__label">
                     {{
                       $t("tournament.team.slot", {
@@ -475,23 +320,16 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
             <div
               v-if="team.invites && team.invites.length > 0"
-              class="mt-2 flex flex-col gap-2"
+              class="flex flex-col gap-1"
             >
-              <div
-                class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.24em] uppercase text-muted-foreground/70"
-              >
-                <span class="w-2 h-[2px] bg-muted-foreground/50"></span>
+              <div class="text-xs text-muted-foreground">
                 {{ $t("tournament.team.pending_invites") }}
-                <span
-                  class="px-[0.4rem] py-[0.02rem] bg-muted/40 text-muted-foreground rounded-full text-[0.6rem]"
-                >
-                  {{ team.invites.length }}
-                </span>
+                <span class="tabular-nums">· {{ team.invites.length }}</span>
               </div>
               <TransitionGroup
                 name="roster-row"
                 tag="div"
-                class="relative flex flex-col gap-2"
+                class="relative flex flex-col divide-y divide-border/50"
               >
                 <TournamentTeamInvite
                   v-for="invite in team.invites"
@@ -499,6 +337,152 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
                   :invite="invite"
                 ></TournamentTeamInvite>
               </TransitionGroup>
+            </div>
+
+            <div v-if="hasRowTools" class="flex flex-wrap items-center gap-2">
+              <Popover
+                v-if="canEditIdentity"
+                v-model:open="isEditingIdentity"
+                @update:open="onIdentityPopoverToggle"
+              >
+                <PopoverTrigger as-child>
+                  <Button variant="outline" size="sm" class="h-8">
+                    <Pencil class="mr-1.5 h-4 w-4" />
+                    {{ $t("common.actions.edit") }}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  :side-offset="8"
+                  class="w-[320px] p-0"
+                  @open-auto-focus="onIdentityPopoverOpenAutoFocus"
+                  @escape-key-down="cancelEditIdentity"
+                >
+                  <form
+                    class="flex flex-col gap-3 p-4"
+                    @submit.prevent="saveIdentity"
+                  >
+                    <div
+                      class="inline-flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    >
+                      <span
+                        class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+                      ></span>
+                      {{ $t("team.form.identity") }}
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                      <Label
+                        for="tournament-team-name"
+                        class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+                      >
+                        {{ $t("common.team_name") }}
+                      </Label>
+                      <Input
+                        id="tournament-team-name"
+                        ref="nameInput"
+                        v-model="editName"
+                        :placeholder="$t('team.form.name_placeholder')"
+                        maxlength="40"
+                        :disabled="savingIdentity"
+                        class="h-9"
+                        @keydown.enter.prevent="saveIdentity"
+                      />
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                      <Label
+                        for="tournament-team-tag"
+                        class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+                      >
+                        {{ $t("team.form.short_name") }}
+                      </Label>
+                      <Input
+                        id="tournament-team-tag"
+                        v-model="editShortName"
+                        :placeholder="$t('team.form.short_name')"
+                        maxlength="5"
+                        :disabled="savingIdentity"
+                        class="h-9 uppercase tracking-[0.18em] font-mono"
+                        @input="onShortNameInput"
+                        @keydown.enter.prevent="saveIdentity"
+                      />
+                    </div>
+
+                    <p
+                      v-if="identityError"
+                      class="font-mono text-[0.65rem] uppercase tracking-[0.15em] text-destructive"
+                    >
+                      {{ identityError }}
+                    </p>
+
+                    <div class="flex items-center justify-end gap-2 pt-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        :disabled="savingIdentity"
+                        @click="cancelEditIdentity"
+                      >
+                        {{ $t("common.cancel") }}
+                      </Button>
+                      <Button
+                        variant="tactical"
+                        type="submit"
+                        size="sm"
+                        :disabled="!canSaveIdentity"
+                        :loading="savingIdentity"
+                      >
+                        <Spinner v-if="savingIdentity" class="mr-1 h-4 w-4" />
+                        {{ $t("common.save") }}
+                      </Button>
+                    </div>
+                  </form>
+                </PopoverContent>
+              </Popover>
+
+              <label
+                v-if="canEditSeed"
+                class="group/seed inline-flex h-8 items-center overflow-hidden rounded border border-border bg-muted/30 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-muted-foreground transition-colors focus-within:border-[hsl(var(--tac-amber)/0.6)] hover:border-[hsl(var(--tac-amber)/0.4)]"
+              >
+                <span class="pl-2 pr-[0.45rem]">
+                  {{ $t("tournament.team.seed_label") }}
+                </span>
+                <input
+                  type="number"
+                  min="1"
+                  inputmode="numeric"
+                  autocomplete="off"
+                  placeholder="—"
+                  class="seed-input h-full w-9 border-l border-border bg-transparent text-center font-mono text-[0.7rem] font-bold tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 group-focus-within/seed:border-[hsl(var(--tac-amber)/0.6)]"
+                  :value="team.seed ?? ''"
+                  @input="
+                    onSeedChange(($event.target as HTMLInputElement).value)
+                  "
+                />
+              </label>
+
+              <Button
+                v-if="!tournament.is_organizer && canLeaveTournament"
+                variant="outline"
+                size="sm"
+                class="h-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                @click="leaveTournament"
+              >
+                <LogOut class="mr-1.5 h-4 w-4" />
+                {{ $t("tournament.team.leave_tournament") }}
+              </Button>
+
+              <Button
+                v-if="tournament.is_organizer && canRemoveTeam"
+                variant="outline"
+                size="sm"
+                class="ml-auto h-8 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                @click="removeTeamDialog = true"
+              >
+                <Trash2 class="mr-1.5 h-4 w-4" />
+                {{ $t("tournament.tournament_team.remove") }}
+              </Button>
             </div>
           </div>
         </div>
@@ -514,9 +498,10 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import { dateLocale } from "~/utilities/dateLocale";
+import { teamLedgerStatus } from "~/components/tournament/teamLedger";
 
 export default {
-  emits: ["toggle-collapsed"],
+  emits: ["toggle"],
   props: {
     team: {
       type: Object,
@@ -526,11 +511,12 @@ export default {
       type: Object,
       required: true,
     },
-    collapsible: {
+    expanded: {
       type: Boolean,
       default: false,
     },
-    collapsed: {
+    // One of the viewer's own entries: pinned first and marked in the row.
+    mine: {
       type: Boolean,
       default: false,
     },
@@ -697,22 +683,6 @@ export default {
     minPlayers() {
       return this.tournament.min_players_per_lineup;
     },
-    missingPlayers() {
-      return Math.max(0, this.minPlayers - this.team.roster.length);
-    },
-    eligibilityLabel() {
-      if (this.team.eligible_at) {
-        return this.$t("tournament.team.eligible");
-      }
-      if (this.missingPlayers > 0) {
-        return this.$t(
-          "tournament.team.need_players",
-          { count: this.missingPlayers },
-          this.missingPlayers,
-        );
-      }
-      return this.$t("tournament.team.not_eligible");
-    },
     rosterLocked() {
       // Once the bracket has been seeded the roster is locked to its minimum;
       // dropping below it strips the team's eligibility and seed mid-tournament.
@@ -778,84 +748,95 @@ export default {
         e_tournament_status_enum.Finished,
       ].includes(status);
     },
-    hasStarted() {
-      const status = this.tournament.status;
-      return ![
-        e_tournament_status_enum.Setup,
-        e_tournament_status_enum.RegistrationOpen,
-        e_tournament_status_enum.RegistrationClosed,
-        // Held for check-in review: nothing has been seeded and no team has
-        // been dropped, so the eligibility badge is still the honest readout.
-        e_tournament_status_enum.CheckInReview,
-      ].includes(status);
+    ledgerStatus() {
+      return teamLedgerStatus(this.team, this.tournament, this.registration);
     },
-    showEligibilityBadge() {
-      return !this.hasStarted;
+    statusLabel() {
+      const status = this.ledgerStatus;
+      switch (status?.key) {
+        case "short":
+          return this.$t(
+            "tournament.team.status.needs_players",
+            { count: status.count },
+            status.count,
+          );
+        case "ready":
+          return this.$t("tournament.team.status.ready");
+        case "not_eligible":
+          return this.$t("tournament.team.status.not_eligible");
+        case "in":
+          return this.$t("tournament.team.status.checked_in");
+        case "miss":
+          return this.$t("tournament.team.status.missed");
+        case "wait":
+          // Every-player mode is waiting on people, not on a captain: say how
+          // many of the lineup have confirmed.
+          if (this.registration?.check_in_setting === "Players") {
+            return this.$t("tournament.check_in.players_progress", {
+              checked: this.team.roster.filter(
+                (member: Record<string, any>) => !!member.checked_in_at,
+              ).length,
+              required: this.minPlayers,
+            });
+          }
+          return this.$t("tournament.team.status.not_checked_in");
+      }
+      return "";
     },
-    // On the card so everyone can read the field: the panel above the tabs
-    // only lists it to organizers and to teams still waiting to confirm.
-    checkInState(): "checked_in" | "waiting" | "missed" | null {
-      const registration = this.registration;
-      if (
-        !registration?.check_in_required ||
-        !registration.check_in_started ||
-        this.hasStarted
-      ) {
+    statusToneClasses() {
+      switch (this.ledgerStatus?.key) {
+        case "in":
+        case "ready":
+          return "text-success before:bg-current";
+        case "wait":
+          return "text-[hsl(var(--tac-amber))] before:bg-current";
+        case "miss":
+        case "not_eligible":
+          return "text-destructive before:bg-current";
+      }
+      return "text-muted-foreground before:border before:border-current";
+    },
+    checkedInClock() {
+      const status = this.ledgerStatus;
+      if (status?.key !== "in") {
         return null;
       }
-      if (this.team.checked_in_at) {
-        return "checked_in";
-      }
-      if (registration.check_in_open) {
-        return "waiting";
-      }
-      // Same gate as the api's tournament_check_in_window_opened: a team is
-      // only a no-show once a check-in window actually opened.
-      return registration.check_in_ends_at ? "missed" : null;
+      return new Date(status.at).toLocaleTimeString(dateLocale(), {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
     },
-    checkInAction(): "mark" | "undo" | "readmit" | null {
+    // During the window an organizer flips a team present or absent without
+    // re-seeding; afterwards a missed team comes back through a re-admit.
+    checkInControl(): "switch" | "readmit" | null {
       if (!this.tournament.is_organizer) {
         return null;
       }
-      if (this.checkInState === "waiting") {
-        return "mark";
-      }
+      const key = this.ledgerStatus?.key;
       if (
-        this.checkInState === "checked_in" &&
-        this.registration?.check_in_open
+        this.registration?.check_in_open &&
+        (key === "wait" || key === "in")
       ) {
-        return "undo";
+        return "switch";
       }
-      return this.checkInState === "missed" ? "readmit" : null;
+      return key === "miss" ? "readmit" : null;
     },
-    hasHeaderActions() {
+    faces() {
+      return this.team.roster.slice(
+        0,
+        this.minPlayers || this.team.roster.length,
+      );
+    },
+    openFaces() {
+      return Math.max(0, this.minPlayers - this.team.roster.length);
+    },
+    hasRowTools() {
       return (
-        !!this.checkInAction ||
+        this.canEditIdentity ||
+        this.canEditSeed ||
         (!this.tournament.is_organizer && this.canLeaveTournament) ||
         (this.tournament.is_organizer && this.canRemoveTeam)
       );
-    },
-    checkInLabel() {
-      if (this.checkInState === "checked_in") {
-        return this.$t("tournament.check_in.checked_in_at", {
-          time: new Date(this.team.checked_in_at).toLocaleTimeString(
-            dateLocale(),
-            { hour: "2-digit", minute: "2-digit" },
-          ),
-        });
-      }
-      if (this.checkInState === "missed") {
-        return this.$t("tournament.team.missed_check_in");
-      }
-      if (this.registration?.check_in_setting === "Players") {
-        return this.$t("tournament.check_in.players_progress", {
-          checked: this.team.roster.filter(
-            (member: Record<string, any>) => !!member.checked_in_at,
-          ).length,
-          required: this.minPlayers,
-        });
-      }
-      return this.$t("tournament.check_in.not_checked_in");
     },
     finalPlacement() {
       if (this.tournament.status !== e_tournament_status_enum.Finished) {
@@ -920,6 +901,13 @@ export default {
     },
   },
   methods: {
+    playerAvatarSrc(player: Record<string, any>) {
+      return resolveAvatarUrl(
+        player.custom_avatar_url || player.avatar_url,
+        this.apiDomain,
+        64,
+      );
+    },
     ordinal(n: number) {
       const s = ["th", "st", "nd", "rd"];
       const v = n % 100;
@@ -1210,47 +1198,30 @@ export default {
 </script>
 
 <style scoped>
-/* Matches the filled player row. PlayerDisplay's intrinsic two-line content is
-   50px — taller than its own min-h-12 — so match that, not the 3rem floor. */
+/* Sized to a filled roster row: PlayerDisplay's compact 32px avatar plus
+   the row's vertical padding. */
 .roster-slot {
   display: flex;
   width: 100%;
-  min-height: calc(50px + 1.3rem + 2px);
+  min-height: 2.75rem;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.65rem 0.85rem;
-  border: 1px dashed hsl(var(--border));
-  border-radius: 0.375rem;
-  background: hsl(var(--muted) / 0.1);
+  padding: 0.375rem 0;
   color: hsl(var(--muted-foreground));
-  transition:
-    border-color 0.16s ease,
-    background 0.16s ease,
-    color 0.16s ease;
+  transition: color 0.16s ease;
 }
 .roster-slot--open {
   cursor: pointer;
   text-align: left;
 }
 .roster-slot--open:hover {
-  border-color: hsl(var(--tac-amber) / 0.55);
-  background: hsl(var(--tac-amber) / 0.06);
   color: hsl(var(--tac-amber));
-}
-.roster-slot__index {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: hsl(var(--muted-foreground) / 0.55);
-}
-.roster-slot--open:hover .roster-slot__index {
-  color: hsl(var(--tac-amber) / 0.7);
 }
 .roster-slot__avatar {
   display: grid;
   place-items: center;
-  height: 2.25rem;
-  width: 2.25rem;
+  height: 2rem;
+  width: 2rem;
   flex-shrink: 0;
   border: 1px dashed hsl(var(--border));
   border-radius: 0.375rem;

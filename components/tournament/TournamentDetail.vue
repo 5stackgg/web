@@ -32,14 +32,26 @@ import {
   ArrowLeft,
   Globe,
   MapPin,
-  Minimize,
-  Maximize,
   MessageSquare,
   AtSign,
   CalendarDays,
   Layers,
   ChevronDown,
+  ArrowUp,
+  ArrowDown,
+  Search,
+  X,
 } from "lucide-vue-next";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  teamLedgerColumns,
+  teamLedgerStatus,
+  tournamentHasStarted as hasTournamentStarted,
+} from "~/components/tournament/teamLedger";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import { Button } from "@/components/ui/button";
@@ -87,8 +99,6 @@ import { useMediaQuery } from "@vueuse/core";
 
 import {
   tacticalCtaButtonClasses,
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
   tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
@@ -153,22 +163,6 @@ const chatRoomUnreadPopTransition = {
     "[transition:transform_0.15s_ease-in,opacity_0.15s_ease-in] motion-reduce:[transition:none]",
   leaveToClass: "scale-0 opacity-0",
 };
-const tacticalSectionCountClasses =
-  "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-[0.45rem] py-[0.05rem] text-[0.62rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
-const tournamentTeamCardClasses =
-  "rounded-lg border border-border bg-card/45 px-5 py-4 [backdrop-filter:blur(6px)] transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.35)] hover:bg-card/60";
-
-function setTeamEnterDelay(el: Element) {
-  const step = Number((el as HTMLElement).dataset.stagger ?? 0);
-  if (!step) {
-    return;
-  }
-  (el as HTMLElement).style.transitionDelay = `${step * 40}ms`;
-}
-
-function clearTeamEnterDelay(el: Element) {
-  (el as HTMLElement).style.transitionDelay = "";
-}
 </script>
 
 <template>
@@ -701,148 +695,154 @@ function clearTeamEnterDelay(el: Element) {
 
           <TabsContent value="teams">
             <PageTransition>
-              <div class="grid gap-8">
-                <ManageSection
-                  v-if="myTeam"
-                  :label="$t('tournament.page.my_team')"
-                  :hint="$t('tournament.page.my_team_hint')"
-                >
-                  <div :class="tournamentTeamCardClasses">
-                    <TournamentTeam
-                      :tournament="tournament"
-                      :team="myTeam"
-                      :registration="tournamentRegistration"
-                      :free-agent-steam-ids="freeAgentSteamIds"
-                    ></TournamentTeam>
-                  </div>
-                </ManageSection>
-
-                <div class="min-w-0">
-                  <div
-                    class="mb-[0.85rem] flex flex-wrap items-center justify-between gap-3"
+              <div class="min-w-0">
+                <div class="mb-3 flex flex-wrap items-center gap-2">
+                  <AnimatedFilters
+                    v-if="freeAgentsTabVisible"
+                    v-model="teamsPanel"
+                    :options="teamsPanelTabs"
+                    square
+                  />
+                  <template
+                    v-if="teamsPanel === 'roster' && ledgerBaseTeams.length > 0"
                   >
+                    <InputGroup
+                      class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs"
+                    >
+                      <InputGroupAddon class="pl-2.5">
+                        <Search class="h-3.5 w-3.5" />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        id="tournament-team-search"
+                        v-model="teamSearch"
+                        :placeholder="$t('tournament.teams_ledger.search')"
+                        autocomplete="off"
+                        class="h-full text-sm"
+                      />
+                      <InputGroupAddon
+                        v-if="teamSearch"
+                        align="inline-end"
+                        class="pr-2"
+                      >
+                        <button
+                          type="button"
+                          class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                          :aria-label="$t('common.clear')"
+                          @click="teamSearch = ''"
+                        >
+                          <X class="h-3.5 w-3.5" />
+                        </button>
+                      </InputGroupAddon>
+                    </InputGroup>
                     <AnimatedFilters
-                      v-if="freeAgentsTabVisible"
-                      v-model="teamsPanel"
-                      :options="teamsPanelTabs"
+                      v-if="teamFilterOptions.length > 1"
+                      v-model="teamFilter"
+                      :options="teamFilterOptions"
+                      :stacked="isPhone"
                       square
+                      class="max-sm:order-last"
                     />
-                    <div v-else :class="tacticalSectionLabelClasses">
-                      <span :class="tacticalSectionTickClasses"></span>
-                      {{ $t("tournament.page.roster_section") }}
-                      <span :class="tacticalSectionCountClasses">
-                        {{ filteredTeams.length }}
+                    <span
+                      v-if="teamLedgerSummary"
+                      class="ml-auto whitespace-nowrap text-sm text-muted-foreground max-sm:hidden"
+                    >
+                      {{ teamLedgerSummary }}
+                    </span>
+                  </template>
+                </div>
+
+                <FadeSwap>
+                  <TournamentFreeAgents
+                    v-if="teamsPanel === 'free-agents'"
+                    key="free-agents"
+                    :tournament="tournament"
+                    :my-team="myTeam"
+                  />
+
+                  <div
+                    v-else-if="ledgerBaseTeams.length === 0"
+                    key="no-teams"
+                    class="grid justify-items-start gap-3 rounded-lg border border-dashed border-border p-8 text-muted-foreground"
+                  >
+                    {{ $t("tournament.page.no_teams_yet") }}
+                    <Button
+                      v-if="tournament.is_organizer"
+                      variant="outline"
+                      size="sm"
+                      @click="openManage('teams')"
+                    >
+                      <UserPlus class="h-4 w-4" />
+                      {{ $t("tournament.manage.invite_teams") }}
+                    </Button>
+                  </div>
+
+                  <div
+                    v-else-if="ledgerTeams.length === 0"
+                    key="no-matches"
+                    class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
+                  >
+                    {{ $t("tournament.teams_filter.no_matches") }}
+                  </div>
+
+                  <div
+                    v-else
+                    key="teams"
+                    class="overflow-hidden rounded-lg border border-border bg-card/45"
+                  >
+                    <div
+                      class="hidden h-9 items-center gap-4 border-b border-border bg-muted/20 px-4 text-xs text-muted-foreground md:grid"
+                      :class="teamLedgerColumns"
+                    >
+                      <button
+                        v-for="column in teamLedgerSortColumns"
+                        :key="column.key"
+                        type="button"
+                        class="inline-flex items-center gap-1 justify-self-start rounded-sm transition-colors hover:text-foreground"
+                        :class="[
+                          column.class,
+                          { 'text-foreground': teamSort.key === column.key },
+                        ]"
+                        :aria-label="
+                          $t('tournament.teams_ledger.sort_by', {
+                            column: column.label,
+                          })
+                        "
+                        @click="sortTeamsBy(column.key)"
+                      >
+                        {{ column.label }}
+                        <component
+                          :is="teamSort.dir === 1 ? ArrowUp : ArrowDown"
+                          v-if="teamSort.key === column.key"
+                          class="h-3 w-3"
+                        />
+                      </button>
+                      <span class="md:col-start-3 md:row-start-1">
+                        {{ $t("tournament.teams_ledger.players") }}
                       </span>
                     </div>
-
-                    <!-- On phones this wrapper dissolves: the expand toggle
-                         joins the panel switch on row one and the filters
-                         take row two at full width. -->
-                    <div
-                      v-if="teamsPanel === 'roster'"
-                      class="flex flex-wrap items-center gap-2 max-sm:contents"
-                    >
-                      <AnimatedFilters
-                        v-if="visibleTeams.length > 1"
-                        v-model="teamFilter"
-                        :options="teamFilterOptions"
-                        :stacked="isPhone"
-                        square
-                        class="max-sm:order-last"
-                      />
-                      <Button
-                        v-if="visibleTeams.length > 0"
-                        variant="outline"
-                        size="sm"
-                        class="h-8 max-sm:w-8 max-sm:px-0"
-                        :title="
-                          allTeamsCollapsed
-                            ? $t('tournament.teams_filter.expand_all')
-                            : $t('tournament.teams_filter.collapse_all')
-                        "
-                        @click="toggleAllTeams"
-                      >
-                        <component
-                          :is="allTeamsCollapsed ? Maximize : Minimize"
-                          class="h-4 w-4 shrink-0 sm:mr-1.5"
-                        />
-                        <span class="max-sm:sr-only">
-                          {{
-                            allTeamsCollapsed
-                              ? $t("tournament.teams_filter.expand_all")
-                              : $t("tournament.teams_filter.collapse_all")
-                          }}
-                        </span>
-                      </Button>
-                    </div>
-                  </div>
-
-                  <FadeSwap>
-                    <TournamentFreeAgents
-                      v-if="teamsPanel === 'free-agents'"
-                      key="free-agents"
-                      :tournament="tournament"
-                      :my-team="myTeam"
-                    />
-
-                    <div
-                      v-else-if="visibleTeams.length === 0"
-                      key="no-teams"
-                      class="grid justify-items-start gap-3 rounded-lg border border-dashed border-border p-8 text-muted-foreground"
-                    >
-                      {{ $t("tournament.page.no_teams_yet") }}
-                      <Button
-                        v-if="tournament.is_organizer"
-                        variant="outline"
-                        size="sm"
-                        @click="openManage('teams')"
-                      >
-                        <UserPlus class="h-4 w-4" />
-                        {{ $t("tournament.manage.invite_teams") }}
-                      </Button>
-                    </div>
-
-                    <div
-                      v-else-if="filteredTeams.length === 0"
-                      key="no-matches"
-                      class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
-                    >
-                      {{ $t("tournament.teams_filter.no_matches") }}
-                    </div>
-
                     <TransitionGroup
-                      v-else
-                      key="teams"
                       tag="div"
-                      class="flex flex-col gap-4"
-                      enter-active-class="transition-[opacity,transform] [transition-duration:420ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms] motion-reduce:![transition-delay:0ms]"
-                      enter-from-class="opacity-0 translate-y-3 motion-reduce:translate-y-0"
-                      leave-active-class="absolute w-full transition-[opacity,transform] duration-200 ease-in motion-reduce:![transition-duration:1ms]"
-                      leave-to-class="opacity-0 -translate-y-2 motion-reduce:translate-y-0"
+                      class="relative divide-y divide-border/70"
+                      enter-active-class="transition-opacity duration-200 ease-out motion-reduce:transition-none"
+                      enter-from-class="opacity-0"
+                      leave-active-class="absolute w-full transition-opacity duration-150 ease-in motion-reduce:transition-none"
+                      leave-to-class="opacity-0"
                       move-class="transition-transform duration-300 ease-out motion-reduce:!transition-none"
-                      @before-enter="setTeamEnterDelay"
-                      @after-enter="clearTeamEnterDelay"
-                      @enter-cancelled="clearTeamEnterDelay"
                     >
-                      <div
-                        v-for="(team, index) of filteredTeams"
+                      <TournamentTeam
+                        v-for="team of ledgerTeams"
                         :key="team.id"
-                        :data-stagger="Math.min(index, 12)"
-                        :class="tournamentTeamCardClasses"
-                      >
-                        <TournamentTeam
-                          :tournament="tournament"
-                          :team="team"
-                          :registration="tournamentRegistration"
-                          :free-agent-steam-ids="freeAgentSteamIds"
-                          :collapsible="true"
-                          :collapsed="collapsedTeams.has(team.id)"
-                          @toggle-collapsed="toggleTeamCollapsed(team.id)"
-                        ></TournamentTeam>
-                      </div>
+                        :tournament="tournament"
+                        :team="team"
+                        :registration="tournamentRegistration"
+                        :free-agent-steam-ids="freeAgentSteamIds"
+                        :expanded="expandedTeams.has(team.id)"
+                        :mine="myTeamIds.has(team.id)"
+                        @toggle="toggleTeamExpanded(team.id)"
+                      />
                     </TransitionGroup>
-                  </FadeSwap>
-                </div>
+                  </div>
+                </FadeSwap>
               </div>
             </PageTransition>
           </TabsContent>
@@ -1073,7 +1073,12 @@ export default {
       teamsPanel: "roster",
       manageSection: "details",
       teamFilter: "all",
-      collapsedTeams: new Set(),
+      teamSearch: "",
+      teamSort: { key: "seed", dir: 1 } as { key: string; dir: 1 | -1 },
+      expandedTeams: new Set<string>(),
+      // The viewer's own entries open once, when they first arrive; after
+      // that a collapse sticks.
+      openedMyTeamIds: new Set<string>(),
       myTeamLoaded: false,
       myFreeAgentLoaded: false,
       freeAgentSteamIds: [] as Array<string>,
@@ -2023,80 +2028,179 @@ export default {
       );
       return visible.map((team) => mine.get(team.id) ?? team);
     },
-    incompleteTeams() {
-      return this.visibleTeams.filter((team) => !team.eligible_at);
+    // Every team the tab can list, the viewer's own entries included even
+    // once seeding has dropped them from the public list.
+    ledgerBaseTeams(): Array<Record<string, any>> {
+      const listed = new Set(this.visibleTeams.map((team) => team.id));
+      return [
+        ...this.visibleTeams,
+        ...(this.myTeams as Array<Record<string, any>>).filter(
+          (team) => !listed.has(team.id),
+        ),
+      ];
     },
-    // The same span the team cards show their check-in badge in.
-    checkInFilterVisible() {
+    teamStatuses(): Map<string, ReturnType<typeof teamLedgerStatus>> {
+      return new Map(
+        this.ledgerBaseTeams.map((team) => [
+          team.id,
+          teamLedgerStatus(
+            team,
+            this.tournament ?? {},
+            this.tournamentRegistration,
+          ),
+        ]),
+      );
+    },
+    myTeamIds(): Set<string> {
+      return new Set(
+        (this.myTeams as Array<Record<string, any>>).map((team) => team.id),
+      );
+    },
+    // Open while teams can still confirm, closed once a window really opened
+    // and ended; null when there is no check-in to speak of.
+    checkInPhase(): "open" | "closed" | null {
       const registration = this.tournamentRegistration;
-      return (
-        registration?.check_in_required === true &&
-        registration?.check_in_started === true &&
-        !this.tournamentHasStarted
-      );
-    },
-    notCheckedInTeams(): Array<Record<string, any>> {
-      return this.visibleTeams.filter(
-        (team: Record<string, any>) => !team.checked_in_at,
-      );
-    },
-    // Return type spelled out because `tournament.teams` is `any`: without it
-    // the v-for index below widens to `string | number` (the object-iteration
-    // signature) and every numeric use of it fails to type-check.
-    filteredTeams(): Array<Record<string, any>> {
-      if (this.teamFilter === "incomplete") return this.incompleteTeams;
-      if (this.teamFilter === "not_checked_in") return this.notCheckedInTeams;
-      if (this.teamFilter === "ready") {
-        return this.visibleTeams.filter((team) => !!team.eligible_at);
+      if (
+        hasTournamentStarted(this.tournament?.status) ||
+        registration?.check_in_required !== true ||
+        registration?.check_in_started !== true
+      ) {
+        return null;
       }
-      return this.visibleTeams;
+      if (registration.check_in_open === true) {
+        return "open";
+      }
+      return registration.check_in_ends_at ? "closed" : null;
     },
     teamFilterOptions() {
-      const incomplete = this.incompleteTeams.length;
+      const counts: Record<string, number> = {};
+      for (const status of this.teamStatuses.values()) {
+        if (status) {
+          counts[status.key] = (counts[status.key] ?? 0) + 1;
+        }
+      }
+      if (hasTournamentStarted(this.tournament?.status)) {
+        return [];
+      }
+      const option = (key: string, label: string) => ({
+        key,
+        label,
+        count: counts[key] ?? 0,
+      });
       return [
         {
           key: "all",
           label: this.$t("tournament.teams_filter.all"),
-          count: this.visibleTeams.length,
+          count: this.ledgerBaseTeams.length,
         },
-        {
-          key: "ready",
-          label: this.$t("tournament.teams_filter.ready"),
-          count: this.visibleTeams.length - incomplete,
-        },
-        {
-          key: "incomplete",
-          label: this.$t("tournament.teams_filter.incomplete"),
-          count: incomplete,
-        },
-        ...(this.checkInFilterVisible
+        ...(this.checkInPhase
           ? [
-              {
-                key: "not_checked_in",
-                label: this.$t("tournament.teams_filter.not_checked_in"),
-                count: this.notCheckedInTeams.length,
-              },
+              option("in", this.$t("tournament.teams_filter.checked_in")),
+              this.checkInPhase === "open"
+                ? option(
+                    "wait",
+                    this.$t("tournament.teams_filter.not_checked_in"),
+                  )
+                : option("miss", this.$t("tournament.teams_filter.missed")),
             ]
-          : []),
+          : [option("ready", this.$t("tournament.teams_filter.ready"))]),
+        option("short", this.$t("tournament.teams_filter.incomplete")),
       ];
+    },
+    // The table's rows: filtered, searched (team, tag or any player's name),
+    // sorted, with the viewer's own entries pinned on top.
+    ledgerTeams(): Array<Record<string, any>> {
+      const query = this.teamSearch.trim().toLowerCase();
+      const matches = (team: Record<string, any>) =>
+        !query ||
+        [team.name, team.short_name, team.team?.name, team.team?.short_name]
+          .filter(Boolean)
+          .some((value) => String(value).toLowerCase().includes(query)) ||
+        (team.roster ?? []).some((member: Record<string, any>) =>
+          String(member.player?.name ?? "")
+            .toLowerCase()
+            .includes(query),
+        );
+
+      const rank: Record<string, number> = {
+        wait: 0,
+        miss: 1,
+        short: 2,
+        not_eligible: 3,
+        in: 4,
+        ready: 5,
+      };
+      const { key, dir } = this.teamSort;
+      const order = new Map(
+        this.ledgerBaseTeams.map((team, index) => [team.id, index]),
+      );
+      const compare = (a: Record<string, any>, b: Record<string, any>) => {
+        let result = 0;
+        if (key === "name") {
+          result = String(a.name ?? "").localeCompare(String(b.name ?? ""));
+        } else if (key === "status") {
+          result =
+            (rank[this.teamStatuses.get(a.id)?.key ?? ""] ?? 9) -
+            (rank[this.teamStatuses.get(b.id)?.key ?? ""] ?? 9);
+        } else {
+          result = (a.seed ?? Infinity) - (b.seed ?? Infinity);
+          if (Number.isNaN(result)) {
+            result = 0;
+          }
+        }
+        return result * dir || order.get(a.id)! - order.get(b.id)!;
+      };
+
+      return this.ledgerBaseTeams
+        .filter(
+          (team) =>
+            this.teamFilter === "all" ||
+            this.teamStatuses.get(team.id)?.key === this.teamFilter,
+        )
+        .filter(matches)
+        .sort(
+          (a, b) =>
+            Number(this.myTeamIds.has(b.id)) -
+              Number(this.myTeamIds.has(a.id)) || compare(a, b),
+        );
+    },
+    teamLedgerSortColumns() {
+      return [
+        { key: "seed", label: this.$t("tournament.teams_ledger.seed") },
+        { key: "name", label: this.$t("tournament.teams_ledger.team") },
+        {
+          key: "status",
+          label: this.$t("tournament.teams_ledger.status"),
+          class: "md:col-start-4",
+        },
+      ];
+    },
+    teamLedgerSummary() {
+      if (!this.checkInPhase) {
+        return null;
+      }
+      let checked = 0;
+      let total = 0;
+      for (const status of this.teamStatuses.values()) {
+        if (status && status.key !== "short") {
+          total += 1;
+          checked += status.key === "in" ? 1 : 0;
+        }
+      }
+      return this.$t("tournament.check_in.field_count", { checked, total });
     },
     teamsPanelTabs() {
       return [
         {
           key: "roster",
           label: this.$t("tournament.page.roster_section"),
-          count: this.filteredTeams.length,
+          count: this.ledgerBaseTeams.length,
         },
         {
           key: "free-agents",
           label: this.$t("tournament.free_agents.title"),
         },
       ];
-    },
-    allTeamsCollapsed() {
-      const teams = this.filteredTeams;
-      if (teams.length === 0) return false;
-      return teams.every((team) => this.collapsedTeams.has(team.id));
     },
     statusTier() {
       const s = this.tournament?.status;
@@ -2343,23 +2447,18 @@ export default {
     refetchTournamentStatic() {
       return this.$apollo?.queries?.tournamentStatic?.refetch();
     },
-    toggleTeamCollapsed(teamId) {
-      if (this.collapsedTeams.has(teamId)) {
-        this.collapsedTeams.delete(teamId);
+    toggleTeamExpanded(teamId: string) {
+      if (this.expandedTeams.has(teamId)) {
+        this.expandedTeams.delete(teamId);
         return;
       }
-      this.collapsedTeams.add(teamId);
+      this.expandedTeams.add(teamId);
     },
-    toggleAllTeams() {
-      if (this.allTeamsCollapsed) {
-        for (const team of this.filteredTeams) {
-          this.collapsedTeams.delete(team.id);
-        }
-        return;
-      }
-      for (const team of this.filteredTeams) {
-        this.collapsedTeams.add(team.id);
-      }
+    sortTeamsBy(key: string) {
+      this.teamSort =
+        this.teamSort.key === key
+          ? { key, dir: this.teamSort.dir === 1 ? -1 : 1 }
+          : { key, dir: 1 };
     },
     syncActiveTabFromRoute() {
       if (!this.tournament) {
@@ -2535,10 +2634,23 @@ export default {
     },
   },
   watch: {
-    checkInFilterVisible(visible) {
-      if (!visible && this.teamFilter === "not_checked_in") {
+    // The filters follow the phase; a pick the phase no longer offers
+    // falls back to All instead of an empty table.
+    teamFilterOptions(options: Array<{ key: string }>) {
+      if (!options.some((option) => option.key === this.teamFilter)) {
         this.teamFilter = "all";
       }
+    },
+    myTeams: {
+      handler(teams: Array<Record<string, any>>) {
+        for (const team of teams) {
+          if (!this.openedMyTeamIds.has(team.id)) {
+            this.openedMyTeamIds.add(team.id);
+            this.expandedTeams.add(team.id);
+          }
+        }
+      },
+      immediate: true,
     },
     "tournamentLive.can_open_registration"() {
       this.statusMenuNow = Date.now();

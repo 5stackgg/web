@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Torna alla lega",
       "my_team": "Il mio team",
-      "my_team_hint": "Gestisci roster, inviti e prontezza del tuo team per questo torneo.",
       "roster_section": "Roster",
       "no_teams_yet": "Nessun team ancora.",
       "about_section": "Info",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Idoneo",
-      "not_eligible": "Non idoneo",
-      "need_players": "Serve ancora {count} giocatore | Servono altri {count} giocatori",
-      "missed_check_in": "Check-in mancato",
+      "status": {
+        "ready": "Pronta",
+        "not_eligible": "Non idonea",
+        "needs_players": "Serve ancora {count} giocatore | Servono altri {count} giocatori",
+        "checked_in": "Check-in effettuato",
+        "not_checked_in": "Check-in non effettuato",
+        "missed": "Check-in mancato"
+      },
       "leave_tournament": "Abbandona torneo",
       "leave_team": "Lascia team",
       "slot": "Slot {number}",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "Tutte",
       "ready": "Pronte",
+      "checked_in": "Check-in fatto",
       "incomplete": "Mancano giocatori",
       "not_checked_in": "Check-in non effettuato",
+      "missed": "Mancati",
       "no_matches": "Nessuna squadra corrisponde a questo filtro",
       "collapse": "Comprimi",
-      "expand": "Espandi",
-      "collapse_all": "Comprimi tutto",
-      "expand_all": "Espandi tutto"
+      "expand": "Espandi"
+    },
+    "teams_ledger": {
+      "search": "Cerca squadre o giocatori",
+      "seed": "Testa di serie",
+      "team": "Squadra",
+      "players": "Giocatori",
+      "status": "Stato",
+      "sort_by": "Ordina per {column}"
     },
     "matches_filter": {
       "live": "Live",
@@ -9539,10 +9550,12 @@
       "admin_hint": "In questo torneo i giocatori non possono fare il check-in da soli. Segna ogni team come presente prima che la finestra si chiuda.",
       "check_in": "Fai il check-in",
       "mark_present": "Segna presente",
+      "present": "Presente",
+      "absent": "Assente",
+      "present_label": "{team} è presente",
       "checked_in": "check-in effettuato",
       "checked_in_at": "check-in effettuato · {time}",
       "waiting": "in attesa",
-      "not_checked_in": "check-in non effettuato",
       "not_needed": "non necessario",
       "role_captain": "capitano",
       "role_starter": "titolare",

@@ -8834,7 +8834,6 @@
     "page": {
       "back_to_league": "Back to League",
       "my_team": "My Team",
-      "my_team_hint": "Manage your roster, invites, and readiness for this tournament.",
       "roster_section": "Roster",
       "no_teams_yet": "No teams yet.",
       "about_section": "About",
@@ -9235,10 +9234,14 @@
       }
     },
     "team": {
-      "eligible": "Eligible",
-      "not_eligible": "Not Eligible",
-      "need_players": "Need {count} more player | Need {count} more players",
-      "missed_check_in": "Missed Check-in",
+      "status": {
+        "ready": "Ready",
+        "not_eligible": "Not eligible",
+        "needs_players": "Needs {count} player | Needs {count} players",
+        "checked_in": "Checked in",
+        "not_checked_in": "Not checked in",
+        "missed": "Missed check-in"
+      },
       "leave_tournament": "Leave Tournament",
       "leave_team": "Leave Team",
       "slot": "Slot {number}",
@@ -9423,13 +9426,21 @@
     "teams_filter": {
       "all": "All",
       "ready": "Ready",
+      "checked_in": "Checked in",
       "incomplete": "Needs Players",
       "not_checked_in": "Not Checked In",
+      "missed": "Missed",
       "no_matches": "No teams match this filter",
       "collapse": "Collapse",
-      "expand": "Expand",
-      "collapse_all": "Collapse All",
-      "expand_all": "Expand All"
+      "expand": "Expand"
+    },
+    "teams_ledger": {
+      "search": "Search teams or players",
+      "seed": "Seed",
+      "team": "Team",
+      "players": "Players",
+      "status": "Status",
+      "sort_by": "Sort by {column}"
     },
     "matches_filter": {
       "live": "Live",
@@ -9541,10 +9552,12 @@
       "admin_hint": "Players can't check themselves in for this tournament. Mark each team present before the window closes.",
       "check_in": "Check in",
       "mark_present": "Mark present",
+      "present": "Present",
+      "absent": "Absent",
+      "present_label": "{team} is present",
       "checked_in": "checked in",
       "checked_in_at": "checked in · {time}",
       "waiting": "waiting",
-      "not_checked_in": "not checked in",
       "not_needed": "not needed",
       "role_captain": "captain",
       "role_starter": "starter",

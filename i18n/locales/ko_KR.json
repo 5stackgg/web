@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "리그로 돌아가기",
       "my_team": "내 팀",
-      "my_team_hint": "이 토너먼트의 로스터, 초대, 준비 상태를 관리합니다.",
       "roster_section": "로스터",
       "no_teams_yet": "아직 팀이 없습니다.",
       "about_section": "소개",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "참가 가능",
-      "not_eligible": "참가 불가",
-      "need_players": "{count}명의 플레이어가 더 필요합니다 | {count}명의 플레이어가 더 필요합니다",
-      "missed_check_in": "체크인 누락",
+      "status": {
+        "ready": "준비 완료",
+        "not_eligible": "참가 불가",
+        "needs_players": "{count}명이 더 필요합니다 | {count}명이 더 필요합니다",
+        "checked_in": "체크인 완료",
+        "not_checked_in": "체크인 안 함",
+        "missed": "체크인 놓침"
+      },
       "leave_tournament": "토너먼트 탈퇴",
       "leave_team": "팀 탈퇴",
       "slot": "슬롯 {number}",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "전체",
       "ready": "준비 완료",
+      "checked_in": "체크인 완료",
       "incomplete": "인원 부족",
       "not_checked_in": "체크인 안 함",
+      "missed": "놓침",
       "no_matches": "이 필터에 맞는 팀이 없습니다",
       "collapse": "접기",
-      "expand": "펼치기",
-      "collapse_all": "모두 접기",
-      "expand_all": "모두 펼치기"
+      "expand": "펼치기"
+    },
+    "teams_ledger": {
+      "search": "팀 또는 플레이어 검색",
+      "seed": "시드",
+      "team": "팀",
+      "players": "플레이어",
+      "status": "상태",
+      "sort_by": "{column} 기준 정렬"
     },
     "matches_filter": {
       "live": "라이브",
@@ -9539,10 +9550,12 @@
       "admin_hint": "이 토너먼트에서는 선수가 직접 체크인할 수 없습니다. 창이 닫히기 전에 각 팀을 참석으로 표시하세요.",
       "check_in": "체크인",
       "mark_present": "참석으로 표시",
+      "present": "참석",
+      "absent": "불참",
+      "present_label": "{team} 참석",
       "checked_in": "체크인 완료",
       "checked_in_at": "체크인 완료 · {time}",
       "waiting": "대기 중",
-      "not_checked_in": "체크인 안 함",
       "not_needed": "필요 없음",
       "role_captain": "팀장",
       "role_starter": "주전",

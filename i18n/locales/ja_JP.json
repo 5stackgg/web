@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "リーグへ戻る",
       "my_team": "自分のチーム",
-      "my_team_hint": "このトーナメントのロスター、招待、準備状況を管理します。",
       "roster_section": "ロスター",
       "no_teams_yet": "チームはまだありません",
       "about_section": "概要",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "参加可能",
-      "not_eligible": "参加不可",
-      "need_players": "あと {count} 人必要 | あと {count} 人必要",
-      "missed_check_in": "チェックイン未完了",
+      "status": {
+        "ready": "準備完了",
+        "not_eligible": "参加不可",
+        "needs_players": "あと {count} 人必要 | あと {count} 人必要",
+        "checked_in": "チェックイン済み",
+        "not_checked_in": "未チェックイン",
+        "missed": "チェックイン未完了"
+      },
       "leave_tournament": "トーナメントを離脱",
       "leave_team": "チームを離脱",
       "slot": "スロット {number}",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "すべて",
       "ready": "準備完了",
+      "checked_in": "チェックイン済み",
       "incomplete": "人数不足",
       "not_checked_in": "未チェックイン",
+      "missed": "未完了",
       "no_matches": "この条件に一致するチームはありません",
       "collapse": "折りたたむ",
-      "expand": "展開",
-      "collapse_all": "すべて折りたたむ",
-      "expand_all": "すべて展開"
+      "expand": "展開"
+    },
+    "teams_ledger": {
+      "search": "チームまたはプレイヤーを検索",
+      "seed": "シード",
+      "team": "チーム",
+      "players": "プレイヤー",
+      "status": "ステータス",
+      "sort_by": "{column}で並べ替え"
     },
     "matches_filter": {
       "live": "ライブ",
@@ -9539,10 +9550,12 @@
       "admin_hint": "このトーナメントではプレイヤーが自分でチェックインできません。受付終了までに各チームを出席として記録してください。",
       "check_in": "チェックイン",
       "mark_present": "出席にする",
+      "present": "出席",
+      "absent": "欠席",
+      "present_label": "{team} は出席",
       "checked_in": "チェックイン済み",
       "checked_in_at": "チェックイン済み · {time}",
       "waiting": "待機中",
-      "not_checked_in": "未チェックイン",
       "not_needed": "不要",
       "role_captain": "キャプテン",
       "role_starter": "スターター",

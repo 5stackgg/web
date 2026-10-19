@@ -72,7 +72,7 @@ async function badge(
   await wrapper.vm.$nextTick();
 
   return wrapper
-    .findAll("header span.rounded")
+    .findAll("span.rounded")
     .map((span) => span.text())
     .find((text) => /^\d+(st|nd|rd|th)$/.test(text));
 }

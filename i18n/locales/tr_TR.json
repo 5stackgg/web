@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Lige dön",
       "my_team": "Takımım",
-      "my_team_hint": "Bu turnuva için kadronu, davetlerini ve hazırlık durumunu yönet.",
       "roster_section": "Kadro",
       "no_teams_yet": "Henüz takım yok.",
       "about_section": "Hakkında",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Uygun",
-      "not_eligible": "Uygun değil",
-      "need_players": "{count} oyuncu daha gerekiyor | {count} oyuncu daha gerekiyor",
-      "missed_check_in": "Katılım onayı kaçırıldı",
+      "status": {
+        "ready": "Hazır",
+        "not_eligible": "Uygun değil",
+        "needs_players": "{count} oyuncu daha gerekiyor | {count} oyuncu daha gerekiyor",
+        "checked_in": "Katılım onaylandı",
+        "not_checked_in": "Katılım onaylanmadı",
+        "missed": "Katılım onayını kaçırdı"
+      },
       "leave_tournament": "Turnuvadan Ayrıl",
       "leave_team": "Takımdan Ayrıl",
       "slot": "Slot {number}",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "Tümü",
       "ready": "Hazır",
+      "checked_in": "Onaylayanlar",
       "incomplete": "Oyuncu eksik",
       "not_checked_in": "Katılım onaylanmadı",
+      "missed": "Kaçıranlar",
       "no_matches": "Bu filtreye uyan takım yok",
       "collapse": "Daralt",
-      "expand": "Genişlet",
-      "collapse_all": "Tümünü daralt",
-      "expand_all": "Tümünü genişlet"
+      "expand": "Genişlet"
+    },
+    "teams_ledger": {
+      "search": "Takım veya oyuncu ara",
+      "seed": "Seri başı",
+      "team": "Takım",
+      "players": "Oyuncular",
+      "status": "Durum",
+      "sort_by": "{column} göre sırala"
     },
     "matches_filter": {
       "live": "Canlı",
@@ -9539,10 +9550,12 @@
       "admin_hint": "Bu turnuvada oyuncular kendi katılımlarını onaylayamaz. Pencere kapanmadan her takımı mevcut olarak işaretle.",
       "check_in": "Katılımı onayla",
       "mark_present": "Mevcut olarak işaretle",
+      "present": "Burada",
+      "absent": "Yok",
+      "present_label": "{team} burada",
       "checked_in": "katılım onaylandı",
       "checked_in_at": "katılım onaylandı · {time}",
       "waiting": "bekliyor",
-      "not_checked_in": "katılım onaylanmadı",
       "not_needed": "gerekmiyor",
       "role_captain": "kaptan",
       "role_starter": "ilk 5",

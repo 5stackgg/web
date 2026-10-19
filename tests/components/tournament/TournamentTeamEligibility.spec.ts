@@ -24,6 +24,7 @@ async function mountTeam(options: {
   rosterCheckedIn?: number;
   registration?: Record<string, unknown> | null;
   tournament?: Record<string, unknown>;
+  expanded?: boolean;
 }) {
   const wrapper = await mountSuspended(TournamentTeam, {
     props: {
@@ -45,6 +46,7 @@ async function mountTeam(options: {
         invites: [],
       },
       registration: options.registration ?? null,
+      expanded: options.expanded ?? false,
     },
     global: {
       stubs: { TournamentTeamMemberRow: true },
@@ -70,122 +72,61 @@ const checkInOpen = {
   check_in_open: true,
 };
 
-function badge(wrapper: Wrapper) {
+function status(wrapper: Wrapper) {
   return wrapper
-    .findAll("header span.rounded")
-    .map((span) => span.text())
-    .find((text) => /Eligible|Need|Missed|Not Eligible/i.test(text));
-}
-
-function checkInBadge(wrapper: Wrapper) {
-  return wrapper
-    .findAll("header span.rounded")
-    .map((span) => span.text())
-    .find((text) => /checked in|Missed/i.test(text));
+    .find("[data-team-status]")
+    .text()
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function buttons(wrapper: Wrapper) {
-  return wrapper.findAll("header button").map((button) => button.text());
+  return wrapper.findAll("button").map((button) => button.text());
 }
 
-function emptySlots(wrapper: Wrapper) {
-  return wrapper.findAll(".roster-slot").length;
-}
-
-describe("TournamentTeam eligibility badge", () => {
+describe("TournamentTeam ledger status", () => {
   it("counts the players a team needs up to the minimum lineup, not the roster cap", async () => {
     const wrapper = await mountTeam({ rosterSize: 4 });
 
-    expect(badge(wrapper)).toBe("Need 1 more player");
+    expect(status(wrapper)).toBe("Needs 1 player");
   });
 
   it("says players in the plural past one", async () => {
     const wrapper = await mountTeam({ rosterSize: 3 });
 
-    expect(badge(wrapper)).toBe("Need 2 more players");
+    expect(status(wrapper)).toBe("Needs 2 players");
   });
 
   it("keeps the counter and the empty slots at the roster cap", async () => {
-    const wrapper = await mountTeam({ rosterSize: 4 });
+    const wrapper = await mountTeam({ rosterSize: 4, expanded: true });
 
-    expect(wrapper.find("header").text()).toContain("4/7");
-    expect(emptySlots(wrapper)).toBe(3);
+    expect(wrapper.text()).toContain("4/7");
+    expect(wrapper.findAll(".roster-slot").length).toBe(3);
   });
 
-  // The check-in badge says it, so eligibility doesn't repeat it.
-  it("leaves Missed Check-in to the check-in badge when a full-enough roster missed it", async () => {
-    const wrapper = await mountTeam({
-      rosterSize: 5,
-      registration: checkInClosed,
-    });
-
-    expect(badge(wrapper)).toBe("Not Eligible");
-    expect(checkInBadge(wrapper)).toBe("Missed Check-in");
-  });
-
-  it("says Need when the roster is short, even if check-in was missed too", async () => {
-    const wrapper = await mountTeam({
-      rosterSize: 4,
-      registration: checkInClosed,
-    });
-
-    expect(badge(wrapper)).toBe("Need 1 more player");
-  });
-
-  it("says Not Eligible when the roster is full enough and check-in is not the reason", async () => {
-    const wrapper = await mountTeam({
-      rosterSize: 5,
-      checkedIn: true,
-      registration: checkInClosed,
-    });
-
-    expect(badge(wrapper)).toBe("Not Eligible");
-  });
-
-  it("does not blame check-in before a check-in window ever opened", async () => {
-    const wrapper = await mountTeam({
-      rosterSize: 6,
-      registration: { check_in_required: true, check_in_ends_at: null },
-    });
-
-    expect(badge(wrapper)).toBe("Not Eligible");
-  });
-
-  it("says Eligible once the team is eligible", async () => {
+  it("says Ready once the team is eligible", async () => {
     const wrapper = await mountTeam({ rosterSize: 5, eligible: true });
 
-    expect(badge(wrapper)).toBe("Eligible");
-  });
-});
-
-describe("TournamentTeam check-in badge", () => {
-  it("shows nothing when the tournament does not require check-in", async () => {
-    const wrapper = await mountTeam({ rosterSize: 5, eligible: true });
-
-    expect(checkInBadge(wrapper)).toBeUndefined();
+    expect(status(wrapper)).toBe("Ready");
   });
 
-  it("shows nothing before the window starts", async () => {
-    const wrapper = await mountTeam({
-      rosterSize: 5,
-      eligible: true,
-      registration: { check_in_required: true, check_in_started: false },
-    });
+  it("says Not eligible when the roster is full and check-in is not the reason", async () => {
+    const wrapper = await mountTeam({ rosterSize: 5 });
 
-    expect(checkInBadge(wrapper)).toBeUndefined();
+    expect(status(wrapper)).toBe("Not eligible");
   });
 
-  it("says not checked in while the window is open", async () => {
+  it("says Not checked in while the window is open", async () => {
     const wrapper = await mountTeam({
       rosterSize: 5,
       eligible: true,
       registration: checkInOpen,
     });
 
-    expect(checkInBadge(wrapper)).toBe("not checked in");
+    expect(status(wrapper)).toBe("Not checked in");
   });
 
-  it("counts confirmed players in Players mode", async () => {
+  it("counts confirmed players in every-player mode", async () => {
     const wrapper = await mountTeam({
       rosterSize: 6,
       rosterCheckedIn: 2,
@@ -193,7 +134,7 @@ describe("TournamentTeam check-in badge", () => {
       registration: { ...checkInOpen, check_in_setting: "Players" },
     });
 
-    expect(checkInBadge(wrapper)).toBe("2 of 5 checked in");
+    expect(status(wrapper)).toBe("2 of 5 checked in");
   });
 
   it("shows when the team checked in", async () => {
@@ -204,20 +145,37 @@ describe("TournamentTeam check-in badge", () => {
       registration: checkInOpen,
     });
 
-    expect(checkInBadge(wrapper)).toMatch(/^checked in · /);
+    expect(status(wrapper)).toMatch(/^Checked in \d/);
+  });
+
+  it("says Missed check-in once a window that opened has closed", async () => {
+    const wrapper = await mountTeam({
+      rosterSize: 5,
+      registration: checkInClosed,
+    });
+
+    expect(status(wrapper)).toBe("Missed check-in");
+  });
+
+  it("says Needs when the roster is short, even if check-in was missed too", async () => {
+    const wrapper = await mountTeam({
+      rosterSize: 4,
+      registration: checkInClosed,
+    });
+
+    expect(status(wrapper)).toBe("Needs 1 player");
   });
 
   it("does not blame check-in when a window never opened", async () => {
     const wrapper = await mountTeam({
-      rosterSize: 5,
-      eligible: true,
+      rosterSize: 6,
       registration: { ...checkInClosed, check_in_ends_at: null },
     });
 
-    expect(checkInBadge(wrapper)).toBeUndefined();
+    expect(status(wrapper)).toBe("Not eligible");
   });
 
-  it("goes away once the tournament is live", async () => {
+  it("leaves the status to the bracket once the tournament is live", async () => {
     const wrapper = await mountTeam({
       rosterSize: 5,
       eligible: true,
@@ -226,9 +184,11 @@ describe("TournamentTeam check-in badge", () => {
       tournament: { status: "Live" },
     });
 
-    expect(checkInBadge(wrapper)).toBeUndefined();
+    expect(wrapper.find("[data-team-status]").exists()).toBe(false);
   });
+});
 
+describe("TournamentTeam ledger check-in controls", () => {
   it("offers no controls to someone who is not an organizer", async () => {
     const wrapper = await mountTeam({
       rosterSize: 5,
@@ -236,10 +196,10 @@ describe("TournamentTeam check-in badge", () => {
       registration: checkInOpen,
     });
 
-    expect(buttons(wrapper)).not.toContain("Mark present");
+    expect(wrapper.find('[role="switch"]').exists()).toBe(false);
   });
 
-  it("lets an organizer mark a team present while the window is open", async () => {
+  it("gives an organizer a present switch while the window is open", async () => {
     const wrapper = await mountTeam({
       rosterSize: 5,
       eligible: true,
@@ -247,10 +207,12 @@ describe("TournamentTeam check-in badge", () => {
       tournament: { is_organizer: true },
     });
 
-    expect(buttons(wrapper)).toContain("Mark present");
+    const toggle = wrapper.find('[role="switch"]');
+    expect(toggle.exists()).toBe(true);
+    expect(toggle.attributes("aria-checked")).toBe("false");
   });
 
-  it("lets an organizer undo a check-in while the window is open", async () => {
+  it("shows a checked-in team as switched on", async () => {
     const wrapper = await mountTeam({
       rosterSize: 5,
       eligible: true,
@@ -259,10 +221,12 @@ describe("TournamentTeam check-in badge", () => {
       tournament: { is_organizer: true },
     });
 
-    expect(buttons(wrapper)).toContain("Undo");
+    expect(
+      wrapper.find('[role="switch"]').attributes("aria-checked"),
+    ).toBe("true");
   });
 
-  it("offers no undo once the window has closed", async () => {
+  it("takes the switch away once the window has closed", async () => {
     const wrapper = await mountTeam({
       rosterSize: 5,
       eligible: true,
@@ -271,7 +235,7 @@ describe("TournamentTeam check-in badge", () => {
       tournament: { is_organizer: true },
     });
 
-    expect(buttons(wrapper)).not.toContain("Undo");
+    expect(wrapper.find('[role="switch"]').exists()).toBe(false);
   });
 
   it("lets an organizer re-admit a team that missed check-in", async () => {

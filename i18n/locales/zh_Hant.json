@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "返回聯賽",
       "my_team": "我的隊伍",
-      "my_team_hint": "管理您的陣容、邀請以及此賽事的準備狀態。",
       "roster_section": "陣容",
       "no_teams_yet": "尚無隊伍。",
       "about_section": "關於",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "符合資格",
-      "not_eligible": "不符合資格",
-      "need_players": "還需要 {count} 名選手 | 還需要 {count} 名選手",
-      "missed_check_in": "錯過報到",
+      "status": {
+        "ready": "已就緒",
+        "not_eligible": "不符合資格",
+        "needs_players": "還需要 {count} 名選手 | 還需要 {count} 名選手",
+        "checked_in": "已報到",
+        "not_checked_in": "未報到",
+        "missed": "錯過報到"
+      },
       "leave_tournament": "離開賽事",
       "leave_team": "離開隊伍",
       "slot": "第 {number} 號位",
@@ -9421,13 +9424,21 @@
     "teams_filter": {
       "all": "全部",
       "ready": "已就緒",
+      "checked_in": "已報到",
       "incomplete": "人數不足",
       "not_checked_in": "未報到",
+      "missed": "錯過",
       "no_matches": "沒有符合此篩選條件的隊伍",
       "collapse": "收合",
-      "expand": "展開",
-      "collapse_all": "全部收合",
-      "expand_all": "全部展開"
+      "expand": "展開"
+    },
+    "teams_ledger": {
+      "search": "搜尋隊伍或選手",
+      "seed": "種子",
+      "team": "隊伍",
+      "players": "選手",
+      "status": "狀態",
+      "sort_by": "依{column}排序"
     },
     "matches_filter": {
       "live": "進行中",
@@ -9539,10 +9550,12 @@
       "admin_hint": "本賽事中選手無法自行報到。請在時段關閉前把每支隊伍標記為已到場。",
       "check_in": "報到",
       "mark_present": "標記為已到場",
+      "present": "已到場",
+      "absent": "未到場",
+      "present_label": "{team} 已到場",
       "checked_in": "已報到",
       "checked_in_at": "已報到 · {time}",
       "waiting": "等待中",
-      "not_checked_in": "未報到",
       "not_needed": "無須報到",
       "role_captain": "隊長",
       "role_starter": "先發",

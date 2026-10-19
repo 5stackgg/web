@@ -43,17 +43,15 @@ import Separator from "../ui/separator/Separator.vue";
 </script>
 
 <template>
-  <div
-    class="flex items-center justify-between gap-4 px-[0.85rem] py-[0.65rem] bg-card/50 border border-border rounded-md [transition:border-color_160ms_ease,background_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-card/70"
-  >
+  <div class="flex items-center justify-between gap-4 py-1.5">
     <div class="flex items-center gap-[0.65rem] min-w-0 flex-1">
-      <PlayerDisplay :player="member.player" :linkable="true" />
+      <PlayerDisplay :player="member.player" :linkable="true" size="xs" />
     </div>
 
     <div class="flex flex-shrink-0 items-center gap-2">
       <span
         v-if="isCaptain"
-        class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border/70 bg-muted/25 px-3 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground"
+        class="inline-flex h-8 items-center gap-1.5 text-xs font-medium text-[hsl(var(--tac-amber))]"
       >
         <Shield class="h-3.5 w-3.5" />
         {{ $t("team.roles.captain") }}

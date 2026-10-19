@@ -173,6 +173,20 @@ describe("restore round", () => {
     expect(sent()[0].variables).toEqual({ matchId: "m-1", round: 13 });
   });
 
+  it("picks nothing after a map restart, so undoing it is a choice", async () => {
+    await mountRestore(
+      restoreRounds({
+        live_round: 1,
+        rounds: Array.from({ length: 13 }, (_, index) =>
+          round(index + 1, true, true),
+        ),
+      }),
+    );
+
+    expect(body().textContent).toContain("Undone, can still be brought back");
+    expect(button("Restore to Round")!.disabled).toBe(true);
+  });
+
   it("waits for a missing player instead of sending the restore", async () => {
     await mountRestore(
       restoreRounds({ connected_players: 9, disconnected: ["osk"] }),

@@ -165,13 +165,11 @@ const selectableRounds = computed(() => {
   return rounds;
 });
 
+// Going forward undoes a restore or a map restart, so it is never picked for
+// the organizer.
 function defaultRound() {
   const live = liveRound.value ?? 0;
-  return (
-    selectableRounds.value.filter((round) => round <= live).at(-1) ??
-    selectableRounds.value.at(-1) ??
-    null
-  );
+  return selectableRounds.value.filter((round) => round <= live).at(-1) ?? null;
 }
 
 async function load() {

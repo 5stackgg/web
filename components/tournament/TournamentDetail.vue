@@ -83,6 +83,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { Fold } from "~/components/ui/transitions";
 import { useTournamentPreviews } from "~/composables/useTournamentPreview";
+import { useMediaQuery } from "@vueuse/core";
 
 import {
   tacticalCtaButtonClasses,
@@ -94,6 +95,9 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const route = useRoute();
 const tournamentPreviews = useTournamentPreviews();
+// Below `sm` the team filters stack count over label in equal columns, so the
+// whole strip fits one row instead of wrapping.
+const isPhone = useMediaQuery("(max-width: 639px)");
 const tournamentPreview = computed(
   () => tournamentPreviews.value[String(route.params.tournamentId)] ?? null,
 );
@@ -731,32 +735,44 @@ function clearTeamEnterDelay(el: Element) {
                       </span>
                     </div>
 
+                    <!-- On phones this wrapper dissolves: the expand toggle
+                         joins the panel switch on row one and the filters
+                         take row two at full width. -->
                     <div
                       v-if="teamsPanel === 'roster'"
-                      class="flex flex-wrap items-center gap-2"
+                      class="flex flex-wrap items-center gap-2 max-sm:contents"
                     >
                       <AnimatedFilters
                         v-if="visibleTeams.length > 1"
                         v-model="teamFilter"
                         :options="teamFilterOptions"
+                        :stacked="isPhone"
                         square
+                        class="max-sm:order-last"
                       />
                       <Button
                         v-if="visibleTeams.length > 0"
                         variant="outline"
                         size="sm"
-                        class="h-8"
+                        class="h-8 max-sm:w-8 max-sm:px-0"
+                        :title="
+                          allTeamsCollapsed
+                            ? $t('tournament.teams_filter.expand_all')
+                            : $t('tournament.teams_filter.collapse_all')
+                        "
                         @click="toggleAllTeams"
                       >
                         <component
                           :is="allTeamsCollapsed ? Maximize : Minimize"
-                          class="mr-1.5 h-4 w-4 shrink-0"
+                          class="h-4 w-4 shrink-0 sm:mr-1.5"
                         />
-                        {{
-                          allTeamsCollapsed
-                            ? $t("tournament.teams_filter.expand_all")
-                            : $t("tournament.teams_filter.collapse_all")
-                        }}
+                        <span class="max-sm:sr-only">
+                          {{
+                            allTeamsCollapsed
+                              ? $t("tournament.teams_filter.expand_all")
+                              : $t("tournament.teams_filter.collapse_all")
+                          }}
+                        </span>
                       </Button>
                     </div>
                   </div>

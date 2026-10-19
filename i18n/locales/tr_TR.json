@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Düğüm bağlandığında CS2'yi kurun.",
-          "gpu_only": "Yalnızca GPU düğümleri CS2 sunucusu çalıştırmaz.",
+          "gpu_only": "Yalnızca GPU düğümleri CS2'yi sadece dizilim önizlemelerini çekmek için çalıştırır ve bu düğümde Render kapalı.",
           "plugin_unsupported": "Desteklenmiyor",
           "update_log": "Güncelleme günlüğü",
           "on_build": "{build} sürümünde",

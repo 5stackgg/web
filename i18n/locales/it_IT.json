@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installa CS2 quando il nodo si connette.",
-          "gpu_only": "I nodi solo GPU non eseguono server CS2.",
+          "gpu_only": "I nodi solo GPU eseguono CS2 solo per registrare le anteprime dei lineup, e il Rendering è disattivato su questo.",
           "plugin_unsupported": "Non supportato",
           "update_log": "Log aggiornamento",
           "on_build": "sulla build {build}",

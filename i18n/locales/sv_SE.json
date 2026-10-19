@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installera CS2 när noden ansluter.",
-          "gpu_only": "Noder med endast GPU kör inga CS2-servrar.",
+          "gpu_only": "Noder med endast GPU kör CS2 bara för att filma förhandsvisningar av uppställningar, och Rendering är avstängt på den här.",
           "plugin_unsupported": "Stöds inte",
           "update_log": "Uppdateringslogg",
           "on_build": "på build {build}",

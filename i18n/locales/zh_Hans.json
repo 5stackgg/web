@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "节点连接后安装 CS2。",
-          "gpu_only": "仅 GPU 节点不运行 CS2 服务器。",
+          "gpu_only": "仅 GPU 节点只为拍摄点位预览运行 CS2，而此节点已关闭渲染。",
           "plugin_unsupported": "不支持",
           "update_log": "更新日志",
           "on_build": "（版本 {build}）",

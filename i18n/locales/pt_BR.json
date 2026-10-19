@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Instale o CS2 quando o nó se conectar.",
-          "gpu_only": "Nós só de GPU não rodam servidores de CS2.",
+          "gpu_only": "Nós só de GPU rodam CS2 apenas para gravar prévias de lineups, e a Renderização está desligada neste.",
           "plugin_unsupported": "Não suportado",
           "update_log": "Log de atualização",
           "on_build": "na build {build}",

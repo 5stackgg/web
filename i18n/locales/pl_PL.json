@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Zainstaluj CS2 po połączeniu węzła.",
-          "gpu_only": "Węzły tylko GPU nie uruchamiają serwerów CS2.",
+          "gpu_only": "Węzły tylko GPU uruchamiają CS2 wyłącznie do nagrywania podglądów ustawek, a Renderowanie jest na tym wyłączone.",
           "plugin_unsupported": "Nieobsługiwany",
           "update_log": "Log aktualizacji",
           "on_build": "na buildzie {build}",

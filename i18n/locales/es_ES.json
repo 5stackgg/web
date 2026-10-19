@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Instala CS2 cuando el nodo se conecte.",
-          "gpu_only": "Los nodos solo GPU no ejecutan servidores de CS2.",
+          "gpu_only": "Los nodos solo GPU ejecutan CS2 solo para grabar vistas previas de lineups, y el Renderizado está desactivado en este.",
           "plugin_unsupported": "No compatible",
           "update_log": "Registro de actualización",
           "on_build": "en la build {build}",

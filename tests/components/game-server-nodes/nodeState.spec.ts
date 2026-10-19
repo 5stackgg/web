@@ -120,6 +120,27 @@ describe("CS2 builds", () => {
       canUpdateCs(node({ gpu: true, enabled_for_match_making: false }), 120),
     ).toBe(false);
   });
+
+  // Each lineup preview a GPU-only node renders boots a CS2 server on it.
+  it("updates a GPU-only node that renders lineup previews", () => {
+    const gpuOnly = (fields: Partial<NodeLike> = {}) =>
+      node({
+        gpu: true,
+        enabled_for_match_making: false,
+        region: null,
+        start_port_range: null,
+        end_port_range: null,
+        gpu_rendering_enabled: true,
+        ...fields,
+      });
+
+    expect(canUpdateCs(gpuOnly({ build_id: null }), 120)).toBe(true);
+    expect(canUpdateCs(gpuOnly(), 120)).toBe(true);
+    expect(canUpdateCs(gpuOnly(), 100)).toBe(false);
+    expect(canUpdateCs(gpuOnly({ gpu_rendering_enabled: false }), 120)).toBe(
+      false,
+    );
+  });
 });
 
 describe("attention", () => {

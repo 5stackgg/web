@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "節點連線後安裝 CS2。",
-          "gpu_only": "僅 GPU 節點不執行 CS2 伺服器。",
+          "gpu_only": "僅 GPU 節點只為拍攝點位預覽執行 CS2，而此節點已關閉轉檔渲染。",
           "plugin_unsupported": "不支援",
           "update_log": "更新記錄",
           "on_build": "（版本 {build}）",

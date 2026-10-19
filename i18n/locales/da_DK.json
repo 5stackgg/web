@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installer CS2, når noden forbinder.",
-          "gpu_only": "Rene GPU-noder kører ikke CS2-servere.",
+          "gpu_only": "Rene GPU-noder kører kun CS2 for at optage forhåndsvisninger af opstillinger, og Rendering er slået fra på denne.",
           "plugin_unsupported": "Ikke understøttet",
           "update_log": "Opdateringslog",
           "on_build": "på build {build}",

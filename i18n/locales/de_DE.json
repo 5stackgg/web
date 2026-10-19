@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installiere CS2, sobald der Node verbunden ist.",
-          "gpu_only": "Reine GPU-Nodes betreiben keine CS2-Server.",
+          "gpu_only": "Reine GPU-Nodes betreiben CS2 nur, um Lineup-Vorschauen aufzunehmen, und Rendering ist auf diesem Node aus.",
           "plugin_unsupported": "Nicht unterstützt",
           "update_log": "Update-Log",
           "on_build": "auf Build {build}",

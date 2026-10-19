@@ -107,6 +107,12 @@ export function isGpuOnly(node: NodeLike) {
   return !!node.gpu && !node.enabled_for_match_making;
 }
 
+// A GPU-only node still boots a CS2 server for each lineup preview it renders:
+// the render pod films that server over loopback, so it has to be on the node.
+export function runsCs2(node: NodeLike) {
+  return !isGpuOnly(node) || !!node.gpu_rendering_enabled;
+}
+
 export function nodeStatus(node: NodeLike): NodeStatus {
   if (node.status === "Setup") {
     return "setup";
@@ -212,7 +218,7 @@ export function canUpdateCs(
   return (
     isReachable(node) &&
     !node.update_status &&
-    !isGpuOnly(node) &&
+    runsCs2(node) &&
     (!node.build_id || isBuildBehind(node, currentBuildId))
   );
 }

@@ -5219,7 +5219,7 @@
         },
         "cs2": {
           "setup": "Install CS2 once the node connects.",
-          "gpu_only": "GPU-only nodes don't run CS2 servers.",
+          "gpu_only": "GPU-only nodes run CS2 only to film lineup previews, and Rendering is off on this one.",
           "plugin_unsupported": "Not supported",
           "update_log": "Update log",
           "on_build": "on build {build}",

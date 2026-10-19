@@ -5217,7 +5217,7 @@
         },
         "cs2": {
           "setup": "Installez CS2 une fois le nœud connecté.",
-          "gpu_only": "Les nœuds GPU uniquement n'exécutent pas de serveurs CS2.",
+          "gpu_only": "Les nœuds GPU uniquement n'exécutent CS2 que pour filmer les aperçus de lineups, et le Rendu est désactivé sur celui-ci.",
           "plugin_unsupported": "Non pris en charge",
           "update_log": "Journal de mise à jour",
           "on_build": "sur le build {build}",

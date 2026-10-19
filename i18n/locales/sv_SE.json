@@ -5190,9 +5190,6 @@
           "ports": "portar",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 och plugins"
-        },
         "capacity": {
           "gpu_only": "Endast GPU, så den är inte värd för matcher. Byt tillbaka under GPU.",
           "max_servers": "Max servrar",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "Installera CS2 när noden ansluter.",
           "gpu_only": "Noder med endast GPU kör inga CS2-servrar.",
-          "to": "till {version}",
           "plugin_unsupported": "Stöds inte",
           "update_log": "Uppdateringslogg",
-          "behind_line": "build {build}, uppdatera till {target}",
-          "failed_line": "{ago} · fortfarande på build {build}",
-          "build_line": "build {build}",
           "on_build": "på build {build}",
-          "pinning_unsupported": "Fästning stöds inte"
+          "pinning_unsupported": "Fästning stöds inte",
+          "actions": "CS2-åtgärder",
+          "version": "Version"
         },
         "hardware": {
           "cores": "Kärnor",
@@ -5310,7 +5305,33 @@
           "details": "Detaljer"
         },
         "window_minutes": "Senaste {count} minuten | Senaste {count} minuterna",
-        "window_hours": "Senaste {count} timmen | Senaste {count} timmarna"
+        "window_hours": "Senaste {count} timmen | Senaste {count} timmarna",
+        "game": {
+          "up_to_date": "Uppdaterad",
+          "update_available": "Uppdatering tillgänglig",
+          "updating": "Uppdaterar",
+          "updating_to": "Uppdaterar till {build}",
+          "installing": "Installerar",
+          "installing_to": "Installerar {build}",
+          "installed": "Installerad",
+          "build": "build {build}",
+          "on_update_to": "På {build}, uppdatera till {target}",
+          "still_on": "Fortfarande på {build}",
+          "watch_log": "Följ loggen",
+          "open_log": "Öppna loggen",
+          "last_lines": "Sista raderna i loggen",
+          "retry": "Försök igen"
+        },
+        "csgo": {
+          "legacy": "Legacy",
+          "actions": "CS:GO-åtgärder",
+          "install_hint": "För legacy CS:GO-servrar"
+        },
+        "log": {
+          "title_cs2": "CS2-uppdateringslogg",
+          "title_csgo": "CS:GO-uppdateringslogg",
+          "kept": "Loggar sparas i 7 dagar efter varje uppdatering"
+        }
       }
     },
     "dedicated_servers": {
@@ -11857,6 +11878,7 @@
     "toast": {
       "cs_updating": "CS2 uppdateras på noden",
       "csgo_installing": "CS:GO installeras på noden",
+      "csgo_updating": "CS:GO uppdateras på noden",
       "ports_updated": "Nodportar uppdaterade",
       "ports_removed": "Nodportar borttagna",
       "made_gpu_only": "Nod satt till endast GPU",

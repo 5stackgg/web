@@ -25,6 +25,11 @@ export type NodeLike = {
   end_port_range?: number | null;
   update_status?: string | null;
   update_failed_at?: string | null;
+  update_error?: string | null;
+  csgo_build_id?: number | string | null;
+  csgo_update_status?: string | null;
+  csgo_update_failed_at?: string | null;
+  csgo_update_error?: string | null;
   supports_cpu_pinning?: boolean | null;
   cpu_sockets?: number | null;
   cpu_cores_per_socket?: number | null;

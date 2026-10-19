@@ -5190,9 +5190,6 @@
           "ports": "portlar",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 ve eklentiler"
-        },
         "capacity": {
           "gpu_only": "Yalnızca GPU olduğu için maç barındırmaz. GPU altından geri değiştirin.",
           "max_servers": "Maks. sunucu",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "Düğüm bağlandığında CS2'yi kurun.",
           "gpu_only": "Yalnızca GPU düğümleri CS2 sunucusu çalıştırmaz.",
-          "to": "→ {version}",
           "plugin_unsupported": "Desteklenmiyor",
           "update_log": "Güncelleme günlüğü",
-          "behind_line": "sürüm {build}, {target} sürümüne güncelle",
-          "failed_line": "{ago} · hâlâ {build} sürümünde",
-          "build_line": "sürüm {build}",
           "on_build": "{build} sürümünde",
-          "pinning_unsupported": "Sabitleme desteklenmiyor"
+          "pinning_unsupported": "Sabitleme desteklenmiyor",
+          "actions": "CS2 işlemleri",
+          "version": "Sürüm"
         },
         "hardware": {
           "cores": "Çekirdek",
@@ -5310,7 +5305,33 @@
           "details": "Ayrıntılar"
         },
         "window_minutes": "Son {count} dakika | Son {count} dakika",
-        "window_hours": "Son {count} saat | Son {count} saat"
+        "window_hours": "Son {count} saat | Son {count} saat",
+        "game": {
+          "up_to_date": "Güncel",
+          "update_available": "Güncelleme var",
+          "updating": "Güncelleniyor",
+          "updating_to": "{build} sürümüne güncelleniyor",
+          "installing": "Yükleniyor",
+          "installing_to": "{build} yükleniyor",
+          "installed": "Yüklü",
+          "build": "sürüm {build}",
+          "on_update_to": "{build} sürümünde, {target} sürümüne güncelle",
+          "still_on": "Hâlâ {build} sürümünde",
+          "watch_log": "Günlüğü izle",
+          "open_log": "Günlüğü aç",
+          "last_lines": "Günlüğün son satırları",
+          "retry": "Yeniden dene"
+        },
+        "csgo": {
+          "legacy": "Eski",
+          "actions": "CS:GO işlemleri",
+          "install_hint": "Eski CS:GO sunucuları için"
+        },
+        "log": {
+          "title_cs2": "CS2 güncelleme günlüğü",
+          "title_csgo": "CS:GO güncelleme günlüğü",
+          "kept": "Günlükler her güncellemeden sonra 7 gün saklanır"
+        }
       }
     },
     "dedicated_servers": {
@@ -11857,6 +11878,7 @@
     "toast": {
       "cs_updating": "CS2 düğümde güncelleniyor",
       "csgo_installing": "CS:GO düğümde yükleniyor",
+      "csgo_updating": "CS:GO düğümde güncelleniyor",
       "ports_updated": "Düğüm portları güncellendi",
       "ports_removed": "Düğüm portları kaldırıldı",
       "made_gpu_only": "Düğüm yalnızca GPU olarak ayarlandı",

@@ -5190,9 +5190,6 @@
           "ports": "포트",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 및 플러그인"
-        },
         "capacity": {
           "gpu_only": "GPU 전용이라 매치를 호스팅하지 않습니다. GPU에서 다시 전환하세요.",
           "max_servers": "최대 서버 수",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "노드가 연결되면 CS2를 설치하세요.",
           "gpu_only": "GPU 전용 노드는 CS2 서버를 실행하지 않습니다.",
-          "to": "→ {version}",
           "plugin_unsupported": "지원 안 됨",
           "update_log": "업데이트 로그",
-          "behind_line": "빌드 {build}, {target}(으)로 업데이트",
-          "failed_line": "{ago} · 아직 빌드 {build}",
-          "build_line": "빌드 {build}",
           "on_build": "(빌드 {build})",
-          "pinning_unsupported": "고정 미지원"
+          "pinning_unsupported": "고정 미지원",
+          "actions": "CS2 작업",
+          "version": "버전"
         },
         "hardware": {
           "cores": "코어",
@@ -5310,7 +5305,33 @@
           "details": "세부 정보"
         },
         "window_minutes": "최근 {count}분 | 최근 {count}분",
-        "window_hours": "최근 {count}시간 | 최근 {count}시간"
+        "window_hours": "최근 {count}시간 | 최근 {count}시간",
+        "game": {
+          "up_to_date": "최신",
+          "update_available": "업데이트 가능",
+          "updating": "업데이트 중",
+          "updating_to": "{build}(으)로 업데이트 중",
+          "installing": "설치 중",
+          "installing_to": "{build} 설치 중",
+          "installed": "설치됨",
+          "build": "빌드 {build}",
+          "on_update_to": "현재 {build}, {target}(으)로 업데이트",
+          "still_on": "아직 {build}",
+          "watch_log": "로그 보기",
+          "open_log": "로그 열기",
+          "last_lines": "로그 마지막 줄",
+          "retry": "다시 시도"
+        },
+        "csgo": {
+          "legacy": "레거시",
+          "actions": "CS:GO 작업",
+          "install_hint": "레거시 CS:GO 서버용"
+        },
+        "log": {
+          "title_cs2": "CS2 업데이트 로그",
+          "title_csgo": "CS:GO 업데이트 로그",
+          "kept": "로그는 업데이트마다 7일간 보관됩니다"
+        }
       }
     },
     "dedicated_servers": {
@@ -11857,6 +11878,7 @@
     "toast": {
       "cs_updating": "노드에서 CS2를 업데이트하는 중입니다",
       "csgo_installing": "노드에서 CS:GO를 설치하는 중입니다",
+      "csgo_updating": "노드에서 CS:GO를 업데이트하는 중입니다",
       "ports_updated": "노드 포트가 업데이트되었습니다",
       "ports_removed": "노드 포트가 제거되었습니다",
       "made_gpu_only": "노드가 GPU 전용으로 설정되었습니다",

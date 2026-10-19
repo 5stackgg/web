@@ -26,6 +26,8 @@ import {
 import NodeStatusDot from "~/components/game-server-nodes/NodeStatusDot.vue";
 import InspectorCapacity from "~/components/game-server-nodes/InspectorCapacity.vue";
 import InspectorCs2 from "~/components/game-server-nodes/InspectorCs2.vue";
+import InspectorCsgo from "~/components/game-server-nodes/InspectorCsgo.vue";
+import UpdateLogSheet from "~/components/game-server-nodes/UpdateLogSheet.vue";
 import InspectorDisk from "~/components/game-server-nodes/InspectorDisk.vue";
 import InspectorHardware from "~/components/game-server-nodes/InspectorHardware.vue";
 import InspectorLive from "~/components/game-server-nodes/InspectorLive.vue";
@@ -60,6 +62,7 @@ import {
   type NodeLike,
 } from "~/components/game-server-nodes/nodeState";
 import {
+  csgoState,
   nextStep,
   nodeAttention,
   type AttentionItem,
@@ -172,7 +175,7 @@ const copyOf = (item: (typeof attention.value)[number]) =>
 
 const portsOpen = ref(false);
 const moreOpen = ref(false);
-const logOpen = ref(!!props.node.update_failed_at && !props.node.update_status);
+const logGame = ref<"cs2" | "csgo" | null>(null);
 const editVideo = ref(false);
 
 const regionLabel = computed(() => {
@@ -228,6 +231,9 @@ const stepIsMenu = computed(
 );
 
 const pluginRuntime = computed(() => settings.gameServerPluginRuntime);
+const csgoShown = computed(
+  () => csgoState(view.value, settings.csgoBuildId) !== "none",
+);
 const runtimePlugins = computed(() =>
   props.pluginVersions.filter(
     (version) => version.runtime === pluginRuntime.value,
@@ -290,7 +296,6 @@ const pinPlugin = (version: string | null) =>
 async function updateCs() {
   try {
     await updateGame(client, props.node.id);
-    logOpen.value = true;
     toast({ title: t("game_server.toast.cs_updating") });
   } catch (error: any) {
     failed(error);
@@ -299,9 +304,13 @@ async function updateCs() {
 
 async function updateCsgo() {
   try {
+    const installed = !!props.node.csgo_build_id;
     await updateGame(client, props.node.id, "csgo");
-    logOpen.value = true;
-    toast({ title: t("game_server.toast.csgo_installing") });
+    toast({
+      title: installed
+        ? t("game_server.toast.csgo_updating")
+        : t("game_server.toast.csgo_installing"),
+    });
   } catch (error: any) {
     failed(error);
   }
@@ -742,7 +751,6 @@ const CALLOUT_BORDER: Record<string, string> = {
           @clear-ports="clearPorts"
         />
         <InspectorCs2
-          v-model:log-open="logOpen"
           :node="view"
           :game-versions="gameVersions"
           :plugin-versions="pluginVersions"
@@ -752,10 +760,19 @@ const CALLOUT_BORDER: Record<string, string> = {
           :pin-plugin="shown('pin_plugin_version')"
           :current-build-id="currentBuildId"
           :next-step="step"
+          :csgo-shown="csgoShown"
           @pin-build="pinBuild"
           @pin-plugin="pinPlugin"
           @update-cs="updateCs"
-          @update-csgo="updateCsgo"
+          @install-csgo="updateCsgo"
+          @open-log="logGame = 'cs2'"
+        />
+        <InspectorCsgo
+          v-if="csgoShown"
+          :node="view"
+          :latest-build-id="settings.csgoBuildId"
+          @update="updateCsgo"
+          @open-log="logGame = 'csgo'"
         />
         <InspectorHardware :node="node" />
         <InspectorGpu
@@ -783,6 +800,8 @@ const CALLOUT_BORDER: Record<string, string> = {
         {{ t(`${INSPECTOR}.remove`) }}
       </Button>
     </div>
+
+    <UpdateLogSheet v-model:game="logGame" :node="node" />
 
     <EditCs2Options
       v-if="node.gpu"

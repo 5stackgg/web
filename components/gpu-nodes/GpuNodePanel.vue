@@ -13,6 +13,7 @@ import NodeStatsPoll from "~/components/game-server-nodes/NodeStatsPoll.vue";
 import type { MetricRangeKey } from "~/components/game-server-nodes/nodeMetrics";
 import NodeControlList from "~/components/game-server-nodes/NodeControlList.vue";
 import InspectorGpu from "~/components/game-server-nodes/InspectorGpu.vue";
+import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import GpuKindIcon from "~/components/gpu-nodes/GpuKindIcon.vue";
 import GpuSessionState from "~/components/gpu-nodes/GpuSessionState.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
@@ -141,9 +142,9 @@ onBeforeUnmount(() => headerObserver?.disconnect());
       <div class="gpn-col gpn-col-l">
         <section class="grid gap-3 p-4">
           <div class="flex min-h-7 items-center gap-2">
-            <h3 class="text-[13px] font-semibold">
-              {{ $t("pages.gpu_nodes.sheet.now") }}
-            </h3>
+            <InspectorLabel>{{
+              $t("pages.gpu_nodes.sheet.now")
+            }}</InspectorLabel>
             <span class="grow" />
             <Button
               v-if="session"
@@ -268,9 +269,7 @@ onBeforeUnmount(() => headerObserver?.disconnect());
 
       <div class="gpn-col gpn-col-r divide-y divide-border/60">
         <section class="grid gap-2.5 p-4">
-          <h3 class="text-[13px] font-semibold">
-            {{ $t("pages.gpu_nodes.col.node") }}
-          </h3>
+          <InspectorLabel>{{ $t("pages.gpu_nodes.col.node") }}</InspectorLabel>
 
           <NodeControlList :node="node" />
 
@@ -344,9 +343,9 @@ onBeforeUnmount(() => headerObserver?.disconnect());
 
         <section class="grid gap-2.5 p-4">
           <div class="flex min-h-7 flex-wrap items-center gap-2">
-            <h3 class="grow text-[13px] font-semibold">
-              {{ $t("pages.gpu_nodes.sheet.shader_cache") }}
-            </h3>
+            <InspectorLabel class="grow">{{
+              $t("pages.gpu_nodes.sheet.shader_cache")
+            }}</InspectorLabel>
             <Button
               v-if="isBaking(node)"
               size="xs"

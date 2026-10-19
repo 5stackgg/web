@@ -294,6 +294,13 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // CS:GO's latest public build, written by the api's game update check.
+    const csgoBuildId = computed(
+      () =>
+        settings.value?.find((setting) => setting.name === "csgo_build_id")
+          ?.value || null,
+    );
+
     const newsEnabled = computed(() => {
       return (
         settings.value?.find(
@@ -757,6 +764,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsDiscordBot,
       supportsGameServerNodes,
       supportsGameServerVersionPinning,
+      csgoBuildId,
       playerNameRegistration,
       newsEnabled,
       vetoScoutingEnabled,

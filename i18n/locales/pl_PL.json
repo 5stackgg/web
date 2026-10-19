@@ -5190,9 +5190,6 @@
           "ports": "porty",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 i wtyczki"
-        },
         "capacity": {
           "gpu_only": "Tylko GPU, więc nie hostuje meczów. Przełącz z powrotem w sekcji GPU.",
           "max_servers": "Maks. serwerów",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "Zainstaluj CS2 po połączeniu węzła.",
           "gpu_only": "Węzły tylko GPU nie uruchamiają serwerów CS2.",
-          "to": "do {version}",
           "plugin_unsupported": "Nieobsługiwany",
           "update_log": "Log aktualizacji",
-          "behind_line": "build {build}, zaktualizuj do {target}",
-          "failed_line": "{ago} · nadal na buildzie {build}",
-          "build_line": "build {build}",
           "on_build": "na buildzie {build}",
-          "pinning_unsupported": "Przypinanie nieobsługiwane"
+          "pinning_unsupported": "Przypinanie nieobsługiwane",
+          "actions": "Akcje CS2",
+          "version": "Wersja"
         },
         "hardware": {
           "cores": "Rdzenie",
@@ -5310,7 +5305,33 @@
           "details": "Szczegóły"
         },
         "window_minutes": "Ostatnia {count} minuta | Ostatnie {count} min",
-        "window_hours": "Ostatnia {count} godzina | Ostatnie {count} godz."
+        "window_hours": "Ostatnia {count} godzina | Ostatnie {count} godz.",
+        "game": {
+          "up_to_date": "Aktualny",
+          "update_available": "Dostępna aktualizacja",
+          "updating": "Aktualizowanie",
+          "updating_to": "Aktualizowanie do {build}",
+          "installing": "Instalowanie",
+          "installing_to": "Instalowanie {build}",
+          "installed": "Zainstalowano",
+          "build": "build {build}",
+          "on_update_to": "Na {build}, zaktualizuj do {target}",
+          "still_on": "Nadal na {build}",
+          "watch_log": "Obserwuj log",
+          "open_log": "Otwórz log",
+          "last_lines": "Ostatnie linie logu",
+          "retry": "Ponów"
+        },
+        "csgo": {
+          "legacy": "Legacy",
+          "actions": "Akcje CS:GO",
+          "install_hint": "Dla serwerów legacy CS:GO"
+        },
+        "log": {
+          "title_cs2": "Log aktualizacji CS2",
+          "title_csgo": "Log aktualizacji CS:GO",
+          "kept": "Logi są przechowywane przez 7 dni po każdej aktualizacji"
+        }
       }
     },
     "dedicated_servers": {
@@ -11857,6 +11878,7 @@
     "toast": {
       "cs_updating": "CS2 jest aktualizowane na węźle",
       "csgo_installing": "CS:GO jest instalowane na węźle",
+      "csgo_updating": "CS:GO jest aktualizowane na węźle",
       "ports_updated": "Porty węzła zaktualizowane",
       "ports_removed": "Porty węzła usunięte",
       "made_gpu_only": "Węzeł ustawiony jako tylko GPU",

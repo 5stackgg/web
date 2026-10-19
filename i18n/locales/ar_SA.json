@@ -5190,9 +5190,6 @@
           "ports": "منافذ",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 والإضافات"
-        },
         "capacity": {
           "gpu_only": "مخصصة لـ GPU فقط، لذا لا تستضيف مباريات. أعدها من قسم GPU.",
           "max_servers": "الحد الأقصى للسيرفرات",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "ثبّت CS2 بعد اتصال العقدة.",
           "gpu_only": "عقد GPU فقط لا تشغّل سيرفرات CS2.",
-          "to": "إلى {version}",
           "plugin_unsupported": "غير مدعوم",
           "update_log": "سجل التحديث",
-          "behind_line": "الإصدار {build}، حدّث إلى {target}",
-          "failed_line": "{ago} · لا يزال على الإصدار {build}",
-          "build_line": "الإصدار {build}",
           "on_build": "على الإصدار {build}",
-          "pinning_unsupported": "التثبيت غير مدعوم"
+          "pinning_unsupported": "التثبيت غير مدعوم",
+          "actions": "إجراءات CS2",
+          "version": "الإصدار"
         },
         "hardware": {
           "cores": "الأنوية",
@@ -5310,7 +5305,33 @@
           "details": "التفاصيل"
         },
         "window_minutes": "آخر {count} دقيقة | آخر {count} دقائق",
-        "window_hours": "آخر {count} ساعة | آخر {count} ساعات"
+        "window_hours": "آخر {count} ساعة | آخر {count} ساعات",
+        "game": {
+          "up_to_date": "محدّث",
+          "update_available": "يتوفر تحديث",
+          "updating": "جارٍ التحديث",
+          "updating_to": "جارٍ التحديث إلى {build}",
+          "installing": "جارٍ التثبيت",
+          "installing_to": "جارٍ تثبيت {build}",
+          "installed": "مثبّت",
+          "build": "الإصدار {build}",
+          "on_update_to": "على {build}، حدّث إلى {target}",
+          "still_on": "لا يزال على {build}",
+          "watch_log": "تابع السجل",
+          "open_log": "افتح السجل",
+          "last_lines": "آخر أسطر السجل",
+          "retry": "أعد المحاولة"
+        },
+        "csgo": {
+          "legacy": "قديم",
+          "actions": "إجراءات CS:GO",
+          "install_hint": "لخوادم CS:GO القديمة"
+        },
+        "log": {
+          "title_cs2": "سجل تحديث CS2",
+          "title_csgo": "سجل تحديث CS:GO",
+          "kept": "تُحفظ السجلات 7 أيام بعد كل تحديث"
+        }
       }
     },
     "dedicated_servers": {
@@ -11857,6 +11878,7 @@
     "toast": {
       "cs_updating": "يجري تحديث CS2 على العقدة",
       "csgo_installing": "يجري تثبيت CS:GO على العقدة",
+      "csgo_updating": "يجري تحديث CS:GO على العقدة",
       "ports_updated": "تم تحديث منافذ العقدة",
       "ports_removed": "تم حذف منافذ العقدة",
       "made_gpu_only": "تم ضبط العقدة لـ GPU فقط",

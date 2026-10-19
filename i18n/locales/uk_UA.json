@@ -5190,9 +5190,6 @@
           "ports": "порти",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 і плагіни"
-        },
         "capacity": {
           "gpu_only": "Лише GPU, матчі не приймає. Повернути можна в розділі GPU.",
           "max_servers": "Макс. серверів",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "Встановіть CS2 після підключення ноди.",
           "gpu_only": "Ноди лише для GPU не запускають сервери CS2.",
-          "to": "до {version}",
           "plugin_unsupported": "Не підтримується",
           "update_log": "Лог оновлення",
-          "behind_line": "збірка {build}, оновити до {target}",
-          "failed_line": "{ago} · досі на збірці {build}",
-          "build_line": "збірка {build}",
           "on_build": "на збірці {build}",
-          "pinning_unsupported": "Закріплення не підтримується"
+          "pinning_unsupported": "Закріплення не підтримується",
+          "actions": "Дії CS2",
+          "version": "Версія"
         },
         "hardware": {
           "cores": "Ядра",
@@ -5310,7 +5305,33 @@
           "details": "Докладніше"
         },
         "window_minutes": "Остання {count} хвилина | Останні {count} хв",
-        "window_hours": "Остання {count} година | Останні {count} год"
+        "window_hours": "Остання {count} година | Останні {count} год",
+        "game": {
+          "up_to_date": "Актуально",
+          "update_available": "Доступне оновлення",
+          "updating": "Оновлення",
+          "updating_to": "Оновлення до {build}",
+          "installing": "Встановлення",
+          "installing_to": "Встановлення {build}",
+          "installed": "Встановлено",
+          "build": "збірка {build}",
+          "on_update_to": "На {build}, оновіть до {target}",
+          "still_on": "Досі на {build}",
+          "watch_log": "Стежити за логом",
+          "open_log": "Відкрити лог",
+          "last_lines": "Останні рядки логу",
+          "retry": "Повторити"
+        },
+        "csgo": {
+          "legacy": "Legacy",
+          "actions": "Дії CS:GO",
+          "install_hint": "Для legacy-серверів CS:GO"
+        },
+        "log": {
+          "title_cs2": "Лог оновлення CS2",
+          "title_csgo": "Лог оновлення CS:GO",
+          "kept": "Логи зберігаються 7 днів після кожного оновлення"
+        }
       }
     },
     "dedicated_servers": {
@@ -11857,6 +11878,7 @@
     "toast": {
       "cs_updating": "CS2 оновлюється на ноді",
       "csgo_installing": "CS:GO встановлюється на ноді",
+      "csgo_updating": "CS:GO оновлюється на ноді",
       "ports_updated": "Порти ноди оновлено",
       "ports_removed": "Порти ноди видалено",
       "made_gpu_only": "Ноду переведено в режим лише GPU",

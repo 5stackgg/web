@@ -52,6 +52,7 @@ import {
   filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { schemaHasField } from "~/utilities/schemaHasType";
 import { order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
@@ -153,7 +154,14 @@ const serverRegions = computed<Array<{ value: string; description?: string }>>(
   () => (regionsSub.result.value as any)?.server_regions ?? [],
 );
 
-const nodesSub = useSubscription(
+// CS:GO's own update columns and a failed update's last log lines come with
+// an api that has them; until then the rows go without.
+const gameUpdateColumns = ref(false);
+schemaHasField(client, "game_server_nodes", "csgo_update_status").then(
+  (has) => (gameUpdateColumns.value = has),
+);
+
+const nodesSub = useSubscription(() =>
   typedGql("subscription")({
     game_server_nodes: [
       { order_by: [{ label: order_by.asc }, { id: order_by.asc }] },
@@ -204,6 +212,14 @@ const nodesSub = useSubscription(
         demo_network_limiter: true,
         disk_available_gb: true,
         disk_used_percent: true,
+        ...(gameUpdateColumns.value
+          ? {
+              update_error: true,
+              csgo_update_status: true,
+              csgo_update_failed_at: true,
+              csgo_update_error: true,
+            }
+          : {}),
       } as any,
     ],
   }),

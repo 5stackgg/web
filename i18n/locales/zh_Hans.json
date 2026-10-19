@@ -5190,9 +5190,6 @@
           "ports": "端口",
           "cs2": "CS2"
         },
-        "sections": {
-          "cs2": "CS2 与插件"
-        },
         "capacity": {
           "gpu_only": "仅 GPU，因此不承载比赛。可在 GPU 中切换回来。",
           "max_servers": "最大服务器数",
@@ -5221,14 +5218,12 @@
         "cs2": {
           "setup": "节点连接后安装 CS2。",
           "gpu_only": "仅 GPU 节点不运行 CS2 服务器。",
-          "to": "至 {version}",
           "plugin_unsupported": "不支持",
           "update_log": "更新日志",
-          "behind_line": "版本 {build}，更新到 {target}",
-          "failed_line": "{ago} · 仍在版本 {build}",
-          "build_line": "版本 {build}",
           "on_build": "（版本 {build}）",
-          "pinning_unsupported": "不支持固定版本"
+          "pinning_unsupported": "不支持固定版本",
+          "actions": "CS2 操作",
+          "version": "版本"
         },
         "hardware": {
           "cores": "核心",
@@ -5310,7 +5305,33 @@
           "details": "详情"
         },
         "window_minutes": "最近 {count} 分钟 | 最近 {count} 分钟",
-        "window_hours": "最近 {count} 小时 | 最近 {count} 小时"
+        "window_hours": "最近 {count} 小时 | 最近 {count} 小时",
+        "game": {
+          "up_to_date": "已是最新",
+          "update_available": "有可用更新",
+          "updating": "正在更新",
+          "updating_to": "正在更新到 {build}",
+          "installing": "正在安装",
+          "installing_to": "正在安装 {build}",
+          "installed": "已安装",
+          "build": "版本 {build}",
+          "on_update_to": "当前 {build}，更新到 {target}",
+          "still_on": "仍在 {build}",
+          "watch_log": "查看日志",
+          "open_log": "打开日志",
+          "last_lines": "日志最后几行",
+          "retry": "重试"
+        },
+        "csgo": {
+          "legacy": "旧版",
+          "actions": "CS:GO 操作",
+          "install_hint": "用于旧版 CS:GO 服务器"
+        },
+        "log": {
+          "title_cs2": "CS2 更新日志",
+          "title_csgo": "CS:GO 更新日志",
+          "kept": "每次更新后日志保留 7 天"
+        }
       }
     },
     "dedicated_servers": {
@@ -11857,6 +11878,7 @@
     "toast": {
       "cs_updating": "节点上的 CS2 正在更新",
       "csgo_installing": "节点上的 CS:GO 正在安装",
+      "csgo_updating": "节点上的 CS:GO 正在更新",
       "ports_updated": "节点端口已更新",
       "ports_removed": "节点端口已移除",
       "made_gpu_only": "节点已设置为仅 GPU",

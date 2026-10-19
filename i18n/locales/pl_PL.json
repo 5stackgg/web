@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Typ meczu i map pool są zablokowane po utworzeniu drabinki.",
       "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany typu meczu i map poolu, a potem zapisz ponownie.",
+      "rules_drawn_while_editing": "Etap rozpoczął się podczas edycji, więc jego zasady są zablokowane. Odrzuć zmiany w zasadach i zapisz ponownie.",
       "logo": {
         "label": "Logo"
       },
@@ -9057,8 +9058,7 @@
       "structure_locked_label": "Typ, drużyny i grupy",
       "structure_locked": "Typ, drużyny i grupy są zablokowane po utworzeniu drabinki.",
       "match_settings_locked_label": "Ustawienia meczu",
-      "match_settings_locked": "Ustawienia meczu są zablokowane, gdy ten etap ma już mecze.",
-      "match_settings_locked_match_mode": "Ustawienia meczu są zablokowane, gdy ten etap ma już mecze. Tryb meczu nadal można zmienić.",
+      "match_settings_inherited": "Ten etap korzysta z ustawień turnieju. Zmień je w Zasadach meczów.",
       "drawn_while_editing": "Drabinka została utworzona podczas edycji. Odrzuć zmiany, które są teraz zablokowane, i zapisz ponownie.",
       "final_map_advantage": {
         "label": "Przewaga mapowa w finale",
@@ -10266,6 +10266,12 @@
         "none": "Competitive (bez trybu)",
         "description": "Wczytuje zestaw wtyczek i zmiennych konsoli na serwerze meczowym.",
         "unranked_note": "Mecze z własnym trybem gry nigdy nie liczą się do ELO ani do rankingów."
+      },
+      "rules_locked": {
+        "label": "Zasady zablokowane",
+        "tournament_match": "Wszystkie mecze etapu toczą się według tych samych zasad: format, mapy, rundy, dogrywka, przerwy i rezerwowi. Region, opóźnienie GOTV, check-in i limity czasu wciąż można zmienić.",
+        "tournament": "Etap korzystający z tych ustawień ma już mecze, więc jego zasady są zablokowane: format, mapy, rundy, dogrywka, przerwy i rezerwowi. Region, opóźnienie GOTV, check-in i limity czasu wciąż można zmienić.",
+        "stage": "Zablokowane, gdy ten etap ma już mecze, aby wszystkie jego mecze toczyły się według tych samych zasad."
       }
     },
     "schedule": {

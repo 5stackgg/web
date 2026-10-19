@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Matchtyp och kartpool är låsta när slutspelsträdet har skapats.",
       "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta dina ändringar av matchtyp och kartpool och spara sedan igen.",
+      "rules_drawn_while_editing": "En fas startade medan du redigerade, så dess regler är låsta. Ignorera dina ändringar av dem och spara igen.",
       "logo": {
         "label": "Logotyp"
       },
@@ -9057,8 +9058,7 @@
       "structure_locked_label": "Typ, lag och grupper",
       "structure_locked": "Typ, lag och grupper är låsta när slutspelsträdet har skapats.",
       "match_settings_locked_label": "Matchinställningar",
-      "match_settings_locked": "Matchinställningarna är låsta när den här fasen har matcher.",
-      "match_settings_locked_match_mode": "Matchinställningarna är låsta när den här fasen har matcher. Matchläget kan fortfarande ändras.",
+      "match_settings_inherited": "Den här fasen använder turneringens inställningar. Ändra dem under Matchregler.",
       "drawn_while_editing": "Slutspelsträdet skapades medan du redigerade. Förkasta ändringarna som nu är låsta och spara igen.",
       "final_map_advantage": {
         "label": "Kartfördel i final",
@@ -10266,6 +10266,12 @@
         "none": "Competitive (inget läge)",
         "description": "Laddar en uppsättning tillägg och konsolvariabler på matchservern.",
         "unranked_note": "Matcher med ett anpassat spelläge räknas aldrig mot ELO eller topplistorna."
+      },
+      "rules_locked": {
+        "label": "Regler låsta",
+        "tournament_match": "Alla matcher i en fas spelas med samma regler: format, banor, rundor, övertid, timeouts och avbytare. Region, TV-fördröjning, incheckning och timers kan fortfarande ändras.",
+        "tournament": "En fas som använder de här inställningarna har matcher, så reglerna är låsta: format, banor, rundor, övertid, timeouts och avbytare. Region, TV-fördröjning, incheckning och timers kan fortfarande ändras.",
+        "stage": "Låst när den här fasen har matcher, så att alla matcher i den spelas med samma regler."
       }
     },
     "schedule": {

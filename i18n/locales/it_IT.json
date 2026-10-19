@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Il tipo di match e il map pool sono bloccati dopo la generazione del tabellone.",
       "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche a tipo di match e map pool, poi salva di nuovo.",
+      "rules_drawn_while_editing": "Una fase è iniziata mentre modificavi, quindi le sue regole sono bloccate. Annulla le modifiche alle regole, poi salva di nuovo.",
       "logo": {
         "label": "Logo"
       },
@@ -9057,8 +9058,7 @@
       "structure_locked_label": "Tipo, squadre e gironi",
       "structure_locked": "Tipo, squadre e gironi sono bloccati dopo la generazione del tabellone.",
       "match_settings_locked_label": "Impostazioni match",
-      "match_settings_locked": "Le impostazioni match sono bloccate quando questa fase ha dei match.",
-      "match_settings_locked_match_mode": "Le impostazioni match sono bloccate quando questa fase ha dei match. La modalità match si può ancora cambiare.",
+      "match_settings_inherited": "Questa fase usa le impostazioni del torneo. Modificale in Regole delle partite.",
       "drawn_while_editing": "Il tabellone è stato generato mentre modificavi. Annulla le modifiche ora bloccate, poi salva di nuovo.",
       "final_map_advantage": {
         "label": "Vantaggio mappe finale",
@@ -10266,6 +10266,12 @@
         "none": "Competitive (nessuna modalità)",
         "description": "Carica un insieme di plugin e variabili di console sul server della partita.",
         "unranked_note": "Le partite con una modalità di gioco personalizzata non contano mai per l'ELO né per le classifiche."
+      },
+      "rules_locked": {
+        "label": "Regole bloccate",
+        "tournament_match": "Tutti i match di una fase si giocano con le stesse regole: formato, mappe, round, overtime, timeout e riserve. Regione, ritardo TV, check-in e timer si possono ancora cambiare.",
+        "tournament": "Una fase che usa queste impostazioni ha già dei match, quindi le sue regole sono bloccate: formato, mappe, round, overtime, timeout e riserve. Regione, ritardo TV, check-in e timer si possono ancora cambiare.",
+        "stage": "Bloccato quando questa fase ha dei match, così tutti i suoi match si giocano con le stesse regole."
       }
     },
     "schedule": {

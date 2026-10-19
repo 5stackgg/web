@@ -10,7 +10,12 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
 
 <template>
   <form @submit.prevent="updateMatch" class="mx-auto w-full max-w-4xl">
-    <MatchOptions :form="form" :match="match">
+    <MatchOptions
+      :form="form"
+      :match="match"
+      :lock-rules="isTournamentMatch"
+      :lock-rules-reason="$t('match.options.rules_locked.tournament_match')"
+    >
       <template #left>
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem>
@@ -50,7 +55,10 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
         </FormField>
 
         <Transition name="lineup-expand">
-        <div v-if="!form.values.pug" class="lineup-expand grid">
+        <div
+          v-if="!form.values.pug && !isTournamentMatch"
+          class="lineup-expand grid"
+        >
         <div class="min-h-0 overflow-hidden">
         <div
           class="relative p-5 border border-border rounded-lg [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px]"
@@ -139,7 +147,7 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
       </template>
     </MatchOptions>
 
-    <div class="mt-8 flex justify-center pb-24">
+    <div v-if="!contained" class="mt-8 flex justify-center pb-24">
       <button
         v-if="!match"
         type="submit"
@@ -170,6 +178,7 @@ const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
 
     <SettingsSaveBar
       v-if="match"
+      :contained="contained"
       :dirty="isDirty"
       :submitting="submitting"
       @save="updateMatch"
@@ -191,6 +200,7 @@ import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toast } from "@/components/ui/toast";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import {
+  keepStoredRules,
   setupOptions,
   setupOptionsVariables,
   setupOptionsSetMutation,
@@ -206,6 +216,10 @@ export default {
     match: {
       type: Object,
       required: false,
+    },
+    contained: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -393,11 +407,13 @@ export default {
           });
         }
 
-        let mapPoolId = form.map_pool_id;
+        let mapPoolId = this.isTournamentMatch
+          ? this.match.options.map_pool.id
+          : form.map_pool_id;
 
         // Never rewrite a pool in place: seeded pools are global, and
         // tournament matches share their tournament's Custom pool.
-        if (form.custom_map_pool) {
+        if (form.custom_map_pool && !this.isTournamentMatch) {
           const currentPool = this.match.options.map_pool;
           const unchanged =
             currentPool.id === mapPoolId &&
@@ -430,11 +446,15 @@ export default {
           }
         }
 
+        const variables = setupOptionsVariables(form, {
+          mapPoolId: mapPoolId,
+          matchOptionsId: this.match.options.id,
+        });
+
         await this.$apollo.mutate({
-          variables: setupOptionsVariables(form, {
-            mapPoolId: mapPoolId,
-            matchOptionsId: this.match.options.id,
-          }),
+          variables: this.isTournamentMatch
+            ? keepStoredRules(variables, this.match.options)
+            : variables,
           mutation: generateMutation({
             update_match_options_by_pk: [
               {

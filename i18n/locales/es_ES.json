@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "El tipo de partida y el pool de mapas se bloquean una vez generado el cuadro.",
       "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta tus cambios de tipo de partida y pool de mapas y luego guarda de nuevo.",
+      "rules_drawn_while_editing": "Una fase empezó mientras editabas, así que sus reglas están bloqueadas. Descarta tus cambios en ellas y vuelve a guardar.",
       "logo": {
         "label": "Logo"
       },
@@ -9057,8 +9058,7 @@
       "structure_locked_label": "Tipo, equipos y grupos",
       "structure_locked": "El tipo, los equipos y los grupos se bloquean una vez generado el cuadro.",
       "match_settings_locked_label": "Ajustes de partida",
-      "match_settings_locked": "Los ajustes de partida se bloquean cuando esta fase tiene partidas.",
-      "match_settings_locked_match_mode": "Los ajustes de partida se bloquean cuando esta fase tiene partidas. El modo de partida aún se puede cambiar.",
+      "match_settings_inherited": "Esta fase usa los ajustes del torneo. Cámbialos en Reglas de partida.",
       "drawn_while_editing": "El cuadro se generó mientras editabas. Descarta los cambios que ahora están bloqueados y vuelve a guardar.",
       "final_map_advantage": {
         "label": "Ventaja de mapa en la final",
@@ -10266,6 +10266,12 @@
         "none": "Competitivo (sin modo)",
         "description": "Carga un conjunto de plugins y variables de consola en el servidor de la partida.",
         "unranked_note": "Las partidas con un modo de juego personalizado nunca cuentan para el ELO ni para las clasificaciones."
+      },
+      "rules_locked": {
+        "label": "Reglas bloqueadas",
+        "tournament_match": "Todas las partidas de una fase se juegan con las mismas reglas: formato, mapas, rondas, prórroga, tiempos muertos y suplentes. La región, el retardo de TV, el check-in y los temporizadores aún se pueden cambiar.",
+        "tournament": "Una fase que usa estos ajustes ya tiene partidas, así que sus reglas están bloqueadas: formato, mapas, rondas, prórroga, tiempos muertos y suplentes. La región, el retardo de TV, el check-in y los temporizadores aún se pueden cambiar.",
+        "stage": "Bloqueado cuando esta fase tiene partidas, para que todas sus partidas se jueguen con las mismas reglas."
       }
     },
     "schedule": {

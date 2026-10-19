@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Match-Typ und Map-Pool sind gesperrt, sobald der Turnierbaum gezogen ist.",
       "drawn_while_editing": "Der Turnierbaum wurde gezogen, während du bearbeitet hast. Verwirf deine Änderungen an Match-Typ und Map-Pool und speichere dann erneut.",
+      "rules_drawn_while_editing": "Eine Stage hat während deiner Bearbeitung begonnen, daher sind ihre Regeln gesperrt. Verwirf deine Änderungen daran und speichere erneut.",
       "logo": {
         "label": "Logo"
       },
@@ -9057,8 +9058,7 @@
       "structure_locked_label": "Typ, Teams und Gruppen",
       "structure_locked": "Typ, Teams und Gruppen sind gesperrt, sobald der Turnierbaum gezogen ist.",
       "match_settings_locked_label": "Match-Einstellungen",
-      "match_settings_locked": "Die Match-Einstellungen sind gesperrt, sobald diese Stage Matches hat.",
-      "match_settings_locked_match_mode": "Die Match-Einstellungen sind gesperrt, sobald diese Stage Matches hat. Der Match-Modus lässt sich weiterhin ändern.",
+      "match_settings_inherited": "Diese Stage nutzt die Einstellungen des Turniers. Ändere sie unter Matchregeln.",
       "drawn_while_editing": "Der Turnierbaum wurde gezogen, während du bearbeitet hast. Verwirf die Änderungen, die jetzt gesperrt sind, und speichere erneut.",
       "final_map_advantage": {
         "label": "Map-Vorteil im Finale",
@@ -10266,6 +10266,12 @@
         "none": "Competitive (kein Modus)",
         "description": "Lädt eine Reihe von Plugins und Console-Variablen auf dem Match-Server.",
         "unranked_note": "Matches mit einem eigenen Spielmodus zählen nie für ELO oder die Ranglisten."
+      },
+      "rules_locked": {
+        "label": "Regeln gesperrt",
+        "tournament_match": "Jedes Match einer Stage spielt nach denselben Regeln: Format, Maps, Runden, Overtime, Timeouts und Ersatzspieler. Region, TV-Delay, Check-in und Timer lassen sich weiterhin ändern.",
+        "tournament": "Eine Stage mit diesen Einstellungen hat bereits Matches, daher sind ihre Regeln gesperrt: Format, Maps, Runden, Overtime, Timeouts und Ersatzspieler. Region, TV-Delay, Check-in und Timer lassen sich weiterhin ändern.",
+        "stage": "Gesperrt, sobald diese Stage Matches hat, damit jedes Match darin nach denselben Regeln spielt."
       }
     },
     "schedule": {

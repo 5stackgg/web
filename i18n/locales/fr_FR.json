@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "Le type de match et le map pool sont verrouillés une fois l'arbre tiré.",
       "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule tes changements de type de match et de map pool, puis enregistre à nouveau.",
+      "rules_drawn_while_editing": "Une phase a commencé pendant votre modification, ses règles sont donc verrouillées. Annulez vos changements sur celles-ci, puis enregistrez à nouveau.",
       "logo": {
         "label": "Logo"
       },
@@ -9057,8 +9058,7 @@
       "structure_locked_label": "Type, équipes et groupes",
       "structure_locked": "Le type, les équipes et les groupes sont verrouillés une fois l'arbre tiré.",
       "match_settings_locked_label": "Paramètres de match",
-      "match_settings_locked": "Les paramètres de match sont verrouillés dès que cette phase a des matchs.",
-      "match_settings_locked_match_mode": "Les paramètres de match sont verrouillés dès que cette phase a des matchs. Le mode de match peut encore changer.",
+      "match_settings_inherited": "Cette phase utilise les paramètres du tournoi. Modifiez-les dans Règles de match.",
       "drawn_while_editing": "L'arbre a été tiré pendant ta modification. Annule les changements désormais verrouillés, puis enregistre à nouveau.",
       "final_map_advantage": {
         "label": "Avantage de map en finale",
@@ -10266,6 +10266,12 @@
         "none": "Compétitif (aucun mode)",
         "description": "Charge un ensemble de plugins et de variables de console sur le serveur du match.",
         "unranked_note": "Les matchs avec un mode de jeu personnalisé ne comptent jamais pour l'ELO ni pour les classements."
+      },
+      "rules_locked": {
+        "label": "Règles verrouillées",
+        "tournament_match": "Tous les matchs d'une phase se jouent avec les mêmes règles : format, cartes, manches, prolongation, temps morts et remplaçants. La région, le délai TV, le check-in et les minuteurs peuvent encore changer.",
+        "tournament": "Une phase qui utilise ces paramètres a déjà des matchs, ses règles sont donc verrouillées : format, cartes, manches, prolongation, temps morts et remplaçants. La région, le délai TV, le check-in et les minuteurs peuvent encore changer.",
+        "stage": "Verrouillé dès que cette phase a des matchs, pour que tous ses matchs se jouent avec les mêmes règles."
       }
     },
     "schedule": {

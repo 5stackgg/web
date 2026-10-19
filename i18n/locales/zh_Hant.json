@@ -8951,6 +8951,7 @@
       },
       "map_pool_locked": "對陣圖產生後，比賽類型和地圖池將被鎖定。",
       "drawn_while_editing": "你編輯期間對陣圖已產生。請捨棄對比賽類型和地圖池的變更，然後重新儲存。",
+      "rules_drawn_while_editing": "你編輯期間有階段已開始，因此其規則已鎖定。請捨棄對規則的變更，然後重新儲存。",
       "logo": {
         "label": "標誌"
       },
@@ -9057,8 +9058,7 @@
       "structure_locked_label": "類型、隊伍和小組",
       "structure_locked": "對陣圖產生後，類型、隊伍和小組將被鎖定。",
       "match_settings_locked_label": "比賽設定",
-      "match_settings_locked": "此階段產生比賽後，比賽設定將被鎖定。",
-      "match_settings_locked_match_mode": "此階段產生比賽後，比賽設定將被鎖定。比賽模式仍可變更。",
+      "match_settings_inherited": "此階段使用賽事的設定。請在比賽規則中變更。",
       "drawn_while_editing": "你編輯期間對陣圖已產生。請捨棄現已鎖定的變更，然後重新儲存。",
       "final_map_advantage": {
         "label": "決賽地圖優勢",
@@ -10266,6 +10266,12 @@
         "none": "競技（無模式）",
         "description": "在比賽伺服器上載入一組外掛與主控台變數。",
         "unranked_note": "使用自訂遊戲模式的比賽永遠不計入 ELO 或排行榜。"
+      },
+      "rules_locked": {
+        "label": "規則已鎖定",
+        "tournament_match": "同一階段的所有比賽使用相同的規則：賽制、地圖、回合數、延長賽、暫停和替補。地區、TV 延遲、報到和計時器仍可變更。",
+        "tournament": "使用這些設定的階段已有比賽，因此規則已鎖定：賽制、地圖、回合數、延長賽、暫停和替補。地區、TV 延遲、報到和計時器仍可變更。",
+        "stage": "此階段產生比賽後將被鎖定，確保其中所有比賽使用相同的規則。"
       }
     },
     "schedule": {

@@ -13938,6 +13938,17 @@
       "docs": "Lire la documentation"
     }
   },
+  "licenses": {
+    "title": "Licences",
+    "intro": "Ce site fonctionne avec 5Stack, un logiciel libre publié sous la licence publique générale GNU Affero, version 3. Il est fourni sans aucune garantie.",
+    "source": "Code source",
+    "license_text": "Texte de la licence",
+    "third_party": {
+      "title": "Logiciels tiers",
+      "description": "5Stack repose sur des logiciels open source. Les licences de tous les paquets qu'il inclut figurent dans un seul fichier.",
+      "link": "Voir les licences"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Nom",

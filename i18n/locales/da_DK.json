@@ -13938,6 +13938,17 @@
       "docs": "Læs dokumentationen"
     }
   },
+  "licenses": {
+    "title": "Licenser",
+    "intro": "Dette websted kører 5Stack, fri software udgivet under GNU Affero General Public License, version 3. Det leveres uden nogen garanti.",
+    "source": "Kildekode",
+    "license_text": "Licenstekst",
+    "third_party": {
+      "title": "Tredjepartssoftware",
+      "description": "5Stack er bygget på open source-software. Licenserne for alle pakker, det leveres med, står i én fil.",
+      "link": "Se licenser"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Navn",

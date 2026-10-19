@@ -2,6 +2,7 @@
   "name": "5stack.gg",
   "version": "0.0.1",
   "private": true,
+  "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "build": "nuxt build --standalone",
@@ -11,6 +12,7 @@
     "postinstall": "nuxt prepare",
     "codegen": "bash -c '. ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET && ./scripts/patch-zeus-codegen.sh'",
     "check-translations": "node scripts/check-translations.js",
+    "third-party-notices": "node scripts/third-party-notices.mjs",
     "typecheck": "NODE_OPTIONS=--max-old-space-size=8192 vue-tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest"

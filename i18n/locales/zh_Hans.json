@@ -13938,6 +13938,17 @@
       "docs": "阅读文档"
     }
   },
+  "licenses": {
+    "title": "许可证",
+    "intro": "本站运行 5Stack，这是一款依据 GNU Affero 通用公共许可证第 3 版发布的自由软件，不提供任何担保。",
+    "source": "源代码",
+    "license_text": "许可证全文",
+    "third_party": {
+      "title": "第三方软件",
+      "description": "5Stack 基于开源软件构建。其包含的所有软件包的许可证都列在一个文件中。",
+      "link": "查看许可证"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "名称",

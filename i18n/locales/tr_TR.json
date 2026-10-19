@@ -13938,6 +13938,17 @@
       "docs": "Belgeleri oku"
     }
   },
+  "licenses": {
+    "title": "Lisanslar",
+    "intro": "Bu site, GNU Affero Genel Kamu Lisansı sürüm 3 altında yayımlanan özgür bir yazılım olan 5Stack ile çalışır. Hiçbir garanti olmadan sunulur.",
+    "source": "Kaynak kodu",
+    "license_text": "Lisans metni",
+    "third_party": {
+      "title": "Üçüncü taraf yazılımlar",
+      "description": "5Stack açık kaynaklı yazılımlar üzerine kuruludur. İçerdiği tüm paketlerin lisansları tek bir dosyada listelenir.",
+      "link": "Lisansları görüntüle"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Ad",

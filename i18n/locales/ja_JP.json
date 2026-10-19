@@ -13938,6 +13938,17 @@
       "docs": "ドキュメントを読む"
     }
   },
+  "licenses": {
+    "title": "ライセンス",
+    "intro": "このサイトは 5Stack で動作しています。5Stack は GNU Affero General Public License バージョン 3 の下で公開されているフリーソフトウェアで、いかなる保証もありません。",
+    "source": "ソースコード",
+    "license_text": "ライセンス全文",
+    "third_party": {
+      "title": "サードパーティ製ソフトウェア",
+      "description": "5Stack はオープンソースソフトウェアで構築されています。同梱しているすべてのパッケージのライセンスを 1 つのファイルにまとめています。",
+      "link": "ライセンスを表示"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "名前",

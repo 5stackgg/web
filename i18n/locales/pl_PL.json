@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Wróć do ligi",
       "my_team": "Moja drużyna",
-      "my_team_hint": "Zarządzaj składem, zaproszeniami i gotowością do tego turnieju.",
       "roster_section": "Skład",
       "no_teams_yet": "Brak drużyn",
       "about_section": "O turnieju",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Kwalifikuje się",
-      "not_eligible": "Nie kwalifikuje się",
-      "need_players": "Brakuje graczy: {count} | Brakuje graczy: {count}",
-      "missed_check_in": "Brak potwierdzenia obecności",
+      "status": {
+        "ready": "Gotowa",
+        "not_eligible": "Nie kwalifikuje się",
+        "needs_players": "Brakuje graczy: {count} | Brakuje graczy: {count}",
+        "checked_in": "Obecność potwierdzona",
+        "not_checked_in": "Obecność niepotwierdzona",
+        "missed": "Nie potwierdziła obecności"
+      },
       "leave_tournament": "Opuść turniej",
       "leave_team": "Opuść drużynę",
       "slot": "Slot {number}",
@@ -9421,12 +9424,21 @@
     "teams_filter": {
       "all": "Wszystkie",
       "ready": "Gotowe",
+      "checked_in": "Potwierdzone",
       "incomplete": "Brakuje graczy",
+      "not_checked_in": "Obecność niepotwierdzona",
+      "missed": "Niepotwierdzone",
       "no_matches": "Żadna drużyna nie pasuje do tego filtra",
       "collapse": "Zwiń",
-      "expand": "Rozwiń",
-      "collapse_all": "Zwiń wszystko",
-      "expand_all": "Rozwiń wszystko"
+      "expand": "Rozwiń"
+    },
+    "teams_ledger": {
+      "search": "Szukaj drużyn lub graczy",
+      "seed": "Rozstawienie",
+      "team": "Drużyna",
+      "players": "Gracze",
+      "status": "Status",
+      "sort_by": "Sortuj według: {column}"
     },
     "matches_filter": {
       "live": "Na żywo",
@@ -9538,6 +9550,9 @@
       "admin_hint": "W tym turnieju gracze nie mogą sami potwierdzić obecności. Oznacz każdą drużynę jako obecną, zanim okno się zamknie.",
       "check_in": "Potwierdź obecność",
       "mark_present": "Oznacz jako obecną",
+      "present": "Obecna",
+      "absent": "Nieobecna",
+      "present_label": "{team} jest obecna",
       "checked_in": "obecność potwierdzona",
       "checked_in_at": "obecność potwierdzona · {time}",
       "waiting": "oczekuje",
@@ -9554,6 +9569,7 @@
       "missed_hint": "Potwierdzanie zamknęło się o {time} i drabinka powstaje bez twojej drużyny.",
       "missed_contact": "Skontaktuj się z organizatorem, jeśli uważasz, że to pomyłka — może przywrócić drużynę w dowolnej chwili przed startem turnieju.",
       "failed": "Nie udało się potwierdzić obecności",
+      "undo_failed": "Nie udało się cofnąć potwierdzenia obecności",
       "free_agent_opens_at_hint": "Jesteś w puli wolnych zawodników. Damy znać, gdy otworzy się okno.",
       "free_agent_heading": "Potwierdź, że nadal jesteś dostępny",
       "free_agent_hint": "Wolni zawodnicy, którzy nie potwierdzą do {time}, trafiają na listę rezerwową i nie zostają wybrani do żadnej drużyny.",

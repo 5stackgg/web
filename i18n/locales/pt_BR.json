@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Voltar para a Liga",
       "my_team": "Minha equipe",
-      "my_team_hint": "Gerencie sua escalação, convites e prontidão para este torneio.",
       "roster_section": "Escalação",
       "no_teams_yet": "Nenhuma equipe ainda.",
       "about_section": "Sobre",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Elegível",
-      "not_eligible": "Não elegível",
-      "need_players": "Falta {count} jogador | Faltam {count} jogadores",
-      "missed_check_in": "Check-in perdido",
+      "status": {
+        "ready": "Pronto",
+        "not_eligible": "Não elegível",
+        "needs_players": "Falta {count} jogador | Faltam {count} jogadores",
+        "checked_in": "Check-in feito",
+        "not_checked_in": "Sem check-in",
+        "missed": "Perdeu o check-in"
+      },
       "leave_tournament": "Sair do campeonato",
       "leave_team": "Sair",
       "slot": "Slot {number}",
@@ -9421,12 +9424,21 @@
     "teams_filter": {
       "all": "Todos",
       "ready": "Prontos",
+      "checked_in": "Com check-in",
       "incomplete": "Precisa de jogadores",
+      "not_checked_in": "Sem check-in",
+      "missed": "Perderam",
       "no_matches": "Nenhum time corresponde a este filtro",
       "collapse": "Recolher",
-      "expand": "Expandir",
-      "collapse_all": "Recolher todos",
-      "expand_all": "Expandir todos"
+      "expand": "Expandir"
+    },
+    "teams_ledger": {
+      "search": "Buscar times ou jogadores",
+      "seed": "Seed",
+      "team": "Time",
+      "players": "Jogadores",
+      "status": "Status",
+      "sort_by": "Ordenar por {column}"
     },
     "matches_filter": {
       "live": "Ao vivo",
@@ -9538,6 +9550,9 @@
       "admin_hint": "Neste torneio os jogadores não podem fazer o próprio check-in. Marque cada equipe como presente antes de a janela fechar.",
       "check_in": "Fazer check-in",
       "mark_present": "Marcar presente",
+      "present": "Presente",
+      "absent": "Ausente",
+      "present_label": "{team} está presente",
       "checked_in": "check-in feito",
       "checked_in_at": "check-in feito · {time}",
       "waiting": "aguardando",
@@ -9554,6 +9569,7 @@
       "missed_hint": "O check-in fechou às {time} e a chave é montada sem a sua equipe.",
       "missed_contact": "Fale com um organizador se achar que isso está errado — ele pode readmitir uma equipe a qualquer momento antes de o torneio começar.",
       "failed": "Falha no check-in",
+      "undo_failed": "Não foi possível desfazer o check-in",
       "free_agent_opens_at_hint": "Você está no grupo de agentes livres. Avisaremos quando a janela abrir.",
       "free_agent_heading": "Confirme que você ainda está disponível",
       "free_agent_hint": "Agentes livres que não confirmarem até {time} vão para a lista de espera e não são draftados em nenhuma equipe.",

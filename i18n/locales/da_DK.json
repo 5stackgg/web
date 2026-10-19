@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Tilbage til liga",
       "my_team": "Mit hold",
-      "my_team_hint": "Administrer din trup, invitationer og klarmelding til denne turnering.",
       "roster_section": "Trup",
       "no_teams_yet": "Ingen hold endnu",
       "about_section": "Om",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Kvalificeret",
-      "not_eligible": "Ikke kvalificeret",
-      "need_players": "Mangler {count} spiller | Mangler {count} spillere",
-      "missed_check_in": "Misset check-in",
+      "status": {
+        "ready": "Klar",
+        "not_eligible": "Ikke kvalificeret",
+        "needs_players": "Mangler {count} spiller | Mangler {count} spillere",
+        "checked_in": "Checket ind",
+        "not_checked_in": "Ikke checket ind",
+        "missed": "Missede check-in"
+      },
       "leave_tournament": "Forlad turnering",
       "leave_team": "Forlad hold",
       "slot": "Plads {number}",
@@ -9421,12 +9424,21 @@
     "teams_filter": {
       "all": "Alle",
       "ready": "Klar",
+      "checked_in": "Checket ind",
       "incomplete": "Mangler spillere",
+      "not_checked_in": "Ikke checket ind",
+      "missed": "Missede",
       "no_matches": "Ingen hold passer til dette filter",
       "collapse": "Fold sammen",
-      "expand": "Fold ud",
-      "collapse_all": "Fold alt sammen",
-      "expand_all": "Fold alt ud"
+      "expand": "Fold ud"
+    },
+    "teams_ledger": {
+      "search": "Søg efter hold eller spillere",
+      "seed": "Seed",
+      "team": "Hold",
+      "players": "Spillere",
+      "status": "Status",
+      "sort_by": "Sortér efter {column}"
     },
     "matches_filter": {
       "live": "Live",
@@ -9538,6 +9550,9 @@
       "admin_hint": "Spillerne kan ikke checke sig selv ind i denne turnering. Markér hvert hold som til stede, før vinduet lukker.",
       "check_in": "Check ind",
       "mark_present": "Markér til stede",
+      "present": "Til stede",
+      "absent": "Fraværende",
+      "present_label": "{team} er til stede",
       "checked_in": "checket ind",
       "checked_in_at": "checket ind · {time}",
       "waiting": "venter",
@@ -9554,6 +9569,7 @@
       "missed_hint": "Check-in lukkede kl. {time}, og bracketen sættes op uden dit hold.",
       "missed_contact": "Kontakt en arrangør, hvis du mener, det er forkert — de kan genindsætte et hold når som helst, før turneringen går i gang.",
       "failed": "Check-in mislykkedes",
+      "undo_failed": "Kunne ikke fortryde check-in",
       "free_agent_opens_at_hint": "Du er i free agent-puljen. Vi giver besked, når vinduet åbner.",
       "free_agent_heading": "Bekræft at du stadig er ledig",
       "free_agent_hint": "Free agents, der ikke har bekræftet kl. {time}, ryger på ventelisten og bliver ikke draftet ind på et hold.",

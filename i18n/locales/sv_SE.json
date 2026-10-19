@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Tillbaka till ligan",
       "my_team": "Mitt lag",
-      "my_team_hint": "Hantera din trupp, inbjudningar och redo-status för denna turnering.",
       "roster_section": "Trupp",
       "no_teams_yet": "Inga lag ännu",
       "about_section": "Om",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Kvalificerat",
-      "not_eligible": "Inte kvalificerat",
-      "need_players": "Behöver {count} spelare till | Behöver {count} spelare till",
-      "missed_check_in": "Missad incheckning",
+      "status": {
+        "ready": "Klart",
+        "not_eligible": "Inte kvalificerat",
+        "needs_players": "Behöver {count} spelare till | Behöver {count} spelare till",
+        "checked_in": "Incheckat",
+        "not_checked_in": "Inte incheckat",
+        "missed": "Missade incheckningen"
+      },
       "leave_tournament": "Lämna turneringen",
       "leave_team": "Lämna laget",
       "slot": "Plats {number}",
@@ -9421,12 +9424,21 @@
     "teams_filter": {
       "all": "Alla",
       "ready": "Klara",
+      "checked_in": "Incheckade",
       "incomplete": "Saknar spelare",
+      "not_checked_in": "Inte incheckade",
+      "missed": "Missade",
       "no_matches": "Inga lag matchar det här filtret",
       "collapse": "Fäll ihop",
-      "expand": "Fäll ut",
-      "collapse_all": "Fäll ihop alla",
-      "expand_all": "Fäll ut alla"
+      "expand": "Fäll ut"
+    },
+    "teams_ledger": {
+      "search": "Sök lag eller spelare",
+      "seed": "Seedning",
+      "team": "Lag",
+      "players": "Spelare",
+      "status": "Status",
+      "sort_by": "Sortera efter {column}"
     },
     "matches_filter": {
       "live": "Live",
@@ -9538,6 +9550,9 @@
       "admin_hint": "Spelarna kan inte checka in sig själva i den här turneringen. Markera varje lag som närvarande innan fönstret stänger.",
       "check_in": "Checka in",
       "mark_present": "Markera närvarande",
+      "present": "Närvarande",
+      "absent": "Frånvarande",
+      "present_label": "{team} är närvarande",
       "checked_in": "incheckad",
       "checked_in_at": "incheckad · {time}",
       "waiting": "väntar",
@@ -9554,6 +9569,7 @@
       "missed_hint": "Incheckningen stängde {time} och slutspelsträdet sätts utan ditt lag.",
       "missed_contact": "Kontakta en arrangör om du tycker att det blivit fel — hen kan återinsätta ett lag när som helst innan turneringen drar igång.",
       "failed": "Incheckningen misslyckades",
+      "undo_failed": "Det gick inte att ångra incheckningen",
       "free_agent_opens_at_hint": "Du är i free agent-poolen. Vi hör av oss när fönstret öppnar.",
       "free_agent_heading": "Bekräfta att du fortfarande är tillgänglig",
       "free_agent_hint": "Free agents som inte har bekräftat {time} flyttas till väntelistan och draftas inte in i något lag.",

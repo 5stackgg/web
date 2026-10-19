@@ -8832,7 +8832,6 @@
     "page": {
       "back_to_league": "Zurück zur Liga",
       "my_team": "Mein Team",
-      "my_team_hint": "Verwalte Roster, Einladungen und Bereitschaft für dieses Turnier.",
       "roster_section": "Roster",
       "no_teams_yet": "Noch keine Teams",
       "about_section": "Über",
@@ -9233,10 +9232,14 @@
       }
     },
     "team": {
-      "eligible": "Startberechtigt",
-      "not_eligible": "Nicht startberechtigt",
-      "need_players": "Noch {count} Spieler nötig | Noch {count} Spieler nötig",
-      "missed_check_in": "Check-in verpasst",
+      "status": {
+        "ready": "Bereit",
+        "not_eligible": "Nicht startberechtigt",
+        "needs_players": "Noch {count} Spieler nötig | Noch {count} Spieler nötig",
+        "checked_in": "Eingecheckt",
+        "not_checked_in": "Nicht eingecheckt",
+        "missed": "Check-in verpasst"
+      },
       "leave_tournament": "Turnier verlassen",
       "leave_team": "Team verlassen",
       "slot": "Slot {number}",
@@ -9421,12 +9424,21 @@
     "teams_filter": {
       "all": "Alle",
       "ready": "Bereit",
+      "checked_in": "Eingecheckt",
       "incomplete": "Braucht Spieler",
+      "not_checked_in": "Nicht eingecheckt",
+      "missed": "Verpasst",
       "no_matches": "Keine Teams passen zu diesem Filter",
       "collapse": "Einklappen",
-      "expand": "Ausklappen",
-      "collapse_all": "Alle einklappen",
-      "expand_all": "Alle ausklappen"
+      "expand": "Ausklappen"
+    },
+    "teams_ledger": {
+      "search": "Teams oder Spieler suchen",
+      "seed": "Setzplatz",
+      "team": "Team",
+      "players": "Spieler",
+      "status": "Status",
+      "sort_by": "Nach {column} sortieren"
     },
     "matches_filter": {
       "live": "Live",
@@ -9538,6 +9550,9 @@
       "admin_hint": "Spieler können sich in diesem Turnier nicht selbst einchecken. Markiere jedes Team als anwesend, bevor das Fenster schließt.",
       "check_in": "Einchecken",
       "mark_present": "Als anwesend markieren",
+      "present": "Anwesend",
+      "absent": "Abwesend",
+      "present_label": "{team} ist anwesend",
       "checked_in": "eingecheckt",
       "checked_in_at": "eingecheckt · {time}",
       "waiting": "wartet",
@@ -9554,6 +9569,7 @@
       "missed_hint": "Der Check-in schloss um {time} und das Bracket wird ohne dein Team gesetzt.",
       "missed_contact": "Melde dich bei einem Veranstalter, wenn das falsch ist — er kann ein Team jederzeit vor dem Turnierstart wieder zulassen.",
       "failed": "Check-in fehlgeschlagen",
+      "undo_failed": "Check-in konnte nicht rückgängig gemacht werden",
       "free_agent_opens_at_hint": "Du bist im Free-Agent-Pool. Wir melden uns, wenn das Fenster öffnet.",
       "free_agent_heading": "Bestätige, dass du noch verfügbar bist",
       "free_agent_hint": "Free Agents, die bis {time} nicht bestätigt haben, kommen auf die Warteliste und werden nicht in ein Team gedraftet.",

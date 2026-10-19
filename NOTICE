@@ -87,6 +87,36 @@ Their license texts are collected in public/third-party-licenses.txt,
 which the panel serves at /third-party-licenses.txt. After changing
 dependencies, regenerate it with `yarn third-party-notices`.
 
+The components in components/ui come from shadcn-vue
+(https://github.com/unovue/shadcn-vue):
+
+    MIT License
+
+    Copyright (c) 2023 unovue
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+public/radars/metadata.json, the map radar calibration, is vendored from
+boltobserv by boltgolt (https://github.com/boltgolt/boltobserv) and is
+licensed under the GNU GPL version 3, which the GNU AGPL version 3 allows
+it to be combined with.
+
 The Oxanium font in public/fonts is Copyright 2019 The Oxanium Project
 Authors (https://github.com/sevmeyer/oxanium) and is licensed under the
 SIL Open Font License 1.1 (public/fonts/Oxanium-OFL.txt).
@@ -99,7 +129,7 @@ MIT License.
 MATERIAL NOT COVERED BY THIS LICENSE
 
 Counter-Strike 2 images and data, including the equipment, map, skill
-group and team images in public/img and the radar images in
+group and team images in public/img and the rush_001 radar images in
 public/radars, are the property of Valve Corporation. The FACEIT logo in
 public/img/logos is a trademark of its owner. The copyright holder does
 not license them under the GNU AGPL, and nothing in this repository

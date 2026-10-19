@@ -189,6 +189,7 @@ import { teamLedgerColumns } from "~/components/tournament/teamLedger";
               $t('tournament.check_in.present_label', { team: displayName })
             "
             class="data-[state=checked]:bg-success"
+            @click.stop
             @update:model-value="(value: boolean) => setCheckIn(value)"
           />
           {{

@@ -3,12 +3,18 @@ import { computed } from "vue";
 import { useBootProgress } from "~/composables/useBootProgress";
 import StatusDot from "~/components/admin/StatusDot.vue";
 import type { GpuSession } from "~/components/gpu-nodes/gpuSessions";
+import { pickEncoderMarker } from "~/utilities/encoderMarker";
 
 // One line of where a GPU session is: its boot step while it starts, then
 // Live / Playing / a render's percent / a bake's shader count.
 const props = defineProps<{ session: GpuSession }>();
 
 const isBake = computed(() => props.session.kind === "bake");
+const encoder = computed(() =>
+  props.session.kind === "live" || props.session.kind === "demo"
+    ? pickEncoderMarker(props.session.statusHistory)
+    : null,
+);
 
 const { bootInfo, isErrored, visibleStages, currentStage, currentIndex, pct } =
   useBootProgress(() => ({
@@ -123,5 +129,13 @@ const step = computed(() => {
         />
       </span>
     </template>
+    <span
+      v-if="encoder"
+      class="gpu-session-encoder w-fit rounded-full border px-1.5 py-0.5 font-mono text-[10px]"
+      :class="encoder.warning ? 'border-destructive/50 bg-destructive/10 text-destructive' : 'border-border text-muted-foreground'"
+      :title="$t('pages.gpu_nodes.encoder_tag_title', { element: encoder.element })"
+    >
+      {{ encoder.element }}
+    </span>
   </div>
 </template>

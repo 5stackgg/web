@@ -119,34 +119,12 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
           id="encoding"
           :title="$t('pages.settings.application.streaming.encoding_section')"
         >
-          <FormField v-slot="{ componentField }" name="live_video_codec">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.streaming.live_video_codec")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.streaming.live_video_codec_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="h265">
-                    {{ $t("pages.settings.application.streaming.codec_h265") }}
-                  </SelectItem>
-                  <SelectItem value="h264">
-                    {{ $t("pages.settings.application.streaming.codec_h264") }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+          <NuxtLink
+            to="/settings/application/encoding"
+            class="inline-flex text-sm font-medium text-primary hover:underline"
+          >
+            {{ $t("pages.settings.application.encoding.title") }}
+          </NuxtLink>
         </SettingsSection>
 
         <SettingsSection
@@ -185,7 +163,6 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
         />
       </form>
     </PageTransition>
-
   </SettingsPage>
 </template>
 
@@ -212,7 +189,6 @@ export default {
                 .string()
                 .default(e_player_roles_enum.streamer),
             }),
-            live_video_codec: z.enum(["h265", "h264"]).default("h264"),
           }),
         ),
       }),
@@ -223,14 +199,12 @@ export default {
       immediate: true,
       handler(newVal) {
         for (const setting of newVal) {
-          if (setting.name === "live_video_codec") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "h265" ? "h265" : "h264",
-            );
-            continue;
+          if (
+            setting.name === "public.minimum_role_to_stream" ||
+            setting.name === "public.minimum_role_to_spectate"
+          ) {
+            this.form.setFieldValue(setting.name, setting.value);
           }
-          this.form.setFieldValue(setting.name, setting.value);
         }
         this.form.resetForm({ values: this.form.values });
       },
@@ -312,10 +286,6 @@ export default {
                   {
                     name: "public.minimum_role_to_spectate",
                     value: roleToSpectate,
-                  },
-                  {
-                    name: "live_video_codec",
-                    value: this.form.values.live_video_codec ?? "h264",
                   },
                 ],
                 on_conflict: {

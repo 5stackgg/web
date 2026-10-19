@@ -2594,6 +2594,19 @@
             "mode_note": "최우선"
           }
         },
+        "encoding": {
+          "title": "비디오 인코딩",
+          "description": "CPU 대체를 허용하는 GPU 인코딩, GPU 전용 또는 CPU 전용을 선택하세요. 각 GPU 노드에서 AMD 또는 NVIDIA가 감지됩니다. 새 실시간 방송, 데모, 하이라이트 및 유틸리티 영상에 적용됩니다.",
+          "updated": "비디오 인코딩 설정을 업데이트했습니다",
+          "hardware_description": "AMD는 VA-API, NVIDIA는 NVENC를 사용합니다. 이 정책은 캡처와 최종 MP4 인코딩에 적용됩니다. 크기 조절, 합성 및 오디오에는 여전히 CPU가 사용될 수 있습니다.",
+          "apply_description": "저장된 설정은 새 작업에 적용됩니다. 실행 중인 작업과 기존 영상은 현재 설정을 유지합니다.",
+          "live_section": "실시간 방송 및 데모 재생",
+          "clips_section": "하이라이트 및 유틸리티 영상",
+          "live_codec_description": "H.264는 가장 폭넓은 재생 지원을 제공합니다. H.265 / HEVC에는 호환 GPU와 재생 기기가 필요하며 일부 브라우저는 WebRTC 대신 HLS가 필요합니다. CPU 인코딩은 H.264를 사용합니다.",
+          "clip_codec_description": "하이라이트, 편집한 클립 및 유틸리티 영상에 적용됩니다. H.264는 가장 폭넓게 지원됩니다. H.265 / HEVC에는 호환 GPU와 재생 기기가 필요합니다. CPU 인코딩은 H.264를 사용합니다.",
+          "nodes_description": "CS2 렌더링 해상도와 사용 가능한 작업은 GPU 노드별로 설정합니다.",
+          "save_failed": "영상 인코딩 설정을 저장하지 못했습니다. 변경 사항은 유지됩니다."
+        },
         "streaming": {
           "title": "스트리밍",
           "access_section": "관전자 접근",
@@ -2616,6 +2629,11 @@
           "live_video_codec_description": "H.264는 모든 브라우저에서 가장 낮은 지연의 WebRTC 경로를 포함해 가장 폭넓은 브라우저·기기 호환성을 위한 기본값입니다. H.265(HEVC)는 동일 품질에서 약 30% 더 작지만, HEVC over WebRTC는 Safari 17 이상에서만 지원되며 Chrome과 Firefox 시청자는 HLS 경로로 대체됩니다. GPU에 NVENC HEVC가 없으면 H.265는 자동으로 H.264로 대체됩니다.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264(권장)",
+          "video_encoder": "동영상 인코더",
+          "video_encoder_description": "자동은 GPU 인코더를 사용하며 GPU 인코더가 실패하면 작업을 CPU로 전환합니다. GPU만 사용은 CPU를 사용하지 않으며 대신 작업이 실패합니다. CPU만 사용은 항상 CPU에서 인코딩합니다(H.264, 더 많은 CPU 코어 사용). 모든 작업에는 CS2를 실행할 GPU 노드가 필요합니다.",
+          "encoder_auto": "자동(권장)",
+          "encoder_gpu": "GPU만 사용",
+          "encoder_cpu": "CPU만 사용",
           "updated": "스트리밍 설정이 업데이트되었습니다"
         },
         "cameras": {
@@ -4632,6 +4650,7 @@
     "gpu_nodes": {
       "title": "GPU 노드",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "영상 인코더: {element}",
       "description": "라이브 스트림, 데모 재생, 하이라이트 렌더링을 처리하는 GPU 지원 게임 서버 노드입니다. GPU 하나당 동시에 하나의 작업만 처리합니다.",
       "metrics": "메트릭",
       "meter": {

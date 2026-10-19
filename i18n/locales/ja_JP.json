@@ -2594,6 +2594,19 @@
             "mode_note": "最優先"
           }
         },
+        "encoding": {
+          "title": "動画エンコード",
+          "description": "CPU フォールバック付き GPU、GPU のみ、CPU のみから選択します。各 GPU ノードで AMD または NVIDIA を自動検出します。新しいライブ配信、デモ、ハイライト、ユーティリティ動画に適用されます。",
+          "updated": "動画エンコード設定を更新しました",
+          "hardware_description": "AMD は VA-API、NVIDIA は NVENC を使用します。この設定はキャプチャと最終 MP4 のエンコードに適用されます。拡大縮小、合成、音声処理には CPU が使われる場合があります。",
+          "apply_description": "保存した設定は新しいジョブに適用されます。実行中のジョブと既存の動画の設定は変わりません。",
+          "live_section": "ライブ配信とデモ再生",
+          "clips_section": "ハイライトとユーティリティ動画",
+          "live_codec_description": "H.264 は幅広い再生環境に対応します。H.265 / HEVC には対応 GPU と再生端末が必要です。一部のブラウザでは WebRTC の代わりに HLS が必要です。CPU エンコードは H.264 を使用します。",
+          "clip_codec_description": "ハイライト、編集したクリップ、ユーティリティ動画に適用されます。H.264 は幅広い環境に対応します。H.265 / HEVC には対応 GPU と再生端末が必要です。CPU エンコードは H.264 を使用します。",
+          "nodes_description": "CS2 の描画解像度と利用できる処理は GPU ノードごとに設定します。",
+          "save_failed": "動画エンコード設定を保存できませんでした。変更内容は保持されています。"
+        },
         "streaming": {
           "title": "配信",
           "access_section": "観戦者アクセス",
@@ -2616,6 +2629,11 @@
           "live_video_codec_description": "H.264 が既定で、ブラウザやデバイスの互換性が最も広く、すべてのブラウザで最も低遅延な WebRTC 経路を使えます。H.265 (HEVC) は同等画質で約 30% 小さくなりますが、WebRTC 上の HEVC は Safari 17 以降のみ対応で、Chrome と Firefox の視聴者は HLS 経路にフォールバックします。GPU が NVENC HEVC に非対応の場合、H.265 は自動的に H.264 にフォールバックします。",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264（推奨）",
+          "video_encoder": "映像エンコーダー",
+          "video_encoder_description": "自動は GPU エンコーダーを使用し、GPU エンコーダーが失敗した場合はジョブを CPU に切り替えます。GPU のみは CPU を使用せず、代わりにジョブが失敗します。CPU のみは常に CPU でエンコードします（H.264、より多くの CPU コアを使用）。どのジョブでも CS2 を実行するために GPU ノードが必要です。",
+          "encoder_auto": "自動（推奨）",
+          "encoder_gpu": "GPU のみ",
+          "encoder_cpu": "CPU のみ",
           "updated": "配信設定を更新しました"
         },
         "cameras": {
@@ -4632,6 +4650,7 @@
     "gpu_nodes": {
       "title": "GPU ノード",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "映像エンコーダー: {element}",
       "description": "ライブ配信・デモ再生・ハイライトのレンダリングを担う GPU 対応のゲームサーバーノードです。各 GPU は同時に1つの処理のみ実行します。",
       "metrics": "メトリクス",
       "meter": {

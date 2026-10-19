@@ -2594,6 +2594,19 @@
             "mode_note": "prevalece"
           }
         },
+        "encoding": {
+          "title": "Codificación de vídeo",
+          "description": "Elige codificación GPU con respaldo CPU, solo GPU o solo CPU. AMD o NVIDIA se detecta en cada nodo GPU. Se aplica a nuevas emisiones, demos, momentos destacados y vídeos de utilidad.",
+          "updated": "Ajustes de codificación de vídeo actualizados",
+          "hardware_description": "AMD usa VA-API; NVIDIA usa NVENC. Esta política cubre la captura y la codificación del MP4 final. El escalado, la composición y el audio aún pueden usar CPU.",
+          "apply_description": "Los ajustes guardados se aplican a los nuevos trabajos. Los trabajos en curso y los vídeos existentes conservan sus ajustes.",
+          "live_section": "Emisiones y reproducción de demos",
+          "clips_section": "Momentos destacados y vídeos de utilidad",
+          "live_codec_description": "H.264 ofrece la mayor compatibilidad. H.265 / HEVC necesita una GPU y un dispositivo compatibles; algunos navegadores requieren HLS en lugar de WebRTC. La codificación CPU usa H.264.",
+          "clip_codec_description": "Se aplica a momentos destacados, clips editados y vídeos de utilidad. H.264 ofrece la mayor compatibilidad. H.265 / HEVC necesita una GPU y un dispositivo compatibles. La codificación CPU usa H.264.",
+          "nodes_description": "La resolución de renderizado de CS2 y los trabajos disponibles se configuran por nodo GPU.",
+          "save_failed": "No se pudieron guardar los ajustes de vídeo. Tus cambios se conservan."
+        },
         "streaming": {
           "title": "Retransmisión",
           "access_section": "Acceso de espectadores",
@@ -2616,6 +2629,11 @@
           "live_video_codec_description": "H.264 es el valor por defecto por su máxima compatibilidad con navegadores y dispositivos, incluida la ruta WebRTC de menor latencia en todos los navegadores. H.265 (HEVC) ocupa ~30% menos con la misma calidad, pero HEVC sobre WebRTC solo funciona en Safari 17+: los espectadores de Chrome y Firefox pasan a la ruta HLS. H.265 recurre automáticamente a H.264 si la GPU no admite NVENC HEVC.",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recomendado)",
+          "video_encoder": "Codificador de vídeo",
+          "video_encoder_description": "Automático usa el codificador GPU y cambia una tarea a la CPU si falla el codificador GPU. Solo GPU nunca usa la CPU; la tarea falla en su lugar. Solo CPU siempre codifica en la CPU (H.264, más núcleos de CPU). Cada tarea sigue necesitando un nodo GPU para ejecutar CS2.",
+          "encoder_auto": "Automático (recomendado)",
+          "encoder_gpu": "Solo GPU",
+          "encoder_cpu": "Solo CPU",
           "updated": "Ajustes de retransmisión actualizados"
         },
         "cameras": {
@@ -4632,6 +4650,7 @@
     "gpu_nodes": {
       "title": "Nodos GPU",
       "gpu_unknown": "GPU",
+      "encoder_tag_title": "Codificador de vídeo: {element}",
       "description": "Nodos de servidores con GPU que alojan las retransmisiones en directo, la reproducción de demos y el renderizado de highlights. Cada GPU atiende como máximo a un consumidor a la vez.",
       "metrics": "Métricas",
       "meter": {

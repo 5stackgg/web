@@ -43,7 +43,7 @@ const checkInActionClasses =
 <template>
   <div v-if="team && e_team_roles" class="flex flex-col">
     <header class="flex items-center justify-between gap-4 flex-wrap">
-      <div class="min-w-0 flex-1 flex items-center gap-3">
+      <div class="min-w-0 flex-1 flex items-center gap-3 max-sm:basis-full">
         <div
           class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
         >
@@ -219,7 +219,7 @@ const checkInActionClasses =
 
             <span
               v-if="checkInState"
-              class="inline-flex h-6 items-center gap-[0.4rem] px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
+              class="inline-flex h-6 items-center gap-[0.4rem] whitespace-nowrap px-[0.55rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
               :class="{
                 'text-success bg-success/10 border-success/40':
                   checkInState === 'checked_in',
@@ -305,7 +305,7 @@ const checkInActionClasses =
         </div>
       </div>
 
-      <div class="flex items-center gap-3 flex-shrink-0">
+      <div class="flex items-center gap-3 flex-shrink-0 max-sm:ml-auto">
         <div
           class="inline-flex h-8 items-center px-[0.7rem] font-mono tabular-nums border border-border rounded bg-muted/20"
         >

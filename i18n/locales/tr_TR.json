@@ -1857,7 +1857,10 @@
         "search": "Takım, turnuva veya oyuncu ara…",
         "search_label": "Turnuva takımlarında ara",
         "col_tournament": "Turnuva",
-        "col_status": "Durum"
+        "col_status": "Durum",
+        "running": "Devam eden",
+        "finished": "Biten",
+        "segment_label": "Turnuva durumu"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "En yüksek kazanç",
           "worst_loss": "En büyük kayıp",
           "view_match": "Maçı görüntüle"
-        }
+        },
+        "more_tournament_teams": "{count} turnuva takımı daha | {count} turnuva takımı daha"
       },
       "empty": {
         "title": "Henüz oyuncu yok",

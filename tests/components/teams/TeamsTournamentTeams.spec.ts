@@ -36,11 +36,22 @@ const TEAM_X = {
   ],
 };
 
-function respond(teams: unknown[], count = teams.length) {
+const RUNNING = {
+  tournament: {
+    status: { _nin: ["Finished", "Cancelled", "CancelledMinTeams"] },
+  },
+};
+const FINISHED = { tournament: { status: { _eq: "Finished" } } };
+
+function respond(
+  teams: unknown[],
+  counts = { running: teams.length, finished: 0 },
+) {
   client.query.mockResolvedValue({
     data: {
       tournament_teams: teams,
-      tournament_teams_aggregate: { aggregate: { count } },
+      running: { aggregate: { count: counts.running } },
+      finished: { aggregate: { count: counts.finished } },
     },
   });
 }
@@ -53,16 +64,27 @@ function lastWhere() {
   return lastVariables().where;
 }
 
+function searchClause(where: any) {
+  return where._and.find((clause: any) => clause._or);
+}
+
 async function search(wrapper: any, value: string) {
   await wrapper.find("input").setValue(value);
   vi.advanceTimersByTime(300);
   await flushPromises();
-  return lastWhere()._and.find((clause: any) => clause._or);
+  return searchClause(lastWhere());
+}
+
+function segmentButton(wrapper: any, label: string) {
+  return wrapper
+    .findAll('[role="group"] button')
+    .find((button: any) => button.text().startsWith(label));
 }
 
 describe("TeamsTournamentTeams", () => {
   beforeEach(() => {
     client.query.mockReset();
+    respond([]);
     useAuthStore().me = undefined;
   });
 
@@ -70,18 +92,35 @@ describe("TeamsTournamentTeams", () => {
     vi.useRealTimers();
   });
 
-  it("lists teams that only exist inside a tournament and links to the tournament", async () => {
-    respond([TEAM_X]);
+  it("lists running tournaments' own teams first and links to the tournament", async () => {
+    respond([TEAM_X], { running: 15, finished: 172 });
 
     const wrapper = await mountSuspended(TeamsTournamentTeams);
     await flushPromises();
 
     expect(lastWhere()._and).toContainEqual({ team_id: { _is_null: true } });
+    expect(lastWhere()._and).toContainEqual(RUNNING);
     expect(wrapper.text()).toContain("Team X");
     expect(wrapper.text()).toContain("Autumn Cup");
+    expect(segmentButton(wrapper, "Running").text()).toContain("15");
+    expect(segmentButton(wrapper, "Finished").text()).toContain("172");
     expect(wrapper.find('a[href="/tournaments/tour-1?tab=teams"]').exists()).toBe(
       true,
     );
+  });
+
+  it("keeps finished tournaments' teams behind the Finished toggle", async () => {
+    respond([TEAM_X], { running: 15, finished: 172 });
+
+    const wrapper = await mountSuspended(TeamsTournamentTeams);
+    await flushPromises();
+
+    await segmentButton(wrapper, "Finished").trigger("click");
+    await flushPromises();
+
+    expect(lastWhere()._and).toContainEqual(FINISHED);
+    expect(lastWhere()._and).not.toContainEqual(RUNNING);
+    expect(lastVariables().offset).toBe(0);
   });
 
   it("orders teams of the same tournament by a unique key so pages never overlap", async () => {
@@ -97,16 +136,19 @@ describe("TeamsTournamentTeams", () => {
     ]);
   });
 
-  it("finds a player's tournament teams by steam id", async () => {
+  it("finds a player's tournament teams by steam id in both running and finished counts", async () => {
     respond([TEAM_X]);
     vi.useFakeTimers();
 
     const wrapper = await mountSuspended(TeamsTournamentTeams);
     await flushPromises();
 
-    expect((await search(wrapper, PLAYER))._or).toContainEqual({
+    const clause = await search(wrapper, PLAYER);
+    expect(clause._or).toContainEqual({
       roster: { player_steam_id: { _eq: PLAYER } },
     });
+    expect(lastVariables().runningWhere._and).toContainEqual(clause);
+    expect(lastVariables().finishedWhere._and).toContainEqual(clause);
     expect(
       JSON.stringify(await search(wrapper, "9999999999999999999")),
     ).not.toContain("player_steam_id");
@@ -119,7 +161,7 @@ describe("TeamsTournamentTeams", () => {
     const wrapper = await mountSuspended(TeamsTournamentTeams);
     await flushPromises();
 
-    await wrapper.find("button[aria-pressed]").trigger("click");
+    await wrapper.find("button[title]").trigger("click");
     await flushPromises();
 
     expect(lastWhere()._and).toContainEqual({
@@ -129,8 +171,8 @@ describe("TeamsTournamentTeams", () => {
     expect(JSON.stringify(lastWhere())).not.toContain("captain_steam_id");
   });
 
-  it("does not blame filters for an empty page when none are set", async () => {
-    respond([], 11);
+  it("does not blame filters for an empty list when none are set", async () => {
+    respond([], { running: 0, finished: 11 });
 
     const wrapper = await mountSuspended(TeamsTournamentTeams);
     await flushPromises();
@@ -140,7 +182,7 @@ describe("TeamsTournamentTeams", () => {
   });
 
   it("renders nothing when no tournament has a team of its own", async () => {
-    respond([]);
+    respond([], { running: 0, finished: 0 });
 
     const wrapper = await mountSuspended(TeamsTournamentTeams);
     await flushPromises();

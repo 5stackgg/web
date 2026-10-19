@@ -1857,7 +1857,10 @@
         "search": "Пошук команд, турнірів або гравців…",
         "search_label": "Пошук команд турнірів",
         "col_tournament": "Турнір",
-        "col_status": "Статус"
+        "col_status": "Статус",
+        "running": "Тривають",
+        "finished": "Завершені",
+        "segment_label": "Статус турніру"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Найбільший приріст",
           "worst_loss": "Найбільша втрата",
           "view_match": "Переглянути матч"
-        }
+        },
+        "more_tournament_teams": "Ще {count} команда турніру | Ще {count} команд турнірів"
       },
       "empty": {
         "title": "Гравців поки немає",

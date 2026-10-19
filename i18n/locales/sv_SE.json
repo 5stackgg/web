@@ -1857,7 +1857,10 @@
         "search": "Sök lag, turneringar eller spelare…",
         "search_label": "Sök turneringslag",
         "col_tournament": "Turnering",
-        "col_status": "Status"
+        "col_status": "Status",
+        "running": "Pågående",
+        "finished": "Avslutade",
+        "segment_label": "Turneringsstatus"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Bästa enskilda vinst",
           "worst_loss": "Sämsta enskilda förlust",
           "view_match": "Visa match"
-        }
+        },
+        "more_tournament_teams": "{count} turneringslag till | {count} turneringslag till"
       },
       "empty": {
         "title": "Inga spelare än",

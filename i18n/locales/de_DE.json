@@ -1857,7 +1857,10 @@
         "search": "Teams, Turniere oder Spieler suchen…",
         "search_label": "Turnierteams durchsuchen",
         "col_tournament": "Turnier",
-        "col_status": "Status"
+        "col_status": "Status",
+        "running": "Laufend",
+        "finished": "Beendet",
+        "segment_label": "Turnierstatus"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Größter Einzelgewinn",
           "worst_loss": "Größter Einzelverlust",
           "view_match": "Match ansehen"
-        }
+        },
+        "more_tournament_teams": "{count} weiteres Turnierteam | {count} weitere Turnierteams"
       },
       "empty": {
         "title": "Noch keine Spieler",

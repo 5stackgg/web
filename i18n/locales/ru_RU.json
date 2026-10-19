@@ -1857,7 +1857,10 @@
         "search": "Поиск команд, турниров или игроков…",
         "search_label": "Поиск команд турниров",
         "col_tournament": "Турнир",
-        "col_status": "Статус"
+        "col_status": "Статус",
+        "running": "Идут",
+        "finished": "Завершены",
+        "segment_label": "Статус турнира"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Лучший прирост за матч",
           "worst_loss": "Худшая потеря за матч",
           "view_match": "Смотреть матч"
-        }
+        },
+        "more_tournament_teams": "Ещё {count} команда турнира | Ещё {count} команд турниров"
       },
       "empty": {
         "title": "Игроков пока нет",

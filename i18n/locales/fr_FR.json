@@ -1857,7 +1857,10 @@
         "search": "Rechercher des équipes, tournois ou joueurs…",
         "search_label": "Rechercher des équipes de tournoi",
         "col_tournament": "Tournoi",
-        "col_status": "Statut"
+        "col_status": "Statut",
+        "running": "En cours",
+        "finished": "Terminés",
+        "segment_label": "Statut du tournoi"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Meilleur gain",
           "worst_loss": "Pire perte",
           "view_match": "Voir le match"
-        }
+        },
+        "more_tournament_teams": "{count} autre équipe de tournoi | {count} autres équipes de tournoi"
       },
       "empty": {
         "title": "Aucun joueur pour l'instant",

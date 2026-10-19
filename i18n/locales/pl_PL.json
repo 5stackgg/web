@@ -1857,7 +1857,10 @@
         "search": "Szukaj drużyn, turniejów lub graczy…",
         "search_label": "Szukaj drużyn turniejowych",
         "col_tournament": "Turniej",
-        "col_status": "Status"
+        "col_status": "Status",
+        "running": "Trwające",
+        "finished": "Zakończone",
+        "segment_label": "Status turnieju"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Najlepszy pojedynczy zysk",
           "worst_loss": "Najgorsza pojedyncza strata",
           "view_match": "Zobacz mecz"
-        }
+        },
+        "more_tournament_teams": "{count} kolejna drużyna turniejowa | {count} kolejnych drużyn turniejowych"
       },
       "empty": {
         "title": "Brak graczy",

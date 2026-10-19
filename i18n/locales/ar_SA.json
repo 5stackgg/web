@@ -1857,7 +1857,10 @@
         "search": "ابحث عن الفرق أو البطولات أو اللاعبين…",
         "search_label": "البحث في فرق البطولات",
         "col_tournament": "البطولة",
-        "col_status": "الحالة"
+        "col_status": "الحالة",
+        "running": "جارية",
+        "finished": "منتهية",
+        "segment_label": "حالة البطولة"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "أكبر مكسب في مباراة",
           "worst_loss": "أكبر خسارة في مباراة",
           "view_match": "اعرض المباراة"
-        }
+        },
+        "more_tournament_teams": "{count} فريق بطولة آخر | {count} فرق بطولات أخرى"
       },
       "empty": {
         "title": "لا يوجد لاعبون بعد",

@@ -1857,7 +1857,10 @@
         "search": "팀, 토너먼트 또는 플레이어 검색…",
         "search_label": "토너먼트 팀 검색",
         "col_tournament": "토너먼트",
-        "col_status": "상태"
+        "col_status": "상태",
+        "running": "진행 중",
+        "finished": "종료",
+        "segment_label": "토너먼트 상태"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "최대 단일 상승폭",
           "worst_loss": "최대 단일 하락폭",
           "view_match": "매치 보기"
-        }
+        },
+        "more_tournament_teams": "토너먼트 팀 {count}개 더 보기 | 토너먼트 팀 {count}개 더 보기"
       },
       "empty": {
         "title": "아직 플레이어가 없습니다",

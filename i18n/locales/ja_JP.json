@@ -1857,7 +1857,10 @@
         "search": "チーム、トーナメント、プレイヤーを検索…",
         "search_label": "トーナメントチームを検索",
         "col_tournament": "トーナメント",
-        "col_status": "ステータス"
+        "col_status": "ステータス",
+        "running": "開催中",
+        "finished": "終了",
+        "segment_label": "トーナメントの状態"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "最大の上昇",
           "worst_loss": "最大の下落",
           "view_match": "試合を表示"
-        }
+        },
+        "more_tournament_teams": "他 {count} 件のトーナメントチーム | 他 {count} 件のトーナメントチーム"
       },
       "empty": {
         "title": "まだプレイヤーはいません",

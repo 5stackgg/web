@@ -2207,13 +2207,9 @@ const AwardComposer = defineAsyncComponent(
                     </template>
 
                     <NuxtLink
-                      v-for="entry in playerTournamentTeams"
+                      v-for="entry in shownTournamentTeams"
                       :key="entry.tournament_team.id"
-                      :to="{
-                        name: 'tournaments-tournamentId',
-                        params: { tournamentId: entry.tournament.id },
-                        query: { tab: 'teams' },
-                      }"
+                      :to="tournamentTeamLink(entry)"
                       :class="playerHeroTeamChipClasses"
                       :title="`${entry.tournament_team.name} · ${entry.tournament.name}`"
                     >
@@ -2225,6 +2221,42 @@ const AwardComposer = defineAsyncComponent(
                         entry.tournament_team.name
                       }}</span>
                     </NuxtLink>
+
+                    <Popover v-if="moreTournamentTeams.length">
+                      <PopoverTrigger as-child>
+                        <button
+                          type="button"
+                          :class="playerHeroTeamChipClasses"
+                          :aria-label="
+                            $t(
+                              'pages.players.detail.more_tournament_teams',
+                              moreTournamentTeams.length,
+                            )
+                          "
+                        >
+                          +{{ moreTournamentTeams.length }}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" class="w-72 p-1">
+                        <NuxtLink
+                          v-for="entry in moreTournamentTeams"
+                          :key="entry.tournament_team.id"
+                          :to="tournamentTeamLink(entry)"
+                          class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 transition-colors hover:bg-[hsl(var(--tac-amber)/0.1)]"
+                        >
+                          <Trophy
+                            class="h-3 w-3 shrink-0 text-[hsl(var(--tac-amber))]"
+                          />
+                          <span class="truncate text-sm font-semibold">{{
+                            entry.tournament_team.name
+                          }}</span>
+                          <span
+                            class="ml-auto truncate text-xs text-muted-foreground"
+                            >{{ entry.tournament.name }}</span
+                          >
+                        </NuxtLink>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
               </div>
@@ -3919,6 +3951,12 @@ export default {
         this.playerTournamentTeams.length
       );
     },
+    shownTournamentTeams() {
+      return this.playerTournamentTeams.slice(0, 3);
+    },
+    moreTournamentTeams() {
+      return this.playerTournamentTeams.slice(3);
+    },
     heroActionsBind(): Record<string, any> {
       return {
         actions: this.heroActions,
@@ -4191,6 +4229,13 @@ export default {
     },
   },
   methods: {
+    tournamentTeamLink(entry: { tournament: { id: string } }) {
+      return {
+        name: "tournaments-tournamentId",
+        params: { tournamentId: entry.tournament.id },
+        query: { tab: "teams" },
+      };
+    },
     setPlayer(player: any) {
       this.player = player;
       const ctx = usePlayerContext();

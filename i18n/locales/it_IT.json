@@ -1857,7 +1857,10 @@
         "search": "Cerca squadre, tornei o giocatori…",
         "search_label": "Cerca squadre del torneo",
         "col_tournament": "Torneo",
-        "col_status": "Stato"
+        "col_status": "Stato",
+        "running": "In corso",
+        "finished": "Conclusi",
+        "segment_label": "Stato del torneo"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Miglior guadagno singolo",
           "worst_loss": "Peggior perdita singola",
           "view_match": "Vedi match"
-        }
+        },
+        "more_tournament_teams": "{count} altra squadra del torneo | {count} altre squadre del torneo"
       },
       "empty": {
         "title": "Ancora nessun giocatore",

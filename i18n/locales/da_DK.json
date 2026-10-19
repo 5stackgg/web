@@ -1857,7 +1857,10 @@
         "search": "Søg efter hold, turneringer eller spillere…",
         "search_label": "Søg i turneringshold",
         "col_tournament": "Turnering",
-        "col_status": "Status"
+        "col_status": "Status",
+        "running": "I gang",
+        "finished": "Afsluttet",
+        "segment_label": "Turneringsstatus"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Største enkeltgevinst",
           "worst_loss": "Største enkelttab",
           "view_match": "Se kamp"
-        }
+        },
+        "more_tournament_teams": "{count} turneringshold mere | {count} turneringshold mere"
       },
       "empty": {
         "title": "Ingen spillere endnu",

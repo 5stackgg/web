@@ -1857,7 +1857,10 @@
         "search": "搜尋隊伍、賽事或玩家…",
         "search_label": "搜尋賽事隊伍",
         "col_tournament": "賽事",
-        "col_status": "狀態"
+        "col_status": "狀態",
+        "running": "進行中",
+        "finished": "已結束",
+        "segment_label": "賽事狀態"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "單次最大增益",
           "worst_loss": "單次最大損失",
           "view_match": "查看比賽"
-        }
+        },
+        "more_tournament_teams": "另外 {count} 支賽事隊伍 | 另外 {count} 支賽事隊伍"
       },
       "empty": {
         "title": "尚無玩家",

@@ -1857,7 +1857,10 @@
         "search": "Buscar times, torneios ou jogadores…",
         "search_label": "Buscar times de torneio",
         "col_tournament": "Torneio",
-        "col_status": "Status"
+        "col_status": "Status",
+        "running": "Em andamento",
+        "finished": "Encerrados",
+        "segment_label": "Status do torneio"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Maior ganho único",
           "worst_loss": "Maior perda única",
           "view_match": "Ver partida"
-        }
+        },
+        "more_tournament_teams": "Mais {count} time de torneio | Mais {count} times de torneio"
       },
       "empty": {
         "title": "Nenhum jogador ainda",

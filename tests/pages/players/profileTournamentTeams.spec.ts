@@ -92,4 +92,55 @@ describe("player profile tournament teams", () => {
     });
     expect(wrapper.text()).toContain("TX");
   });
+
+  it("puts the player's own teams first and folds tournament teams past three into +N", async () => {
+    const wrapper = await mountSuspended(PlayerPage, {
+      shallow: true,
+      route: `/players/${TARGET}`,
+      global: { renderStubDefaultSlot: true },
+    } as any);
+    unmount = () => wrapper.unmount();
+
+    (wrapper.vm as any).player = {
+      steam_id: TARGET,
+      name: "Dana",
+      role: e_player_roles_enum.user,
+      teams: [{ id: "team-1", name: "Blue Rabbits", short_name: "BR" }],
+    };
+    const entry = (id: string, name: string, shortName: string) => ({
+      tournament_team: { id, name, short_name: shortName },
+      tournament: { id: `tour-${id}`, name: `Cup ${id}` },
+    });
+    subscription().result.call(wrapper.vm, {
+      data: {
+        tournament_team_roster: [
+          entry("1", "Team X", "TX"),
+          entry("2", "I AM DEV", "IAD"),
+          entry("3", "Pickup 4", "P4"),
+          entry("4", "Grind House", "GH"),
+          entry("5", "Nova Five", "NV5"),
+        ],
+      },
+    });
+    await flushPromises();
+
+    const links = wrapper
+      .findAllComponents({ name: "NuxtLink" })
+      .map((link) => link.props("to"));
+    const tournamentLinks = links.filter(
+      (to: any) => to?.name === "tournaments-tournamentId",
+    );
+    expect(links.indexOf("/teams/team-1")).toBeLessThan(
+      links.indexOf(tournamentLinks[0]),
+    );
+    expect(tournamentLinks).toHaveLength(5);
+
+    const text = wrapper.text();
+    expect(text).toContain("TX");
+    expect(text).toContain("P4");
+    expect(text).toContain("+2");
+    expect(text).not.toContain("GH");
+    expect(text).toContain("Grind House");
+    expect(text).toContain("Nova Five");
+  });
 });

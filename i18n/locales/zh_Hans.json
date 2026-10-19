@@ -1857,7 +1857,10 @@
         "search": "搜索队伍、赛事或玩家…",
         "search_label": "搜索赛事队伍",
         "col_tournament": "赛事",
-        "col_status": "状态"
+        "col_status": "状态",
+        "running": "进行中",
+        "finished": "已结束",
+        "segment_label": "赛事状态"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "单次最大增益",
           "worst_loss": "单次最大损失",
           "view_match": "查看比赛"
-        }
+        },
+        "more_tournament_teams": "另外 {count} 支赛事队伍 | 另外 {count} 支赛事队伍"
       },
       "empty": {
         "title": "暂无玩家",

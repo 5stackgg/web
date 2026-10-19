@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
+import { useI18n } from "vue-i18n";
 import { Search, Users, X } from "lucide-vue-next";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import FilterBar from "~/components/common/FilterBar.vue";
 import Pagination from "~/components/Pagination.vue";
 import TeamsEmblem from "~/components/teams/TeamsEmblem.vue";
+import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -25,23 +27,58 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
+type Segment = "running" | "finished";
+
+const { t } = useI18n();
 const { client } = useApolloClient();
 const auth = useAuthStore();
 
 const search = ref("");
 const query = ref("");
 const mine = ref(false);
+const segment = ref<Segment>("running");
 const page = ref(1);
 const perPage = usePerPage("tournament-teams");
-useRestoredRefs("teams-tournament-teams", { search, query, mine, page });
+useRestoredRefs("teams-tournament-teams", {
+  search,
+  query,
+  mine,
+  segment,
+  page,
+});
 
 const teams = ref<any[]>([]);
-const total = ref(0);
+const counts = ref<Record<Segment, number>>({ running: 0, finished: 0 });
 const fetching = ref(false);
 const loaded = ref(false);
 
 const signedIn = computed(() => !!auth.me);
 const anyFilter = computed(() => !!search.value || mine.value);
+const total = computed(() => counts.value[segment.value]);
+
+const segmentOptions = computed(() => [
+  {
+    key: "running" as Segment,
+    label: t("pages.teams.tournament_teams.running"),
+    count: counts.value.running,
+  },
+  {
+    key: "finished" as Segment,
+    label: t("pages.teams.tournament_teams.finished"),
+    count: counts.value.finished,
+  },
+]);
+
+const SEGMENT_STATUS: Record<Segment, any> = {
+  running: {
+    _nin: [
+      e_tournament_status_enum.Finished,
+      e_tournament_status_enum.Cancelled,
+      e_tournament_status_enum.CancelledMinTeams,
+    ],
+  },
+  finished: { _eq: e_tournament_status_enum.Finished },
+};
 
 // Teams made with "New team" inside a tournament (pickup teams included) have
 // no `teams` row, so the directory can never list them.
@@ -75,10 +112,20 @@ const listQuery = generateQuery({
       ],
     },
   ],
-  tournament_teams_aggregate: [
-    { where: $("where", "tournament_teams_bool_exp!") },
-    { aggregate: { count: true } },
-  ],
+  __alias: {
+    running: {
+      tournament_teams_aggregate: [
+        { where: $("runningWhere", "tournament_teams_bool_exp!") },
+        { aggregate: { count: true } },
+      ],
+    },
+    finished: {
+      tournament_teams_aggregate: [
+        { where: $("finishedWhere", "tournament_teams_bool_exp!") },
+        { aggregate: { count: true } },
+      ],
+    },
+  },
 } as any);
 
 // Every team in a tournament shares its start, so the id breaks the tie or
@@ -89,20 +136,8 @@ const ORDER = [
   { id: order_by.asc },
 ];
 
-const where = computed(() => {
-  const and: any[] = [
-    { team_id: { _is_null: true } },
-    {
-      tournament: {
-        status: {
-          _nin: [
-            e_tournament_status_enum.Cancelled,
-            e_tournament_status_enum.CancelledMinTeams,
-          ],
-        },
-      },
-    },
-  ];
+const filters = computed(() => {
+  const and: any[] = [{ team_id: { _is_null: true } }];
   const raw = query.value.trim();
   const term = raw.replace(/[\\%_]/g, (c) => `\\${c}`);
   if (term) {
@@ -121,8 +156,19 @@ const where = computed(() => {
   if (mine.value && auth.me?.steam_id) {
     and.push({ roster: { player_steam_id: { _eq: auth.me.steam_id } } });
   }
-  return { _and: and };
+  return and;
 });
+
+function whereFor(value: Segment) {
+  return {
+    _and: [
+      ...filters.value,
+      { tournament: { status: SEGMENT_STATUS[value] } },
+    ],
+  };
+}
+
+const where = computed(() => whereFor(segment.value));
 
 let generation = 0;
 async function load() {
@@ -136,6 +182,8 @@ async function load() {
       query: listQuery,
       variables: {
         where: where.value,
+        runningWhere: whereFor("running"),
+        finishedWhere: whereFor("finished"),
         orderBy: ORDER,
         limit: perPage.value,
         offset: (page.value - 1) * perPage.value,
@@ -146,8 +194,10 @@ async function load() {
       return;
     }
     teams.value = (data as any)?.tournament_teams ?? [];
-    total.value =
-      (data as any)?.tournament_teams_aggregate?.aggregate?.count ?? 0;
+    counts.value = {
+      running: (data as any)?.running?.aggregate?.count ?? 0,
+      finished: (data as any)?.finished?.aggregate?.count ?? 0,
+    };
     loaded.value = true;
   } catch (error) {
     console.error("[teams] tournament teams query error", error);
@@ -176,7 +226,7 @@ watch(search, (value) => {
     page.value = 1;
   }, 250);
 });
-watch(mine, () => {
+watch([mine, segment], () => {
   page.value = 1;
 });
 watch(signedIn, (value) => {
@@ -222,10 +272,10 @@ const chipClasses =
 
 <template>
   <section
-    v-if="loaded && (total > 0 || anyFilter)"
+    v-if="loaded && (counts.running + counts.finished > 0 || anyFilter)"
     aria-labelledby="teams-tournament-label"
   >
-    <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+    <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-3">
       <h2
         id="teams-tournament-label"
         :class="[tacticalSectionLabelClasses, '!mb-0']"
@@ -233,9 +283,14 @@ const chipClasses =
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("pages.teams.tournament_teams.title") }}
       </h2>
-      <span class="text-[12.5px] text-muted-foreground">
+      <span class="mr-auto text-[12.5px] text-muted-foreground">
         {{ $t("pages.teams.tournament_teams.subtitle") }}
       </span>
+      <WatchSegmented
+        v-model="segment"
+        :options="segmentOptions"
+        :label="$t('pages.teams.tournament_teams.segment_label')"
+      />
     </div>
 
     <FilterBar>

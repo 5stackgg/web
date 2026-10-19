@@ -1857,7 +1857,10 @@
         "search": "Search teams, tournaments or players…",
         "search_label": "Search tournament teams",
         "col_tournament": "Tournament",
-        "col_status": "Status"
+        "col_status": "Status",
+        "running": "Running",
+        "finished": "Finished",
+        "segment_label": "Tournament status"
       }
     },
     "settings": {
@@ -4376,7 +4379,8 @@
           "best_gain": "Best Single Gain",
           "worst_loss": "Worst Single Loss",
           "view_match": "View match"
-        }
+        },
+        "more_tournament_teams": "{count} more tournament team | {count} more tournament teams"
       },
       "empty": {
         "title": "No players yet",

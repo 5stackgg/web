@@ -321,6 +321,28 @@ describe("restart match", () => {
     );
   });
 
+  it("lets a match that reopened mid-preview be restarted", async () => {
+    let refuse: (error: Error) => void = () => {};
+    mutate.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          refuse = reject;
+        }),
+    );
+    wrapper = await mountSuspended(MatchRestartDialog, {
+      props: { match: finishedRoundRobin(), open: true },
+    });
+    await flushPromises();
+
+    await wrapper.setProps({ match: match({ status: "WaitingForCheckIn" }) });
+    await flushPromises();
+    refuse(new Error("the next stage was already seeded from these standings"));
+    await flushPromises();
+
+    expect(body().textContent).not.toContain("This match can't be restarted");
+    expect(button("Restart Match")!.disabled).toBe(false);
+  });
+
   it("forgets an old refusal once the match can be reopened", async () => {
     mutate.mockRejectedValueOnce(
       new Error("the next stage was already seeded from these standings"),

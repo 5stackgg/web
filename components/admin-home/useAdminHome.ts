@@ -5,6 +5,7 @@ import {
   ref,
   shallowRef,
   watch,
+  type Ref,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { $, order_by } from "~/generated/zeus";
@@ -52,6 +53,7 @@ import {
   upcomingSeasons,
 } from "~/components/seasons/seasonPhase";
 import {
+  AREAS,
   AREA_LABEL_KEYS,
   AREA_ROUTES,
   alertSignals,
@@ -60,6 +62,7 @@ import {
   diskFlaggedNodes,
   gpuSignals,
   metricSignals,
+  needCount,
   nodeSignals,
   pluginSignals,
   renderSignals,
@@ -79,7 +82,7 @@ const DAY_MS = 86_400_000;
 // node or a pass over the database wait until the page has settled.
 const LAZY_MS = 1200;
 const DB_POLL_MS = 60_000;
-// A source that never answers must not hold the verdict back forever.
+// A source that never answers must not hide the problems already found.
 const READY_FALLBACK_MS = 8000;
 
 type Sub = { unsubscribe: () => void };
@@ -296,6 +299,7 @@ export function useAdminHome() {
   );
   const nodesLoaded = ref(false);
   const currentBuildId = ref<number | string | null>(null);
+  const versionLoaded = ref(false);
   const servers = shallowRef<any[]>([]);
   const serversLoaded = ref(false);
   const accounts = shallowRef<any[]>([]);
@@ -305,10 +309,15 @@ export function useAdminHome() {
   const plugins = shallowRef<any[]>([]);
   const pluginsLoaded = ref(false);
   const desired = shallowRef<DesiredInstall[]>([]);
+  const desiredLoaded = ref(false);
   const clipsInFlight = shallowRef<any[]>([]);
+  const clipsInFlightLoaded = ref(false);
   const lineupsInFlight = shallowRef<any[]>([]);
+  const lineupsInFlightLoaded = ref(false);
   const failedClips = ref(0);
+  const failedClipsLoaded = ref(false);
   const failedLineups = ref(0);
+  const failedLineupsLoaded = ref(false);
   const coverage = shallowRef<CoverageCounts | null>(null);
   const coverageLoaded = ref(false);
   const db = shallowRef<{
@@ -316,6 +325,7 @@ export function useAdminHome() {
     active: ActiveQueryLike[];
     locks: Array<{ pid: number | null; granted: boolean | null }>;
   } | null>(null);
+  const dbLoaded = ref(false);
   const dbThreshold = ref(readSlowThreshold());
   const metricsOn = ref(false);
   const nodeStats = ref<Record<string, NodeStats | null>>({});
@@ -328,18 +338,28 @@ export function useAdminHome() {
   function live(
     query: unknown,
     next: (data: any) => void,
-    options: { variables?: Record<string, unknown>; settle?: () => void } = {},
+    options: {
+      variables?: Record<string, unknown>;
+      loaded?: Ref<boolean>;
+    } = {},
   ): Sub {
     const sub = client
       .subscribe({ query: query as any, variables: options.variables })
       .subscribe({
         next: ({ data }: any) => {
           next(data);
+          if (options.loaded) {
+            options.loaded.value = true;
+          }
           heard();
         },
         error: (error: unknown) => {
           console.error("[admin-home] subscription:", error);
-          options.settle?.();
+          // Still counts as answered, so the verdict does not wait on it
+          // forever.
+          if (options.loaded) {
+            options.loaded.value = true;
+          }
         },
       });
     subs.add(sub);
@@ -371,35 +391,44 @@ export function useAdminHome() {
     nodesSubscription,
     (data) => {
       nodes.value = data?.game_server_nodes ?? [];
-      nodesLoaded.value = true;
     },
-    { settle: () => (nodesLoaded.value = true) },
+    { loaded: nodesLoaded },
   );
-  live(currentVersionSubscription, (data) => {
-    currentBuildId.value = data?.game_versions?.[0]?.build_id ?? null;
-  });
+  live(
+    currentVersionSubscription,
+    (data) => {
+      currentBuildId.value = data?.game_versions?.[0]?.build_id ?? null;
+    },
+    { loaded: versionLoaded },
+  );
   live(
     serversSubscription,
     (data) => {
       servers.value = data?.servers ?? [];
-      serversLoaded.value = true;
     },
-    { settle: () => (serversLoaded.value = true) },
+    { loaded: serversLoaded },
   );
   live(
     accountsSubscription,
     (data) => {
       accounts.value = data?.steam_accounts ?? [];
-      accountsLoaded.value = true;
     },
-    { settle: () => (accountsLoaded.value = true) },
+    { loaded: accountsLoaded },
   );
-  live(clipsInFlightSubscription, (data) => {
-    clipsInFlight.value = data?.clip_render_jobs ?? [];
-  });
-  live(utilityRendersInFlightBriefSubscription, (data) => {
-    lineupsInFlight.value = data?.utility_lineup_renders ?? [];
-  });
+  live(
+    clipsInFlightSubscription,
+    (data) => {
+      clipsInFlight.value = data?.clip_render_jobs ?? [];
+    },
+    { loaded: clipsInFlightLoaded },
+  );
+  live(
+    utilityRendersInFlightBriefSubscription,
+    (data) => {
+      lineupsInFlight.value = data?.utility_lineup_renders ?? [];
+    },
+    { loaded: lineupsInFlightLoaded },
+  );
 
   const since = new Date(Date.now() - DAY_MS).toISOString();
   live(
@@ -407,14 +436,14 @@ export function useAdminHome() {
     (data) => {
       failedClips.value = data?.clip_render_jobs?.length ?? 0;
     },
-    { variables: { since } },
+    { variables: { since }, loaded: failedClipsLoaded },
   );
   live(
     lineupsFailedSubscription,
     (data) => {
       failedLineups.value = data?.utility_lineup_renders?.length ?? 0;
     },
-    { variables: { since } },
+    { variables: { since }, loaded: failedLineupsLoaded },
   );
 
   const seasonsEnabled = computed(() => settings.seasonsEnabled);
@@ -427,9 +456,8 @@ export function useAdminHome() {
         seasonsSubscription,
         (data) => {
           seasons.value = data?.seasons ?? [];
-          seasonsLoaded.value = true;
         },
-        { settle: () => (seasonsLoaded.value = true) },
+        { loaded: seasonsLoaded },
       ),
     ],
     () => {
@@ -445,18 +473,22 @@ export function useAdminHome() {
         pluginsSubscription,
         (data) => {
           plugins.value = data?.game_plugins ?? [];
-          pluginsLoaded.value = true;
         },
-        { settle: () => (pluginsLoaded.value = true) },
+        { loaded: pluginsLoaded },
       ),
-      live(desiredSubscription, (data) => {
-        desired.value = data?.game_plugin_installs ?? [];
-      }),
+      live(
+        desiredSubscription,
+        (data) => {
+          desired.value = data?.game_plugin_installs ?? [];
+        },
+        { loaded: desiredLoaded },
+      ),
     ],
     () => {
       plugins.value = [];
       desired.value = [];
       pluginsLoaded.value = false;
+      desiredLoaded.value = false;
     },
   );
 
@@ -505,6 +537,8 @@ export function useAdminHome() {
       heard();
     } catch (error) {
       console.error("[admin-home] database:", error);
+    } finally {
+      dbLoaded.value = true;
     }
   }
 
@@ -675,15 +709,34 @@ export function useAdminHome() {
     return sortSignals(list);
   });
 
+  // An area is called fine only once everything its rules read has answered.
+  const areaRead = computed<Record<AreaKey, boolean>>(() => ({
+    seasons: !seasonsEnabled.value || seasonsLoaded.value,
+    nodes: nodesLoaded.value && versionLoaded.value && settings.settingsLoaded,
+    servers: serversLoaded.value && settings.settingsLoaded,
+    gpus:
+      nodesLoaded.value && accountsLoaded.value && clipsInFlightLoaded.value,
+    renders:
+      clipsInFlightLoaded.value &&
+      lineupsInFlightLoaded.value &&
+      failedClipsLoaded.value &&
+      failedLineupsLoaded.value &&
+      coverageLoaded.value,
+    metrics: metricsReady.value,
+    database: dbLoaded.value,
+    // Banners are notices: they never change the verdict.
+    alerts: true,
+    plugins:
+      !pluginsEnabled.value || (pluginsLoaded.value && desiredLoaded.value),
+    settings: settings.settingsLoaded,
+  }));
+
+  // "All clear" waits for every area. A source that never answers only holds
+  // that back: the problems already found still show.
   const ready = computed(
     () =>
-      forceReady.value ||
-      (nodesLoaded.value &&
-        serversLoaded.value &&
-        accountsLoaded.value &&
-        settings.settingsLoaded &&
-        (!seasonsEnabled.value || seasonsLoaded.value) &&
-        (!pluginsEnabled.value || pluginsLoaded.value)),
+      AREAS.every((area) => areaRead.value[area]) ||
+      (forceReady.value && needCount(signals.value) > 0),
   );
 
   /* ---------------- area cards ---------------- */
@@ -702,7 +755,10 @@ export function useAdminHome() {
     body: Omit<AreaCard, "area" | "label" | "to" | "tone" | "toneLabel">,
     state: "read" | "checking" | "empty" = "read",
   ): AreaCard {
-    const tone: Tone = state === "read" ? areaTone(signals.value, area) : "off";
+    const tone: Tone =
+      state === "read" && areaRead.value[area]
+        ? areaTone(signals.value, area)
+        : "off";
     return {
       area,
       label: t(AREA_LABEL_KEYS[area]),

@@ -90,8 +90,9 @@ function onAction(signal: Signal) {
     <PageTransition :delay="0">
       <div class="grid gap-4">
         <div class="flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1">
-          <!-- The verdict waits for the live areas, so it never says "All
-               clear" about something it hasn't read. -->
+          <!-- The verdict waits for every area, metrics and the database
+               included, so it never says "All clear" about something it
+               hasn't read. -->
           <FadeSwap class="min-w-0" aria-live="polite">
             <Skeleton
               v-if="!ready"

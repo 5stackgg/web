@@ -10060,6 +10060,7 @@
       "replay_failed": "No se ha podido cargar la repetición",
       "staff_only": "Solo staff",
       "stop": "Detener el directo",
+      "stop_short": "Detener",
       "stopped": "Directo detenido",
       "resume": "Ver",
       "card": {

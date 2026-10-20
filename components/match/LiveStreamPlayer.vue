@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
-import { ExternalLink, PictureInPicture, Square } from "lucide-vue-next";
+import {
+  ChevronDown,
+  ExternalLink,
+  PictureInPicture,
+  Square,
+  Trophy,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { loginLinks } from "~/utilities/loginLinks";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -13,6 +19,11 @@ import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
 import StreamBootStatus from "~/components/match/StreamBootStatus.vue";
 import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
+import {
+  streamControlButtonClasses,
+  streamControlDividerClasses,
+  streamControlIconClasses,
+} from "~/components/match/streamControlClasses";
 import {
   useWhepStatusCopy,
   type WhepPhase,
@@ -344,6 +355,23 @@ function openPopoutWindow() {
 function focusPopoutWindow() {
   matchPopout.focusPopout(props.matchId);
 }
+
+// The overlay knows when there is a scoreboard to open: the page's player only
+// has one in fullscreen.
+const scoreboard = ref<InstanceType<typeof MatchScoreboardOverlay> | null>(
+  null,
+);
+const canToggleScoreboard = computed(() => !!scoreboard.value?.canShow);
+const canPin = computed(() => !props.inGlobal && !props.inPopout);
+const canPopOut = computed(() => !coarsePointer.value && !props.inPopout);
+const hasHostControls = computed(
+  () =>
+    canPin.value ||
+    canPopOut.value ||
+    canToggleScoreboard.value ||
+    props.inGlobal ||
+    canStop.value,
+);
 </script>
 
 <template>
@@ -442,55 +470,84 @@ function focusPopoutWindow() {
 
       <MatchScoreboardOverlay
         v-if="!bare"
+        ref="scoreboard"
         v-model:open="scoreboardOpen"
         :match-id="matchId"
         :compact="compact"
         :require-fullscreen="!compact"
+        :hide-toggle="isLive && !whepPhase"
       />
 
-      <div
-        v-if="isLive && !inPopout && !bare && !whepPhase"
-        class="absolute bottom-3 left-12 z-10 flex items-center gap-2 transition-opacity duration-150"
-        :class="
-          coarsePointer
-            ? ''
-            : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100'
-        "
-      >
+      <template v-if="hasHostControls" #controls>
         <button
-          v-if="!inGlobal"
+          v-if="canPin"
           type="button"
           :title="$t('ui.pin_overlay')"
           :aria-label="$t('ui.pin_overlay')"
-          class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
+          :class="streamControlButtonClasses"
           @click="promoteToPip"
         >
-          <PictureInPicture class="size-3.5" />
+          <PictureInPicture :class="streamControlIconClasses" />
         </button>
         <button
-          v-if="!coarsePointer"
+          v-if="canPopOut"
           type="button"
           :title="$t('ui.open_new_window')"
           :aria-label="$t('ui.open_new_window')"
-          class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
+          :class="streamControlButtonClasses"
           @click="openPopoutWindow"
         >
-          <ExternalLink class="size-3.5" />
+          <ExternalLink :class="streamControlIconClasses" />
         </button>
+        <template v-if="canToggleScoreboard">
+          <span :class="streamControlDividerClasses" aria-hidden="true" />
+          <button
+            type="button"
+            :title="$t('match.scoreboard')"
+            :aria-label="$t('match.scoreboard')"
+            :aria-expanded="scoreboardOpen"
+            :class="[
+              streamControlButtonClasses,
+              'stream-control-labelled',
+              scoreboardOpen && 'bg-white/[0.14]',
+            ]"
+            @click="scoreboardOpen = !scoreboardOpen"
+          >
+            <Trophy :class="streamControlIconClasses" />
+            <span class="stream-control-label inline-flex items-center gap-2">
+              {{ $t("match.scoreboard") }}
+              <ChevronDown
+                class="size-3.5 transition-transform duration-200 motion-reduce:transition-none"
+                :class="scoreboardOpen && 'rotate-180'"
+              />
+            </span>
+          </button>
+        </template>
+        <template v-if="inGlobal">
+          <span :class="streamControlDividerClasses" aria-hidden="true" />
+          <span class="inline-flex items-center pl-1 pr-2 text-xs">
+            <StreamViewerBadge :match-id="matchId" bare />
+          </span>
+        </template>
         <template v-if="canStop">
-          <span class="h-4 w-px bg-white/25" aria-hidden="true" />
+          <span :class="streamControlDividerClasses" aria-hidden="true" />
           <button
             type="button"
             :title="$t('match.stream.stop')"
             :aria-label="$t('match.stream.stop')"
-            class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:border-destructive hover:bg-destructive hover:text-white hover:scale-110 cursor-pointer"
+            :class="[
+              streamControlButtonClasses,
+              'stream-control-labelled hover:!bg-destructive',
+            ]"
             @click="stopStream"
           >
             <Square class="size-3 fill-current" />
+            <span class="stream-control-label">{{
+              $t("match.stream.stop_short")
+            }}</span>
           </button>
         </template>
-        <StreamViewerBadge v-if="compact" :match-id="matchId" size="md" />
-      </div>
+      </template>
     </StreamCanvas>
   </div>
 

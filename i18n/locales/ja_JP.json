@@ -10060,6 +10060,7 @@
       "replay_failed": "リプレイを読み込めませんでした",
       "staff_only": "スタッフのみ",
       "stop": "配信を停止",
+      "stop_short": "停止",
       "stopped": "配信を停止しました",
       "resume": "視聴する",
       "card": {

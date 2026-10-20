@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { defineComponent, h } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
@@ -47,16 +48,31 @@ async function pushStream(row: typeof streamRow | null) {
   await flushPromises();
 }
 
+// A scoreboard with data, the way the overlay reports one it can open.
+const ScoreboardWithData = defineComponent({
+  props: { open: Boolean },
+  emits: ["update:open"],
+  setup(_, { expose }) {
+    expose({ canShow: true });
+    return () => h("div");
+  },
+});
+
 async function mountPlayer(
   props: Record<string, unknown> = { inGlobal: true },
+  stubs: Record<string, unknown> = {},
 ) {
   return mountSuspended(LiveStreamPlayer, {
     props: { matchId: "match-1", ...props },
     global: {
       stubs: {
-        StreamCanvas: { template: '<div class="stream-canvas"><slot /></div>' },
+        StreamCanvas: {
+          template:
+            '<div class="stream-canvas"><slot /><div class="controls"><slot name="controls" /></div></div>',
+        },
         MatchScoreboardOverlay: true,
         StreamViewerBadge: true,
+        ...stubs,
       },
     },
   });
@@ -149,6 +165,33 @@ describe("LiveStreamPlayer on the match page", () => {
 
     expect(wrapper.find(".stream-canvas").exists()).toBe(false);
     expect(wrapper.text()).toContain("Stream stopped");
+  });
+
+  it("adds pin, pop-out and a labelled Stop to the player's bar", async () => {
+    const wrapper = await mountPlayer({});
+    await pushStream(streamRow);
+    const bar = wrapper.find(".controls");
+
+    expect(
+      bar.findAll("button").map((b: any) => b.attributes("aria-label")),
+    ).toEqual(["Pin as floating overlay", "Open in new window", "Stop stream"]);
+    expect(stopButton(wrapper).text()).toBe("Stop");
+  });
+
+  it("gives the pop-out window only the scoreboard, which opens the panel", async () => {
+    const wrapper = await mountPlayer(
+      { inPopout: true },
+      { MatchScoreboardOverlay: ScoreboardWithData },
+    );
+    await pushStream(streamRow);
+    const buttons = wrapper.find(".controls").findAll("button");
+
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0].text()).toBe("Scoreboard");
+
+    await buttons[0].trigger("click");
+
+    expect(buttons[0].attributes("aria-expanded")).toBe("true");
   });
 
   it("has no Stop in the floating player, which closes instead", async () => {

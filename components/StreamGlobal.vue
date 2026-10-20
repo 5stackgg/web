@@ -8,6 +8,11 @@ import { useMatchPopout } from "~/composables/useMatchPopout";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useTwitchPovGuard } from "~/composables/useTwitch";
 import {
+  streamControlBarClasses,
+  streamControlButtonClasses,
+  streamControlIconClasses,
+} from "~/components/match/streamControlClasses";
+import {
   embedStreamKey,
   liveStreamKey,
   useStoppedStreams,
@@ -38,7 +43,7 @@ useTwitchPovGuard(
 <template>
   <div
     v-if="stream"
-    class="fixed bottom-4 right-4 z-50 rounded-lg overflow-hidden shadow-2xl border border-border bg-background"
+    class="group fixed bottom-4 right-4 z-50 rounded-lg overflow-hidden shadow-2xl border border-border bg-background"
     :style="containerStyle"
   >
     <div class="h-full w-full" :class="{ 'pointer-events-none': isResizing }">
@@ -54,27 +59,34 @@ useTwitchPovGuard(
       <StreamEmbed v-else :streams="[stream]" :global="true" />
     </div>
     <div
-      class="absolute top-0 left-0 w-6 h-6 cursor-nwse-resize bg-border hover:bg-primary/50 transition-colors z-10 flex items-center justify-center"
+      class="absolute left-0 top-0 z-40 grid size-[22px] cursor-nwse-resize place-items-center rounded-br-lg bg-background/55 opacity-0 shadow-[inset_-1px_-1px_0_rgb(255_255_255/0.2)] backdrop-blur-[14px] backdrop-saturate-[1.4] transition-opacity duration-150 group-hover:opacity-100 [@media(pointer:coarse)]:opacity-100"
+      :class="{ 'opacity-100': isResizing }"
       @mousedown="startResize"
     >
-      <div class="w-3 h-3 border-l-2 border-t-2 border-foreground/40"></div>
+      <div
+        class="mb-0.5 mr-0.5 size-[7px] border-l-2 border-t-2 border-white/75"
+      ></div>
     </div>
-    <div class="absolute top-2 right-2 z-10 flex items-center gap-1">
+    <div
+      class="absolute right-2 top-2 z-40 [--stream-control-icon:14px] [--stream-control:26px]"
+      :class="streamControlBarClasses"
+    >
       <NuxtLink
         v-if="stream.match_id && !isOnMatchPage"
         :to="`/matches/${stream.match_id}`"
-        class="w-6 h-6 rounded-md opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
+        :class="streamControlButtonClasses"
         :title="$t('match.open_match')"
       >
-        <ArrowUpRight class="w-4 h-4" />
+        <ArrowUpRight :class="streamControlIconClasses" />
         <span class="sr-only">{{ $t("match.open_match") }}</span>
       </NuxtLink>
       <button
-        class="w-6 h-6 rounded-md opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
+        :class="streamControlButtonClasses"
+        :title="$t('common.close')"
         @click="closePreview"
         type="button"
       >
-        <Cross2Icon class="w-4 h-4" />
+        <Cross2Icon :class="streamControlIconClasses" />
         <span class="sr-only">{{ $t("common.close") }}</span>
       </button>
     </div>

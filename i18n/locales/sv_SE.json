@@ -13938,6 +13938,17 @@
       "docs": "Läs dokumentationen"
     }
   },
+  "licenses": {
+    "title": "Licenser",
+    "intro": "Den här webbplatsen kör 5Stack, fri programvara som släpps under GNU Affero General Public License, version 3. Den levereras utan någon garanti.",
+    "source": "Källkod",
+    "license_text": "Licenstext",
+    "third_party": {
+      "title": "Programvara från tredje part",
+      "description": "5Stack bygger på programvara med öppen källkod. Licenserna för alla paket som ingår finns i en fil.",
+      "link": "Visa licenser"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Namn",

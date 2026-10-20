@@ -6,6 +6,7 @@ import {
   LogOut,
   ChevronRight,
   MonitorDown,
+  Scale,
 } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -147,6 +148,17 @@ const chevronClasses =
         >
           <CircleHelp :class="iconClasses" />
           {{ $t("faq.title") }}
+          <ChevronRight :class="chevronClasses" />
+        </NuxtLink>
+      </DropdownMenuItem>
+
+      <DropdownMenuItem as-child :class="rowClasses">
+        <NuxtLink
+          :to="{ name: 'licenses' }"
+          :class="{ 'router-link-active': isSectionActive('licenses') }"
+        >
+          <Scale :class="iconClasses" />
+          {{ $t("licenses.title") }}
           <ChevronRight :class="chevronClasses" />
         </NuxtLink>
       </DropdownMenuItem>

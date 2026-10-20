@@ -13938,6 +13938,17 @@
       "docs": "閱讀文件"
     }
   },
+  "licenses": {
+    "title": "授權條款",
+    "intro": "本站採用 5Stack 運作，這是依據 GNU Affero 通用公共授權條款第 3 版發布的自由軟體，不提供任何擔保。",
+    "source": "原始碼",
+    "license_text": "授權條款全文",
+    "third_party": {
+      "title": "第三方軟體",
+      "description": "5Stack 以開放原始碼軟體打造。其包含的所有套件授權條款都列在同一個檔案中。",
+      "link": "檢視授權條款"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "名稱",

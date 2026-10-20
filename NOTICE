@@ -1,0 +1,136 @@
+5Stack Web
+Copyright (C) 2025-2026 Luke Policinski
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU Affero General Public License, version 3 only, as
+published by the Free Software Foundation (see LICENSE), together with the
+additional terms and the additional permission below.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+General Public License for more details.
+
+
+ADDITIONAL TERMS (GNU AGPL version 3, section 7)
+
+These terms apply to every copy of this program and to every work based
+on it.
+
+1. Attribution (section 7(b)). Keep this NOTICE file and every copyright
+   notice in the source. Any user interface that displays Appropriate
+   Legal Notices must include the credit "Powered by 5Stack" with a
+   working link to https://5stack.gg. In the 5Stack web panel that credit
+   is on the sign-in page and on the Licenses page (/licenses).
+
+2. Origin (section 7(c)). Do not present a modified version as the
+   official 5Stack, or as made or endorsed by its author, and mark a
+   modified version as changed from the original.
+
+3. Names and marks (section 7(e)). This license grants no right to use
+   the 5Stack name or logo, except to give the credit in term 1 and to
+   describe the origin of the work truthfully.
+
+
+ADDITIONAL PERMISSION FOR PLUGINS (GNU AGPL version 3, section 7)
+
+As a special exception, the copyright holder permits plugins for 5Stack
+to be licensed under the MIT License, even where a plugin would
+otherwise be a work based on this program. A plugin is software that
+works with 5Stack only through its published plugin interfaces: the
+@5stack/ui package, the panel's plugin page interface, the plugin
+registry, and the 5Stack GraphQL and REST APIs. This permission covers
+plugins only, never a modified version of 5Stack itself.
+
+
+EARLIER VERSIONS
+
+Versions of this repository published before this NOTICE file was added
+were released under the MIT License and remain under it. The
+contributions they contain were made under that license, whose notice
+follows:
+
+    MIT License
+
+    Copyright (c) 2025 5Stack.gg
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+OTHER LICENSING
+
+To use this program under terms other than the license above, contact
+the copyright holder: https://github.com/lukepolo
+
+
+THIRD-PARTY SOFTWARE
+
+This program uses third-party npm packages, each under its own license.
+Their license texts are collected in public/third-party-licenses.txt,
+which the panel serves at /third-party-licenses.txt. After changing
+dependencies, regenerate it with `yarn third-party-notices`.
+
+The components in components/ui come from shadcn-vue
+(https://github.com/unovue/shadcn-vue):
+
+    MIT License
+
+    Copyright (c) 2023 unovue
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+public/radars/metadata.json, the map radar calibration, is vendored from
+boltobserv by boltgolt (https://github.com/boltgolt/boltobserv) and is
+licensed under the GNU GPL version 3, which the GNU AGPL version 3 allows
+it to be combined with.
+
+The Oxanium font in public/fonts is Copyright 2019 The Oxanium Project
+Authors (https://github.com/sevmeyer/oxanium) and is licensed under the
+SIL Open Font License 1.1 (public/fonts/Oxanium-OFL.txt).
+
+The map-assets image (docker/map-assets) runs the Source 2 Viewer CLI from
+ValveResourceFormat (https://github.com/ValveResourceFormat/ValveResourceFormat),
+MIT License.
+
+
+MATERIAL NOT COVERED BY THIS LICENSE
+
+Counter-Strike 2 images and data, including the equipment, map, skill
+group and team images in public/img and the rush_001 radar images in
+public/radars, are the property of Valve Corporation. The FACEIT logo in
+public/img/logos is a trademark of its owner. The copyright holder does
+not license them under the GNU AGPL, and nothing in this repository
+grants rights to them.

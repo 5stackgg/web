@@ -13938,6 +13938,17 @@
       "docs": "Leggi la documentazione"
     }
   },
+  "licenses": {
+    "title": "Licenze",
+    "intro": "Questo sito utilizza 5Stack, software libero rilasciato sotto la GNU Affero General Public License, versione 3. Viene fornito senza alcuna garanzia.",
+    "source": "Codice sorgente",
+    "license_text": "Testo della licenza",
+    "third_party": {
+      "title": "Software di terze parti",
+      "description": "5Stack è costruito su software open source. Le licenze di tutti i pacchetti inclusi sono elencate in un unico file.",
+      "link": "Vedi licenze"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Nome",

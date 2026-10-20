@@ -13944,6 +13944,17 @@
       "docs": "Read the docs"
     }
   },
+  "licenses": {
+    "title": "Licenses",
+    "intro": "This site runs 5Stack, free software released under the GNU Affero General Public License, version 3. It comes with no warranty.",
+    "source": "Source code",
+    "license_text": "License text",
+    "third_party": {
+      "title": "Third-party software",
+      "description": "5Stack is built on open-source software. The licenses of every package it ships are listed in one file.",
+      "link": "View licenses"
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Name",

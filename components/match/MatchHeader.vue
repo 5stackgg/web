@@ -264,7 +264,7 @@ const resultText = computed(() =>
         <Transition name="hdr-open">
           <span
             v-if="showAutoCancel"
-            class="inline-grid grid-cols-[1fr] md:hidden"
+            class="hdr-open-wide inline-grid grid-cols-[1fr] md:hidden"
           >
             <span class="min-w-0 overflow-hidden">
               <span
@@ -287,7 +287,7 @@ const resultText = computed(() =>
           >
             <span class="min-w-0 overflow-hidden">
               <span
-                class="inline-flex h-9 items-center gap-1.5 whitespace-nowrap pr-2 text-[13px] text-destructive"
+                class="inline-flex h-9 items-center gap-1.5 whitespace-nowrap text-[13px] text-destructive"
               >
                 <AlertTriangle class="size-3.5 shrink-0" />
                 {{ $t("match.auto_canceling") }}
@@ -673,12 +673,17 @@ const resultText = computed(() =>
 .hdr-open-enter-active {
   transition-delay: 0ms, 0ms, 120ms;
 }
-/* The row's 8px gap folds in with it. */
+/* The gap beside it folds in with it: 8px among the actions, 16px in the
+   status row. */
 .hdr-open-enter-from,
 .hdr-open-leave-to {
   grid-template-columns: 0fr;
   margin-left: -8px;
   opacity: 0;
+}
+.hdr-open-wide.hdr-open-enter-from,
+.hdr-open-wide.hdr-open-leave-to {
+  margin-left: -16px;
 }
 @media (prefers-reduced-motion: reduce) {
   .hdr-open-enter-active,

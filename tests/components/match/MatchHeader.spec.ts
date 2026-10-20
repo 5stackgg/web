@@ -55,7 +55,12 @@ describe("MatchHeader series facts", () => {
     expect(statusRow.textContent).toContain(
       "Competitive · Best of 5 · Play Hard @ LAN",
     );
-    expect(statusRow.textContent).toContain("Auto Canceling");
+    const countdowns = Array.from(
+      statusRow.querySelectorAll(".inline-grid"),
+    ).filter((el) => el.textContent?.includes("Auto Canceling"));
+    expect(countdowns).toHaveLength(2);
+    expect(countdowns[0].classList.contains("md:hidden")).toBe(true);
+    expect(countdowns[1].classList.contains("max-md:hidden")).toBe(true);
     expect(bottom.textContent).toContain("Map 5");
     expect(bottom.textContent).not.toContain("Best of 5");
     expect(bottom.textContent).not.toContain("Auto Canceling");
@@ -66,5 +71,6 @@ describe("MatchHeader series facts", () => {
     const bottom = wrapper.element.lastElementChild!;
 
     expect(bottom.textContent?.trim()).toBe("");
+    expect(bottom.children).toHaveLength(1);
   });
 });

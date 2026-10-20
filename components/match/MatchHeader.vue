@@ -198,10 +198,6 @@ const metaFacts = computed(() =>
     .join(" · "),
 );
 
-const metaLine = computed(() =>
-  [metaFacts.value, formattedSchedule.value].filter(Boolean).join(" · "),
-);
-
 const resultText = computed(() =>
   props.match.status === e_match_status_enum.Finished
     ? t("match.header.final")
@@ -211,7 +207,7 @@ const resultText = computed(() =>
 
 <template>
   <div
-    class="grid gap-4 bg-[linear-gradient(180deg,rgb(255_255_255/0.035),transparent_70%)] px-4 pb-5 pt-4 md:gap-[18px] md:px-6"
+    class="grid bg-[linear-gradient(180deg,rgb(255_255_255/0.035),transparent_70%)] px-4 pb-5 pt-4 md:px-6"
   >
     <div class="flex items-start gap-3">
       <div
@@ -254,9 +250,52 @@ const resultText = computed(() =>
             <template v-if="tournament">· </template>{{ match.label }}
           </span>
         </span>
+
+        <span v-if="metaFacts" class="text-[13px] text-muted-foreground">
+          {{ metaFacts }}
+        </span>
+        <span
+          v-if="formattedSchedule"
+          class="text-[13px] text-muted-foreground"
+        >
+          {{ formattedSchedule }}
+        </span>
+
+        <Transition name="hdr-open">
+          <span
+            v-if="showAutoCancel"
+            class="inline-grid grid-cols-[1fr] md:hidden"
+          >
+            <span class="min-w-0 overflow-hidden">
+              <span
+                class="inline-flex items-center gap-1.5 whitespace-nowrap text-[13px] text-destructive"
+              >
+                <AlertTriangle class="size-3.5 shrink-0" />
+                {{ $t("match.auto_canceling") }}
+                <TimeAgo :date="match.cancels_at" countdown hide-icon />
+              </span>
+            </span>
+          </span>
+        </Transition>
       </div>
 
       <div class="flex h-9 shrink-0 items-center gap-2">
+        <Transition name="hdr-open">
+          <span
+            v-if="showAutoCancel"
+            class="inline-grid grid-cols-[1fr] max-md:hidden"
+          >
+            <span class="min-w-0 overflow-hidden">
+              <span
+                class="inline-flex h-9 items-center gap-1.5 whitespace-nowrap pr-2 text-[13px] text-destructive"
+              >
+                <AlertTriangle class="size-3.5 shrink-0" />
+                {{ $t("match.auto_canceling") }}
+                <TimeAgo :date="match.cancels_at" countdown hide-icon />
+              </span>
+            </span>
+          </span>
+        </Transition>
         <MatchSourceBadge
           v-if="match.source !== 'faceit'"
           :source="match.source"
@@ -268,7 +307,7 @@ const resultText = computed(() =>
 
     <!-- Desktop: a broadcast scorebug, names outside, crests against the box. -->
     <div
-      class="hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-5 md:grid"
+      class="mt-[18px] hidden grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-5 md:grid"
     >
       <template v-for="(team, i) in teams" :key="team.id ?? i">
         <div
@@ -432,7 +471,7 @@ const resultText = computed(() =>
     </div>
 
     <!-- Phone: the same facts as two team rows. -->
-    <div class="grid gap-2.5 md:hidden">
+    <div class="mt-4 grid gap-2.5 md:hidden">
       <div
         v-for="(team, i) in teams"
         :key="team.id ?? i"
@@ -520,15 +559,15 @@ const resultText = computed(() =>
       </span>
     </div>
 
-    <!-- The veto row shares this last item, so the header's gap only opens
-         with it. -->
+    <!-- Both rows carry the gap above them, so a Bo1 without a veto ends at
+         the scorebug. -->
     <div>
       <div
-        class="flex flex-wrap items-center gap-2 text-[13px] text-muted-foreground md:justify-center"
+        v-if="mapChips.length"
+        class="flex flex-wrap items-center gap-2 pt-4 text-[13px] text-muted-foreground md:justify-center md:pt-[18px]"
       >
         <!-- Phone: the series as one divided strip, a cell per map. -->
         <div
-          v-if="mapChips.length"
           class="grid w-full auto-cols-fr grid-flow-col divide-x divide-white/[0.07] overflow-hidden rounded-md bg-white/[0.04] ring-1 ring-inset ring-white/[0.07] md:hidden"
         >
           <div
@@ -616,33 +655,6 @@ const resultText = computed(() =>
             {{ $t("match.map_number", { count: index + 1 }) }}
           </template>
         </span>
-
-        <span
-          v-if="metaLine"
-          class="inline-flex h-7 items-center max-md:hidden"
-        >
-          {{ metaLine }}
-        </span>
-        <span v-if="metaLine" class="grid w-full gap-1 leading-snug md:hidden">
-          <span v-if="metaFacts">{{ metaFacts }}</span>
-          <span v-if="formattedSchedule">{{ formattedSchedule }}</span>
-        </span>
-
-        <!-- It opens its own width, so the centred row eases over to make
-             room instead of jumping. -->
-        <Transition name="hdr-open">
-          <span v-if="showAutoCancel" class="hdr-open">
-            <span class="min-w-0 overflow-hidden">
-              <span
-                class="inline-flex h-7 items-center gap-1.5 whitespace-nowrap text-destructive"
-              >
-                <AlertTriangle class="size-3.5 shrink-0" />
-                {{ $t("match.auto_canceling") }}
-                <TimeAgo :date="match.cancels_at" countdown hide-icon />
-              </span>
-            </span>
-          </span>
-        </Transition>
       </div>
 
       <MatchHeaderVeto :match="match" />
@@ -651,10 +663,6 @@ const resultText = computed(() =>
 </template>
 
 <style scoped>
-.hdr-open {
-  display: inline-grid;
-  grid-template-columns: 1fr;
-}
 .hdr-open-enter-active,
 .hdr-open-leave-active {
   transition:

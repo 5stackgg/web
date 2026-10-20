@@ -41,12 +41,15 @@ const chars = computed(() => {
 /* No `will-change` here on purpose: these pages mount 100+ AnimatedStats, and a
    permanent hint would pin a compositor layer per character at idle. The flip is
    a one-shot transform/opacity animation, which the compositor promotes on its
-   own while it runs — so the hint costs memory without buying smoothness. */
+   own while it runs — so the hint costs memory without buying smoothness.
+   The same goes for a fill mode (`forwards`/`both`) and backface-visibility:
+   Chrome counts a finished animation that still fills as running, so the layer
+   would never be released. The last keyframe is the resting style, and the
+   leaf never turns past 90deg, so neither is needed. */
 .flip-stat__char {
   display: inline-block;
   transform-origin: top center;
-  backface-visibility: hidden;
-  animation: flip-char 440ms cubic-bezier(0.2, 0.78, 0.32, 1) both;
+  animation: flip-char 440ms cubic-bezier(0.2, 0.78, 0.32, 1);
 }
 
 @keyframes flip-char {

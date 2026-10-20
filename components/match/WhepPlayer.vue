@@ -1039,16 +1039,17 @@ defineExpose({ connect, teardown });
     <!-- One frosted bar at each bottom corner: fullscreen plus whatever the
          host adds on the left, sound on the right. Browsers force WHEP
          playback to start muted, so until the viewer unmutes, the right
-         corner is a solid Tap to unmute that never hides. -->
-    <div
-      v-if="controls && !phase"
-      class="stream-controls pointer-events-none absolute inset-0 z-30"
-      :class="{ 'is-touch': coarsePointer, 'is-fullscreen': isFullscreen }"
-    >
+         corner is a solid Tap to unmute that never hides. No pointer-events
+         class on these: a click-through host turns them off on the root. -->
+    <template v-if="controls && !phase">
       <div
         v-if="hasPicture || $slots.controls"
-        class="absolute bottom-[var(--stream-control-inset)] left-[var(--stream-control-inset)] transition-opacity duration-150"
-        :class="[streamControlBarClasses, revealClasses]"
+        class="stream-controls absolute bottom-[var(--stream-control-inset)] left-[var(--stream-control-inset)] z-10 transition-opacity duration-150"
+        :class="[
+          streamControlBarClasses,
+          revealClasses,
+          { 'is-touch': coarsePointer },
+        ]"
       >
         <button
           v-if="hasPicture"
@@ -1072,7 +1073,8 @@ defineExpose({ connect, teardown });
         v-if="hasPicture && isMuted && !muted && !disableShortcuts"
         type="button"
         :aria-label="$t('ui.unmute')"
-        class="pointer-events-auto absolute bottom-[var(--stream-control-inset)] right-[var(--stream-control-inset)] inline-flex h-[var(--stream-control)] cursor-pointer items-center gap-2 rounded-[calc(var(--stream-control)/4)] bg-foreground pl-2.5 pr-3.5 text-[13px] font-semibold text-background shadow-[0_0_0_1px_rgb(0_0_0/0.3),0_8px_24px_-8px_rgb(0_0_0/0.7)] transition-colors duration-150 hover:bg-foreground/85"
+        class="stream-controls absolute bottom-[var(--stream-control-inset)] right-[var(--stream-control-inset)] z-10 inline-flex h-[var(--stream-control)] cursor-pointer items-center gap-2 rounded-[calc(var(--stream-control)/4)] bg-foreground pl-2.5 pr-3.5 text-[13px] font-semibold text-background shadow-[0_0_0_1px_rgb(0_0_0/0.3),0_8px_24px_-8px_rgb(0_0_0/0.7)] transition-colors duration-150 hover:bg-foreground/85"
+        :class="{ 'is-touch': coarsePointer }"
         @click="toggleMute"
       >
         <VolumeX class="size-4" />
@@ -1081,8 +1083,12 @@ defineExpose({ connect, teardown });
 
       <div
         v-else-if="hasPicture && !isMuted"
-        class="absolute bottom-[var(--stream-control-inset)] right-[var(--stream-control-inset)] transition-opacity duration-150"
-        :class="[streamControlBarClasses, revealClasses]"
+        class="stream-controls absolute bottom-[var(--stream-control-inset)] right-[var(--stream-control-inset)] z-10 transition-opacity duration-150"
+        :class="[
+          streamControlBarClasses,
+          revealClasses,
+          { 'is-touch': coarsePointer },
+        ]"
       >
         <button
           type="button"
@@ -1106,7 +1112,7 @@ defineExpose({ connect, teardown });
           @input="setVolume(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
-    </div>
+    </template>
     <!-- "Rendering clip" chip. Shown over the last-good frame while
          the pod has stopped its publisher to free the GPU for a
          render. We keep the <video> intact (no teardown) so users
@@ -1181,12 +1187,26 @@ video::-internal-media-controls-overlay-cast-button {
 }
 
 /* Control sizes follow the player's width (the root is the container), so
-   the floating player and camera tiles get smaller ones than the page. */
+   the floating player and camera tiles get smaller ones than the page, and a
+   fullscreen player bigger ones. Only the width: a fullscreen deck must not
+   blow up the camera tiles inside it. A host's .stream-control-label text
+   drops out on small players, where it would run into the unmute pill. */
 .stream-controls {
   --stream-control: 36px;
   --stream-control-icon: 18px;
   --stream-control-inset: 12px;
   --stream-control-slider: 84px;
+}
+.stream-controls :deep(.stream-control-labelled) {
+  padding-inline: 10px 12px;
+}
+@container (min-width: 1280px) {
+  .stream-controls {
+    --stream-control: 40px;
+    --stream-control-icon: 20px;
+    --stream-control-inset: 16px;
+    --stream-control-slider: 96px;
+  }
 }
 @container (max-width: 559px) {
   .stream-controls {
@@ -1194,6 +1214,12 @@ video::-internal-media-controls-overlay-cast-button {
     --stream-control-icon: 14px;
     --stream-control-inset: 8px;
     --stream-control-slider: 56px;
+  }
+  .stream-controls :deep(.stream-control-labelled) {
+    padding-inline: 0;
+  }
+  .stream-controls :deep(.stream-control-label) {
+    display: none;
   }
 }
 @container (max-width: 319px) {
@@ -1207,12 +1233,6 @@ video::-internal-media-controls-overlay-cast-button {
 .stream-controls.is-touch {
   --stream-control: 40px;
   --stream-control-icon: 18px;
-}
-.stream-controls.is-fullscreen {
-  --stream-control: 40px;
-  --stream-control-icon: 20px;
-  --stream-control-inset: 16px;
-  --stream-control-slider: 96px;
 }
 
 /* The track fills up to the thumb, so the level reads at a glance. */

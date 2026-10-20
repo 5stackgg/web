@@ -475,7 +475,7 @@ const hasHostControls = computed(
         :match-id="matchId"
         :compact="compact"
         :require-fullscreen="!compact"
-        hide-toggle
+        :hide-toggle="isLive && !whepPhase"
       />
 
       <template v-if="hasHostControls" #controls>
@@ -508,19 +508,19 @@ const hasHostControls = computed(
             :aria-expanded="scoreboardOpen"
             :class="[
               streamControlButtonClasses,
-              !inGlobal && 'px-2.5',
+              'stream-control-labelled',
               scoreboardOpen && 'bg-white/[0.14]',
             ]"
             @click="scoreboardOpen = !scoreboardOpen"
           >
             <Trophy :class="streamControlIconClasses" />
-            <template v-if="!inGlobal">
+            <span class="stream-control-label inline-flex items-center gap-2">
               {{ $t("match.scoreboard") }}
               <ChevronDown
                 class="size-3.5 transition-transform duration-200 motion-reduce:transition-none"
                 :class="scoreboardOpen && 'rotate-180'"
               />
-            </template>
+            </span>
           </button>
         </template>
         <template v-if="inGlobal">
@@ -537,12 +537,14 @@ const hasHostControls = computed(
             :aria-label="$t('match.stream.stop')"
             :class="[
               streamControlButtonClasses,
-              'pl-2.5 pr-3 hover:!bg-destructive',
+              'stream-control-labelled hover:!bg-destructive',
             ]"
             @click="stopStream"
           >
             <Square class="size-3 fill-current" />
-            {{ $t("match.stream.stop_short") }}
+            <span class="stream-control-label">{{
+              $t("match.stream.stop_short")
+            }}</span>
           </button>
         </template>
       </template>

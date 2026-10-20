@@ -247,6 +247,22 @@ describe("WhepPlayer", () => {
       expect(wrapper.find('input[type="range"]').exists()).toBe(true);
     });
 
+    it("holds a host's buttons back until there is a picture", async () => {
+      const wrapper = await mountPlayer(
+        {},
+        { controls: '<button type="button" class="host-control" />' },
+      );
+
+      expect(wrapper.find(".host-control").exists()).toBe(false);
+    });
+
+    it("leaves pointer events to the host, so a click-through tile stays one", async () => {
+      vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue();
+      const wrapper = await playing({});
+
+      expect(wrapper.find(".pointer-events-auto").exists()).toBe(false);
+    });
+
     it("puts a host's buttons in the same bar as fullscreen", async () => {
       const wrapper = await playing(
         {},

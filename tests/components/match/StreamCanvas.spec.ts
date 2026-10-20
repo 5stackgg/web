@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { h } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 
@@ -6,13 +7,18 @@ const WHEP_URL = "https://stream.example/demo-1/whep";
 
 let unmount: (() => void) | undefined;
 
-async function mountCanvas(props: Record<string, unknown>) {
+async function mountCanvas(
+  props: Record<string, unknown>,
+  slots: Record<string, () => unknown> = {},
+) {
   const wrapper = await mountSuspended(StreamCanvas, {
     props: { whepUrl: WHEP_URL, showBoot: true, ...props },
-    slots: { boot: () => "booting" },
+    slots: { boot: () => "booting", ...slots },
     global: {
       stubs: {
-        WhepPlayer: { template: '<div class="whep-player" />' },
+        WhepPlayer: {
+          template: '<div class="whep-player"><slot name="controls" /></div>',
+        },
       },
     },
   });
@@ -38,6 +44,15 @@ describe("StreamCanvas", () => {
 
     expect(wrapper.find(".whep-player").exists()).toBe(true);
     expect(wrapper.text()).toContain("booting");
+  });
+
+  it("hands a host's controls to the player", async () => {
+    const wrapper = await mountCanvas(
+      { isLive: true },
+      { controls: () => h("button", { class: "host-control" }) },
+    );
+
+    expect(wrapper.find(".whep-player .host-control").exists()).toBe(true);
   });
 
   it("keeps the same player when the stream goes live", async () => {

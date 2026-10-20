@@ -32,7 +32,8 @@ const props = withDefaults(
     // ask for it via fullscreen). Auto-closes the panel on exit.
     requireFullscreen?: boolean;
     // Suppresses the floating toggle pill — caller is providing its
-    // own toggle. The panel still renders, driven by v-model:open.
+    // own toggle. The panel still renders, driven by v-model:open, and
+    // stops short of the bottom so a toggle in a bottom bar stays clear.
     hideToggle?: boolean;
   }>(),
   {
@@ -315,9 +316,10 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
   <Transition name="scoreboard-slide">
     <div
       v-if="open && canShow"
-      class="absolute inset-x-0 top-0 z-20 max-h-full overflow-auto border-b border-[hsl(var(--tac-amber)/0.5)] bg-card/95 backdrop-blur-sm shadow-[0_10px_30px_-10px_rgba(0,0,0,0.7)]"
+      class="absolute inset-x-0 top-0 z-20 overflow-auto border-b border-[hsl(var(--tac-amber)/0.5)] bg-card/95 backdrop-blur-sm shadow-[0_10px_30px_-10px_rgba(0,0,0,0.7)]"
+      :class="hideToggle ? 'max-h-[calc(100%-4rem)]' : 'max-h-full'"
     >
-      <div class="px-4 pt-11 pb-3">
+      <div class="px-4 pb-3" :class="hideToggle ? 'pt-4' : 'pt-11'">
         <div
           v-if="!hasMaps"
           class="rounded border border-border/60 bg-background/40 px-3 py-3 text-center font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"

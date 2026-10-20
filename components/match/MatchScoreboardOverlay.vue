@@ -236,7 +236,7 @@ watch(isFullscreen, (val) => {
 });
 
 // Expose the matchData + helpers so parents can reuse if needed
-defineExpose({ hasMatchData, toggle });
+defineExpose({ hasMatchData, canShow, toggle });
 
 function statsForCurrentMap(lp: any): any | null {
   const arr = lp?.player?.match_map_stats ?? [];

@@ -102,9 +102,11 @@ async function answered(n: number) {
 
 async function mountPlayer(
   props: { trickle?: boolean; controls?: boolean; volume?: number } = {},
+  slots: Record<string, string> = {},
 ) {
   mounted = await mountSuspended(WhepPlayer, {
     props: { whepUrl: WHEP_URL, fallbackUrl: FALLBACK_URL, ...props },
+    slots,
   });
   return mounted;
 }
@@ -206,18 +208,55 @@ describe("WhepPlayer", () => {
   });
 
   describe("controls", () => {
-    async function playing(props: { controls?: boolean; volume?: number }) {
-      const wrapper = await mountPlayer(props);
+    async function playing(
+      props: { controls?: boolean; volume?: number },
+      slots: Record<string, string> = {},
+    ) {
+      const wrapper = await mountPlayer(props, slots);
       await answered(1);
       peers[0].become("connected");
       await flushPromises();
       return wrapper;
     }
 
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
     it("draws its own buttons by default", async () => {
       const wrapper = await playing({});
 
       expect(wrapper.findAll("button").length).toBeGreaterThan(0);
+    });
+
+    it("swaps the volume bar for Tap to unmute while muted", async () => {
+      vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue();
+      const wrapper = await playing({});
+
+      expect(wrapper.find('input[type="range"]').exists()).toBe(true);
+
+      await wrapper.find('button[aria-label="Mute"]').trigger("click");
+
+      expect(wrapper.find('input[type="range"]').exists()).toBe(false);
+      expect(wrapper.find('button[aria-label="Unmute"]').text()).toBe(
+        "Tap to unmute",
+      );
+
+      await wrapper.find('button[aria-label="Unmute"]').trigger("click");
+
+      expect(wrapper.find('input[type="range"]').exists()).toBe(true);
+    });
+
+    it("puts a host's buttons in the same bar as fullscreen", async () => {
+      const wrapper = await playing(
+        {},
+        { controls: '<button type="button" class="host-control" />' },
+      );
+      const fullscreen = wrapper.find('button[aria-label="Fullscreen"]');
+
+      expect(fullscreen.element.nextElementSibling?.className).toBe(
+        "host-control",
+      );
     });
 
     it("leaves mute, volume and fullscreen to a host that turns them off", async () => {

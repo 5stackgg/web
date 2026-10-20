@@ -10060,6 +10060,7 @@
       "replay_failed": "Nie udało się wczytać powtórki",
       "staff_only": "Tylko dla obsługi",
       "stop": "Zatrzymaj transmisję",
+      "stop_short": "Zatrzymaj",
       "stopped": "Transmisja zatrzymana",
       "resume": "Oglądaj",
       "card": {

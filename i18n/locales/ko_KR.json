@@ -10060,6 +10060,7 @@
       "replay_failed": "리플레이를 불러오지 못했습니다",
       "staff_only": "스태프 전용",
       "stop": "스트림 중지",
+      "stop_short": "중지",
       "stopped": "스트림 중지됨",
       "resume": "시청하기",
       "card": {

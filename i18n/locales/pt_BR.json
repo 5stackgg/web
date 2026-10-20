@@ -10060,6 +10060,7 @@
       "replay_failed": "Não foi possível carregar o replay",
       "staff_only": "Somente staff",
       "stop": "Parar transmissão",
+      "stop_short": "Parar",
       "stopped": "Transmissão parada",
       "resume": "Assistir",
       "card": {

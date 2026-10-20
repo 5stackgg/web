@@ -136,6 +136,9 @@ defineExpose({ rootEl });
         <template v-if="$slots.status" #status="statusProps">
           <slot name="status" v-bind="statusProps" />
         </template>
+        <template v-if="$slots.controls" #controls>
+          <slot name="controls" />
+        </template>
       </WhepPlayer>
     </template>
     <!-- Boot → live is a crossfade, not out-in: the player mounts (and
@@ -162,6 +165,9 @@ defineExpose({ rootEl });
       >
         <template v-if="$slots.status" #status="statusProps">
           <slot name="status" v-bind="statusProps" />
+        </template>
+        <template v-if="$slots.controls" #controls>
+          <slot name="controls" />
         </template>
       </WhepPlayer>
       <Transition name="boot-fade">

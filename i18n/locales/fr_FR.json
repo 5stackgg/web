@@ -10060,6 +10060,7 @@
       "replay_failed": "Le replay n'a pas pu être chargé",
       "staff_only": "Réservé au staff",
       "stop": "Arrêter le stream",
+      "stop_short": "Arrêter",
       "stopped": "Stream arrêté",
       "resume": "Regarder",
       "card": {

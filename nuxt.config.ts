@@ -347,6 +347,16 @@ export default defineNuxtConfig({
     },
   },
 
+  // The worker and the script it imports keep their URLs across deploys. With
+  // no Cache-Control, Cloudflare caches them at the edge and stamps its 4 hour
+  // browser TTL on them, so installed apps kept the old worker for hours.
+  // no-store, not no-cache or max-age=0: Cloudflare still stores those at the
+  // edge, and raises any max-age below its browser TTL up to that TTL.
+  routeRules: {
+    "/sw.js": { headers: { "Cache-Control": "no-store" } },
+    "/sw-push.js": { headers: { "Cache-Control": "no-store" } },
+  },
+
   devtools: {
     enabled: true,
 

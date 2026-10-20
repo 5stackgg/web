@@ -421,6 +421,11 @@ export default {
           });
         }
 
+        const unique = uniqueMapsMap.get(map.name)!;
+        if (!unique.label && map.label) {
+          unique.label = map.label;
+        }
+
         if (map.enabled) {
           uniqueMapsMap.get(map.name)?.poolTypes.push(map.type);
         }

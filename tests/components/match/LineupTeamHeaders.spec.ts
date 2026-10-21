@@ -149,6 +149,16 @@ describe.each(tabs)("%s tab with both teams", (_name, component) => {
     expect(lastRowBorder(first)).toBe("3px");
     expect(lastRowBorder(second)).toBe("0px");
   });
+
+  // A pinned cell paints above the table's collapsed row borders, so its
+  // background has to stop short of them or it hides the line.
+  it("keeps the row lines in the pinned player column", async () => {
+    const table = await mountTable(component, { combineWith: lineup2 });
+
+    for (const pinned of table.querySelectorAll(".sticky")) {
+      expect(getComputedStyle(pinned).backgroundClip).toBe("padding-box");
+    }
+  });
 });
 
 describe("a one-team table", () => {

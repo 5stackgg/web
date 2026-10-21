@@ -71,7 +71,7 @@ const tradeColumns = computed(() =>
 
 <template>
   <Table
-    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5 [&>tbody:not(:last-child)>tr:last-child]:border-b-[3px] [&>tbody:not(:last-child)>tr:last-child]:border-border/80"
+    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5 [&_.sticky]:bg-clip-padding [&>tbody:not(:last-child)>tr:last-child]:border-b-[3px] [&>tbody:not(:last-child)>tr:last-child]:border-border/80"
   >
     <template v-for="lp of lineupsToRender" :key="lp.id">
       <TableHeader class="[&_th]:h-12 bg-muted/20">

@@ -122,7 +122,7 @@ async function switchAndClose() {
     <PopoverTrigger as-child>
       <button
         type="button"
-        class="group relative hidden h-12 items-center gap-2.5 overflow-hidden rounded-md border pl-2.5 pr-3 text-left shadow-sm backdrop-blur-sm transition-colors duration-150 md:flex"
+        class="group relative hidden h-12 max-w-[13rem] items-center gap-2.5 overflow-hidden rounded-md border pl-2.5 pr-3 text-left shadow-sm backdrop-blur-sm transition-colors duration-150 md:flex"
         :class="
           connected
             ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.06)]'

@@ -21,6 +21,7 @@ vi.mock("@/composables/useHubState", () => ({
 const stubs = {
   MatchLobbies: true,
   DraftRoomNav: true,
+  UtilityPracticeNav: true,
   SystemStatus: true,
   PlayerDisplay: true,
   PlayerPendingImports: true,
@@ -402,5 +403,39 @@ describe("TopNav FAQ entry", () => {
     expect((await openCommunity(wrapper)).find('a[href="/faq"]').exists()).toBe(
       false,
     );
+  });
+});
+
+describe("TopNav practice server chip", () => {
+  it("puts the practice chip before the draft room and lobby chips on desktop", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+
+    const wrapper = await mountTopNav();
+    const chip = wrapper.find("utility-practice-nav-stub");
+
+    expect(chip.exists()).toBe(true);
+    const next = chip.element.nextElementSibling;
+    expect(next?.tagName.toLowerCase()).toBe("draft-room-nav-stub");
+    expect(next?.nextElementSibling?.tagName.toLowerCase()).toBe(
+      "match-lobbies-stub",
+    );
+  });
+
+  it("leaves it off a phone, like the lobby button", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+
+    const wrapper = await mountTopNav();
+
+    expect(wrapper.find("utility-practice-nav-stub").exists()).toBe(false);
+    expect(wrapper.find("match-lobbies-stub").exists()).toBe(false);
+  });
+
+  it("gives a visitor who is not signed in no chip", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+    useAuthStore().me = undefined;
+
+    const wrapper = await mountTopNav();
+
+    expect(wrapper.find("utility-practice-nav-stub").exists()).toBe(false);
   });
 });

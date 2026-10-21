@@ -10933,7 +10933,6 @@
       "ready": "Servidor pronto",
       "copy_connect": "Copiar comando de conexão",
       "show_address": "Mostrar endereço do servidor",
-      "hide_address": "Ocultar endereço do servidor",
       "join_as_spectator": "Entrar como Espectador",
       "join_tv_stream": "Entrar para assistir pela GO TV",
       "tv_delay": "A transmissão de GO TV está atrasada em {delay} segundos, aguardando que a GO TV esteja pronta."

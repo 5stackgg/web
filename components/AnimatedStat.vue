@@ -23,10 +23,8 @@ const chars = computed(() => {
   return [...s];
 });
 
-// With a stagger the cascade starts at the first character that changed, so a
-// shared prefix holds still while the rest falls in behind it, and what stood
-// there before folds away under each new leaf -- a departures board, not a
-// swap.
+// The cascade counts from the first character that changed, so a shared
+// prefix holds still.
 const firstChanged = ref(0);
 const leaving = ref<Record<number, { key: string; ch: string }>>({});
 let generation = 0;
@@ -39,7 +37,9 @@ watch(
       index++;
     }
     firstChanged.value = index;
-    if (!props.stagger || !previous.length) {
+    // Emptied, it clears at once: what it held may be meant to disappear.
+    if (!props.stagger || !previous.length || !next.length) {
+      leaving.value = {};
       return;
     }
     generation++;
@@ -61,6 +61,14 @@ watch(
   { immediate: true, flush: "sync" },
 );
 onBeforeUnmount(() => clearTimeout(leavingTimer));
+
+// Joined and right-to-left scripts can't be cut into separate leaves without
+// breaking their letters apart, so they change as a whole instead.
+const whole = computed(
+  () =>
+    props.stagger > 0 &&
+    /[\u0590-\u08ff\ufb1d-\ufdff\ufe70-\ufeff]/.test(chars.value.join("")),
+);
 
 const slots = computed(() =>
   Math.max(
@@ -87,6 +95,9 @@ const delayOf = (index: number) =>
         >{{ ch === " " ? " " : ch }}</span
       >
     </template>
+    <span v-else-if="whole" :key="chars.join('')" class="flip-stat__whole">{{
+      chars.join("")
+    }}</span>
     <template v-else>
       <span
         v-for="slot in slots"
@@ -170,6 +181,16 @@ const delayOf = (index: number) =>
   pointer-events: none;
 }
 
+.flip-stat__whole {
+  animation: flip-whole-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes flip-whole-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* A trailing leaf with nothing to replace it closes its cell as it folds, so
    whatever follows the stat slides up to it rather than jumping once it goes. */
 .flip-stat__slot.is-gone {
@@ -219,7 +240,8 @@ const delayOf = (index: number) =>
   .flip-stat__out {
     display: none;
   }
-  .flip-stat__slot.is-gone {
+  .flip-stat__slot.is-gone,
+  .flip-stat__whole {
     animation: none;
   }
 }

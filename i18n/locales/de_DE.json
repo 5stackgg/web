@@ -10933,7 +10933,6 @@
       "ready": "Server bereit",
       "copy_connect": "Connect-Befehl kopieren",
       "show_address": "Serveradresse anzeigen",
-      "hide_address": "Serveradresse ausblenden",
       "join_as_spectator": "Zuschauer-Details",
       "join_tv_stream": "TV-Stream-Details",
       "tv_delay": "TV ist um {delay} Sekunden verzögert, warte auf den Stream."

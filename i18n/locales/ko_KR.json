@@ -10933,7 +10933,6 @@
       "ready": "서버 준비 완료",
       "copy_connect": "접속 명령어 복사",
       "show_address": "서버 주소 보기",
-      "hide_address": "서버 주소 숨기기",
       "join_as_spectator": "관전자 접속 정보",
       "join_tv_stream": "TV 스트림 정보",
       "tv_delay": "TV가 {delay}초 지연되고 있습니다. 스트림 준비를 기다리는 중입니다."

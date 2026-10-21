@@ -10933,7 +10933,6 @@
       "ready": "伺服器已就緒",
       "copy_connect": "複製連線指令",
       "show_address": "顯示伺服器位址",
-      "hide_address": "隱藏伺服器位址",
       "join_as_spectator": "觀戰詳情",
       "join_tv_stream": "TV 直播詳情",
       "tv_delay": "TV 延遲 {delay} 秒，等待直播就緒。"

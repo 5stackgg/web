@@ -4,9 +4,8 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 </script>
 
 <template>
-  <!-- The match page's strip along the foot of its header: the same states
-       as the card, in a row, with the server's address masked until asked
-       for so a stream or a screenshot never carries it by accident. -->
+  <!-- Masked until asked for, so a stream or a screenshot never carries the
+       server's address by accident. -->
   <Transition
     v-if="variant === 'bar'"
     enter-active-class="mcb-fold"
@@ -37,10 +36,12 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
             alt=""
             class="h-10 w-16 shrink-0 rounded-md object-cover ring-1 ring-inset ring-white/10"
           />
-          <!-- The words flip over in place, a departures board turning from
-               booting to ready, while the spinner's slot closes behind it. -->
-          <div class="grid min-w-0 flex-1 gap-0.5" role="status">
-            <span class="flex min-w-0 items-center text-sm font-semibold">
+          <span class="sr-only" role="status">{{ title }}</span>
+          <div class="grid min-w-0 flex-1 gap-0.5">
+            <span
+              class="flex min-w-0 items-center text-sm font-semibold"
+              aria-hidden="true"
+            >
               <span
                 class="mcb-icon-slot"
                 :class="{ 'is-open': showOffline || showBooting }"
@@ -72,8 +73,6 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
                 · {{ facts }}
               </span>
             </span>
-            <!-- The second line changes shape between booting and ready, so it
-                 fades across rather than flipping letter for letter. -->
             <Transition
               mode="out-in"
               enter-active-class="transition-opacity [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
@@ -89,70 +88,76 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
                 {{ match.server_error }}
               </span>
               <span
-                v-else-if="detail || showConnect"
-                :key="phase"
+                v-else-if="showBooting"
+                key="booting"
+                class="h-[18px] truncate text-xs leading-[18px] text-muted-foreground"
+              >
+                {{ $t("match.veto.start.booting_line") }}
+              </span>
+              <span
+                v-else-if="showConnect"
+                key="ready"
                 class="flex h-[18px] min-w-0 items-center gap-2 text-xs leading-[18px] text-muted-foreground"
               >
-                <span
-                  v-if="detail"
-                  class="min-w-0 shrink-0 overflow-hidden whitespace-nowrap"
-                  :class="showConnect && 'font-mono'"
-                >
-                  <AnimatedStat :value="detail" :stagger="12" />
+                <span v-if="connectParts.prefix" class="shrink-0 font-mono">
+                  <AnimatedStat :value="connectParts.prefix" :stagger="12" />
                 </span>
-                <template v-if="showConnect">
-                  <!-- One width whether masked or shown (a mono character is
-                       1ch), so the eye beside it never moves. Masked, the address
-                       is not in the page at all. -->
-                  <span
-                    class="grid min-w-0 shrink items-center overflow-hidden whitespace-nowrap font-mono"
-                    :style="{ width: `${address.length}ch` }"
+                <!-- One width whether masked or shown (a mono character is
+                     1ch), so the eye beside it never moves. Masked, the address
+                     is not in the page at all. -->
+                <span
+                  class="grid min-w-0 shrink items-center overflow-hidden whitespace-nowrap font-mono"
+                  :style="{ width: `${address.length}ch` }"
+                >
+                  <Transition
+                    enter-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+                    leave-active-class="transition-opacity [transition-duration:110ms] motion-reduce:![transition-duration:1ms]"
+                    enter-from-class="opacity-0"
+                    leave-to-class="opacity-0"
                   >
-                    <Transition
-                      enter-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
-                      leave-active-class="transition-opacity [transition-duration:160ms] motion-reduce:![transition-duration:1ms]"
-                      enter-from-class="opacity-0"
-                      leave-to-class="opacity-0"
-                    >
-                      <span
-                        v-if="!revealed"
-                        class="mcb-redact [grid-area:1/1]"
-                        aria-hidden="true"
-                      ></span>
-                    </Transition>
-                    <AnimatedStat
-                      :value="revealed ? address : ''"
-                      :stagger="12"
-                      class="[grid-area:1/1]"
-                    />
-                  </span>
-                  <button
-                    type="button"
-                    class="mcb-icon-button relative grid size-[18px] shrink-0 place-items-center rounded text-muted-foreground"
-                    :aria-label="
-                      revealed
-                        ? $t('match.server.hide_address')
-                        : $t('match.server.show_address')
-                    "
-                    :aria-pressed="revealed"
-                    @click="revealed = !revealed"
-                  >
-                    <EyeOff v-if="revealed" class="size-3.5" />
-                    <Eye v-else class="size-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    class="mcb-icon-button relative grid size-[18px] shrink-0 place-items-center rounded text-muted-foreground"
-                    :aria-label="$t('match.server.copy_connect')"
-                    @click="copyConnect"
-                  >
-                    <Check
-                      v-if="copied"
-                      class="size-3.5 text-[hsl(var(--tac-amber))]"
-                    />
-                    <Copy v-else class="size-3.5" />
-                  </button>
-                </template>
+                    <span
+                      v-if="!revealed"
+                      class="mcb-redact [grid-area:1/1]"
+                      aria-hidden="true"
+                    ></span>
+                  </Transition>
+                  <AnimatedStat
+                    :value="revealed ? address : ''"
+                    :stagger="12"
+                    class="[grid-area:1/1]"
+                  />
+                </span>
+                <button
+                  type="button"
+                  class="mcb-icon-button relative grid size-6 shrink-0 place-items-center rounded text-muted-foreground"
+                  :aria-label="$t('match.server.show_address')"
+                  :aria-pressed="revealed"
+                  @click="revealed = !revealed"
+                >
+                  <EyeOff v-if="revealed" class="size-3.5" />
+                  <Eye v-else class="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  class="mcb-icon-button relative grid size-6 shrink-0 place-items-center rounded text-muted-foreground"
+                  :aria-label="$t('match.server.copy_connect')"
+                  @click="copyConnect"
+                >
+                  <Check
+                    v-if="copied"
+                    class="size-3.5 text-[hsl(var(--tac-amber))]"
+                  />
+                  <Copy v-else class="size-3.5" />
+                </button>
+              </span>
+              <span
+                v-else-if="showTvDelay"
+                key="tv"
+                class="h-[18px] truncate text-xs leading-[18px] text-muted-foreground"
+              >
+                {{
+                  $t("match.server.tv_delay", { delay: match.options.tv_delay })
+                }}
               </span>
             </Transition>
           </div>
@@ -169,16 +174,15 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
               :key="phase"
               class="flex items-center gap-2 max-sm:w-full"
             >
-              <ClipBoard
+              <Button
                 v-if="showTv"
-                :data="match.tv_connection_string"
-                class="h-10 w-auto shrink-0 px-3 max-sm:flex-1"
+                variant="outline"
+                class="h-10 shrink-0 gap-2 px-3 max-sm:flex-1"
+                @click="copyTv"
               >
-                <span class="flex items-center gap-2">
-                  <Tv class="size-4" />
-                  {{ $t("match.server.join_tv_stream") }}
-                </span>
-              </ClipBoard>
+                <Tv class="size-4" />
+                {{ $t("match.server.join_tv_stream") }}
+              </Button>
               <template v-if="showPlayerJoin">
                 <Button
                   variant="outline"
@@ -585,6 +589,8 @@ import {
 } from "lucide-vue-next";
 import mapLabel from "~/utilities/mapLabel";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import { toast } from "@/components/ui/toast";
+import { copyText } from "~/utilities/copyText";
 import { Spinner } from "~/components/ui/spinner";
 import { Button } from "~/components/ui/button";
 import ClipBoard from "~/components/ClipBoard.vue";
@@ -651,12 +657,13 @@ export default {
       this.handleClick();
       window.location.href = this.match.connection_link;
     },
+    async copyTv() {
+      await copyText(this.match.tv_connection_string);
+      toast({ title: this.$t("pages.toasts.copied_to_clipboard") });
+    },
     async copyConnect() {
-      try {
-        await navigator.clipboard.writeText(this.match.connection_string);
-      } catch {
-        return;
-      }
+      await copyText(this.match.connection_string);
+      toast({ title: this.$t("pages.toasts.copied_to_clipboard") });
       this.copied = true;
       clearTimeout(this.copiedTimer);
       this.copiedTimer = setTimeout(() => {
@@ -766,20 +773,6 @@ export default {
       }
       return this.showBooting ? "booting" : "ready";
     },
-    detail() {
-      if (this.showBooting) {
-        return this.$t("match.veto.start.booting_line");
-      }
-      if (this.showTvDelay) {
-        return this.$t("match.server.tv_delay", {
-          delay: this.match.options.tv_delay,
-        });
-      }
-      if (this.showConnect) {
-        return this.connectParts.prefix;
-      }
-      return "";
-    },
     // "connect" stays readable; everything after it is the part to keep off
     // a stream.
     connectParts() {
@@ -811,7 +804,10 @@ export default {
       if (this.showBooting) {
         return this.$t("match.veto.start.booting");
       }
-      return this.$t("match.server.ready");
+      if (this.showConnect) {
+        return this.$t("match.server.ready");
+      }
+      return this.$t("match.server.join_tv_stream");
     },
     showTvDelay() {
       return this.isLive && this.canWatch && !this.match.tv_connection_string;

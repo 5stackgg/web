@@ -10933,7 +10933,6 @@
       "ready": "服务器已就绪",
       "copy_connect": "复制连接命令",
       "show_address": "显示服务器地址",
-      "hide_address": "隐藏服务器地址",
       "join_as_spectator": "观战详情",
       "join_tv_stream": "TV 直播详情",
       "tv_delay": "TV 延迟 {delay} 秒，等待直播就绪。"

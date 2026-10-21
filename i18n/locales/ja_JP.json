@@ -10933,7 +10933,6 @@
       "ready": "サーバー準備完了",
       "copy_connect": "接続コマンドをコピー",
       "show_address": "サーバーアドレスを表示",
-      "hide_address": "サーバーアドレスを隠す",
       "join_as_spectator": "観戦者用接続情報",
       "join_tv_stream": "TV配信接続情報",
       "tv_delay": "TVは{delay}秒遅延しています。配信の準備が整うまでお待ちください。"

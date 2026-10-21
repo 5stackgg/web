@@ -10933,7 +10933,6 @@
       "ready": "Servern är redo",
       "copy_connect": "Kopiera connect-kommando",
       "show_address": "Visa serveradress",
-      "hide_address": "Dölj serveradress",
       "join_as_spectator": "Åskådardetaljer",
       "join_tv_stream": "TV-strömdetaljer",
       "tv_delay": "TV är fördröjd med {delay} sekunder, väntar på att strömmen ska bli redo."

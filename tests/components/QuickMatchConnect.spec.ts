@@ -99,6 +99,55 @@ describe("QuickMatchConnect as the match header's bar", () => {
     vi.unstubAllGlobals();
   });
 
+  it("takes the address back out of the page the moment it is hidden", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: ready(), variant: "bar" },
+    });
+    const eye = () => wrapper.findAll(".mcb-icon-button")[0];
+
+    await eye().trigger("click");
+    expect(text(wrapper)).toContain("1.2.3.4");
+
+    await eye().trigger("click");
+    expect(wrapper.html()).not.toContain("1.2.3.4");
+  });
+
+  it("doesn't call the server ready while only the TV delay is showing", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: {
+        match: match({
+          is_in_lineup: false,
+          is_organizer: true,
+          is_server_online: true,
+          connection_string: null,
+          tv_connection_string: null,
+          options: { tv_delay: 90 },
+        }),
+        variant: "bar",
+      },
+    });
+
+    expect(text(wrapper)).not.toContain("Server ready");
+    expect(text(wrapper)).toContain("TV is delayed by 90 seconds");
+  });
+
+  it("keeps the TV address out of the page too", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: {
+        match: match({
+          is_in_lineup: false,
+          is_organizer: true,
+          is_server_online: true,
+          tv_connection_string: "connect 5.6.7.8:27020",
+        }),
+        variant: "bar",
+      },
+    });
+
+    expect(text(wrapper)).toContain("TV Stream Details");
+    expect(wrapper.html()).not.toContain("5.6.7.8");
+  });
+
   it("joins from a click, so hovering never shows the address", async () => {
     const wrapper = await mountSuspended(QuickMatchConnect, {
       props: { match: ready(), variant: "bar" },

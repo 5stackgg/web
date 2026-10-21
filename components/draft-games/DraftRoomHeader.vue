@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Spinner } from "~/components/ui/spinner";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
+import { useElementSize } from "@vueuse/core";
 import { useCountdown } from "~/composables/useCountdown";
 import type {
   DraftHeaderSide,
@@ -19,6 +20,14 @@ const props = defineProps<{
 }>();
 
 const slots = useSlots();
+
+// The menu holds whatever MatchActions shows (cameras, pause, the menu), so the
+// scorebug keeps clear of its measured width rather than a guess.
+const menuEl = ref<HTMLElement | null>(null);
+const { width: menuWidth } = useElementSize(menuEl);
+const menuRoom = computed(() =>
+  menuWidth.value ? `${Math.ceil(menuWidth.value) + 12}px` : "0px",
+);
 
 const SLOTS = [1, 2] as const;
 
@@ -183,10 +192,10 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
 
     <Fold :open="open">
       <div class="draft-header-body">
-        <div class="draft-header-menu">
+        <div ref="menuEl" class="draft-header-menu">
           <slot name="menu" />
         </div>
-        <div class="draft-bug">
+        <div class="draft-bug" :style="{ '--menu-room': menuRoom }">
           <div
             v-for="slot in SLOTS"
             :key="slot"
@@ -370,8 +379,8 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
 .draft-header {
   container: draft-header / inline-size;
   transition:
-    border-color 0.24s ease,
-    box-shadow 0.24s ease;
+    border-color 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .draft-header.is-hot {
   border-color: hsl(var(--tone) / 0.55);
@@ -400,9 +409,6 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
   right: 0.75rem;
   z-index: 1;
 }
-.draft-header-body:has(.draft-header-menu > *) .draft-bug {
-  padding-inline: 2.75rem;
-}
 /* The track scrolls inside the header's width; without containment its cells
    would widen the folds around it and push the scorebug off the card. */
 .draft-header-track {
@@ -415,6 +421,7 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
   grid-template-areas: "left box right";
   align-items: center;
   gap: 1.25rem;
+  padding-inline: var(--menu-room);
 }
 .draft-bug-side {
   display: flex;
@@ -540,8 +547,8 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
     top: 0.5rem;
     right: 0.5rem;
   }
-  .draft-header-body:has(.draft-header-menu > *) .draft-bug {
-    padding-inline: 0 2.75rem;
+  .draft-bug {
+    padding-inline: 0 var(--menu-room);
   }
   .draft-header-track {
     padding-top: 0.875rem;

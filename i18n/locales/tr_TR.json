@@ -10933,7 +10933,6 @@
       "ready": "Sunucu hazır",
       "copy_connect": "Bağlantı komutunu kopyala",
       "show_address": "Sunucu adresini göster",
-      "hide_address": "Sunucu adresini gizle",
       "join_as_spectator": "İzleyici bilgileri",
       "join_tv_stream": "TV yayını bilgileri",
       "tv_delay": "TV yayını {delay} saniye gecikmeli — yayının hazır olması bekleniyor."

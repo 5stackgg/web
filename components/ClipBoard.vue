@@ -37,6 +37,7 @@ import { Copy, Check } from "lucide-vue-next";
 
 <script lang="ts">
 import { toast } from "@/components/ui/toast";
+import { copyText } from "~/utilities/copyText";
 export default {
   props: {
     data: {
@@ -65,16 +66,7 @@ export default {
         return;
       }
 
-      try {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          await navigator.clipboard.writeText(this.data);
-        } else {
-          this.fallbackCopyToClipboard(this.data);
-        }
-      } catch (err) {
-        console.error("Failed to copy to clipboard:", err);
-        this.fallbackCopyToClipboard(this.data);
-      }
+      await copyText(this.data);
 
       this.showCopied();
       toast({
@@ -91,30 +83,6 @@ export default {
         this.copied = false;
         this.copiedTimer = undefined;
       }, 1500);
-    },
-
-    fallbackCopyToClipboard(text) {
-      // Create a temporary textarea element
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-
-      // Make it invisible
-      textArea.style.position = "fixed";
-      textArea.style.left = "-999999px";
-      textArea.style.top = "-999999px";
-      document.body.appendChild(textArea);
-
-      // Select and copy the text
-      textArea.focus();
-      textArea.select();
-
-      try {
-        document.execCommand("copy");
-      } catch (err) {
-        console.error("Fallback copy failed:", err);
-      }
-
-      document.body.removeChild(textArea);
     },
   },
 };

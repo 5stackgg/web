@@ -186,10 +186,13 @@ const loginButtonClasses =
 const loginArrowClasses =
   "font-sans text-[hsl(var(--tac-amber))] transition-transform duration-150 group-hover:translate-x-[3px]";
 
-// Signed-in only (it sits under `v-if="me"`), and it carries the lobby, quick
-// queue and player-search UI with it: a visitor who is not signed in never
-// downloads any of that.
+// Signed-in only (they sit under `v-if="me"`), and they carry the lobby, quick
+// queue, practice panel and player-search UI with them: a visitor who is not
+// signed in never downloads any of that.
 const MatchLobbies = defineAsyncComponent(() => import("./MatchLobbies.vue"));
+const UtilityPracticeNav = defineAsyncComponent(
+  () => import("~/components/utility/UtilityPracticeNav.vue"),
+);
 </script>
 
 <template>
@@ -718,6 +721,7 @@ const MatchLobbies = defineAsyncComponent(() => import("./MatchLobbies.vue"));
           >
             <Search class="h-4 w-4" />
           </button>
+          <UtilityPracticeNav v-if="!isMobile" />
           <DraftRoomNav v-if="!isMobile" />
           <MatchLobbies v-if="!isMobile" />
           <MobileHubButton />

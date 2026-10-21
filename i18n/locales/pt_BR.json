@@ -6909,7 +6909,10 @@
         "ask_host": "Peça para {host} trocar.",
         "ask_the_host": "Peça para o dono trocar.",
         "nav_switching": "Trocando",
-        "operator": "Console do servidor"
+        "operator": "Console do servidor",
+        "staff_stop": "Parar",
+        "staff_stop_ask": "Parar o servidor de {host} para todos que estão nele?",
+        "staff_stop_ask_unnamed": "Parar este servidor para todos que estão nele?"
       },
       "collections": {
         "tab": "Coleções",

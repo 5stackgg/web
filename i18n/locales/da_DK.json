@@ -6909,7 +6909,10 @@
         "ask_host": "Bed {host} om at skifte den.",
         "ask_the_host": "Bed værten om at skifte den.",
         "nav_switching": "Skifter",
-        "operator": "Serverkonsol"
+        "operator": "Serverkonsol",
+        "staff_stop": "Stop",
+        "staff_stop_ask": "Stop serveren, som {host} har startet, for alle på den?",
+        "staff_stop_ask_unnamed": "Stop denne server for alle på den?"
       },
       "collections": {
         "tab": "Samlinger",

@@ -6909,7 +6909,10 @@
         "ask_host": "{host} に切り替えを頼んでください。",
         "ask_the_host": "ホストに切り替えを頼んでください。",
         "nav_switching": "切り替え中",
-        "operator": "サーバーコンソール"
+        "operator": "サーバーコンソール",
+        "staff_stop": "停止",
+        "staff_stop_ask": "{host} のサーバーを、参加中の全員に対して停止しますか？",
+        "staff_stop_ask_unnamed": "このサーバーを、参加中の全員に対して停止しますか？"
       },
       "collections": {
         "tab": "コレクション",

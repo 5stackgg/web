@@ -133,9 +133,10 @@ export const utilityPracticeSessionFields = {
   // Named, not just numbered: the only useful thing to tell a guest whose
   // server is on the wrong map is who can move it.
   host: { name: true },
-  // Only for the staff console and the pod log tail below the panel; nothing
-  // player-facing reads it.
-  match: { server_id: true },
+  // The staff console's server. Not match.server_id: practice matches are
+  // hidden from every role, so that is always null. Null too for anyone RCON
+  // would refuse, which is what decides whether the console is offered.
+  server_id: true,
   team_id: true,
   map_name: true,
   map_changing_at: true,
@@ -153,6 +154,7 @@ export const utilityPracticeSessionFields = {
   is_member: true,
   can_view: true,
   can_manage: true,
+  can_stop: true,
 } as const;
 
 // A drill record belongs to a player, so signed out there is none to read --
@@ -736,9 +738,9 @@ export const inviteToUtilityPracticeMutation = generateMutation({
 });
 
 /**
- * The other half of stopUtilityPractice. Stopping is gated on `can_manage`, and
- * without this a joiner has no way out of a session at all — they are on the
- * roster of a server they cannot end and cannot leave.
+ * The other half of stopUtilityPractice. Stopping is the host's (and staff's,
+ * through `can_stop`), and without this a joiner has no way out of a session at
+ * all — they are on the roster of a server they cannot end and cannot leave.
  */
 export const leaveUtilityPracticeMutation = generateMutation({
   leaveUtilityPractice: [

@@ -6909,7 +6909,10 @@
         "ask_host": "Pídele a {host} que lo cambie.",
         "ask_the_host": "Pídele al anfitrión que lo cambie.",
         "nav_switching": "Cambiando",
-        "operator": "Consola del servidor"
+        "operator": "Consola del servidor",
+        "staff_stop": "Detener",
+        "staff_stop_ask": "¿Detener el servidor de {host} para todos los que están en él?",
+        "staff_stop_ask_unnamed": "¿Detener este servidor para todos los que están en él?"
       },
       "collections": {
         "tab": "Colecciones",

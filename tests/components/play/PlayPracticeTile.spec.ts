@@ -12,7 +12,7 @@ function sessionRow(extra: Record<string, unknown> = {}) {
   return {
     id: "s-1",
     match_id: "m-1",
-    match: { server_id: "srv-1" },
+    server_id: null,
     host_steam_id: "9",
     host: { name: "rawr" },
     team_id: null,

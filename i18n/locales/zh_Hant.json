@@ -6909,7 +6909,10 @@
         "ask_host": "請讓 {host} 來切換。",
         "ask_the_host": "請讓主辦者來切換。",
         "nav_switching": "切換中",
-        "operator": "伺服器主控台"
+        "operator": "伺服器主控台",
+        "staff_stop": "停止",
+        "staff_stop_ask": "要為伺服器上的所有人停止 {host} 的伺服器嗎？",
+        "staff_stop_ask_unnamed": "要為伺服器上的所有人停止此伺服器嗎？"
       },
       "collections": {
         "tab": "合輯",

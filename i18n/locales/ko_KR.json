@@ -6909,7 +6909,10 @@
         "ask_host": "{host}에게 바꿔 달라고 요청하세요.",
         "ask_the_host": "호스트에게 바꿔 달라고 요청하세요.",
         "nav_switching": "전환 중",
-        "operator": "서버 콘솔"
+        "operator": "서버 콘솔",
+        "staff_stop": "중지",
+        "staff_stop_ask": "접속한 모든 사람에 대해 {host}님의 서버를 중지할까요?",
+        "staff_stop_ask_unnamed": "접속한 모든 사람에 대해 이 서버를 중지할까요?"
       },
       "collections": {
         "tab": "컬렉션",

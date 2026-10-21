@@ -6909,7 +6909,10 @@
         "ask_host": "请让 {host} 来切换。",
         "ask_the_host": "请让房主来切换。",
         "nav_switching": "切换中",
-        "operator": "服务器控制台"
+        "operator": "服务器控制台",
+        "staff_stop": "停止",
+        "staff_stop_ask": "要为服务器上的所有人停止 {host} 的服务器吗？",
+        "staff_stop_ask_unnamed": "要为服务器上的所有人停止此服务器吗？"
       },
       "collections": {
         "tab": "合集",

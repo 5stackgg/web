@@ -386,7 +386,8 @@ export type UtilityMetaLineup = {
 export type UtilityPracticeSession = {
   id: string;
   match_id: string | null;
-  match: { server_id: string | null } | null;
+  /** Null unless RCON would let this viewer in. */
+  server_id: string | null;
   host_steam_id: string | null;
   host: { name: string | null } | null;
   team_id: string | null;
@@ -409,6 +410,7 @@ export type UtilityPracticeSession = {
   is_member: boolean | null;
   can_view: boolean | null;
   can_manage: boolean | null;
+  can_stop: boolean | null;
 };
 
 /** What startUtilityPractice / joinUtilityPractice return. Keyed `id`. */
@@ -444,9 +446,11 @@ export type UtilityPracticeView = {
   /** Over because it never came up, rather than stopped or reaped. */
   hasFailed: boolean;
   canManage: boolean;
+  /** Ending it for everyone: the host, or staff (admins only, on a render). */
+  canStop: boolean;
   /** The match behind the session, for the pod log tail. */
   matchId: string | null;
-  /** The box it is running on, for the RCON console. */
+  /** The box it is running on, for the RCON console; null if RCON refuses. */
   serverId: string | null;
 };
 
@@ -500,8 +504,9 @@ export function readUtilityPracticeSession(
     isOver: status === "Ended" || status === "Failed",
     hasFailed: status === "Failed",
     canManage: session?.can_manage === true,
+    canStop: session?.can_stop === true,
     matchId: session?.match_id ?? started?.match_id ?? null,
-    serverId: session?.match?.server_id ?? null,
+    serverId: session?.server_id ?? null,
   };
 }
 

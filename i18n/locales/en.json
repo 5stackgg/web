@@ -6909,7 +6909,10 @@
         "ask_host": "Ask {host} to switch it.",
         "ask_the_host": "Ask the host to switch it.",
         "nav_switching": "Switching",
-        "operator": "Server console"
+        "operator": "Server console",
+        "staff_stop": "Stop",
+        "staff_stop_ask": "Stop {host}'s server for everyone on it?",
+        "staff_stop_ask_unnamed": "Stop this server for everyone on it?"
       },
       "collections": {
         "tab": "Collections",

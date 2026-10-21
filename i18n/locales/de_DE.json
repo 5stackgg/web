@@ -10930,6 +10930,9 @@
       "reboot_confirm_description": "Damit wird der aktuelle On-Demand-Match-Server neu gestartet. Das Match bleibt in seinem aktuellen Status, während sich der Server neu verbindet.",
       "reboot_started": "Server-Neustart gestartet",
       "join_server": "Server beitreten",
+      "ready": "Server bereit",
+      "copy_connect": "Connect-Befehl kopieren",
+      "show_address": "Serveradresse anzeigen",
       "join_as_spectator": "Zuschauer-Details",
       "join_tv_stream": "TV-Stream-Details",
       "tv_delay": "TV ist um {delay} Sekunden verzögert, warte auf den Stream."
@@ -12922,25 +12925,15 @@
       "loading": "Draft-Room wird geladen ...",
       "avg": "Ø",
       "open_slot": "Freier Slot",
-      "draft_log": "Draft-Log",
       "log_picked": "pickte",
       "log_empty": "Noch keine Picks.",
       "team_alpha": "Team 1",
       "team_bravo": "Team 2",
-      "squad_ready": "Squad bereit",
       "expires_in": "Lobby läuft ab in",
       "extend": "Den Room weitere 30 Minuten offen halten",
-      "host_assigning": "Host verteilt die Teams",
-      "host_hint": "Füll die offenen Slots oben, um Spieler direkt einem Team zuzuweisen.",
       "make_captain": "Zum Captain machen",
-      "choose_captains": "Captains wählen",
       "choose_captains_hint": "Wähl für jedes Team einen Captain, um den Draft zu starten.",
-      "pick_captains": "Captains wählen",
-      "captain_picking": "{name} pickt gerade …",
       "your_pick": "Dein Pick",
-      "alpha_picking": "Team 1 pickt",
-      "bravo_picking": "Team 2 pickt",
-      "standby": "Standby",
       "pick_order": "Pick-Reihenfolge",
       "on_the_clock": "Am Zug",
       "pick_of": "Wahl {n} von {total}",
@@ -12966,24 +12959,15 @@
       "deny": "Ablehnen",
       "edit_settings": "Einstellungen bearbeiten",
       "start_match": "Match starten",
-      "starting": "Startet …",
-      "pick_teams": "Wähl beide Teams zum Starten",
-      "vs": "vs",
       "copy_invite": "Einladungslink kopieren",
       "invite_copied": "Einladungslink kopiert",
       "back_to_room": "Zurück zum Draft-Room",
-      "join_prompt": "Spring rein — ein Slot ist frei",
-      "request_prompt": "Für diese Lobby braucht der Beitritt die Freigabe des Hosts",
-      "request_pending": "Deine Anfrage wartet auf die Freigabe des Hosts",
       "backups": "Backups",
       "side_backups": "Ersatzspieler {team}",
       "unassigned_backups": "Nicht zugewiesene Spieler",
       "no_backups": "Zieh einen Spieler hierher, um ihn auf die Bank zu setzen",
       "drop_to_bench": "Zieh einen Spieler hierher, um ihn auf die Bank zu setzen",
       "side_full": "Diese Seite ist schon voll",
-      "checking_in": "Check-in — {ready}/{total} bereit",
-      "waitlist_prompt": "Lobby ist voll — werde Backup und übernimm den nächsten freien Platz",
-      "waitlist_pending": "Du bist Backup — du übernimmst den nächsten freien Platz, auch beim Check-in",
       "join_waitlist": "Als Backup beitreten",
       "leave_waitlist": "Backups verlassen",
       "invite_pending": "Du wurdest in diese Lobby eingeladen",
@@ -12996,8 +12980,6 @@
       "invite_sent": "{name} in deinen Draft eingeladen",
       "match_starting": "Match startet — Server bootet",
       "no_regions_available_description": "In keiner Game-Server-Region sind Server verfügbar. Der Draft kann erst starten, wenn ein Server online geht — melde dich bei einem Admin.",
-      "assign_all": "Alle Spieler zuweisen",
-      "need_full": "Warten auf Spieler",
       "search_requests": "Anfragen durchsuchen",
       "sort_elo_high": "Rang: hoch",
       "sort_elo_low": "Rang: niedrig",
@@ -13024,6 +13006,85 @@
       "swap_in": "{name} einwechseln",
       "remove_no_show": "Aus dem Match entfernen",
       "remove_no_show_description": "Er wird aus dem Match genommen und sein Platz bleibt frei."
+    },
+    "header": {
+      "label": "Status des Draft-Raums",
+      "start_draft": "Draft starten",
+      "join": "Lobby beitreten",
+      "request": "Beitritt anfragen",
+      "invited_title": "Du bist eingeladen",
+      "invited_detail": "Nimm an, um einen Platz in dieser Lobby zu bekommen.",
+      "requested_title": "Anfrage gesendet",
+      "requested_detail": "Warte, bis der Host dich reinlässt.",
+      "backup_title": "Du bist Backup Nr. {n}",
+      "backup_detail": "Du bekommst einen Platz, wenn ein Spieler geht oder den Check-in verpasst.",
+      "no_regions_title": "Keine Server verfügbar",
+      "no_regions_detail": "Du kannst starten, sobald ein Gameserver online ist.",
+      "teams_pick_title": "Wähle beide Teams",
+      "teams_pick_detail": "Wähle die zwei Teams, die dieses Match spielen.",
+      "teams_fill_title": "Fülle beide Kader",
+      "teams_fill_detail": "{team} braucht noch {count} Spieler. | {team} braucht noch {count} Spieler.",
+      "teams_ready_title": "Beide Kader voll",
+      "ready_match_detail": "Starte das Match, wenn du bereit bist.",
+      "host_fill_title": "Fülle beide Teams",
+      "host_fill_detail": "Nutze die freien Plätze, um Spieler direkt in ein Team zu setzen.",
+      "waiting_title": "Warte auf {count} weiteren Spieler | Warte auf {count} weitere Spieler",
+      "unlocks_detail": "{action} wird freigeschaltet, sobald alle {capacity} Plätze belegt sind.",
+      "choose_captains_title": "Captains wählen",
+      "captains_set_title": "Captains stehen fest",
+      "captains_set_detail": "{one} und {two} wählen die Teams. Starte, wenn du bereit bist.",
+      "ready_title": "Alle {capacity} Plätze belegt",
+      "ready_draft_detail": "Starte den Draft, wenn du bereit bist. Danach sind die Einstellungen gesperrt.",
+      "member_title": "Du bist dabei",
+      "member_waiting": "Warte, bis noch {count} Spieler beitritt. | Warte, bis noch {count} Spieler beitreten.",
+      "member_full": "Warte, bis der Host startet.",
+      "approval_title": "Freigabe durch den Host nötig",
+      "approval_detail": "Frag an, und der Host lässt dich rein.",
+      "full_title": "Lobby voll",
+      "full_detail": "Tritt als Backup bei, um den nächsten freien Platz zu bekommen.",
+      "seats_open": "{count} Platz frei | {count} Plätze frei",
+      "join_detail": "Tritt jetzt bei, um dir einen der Plätze zu sichern.",
+      "seats_filled": "{filled} von {capacity} Plätzen belegt",
+      "your_pick_title": "Deine Wahl",
+      "your_pick_detail": "Wahl {n} von {total}. Läuft die Zeit ab, wird {name} für dich gewählt.",
+      "pick_plain": "Wahl {n} von {total}.",
+      "pick_next": "Wahl {n} von {total}. Du wählst als Nächstes.",
+      "pick_later": "Wahl {n} von {total}. Deine nächste Wahl ist Nr. {next}.",
+      "picking_title": "{name} wählt für {team}",
+      "selecting_title": "Captains werden gewählt",
+      "selecting_detail": "Der Draft startet gleich.",
+      "box_checked_in": "Eingecheckt",
+      "checkin_title": "Check ein, um zu spielen",
+      "checkin_detail": "{ready} von {total} eingecheckt. Alle haben eine Minute.",
+      "checkin_count": "{ready} von {total} eingecheckt.",
+      "no_shows_title": "{count} Spieler hat den Check-in verpasst | {count} Spieler haben den Check-in verpasst",
+      "no_shows_detail": "Wechsle in ihrer Zeile ein Backup ein, sonst wird das Match bei Ablauf der Zeit abgebrochen.",
+      "checked_title": "Du bist eingecheckt",
+      "checked_detail": "Warte noch auf {count} Spieler. | Warte noch auf {count} Spieler.",
+      "checkin_watch_title": "Check-in läuft",
+      "box_map_veto": "Map-Veto",
+      "box_region_veto": "Region-Veto",
+      "veto_you_ban": "Dein Ban",
+      "veto_you_ban_detail": "Klicke zweimal auf eine Map, um sie zu bannen.",
+      "veto_you_pick": "Dein Pick",
+      "veto_you_pick_detail": "Klicke zweimal auf eine Map, um sie zu picken.",
+      "veto_you_side": "Deine Seite",
+      "veto_you_side_detail": "Klicke zweimal auf CT oder T, um deine Startseite zu wählen.",
+      "veto_you_region": "Dein Region-Ban",
+      "veto_you_region_detail": "Klicke zweimal auf eine Region, um sie zu bannen.",
+      "veto_them_ban": "{team} bannt eine Map",
+      "veto_them_pick": "{team} pickt eine Map",
+      "veto_them_side": "{team} wählt eine Seite",
+      "veto_them_region": "{team} bannt eine Region",
+      "veto_detail": "Map-Veto, Best of {count}.",
+      "veto_region_detail": "Gespielt wird in der letzten verbleibenden Region.",
+      "starting_title": "Match wird gestartet",
+      "starting_detail": "Ein Server für {map} startet. Die Match-Seite öffnet sich gleich.",
+      "starting_detail_plain": "Ein Server startet. Die Match-Seite öffnet sich gleich.",
+      "box_booting": "Server startet",
+      "canceled_title": "Dieser Draft wurde abgebrochen",
+      "creating_title": "Match wird eingerichtet",
+      "creating_detail": "Der Check-in öffnet gleich."
     },
     "bar": {
       "region": "Region",
@@ -14098,6 +14159,10 @@
       "tournaments": {
         "title": "Turniere",
         "lede": "Mit deinem Team an einem teilnehmen und als Organisator eines leiten."
+      },
+      "veto": {
+        "title": "Das Veto",
+        "lede": "Wie die Maps eines Matches gewählt werden und was danach passiert."
       }
     },
     "sections": {
@@ -14217,6 +14282,11 @@
         "title": "Ein Turnierergebnis korrigieren",
         "lede": "Falscher Sieger, eine Wiederholung oder ein Match, das nie stattfand.",
         "keywords": "zurücksetzen sieger ergebnis falsch bracket turnierbaum wiederholen kampflos forfeit abbrechen neu erstellen match tabelle"
+      },
+      "veto_flow": {
+        "title": "So funktioniert das Veto",
+        "lede": "Züge, Uhren und Seiten, dann weiter zum Match.",
+        "keywords": "veto ban pick seite decider knife region uhr timer draft lobby maps"
       }
     },
     "content": {
@@ -14448,6 +14518,15 @@
         "results_3": "In Round Robin und Schweizer System lässt sich ein Ergebnis nicht mehr zurücksetzen, sobald die nächste Stage aus der Tabelle gesetzt oder die nächste Swiss-Runde ausgelost wurde.",
         "results_4": "Auf der Match-Seite bietet **Problem beheben** dieselben Korrekturen: Das Match muss neu gespielt werden, das falsche Team hat gewonnen oder ein Team kann nicht weiterspielen.",
         "results_5": "Ein abgebrochenes Match bringt den Turnierbaum nicht voran. Starte es über **Problem beheben** neu oder lege einen Sieger fest. Hat ein Platz im Turnierbaum sein Match verloren, erscheint dort **Match neu erstellen**."
+      },
+      "veto_flow": {
+        "turns": "Die Teams sind abwechselnd dran. Jeder Zug ist ein Ban, ein Pick oder eine Seitenwahl und hat eine Uhr: Läuft sie ab, wird für das Team gewählt.",
+        "maps": "Bei einem Best of One werden Maps gebannt, bis eine übrig ist. Eine Serie pickt außerdem die Maps, die sie spielt, und die letzte übrige Map ist der Decider.",
+        "sides": "Das Team, das eine Map nicht gepickt hat, wählt die Startseite. Die Seiten auf dem Decider entscheidet eine Knife-Runde, wenn das Match eine hat.",
+        "regions": "Sind mehrere Regionen aktiv, machen die Teams zuerst das Veto der Region.",
+        "draft": "In einer Draft-Lobby läuft das Veto im Draft-Room. Wenn es fertig ist, zeigt der Raum es noch ein paar Sekunden und schickt dann alle auf die Match-Seite, die die Maps zeigt, während der Server startet. Sobald der Server bereit ist, falten sich die Maps in ihre Karten und „Server beitreten“ erscheint.",
+        "demo_body": "Eine ausgedachte Draft-Lobby, die ganz durchläuft: der letzte Check-in, das Veto und das Match, an das sie übergibt. Nichts, was du dort tust, betrifft ein echtes Match.",
+        "demo_open": "Demo-Lobby öffnen"
       }
     },
     "demo": {
@@ -14472,7 +14551,30 @@
       "nothing_changed": "Das ist die Demo, also hat sich nichts wirklich geändert."
     },
     "intro_admin": "Wie Matches und Turniere hier funktionieren, was zu tun ist, wenn etwas schiefgeht, und wie du diese Seite betreibst.",
-    "search_hint": "Drück überall auf der Seite ⌘K, um diese Antworten zu durchsuchen."
+    "search_hint": "Drück überall auf der Seite ⌘K, um diese Antworten zu durchsuchen.",
+    "demo_draft": {
+      "title": "Demo-Lobby",
+      "step_label": "Draft-Schritt",
+      "replay": "Erneut abspielen",
+      "steps": {
+        "check_in": {
+          "label": "Check-in",
+          "caption": "Ein ausgedachter Draft, der gerade sein Match erstellt hat. Bis auf einen Spieler haben alle im Draft-Room eingecheckt. Nichts hier betrifft einen echten Draft."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Sobald alle eingecheckt haben, bannen die Captains im Draft-Room Maps, bis eine übrig ist. Der Raum zeigt das fertige Veto noch ein paar Sekunden und schickt dann alle auf die Match-Seite."
+        },
+        "booting": {
+          "label": "Server startet",
+          "caption": "Die Match-Seite öffnet mit den Maps aus dem Veto, während der Server startet."
+        },
+        "ready": {
+          "label": "Server bereit",
+          "caption": "Der Server läuft: Die Maps falten sich in ihre Karten, das Veto wandert in den Kopfbereich, dann bekommen die Spieler „Server beitreten“."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Lizenzen",

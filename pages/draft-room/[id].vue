@@ -8,7 +8,7 @@ import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import DraftRoom from "~/components/draft-games/DraftRoom.vue";
-import { STARTING_STATUSES } from "~/utilities/vetoStage";
+import { DRAFT_VETO_HOLD_MS, STARTING_STATUSES } from "~/utilities/vetoStage";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Button } from "~/components/ui/button";
 
@@ -185,7 +185,7 @@ watch(
     }
     startRedirect = setTimeout(
       () => navigateTo(`/matches/${match.value.id}`),
-      match.value.options?.map_veto ? 4000 : 0,
+      match.value.options?.map_veto ? DRAFT_VETO_HOLD_MS : 0,
     );
   },
 );

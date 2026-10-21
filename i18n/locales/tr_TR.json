@@ -10930,6 +10930,9 @@
       "reboot_confirm_description": "Bu işlem geçerli talep üzerine maç sunucusunu yeniden başlatır ve sunucu yeniden bağlanırken maçı mevcut durumunda tutar.",
       "reboot_started": "Sunucu yeniden başlatma başladı",
       "join_server": "Sunucuya katıl",
+      "ready": "Sunucu hazır",
+      "copy_connect": "Bağlantı komutunu kopyala",
+      "show_address": "Sunucu adresini göster",
       "join_as_spectator": "İzleyici bilgileri",
       "join_tv_stream": "TV yayını bilgileri",
       "tv_delay": "TV yayını {delay} saniye gecikmeli — yayının hazır olması bekleniyor."
@@ -12922,25 +12925,15 @@
       "loading": "Seçim odası yükleniyor...",
       "avg": "Ort.",
       "open_slot": "Boş Slot",
-      "draft_log": "Seçim Kaydı",
       "log_picked": "seçti",
       "log_empty": "Henüz seçim yok.",
       "team_alpha": "Takım 1",
       "team_bravo": "Takım 2",
-      "squad_ready": "Kadro Hazır",
       "expires_in": "Lobi Süresi Doluyor",
       "extend": "Odayı 30 dakika daha açık tut",
-      "host_assigning": "Ev Sahibi Takımları Atıyor",
-      "host_hint": "Oyuncuları doğrudan bir takıma eklemek için yukarıdaki boş slotları doldur.",
       "make_captain": "Kaptan yap",
-      "choose_captains": "Kaptanları Seç",
       "choose_captains_hint": "Seçimi başlatmak için her takım için bir kaptan seç.",
-      "pick_captains": "Kaptanları Seç",
-      "captain_picking": "{name} seçiyor…",
       "your_pick": "Sıra Sende",
-      "alpha_picking": "Takım 1 Seçiyor",
-      "bravo_picking": "Takım 2 Seçiyor",
-      "standby": "Bekliyor",
       "pick_order": "Seçim Sırası",
       "on_the_clock": "Sıra Onda",
       "pick_of": "Seçim {n}/{total}",
@@ -12966,24 +12959,15 @@
       "deny": "Reddet",
       "edit_settings": "Ayarları Düzenle",
       "start_match": "Maçı Başlat",
-      "starting": "Başlıyor…",
-      "pick_teams": "Başlamak için her iki takımı da seç",
-      "vs": "vs",
       "copy_invite": "Davet Bağlantısını Kopyala",
       "invite_copied": "Davet bağlantısı kopyalandı",
       "back_to_room": "Seçim Odasına Dön",
-      "join_prompt": "Hemen katıl — boş bir slot var",
-      "request_prompt": "Bu lobiye katılmak için ev sahibi onayı gerekiyor",
-      "request_pending": "İsteğin ev sahibi onayını bekliyor",
       "backups": "Bekleyenler",
       "side_backups": "{team} Yedekleri",
       "unassigned_backups": "Atanmamış Oyuncular",
       "no_backups": "Yedeğe almak için bir oyuncuyu buraya sürükle",
       "drop_to_bench": "Yedeğe almak için bir oyuncuyu buraya sürükle",
       "side_full": "Bu taraf zaten dolu",
-      "checking_in": "Katılım Onayı — {ready}/{total} Hazır",
-      "waitlist_prompt": "Lobi dolu — bekleyenlere katıl ve açılan ilk yeri al",
-      "waitlist_pending": "Bekleyenlerdesin — katılım onayı sırasında bile açılan ilk yeri alacaksın",
       "join_waitlist": "Bekleyenlere Katıl",
       "leave_waitlist": "Bekleyenlerden Ayrıl",
       "invite_pending": "Bu lobiye davet edildin",
@@ -12996,8 +12980,6 @@
       "invite_sent": "{name} seçimine davet edildi",
       "match_starting": "Maç Başlıyor — Sunucu Açılıyor",
       "no_regions_available_description": "Hiçbir sunucu bölgesinde kullanılabilir sunucu yok. Bir sunucu çevrimiçi olmadan seçim başlayamaz — bir yöneticiye ulaş.",
-      "assign_all": "Tüm Oyuncuları Ata",
-      "need_full": "Oyuncular Bekleniyor",
       "search_requests": "İsteklerde ara",
       "sort_elo_high": "Rank: Yüksek",
       "sort_elo_low": "Rank: Düşük",
@@ -13024,6 +13006,85 @@
       "swap_in": "{name} oyuna alınsın",
       "remove_no_show": "Maçtan çıkar",
       "remove_no_show_description": "Maçtan çıkarılacak ve yeri boş kalacak."
+    },
+    "header": {
+      "label": "Draft odası durumu",
+      "start_draft": "Draftı Başlat",
+      "join": "Lobiye Katıl",
+      "request": "Katılma İsteği Gönder",
+      "invited_title": "Davet edildin",
+      "invited_detail": "Bu lobide yer almak için kabul et.",
+      "requested_title": "İstek gönderildi",
+      "requested_detail": "Ev sahibinin seni içeri almasını bekliyorsun.",
+      "backup_title": "{n}. sıradaki bekleyensin",
+      "backup_detail": "Bir oyuncu ayrılır ya da katılımını onaylamazsa yer sana geçer.",
+      "no_regions_title": "Uygun sunucu yok",
+      "no_regions_detail": "Bir oyun sunucusu çevrimiçi olunca başlatabilirsin.",
+      "teams_pick_title": "İki takımı da seç",
+      "teams_pick_detail": "Bu maçı oynayacak iki takımı seç.",
+      "teams_fill_title": "İki kadroyu da doldur",
+      "teams_fill_detail": "{team} takımının {count} oyuncuya daha ihtiyacı var. | {team} takımının {count} oyuncuya daha ihtiyacı var.",
+      "teams_ready_title": "İki kadro da tamam",
+      "ready_match_detail": "Hazır olduğunda maçı başlat.",
+      "host_fill_title": "İki takımı da doldur",
+      "host_fill_detail": "Boş yerleri kullanarak oyuncuları doğrudan bir takıma koy.",
+      "waiting_title": "{count} oyuncu daha bekleniyor | {count} oyuncu daha bekleniyor",
+      "unlocks_detail": "{capacity} yerin hepsi dolunca {action} açılır.",
+      "choose_captains_title": "Kaptanları seç",
+      "captains_set_title": "Kaptanlar belli",
+      "captains_set_detail": "Takımları {one} ve {two} seçecek. Hazır olduğunda başlat.",
+      "ready_title": "{capacity} yerin hepsi doldu",
+      "ready_draft_detail": "Hazır olduğunda draftı başlat. Başladıktan sonra ayarlar kilitlenir.",
+      "member_title": "İçeridesin",
+      "member_waiting": "{count} oyuncunun daha katılması bekleniyor. | {count} oyuncunun daha katılması bekleniyor.",
+      "member_full": "Ev sahibinin başlatması bekleniyor.",
+      "approval_title": "Ev sahibi onayı gerekli",
+      "approval_detail": "Katılma isteği gönder, ev sahibi seni içeri alsın.",
+      "full_title": "Lobi dolu",
+      "full_detail": "Boşalan ilk yeri almak için bekleyenlere katıl.",
+      "seats_open": "{count} boş yer | {count} boş yer",
+      "join_detail": "Yerlerden birini almak için şimdi katıl.",
+      "seats_filled": "{capacity} yerin {filled} tanesi dolu",
+      "your_pick_title": "Seçim sırası sende",
+      "your_pick_detail": "Seçim {n}/{total}. Süre dolarsa senin yerine {name} seçilir.",
+      "pick_plain": "Seçim {n}/{total}.",
+      "pick_next": "Seçim {n}/{total}. Sıradaki seçim senin.",
+      "pick_later": "Seçim {n}/{total}. Senin sıradaki seçimin {next}.",
+      "picking_title": "{name}, {team} için seçiyor",
+      "selecting_title": "Kaptanlar seçiliyor",
+      "selecting_detail": "Draft birazdan başlıyor.",
+      "box_checked_in": "Katılımı onaylanan",
+      "checkin_title": "Oynamak için katılımını onayla",
+      "checkin_detail": "{total} oyuncudan {ready} tanesi onayladı. Herkesin bir dakikası var.",
+      "checkin_count": "{total} oyuncudan {ready} tanesi onayladı.",
+      "no_shows_title": "{count} oyuncu katılımını onaylamadı | {count} oyuncu katılımını onaylamadı",
+      "no_shows_detail": "Satırından bekleyenlerden birini al, yoksa süre dolunca maç iptal olur.",
+      "checked_title": "Katılımını onayladın",
+      "checked_detail": "{count} oyuncu daha bekleniyor. | {count} oyuncu daha bekleniyor.",
+      "checkin_watch_title": "Katılım onayı sürüyor",
+      "box_map_veto": "Harita vetosu",
+      "box_region_veto": "Bölge vetosu",
+      "veto_you_ban": "Senin banın",
+      "veto_you_ban_detail": "Bir haritayı banlamak için iki kez tıkla.",
+      "veto_you_pick": "Senin pick'in",
+      "veto_you_pick_detail": "Bir haritayı seçmek için iki kez tıkla.",
+      "veto_you_side": "Senin tarafın",
+      "veto_you_side_detail": "Başlayacağın tarafı seçmek için CT veya T'ye iki kez tıkla.",
+      "veto_you_region": "Senin bölge banın",
+      "veto_you_region_detail": "Bir bölgeyi banlamak için iki kez tıkla.",
+      "veto_them_ban": "{team} bir harita banlıyor",
+      "veto_them_pick": "{team} bir harita seçiyor",
+      "veto_them_side": "{team} taraf seçiyor",
+      "veto_them_region": "{team} bir bölge banlıyor",
+      "veto_detail": "Harita vetosu, BO{count}.",
+      "veto_region_detail": "Maç kalan son bölgede oynanır.",
+      "starting_title": "Maç başlatılıyor",
+      "starting_detail": "{map} için sunucu açılıyor. Maç sayfası birazdan açılacak.",
+      "starting_detail_plain": "Sunucu açılıyor. Maç sayfası birazdan açılacak.",
+      "box_booting": "Sunucu açılıyor",
+      "canceled_title": "Bu draft iptal edildi",
+      "creating_title": "Maç hazırlanıyor",
+      "creating_detail": "Katılım onayı birazdan başlıyor."
     },
     "bar": {
       "region": "Bölge",
@@ -14098,6 +14159,10 @@
       "tournaments": {
         "title": "Turnuvalar",
         "lede": "Takımınla bir turnuvaya katılmak ve organizatör olarak bir turnuva yönetmek."
+      },
+      "veto": {
+        "title": "Veto",
+        "lede": "Bir maçın haritalarının nasıl seçildiği ve sonrasında ne olduğu."
       }
     },
     "sections": {
@@ -14217,6 +14282,11 @@
         "title": "Turnuva Sonucunu Düzeltmek",
         "lede": "Yanlış kazanan, tekrar maçı ya da hiç oynanmamış bir maç.",
         "keywords": "sıfırla kazanan sonuç yanlış eşleşme tablosu tekrar hükmen iptal yeniden oluştur maç sıralama"
+      },
+      "veto_flow": {
+        "title": "Veto nasıl işler",
+        "lede": "Sıralar, süreler ve taraflar, sonra maça geçiş.",
+        "keywords": "veto ban pick taraf decider bıçak bölge süre seçim lobi harita"
       }
     },
     "content": {
@@ -14448,6 +14518,15 @@
         "results_3": "Lig usulü ve İsviçre sisteminde, sonraki etap sıralamaya göre oluşturulduktan ya da sonraki İsviçre turu eşleştirildikten sonra bir sonuç sıfırlanamaz.",
         "results_4": "Maç sayfasında **Sorunu Çöz** aynı düzeltmeleri sunar: maçın yeniden oynanması gerekiyor, galibiyet yanlış takıma verildi ya da bir takım devam edemiyor.",
         "results_5": "İptal edilen bir maç eşleşme tablosunu ilerletmez. Onu **Sorunu Çöz** üzerinden yeniden başlat ya da bir kazanan belirle. Eşleşme tablosundaki bir yuva maçını kaybettiyse orada **Maçı Yeniden Oluştur** görünür."
+      },
+      "veto_flow": {
+        "turns": "Takımlar sırayla oynar. Her sıra bir ban, bir pick ya da taraf seçimidir ve bir süresi vardır: süre dolarsa seçim takım adına yapılır.",
+        "maps": "Tek haritalık maçta (best of one) tek harita kalana kadar harita banlanır. Bir seri ayrıca oynayacağı haritaları seçer ve geriye kalan son harita decider olur.",
+        "sides": "Haritayı seçmeyen takım başlangıç tarafını seçer. Decider'daki tarafları, maçta varsa bıçak raundu belirler.",
+        "regions": "Birden fazla bölge açıksa takımlar önce bölge vetosunu yapar.",
+        "draft": "Seçim lobisinde veto seçim odasında yapılır. Veto bitince oda onu birkaç saniye daha gösterir, sonra herkesi maç sayfasına gönderir; sayfa, sunucu açılırken haritaları gösterir. Sunucu hazır olunca haritalar kartlarına katlanır ve \"Sunucuya katıl\" belirir.",
+        "demo_body": "Sonuna kadar ilerleyen, gerçek olmayan bir seçim lobisi: son katılım bildirimi, veto ve devrettiği maç. Orada yaptığın hiçbir şey gerçek bir maça dokunmaz.",
+        "demo_open": "Demo Lobiyi Aç"
       }
     },
     "demo": {
@@ -14472,7 +14551,30 @@
       "nothing_changed": "Bu bir demo, bu yüzden gerçekte hiçbir şey değişmedi."
     },
     "intro_admin": "Burada maçların ve turnuvaların nasıl işlediği, bir şeyler ters gittiğinde ne yapılacağı ve bu sitenin nasıl yönetileceği.",
-    "search_hint": "Bu cevaplarda aramak için sitenin herhangi bir yerinde ⌘K'ye bas."
+    "search_hint": "Bu cevaplarda aramak için sitenin herhangi bir yerinde ⌘K'ye bas.",
+    "demo_draft": {
+      "title": "Demo Lobi",
+      "step_label": "Seçim adımı",
+      "replay": "Tekrar oynat",
+      "steps": {
+        "check_in": {
+          "label": "Katılım",
+          "caption": "Maçını yeni oluşturmuş, gerçek olmayan bir seçim. Bir oyuncu dışında herkes seçim odasından katılım bildirdi. Buradaki hiçbir şey gerçek bir seçime dokunmaz."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Herkes katılım bildirince kaptanlar seçim odasında tek harita kalana kadar harita banlar. Oda biten vetoyu birkaç saniye daha gösterir, sonra herkesi maç sayfasına gönderir."
+        },
+        "booting": {
+          "label": "Sunucu açılıyor",
+          "caption": "Maç sayfası, sunucu açılırken vetodaki haritalarla açılır."
+        },
+        "ready": {
+          "label": "Sunucu hazır",
+          "caption": "Sunucu hazır: haritalar kartlarına katlanır, veto üst kısma geçer, ardından oyuncular \"Sunucuya katıl\" düğmesini görür."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Lisanslar",

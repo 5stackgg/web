@@ -64,3 +64,120 @@ describe("QuickMatchConnect", () => {
     expect(wrapper.find(".qmc-join").exists()).toBe(false);
   });
 });
+
+describe("QuickMatchConnect as the match header's bar", () => {
+  // The bar's words flip by character, which renders spaces as non-breaking.
+  const text = (wrapper: { text: () => string }) =>
+    wrapper.text().replace(/\u00a0/g, " ");
+  const ready = () =>
+    match({
+      is_server_online: true,
+      connection_link: "steam://connect/1.2.3.4",
+    });
+
+  it("keeps the server's address out of the page until it is asked for", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: ready(), variant: "bar" },
+    });
+
+    expect(text(wrapper)).not.toContain("1.2.3.4");
+    expect(wrapper.find(".mcb-redact").exists()).toBe(true);
+
+    await wrapper.findAll(".mcb-icon-button")[0].trigger("click");
+    expect(text(wrapper)).toContain("1.2.3.4");
+  });
+
+  it("copies the whole connect command, masked or not", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal("navigator", { ...navigator, clipboard: { writeText } });
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: ready(), variant: "bar" },
+    });
+
+    await wrapper.findAll(".mcb-icon-button")[1].trigger("click");
+    expect(writeText).toHaveBeenCalledWith("connect 1.2.3.4");
+    vi.unstubAllGlobals();
+  });
+
+  it("takes the address back out of the page the moment it is hidden", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: ready(), variant: "bar" },
+    });
+    const eye = () => wrapper.findAll(".mcb-icon-button")[0];
+
+    await eye().trigger("click");
+    expect(text(wrapper)).toContain("1.2.3.4");
+
+    await eye().trigger("click");
+    expect(text(wrapper)).not.toContain("1.2.3.4");
+  });
+
+  it("masks the address again when the server comes back from a reboot", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: ready(), variant: "bar" },
+    });
+
+    await wrapper.findAll(".mcb-icon-button")[0].trigger("click");
+    expect(text(wrapper)).toContain("1.2.3.4");
+
+    await wrapper.setProps({ match: { ...ready(), is_server_online: false } });
+    await wrapper.setProps({ match: ready() });
+    expect(text(wrapper)).not.toContain("1.2.3.4");
+  });
+
+  it("doesn't call the server ready while only the TV delay is showing", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: {
+        match: match({
+          is_in_lineup: false,
+          is_organizer: true,
+          is_server_online: true,
+          connection_string: null,
+          tv_connection_string: null,
+          options: { tv_delay: 90 },
+        }),
+        variant: "bar",
+      },
+    });
+
+    expect(text(wrapper)).not.toContain("Server ready");
+    expect(text(wrapper)).toContain("TV is delayed by 90 seconds");
+  });
+
+  it("keeps the TV address out of the page too", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: {
+        match: match({
+          is_in_lineup: false,
+          is_organizer: true,
+          is_server_online: true,
+          tv_connection_string: "connect 5.6.7.8:27020",
+        }),
+        variant: "bar",
+      },
+    });
+
+    expect(text(wrapper)).toContain("TV Stream Details");
+    expect(wrapper.html()).not.toContain("5.6.7.8");
+  });
+
+  it("joins from a click, so hovering never shows the address", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: ready(), variant: "bar" },
+    });
+
+    expect(wrapper.find('a[href*="1.2.3.4"]').exists()).toBe(false);
+    expect(wrapper.find(".qmc-join").classes()).toContain("tac-amber-cta");
+  });
+
+  it("holds a player's Join Server in place, locked, while the server boots", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: match(), variant: "bar" },
+    });
+
+    const join = wrapper.find(".qmc-join");
+    expect(join.classes()).toContain("is-locked");
+    expect(join.attributes("disabled")).toBeDefined();
+    expect(text(wrapper)).toContain("Starting your match server");
+  });
+});

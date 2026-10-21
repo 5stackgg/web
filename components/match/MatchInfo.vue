@@ -98,6 +98,16 @@ export default {
       type: String,
       default: undefined,
     },
+    // The draft room asks for check-in in its own header.
+    hideCheckIn: {
+      type: Boolean,
+      default: false,
+    },
+    // The match page connects from the strip along its header.
+    hideConnect: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     me() {
@@ -121,10 +131,14 @@ export default {
       });
     },
     showCheckInSection() {
-      return !!this.isInMatch && this.match.can_check_in;
+      return !this.hideCheckIn && !!this.isInMatch && this.match.can_check_in;
     },
     showQuickConnectSection() {
-      return this.match.status === e_match_status_enum.Live && !!this.me;
+      return (
+        !this.hideConnect &&
+        this.match.status === e_match_status_enum.Live &&
+        !!this.me
+      );
     },
     showAnyActionSection() {
       return (

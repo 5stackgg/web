@@ -6,7 +6,7 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import { useTradeColumns } from "~/composables/useMatchTableColumns";
 import {
-  teamHeadClass,
+  TEAM_HEAD_CLASS,
   useCurrentUserRow,
 } from "~/composables/useCurrentUserRow";
 
@@ -79,7 +79,7 @@ const tradeColumns = computed(() =>
           <TableHead
             v-if="!hideMember"
             class="w-[110px] md:w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border [transform:translateZ(0)]"
-            :class="teamHeadClass(lp)"
+            :class="TEAM_HEAD_CLASS"
           >
             {{ lp.name }}
           </TableHead>

@@ -45,9 +45,10 @@ watch(
       :aria-label="$t('draft_games.room.pick_order')"
     >
       <li
-        v-for="cell in cells"
+        v-for="(cell, index) in cells"
         :key="cell.no"
         class="pick-cell"
+        :style="{ '--i': index }"
         :class="[`is-${cell.state}`, cell.lineup === 2 ? 'is-bravo' : '']"
         :aria-current="cell.state === 'current' ? 'step' : undefined"
       >
@@ -77,8 +78,12 @@ watch(
 </template>
 
 <style scoped>
+/* A scroll box clips on every side, so it keeps room for the cells' borders
+   and the current pick's glow, without moving them. */
 .pick-track-scroll {
   position: relative;
+  margin: -12px;
+  padding: 12px;
   overflow-x: auto;
   scrollbar-width: none;
 }

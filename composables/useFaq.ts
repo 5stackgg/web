@@ -158,6 +158,19 @@ export function useFaqOutline() {
       ],
     },
     {
+      id: "veto",
+      title: t("faq.parts.veto.title"),
+      lede: t("faq.parts.veto.lede"),
+      sections: [
+        {
+          id: "veto-flow",
+          title: t("faq.sections.veto_flow.title"),
+          lede: t("faq.sections.veto_flow.lede"),
+          keywords: t("faq.sections.veto_flow.keywords"),
+        },
+      ],
+    },
+    {
       id: "tournaments",
       title: t("faq.parts.tournaments.title"),
       lede: t("faq.parts.tournaments.lede"),

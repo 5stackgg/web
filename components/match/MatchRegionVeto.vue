@@ -22,6 +22,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
       :deadline="vetoPickDeadline"
       :total="match.options.veto_pick_timeout"
       :viewer="viewerLineup"
+      :status-line="statusLine"
       @confirm="({ itemId }) => itemId && vetoPick(itemId)"
     />
     <template v-else-if="canSelectRegion && !match.region">
@@ -113,10 +114,18 @@ export default {
       type: String,
       required: false,
     },
+    statusLine: {
+      type: Boolean,
+      default: true,
+    },
   },
   apollo: {
     $subscribe: {
       match_map_veto_picks: {
+        // Without a region veto there are no picks to show.
+        skip() {
+          return !this.match.options.region_veto;
+        },
         variables: function () {
           return {
             matchId: this.matchId || this.$route.params.id,

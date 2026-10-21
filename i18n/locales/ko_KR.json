@@ -10930,6 +10930,9 @@
       "reboot_confirm_description": "현재 온디맨드 매치 서버를 재시작하며, 서버가 재연결되는 동안 매치는 현재 상태를 유지합니다.",
       "reboot_started": "서버 재부팅이 시작되었습니다",
       "join_server": "서버 참가",
+      "ready": "서버 준비 완료",
+      "copy_connect": "접속 명령어 복사",
+      "show_address": "서버 주소 보기",
       "join_as_spectator": "관전자 접속 정보",
       "join_tv_stream": "TV 스트림 정보",
       "tv_delay": "TV가 {delay}초 지연되고 있습니다. 스트림 준비를 기다리는 중입니다."
@@ -12922,25 +12925,15 @@
       "loading": "드래프트 룸 불러오는 중...",
       "avg": "평균",
       "open_slot": "빈 슬롯",
-      "draft_log": "드래프트 로그",
       "log_picked": "픽함",
       "log_empty": "아직 픽이 없습니다.",
       "team_alpha": "팀 1",
       "team_bravo": "팀 2",
-      "squad_ready": "스쿼드 준비 완료",
       "expires_in": "로비 만료까지",
       "extend": "로비를 30분 더 유지",
-      "host_assigning": "호스트가 팀 배정 중",
-      "host_hint": "위의 빈 슬롯을 채우면 플레이어가 바로 팀에 추가됩니다.",
       "make_captain": "팀장으로 지정",
-      "choose_captains": "팀장 선택",
       "choose_captains_hint": "드래프트를 시작하려면 각 팀의 팀장을 선택하세요.",
-      "pick_captains": "팀장 선택",
-      "captain_picking": "{name}이(가) 픽하는 중…",
       "your_pick": "내 차례",
-      "alpha_picking": "팀 1 픽 중",
-      "bravo_picking": "팀 2 픽 중",
-      "standby": "대기",
       "pick_order": "픽 순서",
       "on_the_clock": "픽 차례",
       "pick_of": "픽 {n} / {total}",
@@ -12966,24 +12959,15 @@
       "deny": "거절",
       "edit_settings": "설정 편집",
       "start_match": "매치 시작",
-      "starting": "시작 중…",
-      "pick_teams": "시작하려면 양 팀을 선택하세요",
-      "vs": "vs",
       "copy_invite": "초대 링크 복사",
       "invite_copied": "초대 링크가 복사되었습니다",
       "back_to_room": "드래프트 룸으로 돌아가기",
-      "join_prompt": "지금 참가하세요 — 빈 슬롯이 있습니다",
-      "request_prompt": "이 로비는 참가하려면 호스트 승인이 필요합니다",
-      "request_pending": "호스트 승인을 기다리는 중입니다",
       "backups": "백업",
       "side_backups": "{team} 교체 선수",
       "unassigned_backups": "배정되지 않은 플레이어",
       "no_backups": "여기로 플레이어를 드래그하면 벤치로 이동합니다",
       "drop_to_bench": "여기로 플레이어를 드래그하면 벤치로 이동합니다",
       "side_full": "이 진영은 이미 가득 찼습니다",
-      "checking_in": "체크인 중 — {ready}/{total} 준비 완료",
-      "waitlist_prompt": "로비가 가득 찼습니다 — 백업으로 참가하면 다음에 비는 자리에 들어갑니다",
-      "waitlist_pending": "백업입니다 — 체크인 중이라도 다음에 비는 자리에 들어갑니다",
       "join_waitlist": "백업으로 참가",
       "leave_waitlist": "백업 나가기",
       "invite_pending": "이 로비에 초대되었습니다",
@@ -12996,8 +12980,6 @@
       "invite_sent": "{name}님을 드래프트에 초대했습니다",
       "match_starting": "매치 시작 중 — 서버 부팅 중",
       "no_regions_available_description": "사용 가능한 게임 서버 지역이 없습니다. 서버가 온라인 상태가 될 때까지 드래프트를 시작할 수 없습니다 — 관리자에게 문의하세요.",
-      "assign_all": "모든 플레이어 배정",
-      "need_full": "플레이어 대기 중",
       "search_requests": "요청 검색",
       "sort_elo_high": "랭크: 높은 순",
       "sort_elo_low": "랭크: 낮은 순",
@@ -13024,6 +13006,85 @@
       "swap_in": "{name} 투입",
       "remove_no_show": "경기에서 제외",
       "remove_no_show_description": "경기에서 제외되며 자리는 비어 있게 됩니다."
+    },
+    "header": {
+      "label": "드래프트 방 상태",
+      "start_draft": "드래프트 시작",
+      "join": "로비 참가",
+      "request": "참가 요청",
+      "invited_title": "초대받았습니다",
+      "invited_detail": "수락하면 이 로비의 자리에 들어갑니다.",
+      "requested_title": "요청을 보냈습니다",
+      "requested_detail": "호스트가 들여보내 주기를 기다리는 중입니다.",
+      "backup_title": "백업 {n}번입니다",
+      "backup_detail": "플레이어가 나가거나 체크인하지 않으면 자리를 받습니다.",
+      "no_regions_title": "사용 가능한 서버가 없습니다",
+      "no_regions_detail": "게임 서버가 온라인이 되면 시작할 수 있습니다.",
+      "teams_pick_title": "두 팀을 선택하세요",
+      "teams_pick_detail": "이 매치를 치를 두 팀을 고르세요.",
+      "teams_fill_title": "두 로스터를 채우세요",
+      "teams_fill_detail": "{team}에 {count}명이 더 필요합니다. | {team}에 {count}명이 더 필요합니다.",
+      "teams_ready_title": "두 로스터가 모두 찼습니다",
+      "ready_match_detail": "준비되면 매치를 시작하세요.",
+      "host_fill_title": "두 팀을 채우세요",
+      "host_fill_detail": "빈 자리를 이용해 플레이어를 바로 팀에 넣으세요.",
+      "waiting_title": "{count}명을 더 기다리는 중 | {count}명을 더 기다리는 중",
+      "unlocks_detail": "{capacity}자리가 모두 차면 {action}을(를) 누를 수 있습니다.",
+      "choose_captains_title": "팀장을 고르세요",
+      "captains_set_title": "팀장이 정해졌습니다",
+      "captains_set_detail": "{one}와(과) {two}이(가) 팀을 고릅니다. 준비되면 시작하세요.",
+      "ready_title": "{capacity}자리가 모두 찼습니다",
+      "ready_draft_detail": "준비되면 드래프트를 시작하세요. 시작하면 설정이 잠깁니다.",
+      "member_title": "참가했습니다",
+      "member_waiting": "{count}명이 더 참가하기를 기다리는 중입니다. | {count}명이 더 참가하기를 기다리는 중입니다.",
+      "member_full": "호스트가 시작하기를 기다리는 중입니다.",
+      "approval_title": "호스트 승인이 필요합니다",
+      "approval_detail": "참가를 요청하면 호스트가 들여보내 줍니다.",
+      "full_title": "로비가 가득 찼습니다",
+      "full_detail": "백업으로 참가하면 다음에 비는 자리를 받습니다.",
+      "seats_open": "빈 자리 {count}개 | 빈 자리 {count}개",
+      "join_detail": "지금 참가해 자리를 잡으세요.",
+      "seats_filled": "{capacity}자리 중 {filled}자리가 찼습니다",
+      "your_pick_title": "내 픽 차례",
+      "your_pick_detail": "픽 {n} / {total}. 시간이 다 되면 {name}이(가) 자동으로 뽑힙니다.",
+      "pick_plain": "픽 {n} / {total}.",
+      "pick_next": "픽 {n} / {total}. 다음은 내 차례입니다.",
+      "pick_later": "픽 {n} / {total}. 내 다음 픽은 {next}번입니다.",
+      "picking_title": "{name}이(가) {team}의 픽을 고르는 중",
+      "selecting_title": "팀장을 정하는 중",
+      "selecting_detail": "곧 드래프트가 시작됩니다.",
+      "box_checked_in": "체크인 완료",
+      "checkin_title": "체크인하고 플레이하세요",
+      "checkin_detail": "{total}명 중 {ready}명이 체크인했습니다. 모두 1분이 주어집니다.",
+      "checkin_count": "{total}명 중 {ready}명이 체크인했습니다.",
+      "no_shows_title": "{count}명이 체크인하지 않았습니다 | {count}명이 체크인하지 않았습니다",
+      "no_shows_detail": "해당 줄에서 백업으로 교체하세요. 시간이 다 되면 매치가 취소됩니다.",
+      "checked_title": "체크인했습니다",
+      "checked_detail": "{count}명을 더 기다리는 중입니다. | {count}명을 더 기다리는 중입니다.",
+      "checkin_watch_title": "체크인 진행 중",
+      "box_map_veto": "맵 밴픽",
+      "box_region_veto": "지역 밴픽",
+      "veto_you_ban": "내 밴",
+      "veto_you_ban_detail": "맵을 두 번 클릭하면 밴합니다.",
+      "veto_you_pick": "내 픽",
+      "veto_you_pick_detail": "맵을 두 번 클릭하면 픽합니다.",
+      "veto_you_side": "내 진영",
+      "veto_you_side_detail": "CT 또는 T를 두 번 클릭해 시작 진영을 고르세요.",
+      "veto_you_region": "내 지역 밴",
+      "veto_you_region_detail": "지역을 두 번 클릭하면 밴합니다.",
+      "veto_them_ban": "{team}이(가) 맵을 밴하는 중",
+      "veto_them_pick": "{team}이(가) 맵을 픽하는 중",
+      "veto_them_side": "{team}이(가) 진영을 고르는 중",
+      "veto_them_region": "{team}이(가) 지역을 밴하는 중",
+      "veto_detail": "맵 밴픽, BO{count}.",
+      "veto_region_detail": "마지막으로 남은 지역에서 매치가 진행됩니다.",
+      "starting_title": "매치를 시작하는 중",
+      "starting_detail": "{map} 서버를 부팅하는 중입니다. 곧 매치 페이지가 열립니다.",
+      "starting_detail_plain": "서버를 부팅하는 중입니다. 곧 매치 페이지가 열립니다.",
+      "box_booting": "서버 부팅 중",
+      "canceled_title": "이 드래프트는 취소되었습니다",
+      "creating_title": "매치를 준비하는 중",
+      "creating_detail": "곧 체크인이 시작됩니다."
     },
     "bar": {
       "region": "지역",
@@ -14098,6 +14159,10 @@
       "tournaments": {
         "title": "토너먼트",
         "lede": "팀으로 참가하는 방법과 주최자로서 운영하는 방법."
+      },
+      "veto": {
+        "title": "밴픽",
+        "lede": "경기 맵이 어떻게 정해지고 그다음에 무엇이 이어지는지."
       }
     },
     "sections": {
@@ -14217,6 +14282,11 @@
         "title": "토너먼트 결과 수정",
         "lede": "잘못된 승자, 재경기, 또는 열리지 않은 매치.",
         "keywords": "초기화 리셋 승자 결과 오류 대진표 재경기 몰수패 취소 다시 만들기 매치 순위"
+      },
+      "veto_flow": {
+        "title": "밴픽 진행 방식",
+        "lede": "차례, 타이머, 진영, 그리고 경기로.",
+        "keywords": "밴픽 veto 밴 픽 진영 디사이더 나이프 지역 타이머 드래프트 로비 맵"
       }
     },
     "content": {
@@ -14448,6 +14518,15 @@
         "results_3": "라운드 로빈과 스위스에서는 순위로 다음 스테이지 시드가 정해졌거나 다음 스위스 라운드 대진이 짜인 뒤에는 결과를 초기화할 수 없어요.",
         "results_4": "매치 페이지의 **문제 해결**에도 같은 해결 방법이 있어요: 매치를 다시 해야 할 때, 다른 팀이 승리로 기록됐을 때, 한 팀이 계속할 수 없을 때.",
         "results_5": "취소된 매치는 대진표를 진행시키지 않아요. **문제 해결**에서 다시 시작하거나 승자를 지정하세요. 대진표 칸에서 매치가 사라졌다면 그곳에 **매치 다시 만들기**가 나타나요."
+      },
+      "veto_flow": {
+        "turns": "팀이 번갈아 차례를 가집니다. 각 차례는 밴, 픽, 진영 선택 중 하나이며 타이머가 있습니다. 시간이 다 되면 그 팀 대신 선택됩니다.",
+        "maps": "단판(best of one)에서는 맵이 하나 남을 때까지 밴합니다. 시리즈에서는 플레이할 맵도 픽하며, 마지막으로 남은 맵이 디사이더가 됩니다.",
+        "sides": "맵을 픽하지 않은 팀이 시작 진영을 고릅니다. 디사이더의 진영은 경기에 나이프 라운드가 있으면 그것으로 정해집니다.",
+        "regions": "지역이 둘 이상 켜져 있으면 팀들이 먼저 지역 밴픽을 합니다.",
+        "draft": "드래프트 로비에서는 밴픽이 드래프트 룸에서 진행됩니다. 끝나면 룸은 몇 초 동안 결과를 보여 준 뒤 모두를 매치 페이지로 보내고, 서버가 부팅되는 동안 맵이 표시됩니다. 서버가 준비되면 맵이 카드로 접혀 들어가고 '서버 참가'가 나타납니다.",
+        "demo_body": "끝까지 진행되는 가상의 드래프트 로비입니다. 마지막 참가 확인, 밴픽, 그리고 넘겨받는 매치까지. 여기서 하는 일은 실제 매치에 영향을 주지 않습니다.",
+        "demo_open": "체험용 로비 열기"
       }
     },
     "demo": {
@@ -14472,7 +14551,30 @@
       "nothing_changed": "체험판이라 실제로는 아무것도 바뀌지 않았어요."
     },
     "intro_admin": "이곳에서 매치와 토너먼트가 어떻게 진행되는지, 문제가 생기면 어떻게 하는지, 그리고 이 사이트를 어떻게 운영하는지 안내해요.",
-    "search_hint": "사이트 어디서든 ⌘K를 누르면 이 답변을 검색할 수 있어요."
+    "search_hint": "사이트 어디서든 ⌘K를 누르면 이 답변을 검색할 수 있어요.",
+    "demo_draft": {
+      "title": "체험용 로비",
+      "step_label": "드래프트 단계",
+      "replay": "다시 재생",
+      "steps": {
+        "check_in": {
+          "label": "참가 확인",
+          "caption": "방금 매치를 만든 가상의 드래프트입니다. 한 명을 빼고 모두 드래프트 룸에서 참가 확인을 마쳤습니다. 여기서 하는 일은 실제 드래프트에 영향을 주지 않습니다."
+        },
+        "veto": {
+          "label": "밴픽",
+          "caption": "모두 참가 확인을 마치면 캡틴들이 드래프트 룸에서 맵이 하나 남을 때까지 맵을 밴합니다. 룸은 끝난 밴픽을 몇 초 더 보여 준 뒤 모두를 매치 페이지로 보냅니다."
+        },
+        "booting": {
+          "label": "서버 부팅 중",
+          "caption": "서버가 부팅되는 동안 매치 페이지는 밴픽으로 정해진 맵을 보여 주며 열립니다."
+        },
+        "ready": {
+          "label": "서버 준비 완료",
+          "caption": "서버가 준비되면 맵이 각자의 카드로 접혀 들어가고, 밴픽이 헤더로 옮겨진 뒤 플레이어에게 '서버 참가'가 나타납니다."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "라이선스",

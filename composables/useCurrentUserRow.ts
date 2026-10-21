@@ -7,21 +7,19 @@ import {
   type Ref,
 } from "vue";
 
-// Row + sticky-cell highlight classes for the currently logged-in player's
-// row in a lineup-stats table. Tac-amber accent, kept intentionally subtle
-// (low-alpha bg + 2px left rail on the sticky cell).
-const ROW_CLASS = "";
+// The logged-in player's row in a lineup-stats table, tinted end to end in
+// tac-amber with a 2px rail on its sticky cell. The sticky cell lays the tint
+// as an image over the card colour: it has to stay opaque over scrolled cells,
+// and a `background` shorthand would undo the tables' padding-box clip.
+const ROW_CLASS =
+  "bg-[hsl(var(--tac-amber)/0.04)] hover:bg-[hsl(var(--tac-amber)/0.07)]";
 
 const STICKY_CELL_CLASS =
-  "bg-card group-hover:bg-muted shadow-[inset_2px_0_0_hsl(var(--tac-amber)/0.55),3px_0_6px_-3px_hsl(0_0%_0%/0.7)]";
+  "bg-card bg-[linear-gradient(hsl(var(--tac-amber)/0.04),hsl(var(--tac-amber)/0.04))] group-hover:bg-[linear-gradient(hsl(var(--tac-amber)/0.07),hsl(var(--tac-amber)/0.07))] shadow-[inset_2px_0_0_hsl(var(--tac-amber)/0.45),3px_0_6px_-3px_hsl(0_0%_0%/0.7)]";
 
-// The viewer's own team in the same tables: its header cell gets the rail
-// their row has, and its name the accent.
-export function teamHeadClass(lineup: any) {
-  return lineup?.is_on_lineup
-    ? "text-[hsl(var(--tac-amber))] shadow-[inset_2px_0_0_hsl(var(--tac-amber)/0.55),3px_0_6px_-3px_hsl(0_0%_0%/0.7)]"
-    : "shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]";
-}
+// A team's header cell in the same tables. Every team's is plain: the
+// viewer's own row already says which side they are on.
+export const TEAM_HEAD_CLASS = "shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]";
 
 // Lets a surface pin a different player's row (e.g. the profile being viewed)
 // instead of the logged-in user's.

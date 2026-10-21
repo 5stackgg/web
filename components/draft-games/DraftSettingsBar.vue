@@ -8,7 +8,6 @@ import { serverNow } from "~/stores/ServerClockStore";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/toast";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-import MatchActions from "~/components/match/MatchActions.vue";
 import { Crown } from "lucide-vue-next";
 import {
   HoverCard,
@@ -276,8 +275,6 @@ const leave = async () => {
         </div>
 
         <div class="deck flex shrink-0 items-center gap-1.5">
-          <MatchActions v-if="match" :match="match" />
-
           <FiveStackToolTip
             v-if="canEdit"
             as-child

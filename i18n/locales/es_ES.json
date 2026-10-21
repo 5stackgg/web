@@ -10930,6 +10930,9 @@
       "reboot_confirm_description": "Esto reiniciará el servidor bajo demanda actual y mantendrá la partida en su estado actual mientras el servidor se reconecta.",
       "reboot_started": "Reinicio del servidor iniciado",
       "join_server": "Entrar al servidor",
+      "ready": "Servidor listo",
+      "copy_connect": "Copiar comando de conexión",
+      "show_address": "Mostrar dirección del servidor",
       "join_as_spectator": "Datos de espectador",
       "join_tv_stream": "Datos del stream de TV",
       "tv_delay": "La TV tiene un retardo de {delay} segundos, esperando a que el stream esté listo."
@@ -12922,25 +12925,15 @@
       "loading": "Cargando la sala de draft...",
       "avg": "Media",
       "open_slot": "Hueco libre",
-      "draft_log": "Registro del draft",
       "log_picked": "ha elegido a",
       "log_empty": "Aún no hay elecciones.",
       "team_alpha": "Equipo 1",
       "team_bravo": "Equipo 2",
-      "squad_ready": "Equipo listo",
       "expires_in": "El lobby caduca en",
       "extend": "Mantén la sala abierta 30 minutos más",
-      "host_assigning": "El anfitrión asigna los equipos",
-      "host_hint": "Rellena los huecos de arriba para añadir jugadores directamente a un equipo.",
       "make_captain": "Hacer capitán",
-      "choose_captains": "Elegir capitanes",
       "choose_captains_hint": "Elige un capitán por equipo para empezar el draft.",
-      "pick_captains": "Elegir capitanes",
-      "captain_picking": "{name} está eligiendo…",
       "your_pick": "Te toca elegir",
-      "alpha_picking": "Elige el equipo 1",
-      "bravo_picking": "Elige el equipo 2",
-      "standby": "En espera",
       "pick_order": "Orden de elección",
       "on_the_clock": "Su turno",
       "pick_of": "Elección {n} de {total}",
@@ -12966,24 +12959,15 @@
       "deny": "Rechazar",
       "edit_settings": "Editar ajustes",
       "start_match": "Empezar partida",
-      "starting": "Empezando…",
-      "pick_teams": "Selecciona los dos equipos para empezar",
-      "vs": "vs",
       "copy_invite": "Copiar enlace de invitación",
       "invite_copied": "Enlace de invitación copiado",
       "back_to_room": "Volver a la sala de draft",
-      "join_prompt": "Únete: hay un hueco libre",
-      "request_prompt": "Este lobby requiere la aprobación del anfitrión",
-      "request_pending": "Tu solicitud espera la aprobación del anfitrión",
       "backups": "Reservas",
       "side_backups": "Suplentes de {team}",
       "unassigned_backups": "Jugadores sin asignar",
       "no_backups": "Arrastra aquí a un jugador para mandarlo al banquillo",
       "drop_to_bench": "Arrastra aquí a un jugador para mandarlo al banquillo",
       "side_full": "Este bando ya está lleno",
-      "checking_in": "Check-in — {ready}/{total} listos",
-      "waitlist_prompt": "La sala está llena: únete como reserva y ocupa el próximo puesto que quede libre",
-      "waitlist_pending": "Eres reserva: ocuparás el próximo puesto libre, incluso durante el check-in",
       "join_waitlist": "Unirse como reserva",
       "leave_waitlist": "Dejar las reservas",
       "invite_pending": "Te han invitado a este lobby",
@@ -12996,8 +12980,6 @@
       "invite_sent": "Has invitado a {name} a tu draft",
       "match_starting": "Empezando la partida — arrancando el servidor",
       "no_regions_available_description": "Ninguna región tiene servidores disponibles. El draft no puede empezar hasta que haya un servidor en línea; contacta con un administrador.",
-      "assign_all": "Asignar a todos los jugadores",
-      "need_full": "Esperando jugadores",
       "search_requests": "Buscar solicitudes",
       "sort_elo_high": "Rango: alto",
       "sort_elo_low": "Rango: bajo",
@@ -13024,6 +13006,85 @@
       "swap_in": "Meter a {name}",
       "remove_no_show": "Quitar del partido",
       "remove_no_show_description": "Se le quitará del partido y su puesto quedará libre."
+    },
+    "header": {
+      "label": "Estado de la sala de draft",
+      "start_draft": "Empezar el draft",
+      "join": "Entrar en la sala",
+      "request": "Pedir entrar",
+      "invited_title": "Te han invitado",
+      "invited_detail": "Acepta para ocupar una plaza en esta sala.",
+      "requested_title": "Solicitud enviada",
+      "requested_detail": "Esperando a que el anfitrión te deje entrar.",
+      "backup_title": "Eres la reserva n.º {n}",
+      "backup_detail": "Consigues plaza si un jugador se va o no hace el check-in.",
+      "no_regions_title": "No hay servidores disponibles",
+      "no_regions_detail": "Podrás empezar cuando haya un servidor de juego en línea.",
+      "teams_pick_title": "Elige los dos equipos",
+      "teams_pick_detail": "Elige los dos equipos que juegan esta partida.",
+      "teams_fill_title": "Completa ambas plantillas",
+      "teams_fill_detail": "A {team} le falta {count} jugador. | A {team} le faltan {count} jugadores.",
+      "teams_ready_title": "Ambas plantillas completas",
+      "ready_match_detail": "Empieza la partida cuando estés listo.",
+      "host_fill_title": "Completa los dos equipos",
+      "host_fill_detail": "Usa las plazas libres para poner jugadores directamente en un equipo.",
+      "waiting_title": "Falta {count} jugador | Faltan {count} jugadores",
+      "unlocks_detail": "{action} se desbloquea cuando las {capacity} plazas estén ocupadas.",
+      "choose_captains_title": "Elige capitanes",
+      "captains_set_title": "Capitanes elegidos",
+      "captains_set_detail": "{one} y {two} eligen los equipos. Empieza cuando estés listo.",
+      "ready_title": "Las {capacity} plazas están ocupadas",
+      "ready_draft_detail": "Empieza el draft cuando estés listo. Los ajustes se bloquean al empezar.",
+      "member_title": "Estás dentro",
+      "member_waiting": "Falta que entre {count} jugador. | Falta que entren {count} jugadores.",
+      "member_full": "Esperando a que el anfitrión empiece.",
+      "approval_title": "Hace falta la aprobación del anfitrión",
+      "approval_detail": "Pide entrar y el anfitrión te dejará pasar.",
+      "full_title": "Sala llena",
+      "full_detail": "Únete como reserva para ocupar la próxima plaza que quede libre.",
+      "seats_open": "{count} plaza libre | {count} plazas libres",
+      "join_detail": "Únete ahora para ocupar una de las plazas.",
+      "seats_filled": "{filled} de {capacity} plazas ocupadas",
+      "your_pick_title": "Te toca elegir",
+      "your_pick_detail": "Elección {n} de {total}. Si se acaba el tiempo, se elige a {name} por ti.",
+      "pick_plain": "Elección {n} de {total}.",
+      "pick_next": "Elección {n} de {total}. Eliges tú después.",
+      "pick_later": "Elección {n} de {total}. Tu próxima elección es la {next}.",
+      "picking_title": "{name} elige para {team}",
+      "selecting_title": "Eligiendo capitanes",
+      "selecting_detail": "El draft empieza en un momento.",
+      "box_checked_in": "Con check-in",
+      "checkin_title": "Haz el check-in para jugar",
+      "checkin_detail": "{ready} de {total} han hecho el check-in. Todos tienen un minuto.",
+      "checkin_count": "{ready} de {total} han hecho el check-in.",
+      "no_shows_title": "{count} jugador no hizo el check-in | {count} jugadores no hicieron el check-in",
+      "no_shows_detail": "Mete una reserva desde su fila o la partida se cancela cuando se acabe el tiempo.",
+      "checked_title": "Ya hiciste el check-in",
+      "checked_detail": "Falta {count} jugador. | Faltan {count} jugadores.",
+      "checkin_watch_title": "Check-in en curso",
+      "box_map_veto": "Veto de mapas",
+      "box_region_veto": "Veto de región",
+      "veto_you_ban": "Tu baneo",
+      "veto_you_ban_detail": "Haz doble clic en un mapa para banearlo.",
+      "veto_you_pick": "Tu elección",
+      "veto_you_pick_detail": "Haz doble clic en un mapa para elegirlo.",
+      "veto_you_side": "Tu bando",
+      "veto_you_side_detail": "Haz doble clic en CT o T para elegir dónde empiezas.",
+      "veto_you_region": "Tu baneo de región",
+      "veto_you_region_detail": "Haz doble clic en una región para banearla.",
+      "veto_them_ban": "{team} está baneando un mapa",
+      "veto_them_pick": "{team} está eligiendo un mapa",
+      "veto_them_side": "{team} está eligiendo bando",
+      "veto_them_region": "{team} está baneando una región",
+      "veto_detail": "Veto de mapas, al mejor de {count}.",
+      "veto_region_detail": "La partida se juega en la última región que quede.",
+      "starting_title": "Empezando la partida",
+      "starting_detail": "Arrancando un servidor para {map}. La página de la partida se abre en un momento.",
+      "starting_detail_plain": "Arrancando un servidor. La página de la partida se abre en un momento.",
+      "box_booting": "Arrancando servidor",
+      "canceled_title": "Este draft se canceló",
+      "creating_title": "Preparando la partida",
+      "creating_detail": "El check-in se abre en un momento."
     },
     "bar": {
       "region": "Región",
@@ -14098,6 +14159,10 @@
       "tournaments": {
         "title": "Torneos",
         "lede": "Apuntarte a uno con tu equipo, y organizar uno."
+      },
+      "veto": {
+        "title": "El veto",
+        "lede": "Cómo se eligen los mapas de una partida y qué pasa después."
       }
     },
     "sections": {
@@ -14217,6 +14282,11 @@
         "title": "Corregir un resultado del torneo",
         "lede": "Ganador equivocado, una repetición o una partida que nunca se jugó.",
         "keywords": "restablecer ganador resultado mal cuadro bracket repetir incomparecencia cancelar recrear partida clasificación"
+      },
+      "veto_flow": {
+        "title": "Cómo funciona el veto",
+        "lede": "Turnos, relojes y lados, y luego a la partida.",
+        "keywords": "veto ban pick lado decider cuchillo región reloj draft lobby mapas"
       }
     },
     "content": {
@@ -14448,6 +14518,15 @@
         "results_3": "En todos contra todos y suizo, un resultado no se puede restablecer una vez que la siguiente fase se sorteó con la clasificación, o que se emparejó la siguiente ronda suiza.",
         "results_4": "En la página de la partida, **Solucionar un problema** tiene las mismas soluciones: hay que volver a jugar la partida, ganó el equipo equivocado o un equipo no puede continuar.",
         "results_5": "Una partida cancelada no hace avanzar el cuadro. Reiníciala desde **Solucionar un problema** o define un ganador. Si un hueco del cuadro ha perdido su partida, ahí aparece **Recrear partida**."
+      },
+      "veto_flow": {
+        "turns": "Los equipos se turnan. Cada turno es un ban, un pick o una elección de lado, y tiene un reloj: si se agota, se elige por ese equipo.",
+        "maps": "En un best of one se banean mapas hasta que queda uno. Una serie además elige los mapas que jugará, y el último mapa que queda es el decider.",
+        "sides": "El equipo que no eligió un mapa escoge su lado inicial. Los lados del decider los decide una ronda de cuchillo, si la partida tiene una.",
+        "regions": "Cuando hay más de una región activa, los equipos hacen primero el veto de la región.",
+        "draft": "En un lobby de draft el veto se hace en la sala de draft. Cuando termina, la sala lo mantiene unos segundos y luego lleva a todos a la página de la partida, que muestra los mapas mientras arranca el servidor. Cuando el servidor está listo, los mapas se pliegan en sus tarjetas y aparece «Entrar al servidor».",
+        "demo_body": "Un lobby de draft de prueba que llega hasta el final: la última confirmación, el veto y la partida a la que da paso. Nada de lo que hagas ahí afecta a una partida real.",
+        "demo_open": "Abrir el lobby de demostración"
       }
     },
     "demo": {
@@ -14472,7 +14551,30 @@
       "nothing_changed": "Esto es la demo, así que en realidad no ha cambiado nada."
     },
     "intro_admin": "Cómo funcionan aquí las partidas y los torneos, qué hacer cuando algo sale mal y cómo gestionar este sitio.",
-    "search_hint": "Pulsa ⌘K en cualquier parte del sitio para buscar en estas respuestas."
+    "search_hint": "Pulsa ⌘K en cualquier parte del sitio para buscar en estas respuestas.",
+    "demo_draft": {
+      "title": "Lobby de demostración",
+      "step_label": "Paso del draft",
+      "replay": "Repetir",
+      "steps": {
+        "check_in": {
+          "label": "Confirmación",
+          "caption": "Un draft de prueba que acaba de crear su partida. Todos han confirmado su asistencia desde la sala de draft menos un jugador. Nada de esto afecta a un draft real."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Cuando todos han confirmado, los capitanes banean mapas en la sala de draft hasta que queda uno. La sala mantiene el veto terminado unos segundos y luego lleva a todos a la página de la partida."
+        },
+        "booting": {
+          "label": "Arrancando servidor",
+          "caption": "La página de la partida se abre con los mapas del veto mientras arranca el servidor."
+        },
+        "ready": {
+          "label": "Servidor listo",
+          "caption": "El servidor está listo: los mapas se pliegan en sus tarjetas, el veto pasa a la cabecera y los jugadores ven «Entrar al servidor»."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licencias",

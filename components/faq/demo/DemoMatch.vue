@@ -133,14 +133,14 @@ const segment =
             v-for="option in steps"
             :key="option.value"
             type="button"
-            :aria-pressed="demo.step.value === option.value"
+            :aria-pressed="demo.shownStep.value === option.value"
             :class="[
               segment,
-              demo.step.value === option.value
+              demo.shownStep.value === option.value
                 ? 'bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
                 : 'text-muted-foreground hover:text-foreground',
             ]"
-            @click="demo.step.value = option.value"
+            @click="demo.jumpTo(option.value)"
           >
             {{ $t(option.label) }}
           </button>

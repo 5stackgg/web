@@ -117,7 +117,7 @@ describe("MatchMapVeto start stage", () => {
     // Not until its moves have arrived.
     expect(board(wrapper).exists()).toBe(false);
 
-    (wrapper.vm as any).picks = [];
+    (wrapper.vm as any).fetchedPicks = [];
     await wrapper.vm.$nextTick();
     expect(board(wrapper).exists()).toBe(true);
     expect(board(wrapper).props("start")).toBeNull();

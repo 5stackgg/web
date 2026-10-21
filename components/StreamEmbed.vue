@@ -309,7 +309,6 @@ export default {
       // reload is the most reliable path).
       isMuted: true,
       played: false,
-      failedKey: null as string | null,
     };
   },
   computed: {
@@ -360,20 +359,19 @@ export default {
       }
 
       const key = embedStreamKey(stream);
+      const presses = usePressedStreams();
 
-      if (this.failedKey === key) {
+      if (presses.hasFailed(key)) {
         return true;
       }
 
-      return (
-        !this.started &&
-        !this.played &&
-        !usePressedStreams().isPressed(key)
-      );
+      return !this.started && !this.played && !presses.isPressed(key);
     },
-    waitingKey() {
-      return this.waiting && this.selectedStream
-        ? embedStreamKey(this.selectedStream)
+    playback() {
+      const stream = this.selectedStream;
+
+      return stream
+        ? { key: embedStreamKey(stream), on: !this.isStopped && !this.waiting }
         : null;
     },
     waitingPlatform() {
@@ -418,8 +416,9 @@ export default {
 
       usePressedStreams().press(embedStreamKey(this.selectedStream));
       this.played = true;
-      this.failedKey = null;
-      (this.$refs.playerRef as HTMLElement | null)?.focus();
+      (this.$refs.playerRef as HTMLElement | null)?.focus({
+        preventScroll: true,
+      });
     },
     povInitials(name?: string) {
       return (name || "?").slice(0, 2).toUpperCase();
@@ -447,10 +446,6 @@ export default {
       if (!this.selectedStream) return;
       usePressedStreams().press(embedStreamKey(this.selectedStream));
       useStoppedStreams().resume(embedStreamKey(this.selectedStream));
-      // The player div only exists again once StreamCanvas re-renders.
-      this.$nextTick(() => {
-        this.loadStream();
-      });
     },
     selectStream(stream: MatchStream) {
       if (this.selectedStream?.id === stream.id) {
@@ -562,32 +557,47 @@ export default {
 
       return { platform: "iframe", embedId: link };
     },
-    async loadTwitchPlayerScript(): Promise<void> {
-      if ((window as any).Twitch && (window as any).Twitch.Player) {
-        return;
+    loadTwitchPlayerScript(): Promise<void> {
+      if ((window as any).Twitch?.Player) {
+        return Promise.resolve();
       }
 
+      if (twitchScript) {
+        return twitchScript;
+      }
+
+      let resolveLoad = () => {};
+      let rejectLoad = (_error: Error) => {};
+      const loading = new Promise<void>((resolve, reject) => {
+        resolveLoad = resolve;
+        rejectLoad = reject;
+      });
+      // Set before the script goes in: a blocked one can fail on the spot.
+      twitchScript = loading;
+
+      const script = document.createElement("script");
       // A script that failed never fires again: a retry needs a new one.
-      if (!twitchScript) {
-        const loading = new Promise<void>((resolve, reject) => {
-          const script = document.createElement("script");
+      const fail = () => {
+        script.remove();
+        if (twitchScript === loading) {
+          twitchScript = null;
+        }
+        rejectLoad(new Error("Failed to load Twitch player script"));
+      };
 
-          script.src = TWITCH_SCRIPT;
-          script.onload = () => resolve();
-          script.onerror = () => {
-            script.remove();
-            if (twitchScript === loading) {
-              twitchScript = null;
-            }
-            reject(new Error("Failed to load Twitch player script"));
-          };
+      script.src = TWITCH_SCRIPT;
+      script.onload = () => {
+        if ((window as any).Twitch?.Player) {
+          resolveLoad();
+          return;
+        }
+        fail();
+      };
+      script.onerror = fail;
 
-          document.body.appendChild(script);
-        });
-        twitchScript = loading;
-      }
+      document.body.appendChild(script);
 
-      return twitchScript;
+      return loading;
     },
     mountTwitchPlayer(embedId: string) {
       const playerRef = this.$refs.playerRef as HTMLDivElement | null;
@@ -750,7 +760,7 @@ export default {
       this.embedId = parsed.embedId;
 
       // Stopped: nothing to mount into, and no reason to pull in the
-      // Twitch SDK. resumeStream() loads it on Watch.
+      // Twitch SDK.
       if (!this.embedId || this.isStopped) {
         return;
       }
@@ -771,12 +781,11 @@ export default {
         case "twitch":
           try {
             await this.loadTwitchPlayerScript();
+            this.mountTwitchPlayer(this.embedId);
           } catch (error) {
             console.warn("Twitch player failed to load:", error);
-            this.failedKey = embedStreamKey(stream);
-            return;
+            usePressedStreams().fail(embedStreamKey(stream));
           }
-          this.mountTwitchPlayer(this.embedId);
           break;
         case "youtube":
           this.mountYouTubePlayer(this.embedId);
@@ -791,15 +800,14 @@ export default {
     },
   },
   watch: {
-    // Pressed here or in another card showing the same stream.
-    waitingKey(next, previous) {
-      if (
-        previous &&
-        !next &&
-        this.selectedStream &&
-        embedStreamKey(this.selectedStream) === previous
-      ) {
-        this.loadStream();
+    // The same stream can play again: pressed here or in another card, or
+    // back from Stop, whose player div only returns with the next render. A
+    // switch to another stream loads through selectedStream.
+    playback(next, previous) {
+      if (next?.on && previous && !previous.on && next.key === previous.key) {
+        this.$nextTick(() => {
+          this.loadStream();
+        });
       }
     },
     selectedStream(stream, oldStream) {

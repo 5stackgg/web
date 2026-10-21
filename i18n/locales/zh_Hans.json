@@ -12447,7 +12447,7 @@
   "streams": {
     "move_to_global_view": "移动到全局视图",
     "play": "播放 {name}",
-    "load_notice": "按下播放后才会加载 {platform} 播放器。在此之前不会从 {platform} 加载任何内容。",
+    "load_notice": "按下播放即可加载 {platform} 播放器。",
     "open_on": "在 {platform} 上打开",
     "section_title": "直播",
     "section_description": "管理此比赛的直播链接。这些链接将显示给观众和解说员。",

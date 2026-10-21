@@ -12447,7 +12447,7 @@
   "streams": {
     "move_to_global_view": "Sposta nella vista globale",
     "play": "Riproduci {name}",
-    "load_notice": "Premi play per caricare il player di {platform}. Prima di allora non viene caricato nulla da {platform}.",
+    "load_notice": "Premi play per caricare il player di {platform}.",
     "open_on": "Apri su {platform}",
     "section_title": "Dirette",
     "section_description": "Gestisci i link delle dirette per questo match. Questi link sono mostrati a spettatori e caster.",

@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import WatchStreamStage from "~/components/watch/WatchStreamStage.vue";
+import StreamEmbed from "~/components/StreamEmbed.vue";
 import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
 import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import {
@@ -269,6 +270,34 @@ describe("WatchStreamStage press to play", () => {
     pushes.length = 0;
     useApplicationSettingsStore().settings = [];
     useAuthStore().me = { steam_id: "1", role: "user" } as any;
+  });
+
+  it("counts its Watch button as the press, so the floating player starts at once", async () => {
+    const wrapper = await mountStage([
+      liveMatch({ streams: [{ ...kick, id: "s-watch-kick" }] }),
+    ]);
+
+    await wrapper
+      .findAll("button")
+      .find((button) => button.text() === "Watch")!
+      .trigger("click");
+    const floating = await mountSuspended(StreamEmbed, {
+      props: {
+        streams: [useApplicationSettingsStore().globalStream],
+        global: true,
+      },
+    });
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    await flushPromises();
+
+    expect(
+      floating.find("[data-test='stream-press-play']").exists(),
+    ).toBe(false);
+    expect(floating.get("iframe").attributes("src")).toContain(
+      "player.kick.com/eastside",
+    );
+    floating.unmount();
+    useApplicationSettingsStore().setGlobalStream();
   });
 
   it("plays the next stream on the stage straight away once play was pressed there", async () => {

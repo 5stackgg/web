@@ -26,6 +26,8 @@ import {
   type WhepPhase,
 } from "~/composables/useWhepStatusCopy";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { embedStreamKey } from "~/composables/useStoppedStreams";
+import { usePressedStreams } from "~/composables/usePressedStreams";
 import { useAuthStore } from "~/stores/AuthStore";
 import { loginLinks } from "~/utilities/loginLinks";
 import mapLabel from "~/utilities/mapLabel";
@@ -207,8 +209,6 @@ const showLowerThird = computed(
 );
 
 const embedRef = ref<any>(null);
-// The stage is one card to the viewer: once play was pressed here, the next
-// stream it shows plays straight away, though each gets an embed of its own.
 const embedStarted = ref(false);
 function toggleMute() {
   muted.value = !muted.value;
@@ -307,10 +307,9 @@ function watchInPlayer() {
     login();
     return;
   }
-  settings.setGlobalStream({
-    ...stream.value,
-    match_id: current.value.id,
-  } as any);
+  const floated = { ...stream.value, match_id: current.value.id };
+  usePressedStreams().press(embedStreamKey(floated));
+  settings.setGlobalStream(floated as any);
 }
 
 function returnHere() {

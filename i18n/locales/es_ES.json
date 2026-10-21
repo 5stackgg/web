@@ -12447,7 +12447,7 @@
   "streams": {
     "move_to_global_view": "Mover a la vista global",
     "play": "Reproducir {name}",
-    "load_notice": "Pulsa reproducir para cargar el reproductor de {platform}. No se carga nada de {platform} antes.",
+    "load_notice": "Pulsa reproducir para cargar el reproductor de {platform}.",
     "open_on": "Abrir en {platform}",
     "section_title": "Emisiones en directo",
     "section_description": "Gestiona los enlaces de emisión en directo de esta partida. Estos enlaces se muestran a espectadores y casters.",

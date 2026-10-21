@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useId } from "vue";
 import { Button } from "~/components/ui/button";
 import {
   ExternalLink,
@@ -14,6 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { badgePopTransition } from "~/utilities/badgeCount";
+
+const noticeId = useId();
 </script>
 
 <template>
@@ -25,7 +28,12 @@ import { badgePopTransition } from "~/utilities/badgeCount";
       :class="inline ? 'h-full' : 'aspect-video'"
     >
       <template #video>
-        <div ref="playerRef" class="absolute inset-0 h-full w-full"></div>
+        <div
+          ref="playerRef"
+          data-test="stream-player"
+          tabindex="-1"
+          class="absolute inset-0 h-full w-full outline-none"
+        ></div>
       </template>
 
       <PageTransition swap :appear="false">
@@ -43,7 +51,9 @@ import { badgePopTransition } from "~/utilities/badgeCount";
             type="button"
             data-test="stream-press-play"
             class="group absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
+            :class="inline ? 'pb-[18%]' : ''"
             :aria-label="$t('streams.play', { name: waitingTitle })"
+            :aria-describedby="noticeId"
             @click="pressPlay"
           >
             <span
@@ -57,7 +67,10 @@ import { badgePopTransition } from "~/utilities/badgeCount";
             <span class="max-w-full truncate text-xs text-white/60">
               {{ waitingLink }}
             </span>
-            <span class="max-w-xs text-[11px] leading-snug text-white/45">
+            <span
+              :id="noticeId"
+              class="max-w-xs text-[11px] leading-snug text-white/45"
+            >
               {{ $t("streams.load_notice", { platform: waitingPlatform }) }}
             </span>
           </button>
@@ -213,7 +226,6 @@ interface MatchStream {
   avatar_url?: string | null;
 }
 
-import { reactive } from "vue";
 import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
@@ -223,6 +235,7 @@ import {
 } from "~/composables/useStoppedStreams";
 import { isHttpLink } from "~/utilities/httpLink";
 import { isDroppedTwitchPov } from "~/composables/useTwitch";
+import { usePressedStreams } from "~/composables/usePressedStreams";
 
 const PRESS_TO_PLAY: Partial<Record<NonNullable<Platform>, string>> = {
   twitch: "Twitch",
@@ -230,9 +243,9 @@ const PRESS_TO_PLAY: Partial<Record<NonNullable<Platform>, string>> = {
   kick: "Kick",
 };
 
-// A stream pressed once plays straight away wherever it shows next in this
-// visit: moved into the floating player, or back on the page.
-const pressedStreams = reactive(new Set<string>());
+const TWITCH_SCRIPT = "https://player.twitch.tv/js/embed/v1.js";
+
+let twitchScript: Promise<void> | null = null;
 
 export default {
   components: {
@@ -272,8 +285,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    // A host that swaps a new embed in for each stream (the /watch stage)
-    // keeps the press here, so the next stream it shows plays straight away.
     started: {
       type: Boolean,
       default: false,
@@ -298,8 +309,6 @@ export default {
       // reload is the most reliable path).
       isMuted: true,
       played: false,
-      // The stream whose player didn't load (Twitch's script blocked), shown
-      // waiting again so the viewer can retry or open it on its site.
       failedKey: null as string | null,
     };
   },
@@ -356,7 +365,16 @@ export default {
         return true;
       }
 
-      return !this.started && !this.played && !pressedStreams.has(key);
+      return (
+        !this.started &&
+        !this.played &&
+        !usePressedStreams().isPressed(key)
+      );
+    },
+    waitingKey() {
+      return this.waiting && this.selectedStream
+        ? embedStreamKey(this.selectedStream)
+        : null;
     },
     waitingPlatform() {
       return this.selectedStream ? this.pressToPlay(this.selectedStream) : null;
@@ -398,10 +416,10 @@ export default {
         return;
       }
 
-      pressedStreams.add(embedStreamKey(this.selectedStream));
+      usePressedStreams().press(embedStreamKey(this.selectedStream));
       this.played = true;
       this.failedKey = null;
-      this.loadStream();
+      (this.$refs.playerRef as HTMLElement | null)?.focus();
     },
     povInitials(name?: string) {
       return (name || "?").slice(0, 2).toUpperCase();
@@ -427,8 +445,7 @@ export default {
     },
     resumeStream() {
       if (!this.selectedStream) return;
-      // Watch is the press: it plays without asking again.
-      pressedStreams.add(embedStreamKey(this.selectedStream));
+      usePressedStreams().press(embedStreamKey(this.selectedStream));
       useStoppedStreams().resume(embedStreamKey(this.selectedStream));
       // The player div only exists again once StreamCanvas re-renders.
       this.$nextTick(() => {
@@ -546,32 +563,31 @@ export default {
       return { platform: "iframe", embedId: link };
     },
     async loadTwitchPlayerScript(): Promise<void> {
-      return new Promise((resolve, reject) => {
-        if ((window as any).Twitch && (window as any).Twitch.Player) {
-          resolve();
-          return;
-        }
+      if ((window as any).Twitch && (window as any).Twitch.Player) {
+        return;
+      }
 
-        const existing = document.querySelector(
-          'script[src*="player.twitch.tv/js/embed/v1.js"]',
-        );
+      // A script that failed never fires again: a retry needs a new one.
+      if (!twitchScript) {
+        const loading = new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
 
-        if (existing) {
-          existing.addEventListener("load", () => resolve());
-          existing.addEventListener("error", () => reject());
-          return;
-        }
+          script.src = TWITCH_SCRIPT;
+          script.onload = () => resolve();
+          script.onerror = () => {
+            script.remove();
+            if (twitchScript === loading) {
+              twitchScript = null;
+            }
+            reject(new Error("Failed to load Twitch player script"));
+          };
 
-        const script = document.createElement("script");
+          document.body.appendChild(script);
+        });
+        twitchScript = loading;
+      }
 
-        script.src = "https://player.twitch.tv/js/embed/v1.js";
-        script.onload = () => resolve();
-        script.onerror = () => {
-          reject(new Error("Failed to load Twitch player script"));
-        };
-
-        document.body.appendChild(script);
-      });
+      return twitchScript;
     },
     mountTwitchPlayer(embedId: string) {
       const playerRef = this.$refs.playerRef as HTMLDivElement | null;
@@ -775,6 +791,17 @@ export default {
     },
   },
   watch: {
+    // Pressed here or in another card showing the same stream.
+    waitingKey(next, previous) {
+      if (
+        previous &&
+        !next &&
+        this.selectedStream &&
+        embedStreamKey(this.selectedStream) === previous
+      ) {
+        this.loadStream();
+      }
+    },
     selectedStream(stream, oldStream) {
       if (stream !== oldStream && stream !== null) {
         // Use requestAnimationFrame to defer heavy operations

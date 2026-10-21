@@ -160,9 +160,24 @@ describe("StreamEmbed waits for play", () => {
   };
 
   const twitchScript = () =>
-    document.querySelector('script[src="https://player.twitch.tv/js/embed/v1.js"]');
+    document.querySelector(
+      'script[src="https://player.twitch.tv/js/embed/v1.js"]',
+    );
   const playButton = (wrapper: any) =>
     wrapper.find("button[data-test='stream-press-play']");
+  // The test DOM fails an external script by itself, and a failed script is
+  // taken out of the page, so each one is caught as it goes in.
+  const watchTwitchScripts = () => {
+    const appended = vi.spyOn(document.body, "appendChild");
+    return () =>
+      appended.mock.calls
+        .map(([node]) => node)
+        .filter(
+          (node): node is HTMLScriptElement =>
+            node instanceof HTMLScriptElement &&
+            node.src === "https://player.twitch.tv/js/embed/v1.js",
+        );
+  };
 
   beforeEach(() => {
     useApplicationSettingsStore().setGlobalStream();
@@ -173,6 +188,7 @@ describe("StreamEmbed waits for play", () => {
     unmount = undefined;
     twitchScript()?.remove();
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
   it.each([
@@ -182,7 +198,9 @@ describe("StreamEmbed waits for play", () => {
   ] as const)(
     "loads nothing from %s until play is pressed, and names the stream",
     async (platform, stream, channel) => {
-      const wrapper = await mountEmbed({}, [{ ...stream, id: `idle-${stream.id}` }]);
+      const wrapper = await mountEmbed({}, [
+        { ...stream, id: `idle-${stream.id}` },
+      ]);
 
       expect(wrapper.find("iframe").exists()).toBe(false);
       expect(twitchScript()).toBeNull();
@@ -191,9 +209,12 @@ describe("StreamEmbed waits for play", () => {
       );
       expect(wrapper.text()).toContain(stream.title);
       expect(wrapper.text()).toContain(channel);
-      expect(wrapper.text()).toContain(
-        `Press play to load the ${platform} player. Nothing is loaded from ${platform} before that.`,
-      );
+      const notice = `Press play to load the ${platform} player.`;
+      expect(wrapper.text()).toContain(notice);
+      expect(wrapper.text()).not.toContain("Nothing is loaded");
+      const describedBy = playButton(wrapper).attributes("aria-describedby");
+      expect(describedBy).toBeTruthy();
+      expect(wrapper.get(`[id="${describedBy}"]`).text()).toBe(notice);
       const open = wrapper
         .findAll("a")
         .find((link: any) => link.text() === `Open on ${platform}`);
@@ -231,18 +252,114 @@ describe("StreamEmbed waits for play", () => {
   });
 
   it("asks twitch.tv for its player script only on the press, and offers play again when it is blocked", async () => {
-    const wrapper = await mountEmbed({}, [{ ...twitch, id: "blocked-twitch" }]);
-    expect(twitchScript()).toBeNull();
+    const scripts = watchTwitchScripts();
+    const wrapper = await mountEmbed({}, [
+      { ...twitch, id: "blocked-twitch" },
+    ]);
+    expect(scripts()).toHaveLength(0);
 
     await playButton(wrapper).trigger("click");
-    const script = twitchScript();
-    expect(script).not.toBeNull();
+    expect(scripts()).toHaveLength(1);
 
-    script!.dispatchEvent(new Event("error"));
+    scripts()[0].dispatchEvent(new Event("error"));
     await settle();
 
     expect(playButton(wrapper).exists()).toBe(true);
     expect(wrapper.find("button[aria-label='Unmute']").exists()).toBe(false);
+  });
+
+  it("asks for Twitch's player script again on a retry after it was blocked", async () => {
+    const scripts = watchTwitchScripts();
+    const wrapper = await mountEmbed({}, [{ ...twitch, id: "retry-twitch" }]);
+
+    await playButton(wrapper).trigger("click");
+    scripts()[0].dispatchEvent(new Event("error"));
+    await settle();
+
+    expect(twitchScript()).toBeNull();
+    expect(playButton(wrapper).exists()).toBe(true);
+
+    await playButton(wrapper).trigger("click");
+    expect(scripts()).toHaveLength(2);
+    expect(scripts()[1]).not.toBe(scripts()[0]);
+
+    scripts()[1].dispatchEvent(new Event("error"));
+    await settle();
+
+    expect(playButton(wrapper).exists()).toBe(true);
+  });
+
+  it("plays on a retry once Twitch's player is reachable again", async () => {
+    const wrapper = await mountEmbed({}, [
+      { ...twitch, id: "retry-ok-twitch" },
+    ]);
+    const scripts = watchTwitchScripts();
+    await playButton(wrapper).trigger("click");
+    scripts()[0].dispatchEvent(new Event("error"));
+    await settle();
+
+    const players: unknown[] = [];
+    vi.stubGlobal("Twitch", {
+      Player: class {
+        constructor(_el: unknown, options: unknown) {
+          players.push(options);
+        }
+        destroy() {}
+        setMuted() {}
+      },
+    });
+    await playButton(wrapper).trigger("click");
+    await settle();
+
+    expect(players).toHaveLength(1);
+    expect(playButton(wrapper).exists()).toBe(false);
+  });
+
+  it("starts another card on the same stream once play is pressed in one", async () => {
+    const stream = { ...youtubeFeed, id: "twice-youtube" };
+    const first = await mountSuspended(StreamEmbed, {
+      props: { streams: [stream] },
+    });
+    const second = await mountSuspended(StreamEmbed, {
+      props: { streams: [stream] },
+    });
+    await settle();
+
+    await playButton(first).trigger("click");
+    await settle();
+
+    expect(playButton(second).exists()).toBe(false);
+    expect(second.get("iframe").attributes("src")).toContain(
+      "youtube.com/embed/yt42",
+    );
+    first.unmount();
+    second.unmount();
+  });
+
+  it("hands focus to the player when play is pressed", async () => {
+    const wrapper = await mountSuspended(StreamEmbed, {
+      props: { streams: [{ ...kick, id: "focus-kick" }] },
+      attachTo: document.body,
+    });
+    unmount = () => wrapper.unmount();
+    await settle();
+
+    const play = playButton(wrapper);
+    (play.element as HTMLElement).focus();
+    await play.trigger("click");
+    await settle();
+
+    expect(document.activeElement).toBe(
+      wrapper.get("[data-test='stream-player']").element,
+    );
+  });
+
+  it("keeps the placeholder's text above the /watch stage's match card", async () => {
+    const wrapper = await mountEmbed({ inline: true }, [
+      { ...kick, id: "stage-layout-kick" },
+    ]);
+
+    expect(playButton(wrapper).classes()).toContain("pb-[18%]");
   });
 
   it("starts the stream muted when play is pressed", async () => {

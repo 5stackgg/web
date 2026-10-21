@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
-import { e_match_status_enum } from "~/generated/zeus";
+import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
 
 // The match page's map cards: one slot per map of the series, a placeholder
 // until the veto fills it.
@@ -28,7 +28,19 @@ const ENDED: string[] = [
 const mapSlots = computed<any[]>(() => {
   const maps = props.match.match_maps || [];
   const bestOf = props.match.options?.best_of;
-  if (!bestOf || ENDED.includes(props.match.status)) {
+  // Once the match is over, a map that was never played (the decider of a
+  // 2-0) never will be, so only the played ones stay.
+  if (ENDED.includes(props.match.status)) {
+    return maps.filter(
+      (map: any) =>
+        map.rounds?.length > 0 ||
+        [
+          e_match_map_status_enum.Finished,
+          e_match_map_status_enum.Surrendered,
+        ].includes(map.status),
+    );
+  }
+  if (!bestOf) {
     return maps;
   }
   const slots: any[] = [];

@@ -233,7 +233,7 @@ const MatchLiveStreams = lazyPanel(
               <SelectItem value="scoreboard">
                 {{ $t("match.tabs.scoreboard") }}
               </SelectItem>
-              <SelectItem value="rounds">
+              <SelectItem v-if="showRoundsTab" value="rounds">
                 {{ $t("match.tabs.rounds") }}
               </SelectItem>
               <template v-if="!disableStats">
@@ -284,7 +284,7 @@ const MatchLiveStreams = lazyPanel(
           <TabsTrigger value="scoreboard">
             {{ $t("match.tabs.scoreboard") }}
           </TabsTrigger>
-          <TabsTrigger value="rounds">
+          <TabsTrigger v-if="showRoundsTab" value="rounds">
             {{ $t("match.tabs.rounds") }}
           </TabsTrigger>
           <template v-if="!disableStats">
@@ -543,8 +543,12 @@ const MatchLiveStreams = lazyPanel(
           </div>
         </Transition>
       </TabsContent>
-      <TabsContent value="rounds" class="tab-panel-in mt-0">
-        <MatchRoundsPanel :match="match" :match-map="roundsMap" />
+      <TabsContent
+        v-if="showRoundsTab"
+        value="rounds"
+        class="tab-panel-in mt-0"
+      >
+        <MatchRoundsPanel :match="match" :match-map="currentMap" />
       </TabsContent>
       <TabsContent value="economy" class="tab-panel-in mt-0">
         <div class="grid gap-4 max-w-[1500px]">
@@ -1178,17 +1182,13 @@ export default {
     effectiveScoreboardLens() {
       return this.disableStats ? "general" : this.scoreboardLens;
     },
-    // The map the Rounds tab shows: the one picked above the tabs, else the
-    // map being played, else the last one with rounds.
-    roundsMap() {
-      const maps = this.match.match_maps ?? [];
-      if (this.activeMap) {
-        return maps.find((map: any) => map.id === this.activeMap!.id) ?? null;
-      }
+    // Rounds is for resets, so it only shows for the map being played; a
+    // finished map's rounds are on its own card.
+    showRoundsTab() {
       return (
-        maps.find((map: any) => map.is_current_map) ??
-        [...maps].reverse().find((map: any) => map.rounds?.length) ??
-        null
+        this.match.status === e_match_status_enum.Live &&
+        !!this.currentMap &&
+        (!this.activeMap || this.activeMap.id === this.currentMap.id)
       );
     },
     isOpsTabActive() {
@@ -1395,7 +1395,11 @@ export default {
       return true;
     },
     availableMatchTabs() {
-      const tabs = ["scoreboard", "rounds"];
+      const tabs = ["scoreboard"];
+
+      if (this.showRoundsTab) {
+        tabs.push("rounds");
+      }
 
       if (!this.disableStats) {
         tabs.push("economy");
@@ -1438,14 +1442,17 @@ export default {
         if (this.activeMap && this.activeMap.id !== current?.id) {
           this.$emit("clear-active-map");
         }
-        this.activeTab = "rounds";
+        // Rounds only exists once a finished map's pick has cleared.
         void this.$nextTick(() => {
-          const reduce = window.matchMedia?.(
-            "(prefers-reduced-motion: reduce)",
-          ).matches;
-          (this.$el as HTMLElement | undefined)?.scrollIntoView?.({
-            behavior: reduce ? "auto" : "smooth",
-            block: "start",
+          this.activeTab = "rounds";
+          void this.$nextTick(() => {
+            const reduce = window.matchMedia?.(
+              "(prefers-reduced-motion: reduce)",
+            ).matches;
+            (this.$el as HTMLElement | undefined)?.scrollIntoView?.({
+              behavior: reduce ? "auto" : "smooth",
+              block: "start",
+            });
           });
         });
       },

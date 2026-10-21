@@ -1,6 +1,13 @@
 <script lang="ts" setup>
+import { useId } from "vue";
 import { Button } from "~/components/ui/button";
-import { ExternalLink, Square, Volume2, VolumeX } from "lucide-vue-next";
+import {
+  ExternalLink,
+  Play,
+  Square,
+  Volume2,
+  VolumeX,
+} from "lucide-vue-next";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
@@ -8,6 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { badgePopTransition } from "~/utilities/badgeCount";
+
+const noticeId = useId();
 </script>
 
 <template>
@@ -19,8 +28,66 @@ import { badgePopTransition } from "~/utilities/badgeCount";
       :class="inline ? 'h-full' : 'aspect-video'"
     >
       <template #video>
-        <div ref="playerRef" class="absolute inset-0 h-full w-full"></div>
+        <div
+          ref="playerRef"
+          data-test="stream-player"
+          tabindex="-1"
+          class="absolute inset-0 h-full w-full outline-none"
+        ></div>
       </template>
+
+      <PageTransition swap :appear="false">
+        <div
+          v-if="waiting"
+          :key="selectedStream.id"
+          data-test="stream-waiting"
+          class="absolute inset-0 overflow-hidden"
+        >
+          <span
+            aria-hidden="true"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,hsl(240_6%_16%),#000_70%)]"
+          ></span>
+          <button
+            type="button"
+            data-test="stream-press-play"
+            class="group absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
+            :class="inline ? 'pb-[18%]' : ''"
+            :aria-label="$t('streams.play', { name: waitingTitle })"
+            :aria-describedby="noticeId"
+            @click="pressPlay"
+          >
+            <span
+              class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-black/55 text-white ring-1 ring-white/15 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transition-none"
+            >
+              <Play class="h-5 w-5 fill-current" />
+            </span>
+            <span class="max-w-full truncate text-sm font-semibold text-white">
+              {{ waitingTitle }}
+            </span>
+            <span class="max-w-full truncate text-xs text-white/60">
+              {{ waitingLink }}
+            </span>
+            <span
+              :id="noticeId"
+              class="max-w-xs text-[11px] leading-snug text-white/45"
+            >
+              {{ $t("streams.load_notice", { platform: waitingPlatform }) }}
+            </span>
+          </button>
+          <Button
+            as="a"
+            :href="selectedStream.link"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="outline"
+            size="sm"
+            class="absolute bottom-2 right-2 border-white/20 bg-black/50 text-white/90 hover:bg-black/70 hover:text-white"
+          >
+            <ExternalLink />
+            {{ $t("streams.open_on", { platform: waitingPlatform }) }}
+          </Button>
+        </div>
+      </PageTransition>
 
       <Button
         v-if="global === false && !inline"
@@ -61,25 +128,27 @@ import { badgePopTransition } from "~/utilities/badgeCount";
            obvious place to bring audio in. Stays visible while muted
            (so the call-to-action is reachable on touch devices); fades
            in on hover once unmuted. -->
-      <button
-        v-if="!inline"
-        type="button"
-        :aria-label="isMuted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
-        :class="[
-          'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
-          isMuted
-            ? 'opacity-100'
-            : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
-        ]"
-        @click="toggleMute"
-      >
-        <VolumeX v-if="isMuted" class="size-3.5" />
-        <Volume2 v-else class="size-3.5" />
-      </button>
+      <PageTransition swap :appear="false">
+        <button
+          v-if="!inline && !waiting"
+          type="button"
+          :aria-label="isMuted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
+          :class="[
+            'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
+            isMuted
+              ? 'opacity-100'
+              : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
+          ]"
+          @click="toggleMute"
+        >
+          <VolumeX v-if="isMuted" class="size-3.5" />
+          <Volume2 v-else class="size-3.5" />
+        </button>
+      </PageTransition>
 
       <PageTransition swap :appear="false">
         <span
-          v-if="selectedPov"
+          v-if="selectedPov && !waiting"
           :key="selectedPov.id"
           class="pointer-events-none absolute bottom-2 left-2 z-10 rounded-sm bg-black/60 px-1.5 py-0.5 text-[0.7rem] font-semibold text-white"
           data-test="stream-pov-label"
@@ -166,6 +235,17 @@ import {
 } from "~/composables/useStoppedStreams";
 import { isHttpLink } from "~/utilities/httpLink";
 import { isDroppedTwitchPov } from "~/composables/useTwitch";
+import { usePressedStreams } from "~/composables/usePressedStreams";
+
+const PRESS_TO_PLAY: Partial<Record<NonNullable<Platform>, string>> = {
+  twitch: "Twitch",
+  youtube: "YouTube",
+  kick: "Kick",
+};
+
+const TWITCH_SCRIPT = "https://player.twitch.tv/js/embed/v1.js";
+
+let twitchScript: Promise<void> | null = null;
 
 export default {
   components: {
@@ -205,7 +285,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    started: {
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: ["update:started"],
   data() {
     return {
       playerInstance: null as any,
@@ -223,6 +308,7 @@ export default {
       // either don't expose a JS API or it's unstable enough that a
       // reload is the most reliable path).
       isMuted: true,
+      played: false,
     };
   },
   computed: {
@@ -265,6 +351,50 @@ export default {
           (this.showTitle == false && this.streams.length > 0))
       );
     },
+    waiting() {
+      const stream = this.selectedStream;
+
+      if (!stream || !this.pressToPlay(stream)) {
+        return false;
+      }
+
+      const key = embedStreamKey(stream);
+      const presses = usePressedStreams();
+
+      if (presses.hasFailed(key)) {
+        return true;
+      }
+
+      return !this.started && !this.played && !presses.isPressed(key);
+    },
+    playback() {
+      const stream = this.selectedStream;
+
+      return stream
+        ? { key: embedStreamKey(stream), on: !this.isStopped && !this.waiting }
+        : null;
+    },
+    waitingPlatform() {
+      return this.selectedStream ? this.pressToPlay(this.selectedStream) : null;
+    },
+    waitingTitle() {
+      const stream = this.selectedStream;
+
+      if (!stream) {
+        return "";
+      }
+
+      return stream.title || this.parseStreamLink(stream.link).embedId || "";
+    },
+    waitingLink() {
+      if (!this.selectedStream || !isHttpLink(this.selectedStream.link)) {
+        return "";
+      }
+
+      const url = new URL(this.selectedStream.link);
+
+      return `${url.hostname.replace(/^www\./, "")}${url.pathname.replace(/\/+$/, "")}${url.search}`;
+    },
     selectedPov() {
       return (
         this.streams.find(
@@ -274,6 +404,22 @@ export default {
     },
   },
   methods: {
+    pressToPlay(stream: MatchStream) {
+      const { platform } = this.parseStreamLink(stream.link);
+
+      return platform ? (PRESS_TO_PLAY[platform] ?? null) : null;
+    },
+    pressPlay() {
+      if (!this.selectedStream) {
+        return;
+      }
+
+      usePressedStreams().press(embedStreamKey(this.selectedStream));
+      this.played = true;
+      (this.$refs.playerRef as HTMLElement | null)?.focus({
+        preventScroll: true,
+      });
+    },
     povInitials(name?: string) {
       return (name || "?").slice(0, 2).toUpperCase();
     },
@@ -298,11 +444,8 @@ export default {
     },
     resumeStream() {
       if (!this.selectedStream) return;
+      usePressedStreams().press(embedStreamKey(this.selectedStream));
       useStoppedStreams().resume(embedStreamKey(this.selectedStream));
-      // The player div only exists again once StreamCanvas re-renders.
-      this.$nextTick(() => {
-        this.loadStream();
-      });
     },
     selectStream(stream: MatchStream) {
       if (this.selectedStream?.id === stream.id) {
@@ -414,33 +557,47 @@ export default {
 
       return { platform: "iframe", embedId: link };
     },
-    async loadTwitchPlayerScript(): Promise<void> {
-      return new Promise((resolve, reject) => {
-        if ((window as any).Twitch && (window as any).Twitch.Player) {
-          resolve();
-          return;
-        }
+    loadTwitchPlayerScript(): Promise<void> {
+      if ((window as any).Twitch?.Player) {
+        return Promise.resolve();
+      }
 
-        const existing = document.querySelector(
-          'script[src*="player.twitch.tv/js/embed/v1.js"]',
-        );
+      if (twitchScript) {
+        return twitchScript;
+      }
 
-        if (existing) {
-          existing.addEventListener("load", () => resolve());
-          existing.addEventListener("error", () => reject());
-          return;
-        }
-
-        const script = document.createElement("script");
-
-        script.src = "https://player.twitch.tv/js/embed/v1.js";
-        script.onload = () => resolve();
-        script.onerror = () => {
-          reject(new Error("Failed to load Twitch player script"));
-        };
-
-        document.body.appendChild(script);
+      let resolveLoad = () => {};
+      let rejectLoad = (_error: Error) => {};
+      const loading = new Promise<void>((resolve, reject) => {
+        resolveLoad = resolve;
+        rejectLoad = reject;
       });
+      // Set before the script goes in: a blocked one can fail on the spot.
+      twitchScript = loading;
+
+      const script = document.createElement("script");
+      // A script that failed never fires again: a retry needs a new one.
+      const fail = () => {
+        script.remove();
+        if (twitchScript === loading) {
+          twitchScript = null;
+        }
+        rejectLoad(new Error("Failed to load Twitch player script"));
+      };
+
+      script.src = TWITCH_SCRIPT;
+      script.onload = () => {
+        if ((window as any).Twitch?.Player) {
+          resolveLoad();
+          return;
+        }
+        fail();
+      };
+      script.onerror = fail;
+
+      document.body.appendChild(script);
+
+      return loading;
     },
     mountTwitchPlayer(embedId: string) {
       const playerRef = this.$refs.playerRef as HTMLDivElement | null;
@@ -564,7 +721,7 @@ export default {
       // toggling at runtime — rebuild the iframe with the inverted
       // mute query param. Cheap (single re-mount) and matches the
       // behavior the user opted into by clicking the pill.
-      if (this.embedId) {
+      if (this.embedId && !this.waiting) {
         switch (this.platform) {
           case "youtube":
             this.mountYouTubePlayer(this.embedId);
@@ -590,26 +747,45 @@ export default {
       }
     },
     async loadStream() {
-      if (!this.selectedStream || !this.selectedStream.link) {
+      const stream = this.selectedStream;
+
+      if (!stream || !stream.link) {
         this.platform = null;
         this.embedId = null;
         return;
       }
 
-      const parsed = this.parseStreamLink(this.selectedStream.link);
+      const parsed = this.parseStreamLink(stream.link);
       this.platform = parsed.platform;
       this.embedId = parsed.embedId;
 
       // Stopped: nothing to mount into, and no reason to pull in the
-      // Twitch SDK. resumeStream() loads it on Watch.
+      // Twitch SDK.
       if (!this.embedId || this.isStopped) {
         return;
       }
 
+      if (this.waiting) {
+        this.cleanupPlayer();
+        return;
+      }
+
+      if (this.pressToPlay(stream)) {
+        this.played = true;
+        if (!this.started) {
+          this.$emit("update:started", true);
+        }
+      }
+
       switch (this.platform) {
         case "twitch":
-          await this.loadTwitchPlayerScript();
-          this.mountTwitchPlayer(this.embedId);
+          try {
+            await this.loadTwitchPlayerScript();
+            this.mountTwitchPlayer(this.embedId);
+          } catch (error) {
+            console.warn("Twitch player failed to load:", error);
+            usePressedStreams().fail(embedStreamKey(stream));
+          }
           break;
         case "youtube":
           this.mountYouTubePlayer(this.embedId);
@@ -624,6 +800,16 @@ export default {
     },
   },
   watch: {
+    // The same stream can play again: pressed here or in another card, or
+    // back from Stop, whose player div only returns with the next render. A
+    // switch to another stream loads through selectedStream.
+    playback(next, previous) {
+      if (next?.on && previous && !previous.on && next.key === previous.key) {
+        this.$nextTick(() => {
+          this.loadStream();
+        });
+      }
+    },
     selectedStream(stream, oldStream) {
       if (stream !== oldStream && stream !== null) {
         // Use requestAnimationFrame to defer heavy operations

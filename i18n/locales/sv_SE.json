@@ -12447,6 +12447,9 @@
   },
   "streams": {
     "move_to_global_view": "Flytta till global vy",
+    "play": "Spela upp {name}",
+    "load_notice": "Tryck på spela upp för att läsa in {platform}-spelaren.",
+    "open_on": "Öppna på {platform}",
     "section_title": "Livesändningar",
     "section_description": "Hantera livesändningslänkarna för denna match. Dessa länkar visas för tittare och kommentatorer.",
     "no_streams_title": "Inga livesändningar",

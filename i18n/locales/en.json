@@ -12447,6 +12447,9 @@
   },
   "streams": {
     "move_to_global_view": "Move to global view",
+    "play": "Play {name}",
+    "load_notice": "Press play to load the {platform} player.",
+    "open_on": "Open on {platform}",
     "section_title": "Live Streams",
     "section_description": "Manage the live stream links for this match. These links are shown to viewers and casters.",
     "no_streams_title": "No Live Streams",

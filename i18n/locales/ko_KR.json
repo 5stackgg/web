@@ -12447,6 +12447,9 @@
   },
   "streams": {
     "move_to_global_view": "전체 화면으로 이동",
+    "play": "{name} 재생",
+    "load_notice": "재생을 누르면 {platform} 플레이어를 불러옵니다.",
+    "open_on": "{platform}에서 열기",
     "section_title": "라이브 스트림",
     "section_description": "이 매치의 라이브 스트림 링크를 관리합니다. 이 링크는 시청자와 캐스터에게 표시됩니다.",
     "no_streams_title": "라이브 스트림 없음",

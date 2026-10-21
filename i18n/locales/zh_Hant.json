@@ -12447,6 +12447,9 @@
   },
   "streams": {
     "move_to_global_view": "移至全域檢視",
+    "play": "播放 {name}",
+    "load_notice": "按下播放即可載入 {platform} 播放器。",
+    "open_on": "在 {platform} 上開啟",
     "section_title": "直播",
     "section_description": "管理此比賽的直播連結。這些連結會顯示給觀眾與主播。",
     "no_streams_title": "無直播",

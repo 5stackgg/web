@@ -12447,6 +12447,9 @@
   },
   "streams": {
     "move_to_global_view": "In die globale Ansicht verschieben",
+    "play": "{name} abspielen",
+    "load_notice": "Drücke auf Abspielen, um den {platform}-Player zu laden.",
+    "open_on": "Auf {platform} öffnen",
     "section_title": "Livestreams",
     "section_description": "Verwalte die Livestream-Links für dieses Match. Diese Links werden Zuschauern und Castern angezeigt.",
     "no_streams_title": "Keine Livestreams",

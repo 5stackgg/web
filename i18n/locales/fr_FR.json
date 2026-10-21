@@ -12447,6 +12447,9 @@
   },
   "streams": {
     "move_to_global_view": "Déplacer vers la vue globale",
+    "play": "Lire {name}",
+    "load_notice": "Appuyez sur lecture pour charger le lecteur {platform}.",
+    "open_on": "Ouvrir sur {platform}",
     "section_title": "Streams en direct",
     "section_description": "Gère les liens de stream en direct de ce match. Ces liens sont affichés aux spectateurs et aux casters.",
     "no_streams_title": "Aucun stream en direct",

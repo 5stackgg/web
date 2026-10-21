@@ -12447,6 +12447,9 @@
   },
   "streams": {
     "move_to_global_view": "Przenieś do widoku globalnego",
+    "play": "Odtwórz {name}",
+    "load_notice": "Naciśnij odtwarzanie, aby wczytać odtwarzacz {platform}.",
+    "open_on": "Otwórz w serwisie {platform}",
     "section_title": "Transmisje na żywo",
     "section_description": "Zarządzaj linkami do transmisji na żywo dla tego meczu. Te linki są widoczne dla widzów i komentatorów",
     "no_streams_title": "Brak transmisji na żywo",

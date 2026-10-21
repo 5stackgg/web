@@ -26,6 +26,8 @@ import {
   type WhepPhase,
 } from "~/composables/useWhepStatusCopy";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { embedStreamKey } from "~/composables/useStoppedStreams";
+import { usePressedStreams } from "~/composables/usePressedStreams";
 import { useAuthStore } from "~/stores/AuthStore";
 import { loginLinks } from "~/utilities/loginLinks";
 import mapLabel from "~/utilities/mapLabel";
@@ -207,6 +209,7 @@ const showLowerThird = computed(
 );
 
 const embedRef = ref<any>(null);
+const embedStarted = ref(false);
 function toggleMute() {
   muted.value = !muted.value;
   // Slider was dragged to 0 before muting: unmute at full volume so the
@@ -304,10 +307,9 @@ function watchInPlayer() {
     login();
     return;
   }
-  settings.setGlobalStream({
-    ...stream.value,
-    match_id: current.value.id,
-  } as any);
+  const floated = { ...stream.value, match_id: current.value.id };
+  usePressedStreams().press(embedStreamKey(floated));
+  settings.setGlobalStream(floated as any);
 }
 
 function returnHere() {
@@ -437,6 +439,7 @@ const trayButtonClass =
           v-else-if="stream"
           :key="stream.id"
           ref="embedRef"
+          v-model:started="embedStarted"
           inline
           :streams="[stream as any]"
           :match-id="current.id"

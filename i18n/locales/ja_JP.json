@@ -11830,6 +11830,7 @@
     "official": "公式マップ",
     "workshop": "ワークショップマップ",
     "active_duty": "アクティブデューティ",
+    "other": "その他のマップ",
     "radar_room": {
       "label": "ルーム",
       "auto": "自動",

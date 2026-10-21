@@ -11830,6 +11830,7 @@
     "official": "官方地图",
     "workshop": "创意工坊地图",
     "active_duty": "现役图池",
+    "other": "其他地图",
     "radar_room": {
       "label": "房间",
       "auto": "自动",

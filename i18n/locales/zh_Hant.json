@@ -4427,7 +4427,15 @@
           "description": "你專屬的道具點位練習伺服器 · 任意地圖",
           "map": "地圖",
           "start": "開始練習",
-          "sign_in": "登入後練習"
+          "sign_in": "登入後練習",
+          "manage": "管理",
+          "stop": "停止",
+          "leave": "離開",
+          "access_open": "任何拿到連結的人都能加入",
+          "access_friends": "好友可以加入",
+          "access_invite": "受邀玩家可以加入",
+          "access_private": "只有你可以加入",
+          "invite_link_in_panel": "邀請連結在面板中"
         }
       },
       "matchmaking": {

@@ -120,62 +120,67 @@ async function switchAndClose() {
 <template>
   <Popover v-if="visible" v-model:open="open">
     <PopoverTrigger as-child>
-      <button
-        type="button"
-        class="group relative hidden h-12 max-w-[13rem] items-center gap-2.5 overflow-hidden rounded-md border pl-2.5 pr-3 text-left shadow-sm backdrop-blur-sm transition-colors duration-150 md:flex"
-        :class="
-          connected
-            ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.06)]'
-            : 'border-zinc-900/90 bg-[#09090b]/95 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-black/95'
-        "
-      >
-        <!-- A live server earns a moving edge; a booked one does not. -->
-        <span
-          v-if="connected"
-          class="absolute inset-y-0 left-0 w-[2px] bg-[hsl(var(--tac-amber))]"
-          aria-hidden="true"
-        ></span>
-
-        <span
-          class="flex h-7 w-7 shrink-0 items-center justify-center rounded text-[hsl(var(--tac-amber))]"
+      <slot name="trigger">
+        <button
+          type="button"
+          class="group relative hidden h-12 max-w-[13rem] items-center gap-2.5 overflow-hidden rounded-md border pl-2.5 pr-3 text-left shadow-sm backdrop-blur-sm transition-colors duration-150 md:flex"
           :class="
-            connected ? 'bg-[hsl(var(--tac-amber)/0.16)]' : 'bg-zinc-900/80'
+            connected
+              ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.06)]'
+              : 'border-zinc-900/90 bg-[#09090b]/95 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-black/95'
           "
         >
-          <span v-if="booting" class="relative flex h-1.5 w-1.5">
-            <span
-              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-            ></span>
-            <span
-              class="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
-            ></span>
-          </span>
-          <Server v-else class="h-4 w-4" />
-        </span>
-
-        <!-- Name over caption, the same hierarchy the match bar uses. -->
-        <span class="flex min-w-0 flex-col justify-center leading-tight">
-          <span class="truncate text-xs font-medium text-foreground">
-            {{ mapDisplay }}
-          </span>
+          <!-- A live server earns a moving edge; a booked one does not. -->
           <span
-            class="truncate font-mono text-[0.58rem] uppercase tracking-[0.16em]"
+            v-if="connected"
+            class="absolute inset-y-0 left-0 w-[2px] bg-[hsl(var(--tac-amber))]"
+            aria-hidden="true"
+          ></span>
+
+          <span
+            class="flex h-7 w-7 shrink-0 items-center justify-center rounded text-[hsl(var(--tac-amber))]"
             :class="
-              connected
-                ? 'text-[hsl(var(--tac-amber))]'
-                : 'text-muted-foreground'
+              connected ? 'bg-[hsl(var(--tac-amber)/0.16)]' : 'bg-zinc-900/80'
             "
           >
-            {{ state }}
+            <span v-if="booting" class="relative flex h-1.5 w-1.5">
+              <span
+                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+              ></span>
+            </span>
+            <Server v-else class="h-4 w-4" />
           </span>
-        </span>
-      </button>
+
+          <!-- Name over caption, the same hierarchy the match bar uses. -->
+          <span class="flex min-w-0 flex-col justify-center leading-tight">
+            <span class="truncate text-xs font-medium text-foreground">
+              {{ mapDisplay }}
+            </span>
+            <span
+              class="truncate font-mono text-[0.58rem] uppercase tracking-[0.16em]"
+              :class="
+                connected
+                  ? 'text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground'
+              "
+            >
+              {{ state }}
+            </span>
+          </span>
+        </button>
+      </slot>
     </PopoverTrigger>
 
     <!-- The same panel the practice dialog renders, rather than a menu of
          verbs beside a summary of the facts. One layout, one set of controls,
          and nothing to keep in step between the chrome and the page. -->
-    <PopoverContent align="end" class="w-[23rem] p-3">
+    <PopoverContent
+      align="end"
+      class="w-[23rem] max-w-[calc(100vw-2rem)] p-3"
+    >
       <UtilityPracticeSessionPanel
         v-if="session"
         :session="session"

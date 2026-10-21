@@ -4427,7 +4427,15 @@
           "description": "Własny serwer do ćwiczenia ustawek · dowolna mapa",
           "map": "Mapa",
           "start": "Zacznij trening",
-          "sign_in": "Zaloguj się, aby trenować"
+          "sign_in": "Zaloguj się, aby trenować",
+          "manage": "Zarządzaj",
+          "stop": "Zatrzymaj",
+          "leave": "Opuść",
+          "access_open": "Dołączyć może każdy z linkiem",
+          "access_friends": "Dołączyć mogą znajomi",
+          "access_invite": "Dołączyć mogą zaproszeni gracze",
+          "access_private": "Dołączyć możesz tylko ty",
+          "invite_link_in_panel": "link z zaproszeniem w panelu"
         }
       },
       "matchmaking": {

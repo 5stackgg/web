@@ -4427,7 +4427,15 @@
           "description": "Tu propio servidor para lineups de utilidad · cualquier mapa",
           "map": "Mapa",
           "start": "Empezar a practicar",
-          "sign_in": "Inicia sesión para practicar"
+          "sign_in": "Inicia sesión para practicar",
+          "manage": "Gestionar",
+          "stop": "Detener",
+          "leave": "Salir",
+          "access_open": "Cualquiera con el enlace puede entrar",
+          "access_friends": "Tus amigos pueden entrar",
+          "access_invite": "Los jugadores invitados pueden entrar",
+          "access_private": "Solo puedes entrar tú",
+          "invite_link_in_panel": "enlace de invitación en el panel"
         }
       },
       "matchmaking": {

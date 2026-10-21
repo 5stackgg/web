@@ -4427,7 +4427,15 @@
           "description": "Utility dizilimleri için kendi sunucun · istediğin harita",
           "map": "Harita",
           "start": "Antrenmana başla",
-          "sign_in": "Antrenman için giriş yap"
+          "sign_in": "Antrenman için giriş yap",
+          "manage": "Yönet",
+          "stop": "Durdur",
+          "leave": "Ayrıl",
+          "access_open": "Bağlantısı olan herkes girebilir",
+          "access_friends": "Arkadaşların girebilir",
+          "access_invite": "Davet edilen oyuncular girebilir",
+          "access_private": "Yalnızca sen girebilirsin",
+          "invite_link_in_panel": "davet bağlantısı panelde"
         }
       },
       "matchmaking": {

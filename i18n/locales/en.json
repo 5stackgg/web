@@ -4427,7 +4427,15 @@
           "description": "Your own server for utility lineups · any map",
           "map": "Map",
           "start": "Start practice",
-          "sign_in": "Sign in to practice"
+          "sign_in": "Sign in to practice",
+          "manage": "Manage",
+          "stop": "Stop",
+          "leave": "Leave",
+          "access_open": "Anyone with the link can join",
+          "access_friends": "Friends can join",
+          "access_invite": "Invited players can join",
+          "access_private": "Only you can join",
+          "invite_link_in_panel": "invite link in the panel"
         }
       },
       "matchmaking": {

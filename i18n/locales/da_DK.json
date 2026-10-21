@@ -4427,7 +4427,15 @@
           "description": "Din egen server til utility-opstillinger · valgfri map",
           "map": "Map",
           "start": "Start træning",
-          "sign_in": "Log ind for at træne"
+          "sign_in": "Log ind for at træne",
+          "manage": "Administrer",
+          "stop": "Stop",
+          "leave": "Forlad",
+          "access_open": "Alle med linket kan gå ind",
+          "access_friends": "Venner kan gå ind",
+          "access_invite": "Inviterede spillere kan gå ind",
+          "access_private": "Kun du kan gå ind",
+          "invite_link_in_panel": "invitationslink i panelet"
         }
       },
       "matchmaking": {

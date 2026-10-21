@@ -4427,7 +4427,15 @@
           "description": "Dein eigener Server für Utility-Lineups · jede Map",
           "map": "Map",
           "start": "Übung starten",
-          "sign_in": "Zum Üben einloggen"
+          "sign_in": "Zum Üben einloggen",
+          "manage": "Verwalten",
+          "stop": "Stoppen",
+          "leave": "Verlassen",
+          "access_open": "Jeder mit dem Link kann beitreten",
+          "access_friends": "Freunde können beitreten",
+          "access_invite": "Eingeladene Spieler können beitreten",
+          "access_private": "Nur du kannst beitreten",
+          "invite_link_in_panel": "Einladungslink im Panel"
         }
       },
       "matchmaking": {

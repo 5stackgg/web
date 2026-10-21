@@ -161,7 +161,8 @@ describe("ChatMessageMedia", () => {
       expect.arrayContaining(["bottom-1.5", "right-1.5"]),
     );
     expect(play.find("[data-gif-pause-icon]").exists()).toBe(true);
-    expect(gif.get("[data-gif-animated] img").attributes("src")).toBe(
+    await gif.get("img[data-gif-loading]").trigger("load");
+    expect(gif.get("img[data-gif-animated]").attributes("src")).toBe(
       "https://i.giphy.com/media/abc123/giphy.webp",
     );
     expect(gif.get("img").attributes("src")).toBe(
@@ -176,6 +177,88 @@ describe("ChatMessageMedia", () => {
     expect(gif.get("img").attributes("src")).toBe(
       "https://i.giphy.com/media/abc123/giphy_s.gif",
     );
+  });
+
+  it("keeps the still frame up, undimmed, while the moving GIF loads", async () => {
+    reduceMotion();
+
+    const wrapper = await mountSuspended(ChatMessageMedia, {
+      props: {
+        message: message({ gif: { id: "abc123", width: 480, height: 270 } }),
+      },
+    });
+
+    const gif = wrapper.get("[data-gif-id='abc123']");
+    await gif.get("button[data-gif-play]").trigger("click");
+
+    const layer = gif.get("[data-gif-animated-layer]");
+    expect(layer.find("img[data-gif-animated]").exists()).toBe(false);
+    expect(layer.get("img[data-gif-loading]").attributes("src")).toBe(
+      "https://i.giphy.com/media/abc123/giphy.webp",
+    );
+    expect(layer.get("img[data-gif-loading]").classes()).toContain(
+      "opacity-0",
+    );
+    expect(layer.find(".bg-muted\\/40").exists()).toBe(false);
+  });
+
+  it("goes back to the still frame and Play when the moving GIF won't load", async () => {
+    reduceMotion();
+
+    const wrapper = await mountSuspended(ChatMessageMedia, {
+      props: {
+        message: message({ gif: { id: "abc123", width: 480, height: 270 } }),
+      },
+    });
+
+    const gif = wrapper.get("[data-gif-id='abc123']");
+    const play = gif.get("button[data-gif-play]");
+    await play.trigger("click");
+    await gif.get("img[data-gif-loading]").trigger("error");
+
+    expect(play.attributes("aria-pressed")).toBe("false");
+    expect(play.classes()).toContain("inset-0");
+    expect(gif.find("[data-gif-animated-layer]").exists()).toBe(false);
+  });
+
+  it("waits for another tap after reduced motion is turned off and back on", async () => {
+    const listeners = new Set<(event: { matches: boolean }) => void>();
+    let reduce = true;
+    vi.stubGlobal("matchMedia", (query: string) => ({
+      get matches() {
+        return query.includes("reduce") && reduce;
+      },
+      media: query,
+      onchange: null,
+      addEventListener: (_: string, listener: (event: any) => void) =>
+        listeners.add(listener),
+      removeEventListener: (_: string, listener: (event: any) => void) =>
+        listeners.delete(listener),
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }));
+    const setReduce = async (next: boolean) => {
+      reduce = next;
+      listeners.forEach((listener) => listener({ matches: next }));
+      await flushPromises();
+    };
+
+    const wrapper = await mountSuspended(ChatMessageMedia, {
+      props: {
+        message: message({ gif: { id: "abc123", width: 480, height: 270 } }),
+      },
+    });
+    const gif = () => wrapper.get("[data-gif-id='abc123']");
+
+    await gif().get("button[data-gif-play]").trigger("click");
+    await setReduce(false);
+    await setReduce(true);
+
+    expect(
+      gif().get("button[data-gif-play]").attributes("aria-pressed"),
+    ).toBe("false");
+    expect(gif().find("[data-gif-animated-layer]").exists()).toBe(false);
   });
 
   it("puts no buttons on a GIF for anyone who has not asked for less motion", async () => {

@@ -39,6 +39,14 @@ const motion = usePreferredReducedMotion();
 const still = computed(() => motion.value === "reduce");
 const ANIMATED = ["image/gif", "image/webp"];
 const gifPlaying = ref(false);
+const gifLoaded = ref(false);
+
+function stopGif() {
+  gifPlaying.value = false;
+  gifLoaded.value = false;
+}
+
+watch(still, stopGif);
 
 const gif = computed(() =>
   props.message.gif && chatGifUrl(props.message.gif.id, "full")
@@ -206,10 +214,31 @@ const tileClasses =
           <div
             v-if="gifPlaying"
             key="animated"
-            data-gif-animated
+            data-gif-animated-layer
             class="h-full w-full"
           >
-            <FadeImage :src="chatGifUrl(gif.id, 'full')" />
+            <FadeSwap class="h-full w-full">
+              <img
+                v-if="gifLoaded"
+                key="loaded"
+                data-gif-animated
+                :src="chatGifUrl(gif.id, 'full')"
+                alt=""
+                draggable="false"
+                class="block h-full w-full object-cover"
+              />
+            </FadeSwap>
+            <img
+              v-if="!gifLoaded"
+              data-gif-loading
+              :src="chatGifUrl(gif.id, 'full')"
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              class="absolute inset-0 h-full w-full opacity-0"
+              @load="gifLoaded = true"
+              @error="stopGif"
+            />
           </div>
         </FadeSwap>
       </div>

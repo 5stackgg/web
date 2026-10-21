@@ -2,6 +2,7 @@
 // right now, the node's state, the Steam account pool's health and the
 // filters. Pure, so it can be tested without a socket.
 import { shortGpuName } from "~/components/gpu-nodes/gpuDevices";
+import compactDuration, { durationUnit } from "~/utilities/compactDuration";
 
 export type GpuSessionKind = "live" | "demo" | "highlights" | "bake";
 
@@ -429,9 +430,12 @@ export function matchesSearch(
 /** "<1m", "41m", "1h 3m". */
 export function formatElapsed(ms: number): string {
   const minutes = Math.max(0, Math.round(ms / 60000));
-  if (minutes < 1) return "<1m";
-  if (minutes < 60) return `${minutes}m`;
-  return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+  if (minutes < 1) return `<${durationUnit(1, "minute")}`;
+  return compactDuration(minutes * 60000, {
+    largest: "hour",
+    smallest: "minute",
+    parts: 2,
+  });
 }
 
 export type GpuWorkload = "streaming" | "demos" | "rendering";

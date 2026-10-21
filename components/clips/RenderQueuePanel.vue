@@ -48,6 +48,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import mapLabel from "~/utilities/mapLabel";
+import compactDuration from "~/utilities/compactDuration";
 
 const authStore = useAuthStore();
 const { showClip, setClipQueue } = useClipModal();
@@ -841,14 +842,7 @@ function formatTimeAgo(iso: string | null): string {
   if (!iso) return "";
   const t = new Date(iso).getTime();
   if (!Number.isFinite(t)) return "";
-  const seconds = Math.max(0, Math.round((Date.now() - t) / 1000));
-  if (seconds < 60) return `${seconds}s`;
-  const m = Math.floor(seconds / 60);
-  if (m < 60) return `${m}m`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h`;
-  const d = Math.floor(h / 24);
-  return `${d}d`;
+  return compactDuration(Math.round((Date.now() - t) / 1000) * 1000);
 }
 
 const totalInFlight = computed(() => inFlight.value.length);

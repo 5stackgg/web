@@ -3,9 +3,10 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// Every date and time the app shows goes through dateLocale(), or one screen
-// reads 21:30 while the next reads 9:30 PM. Numbers are not checked: their
-// toLocaleString calls carry no date options.
+// Every date, time and duration the app shows goes through dateLocale(), or
+// one screen reads 21:30 while the next reads 9:30 PM. Numbers are not
+// checked: their toLocaleString calls carry no date options, and only a
+// NumberFormat that formats units is a duration.
 const ROOTS = [
   "components",
   "composables",
@@ -65,7 +66,7 @@ function bypasses(path: string) {
   const source = readFileSync(path, "utf8");
   const found: string[] = [];
   const calls =
-    /(new\s+Intl\.(?:DateTimeFormat|RelativeTimeFormat)|Intl\.(?:DateTimeFormat|RelativeTimeFormat)|\.toLocaleDateString|\.toLocaleTimeString|\.toLocaleString)\s*\(/g;
+    /(new\s+Intl\.(?:DateTimeFormat|RelativeTimeFormat|NumberFormat)|Intl\.(?:DateTimeFormat|RelativeTimeFormat|NumberFormat)|\.toLocaleDateString|\.toLocaleTimeString|\.toLocaleString)\s*\(/g;
 
   for (const match of source.matchAll(calls)) {
     const open = match.index! + match[0].length - 1;
@@ -80,10 +81,11 @@ function bypasses(path: string) {
       }
     }
 
-    const isDate =
-      kind !== ".toLocaleString" ||
-      DATE_OPTIONS.test(args) ||
-      /new Date\([^;]*\)\s*$/.test(before);
+    const isDate = /NumberFormat$/.test(kind)
+      ? /style\s*:\s*["']unit["']/.test(args)
+      : kind !== ".toLocaleString" ||
+        DATE_OPTIONS.test(args) ||
+        /new Date\([^;]*\)\s*$/.test(before);
 
     if (isDate && firstArgument(args) !== "dateLocale()") {
       const line = source.slice(0, match.index).split("\n").length;

@@ -1196,6 +1196,7 @@ import { matchClipFields } from "~/graphql/matchClip";
 import { $, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { loginLinks } from "~/utilities/loginLinks";
+import compactDuration from "~/utilities/compactDuration";
 
 export default {
   props: {
@@ -1441,14 +1442,11 @@ export default {
 
       const start = new Date(match.started_at);
       const end = new Date(match.ended_at);
-      const durationMs = end.getTime() - start.getTime();
 
-      const minutes = Math.floor(durationMs / 60000);
-
-      if (minutes > 0) {
-        return `${minutes}m`;
-      }
-      return "0m";
+      return compactDuration(end.getTime() - start.getTime(), {
+        largest: "minute",
+        smallest: "minute",
+      });
     },
     getKDRatio(kills: number, deaths: number): string {
       if (deaths === 0) {

@@ -76,6 +76,27 @@ describe.each([
   });
 });
 
+describe("MatchTableRow duration", () => {
+  it.each([
+    ["en", "40m"],
+    ["de", "40 Min."],
+  ])("reads in %s", async (locale, expected) => {
+    const i18n = (useNuxtApp() as any).$i18n;
+    await i18n.setLocale(locale);
+
+    try {
+      const wrapper = await mountSuspended(MatchTableRow, {
+        props: { match: finishedMatch(), compact: false },
+      });
+
+      expect(wrapper.text()).toContain(expected);
+      wrapper.unmount();
+    } finally {
+      await i18n.setLocale("en");
+    }
+  });
+});
+
 describe("MatchTableRow stream gate", () => {
   it("sends a signed-out viewer to sign in instead of playing the stream", async () => {
     const settings = useApplicationSettingsStore();

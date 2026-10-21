@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { dateLocale } from "~/utilities/dateLocale";
+import { durationUnit } from "~/utilities/compactDuration";
 import { serverNow } from "~/stores/ServerClockStore";
 
 const props = withDefaults(
@@ -85,20 +85,6 @@ const coarse = computed(
   () => remaining.value !== null && remaining.value >= DAY_SECONDS,
 );
 
-// Intl carries the unit suffix per locale ("57d", "57 j", "57天"), which keeps
-// this out of the translation files entirely.
-function formatUnit(value: number, unit: "day" | "hour") {
-  try {
-    return new Intl.NumberFormat(dateLocale(), {
-      style: "unit",
-      unit,
-      unitDisplay: "narrow",
-    }).format(value);
-  } catch {
-    return `${value}${unit === "day" ? "d" : "h"}`;
-  }
-}
-
 const label = computed(() => {
   if (remaining.value === null) {
     return null;
@@ -107,7 +93,7 @@ const label = computed(() => {
   if (coarse.value) {
     const days = Math.floor(remaining.value / DAY_SECONDS);
     const hours = Math.floor((remaining.value % DAY_SECONDS) / 3600);
-    return `${formatUnit(days, "day")} ${formatUnit(hours, "hour")}`;
+    return `${durationUnit(days, "day")} ${durationUnit(hours, "hour")}`;
   }
 
   const hours = Math.floor(remaining.value / 3600);

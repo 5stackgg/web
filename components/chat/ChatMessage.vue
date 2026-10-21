@@ -37,11 +37,12 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
     <!-- Grouped lines carry no name and no time, which is what makes a run
          readable -- but the time still has to be recoverable, so it comes back
          in the gutter the avatar left empty, on hover. A line that opens on
-         media has filled that gutter, so it goes without. -->
+         media has filled that gutter, so it goes without; one that follows
+         media has given the gutter up, so it carries the time after its text. -->
     <span
-      v-if="!showMeta && !mediaLeads"
+      v-if="!showMeta && !mediaLeads && !afterMedia"
       data-chat-clock
-      class="pointer-events-none absolute left-0 w-12 pr-2 text-right font-mono text-[10px] leading-snug text-muted-foreground/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+      class="pointer-events-none absolute left-0 w-12 whitespace-nowrap pr-2 text-right font-mono text-[10px] leading-snug text-muted-foreground/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
       :style="{ top: `calc(${padTopRem}rem + 1px)` }"
     >
       {{ clockTime }}
@@ -159,6 +160,14 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           </template>
           {{ $t("chat.edited_at", { time: editedAtLabel }) }}
         </FiveStackToolTip>
+        <!-- Faded rather than left out, so a hover never rewraps the line. -->
+        <span
+          v-if="!showMeta && afterMedia"
+          data-chat-clock
+          class="pointer-events-none ml-1.5 whitespace-nowrap font-mono text-[10px] text-muted-foreground/70 opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+        >
+          {{ clockTime }}
+        </span>
       </p>
       <!-- Media takes the whole width of the line, under the avatar, so a GIF
            in a narrow panel isn't held to the text column. With only the name
@@ -166,8 +175,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       <div
         v-if="hasMedia"
         data-chat-media
-        class="-ml-10"
-        :class="{ 'pt-1': showMeta && mediaLeads }"
+        :class="{ '-ml-10': !afterMedia, 'pt-1': showMeta && mediaLeads }"
       >
         <ChatMessageMedia :message="message" />
       </div>
@@ -216,6 +224,7 @@ import { outranksPlayer } from "~/utilities/sanctionAuthority";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
 import { useChatReadState } from "~/composables/useChatReadState";
 import { mentionSegments, mentionsViewer } from "~/utilities/chatMentions";
+import { continuesChatRun, hasChatMedia } from "~/utilities/chatLobbyMessages";
 
 export default {
   props: {
@@ -230,6 +239,11 @@ export default {
     nextMessage: {
       type: Object,
       required: false,
+    },
+    // Set by ChatMessages on a line whose run has shown media above it.
+    afterMedia: {
+      type: Boolean,
+      default: false,
     },
     // The room this line lives in. Without one there is nothing to act on, so
     // no actions are offered.
@@ -328,7 +342,7 @@ export default {
       );
     },
     hasMedia() {
-      return (this.message?.attachments?.length ?? 0) > 0 || !!this.message?.gif;
+      return hasChatMedia(this.message);
     },
     mediaLeads() {
       return this.hasMedia && !this.hasText && !this.editing;
@@ -393,7 +407,8 @@ export default {
     },
     // Wall clock rather than "5 minutes ago": this only shows on hover over a
     // grouped line, where the question is when that line landed relative to the
-    // ones around it, not how long ago it was.
+    // ones around it, not how long ago it was. Without AM/PM, which a line
+    // minutes from the one above never needs, and which wrapped in the gutter.
     clockTime() {
       const time = new Date(this.message?.timestamp);
 
@@ -401,10 +416,15 @@ export default {
         return "";
       }
 
-      return time.toLocaleTimeString(dateLocale(), {
+      return new Intl.DateTimeFormat(dateLocale(), {
         hour: "numeric",
         minute: "2-digit",
-      });
+      })
+        .formatToParts(time)
+        .filter((part) => part.type !== "dayPeriod")
+        .map((part) => part.value)
+        .join("")
+        .trim();
     },
     // A run is consecutive team lines, whoever is speaking -- the rail marks
     // the room, not the speaker, so it should not break when the speaker
@@ -433,7 +453,8 @@ export default {
       // to it, so a team line starts on the same column as every other line and
       // the avatars stay in one straight edge down the list.
       const classes = [
-        "group group/chat-message relative isolate pl-12 text-[13px] leading-snug",
+        "group group/chat-message relative isolate text-[13px] leading-snug",
+        this.afterMedia ? "pl-2" : "pl-12",
         // Lifts the line under the pointer, and holds it while one of its menus
         // is open and the pointer has gone into it.
         "before:pointer-events-none before:absolute before:-z-10 before:rounded-sm before:transition-colors before:duration-150 [@media(hover:hover)]:hover:before:bg-muted/25 has-[[data-chat-menu-open]]:before:bg-muted/40",
@@ -448,7 +469,7 @@ export default {
       if (this.mentionLit) {
         classes.push(
           "rounded-sm bg-[hsl(var(--tac-amber)/0.07)] pb-1.5 before:inset-0",
-          this.isSameSender && this.isCloseTogether ? "mt-1" : "mt-3",
+          this.showMeta ? "mt-3" : "mt-1",
         );
         if (!this.reservesActions) {
           classes.push("pr-2");
@@ -459,7 +480,7 @@ export default {
       if (!this.isTeamMessage) {
         classes.push(
           "before:inset-x-0 before:-inset-y-0.5",
-          this.isSameSender && this.isCloseTogether ? "mt-1" : "mt-3",
+          this.showMeta ? "mt-3" : "mt-1",
         );
         return classes;
       }
@@ -477,34 +498,8 @@ export default {
 
       return classes;
     },
-    isSameSender() {
-      if (!this.previousMessage) {
-        return false;
-      }
-      // Same player, different room is not the same speaker as far as this
-      // stream is concerned -- grouping the second line under the first would
-      // hand it the wrong rail and hide which room it went to.
-      if (this.previousMessage.__channel !== this.message.__channel) {
-        return false;
-      }
-      return (
-        String(this.message.from?.steam_id) ===
-        String(this.previousMessage.from?.steam_id)
-      );
-    },
-    isCloseTogether() {
-      if (!this.isSameSender || !this.previousMessage) {
-        return false;
-      }
-      const previousTimestamp = new Date(this.previousMessage.timestamp);
-      const messageTimestamp = new Date(this.message.timestamp);
-
-      messageTimestamp.setMinutes(messageTimestamp.getMinutes() - 5);
-
-      return previousTimestamp > messageTimestamp;
-    },
     showMeta() {
-      return !this.isSameSender || !this.isCloseTogether;
+      return !continuesChatRun(this.previousMessage, this.message);
     },
   },
 };

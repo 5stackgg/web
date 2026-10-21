@@ -358,4 +358,24 @@ describe("ChatMessage with media", () => {
     expect(gifLine.find("[data-chat-media]").classes()).not.toContain("pt-1");
     expect(textLine.find("[data-chat-clock]").exists()).toBe(true);
   });
+
+  it("starts a line after media at the media's edge, with its time after the text", async () => {
+    const gif = { id: "abc123", width: 480, height: 270 };
+    const props = {
+      previousMessage: message({ id: "m-0", gif }),
+      afterMedia: true,
+    };
+    const textLine = await mountSuspended(ChatMessage, {
+      props: { ...props, message: message({ message: "FEATURES!" }) },
+    });
+    const gifLine = await mountSuspended(ChatMessage, {
+      props: { ...props, message: message({ message: "again", gif }) },
+    });
+
+    expect(textLine.classes()).toContain("pl-2");
+    expect(textLine.classes()).not.toContain("pl-12");
+    expect(textLine.get("p [data-chat-clock]").text()).not.toMatch(/AM|PM/);
+    expect(textLine.findAll("[data-chat-clock]")).toHaveLength(1);
+    expect(gifLine.get("[data-chat-media]").classes()).not.toContain("-ml-10");
+  });
 });

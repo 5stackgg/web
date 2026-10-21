@@ -8072,6 +8072,7 @@
         "friend_request": "Venneanmodning",
         "invited_you": "inviterede dig til",
         "team_and_lineup": "{team} og opstillingen til {tournament}",
+        "stand_in": "at spille som reserve for {team} i {tournament}",
         "tournament_only_team": "{team} til {tournament}, et hold kun til denne turnering",
         "invited_party": "inviterede dig til sin lobby",
         "wants_to_be_friends": "vil være venner",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "Afventer",
       "pending_team": "Inviteret til holdet og denne opstilling",
+      "pending_stand_in": "Inviteret som reserve til denne turnering",
       "pending_tournament": "Kun inviteret til denne turnering"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Invitation sendt",
       "invite_sent_description": "{name} er inviteret og skal acceptere, før vedkommende kommer på din trup",
       "invite_sent_team_description": "{name} er inviteret til {team} og kommer i denne opstilling, når de accepterer",
+      "invite_sent_stand_in_description": "{name} er inviteret som reserve for {team} i denne turnering og skal acceptere først",
       "invite_sent_tournament_description": "{name} er inviteret til {team} til denne turnering og skal acceptere først",
       "new": "Opret nyt hold",
       "select": "Vælg eksisterende hold",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "På holdet",
         "team_invite": "Invitation til hold + opstilling",
+        "stand_in_invite": "Reserveinvitation",
         "tournament_invite": "Turneringsinvitation"
       },
       "add_hint": {
-        "team": "Spillere uden for {team} får en invitation. Accepterer de, kommer de på holdet og i denne opstilling.",
+        "team": "{team} har ikke en fuld opstilling endnu, så spillere uden for holdet inviteres til holdet og denne opstilling.",
+        "stand_in": "{team} har allerede en fuld opstilling, så spillere uden for holdet inviteres som reserver til denne turnering og kommer ikke på holdet.",
         "tournament": "Spillere får en invitation til {team}, et hold kun til denne turnering."
       },
       "seed_label": "Seedning",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Turneringsinvitation",
       "tournament_message": "Du er inviteret til en turnering",
       "team_and_lineup_message": "Bliv en del af {team} og opstillingen til",
+      "stand_in_message": "Spil som reserve for {team} uden at komme på holdet, i",
       "tournament_team_message": "Spil for {team}, et hold kun til denne turnering, i",
       "team_message": "Du er inviteret til et hold",
       "invited_by": "Inviteret af",

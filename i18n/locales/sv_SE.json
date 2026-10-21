@@ -8072,6 +8072,7 @@
         "friend_request": "Vänförfrågan",
         "invited_you": "bjöd in dig till",
         "team_and_lineup": "{team} och uppställningen för {tournament}",
+        "stand_in": "att spela som reserv för {team} i {tournament}",
         "tournament_only_team": "{team} i {tournament}, ett lag bara för den här turneringen",
         "invited_party": "bjöd in dig till sin grupp",
         "wants_to_be_friends": "vill bli vän",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "Väntande",
       "pending_team": "Inbjuden till laget och den här uppställningen",
+      "pending_stand_in": "Inbjuden som reserv för den här turneringen",
       "pending_tournament": "Inbjuden bara till den här turneringen"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Inbjudan skickad",
       "invite_sent_description": "{name} har bjudits in och måste tacka ja innan personen kommer med i din trupp",
       "invite_sent_team_description": "{name} har bjudits in till {team} och kommer med i den här uppställningen när de tackar ja",
+      "invite_sent_stand_in_description": "{name} har bjudits in som reserv för {team} i den här turneringen och måste tacka ja först",
       "invite_sent_tournament_description": "{name} har bjudits in till {team} för den här turneringen och måste tacka ja först",
       "new": "Skapa nytt lag",
       "select": "Välj befintligt lag",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "I laget",
         "team_invite": "Inbjudan till lag + uppställning",
+        "stand_in_invite": "Reservinbjudan",
         "tournament_invite": "Turneringsinbjudan"
       },
       "add_hint": {
-        "team": "Spelare utanför {team} får en inbjudan. Tackar de ja kommer de med i laget och i den här uppställningen.",
+        "team": "{team} har inte en full uppställning än, så spelare utanför laget bjuds in till laget och den här uppställningen.",
+        "stand_in": "{team} har redan en full uppställning, så spelare utanför laget bjuds in som reserver för den här turneringen och kommer inte med i laget.",
         "tournament": "Spelare får en inbjudan till {team}, ett lag bara för den här turneringen."
       },
       "seed_label": "Seedning",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Turneringsinbjudan",
       "tournament_message": "Du har blivit inbjuden att gå med i en turnering",
       "team_and_lineup_message": "Gå med i {team} och uppställningen för",
+      "stand_in_message": "Spela som reserv för {team}, utan att gå med i laget, i",
       "tournament_team_message": "Spela för {team}, ett lag bara för den här turneringen, i",
       "team_message": "Du har blivit inbjuden att gå med i ett lag",
       "invited_by": "Inbjuden av",

@@ -8072,6 +8072,7 @@
         "friend_request": "Arkadaşlık isteği",
         "invited_you": "seni davet etti:",
         "team_and_lineup": "{team} ve kadrosu ({tournament})",
+        "stand_in": "{tournament} turnuvasında {team} için yedek oyuncu olarak",
         "tournament_only_team": "{team} ({tournament}, sadece bu turnuvaya özel takım)",
         "invited_party": "seni partisine davet etti",
         "wants_to_be_friends": "arkadaş olmak istiyor",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "Bekliyor",
       "pending_team": "Takıma ve bu kadroya davet edildi",
+      "pending_stand_in": "Bu turnuva için yedek olarak davet edildi",
       "pending_tournament": "Sadece bu turnuvaya davet edildi"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Davet gönderildi",
       "invite_sent_description": "{name} davet edildi; kadrona katılmadan önce kabul etmesi gerekiyor",
       "invite_sent_team_description": "{name}, {team} takımına davet edildi; kabul edince bu kadroya katılacak",
+      "invite_sent_stand_in_description": "{name}, bu turnuvada {team} için yedek oyuncu olarak davet edildi ve önce kabul etmesi gerekiyor",
       "invite_sent_tournament_description": "{name}, bu turnuva için {team} takımına davet edildi ve önce kabul etmesi gerekiyor",
       "new": "Yeni Takım Oluştur",
       "select": "Mevcut Takımı Seç",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "Takımda",
         "team_invite": "Takım + kadro daveti",
+        "stand_in_invite": "Yedek oyuncu daveti",
         "tournament_invite": "Turnuva daveti"
       },
       "add_hint": {
-        "team": "{team} dışındaki oyunculara davet gider. Kabul edenler takıma ve bu kadroya katılır.",
+        "team": "{team} takımının kadrosu henüz tam değil, bu yüzden takım dışındaki oyuncular takıma ve bu kadroya davet edilir.",
+        "stand_in": "{team} takımının kadrosu zaten tam, bu yüzden takım dışındaki oyuncular bu turnuva için yedek olarak davet edilir ve takıma katılmaz.",
         "tournament": "Oyunculara {team} için davet gider; bu takım sadece bu turnuvaya özel."
       },
       "seed_label": "Seri Başı",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Turnuva Daveti",
       "tournament_message": "Bir turnuvaya katılman için davet edildin",
       "team_and_lineup_message": "{team} takımına ve kadrosuna katıl:",
+      "stand_in_message": "Takıma katılmadan {team} için yedek olarak oyna:",
       "tournament_team_message": "Sadece bu turnuvaya özel {team} takımında oyna:",
       "team_message": "Bir takıma katılman için davet edildin",
       "invited_by": "Davet eden",

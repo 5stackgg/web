@@ -8072,6 +8072,7 @@
         "friend_request": "Friend Request",
         "invited_you": "invited you to",
         "team_and_lineup": "{team} and its lineup for {tournament}",
+        "stand_in": "stand in for {team} in {tournament}",
         "tournament_only_team": "{team} for {tournament}, a team for this tournament only",
         "invited_party": "invited you to their party",
         "wants_to_be_friends": "wants to be friends",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "Pending",
       "pending_team": "Invited to the team and this lineup",
+      "pending_stand_in": "Invited to stand in for this tournament",
       "pending_tournament": "Invited for this tournament only"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Invite Sent",
       "invite_sent_description": "{name} has been invited and needs to accept before they join your roster",
       "invite_sent_team_description": "{name} has been invited to {team} and joins this lineup once they accept",
+      "invite_sent_stand_in_description": "{name} has been invited to stand in for {team} in this tournament and needs to accept first",
       "invite_sent_tournament_description": "{name} has been invited to {team} for this tournament and needs to accept first",
       "new": "Create New Team",
       "select": "Select Existing Team",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "On the team",
         "team_invite": "Team + lineup invite",
+        "stand_in_invite": "Stand-in invite",
         "tournament_invite": "Tournament invite"
       },
       "add_hint": {
-        "team": "Players outside {team} get an invite. Accepting it adds them to the team and to this lineup.",
+        "team": "{team} doesn't have a full lineup yet, so players from outside it are invited to join the team and this lineup.",
+        "stand_in": "{team} already has a full lineup, so players from outside it are invited as stand-ins for this tournament and don't join the team.",
         "tournament": "Players get an invite to {team}, a team for this tournament only."
       },
       "seed_label": "Seed",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Tournament Invite",
       "tournament_message": "You have been invited to join a tournament",
       "team_and_lineup_message": "Join {team} and its lineup for",
+      "stand_in_message": "Stand in for {team}, without joining the team, in",
       "tournament_team_message": "Join {team}, a team for this tournament only, in",
       "team_message": "You have been invited to join a team",
       "invited_by": "Invited by",

@@ -30,13 +30,14 @@ import TimeAgo from "./TimeAgo.vue";
     </template>
     <template v-else-if="isTournamentTeam">
       {{
-        joinsTeam
-          ? $t("team.invite.team_and_lineup_message", {
-              team: tournamentTeamName,
-            })
-          : $t("team.invite.tournament_team_message", {
-              team: tournamentTeamName,
-            })
+        $t(
+          joinsTeam
+            ? "team.invite.team_and_lineup_message"
+            : standIn
+              ? "team.invite.stand_in_message"
+              : "team.invite.tournament_team_message",
+          { team: tournamentTeamName },
+        )
       }}
       <!-- A tournament still in Setup is hidden from players, so the invite
            can arrive before its tournament is readable. -->
@@ -112,10 +113,15 @@ export default {
     isTournamentTeam(): boolean {
       return this.type === "tournament" || this.type === "tournament-team";
     },
-    // An invite onto a team-backed entry puts the player on the team as well,
-    // and that entry has no name of its own.
+    // Fixed when it was sent: an invite onto a team-backed entry joins the
+    // team as well only while the team was short of a lineup.
     joinsTeam(): boolean {
-      return this.isTournamentTeam && !!this.invite.team?.team_id;
+      return this.isTournamentTeam && !!this.invite.joins_team;
+    },
+    standIn(): boolean {
+      return (
+        this.isTournamentTeam && !!this.invite.team?.team_id && !this.joinsTeam
+      );
     },
     tournamentTeamName(): string {
       return this.invite.team?.team?.name || this.invite.team?.name || "";

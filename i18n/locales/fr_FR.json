@@ -8072,6 +8072,7 @@
         "friend_request": "Demande d'ami",
         "invited_you": "t'a invité à",
         "team_and_lineup": "rejoindre {team} et sa composition pour {tournament}",
+        "stand_in": "jouer comme remplaçant de {team} dans {tournament}",
         "tournament_only_team": "jouer pour {team} dans {tournament}, une équipe pour ce tournoi uniquement",
         "invited_party": "t'a invité dans son groupe",
         "wants_to_be_friends": "veut être ton ami",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "En attente",
       "pending_team": "Invité dans l'équipe et cette composition",
+      "pending_stand_in": "Invité comme remplaçant pour ce tournoi",
       "pending_tournament": "Invité pour ce tournoi uniquement"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Invitation envoyée",
       "invite_sent_description": "{name} a été invité et doit accepter avant de rejoindre votre effectif",
       "invite_sent_team_description": "{name} a été invité dans {team} et rejoindra cette composition après avoir accepté",
+      "invite_sent_stand_in_description": "{name} a été invité comme remplaçant de {team} pour ce tournoi et doit d'abord accepter",
       "invite_sent_tournament_description": "{name} a été invité dans {team} pour ce tournoi et doit d'abord accepter",
       "new": "Créer une équipe",
       "select": "Choisir une équipe existante",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "Dans l'équipe",
         "team_invite": "Invitation équipe + compo",
+        "stand_in_invite": "Invitation remplaçant",
         "tournament_invite": "Invitation au tournoi"
       },
       "add_hint": {
-        "team": "Les joueurs hors de {team} reçoivent une invitation. En l'acceptant, ils rejoignent l'équipe et cette composition.",
+        "team": "{team} n'a pas encore de composition complète, donc les joueurs extérieurs sont invités dans l'équipe et cette composition.",
+        "stand_in": "{team} a déjà une composition complète, donc les joueurs extérieurs sont invités comme remplaçants pour ce tournoi et ne rejoignent pas l'équipe.",
         "tournament": "Les joueurs reçoivent une invitation pour {team}, une équipe pour ce tournoi uniquement."
       },
       "seed_label": "Seed",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Invitation à un tournoi",
       "tournament_message": "Tu as été invité à rejoindre un tournoi",
       "team_and_lineup_message": "Rejoins {team} et sa composition pour",
+      "stand_in_message": "Joue comme remplaçant de {team}, sans rejoindre l'équipe, dans",
       "tournament_team_message": "Joue pour {team}, une équipe pour ce tournoi uniquement, dans",
       "team_message": "Tu as été invité à rejoindre une équipe",
       "invited_by": "Invité par",

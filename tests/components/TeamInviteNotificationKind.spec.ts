@@ -9,8 +9,9 @@ afterEach(() => {
   unmount = null;
 });
 
-const invite = (team: Record<string, unknown>) => ({
+const invite = (team: Record<string, unknown>, joinsTeam = false) => ({
   id: "invite-1",
+  joins_team: joinsTeam,
   created_at: "2026-10-21T08:00:00Z",
   invited_by: { steam_id: "76561198000000001", name: "sniddyus" },
   team: {
@@ -20,9 +21,9 @@ const invite = (team: Record<string, unknown>) => ({
   },
 });
 
-async function mountInvite(team: Record<string, unknown>) {
+async function mountInvite(team: Record<string, unknown>, joinsTeam = false) {
   const wrapper = await mountSuspended(TeamInviteNotification, {
-    props: { invite: invite(team), type: "tournament" },
+    props: { invite: invite(team, joinsTeam), type: "tournament" },
   });
   unmount = () => wrapper.unmount();
   return wrapper;
@@ -30,16 +31,28 @@ async function mountInvite(team: Record<string, unknown>) {
 
 describe("TeamInviteNotification for an invite onto a tournament entry", () => {
   it("says an invite onto a team-backed entry joins the team and its lineup", async () => {
+    const wrapper = await mountInvite(
+      { name: null, team_id: "team-1", team: { name: "Ultima Ratio" } },
+      true,
+    );
+
+    expect(wrapper.find("h3").text()).toBe("Team Invite");
+    expect(wrapper.text()).toContain("Join Ultima Ratio and its lineup for");
+    expect(wrapper.find("a").attributes("href")).toBe(
+      "/tournaments/tournament-1",
+    );
+  });
+
+  it("tells a stand-in they will not join the permanent team", async () => {
     const wrapper = await mountInvite({
       name: null,
       team_id: "team-1",
       team: { name: "Ultima Ratio" },
     });
 
-    expect(wrapper.find("h3").text()).toBe("Team Invite");
-    expect(wrapper.text()).toContain("Join Ultima Ratio and its lineup for");
-    expect(wrapper.find("a").attributes("href")).toBe(
-      "/tournaments/tournament-1",
+    expect(wrapper.find("h3").text()).toBe("Tournament Invite");
+    expect(wrapper.text()).toContain(
+      "Stand in for Ultima Ratio, without joining the team, in",
     );
   });
 

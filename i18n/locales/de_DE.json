@@ -8072,6 +8072,7 @@
         "friend_request": "Freundschaftsanfrage",
         "invited_you": "hat dich eingeladen zu",
         "team_and_lineup": "{team} und dem Lineup für {tournament}",
+        "stand_in": "einem Einsatz als Ersatz für {team} bei {tournament}",
         "tournament_only_team": "{team} für {tournament}, einem Team nur für dieses Turnier",
         "invited_party": "hat dich in seine Party eingeladen",
         "wants_to_be_friends": "will mit dir befreundet sein",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "Ausstehend",
       "pending_team": "Eingeladen ins Team und in dieses Lineup",
+      "pending_stand_in": "Als Ersatz für dieses Turnier eingeladen",
       "pending_tournament": "Nur für dieses Turnier eingeladen"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Einladung gesendet",
       "invite_sent_description": "{name} wurde eingeladen und muss annehmen, bevor er in deinen Kader kommt",
       "invite_sent_team_description": "{name} wurde zu {team} eingeladen und kommt nach der Annahme in dieses Lineup",
+      "invite_sent_stand_in_description": "{name} wurde als Ersatz für {team} in diesem Turnier eingeladen und muss erst annehmen",
       "invite_sent_tournament_description": "{name} wurde für dieses Turnier zu {team} eingeladen und muss erst annehmen",
       "new": "Neues Team erstellen",
       "select": "Bestehendes Team wählen",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "Im Team",
         "team_invite": "Einladung: Team + Lineup",
+        "stand_in_invite": "Ersatz-Einladung",
         "tournament_invite": "Turnier-Einladung"
       },
       "add_hint": {
-        "team": "Spieler außerhalb von {team} bekommen eine Einladung. Wer annimmt, kommt ins Team und in dieses Lineup.",
+        "team": "{team} hat noch kein volles Lineup, daher werden Spieler von außerhalb ins Team und in dieses Lineup eingeladen.",
+        "stand_in": "{team} hat schon ein volles Lineup, daher werden Spieler von außerhalb als Ersatz für dieses Turnier eingeladen und kommen nicht ins Team.",
         "tournament": "Spieler bekommen eine Einladung zu {team}, einem Team nur für dieses Turnier."
       },
       "seed_label": "Seed",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Turnier-Einladung",
       "tournament_message": "Du wurdest zu einem Turnier eingeladen",
       "team_and_lineup_message": "Tritt {team} und dem Lineup bei für",
+      "stand_in_message": "Spiel als Ersatz für {team}, ohne dem Team beizutreten, bei",
       "tournament_team_message": "Spiel für {team}, ein Team nur für dieses Turnier, bei",
       "team_message": "Du wurdest in ein Team eingeladen",
       "invited_by": "Eingeladen von",

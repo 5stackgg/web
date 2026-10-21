@@ -367,9 +367,11 @@ async function invite(agent: Agent) {
             name: agent.player?.name,
           })
         : t(
-            recruitingTeam.value?.team_id
-              ? "tournament.team.invite_sent_team_description"
-              : "tournament.team.invite_sent_tournament_description",
+            !recruitingTeam.value?.team_id
+              ? "tournament.team.invite_sent_tournament_description"
+              : recruitingTeam.value.invites_join_team
+                ? "tournament.team.invite_sent_team_description"
+                : "tournament.team.invite_sent_stand_in_description",
             {
               name: agent.player?.name,
               team:

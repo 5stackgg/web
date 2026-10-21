@@ -192,9 +192,11 @@ const items = computed<ToastItem[]>(() => {
     });
   }
 
-  // An invite onto a team-backed entry joins the player to the team as well.
+  // An invite onto a team-backed entry joins the player to the team as well
+  // while the team was short of a lineup, and is a stand-in's otherwise.
   for (const invite of notificationStore.tournament_team_invites) {
-    const joinsTeam = !!invite.team?.team_id;
+    const joinsTeam = !!invite.joins_team;
+    const standIn = !joinsTeam && !!invite.team?.team_id;
     const names = {
       team: invite.team?.team?.name || invite.team?.name || "",
       tournament: invite.team?.tournament?.name ?? "",
@@ -210,7 +212,9 @@ const items = computed<ToastItem[]>(() => {
       action: t("layouts.notifications.toast.invited_you"),
       detail: joinsTeam
         ? t("layouts.notifications.toast.team_and_lineup", names)
-        : t("layouts.notifications.toast.tournament_only_team", names),
+        : standIn
+          ? t("layouts.notifications.toast.stand_in", names)
+          : t("layouts.notifications.toast.tournament_only_team", names),
       accept: () => inviteAction("tournament", invite.id, true),
       decline: () => inviteAction("tournament", invite.id, false),
     });

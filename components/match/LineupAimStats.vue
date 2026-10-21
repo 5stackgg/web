@@ -7,7 +7,7 @@ import StatChevron from "~/components/StatChevron.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import { useAimColumns } from "~/composables/useMatchTableColumns";
 import {
-  teamHeadClass,
+  TEAM_HEAD_CLASS,
   useCurrentUserRow,
 } from "~/composables/useCurrentUserRow";
 
@@ -50,7 +50,7 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
           <TableHead
             v-if="!hideMember"
             class="w-[110px] md:w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border [transform:translateZ(0)]"
-            :class="teamHeadClass(lp)"
+            :class="TEAM_HEAD_CLASS"
           >
             {{ lp.name }}
           </TableHead>

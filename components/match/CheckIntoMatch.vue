@@ -14,7 +14,11 @@
           v-if="!isCheckedIn && needsCamera"
           key="camera"
           type="button"
-          :class="[tacticalCtaButtonClasses, 'w-full', deadlineGutterClasses]"
+          :class="[
+            tacticalCtaButtonClasses,
+            compact ? 'h-10' : 'w-full',
+            deadlineGutterClasses,
+          ]"
           @click="cameraSetupOpen = true"
         >
           <LucideVideo class="w-4 h-4" />
@@ -33,7 +37,8 @@
           type="button"
           :class="[
             tacticalCtaButtonClasses,
-            'w-full disabled:cursor-default',
+            compact ? 'h-10' : 'w-full',
+            'disabled:cursor-default',
             deadlineGutterClasses,
           ]"
           :disabled="loading"
@@ -64,7 +69,7 @@
              applies to everyone else -- it keeps its slot, now framed in its
              own amber rather than cut out of the button's. -->
         <div
-          v-else
+          v-else-if="!compact"
           key="checked-in"
           class="flex min-h-[2.625rem] items-center gap-3"
         >
@@ -152,6 +157,11 @@ export default {
     deadlineHelp: {
       type: String,
       default: undefined,
+    },
+    // Just the button, sized for the draft room's header.
+    compact: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props: {

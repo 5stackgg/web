@@ -67,6 +67,9 @@ const props = withDefaults(
     // The server's state over the start's maps (the page may show it
     // elsewhere).
     bootStatus?: boolean;
+    // Whose move it is and its clock, for a page that doesn't say so above
+    // the board.
+    statusLine?: boolean;
   }>(),
   {
     pickingLineup: null,
@@ -81,6 +84,7 @@ const props = withDefaults(
     handOff: false,
     knifeRound: false,
     bootStatus: true,
+    statusLine: true,
   },
 );
 
@@ -1097,21 +1101,20 @@ watch(
   },
 );
 
-// Server ready: the panels let go of their words and the maps hand over to
-// the page.
+// Server ready: the maps hand over to the page.
 let handTimer: ReturnType<typeof setTimeout> | undefined;
 watch(
   () => props.start?.phase === "ready" && props.handOff,
   (go) => {
     clearTimeout(handTimer);
     if (!go) return;
-    shown.value = [];
     handTimer = setTimeout(() => void handOffNow(), 260);
   },
   { immediate: true },
 );
 
-// The maps fold up where they stand; the page unfolds its own cards for them.
+// The maps fold up where they stand, words and all; the page unfolds its own
+// cards for them.
 async function handOffNow() {
   if (typeof areaEl.value?.animate === "function") {
     await settle(
@@ -1146,7 +1149,7 @@ onBeforeUnmount(() => {
   <div class="vb" :class="{ 'is-live': live }" :data-act="step?.type">
     <!-- One line through the veto: your turn changes its colour and words,
          never its height. Once the veto is done it folds away. -->
-    <Transition name="vb-status">
+    <Transition v-if="statusLine" name="vb-status">
       <div v-if="!done && !start" class="vb-status" aria-live="polite">
         <VetoCrest
           v-if="actingLineup"

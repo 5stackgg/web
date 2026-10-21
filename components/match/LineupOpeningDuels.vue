@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { teamHeadClass } from "~/composables/useCurrentUserRow";
+import { TEAM_HEAD_CLASS } from "~/composables/useCurrentUserRow";
 import { computed, ref, watch, onUnmounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
@@ -223,7 +223,7 @@ function sortGettersFor(lp: any): Record<string, (m: any) => unknown> {
         <TableRow>
           <TableHead
             class="w-[110px] md:w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border [transform:translateZ(0)]"
-            :class="teamHeadClass(lp)"
+            :class="TEAM_HEAD_CLASS"
           >
             {{ lp.name }}
           </TableHead>

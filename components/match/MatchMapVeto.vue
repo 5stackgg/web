@@ -27,6 +27,7 @@ import VetoBoard from "~/components/match/VetoBoard.vue";
           :start="start"
           :hand-off="stage"
           :boot-status="bootStatus"
+          :status-line="statusLine"
           :knife-round="!!match.options.knife_round"
           @confirm="onConfirm"
           @handoff="onHandoff"
@@ -89,6 +90,10 @@ export default {
     // The server's state over the maps while it boots; off when the page
     // shows it where the Join Server button goes.
     bootStatus: {
+      type: Boolean,
+      default: true,
+    },
+    statusLine: {
       type: Boolean,
       default: true,
     },

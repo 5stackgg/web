@@ -18,6 +18,7 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 import CameraRequirementOverlay from "~/components/match/CameraRequirementOverlay.vue";
 import MatchHighlightsReel from "~/components/match/MatchHighlightsReel.vue";
 import MatchHeader from "~/components/match/MatchHeader.vue";
+import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
@@ -212,6 +213,12 @@ const ChatLobby = defineAsyncComponent(
           class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
         >
           <MatchHeader :match="match" />
+          <QuickMatchConnect
+            variant="bar"
+            :match="match"
+            :camera-ready="cameraReady"
+            :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
+          />
           <div
             class="grid transition-[grid-template-rows] [transition-duration:240ms] ease-out motion-reduce:transition-none"
             :class="hasMatchClips ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
@@ -233,7 +240,7 @@ const ChatLobby = defineAsyncComponent(
             <MatchInfo
               :match="match"
               :camera-ready="cameraReady"
-              :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
+              hide-connect
             ></MatchInfo>
           </PageTransition>
 

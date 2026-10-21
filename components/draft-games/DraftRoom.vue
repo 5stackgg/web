@@ -2,10 +2,10 @@
 import { computed, ref, watch } from "vue";
 import {
   ArrowRight,
-  Swords,
   Play,
   MessagesSquare,
   Inbox,
+  UserPlus,
 } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import { useElementSize } from "@vueuse/core";
@@ -31,6 +31,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
 import { matchHasEnded } from "~/utilities/matchTeamLobby";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
@@ -39,10 +40,11 @@ import DraftSettingsBar from "~/components/draft-games/DraftSettingsBar.vue";
 import DraftTeamPanel from "~/components/draft-games/DraftTeamPanel.vue";
 import DraftPlayerCard from "~/components/draft-games/DraftPlayerCard.vue";
 import DraftBackupsPanel from "~/components/draft-games/DraftBackupsPanel.vue";
-import DraftClock from "~/components/draft-games/DraftClock.vue";
 import DraftPickTrack from "~/components/draft-games/DraftPickTrack.vue";
 import DraftActionButton from "~/components/draft-games/DraftActionButton.vue";
-import DraftSelfStatus from "~/components/draft-games/DraftSelfStatus.vue";
+import DraftRoomHeader from "~/components/draft-games/DraftRoomHeader.vue";
+import DraftHeaderAction from "~/components/draft-games/DraftHeaderAction.vue";
+import MatchActions from "~/components/match/MatchActions.vue";
 import DraftRequestQueue from "~/components/draft-games/DraftRequestQueue.vue";
 import DraftOpenSlot from "~/components/draft-games/DraftOpenSlot.vue";
 import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue";
@@ -51,6 +53,18 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import { useCountdown } from "~/composables/useCountdown";
 import { STARTING_STATUSES, vetoMapsSet } from "~/utilities/vetoStage";
+import {
+  mapVetoPicking,
+  mapVetoTurn,
+  vetoLineups,
+} from "~/utilities/vetoLineups";
+import { resolveAvatarUrl, type AvatarWidth } from "~/utilities/avatarUrl";
+import { teamMonogram } from "~/components/watch/watchTicker";
+import type {
+  DraftHeaderPhase,
+  DraftHeaderSide,
+  DraftHeaderState,
+} from "~/components/draft-games/draftRoomHeader";
 
 const props = defineProps<{
   room: any;
@@ -145,7 +159,16 @@ const checkInProgress = computed(() => {
   if (!map) {
     return null;
   }
-  const states = Object.values(map);
+  // A side's backups sit in the match as its substitutes, so the count is
+  // the starters'.
+  const backups = new Set(
+    props.room.players
+      .filter((p: any) => p.status === "Waitlist")
+      .map((p: any) => p.steam_id),
+  );
+  const states = Object.entries(map)
+    .filter(([steamId]) => !backups.has(steamId))
+    .map(([, checkedIn]) => checkedIn);
   return { ready: states.filter(Boolean).length, total: states.length };
 });
 
@@ -244,11 +267,6 @@ const notStarted = computed(
   () => !props.room.match_id && props.room.status === "Open",
 );
 const isHostAssigning = computed(() => isHostMode.value && notStarted.value);
-const isAssembling = computed(
-  () =>
-    !isHostMode.value &&
-    ["Open", "Filled", "SelectingCaptains"].includes(props.room.status),
-);
 
 const accepted = computed(() =>
   props.room.players.filter((p: any) => p.status === "Accepted"),
@@ -463,23 +481,6 @@ const respondInvite = (accept: boolean) => {
   );
 };
 
-const clockAccent = computed(() =>
-  currentLineup.value === 2 ? "var(--tac-blue)" : "var(--tac-amber)",
-);
-
-const statusLabel = computed(() => {
-  if (isMyTurn.value) {
-    return "draft_games.room.your_pick";
-  }
-  if (currentLineup.value === 1) {
-    return "draft_games.room.alpha_picking";
-  }
-  if (currentLineup.value === 2) {
-    return "draft_games.room.bravo_picking";
-  }
-  return "draft_games.room.standby";
-});
-
 const draftedCount = computed(
   () =>
     props.room.players.filter((p: any) => !p.is_captain && p.lineup != null)
@@ -630,14 +631,6 @@ watch(
     }, 2400);
   },
   { immediate: true },
-);
-
-const hasSelfStatus = computed(
-  () =>
-    canJoin.value ||
-    hasRequested.value ||
-    isWaitlisted.value ||
-    isInvited.value,
 );
 
 const leaveWaitlist = () =>
@@ -903,57 +896,585 @@ const startReady = computed(() => {
   return accepted.value.length === props.room.capacity;
 });
 
-const startHint = computed(() => {
-  if (props.room.mode === "Teams") {
-    return props.room.team_1_id
-      ? "draft_games.room.assign_all"
-      : "draft_games.room.pick_teams";
-  }
-  if (props.room.mode === "Host") {
-    return "draft_games.room.assign_all";
-  }
-  if (isManualCaptains.value && !manualCaptainsReady.value) {
-    return "draft_games.room.pick_captains";
-  }
-  return "draft_games.room.need_full";
-});
-
 const start = () => {
   return runGuarded("start", () => useDraftGamesStore().start(props.room.id));
 };
+
+const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
+const avatarOf = (player: any, size: AvatarWidth) =>
+  resolveAvatarUrl(
+    player?.custom_avatar_url || player?.avatar_url,
+    apiDomain.value,
+    size,
+  ) ?? null;
+
+const headerPhase = computed<DraftHeaderPhase>(() => {
+  if (inStartStage.value || inMatchStarting.value) {
+    return "starting";
+  }
+  if (inVeto.value) {
+    return "veto";
+  }
+  if (isCheckIn.value) {
+    return "checkin";
+  }
+  if (isDrafting.value) {
+    return "draft";
+  }
+  if (notStarted.value) {
+    return "lobby";
+  }
+  return "between";
+});
+
+const mySide = computed<1 | 2 | null>(() =>
+  inLineup.value ? myMembership.value.lineup : null,
+);
+
+const sideTitle = (lineup: 1 | 2) =>
+  isTeamsMode.value
+    ? sideName(lineup) || t("draft_games.room.team", { team: lineup })
+    : draftSideLabel(lineup);
+
+const headerSides = computed<[DraftHeaderSide, DraftHeaderSide]>(
+  () =>
+    ([1, 2] as const).map((lineup) => {
+      const players = startersFor(lineup);
+      const name = sideTitle(lineup);
+      return {
+        name,
+        // A pickup's sides are named after nobody, so the captain's face stands
+        // in for a crest, as on the match page.
+        crest:
+          isTeamsMode.value || !players[0]
+            ? null
+            : avatarOf(players[0].player, 128),
+        monogram: teamMonogram(name),
+        players: players.map((player: any) => ({
+          steamId: player.steam_id,
+          name: player.player?.name ?? "",
+          src: avatarOf(player.player, 64),
+        })),
+        seats: perTeam.value,
+        mine: mySide.value === lineup,
+      };
+    }) as [DraftHeaderSide, DraftHeaderSide],
+);
+
+const bestOf = computed<number>(
+  () => props.match?.options?.best_of ?? props.room.options?.best_of ?? 1,
+);
+const winsNeeded = computed(() =>
+  bestOf.value > 1 ? Math.ceil(bestOf.value / 2) : 0,
+);
+
+const headerTrack = computed(
+  () =>
+    props.room.mode === "Captains" &&
+    pattern.value.length > 0 &&
+    headerPhase.value !== "lobby" &&
+    (isDrafting.value || hasPicks.value),
+);
+
+const myCheckedIn = computed(
+  () => !!checkInBySteamId.value?.[me.value?.steam_id ?? ""],
+);
+
+// The match's own lineup, which takes in a side's backups as substitutes.
+const inMatchLineup = computed(
+  () => checkInBySteamId.value?.[me.value?.steam_id ?? ""] !== undefined,
+);
+
+const canCheckIn = computed(
+  () =>
+    headerPhase.value === "checkin" &&
+    !!props.match?.can_check_in &&
+    inMatchLineup.value &&
+    !myCheckedIn.value,
+);
+
+const inviteOpen = computed(
+  () =>
+    !props.room.match_id &&
+    !["CreatingMatch", "Completed", "Canceled"].includes(props.room.status),
+);
+
+type DraftHeaderActionKind =
+  "checkin" | "accept" | "decline" | "leave" | "join" | "start";
+
+const headerActions = computed<DraftHeaderActionKind[]>(() => {
+  if (canCheckIn.value) {
+    return ["checkin"];
+  }
+  if (isInvited.value) {
+    return inviteOpen.value ? ["decline", "accept"] : ["decline"];
+  }
+  if (notStarted.value && isWaitlisted.value) {
+    return ["leave"];
+  }
+  const actions: DraftHeaderActionKind[] = [];
+  if (canJoin.value) {
+    actions.push("join");
+  }
+  if (showStart.value) {
+    actions.push("start");
+  }
+  return actions;
+});
+
+const regionVetoing = computed(
+  () => !!props.match?.options?.region_veto && !props.match?.region,
+);
+
+const vetoTurn = computed<1 | 2 | null>(() => {
+  const match = props.match;
+  if (!match) {
+    return null;
+  }
+  if (regionVetoing.value) {
+    if (match.lineup_1?.is_picking_region_veto) {
+      return 1;
+    }
+    if (match.lineup_2?.is_picking_region_veto) {
+      return 2;
+    }
+    return null;
+  }
+  return mapVetoTurn(match);
+});
+
+// The scorebug has the veto's seconds; the board's card keeps just the time
+// left, along its own top edge.
+const vetoDeadline = computed(() =>
+  inVeto.value && vetoTurn.value
+    ? (props.match?.veto_pick_expires_at ?? null)
+    : null,
+);
+const { urgent: vetoUrgent, meter: vetoMeter } = useCountdown(
+  vetoDeadline,
+  computed(() => props.match?.options?.veto_pick_timeout ?? 0),
+);
+
+const vetoMine = computed(() => {
+  const match = props.match;
+  if (!match) {
+    return false;
+  }
+  if (regionVetoing.value) {
+    return !!(
+      match.lineup_1?.can_pick_region_veto ||
+      match.lineup_2?.can_pick_region_veto
+    );
+  }
+  return mapVetoPicking(match, false);
+});
+
+const startMap = computed(() => props.match?.match_maps?.[0]?.map ?? null);
+
+const startLabelText = computed(() =>
+  props.room.mode === "Captains"
+    ? t("draft_games.header.start_draft")
+    : t("draft_games.room.start_match"),
+);
+
+const joinLabel = computed(() =>
+  props.room.require_approval
+    ? t("draft_games.header.request")
+    : lobbyFull.value
+      ? t("draft_games.room.join_waitlist")
+      : t("draft_games.header.join"),
+);
+
+const lobbyCopy = (): Pick<
+  DraftHeaderState,
+  "tone" | "hot" | "title" | "detail"
+> => {
+  const capacity = props.room.capacity;
+  const open = capacity - accepted.value.length;
+  const quiet = (title: string, detail = "") => ({
+    tone: "muted" as const,
+    hot: false,
+    title,
+    detail,
+  });
+  const loud = (title: string, detail = "") => ({
+    tone: "amber" as const,
+    hot: true,
+    title,
+    detail,
+  });
+
+  if (isInvited.value) {
+    return loud(
+      t("draft_games.header.invited_title"),
+      t("draft_games.header.invited_detail"),
+    );
+  }
+  if (hasRequested.value) {
+    return quiet(
+      t("draft_games.header.requested_title"),
+      t("draft_games.header.requested_detail"),
+    );
+  }
+  if (isWaitlisted.value) {
+    const side = myMembership.value?.lineup ?? null;
+    const place =
+      waitlist.value
+        .filter((p: any) => (p.lineup ?? null) === side)
+        .findIndex((p: any) => p.steam_id === me.value?.steam_id) + 1;
+    return quiet(
+      t("draft_games.header.backup_title", { n: place }),
+      t("draft_games.header.backup_detail"),
+    );
+  }
+  if (showStart.value) {
+    if (!regionsAvailable.value) {
+      return quiet(
+        t("draft_games.header.no_regions_title"),
+        t("draft_games.header.no_regions_detail"),
+      );
+    }
+    if (isTeamsMode.value) {
+      if (!props.room.team_1_id) {
+        return quiet(
+          t("draft_games.header.teams_pick_title"),
+          t("draft_games.header.teams_pick_detail"),
+        );
+      }
+      if (!startReady.value) {
+        const short = team1Count.value < perTeam.value ? 1 : 2;
+        const need =
+          perTeam.value - (short === 1 ? team1Count.value : team2Count.value);
+        return quiet(
+          t("draft_games.header.teams_fill_title"),
+          t(
+            "draft_games.header.teams_fill_detail",
+            { team: sideTitle(short), count: need },
+            need,
+          ),
+        );
+      }
+      return loud(
+        t("draft_games.header.teams_ready_title"),
+        t("draft_games.header.ready_match_detail"),
+      );
+    }
+    if (isHostMode.value) {
+      return startReady.value
+        ? loud(
+            t("draft_games.header.teams_ready_title"),
+            t("draft_games.header.ready_match_detail"),
+          )
+        : quiet(
+            t("draft_games.header.host_fill_title"),
+            t("draft_games.header.host_fill_detail"),
+          );
+    }
+    if (open > 0) {
+      return quiet(
+        t("draft_games.header.waiting_title", { count: open }, open),
+        t("draft_games.header.unlocks_detail", {
+          action: startLabelText.value,
+          capacity,
+        }),
+      );
+    }
+    if (isManualCaptains.value && !manualCaptainsReady.value) {
+      return quiet(
+        t("draft_games.header.choose_captains_title"),
+        t("draft_games.room.choose_captains_hint"),
+      );
+    }
+    if (isManualCaptains.value) {
+      return loud(
+        t("draft_games.header.captains_set_title"),
+        t("draft_games.header.captains_set_detail", {
+          one: team1Captain.value?.player?.name ?? "",
+          two: team2Captain.value?.player?.name ?? "",
+        }),
+      );
+    }
+    return loud(
+      t("draft_games.header.ready_title", { capacity }),
+      props.room.mode === "Captains"
+        ? t("draft_games.header.ready_draft_detail")
+        : t("draft_games.header.ready_match_detail"),
+    );
+  }
+  if (isMember.value) {
+    return {
+      tone: "success",
+      hot: false,
+      title: t("draft_games.header.member_title"),
+      detail:
+        open > 0
+          ? t("draft_games.header.member_waiting", { count: open }, open)
+          : t("draft_games.header.member_full"),
+    };
+  }
+  if (canJoin.value) {
+    if (props.room.require_approval) {
+      return loud(
+        t("draft_games.header.approval_title"),
+        t("draft_games.header.approval_detail"),
+      );
+    }
+    if (lobbyFull.value) {
+      return quiet(
+        t("draft_games.header.full_title"),
+        t("draft_games.header.full_detail"),
+      );
+    }
+    return loud(
+      t("draft_games.header.seats_open", { count: open }, open),
+      t("draft_games.header.join_detail"),
+    );
+  }
+  return quiet(
+    t("draft_games.header.seats_filled", {
+      filled: accepted.value.length,
+      capacity,
+    }),
+  );
+};
+
+const header = computed<DraftHeaderState>(() => {
+  const phase = headerPhase.value;
+  const match = props.match;
+  const capacity = props.room.capacity;
+
+  if (phase === "lobby") {
+    return {
+      phase,
+      ...lobbyCopy(),
+      box: { kind: "vs" },
+      onClock: null,
+    };
+  }
+
+  if (phase === "draft") {
+    const side = currentLineup.value as 1 | 2;
+    const captain = currentCaptain.value;
+    const n = Math.min(draftedCount.value + 1, pattern.value.length);
+    const total = pattern.value.length;
+    const box = {
+      kind: "clock" as const,
+      deadline: props.room.pick_deadline ?? null,
+      total: 30,
+      side,
+      caption: pickProgress.value,
+    };
+    if (isMyTurn.value) {
+      return {
+        phase,
+        tone: "amber",
+        hot: true,
+        title: t("draft_games.header.your_pick_title"),
+        detail: autoPickName.value
+          ? t("draft_games.header.your_pick_detail", {
+              n,
+              total,
+              name: autoPickName.value,
+            })
+          : t("draft_games.header.pick_plain", { n, total }),
+        box,
+        onClock: side,
+      };
+    }
+    let detail = t("draft_games.header.pick_plain", { n, total });
+    if (myCaptainLineup.value) {
+      const next = pattern.value.findIndex(
+        (lineup, index) => index >= n && lineup === myCaptainLineup.value,
+      );
+      if (next === n) {
+        detail = t("draft_games.header.pick_next", { n, total });
+      } else if (next > 0) {
+        detail = t("draft_games.header.pick_later", {
+          n,
+          total,
+          next: next + 1,
+        });
+      }
+    }
+    return {
+      phase,
+      tone: "muted",
+      hot: false,
+      title: captain
+        ? t("draft_games.header.picking_title", {
+            name: captain.player?.name ?? "",
+            team: sideTitle(side),
+          })
+        : t("draft_games.header.selecting_title"),
+      detail,
+      box,
+      onClock: side,
+    };
+  }
+
+  if (phase === "checkin") {
+    const total = checkInProgress.value?.total ?? capacity;
+    const ready = checkInProgress.value?.ready ?? 0;
+    const missing = total - ready;
+    const base = {
+      phase,
+      box: {
+        kind: "count" as const,
+        value: ready,
+        of: total,
+        caption: t("draft_games.header.box_checked_in"),
+      },
+      onClock: null,
+    };
+    if (canCheckIn.value) {
+      return {
+        ...base,
+        tone: "amber",
+        hot: true,
+        title: t("draft_games.header.checkin_title"),
+        detail: checkInWindowOver.value
+          ? t("draft_games.header.checkin_count", { ready, total })
+          : t("draft_games.header.checkin_detail", { ready, total }),
+      };
+    }
+    if (canReplaceNoShows.value && !isTeamsMode.value && missing > 0) {
+      return {
+        ...base,
+        tone: "amber",
+        hot: false,
+        title: t(
+          "draft_games.header.no_shows_title",
+          { count: missing },
+          missing,
+        ),
+        detail: t("draft_games.header.no_shows_detail"),
+      };
+    }
+    if (inMatchLineup.value && myCheckedIn.value) {
+      return {
+        ...base,
+        tone: "success",
+        hot: false,
+        title: t("draft_games.header.checked_title"),
+        detail: t(
+          "draft_games.header.checked_detail",
+          { count: missing },
+          missing,
+        ),
+      };
+    }
+    return {
+      ...base,
+      tone: "muted",
+      hot: false,
+      title: t("draft_games.header.checkin_watch_title"),
+      detail: t("draft_games.header.checkin_count", { ready, total }),
+    };
+  }
+
+  if (phase === "veto") {
+    const turn = vetoTurn.value;
+    const lineups = match ? vetoLineups(match, t) : null;
+    const acting = turn && lineups ? lineups[turn - 1] : null;
+    const region = regionVetoing.value;
+    const step = String(match?.map_veto_type ?? "").toLowerCase();
+    const kind = region
+      ? "region"
+      : ["ban", "pick", "side"].includes(step)
+        ? step
+        : "ban";
+    const box = {
+      kind: "clock" as const,
+      deadline: match?.veto_pick_expires_at ?? null,
+      total: match?.options?.veto_pick_timeout ?? 0,
+      side: turn,
+      caption: region
+        ? t("draft_games.header.box_region_veto")
+        : t("draft_games.header.box_map_veto"),
+    };
+    if (vetoMine.value) {
+      return {
+        phase,
+        tone: "amber",
+        hot: true,
+        title: t(`draft_games.header.veto_you_${kind}`),
+        detail: t(`draft_games.header.veto_you_${kind}_detail`),
+        box,
+        onClock: turn,
+      };
+    }
+    return {
+      phase,
+      tone: "muted",
+      hot: false,
+      title: acting
+        ? t(`draft_games.header.veto_them_${kind}`, { team: acting.name })
+        : region
+          ? t("draft_games.header.box_region_veto")
+          : t("draft_games.header.box_map_veto"),
+      detail: region
+        ? t("draft_games.header.veto_region_detail")
+        : t("draft_games.header.veto_detail", { count: bestOf.value }),
+      box,
+      onClock: turn,
+    };
+  }
+
+  if (phase === "starting") {
+    const map = startMap.value;
+    return {
+      phase,
+      tone: "success",
+      hot: false,
+      title: t("draft_games.header.starting_title"),
+      detail: map
+        ? t("draft_games.header.starting_detail", { map: mapLabel(map) })
+        : t("draft_games.header.starting_detail_plain"),
+      box: map
+        ? {
+            kind: "map",
+            label: mapLabel(map),
+            patch: map.patch ?? null,
+            caption: t("draft_games.header.box_booting"),
+          }
+        : { kind: "vs" },
+      onClock: null,
+    };
+  }
+
+  const canceled =
+    props.room.status === "Canceled" || match?.status === "Canceled";
+  const choosing =
+    props.room.mode === "Captains" &&
+    ["Filled", "SelectingCaptains"].includes(props.room.status);
+  return {
+    phase,
+    tone: canceled ? "muted" : "success",
+    hot: false,
+    title: canceled
+      ? t("draft_games.header.canceled_title")
+      : choosing
+        ? t("draft_games.header.selecting_title")
+        : t("draft_games.header.creating_title"),
+    detail: canceled
+      ? ""
+      : choosing
+        ? t("draft_games.header.selecting_detail")
+        : t("draft_games.header.creating_detail"),
+    box: { kind: "vs" },
+    onClock: null,
+  };
+});
 </script>
 
 <template>
   <div class="draft-room space-y-4">
-    <DraftSettingsBar
-      :room="room"
-      :match="match"
-      @open-settings="settingsOpen = true"
-    />
-
     <DraftSettingsSheet
       v-if="isOrganizer"
       :open="settingsOpen"
       :room-id="room.id"
       @close="settingsOpen = false"
     />
-
-    <!-- Region availability flips with the fleet, not with anything the room
-         did, so the warning eases in rather than shoving the room down. -->
-    <Transition name="collapse">
-      <div v-if="!regionsAvailable && notStarted" class="grid grid-rows-[1fr]">
-        <div class="collapse-clip">
-          <Alert variant="destructive" class="bg-red-600 text-white">
-            <AlertTitle>
-              {{ $t("match.region_veto.no_regions_available") }}
-            </AlertTitle>
-            <AlertDescription>
-              {{ $t("draft_games.room.no_regions_available_description") }}
-            </AlertDescription>
-          </Alert>
-        </div>
-      </div>
-    </Transition>
 
     <div class="sr-only" aria-live="polite">{{ pickAnnouncement }}</div>
 
@@ -962,26 +1483,108 @@ const start = () => {
          chat rail only fits beside the board once the lobby itself is wide. -->
     <div class="draft-room-body">
       <div class="draft-main min-w-0 space-y-4">
-        <!-- Below the rail breakpoint the rail stacks under the board, so the
-             viewer's own join or invite prompt moves above it. -->
+        <DraftRoomHeader
+          :state="header"
+          :seats="{ filled: accepted.length, capacity: room.capacity }"
+          :sides="headerSides"
+          :wins-needed="winsNeeded"
+          :track="headerTrack"
+        >
+          <template #menu>
+            <MatchActions v-if="match" :match="match" />
+          </template>
+          <template v-if="headerPhase !== 'lobby' && headerActions.length" #cta>
+            <CheckIntoMatch
+              v-if="headerActions.includes('checkin')"
+              compact
+              :match="match"
+              :deadline="checkInDeadline"
+              :deadline-help="checkInDeadlineHelp"
+            />
+            <DraftHeaderAction
+              v-if="headerActions.includes('decline')"
+              variant="secondary"
+              :label="$t('draft_games.room.decline_invite')"
+              :action="() => respondInvite(false)"
+            />
+            <DraftHeaderAction
+              v-if="headerActions.includes('accept')"
+              :label="$t('draft_games.room.accept_invite')"
+              :action="() => respondInvite(true)"
+            />
+          </template>
+          <template #actions>
+            <HeightSwap axis="x">
+              <div
+                v-if="headerActions.length"
+                :key="headerActions.join('+')"
+                class="flex items-center gap-2"
+              >
+                <DraftHeaderAction
+                  v-if="headerActions.includes('decline')"
+                  variant="secondary"
+                  :label="$t('draft_games.room.decline_invite')"
+                  :action="() => respondInvite(false)"
+                />
+                <DraftHeaderAction
+                  v-if="headerActions.includes('accept')"
+                  :label="$t('draft_games.room.accept_invite')"
+                  :action="() => respondInvite(true)"
+                />
+                <DraftHeaderAction
+                  v-if="headerActions.includes('leave')"
+                  variant="secondary"
+                  :label="$t('draft_games.room.leave_waitlist')"
+                  :action="leaveWaitlist"
+                />
+                <DraftHeaderAction
+                  v-if="headerActions.includes('join')"
+                  :icon="UserPlus"
+                  :label="joinLabel"
+                  :action="joinRoom"
+                />
+                <DraftHeaderAction
+                  v-if="headerActions.includes('start')"
+                  :icon="Play"
+                  :label="startLabelText"
+                  :locked="!startReady || !regionsAvailable"
+                  :reason="header.detail"
+                  :action="start"
+                />
+              </div>
+            </HeightSwap>
+          </template>
+          <template #track>
+            <DraftPickTrack :cells="pickTrack" />
+          </template>
+        </DraftRoomHeader>
+
+        <!-- The room's settings lock once it starts, so the bar folds away as
+             the scorebug opens above it. -->
+        <Fold :open="notStarted">
+          <DraftSettingsBar
+            :room="room"
+            :match="match"
+            @open-settings="settingsOpen = true"
+          />
+        </Fold>
+
+        <!-- Region availability flips with the fleet, not with anything the room
+             did, so the warning eases in rather than shoving the room down. -->
         <Transition name="collapse">
           <div
-            v-if="hasSelfStatus"
-            class="draft-status-top grid grid-rows-[1fr]"
+            v-if="!regionsAvailable && notStarted"
+            class="grid grid-rows-[1fr]"
           >
             <div class="collapse-clip">
-              <DraftSelfStatus
-                inline
-                :can-join="canJoin"
-                :has-requested="hasRequested"
-                :is-waitlisted="isWaitlisted"
-                :is-invited="isInvited"
-                :lobby-full="lobbyFull"
-                :require-approval="!!room.require_approval"
-                @join="joinRoom"
-                @leave="leaveWaitlist"
-                @respond="respondInvite"
-              />
+              <Alert variant="destructive" class="bg-red-600 text-white">
+                <AlertTitle>
+                  {{ $t("match.region_veto.no_regions_available") }}
+                </AlertTitle>
+                <AlertDescription>
+                  {{ $t("draft_games.room.no_regions_available_description") }}
+                </AlertDescription>
+              </Alert>
             </div>
           </div>
         </Transition>
@@ -1000,6 +1603,7 @@ const start = () => {
               <MatchInfo
                 :match="match"
                 hide-booting
+                hide-check-in
                 :check-in-deadline="checkInDeadline"
                 :check-in-deadline-help="checkInDeadlineHelp"
               />
@@ -1007,25 +1611,42 @@ const start = () => {
           </div>
         </Transition>
 
-        <!-- Stages are wildly different heights (the veto board vs one small
-             starting card), so they trade through a measured height swap --
-             the column eases between them instead of collapsing hundreds of
-             pixels on the handoff frame. -->
-        <HeightSwap>
-          <div :key="stage" class="space-y-4">
+        <!-- One stage folds shut, then the next unfolds from the top: the
+             match page's hand-off from the veto to its map cards, played the
+             other way, so check-in to veto reads as one move. -->
+        <Transition
+          mode="out-in"
+          enter-active-class="stage-unfold"
+          leave-active-class="stage-fold"
+          enter-from-class="stage-unfold-from"
+          leave-to-class="stage-folded"
+        >
+          <div :key="stage" class="grid grid-rows-[1fr]">
             <div
               v-if="inVeto"
-              class="veto-stage rounded-xl border border-border bg-card/40 p-6 [backdrop-filter:blur(8px)]"
+              class="veto-stage relative rounded-xl border border-border bg-card/40 p-6 [backdrop-filter:blur(8px)]"
             >
+              <span
+                ref="vetoMeter"
+                class="veto-stage-meter"
+                :class="{ 'is-on': !!vetoDeadline, 'is-urgent': vetoUrgent }"
+                :style="{
+                  '--side':
+                    vetoTurn === 2 ? 'var(--tac-blue)' : 'var(--tac-amber)',
+                }"
+                aria-hidden="true"
+              ></span>
               <MatchRegionVeto
                 :match="match"
                 :match-id="room.match_id"
+                :status-line="false"
                 class="pb-6"
               />
               <MatchMapVeto
                 :match="match"
                 :match-id="room.match_id"
                 :stage="false"
+                :status-line="false"
                 :picks="vetoPicks"
               />
             </div>
@@ -1065,118 +1686,6 @@ const start = () => {
             </div>
 
             <div v-else-if="isTeamsMode" class="space-y-4">
-              <div
-                class="teams-matchup relative flex flex-col items-center gap-6 rounded-xl border border-border bg-card/40 p-8 [backdrop-filter:blur(8px)]"
-              >
-                <div
-                  class="grid w-full max-w-2xl grid-cols-[1fr_auto_1fr] items-center gap-4"
-                >
-                  <div class="team-slot amber">
-                    <span class="team-tick"></span>
-                    <span class="truncate">{{
-                      sideName(1) || $t("draft_games.room.team", { team: 1 })
-                    }}</span>
-                  </div>
-                  <div class="vs-badge">
-                    <Swords class="h-4 w-4" />
-                    {{ $t("draft_games.room.vs") }}
-                  </div>
-                  <div class="team-slot blue justify-end text-right">
-                    <span class="truncate">{{
-                      sideName(2) || $t("draft_games.room.team", { team: 2 })
-                    }}</span>
-                    <span class="team-tick blue-tick"></span>
-                  </div>
-                </div>
-
-                <!-- The hint and the CTA share one row height, so swapping between
-                 them never moves the rosters below. Check-in is the one state
-                 allowed to grow: it carries a button as well as the readout,
-                 and that happens once, at the very end, where a single settle
-                 costs less than making people leave to find it. -->
-                <div
-                  v-if="showStart || isCheckIn"
-                  class="flex min-h-14 w-full items-center justify-center"
-                >
-                  <Transition name="cta" mode="out-in">
-                    <!-- Check-in is asked for here, not only on the match page.
-                     The draft room is where everyone already is when the match
-                     reaches this state, and telling them "waiting for check in"
-                     without offering the button is a dead end -- they had to go
-                     find the match page to do the one thing being asked of
-                     them. CheckIntoMatch self-gates on can_check_in, so anyone
-                     who cannot (a coach, an organizer watching) still just sees
-                     the count. -->
-                    <div
-                      v-if="isCheckIn"
-                      key="checkin"
-                      class="flex w-full flex-col items-center gap-2.5"
-                    >
-                      <div
-                        class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-                      >
-                        <span
-                          class="relative grid h-2 w-2 place-items-center"
-                          aria-hidden="true"
-                        >
-                          <span
-                            class="absolute inset-0 animate-ping rounded-full bg-[hsl(var(--tac-amber)/0.5)]"
-                          ></span>
-                          <span
-                            class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
-                          ></span>
-                        </span>
-                        {{
-                          checkInProgress
-                            ? $t(
-                                "draft_games.room.checking_in",
-                                checkInProgress,
-                              )
-                            : $t("draft_games.room.match_starting")
-                        }}
-                      </div>
-
-                      <CheckIntoMatch
-                        v-if="match"
-                        :match="match"
-                        :deadline="checkInDeadline"
-                        :deadline-help="checkInDeadlineHelp"
-                        class="w-64"
-                      />
-                    </div>
-
-                    <Button
-                      v-else-if="startReady"
-                      key="start"
-                      variant="tactical"
-                      type="button"
-                      :disabled="isPending('start') || !regionsAvailable"
-                      :class="[
-                        tacticalCtaButtonClasses,
-                        'justify-center px-10 py-3.5 text-base',
-                      ]"
-                      @click="start"
-                    >
-                      <Spinner v-if="isPending('start')" class="h-5 w-5" />
-                      <Play v-else class="h-5 w-5" />
-                      {{
-                        isPending("start")
-                          ? $t("draft_games.room.starting")
-                          : $t("draft_games.room.start_match")
-                      }}
-                    </Button>
-
-                    <div
-                      v-else
-                      key="hint"
-                      class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
-                    >
-                      {{ $t(startHint) }}
-                    </div>
-                  </Transition>
-                </div>
-              </div>
-
               <div class="draft-pair-grid items-stretch">
                 <DraftTeamPanel
                   :title="
@@ -1363,135 +1872,6 @@ const start = () => {
             </div>
 
             <div v-else class="w-full space-y-4">
-              <!-- In Host mode this whole panel is the CTA: it does not exist until
-               both sides are filled, so it expands into place rather than
-               appearing under the cursor mid-assignment. -->
-              <Transition name="collapse">
-                <div
-                  v-if="isAssembling || isDrafting || (showStart && startReady)"
-                  class="grid grid-rows-[1fr]"
-                >
-                  <div class="collapse-clip">
-                    <div
-                      class="theater relative flex flex-col items-center gap-5 rounded-xl border border-border bg-card/40 p-5 [backdrop-filter:blur(8px)]"
-                    >
-                      <Transition name="cta" mode="out-in">
-                        <div
-                          v-if="isAssembling"
-                          key="assemble"
-                          class="flex flex-col items-center gap-4 py-3 text-center"
-                        >
-                          <div
-                            class="assemble-count font-mono text-5xl font-bold leading-none tabular-nums"
-                          >
-                            {{ accepted.length
-                            }}<span class="text-2xl text-muted-foreground/40"
-                              >/{{ room.capacity }}</span
-                            >
-                          </div>
-
-                          <div
-                            class="flex flex-wrap items-center justify-center gap-1.5"
-                          >
-                            <span
-                              v-for="slot in room.capacity"
-                              :key="slot"
-                              class="slot"
-                              :class="{
-                                'slot--filled': slot <= accepted.length,
-                                'slot--next': slot === accepted.length + 1,
-                              }"
-                            ></span>
-                          </div>
-
-                          <div
-                            v-if="accepted.length >= room.capacity"
-                            class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]"
-                          >
-                            {{ $t("draft_games.room.squad_ready") }}
-                          </div>
-                        </div>
-
-                        <div
-                          v-else-if="isDrafting"
-                          key="drafting"
-                          class="flex w-full flex-col gap-4"
-                        >
-                          <div class="flex items-center gap-4">
-                            <DraftClock
-                              compact
-                              :deadline="room.pick_deadline"
-                              :accent="clockAccent"
-                              :pulse="isMyTurn"
-                            />
-                            <div class="min-w-0 flex-1">
-                              <div
-                                class="status-banner font-sans text-sm font-bold uppercase tracking-[0.18em]"
-                                :class="isMyTurn ? 'is-mine' : ''"
-                                :style="{ '--accent': clockAccent }"
-                              >
-                                <template v-if="isMyTurn">
-                                  {{ $t("draft_games.room.your_pick") }}
-                                </template>
-                                <template v-else-if="currentCaptain">
-                                  {{
-                                    $t("draft_games.room.captain_picking", {
-                                      name: currentCaptain.player.name,
-                                    })
-                                  }}
-                                </template>
-                                <template v-else>
-                                  {{ $t(statusLabel) }}
-                                </template>
-                              </div>
-                              <div
-                                v-if="pattern.length"
-                                class="mt-1 text-xs leading-relaxed text-muted-foreground"
-                              >
-                                {{ pickProgress }}
-                                <template v-if="isMyTurn && autoPickName">
-                                  {{
-                                    $t("draft_games.room.auto_pick_hint", {
-                                      name: autoPickName,
-                                    })
-                                  }}
-                                </template>
-                              </div>
-                            </div>
-                          </div>
-                          <DraftPickTrack
-                            v-if="pickTrack.length"
-                            :cells="pickTrack"
-                          />
-                        </div>
-                      </Transition>
-
-                      <Transition name="cta">
-                        <Button
-                          v-if="showStart && startReady"
-                          variant="tactical"
-                          type="button"
-                          :disabled="isPending('start') || !regionsAvailable"
-                          :class="[
-                            tacticalCtaButtonClasses,
-                            'justify-center px-10 py-3.5 text-base',
-                          ]"
-                          @click="start"
-                        >
-                          <Spinner v-if="isPending('start')" class="h-5 w-5" />
-                          <Play v-else class="h-5 w-5" />
-                          {{
-                            isPending("start")
-                              ? $t("draft_games.room.starting")
-                              : $t("draft_games.room.start_match")
-                          }}
-                        </Button>
-                      </Transition>
-                    </div>
-                  </div>
-                </div>
-              </Transition>
-
               <!-- Pug lobbies have no sides until the draft assigns them, so the
                roster columns grow in instead of appearing under the pool. -->
               <Transition name="collapse">
@@ -1556,53 +1936,6 @@ const start = () => {
                         @swap="swapInBackup"
                         @kick="kick"
                       />
-                    </div>
-                  </div>
-                </div>
-              </Transition>
-
-              <!-- Both hints are transient instructions -- they retire the moment
-               the thing they ask for is done, so they fold away instead of
-               blinking out from under the rosters. -->
-              <Transition name="collapse">
-                <div
-                  v-if="isHostAssigning && isOrganizer"
-                  class="grid grid-rows-[1fr]"
-                >
-                  <div class="collapse-clip">
-                    <div
-                      class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
-                    >
-                      <div
-                        class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
-                      >
-                        {{ $t("draft_games.room.host_assigning") }}
-                      </div>
-                      <div class="text-xs text-muted-foreground/70">
-                        {{ $t("draft_games.room.host_hint") }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Transition>
-
-              <Transition name="collapse">
-                <div
-                  v-if="canDesignateCaptain && !manualCaptainsReady"
-                  class="grid grid-rows-[1fr]"
-                >
-                  <div class="collapse-clip">
-                    <div
-                      class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
-                    >
-                      <div
-                        class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
-                      >
-                        {{ $t("draft_games.room.choose_captains") }}
-                      </div>
-                      <div class="text-xs text-muted-foreground/70">
-                        {{ $t("draft_games.room.choose_captains_hint") }}
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1879,22 +2212,6 @@ const start = () => {
               </Transition>
             </div>
           </div>
-        </HeightSwap>
-
-        <Transition name="collapse">
-          <div v-if="hasPicks && !isDrafting" class="grid grid-rows-[1fr]">
-            <div class="collapse-clip">
-              <div class="rounded-xl border border-border bg-card/40 p-4">
-                <h3
-                  class="mb-3 flex items-center gap-2 font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-                >
-                  <span class="pool-tick"></span>
-                  {{ $t("draft_games.room.draft_log") }}
-                </h3>
-                <DraftPickTrack :cells="pickTrack" />
-              </div>
-            </div>
-          </div>
         </Transition>
 
         <Transition name="cta">
@@ -1930,19 +2247,6 @@ const start = () => {
            than above the room: they appear and disappear as the lobby fills,
            and full width they shoved the whole roster down every time. -->
       <div class="draft-rail flex flex-col">
-        <DraftSelfStatus
-          class="draft-status-rail"
-          :can-join="canJoin"
-          :has-requested="hasRequested"
-          :is-waitlisted="isWaitlisted"
-          :is-invited="isInvited"
-          :lobby-full="lobbyFull"
-          :require-approval="!!room.require_approval"
-          @join="joinRoom"
-          @leave="leaveWaitlist"
-          @respond="respondInvite"
-        />
-
         <!-- Capped rather than left to fill the rail. The rail is a full
              viewport tall but starts well down the page, and the page is too
              short to scroll the remainder into view, so anything pinned to the
@@ -2095,6 +2399,45 @@ const start = () => {
 </template>
 
 <style scoped>
+.stage-fold {
+  transition:
+    grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.18s ease-in;
+}
+.stage-unfold {
+  transition: grid-template-rows 0.46s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stage-fold > *,
+.stage-unfold > * {
+  min-height: 0;
+  overflow: hidden;
+}
+.stage-folded {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.stage-unfold-from {
+  grid-template-rows: 0fr;
+}
+.veto-stage-meter {
+  position: absolute;
+  top: -1px;
+  inset-inline: 0.75rem;
+  height: 2px;
+  border-radius: 2px;
+  background: hsl(var(--side));
+  transform-origin: left;
+  transform: scaleX(var(--countdown, 0));
+  opacity: 0;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.veto-stage-meter.is-on {
+  opacity: 1;
+}
+.veto-stage-meter.is-urgent {
+  background: hsl(var(--destructive));
+}
 .pool-tick {
   display: inline-block;
   height: 2px;
@@ -2166,9 +2509,6 @@ const start = () => {
   gap: 0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
 }
-.draft-status-rail {
-  display: none;
-}
 .draft-pickbar {
   display: flex;
 }
@@ -2196,110 +2536,6 @@ const start = () => {
     min-height: 380px;
     max-height: 34rem;
     flex: 1 1 0%;
-  }
-  .draft-status-top {
-    display: none;
-  }
-  .draft-status-top + * {
-    margin-top: 0 !important;
-  }
-  .draft-status-rail {
-    display: block;
-  }
-}
-.team-slot {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  min-width: 0;
-  font-family: var(--font-sans);
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.team-slot .team-tick {
-  height: 22px;
-  width: 4px;
-  border-radius: 2px;
-  background: hsl(var(--tac-amber));
-  box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.6);
-}
-.team-slot .blue-tick {
-  background: hsl(var(--tac-blue));
-  box-shadow: 0 0 8px hsl(var(--tac-blue) / 0.6);
-}
-.vs-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: hsl(var(--tac-amber));
-  background: hsl(var(--tac-amber) / 0.12);
-  border: 1px solid hsl(var(--tac-amber) / 0.4);
-}
-.theater::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 0.75rem;
-  background: radial-gradient(
-    ellipse at top,
-    hsl(var(--tac-amber) / 0.07),
-    transparent 60%
-  );
-  pointer-events: none;
-}
-.assemble-count {
-  text-shadow: 0 0 24px hsl(var(--tac-amber) / 0.3);
-}
-.slot {
-  height: 6px;
-  width: 18px;
-  border-radius: 2px;
-  border: 1px solid hsl(var(--border));
-  background: transparent;
-  transition:
-    background 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-.slot--filled {
-  border-color: hsl(var(--tac-amber));
-  background: hsl(var(--tac-amber));
-  box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.55);
-}
-.slot--next {
-  border-color: hsl(var(--tac-amber) / 0.6);
-  animation: slot-pulse 1.4s ease-in-out infinite;
-}
-@keyframes slot-pulse {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-.status-banner {
-  color: hsl(var(--muted-foreground));
-}
-.status-banner.is-mine {
-  color: hsl(var(--accent));
-  text-shadow: 0 0 16px hsl(var(--accent) / 0.5);
-  animation: banner-flash 1.2s ease-in-out infinite;
-}
-@keyframes banner-flash {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
   }
 }
 .dock-toggle {
@@ -2377,15 +2613,16 @@ const start = () => {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .slot--next,
-  .status-banner.is-mine,
   .starting-map {
     animation: none;
   }
   .collapse-enter-active,
   .collapse-leave-active,
   .cta-enter-active,
-  .cta-leave-active {
+  .cta-leave-active,
+  .stage-fold,
+  .stage-unfold,
+  .veto-stage-meter {
     transition-duration: 1ms;
   }
 }

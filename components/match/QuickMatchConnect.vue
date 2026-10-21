@@ -4,7 +4,214 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 </script>
 
 <template>
-  <div v-if="showConnectPanel">
+  <!-- The match page's strip along the foot of its header: the same states
+       as the card, in a row, with the server's address masked until asked
+       for so a stream or a screenshot never carries it by accident. -->
+  <Transition
+    v-if="variant === 'bar'"
+    enter-active-class="mcb-fold"
+    leave-active-class="mcb-fold"
+    enter-from-class="mcb-folded"
+    leave-to-class="mcb-folded"
+  >
+    <div v-if="showBar" class="grid grid-rows-[1fr]">
+      <div class="min-h-0">
+        <div
+          class="relative flex items-center gap-3 border-t border-white/[0.06] bg-black/25 px-4 py-3 max-sm:flex-wrap md:px-6"
+        >
+          <Transition
+            enter-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+            leave-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
+            <span
+              v-if="showBooting"
+              class="mcb-progress"
+              aria-hidden="true"
+            ></span>
+          </Transition>
+          <img
+            v-if="currentMap?.poster"
+            :src="currentMap.poster"
+            alt=""
+            class="h-10 w-16 shrink-0 rounded-md object-cover ring-1 ring-inset ring-white/10"
+          />
+          <!-- The words flip over in place, a departures board turning from
+               booting to ready, while the spinner's slot closes behind it. -->
+          <div class="grid min-w-0 flex-1 gap-0.5" role="status">
+            <span class="flex min-w-0 items-center text-sm font-semibold">
+              <span
+                class="mcb-icon-slot"
+                :class="{ 'is-open': showOffline || showBooting }"
+              >
+                <Transition
+                  enter-active-class="mcb-icon-in"
+                  leave-active-class="mcb-icon-out"
+                  enter-from-class="mcb-icon-from"
+                  leave-to-class="mcb-icon-from"
+                >
+                  <span v-if="showOffline" key="offline" class="mcb-icon">
+                    <AlertTriangle class="size-3.5 text-destructive" />
+                  </span>
+                  <span v-else-if="showBooting" key="booting" class="mcb-icon">
+                    <Spinner class="size-3.5 text-[hsl(var(--tac-amber))]" />
+                  </span>
+                </Transition>
+              </span>
+              <AnimatedStat
+                :value="title"
+                :stagger="30"
+                class="whitespace-nowrap"
+                :class="showOffline && 'text-destructive'"
+              />
+              <span
+                v-if="facts"
+                class="ml-1 truncate font-normal text-muted-foreground"
+              >
+                · {{ facts }}
+              </span>
+            </span>
+            <!-- The second line changes shape between booting and ready, so it
+                 fades across rather than flipping letter for letter. -->
+            <Transition
+              mode="out-in"
+              enter-active-class="transition-opacity [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+              leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+              enter-from-class="opacity-0"
+              leave-to-class="opacity-0"
+            >
+              <span
+                v-if="showBooting && match.server_error"
+                key="error"
+                class="whitespace-pre-wrap break-words text-xs text-[hsl(var(--tac-amber))]"
+              >
+                {{ match.server_error }}
+              </span>
+              <span
+                v-else-if="detail || showConnect"
+                :key="phase"
+                class="flex h-[18px] min-w-0 items-center gap-2 text-xs leading-[18px] text-muted-foreground"
+              >
+                <span
+                  v-if="detail"
+                  class="min-w-0 shrink-0 overflow-hidden whitespace-nowrap"
+                  :class="showConnect && 'font-mono'"
+                >
+                  <AnimatedStat :value="detail" :stagger="12" />
+                </span>
+                <template v-if="showConnect">
+                  <!-- One width whether masked or shown (a mono character is
+                       1ch), so the eye beside it never moves. Masked, the address
+                       is not in the page at all. -->
+                  <span
+                    class="grid min-w-0 shrink items-center overflow-hidden whitespace-nowrap font-mono"
+                    :style="{ width: `${address.length}ch` }"
+                  >
+                    <Transition
+                      enter-active-class="transition-opacity [transition-duration:240ms] motion-reduce:![transition-duration:1ms]"
+                      leave-active-class="transition-opacity [transition-duration:160ms] motion-reduce:![transition-duration:1ms]"
+                      enter-from-class="opacity-0"
+                      leave-to-class="opacity-0"
+                    >
+                      <span
+                        v-if="!revealed"
+                        class="mcb-redact [grid-area:1/1]"
+                        aria-hidden="true"
+                      ></span>
+                    </Transition>
+                    <AnimatedStat
+                      :value="revealed ? address : ''"
+                      :stagger="12"
+                      class="[grid-area:1/1]"
+                    />
+                  </span>
+                  <button
+                    type="button"
+                    class="mcb-icon-button relative grid size-[18px] shrink-0 place-items-center rounded text-muted-foreground"
+                    :aria-label="
+                      revealed
+                        ? $t('match.server.hide_address')
+                        : $t('match.server.show_address')
+                    "
+                    :aria-pressed="revealed"
+                    @click="revealed = !revealed"
+                  >
+                    <EyeOff v-if="revealed" class="size-3.5" />
+                    <Eye v-else class="size-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    class="mcb-icon-button relative grid size-[18px] shrink-0 place-items-center rounded text-muted-foreground"
+                    :aria-label="$t('match.server.copy_connect')"
+                    @click="copyConnect"
+                  >
+                    <Check
+                      v-if="copied"
+                      class="size-3.5 text-[hsl(var(--tac-amber))]"
+                    />
+                    <Copy v-else class="size-3.5" />
+                  </button>
+                </template>
+              </span>
+            </Transition>
+          </div>
+
+          <Transition
+            mode="out-in"
+            enter-active-class="transition-opacity [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+            leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
+            <div
+              v-if="showTv || showPlayerJoin"
+              :key="phase"
+              class="flex items-center gap-2 max-sm:w-full"
+            >
+              <ClipBoard
+                v-if="showTv"
+                :data="match.tv_connection_string"
+                class="h-10 w-auto shrink-0 px-3 max-sm:flex-1"
+              >
+                <span class="flex items-center gap-2">
+                  <Tv class="size-4" />
+                  {{ $t("match.server.join_tv_stream") }}
+                </span>
+              </ClipBoard>
+              <template v-if="showPlayerJoin">
+                <Button
+                  variant="outline"
+                  class="qmc-join h-10 px-5 max-sm:flex-1"
+                  :class="[
+                    showConnect ? 'tac-amber-cta' : 'is-locked',
+                    { 'is-calling': showConnect && !inGame && !isLoading },
+                  ]"
+                  :disabled="!showConnect"
+                  :loading="isLoading"
+                  @click="join"
+                >
+                  <span v-if="showConnect" class="relative flex size-2">
+                    <span
+                      class="absolute inline-flex size-full animate-ping rounded-full motion-reduce:animate-none"
+                      :class="inGame ? 'bg-green-500' : 'bg-red-500'"
+                    ></span>
+                    <span
+                      class="relative inline-flex size-2 rounded-full"
+                      :class="inGame ? 'bg-green-500' : 'bg-red-500'"
+                    ></span>
+                  </span>
+                  <span>{{ $t("match.server.join_server") }}</span>
+                  <ExternalLink class="size-4" />
+                </Button>
+              </template>
+            </div>
+          </Transition>
+        </div>
+      </div>
+    </div>
+  </Transition>
+  <div v-else-if="showConnectPanel">
     <template v-if="isLive && canWatch && !match.tv_connection_string">
       <div
         class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 mb-2"
@@ -238,10 +445,146 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
     opacity: 0;
   }
 }
+.mcb-fold {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mcb-fold > * {
+  overflow: hidden;
+}
+.mcb-folded {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.mcb-progress {
+  position: absolute;
+  inset-inline: 0;
+  top: -1px;
+  height: 2px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mcb-progress::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 30%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--tac-amber)),
+    transparent
+  );
+  animation: mcb-slide 1.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes mcb-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+/* The status icon's slot is open only while there is one to show, and it
+   closes as the spinner leaves, so the title slides into its place. */
+.mcb-icon-slot {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 0;
+  margin-right: 0;
+  transition:
+    width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    margin-right 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mcb-icon-slot.is-open {
+  width: 0.875rem;
+  margin-right: 0.5rem;
+}
+.mcb-icon {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+}
+.mcb-icon-in {
+  transition:
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mcb-icon-out {
+  transition:
+    opacity 0.16s ease-in,
+    transform 0.16s ease-in;
+}
+.mcb-icon-from {
+  opacity: 0;
+  transform: scale(0.4);
+}
+/* A redaction bar the address's own width, striped so it reads as hidden
+   rather than empty. */
+.mcb-redact {
+  height: 10px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    135deg,
+    hsl(var(--muted-foreground) / 0.34) 0 3px,
+    hsl(var(--muted-foreground) / 0.16) 3px 6px
+  );
+}
+.mcb-icon-button::before {
+  content: "";
+  position: absolute;
+  inset: -8px -4px;
+}
+.mcb-icon-button {
+  transition: color 0.15s ease-out;
+}
+.mcb-icon-button:focus-visible {
+  outline: 2px solid hsl(var(--foreground) / 0.8);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mcb-icon-button:hover {
+    color: hsl(var(--foreground));
+  }
+}
+.qmc-join.is-locked:disabled {
+  opacity: 1;
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
+  background: hsl(var(--muted) / 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mcb-icon-in,
+  .mcb-icon-out,
+  .mcb-icon-slot {
+    transition-duration: 1ms;
+  }
+  .mcb-fold {
+    transition-duration: 1ms;
+  }
+  .mcb-progress::after {
+    animation: none;
+    width: 100%;
+    opacity: 0.35;
+  }
+}
 </style>
 
 <script lang="ts">
-import { ExternalLink, Copy, Tv, AlertTriangle } from "lucide-vue-next";
+import {
+  ExternalLink,
+  Check,
+  Copy,
+  Eye,
+  EyeOff,
+  Tv,
+  AlertTriangle,
+} from "lucide-vue-next";
+import mapLabel from "~/utilities/mapLabel";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import { Spinner } from "~/components/ui/spinner";
 import { Button } from "~/components/ui/button";
 import ClipBoard from "~/components/ClipBoard.vue";
@@ -255,12 +598,21 @@ export default {
     Copy,
     Tv,
     AlertTriangle,
+    AnimatedStat,
+    Check,
+    Eye,
+    EyeOff,
     ClipBoard,
   },
   props: {
     match: {
       type: Object,
       required: true,
+    },
+    // "bar" lays the same states out as the strip along the match header.
+    variant: {
+      type: String,
+      default: "card",
     },
     // The surrounding UI shows the server starting (the veto's start stage):
     // no booting spinner here, and the connect box waits until the maps have
@@ -279,7 +631,12 @@ export default {
   data() {
     return {
       isLoading: false,
+      revealed: false,
+      copied: false,
     };
+  },
+  beforeUnmount() {
+    clearTimeout(this.copiedTimer);
   },
   methods: {
     handleClick() {
@@ -287,6 +644,24 @@ export default {
       setTimeout(() => {
         this.isLoading = false;
       }, 10000);
+    },
+    // Opened from a click rather than a link, so hovering Join Server never
+    // puts the address in the browser's status bar.
+    join() {
+      this.handleClick();
+      window.location.href = this.match.connection_link;
+    },
+    async copyConnect() {
+      try {
+        await navigator.clipboard.writeText(this.match.connection_string);
+      } catch {
+        return;
+      }
+      this.copied = true;
+      clearTimeout(this.copiedTimer);
+      this.copiedTimer = setTimeout(() => {
+        this.copied = false;
+      }, 1500);
     },
   },
   computed: {
@@ -384,6 +759,85 @@ export default {
           inGame?: boolean;
         }) || undefined;
       return !!player?.inGame;
+    },
+    phase() {
+      if (this.showOffline) {
+        return "offline";
+      }
+      return this.showBooting ? "booting" : "ready";
+    },
+    detail() {
+      if (this.showBooting) {
+        return this.$t("match.veto.start.booting_line");
+      }
+      if (this.showTvDelay) {
+        return this.$t("match.server.tv_delay", {
+          delay: this.match.options.tv_delay,
+        });
+      }
+      if (this.showConnect) {
+        return this.connectParts.prefix;
+      }
+      return "";
+    },
+    // "connect" stays readable; everything after it is the part to keep off
+    // a stream.
+    connectParts() {
+      const command = this.match.connection_string ?? "";
+      const match = command.match(/^(connect)\s+(.*)$/i);
+      return match
+        ? { prefix: match[1], address: match[2] }
+        : { prefix: "", address: command };
+    },
+    address() {
+      return this.connectParts.address;
+    },
+    currentMap() {
+      const maps = this.match.match_maps ?? [];
+      return (maps.find((entry: any) => entry.is_current_map) ?? maps[0])?.map;
+    },
+    facts() {
+      return [
+        this.currentMap ? mapLabel(this.currentMap) : "",
+        this.match.e_region?.description ?? this.match.region ?? "",
+      ]
+        .filter(Boolean)
+        .join(" · ");
+    },
+    title() {
+      if (this.showOffline) {
+        return this.$t("match.server.offline");
+      }
+      if (this.showBooting) {
+        return this.$t("match.veto.start.booting");
+      }
+      return this.$t("match.server.ready");
+    },
+    showTvDelay() {
+      return this.isLive && this.canWatch && !this.match.tv_connection_string;
+    },
+    showTv() {
+      return (
+        this.isLive &&
+        !!this.match.tv_connection_string &&
+        !this.match.connection_link
+      );
+    },
+    // A player's Join Server holds its place, locked, while the server boots.
+    showPlayerJoin() {
+      return (
+        !!this.match.connection_link || (this.isInLineup && this.showBooting)
+      );
+    },
+    showBar() {
+      return (
+        this.showConnectPanel &&
+        (this.showOffline ||
+          this.showBooting ||
+          this.showConnect ||
+          this.showTv ||
+          this.showTvDelay)
+      );
     },
   },
 };

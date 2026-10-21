@@ -339,7 +339,7 @@ const ledgerDecider = computed(
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 4px;
+  padding: 0 12px;
   border-radius: 6px;
   font-size: 11px;
   font-weight: 600;
@@ -349,8 +349,8 @@ const ledgerDecider = computed(
 }
 .vb-tok .n {
   position: absolute;
-  top: 2px;
-  left: 4px;
+  top: 4px;
+  left: 6px;
   font-size: 8px;
   line-height: 1;
   color: var(--vb-faint);

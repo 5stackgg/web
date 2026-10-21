@@ -6,6 +6,7 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
 import MatchHeader from "~/components/match/MatchHeader.vue";
 import MatchHeaderVeto from "~/components/match/MatchHeaderVeto.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
+import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import MatchMapSlots from "~/components/match/MatchMapSlots.vue";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
@@ -285,6 +286,11 @@ const segment =
                 <MatchHeaderVeto :match="match" :picks="picks" />
               </template>
             </MatchHeader>
+            <QuickMatchConnect
+              variant="bar"
+              :match="match"
+              :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
+            />
           </section>
         </PageTransition>
 
@@ -293,10 +299,7 @@ const segment =
         >
           <div class="grid min-w-0 grid-cols-1 gap-y-4 md:gap-y-6">
             <PageTransition :delay="100">
-              <MatchInfo
-                :match="match"
-                :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
-              />
+              <MatchInfo :match="match" hide-connect />
             </PageTransition>
 
             <PageTransition :delay="200">

@@ -14,7 +14,7 @@
 
 # The replay stage's prep is the browser's own TypeScript; it is bundled here,
 # once, so the job carries one .mjs and no esbuild.
-FROM node:24-bookworm-slim AS prep
+FROM node:24.22.1-bookworm-slim AS prep
 
 WORKDIR /opt/5stack
 
@@ -26,7 +26,7 @@ COPY scripts/replay-stage/build-prep.mjs ./scripts/replay-stage/
 
 RUN node scripts/replay-stage/build-prep.mjs --bundle /opt/5stack/prep/prep.mjs
 
-FROM node:24-bookworm-slim
+FROM node:24.22.1-bookworm-slim
 
 # Pinned: a new Source2Viewer can change the glTF export (it already moved the
 # physics group names from materials to meshes once), so the version moves by

@@ -108,6 +108,27 @@ describe("map pool editor", () => {
       .find((display) => display.props("map").name === name)
       ?.element.closest("div.rounded-lg.overflow-hidden");
 
+  it("steps back to the map pools list it was opened from", async () => {
+    const wrapper = await mountPage();
+    window.history.replaceState(
+      { ...window.history.state, back: "/settings/application/map-pools" },
+      "",
+    );
+    const router = useRouter();
+    const back = vi.spyOn(router, "back").mockImplementation(() => {});
+    const push = vi
+      .spyOn(router, "push")
+      .mockImplementation(async () => undefined);
+
+    await wrapper
+      .get('a[href="/settings/application/map-pools"]')
+      .trigger("click");
+
+    expect(back).toHaveBeenCalledTimes(1);
+    expect(push).not.toHaveBeenCalled();
+    window.history.replaceState({ ...window.history.state, back: null }, "");
+  });
+
   it("shows a map that is in the pool but no longer enabled for its mode, selected", async () => {
     const wrapper = await mountPage();
 

@@ -29,6 +29,7 @@ import SystemStatus from "./SystemStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
 import MobileHubButton from "./MobileHubButton.vue";
+import HistoryBackButton from "./HistoryBackButton.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { loginLinks } from "~/utilities/loginLinks";
 import { cn } from "@/lib/utils";
@@ -212,6 +213,10 @@ const UtilityPracticeNav = defineAsyncComponent({
       class="relative flex h-14 min-h-14 items-center justify-between gap-1 px-2 sm:h-16 sm:min-h-16 sm:gap-4 sm:px-4"
     >
       <div class="flex min-w-0 items-center gap-1 sm:gap-3">
+        <HistoryBackButton
+          v-if="isMobile"
+          class="text-topnav-foreground hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]"
+        />
         <NuxtLink
           v-if="!isMobile"
           :to="homePath"

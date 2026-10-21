@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import BackLink from "~/components/common/BackLink.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import TournamentStageBuilder from "~/components/tournament/TournamentStageBuilder.vue";
 import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
@@ -170,7 +171,7 @@ const chatRoomUnreadPopTransition = {
        page while its queries land, then dissolves into it: no blank wait. -->
   <FadeSwap>
     <div v-if="tournament" key="tournament">
-      <NuxtLink
+      <BackLink
         v-if="leagueSeasonId"
         :to="{
           name: 'league-seasons-seasonId',
@@ -180,7 +181,7 @@ const chatRoomUnreadPopTransition = {
       >
         <ArrowLeft class="h-4 w-4" />
         {{ $t("tournament.page.back_to_league") }}
-      </NuxtLink>
+      </BackLink>
       <Tabs v-model="activeTab" default-value="overview">
         <PageTransition>
           <header :class="tournamentHeroClasses">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ArrowLeft } from "lucide-vue-next";
+import BackLink from "~/components/common/BackLink.vue";
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import ManageSection from "~/components/common/ManageSection.vue";
@@ -8,13 +9,13 @@ import ManageSection from "~/components/common/ManageSection.vue";
 <template>
   <PageTransition :delay="0">
     <div class="grid gap-4">
-      <NuxtLink
+      <BackLink
         to="/settings/application/map-pools"
         class="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft class="h-4 w-4" />
         {{ $t("pages.map_pools.title") }}
-      </NuxtLink>
+      </BackLink>
       <ManageSection
         v-if="map_pools_by_pk"
         :label="$t('pages.map_pools.pool.modify_maps')"

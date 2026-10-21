@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from "~/components/ui/button";
+import BackLink from "~/components/common/BackLink.vue";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -82,10 +83,10 @@ const goldButton = [createButtonClasses, "w-full"];
         size="sm"
         class="-ml-2 h-8 gap-1.5 text-muted-foreground hover:text-foreground"
       >
-        <NuxtLink to="/plugins">
+        <BackLink to="/plugins">
           <ArrowLeft class="h-4 w-4" />
           {{ $t("pages.plugins.back") }}
-        </NuxtLink>
+        </BackLink>
       </Button>
 
       <div class="flex flex-wrap items-start gap-3.5">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { Button } from "~/components/ui/button";
+import BackLink from "~/components/common/BackLink.vue";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -233,12 +234,12 @@ onBeforeUnmount(() => {
 <template>
   <PageTransition>
     <div class="flex items-center justify-between">
-      <NuxtLink to="/news">
+      <BackLink to="/news">
         <Button variant="ghost" size="sm" class="gap-1">
           <ArrowLeft class="h-4 w-4" />
           {{ newsLabel || $t("pages.news.title") }}
         </Button>
-      </NuxtLink>
+      </BackLink>
       <div v-if="!loading" class="flex items-center gap-4">
         <Button
           variant="outline"

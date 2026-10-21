@@ -12186,6 +12186,7 @@
     },
     "gifs": {
       "label": "GIF",
+      "play": "GIF を再生",
       "open": "GIF を送信",
       "search": "GIPHY で検索",
       "command_search_for": "GIPHYで「{term}」を検索",

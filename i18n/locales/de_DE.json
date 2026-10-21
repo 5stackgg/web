@@ -12186,6 +12186,7 @@
     },
     "gifs": {
       "label": "GIF",
+      "play": "GIF abspielen",
       "open": "GIF senden",
       "search": "GIPHY durchsuchen",
       "command_search_for": "GIPHY nach „{term}“ durchsuchen",

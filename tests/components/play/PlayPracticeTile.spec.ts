@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { reactive } from "vue";
+import { nextTick, reactive } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlayPracticeTile from "~/components/play/PlayPracticeTile.vue";
@@ -86,11 +86,11 @@ const settle = async (ms = 20) => {
   await flushPromises();
 };
 
-async function mountTile() {
+async function mountTile(stubs: Record<string, boolean> = {}) {
   const wrapper = await mountSuspended(PlayPracticeTile, {
     attachTo: document.body,
     global: {
-      stubs: { PlayerSearch: true, RconCommander: true },
+      stubs: { PlayerSearch: true, RconCommander: true, ...stubs },
     },
   });
   mounted.push(wrapper);
@@ -222,7 +222,36 @@ describe("PlayPracticeTile", () => {
     expect(
       wrapper.find('a[href="steam://connect/1.2.3.4:27015/x"]').exists(),
     ).toBe(false);
-    expect(buttonNamed(wrapper, "Stop Server")).toBeTruthy();
+  });
+
+  it("keeps Manage within reach while your server changes map", async () => {
+    const wrapper = await mountTile();
+    push(sessionRow({ map_changing_at: "2026-10-21T12:00:00Z" }));
+    await settle(400);
+
+    expect(buttonNamed(wrapper, "Manage")).toBeTruthy();
+    expect(buttonNamed(wrapper, "Stop")).toBeTruthy();
+    expect(
+      wrapper.find('a[href="steam://connect/1.2.3.4:27015/x"]').exists(),
+    ).toBe(false);
+  });
+
+  it("lets the old state label fade out pinned to its right edge", async () => {
+    const wrapper = await mountTile({ transition: false });
+    push(sessionRow());
+    await settle(400);
+
+    push(sessionRow({ map_changing_at: "2026-10-21T12:00:00Z" }));
+    await nextTick();
+    await nextTick();
+
+    const leaving = wrapper
+      .findAll("span")
+      .find((span) => span.text() === "Ready to join");
+    expect(leaving?.classes()).toEqual(
+      expect.arrayContaining(["absolute", "right-0", "top-0"]),
+    );
+    expect(leaving?.classes()).not.toContain("inset-0");
   });
 
   it("offers Join again once the switch has landed", async () => {

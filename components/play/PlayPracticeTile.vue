@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Spinner } from "~/components/ui/spinner";
-import { FadeSwap, HeightSwap } from "~/components/ui/transitions";
+import { HeightSwap } from "~/components/ui/transitions";
 import { toast } from "~/components/ui/toast";
 import ClipBoard from "~/components/ClipBoard.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
@@ -250,19 +250,28 @@ const touchTarget =
           <span class="min-w-0 truncate text-[13.5px] font-medium">
             {{ sessionMap }}
           </span>
-          <FadeSwap class="ml-auto shrink-0">
-            <span
-              :key="tileState"
-              class="block whitespace-nowrap text-right font-mono text-[0.55rem] uppercase tracking-[0.14em]"
-              :class="
-                tileState === 'ready'
-                  ? 'text-[hsl(var(--tac-amber))]'
-                  : 'text-muted-foreground'
-              "
+          <!-- Not FadeSwap: its leaver takes the entering label's width, and a
+               longer label overflowing that box ignores text-right. -->
+          <span class="relative ml-auto shrink-0">
+            <Transition
+              enter-active-class="transition-opacity duration-300 ease-out motion-reduce:!duration-0"
+              leave-active-class="absolute right-0 top-0 transition-opacity duration-200 ease-in motion-reduce:!duration-0"
+              enter-from-class="opacity-0"
+              leave-to-class="opacity-0"
             >
-              {{ $t(stateLabels[tileState]) }}
-            </span>
-          </FadeSwap>
+              <span
+                :key="tileState"
+                class="block whitespace-nowrap font-mono text-[0.55rem] uppercase tracking-[0.14em]"
+                :class="
+                  tileState === 'ready'
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground'
+                "
+              >
+                {{ $t(stateLabels[tileState]) }}
+              </span>
+            </Transition>
+          </span>
         </div>
 
         <HeightSwap>
@@ -345,7 +354,7 @@ const touchTarget =
       </div>
 
       <div
-        v-else-if="tileState !== 'ready'"
+        v-else-if="tileState === 'booting'"
         key="booting"
         class="flex flex-wrap items-center gap-2 pt-1"
       >
@@ -364,9 +373,13 @@ const touchTarget =
         </Button>
       </div>
 
-      <div v-else key="ready" class="flex flex-wrap items-center gap-2 pt-1">
+      <div
+        v-else
+        :key="tileState"
+        class="flex flex-wrap items-center gap-2 pt-1"
+      >
         <Button
-          v-if="practice.connectionLink"
+          v-if="tileState === 'ready' && practice.connectionLink"
           as="a"
           :href="practice.connectionLink"
           size="sm"
@@ -381,7 +394,7 @@ const touchTarget =
           {{ $t("server.join_server") }}
         </Button>
         <ClipBoard
-          v-if="practice.connectionString"
+          v-if="tileState === 'ready' && practice.connectionString"
           :data="practice.connectionString"
           :class="['h-8 w-8 shrink-0', touchTarget, 'after:-inset-x-1.5']"
           :title="practice.connectionString"

@@ -5,13 +5,20 @@ import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import VetoRail from "~/components/match/VetoRail.vue";
 import { useAuthStore } from "~/stores/AuthStore";
-import mapLabel from "~/utilities/mapLabel";
-import { mapVetoSteps, vetoLineups, viewerSlot } from "~/utilities/vetoLineups";
+import {
+  mapVetoItems,
+  mapVetoSteps,
+  vetoLineups,
+  viewerSlot,
+} from "~/utilities/vetoLineups";
 import { vetoBoardUp } from "~/utilities/vetoStage";
 import { vetoHandoffPhase } from "~/composables/useVetoHandoff";
 
 const props = defineProps<{
   match: any;
+  // The veto's picks when the caller already has them (the FAQ's demo
+  // match); otherwise they are fetched.
+  picks?: any[];
 }>();
 
 const { t } = useI18n();
@@ -43,9 +50,11 @@ const { result } = useQuery(
     }
   `,
   () => ({ matchId: props.match.id }),
-  () => ({ enabled: vetoed.value }),
+  () => ({ enabled: vetoed.value && !props.picks }),
 );
-const picks = computed(() => result.value?.match_map_veto_picks ?? []);
+const picks = computed(
+  () => props.picks ?? result.value?.match_map_veto_picks ?? [],
+);
 
 const arriving = computed(
   () => vetoHandoffPhase(props.match.id) === "arriving",
@@ -59,14 +68,7 @@ const show = computed(() => {
   return arriving.value || picks.value.length > 0;
 });
 
-const items = computed(() =>
-  (props.match.options?.map_pool?.maps ?? []).map((map: any) => ({
-    id: map.id,
-    label: mapLabel(map),
-    poster: map.poster,
-    patch: map.patch,
-  })),
-);
+const items = computed(() => mapVetoItems(props.match));
 const steps = computed(() => mapVetoSteps(props.match, picks.value));
 const lineups = computed(() => vetoLineups(props.match, t));
 const viewerLineup = computed(() =>

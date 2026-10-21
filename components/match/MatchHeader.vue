@@ -309,7 +309,9 @@ const resultText = computed(() =>
           :source="match.source"
           class="self-stretch px-[0.7rem] text-[0.62rem] leading-none"
         />
-        <MatchActions :match="match" />
+        <slot name="actions">
+          <MatchActions :match="match" />
+        </slot>
       </div>
     </div>
 
@@ -665,7 +667,9 @@ const resultText = computed(() =>
         </span>
       </div>
 
-      <MatchHeaderVeto :match="match" />
+      <slot name="veto">
+        <MatchHeaderVeto :match="match" />
+      </slot>
     </div>
   </div>
 </template>

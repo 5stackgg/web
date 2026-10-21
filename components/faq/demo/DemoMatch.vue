@@ -10,12 +10,15 @@ import {
 import { FlaskConical, RotateCcw } from "lucide-vue-next";
 import DemoAdminDock from "~/components/faq/demo/DemoAdminDock.vue";
 import DemoFixFlows from "~/components/faq/demo/DemoFixFlows.vue";
-import MatchVetoFixDialog from "~/components/match/veto/MatchVetoFixDialog.vue";
-import DemoMapCard from "~/components/faq/demo/DemoMapCard.vue";
-import DemoMatchHeader from "~/components/faq/demo/DemoMatchHeader.vue";
 import DemoScoreboard from "~/components/faq/demo/DemoScoreboard.vue";
-import DemoVetoBoard from "~/components/faq/demo/DemoVetoBoard.vue";
 import FaqHelpGlyph from "~/components/faq/FaqHelpGlyph.vue";
+import MatchHeader from "~/components/match/MatchHeader.vue";
+import MatchHeaderVeto from "~/components/match/MatchHeaderVeto.vue";
+import MatchInfo from "~/components/match/MatchInfo.vue";
+import MatchMapSlots from "~/components/match/MatchMapSlots.vue";
+import MatchPauseButton from "~/components/match/MatchPauseButton.vue";
+import VetoBoard from "~/components/match/VetoBoard.vue";
+import MatchVetoFixDialog from "~/components/match/veto/MatchVetoFixDialog.vue";
 import MatchRoundsTab from "~/components/match/rounds/MatchRoundsTab.vue";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
@@ -23,14 +26,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { HeightSwap, PageTransition } from "~/components/ui/transitions";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useDemoMatch, type DemoStep } from "~/composables/useDemoMatch";
+import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
 import {
   DEMO_CHAT,
   DEMO_DISCONNECTED,
   DEMO_LINEUPS,
-  demoMirageRounds,
-  type DemoMapSlot,
 } from "~/utilities/demoMatch";
-import { scoreBefore } from "~/utilities/rewind";
+import {
+  mapVetoItems,
+  mapVetoPicking,
+  mapVetoTurn,
+  vetoLineups,
+} from "~/utilities/vetoLineups";
+import { vetoBoardUp } from "~/utilities/vetoStage";
 
 const demo = useDemoMatch();
 const { t } = useI18n();
@@ -48,14 +56,24 @@ const otherTabs = [
   "match.tabs.utility",
 ];
 
-const roundsData = computed(() =>
-  demo.step.value === "finished"
-    ? demo.finishedRounds.value
-    : demo.rounds.value,
+const match = computed(() => demo.match.value);
+
+const currentMapStatus = computed(
+  () => match.value.match_maps.find((map) => map.is_current_map)?.status,
+);
+const canPause = computed(
+  () =>
+    match.value.status === e_match_status_enum.Live &&
+    currentMapStatus.value !== undefined &&
+    [
+      e_match_map_status_enum.Live,
+      e_match_map_status_enum.Overtime,
+      e_match_map_status_enum.Paused,
+    ].includes(currentMapStatus.value),
 );
 
-const liveScore = computed(() =>
-  scoreBefore(demo.rounds.value, demo.live.value),
+const vetoDone = computed(() =>
+  demo.vetoBoardSteps.value.every((step) => !!step.record),
 );
 
 const tabsEl = ref<HTMLElement | null>(null);
@@ -65,53 +83,6 @@ watch(demo.focusRounds, async () => {
   tabsEl.value?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-const mirageRounds = demoMirageRounds();
-
-const mapSlots = computed<(DemoMapSlot | null)[]>(() => {
-  const step = demo.step.value;
-  if (step === "veto") {
-    const slots: (DemoMapSlot | null)[] = demo.vetoSteps.value
-      .slice(0, demo.vetoDone.value)
-      .filter((pick) => pick.type === "Pick" || pick.type === "Decider")
-      .map((pick) => ({
-        map: pick.map,
-        pickedBy: pick.type === "Pick" ? pick.lineup : null,
-        status: "Scheduled",
-      }));
-    while (slots.length < 3) {
-      slots.push(null);
-    }
-    return slots;
-  }
-  const mirage: DemoMapSlot = {
-    map: "de_mirage",
-    pickedBy: 1,
-    status: "Finished",
-    score: [13, 9],
-    rounds: mirageRounds,
-  };
-  const data = roundsData.value;
-  const ancient: DemoMapSlot = {
-    map: "de_ancient",
-    pickedBy: 2,
-    status:
-      step === "finished" ? "Finished" : demo.paused.value ? "Paused" : "Live",
-    score: step === "finished" ? [13, 10] : liveScore.value,
-    rounds: data.rounds.filter(
-      (row) => !row.undone && (data.finished || row.round < data.live_round),
-    ),
-    current: step === "live",
-  };
-  if (step === "finished") {
-    return [mirage, ancient];
-  }
-  return [
-    mirage,
-    ancient,
-    { map: "de_dust2", pickedBy: null, status: "Scheduled" },
-  ];
-});
-
 const series = computed<[number, number]>(() =>
   demo.step.value === "finished"
     ? [2, 0]
@@ -119,10 +90,6 @@ const series = computed<[number, number]>(() =>
       ? [1, 0]
       : [0, 0],
 );
-
-function openRounds() {
-  demo.startRewind();
-}
 
 const dockReady = ref(false);
 let dockFrame = 0;
@@ -198,50 +165,33 @@ const segment =
     </PageTransition>
 
     <PageTransition :delay="80">
-      <DemoMatchHeader
-        :step="demo.step.value"
-        :paused="demo.paused.value"
-        :live-score="liveScore"
-      />
+      <section
+        class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
+      >
+        <MatchHeader :match="match">
+          <template #actions>
+            <MatchPauseButton
+              :show="canPause"
+              :paused="currentMapStatus === e_match_map_status_enum.Paused"
+              @toggle="demo.togglePause()"
+            />
+          </template>
+          <template #veto>
+            <MatchHeaderVeto :match="match" :picks="demo.picks.value" />
+          </template>
+        </MatchHeader>
+      </section>
     </PageTransition>
 
     <div
       class="grid grid-cols-1 items-start gap-4 md:gap-6 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)] lg:gap-8"
     >
       <div class="grid min-w-0 grid-cols-1 gap-y-4 md:gap-y-6">
-        <PageTransition :delay="120">
-          <div
-            class="flex flex-col gap-3 rounded-xl border border-white/10 bg-background/80 p-4 backdrop-blur-sm"
-          >
-            <div class="flex items-center gap-2">
-              <span
-                class="size-2 rounded-full"
-                :class="
-                  demo.step.value === 'veto'
-                    ? 'bg-muted-foreground/50'
-                    : 'bg-success'
-                "
-              />
-              <span
-                class="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-              >
-                {{ $t("faq.demo.server_label") }}
-              </span>
-              <span class="ml-auto text-xs text-muted-foreground">US East</span>
-            </div>
-            <code
-              v-if="demo.step.value !== 'veto'"
-              class="rounded-md border border-border bg-muted/30 px-3 py-2 font-mono text-xs text-foreground/85"
-            >
-              connect 203.0.113.10:27015
-            </code>
-            <p v-else class="text-xs text-muted-foreground">
-              {{ $t("faq.demo.server_pending") }}
-            </p>
-          </div>
+        <PageTransition :delay="100">
+          <MatchInfo :match="match" />
         </PageTransition>
 
-        <PageTransition :delay="180">
+        <PageTransition :delay="200">
           <div
             class="overflow-hidden rounded-xl border border-border/60 bg-card/30"
           >
@@ -283,68 +233,29 @@ const segment =
           </div>
         </PageTransition>
 
-        <PageTransition :delay="240">
-          <TransitionGroup
-            tag="div"
-            class="flex flex-col gap-3"
-            leave-active-class="transition-opacity duration-150 ease-in motion-reduce:transition-none"
-            leave-to-class="opacity-0"
-          >
-            <div
-              v-for="(slot, index) in mapSlots"
-              :key="index"
-              class="grid grid-cols-[minmax(0,1fr)]"
-            >
-              <HeightSwap>
-                <div v-if="slot" :key="slot.map">
-                  <DemoMapCard
-                    :slot="slot"
-                    :can-restore="slot.current"
-                    @restore="openRounds"
-                  />
-                </div>
-                <div
-                  v-else
-                  key="tbd"
-                  class="overflow-hidden rounded-xl border-2 border-dashed border-border/60"
-                >
-                  <div
-                    class="flex aspect-[16/5] items-center justify-center bg-muted/40 text-muted-foreground"
-                  >
-                    <div class="flex flex-col items-center gap-1">
-                      <span
-                        class="text-sm font-semibold uppercase tracking-wide"
-                      >
-                        {{ $t("match.map_number", { count: index + 1 }) }}
-                      </span>
-                      <span class="text-xs">{{ $t("match.map_tbd") }}</span>
-                    </div>
-                  </div>
-                  <div
-                    class="border-t border-border/30 bg-muted/40 px-3 py-2.5"
-                  >
-                    <div class="flex items-center justify-center">
-                      <span class="text-xs text-muted-foreground">—</span>
-                    </div>
-                  </div>
-                </div>
-              </HeightSwap>
-            </div>
-          </TransitionGroup>
+        <PageTransition :delay="200">
+          <MatchMapSlots :match="match" :folded="vetoBoardUp(match)" />
         </PageTransition>
       </div>
 
-      <PageTransition :delay="160" class="min-w-0">
+      <PageTransition :delay="100" class="min-w-0">
         <HeightSwap>
-          <div v-if="demo.step.value === 'veto'" key="veto">
-            <DemoVetoBoard
-              v-model:acting="demo.actingForTeam.value"
-              :steps="demo.vetoSteps.value"
-              :done="demo.vetoDone.value"
-              :current="demo.vetoCurrent.value"
-              :clock="demo.clock.value"
-              @choose="(map, side) => demo.chooseForTeam(map, side)"
+          <div v-if="demo.step.value === 'veto'" key="veto" class="pb-6">
+            <VetoBoard
+              kind="map"
+              :items="mapVetoItems(match)"
+              :steps="demo.vetoBoardSteps.value"
+              :lineups="vetoLineups(match, t)"
+              :picking-lineup="mapVetoTurn(match)"
+              :is-picking="mapVetoPicking(match, demo.vetoOverride.value)"
+              :deadline="match.veto_pick_expires_at"
+              :total="match.options.veto_pick_timeout"
+              :best-of="match.options.best_of"
+              @confirm="demo.vetoMove($event)"
             />
+            <p v-if="vetoDone" class="mt-3 text-sm text-muted-foreground">
+              {{ $t("faq.demo.veto_complete") }}
+            </p>
           </div>
           <div v-else key="match" ref="tabsEl" class="scroll-mt-4">
             <Tabs v-model="demo.tab.value">
@@ -376,13 +287,13 @@ const segment =
                 </div>
               </div>
               <TabsContent value="scoreboard">
-                <DemoScoreboard :data="roundsData" />
+                <DemoScoreboard :data="demo.roundsData.value" />
               </TabsContent>
               <TabsContent value="rounds">
                 <MatchRoundsTab
                   v-model:rewinding="demo.rewinding.value"
                   v-model:target="demo.target.value"
-                  :data="roundsData"
+                  :data="demo.roundsData.value"
                   :lineup1="DEMO_LINEUPS[1].name"
                   :lineup2="DEMO_LINEUPS[2].name"
                   :map-number="2"
@@ -421,11 +332,10 @@ const segment =
     <Teleport v-if="dockReady" to="#main-bottom-dock">
       <DemoAdminDock
         v-model:open="demo.fixOpen.value"
-        :match="demo.fakeMatch.value"
-        :paused="demo.paused.value"
+        :match="match"
         :items="demo.fixItems.value"
         @select="demo.selectFix($event)"
-        @resume="demo.resume()"
+        @pause="demo.togglePause()"
       />
     </Teleport>
   </div>

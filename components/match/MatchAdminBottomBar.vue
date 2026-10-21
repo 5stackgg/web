@@ -1,26 +1,11 @@
 <script lang="ts" setup>
-import {
-  ref,
-  computed,
-  provide,
-  nextTick,
-  onMounted,
-  onBeforeUnmount,
-} from "vue";
+import { ref, computed, provide, onMounted, onBeforeUnmount } from "vue";
 import EventEmitter from "eventemitter3";
 import { useMatchBackupRounds } from "~/composables/useMatchBackupRounds";
-import {
-  ChevronUp,
-  GripHorizontal,
-  Shield,
-  Terminal,
-  Zap,
-} from "lucide-vue-next";
-import { useVetoOverride } from "~/composables/useVetoOverride";
+import { Terminal } from "lucide-vue-next";
 import MatchActions from "~/components/match/MatchActions.vue";
-import MatchAdminSteps from "~/components/match/MatchAdminSteps.vue";
-import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
-import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import MatchAdminDock from "~/components/match/MatchAdminDock.vue";
+import MatchVetoOverrideToggle from "~/components/match/MatchVetoOverrideToggle.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
@@ -54,13 +39,10 @@ provide("commander", commander);
 
 const applicationSettings = useApplicationSettingsStore();
 
-const { enabled: vetoOverride } = useVetoOverride(() => props.match?.id);
-
 const isVetoing = computed(
   () => props.match?.status === e_match_status_enum.Veto,
 );
 
-const open = ref(false);
 const dockReady = ref(false);
 const hasLogs = ref(false);
 const showConfirmDialog = ref(false);
@@ -68,104 +50,9 @@ const showRebootDialog = ref(false);
 const pendingCommand = ref<MatchCommand | null>(null);
 const executePending = ref<(() => void) | null>(null);
 
-const panelHeight = ref(240);
-const dragging = ref(false);
-const MIN_HEIGHT = 120;
-
-function maxHeight() {
-  return Math.round(window.innerHeight * 0.9);
-}
-
-let activeMove: ((ev: MouseEvent) => void) | null = null;
-let activeUp: (() => void) | null = null;
-
-function stopDrag() {
-  if (activeMove) document.removeEventListener("mousemove", activeMove);
-  if (activeUp) document.removeEventListener("mouseup", activeUp);
-  activeMove = null;
-  activeUp = null;
-  dragging.value = false;
-}
-
-function startDrag(e: MouseEvent) {
-  e.preventDefault();
-  stopDrag();
-  dragging.value = true;
-  const startY = e.clientY;
-  const startHeight = panelHeight.value;
-
-  activeMove = (ev: MouseEvent) => {
-    const delta = startY - ev.clientY;
-    panelHeight.value = Math.max(
-      MIN_HEIGHT,
-      Math.min(maxHeight(), startHeight + delta),
-    );
-  };
-  activeUp = () => stopDrag();
-
-  document.addEventListener("mousemove", activeMove);
-  document.addEventListener("mouseup", activeUp);
-}
-
 let dockRaf = 0;
 
-// The dock spans the content column, which a pinned chat or the hub can
-// narrow at any screen size, so it fits itself to its own width: the
-// fullest layout that does not overlap. The steps drop to the current one's
-// label first, then the controls to icons (labels as tooltips), and last the
-// steps go.
-const FITS = ["full", "steps", "icons", "tight"] as const;
-const fit = ref<(typeof FITS)[number]>("full");
-const rowEl = ref<HTMLElement | null>(null);
-const leftEl = ref<HTMLElement | null>(null);
-const actionsEl = ref<HTMLElement | null>(null);
-
-const overflows = () => {
-  const row = rowEl.value;
-  const left = leftEl.value;
-  if (!row) return false;
-  return (
-    row.scrollWidth > row.clientWidth + 1 ||
-    (!!left && left.scrollWidth > left.clientWidth + 1)
-  );
-};
-
-// Each try renders before the next frame paints, so only the one that fits
-// is ever seen.
-let fitting = false;
-async function refit() {
-  if (fitting || !rowEl.value) return;
-  fitting = true;
-  try {
-    for (const next of FITS) {
-      fit.value = next;
-      await nextTick();
-      if (!overflows()) break;
-    }
-  } finally {
-    fitting = false;
-  }
-}
-
-// The row's width, and the controls' (a step's own action comes and goes).
-let fitObserver: ResizeObserver | undefined;
-function observe(el: HTMLElement | null) {
-  if (el) fitObserver?.observe(el);
-}
-function setRow(el: unknown) {
-  rowEl.value = (el as HTMLElement) ?? null;
-  observe(rowEl.value);
-}
-function setActions(el: unknown) {
-  actionsEl.value = (el as HTMLElement) ?? null;
-  observe(actionsEl.value);
-}
-if (typeof ResizeObserver !== "undefined") {
-  fitObserver = new ResizeObserver(() => void refit());
-}
-
 onMounted(() => {
-  panelHeight.value = Math.round(window.innerHeight * 0.45);
   // Teleport resolves its target once, at mount, and never re-resolves it on
   // a `disabled` toggle. On a fresh load #main-bottom-dock can land after this
   // component, so hold off mounting the Teleport until the dock exists.
@@ -180,9 +67,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  fitObserver?.disconnect();
   cancelAnimationFrame(dockRaf);
-  stopDrag();
 });
 
 const currentMap = computed(() =>
@@ -260,161 +145,17 @@ function runCommand(
 
 <template>
   <Teleport v-if="dockReady" to="#main-bottom-dock">
-    <div
-      class="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
-    >
-      <AlertDialog :open="showConfirmDialog">
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
-            <AlertDialogDescription class="flex flex-col gap-2">
-              <span>{{ $t("common.are_you_sure") }}</span>
-              <Badge variant="secondary" class="w-fit">
-                {{ pendingCommand?.display ? $t(pendingCommand.display) : "" }}
-              </Badge>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel @click="showConfirmDialog = false">
-              {{ $t("common.cancel") }}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              @click="
-                executePending && executePending();
-                showConfirmDialog = false;
-              "
-            >
-              {{ $t("common.confirm") }}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <!-- Reboot confirm lives here (not in the RCON dropdown) so it survives
-           the dropdown unmounting when the menu closes. -->
-      <MatchServerRebootControl
-        :match="match"
-        variant="dialog"
-        v-model:open="showRebootDialog"
-      />
-
-      <div
-        v-show="open"
-        class="group h-2 cursor-ns-resize bg-border hover:bg-[hsl(var(--tac-amber)/0.4)] transition-colors flex items-center justify-center"
-        @mousedown="startDrag"
-      >
-        <GripHorizontal
-          class="w-4 h-4 text-muted-foreground/60 group-hover:text-[hsl(var(--tac-amber))] transition-colors pointer-events-none"
+    <MatchAdminDock :match="match" :controllable="canSendRCONCommands">
+      <template #actions="{ compact }">
+        <MatchVetoOverrideToggle
+          v-if="isVetoing"
+          :match-id="match.id"
+          :compact="compact"
         />
-      </div>
+        <MatchActions :match="match" dock :compact="compact" />
+      </template>
 
-      <!-- Three regions: where the match is (ADMIN + steps), what to do now
-           (Veto Override and the match actions), and the console expander.
-           Clicking the first region also opens the console; the chevron is the
-           labeled control, since the steps carry their own tooltips. All three
-           shade off the shared `group` rather than their own :hover. -->
-      <div
-        :ref="setRow"
-        class="group flex items-stretch"
-        :class="dragging && 'select-none'"
-      >
-        <div
-          ref="leftEl"
-          class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out"
-          @click="open = !open"
-        >
-          <div
-            class="inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase border rounded transition-colors duration-200 ease-out"
-            :class="
-              canSendRCONCommands
-                ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-                : 'border-border bg-muted/40 text-muted-foreground'
-            "
-          >
-            <Shield class="w-3 h-3" />
-            <span :class="fit === 'tight' && 'sr-only'">{{
-              $t("match.admin")
-            }}</span>
-          </div>
-
-          <MatchAdminSteps
-            v-show="fit !== 'tight'"
-            :match="match"
-            :labels="fit === 'full' ? 'all' : 'current'"
-          />
-        </div>
-
-        <div
-          :ref="setActions"
-          class="flex shrink-0 items-center gap-2 px-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out empty:hidden"
-        >
-          <button
-            v-if="isVetoing"
-            type="button"
-            class="inline-flex items-center gap-2 whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] transition-colors duration-200 ease-out"
-            :class="
-              vetoOverride
-                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.24)]'
-                : 'border-border bg-background/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.4)] hover:text-foreground'
-            "
-            :aria-pressed="vetoOverride"
-            @click="vetoOverride = !vetoOverride"
-          >
-            <MatchDockLabel
-              :label="$t('match.admin_bar.veto_override')"
-              :compact="fit === 'icons' || fit === 'tight'"
-            >
-              <Zap class="h-3 w-3 shrink-0" />
-            </MatchDockLabel>
-          </button>
-
-          <MatchActions
-            :match="match"
-            dock
-            :compact="fit === 'icons' || fit === 'tight'"
-          />
-        </div>
-
-        <FiveStackToolTip
-          as-child
-          side="top"
-          :delay-duration="120"
-          :tap-toggle="false"
-        >
-          <template #trigger>
-            <button
-              type="button"
-              class="flex shrink-0 items-center gap-1.5 pl-2 pr-4 py-2 text-xs text-muted-foreground group-hover:bg-muted/40 transition-colors duration-200 ease-out"
-              :aria-expanded="open"
-              :aria-label="
-                open
-                  ? $t('match.admin_bar.hide_console')
-                  : $t('match.admin_bar.show_console')
-              "
-              @click="open = !open"
-            >
-              <ChevronUp
-                class="w-4 h-4 transition-transform duration-300 ease-out"
-                :class="open ? 'rotate-180' : 'rotate-0'"
-              />
-            </button>
-          </template>
-          {{
-            open
-              ? $t("match.admin_bar.hide_console")
-              : $t("match.admin_bar.show_console")
-          }}
-        </FiveStackToolTip>
-      </div>
-
-      <div
-        class="overflow-hidden"
-        :class="[
-          !dragging && 'transition-[height] duration-300 ease-out',
-          open && 'border-t',
-        ]"
-        :style="{ height: open ? `${panelHeight}px` : '0px' }"
-      >
+      <template #console>
         <div
           class="h-full min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-4 overflow-auto lg:overflow-hidden"
         >
@@ -534,7 +275,42 @@ function runCommand(
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </MatchAdminDock>
+
+    <AlertDialog :open="showConfirmDialog">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
+          <AlertDialogDescription class="flex flex-col gap-2">
+            <span>{{ $t("common.are_you_sure") }}</span>
+            <Badge variant="secondary" class="w-fit">
+              {{ pendingCommand?.display ? $t(pendingCommand.display) : "" }}
+            </Badge>
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel @click="showConfirmDialog = false">
+            {{ $t("common.cancel") }}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            @click="
+              executePending && executePending();
+              showConfirmDialog = false;
+            "
+          >
+            {{ $t("common.confirm") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <!-- Reboot confirm lives here (not in the RCON dropdown) so it survives
+         the dropdown unmounting when the menu closes. -->
+    <MatchServerRebootControl
+      :match="match"
+      variant="dialog"
+      v-model:open="showRebootDialog"
+    />
   </Teleport>
 </template>

@@ -1,113 +1,94 @@
 <script setup lang="ts">
-import { ChevronUp, LifeBuoy, Play, Shield } from "lucide-vue-next";
-import MatchAdminSteps from "~/components/match/MatchAdminSteps.vue";
-import MatchFixProblemMenu from "~/components/match/MatchFixProblemMenu.vue";
-import FaqHelpGlyph from "~/components/faq/FaqHelpGlyph.vue";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
+import { computed } from "vue";
+import { Pause, Play } from "lucide-vue-next";
+import MatchAdminDock from "~/components/match/MatchAdminDock.vue";
+import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
+import MatchFixProblemButton from "~/components/match/MatchFixProblemButton.vue";
+import MatchVetoOverrideToggle from "~/components/match/MatchVetoOverrideToggle.vue";
+import { dockPrimary } from "~/components/match/matchDockClasses";
+import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
 import { faqHotClasses } from "~/utilities/faqClasses";
-import type { FixProblemItem } from "~/utilities/fixProblem";
+import type { FixProblemMenu } from "~/utilities/fixProblem";
 
-defineProps<{
+// The match page's admin dock with the demo's controls in it. A FAQ figure
+// shows it frozen: drawn, but nothing in it does anything.
+const props = defineProps<{
   match: Record<string, any>;
-  paused?: boolean;
-  items: {
-    stepLabel: string;
-    now: FixProblemItem[];
-    anytime: FixProblemItem[];
-    later?: string;
-  };
-  hot?: "fix" | "resume";
+  items: FixProblemMenu;
+  hot?: "fix" | "pause";
   frozen?: boolean;
 }>();
 
 const open = defineModel<boolean>("open", { default: false });
 
-const emit = defineEmits<{ select: [string]; resume: [] }>();
+const emit = defineEmits<{ select: [string]; pause: [] }>();
 
-const dockChip =
-  "inline-flex items-center gap-2 whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] transition-colors duration-200 ease-out";
-const dockPrimary = `${dockChip} border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] data-[state=open]:bg-[hsl(var(--tac-amber)/0.2)]`;
+const mapStatus = computed(
+  () => props.match.match_maps?.find((map: any) => map.is_current_map)?.status,
+);
+
+// The dock's main action while a map is played, as on a real match.
+const canPause = computed(
+  () =>
+    props.match.status === e_match_status_enum.Live &&
+    [
+      e_match_map_status_enum.Live,
+      e_match_map_status_enum.Overtime,
+      e_match_map_status_enum.Paused,
+    ].includes(mapStatus.value),
+);
+const paused = computed(
+  () => mapStatus.value === e_match_map_status_enum.Paused,
+);
+
+const fixOpen = computed({
+  get: () => !props.frozen && open.value,
+  set: (value: boolean) => {
+    if (!props.frozen) {
+      open.value = value;
+    }
+  },
+});
 </script>
 
 <template>
-  <div
-    class="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
-  >
-    <div class="flex items-stretch">
-      <div class="flex min-w-0 flex-1 items-center gap-3 py-2 pl-4 pr-2">
-        <div
-          class="inline-flex items-center gap-1.5 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-2 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-        >
-          <Shield class="size-3" />
-          <span class="max-sm:sr-only">{{ $t("match.admin") }}</span>
-        </div>
-        <MatchAdminSteps
-          :match="match"
-          labels="current"
-          class="max-md:hidden"
-        />
-      </div>
-
-      <div class="flex shrink-0 items-center gap-2 px-2">
-        <button
-          v-if="paused"
-          type="button"
-          :class="[dockPrimary, hot === 'resume' && faqHotClasses]"
-          @click="emit('resume')"
-        >
-          <Play class="size-3 shrink-0" />
-          <span class="max-sm:sr-only">{{ $t("faq.demo.resume") }}</span>
-        </button>
-
-        <button
-          v-if="frozen"
-          type="button"
-          :class="[dockPrimary, hot === 'fix' && faqHotClasses]"
-        >
-          <LifeBuoy class="size-3 shrink-0" />
-          {{ $t("match.recovery.fix.title") }}
-        </button>
-        <Popover v-else v-model:open="open">
-          <PopoverTrigger as-child>
-            <button
-              type="button"
-              :class="[dockPrimary, hot === 'fix' && faqHotClasses]"
-            >
-              <LifeBuoy class="size-3 shrink-0" />
-              {{ $t("match.recovery.fix.title") }}
-            </button>
-          </PopoverTrigger>
-          <PopoverContent
-            side="top"
-            align="end"
-            :side-offset="10"
-            class="w-[min(24rem,calc(100vw-2rem))] p-0"
-          >
-            <MatchFixProblemMenu
-              :step-label="items.stepLabel"
-              :now="items.now"
-              :anytime="items.anytime"
-              :later="items.later"
-              @select="emit('select', $event)"
-            >
-              <template #aside>
-                <FaqHelpGlyph section="fix-a-problem" />
-              </template>
-            </MatchFixProblemMenu>
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      <span
-        class="flex shrink-0 items-center py-2 pl-2 pr-4 text-muted-foreground/40"
-        aria-hidden="true"
+  <MatchAdminDock :match="match" controllable :inert="frozen || undefined">
+    <template #actions="{ compact }">
+      <MatchVetoOverrideToggle
+        v-if="match.status === e_match_status_enum.Veto"
+        :match-id="match.id"
+        :compact="compact"
+      />
+      <button
+        v-if="canPause"
+        type="button"
+        :class="[dockPrimary, hot === 'pause' && faqHotClasses]"
+        @click="emit('pause')"
       >
-        <ChevronUp class="size-4" />
-      </span>
-    </div>
-  </div>
+        <MatchDockLabel
+          :label="
+            paused ? $t('match.actions.resume') : $t('match.actions.pause')
+          "
+          :compact="compact"
+        >
+          <component :is="paused ? Play : Pause" class="h-3 w-3 shrink-0" />
+        </MatchDockLabel>
+      </button>
+      <MatchFixProblemButton
+        v-model:open="fixOpen"
+        :menu="items"
+        :compact="compact"
+        :hot="hot === 'fix'"
+        @select="emit('select', $event)"
+      />
+    </template>
+
+    <template #console>
+      <div
+        class="flex h-full items-center justify-center p-6 text-sm text-muted-foreground"
+      >
+        {{ $t("faq.demo.not_in_demo") }}
+      </div>
+    </template>
+  </MatchAdminDock>
 </template>

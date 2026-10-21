@@ -14,8 +14,8 @@ import {
 import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
-import FaqHelpGlyph from "~/components/faq/FaqHelpGlyph.vue";
-import MatchFixProblemMenu from "~/components/match/MatchFixProblemMenu.vue";
+import MatchFixProblemButton from "~/components/match/MatchFixProblemButton.vue";
+import MatchPauseButton from "~/components/match/MatchPauseButton.vue";
 import MatchRestartDialog from "~/components/match/MatchRestartDialog.vue";
 import MatchVetoFixDialog from "~/components/match/veto/MatchVetoFixDialog.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
@@ -29,11 +29,6 @@ import {
   DropdownMenuSubTrigger,
 } from "~/components/ui/dropdown-menu";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/components/ui/popover";
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -43,14 +38,11 @@ import {
   e_match_map_status_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
-
-// Dock controls share the admin bar's chip shape so the strip stays one short
-// row; the tone says what the button does.
-const dockChip =
-  "inline-flex items-center gap-2 whitespace-nowrap rounded-md border px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] transition-colors duration-200 ease-out disabled:pointer-events-none disabled:opacity-50";
-const dockPrimary = `${dockChip} border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)]`;
-const dockDanger = `${dockChip} border-[hsl(var(--destructive)/0.45)] text-destructive hover:bg-[hsl(var(--destructive)/0.12)]`;
-const dockNeutral = `${dockChip} border-border bg-background/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.4)] hover:text-foreground data-[state=open]:border-[hsl(var(--tac-amber)/0.4)] data-[state=open]:text-foreground`;
+import {
+  dockDanger,
+  dockNeutral,
+  dockPrimary,
+} from "~/components/match/matchDockClasses";
 
 const menuLabel =
   "px-2 pb-1 pt-1.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground";
@@ -63,51 +55,12 @@ const menuLabel =
   >
     <MatchCameraStatus v-if="canWatchCameras && !dock" :match-id="match.id" />
 
-    <!-- The pause control appears when a map goes live; its column animates
-         0fr -> 1fr so the kebab slides over instead of jumping. Both labels
-         are always laid out (one invisible), so Pause <-> Resume never
-         changes the button's width -- only the colors cross-fade. -->
-    <Transition
-      enter-active-class="pause-reveal"
-      enter-from-class="pause-reveal-collapsed"
-      leave-active-class="pause-reveal"
-      leave-to-class="pause-reveal-collapsed"
-    >
-      <div v-if="canPauseResume && !dock" class="grid min-w-0 grid-cols-[1fr]">
-        <div class="min-w-0 overflow-hidden">
-          <Button
-            size="sm"
-            variant="outline"
-            @click="togglePause"
-            :disabled="!match.is_server_online"
-            :class="[
-              'h-9 gap-1.5 font-mono text-[0.62rem] font-bold tracking-[0.18em] uppercase transition-colors',
-              isPaused
-                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
-                : 'border-[hsl(var(--destructive)/0.55)] bg-[hsl(var(--destructive)/0.12)] text-destructive hover:bg-[hsl(var(--destructive)/0.2)] hover:text-destructive',
-            ]"
-          >
-            <component :is="isPaused ? Play : Pause" class="h-3 w-3" />
-            <span class="grid text-center">
-              <span
-                class="col-start-1 row-start-1"
-                :class="{ invisible: isPaused }"
-                :aria-hidden="isPaused"
-              >
-                {{ $t("match.actions.pause") }}
-              </span>
-              <span
-                class="col-start-1 row-start-1"
-                :class="{ invisible: !isPaused }"
-                :aria-hidden="!isPaused"
-              >
-                {{ $t("match.actions.resume") }}
-              </span>
-            </span>
-          </Button>
-        </div>
-      </div>
-    </Transition>
+    <MatchPauseButton
+      :show="canPauseResume && !dock"
+      :paused="isPaused"
+      :disabled="!match.is_server_online"
+      @toggle="togglePause"
+    />
 
     <!-- Admin dock: the current step's main action, then Cancel and Delete out
          front. The veto step's main action, Veto Override, lives in the bar. -->
@@ -176,36 +129,13 @@ const menuLabel =
         </MatchDockLabel>
       </button>
 
-      <Popover v-if="canFixProblems" v-model:open="fixOpen">
-        <PopoverTrigger as-child>
-          <button type="button" :class="dockNeutral">
-            <MatchDockLabel
-              :label="$t('match.recovery.fix.title')"
-              :compact="compact"
-            >
-              <LifeBuoy class="h-3 w-3 shrink-0" />
-            </MatchDockLabel>
-          </button>
-        </PopoverTrigger>
-        <PopoverContent
-          side="top"
-          align="end"
-          :side-offset="10"
-          class="w-[min(24rem,calc(100vw-2rem))] p-0"
-        >
-          <MatchFixProblemMenu
-            :step-label="fixMenu.stepLabel"
-            :now="fixMenu.now"
-            :anytime="fixMenu.anytime"
-            :later="fixMenu.later"
-            @select="onFixSelect"
-          >
-            <template #aside>
-              <FaqHelpGlyph section="fix-a-problem" />
-            </template>
-          </MatchFixProblemMenu>
-        </PopoverContent>
-      </Popover>
+      <MatchFixProblemButton
+        v-if="canFixProblems"
+        v-model:open="fixOpen"
+        :menu="fixMenu"
+        :compact="compact"
+        @select="onFixSelect"
+      />
       <button
         v-if="match.can_cancel"
         type="button"
@@ -636,10 +566,9 @@ import {
   currentMatchAdminStep,
   upcomingAdminActions,
 } from "~/utilities/matchAdminSteps";
-import { fixProblemItems } from "~/utilities/fixProblem";
+import { matchFixMenu } from "~/utilities/fixProblem";
 import { vetoTimelineSteps } from "~/utilities/rewind";
 import { mapVetoSteps } from "~/utilities/vetoLineups";
-import mapLabel from "~/utilities/mapLabel";
 import { useMatchRoundsFocus } from "~/composables/useMatchRoundsFocus";
 import { useVetoOverride } from "~/composables/useVetoOverride";
 import { e_veto_pick_types_enum, order_by } from "~/generated/zeus";
@@ -1378,44 +1307,8 @@ export default {
       );
     },
     fixMenu() {
-      const match = this.match;
-      const currentMap = match.match_maps?.find(
-        (map: any) => map.is_current_map,
-      );
-      const step = currentMatchAdminStep(match);
-      const stepKey =
-        step === "live" && currentMap?.status === e_match_map_status_enum.Paused
-          ? "paused"
-          : step === "finished" && match.status === e_match_status_enum.Canceled
-            ? "canceled"
-            : step;
-      const lineupName = (id: string) =>
-        id === match.lineup_1_id
-          ? match.lineup_1?.name
-          : id === match.lineup_2_id
-            ? match.lineup_2?.name
-            : "";
-      const last = this.vetoPicks[this.lastVetoStep - 1];
-      return fixProblemItems(this.$t, {
-        status: match.status,
-        stepLabel: this.$t(`match.admin_bar.steps.${stepKey}`),
-        hasWinner: !!match.winning_lineup_id,
-        currentMapStatus: currentMap?.status ?? null,
-        mapsStarted: (match.match_maps ?? []).some(
-          (map: any) => map.status && map.status !== "Scheduled",
-        ),
-        rush: match.options?.type === "Rush",
+      return matchFixMenu(this.$t, this.match, this.vetoPicks, {
         bracket: this.isBracketMatch,
-        mapVeto: !!match.options?.map_veto,
-        vetoPicks: this.vetoPicks.length,
-        vetoTeam: this.vetoTeamName,
-        vetoClockRunning: !!match.veto_pick_expires_at,
-        lastPick: last
-          ? {
-              team: lineupName(last.match_lineup_id) ?? "",
-              map: mapLabel(last.map),
-            }
-          : null,
         canSetWinner: this.canSetMatchWinner,
         canReboot: this.canRebootServer,
         canReparse: this.canReparseDemos,
@@ -1778,22 +1671,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* The pause control's column collapses to a true zero -- the cell carries no
-   padding of its own, so nothing is left to snap when the element unmounts. */
-.pause-reveal {
-  transition:
-    grid-template-columns 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.18s ease;
-}
-.pause-reveal-collapsed {
-  grid-template-columns: 0fr;
-  opacity: 0;
-}
-@media (prefers-reduced-motion: reduce) {
-  .pause-reveal {
-    transition-duration: 1ms;
-  }
-}
-</style>

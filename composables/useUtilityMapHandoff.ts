@@ -83,25 +83,42 @@ export function restingRect(element: Element | null | undefined) {
 }
 
 /**
- * Plays an element from where its twin was to where it is. Both are the same
- * square radar, so it is one uniform scale about the element's own corner.
+ * Where a radar is drawn in its box. Its square viewBox is letterboxed into a
+ * box that is not square, so the radar is the square centred in it -- a tile
+ * in a two-row index is taller than it is wide.
+ */
+export function drawnSquare(box: UtilityMapRect): UtilityMapRect {
+  const side = Math.min(box.width, box.height);
+  return {
+    left: box.left + (box.width - side) / 2,
+    top: box.top + (box.height - side) / 2,
+    width: side,
+    height: side,
+  };
+}
+
+/**
+ * Plays an element from where its twin was to where it is. Both draw the same
+ * square radar, so it is one uniform scale about that square's corner.
  */
 export function morphFromRect(
   element: Element | null | undefined,
   from: UtilityMapRect,
 ) {
-  const to = element?.getBoundingClientRect();
-  if (!element || !to || !to.width) {
+  const box = element?.getBoundingClientRect();
+  if (!element || !box || !box.width) {
     return null;
   }
+  const to = drawnSquare(box);
+  const transformOrigin = `${to.left - box.left}px ${to.top - box.top}px`;
   const scale = from.width / to.width;
   return element.animate(
     [
       {
-        transformOrigin: "0 0",
+        transformOrigin,
         transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${scale})`,
       },
-      { transformOrigin: "0 0", transform: "none" },
+      { transformOrigin, transform: "none" },
     ],
     { duration: 420, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
   );

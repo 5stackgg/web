@@ -14,14 +14,12 @@ import type { UtilityType } from "~/types/utility";
 import { e_match_types_enum, order_by } from "~/generated/zeus";
 import { loadRadarMaps, normalizeMapName } from "~/utilities/mapAssets";
 import mapLabel from "~/utilities/mapLabel";
-import activeDutyMaps from "~/utilities/activeDutyMaps";
 
 export type UtilityMapTile = {
   name: string;
   label: string;
   patch: string | null;
   poster: string | null;
-  activeDuty: boolean;
 };
 
 /** Where one lineup lands, reduced to what a map's tile draws. */
@@ -43,15 +41,7 @@ const mapsQuery = generateQuery({
       },
       order_by: [{ name: order_by.asc }],
     },
-    {
-      id: true,
-      name: true,
-      label: true,
-      patch: true,
-      poster: true,
-      type: true,
-      active_pool: true,
-    },
+    { id: true, name: true, label: true, patch: true, poster: true },
   ],
 });
 
@@ -71,11 +61,9 @@ function loadMaps(): Promise<void> {
           getGraphqlClient().query({ query: mapsQuery, fetchPolicy: "cache-first" }),
           loadRadarMaps(),
         ]);
-        const rows = ((data as any)?.maps ?? []) as Array<any>;
-        const activeDuty = activeDutyMaps(rows);
         const seen = new Set<string>();
         const next: UtilityMapTile[] = [];
-        for (const map of rows) {
+        for (const map of ((data as any)?.maps ?? []) as Array<any>) {
           const radar = normalizeMapName(map.name);
           // A map without a radar has nothing to draw a lineup on.
           if (!radarMaps.has(radar) || seen.has(radar)) {
@@ -87,7 +75,6 @@ function loadMaps(): Promise<void> {
             label: mapLabel(map),
             patch: map.patch ?? null,
             poster: map.poster ?? null,
-            activeDuty: activeDuty.has(radar),
           });
         }
         tiles.value = next;

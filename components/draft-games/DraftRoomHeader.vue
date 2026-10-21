@@ -21,12 +21,17 @@ const props = defineProps<{
 
 const slots = useSlots();
 
-// The menu holds whatever MatchActions shows (cameras, pause, the menu), so the
-// scorebug keeps clear of its measured width rather than a guess.
+// The menu holds whatever MatchActions shows. A lone menu button fits in the
+// corner with a little room kept clear on both sides of the scorebug; anything
+// wider (cameras, pause) gets a row of its own, as clearing it on both sides
+// would squeeze the team names away.
 const menuEl = ref<HTMLElement | null>(null);
 const { width: menuWidth } = useElementSize(menuEl);
+const menuInRow = computed(() => menuWidth.value > 56);
 const menuRoom = computed(() =>
-  menuWidth.value ? `${Math.ceil(menuWidth.value) + 12}px` : "0px",
+  menuWidth.value && !menuInRow.value
+    ? `${Math.ceil(menuWidth.value) + 12}px`
+    : "0px",
 );
 
 const SLOTS = [1, 2] as const;
@@ -192,8 +197,10 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
 
     <Fold :open="open">
       <div class="draft-header-body">
-        <div ref="menuEl" class="draft-header-menu">
-          <slot name="menu" />
+        <div class="draft-header-menu" :class="{ 'is-row': menuInRow }">
+          <span ref="menuEl" class="inline-flex items-center gap-2">
+            <slot name="menu" />
+          </span>
         </div>
         <div class="draft-bug" :style="{ '--menu-room': menuRoom }">
           <div
@@ -408,6 +415,12 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
   top: 0.75rem;
   right: 0.75rem;
   z-index: 1;
+}
+.draft-header-menu.is-row {
+  position: static;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
 }
 /* The track scrolls inside the header's width; without containment its cells
    would widen the folds around it and push the scorebug off the card. */

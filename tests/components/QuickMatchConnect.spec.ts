@@ -80,7 +80,7 @@ describe("QuickMatchConnect as the match header's bar", () => {
       props: { match: ready(), variant: "bar" },
     });
 
-    expect(wrapper.html()).not.toContain("1.2.3.4");
+    expect(text(wrapper)).not.toContain("1.2.3.4");
     expect(wrapper.find(".mcb-redact").exists()).toBe(true);
 
     await wrapper.findAll(".mcb-icon-button")[0].trigger("click");
@@ -109,7 +109,20 @@ describe("QuickMatchConnect as the match header's bar", () => {
     expect(text(wrapper)).toContain("1.2.3.4");
 
     await eye().trigger("click");
-    expect(wrapper.html()).not.toContain("1.2.3.4");
+    expect(text(wrapper)).not.toContain("1.2.3.4");
+  });
+
+  it("masks the address again when the server comes back from a reboot", async () => {
+    const wrapper = await mountSuspended(QuickMatchConnect, {
+      props: { match: ready(), variant: "bar" },
+    });
+
+    await wrapper.findAll(".mcb-icon-button")[0].trigger("click");
+    expect(text(wrapper)).toContain("1.2.3.4");
+
+    await wrapper.setProps({ match: { ...ready(), is_server_online: false } });
+    await wrapper.setProps({ match: ready() });
+    expect(text(wrapper)).not.toContain("1.2.3.4");
   });
 
   it("doesn't call the server ready while only the TV delay is showing", async () => {

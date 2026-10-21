@@ -36,7 +36,7 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
             alt=""
             class="h-10 w-16 shrink-0 rounded-md object-cover ring-1 ring-inset ring-white/10"
           />
-          <span class="sr-only" role="status">{{ title }}</span>
+          <span class="sr-only" role="status">{{ statusText }}</span>
           <div class="grid min-w-0 flex-1 gap-0.5">
             <span
               class="flex min-w-0 items-center text-sm font-semibold"
@@ -641,6 +641,15 @@ export default {
       copied: false,
     };
   },
+  watch: {
+    // A rebooted server can come back on another address; it stays masked
+    // until asked for again.
+    showConnect(ready) {
+      if (!ready) {
+        this.revealed = false;
+      }
+    },
+  },
   beforeUnmount() {
     clearTimeout(this.copiedTimer);
   },
@@ -657,9 +666,12 @@ export default {
       this.handleClick();
       window.location.href = this.match.connection_link;
     },
-    async copyTv() {
-      await copyText(this.match.tv_connection_string);
-      toast({ title: this.$t("pages.toasts.copied_to_clipboard") });
+    // Not async: Button treats a returned promise as pending work and holds
+    // its spinner for the minimum loading time.
+    copyTv() {
+      void copyText(this.match.tv_connection_string).then(() =>
+        toast({ title: this.$t("pages.toasts.copied_to_clipboard") }),
+      );
     },
     async copyConnect() {
       await copyText(this.match.connection_string);
@@ -796,6 +808,15 @@ export default {
       ]
         .filter(Boolean)
         .join(" · ");
+    },
+    statusText() {
+      return [
+        this.title,
+        this.facts,
+        this.showBooting ? this.match.server_error : "",
+      ]
+        .filter(Boolean)
+        .join(". ");
     },
     title() {
       if (this.showOffline) {

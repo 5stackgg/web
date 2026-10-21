@@ -11,6 +11,7 @@ import {
 } from "~/components/watch/watchStage";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useWatchStage } from "~/composables/useWatchStage";
 
 const { pushes } = vi.hoisted(() => ({
   pushes: [] as Array<(result: any) => void>,
@@ -88,11 +89,16 @@ describe("stage rules", () => {
   });
 });
 
-async function mountStage(matches: any[]) {
+async function mountStage(
+  matches: any[],
+  streamEmbed: Record<string, unknown> = {
+    template: '<div class="stream-embed" />',
+  },
+) {
   const wrapper = await mountSuspended(WatchStreamStage, {
     global: {
       stubs: {
-        StreamEmbed: { template: '<div class="stream-embed" />' },
+        StreamEmbed: streamEmbed,
         LiveStreamPlayer: { template: '<div class="live-player" />' },
         StreamMatchCard: true,
         StreamViewerBadge: true,
@@ -247,5 +253,39 @@ describe("WatchStreamStage phone caption", () => {
     ]);
 
     expect(caption(wrapper)).toBe("Ancient · Final");
+  });
+});
+
+describe("WatchStreamStage press to play", () => {
+  const pressable = {
+    props: ["started"],
+    emits: ["update:started"],
+    template:
+      '<button class="stream-embed" :data-started="started ? \'yes\' : \'no\'" @click="$emit(\'update:started\', true)" />',
+  };
+  const kick = { id: "s2", link: "https://kick.com/eastside", title: "Kick feed" };
+
+  beforeEach(() => {
+    pushes.length = 0;
+    useApplicationSettingsStore().settings = [];
+    useAuthStore().me = { steam_id: "1", role: "user" } as any;
+  });
+
+  it("plays the next stream on the stage straight away once play was pressed there", async () => {
+    useWatchStage().setStage("m1");
+    const wrapper = await mountStage(
+      [liveMatch(), liveMatch({ id: "m2", streams: [kick] })],
+      pressable,
+    );
+
+    expect(wrapper.get(".stream-embed").attributes("data-started")).toBe("no");
+    await wrapper.get(".stream-embed").trigger("click");
+
+    useWatchStage().setStage("m2");
+    await flushPromises();
+
+    expect(wrapper.get(".stream-embed").attributes("data-started")).toBe(
+      "yes",
+    );
   });
 });

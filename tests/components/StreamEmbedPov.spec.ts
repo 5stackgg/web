@@ -54,7 +54,9 @@ async function settle() {
 }
 
 async function mountEmbed(streams: unknown[]) {
-  const wrapper = await mountSuspended(StreamEmbed, { props: { streams } });
+  const wrapper = await mountSuspended(StreamEmbed, {
+    props: { streams, started: true },
+  });
   unmount = () => wrapper.unmount();
   await settle();
   return wrapper;
@@ -100,7 +102,7 @@ describe("StreamEmbed with player POVs", () => {
 
   it("names POV chips even where the picker otherwise shows icons only", async () => {
     const wrapper = await mountSuspended(StreamEmbed, {
-      props: { streams: [organizer, kappa], showTitle: false },
+      props: { streams: [organizer, kappa], showTitle: false, started: true },
     });
     unmount = () => wrapper.unmount();
     await settle();

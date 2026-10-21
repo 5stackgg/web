@@ -12446,6 +12446,9 @@
   },
   "streams": {
     "move_to_global_view": "Flyt til globalt visning",
+    "play": "Afspil {name}",
+    "load_notice": "Tryk på afspil for at indlæse {platform}-afspilleren. Intet hentes fra {platform} før da.",
+    "open_on": "Åbn på {platform}",
     "section_title": "Live streams",
     "section_description": "Administrer live stream-links til denne kamp. Linkene vises for seere og castere.",
     "no_streams_title": "Ingen live streams",

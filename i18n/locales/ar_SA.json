@@ -12446,6 +12446,9 @@
   },
   "streams": {
     "move_to_global_view": "انقل إلى العرض العام",
+    "play": "تشغيل {name}",
+    "load_notice": "اضغط تشغيل لتحميل مشغّل {platform}. لا يُحمَّل أي شيء من {platform} قبل ذلك.",
+    "open_on": "افتح على {platform}",
     "section_title": "البث المباشر",
     "section_description": "أدر روابط البث المباشر لهذه المباراة. تظهر هذه الروابط للمشاهدين والمعلقين.",
     "no_streams_title": "لا يوجد بث مباشر",

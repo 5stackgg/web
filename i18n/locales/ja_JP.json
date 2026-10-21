@@ -12446,6 +12446,9 @@
   },
   "streams": {
     "move_to_global_view": "全体ビューへ移動",
+    "play": "{name} を再生",
+    "load_notice": "再生を押すと {platform} のプレーヤーを読み込みます。それまで {platform} からは何も読み込まれません。",
+    "open_on": "{platform} で開く",
     "section_title": "ライブ配信",
     "section_description": "この試合のライブ配信リンクを管理します。これらのリンクは視聴者と実況者に表示されます。",
     "no_streams_title": "ライブ配信なし",

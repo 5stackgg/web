@@ -12446,6 +12446,9 @@
   },
   "streams": {
     "move_to_global_view": "Mover para visão global",
+    "play": "Reproduzir {name}",
+    "load_notice": "Toque em reproduzir para carregar o player de {platform}. Nada é carregado de {platform} antes disso.",
+    "open_on": "Abrir em {platform}",
     "section_title": "Live Streaming",
     "section_description": "Gerencie os links de transmissão ao vivo desta partida. Esses links são exibidos para espectadores e narradores.",
     "no_streams_title": "Nenhuma Transmissão Ao Vivo",

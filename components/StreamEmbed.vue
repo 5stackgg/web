@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
-import { ExternalLink, Square, Volume2, VolumeX } from "lucide-vue-next";
+import {
+  ExternalLink,
+  Play,
+  Square,
+  Volume2,
+  VolumeX,
+} from "lucide-vue-next";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
@@ -21,6 +27,54 @@ import { badgePopTransition } from "~/utilities/badgeCount";
       <template #video>
         <div ref="playerRef" class="absolute inset-0 h-full w-full"></div>
       </template>
+
+      <PageTransition swap :appear="false">
+        <div
+          v-if="waiting"
+          :key="selectedStream.id"
+          data-test="stream-waiting"
+          class="absolute inset-0 overflow-hidden"
+        >
+          <span
+            aria-hidden="true"
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_40%,hsl(240_6%_16%),#000_70%)]"
+          ></span>
+          <button
+            type="button"
+            data-test="stream-press-play"
+            class="group absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
+            :aria-label="$t('streams.play', { name: waitingTitle })"
+            @click="pressPlay"
+          >
+            <span
+              class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-black/55 text-white ring-1 ring-white/15 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transition-none"
+            >
+              <Play class="h-5 w-5 fill-current" />
+            </span>
+            <span class="max-w-full truncate text-sm font-semibold text-white">
+              {{ waitingTitle }}
+            </span>
+            <span class="max-w-full truncate text-xs text-white/60">
+              {{ waitingLink }}
+            </span>
+            <span class="max-w-xs text-[11px] leading-snug text-white/45">
+              {{ $t("streams.load_notice", { platform: waitingPlatform }) }}
+            </span>
+          </button>
+          <Button
+            as="a"
+            :href="selectedStream.link"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="outline"
+            size="sm"
+            class="absolute bottom-2 right-2 border-white/20 bg-black/50 text-white/90 hover:bg-black/70 hover:text-white"
+          >
+            <ExternalLink />
+            {{ $t("streams.open_on", { platform: waitingPlatform }) }}
+          </Button>
+        </div>
+      </PageTransition>
 
       <Button
         v-if="global === false && !inline"
@@ -61,25 +115,27 @@ import { badgePopTransition } from "~/utilities/badgeCount";
            obvious place to bring audio in. Stays visible while muted
            (so the call-to-action is reachable on touch devices); fades
            in on hover once unmuted. -->
-      <button
-        v-if="!inline"
-        type="button"
-        :aria-label="isMuted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
-        :class="[
-          'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
-          isMuted
-            ? 'opacity-100'
-            : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
-        ]"
-        @click="toggleMute"
-      >
-        <VolumeX v-if="isMuted" class="size-3.5" />
-        <Volume2 v-else class="size-3.5" />
-      </button>
+      <PageTransition swap :appear="false">
+        <button
+          v-if="!inline && !waiting"
+          type="button"
+          :aria-label="isMuted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
+          :class="[
+            'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
+            isMuted
+              ? 'opacity-100'
+              : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
+          ]"
+          @click="toggleMute"
+        >
+          <VolumeX v-if="isMuted" class="size-3.5" />
+          <Volume2 v-else class="size-3.5" />
+        </button>
+      </PageTransition>
 
       <PageTransition swap :appear="false">
         <span
-          v-if="selectedPov"
+          v-if="selectedPov && !waiting"
           :key="selectedPov.id"
           class="pointer-events-none absolute bottom-2 left-2 z-10 rounded-sm bg-black/60 px-1.5 py-0.5 text-[0.7rem] font-semibold text-white"
           data-test="stream-pov-label"
@@ -157,6 +213,7 @@ interface MatchStream {
   avatar_url?: string | null;
 }
 
+import { reactive } from "vue";
 import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
@@ -166,6 +223,16 @@ import {
 } from "~/composables/useStoppedStreams";
 import { isHttpLink } from "~/utilities/httpLink";
 import { isDroppedTwitchPov } from "~/composables/useTwitch";
+
+const PRESS_TO_PLAY: Partial<Record<NonNullable<Platform>, string>> = {
+  twitch: "Twitch",
+  youtube: "YouTube",
+  kick: "Kick",
+};
+
+// A stream pressed once plays straight away wherever it shows next in this
+// visit: moved into the floating player, or back on the page.
+const pressedStreams = reactive(new Set<string>());
 
 export default {
   components: {
@@ -205,7 +272,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    // A host that swaps a new embed in for each stream (the /watch stage)
+    // keeps the press here, so the next stream it shows plays straight away.
+    started: {
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: ["update:started"],
   data() {
     return {
       playerInstance: null as any,
@@ -223,6 +297,10 @@ export default {
       // either don't expose a JS API or it's unstable enough that a
       // reload is the most reliable path).
       isMuted: true,
+      played: false,
+      // The stream whose player didn't load (Twitch's script blocked), shown
+      // waiting again so the viewer can retry or open it on its site.
+      failedKey: null as string | null,
     };
   },
   computed: {
@@ -265,6 +343,42 @@ export default {
           (this.showTitle == false && this.streams.length > 0))
       );
     },
+    waiting() {
+      const stream = this.selectedStream;
+
+      if (!stream || !this.pressToPlay(stream)) {
+        return false;
+      }
+
+      const key = embedStreamKey(stream);
+
+      if (this.failedKey === key) {
+        return true;
+      }
+
+      return !this.started && !this.played && !pressedStreams.has(key);
+    },
+    waitingPlatform() {
+      return this.selectedStream ? this.pressToPlay(this.selectedStream) : null;
+    },
+    waitingTitle() {
+      const stream = this.selectedStream;
+
+      if (!stream) {
+        return "";
+      }
+
+      return stream.title || this.parseStreamLink(stream.link).embedId || "";
+    },
+    waitingLink() {
+      if (!this.selectedStream || !isHttpLink(this.selectedStream.link)) {
+        return "";
+      }
+
+      const url = new URL(this.selectedStream.link);
+
+      return `${url.hostname.replace(/^www\./, "")}${url.pathname.replace(/\/+$/, "")}${url.search}`;
+    },
     selectedPov() {
       return (
         this.streams.find(
@@ -274,6 +388,21 @@ export default {
     },
   },
   methods: {
+    pressToPlay(stream: MatchStream) {
+      const { platform } = this.parseStreamLink(stream.link);
+
+      return platform ? (PRESS_TO_PLAY[platform] ?? null) : null;
+    },
+    pressPlay() {
+      if (!this.selectedStream) {
+        return;
+      }
+
+      pressedStreams.add(embedStreamKey(this.selectedStream));
+      this.played = true;
+      this.failedKey = null;
+      this.loadStream();
+    },
     povInitials(name?: string) {
       return (name || "?").slice(0, 2).toUpperCase();
     },
@@ -298,6 +427,8 @@ export default {
     },
     resumeStream() {
       if (!this.selectedStream) return;
+      // Watch is the press: it plays without asking again.
+      pressedStreams.add(embedStreamKey(this.selectedStream));
       useStoppedStreams().resume(embedStreamKey(this.selectedStream));
       // The player div only exists again once StreamCanvas re-renders.
       this.$nextTick(() => {
@@ -564,7 +695,7 @@ export default {
       // toggling at runtime — rebuild the iframe with the inverted
       // mute query param. Cheap (single re-mount) and matches the
       // behavior the user opted into by clicking the pill.
-      if (this.embedId) {
+      if (this.embedId && !this.waiting) {
         switch (this.platform) {
           case "youtube":
             this.mountYouTubePlayer(this.embedId);
@@ -590,13 +721,15 @@ export default {
       }
     },
     async loadStream() {
-      if (!this.selectedStream || !this.selectedStream.link) {
+      const stream = this.selectedStream;
+
+      if (!stream || !stream.link) {
         this.platform = null;
         this.embedId = null;
         return;
       }
 
-      const parsed = this.parseStreamLink(this.selectedStream.link);
+      const parsed = this.parseStreamLink(stream.link);
       this.platform = parsed.platform;
       this.embedId = parsed.embedId;
 
@@ -606,9 +739,27 @@ export default {
         return;
       }
 
+      if (this.waiting) {
+        this.cleanupPlayer();
+        return;
+      }
+
+      if (this.pressToPlay(stream)) {
+        this.played = true;
+        if (!this.started) {
+          this.$emit("update:started", true);
+        }
+      }
+
       switch (this.platform) {
         case "twitch":
-          await this.loadTwitchPlayerScript();
+          try {
+            await this.loadTwitchPlayerScript();
+          } catch (error) {
+            console.warn("Twitch player failed to load:", error);
+            this.failedKey = embedStreamKey(stream);
+            return;
+          }
           this.mountTwitchPlayer(this.embedId);
           break;
         case "youtube":

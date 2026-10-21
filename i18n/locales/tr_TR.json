@@ -12446,6 +12446,9 @@
   },
   "streams": {
     "move_to_global_view": "Genel görünüme taşı",
+    "play": "Oynat: {name}",
+    "load_notice": "{platform} oynatıcısını yüklemek için oynat'a basın. Öncesinde {platform} üzerinden hiçbir şey yüklenmez.",
+    "open_on": "{platform} üzerinde aç",
     "section_title": "Canlı Yayınlar",
     "section_description": "Bu maç için canlı yayın bağlantılarını yönet. Bu bağlantılar izleyicilere ve yorumculara gösterilir.",
     "no_streams_title": "Canlı Yayın Yok",

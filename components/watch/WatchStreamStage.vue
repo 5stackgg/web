@@ -207,6 +207,9 @@ const showLowerThird = computed(
 );
 
 const embedRef = ref<any>(null);
+// The stage is one card to the viewer: once play was pressed here, the next
+// stream it shows plays straight away, though each gets an embed of its own.
+const embedStarted = ref(false);
 function toggleMute() {
   muted.value = !muted.value;
   // Slider was dragged to 0 before muting: unmute at full volume so the
@@ -437,6 +440,7 @@ const trayButtonClass =
           v-else-if="stream"
           :key="stream.id"
           ref="embedRef"
+          v-model:started="embedStarted"
           inline
           :streams="[stream as any]"
           :match-id="current.id"

@@ -1,11 +1,13 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
 import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
+import { tournamentCardFields } from "~/graphql/tournamentCardFields";
+import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 
 function tournament({
   registration_type = "teams",
   teams = 0,
-  rostered = 0,
+  rosters = [] as number[],
   freeAgents = 0,
   maxTeams = 16 as number | null,
   lineup = 5 as number | null,
@@ -13,7 +15,7 @@ function tournament({
 }: {
   registration_type?: string;
   teams?: number;
-  rostered?: number;
+  rosters?: number[];
   freeAgents?: number;
   maxTeams?: number | null;
   lineup?: number | null;
@@ -24,7 +26,9 @@ function tournament({
     min_players_per_lineup: lineup,
     options: { type },
     teams_aggregate: { aggregate: { count: teams } },
-    rosters_aggregate: { aggregate: { count: rostered } },
+    roster_counts: rosters.map((count) => ({
+      roster_aggregate: { aggregate: { count } },
+    })),
     free_agents_aggregate: { aggregate: { count: freeAgents } },
     stages: maxTeams === null ? [] : [{ order: 1, max_teams: maxTeams }],
   };
@@ -51,7 +55,7 @@ describe("tournamentRegistrationCount", () => {
         tournament({
           registration_type: "both",
           teams: 6,
-          rostered: 22,
+          rosters: [5, 5, 4, 3, 3, 2],
           freeAgents: 16,
         }),
       ),
@@ -64,11 +68,29 @@ describe("tournamentRegistrationCount", () => {
         tournament({
           registration_type: "both",
           teams: 1,
-          rostered: 2,
+          rosters: [2],
           maxTeams: 32,
         }),
       ),
     ).toEqual({ unit: "players", count: 2, max: 160 });
+  });
+
+  it("counts no more than a starting lineup per team, so substitutes take no slot", () => {
+    expect(
+      tournamentRegistrationCount(
+        tournament({
+          registration_type: "both",
+          teams: 12,
+          rosters: Array(12).fill(7),
+        }),
+      ),
+    ).toEqual({ unit: "players", count: 60, max: 80 });
+
+    expect(
+      tournamentRegistrationCount(
+        tournament({ registration_type: "both", teams: 2, rosters: [7, 2] }),
+      ).count,
+    ).toBe(7);
   });
 
   it("never shows more players than the cap", () => {
@@ -77,7 +99,7 @@ describe("tournamentRegistrationCount", () => {
         tournament({
           registration_type: "both",
           teams: 15,
-          rostered: 75,
+          rosters: Array(15).fill(5),
           freeAgents: 20,
         }),
       ),
@@ -102,7 +124,7 @@ describe("tournamentRegistrationCount", () => {
         tournament({
           registration_type: "both",
           teams: 3,
-          rostered: 6,
+          rosters: [2, 2, 2],
           freeAgents: 2,
           maxTeams: 8,
           lineup: 2,
@@ -146,5 +168,14 @@ describe("tournamentRegistrationCount", () => {
       count: 2,
       max: 16,
     });
+  });
+
+  it.each([
+    ["tournamentCardFields", tournamentCardFields],
+    ["simpleTournamentFields", simpleTournamentFields],
+  ])("is fed each team's roster count by %s", (_, fields: any) => {
+    expect(fields.__alias.roster_counts.teams[1]).toHaveProperty(
+      "roster_aggregate",
+    );
   });
 });

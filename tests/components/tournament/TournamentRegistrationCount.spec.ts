@@ -16,7 +16,7 @@ function fridayMix(
   registration_type: string,
   teams: number,
   agents: number,
-  rostered = 0,
+  rosters: number[] = [],
 ) {
   return {
     id: `friday-mix-${registration_type}`,
@@ -27,7 +27,9 @@ function fridayMix(
     min_players_per_lineup: 5,
     options: { type: "Competitive", best_of: 1 },
     teams_aggregate: { aggregate: { count: teams } },
-    rosters_aggregate: { aggregate: { count: rostered } },
+    roster_counts: rosters.map((count) => ({
+      roster_aggregate: { aggregate: { count } },
+    })),
     free_agents_aggregate: { aggregate: { count: agents } },
     stages: [{ order: 1, max_teams: 16, type: "SingleElimination" }],
     categories: [],
@@ -82,7 +84,7 @@ describe("registration counts", () => {
 
   it("counts the players on the agenda row, not a full lineup per team", async () => {
     const wrapper = await mount(TournamentAgendaRow, {
-      tournament: fridayMix("both", 6, 16, 22),
+      tournament: fridayMix("both", 6, 16, [5, 5, 4, 3, 3, 2]),
     });
 
     expect(wrapper.text()).toContain("38 of 80 players");

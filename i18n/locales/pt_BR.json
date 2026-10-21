@@ -4392,6 +4392,7 @@
       }
     },
     "play": {
+      "open_registration_tournaments": {},
       "more_ways": {
         "title": "Mais formas de jogar",
         "tournaments": {
@@ -4474,6 +4475,7 @@
         },
         "find_lan_match": "Encontrar partida LAN"
       },
+      "draft_games": {},
       "schedule": {
         "vs": "vs",
         "now": "Agora",
@@ -8657,7 +8659,7 @@
     "clear_filters": "Limpar filtros"
   },
   "global_search": {
-    "placeholder": "Buscar jogadores, páginas e configurações",
+    "placeholder": "Buscar jogadores, páginas, configurações e ajuda",
     "pages": "Páginas",
     "players": "Jogadores",
     "searching": "Procurando...",
@@ -8667,7 +8669,8 @@
       "navigate": "para navegar",
       "open": "para abrir",
       "close": "para fechar"
-    }
+    },
+    "help": "Ajuda"
   },
   "file_manager_store": {
     "load_directory_failed": "Falha ao carregar diretório",
@@ -10479,7 +10482,8 @@
       "type": "Tipo",
       "region": "Região/Local",
       "no_logs_title": "Sem logs disponíveis",
-      "no_logs_description": "Sem logs disponíveis e nenhum servidor conectado."
+      "no_logs_description": "Sem logs disponíveis e nenhum servidor conectado.",
+      "rounds": "Rounds"
     },
     "chat_log": {
       "visibility": "Somente organizadores e staff",
@@ -11102,10 +11106,7 @@
         "title": "Resolver um problema",
         "description": "{team_1} vs {team_2}",
         "restore_title": "Um round deu errado",
-        "restore_description": "Queda, bug ou desconexão. Repita o round em andamento ou volte mais, com uma prévia antes.",
-        "restore_rush": "Partidas Rush não podem restaurar rounds.",
         "restore_over": "Os mapas acabaram.",
-        "restore_not_live": "Só enquanto um mapa está sendo jogado.",
         "restart_map_title": "Este mapa precisa recomeçar",
         "restart_map_description": "Volta ao aquecimento em 0–0. Os rounds jogados continuam restauráveis até o próximo round terminar.",
         "restart_title": "A partida inteira precisa ser repetida",
@@ -11114,7 +11115,6 @@
         "reopen_description": "Reabre o check-in para que a partida cancelada possa ser jogada.",
         "replay_title": "A partida precisa ser jogada de novo",
         "replay_description": "Apaga o resultado e reabre o check-in. A classificação do torneio é atualizada.",
-        "replay_bracket_only": "Só partidas de torneio podem ser jogadas de novo depois de terem resultado.",
         "winner_title": "O time errado ficou com a vitória",
         "winner_description": "Escolha o vencedor certo sem repetir a partida.",
         "forfeit_title": "Um time não pode continuar",
@@ -11126,46 +11126,12 @@
       },
       "restore": {
         "title": "Restaurar round",
-        "description": "{map} · round em andamento {round}. Escolha o round a ser jogado de novo.",
-        "description_short": "Escolha o round a ser jogado de novo.",
-        "load_failed": "Não foi possível carregar os backups dos rounds",
         "rush": "Partidas Rush não podem restaurar rounds.",
         "not_in_progress": "Rounds só podem ser restaurados enquanto um mapa está sendo jogado.",
         "not_live_yet": "O mapa ainda não voltou ao vivo. Assim que voltar, qualquer round anterior pode ser restaurado até o round 1 terminar.",
         "team_member": "Você está em um dos times, então outro organizador precisa restaurar os rounds. Os jogadores ainda podem iniciar a votação no jogo.",
         "nothing_yet": "Nenhum round terminou neste mapa ainda, então não há para onde voltar.",
-        "replay_live": "Repetir o round em andamento {round}",
-        "round_result": "Round {round}: {team} venceu · {reason}",
-        "now": "Agora",
-        "won_ct": "Vencido como CT",
-        "won_t": "Vencido como T",
-        "undone": "Desfeito, ainda pode ser trazido de volta",
-        "round_one": "O round 1 não tem backup",
-        "headline": "Voltar ao início do round {round}",
-        "headline_live": "Jogar o round {round} desde o início",
-        "headline_forward": "Avançar ao início do round {round}",
-        "previous_round": "Fim do round {round}: {team} venceu como {side} · {reason}",
         "economy_hidden": "O dinheiro e as armas dos jogadores estão ocultos porque você está jogando nesta partida.",
-        "bank": "Caixa {amount}",
-        "timeouts": "Pausas restantes: {count}",
-        "player": "Jogador",
-        "cash": "Dinheiro",
-        "armor": "Colete",
-        "carries": "Carrega",
-        "kd": "K / D",
-        "no_armor": "Nenhum",
-        "died": "Morreu, compra de novo",
-        "knife_only": "Só a faca",
-        "undo_live": "Desfaz só o round em andamento.",
-        "undo_round": "Desfaz o round {round} e o round em andamento, incluindo seus abates e dano.",
-        "undo_rounds": "Desfaz os rounds {from}–{to} e o round em andamento, incluindo seus abates e dano.",
-        "redo_round": "Traz de volta o round {round}, com seus abates e dano.",
-        "redo_rounds": "Traz de volta os rounds {from}–{to}, com seus abates e dano.",
-        "waiting": "Aguardando os jogadores se reconectarem ({connected}/{expected}). Desconectados: {names}.",
-        "everyone_connected": "Todos estão conectados",
-        "pauses": "A partida pausa enquanto o round carrega. Os times ficam prontos para continuar.",
-        "confirm": "Restaurar para o round {round}",
-        "confirm_live": "Repetir o round {round}",
         "started": "Restaurando o round {round}",
         "failed": "Não foi possível restaurar o round"
       },
@@ -11369,6 +11335,116 @@
         "knife_line": "O vencedor escolhe o lado"
       },
       "map": "Mapa"
+    },
+    "rewind": {
+      "strip_label": "Rounds. Clique em um round, ou use as setas do teclado, para escolher de onde restaurar.",
+      "previous_round": "Round anterior",
+      "next_round": "Próximo round",
+      "start_of": "Início do R{round}",
+      "half": "Intervalo",
+      "at_start_of": "No início do R{round}",
+      "bank": "Caixa",
+      "player": "Jogador",
+      "cash": "Dinheiro",
+      "armor": "Colete",
+      "carries": "Equipamento",
+      "not_connected": "Não conectado",
+      "not_connected_tip": "Não conectado. O servidor espera todos os jogadores antes de carregar um round.",
+      "now_value": "Agora {value}",
+      "armor_helmet": "Colete e capacete",
+      "armor_only": "Colete, sem capacete",
+      "buys_fresh": "Morreu, compra do zero",
+      "connected_count": "{connected}/{expected} conectados",
+      "waiting_tip": "{names} não está conectado. O servidor de jogo espera todos os jogadores antes de carregar o round, então isto é liberado quando eles voltarem.",
+      "everyone_connected": "Todos estão conectados",
+      "undone": "Desfeito",
+      "undone_one": "O round {round} foi desfeito",
+      "undone_many": "Os rounds {from}–{to} foram desfeitos",
+      "undone_until": "Eles podem voltar até o fim do round {round}",
+      "bring_back": "Trazer de volta",
+      "round": "Round",
+      "won_by": "Vencido por",
+      "how": "Como",
+      "score": "Placar",
+      "halftime": "Intervalo",
+      "in_progress": "Em andamento",
+      "round_n": "o round {round}",
+      "rounds_range": "os rounds {from}–{to}",
+      "replay_headline": "Jogar o round {round} de novo desde o início",
+      "replay_detail": "Desfaz só o round em andamento",
+      "replay_confirm": "Jogar de novo o round {round}",
+      "back_headline": "Voltar ao início do round {round}",
+      "back_detail": "Desfaz {span} e o round em andamento",
+      "forward_headline": "Avançar para o início do round {round}",
+      "forward_detail": "Traz de volta {span}",
+      "restore_confirm": "Restaurar round {round}",
+      "pauses_after": "A partida pausa em seguida, e os times dão ready para continuar.",
+      "preview_chip": "Prévia · Início do R{round}",
+      "rounds_played": "{count} rounds jogados",
+      "round_in_progress": "Round {round} em andamento",
+      "legend_back": "Rounds listrados são desfeitos: {span} e o round em andamento",
+      "legend_forward": "Recupera {span}",
+      "legend_replay": "Só o round em andamento é desfeito",
+      "legend_rules": "O round 1 não tem backup. Rounds desfeitos podem voltar até o fim do round seguinte.",
+      "amber_hint": "Valores em âmbar são diferentes do round em andamento. Passe o mouse sobre um valor de dinheiro para ver quanto o jogador tem agora.",
+      "restore_from_round": "Restaurar desde o início do round {round}",
+      "restore_from_here": "Restaurar daqui",
+      "click_hint": "Clique em qualquer round para restaurar a partida ao início dele. Nada muda até você confirmar.",
+      "kills_count": "{count} abates",
+      "damage_count": "{count} de dano",
+      "unlocks_when": "A restauração é liberada quando {names} reconectar.",
+      "no_rounds": "Nenhum round foi jogado neste mapa ainda."
+    },
+    "fix_menu": {
+      "right_now": "Agora",
+      "any_time": "A qualquer momento",
+      "restore_description": "Crash, bug ou desconexão. Volte ao início de qualquer round na aba Rounds.",
+      "undo_last_title": "Desfazer a última etapa",
+      "undo_last_description": "Desfaz a escolha de {map} feita por {team}, e o time escolhe de novo.",
+      "mispick_title": "Corrigir um pick errado",
+      "mispick_description": "Escolha a etapa que deu errado. Ela e todas as etapas seguintes são refeitas.",
+      "redo_title": "Refazer o veto",
+      "redo_description": "Recomece do primeiro ban, com todos os mapas de volta ao pool.",
+      "act_title": "Banir ou escolher por {team}",
+      "act_description": "Ative a sobrescrita do veto e faça você mesmo a escolha desta etapa no quadro do veto.",
+      "time_title": "Dar mais 30 segundos",
+      "time_description": "Adiciona tempo ao relógio de {team}.",
+      "later_rounds": "As correções de round são liberadas quando um mapa estiver sendo jogado.",
+      "later_results": "As correções de resultado e estatísticas são liberadas quando a partida terminar.",
+      "act_toast": "Sobrescrita do veto ativada: faça a escolha de {team} no quadro do veto.",
+      "undo_confirm": "Desfazer etapa",
+      "rewound": "Veto voltou para a etapa {step}",
+      "rewind_failed": "Não foi possível voltar o veto",
+      "time_added": "{seconds} segundos adicionados ao relógio do veto",
+      "time_failed": "Não foi possível adicionar tempo ao relógio do veto"
+    },
+    "veto_rewind": {
+      "title": "Veto · Melhor de {count}",
+      "to_act": "age na etapa {step}",
+      "ban": "Ban",
+      "pick": "Pick",
+      "side": "Lado",
+      "decider": "Decisivo",
+      "now": "Agora",
+      "drawn": "Restante",
+      "redone": "Refeito",
+      "again_from": "Etapa {step} de novo",
+      "rewind_to_step": "Voltar para a etapa {step}",
+      "again_ban": "{team} bane de novo",
+      "again_pick": "{team} escolhe de novo",
+      "again_side": "{team} escolhe o lado de novo",
+      "again_decider": "O decisivo é definido de novo",
+      "cleared_ban": "o ban de {map} por {team}",
+      "cleared_pick": "o pick de {map} por {team}",
+      "cleared_side": "o lado de {team} em {map}",
+      "cleared_decider": "o decisivo, {map}",
+      "bar_headline": "Voltar para a etapa {step} · {again}",
+      "bar_detail": "Apaga {list}. O relógio recomeça.",
+      "confirm": "Voltar o veto",
+      "footnote": "Mapas banidos voltam ao pool",
+      "eyebrow": "Prévia · A partir da etapa {step}",
+      "dialog_title": "Corrigir o veto",
+      "dialog_description": "Clique na etapa que deu errado. Ela e todas as etapas seguintes são refeitas."
     }
   },
   "ui": {
@@ -11745,6 +11821,7 @@
         "description": "Partidas 3v3 em ritmo acelerado, sala por sala, em que cada round vencido empurra o combate para frente"
       }
     },
+    "queue_wait": {},
     "match_found": "Partida Encontrada",
     "match_found_description": "Pressione Pronto para aceitar a partida antes que o tempo acabe.",
     "waiting_for_players": "Aguardando Jogadores",
@@ -11803,6 +11880,7 @@
     "banned_until": "Você está banido do matchmaking até {time}",
     "in_queue": "na fila",
     "temp_banned": "Você está temporariamente banido do matchmaking.",
+    "settings_section": {},
     "no_preferred_regions": "Por favor, selecione pelo menos uma região/local de sua preferência nas configurações de matchmaking.",
     "party_size": {
       "requirement": "Entre na fila com {half} ou menos, ou exatamente {full} jogadores"
@@ -12722,6 +12800,7 @@
     "filters": {
       "any": "∞"
     },
+    "sort": {},
     "create": {
       "captain_selection": "Seleção de capitães",
       "draft_order": "Método de pick players",
@@ -12925,6 +13004,7 @@
       "teams": "Equipes",
       "teams_desc": "Equipes já cadastradas na plataforma entram diretamente na partida ou uma equipe versus jogadores externos não necessariamente de uma equipe."
     },
+    "mode_short": {},
     "access": {
       "open": "Aberto",
       "open_desc": "Qualquer um pode encontrar e entrar pela lista pública.",
@@ -13825,8 +13905,8 @@
   },
   "faq": {
     "title": "Ajuda e FAQ",
-    "intro": "Perguntas comuns sobre a plataforma, sobre como jogar aqui e sobre como rodar sua própria instância. Se algo não estiver coberto, os links da comunidade no fim da página são o caminho mais rápido para uma resposta.",
-    "search_placeholder": "Buscar perguntas",
+    "intro": "Como funcionam as partidas e os torneios aqui, e o que fazer quando algo dá errado.",
+    "search_placeholder": "Buscar no FAQ",
     "no_results": "Nenhuma pergunta corresponde a \"{term}\".",
     "links": {
       "features": "Todos os recursos",
@@ -13880,7 +13960,7 @@
       },
       "check_in": {
         "question": "Por que preciso fazer check-in antes de uma partida?",
-        "answer": "O check-in confirma que todo mundo está mesmo na frente do computador antes de um servidor ser reservado e de o resto do lobby ficar esperando. Partidas com cancelamento automático mostram uma contagem regressiva, e a partida é cancelada sozinha se os jogadores necessários não fizerem check-in até o prazo."
+        "answer": "O check-in confirma que todo mundo está mesmo na frente do computador antes de um servidor ser reservado e de o resto do lobby ficar esperando. Partidas com cancelamento automático mostram uma contagem regressiva, e a partida é cancelada sozinha se os jogadores necessários não fizerem check-in até o prazo. Em uma partida de torneio, o time que perder o prazo perde por W.O."
       },
       "tournaments": {
         "question": "Como entro em um campeonato?",
@@ -13904,7 +13984,6 @@
       }
     },
     "hosting": {
-      "title": "Hospedando a sua",
       "self_host": {
         "question": "Posso rodar minha própria instância?",
         "answer": "Sim — essa é a forma pensada de usar o 5Stack. Ele é auto-hospedado e instala com um único comando, que sobe o Kubernetes (K3s), o banco de dados, o armazenamento e o próprio painel. O guia de instalação na documentação explica o processo do início ao fim."
@@ -13939,8 +14018,420 @@
       "description": "O Discord é o caminho mais rápido até uma pessoa — quem roda instâncias do 5Stack está lá. Bugs e pedidos de recurso vão no GitHub, e a documentação cobre instalação, servidores e todos os recursos em detalhe.",
       "discord": "Entrar no Discord",
       "github": "Reportar um problema",
-      "docs": "Ler a documentação"
-    }
+      "docs": "Ler a documentação",
+      "description_player": "Quem administra este site está no Discord. Pergunte lá se a sua dúvida não tiver resposta aqui."
+    },
+    "help_glyph": "Como isso funciona?",
+    "part_of": "Parte {n} de {total}",
+    "link_to": "Link para {title}",
+    "contents": "Conteúdo",
+    "search_results": "Respostas",
+    "open_full": "Abrir no FAQ",
+    "parts": {
+      "start": {
+        "title": "Comece aqui",
+        "lede": "Algo errado? Comece pelo que você está vendo."
+      },
+      "running": {
+        "title": "Conduzindo uma partida",
+        "lede": "Para organizadores: como colocar uma partida nos trilhos quando algo dá errado."
+      },
+      "playing": {
+        "lede": "Como entrar em partidas, e o que acontece em volta delas."
+      },
+      "about": {
+        "lede": "O que é este site, e quem o faz."
+      },
+      "hosting": {
+        "lede": "Hospedar este site, seus servidores e seu visual, com links para a documentação completa. Só administradores veem esta parte.",
+        "title": "Para administradores"
+      },
+      "tournaments": {
+        "title": "Torneios",
+        "lede": "Como entrar em um com a sua equipe, e como conduzir um sendo organizador."
+      }
+    },
+    "sections": {
+      "something_wrong": {
+        "title": "Algo deu errado?",
+        "lede": "Encontre o que você está vendo e vá direto para a solução.",
+        "keywords": "problema quebrado ajuda crash caiu travado erro falha errado bug"
+      },
+      "words": {
+        "title": "Termos usados aqui",
+        "lede": "Os poucos termos em que este guia se apoia.",
+        "keywords": "glossário termos definições significado"
+      },
+      "fix_a_problem": {
+        "title": "Resolver um problema",
+        "lede": "Um botão para todas as correções, com as que importam agora no topo.",
+        "keywords": "resolver corrigir problema barra admin organizador ferramentas ajuda",
+        "subs": {
+          "where": "Onde fica",
+          "steps": "Acompanha a partida",
+          "who": "Quem vê"
+        }
+      },
+      "restore": {
+        "title": "Restaurar um round",
+        "lede": "Volte ao início de qualquer round, e veja como ele era antes de qualquer mudança.",
+        "keywords": "restaurar round backup voltar desfazer crash caiu servidor desconectou desconexão rejogar aba rounds rewind",
+        "subs": {
+          "how": "Passo a passo",
+          "which": "Qual round escolher",
+          "wait": "Esperando os jogadores",
+          "undo": "Mudou de ideia?",
+          "limits": "Quando não dá"
+        }
+      },
+      "restart_map": {
+        "title": "Reiniciar o mapa",
+        "lede": "De volta ao aquecimento em 0–0, sem perder os rounds jogados.",
+        "keywords": "reiniciar mapa aquecimento recomeçar 0-0 resetar warmup restart"
+      },
+      "veto_fix": {
+        "title": "Corrigir o veto",
+        "lede": "Desfaça um ban, um pick ou um lado, ou faça o veto de novo.",
+        "keywords": "veto mis-pick pick errado mapa errado ban pick lado refazer desfazer relógio tempo timer",
+        "subs": {
+          "how": "Passo a passo",
+          "why": "Por que as etapas seguintes também são refeitas",
+          "more": "Mais tempo, ou agir por um time"
+        }
+      },
+      "server": {
+        "title": "Problemas no servidor",
+        "lede": "Quando o servidor para de responder, ou a partida precisa de outro.",
+        "keywords": "servidor crash caiu reiniciar reboot não responde lag conectar mover trocar"
+      },
+      "results": {
+        "title": "Resultados e estatísticas",
+        "lede": "Um vencedor errado, um time que não pode continuar, ou números que parecem errados.",
+        "keywords": "vencedor resultado W.O. desistência reprocessar estatísticas demo placar errado"
+      },
+      "replay_match": {
+        "title": "Jogar a partida inteira de novo",
+        "lede": "Recomece a partida a partir do check-in.",
+        "keywords": "rejogar reiniciar partida cancelar cancelada check-in de novo replay"
+      },
+      "demo_match": {
+        "title": "Teste em uma partida demo",
+        "lede": "Pratique cada correção em uma partida de mentira primeiro.",
+        "keywords": "demo praticar testar teste sandbox exemplo"
+      },
+      "call_support": {
+        "title": "O que faço se algo der errado na minha partida?",
+        "answer": "Abra o menu ⋮ na página da partida e escolha Chamar Suporte. Os organizadores da partida são avisados na hora, e a maioria dos problemas pode ser resolvida sem recomeçar a partida.",
+        "keywords": "ajuda suporte organizador admin problema reportar chamar"
+      },
+      "t_join": {
+        "title": "Entrar em um torneio",
+        "lede": "Com uma equipe, ou sozinho como agente livre.",
+        "keywords": "entrar inscrever inscrição cadastro equipe time agente livre free agent pool lista de espera torneio"
+      },
+      "t_roster": {
+        "title": "Seu elenco no torneio",
+        "lede": "Quem pode jogar, e quando o elenco para de mudar.",
+        "keywords": "elenco escalação lineup reserva sub adicionar remover jogador equipe capitão travado seed"
+      },
+      "t_check_in": {
+        "title": "Fazer check-in",
+        "lede": "Há dois check-ins: um para o torneio e um para cada partida.",
+        "keywords": "check-in check in perdeu atrasado W.O. presente torneio partida prazo"
+      },
+      "t_next_match": {
+        "title": "Encontrar sua próxima partida",
+        "lede": "Onde aparecem suas partidas e os horários delas.",
+        "keywords": "próxima partida agenda horário chaveamento quando hora próximas"
+      },
+      "t_organizers": {
+        "title": "Quem organiza um torneio",
+        "lede": "Os organizadores, e o que só o criador pode fazer.",
+        "keywords": "organizador admin co-organizador adicionar organizador permissões criador"
+      },
+      "t_setup": {
+        "title": "Criar um torneio",
+        "lede": "Fases, seeds e o que fica travado depois que o chaveamento é gerado.",
+        "keywords": "criar torneio fase eliminação simples dupla round robin suíço swiss seed chaveamento grupos"
+      },
+      "t_start": {
+        "title": "Abrir e iniciar",
+        "lede": "Inscrições, check-in e horário de início.",
+        "keywords": "abrir inscrições fechar inscrições iniciar torneio mínimo equipes cancelado ao vivo"
+      },
+      "t_scheduling": {
+        "title": "Agendar partidas",
+        "lede": "Automático, à mão, ou combinado entre os capitães.",
+        "keywords": "agendar horário manual automático auto iniciar negociado configurações da partida regras travadas editar próxima partida"
+      },
+      "t_results": {
+        "title": "Corrigir um resultado de torneio",
+        "lede": "Vencedor errado, uma partida para rejogar, ou uma partida que nunca aconteceu.",
+        "keywords": "redefinir vencedor resultado errado chaveamento rejogar W.O. cancelar recriar partida classificação"
+      }
+    },
+    "content": {
+      "wrong": {
+        "heading_see": "O que você vê",
+        "heading_why": "Por quê",
+        "heading_fix": "O que fazer",
+        "crash": {
+          "see": "O servidor caiu no meio de um round",
+          "why": "O round em andamento foi perdido",
+          "fix": "Jogue esse round de novo"
+        },
+        "dropped": {
+          "see": "Um jogador caiu e o time dele perdeu o round",
+          "why": "O servidor espera todos antes de carregar um round",
+          "fix": "Restaure quando ele voltar"
+        },
+        "map_over": {
+          "see": "O mapa precisa recomeçar do 0–0",
+          "why": "Configurações erradas, um jogador atrasado, ou um começo ruim",
+          "fix": "Reinicie o mapa"
+        },
+        "veto_wrong": {
+          "see": "Um time baniu ou escolheu o mapa errado",
+          "why": "Todas as etapas seguintes dependem dessa escolha",
+          "fix": "Corrija o pick errado"
+        },
+        "veto_clock": {
+          "see": "O relógio do veto acabou para um time",
+          "why": "Um mapa foi escolhido por eles",
+          "fix": "Desfaça a última etapa"
+        },
+        "server": {
+          "see": "O servidor não está respondendo",
+          "why": "Ele caiu ou perdeu a conexão",
+          "fix": "Reinicie-o, ou mova a partida"
+        },
+        "winner": {
+          "see": "O time errado ficou com a vitória",
+          "why": "Um resultado foi definido à mão, ou um W.O. foi um engano",
+          "fix": "Defina o vencedor certo"
+        },
+        "stats": {
+          "see": "As estatísticas ou a demo parecem erradas",
+          "why": "A demo foi lida antes de estar completa",
+          "fix": "Leia as demos de novo"
+        },
+        "no_button": {
+          "see": "Não aparece Resolver um problema na minha partida",
+          "why": "Só os organizadores da partida veem",
+          "fix": "Veja quem pode corrigir uma partida"
+        },
+        "player": {
+          "see": "Estou jogando e algo está errado",
+          "why": "Quem corrige partidas são os organizadores, não os jogadores",
+          "fix": "Chame o suporte"
+        },
+        "t_no_show": {
+          "see": "Um time não fez check-in para uma partida de torneio",
+          "why": "Partidas de torneio terminam em W.O., não são canceladas",
+          "fix": "Como funciona o check-in da partida"
+        },
+        "t_result": {
+          "see": "Um resultado de torneio está errado",
+          "why": "Um vencedor foi definido por engano, ou a partida precisa ser rejogada",
+          "fix": "Corrija o resultado"
+        }
+      },
+      "words": {
+        "heading_term": "Termo",
+        "heading_meaning": "O que significa",
+        "organizer": {
+          "term": "Organizador",
+          "meaning": "Quem conduz uma partida: a pessoa que a criou, os organizadores do torneio dela, e a staff do site."
+        },
+        "fix": {
+          "term": "Resolver um problema",
+          "meaning": "O botão na barra de administração, na parte de baixo da página da partida. Toda correção deste guia começa por ali."
+        },
+        "rounds_tab": {
+          "term": "Aba Rounds",
+          "meaning": "A aba da página da partida que lista todos os rounds do mapa. É ali que se restaura um round."
+        },
+        "rewind": {
+          "term": "Prévia",
+          "meaning": "O que a aba Rounds mostra quando você clica em um round: aquele round como ele era. Nada muda até você apertar Restaurar."
+        },
+        "backup": {
+          "term": "Backup",
+          "meaning": "O que o servidor salva ao fim de cada round: o placar e o dinheiro, o colete e as armas de cada jogador. Uma restauração carrega um deles."
+        },
+        "undone": {
+          "term": "Round desfeito",
+          "meaning": "Um round que uma restauração desfez. Ele pode voltar até o fim do round seguinte."
+        },
+        "veto": {
+          "term": "Veto",
+          "meaning": "Os times banindo e escolhendo mapas, e escolhendo lados, uma etapa de cada vez."
+        }
+      },
+      "fix": {
+        "where_title": "Abra pela barra de administração",
+        "where_1": "Na parte de baixo da página da partida, aperte Resolver um problema.",
+        "where_2": "Escolha o que deu errado. Cada correção abre onde ela acontece: uma correção de round abre a aba Rounds, uma correção de veto abre o veto.",
+        "steps_1": "A lista acompanha a partida. Em Agora ficam as correções para a etapa em que a partida está, e em A qualquer momento ficam as que sempre funcionam. Nada aparece acinzentado; uma linha no final diz o que é liberado depois.",
+        "steps_veto_caption": "Durante o veto: desfazer uma etapa, agir por um time ou dar mais tempo a ele.",
+        "steps_live_caption": "Enquanto um mapa está sendo jogado: restaurar um round ou recomeçar o mapa.",
+        "who_1": "Os organizadores veem: quem criou a partida, os organizadores do torneio dela, e a staff do site.",
+        "who_2": "Os jogadores não veem. Eles podem pedir ajuda com",
+        "who_3": "Se você estiver jogando a partida, outro organizador precisa restaurar os rounds."
+      },
+      "restore": {
+        "pick_title": "Clique no round",
+        "pick_1": "Na aba Rounds, clique no round que vai ser jogado de novo, na faixa ou na lista abaixo dela. Uma linha âmbar marca o início dele.",
+        "pick_2": "Os rounds depois da linha ficam listrados: são os que serão desfeitos, com a contagem de abates e dano que vão junto com eles.",
+        "pick_caption": "Voltando ao início do round 16 a partir do round 17.",
+        "confirm_title": "Restaurar",
+        "confirm_1": "Aperte {button} na barra de baixo.",
+        "confirm_2": "O servidor carrega o round, e o placar volta junto.",
+        "after_title": "Dar ready",
+        "after_1": "A partida pausa no round restaurado para que todos possam se preparar.",
+        "after_2": "Ela continua quando os times dão ready no jogo. A staff também pode apertar {resume} na barra de administração.",
+        "which_heading_pick": "Se você escolher",
+        "which_heading_result": "O que acontece",
+        "which_live": "O round sendo jogado",
+        "which_live_result": "Ele recomeça do primeiro segundo. Nada mais muda.",
+        "which_earlier": "Um round anterior",
+        "which_earlier_result": "O jogo volta ao início desse round. Os rounds depois dele são desfeitos, incluindo placar e estatísticas.",
+        "which_first": "Round 1",
+        "which_first_result": "Não há backup antes do round 1, então reinicie o mapa.",
+        "which_note": "O número de um round é o do round que você vai jogar a seguir: restaurar o round 16 coloca os dois times no início do round 16.",
+        "wait_1": "O servidor de jogo não carrega um round até que todos os jogadores estejam de volta nele, então o botão Restaurar espera por eles.",
+        "wait_2": "A barra diz quem está faltando, aqui {name}. O botão é liberado no momento em que ele reconectar.",
+        "undo_1": "Rounds desfeitos não são descartados na hora. Até o fim do round seguinte, eles ficam esperando no final da faixa de rounds.",
+        "undo_2": "Escolheu o round errado? Aperte {button} para avançar até onde você estava.",
+        "limit_live": "Só enquanto o mapa está ao vivo: não no aquecimento nem no round da faca.",
+        "limit_over": "Não depois que o mapa terminou. Corrija o resultado dele em vez disso.",
+        "limit_rush": "Não em partidas Rush.",
+        "limit_player": "Não por um organizador que está jogando a partida.",
+        "limit_economy": "Jogadores da partida não veem a prévia de dinheiro e armas, então ela não entrega a economia do outro time.",
+        "pick_anywhere": "Não está na aba Rounds? Aperte {fix} e depois {round}. Ela abre lá com o round em andamento já escolhido.",
+        "preview_title": "Confira a prévia",
+        "preview_1": "O dinheiro, o colete e as armas de cada jogador aparecem como estavam no início daquele round. O que for diferente de agora fica em âmbar.",
+        "preview_2": "Clique em outro round para mover a linha, ou aperte Esc para limpá-la.",
+        "preview_caption": "{name} não está conectado, então aparece um aviso ao lado do nome dele."
+      },
+      "restart_map": {
+        "how": "Aperte {fix} e depois {item}.",
+        "after": "O mapa volta ao aquecimento em 0–0. Os jogadores continuam no servidor.",
+        "undo": "Os rounds que foram jogados ficam na faixa de rounds até o fim do round seguinte, então um reinício por engano pode ser desfeito com {link}."
+      },
+      "veto": {
+        "pick_title": "Escolha a correção",
+        "pick_1": "Durante o veto, aperte {fix}.",
+        "pick_undo": "{item} desfaz o ban, pick ou escolha de lado mais recente.",
+        "pick_mispick": "{item} já escolhe a etapa mais recente para você. Clique em qualquer etapa anterior para voltar mais.",
+        "pick_redo": "{item} recomeça do primeiro ban.",
+        "step_title": "Clique na etapa que deu errado",
+        "step_1": "Corrigir um pick errado e Refazer o veto abrem as etapas do veto. Clique na que deu errado: ela e todas as etapas seguintes ficam listradas.",
+        "step_2": "A barra mostra quem age em seguida e lista tudo o que será apagado.",
+        "confirm_title": "Voltar o veto",
+        "confirm_1": "Aperte {button}.",
+        "confirm_2": "O relógio recomeça para o time da vez.",
+        "why_1": "De quem é a vez, e se a etapa é um ban, um pick ou um lado, depende de quantas etapas já foram feitas. Desfaça a etapa 3 e a etapa 4 passa a ser de outro time, então toda etapa depois da que você corrigir é refeita.",
+        "why_2": "Mapas banidos voltam ao pool, e mapas que tinham sido escolhidos saem da partida.",
+        "more_time": "{item} adiciona tempo para o time da vez.",
+        "more_act": "{item} ativa a sobrescrita do veto, para você fazer a escolha atual no quadro do veto por um time que travou ou saiu.",
+        "more_after": "Essas correções continuam em Resolver um problema depois que o veto termina, até o primeiro mapa ficar ao vivo. Usar uma delas nesse momento leva a partida de volta ao veto."
+      },
+      "server": {
+        "reboot": "{item} reinicia o servidor de jogo. Os jogadores reconectam à mesma partida.",
+        "move": "Para mover a partida para outro servidor, escolha um outro em Resolver um problema.",
+        "crash": "Se o servidor caiu no meio do round, reinicie-o e depois restaure o round quando todos voltarem."
+      },
+      "results": {
+        "winner": "{item} define o vencedor certo sem jogar de novo.",
+        "forfeit": "{item} encerra a partida agora e dá a vitória ao outro time.",
+        "reparse": "{item} lê as demos de novo. O resultado continua o mesmo."
+      },
+      "replay": {
+        "restart": "{item} cancela esta tentativa e reabre o check-in para os dois times.",
+        "tournament": "Em um torneio, uma partida que já tem resultado pode ser jogada de novo com {item}. A classificação é atualizada.",
+        "canceled": "Uma partida cancelada pode ser reaberta do mesmo jeito, sem precisar ser criada de novo."
+      },
+      "demo": {
+        "body": "Uma partida de mentira com tudo o que está nesta página: a barra de administração, Resolver um problema, a aba Rounds e o veto. Nada do que você fizer lá afeta uma partida real.",
+        "open": "Abrir a partida demo"
+      },
+      "figures": {
+        "match_page_bottom": "Parte de baixo da página da partida",
+        "fix_veto": "Resolver um problema · Veto",
+        "fix_live": "Resolver um problema · Ao vivo",
+        "rounds_rewind": "Aba Rounds · Retroceder",
+        "rounds_bar": "Aba Rounds · Barra inferior",
+        "rounds_tab": "Aba Rounds",
+        "veto": "Veto"
+      },
+      "tournament": {
+        "join_1": "Enquanto as inscrições estiverem abertas, aperte **Inscrever-se no Torneio** no topo do torneio.",
+        "join_2": "**Como equipe**: escolha uma das suas equipes, ou ative **Criar Nova Equipe**.",
+        "join_3": "**Como agente livre**: aperte **Inscrever-se**. Quando as inscrições fecham, os agentes livres são distribuídos em equipes equilibradas, por ordem de inscrição. Quem sobrar fica na lista de espera e sobe se abrir uma vaga. **Sair do grupo** tira você.",
+        "join_4": "O organizador decide quem pode se inscrever (equipes, agentes livres ou ambos), e pode deixar só por convite ou limitar por cargo ou rank.",
+        "roster_1": "Uma escalação tem o tamanho do tipo de partida (5 no Competitivo, 2 no Braço Direito, 1 no X1), mais reservas se o torneio permitir.",
+        "roster_2": "O dono, o capitão ou os admins da equipe adicionam e removem jogadores. Eles só podem adicionar jogadores até as inscrições fecharem; depois disso, os organizadores ainda podem adicioná-los.",
+        "roster_3": "Depois que o chaveamento recebe os seeds, o elenco não pode ficar abaixo de uma escalação completa. Adicione um reserva primeiro, depois remova o jogador.",
+        "roster_4": "Um jogador necessário para uma partida que ainda não começou não pode ser removido.",
+        "check_1": "O **check-in do torneio** só existe quando o organizador o exige. Ele abre 60 minutos antes do início e fecha 15 minutos antes, a menos que o organizador tenha mudado isso. O organizador decide se fazem check-in os capitães, todos os jogadores ou só os organizadores.",
+        "check_2": "Equipes que perdem o check-in não são removidas, só ficam fora do chaveamento. O organizador pode deixá-las voltar, seguir sem elas ou dar mais tempo.",
+        "check_3": "O **check-in da partida** abre uns 15 minutos antes de cada partida. Aperte **Fazer check-in** na página da partida.",
+        "check_4": "Se uma equipe não fizer check-in até o prazo, ela perde por W.O. e a equipe que fez check-in vence. Se nenhuma equipe fizer check-in, o vencedor é decidido no cara ou coroa, a menos que a fase use o Modo de Partida Admin: aí os organizadores decidem.",
+        "next_1": "No torneio, a aba **Chaveamento** mostra todas as partidas; **Seguir um time** destaca a sua. A aba **Partidas** lista as partidas em Ao vivo, Próximos e Resultados.",
+        "next_2": "Suas próximas partidas também aparecem na página Partidas, e você recebe uma notificação quando o check-in abre.",
+        "org_1": "Os organizadores de um torneio são: a pessoa que o criou, quem foi adicionado em **Gerenciar** e depois **Organizadores**, os membros de uma equipe vinculada a ele, e a staff do site com o cargo de organizador de torneios ou administrador.",
+        "org_2": "Qualquer organizador pode adicionar mais organizadores, pausar e retomar o torneio e agendar partidas.",
+        "org_3": "Abrir e fechar inscrições, iniciar, cancelar e redefinir o torneio ficam restritos ao criador e à staff do site com o cargo de organizador de torneios ou administrador.",
+        "setup_1": "Aperte **Criar Torneio** na página Torneios. Cada fase é eliminação simples, eliminação dupla, round robin ou suíço; **Adicionar Outra Fase** encadeia as fases.",
+        "setup_2": "O **Máximo de Equipes** de uma fase decide quantas equipes chegam nela vindas da fase anterior: as sobreviventes de uma fase eliminatória, ou o topo da classificação no round robin ou no suíço.",
+        "setup_3": "Os organizadores podem digitar um **Seed** para cada equipe antes de o torneio ficar ao vivo. Equipes sem seed são distribuídas aleatoriamente.",
+        "setup_4": "Um torneio novo só fica visível para os organizadores até as inscrições abrirem. Depois que o chaveamento é gerado, as fases ficam travadas.",
+        "start_1": "Aperte **Abrir Inscrições** quando as equipes puderem se inscrever, e **Fechar Inscrições** para encerrar.",
+        "start_2": "Com check-in, as inscrições fecham quando o check-in termina. Sem ele, o torneio fica ao vivo no horário de início.",
+        "start_3": "Se poucas equipes tiverem se inscrito até o horário de início, o torneio é cancelado.",
+        "sched_1": "As partidas começam sozinhas, a menos que **Auto Iniciar** esteja desligado ou a fase use agendamento manual. Nesse caso, clique em uma partida vazia no chaveamento, aperte **Agendar Partida** e escolha um horário ou **Agora**.",
+        "sched_2": "Com **Agendamento Negociado**, os dois capitães combinam um horário entre si.",
+        "sched_3": "Para mudar uma única partida futura, abra o menu ⋮ dela no chaveamento e escolha **Configurações da Partida**. Isso funciona até a partida começar.",
+        "sched_4": "Depois que uma fase tem partidas, as regras dela ficam travadas para todos: formato, mapas, rounds, prorrogação, timeouts e reservas. A região, o atraso da TV, o check-in e os timers ainda podem mudar.",
+        "results_1": "No chaveamento, abra o menu ⋮ da partida e escolha **Redefinir vencedor**. Escolha o vencedor certo, ou nenhum vencedor para jogar de novo, e depois **Confirmar redefinição**. As partidas seguintes que dependiam dela são apagadas.",
+        "results_2": "Uma redefinição espera enquanto essa partida, ou uma seguinte que ela alimenta, estiver sendo jogada ou no veto.",
+        "results_3": "No round robin e no suíço, um resultado não pode ser redefinido depois que a fase seguinte recebeu seeds pela classificação, ou depois que a rodada suíça seguinte foi emparelhada.",
+        "results_4": "Na página da partida, **Resolver um problema** tem as mesmas correções: a partida precisa ser jogada de novo, o time errado ficou com a vitória, ou um time não pode continuar.",
+        "results_5": "Uma partida cancelada não faz o chaveamento andar. Reinicie-a em **Resolver um problema**, ou defina um vencedor. Se um espaço do chaveamento perdeu a partida, aparece **Recriar Partida** ali."
+      }
+    },
+    "demo": {
+      "title": "Partida demo",
+      "badge": "Demo",
+      "intro": "Uma partida de mentira para testar as ferramentas de organizador. Escolha uma etapa e aperte Resolver um problema na barra de administração, na parte de baixo. Nada aqui afeta uma partida real.",
+      "step_label": "Etapa da partida",
+      "reconnects": "{name} está conectado",
+      "reset": "Resetar",
+      "series_label": "Melhor de 3 · Demo Cup",
+      "not_needed": "Não é necessário",
+      "not_in_demo": "Essa não faz parte da demo.",
+      "restored_title": "Restaurando o round {round}",
+      "restored_description": "A partida pausa enquanto o round carrega. Os times dão ready para continuar.",
+      "veto_rewound_title": "Veto voltou para a etapa {step}",
+      "resume": "Retomar",
+      "acting_map": "Agindo por {team}: escolha um mapa abaixo.",
+      "acting_side": "Agindo por {team}: escolha um lado.",
+      "banned_by": "Banido por {team}",
+      "picked_by": "Escolhido por {team}",
+      "veto_complete": "O veto terminou. Em uma partida real, o servidor inicia em seguida.",
+      "server_label": "Servidor",
+      "server_pending": "Um servidor é escolhido quando o veto terminar.",
+      "chat_label": "Chat da partida",
+      "chat_readonly": "O chat é somente leitura na demo.",
+      "winner_set": "Vencedor da partida definido",
+      "forfeit_hint": "Escolha o time que continua jogando. A partida termina agora e ele fica com a vitória.",
+      "forfeit_confirm": "Encerrar a partida",
+      "forfeit_done": "Partida encerrada",
+      "nothing_changed": "Isto é a demo, então nada mudou de verdade."
+    },
+    "intro_admin": "Como funcionam as partidas e os torneios aqui, o que fazer quando algo dá errado, e como administrar este site.",
+    "search_hint": "Aperte ⌘K em qualquer lugar do site para buscar nestas respostas."
   },
   "licenses": {
     "title": "Licenças",

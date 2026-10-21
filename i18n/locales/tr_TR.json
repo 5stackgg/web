@@ -4392,6 +4392,7 @@
       }
     },
     "play": {
+      "open_registration_tournaments": {},
       "more_ways": {
         "title": "Oynamanın diğer yolları",
         "tournaments": {
@@ -4474,6 +4475,7 @@
         },
         "find_lan_match": "LAN maçı bul"
       },
+      "draft_games": {},
       "schedule": {
         "vs": "vs",
         "now": "Şimdi",
@@ -8657,7 +8659,7 @@
     "clear_filters": "Filtreleri temizle"
   },
   "global_search": {
-    "placeholder": "Oyuncu, sayfa ve ayar ara",
+    "placeholder": "Oyuncu, sayfa, ayar ve yardım ara",
     "pages": "Sayfalar",
     "players": "Oyuncular",
     "searching": "Aranıyor...",
@@ -8667,7 +8669,8 @@
       "navigate": "gezinmek için",
       "open": "açmak için",
       "close": "kapatmak için"
-    }
+    },
+    "help": "Yardım"
   },
   "file_manager_store": {
     "load_directory_failed": "Dizin yüklenemedi",
@@ -10479,7 +10482,8 @@
       "type": "Tür",
       "region": "Bölge",
       "no_logs_title": "Kayıt Yok",
-      "no_logs_description": "Kullanılabilir kayıt yok ve bağlı bir sunucu bulunmuyor."
+      "no_logs_description": "Kullanılabilir kayıt yok ve bağlı bir sunucu bulunmuyor.",
+      "rounds": "Rauntlar"
     },
     "chat_log": {
       "visibility": "Yalnızca organizatörler ve yetkililer",
@@ -11102,10 +11106,7 @@
         "title": "Sorunu Çöz",
         "description": "{team_1} vs {team_2}",
         "restore_title": "Bir raunt ters gitti",
-        "restore_description": "Çökme, hata veya bağlantı kopması. Süren raundu tekrar oynat ya da daha geriye dön, önce önizlemeyle.",
-        "restore_rush": "Rush maçlarında raunt geri yüklenemez.",
         "restore_over": "Haritalar bitti.",
-        "restore_not_live": "Yalnızca bir harita oynanırken.",
         "restart_map_title": "Bu harita baştan başlamalı",
         "restart_map_description": "0–0 ile ısınmaya dönülür. Oynanan rauntlar, sonraki raunt bitene kadar geri yüklenebilir.",
         "restart_title": "Maçın tamamı yeniden oynanmalı",
@@ -11114,7 +11115,6 @@
         "reopen_description": "İptal edilen maçın oynanabilmesi için check-in'i yeniden açar.",
         "replay_title": "Maçın yeniden oynanması gerekiyor",
         "replay_description": "Sonucu siler ve check-in'i yeniden açar. Turnuva sıralaması güncellenir.",
-        "replay_bracket_only": "Sonucu olan maçlardan yalnızca turnuva maçları yeniden oynanabilir.",
         "winner_title": "Galibiyet yanlış takıma verildi",
         "winner_description": "Maçı tekrarlamadan doğru kazananı seç.",
         "forfeit_title": "Bir takım devam edemiyor",
@@ -11126,46 +11126,12 @@
       },
       "restore": {
         "title": "Raundu Geri Yükle",
-        "description": "{map} · süren raunt {round}. Tekrar oynanacak raundu seç.",
-        "description_short": "Tekrar oynanacak raundu seç.",
-        "load_failed": "Raunt yedekleri yüklenemedi",
         "rush": "Rush maçlarında raunt geri yüklenemez.",
         "not_in_progress": "Rauntlar yalnızca bir harita oynanırken geri yüklenebilir.",
         "not_live_yet": "Harita henüz yeniden canlı değil. Canlı olduğunda, 1. raunt bitene kadar önceki herhangi bir raunt geri yüklenebilir.",
         "team_member": "Takımlardan birindesin, bu yüzden rauntları başka bir organizatör geri yüklemeli. Oyuncular yine de oyun içi oylamayı başlatabilir.",
         "nothing_yet": "Bu haritada henüz hiçbir raunt bitmedi, geri dönülecek bir yer yok.",
-        "replay_live": "Süren raundu tekrar oynat ({round})",
-        "round_result": "Raunt {round}: {team} kazandı · {reason}",
-        "now": "Şimdi",
-        "won_ct": "CT olarak kazanıldı",
-        "won_t": "T olarak kazanıldı",
-        "undone": "Geri alındı, hâlâ geri getirilebilir",
-        "round_one": "1. raundun yedeği yok",
-        "headline": "{round}. raundun başına dön",
-        "headline_live": "{round}. raundu baştan oyna",
-        "headline_forward": "{round}. raundun başına ilerle",
-        "previous_round": "{round}. raunt bitti: {team} {side} olarak kazandı · {reason}",
         "economy_hidden": "Bu maçta oynadığın için oyuncuların parası ve silahları gizli.",
-        "bank": "Kasa {amount}",
-        "timeouts": "Kalan mola: {count}",
-        "player": "Oyuncu",
-        "cash": "Para",
-        "armor": "Zırh",
-        "carries": "Elindeki",
-        "kd": "K / D",
-        "no_armor": "Yok",
-        "died": "Öldü, yeniden alır",
-        "knife_only": "Sadece bıçak",
-        "undo_live": "Yalnızca süren raundu geri alır.",
-        "undo_round": "{round}. raundu ve süren raundu, öldürmeleri ve hasarlarıyla birlikte geri alır.",
-        "undo_rounds": "{from}–{to}. rauntları ve süren raundu, öldürmeleri ve hasarlarıyla birlikte geri alır.",
-        "redo_round": "{round}. raundu, öldürmeleri ve hasarıyla birlikte geri getirir.",
-        "redo_rounds": "{from}–{to}. rauntları, öldürmeleri ve hasarlarıyla birlikte geri getirir.",
-        "waiting": "Oyuncuların yeniden bağlanması bekleniyor ({connected}/{expected}). Bağlı olmayanlar: {names}.",
-        "everyone_connected": "Herkes bağlı",
-        "pauses": "Raunt yüklenirken maç duraklatılır. Devam etmek için takımlar hazır olur.",
-        "confirm": "{round}. raunda geri yükle",
-        "confirm_live": "{round}. raundu tekrar oynat",
         "started": "{round}. raunt geri yükleniyor",
         "failed": "Raunt geri yüklenemedi"
       },
@@ -11369,6 +11335,116 @@
         "knife_line": "Kazanan tarafı seçer"
       },
       "map": "Harita"
+    },
+    "rewind": {
+      "strip_label": "Rauntlar. Nereden geri yükleneceğini seçmek için bir raunda tıkla ya da ok tuşlarını kullan.",
+      "previous_round": "Önceki raunt",
+      "next_round": "Sonraki raunt",
+      "start_of": "R{round} başlangıcı",
+      "half": "Devre",
+      "at_start_of": "R{round} başında",
+      "bank": "Kasa",
+      "player": "Oyuncu",
+      "cash": "Para",
+      "armor": "Zırh",
+      "carries": "Ekipman",
+      "not_connected": "Bağlı değil",
+      "not_connected_tip": "Bağlı değil. Sunucu bir raundu yüklemeden önce tüm oyuncuları bekler.",
+      "now_value": "Şu an {value}",
+      "armor_helmet": "Zırh ve kask",
+      "armor_only": "Zırh, kask yok",
+      "buys_fresh": "Öldü, sıfırdan alır",
+      "connected_count": "{connected}/{expected} bağlı",
+      "waiting_tip": "Bağlı değil: {names}. Oyun sunucusu raundu yüklemeden önce tüm oyuncuları bekler, bu yüzden geri döndüklerinde bu seçenek açılır.",
+      "everyone_connected": "Herkes bağlı",
+      "undone": "Geri alındı",
+      "undone_one": "{round}. raunt geri alındı",
+      "undone_many": "{from}–{to}. rauntlar geri alındı",
+      "undone_until": "{round}. raunt bitene kadar geri getirilebilirler",
+      "bring_back": "Geri Getir",
+      "round": "Raunt",
+      "won_by": "Kazanan",
+      "how": "Nasıl",
+      "score": "Skor",
+      "halftime": "Devre arası",
+      "in_progress": "Oynanıyor",
+      "round_n": "{round}. raunt",
+      "rounds_range": "{from}–{to}. rauntlar",
+      "replay_headline": "{round}. Raundu Baştan Oyna",
+      "replay_detail": "Yalnızca oynanan raunt geri alınır",
+      "replay_confirm": "{round}. Raundu Yeniden Oyna",
+      "back_headline": "{round}. Raundun Başına Dön",
+      "back_detail": "{span} ve oynanan raunt geri alınır",
+      "forward_headline": "{round}. Raundun Başına İlerle",
+      "forward_detail": "{span} geri gelir",
+      "restore_confirm": "{round}. Raundu Geri Yükle",
+      "pauses_after": "Ardından maç duraklar ve takımlar devam etmek için hazır olduklarını bildirir.",
+      "preview_chip": "Önizleme · R{round} başlangıcı",
+      "rounds_played": "{count} raunt oynandı",
+      "round_in_progress": "{round}. raunt oynanıyor",
+      "legend_back": "Taralı rauntlar geri alınır: {span} ve oynanan raunt",
+      "legend_forward": "Geri gelir: {span}",
+      "legend_replay": "Yalnızca oynanan raunt geri alınır",
+      "legend_rules": "1. raundun yedeği yoktur. Geri alınan rauntlar, sonraki raunt bitene kadar geri getirilebilir.",
+      "amber_hint": "Kehribar renkli değerler oynanan raunttakinden farklıdır. Oyuncunun şu an ne kadar parası olduğunu görmek için bir para değerinin üzerine gel.",
+      "restore_from_round": "{round}. raundun başından geri yükle",
+      "restore_from_here": "Buradan Geri Yükle",
+      "click_hint": "Maçı bir raundun başına geri yüklemek için o raunda tıkla. Sen onaylayana kadar hiçbir şey değişmez.",
+      "kills_count": "{count} kill",
+      "damage_count": "{count} hasar",
+      "unlocks_when": "Geri yükleme, şu oyuncular yeniden bağlandığında açılır: {names}.",
+      "no_rounds": "Bu haritada henüz hiç raunt oynanmadı."
+    },
+    "fix_menu": {
+      "right_now": "Şu An",
+      "any_time": "Her Zaman",
+      "restore_description": "Çökme, hata veya bağlantı kopması. Rauntlar sekmesinde herhangi bir raundun başına geri dön.",
+      "undo_last_title": "Son Adımı Geri Al",
+      "undo_last_description": "{team} takımının {map} seçimini geri alır ve takım yeniden seçer.",
+      "mispick_title": "Yanlış Seçimi Düzelt",
+      "mispick_description": "Hatanın olduğu adımı seç. O adım ve sonrasındaki tüm adımlar yeniden yapılır.",
+      "redo_title": "Vetoyu Yeniden Yap",
+      "redo_description": "Tüm haritalar havuza geri dönerek ilk bandan yeniden başla.",
+      "act_title": "{team} Adına Ban veya Pick",
+      "act_description": "Veto geçersiz kılmayı aç ve bu adımın seçimini veto ekranında kendin yap.",
+      "time_title": "30 Saniye Daha Ver",
+      "time_description": "{team} takımının süresine zaman ekler.",
+      "later_rounds": "Raunt düzeltmeleri bir harita oynanmaya başlayınca açılır.",
+      "later_results": "Sonuç ve istatistik düzeltmeleri maç bitince açılır.",
+      "act_toast": "Veto geçersiz kılma açık: {team} takımının seçimini veto ekranında yap.",
+      "undo_confirm": "Adımı Geri Al",
+      "rewound": "Veto {step}. adıma geri sarıldı",
+      "rewind_failed": "Veto geri sarılamadı",
+      "time_added": "Veto süresine {seconds} saniye eklendi",
+      "time_failed": "Veto süresine zaman eklenemedi"
+    },
+    "veto_rewind": {
+      "title": "Veto · Best of {count}",
+      "to_act": "{step}. adımda sırada",
+      "ban": "Ban",
+      "pick": "Pick",
+      "side": "Taraf",
+      "decider": "Karar",
+      "now": "Şimdi",
+      "drawn": "Kalan",
+      "redone": "Yeniden",
+      "again_from": "{step}. adım yeniden",
+      "rewind_to_step": "{step}. adıma geri sar",
+      "again_ban": "{team} Yeniden Banlar",
+      "again_pick": "{team} Yeniden Seçer",
+      "again_side": "{team} Yeniden Taraf Seçer",
+      "again_decider": "Karar Haritası Yeniden Belirlenir",
+      "cleared_ban": "{team} takımının {map} banı",
+      "cleared_pick": "{team} takımının {map} seçimi",
+      "cleared_side": "{team} takımının {map} haritasındaki tarafı",
+      "cleared_decider": "karar haritası {map}",
+      "bar_headline": "{step}. Adıma Geri Sar · {again}",
+      "bar_detail": "Silinecekler: {list}. Süre yeniden başlar.",
+      "confirm": "Vetoyu Geri Sar",
+      "footnote": "Banlanan haritalar havuza geri döner",
+      "eyebrow": "Önizleme · {step}. adımdan itibaren",
+      "dialog_title": "Vetoyu Düzelt",
+      "dialog_description": "Hatanın olduğu adıma tıkla. O adım ve sonrasındaki tüm adımlar yeniden yapılır."
     }
   },
   "ui": {
@@ -11745,6 +11821,7 @@
         "description": "Oda oda ilerleyen hızlı tempolu 3v3 maçlar; kazanılan her raunt mücadeleyi ileri taşır"
       }
     },
+    "queue_wait": {},
     "match_found": "Maç bulundu",
     "match_found_description": "Süre dolmadan maçı kabul etmek için Hazır'a bas.",
     "waiting_for_players": "Oyuncular bekleniyor",
@@ -11803,6 +11880,7 @@
     "banned_until": "{time} tarihine kadar eşleştirmeden yasaklısın",
     "in_queue": "sırada",
     "temp_banned": "Eşleştirmeden geçici olarak banlandın",
+    "settings_section": {},
     "no_preferred_regions": "Eşleştirme ayarlarından en az bir tercih edilen bölge seç",
     "party_size": {
       "requirement": "{half} veya daha az kişiyle ya da tam olarak {full} kişiyle sıraya girin"
@@ -12722,6 +12800,7 @@
     "filters": {
       "any": "Hepsi"
     },
+    "sort": {},
     "create": {
       "captain_selection": "Kaptan Seçimi",
       "draft_order": "Seçim Sırası",
@@ -12925,6 +13004,7 @@
       "teams": "Hazır Takımlar",
       "teams_desc": "Karşı karşıya getirmek için iki kayıtlı takım seç."
     },
+    "mode_short": {},
     "access": {
       "open": "Açık",
       "open_desc": "Herkes genel listeden bulup katılabilir.",
@@ -13825,7 +13905,7 @@
   },
   "faq": {
     "title": "Yardım ve SSS",
-    "intro": "Platform hakkında, burada nasıl oynanacağı ve kendi kurulumunu nasıl işleteceğin hakkında sık sorulan sorular. Bir konu burada yoksa, en alttaki topluluk bağlantıları cevaba giden en hızlı yoldur.",
+    "intro": "Burada maçların ve turnuvaların nasıl işlediği ve bir şeyler ters gittiğinde ne yapılacağı.",
     "search_placeholder": "Sorularda ara",
     "no_results": "«{term}» ile eşleşen soru yok.",
     "links": {
@@ -13880,7 +13960,7 @@
       },
       "check_in": {
         "question": "Maçtan önce neden katılım bildirmem gerekiyor?",
-        "answer": "Katılım bildirimi, bir sunucu ayrılıp lobinin geri kalanı bekletilmeden önce herkesin gerçekten başında olduğunu doğrular. Otomatik iptali açık maçlarda bir geri sayım görünür ve gerekli oyuncular süre dolmadan katılım bildirmezse maç otomatik olarak iptal edilir."
+        "answer": "Katılım bildirimi, bir sunucu ayrılıp lobinin geri kalanı bekletilmeden önce herkesin gerçekten başında olduğunu doğrular. Otomatik iptali açık maçlarda bir geri sayım görünür ve gerekli oyuncular süre dolmadan katılım bildirmezse maç otomatik olarak iptal edilir. Turnuva maçında ise süreyi kaçıran takım hükmen mağlup sayılır."
       },
       "tournaments": {
         "question": "Bir turnuvaya nasıl katılırım?",
@@ -13904,7 +13984,6 @@
       }
     },
     "hosting": {
-      "title": "Kendi kurulumunu barındırmak",
       "self_host": {
         "question": "Kendi kurulumumu çalıştırabilir miyim?",
         "answer": "Evet — 5Stack'in kullanılması gereken yol budur. Kendi sunucunda barındırılır ve tek bir komutla kurulur; bu komut Kubernetes'i (K3s), veritabanını, depolamayı ve panelin kendisini ayağa kaldırır. Belgelerdeki kurulum rehberi baştan sona anlatır."
@@ -13939,8 +14018,420 @@
       "description": "Bir insana ulaşmanın en hızlı yolu Discord — 5Stack kurulumlarını işletenler orada. Hatalar ve özellik istekleri GitHub'a, belgeler ise kurulumu, sunucuları ve her özelliği ayrıntılı biçimde anlatır.",
       "discord": "Discord'a katıl",
       "github": "Sorun bildir",
-      "docs": "Belgeleri oku"
-    }
+      "docs": "Belgeleri oku",
+      "description_player": "Bu siteyi işletenler Discord'da. Sorunun cevabı burada yoksa orada sor."
+    },
+    "help_glyph": "Bu nasıl çalışıyor?",
+    "part_of": "Bölüm {n}/{total}",
+    "link_to": "«{title}» bağlantısı",
+    "contents": "İçindekiler",
+    "search_results": "Cevaplar",
+    "open_full": "SSS'de aç",
+    "parts": {
+      "start": {
+        "title": "Buradan Başla",
+        "lede": "Bir sorun mu var? Gördüğün şeyden başla."
+      },
+      "running": {
+        "title": "Maç Yönetmek",
+        "lede": "Organizatörler için: bir şeyler ters gittiğinde maçı düzeltmek."
+      },
+      "playing": {
+        "lede": "Maçlara girmek ve etraflarında olanlar."
+      },
+      "about": {
+        "lede": "Bu site nedir ve onu kim yapıyor."
+      },
+      "hosting": {
+        "lede": "Bu sitenin, sunucularının ve görünümünün barındırılması; tam belgelere bağlantılarla. Bu bölümü yalnızca yöneticiler görür.",
+        "title": "Yöneticiler İçin"
+      },
+      "tournaments": {
+        "title": "Turnuvalar",
+        "lede": "Takımınla bir turnuvaya katılmak ve organizatör olarak bir turnuva yönetmek."
+      }
+    },
+    "sections": {
+      "something_wrong": {
+        "title": "Bir Şey mi Ters Gitti?",
+        "lede": "Gördüğün şeyi bul ve doğrudan çözüme git.",
+        "keywords": "sorun bozuk yardım çökme takıldı hata problem yanlış crash"
+      },
+      "words": {
+        "title": "Burada Kullanılan Terimler",
+        "lede": "Bu rehberin dayandığı birkaç terim.",
+        "keywords": "sözlük terimler tanımlar anlam"
+      },
+      "fix_a_problem": {
+        "title": "Sorunu Çöz",
+        "lede": "Her düzeltme için tek bir düğme; şu an önemli olanlar en üstte.",
+        "keywords": "düzelt sorun çöz yönetici çubuğu organizatör araçlar yardım fix",
+        "subs": {
+          "where": "Nerede",
+          "steps": "Maçı Takip Eder",
+          "who": "Kimler Görür"
+        }
+      },
+      "restore": {
+        "title": "Raundu Geri Yüklemek",
+        "lede": "Herhangi bir raundun başına dön ve bir şey değişmeden önce onu gör.",
+        "keywords": "geri yükle raunt yedek geri sar geri al çökme çöktü sunucu bağlantı koptu düştü tekrar oyna geri dön rauntlar sekmesi restore",
+        "subs": {
+          "how": "Adım Adım",
+          "which": "Hangi Raunt Seçilmeli",
+          "wait": "Oyuncuları Beklemek",
+          "undo": "Fikrini mi Değiştirdin?",
+          "limits": "Ne Zaman Yapılamaz"
+        }
+      },
+      "restart_map": {
+        "title": "Haritayı Yeniden Başlatmak",
+        "lede": "Oynanan rauntları kaybetmeden 0–0 ile ısınmaya dön.",
+        "keywords": "yeniden başlat harita ısınma baştan 0-0 sıfırla restart"
+      },
+      "veto_fix": {
+        "title": "Vetoyu Düzeltmek",
+        "lede": "Bir banı, pick'i ya da taraf seçimini geri al veya vetoyu yeniden yap.",
+        "keywords": "veto yanlış seçim mis-pick mispick yanlış harita ban pick taraf yeniden geri al süre zamanlayıcı",
+        "subs": {
+          "how": "Adım Adım",
+          "why": "Sonraki Adımlar Neden Gidiyor",
+          "more": "Ek Süre veya Takım Adına Hareket"
+        }
+      },
+      "server": {
+        "title": "Sunucu Sorunları",
+        "lede": "Sunucu yanıt vermeyi bıraktığında ya da maçın başka bir sunucuya ihtiyacı olduğunda.",
+        "keywords": "sunucu çökme yeniden başlat reboot yanıt vermiyor lag bağlan taşı"
+      },
+      "results": {
+        "title": "Sonuçlar ve İstatistikler",
+        "lede": "Yanlış kazanan, devam edemeyen bir takım ya da tuhaf görünen sayılar.",
+        "keywords": "kazanan sonuç hükmen forfeit yeniden ayrıştır reparse istatistik demo skor yanlış"
+      },
+      "replay_match": {
+        "title": "Maçın Tamamını Yeniden Oynamak",
+        "lede": "Maçı check-in'den itibaren baştan başlat.",
+        "keywords": "tekrar oyna yeniden başlat maç iptal iptal edildi check-in yeniden"
+      },
+      "demo_match": {
+        "title": "Bir Demo Maçta Dene",
+        "lede": "Her düzeltmeyi önce sahte bir maçta dene.",
+        "keywords": "demo pratik dene test deneme alanı örnek"
+      },
+      "call_support": {
+        "title": "Maçımda bir şeyler ters giderse ne yapmalıyım?",
+        "answer": "Maç sayfasında ⋮ menüsünü aç ve Destek Çağır'ı seç. Maçın organizatörlerine hemen haber verilir ve çoğu sorun maçı baştan başlatmadan çözülebilir.",
+        "keywords": "yardım destek organizatör yönetici sorun bildir çağır"
+      },
+      "t_join": {
+        "title": "Turnuvaya Katılmak",
+        "lede": "Takım olarak ya da tek başına serbest oyuncu olarak.",
+        "keywords": "katıl kayıt kaydol takım serbest oyuncu havuz yedek listesi turnuva"
+      },
+      "t_roster": {
+        "title": "Turnuva Kadron",
+        "lede": "Kimler oynayabilir ve kadro ne zaman değişmez hâle gelir.",
+        "keywords": "kadro diziliş yedek oyuncu ekle çıkar oyuncu takım kaptan kilitli seri başı"
+      },
+      "t_check_in": {
+        "title": "Katılım Onayı",
+        "lede": "İki katılım onayı vardır: biri turnuva için, biri her maç için.",
+        "keywords": "katılım onayı check-in kaçırdı geç hükmen mevcut turnuva maç süre"
+      },
+      "t_next_match": {
+        "title": "Sıradaki Maçını Bulmak",
+        "lede": "Maçlarının ve saatlerinin göründüğü yerler.",
+        "keywords": "sıradaki maç program fikstür eşleşme tablosu ne zaman saat yaklaşan"
+      },
+      "t_organizers": {
+        "title": "Turnuvayı Kim Yönetir",
+        "lede": "Organizatörler ve yalnızca oluşturanın yapabildikleri.",
+        "keywords": "organizatör yönetici yardımcı organizatör organizatör ekle yetkiler oluşturan"
+      },
+      "t_setup": {
+        "title": "Turnuva Kurmak",
+        "lede": "Etaplar, seri başları ve eşleşme tablosu çekildikten sonra neyin kilitlendiği.",
+        "keywords": "turnuva oluştur etap tek çift eleme lig usulü isviçre swiss seri başı eşleşme tablosu gruplar"
+      },
+      "t_start": {
+        "title": "Açmak ve Başlatmak",
+        "lede": "Kayıtlar, katılım onayı ve başlangıç saati.",
+        "keywords": "kayıtları aç kayıtları kapat turnuvayı başlat minimum takım iptal edildi canlıya geç"
+      },
+      "t_scheduling": {
+        "title": "Maçları Planlamak",
+        "lede": "Otomatik, elle ya da kaptanlar arasında anlaşarak.",
+        "keywords": "planla saat manuel otomatik başlatma anlaşmalı maç ayarları kurallar kilitli düzenle yaklaşan maç"
+      },
+      "t_results": {
+        "title": "Turnuva Sonucunu Düzeltmek",
+        "lede": "Yanlış kazanan, tekrar maçı ya da hiç oynanmamış bir maç.",
+        "keywords": "sıfırla kazanan sonuç yanlış eşleşme tablosu tekrar hükmen iptal yeniden oluştur maç sıralama"
+      }
+    },
+    "content": {
+      "wrong": {
+        "heading_see": "Gördüğün",
+        "heading_why": "Neden",
+        "heading_fix": "Ne Yapmalı",
+        "crash": {
+          "see": "Sunucu bir raundun ortasında çöktü",
+          "why": "Oynanan raunt kayboldu",
+          "fix": "O raundu yeniden oyna"
+        },
+        "dropped": {
+          "see": "Bir oyuncu düştü ve takımı raundu kaybetti",
+          "why": "Sunucu bir raundu yüklemeden önce herkesi bekler",
+          "fix": "Oyuncu dönünce raundu geri yükle"
+        },
+        "map_over": {
+          "see": "Harita 0–0'dan yeniden başlamalı",
+          "why": "Yanlış ayarlar, geç kalan bir oyuncu ya da kötü bir başlangıç",
+          "fix": "Haritayı yeniden başlat"
+        },
+        "veto_wrong": {
+          "see": "Bir takım yanlış haritayı banladı ya da seçti",
+          "why": "Sonraki her adım o seçime bağlı",
+          "fix": "Yanlış seçimi düzelt"
+        },
+        "veto_clock": {
+          "see": "Bir takımın veto süresi doldu",
+          "why": "Onların yerine bir harita seçildi",
+          "fix": "Son adımı geri al"
+        },
+        "server": {
+          "see": "Sunucu yanıt vermiyor",
+          "why": "Çöktü ya da bağlantısını kaybetti",
+          "fix": "Yeniden başlat ya da maçı taşı"
+        },
+        "winner": {
+          "see": "Galibiyet yanlış takıma verildi",
+          "why": "Sonuç elle girildi ya da hükmen karar bir hataydı",
+          "fix": "Doğru kazananı belirle"
+        },
+        "stats": {
+          "see": "İstatistikler veya demo yanlış görünüyor",
+          "why": "Demo tamamlanmadan okundu",
+          "fix": "Demoları yeniden oku"
+        },
+        "no_button": {
+          "see": "Maçımda Sorunu Çöz yok",
+          "why": "Onu yalnızca maçın organizatörleri görür",
+          "fix": "Bir maçı kimlerin düzeltebileceğini gör"
+        },
+        "player": {
+          "see": "Oynuyorum ve bir şeyler ters gidiyor",
+          "why": "Maçları oyuncular değil, organizatörler düzeltir",
+          "fix": "Destek çağır"
+        },
+        "t_no_show": {
+          "see": "Bir takım turnuva maçı için katılımını onaylamadı",
+          "why": "Turnuva maçları iptal edilmez, hükmen sonuçlanır",
+          "fix": "Maç katılım onayı nasıl işler"
+        },
+        "t_result": {
+          "see": "Bir turnuva sonucu yanlış",
+          "why": "Kazanan yanlışlıkla belirlendi ya da maçın yeniden oynanması gerekiyor",
+          "fix": "Sonucu düzelt"
+        }
+      },
+      "words": {
+        "heading_term": "Terim",
+        "heading_meaning": "Anlamı",
+        "organizer": {
+          "term": "Organizatör",
+          "meaning": "Bir maçı yöneten herkes: maçı oluşturan kişi, turnuvasının organizatörleri ve site yetkilileri."
+        },
+        "fix": {
+          "term": "Sorunu Çöz",
+          "meaning": "Maç sayfasının altındaki yönetici çubuğunda bulunan düğme. Bu rehberdeki her düzeltme oradan başlar."
+        },
+        "rounds_tab": {
+          "term": "Rauntlar Sekmesi",
+          "meaning": "Maç sayfasında haritanın tüm rauntlarını listeleyen sekme. Raunt geri yükleme orada yapılır."
+        },
+        "rewind": {
+          "term": "Önizleme",
+          "meaning": "Bir raunda tıkladığında Rauntlar sekmesinin gösterdiği şey: o raundun o anki hâli. Geri Yükle'ye basana kadar hiçbir şey değişmez."
+        },
+        "backup": {
+          "term": "Yedek",
+          "meaning": "Sunucunun her raunt bittiğinde kaydettiği şey: skor ve her oyuncunun parası, zırhı ve silahları. Geri yükleme bunlardan birini yükler."
+        },
+        "undone": {
+          "term": "Geri Alınan Raunt",
+          "meaning": "Bir geri yüklemenin geri aldığı raunt. Sonraki raunt bitene kadar geri getirilebilir."
+        },
+        "veto": {
+          "term": "Veto",
+          "meaning": "Takımların adım adım harita banlaması, seçmesi ve taraf seçmesi."
+        }
+      },
+      "fix": {
+        "where_title": "Yönetici Çubuğundan Aç",
+        "where_1": "Maç sayfasının altında Sorunu Çöz'e bas.",
+        "where_2": "Neyin ters gittiğini seç. Her düzeltme yapıldığı yerde açılır: raunt düzeltmesi Rauntlar sekmesini, veto düzeltmesi vetoyu açar.",
+        "steps_1": "Liste maçı takip eder. Şu An, maçın bulunduğu adımın düzeltmelerini; Her Zaman ise her zaman çalışanları içerir. Hiçbir şey soluk gösterilmez; alttaki bir satır neyin daha sonra açılacağını söyler.",
+        "steps_veto_caption": "Veto sırasında: bir adımı geri al, bir takım adına hareket et ya da onlara ek süre ver.",
+        "steps_live_caption": "Bir harita oynanırken: bir raundu geri yükle ya da haritayı baştan başlat.",
+        "who_1": "Organizatörler görür: maçı oluşturan kişi, turnuvasının organizatörleri ve site yetkilileri.",
+        "who_2": "Oyuncular görmez. Şununla yardım isteyebilirler:",
+        "who_3": "Maçta kendin oynuyorsan rauntları başka bir organizatör geri yüklemelidir."
+      },
+      "restore": {
+        "pick_title": "Raunda Tıkla",
+        "pick_1": "Rauntlar sekmesinde, şeritte ya da altındaki listede yeniden oynanacak raunda tıkla. Başlangıcını kehribar renkli bir çizgi işaretler.",
+        "pick_2": "Çizgiden sonraki rauntlar taralıdır: geri alınacak olanlar bunlardır ve yanlarında onlarla birlikte gidecek kill ve hasar sayısı yazar.",
+        "pick_caption": "17. raunttan 16. raundun başına geri sarma.",
+        "confirm_title": "Geri Yükle",
+        "confirm_1": "Alttaki çubukta {button} düğmesine bas.",
+        "confirm_2": "Sunucu raundu yükler ve skor da onunla birlikte geri döner.",
+        "after_title": "Hazır Ol",
+        "after_1": "Herkes hazırlanabilsin diye maç geri yüklenen rauntta duraklar.",
+        "after_2": "Takımlar oyunda hazır olduklarını bildirince maç devam eder. Yetkililer yönetici çubuğunda {resume} düğmesine de basabilir.",
+        "which_heading_pick": "Seçtiğin",
+        "which_heading_result": "Ne Olur",
+        "which_live": "Oynanan raunt",
+        "which_live_result": "İlk saniyesinden yeniden başlar. Başka hiçbir şey değişmez.",
+        "which_earlier": "Daha önceki bir raunt",
+        "which_earlier_result": "Oyun o raundun başına döner. Sonrasındaki rauntlar, skorları ve istatistikleriyle birlikte geri alınır.",
+        "which_first": "1. raunt",
+        "which_first_result": "1. raunttan önce yedek yoktur, bu yüzden bunun yerine haritayı yeniden başlat.",
+        "which_note": "Bir raundun numarası, sırada oynayacağın raunttur: 16. raundu geri yüklemek iki takımı da 16. raundun başına koyar.",
+        "wait_1": "Oyun sunucusu, tüm oyuncular geri dönmeden bir raundu yüklemez; bu yüzden Geri Yükle düğmesi onları bekler.",
+        "wait_2": "Çubuk kimin eksik olduğunu gösterir, burada: {name}. Oyuncu yeniden bağlandığı anda düğme açılır.",
+        "undo_1": "Geri alınan rauntlar hemen atılmaz. Sonraki raunt bitene kadar raunt şeridinin sonunda beklerler.",
+        "undo_2": "Yanlış raundu mu seçtin? Bulunduğun yere ilerlemek için {button} düğmesine bas.",
+        "limit_live": "Yalnızca harita canlıyken: ısınmada ya da bıçak raundunda değil.",
+        "limit_over": "Harita bittikten sonra değil. Bunun yerine sonucunu düzelt.",
+        "limit_rush": "Rush maçlarında değil.",
+        "limit_player": "Maçta oynayan bir organizatör tarafından değil.",
+        "limit_economy": "Maçtaki oyuncular para ve silah önizlemesini görmez, böylece rakip takımın ekonomisi ele verilmez.",
+        "pick_anywhere": "Rauntlar sekmesinde değil misin? {fix} düğmesine, ardından {round} seçeneğine bas. Sekme, oynanan raunt seçili olarak açılır.",
+        "preview_title": "Önizlemeyi Kontrol Et",
+        "preview_1": "Her oyuncunun parası, zırhı ve silahları o raundun başındaki hâliyle gösterilir. Şu ankinden farklı olan her şey kehribar renklidir.",
+        "preview_2": "Çizgiyi taşımak için başka bir raunda tıkla ya da temizlemek için Esc'ye bas.",
+        "preview_caption": "{name} bağlı değil, bu yüzden adının yanında bir uyarı görünür."
+      },
+      "restart_map": {
+        "how": "{fix} düğmesine, ardından {item} seçeneğine bas.",
+        "after": "Harita 0–0 ile ısınmaya döner. Oyuncular sunucuda kalır.",
+        "undo": "Oynanan rauntlar sonraki raunt bitene kadar raunt şeridinde kalır, bu yüzden yanlışlıkla yapılan bir yeniden başlatma {link} ile geri alınabilir."
+      },
+      "veto": {
+        "pick_title": "Düzeltmeyi Seç",
+        "pick_1": "Veto sırasında {fix} düğmesine bas.",
+        "pick_undo": "{item}, en son ban, pick veya taraf seçimini geri alır.",
+        "pick_mispick": "{item}, en son adımı senin için seçer. Daha geriye gitmek için daha önceki bir adıma tıkla.",
+        "pick_redo": "{item}, ilk bandan yeniden başlar.",
+        "step_title": "Hatanın Olduğu Adıma Tıkla",
+        "step_1": "Yanlış Seçimi Düzelt ve Vetoyu Yeniden Yap, vetonun adımlarını açar. Hatanın olduğu adıma tıkla: o adım ve sonrasındaki tüm adımlar taralı olur.",
+        "step_2": "Çubuk sıradaki takımı gösterir ve silinecek her şeyi listeler.",
+        "confirm_title": "Vetoyu Geri Sar",
+        "confirm_1": "{button} düğmesine bas.",
+        "confirm_2": "Sırası gelen takım için süre yeniden başlar.",
+        "why_1": "Sıranın kimde olduğu ve adımın ban, pick ya da taraf olması, kaç adımın tamamlandığına bağlıdır. 3. adımı geri alırsan 4. adım başka bir takıma geçer; bu yüzden düzelttiğin adımdan sonraki her adım yeniden yapılır.",
+        "why_2": "Banlanan haritalar havuza geri döner, seçilmiş haritalar maçtan çıkarılır.",
+        "more_time": "{item}, sırası gelen takıma süre ekler.",
+        "more_act": "{item}, veto geçersiz kılmayı açar; böylece takılmış ya da ayrılmış bir takım adına mevcut seçimi veto ekranında yapabilirsin.",
+        "more_after": "Bu düzeltmeler veto bittikten sonra da ilk harita canlıya geçene kadar Sorunu Çöz'de kalır. O sırada birini kullanmak maçı vetoya geri götürür."
+      },
+      "server": {
+        "reboot": "{item}, oyun sunucusunu yeniden başlatır. Oyuncular aynı maça yeniden bağlanır.",
+        "move": "Maçı farklı bir sunucuya taşımak için Sorunu Çöz'den başka bir sunucu seç.",
+        "crash": "Sunucu raunt ortasında çöktüyse onu yeniden başlat, ardından herkes döndüğünde raundu geri yükle."
+      },
+      "results": {
+        "winner": "{item}, maçı yeniden oynatmadan doğru kazananı belirler.",
+        "forfeit": "{item}, maçı hemen bitirir ve galibiyeti diğer takıma verir.",
+        "reparse": "{item}, demoları yeniden okur. Sonuç olduğu gibi kalır."
+      },
+      "replay": {
+        "restart": "{item}, bu denemeyi iptal eder ve iki takım için check-in'i yeniden açar.",
+        "tournament": "Bir turnuvada, sonucu belli olan bir maç {item} ile yeniden oynanabilir. Sıralama güncellenir.",
+        "canceled": "İptal edilen bir maç da aynı şekilde yeniden açılabilir, böylece yeniden oluşturulması gerekmez."
+      },
+      "demo": {
+        "body": "Bu sayfadaki her şeyi içeren sahte bir maç: yönetici çubuğu, Sorunu Çöz, Rauntlar sekmesi ve veto. Orada yaptığın hiçbir şey gerçek bir maça dokunmaz.",
+        "open": "Demo Maçı Aç"
+      },
+      "figures": {
+        "match_page_bottom": "Maç Sayfasının Altı",
+        "fix_veto": "Sorunu Çöz · Veto",
+        "fix_live": "Sorunu Çöz · Canlı",
+        "rounds_rewind": "Rauntlar Sekmesi · Geri Sarma",
+        "rounds_bar": "Rauntlar Sekmesi · Alt Çubuk",
+        "rounds_tab": "Rauntlar Sekmesi",
+        "veto": "Veto"
+      },
+      "tournament": {
+        "join_1": "Kayıtlar açıkken turnuvanın üst kısmındaki **Turnuvaya Katıl** düğmesine bas.",
+        "join_2": "**Takım olarak**: takımlarından birini seç ya da **Yeni Takım Oluştur** seçeneğini aç.",
+        "join_3": "**Serbest oyuncu olarak**: **Kaydol** düğmesine bas. Kayıtlar kapandığında serbest oyuncular, ilk kaydolanlardan başlayarak dengeli takımlara dağıtılır. Açıkta kalanlar yedek listesinde bekler ve bir yer açılırsa sıra atlar. **Havuzdan ayrıl** seni havuzdan çıkarır.",
+        "join_4": "Kimlerin kaydolabileceğine (takımlar, serbest oyuncular ya da ikisi) organizatör karar verir; turnuvayı yalnızca davetle yapabilir ya da rol veya rütbeye göre sınırlayabilir.",
+        "roster_1": "Bir diziliş, maç türünün boyutu kadardır (Rekabetçi için 5, Wingman için 2, Düello için 1); turnuva izin veriyorsa üstüne yedekler eklenir.",
+        "roster_2": "Oyuncuları takımın sahibi, kaptanı veya takım yöneticileri ekler ve çıkarır. Oyuncu ekleme yalnızca kayıtlar kapanana kadar yapılabilir; organizatörler bundan sonra da ekleyebilir.",
+        "roster_3": "Eşleşme tablosu oluşturulduktan sonra kadro tam bir dizilişin altına düşemez. Önce bir yedek ekle, sonra oyuncuyu çıkar.",
+        "roster_4": "Henüz başlamamış bir maç için gereken bir oyuncu çıkarılamaz.",
+        "check_1": "**Turnuva katılım onayı** yalnızca organizatör isterse açıktır. Organizatör değiştirmediyse başlangıçtan 60 dakika önce açılır ve 15 dakika önce kapanır. Katılımı kimin onaylayacağına (kaptanlar, her oyuncu ya da yalnızca organizatörler) organizatör karar verir.",
+        "check_2": "Onu kaçıran takımlar silinmez, yalnızca eşleşme tablosuna alınmaz. Organizatör onları geri alabilir, onlarsız devam edebilir ya da ek süre verebilir.",
+        "check_3": "**Maç katılım onayı** her maçtan yaklaşık 15 dakika önce açılır. Maç sayfasında **Katılımı onayla** düğmesine bas.",
+        "check_4": "Takımlardan biri süre dolmadan katılımını onaylamazsa hükmen mağlup sayılır ve onaylayan takım kazanır. İki takım da katılımını onaylamazsa kazananı yazı tura belirler; aşama Yönetici maç modunu kullanıyorsa organizatörler karar verir.",
+        "next_1": "Turnuvada **Fikstür** sekmesi tüm maçları gösterir; **Bir takımı takip et** seninkini vurgular. **Maçlar** sekmesi onları Canlı, Yaklaşan ve Sonuçlar olarak listeler.",
+        "next_2": "Yaklaşan maçların Maçlar sayfasında da görünür ve katılım onayı açıldığında bildirim alırsın.",
+        "org_1": "Bir turnuvanın organizatörleri şunlardır: onu oluşturan kişi, **Yönet** ve ardından **Organizatörler** altında eklenen herkes, turnuvaya bağlı bir takımın üyeleri ve turnuva organizatörü veya yönetici rolüne sahip site yetkilileri.",
+        "org_2": "Her organizatör başka organizatörler ekleyebilir, turnuvayı duraklatıp devam ettirebilir ve maç planlayabilir.",
+        "org_3": "Kayıtları açmak ve kapatmak, turnuvayı başlatmak, iptal etmek ve sıfırlamak yalnızca onu oluşturan kişiye ve turnuva organizatörü veya yönetici rolüne sahip site yetkililerine aittir.",
+        "setup_1": "Turnuvalar sayfasında **Turnuva Oluştur** düğmesine bas. Her etap tek eleme, çift eleme, lig usulü ya da İsviçre sistemidir; **Başka Etap Ekle** onları birbirine bağlar.",
+        "setup_2": "Bir etabın **Maksimum Takım** değeri, önceki etaptan kaç takımın ona ulaşacağını belirler: eleme etabından kalanlar ya da lig usulü veya İsviçre sisteminde sıralamanın üst kısmı.",
+        "setup_3": "Organizatörler turnuva canlıya geçmeden önce her takım için bir **Seri Başı** yazabilir. Seri başı olmayan takımlar rastgele yerleştirilir.",
+        "setup_4": "Yeni bir turnuvayı kayıtlar açılana kadar yalnızca organizatörleri görür. Eşleşme tablosu çekildikten sonra etapları kilitlenir.",
+        "start_1": "Takımlar kaydolabilecekken **Kayıtları Aç** düğmesine, durdurmak için **Kayıtları Kapat** düğmesine bas.",
+        "start_2": "Katılım onayı açıksa kayıtlar, katılım onayı bittiğinde kapanır. Kapalıysa turnuva başlangıç saatinde canlıya geçer.",
+        "start_3": "Başlangıç saatine kadar çok az takım kaydolduysa turnuva iptal edilir.",
+        "sched_1": "**Otomatik Başlatma** kapalı olmadıkça ve etap manuel planlama kullanmadıkça maçlar kendiliğinden başlar. Aksi hâlde eşleşme tablosunda boş bir maça tıkla, **Maç Planla** düğmesine bas ve bir saat ya da **Şimdi** seç.",
+        "sched_2": "**Anlaşmalı Planlama** ile iki kaptan saat konusunda kendi aralarında anlaşır.",
+        "sched_3": "Yaklaşan tek bir maçı değiştirmek için eşleşme tablosunda maçın ⋮ menüsünü aç ve **Maç ayarları** seçeneğini seç. Bu, maç başlayana kadar çalışır.",
+        "sched_4": "Bir etapta maçlar oluştuğunda kuralları herkes için kilitlenir: format, haritalar, rauntlar, uzatma, molalar ve yedekler. Bölge, TV gecikmesi, katılım onayı ve zamanlayıcılar hâlâ değiştirilebilir.",
+        "results_1": "Eşleşme tablosunda maçın ⋮ menüsünü aç ve **Kazananı sıfırla** seçeneğini seç. Doğru kazananı ya da maçı yeniden oynatmak için kazanansız seçeneğini seç, ardından **Sıfırlamayı onayla** düğmesine bas. Ona bağlı sonraki maçlar temizlenir.",
+        "results_2": "O maç ya da beslediği sonraki bir maç oynanırken veya vetosu yapılırken sıfırlama bekler.",
+        "results_3": "Lig usulü ve İsviçre sisteminde, sonraki etap sıralamaya göre oluşturulduktan ya da sonraki İsviçre turu eşleştirildikten sonra bir sonuç sıfırlanamaz.",
+        "results_4": "Maç sayfasında **Sorunu Çöz** aynı düzeltmeleri sunar: maçın yeniden oynanması gerekiyor, galibiyet yanlış takıma verildi ya da bir takım devam edemiyor.",
+        "results_5": "İptal edilen bir maç eşleşme tablosunu ilerletmez. Onu **Sorunu Çöz** üzerinden yeniden başlat ya da bir kazanan belirle. Eşleşme tablosundaki bir yuva maçını kaybettiyse orada **Maçı Yeniden Oluştur** görünür."
+      }
+    },
+    "demo": {
+      "title": "Demo Maç",
+      "badge": "Demo",
+      "intro": "Organizatör araçlarını denemek için sahte bir maç. Bir adım seç, ardından alttaki yönetici çubuğunda Sorunu Çöz'e bas. Buradaki hiçbir şey gerçek bir maça dokunmaz.",
+      "step_label": "Maç adımı",
+      "reconnects": "{name} bağlı",
+      "reset": "Sıfırla",
+      "series_label": "Best of 3 · Demo Cup",
+      "not_needed": "Gerekmiyor",
+      "not_in_demo": "Bu, demonun bir parçası değil.",
+      "restored_title": "{round}. raunt geri yükleniyor",
+      "restored_description": "Raunt yüklenirken maç duraklar. Takımlar devam etmek için hazır olduklarını bildirir.",
+      "veto_rewound_title": "Veto {step}. adıma geri sarıldı",
+      "resume": "Devam et",
+      "acting_map": "{team} adına hareket ediyorsun: aşağıdan bir harita seç.",
+      "acting_side": "{team} adına hareket ediyorsun: bir taraf seç.",
+      "banned_by": "Banlayan: {team}",
+      "picked_by": "Seçen: {team}",
+      "veto_complete": "Veto tamamlandı. Gerçek bir maçta sırada sunucu başlar.",
+      "server_label": "Sunucu",
+      "server_pending": "Veto bitince bir sunucu seçilir.",
+      "chat_label": "Maç Sohbeti",
+      "chat_readonly": "Demoda sohbet salt okunurdur.",
+      "winner_set": "Maç kazananı belirlendi",
+      "forfeit_hint": "Oynamaya devam eden takımı seç. Maç hemen biter ve galibiyet onlara verilir.",
+      "forfeit_confirm": "Maçı Bitir",
+      "forfeit_done": "Maç bitti",
+      "nothing_changed": "Bu bir demo, bu yüzden gerçekte hiçbir şey değişmedi."
+    },
+    "intro_admin": "Burada maçların ve turnuvaların nasıl işlediği, bir şeyler ters gittiğinde ne yapılacağı ve bu sitenin nasıl yönetileceği.",
+    "search_hint": "Bu cevaplarda aramak için sitenin herhangi bir yerinde ⌘K'ye bas."
   },
   "licenses": {
     "title": "Lisanslar",

@@ -4392,6 +4392,7 @@
       }
     },
     "play": {
+      "open_registration_tournaments": {},
       "more_ways": {
         "title": "Weitere Spielmöglichkeiten",
         "tournaments": {
@@ -4474,6 +4475,7 @@
         },
         "find_lan_match": "LAN-Match suchen"
       },
+      "draft_games": {},
       "schedule": {
         "vs": "vs",
         "now": "Jetzt",
@@ -8657,7 +8659,7 @@
     "clear_filters": "Filter zurücksetzen"
   },
   "global_search": {
-    "placeholder": "Spieler, Seiten und Einstellungen suchen",
+    "placeholder": "Spieler, Seiten, Einstellungen und Hilfe suchen",
     "pages": "Seiten",
     "players": "Spieler",
     "searching": "Suche läuft...",
@@ -8667,7 +8669,8 @@
       "navigate": "zum Navigieren",
       "open": "zum Öffnen",
       "close": "zum Schließen"
-    }
+    },
+    "help": "Hilfe"
   },
   "file_manager_store": {
     "load_directory_failed": "Verzeichnis konnte nicht geladen werden",
@@ -10479,7 +10482,8 @@
       "type": "Typ",
       "region": "Region",
       "no_logs_title": "Keine Logs verfügbar",
-      "no_logs_description": "Es sind keine Logs verfügbar und kein Server ist verbunden."
+      "no_logs_description": "Es sind keine Logs verfügbar und kein Server ist verbunden.",
+      "rounds": "Runden"
     },
     "chat_log": {
       "visibility": "Nur Organisatoren und Staff",
@@ -11102,10 +11106,7 @@
         "title": "Problem beheben",
         "description": "{team_1} vs {team_2}",
         "restore_title": "Eine Runde ist schiefgelaufen",
-        "restore_description": "Absturz, Bug oder Verbindungsabbruch. Die laufende Runde wiederholen oder weiter zurückgehen, mit Vorschau.",
-        "restore_rush": "In Rush-Matches können keine Runden wiederhergestellt werden.",
         "restore_over": "Die Maps sind vorbei.",
-        "restore_not_live": "Nur während eine Map gespielt wird.",
         "restart_map_title": "Diese Map muss neu beginnen",
         "restart_map_description": "Zurück ins Warmup bei 0–0. Die gespielten Runden bleiben wiederherstellbar, bis die nächste Runde endet.",
         "restart_title": "Das ganze Match muss wiederholt werden",
@@ -11114,7 +11115,6 @@
         "reopen_description": "Öffnet den Check-in erneut, damit das abgebrochene Match gespielt werden kann.",
         "replay_title": "Das Match muss neu gespielt werden",
         "replay_description": "Löscht das Ergebnis und öffnet den Check-in erneut. Die Turniertabelle wird aktualisiert.",
-        "replay_bracket_only": "Nur Turniermatches können nach einem Ergebnis neu gespielt werden.",
         "winner_title": "Das falsche Team hat gewonnen",
         "winner_description": "Den richtigen Sieger ohne Wiederholung festlegen.",
         "forfeit_title": "Ein Team kann nicht weiterspielen",
@@ -11126,46 +11126,12 @@
       },
       "restore": {
         "title": "Runde wiederherstellen",
-        "description": "{map} · laufende Runde {round}. Wähle die Runde, die neu gespielt wird.",
-        "description_short": "Wähle die Runde, die neu gespielt wird.",
-        "load_failed": "Die Runden-Backups konnten nicht geladen werden",
         "rush": "In Rush-Matches können keine Runden wiederhergestellt werden.",
         "not_in_progress": "Runden können nur wiederhergestellt werden, während eine Map gespielt wird.",
         "not_live_yet": "Die Map ist noch nicht wieder live. Sobald sie es ist, lässt sich jede frühere Runde wiederherstellen, bis Runde 1 vorbei ist.",
         "team_member": "Du gehörst zu einem der Teams, deshalb muss ein anderer Organisator Runden wiederherstellen. Die Spieler können weiterhin die Abstimmung im Spiel starten.",
         "nothing_yet": "Auf dieser Map ist noch keine Runde beendet, es gibt also nichts, wohin man zurückkehren kann.",
-        "replay_live": "Laufende Runde {round} wiederholen",
-        "round_result": "Runde {round}: {team} gewinnt · {reason}",
-        "now": "Jetzt",
-        "won_ct": "Als CT gewonnen",
-        "won_t": "Als T gewonnen",
-        "undone": "Rückgängig gemacht, kann zurückgeholt werden",
-        "round_one": "Runde 1 hat kein Backup",
-        "headline": "Zurück zum Beginn von Runde {round}",
-        "headline_live": "Runde {round} von vorne spielen",
-        "headline_forward": "Vor zum Beginn von Runde {round}",
-        "previous_round": "Runde {round} endete: {team} gewann als {side} · {reason}",
         "economy_hidden": "Geld und Waffen der Spieler sind ausgeblendet, weil du in diesem Match spielst.",
-        "bank": "Kasse {amount}",
-        "timeouts": "Verbleibende Timeouts: {count}",
-        "player": "Spieler",
-        "cash": "Geld",
-        "armor": "Rüstung",
-        "carries": "Trägt",
-        "kd": "K / D",
-        "no_armor": "Keine",
-        "died": "Gestorben, kauft neu",
-        "knife_only": "Nur Messer",
-        "undo_live": "Macht nur die laufende Runde rückgängig.",
-        "undo_round": "Macht Runde {round} und die laufende Runde rückgängig, inklusive ihrer Kills und ihres Schadens.",
-        "undo_rounds": "Macht die Runden {from}–{to} und die laufende Runde rückgängig, inklusive ihrer Kills und ihres Schadens.",
-        "redo_round": "Holt Runde {round} zurück, mit ihren Kills und ihrem Schaden.",
-        "redo_rounds": "Holt die Runden {from}–{to} zurück, mit ihren Kills und ihrem Schaden.",
-        "waiting": "Warte auf die Wiederverbindung der Spieler ({connected}/{expected}). Nicht verbunden: {names}.",
-        "everyone_connected": "Alle sind verbunden",
-        "pauses": "Das Match pausiert, während die Runde lädt. Die Teams machen sich bereit, um weiterzuspielen.",
-        "confirm": "Auf Runde {round} zurücksetzen",
-        "confirm_live": "Runde {round} wiederholen",
         "started": "Runde {round} wird wiederhergestellt",
         "failed": "Die Runde konnte nicht wiederhergestellt werden"
       },
@@ -11369,6 +11335,116 @@
         "knife_line": "Gewinner wählt die Seite"
       },
       "map": "Map"
+    },
+    "rewind": {
+      "strip_label": "Runden. Klick auf eine Runde oder nutze die Pfeiltasten, um auszuwählen, ab wo wiederhergestellt wird.",
+      "previous_round": "Vorherige Runde",
+      "next_round": "Nächste Runde",
+      "start_of": "Start R{round}",
+      "half": "Halbzeit",
+      "at_start_of": "Zu Beginn von R{round}",
+      "bank": "Kasse",
+      "player": "Spieler",
+      "cash": "Geld",
+      "armor": "Rüstung",
+      "carries": "Ausrüstung",
+      "not_connected": "Nicht verbunden",
+      "not_connected_tip": "Nicht verbunden. Der Server wartet auf alle Spieler, bevor er eine Runde lädt.",
+      "now_value": "Jetzt {value}",
+      "armor_helmet": "Rüstung und Helm",
+      "armor_only": "Rüstung, kein Helm",
+      "buys_fresh": "Gestorben, kauft neu",
+      "connected_count": "{connected}/{expected} verbunden",
+      "waiting_tip": "{names} ist nicht verbunden. Der Gameserver wartet auf alle Spieler, bevor er die Runde lädt, daher wird das freigeschaltet, sobald sie zurück sind.",
+      "everyone_connected": "Alle sind verbunden",
+      "undone": "Rückgängig gemacht",
+      "undone_one": "Runde {round} wurde rückgängig gemacht",
+      "undone_many": "Runden {from}–{to} wurden rückgängig gemacht",
+      "undone_until": "Sie lassen sich zurückholen, bis Runde {round} endet",
+      "bring_back": "Zurückholen",
+      "round": "Runde",
+      "won_by": "Gewonnen von",
+      "how": "Wie",
+      "score": "Spielstand",
+      "halftime": "Halbzeit",
+      "in_progress": "Läuft",
+      "round_n": "Runde {round}",
+      "rounds_range": "Runden {from}–{to}",
+      "replay_headline": "Runde {round} von vorn spielen",
+      "replay_detail": "Macht nur die laufende Runde rückgängig",
+      "replay_confirm": "Runde {round} neu spielen",
+      "back_headline": "Zurück zum Start von Runde {round}",
+      "back_detail": "Macht {span} und die laufende Runde rückgängig",
+      "forward_headline": "Vor zum Start von Runde {round}",
+      "forward_detail": "Holt {span} zurück",
+      "restore_confirm": "Runde {round} wiederherstellen",
+      "pauses_after": "Danach pausiert das Match, und die Teams melden sich bereit, um weiterzuspielen.",
+      "preview_chip": "Vorschau · Start von R{round}",
+      "rounds_played": "{count} Runden gespielt",
+      "round_in_progress": "Runde {round} läuft",
+      "legend_back": "Schraffierte Runden werden rückgängig gemacht: {span} und die laufende Runde",
+      "legend_forward": "Kommt zurück: {span}",
+      "legend_replay": "Nur die laufende Runde wird rückgängig gemacht",
+      "legend_rules": "Für Runde 1 gibt es kein Backup. Rückgängig gemachte Runden lassen sich zurückholen, bis die nächste Runde endet.",
+      "amber_hint": "Bernsteinfarbene Werte weichen von der laufenden Runde ab. Fahr mit der Maus über einen Geldbetrag, um zu sehen, was der Spieler jetzt hat.",
+      "restore_from_round": "Ab dem Start von Runde {round} wiederherstellen",
+      "restore_from_here": "Ab hier wiederherstellen",
+      "click_hint": "Klick auf eine beliebige Runde, um das Match auf ihren Start zurückzusetzen. Es ändert sich nichts, bis du bestätigst.",
+      "kills_count": "{count} Kills",
+      "damage_count": "{count} Schaden",
+      "unlocks_when": "Wiederherstellen wird freigeschaltet, sobald {names} wieder verbunden ist.",
+      "no_rounds": "Auf dieser Map wurden noch keine Runden gespielt."
+    },
+    "fix_menu": {
+      "right_now": "Jetzt",
+      "any_time": "Jederzeit",
+      "restore_description": "Absturz, Bug oder Verbindungsabbruch. Spul im Tab „Runden“ auf den Start einer beliebigen Runde zurück.",
+      "undo_last_title": "Letzten Schritt rückgängig machen",
+      "undo_last_description": "Nimmt die Wahl von {team} ({map}) zurück, und das Team wählt erneut.",
+      "mispick_title": "Fehlpick korrigieren",
+      "mispick_description": "Wähle den Schritt, der schiefging. Er und alle Schritte danach werden wiederholt.",
+      "redo_title": "Veto neu durchführen",
+      "redo_description": "Beginnt erneut beim ersten Ban, mit allen Maps wieder im Pool.",
+      "act_title": "Für {team} bannen oder picken",
+      "act_description": "Schalte „Veto überschreiben“ ein und triff die Wahl dieses Schritts selbst auf dem Veto-Board.",
+      "time_title": "30 Sekunden mehr geben",
+      "time_description": "Gibt {team} mehr Zeit auf der Uhr.",
+      "later_rounds": "Runden-Korrekturen werden freigeschaltet, sobald eine Map gespielt wird.",
+      "later_results": "Korrekturen an Ergebnis und Statistiken werden freigeschaltet, wenn das Match vorbei ist.",
+      "act_toast": "„Veto überschreiben“ ist an: Triff die Wahl für {team} auf dem Veto-Board.",
+      "undo_confirm": "Schritt rückgängig machen",
+      "rewound": "Veto auf Schritt {step} zurückgesetzt",
+      "rewind_failed": "Das Veto konnte nicht zurückgesetzt werden",
+      "time_added": "{seconds} Sekunden zur Veto-Uhr hinzugefügt",
+      "time_failed": "Zur Veto-Uhr konnte keine Zeit hinzugefügt werden"
+    },
+    "veto_rewind": {
+      "title": "Veto · Best of {count}",
+      "to_act": "ist bei Schritt {step} dran",
+      "ban": "Ban",
+      "pick": "Pick",
+      "side": "Seite",
+      "decider": "Decider",
+      "now": "Jetzt",
+      "drawn": "Übrig",
+      "redone": "Wiederholt",
+      "again_from": "Schritt {step} erneut",
+      "rewind_to_step": "Zurück zu Schritt {step}",
+      "again_ban": "{team} bannt erneut",
+      "again_pick": "{team} pickt erneut",
+      "again_side": "{team} wählt erneut eine Seite",
+      "again_decider": "Der Decider wird neu bestimmt",
+      "cleared_ban": "den Ban von {map} durch {team}",
+      "cleared_pick": "den Pick von {map} durch {team}",
+      "cleared_side": "die Seitenwahl von {team} auf {map}",
+      "cleared_decider": "den Decider {map}",
+      "bar_headline": "Zurück zu Schritt {step} · {again}",
+      "bar_detail": "Löscht {list}. Die Uhr startet neu.",
+      "confirm": "Veto zurücksetzen",
+      "footnote": "Gebannte Maps kommen zurück in den Pool",
+      "eyebrow": "Vorschau · Ab Schritt {step}",
+      "dialog_title": "Veto korrigieren",
+      "dialog_description": "Klick auf den Schritt, der schiefging. Er und alle Schritte danach werden wiederholt."
     }
   },
   "ui": {
@@ -11745,6 +11821,7 @@
         "description": "Schnelle 3v3-Matches Raum für Raum – jede gewonnene Runde treibt den Kampf nach vorn"
       }
     },
+    "queue_wait": {},
     "match_found": "Match gefunden",
     "match_found_description": "Drück auf Bereit, um das Match anzunehmen, bevor die Zeit abläuft.",
     "waiting_for_players": "Warten auf Spieler",
@@ -11803,6 +11880,7 @@
     "banned_until": "Du bist bis {time} vom Matchmaking gesperrt",
     "in_queue": "in der Queue",
     "temp_banned": "Du bist vorübergehend vom Matchmaking gebannt",
+    "settings_section": {},
     "no_preferred_regions": "Wähle in den Matchmaking-Einstellungen mindestens eine bevorzugte Region",
     "party_size": {
       "requirement": "Queue mit {half} oder weniger, oder genau {full} Spielern"
@@ -12722,6 +12800,7 @@
     "filters": {
       "any": "Beliebig"
     },
+    "sort": {},
     "create": {
       "captain_selection": "Captain-Auswahl",
       "draft_order": "Draft-Reihenfolge",
@@ -12925,6 +13004,7 @@
       "teams": "Feste Teams",
       "teams_desc": "Wähl zwei gespeicherte Teams, die gegeneinander spielen."
     },
+    "mode_short": {},
     "access": {
       "open": "Offen",
       "open_desc": "Jeder kann die Lobby in der öffentlichen Liste finden und beitreten.",
@@ -13825,8 +13905,8 @@
   },
   "faq": {
     "title": "Hilfe & FAQ",
-    "intro": "Häufige Fragen zur Plattform, zum Spielen hier und zum Betrieb einer eigenen Instanz. Ist etwas nicht abgedeckt, führen die Community-Links unten am schnellsten zu einer Antwort.",
-    "search_placeholder": "Fragen durchsuchen",
+    "intro": "Wie Matches und Turniere hier funktionieren und was zu tun ist, wenn etwas schiefgeht.",
+    "search_placeholder": "FAQ durchsuchen",
     "no_results": "Keine Frage passt zu „{term}“.",
     "links": {
       "features": "Alle Funktionen",
@@ -13880,7 +13960,7 @@
       },
       "check_in": {
         "question": "Warum muss ich vor einem Match einchecken?",
-        "answer": "Das Einchecken bestätigt, dass alle tatsächlich am Rechner sitzen, bevor ein Server reserviert wird und die übrige Lobby warten muss. Matches mit automatischem Abbruch zeigen einen Countdown, und das Match wird automatisch abgebrochen, wenn die erforderlichen Spieler bis zum Ablauf nicht eingecheckt haben."
+        "answer": "Das Einchecken bestätigt, dass alle tatsächlich am Rechner sitzen, bevor ein Server reserviert wird und die übrige Lobby warten muss. Matches mit automatischem Abbruch zeigen einen Countdown, und das Match wird automatisch abgebrochen, wenn die erforderlichen Spieler bis zum Ablauf nicht eingecheckt haben. In einem Turnier-Match verliert ein Team, das die Frist verpasst, stattdessen kampflos."
       },
       "tournaments": {
         "question": "Wie nehme ich an einem Turnier teil?",
@@ -13904,7 +13984,6 @@
       }
     },
     "hosting": {
-      "title": "Selbst hosten",
       "self_host": {
         "question": "Kann ich eine eigene Instanz betreiben?",
         "answer": "Ja — so ist 5Stack gedacht. Es wird selbst gehostet und lässt sich mit einem einzigen Befehl installieren, der Kubernetes (K3s), die Datenbank, den Speicher und das Panel selbst hochfährt. Die Installationsanleitung in der Doku führt Schritt für Schritt hindurch."
@@ -13939,8 +14018,420 @@
       "description": "Discord ist der schnellste Weg zu einem Menschen — die Leute, die 5Stack-Instanzen betreiben, sind dort. Fehler und Funktionswünsche gehören auf GitHub, und die Doku behandelt Installation, Server und jede Funktion im Detail.",
       "discord": "Discord beitreten",
       "github": "Problem melden",
-      "docs": "Doku lesen"
-    }
+      "docs": "Doku lesen",
+      "description_player": "Die Leute, die diese Seite betreiben, sind auf Discord. Frag dort, wenn deine Frage hier nicht beantwortet wird."
+    },
+    "help_glyph": "Wie funktioniert das?",
+    "part_of": "Teil {n} von {total}",
+    "link_to": "Link zu {title}",
+    "contents": "Inhalt",
+    "search_results": "Antworten",
+    "open_full": "In den FAQ öffnen",
+    "parts": {
+      "start": {
+        "title": "Hier starten",
+        "lede": "Läuft etwas schief? Fang mit dem an, was du siehst."
+      },
+      "running": {
+        "title": "Ein Match leiten",
+        "lede": "Für Organisatoren: ein Match wieder ins Lot bringen, wenn etwas schiefgeht."
+      },
+      "playing": {
+        "lede": "In Matches kommen und was drumherum passiert."
+      },
+      "about": {
+        "lede": "Was diese Seite ist und wer sie macht."
+      },
+      "hosting": {
+        "lede": "Diese Seite, ihre Server und ihr Aussehen betreiben, mit Links zur vollständigen Doku. Nur Administratoren sehen diesen Teil.",
+        "title": "Für Administratoren"
+      },
+      "tournaments": {
+        "title": "Turniere",
+        "lede": "Mit deinem Team an einem teilnehmen und als Organisator eines leiten."
+      }
+    },
+    "sections": {
+      "something_wrong": {
+        "title": "Etwas ist schiefgelaufen?",
+        "lede": "Finde, was du siehst, und spring direkt zur Lösung.",
+        "keywords": "problem kaputt hilfe absturz crash hängt feststecken fehler falsch störung"
+      },
+      "words": {
+        "title": "Begriffe in dieser Anleitung",
+        "lede": "Die wenigen Begriffe, auf die sich diese Anleitung stützt.",
+        "keywords": "glossar begriffe definitionen bedeutung"
+      },
+      "fix_a_problem": {
+        "title": "Problem beheben",
+        "lede": "Ein Button für jede Korrektur, mit den gerade wichtigen ganz oben.",
+        "keywords": "problem beheben korrigieren admin leiste dock organisator werkzeuge hilfe",
+        "subs": {
+          "where": "Wo er ist",
+          "steps": "Er folgt dem Match",
+          "who": "Wer ihn sieht"
+        }
+      },
+      "restore": {
+        "title": "Eine Runde wiederherstellen",
+        "lede": "Geh zurück zum Start einer beliebigen Runde und sieh sie dir an, bevor sich etwas ändert.",
+        "keywords": "wiederherstellen runde backup zurückspulen rückgängig absturz abgestürzt crash server verbindungsabbruch disconnect rausgeflogen wiederholen zurück runden tab",
+        "subs": {
+          "how": "Schritt für Schritt",
+          "which": "Welche Runde wählen",
+          "wait": "Auf Spieler warten",
+          "undo": "Doch anders entschieden?",
+          "limits": "Wann es nicht geht"
+        }
+      },
+      "restart_map": {
+        "title": "Die Map neu starten",
+        "lede": "Zurück ins Warmup bei 0–0, ohne die gespielten Runden zu verlieren.",
+        "keywords": "map neu starten neustart warmup aufwärmen von vorn 0-0 zurücksetzen reset"
+      },
+      "veto_fix": {
+        "title": "Das Veto korrigieren",
+        "lede": "Nimm einen Ban, einen Pick oder eine Seitenwahl zurück, oder führ das Veto neu durch.",
+        "keywords": "veto mis-pick mispick fehlpick falsche map ban bannen pick seite wiederholen rückgängig uhr timer",
+        "subs": {
+          "how": "Schritt für Schritt",
+          "why": "Warum spätere Schritte auch wegfallen",
+          "more": "Mehr Zeit oder für ein Team handeln"
+        }
+      },
+      "server": {
+        "title": "Serverprobleme",
+        "lede": "Wenn der Server nicht mehr reagiert oder das Match einen anderen braucht.",
+        "keywords": "server absturz crash neustart reboot neu starten reagiert nicht lag verbinden umziehen wechseln"
+      },
+      "results": {
+        "title": "Ergebnisse und Statistiken",
+        "lede": "Ein falscher Sieger, ein Team, das nicht weitermachen kann, oder Zahlen, die nicht stimmen.",
+        "keywords": "sieger ergebnis kampflos forfeit aufgeben reparse statistiken stats demo spielstand falsch"
+      },
+      "replay_match": {
+        "title": "Das ganze Match neu spielen",
+        "lede": "Das Match ab dem Check-in neu starten.",
+        "keywords": "neu spielen wiederholen neustart match abbrechen abgebrochen check-in erneut"
+      },
+      "demo_match": {
+        "title": "An einem Demo-Match ausprobieren",
+        "lede": "Übe jede Korrektur zuerst an einem Probe-Match.",
+        "keywords": "demo üben ausprobieren testen test sandbox beispiel"
+      },
+      "call_support": {
+        "title": "Was mache ich, wenn in meinem Match etwas schiefgeht?",
+        "answer": "Öffne das ⋮-Menü auf der Match-Seite und wähle „Support rufen“. Die Organisatoren des Matches werden sofort benachrichtigt, und die meisten Probleme lassen sich beheben, ohne das Match neu zu starten.",
+        "keywords": "hilfe support organisator admin problem melden rufen"
+      },
+      "t_join": {
+        "title": "An einem Turnier teilnehmen",
+        "lede": "Als Team oder allein als Free Agent.",
+        "keywords": "beitreten teilnehmen anmelden anmeldung registrierung team free agent pool warteliste turnier"
+      },
+      "t_roster": {
+        "title": "Dein Turnier-Roster",
+        "lede": "Wer spielen darf und ab wann sich das Roster nicht mehr ändert.",
+        "keywords": "roster lineup aufstellung ersatzspieler sub hinzufügen entfernen spieler team captain kapitän gesperrt gesetzt seed"
+      },
+      "t_check_in": {
+        "title": "Einchecken",
+        "lede": "Es gibt zwei Check-ins: einen fürs Turnier und einen für jedes Match.",
+        "keywords": "einchecken check-in verpasst zu spät kampflos forfeit anwesend turnier match frist"
+      },
+      "t_next_match": {
+        "title": "Dein nächstes Match finden",
+        "lede": "Wo deine Matches und ihre Zeiten auftauchen.",
+        "keywords": "nächstes match zeitplan spielplan bracket turnierbaum wann zeit anstehend"
+      },
+      "t_organizers": {
+        "title": "Wer ein Turnier leitet",
+        "lede": "Organisatoren und was nur der Ersteller darf.",
+        "keywords": "organisator veranstalter admin co-organisator organisator hinzufügen rechte berechtigungen ersteller"
+      },
+      "t_setup": {
+        "title": "Eins einrichten",
+        "lede": "Stages, Setzung und was gesperrt wird, sobald der Turnierbaum ausgelost ist.",
+        "keywords": "turnier erstellen stage phase single double elimination round robin swiss schweizer system seed setzen setzung bracket turnierbaum gruppen"
+      },
+      "t_start": {
+        "title": "Öffnen und starten",
+        "lede": "Anmeldung, Check-in und die Startzeit.",
+        "keywords": "anmeldung öffnen anmeldung schließen turnier starten mindestanzahl teams abgebrochen live gehen"
+      },
+      "t_scheduling": {
+        "title": "Matches ansetzen",
+        "lede": "Automatisch, von Hand oder zwischen den Captains abgestimmt.",
+        "keywords": "ansetzen planen terminierung zeit manuell auto start abgestimmt match-einstellungen regeln gesperrt bearbeiten anstehendes match"
+      },
+      "t_results": {
+        "title": "Ein Turnierergebnis korrigieren",
+        "lede": "Falscher Sieger, eine Wiederholung oder ein Match, das nie stattfand.",
+        "keywords": "zurücksetzen sieger ergebnis falsch bracket turnierbaum wiederholen kampflos forfeit abbrechen neu erstellen match tabelle"
+      }
+    },
+    "content": {
+      "wrong": {
+        "heading_see": "Was du siehst",
+        "heading_why": "Warum",
+        "heading_fix": "Was zu tun ist",
+        "crash": {
+          "see": "Der Server ist mitten in einer Runde abgestürzt",
+          "why": "Die laufende Runde ist verloren",
+          "fix": "Diese Runde neu spielen"
+        },
+        "dropped": {
+          "see": "Ein Spieler ist rausgeflogen und sein Team hat die Runde verloren",
+          "why": "Der Server wartet auf alle, bevor er eine Runde lädt",
+          "fix": "Stell sie wieder her, sobald er zurück ist"
+        },
+        "map_over": {
+          "see": "Die Map muss bei 0–0 neu beginnen",
+          "why": "Falsche Einstellungen, ein verspäteter Spieler oder ein misslungener Start",
+          "fix": "Die Map neu starten"
+        },
+        "veto_wrong": {
+          "see": "Ein Team hat die falsche Map gebannt oder gepickt",
+          "why": "Jeder spätere Schritt hängt von dieser Wahl ab",
+          "fix": "Den Fehlpick korrigieren"
+        },
+        "veto_clock": {
+          "see": "Einem Team ist die Veto-Uhr abgelaufen",
+          "why": "Eine Map wurde für das Team gewählt",
+          "fix": "Den letzten Schritt rückgängig machen"
+        },
+        "server": {
+          "see": "Der Server reagiert nicht",
+          "why": "Er ist abgestürzt oder hat die Verbindung verloren",
+          "fix": "Neu starten oder das Match umziehen"
+        },
+        "winner": {
+          "see": "Das falsche Team hat gewonnen",
+          "why": "Ein Ergebnis wurde von Hand gesetzt, oder eine kampflose Wertung war ein Versehen",
+          "fix": "Den richtigen Sieger festlegen"
+        },
+        "stats": {
+          "see": "Statistiken oder Demo sehen falsch aus",
+          "why": "Die Demo wurde eingelesen, bevor sie vollständig war",
+          "fix": "Die Demos erneut einlesen"
+        },
+        "no_button": {
+          "see": "In meinem Match gibt es kein „Problem beheben“",
+          "why": "Nur die Organisatoren des Matches sehen den Button",
+          "fix": "Sieh nach, wer ein Match korrigieren kann"
+        },
+        "player": {
+          "see": "Ich spiele und etwas stimmt nicht",
+          "why": "Organisatoren korrigieren Matches, nicht Spieler",
+          "fix": "Support rufen"
+        },
+        "t_no_show": {
+          "see": "Ein Team hat für ein Turnier-Match nicht eingecheckt",
+          "why": "Turnier-Matches werden kampflos gewertet, nicht abgebrochen",
+          "fix": "So funktioniert der Match-Check-in"
+        },
+        "t_result": {
+          "see": "Ein Turnierergebnis ist falsch",
+          "why": "Ein Sieger wurde versehentlich gesetzt, oder das Match muss wiederholt werden",
+          "fix": "Das Ergebnis korrigieren"
+        }
+      },
+      "words": {
+        "heading_term": "Begriff",
+        "heading_meaning": "Bedeutung",
+        "organizer": {
+          "term": "Organisator",
+          "meaning": "Wer ein Match leitet: die Person, die es erstellt hat, die Organisatoren seines Turniers und das Staff der Seite."
+        },
+        "fix": {
+          "term": "Problem beheben",
+          "meaning": "Der Button in der Admin-Leiste unten auf einer Match-Seite. Jede Korrektur in dieser Anleitung beginnt dort."
+        },
+        "rounds_tab": {
+          "term": "Tab „Runden“",
+          "meaning": "Der Tab auf einer Match-Seite, der jede Runde der Map auflistet. Dort werden Runden wiederhergestellt."
+        },
+        "rewind": {
+          "term": "Vorschau",
+          "meaning": "Was der Tab „Runden“ zeigt, wenn du auf eine Runde klickst: diese Runde so, wie sie war. Es ändert sich nichts, bis du auf „Wiederherstellen“ drückst."
+        },
+        "backup": {
+          "term": "Backup",
+          "meaning": "Was der Server am Ende jeder Runde speichert: den Spielstand und Geld, Rüstung und Waffen jedes Spielers. Eine Wiederherstellung lädt eins davon."
+        },
+        "undone": {
+          "term": "Rückgängig gemachte Runde",
+          "meaning": "Eine Runde, die eine Wiederherstellung zurückgenommen hat. Sie lässt sich zurückholen, bis die nächste Runde endet."
+        },
+        "veto": {
+          "term": "Veto",
+          "meaning": "Die Teams bannen und picken Maps und wählen Seiten, Schritt für Schritt."
+        }
+      },
+      "fix": {
+        "where_title": "Über die Admin-Leiste öffnen",
+        "where_1": "Drück unten auf einer Match-Seite auf „Problem beheben“.",
+        "where_2": "Wähle, was schiefging. Jede Korrektur öffnet sich dort, wo sie passiert: Eine Runden-Korrektur öffnet den Tab „Runden“, eine Veto-Korrektur das Veto.",
+        "steps_1": "Die Liste folgt dem Match. „Jetzt“ enthält die Korrekturen für den Schritt, in dem das Match gerade ist, und „Jederzeit“ die, die immer funktionieren. Nichts wird ausgegraut angezeigt; eine Zeile unten sagt, was später freigeschaltet wird.",
+        "steps_veto_caption": "Während des Vetos: einen Schritt zurücknehmen, für ein Team handeln oder ihm mehr Zeit geben.",
+        "steps_live_caption": "Während eine Map gespielt wird: eine Runde wiederherstellen oder die Map neu starten.",
+        "who_1": "Organisatoren sehen ihn: wer das Match erstellt hat, die Organisatoren seines Turniers und das Staff der Seite.",
+        "who_2": "Spieler sehen ihn nicht. Sie können Hilfe holen über",
+        "who_3": "Wenn du selbst im Match spielst, muss ein anderer Organisator Runden wiederherstellen."
+      },
+      "restore": {
+        "pick_title": "Klick auf die Runde",
+        "pick_1": "Klick im Tab „Runden“ auf die Runde, die erneut gespielt werden soll, auf der Leiste oder in der Liste darunter. Eine bernsteinfarbene Linie markiert ihren Start.",
+        "pick_2": "Runden nach der Linie sind schraffiert: Das sind die, die rückgängig gemacht werden, mit der Zahl der Kills und dem Schaden, die dazugehören.",
+        "pick_caption": "Zurückspulen zum Start von Runde 16 aus Runde 17.",
+        "confirm_title": "Wiederherstellen",
+        "confirm_1": "Drück {button} in der Leiste unten.",
+        "confirm_2": "Der Server lädt die Runde, und der Spielstand geht mit zurück.",
+        "after_title": "Bereit melden",
+        "after_1": "Das Match pausiert auf der wiederhergestellten Runde, damit sich alle bereit machen können.",
+        "after_2": "Es geht weiter, sobald sich die Teams im Spiel bereit melden. Das Staff kann auch {resume} in der Admin-Leiste drücken.",
+        "which_heading_pick": "Wenn du wählst",
+        "which_heading_result": "Was passiert",
+        "which_live": "Die Runde, die gerade gespielt wird",
+        "which_live_result": "Sie beginnt ab ihrer ersten Sekunde neu. Sonst ändert sich nichts.",
+        "which_earlier": "Eine frühere Runde",
+        "which_earlier_result": "Das Spiel geht zurück zum Start dieser Runde. Die Runden danach werden rückgängig gemacht, samt Spielstand und Statistiken.",
+        "which_first": "Runde 1",
+        "which_first_result": "Vor Runde 1 gibt es kein Backup, starte also stattdessen die Map neu.",
+        "which_note": "Die Nummer einer Runde ist die Runde, die du als Nächstes spielst: Wiederherstellen von Runde 16 setzt beide Teams an den Start von Runde 16.",
+        "wait_1": "Der Gameserver lädt keine Runde, bis jeder Spieler wieder drauf ist, deshalb wartet der Button „Wiederherstellen“ auf sie.",
+        "wait_2": "Die Leiste zeigt, wer fehlt, hier {name}. Der Button wird freigeschaltet, sobald die Verbindung wieder steht.",
+        "undo_1": "Rückgängig gemachte Runden werden nicht sofort verworfen. Bis die nächste Runde endet, warten sie am Ende der Rundenleiste.",
+        "undo_2": "Die falsche Runde gewählt? Drück {button}, um wieder dorthin vorzuspringen, wo du warst.",
+        "limit_live": "Nur während die Map live ist: nicht im Warmup und nicht in der Knife-Runde.",
+        "limit_over": "Nicht mehr, wenn die Map vorbei ist. Korrigiere dann ihr Ergebnis.",
+        "limit_rush": "Nicht in Rush-Matches.",
+        "limit_player": "Nicht durch einen Organisator, der selbst im Match spielt.",
+        "limit_economy": "Spieler im Match sehen die Vorschau von Geld und Waffen nicht, damit sie die Economy des anderen Teams nicht verrät.",
+        "pick_anywhere": "Nicht im Tab „Runden“? Drück {fix} und dann {round}. Der Tab öffnet sich mit der laufenden Runde ausgewählt.",
+        "preview_title": "Vorschau prüfen",
+        "preview_1": "Geld, Rüstung und Waffen jedes Spielers werden so angezeigt, wie sie zu Beginn dieser Runde waren. Alles, was sich von jetzt unterscheidet, ist bernsteinfarben.",
+        "preview_2": "Klick auf eine andere Runde, um die Linie zu verschieben, oder drück Esc, um sie zu entfernen.",
+        "preview_caption": "{name} ist nicht verbunden, deshalb erscheint eine Warnung neben dem Namen."
+      },
+      "restart_map": {
+        "how": "Drück {fix} und dann {item}.",
+        "after": "Die Map geht zurück ins Warmup bei 0–0. Die Spieler bleiben auf dem Server.",
+        "undo": "Die gespielten Runden bleiben auf der Rundenleiste, bis die nächste Runde endet, sodass ein versehentlicher Neustart mit {link} zurückgenommen werden kann."
+      },
+      "veto": {
+        "pick_title": "Korrektur wählen",
+        "pick_1": "Drück während des Vetos auf {fix}.",
+        "pick_undo": "{item} nimmt den neuesten Ban, Pick oder die neueste Seitenwahl zurück.",
+        "pick_mispick": "{item} wählt den neuesten Schritt für dich aus. Klick auf einen früheren Schritt, um weiter zurückzugehen.",
+        "pick_redo": "{item} beginnt erneut beim ersten Ban.",
+        "step_title": "Klick auf den Schritt, der schiefging",
+        "step_1": "„Fehlpick korrigieren“ und „Veto neu durchführen“ öffnen die Schritte des Vetos. Klick auf den, der schiefging: Er und alle Schritte danach werden schraffiert.",
+        "step_2": "Die Leiste nennt, wer als Nächstes dran ist, und listet alles auf, was gelöscht wird.",
+        "confirm_title": "Veto zurücksetzen",
+        "confirm_1": "Drück {button}.",
+        "confirm_2": "Die Uhr startet neu für das Team, das an der Reihe ist.",
+        "why_1": "Wer an der Reihe ist und ob der Schritt ein Ban, ein Pick oder eine Seitenwahl ist, ergibt sich daraus, wie viele Schritte erledigt sind. Nimmst du Schritt 3 zurück, gehört Schritt 4 jemand anderem, deshalb wird jeder Schritt nach dem korrigierten wiederholt.",
+        "why_2": "Gebannte Maps kommen zurück in den Pool, und gepickte Maps werden aus dem Match genommen.",
+        "more_time": "{item} gibt dem Team, das an der Reihe ist, mehr Zeit.",
+        "more_act": "{item} schaltet „Veto überschreiben“ ein, sodass du die aktuelle Wahl auf dem Veto-Board für ein Team treffen kannst, das feststeckt oder gegangen ist.",
+        "more_after": "Diese Korrekturen bleiben nach dem Veto unter „Problem beheben“, bis die erste Map live geht. Nutzt du dann eine davon, geht das Match zurück ins Veto."
+      },
+      "server": {
+        "reboot": "{item} startet den Gameserver neu. Die Spieler verbinden sich wieder mit demselben Match.",
+        "move": "Um das Match auf einen anderen Server umzuziehen, wähle unter „Problem beheben“ einen anderen aus.",
+        "crash": "Wenn der Server mitten in der Runde abgestürzt ist, starte ihn neu und stell dann die Runde wieder her, sobald alle zurück sind."
+      },
+      "results": {
+        "winner": "{item} legt den richtigen Sieger fest, ohne neu zu spielen.",
+        "forfeit": "{item} beendet das Match sofort und spricht es dem anderen Team zu.",
+        "reparse": "{item} liest die Demos erneut ein. Das Ergebnis bleibt unverändert."
+      },
+      "replay": {
+        "restart": "{item} bricht diesen Versuch ab und öffnet den Check-in für beide Teams erneut.",
+        "tournament": "In einem Turnier kann ein Match, das schon ein Ergebnis hat, mit {item} erneut gespielt werden. Die Tabelle wird aktualisiert.",
+        "canceled": "Ein abgebrochenes Match lässt sich auf dieselbe Weise wieder öffnen, sodass es nicht neu erstellt werden muss."
+      },
+      "demo": {
+        "body": "Ein Probe-Match mit allem auf dieser Seite: der Admin-Leiste, „Problem beheben“, dem Tab „Runden“ und dem Veto. Nichts, was du dort tust, betrifft ein echtes Match.",
+        "open": "Demo-Match öffnen"
+      },
+      "figures": {
+        "match_page_bottom": "Unten auf einer Match-Seite",
+        "fix_veto": "Problem beheben · Veto",
+        "fix_live": "Problem beheben · Live",
+        "rounds_rewind": "Tab „Runden“ · Zurückspulen",
+        "rounds_bar": "Tab „Runden“ · Untere Leiste",
+        "rounds_tab": "Tab „Runden“",
+        "veto": "Veto"
+      },
+      "tournament": {
+        "join_1": "Solange die Anmeldung offen ist, drück oben im Turnier auf **Turnier beitreten**.",
+        "join_2": "**Als Team**: Wähle eins deiner Teams oder schalte **Neues Team erstellen** ein.",
+        "join_3": "**Als Free Agent**: Drück **Anmelden**. Wenn die Anmeldung schließt, werden Free Agents in ausgeglichene Teams gedraftet, die frühesten Anmeldungen zuerst. Wer übrig bleibt, kommt auf eine Warteliste und rückt nach, wenn ein Platz frei wird. **Pool verlassen** nimmt dich raus.",
+        "join_4": "Der Organisator entscheidet, wer sich anmelden kann (Teams, Free Agents oder beide), und kann die Anmeldung nur auf Einladung zulassen oder nach Rolle oder Rang beschränken.",
+        "roster_1": "Ein Lineup hat die Größe des Match-Typs (5 für Competitive, 2 für Wingman, 1 für Duell), plus Ersatzspieler, wenn das Turnier sie erlaubt.",
+        "roster_2": "Besitzer, Captain oder Team-Admins des Teams fügen Spieler hinzu und entfernen sie. Hinzufügen können sie Spieler nur bis zum Anmeldeschluss; Organisatoren können sie auch danach noch hinzufügen.",
+        "roster_3": "Sobald der Turnierbaum gesetzt ist, darf ein Roster nicht unter ein volles Lineup fallen. Füg zuerst einen Ersatzspieler hinzu und entferne dann den Spieler.",
+        "roster_4": "Ein Spieler, der für ein noch nicht gestartetes Match gebraucht wird, kann nicht entfernt werden.",
+        "check_1": "Der **Turnier-Check-in** ist nur aktiv, wenn der Organisator ihn verlangt. Er öffnet 60 Minuten vor dem Start und schließt 15 Minuten vorher, sofern der Organisator das nicht geändert hat. Der Organisator entscheidet, ob Captains, alle Spieler oder nur Organisatoren einchecken.",
+        "check_2": "Teams, die ihn verpassen, werden nicht entfernt, sondern nur aus dem Turnierbaum gelassen. Der Organisator kann sie wieder reinlassen, ohne sie weitermachen oder mehr Zeit geben.",
+        "check_3": "Der **Match-Check-in** öffnet etwa 15 Minuten vor jedem Match. Drück auf der Match-Seite auf **Check-in**.",
+        "check_4": "Wenn ein Team bis zur Frist nicht eincheckt, verliert es kampflos, und das Team, das eingecheckt hat, gewinnt. Checkt keines der Teams ein, entscheidet ein Münzwurf, außer die Stage nutzt den Match-Modus Admin: Dann entscheiden die Organisatoren.",
+        "next_1": "Im Turnier zeigt der Tab **Turnierbaum** jedes Match; **Team verfolgen** hebt deins hervor. Der Tab **Matches** listet sie unter Live, Kommend und Ergebnisse auf.",
+        "next_2": "Deine anstehenden Matches stehen auch auf der Matches-Seite, und du bekommst eine Benachrichtigung, wenn der Check-in öffnet.",
+        "org_1": "Organisatoren eines Turniers sind: die Person, die es erstellt hat, alle, die unter **Verwalten** und dann **Organisatoren** hinzugefügt wurden, Mitglieder eines damit verknüpften Teams und Staff der Seite mit der Rolle Turnier-Veranstalter oder Administrator.",
+        "org_2": "Jeder Organisator kann weitere Organisatoren hinzufügen, das Turnier pausieren und fortsetzen und Matches ansetzen.",
+        "org_3": "Anmeldung öffnen und schließen, das Turnier starten, abbrechen und zurücksetzen bleibt seinem Ersteller und Staff der Seite mit der Rolle Turnier-Veranstalter oder Administrator vorbehalten.",
+        "setup_1": "Drück auf der Turniere-Seite auf **Turnier erstellen**. Jede Stage ist Single Elimination, Double Elimination, Round Robin oder Schweizer System; **Weitere Stage hinzufügen** hängt sie aneinander.",
+        "setup_2": "**Maximale Teams** einer Stage legt fest, wie viele Teams sie aus der vorherigen Stage erreichen: die Überlebenden einer Eliminations-Stage, die Spitze der Tabelle aus Round Robin oder Schweizer System.",
+        "setup_3": "Organisatoren können für jedes Team einen **Seed** eintragen, bevor das Turnier live geht. Teams ohne Seed werden zufällig gesetzt.",
+        "setup_4": "Ein neues Turnier ist nur für seine Organisatoren sichtbar, bis die Anmeldung öffnet. Sobald der Turnierbaum ausgelost ist, sind seine Stages gesperrt.",
+        "start_1": "Drück **Anmeldung öffnen**, wenn sich Teams anmelden können, und **Anmeldung schließen**, um sie zu beenden.",
+        "start_2": "Mit Check-in schließt die Anmeldung, wenn der Check-in endet. Ohne geht das Turnier zur Startzeit live.",
+        "start_3": "Wenn sich bis zur Startzeit zu wenige Teams angemeldet haben, wird das Turnier abgebrochen.",
+        "sched_1": "Matches starten von selbst, außer **Auto-Start** ist aus oder die Stage nutzt manuelle Terminierung. Dann klick im Turnierbaum auf ein leeres Match, drück **Match ansetzen** und wähl eine Zeit oder **Jetzt**.",
+        "sched_2": "Mit **Abgestimmte Terminierung** einigen sich die beiden Captains auf eine Zeit.",
+        "sched_3": "Um ein einzelnes anstehendes Match zu ändern, öffne sein ⋮-Menü im Turnierbaum und wähle **Match-Einstellungen**. Das geht, bis das Match startet.",
+        "sched_4": "Sobald eine Stage Matches hat, sind ihre Regeln für alle gesperrt: Format, Maps, Runden, Overtime, Timeouts und Ersatzspieler. Region, TV-Delay, Check-in und Timer lassen sich noch ändern.",
+        "results_1": "Öffne im Turnierbaum das ⋮-Menü des Matches und wähle **Sieger zurücksetzen**. Wähle den richtigen Sieger oder keinen Sieger, um es neu zu spielen, dann **Zurücksetzen bestätigen**. Spätere Matches, die davon abhingen, werden geleert.",
+        "results_2": "Ein Zurücksetzen wartet, solange dieses Match oder ein späteres, in das es einfließt, gespielt oder gevetot wird.",
+        "results_3": "In Round Robin und Schweizer System lässt sich ein Ergebnis nicht mehr zurücksetzen, sobald die nächste Stage aus der Tabelle gesetzt oder die nächste Swiss-Runde ausgelost wurde.",
+        "results_4": "Auf der Match-Seite bietet **Problem beheben** dieselben Korrekturen: Das Match muss neu gespielt werden, das falsche Team hat gewonnen oder ein Team kann nicht weiterspielen.",
+        "results_5": "Ein abgebrochenes Match bringt den Turnierbaum nicht voran. Starte es über **Problem beheben** neu oder lege einen Sieger fest. Hat ein Platz im Turnierbaum sein Match verloren, erscheint dort **Match neu erstellen**."
+      }
+    },
+    "demo": {
+      "title": "Demo-Match",
+      "badge": "Demo",
+      "intro": "Ein Probe-Match zum Ausprobieren der Organisator-Werkzeuge. Wähl einen Schritt und drück dann unten in der Admin-Leiste auf „Problem beheben“. Nichts hier betrifft ein echtes Match.",
+      "step_label": "Match-Schritt",
+      "reconnects": "{name} ist verbunden",
+      "reset": "Zurücksetzen",
+      "series_label": "Best of 3 · Demo Cup",
+      "not_needed": "Nicht nötig",
+      "not_in_demo": "Das ist nicht Teil der Demo.",
+      "restored_title": "Runde {round} wird wiederhergestellt",
+      "restored_description": "Das Match pausiert, während die Runde lädt. Die Teams melden sich bereit, um weiterzuspielen.",
+      "veto_rewound_title": "Veto auf Schritt {step} zurückgesetzt",
+      "resume": "Fortsetzen",
+      "acting_map": "Du handelst für {team}: Wähl unten eine Map.",
+      "acting_side": "Du handelst für {team}: Wähl eine Seite.",
+      "banned_by": "Gebannt von {team}",
+      "picked_by": "Gepickt von {team}",
+      "veto_complete": "Das Veto ist fertig. In einem echten Match startet als Nächstes der Server.",
+      "server_label": "Server",
+      "server_pending": "Ein Server wird gewählt, sobald das Veto fertig ist.",
+      "chat_label": "Match-Chat",
+      "chat_readonly": "Der Chat ist in der Demo schreibgeschützt.",
+      "winner_set": "Match-Sieger festgelegt",
+      "forfeit_hint": "Wähle das Team, das weiterspielt. Das Match endet sofort, und dieses Team bekommt den Sieg.",
+      "forfeit_confirm": "Match beenden",
+      "forfeit_done": "Match beendet",
+      "nothing_changed": "Das ist die Demo, also hat sich nichts wirklich geändert."
+    },
+    "intro_admin": "Wie Matches und Turniere hier funktionieren, was zu tun ist, wenn etwas schiefgeht, und wie du diese Seite betreibst.",
+    "search_hint": "Drück überall auf der Seite ⌘K, um diese Antworten zu durchsuchen."
   },
   "licenses": {
     "title": "Lizenzen",

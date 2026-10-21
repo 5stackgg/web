@@ -4392,6 +4392,7 @@
       }
     },
     "play": {
+      "open_registration_tournaments": {},
       "more_ways": {
         "title": "Plus de façons de jouer",
         "tournaments": {
@@ -4474,6 +4475,7 @@
         },
         "find_lan_match": "Trouver un match LAN"
       },
+      "draft_games": {},
       "schedule": {
         "vs": "vs",
         "now": "Maintenant",
@@ -8657,7 +8659,7 @@
     "clear_filters": "Effacer les filtres"
   },
   "global_search": {
-    "placeholder": "Rechercher des joueurs, des pages et des paramètres",
+    "placeholder": "Rechercher des joueurs, des pages, des paramètres et de l'aide",
     "pages": "Pages",
     "players": "Joueurs",
     "searching": "Recherche...",
@@ -8667,7 +8669,8 @@
       "navigate": "pour naviguer",
       "open": "pour ouvrir",
       "close": "pour fermer"
-    }
+    },
+    "help": "Aide"
   },
   "file_manager_store": {
     "load_directory_failed": "Impossible de charger le répertoire",
@@ -10479,7 +10482,8 @@
       "type": "Type",
       "region": "Région",
       "no_logs_title": "Aucun log disponible",
-      "no_logs_description": "Aucun log disponible et aucun serveur connecté."
+      "no_logs_description": "Aucun log disponible et aucun serveur connecté.",
+      "rounds": "Rounds"
     },
     "chat_log": {
       "visibility": "Organisateurs et staff uniquement",
@@ -11102,10 +11106,7 @@
         "title": "Résoudre un problème",
         "description": "{team_1} vs {team_2}",
         "restore_title": "Un round s'est mal passé",
-        "restore_description": "Crash, bug ou déconnexion. Rejouer le round en cours ou revenir plus loin, avec un aperçu d'abord.",
-        "restore_rush": "Les matchs Rush ne peuvent pas restaurer de round.",
         "restore_over": "Les maps sont terminées.",
-        "restore_not_live": "Uniquement pendant qu'une map est en cours.",
         "restart_map_title": "Cette map doit recommencer",
         "restart_map_description": "Retour à l'échauffement à 0–0. Les rounds joués restent restaurables jusqu'à la fin du prochain round.",
         "restart_title": "Le match entier doit être rejoué",
@@ -11114,7 +11115,6 @@
         "reopen_description": "Rouvre le check-in pour que le match annulé puisse être joué.",
         "replay_title": "Le match doit être rejoué",
         "replay_description": "Efface le résultat et rouvre le check-in. Le classement du tournoi est mis à jour.",
-        "replay_bracket_only": "Seuls les matchs de tournoi peuvent être rejoués une fois qu'ils ont un résultat.",
         "winner_title": "La mauvaise équipe a gagné",
         "winner_description": "Choisir le bon vainqueur sans rejouer.",
         "forfeit_title": "Une équipe ne peut pas continuer",
@@ -11126,46 +11126,12 @@
       },
       "restore": {
         "title": "Restaurer un round",
-        "description": "{map} · round en cours {round}. Choisissez le round à rejouer.",
-        "description_short": "Choisissez le round à rejouer.",
-        "load_failed": "Impossible de charger les sauvegardes de round",
         "rush": "Les matchs Rush ne peuvent pas restaurer de round.",
         "not_in_progress": "Les rounds ne peuvent être restaurés que pendant qu'une map est en cours.",
         "not_live_yet": "La map n'est pas encore repartie en live. Dès qu'elle l'est, tout round précédent peut être restauré jusqu'à la fin du round 1.",
         "team_member": "Vous faites partie d'une des équipes : un autre organisateur doit restaurer les rounds. Les joueurs peuvent toujours lancer le vote en jeu.",
         "nothing_yet": "Aucun round n'est encore terminé sur cette map, il n'y a donc rien à restaurer.",
-        "replay_live": "Rejouer le round en cours {round}",
-        "round_result": "Round {round} : {team} gagne · {reason}",
-        "now": "Maintenant",
-        "won_ct": "Gagné en CT",
-        "won_t": "Gagné en T",
-        "undone": "Annulé, peut encore être rétabli",
-        "round_one": "Le round 1 n'a pas de sauvegarde",
-        "headline": "Retour au début du round {round}",
-        "headline_live": "Rejouer le round {round} depuis le début",
-        "headline_forward": "Avancer au début du round {round}",
-        "previous_round": "Fin du round {round} : {team} a gagné en {side} · {reason}",
         "economy_hidden": "L'argent et les armes des joueurs sont masqués car vous jouez dans ce match.",
-        "bank": "Caisse {amount}",
-        "timeouts": "Temps morts restants : {count}",
-        "player": "Joueur",
-        "cash": "Argent",
-        "armor": "Armure",
-        "carries": "Porte",
-        "kd": "K / D",
-        "no_armor": "Aucune",
-        "died": "Mort, rachète tout",
-        "knife_only": "Couteau seul",
-        "undo_live": "Annule uniquement le round en cours.",
-        "undo_round": "Annule le round {round} et le round en cours, y compris leurs kills et leurs dégâts.",
-        "undo_rounds": "Annule les rounds {from}–{to} et le round en cours, y compris leurs kills et leurs dégâts.",
-        "redo_round": "Rétablit le round {round}, avec ses kills et ses dégâts.",
-        "redo_rounds": "Rétablit les rounds {from}–{to}, avec leurs kills et leurs dégâts.",
-        "waiting": "En attente de la reconnexion des joueurs ({connected}/{expected}). Non connectés : {names}.",
-        "everyone_connected": "Tout le monde est connecté",
-        "pauses": "Le match est mis en pause pendant le chargement du round. Les équipes se déclarent prêtes pour reprendre.",
-        "confirm": "Restaurer au round {round}",
-        "confirm_live": "Rejouer le round {round}",
         "started": "Restauration du round {round}",
         "failed": "Impossible de restaurer le round"
       },
@@ -11369,6 +11335,116 @@
         "knife_line": "Le vainqueur choisit son camp"
       },
       "map": "Map"
+    },
+    "rewind": {
+      "strip_label": "Rounds. Cliquez sur un round, ou utilisez les flèches du clavier, pour choisir le point de restauration.",
+      "previous_round": "Round précédent",
+      "next_round": "Round suivant",
+      "start_of": "Début R{round}",
+      "half": "Mi-temps",
+      "at_start_of": "Au début de R{round}",
+      "bank": "Banque",
+      "player": "Joueur",
+      "cash": "Argent",
+      "armor": "Armure",
+      "carries": "Équipement",
+      "not_connected": "Non connecté",
+      "not_connected_tip": "Non connecté. Le serveur attend tous les joueurs avant de charger un round.",
+      "now_value": "Actuellement {value}",
+      "armor_helmet": "Armure et casque",
+      "armor_only": "Armure, sans casque",
+      "buys_fresh": "Mort, rachète tout",
+      "connected_count": "{connected}/{expected} connectés",
+      "waiting_tip": "{names} n'est pas connecté. Le serveur de jeu attend tous les joueurs avant de charger le round, donc ceci se débloque à leur retour.",
+      "everyone_connected": "Tout le monde est connecté",
+      "undone": "Annulé",
+      "undone_one": "Le round {round} a été annulé",
+      "undone_many": "Les rounds {from}–{to} ont été annulés",
+      "undone_until": "Ils peuvent revenir jusqu'à la fin du round {round}",
+      "bring_back": "Récupérer",
+      "round": "Round",
+      "won_by": "Gagné par",
+      "how": "Comment",
+      "score": "Score",
+      "halftime": "Mi-temps",
+      "in_progress": "En cours",
+      "round_n": "le round {round}",
+      "rounds_range": "les rounds {from}–{to}",
+      "replay_headline": "Rejouer le round {round} depuis le début",
+      "replay_detail": "Annule uniquement le round en cours",
+      "replay_confirm": "Rejouer le round {round}",
+      "back_headline": "Retour au début du round {round}",
+      "back_detail": "Annule {span} et le round en cours",
+      "forward_headline": "Avancer au début du round {round}",
+      "forward_detail": "Récupère {span}",
+      "restore_confirm": "Restaurer le round {round}",
+      "pauses_after": "Le match se met ensuite en pause, et les équipes se déclarent prêtes pour reprendre.",
+      "preview_chip": "Aperçu · Début de R{round}",
+      "rounds_played": "{count} rounds joués",
+      "round_in_progress": "Round {round} en cours",
+      "legend_back": "Les rounds hachurés sont annulés : {span} et le round en cours",
+      "legend_forward": "Ce qui revient : {span}",
+      "legend_replay": "Seul le round en cours est annulé",
+      "legend_rules": "Le round 1 n'a pas de sauvegarde. Les rounds annulés peuvent revenir jusqu'à la fin du round suivant.",
+      "amber_hint": "Les valeurs en ambre diffèrent du round en cours. Survolez un montant pour voir ce que le joueur a maintenant.",
+      "restore_from_round": "Restaurer depuis le début du round {round}",
+      "restore_from_here": "Restaurer à partir d'ici",
+      "click_hint": "Cliquez sur n'importe quel round pour ramener le match à son début. Rien ne change tant que vous n'avez pas confirmé.",
+      "kills_count": "{count} kills",
+      "damage_count": "{count} dégâts",
+      "unlocks_when": "La restauration se débloque quand {names} se reconnecte.",
+      "no_rounds": "Aucun round n'a encore été joué sur cette map."
+    },
+    "fix_menu": {
+      "right_now": "Maintenant",
+      "any_time": "À tout moment",
+      "restore_description": "Crash, bug ou déconnexion. Revenez au début de n'importe quel round dans l'onglet Rounds.",
+      "undo_last_title": "Annuler la dernière étape",
+      "undo_last_description": "Annule le choix de {map} par {team}, qui choisit à nouveau.",
+      "mispick_title": "Corriger une erreur de pick",
+      "mispick_description": "Choisissez l'étape qui s'est mal passée. Elle et toutes les étapes suivantes sont refaites.",
+      "redo_title": "Refaire le veto",
+      "redo_description": "Recommencer depuis le premier ban, avec toutes les maps de nouveau dans le pool.",
+      "act_title": "Bannir ou choisir pour {team}",
+      "act_description": "Activez « Forcer le veto » et faites vous-même le choix de cette étape sur le tableau de veto.",
+      "time_title": "Donner 30 secondes de plus",
+      "time_description": "Ajoute du temps au chrono de {team}.",
+      "later_rounds": "Les corrections de round se débloquent dès qu'une map est en cours.",
+      "later_results": "Les corrections de résultat et de stats se débloquent à la fin du match.",
+      "act_toast": "« Forcer le veto » est activé : faites le choix de {team} sur le tableau de veto.",
+      "undo_confirm": "Annuler l'étape",
+      "rewound": "Veto rembobiné à l'étape {step}",
+      "rewind_failed": "Impossible de rembobiner le veto",
+      "time_added": "{seconds} secondes ajoutées au chrono du veto",
+      "time_failed": "Impossible d'ajouter du temps au chrono du veto"
+    },
+    "veto_rewind": {
+      "title": "Veto · Best of {count}",
+      "to_act": "doit agir à l'étape {step}",
+      "ban": "Ban",
+      "pick": "Pick",
+      "side": "Camp",
+      "decider": "Décisive",
+      "now": "Maintenant",
+      "drawn": "Restante",
+      "redone": "Refaite",
+      "again_from": "Étape {step} à refaire",
+      "rewind_to_step": "Revenir à l'étape {step}",
+      "again_ban": "{team} bannit à nouveau",
+      "again_pick": "{team} choisit à nouveau",
+      "again_side": "{team} choisit à nouveau son camp",
+      "again_decider": "La map décisive est redéfinie",
+      "cleared_ban": "le ban de {map} par {team}",
+      "cleared_pick": "le pick de {map} par {team}",
+      "cleared_side": "le camp de {team} sur {map}",
+      "cleared_decider": "la map décisive, {map}",
+      "bar_headline": "Revenir à l'étape {step} · {again}",
+      "bar_detail": "Efface {list}. Le chrono repart.",
+      "confirm": "Rembobiner le veto",
+      "footnote": "Les maps bannies reviennent dans le pool",
+      "eyebrow": "Aperçu · À partir de l'étape {step}",
+      "dialog_title": "Corriger le veto",
+      "dialog_description": "Cliquez sur l'étape qui s'est mal passée. Elle et toutes les étapes suivantes sont refaites."
     }
   },
   "ui": {
@@ -11745,6 +11821,7 @@
         "description": "Des matchs 3v3 nerveux, salle par salle, où chaque round gagné fait avancer le combat"
       }
     },
+    "queue_wait": {},
     "match_found": "Match trouvé",
     "match_found_description": "Appuyez sur Prêt pour accepter le match avant la fin du compte à rebours.",
     "waiting_for_players": "En attente de joueurs",
@@ -11803,6 +11880,7 @@
     "banned_until": "Vous êtes exclu du matchmaking jusqu'au {time}",
     "in_queue": "en file d'attente",
     "temp_banned": "Tu es temporairement banni du matchmaking",
+    "settings_section": {},
     "no_preferred_regions": "Sélectionne au moins une région préférée dans les paramètres de matchmaking",
     "party_size": {
       "requirement": "File avec {half} joueurs ou moins, ou exactement {full} joueurs"
@@ -12722,6 +12800,7 @@
     "filters": {
       "any": "Tous"
     },
+    "sort": {},
     "create": {
       "captain_selection": "Choix des capitaines",
       "draft_order": "Ordre de draft",
@@ -12925,6 +13004,7 @@
       "teams": "Équipes existantes",
       "teams_desc": "Choisis deux équipes enregistrées pour s'affronter."
     },
+    "mode_short": {},
     "access": {
       "open": "Ouvert",
       "open_desc": "Tout le monde peut le trouver et le rejoindre depuis la liste publique.",
@@ -13825,8 +13905,8 @@
   },
   "faq": {
     "title": "Aide et FAQ",
-    "intro": "Questions courantes sur la plateforme, sur la façon de jouer ici et sur l'hébergement de votre propre instance. Si quelque chose n'est pas couvert, les liens communautaires en bas de page sont la voie la plus rapide vers une réponse.",
-    "search_placeholder": "Rechercher des questions",
+    "intro": "Comment fonctionnent les matchs et les tournois ici, et que faire quand quelque chose tourne mal.",
+    "search_placeholder": "Rechercher dans la FAQ",
     "no_results": "Aucune question ne correspond à « {term} ».",
     "links": {
       "features": "Toutes les fonctionnalités",
@@ -13880,7 +13960,7 @@
       },
       "check_in": {
         "question": "Pourquoi dois-je confirmer ma présence avant un match ?",
-        "answer": "La confirmation garantit que tout le monde est bien devant son écran avant qu'un serveur soit réservé et que le reste du lobby doive attendre. Les matchs avec annulation automatique affichent un compte à rebours, et le match est annulé automatiquement si les joueurs requis n'ont pas confirmé avant l'échéance."
+        "answer": "Le check-in confirme que tout le monde est bien devant son écran avant qu'un serveur soit réservé et que le reste du lobby doive attendre. Les matchs avec annulation automatique affichent un compte à rebours, et le match est annulé automatiquement si les joueurs requis n'ont pas fait leur check-in avant l'échéance. Dans un match de tournoi, une équipe qui manque l'échéance perd plutôt par forfait."
       },
       "tournaments": {
         "question": "Comment rejoindre un tournoi ?",
@@ -13904,7 +13984,6 @@
       }
     },
     "hosting": {
-      "title": "Héberger la vôtre",
       "self_host": {
         "question": "Puis-je faire tourner ma propre instance ?",
         "answer": "Oui — c'est la façon prévue d'utiliser 5Stack. Il est auto-hébergé et s'installe avec une seule commande, qui met en place Kubernetes (K3s), la base de données, le stockage et le panneau lui-même. Le guide d'installation de la documentation détaille tout de bout en bout."
@@ -13939,8 +14018,420 @@
       "description": "Discord est la voie la plus rapide vers un interlocuteur — les personnes qui exploitent des instances 5Stack s'y trouvent. Les bugs et les demandes de fonctionnalités vont sur GitHub, et la documentation couvre en détail l'installation, les serveurs et chaque fonctionnalité.",
       "discord": "Rejoindre Discord",
       "github": "Signaler un problème",
-      "docs": "Lire la documentation"
-    }
+      "docs": "Lire la documentation",
+      "description_player": "Les personnes qui gèrent ce site sont sur Discord. Posez-y votre question si elle n'a pas de réponse ici."
+    },
+    "help_glyph": "Comment ça marche ?",
+    "part_of": "Partie {n} sur {total}",
+    "link_to": "Lien vers {title}",
+    "contents": "Sommaire",
+    "search_results": "Réponses",
+    "open_full": "Ouvrir dans la FAQ",
+    "parts": {
+      "start": {
+        "title": "Commencer ici",
+        "lede": "Un problème ? Partez de ce que vous voyez."
+      },
+      "running": {
+        "title": "Gérer un match",
+        "lede": "Pour les organisateurs : remettre un match sur les rails quand quelque chose tourne mal."
+      },
+      "playing": {
+        "lede": "Entrer dans les matchs, et ce qui se passe autour."
+      },
+      "about": {
+        "lede": "Ce qu'est ce site, et qui le fait."
+      },
+      "hosting": {
+        "lede": "Héberger ce site, ses serveurs et son apparence, avec des liens vers la documentation complète. Seuls les administrateurs voient cette partie.",
+        "title": "Pour les administrateurs"
+      },
+      "tournaments": {
+        "title": "Tournois",
+        "lede": "En rejoindre un avec votre équipe, et en organiser un."
+      }
+    },
+    "sections": {
+      "something_wrong": {
+        "title": "Un problème ?",
+        "lede": "Trouvez ce que vous voyez, et allez directement à la solution.",
+        "keywords": "problème cassé aide crash plantage planté bloqué erreur souci bug"
+      },
+      "words": {
+        "title": "Vocabulaire",
+        "lede": "Les quelques termes sur lesquels s'appuie ce guide.",
+        "keywords": "glossaire termes définitions signification vocabulaire"
+      },
+      "fix_a_problem": {
+        "title": "Résoudre un problème",
+        "lede": "Un bouton pour chaque correction, avec celles qui comptent maintenant en haut.",
+        "keywords": "résoudre corriger problème barre admin dock organisateur outils aide",
+        "subs": {
+          "where": "Où le trouver",
+          "steps": "Il suit le match",
+          "who": "Qui le voit"
+        }
+      },
+      "restore": {
+        "title": "Restaurer un round",
+        "lede": "Revenez au début de n'importe quel round, et voyez-le avant que quoi que ce soit ne change.",
+        "keywords": "restaurer round sauvegarde backup revenir annuler crash planté serveur déconnexion déco rejouer retour onglet rounds",
+        "subs": {
+          "how": "Étape par étape",
+          "which": "Quel round choisir",
+          "wait": "Attendre les joueurs",
+          "undo": "Vous avez changé d'avis ?",
+          "limits": "Quand ce n'est pas possible"
+        }
+      },
+      "restart_map": {
+        "title": "Redémarrer la map",
+        "lede": "Retour à l'échauffement à 0–0, sans perdre les rounds joués.",
+        "keywords": "redémarrer map échauffement warmup recommencer 0-0 réinitialiser reset"
+      },
+      "veto_fix": {
+        "title": "Corriger le veto",
+        "lede": "Annulez un ban, un pick ou un choix de camp, ou refaites le veto.",
+        "keywords": "veto mis-pick mispick erreur mauvaise map ban pick camp refaire annuler chrono minuteur",
+        "subs": {
+          "how": "Étape par étape",
+          "why": "Pourquoi les étapes suivantes partent aussi",
+          "more": "Plus de temps, ou agir pour une équipe"
+        }
+      },
+      "server": {
+        "title": "Problèmes de serveur",
+        "lede": "Quand le serveur ne répond plus, ou que le match a besoin d'un autre.",
+        "keywords": "serveur crash planté redémarrer reboot ne répond pas lag connexion déplacer changer"
+      },
+      "results": {
+        "title": "Résultats et stats",
+        "lede": "Un mauvais vainqueur, une équipe qui ne peut pas continuer, ou des chiffres qui semblent faux.",
+        "keywords": "vainqueur résultat forfait reparse statistiques stats démo score faux"
+      },
+      "replay_match": {
+        "title": "Rejouer tout le match",
+        "lede": "Recommencer le match depuis le check-in.",
+        "keywords": "rejouer redémarrer match annuler annulé check-in recommencer"
+      },
+      "demo_match": {
+        "title": "Essayer sur un match de démo",
+        "lede": "Entraînez-vous d'abord à chaque correction sur un faux match.",
+        "keywords": "démo demo entraînement essayer test bac à sable sandbox exemple"
+      },
+      "call_support": {
+        "title": "Que faire si quelque chose tourne mal dans mon match ?",
+        "answer": "Ouvrez le menu ⋮ sur la page du match et choisissez « Demander de l'aide ». Les organisateurs du match sont prévenus tout de suite, et la plupart des problèmes peuvent être résolus sans recommencer le match.",
+        "keywords": "aide support organisateur admin problème signaler appeler"
+      },
+      "t_join": {
+        "title": "Rejoindre un tournoi",
+        "lede": "En équipe, ou seul en tant qu'agent libre.",
+        "keywords": "rejoindre inscrire inscription s'inscrire équipe agent libre free agent pool liste d'attente tournoi"
+      },
+      "t_roster": {
+        "title": "Votre roster de tournoi",
+        "lede": "Qui peut jouer, et quand le roster ne change plus.",
+        "keywords": "roster effectif composition lineup remplaçant sub ajouter retirer joueur équipe capitaine verrouillé seed tête de série"
+      },
+      "t_check_in": {
+        "title": "Faire son check-in",
+        "lede": "Il y a deux check-ins : un pour le tournoi, un pour chaque match.",
+        "keywords": "check-in check in manqué en retard forfait présent présence tournoi match échéance"
+      },
+      "t_next_match": {
+        "title": "Trouver votre prochain match",
+        "lede": "Où apparaissent vos matchs et leurs horaires.",
+        "keywords": "prochain match planning calendrier bracket arbre quand horaire à venir"
+      },
+      "t_organizers": {
+        "title": "Qui gère un tournoi",
+        "lede": "Les organisateurs, et ce que seul le créateur peut faire.",
+        "keywords": "organisateur admin co-organisateur ajouter organisateur permissions droits créateur"
+      },
+      "t_setup": {
+        "title": "En créer un",
+        "lede": "Phases, seeding, et ce qui se verrouille une fois le bracket tiré.",
+        "keywords": "créer tournoi phase élimination simple double round robin suisse swiss seed seeding tête de série bracket arbre groupes poules"
+      },
+      "t_start": {
+        "title": "Ouvrir et lancer",
+        "lede": "Inscriptions, check-in et heure de début.",
+        "keywords": "ouvrir inscriptions fermer inscriptions lancer tournoi démarrer minimum équipes annulé live"
+      },
+      "t_scheduling": {
+        "title": "Planifier les matchs",
+        "lede": "Automatiquement, à la main, ou d'un commun accord entre capitaines.",
+        "keywords": "planifier horaire manuel auto démarrage négocié paramètres de match règles verrouillé modifier match à venir"
+      },
+      "t_results": {
+        "title": "Corriger un résultat de tournoi",
+        "lede": "Mauvais vainqueur, match à rejouer, ou match qui n'a jamais eu lieu.",
+        "keywords": "réinitialiser vainqueur résultat faux bracket rejouer forfait annuler recréer match classement"
+      }
+    },
+    "content": {
+      "wrong": {
+        "heading_see": "Ce que vous voyez",
+        "heading_why": "Pourquoi",
+        "heading_fix": "Que faire",
+        "crash": {
+          "see": "Le serveur a planté en plein round",
+          "why": "Le round en cours est perdu",
+          "fix": "Rejouer ce round"
+        },
+        "dropped": {
+          "see": "Un joueur s'est déconnecté et son équipe a perdu le round",
+          "why": "Le serveur attend tout le monde avant de charger un round",
+          "fix": "Le restaurer à son retour"
+        },
+        "map_over": {
+          "see": "La map doit recommencer à 0–0",
+          "why": "Mauvais paramètres, un joueur en retard ou un mauvais départ",
+          "fix": "Redémarrer la map"
+        },
+        "veto_wrong": {
+          "see": "Une équipe a banni ou choisi la mauvaise map",
+          "why": "Chaque étape suivante dépend de ce choix",
+          "fix": "Corriger l'erreur de pick"
+        },
+        "veto_clock": {
+          "see": "Le chrono du veto a expiré pour une équipe",
+          "why": "Une map a été choisie à sa place",
+          "fix": "Annuler la dernière étape"
+        },
+        "server": {
+          "see": "Le serveur ne répond pas",
+          "why": "Il a planté ou perdu sa connexion",
+          "fix": "Le redémarrer, ou déplacer le match"
+        },
+        "winner": {
+          "see": "La mauvaise équipe a gagné",
+          "why": "Un résultat a été saisi à la main, ou un forfait était une erreur",
+          "fix": "Définir le bon vainqueur"
+        },
+        "stats": {
+          "see": "Les stats ou la démo semblent fausses",
+          "why": "La démo a été lue avant d'être complète",
+          "fix": "Relire les démos"
+        },
+        "no_button": {
+          "see": "Il n'y a pas de « Résoudre un problème » sur mon match",
+          "why": "Seuls les organisateurs du match le voient",
+          "fix": "Voir qui peut corriger un match"
+        },
+        "player": {
+          "see": "Je joue et quelque chose ne va pas",
+          "why": "Ce sont les organisateurs qui corrigent les matchs, pas les joueurs",
+          "fix": "Demander de l'aide"
+        },
+        "t_no_show": {
+          "see": "Une équipe n'a pas fait son check-in pour un match de tournoi",
+          "why": "Les matchs de tournoi sont perdus par forfait, pas annulés",
+          "fix": "Comment fonctionne le check-in de match"
+        },
+        "t_result": {
+          "see": "Un résultat de tournoi est faux",
+          "why": "Un vainqueur a été défini par erreur, ou le match doit être rejoué",
+          "fix": "Corriger le résultat"
+        }
+      },
+      "words": {
+        "heading_term": "Terme",
+        "heading_meaning": "Signification",
+        "organizer": {
+          "term": "Organisateur",
+          "meaning": "Quiconque gère un match : la personne qui l'a créé, les organisateurs de son tournoi et le staff du site."
+        },
+        "fix": {
+          "term": "Résoudre un problème",
+          "meaning": "Le bouton de la barre d'administration, en bas de la page d'un match. Chaque correction de ce guide commence là."
+        },
+        "rounds_tab": {
+          "term": "Onglet Rounds",
+          "meaning": "L'onglet de la page d'un match qui liste tous les rounds de la map. C'est là qu'on restaure un round."
+        },
+        "rewind": {
+          "term": "Aperçu",
+          "meaning": "Ce que l'onglet Rounds affiche quand vous cliquez sur un round : ce round tel qu'il était. Rien ne change tant que vous n'appuyez pas sur Restaurer."
+        },
+        "backup": {
+          "term": "Sauvegarde",
+          "meaning": "Ce que le serveur enregistre à la fin de chaque round : le score, ainsi que l'argent, l'armure et les armes de chaque joueur. Une restauration en charge une."
+        },
+        "undone": {
+          "term": "Round annulé",
+          "meaning": "Un round retiré par une restauration. Il peut revenir jusqu'à la fin du round suivant."
+        },
+        "veto": {
+          "term": "Veto",
+          "meaning": "Les équipes bannissent et choisissent des maps, puis leur camp, une étape à la fois."
+        }
+      },
+      "fix": {
+        "where_title": "Ouvrez-le depuis la barre d'administration",
+        "where_1": "En bas de la page d'un match, appuyez sur « Résoudre un problème ».",
+        "where_2": "Choisissez ce qui s'est mal passé. Chaque correction s'ouvre là où elle a lieu : une correction de round ouvre l'onglet Rounds, une correction de veto ouvre le veto.",
+        "steps_1": "La liste suit le match. « Maintenant » regroupe les corrections pour l'étape où se trouve le match, et « À tout moment » celles qui fonctionnent toujours. Rien n'est affiché en grisé ; une ligne en bas indique ce qui se débloque plus tard.",
+        "steps_veto_caption": "Pendant le veto : annuler une étape, agir pour une équipe ou lui donner plus de temps.",
+        "steps_live_caption": "Pendant qu'une map est jouée : restaurer un round ou recommencer la map.",
+        "who_1": "Les organisateurs le voient : la personne qui a créé le match, les organisateurs de son tournoi et le staff du site.",
+        "who_2": "Les joueurs ne le voient pas. Ils peuvent demander de l'aide via",
+        "who_3": "Si vous jouez vous-même dans le match, un autre organisateur doit restaurer les rounds."
+      },
+      "restore": {
+        "pick_title": "Cliquez sur le round",
+        "pick_1": "Dans l'onglet Rounds, cliquez sur le round à rejouer, sur la frise ou dans la liste en dessous. Une ligne ambre marque son début.",
+        "pick_2": "Les rounds après la ligne sont hachurés : ce sont ceux qui seront annulés, avec le nombre de kills et les dégâts qui vont avec.",
+        "pick_caption": "Retour au début du round 16 depuis le round 17.",
+        "confirm_title": "Restaurer",
+        "confirm_1": "Appuyez sur {button} dans la barre en bas.",
+        "confirm_2": "Le serveur charge le round, et le score revient en arrière avec lui.",
+        "after_title": "Se déclarer prêt",
+        "after_1": "Le match se met en pause sur le round restauré pour que tout le monde puisse se préparer.",
+        "after_2": "Il reprend dès que les équipes se déclarent prêtes en jeu. Le staff peut aussi appuyer sur {resume} dans la barre d'administration.",
+        "which_heading_pick": "Si vous choisissez",
+        "which_heading_result": "Ce qui se passe",
+        "which_live": "Le round en cours",
+        "which_live_result": "Il recommence depuis sa première seconde. Rien d'autre ne change.",
+        "which_earlier": "Un round précédent",
+        "which_earlier_result": "Le jeu revient au début de ce round. Les rounds suivants sont annulés, scores et stats compris.",
+        "which_first": "Round 1",
+        "which_first_result": "Il n'y a pas de sauvegarde avant le round 1, redémarrez donc plutôt la map.",
+        "which_note": "Le numéro d'un round est celui du round que vous allez jouer : restaurer le round 16 place les deux équipes au début du round 16.",
+        "wait_1": "Le serveur de jeu ne charge pas de round tant que tous les joueurs ne sont pas revenus, donc le bouton Restaurer les attend.",
+        "wait_2": "La barre indique qui manque, ici {name}. Le bouton se débloque dès sa reconnexion.",
+        "undo_1": "Les rounds annulés ne sont pas jetés tout de suite. Jusqu'à la fin du round suivant, ils attendent au bout de la frise des rounds.",
+        "undo_2": "Mauvais round choisi ? Appuyez sur {button} pour revenir là où vous étiez.",
+        "limit_live": "Seulement pendant que la map est en live : pas pendant l'échauffement ni le knife round.",
+        "limit_over": "Pas une fois la map terminée. Corrigez plutôt son résultat.",
+        "limit_rush": "Pas dans les matchs Rush.",
+        "limit_player": "Pas par un organisateur qui joue dans le match.",
+        "limit_economy": "Les joueurs du match ne voient pas l'aperçu de l'argent et des armes, pour ne pas dévoiler l'économie de l'autre équipe.",
+        "pick_anywhere": "Vous n'êtes pas dans l'onglet Rounds ? Appuyez sur {fix}, puis sur {round}. L'onglet s'ouvre avec le round en cours sélectionné.",
+        "preview_title": "Vérifiez l'aperçu",
+        "preview_1": "L'argent, l'armure et les armes de chaque joueur s'affichent tels qu'ils étaient au début de ce round. Tout ce qui diffère de maintenant est en ambre.",
+        "preview_2": "Cliquez sur un autre round pour déplacer la ligne, ou appuyez sur Esc pour l'effacer.",
+        "preview_caption": "{name} n'est pas connecté, donc un avertissement s'affiche à côté de son nom."
+      },
+      "restart_map": {
+        "how": "Appuyez sur {fix}, puis sur {item}.",
+        "after": "La map revient à l'échauffement à 0–0. Les joueurs restent sur le serveur.",
+        "undo": "Les rounds joués restent sur la frise des rounds jusqu'à la fin du round suivant, donc un redémarrage par erreur peut être annulé avec {link}."
+      },
+      "veto": {
+        "pick_title": "Choisissez la correction",
+        "pick_1": "Pendant le veto, appuyez sur {fix}.",
+        "pick_undo": "{item} annule le dernier ban, pick ou choix de camp.",
+        "pick_mispick": "{item} sélectionne pour vous la dernière étape. Cliquez sur une étape antérieure pour remonter plus loin.",
+        "pick_redo": "{item} recommence depuis le premier ban.",
+        "step_title": "Cliquez sur l'étape qui s'est mal passée",
+        "step_1": "« Corriger une erreur de pick » et « Refaire le veto » ouvrent les étapes du veto. Cliquez sur celle qui s'est mal passée : elle et toutes les étapes suivantes sont hachurées.",
+        "step_2": "La barre indique qui joue ensuite et liste tout ce qui sera effacé.",
+        "confirm_title": "Rembobiner le veto",
+        "confirm_1": "Appuyez sur {button}.",
+        "confirm_2": "Le chrono repart pour l'équipe dont c'est le tour.",
+        "why_1": "À qui c'est le tour, et si l'étape est un ban, un pick ou un choix de camp, dépend du nombre d'étapes effectuées. Annulez l'étape 3 et l'étape 4 revient à quelqu'un d'autre : chaque étape après celle que vous corrigez est donc refaite.",
+        "why_2": "Les maps bannies reviennent dans le pool, et les maps choisies sont retirées du match.",
+        "more_time": "{item} ajoute du temps pour l'équipe dont c'est le tour.",
+        "more_act": "{item} active « Forcer le veto », pour que vous puissiez faire le choix en cours sur le tableau de veto à la place d'une équipe bloquée ou partie.",
+        "more_after": "Ces corrections restent dans « Résoudre un problème » après la fin du veto, jusqu'à ce que la première map passe en live. En utiliser une à ce moment-là ramène le match au veto."
+      },
+      "server": {
+        "reboot": "{item} redémarre le serveur de jeu. Les joueurs se reconnectent au même match.",
+        "move": "Pour déplacer le match vers un autre serveur, choisissez-en un autre dans « Résoudre un problème ».",
+        "crash": "Si le serveur a planté en plein round, redémarrez-le, puis restaurez le round une fois que tout le monde est revenu."
+      },
+      "results": {
+        "winner": "{item} définit le bon vainqueur sans rejouer.",
+        "forfeit": "{item} termine le match maintenant et l'attribue à l'autre équipe.",
+        "reparse": "{item} relit les démos. Le résultat reste le même."
+      },
+      "replay": {
+        "restart": "{item} annule cette tentative et rouvre le check-in pour les deux équipes.",
+        "tournament": "Dans un tournoi, un match qui a déjà un résultat peut être rejoué avec {item}. Le classement est mis à jour.",
+        "canceled": "Un match annulé peut être rouvert de la même façon, sans devoir être recréé."
+      },
+      "demo": {
+        "body": "Un faux match avec tout ce qui figure sur cette page : la barre d'administration, « Résoudre un problème », l'onglet Rounds et le veto. Rien de ce que vous y faites ne touche un vrai match.",
+        "open": "Ouvrir le match de démo"
+      },
+      "figures": {
+        "match_page_bottom": "Bas de la page d'un match",
+        "fix_veto": "Résoudre un problème · Veto",
+        "fix_live": "Résoudre un problème · En direct",
+        "rounds_rewind": "Onglet Rounds · Retour arrière",
+        "rounds_bar": "Onglet Rounds · Barre du bas",
+        "rounds_tab": "Onglet Rounds",
+        "veto": "Veto"
+      },
+      "tournament": {
+        "join_1": "Tant que les inscriptions sont ouvertes, appuyez sur **Rejoindre le tournoi** en haut du tournoi.",
+        "join_2": "**En équipe** : choisissez une de vos équipes, ou activez **Créer une équipe**.",
+        "join_3": "**En agent libre** : appuyez sur **S'inscrire**. À la clôture des inscriptions, les agents libres sont répartis par draft dans des équipes équilibrées, les premiers inscrits d'abord. Les autres attendent sur une liste d'attente et montent si une place se libère. **Quitter le pool** vous retire.",
+        "join_4": "L'organisateur décide qui peut s'inscrire (équipes, agents libres ou les deux), et peut réserver l'inscription aux invités ou la limiter par rôle ou par rang.",
+        "roster_1": "Un lineup a la taille du type de match (5 en Compétitif, 2 en Wingman, 1 en Duel), plus des remplaçants si le tournoi les autorise.",
+        "roster_2": "Le propriétaire, le capitaine ou les admins de l'équipe ajoutent et retirent des joueurs. Ils ne peuvent en ajouter que jusqu'à la clôture des inscriptions ; les organisateurs peuvent encore en ajouter ensuite.",
+        "roster_3": "Une fois le bracket seedé, un roster ne peut pas descendre sous un lineup complet. Ajoutez d'abord un remplaçant, puis retirez le joueur.",
+        "roster_4": "Un joueur nécessaire pour un match qui n'a pas commencé ne peut pas être retiré.",
+        "check_1": "Le **check-in du tournoi** n'est actif que si l'organisateur l'exige. Il ouvre 60 minutes avant le début et ferme 15 minutes avant, sauf si l'organisateur a changé cela. L'organisateur décide si ce sont les capitaines, tous les joueurs ou seulement les organisateurs qui font le check-in.",
+        "check_2": "Les équipes qui le manquent ne sont pas retirées, juste laissées hors du bracket. L'organisateur peut les réintégrer, continuer sans elles ou accorder plus de temps.",
+        "check_3": "Le **check-in de match** ouvre environ 15 minutes avant chaque match. Appuyez sur **Check-in** sur la page du match.",
+        "check_4": "Si une équipe ne fait pas son check-in avant l'échéance, elle perd par forfait et l'équipe qui l'a fait gagne. Si aucune équipe ne fait son check-in, un tirage au sort désigne le vainqueur, sauf si la phase utilise le mode de match Admin : les organisateurs décident alors.",
+        "next_1": "Sur le tournoi, l'onglet **Arbre** montre tous les matchs ; **Suivre une équipe** met la vôtre en évidence. L'onglet **Matchs** les liste en Live, À venir et Résultats.",
+        "next_2": "Vos prochains matchs sont aussi sur la page Matchs, et vous recevez une notification à l'ouverture du check-in.",
+        "org_1": "Les organisateurs d'un tournoi sont : la personne qui l'a créé, toute personne ajoutée sous **Gérer**, puis **Organisateurs**, les membres d'une équipe qui y est liée, et le staff du site ayant le rôle d'organisateur de tournois ou d'administrateur.",
+        "org_2": "Tout organisateur peut ajouter d'autres organisateurs, mettre en pause et reprendre le tournoi, et planifier des matchs.",
+        "org_3": "Ouvrir et fermer les inscriptions, lancer, annuler et réinitialiser le tournoi sont réservés à son créateur et au staff du site ayant le rôle d'organisateur de tournois ou d'administrateur.",
+        "setup_1": "Appuyez sur **Créer un tournoi** sur la page Tournois. Chaque phase est en élimination simple, élimination double, round robin ou suisse ; **Ajouter une autre phase** les enchaîne.",
+        "setup_2": "Le champ **Équipes maximum** d'une phase décide combien d'équipes l'atteignent depuis la phase précédente : les survivants d'une phase à élimination, le haut du classement d'un round robin ou d'un suisse.",
+        "setup_3": "Les organisateurs peuvent saisir un **Seed** pour chaque équipe avant que le tournoi passe en live. Les équipes sans seed sont placées au hasard.",
+        "setup_4": "Un nouveau tournoi n'est visible que par ses organisateurs jusqu'à l'ouverture des inscriptions. Une fois le bracket tiré, ses phases sont verrouillées.",
+        "start_1": "Appuyez sur **Ouvrir les inscriptions** quand les équipes peuvent s'inscrire, et sur **Fermer les inscriptions** pour arrêter.",
+        "start_2": "Avec le check-in, les inscriptions ferment à la fin du check-in. Sans, le tournoi passe en live à son heure de début.",
+        "start_3": "Si trop peu d'équipes sont inscrites à l'heure de début, le tournoi est annulé.",
+        "sched_1": "Les matchs démarrent tout seuls sauf si **Démarrage auto** est désactivé ou si la phase utilise la planification manuelle. Dans ce cas, cliquez sur un match vide dans le bracket, appuyez sur **Planifier le match** et choisissez un horaire ou **Maintenant**.",
+        "sched_2": "Avec **Planification négociée**, les deux capitaines se mettent d'accord sur un horaire.",
+        "sched_3": "Pour modifier un match à venir, ouvrez son menu ⋮ dans le bracket et choisissez **Paramètres de match**. Cela fonctionne jusqu'au début du match.",
+        "sched_4": "Dès qu'une phase a des matchs, ses règles sont verrouillées pour tout le monde : format, maps, rounds, prolongations, temps morts et remplaçants. La région, le délai TV, le check-in et les minuteurs peuvent encore changer.",
+        "results_1": "Dans le bracket, ouvrez le menu ⋮ du match et choisissez **Réinitialiser le vainqueur**. Choisissez le bon vainqueur, ou aucun vainqueur pour le rejouer, puis **Confirmer la réinitialisation**. Les matchs suivants qui en dépendaient sont effacés.",
+        "results_2": "Une réinitialisation attend tant que ce match, ou un match suivant qu'il alimente, est en cours de jeu ou de veto.",
+        "results_3": "En round robin et en suisse, un résultat ne peut plus être réinitialisé une fois la phase suivante seedée à partir du classement, ou une fois le round suisse suivant apparié.",
+        "results_4": "Sur la page du match, **Résoudre un problème** propose les mêmes corrections : le match doit être rejoué, la mauvaise équipe a gagné, ou une équipe ne peut pas continuer.",
+        "results_5": "Un match annulé ne fait pas avancer le bracket. Redémarrez-le depuis **Résoudre un problème**, ou définissez un vainqueur. Si un emplacement du bracket a perdu son match, **Recréer le match** y apparaît."
+      }
+    },
+    "demo": {
+      "title": "Match de démo",
+      "badge": "Démo",
+      "intro": "Un faux match pour essayer les outils d'organisateur. Choisissez une étape, puis appuyez sur « Résoudre un problème » dans la barre d'administration en bas. Rien ici ne touche un vrai match.",
+      "step_label": "Étape du match",
+      "reconnects": "{name} est connecté",
+      "reset": "Réinitialiser",
+      "series_label": "Best of 3 · Demo Cup",
+      "not_needed": "Pas nécessaire",
+      "not_in_demo": "Cette option ne fait pas partie de la démo.",
+      "restored_title": "Restauration du round {round}",
+      "restored_description": "Le match est en pause pendant le chargement du round. Les équipes se déclarent prêtes pour reprendre.",
+      "veto_rewound_title": "Veto rembobiné à l'étape {step}",
+      "resume": "Reprendre",
+      "acting_map": "Vous agissez pour {team} : choisissez une map ci-dessous.",
+      "acting_side": "Vous agissez pour {team} : choisissez un camp.",
+      "banned_by": "Bannie par {team}",
+      "picked_by": "Choisie par {team}",
+      "veto_complete": "Le veto est terminé. Dans un vrai match, le serveur démarre ensuite.",
+      "server_label": "Serveur",
+      "server_pending": "Un serveur est choisi une fois le veto terminé.",
+      "chat_label": "Chat du match",
+      "chat_readonly": "Le chat est en lecture seule dans la démo.",
+      "winner_set": "Vainqueur du match défini",
+      "forfeit_hint": "Choisissez l'équipe qui continue à jouer. Le match se termine maintenant et elle remporte la victoire.",
+      "forfeit_confirm": "Terminer le match",
+      "forfeit_done": "Match terminé",
+      "nothing_changed": "C'est la démo, donc rien n'a vraiment changé."
+    },
+    "intro_admin": "Comment fonctionnent les matchs et les tournois ici, que faire quand quelque chose tourne mal, et comment gérer ce site.",
+    "search_hint": "Appuyez sur ⌘K n'importe où sur le site pour rechercher dans ces réponses."
   },
   "licenses": {
     "title": "Licences",

@@ -2,10 +2,7 @@
 import UtilityTypeGlyph from "~/components/utility/UtilityTypeGlyph.vue";
 import { computed, nextTick, onMounted, ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
-import { useI18n } from "vue-i18n";
-import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { FadeSwap, HeightSwap } from "~/components/ui/transitions";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilityMapPreviewTile from "~/components/utility/UtilityMapPreviewTile.vue";
 import UtilityMapRail from "~/components/utility/UtilityMapRail.vue";
@@ -50,45 +47,6 @@ onBeforeRouteLeave((to) => {
 const arrival = arriveUtilityPage("map");
 const arriving = ref(!!arrival);
 
-const { t } = useI18n();
-
-const ACTIVE_DUTY = "active";
-const OTHER_MAPS = "other";
-
-const activeTiles = computed(() =>
-  tiles.value.filter((tile) => tile.activeDuty),
-);
-const otherTiles = computed(() =>
-  tiles.value.filter((tile) => !tile.activeDuty),
-);
-const grouped = computed(
-  () => activeTiles.value.length > 0 && otherTiles.value.length > 0,
-);
-
-// Back from a map's board, the group holding that map, so its tile is there
-// for the board to shrink into.
-const group = ref(
-  tiles.value.find((tile) => tile.name === arrival?.map)?.activeDuty === false
-    ? OTHER_MAPS
-    : ACTIVE_DUTY,
-);
-
-const groupOptions = computed(() => [
-  {
-    key: ACTIVE_DUTY,
-    label: t("maps.active_duty"),
-    count: activeTiles.value.length,
-  },
-  { key: OTHER_MAPS, label: t("maps.other"), count: otherTiles.value.length },
-]);
-
-const shownTiles = computed(() => {
-  if (!grouped.value) {
-    return tiles.value;
-  }
-  return group.value === OTHER_MAPS ? otherTiles.value : activeTiles.value;
-});
-
 onMounted(async () => {
   if (arrival?.rect) {
     void nextTick(() => tileRefs.get(arrival.map)?.shrinkFrom(arrival.rect!));
@@ -110,7 +68,7 @@ const total = computed(() =>
 // Three across on desktop. The legend takes what the maps leave of their last
 // row, or a row of its own when they leave nothing.
 const COLUMNS = 3;
-const mapCount = computed(() => (loading.value ? 10 : shownTiles.value.length));
+const mapCount = computed(() => (loading.value ? 10 : tiles.value.length));
 const legendSpan = computed(
   () => (COLUMNS - (mapCount.value % COLUMNS)) % COLUMNS || COLUMNS,
 );
@@ -147,34 +105,17 @@ const LEGEND_SPAN: Record<number, string> = {
             class="flex min-h-11 items-center gap-2 px-1 pb-2"
             :class="arriving ? 'utility-arrive' : ''"
           >
-            <FadeSwap>
-              <div v-if="grouped" key="groups">
-                <h1 class="sr-only">
-                  {{ $t("pages.utility.picker.all_maps") }}
-                </h1>
-                <AnimatedFilters
-                  v-model="group"
-                  :options="groupOptions"
-                  square
-                />
-              </div>
-              <div
-                v-else-if="tiles.length"
-                key="all"
-                class="flex items-center gap-2"
-              >
-                <h1
-                  class="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em]"
-                >
-                  {{ $t("pages.utility.picker.all_maps") }}
-                </h1>
-                <span
-                  class="font-mono text-[0.7rem] tabular-nums text-muted-foreground"
-                >
-                  {{ tiles.length }}
-                </span>
-              </div>
-            </FadeSwap>
+            <h1
+              class="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em]"
+            >
+              {{ $t("pages.utility.picker.all_maps") }}
+            </h1>
+            <span
+              v-if="tiles.length"
+              class="font-mono text-[0.7rem] tabular-nums text-muted-foreground"
+            >
+              {{ tiles.length }}
+            </span>
           </div>
 
           <UtilityEmpty
@@ -188,71 +129,69 @@ const LEGEND_SPAN: Record<number, string> = {
                rows as the maps need: every map is in view at once, in the
                same footprint the map itself has. Below that the tiles simply
                flow down the page at a size worth looking at. -->
-          <HeightSwap v-else>
-            <section
-              :key="group"
-              :aria-label="$t('pages.utility.picker.label')"
-              class="mx-auto grid w-full grid-cols-2 gap-2.5 sm:grid-cols-3 lg:aspect-square lg:max-w-[calc(100vh-12rem)] lg:[grid-template-rows:repeat(var(--map-rows),minmax(6.5rem,1fr))]"
-              :style="{ '--map-rows': rows }"
-            >
-              <!-- Holds the grid's shape while the maps load, so the tiles land
-                   in place instead of pushing the page down. -->
-              <template v-if="loading">
-                <div
-                  v-for="n of 10"
-                  :key="n"
-                  aria-hidden="true"
-                  class="flex flex-col overflow-hidden rounded-[10px] border border-white/[0.05] bg-white/[0.03]"
-                >
-                  <span class="block aspect-square lg:aspect-auto lg:flex-1" />
-                  <span
-                    class="block h-[2.125rem] border-t border-white/[0.05] lg:hidden"
-                  />
-                </div>
-              </template>
-
-              <template v-else>
-                <UtilityMapPreviewTile
-                  v-for="tile of shownTiles"
-                  :key="tile.name"
-                  :ref="(el) => setTile(tile.name, el)"
-                  :class="
-                    arriving && tile.name !== arrival?.map ? 'utility-arrive' : ''
-                  "
-                  :tile="tile"
-                  :landings="landings[tile.name] ?? []"
-                  :count="counts[tile.name] ?? 0"
-                  :private-count="privateCounts[tile.name] ?? 0"
+          <section
+            v-else
+            :aria-label="$t('pages.utility.picker.label')"
+            class="mx-auto grid w-full grid-cols-2 gap-2.5 sm:grid-cols-3 lg:aspect-square lg:max-w-[calc(100vh-12rem)] lg:[grid-template-rows:repeat(var(--map-rows),minmax(6.5rem,1fr))]"
+            :style="{ '--map-rows': rows }"
+          >
+            <!-- Holds the grid's shape while the maps load, so the tiles land
+                 in place instead of pushing the page down. -->
+            <template v-if="loading">
+              <div
+                v-for="n of 10"
+                :key="n"
+                aria-hidden="true"
+                class="flex flex-col overflow-hidden rounded-[10px] border border-white/[0.05] bg-white/[0.03]"
+              >
+                <span class="block aspect-square lg:aspect-auto lg:flex-1" />
+                <span
+                  class="block h-[2.125rem] border-t border-white/[0.05] lg:hidden"
                 />
+              </div>
+            </template>
 
-                <!-- What the marks mean, said once, in whatever the maps leave
-                     over of the last row. -->
-                <div
-                  class="flex min-h-0 flex-col justify-center gap-2.5 rounded-[10px] border border-dashed border-border px-3.5 py-3"
-                  :class="[LEGEND_SPAN[legendSpan], arriving ? 'utility-arrive' : '']"
-                >
-                  <p class="text-xs leading-relaxed text-muted-foreground">
-                    {{ $t("pages.utility.picker.legend") }}
-                    <span class="tabular-nums">
-                      {{
-                        $t("pages.utility.picker.total", { count: total }, total)
-                      }}
-                    </span>
-                  </p>
-                  <p class="flex flex-wrap gap-x-3 gap-y-1.5">
-                    <span
-                      v-for="type of UTILITY_TYPES"
-                      :key="type"
-                      class="inline-flex items-center gap-1.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
-                    >
-                      <UtilityTypeGlyph :type="type" class="size-3" />
-                      {{ $t(`pages.utility.types.${type}`) }}
-                    </span>
-                  </p>
-                </div>
-              </template>
-            </section>
-          </HeightSwap>
+            <template v-else>
+              <UtilityMapPreviewTile
+                v-for="tile of tiles"
+                :key="tile.name"
+                :ref="(el) => setTile(tile.name, el)"
+                :class="
+                  arriving && tile.name !== arrival?.map ? 'utility-arrive' : ''
+                "
+                :tile="tile"
+                :landings="landings[tile.name] ?? []"
+                :count="counts[tile.name] ?? 0"
+                :private-count="privateCounts[tile.name] ?? 0"
+              />
+
+              <!-- What the marks mean, said once, in whatever the maps leave
+                   over of the last row. -->
+              <div
+                class="flex min-h-0 flex-col justify-center gap-2.5 rounded-[10px] border border-dashed border-border px-3.5 py-3"
+                :class="[LEGEND_SPAN[legendSpan], arriving ? 'utility-arrive' : '']"
+              >
+                <p class="text-xs leading-relaxed text-muted-foreground">
+                  {{ $t("pages.utility.picker.legend") }}
+                  <span class="tabular-nums">
+                    {{
+                      $t("pages.utility.picker.total", { count: total }, total)
+                    }}
+                  </span>
+                </p>
+                <p class="flex flex-wrap gap-x-3 gap-y-1.5">
+                  <span
+                    v-for="type of UTILITY_TYPES"
+                    :key="type"
+                    class="inline-flex items-center gap-1.5 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+                  >
+                    <UtilityTypeGlyph :type="type" class="size-3" />
+                    {{ $t(`pages.utility.types.${type}`) }}
+                  </span>
+                </p>
+              </div>
+            </template>
+          </section>
         </div>
       </div>
 

@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "已在其他隊伍",
       "owner_on_a_team": "已在這場錦標賽的某支隊伍名單中。",
-      "leaves_pool": "你已以自由選手身分報名。註冊隊伍會讓你退出自由選手名單。"
+      "leaves_pool": "你已以自由選手身分報名。註冊隊伍會讓你退出自由選手名單。",
+      "permanent_team": "保留為常駐隊伍",
+      "permanent_team_description": "同時將其加入你的隊伍，擁有獨立頁面和數據，可直接參加下一場賽事。一次性隊伍請保持關閉。"
     },
     "tournament_team": {
       "remove": "移除隊伍",

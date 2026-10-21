@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "I ett annat lag",
       "owner_on_a_team": "Redan i ett lags trupp i den här turneringen.",
-      "leaves_pool": "Du är anmäld som free agent. Registrerar du ett lag tas du bort från free agent-poolen."
+      "leaves_pool": "Du är anmäld som free agent. Registrerar du ett lag tas du bort från free agent-poolen.",
+      "permanent_team": "Behåll som permanent lag",
+      "permanent_team_description": "Lägger även till det bland dina lag, med egen sida och statistik, redo för nästa turnering. Låt det vara avstängt för ett engångslag."
     },
     "tournament_team": {
       "remove": "Ta bort lag",

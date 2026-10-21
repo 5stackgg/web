@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "Em outra equipe",
       "owner_on_a_team": "Já inscrito em uma equipe neste torneio.",
-      "leaves_pool": "Você está inscrito como agente livre. Inscrever um time tira você da lista de agentes livres."
+      "leaves_pool": "Você está inscrito como agente livre. Inscrever um time tira você da lista de agentes livres.",
+      "permanent_team": "Manter como Equipe Permanente",
+      "permanent_team_description": "Também adiciona aos seus times, com página e estatísticas próprias, pronto para o próximo torneio. Deixe desligado para um time de uma vez só."
     },
     "tournament_team": {
       "remove": "Remover Equipe",

@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "In einem anderen Team",
       "owner_on_a_team": "Bereits im Kader eines Teams in diesem Turnier.",
-      "leaves_pool": "Du bist als Free Agent angemeldet. Wenn du ein Team anmeldest, wirst du aus dem Free-Agent-Pool entfernt."
+      "leaves_pool": "Du bist als Free Agent angemeldet. Wenn du ein Team anmeldest, wirst du aus dem Free-Agent-Pool entfernt.",
+      "permanent_team": "Als festes Team behalten",
+      "permanent_team_description": "Legt es zusätzlich bei deinen Teams an, mit eigener Seite und Statistiken, bereit fürs nächste Turnier. Lass es aus für ein einmaliges Team."
     },
     "tournament_team": {
       "remove": "Team entfernen",

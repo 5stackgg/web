@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "Başka bir takımda",
       "owner_on_a_team": "Bu turnuvada zaten bir takımın kadrosunda.",
-      "leaves_pool": "Serbest oyuncu olarak kayıtlısın. Bir takım kaydetmek seni serbest oyuncu listesinden çıkarır."
+      "leaves_pool": "Serbest oyuncu olarak kayıtlısın. Bir takım kaydetmek seni serbest oyuncu listesinden çıkarır.",
+      "permanent_team": "Kalıcı Takım Olarak Sakla",
+      "permanent_team_description": "Ayrıca kendi sayfası ve istatistikleriyle takımlarına ekler, bir sonraki turnuvaya hazır olur. Tek seferlik bir takım için kapalı bırak."
     },
     "tournament_team": {
       "remove": "Takımı Kaldır",

@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "En otro equipo",
       "owner_on_a_team": "Ya está en la plantilla de un equipo de este torneo.",
-      "leaves_pool": "Estás apuntado como agente libre. Inscribir un equipo te saca de la lista de agentes libres."
+      "leaves_pool": "Estás apuntado como agente libre. Inscribir un equipo te saca de la lista de agentes libres.",
+      "permanent_team": "Mantener como equipo permanente",
+      "permanent_team_description": "También lo añade a tus equipos, con su propia página y estadísticas, listo para el próximo torneo. Déjalo desactivado para un equipo de una sola vez."
     },
     "tournament_team": {
       "remove": "Quitar equipo",

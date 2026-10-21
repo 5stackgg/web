@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "In un altro team",
       "owner_on_a_team": "Già in rosa in una squadra di questo torneo.",
-      "leaves_pool": "Sei iscritto come free agent. Iscrivere una squadra ti toglie dal pool dei free agent."
+      "leaves_pool": "Sei iscritto come free agent. Iscrivere una squadra ti toglie dal pool dei free agent.",
+      "permanent_team": "Mantieni come team permanente",
+      "permanent_team_description": "Lo aggiunge anche ai tuoi team, con una pagina e statistiche proprie, pronto per il prossimo torneo. Lascialo disattivato per un team occasionale."
     },
     "tournament_team": {
       "remove": "Rimuovi team",

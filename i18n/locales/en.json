@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "On another team",
       "owner_on_a_team": "Already rostered on a team in this tournament.",
-      "leaves_pool": "You're signed up as a free agent. Registering a team takes you out of the free agent pool."
+      "leaves_pool": "You're signed up as a free agent. Registering a team takes you out of the free agent pool.",
+      "permanent_team": "Keep as a Permanent Team",
+      "permanent_team_description": "Also adds it to your teams, with its own page and stats, ready for the next tournament. Leave it off for a one-off team."
     },
     "tournament_team": {
       "remove": "Remove Team",

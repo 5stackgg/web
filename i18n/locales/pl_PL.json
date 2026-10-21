@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "W innej drużynie",
       "owner_on_a_team": "Już w składzie drużyny w tym turnieju.",
-      "leaves_pool": "Jesteś zapisany jako wolny zawodnik. Zgłoszenie drużyny usunie cię z listy wolnych zawodników."
+      "leaves_pool": "Jesteś zapisany jako wolny zawodnik. Zgłoszenie drużyny usunie cię z listy wolnych zawodników.",
+      "permanent_team": "Zachowaj jako stałą drużynę",
+      "permanent_team_description": "Dodaje ją też do twoich drużyn, z własną stroną i statystykami, gotową na kolejny turniej. Zostaw wyłączone dla drużyny jednorazowej."
     },
     "tournament_team": {
       "remove": "Usuń drużynę",

@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "已在其他队伍",
       "owner_on_a_team": "已在这场锦标赛的某支战队名单中。",
-      "leaves_pool": "你已以自由选手身份报名。注册队伍会让你退出自由选手名单。"
+      "leaves_pool": "你已以自由选手身份报名。注册队伍会让你退出自由选手名单。",
+      "permanent_team": "保留为常驻队伍",
+      "permanent_team_description": "同时将其加入你的队伍，拥有独立页面和数据，可直接参加下一场赛事。一次性队伍请保持关闭。"
     },
     "tournament_team": {
       "remove": "移除队伍",

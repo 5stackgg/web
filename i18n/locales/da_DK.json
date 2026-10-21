@@ -8911,7 +8911,9 @@
       },
       "already_rostered": "På et andet hold",
       "owner_on_a_team": "Allerede på et holds trup i denne turnering.",
-      "leaves_pool": "Du er tilmeldt som free agent. Tilmelder du et hold, bliver du fjernet fra free agent-puljen."
+      "leaves_pool": "Du er tilmeldt som free agent. Tilmelder du et hold, bliver du fjernet fra free agent-puljen.",
+      "permanent_team": "Behold som fast hold",
+      "permanent_team_description": "Tilføjer det også til dine hold med egen side og statistik, klar til næste turnering. Lad det være slået fra for et engangshold."
     },
     "tournament_team": {
       "remove": "Fjern hold",

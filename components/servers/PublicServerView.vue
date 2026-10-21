@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import { ChevronLeft } from "lucide-vue-next";
+import BackLink from "~/components/common/BackLink.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
@@ -103,13 +104,13 @@ onBeforeUnmount(() => {
         class="flex items-center gap-2 text-xs text-muted-foreground"
         :aria-label="$t('community.server_page.breadcrumb')"
       >
-        <NuxtLink
+        <BackLink
           :to="{ name: 'public-servers' }"
           class="inline-flex items-center gap-1 transition-colors hover:text-foreground"
         >
           <ChevronLeft class="h-3.5 w-3.5" />
           {{ $t("pages.public_servers.title") }}
-        </NuxtLink>
+        </BackLink>
         <template v-if="server">
           <span aria-hidden="true">/</span>
           <span class="truncate text-foreground">{{ server.label }}</span>

@@ -439,3 +439,60 @@ describe("TopNav practice server chip", () => {
     expect(wrapper.find("utility-practice-nav-stub").exists()).toBe(false);
   });
 });
+
+describe("TopNav back arrow", () => {
+  const cameFrom = (back: string | null) =>
+    window.history.replaceState({ ...window.history.state, back }, "");
+  const arrow = (wrapper: Awaited<ReturnType<typeof mountTopNav>>) =>
+    wrapper.find('button[aria-label="Back"]');
+
+  afterEach(() => {
+    cameFrom(null);
+  });
+
+  it("has no Back arrow on the first page of a visit", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+    cameFrom(null);
+
+    const wrapper = await mountTopNav();
+
+    expect(arrow(wrapper).exists()).toBe(false);
+  });
+
+  it("puts a Back arrow first in a phone's bar once there is a page to go back to, and it steps back", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+    cameFrom(null);
+    const wrapper = await mountTopNav();
+    const router = useRouter();
+
+    await router.push({
+      path: router.currentRoute.value.path,
+      query: { from: "leaderboard" },
+    });
+    await flushPromises();
+
+    const back = arrow(wrapper);
+    expect(back.exists()).toBe(true);
+    const play = wrapper
+      .findAll("button")
+      .find((button) => button.text().startsWith("Play"))!;
+    expect(
+      back.element.compareDocumentPosition(play.element) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    const step = vi.spyOn(router, "back").mockImplementation(() => {});
+    await back.trigger("click");
+
+    expect(step).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves the desktop bar as it is", async () => {
+    emulateDevice({ userAgent: userAgents.desktopChrome, width: 1280 });
+    cameFrom("/leaderboard");
+
+    const wrapper = await mountTopNav();
+
+    expect(arrow(wrapper).exists()).toBe(false);
+  });
+});

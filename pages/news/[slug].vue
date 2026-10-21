@@ -8,6 +8,7 @@ import NewsArticleView from "~/components/news/NewsArticleView.vue";
 import NewsCard from "~/components/news/NewsCard.vue";
 import NewsPoster from "~/components/news/NewsPoster.vue";
 import NewsComments from "~/components/news/NewsComments.vue";
+import BackLink from "~/components/common/BackLink.vue";
 import { ArrowLeft, ArrowRight, Link2, PencilLine } from "lucide-vue-next";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { dateLocale } from "~/utilities/dateLocale";
@@ -206,13 +207,13 @@ onMounted(() => {
 <template>
   <PageTransition>
     <div>
-      <NuxtLink
+      <BackLink
         to="/news"
         class="mb-3.5 inline-flex items-center gap-1.5 text-[0.8125rem] text-muted-foreground transition-colors duration-150 hover:text-foreground"
       >
         <ArrowLeft class="h-3.5 w-3.5" />
         {{ newsLabel || $t("pages.news.title") }}
-      </NuxtLink>
+      </BackLink>
 
       <div
         v-if="loading"

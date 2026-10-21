@@ -2,6 +2,7 @@
 import { computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useRoute } from "vue-router";
 import { ArrowLeft } from "lucide-vue-next";
+import BackLink from "~/components/common/BackLink.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TopoBackground from "~/layouts/components/TopoBackground.vue";
 import BroadcastDeck from "~/components/stream-deck/BroadcastDeck.vue";
@@ -54,13 +55,13 @@ function onSwitched(id: string) {
         class="flex-shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-sm"
       >
         <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
-          <NuxtLink
+          <BackLink
             to="/stream-deck"
             class="inline-flex h-8 items-center gap-1.5 rounded-md px-2 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
           >
             <ArrowLeft class="size-4" />
             {{ $t("layouts.app_nav.administration.control_room") }}
-          </NuxtLink>
+          </BackLink>
           <span class="h-5 w-px bg-border" aria-hidden="true" />
           <h1 class="min-w-0 truncate text-base font-semibold">
             {{ stream?.match?.lineup_1?.name ?? $t("common.team_a") }}

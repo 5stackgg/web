@@ -9,6 +9,7 @@ import UtilityPracticeNav from "~/components/utility/UtilityPracticeNav.vue";
 import DraftRoomNav from "./DraftRoomNav.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import MobileHubButton from "./MobileHubButton.vue";
+import HistoryBackButton from "./HistoryBackButton.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -19,6 +20,7 @@ const { isMobile } = useSidebar();
   >
     <div class="flex items-center justify-between w-full">
       <div class="flex items-center gap-2 min-w-0 flex-1">
+        <HistoryBackButton v-if="isMobile" />
         <SidebarTrigger class="shrink-0" />
         <Separator orientation="vertical" class="h-4 shrink-0" />
         <bread-crumbs></bread-crumbs>

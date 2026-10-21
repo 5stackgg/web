@@ -4,6 +4,7 @@ import {
   BookOpen,
   CalendarCog,
   CalendarRange,
+  FileText,
   Film,
   LifeBuoy,
   LineChart,
@@ -11,7 +12,9 @@ import {
   Play,
   Plus,
   Radio,
+  Scale,
   Server,
+  ShieldCheck,
   ShieldHalf,
   Swords,
   Trophy,
@@ -63,6 +66,7 @@ export function useAppSections() {
     const community = t("layouts.app_nav.community.title");
     const social = t("layouts.app_nav.social.title");
     const support = t("layouts.top_nav.support_menu");
+    const legal = t("legal.section");
 
     const sections: (AppSection | false)[] = [
       me && {
@@ -207,6 +211,27 @@ export function useAppSections() {
         to: "/stats-guide",
         icon: BookOpen,
         group: support,
+      },
+      {
+        id: "terms",
+        label: t("legal.terms.title"),
+        to: "/terms",
+        icon: FileText,
+        group: legal,
+      },
+      {
+        id: "privacy",
+        label: t("legal.privacy.title"),
+        to: "/privacy",
+        icon: ShieldCheck,
+        group: legal,
+      },
+      {
+        id: "licenses",
+        label: t("licenses.title"),
+        to: "/licenses",
+        icon: Scale,
+        group: legal,
       },
       above(e_player_roles_enum.match_organizer) && {
         id: "matches-create",

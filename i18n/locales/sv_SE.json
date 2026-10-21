@@ -14484,6 +14484,165 @@
       "link": "Visa licenser"
     }
   },
+  "legal": {
+    "section": "Juridiskt",
+    "updated": "Senast uppdaterad {date}",
+    "translation_note": "Den här sidan är översatt för enkelhetens skull. Om översättningen skiljer sig från den engelska versionen gäller den engelska versionen.",
+    "terms": {
+      "title": "Användarvillkor",
+      "intro": "Dessa villkor gäller din användning av {brand}. Genom att logga in eller använda webbplatsen godkänner du dem. Om du inte godkänner dem ber vi dig att inte använda webbplatsen.",
+      "operators": {
+        "title": "Vem som driver webbplatsen",
+        "body": "Den här webbplatsen kör 5Stack, programvara med öppen källkod för matcher, ligor och turneringar i Counter-Strike 2. Den hostas av sina operatörer, som bestämmer hur den drivs och ansvarar för den."
+      },
+      "account": {
+        "title": "Ditt konto",
+        "body": "Du loggar in med ditt Steam-konto. Håll det säkert: du ansvarar för det som händer på ditt konto, inklusive allt som görs med API-nycklar som du skapar. Dela inte ditt konto, logga inte in som någon annan och skapa inte nya konton för att kringgå en sanktion.",
+        "age": "Du måste vara minst 13 år. Om du är under myndighetsåldern där du bor behöver du tillstånd från en förälder eller vårdnadshavare."
+      },
+      "conduct": {
+        "title": "Fair play och uppförande",
+        "body": "När du använder webbplatsen eller spelar i dess matcher får du inte:",
+        "cheating": "fuska, utnyttja exploits eller använda programvara som ger dig en orättvis fördel",
+        "match_fixing": "fixa matcher, förlora med flit eller manipulera rankningar eller ELO",
+        "abuse": "trakassera, hota eller kränka andra spelare, eller publicera hatiskt, sexuellt eller olagligt innehåll",
+        "impersonation": "utge dig för att vara andra spelare, lag eller personal",
+        "disruption": "spamma, göra reklam utan tillstånd eller störa servrar, chatt eller röstchatt",
+        "security": "försöka förstöra eller överbelasta webbplatsen eller dess servrar, eller ta dig in på konton som inte är dina",
+        "competition_rules": "Arrangörer kan lägga till egna regler för sina matcher, turneringar och ligor, och de reglerna gäller också."
+      },
+      "moderation": {
+        "title": "Moderering",
+        "body": "Operatörerna och den personal de utser kan ta bort innehåll, ändra eller annullera matchresultat samt tysta, stänga av eller banna konton när dessa villkor eller en tävlings regler bryts. Bans kan också utfärdas automatiskt, till exempel för att man har lämnat matcher eller för en VAC-ban."
+      },
+      "content": {
+        "title": "Ditt innehåll",
+        "body": "Du behåller äganderätten till det du lägger till på webbplatsen, till exempel lagnamn och logotyper, chattmeddelanden, klipp och uppladdningar. Du tillåter operatörerna att lagra, visa och dela det i den mån det behövs för att driva webbplatsen, till exempel på matchsidor, topplistor och höjdpunkter. Publicera bara innehåll som du har rätt att dela.",
+        "public": "Din profil, matchhistorik och statistik är offentliga. Integritetspolicyn förklarar vad som samlas in och vem som kan se det."
+      },
+      "services": {
+        "title": "Andra tjänster",
+        "body": "Inloggning sker via Steam, och du kan länka konton på andra tjänster. Dessa tjänster har egna villkor och integritetspolicyer.",
+        "valve": "Counter-Strike och Steam är varumärken som tillhör Valve Corporation. Den här webbplatsen är inte ansluten till eller godkänd av Valve."
+      },
+      "software": {
+        "title": "Programvara med öppen källkod",
+        "body": "5Stack släpps under GNU Affero General Public License, version 3. Det är den licensen, inte dessa villkor, som avgör dina rättigheter till programvaran och dess källkod. Sidan Licenser länkar till källkoden och listar den programvara från tredje part som används."
+      },
+      "warranty": {
+        "title": "Ingen garanti",
+        "body": "Webbplatsen tillhandahålls \"i befintligt skick\" och \"i mån av tillgänglighet\". Den kan ändras, gå ner eller förlora data, och funktioner kan läggas till eller tas bort när som helst. I den utsträckning lagen tillåter lämnar operatörerna inga garantier av något slag."
+      },
+      "liability": {
+        "title": "Ansvarsbegränsning",
+        "body": "I den utsträckning lagen tillåter ansvarar operatörerna inte för indirekta skador eller följdskador, eller för förlorad data, rankningar eller priser, som uppstår genom användningen av webbplatsen. Ingenting i dessa villkor begränsar ansvar som lagen inte tillåter att begränsas."
+      },
+      "ending": {
+        "title": "Avsluta din användning",
+        "body": "Du kan sluta använda webbplatsen när som helst och be operatörerna att radera ditt konto. Operatörerna kan stänga av eller avsluta konton som bryter mot dessa villkor och kan stänga ner webbplatsen."
+      },
+      "changes": {
+        "title": "Ändringar av dessa villkor",
+        "body": "Dessa villkor kan komma att uppdateras, och datumet högst upp visar den senaste versionen. Om du fortsätter att använda webbplatsen efter en ändring godkänner du de uppdaterade villkoren."
+      },
+      "contact": {
+        "title": "Kontakt",
+        "body": "Frågor om dessa villkor skickas till webbplatsens operatörer."
+      }
+    },
+    "privacy": {
+      "title": "Integritetspolicy",
+      "intro": "Den här policyn förklarar vad {brand} samlar in om dig, hur det används och vilka val du har. Webbplatsen ber aldrig om din e-postadress, och dina uppgifter säljs inte.",
+      "operators": {
+        "title": "Vem som är ansvarig",
+        "body": "Den här webbplatsen kör 5Stack, programvara med öppen källkod, och hostas av sina operatörer. De bestämmer hur webbplatsen drivs och ansvarar för den information den lagrar."
+      },
+      "collect": {
+        "title": "Vad som samlas in",
+        "body": "När du loggar in med Steam och använder webbplatsen lagras följande:",
+        "steam": "Ditt Steam-konto: Steam ID, profilnamn, avatar, profillänk och land, samt din status för VAC-bans och spelbans.",
+        "gameplay": "Ditt spelande på den här webbplatsens servrar: matchresultat, statistik, kills och positioner, utility, ELO, demos och klipp.",
+        "content": "Det du lägger till: avatarer, lagnamn och logotyper, andra uppladdningar, chattmeddelanden, klipp och dina inställningar.",
+        "social": "Dina vänner, de spelare du blockerar och eventuella sanktioner mot ditt konto.",
+        "technical": "Sessionen som håller dig inloggad, API-nycklarna du skapar och dina prenumerationer på push-aviseringar tillsammans med din webbläsares user agent.",
+        "servers": "Din IP-adress, när du ansluter till någon av den här webbplatsens communityservrar.",
+        "unregistered": "Du kan ha en profil här utan att någonsin ha loggat in, till exempel efter att ha anslutit till en server som drivs av den här webbplatsen eller förekommit i en importerad demo. Den innehåller ditt Steam ID, ditt namn och din matchstatistik.",
+        "uploads": "Bilder lagras som du laddar upp dem, inklusive eventuell metadata i filen, till exempel var ett foto togs."
+      },
+      "linked": {
+        "title": "Länkade konton",
+        "body": "Beroende på vad den här webbplatsen har aktiverat och vad du väljer att koppla:",
+        "discord": "Discord: ditt användar-ID på Discord, så att webbplatsens Discord-bot kan känna igen dig.",
+        "twitch": "Twitch: ditt Twitch-ID, användarnamn och visningsnamn, och medan du sänder live även din streams titel, spel och antal tittare.",
+        "steam_history": "Matchhistorik från Steam: de autentiserings- och delningskoder du anger, som används för att importera dina matcher.",
+        "steam_presence": "Steam-närvaro: om du lägger till webbplatsens Steam-bot som vän läser den av om du spelar CS2 samt ditt aktuella läge, din karta och ditt resultat.",
+        "steam_friends": "Steam-vänner: när du ber om det kontrolleras din vänlista på Steam för att hitta vänner som spelar här.",
+        "faceit": "FACEIT: där webbplatsen använder FACEIT hämtas din offentliga FACEIT-profil, nivå och ELO med hjälp av ditt Steam ID."
+      },
+      "calls": {
+        "title": "Röst och video",
+        "body": "Röst- och kameraströmmar skickas live till de andra deltagarna i samtalet och spelas aldrig in. När en match kräver kameror kan administratörer och de som ansvarar för sändningen se dessa flöden live.",
+        "stun": "För att koppla upp ett samtal kontaktar din webbläsare en STUN-server, som ser din IP-adress. Det är Googles server om inte operatörerna kör en egen."
+      },
+      "use": {
+        "title": "Hur det används",
+        "matches": "För att driva matcher, lobbyer, turneringar och ligor, och för att visa resultat och statistik.",
+        "fair_play": "För att hålla spelet rättvist och säkert: kontrollera Steam-bans, utfärda sanktioner och moderera chatten.",
+        "notifications": "För att skicka de aviseringar du har slagit på.",
+        "security": "För att hålla webbplatsen säker och fungerande, och för att åtgärda problem."
+      },
+      "public": {
+        "title": "Vad andra kan se",
+        "body": "Din profil är offentlig. Vem som helst, även besökare som inte är inloggade, kan se ditt namn, din avatar, ditt land, din status för Steam-bans, dina FACEIT-uppgifter, din matchhistorik, din statistik, dina lag och dina turneringsresultat.",
+        "chat": "Chattmeddelanden ses av dem som är i rummet, och personal kan granska dem för moderering."
+      },
+      "sharing": {
+        "title": "Delning med andra tjänster",
+        "body": "Viss information delas med, eller hämtas från, andra tjänster så att webbplatsen kan fungera:",
+        "steam": "Steam (Valve), för att logga in dig och läsa din profil och din status för bans.",
+        "push": "Din webbläsares push-tjänst, till exempel Google, Apple, Mozilla eller Microsoft, som levererar push-aviseringar. De innehåller avsändarens namn och en förhandsvisning av meddelandet.",
+        "media": "GIPHY när du söker efter GIF:ar, och Twitch, YouTube eller Kick när du tittar på en inbäddad stream. Dessa tjänster ser din IP-adress.",
+        "hosting": "De leverantörer av hosting och nätverk som operatörerna använder för att driva webbplatsen.",
+        "telemetry": "5Stack-projektet, som tar emot anonyma totalsiffror från den här webbplatsen, till exempel hur många matcher och spelare den har. Ingenting i dem identifierar dig.",
+        "law": "Information kan också lämnas ut när lagen kräver det."
+      },
+      "cookies": {
+        "title": "Cookies och lokal lagring",
+        "body": "En sessionscookie håller dig inloggad. Den gäller i 14 dagar och förnyas medan du använder webbplatsen. En andra cookie kommer ihåg om sidofältet är öppet. Webbläsarens lokala lagring sparar inställningar som chattflikar, röst- och kameraenheter och meddelanden som du har stängt.",
+        "analytics": "Den här webbplatsen använder också Google Tag Manager, som kan läsa in analysverktyg som sätter egna cookies för att mäta hur webbplatsen används."
+      },
+      "retention": {
+        "title": "Hur länge det sparas",
+        "profile": "Din profil, statistik och matchhistorik sparas tills ditt konto raderas.",
+        "chat": "Chattrum upphör efter tidsgränser som operatörerna ställer in, ungefär en timme för matcher och lobbyer och längre för lag och turneringar. Personal kan granska match- och lagchatt i 7 dagar.",
+        "direct": "Direktmeddelanden sparas under en period som operatörerna ställer in, som standard ett år.",
+        "edits": "När du redigerar eller tar bort ett chattmeddelande sparas originaltexten för moderering.",
+        "sessions": "Sessioner på communityservrar, inklusive IP-adresser, raderas som standard efter 7 dagar.",
+        "demos": "Demos och klipp tas bort när lagringsutrymmet fylls. Statistiken som har hämtats från dem sparas.",
+        "backups": "Dagliga säkerhetskopior sparas som standard i 7 dagar."
+      },
+      "choices": {
+        "title": "Dina val",
+        "settings": "Ändra land, språk och aviseringsval i dina inställningar.",
+        "unlink": "Koppla från länkade konton när som helst.",
+        "api_keys": "Återkalla API-nycklar som du har skapat.",
+        "requests": "Be operatörerna om en kopia av dina uppgifter, en rättelse eller att radera ditt konto.",
+        "rights": "Beroende på var du bor kan du ha ytterligare rättigheter, till exempel att invända mot hur dina uppgifter används eller att klaga hos en dataskyddsmyndighet."
+      },
+      "children": {
+        "title": "Barn",
+        "body": "Webbplatsen är inte avsedd för barn under 13 år."
+      },
+      "changes": {
+        "title": "Ändringar av denna policy",
+        "body": "Den här policyn kan komma att uppdateras, och datumet högst upp visar den senaste versionen."
+      },
+      "contact": {
+        "title": "Kontakt",
+        "body": "Frågor eller förfrågningar om dina uppgifter skickas till webbplatsens operatörer."
+      }
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Namn",

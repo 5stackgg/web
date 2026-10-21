@@ -18,10 +18,6 @@ const linkClasses =
       >
         Powered by 5Stack
       </a>
-      <span aria-hidden="true">·</span>
-      <NuxtLink :class="linkClasses" :to="{ name: 'licenses' }">
-        {{ $t("licenses.title") }}
-      </NuxtLink>
     </p>
   </footer>
 </template>

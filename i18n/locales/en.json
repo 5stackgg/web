@@ -14484,6 +14484,165 @@
       "link": "View licenses"
     }
   },
+  "legal": {
+    "section": "Legal",
+    "updated": "Last updated {date}",
+    "translation_note": "This page is translated for convenience. If the translation differs from the English version, the English version applies.",
+    "terms": {
+      "title": "Terms of Service",
+      "intro": "These terms cover your use of {brand}. By signing in or using the site, you agree to them. If you don't agree, please don't use the site.",
+      "operators": {
+        "title": "Who runs this site",
+        "body": "This site runs on 5Stack, open-source software for Counter-Strike 2 matches, leagues and tournaments. It is hosted by its operators, who decide how it is run and are responsible for it."
+      },
+      "account": {
+        "title": "Your account",
+        "body": "You sign in with your Steam account. Keep it secure: you're responsible for what happens on your account, including anything done with API keys you create. Don't share your account, sign in as someone else, or make new accounts to get around a sanction.",
+        "age": "You must be at least 13. If you're under the age of majority where you live, you need a parent's or guardian's permission."
+      },
+      "conduct": {
+        "title": "Fair play and conduct",
+        "body": "When you use the site or play in its matches, don't:",
+        "cheating": "cheat, abuse exploits, or use software that gives you an unfair advantage",
+        "match_fixing": "fix matches, throw games on purpose, or manipulate rankings or ELO",
+        "abuse": "harass, threaten or abuse other players, or post hateful, sexual or illegal content",
+        "impersonation": "impersonate other players, teams or staff",
+        "disruption": "spam, advertise without permission, or disrupt servers, chat or voice",
+        "security": "try to break or overload the site or its servers, or get into accounts that aren't yours",
+        "competition_rules": "Organizers can add their own rules for their matches, tournaments and leagues, and those rules apply too."
+      },
+      "moderation": {
+        "title": "Moderation",
+        "body": "The operators and the staff they appoint can remove content, change or cancel match results, and mute, suspend or ban accounts when these terms or a competition's rules are broken. Bans can also be applied automatically, for example for abandoning matches or for a VAC ban."
+      },
+      "content": {
+        "title": "Your content",
+        "body": "You keep ownership of what you add to the site, such as team names and logos, chat messages, clips and uploads. You allow the operators to store, show and share it as needed to run the site, for example on match pages, leaderboards and highlights. Only post content you have the right to share.",
+        "public": "Your profile, match history and stats are public. The Privacy Policy explains what is collected and who can see it."
+      },
+      "services": {
+        "title": "Other services",
+        "body": "Signing in uses Steam, and you can link accounts on other services. Those services have their own terms and privacy policies.",
+        "valve": "Counter-Strike and Steam are trademarks of Valve Corporation. This site is not affiliated with or endorsed by Valve."
+      },
+      "software": {
+        "title": "Open-source software",
+        "body": "5Stack is released under the GNU Affero General Public License, version 3. That license, not these terms, sets your rights to the software and its source code. The Licenses page links to the source and lists the third-party software it uses."
+      },
+      "warranty": {
+        "title": "No warranty",
+        "body": "The site is provided \"as is\" and \"as available\". It can change, go offline or lose data, and features can be added or removed at any time. As far as the law allows, the operators make no warranties of any kind."
+      },
+      "liability": {
+        "title": "Limitation of liability",
+        "body": "As far as the law allows, the operators aren't liable for indirect or consequential losses, or for lost data, rankings or prizes, that come from using the site. Nothing in these terms limits liability that the law doesn't allow to be limited."
+      },
+      "ending": {
+        "title": "Ending your use",
+        "body": "You can stop using the site at any time and ask the operators to delete your account. The operators can suspend or close accounts that break these terms, and can shut the site down."
+      },
+      "changes": {
+        "title": "Changes to these terms",
+        "body": "These terms may be updated, and the date at the top shows the latest version. If you keep using the site after a change, you accept the updated terms."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Questions about these terms go to the site's operators."
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "This policy explains what {brand} collects about you, how it's used, and the choices you have. The site never asks for your email address, and your data isn't sold.",
+      "operators": {
+        "title": "Who is responsible",
+        "body": "This site runs on 5Stack, open-source software, and is hosted by its operators. They decide how the site is run and are responsible for the information it holds."
+      },
+      "collect": {
+        "title": "What is collected",
+        "body": "When you sign in with Steam and use the site, it stores:",
+        "steam": "Your Steam account: Steam ID, profile name, avatar, profile link and country, plus your VAC and game ban status.",
+        "gameplay": "Your play on this site's servers: match results, stats, kills and positions, utility, ELO, demos and clips.",
+        "content": "What you add: avatars, team names and logos, other uploads, chat messages, clips and your settings.",
+        "social": "Your friends, the players you block, and any sanctions on your account.",
+        "technical": "The session that keeps you signed in, the API keys you create, and your push notification subscriptions with your browser's user agent.",
+        "servers": "Your IP address, when you join one of this site's community servers.",
+        "unregistered": "You can have a profile here without ever signing in, for example after joining a server run by this site or appearing in an imported demo. It holds your Steam ID, name and match stats.",
+        "uploads": "Images are stored as you upload them, including any metadata in the file, such as where a photo was taken."
+      },
+      "linked": {
+        "title": "Linked accounts",
+        "body": "Depending on what this site has turned on and what you choose to connect:",
+        "discord": "Discord: your Discord user ID, so the site's Discord bot can recognize you.",
+        "twitch": "Twitch: your Twitch ID, username and display name, and while you're live, your stream's title, game and viewer count.",
+        "steam_history": "Steam match history: the authentication and share codes you provide, used to import your matches.",
+        "steam_presence": "Steam presence: if you add the site's Steam bot as a friend, it reads whether you're playing CS2 and your current mode, map and score.",
+        "steam_friends": "Steam friends: when you ask, your Steam friend list is checked to find friends who play here.",
+        "faceit": "FACEIT: where the site uses FACEIT, your public FACEIT profile, level and ELO are looked up by your Steam ID."
+      },
+      "calls": {
+        "title": "Voice and video",
+        "body": "Voice and camera streams are sent live to the other people in the call and are never recorded. When a match requires cameras, admins and broadcasters can watch those feeds live.",
+        "stun": "To connect a call, your browser contacts a STUN server, which sees your IP address. This is Google's server unless the operators run their own."
+      },
+      "use": {
+        "title": "How it's used",
+        "matches": "To run matches, lobbies, tournaments and leagues, and to show results and stats.",
+        "fair_play": "To keep play fair and safe: checking Steam bans, applying sanctions and moderating chat.",
+        "notifications": "To send the notifications you've turned on.",
+        "security": "To keep the site secure and working, and to fix problems."
+      },
+      "public": {
+        "title": "What others can see",
+        "body": "Your profile is public. Anyone, including visitors who aren't signed in, can see your name, avatar, country, Steam ban status, FACEIT details, match history, stats, teams and tournament results.",
+        "chat": "Chat messages are seen by the people in that room, and staff can review them to moderate."
+      },
+      "sharing": {
+        "title": "Sharing with other services",
+        "body": "Some information is shared with, or loaded from, other services so the site can work:",
+        "steam": "Steam (Valve), to sign you in and read your profile and ban status.",
+        "push": "Your browser's push service, such as Google, Apple, Mozilla or Microsoft, which delivers push notifications. They include the sender's name and a preview of the message.",
+        "media": "GIPHY when you search for GIFs, and Twitch, YouTube or Kick when you watch an embedded stream. These services see your IP address.",
+        "hosting": "The hosting and network providers the operators use to run the site.",
+        "telemetry": "The 5Stack project, which receives anonymous totals from this site, such as how many matches and players it has. Nothing in them identifies you.",
+        "law": "Information can also be disclosed when the law requires it."
+      },
+      "cookies": {
+        "title": "Cookies and local storage",
+        "body": "A session cookie keeps you signed in. It lasts 14 days and renews while you use the site. A second cookie remembers whether the sidebar is open. Your browser's local storage keeps preferences such as chat tabs, voice and camera devices, and notices you've dismissed.",
+        "analytics": "This site also uses Google Tag Manager, which can load analytics tools that set their own cookies to measure how the site is used."
+      },
+      "retention": {
+        "title": "How long it's kept",
+        "profile": "Your profile, stats and match history are kept until your account is deleted.",
+        "chat": "Chat rooms expire on timers the operators set, about an hour for matches and lobbies and longer for teams and tournaments. Staff can review match and team chat for 7 days.",
+        "direct": "Direct messages are kept for a period the operators set, one year by default.",
+        "edits": "When you edit or delete a chat message, the original text is kept for moderation.",
+        "sessions": "Community server sessions, including IP addresses, are deleted after 7 days by default.",
+        "demos": "Demos and clips are removed as storage fills up. The stats taken from them are kept.",
+        "backups": "Daily backups are kept for 7 days by default."
+      },
+      "choices": {
+        "title": "Your choices",
+        "settings": "Change your country, language and notification preferences in your settings.",
+        "unlink": "Unlink connected accounts at any time.",
+        "api_keys": "Revoke API keys you've created.",
+        "requests": "Ask the operators for a copy of your data, a correction, or to delete your account.",
+        "rights": "Depending on where you live, you may have further rights, such as objecting to how your data is used or complaining to a data protection authority."
+      },
+      "children": {
+        "title": "Children",
+        "body": "The site is not meant for children under 13."
+      },
+      "changes": {
+        "title": "Changes to this policy",
+        "body": "This policy may be updated, and the date at the top shows the latest version."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Questions or requests about your data go to the site's operators."
+      }
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Name",

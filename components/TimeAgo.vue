@@ -14,6 +14,7 @@ import { shallowRef } from "vue";
 import TimeAgo from "javascript-time-ago";
 import type { LocaleData } from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { dateLocale } from "~/utilities/dateLocale";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -150,6 +151,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    clockAfterHour: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -204,6 +210,30 @@ export default {
       this.unsubscribe?.();
       this.unsubscribe = null;
     },
+    clockText(time: Date) {
+      const now = new Date();
+      // The relative text reads the date a second early and rounds 59.5
+      // minutes up to "1 hour ago"; the clock takes over at that moment.
+      if (now.getTime() - time.getTime() + 1000 < 59.5 * 60 * 1000) {
+        return "";
+      }
+
+      if (time.toDateString() === now.toDateString()) {
+        return time.toLocaleTimeString(dateLocale(), {
+          hour: "numeric",
+          minute: "2-digit",
+        });
+      }
+
+      return time.toLocaleString(dateLocale(), {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: time.getFullYear() === now.getFullYear() ? undefined : "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
+    },
     updateText() {
       const time = new Date(this.date);
       if (Number.isNaN(time.getTime())) {
@@ -225,6 +255,12 @@ export default {
                 .toString()
                 .padStart(2, "0")}`
             : `${minutes}:${seconds.toString().padStart(2, "0")}`;
+        return;
+      }
+
+      const clock = this.clockAfterHour ? this.clockText(time) : "";
+      if (clock) {
+        this.text = clock;
         return;
       }
 

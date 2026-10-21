@@ -50,6 +50,19 @@ describe("the render queue's ages", () => {
     expect(inLocale(locale, () => renderLength(19_600))).toBe(expected);
     expect(renderLength(null)).toBeNull();
   });
+
+  it.each([
+    ["en", "1000s"],
+    ["de", "1000 Sek."],
+  ])("gives a long render's length ungrouped in %s", (locale, expected) => {
+    expect(inLocale(locale, () => renderLength(1_000_000))).toBe(expected);
+  });
+
+  it("has no length for a render that reports none it could have taken", () => {
+    expect(renderLength(-400)).toBeNull();
+    expect(renderLength(0)).toBeNull();
+    expect(renderLength("not a number")).toBeNull();
+  });
 });
 
 describe("the database explorer's durations", () => {

@@ -58,7 +58,7 @@ export function renderLength(
   ms: number | string | null | undefined,
 ): string | null {
   const value = Number(ms);
-  if (!value) {
+  if (!Number.isFinite(value) || value <= 0) {
     return null;
   }
   return durationUnit(Math.round(value / 1000), "second");

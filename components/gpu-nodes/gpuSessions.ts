@@ -430,7 +430,9 @@ export function matchesSearch(
 /** "<1m", "41m", "1h 3m". */
 export function formatElapsed(ms: number): string {
   const minutes = Math.max(0, Math.round(ms / 60000));
-  if (minutes < 1) return `<${durationUnit(1, "minute")}`;
+  if (minutes < 1) {
+    return `<${durationUnit(1, "minute")}`;
+  }
   return compactDuration(minutes * 60000, {
     largest: "hour",
     smallest: "minute",

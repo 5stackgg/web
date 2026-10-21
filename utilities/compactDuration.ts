@@ -18,18 +18,34 @@ const FALLBACK: Record<DurationUnit, string> = {
   second: "s",
 };
 
+const formatters = new Map<string, Intl.NumberFormat>();
+
+export function unitFormatter(
+  unit: DurationUnit,
+  options: Intl.NumberFormatOptions = {},
+) {
+  const key = `${dateLocale() ?? ""}|${unit}|${JSON.stringify(options)}`;
+  let formatter = formatters.get(key);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(dateLocale(), {
+      style: "unit",
+      unit,
+      unitDisplay: "narrow",
+      useGrouping: false,
+      ...options,
+    });
+    formatters.set(key, formatter);
+  }
+  return formatter;
+}
+
 export function durationUnit(
   value: number,
   unit: DurationUnit,
   options: Intl.NumberFormatOptions = {},
 ) {
   try {
-    return new Intl.NumberFormat(dateLocale(), {
-      style: "unit",
-      unit,
-      unitDisplay: "narrow",
-      ...options,
-    }).format(value);
+    return unitFormatter(unit, options).format(value);
   } catch {
     return `${value}${FALLBACK[unit]}`;
   }

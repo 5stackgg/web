@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it } from "vitest";
-import compactDuration, { durationUnit } from "~/utilities/compactDuration";
+import compactDuration, {
+  durationUnit,
+  unitFormatter,
+} from "~/utilities/compactDuration";
 import { pinBrowserLocale } from "../helpers/browserLocale";
 
 pinBrowserLocale("en-US");
@@ -95,5 +98,37 @@ describe("compactDuration", () => {
         }),
       ),
     ).toBe(expected);
+  });
+});
+
+describe("durationUnit", () => {
+  it.each([
+    ["en", ["1000s", "1440m"]],
+    ["de", ["1000 Sek.", "1440 Min."]],
+  ])("never groups the digits in %s", (locale, expected) => {
+    expect(
+      inLocale(locale, () => [
+        durationUnit(1000, "second"),
+        compactDuration(1440 * MINUTE, {
+          largest: "minute",
+          smallest: "minute",
+        }),
+      ]),
+    ).toEqual(expected);
+  });
+
+  it("builds each formatter once for its language, unit and options", () => {
+    const minute = unitFormatter("minute");
+
+    expect(unitFormatter("minute")).toBe(minute);
+    expect(unitFormatter("second")).not.toBe(minute);
+    expect(unitFormatter("minute", { minimumIntegerDigits: 2 })).toBe(
+      unitFormatter("minute", { minimumIntegerDigits: 2 }),
+    );
+    expect(unitFormatter("minute", { minimumIntegerDigits: 2 })).not.toBe(
+      minute,
+    );
+    expect(inLocale("de", () => unitFormatter("minute"))).not.toBe(minute);
+    expect(inLocale("en", () => unitFormatter("minute"))).toBe(minute);
   });
 });

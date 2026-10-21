@@ -18,6 +18,10 @@ import {
   touchesTable,
 } from "~/components/database/dbHealth";
 
+// Without Nuxt there is no panel language, so durations would otherwise read
+// in whatever language this machine's Intl defaults to.
+vi.mock("~/utilities/dateLocale", () => ({ dateLocale: () => "en-US" }));
+
 const q = (id: string, query: string, mean: number, max: number) => ({
   queryid: id,
   query,

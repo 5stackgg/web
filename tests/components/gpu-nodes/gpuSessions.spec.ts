@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   buildSessions,
   claimFor,
@@ -19,6 +19,10 @@ import {
   workloadActivity,
   type GpuSession,
 } from "~/components/gpu-nodes/gpuSessions";
+
+// Without Nuxt there is no panel language, so durations would otherwise read
+// in whatever language this machine's Intl defaults to.
+vi.mock("~/utilities/dateLocale", () => ({ dateLocale: () => "en-US" }));
 
 const node = (id: string, extra: Record<string, unknown> = {}) => ({
   id,

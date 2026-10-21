@@ -11830,6 +11830,7 @@
     "official": "Mapas oficiales",
     "workshop": "Mapas de Workshop",
     "active_duty": "Active Duty",
+    "other": "Otros mapas",
     "radar_room": {
       "label": "Sala",
       "auto": "Automático",

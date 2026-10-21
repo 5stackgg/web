@@ -6,7 +6,9 @@ import { Button } from "~/components/ui/button";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
@@ -22,7 +24,7 @@ import {
   leaveUtilityPracticeMutation,
   stopUtilityPracticeMutation,
 } from "~/graphql/utilityGraphql";
-import { order_by } from "~/generated/zeus";
+import { e_match_types_enum, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import { readUtilityPracticeSession } from "~/types/utility";
@@ -36,6 +38,7 @@ import {
 } from "~/utilities/utilityPracticeAccess";
 import { loginLinks } from "~/utilities/loginLinks";
 import cleanMapName from "~/utilities/cleanMapName";
+import activeDutyMaps from "~/utilities/activeDutyMaps";
 import { loadRadarMaps, normalizeMapName } from "~/utilities/mapAssets";
 
 const { t } = useI18n();
@@ -45,6 +48,7 @@ const isGuest = computed(() => !useAuthStore().me?.steam_id);
 // The practice dialog books a server for one map, so the tile picks it here.
 // Only maps with a radar can carry lineups -- same rule as /utility.
 const maps = ref<string[]>([]);
+const activeDuty = ref<Set<string>>(new Set());
 const mapName = ref<string>("");
 const practiceOpen = ref(false);
 
@@ -54,10 +58,11 @@ const mapsQuery = generateQuery({
       where: {
         enabled: { _eq: true },
         workshop_map_id: { _is_null: true },
+        type: { _neq: e_match_types_enum.Rush },
       },
       order_by: [{ name: order_by.asc }],
     },
-    { name: true },
+    { name: true, type: true, active_pool: true },
   ],
 });
 
@@ -71,17 +76,35 @@ onMounted(async () => {
       }),
       loadRadarMaps(),
     ]);
+    const rows = ((data as any)?.maps ?? []) as Array<{
+      name: string;
+      type: string;
+      active_pool: boolean;
+    }>;
     const names = new Set<string>();
-    for (const map of ((data as any)?.maps ?? []) as Array<{ name: string }>) {
+    for (const map of rows) {
       const radar = normalizeMapName(map.name);
       if (radarMaps.has(radar)) names.add(radar);
     }
     maps.value = [...names];
+    activeDuty.value = activeDutyMaps(rows);
     mapName.value =
       maps.value.find((name) => name === "de_mirage") ?? maps.value[0] ?? "";
   } catch (error) {
     console.error("[play] practice maps error:", error);
   }
+});
+
+const mapGroups = computed(() => {
+  const active = maps.value.filter((map) => activeDuty.value.has(map));
+  const other = maps.value.filter((map) => !activeDuty.value.has(map));
+  if (!active.length || !other.length) {
+    return [];
+  }
+  return [
+    { key: "active", label: "maps.active_duty", maps: active },
+    { key: "other", label: "maps.other", maps: other },
+  ];
 });
 
 const { session } = useUtilityPracticeSession();
@@ -273,9 +296,23 @@ const touchTarget =
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem v-for="map in maps" :key="map" :value="map">
-                {{ cleanMapName(map) }}
-              </SelectItem>
+              <template v-if="mapGroups.length">
+                <SelectGroup v-for="group in mapGroups" :key="group.key">
+                  <SelectLabel
+                    class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
+                  >
+                    {{ $t(group.label) }}
+                  </SelectLabel>
+                  <SelectItem v-for="map in group.maps" :key="map" :value="map">
+                    {{ cleanMapName(map) }}
+                  </SelectItem>
+                </SelectGroup>
+              </template>
+              <template v-else>
+                <SelectItem v-for="map in maps" :key="map" :value="map">
+                  {{ cleanMapName(map) }}
+                </SelectItem>
+              </template>
             </SelectContent>
           </Select>
           <Button

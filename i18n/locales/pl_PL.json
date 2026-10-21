@@ -11830,6 +11830,7 @@
     "official": "Mapy oficjalne",
     "workshop": "Mapy z Workshopu",
     "active_duty": "Active Duty",
+    "other": "Pozostałe mapy",
     "radar_room": {
       "label": "Pokój",
       "auto": "Automatycznie",

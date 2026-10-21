@@ -11830,6 +11830,7 @@
     "official": "Officielle maps",
     "workshop": "Workshop-maps",
     "active_duty": "Active Duty",
+    "other": "Andre maps",
     "radar_room": {
       "label": "Rum",
       "auto": "Auto",

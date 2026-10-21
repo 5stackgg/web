@@ -11830,6 +11830,7 @@
     "official": "공식 맵",
     "workshop": "워크샵 맵",
     "active_duty": "액티브 듀티",
+    "other": "기타 맵",
     "radar_room": {
       "label": "방",
       "auto": "자동",

@@ -1,5 +1,6 @@
 // Mirrors graphql/cs2BuildGraphql.ts and the api's GameServerNodeService /
 // MapAssetsService shapes — extend them together.
+import compactDuration from "~/utilities/compactDuration";
 
 export type Cs2BuildNode = {
   id: string;
@@ -200,16 +201,7 @@ export function formatDuration(seconds: number | null): string | null {
   if (seconds === null) {
     return null;
   }
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const rest = seconds % 60;
-  if (hours) {
-    return `${hours}h ${minutes}m`;
-  }
-  if (minutes) {
-    return `${minutes}m ${rest}s`;
-  }
-  return `${rest}s`;
+  return compactDuration(seconds * 1000, { largest: "hour", parts: 2 });
 }
 
 export function gamedataRunStatus(

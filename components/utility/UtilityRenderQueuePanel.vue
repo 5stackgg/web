@@ -41,6 +41,7 @@ import { useBootStages } from "~/composables/useBootStages";
 import { useUtilityRenderCoverage } from "~/composables/useUtilityRenderCoverage";
 import { useAuthStore } from "~/stores/AuthStore";
 import cleanMapName from "~/utilities/cleanMapName";
+import compactDuration from "~/utilities/compactDuration";
 import { utilityLineupRoute } from "~/utilities/utilityDisplay";
 import {
   liveUtilityRenderIds,
@@ -262,7 +263,7 @@ function progressPct(render: UtilityLineupRender) {
   return Math.round(Number(render.progress ?? 0) * 100);
 }
 
-// Compact and mono so it sits in a column of numbers: 45S, 6M, 1H04.
+// Compact and mono so it sits in a column of numbers: 45S, 6M, 1H 04M.
 function since(iso: string | null | undefined): string {
   if (!iso) {
     return "";
@@ -272,15 +273,16 @@ function since(iso: string | null | undefined): string {
     return "";
   }
 
-  const seconds = Math.max(0, Math.round((now.value - started) / 1000));
-  if (seconds < 60) {
-    return `${seconds}s`;
+  const elapsed = Math.round((now.value - started) / 1000) * 1000;
+  if (elapsed < 3_600_000) {
+    return compactDuration(elapsed);
   }
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) {
-    return `${minutes}m`;
-  }
-  return `${Math.floor(minutes / 60)}h${String(minutes % 60).padStart(2, "0")}`;
+  return compactDuration(elapsed, {
+    largest: "hour",
+    smallest: "minute",
+    parts: 2,
+    pad: true,
+  });
 }
 
 /**
@@ -318,7 +320,7 @@ function timeline(
     const seconds = Math.max(0, Math.round((until - entry.at) / 1000));
     return {
       leg: entry.leg,
-      held: seconds < 60 ? `${seconds}s` : `${Math.floor(seconds / 60)}m`,
+      held: compactDuration(seconds * 1000, { largest: "minute" }),
     };
   });
 }

@@ -3,6 +3,7 @@ import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { toast } from "~/components/ui/toast";
+import compactDuration from "~/utilities/compactDuration";
 
 export type RecomputeEloStatus = {
   running: boolean;
@@ -80,17 +81,10 @@ const eta = computed(() => {
 });
 
 function formatDuration(ms: number): string {
-  const totalSeconds = Math.max(0, Math.round(ms / 1000));
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  if (hours > 0) {
-    return `${hours}h ${minutes}m`;
-  }
-  if (minutes > 0) {
-    return `${minutes}m ${seconds}s`;
-  }
-  return `${seconds}s`;
+  return compactDuration(Math.round(ms / 1000) * 1000, {
+    largest: "hour",
+    parts: 2,
+  });
 }
 
 type Translate = (key: string, named?: Record<string, unknown>) => string;

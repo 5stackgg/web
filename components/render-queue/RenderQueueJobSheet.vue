@@ -35,6 +35,7 @@ import {
   clipDuration,
   clipTitle,
   logService,
+  renderLength,
   since,
   statusToneClass,
 } from "~/components/render-queue/renderQueueDisplay";
@@ -388,11 +389,7 @@ const canRerender = computed(
                     {{ $t("pages.render_queue.ledger.col.length") }}
                   </dt>
                   <dd class="tabular-nums">
-                    {{
-                      render.duration_ms
-                        ? `${Math.round(Number(render.duration_ms) / 1000)}s`
-                        : "—"
-                    }}
+                    {{ renderLength(render.duration_ms) ?? "—" }}
                   </dd>
                   <dt class="text-muted-foreground">
                     {{ $t("pages.utility.render_queue.coverage.version") }}

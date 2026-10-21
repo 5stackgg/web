@@ -123,6 +123,7 @@ import {
   clipDetails,
   clipDuration,
   clipTitle,
+  renderLength,
   since,
   statusIcon,
   statusLive,
@@ -2123,9 +2124,7 @@ function openRow(row: Row) {
                           </template>
                           <template v-else>
                             {{
-                              line.row.render.duration_ms
-                                ? `${Math.round(Number(line.row.render.duration_ms) / 1000)}s`
-                                : "—"
+                              renderLength(line.row.render.duration_ms) ?? "—"
                             }}
                           </template>
                         </span>

@@ -5,6 +5,7 @@ import { Check, CircleDashed, AlertCircle, Minus, FastForward } from "lucide-vue
 import { Spinner } from "~/components/ui/spinner";
 import type { BootMode } from "~/composables/useBootStages";
 import { useBootProgress } from "~/composables/useBootProgress";
+import compactDuration from "~/utilities/compactDuration";
 
 const { t } = useI18n();
 
@@ -63,11 +64,7 @@ onBeforeUnmount(() => clearInterval(ticker));
 
 function fmt(ms: number): string {
   if (!Number.isFinite(ms) || ms < 0) return "";
-  const seconds = Math.floor(ms / 1000);
-  if (seconds < 60) return `${seconds}s`;
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}m ${s.toString().padStart(2, "0")}s`;
+  return compactDuration(ms, { largest: "minute", parts: 2, pad: true });
 }
 
 function stageDuration(stageKey: string): string {

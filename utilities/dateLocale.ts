@@ -1,4 +1,4 @@
-import { tryUseNuxtApp } from "#app";
+import { tryUseNuxtApp } from "#app/nuxt";
 
 export type BrowserClock = {
   locale: string;

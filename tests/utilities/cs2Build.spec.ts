@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   GAMEDATA_STALE_MS,
   MAP_ASSETS_STALE_MS,
@@ -15,6 +15,10 @@ import {
   type GamedataRunRow,
   type MapAssetsRunRow,
 } from "~/types/cs2Build";
+
+// Without Nuxt there is no panel language, so durations would otherwise read
+// in whatever language this machine's Intl defaults to.
+vi.mock("~/utilities/dateLocale", () => ({ dateLocale: () => "en-US" }));
 
 const NOW = new Date("2026-09-28T12:00:00Z").getTime();
 const ago = (ms: number) => new Date(NOW - ms).toISOString();

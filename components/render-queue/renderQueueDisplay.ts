@@ -9,6 +9,7 @@ import {
 } from "lucide-vue-next";
 import type { LedgerClipJob } from "~/components/render-queue/renderQueueLedger";
 import { TONE_TEXT, type Tone } from "~/components/admin/tone";
+import compactDuration, { durationUnit } from "~/utilities/compactDuration";
 
 type Translate = (key: string, named?: Record<string, unknown>) => string;
 
@@ -51,6 +52,16 @@ export function clipDuration(job: LedgerClipJob): string | null {
   }
   const total = Math.round(ms / 1000);
   return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+}
+
+export function renderLength(
+  ms: number | string | null | undefined,
+): string | null {
+  const value = Number(ms);
+  if (!Number.isFinite(value) || value <= 0) {
+    return null;
+  }
+  return durationUnit(Math.round(value / 1000), "second");
 }
 
 // The render job's own pod, when it has one worth reading logs from.
@@ -106,22 +117,14 @@ export function statusIcon(status: string) {
   }
 }
 
-// Compact so it sits in a column of numbers: 45s, 6m, 1h04, 3d.
+// Compact so it sits in a column of numbers: 45s, 6m, 1h 04m, 3d.
 export function since(at: number, now: number): string {
   if (!at) {
     return "";
   }
-  const seconds = Math.max(0, Math.round((now - at) / 1000));
-  if (seconds < 60) {
-    return `${seconds}s`;
+  const elapsed = Math.round((now - at) / 1000) * 1000;
+  if (elapsed < 3_600_000 || elapsed >= 86_400_000) {
+    return compactDuration(elapsed);
   }
-  const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) {
-    return `${minutes}m`;
-  }
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) {
-    return `${hours}h${String(minutes % 60).padStart(2, "0")}`;
-  }
-  return `${Math.floor(hours / 24)}d`;
+  return compactDuration(elapsed, { smallest: "minute", parts: 2, pad: true });
 }

@@ -786,6 +786,34 @@ describe("UtilityRenderQueuePanel queue", () => {
     expect(text).not.toContain("Render pod booting");
   });
 
+  it.each([
+    ["en", ["1h 04m", "9m", "20s"]],
+    ["de", ["1h 04 Min.", "9 Min.", "20 Sek."]],
+  ])("times a row and its legs in %s", async (locale, expected) => {
+    const i18n = (useNuxtApp() as any).$i18n;
+    await i18n.setLocale(locale);
+
+    try {
+      rows.inFlight = [
+        {
+          ...queued("n-1", "de_nuke", [
+            ["waiting_for_map", 600],
+            ["changing_map:de_nuke", 20],
+          ]),
+          created_at: ago(3840),
+        },
+      ];
+      const wrapper = await mountPanel();
+
+      const text = queueRow(wrapper, "n-1").text();
+      for (const time of expected) {
+        expect(text).toContain(time);
+      }
+    } finally {
+      await i18n.setLocale("en");
+    }
+  });
+
   it("marks a row as gone quiet only where silence means something", async () => {
     rows.inFlight = [
       {

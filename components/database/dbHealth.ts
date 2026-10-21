@@ -1,6 +1,7 @@
 // Shared rules for the database explorer: the slow-query threshold, what
 // counts as slow / bloated / cold, and the formatting every view uses. Kept
 // free of Vue so the rules can be tested on their own.
+import compactDuration, { durationUnit } from "~/utilities/compactDuration";
 
 export type Sev = "" | "warn" | "bad";
 
@@ -246,10 +247,14 @@ export function formatMs(value: number | null | undefined) {
 
 export function formatDuration(seconds: number | null | undefined) {
   const s = Math.max(0, seconds || 0);
-  if (s < 60) return `${s.toFixed(s < 10 ? 2 : 1)}s`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ${String(Math.floor(s % 60)).padStart(2, "0")}s`;
-  return `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, "0")}m`;
+  if (s < 60) {
+    const digits = s < 10 ? 2 : 1;
+    return durationUnit(s, "second", {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    });
+  }
+  return compactDuration(s * 1000, { largest: "hour", parts: 2, pad: true });
 }
 
 export function formatPct(ratio: number | null | undefined, digits = 1) {

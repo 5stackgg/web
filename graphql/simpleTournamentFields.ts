@@ -137,6 +137,14 @@ export const simpleTournamentFields = Selector("tournaments")({
       },
     },
   ],
+  rosters_aggregate: [
+    {},
+    {
+      aggregate: {
+        count: true,
+      },
+    },
+  ],
   min_players_per_lineup: true,
   free_agents_aggregate: [
     { where: freeAgentPoolWhere },

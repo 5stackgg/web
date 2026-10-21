@@ -27,9 +27,9 @@ function lineupSize(tournament: any): number {
   return match ? match / 2 : 5;
 }
 
-// A team counts as one starting lineup, never its substitutes, and the pool
-// is what the api calls the pool: registered and waitlisted agents. A drafted
-// agent is already inside one of the teams.
+// A team counts the players on its roster, not the full lineup it may still be
+// short of, and the pool is what the api calls the pool: registered and
+// waitlisted agents. A drafted agent is already on one of the rosters.
 export function tournamentRegistrationCount(
   tournament: any,
 ): TournamentRegistrationCount {
@@ -47,7 +47,9 @@ export function tournamentRegistrationCount(
   const size = lineupSize(tournament);
   const agents =
     Number(tournament?.free_agents_aggregate?.aggregate?.count) || 0;
-  const players = teams * size + agents;
+  const rostered =
+    Number(tournament?.rosters_aggregate?.aggregate?.count) || 0;
+  const players = rostered + agents;
   const max = maxTeams ? maxTeams * size : null;
 
   return {

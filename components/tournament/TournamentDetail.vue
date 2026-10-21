@@ -1326,6 +1326,14 @@ export default {
                   },
                 },
               ],
+              rosters_aggregate: [
+                {},
+                {
+                  aggregate: {
+                    count: true,
+                  },
+                },
+              ],
               stages: [
                 {
                   order_by: [

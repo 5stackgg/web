@@ -37,6 +37,7 @@ export const tournamentCardFields = {
   admin: { name: true },
   prizes: [{}, { prize: true }],
   teams_aggregate: count,
+  rosters_aggregate: count,
   registration_type: true,
   min_players_per_lineup: true,
   free_agents_aggregate: [

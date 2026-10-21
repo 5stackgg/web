@@ -190,9 +190,12 @@ const loginArrowClasses =
 // queue, practice panel and player-search UI with them: a visitor who is not
 // signed in never downloads any of that.
 const MatchLobbies = defineAsyncComponent(() => import("./MatchLobbies.vue"));
-const UtilityPracticeNav = defineAsyncComponent(
-  () => import("~/components/utility/UtilityPracticeNav.vue"),
-);
+// Not suspensible: almost nobody holds a practice server, so the root Suspense
+// must not keep the pre-loader up waiting for a chip that renders nothing.
+const UtilityPracticeNav = defineAsyncComponent({
+  loader: () => import("~/components/utility/UtilityPracticeNav.vue"),
+  suspensible: false,
+});
 </script>
 
 <template>

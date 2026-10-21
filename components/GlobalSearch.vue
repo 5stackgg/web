@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Component } from "vue";
 import type { RouteLocationRaw } from "vue-router";
-import { Cog, Loader2, Search, UserCog } from "lucide-vue-next";
+import { CircleHelp, Cog, Loader2, Search, UserCog } from "lucide-vue-next";
 import FilterChip from "~/components/common/FilterChip.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Kbd } from "~/components/ui/kbd";
@@ -12,6 +12,7 @@ import {
 } from "~/composables/useGlobalSearch";
 import { useGlobalSearchOpen } from "~/composables/useGlobalSearchOpen";
 import { selectSetting } from "~/composables/useSettingsSearch";
+import { useFaqDialog, useFaqSearch } from "~/composables/useFaq";
 
 type Option = {
   id: string;
@@ -23,6 +24,7 @@ type Option = {
   description?: string;
   aside?: string;
   setting?: GlobalSearchSetting;
+  faq?: string;
   player?: any;
 };
 
@@ -34,6 +36,8 @@ const query = ref("");
 const input = ref<HTMLInputElement | null>(null);
 const active = ref(0);
 const { search } = useGlobalSearch();
+const { search: searchFaq } = useFaqSearch();
+const faqDialog = useFaqDialog();
 
 const searching = computed(() => query.value.trim().length > 0);
 
@@ -77,6 +81,22 @@ const groups = computed<{ id: string; label: string; options: Option[] }[]>(
         id: "application",
         label: t("layouts.application_settings.title"),
         options: settings(application, Cog),
+      },
+      {
+        id: "faq",
+        label: t("global_search.help"),
+        options: searchFaq(query.value, 4, { strict: true }).map<Option>(
+          (hit) => ({
+            id: `faq-${hit.id}`,
+            index: 0,
+            to: `/faq#${hit.id}`,
+            label: hit.title,
+            description: hit.lede,
+            icon: CircleHelp,
+            aside: hit.part,
+            faq: hit.id,
+          }),
+        ),
       },
     ].filter((group) => group.options.length > 0);
 
@@ -228,6 +248,14 @@ function choose(option: Option | undefined) {
     selectSetting(option.setting.hit);
   }
   open.value = false;
+  if (option.faq) {
+    if (route.path === "/faq") {
+      faqDialog.jumpTo(option.faq);
+    } else {
+      faqDialog.open(option.faq);
+    }
+    return;
+  }
   navigateTo(option.to);
 }
 

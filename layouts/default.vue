@@ -56,8 +56,12 @@ const OrphanedUploadsDialog = defineAsyncComponent(
 const EnablePushPrompt = defineAsyncComponent(
   () => import("~/components/notification/EnablePushPrompt.vue"),
 );
+const FaqDialog = defineAsyncComponent(
+  () => import("~/components/faq/FaqDialog.vue"),
+);
 import { useClipModal } from "~/composables/useClipModal";
 import { useOrphanedScan } from "~/composables/useOrphanedScan";
+import { useFaqDialog } from "~/composables/useFaq";
 
 const { activeClipId } = useClipModal();
 const { dialogOpen: orphanedUploadsOpen } = useOrphanedScan();
@@ -74,6 +78,13 @@ const orphanedUploadsMounted = ref(orphanedUploadsOpen.value);
 watch(orphanedUploadsOpen, (open) => {
   if (open) {
     orphanedUploadsMounted.value = true;
+  }
+});
+const { anchor: faqAnchor } = useFaqDialog();
+const faqDialogMounted = ref(!!faqAnchor.value);
+watch(faqAnchor, (anchor) => {
+  if (anchor) {
+    faqDialogMounted.value = true;
   }
 });
 
@@ -205,6 +216,8 @@ provide("adminContent", adminContent);
   <ClipDetailModal v-if="clipModalMounted" :clip-id="activeClipId" />
 
   <OrphanedUploadsDialog v-if="orphanedUploadsMounted" />
+
+  <FaqDialog v-if="faqDialogMounted" />
 
   <EnablePushPrompt v-if="authStore.me" />
 

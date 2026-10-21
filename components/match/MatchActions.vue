@@ -14,9 +14,10 @@ import {
 import BlockedMenuItem from "~/components/common/BlockedMenuItem.vue";
 import MatchCameraStatus from "~/components/match/MatchCameraStatus.vue";
 import MatchDockLabel from "~/components/match/MatchDockLabel.vue";
-import MatchFixProblemDialog from "~/components/match/MatchFixProblemDialog.vue";
+import FaqHelpGlyph from "~/components/faq/FaqHelpGlyph.vue";
+import MatchFixProblemMenu from "~/components/match/MatchFixProblemMenu.vue";
 import MatchRestartDialog from "~/components/match/MatchRestartDialog.vue";
-import MatchRestoreRoundDialog from "~/components/match/MatchRestoreRoundDialog.vue";
+import MatchVetoFixDialog from "~/components/match/veto/MatchVetoFixDialog.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
@@ -27,6 +28,11 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from "~/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
@@ -170,19 +176,36 @@ const menuLabel =
         </MatchDockLabel>
       </button>
 
-      <button
-        v-if="canFixProblems"
-        type="button"
-        :class="dockNeutral"
-        @click="fixOpen = true"
-      >
-        <MatchDockLabel
-          :label="$t('match.recovery.fix.title')"
-          :compact="compact"
+      <Popover v-if="canFixProblems" v-model:open="fixOpen">
+        <PopoverTrigger as-child>
+          <button type="button" :class="dockNeutral">
+            <MatchDockLabel
+              :label="$t('match.recovery.fix.title')"
+              :compact="compact"
+            >
+              <LifeBuoy class="h-3 w-3 shrink-0" />
+            </MatchDockLabel>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          side="top"
+          align="end"
+          :side-offset="10"
+          class="w-[min(24rem,calc(100vw-2rem))] p-0"
         >
-          <LifeBuoy class="h-3 w-3 shrink-0" />
-        </MatchDockLabel>
-      </button>
+          <MatchFixProblemMenu
+            :step-label="fixMenu.stepLabel"
+            :now="fixMenu.now"
+            :anytime="fixMenu.anytime"
+            :later="fixMenu.later"
+            @select="onFixSelect"
+          >
+            <template #aside>
+              <FaqHelpGlyph section="fix-a-problem" />
+            </template>
+          </MatchFixProblemMenu>
+        </PopoverContent>
+      </Popover>
       <button
         v-if="match.can_cancel"
         type="button"
@@ -532,15 +555,17 @@ const menuLabel =
     </AlertDialog>
 
     <template v-if="dock">
-      <MatchFixProblemDialog
-        v-model:open="fixOpen"
-        :match="match"
-        :can-set-winner="canSetMatchWinner"
-        :can-reboot="canRebootServer"
-        :can-reparse="canReparseDemos"
-        @select="onFixSelect"
+      <MatchVetoFixDialog
+        v-model:open="vetoFixOpen"
+        :steps="vetoTimeline"
+        :done="vetoPicks.length"
+        :lineup1="match.lineup_1?.name ?? ''"
+        :lineup2="match.lineup_2?.name ?? ''"
+        :initial-step="vetoFixStep"
+        :best-of="match.options?.best_of ?? 1"
+        :busy="vetoRewinding"
+        @confirm="rewindVeto"
       />
-      <MatchRestoreRoundDialog v-model:open="restoreOpen" :match="match" />
       <MatchRestartDialog v-model:open="restartOpen" :match="match" />
       <MatchServerRebootControl
         v-model:open="rebootOpen"
@@ -559,6 +584,22 @@ import { toast } from "@/components/ui/toast";
 const PAUSE_CLIP_RENDER_BATCH = gql`
   mutation PauseClipRenderBatch($match_map_id: uuid!) {
     pauseClipRenderBatch(match_map_id: $match_map_id) {
+      success
+    }
+  }
+`;
+
+const REWIND_MAP_VETO = gql`
+  mutation RewindMapVeto($matchId: uuid!, $step: Int!, $expected: Int!) {
+    rewindMapVeto(match_id: $matchId, step: $step, expected_picks: $expected) {
+      success
+    }
+  }
+`;
+
+const EXTEND_VETO_CLOCK = gql`
+  mutation ExtendVetoClock($matchId: uuid!, $seconds: Int!) {
+    extendVetoClock(match_id: $matchId, seconds: $seconds) {
       success
     }
   }
@@ -595,6 +636,13 @@ import {
   currentMatchAdminStep,
   upcomingAdminActions,
 } from "~/utilities/matchAdminSteps";
+import { fixProblemItems } from "~/utilities/fixProblem";
+import { vetoTimelineSteps } from "~/utilities/rewind";
+import { mapVetoSteps } from "~/utilities/vetoLineups";
+import mapLabel from "~/utilities/mapLabel";
+import { useMatchRoundsFocus } from "~/composables/useMatchRoundsFocus";
+import { useVetoOverride } from "~/composables/useVetoOverride";
+import { e_veto_pick_types_enum, order_by } from "~/generated/zeus";
 type MatchActionChoice = { value: string; label: string };
 
 type MatchActionConfirm = {
@@ -652,9 +700,13 @@ export default {
       deletingMatch: false,
       togglingLive: false,
       fixOpen: false,
-      restoreOpen: false,
       restartOpen: false,
       rebootOpen: false,
+      vetoFixOpen: false,
+      vetoFixStep: 1,
+      vetoRewinding: false,
+      vetoPicks: [] as Array<any>,
+      vetoPicksSub: undefined as { unsubscribe: () => void } | undefined,
     };
   },
   created() {
@@ -664,8 +716,18 @@ export default {
   beforeUnmount() {
     socket.removeListener("rcon", this.onRconResponse);
     this.renderSummarySub?.unsubscribe();
+    this.vetoPicksSub?.unsubscribe();
   },
   watch: {
+    vetoPicksScope: {
+      immediate: true,
+      handler() {
+        this.vetoPicksSub?.unsubscribe();
+        this.vetoPicksSub = undefined;
+        this.vetoPicks = [];
+        this.subscribeVetoPicks();
+      },
+    },
     renderSummaryScope: {
       immediate: true,
       handler() {
@@ -713,10 +775,11 @@ export default {
       });
     },
     async onFixSelect(action: string) {
+      this.fixOpen = false;
       await this.$nextTick();
       switch (action) {
         case "restore":
-          this.restoreOpen = true;
+          useMatchRoundsFocus().focus(this.match.id);
           break;
         case "restart_map":
           this.confirmRestartMap();
@@ -725,7 +788,30 @@ export default {
           this.restartOpen = true;
           break;
         case "winner":
+        case "forfeit":
           this.openWinnerDialog();
+          break;
+        case "undo_last":
+          this.confirmUndoLastVetoStep();
+          break;
+        case "mispick":
+          this.vetoFixStep = Math.max(1, this.lastVetoStep);
+          this.vetoFixOpen = true;
+          break;
+        case "redo":
+          this.vetoFixStep = 1;
+          this.vetoFixOpen = true;
+          break;
+        case "act":
+          useVetoOverride(() => this.match.id).enabled.value = true;
+          toast({
+            title: this.$t("match.fix_menu.act_toast", {
+              team: this.vetoTeamName,
+            }),
+          });
+          break;
+        case "time":
+          await this.extendVetoClock();
           break;
         case "reboot":
           this.rebootOpen = true;
@@ -949,6 +1035,84 @@ export default {
         });
       }
     },
+    subscribeVetoPicks() {
+      if (!this.vetoPicksScope) {
+        return;
+      }
+      this.vetoPicksSub = (this as any).$apollo
+        .subscribe({
+          query: generateSubscription({
+            match_map_veto_picks: [
+              {
+                where: { match_id: { _eq: this.match.id } },
+                order_by: [{ created_at: order_by.asc }],
+              },
+              {
+                id: true,
+                type: true,
+                side: true,
+                match_lineup_id: true,
+                auto_picked: true,
+                map: { id: true, name: true, label: true },
+              },
+            ],
+          }),
+        })
+        .subscribe({
+          next: ({ data }: any) => {
+            this.vetoPicks = data?.match_map_veto_picks ?? [];
+          },
+        });
+    },
+    confirmUndoLastVetoStep() {
+      const step = this.lastVetoStep;
+      const expected = this.vetoPicks.length;
+      this.ask({
+        title: this.$t("match.fix_menu.undo_last_title"),
+        description: this.fixMenu.now.find(
+          (item: { key: string }) => item.key === "undo_last",
+        )?.description,
+        action: this.$t("match.fix_menu.undo_confirm"),
+        run: () => this.rewindVeto(step, expected),
+      });
+    },
+    async rewindVeto(step: number, expected = this.vetoPicks.length) {
+      if (this.vetoRewinding) {
+        return;
+      }
+      this.vetoRewinding = true;
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: REWIND_MAP_VETO,
+          variables: { matchId: this.match.id, step, expected },
+        });
+        this.vetoFixOpen = false;
+        toast({ title: this.$t("match.fix_menu.rewound", { step }) });
+      } catch (error) {
+        toast({
+          title: this.$t("match.fix_menu.rewind_failed"),
+          description: (error as Error)?.message,
+          variant: "destructive",
+        });
+      } finally {
+        this.vetoRewinding = false;
+      }
+    },
+    async extendVetoClock() {
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: EXTEND_VETO_CLOCK,
+          variables: { matchId: this.match.id, seconds: 30 },
+        });
+        toast({ title: this.$t("match.fix_menu.time_added", { seconds: 30 }) });
+      } catch (error) {
+        toast({
+          title: this.$t("match.fix_menu.time_failed"),
+          description: (error as Error)?.message,
+          variant: "destructive",
+        });
+      }
+    },
     subscribeRenderSummary() {
       // Guests have no select permission on clip_render_jobs, and RetryLink
       // would retry the rejected subscription up to 30 times.
@@ -1166,6 +1330,97 @@ export default {
     },
   },
   computed: {
+    vetoPicksScope() {
+      const mapsStarted = (this.match.match_maps ?? []).some(
+        (map: any) => map.status && map.status !== "Scheduled",
+      );
+      const rewindable =
+        this.match.status === e_match_status_enum.Veto ||
+        ([
+          e_match_status_enum.WaitingForServer,
+          e_match_status_enum.Live,
+        ].includes(this.match.status) &&
+          !mapsStarted);
+      return this.dock &&
+        this.match.is_organizer &&
+        this.match.options?.map_veto &&
+        rewindable
+        ? this.match.id
+        : "";
+    },
+    vetoTeamName() {
+      const id = this.match.map_veto_picking_lineup_id;
+      if (id && id === this.match.lineup_1_id) {
+        return this.match.lineup_1?.name ?? null;
+      }
+      if (id && id === this.match.lineup_2_id) {
+        return this.match.lineup_2?.name ?? null;
+      }
+      return null;
+    },
+    // Nobody chooses the Decider, so the last step anyone took is the one
+    // before it, and taking that back takes the Decider with it.
+    lastVetoStep() {
+      return this.vetoPicks.at(-1)?.type === e_veto_pick_types_enum.Decider
+        ? this.vetoPicks.length - 1
+        : this.vetoPicks.length;
+    },
+    vetoTimeline() {
+      const names = new Map(
+        (this.match.options?.map_pool?.maps ?? []).map((map: any) => [
+          map.id,
+          map.name,
+        ]),
+      );
+      return vetoTimelineSteps(
+        mapVetoSteps(this.match, this.vetoPicks),
+        (id: string) => String(names.get(id) ?? ""),
+      );
+    },
+    fixMenu() {
+      const match = this.match;
+      const currentMap = match.match_maps?.find(
+        (map: any) => map.is_current_map,
+      );
+      const step = currentMatchAdminStep(match);
+      const stepKey =
+        step === "live" && currentMap?.status === e_match_map_status_enum.Paused
+          ? "paused"
+          : step === "finished" && match.status === e_match_status_enum.Canceled
+            ? "canceled"
+            : step;
+      const lineupName = (id: string) =>
+        id === match.lineup_1_id
+          ? match.lineup_1?.name
+          : id === match.lineup_2_id
+            ? match.lineup_2?.name
+            : "";
+      const last = this.vetoPicks[this.lastVetoStep - 1];
+      return fixProblemItems(this.$t, {
+        status: match.status,
+        stepLabel: this.$t(`match.admin_bar.steps.${stepKey}`),
+        hasWinner: !!match.winning_lineup_id,
+        currentMapStatus: currentMap?.status ?? null,
+        mapsStarted: (match.match_maps ?? []).some(
+          (map: any) => map.status && map.status !== "Scheduled",
+        ),
+        rush: match.options?.type === "Rush",
+        bracket: this.isBracketMatch,
+        mapVeto: !!match.options?.map_veto,
+        vetoPicks: this.vetoPicks.length,
+        vetoTeam: this.vetoTeamName,
+        vetoClockRunning: !!match.veto_pick_expires_at,
+        lastPick: last
+          ? {
+              team: lineupName(last.match_lineup_id) ?? "",
+              map: mapLabel(last.map),
+            }
+          : null,
+        canSetWinner: this.canSetMatchWinner,
+        canReboot: this.canRebootServer,
+        canReparse: this.canReparseDemos,
+      });
+    },
     renderSummaryScope() {
       return `${this.match?.id ?? ""}:${useAuthStore().me?.steam_id ?? ""}`;
     },

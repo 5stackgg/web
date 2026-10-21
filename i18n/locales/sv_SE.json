@@ -4392,6 +4392,7 @@
       }
     },
     "play": {
+      "open_registration_tournaments": {},
       "more_ways": {
         "title": "Fler sätt att spela",
         "tournaments": {
@@ -4474,6 +4475,7 @@
         },
         "find_lan_match": "Hitta LAN-match"
       },
+      "draft_games": {},
       "schedule": {
         "vs": "vs",
         "now": "Nu",
@@ -8657,7 +8659,7 @@
     "clear_filters": "Rensa filter"
   },
   "global_search": {
-    "placeholder": "Sök spelare, sidor och inställningar",
+    "placeholder": "Sök spelare, sidor, inställningar och hjälp",
     "pages": "Sidor",
     "players": "Spelare",
     "searching": "Söker...",
@@ -8667,7 +8669,8 @@
       "navigate": "för att navigera",
       "open": "för att öppna",
       "close": "för att stänga"
-    }
+    },
+    "help": "Hjälp"
   },
   "file_manager_store": {
     "load_directory_failed": "Det gick inte att läsa in katalogen",
@@ -10479,7 +10482,8 @@
       "type": "Typ",
       "region": "Region",
       "no_logs_title": "Inga loggar tillgängliga",
-      "no_logs_description": "Inga loggar är tillgängliga och ingen server är ansluten."
+      "no_logs_description": "Inga loggar är tillgängliga och ingen server är ansluten.",
+      "rounds": "Ronder"
     },
     "chat_log": {
       "visibility": "Endast arrangörer och personal",
@@ -11099,10 +11103,7 @@
         "title": "Lös ett problem",
         "description": "{team_1} vs {team_2}",
         "restore_title": "En rond gick fel",
-        "restore_description": "Krasch, bugg eller frånkoppling. Spela om den pågående ronden eller gå längre tillbaka, med förhandsvisning först.",
-        "restore_rush": "Rush-matcher kan inte återställa ronder.",
         "restore_over": "Banorna är slut.",
-        "restore_not_live": "Bara medan en bana spelas.",
         "restart_map_title": "Banan måste börja om",
         "restart_map_description": "Tillbaka till uppvärmning vid 0–0. De spelade ronderna går att återställa tills nästa rond slutar.",
         "restart_title": "Hela matchen måste spelas om",
@@ -11111,7 +11112,6 @@
         "reopen_description": "Öppnar incheckningen igen så att den avbrutna matchen kan spelas.",
         "replay_title": "Matchen måste spelas igen",
         "replay_description": "Rensar resultatet och öppnar incheckningen igen. Turneringens tabell uppdateras.",
-        "replay_bracket_only": "Bara turneringsmatcher kan spelas om när de har ett resultat.",
         "winner_title": "Fel lag fick vinsten",
         "winner_description": "Välj rätt vinnare utan omspel.",
         "forfeit_title": "Ett lag kan inte fortsätta",
@@ -11123,46 +11123,12 @@
       },
       "restore": {
         "title": "Återställ rond",
-        "description": "{map} · pågående rond {round}. Välj ronden som ska spelas om.",
-        "description_short": "Välj ronden som ska spelas om.",
-        "load_failed": "Kunde inte läsa in rondernas säkerhetskopior",
         "rush": "Rush-matcher kan inte återställa ronder.",
         "not_in_progress": "Ronder kan bara återställas medan en bana spelas.",
         "not_live_yet": "Banan är inte live igen än. När den är det går alla tidigare ronder att återställa tills rond 1 är slut.",
         "team_member": "Du är med i ett av lagen, så en annan arrangör måste återställa ronder. Spelarna kan fortfarande starta omröstningen i spelet.",
         "nothing_yet": "Ingen rond har avslutats på den här banan än, så det finns inget att gå tillbaka till.",
-        "replay_live": "Spela om den pågående ronden {round}",
-        "round_result": "Rond {round}: {team} vann · {reason}",
-        "now": "Nu",
-        "won_ct": "Vunnen som CT",
-        "won_t": "Vunnen som T",
-        "undone": "Ångrad, kan fortfarande tas tillbaka",
-        "round_one": "Rond 1 har ingen säkerhetskopia",
-        "headline": "Tillbaka till början av rond {round}",
-        "headline_live": "Spela rond {round} från början",
-        "headline_forward": "Fram till början av rond {round}",
-        "previous_round": "Rond {round} slutade: {team} vann som {side} · {reason}",
         "economy_hidden": "Spelarnas pengar och vapen är dolda eftersom du spelar i den här matchen.",
-        "bank": "Kassa {amount}",
-        "timeouts": "Timeouts kvar: {count}",
-        "player": "Spelare",
-        "cash": "Pengar",
-        "armor": "Rustning",
-        "carries": "Bär",
-        "kd": "K / D",
-        "no_armor": "Ingen",
-        "died": "Dog, köper nytt",
-        "knife_only": "Bara kniv",
-        "undo_live": "Ångrar bara den pågående ronden.",
-        "undo_round": "Ångrar rond {round} och den pågående ronden, inklusive deras kills och skada.",
-        "undo_rounds": "Ångrar ronderna {from}–{to} och den pågående ronden, inklusive deras kills och skada.",
-        "redo_round": "Tar tillbaka rond {round}, med dess kills och skada.",
-        "redo_rounds": "Tar tillbaka ronderna {from}–{to}, med deras kills och skada.",
-        "waiting": "Väntar på att spelarna ansluter igen ({connected}/{expected}). Inte anslutna: {names}.",
-        "everyone_connected": "Alla är anslutna",
-        "pauses": "Matchen pausas medan ronden laddas. Lagen markerar sig redo för att fortsätta.",
-        "confirm": "Återställ till rond {round}",
-        "confirm_live": "Spela om rond {round}",
         "started": "Återställer rond {round}",
         "failed": "Kunde inte återställa ronden"
       },
@@ -11366,6 +11332,116 @@
         "knife_line": "Vinnaren väljer sida"
       },
       "map": "Karta"
+    },
+    "rewind": {
+      "strip_label": "Ronder. Klicka på en rond, eller använd piltangenterna, för att välja var du ska återställa från.",
+      "previous_round": "Föregående rond",
+      "next_round": "Nästa rond",
+      "start_of": "Start R{round}",
+      "half": "Halvtid",
+      "at_start_of": "Vid start av R{round}",
+      "bank": "Kassa",
+      "player": "Spelare",
+      "cash": "Pengar",
+      "armor": "Rustning",
+      "carries": "Utrustning",
+      "not_connected": "Inte ansluten",
+      "not_connected_tip": "Inte ansluten. Servern väntar på alla spelare innan den laddar en rond.",
+      "now_value": "Nu {value}",
+      "armor_helmet": "Rustning och hjälm",
+      "armor_only": "Rustning, ingen hjälm",
+      "buys_fresh": "Dog, köper nytt",
+      "connected_count": "{connected}/{expected} anslutna",
+      "waiting_tip": "{names} är inte ansluten. Spelservern väntar på alla spelare innan den laddar ronden, så det här låses upp när de är tillbaka.",
+      "everyone_connected": "Alla är anslutna",
+      "undone": "Ångrad",
+      "undone_one": "Rond {round} ångrades",
+      "undone_many": "Ronderna {from}–{to} ångrades",
+      "undone_until": "De kan komma tillbaka tills rond {round} är slut",
+      "bring_back": "Ta tillbaka",
+      "round": "Rond",
+      "won_by": "Vunnen av",
+      "how": "Hur",
+      "score": "Ställning",
+      "halftime": "Halvtid",
+      "in_progress": "Pågår",
+      "round_n": "rond {round}",
+      "rounds_range": "ronderna {from}–{to}",
+      "replay_headline": "Spela rond {round} från början igen",
+      "replay_detail": "Ångrar bara den pågående ronden",
+      "replay_confirm": "Spela om rond {round}",
+      "back_headline": "Tillbaka till starten av rond {round}",
+      "back_detail": "Ångrar {span} och den pågående ronden",
+      "forward_headline": "Fram till starten av rond {round}",
+      "forward_detail": "Tar tillbaka {span}",
+      "restore_confirm": "Återställ rond {round}",
+      "pauses_after": "Matchen pausas efteråt, och lagen gör sig redo för att fortsätta.",
+      "preview_chip": "Förhandsvisning · Start R{round}",
+      "rounds_played": "{count} ronder spelade",
+      "round_in_progress": "Rond {round} pågår",
+      "legend_back": "Randiga ronder ångras: {span} och den pågående ronden",
+      "legend_forward": "Kommer tillbaka: {span}",
+      "legend_replay": "Bara den pågående ronden ångras",
+      "legend_rules": "Rond 1 har ingen säkerhetskopia. Ångrade ronder kan komma tillbaka tills nästa rond är slut.",
+      "amber_hint": "Bärnstensfärgade värden skiljer sig från den pågående ronden. Håll muspekaren över ett belopp för att se vad spelaren har nu.",
+      "restore_from_round": "Återställ från starten av rond {round}",
+      "restore_from_here": "Återställ härifrån",
+      "click_hint": "Klicka på valfri rond för att återställa matchen till dess start. Inget ändras förrän du bekräftar.",
+      "kills_count": "{count} kills",
+      "damage_count": "{count} skada",
+      "unlocks_when": "Återställningen låses upp när {names} ansluter igen.",
+      "no_rounds": "Inga ronder har spelats på den här banan än."
+    },
+    "fix_menu": {
+      "right_now": "Just nu",
+      "any_time": "När som helst",
+      "restore_description": "Krasch, bugg eller frånkoppling. Spola tillbaka till starten av valfri rond på fliken Ronder.",
+      "undo_last_title": "Ångra senaste steget",
+      "undo_last_description": "Tar tillbaka {team}s val av {map}, och de väljer igen.",
+      "mispick_title": "Rätta ett felval",
+      "mispick_description": "Välj steget som blev fel. Det och alla steg efter det görs om.",
+      "redo_title": "Gör om vetot",
+      "redo_description": "Börja om från första bannet, med alla kartor tillbaka i poolen.",
+      "act_title": "Banna eller välj åt {team}",
+      "act_description": "Slå på Åsidosätt veto och gör själv det här stegets val på vetotavlan.",
+      "time_title": "Ge 30 sekunder till",
+      "time_description": "Lägger till tid på {team}s klocka.",
+      "later_rounds": "Rondåtgärder låses upp när en bana spelas.",
+      "later_results": "Åtgärder för resultat och statistik låses upp när matchen är slut.",
+      "act_toast": "Åsidosätt veto är på: gör {team}s val på vetotavlan.",
+      "undo_confirm": "Ångra steg",
+      "rewound": "Vetot spolades tillbaka till steg {step}",
+      "rewind_failed": "Kunde inte spola tillbaka vetot",
+      "time_added": "{seconds} sekunder tillagda på vetoklockan",
+      "time_failed": "Kunde inte lägga till tid på vetoklockan"
+    },
+    "veto_rewind": {
+      "title": "Veto · Best of {count}",
+      "to_act": "ska agera i steg {step}",
+      "ban": "Bann",
+      "pick": "Val",
+      "side": "Sida",
+      "decider": "Avgörare",
+      "now": "Nu",
+      "drawn": "Kvar",
+      "redone": "Görs om",
+      "again_from": "Steg {step} igen",
+      "rewind_to_step": "Spola tillbaka till steg {step}",
+      "again_ban": "{team} bannar igen",
+      "again_pick": "{team} väljer igen",
+      "again_side": "{team} väljer sida igen",
+      "again_decider": "Avgöraren bestäms igen",
+      "cleared_ban": "{team}s bann av {map}",
+      "cleared_pick": "{team}s val av {map}",
+      "cleared_side": "{team}s sida på {map}",
+      "cleared_decider": "avgöraren, {map}",
+      "bar_headline": "Spola tillbaka till steg {step} · {again}",
+      "bar_detail": "Rensar {list}. Klockan startar om.",
+      "confirm": "Spola tillbaka vetot",
+      "footnote": "Bannade kartor går tillbaka till poolen",
+      "eyebrow": "Förhandsvisning · Från steg {step}",
+      "dialog_title": "Rätta vetot",
+      "dialog_description": "Klicka på steget som blev fel. Det och alla steg efter det görs om."
     }
   },
   "ui": {
@@ -11742,6 +11818,7 @@
         "description": "Snabba 3v3-matcher rum för rum där varje vunnen rond driver striden framåt"
       }
     },
+    "queue_wait": {},
     "match_found": "Match hittad",
     "match_found_description": "Tryck på Redo för att acceptera matchen innan tiden tar slut.",
     "waiting_for_players": "Väntar på spelare",
@@ -11800,6 +11877,7 @@
     "banned_until": "Du är avstängd från matchmaking till {time}",
     "in_queue": "i kö",
     "temp_banned": "Du är tillfälligt avstängd från matchmaking",
+    "settings_section": {},
     "no_preferred_regions": "Välj minst en föredragen region i matchmaking-inställningarna",
     "party_size": {
       "requirement": "Köa med {half} eller färre, eller exakt {full} spelare"
@@ -12719,6 +12797,7 @@
     "filters": {
       "any": "Alla"
     },
+    "sort": {},
     "create": {
       "captain_selection": "Val av lagkapten",
       "draft_order": "Draftordning",
@@ -12922,6 +13001,7 @@
       "teams": "Färdiga lag",
       "teams_desc": "Välj två sparade lag som möts."
     },
+    "mode_short": {},
     "access": {
       "open": "Öppen",
       "open_desc": "Alla kan hitta och gå med från den publika listan.",
@@ -13822,8 +13902,8 @@
   },
   "faq": {
     "title": "Hjälp och FAQ",
-    "intro": "Vanliga frågor om plattformen, om att spela här och om att köra en egen instans. Om något inte täcks är community-länkarna längst ned snabbaste vägen till ett svar.",
-    "search_placeholder": "Sök bland frågor",
+    "intro": "Hur matcher och turneringar fungerar här, och vad du gör när något går fel.",
+    "search_placeholder": "Sök i FAQ",
     "no_results": "Inga frågor matchar «{term}».",
     "links": {
       "features": "Alla funktioner",
@@ -13877,7 +13957,7 @@
       },
       "check_in": {
         "question": "Varför måste jag anmäla mig före en match?",
-        "answer": "Anmälan bekräftar att alla verkligen sitter redo innan en server bokas och resten av lobbyt får vänta. Matcher med automatiskt avbrott visar en nedräkning, och matchen avbryts automatiskt om de spelare som krävs inte har anmält sig i tid."
+        "answer": "Incheckningen bekräftar att alla verkligen sitter redo innan en server bokas och resten av lobbyn får vänta. Matcher med automatiskt avbrott visar en nedräkning, och matchen avbryts automatiskt om de spelare som krävs inte har checkat in i tid. I en turneringsmatch förlorar ett lag som missar tidsgränsen i stället på walkover."
       },
       "tournaments": {
         "question": "Hur går jag med i en turnering?",
@@ -13901,7 +13981,6 @@
       }
     },
     "hosting": {
-      "title": "Att köra en egen",
       "self_host": {
         "question": "Kan jag köra en egen instans?",
         "answer": "Ja — det är så 5Stack är tänkt att användas. Det driftas av ägaren själv och installeras med ett enda kommando, som reser Kubernetes (K3s), databasen, lagringen och själva panelen. Installationsguiden i dokumentationen går igenom det från början till slut."
@@ -13936,8 +14015,420 @@
       "description": "Discord är snabbaste vägen till en människa — de som driver 5Stack-instanser finns där. Buggar och önskemål hör hemma på GitHub, och dokumentationen täcker installation, servrar och varje funktion på djupet.",
       "discord": "Gå med på Discord",
       "github": "Rapportera ett problem",
-      "docs": "Läs dokumentationen"
-    }
+      "docs": "Läs dokumentationen",
+      "description_player": "De som driver den här sidan finns på Discord. Fråga där om din fråga inte besvaras här."
+    },
+    "help_glyph": "Hur fungerar det här?",
+    "part_of": "Del {n} av {total}",
+    "link_to": "Länk till {title}",
+    "contents": "Innehåll",
+    "search_results": "Svar",
+    "open_full": "Öppna i FAQ",
+    "parts": {
+      "start": {
+        "title": "Börja här",
+        "lede": "Något fel? Börja med det du ser."
+      },
+      "running": {
+        "title": "Att leda en match",
+        "lede": "För arrangörer: att ställa en match till rätta när något går fel."
+      },
+      "playing": {
+        "lede": "Att komma in i matcher, och vad som händer runt dem."
+      },
+      "about": {
+        "lede": "Vad den här sidan är, och vem som gör den."
+      },
+      "hosting": {
+        "lede": "Drift av den här sidan, dess servrar och dess utseende, med länkar till hela dokumentationen. Bara administratörer ser den här delen.",
+        "title": "För administratörer"
+      },
+      "tournaments": {
+        "title": "Turneringar",
+        "lede": "Att gå med i en med ditt lag, och att leda en som arrangör."
+      }
+    },
+    "sections": {
+      "something_wrong": {
+        "title": "Har något gått fel?",
+        "lede": "Hitta det du ser och gå direkt till lösningen.",
+        "keywords": "problem trasig hjälp krasch fast fastnat fel bugg"
+      },
+      "words": {
+        "title": "Ord som används här",
+        "lede": "De få begrepp som den här guiden bygger på.",
+        "keywords": "ordlista begrepp definitioner betydelse"
+      },
+      "fix_a_problem": {
+        "title": "Lös ett problem",
+        "lede": "En knapp för varje åtgärd, med de som spelar roll just nu överst.",
+        "keywords": "lös fixa problem adminfält admin arrangör verktyg hjälp",
+        "subs": {
+          "where": "Var den finns",
+          "steps": "Den följer matchen",
+          "who": "Vem som ser den"
+        }
+      },
+      "restore": {
+        "title": "Återställa en rond",
+        "lede": "Gå tillbaka till starten av valfri rond, och se den innan något ändras.",
+        "keywords": "återställ rond runda backup säkerhetskopia spola tillbaka ångra krasch kraschade server frånkopplad tappade spela om gå tillbaka ronder flik",
+        "subs": {
+          "how": "Steg för steg",
+          "which": "Vilken rond du ska välja",
+          "wait": "Vänta på spelare",
+          "undo": "Ångrat dig?",
+          "limits": "När det inte går"
+        }
+      },
+      "restart_map": {
+        "title": "Starta om banan",
+        "lede": "Tillbaka till uppvärmning vid 0–0, utan att förlora de spelade ronderna.",
+        "keywords": "starta om bana karta uppvärmning börja om 0-0 återställ restart warmup"
+      },
+      "veto_fix": {
+        "title": "Rätta vetot",
+        "lede": "Ta tillbaka ett bann, ett val eller en sida, eller kör vetot igen.",
+        "keywords": "veto mis-pick felval fel karta bann val sida gör om ångra klocka timer tid",
+        "subs": {
+          "how": "Steg för steg",
+          "why": "Varför senare steg också försvinner",
+          "more": "Mer tid, eller agera åt ett lag"
+        }
+      },
+      "server": {
+        "title": "Serverproblem",
+        "lede": "När servern slutar svara, eller matchen behöver en annan.",
+        "keywords": "server krasch starta om omstart svarar inte lagg ansluta flytta"
+      },
+      "results": {
+        "title": "Resultat och statistik",
+        "lede": "Fel vinnare, ett lag som inte kan fortsätta, eller siffror som ser konstiga ut.",
+        "keywords": "vinnare resultat walkover tolka om statistik demo ställning fel"
+      },
+      "replay_match": {
+        "title": "Spela hela matchen igen",
+        "lede": "Börja om matchen från incheckningen.",
+        "keywords": "spela om omspel starta om match avbryt avbruten incheckning igen"
+      },
+      "demo_match": {
+        "title": "Prova på en demomatch",
+        "lede": "Öva varje åtgärd på en låtsasmatch först.",
+        "keywords": "demo öva prova testa sandlåda exempel"
+      },
+      "call_support": {
+        "title": "Vad gör jag om något går fel i min match?",
+        "answer": "Öppna ⋮-menyn på matchsidan och välj Kalla på support. Matchens arrangörer får besked direkt, och de flesta problem kan lösas utan att matchen börjar om.",
+        "keywords": "hjälp support arrangör admin problem rapportera kalla"
+      },
+      "t_join": {
+        "title": "Gå med i en turnering",
+        "lede": "Som lag, eller på egen hand som free agent.",
+        "keywords": "gå med anmäl anmälan registrering lag free agent pool väntelista turnering"
+      },
+      "t_roster": {
+        "title": "Din turneringstrupp",
+        "lede": "Vem som får spela, och när truppen slutar ändras.",
+        "keywords": "trupp laguppställning reserv avbytare sub lägg till ta bort spelare lag kapten låst seedad"
+      },
+      "t_check_in": {
+        "title": "Incheckning",
+        "lede": "Det finns två incheckningar: en för turneringen och en för varje match.",
+        "keywords": "checka in incheckning missade sen walkover närvarande turnering match tidsgräns"
+      },
+      "t_next_match": {
+        "title": "Hitta din nästa match",
+        "lede": "Var dina matcher och deras tider visas.",
+        "keywords": "nästa match schema slutspelsträd bracket när tid kommande"
+      },
+      "t_organizers": {
+        "title": "Vem som leder en turnering",
+        "lede": "Arrangörer, och vad bara skaparen kan göra.",
+        "keywords": "arrangör admin medarrangör lägg till arrangör behörigheter skapare"
+      },
+      "t_setup": {
+        "title": "Sätta upp en turnering",
+        "lede": "Faser, seedning och vad som låses när slutspelsträdet har lottats.",
+        "keywords": "skapa turnering fas enkelutslagning dubbelutslagning round robin schweizersystem swiss seed seedning slutspelsträd bracket grupper"
+      },
+      "t_start": {
+        "title": "Öppna och starta",
+        "lede": "Anmälan, incheckning och starttiden.",
+        "keywords": "öppna anmälan stäng anmälan starta turnering minsta antal lag avbruten gå live"
+      },
+      "t_scheduling": {
+        "title": "Schemalägga matcher",
+        "lede": "Automatiskt, manuellt eller överenskommet mellan lagkaptenerna.",
+        "keywords": "schemalägg tid manuell autostart förhandlad matchinställningar regler låsta redigera kommande match"
+      },
+      "t_results": {
+        "title": "Rätta ett turneringsresultat",
+        "lede": "Fel vinnare, ett omspel eller en match som aldrig blev av.",
+        "keywords": "återställ vinnare resultat fel slutspelsträd omspel walkover avbryt återskapa match tabell"
+      }
+    },
+    "content": {
+      "wrong": {
+        "heading_see": "Det du ser",
+        "heading_why": "Varför",
+        "heading_fix": "Vad du gör",
+        "crash": {
+          "see": "Servern kraschade mitt i en rond",
+          "why": "Den pågående ronden är förlorad",
+          "fix": "Spela om den ronden"
+        },
+        "dropped": {
+          "see": "En spelare tappade anslutningen och laget förlorade ronden",
+          "why": "Servern väntar på alla innan den laddar en rond",
+          "fix": "Återställ den när spelaren är tillbaka"
+        },
+        "map_over": {
+          "see": "Banan måste börja om från 0–0",
+          "why": "Fel inställningar, en sen spelare eller en dålig start",
+          "fix": "Starta om banan"
+        },
+        "veto_wrong": {
+          "see": "Ett lag bannade eller valde fel karta",
+          "why": "Varje senare steg beror på det valet",
+          "fix": "Rätta felvalet"
+        },
+        "veto_clock": {
+          "see": "Vetoklockan tog slut för ett lag",
+          "why": "En karta valdes åt dem",
+          "fix": "Ångra senaste steget"
+        },
+        "server": {
+          "see": "Servern svarar inte",
+          "why": "Den kraschade eller tappade anslutningen",
+          "fix": "Starta om den, eller flytta matchen"
+        },
+        "winner": {
+          "see": "Fel lag fick vinsten",
+          "why": "Ett resultat sattes manuellt, eller en walkover var ett misstag",
+          "fix": "Sätt rätt vinnare"
+        },
+        "stats": {
+          "see": "Statistiken eller demon ser fel ut",
+          "why": "Demon lästes in innan den var komplett",
+          "fix": "Läs in demofilerna igen"
+        },
+        "no_button": {
+          "see": "Det finns inget Lös ett problem på min match",
+          "why": "Bara matchens arrangörer ser det",
+          "fix": "Se vem som kan rätta en match"
+        },
+        "player": {
+          "see": "Jag spelar och något är fel",
+          "why": "Arrangörer rättar matcher, inte spelare",
+          "fix": "Kalla på support"
+        },
+        "t_no_show": {
+          "see": "Ett lag checkade inte in till en turneringsmatch",
+          "why": "Turneringsmatcher avgörs på walkover, de avbryts inte",
+          "fix": "Så fungerar matchincheckningen"
+        },
+        "t_result": {
+          "see": "Ett turneringsresultat är fel",
+          "why": "En vinnare sattes av misstag, eller matchen behöver spelas om",
+          "fix": "Rätta resultatet"
+        }
+      },
+      "words": {
+        "heading_term": "Ord",
+        "heading_meaning": "Vad det betyder",
+        "organizer": {
+          "term": "Arrangör",
+          "meaning": "Den som leder en match: personen som skapade den, arrangörerna för dess turnering och sidans personal."
+        },
+        "fix": {
+          "term": "Lös ett problem",
+          "meaning": "Knappen i adminfältet längst ned på en matchsida. Varje åtgärd i den här guiden börjar där."
+        },
+        "rounds_tab": {
+          "term": "Fliken Ronder",
+          "meaning": "Fliken på en matchsida som listar alla ronder på banan. Det är där du återställer en rond."
+        },
+        "rewind": {
+          "term": "Förhandsvisning",
+          "meaning": "Det som fliken Ronder visar när du klickar på en rond: ronden som den var. Inget ändras förrän du trycker på Återställ."
+        },
+        "backup": {
+          "term": "Säkerhetskopia",
+          "meaning": "Det servern sparar när varje rond slutar: ställningen och varje spelares pengar, rustning och vapen. En återställning laddar en av dem."
+        },
+        "undone": {
+          "term": "Ångrad rond",
+          "meaning": "En rond som en återställning tog tillbaka. Den kan komma tillbaka tills nästa rond är slut."
+        },
+        "veto": {
+          "term": "Veto",
+          "meaning": "När lagen bannar och väljer kartor, och väljer sidor, ett steg i taget."
+        }
+      },
+      "fix": {
+        "where_title": "Öppna den från adminfältet",
+        "where_1": "Längst ned på en matchsida trycker du på Lös ett problem.",
+        "where_2": "Välj vad som gick fel. Varje åtgärd öppnas där den hör hemma: en rondåtgärd öppnar fliken Ronder, en vetoåtgärd öppnar vetot.",
+        "steps_1": "Listan följer matchen. Under Just nu finns åtgärderna för det steg matchen är i, och under När som helst finns de som alltid fungerar. Inget visas utgråat; en rad längst ned säger vad som låses upp senare.",
+        "steps_veto_caption": "Under vetot: ta tillbaka ett steg, agera åt ett lag eller ge dem mer tid.",
+        "steps_live_caption": "Medan en bana spelas: återställ en rond eller börja om banan.",
+        "who_1": "Arrangörer ser den: den som skapade matchen, arrangörerna för dess turnering och sidans personal.",
+        "who_2": "Spelare ser den inte. De kan be om hjälp med",
+        "who_3": "Om du själv spelar i matchen måste en annan arrangör återställa ronder."
+      },
+      "restore": {
+        "pick_title": "Klicka på ronden",
+        "pick_1": "På fliken Ronder klickar du på ronden som ska spelas igen, på remsan eller i listan under den. En bärnstensfärgad linje markerar dess start.",
+        "pick_2": "Ronderna efter linjen är randiga: det är de som ångras, med antalet kills och skadan som hör till dem.",
+        "pick_caption": "Spolar tillbaka till starten av rond 16 från rond 17.",
+        "confirm_title": "Återställ",
+        "confirm_1": "Tryck på {button} i fältet längst ned.",
+        "confirm_2": "Servern laddar ronden, och ställningen går tillbaka med den.",
+        "after_title": "Gör er redo",
+        "after_1": "Matchen pausas på den återställda ronden så att alla hinner göra sig redo.",
+        "after_2": "Den fortsätter när lagen gör sig redo i spelet. Personalen kan också trycka på {resume} i adminfältet.",
+        "which_heading_pick": "Om du väljer",
+        "which_heading_result": "Vad som händer",
+        "which_live": "Ronden som spelas",
+        "which_live_result": "Den börjar om från första sekunden. Inget annat ändras.",
+        "which_earlier": "En tidigare rond",
+        "which_earlier_result": "Spelet går tillbaka till starten av den ronden. Ronderna efter den ångras, inklusive ställning och statistik.",
+        "which_first": "Rond 1",
+        "which_first_result": "Det finns ingen säkerhetskopia före rond 1, så starta om banan i stället.",
+        "which_note": "En ronds nummer är ronden du spelar härnäst: att återställa rond 16 sätter båda lagen vid starten av rond 16.",
+        "wait_1": "Spelservern laddar inte en rond förrän alla spelare är tillbaka på den, så Återställ-knappen väntar på dem.",
+        "wait_2": "Fältet visar vem som saknas, här {name}. Knappen låses upp i samma stund som spelaren ansluter igen.",
+        "undo_1": "Ångrade ronder kastas inte direkt. Tills nästa rond är slut väntar de i slutet av rondremsan.",
+        "undo_2": "Valde du fel rond? Tryck på {button} för att gå fram till där du var.",
+        "limit_live": "Bara medan banan är live: inte under uppvärmningen eller knivronden.",
+        "limit_over": "Inte när banan är slut. Rätta dess resultat i stället.",
+        "limit_rush": "Inte i Rush-matcher.",
+        "limit_player": "Inte av en arrangör som själv spelar i matchen.",
+        "limit_economy": "Spelare i matchen ser inte förhandsvisningen av pengar och vapen, så den kan inte avslöja det andra lagets ekonomi.",
+        "pick_anywhere": "Inte på fliken Ronder? Tryck på {fix} och sedan {round}. Den öppnas där med den pågående ronden vald.",
+        "preview_title": "Kolla förhandsvisningen",
+        "preview_1": "Varje spelares pengar, rustning och vapen visas som de var i starten av den ronden. Allt som skiljer sig från nu är bärnstensfärgat.",
+        "preview_2": "Klicka på en annan rond för att flytta linjen, eller tryck på Esc för att ta bort den.",
+        "preview_caption": "{name} är inte ansluten, så en varning visas bredvid namnet."
+      },
+      "restart_map": {
+        "how": "Tryck på {fix} och sedan {item}.",
+        "after": "Banan går tillbaka till uppvärmning vid 0–0. Spelarna stannar kvar på servern.",
+        "undo": "Ronderna som spelats ligger kvar på rondremsan tills nästa rond är slut, så en omstart av misstag kan tas tillbaka med {link}."
+      },
+      "veto": {
+        "pick_title": "Välj åtgärd",
+        "pick_1": "Under vetot trycker du på {fix}.",
+        "pick_undo": "{item} tar tillbaka det senaste bannet, valet eller sidvalet.",
+        "pick_mispick": "{item} väljer det senaste steget åt dig. Klicka på ett tidigare steg för att gå längre tillbaka.",
+        "pick_redo": "{item} börjar om från första bannet.",
+        "step_title": "Klicka på steget som blev fel",
+        "step_1": "Rätta ett felval och Gör om vetot öppnar vetots steg. Klicka på det som blev fel: det och alla steg efter det blir randiga.",
+        "step_2": "Fältet visar vem som agerar härnäst och listar allt som rensas.",
+        "confirm_title": "Spola tillbaka vetot",
+        "confirm_1": "Tryck på {button}.",
+        "confirm_2": "Klockan startar om för laget vars tur det är.",
+        "why_1": "Vems tur det är, och om steget är ett bann, ett val eller en sida, beror på hur många steg som är gjorda. Ta tillbaka steg 3 så tillhör steg 4 någon annan, och därför görs varje steg efter det du rättar om.",
+        "why_2": "Bannade kartor går tillbaka till poolen, och kartor som valts tas bort från matchen.",
+        "more_time": "{item} lägger till tid för laget vars tur det är.",
+        "more_act": "{item} slår på Åsidosätt veto, så att du kan göra det aktuella valet på vetotavlan åt ett lag som har fastnat eller lämnat.",
+        "more_after": "De här åtgärderna finns kvar i Lös ett problem efter att vetot är klart, tills den första banan går live. Använder du en av dem då går matchen tillbaka till vetot."
+      },
+      "server": {
+        "reboot": "{item} startar om spelservern. Spelarna ansluter igen till samma match.",
+        "move": "För att flytta matchen till en annan server väljer du en annan i Lös ett problem.",
+        "crash": "Om servern kraschade mitt i en rond, starta om den och återställ sedan ronden när alla är tillbaka."
+      },
+      "results": {
+        "winner": "{item} sätter rätt vinnare utan omspel.",
+        "forfeit": "{item} avslutar matchen nu och ger den till det andra laget.",
+        "reparse": "{item} läser in demofilerna igen. Resultatet förblir detsamma."
+      },
+      "replay": {
+        "restart": "{item} avbryter det här försöket och öppnar incheckningen igen för båda lagen.",
+        "tournament": "I en turnering kan en match som redan har ett resultat spelas igen med {item}. Tabellen uppdateras.",
+        "canceled": "En avbruten match kan öppnas igen på samma sätt, så den behöver inte skapas på nytt."
+      },
+      "demo": {
+        "body": "En låtsasmatch med allt på den här sidan: adminfältet, Lös ett problem, fliken Ronder och vetot. Inget du gör där påverkar en riktig match.",
+        "open": "Öppna demomatchen"
+      },
+      "figures": {
+        "match_page_bottom": "Längst ned på en matchsida",
+        "fix_veto": "Lös ett problem · Veto",
+        "fix_live": "Lös ett problem · Live",
+        "rounds_rewind": "Fliken Ronder · Spola tillbaka",
+        "rounds_bar": "Fliken Ronder · Nedre fältet",
+        "rounds_tab": "Fliken Ronder",
+        "veto": "Veto"
+      },
+      "tournament": {
+        "join_1": "Medan anmälan är öppen trycker du på **Gå med i turnering** högst upp i turneringen.",
+        "join_2": "**Som lag**: välj ett av dina lag, eller slå på **Skapa nytt lag**.",
+        "join_3": "**Som free agent**: tryck på **Anmäl dig**. När anmälan stänger fördelas free agents i jämna lag, med de som anmälde sig först först. De som blir över hamnar på en väntelista och flyttas upp om en plats blir ledig. **Lämna poolen** tar bort dig.",
+        "join_4": "Arrangören bestämmer vem som kan anmäla sig (lag, free agents eller båda), och kan göra anmälan endast med inbjudan eller begränsa den efter roll eller rank.",
+        "roster_1": "En laguppställning är lika stor som matchtypen (5 för Competitive, 2 för Wingman, 1 för Duell), plus reserver om turneringen tillåter det.",
+        "roster_2": "Lagets ägare, lagkapten eller lagadministratörer lägger till och tar bort spelare. De kan bara lägga till spelare tills anmälan stänger; arrangörer kan fortfarande lägga till dem efter det.",
+        "roster_3": "När slutspelsträdet är seedat kan en trupp inte gå under en full laguppställning. Lägg till en reserv först och ta sedan bort spelaren.",
+        "roster_4": "En spelare som behövs till en match som inte har börjat kan inte tas bort.",
+        "check_1": "**Turneringsincheckning** är bara på när arrangören kräver det. Den öppnar 60 minuter före start och stänger 15 minuter före, om inte arrangören har ändrat det. Arrangören bestämmer om lagkaptener, alla spelare eller bara arrangörer checkar in.",
+        "check_2": "Lag som missar den tas inte bort, utan lämnas bara utanför slutspelsträdet. Arrangören kan släppa in dem igen, fortsätta utan dem eller ge mer tid.",
+        "check_3": "**Matchincheckning** öppnar ungefär 15 minuter före varje match. Tryck på **Checka in** på matchsidan.",
+        "check_4": "Om ett lag inte checkar in i tid förlorar det på walkover och laget som checkade in vinner. Om inget lag checkar in avgör en slantsingling, om inte steget använder matchläget Admin: då avgör arrangörerna.",
+        "next_1": "I turneringen visar fliken **Slutspelsträd** alla matcher; **Följ ett lag** markerar ditt. Fliken **Matcher** listar dem som Live, Kommande och Resultat.",
+        "next_2": "Dina kommande matcher finns också på sidan Matcher, och du får en avisering när incheckningen öppnar.",
+        "org_1": "En turnerings arrangörer är: personen som skapade den, alla som lagts till under **Hantera** och sedan **Arrangörer**, medlemmar i ett lag som är kopplat till den, och sidans personal med rollen turneringsarrangör eller administratör.",
+        "org_2": "Alla arrangörer kan lägga till fler arrangörer, pausa och återuppta turneringen och schemalägga matcher.",
+        "org_3": "Att öppna och stänga anmälan, starta, avbryta och återställa turneringen är förbehållet skaparen och sidans personal med rollen turneringsarrangör eller administratör.",
+        "setup_1": "Tryck på **Skapa turnering** på sidan Turneringar. Varje fas är enkelutslagning, dubbelutslagning, round robin eller schweizersystem; **Lägg till en fas till** kedjar ihop dem.",
+        "setup_2": "Inställningen **Högsta antal lag** för en fas avgör hur många lag som når den från fasen före: de som överlevde en utslagsfas, eller toppen av tabellen från round robin eller schweizersystem.",
+        "setup_3": "Arrangörer kan skriva in en **Seedning** för varje lag innan turneringen går live. Lag utan seedning seedas slumpmässigt.",
+        "setup_4": "En ny turnering syns bara för sina arrangörer tills anmälan öppnar. När slutspelsträdet har lottats är dess faser låsta.",
+        "start_1": "Tryck på **Öppna anmälan** när lag kan anmäla sig, och **Stäng anmälan** för att stoppa.",
+        "start_2": "Med incheckning på stänger anmälan när incheckningen slutar. Utan den går turneringen live vid starttiden.",
+        "start_3": "Om för få lag har anmält sig vid starttiden avbryts turneringen.",
+        "sched_1": "Matcher startar av sig själva om inte **Autostart** är avslaget eller fasen använder manuell schemaläggning. Klicka då på en tom match i slutspelsträdet, tryck på **Schemalägg match** och välj en tid eller **Nu**.",
+        "sched_2": "Med **Förhandlad schemaläggning** kommer de två lagkaptenerna överens om en tid sinsemellan.",
+        "sched_3": "För att ändra en enskild kommande match öppnar du dess ⋮-meny i slutspelsträdet och väljer **Matchinställningar**. Det fungerar tills matchen startar.",
+        "sched_4": "När en fas har matcher är dess regler låsta för alla: format, kartor, ronder, övertid, timeouts och reserver. Region, TV-fördröjning, incheckning och timers kan fortfarande ändras.",
+        "results_1": "Öppna matchens ⋮-meny i slutspelsträdet och välj **Återställ vinnare**. Välj rätt vinnare, eller ingen vinnare för att spela om, och sedan **Bekräfta återställning**. Senare matcher som berodde på den rensas.",
+        "results_2": "En återställning väntar medan den matchen, eller en senare som den leder till, spelas eller är i veto.",
+        "results_3": "I round robin och schweizersystem kan ett resultat inte återställas när nästa fas redan har seedats utifrån tabellen, eller när nästa schweizerrunda har lottats.",
+        "results_4": "På matchsidan har **Lös ett problem** samma åtgärder: matchen måste spelas igen, fel lag fick vinsten, eller ett lag kan inte fortsätta.",
+        "results_5": "En avbruten match för inte slutspelsträdet framåt. Starta om den från **Lös ett problem**, eller sätt en vinnare. Om en plats i slutspelsträdet har förlorat sin match visas **Återskapa match** där."
+      }
+    },
+    "demo": {
+      "title": "Demomatch",
+      "badge": "Demo",
+      "intro": "En låtsasmatch för att prova arrangörsverktygen. Välj ett steg och tryck sedan på Lös ett problem i adminfältet längst ned. Inget här påverkar en riktig match.",
+      "step_label": "Matchsteg",
+      "reconnects": "{name} är ansluten",
+      "reset": "Återställ",
+      "series_label": "Best of 3 · Demo Cup",
+      "not_needed": "Behövs inte",
+      "not_in_demo": "Den är inte med i demon.",
+      "restored_title": "Återställer rond {round}",
+      "restored_description": "Matchen pausas medan ronden laddas. Lagen gör sig redo för att fortsätta.",
+      "veto_rewound_title": "Vetot spolades tillbaka till steg {step}",
+      "resume": "Återuppta",
+      "acting_map": "Agerar åt {team}: välj en karta nedan.",
+      "acting_side": "Agerar åt {team}: välj en sida.",
+      "banned_by": "Bannad av {team}",
+      "picked_by": "Vald av {team}",
+      "veto_complete": "Vetot är klart. I en riktig match startar servern härnäst.",
+      "server_label": "Server",
+      "server_pending": "En server väljs när vetot är klart.",
+      "chat_label": "Matchchatt",
+      "chat_readonly": "Chatten är skrivskyddad i demon.",
+      "winner_set": "Matchvinnare satt",
+      "forfeit_hint": "Välj laget som fortsätter spela. Matchen tar slut nu och de får vinsten.",
+      "forfeit_confirm": "Avsluta matchen",
+      "forfeit_done": "Matchen avslutad",
+      "nothing_changed": "Det här är demon, så inget ändrades på riktigt."
+    },
+    "intro_admin": "Hur matcher och turneringar fungerar här, vad du gör när något går fel, och hur du driver den här sidan.",
+    "search_hint": "Tryck på ⌘K var som helst på sidan för att söka bland de här svaren."
   },
   "licenses": {
     "title": "Licenser",

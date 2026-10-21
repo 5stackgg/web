@@ -24,6 +24,10 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  if (path.startsWith("/faq/")) {
+    return true;
+  }
+
   if (path.startsWith("/players")) {
     return true;
   }

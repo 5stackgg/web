@@ -4392,6 +4392,7 @@
       }
     },
     "play": {
+      "open_registration_tournaments": {},
       "more_ways": {
         "title": "Flere måder at spille på",
         "tournaments": {
@@ -4474,6 +4475,7 @@
         },
         "find_lan_match": "Find LAN-kamp"
       },
+      "draft_games": {},
       "schedule": {
         "vs": "vs",
         "now": "Nu",
@@ -8657,7 +8659,7 @@
     "clear_filters": "Ryd filtre"
   },
   "global_search": {
-    "placeholder": "Søg efter spillere, sider og indstillinger",
+    "placeholder": "Søg efter spillere, sider, indstillinger og hjælp",
     "pages": "Sider",
     "players": "Spillere",
     "searching": "Søger...",
@@ -8667,7 +8669,8 @@
       "navigate": "for at navigere",
       "open": "for at åbne",
       "close": "for at lukke"
-    }
+    },
+    "help": "Hjælp"
   },
   "file_manager_store": {
     "load_directory_failed": "Mappen kunne ikke indlæses",
@@ -10479,7 +10482,8 @@
       "type": "Type",
       "region": "Region",
       "no_logs_title": "Ingen logs tilgængelige",
-      "no_logs_description": "Der er ingen logs tilgængelige, og ingen server er forbundet."
+      "no_logs_description": "Der er ingen logs tilgængelige, og ingen server er forbundet.",
+      "rounds": "Runder"
     },
     "chat_log": {
       "visibility": "Kun arrangører og staff",
@@ -11099,10 +11103,7 @@
         "title": "Løs et problem",
         "description": "{team_1} vs {team_2}",
         "restore_title": "En runde gik galt",
-        "restore_description": "Nedbrud, fejl eller afbrydelse. Spil den igangværende runde om eller gå længere tilbage, med en forhåndsvisning først.",
-        "restore_rush": "Rush-kampe kan ikke gendanne runder.",
         "restore_over": "Banerne er færdige.",
-        "restore_not_live": "Kun mens en bane spilles.",
         "restart_map_title": "Banen skal startes forfra",
         "restart_map_description": "Tilbage til opvarmning ved 0–0. De spillede runder kan gendannes, indtil næste runde slutter.",
         "restart_title": "Hele kampen skal spilles om",
@@ -11111,7 +11112,6 @@
         "reopen_description": "Åbner check-in igen, så den aflyste kamp kan spilles.",
         "replay_title": "Kampen skal spilles igen",
         "replay_description": "Rydder resultatet og åbner check-in igen. Turneringens stilling opdateres.",
-        "replay_bracket_only": "Kun turneringskampe kan spilles om, når de har et resultat.",
         "winner_title": "Det forkerte hold fik sejren",
         "winner_description": "Vælg den rigtige vinder uden omkamp.",
         "forfeit_title": "Et hold kan ikke fortsætte",
@@ -11123,46 +11123,12 @@
       },
       "restore": {
         "title": "Gendan runde",
-        "description": "{map} · igangværende runde {round}. Vælg runden, der skal spilles om.",
-        "description_short": "Vælg runden, der skal spilles om.",
-        "load_failed": "Kunne ikke indlæse rundernes sikkerhedskopier",
         "rush": "Rush-kampe kan ikke gendanne runder.",
         "not_in_progress": "Runder kan kun gendannes, mens en bane spilles.",
         "not_live_yet": "Banen er ikke live igen endnu. Når den er, kan enhver tidligere runde gendannes, indtil runde 1 er slut.",
         "team_member": "Du er med på et af holdene, så en anden arrangør skal gendanne runder. Spillerne kan stadig starte afstemningen i spillet.",
         "nothing_yet": "Ingen runde er afsluttet på denne bane endnu, så der er intet at gå tilbage til.",
-        "replay_live": "Spil den igangværende runde {round} om",
-        "round_result": "Runde {round}: {team} vandt · {reason}",
-        "now": "Nu",
-        "won_ct": "Vundet som CT",
-        "won_t": "Vundet som T",
-        "undone": "Fortrudt, kan stadig hentes tilbage",
-        "round_one": "Runde 1 har ingen sikkerhedskopi",
-        "headline": "Tilbage til starten af runde {round}",
-        "headline_live": "Spil runde {round} forfra",
-        "headline_forward": "Frem til starten af runde {round}",
-        "previous_round": "Runde {round} sluttede: {team} vandt som {side} · {reason}",
         "economy_hidden": "Spillernes penge og våben er skjult, fordi du spiller i denne kamp.",
-        "bank": "Kasse {amount}",
-        "timeouts": "Timeouts tilbage: {count}",
-        "player": "Spiller",
-        "cash": "Penge",
-        "armor": "Rustning",
-        "carries": "Bærer",
-        "kd": "K / D",
-        "no_armor": "Ingen",
-        "died": "Døde, køber nyt",
-        "knife_only": "Kun kniv",
-        "undo_live": "Fortryder kun den igangværende runde.",
-        "undo_round": "Fortryder runde {round} og den igangværende runde, inklusive deres kills og skade.",
-        "undo_rounds": "Fortryder runderne {from}–{to} og den igangværende runde, inklusive deres kills og skade.",
-        "redo_round": "Henter runde {round} tilbage, med dens kills og skade.",
-        "redo_rounds": "Henter runderne {from}–{to} tilbage, med deres kills og skade.",
-        "waiting": "Venter på, at spillerne forbinder igen ({connected}/{expected}). Ikke forbundet: {names}.",
-        "everyone_connected": "Alle er forbundet",
-        "pauses": "Kampen sættes på pause, mens runden indlæses. Holdene melder sig klar for at fortsætte.",
-        "confirm": "Gendan til runde {round}",
-        "confirm_live": "Spil runde {round} om",
         "started": "Gendanner runde {round}",
         "failed": "Kunne ikke gendanne runden"
       },
@@ -11366,6 +11332,116 @@
         "knife_line": "Vinderen vælger side"
       },
       "map": "Bane"
+    },
+    "rewind": {
+      "strip_label": "Runder. Klik på en runde, eller brug piletasterne, for at vælge, hvor der skal gendannes fra.",
+      "previous_round": "Forrige runde",
+      "next_round": "Næste runde",
+      "start_of": "Start R{round}",
+      "half": "Halvleg",
+      "at_start_of": "Ved start af R{round}",
+      "bank": "Kasse",
+      "player": "Spiller",
+      "cash": "Penge",
+      "armor": "Rustning",
+      "carries": "Udstyr",
+      "not_connected": "Ikke forbundet",
+      "not_connected_tip": "Ikke forbundet. Serveren venter på alle spillere, før den indlæser en runde.",
+      "now_value": "Nu {value}",
+      "armor_helmet": "Rustning og hjelm",
+      "armor_only": "Rustning, ingen hjelm",
+      "buys_fresh": "Døde, køber forfra",
+      "connected_count": "{connected}/{expected} forbundet",
+      "waiting_tip": "{names} er ikke forbundet. Spilserveren venter på alle spillere, før den indlæser runden, så det her låses op, når de er tilbage.",
+      "everyone_connected": "Alle er forbundet",
+      "undone": "Fortrudt",
+      "undone_one": "Runde {round} blev fortrudt",
+      "undone_many": "Runderne {from}–{to} blev fortrudt",
+      "undone_until": "De kan komme tilbage, indtil runde {round} slutter",
+      "bring_back": "Hent tilbage",
+      "round": "Runde",
+      "won_by": "Vundet af",
+      "how": "Hvordan",
+      "score": "Stilling",
+      "halftime": "Halvleg",
+      "in_progress": "I gang",
+      "round_n": "runde {round}",
+      "rounds_range": "runderne {from}–{to}",
+      "replay_headline": "Spil runde {round} forfra",
+      "replay_detail": "Fortryder kun den igangværende runde",
+      "replay_confirm": "Spil runde {round} igen",
+      "back_headline": "Tilbage til starten af runde {round}",
+      "back_detail": "Fortryder {span} og den igangværende runde",
+      "forward_headline": "Frem til starten af runde {round}",
+      "forward_detail": "Henter {span} tilbage",
+      "restore_confirm": "Gendan runde {round}",
+      "pauses_after": "Kampen sættes på pause bagefter, og holdene melder klar for at fortsætte.",
+      "preview_chip": "Forhåndsvisning · Start R{round}",
+      "rounds_played": "{count} runder spillet",
+      "round_in_progress": "Runde {round} i gang",
+      "legend_back": "Stribede runder fortrydes: {span} og den igangværende runde",
+      "legend_forward": "Kommer tilbage: {span}",
+      "legend_replay": "Kun den igangværende runde fortrydes",
+      "legend_rules": "Runde 1 har ingen backup. Fortrudte runder kan komme tilbage, indtil næste runde slutter.",
+      "amber_hint": "Ravfarvede værdier er anderledes end i den igangværende runde. Hold musen over et beløb for at se, hvad spilleren har nu.",
+      "restore_from_round": "Gendan fra starten af runde {round}",
+      "restore_from_here": "Gendan herfra",
+      "click_hint": "Klik på en runde for at gendanne kampen til dens start. Intet ændres, før du bekræfter.",
+      "kills_count": "{count} kills",
+      "damage_count": "{count} skade",
+      "unlocks_when": "Gendannelse låses op, når {names} forbinder igen.",
+      "no_rounds": "Der er ikke spillet nogen runder på denne bane endnu."
+    },
+    "fix_menu": {
+      "right_now": "Lige nu",
+      "any_time": "Når som helst",
+      "restore_description": "Crash, fejl eller afbrydelse. Spol tilbage til starten af en vilkårlig runde på fanen Runder.",
+      "undo_last_title": "Fortryd det sidste trin",
+      "undo_last_description": "Trækker {team}s valg af {map} tilbage, og de vælger igen.",
+      "mispick_title": "Ret et fejlvalg",
+      "mispick_description": "Vælg det trin, der gik galt. Det og alle trin efter det tages om.",
+      "redo_title": "Tag vetoet om",
+      "redo_description": "Start forfra fra det første ban, med alle baner tilbage i puljen.",
+      "act_title": "Ban eller vælg for {team}",
+      "act_description": "Slå Tilsidesæt veto til, og træf selv dette trins valg på vetotavlen.",
+      "time_title": "Giv 30 sekunder mere",
+      "time_description": "Lægger tid til {team}s ur.",
+      "later_rounds": "Rettelser af runder låses op, når en bane bliver spillet.",
+      "later_results": "Rettelser af resultat og statistik låses op, når kampen er slut.",
+      "act_toast": "Tilsidesæt veto er slået til: træf {team}s valg på vetotavlen.",
+      "undo_confirm": "Fortryd trin",
+      "rewound": "Vetoet er spolet tilbage til trin {step}",
+      "rewind_failed": "Kunne ikke spole vetoet tilbage",
+      "time_added": "{seconds} sekunder lagt til vetouret",
+      "time_failed": "Kunne ikke lægge tid til vetouret"
+    },
+    "veto_rewind": {
+      "title": "Veto · Bedst af {count}",
+      "to_act": "skal handle på trin {step}",
+      "ban": "Ban",
+      "pick": "Pick",
+      "side": "Side",
+      "decider": "Decider",
+      "now": "Nu",
+      "drawn": "Til overs",
+      "redone": "Taget om",
+      "again_from": "Trin {step} igen",
+      "rewind_to_step": "Spol tilbage til trin {step}",
+      "again_ban": "{team} banner igen",
+      "again_pick": "{team} picker igen",
+      "again_side": "{team} vælger side igen",
+      "again_decider": "Decideren fastlægges igen",
+      "cleared_ban": "{team}s ban af {map}",
+      "cleared_pick": "{team}s pick af {map}",
+      "cleared_side": "{team}s side på {map}",
+      "cleared_decider": "decideren, {map}",
+      "bar_headline": "Spol tilbage til trin {step} · {again}",
+      "bar_detail": "Rydder {list}. Uret starter forfra.",
+      "confirm": "Spol vetoet tilbage",
+      "footnote": "Bannede baner kommer tilbage i puljen",
+      "eyebrow": "Forhåndsvisning · Fra trin {step}",
+      "dialog_title": "Ret vetoet",
+      "dialog_description": "Klik på det trin, der gik galt. Det og alle trin efter det tages om."
     }
   },
   "ui": {
@@ -11742,6 +11818,7 @@
         "description": "Hurtige 3v3-kampe rum for rum, hvor hver vundet runde skubber kampen fremad"
       }
     },
+    "queue_wait": {},
     "match_found": "Kamp fundet",
     "match_found_description": "Tryk på Klar for at acceptere kampen, før tiden løber ud.",
     "waiting_for_players": "Venter på spillere",
@@ -11800,6 +11877,7 @@
     "banned_until": "Du er udelukket fra matchmaking indtil {time}",
     "in_queue": "i kø",
     "temp_banned": "Du er midlertidigt udelukket fra matchmaking",
+    "settings_section": {},
     "no_preferred_regions": "Vælg mindst én foretrukken region i matchmaking-indstillinger",
     "party_size": {
       "requirement": "Stil i kø med {half} eller færre, eller præcis {full} spillere"
@@ -12719,6 +12797,7 @@
     "filters": {
       "any": "Alle"
     },
+    "sort": {},
     "create": {
       "captain_selection": "Valg af anfører",
       "draft_order": "Draft-rækkefølge",
@@ -12922,6 +13001,7 @@
       "teams": "Faste hold",
       "teams_desc": "Vælg to gemte hold, der skal mødes."
     },
+    "mode_short": {},
     "access": {
       "open": "Åben",
       "open_desc": "Alle kan finde og joine fra den offentlige liste.",
@@ -13822,8 +13902,8 @@
   },
   "faq": {
     "title": "Hjælp og FAQ",
-    "intro": "Almindelige spørgsmål om platformen, om at spille her, og om at køre din egen instans. Er noget ikke dækket, er community-linkene nederst den hurtigste vej til et svar.",
-    "search_placeholder": "Søg i spørgsmål",
+    "intro": "Sådan fungerer kampe og turneringer her, og hvad du gør, når noget går galt.",
+    "search_placeholder": "Søg i FAQ",
     "no_results": "Ingen spørgsmål matcher «{term}».",
     "links": {
       "features": "Alle funktioner",
@@ -13877,7 +13957,7 @@
       },
       "check_in": {
         "question": "Hvorfor skal jeg melde mig klar før en kamp?",
-        "answer": "Klarmeldingen bekræfter, at alle rent faktisk sidder klar, før en server bliver reserveret, og resten af lobbyen må vente. Kampe med automatisk aflysning viser en nedtælling, og kampen aflyses automatisk, hvis de nødvendige spillere ikke har meldt sig klar inden fristen."
+        "answer": "Check-in bekræfter, at alle rent faktisk sidder klar, før en server bliver reserveret, og resten af lobbyen må vente. Kampe med automatisk aflysning viser en nedtælling, og kampen aflyses automatisk, hvis de nødvendige spillere ikke har checket ind inden fristen. I en turneringskamp taber et hold, der misser fristen, i stedet på walkover."
       },
       "tournaments": {
         "question": "Hvordan tilmelder jeg mig en turnering?",
@@ -13901,7 +13981,6 @@
       }
     },
     "hosting": {
-      "title": "At hoste din egen",
       "self_host": {
         "question": "Kan jeg køre min egen instans?",
         "answer": "Ja — det er sådan, 5Stack er tænkt brugt. Det hostes af ejeren selv og installeres med én kommando, som rejser Kubernetes (K3s), databasen, lagringen og selve panelet. Installationsguiden i dokumentationen går igennem det hele."
@@ -13936,8 +14015,420 @@
       "description": "Discord er den hurtigste vej til et menneske — de folk, der driver 5Stack-instanser, er derinde. Fejl og ønsker hører til på GitHub, og dokumentationen dækker installation, servere og hver funktion i dybden.",
       "discord": "Kom med på Discord",
       "github": "Rapportér et problem",
-      "docs": "Læs dokumentationen"
-    }
+      "docs": "Læs dokumentationen",
+      "description_player": "Dem, der driver denne side, er på Discord. Spørg der, hvis dit spørgsmål ikke er besvaret her."
+    },
+    "help_glyph": "Hvordan virker det her?",
+    "part_of": "Del {n} af {total}",
+    "link_to": "Link til {title}",
+    "contents": "Indhold",
+    "search_results": "Svar",
+    "open_full": "Åbn i FAQ",
+    "parts": {
+      "start": {
+        "title": "Start her",
+        "lede": "Er noget galt? Start med det, du ser."
+      },
+      "running": {
+        "title": "At styre en kamp",
+        "lede": "For arrangører: sådan får du styr på en kamp, når noget går galt."
+      },
+      "playing": {
+        "lede": "At komme i kamp, og hvad der sker omkring kampene."
+      },
+      "about": {
+        "lede": "Hvad denne side er, og hvem der laver den."
+      },
+      "hosting": {
+        "lede": "Hosting af denne side, dens servere og dens udseende, med links til den fulde dokumentation. Kun administratorer ser denne del.",
+        "title": "For administratorer"
+      },
+      "tournaments": {
+        "title": "Turneringer",
+        "lede": "At deltage med dit hold, og at styre en turnering som arrangør."
+      }
+    },
+    "sections": {
+      "something_wrong": {
+        "title": "Er noget gået galt?",
+        "lede": "Find det, du ser, og gå direkte til løsningen.",
+        "keywords": "problem i stykker hjælp crash nedbrud hænger fast fejl galt"
+      },
+      "words": {
+        "title": "Ord, der bruges her",
+        "lede": "De få begreber, denne guide bygger på.",
+        "keywords": "ordliste begreber definitioner betydning"
+      },
+      "fix_a_problem": {
+        "title": "Løs et problem",
+        "lede": "Én knap til alle rettelser, med dem, der betyder noget lige nu, øverst.",
+        "keywords": "løs ret problem adminbjælke admin arrangør værktøjer hjælp",
+        "subs": {
+          "where": "Hvor den er",
+          "steps": "Den følger kampen",
+          "who": "Hvem der ser den"
+        }
+      },
+      "restore": {
+        "title": "Gendan en runde",
+        "lede": "Gå tilbage til starten af en vilkårlig runde, og se den, før noget ændres.",
+        "keywords": "gendan runde backup spol tilbage fortryd crash nedbrud server afbrudt droppet spil igen gå tilbage fanen runder",
+        "subs": {
+          "how": "Trin for trin",
+          "which": "Hvilken runde du skal vælge",
+          "wait": "Venter på spillere",
+          "undo": "Fortryder du?",
+          "limits": "Når det ikke kan lade sig gøre"
+        }
+      },
+      "restart_map": {
+        "title": "Genstart banen",
+        "lede": "Tilbage til opvarmning ved 0–0, uden at miste de spillede runder.",
+        "keywords": "genstart bane map opvarmning start forfra 0-0 nulstil restart warmup"
+      },
+      "veto_fix": {
+        "title": "Ret vetoet",
+        "lede": "Træk et ban, et pick eller en side tilbage, eller kør vetoet igen.",
+        "keywords": "veto mis-pick fejlvalg forkert bane map ban pick side tag om fortryd ur timer tid",
+        "subs": {
+          "how": "Trin for trin",
+          "why": "Hvorfor senere trin også ryger",
+          "more": "Mere tid, eller handl for et hold"
+        }
+      },
+      "server": {
+        "title": "Serverproblemer",
+        "lede": "Når serveren holder op med at svare, eller kampen skal have en anden.",
+        "keywords": "server crash nedbrud genstart reboot svarer ikke lag forbind flyt"
+      },
+      "results": {
+        "title": "Resultater og statistik",
+        "lede": "En forkert vinder, et hold, der ikke kan fortsætte, eller tal, der ser forkerte ud.",
+        "keywords": "vinder resultat walkover genparse statistik demo stilling forkert"
+      },
+      "replay_match": {
+        "title": "Spil hele kampen igen",
+        "lede": "Start kampen forfra fra check-in.",
+        "keywords": "spil igen omkamp genstart kamp aflys aflyst annulleret check-in igen"
+      },
+      "demo_match": {
+        "title": "Prøv det på en demokamp",
+        "lede": "Øv hver rettelse på en prøvekamp først.",
+        "keywords": "demo øv prøv test sandkasse eksempel"
+      },
+      "call_support": {
+        "title": "Hvad gør jeg, hvis noget går galt i min kamp?",
+        "answer": "Åbn ⋮-menuen på kampsiden, og vælg Tilkald support. Kampens arrangører får besked med det samme, og de fleste problemer kan løses uden at starte kampen forfra.",
+        "keywords": "hjælp support arrangør admin problem rapportér tilkald"
+      },
+      "t_join": {
+        "title": "Deltag i en turnering",
+        "lede": "Som hold, eller på egen hånd som free agent.",
+        "keywords": "deltag tilmeld tilmelding registrering hold free agent pulje venteliste turnering"
+      },
+      "t_roster": {
+        "title": "Din turneringstrup",
+        "lede": "Hvem der må spille, og hvornår truppen holder op med at ændre sig.",
+        "keywords": "trup opstilling lineup reserve udskifter sub tilføj fjern spiller hold anfører låst seedet"
+      },
+      "t_check_in": {
+        "title": "Check-in",
+        "lede": "Der er to check-ins: et til turneringen og et til hver kamp.",
+        "keywords": "check-in check ind misset for sent walkover til stede turnering kamp frist"
+      },
+      "t_next_match": {
+        "title": "Find din næste kamp",
+        "lede": "Hvor dine kampe og deres tidspunkter vises.",
+        "keywords": "næste kamp program turneringstræ bracket hvornår tid kommende"
+      },
+      "t_organizers": {
+        "title": "Hvem der styrer en turnering",
+        "lede": "Arrangører, og hvad kun opretteren kan gøre.",
+        "keywords": "arrangør admin medarrangør tilføj arrangør rettigheder opretter"
+      },
+      "t_setup": {
+        "title": "Sæt en turnering op",
+        "lede": "Faser, seedning, og hvad der låses, når bracketen er trukket.",
+        "keywords": "opret turnering fase single double elimination round robin schweizersystem swiss seed seedning bracket turneringstræ grupper"
+      },
+      "t_start": {
+        "title": "Åbning og start",
+        "lede": "Tilmelding, check-in og starttidspunktet.",
+        "keywords": "åbn tilmelding luk tilmelding start turnering minimum hold aflyst annulleret gå live"
+      },
+      "t_scheduling": {
+        "title": "Planlægning af kampe",
+        "lede": "Automatisk, manuelt eller aftalt mellem anførerne.",
+        "keywords": "planlæg tid manuel autostart aftalt kampindstillinger regler låst rediger kommende kamp"
+      },
+      "t_results": {
+        "title": "Ret et turneringsresultat",
+        "lede": "Forkert vinder, en omkamp, eller en kamp, der aldrig blev spillet.",
+        "keywords": "nulstil vinder resultat forkert bracket omkamp walkover aflys genopret kamp stilling"
+      }
+    },
+    "content": {
+      "wrong": {
+        "heading_see": "Det, du ser",
+        "heading_why": "Hvorfor",
+        "heading_fix": "Hvad du gør",
+        "crash": {
+          "see": "Serveren crashede midt i en runde",
+          "why": "Den igangværende runde er tabt",
+          "fix": "Spil den runde igen"
+        },
+        "dropped": {
+          "see": "En spiller røg ud, og holdet tabte runden",
+          "why": "Serveren venter på alle, før den indlæser en runde",
+          "fix": "Gendan den, når spilleren er tilbage"
+        },
+        "map_over": {
+          "see": "Banen skal starte forfra fra 0–0",
+          "why": "Forkerte indstillinger, en spiller, der kom for sent, eller en dårlig start",
+          "fix": "Genstart banen"
+        },
+        "veto_wrong": {
+          "see": "Et hold bannede eller pickede den forkerte bane",
+          "why": "Alle senere trin afhænger af det valg",
+          "fix": "Ret fejlvalget"
+        },
+        "veto_clock": {
+          "see": "Vetouret løb ud for et hold",
+          "why": "En bane blev valgt for dem",
+          "fix": "Fortryd det sidste trin"
+        },
+        "server": {
+          "see": "Serveren svarer ikke",
+          "why": "Den crashede eller mistede forbindelsen",
+          "fix": "Genstart den, eller flyt kampen"
+        },
+        "winner": {
+          "see": "Det forkerte hold fik sejren",
+          "why": "Et resultat blev sat manuelt, eller en walkover var en fejl",
+          "fix": "Sæt den rigtige vinder"
+        },
+        "stats": {
+          "see": "Statistik eller demo ser forkert ud",
+          "why": "Demoen blev læst, før den var færdig",
+          "fix": "Indlæs demoerne igen"
+        },
+        "no_button": {
+          "see": "Der er ingen Løs et problem på min kamp",
+          "why": "Kun kampens arrangører ser den",
+          "fix": "Se, hvem der kan rette en kamp"
+        },
+        "player": {
+          "see": "Jeg spiller, og noget er galt",
+          "why": "Arrangører retter kampe, ikke spillere",
+          "fix": "Tilkald support"
+        },
+        "t_no_show": {
+          "see": "Et hold checkede ikke ind til en turneringskamp",
+          "why": "Turneringskampe afgøres på walkover, de aflyses ikke",
+          "fix": "Sådan fungerer check-in til kampe"
+        },
+        "t_result": {
+          "see": "Et turneringsresultat er forkert",
+          "why": "En vinder blev sat ved en fejl, eller kampen skal spilles om",
+          "fix": "Ret resultatet"
+        }
+      },
+      "words": {
+        "heading_term": "Ord",
+        "heading_meaning": "Hvad det betyder",
+        "organizer": {
+          "term": "Arrangør",
+          "meaning": "Den, der styrer en kamp: personen, der oprettede den, arrangørerne af dens turnering og sidens personale."
+        },
+        "fix": {
+          "term": "Løs et problem",
+          "meaning": "Knappen i adminbjælken nederst på en kampside. Alle rettelser i denne guide starter der."
+        },
+        "rounds_tab": {
+          "term": "Fanen Runder",
+          "meaning": "Fanen på en kampside, der viser alle banens runder. Det er der, man gendanner en runde."
+        },
+        "rewind": {
+          "term": "Forhåndsvisning",
+          "meaning": "Det, fanen Runder viser, når du klikker på en runde: runden, som den var. Intet ændres, før du trykker på Gendan."
+        },
+        "backup": {
+          "term": "Backup",
+          "meaning": "Det, serveren gemmer, når hver runde slutter: stillingen og hver spillers penge, rustning og våben. En gendannelse indlæser en af dem."
+        },
+        "undone": {
+          "term": "Fortrudt runde",
+          "meaning": "En runde, som en gendannelse trak tilbage. Den kan komme tilbage, indtil næste runde slutter."
+        },
+        "veto": {
+          "term": "Veto",
+          "meaning": "Når holdene banner og vælger baner og vælger sider, ét trin ad gangen."
+        }
+      },
+      "fix": {
+        "where_title": "Åbn den fra adminbjælken",
+        "where_1": "Nederst på en kampside trykker du på Løs et problem.",
+        "where_2": "Vælg, hvad der gik galt. Hver rettelse åbner, hvor den hører til: en runderettelse åbner fanen Runder, en vetorettelse åbner vetoet.",
+        "steps_1": "Listen følger kampen. Under Lige nu ligger rettelserne til det trin, kampen er i, og under Når som helst ligger dem, der altid virker. Intet vises nedtonet; en linje nederst fortæller, hvad der låses op senere.",
+        "steps_veto_caption": "Under vetoet: træk et trin tilbage, handl for et hold, eller giv dem mere tid.",
+        "steps_live_caption": "Mens en bane spilles: gendan en runde, eller start banen forfra.",
+        "who_1": "Arrangører ser den: den, der oprettede kampen, arrangørerne af dens turnering og sidens personale.",
+        "who_2": "Spillere ser den ikke. De kan bede om hjælp med",
+        "who_3": "Hvis du selv spiller i kampen, skal en anden arrangør gendanne runder."
+      },
+      "restore": {
+        "pick_title": "Klik på runden",
+        "pick_1": "På fanen Runder klikker du på den runde, der skal spilles igen, på striben eller i listen under den. En ravfarvet linje markerer dens start.",
+        "pick_2": "Runderne efter linjen er stribede: det er dem, der fortrydes, med et tal for de kills og den skade, der hører til dem.",
+        "pick_caption": "Spoler tilbage til starten af runde 16 fra runde 17.",
+        "confirm_title": "Gendan",
+        "confirm_1": "Tryk på {button} i bjælken nederst.",
+        "confirm_2": "Serveren indlæser runden, og stillingen går tilbage med den.",
+        "after_title": "Meld klar",
+        "after_1": "Kampen sættes på pause på den gendannede runde, så alle kan gøre sig klar.",
+        "after_2": "Den fortsætter, når holdene melder klar i spillet. Personalet kan også trykke på {resume} i adminbjælken.",
+        "which_heading_pick": "Hvis du vælger",
+        "which_heading_result": "Hvad der sker",
+        "which_live": "Runden, der spilles",
+        "which_live_result": "Den starter forfra fra første sekund. Intet andet ændres.",
+        "which_earlier": "En tidligere runde",
+        "which_earlier_result": "Spillet går tilbage til starten af den runde. Runderne efter den fortrydes, inklusive stilling og statistik.",
+        "which_first": "Runde 1",
+        "which_first_result": "Der er ingen backup før runde 1, så genstart banen i stedet.",
+        "which_note": "En rundes nummer er den runde, du spiller som den næste: at gendanne runde 16 sætter begge hold ved starten af runde 16.",
+        "wait_1": "Spilserveren indlæser ikke en runde, før alle spillere er tilbage på den, så Gendan-knappen venter på dem.",
+        "wait_2": "Bjælken viser, hvem der mangler, her {name}. Knappen låses op i det øjeblik, spilleren forbinder igen.",
+        "undo_1": "Fortrudte runder bliver ikke smidt væk med det samme. Indtil næste runde slutter, venter de i slutningen af rundestriben.",
+        "undo_2": "Valgte du den forkerte runde? Tryk på {button} for at gå frem til, hvor du var.",
+        "limit_live": "Kun mens banen er live: ikke under opvarmning eller knivrunden.",
+        "limit_over": "Ikke når banen er slut. Ret i stedet dens resultat.",
+        "limit_rush": "Ikke i Rush-kampe.",
+        "limit_player": "Ikke af en arrangør, der selv spiller i kampen.",
+        "limit_economy": "Spillere i kampen ser ikke forhåndsvisningen af penge og våben, så den kan ikke afsløre det andet holds økonomi.",
+        "pick_anywhere": "Ikke på fanen Runder? Tryk på {fix} og derefter {round}. Den åbner der med den igangværende runde valgt.",
+        "preview_title": "Tjek forhåndsvisningen",
+        "preview_1": "Hver spillers penge, rustning og våben vises, som de var ved starten af den runde. Alt, der er anderledes end nu, er ravfarvet.",
+        "preview_2": "Klik på en anden runde for at flytte linjen, eller tryk på Esc for at fjerne den.",
+        "preview_caption": "{name} er ikke forbundet, så der vises en advarsel ved siden af navnet."
+      },
+      "restart_map": {
+        "how": "Tryk på {fix} og derefter {item}.",
+        "after": "Banen går tilbage til opvarmning ved 0–0. Spillerne bliver på serveren.",
+        "undo": "De runder, der blev spillet, bliver på rundestriben, indtil næste runde slutter, så en genstart ved en fejl kan trækkes tilbage med {link}."
+      },
+      "veto": {
+        "pick_title": "Vælg rettelsen",
+        "pick_1": "Under vetoet trykker du på {fix}.",
+        "pick_undo": "{item} trækker det seneste ban, pick eller sidevalg tilbage.",
+        "pick_mispick": "{item} vælger det seneste trin for dig. Klik på et tidligere trin for at gå længere tilbage.",
+        "pick_redo": "{item} starter forfra fra det første ban.",
+        "step_title": "Klik på det trin, der gik galt",
+        "step_1": "Ret et fejlvalg og Tag vetoet om åbner vetoets trin. Klik på det, der gik galt: det og alle trin efter det bliver stribede.",
+        "step_2": "Bjælken viser, hvem der handler som den næste, og lister alt, der bliver ryddet.",
+        "confirm_title": "Spol vetoet tilbage",
+        "confirm_1": "Tryk på {button}.",
+        "confirm_2": "Uret starter forfra for det hold, der har turen.",
+        "why_1": "Hvis tur det er, og om trinnet er et ban, et pick eller en side, afhænger af, hvor mange trin der er gennemført. Træk trin 3 tilbage, og trin 4 tilhører en anden, så alle trin efter det, du retter, tages om.",
+        "why_2": "Bannede baner kommer tilbage i puljen, og baner, der var blevet valgt, fjernes fra kampen.",
+        "more_time": "{item} lægger tid til for det hold, der har turen.",
+        "more_act": "{item} slår Tilsidesæt veto til, så du kan træffe det aktuelle valg på vetotavlen for et hold, der sidder fast eller er gået.",
+        "more_after": "Disse rettelser bliver i Løs et problem, efter vetoet er slut, indtil den første bane går live. Bruger du en af dem da, går kampen tilbage til vetoet."
+      },
+      "server": {
+        "reboot": "{item} genstarter spilserveren. Spillerne forbinder igen til den samme kamp.",
+        "move": "For at flytte kampen til en anden server skal du vælge en anden i Løs et problem.",
+        "crash": "Hvis serveren crashede midt i en runde, så genstart den, og gendan derefter runden, når alle er tilbage."
+      },
+      "results": {
+        "winner": "{item} sætter den rigtige vinder uden omkamp.",
+        "forfeit": "{item} afslutter kampen nu og giver den til det andet hold.",
+        "reparse": "{item} indlæser demoerne igen. Resultatet forbliver det samme."
+      },
+      "replay": {
+        "restart": "{item} annullerer dette forsøg og åbner check-in igen for begge hold.",
+        "tournament": "I en turnering kan en kamp, der allerede har et resultat, spilles igen med {item}. Stillingen opdateres.",
+        "canceled": "En aflyst kamp kan genåbnes på samme måde, så den ikke skal oprettes igen."
+      },
+      "demo": {
+        "body": "En prøvekamp med alt på denne side: adminbjælken, Løs et problem, fanen Runder og vetoet. Intet, du gør der, rører en rigtig kamp.",
+        "open": "Åbn demokampen"
+      },
+      "figures": {
+        "match_page_bottom": "Nederst på en kampside",
+        "fix_veto": "Løs et problem · Veto",
+        "fix_live": "Løs et problem · Live",
+        "rounds_rewind": "Fanen Runder · Spol tilbage",
+        "rounds_bar": "Fanen Runder · Nederste bjælke",
+        "rounds_tab": "Fanen Runder",
+        "veto": "Veto"
+      },
+      "tournament": {
+        "join_1": "Mens tilmeldingen er åben, trykker du på **Tilmeld turnering** øverst i turneringen.",
+        "join_2": "**Som hold**: vælg et af dine hold, eller slå **Opret nyt hold** til.",
+        "join_3": "**Som free agent**: tryk på **Tilmeld dig**. Når tilmeldingen lukker, fordeles free agents på jævnbyrdige hold, de tidligst tilmeldte først. Dem, der bliver tilovers, kommer på en venteliste og rykker op, hvis en plads bliver ledig. **Forlad puljen** tager dig ud.",
+        "join_4": "Arrangøren bestemmer, hvem der kan tilmelde sig (hold, free agents eller begge), og kan gøre det kun med invitation eller begrænse det efter rolle eller rang.",
+        "roster_1": "En opstilling har kamptypens størrelse (5 til Competitive, 2 til Wingman, 1 til Duel), plus reserver, hvis turneringen tillader det.",
+        "roster_2": "Holdets ejer, anfører eller holdadministratorer tilføjer og fjerner spillere. De kan kun tilføje spillere, indtil tilmeldingen lukker; arrangører kan stadig tilføje dem bagefter.",
+        "roster_3": "Når bracketen er seedet, kan en trup ikke komme under en fuld opstilling. Tilføj en reserve først, og fjern så spilleren.",
+        "roster_4": "En spiller, der skal bruges i en kamp, som ikke er startet, kan ikke fjernes.",
+        "check_1": "**Turnerings-check-in** er kun slået til, når arrangøren kræver det. Det åbner 60 minutter før start og lukker 15 minutter før, medmindre arrangøren har ændret det. Arrangøren bestemmer, om anførerne, alle spillere eller kun arrangørerne checker ind.",
+        "check_2": "Hold, der misser det, fjernes ikke, men bliver bare holdt uden for bracketen. Arrangøren kan lukke dem ind igen, fortsætte uden dem eller give mere tid.",
+        "check_3": "**Kamp-check-in** åbner omkring 15 minutter før hver kamp. Tryk på **Check ind** på kampsiden.",
+        "check_4": "Hvis et hold ikke checker ind inden fristen, taber det på walkover, og holdet, der checkede ind, vinder. Hvis ingen af holdene checker ind, afgør et møntkast vinderen, medmindre fasen bruger kamptilstanden Admin: Så afgør arrangørerne det.",
+        "next_1": "I turneringen viser fanen **Turneringstræ** alle kampe; **Følg et hold** fremhæver dit. Fanen **Kampe** viser dem som Live, Kommende og Resultater.",
+        "next_2": "Dine kommende kampe er også på siden Kampe, og du får en notifikation, når check-in åbner.",
+        "org_1": "En turnerings arrangører er: personen, der oprettede den, alle, der er tilføjet under **Administrér** og derefter **Arrangører**, medlemmer af et hold, der er knyttet til den, og sidens personale med rollen turneringsarrangør eller administrator.",
+        "org_2": "Alle arrangører kan tilføje flere arrangører, sætte turneringen på pause og genoptage den og planlægge kampe.",
+        "org_3": "At åbne og lukke tilmeldingen, starte, aflyse og nulstille turneringen er forbeholdt opretteren og sidens personale med rollen turneringsarrangør eller administrator.",
+        "setup_1": "Tryk på **Opret turnering** på siden Turneringer. Hver fase er single elimination, double elimination, round robin eller schweizersystem; **Tilføj endnu en fase** kæder dem sammen.",
+        "setup_2": "En fases **Maksimum hold** afgør, hvor mange hold der når den fra fasen før: de overlevende fra en eliminationsfase, eller toppen af stillingen fra round robin eller schweizersystem.",
+        "setup_3": "Arrangører kan skrive en **Seedning** for hvert hold, før turneringen går live. Hold uden seedning seedes tilfældigt.",
+        "setup_4": "En ny turnering er kun synlig for sine arrangører, indtil tilmeldingen åbner. Når bracketen er trukket, er dens faser låst.",
+        "start_1": "Tryk på **Åbn tilmelding**, når hold kan tilmelde sig, og **Luk tilmelding** for at stoppe.",
+        "start_2": "Med check-in slået til lukker tilmeldingen, når check-in slutter. Uden det går turneringen live på starttidspunktet.",
+        "start_3": "Hvis for få hold har tilmeldt sig inden starttidspunktet, bliver turneringen aflyst.",
+        "sched_1": "Kampe starter af sig selv, medmindre **Autostart** er slået fra, eller fasen bruger manuel planlægning. Klik så på en tom kamp i bracketen, tryk på **Planlæg kamp**, og vælg et tidspunkt eller **Nu**.",
+        "sched_2": "Med **Aftalt planlægning** aftaler de to anførere et tidspunkt indbyrdes.",
+        "sched_3": "For at ændre en enkelt kommende kamp skal du åbne dens ⋮-menu i bracketen og vælge **Kampindstillinger**. Det virker, indtil kampen starter.",
+        "sched_4": "Når en fase har kampe, er dens regler låst for alle: format, baner, runder, overtid, timeouts og reserver. Region, TV-forsinkelse, check-in og timere kan stadig ændres.",
+        "results_1": "Åbn kampens ⋮-menu i bracketen, og vælg **Nulstil vinder**. Vælg den rigtige vinder, eller ingen vinder for at spille den igen, og derefter **Bekræft nulstilling**. Senere kampe, der afhang af den, ryddes.",
+        "results_2": "En nulstilling venter, mens den kamp, eller en senere kamp den fører til, bliver spillet eller er i veto.",
+        "results_3": "I round robin og schweizersystem kan et resultat ikke nulstilles, når næste fase er seedet ud fra stillingen, eller når næste schweizerrunde er parret.",
+        "results_4": "På kampsiden har **Løs et problem** de samme rettelser: kampen skal spilles igen, det forkerte hold fik sejren, eller et hold kan ikke fortsætte.",
+        "results_5": "En aflyst kamp får ikke bracketen til at gå videre. Genstart den fra **Løs et problem**, eller sæt en vinder. Hvis en plads i bracketen har mistet sin kamp, vises **Genopret kamp** der."
+      }
+    },
+    "demo": {
+      "title": "Demokamp",
+      "badge": "Demo",
+      "intro": "En prøvekamp, hvor du kan afprøve arrangørværktøjerne. Vælg et trin, og tryk så på Løs et problem i adminbjælken nederst. Intet her rører en rigtig kamp.",
+      "step_label": "Kamptrin",
+      "reconnects": "{name} er forbundet",
+      "reset": "Nulstil",
+      "series_label": "Bedst af 3 · Demo Cup",
+      "not_needed": "Ikke nødvendig",
+      "not_in_demo": "Den er ikke en del af demoen.",
+      "restored_title": "Gendanner runde {round}",
+      "restored_description": "Kampen sættes på pause, mens runden indlæses. Holdene melder klar for at fortsætte.",
+      "veto_rewound_title": "Vetoet er spolet tilbage til trin {step}",
+      "resume": "Genoptag",
+      "acting_map": "Handler for {team}: vælg en bane nedenfor.",
+      "acting_side": "Handler for {team}: vælg en side.",
+      "banned_by": "Bannet af {team}",
+      "picked_by": "Picket af {team}",
+      "veto_complete": "Vetoet er færdigt. I en rigtig kamp starter serveren som det næste.",
+      "server_label": "Server",
+      "server_pending": "En server vælges, når vetoet er færdigt.",
+      "chat_label": "Kampchat",
+      "chat_readonly": "Chatten er skrivebeskyttet i demoen.",
+      "winner_set": "Kampvinder sat",
+      "forfeit_hint": "Vælg det hold, der bliver ved med at spille. Kampen slutter nu, og de får sejren.",
+      "forfeit_confirm": "Afslut kampen",
+      "forfeit_done": "Kampen er afsluttet",
+      "nothing_changed": "Det her er demoen, så intet blev rigtig ændret."
+    },
+    "intro_admin": "Sådan fungerer kampe og turneringer her, hvad du gør, når noget går galt, og hvordan du driver denne side.",
+    "search_hint": "Tryk på ⌘K hvor som helst på siden for at søge i disse svar."
   },
   "licenses": {
     "title": "Licenser",

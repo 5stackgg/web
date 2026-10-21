@@ -28,6 +28,8 @@ const { columnsRef: tradeColumnsRef } = useTradeColumns();
 const { columnsRef: openingDuelsColumnsRef } = useOpeningDuelsColumns();
 import { provide, ref } from "vue";
 import { lazyPanel } from "~/utilities/lazyPanel";
+import MatchRoundsPanel from "~/components/match/rounds/MatchRoundsPanel.vue";
+import { useMatchRoundsFocus } from "~/composables/useMatchRoundsFocus";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
 import {
@@ -117,7 +119,7 @@ const MatchLiveStreams = lazyPanel(
 </script>
 
 <template>
-  <Tabs v-model="activeTab" class="match-tabs">
+  <Tabs v-model="activeTab" class="match-tabs scroll-mt-16">
     <div
       v-if="statsEligibleMaps.length > 1"
       class="map-filter-banner max-w-[1500px]"
@@ -231,6 +233,9 @@ const MatchLiveStreams = lazyPanel(
               <SelectItem value="scoreboard">
                 {{ $t("match.tabs.scoreboard") }}
               </SelectItem>
+              <SelectItem value="rounds">
+                {{ $t("match.tabs.rounds") }}
+              </SelectItem>
               <template v-if="!disableStats">
                 <SelectItem value="economy">
                   {{ $t("match.tabs.economy") }}
@@ -278,6 +283,9 @@ const MatchLiveStreams = lazyPanel(
         <TabsList variant="underline" class="h-auto flex-nowrap">
           <TabsTrigger value="scoreboard">
             {{ $t("match.tabs.scoreboard") }}
+          </TabsTrigger>
+          <TabsTrigger value="rounds">
+            {{ $t("match.tabs.rounds") }}
           </TabsTrigger>
           <template v-if="!disableStats">
             <TabsTrigger value="economy">
@@ -521,6 +529,9 @@ const MatchLiveStreams = lazyPanel(
           </CardContent>
         </Card>
       </div>
+    </TabsContent>
+    <TabsContent value="rounds">
+      <MatchRoundsPanel :match="match" :match-map="roundsMap" />
     </TabsContent>
     <TabsContent value="economy">
       <div class="grid gap-4 max-w-[1500px]">
@@ -1084,6 +1095,7 @@ export default {
           // scoreboard rather than leaving unfiltered numbers under one.
           const statsTabs = [
             "scoreboard",
+            "rounds",
             "economy",
             "clutches",
             "head-to-head",
@@ -1150,6 +1162,19 @@ export default {
     },
     effectiveScoreboardLens() {
       return this.disableStats ? "general" : this.scoreboardLens;
+    },
+    // The map the Rounds tab shows: the one picked above the tabs, else the
+    // map being played, else the last one with rounds.
+    roundsMap() {
+      const maps = this.match.match_maps ?? [];
+      if (this.activeMap) {
+        return maps.find((map: any) => map.id === this.activeMap!.id) ?? null;
+      }
+      return (
+        maps.find((map: any) => map.is_current_map) ??
+        [...maps].reverse().find((map: any) => map.rounds?.length) ??
+        null
+      );
     },
     isOpsTabActive() {
       return ["settings", "streams", "server"].includes(this.activeTab);
@@ -1355,7 +1380,7 @@ export default {
       return true;
     },
     availableMatchTabs() {
-      const tabs = ["scoreboard"];
+      const tabs = ["scoreboard", "rounds"];
 
       if (!this.disableStats) {
         tabs.push("economy");
@@ -1385,6 +1410,31 @@ export default {
     },
   },
   created() {
+    const { request } = useMatchRoundsFocus();
+    this.$watch(
+      () => request.value,
+      (value: { matchId: string } | null) => {
+        if (value?.matchId !== this.match.id) {
+          return;
+        }
+        const current = this.match.match_maps?.find(
+          (map: any) => map.is_current_map,
+        );
+        if (this.activeMap && this.activeMap.id !== current?.id) {
+          this.$emit("clear-active-map");
+        }
+        this.activeTab = "rounds";
+        void this.$nextTick(() => {
+          const reduce = window.matchMedia?.(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+          (this.$el as HTMLElement | undefined)?.scrollIntoView?.({
+            behavior: reduce ? "auto" : "smooth",
+            block: "start",
+          });
+        });
+      },
+    );
     // Shared with MatchAdminBottomBar so we don't open two identical
     // v_match_map_backup_rounds websockets for the same current map.
     this.backupRoundsTracker = trackMatchBackupRounds(

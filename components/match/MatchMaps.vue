@@ -14,7 +14,6 @@ import {
 import { Spinner } from "~/components/ui/spinner";
 import TimeAgo from "~/components/TimeAgo.vue";
 import MatchSelectMapWinner from "~/components/match/MatchSelectMapWinner.vue";
-import MatchRestoreRoundDialog from "~/components/match/MatchRestoreRoundDialog.vue";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
@@ -83,7 +82,7 @@ import mapLabel from "~/utilities/mapLabel";
               variant="ghost"
               class="inline-flex h-6 w-6 p-0 text-white/70 hover:text-white"
               :aria-label="$t('match.recovery.restore.title')"
-              @click.stop="restoreOpen = true"
+              @click.stop="openRounds"
             >
               <History class="h-4 w-4" />
             </Button>
@@ -363,11 +362,6 @@ import mapLabel from "~/utilities/mapLabel";
         />
       </div>
     </div>
-    <MatchRestoreRoundDialog
-      v-if="canRestoreRound || restoreOpen"
-      v-model:open="restoreOpen"
-      :match="match"
-    />
   </div>
 </template>
 
@@ -406,7 +400,6 @@ export default {
       isParsingDemo: false,
       mapHasMesh: true,
       mapHasRadar: true,
-      restoreOpen: false,
     };
   },
   mounted() {
@@ -583,6 +576,9 @@ export default {
     },
   },
   methods: {
+    openRounds() {
+      useMatchRoundsFocus().focus(this.match.id);
+    },
     async parseDemo() {
       if (this.isParsingDemo) return;
       this.isParsingDemo = true;

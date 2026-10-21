@@ -347,460 +347,475 @@ const MatchLiveStreams = lazyPanel(
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-    <TabsContent value="scoreboard">
-      <div
-        v-if="!disableStats"
-        class="mb-4 flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between lg:gap-3"
-      >
-        <!-- Mobile / tablet: compact stat-category dropdown -->
-        <div class="lg:hidden">
-          <Select v-model="scoreboardLens">
-            <SelectTrigger
-              class="w-full"
-              :aria-label="$t('ui.tooltips.match_section')"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem
-                v-for="l in scoreboardLenses"
-                :key="l.value"
-                :value="l.value"
+    <!-- Glides to the height of the tab you switch to, so what sits below
+         moves with it instead of jumping. -->
+    <HeightGlide>
+      <TabsContent value="scoreboard" class="tab-panel-in mt-0">
+        <div
+          v-if="!disableStats"
+          class="mb-4 flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between lg:gap-3"
+        >
+          <!-- Mobile / tablet: compact stat-category dropdown -->
+          <div class="lg:hidden">
+            <Select v-model="scoreboardLens">
+              <SelectTrigger
+                class="w-full"
+                :aria-label="$t('ui.tooltips.match_section')"
               >
-                {{ $t(l.labelKey) }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <!-- Desktop: stat-category button pill -->
-        <div
-          class="hidden items-center gap-0.5 rounded-md border border-border/60 bg-background/40 p-0.5 lg:inline-flex"
-        >
-          <button
-            v-for="l in scoreboardLenses"
-            :key="l.value"
-            type="button"
-            class="shrink-0 rounded-sm px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
-            :class="
-              scoreboardLens === l.value
-                ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                : 'text-muted-foreground hover:text-foreground'
-            "
-            @click="scoreboardLens = l.value"
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="l in scoreboardLenses"
+                  :key="l.value"
+                  :value="l.value"
+                >
+                  {{ $t(l.labelKey) }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <!-- Desktop: stat-category button pill -->
+          <div
+            class="hidden items-center gap-0.5 rounded-md border border-border/60 bg-background/40 p-0.5 lg:inline-flex"
           >
-            {{ $t(l.labelKey) }}
-          </button>
-        </div>
-        <div
-          v-if="showStatsControls"
-          class="flex items-center gap-2 lg:justify-end"
-        >
-          <Tooltip v-if="effectiveScoreboardLens === 'aim' && aimEstimated">
-            <TooltipTrigger
-              class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] font-mono text-[0.6rem] font-bold tracking-[0.18em] uppercase text-[hsl(var(--tac-amber))]"
+            <button
+              v-for="l in scoreboardLenses"
+              :key="l.value"
+              type="button"
+              class="shrink-0 rounded-sm px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
+              :class="
+                scoreboardLens === l.value
+                  ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground hover:text-foreground'
+              "
+              @click="scoreboardLens = l.value"
             >
-              <AlertTriangle class="w-3 h-3" />
-              {{ $t("match.lineup.stats.estimated") }}
-            </TooltipTrigger>
-            <TooltipContent class="max-w-xs">
-              {{ $t("match.lineup.stats.estimated_tooltip") }}
-            </TooltipContent>
-          </Tooltip>
-          <MatchSideFilter
-            v-if="['general', 'opening'].includes(effectiveScoreboardLens)"
-          />
-          <TableColumnPicker
-            v-if="effectiveScoreboardLens === 'general'"
-            storage-key="match-overview"
-            :columns="overviewColumnsRef"
-          />
-          <TableColumnPicker
-            v-else-if="effectiveScoreboardLens === 'aim'"
-            storage-key="match-aim"
-            :columns="aimColumnsRef"
-          />
-          <TableColumnPicker
-            v-else-if="effectiveScoreboardLens === 'trades'"
-            storage-key="match-trade"
-            :columns="tradeColumnsRef"
-          />
-          <TableColumnPicker
-            v-else-if="effectiveScoreboardLens === 'utility'"
-            storage-key="match-utility"
-            :columns="utilityColumnsRef"
-          />
-          <TableColumnPicker
-            v-else-if="effectiveScoreboardLens === 'opening'"
-            storage-key="match-opening-duels"
-            :columns="openingDuelsColumnsRef"
-          />
+              {{ $t(l.labelKey) }}
+            </button>
+          </div>
+          <div
+            v-if="showStatsControls"
+            class="flex items-center gap-2 lg:justify-end"
+          >
+            <Tooltip v-if="effectiveScoreboardLens === 'aim' && aimEstimated">
+              <TooltipTrigger
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] font-mono text-[0.6rem] font-bold tracking-[0.18em] uppercase text-[hsl(var(--tac-amber))]"
+              >
+                <AlertTriangle class="w-3 h-3" />
+                {{ $t("match.lineup.stats.estimated") }}
+              </TooltipTrigger>
+              <TooltipContent class="max-w-xs">
+                {{ $t("match.lineup.stats.estimated_tooltip") }}
+              </TooltipContent>
+            </Tooltip>
+            <MatchSideFilter
+              v-if="['general', 'opening'].includes(effectiveScoreboardLens)"
+            />
+            <TableColumnPicker
+              v-if="effectiveScoreboardLens === 'general'"
+              storage-key="match-overview"
+              :columns="overviewColumnsRef"
+            />
+            <TableColumnPicker
+              v-else-if="effectiveScoreboardLens === 'aim'"
+              storage-key="match-aim"
+              :columns="aimColumnsRef"
+            />
+            <TableColumnPicker
+              v-else-if="effectiveScoreboardLens === 'trades'"
+              storage-key="match-trade"
+              :columns="tradeColumnsRef"
+            />
+            <TableColumnPicker
+              v-else-if="effectiveScoreboardLens === 'utility'"
+              storage-key="match-utility"
+              :columns="utilityColumnsRef"
+            />
+            <TableColumnPicker
+              v-else-if="effectiveScoreboardLens === 'opening'"
+              storage-key="match-opening-duels"
+              :columns="openingDuelsColumnsRef"
+            />
+          </div>
         </div>
-      </div>
 
-      <template v-if="effectiveScoreboardLens === 'general'">
-        <div
-          class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-          :class="{ 'opacity-60': activeMap && !mapStats }"
+        <!-- A lens switch works like a tab switch: the old table goes at once and
+             the new one fades in over its spot. -->
+        <Transition
+          enter-active-class="transition-all duration-150 ease-out motion-reduce:transition-none"
+          enter-from-class="translate-y-[2px] opacity-0"
+          leave-active-class="hidden"
         >
-          <Card class="overflow-x-auto overscroll-x-none bg-card/20">
-            <CardContent class="p-1 sm:p-2">
-              <LineupOverview
-                :match="mapScopedMatch"
-                :lineup="activeLineup1"
-                :combine-with="activeLineup2"
-              ></LineupOverview>
-            </CardContent>
-          </Card>
-        </div>
+          <div :key="effectiveScoreboardLens">
+            <template v-if="effectiveScoreboardLens === 'general'">
+              <div
+                class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+                :class="{ 'opacity-60': activeMap && !mapStats }"
+              >
+                <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+                  <CardContent class="p-1 sm:p-2">
+                    <LineupOverview
+                      :match="mapScopedMatch"
+                      :lineup="activeLineup1"
+                      :combine-with="activeLineup2"
+                    ></LineupOverview>
+                  </CardContent>
+                </Card>
+              </div>
 
-        <div
-          v-if="canAdjustLineups"
-          class="flex flex-wrap gap-2 mt-3 md:gap-3 md:justify-end container mx-auto px-4"
-        >
-          <Button variant="outline" class="px-4" @click="randomizeTeams">
-            {{ $t("match.tabs.randomize_teams") }}
-          </Button>
-          <Button variant="outline" class="px-4" @click="swapLineups">
-            {{ $t("match.tabs.swap_lineups") }}
-          </Button>
-        </div>
-      </template>
+              <div
+                v-if="canAdjustLineups"
+                class="flex flex-wrap gap-2 mt-3 md:gap-3 md:justify-end container mx-auto px-4"
+              >
+                <Button variant="outline" class="px-4" @click="randomizeTeams">
+                  {{ $t("match.tabs.randomize_teams") }}
+                </Button>
+                <Button variant="outline" class="px-4" @click="swapLineups">
+                  {{ $t("match.tabs.swap_lineups") }}
+                </Button>
+              </div>
+            </template>
 
-      <div
-        v-else-if="effectiveScoreboardLens === 'utility'"
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
-        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-utility
-              :match="mapScopedMatch"
-              :lineup="activeLineup1"
-              :combine-with="activeLineup2"
-            ></lineup-utility>
-          </CardContent>
-        </Card>
-      </div>
+            <div
+              v-else-if="effectiveScoreboardLens === 'utility'"
+              class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+              :class="{ 'opacity-60': activeMap && !mapStats }"
+            >
+              <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+                <CardContent class="p-1 sm:p-2">
+                  <lineup-utility
+                    :match="mapScopedMatch"
+                    :lineup="activeLineup1"
+                    :combine-with="activeLineup2"
+                  ></lineup-utility>
+                </CardContent>
+              </Card>
+            </div>
 
-      <div
-        v-else-if="effectiveScoreboardLens === 'trades'"
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
-        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-trade-stats
-              :match="mapScopedMatch"
-              :lineup="activeLineup1"
-              :combine-with="activeLineup2"
-            ></lineup-trade-stats>
-          </CardContent>
-        </Card>
-      </div>
+            <div
+              v-else-if="effectiveScoreboardLens === 'trades'"
+              class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+              :class="{ 'opacity-60': activeMap && !mapStats }"
+            >
+              <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+                <CardContent class="p-1 sm:p-2">
+                  <lineup-trade-stats
+                    :match="mapScopedMatch"
+                    :lineup="activeLineup1"
+                    :combine-with="activeLineup2"
+                  ></lineup-trade-stats>
+                </CardContent>
+              </Card>
+            </div>
 
-      <div
-        v-else-if="effectiveScoreboardLens === 'aim'"
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
-        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-aim-stats
-              :match="mapScopedMatch"
-              :lineup="activeLineup1"
-              :combine-with="activeLineup2"
-            ></lineup-aim-stats>
-          </CardContent>
-        </Card>
-      </div>
+            <div
+              v-else-if="effectiveScoreboardLens === 'aim'"
+              class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+              :class="{ 'opacity-60': activeMap && !mapStats }"
+            >
+              <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+                <CardContent class="p-1 sm:p-2">
+                  <lineup-aim-stats
+                    :match="mapScopedMatch"
+                    :lineup="activeLineup1"
+                    :combine-with="activeLineup2"
+                  ></lineup-aim-stats>
+                </CardContent>
+              </Card>
+            </div>
 
-      <div
-        v-else-if="effectiveScoreboardLens === 'opening'"
-        class="grid gap-4 max-w-[1500px]"
-      >
-        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-opening-duels
+            <div
+              v-else-if="effectiveScoreboardLens === 'opening'"
+              class="grid gap-4 max-w-[1500px]"
+            >
+              <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+                <CardContent class="p-1 sm:p-2">
+                  <lineup-opening-duels
+                    :match="match"
+                    :lineup="match.lineup_1"
+                    :combine-with="match.lineup_2"
+                    :selected-map-id="activeMap?.id"
+                  ></lineup-opening-duels>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </Transition>
+      </TabsContent>
+      <TabsContent value="rounds" class="tab-panel-in mt-0">
+        <MatchRoundsPanel :match="match" :match-map="roundsMap" />
+      </TabsContent>
+      <TabsContent value="economy" class="tab-panel-in mt-0">
+        <div class="grid gap-4 max-w-[1500px]">
+          <div v-if="showStatsControls" class="flex justify-end gap-2">
+            <MatchSideFilter />
+          </div>
+          <MatchEconomyTimeline :match="match" :selected-map-id="activeMap?.id" />
+          <MatchTeamStats
+            :match="mapScopedMatch"
+            :lineup="activeLineup1"
+            :combine-with="activeLineup2"
+            :selected-map-id="activeMap?.id"
+          />
+          <div class="grid gap-3 mt-2">
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+              />
+              <span
+                class="font-sans text-sm font-semibold uppercase tracking-[0.14em]"
+              >
+                {{ $t("match.buy_types.section_title") }}
+              </span>
+            </div>
+            <lineup-buy-types
               :match="match"
               :lineup="match.lineup_1"
               :combine-with="match.lineup_2"
               :selected-map-id="activeMap?.id"
-            ></lineup-opening-duels>
-          </CardContent>
-        </Card>
-      </div>
-    </TabsContent>
-    <TabsContent value="rounds">
-      <MatchRoundsPanel :match="match" :match-map="roundsMap" />
-    </TabsContent>
-    <TabsContent value="economy">
-      <div class="grid gap-4 max-w-[1500px]">
-        <div v-if="showStatsControls" class="flex justify-end gap-2">
-          <MatchSideFilter />
-        </div>
-        <MatchEconomyTimeline :match="match" :selected-map-id="activeMap?.id" />
-        <MatchTeamStats
-          :match="mapScopedMatch"
-          :lineup="activeLineup1"
-          :combine-with="activeLineup2"
-          :selected-map-id="activeMap?.id"
-        />
-        <div class="grid gap-3 mt-2">
-          <div class="flex items-center gap-2">
-            <span
-              class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
-            />
-            <span
-              class="font-sans text-sm font-semibold uppercase tracking-[0.14em]"
-            >
-              {{ $t("match.buy_types.section_title") }}
-            </span>
+            ></lineup-buy-types>
           </div>
-          <lineup-buy-types
+        </div>
+      </TabsContent>
+      <TabsContent value="clutches" class="tab-panel-in mt-0">
+        <div class="max-w-[1500px]">
+          <div v-if="showStatsControls" class="flex justify-end gap-2 mb-4">
+            <MatchSideFilter />
+          </div>
+          <lineup-clutches
             :match="match"
-            :lineup="match.lineup_1"
-            :combine-with="match.lineup_2"
+            :lineup1="match.lineup_1"
+            :lineup2="match.lineup_2"
             :selected-map-id="activeMap?.id"
-          ></lineup-buy-types>
+          ></lineup-clutches>
         </div>
-      </div>
-    </TabsContent>
-    <TabsContent value="clutches">
-      <div class="max-w-[1500px]">
-        <div v-if="showStatsControls" class="flex justify-end gap-2 mb-4">
-          <MatchSideFilter />
+      </TabsContent>
+      <TabsContent value="head-to-head" class="tab-panel-in mt-0">
+        <!-- No opacity dim here: both panels below carry their own matched-height
+             skeletons, so dimming would just fight the crossfade. -->
+        <div class="grid gap-4 max-w-[1500px]">
+          <HeadToHead
+            :match="match"
+            v-model:selected-a="h2hSelectedA"
+            v-model:selected-b="h2hSelectedB"
+          />
+          <LineupRadarComparison
+            :match="mapScopedMatch"
+            :lineup="activeLineup1"
+            :combine-with="activeLineup2"
+            :selected-map-id="activeMap?.id"
+            :hide-selectors="true"
+            :loading="statsPending"
+            v-model:selected-a="h2hSelectedA"
+            v-model:selected-b="h2hSelectedB"
+          />
         </div>
-        <lineup-clutches
-          :match="match"
-          :lineup1="match.lineup_1"
-          :lineup2="match.lineup_2"
-          :selected-map-id="activeMap?.id"
-        ></lineup-clutches>
-      </div>
-    </TabsContent>
-    <TabsContent value="head-to-head">
-      <!-- No opacity dim here: both panels below carry their own matched-height
-           skeletons, so dimming would just fight the crossfade. -->
-      <div class="grid gap-4 max-w-[1500px]">
-        <HeadToHead
-          :match="match"
-          v-model:selected-a="h2hSelectedA"
-          v-model:selected-b="h2hSelectedB"
-        />
-        <LineupRadarComparison
-          :match="mapScopedMatch"
-          :lineup="activeLineup1"
-          :combine-with="activeLineup2"
-          :selected-map-id="activeMap?.id"
-          :hide-selectors="true"
-          :loading="statsPending"
-          v-model:selected-a="h2hSelectedA"
-          v-model:selected-b="h2hSelectedB"
-        />
-      </div>
-    </TabsContent>
-    <TabsContent value="roles">
-      <div
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
-        <MatchRoles
-          :match="mapScopedMatch"
-          :lineup="activeLineup1"
-          :combine-with="activeLineup2"
-          :selected-map-id="activeMap?.id"
-        />
-      </div>
-    </TabsContent>
-    <TabsContent value="map-analysis">
-      <div class="grid gap-4 max-w-[1500px]">
-        <MatchMapAnalysis :match="match" :selected-map-id="activeMap?.id" />
-      </div>
-    </TabsContent>
-    <TabsContent value="utility">
-      <div class="grid gap-4 max-w-[1500px]">
-        <MatchUtilityUtility :match="match" />
-      </div>
-    </TabsContent>
-    <TabsContent
-      value="server"
-      class="flex flex-col gap-4 max-w-[1500px] w-full overflow-x-auto"
-    >
-      <AlertDialog :open="showConfirmDialog">
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
-            <AlertDialogDescription class="flex flex-col gap-2">
-              <span>{{ $t("common.are_you_sure") }}</span>
-              <Badge variant="secondary" class="w-fit">
-                {{ pendingCommand?.display ? $t(pendingCommand.display) : "" }}
-              </Badge>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel @click="showConfirmDialog = false">
-              {{ $t("common.cancel") }}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              @click="
-                executePending && executePending();
-                showConfirmDialog = false;
-              "
-            >
-              {{ $t("common.confirm") }}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <!-- Reboot confirm lives here (not in the RCON dropdown) so it survives
-           the dropdown unmounting when the menu closes. -->
-      <MatchServerRebootControl
-        :match="match"
-        variant="dialog"
-        v-model:open="showRebootDialog"
-      />
-
-      <HeightSwap v-if="canSendRCONCommands">
-        <RconCommander
-          v-if="canUseRcon"
-          key="console"
-          :server-id="match.server_id"
-          :online="!!match.is_server_online"
-          :match-id="match.id"
-          :plugin-runtime="pluginRuntime"
+      </TabsContent>
+      <TabsContent value="roles" class="tab-panel-in mt-0">
+        <div
+          class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+          :class="{ 'opacity-60': activeMap && !mapStats }"
         >
-          <template #default="{ commander: send }">
-            <template v-for="command of availableCommands">
-              <DropdownMenuItem
-                :disabled="!match.is_server_online"
+          <MatchRoles
+            :match="mapScopedMatch"
+            :lineup="activeLineup1"
+            :combine-with="activeLineup2"
+            :selected-map-id="activeMap?.id"
+          />
+        </div>
+      </TabsContent>
+      <TabsContent value="map-analysis" class="tab-panel-in mt-0">
+        <div class="grid gap-4 max-w-[1500px]">
+          <MatchMapAnalysis :match="match" :selected-map-id="activeMap?.id" />
+        </div>
+      </TabsContent>
+      <TabsContent value="utility" class="tab-panel-in mt-0">
+        <div class="grid gap-4 max-w-[1500px]">
+          <MatchUtilityUtility :match="match" />
+        </div>
+      </TabsContent>
+      <TabsContent
+        value="server"
+        class="tab-panel-in mt-0 flex flex-col gap-4 max-w-[1500px] w-full overflow-x-auto data-[state=inactive]:hidden"
+      >
+        <AlertDialog :open="showConfirmDialog">
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
+              <AlertDialogDescription class="flex flex-col gap-2">
+                <span>{{ $t("common.are_you_sure") }}</span>
+                <Badge variant="secondary" class="w-fit">
+                  {{ pendingCommand?.display ? $t(pendingCommand.display) : "" }}
+                </Badge>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel @click="showConfirmDialog = false">
+                {{ $t("common.cancel") }}
+              </AlertDialogCancel>
+              <AlertDialogAction
                 @click="
-                  command.confirm
-                    ? confirmCommand(command, send)
-                    : send(rconCommand(command.action), '')
+                  executePending && executePending();
+                  showConfirmDialog = false;
                 "
               >
-                {{ $t(command.display) }}
-              </DropdownMenuItem>
-            </template>
+                {{ $t("common.confirm") }}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-            <template v-if="restorableRounds.length > 0">
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger :disabled="!match.is_server_online">
-                  {{ $t("match.tabs.restore_round") }}
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
-                  <DropdownMenuItem
-                    v-for="round of restorableRounds"
-                    :key="round.round"
-                    :disabled="!match.is_server_online"
-                    @click="send('restore_round', round.round.toString())"
-                  >
-                    {{
-                      $t("common.round", {
-                        number: round.round.toString(),
-                      })
-                    }}
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-            </template>
-          </template>
-
-          <template #footer>
-            <MatchServerRebootControl
-              :match="match"
-              variant="menu-item"
-              v-model:open="showRebootDialog"
-            />
-          </template>
-        </RconCommander>
-        <div
-          v-else
-          key="moderators-only"
-          class="grid gap-3 lg:auto-cols-fr lg:grid-flow-col"
-        >
-          <div
-            class="flex flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border p-6 text-center"
-          >
-            <Terminal class="h-5 w-5 text-muted-foreground" />
-            <h3 class="text-sm font-semibold">
-              {{ $t("rcon.moderators_only") }}
-            </h3>
-            <p class="text-xs text-muted-foreground">
-              {{ $t("rcon.moderators_only_description") }}
-            </p>
-          </div>
-          <MatchServerRebootControl :match="match" variant="card" />
-        </div>
-      </HeightSwap>
-
-      <div
-        v-if="!hasLogs"
-        class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-8 text-center"
-      >
-        <h3 class="font-semibold">{{ $t("match.tabs.no_logs_title") }}</h3>
-        <p class="text-sm text-muted-foreground">
-          {{ $t("match.tabs.no_logs_description") }}
-        </p>
-      </div>
-      <div v-if="canViewMatchServerLogs" v-show="hasLogs">
-        <ServiceLogs
-          :service="`${match.source === 'practice' ? 'u' : 'm'}-${match.id}`"
-          :compact="true"
-          :disable-retry="isMatchTerminal"
-          @has-logs="hasLogs = $event"
+        <!-- Reboot confirm lives here (not in the RCON dropdown) so it survives
+             the dropdown unmounting when the menu closes. -->
+        <MatchServerRebootControl
+          :match="match"
+          variant="dialog"
+          v-model:open="showRebootDialog"
         />
-      </div>
-    </TabsContent>
-    <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
-      <MatchOptionsDisplay
-        :options="match.options"
-        :show-details-by-default="true"
-        :substitutes="
-          match.max_players_per_lineup - match.min_players_per_lineup
-        "
-      ></MatchOptionsDisplay>
 
-      <section v-if="displayServerInformation" class="server-info-panel">
-        <header class="server-info-panel__head">
-          <span class="server-info-panel__tick"></span>
-          {{ $t("match.tabs.server_information") }}
-        </header>
-        <dl class="server-info-panel__list">
-          <div class="server-info-row">
-            <dt class="server-info-row__label">{{ $t("match.tabs.type") }}</dt>
-            <dd class="server-info-row__value">
-              {{ match.server_type || $t("common.tbd") }}
-            </dd>
+        <HeightSwap v-if="canSendRCONCommands">
+          <RconCommander
+            v-if="canUseRcon"
+            key="console"
+            :server-id="match.server_id"
+            :online="!!match.is_server_online"
+            :match-id="match.id"
+            :plugin-runtime="pluginRuntime"
+          >
+            <template #default="{ commander: send }">
+              <template v-for="command of availableCommands">
+                <DropdownMenuItem
+                  :disabled="!match.is_server_online"
+                  @click="
+                    command.confirm
+                      ? confirmCommand(command, send)
+                      : send(rconCommand(command.action), '')
+                  "
+                >
+                  {{ $t(command.display) }}
+                </DropdownMenuItem>
+              </template>
+
+              <template v-if="restorableRounds.length > 0">
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger :disabled="!match.is_server_online">
+                    {{ $t("match.tabs.restore_round") }}
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent class="max-h-80 overflow-y-auto">
+                    <DropdownMenuItem
+                      v-for="round of restorableRounds"
+                      :key="round.round"
+                      :disabled="!match.is_server_online"
+                      @click="send('restore_round', round.round.toString())"
+                    >
+                      {{
+                        $t("common.round", {
+                          number: round.round.toString(),
+                        })
+                      }}
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              </template>
+            </template>
+
+            <template #footer>
+              <MatchServerRebootControl
+                :match="match"
+                variant="menu-item"
+                v-model:open="showRebootDialog"
+              />
+            </template>
+          </RconCommander>
+          <div
+            v-else
+            key="moderators-only"
+            class="grid gap-3 lg:auto-cols-fr lg:grid-flow-col"
+          >
+            <div
+              class="flex flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-border p-6 text-center"
+            >
+              <Terminal class="h-5 w-5 text-muted-foreground" />
+              <h3 class="text-sm font-semibold">
+                {{ $t("rcon.moderators_only") }}
+              </h3>
+              <p class="text-xs text-muted-foreground">
+                {{ $t("rcon.moderators_only_description") }}
+              </p>
+            </div>
+            <MatchServerRebootControl :match="match" variant="card" />
           </div>
-          <div class="server-info-row">
-            <dt class="server-info-row__label">
-              {{ $t("match.tabs.region") }}
-            </dt>
-            <dd class="server-info-row__value">
-              <span v-if="match.server_region">{{ match.server_region }}</span>
-              <span v-else-if="match.e_region">{{
-                match.e_region.description || match.e_region.value
-              }}</span>
-            </dd>
-          </div>
-        </dl>
-      </section>
-      <MatchForm
-        v-if="match.is_organizer && showMatchSettingsForm"
-        :match="match"
-        class="!max-w-none"
-      />
-    </TabsContent>
-    <TabsContent value="streams" class="max-w-[1500px]">
-      <MatchLiveStreams :match="match" />
-    </TabsContent>
-    <TabsContent v-if="canViewChatLog" value="chat-log">
-      <HeightGlide>
+        </HeightSwap>
+
+        <div
+          v-if="!hasLogs"
+          class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-8 text-center"
+        >
+          <h3 class="font-semibold">{{ $t("match.tabs.no_logs_title") }}</h3>
+          <p class="text-sm text-muted-foreground">
+            {{ $t("match.tabs.no_logs_description") }}
+          </p>
+        </div>
+        <div v-if="canViewMatchServerLogs" v-show="hasLogs">
+          <ServiceLogs
+            :service="`${match.source === 'practice' ? 'u' : 'm'}-${match.id}`"
+            :compact="true"
+            :disable-retry="isMatchTerminal"
+            @has-logs="hasLogs = $event"
+          />
+        </div>
+      </TabsContent>
+      <TabsContent
+        value="settings"
+        class="tab-panel-in mt-0 flex flex-col gap-4 max-w-[1500px] data-[state=inactive]:hidden"
+      >
+        <MatchOptionsDisplay
+          :options="match.options"
+          :show-details-by-default="true"
+          :substitutes="
+            match.max_players_per_lineup - match.min_players_per_lineup
+          "
+        ></MatchOptionsDisplay>
+
+        <section v-if="displayServerInformation" class="server-info-panel">
+          <header class="server-info-panel__head">
+            <span class="server-info-panel__tick"></span>
+            {{ $t("match.tabs.server_information") }}
+          </header>
+          <dl class="server-info-panel__list">
+            <div class="server-info-row">
+              <dt class="server-info-row__label">{{ $t("match.tabs.type") }}</dt>
+              <dd class="server-info-row__value">
+                {{ match.server_type || $t("common.tbd") }}
+              </dd>
+            </div>
+            <div class="server-info-row">
+              <dt class="server-info-row__label">
+                {{ $t("match.tabs.region") }}
+              </dt>
+              <dd class="server-info-row__value">
+                <span v-if="match.server_region">{{ match.server_region }}</span>
+                <span v-else-if="match.e_region">{{
+                  match.e_region.description || match.e_region.value
+                }}</span>
+              </dd>
+            </div>
+          </dl>
+        </section>
+        <MatchForm
+          v-if="match.is_organizer && showMatchSettingsForm"
+          :match="match"
+          class="!max-w-none"
+        />
+      </TabsContent>
+      <TabsContent value="streams" class="tab-panel-in mt-0 max-w-[1500px]">
+        <MatchLiveStreams :match="match" />
+      </TabsContent>
+      <TabsContent v-if="canViewChatLog" value="chat-log" class="tab-panel-in mt-0">
         <MatchChatLog :match="match" :active-map-id="activeMap?.id" />
-      </HeightGlide>
-    </TabsContent>
+      </TabsContent>
+    </HeightGlide>
     <div
       v-if="!disableStats && !isOpsTabActive && activeTab !== 'chat-log'"
       class="mt-0.5 flex justify-end max-w-[1500px]"

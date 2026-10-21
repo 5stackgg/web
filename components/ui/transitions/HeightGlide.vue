@@ -81,8 +81,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* clip, not hidden: hidden makes this a scroll container for the length of a
+   glide, and a sticky child (the Rounds tab's rewind bar) lets go of the page
+   until it ends. */
 .height-glide-animating {
-  overflow: hidden;
+  overflow: clip;
   transition: height 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 </style>

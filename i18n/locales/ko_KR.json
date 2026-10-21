@@ -12102,6 +12102,7 @@
   },
   "chat": {
     "readonly": "이 채팅은 읽기 전용입니다.",
+    "match_moderator_readonly": "모더레이터로서 이 채팅을 읽을 수 있습니다. 이 경기의 선수, 코치, 주최자만 여기에 글을 쓸 수 있습니다.",
     "lobby_chat": "로비 채팅",
     "message_label": "메시지",
     "new_since_last_visit": "신규",

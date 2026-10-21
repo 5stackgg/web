@@ -12102,6 +12102,7 @@
   },
   "chat": {
     "readonly": "El chat es de solo lectura.",
+    "match_moderator_readonly": "Puedes leer este chat como moderador. Solo los jugadores, entrenadores y organizadores de la partida pueden escribir aquí.",
     "lobby_chat": "Chat del lobby",
     "message_label": "Mensaje",
     "new_since_last_visit": "Nuevo",

@@ -243,17 +243,26 @@ const ChatLobby = defineAsyncComponent(
                falls back to the match room alone.
                Wrapped so the read cursor can follow whether it is on screen,
                rather than whether it is allowed to be. -->
-            <div ref="inlineChat" v-if="canJoinLobby">
+            <div ref="inlineChat" v-if="showsInlineChat">
               <ChatLobby
                 class="max-h-96"
                 instance="matches/id"
                 type="match"
                 :lobby-id="match.id"
                 :team-lobby-id="
-                  myLineupId ? `${match.id}:${myLineupId}` : undefined
+                  myLineupId && !readsMatchChatOnly
+                    ? `${match.id}:${myLineupId}`
+                    : undefined
+                "
+                :can-send="!readsMatchChatOnly"
+                :readonly-hint="
+                  readsMatchChatOnly
+                    ? $t('chat.match_moderator_readonly')
+                    : undefined
                 "
                 :play-notification-sound="
-                  match.status !== e_match_status_enum.Live
+                  match.status !== e_match_status_enum.Live &&
+                  !readsMatchChatOnly
                 "
               />
             </div>
@@ -376,7 +385,12 @@ const ChatLobby = defineAsyncComponent(
 </template>
 
 <script lang="ts">
-import { $, order_by, e_match_status_enum } from "~/generated/zeus";
+import {
+  $,
+  order_by,
+  e_match_status_enum,
+  e_player_roles_enum,
+} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
@@ -685,7 +699,7 @@ export default {
     },
     // The chat is only rendered once the match says this viewer may join it,
     // which is after the subscription's first result.
-    canJoinLobby: {
+    showsInlineChat: {
       immediate: true,
       handler() {
         void this.$nextTick(() => this.watchInlineChat());
@@ -889,7 +903,7 @@ export default {
     // the page nor merely being allowed into the room is mistaken for reading
     // it.
     chatThread() {
-      return this.match && this.canJoinLobby && this.inlineChatVisible
+      return this.match && this.showsInlineChat && this.inlineChatVisible
         ? chatThreadKey("match", this.match.id)
         : null;
     },
@@ -959,6 +973,33 @@ export default {
         this.match.is_organizer ||
         this.match.is_coach
       );
+    },
+    // The api lets a moderator with no part in the match read it only in these
+    // statuses, and answers any other join with nothing at all. Until the
+    // viewer's own seats have loaded, a moderator on a lineup reads as an
+    // outsider.
+    readsMatchChatOnly() {
+      if (
+        !this.match ||
+        this.canJoinLobby ||
+        this.matchStatic?.id !== this.match.id ||
+        this.match.source === "practice"
+      ) {
+        return false;
+      }
+
+      return (
+        [
+          e_match_status_enum.WaitingForCheckIn,
+          e_match_status_enum.Veto,
+          e_match_status_enum.WaitingForServer,
+          e_match_status_enum.Live,
+        ].includes(this.match.status) &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
+      );
+    },
+    showsInlineChat() {
+      return this.canJoinLobby || this.readsMatchChatOnly;
     },
     hasGameStreamer() {
       return (this.match?.streams || []).some((s) => s.is_game_streamer);

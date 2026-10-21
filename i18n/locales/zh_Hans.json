@@ -12102,6 +12102,7 @@
   },
   "chat": {
     "readonly": "聊天为只读模式。",
+    "match_moderator_readonly": "你可以以版主身份阅读此聊天。只有本场比赛的选手、教练和组织者可以在这里发言。",
     "lobby_chat": "大厅聊天",
     "message_label": "消息",
     "new_since_last_visit": "新消息",

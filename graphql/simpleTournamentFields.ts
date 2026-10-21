@@ -1,6 +1,9 @@
 import { order_by, Selector } from "~/generated/zeus";
 import { matchOptionsFields } from "./matchOptionsFields";
-import { freeAgentPoolWhere } from "./tournamentCardFields";
+import {
+  freeAgentPoolWhere,
+  tournamentRosterCounts,
+} from "./tournamentCardFields";
 
 /**
  * The registration / check-in columns and their computed fields.
@@ -137,6 +140,7 @@ export const simpleTournamentFields = Selector("tournaments")({
       },
     },
   ],
+  __alias: tournamentRosterCounts,
   min_players_per_lineup: true,
   free_agents_aggregate: [
     { where: freeAgentPoolWhere },

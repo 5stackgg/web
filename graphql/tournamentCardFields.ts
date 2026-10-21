@@ -15,6 +15,13 @@ export const freeAgentPoolWhere = {
   },
 };
 
+// Aliased because the events page selects its own `teams` over the spread.
+export const tournamentRosterCounts: Record<string, any> = {
+  roster_counts: {
+    teams: [{}, { roster_aggregate: count }],
+  },
+};
+
 // Everything WatchTournamentCard reads, shared by /watch and /play.
 export const tournamentCardFields = {
   id: true,
@@ -37,6 +44,7 @@ export const tournamentCardFields = {
   admin: { name: true },
   prizes: [{}, { prize: true }],
   teams_aggregate: count,
+  __alias: tournamentRosterCounts,
   registration_type: true,
   min_players_per_lineup: true,
   free_agents_aggregate: [

@@ -12,7 +12,12 @@ afterEach(() => {
   unmount = null;
 });
 
-function fridayMix(registration_type: string, teams: number, agents: number) {
+function fridayMix(
+  registration_type: string,
+  teams: number,
+  agents: number,
+  rosters: number[] = [],
+) {
   return {
     id: `friday-mix-${registration_type}`,
     name: "Friday Mix",
@@ -22,6 +27,9 @@ function fridayMix(registration_type: string, teams: number, agents: number) {
     min_players_per_lineup: 5,
     options: { type: "Competitive", best_of: 1 },
     teams_aggregate: { aggregate: { count: teams } },
+    roster_counts: rosters.map((count) => ({
+      roster_aggregate: { aggregate: { count } },
+    })),
     free_agents_aggregate: { aggregate: { count: agents } },
     stages: [{ order: 1, max_teams: 16, type: "SingleElimination" }],
     categories: [],
@@ -74,12 +82,12 @@ describe("registration counts", () => {
     expect(wrapper.text()).not.toContain("/");
   });
 
-  it("counts players on the agenda row", async () => {
+  it("counts the players on the agenda row, not a full lineup per team", async () => {
     const wrapper = await mount(TournamentAgendaRow, {
-      tournament: fridayMix("both", 6, 16),
+      tournament: fridayMix("both", 6, 16, [5, 5, 4, 3, 3, 2]),
     });
 
-    expect(wrapper.text()).toContain("46 of 80 players");
+    expect(wrapper.text()).toContain("38 of 80 players");
   });
 
   it("counts players on the watch card", async () => {

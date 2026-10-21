@@ -1002,7 +1002,10 @@ import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { bracketProposalSelection } from "~/graphql/bracketNegotiation";
 import { formatPrizePool } from "~/utilities/prizePool";
-import { freeAgentPoolWhere } from "~/graphql/tournamentCardFields";
+import {
+  freeAgentPoolWhere,
+  tournamentRosterCounts,
+} from "~/graphql/tournamentCardFields";
 import { tournamentRegistrationCount } from "~/utilities/tournamentRegistrationCount";
 import { dateLocale } from "~/utilities/dateLocale";
 import { tournamentHomepageLink } from "~/utilities/tournamentHomepage";
@@ -1327,6 +1330,7 @@ export default {
                   },
                 },
               ],
+              __alias: tournamentRosterCounts,
               stages: [
                 {
                   order_by: [

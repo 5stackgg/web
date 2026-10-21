@@ -28,6 +28,8 @@ RUN yarn build
 
 FROM node:24.22.1-alpine
 
+RUN apk upgrade --no-cache ca-certificates-bundle
+
 WORKDIR /opt/5stack
 
 COPY --from=builder /opt/5stack/.output  .

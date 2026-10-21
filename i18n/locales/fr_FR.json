@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Tournois",
         "lede": "En rejoindre un avec votre équipe, et en organiser un."
+      },
+      "veto": {
+        "title": "Le veto",
+        "lede": "Comment les maps d'un match sont choisies, et ce qui se passe ensuite."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Corriger un résultat de tournoi",
         "lede": "Mauvais vainqueur, match à rejouer, ou match qui n'a jamais eu lieu.",
         "keywords": "réinitialiser vainqueur résultat faux bracket rejouer forfait annuler recréer match classement"
+      },
+      "veto_flow": {
+        "title": "Comment marche le veto",
+        "lede": "Tours, chronos et côtés, puis direction le match.",
+        "keywords": "veto ban pick côté decider knife couteau région chrono draft lobby maps"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "En round robin et en suisse, un résultat ne peut plus être réinitialisé une fois la phase suivante seedée à partir du classement, ou une fois le round suisse suivant apparié.",
         "results_4": "Sur la page du match, **Résoudre un problème** propose les mêmes corrections : le match doit être rejoué, la mauvaise équipe a gagné, ou une équipe ne peut pas continuer.",
         "results_5": "Un match annulé ne fait pas avancer le bracket. Redémarrez-le depuis **Résoudre un problème**, ou définissez un vainqueur. Si un emplacement du bracket a perdu son match, **Recréer le match** y apparaît."
+      },
+      "veto_flow": {
+        "turns": "Les équipes jouent chacune leur tour. Chaque tour est un ban, un pick ou un choix de côté, avec un chrono : s'il arrive à zéro, le choix est fait pour l'équipe.",
+        "maps": "En best of one, on bannit des maps jusqu'à ce qu'il n'en reste qu'une. Une série choisit aussi les maps qu'elle jouera, et la dernière map restante est le decider.",
+        "sides": "L'équipe qui n'a pas pick une map choisit son côté de départ. Les côtés du decider se jouent au couteau quand le match a un knife round.",
+        "regions": "Quand plusieurs régions sont actives, les équipes font d'abord le veto de la région.",
+        "draft": "Dans un lobby de draft, le veto se fait dans la draft. Une fois terminé, la draft le garde affiché quelques secondes, puis envoie tout le monde sur la page du match, qui montre les maps pendant que le serveur démarre. Dès que le serveur est prêt, les maps se replient dans leurs cartes et « Rejoindre le serveur » apparaît.",
+        "demo_body": "Un lobby de draft fictif qui va jusqu'au bout : la dernière confirmation, le veto et le match qu'il lance. Rien de ce que tu fais là ne touche un vrai match.",
+        "demo_open": "Ouvrir le lobby de démo"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "C'est la démo, donc rien n'a vraiment changé."
     },
     "intro_admin": "Comment fonctionnent les matchs et les tournois ici, que faire quand quelque chose tourne mal, et comment gérer ce site.",
-    "search_hint": "Appuyez sur ⌘K n'importe où sur le site pour rechercher dans ces réponses."
+    "search_hint": "Appuyez sur ⌘K n'importe où sur le site pour rechercher dans ces réponses.",
+    "demo_draft": {
+      "title": "Lobby de démo",
+      "step_label": "Étape de la draft",
+      "replay": "Rejouer",
+      "steps": {
+        "check_in": {
+          "label": "Confirmation",
+          "caption": "Une draft fictive qui vient de créer son match. Tout le monde a confirmé sa présence depuis la draft, sauf un joueur. Rien ici ne touche une vraie draft."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Une fois tout le monde présent, les capitaines bannissent des maps dans la draft jusqu'à ce qu'il n'en reste qu'une. La draft garde le veto terminé affiché quelques secondes, puis envoie tout le monde sur la page du match."
+        },
+        "booting": {
+          "label": "Démarrage du serveur",
+          "caption": "La page du match s'ouvre sur les maps du veto pendant que le serveur démarre."
+        },
+        "ready": {
+          "label": "Serveur prêt",
+          "caption": "Le serveur est prêt : les maps se replient dans leurs cartes, le veto passe dans l'en-tête, puis les joueurs ont « Rejoindre le serveur »."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licences",

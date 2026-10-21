@@ -4,6 +4,10 @@ import { lineupSlot } from "~/utilities/vetoLineups";
 // match server boots: the maps to be played, each team's starting side. It
 // gives way once the server is up (or a map has started).
 export const STARTING_STATUSES = ["Live", "WaitingForServer", "CreatingMatch"];
+
+// How long a draft room keeps its finished veto up once the match starts, so
+// the last ban and the decider are seen before it hands over to the match page.
+export const DRAFT_VETO_HOLD_MS = 4000;
 const NOT_STARTED = ["Scheduled", "Warmup"];
 
 export type VetoStartSide = "CT" | "T";

@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Turneringer",
         "lede": "At deltage med dit hold, og at styre en turnering som arrangør."
+      },
+      "veto": {
+        "title": "Vetoet",
+        "lede": "Hvordan en kamps maps bliver valgt, og hvad der sker bagefter."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Ret et turneringsresultat",
         "lede": "Forkert vinder, en omkamp, eller en kamp, der aldrig blev spillet.",
         "keywords": "nulstil vinder resultat forkert bracket omkamp walkover aflys genopret kamp stilling"
+      },
+      "veto_flow": {
+        "title": "Sådan fungerer vetoet",
+        "lede": "Ture, ure og sider, og så videre til kampen.",
+        "keywords": "veto ban pick side decider kniv region ur draft lobby maps"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "I round robin og schweizersystem kan et resultat ikke nulstilles, når næste fase er seedet ud fra stillingen, eller når næste schweizerrunde er parret.",
         "results_4": "På kampsiden har **Løs et problem** de samme rettelser: kampen skal spilles igen, det forkerte hold fik sejren, eller et hold kan ikke fortsætte.",
         "results_5": "En aflyst kamp får ikke bracketen til at gå videre. Genstart den fra **Løs et problem**, eller sæt en vinder. Hvis en plads i bracketen har mistet sin kamp, vises **Genopret kamp** der."
+      },
+      "veto_flow": {
+        "turns": "Holdene skiftes. Hver tur er et ban, et pick eller et sidevalg og har et ur: Løber det ud, vælges der for holdet.",
+        "maps": "I en best of one bannes maps, til der er ét tilbage. En serie picker også de maps, den skal spille, og det sidste map tilbage er decideren.",
+        "sides": "Holdet, der ikke pickede et map, vælger sin startside. Siderne på decideren afgøres af en kniv-runde, hvis kampen har en.",
+        "regions": "Når mere end én region er slået til, laver holdene først veto på regionen.",
+        "draft": "I en draft-lobby foregår vetoet i draft-rummet. Når det er færdigt, viser rummet det et par sekunder og sender så alle til kampsiden, der viser maps, mens serveren starter op. Når serveren er klar, folder maps sig ind i deres kort, og \"Join server\" dukker op.",
+        "demo_body": "En opdigtet draft-lobby, der kører hele vejen: den sidste klarmelding, vetoet og kampen, den overgiver til. Intet, du gør der, rører en rigtig kamp.",
+        "demo_open": "Åbn demo-lobbyen"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "Det her er demoen, så intet blev rigtig ændret."
     },
     "intro_admin": "Sådan fungerer kampe og turneringer her, hvad du gør, når noget går galt, og hvordan du driver denne side.",
-    "search_hint": "Tryk på ⌘K hvor som helst på siden for at søge i disse svar."
+    "search_hint": "Tryk på ⌘K hvor som helst på siden for at søge i disse svar.",
+    "demo_draft": {
+      "title": "Demo-lobby",
+      "step_label": "Drafttrin",
+      "replay": "Afspil igen",
+      "steps": {
+        "check_in": {
+          "label": "Klarmelding",
+          "caption": "Et opdigtet draft, der lige har lavet sin kamp. Alle undtagen én spiller har meldt sig klar fra draft-rummet. Intet her rører et rigtigt draft."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Når alle har meldt sig klar, banner kaptajnerne maps i draft-rummet, til der er ét tilbage. Rummet viser det færdige veto et par sekunder og sender så alle til kampsiden."
+        },
+        "booting": {
+          "label": "Serveren starter op",
+          "caption": "Kampsiden åbner med vetoets maps, mens serveren starter op."
+        },
+        "ready": {
+          "label": "Server klar",
+          "caption": "Serveren er klar: Maps folder sig ind i deres kort, vetoet flytter op i toppen, og så får spillerne \"Join server\"."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licenser",

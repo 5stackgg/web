@@ -92,10 +92,19 @@ export default {
       type: Boolean,
       default: true,
     },
+    // The veto's picks when the caller already has them (the FAQ's demo
+    // draft); otherwise they, and the teams' veto history, are fetched.
+    picks: {
+      type: Array,
+      default: undefined,
+    },
   },
   apollo: {
     $subscribe: {
       match_map_veto_picks: {
+        skip() {
+          return !!this.picks;
+        },
         variables: function () {
           return {
             order_by: order_by.asc,
@@ -134,7 +143,7 @@ export default {
           ],
         }),
         result: function ({ data }) {
-          this.picks = data.match_map_veto_picks;
+          this.fetchedPicks = data.match_map_veto_picks;
         },
       },
     },
@@ -142,7 +151,7 @@ export default {
   data() {
     return {
       submitting: false,
-      picks: undefined,
+      fetchedPicks: undefined,
       scouting: null as [ScoutLineup | null, ScoutLineup | null] | null,
       playTickSound: useSound().playTickSound,
       playMatchFoundSound: useSound().playMatchFoundSound,
@@ -186,7 +195,7 @@ export default {
         }
       },
     },
-    picks: {
+    vetoPicks: {
       handler(currentPicks, oldPicks) {
         if (oldPicks && currentPicks.length > oldPicks.length) {
           this.playTickSound();
@@ -318,7 +327,7 @@ export default {
       return this.match.veto_pick_expires_at ?? null;
     },
     previousMap() {
-      return this.picks?.at(-1)?.map;
+      return this.vetoPicks?.at(-1)?.map;
     },
     mapPool() {
       return this.match.options?.map_pool?.maps ?? [];
@@ -335,7 +344,7 @@ export default {
       );
     },
     scoutingKey() {
-      if (!this.scoutingEnabled || !this.mapPool.length) {
+      if (this.picks || !this.scoutingEnabled || !this.mapPool.length) {
         return null;
       }
       return [
@@ -364,8 +373,11 @@ export default {
         viewer: this.viewerLineup,
       };
     },
+    vetoPicks() {
+      return this.picks ?? this.fetchedPicks;
+    },
     steps() {
-      return mapVetoSteps(this.match, this.picks ?? []);
+      return mapVetoSteps(this.match, this.vetoPicks ?? []);
     },
     handoffPhase() {
       return vetoHandoffPhase(this.match.id);
@@ -390,7 +402,7 @@ export default {
       }
       return {
         phase: this.startPhase,
-        maps: vetoStartMaps(this.match, this.picks ?? []),
+        maps: vetoStartMaps(this.match, this.vetoPicks ?? []),
       };
     },
     regionSet() {
@@ -402,7 +414,7 @@ export default {
       }
       // The finished veto stays up, once its moves have arrived.
       if (!this.stage && this.regionSet && vetoMapsSet(this.match)) {
-        return this.picks !== undefined;
+        return this.vetoPicks !== undefined;
       }
       return (
         this.regionSet &&

@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Tornei",
         "lede": "Partecipare con la tua squadra, e organizzarne uno."
+      },
+      "veto": {
+        "title": "Il veto",
+        "lede": "Come si scelgono le mappe di un match e cosa succede dopo."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Correggere un risultato del torneo",
         "lede": "Vincitore sbagliato, un match da rigiocare o un match mai disputato.",
         "keywords": "reimposta reset vincitore risultato sbagliato bracket tabellone rigioca forfait tavolino annulla ricrea match classifica"
+      },
+      "veto_flow": {
+        "title": "Come funziona il veto",
+        "lede": "Turni, timer e lati, poi si passa al match.",
+        "keywords": "veto ban pick lato decider coltello regione timer draft lobby mappe"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "Nel girone all'italiana e nello svizzero, un risultato non si può più reimpostare una volta che la fase successiva è stata composta dalla classifica, o che il round svizzero successivo è stato accoppiato.",
         "results_4": "Nella pagina del match, **Risolvi un problema** ha le stesse correzioni: il match va rigiocato, ha vinto la squadra sbagliata o una squadra non può continuare.",
         "results_5": "Un match annullato non fa avanzare il bracket. Riavvialo da **Risolvi un problema**, o imposta un vincitore. Se uno slot del bracket ha perso il suo match, lì compare **Ricrea match**."
+      },
+      "veto_flow": {
+        "turns": "Le squadre fanno a turno. Ogni turno è un ban, un pick o la scelta del lato, e ha un timer: se scade, la scelta viene fatta per quella squadra.",
+        "maps": "In un best of one si bannano mappe finché ne resta una. Una serie sceglie anche le mappe che giocherà, e l'ultima mappa rimasta è il decider.",
+        "sides": "La squadra che non ha scelto una mappa sceglie il lato di partenza. I lati del decider li decide un round al coltello, se il match lo prevede.",
+        "regions": "Quando sono attive più regioni, le squadre fanno prima il veto della regione.",
+        "draft": "In una lobby draft il veto si fa nella draft room. Finito il veto, la stanza lo mostra per qualche secondo e poi porta tutti alla pagina del match, che mostra le mappe mentre il server si avvia. Quando il server è pronto, le mappe si richiudono nelle loro schede e compare «Unisciti al server».",
+        "demo_body": "Una lobby draft di prova che arriva fino in fondo: l'ultima conferma, il veto e il match a cui passa. Niente di quello che fai lì tocca un match reale.",
+        "demo_open": "Apri la lobby demo"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "Questa è la demo, quindi non è cambiato davvero niente."
     },
     "intro_admin": "Come funzionano qui match e tornei, cosa fare quando qualcosa va storto e come gestire questo sito.",
-    "search_hint": "Premi ⌘K ovunque nel sito per cercare tra queste risposte."
+    "search_hint": "Premi ⌘K ovunque nel sito per cercare tra queste risposte.",
+    "demo_draft": {
+      "title": "Lobby demo",
+      "step_label": "Fase della draft",
+      "replay": "Riproduci di nuovo",
+      "steps": {
+        "check_in": {
+          "label": "Presenza",
+          "caption": "Una draft di prova che ha appena creato il suo match. Tutti hanno confermato la presenza dalla draft room tranne un giocatore. Niente qui tocca una draft reale."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Quando tutti hanno confermato, i capitani bannano le mappe nella draft room finché ne resta una. La stanza mostra il veto finito per qualche secondo, poi porta tutti alla pagina del match."
+        },
+        "booting": {
+          "label": "Avvio server",
+          "caption": "La pagina del match si apre sulle mappe del veto mentre il server si avvia."
+        },
+        "ready": {
+          "label": "Server pronto",
+          "caption": "Il server è pronto: le mappe si richiudono nelle loro schede, il veto passa nell'intestazione e i giocatori vedono «Unisciti al server»."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licenze",

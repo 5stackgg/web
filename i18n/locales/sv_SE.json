@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Turneringar",
         "lede": "Att gå med i en med ditt lag, och att leda en som arrangör."
+      },
+      "veto": {
+        "title": "Vetot",
+        "lede": "Hur en matchs banor väljs, och vad som händer sedan."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Rätta ett turneringsresultat",
         "lede": "Fel vinnare, ett omspel eller en match som aldrig blev av.",
         "keywords": "återställ vinnare resultat fel slutspelsträd omspel walkover avbryt återskapa match tabell"
+      },
+      "veto_flow": {
+        "title": "Så fungerar vetot",
+        "lede": "Turer, klockor och sidor, och sedan vidare till matchen.",
+        "keywords": "veto ban pick sida decider kniv region klocka draft lobby banor"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "I round robin och schweizersystem kan ett resultat inte återställas när nästa fas redan har seedats utifrån tabellen, eller när nästa schweizerrunda har lottats.",
         "results_4": "På matchsidan har **Lös ett problem** samma åtgärder: matchen måste spelas igen, fel lag fick vinsten, eller ett lag kan inte fortsätta.",
         "results_5": "En avbruten match för inte slutspelsträdet framåt. Starta om den från **Lös ett problem**, eller sätt en vinnare. Om en plats i slutspelsträdet har förlorat sin match visas **Återskapa match** där."
+      },
+      "veto_flow": {
+        "turns": "Lagen turas om. Varje tur är en ban, en pick eller ett sidval och har en klocka: tar den slut väljs det åt laget.",
+        "maps": "I en best of one bannas banor tills en är kvar. En serie pickar också banorna den ska spela, och den sista banan som blir över är decidern.",
+        "sides": "Laget som inte pickade en bana väljer startsida. Sidorna på decidern avgörs av en knivrunda, om matchen har en.",
+        "regions": "När mer än en region är på gör lagen först veto om regionen.",
+        "draft": "I en draftlobby sker vetot i draftrummet. När det är klart visar rummet det några sekunder och skickar sedan alla till matchsidan, som visar banorna medan servern startar. När servern är klar viks banorna in i sina kort och ”Anslut till server” dyker upp.",
+        "demo_body": "En påhittad draftlobby som går hela vägen: den sista anmälan, vetot och matchen den lämnar över till. Inget du gör där påverkar en riktig match.",
+        "demo_open": "Öppna demolobbyn"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "Det här är demon, så inget ändrades på riktigt."
     },
     "intro_admin": "Hur matcher och turneringar fungerar här, vad du gör när något går fel, och hur du driver den här sidan.",
-    "search_hint": "Tryck på ⌘K var som helst på sidan för att söka bland de här svaren."
+    "search_hint": "Tryck på ⌘K var som helst på sidan för att söka bland de här svaren.",
+    "demo_draft": {
+      "title": "Demolobby",
+      "step_label": "Draftsteg",
+      "replay": "Spela upp igen",
+      "steps": {
+        "check_in": {
+          "label": "Anmälan",
+          "caption": "En påhittad draft som just har skapat sin match. Alla utom en spelare har anmält sig från draftrummet. Inget här påverkar en riktig draft."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "När alla har anmält sig bannar kaptenerna banor i draftrummet tills en är kvar. Rummet visar det färdiga vetot några sekunder och skickar sedan alla till matchsidan."
+        },
+        "booting": {
+          "label": "Servern startar",
+          "caption": "Matchsidan öppnas med vetots banor medan servern startar."
+        },
+        "ready": {
+          "label": "Servern klar",
+          "caption": "Servern är klar: banorna viks in i sina kort, vetot flyttar upp i sidhuvudet och spelarna får ”Anslut till server”."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licenser",

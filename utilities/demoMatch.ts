@@ -145,12 +145,19 @@ export function demoRewindRounds(
     undoneFrom?: number | null;
     connected?: boolean;
     finished?: boolean;
+    // The map down to its last round, which is being played.
+    lastRound?: boolean;
   } = {},
 ): RewindRounds {
-  const played = options.finished ? [...PLAYED, ...PLAYED_TO_THE_END] : PLAYED;
-  const live = options.finished
-    ? played.length + 1
-    : (options.live ?? DEMO_LIVE_ROUND);
+  const played = options.finished
+    ? [...PLAYED, ...PLAYED_TO_THE_END]
+    : options.lastRound
+      ? [...PLAYED, ...PLAYED_TO_THE_END.slice(0, -1)]
+      : PLAYED;
+  const live =
+    options.finished || options.lastRound
+      ? played.length + 1
+      : (options.live ?? DEMO_LIVE_ROUND);
   const undoneFrom = options.undoneFrom ?? null;
   let score: [number, number] = [0, 0];
   const rounds: RewindRound[] = played.map(([winner, reason], index) => {

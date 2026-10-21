@@ -117,6 +117,10 @@ export default {
   apollo: {
     $subscribe: {
       match_map_veto_picks: {
+        // Without a region veto there are no picks to show.
+        skip() {
+          return !this.match.options.region_veto;
+        },
         variables: function () {
           return {
             matchId: this.matchId || this.$route.params.id,

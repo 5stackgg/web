@@ -858,6 +858,30 @@ const linkClasses =
       </div>
     </FaqSection>
 
+    <FaqPartHead id="veto" />
+
+    <FaqSection id="veto-flow">
+      <ul :class="bullets">
+        <li>{{ $t("faq.content.veto_flow.turns") }}</li>
+        <li>{{ $t("faq.content.veto_flow.maps") }}</li>
+        <li>{{ $t("faq.content.veto_flow.sides") }}</li>
+        <li>{{ $t("faq.content.veto_flow.regions") }}</li>
+        <li>{{ $t("faq.content.veto_flow.draft") }}</li>
+      </ul>
+      <div class="flex flex-wrap items-center gap-4">
+        <p class="max-w-xl flex-1 text-sm leading-relaxed text-foreground/85">
+          {{ $t("faq.content.veto_flow.demo_body") }}
+        </p>
+        <NuxtLink
+          to="/faq/demo-draft"
+          class="inline-flex items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] px-3 py-2 font-mono text-[0.7rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.18)]"
+        >
+          {{ $t("faq.content.veto_flow.demo_open") }}
+          <ArrowRight class="size-3.5" />
+        </NuxtLink>
+      </div>
+    </FaqSection>
+
     <FaqPartHead id="tournaments" />
 
     <FaqSection id="t-join">

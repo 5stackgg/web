@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Torneos",
         "lede": "Apuntarte a uno con tu equipo, y organizar uno."
+      },
+      "veto": {
+        "title": "El veto",
+        "lede": "Cómo se eligen los mapas de una partida y qué pasa después."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Corregir un resultado del torneo",
         "lede": "Ganador equivocado, una repetición o una partida que nunca se jugó.",
         "keywords": "restablecer ganador resultado mal cuadro bracket repetir incomparecencia cancelar recrear partida clasificación"
+      },
+      "veto_flow": {
+        "title": "Cómo funciona el veto",
+        "lede": "Turnos, relojes y lados, y luego a la partida.",
+        "keywords": "veto ban pick lado decider cuchillo región reloj draft lobby mapas"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "En todos contra todos y suizo, un resultado no se puede restablecer una vez que la siguiente fase se sorteó con la clasificación, o que se emparejó la siguiente ronda suiza.",
         "results_4": "En la página de la partida, **Solucionar un problema** tiene las mismas soluciones: hay que volver a jugar la partida, ganó el equipo equivocado o un equipo no puede continuar.",
         "results_5": "Una partida cancelada no hace avanzar el cuadro. Reiníciala desde **Solucionar un problema** o define un ganador. Si un hueco del cuadro ha perdido su partida, ahí aparece **Recrear partida**."
+      },
+      "veto_flow": {
+        "turns": "Los equipos se turnan. Cada turno es un ban, un pick o una elección de lado, y tiene un reloj: si se agota, se elige por ese equipo.",
+        "maps": "En un best of one se banean mapas hasta que queda uno. Una serie además elige los mapas que jugará, y el último mapa que queda es el decider.",
+        "sides": "El equipo que no eligió un mapa escoge su lado inicial. Los lados del decider los decide una ronda de cuchillo, si la partida tiene una.",
+        "regions": "Cuando hay más de una región activa, los equipos hacen primero el veto de la región.",
+        "draft": "En un lobby de draft el veto se hace en la sala de draft. Cuando termina, la sala lo mantiene unos segundos y luego lleva a todos a la página de la partida, que muestra los mapas mientras arranca el servidor. Cuando el servidor está listo, los mapas se pliegan en sus tarjetas y aparece «Entrar al servidor».",
+        "demo_body": "Un lobby de draft de prueba que llega hasta el final: la última confirmación, el veto y la partida a la que da paso. Nada de lo que hagas ahí afecta a una partida real.",
+        "demo_open": "Abrir el lobby de demostración"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "Esto es la demo, así que en realidad no ha cambiado nada."
     },
     "intro_admin": "Cómo funcionan aquí las partidas y los torneos, qué hacer cuando algo sale mal y cómo gestionar este sitio.",
-    "search_hint": "Pulsa ⌘K en cualquier parte del sitio para buscar en estas respuestas."
+    "search_hint": "Pulsa ⌘K en cualquier parte del sitio para buscar en estas respuestas.",
+    "demo_draft": {
+      "title": "Lobby de demostración",
+      "step_label": "Paso del draft",
+      "replay": "Repetir",
+      "steps": {
+        "check_in": {
+          "label": "Confirmación",
+          "caption": "Un draft de prueba que acaba de crear su partida. Todos han confirmado su asistencia desde la sala de draft menos un jugador. Nada de esto afecta a un draft real."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Cuando todos han confirmado, los capitanes banean mapas en la sala de draft hasta que queda uno. La sala mantiene el veto terminado unos segundos y luego lleva a todos a la página de la partida."
+        },
+        "booting": {
+          "label": "Arrancando servidor",
+          "caption": "La página de la partida se abre con los mapas del veto mientras arranca el servidor."
+        },
+        "ready": {
+          "label": "Servidor listo",
+          "caption": "El servidor está listo: los mapas se pliegan en sus tarjetas, el veto pasa a la cabecera y los jugadores ven «Entrar al servidor»."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licencias",

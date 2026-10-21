@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Turniere",
         "lede": "Mit deinem Team an einem teilnehmen und als Organisator eines leiten."
+      },
+      "veto": {
+        "title": "Das Veto",
+        "lede": "Wie die Maps eines Matches gewählt werden und was danach passiert."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Ein Turnierergebnis korrigieren",
         "lede": "Falscher Sieger, eine Wiederholung oder ein Match, das nie stattfand.",
         "keywords": "zurücksetzen sieger ergebnis falsch bracket turnierbaum wiederholen kampflos forfeit abbrechen neu erstellen match tabelle"
+      },
+      "veto_flow": {
+        "title": "So funktioniert das Veto",
+        "lede": "Züge, Uhren und Seiten, dann weiter zum Match.",
+        "keywords": "veto ban pick seite decider knife region uhr timer draft lobby maps"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "In Round Robin und Schweizer System lässt sich ein Ergebnis nicht mehr zurücksetzen, sobald die nächste Stage aus der Tabelle gesetzt oder die nächste Swiss-Runde ausgelost wurde.",
         "results_4": "Auf der Match-Seite bietet **Problem beheben** dieselben Korrekturen: Das Match muss neu gespielt werden, das falsche Team hat gewonnen oder ein Team kann nicht weiterspielen.",
         "results_5": "Ein abgebrochenes Match bringt den Turnierbaum nicht voran. Starte es über **Problem beheben** neu oder lege einen Sieger fest. Hat ein Platz im Turnierbaum sein Match verloren, erscheint dort **Match neu erstellen**."
+      },
+      "veto_flow": {
+        "turns": "Die Teams sind abwechselnd dran. Jeder Zug ist ein Ban, ein Pick oder eine Seitenwahl und hat eine Uhr: Läuft sie ab, wird für das Team gewählt.",
+        "maps": "Bei einem Best of One werden Maps gebannt, bis eine übrig ist. Eine Serie pickt außerdem die Maps, die sie spielt, und die letzte übrige Map ist der Decider.",
+        "sides": "Das Team, das eine Map nicht gepickt hat, wählt die Startseite. Die Seiten auf dem Decider entscheidet eine Knife-Runde, wenn das Match eine hat.",
+        "regions": "Sind mehrere Regionen aktiv, machen die Teams zuerst das Veto der Region.",
+        "draft": "In einer Draft-Lobby läuft das Veto im Draft-Room. Wenn es fertig ist, zeigt der Raum es noch ein paar Sekunden und schickt dann alle auf die Match-Seite, die die Maps zeigt, während der Server startet. Sobald der Server bereit ist, falten sich die Maps in ihre Karten und „Server beitreten“ erscheint.",
+        "demo_body": "Eine ausgedachte Draft-Lobby, die ganz durchläuft: der letzte Check-in, das Veto und das Match, an das sie übergibt. Nichts, was du dort tust, betrifft ein echtes Match.",
+        "demo_open": "Demo-Lobby öffnen"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "Das ist die Demo, also hat sich nichts wirklich geändert."
     },
     "intro_admin": "Wie Matches und Turniere hier funktionieren, was zu tun ist, wenn etwas schiefgeht, und wie du diese Seite betreibst.",
-    "search_hint": "Drück überall auf der Seite ⌘K, um diese Antworten zu durchsuchen."
+    "search_hint": "Drück überall auf der Seite ⌘K, um diese Antworten zu durchsuchen.",
+    "demo_draft": {
+      "title": "Demo-Lobby",
+      "step_label": "Draft-Schritt",
+      "replay": "Erneut abspielen",
+      "steps": {
+        "check_in": {
+          "label": "Check-in",
+          "caption": "Ein ausgedachter Draft, der gerade sein Match erstellt hat. Bis auf einen Spieler haben alle im Draft-Room eingecheckt. Nichts hier betrifft einen echten Draft."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Sobald alle eingecheckt haben, bannen die Captains im Draft-Room Maps, bis eine übrig ist. Der Raum zeigt das fertige Veto noch ein paar Sekunden und schickt dann alle auf die Match-Seite."
+        },
+        "booting": {
+          "label": "Server startet",
+          "caption": "Die Match-Seite öffnet mit den Maps aus dem Veto, während der Server startet."
+        },
+        "ready": {
+          "label": "Server bereit",
+          "caption": "Der Server läuft: Die Maps falten sich in ihre Karten, das Veto wandert in den Kopfbereich, dann bekommen die Spieler „Server beitreten“."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Lizenzen",

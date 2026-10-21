@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Torneios",
         "lede": "Como entrar em um com a sua equipe, e como conduzir um sendo organizador."
+      },
+      "veto": {
+        "title": "O veto",
+        "lede": "Como os mapas de uma partida são escolhidos e o que acontece depois."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Corrigir um resultado de torneio",
         "lede": "Vencedor errado, uma partida para rejogar, ou uma partida que nunca aconteceu.",
         "keywords": "redefinir vencedor resultado errado chaveamento rejogar W.O. cancelar recriar partida classificação"
+      },
+      "veto_flow": {
+        "title": "Como o veto funciona",
+        "lede": "Turnos, relógios e lados, e depois para a partida.",
+        "keywords": "veto ban pick lado decider faca região relógio draft lobby mapas"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "No round robin e no suíço, um resultado não pode ser redefinido depois que a fase seguinte recebeu seeds pela classificação, ou depois que a rodada suíça seguinte foi emparelhada.",
         "results_4": "Na página da partida, **Resolver um problema** tem as mesmas correções: a partida precisa ser jogada de novo, o time errado ficou com a vitória, ou um time não pode continuar.",
         "results_5": "Uma partida cancelada não faz o chaveamento andar. Reinicie-a em **Resolver um problema**, ou defina um vencedor. Se um espaço do chaveamento perdeu a partida, aparece **Recriar Partida** ali."
+      },
+      "veto_flow": {
+        "turns": "Os times se revezam. Cada turno é um ban, um pick ou uma escolha de lado, e tem um relógio: quando ele acaba, a escolha é feita pelo time.",
+        "maps": "Em uma melhor de um, os mapas são banidos até sobrar um. Uma série também escolhe os mapas que vai jogar, e o último mapa que sobra é o decider.",
+        "sides": "O time que não escolheu um mapa escolhe o lado inicial. Os lados do decider são decididos por um round de faca, quando a partida tem um.",
+        "regions": "Quando há mais de uma região ativa, os times fazem primeiro o veto da região.",
+        "draft": "Em um lobby de draft, o veto acontece na Sala Draft. Quando termina, a sala o mantém por alguns segundos e depois leva todos para a página da partida, que mostra os mapas enquanto o servidor inicia. Quando o servidor fica pronto, os mapas se recolhem nos seus cards e aparece \"Entrar no Servidor\".",
+        "demo_body": "Um lobby de draft de mentira que vai até o fim: o último check-in, o veto e a partida para onde ele leva. Nada do que você fizer ali afeta uma partida real.",
+        "demo_open": "Abrir o lobby demo"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "Isto é a demo, então nada mudou de verdade."
     },
     "intro_admin": "Como funcionam as partidas e os torneios aqui, o que fazer quando algo dá errado, e como administrar este site.",
-    "search_hint": "Aperte ⌘K em qualquer lugar do site para buscar nestas respostas."
+    "search_hint": "Aperte ⌘K em qualquer lugar do site para buscar nestas respostas.",
+    "demo_draft": {
+      "title": "Lobby demo",
+      "step_label": "Etapa do draft",
+      "replay": "Repetir",
+      "steps": {
+        "check_in": {
+          "label": "Check-in",
+          "caption": "Um draft de mentira que acabou de criar sua partida. Todos fizeram check-in pela Sala Draft, menos um jogador. Nada aqui afeta um draft real."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Quando todos fazem check-in, os capitães banem mapas na Sala Draft até sobrar um. A sala mantém o veto terminado por alguns segundos e depois leva todos para a página da partida."
+        },
+        "booting": {
+          "label": "Servidor iniciando",
+          "caption": "A página da partida abre com os mapas do veto enquanto o servidor inicia."
+        },
+        "ready": {
+          "label": "Servidor pronto",
+          "caption": "O servidor está pronto: os mapas se recolhem nos seus cards, o veto vai para o cabeçalho e os jogadores recebem \"Entrar no Servidor\"."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licenças",

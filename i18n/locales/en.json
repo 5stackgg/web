@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Tournaments",
         "lede": "Joining one with your team, and running one as an organizer."
+      },
+      "veto": {
+        "title": "The Veto",
+        "lede": "How a match's maps are chosen, and what happens once they are."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Fixing a Tournament Result",
         "lede": "Wrong winner, a replay, or a match that never happened.",
         "keywords": "reset winner result wrong bracket replay forfeit cancel recreate match standings"
+      },
+      "veto_flow": {
+        "title": "How the Veto Works",
+        "lede": "Turns, clocks and sides, then on to the match.",
+        "keywords": "veto ban pick side decider knife region clock timer draft lobby maps"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "In round robin and Swiss, a result can't be reset once the next stage was seeded from the standings, or once the next Swiss round was paired.",
         "results_4": "On the match page, **Fix a Problem** has the same fixes: the match needs to be played again, the wrong team got the win, or a team can't continue.",
         "results_5": "A canceled match doesn't move the bracket on. Restart it from **Fix a Problem**, or set a winner. If a bracket slot has lost its match, **Recreate Match** appears there."
+      },
+      "veto_flow": {
+        "turns": "The teams take turns. Each turn is a ban, a pick or a side choice, and has a clock: when it runs out, the choice is made for that team.",
+        "maps": "A best of one bans maps until one is left. A series also picks the maps it will play, and the last map left over is the decider.",
+        "sides": "The team that didn't pick a map chooses its starting side. The decider's sides come from a knife round, when the match has one.",
+        "regions": "When more than one region is on, the teams veto the region first.",
+        "draft": "In a draft lobby the veto happens in the draft room. When it ends, the room keeps it up for a few seconds, then sends everyone to the match page, which shows the maps while the server boots. Once the server is ready, the maps fold into their cards and Join Server opens.",
+        "demo_body": "A pretend draft lobby that runs the whole way: the last check-in, the veto, and the match it hands over to. Nothing you do there touches a real match.",
+        "demo_open": "Open the Demo Lobby"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "This is the demo, so nothing really changed."
     },
     "intro_admin": "How matches and tournaments work here, what to do when something goes wrong, and how to run this site.",
-    "search_hint": "Press ⌘K anywhere on the site to search these answers."
+    "search_hint": "Press ⌘K anywhere on the site to search these answers.",
+    "demo_draft": {
+      "title": "Demo Lobby",
+      "step_label": "Draft step",
+      "replay": "Replay",
+      "steps": {
+        "check_in": {
+          "label": "Check-in",
+          "caption": "A pretend draft that has just made its match. Everyone has checked in from the draft room but one player. Nothing here touches a real draft."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Once everyone is in, the captains ban maps in the draft room until one is left. The room keeps the finished veto up for a few seconds, then sends everyone to the match page."
+        },
+        "booting": {
+          "label": "Server booting",
+          "caption": "The match page opens on the veto's maps while the server boots."
+        },
+        "ready": {
+          "label": "Server ready",
+          "caption": "The server is up: the maps fold into their cards, the veto moves into the header, then players get Join Server."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licenses",

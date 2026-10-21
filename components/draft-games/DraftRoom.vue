@@ -56,6 +56,8 @@ const props = defineProps<{
   room: any;
   match?: any;
   inviteCode?: string;
+  // The map veto's picks, when the caller has them (the FAQ's demo draft).
+  vetoPicks?: any[];
 }>();
 
 const { t } = useI18n();
@@ -1024,6 +1026,7 @@ const start = () => {
                 :match="match"
                 :match-id="room.match_id"
                 :stage="false"
+                :picks="vetoPicks"
               />
             </div>
 
@@ -1991,32 +1994,36 @@ const start = () => {
                 {{ $t("draft_games.room.comms") }}
               </h3>
             </div>
-            <div v-if="me" class="flex min-h-0 flex-1 flex-col">
-              <ChatLobby
-                class="min-h-0 flex-1"
-                instance="draft-room"
-                :type="chatType"
-                :lobby-id="chatLobbyId"
-                :team-lobby-id="teamChatLobbyId ?? undefined"
-                :frameless="true"
-                :can-send="canChat"
-                :readonly-hint="$t('draft_games.room.chat_players_only')"
-              />
-            </div>
-            <div
-              v-else
-              class="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 px-4 py-6 text-center"
-            >
-              <p class="text-xs text-muted-foreground">
-                {{ $t("draft_games.room.login_to_chat") }}
-              </p>
-              <NuxtLink
-                :to="`/login?redirect=/draft-room/${room.id}`"
-                class="text-xs font-medium text-[hsl(var(--tac-amber))] underline underline-offset-4"
+            <!-- The FAQ's demo draft brings its own: a live chat needs a real
+                 room. -->
+            <slot name="chat">
+              <div v-if="me" class="flex min-h-0 flex-1 flex-col">
+                <ChatLobby
+                  class="min-h-0 flex-1"
+                  instance="draft-room"
+                  :type="chatType"
+                  :lobby-id="chatLobbyId"
+                  :team-lobby-id="teamChatLobbyId ?? undefined"
+                  :frameless="true"
+                  :can-send="canChat"
+                  :readonly-hint="$t('draft_games.room.chat_players_only')"
+                />
+              </div>
+              <div
+                v-else
+                class="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 px-4 py-6 text-center"
               >
-                {{ $t("draft_games.room.login") }}
-              </NuxtLink>
-            </div>
+                <p class="text-xs text-muted-foreground">
+                  {{ $t("draft_games.room.login_to_chat") }}
+                </p>
+                <NuxtLink
+                  :to="`/login?redirect=/draft-room/${room.id}`"
+                  class="text-xs font-medium text-[hsl(var(--tac-amber))] underline underline-offset-4"
+                >
+                  {{ $t("draft_games.room.login") }}
+                </NuxtLink>
+              </div>
+            </slot>
           </div>
         </div>
 
@@ -2035,14 +2042,18 @@ const start = () => {
                    on the chat composer existed to start a call before this
                    section appeared -- which left the same three controls on
                    screen twice as soon as it had. -->
-              <VoiceChannelCard
-                v-if="myVoiceLineupId"
-                show-empty
-                class="mt-3"
-                kind="match"
-                :channel-id="myVoiceLineupId"
-                :label="$t('layouts.voice_panel.team_comms')"
-              />
+              <!-- The FAQ's demo draft has no voice: a channel needs a real
+                   room, like the chat. -->
+              <slot name="voice">
+                <VoiceChannelCard
+                  v-if="myVoiceLineupId"
+                  show-empty
+                  class="mt-3"
+                  kind="match"
+                  :channel-id="myVoiceLineupId"
+                  :label="$t('layouts.voice_panel.team_comms')"
+                />
+              </slot>
             </div>
           </div>
         </Transition>

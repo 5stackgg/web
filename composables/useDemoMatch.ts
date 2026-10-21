@@ -27,6 +27,8 @@ export type { DemoStep };
 
 const MORE_TIME = 30;
 const START_PICKS = 4;
+// How long a step you jump to shows the end of the step before it.
+const JUMP_LEAD_MS = 1500;
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
 
@@ -65,6 +67,10 @@ export function useDemoMatch() {
   const { t } = useI18n();
 
   const step = ref<DemoStep>("live");
+  // The step being jumped to, while the end of the one before it shows.
+  const pending = ref<DemoStep | null>(null);
+  const shownStep = computed(() => pending.value ?? step.value);
+  const lastRound = ref(false);
   const connected = ref(false);
   const tab = ref<"scoreboard" | "rounds">("scoreboard");
   const fixOpen = ref(false);
@@ -90,6 +96,7 @@ export function useDemoMatch() {
       live: live.value,
       undoneFrom: undoneFrom.value,
       connected: connected.value,
+      lastRound: lastRound.value,
     }),
   );
 
@@ -281,7 +288,40 @@ export function useDemoMatch() {
     }
   });
 
+  // A step you pick starts from the end of the one before it, so the move
+  // into it plays: live from the finished veto, finished from the map's last
+  // round. Nothing comes before the veto, so it starts afresh.
+  let jumpTimer: ReturnType<typeof setTimeout> | undefined;
+  function jumpTo(next: DemoStep) {
+    clearTimeout(jumpTimer);
+    pending.value = null;
+    lastRound.value = false;
+    if (next === "veto") {
+      picks.value = demoPicks(START_PICKS);
+      deadline.value = clockFrom(DEMO_VETO_CLOCK);
+      step.value = "veto";
+      return;
+    }
+    if (next === "live") {
+      picks.value = withDecider(demoPicks(8));
+      step.value = "veto";
+    } else {
+      live.value = DEMO_LIVE_ROUND;
+      undoneFrom.value = null;
+      paused.value = false;
+      lastRound.value = true;
+      step.value = "live";
+    }
+    pending.value = next;
+    jumpTimer = setTimeout(() => {
+      pending.value = null;
+      lastRound.value = false;
+      step.value = next;
+    }, JUMP_LEAD_MS);
+  }
+
   onBeforeUnmount(() => {
+    clearTimeout(jumpTimer);
     clearTimeout(autoTimer);
     vetoOverride.value = false;
   });
@@ -357,6 +397,8 @@ export function useDemoMatch() {
 
   return {
     step,
+    shownStep,
+    jumpTo,
     connected,
     tab,
     fixOpen,

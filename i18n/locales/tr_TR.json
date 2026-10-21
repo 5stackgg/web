@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Turnuvalar",
         "lede": "Takımınla bir turnuvaya katılmak ve organizatör olarak bir turnuva yönetmek."
+      },
+      "veto": {
+        "title": "Veto",
+        "lede": "Bir maçın haritalarının nasıl seçildiği ve sonrasında ne olduğu."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Turnuva Sonucunu Düzeltmek",
         "lede": "Yanlış kazanan, tekrar maçı ya da hiç oynanmamış bir maç.",
         "keywords": "sıfırla kazanan sonuç yanlış eşleşme tablosu tekrar hükmen iptal yeniden oluştur maç sıralama"
+      },
+      "veto_flow": {
+        "title": "Veto nasıl işler",
+        "lede": "Sıralar, süreler ve taraflar, sonra maça geçiş.",
+        "keywords": "veto ban pick taraf decider bıçak bölge süre seçim lobi harita"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "Lig usulü ve İsviçre sisteminde, sonraki etap sıralamaya göre oluşturulduktan ya da sonraki İsviçre turu eşleştirildikten sonra bir sonuç sıfırlanamaz.",
         "results_4": "Maç sayfasında **Sorunu Çöz** aynı düzeltmeleri sunar: maçın yeniden oynanması gerekiyor, galibiyet yanlış takıma verildi ya da bir takım devam edemiyor.",
         "results_5": "İptal edilen bir maç eşleşme tablosunu ilerletmez. Onu **Sorunu Çöz** üzerinden yeniden başlat ya da bir kazanan belirle. Eşleşme tablosundaki bir yuva maçını kaybettiyse orada **Maçı Yeniden Oluştur** görünür."
+      },
+      "veto_flow": {
+        "turns": "Takımlar sırayla oynar. Her sıra bir ban, bir pick ya da taraf seçimidir ve bir süresi vardır: süre dolarsa seçim takım adına yapılır.",
+        "maps": "Tek haritalık maçta (best of one) tek harita kalana kadar harita banlanır. Bir seri ayrıca oynayacağı haritaları seçer ve geriye kalan son harita decider olur.",
+        "sides": "Haritayı seçmeyen takım başlangıç tarafını seçer. Decider'daki tarafları, maçta varsa bıçak raundu belirler.",
+        "regions": "Birden fazla bölge açıksa takımlar önce bölge vetosunu yapar.",
+        "draft": "Seçim lobisinde veto seçim odasında yapılır. Veto bitince oda onu birkaç saniye daha gösterir, sonra herkesi maç sayfasına gönderir; sayfa, sunucu açılırken haritaları gösterir. Sunucu hazır olunca haritalar kartlarına katlanır ve \"Sunucuya katıl\" belirir.",
+        "demo_body": "Sonuna kadar ilerleyen, gerçek olmayan bir seçim lobisi: son katılım bildirimi, veto ve devrettiği maç. Orada yaptığın hiçbir şey gerçek bir maça dokunmaz.",
+        "demo_open": "Demo Lobiyi Aç"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "Bu bir demo, bu yüzden gerçekte hiçbir şey değişmedi."
     },
     "intro_admin": "Burada maçların ve turnuvaların nasıl işlediği, bir şeyler ters gittiğinde ne yapılacağı ve bu sitenin nasıl yönetileceği.",
-    "search_hint": "Bu cevaplarda aramak için sitenin herhangi bir yerinde ⌘K'ye bas."
+    "search_hint": "Bu cevaplarda aramak için sitenin herhangi bir yerinde ⌘K'ye bas.",
+    "demo_draft": {
+      "title": "Demo Lobi",
+      "step_label": "Seçim adımı",
+      "replay": "Tekrar oynat",
+      "steps": {
+        "check_in": {
+          "label": "Katılım",
+          "caption": "Maçını yeni oluşturmuş, gerçek olmayan bir seçim. Bir oyuncu dışında herkes seçim odasından katılım bildirdi. Buradaki hiçbir şey gerçek bir seçime dokunmaz."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Herkes katılım bildirince kaptanlar seçim odasında tek harita kalana kadar harita banlar. Oda biten vetoyu birkaç saniye daha gösterir, sonra herkesi maç sayfasına gönderir."
+        },
+        "booting": {
+          "label": "Sunucu açılıyor",
+          "caption": "Maç sayfası, sunucu açılırken vetodaki haritalarla açılır."
+        },
+        "ready": {
+          "label": "Sunucu hazır",
+          "caption": "Sunucu hazır: haritalar kartlarına katlanır, veto üst kısma geçer, ardından oyuncular \"Sunucuya katıl\" düğmesini görür."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Lisanslar",

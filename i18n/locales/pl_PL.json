@@ -14098,6 +14098,10 @@
       "tournaments": {
         "title": "Turnieje",
         "lede": "Jak dołączyć do turnieju z drużyną i jak go poprowadzić jako organizator."
+      },
+      "veto": {
+        "title": "Veto",
+        "lede": "Jak wybierane są mapy meczu i co dzieje się potem."
       }
     },
     "sections": {
@@ -14217,6 +14221,11 @@
         "title": "Poprawianie wyniku turnieju",
         "lede": "Zły zwycięzca, powtórka albo mecz, który nigdy się nie odbył.",
         "keywords": "resetuj zwycięzca wynik błędny drabinka powtórka walkower anuluj utwórz ponownie mecz tabela"
+      },
+      "veto_flow": {
+        "title": "Jak działa veto",
+        "lede": "Tury, zegary i strony, a potem mecz.",
+        "keywords": "veto ban pick strona decider nóż region zegar draft lobby mapy"
       }
     },
     "content": {
@@ -14448,6 +14457,15 @@
         "results_3": "W systemie każdy z każdym i szwajcarskim wyniku nie da się zresetować, gdy kolejny etap został już rozstawiony na podstawie tabeli albo gdy sparowano kolejną rundę szwajcarską.",
         "results_4": "Na stronie meczu **Rozwiąż problem** ma te same poprawki: mecz trzeba rozegrać ponownie, wygrała zła drużyna albo drużyna nie może kontynuować.",
         "results_5": "Anulowany mecz nie przesuwa drabinki dalej. Zrestartuj go z **Rozwiąż problem** albo ustaw zwycięzcę. Jeśli miejsce w drabince straciło swój mecz, pojawi się tam **Utwórz mecz ponownie**."
+      },
+      "veto_flow": {
+        "turns": "Drużyny działają na zmianę. Każda tura to ban, pick albo wybór strony i ma zegar: gdy się skończy, wybór zostaje dokonany za drużynę.",
+        "maps": "W best of one banuje się mapy, aż zostanie jedna. Seria wybiera też mapy, które zagra, a ostatnia pozostała mapa to decider.",
+        "sides": "Drużyna, która nie wybrała mapy, wybiera stronę startową. O stronach na deciderze decyduje runda nożowa, jeśli mecz ją ma.",
+        "regions": "Gdy włączony jest więcej niż jeden region, drużyny najpierw robią veto regionu.",
+        "draft": "W lobby draftu veto odbywa się w pokoju draftu. Gdy się skończy, pokój pokazuje je jeszcze kilka sekund, a potem przenosi wszystkich na stronę meczu, która pokazuje mapy, gdy serwer się uruchamia. Gdy serwer jest gotowy, mapy składają się do swoich kart i pojawia się „Dołącz do serwera”.",
+        "demo_body": "Udawane lobby draftu, które przechodzi całą drogę: ostatnie potwierdzenie, veto i mecz, do którego prowadzi. Nic, co tam zrobisz, nie dotyka prawdziwego meczu.",
+        "demo_open": "Otwórz lobby demo"
       }
     },
     "demo": {
@@ -14472,7 +14490,30 @@
       "nothing_changed": "To tylko demo, więc nic się naprawdę nie zmieniło."
     },
     "intro_admin": "Jak działają tutaj mecze i turnieje, co robić, gdy coś pójdzie nie tak, i jak prowadzić tę stronę.",
-    "search_hint": "Naciśnij ⌘K w dowolnym miejscu strony, aby przeszukać te odpowiedzi."
+    "search_hint": "Naciśnij ⌘K w dowolnym miejscu strony, aby przeszukać te odpowiedzi.",
+    "demo_draft": {
+      "title": "Lobby demo",
+      "step_label": "Etap draftu",
+      "replay": "Odtwórz ponownie",
+      "steps": {
+        "check_in": {
+          "label": "Obecność",
+          "caption": "Udawany draft, który właśnie utworzył swój mecz. Wszyscy poza jednym graczem potwierdzili obecność w pokoju draftu. Nic tutaj nie dotyka prawdziwego draftu."
+        },
+        "veto": {
+          "label": "Veto",
+          "caption": "Gdy wszyscy potwierdzą obecność, kapitanowie banują mapy w pokoju draftu, aż zostanie jedna. Pokój pokazuje zakończone veto jeszcze przez kilka sekund, a potem przenosi wszystkich na stronę meczu."
+        },
+        "booting": {
+          "label": "Uruchamianie serwera",
+          "caption": "Strona meczu otwiera się z mapami z veta, gdy serwer się uruchamia."
+        },
+        "ready": {
+          "label": "Serwer gotowy",
+          "caption": "Serwer działa: mapy składają się do swoich kart, veto trafia do nagłówka, a gracze dostają „Dołącz do serwera”."
+        }
+      }
+    }
   },
   "licenses": {
     "title": "Licencje",

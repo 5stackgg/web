@@ -17,6 +17,7 @@ const pendingTeamFields = {
   checked_in_at: true,
   checked_in: true,
   can_recruit: true,
+  invites_join_team: true,
 } as {};
 
 const pendingRosterFields = {

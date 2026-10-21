@@ -8072,6 +8072,7 @@
         "friend_request": "Richiesta di amicizia",
         "invited_you": "ti ha invitato a",
         "team_and_lineup": "unirti a {team} e al suo lineup per {tournament}",
+        "stand_in": "giocare come riserva di {team} in {tournament}",
         "tournament_only_team": "giocare con {team} in {tournament}, un team solo per questo torneo",
         "invited_party": "ti ha invitato nel suo party",
         "wants_to_be_friends": "vuole diventare tuo amico",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "In attesa",
       "pending_team": "Invitato nel team e in questo lineup",
+      "pending_stand_in": "Invitato come riserva per questo torneo",
       "pending_tournament": "Invitato solo per questo torneo"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Invito inviato",
       "invite_sent_description": "{name} è stato invitato e deve accettare prima di entrare nella tua rosa",
       "invite_sent_team_description": "{name} è stato invitato in {team} ed entrerà in questo lineup quando accetta",
+      "invite_sent_stand_in_description": "{name} è stato invitato come riserva di {team} in questo torneo e deve prima accettare",
       "invite_sent_tournament_description": "{name} è stato invitato in {team} per questo torneo e deve prima accettare",
       "new": "Crea nuovo team",
       "select": "Seleziona team esistente",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "Nel team",
         "team_invite": "Invito team + lineup",
+        "stand_in_invite": "Invito da riserva",
         "tournament_invite": "Invito al torneo"
       },
       "add_hint": {
-        "team": "I giocatori fuori da {team} ricevono un invito. Accettandolo entrano nel team e in questo lineup.",
+        "team": "{team} non ha ancora un lineup completo, quindi i giocatori esterni vengono invitati nel team e in questo lineup.",
+        "stand_in": "{team} ha già un lineup completo, quindi i giocatori esterni vengono invitati come riserve per questo torneo e non entrano nel team.",
         "tournament": "I giocatori ricevono un invito in {team}, un team solo per questo torneo."
       },
       "seed_label": "Seed",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Invito al torneo",
       "tournament_message": "Sei stato invitato a partecipare a un torneo",
       "team_and_lineup_message": "Unisciti a {team} e al suo lineup per",
+      "stand_in_message": "Gioca come riserva di {team}, senza entrare nel team, in",
       "tournament_team_message": "Gioca con {team}, un team solo per questo torneo, in",
       "team_message": "Sei stato invitato a entrare in un team",
       "invited_by": "Invitato da",

@@ -8072,6 +8072,7 @@
         "friend_request": "Zaproszenie do znajomych",
         "invited_you": "zaprosił(a) cię do",
         "team_and_lineup": "{team} i jej składu na {tournament}",
+        "stand_in": "gry jako rezerwowy {team} w {tournament}",
         "tournament_only_team": "{team} na {tournament}, drużyny tylko na ten turniej",
         "invited_party": "zaprosił(a) cię do swojej ekipy",
         "wants_to_be_friends": "chce zostać twoim znajomym",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "Oczekujące",
       "pending_team": "Zaproszony do drużyny i tego składu",
+      "pending_stand_in": "Zaproszony jako rezerwowy na ten turniej",
       "pending_tournament": "Zaproszony tylko na ten turniej"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Zaproszenie wysłane",
       "invite_sent_description": "{name} został zaproszony i musi zaakceptować, zanim dołączy do twojego składu",
       "invite_sent_team_description": "{name} dostał zaproszenie do {team} i dołączy do tego składu po akceptacji",
+      "invite_sent_stand_in_description": "{name} dostał zaproszenie jako rezerwowy {team} na ten turniej i musi je najpierw przyjąć",
       "invite_sent_tournament_description": "{name} dostał zaproszenie do {team} na ten turniej i musi je najpierw przyjąć",
       "new": "Utwórz nową drużynę",
       "select": "Wybierz istniejącą drużynę",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "W drużynie",
         "team_invite": "Zaproszenie do drużyny i składu",
+        "stand_in_invite": "Zaproszenie rezerwowego",
         "tournament_invite": "Zaproszenie na turniej"
       },
       "add_hint": {
-        "team": "Gracze spoza {team} dostają zaproszenie. Po przyjęciu dołączają do drużyny i do tego składu.",
+        "team": "{team} nie ma jeszcze pełnego składu, więc gracze spoza drużyny dostają zaproszenie do drużyny i do tego składu.",
+        "stand_in": "{team} ma już pełny skład, więc gracze spoza drużyny są zapraszani jako rezerwowi na ten turniej i nie dołączają do drużyny.",
         "tournament": "Gracze dostają zaproszenie do {team}, drużyny tylko na ten turniej."
       },
       "seed_label": "Rozstawienie",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Zaproszenie do turnieju",
       "tournament_message": "Zostałeś zaproszony do dołączenia do turnieju",
       "team_and_lineup_message": "Dołącz do {team} i jej składu na",
+      "stand_in_message": "Zagraj jako rezerwowy {team}, bez dołączania do drużyny, w",
       "tournament_team_message": "Zagraj w {team}, drużynie tylko na ten turniej, w",
       "team_message": "Zostałeś zaproszony do dołączenia do drużyny",
       "invited_by": "Zaprosił",

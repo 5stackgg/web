@@ -179,8 +179,22 @@ describe("TournamentFreeAgents", () => {
 
     it.each([
       [
-        { team_id: "squad", can_recruit: true, team: { name: "Ultima Ratio" } },
+        {
+          team_id: "squad",
+          can_recruit: true,
+          invites_join_team: true,
+          team: { name: "Ultima Ratio" },
+        },
         "Player 76561198000000003 has been invited to Ultima Ratio and joins this lineup once they accept",
+      ],
+      [
+        {
+          team_id: "squad",
+          can_recruit: true,
+          invites_join_team: false,
+          team: { name: "Ultima Ratio" },
+        },
+        "Player 76561198000000003 has been invited to stand in for Ultima Ratio in this tournament and needs to accept first",
       ],
       [
         { name: "Friday Mix" },

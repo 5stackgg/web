@@ -696,8 +696,9 @@ describe("ActionToasts match actions", () => {
 });
 
 describe("ActionToasts tournament team invites", () => {
-  const invite = (team: Record<string, unknown>) => ({
+  const invite = (team: Record<string, unknown>, joinsTeam = false) => ({
     id: "invite-1",
+    joins_team: joinsTeam,
     created_at: "2026-10-21T08:00:00Z",
     invited_by: { steam_id: "76561198000000002", name: "sniddyus" },
     team: {
@@ -713,7 +714,10 @@ describe("ActionToasts tournament team invites", () => {
 
   it("says an invite onto a team-backed entry joins the team and its lineup", async () => {
     useNotificationStore().tournament_team_invites = [
-      invite({ name: null, team_id: "team-1", team: { name: "Ultima Ratio" } }),
+      invite(
+        { name: null, team_id: "team-1", team: { name: "Ultima Ratio" } },
+        true,
+      ),
     ];
 
     const wrapper = await mountToasts();
@@ -721,6 +725,19 @@ describe("ActionToasts tournament team invites", () => {
     expect(wrapper.text()).toContain("Team Invite");
     expect(wrapper.text()).toContain(
       "Ultima Ratio and its lineup for VulkanLAN 2026",
+    );
+  });
+
+  it("says a stand-in invite is for this tournament, not the team", async () => {
+    useNotificationStore().tournament_team_invites = [
+      invite({ name: null, team_id: "team-1", team: { name: "Ultima Ratio" } }),
+    ];
+
+    const wrapper = await mountToasts();
+
+    expect(wrapper.text()).toContain("Tournament Invite");
+    expect(wrapper.text()).toContain(
+      "stand in for Ultima Ratio in VulkanLAN 2026",
     );
   });
 

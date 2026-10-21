@@ -8072,6 +8072,7 @@
         "friend_request": "Solicitud de amistad",
         "invited_you": "te ha invitado a",
         "team_and_lineup": "{team} y su alineación para {tournament}",
+        "stand_in": "jugar como suplente de {team} en {tournament}",
         "tournament_only_team": "{team} para {tournament}, un equipo solo para este torneo",
         "invited_party": "te ha invitado a su grupo",
         "wants_to_be_friends": "quiere ser tu amigo",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "Pendiente",
       "pending_team": "Invitado al equipo y a esta alineación",
+      "pending_stand_in": "Invitado como suplente para este torneo",
       "pending_tournament": "Invitado solo para este torneo"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "Invitación enviada",
       "invite_sent_description": "Se ha invitado a {name} y debe aceptar antes de entrar en tu plantilla",
       "invite_sent_team_description": "{name} ha sido invitado a {team} y entrará en esta alineación cuando acepte",
+      "invite_sent_stand_in_description": "{name} ha sido invitado como suplente de {team} en este torneo y tiene que aceptar primero",
       "invite_sent_tournament_description": "{name} ha sido invitado a {team} para este torneo y tiene que aceptar primero",
       "new": "Crear equipo nuevo",
       "select": "Seleccionar equipo existente",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "En el equipo",
         "team_invite": "Invitación a equipo + alineación",
+        "stand_in_invite": "Invitación de suplente",
         "tournament_invite": "Invitación al torneo"
       },
       "add_hint": {
-        "team": "Los jugadores que no son de {team} reciben una invitación. Al aceptarla se unen al equipo y a esta alineación.",
+        "team": "{team} aún no tiene una alineación completa, así que los jugadores de fuera reciben una invitación al equipo y a esta alineación.",
+        "stand_in": "{team} ya tiene una alineación completa, así que los jugadores de fuera son invitados como suplentes para este torneo y no entran en el equipo.",
         "tournament": "Los jugadores reciben una invitación a {team}, un equipo solo para este torneo."
       },
       "seed_label": "Seed",
@@ -9837,6 +9842,7 @@
       "tournament_title": "Invitación a torneo",
       "tournament_message": "Te han invitado a unirte a un torneo",
       "team_and_lineup_message": "Únete a {team} y a su alineación para",
+      "stand_in_message": "Juega como suplente de {team}, sin unirte al equipo, en",
       "tournament_team_message": "Juega con {team}, un equipo solo para este torneo, en",
       "team_message": "Te han invitado a unirte a un equipo",
       "invited_by": "Invitado por",

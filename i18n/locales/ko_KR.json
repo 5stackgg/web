@@ -8072,6 +8072,7 @@
         "friend_request": "친구 요청",
         "invited_you": "님이 초대했습니다:",
         "team_and_lineup": "{team} 및 라인업 ({tournament})",
+        "stand_in": "{tournament}에서 {team}의 대체 선수로 출전",
         "tournament_only_team": "{tournament} 전용 팀 {team}",
         "invited_party": "님이 파티에 초대했습니다",
         "wants_to_be_friends": "님이 친구 요청을 보냈습니다",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "대기 중",
       "pending_team": "팀과 이 라인업에 초대됨",
+      "pending_stand_in": "이 토너먼트의 대체 선수로 초대됨",
       "pending_tournament": "이 토너먼트에만 초대됨"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "초대를 보냈습니다",
       "invite_sent_description": "{name}을(를) 초대했습니다. 로스터에 합류하려면 수락해야 합니다",
       "invite_sent_team_description": "{name}님을 {team}에 초대했습니다. 수락하면 이 라인업에 들어옵니다",
+      "invite_sent_stand_in_description": "{name}님을 이 토너먼트에서 {team}의 대체 선수로 초대했습니다. 먼저 수락해야 합니다",
       "invite_sent_tournament_description": "{name}님을 이 토너먼트의 {team}에 초대했습니다. 먼저 수락해야 합니다",
       "new": "새 팀 생성",
       "select": "기존 팀 선택",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "팀원",
         "team_invite": "팀 + 라인업 초대",
+        "stand_in_invite": "대체 선수 초대",
         "tournament_invite": "토너먼트 초대"
       },
       "add_hint": {
-        "team": "{team} 소속이 아닌 플레이어에게는 초대가 갑니다. 수락하면 팀과 이 라인업에 들어옵니다.",
+        "team": "{team}의 라인업이 아직 다 차지 않아 팀 밖의 플레이어는 팀과 이 라인업에 초대됩니다.",
+        "stand_in": "{team}의 라인업이 이미 다 차서 팀 밖의 플레이어는 이 토너먼트의 대체 선수로 초대되며 팀에는 들어가지 않습니다.",
         "tournament": "플레이어에게 이 토너먼트 전용 팀인 {team} 초대가 갑니다."
       },
       "seed_label": "시드",
@@ -9837,6 +9842,7 @@
       "tournament_title": "토너먼트 초대",
       "tournament_message": "토너먼트 참가 초대를 받았습니다",
       "team_and_lineup_message": "{team} 및 라인업 참가:",
+      "stand_in_message": "팀에 들어가지 않고 {team}의 대체 선수로 출전:",
       "tournament_team_message": "이 토너먼트 전용 팀 {team}(으)로 출전:",
       "team_message": "팀 가입 초대를 받았습니다",
       "invited_by": "초대한 사람",

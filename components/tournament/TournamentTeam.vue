@@ -350,7 +350,7 @@ import { teamLedgerColumns } from "~/components/tournament/teamLedger";
                   v-for="invite in team.invites"
                   :key="invite.id"
                   :invite="invite"
-                  :joins-team="!!team.team_id"
+                  :kind="pendingInviteKind(invite)"
                 ></TournamentTeamInvite>
               </TransitionGroup>
             </div>
@@ -692,25 +692,34 @@ export default {
         ...(this.placesOutright ? {} : this.freeAgentTags),
       };
     },
-    // tbi_tournament_team_roster places an organizer's pick outright; anyone
-    // else's becomes an invite, to the team as well when the entry has one.
+    // What an invite from here does (tournament_team_invites_join_team): a
+    // team-backed entry takes outsiders onto the team while it is short of a
+    // lineup, and as stand-ins once it has one.
+    inviteKind() {
+      if (!this.team.team_id) {
+        return "tournament";
+      }
+      return this.team.invites_join_team ? "team" : "stand_in";
+    },
     inviteTag() {
       if (!this.invitesOutsiders) {
         return undefined;
       }
-      return this.team.team_id
-        ? this.$t("tournament.team.add_tag.team_invite")
-        : this.$t("tournament.team.add_tag.tournament_invite");
+      return this.$t(
+        {
+          team: "tournament.team.add_tag.team_invite",
+          stand_in: "tournament.team.add_tag.stand_in_invite",
+          tournament: "tournament.team.add_tag.tournament_invite",
+        }[this.inviteKind],
+      );
     },
     inviteHint() {
       if (!this.invitesOutsiders) {
         return undefined;
       }
-      return this.team.team_id
-        ? this.$t("tournament.team.add_hint.team", { team: this.displayName })
-        : this.$t("tournament.team.add_hint.tournament", {
-            team: this.displayName,
-          });
+      return this.$t(`tournament.team.add_hint.${this.inviteKind}`, {
+        team: this.displayName,
+      });
     },
     // Layered so the most specific fact wins: another team's roster first,
     // then this team's roster, then this team's pending invites.
@@ -1142,6 +1151,12 @@ export default {
         }),
       });
     },
+    pendingInviteKind(invite) {
+      if (invite.joins_team) {
+        return "team";
+      }
+      return this.team.team_id ? "stand_in" : "tournament";
+    },
     async addMember(member) {
       try {
         const result = await this.$apollo.mutate({
@@ -1177,15 +1192,10 @@ export default {
             ? this.$t("tournament.team.member_added_description", {
                 name: member.name,
               })
-            : this.team.team_id
-              ? this.$t("tournament.team.invite_sent_team_description", {
-                  name: member.name,
-                  team: this.displayName,
-                })
-              : this.$t("tournament.team.invite_sent_tournament_description", {
-                  name: member.name,
-                  team: this.displayName,
-                }),
+            : this.$t(
+                `tournament.team.invite_sent_${this.inviteKind}_description`,
+                { name: member.name, team: this.displayName },
+              ),
         });
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);

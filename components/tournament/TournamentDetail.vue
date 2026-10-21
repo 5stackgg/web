@@ -1788,6 +1788,8 @@ export default {
                 {},
                 {
                   id: true,
+                  // Lands with the api migration; typed once codegen runs.
+                  ...({ joins_team: true } as {}),
                   player: playerFields,
                 },
               ],

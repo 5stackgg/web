@@ -133,6 +133,7 @@ describe("NotificationStore tournament team invites", () => {
       );
     const invite = documents.tournament_team_invites;
     expect(invite, "tournament_team_invites subscription").toBeDefined();
+    expect(Object.keys(fields(invite))).toContain("joins_team");
     const team = fields(fields(invite).team);
 
     expect(Object.keys(team)).toEqual(

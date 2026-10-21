@@ -8072,6 +8072,7 @@
         "friend_request": "好友请求",
         "invited_you": "邀请您加入",
         "team_and_lineup": "{team} 及其 {tournament} 阵容",
+        "stand_in": "{team} 作为 {tournament} 的替补",
         "tournament_only_team": "{team}（仅限 {tournament} 的队伍）",
         "invited_party": "邀请您加入他们的队伍",
         "wants_to_be_friends": "想成为好友",
@@ -8830,6 +8831,7 @@
     "team_invite": {
       "pending": "待处理",
       "pending_team": "已邀请加入队伍和本次阵容",
+      "pending_stand_in": "已邀请作为本赛事替补",
       "pending_tournament": "仅邀请参加本赛事"
     },
     "results_table": {
@@ -9266,6 +9268,7 @@
       "invite_sent": "已发送邀请",
       "invite_sent_description": "已邀请 {name}，对方接受后才会加入你的名单",
       "invite_sent_team_description": "已邀请 {name} 加入 {team}，接受后将进入本次阵容",
+      "invite_sent_stand_in_description": "已邀请 {name} 作为本赛事 {team} 的替补，需要对方先接受",
       "invite_sent_tournament_description": "已邀请 {name} 为本赛事加入 {team}，需要对方先接受",
       "new": "创建新队伍",
       "select": "选择现有队伍",
@@ -9286,10 +9289,12 @@
       "add_tag": {
         "on_team": "队伍成员",
         "team_invite": "队伍 + 阵容邀请",
+        "stand_in_invite": "替补邀请",
         "tournament_invite": "赛事邀请"
       },
       "add_hint": {
-        "team": "{team} 以外的选手会收到邀请，接受后将加入队伍和本次阵容。",
+        "team": "{team} 的阵容尚未满员，因此队伍以外的选手会被邀请加入队伍和本次阵容。",
+        "stand_in": "{team} 的阵容已经满员，因此队伍以外的选手会被邀请作为本赛事的替补，不会加入队伍。",
         "tournament": "选手会收到 {team} 的邀请，这是仅限本赛事的队伍。"
       },
       "seed_label": "种子排名",
@@ -9837,6 +9842,7 @@
       "tournament_title": "赛事邀请",
       "tournament_message": "您被邀请加入一个赛事",
       "team_and_lineup_message": "加入 {team} 及其阵容，参加",
+      "stand_in_message": "以替补身份为 {team} 出战（不加入队伍），参加",
       "tournament_team_message": "以仅限本赛事的队伍 {team} 参加",
       "team_message": "您被邀请加入一个队伍",
       "invited_by": "邀请人",

@@ -29,6 +29,7 @@ const ultimaRatio = {
   name: null,
   owner_steam_id: CAPTAIN,
   can_recruit: true,
+  invites_join_team: true,
   team_id: "team-1",
   team: { id: "team-1", name: "Ultima Ratio", short_name: "UR" },
 };
@@ -107,7 +108,19 @@ describe("TournamentTeam says what adding a player does", () => {
     expect(search(wrapper).props("teamId")).toBeUndefined();
     expect(search(wrapper).props("fallbackTag")).toBe("Team + lineup invite");
     expect(search(wrapper).props("hint")).toBe(
-      "Players outside Ultima Ratio get an invite. Accepting it adds them to the team and to this lineup.",
+      "Ultima Ratio doesn't have a full lineup yet, so players from outside it are invited to join the team and this lineup.",
+    );
+  });
+
+  it("invites stand-ins, not teammates, once the team has a full lineup", async () => {
+    const wrapper = await mountTeam({
+      ...ultimaRatio,
+      invites_join_team: false,
+    });
+
+    expect(search(wrapper).props("fallbackTag")).toBe("Stand-in invite");
+    expect(search(wrapper).props("hint")).toBe(
+      "Ultima Ratio already has a full lineup, so players from outside it are invited as stand-ins for this tournament and don't join the team.",
     );
   });
 
@@ -169,6 +182,10 @@ describe("TournamentTeam says what adding a player does", () => {
       "Doofy has been invited to Ultima Ratio and joins this lineup once they accept",
     ],
     [
+      { ...ultimaRatio, invites_join_team: false },
+      "Doofy has been invited to stand in for Ultima Ratio in this tournament and needs to accept first",
+    ],
+    [
       fridayMix,
       "Doofy has been invited to Friday Mix for this tournament and needs to accept first",
     ],
@@ -190,11 +207,18 @@ describe("TournamentTeam says what adding a player does", () => {
   });
 
   it.each([
-    [ultimaRatio, "Invited to the team and this lineup"],
-    [fridayMix, "Invited for this tournament only"],
-  ])("labels a pending invite by what it joins (%#)", async (entry, label) => {
+    [ultimaRatio, true, "Invited to the team and this lineup"],
+    [ultimaRatio, false, "Invited to stand in for this tournament"],
+    [fridayMix, false, "Invited for this tournament only"],
+  ])("labels a pending invite (%#)", async (entry, joins, label) => {
     const wrapper = await mountTeam(entry, {
-      invites: [{ id: "invite-1", player: { steam_id: MATE, name: "Doofy" } }],
+      invites: [
+        {
+          id: "invite-1",
+          joins_team: joins,
+          player: { steam_id: MATE, name: "Doofy" },
+        },
+      ],
     });
 
     expect(wrapper.text()).toContain(label);

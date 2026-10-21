@@ -486,6 +486,8 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
               },
               {
                 id: true,
+                // Lands with the api migration; typed once codegen runs.
+                ...({ joins_team: true } as {}),
                 team: {
                   id: true,
                   name: true,

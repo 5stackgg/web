@@ -302,6 +302,28 @@ const practiceOpen = ref(false);
 const { session: practiceSession } = useUtilityPracticeSession();
 
 const { isMobile } = useSidebar();
+
+// Booting a server takes the create matches role at the api; standing in one
+// somebody else started does not. Until the settings arrive the role reads as
+// the lowest one, which would offer a server to everybody.
+const canStartPractice = computed(
+  () =>
+    useApplicationSettingsStore().settingsLoaded &&
+    useApplicationSettingsStore().canCreateMatch,
+);
+const canHavePracticeServer = computed(
+  () => canStartPractice.value || !!practiceSession.value,
+);
+const practiceServerBar = computed(
+  () => !isMobile.value && canHavePracticeServer.value,
+);
+
+watch(practiceSession, (session, before) => {
+  if (before && !session && !canStartPractice.value) {
+    practiceOpen.value = false;
+  }
+});
+
 const forkOpen = ref(false);
 type LineupRef = { id: string; name: string };
 const forkLineup = ref<LineupRef | null>(null);
@@ -2663,7 +2685,7 @@ function selectLineup(id: string | null) {
             :lineups="lineups"
             :busiest="Math.max(1, metaBusiest)"
             :signed-in="!!mySteamId"
-            :can-practice="!!mySteamId && !isMobile"
+            :can-practice="practiceServerBar"
             @back="closeMetaSpot"
             @open-lineup="openLineup"
             @write-up="writeUpMetaSpot"
@@ -2676,7 +2698,7 @@ function selectLineup(id: string | null) {
             :lineups="lineups"
             :context="detailContext"
             :can-react="!!mySteamId"
-            :can-practice="!isMobile && !!mySteamId"
+            :can-practice="practiceServerBar"
             :can-review="canReview"
             @skip="skipFromDetail"
             @bar="setDetailBar"
@@ -2749,6 +2771,7 @@ function selectLineup(id: string | null) {
                     :collection-id="practiceTarget?.collectionId ?? null"
                     :join-invite-code="joinInviteCode"
                     @joined="practiceOpen = false"
+                    @dismiss="practiceOpen = false"
                   />
                 </div>
               </section>
@@ -2762,12 +2785,13 @@ function selectLineup(id: string | null) {
                or the view's own main action. Signed out there is no server to
                have -- starting one, joining one and the list of them all need
                an account -- and a phone cannot join one, so there the bar is
-               only ever a view's action. -->
+               only ever a view's action. So it is below the create matches
+               role, until somebody lets you on to theirs. -->
           <UtilityPracticeBar
-            v-if="mySteamId && (!isMobile || barOffer?.actions.length)"
+            v-if="mySteamId && (practiceServerBar || barOffer?.actions.length)"
             :map-name="mapName"
             :open="practiceOpen"
-            :server="!isMobile"
+            :server="practiceServerBar"
             :offer="barOffer"
             @toggle="togglePractice"
           />

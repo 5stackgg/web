@@ -63,6 +63,7 @@ const mapDisplay = computed(() => cleanMapName(props.mapName));
         :join-invite-code="joinInviteCode"
         :join-session-id="joinSessionId"
         @joined="open = false"
+        @dismiss="open = false"
       />
     </DialogContent>
   </Dialog>

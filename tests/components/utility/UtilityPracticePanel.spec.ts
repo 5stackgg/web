@@ -36,6 +36,12 @@ function sessionRow(extra: Record<string, unknown> = {}) {
 // The session a refresh finds, and what the subscription by id says next.
 let held: ReturnType<typeof sessionRow> | null = null;
 let push: (row: ReturnType<typeof sessionRow> | null) => void = () => {};
+let joined: ReturnType<typeof sessionRow> | null = null;
+const asked: string[] = [];
+
+function fieldOf(query: any) {
+  return query?.definitions?.[0]?.selectionSet?.selections?.[0]?.name?.value;
+}
 
 vi.mock("~/graphql/getGraphqlClient", () => ({
   default: () => ({
@@ -46,20 +52,30 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
         return { unsubscribe() {} };
       },
     }),
-    query: async ({ variables }: any) => ({
-      data: variables?.statuses
-        ? { utility_practice_sessions: held ? [held] : [] }
-        : { utilityPracticeServers: { servers: [] }, utility_playbooks: [] },
+    query: async ({ query, variables }: any) => {
+      asked.push(fieldOf(query));
+      return {
+        data: variables?.statuses
+          ? { utility_practice_sessions: held ? [held] : [] }
+          : { utilityPracticeServers: { servers: [] }, utility_playbooks: [] },
+      };
+    },
+    mutate: async () => ({
+      data: joined ? { joinUtilityPractice: joined } : {},
     }),
-    mutate: async () => ({ data: {} }),
   }),
 }));
 
 const auth = reactive({ me: { steam_id: "9" }, isRoleAbove: () => false });
 vi.mock("~/stores/AuthStore", () => ({ useAuthStore: () => auth }));
 
+const settings = reactive({ canCreateMatch: true, settingsLoaded: true });
 vi.mock("~/stores/ApplicationSettings", () => ({
-  useApplicationSettingsStore: () => ({ availableRegions: [] }),
+  useApplicationSettingsStore: () => ({
+    availableRegions: [],
+    canCreateMatch: settings.canCreateMatch,
+    settingsLoaded: settings.settingsLoaded,
+  }),
 }));
 
 vi.mock("~/stores/MatchmakingStore", () => ({
@@ -70,6 +86,10 @@ const mounted: Array<{ unmount: () => void }> = [];
 
 beforeEach(() => {
   held = sessionRow();
+  joined = null;
+  asked.length = 0;
+  settings.canCreateMatch = true;
+  settings.settingsLoaded = true;
   useToast().dismiss();
 });
 
@@ -83,10 +103,10 @@ const settle = async (ms = 20) => {
   await flushPromises();
 };
 
-async function mountPanel() {
+async function mountPanel(props: Record<string, unknown> = {}) {
   const wrapper = await mountSuspended(UtilityPracticePanel, {
     attachTo: document.body,
-    props: { mapName: "de_mirage" },
+    props: { mapName: "de_mirage", ...props },
     global: {
       stubs: {
         PlayerSearch: true,
@@ -158,5 +178,82 @@ describe("UtilityPracticePanel", () => {
 
     expect(wrapper.text()).toContain("Start Server");
     expect(wrapper.text()).not.toContain("Stop Server");
+  });
+});
+
+describe("UtilityPracticePanel and the create matches role", () => {
+  beforeEach(() => {
+    settings.canCreateMatch = false;
+    held = null;
+  });
+
+  it("offers a player below the role no way to start a server", async () => {
+    const wrapper = await mountPanel();
+
+    expect(wrapper.text()).not.toContain("Start Server");
+    expect(wrapper.text()).not.toContain("Region");
+    expect(asked).not.toContain("utilityPracticeServers");
+  });
+
+  it("still lets a player below the role join from an invite link", async () => {
+    joined = sessionRow({ can_manage: false });
+    const wrapper = await mountPanel({ joinInviteCode: "abc123" });
+    push(sessionRow({ can_manage: false }));
+    await settle();
+
+    expect(wrapper.text()).toContain("Leave Session");
+    expect(wrapper.text()).not.toContain("Start Server");
+    expect(useToast().toasts.value.map((toast) => toast.title)).not.toContain(
+      "Could not join that practice server",
+    );
+  });
+
+  it("puts nothing in its place once the server they joined is gone", async () => {
+    held = sessionRow({ can_manage: false });
+    const wrapper = await mountPanel();
+    push(sessionRow({ can_manage: false, status: "Ended" }));
+    await settle();
+
+    expect(wrapper.text()).not.toContain("Leave Session");
+    expect(wrapper.text()).not.toContain("Start Server");
+  });
+
+  it("is unchanged for a player at the role", async () => {
+    settings.canCreateMatch = true;
+    const wrapper = await mountPanel();
+
+    expect(wrapper.text()).toContain("Start Server");
+    expect(asked).toContain("utilityPracticeServers");
+  });
+
+  it("hands a failed invite back to its host for a player below the role", async () => {
+    const wrapper = await mountPanel({ joinInviteCode: "stale" });
+    await settle();
+
+    expect(wrapper.emitted("dismiss")).toHaveLength(1);
+  });
+
+  it("keeps a failed invite on the form for a player at the role", async () => {
+    settings.canCreateMatch = true;
+    const wrapper = await mountPanel({ joinInviteCode: "stale" });
+    await settle();
+
+    expect(wrapper.emitted("dismiss")).toBeUndefined();
+    expect(wrapper.text()).toContain("Start Server");
+  });
+
+  it("waits for the settings before offering the form, then offers it", async () => {
+    settings.canCreateMatch = true;
+    settings.settingsLoaded = false;
+    const wrapper = await mountPanel();
+
+    expect(wrapper.text()).not.toContain("Start Server");
+    expect(asked).not.toContain("utilityPracticeServers");
+
+    settings.settingsLoaded = true;
+    await settle();
+
+    expect(wrapper.text()).toContain("Start Server");
+    expect(asked).toContain("utilityPracticeServers");
   });
 });

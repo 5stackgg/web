@@ -71,7 +71,7 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits<{ (e: "joined"): void }>();
+const emit = defineEmits<{ (e: "joined"): void; (e: "dismiss"): void }>();
 
 // Up or being joined, so the surface around it can say so.
 const live = defineModel<boolean>("live", { default: false });
@@ -85,6 +85,14 @@ const NO_PLAYBOOK = "none";
 const SERVER_PREFIX = "server:";
 
 const regions = computed(() => useApplicationSettingsStore().availableRegions);
+// The api holds starting a server to the create matches role, and the server
+// list to the same; joining one somebody else started is anybody's. Until the
+// settings arrive the role reads as the lowest one, which would offer it to all.
+const canStart = computed(
+  () =>
+    useApplicationSettingsStore().settingsLoaded &&
+    useApplicationSettingsStore().canCreateMatch,
+);
 const region = ref<string>(ANY_REGION);
 const playbookChoice = ref<string>(NO_PLAYBOOK);
 
@@ -260,6 +268,16 @@ watch(
     }
     playbookChoice.value = props.playbookId ?? NO_PLAYBOOK;
     void restoreLiveSession();
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.active && canStart.value,
+  (formShown) => {
+    if (!formShown) {
+      return;
+    }
     void loadPracticeServers();
     if (playbooks.value.length === 0) {
       void loadPlaybooks();
@@ -434,6 +452,9 @@ watch(
         description: error?.message,
         variant: "destructive",
       });
+      if (!canStart.value) {
+        emit("dismiss");
+      }
     } finally {
       joining.value = false;
     }
@@ -596,7 +617,7 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
 <template>
   <div>
     <div class="space-y-4">
-      <div v-if="!sessionId && !joining" class="space-y-4">
+      <div v-if="!sessionId && !joining && canStart" class="space-y-4">
         <div class="space-y-1.5">
           <span :class="fieldLabel">
             <Signal class="h-3.5 w-3.5" />
@@ -791,7 +812,7 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
 
       <!-- One panel for a running session, shared with the top bar so the
            two surfaces cannot drift into a panel and a menu again. -->
-      <div v-else>
+      <div v-else-if="sessionId || joining">
         <UtilityPracticeSessionPanel
           :session="session"
           :started="started"
@@ -828,7 +849,7 @@ const footerCta = "w-full font-bold uppercase tracking-[0.22em]";
 
     <!-- Only the start CTA lives here: once a session exists the session panel
          owns the way out of it. -->
-    <div v-if="!sessionId && !joining" class="mt-5">
+    <div v-if="!sessionId && !joining && canStart" class="mt-5">
       <Button
         size="lg"
         :class="['tac-amber-cta', footerCta]"

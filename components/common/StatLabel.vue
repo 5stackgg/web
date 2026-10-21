@@ -52,6 +52,7 @@ const headerTouch = computed(
       <template #trigger>
         <button
           type="button"
+          data-stat-info
           class="-m-1 inline-flex shrink-0 items-center justify-center p-2 text-muted-foreground/70 hover:text-foreground"
           :aria-label="title"
         >

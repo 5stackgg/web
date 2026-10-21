@@ -216,15 +216,10 @@ function sortGettersFor(lp: any): Record<string, (m: any) => unknown> {
 </script>
 <template>
   <Table
-    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5"
+    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5 [&>tbody:not(:last-child)>tr:last-child]:border-b-[3px] [&>tbody:not(:last-child)>tr:last-child]:border-border/80"
   >
-    <template v-for="(lp, lpIdx) of lineupsToRender" :key="lp.id">
-      <TableHeader
-        :class="[
-          '[&_th]:h-12 bg-muted/20',
-          lpIdx > 0 ? '[&_th]:pt-7 border-t-[3px] border-border/80' : '',
-        ]"
-      >
+    <template v-for="lp of lineupsToRender" :key="lp.id">
+      <TableHeader class="[&_th]:h-12 bg-muted/20">
         <TableRow>
           <TableHead
             class="w-[110px] md:w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border [transform:translateZ(0)]"

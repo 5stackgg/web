@@ -33,6 +33,7 @@ describe("useGlobalSearch", () => {
   it("finds a page by its name and by its nav group", async () => {
     const search = await searchAs("administrator");
     expect(ids(search("leaderboard").sections)).toContain("leaderboard");
+    expect(ids(search("bans").sections)).toContain("bans");
     expect(ids(search("servers").sections)).toEqual(
       expect.arrayContaining([
         "dedicated-servers",

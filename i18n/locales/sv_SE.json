@@ -7997,6 +7997,148 @@
           "plugin_outdated": "{count} server kör ett inaktuellt plugin | {count} servrar kör ett inaktuellt plugin"
         }
       }
+    },
+    "bans": {
+      "title": "Nyligen bannade",
+      "search": "Sök bannade spelare",
+      "row_label": "{name}, öppna banärende",
+      "by": "av {name}",
+      "source": {
+        "label": "Bankälla",
+        "all": "Alla bans",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "Period",
+        "label": "{days} dagar",
+        "option": "Senaste {days} dagarna"
+      },
+      "played_with": {
+        "label": "Spelat med mig",
+        "everyone": "Alla",
+        "either": "Spelat med mig",
+        "either_hint": "Båda sidor",
+        "opponent": "Mot mig",
+        "opponent_hint": "Motståndare",
+        "teammate": "I mitt lag",
+        "teammate_hint": "Lagkamrater",
+        "lost_only": "Bara matcher jag förlorade",
+        "lost_label": "{side}, förlorade"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "Källan är {source}",
+        "vac": "VAC-ban",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "Spelban",
+        "game_hint": "CS2 Overwatch",
+        "staff": "Staffban",
+        "staff_hint": "Utfärdad av en moderator",
+        "auto": "Automatisk",
+        "auto_hint": "För en Steam VAC-ban",
+        "banned_here": "Bannad här",
+        "any": "Alla",
+        "banned_here_now": "Bannad här nu",
+        "not_banned_here": "Steam-ban, kan fortfarande spela här",
+        "timing": "Tidpunkt",
+        "played_first": "Spelade här före banen",
+        "arrived_banned": "Redan bannad vid ankomsten"
+      },
+      "columns": {
+        "player": "Spelare",
+        "ban": "Ban",
+        "banned": "Bannad",
+        "length": "Längd",
+        "last_match": "Senaste match här",
+        "with_you": "Med dig"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "Steam VAC-ban",
+        "game": "Spelban",
+        "game_count": "Spelban ×{count}",
+        "game_title": "Steam-spelban (CS2 Overwatch)",
+        "staff": "Staffban",
+        "staff_title": "Bannad här av staff",
+        "auto": "Autoban",
+        "auto_title": "Bannad här automatiskt för en Steam VAC-ban"
+      },
+      "length": {
+        "permanent": "Permanent",
+        "days": "{count} dag | {count} dagar",
+        "hours": "{count} timme | {count} timmar",
+        "days_left": "{count} dag kvar | {count} dagar kvar",
+        "hours_left": "{count} timme kvar | {count} timmar kvar",
+        "ended": "Avslutad",
+        "not_banned_here": "Inte bannad här",
+        "matches_since": "{count} match sedan dess | {count} matcher sedan dess",
+        "no_matches_since": "Inga matcher sedan dess"
+      },
+      "last_match": {
+        "only": "Enda matchen",
+        "none": "Inga matcher här"
+      },
+      "with_you": {
+        "teammate": "Lagkamrat",
+        "opponent": "Motståndare",
+        "both": "Båda sidor",
+        "match_label": "{map} {score}",
+        "count": "{count} match med dig | {count} matcher med dig",
+        "summary": "{count} match med dig, {lost} förlorad | {count} matcher med dig, {lost} förlorade"
+      },
+      "summary": {
+        "count": "{count} spelare bannad de senaste {days} dagarna | {count} spelare bannade de senaste {days} dagarna",
+        "gaps": "{count} Steam-bannad spelare kan fortfarande spela här | {count} Steam-bannade spelare kan fortfarande spela här",
+        "lost_of_either": "Du förlorade {lost} av {count} match med eller mot dem | Du förlorade {lost} av {count} matcher med eller mot dem",
+        "lost_of_opponent": "Du förlorade {lost} av {count} match mot dem | Du förlorade {lost} av {count} matcher mot dem",
+        "lost_of_teammate": "Du förlorade {lost} av {count} match med dem i ditt lag | Du förlorade {lost} av {count} matcher med dem i ditt lag",
+        "lost_only_either": "Du förlorade {count} match med eller mot dem | Du förlorade {count} matcher med eller mot dem",
+        "lost_only_opponent": "Du förlorade {count} match mot dem | Du förlorade {count} matcher mot dem",
+        "lost_only_teammate": "Du förlorade {count} match med dem i ditt lag | Du förlorade {count} matcher med dem i ditt lag"
+      },
+      "empty": {
+        "title": "Ingen har bannats nyligen",
+        "description": "Steam-bans visas här inom en dag efter att Valve utfärdat dem, och 5Stack-bans direkt.",
+        "played_with": "Ingen du spelat med har bannats de senaste {days} dagarna. Prova en längre period.",
+        "no_gaps": "Alla Steam-bannade spelare under den här perioden är bannade här också."
+      },
+      "record": {
+        "title": "Banärende",
+        "matches_here": "{count} match här | {count} matcher här",
+        "vac_gap_title": "VAC-bannad på Steam, inte bannad här.",
+        "vac_gap_body": "Den automatiska banen gällde inte, eller så hävde staff den.",
+        "game_gap_title": "Steam-spelban, spelar fortfarande här.",
+        "game_gap_body": "Bara VAC-bans utlöser den automatiska banen.",
+        "matches_since": "{count} match sedan dess. | {count} matcher sedan dess.",
+        "reason": "Anledning",
+        "what_happened": "Vad som hände",
+        "your_matches": "Dina matcher med dem",
+        "moderation": "Moderering",
+        "end_now": "Avsluta banen nu",
+        "end_confirm": "Avsluta den här banen nu? {name} kan köa och gå med i turneringar direkt.",
+        "keep_ban": "Behåll banen",
+        "end_ban": "Avsluta banen",
+        "open_profile": "Öppna profil"
+      },
+      "timeline": {
+        "steam_both": "VAC- och spelbans på Steam",
+        "steam_vac": "VAC-ban på Steam | {count} VAC-bans på Steam",
+        "steam_game": "Spelban på Steam | {count} spelbans på Steam",
+        "steam_before_join": "{date}, före deras första match här",
+        "steam_day": "{date}. Steam anger dagen, inte tiden",
+        "first_match": "Första matchen här",
+        "only_match": "Deras enda match här",
+        "banned_auto": "Bannad här automatiskt",
+        "banned_by": "Bannad här av {name}",
+        "banned_staff": "Bannad här av staff",
+        "for_vac": "för Steam VAC-banen",
+        "ban_ended": "Banen avslutad",
+        "last_match": "Senaste match här",
+        "matches_after_steam": "{count} match efter Steam-banen | {count} matcher efter Steam-banen"
+      }
     }
   },
   "layouts": {
@@ -8124,7 +8266,8 @@
         "news": "Nyheter",
         "leagues": "Liga",
         "events": "Event",
-        "utility": "Utility"
+        "utility": "Utility",
+        "bans": "Bans"
       },
       "community": {
         "title": "Community"
@@ -8209,7 +8352,8 @@
         "events": "Event",
         "system_media_server": "Medieserver",
         "utility_drift": "Drift i utility-uppställningar",
-        "utility": "Utility-uppställningar"
+        "utility": "Utility-uppställningar",
+        "bans": "Nyligen bannade"
       },
       "logout_dialog": {
         "title": "Logga ut",
@@ -8289,6 +8433,10 @@
         "events": {
           "title": "Evenemang",
           "subtitle": "Communitykvällar och enstaka spel"
+        },
+        "bans": {
+          "title": "Bans",
+          "subtitle": "Senaste Steam- och 5Stack-bans"
         }
       }
     },

@@ -7997,6 +7997,148 @@
           "plugin_outdated": "{count} сервер использует устаревший плагин | {count} серверов используют устаревший плагин"
         }
       }
+    },
+    "bans": {
+      "title": "Недавно забаненные",
+      "search": "Поиск забаненных игроков",
+      "row_label": "{name}, открыть историю бана",
+      "by": "выдал {name}",
+      "source": {
+        "label": "Источник бана",
+        "all": "Все баны",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "Период",
+        "label": "{days} дней",
+        "option": "Последние {days} дней"
+      },
+      "played_with": {
+        "label": "Играли со мной",
+        "everyone": "Все",
+        "either": "Играли со мной",
+        "either_hint": "Любая сторона",
+        "opponent": "Против меня",
+        "opponent_hint": "Соперники",
+        "teammate": "В моей команде",
+        "teammate_hint": "Тиммейты",
+        "lost_only": "Только проигранные матчи",
+        "lost_label": "{side}, проигранные"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "Источник: {source}",
+        "vac": "VAC-бан",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "Игровой бан",
+        "game_hint": "CS2 Overwatch",
+        "staff": "Бан от персонала",
+        "staff_hint": "Выдан модератором",
+        "auto": "Автоматический",
+        "auto_hint": "За VAC-бан в Steam",
+        "banned_here": "Забанен здесь",
+        "any": "Любой",
+        "banned_here_now": "Сейчас забанен здесь",
+        "not_banned_here": "Бан в Steam, всё ещё может играть здесь",
+        "timing": "Время",
+        "played_first": "Играл здесь до бана",
+        "arrived_banned": "Уже был забанен при регистрации"
+      },
+      "columns": {
+        "player": "Игрок",
+        "ban": "Бан",
+        "banned": "Забанен",
+        "length": "Срок",
+        "last_match": "Последний матч здесь",
+        "with_you": "С вами"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "VAC-бан в Steam",
+        "game": "Игровой бан",
+        "game_count": "Игровой бан ×{count}",
+        "game_title": "Игровой бан в Steam (CS2 Overwatch)",
+        "staff": "Бан персонала",
+        "staff_title": "Забанен здесь персоналом",
+        "auto": "Автобан",
+        "auto_title": "Забанен здесь автоматически за VAC-бан в Steam"
+      },
+      "length": {
+        "permanent": "Навсегда",
+        "days": "{count} день | {count} дней",
+        "hours": "{count} час | {count} часов",
+        "days_left": "Остался {count} день | Осталось {count} дней",
+        "hours_left": "Остался {count} час | Осталось {count} часов",
+        "ended": "Завершён",
+        "not_banned_here": "Не забанен здесь",
+        "matches_since": "{count} матч с тех пор | {count} матчей с тех пор",
+        "no_matches_since": "С тех пор матчей нет"
+      },
+      "last_match": {
+        "only": "Единственный матч",
+        "none": "Матчей здесь нет"
+      },
+      "with_you": {
+        "teammate": "Тиммейт",
+        "opponent": "Соперник",
+        "both": "Обе стороны",
+        "match_label": "{map} {score}",
+        "count": "{count} матч с вами | {count} матчей с вами",
+        "summary": "{count} матч с вами, проиграно {lost} | {count} матчей с вами, проиграно {lost}"
+      },
+      "summary": {
+        "count": "{count} игрок забанен за последние {days} дней | {count} игроков забанено за последние {days} дней",
+        "gaps": "{count} игрок с баном в Steam всё ещё может играть здесь | {count} игроков с баном в Steam всё ещё могут играть здесь",
+        "lost_of_either": "Вы проиграли {lost} из {count} матча с ними или против них | Вы проиграли {lost} из {count} матчей с ними или против них",
+        "lost_of_opponent": "Вы проиграли {lost} из {count} матча против них | Вы проиграли {lost} из {count} матчей против них",
+        "lost_of_teammate": "Вы проиграли {lost} из {count} матча с ними в команде | Вы проиграли {lost} из {count} матчей с ними в команде",
+        "lost_only_either": "Вы проиграли {count} матч с ними или против них | Вы проиграли {count} матчей с ними или против них",
+        "lost_only_opponent": "Вы проиграли {count} матч против них | Вы проиграли {count} матчей против них",
+        "lost_only_teammate": "Вы проиграли {count} матч с ними в команде | Вы проиграли {count} матчей с ними в команде"
+      },
+      "empty": {
+        "title": "Недавно никого не банили",
+        "description": "Баны Steam появляются здесь в течение суток после того, как их выдала Valve, а баны 5Stack — сразу.",
+        "played_with": "Никого из тех, с кем вы играли, не забанили за последние {days} дней. Попробуйте период подлиннее.",
+        "no_gaps": "Все игроки с баном в Steam за этот период забанены и здесь."
+      },
+      "record": {
+        "title": "История бана",
+        "matches_here": "{count} матч здесь | {count} матчей здесь",
+        "vac_gap_title": "VAC-бан в Steam, здесь не забанен.",
+        "vac_gap_body": "Автоматический бан не сработал, или персонал его снял.",
+        "game_gap_title": "Игровой бан в Steam, всё ещё играет здесь.",
+        "game_gap_body": "Автоматический бан выдаётся только за VAC-баны.",
+        "matches_since": "{count} матч с тех пор. | {count} матчей с тех пор.",
+        "reason": "Причина",
+        "what_happened": "Что произошло",
+        "your_matches": "Ваши матчи с этим игроком",
+        "moderation": "Модерация",
+        "end_now": "Снять бан сейчас",
+        "end_confirm": "Снять этот бан сейчас? {name} сразу сможет искать матчи и участвовать в турнирах.",
+        "keep_ban": "Оставить бан",
+        "end_ban": "Снять бан",
+        "open_profile": "Открыть профиль"
+      },
+      "timeline": {
+        "steam_both": "VAC- и игровые баны в Steam",
+        "steam_vac": "VAC-бан в Steam | {count} VAC-банов в Steam",
+        "steam_game": "Игровой бан в Steam | {count} игровых банов в Steam",
+        "steam_before_join": "{date}, до первого матча здесь",
+        "steam_day": "{date}. Steam сообщает день, но не время",
+        "first_match": "Первый матч здесь",
+        "only_match": "Единственный матч здесь",
+        "banned_auto": "Забанен здесь автоматически",
+        "banned_by": "Забанен здесь: {name}",
+        "banned_staff": "Забанен здесь персоналом",
+        "for_vac": "за VAC-бан в Steam",
+        "ban_ended": "Бан завершён",
+        "last_match": "Последний матч здесь",
+        "matches_after_steam": "{count} матч после бана в Steam | {count} матчей после бана в Steam"
+      }
     }
   },
   "layouts": {
@@ -8124,7 +8266,8 @@
         "news": "Новости",
         "leagues": "Лига",
         "events": "События",
-        "utility": "Гранаты"
+        "utility": "Гранаты",
+        "bans": "Баны"
       },
       "community": {
         "title": "Сообщество"
@@ -8209,7 +8352,8 @@
         "events": "События",
         "system_media_server": "Медиасервер",
         "utility_drift": "Смещение раскидок гранат",
-        "utility": "Раскидки гранат"
+        "utility": "Раскидки гранат",
+        "bans": "Недавно забаненные"
       },
       "logout_dialog": {
         "title": "Выйти",
@@ -8289,6 +8433,10 @@
         "events": {
           "title": "События",
           "subtitle": "Вечера сообщества и разовые игры"
+        },
+        "bans": {
+          "title": "Баны",
+          "subtitle": "Недавние баны Steam и 5Stack"
         }
       }
     },

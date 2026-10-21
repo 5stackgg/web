@@ -497,6 +497,26 @@ const UtilityPracticeNav = defineAsyncComponent({
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
+                      <li>
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/bans"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{ $t("layouts.top_nav.community.bans.title") }}
+                              </span>
+                              <span :class="navItemSubClasses">
+                                {{
+                                  $t("layouts.top_nav.community.bans.subtitle")
+                                }}
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
                     </ul>
                   </div>
 

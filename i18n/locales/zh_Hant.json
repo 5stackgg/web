@@ -7997,6 +7997,148 @@
           "plugin_outdated": "{count} 台伺服器執行的外掛已過時 | {count} 台伺服器執行的外掛已過時"
         }
       }
+    },
+    "bans": {
+      "title": "最近封鎖",
+      "search": "搜尋被封鎖的玩家",
+      "row_label": "{name}，開啟封鎖紀錄",
+      "by": "由 {name} 封鎖",
+      "source": {
+        "label": "封鎖來源",
+        "all": "所有封鎖",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "時間範圍",
+        "label": "{days} 天",
+        "option": "最近 {days} 天"
+      },
+      "played_with": {
+        "label": "與我同場",
+        "everyone": "所有人",
+        "either": "與我同場",
+        "either_hint": "任一方",
+        "opponent": "與我對戰",
+        "opponent_hint": "對手",
+        "teammate": "與我同隊",
+        "teammate_hint": "隊友",
+        "lost_only": "僅我輸掉的比賽",
+        "lost_label": "{side}，輸掉的"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "來源為 {source}",
+        "vac": "VAC 封鎖",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "遊戲封鎖",
+        "game_hint": "CS2 Overwatch",
+        "staff": "管理員封鎖",
+        "staff_hint": "由版主發出",
+        "auto": "自動",
+        "auto_hint": "因 Steam VAC 封鎖",
+        "banned_here": "在此封鎖",
+        "any": "任意",
+        "banned_here_now": "目前在此封鎖",
+        "not_banned_here": "Steam 封鎖，仍可在此遊玩",
+        "timing": "時間",
+        "played_first": "封鎖前曾在此遊玩",
+        "arrived_banned": "加入時已被封鎖"
+      },
+      "columns": {
+        "player": "玩家",
+        "ban": "封鎖",
+        "banned": "封鎖時間",
+        "length": "時長",
+        "last_match": "在此最近一場比賽",
+        "with_you": "與你"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "Steam VAC 封鎖",
+        "game": "遊戲封鎖",
+        "game_count": "遊戲封鎖 ×{count}",
+        "game_title": "Steam 遊戲封鎖（CS2 Overwatch）",
+        "staff": "管理員封鎖",
+        "staff_title": "被管理員在此封鎖",
+        "auto": "自動封鎖",
+        "auto_title": "因 Steam VAC 封鎖而在此被自動封鎖"
+      },
+      "length": {
+        "permanent": "永久",
+        "days": "{count} 天 | {count} 天",
+        "hours": "{count} 小時 | {count} 小時",
+        "days_left": "剩餘 {count} 天 | 剩餘 {count} 天",
+        "hours_left": "剩餘 {count} 小時 | 剩餘 {count} 小時",
+        "ended": "已結束",
+        "not_banned_here": "未在此封鎖",
+        "matches_since": "此後 {count} 場比賽 | 此後 {count} 場比賽",
+        "no_matches_since": "此後沒有比賽"
+      },
+      "last_match": {
+        "only": "唯一一場比賽",
+        "none": "在此沒有比賽"
+      },
+      "with_you": {
+        "teammate": "隊友",
+        "opponent": "對手",
+        "both": "雙方",
+        "match_label": "{map} {score}",
+        "count": "與你 {count} 場 | 與你 {count} 場",
+        "summary": "與你 {count} 場，輸 {lost} 場 | 與你 {count} 場，輸 {lost} 場"
+      },
+      "summary": {
+        "count": "最近 {days} 天有 {count} 名玩家被封鎖 | 最近 {days} 天有 {count} 名玩家被封鎖",
+        "gaps": "{count} 名被 Steam 封鎖的玩家仍可在此遊玩 | {count} 名被 Steam 封鎖的玩家仍可在此遊玩",
+        "lost_of_either": "與他們同隊或對戰的 {count} 場比賽中你輸了 {lost} 場 | 與他們同隊或對戰的 {count} 場比賽中你輸了 {lost} 場",
+        "lost_of_opponent": "與他們對戰的 {count} 場比賽中你輸了 {lost} 場 | 與他們對戰的 {count} 場比賽中你輸了 {lost} 場",
+        "lost_of_teammate": "與他們同隊的 {count} 場比賽中你輸了 {lost} 場 | 與他們同隊的 {count} 場比賽中你輸了 {lost} 場",
+        "lost_only_either": "與他們同隊或對戰時你輸了 {count} 場比賽 | 與他們同隊或對戰時你輸了 {count} 場比賽",
+        "lost_only_opponent": "與他們對戰時你輸了 {count} 場比賽 | 與他們對戰時你輸了 {count} 場比賽",
+        "lost_only_teammate": "與他們同隊時你輸了 {count} 場比賽 | 與他們同隊時你輸了 {count} 場比賽"
+      },
+      "empty": {
+        "title": "最近沒有人被封鎖",
+        "description": "Steam 封鎖會在 Valve 發出後一天內顯示在這裡，5Stack 封鎖則在發出後立即顯示。",
+        "played_with": "最近 {days} 天內與你一起玩過的人都沒有被封鎖。試試更長的時間範圍。",
+        "no_gaps": "此時間範圍內被 Steam 封鎖的玩家在這裡也都已被封鎖。"
+      },
+      "record": {
+        "title": "封鎖紀錄",
+        "matches_here": "在此 {count} 場比賽 | 在此 {count} 場比賽",
+        "vac_gap_title": "Steam 上有 VAC 封鎖，但在此未封鎖。",
+        "vac_gap_body": "自動封鎖未生效，或已被管理員解除。",
+        "game_gap_title": "Steam 遊戲封鎖，仍在此遊玩。",
+        "game_gap_body": "只有 VAC 封鎖才會觸發自動封鎖。",
+        "matches_since": "此後 {count} 場比賽。 | 此後 {count} 場比賽。",
+        "reason": "原因",
+        "what_happened": "經過",
+        "your_matches": "你與該玩家的比賽",
+        "moderation": "管理",
+        "end_now": "立即解除封鎖",
+        "end_confirm": "現在解除此封鎖？{name} 將可以立即排隊並參加錦標賽。",
+        "keep_ban": "保留封鎖",
+        "end_ban": "解除封鎖",
+        "open_profile": "開啟個人檔案"
+      },
+      "timeline": {
+        "steam_both": "Steam 上的 VAC 與遊戲封鎖",
+        "steam_vac": "Steam 上的 VAC 封鎖 | Steam 上的 {count} 次 VAC 封鎖",
+        "steam_game": "Steam 上的遊戲封鎖 | Steam 上的 {count} 次遊戲封鎖",
+        "steam_before_join": "{date}，在此首場比賽之前",
+        "steam_day": "{date}。Steam 只提供日期，不提供時間",
+        "first_match": "在此首場比賽",
+        "only_match": "在此唯一一場比賽",
+        "banned_auto": "在此被自動封鎖",
+        "banned_by": "在此被 {name} 封鎖",
+        "banned_staff": "在此被管理員封鎖",
+        "for_vac": "因 Steam VAC 封鎖",
+        "ban_ended": "封鎖結束",
+        "last_match": "在此最近一場比賽",
+        "matches_after_steam": "Steam 封鎖後 {count} 場比賽 | Steam 封鎖後 {count} 場比賽"
+      }
     }
   },
   "layouts": {
@@ -8124,7 +8266,8 @@
         "news": "最新消息",
         "leagues": "聯賽",
         "events": "活動",
-        "utility": "道具"
+        "utility": "道具",
+        "bans": "封鎖"
       },
       "community": {
         "title": "社群"
@@ -8209,7 +8352,8 @@
         "events": "活動",
         "system_media_server": "媒體伺服器",
         "utility_drift": "道具點位位移",
-        "utility": "道具點位"
+        "utility": "道具點位",
+        "bans": "最近封鎖"
       },
       "logout_dialog": {
         "title": "登出",
@@ -8289,6 +8433,10 @@
         "events": {
           "title": "活動",
           "subtitle": "社群之夜與一次性賽事"
+        },
+        "bans": {
+          "title": "封鎖",
+          "subtitle": "最近的 Steam 與 5Stack 封鎖"
         }
       }
     },

@@ -7997,6 +7997,148 @@
           "plugin_outdated": "{count} Server nutzt ein veraltetes Plugin | {count} Server nutzen ein veraltetes Plugin"
         }
       }
+    },
+    "bans": {
+      "title": "Kürzlich gebannt",
+      "search": "Gebannte Spieler suchen",
+      "row_label": "{name}, Bann-Akte öffnen",
+      "by": "von {name}",
+      "source": {
+        "label": "Bann-Quelle",
+        "all": "Alle Banns",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "Zeitraum",
+        "label": "{days} Tage",
+        "option": "Letzte {days} Tage"
+      },
+      "played_with": {
+        "label": "Mit mir gespielt",
+        "everyone": "Alle",
+        "either": "Mit mir gespielt",
+        "either_hint": "Beide Seiten",
+        "opponent": "Gegen mich",
+        "opponent_hint": "Gegner",
+        "teammate": "In meinem Team",
+        "teammate_hint": "Teamkollegen",
+        "lost_only": "Nur verlorene Matches",
+        "lost_label": "{side}, verloren"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "Quelle ist {source}",
+        "vac": "VAC-Bann",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "Game-Bann",
+        "game_hint": "CS2 Overwatch",
+        "staff": "Staff-Bann",
+        "staff_hint": "Von einem Moderator verhängt",
+        "auto": "Automatisch",
+        "auto_hint": "Für einen Steam-VAC-Bann",
+        "banned_here": "Hier gebannt",
+        "any": "Alle",
+        "banned_here_now": "Hier aktuell gebannt",
+        "not_banned_here": "Steam-Bann, darf hier noch spielen",
+        "timing": "Zeitpunkt",
+        "played_first": "Hat vor dem Bann hier gespielt",
+        "arrived_banned": "War beim Beitritt schon gebannt"
+      },
+      "columns": {
+        "player": "Spieler",
+        "ban": "Bann",
+        "banned": "Gebannt",
+        "length": "Dauer",
+        "last_match": "Letztes Match hier",
+        "with_you": "Mit dir"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "Steam-VAC-Bann",
+        "game": "Game-Bann",
+        "game_count": "Game-Bann ×{count}",
+        "game_title": "Steam-Game-Bann (CS2 Overwatch)",
+        "staff": "Staff-Bann",
+        "staff_title": "Hier vom Staff gebannt",
+        "auto": "Auto-Bann",
+        "auto_title": "Hier automatisch wegen eines Steam-VAC-Banns gebannt"
+      },
+      "length": {
+        "permanent": "Permanent",
+        "days": "{count} Tag | {count} Tage",
+        "hours": "{count} Stunde | {count} Stunden",
+        "days_left": "noch {count} Tag | noch {count} Tage",
+        "hours_left": "noch {count} Stunde | noch {count} Stunden",
+        "ended": "Beendet",
+        "not_banned_here": "Hier nicht gebannt",
+        "matches_since": "{count} Match seitdem | {count} Matches seitdem",
+        "no_matches_since": "Seitdem keine Matches"
+      },
+      "last_match": {
+        "only": "Einziges Match",
+        "none": "Keine Matches hier"
+      },
+      "with_you": {
+        "teammate": "Teamkollege",
+        "opponent": "Gegner",
+        "both": "Beide Seiten",
+        "match_label": "{map} {score}",
+        "count": "{count} Match mit dir | {count} Matches mit dir",
+        "summary": "{count} Match mit dir, {lost} verloren | {count} Matches mit dir, {lost} verloren"
+      },
+      "summary": {
+        "count": "{count} Spieler in den letzten {days} Tagen gebannt | {count} Spieler in den letzten {days} Tagen gebannt",
+        "gaps": "{count} auf Steam gebannter Spieler darf hier noch spielen | {count} auf Steam gebannte Spieler dürfen hier noch spielen",
+        "lost_of_either": "Du hast {lost} von {count} Match mit oder gegen sie verloren | Du hast {lost} von {count} Matches mit oder gegen sie verloren",
+        "lost_of_opponent": "Du hast {lost} von {count} Match gegen sie verloren | Du hast {lost} von {count} Matches gegen sie verloren",
+        "lost_of_teammate": "Du hast {lost} von {count} Match mit ihnen im Team verloren | Du hast {lost} von {count} Matches mit ihnen im Team verloren",
+        "lost_only_either": "Du hast {count} Match mit oder gegen sie verloren | Du hast {count} Matches mit oder gegen sie verloren",
+        "lost_only_opponent": "Du hast {count} Match gegen sie verloren | Du hast {count} Matches gegen sie verloren",
+        "lost_only_teammate": "Du hast {count} Match mit ihnen im Team verloren | Du hast {count} Matches mit ihnen im Team verloren"
+      },
+      "empty": {
+        "title": "Niemand wurde kürzlich gebannt",
+        "description": "Steam-Banns erscheinen hier innerhalb eines Tages, nachdem Valve sie verhängt hat, 5Stack-Banns sofort.",
+        "played_with": "Niemand, mit dem du gespielt hast, wurde in den letzten {days} Tagen gebannt. Versuch einen längeren Zeitraum.",
+        "no_gaps": "Jeder auf Steam gebannte Spieler in diesem Zeitraum ist auch hier gebannt."
+      },
+      "record": {
+        "title": "Bann-Akte",
+        "matches_here": "{count} Match hier | {count} Matches hier",
+        "vac_gap_title": "Auf Steam VAC-gebannt, hier nicht gebannt.",
+        "vac_gap_body": "Der automatische Bann griff nicht, oder der Staff hat ihn aufgehoben.",
+        "game_gap_title": "Steam-Game-Bann, spielt hier weiter.",
+        "game_gap_body": "Nur VAC-Banns lösen den automatischen Bann aus.",
+        "matches_since": "{count} Match seitdem. | {count} Matches seitdem.",
+        "reason": "Grund",
+        "what_happened": "Was passiert ist",
+        "your_matches": "Deine Matches mit ihnen",
+        "moderation": "Moderation",
+        "end_now": "Bann jetzt beenden",
+        "end_confirm": "Diesen Bann jetzt beenden? {name} kann sofort wieder in die Warteschlange und Turnieren beitreten.",
+        "keep_ban": "Bann behalten",
+        "end_ban": "Bann beenden",
+        "open_profile": "Profil öffnen"
+      },
+      "timeline": {
+        "steam_both": "VAC- und Game-Banns auf Steam",
+        "steam_vac": "VAC-Bann auf Steam | {count} VAC-Banns auf Steam",
+        "steam_game": "Game-Bann auf Steam | {count} Game-Banns auf Steam",
+        "steam_before_join": "{date}, vor dem ersten Match hier",
+        "steam_day": "{date}. Steam nennt den Tag, nicht die Uhrzeit",
+        "first_match": "Erstes Match hier",
+        "only_match": "Einziges Match hier",
+        "banned_auto": "Hier automatisch gebannt",
+        "banned_by": "Hier von {name} gebannt",
+        "banned_staff": "Hier vom Staff gebannt",
+        "for_vac": "wegen des Steam-VAC-Banns",
+        "ban_ended": "Bann beendet",
+        "last_match": "Letztes Match hier",
+        "matches_after_steam": "{count} Match nach dem Steam-Bann | {count} Matches nach dem Steam-Bann"
+      }
     }
   },
   "layouts": {
@@ -8124,7 +8266,8 @@
         "news": "News",
         "leagues": "Liga",
         "events": "Events",
-        "utility": "Utility"
+        "utility": "Utility",
+        "bans": "Banns"
       },
       "community": {
         "title": "Community"
@@ -8209,7 +8352,8 @@
         "events": "Events",
         "system_media_server": "Medienserver",
         "utility_drift": "Drift von Utility-Lineups",
-        "utility": "Utility-Lineups"
+        "utility": "Utility-Lineups",
+        "bans": "Kürzlich gebannt"
       },
       "logout_dialog": {
         "title": "Abmelden",
@@ -8289,6 +8433,10 @@
         "events": {
           "title": "Events",
           "subtitle": "Community-Abende und einmalige Spiele"
+        },
+        "bans": {
+          "title": "Banns",
+          "subtitle": "Aktuelle Steam- und 5Stack-Banns"
         }
       }
     },

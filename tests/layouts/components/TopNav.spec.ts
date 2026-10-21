@@ -256,6 +256,7 @@ describe("TopNav menus on a phone", () => {
     const community = await openMenu(wrapper, "Community");
 
     expect(community.find('a[href="/players"]').exists()).toBe(true);
+    expect(community.find('a[href="/bans"]').exists()).toBe(true);
     expect(community.find('a[href="/watch"]').exists()).toBe(false);
     expect(wrapper.find('a[href="/watch"]').exists()).toBe(true);
     const subtitle = community

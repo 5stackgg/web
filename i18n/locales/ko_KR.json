@@ -7997,6 +7997,148 @@
           "plugin_outdated": "서버 {count}대가 오래된 플러그인을 사용 중입니다 | 서버 {count}대가 오래된 플러그인을 사용 중입니다"
         }
       }
+    },
+    "bans": {
+      "title": "최근 밴",
+      "search": "밴된 플레이어 검색",
+      "row_label": "{name}, 밴 기록 열기",
+      "by": "{name} 처리",
+      "source": {
+        "label": "밴 출처",
+        "all": "모든 밴",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "기간",
+        "label": "{days}일",
+        "option": "최근 {days}일"
+      },
+      "played_with": {
+        "label": "나와 함께 플레이",
+        "everyone": "전체",
+        "either": "나와 함께 플레이",
+        "either_hint": "양쪽 모두",
+        "opponent": "나와 상대",
+        "opponent_hint": "상대",
+        "teammate": "내 팀",
+        "teammate_hint": "팀원",
+        "lost_only": "내가 진 경기만",
+        "lost_label": "{side}, 패배"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "출처: {source}",
+        "vac": "VAC 밴",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "게임 밴",
+        "game_hint": "CS2 Overwatch",
+        "staff": "스태프 밴",
+        "staff_hint": "모더레이터가 부여",
+        "auto": "자동",
+        "auto_hint": "Steam VAC 밴에 따른 조치",
+        "banned_here": "여기서 밴",
+        "any": "전체",
+        "banned_here_now": "현재 여기서 밴됨",
+        "not_banned_here": "Steam 밴, 여기서는 아직 플레이 가능",
+        "timing": "시점",
+        "played_first": "밴 전에 여기서 플레이함",
+        "arrived_banned": "가입할 때 이미 밴 상태"
+      },
+      "columns": {
+        "player": "플레이어",
+        "ban": "밴",
+        "banned": "밴 일시",
+        "length": "기간",
+        "last_match": "여기서의 마지막 경기",
+        "with_you": "나와의 경기"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "Steam VAC 밴",
+        "game": "게임 밴",
+        "game_count": "게임 밴 ×{count}",
+        "game_title": "Steam 게임 밴 (CS2 Overwatch)",
+        "staff": "스태프 밴",
+        "staff_title": "스태프가 여기서 밴함",
+        "auto": "자동 밴",
+        "auto_title": "Steam VAC 밴으로 여기서 자동 밴됨"
+      },
+      "length": {
+        "permanent": "영구",
+        "days": "{count}일 | {count}일",
+        "hours": "{count}시간 | {count}시간",
+        "days_left": "{count}일 남음 | {count}일 남음",
+        "hours_left": "{count}시간 남음 | {count}시간 남음",
+        "ended": "종료됨",
+        "not_banned_here": "여기서는 밴 아님",
+        "matches_since": "이후 {count}경기 | 이후 {count}경기",
+        "no_matches_since": "이후 경기 없음"
+      },
+      "last_match": {
+        "only": "유일한 경기",
+        "none": "여기서 경기 없음"
+      },
+      "with_you": {
+        "teammate": "팀원",
+        "opponent": "상대",
+        "both": "양쪽 모두",
+        "match_label": "{map} {score}",
+        "count": "나와 {count}경기 | 나와 {count}경기",
+        "summary": "나와 {count}경기, {lost}패 | 나와 {count}경기, {lost}패"
+      },
+      "summary": {
+        "count": "최근 {days}일 동안 {count}명 밴 | 최근 {days}일 동안 {count}명 밴",
+        "gaps": "Steam에서 밴된 {count}명이 아직 여기서 플레이 가능 | Steam에서 밴된 {count}명이 아직 여기서 플레이 가능",
+        "lost_of_either": "함께 또는 상대로 한 {count}경기 중 {lost}경기를 졌습니다 | 함께 또는 상대로 한 {count}경기 중 {lost}경기를 졌습니다",
+        "lost_of_opponent": "상대로 한 {count}경기 중 {lost}경기를 졌습니다 | 상대로 한 {count}경기 중 {lost}경기를 졌습니다",
+        "lost_of_teammate": "같은 팀이었던 {count}경기 중 {lost}경기를 졌습니다 | 같은 팀이었던 {count}경기 중 {lost}경기를 졌습니다",
+        "lost_only_either": "함께 또는 상대로 {count}경기를 졌습니다 | 함께 또는 상대로 {count}경기를 졌습니다",
+        "lost_only_opponent": "상대로 {count}경기를 졌습니다 | 상대로 {count}경기를 졌습니다",
+        "lost_only_teammate": "같은 팀으로 {count}경기를 졌습니다 | 같은 팀으로 {count}경기를 졌습니다"
+      },
+      "empty": {
+        "title": "최근 밴된 사람이 없습니다",
+        "description": "Steam 밴은 Valve가 부여한 지 하루 안에, 5Stack 밴은 부여되는 즉시 여기에 표시됩니다.",
+        "played_with": "최근 {days}일 동안 함께 플레이한 사람 중 밴된 사람이 없습니다. 기간을 늘려 보세요.",
+        "no_gaps": "이 기간에 Steam에서 밴된 플레이어는 모두 여기서도 밴되었습니다."
+      },
+      "record": {
+        "title": "밴 기록",
+        "matches_here": "여기서 {count}경기 | 여기서 {count}경기",
+        "vac_gap_title": "Steam에서 VAC 밴, 여기서는 밴 아님.",
+        "vac_gap_body": "자동 밴이 적용되지 않았거나 스태프가 해제했습니다.",
+        "game_gap_title": "Steam 게임 밴, 여기서 아직 플레이 중.",
+        "game_gap_body": "자동 밴은 VAC 밴에만 적용됩니다.",
+        "matches_since": "이후 {count}경기. | 이후 {count}경기.",
+        "reason": "사유",
+        "what_happened": "경과",
+        "your_matches": "이 플레이어와의 경기",
+        "moderation": "관리",
+        "end_now": "지금 밴 종료",
+        "end_confirm": "지금 이 밴을 종료할까요? {name}님이 바로 대기열과 토너먼트에 참여할 수 있습니다.",
+        "keep_ban": "밴 유지",
+        "end_ban": "밴 종료",
+        "open_profile": "프로필 열기"
+      },
+      "timeline": {
+        "steam_both": "Steam VAC 밴 및 게임 밴",
+        "steam_vac": "Steam VAC 밴 | Steam VAC 밴 {count}건",
+        "steam_game": "Steam 게임 밴 | Steam 게임 밴 {count}건",
+        "steam_before_join": "{date}, 여기서의 첫 경기 이전",
+        "steam_day": "{date}. Steam은 시간 없이 날짜만 제공",
+        "first_match": "여기서의 첫 경기",
+        "only_match": "여기서의 유일한 경기",
+        "banned_auto": "여기서 자동 밴",
+        "banned_by": "{name}이(가) 여기서 밴",
+        "banned_staff": "스태프가 여기서 밴",
+        "for_vac": "Steam VAC 밴에 따른 조치",
+        "ban_ended": "밴 종료",
+        "last_match": "여기서의 마지막 경기",
+        "matches_after_steam": "Steam 밴 이후 {count}경기 | Steam 밴 이후 {count}경기"
+      }
     }
   },
   "layouts": {
@@ -8124,7 +8266,8 @@
         "news": "뉴스",
         "leagues": "리그",
         "events": "이벤트",
-        "utility": "유틸리티"
+        "utility": "유틸리티",
+        "bans": "밴"
       },
       "community": {
         "title": "커뮤니티"
@@ -8209,7 +8352,8 @@
         "events": "이벤트",
         "system_media_server": "미디어 서버",
         "utility_drift": "유틸리티 라인업 변동",
-        "utility": "유틸리티 라인업"
+        "utility": "유틸리티 라인업",
+        "bans": "최근 밴"
       },
       "logout_dialog": {
         "title": "로그아웃",
@@ -8289,6 +8433,10 @@
         "events": {
           "title": "이벤트",
           "subtitle": "커뮤니티 나이트와 일회성 경기"
+        },
+        "bans": {
+          "title": "밴",
+          "subtitle": "최근 Steam 및 5Stack 밴"
         }
       }
     },

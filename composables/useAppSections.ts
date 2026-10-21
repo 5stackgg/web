@@ -16,6 +16,7 @@ import {
   Server,
   ShieldCheck,
   ShieldHalf,
+  ShieldX,
   Swords,
   Trophy,
   UserCog,
@@ -155,6 +156,14 @@ export function useAppSections() {
         icon: Trophy,
         group: community,
         keywords: t("layouts.top_nav.community.leaderboard.subtitle"),
+      },
+      {
+        id: "bans",
+        label: t("layouts.app_nav.navigation.bans"),
+        to: { name: "bans" },
+        icon: ShieldX,
+        group: community,
+        keywords: t("layouts.top_nav.community.bans.subtitle"),
       },
       settings.newsEnabled &&
         (hasContent("news") || settings.canPostNews) && {

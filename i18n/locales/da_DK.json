@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "Admin",
     "team_invite": {
-      "pending": "Afventer"
+      "pending": "Afventer",
+      "pending_team": "Inviteret til holdet og denne opstilling",
+      "pending_tournament": "Kun inviteret til denne turnering"
     },
     "results_table": {
       "matches": "Kampe"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "Allerede på et holds trup i denne turnering.",
       "leaves_pool": "Du er tilmeldt som free agent. Tilmelder du et hold, bliver du fjernet fra free agent-puljen.",
       "permanent_team": "Behold som fast hold",
-      "permanent_team_description": "Tilføjer det også til dine hold med egen side og statistik, klar til næste turnering. Lad det være slået fra for et engangshold."
+      "permanent_team_description": "Tilføjer det også til dine hold med egen side og statistik. Holdkammerater, du inviterer, kommer på holdet og i denne opstilling. Lad det være slået fra for et engangshold.",
+      "permanent_team_name_taken": "Der findes allerede et hold ved navn {name}. Vælg et andet navn, eller slå Behold som fast hold fra."
     },
     "tournament_team": {
       "remove": "Fjern hold",
@@ -9260,6 +9263,8 @@
       "member_added_description": "{name} blev tilføjet til din trup",
       "invite_sent": "Invitation sendt",
       "invite_sent_description": "{name} er inviteret og skal acceptere, før vedkommende kommer på din trup",
+      "invite_sent_team_description": "{name} er inviteret til {team} og kommer i denne opstilling, når de accepterer",
+      "invite_sent_tournament_description": "{name} er inviteret til {team} til denne turnering og skal acceptere først",
       "new": "Opret nyt hold",
       "select": "Vælg eksisterende hold",
       "select_role": "Vælg rolle",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "Annuller denne invitation?",
       "cancel_invite_description": "Dette annullerer invitationen til dette medlem",
       "free_agent_tag": "Free agent",
+      "kind": {
+        "team": "Hold",
+        "tournament_only": "Kun turnering"
+      },
+      "add_tag": {
+        "on_team": "På holdet",
+        "team_invite": "Invitation til hold + opstilling",
+        "tournament_invite": "Turneringsinvitation"
+      },
+      "add_hint": {
+        "team": "Spillere uden for {team} får en invitation. Accepterer de, kommer de på holdet og i denne opstilling.",
+        "tournament": "Spillere får en invitation til {team}, et hold kun til denne turnering."
+      },
       "seed_label": "Seedning",
       "seed_display": "Seedning #{seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "Holdinvitation",
       "tournament_title": "Turneringsinvitation",
       "tournament_message": "Du er inviteret til en turnering",
+      "team_and_lineup_message": "Bliv en del af {team} og opstillingen til",
+      "tournament_team_message": "Spil for {team}, et hold kun til denne turnering, i",
       "team_message": "Du er inviteret til et hold",
       "invited_by": "Inviteret af",
       "deny": "Afvis",

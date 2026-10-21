@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "管理",
     "team_invite": {
-      "pending": "待處理"
+      "pending": "待處理",
+      "pending_team": "已邀請加入隊伍和本次陣容",
+      "pending_tournament": "僅邀請參加本賽事"
     },
     "results_table": {
       "matches": "比賽"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "已在這場錦標賽的某支隊伍名單中。",
       "leaves_pool": "你已以自由選手身分報名。註冊隊伍會讓你退出自由選手名單。",
       "permanent_team": "保留為常駐隊伍",
-      "permanent_team_description": "同時將其加入你的隊伍，擁有獨立頁面和數據，可直接參加下一場賽事。一次性隊伍請保持關閉。"
+      "permanent_team_description": "同時將其加入你的隊伍，擁有獨立頁面和數據。你邀請的隊友會加入隊伍和本次陣容。一次性隊伍請保持關閉。",
+      "permanent_team_name_taken": "已存在名為 {name} 的隊伍。請換一個名稱，或關閉「保留為常駐隊伍」。"
     },
     "tournament_team": {
       "remove": "移除隊伍",
@@ -9260,6 +9263,8 @@
       "member_added_description": "已將 {name} 加入你的名單",
       "invite_sent": "已送出邀請",
       "invite_sent_description": "已邀請 {name}，對方接受後才會加入你的名單",
+      "invite_sent_team_description": "已邀請 {name} 加入 {team}，接受後將進入本次陣容",
+      "invite_sent_tournament_description": "已邀請 {name} 為本賽事加入 {team}，需要對方先接受",
       "new": "建立新隊伍",
       "select": "選擇現有隊伍",
       "select_role": "選擇角色",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "您確定要取消此邀請嗎？",
       "cancel_invite_description": "這將取消對該成員的邀請",
       "free_agent_tag": "自由選手",
+      "kind": {
+        "team": "隊伍",
+        "tournament_only": "僅限本賽事"
+      },
+      "add_tag": {
+        "on_team": "隊伍成員",
+        "team_invite": "隊伍 + 陣容邀請",
+        "tournament_invite": "賽事邀請"
+      },
+      "add_hint": {
+        "team": "{team} 以外的選手會收到邀請，接受後將加入隊伍和本次陣容。",
+        "tournament": "選手會收到 {team} 的邀請，這是僅限本賽事的隊伍。"
+      },
       "seed_label": "種子序",
       "seed_display": "種子 #{seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "隊伍邀請",
       "tournament_title": "賽事邀請",
       "tournament_message": "您受邀加入一個賽事",
+      "team_and_lineup_message": "加入 {team} 及其陣容，參加",
+      "tournament_team_message": "以僅限本賽事的隊伍 {team} 參加",
       "team_message": "您受邀加入一個隊伍",
       "invited_by": "邀請人",
       "deny": "拒絕",

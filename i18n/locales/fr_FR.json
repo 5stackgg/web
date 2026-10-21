@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "Admin",
     "team_invite": {
-      "pending": "En attente"
+      "pending": "En attente",
+      "pending_team": "Invité dans l'équipe et cette composition",
+      "pending_tournament": "Invité pour ce tournoi uniquement"
     },
     "results_table": {
       "matches": "Matchs"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "Déjà dans l'effectif d'une équipe de ce tournoi.",
       "leaves_pool": "Tu es inscrit comme agent libre. Inscrire une équipe te retire de la liste des agents libres.",
       "permanent_team": "Garder comme équipe permanente",
-      "permanent_team_description": "L'ajoute aussi à tes équipes, avec sa propre page et ses stats, prête pour le prochain tournoi. Laisse désactivé pour une équipe ponctuelle."
+      "permanent_team_description": "L'ajoute aussi à tes équipes, avec sa propre page et ses stats. Les coéquipiers que tu invites rejoignent l'équipe et cette composition. Laisse désactivé pour une équipe ponctuelle.",
+      "permanent_team_name_taken": "Une équipe nommée {name} existe déjà. Choisis un autre nom ou désactive Garder comme équipe permanente."
     },
     "tournament_team": {
       "remove": "Retirer l'équipe",
@@ -9260,6 +9263,8 @@
       "member_added_description": "{name} a été ajouté à votre effectif",
       "invite_sent": "Invitation envoyée",
       "invite_sent_description": "{name} a été invité et doit accepter avant de rejoindre votre effectif",
+      "invite_sent_team_description": "{name} a été invité dans {team} et rejoindra cette composition après avoir accepté",
+      "invite_sent_tournament_description": "{name} a été invité dans {team} pour ce tournoi et doit d'abord accepter",
       "new": "Créer une équipe",
       "select": "Choisir une équipe existante",
       "select_role": "Choisir un rôle",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "Annuler cette invitation ?",
       "cancel_invite_description": "L'invitation de ce membre sera annulée",
       "free_agent_tag": "Agent libre",
+      "kind": {
+        "team": "Équipe",
+        "tournament_only": "Tournoi uniquement"
+      },
+      "add_tag": {
+        "on_team": "Dans l'équipe",
+        "team_invite": "Invitation équipe + compo",
+        "tournament_invite": "Invitation au tournoi"
+      },
+      "add_hint": {
+        "team": "Les joueurs hors de {team} reçoivent une invitation. En l'acceptant, ils rejoignent l'équipe et cette composition.",
+        "tournament": "Les joueurs reçoivent une invitation pour {team}, une équipe pour ce tournoi uniquement."
+      },
       "seed_label": "Seed",
       "seed_display": "Seed n° {seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "Invitation d'équipe",
       "tournament_title": "Invitation à un tournoi",
       "tournament_message": "Tu as été invité à rejoindre un tournoi",
+      "team_and_lineup_message": "Rejoins {team} et sa composition pour",
+      "tournament_team_message": "Joue pour {team}, une équipe pour ce tournoi uniquement, dans",
       "team_message": "Tu as été invité à rejoindre une équipe",
       "invited_by": "Invité par",
       "deny": "Refuser",

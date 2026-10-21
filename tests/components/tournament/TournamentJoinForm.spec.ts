@@ -36,6 +36,7 @@ afterEach(() => {
 
 async function mountJoinForm(options: {
   isOrganizer?: boolean;
+  canJoin?: boolean;
   tournamentOwners: string[];
   rostered?: string[];
   myFreeAgent?: Record<string, unknown>;
@@ -55,7 +56,7 @@ async function mountJoinForm(options: {
       tournament: {
         id: "tournament-1",
         status: "RegistrationOpen",
-        can_join: true,
+        can_join: options.canJoin ?? true,
         is_organizer: options.isOrganizer ?? false,
         min_players_per_lineup: 5,
         teams: options.tournamentOwners.map((owner, index) => ({
@@ -96,17 +97,38 @@ async function startNewTeam(
   return vm;
 }
 
+async function clickKeepPermanent(
+  wrapper: Awaited<ReturnType<typeof mountJoinForm>>,
+) {
+  const card = wrapper
+    .findAll("div.cursor-pointer")
+    .find((element) => element.text().includes(KEEP_PERMANENT));
+  expect(card, "Keep as a Permanent Team switch").toBeDefined();
+  await card!.trigger("click");
+  await flushPromises();
+}
+
+function serve(existingTeams: Array<{ id: string }> = []) {
+  const client = (useNuxtApp() as any).$apollo.defaultClient;
+  const mutate = vi.fn().mockResolvedValue({ data: {} });
+  vi.spyOn(client, "mutate").mockImplementation(mutate);
+  vi.spyOn(client, "query").mockResolvedValue({
+    data: { teams: existingTeams },
+  });
+  return mutate;
+}
+
 async function registeredEntry(
   wrapper: Awaited<ReturnType<typeof mountJoinForm>>,
   values: Record<string, unknown>,
+  permanent = false,
 ) {
-  const mutate = vi.fn().mockResolvedValue({ data: {} });
-  vi.spyOn(
-    (useNuxtApp() as any).$apollo.defaultClient,
-    "mutate",
-  ).mockImplementation(mutate);
+  const mutate = serve();
 
   const vm = await startNewTeam(wrapper, values);
+  if (permanent) {
+    await clickKeepPermanent(wrapper);
+  }
   await vm.joinTournament();
   await flushPromises();
 
@@ -183,11 +205,22 @@ describe("TournamentJoinForm", () => {
 
   it("offers to keep a new team the registrant plays on", async () => {
     const wrapper = await mountJoinForm({ tournamentOwners: [SOMEONE_ELSE] });
-    expect(wrapper.text()).not.toContain(KEEP_PERMANENT);
 
     await startNewTeam(wrapper);
 
     expect(wrapper.text()).toContain(KEEP_PERMANENT);
+  });
+
+  it("does not offer it when the registrant cannot play on the team", async () => {
+    const wrapper = await mountJoinForm({
+      tournamentOwners: [SOMEONE_ELSE],
+      canJoin: false,
+    });
+
+    await startNewTeam(wrapper);
+
+    expect(wrapper.text()).toContain("Create New Team");
+    expect(wrapper.text()).not.toContain(KEEP_PERMANENT);
   });
 
   it("does not offer it for a team an organizer builds for another player", async () => {
@@ -204,10 +237,11 @@ describe("TournamentJoinForm", () => {
   it("creates the permanent team in the same insert that enters it", async () => {
     const wrapper = await mountJoinForm({ tournamentOwners: [SOMEONE_ELSE] });
 
-    const entry = await registeredEntry(wrapper, {
-      team_name: "Ultima Ratio",
-      permanent_team: true,
-    });
+    const entry = await registeredEntry(
+      wrapper,
+      { team_name: "Ultima Ratio" },
+      true,
+    );
 
     expect(entry.team).toEqual({
       data: { name: "Ultima Ratio", short_name: "UR" },
@@ -231,5 +265,20 @@ describe("TournamentJoinForm", () => {
     expect(entry.team_id).toBeNull();
     expect(entry.name).toBe("Ultima Ratio");
     expect(entry.short_name).toBe("UR");
+  });
+
+  it("stops before saving when another team already has the name", async () => {
+    const wrapper = await mountJoinForm({ tournamentOwners: [SOMEONE_ELSE] });
+    const mutate = serve([{ id: "taken" }]);
+    const vm = await startNewTeam(wrapper, { team_name: "Mix" });
+    await clickKeepPermanent(wrapper);
+
+    await vm.joinTournament();
+    await flushPromises();
+
+    expect(mutate).not.toHaveBeenCalled();
+    expect(vm.form.errors.team_name).toBe(
+      "A team called Mix already exists. Pick another name, or turn off Keep as a Permanent Team.",
+    );
   });
 });

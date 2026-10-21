@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "Admin",
     "team_invite": {
-      "pending": "Pendente"
+      "pending": "Pendente",
+      "pending_team": "Convidado para o time e esta lineup",
+      "pending_tournament": "Convidado só para este torneio"
     },
     "results_table": {
       "matches": "Partidas"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "Já inscrito em uma equipe neste torneio.",
       "leaves_pool": "Você está inscrito como agente livre. Inscrever um time tira você da lista de agentes livres.",
       "permanent_team": "Manter como Equipe Permanente",
-      "permanent_team_description": "Também adiciona aos seus times, com página e estatísticas próprias, pronto para o próximo torneio. Deixe desligado para um time de uma vez só."
+      "permanent_team_description": "Também adiciona aos seus times, com página e estatísticas próprias. Os colegas que você convidar entram no time e nesta lineup. Deixe desligado para um time de uma vez só.",
+      "permanent_team_name_taken": "Já existe um time chamado {name}. Escolha outro nome ou desligue Manter como Equipe Permanente."
     },
     "tournament_team": {
       "remove": "Remover Equipe",
@@ -9260,6 +9263,8 @@
       "member_added_description": "{name} foi adicionado ao seu elenco",
       "invite_sent": "Convite enviado",
       "invite_sent_description": "{name} foi convidado e precisa aceitar antes de entrar no seu elenco",
+      "invite_sent_team_description": "{name} foi convidado para {team} e entra nesta lineup quando aceitar",
+      "invite_sent_tournament_description": "{name} foi convidado para {team} neste torneio e precisa aceitar primeiro",
       "new": "Criar Nova Equipe",
       "select": "Selecionar uma Equipe Existente",
       "select_role": "Selecionar Função",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "Cancelar convite",
       "cancel_invite_description": "Tem certeza que deseja cancelar este convite?",
       "free_agent_tag": "Agente livre",
+      "kind": {
+        "team": "Time",
+        "tournament_only": "Só o torneio"
+      },
+      "add_tag": {
+        "on_team": "No time",
+        "team_invite": "Convite para time + lineup",
+        "tournament_invite": "Convite do torneio"
+      },
+      "add_hint": {
+        "team": "Jogadores fora de {team} recebem um convite. Ao aceitar, entram no time e nesta lineup.",
+        "tournament": "Os jogadores recebem um convite para {team}, um time só para este torneio."
+      },
       "seed_label": "Seed",
       "seed_display": "Seed #{seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "Convite para Equipe",
       "tournament_title": "Convite para o Torneio",
       "tournament_message": "Você foi convidado para entrar em um Torneio",
+      "team_and_lineup_message": "Entre em {team} e na lineup para",
+      "tournament_team_message": "Jogue por {team}, um time só para este torneio, em",
       "team_message": "Você foi convidado para entrar em uma Equipe",
       "invited_by": "Convidado por",
       "deny": "Recusar",

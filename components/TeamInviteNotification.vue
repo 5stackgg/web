@@ -29,7 +29,15 @@ import TimeAgo from "./TimeAgo.vue";
       </p>
     </template>
     <template v-else-if="isTournamentTeam">
-      {{ $t("team.invite.tournament_message", { team: invite.team.name }) }}
+      {{
+        joinsTeam
+          ? $t("team.invite.team_and_lineup_message", {
+              team: tournamentTeamName,
+            })
+          : $t("team.invite.tournament_team_message", {
+              team: tournamentTeamName,
+            })
+      }}
       <p class="text-sm text-muted-foreground mb-2">
         <NuxtLink
           :to="`/tournaments/${invite.team.tournament.id}`"
@@ -99,6 +107,14 @@ export default {
     isTournamentTeam(): boolean {
       return this.type === "tournament" || this.type === "tournament-team";
     },
+    // An invite onto a team-backed entry puts the player on the team as well,
+    // and that entry has no name of its own.
+    joinsTeam(): boolean {
+      return this.isTournamentTeam && !!this.invite.team?.team_id;
+    },
+    tournamentTeamName(): string {
+      return this.invite.team?.team?.name || this.invite.team?.name || "";
+    },
     title(): string {
       if (this.isRegistration) {
         return this.$t(
@@ -107,7 +123,7 @@ export default {
             : "team.invite.tournament_registration_title",
         ) as string;
       }
-      if (this.isTournamentTeam) {
+      if (this.isTournamentTeam && !this.joinsTeam) {
         return this.$t("team.invite.tournament_title") as string;
       }
       return this.$t("team.invite.team_title") as string;

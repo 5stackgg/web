@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "Admin",
     "team_invite": {
-      "pending": "Väntande"
+      "pending": "Väntande",
+      "pending_team": "Inbjuden till laget och den här uppställningen",
+      "pending_tournament": "Inbjuden bara till den här turneringen"
     },
     "results_table": {
       "matches": "Matcher"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "Redan i ett lags trupp i den här turneringen.",
       "leaves_pool": "Du är anmäld som free agent. Registrerar du ett lag tas du bort från free agent-poolen.",
       "permanent_team": "Behåll som permanent lag",
-      "permanent_team_description": "Lägger även till det bland dina lag, med egen sida och statistik, redo för nästa turnering. Låt det vara avstängt för ett engångslag."
+      "permanent_team_description": "Lägger även till det bland dina lag, med egen sida och statistik. Lagkamrater du bjuder in kommer med i laget och i den här uppställningen. Låt det vara avstängt för ett engångslag.",
+      "permanent_team_name_taken": "Det finns redan ett lag som heter {name}. Välj ett annat namn eller stäng av Behåll som permanent lag."
     },
     "tournament_team": {
       "remove": "Ta bort lag",
@@ -9260,6 +9263,8 @@
       "member_added_description": "{name} lades till i din trupp",
       "invite_sent": "Inbjudan skickad",
       "invite_sent_description": "{name} har bjudits in och måste tacka ja innan personen kommer med i din trupp",
+      "invite_sent_team_description": "{name} har bjudits in till {team} och kommer med i den här uppställningen när de tackar ja",
+      "invite_sent_tournament_description": "{name} har bjudits in till {team} för den här turneringen och måste tacka ja först",
       "new": "Skapa nytt lag",
       "select": "Välj befintligt lag",
       "select_role": "Välj roll",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "Avbryta denna inbjudan?",
       "cancel_invite_description": "Detta avbryter inbjudan för denna medlem",
       "free_agent_tag": "Free agent",
+      "kind": {
+        "team": "Lag",
+        "tournament_only": "Bara turneringen"
+      },
+      "add_tag": {
+        "on_team": "I laget",
+        "team_invite": "Inbjudan till lag + uppställning",
+        "tournament_invite": "Turneringsinbjudan"
+      },
+      "add_hint": {
+        "team": "Spelare utanför {team} får en inbjudan. Tackar de ja kommer de med i laget och i den här uppställningen.",
+        "tournament": "Spelare får en inbjudan till {team}, ett lag bara för den här turneringen."
+      },
       "seed_label": "Seedning",
       "seed_display": "Seedning #{seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "Laginbjudan",
       "tournament_title": "Turneringsinbjudan",
       "tournament_message": "Du har blivit inbjuden att gå med i en turnering",
+      "team_and_lineup_message": "Gå med i {team} och uppställningen för",
+      "tournament_team_message": "Spela för {team}, ett lag bara för den här turneringen, i",
       "team_message": "Du har blivit inbjuden att gå med i ett lag",
       "invited_by": "Inbjuden av",
       "deny": "Neka",

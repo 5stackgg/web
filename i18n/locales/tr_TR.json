@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "Yönetici",
     "team_invite": {
-      "pending": "Bekliyor"
+      "pending": "Bekliyor",
+      "pending_team": "Takıma ve bu kadroya davet edildi",
+      "pending_tournament": "Sadece bu turnuvaya davet edildi"
     },
     "results_table": {
       "matches": "Maçlar"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "Bu turnuvada zaten bir takımın kadrosunda.",
       "leaves_pool": "Serbest oyuncu olarak kayıtlısın. Bir takım kaydetmek seni serbest oyuncu listesinden çıkarır.",
       "permanent_team": "Kalıcı Takım Olarak Sakla",
-      "permanent_team_description": "Ayrıca kendi sayfası ve istatistikleriyle takımlarına ekler, bir sonraki turnuvaya hazır olur. Tek seferlik bir takım için kapalı bırak."
+      "permanent_team_description": "Ayrıca kendi sayfası ve istatistikleriyle takımlarına ekler. Davet ettiğin takım arkadaşları takıma ve bu kadroya katılır. Tek seferlik bir takım için kapalı bırak.",
+      "permanent_team_name_taken": "{name} adında bir takım zaten var. Başka bir isim seç ya da Kalıcı Takım Olarak Sakla'yı kapat."
     },
     "tournament_team": {
       "remove": "Takımı Kaldır",
@@ -9260,6 +9263,8 @@
       "member_added_description": "{name} kadrona eklendi",
       "invite_sent": "Davet gönderildi",
       "invite_sent_description": "{name} davet edildi; kadrona katılmadan önce kabul etmesi gerekiyor",
+      "invite_sent_team_description": "{name}, {team} takımına davet edildi; kabul edince bu kadroya katılacak",
+      "invite_sent_tournament_description": "{name}, bu turnuva için {team} takımına davet edildi ve önce kabul etmesi gerekiyor",
       "new": "Yeni Takım Oluştur",
       "select": "Mevcut Takımı Seç",
       "select_role": "Rol Seç",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "Bu daveti iptal etmek istediğine emin misin?",
       "cancel_invite_description": "Bu, üyenin davetini iptal eder",
       "free_agent_tag": "Serbest oyuncu",
+      "kind": {
+        "team": "Takım",
+        "tournament_only": "Sadece turnuva"
+      },
+      "add_tag": {
+        "on_team": "Takımda",
+        "team_invite": "Takım + kadro daveti",
+        "tournament_invite": "Turnuva daveti"
+      },
+      "add_hint": {
+        "team": "{team} dışındaki oyunculara davet gider. Kabul edenler takıma ve bu kadroya katılır.",
+        "tournament": "Oyunculara {team} için davet gider; bu takım sadece bu turnuvaya özel."
+      },
       "seed_label": "Seri Başı",
       "seed_display": "Seri Başı #{seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "Takım Daveti",
       "tournament_title": "Turnuva Daveti",
       "tournament_message": "Bir turnuvaya katılman için davet edildin",
+      "team_and_lineup_message": "{team} takımına ve kadrosuna katıl:",
+      "tournament_team_message": "Sadece bu turnuvaya özel {team} takımında oyna:",
       "team_message": "Bir takıma katılman için davet edildin",
       "invited_by": "Davet eden",
       "deny": "Reddet",

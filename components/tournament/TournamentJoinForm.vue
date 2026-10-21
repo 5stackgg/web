@@ -687,6 +687,18 @@ export default {
           .map((member) => member.player_steam_id),
       );
     },
+    async teamNameTaken(name: string) {
+      const { data } = await this.$apollo.query({
+        query: generateQuery({
+          teams: [
+            { where: { name: { _eq: name } }, limit: 1 },
+            { id: true },
+          ],
+        }),
+        fetchPolicy: "network-only",
+      });
+      return (data?.teams?.length ?? 0) > 0;
+    },
     async joinTournament() {
       if (this.submitLock) {
         return;
@@ -702,6 +714,20 @@ export default {
         this.submitting = true;
         let teamName = this.form.values.team_name;
         let shortName = this.form.values.short_name;
+        const permanent =
+          this.canMakePermanent && !!this.form.values.permanent_team;
+
+        // Team names are unique across the whole panel, not just this
+        // tournament, so a clash would otherwise surface as a database error.
+        if (permanent && (await this.teamNameTaken(teamName))) {
+          this.form.setFieldError(
+            "team_name",
+            this.$t("tournament.join.permanent_team_name_taken", {
+              name: teamName,
+            }),
+          );
+          return;
+        }
 
         let addPlayerSteamId = null;
         if (
@@ -721,16 +747,15 @@ export default {
           ? addPlayerSteamId || this.me.steam_id
           : null;
 
-        const team =
-          this.canMakePermanent && this.form.values.permanent_team
-            ? { team: { data: { name: teamName, short_name: shortName } } }
-            : {
-                name: teamName,
-                short_name: this.form.values.new_team ? shortName : null,
-                team_id: this.form.values.new_team
-                  ? null
-                  : this.form.values.team_id,
-              };
+        const team = permanent
+          ? { team: { data: { name: teamName, short_name: shortName } } }
+          : {
+              name: teamName,
+              short_name: this.form.values.new_team ? shortName : null,
+              team_id: this.form.values.new_team
+                ? null
+                : this.form.values.team_id,
+            };
 
         await this.$apollo.mutate({
           mutation: generateMutation({

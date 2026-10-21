@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "管理者",
     "team_invite": {
-      "pending": "保留中"
+      "pending": "保留中",
+      "pending_team": "チームとこの出場メンバーに招待中",
+      "pending_tournament": "この大会のみ招待中"
     },
     "results_table": {
       "matches": "試合"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "このトーナメントですでにいずれかのチームに登録されています。",
       "leaves_pool": "フリーエージェントとして登録済みです。チームを登録すると、フリーエージェントから外れます。",
       "permanent_team": "常設チームとして残す",
-      "permanent_team_description": "専用ページと戦績付きでマイチームにも追加され、次の大会にもそのまま出場できます。今回限りのチームならオフのままにしてください。"
+      "permanent_team_description": "専用ページと戦績付きでマイチームにも追加されます。招待したメンバーはチームとこの出場メンバーに加わります。今回限りのチームならオフのままにしてください。",
+      "permanent_team_name_taken": "{name} という名前のチームはすでにあります。別の名前にするか、常設チームとして残すをオフにしてください。"
     },
     "tournament_team": {
       "remove": "チームを削除",
@@ -9260,6 +9263,8 @@
       "member_added_description": "{name} をロースターに追加しました",
       "invite_sent": "招待を送信しました",
       "invite_sent_description": "{name} を招待しました。ロースターに加わるには承諾が必要です",
+      "invite_sent_team_description": "{name} を {team} に招待しました。承認するとこの出場メンバーに加わります",
+      "invite_sent_tournament_description": "{name} をこの大会の {team} に招待しました。先に承認が必要です",
       "new": "新しいチームを作成",
       "select": "既存のチームを選択",
       "select_role": "ロールを選択",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "この招待を取り消しますか？",
       "cancel_invite_description": "このメンバーへの招待を取り消します",
       "free_agent_tag": "フリーエージェント",
+      "kind": {
+        "team": "チーム",
+        "tournament_only": "大会のみ"
+      },
+      "add_tag": {
+        "on_team": "チームメンバー",
+        "team_invite": "チーム＋出場メンバーへの招待",
+        "tournament_invite": "大会への招待"
+      },
+      "add_hint": {
+        "team": "{team} 以外のプレイヤーには招待が届きます。承認するとチームとこの出場メンバーに加わります。",
+        "tournament": "プレイヤーには {team}（この大会限りのチーム）への招待が届きます。"
+      },
       "seed_label": "シード",
       "seed_display": "シード #{seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "チーム招待",
       "tournament_title": "トーナメント招待",
       "tournament_message": "トーナメントへの参加に招待されました",
+      "team_and_lineup_message": "{team} とその出場メンバーに参加：",
+      "tournament_team_message": "この大会限りのチーム {team} でプレイ：",
       "team_message": "チームへの参加に招待されました",
       "invited_by": "招待者",
       "deny": "拒否",

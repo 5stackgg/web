@@ -7,7 +7,11 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     <div class="flex items-center gap-[0.65rem] min-w-0">
       <PlayerDisplay :player="invite.player" size="xs"></PlayerDisplay>
       <span class="text-xs text-muted-foreground">
-        {{ $t("tournament.team_invite.pending") }}
+        {{
+          joinsTeam
+            ? $t("tournament.team_invite.pending_team")
+            : $t("tournament.team_invite.pending_tournament")
+        }}
       </span>
     </div>
     <AlertDialog>
@@ -47,6 +51,11 @@ export default {
     invite: {
       type: Object,
       required: true,
+    },
+    // A team-backed entry's invite puts the player on the team as well.
+    joinsTeam: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {

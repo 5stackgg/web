@@ -8826,7 +8826,9 @@
   "tournament": {
     "admin_label": "管理",
     "team_invite": {
-      "pending": "待处理"
+      "pending": "待处理",
+      "pending_team": "已邀请加入队伍和本次阵容",
+      "pending_tournament": "仅邀请参加本赛事"
     },
     "results_table": {
       "matches": "比赛"
@@ -8913,7 +8915,8 @@
       "owner_on_a_team": "已在这场锦标赛的某支战队名单中。",
       "leaves_pool": "你已以自由选手身份报名。注册队伍会让你退出自由选手名单。",
       "permanent_team": "保留为常驻队伍",
-      "permanent_team_description": "同时将其加入你的队伍，拥有独立页面和数据，可直接参加下一场赛事。一次性队伍请保持关闭。"
+      "permanent_team_description": "同时将其加入你的队伍，拥有独立页面和数据。你邀请的队友会加入队伍和本次阵容。一次性队伍请保持关闭。",
+      "permanent_team_name_taken": "已存在名为 {name} 的队伍。请换一个名称，或关闭“保留为常驻队伍”。"
     },
     "tournament_team": {
       "remove": "移除队伍",
@@ -9260,6 +9263,8 @@
       "member_added_description": "已将 {name} 添加到你的名单",
       "invite_sent": "已发送邀请",
       "invite_sent_description": "已邀请 {name}，对方接受后才会加入你的名单",
+      "invite_sent_team_description": "已邀请 {name} 加入 {team}，接受后将进入本次阵容",
+      "invite_sent_tournament_description": "已邀请 {name} 为本赛事加入 {team}，需要对方先接受",
       "new": "创建新队伍",
       "select": "选择现有队伍",
       "select_role": "选择角色",
@@ -9272,6 +9277,19 @@
       "confirm_cancel_invite": "您确定要取消此邀请吗？",
       "cancel_invite_description": "这将取消对该成员的邀请",
       "free_agent_tag": "自由选手",
+      "kind": {
+        "team": "队伍",
+        "tournament_only": "仅限本赛事"
+      },
+      "add_tag": {
+        "on_team": "队伍成员",
+        "team_invite": "队伍 + 阵容邀请",
+        "tournament_invite": "赛事邀请"
+      },
+      "add_hint": {
+        "team": "{team} 以外的选手会收到邀请，接受后将加入队伍和本次阵容。",
+        "tournament": "选手会收到 {team} 的邀请，这是仅限本赛事的队伍。"
+      },
       "seed_label": "种子排名",
       "seed_display": "种子 #{seed}"
     },
@@ -9816,6 +9834,8 @@
       "team_title": "队伍邀请",
       "tournament_title": "赛事邀请",
       "tournament_message": "您被邀请加入一个赛事",
+      "team_and_lineup_message": "加入 {team} 及其阵容，参加",
+      "tournament_team_message": "以仅限本赛事的队伍 {team} 参加",
       "team_message": "您被邀请加入一个队伍",
       "invited_by": "邀请人",
       "deny": "拒绝",

@@ -486,7 +486,13 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
               },
               {
                 id: true,
-                team: { id: true, name: true, tournament: { name: true } },
+                team: {
+                  id: true,
+                  name: true,
+                  team_id: true,
+                  team: { name: true },
+                  tournament: { id: true, name: true },
+                },
                 invited_by: { ...playerFields },
                 created_at: true,
               },

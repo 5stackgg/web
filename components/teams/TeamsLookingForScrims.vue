@@ -7,7 +7,7 @@ import { $, order_by } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
+import ScrimTeamSheet from "~/components/scrims/ScrimTeamSheet.vue";
 import TeamsEmblem from "~/components/teams/TeamsEmblem.vue";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -40,6 +40,8 @@ const postingsQuery = generateSubscription({
       regions: true,
       map_ids: true,
       notes: true,
+      elo_min: true,
+      elo_max: true,
       allow_outside_availability: true,
       team: {
         id: true,
@@ -61,6 +63,7 @@ const postingsQuery = generateSubscription({
         reputation: {
           scrims_completed: true,
           no_shows: true,
+          late_cancels: true,
           reliability_pct: true,
         },
         scrim_availability: {
@@ -374,6 +377,10 @@ const linkClasses =
       </div>
     </HorizontalScrollRow>
 
-    <ScrimRequestDialog v-model:open="dialogOpen" :posting="selectedPosting" />
+    <ScrimTeamSheet
+      v-model:open="dialogOpen"
+      :posting="selectedPosting"
+      @edit-listing="$router.push('/scrims?tab=listing')"
+    />
   </section>
 </template>

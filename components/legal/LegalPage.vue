@@ -2,13 +2,12 @@
 import { computed } from "vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { dateLocale } from "~/utilities/dateLocale";
 
 const props = defineProps<{
   title: string;
   updated?: string;
 }>();
-
-const { locale } = useI18n();
 
 useHead({ title: () => props.title });
 
@@ -23,7 +22,7 @@ const linkClasses =
 
 const updatedLabel = computed(() =>
   props.updated
-    ? new Date(`${props.updated}T00:00:00`).toLocaleDateString(locale.value, {
+    ? new Date(`${props.updated}T00:00:00`).toLocaleDateString(dateLocale(), {
         dateStyle: "long",
       })
     : null,

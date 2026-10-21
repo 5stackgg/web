@@ -1,206 +1,72 @@
-<script lang="ts">
-import { $, order_by } from "~/generated/zeus";
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import TeamScrimSettings from "~/components/team/TeamScrimSettings.vue";
-import TeamScrimRequests from "~/components/team/TeamScrimRequests.vue";
-import TeamCalendarButton from "~/components/team/TeamCalendarButton.vue";
+<script setup lang="ts">
+import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { useApolloClient } from "@vue/apollo-composable";
+import { ArrowRight } from "lucide-vue-next";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
+import ScrimRequests from "~/components/scrims/ScrimRequests.vue";
+import ScrimListing from "~/components/scrims/ScrimListing.vue";
+import { awaitingTeam, useScrimTeamRequests } from "~/composables/useScrimFinder";
+import { $ } from "~/generated/zeus";
+import { generateSubscription } from "~/graphql/graphqlGen";
+import { scrimMyTeamFields } from "~/graphql/scrimFields";
 
-export default {
-  components: {
-    Tabs,
-    TabsList,
-    TabsTrigger,
-    TabsContent,
-    TeamScrimSettings,
-    TeamScrimRequests,
-    TeamCalendarButton,
-  },
-  props: {
-    teamId: {
-      type: String,
-      required: true,
-    },
-    initialTab: {
-      type: String,
-      default: "",
-    },
-  },
-  data() {
-    return {
-      tab: this.initialTab === "requests" ? "requests" : "finder",
-      settings: null as any,
-      requests: [] as any[],
-    };
-  },
-  watch: {
-    tab(value: string) {
-      // Update the URL bar via history so the sub-tab is shareable without a
-      // router navigation (which was re-rendering the page).
-      if (typeof window === "undefined") {
-        return;
-      }
-      const url = new URL(window.location.href);
-      if (value === "finder") {
-        url.searchParams.delete("scrimTab");
-      } else {
-        url.searchParams.set("scrimTab", value);
-      }
-      window.history.replaceState(window.history.state, "", url.toString());
-    },
-  },
-  computed: {
-    enabled(): boolean {
-      return this.settings?.enabled === true;
-    },
-    pendingCount(): number {
-      return this.requests.filter(
-        (request) => request.awaiting_team_id === this.teamId,
-      ).length;
-    },
-    loadout(): Array<{ label: string; value: string }> {
-      if (!this.settings) {
-        return [];
-      }
-      const regions = this.settings.regions ?? [];
-      const eloMin = this.settings.elo_min;
-      const eloMax = this.settings.elo_max;
-      return [
-        {
-          label: this.$t("common.region"),
-          value: regions.length ? regions.join(" · ") : this.$t("common.any"),
-        },
-        {
-          label: this.$t("scrim.elo_label"),
-          value:
-            eloMin == null && eloMax == null
-              ? this.$t("common.any")
-              : `${eloMin ?? "0"} – ${eloMax ?? "∞"}`,
-        },
-      ];
-    },
-  },
-  apollo: {
-    $subscribe: {
-      team_scrim_settings: {
-        query: typedGql("subscription")({
-          team_scrim_settings: [
-            { where: { team_id: { _eq: $("teamId", "uuid!") } } },
-            {
-              enabled: true,
-              regions: true,
-              elo_min: true,
-              elo_max: true,
-            },
-          ],
-        }),
-        variables() {
-          return { teamId: this.teamId };
-        },
-        result({ data }) {
-          this.settings = data.team_scrim_settings?.at(0) ?? null;
-        },
+const props = defineProps<{ teamId: string; initialTab?: string }>();
+
+const { client } = useApolloClient();
+const team = ref<any | null>(null);
+const teamQuery = generateSubscription({
+  teams_by_pk: [{ id: $("teamId", "uuid!") }, scrimMyTeamFields],
+} as any);
+let sub: { unsubscribe: () => void } | null = null;
+watch(
+  () => props.teamId,
+  (teamId) => {
+    sub?.unsubscribe();
+    if (!teamId || typeof window === "undefined") return;
+    sub = client.subscribe({ query: teamQuery, variables: { teamId } }).subscribe({
+      next: ({ data }: any) => {
+        team.value = data?.teams_by_pk ?? null;
       },
-      team_scrim_requests: {
-        query: typedGql("subscription")({
-          team_scrim_requests: [
-            {
-              where: {
-                _or: [
-                  { from_team_id: { _eq: $("teamId", "uuid!") } },
-                  { to_team_id: { _eq: $("teamId", "uuid!") } },
-                ],
-                status: { _in: ["Pending", "Countered"] },
-              },
-              order_by: [{ created_at: order_by.desc }],
-            },
-            { id: true, awaiting_team_id: true },
-          ],
-        }),
-        variables() {
-          return { teamId: this.teamId };
-        },
-        result({ data }) {
-          this.requests = data.team_scrim_requests ?? [];
-        },
-      },
-    },
+    });
   },
-};
+  { immediate: true },
+);
+onBeforeUnmount(() => sub?.unsubscribe());
+
+const { requests } = useScrimTeamRequests(() => props.teamId);
+const pendingCount = computed(
+  () => requests.value.filter((request) => awaitingTeam(request, props.teamId)).length,
+);
+
+const tab = ref(props.initialTab === "listing" ? "listing" : "requests");
+watch(tab, (value) => {
+  // History, not a router navigation, so the sub-tab is shareable without
+  // re-rendering the page.
+  if (typeof window === "undefined") return;
+  const url = new URL(window.location.href);
+  if (value === "requests") url.searchParams.delete("scrimTab");
+  else url.searchParams.set("scrimTab", value);
+  window.history.replaceState(window.history.state, "", url.toString());
+});
 </script>
 
 <template>
   <section class="relative">
-    <header class="relative flex flex-wrap items-start justify-between gap-4">
-      <div class="flex min-w-0 flex-col gap-1">
-        <span
-          class="mb-1 inline-flex items-center gap-2 font-sans text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground"
-        >
-          <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]" />
-          {{ $t("scrim.finder_title") }}
-        </span>
-        <p class="text-[0.85rem] text-muted-foreground">
-          {{ $t("scrim.finder_description") }}
-        </p>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <TeamCalendarButton :team-id="teamId" />
-
-        <div
-          class="flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition-colors"
-          :class="
-            enabled
-              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))]'
-              : 'border-border bg-muted/40 text-muted-foreground'
-          "
-        >
-          <span
-            class="relative flex h-2 w-2"
-            :class="enabled ? '' : 'opacity-50'"
-          >
-            <span
-              v-if="enabled"
-              class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-            />
-            <span
-              class="relative inline-flex h-2 w-2 rounded-full"
-              :class="enabled ? 'bg-[hsl(var(--tac-amber))]' : 'bg-muted-foreground'"
-            />
-          </span>
-          {{ enabled ? $t("scrim.open_to_scrims") : $t("scrim.closed") }}
-        </div>
-      </div>
-    </header>
-
-    <div
-      v-if="enabled && loadout.length"
-      class="relative mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border bg-border"
-    >
-      <div
-        v-for="item in loadout"
-        :key="item.label"
-        class="bg-card/60 px-4 py-2"
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <p class="text-sm text-muted-foreground">{{ $t("scrims.team_tab.description") }}</p>
+      <NuxtLink
+        to="/scrims"
+        class="inline-flex items-center gap-1 text-sm text-[hsl(var(--tac-amber))] hover:underline"
       >
-        <div
-          class="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          {{ item.label }}
-        </div>
-        <div class="mt-0.5 truncate text-sm font-medium text-foreground">
-          {{ item.value }}
-        </div>
-      </div>
+        {{ $t("scrims.team_tab.find") }}
+        <ArrowRight class="h-3.5 w-3.5" />
+      </NuxtLink>
     </div>
 
-    <Tabs v-model="tab" class="relative mt-6">
-      <TabsList
-        variant="underline"
-        class="w-full justify-start overflow-x-auto border-b border-border pb-px"
-      >
-        <TabsTrigger value="finder">{{ $t("scrim.finder_tab") }}</TabsTrigger>
+    <Tabs v-model="tab" class="relative mt-4">
+      <TabsList variant="underline" class="w-full justify-start overflow-x-auto border-b border-border pb-px">
         <TabsTrigger value="requests" class="gap-2">
-          {{ $t("scrim.requests_tab") }}
+          {{ $t("scrims.tabs.requests") }}
           <span
             v-if="pendingCount > 0"
             class="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.65rem] font-bold text-[hsl(var(--tac-amber-foreground))]"
@@ -208,13 +74,14 @@ export default {
             {{ pendingCount }}
           </span>
         </TabsTrigger>
+        <TabsTrigger value="listing">{{ $t("scrims.tabs.listing") }}</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="finder" class="mt-5 focus-visible:outline-none">
-        <TeamScrimSettings :team-id="teamId" />
-      </TabsContent>
       <TabsContent value="requests" class="mt-5 focus-visible:outline-none">
-        <TeamScrimRequests :team-id="teamId" />
+        <ScrimRequests v-if="team" :team="team" @open="(opponent) => $router.push(`/teams/${opponent.id}`)" />
+      </TabsContent>
+      <TabsContent value="listing" class="mt-5 focus-visible:outline-none">
+        <ScrimListing v-if="team" :team="team" />
       </TabsContent>
     </Tabs>
   </section>

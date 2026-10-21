@@ -1,1067 +1,256 @@
-<script lang="ts">
-import { $, order_by } from "~/generated/zeus";
-import mapLabel from "~/utilities/mapLabel";
-import teamAvatarSrc from "~/utilities/teamAvatar";
-import { ELO_MAX, ELO_STEP } from "~/utilities/scrimElo";
-import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { useAuthStore } from "~/stores/AuthStore";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Slider } from "@/components/ui/slider";
-import {
-  ExternalLink,
-  Search,
-  X,
-  SlidersHorizontal,
-  Check,
-  Gauge,
-  Globe,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
-} from "lucide-vue-next";
-import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
-import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
-import { dateLocale } from "~/utilities/dateLocale";
-
-const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-function sameDate(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-export default {
-  components: {
-    Button,
-    Avatar,
-    AvatarImage,
-    AvatarFallback,
-    InputGroup,
-    InputGroupAddon,
-    InputGroupInput,
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-    ExternalLink,
-    Search,
-    X,
-    SlidersHorizontal,
-    Check,
-    Gauge,
-    Globe,
-    Slider,
-    ArrowUpDown,
-    ArrowUp,
-    ArrowDown,
-    PageTransition,
-    TeamRankSummary,
-    ScrimRequestDialog,
-  },
-  data() {
-    return {
-      postings: [] as any[],
-      myTeams: [] as any[],
-      myMemberTeamIds: [] as string[],
-      mapsById: {} as Record<string, any>,
-      regionFilter: [] as string[],
-      regionSearch: "",
-      searchQuery: "",
-      mapFilter: [] as string[],
-      eloRange: [0, ELO_MAX] as number[],
-      ELO_MAX,
-      ELO_STEP,
-      sortChain: [] as { key: string; dir: "asc" | "desc" }[],
-      dialogOpen: false,
-      selectedPosting: null as any,
-      postingsLoaded: false,
-    };
-  },
-  computed: {
-    scrimFinderEnabled(): boolean {
-      return useApplicationSettingsStore().scrimFinderEnabled;
-    },
-    mySteamId(): string | undefined {
-      return useAuthStore().me?.steam_id;
-    },
-    regionOptions() {
-      const regions = new Set<string>();
-      for (const posting of this.postings) {
-        for (const region of posting.regions ?? []) {
-          regions.add(region);
-        }
-      }
-      return Array.from(regions)
-        .sort((a, b) => a.localeCompare(b))
-        .map((region) => ({ key: region, label: region }));
-    },
-    filteredRegionOptions() {
-      const query = this.regionSearch.trim().toLowerCase();
-      if (!query) {
-        return this.regionOptions;
-      }
-      return this.regionOptions.filter((region) =>
-        region.label.toLowerCase().includes(query),
-      );
-    },
-    sortOptions() {
-      return [
-        { key: "name", label: this.$t("pages.scrims.sort_name") },
-        { key: "elo", label: this.$t("pages.scrims.sort_elo") },
-        { key: "reliability", label: this.$t("pages.scrims.sort_reliable") },
-      ];
-    },
-    mapOptions() {
-      const ids = new Set<string>();
-      for (const posting of this.postings) {
-        for (const id of posting.map_ids ?? []) {
-          ids.add(id);
-        }
-      }
-      return Array.from(ids)
-        .map((id) => this.mapsById[id])
-        .filter(Boolean)
-        .sort((a, b) => this.cleanName(a).localeCompare(this.cleanName(b)));
-    },
-    eloActive(): boolean {
-      return this.eloRange[0] > 0 || this.eloRange[1] < this.ELO_MAX;
-    },
-    hasScrimChips(): boolean {
-      return (
-        this.regionFilter.length > 0 ||
-        this.mapFilter.length > 0 ||
-        this.eloActive ||
-        this.sortChain.length > 0
-      );
-    },
-    hasActiveScrimFilters(): boolean {
-      return !!this.searchQuery || this.hasScrimChips;
-    },
-    regionScoped(): any[] {
-      return this.postings.filter(
-        (posting) =>
-          // The finder is for finding opponents — hide teams you're on (you
-          // manage their listing from the team page instead).
-          !this.myMemberTeamIds.includes(posting.team_id) &&
-          this.regionMatches(posting),
-      );
-    },
-    todayRows() {
-      const now = new Date();
-      const todayDow = now.getDay();
-      const rows: any[] = [];
-
-      for (const posting of this.regionScoped) {
-        for (const window of posting.team?.scrim_availability ?? []) {
-          const start = new Date(window.starts_at);
-          const end = new Date(window.ends_at);
-          const matches = window.recurring_weekly
-            ? start.getDay() === todayDow
-            : sameDate(start, now);
-          if (!matches) {
-            continue;
-          }
-          rows.push({
-            key: `${posting.id}-${window.starts_at}`,
-            posting,
-            startMinutes: start.getHours() * 60 + start.getMinutes(),
-            startLabel: this.formatTime(start),
-            endLabel: this.formatTime(end),
-          });
-        }
-      }
-
-      rows.sort((a, b) => a.startMinutes - b.startMinutes);
-      return rows;
-    },
-    availableTeams(): any[] {
-      const query = this.searchQuery.trim().toLowerCase();
-      const filtered = this.regionScoped.filter((posting) => {
-        if (
-          query &&
-          !(posting.team?.name ?? "").toLowerCase().includes(query)
-        ) {
-          return false;
-        }
-        return this.mapMatches(posting) && this.eloMatches(posting);
-      });
-
-      return [...filtered].sort((a, b) => this.compareSort(a, b));
-    },
-    sortSummary(): string {
-      const labels: Record<string, string> = {
-        name: this.$t("pages.scrims.sort_name"),
-        elo: this.$t("pages.scrims.sort_elo"),
-        reliability: this.$t("pages.scrims.sort_reliable"),
-      };
-      return this.sortChain
-        .map(({ key, dir }) => `${labels[key]} ${dir === "asc" ? "↑" : "↓"}`)
-        .join(" · ");
-    },
-  },
-  apollo: {
-    $subscribe: {
-      team_scrim_settings: {
-        query: typedGql("subscription")({
-          team_scrim_settings: [
-            {
-              where: { enabled: { _eq: true } },
-              order_by: [{ updated_at: order_by.desc }],
-            },
-            {
-              id: true,
-              team_id: true,
-              regions: true,
-              map_ids: true,
-              notes: true,
-              allow_outside_availability: true,
-              team: {
-                id: true,
-                name: true,
-                avatar_url: true,
-                ranks: {
-                  avg_elo: true,
-                  avg_wingman_elo: true,
-                  avg_duel_elo: true,
-                  avg_rush_elo: true,
-                  min_elo: true,
-                  max_elo: true,
-                  avg_faceit_level: true,
-                  avg_faceit_elo: true,
-                  avg_premier: true,
-                  roster_size: true,
-                },
-                reputation: {
-                  scrims_completed: true,
-                  no_shows: true,
-                  reliability_pct: true,
-                },
-                scrim_availability: {
-                  starts_at: true,
-                  ends_at: true,
-                  recurring_weekly: true,
-                },
-              },
-            },
-          ],
-        }),
-        result({ data }) {
-          this.postings = data.team_scrim_settings ?? [];
-          this.postingsLoaded = true;
-        },
-      },
-      myTeams: {
-        query: typedGql("subscription")({
-          teams: [
-            {
-              where: {
-                _or: [
-                  { owner_steam_id: { _eq: $("steamId", "bigint!") } },
-                  {
-                    roster: {
-                      _and: [
-                        { role: { _eq: "Admin" } },
-                        { player_steam_id: { _eq: $("steamId", "bigint!") } },
-                      ],
-                    },
-                  },
-                ],
-              },
-            },
-            { id: true, name: true },
-          ],
-        }),
-        variables() {
-          return { steamId: this.mySteamId };
-        },
-        skip() {
-          return !this.mySteamId;
-        },
-        result({ data }) {
-          this.myTeams = data.teams ?? [];
-        },
-      },
-      myMemberships: {
-        query: typedGql("subscription")({
-          teams: [
-            {
-              where: {
-                roster: {
-                  player_steam_id: { _eq: $("steamId", "bigint!") },
-                },
-              },
-            },
-            { id: true },
-          ],
-        }),
-        variables() {
-          return { steamId: this.mySteamId };
-        },
-        skip() {
-          return !this.mySteamId;
-        },
-        result({ data }) {
-          this.myMemberTeamIds = (data.teams ?? []).map((team: any) => team.id);
-        },
-      },
-    },
-  },
-  mounted() {
-    this.loadMaps();
-  },
-  methods: {
-    async loadMaps() {
-      const { data } = await this.$apollo.query({
-        query: typedGql("query")({
-          maps: [{}, { id: true, name: true, patch: true }],
-        }),
-      });
-      const byId: Record<string, any> = {};
-      for (const map of data.maps ?? []) {
-        byId[map.id] = map;
-      }
-      this.mapsById = byId;
-    },
-    formatTime(date: Date): string {
-      return date.toLocaleTimeString(dateLocale(), {
-        hour: "numeric",
-        minute: "2-digit",
-      });
-    },
-    regionMatches(posting: any): boolean {
-      if (this.regionFilter.length === 0) {
-        return true;
-      }
-      const regions = posting.regions ?? [];
-      return (
-        regions.length === 0 ||
-        this.regionFilter.some((region) => regions.includes(region))
-      );
-    },
-    resetScrimFilters() {
-      this.searchQuery = "";
-      this.regionFilter = [];
-      this.mapFilter = [];
-      this.eloRange = [0, this.ELO_MAX];
-      this.sortChain = [];
-    },
-    toggleRegion(region: string) {
-      const next = new Set(this.regionFilter);
-      if (next.has(region)) {
-        next.delete(region);
-      } else {
-        next.add(region);
-      }
-      this.regionFilter = Array.from(next);
-    },
-    mapMatches(posting: any): boolean {
-      if (this.mapFilter.length === 0) {
-        return true;
-      }
-      const mapIds = posting.map_ids ?? [];
-      return (
-        mapIds.length === 0 || this.mapFilter.some((id) => mapIds.includes(id))
-      );
-    },
-    sortRank(key: string): number {
-      return this.sortChain.findIndex((entry) => entry.key === key) + 1;
-    },
-    sortDir(key: string): "asc" | "desc" | null {
-      return this.sortChain.find((entry) => entry.key === key)?.dir ?? null;
-    },
-    toggleSort(key: string) {
-      const entry = this.sortChain.find((item) => item.key === key);
-      if (entry) {
-        entry.dir = entry.dir === "asc" ? "desc" : "asc";
-        return;
-      }
-      this.sortChain.push({ key, dir: key === "name" ? "asc" : "desc" });
-    },
-    removeSort(key: string) {
-      this.sortChain = this.sortChain.filter((entry) => entry.key !== key);
-    },
-    compareSort(a: any, b: any): number {
-      for (let i = 0; i < this.sortChain.length; i++) {
-        const { key, dir } = this.sortChain[i];
-        const isLast = i === this.sortChain.length - 1;
-        let cmp = 0;
-        if (key === "name") {
-          cmp = (a.team?.name ?? "").localeCompare(b.team?.name ?? "");
-        } else if (key === "elo") {
-          const ea = a.team?.ranks?.avg_elo ?? -1;
-          const eb = b.team?.ranks?.avg_elo ?? -1;
-          // Bucket ELO when another key follows so it can break near-ties;
-          // keep it exact when ELO is the final (or only) key.
-          cmp = isLast
-            ? ea - eb
-            : Math.floor(ea / this.ELO_STEP) - Math.floor(eb / this.ELO_STEP);
-        } else if (key === "reliability") {
-          cmp =
-            (a.team?.reputation?.reliability_pct ?? -1) -
-            (b.team?.reputation?.reliability_pct ?? -1);
-        }
-        if (cmp !== 0) {
-          return dir === "asc" ? cmp : -cmp;
-        }
-      }
-      return (a.team?.name ?? "").localeCompare(b.team?.name ?? "");
-    },
-    eloMatches(posting: any): boolean {
-      if (!this.eloActive) {
-        return true;
-      }
-      const elo = posting.team?.ranks?.avg_elo;
-      if (elo == null) {
-        return false;
-      }
-      return (
-        elo >= this.eloRange[0] &&
-        (this.eloRange[1] >= this.ELO_MAX || elo <= this.eloRange[1])
-      );
-    },
-    toggleMap(id: string) {
-      const next = new Set(this.mapFilter);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      this.mapFilter = Array.from(next);
-    },
-    availabilityDays(posting: any): string[] {
-      const days = new Set<number>();
-      for (const window of posting.team?.scrim_availability ?? []) {
-        days.add(new Date(window.starts_at).getDay());
-      }
-      return Array.from(days)
-        .sort((a, b) => a - b)
-        .map((index) => DAY_NAMES[index]);
-    },
-    mapPatches(mapIds: Array<string>): Array<any> {
-      return (mapIds ?? [])
-        .map((id) => this.mapsById[id])
-        .filter((map) => map && map.patch);
-    },
-    cleanName(map: any): string {
-      return mapLabel(map);
-    },
-    teamAvatar(team: any): string | null {
-      return teamAvatarSrc(team);
-    },
-    canRequest(posting: any): boolean {
-      // You can't scrim a team you're on, and you need a team you manage to
-      // request from.
-      if (this.myMemberTeamIds.includes(posting.team_id)) {
-        return false;
-      }
-      return this.myTeams.length > 0;
-    },
-    openRequest(posting: any) {
-      this.selectedPosting = posting;
-      this.dialogOpen = true;
-    },
-  },
-};
-</script>
-
 <script setup lang="ts">
-import FilterBar from "~/components/common/FilterBar.vue";
-import FilterMenu from "~/components/common/FilterMenu.vue";
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { ChevronDown, Check, Lock } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
+import { Skeleton } from "~/components/ui/skeleton";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import DeferredLoading from "~/components/common/DeferredLoading.vue";
-import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
-import { Skeleton } from "~/components/ui/skeleton";
-import { ChevronDown } from "lucide-vue-next";
+import ScrimBoard from "~/components/scrims/ScrimBoard.vue";
+import ScrimRequests from "~/components/scrims/ScrimRequests.vue";
+import ScrimListing from "~/components/scrims/ScrimListing.vue";
+import ScrimNowButton from "~/components/scrims/ScrimNowButton.vue";
+import ScrimTeamSheet from "~/components/scrims/ScrimTeamSheet.vue";
+import {
+  awaitingTeam,
+  scrimOpponent,
+  useMyScrimTeams,
+  useScrimClock,
+  useScrimMaps,
+  useScrimPostings,
+  useScrimTeamRequests,
+} from "~/composables/useScrimFinder";
+import teamAvatarSrc from "~/utilities/teamAvatar";
+import SteamIcon from "~/components/icons/SteamIcon.vue";
+import { signInWithSteam } from "~/utilities/loginLinks";
+import { useAuthStore } from "~/stores/AuthStore";
+import { dayLabel, timeLabel } from "~/utilities/scrimFormat";
 import {
   filterTriggerBase,
   filterTriggerIdle,
-  filterTriggerActive,
-  filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
+
+const auth = useAuthStore();
+const route = useRoute();
+const router = useRouter();
+const now = useScrimClock();
+const { postings, loaded } = useScrimPostings();
+const { mapsById } = useScrimMaps();
+const { teams, memberTeamIds, activeTeam, setActiveTeam } = useMyScrimTeams();
+const { requests, booked } = useScrimTeamRequests(() => activeTeam.value?.id);
+
+const enabled = computed(() => useApplicationSettingsStore().scrimFinderEnabled);
+
+// The finder is for finding opponents; teams you're on are managed from the
+// Your listing tab instead.
+const others = computed(() =>
+  postings.value.filter((posting) => !memberTeamIds.value.includes(posting.team_id)),
+);
+
+const TABS = ["board", "requests", "listing"] as const;
+type Tab = (typeof TABS)[number];
+const tab = computed<Tab>(() => {
+  const value = String(route.query.tab ?? "");
+  return activeTeam.value && (TABS as readonly string[]).includes(value)
+    ? (value as Tab)
+    : "board";
+});
+function setTab(value: Tab) {
+  const query = { ...route.query };
+  if (value === "board") delete query.tab;
+  else query.tab = value;
+  void router.replace({ query });
+}
+
+const needsYou = computed(
+  () => requests.value.filter((request) => activeTeam.value && awaitingTeam(request, activeTeam.value.id)).length,
+);
+const bookedWith = computed(() =>
+  booked.value && activeTeam.value ? scrimOpponent(booked.value, activeTeam.value.id) : null,
+);
+
+const sheetOpen = ref(false);
+const sheetPosting = ref<any>(null);
+const sheetAt = ref<number | null>(null);
+function openPosting(posting: any, at: number | null = null) {
+  sheetPosting.value = posting;
+  sheetAt.value = at;
+  sheetOpen.value = true;
+}
+function openOpponent(opponent: any) {
+  const posting = postings.value.find((item) => item.team_id === opponent?.id);
+  if (posting) {
+    openPosting(posting);
+  } else if (opponent?.id) {
+    void router.push(`/teams/${opponent.id}`);
+  }
+}
+const teamSwitchOpen = ref(false);
 </script>
 
 <template>
   <h1 class="sr-only">{{ $t("pages.scrims.title") }}</h1>
 
-  <div>
-    <SectionEmpty
-      v-if="!scrimFinderEnabled"
-      :title="$t('pages.scrims.title')"
-      :description="$t('pages.scrims.disabled_message')"
-    />
+  <SectionEmpty
+    v-if="!enabled"
+    :title="$t('pages.scrims.title')"
+    :description="$t('pages.scrims.disabled_message')"
+  />
 
-    <template v-else>
-      <PageTransition class="block">
-        <FilterBar>
-          <!-- Search (always visible — type instantly) -->
-          <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
-            <InputGroupAddon class="pl-2.5">
-              <Search class="h-3.5 w-3.5" />
-            </InputGroupAddon>
-            <InputGroupInput
-              v-model="searchQuery"
-              type="text"
-              :placeholder="$t('pages.scrims.search_placeholder')"
-              class="h-full text-sm"
-            />
-            <InputGroupAddon align="inline-end" class="pr-2">
-              <button
-                v-if="searchQuery"
-                type="button"
-                class="rounded-sm p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                @click="searchQuery = ''"
-              >
-                <X class="h-3.5 w-3.5" />
-              </button>
-            </InputGroupAddon>
-          </InputGroup>
-
-          <Popover>
+  <div v-else class="space-y-4">
+    <PageTransition v-if="activeTeam" class="block">
+      <div class="flex flex-col-reverse gap-x-4 gap-y-2 border-b border-border sm:flex-row sm:items-end">
+        <div class="flex flex-1 gap-5 overflow-x-auto" role="tablist" :aria-label="$t('pages.scrims.title')">
+          <button
+            v-for="item in TABS"
+            :key="item"
+            type="button"
+            role="tab"
+            :aria-selected="tab === item"
+            class="inline-flex items-center gap-2 whitespace-nowrap py-2.5 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
+            :class="
+              tab === item
+                ? 'text-foreground shadow-[inset_0_-2px_0_hsl(var(--tac-amber))]'
+                : 'text-muted-foreground [@media(hover:hover)]:hover:text-foreground'
+            "
+            @click="setTab(item)"
+          >
+            {{ $t(`scrims.tabs.${item}`) }}
+            <span
+              v-if="item === 'requests' && needsYou"
+              class="inline-flex h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.7rem] font-bold text-[hsl(var(--tac-amber-foreground))]"
+            >
+              {{ needsYou }}
+            </span>
+            <span
+              v-if="item === 'listing' && !activeTeam.scrim_settings?.enabled"
+              class="text-xs font-normal text-muted-foreground"
+            >
+              {{ $t("scrims.listing.closed") }}
+            </span>
+          </button>
+        </div>
+        <div class="flex items-center gap-2 pb-2 sm:pb-1.5">
+          <Popover v-if="teams.length > 1" v-model:open="teamSwitchOpen">
             <PopoverTrigger as-child>
-              <button
-                type="button"
-                :class="[
-                  filterTriggerBase,
-                  regionFilter.length ? filterTriggerActive : filterTriggerIdle,
-                ]"
-              >
-                <Globe class="h-3.5 w-3.5" />
-                {{ $t("pages.scrims.regions_label") }}
-                <span v-if="regionFilter.length" :class="filterBadgeClasses">
-                  {{ regionFilter.length }}
-                </span>
+              <button type="button" :class="[filterTriggerBase, filterTriggerIdle]" :aria-label="$t('scrims.team_switch')">
+                <Avatar shape="square" class="h-5 w-5 rounded">
+                  <AvatarImage v-if="teamAvatarSrc(activeTeam)" :src="teamAvatarSrc(activeTeam)!" :alt="activeTeam.name" />
+                  <AvatarFallback class="rounded text-[0.5rem] font-semibold uppercase">
+                    {{ activeTeam.name.slice(0, 2) }}
+                  </AvatarFallback>
+                </Avatar>
+                <span class="max-w-[10rem] truncate">{{ activeTeam.name }}</span>
                 <ChevronDown class="h-3 w-3 opacity-50" />
               </button>
             </PopoverTrigger>
-            <PopoverContent align="start" class="w-56 p-1.5">
-              <div class="flex items-center justify-between px-2 py-1">
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.regions_section") }}
-                </span>
-                <button
-                  v-if="regionFilter.length"
-                  type="button"
-                  class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
-                  @click="regionFilter = []"
-                >
-                  {{ $t("common.clear") }}
-                </button>
-              </div>
-              <InputGroup class="mb-1 h-8 bg-card/60">
-                <InputGroupAddon class="pl-2.5">
-                  <Search class="h-3.5 w-3.5" />
-                </InputGroupAddon>
-                <InputGroupInput
-                  v-model="regionSearch"
-                  type="text"
-                  :placeholder="$t('pages.scrims.filter_regions_placeholder')"
-                  class="h-full text-xs"
-                />
-              </InputGroup>
-              <div class="max-h-60 overflow-y-auto">
-                <button
-                  v-for="region in filteredRegionOptions"
-                  :key="region.key"
-                  type="button"
-                  class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
-                  @click="toggleRegion(region.key)"
-                >
-                  <span
-                    class="flex h-4 w-4 shrink-0 items-center justify-center rounded border"
-                    :class="
-                      regionFilter.includes(region.key)
-                        ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber))] text-black'
-                        : 'border-border'
-                    "
-                  >
-                    <Check
-                      v-if="regionFilter.includes(region.key)"
-                      class="h-3 w-3"
-                    />
-                  </span>
-                  <span class="truncate">{{ region.label }}</span>
-                </button>
-              </div>
-              <p
-                v-if="filteredRegionOptions.length === 0"
-                class="px-2 py-3 text-center text-xs text-muted-foreground"
-              >
-                {{ $t("pages.scrims.no_regions_found") }}
-              </p>
-            </PopoverContent>
-          </Popover>
-
-          <!-- Filters (Maps / ELO / Sort bundled, pinned right) + grouped reset -->
-          <FilterMenu
-            class="ml-auto"
-            :count="
-              (mapFilter.length ? 1 : 0) +
-              (eloActive ? 1 : 0) +
-              (sortChain.length ? 1 : 0)
-            "
-            :active="mapFilter.length > 0 || eloActive || sortChain.length > 0"
-            :show-reset="hasActiveScrimFilters"
-            content-class="w-[min(92vw,320px)] space-y-4 p-3"
-            @reset="resetScrimFilters"
-          >
-            <!-- Maps -->
-            <div class="space-y-1.5">
-              <div class="flex items-center justify-between">
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.preferred_maps") }}
-                </span>
-                <button
-                  v-if="mapFilter.length"
-                  type="button"
-                  class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
-                  @click="mapFilter = []"
-                >
-                  {{ $t("common.clear") }}
-                </button>
-              </div>
-              <div class="max-h-48 overflow-y-auto">
-                <button
-                  v-for="map in mapOptions"
-                  :key="map.id"
-                  type="button"
-                  class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
-                  @click="toggleMap(map.id)"
-                >
-                  <span
-                    class="flex h-4 w-4 shrink-0 items-center justify-center rounded border"
-                    :class="
-                      mapFilter.includes(map.id)
-                        ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber))] text-black'
-                        : 'border-border'
-                    "
-                  >
-                    <Check v-if="mapFilter.includes(map.id)" class="h-3 w-3" />
-                  </span>
-                  <img
-                    v-if="map.patch"
-                    :src="map.patch"
-                    :alt="cleanName(map)"
-                    class="h-5 w-5 object-contain"
-                  />
-                  <span class="truncate">{{ cleanName(map) }}</span>
-                </button>
-                <p
-                  v-if="mapOptions.length === 0"
-                  class="px-2 py-3 text-center text-xs text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.no_map_preferences") }}
-                </p>
-              </div>
-            </div>
-
-            <!-- ELO -->
-            <div class="space-y-1.5 border-t border-border/50 pt-3">
-              <div class="flex items-center justify-between">
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.team_avg_elo") }}
-                </span>
-                <button
-                  v-if="eloActive"
-                  type="button"
-                  class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
-                  @click="eloRange = [0, ELO_MAX]"
-                >
-                  {{ $t("common.clear") }}
-                </button>
-              </div>
-              <div
-                class="flex items-center justify-between text-xs tabular-nums text-muted-foreground"
-              >
-                <span>{{
-                  eloRange[0] === 0 ? $t("common.any") : eloRange[0]
-                }}</span>
-                <span>{{
-                  eloRange[1] >= ELO_MAX ? $t("common.any") : eloRange[1]
-                }}</span>
-              </div>
-              <Slider
-                v-model="eloRange"
-                :min="0"
-                :max="ELO_MAX"
-                :step="ELO_STEP"
-                class="mt-1"
-              />
-            </div>
-
-            <!-- Sort -->
-            <div class="space-y-1 border-t border-border/50 pt-3">
-              <div class="flex items-center justify-between px-1">
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.sort_by") }}
-                </span>
-                <button
-                  v-if="sortChain.length"
-                  type="button"
-                  class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
-                  @click="sortChain = []"
-                >
-                  {{ $t("common.clear") }}
-                </button>
-              </div>
+            <PopoverContent align="end" class="w-60 p-1.5">
+              <p class="px-2 pb-1.5 pt-1 text-xs text-muted-foreground">{{ $t("scrims.team_switch") }}</p>
               <button
-                v-for="option in sortOptions"
-                :key="option.key"
+                v-for="item in teams"
+                :key="item.id"
                 type="button"
                 class="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
-                @click="toggleSort(option.key)"
+                @click="setActiveTeam(item.id); teamSwitchOpen = false"
               >
-                <span
-                  class="flex h-4 w-4 shrink-0 items-center justify-center rounded text-[0.6rem] font-semibold"
-                  :class="
-                    sortRank(option.key)
-                      ? 'bg-[hsl(var(--tac-amber))] text-black'
-                      : 'border border-border text-transparent'
-                  "
-                >
-                  {{ sortRank(option.key) || "" }}
-                </span>
-                <span class="flex-1 truncate">{{ option.label }}</span>
-                <ArrowUp
-                  v-if="sortDir(option.key) === 'asc'"
-                  class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-                />
-                <ArrowDown
-                  v-else-if="sortDir(option.key) === 'desc'"
-                  class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-                />
-                <button
-                  v-if="sortRank(option.key)"
-                  type="button"
-                  class="rounded-sm p-0.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  @click.stop="removeSort(option.key)"
-                >
-                  <X class="h-3.5 w-3.5" />
-                </button>
+                <span class="flex-1 truncate">{{ item.name }}</span>
+                <Check v-if="item.id === activeTeam.id" class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
               </button>
-              <p
-                class="px-2 pb-1 pt-1.5 text-[0.6rem] leading-snug text-muted-foreground"
-              >
-                {{ $t("pages.scrims.sort_instructions") }}
-              </p>
-            </div>
-          </FilterMenu>
-        </FilterBar>
-      </PageTransition>
+            </PopoverContent>
+          </Popover>
+          <ScrimNowButton :team="activeTeam" :now="now" :booked="!!booked" />
+        </div>
+      </div>
+    </PageTransition>
 
-      <PageTransition :delay="100" class="mt-6 block">
-        <DeferredLoading
-          :loading="!postingsLoaded"
-          v-slot="{ skeleton, loaded }"
-        >
-          <FadeSwap>
-            <div
-              v-if="skeleton"
-              key="loading"
-              class="space-y-10"
-              aria-busy="true"
-            >
-              <div class="space-y-3">
+    <div
+      v-if="booked && bookedWith && tab !== 'requests'"
+      class="flex flex-wrap items-center gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm"
+    >
+      <Lock class="h-4 w-4 shrink-0 text-[hsl(var(--tac-amber))]" />
+      <span class="min-w-[14rem] flex-1 [text-wrap:pretty]">
+        <b class="font-semibold">
+          {{
+            $t("scrims.booked.banner", {
+              team: activeTeam.name,
+              opponent: bookedWith.name,
+              when: $t("scrims.when", {
+                day: dayLabel(new Date(booked.proposed_scheduled_at).getTime(), now, { inline: true }),
+                time: timeLabel(new Date(booked.proposed_scheduled_at).getTime()),
+              }),
+            })
+          }}
+        </b>
+        {{ $t("scrims.booked.lock") }}
+      </span>
+      <Button as-child size="sm" variant="outline">
+        <NuxtLink :to="`/matches/${booked.match_id}`">{{ $t("scrims.requests.view_match") }}</NuxtLink>
+      </Button>
+    </div>
+
+    <PageTransition :delay="100" class="block">
+      <FadeSwap>
+        <ScrimRequests
+          v-if="tab === 'requests' && activeTeam"
+          key="requests"
+          :team="activeTeam"
+          @open="openOpponent"
+        />
+        <ScrimListing
+          v-else-if="tab === 'listing' && activeTeam"
+          key="listing"
+          :team="activeTeam"
+          preview
+        />
+        <div v-else key="board" class="space-y-4">
+          <div
+            v-if="!activeTeam"
+            class="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/40 px-4 py-3 text-sm"
+          >
+            <span class="min-w-[14rem] flex-1 text-muted-foreground">
+              {{ auth.me ? $t("scrims.cta.player") : $t("scrims.cta.guest") }}
+            </span>
+            <Button v-if="auth.me" as-child size="sm" variant="outline">
+              <NuxtLink to="/teams/create">{{ $t("scrims.cta.create_team") }}</NuxtLink>
+            </Button>
+            <Button v-else size="sm" class="tac-amber-cta gap-1.5" @click="signInWithSteam">
+              <SteamIcon class="h-3.5 w-3.5" />
+              {{ $t("scrims.cta.sign_in") }}
+            </Button>
+          </div>
+          <DeferredLoading :loading="!loaded" v-slot="{ skeleton }">
+            <FadeSwap>
+              <div v-if="skeleton" key="loading" class="space-y-4" aria-busy="true">
+                <Skeleton class="h-8 w-full rounded-md" />
                 <Skeleton class="h-4 w-24 rounded-sm" />
-                <Skeleton
-                  v-for="i in 2"
-                  :key="i"
-                  class="h-[5.5rem] w-full rounded-lg"
-                />
+                <Skeleton v-for="i in 4" :key="i" class="h-[3.75rem] w-full rounded-lg" />
               </div>
-              <div class="space-y-3">
-                <Skeleton class="h-4 w-32 rounded-sm" />
-                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  <Skeleton v-for="i in 3" :key="i" class="h-44 rounded-lg" />
-                </div>
-              </div>
-            </div>
-            <SectionEmpty
-              v-else-if="loaded && !todayRows.length && !availableTeams.length"
-              key="empty"
-              :title="
-                hasActiveScrimFilters
-                  ? $t('common.empty_filtered.title')
-                  : $t('pages.scrims.empty_title')
-              "
-              :description="
-                hasActiveScrimFilters
-                  ? $t('common.empty_filtered.description')
-                  : $t('pages.scrims.description')
-              "
-            >
-              <Button
-                v-if="hasActiveScrimFilters"
-                variant="outline"
-                size="sm"
-                class="h-8"
-                @click="resetScrimFilters"
-              >
-                <X class="h-3.5 w-3.5" />
-                {{ $t("common.reset_filters") }}
-              </Button>
-            </SectionEmpty>
-            <div v-else key="list" class="space-y-10">
-              <!-- Today's schedule -->
-              <section class="space-y-3">
-                <div class="flex items-center gap-3">
-                  <span
-                    class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-                  >
-                    {{ $t("pages.scrims.today") }}
-                  </span>
-                  <span class="text-xs text-muted-foreground">{{
-                    todayRows.length
-                  }}</span>
-                  <span class="h-px flex-1 bg-border" />
-                </div>
+              <ScrimBoard
+                v-else
+                key="board"
+                :postings="others"
+                :my-team="activeTeam"
+                :requests="requests"
+                :maps-by-id="mapsById"
+                :now="now"
+                @open="openPosting"
+                @edit-listing="setTab('listing')"
+              />
+            </FadeSwap>
+          </DeferredLoading>
+        </div>
+      </FadeSwap>
+    </PageTransition>
 
-                <p
-                  v-if="todayRows.length === 0"
-                  class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.no_teams_today") }}
-                </p>
-
-                <div
-                  v-for="entry in todayRows"
-                  :key="entry.key"
-                  class="group relative flex items-stretch overflow-hidden rounded-lg border border-border bg-card transition-all hover:border-[hsl(var(--tac-amber)/0.5)]"
-                >
-                  <div
-                    class="relative flex w-[110px] shrink-0 flex-col items-center justify-center gap-0.5 border-r border-border/60 bg-[hsl(var(--tac-amber)/0.05)] px-2 py-4 text-center sm:w-[124px]"
-                  >
-                    <span
-                      class="absolute inset-y-0 left-0 w-[3px] bg-[hsl(var(--tac-amber))]"
-                    />
-                    <span
-                      class="font-sans text-lg font-bold leading-none tabular-nums text-foreground"
-                    >
-                      {{ entry.startLabel }}
-                    </span>
-                    <span
-                      class="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
-                    >
-                      {{ $t("pages.scrims.time_to") }} {{ entry.endLabel }}
-                    </span>
-                  </div>
-
-                  <div
-                    class="flex min-w-0 flex-1 flex-col justify-center gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-                  >
-                    <div class="flex min-w-0 flex-1 flex-col gap-2">
-                      <div class="flex min-w-0 flex-wrap items-center gap-2">
-                        <NuxtLink
-                          :to="`/teams/${entry.posting.team_id}`"
-                          class="flex min-w-0 items-center gap-2 font-semibold hover:text-[hsl(var(--tac-amber))]"
-                        >
-                          <Avatar shape="square" class="h-7 w-7 rounded-md">
-                            <AvatarImage
-                              v-if="teamAvatar(entry.posting.team)"
-                              :src="teamAvatar(entry.posting.team)"
-                              :alt="entry.posting.team?.name"
-                            />
-                            <AvatarFallback
-                              class="rounded-md text-[0.6rem] font-semibold uppercase"
-                            >
-                              {{
-                                (entry.posting.team?.name || "?").slice(0, 2)
-                              }}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span class="truncate">{{
-                            entry.posting.team?.name
-                          }}</span>
-                        </NuxtLink>
-                        <a
-                          :href="`/teams/${entry.posting.team_id}`"
-                          target="_blank"
-                          rel="noopener"
-                          class="text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                          :title="$t('pages.scrims.open_team_new_tab')"
-                          @click.stop
-                        >
-                          <ExternalLink class="h-3.5 w-3.5" />
-                        </a>
-                        <span
-                          v-for="region in entry.posting.regions"
-                          :key="region"
-                          class="rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
-                        >
-                          {{ region }}
-                        </span>
-                      </div>
-
-                      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                        <TeamRankSummary
-                          :ranks="entry.posting.team?.ranks"
-                          :reputation="entry.posting.team?.reputation"
-                        />
-                        <div
-                          v-if="mapPatches(entry.posting.map_ids).length"
-                          class="flex flex-wrap items-center gap-1.5"
-                        >
-                          <img
-                            v-for="map in mapPatches(entry.posting.map_ids)"
-                            :key="map.id"
-                            :src="map.patch"
-                            :alt="cleanName(map)"
-                            :title="cleanName(map)"
-                            class="h-6 w-6 object-contain"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button
-                      v-if="canRequest(entry.posting)"
-                      class="tac-amber-cta shrink-0 self-start sm:self-center"
-                      @click="openRequest(entry.posting)"
-                    >
-                      {{ $t("pages.scrims.request_scrim") }}
-                    </Button>
-                  </div>
-                </div>
-              </section>
-
-              <!-- Browse all available teams -->
-              <section class="space-y-3">
-                <div class="flex items-center gap-3">
-                  <span
-                    class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-                  >
-                    {{ $t("pages.scrims.available_teams") }}
-                  </span>
-                  <span class="text-xs text-muted-foreground">{{
-                    availableTeams.length
-                  }}</span>
-                  <span class="h-px flex-1 bg-border" />
-                </div>
-
-                <p
-                  v-if="availableTeams.length === 0"
-                  class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
-                >
-                  {{ $t("pages.scrims.no_teams_match") }}
-                </p>
-
-                <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  <div
-                    v-for="posting in availableTeams"
-                    :key="posting.id"
-                    class="group relative flex flex-col gap-3 overflow-hidden rounded-lg border border-border bg-card p-4 transition-all hover:border-[hsl(var(--tac-amber)/0.5)]"
-                  >
-                    <div class="flex min-w-0 items-start gap-3">
-                      <NuxtLink
-                        :to="`/teams/${posting.team_id}`"
-                        class="flex min-w-0 flex-1 items-center gap-2 font-semibold hover:text-[hsl(var(--tac-amber))]"
-                      >
-                        <Avatar shape="square" class="h-9 w-9 rounded-md">
-                          <AvatarImage
-                            v-if="teamAvatar(posting.team)"
-                            :src="teamAvatar(posting.team)"
-                            :alt="posting.team?.name"
-                          />
-                          <AvatarFallback
-                            class="rounded-md text-[0.65rem] font-semibold uppercase"
-                          >
-                            {{ (posting.team?.name || "?").slice(0, 2) }}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span class="truncate">{{ posting.team?.name }}</span>
-                      </NuxtLink>
-                      <a
-                        :href="`/teams/${posting.team_id}`"
-                        target="_blank"
-                        rel="noopener"
-                        class="mt-1 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                        :title="$t('pages.scrims.open_team_new_tab')"
-                        @click.stop
-                      >
-                        <ExternalLink class="h-3.5 w-3.5" />
-                      </a>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-1.5">
-                      <span
-                        v-for="region in posting.regions"
-                        :key="region"
-                        class="rounded border border-border px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
-                      >
-                        {{ region }}
-                      </span>
-                      <span
-                        v-for="day in availabilityDays(posting)"
-                        :key="day"
-                        class="rounded bg-muted/50 px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground"
-                      >
-                        {{ day }}
-                      </span>
-                    </div>
-
-                    <TeamRankSummary
-                      :ranks="posting.team?.ranks"
-                      :reputation="posting.team?.reputation"
-                    />
-
-                    <div
-                      v-if="mapPatches(posting.map_ids).length"
-                      class="flex flex-wrap items-center gap-1.5"
-                    >
-                      <img
-                        v-for="map in mapPatches(posting.map_ids)"
-                        :key="map.id"
-                        :src="map.patch"
-                        :alt="cleanName(map)"
-                        :title="cleanName(map)"
-                        class="h-6 w-6 object-contain"
-                      />
-                    </div>
-
-                    <p
-                      v-if="posting.notes"
-                      class="line-clamp-2 text-xs text-muted-foreground"
-                    >
-                      {{ posting.notes }}
-                    </p>
-
-                    <Button
-                      v-if="canRequest(posting)"
-                      class="tac-amber-cta mt-auto w-full"
-                      @click="openRequest(posting)"
-                    >
-                      {{ $t("pages.scrims.request_scrim") }}
-                    </Button>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </FadeSwap>
-        </DeferredLoading>
-      </PageTransition>
-    </template>
-
-    <ScrimRequestDialog v-model:open="dialogOpen" :posting="selectedPosting" />
+    <ScrimTeamSheet
+      v-model:open="sheetOpen"
+      :posting="sheetPosting"
+      :at="sheetAt"
+      @edit-listing="setTab('listing')"
+    />
   </div>
 </template>

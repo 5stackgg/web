@@ -49,7 +49,7 @@ import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import TeamHighlights from "~/components/team/TeamHighlights.vue";
 import TeamScrimManager from "~/components/team/TeamScrimManager.vue";
 import TeamMatches from "~/components/team/TeamMatches.vue";
-import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
+import ScrimTeamSheet from "~/components/scrims/ScrimTeamSheet.vue";
 import TeamHero from "~/components/team/TeamHero.vue";
 import TeamStage from "~/components/team/TeamStage.vue";
 import TeamResultsTicker from "~/components/team/TeamResultsTicker.vue";
@@ -334,10 +334,11 @@ const scrimNeedsCount = computed(
     </HeightGlide>
   </Tabs>
 
-  <ScrimRequestDialog
+  <ScrimTeamSheet
     v-if="team && teamOpenToScrims"
     v-model:open="scrimRequestOpen"
     :posting="teamPosting"
+    @edit-listing="$router.push('/scrims?tab=listing')"
   />
   <AwardComposer
     v-if="team && awardComposerOpen"
@@ -520,11 +521,17 @@ export default {
               reputation: {
                 scrims_completed: true,
                 no_shows: true,
+                late_cancels: true,
                 reliability_pct: true,
               },
               scrim_settings: {
                 enabled: true,
                 map_ids: true,
+                regions: true,
+                notes: true,
+                elo_min: true,
+                elo_max: true,
+                allow_outside_availability: true,
               },
               scrim_availability: {
                 starts_at: true,
@@ -680,10 +687,18 @@ export default {
       if (!this.team) {
         return null;
       }
+      const settings = this.team.scrim_settings ?? {};
       return {
+        id: this.team.id,
         team_id: this.team.id,
-        map_ids: this.team.scrim_settings?.map_ids ?? [],
+        map_ids: settings.map_ids ?? [],
+        regions: settings.regions ?? [],
+        notes: settings.notes ?? "",
+        elo_min: settings.elo_min ?? null,
+        elo_max: settings.elo_max ?? null,
+        allow_outside_availability: settings.allow_outside_availability ?? false,
         team: {
+          id: this.team.id,
           name: this.team.name,
           avatar_url: this.team.avatar_url,
           ranks: this.team.ranks,

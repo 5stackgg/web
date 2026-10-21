@@ -7,6 +7,8 @@ import {
   ChevronRight,
   MonitorDown,
   Scale,
+  FileText,
+  ShieldCheck,
 } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -57,6 +59,12 @@ function isSectionActive(name: string): boolean {
   const current = route.name as string | undefined;
   return current === name || Boolean(current?.startsWith(`${name}-`));
 }
+
+const legalLinks = [
+  { name: "terms", label: "legal.terms.title", icon: FileText },
+  { name: "privacy", label: "legal.privacy.title", icon: ShieldCheck },
+  { name: "licenses", label: "licenses.title", icon: Scale },
+];
 
 const panelClasses =
   "w-[17.5rem] overflow-hidden !rounded-md border bg-popover/95 !p-0 shadow-[0_20px_40px_-16px_hsl(0_0%_0%/0.6)] [backdrop-filter:blur(10px)]";
@@ -152,17 +160,6 @@ const chevronClasses =
         </NuxtLink>
       </DropdownMenuItem>
 
-      <DropdownMenuItem as-child :class="rowClasses">
-        <NuxtLink
-          :to="{ name: 'licenses' }"
-          :class="{ 'router-link-active': isSectionActive('licenses') }"
-        >
-          <Scale :class="iconClasses" />
-          {{ $t("licenses.title") }}
-          <ChevronRight :class="chevronClasses" />
-        </NuxtLink>
-      </DropdownMenuItem>
-
       <DropdownMenuItem
         v-if="showInstall && canInstall"
         :class="rowClasses"
@@ -171,6 +168,27 @@ const chevronClasses =
         <MonitorDown :class="iconClasses" />
         {{ $t("pwa.install.button") }}
         <ChevronRight :class="chevronClasses" />
+      </DropdownMenuItem>
+
+      <div :class="eyebrowClasses">
+        <span :class="tickClasses"></span>
+        {{ $t("legal.section") }}
+      </div>
+
+      <DropdownMenuItem
+        v-for="link of legalLinks"
+        :key="link.name"
+        as-child
+        :class="rowClasses"
+      >
+        <NuxtLink
+          :to="{ name: link.name }"
+          :class="{ 'router-link-active': isSectionActive(link.name) }"
+        >
+          <component :is="link.icon" :class="iconClasses" />
+          {{ $t(link.label) }}
+          <ChevronRight :class="chevronClasses" />
+        </NuxtLink>
       </DropdownMenuItem>
 
       <div class="mx-3 mt-1 h-px bg-border/60"></div>

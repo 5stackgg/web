@@ -14484,6 +14484,165 @@
       "link": "Se licenser"
     }
   },
+  "legal": {
+    "section": "Juridisk",
+    "updated": "Senest opdateret {date}",
+    "translation_note": "Denne side er oversat for nemheds skyld. Hvis oversættelsen afviger fra den engelske version, gælder den engelske version.",
+    "terms": {
+      "title": "Servicevilkår",
+      "intro": "Disse vilkår gælder for din brug af {brand}. Når du logger ind eller bruger webstedet, accepterer du dem. Hvis du ikke accepterer dem, så lad være med at bruge webstedet.",
+      "operators": {
+        "title": "Hvem driver dette websted",
+        "body": "Dette websted kører på 5Stack, open source-software til kampe, ligaer og turneringer i Counter-Strike 2. Det hostes af sine operatører, som bestemmer, hvordan det drives, og er ansvarlige for det."
+      },
+      "account": {
+        "title": "Din konto",
+        "body": "Du logger ind med din Steam-konto. Hold den sikker: du er ansvarlig for det, der sker på din konto, herunder alt, der gøres med API-nøgler, du opretter. Del ikke din konto, log ikke ind som en anden, og opret ikke nye konti for at omgå en sanktion.",
+        "age": "Du skal være mindst 13 år. Hvis du er under myndighedsalderen der, hvor du bor, skal du have tilladelse fra en forælder eller værge."
+      },
+      "conduct": {
+        "title": "Fair play og opførsel",
+        "body": "Når du bruger webstedet eller spiller i dets kampe, må du ikke:",
+        "cheating": "snyde, misbruge exploits eller bruge software, der giver dig en uretfærdig fordel",
+        "match_fixing": "aftale kampresultater, tabe spil med vilje eller manipulere ranglister eller ELO",
+        "abuse": "chikanere, true eller krænke andre spillere eller poste hadefuldt, seksuelt eller ulovligt indhold",
+        "impersonation": "udgive dig for at være andre spillere, hold eller personale",
+        "disruption": "spamme, reklamere uden tilladelse eller forstyrre servere, chat eller stemmechat",
+        "security": "forsøge at ødelægge eller overbelaste webstedet eller dets servere eller skaffe dig adgang til konti, der ikke er dine",
+        "competition_rules": "Arrangører kan tilføje deres egne regler for deres kampe, turneringer og ligaer, og de regler gælder også."
+      },
+      "moderation": {
+        "title": "Moderation",
+        "body": "Operatørerne og det personale, de udpeger, kan fjerne indhold, ændre eller annullere kampresultater samt mute, suspendere eller banne konti, når disse vilkår eller en konkurrences regler overtrædes. Bans kan også gives automatisk, for eksempel for at forlade kampe eller for et VAC-ban."
+      },
+      "content": {
+        "title": "Dit indhold",
+        "body": "Du beholder ejerskabet af det, du tilføjer til webstedet, såsom holdnavne og logoer, chatbeskeder, klip og uploads. Du giver operatørerne lov til at gemme, vise og dele det i det omfang, det er nødvendigt for at drive webstedet, for eksempel på kampsider, ranglister og highlights. Post kun indhold, som du har ret til at dele.",
+        "public": "Din profil, kamphistorik og statistik er offentlige. Privatlivspolitikken forklarer, hvad der indsamles, og hvem der kan se det."
+      },
+      "services": {
+        "title": "Andre tjenester",
+        "body": "Login sker via Steam, og du kan tilknytte konti på andre tjenester. Disse tjenester har deres egne vilkår og privatlivspolitikker.",
+        "valve": "Counter-Strike og Steam er varemærker tilhørende Valve Corporation. Dette websted er ikke tilknyttet eller godkendt af Valve."
+      },
+      "software": {
+        "title": "Open source-software",
+        "body": "5Stack er udgivet under GNU Affero General Public License, version 3. Det er den licens, ikke disse vilkår, der fastlægger dine rettigheder til softwaren og dens kildekode. Siden Licenser linker til kildekoden og viser den tredjepartssoftware, den bruger."
+      },
+      "warranty": {
+        "title": "Ingen garanti",
+        "body": "Webstedet leveres \"som det er\" og \"som tilgængeligt\". Det kan ændre sig, gå offline eller miste data, og funktioner kan tilføjes eller fjernes når som helst. I det omfang loven tillader det, giver operatørerne ingen garantier af nogen art."
+      },
+      "liability": {
+        "title": "Ansvarsbegrænsning",
+        "body": "I det omfang loven tillader det, er operatørerne ikke ansvarlige for indirekte tab eller følgetab eller for tabte data, placeringer eller præmier, der skyldes brugen af webstedet. Intet i disse vilkår begrænser et ansvar, som loven ikke tillader at begrænse."
+      },
+      "ending": {
+        "title": "Ophør af din brug",
+        "body": "Du kan til enhver tid stoppe med at bruge webstedet og bede operatørerne om at slette din konto. Operatørerne kan suspendere eller lukke konti, der overtræder disse vilkår, og kan lukke webstedet ned."
+      },
+      "changes": {
+        "title": "Ændringer af disse vilkår",
+        "body": "Disse vilkår kan blive opdateret, og datoen øverst viser den seneste version. Hvis du fortsætter med at bruge webstedet efter en ændring, accepterer du de opdaterede vilkår."
+      },
+      "contact": {
+        "title": "Kontakt",
+        "body": "Spørgsmål om disse vilkår skal rettes til webstedets operatører."
+      }
+    },
+    "privacy": {
+      "title": "Privatlivspolitik",
+      "intro": "Denne politik forklarer, hvad {brand} indsamler om dig, hvordan det bruges, og hvilke valg du har. Webstedet beder aldrig om din e-mailadresse, og dine data bliver ikke solgt.",
+      "operators": {
+        "title": "Hvem er ansvarlig",
+        "body": "Dette websted kører på 5Stack, open source-software, og hostes af sine operatører. De bestemmer, hvordan webstedet drives, og er ansvarlige for de oplysninger, det opbevarer."
+      },
+      "collect": {
+        "title": "Hvad der indsamles",
+        "body": "Når du logger ind med Steam og bruger webstedet, gemmer det:",
+        "steam": "Din Steam-konto: Steam ID, profilnavn, avatar, profillink og land samt din status for VAC-bans og spilbans.",
+        "gameplay": "Dit spil på dette websteds servere: kampresultater, statistik, kills og positioner, utility, ELO, demoer og klip.",
+        "content": "Det, du tilføjer: avatarer, holdnavne og logoer, andre uploads, chatbeskeder, klip og dine indstillinger.",
+        "social": "Dine venner, de spillere, du blokerer, og eventuelle sanktioner på din konto.",
+        "technical": "Den session, der holder dig logget ind, de API-nøgler, du opretter, og dine abonnementer på push-notifikationer sammen med din browsers user agent.",
+        "servers": "Din IP-adresse, når du tilslutter dig en af dette websteds communityservere.",
+        "unregistered": "Du kan have en profil her uden nogensinde at have logget ind, for eksempel efter at have tilsluttet dig en server, som dette websted driver, eller ved at optræde i en importeret demo. Den indeholder dit Steam ID, dit navn og din kampstatistik.",
+        "uploads": "Billeder gemmes, som du uploader dem, inklusive eventuelle metadata i filen, såsom hvor et foto blev taget."
+      },
+      "linked": {
+        "title": "Tilknyttede konti",
+        "body": "Afhængigt af hvad dette websted har slået til, og hvad du vælger at forbinde:",
+        "discord": "Discord: dit Discord-bruger-ID, så webstedets Discord-bot kan genkende dig.",
+        "twitch": "Twitch: dit Twitch-ID, brugernavn og visningsnavn og, mens du er live, din streams titel, spil og antal seere.",
+        "steam_history": "Steam-kamphistorik: de godkendelses- og delingskoder, du angiver, og som bruges til at importere dine kampe.",
+        "steam_presence": "Steam-status: hvis du tilføjer webstedets Steam-bot som ven, aflæser den, om du spiller CS2, samt din aktuelle tilstand, dit map og din score.",
+        "steam_friends": "Steam-venner: når du beder om det, tjekkes din Steam-venneliste for at finde venner, der spiller her.",
+        "faceit": "FACEIT: hvor webstedet bruger FACEIT, slås din offentlige FACEIT-profil, dit niveau og din ELO op ud fra dit Steam ID."
+      },
+      "calls": {
+        "title": "Stemme og video",
+        "body": "Stemme- og kamerastreams sendes live til de andre deltagere i opkaldet og optages aldrig. Når en kamp kræver kameraer, kan admins og dem, der står for udsendelsen, se disse feeds live.",
+        "stun": "For at forbinde et opkald kontakter din browser en STUN-server, som ser din IP-adresse. Det er Googles server, medmindre operatørerne kører deres egen."
+      },
+      "use": {
+        "title": "Hvordan det bruges",
+        "matches": "Til at afvikle kampe, lobbyer, turneringer og ligaer og til at vise resultater og statistik.",
+        "fair_play": "Til at holde spillet fair og sikkert: tjekke Steam-bans, give sanktioner og moderere chatten.",
+        "notifications": "Til at sende de notifikationer, du har slået til.",
+        "security": "Til at holde webstedet sikkert og kørende og til at rette fejl."
+      },
+      "public": {
+        "title": "Hvad andre kan se",
+        "body": "Din profil er offentlig. Alle, også besøgende, der ikke er logget ind, kan se dit navn, din avatar, dit land, din Steam-ban-status, dine FACEIT-oplysninger, din kamphistorik, din statistik, dine hold og dine turneringsresultater.",
+        "chat": "Chatbeskeder ses af dem, der er i det pågældende rum, og personalet kan gennemgå dem for at moderere."
+      },
+      "sharing": {
+        "title": "Deling med andre tjenester",
+        "body": "Nogle oplysninger deles med eller hentes fra andre tjenester, så webstedet kan fungere:",
+        "steam": "Steam (Valve), for at logge dig ind og læse din profil og ban-status.",
+        "push": "Din browsers push-tjeneste, såsom Google, Apple, Mozilla eller Microsoft, som leverer push-notifikationer. De indeholder afsenderens navn og en forhåndsvisning af beskeden.",
+        "media": "GIPHY, når du søger efter GIF'er, og Twitch, YouTube eller Kick, når du ser en indlejret stream. Disse tjenester ser din IP-adresse.",
+        "hosting": "De hosting- og netværksudbydere, som operatørerne bruger til at drive webstedet.",
+        "telemetry": "5Stack-projektet, som modtager anonyme totaler fra dette websted, såsom hvor mange kampe og spillere det har. Intet i dem identificerer dig.",
+        "law": "Oplysninger kan også videregives, når loven kræver det."
+      },
+      "cookies": {
+        "title": "Cookies og lokal lagring",
+        "body": "En sessionscookie holder dig logget ind. Den varer 14 dage og fornyes, mens du bruger webstedet. En anden cookie husker, om sidepanelet er åbent. Din browsers lokale lagring gemmer præferencer som chatfaner, stemme- og kameraenheder og beskeder, du har lukket.",
+        "analytics": "Dette websted bruger også Google Tag Manager, som kan indlæse analyseværktøjer, der sætter deres egne cookies for at måle, hvordan webstedet bruges."
+      },
+      "retention": {
+        "title": "Hvor længe det opbevares",
+        "profile": "Din profil, statistik og kamphistorik opbevares, indtil din konto slettes.",
+        "chat": "Chatrum udløber efter tidsfrister, som operatørerne fastsætter, cirka en time for kampe og lobbyer og længere for hold og turneringer. Personalet kan gennemgå kamp- og holdchat i 7 dage.",
+        "direct": "Private beskeder opbevares i en periode, som operatørerne fastsætter, som standard ét år.",
+        "edits": "Når du redigerer eller sletter en chatbesked, bevares den oprindelige tekst til brug for moderation.",
+        "sessions": "Sessioner på communityservere, herunder IP-adresser, slettes som standard efter 7 dage.",
+        "demos": "Demoer og klip fjernes, efterhånden som lagerpladsen bliver fyldt op. Den statistik, der er hentet fra dem, bevares.",
+        "backups": "Daglige backups opbevares som standard i 7 dage."
+      },
+      "choices": {
+        "title": "Dine valg",
+        "settings": "Skift dit land, dit sprog og dine notifikationspræferencer i dine indstillinger.",
+        "unlink": "Fjern tilknyttede konti når som helst.",
+        "api_keys": "Tilbagekald API-nøgler, du har oprettet.",
+        "requests": "Bed operatørerne om en kopi af dine data, en rettelse eller om at slette din konto.",
+        "rights": "Afhængigt af hvor du bor, kan du have yderligere rettigheder, såsom at gøre indsigelse mod, hvordan dine data bruges, eller at klage til en databeskyttelsesmyndighed."
+      },
+      "children": {
+        "title": "Børn",
+        "body": "Webstedet er ikke beregnet til børn under 13 år."
+      },
+      "changes": {
+        "title": "Ændringer af denne politik",
+        "body": "Denne politik kan blive opdateret, og datoen øverst viser den seneste version."
+      },
+      "contact": {
+        "title": "Kontakt",
+        "body": "Spørgsmål eller anmodninger om dine data skal rettes til webstedets operatører."
+      }
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Navn",

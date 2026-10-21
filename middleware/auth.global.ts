@@ -18,6 +18,8 @@ function isPublicRoute(path: string): boolean {
     "/stats-guide",
     "/faq",
     "/licenses",
+    "/terms",
+    "/privacy",
   ];
 
   if (publicRoutes.includes(path)) {

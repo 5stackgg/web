@@ -14484,6 +14484,165 @@
       "link": "Lisansları görüntüle"
     }
   },
+  "legal": {
+    "section": "Yasal",
+    "updated": "Son güncelleme: {date}",
+    "translation_note": "Bu sayfa kolaylık sağlamak amacıyla çevrilmiştir. Çeviri İngilizce sürümden farklıysa İngilizce sürüm geçerlidir.",
+    "terms": {
+      "title": "Hizmet Şartları",
+      "intro": "Bu şartlar, {brand} sitesini kullanmanı kapsar. Giriş yaparak veya siteyi kullanarak bu şartları kabul etmiş olursun. Kabul etmiyorsan lütfen siteyi kullanma.",
+      "operators": {
+        "title": "Bu siteyi kim işletiyor",
+        "body": "Bu site, Counter-Strike 2 maçları, ligleri ve turnuvaları için açık kaynaklı bir yazılım olan 5Stack ile çalışır. Site, nasıl işletileceğine karar veren ve sorumluluğunu taşıyan işletmecileri tarafından barındırılır."
+      },
+      "account": {
+        "title": "Hesabın",
+        "body": "Steam hesabınla giriş yaparsın. Hesabını güvende tut: oluşturduğun API anahtarlarıyla yapılan her şey dahil, hesabında olan her şeyden sen sorumlusun. Hesabını başkalarıyla paylaşma, başkası olarak giriş yapma ve bir yaptırımı atlatmak için yeni hesap açma.",
+        "age": "En az 13 yaşında olmalısın. Yaşadığın yerde reşit değilsen ebeveyninin veya vasinin iznine ihtiyacın var."
+      },
+      "conduct": {
+        "title": "Adil oyun ve davranış",
+        "body": "Siteyi kullanırken veya sitedeki maçlarda oynarken şunları yapma:",
+        "cheating": "hile yapmak, açıkları istismar etmek veya sana haksız avantaj sağlayan yazılımlar kullanmak",
+        "match_fixing": "şike yapmak, maçları bilerek kaybetmek veya sıralamaları ya da ELO'yu manipüle etmek",
+        "abuse": "diğer oyuncuları taciz etmek, tehdit etmek veya onlara hakaret etmek ya da nefret içeren, cinsel veya yasa dışı içerik paylaşmak",
+        "impersonation": "kendini başka oyuncular, takımlar veya ekip üyeleri olarak tanıtmak",
+        "disruption": "spam yapmak, izinsiz reklam yapmak veya sunucuların, sohbetin ya da sesli sohbetin işleyişini bozmak",
+        "security": "siteyi veya sunucularını bozmaya ya da aşırı yüklemeye veya sana ait olmayan hesaplara girmeye çalışmak",
+        "competition_rules": "Organizatörler kendi maçları, turnuvaları ve ligleri için kendi kurallarını ekleyebilir; bu kurallar da geçerlidir."
+      },
+      "moderation": {
+        "title": "Moderasyon",
+        "body": "İşletmeciler ve atadıkları ekip, bu şartlar veya bir yarışmanın kuralları ihlal edildiğinde içerikleri kaldırabilir, maç sonuçlarını değiştirebilir veya iptal edebilir ve hesapları susturabilir, askıya alabilir veya yasaklayabilir. Yasaklar otomatik olarak da uygulanabilir; örneğin maçları terk etme veya bir VAC yasağı nedeniyle."
+      },
+      "content": {
+        "title": "İçeriğin",
+        "body": "Siteye eklediğin takım adları ve logoları, sohbet mesajları, klipler ve yüklemeler gibi içeriklerin sahipliği sende kalır. İşletmecilerin bunları, siteyi çalıştırmak için gerektiği ölçüde, örneğin maç sayfalarında, sıralamalarda ve öne çıkan anlarda saklamasına, göstermesine ve paylaşmasına izin verirsin. Yalnızca paylaşma hakkına sahip olduğun içerikleri yayınla.",
+        "public": "Profilin, maç geçmişin ve istatistiklerin herkese açıktır. Gizlilik Politikası neyin toplandığını ve kimlerin görebileceğini açıklar."
+      },
+      "services": {
+        "title": "Diğer hizmetler",
+        "body": "Giriş için Steam kullanılır ve diğer hizmetlerdeki hesaplarını bağlayabilirsin. Bu hizmetlerin kendi şartları ve gizlilik politikaları vardır.",
+        "valve": "Counter-Strike ve Steam, Valve Corporation'ın ticari markalarıdır. Bu sitenin Valve ile bir bağlantısı yoktur ve site Valve tarafından onaylanmamıştır."
+      },
+      "software": {
+        "title": "Açık kaynaklı yazılım",
+        "body": "5Stack, GNU Affero General Public License sürüm 3 altında yayımlanır. Yazılım ve kaynak kodu üzerindeki haklarını bu şartlar değil, o lisans belirler. Lisanslar sayfası kaynak koduna bağlantı verir ve yazılımın kullandığı üçüncü taraf yazılımları listeler."
+      },
+      "warranty": {
+        "title": "Garanti reddi",
+        "body": "Site \"olduğu gibi\" ve \"mevcut olduğu şekliyle\" sunulur. Değişebilir, çevrim dışı olabilir veya veri kaybedebilir; özellikler her an eklenebilir veya kaldırılabilir. Yasaların izin verdiği ölçüde işletmeciler hiçbir türde garanti vermez."
+      },
+      "liability": {
+        "title": "Sorumluluğun sınırlandırılması",
+        "body": "Yasaların izin verdiği ölçüde işletmeciler, sitenin kullanımından doğan dolaylı veya sonuçsal zararlardan ya da veri, sıralama veya ödül kayıplarından sorumlu değildir. Bu şartlardaki hiçbir hüküm, yasaların sınırlandırılmasına izin vermediği sorumluluğu sınırlamaz."
+      },
+      "ending": {
+        "title": "Kullanımın sona ermesi",
+        "body": "Siteyi istediğin zaman kullanmayı bırakabilir ve işletmecilerden hesabını silmelerini isteyebilirsin. İşletmeciler bu şartları ihlal eden hesapları askıya alabilir veya kapatabilir ve siteyi kapatabilir."
+      },
+      "changes": {
+        "title": "Bu şartlardaki değişiklikler",
+        "body": "Bu şartlar güncellenebilir; en üstteki tarih en son sürümü gösterir. Bir değişiklikten sonra siteyi kullanmaya devam edersen güncellenmiş şartları kabul etmiş olursun."
+      },
+      "contact": {
+        "title": "İletişim",
+        "body": "Bu şartlarla ilgili soruların için sitenin işletmecilerine başvur."
+      }
+    },
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "intro": "Bu politika, {brand} tarafından hakkında nelerin toplandığını, bunların nasıl kullanıldığını ve hangi seçeneklere sahip olduğunu açıklar. Site e-posta adresini asla istemez ve verilerin satılmaz.",
+      "operators": {
+        "title": "Sorumlu kim",
+        "body": "Bu site, açık kaynaklı bir yazılım olan 5Stack ile çalışır ve işletmecileri tarafından barındırılır. Sitenin nasıl işletileceğine onlar karar verir ve sitede tutulan bilgilerden onlar sorumludur."
+      },
+      "collect": {
+        "title": "Neler toplanır",
+        "body": "Steam ile giriş yapıp siteyi kullandığında site şunları saklar:",
+        "steam": "Steam hesabın: Steam ID, profil adı, avatar, profil bağlantısı ve ülke ile VAC ve oyun yasağı durumun.",
+        "gameplay": "Bu sitenin sunucularındaki oyunun: maç sonuçları, istatistikler, öldürmeler ve konumlar, utility kullanımı, ELO, demolar ve klipler.",
+        "content": "Eklediklerin: avatarlar, takım adları ve logoları, diğer yüklemeler, sohbet mesajları, klipler ve ayarların.",
+        "social": "Arkadaşların, engellediğin oyuncular ve hesabına uygulanan tüm yaptırımlar.",
+        "technical": "Girişli kalmanı sağlayan oturum, oluşturduğun API anahtarları ve tarayıcının user agent bilgisiyle birlikte anlık bildirim aboneliklerin.",
+        "servers": "Bu sitenin topluluk sunucularından birine katıldığında IP adresin.",
+        "unregistered": "Hiç giriş yapmadan da burada bir profilin olabilir; örneğin bu sitenin işlettiği bir sunucuya katıldıktan sonra veya içe aktarılan bir demoda yer aldığında. Bu profilde Steam ID'n, adın ve maç istatistiklerin bulunur.",
+        "uploads": "Görseller, dosyadaki meta veriler de dahil olmak üzere yüklediğin haliyle saklanır; örneğin bir fotoğrafın nerede çekildiği bilgisi."
+      },
+      "linked": {
+        "title": "Bağlı hesaplar",
+        "body": "Bu sitede nelerin etkin olduğuna ve neleri bağlamayı seçtiğine bağlı olarak:",
+        "discord": "Discord: sitenin Discord botunun seni tanıyabilmesi için Discord kullanıcı kimliğin.",
+        "twitch": "Twitch: Twitch kimliğin, kullanıcı adın ve görünen adın; yayındayken ise yayınının başlığı, oyunu ve izleyici sayısı.",
+        "steam_history": "Steam maç geçmişi: maçlarını içe aktarmak için kullanılan, senin sağladığın kimlik doğrulama ve paylaşım kodları.",
+        "steam_presence": "Steam durumu: sitenin Steam botunu arkadaş olarak eklersen bot, CS2 oynayıp oynamadığını ve mevcut modunu, haritanı ve skorunu okur.",
+        "steam_friends": "Steam arkadaşları: istediğinde, burada oynayan arkadaşlarını bulmak için Steam arkadaş listen kontrol edilir.",
+        "faceit": "FACEIT: sitenin FACEIT kullandığı durumlarda, herkese açık FACEIT profilin, seviyen ve ELO'n Steam ID'n üzerinden sorgulanır."
+      },
+      "calls": {
+        "title": "Ses ve görüntü",
+        "body": "Ses ve kamera yayınları görüşmedeki diğer kişilere canlı olarak iletilir ve asla kaydedilmez. Bir maçta kamera zorunluysa yöneticiler ve yayıncılar bu görüntüleri canlı izleyebilir.",
+        "stun": "Bir görüşmeyi bağlamak için tarayıcın, IP adresini gören bir STUN sunucusuna bağlanır. İşletmeciler kendi sunucularını çalıştırmıyorsa bu sunucu Google'ın sunucusudur."
+      },
+      "use": {
+        "title": "Nasıl kullanılır",
+        "matches": "Maçları, lobileri, turnuvaları ve ligleri yürütmek, sonuçları ve istatistikleri göstermek için.",
+        "fair_play": "Oyunu adil ve güvenli tutmak için: Steam yasaklarını kontrol etmek, yaptırım uygulamak ve sohbeti denetlemek.",
+        "notifications": "Açtığın bildirimleri göndermek için.",
+        "security": "Siteyi güvenli ve çalışır durumda tutmak ve sorunları gidermek için."
+      },
+      "public": {
+        "title": "Başkaları neleri görebilir",
+        "body": "Profilin herkese açıktır. Giriş yapmamış ziyaretçiler dahil herkes adını, avatarını, ülkeni, Steam yasak durumunu, FACEIT bilgilerini, maç geçmişini, istatistiklerini, takımlarını ve turnuva sonuçlarını görebilir.",
+        "chat": "Sohbet mesajlarını o odadaki kişiler görür ve ekip, moderasyon için bunları inceleyebilir."
+      },
+      "sharing": {
+        "title": "Diğer hizmetlerle paylaşım",
+        "body": "Sitenin çalışabilmesi için bazı bilgiler diğer hizmetlerle paylaşılır veya onlardan yüklenir:",
+        "steam": "Steam (Valve): giriş yapmanı sağlamak, profilini ve yasak durumunu okumak için.",
+        "push": "Anlık bildirimleri ileten, tarayıcının anlık bildirim hizmeti; örneğin Google, Apple, Mozilla veya Microsoft. Bildirimler, gönderenin adını ve mesajın bir önizlemesini içerir.",
+        "media": "GIF ararken GIPHY; gömülü bir yayını izlerken Twitch, YouTube veya Kick. Bu hizmetler IP adresini görür.",
+        "hosting": "İşletmecilerin siteyi çalıştırmak için kullandığı barındırma ve ağ sağlayıcıları.",
+        "telemetry": "Bu siteden, kaç maç ve oyuncu olduğu gibi anonim toplam veriler alan 5Stack projesi. Bu verilerde seni tanımlayan hiçbir şey yoktur.",
+        "law": "Yasaların gerektirdiği durumlarda bilgiler ayrıca açıklanabilir."
+      },
+      "cookies": {
+        "title": "Çerezler ve yerel depolama",
+        "body": "Bir oturum çerezi girişli kalmanı sağlar. Bu çerez 14 gün geçerlidir ve siteyi kullandıkça yenilenir. İkinci bir çerez, kenar çubuğunun açık olup olmadığını hatırlar. Tarayıcının yerel depolama alanı; sohbet sekmeleri, ses ve kamera cihazları ve kapattığın duyurular gibi tercihleri saklar.",
+        "analytics": "Bu site ayrıca, sitenin nasıl kullanıldığını ölçmek için kendi çerezlerini yerleştiren analiz araçlarını yükleyebilen Google Tag Manager'ı kullanır."
+      },
+      "retention": {
+        "title": "Ne kadar süre saklanır",
+        "profile": "Profilin, istatistiklerin ve maç geçmişin hesabın silinene kadar saklanır.",
+        "chat": "Sohbet odaları, işletmecilerin belirlediği sürelerin sonunda silinir: maçlar ve lobiler için yaklaşık bir saat, takımlar ve turnuvalar için daha uzun. Ekip, maç ve takım sohbetlerini 7 gün boyunca inceleyebilir.",
+        "direct": "Doğrudan mesajlar, işletmecilerin belirlediği süre boyunca saklanır; bu süre varsayılan olarak bir yıldır.",
+        "edits": "Bir sohbet mesajını düzenlediğinde veya sildiğinde, orijinal metin moderasyon için saklanır.",
+        "sessions": "IP adresleri dahil topluluk sunucusu oturumları varsayılan olarak 7 gün sonra silinir.",
+        "demos": "Depolama alanı doldukça demolar ve klipler kaldırılır. Bunlardan elde edilen istatistikler saklanır.",
+        "backups": "Günlük yedekler varsayılan olarak 7 gün saklanır."
+      },
+      "choices": {
+        "title": "Seçeneklerin",
+        "settings": "Ülkeni, dilini ve bildirim tercihlerini ayarlarından değiştir.",
+        "unlink": "Bağlı hesapların bağlantısını istediğin zaman kaldır.",
+        "api_keys": "Oluşturduğun API anahtarlarını iptal et.",
+        "requests": "İşletmecilerden verilerinin bir kopyasını, verilerinin düzeltilmesini veya hesabının silinmesini iste.",
+        "rights": "Yaşadığın yere bağlı olarak, verilerinin nasıl kullanıldığına itiraz etmek veya bir veri koruma kurumuna şikâyette bulunmak gibi başka hakların da olabilir."
+      },
+      "children": {
+        "title": "Çocuklar",
+        "body": "Site 13 yaşın altındaki çocuklara yönelik değildir."
+      },
+      "changes": {
+        "title": "Bu politikadaki değişiklikler",
+        "body": "Bu politika güncellenebilir; en üstteki tarih en son sürümü gösterir."
+      },
+      "contact": {
+        "title": "İletişim",
+        "body": "Verilerinle ilgili soruların veya taleplerin için sitenin işletmecilerine başvur."
+      }
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Ad",

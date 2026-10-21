@@ -14484,6 +14484,165 @@
       "link": "Voir les licences"
     }
   },
+  "legal": {
+    "section": "Informations légales",
+    "updated": "Dernière mise à jour : {date}",
+    "translation_note": "Cette page est traduite pour votre commodité. En cas de divergence entre la traduction et la version anglaise, la version anglaise prévaut.",
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "intro": "Ces conditions encadrent votre utilisation de {brand}. En vous connectant ou en utilisant le site, vous les acceptez. Si vous ne les acceptez pas, merci de ne pas utiliser le site.",
+      "operators": {
+        "title": "Qui gère ce site",
+        "body": "Ce site fonctionne avec 5Stack, un logiciel open source pour les matchs, ligues et tournois de Counter-Strike 2. Il est hébergé par ses exploitants, qui décident de son fonctionnement et en sont responsables."
+      },
+      "account": {
+        "title": "Votre compte",
+        "body": "Vous vous connectez avec votre compte Steam. Protégez-le : vous êtes responsable de ce qui se passe sur votre compte, y compris de tout ce qui est fait avec les clés d'API que vous créez. Ne partagez pas votre compte, ne vous connectez pas en tant que quelqu'un d'autre et ne créez pas de nouveaux comptes pour contourner une sanction.",
+        "age": "Vous devez avoir au moins 13 ans. Si vous n'avez pas atteint l'âge de la majorité là où vous vivez, vous avez besoin de l'autorisation d'un parent ou d'un tuteur."
+      },
+      "conduct": {
+        "title": "Fair-play et comportement",
+        "body": "Lorsque vous utilisez le site ou jouez dans ses matchs, il vous est interdit de :",
+        "cheating": "tricher, abuser de failles ou utiliser des logiciels qui vous donnent un avantage déloyal",
+        "match_fixing": "truquer des matchs, perdre volontairement des parties ou manipuler les classements ou l'ELO",
+        "abuse": "harceler, menacer ou insulter d'autres joueurs, ou publier du contenu haineux, sexuel ou illégal",
+        "impersonation": "vous faire passer pour d'autres joueurs, équipes ou membres du staff",
+        "disruption": "spammer, faire de la publicité sans autorisation, ou perturber les serveurs, le chat ou le chat vocal",
+        "security": "tenter de mettre hors service ou de surcharger le site ou ses serveurs, ou accéder à des comptes qui ne sont pas les vôtres",
+        "competition_rules": "Les organisateurs peuvent ajouter leurs propres règles pour leurs matchs, tournois et ligues, et ces règles s'appliquent également."
+      },
+      "moderation": {
+        "title": "Modération",
+        "body": "Les exploitants et les membres du staff qu'ils désignent peuvent supprimer du contenu, modifier ou annuler des résultats de matchs, et rendre muets, suspendre ou bannir des comptes en cas de violation de ces conditions ou des règles d'une compétition. Des bannissements peuvent aussi être appliqués automatiquement, par exemple en cas d'abandon de matchs ou de bannissement VAC."
+      },
+      "content": {
+        "title": "Votre contenu",
+        "body": "Vous restez propriétaire de ce que vous ajoutez au site, comme les noms et logos d'équipe, les messages de chat, les clips et les fichiers envoyés. Vous autorisez les exploitants à le stocker, l'afficher et le partager dans la mesure nécessaire au fonctionnement du site, par exemple sur les pages de match, les classements et les highlights. Ne publiez que du contenu que vous avez le droit de partager.",
+        "public": "Votre profil, votre historique de matchs et vos statistiques sont publics. La politique de confidentialité explique ce qui est collecté et qui peut le voir."
+      },
+      "services": {
+        "title": "Autres services",
+        "body": "La connexion passe par Steam, et vous pouvez lier des comptes d'autres services. Ces services ont leurs propres conditions d'utilisation et politiques de confidentialité.",
+        "valve": "Counter-Strike et Steam sont des marques de Valve Corporation. Ce site n'est ni affilié à Valve ni approuvé par Valve."
+      },
+      "software": {
+        "title": "Logiciel open source",
+        "body": "5Stack est publié sous la GNU Affero General Public License, version 3. C'est cette licence, et non les présentes conditions, qui définit vos droits sur le logiciel et son code source. La page Licences renvoie vers le code source et liste les logiciels tiers que 5Stack utilise."
+      },
+      "warranty": {
+        "title": "Absence de garantie",
+        "body": "Le site est fourni « en l'état » et « selon disponibilité ». Il peut changer, être hors ligne ou perdre des données, et des fonctionnalités peuvent être ajoutées ou supprimées à tout moment. Dans la mesure permise par la loi, les exploitants n'offrent aucune garantie d'aucune sorte."
+      },
+      "liability": {
+        "title": "Limitation de responsabilité",
+        "body": "Dans la mesure permise par la loi, les exploitants ne sont pas responsables des pertes indirectes ou consécutives, ni de la perte de données, de classements ou de prix, résultant de l'utilisation du site. Rien dans les présentes conditions ne limite une responsabilité que la loi ne permet pas de limiter."
+      },
+      "ending": {
+        "title": "Fin de l'utilisation",
+        "body": "Vous pouvez cesser d'utiliser le site à tout moment et demander aux exploitants de supprimer votre compte. Les exploitants peuvent suspendre ou fermer les comptes qui enfreignent ces conditions, et peuvent fermer le site."
+      },
+      "changes": {
+        "title": "Modifications de ces conditions",
+        "body": "Ces conditions peuvent être mises à jour ; la date en haut de la page indique la dernière version. Si vous continuez à utiliser le site après une modification, vous acceptez les conditions mises à jour."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Pour toute question sur ces conditions, adressez-vous aux exploitants du site."
+      }
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "Cette politique explique ce que {brand} collecte à votre sujet, comment ces informations sont utilisées et les choix dont vous disposez. Le site ne vous demande jamais votre adresse e-mail, et vos données ne sont pas vendues.",
+      "operators": {
+        "title": "Qui est responsable",
+        "body": "Ce site fonctionne avec 5Stack, un logiciel open source, et est hébergé par ses exploitants. Ils décident de la manière dont le site est géré et sont responsables des informations qu'il conserve."
+      },
+      "collect": {
+        "title": "Ce qui est collecté",
+        "body": "Lorsque vous vous connectez avec Steam et utilisez le site, celui-ci enregistre :",
+        "steam": "Votre compte Steam : Steam ID, nom de profil, avatar, lien du profil et pays, ainsi que votre statut de bannissement VAC et de bannissement de jeu.",
+        "gameplay": "Votre activité de jeu sur les serveurs de ce site : résultats de matchs, statistiques, kills et positions, utilitaires, ELO, démos et clips.",
+        "content": "Ce que vous ajoutez : avatars, noms et logos d'équipe, autres fichiers envoyés, messages de chat, clips et vos paramètres.",
+        "social": "Vos amis, les joueurs que vous bloquez et les éventuelles sanctions sur votre compte.",
+        "technical": "La session qui maintient votre connexion, les clés d'API que vous créez et vos abonnements aux notifications push, avec l'agent utilisateur (user agent) de votre navigateur.",
+        "servers": "Votre adresse IP, lorsque vous rejoignez l'un des serveurs communautaires de ce site.",
+        "unregistered": "Vous pouvez avoir un profil ici sans aucune connexion de votre part, par exemple si vous avez rejoint un serveur géré par ce site ou si vous figurez dans une démo importée. Il contient votre Steam ID, votre nom et vos statistiques de match.",
+        "uploads": "Les images sont stockées telles que vous les envoyez, y compris les métadonnées du fichier, comme le lieu où une photo a été prise."
+      },
+      "linked": {
+        "title": "Comptes liés",
+        "body": "Selon ce que ce site a activé et ce que vous choisissez de connecter :",
+        "discord": "Discord : votre identifiant utilisateur Discord, pour que le bot Discord du site puisse vous reconnaître.",
+        "twitch": "Twitch : votre identifiant Twitch, votre nom d'utilisateur et votre nom d'affichage et, pendant que vous êtes en direct, le titre, le jeu et le nombre de spectateurs de votre stream.",
+        "steam_history": "Historique de matchs Steam : les codes d'authentification et de partage que vous fournissez, utilisés pour importer vos matchs.",
+        "steam_presence": "Présence Steam : si vous ajoutez le bot Steam du site en ami, il voit si vous jouez à CS2 ainsi que votre mode, votre map et votre score actuels.",
+        "steam_friends": "Amis Steam : à votre demande, votre liste d'amis Steam est vérifiée pour trouver les amis qui jouent ici.",
+        "faceit": "FACEIT : lorsque le site utilise FACEIT, votre profil FACEIT public, votre niveau et votre ELO sont récupérés à partir de votre Steam ID."
+      },
+      "calls": {
+        "title": "Voix et vidéo",
+        "body": "Les flux vocaux et de caméra sont transmis en direct aux autres participants de l'appel et ne sont jamais enregistrés. Lorsqu'un match exige des caméras, les admins et les diffuseurs peuvent regarder ces flux en direct.",
+        "stun": "Pour établir un appel, votre navigateur contacte un serveur STUN, qui voit votre adresse IP. Il s'agit du serveur de Google, sauf si les exploitants utilisent le leur."
+      },
+      "use": {
+        "title": "Utilisation des données",
+        "matches": "Pour organiser les matchs, lobbys, tournois et ligues, et afficher les résultats et les statistiques.",
+        "fair_play": "Pour garantir un jeu équitable et sûr : vérification des bannissements Steam, application de sanctions et modération du chat.",
+        "notifications": "Pour envoyer les notifications que vous avez activées.",
+        "security": "Pour assurer la sécurité et le bon fonctionnement du site, et corriger les problèmes."
+      },
+      "public": {
+        "title": "Ce que les autres peuvent voir",
+        "body": "Votre profil est public. Tout le monde, y compris les visiteurs non connectés, peut voir votre nom, votre avatar, votre pays, votre statut de bannissement Steam, vos informations FACEIT, votre historique de matchs, vos statistiques, vos équipes et vos résultats en tournoi.",
+        "chat": "Les messages de chat sont visibles par les personnes présentes dans le salon, et le staff peut les consulter à des fins de modération."
+      },
+      "sharing": {
+        "title": "Partage avec d'autres services",
+        "body": "Certaines informations sont partagées avec d'autres services, ou chargées depuis ceux-ci, pour que le site puisse fonctionner :",
+        "steam": "Steam (Valve), pour vous connecter et lire votre profil et votre statut de bannissement.",
+        "push": "Le service push de votre navigateur, comme Google, Apple, Mozilla ou Microsoft, qui distribue les notifications push. Celles-ci contiennent le nom de l'expéditeur et un aperçu du message.",
+        "media": "GIPHY lorsque vous recherchez des GIF, et Twitch, YouTube ou Kick lorsque vous regardez un stream intégré. Ces services voient votre adresse IP.",
+        "hosting": "Les hébergeurs et fournisseurs réseau auxquels les exploitants font appel pour faire fonctionner le site.",
+        "telemetry": "Le projet 5Stack, qui reçoit de ce site des totaux anonymes, comme son nombre de matchs et de joueurs. Rien dans ces données ne permet de vous identifier.",
+        "law": "Des informations peuvent aussi être divulguées lorsque la loi l'exige."
+      },
+      "cookies": {
+        "title": "Cookies et stockage local",
+        "body": "Un cookie de session maintient votre connexion. Il dure 14 jours et se renouvelle tant que vous utilisez le site. Un second cookie mémorise si la barre latérale est ouverte. Le stockage local de votre navigateur conserve des préférences comme les onglets de chat, les périphériques vocaux et de caméra, et les avis que vous avez masqués.",
+        "analytics": "Ce site utilise également Google Tag Manager, qui peut charger des outils d'analyse déposant leurs propres cookies pour mesurer l'utilisation du site."
+      },
+      "retention": {
+        "title": "Durée de conservation",
+        "profile": "Votre profil, vos statistiques et votre historique de matchs sont conservés jusqu'à la suppression de votre compte.",
+        "chat": "Les salons de chat expirent selon des délais fixés par les exploitants : environ une heure pour les matchs et les lobbys, et plus longtemps pour les équipes et les tournois. Le staff peut consulter le chat des matchs et des équipes pendant 7 jours.",
+        "direct": "Les messages privés sont conservés pendant une durée fixée par les exploitants, un an par défaut.",
+        "edits": "Lorsque vous modifiez ou supprimez un message de chat, le texte d'origine est conservé à des fins de modération.",
+        "sessions": "Les sessions sur les serveurs communautaires, y compris les adresses IP, sont supprimées après 7 jours par défaut.",
+        "demos": "Les démos et les clips sont supprimés à mesure que l'espace de stockage se remplit. Les statistiques qui en sont tirées sont conservées.",
+        "backups": "Les sauvegardes quotidiennes sont conservées 7 jours par défaut."
+      },
+      "choices": {
+        "title": "Vos choix",
+        "settings": "Modifiez votre pays, votre langue et vos préférences de notification dans vos paramètres.",
+        "unlink": "Déliez les comptes connectés à tout moment.",
+        "api_keys": "Révoquez les clés d'API que vous avez créées.",
+        "requests": "Demandez aux exploitants une copie de vos données, une rectification ou la suppression de votre compte.",
+        "rights": "Selon votre lieu de résidence, vous pouvez disposer d'autres droits, comme celui de vous opposer à l'utilisation de vos données ou de déposer une réclamation auprès d'une autorité de protection des données."
+      },
+      "children": {
+        "title": "Enfants",
+        "body": "Le site n'est pas destiné aux enfants de moins de 13 ans."
+      },
+      "changes": {
+        "title": "Modifications de cette politique",
+        "body": "Cette politique peut être mise à jour ; la date en haut de la page indique la dernière version."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Pour toute question ou demande concernant vos données, adressez-vous aux exploitants du site."
+      }
+    }
+  },
   "game_modes": {
     "form": {
       "name": "Nom",

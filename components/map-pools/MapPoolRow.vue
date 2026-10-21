@@ -98,6 +98,7 @@ import { Button } from "~/components/ui/button";
 interface Map {
   id: string;
   name: string;
+  label?: string | null;
   type: string;
   patch?: string;
   poster?: string;
@@ -173,6 +174,7 @@ export default {
                   type,
                   enabled: true,
                   name: map.name,
+                  label: map.label,
                   active_pool:
                     !this.lockedTypes.includes(type) && map.active_pool,
                   workshop_map_id: map.workshop_map_id,
@@ -180,9 +182,11 @@ export default {
                   patch: map.patch,
                 },
               ],
+              // An existing copy takes the label only when there is one, so a
+              // map without a label never blanks a copy's.
               on_conflict: {
                 constraint: "maps_name_type_key",
-                update_columns: ["enabled"],
+                update_columns: map.label ? ["enabled", "label"] : ["enabled"],
               },
             },
             {

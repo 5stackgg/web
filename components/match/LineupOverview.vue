@@ -143,15 +143,10 @@ import {
 
 <template>
   <Table
-    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5"
+    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5 [&_th:not(.sticky)_[data-stat-info]]:order-last [&>tbody:not(:last-child)>tr:last-child]:border-b-[3px] [&>tbody:not(:last-child)>tr:last-child]:border-border/80"
   >
-    <template v-for="(lp, lpIdx) of lineupsToRender" :key="lp.id">
-      <TableHeader
-        :class="[
-          '[&_th]:h-12 bg-muted/20',
-          lpIdx > 0 ? '[&_th]:pt-7 border-t-[3px] border-border/80' : '',
-        ]"
-      >
+    <template v-for="lp of lineupsToRender" :key="lp.id">
+      <TableHeader class="[&_th]:h-12 bg-muted/20">
         <TableRow>
           <TableHead
             v-if="!hideMember"

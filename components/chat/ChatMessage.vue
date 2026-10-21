@@ -83,7 +83,11 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           v-if="!mediaLeads"
           class="whitespace-nowrap text-[10px] text-muted-foreground/70"
         >
-          <time-ago :date="message.timestamp" hide-icon></time-ago>
+          <time-ago
+            :date="message.timestamp"
+            hide-icon
+            clock-after-hour
+          ></time-ago>
         </span>
         <span
           v-if="authorBlocked"
@@ -107,7 +111,11 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
         data-chat-media-time
         class="whitespace-nowrap text-[10px] leading-4 text-muted-foreground/70"
       >
-        <time-ago :date="message.timestamp" hide-icon></time-ago>
+        <time-ago
+          :date="message.timestamp"
+          hide-icon
+          clock-after-hour
+        ></time-ago>
       </div>
       <ChatMessageEditor
         v-if="editing && room"

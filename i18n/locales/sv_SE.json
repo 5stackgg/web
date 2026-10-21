@@ -11446,7 +11446,12 @@
       "rewound": "Vetot spolades tillbaka till steg {step}",
       "rewind_failed": "Kunde inte spola tillbaka vetot",
       "time_added": "{seconds} sekunder tillagda på vetoklockan",
-      "time_failed": "Kunde inte lägga till tid på vetoklockan"
+      "time_failed": "Kunde inte lägga till tid på vetoklockan",
+      "deadline_title": "De behöver mer tid",
+      "deadline_description": "Ger {minutes} minuter till innan matchen avbryts automatiskt.",
+      "deadline_forfeit_description": "Förlänger tidsgränsen med {minutes} minuter.",
+      "deadline_added": "Tidsgränsen förlängd med {minutes} minuter",
+      "deadline_failed": "Kunde inte förlänga tidsgränsen"
     },
     "veto_rewind": {
       "title": "Veto · Best of {count}",

@@ -17,6 +17,7 @@ function menu(overrides: Partial<FixProblemState> = {}) {
     vetoPicks: 9,
     vetoTeam: null,
     vetoClockRunning: false,
+    deadlineRunning: false,
     lastPick: null,
     canSetWinner: true,
     canReboot: true,
@@ -107,6 +108,58 @@ describe("Fix a Problem", () => {
     });
     expect(keys(bracket.now)).toEqual(["restart", "winner", "reparse"]);
     expect(bracket.later).toBeUndefined();
+  });
+
+  it("pushes the deadline back while the match counts down to it", () => {
+    expect(
+      keys(menu({ currentMapStatus: "Warmup", deadlineRunning: true }).now),
+    ).toEqual(["restore", "restart_map", "deadline"]);
+
+    expect(
+      keys(
+        menu({
+          status: "Veto",
+          currentMapStatus: null,
+          mapsStarted: false,
+          vetoPicks: 4,
+          vetoTeam: "Ironside",
+          vetoClockRunning: true,
+          deadlineRunning: true,
+          lastPick: { team: "Ironside", map: "Mirage" },
+        }).now,
+      ),
+    ).toEqual(["undo_last", "mispick", "redo", "act", "time", "deadline"]);
+
+    expect(
+      keys(
+        menu({
+          status: "WaitingForCheckIn",
+          currentMapStatus: null,
+          mapsStarted: false,
+          vetoPicks: 0,
+          deadlineRunning: true,
+        }).now,
+      ),
+    ).toEqual(["deadline"]);
+  });
+
+  it("says a tournament match's deadline is pushed back, not its auto cancel", () => {
+    const deadline = (bracket: boolean) =>
+      menu({ deadlineRunning: true, bracket }).now.find(
+        (item) => item.key === "deadline",
+      )?.description;
+
+    expect(deadline(false)).toBe("match.fix_menu.deadline_description");
+    expect(deadline(true)).toBe("match.fix_menu.deadline_forfeit_description");
+  });
+
+  it("has no deadline to push back once the match is over or canceled", () => {
+    for (const status of ["Canceled", "Finished", "Forfeit"]) {
+      expect(keys(menu({ status, deadlineRunning: true }).now)).not.toContain(
+        "deadline",
+      );
+    }
+    expect(keys(menu().now)).not.toContain("deadline");
   });
 
   it("leaves out what the organizer isn't allowed to do", () => {

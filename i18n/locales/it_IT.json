@@ -11446,7 +11446,12 @@
       "rewound": "Veto riportato al passo {step}",
       "rewind_failed": "Impossibile riportare indietro il veto",
       "time_added": "{seconds} secondi aggiunti al timer del veto",
-      "time_failed": "Impossibile aggiungere tempo al timer del veto"
+      "time_failed": "Impossibile aggiungere tempo al timer del veto",
+      "deadline_title": "Serve più tempo",
+      "deadline_description": "Aggiunge {minutes} minuti prima che la partita venga annullata automaticamente.",
+      "deadline_forfeit_description": "Aggiunge {minutes} minuti alla scadenza.",
+      "deadline_added": "Scadenza posticipata di {minutes} minuti",
+      "deadline_failed": "Impossibile posticipare la scadenza"
     },
     "veto_rewind": {
       "title": "Veto · Best of {count}",

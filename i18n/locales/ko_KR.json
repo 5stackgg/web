@@ -11446,7 +11446,12 @@
       "rewound": "밴픽을 {step}단계로 되감았어요",
       "rewind_failed": "밴픽을 되감지 못했어요",
       "time_added": "밴픽 타이머에 {seconds}초를 추가했어요",
-      "time_failed": "밴픽 타이머에 시간을 추가하지 못했어요"
+      "time_failed": "밴픽 타이머에 시간을 추가하지 못했어요",
+      "deadline_title": "시간이 더 필요해요",
+      "deadline_description": "경기가 자동 취소되기 전까지 {minutes}분을 더 줘요.",
+      "deadline_forfeit_description": "마감을 {minutes}분 늘려요.",
+      "deadline_added": "마감이 {minutes}분 늘어났어요",
+      "deadline_failed": "마감을 늘리지 못했어요"
     },
     "veto_rewind": {
       "title": "밴픽 · BO{count}",

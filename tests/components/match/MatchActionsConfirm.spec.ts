@@ -114,6 +114,28 @@ describe("match actions confirm before acting", () => {
   });
 });
 
+describe("Fix a Problem pushes the deadline back", () => {
+  it("adds 15 minutes to the match's deadline", async () => {
+    signIn(e_player_roles_enum.administrator);
+    const actions = await mountActions("Warmup", {
+      dock: true,
+      cancels_at: new Date(Date.now() + 5 * 60_000).toISOString(),
+    });
+
+    expect(
+      actions.fixMenu.now.map((item: { key: string }) => item.key),
+    ).toContain("deadline");
+
+    await actions.onFixSelect("deadline");
+
+    expect(sent()[0]).toContain("extendMatchAutoCancel");
+    expect(mutate.mock.calls[0][0].variables).toEqual({
+      matchId: "m-1",
+      minutes: 15,
+    });
+  });
+});
+
 describe("map winner confirms before saving", () => {
   const series = (overrides: Record<string, any> = {}) =>
     match("Live", {

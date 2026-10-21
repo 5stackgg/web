@@ -11446,7 +11446,12 @@
       "rewound": "Veto {step}. adıma geri sarıldı",
       "rewind_failed": "Veto geri sarılamadı",
       "time_added": "Veto süresine {seconds} saniye eklendi",
-      "time_failed": "Veto süresine zaman eklenemedi"
+      "time_failed": "Veto süresine zaman eklenemedi",
+      "deadline_title": "Daha fazla zamana ihtiyaçları var",
+      "deadline_description": "Maç otomatik iptal edilmeden önce {minutes} dakika ekler.",
+      "deadline_forfeit_description": "Son süreye {minutes} dakika ekler.",
+      "deadline_added": "Son süre {minutes} dakika uzatıldı",
+      "deadline_failed": "Son süre uzatılamadı"
     },
     "veto_rewind": {
       "title": "Veto · Best of {count}",

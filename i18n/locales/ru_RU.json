@@ -11446,7 +11446,12 @@
       "rewound": "Вето отмотано к шагу {step}",
       "rewind_failed": "Не удалось отмотать вето",
       "time_added": "К таймеру вето добавлено секунд: {seconds}",
-      "time_failed": "Не удалось добавить время к таймеру вето"
+      "time_failed": "Не удалось добавить время к таймеру вето",
+      "deadline_title": "Им нужно больше времени",
+      "deadline_description": "Добавляет {minutes} мин до автоотмены матча.",
+      "deadline_forfeit_description": "Продлевает срок на {minutes} мин.",
+      "deadline_added": "Срок продлён на {minutes} мин",
+      "deadline_failed": "Не удалось продлить срок"
     },
     "veto_rewind": {
       "title": "Вето · Best of {count}",

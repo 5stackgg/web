@@ -11446,7 +11446,12 @@
       "rewound": "Veto retrocedido al paso {step}",
       "rewind_failed": "No se pudo retroceder el veto",
       "time_added": "{seconds} segundos añadidos al reloj del veto",
-      "time_failed": "No se pudo añadir tiempo al reloj del veto"
+      "time_failed": "No se pudo añadir tiempo al reloj del veto",
+      "deadline_title": "Necesitan más tiempo",
+      "deadline_description": "Añade {minutes} minutos antes de que la partida se cancele automáticamente.",
+      "deadline_forfeit_description": "Añade {minutes} minutos al plazo.",
+      "deadline_added": "Plazo ampliado {minutes} minutos",
+      "deadline_failed": "No se pudo ampliar el plazo"
     },
     "veto_rewind": {
       "title": "Veto · Al mejor de {count}",

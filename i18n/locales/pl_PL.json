@@ -11446,7 +11446,12 @@
       "rewound": "Veto cofnięte do kroku {step}",
       "rewind_failed": "Nie udało się cofnąć veto",
       "time_added": "Dodano {seconds} s do zegara veto",
-      "time_failed": "Nie udało się dodać czasu do zegara veto"
+      "time_failed": "Nie udało się dodać czasu do zegara veto",
+      "deadline_title": "Potrzebują więcej czasu",
+      "deadline_description": "Dodaje {minutes} min, zanim mecz zostanie automatycznie anulowany.",
+      "deadline_forfeit_description": "Dodaje {minutes} min do terminu.",
+      "deadline_added": "Termin przesunięty o {minutes} min",
+      "deadline_failed": "Nie udało się przesunąć terminu"
     },
     "veto_rewind": {
       "title": "Veto · Best of {count}",

@@ -11446,7 +11446,12 @@
       "rewound": "Veto をステップ {step} まで巻き戻しました",
       "rewind_failed": "Veto を巻き戻せませんでした",
       "time_added": "Veto タイマーに {seconds} 秒追加しました",
-      "time_failed": "Veto タイマーに時間を追加できませんでした"
+      "time_failed": "Veto タイマーに時間を追加できませんでした",
+      "deadline_title": "もっと時間が必要",
+      "deadline_description": "試合が自動中止されるまでの時間を {minutes} 分延長します。",
+      "deadline_forfeit_description": "期限を {minutes} 分延長します。",
+      "deadline_added": "期限を {minutes} 分延長しました",
+      "deadline_failed": "期限を延長できませんでした"
     },
     "veto_rewind": {
       "title": "Veto · BO{count}",

@@ -11446,7 +11446,12 @@
       "rewound": "Vetoet er spolet tilbage til trin {step}",
       "rewind_failed": "Kunne ikke spole vetoet tilbage",
       "time_added": "{seconds} sekunder lagt til vetouret",
-      "time_failed": "Kunne ikke lægge tid til vetouret"
+      "time_failed": "Kunne ikke lægge tid til vetouret",
+      "deadline_title": "De har brug for mere tid",
+      "deadline_description": "Giver {minutes} minutter mere, før kampen aflyses automatisk.",
+      "deadline_forfeit_description": "Lægger {minutes} minutter til fristen.",
+      "deadline_added": "Fristen er rykket {minutes} minutter",
+      "deadline_failed": "Kunne ikke rykke fristen"
     },
     "veto_rewind": {
       "title": "Veto · Bedst af {count}",

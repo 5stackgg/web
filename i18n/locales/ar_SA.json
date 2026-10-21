@@ -11446,7 +11446,12 @@
       "rewound": "أُعيد الاستبعاد إلى الخطوة {step}",
       "rewind_failed": "تعذّرت إعادة الاستبعاد",
       "time_added": "أُضيفت {seconds} ثانية إلى مؤقت الاستبعاد",
-      "time_failed": "تعذّرت إضافة وقت إلى مؤقت الاستبعاد"
+      "time_failed": "تعذّرت إضافة وقت إلى مؤقت الاستبعاد",
+      "deadline_title": "يحتاجون إلى مزيد من الوقت",
+      "deadline_description": "يضيف {minutes} دقيقة قبل الإلغاء التلقائي للمباراة.",
+      "deadline_forfeit_description": "يضيف {minutes} دقيقة إلى الموعد النهائي.",
+      "deadline_added": "تم تأجيل الموعد النهائي {minutes} دقيقة",
+      "deadline_failed": "تعذّر تأجيل الموعد النهائي"
     },
     "veto_rewind": {
       "title": "الاستبعاد · Best Of {count}",

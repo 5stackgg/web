@@ -1,5 +1,6 @@
 import type { Component } from "vue";
 import {
+  AlarmClockPlus,
   FileText,
   Flag,
   Hand,
@@ -27,7 +28,8 @@ export type FixProblemKey =
   | "mispick"
   | "redo"
   | "act"
-  | "time";
+  | "time"
+  | "deadline";
 
 export type FixProblemItem = {
   key: FixProblemKey | string;
@@ -56,6 +58,7 @@ export type FixProblemState = {
   vetoPicks: number;
   vetoTeam?: string | null;
   vetoClockRunning: boolean;
+  deadlineRunning: boolean;
   lastPick?: { team: string; map: string } | null;
   canSetWinner: boolean;
   canReboot: boolean;
@@ -85,6 +88,8 @@ const PRE_MAP: string[] = [
 ];
 
 const MAP_IN_PROGRESS = ["Warmup", "Live", "Overtime", "Paused"];
+
+export const DEADLINE_MINUTES = 15;
 const MAP_RESTARTABLE = [...MAP_IN_PROGRESS, "Knife"];
 
 // What Fix a Problem offers: the fixes for the step the match is in first,
@@ -177,6 +182,20 @@ export function fixProblemItems(
       icon: RotateCcw,
       title: t("match.recovery.fix.restart_map_title"),
       description: t("match.recovery.fix.restart_map_description"),
+    });
+  }
+
+  if (unfinished && state.deadlineRunning) {
+    now.push({
+      key: "deadline",
+      icon: AlarmClockPlus,
+      title: t("match.fix_menu.deadline_title"),
+      description: t(
+        state.bracket
+          ? "match.fix_menu.deadline_forfeit_description"
+          : "match.fix_menu.deadline_description",
+        { minutes: DEADLINE_MINUTES },
+      ),
     });
   }
 
@@ -307,6 +326,7 @@ export function matchFixMenu(
     vetoPicks: vetoPicks.length,
     vetoTeam,
     vetoClockRunning: !!match.veto_pick_expires_at,
+    deadlineRunning: !!match.cancels_at,
     lastPick: last
       ? {
           team: lineupName(last.match_lineup_id) ?? "",

@@ -141,7 +141,7 @@ defineExpose({
         v-if="radarSrc"
         ref="radar"
         :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
-        class="absolute inset-[7%] h-[86%] w-[86%] lg:inset-x-0 lg:bottom-auto lg:top-[3%] lg:mx-auto lg:h-[90%] lg:w-auto"
+        class="absolute inset-[7%] h-[86%] w-[86%] lg:inset-x-0 lg:bottom-auto lg:top-[5%] lg:mx-auto lg:h-[calc(95%-2.7rem)] lg:w-auto lg:max-w-[90%]"
         aria-hidden="true"
       >
         <image
@@ -167,8 +167,8 @@ defineExpose({
       </svg>
     </span>
 
-    <!-- Along the foot of the cell on desktop, over the radar's empty lower
-         margin, so the radar keeps the cell's whole height. -->
+    <!-- Along the foot of the cell on desktop, 2.7rem tall there (pt-4, pb-2
+         and one 1.2rem line of text): the radar above stops at its top. -->
     <span
       class="flex items-center gap-2 border-t border-white/[0.06] px-2.5 py-2 lg:absolute lg:inset-x-0 lg:bottom-0 lg:border-t-0 lg:bg-gradient-to-t lg:from-zinc-950/90 lg:via-zinc-950/60 lg:to-transparent lg:pt-4"
     >

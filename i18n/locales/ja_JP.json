@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "ソロでキュー中",
-          "invite": "フレンドを招待",
           "leader": "{count}人パーティーでキュー中",
           "you_lead": "あなたがリーダー",
           "member": "{name}のパーティー（{count}人）",
@@ -4481,7 +4480,32 @@
           "title": "すべてのリージョンが上限の {ms} ms を超えています",
           "body": "上限を上げるか、許容できるリージョンにスターを付けてから、もう一度キューに参加してください。"
         },
-        "find_lan_match": "LANマッチを探す"
+        "find_lan_match": "LANマッチを探す",
+        "fill_to": "{count}人パーティ · {total}人まで埋める",
+        "seat_row": {
+          "your_side": "自チーム",
+          "just_you": "あなただけ",
+          "all_seats": "全{count}席",
+          "both_seats": "両方の席",
+          "count": "{count} / {total}",
+          "avg_elo": "平均 {elo} ELO",
+          "invite": "フレンドを招待",
+          "invite_short": "招待",
+          "vs": "VS",
+          "from_queue": "キューから相手{count}人 | キューから相手{count}人",
+          "open_all": "身内で対戦？全{count}席を開く",
+          "open_both": "フレンドと1v1？両方の席を開く",
+          "just_your_side": "自チームのみ",
+          "fill_all": "身内で対戦するには全{count}席を埋めてください。",
+          "too_many": "{count}人は片側には多すぎます。身内で対戦するには全{total}席を埋めるか、{extra}人外してください。",
+          "play_each_other": "身内で対戦します。チームは試合開始時にランダムで分けられます。",
+          "pending_pill": "+{count}人招待中",
+          "pending_side": "参加すると{count}人になり、{format}の片側には多すぎます。",
+          "pending_full": "参加すると{count}人になり、身内で対戦します。",
+          "pending_too_big": "参加するとパーティが{format}には大きすぎます。",
+          "cancel_invite": "招待を取り消す",
+          "cancel_invite_for": "{name}への招待を取り消す"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "プレイヤーをロビーに招待",
       "access_updated": "ロビー参加権限を{access}に更新しました。",
       "invited": "招待済み",
-      "waiting_for_players": "ロビーへの参加を待っています。上の招待ボタンからフレンドを追加してください。"
+      "waiting_for_players": "ロビーへの参加を待っています。上の招待ボタンからフレンドを追加してください。",
+      "access_values": {
+        "Open": "公開",
+        "Friends": "フレンド",
+        "Invite": "招待のみ"
+      }
     },
     "friends": {
       "title": "フレンド",

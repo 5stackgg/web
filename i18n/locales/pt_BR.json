@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "Na fila solo",
-          "invite": "Convidar amigos",
           "leader": "Na fila com um grupo de {count}",
           "you_lead": "Você é o líder",
           "member": "No grupo de {name} ({count})",
@@ -4481,7 +4480,32 @@
           "title": "Todas as regiões passam do seu limite de {ms} ms",
           "body": "Aumente o limite ou marque com estrela uma região que você aceite e entre na fila de novo."
         },
-        "find_lan_match": "Encontrar partida LAN"
+        "find_lan_match": "Encontrar partida LAN",
+        "fill_to": "Grupo de {count} · complete até {total}",
+        "seat_row": {
+          "your_side": "Seu lado",
+          "just_you": "Só você",
+          "all_seats": "Todas as {count} vagas",
+          "both_seats": "As duas vagas",
+          "count": "{count} de {total}",
+          "avg_elo": "média {elo} ELO",
+          "invite": "Convidar um amigo",
+          "invite_short": "Convidar",
+          "vs": "VS",
+          "from_queue": "{count} adversário da fila | {count} adversários da fila",
+          "open_all": "Vão jogar entre vocês? Abra todas as {count} vagas",
+          "open_both": "1v1 contra um amigo? Abra as duas vagas",
+          "just_your_side": "Só o seu lado",
+          "fill_all": "Preencha todas as {count} vagas para jogarem entre vocês.",
+          "too_many": "Um grupo de {count} é demais para um lado. Preencha todas as {total} vagas para jogarem entre vocês ou remova {extra}.",
+          "play_each_other": "Vocês jogam entre si. Os times são sorteados quando a partida começa.",
+          "pending_pill": "+{count} aguardando",
+          "pending_side": "Se entrarem, vocês seriam {count}: demais para um lado de {format}.",
+          "pending_full": "Se entrarem, vocês seriam {count} e jogariam entre si.",
+          "pending_too_big": "Se entrarem, o grupo fica grande demais para {format}.",
+          "cancel_invite": "Cancelar convite",
+          "cancel_invite_for": "Cancelar o convite de {name}"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Convidar Jogador para a Lobby",
       "access_updated": "Acesso à lobby atualizado para {access}",
       "invited": "Convidado",
-      "waiting_for_players": "Aguardando jogadores entrarem no seu lobby. Use o botão Convidar acima para adicionar amigos."
+      "waiting_for_players": "Aguardando jogadores entrarem no seu lobby. Use o botão Convidar acima para adicionar amigos.",
+      "access_values": {
+        "Open": "Aberto",
+        "Friends": "Amigos",
+        "Invite": "Só convite"
+      }
     },
     "friends": {
       "title": "Amigos",

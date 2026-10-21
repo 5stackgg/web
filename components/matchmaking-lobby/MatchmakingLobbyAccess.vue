@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { Handshake, Unlock, SendHorizontal } from "lucide-vue-next";
+import {
+  ChevronDown,
+  Handshake,
+  Unlock,
+  SendHorizontal,
+} from "lucide-vue-next";
 import { e_lobby_access_enum } from "~/generated/zeus";
 import {
   Popover,
@@ -10,15 +15,43 @@ import { Button } from "~/components/ui/button";
 </script>
 
 <template>
-  <component :is="getIcon(lobby.access)" class="h-4 w-4" v-if="!isCaptain" />
+  <!-- `labelled` (the /play seat row) names the setting beside its icon. -->
+  <span
+    v-if="!isCaptain && labelled"
+    class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border px-2.5 text-[12.5px] text-muted-foreground"
+  >
+    <component :is="getIcon(lobby.access)" class="size-3.5" />
+    {{ accessLabel(lobby.access) }}
+  </span>
+  <component
+    :is="getIcon(lobby.access)"
+    class="h-4 w-4"
+    v-else-if="!isCaptain"
+  />
 
   <div
-    class="relative group transition-transform hover:scale-110 hover:z-10"
+    :class="
+      labelled
+        ? 'relative'
+        : 'relative group transition-transform hover:scale-110 hover:z-10'
+    "
     v-else
   >
     <Popover v-model:open="popoverOpen">
-      <PopoverTrigger>
+      <PopoverTrigger :as-child="labelled">
         <Button
+          v-if="labelled"
+          variant="outline"
+          size="sm"
+          class="h-8 gap-1.5 px-2.5 text-[12.5px] font-medium max-sm:px-2"
+          :aria-label="`${$t('matchmaking.lobby.access')}: ${accessLabel(lobby.access)}`"
+        >
+          <component :is="getIcon(lobby.access)" class="size-3.5" />
+          <span class="max-sm:hidden">{{ accessLabel(lobby.access) }}</span>
+          <ChevronDown class="size-3 opacity-50" />
+        </Button>
+        <Button
+          v-else
           variant="outline"
           size="icon"
           class="rounded-full bg-secondary hover:bg-secondary/80 transition-colors duration-200"
@@ -57,7 +90,7 @@ import { Button } from "~/components/ui/button";
               }"
             >
               <component :is="getIcon(access)" class="h-4 w-4 mr-2" />
-              {{ access }}
+              {{ accessLabel(access) }}
             </Button>
           </div>
         </div>
@@ -88,6 +121,10 @@ export default {
     lobby: {
       type: Object as () => Lobby,
       required: true,
+    },
+    labelled: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -130,7 +167,7 @@ export default {
 
         toast({
           title: this.$t("matchmaking.lobby.access_updated", {
-            access,
+            access: this.accessLabel(access),
           }),
         });
 
@@ -142,6 +179,9 @@ export default {
           variant: "destructive",
         });
       }
+    },
+    accessLabel(access: e_lobby_access_enum) {
+      return this.$t(`matchmaking.lobby.access_values.${access}`);
     },
     getIcon(access: e_lobby_access_enum) {
       switch (access) {

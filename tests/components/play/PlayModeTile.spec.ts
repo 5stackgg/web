@@ -50,17 +50,35 @@ describe("PlayModeTile", () => {
         ...competitive,
         title: "Wingman",
         expected: 4,
+        party: 5,
         canQueue: false,
         selected: true,
       },
     });
 
-    expect(wrapper.text()).toContain("A party of 3 is too big for Wingman");
+    expect(wrapper.text()).toContain("A party of 5 is too big for Wingman");
     expect(wrapper.attributes("aria-checked")).toBe("false");
     expect(wrapper.attributes("aria-disabled")).toBe("true");
     expect(amberSeats(wrapper)).toHaveLength(2);
     await wrapper.trigger("click");
     expect(wrapper.emitted("select")).toBeUndefined();
+  });
+
+  it("lets a party between one side and the whole match pick the mode to fill it", async () => {
+    const wrapper = await mountSuspended(PlayModeTile, {
+      props: {
+        ...competitive,
+        title: "Wingman",
+        expected: 4,
+        canQueue: false,
+      },
+    });
+
+    expect(wrapper.text()).toContain("Party of 3 · fill to 4");
+    expect(wrapper.text()).not.toContain("too big");
+    expect(wrapper.attributes("aria-disabled")).toBeUndefined();
+    await wrapper.trigger("click");
+    expect(wrapper.emitted("select")).toHaveLength(1);
   });
 
   it("hides counts and party fit from a guest", async () => {

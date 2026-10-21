@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "I kø solo",
-          "invite": "Invitér venner",
           "leader": "I kø som gruppe på {count}",
           "you_lead": "Du er leder",
           "member": "I {name}s gruppe på {count}",
@@ -4481,7 +4480,32 @@
           "title": "Alle regioner er over din grænse på {ms} ms",
           "body": "Hæv din grænse, eller stjernemarkér en region, du vil acceptere, og stil dig i kø igen."
         },
-        "find_lan_match": "Find LAN-kamp"
+        "find_lan_match": "Find LAN-kamp",
+        "fill_to": "Gruppe på {count} · fyld op til {total}",
+        "seat_row": {
+          "your_side": "Din side",
+          "just_you": "Kun dig",
+          "all_seats": "Alle {count} pladser",
+          "both_seats": "Begge pladser",
+          "count": "{count} af {total}",
+          "avg_elo": "gns. {elo} ELO",
+          "invite": "Inviter en ven",
+          "invite_short": "Inviter",
+          "vs": "VS",
+          "from_queue": "{count} modstander fra køen | {count} modstandere fra køen",
+          "open_all": "Spiller I mod hinanden? Åbn alle {count} pladser",
+          "open_both": "1v1 mod en ven? Åbn begge pladser",
+          "just_your_side": "Kun din side",
+          "fill_all": "Fyld alle {count} pladser for at spille mod hinanden.",
+          "too_many": "En gruppe på {count} er for stor til én side. Fyld alle {total} pladser for at spille mod hinanden, eller fjern {extra}.",
+          "play_each_other": "I spiller mod hinanden. Holdene trækkes tilfældigt, når kampen starter.",
+          "pending_pill": "+{count} inviteret",
+          "pending_side": "Hvis de joiner, bliver I {count}: for mange til én side i {format}.",
+          "pending_full": "Hvis de joiner, bliver I {count} og spiller mod hinanden.",
+          "pending_too_big": "Hvis de joiner, bliver gruppen for stor til {format}.",
+          "cancel_invite": "Annuller invitation",
+          "cancel_invite_for": "Annuller invitationen til {name}"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Inviter spiller til lobby",
       "access_updated": "Lobbyadgang ændret til {access}",
       "invited": "Inviteret",
-      "waiting_for_players": "Venter på at spillere joiner din lobby. Brug Inviter-knappen ovenfor til at tilføje venner."
+      "waiting_for_players": "Venter på at spillere joiner din lobby. Brug Inviter-knappen ovenfor til at tilføje venner.",
+      "access_values": {
+        "Open": "Åben",
+        "Friends": "Venner",
+        "Invite": "Kun invitation"
+      }
     },
     "friends": {
       "title": "Venner",

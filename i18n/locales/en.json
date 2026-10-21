@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "Queuing solo",
-          "invite": "Invite friends",
           "leader": "Queuing as a party of {count}",
           "you_lead": "You lead",
           "member": "In {name}'s party of {count}",
@@ -4481,7 +4480,32 @@
           "title": "Every region is over your {ms} ms limit",
           "body": "Raise your limit or star a region you'd accept, then queue again."
         },
-        "find_lan_match": "Find LAN Match"
+        "find_lan_match": "Find LAN Match",
+        "fill_to": "Party of {count} · fill to {total}",
+        "seat_row": {
+          "your_side": "Your side",
+          "just_you": "Just you",
+          "all_seats": "All {count} seats",
+          "both_seats": "Both seats",
+          "count": "{count} of {total}",
+          "avg_elo": "avg {elo} ELO",
+          "invite": "Invite a friend",
+          "invite_short": "Invite",
+          "vs": "VS",
+          "from_queue": "{count} opponent from the queue | {count} opponents from the queue",
+          "open_all": "Playing each other? Open all {count} seats",
+          "open_both": "Play a friend 1v1? Open both seats",
+          "just_your_side": "Just your side",
+          "fill_all": "Fill all {count} seats to play each other.",
+          "too_many": "A party of {count} is too big for one side. Fill all {total} seats to play each other, or remove {extra}.",
+          "play_each_other": "You play each other. Teams are picked at random when the match starts.",
+          "pending_pill": "+{count} invited",
+          "pending_side": "If they join, you'd be {count}, too many for one side of {format}.",
+          "pending_full": "If they join, you'd be {count} and play each other.",
+          "pending_too_big": "If they join, the party is too big for {format}.",
+          "cancel_invite": "Cancel invite",
+          "cancel_invite_for": "Cancel {name}'s invite"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Invite Player to Lobby",
       "access_updated": "Lobby access updated to {access}",
       "invited": "Invited",
-      "waiting_for_players": "Waiting for players to join your lobby. Use the Invite button above to add friends."
+      "waiting_for_players": "Waiting for players to join your lobby. Use the Invite button above to add friends.",
+      "access_values": {
+        "Open": "Open",
+        "Friends": "Friends",
+        "Invite": "Invite only"
+      }
     },
     "friends": {
       "title": "Friends",

@@ -18,11 +18,12 @@ import {
 
 const LAST_TYPE_KEY = "matchmaking-last-type";
 
+// Largest format first, so the picker reads down: 5v5, 3v3, 2v2, 1v1.
 const QUEUEABLE_TYPES = [
   e_match_types_enum.Competitive,
+  e_match_types_enum.Rush,
   e_match_types_enum.Wingman,
   e_match_types_enum.Duel,
-  e_match_types_enum.Rush,
 ];
 
 function readLastType(): e_match_types_enum | null {

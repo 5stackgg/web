@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "Grasz solo",
-          "invite": "Zaproś znajomych",
           "leader": "Grasz w {count}-osobowej paczce",
           "you_lead": "Jesteś liderem",
           "member": "W {count}-osobowej paczce gracza {name}",
@@ -4481,7 +4480,32 @@
           "title": "Każdy region przekracza twój limit {ms} ms",
           "body": "Podnieś limit lub oznacz gwiazdką region, który akceptujesz, i dołącz ponownie do kolejki."
         },
-        "find_lan_match": "Szukaj meczu LAN"
+        "find_lan_match": "Szukaj meczu LAN",
+        "fill_to": "Drużyna {count} os. · dobierz do {total}",
+        "seat_row": {
+          "your_side": "Twoja strona",
+          "just_you": "Tylko ty",
+          "all_seats": "Wszystkie miejsca: {count}",
+          "both_seats": "Oba miejsca",
+          "count": "{count} z {total}",
+          "avg_elo": "śr. {elo} ELO",
+          "invite": "Zaproś znajomego",
+          "invite_short": "Zaproś",
+          "vs": "VS",
+          "from_queue": "Przeciwnicy z kolejki: {count} | Przeciwnicy z kolejki: {count}",
+          "open_all": "Gracie przeciwko sobie? Otwórz wszystkie miejsca: {count}",
+          "open_both": "1v1 ze znajomym? Otwórz oba miejsca",
+          "just_your_side": "Tylko twoja strona",
+          "fill_all": "Zapełnij wszystkie miejsca ({count}), aby grać przeciwko sobie.",
+          "too_many": "Drużyna {count} os. to za dużo na jedną stronę. Zapełnij wszystkie miejsca ({total}), aby grać przeciwko sobie, albo usuń {extra} os.",
+          "play_each_other": "Gracie przeciwko sobie. Drużyny są losowane na początku meczu.",
+          "pending_pill": "+{count} oczekuje",
+          "pending_side": "Jeśli dołączą, będzie was {count}: za dużo na jedną stronę {format}.",
+          "pending_full": "Jeśli dołączą, będzie was {count} i zagracie przeciwko sobie.",
+          "pending_too_big": "Jeśli dołączą, drużyna będzie za duża na {format}.",
+          "cancel_invite": "Anuluj zaproszenie",
+          "cancel_invite_for": "Anuluj zaproszenie dla {name}"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Zaproś gracza do lobby",
       "access_updated": "Dostęp do lobby zmieniony na {access}",
       "invited": "Zaproszono",
-      "waiting_for_players": "Czekanie na graczy w twoim lobby. Użyj przycisku Zaproś powyżej, aby dodać znajomych"
+      "waiting_for_players": "Czekanie na graczy w twoim lobby. Użyj przycisku Zaproś powyżej, aby dodać znajomych",
+      "access_values": {
+        "Open": "Otwarte",
+        "Friends": "Znajomi",
+        "Invite": "Tylko zaproszenia"
+      }
     },
     "friends": {
       "title": "Znajomi",

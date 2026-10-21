@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "솔로로 대기 중",
-          "invite": "친구 초대",
           "leader": "{count}명 파티로 대기 중",
           "you_lead": "내가 파티장",
           "member": "{name}님의 {count}명 파티",
@@ -4481,7 +4480,32 @@
           "title": "모든 지역이 {ms} ms 제한을 초과합니다",
           "body": "제한을 높이거나 허용할 지역에 별표한 뒤 다시 대기열에 참가하세요."
         },
-        "find_lan_match": "LAN 매치 찾기"
+        "find_lan_match": "LAN 매치 찾기",
+        "fill_to": "{count}인 파티 · {total}명까지 채우기",
+        "seat_row": {
+          "your_side": "우리 팀",
+          "just_you": "나 혼자",
+          "all_seats": "전체 {count}자리",
+          "both_seats": "두 자리 모두",
+          "count": "{count} / {total}",
+          "avg_elo": "평균 {elo} ELO",
+          "invite": "친구 초대",
+          "invite_short": "초대",
+          "vs": "VS",
+          "from_queue": "대기열에서 상대 {count}명 | 대기열에서 상대 {count}명",
+          "open_all": "서로 대결하나요? 전체 {count}자리 열기",
+          "open_both": "친구와 1v1? 두 자리 모두 열기",
+          "just_your_side": "우리 팀만",
+          "fill_all": "서로 대결하려면 {count}자리를 모두 채우세요.",
+          "too_many": "{count}명은 한쪽 팀에 너무 많습니다. 서로 대결하려면 {total}자리를 모두 채우거나 {extra}명을 빼세요.",
+          "play_each_other": "서로 대결합니다. 팀은 경기 시작 시 무작위로 나뉩니다.",
+          "pending_pill": "+{count}명 초대됨",
+          "pending_side": "참가하면 {count}명이 되어 {format} 한쪽 팀에 너무 많습니다.",
+          "pending_full": "참가하면 {count}명이 되어 서로 대결합니다.",
+          "pending_too_big": "참가하면 파티가 {format}에 너무 커집니다.",
+          "cancel_invite": "초대 취소",
+          "cancel_invite_for": "{name}님 초대 취소"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "로비에 플레이어 초대",
       "access_updated": "로비 접근 권한이 {access}(으)로 변경되었습니다",
       "invited": "초대됨",
-      "waiting_for_players": "플레이어가 로비에 참여하기를 기다리는 중입니다. 위의 초대 버튼으로 친구를 추가하세요."
+      "waiting_for_players": "플레이어가 로비에 참여하기를 기다리는 중입니다. 위의 초대 버튼으로 친구를 추가하세요.",
+      "access_values": {
+        "Open": "공개",
+        "Friends": "친구",
+        "Invite": "초대 전용"
+      }
     },
     "friends": {
       "title": "친구",

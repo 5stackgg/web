@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "In coda da solo",
-          "invite": "Invita amici",
           "leader": "In coda con un gruppo da {count}",
           "you_lead": "Sei il leader",
           "member": "Nel gruppo di {name} ({count})",
@@ -4481,7 +4480,32 @@
           "title": "Ogni regione supera il tuo limite di {ms} ms",
           "body": "Alza il limite o contrassegna con la stella una regione che accetteresti, poi rimettiti in coda."
         },
-        "find_lan_match": "Trova partita LAN"
+        "find_lan_match": "Trova partita LAN",
+        "fill_to": "Gruppo da {count} · riempi fino a {total}",
+        "seat_row": {
+          "your_side": "La tua squadra",
+          "just_you": "Solo tu",
+          "all_seats": "Tutti i {count} posti",
+          "both_seats": "Entrambi i posti",
+          "count": "{count} su {total}",
+          "avg_elo": "media {elo} ELO",
+          "invite": "Invita un amico",
+          "invite_short": "Invita",
+          "vs": "VS",
+          "from_queue": "{count} avversario dalla coda | {count} avversari dalla coda",
+          "open_all": "Giocate tra di voi? Apri tutti i {count} posti",
+          "open_both": "1v1 contro un amico? Apri entrambi i posti",
+          "just_your_side": "Solo la tua squadra",
+          "fill_all": "Riempi tutti i {count} posti per giocare tra di voi.",
+          "too_many": "Un gruppo da {count} è troppo per una squadra. Riempi tutti i {total} posti per giocare tra di voi, oppure rimuovine {extra}.",
+          "play_each_other": "Giocate tra di voi. Le squadre vengono sorteggiate all'inizio della partita.",
+          "pending_pill": "+{count} in attesa",
+          "pending_side": "Se si uniscono sareste {count}: troppi per una squadra in {format}.",
+          "pending_full": "Se si uniscono sareste {count} e giochereste tra di voi.",
+          "pending_too_big": "Se si uniscono, il gruppo è troppo grande per il {format}.",
+          "cancel_invite": "Annulla invito",
+          "cancel_invite_for": "Annulla l'invito a {name}"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Invita un giocatore nella lobby",
       "access_updated": "Accesso alla lobby aggiornato a {access}",
       "invited": "Invitato",
-      "waiting_for_players": "In attesa che i giocatori entrino nella tua lobby. Usa il pulsante Invita qui sopra per aggiungere amici."
+      "waiting_for_players": "In attesa che i giocatori entrino nella tua lobby. Usa il pulsante Invita qui sopra per aggiungere amici.",
+      "access_values": {
+        "Open": "Aperta",
+        "Friends": "Amici",
+        "Invite": "Solo su invito"
+      }
     },
     "friends": {
       "title": "Amici",

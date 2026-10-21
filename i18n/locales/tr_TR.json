@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "Solo sıraya giriyorsun",
-          "invite": "Arkadaşlarını davet et",
           "leader": "{count} kişilik partiyle sıraya giriyorsun",
           "you_lead": "Lider sensin",
           "member": "{name} partisindesin ({count} kişi)",
@@ -4481,7 +4480,32 @@
           "title": "Tüm bölgeler {ms} ms sınırının üzerinde",
           "body": "Sınırını yükselt ya da kabul edeceğin bir bölgeyi yıldızla, sonra tekrar sıraya gir."
         },
-        "find_lan_match": "LAN maçı bul"
+        "find_lan_match": "LAN maçı bul",
+        "fill_to": "{count} kişilik grup · {total} kişiye tamamla",
+        "seat_row": {
+          "your_side": "Senin tarafın",
+          "just_you": "Sadece sen",
+          "all_seats": "{count} koltuğun tümü",
+          "both_seats": "İki koltuk",
+          "count": "{count} / {total}",
+          "avg_elo": "ort. {elo} ELO",
+          "invite": "Arkadaş davet et",
+          "invite_short": "Davet et",
+          "vs": "VS",
+          "from_queue": "Sıradan {count} rakip | Sıradan {count} rakip",
+          "open_all": "Birbirinize karşı mı oynuyorsunuz? {count} koltuğun tümünü aç",
+          "open_both": "Bir arkadaşla 1v1 mi? İki koltuğu da aç",
+          "just_your_side": "Sadece senin tarafın",
+          "fill_all": "Birbirinize karşı oynamak için {count} koltuğun tümünü doldurun.",
+          "too_many": "{count} kişilik grup tek taraf için fazla. Birbirinize karşı oynamak için {total} koltuğun tümünü doldurun ya da {extra} kişiyi çıkarın.",
+          "play_each_other": "Birbirinize karşı oynuyorsunuz. Takımlar maç başlarken rastgele belirlenir.",
+          "pending_pill": "+{count} davetli",
+          "pending_side": "Katılırlarsa {count} kişi olursunuz: {format} için tek tarafa fazla.",
+          "pending_full": "Katılırlarsa {count} kişi olur ve birbirinize karşı oynarsınız.",
+          "pending_too_big": "Katılırlarsa grup {format} için fazla büyük olur.",
+          "cancel_invite": "Daveti iptal et",
+          "cancel_invite_for": "{name} davetini iptal et"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Lobiye oyuncu davet et",
       "access_updated": "Lobi erişimi {access} olarak güncellendi",
       "invited": "Davet edildi",
-      "waiting_for_players": "Lobine katılacak oyuncular bekleniyor. Arkadaş eklemek için yukarıdaki Davet butonunu kullan."
+      "waiting_for_players": "Lobine katılacak oyuncular bekleniyor. Arkadaş eklemek için yukarıdaki Davet butonunu kullan.",
+      "access_values": {
+        "Open": "Açık",
+        "Friends": "Arkadaşlar",
+        "Invite": "Yalnızca davet"
+      }
     },
     "friends": {
       "title": "Arkadaşlar",

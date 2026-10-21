@@ -49,8 +49,14 @@ import {
 import { useSound } from "~/composables/useSound";
 import { isVetoOverrideEnabled } from "~/composables/useVetoOverride";
 import { toast } from "@/components/ui/toast";
-import mapLabel from "~/utilities/mapLabel";
-import { mapVetoSteps, vetoLineups, viewerSlot } from "~/utilities/vetoLineups";
+import {
+  mapVetoItems,
+  mapVetoPicking,
+  mapVetoSteps,
+  mapVetoTurn,
+  vetoLineups,
+  viewerSlot,
+} from "~/utilities/vetoLineups";
 import {
   vetoMapsSet,
   vetoStarting,
@@ -292,18 +298,7 @@ export default {
       return isVetoOverrideEnabled(this.match?.id);
     },
     isPicking() {
-      if (this.canOverride && this.override) {
-        return true;
-      }
-
-      if (this.match.is_organizer && !this.match.is_captain) {
-        return false;
-      }
-
-      return (
-        this.match.lineup_1.can_pick_map_veto ||
-        this.match.lineup_2.can_pick_map_veto
-      );
+      return mapVetoPicking(this.match, this.canOverride && this.override);
     },
     pickType() {
       if (!this.match) {
@@ -313,13 +308,7 @@ export default {
       return this.match.map_veto_type;
     },
     pickingLineup() {
-      if (this.match.lineup_1?.is_picking_map_veto) {
-        return 1;
-      }
-      if (this.match.lineup_2?.is_picking_map_veto) {
-        return 2;
-      }
-      return null;
+      return mapVetoTurn(this.match);
     },
     vetoPickDeadline() {
       if (!this.match.options.veto_pick_timeout) {
@@ -335,12 +324,7 @@ export default {
       return this.match.options?.map_pool?.maps ?? [];
     },
     items() {
-      return this.mapPool.map((map: any) => ({
-        id: map.id,
-        label: mapLabel(map),
-        poster: map.poster,
-        patch: map.patch,
-      }));
+      return mapVetoItems(this.match);
     },
     lineups() {
       return vetoLineups(this.match, this.$t);

@@ -11,7 +11,9 @@ import {
   Trophy,
   Undo2,
 } from "lucide-vue-next";
-import { e_match_status_enum } from "~/generated/zeus";
+import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
+import { currentMatchAdminStep } from "~/utilities/matchAdminSteps";
+import mapLabel from "~/utilities/mapLabel";
 
 export type FixProblemKey =
   | "restore"
@@ -256,4 +258,63 @@ export function fixProblemItems(
   }
 
   return { stepLabel: state.stepLabel, now, anytime, later };
+}
+
+// Fix a Problem for a match as the api hands it over, with its veto picks in
+// order. What the viewer may do is the caller's to say.
+export function matchFixMenu(
+  t: Translate,
+  match: any,
+  vetoPicks: any[],
+  allowed: {
+    bracket: boolean;
+    canSetWinner: boolean;
+    canReboot: boolean;
+    canReparse: boolean;
+  },
+): FixProblemMenu {
+  const currentMap = match.match_maps?.find((map: any) => map.is_current_map);
+  const step = currentMatchAdminStep(match);
+  const stepKey =
+    step === "live" && currentMap?.status === e_match_map_status_enum.Paused
+      ? "paused"
+      : step === "finished" && match.status === e_match_status_enum.Canceled
+        ? "canceled"
+        : step;
+  const lineupName = (id: string) =>
+    id === match.lineup_1_id
+      ? match.lineup_1?.name
+      : id === match.lineup_2_id
+        ? match.lineup_2?.name
+        : "";
+  const vetoTeam = match.map_veto_picking_lineup_id
+    ? lineupName(match.map_veto_picking_lineup_id) || null
+    : null;
+  // Nobody chooses the Decider, so the last step anyone took is the one
+  // before it.
+  const last = vetoPicks.findLast((pick: any) => pick.type !== "Decider");
+  return fixProblemItems(t, {
+    status: match.status,
+    stepLabel: t(`match.admin_bar.steps.${stepKey}`),
+    hasWinner: !!match.winning_lineup_id,
+    currentMapStatus: currentMap?.status ?? null,
+    mapsStarted: (match.match_maps ?? []).some(
+      (map: any) => map.status && map.status !== "Scheduled",
+    ),
+    rush: match.options?.type === "Rush",
+    bracket: allowed.bracket,
+    mapVeto: !!match.options?.map_veto,
+    vetoPicks: vetoPicks.length,
+    vetoTeam,
+    vetoClockRunning: !!match.veto_pick_expires_at,
+    lastPick: last
+      ? {
+          team: lineupName(last.match_lineup_id) ?? "",
+          map: mapLabel(last.map),
+        }
+      : null,
+    canSetWinner: allowed.canSetWinner,
+    canReboot: allowed.canReboot,
+    canReparse: allowed.canReparse,
+  });
 }

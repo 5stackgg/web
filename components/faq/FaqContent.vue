@@ -29,6 +29,7 @@ import {
   DEMO_DISCONNECTED,
   DEMO_LINEUPS,
   DEMO_VETO,
+  demoPicks,
   demoRewindRounds,
 } from "~/utilities/demoMatch";
 import { playersAtStartOf } from "~/utilities/rewind";
@@ -79,11 +80,7 @@ const i = DEMO_LINEUPS[2].name;
 
 const fixLive = computed(() => demoFixMenu(t, { step: "live" }));
 const fixVeto = computed(() =>
-  demoFixMenu(t, {
-    step: "veto",
-    picks: DEMO_VETO.slice(0, 4),
-    current: DEMO_VETO[4],
-  }),
+  demoFixMenu(t, { step: "veto", picks: demoPicks(4) }),
 );
 
 const liveMatch = (status: e_match_map_status_enum) => ({
@@ -454,8 +451,7 @@ const linkClasses =
             <DemoAdminDock
               :match="liveMatch(e_match_map_status_enum.Paused)"
               :items="fixLive"
-              paused
-              hot="resume"
+              hot="pause"
               frozen
             />
           </FaqFigure>

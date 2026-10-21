@@ -302,6 +302,23 @@ const practiceOpen = ref(false);
 const { session: practiceSession } = useUtilityPracticeSession();
 
 const { isMobile } = useSidebar();
+
+// Booting a server takes the create matches role at the api; standing in one
+// somebody else started does not.
+const canHavePracticeServer = computed(
+  () =>
+    useApplicationSettingsStore().canCreateMatch || !!practiceSession.value,
+);
+const practiceServerBar = computed(
+  () => !isMobile.value && canHavePracticeServer.value,
+);
+
+watch(canHavePracticeServer, (can) => {
+  if (!can) {
+    practiceOpen.value = false;
+  }
+});
+
 const forkOpen = ref(false);
 type LineupRef = { id: string; name: string };
 const forkLineup = ref<LineupRef | null>(null);
@@ -2762,12 +2779,13 @@ function selectLineup(id: string | null) {
                or the view's own main action. Signed out there is no server to
                have -- starting one, joining one and the list of them all need
                an account -- and a phone cannot join one, so there the bar is
-               only ever a view's action. -->
+               only ever a view's action. So it is below the create matches
+               role, until somebody lets you on to theirs. -->
           <UtilityPracticeBar
-            v-if="mySteamId && (!isMobile || barOffer?.actions.length)"
+            v-if="mySteamId && (practiceServerBar || barOffer?.actions.length)"
             :map-name="mapName"
             :open="practiceOpen"
-            :server="!isMobile"
+            :server="practiceServerBar"
             :offer="barOffer"
             @toggle="togglePractice"
           />

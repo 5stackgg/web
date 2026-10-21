@@ -3,6 +3,7 @@ import { computed, ref, watch } from "vue";
 import gql from "graphql-tag";
 import PlayMoreWaysView from "~/components/play/PlayMoreWaysView.vue";
 import { useCurrentLeagueSeason } from "~/composables/useCurrentLeagueSeason";
+import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
@@ -53,11 +54,18 @@ watch(
   { immediate: true },
 );
 
+const { session: practiceSession } = useUtilityPracticeSession();
+
+// Starting a practice server takes the create matches role at the api, so a
+// signed-in player below it is only shown a server somebody let them on.
 const practiceEnabled = computed(
   () =>
     settings.settings.find(
       (setting) => setting.name === "public.utility_practice_enabled",
-    )?.value === "true",
+    )?.value === "true" &&
+    (!useAuthStore().me?.steam_id ||
+      settings.canCreateMatch ||
+      !!practiceSession.value),
 );
 </script>
 

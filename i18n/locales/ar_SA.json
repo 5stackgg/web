@@ -8021,6 +8021,148 @@
           "plugin_outdated": "{count} خادم يشغّل إضافة قديمة | {count} خوادم تشغّل إضافة قديمة"
         }
       }
+    },
+    "bans": {
+      "title": "المحظورون مؤخرًا",
+      "search": "ابحث عن لاعبين محظورين",
+      "row_label": "{name}، افتح سجل الحظر",
+      "by": "بواسطة {name}",
+      "source": {
+        "label": "مصدر الحظر",
+        "all": "كل أنواع الحظر",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "الفترة",
+        "label": "{days} يومًا",
+        "option": "آخر {days} يومًا"
+      },
+      "played_with": {
+        "label": "لعبوا معي",
+        "everyone": "الجميع",
+        "either": "لعبوا معي",
+        "either_hint": "أي جانب",
+        "opponent": "ضدي",
+        "opponent_hint": "الخصوم",
+        "teammate": "في فريقي",
+        "teammate_hint": "زملاء الفريق",
+        "lost_only": "المباريات التي خسرتها فقط",
+        "lost_label": "{side}، خسارة"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "المصدر هو {source}",
+        "vac": "حظر VAC",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "حظر من اللعبة",
+        "game_hint": "CS2 Overwatch",
+        "staff": "حظر من الطاقم",
+        "staff_hint": "فرضه مشرف",
+        "auto": "تلقائي",
+        "auto_hint": "بسبب حظر VAC على Steam",
+        "banned_here": "محظور هنا",
+        "any": "الكل",
+        "banned_here_now": "محظور هنا الآن",
+        "not_banned_here": "محظور على Steam، ولا يزال بإمكانه اللعب هنا",
+        "timing": "التوقيت",
+        "played_first": "لعب هنا قبل الحظر",
+        "arrived_banned": "كان محظورًا بالفعل عند انضمامه"
+      },
+      "columns": {
+        "player": "اللاعب",
+        "ban": "الحظر",
+        "banned": "تاريخ الحظر",
+        "length": "المدة",
+        "last_match": "آخر مباراة هنا",
+        "with_you": "معك"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "حظر VAC على Steam",
+        "game": "حظر لعبة",
+        "game_count": "حظر لعبة ×{count}",
+        "game_title": "حظر من اللعبة على Steam (CS2 Overwatch)",
+        "staff": "حظر الطاقم",
+        "staff_title": "حظره الطاقم هنا",
+        "auto": "حظر تلقائي",
+        "auto_title": "حُظر هنا تلقائيًا بسبب حظر VAC على Steam"
+      },
+      "length": {
+        "permanent": "دائم",
+        "days": "{count} يوم | {count} أيام",
+        "hours": "{count} ساعة | {count} ساعات",
+        "days_left": "يتبقى {count} يوم | يتبقى {count} أيام",
+        "hours_left": "تتبقى {count} ساعة | تتبقى {count} ساعات",
+        "ended": "انتهى",
+        "not_banned_here": "غير محظور هنا",
+        "matches_since": "{count} مباراة منذ ذلك الحين | {count} مباريات منذ ذلك الحين",
+        "no_matches_since": "لا مباريات منذ ذلك الحين"
+      },
+      "last_match": {
+        "only": "المباراة الوحيدة",
+        "none": "لا مباريات هنا"
+      },
+      "with_you": {
+        "teammate": "زميل فريق",
+        "opponent": "خصم",
+        "both": "كلا الجانبين",
+        "match_label": "{map} {score}",
+        "count": "{count} مباراة معك | {count} مباريات معك",
+        "summary": "{count} مباراة معك، خسرت {lost} | {count} مباريات معك، خسرت {lost}"
+      },
+      "summary": {
+        "count": "{count} لاعب حُظر خلال آخر {days} يومًا | {count} لاعبين حُظروا خلال آخر {days} يومًا",
+        "gaps": "{count} لاعب محظور على Steam لا يزال بإمكانه اللعب هنا | {count} لاعبين محظورين على Steam لا يزال بإمكانهم اللعب هنا",
+        "lost_of_either": "خسرت {lost} من {count} مباراة معهم أو ضدهم | خسرت {lost} من {count} مباريات معهم أو ضدهم",
+        "lost_of_opponent": "خسرت {lost} من {count} مباراة ضدهم | خسرت {lost} من {count} مباريات ضدهم",
+        "lost_of_teammate": "خسرت {lost} من {count} مباراة وهم في فريقك | خسرت {lost} من {count} مباريات وهم في فريقك",
+        "lost_only_either": "خسرت {count} مباراة معهم أو ضدهم | خسرت {count} مباريات معهم أو ضدهم",
+        "lost_only_opponent": "خسرت {count} مباراة ضدهم | خسرت {count} مباريات ضدهم",
+        "lost_only_teammate": "خسرت {count} مباراة وهم في فريقك | خسرت {count} مباريات وهم في فريقك"
+      },
+      "empty": {
+        "title": "لم يُحظر أحد مؤخرًا",
+        "description": "يظهر حظر Steam هنا خلال يوم من فرض Valve له، ويظهر حظر 5Stack فور فرضه.",
+        "played_with": "لم يُحظر أي شخص لعبت معه خلال آخر {days} يومًا. جرّب فترة أطول.",
+        "no_gaps": "كل لاعب محظور على Steam في هذه الفترة محظور هنا أيضًا."
+      },
+      "record": {
+        "title": "سجل الحظر",
+        "matches_here": "{count} مباراة هنا | {count} مباريات هنا",
+        "vac_gap_title": "محظور بـ VAC على Steam، وغير محظور هنا.",
+        "vac_gap_body": "لم يُطبَّق الحظر التلقائي، أو رفعه الطاقم.",
+        "game_gap_title": "حظر من اللعبة على Steam، ولا يزال يلعب هنا.",
+        "game_gap_body": "حظر VAC وحده يفعّل الحظر التلقائي.",
+        "matches_since": "{count} مباراة منذ ذلك الحين. | {count} مباريات منذ ذلك الحين.",
+        "reason": "السبب",
+        "what_happened": "ما الذي حدث",
+        "your_matches": "مبارياتك معه",
+        "moderation": "الإشراف",
+        "end_now": "إنهاء الحظر الآن",
+        "end_confirm": "إنهاء هذا الحظر الآن؟ سيتمكن {name} من دخول قائمة الانتظار والانضمام إلى البطولات فورًا.",
+        "keep_ban": "الإبقاء على الحظر",
+        "end_ban": "إنهاء الحظر",
+        "open_profile": "فتح الملف الشخصي"
+      },
+      "timeline": {
+        "steam_both": "حظر VAC وحظر من اللعبة على Steam",
+        "steam_vac": "حظر VAC على Steam | {count} حظر VAC على Steam",
+        "steam_game": "حظر من اللعبة على Steam | {count} حظر من اللعبة على Steam",
+        "steam_before_join": "{date}، قبل مباراته الأولى هنا",
+        "steam_day": "{date}. يذكر Steam اليوم وليس الوقت",
+        "first_match": "أول مباراة هنا",
+        "only_match": "مباراته الوحيدة هنا",
+        "banned_auto": "حُظر هنا تلقائيًا",
+        "banned_by": "حظره {name} هنا",
+        "banned_staff": "حظره الطاقم هنا",
+        "for_vac": "بسبب حظر VAC على Steam",
+        "ban_ended": "انتهى الحظر",
+        "last_match": "آخر مباراة هنا",
+        "matches_after_steam": "{count} مباراة بعد حظر Steam | {count} مباريات بعد حظر Steam"
+      }
     }
   },
   "layouts": {
@@ -8148,7 +8290,8 @@
         "news": "الأخبار",
         "leagues": "الدوري",
         "events": "الفعاليات",
-        "utility": "الأدوات"
+        "utility": "الأدوات",
+        "bans": "الحظر"
       },
       "community": {
         "title": "المجتمع"
@@ -8233,7 +8376,8 @@
         "events": "الفعاليات",
         "system_media_server": "خادم الوسائط",
         "utility_drift": "انزياح رميات الأدوات",
-        "utility": "رميات الأدوات"
+        "utility": "رميات الأدوات",
+        "bans": "المحظورون مؤخرًا"
       },
       "logout_dialog": {
         "title": "تسجيل الخروج",
@@ -8313,6 +8457,10 @@
         "events": {
           "title": "الفعاليات",
           "subtitle": "أمسيات المجتمع والمباريات العابرة"
+        },
+        "bans": {
+          "title": "الحظر",
+          "subtitle": "أحدث حظر على Steam و5Stack"
         }
       }
     },

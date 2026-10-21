@@ -6,6 +6,7 @@ import {
   Play,
   CalendarCog,
   ShieldHalf,
+  ShieldX,
   Users,
   Radio,
   Home,
@@ -544,6 +545,22 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                     >
                       <Trophy />
                       {{ $t("layouts.app_nav.navigation.leaderboard") }}
+                    </NuxtLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    as-child
+                    :tooltip="$t('layouts.app_nav.tooltips.bans')"
+                  >
+                    <NuxtLink
+                      :to="{ name: 'bans' }"
+                      :class="{
+                        'router-link-active': isRouteActive('bans'),
+                      }"
+                    >
+                      <ShieldX />
+                      {{ $t("layouts.app_nav.navigation.bans") }}
                     </NuxtLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

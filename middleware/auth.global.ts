@@ -14,6 +14,7 @@ function isPublicRoute(path: string): boolean {
     "/login",
     "/play",
     "/watch",
+    "/bans",
     "/public-servers",
     "/stats-guide",
     "/faq",

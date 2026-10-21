@@ -8021,6 +8021,148 @@
           "plugin_outdated": "{count} sunucu eski bir eklenti çalıştırıyor | {count} sunucu eski bir eklenti çalıştırıyor"
         }
       }
+    },
+    "bans": {
+      "title": "Son banlananlar",
+      "search": "Banlı oyuncu ara",
+      "row_label": "{name}, ban kaydını aç",
+      "by": "{name} tarafından",
+      "source": {
+        "label": "Ban kaynağı",
+        "all": "Tüm banlar",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "Dönem",
+        "label": "{days} gün",
+        "option": "Son {days} gün"
+      },
+      "played_with": {
+        "label": "Benimle oynayanlar",
+        "everyone": "Herkes",
+        "either": "Benimle oynayanlar",
+        "either_hint": "İki taraf da",
+        "opponent": "Bana karşı",
+        "opponent_hint": "Rakipler",
+        "teammate": "Takımımda",
+        "teammate_hint": "Takım arkadaşları",
+        "lost_only": "Sadece kaybettiğim maçlar",
+        "lost_label": "{side}, kaybedilen"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "Kaynak: {source}",
+        "vac": "VAC banı",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "Oyun banı",
+        "game_hint": "CS2 Overwatch",
+        "staff": "Yetkili banı",
+        "staff_hint": "Bir moderatör verdi",
+        "auto": "Otomatik",
+        "auto_hint": "Bir Steam VAC banı için",
+        "banned_here": "Burada banlı",
+        "any": "Herhangi",
+        "banned_here_now": "Şu an burada banlı",
+        "not_banned_here": "Steam banı var, hâlâ burada oynayabilir",
+        "timing": "Zamanlama",
+        "played_first": "Bandan önce burada oynadı",
+        "arrived_banned": "Katıldığında zaten banlıydı"
+      },
+      "columns": {
+        "player": "Oyuncu",
+        "ban": "Ban",
+        "banned": "Banlandı",
+        "length": "Süre",
+        "last_match": "Buradaki son maç",
+        "with_you": "Seninle"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "Steam VAC banı",
+        "game": "Oyun banı",
+        "game_count": "Oyun banı ×{count}",
+        "game_title": "Steam oyun banı (CS2 Overwatch)",
+        "staff": "Yetkili banı",
+        "staff_title": "Burada yetkililer tarafından banlandı",
+        "auto": "Oto ban",
+        "auto_title": "Bir Steam VAC banı nedeniyle burada otomatik banlandı"
+      },
+      "length": {
+        "permanent": "Kalıcı",
+        "days": "{count} gün | {count} gün",
+        "hours": "{count} saat | {count} saat",
+        "days_left": "{count} gün kaldı | {count} gün kaldı",
+        "hours_left": "{count} saat kaldı | {count} saat kaldı",
+        "ended": "Bitti",
+        "not_banned_here": "Burada banlı değil",
+        "matches_since": "O zamandan beri {count} maç | O zamandan beri {count} maç",
+        "no_matches_since": "O zamandan beri maç yok"
+      },
+      "last_match": {
+        "only": "Tek maç",
+        "none": "Burada maç yok"
+      },
+      "with_you": {
+        "teammate": "Takım arkadaşı",
+        "opponent": "Rakip",
+        "both": "İki taraf da",
+        "match_label": "{map} {score}",
+        "count": "Seninle {count} maç | Seninle {count} maç",
+        "summary": "Seninle {count} maç, {lost} kayıp | Seninle {count} maç, {lost} kayıp"
+      },
+      "summary": {
+        "count": "Son {days} günde {count} oyuncu banlandı | Son {days} günde {count} oyuncu banlandı",
+        "gaps": "Steam'de banlı {count} oyuncu hâlâ burada oynayabiliyor | Steam'de banlı {count} oyuncu hâlâ burada oynayabiliyor",
+        "lost_of_either": "Onlarla birlikte veya onlara karşı {count} maçın {lost} tanesini kaybettin | Onlarla birlikte veya onlara karşı {count} maçın {lost} tanesini kaybettin",
+        "lost_of_opponent": "Onlara karşı {count} maçın {lost} tanesini kaybettin | Onlara karşı {count} maçın {lost} tanesini kaybettin",
+        "lost_of_teammate": "Onlar takımındayken {count} maçın {lost} tanesini kaybettin | Onlar takımındayken {count} maçın {lost} tanesini kaybettin",
+        "lost_only_either": "Onlarla birlikte veya onlara karşı {count} maç kaybettin | Onlarla birlikte veya onlara karşı {count} maç kaybettin",
+        "lost_only_opponent": "Onlara karşı {count} maç kaybettin | Onlara karşı {count} maç kaybettin",
+        "lost_only_teammate": "Onlar takımındayken {count} maç kaybettin | Onlar takımındayken {count} maç kaybettin"
+      },
+      "empty": {
+        "title": "Yakın zamanda kimse banlanmadı",
+        "description": "Steam banları Valve verdikten sonraki bir gün içinde, 5Stack banları ise verildiği anda burada görünür.",
+        "played_with": "Birlikte oynadığın kimse son {days} günde banlanmadı. Daha uzun bir dönem dene.",
+        "no_gaps": "Bu dönemde Steam'de banlanan her oyuncu burada da banlı."
+      },
+      "record": {
+        "title": "Ban kaydı",
+        "matches_here": "Burada {count} maç | Burada {count} maç",
+        "vac_gap_title": "Steam'de VAC banlı, burada banlı değil.",
+        "vac_gap_body": "Otomatik ban uygulanmadı ya da yetkililer kaldırdı.",
+        "game_gap_title": "Steam oyun banı var, hâlâ burada oynuyor.",
+        "game_gap_body": "Otomatik banı yalnızca VAC banları tetikler.",
+        "matches_since": "O zamandan beri {count} maç. | O zamandan beri {count} maç.",
+        "reason": "Sebep",
+        "what_happened": "Ne oldu",
+        "your_matches": "Onunla oynadığın maçlar",
+        "moderation": "Moderasyon",
+        "end_now": "Banı şimdi bitir",
+        "end_confirm": "Bu ban şimdi bitirilsin mi? {name} hemen sıraya girebilir ve turnuvalara katılabilir.",
+        "keep_ban": "Banı koru",
+        "end_ban": "Banı bitir",
+        "open_profile": "Profili aç"
+      },
+      "timeline": {
+        "steam_both": "Steam'de VAC ve oyun banları",
+        "steam_vac": "Steam'de VAC banı | Steam'de {count} VAC banı",
+        "steam_game": "Steam'de oyun banı | Steam'de {count} oyun banı",
+        "steam_before_join": "{date}, buradaki ilk maçından önce",
+        "steam_day": "{date}. Steam saati değil, günü verir",
+        "first_match": "Buradaki ilk maç",
+        "only_match": "Buradaki tek maçı",
+        "banned_auto": "Burada otomatik banlandı",
+        "banned_by": "Burada {name} tarafından banlandı",
+        "banned_staff": "Burada yetkililer tarafından banlandı",
+        "for_vac": "Steam VAC banı nedeniyle",
+        "ban_ended": "Ban bitti",
+        "last_match": "Buradaki son maç",
+        "matches_after_steam": "Steam banından sonra {count} maç | Steam banından sonra {count} maç"
+      }
     }
   },
   "layouts": {
@@ -8148,7 +8290,8 @@
         "news": "Haberler",
         "leagues": "Lig",
         "events": "Etkinlikler",
-        "utility": "Utility"
+        "utility": "Utility",
+        "bans": "Banlar"
       },
       "community": {
         "title": "Topluluk"
@@ -8233,7 +8376,8 @@
         "events": "Etkinlikler",
         "system_media_server": "Medya sunucusu",
         "utility_drift": "Utility Dizilim Kayması",
-        "utility": "Utility Dizilimleri"
+        "utility": "Utility Dizilimleri",
+        "bans": "Son banlananlar"
       },
       "logout_dialog": {
         "title": "Çıkış yap",
@@ -8313,6 +8457,10 @@
         "events": {
           "title": "Etkinlikler",
           "subtitle": "Topluluk geceleri ve tek seferlik oyunlar"
+        },
+        "bans": {
+          "title": "Banlar",
+          "subtitle": "Son Steam ve 5Stack banları"
         }
       }
     },

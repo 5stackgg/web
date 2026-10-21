@@ -8021,6 +8021,148 @@
           "plugin_outdated": "{count} 台服务器运行的插件已过时 | {count} 台服务器运行的插件已过时"
         }
       }
+    },
+    "bans": {
+      "title": "最近封禁",
+      "search": "搜索被封禁的玩家",
+      "row_label": "{name}，打开封禁记录",
+      "by": "由 {name} 封禁",
+      "source": {
+        "label": "封禁来源",
+        "all": "全部封禁",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "时间范围",
+        "label": "{days} 天",
+        "option": "最近 {days} 天"
+      },
+      "played_with": {
+        "label": "与我同场",
+        "everyone": "所有人",
+        "either": "与我同场",
+        "either_hint": "任意一方",
+        "opponent": "与我对战",
+        "opponent_hint": "对手",
+        "teammate": "与我同队",
+        "teammate_hint": "队友",
+        "lost_only": "仅我输掉的比赛",
+        "lost_label": "{side}，输掉的"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "来源为 {source}",
+        "vac": "VAC 封禁",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "游戏封禁",
+        "game_hint": "CS2 Overwatch",
+        "staff": "管理员封禁",
+        "staff_hint": "由版主发出",
+        "auto": "自动",
+        "auto_hint": "因 Steam VAC 封禁",
+        "banned_here": "在此封禁",
+        "any": "任意",
+        "banned_here_now": "当前在此封禁",
+        "not_banned_here": "Steam 封禁，仍可在此游戏",
+        "timing": "时间",
+        "played_first": "封禁前在此游戏过",
+        "arrived_banned": "加入时已被封禁"
+      },
+      "columns": {
+        "player": "玩家",
+        "ban": "封禁",
+        "banned": "封禁时间",
+        "length": "时长",
+        "last_match": "在此最近一场比赛",
+        "with_you": "与你"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "Steam VAC 封禁",
+        "game": "游戏封禁",
+        "game_count": "游戏封禁 ×{count}",
+        "game_title": "Steam 游戏封禁（CS2 Overwatch）",
+        "staff": "管理员封禁",
+        "staff_title": "被管理员在此封禁",
+        "auto": "自动封禁",
+        "auto_title": "因 Steam VAC 封禁而在此被自动封禁"
+      },
+      "length": {
+        "permanent": "永久",
+        "days": "{count} 天 | {count} 天",
+        "hours": "{count} 小时 | {count} 小时",
+        "days_left": "剩余 {count} 天 | 剩余 {count} 天",
+        "hours_left": "剩余 {count} 小时 | 剩余 {count} 小时",
+        "ended": "已结束",
+        "not_banned_here": "未在此封禁",
+        "matches_since": "此后 {count} 场比赛 | 此后 {count} 场比赛",
+        "no_matches_since": "此后没有比赛"
+      },
+      "last_match": {
+        "only": "唯一一场比赛",
+        "none": "在此没有比赛"
+      },
+      "with_you": {
+        "teammate": "队友",
+        "opponent": "对手",
+        "both": "双方",
+        "match_label": "{map} {score}",
+        "count": "与你 {count} 场 | 与你 {count} 场",
+        "summary": "与你 {count} 场，输 {lost} 场 | 与你 {count} 场，输 {lost} 场"
+      },
+      "summary": {
+        "count": "最近 {days} 天有 {count} 名玩家被封禁 | 最近 {days} 天有 {count} 名玩家被封禁",
+        "gaps": "{count} 名被 Steam 封禁的玩家仍可在此游戏 | {count} 名被 Steam 封禁的玩家仍可在此游戏",
+        "lost_of_either": "与他们同队或对战的 {count} 场比赛中你输了 {lost} 场 | 与他们同队或对战的 {count} 场比赛中你输了 {lost} 场",
+        "lost_of_opponent": "与他们对战的 {count} 场比赛中你输了 {lost} 场 | 与他们对战的 {count} 场比赛中你输了 {lost} 场",
+        "lost_of_teammate": "与他们同队的 {count} 场比赛中你输了 {lost} 场 | 与他们同队的 {count} 场比赛中你输了 {lost} 场",
+        "lost_only_either": "与他们同队或对战时你输了 {count} 场比赛 | 与他们同队或对战时你输了 {count} 场比赛",
+        "lost_only_opponent": "与他们对战时你输了 {count} 场比赛 | 与他们对战时你输了 {count} 场比赛",
+        "lost_only_teammate": "与他们同队时你输了 {count} 场比赛 | 与他们同队时你输了 {count} 场比赛"
+      },
+      "empty": {
+        "title": "最近没有人被封禁",
+        "description": "Steam 封禁会在 Valve 发出后一天内显示在这里，5Stack 封禁则在发出后立即显示。",
+        "played_with": "最近 {days} 天内与你一起玩过的人都没有被封禁。试试更长的时间范围。",
+        "no_gaps": "此时间范围内被 Steam 封禁的玩家在这里也都已被封禁。"
+      },
+      "record": {
+        "title": "封禁记录",
+        "matches_here": "在此 {count} 场比赛 | 在此 {count} 场比赛",
+        "vac_gap_title": "Steam 上有 VAC 封禁，但在此未封禁。",
+        "vac_gap_body": "自动封禁未生效，或已被管理员解除。",
+        "game_gap_title": "Steam 游戏封禁，仍在此游戏。",
+        "game_gap_body": "只有 VAC 封禁才会触发自动封禁。",
+        "matches_since": "此后 {count} 场比赛。 | 此后 {count} 场比赛。",
+        "reason": "原因",
+        "what_happened": "经过",
+        "your_matches": "你与该玩家的比赛",
+        "moderation": "管理",
+        "end_now": "立即解除封禁",
+        "end_confirm": "现在解除此封禁？{name} 将可以立即排队并参加锦标赛。",
+        "keep_ban": "保留封禁",
+        "end_ban": "解除封禁",
+        "open_profile": "打开个人资料"
+      },
+      "timeline": {
+        "steam_both": "Steam 上的 VAC 和游戏封禁",
+        "steam_vac": "Steam 上的 VAC 封禁 | Steam 上的 {count} 次 VAC 封禁",
+        "steam_game": "Steam 上的游戏封禁 | Steam 上的 {count} 次游戏封禁",
+        "steam_before_join": "{date}，在此首场比赛之前",
+        "steam_day": "{date}。Steam 只提供日期，不提供时间",
+        "first_match": "在此首场比赛",
+        "only_match": "在此唯一一场比赛",
+        "banned_auto": "在此被自动封禁",
+        "banned_by": "在此被 {name} 封禁",
+        "banned_staff": "在此被管理员封禁",
+        "for_vac": "因 Steam VAC 封禁",
+        "ban_ended": "封禁结束",
+        "last_match": "在此最近一场比赛",
+        "matches_after_steam": "Steam 封禁后 {count} 场比赛 | Steam 封禁后 {count} 场比赛"
+      }
     }
   },
   "layouts": {
@@ -8148,7 +8290,8 @@
         "news": "新闻",
         "leagues": "联赛",
         "events": "活动",
-        "utility": "道具"
+        "utility": "道具",
+        "bans": "封禁"
       },
       "community": {
         "title": "社区"
@@ -8233,7 +8376,8 @@
         "events": "活动",
         "system_media_server": "媒体服务器",
         "utility_drift": "道具点位偏移",
-        "utility": "道具点位"
+        "utility": "道具点位",
+        "bans": "最近封禁"
       },
       "logout_dialog": {
         "title": "登出",
@@ -8313,6 +8457,10 @@
         "events": {
           "title": "活动",
           "subtitle": "社区之夜与一次性赛事"
+        },
+        "bans": {
+          "title": "封禁",
+          "subtitle": "最近的 Steam 和 5Stack 封禁"
         }
       }
     },

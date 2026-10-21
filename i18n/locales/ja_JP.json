@@ -8021,6 +8021,148 @@
           "plugin_outdated": "{count} 台のサーバーが古いプラグインを使用しています | {count} 台のサーバーが古いプラグインを使用しています"
         }
       }
+    },
+    "bans": {
+      "title": "最近のBAN",
+      "search": "BANされたプレイヤーを検索",
+      "row_label": "{name}、BAN記録を開く",
+      "by": "{name}による",
+      "source": {
+        "label": "BANの出所",
+        "all": "すべてのBAN",
+        "steam": "Steam",
+        "fivestack": "5Stack"
+      },
+      "window": {
+        "title": "期間",
+        "label": "{days}日",
+        "option": "過去{days}日"
+      },
+      "played_with": {
+        "label": "一緒にプレイ",
+        "everyone": "全員",
+        "either": "一緒にプレイ",
+        "either_hint": "どちら側でも",
+        "opponent": "自分と対戦",
+        "opponent_hint": "対戦相手",
+        "teammate": "自分のチーム",
+        "teammate_hint": "チームメイト",
+        "lost_only": "負けた試合のみ",
+        "lost_label": "{side}・敗戦"
+      },
+      "filters": {
+        "steam": "Steam",
+        "fivestack": "5Stack",
+        "source_is": "出所: {source}",
+        "vac": "VAC BAN",
+        "vac_hint": "Valve Anti-Cheat",
+        "game": "ゲーム内BAN",
+        "game_hint": "CS2 Overwatch",
+        "staff": "スタッフBAN",
+        "staff_hint": "モデレーターが発行",
+        "auto": "自動",
+        "auto_hint": "SteamのVAC BANによる",
+        "banned_here": "ここでのBAN",
+        "any": "すべて",
+        "banned_here_now": "現在ここでBAN中",
+        "not_banned_here": "SteamでBAN、ここではまだプレイ可能",
+        "timing": "タイミング",
+        "played_first": "BAN前にここでプレイ",
+        "arrived_banned": "参加時にすでにBAN済み"
+      },
+      "columns": {
+        "player": "プレイヤー",
+        "ban": "BAN",
+        "banned": "BAN日時",
+        "length": "期間",
+        "last_match": "ここでの最終試合",
+        "with_you": "あなたとの試合"
+      },
+      "tags": {
+        "vac": "VAC",
+        "vac_count": "VAC ×{count}",
+        "vac_title": "SteamのVAC BAN",
+        "game": "ゲーム内BAN",
+        "game_count": "ゲーム内BAN ×{count}",
+        "game_title": "Steamのゲーム内BAN（CS2 Overwatch）",
+        "staff": "スタッフBAN",
+        "staff_title": "スタッフによりここでBAN",
+        "auto": "自動BAN",
+        "auto_title": "SteamのVAC BANによりここで自動BAN"
+      },
+      "length": {
+        "permanent": "永久",
+        "days": "{count}日 | {count}日",
+        "hours": "{count}時間 | {count}時間",
+        "days_left": "残り{count}日 | 残り{count}日",
+        "hours_left": "残り{count}時間 | 残り{count}時間",
+        "ended": "終了",
+        "not_banned_here": "ここではBANなし",
+        "matches_since": "その後{count}試合 | その後{count}試合",
+        "no_matches_since": "その後の試合なし"
+      },
+      "last_match": {
+        "only": "唯一の試合",
+        "none": "ここでの試合なし"
+      },
+      "with_you": {
+        "teammate": "チームメイト",
+        "opponent": "対戦相手",
+        "both": "両方",
+        "match_label": "{map} {score}",
+        "count": "あなたと{count}試合 | あなたと{count}試合",
+        "summary": "あなたと{count}試合、{lost}敗 | あなたと{count}試合、{lost}敗"
+      },
+      "summary": {
+        "count": "過去{days}日間に{count}人がBAN | 過去{days}日間に{count}人がBAN",
+        "gaps": "SteamでBANされた{count}人がまだここでプレイ可能 | SteamでBANされた{count}人がまだここでプレイ可能",
+        "lost_of_either": "一緒に、または対戦した{count}試合中{lost}試合で負けました | 一緒に、または対戦した{count}試合中{lost}試合で負けました",
+        "lost_of_opponent": "対戦した{count}試合中{lost}試合で負けました | 対戦した{count}試合中{lost}試合で負けました",
+        "lost_of_teammate": "同じチームだった{count}試合中{lost}試合で負けました | 同じチームだった{count}試合中{lost}試合で負けました",
+        "lost_only_either": "一緒に、または対戦して{count}試合負けました | 一緒に、または対戦して{count}試合負けました",
+        "lost_only_opponent": "対戦して{count}試合負けました | 対戦して{count}試合負けました",
+        "lost_only_teammate": "同じチームで{count}試合負けました | 同じチームで{count}試合負けました"
+      },
+      "empty": {
+        "title": "最近BANされたプレイヤーはいません",
+        "description": "SteamのBANはValveが発行してから1日以内に、5StackのBANは発行後すぐにここに表示されます。",
+        "played_with": "過去{days}日間に一緒にプレイした人はBANされていません。期間を長くしてみてください。",
+        "no_gaps": "この期間にSteamでBANされたプレイヤーは全員ここでもBANされています。"
+      },
+      "record": {
+        "title": "BAN記録",
+        "matches_here": "ここで{count}試合 | ここで{count}試合",
+        "vac_gap_title": "SteamでVAC BAN、ここではBANなし。",
+        "vac_gap_body": "自動BANが適用されなかったか、スタッフが解除しました。",
+        "game_gap_title": "Steamのゲーム内BAN、ここでまだプレイ中。",
+        "game_gap_body": "自動BANはVAC BANでのみ発動します。",
+        "matches_since": "その後{count}試合。 | その後{count}試合。",
+        "reason": "理由",
+        "what_happened": "経緯",
+        "your_matches": "このプレイヤーとの試合",
+        "moderation": "モデレーション",
+        "end_now": "今すぐBANを終了",
+        "end_confirm": "このBANを今すぐ終了しますか？{name}はすぐにキューと大会に参加できるようになります。",
+        "keep_ban": "BANを維持",
+        "end_ban": "BANを終了",
+        "open_profile": "プロフィールを開く"
+      },
+      "timeline": {
+        "steam_both": "SteamでVAC BANとゲーム内BAN",
+        "steam_vac": "SteamでVAC BAN | SteamでVAC BAN {count}件",
+        "steam_game": "Steamでゲーム内BAN | Steamでゲーム内BAN {count}件",
+        "steam_before_join": "{date}、ここでの初試合より前",
+        "steam_day": "{date}。Steamは日付のみで時刻は不明",
+        "first_match": "ここでの初試合",
+        "only_match": "ここでの唯一の試合",
+        "banned_auto": "ここで自動BAN",
+        "banned_by": "{name}がここでBAN",
+        "banned_staff": "スタッフがここでBAN",
+        "for_vac": "SteamのVAC BANによる",
+        "ban_ended": "BAN終了",
+        "last_match": "ここでの最終試合",
+        "matches_after_steam": "SteamのBAN後に{count}試合 | SteamのBAN後に{count}試合"
+      }
     }
   },
   "layouts": {
@@ -8148,7 +8290,8 @@
         "news": "ニュース",
         "leagues": "リーグ",
         "events": "イベント",
-        "utility": "ユーティリティ"
+        "utility": "ユーティリティ",
+        "bans": "BAN"
       },
       "community": {
         "title": "コミュニティ"
@@ -8233,7 +8376,8 @@
         "events": "イベント",
         "system_media_server": "メディアサーバー",
         "utility_drift": "ユーティリティラインナップのずれ",
-        "utility": "ユーティリティラインナップ"
+        "utility": "ユーティリティラインナップ",
+        "bans": "最近のBAN"
       },
       "logout_dialog": {
         "title": "ログアウト",
@@ -8313,6 +8457,10 @@
         "events": {
           "title": "イベント",
           "subtitle": "コミュニティナイトと単発の企画"
+        },
+        "bans": {
+          "title": "BAN",
+          "subtitle": "最近のSteamと5StackのBAN"
         }
       }
     },

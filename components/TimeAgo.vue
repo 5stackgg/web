@@ -212,7 +212,9 @@ export default {
     },
     clockText(time: Date) {
       const now = new Date();
-      if (now.getTime() - time.getTime() < 60 * 60 * 1000) {
+      // The relative text reads the date a second early and rounds 59.5
+      // minutes up to "1 hour ago"; the clock takes over at that moment.
+      if (now.getTime() - time.getTime() + 1000 < 59.5 * 60 * 1000) {
         return "";
       }
 

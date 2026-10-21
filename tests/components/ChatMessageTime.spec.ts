@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 import {
   resetBrowserLanguages,
   setBrowserLanguages,
@@ -53,17 +52,8 @@ function shown(element: Element | null | undefined) {
   return (element?.textContent ?? "").replace(/\s+/g, " ").trim();
 }
 
-async function nameLineTime(sent: Date) {
-  const wrapper = await mountLine(sent);
+function nameLineTime(wrapper: Awaited<ReturnType<typeof mountLine>>) {
   return shown(wrapper.get("h4").element.nextElementSibling);
-}
-
-async function relative(sent: Date) {
-  const wrapper = await mountSuspended(TimeAgo, {
-    props: { date: sent.toISOString(), hideIcon: true },
-  });
-  unmounts.push(() => wrapper.unmount());
-  return shown(wrapper.element);
 }
 
 const bands: Array<[string, Date]> = [
@@ -92,7 +82,7 @@ describe.each([
     "de",
     "de-DE",
     [
-      null,
+      "vor 59 Minuten",
       "14:40",
       "9:05",
       "Mo., 19. Okt., 21:14",
@@ -108,8 +98,10 @@ describe.each([
   it.each(bands.map(([band, sent], index) => [band, sent, index] as const))(
     "a message %s",
     async (_band, sent, index) => {
-      expect(await nameLineTime(sent)).toBe(
-        expected[index] ?? (await relative(sent)),
+      const wrapper = await mountLine(sent);
+
+      await vi.waitFor(() =>
+        expect(nameLineTime(wrapper)).toBe(expected[index]),
       );
     },
   );
@@ -122,25 +114,37 @@ describe("chat message time as the clock runs", () => {
 
   it("turns from minutes ago to the time of day once the message is an hour old", async () => {
     const wrapper = await mountLine(new Date(2026, 9, 20, 14, 41));
-    const time = () => shown(wrapper.get("h4").element.nextElementSibling);
 
-    expect(time()).toBe("59 minutes ago");
+    expect(nameLineTime(wrapper)).toBe("59 minutes ago");
 
     await vi.advanceTimersByTimeAsync(61_000);
 
-    expect(time()).toBe("2:41 PM");
+    expect(nameLineTime(wrapper)).toBe("2:41 PM");
+  });
+
+  it("never reads 1 hour ago on the way there", async () => {
+    const wrapper = await mountLine(new Date(2026, 9, 20, 14, 40, 35));
+    const seen = [nameLineTime(wrapper)];
+
+    for (let second = 0; second < 60; second++) {
+      await vi.advanceTimersByTimeAsync(1000);
+      if (nameLineTime(wrapper) !== seen.at(-1)) {
+        seen.push(nameLineTime(wrapper));
+      }
+    }
+
+    expect(seen).toEqual(["59 minutes ago", "2:40 PM"]);
   });
 
   it("adds the day and date once the day it was sent is over", async () => {
     vi.setSystemTime(new Date(2026, 9, 20, 23, 59, 30));
     const wrapper = await mountLine(new Date(2026, 9, 20, 13, 5));
-    const time = () => shown(wrapper.get("h4").element.nextElementSibling);
 
-    expect(time()).toBe("1:05 PM");
+    expect(nameLineTime(wrapper)).toBe("1:05 PM");
 
     await vi.advanceTimersByTimeAsync(60_000);
 
-    expect(time()).toBe("Tue, Oct 20, 1:05 PM");
+    expect(nameLineTime(wrapper)).toBe("Tue, Oct 20, 1:05 PM");
   });
 
   it("does the same for the time under the name when a GIF leads", async () => {

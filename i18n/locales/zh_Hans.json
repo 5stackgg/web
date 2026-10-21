@@ -10566,6 +10566,7 @@
       "picked": "已选"
     },
     "auto_canceling": "自动取消中",
+    "deadline_in": "截止倒计时",
     "demo_processing": "正在处理 demo",
     "actions": {
       "call_support": "请求支持",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "您已签到 {checked}/{required} 名玩家，达到开始比赛所需人数",
       "deadline": "签到剩余时间",
       "deadline_checked_in": "自动取消倒计时",
-      "deadline_help": "若所有必需成员未在计时结束前签到，比赛会自动取消。"
+      "deadline_help": "若所有必需成员未在计时结束前签到，比赛会自动取消。",
+      "deadline_help_tournament": "计时结束时，所有必需成员都已签到的队伍将因对方弃权获胜。若没有这样的队伍，则通过掷硬币决定胜者。",
+      "deadline_help_tournament_admin": "计时结束时，所有必需成员都已签到的队伍将因对方弃权获胜。若没有这样的队伍，由赛事主办方决定。"
     },
     "coach": {
       "assign": "分配教练"

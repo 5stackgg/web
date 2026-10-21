@@ -10566,6 +10566,7 @@
       "picked": "Picket"
     },
     "auto_canceling": "Aflyser automatisk",
+    "deadline_in": "Fristen udløber om",
     "demo_processing": "Behandler demo",
     "actions": {
       "call_support": "Tilkald support",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Du har checket {checked} ud af {required} spillere ind, som kræves for at starte kampen",
       "deadline": "Meld dig klar inden for",
       "deadline_checked_in": "Aflyses automatisk om",
-      "deadline_help": "Kampen aflyses automatisk, hvis alle nødvendige spillere ikke har meldt sig klar, inden tiden løber ud."
+      "deadline_help": "Kampen aflyses automatisk, hvis alle nødvendige spillere ikke har meldt sig klar, inden tiden løber ud.",
+      "deadline_help_tournament": "Hvis tiden løber ud, vinder et hold, hvor alle nødvendige spillere har meldt sig klar, på walkover. Hvis intet hold har det, afgør et møntkast vinderen.",
+      "deadline_help_tournament_admin": "Hvis tiden løber ud, vinder et hold, hvor alle nødvendige spillere har meldt sig klar, på walkover. Hvis intet hold har det, afgør turneringsarrangørerne det."
     },
     "coach": {
       "assign": "Tildel coach"

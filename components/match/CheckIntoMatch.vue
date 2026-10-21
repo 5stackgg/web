@@ -22,7 +22,7 @@
           <span class="absolute inset-y-0 right-3 flex items-center">
             <CheckInDeadline
               :cancels-at="checkInDeadline"
-              :help-label="deadlineHelp"
+              :help-label="expiryHelp"
             />
           </span>
         </button>
@@ -55,7 +55,7 @@
           >
             <CheckInDeadline
               :cancels-at="checkInDeadline"
-              :help-label="deadlineHelp"
+              :help-label="expiryHelp"
             />
           </span>
         </button>
@@ -73,7 +73,8 @@
           </Badge>
           <CheckInDeadline
             :cancels-at="checkInDeadline"
-            :help-label="deadlineHelp"
+            :prefix-label="checkedInLabel"
+            :help-label="expiryHelp"
             variant="standalone"
             checked-in
           />
@@ -194,6 +195,25 @@ export default {
     // gutter -- auto-cancellation being off leaves cancels_at null.
     checkInDeadline() {
       return this.deadline ?? this.match?.cancels_at;
+    },
+    // A tournament match isn't canceled when check-in runs out: a team that
+    // checked in wins by forfeit, and with neither, an admin-mode match goes to
+    // the organizers while any other is coin-tossed (CancelExpiredMatches).
+    tournamentMatch() {
+      return (this.match.tournament_brackets?.length ?? 0) > 0;
+    },
+    expiryHelp() {
+      if (this.deadlineHelp !== undefined || !this.tournamentMatch) {
+        return this.deadlineHelp;
+      }
+      return this.match.options?.match_mode === "admin"
+        ? this.$t("match.check_in.deadline_help_tournament_admin")
+        : this.$t("match.check_in.deadline_help_tournament");
+    },
+    checkedInLabel() {
+      return this.tournamentMatch && this.deadline === undefined
+        ? this.$t("match.deadline_in")
+        : undefined;
     },
     deadlineGutterClasses() {
       return this.checkInDeadline ? "pr-[4.75rem]" : "";

@@ -10568,6 +10568,7 @@
       "picked": "Picked"
     },
     "auto_canceling": "Auto Canceling",
+    "deadline_in": "Deadline in",
     "demo_processing": "Processing demo",
     "actions": {
       "call_support": "Call for Support",
@@ -10864,7 +10865,9 @@
       "checked_in_description": "You have checked in {checked} out of {required} players required to start the match",
       "deadline": "Check in within",
       "deadline_checked_in": "Auto-cancels in",
-      "deadline_help": "The match is automatically canceled if everyone required hasn't checked in before the timer runs out."
+      "deadline_help": "The match is automatically canceled if everyone required hasn't checked in before the timer runs out.",
+      "deadline_help_tournament": "If the timer runs out, a team with everyone required checked in wins by forfeit. If neither has, a coin toss picks the winner.",
+      "deadline_help_tournament_admin": "If the timer runs out, a team with everyone required checked in wins by forfeit. If neither has, the tournament organizers decide."
     },
     "coach": {
       "assign": "Assign Coach"

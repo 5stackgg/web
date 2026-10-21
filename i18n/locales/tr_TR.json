@@ -10566,6 +10566,7 @@
       "picked": "Seçildi"
     },
     "auto_canceling": "Otomatik İptal Ediliyor",
+    "deadline_in": "Son süreye kalan",
     "demo_processing": "Demo işleniyor",
     "actions": {
       "call_support": "Destek Çağır",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Maçı başlatmak için gereken {required} oyuncudan {checked} tanesi katılımını onayladı",
       "deadline": "Şu süre içinde katılım bildir",
       "deadline_checked_in": "Otomatik iptale kalan",
-      "deadline_help": "Gerekli herkes süre dolmadan katılım bildirmezse maç otomatik olarak iptal edilir."
+      "deadline_help": "Gerekli herkes süre dolmadan katılım bildirmezse maç otomatik olarak iptal edilir.",
+      "deadline_help_tournament": "Süre dolarsa gerekli herkesin katılım bildirdiği takım hükmen kazanır. Böyle bir takım yoksa kazananı yazı tura belirler.",
+      "deadline_help_tournament_admin": "Süre dolarsa gerekli herkesin katılım bildirdiği takım hükmen kazanır. Böyle bir takım yoksa turnuva organizatörleri karar verir."
     },
     "coach": {
       "assign": "Koç ata"

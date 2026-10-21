@@ -10566,6 +10566,7 @@
       "picked": "Scelta"
     },
     "auto_canceling": "Annullamento automatico",
+    "deadline_in": "Scadenza tra",
     "demo_processing": "Elaborazione della demo",
     "actions": {
       "call_support": "Richiedi supporto",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Hai fatto il check-in di {checked} giocatori su {required} richiesti per iniziare il match",
       "deadline": "Conferma la presenza entro",
       "deadline_checked_in": "Annullamento automatico tra",
-      "deadline_help": "La partita viene annullata automaticamente se tutti i partecipanti richiesti non hanno confermato prima dello scadere del timer."
+      "deadline_help": "La partita viene annullata automaticamente se tutti i partecipanti richiesti non hanno confermato prima dello scadere del timer.",
+      "deadline_help_tournament": "Se il timer scade, una squadra in cui tutti i partecipanti richiesti hanno confermato la presenza vince a tavolino. Se nessuna ci è riuscita, il vincitore è deciso con il lancio di una moneta.",
+      "deadline_help_tournament_admin": "Se il timer scade, una squadra in cui tutti i partecipanti richiesti hanno confermato la presenza vince a tavolino. Se nessuna ci è riuscita, decidono gli organizzatori del torneo."
     },
     "coach": {
       "assign": "Assegna coach"

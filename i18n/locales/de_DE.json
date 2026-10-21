@@ -10566,6 +10566,7 @@
       "picked": "Gepickt"
     },
     "auto_canceling": "Wird automatisch abgebrochen",
+    "deadline_in": "Frist endet in",
     "demo_processing": "Demo wird verarbeitet",
     "actions": {
       "call_support": "Support rufen",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Du hast {checked} von {required} Spielern eingecheckt, die zum Start des Matches nötig sind",
       "deadline": "Einchecken innerhalb von",
       "deadline_checked_in": "Automatischer Abbruch in",
-      "deadline_help": "Das Match wird automatisch abgebrochen, wenn nicht alle Erforderlichen vor Ablauf des Timers eingecheckt haben."
+      "deadline_help": "Das Match wird automatisch abgebrochen, wenn nicht alle Erforderlichen vor Ablauf des Timers eingecheckt haben.",
+      "deadline_help_tournament": "Läuft der Timer ab, gewinnt ein Team, bei dem alle Erforderlichen eingecheckt haben, kampflos. Hat das kein Team geschafft, entscheidet ein Münzwurf.",
+      "deadline_help_tournament_admin": "Läuft der Timer ab, gewinnt ein Team, bei dem alle Erforderlichen eingecheckt haben, kampflos. Hat das kein Team geschafft, entscheiden die Turnierorganisatoren."
     },
     "coach": {
       "assign": "Coach zuweisen"

@@ -106,3 +106,41 @@ describe("NotificationStore stacking", () => {
     ]);
   });
 });
+
+describe("NotificationStore tournament team invites", () => {
+  it("asks for what an invite needs to link its tournament and name a team-backed entry", async () => {
+    const documents: Record<string, any> = {};
+    const client = useApollo().clients!.default;
+    vi.spyOn(client, "subscribe").mockImplementation((options: any) => {
+      const root = options.query.definitions[0].selectionSet.selections[0];
+      documents[root.name.value] = root;
+      return {
+        subscribe() {
+          return { unsubscribe() {}, closed: false };
+        },
+      } as any;
+    });
+    useNotificationStore();
+    useAuthStore().me = { steam_id: ME } as any;
+    await flushPromises();
+
+    const fields = (node: any) =>
+      Object.fromEntries(
+        node.selectionSet.selections.map((field: any) => [
+          field.name.value,
+          field,
+        ]),
+      );
+    const invite = documents.tournament_team_invites;
+    expect(invite, "tournament_team_invites subscription").toBeDefined();
+    const team = fields(fields(invite).team);
+
+    expect(Object.keys(team)).toEqual(
+      expect.arrayContaining(["team_id", "team", "tournament"]),
+    );
+    expect(Object.keys(fields(team.team))).toContain("name");
+    expect(Object.keys(fields(team.tournament))).toEqual(
+      expect.arrayContaining(["id", "name"]),
+    );
+  });
+});

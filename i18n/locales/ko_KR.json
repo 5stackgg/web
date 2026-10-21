@@ -8071,6 +8071,8 @@
         "lobby_invite": "로비 초대",
         "friend_request": "친구 요청",
         "invited_you": "님이 초대했습니다:",
+        "team_and_lineup": "{team} 및 라인업 ({tournament})",
+        "tournament_only_team": "{tournament} 전용 팀 {team}",
         "invited_party": "님이 파티에 초대했습니다",
         "wants_to_be_friends": "님이 친구 요청을 보냈습니다",
         "actor_host": "호스트",
@@ -8826,7 +8828,9 @@
   "tournament": {
     "admin_label": "관리자",
     "team_invite": {
-      "pending": "대기 중"
+      "pending": "대기 중",
+      "pending_team": "팀과 이 라인업에 초대됨",
+      "pending_tournament": "이 토너먼트에만 초대됨"
     },
     "results_table": {
       "matches": "매치"
@@ -8911,7 +8915,10 @@
       },
       "already_rostered": "다른 팀 소속",
       "owner_on_a_team": "이 토너먼트에서 이미 어떤 팀의 로스터에 등록되어 있습니다.",
-      "leaves_pool": "프리 에이전트로 신청되어 있습니다. 팀을 등록하면 프리 에이전트 목록에서 빠집니다."
+      "leaves_pool": "프리 에이전트로 신청되어 있습니다. 팀을 등록하면 프리 에이전트 목록에서 빠집니다.",
+      "permanent_team": "상설 팀으로 유지",
+      "permanent_team_description": "전용 페이지와 통계가 있는 내 팀으로도 추가됩니다. 초대한 팀원은 팀과 이 라인업에 함께 들어옵니다. 이번 한 번만 쓸 팀이라면 끈 상태로 두세요.",
+      "permanent_team_name_taken": "{name}(이)라는 팀이 이미 있습니다. 다른 이름을 고르거나 상설 팀으로 유지를 끄세요."
     },
     "tournament_team": {
       "remove": "팀 제거",
@@ -9258,6 +9265,8 @@
       "member_added_description": "{name}을(를) 로스터에 추가했습니다",
       "invite_sent": "초대를 보냈습니다",
       "invite_sent_description": "{name}을(를) 초대했습니다. 로스터에 합류하려면 수락해야 합니다",
+      "invite_sent_team_description": "{name}님을 {team}에 초대했습니다. 수락하면 이 라인업에 들어옵니다",
+      "invite_sent_tournament_description": "{name}님을 이 토너먼트의 {team}에 초대했습니다. 먼저 수락해야 합니다",
       "new": "새 팀 생성",
       "select": "기존 팀 선택",
       "select_role": "역할 선택",
@@ -9270,6 +9279,19 @@
       "confirm_cancel_invite": "정말 이 초대를 취소하시겠습니까?",
       "cancel_invite_description": "이 멤버에 대한 초대가 취소됩니다",
       "free_agent_tag": "프리 에이전트",
+      "kind": {
+        "team": "팀",
+        "tournament_only": "토너먼트 전용"
+      },
+      "add_tag": {
+        "on_team": "팀원",
+        "team_invite": "팀 + 라인업 초대",
+        "tournament_invite": "토너먼트 초대"
+      },
+      "add_hint": {
+        "team": "{team} 소속이 아닌 플레이어에게는 초대가 갑니다. 수락하면 팀과 이 라인업에 들어옵니다.",
+        "tournament": "플레이어에게 이 토너먼트 전용 팀인 {team} 초대가 갑니다."
+      },
       "seed_label": "시드",
       "seed_display": "시드 #{seed}"
     },
@@ -9814,6 +9836,8 @@
       "team_title": "팀 초대",
       "tournament_title": "토너먼트 초대",
       "tournament_message": "토너먼트 참가 초대를 받았습니다",
+      "team_and_lineup_message": "{team} 및 라인업 참가:",
+      "tournament_team_message": "이 토너먼트 전용 팀 {team}(으)로 출전:",
       "team_message": "팀 가입 초대를 받았습니다",
       "invited_by": "초대한 사람",
       "deny": "거절",

@@ -8071,6 +8071,8 @@
         "lobby_invite": "Invito alla lobby",
         "friend_request": "Richiesta di amicizia",
         "invited_you": "ti ha invitato a",
+        "team_and_lineup": "unirti a {team} e al suo lineup per {tournament}",
+        "tournament_only_team": "giocare con {team} in {tournament}, un team solo per questo torneo",
         "invited_party": "ti ha invitato nel suo party",
         "wants_to_be_friends": "vuole diventare tuo amico",
         "actor_host": "L'host",
@@ -8826,7 +8828,9 @@
   "tournament": {
     "admin_label": "Admin",
     "team_invite": {
-      "pending": "In attesa"
+      "pending": "In attesa",
+      "pending_team": "Invitato nel team e in questo lineup",
+      "pending_tournament": "Invitato solo per questo torneo"
     },
     "results_table": {
       "matches": "Match"
@@ -8911,7 +8915,10 @@
       },
       "already_rostered": "In un altro team",
       "owner_on_a_team": "Già in rosa in una squadra di questo torneo.",
-      "leaves_pool": "Sei iscritto come free agent. Iscrivere una squadra ti toglie dal pool dei free agent."
+      "leaves_pool": "Sei iscritto come free agent. Iscrivere una squadra ti toglie dal pool dei free agent.",
+      "permanent_team": "Mantieni come team permanente",
+      "permanent_team_description": "Lo aggiunge anche ai tuoi team, con una pagina e statistiche proprie. I compagni che inviti entrano nel team e in questo lineup. Lascialo disattivato per un team occasionale.",
+      "permanent_team_name_taken": "Esiste già un team chiamato {name}. Scegli un altro nome o disattiva Mantieni come team permanente."
     },
     "tournament_team": {
       "remove": "Rimuovi team",
@@ -9258,6 +9265,8 @@
       "member_added_description": "{name} è stato aggiunto alla tua rosa",
       "invite_sent": "Invito inviato",
       "invite_sent_description": "{name} è stato invitato e deve accettare prima di entrare nella tua rosa",
+      "invite_sent_team_description": "{name} è stato invitato in {team} ed entrerà in questo lineup quando accetta",
+      "invite_sent_tournament_description": "{name} è stato invitato in {team} per questo torneo e deve prima accettare",
       "new": "Crea nuovo team",
       "select": "Seleziona team esistente",
       "select_role": "Seleziona ruolo",
@@ -9270,6 +9279,19 @@
       "confirm_cancel_invite": "Annullare questo invito?",
       "cancel_invite_description": "Questo annullerà l'invito per questo membro",
       "free_agent_tag": "Free agent",
+      "kind": {
+        "team": "Team",
+        "tournament_only": "Solo torneo"
+      },
+      "add_tag": {
+        "on_team": "Nel team",
+        "team_invite": "Invito team + lineup",
+        "tournament_invite": "Invito al torneo"
+      },
+      "add_hint": {
+        "team": "I giocatori fuori da {team} ricevono un invito. Accettandolo entrano nel team e in questo lineup.",
+        "tournament": "I giocatori ricevono un invito in {team}, un team solo per questo torneo."
+      },
       "seed_label": "Seed",
       "seed_display": "Seed #{seed}"
     },
@@ -9814,6 +9836,8 @@
       "team_title": "Invito al team",
       "tournament_title": "Invito al torneo",
       "tournament_message": "Sei stato invitato a partecipare a un torneo",
+      "team_and_lineup_message": "Unisciti a {team} e al suo lineup per",
+      "tournament_team_message": "Gioca con {team}, un team solo per questo torneo, in",
       "team_message": "Sei stato invitato a entrare in un team",
       "invited_by": "Invitato da",
       "deny": "Rifiuta",

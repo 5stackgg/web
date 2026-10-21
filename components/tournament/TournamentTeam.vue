@@ -102,6 +102,18 @@ import { teamLedgerColumns } from "~/components/tournament/teamLedger";
             >
               {{ $t("tournament.page.my_team") }}
             </span>
+            <span
+              v-if="team.team_id"
+              class="rounded border border-border px-1.5 text-foreground"
+            >
+              {{ $t("tournament.team.kind.team") }}
+            </span>
+            <span
+              v-else
+              class="rounded border border-dashed border-muted-foreground/50 px-1.5"
+            >
+              {{ $t("tournament.team.kind.tournament_only") }}
+            </span>
             <!-- Phones fold the status and player count under the name. -->
             <span
               v-if="ledgerStatus"
@@ -292,8 +304,10 @@ import { teamLedgerColumns } from "~/components/tournament/teamLedger";
                   :label="$t('tournament.team.add_player')"
                   :self="true"
                   :ineligible="ineligiblePlayers"
-                  :tags="freeAgentTags"
-                  :team-id="team.team_id"
+                  :tags="addPlayerTags"
+                  :fallback-tag="inviteTag"
+                  :hint="inviteHint"
+                  :team-id="searchTeamId"
                   @selected="addMember"
                 >
                   <button type="button" class="roster-slot roster-slot--open">
@@ -336,6 +350,7 @@ import { teamLedgerColumns } from "~/components/tournament/teamLedger";
                   v-for="invite in team.invites"
                   :key="invite.id"
                   :invite="invite"
+                  :joins-team="!!team.team_id"
                 ></TournamentTeamInvite>
               </TransitionGroup>
             </div>
@@ -493,7 +508,11 @@ import { teamLedgerColumns } from "~/components/tournament/teamLedger";
 </template>
 
 <script lang="ts">
-import { e_team_roles_enum, e_tournament_status_enum } from "~/generated/zeus";
+import {
+  $,
+  e_team_roles_enum,
+  e_tournament_status_enum,
+} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { tournamentPodiumQuery } from "~/graphql/tournamentPodium";
@@ -539,9 +558,32 @@ export default {
       identityError: "",
       removeTeamDialog: false,
       podiumSteps: null as any[] | null,
+      teamMemberSteamIds: [] as string[],
     };
   },
   apollo: {
+    // Who is already on a team-backed entry's team: they go straight onto the
+    // lineup, everyone else gets an invite to the team.
+    teamMemberSteamIds: {
+      fetchPolicy: "cache-and-network",
+      query: typedGql("query")({
+        team_roster: [
+          { where: { team_id: { _eq: $("team_id", "uuid!") } } },
+          { player_steam_id: true },
+        ],
+      }),
+      variables: function () {
+        return { team_id: (this as any).team?.team_id };
+      },
+      skip: function () {
+        const self = this as any;
+        return !self.team?.team_id || !self.team?.can_manage;
+      },
+      update: (data: any) =>
+        (data?.team_roster ?? []).map((row: any) =>
+          String(row.player_steam_id),
+        ),
+    },
     // The placements the podium shows, where a shared 3rd is two teams on
     // the same step. Optional, so an api without the field falls back.
     podiumSteps: {
@@ -620,6 +662,55 @@ export default {
       return Object.fromEntries(
         this.freeAgentSteamIds.map((steamId) => [steamId, tag]),
       );
+    },
+    // tbi_tournament_team_roster: staff roles place anyone outright, and a
+    // tournament's own organizers do so on a team-backed entry; on a
+    // tournament-only team their pick is an invite like anyone else's.
+    placesOutright() {
+      const auth = useAuthStore();
+      return (
+        auth.isAdmin ||
+        auth.isTournamentOrganizer ||
+        (!!this.team.team_id && !!this.tournament.is_organizer)
+      );
+    },
+    invitesOutsiders() {
+      return !this.placesOutright && !!this.team.can_recruit;
+    },
+    // Without can_recruit, a team-backed lineup is picked from the team alone.
+    searchTeamId() {
+      return this.team.team_id && !this.placesOutright && !this.team.can_recruit
+        ? this.team.team_id
+        : undefined;
+    },
+    addPlayerTags() {
+      const onTeam = this.$t("tournament.team.add_tag.on_team");
+      return {
+        ...Object.fromEntries(
+          this.teamMemberSteamIds.map((steamId) => [steamId, onTeam]),
+        ),
+        ...(this.placesOutright ? {} : this.freeAgentTags),
+      };
+    },
+    // tbi_tournament_team_roster places an organizer's pick outright; anyone
+    // else's becomes an invite, to the team as well when the entry has one.
+    inviteTag() {
+      if (!this.invitesOutsiders) {
+        return undefined;
+      }
+      return this.team.team_id
+        ? this.$t("tournament.team.add_tag.team_invite")
+        : this.$t("tournament.team.add_tag.tournament_invite");
+    },
+    inviteHint() {
+      if (!this.invitesOutsiders) {
+        return undefined;
+      }
+      return this.team.team_id
+        ? this.$t("tournament.team.add_hint.team", { team: this.displayName })
+        : this.$t("tournament.team.add_hint.tournament", {
+            team: this.displayName,
+          });
     },
     // Layered so the most specific fact wins: another team's roster first,
     // then this team's roster, then this team's pending invites.
@@ -1086,9 +1177,15 @@ export default {
             ? this.$t("tournament.team.member_added_description", {
                 name: member.name,
               })
-            : this.$t("tournament.team.invite_sent_description", {
-                name: member.name,
-              }),
+            : this.team.team_id
+              ? this.$t("tournament.team.invite_sent_team_description", {
+                  name: member.name,
+                  team: this.displayName,
+                })
+              : this.$t("tournament.team.invite_sent_tournament_description", {
+                  name: member.name,
+                  team: this.displayName,
+                }),
         });
       } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);

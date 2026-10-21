@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,6 +18,7 @@ import TeamSearch from "~/components/teams/TeamSearch.vue";
 import { Card } from "~/components/ui/card";
 import { Checkbox } from "~/components/ui/checkbox";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { Fold } from "~/components/ui/transitions";
 </script>
 
 <template>
@@ -221,6 +223,38 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
                 <FormMessage v-if="meta.touched" />
               </FormItem>
             </FormField>
+
+            <Fold :open="canMakePermanent">
+              <FormField v-slot="{ value, handleChange }" name="permanent_team">
+                <FormItem>
+                  <Card
+                    class="rounded-md bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+                    @click="handleChange(!value)"
+                  >
+                    <div
+                      class="flex flex-row items-center justify-between gap-4 px-4 py-2.5"
+                    >
+                      <div class="space-y-0.5">
+                        <FormLabel>{{
+                          $t("tournament.join.permanent_team")
+                        }}</FormLabel>
+                        <FormDescription>{{
+                          $t("tournament.join.permanent_team_description")
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                          @click.stop
+                        />
+                      </FormControl>
+                    </div>
+                  </Card>
+                </FormItem>
+              </FormField>
+            </Fold>
           </div>
         </FormSection>
       </template>
@@ -311,6 +345,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             new_team: z.boolean().default(false),
+            permanent_team: z.boolean().default(false),
             add_self_to_lineup: z.boolean().default(false),
             owner_steam_id: z
               .string()
@@ -496,6 +531,13 @@ export default {
     atLineupCap() {
       return this.maxLineup > 0 && this.selectedPlayers.size >= this.maxLineup;
     },
+    // Hasura presets a new team's owner to the caller, so a team an organizer
+    // builds for another player would end up owned by the organizer.
+    canMakePermanent() {
+      return (
+        !!this.form.values.new_team && !!this.form.values.add_self_to_lineup
+      );
+    },
   },
   watch: {
     "form.values.add_self_to_lineup": {
@@ -645,6 +687,18 @@ export default {
           .map((member) => member.player_steam_id),
       );
     },
+    async teamNameTaken(name: string) {
+      const { data } = await this.$apollo.query({
+        query: generateQuery({
+          teams: [
+            { where: { name: { _eq: name } }, limit: 1 },
+            { id: true },
+          ],
+        }),
+        fetchPolicy: "network-only",
+      });
+      return (data?.teams?.length ?? 0) > 0;
+    },
     async joinTournament() {
       if (this.submitLock) {
         return;
@@ -660,6 +714,20 @@ export default {
         this.submitting = true;
         let teamName = this.form.values.team_name;
         let shortName = this.form.values.short_name;
+        const permanent =
+          this.canMakePermanent && !!this.form.values.permanent_team;
+
+        // Team names are unique across the whole panel, not just this
+        // tournament, so a clash would otherwise surface as a database error.
+        if (permanent && (await this.teamNameTaken(teamName))) {
+          this.form.setFieldError(
+            "team_name",
+            this.$t("tournament.join.permanent_team_name_taken", {
+              name: teamName,
+            }),
+          );
+          return;
+        }
 
         let addPlayerSteamId = null;
         if (
@@ -679,14 +747,23 @@ export default {
           ? addPlayerSteamId || this.me.steam_id
           : null;
 
+        const team = permanent
+          ? { team: { data: { name: teamName, short_name: shortName } } }
+          : {
+              name: teamName,
+              short_name: this.form.values.new_team ? shortName : null,
+              team_id: this.form.values.new_team
+                ? null
+                : this.form.values.team_id,
+            };
+
         await this.$apollo.mutate({
           mutation: generateMutation({
             insert_tournament_teams_one: [
               {
                 object: {
                   tournament_id: this.$route.params.tournamentId,
-                  name: teamName,
-                  short_name: this.form.values.new_team ? shortName : null,
+                  ...team,
                   // `owner_steam_id` is a Hasura session preset on insert and
                   // must never be submitted from here. The player an organizer
                   // picks still reaches the team as its captain and its first
@@ -694,9 +771,6 @@ export default {
                   ...(captainSteamId
                     ? { captain_steam_id: captainSteamId }
                     : {}),
-                  team_id: this.form.values.new_team
-                    ? null
-                    : this.form.values.team_id,
                   roster: {
                     data: this.form.values.new_team
                       ? addPlayerSteamId

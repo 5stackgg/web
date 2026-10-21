@@ -8071,6 +8071,8 @@
         "lobby_invite": "Zaproszenie do lobby",
         "friend_request": "Zaproszenie do znajomych",
         "invited_you": "zaprosił(a) cię do",
+        "team_and_lineup": "{team} i jej składu na {tournament}",
+        "tournament_only_team": "{team} na {tournament}, drużyny tylko na ten turniej",
         "invited_party": "zaprosił(a) cię do swojej ekipy",
         "wants_to_be_friends": "chce zostać twoim znajomym",
         "actor_host": "Gospodarz",
@@ -8826,7 +8828,9 @@
   "tournament": {
     "admin_label": "Admin",
     "team_invite": {
-      "pending": "Oczekujące"
+      "pending": "Oczekujące",
+      "pending_team": "Zaproszony do drużyny i tego składu",
+      "pending_tournament": "Zaproszony tylko na ten turniej"
     },
     "results_table": {
       "matches": "Mecze"
@@ -8911,7 +8915,10 @@
       },
       "already_rostered": "W innej drużynie",
       "owner_on_a_team": "Już w składzie drużyny w tym turnieju.",
-      "leaves_pool": "Jesteś zapisany jako wolny zawodnik. Zgłoszenie drużyny usunie cię z listy wolnych zawodników."
+      "leaves_pool": "Jesteś zapisany jako wolny zawodnik. Zgłoszenie drużyny usunie cię z listy wolnych zawodników.",
+      "permanent_team": "Zachowaj jako stałą drużynę",
+      "permanent_team_description": "Dodaje ją też do twoich drużyn, z własną stroną i statystykami. Zaproszeni gracze dołączają do drużyny i do tego składu. Zostaw wyłączone dla drużyny jednorazowej.",
+      "permanent_team_name_taken": "Drużyna o nazwie {name} już istnieje. Wybierz inną nazwę albo wyłącz Zachowaj jako stałą drużynę."
     },
     "tournament_team": {
       "remove": "Usuń drużynę",
@@ -9258,6 +9265,8 @@
       "member_added_description": "{name} został dodany do twojego składu",
       "invite_sent": "Zaproszenie wysłane",
       "invite_sent_description": "{name} został zaproszony i musi zaakceptować, zanim dołączy do twojego składu",
+      "invite_sent_team_description": "{name} dostał zaproszenie do {team} i dołączy do tego składu po akceptacji",
+      "invite_sent_tournament_description": "{name} dostał zaproszenie do {team} na ten turniej i musi je najpierw przyjąć",
       "new": "Utwórz nową drużynę",
       "select": "Wybierz istniejącą drużynę",
       "select_role": "Wybierz rolę",
@@ -9270,6 +9279,19 @@
       "confirm_cancel_invite": "Czy na pewno chcesz anulować to zaproszenie?",
       "cancel_invite_description": "Spowoduje to anulowanie zaproszenia dla tego członka",
       "free_agent_tag": "Wolny zawodnik",
+      "kind": {
+        "team": "Drużyna",
+        "tournament_only": "Tylko turniej"
+      },
+      "add_tag": {
+        "on_team": "W drużynie",
+        "team_invite": "Zaproszenie do drużyny i składu",
+        "tournament_invite": "Zaproszenie na turniej"
+      },
+      "add_hint": {
+        "team": "Gracze spoza {team} dostają zaproszenie. Po przyjęciu dołączają do drużyny i do tego składu.",
+        "tournament": "Gracze dostają zaproszenie do {team}, drużyny tylko na ten turniej."
+      },
       "seed_label": "Rozstawienie",
       "seed_display": "Rozstawienie #{seed}"
     },
@@ -9814,6 +9836,8 @@
       "team_title": "Zaproszenie do drużyny",
       "tournament_title": "Zaproszenie do turnieju",
       "tournament_message": "Zostałeś zaproszony do dołączenia do turnieju",
+      "team_and_lineup_message": "Dołącz do {team} i jej składu na",
+      "tournament_team_message": "Zagraj w {team}, drużynie tylko na ten turniej, w",
       "team_message": "Zostałeś zaproszony do dołączenia do drużyny",
       "invited_by": "Zaprosił",
       "deny": "Odrzuć",

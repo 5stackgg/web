@@ -694,3 +694,46 @@ describe("ActionToasts match actions", () => {
     expect(entryOf("Dana").classList).toContain("md:grid");
   });
 });
+
+describe("ActionToasts tournament team invites", () => {
+  const invite = (team: Record<string, unknown>) => ({
+    id: "invite-1",
+    created_at: "2026-10-21T08:00:00Z",
+    invited_by: { steam_id: "76561198000000002", name: "sniddyus" },
+    team: {
+      id: "entry-1",
+      tournament: { id: "tournament-1", name: "VulkanLAN 2026" },
+      ...team,
+    },
+  });
+
+  afterEach(() => {
+    useNotificationStore().tournament_team_invites = [];
+  });
+
+  it("says an invite onto a team-backed entry joins the team and its lineup", async () => {
+    useNotificationStore().tournament_team_invites = [
+      invite({ name: null, team_id: "team-1", team: { name: "Ultima Ratio" } }),
+    ];
+
+    const wrapper = await mountToasts();
+
+    expect(wrapper.text()).toContain("Team Invite");
+    expect(wrapper.text()).toContain(
+      "Ultima Ratio and its lineup for VulkanLAN 2026",
+    );
+  });
+
+  it("says an invite onto a tournament-only team is for this tournament only", async () => {
+    useNotificationStore().tournament_team_invites = [
+      invite({ name: "Friday Mix", team_id: null, team: null }),
+    ];
+
+    const wrapper = await mountToasts();
+
+    expect(wrapper.text()).toContain("Tournament Invite");
+    expect(wrapper.text()).toContain(
+      "Friday Mix for VulkanLAN 2026, a team for this tournament only",
+    );
+  });
+});

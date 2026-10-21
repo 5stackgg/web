@@ -16,6 +16,7 @@ import { playerFields } from "~/graphql/playerFields";
 const pendingTeamFields = {
   checked_in_at: true,
   checked_in: true,
+  can_recruit: true,
 } as {};
 
 const pendingRosterFields = {

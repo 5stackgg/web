@@ -89,7 +89,7 @@ const { height: viewportHeight } = useVisualViewport();
                     :player="player"
                     :active="indexOfPlayer(player) === selectedIndex"
                     :reason="reasonFor(player)"
-                    :tag="tags[String(player.steam_id)]"
+                    :tag="tagFor(player)"
                     @select="select(player)"
                     @hover="onHover(indexOfPlayer(player))"
                   />
@@ -114,7 +114,7 @@ const { height: viewportHeight } = useVisualViewport();
                 :player="player"
                 :active="index === selectedIndex"
                 :reason="reasonFor(player)"
-                :tag="tags[String(player.steam_id)]"
+                :tag="tagFor(player)"
                 @select="select(player)"
                 @hover="onHover(index)"
               />
@@ -182,6 +182,9 @@ const { height: viewportHeight } = useVisualViewport();
               @toggle="toggleRegisteredOnly"
             />
           </FilterRail>
+          <p v-if="hint" class="text-xs leading-relaxed text-muted-foreground">
+            {{ hint }}
+          </p>
         </div>
       </div>
     </DrawerContent>
@@ -248,6 +251,9 @@ const { height: viewportHeight } = useVisualViewport();
               @toggle="toggleRegisteredOnly"
             />
           </FilterRail>
+          <p v-if="hint" class="text-xs leading-relaxed text-muted-foreground">
+            {{ hint }}
+          </p>
         </div>
 
         <div ref="scrollEl" class="max-h-[300px] overflow-y-auto">
@@ -284,7 +290,7 @@ const { height: viewportHeight } = useVisualViewport();
                     :player="player"
                     :active="indexOfPlayer(player) === selectedIndex"
                     :reason="reasonFor(player)"
-                    :tag="tags[String(player.steam_id)]"
+                    :tag="tagFor(player)"
                     @select="select(player)"
                     @hover="onHover(indexOfPlayer(player))"
                   />
@@ -315,7 +321,7 @@ const { height: viewportHeight } = useVisualViewport();
                   :player="player"
                   :active="index === selectedIndex"
                   :reason="reasonFor(player)"
-                  :tag="tags[String(player.steam_id)]"
+                  :tag="tagFor(player)"
                   @select="select(player)"
                   @hover="onHover(index)"
                 />
@@ -400,6 +406,16 @@ export default {
       type: Object as () => Record<string, string>,
       required: false,
       default: () => ({}),
+    },
+    // The label for every selectable player `tags` says nothing about.
+    fallbackTag: {
+      type: String,
+      required: false,
+    },
+    // A line under the search field saying what picking a player does.
+    hint: {
+      type: String,
+      required: false,
     },
     teamId: {
       type: String,
@@ -649,6 +665,12 @@ export default {
     reasonFor(player: Player): string | undefined {
       if (!player) return undefined;
       return this.ineligible[String(player.steam_id)];
+    },
+    tagFor(player: Player): string | undefined {
+      return (
+        this.tags[String(player.steam_id)] ??
+        (this.reasonFor(player) ? undefined : this.fallbackTag)
+      );
     },
     isIneligible(player: Player): boolean {
       return !!this.reasonFor(player);

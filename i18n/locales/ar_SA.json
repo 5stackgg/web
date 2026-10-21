@@ -8071,6 +8071,8 @@
         "lobby_invite": "دعوة لوبي",
         "friend_request": "طلب صداقة",
         "invited_you": "دعاك إلى",
+        "team_and_lineup": "{team} وتشكيلته في {tournament}",
+        "tournament_only_team": "{team} في {tournament}، وهو فريق لهذه البطولة فقط",
         "invited_party": "دعاك إلى مجموعته",
         "wants_to_be_friends": "يريد إضافتك صديقًا",
         "actor_host": "المضيف",
@@ -8826,7 +8828,9 @@
   "tournament": {
     "admin_label": "مشرف",
     "team_invite": {
-      "pending": "قيد الانتظار"
+      "pending": "قيد الانتظار",
+      "pending_team": "مدعو إلى الفريق وهذه التشكيلة",
+      "pending_tournament": "مدعو لهذه البطولة فقط"
     },
     "results_table": {
       "matches": "مباريات"
@@ -8911,7 +8915,10 @@
       },
       "already_rostered": "في فريق آخر",
       "owner_on_a_team": "مسجَّل بالفعل ضمن تشكيلة فريق في هذه البطولة.",
-      "leaves_pool": "أنت مسجّل كلاعب حر. تسجيل فريق سيُخرجك من قائمة اللاعبين الأحرار."
+      "leaves_pool": "أنت مسجّل كلاعب حر. تسجيل فريق سيُخرجك من قائمة اللاعبين الأحرار.",
+      "permanent_team": "احتفظ به كفريق دائم",
+      "permanent_team_description": "يضيفه أيضًا إلى فرقك، بصفحة وإحصائيات خاصة به. زملاؤك الذين تدعوهم ينضمون إلى الفريق وإلى هذه التشكيلة. اتركه مُعطّلًا لفريق لمرة واحدة.",
+      "permanent_team_name_taken": "يوجد فريق باسم {name} بالفعل. اختر اسمًا آخر أو أوقف خيار الاحتفاظ به كفريق دائم."
     },
     "tournament_team": {
       "remove": "احذف الفريق",
@@ -9258,6 +9265,8 @@
       "member_added_description": "أُضيف {name} إلى تشكيلتك",
       "invite_sent": "أُرسلت الدعوة",
       "invite_sent_description": "دُعي {name} وعليه القبول قبل الانضمام إلى تشكيلتك",
+      "invite_sent_team_description": "تمت دعوة {name} إلى {team} وسينضم إلى هذه التشكيلة بعد القبول",
+      "invite_sent_tournament_description": "تمت دعوة {name} إلى {team} لهذه البطولة ويجب أن يقبل أولًا",
       "new": "أنشئ فريقًا جديدًا",
       "select": "اختر فريقًا موجودًا",
       "select_role": "اختر الدور",
@@ -9270,6 +9279,19 @@
       "confirm_cancel_invite": "هل تريد إلغاء هذه الدعوة؟",
       "cancel_invite_description": "سيؤدي هذا إلى إلغاء الدعوة لهذا العضو",
       "free_agent_tag": "لاعب حر",
+      "kind": {
+        "team": "فريق",
+        "tournament_only": "للبطولة فقط"
+      },
+      "add_tag": {
+        "on_team": "في الفريق",
+        "team_invite": "دعوة للفريق والتشكيلة",
+        "tournament_invite": "دعوة للبطولة"
+      },
+      "add_hint": {
+        "team": "اللاعبون من خارج {team} يتلقون دعوة. قبولها يضيفهم إلى الفريق وإلى هذه التشكيلة.",
+        "tournament": "يتلقى اللاعبون دعوة إلى {team}، وهو فريق لهذه البطولة فقط."
+      },
       "seed_label": "التصنيف الأولي",
       "seed_display": "التصنيف #{seed}"
     },
@@ -9814,6 +9836,8 @@
       "team_title": "دعوة فريق",
       "tournament_title": "دعوة بطولة",
       "tournament_message": "تمت دعوتك للانضمام إلى بطولة",
+      "team_and_lineup_message": "انضم إلى {team} وتشكيلته في",
+      "tournament_team_message": "العب مع {team}، وهو فريق لهذه البطولة فقط، في",
       "team_message": "تمت دعوتك للانضمام إلى فريق",
       "invited_by": "الداعي",
       "deny": "ارفض",

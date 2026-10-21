@@ -192,15 +192,25 @@ const items = computed<ToastItem[]>(() => {
     });
   }
 
+  // An invite onto a team-backed entry joins the player to the team as well.
   for (const invite of notificationStore.tournament_team_invites) {
+    const joinsTeam = !!invite.team?.team_id;
+    const names = {
+      team: invite.team?.team?.name || invite.team?.name || "",
+      tournament: invite.team?.tournament?.name ?? "",
+    };
     list.push({
       id: `tournament:${invite.id}`,
-      kind: t("layouts.notifications.toast.tournament_invite"),
+      kind: joinsTeam
+        ? t("layouts.notifications.toast.team_invite")
+        : t("layouts.notifications.toast.tournament_invite"),
       who:
         invite.invited_by?.name ||
         t("layouts.notifications.toast.actor_organizer"),
       action: t("layouts.notifications.toast.invited_you"),
-      detail: invite.team?.tournament?.name ?? invite.team?.name ?? "",
+      detail: joinsTeam
+        ? t("layouts.notifications.toast.team_and_lineup", names)
+        : t("layouts.notifications.toast.tournament_only_team", names),
       accept: () => inviteAction("tournament", invite.id, true),
       decline: () => inviteAction("tournament", invite.id, false),
     });

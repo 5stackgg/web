@@ -11446,7 +11446,12 @@
       "rewound": "Veto rewound to step {step}",
       "rewind_failed": "Couldn't rewind the veto",
       "time_added": "{seconds} seconds added to the veto clock",
-      "time_failed": "Couldn't add time to the veto clock"
+      "time_failed": "Couldn't add time to the veto clock",
+      "deadline_title": "They need more time",
+      "deadline_description": "Adds {minutes} minutes before the match auto cancels.",
+      "deadline_forfeit_description": "Adds {minutes} minutes to the deadline.",
+      "deadline_added": "Deadline pushed back {minutes} minutes",
+      "deadline_failed": "Couldn't push the deadline back"
     },
     "veto_rewind": {
       "title": "Veto · Best of {count}",

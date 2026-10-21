@@ -535,6 +535,14 @@ const EXTEND_VETO_CLOCK = gql`
   }
 `;
 
+const EXTEND_MATCH_AUTO_CANCEL = gql`
+  mutation ExtendMatchAutoCancel($matchId: uuid!, $minutes: Int!) {
+    extendMatchAutoCancel(match_id: $matchId, minutes: $minutes) {
+      success
+    }
+  }
+`;
+
 const RESTART_MATCH_MAP = gql`
   mutation RestartMatchMap($matchId: uuid!) {
     restartMatchMap(match_id: $matchId) {
@@ -566,7 +574,7 @@ import {
   currentMatchAdminStep,
   upcomingAdminActions,
 } from "~/utilities/matchAdminSteps";
-import { matchFixMenu } from "~/utilities/fixProblem";
+import { DEADLINE_MINUTES, matchFixMenu } from "~/utilities/fixProblem";
 import { vetoTimelineSteps } from "~/utilities/rewind";
 import { mapVetoSteps } from "~/utilities/vetoLineups";
 import { useMatchRoundsFocus } from "~/composables/useMatchRoundsFocus";
@@ -741,6 +749,9 @@ export default {
           break;
         case "time":
           await this.extendVetoClock();
+          break;
+        case "deadline":
+          await this.extendDeadline();
           break;
         case "reboot":
           this.rebootOpen = true;
@@ -1037,6 +1048,25 @@ export default {
       } catch (error) {
         toast({
           title: this.$t("match.fix_menu.time_failed"),
+          description: (error as Error)?.message,
+          variant: "destructive",
+        });
+      }
+    },
+    async extendDeadline() {
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: EXTEND_MATCH_AUTO_CANCEL,
+          variables: { matchId: this.match.id, minutes: DEADLINE_MINUTES },
+        });
+        toast({
+          title: this.$t("match.fix_menu.deadline_added", {
+            minutes: DEADLINE_MINUTES,
+          }),
+        });
+      } catch (error) {
+        toast({
+          title: this.$t("match.fix_menu.deadline_failed"),
           description: (error as Error)?.message,
           variant: "destructive",
         });

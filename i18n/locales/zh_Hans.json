@@ -11446,7 +11446,12 @@
       "rewound": "BP 已回退到第 {step} 步",
       "rewind_failed": "无法回退 BP",
       "time_added": "BP 计时器已增加 {seconds} 秒",
-      "time_failed": "无法为 BP 计时器增加时间"
+      "time_failed": "无法为 BP 计时器增加时间",
+      "deadline_title": "需要更多时间",
+      "deadline_description": "在比赛自动取消前再增加 {minutes} 分钟。",
+      "deadline_forfeit_description": "将截止时间延后 {minutes} 分钟。",
+      "deadline_added": "截止时间已延后 {minutes} 分钟",
+      "deadline_failed": "无法延后截止时间"
     },
     "veto_rewind": {
       "title": "BP · BO{count}",

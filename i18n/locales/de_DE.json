@@ -11446,7 +11446,12 @@
       "rewound": "Veto auf Schritt {step} zurückgesetzt",
       "rewind_failed": "Das Veto konnte nicht zurückgesetzt werden",
       "time_added": "{seconds} Sekunden zur Veto-Uhr hinzugefügt",
-      "time_failed": "Zur Veto-Uhr konnte keine Zeit hinzugefügt werden"
+      "time_failed": "Zur Veto-Uhr konnte keine Zeit hinzugefügt werden",
+      "deadline_title": "Sie brauchen mehr Zeit",
+      "deadline_description": "Gibt {minutes} Minuten mehr, bevor das Match automatisch abgebrochen wird.",
+      "deadline_forfeit_description": "Verlängert die Frist um {minutes} Minuten.",
+      "deadline_added": "Frist um {minutes} Minuten verlängert",
+      "deadline_failed": "Die Frist konnte nicht verlängert werden"
     },
     "veto_rewind": {
       "title": "Veto · Best of {count}",

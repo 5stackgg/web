@@ -11446,7 +11446,12 @@
       "rewound": "Veto rembobiné à l'étape {step}",
       "rewind_failed": "Impossible de rembobiner le veto",
       "time_added": "{seconds} secondes ajoutées au chrono du veto",
-      "time_failed": "Impossible d'ajouter du temps au chrono du veto"
+      "time_failed": "Impossible d'ajouter du temps au chrono du veto",
+      "deadline_title": "Ils ont besoin de plus de temps",
+      "deadline_description": "Ajoute {minutes} minutes avant l'annulation automatique du match.",
+      "deadline_forfeit_description": "Ajoute {minutes} minutes à l'échéance.",
+      "deadline_added": "Échéance repoussée de {minutes} minutes",
+      "deadline_failed": "Impossible de repousser l'échéance"
     },
     "veto_rewind": {
       "title": "Veto · Best of {count}",

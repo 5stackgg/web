@@ -11446,7 +11446,12 @@
       "rewound": "Veto voltou para a etapa {step}",
       "rewind_failed": "Não foi possível voltar o veto",
       "time_added": "{seconds} segundos adicionados ao relógio do veto",
-      "time_failed": "Não foi possível adicionar tempo ao relógio do veto"
+      "time_failed": "Não foi possível adicionar tempo ao relógio do veto",
+      "deadline_title": "Eles precisam de mais tempo",
+      "deadline_description": "Adiciona {minutes} minutos antes de a partida ser cancelada automaticamente.",
+      "deadline_forfeit_description": "Adiciona {minutes} minutos ao prazo.",
+      "deadline_added": "Prazo adiado em {minutes} minutos",
+      "deadline_failed": "Não foi possível adiar o prazo"
     },
     "veto_rewind": {
       "title": "Veto · Melhor de {count}",

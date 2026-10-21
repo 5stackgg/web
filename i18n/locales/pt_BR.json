@@ -12199,6 +12199,7 @@
     },
     "gifs": {
       "label": "GIF",
+      "play": "Reproduzir GIF",
       "open": "Enviar um GIF",
       "search": "Pesquisar no GIPHY",
       "command_search_for": "Buscar “{term}” no GIPHY",

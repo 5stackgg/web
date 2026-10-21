@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { usePreferredReducedMotion } from "@vueuse/core";
-import { Film, Play } from "lucide-vue-next";
+import { Film, Pause, Play } from "lucide-vue-next";
 import FadeImage from "~/components/media/FadeImage.vue";
 import MediaLightbox from "~/components/media/MediaLightbox.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import {
   chatAttachmentPosterUrl,
   chatAttachmentUrl,
@@ -37,6 +38,15 @@ const videos = computed(() =>
 const motion = usePreferredReducedMotion();
 const still = computed(() => motion.value === "reduce");
 const ANIMATED = ["image/gif", "image/webp"];
+const gifPlaying = ref(false);
+const gifLoaded = ref(false);
+
+function stopGif() {
+  gifPlaying.value = false;
+  gifLoaded.value = false;
+}
+
+watch(still, stopGif);
 
 const gif = computed(() =>
   props.message.gif && chatGifUrl(props.message.gif.id, "full")
@@ -199,11 +209,74 @@ const tileClasses =
         :src="chatGifUrl(gif.id, 'full', still)"
         :alt="$t('chat.gifs.label')"
       />
+      <div v-if="still" class="pointer-events-none absolute inset-0">
+        <FadeSwap class="h-full w-full">
+          <div
+            v-if="gifPlaying"
+            key="animated"
+            data-gif-animated-layer
+            class="h-full w-full"
+          >
+            <FadeSwap class="h-full w-full">
+              <img
+                v-if="gifLoaded"
+                key="loaded"
+                data-gif-animated
+                :src="chatGifUrl(gif.id, 'full')"
+                alt=""
+                draggable="false"
+                class="block h-full w-full object-cover"
+              />
+            </FadeSwap>
+            <img
+              v-if="!gifLoaded"
+              data-gif-loading
+              :src="chatGifUrl(gif.id, 'full')"
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              class="absolute inset-0 h-full w-full opacity-0"
+              @load="gifLoaded = true"
+              @error="stopGif"
+            />
+          </div>
+        </FadeSwap>
+      </div>
       <span
         class="pointer-events-none absolute left-1.5 top-1.5 rounded-sm bg-black/60 px-1 py-0.5 font-mono text-[0.5rem] font-bold uppercase tracking-wider text-white/90"
       >
         {{ $t("chat.gifs.label") }}
       </span>
+      <button
+        v-if="still"
+        type="button"
+        data-gif-play
+        :aria-label="$t('chat.gifs.play')"
+        :aria-pressed="gifPlaying"
+        :class="[
+          'absolute flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]',
+          gifPlaying
+            ? 'bottom-1.5 right-1.5 size-7 rounded-full border border-white/20 bg-black/60 text-white/90 before:absolute before:-inset-2'
+            : 'inset-0 focus-visible:ring-inset',
+        ]"
+        @click="gifPlaying = !gifPlaying"
+      >
+        <FadeSwap>
+          <Pause
+            v-if="gifPlaying"
+            key="pause"
+            data-gif-pause-icon
+            class="size-3.5"
+          />
+          <span
+            v-else
+            key="play"
+            class="flex h-11 w-11 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-black/60 text-[hsl(var(--tac-amber))]"
+          >
+            <Play class="ml-0.5 h-5 w-5" />
+          </span>
+        </FadeSwap>
+      </button>
     </div>
 
     <MediaLightbox

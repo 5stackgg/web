@@ -5,6 +5,7 @@ import {
   heroState,
   roundedPing,
   seatLayout,
+  seatPlan,
   type HeroInputs,
 } from "~/components/play/matchmakingHero";
 
@@ -64,6 +65,37 @@ const base: HeroInputs = {
   noRegions: false,
   isMember: false,
 };
+
+describe("seatPlan", () => {
+  it("draws one side while the party fits it", () => {
+    expect(seatPlan(10, 2, false)).toEqual({
+      perSide: 5,
+      total: 5,
+      inHouse: false,
+      twoRows: false,
+    });
+    expect(seatPlan(4, 2, false)).toMatchObject({ total: 2, inHouse: false });
+  });
+
+  it("opens the whole match when the joined party outgrows one side", () => {
+    expect(seatPlan(6, 4, false)).toEqual({
+      perSide: 3,
+      total: 6,
+      inHouse: true,
+      twoRows: true,
+    });
+    expect(seatPlan(4, 4, false)).toMatchObject({ total: 4, twoRows: false });
+  });
+
+  it("opens the whole match when the leader asks to play each other", () => {
+    expect(seatPlan(10, 1, true)).toMatchObject({
+      total: 10,
+      inHouse: true,
+      twoRows: true,
+    });
+    expect(seatPlan(2, 1, true)).toMatchObject({ total: 2, twoRows: false });
+  });
+});
 
 describe("heroState", () => {
   it("is idle by default", () => {

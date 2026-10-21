@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "单人排队",
-          "invite": "邀请好友",
           "leader": "以 {count} 人小队排队",
           "you_lead": "你是队长",
           "member": "在 {name} 的 {count} 人小队中",
@@ -4481,7 +4480,32 @@
           "title": "所有区域都超过了你的 {ms} ms 上限",
           "body": "提高上限或标星一个你能接受的区域，然后重新排队。"
         },
-        "find_lan_match": "寻找局域网比赛"
+        "find_lan_match": "寻找局域网比赛",
+        "fill_to": "{count} 人小队 · 补满 {total} 人",
+        "seat_row": {
+          "your_side": "你方",
+          "just_you": "只有你",
+          "all_seats": "全部 {count} 个位置",
+          "both_seats": "两个位置",
+          "count": "{count} / {total}",
+          "avg_elo": "平均 {elo} ELO",
+          "invite": "邀请好友",
+          "invite_short": "邀请",
+          "vs": "VS",
+          "from_queue": "队列中的 {count} 名对手 | 队列中的 {count} 名对手",
+          "open_all": "内战？开放全部 {count} 个位置",
+          "open_both": "和好友 1v1？开放两个位置",
+          "just_your_side": "只要你方",
+          "fill_all": "补满全部 {count} 个位置即可内战。",
+          "too_many": "{count} 人超过一方的人数。补满全部 {total} 个位置进行内战，或移除 {extra} 人。",
+          "play_each_other": "你们将进行内战。比赛开始时随机分队。",
+          "pending_pill": "+{count} 已邀请",
+          "pending_side": "如果他们加入，你们将有 {count} 人，超过 {format} 一方的人数。",
+          "pending_full": "如果他们加入，你们将有 {count} 人并进行内战。",
+          "pending_too_big": "如果他们加入，小队人数将超过 {format} 的上限。",
+          "cancel_invite": "取消邀请",
+          "cancel_invite_for": "取消对 {name} 的邀请"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "邀请玩家加入大厅",
       "access_updated": "大厅权限已更新为 {access}",
       "invited": "已邀请",
-      "waiting_for_players": "等待玩家加入您的大厅。使用上方的“邀请”按钮添加好友。"
+      "waiting_for_players": "等待玩家加入您的大厅。使用上方的“邀请”按钮添加好友。",
+      "access_values": {
+        "Open": "公开",
+        "Friends": "好友",
+        "Invite": "仅限邀请"
+      }
     },
     "friends": {
       "title": "好友",

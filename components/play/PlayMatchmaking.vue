@@ -22,6 +22,7 @@ import Fold from "~/components/ui/transitions/Fold.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayModeTile from "~/components/play/PlayModeTile.vue";
 import PlaySeats from "~/components/play/PlaySeats.vue";
+import PlaySeatRow from "~/components/play/PlaySeatRow.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import MatchmakingSettingsPanel from "~/components/matchmaking/MatchmakingSettingsPanel.vue";
 import { useQuickQueue } from "~/composables/useQuickQueue";
@@ -79,10 +80,14 @@ function formatName(type: e_match_types_enum) {
 }
 
 // What the button queues: the tile the viewer picked if the party can still
-// play it. Nothing is chosen for them unless only one mode fits.
+// play it. Nothing is chosen for them unless only one mode fits. A party
+// between one side and the whole match can still pick a mode and fill the
+// seats to play each other; Find stays off until it fits.
 const picked = ref<e_match_types_enum | null>(null);
 const selectable = computed(() =>
-  modes.value.filter((mode) => isGuest.value || mode.canQueue),
+  modes.value.filter(
+    (mode) => isGuest.value || mode.canQueue || party.value < mode.expected,
+  ),
 );
 const selectedType = computed<e_match_types_enum | null>(() => {
   if (isMember.value) return null;
@@ -90,6 +95,16 @@ const selectedType = computed<e_match_types_enum | null>(() => {
   if (choice) return choice.type;
   return selectable.value.length === 1 ? selectable.value[0].type : null;
 });
+const selectedCanQueue = computed(
+  () =>
+    modes.value.find((mode) => mode.type === selectedType.value)?.canQueue ??
+    false,
+);
+// The seat row follows the pick; before one, it shows the biggest format.
+const seatType = computed(
+  () => selectedType.value ?? modes.value[0]?.type ?? null,
+);
+
 // With nothing checked, Tab lands on the first mode it can pick, like a
 // native radio set.
 const tabStop = computed(
@@ -398,7 +413,9 @@ function findMatch(event: MouseEvent) {
     signIn();
     return;
   }
-  if (selectedType.value) join(selectedType.value, event.currentTarget);
+  if (selectedType.value && selectedCanQueue.value) {
+    join(selectedType.value, event.currentTarget);
+  }
 }
 
 const settingsOpen = ref(false);
@@ -537,6 +554,8 @@ const linkClasses =
             }"
           ></span>
         </div>
+
+        <PlaySeatRow v-if="!isGuest && seatType" :type="seatType" />
 
         <div
           class="mt-4 flex items-center justify-between gap-x-6 gap-y-3.5 border-t border-border/70 pt-4 max-lg:flex-col max-lg:items-stretch max-sm:contents"
@@ -693,14 +712,12 @@ const linkClasses =
                 <span v-else>{{
                   $t("pages.play.matchmaking.queue_solo")
                 }}</span>
-                <span class="text-muted-foreground/55">·</span>
-                <button type="button" :class="linkClasses" @click="openParty">
-                  {{
-                    party > 1 || isMember
-                      ? $t("pages.play.matchmaking.party.open")
-                      : $t("pages.play.matchmaking.party.invite")
-                  }}
-                </button>
+                <template v-if="party > 1 || isMember">
+                  <span class="text-muted-foreground/55">·</span>
+                  <button type="button" :class="linkClasses" @click="openParty">
+                    {{ $t("pages.play.matchmaking.party.open") }}
+                  </button>
+                </template>
               </div>
             </template>
           </div>
@@ -765,7 +782,7 @@ const linkClasses =
             <Button
               v-else
               :class="primaryClasses"
-              :disabled="state !== 'idle' || !selectedType"
+              :disabled="state !== 'idle' || !selectedType || !selectedCanQueue"
               @click="findMatch"
             >
               <Play class="size-4 fill-current" />

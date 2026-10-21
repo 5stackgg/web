@@ -29,6 +29,30 @@ export function seatLayout(expected: number, party: number): SeatLayout {
   };
 }
 
+export type SeatPlan = {
+  perSide: number;
+  // Seats drawn: one side, or the whole match when the party plays itself.
+  total: number;
+  inHouse: boolean;
+  // Past five seats the whole match folds into two half-height rows, so the
+  // seat row is the same height in every mode.
+  twoRows: boolean;
+};
+
+// Seats the /play seat row draws for a mode. It opens the whole match when
+// the joined party is bigger than one side, or when the leader asks to play
+// each other. Pending invites never reshape it: they only count once joined.
+export function seatPlan(
+  expected: number,
+  joined: number,
+  openAll: boolean,
+): SeatPlan {
+  const perSide = Math.max(1, Math.floor(expected / 2));
+  const inHouse = openAll || joined > perSide;
+  const total = inHouse ? perSide * 2 : perSide;
+  return { perSide, total, inHouse, twoRows: total > 5 };
+}
+
 export type HeroState =
   | "hidden"
   | "guest"

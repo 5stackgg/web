@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "En file en solo",
-          "invite": "Inviter des amis",
           "leader": "En file en groupe de {count}",
           "you_lead": "Tu es chef de groupe",
           "member": "Dans le groupe de {name} ({count})",
@@ -4481,7 +4480,32 @@
           "title": "Toutes les régions dépassent ta limite de {ms} ms",
           "body": "Augmente ta limite ou mets en favori une région acceptable, puis relance la file."
         },
-        "find_lan_match": "Trouver un match LAN"
+        "find_lan_match": "Trouver un match LAN",
+        "fill_to": "Groupe de {count} · complétez à {total}",
+        "seat_row": {
+          "your_side": "Votre camp",
+          "just_you": "Vous seul",
+          "all_seats": "Les {count} places",
+          "both_seats": "Les deux places",
+          "count": "{count} sur {total}",
+          "avg_elo": "moy. {elo} ELO",
+          "invite": "Inviter un ami",
+          "invite_short": "Inviter",
+          "vs": "VS",
+          "from_queue": "{count} adversaire de la file | {count} adversaires de la file",
+          "open_all": "Vous jouez entre vous ? Ouvrez les {count} places",
+          "open_both": "Un 1v1 contre un ami ? Ouvrez les deux places",
+          "just_your_side": "Seulement votre camp",
+          "fill_all": "Remplissez les {count} places pour jouer entre vous.",
+          "too_many": "Un groupe de {count}, c'est trop pour un camp. Remplissez les {total} places pour jouer entre vous, ou retirez-en {extra}.",
+          "play_each_other": "Vous jouez entre vous. Les équipes sont tirées au sort au début du match.",
+          "pending_pill": "+{count} en attente",
+          "pending_side": "S'ils rejoignent, vous seriez {count} : trop pour un camp en {format}.",
+          "pending_full": "S'ils rejoignent, vous seriez {count} et joueriez entre vous.",
+          "pending_too_big": "S'ils rejoignent, le groupe sera trop grand pour le {format}.",
+          "cancel_invite": "Annuler l'invitation",
+          "cancel_invite_for": "Annuler l'invitation de {name}"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Inviter un joueur dans le lobby",
       "access_updated": "Accès au lobby modifié : {access}",
       "invited": "Invité",
-      "waiting_for_players": "En attente de joueurs dans ton lobby. Utilise le bouton Inviter ci-dessus pour ajouter des amis."
+      "waiting_for_players": "En attente de joueurs dans ton lobby. Utilise le bouton Inviter ci-dessus pour ajouter des amis.",
+      "access_values": {
+        "Open": "Ouvert",
+        "Friends": "Amis",
+        "Invite": "Sur invitation"
+      }
     },
     "friends": {
       "title": "Amis",

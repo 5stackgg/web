@@ -4460,7 +4460,6 @@
         },
         "party": {
           "solo": "Köar solo",
-          "invite": "Bjud in vänner",
           "leader": "Köar som grupp på {count}",
           "you_lead": "Du leder",
           "member": "I {name}s grupp på {count}",
@@ -4481,7 +4480,32 @@
           "title": "Alla regioner ligger över din gräns på {ms} ms",
           "body": "Höj gränsen eller stjärnmärk en region du kan godta och köa sedan igen."
         },
-        "find_lan_match": "Hitta LAN-match"
+        "find_lan_match": "Hitta LAN-match",
+        "fill_to": "Grupp på {count} · fyll till {total}",
+        "seat_row": {
+          "your_side": "Din sida",
+          "just_you": "Bara du",
+          "all_seats": "Alla {count} platser",
+          "both_seats": "Båda platserna",
+          "count": "{count} av {total}",
+          "avg_elo": "snitt {elo} ELO",
+          "invite": "Bjud in en vän",
+          "invite_short": "Bjud in",
+          "vs": "VS",
+          "from_queue": "{count} motståndare från kön | {count} motståndare från kön",
+          "open_all": "Spelar ni mot varandra? Öppna alla {count} platser",
+          "open_both": "1v1 mot en vän? Öppna båda platserna",
+          "just_your_side": "Bara din sida",
+          "fill_all": "Fyll alla {count} platser för att spela mot varandra.",
+          "too_many": "En grupp på {count} är för stor för en sida. Fyll alla {total} platser för att spela mot varandra, eller ta bort {extra}.",
+          "play_each_other": "Ni spelar mot varandra. Lagen lottas när matchen startar.",
+          "pending_pill": "+{count} inbjudna",
+          "pending_side": "Om de går med blir ni {count}: för många för en sida i {format}.",
+          "pending_full": "Om de går med blir ni {count} och spelar mot varandra.",
+          "pending_too_big": "Om de går med blir gruppen för stor för {format}.",
+          "cancel_invite": "Dra tillbaka inbjudan",
+          "cancel_invite_for": "Dra tillbaka inbjudan till {name}"
+        }
       },
       "draft_games": {},
       "schedule": {
@@ -11893,7 +11917,12 @@
       "invite_player": "Bjud in spelare till lobbyn",
       "access_updated": "Lobbyåtkomst uppdaterad till {access}",
       "invited": "Inbjuden",
-      "waiting_for_players": "Väntar på att spelare ska gå med i din lobby. Använd knappen Bjud in ovan för att lägga till vänner."
+      "waiting_for_players": "Väntar på att spelare ska gå med i din lobby. Använd knappen Bjud in ovan för att lägga till vänner.",
+      "access_values": {
+        "Open": "Öppen",
+        "Friends": "Vänner",
+        "Invite": "Endast inbjudan"
+      }
     },
     "friends": {
       "title": "Vänner",

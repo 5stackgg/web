@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Check, Lock } from "lucide-vue-next";
+import { Check, Lock, UserPlus } from "lucide-vue-next";
 import PlaySeats from "~/components/play/PlaySeats.vue";
 
 // One mode in the picker. Typographic on purpose: the format and who it seats
@@ -24,7 +24,14 @@ const props = defineProps<{
 defineEmits<{ (e: "select"): void }>();
 
 const perSide = computed(() => Math.max(1, Math.floor(props.expected / 2)));
-const blocked = computed(() => props.party > 0 && !props.canQueue);
+// Between one side and the whole match the party can't queue yet, but the
+// mode stays pickable: fill every seat and you play each other.
+const fill = computed(
+  () => props.party > 0 && !props.canQueue && props.party < props.expected,
+);
+const blocked = computed(
+  () => props.party > 0 && !props.canQueue && !fill.value,
+);
 const checked = computed(() => props.selected && !blocked.value);
 </script>
 
@@ -120,6 +127,18 @@ const checked = computed(() => props.selected && !blocked.value);
     >
       <Lock class="mt-0.5 size-[13px] shrink-0" />
       {{ $t("pages.play.matchmaking.too_big", { count: party, mode: title }) }}
+    </span>
+    <span
+      v-else-if="fill"
+      class="mt-auto flex items-start gap-1.5 pt-2 text-[12.5px] font-semibold text-[hsl(var(--tac-amber))] max-sm:pt-1.5 max-sm:text-xs"
+    >
+      <UserPlus class="mt-0.5 size-[13px] shrink-0" />
+      {{
+        $t("pages.play.matchmaking.fill_to", {
+          count: party,
+          total: expected,
+        })
+      }}
     </span>
   </button>
 </template>

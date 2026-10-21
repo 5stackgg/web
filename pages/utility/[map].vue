@@ -304,17 +304,22 @@ const { session: practiceSession } = useUtilityPracticeSession();
 const { isMobile } = useSidebar();
 
 // Booting a server takes the create matches role at the api; standing in one
-// somebody else started does not.
-const canHavePracticeServer = computed(
+// somebody else started does not. Until the settings arrive the role reads as
+// the lowest one, which would offer a server to everybody.
+const canStartPractice = computed(
   () =>
-    useApplicationSettingsStore().canCreateMatch || !!practiceSession.value,
+    useApplicationSettingsStore().settingsLoaded &&
+    useApplicationSettingsStore().canCreateMatch,
+);
+const canHavePracticeServer = computed(
+  () => canStartPractice.value || !!practiceSession.value,
 );
 const practiceServerBar = computed(
   () => !isMobile.value && canHavePracticeServer.value,
 );
 
-watch(canHavePracticeServer, (can) => {
-  if (!can) {
+watch(practiceSession, (session, before) => {
+  if (before && !session && !canStartPractice.value) {
     practiceOpen.value = false;
   }
 });
@@ -2680,7 +2685,7 @@ function selectLineup(id: string | null) {
             :lineups="lineups"
             :busiest="Math.max(1, metaBusiest)"
             :signed-in="!!mySteamId"
-            :can-practice="!!mySteamId && !isMobile"
+            :can-practice="practiceServerBar"
             @back="closeMetaSpot"
             @open-lineup="openLineup"
             @write-up="writeUpMetaSpot"
@@ -2693,7 +2698,7 @@ function selectLineup(id: string | null) {
             :lineups="lineups"
             :context="detailContext"
             :can-react="!!mySteamId"
-            :can-practice="!isMobile && !!mySteamId"
+            :can-practice="practiceServerBar"
             :can-review="canReview"
             @skip="skipFromDetail"
             @bar="setDetailBar"
@@ -2766,6 +2771,7 @@ function selectLineup(id: string | null) {
                     :collection-id="practiceTarget?.collectionId ?? null"
                     :join-invite-code="joinInviteCode"
                     @joined="practiceOpen = false"
+                    @dismiss="practiceOpen = false"
                   />
                 </div>
               </section>

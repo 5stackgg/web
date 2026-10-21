@@ -71,7 +71,7 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits<{ (e: "joined"): void }>();
+const emit = defineEmits<{ (e: "joined"): void; (e: "dismiss"): void }>();
 
 // Up or being joined, so the surface around it can say so.
 const live = defineModel<boolean>("live", { default: false });
@@ -86,8 +86,13 @@ const SERVER_PREFIX = "server:";
 
 const regions = computed(() => useApplicationSettingsStore().availableRegions);
 // The api holds starting a server to the create matches role, and the server
-// list to the same; joining one somebody else started is anybody's.
-const canStart = computed(() => useApplicationSettingsStore().canCreateMatch);
+// list to the same; joining one somebody else started is anybody's. Until the
+// settings arrive the role reads as the lowest one, which would offer it to all.
+const canStart = computed(
+  () =>
+    useApplicationSettingsStore().settingsLoaded &&
+    useApplicationSettingsStore().canCreateMatch,
+);
 const region = ref<string>(ANY_REGION);
 const playbookChoice = ref<string>(NO_PLAYBOOK);
 
@@ -263,7 +268,14 @@ watch(
     }
     playbookChoice.value = props.playbookId ?? NO_PLAYBOOK;
     void restoreLiveSession();
-    if (!canStart.value) {
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.active && canStart.value,
+  (formShown) => {
+    if (!formShown) {
       return;
     }
     void loadPracticeServers();
@@ -440,6 +452,9 @@ watch(
         description: error?.message,
         variant: "destructive",
       });
+      if (!canStart.value) {
+        emit("dismiss");
+      }
     } finally {
       joining.value = false;
     }

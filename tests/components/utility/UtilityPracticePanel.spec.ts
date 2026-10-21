@@ -69,11 +69,12 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
 const auth = reactive({ me: { steam_id: "9" }, isRoleAbove: () => false });
 vi.mock("~/stores/AuthStore", () => ({ useAuthStore: () => auth }));
 
-const settings = reactive({ canCreateMatch: true });
+const settings = reactive({ canCreateMatch: true, settingsLoaded: true });
 vi.mock("~/stores/ApplicationSettings", () => ({
   useApplicationSettingsStore: () => ({
     availableRegions: [],
     canCreateMatch: settings.canCreateMatch,
+    settingsLoaded: settings.settingsLoaded,
   }),
 }));
 
@@ -88,6 +89,7 @@ beforeEach(() => {
   joined = null;
   asked.length = 0;
   settings.canCreateMatch = true;
+  settings.settingsLoaded = true;
   useToast().dismiss();
 });
 
@@ -219,6 +221,37 @@ describe("UtilityPracticePanel and the create matches role", () => {
   it("is unchanged for a player at the role", async () => {
     settings.canCreateMatch = true;
     const wrapper = await mountPanel();
+
+    expect(wrapper.text()).toContain("Start Server");
+    expect(asked).toContain("utilityPracticeServers");
+  });
+
+  it("hands a failed invite back to its host for a player below the role", async () => {
+    const wrapper = await mountPanel({ joinInviteCode: "stale" });
+    await settle();
+
+    expect(wrapper.emitted("dismiss")).toHaveLength(1);
+  });
+
+  it("keeps a failed invite on the form for a player at the role", async () => {
+    settings.canCreateMatch = true;
+    const wrapper = await mountPanel({ joinInviteCode: "stale" });
+    await settle();
+
+    expect(wrapper.emitted("dismiss")).toBeUndefined();
+    expect(wrapper.text()).toContain("Start Server");
+  });
+
+  it("waits for the settings before offering the form, then offers it", async () => {
+    settings.canCreateMatch = true;
+    settings.settingsLoaded = false;
+    const wrapper = await mountPanel();
+
+    expect(wrapper.text()).not.toContain("Start Server");
+    expect(asked).not.toContain("utilityPracticeServers");
+
+    settings.settingsLoaded = true;
+    await settle();
 
     expect(wrapper.text()).toContain("Start Server");
     expect(asked).toContain("utilityPracticeServers");

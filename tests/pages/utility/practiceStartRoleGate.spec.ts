@@ -51,10 +51,18 @@ const settle = async () => {
 type Wrapper = Awaited<ReturnType<typeof mountSuspended>>;
 let wrapper: Wrapper | undefined;
 
-function signIn(role: string, createMatchesRole: string) {
-  useApplicationSettingsStore().settings = [
+function loadSettings(createMatchesRole: string) {
+  const settings = useApplicationSettingsStore();
+  settings.settings = [
     { name: "public.create_matches_role", value: createMatchesRole },
   ];
+  settings.settingsLoaded = true;
+}
+
+function signIn(role: string, createMatchesRole: string | null) {
+  if (createMatchesRole) {
+    loadSettings(createMatchesRole);
+  }
   const auth = useAuthStore();
   auth.me = { steam_id: "76561198000000001", role, teams: [] } as any;
   auth.hasCheckedSession = true;
@@ -84,6 +92,7 @@ afterEach(async () => {
   practiceSession.value = null;
   useAuthStore().me = undefined;
   useApplicationSettingsStore().settings = [];
+  useApplicationSettingsStore().settingsLoaded = false;
   vi.unstubAllGlobals();
   document.body.innerHTML = "";
   await useRouter().replace("/");
@@ -110,6 +119,9 @@ const bar = (page: Wrapper) =>
 
 const drawerOpen = () =>
   !!document.querySelector("[data-utility-practice-open]");
+
+const panel = (page: Wrapper) =>
+  page.findComponent({ name: "UtilityPracticePanel" });
 
 describe("the practice server bar and the create matches role", () => {
   it("is no launcher for a player below the role the api asks for", async () => {
@@ -167,5 +179,70 @@ describe("the practice server bar and the create matches role", () => {
 
     expect(drawerOpen()).toBe(false);
     expect(bar(page).exists()).toBe(false);
+  });
+
+  it("offers no way to practise a lineup or a spot to a player who cannot have a server", async () => {
+    signIn("user", "verified_user");
+
+    const page = await openMap();
+
+    expect(
+      page.findComponent({ name: "UtilityLineupDetail" }).props("canPractice"),
+    ).toBe(false);
+    expect(
+      page.findComponent({ name: "UtilityMetaSpotView" }).props("canPractice"),
+    ).toBe(false);
+  });
+
+  it("still offers them to a player at the role, and to one on a server somebody let them on", async () => {
+    signIn("verified_user", "verified_user");
+    const page = await openMap();
+
+    expect(
+      page.findComponent({ name: "UtilityLineupDetail" }).props("canPractice"),
+    ).toBe(true);
+
+    loadSettings("match_organizer");
+    practiceSession.value = joinedSession();
+    await settle();
+
+    expect(
+      page.findComponent({ name: "UtilityLineupDetail" }).props("canPractice"),
+    ).toBe(true);
+    expect(
+      page.findComponent({ name: "UtilityMetaSpotView" }).props("canPractice"),
+    ).toBe(true);
+  });
+
+  it("puts the server panel away when an invite could not be joined", async () => {
+    signIn("user", "verified_user");
+
+    const page = await openMap("/utility/de_mirage?practice=stale");
+    expect(drawerOpen()).toBe(true);
+
+    panel(page).vm.$emit("dismiss");
+    await settle();
+
+    expect(drawerOpen()).toBe(false);
+  });
+
+  it("is no launcher before the settings have said who may start one", async () => {
+    signIn("user", null);
+
+    const page = await openMap();
+
+    expect(bar(page).exists()).toBe(false);
+  });
+
+  it("keeps an invite's server panel open while the settings arrive mid-join", async () => {
+    signIn("user", null);
+
+    await openMap("/utility/de_mirage?practice=abc123");
+    expect(drawerOpen()).toBe(true);
+
+    loadSettings("verified_user");
+    await settle();
+
+    expect(drawerOpen()).toBe(true);
   });
 });

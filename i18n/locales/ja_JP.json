@@ -4427,7 +4427,15 @@
           "description": "ユーティリティのラインナップ練習用の専用サーバー · マップ自由",
           "map": "マップ",
           "start": "練習を開始",
-          "sign_in": "ログインして練習"
+          "sign_in": "ログインして練習",
+          "manage": "管理",
+          "stop": "停止",
+          "leave": "退出",
+          "access_open": "リンクを持っている人なら誰でも参加できます",
+          "access_friends": "フレンドが参加できます",
+          "access_invite": "招待したプレイヤーが参加できます",
+          "access_private": "参加できるのはあなただけです",
+          "invite_link_in_panel": "招待リンクはパネルにあります"
         }
       },
       "matchmaking": {

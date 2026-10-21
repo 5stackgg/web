@@ -4427,7 +4427,15 @@
           "description": "Il tuo server per i lineup di utility · qualsiasi mappa",
           "map": "Mappa",
           "start": "Inizia ad allenarti",
-          "sign_in": "Accedi per allenarti"
+          "sign_in": "Accedi per allenarti",
+          "manage": "Gestisci",
+          "stop": "Ferma",
+          "leave": "Esci",
+          "access_open": "Chiunque abbia il link può entrare",
+          "access_friends": "Possono entrare i tuoi amici",
+          "access_invite": "Possono entrare i giocatori invitati",
+          "access_private": "Puoi entrare solo tu",
+          "invite_link_in_panel": "link d'invito nel pannello"
         }
       },
       "matchmaking": {

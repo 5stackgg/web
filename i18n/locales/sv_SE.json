@@ -4427,7 +4427,15 @@
           "description": "Din egen server för utility-uppställningar · valfri karta",
           "map": "Karta",
           "start": "Starta träning",
-          "sign_in": "Logga in för att träna"
+          "sign_in": "Logga in för att träna",
+          "manage": "Hantera",
+          "stop": "Stoppa",
+          "leave": "Lämna",
+          "access_open": "Alla med länken kan ansluta",
+          "access_friends": "Vänner kan ansluta",
+          "access_invite": "Inbjudna spelare kan ansluta",
+          "access_private": "Bara du kan ansluta",
+          "invite_link_in_panel": "inbjudningslänk i panelen"
         }
       },
       "matchmaking": {

@@ -4427,7 +4427,15 @@
           "description": "유틸 라인업 연습용 개인 서버 · 모든 맵",
           "map": "맵",
           "start": "연습 시작",
-          "sign_in": "로그인하고 연습"
+          "sign_in": "로그인하고 연습",
+          "manage": "관리",
+          "stop": "정지",
+          "leave": "나가기",
+          "access_open": "링크가 있으면 누구나 참가할 수 있습니다",
+          "access_friends": "친구가 참가할 수 있습니다",
+          "access_invite": "초대한 플레이어가 참가할 수 있습니다",
+          "access_private": "나만 참가할 수 있습니다",
+          "invite_link_in_panel": "초대 링크는 패널에 있습니다"
         }
       },
       "matchmaking": {

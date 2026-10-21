@@ -4427,7 +4427,15 @@
           "description": "Seu próprio servidor para lineups de utilitário · qualquer mapa",
           "map": "Mapa",
           "start": "Começar treino",
-          "sign_in": "Entre para treinar"
+          "sign_in": "Entre para treinar",
+          "manage": "Gerenciar",
+          "stop": "Parar",
+          "leave": "Sair",
+          "access_open": "Qualquer um com o link pode entrar",
+          "access_friends": "Seus amigos podem entrar",
+          "access_invite": "Jogadores convidados podem entrar",
+          "access_private": "Só você pode entrar",
+          "invite_link_in_panel": "link de convite no painel"
         }
       },
       "matchmaking": {

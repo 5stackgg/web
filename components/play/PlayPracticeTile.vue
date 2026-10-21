@@ -107,17 +107,28 @@ const mapGroups = computed(() => {
   ];
 });
 
-const { session } = useUtilityPracticeSession();
+const { session, switching } = useUtilityPracticeSession();
 
 const practice = computed(() => readUtilityPracticeSession(session.value));
 
+// A server stays Ready through a map change, which is no time to join it.
 const tileState = computed(() => {
   if (!session.value) {
     return "start";
   }
 
+  if (switching.value) {
+    return "switching";
+  }
+
   return practice.value.isLive ? "ready" : "booting";
 });
+
+const stateLabels: Record<string, string> = {
+  booting: "pages.utility.practice.nav_starting",
+  switching: "pages.utility.practice.nav_switching",
+  ready: "pages.utility.practice.nav_ready",
+};
 
 const sessionMap = computed(() =>
   practice.value.mapName ? cleanMapName(practice.value.mapName) : null,
@@ -226,49 +237,64 @@ const touchTarget =
       >
         {{ $t("pages.play.more_ways.practice.description") }}
       </p>
-      <div v-else :key="tileState" class="flex flex-col gap-2">
+      <div v-else key="session" class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
           <span
-            class="h-1.5 w-1.5 shrink-0 rounded-full"
+            class="h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-200 motion-reduce:transition-none"
             :class="
-              tileState === 'booting'
-                ? 'bg-muted-foreground/60'
-                : 'bg-[hsl(var(--tac-amber))]'
+              tileState === 'ready'
+                ? 'bg-[hsl(var(--tac-amber))]'
+                : 'bg-muted-foreground/60'
             "
           />
           <span class="min-w-0 truncate text-[13.5px] font-medium">
             {{ sessionMap }}
           </span>
-          <span
-            class="ml-auto shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.14em]"
-            :class="
-              tileState === 'booting'
-                ? 'text-muted-foreground'
-                : 'text-[hsl(var(--tac-amber))]'
-            "
-          >
-            {{
-              tileState === "booting"
-                ? $t("pages.utility.practice.nav_starting")
-                : $t("pages.utility.practice.nav_ready")
-            }}
+          <!-- Not FadeSwap: its leaver takes the entering label's width, and a
+               longer label overflowing that box ignores text-right. -->
+          <span class="relative ml-auto shrink-0">
+            <Transition
+              enter-active-class="transition-opacity duration-300 ease-out motion-reduce:!duration-0"
+              leave-active-class="absolute right-0 top-0 transition-opacity duration-200 ease-in motion-reduce:!duration-0"
+              enter-from-class="opacity-0"
+              leave-to-class="opacity-0"
+            >
+              <span
+                :key="tileState"
+                class="block whitespace-nowrap font-mono text-[0.55rem] uppercase tracking-[0.14em]"
+                :class="
+                  tileState === 'ready'
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground'
+                "
+              >
+                {{ $t(stateLabels[tileState]) }}
+              </span>
+            </Transition>
           </span>
         </div>
 
-        <div
-          v-if="tileState === 'booting'"
-          class="flex items-center gap-2 text-[12.5px] text-muted-foreground"
-        >
-          <Spinner class="h-4 w-4 shrink-0" />
-          {{ $t("pages.utility.practice.booting") }}
-        </div>
-        <p v-else class="m-0 text-[12.5px] text-muted-foreground">
-          {{ $t(accessLine) }}
-          <template v-if="inviteLinkReaches">
-            &middot;
-            {{ $t("pages.play.more_ways.practice.invite_link_in_panel") }}
-          </template>
-        </p>
+        <HeightSwap>
+          <div
+            v-if="tileState !== 'ready'"
+            :key="tileState"
+            class="flex items-center gap-2 text-[12.5px] text-muted-foreground"
+          >
+            <Spinner class="h-4 w-4 shrink-0" />
+            {{
+              tileState === "switching"
+                ? $t("pages.utility.practice.switching", { map: sessionMap })
+                : $t("pages.utility.practice.booting")
+            }}
+          </div>
+          <p v-else key="ready" class="m-0 text-[12.5px] text-muted-foreground">
+            {{ $t(accessLine) }}
+            <template v-if="inviteLinkReaches">
+              &middot;
+              {{ $t("pages.play.more_ways.practice.invite_link_in_panel") }}
+            </template>
+          </p>
+        </HeightSwap>
       </div>
     </HeightSwap>
 
@@ -347,9 +373,13 @@ const touchTarget =
         </Button>
       </div>
 
-      <div v-else key="ready" class="flex flex-wrap items-center gap-2 pt-1">
+      <div
+        v-else
+        :key="tileState"
+        class="flex flex-wrap items-center gap-2 pt-1"
+      >
         <Button
-          v-if="practice.connectionLink"
+          v-if="tileState === 'ready' && practice.connectionLink"
           as="a"
           :href="practice.connectionLink"
           size="sm"
@@ -364,9 +394,9 @@ const touchTarget =
           {{ $t("server.join_server") }}
         </Button>
         <ClipBoard
-          v-if="practice.connectionString"
+          v-if="tileState === 'ready' && practice.connectionString"
           :data="practice.connectionString"
-          class="h-8 w-8 shrink-0"
+          :class="['h-8 w-8 shrink-0', touchTarget, 'after:-inset-x-1.5']"
           :title="practice.connectionString"
         />
         <UtilityPracticeNav>

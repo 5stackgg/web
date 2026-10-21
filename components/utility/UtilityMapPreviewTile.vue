@@ -4,6 +4,7 @@ import { Lock } from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useRadarProjection } from "~/composables/useRadarProjection";
 import {
+  drawnSquare,
   morphFromRect,
   restingRect,
 } from "~/composables/useUtilityMapHandoff";
@@ -121,8 +122,13 @@ function shrinkFrom(from: UtilityMapRect) {
   animation.addEventListener("cancel", settle);
 }
 
+function rect() {
+  const box = restingRect(radar.value);
+  return box ? drawnSquare(box) : null;
+}
+
 defineExpose({
-  rect: () => restingRect(radar.value),
+  rect,
   src: radarSrc,
   shrinkFrom,
 });

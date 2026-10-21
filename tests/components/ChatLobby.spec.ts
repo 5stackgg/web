@@ -108,6 +108,41 @@ describe("ChatLobby gag", () => {
   });
 });
 
+describe("ChatLobby empty room", () => {
+  const INVITE = "Say something to start the conversation.";
+
+  it("asks a player who can write to start the conversation", async () => {
+    signIn({ is_gagged: false });
+
+    const wrapper = await mountLobby();
+
+    expect(wrapper.text()).toContain("No messages yet");
+    expect(wrapper.text()).toContain(INVITE);
+  });
+
+  it("does not ask a reader who cannot write to start it", async () => {
+    signIn({ role: "moderator" });
+
+    const wrapper = await mountLobby({
+      canSend: false,
+      readonlyHint: "Only the match's players can write here.",
+    });
+
+    expect(wrapper.text()).toContain("No messages yet");
+    expect(wrapper.text()).toContain("Only the match's players can write here.");
+    expect(wrapper.text()).not.toContain(INVITE);
+  });
+
+  it("does not ask a gagged player to start it", async () => {
+    signIn({ is_gagged: true });
+
+    const wrapper = await mountLobby();
+
+    expect(wrapper.text()).toContain(GAGGED);
+    expect(wrapper.text()).not.toContain(INVITE);
+  });
+});
+
 describe("ChatLobby participants", () => {
   // happy-dom focuses any element; a browser ignores focus() on an element it
   // can't focus, which is where a popover with nothing tabbable leaves focus.

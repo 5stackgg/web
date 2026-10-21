@@ -5,6 +5,7 @@ import ChatMessages from "~/components/chat/ChatMessages.vue";
 import ChatInput from "~/components/chat/ChatInput.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import ChatMatchHeader from "~/components/chat/ChatMatchHeader.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { Upload } from "lucide-vue-next";
@@ -140,9 +141,11 @@ import {
               <p class="text-sm font-medium">
                 {{ $t("chat.no_messages_yet", "No messages yet") }}
               </p>
-              <p class="text-xs text-muted-foreground/80">
-                {{ emptyHint }}
-              </p>
+              <Fold :open="composerEnabled">
+                <p class="text-xs text-muted-foreground/80">
+                  {{ emptyHint }}
+                </p>
+              </Fold>
             </div>
           </Empty>
           <button
@@ -347,9 +350,11 @@ import {
             <p class="text-sm font-medium">
               {{ $t("chat.no_messages_yet", "No messages yet") }}
             </p>
-            <p class="text-xs text-muted-foreground/80">
-              {{ emptyHint }}
-            </p>
+            <Fold :open="composerEnabled">
+              <p class="text-xs text-muted-foreground/80">
+                {{ emptyHint }}
+              </p>
+            </Fold>
           </div>
         </Empty>
       </FadeSwap>

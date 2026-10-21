@@ -69,14 +69,14 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="100">
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="grid gap-3">
       <Card
         v-for="pool in map_pools"
         :key="pool.id"
         variant="gradient"
         class="relative p-4"
       >
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between gap-4">
           <div>
             <h2 class="text-lg font-semibold">
               {{ $t("pages.map_pools.pool.pool_heading", { type: pool.type }) }}

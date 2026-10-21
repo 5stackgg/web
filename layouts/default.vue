@@ -134,11 +134,13 @@ onBeforeUnmount(() => unhooks.forEach((unhook) => unhook()));
 // always have, capped so tables don't stretch across a wide monitor. Only
 // public pages centre in a column.
 // Game Server Nodes and GPU Nodes cap themselves: their panels dock in the
-// room past the cap.
+// room past the cap. System Logs runs full width so long lines don't wrap.
 const adminContent = computed(
   () =>
     isAdminRouteName(shownRouteName.value) &&
-    !["game-server-nodes", "gpu-nodes"].includes(String(shownRouteName.value)),
+    !["game-server-nodes", "gpu-nodes", "system-logs"].includes(
+      String(shownRouteName.value),
+    ),
 );
 
 const containContent = computed(() => {

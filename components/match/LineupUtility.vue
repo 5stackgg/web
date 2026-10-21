@@ -404,7 +404,7 @@ const valueGrid =
 
   <Table
     v-else
-    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2.5 [&_td]:px-2.5"
+    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2.5 [&_td]:px-2.5 [&_.sticky]:bg-clip-padding"
   >
     <TableHeader class="bg-muted/20">
       <TableRow class="border-b-0 hover:bg-transparent">

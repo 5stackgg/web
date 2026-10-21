@@ -205,6 +205,76 @@ describe("PlayPracticeTile", () => {
     );
   });
 
+  it("says Switching, as the top bar does, while your server changes map", async () => {
+    const wrapper = await mountTile();
+    push(
+      sessionRow({
+        map_name: "de_inferno",
+        map_changing_at: "2026-10-21T12:00:00Z",
+      }),
+    );
+    await settle(400);
+
+    expect(wrapper.text()).toContain("Inferno");
+    expect(wrapper.text()).toContain("Switching");
+    expect(wrapper.text()).toContain("Switching your server to Inferno");
+    expect(wrapper.text()).not.toContain("Ready to join");
+    expect(
+      wrapper.find('a[href="steam://connect/1.2.3.4:27015/x"]').exists(),
+    ).toBe(false);
+    expect(buttonNamed(wrapper, "Stop Server")).toBeTruthy();
+  });
+
+  it("offers Join again once the switch has landed", async () => {
+    const wrapper = await mountTile();
+    push(sessionRow({ map_changing_at: "2026-10-21T12:00:00Z" }));
+    await settle(400);
+    push(sessionRow());
+    await settle(400);
+
+    expect(wrapper.text()).toContain("Ready to join");
+    expect(
+      wrapper.find('a[href="steam://connect/1.2.3.4:27015/x"]').exists(),
+    ).toBe(true);
+  });
+
+  it("keeps the map line in place when the server comes up, swapping only what changed", async () => {
+    const wrapper = await mountTile();
+    push(sessionRow({ status: "Starting", connection_string: null }));
+    await settle(400);
+    const mapLine = () =>
+      wrapper.findAll("span").find((span) => span.text() === "Mirage")?.element;
+    const before = mapLine();
+    expect(before).toBeDefined();
+
+    push(sessionRow());
+    await settle(400);
+
+    expect(mapLine()).toBe(before);
+    expect(wrapper.text()).toContain("Ready to join");
+    expect(wrapper.text()).not.toContain("Starting your practice server...");
+  });
+
+  it("gives the copy button the same reach as the buttons beside it", async () => {
+    const wrapper = await mountTile();
+    push(sessionRow());
+    await settle(400);
+
+    const copy = wrapper
+      .find('[data-clipboard-text="connect 1.2.3.4:27015; password x"]')
+      .element.closest("button")!;
+
+    expect(Array.from(copy.classList)).toEqual(
+      expect.arrayContaining([
+        "relative",
+        "after:absolute",
+        "after:-inset-y-1.5",
+        "after:-inset-x-1.5",
+        "[@media(pointer:fine)]:after:hidden",
+      ]),
+    );
+  });
+
   it("goes back to Start practice once the server is gone", async () => {
     const wrapper = await mountTile();
     push(sessionRow());

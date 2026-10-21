@@ -567,11 +567,72 @@ describe("TopNav back arrow", () => {
     await settle();
 
     expect(window.history.state.backLayer).toBe(true);
+    expect(window.history.state.earlierPage).toMatchObject({ value: true });
     expect(arrow(wrapper).exists()).toBe(true);
 
     open.value = false;
     await settle();
 
     expect(arrow(wrapper).exists()).toBe(true);
+  });
+
+  describe("after a reload", () => {
+    const LIBRARY = "/utility/de_mirage";
+    const reloadedOn = (entry: Record<string, unknown>) =>
+      window.history.replaceState(
+        {
+          ...window.history.state,
+          back: LIBRARY,
+          current: `${LIBRARY}?lineup=l-1`,
+          ...entry,
+        },
+        "",
+      );
+
+    it("keeps the arrow on a lineup opened over a page that had one before it", async () => {
+      emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+      reloadedOn({
+        position: 4242,
+        earlierPage: { back: LIBRARY, path: LIBRARY, value: true },
+      });
+
+      const wrapper = await mountTopNav();
+
+      expect(arrow(wrapper).exists()).toBe(true);
+    });
+
+    it("keeps it off on one opened over the first page of a visit", async () => {
+      emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+      reloadedOn({
+        position: 4252,
+        earlierPage: { back: LIBRARY, path: LIBRARY, value: false },
+      });
+
+      const wrapper = await mountTopNav();
+
+      expect(arrow(wrapper).exists()).toBe(false);
+    });
+
+    it("shows it, as before, on a same-page entry nothing has answered for", async () => {
+      emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+      reloadedOn({ position: 4262, earlierPage: undefined });
+
+      const wrapper = await mountTopNav();
+
+      expect(arrow(wrapper).exists()).toBe(true);
+    });
+
+    it("does not trust an answer worked out for another address", async () => {
+      emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+      reloadedOn({
+        back: "/play",
+        position: 4272,
+        earlierPage: { back: LIBRARY, path: LIBRARY, value: false },
+      });
+
+      const wrapper = await mountTopNav();
+
+      expect(arrow(wrapper).exists()).toBe(true);
+    });
   });
 });

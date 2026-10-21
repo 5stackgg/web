@@ -92,6 +92,7 @@
             :message="message"
             :previous-message="messages[index - 1]"
             :next-message="messages[index + 1]"
+            :after-media="afterMedia[index]"
             :room="messageRoom ? messageRoom(message) : null"
             :can-moderate="canModerate"
             :can-post="canPost"
@@ -110,6 +111,7 @@ import type { PropType } from "vue";
 import ChatMessage from "~/components/chat/ChatMessage.vue";
 import { Spinner } from "~/components/ui/spinner";
 import { chatMessageKey } from "~/web-sockets/Socket";
+import { continuesChatRun, hasChatMedia } from "~/utilities/chatLobbyMessages";
 import { chatMessagePermissions } from "~/utilities/chatMessageActions";
 import type {
   ChatType,
@@ -362,6 +364,24 @@ export default {
       const targetTop = offset - Math.max(0, chatMessages.clientHeight / 3);
       this.scrollListTo(targetTop < 0 ? 0 : targetTop);
       this.checkIfAtBottom();
+    },
+  },
+  computed: {
+    // Media in a run takes the avatar's column, so every line after it in the
+    // same run starts at the media's edge rather than an empty gutter.
+    afterMedia() {
+      let seen = false;
+
+      return this.messages.map((message, index) => {
+        if (!continuesChatRun(this.messages[index - 1], message)) {
+          seen = false;
+        }
+
+        const after = seen;
+        seen ||= hasChatMedia(message);
+
+        return after;
+      });
     },
   },
   watch: {

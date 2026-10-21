@@ -4,6 +4,7 @@ import {
   applyChatMessageEdit,
   applyChatMessageReactions,
   chatMessageKey,
+  continuesChatRun,
   hideChatAuthors,
   insertChatMessage,
   isChatMessageDeleted,
@@ -23,6 +24,26 @@ const line = (id: string | undefined, minute: number): LobbyMessage => ({
 });
 
 const ids = (messages: LobbyMessage[]) => messages.map((message) => message.id);
+
+describe("continuesChatRun", () => {
+  it("joins a line from the same player and room within five minutes", () => {
+    expect(continuesChatRun(line("a", 0), line("b", 4))).toBe(true);
+    expect(continuesChatRun(line("a", 0), line("b", 5))).toBe(false);
+    expect(continuesChatRun(undefined, line("b", 1))).toBe(false);
+  });
+
+  it("starts a new run for another player or another room", () => {
+    expect(
+      continuesChatRun(line("a", 0), {
+        ...line("b", 1),
+        from: { steam_id: "76561198000000002" },
+      }),
+    ).toBe(false);
+    expect(
+      continuesChatRun(line("a", 0), { ...line("b", 1), __channel: "team" }),
+    ).toBe(false);
+  });
+});
 
 describe("removeChatMessage", () => {
   it("removes the line and says where it was", () => {

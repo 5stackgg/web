@@ -21,6 +21,38 @@ export function chatMessageTime(message: LobbyMessage) {
   return new Date(message?.timestamp).getTime() || 0;
 }
 
+export function hasChatMedia(
+  message?: Partial<Pick<LobbyMessage, "attachments" | "gif">>,
+) {
+  return (message?.attachments?.length ?? 0) > 0 || !!message?.gif;
+}
+
+type ChatRunLine = Partial<
+  Pick<LobbyMessage, "timestamp" | "from" | "__channel">
+>;
+
+// A line goes under the one above it, without avatar or name, when the same
+// player sent it to the same room within five minutes. Same player, other room
+// is a new speaker: grouping it would hand it the wrong rail and hide which
+// room it went to.
+export function continuesChatRun(
+  previous: ChatRunLine | undefined,
+  message: ChatRunLine | undefined,
+) {
+  if (!previous || previous.__channel !== message?.__channel) {
+    return false;
+  }
+
+  if (String(previous.from?.steam_id) !== String(message?.from?.steam_id)) {
+    return false;
+  }
+
+  return (
+    new Date(previous.timestamp ?? NaN).getTime() >
+    new Date(message?.timestamp ?? NaN).getTime() - 5 * 60 * 1000
+  );
+}
+
 export function isChatMessageDeleted(
   message: LobbyMessage,
   deleted: ReadonlySet<string>,

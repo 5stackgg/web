@@ -198,3 +198,28 @@ describe("ChatMessages editing the last line", () => {
     expect(wrapper.emitted("edit-last-end")).toBeUndefined();
   });
 });
+
+describe("ChatMessages after media", () => {
+  it("marks the lines below media in its run, until a new run starts", async () => {
+    const gif = { id: "abc123", width: 480, height: 270 };
+    const other = { steam_id: "76561198000000002", name: "kairo" };
+    const wrapper = await mountSuspended(ChatMessages, {
+      props: {
+        messages: [
+          own("a", 50),
+          { ...own("b", 40), message: "", gif },
+          own("c", 30),
+          own("d", 20),
+          { ...own("e", 10), from: other },
+        ],
+      },
+    });
+    unmount = () => wrapper.unmount();
+
+    expect(
+      wrapper
+        .findAllComponents(ChatMessage)
+        .map((row) => row.props("afterMedia")),
+    ).toEqual([false, false, true, true, false]);
+  });
+});

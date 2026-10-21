@@ -28,6 +28,7 @@ const ultimaRatio = {
   id: "entry-1",
   name: null,
   owner_steam_id: CAPTAIN,
+  can_recruit: true,
   team_id: "team-1",
   team: { id: "team-1", name: "Ultima Ratio", short_name: "UR" },
 };
@@ -36,6 +37,7 @@ const fridayMix = {
   id: "entry-2",
   name: "Friday Mix",
   short_name: "FM",
+  can_recruit: true,
   team_id: null,
   team: null,
 };
@@ -45,12 +47,13 @@ async function mountTeam(
   options: {
     organizer?: boolean;
     invites?: Array<Record<string, unknown>>;
-    me?: string;
+    role?: string;
   } = {},
 ) {
   useAuthStore().me = {
-    steam_id: options.me ?? CAPTAIN,
+    steam_id: CAPTAIN,
     name: "sniddyus",
+    role: options.role ?? "user",
   } as unknown as ReturnType<typeof useAuthStore>["me"];
   const wrapper = await mountSuspended(TournamentTeam, {
     props: {
@@ -110,7 +113,7 @@ describe("TournamentTeam says what adding a player does", () => {
 
   it("marks players already on the team, who go straight onto the lineup", async () => {
     const wrapper = await mountTeam(ultimaRatio);
-    (wrapper.vm as any).teamRoster = [{ steam_id: MATE, role: "Member" }];
+    (wrapper.vm as any).teamMemberSteamIds = [MATE];
     await flushPromises();
 
     expect(search(wrapper).props("tags")).toMatchObject({
@@ -129,26 +132,28 @@ describe("TournamentTeam says what adding a player does", () => {
     );
   });
 
-  it("keeps the search to the team for a captain who cannot invite to it", async () => {
-    const wrapper = await mountTeam(ultimaRatio, { me: MATE });
-    (wrapper.vm as any).teamRoster = [
-      { steam_id: CAPTAIN, role: "Admin" },
-      { steam_id: MATE, role: "Member" },
-    ];
-    await flushPromises();
+  it("keeps the search to the team for a manager who cannot recruit for it", async () => {
+    const wrapper = await mountTeam({ ...ultimaRatio, can_recruit: false });
 
     expect(search(wrapper).props("teamId")).toBe("team-1");
     expect(search(wrapper).props("fallbackTag")).toBeUndefined();
     expect(search(wrapper).props("hint")).toBeUndefined();
   });
 
-  it("lets a team member with invite rights recruit from outside the team", async () => {
-    const wrapper = await mountTeam(ultimaRatio, { me: MATE });
-    (wrapper.vm as any).teamRoster = [{ steam_id: MATE, role: "Invite" }];
-    await flushPromises();
+  it("tells a tournament's organizer their pick for a tournament-only team is an invite", async () => {
+    const wrapper = await mountTeam(fridayMix, { organizer: true });
 
-    expect(search(wrapper).props("teamId")).toBeUndefined();
-    expect(search(wrapper).props("fallbackTag")).toBe("Team + lineup invite");
+    expect(search(wrapper).props("fallbackTag")).toBe("Tournament invite");
+  });
+
+  it("says nothing about invites to staff, who place players on any team", async () => {
+    const wrapper = await mountTeam(fridayMix, {
+      organizer: true,
+      role: "administrator",
+    });
+
+    expect(search(wrapper).props("fallbackTag")).toBeUndefined();
+    expect(search(wrapper).props("hint")).toBeUndefined();
   });
 
   it("says nothing about invites to an organizer, who places players outright", async () => {

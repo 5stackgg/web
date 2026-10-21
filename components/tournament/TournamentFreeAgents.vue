@@ -297,6 +297,13 @@ const recruitingTeam = computed(() => {
     return null;
   }
 
+  // Recruiting onto a team-backed entry invites the player to the team too,
+  // which takes the right to invite to it (can_recruit). Organizers place
+  // free agents outright instead.
+  if (team.team_id && !team.can_recruit && !props.tournament?.is_organizer) {
+    return null;
+  }
+
   if (props.tournament?.status !== e_tournament_status_enum.RegistrationOpen) {
     return null;
   }
@@ -359,9 +366,16 @@ async function invite(agent: Agent) {
         ? t("tournament.team.member_added_description", {
             name: agent.player?.name,
           })
-        : t("tournament.team.invite_sent_description", {
-            name: agent.player?.name,
-          }),
+        : t(
+            recruitingTeam.value?.team_id
+              ? "tournament.team.invite_sent_team_description"
+              : "tournament.team.invite_sent_tournament_description",
+            {
+              name: agent.player?.name,
+              team:
+                recruitingTeam.value?.team?.name || recruitingTeam.value?.name,
+            },
+          ),
     });
   } catch {
     // The refusal is already toasted by the global Apollo error handler.

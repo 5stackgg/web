@@ -558,18 +558,18 @@ export default {
       identityError: "",
       removeTeamDialog: false,
       podiumSteps: null as any[] | null,
-      teamRoster: [] as Array<{ steam_id: string; role: string }>,
+      teamMemberSteamIds: [] as string[],
     };
   },
   apollo: {
     // Who is already on a team-backed entry's team: they go straight onto the
     // lineup, everyone else gets an invite to the team.
-    teamRoster: {
+    teamMemberSteamIds: {
       fetchPolicy: "cache-and-network",
       query: typedGql("query")({
         team_roster: [
           { where: { team_id: { _eq: $("team_id", "uuid!") } } },
-          { player_steam_id: true, role: true },
+          { player_steam_id: true },
         ],
       }),
       variables: function () {
@@ -580,10 +580,9 @@ export default {
         return !self.team?.team_id || !self.team?.can_manage;
       },
       update: (data: any) =>
-        (data?.team_roster ?? []).map((row: any) => ({
-          steam_id: String(row.player_steam_id),
-          role: row.role,
-        })),
+        (data?.team_roster ?? []).map((row: any) =>
+          String(row.player_steam_id),
+        ),
     },
     // The placements the podium shows, where a shared 3rd is two teams on
     // the same step. Optional, so an api without the field falls back.
@@ -664,33 +663,23 @@ export default {
         this.freeAgentSteamIds.map((steamId) => [steamId, tag]),
       );
     },
-    teamMemberSteamIds() {
-      return this.teamRoster.map((member) => member.steam_id);
-    },
-    // can_invite_to_team: bringing someone onto a team-backed entry from
-    // outside the team invites them to the team, so it takes the same right.
-    canInviteToTeam() {
-      const me = String(useAuthStore().me?.steam_id ?? "");
+    // tbi_tournament_team_roster: staff roles place anyone outright, and a
+    // tournament's own organizers do so on a team-backed entry; on a
+    // tournament-only team their pick is an invite like anyone else's.
+    placesOutright() {
+      const auth = useAuthStore();
       return (
-        String(this.team.owner_steam_id) === me ||
-        this.teamRoster.some(
-          (member) =>
-            member.steam_id === me && ["Admin", "Invite"].includes(member.role),
-        )
+        auth.isAdmin ||
+        auth.isTournamentOrganizer ||
+        (!!this.team.team_id && !!this.tournament.is_organizer)
       );
     },
     invitesOutsiders() {
-      return (
-        !this.tournament.is_organizer &&
-        (!this.team.team_id || this.canInviteToTeam)
-      );
+      return !this.placesOutright && !!this.team.can_recruit;
     },
-    // Without the right to invite, a team-backed lineup is picked from the
-    // team alone.
+    // Without can_recruit, a team-backed lineup is picked from the team alone.
     searchTeamId() {
-      return this.team.team_id &&
-        !this.tournament.is_organizer &&
-        !this.canInviteToTeam
+      return this.team.team_id && !this.placesOutright && !this.team.can_recruit
         ? this.team.team_id
         : undefined;
     },
@@ -700,7 +689,7 @@ export default {
         ...Object.fromEntries(
           this.teamMemberSteamIds.map((steamId) => [steamId, onTeam]),
         ),
-        ...(this.tournament.is_organizer ? {} : this.freeAgentTags),
+        ...(this.placesOutright ? {} : this.freeAgentTags),
       };
     },
     // tbi_tournament_team_roster places an organizer's pick outright; anyone

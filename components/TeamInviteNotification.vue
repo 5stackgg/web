@@ -38,7 +38,12 @@ import TimeAgo from "./TimeAgo.vue";
               team: tournamentTeamName,
             })
       }}
-      <p class="text-sm text-muted-foreground mb-2">
+      <!-- A tournament still in Setup is hidden from players, so the invite
+           can arrive before its tournament is readable. -->
+      <p
+        v-if="invite.team.tournament"
+        class="text-sm text-muted-foreground mb-2"
+      >
         <NuxtLink
           :to="`/tournaments/${invite.team.tournament.id}`"
           class="underline"
@@ -153,6 +158,9 @@ export default {
         return this.$router.push(`/tournaments/${this.invite.tournament.id}`);
       }
       if (this.isTournamentTeam) {
+        if (!this.invite.team.tournament) {
+          return;
+        }
         return this.$router.push(
           `/tournaments/${this.invite.team.tournament.id}`,
         );

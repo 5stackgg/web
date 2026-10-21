@@ -55,4 +55,21 @@ describe("TeamInviteNotification for an invite onto a tournament entry", () => {
       "Join Friday Mix, a team for this tournament only, in",
     );
   });
+
+  it("shows an invite whose tournament is still in Setup without a link", async () => {
+    const wrapper = await mountSuspended(TeamInviteNotification, {
+      props: {
+        invite: {
+          ...invite({ name: "Friday Mix", team_id: null, team: null }),
+          team: { id: "entry-1", name: "Friday Mix", tournament: null },
+        },
+        type: "tournament",
+      },
+    });
+    unmount = () => wrapper.unmount();
+
+    expect(wrapper.text()).toContain("Join Friday Mix");
+    expect(wrapper.find("a").exists()).toBe(false);
+  });
 });
+

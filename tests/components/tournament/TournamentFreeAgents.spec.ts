@@ -167,6 +167,38 @@ describe("TournamentFreeAgents", () => {
       expect(inviteButton(wrapper)).toBeUndefined();
     });
 
+    it("does not offer an invite onto a team-backed entry without the right to recruit for it", async () => {
+      pool.value = [agent("76561198000000003", {})];
+
+      const wrapper = await mountPool(
+        captainsTeam({ team_id: "squad", can_recruit: false }),
+      );
+
+      expect(inviteButton(wrapper)).toBeUndefined();
+    });
+
+    it.each([
+      [
+        { team_id: "squad", can_recruit: true, team: { name: "Ultima Ratio" } },
+        "Player 76561198000000003 has been invited to Ultima Ratio and joins this lineup once they accept",
+      ],
+      [
+        { name: "Friday Mix" },
+        "Player 76561198000000003 has been invited to Friday Mix for this tournament and needs to accept first",
+      ],
+    ])("names what the invite joins in its toast (%#)", async (team, description) => {
+      pool.value = [agent("76561198000000003", {})];
+      mutate.mockResolvedValue({
+        data: { insert_tournament_team_roster_one: null },
+      });
+
+      const wrapper = await mountPool(captainsTeam(team));
+      await inviteButton(wrapper)?.trigger("click");
+      await flushPromises();
+
+      expect(toast).toHaveBeenCalledWith({ title: "Invite Sent", description });
+    });
+
   });
 
   describe("after the draft", () => {

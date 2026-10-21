@@ -10566,6 +10566,7 @@
       "picked": "Elegido"
     },
     "auto_canceling": "Cancelación automática",
+    "deadline_in": "El plazo termina en",
     "demo_processing": "Procesando demo",
     "actions": {
       "call_support": "Pedir soporte",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Han hecho check-in {checked} de los {required} jugadores necesarios para empezar la partida",
       "deadline": "Confirma tu asistencia en",
       "deadline_checked_in": "Cancelación automática en",
-      "deadline_help": "La partida se cancela automáticamente si todos los jugadores necesarios no han confirmado antes de que se agote el temporizador."
+      "deadline_help": "La partida se cancela automáticamente si todos los jugadores necesarios no han confirmado antes de que se agote el temporizador.",
+      "deadline_help_tournament": "Si se agota el temporizador, un equipo con todos los jugadores necesarios confirmados gana por incomparecencia. Si ninguno lo está, se decide a cara o cruz.",
+      "deadline_help_tournament_admin": "Si se agota el temporizador, un equipo con todos los jugadores necesarios confirmados gana por incomparecencia. Si ninguno lo está, deciden los organizadores del torneo."
     },
     "coach": {
       "assign": "Asignar coach"

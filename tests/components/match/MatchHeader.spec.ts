@@ -25,9 +25,12 @@ function waitingMatch(bestOf: number) {
   };
 }
 
-async function mountHeader(bestOf: number) {
+async function mountHeader(
+  bestOf: number,
+  overrides: Record<string, unknown> = {},
+) {
   const wrapper = await mountSuspended(MatchHeader, {
-    props: { match: waitingMatch(bestOf) },
+    props: { match: { ...waitingMatch(bestOf), ...overrides } },
     global: {
       stubs: {
         MatchActions: { template: '<div class="match-actions" />' },
@@ -64,6 +67,15 @@ describe("MatchHeader series facts", () => {
     expect(bottom.textContent).toContain("Map 5");
     expect(bottom.textContent).not.toContain("Best of 5");
     expect(bottom.textContent).not.toContain("Auto Canceling");
+  });
+
+  it("counts down to a tournament match's deadline instead of promising a cancel", async () => {
+    const wrapper = await mountHeader(1, {
+      tournament_brackets: [{ stage: { tournament: { id: "t-1" } } }],
+    });
+
+    expect(wrapper.text()).toContain("Deadline in");
+    expect(wrapper.text()).not.toContain("Auto Canceling");
   });
 
   it("leaves no maps row under a Bo1", async () => {

@@ -10566,6 +10566,7 @@
       "picked": "픽됨"
     },
     "auto_canceling": "자동 취소 중",
+    "deadline_in": "마감까지",
     "demo_processing": "데모 처리 중",
     "actions": {
       "call_support": "지원 요청",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "매치 시작에 필요한 {required}명 중 {checked}명이 체크인했습니다",
       "deadline": "참가 확인 남은 시간",
       "deadline_checked_in": "자동 취소까지",
-      "deadline_help": "필요한 인원이 모두 시간 안에 참가 확인을 하지 않으면 경기가 자동으로 취소됩니다."
+      "deadline_help": "필요한 인원이 모두 시간 안에 참가 확인을 하지 않으면 경기가 자동으로 취소됩니다.",
+      "deadline_help_tournament": "시간이 끝나면 필요한 인원이 모두 참가 확인을 마친 팀이 몰수승을 거둡니다. 그런 팀이 없으면 동전 던지기로 승자를 정합니다.",
+      "deadline_help_tournament_admin": "시간이 끝나면 필요한 인원이 모두 참가 확인을 마친 팀이 몰수승을 거둡니다. 그런 팀이 없으면 대회 주최자가 결정합니다."
     },
     "coach": {
       "assign": "코치 지정"

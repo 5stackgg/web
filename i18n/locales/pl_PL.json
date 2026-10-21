@@ -10566,6 +10566,7 @@
       "picked": "Wybrane"
     },
     "auto_canceling": "Automatyczne anulowanie",
+    "deadline_in": "Termin mija za",
     "demo_processing": "Przetwarzanie dema",
     "actions": {
       "call_support": "Wezwij wsparcie",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Potwierdzono obecność {checked} z {required} graczy wymaganych do rozpoczęcia meczu",
       "deadline": "Potwierdź obecność w ciągu",
       "deadline_checked_in": "Automatyczne anulowanie za",
-      "deadline_help": "Mecz zostaje automatycznie anulowany, jeśli wszyscy wymagani gracze nie potwierdzą obecności przed upływem czasu."
+      "deadline_help": "Mecz zostaje automatycznie anulowany, jeśli wszyscy wymagani gracze nie potwierdzą obecności przed upływem czasu.",
+      "deadline_help_tournament": "Jeśli czas się skończy, drużyna, w której wszyscy wymagani gracze potwierdzili obecność, wygrywa walkowerem. Jeśli nie ma takiej drużyny, zwycięzcę wyłoni rzut monetą.",
+      "deadline_help_tournament_admin": "Jeśli czas się skończy, drużyna, w której wszyscy wymagani gracze potwierdzili obecność, wygrywa walkowerem. Jeśli nie ma takiej drużyny, decydują organizatorzy turnieju."
     },
     "coach": {
       "assign": "Przypisz trenera"

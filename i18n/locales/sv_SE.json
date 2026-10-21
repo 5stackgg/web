@@ -10566,6 +10566,7 @@
       "picked": "Vald"
     },
     "auto_canceling": "Avbryter automatiskt",
+    "deadline_in": "Tidsgränsen går ut om",
     "demo_processing": "Bearbetar demo",
     "actions": {
       "call_support": "Kalla på support",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Du har checkat in {checked} av {required} spelare som krävs för att starta matchen",
       "deadline": "Anmäl dig inom",
       "deadline_checked_in": "Avbryts automatiskt om",
-      "deadline_help": "Matchen avbryts automatiskt om alla som krävs inte har anmält sig innan tiden går ut."
+      "deadline_help": "Matchen avbryts automatiskt om alla som krävs inte har anmält sig innan tiden går ut.",
+      "deadline_help_tournament": "Om tiden går ut vinner ett lag där alla som krävs har anmält sig på walkover. Om inget lag har det avgör en slantsingling.",
+      "deadline_help_tournament_admin": "Om tiden går ut vinner ett lag där alla som krävs har anmält sig på walkover. Om inget lag har det avgör turneringsarrangörerna."
     },
     "coach": {
       "assign": "Tilldela coach"

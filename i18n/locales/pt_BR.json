@@ -10566,6 +10566,7 @@
       "picked": "Escolhido"
     },
     "auto_canceling": "Cancelamento Automático",
+    "deadline_in": "O prazo termina em",
     "demo_processing": "Processando Demo",
     "actions": {
       "call_support": "Chamar Suporte",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "Check-in {checked} de {required} jogadores necessários para iniciar a partida",
       "deadline": "Confirmar dentro de",
       "deadline_checked_in": "Cancela automaticamente em",
-      "deadline_help": "A partida é cancelada automaticamente se todos os jogadores necessários não confirmarem antes do tempo acabar."
+      "deadline_help": "A partida é cancelada automaticamente se todos os jogadores necessários não confirmarem antes do tempo acabar.",
+      "deadline_help_tournament": "Se o tempo acabar, um time com todos os jogadores necessários confirmados vence por W.O. Se nenhum estiver, o vencedor é decidido no cara ou coroa.",
+      "deadline_help_tournament_admin": "Se o tempo acabar, um time com todos os jogadores necessários confirmados vence por W.O. Se nenhum estiver, os organizadores do torneio decidem."
     },
     "coach": {
       "assign": "Atribuir Treinador"

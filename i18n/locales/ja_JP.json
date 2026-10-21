@@ -10566,6 +10566,7 @@
       "picked": "Pick 済み"
     },
     "auto_canceling": "自動中止まで",
+    "deadline_in": "期限まで",
     "demo_processing": "デモを処理中",
     "actions": {
       "call_support": "サポートを呼ぶ",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "試合開始に必要な{required}人中{checked}人がチェックインしました",
       "deadline": "参加確認の残り時間",
       "deadline_checked_in": "自動キャンセルまで",
-      "deadline_help": "必要なプレイヤー全員がタイマー終了までに参加確認しない場合、試合は自動的にキャンセルされます。"
+      "deadline_help": "必要なプレイヤー全員がタイマー終了までに参加確認しない場合、試合は自動的にキャンセルされます。",
+      "deadline_help_tournament": "タイマーが終了すると、必要なメンバー全員が参加確認を済ませたチームが不戦勝になります。該当するチームがない場合は、コイントスで勝者が決まります。",
+      "deadline_help_tournament_admin": "タイマーが終了すると、必要なメンバー全員が参加確認を済ませたチームが不戦勝になります。該当するチームがない場合は、大会の主催者が判断します。"
     },
     "coach": {
       "assign": "コーチを割り当て"

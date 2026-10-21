@@ -98,6 +98,14 @@ const showAutoCancel = computed(
     props.match.status !== e_match_status_enum.Canceled,
 );
 
+// A tournament match is never canceled when cancels_at passes: it is forfeited,
+// or handed to the organizers (CancelExpiredMatches).
+const deadlineLabel = computed(() =>
+  props.match.tournament_brackets?.length
+    ? t("match.deadline_in")
+    : t("match.auto_canceling"),
+);
+
 // A pickup game's lineups are named after their captains, so the captain's
 // face stands in for the missing team crest.
 const isPug = computed(
@@ -271,7 +279,7 @@ const resultText = computed(() =>
                 class="inline-flex items-center gap-1.5 whitespace-nowrap text-[13px] text-destructive"
               >
                 <AlertTriangle class="size-3.5 shrink-0" />
-                {{ $t("match.auto_canceling") }}
+                {{ deadlineLabel }}
                 <TimeAgo :date="match.cancels_at" countdown hide-icon />
               </span>
             </span>
@@ -290,7 +298,7 @@ const resultText = computed(() =>
                 class="inline-flex h-9 items-center gap-1.5 whitespace-nowrap text-[13px] text-destructive"
               >
                 <AlertTriangle class="size-3.5 shrink-0" />
-                {{ $t("match.auto_canceling") }}
+                {{ deadlineLabel }}
                 <TimeAgo :date="match.cancels_at" countdown hide-icon />
               </span>
             </span>

@@ -10566,6 +10566,7 @@
       "picked": "Pick"
     },
     "auto_canceling": "Annulation automatique",
+    "deadline_in": "Échéance dans",
     "demo_processing": "Traitement de la démo",
     "actions": {
       "call_support": "Demander de l'aide",
@@ -10862,7 +10863,9 @@
       "checked_in_description": "{checked} joueurs sur les {required} requis ont fait leur check-in pour lancer le match",
       "deadline": "Confirmez votre présence sous",
       "deadline_checked_in": "Annulation automatique dans",
-      "deadline_help": "Le match est annulé automatiquement si toutes les personnes requises n'ont pas confirmé leur présence avant la fin du minuteur."
+      "deadline_help": "Le match est annulé automatiquement si toutes les personnes requises n'ont pas confirmé leur présence avant la fin du minuteur.",
+      "deadline_help_tournament": "Si le minuteur arrive à zéro, une équipe dont toutes les personnes requises ont confirmé leur présence gagne par forfait. Sinon, un tirage au sort désigne le vainqueur.",
+      "deadline_help_tournament_admin": "Si le minuteur arrive à zéro, une équipe dont toutes les personnes requises ont confirmé leur présence gagne par forfait. Sinon, les organisateurs du tournoi décident."
     },
     "coach": {
       "assign": "Assigner un coach"

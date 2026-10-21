@@ -158,14 +158,17 @@ const LEGEND_SPAN: Record<number, string> = {
                   square
                 />
               </div>
-              <div v-else key="all" class="flex items-center gap-2">
+              <div
+                v-else-if="tiles.length"
+                key="all"
+                class="flex items-center gap-2"
+              >
                 <h1
                   class="font-mono text-[0.68rem] font-bold uppercase tracking-[0.16em]"
                 >
                   {{ $t("pages.utility.picker.all_maps") }}
                 </h1>
                 <span
-                  v-if="tiles.length"
                   class="font-mono text-[0.7rem] tabular-nums text-muted-foreground"
                 >
                   {{ tiles.length }}

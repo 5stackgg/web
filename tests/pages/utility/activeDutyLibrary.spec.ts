@@ -120,6 +120,18 @@ describe("Utility Library map groups", () => {
     expect(shown(wrapper)).toEqual(["de_overpass", "de_train"]);
   });
 
+  it("keeps the header row empty until the maps arrive", async () => {
+    const wrapper = await mountLibrary([]);
+
+    expect(wrapper.text()).not.toContain("All maps");
+    expect(groupButton(wrapper, "Active Duty")).toBeUndefined();
+
+    maps.tiles.value = FLAGGED;
+    await settle();
+
+    expect(groupButton(wrapper, "Active Duty").text()).toContain("3");
+  });
+
   it("shows every map under All maps when no map is flagged Active Duty", async () => {
     const wrapper = await mountLibrary(
       FLAGGED.map((entry) => ({ ...entry, activeDuty: false })),

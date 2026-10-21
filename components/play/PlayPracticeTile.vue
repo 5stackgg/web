@@ -24,7 +24,7 @@ import {
   leaveUtilityPracticeMutation,
   stopUtilityPracticeMutation,
 } from "~/graphql/utilityGraphql";
-import { order_by } from "~/generated/zeus";
+import { e_match_types_enum, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useUtilityPracticeSession } from "~/composables/useUtilityPracticeSession";
 import { readUtilityPracticeSession } from "~/types/utility";
@@ -38,6 +38,7 @@ import {
 } from "~/utilities/utilityPracticeAccess";
 import { loginLinks } from "~/utilities/loginLinks";
 import cleanMapName from "~/utilities/cleanMapName";
+import activeDutyMaps from "~/utilities/activeDutyMaps";
 import { loadRadarMaps, normalizeMapName } from "~/utilities/mapAssets";
 
 const { t } = useI18n();
@@ -57,10 +58,11 @@ const mapsQuery = generateQuery({
       where: {
         enabled: { _eq: true },
         workshop_map_id: { _is_null: true },
+        type: { _neq: e_match_types_enum.Rush },
       },
       order_by: [{ name: order_by.asc }],
     },
-    { name: true, active_pool: true },
+    { name: true, type: true, active_pool: true },
   ],
 });
 
@@ -76,6 +78,7 @@ onMounted(async () => {
     ]);
     const rows = ((data as any)?.maps ?? []) as Array<{
       name: string;
+      type: string;
       active_pool: boolean;
     }>;
     const names = new Set<string>();
@@ -84,11 +87,7 @@ onMounted(async () => {
       if (radarMaps.has(radar)) names.add(radar);
     }
     maps.value = [...names];
-    activeDuty.value = new Set(
-      rows
-        .filter((map) => map.active_pool)
-        .map((map) => normalizeMapName(map.name)),
-    );
+    activeDuty.value = activeDutyMaps(rows);
     mapName.value =
       maps.value.find((name) => name === "de_mirage") ?? maps.value[0] ?? "";
   } catch (error) {
@@ -304,11 +303,7 @@ const touchTarget =
                   >
                     {{ $t(group.label) }}
                   </SelectLabel>
-                  <SelectItem
-                    v-for="map in group.maps"
-                    :key="map"
-                    :value="map"
-                  >
+                  <SelectItem v-for="map in group.maps" :key="map" :value="map">
                     {{ cleanMapName(map) }}
                   </SelectItem>
                 </SelectGroup>

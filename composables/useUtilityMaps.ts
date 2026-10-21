@@ -14,6 +14,7 @@ import type { UtilityType } from "~/types/utility";
 import { e_match_types_enum, order_by } from "~/generated/zeus";
 import { loadRadarMaps, normalizeMapName } from "~/utilities/mapAssets";
 import mapLabel from "~/utilities/mapLabel";
+import activeDutyMaps from "~/utilities/activeDutyMaps";
 
 export type UtilityMapTile = {
   name: string;
@@ -48,6 +49,7 @@ const mapsQuery = generateQuery({
       label: true,
       patch: true,
       poster: true,
+      type: true,
       active_pool: true,
     },
   ],
@@ -70,12 +72,7 @@ function loadMaps(): Promise<void> {
           loadRadarMaps(),
         ]);
         const rows = ((data as any)?.maps ?? []) as Array<any>;
-        // One map has a row per mode, and only some of them carry the flag.
-        const activeDuty = new Set(
-          rows
-            .filter((map) => map.active_pool)
-            .map((map) => normalizeMapName(map.name)),
-        );
+        const activeDuty = activeDutyMaps(rows);
         const seen = new Set<string>();
         const next: UtilityMapTile[] = [];
         for (const map of rows) {

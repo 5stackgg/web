@@ -6,6 +6,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import TopNav from "~/layouts/components/TopNav.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { useBackDismiss } from "~/composables/useBackDismiss";
 import { emulateDevice, fakePwa, userAgents } from "../../helpers/pwaDevice";
 
 mockNuxtImport("usePendingImports", () => () => ({ pendingImports: ref([]) }));
@@ -445,8 +446,36 @@ describe("TopNav back arrow", () => {
     window.history.replaceState({ ...window.history.state, back }, "");
   const arrow = (wrapper: Awaited<ReturnType<typeof mountTopNav>>) =>
     wrapper.find('button[aria-label="Back"]');
+  const settle = async () => {
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 30));
+    await flushPromises();
+  };
 
-  afterEach(() => {
+  async function mountTopNavWithLayer() {
+    const open = ref(false);
+    const Layer = defineComponent({
+      setup() {
+        useBackDismiss(
+          () => open.value,
+          () => (open.value = false),
+        );
+        return () => h("div");
+      },
+    });
+    const wrapper = await mountSuspended(
+      defineComponent({
+        render: () => h(SidebarProvider, null, () => [h(TopNav), h(Layer)]),
+      }),
+      { global: { stubs } },
+    );
+    unmount = () => wrapper.unmount();
+    await settle();
+    return { wrapper, open };
+  }
+
+  afterEach(async () => {
+    await useRouter().replace("/");
     cameFrom(null);
   });
 
@@ -465,10 +494,7 @@ describe("TopNav back arrow", () => {
     const wrapper = await mountTopNav();
     const router = useRouter();
 
-    await router.push({
-      path: router.currentRoute.value.path,
-      query: { from: "leaderboard" },
-    });
+    await router.push("/licenses");
     await flushPromises();
 
     const back = arrow(wrapper);
@@ -494,5 +520,58 @@ describe("TopNav back arrow", () => {
     const wrapper = await mountTopNav();
 
     expect(arrow(wrapper).exists()).toBe(false);
+  });
+
+  it("keeps the arrow off when a sheet opens on the first page of a visit", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+    cameFrom(null);
+    const { wrapper, open } = await mountTopNavWithLayer();
+
+    open.value = true;
+    await settle();
+
+    expect(window.history.state.backLayer).toBe(true);
+    expect(arrow(wrapper).exists()).toBe(false);
+
+    open.value = false;
+    await settle();
+
+    expect(arrow(wrapper).exists()).toBe(false);
+  });
+
+  it("keeps the arrow off when the page only changes its own address", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+    cameFrom(null);
+    const wrapper = await mountTopNav();
+    const router = useRouter();
+
+    await router.push({
+      path: router.currentRoute.value.path,
+      query: { tab: "finished" },
+    });
+    await flushPromises();
+
+    expect(arrow(wrapper).exists()).toBe(false);
+  });
+
+  it("keeps the arrow while a sheet is open over a page that has one before it", async () => {
+    emulateDevice({ userAgent: userAgents.androidChrome, width: 390 });
+    cameFrom(null);
+    const { wrapper, open } = await mountTopNavWithLayer();
+
+    await useRouter().push("/licenses");
+    await settle();
+    expect(arrow(wrapper).exists()).toBe(true);
+
+    open.value = true;
+    await settle();
+
+    expect(window.history.state.backLayer).toBe(true);
+    expect(arrow(wrapper).exists()).toBe(true);
+
+    open.value = false;
+    await settle();
+
+    expect(arrow(wrapper).exists()).toBe(true);
   });
 });

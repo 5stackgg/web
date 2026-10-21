@@ -17,12 +17,39 @@ function pathOf(location: string) {
   return location.split(/[?#]/)[0].replace(/(.)\/$/, "$1");
 }
 
+// An entry with the same path behind it was opened over the page it is on --
+// a layer's entry (useBackDismiss pushes one for every sheet and menu on a
+// phone) or the page's own address changing -- so it has no earlier page of
+// its own, only whatever the page under it had. Kept by history position,
+// which is how one entry finds the one it was opened from.
+const earlierPageAt = new Map<number, boolean>();
+
+function hasEarlierPage() {
+  if (!import.meta.client) {
+    return false;
+  }
+  const state = window.history.state;
+  const back = previousEntry();
+  const position = Number(state?.position);
+  const overSamePage =
+    back !== null &&
+    typeof state?.current === "string" &&
+    pathOf(back) === pathOf(state.current);
+  const answer = overSamePage
+    ? (earlierPageAt.get(position - 1) ?? false)
+    : back !== null;
+  if (Number.isFinite(position)) {
+    earlierPageAt.set(position, answer);
+  }
+  return answer;
+}
+
 export function useHistoryBack() {
   const router = useRouter();
   const canGoBack = ref(false);
 
   function refresh() {
-    canGoBack.value = previousEntry() !== null;
+    canGoBack.value = hasEarlierPage();
   }
 
   onMounted(refresh);

@@ -12102,6 +12102,7 @@
   },
   "chat": {
     "readonly": "Czat jest tylko do odczytu",
+    "match_moderator_readonly": "Możesz czytać ten czat jako moderator. Pisać tu mogą tylko gracze, trenerzy i organizatorzy meczu.",
     "lobby_chat": "Czat lobby",
     "message_label": "Wiadomość",
     "new_since_last_visit": "Nowe",

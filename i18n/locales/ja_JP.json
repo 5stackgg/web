@@ -12102,6 +12102,7 @@
   },
   "chat": {
     "readonly": "チャットは閲覧のみです。",
+    "match_moderator_readonly": "モデレーターとしてこのチャットを閲覧できます。書き込めるのは、この試合の選手、コーチ、主催者だけです。",
     "lobby_chat": "ロビーチャット",
     "message_label": "メッセージ",
     "new_since_last_visit": "新着",

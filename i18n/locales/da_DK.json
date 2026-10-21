@@ -12102,6 +12102,7 @@
   },
   "chat": {
     "readonly": "Chatten er skrivebeskyttet.",
+    "match_moderator_readonly": "Du kan læse denne chat som moderator. Kun kampens spillere, trænere og arrangører kan skrive her.",
     "lobby_chat": "Lobbychat",
     "message_label": "Besked",
     "new_since_last_visit": "Ny",

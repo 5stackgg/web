@@ -89,6 +89,7 @@ import { utilityLineupBucketsQuery } from "~/graphql/utilityMetaGraphql";
 import { renderUtilityLineupPreviewMutation } from "~/graphql/utilityRenderGraphql";
 import { e_player_roles_enum, order_by } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useUtilityReactions } from "~/composables/useUtilityReactions";
 import { normalizeMapName } from "~/utilities/mapAssets";
 import {
@@ -155,6 +156,10 @@ const mapName = computed(() => normalizeMapName(String(route.params.map)));
 
 const auth = useAuthStore();
 const mySteamId = computed(() => auth.me?.steam_id ?? null);
+// Discovery boots a practice server, so the api holds it to the same role.
+const canDiscover = computed(
+  () => !!mySteamId.value && useApplicationSettingsStore().canCreateMatch,
+);
 const myTeamIds = computed(() =>
   (auth.me?.teams ?? []).map((team: { id: string }) => team.id),
 );
@@ -615,7 +620,7 @@ const listTabs = computed(() => {
       icon: ClipboardCheck,
     });
   }
-  if (mySteamId.value) {
+  if (canDiscover.value) {
     tabs.push({
       key: DISCOVER_TAB,
       label: t("pages.utility.discover.tab"),
@@ -2453,7 +2458,7 @@ function selectLineup(id: string | null) {
               <!-- Keyed on the map like the author panel: it holds points
                    picked off this map's board. -->
               <UtilityDiscoverPanel
-                v-else-if="listTab === DISCOVER_TAB && mySteamId"
+                v-else-if="listTab === DISCOVER_TAB && canDiscover"
                 :key="`discover-${mapName}`"
                 :map-name="mapName"
                 :can-practice="!isMobile"

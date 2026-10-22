@@ -143,7 +143,10 @@ const slots = computed(() => {
 
     <!-- Every row is a bare 0fr/1fr cell with the gap inside its clip, so a row
          folds open or shut with its gap, and a pick's player opens where its
-         slot folds shut: the roster holds the same height through the swap. -->
+         slot folds shut: the roster holds the same height through the swap.
+         The gap sits one level inside the clip: padding on the clipped element
+         itself never folds, so a shut row would keep 8px and the roster would
+         jump at both ends of the swap. -->
     <TransitionGroup
       name="roster"
       tag="div"
@@ -154,7 +157,8 @@ const slots = computed(() => {
         :key="player.steam_id"
         class="grid grid-rows-[1fr]"
       >
-      <div class="min-h-0 pt-2">
+      <div class="min-h-0">
+      <div class="pt-2">
       <DraftPlayerCard
         :member="player"
         :accent="accent"
@@ -261,17 +265,20 @@ const slots = computed(() => {
       </DraftPlayerCard>
       </div>
       </div>
+      </div>
       <template v-if="addable">
         <div
           v-for="index in Math.max(0, perTeam - players.length)"
           :key="`add-${index}`"
           class="grid grid-rows-[1fr]"
         >
-          <div class="min-h-0 pt-2">
-            <DraftOpenSlot
-              :exclude="excludeSteamIds || []"
-              @selected="(steamId, player) => emit('add', steamId, player)"
-            />
+          <div class="min-h-0">
+            <div class="pt-2">
+              <DraftOpenSlot
+                :exclude="excludeSteamIds || []"
+                @selected="(steamId, player) => emit('add', steamId, player)"
+              />
+            </div>
           </div>
         </div>
       </template>
@@ -287,7 +294,8 @@ const slots = computed(() => {
           "
           class="grid grid-rows-[1fr]"
         >
-        <div class="min-h-0 pt-2">
+        <div class="min-h-0">
+        <div class="pt-2">
         <div
           class="empty-slot grid min-h-[3.5rem] place-items-center rounded-lg border border-dashed text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/40"
           :class="isClockSlot(index - 1) ? 'is-clock' : ''"
@@ -305,6 +313,7 @@ const slots = computed(() => {
               })
             }}
           </template>
+        </div>
         </div>
         </div>
         </div>

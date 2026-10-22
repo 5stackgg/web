@@ -4170,9 +4170,12 @@
       "table": {
         "elo": "ELO",
         "last_sign_in_at": "Son giriş",
+        "seen": "Görülme",
         "privilege": "Yetki",
         "kdr": "KDR"
       },
+      "signed_in": "{time} giriş yaptı",
+      "outranks_you": "Senden üst rütbede",
       "detail": {
         "all_short": "Tümü",
         "settings_changed": "Özel ayarlar aktif",

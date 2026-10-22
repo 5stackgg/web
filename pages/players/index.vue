@@ -59,6 +59,11 @@ import {
   filterTriggerActive,
   filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
+import PlayerPeekSheet from "~/components/player/PlayerPeekSheet.vue";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+
+// Phones keep three columns; staff open a row in a sheet instead.
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -404,9 +409,13 @@ import {
                     />
                   </div>
                 </TableHead>
-                <TableHead>{{ $t("common.stats.wins") }}</TableHead>
-                <TableHead>{{ $t("common.stats.losses") }}</TableHead>
-                <TableHead>{{ $t("pages.players.table.kdr") }}</TableHead>
+                <template v-if="!isMobile">
+                  <TableHead>{{ $t("common.stats.wins") }}</TableHead>
+                  <TableHead>{{ $t("common.stats.losses") }}</TableHead>
+                </template>
+                <TableHead v-if="!isMobile || !canViewAdditionalDetails">{{
+                  $t("pages.players.table.kdr")
+                }}</TableHead>
                 <TableHead class="cursor-pointer" @click="toggleSort('elo')">
                   <div class="flex items-center gap-1">
                     {{ $t("pages.players.table.elo") }}
@@ -421,7 +430,7 @@ import {
                   </div>
                 </TableHead>
                 <TableHead
-                  v-if="canViewAdditionalDetails"
+                  v-if="canViewAdditionalDetails && !isMobile"
                   class="cursor-pointer"
                   @click="toggleSort('role')"
                 >
@@ -445,7 +454,11 @@ import {
                   @click="toggleSort('last_sign_in_at')"
                 >
                   <div class="flex items-center gap-1">
-                    {{ $t("pages.players.table.last_sign_in_at") }}
+                    {{
+                      isMobile
+                        ? $t("pages.players.table.seen")
+                        : $t("pages.players.table.last_sign_in_at")
+                    }}
                     <ArrowUpIcon
                       v-if="
                         sortField === 'last_sign_in_at' &&
@@ -469,16 +482,37 @@ import {
                 v-for="player of players"
                 :key="player.steam_id"
                 class="cursor-pointer"
+                @click="isMobile && canViewAdditionalDetails && peek(player)"
               >
                 <NuxtLink
-                  :to="{
-                    name: 'players-id',
-                    params: { id: String(player.steam_id) },
-                  }"
+                  :to="
+                    isMobile && canViewAdditionalDetails
+                      ? undefined
+                      : {
+                          name: 'players-id',
+                          params: { id: String(player.steam_id) },
+                        }
+                  "
                   class="contents"
                 >
                   <TableCell class="font-medium">
-                    <PlayerDisplay :player="player" :show-elo="false">
+                    <PlayerDisplay
+                      :player="player"
+                      :show-elo="false"
+                      :show-role="!isMobile"
+                      :show-flag="!isMobile"
+                      :truncate-name="isMobile"
+                    >
+                      <template v-if="isMobile" #elo-postfix>
+                        <span
+                          class="truncate text-xs font-normal text-muted-foreground"
+                          >{{
+                            canViewAdditionalDetails
+                              ? $t(`player_roles.${player.role || "user"}`)
+                              : recordText(player)
+                          }}</span
+                        >
+                      </template>
                       <template #name-postfix>
                         <Transition v-bind="badgePopTransition">
                           <span
@@ -495,9 +529,11 @@ import {
                       </template>
                     </PlayerDisplay>
                   </TableCell>
-                  <TableCell>{{ player.wins ?? 0 }}</TableCell>
-                  <TableCell>{{ player.losses ?? 0 }}</TableCell>
-                  <TableCell>
+                  <template v-if="!isMobile">
+                    <TableCell>{{ player.wins ?? 0 }}</TableCell>
+                    <TableCell>{{ player.losses ?? 0 }}</TableCell>
+                  </template>
+                  <TableCell v-if="!isMobile || !canViewAdditionalDetails">
                     <span class="inline-flex items-center gap-0.5">
                       {{ calculateKDR(player) }}
                       <StatChevron
@@ -517,15 +553,20 @@ import {
                     ></PlayerElo>
                   </TableCell>
                 </NuxtLink>
-                <TableCell v-if="canViewAdditionalDetails">
+                <TableCell v-if="canViewAdditionalDetails && !isMobile">
                   <PlayerRoleForm
                     :player="player"
                     @updated="updatePlayerRole(player.steam_id, $event)"
                   />
                 </TableCell>
-                <TableCell v-if="canViewAdditionalDetails">
+                <TableCell
+                  v-if="canViewAdditionalDetails"
+                  :class="isMobile && 'text-xs text-muted-foreground'"
+                >
                   <TimeAgo
                     :date="player.last_sign_in_at"
+                    :mini="isMobile"
+                    :hide-icon="isMobile"
                     v-if="
                       player.last_sign_in_at && player.last_sign_in_at !== `~~`
                     "
@@ -559,6 +600,13 @@ import {
     :total="playersAggregate || 0"
     v-if="playersAggregate"
   ></Pagination>
+
+  <PlayerPeekSheet
+    v-model:open="peekOpen"
+    :player="peekPlayer"
+    :kd="peekPlayer ? calculateKDR(peekPlayer) : ''"
+    @role-updated="updatePeekRole"
+  />
 </template>
 
 <script lang="ts">
@@ -597,6 +645,9 @@ export default {
       countryPopoverOpen: false,
       rolePopoverOpen: false,
       filtersPopoverOpen: false,
+      // Kept after closing so the sheet still has a player to slide away.
+      peekPlayer: null as any,
+      peekOpen: false,
       countries: getAllCountries(),
       form: useForm({
         validationSchema: toTypedSchema(
@@ -976,6 +1027,23 @@ export default {
       }
 
       player.role = role;
+    },
+    peek(player: any) {
+      this.peekPlayer = player;
+      this.peekOpen = true;
+    },
+    // A search that lands while the sheet is open replaces the rows, so the
+    // sheet's player may no longer be one of them.
+    updatePeekRole(role: e_player_roles_enum) {
+      this.peekPlayer.role = role;
+      this.updatePlayerRole(this.peekPlayer.steam_id, role);
+    },
+    recordText(player: any) {
+      const wins = player.wins ?? 0;
+      const losses = player.losses ?? 0;
+      return wins + losses
+        ? `${this.$t("league.standings.record")} ${wins}–${losses}`
+        : this.$t("pages.players.detail.no_matches");
     },
     resetFilters() {
       this.form.setValues({

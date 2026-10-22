@@ -4170,9 +4170,12 @@
       "table": {
         "elo": "ELO",
         "last_sign_in_at": "آخر دخول",
+        "seen": "آخر ظهور",
         "privilege": "الصلاحية",
         "kdr": "KDR"
       },
+      "signed_in": "سجّل الدخول {time}",
+      "outranks_you": "أعلى منك رتبة",
       "detail": {
         "all_short": "الكل",
         "settings_changed": "إعدادات مخصصة مفعّلة",

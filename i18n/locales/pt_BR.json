@@ -4170,9 +4170,12 @@
       "table": {
         "elo": "Elo",
         "last_sign_in_at": "Último Login em",
+        "seen": "Visto",
         "privilege": "Privilégio",
         "kdr": "KDR"
       },
+      "signed_in": "Entrou {time}",
+      "outranks_you": "Cargo acima do seu",
       "detail": {
         "all_short": "Todos",
         "settings_changed": "Configurações personalizadas ativas",

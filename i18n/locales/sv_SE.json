@@ -15262,7 +15262,6 @@
       "played": "{count} spelade",
       "reliable": "{pct}% pålitlighet",
       "elo_value": "{elo} ELO",
-      "your_team": "Ditt lag",
       "times_note": "Tiderna visas i din tidszon. En best of 1 kan starta ända fram till slutet av ett lags tider.",
       "empty_title": "Inga lag är öppna den här veckan",
       "empty_description": "De flesta lag öppnar sina tider på kvällen. Titta in senare.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "Dold i sökaren. Förfrågningar du redan har skickat gäller fortfarande.",
       "hours": "Veckotider",
       "time_zone": "I din tidszon",
-      "day_open": "Öppet på {day}",
-      "starts": "Start {day}",
-      "ends": "Slut {day}",
       "to": "till",
-      "next_day": "{time} (nästa dag)",
-      "add_range": "Lägg till tider",
-      "remove_range": "Ta bort de här tiderna",
       "outside": "Ta emot förfrågningar utanför de här tiderna",
-      "outside_hint": "Lag kan be om valfri tid. Du accepterar eller avböjer fortfarande själv.",
       "opponents": "Motståndare du tar emot",
       "near": "Inom {n} från {elo}",
-      "elo_hint": "Lagets snitt i 5Stack ELO. Båda lagen måste ligga inom varandras intervall, så ett snävt intervall ger färre förfrågningar.",
       "regions": "Serverregioner",
-      "regions_hint": "Inget valt betyder valfri region.",
       "maps": "Kartor ni vill spela",
       "maps_hint": "Visas för andra lag. Matcher använder Active Duty-poolen med veto.",
       "note": "Meddelande till andra lag",
       "note_placeholder": "Språk i comms, coach i voice, vad ni tränar på…",
       "alerts": "Meddela mig när ett lag öppnar",
-      "alerts_hint": "Få en avisering när ett lag inom ditt ELO-intervall och dina regioner öppnar för scrims, högst var sjätte timme.",
       "save": "Spara annons",
-      "saved": "Annonsen sparad"
+      "saved": "Annonsen sparad",
+      "nearby": "I närheten · under {ms} ms",
+      "show_less": "Visa mindre"
     },
     "now": {
       "button": "Scrim nu",
@@ -15450,6 +15441,10 @@
       "cancelled": "Förfrågan till {team} avbruten.",
       "cancelled_booked": "Scrimmen mot {team} avbröts. Det räknas som en sen avbokning.",
       "failed": "Det gick inte igenom"
+    },
+    "week": {
+      "title": "Den här veckan",
+      "no_hours": "Inga tider"
     }
   }
 }

@@ -15262,7 +15262,6 @@
       "played": "{count} spillet",
       "reliable": "{pct}% pålidelig",
       "elo_value": "{elo} ELO",
-      "your_team": "Dit hold",
       "times_note": "Tiderne er i din tidszone. En kamp i bedst af 1 kan starte helt frem til slutningen af et holds tider.",
       "empty_title": "Ingen hold er åbne i denne uge",
       "empty_description": "De fleste hold åbner deres tider om aftenen. Kig forbi igen senere.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "Skjult i finderen. Anmodninger, du allerede har sendt, gælder stadig.",
       "hours": "Ugentlige tider",
       "time_zone": "I din tidszone",
-      "day_open": "Åben {day}",
-      "starts": "Start {day}",
-      "ends": "Slut {day}",
       "to": "til",
-      "next_day": "{time} (næste dag)",
-      "add_range": "Tilføj tider",
-      "remove_range": "Fjern disse tider",
       "outside": "Tag imod anmodninger uden for disse tider",
-      "outside_hint": "Hold kan bede om en hvilken som helst tid. Du accepterer eller afviser stadig selv.",
       "opponents": "Modstandere I tager imod",
       "near": "Inden for {n} af {elo}",
-      "elo_hint": "Holdets gennemsnitlige 5Stack ELO. Begge hold skal være inden for hinandens interval, så et snævert interval giver færre anmodninger.",
       "regions": "Serverregioner",
-      "regions_hint": "Intet valgt betyder alle regioner.",
       "maps": "Maps I ønsker",
       "maps_hint": "Vises for andre hold. Kampe bruger Active Duty-poolen med veto.",
       "note": "Note til andre hold",
       "note_placeholder": "Sprog på comms, coach på voice, hvad I træner…",
       "alerts": "Giv mig besked, når et hold åbner",
-      "alerts_hint": "Få en notifikation, når et hold i dit ELO-interval og dine regioner åbner for scrims, højst hver 6. time.",
       "save": "Gem opslag",
-      "saved": "Opslag gemt"
+      "saved": "Opslag gemt",
+      "nearby": "I nærheden · under {ms} ms",
+      "show_less": "Vis mindre"
     },
     "now": {
       "button": "Scrim nu",
@@ -15450,6 +15441,10 @@
       "cancelled": "Anmodning til {team} annulleret.",
       "cancelled_booked": "Scrim med {team} aflyst. Det tæller som en sen aflysning.",
       "failed": "Det gik ikke igennem"
+    },
+    "week": {
+      "title": "Denne uge",
+      "no_hours": "Ingen timer"
     }
   }
 }

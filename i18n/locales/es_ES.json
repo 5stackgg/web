@@ -15262,7 +15262,6 @@
       "played": "{count} jugados",
       "reliable": "{pct}% de fiabilidad",
       "elo_value": "{elo} ELO",
-      "your_team": "Tu equipo",
       "times_note": "Las horas están en tu zona horaria. Una partida al mejor de 1 puede empezar hasta el final del horario de un equipo.",
       "empty_title": "Ningún equipo abierto esta semana",
       "empty_description": "La mayoría de los equipos abren su horario por la noche. Vuelve más tarde.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "Oculto en el buscador. Las solicitudes que ya enviaste siguen contando.",
       "hours": "Horario semanal",
       "time_zone": "En tu zona horaria",
-      "day_open": "Abierto el {day}",
-      "starts": "Inicio del {day}",
-      "ends": "Fin del {day}",
       "to": "a",
-      "next_day": "{time} (día siguiente)",
-      "add_range": "Añadir horas",
-      "remove_range": "Quitar estas horas",
       "outside": "Aceptar solicitudes fuera de este horario",
-      "outside_hint": "Los equipos pueden pedir cualquier hora. Tú sigues aceptando o rechazando.",
       "opponents": "Rivales que aceptas",
       "near": "A {n} o menos de {elo}",
-      "elo_hint": "ELO medio de 5Stack del equipo. Cada equipo tiene que estar dentro del rango del otro, así que un rango estrecho significa menos solicitudes.",
       "regions": "Regiones de servidores",
-      "regions_hint": "Si no eliges ninguna, vale cualquier región.",
       "maps": "Mapas que quieres",
       "maps_hint": "Se muestra a otros equipos. Las partidas usan el pool Active Duty con veto.",
       "note": "Nota para otros equipos",
       "note_placeholder": "Idioma de comunicación, coach en voz, qué estáis practicando…",
       "alerts": "Avísame cuando se abra un equipo",
-      "alerts_hint": "Recibe una notificación cuando un equipo de tu rango de ELO y tus regiones se abra a scrims, como mucho cada 6 horas.",
       "save": "Guardar anuncio",
-      "saved": "Anuncio guardado"
+      "saved": "Anuncio guardado",
+      "nearby": "Cercanas · menos de {ms} ms",
+      "show_less": "Mostrar menos"
     },
     "now": {
       "button": "Scrim ya",
@@ -15450,6 +15441,10 @@
       "cancelled": "Solicitud a {team} cancelada.",
       "cancelled_booked": "Scrim con {team} cancelado. Cuenta como cancelación tardía.",
       "failed": "No se pudo completar"
+    },
+    "week": {
+      "title": "Esta semana",
+      "no_hours": "Sin horario"
     }
   }
 }

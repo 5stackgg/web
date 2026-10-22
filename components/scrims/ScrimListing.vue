@@ -2,19 +2,21 @@
 import { computed, onBeforeUnmount, reactive, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
-import { Bell, Plus, X } from "lucide-vue-next";
-import { Button } from "~/components/ui/button";
+import { Check } from "lucide-vue-next";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
 import { toast } from "~/components/ui/toast";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
-import ScrimBoardRow from "~/components/scrims/ScrimBoardRow.vue";
+import ScrimHoursGrid from "~/components/scrims/ScrimHoursGrid.vue";
+import ScrimRegionPicker from "~/components/scrims/ScrimRegionPicker.vue";
 import { useScrimClock, useScrimMaps } from "~/composables/useScrimFinder";
 import { $, order_by } from "~/generated/zeus";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import mapLabel from "~/utilities/mapLabel";
-import { minutesLabel, numberLabel, weekdayName } from "~/utilities/scrimFormat";
+import teamAvatarSrc from "~/utilities/teamAvatar";
+import { dayLabel, numberLabel, rangeLabel } from "~/utilities/scrimFormat";
 import {
   openIntervals,
   weeklyRanges,
@@ -118,30 +120,6 @@ watch(
   { immediate: true, deep: true },
 );
 
-const DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
-function options(from: number, to: number) {
-  const out: Array<{ value: number; label: string }> = [];
-  for (let m = from; m <= to; m += 30) {
-    out.push({
-      value: m,
-      label: m >= 1440 ? t("scrims.listing.next_day", { time: minutesLabel(m) }) : minutesLabel(m),
-    });
-  }
-  return out;
-}
-function toggleDay(dow: number, open: boolean) {
-  form.ranges[dow] = open ? [[20 * 60, 23 * 60]] : [];
-}
-function addRange(dow: number) {
-  const last = form.ranges[dow][form.ranges[dow].length - 1];
-  const start = Math.min(last ? last[1] + 60 : 20 * 60, 1410);
-  form.ranges[dow].push([start, start + 120]);
-}
-function setStart(range: [number, number], value: number) {
-  const length = range[1] - range[0];
-  range[0] = value;
-  range[1] = Math.max(value + 30, Math.min(value + length, value + 720));
-}
 function toggleIn(list: string[], value: string) {
   const index = list.indexOf(value);
   if (index === -1) list.push(value);
@@ -153,26 +131,50 @@ function near() {
   form.eloMin = String(Math.max(0, elo - 1250));
   form.eloMax = String(elo + 1250);
 }
-const sortedMaps = computed(() =>
-  maps.value
-    .filter((map) => map.patch)
-    .sort((a, b) => Number(!!b.active_pool) - Number(!!a.active_pool) || mapLabel(a).localeCompare(mapLabel(b))),
-);
+const mapGroups = computed(() => {
+  const sorted = [...maps.value].sort((a, b) => mapLabel(a).localeCompare(mapLabel(b)));
+  return [
+    { key: "active_duty", maps: sorted.filter((map) => map.active_pool) },
+    { key: "official", maps: sorted.filter((map) => !map.active_pool && !map.workshop_map_id) },
+    { key: "workshop", maps: sorted.filter((map) => !map.active_pool && map.workshop_map_id) },
+  ].filter((group) => group.maps.length);
+});
+function pickedIn(group: { maps: any[] }) {
+  return group.maps.filter((map) => form.maps.includes(map.id)).length;
+}
+function setGroup(group: { maps: any[] }, on: boolean) {
+  const ids = group.maps.map((map) => map.id);
+  form.maps = on
+    ? [...new Set([...form.maps, ...ids])]
+    : form.maps.filter((id) => !ids.includes(id));
+}
 const readElo = (value: string) => {
   const digits = value.replace(/[^0-9]/g, "");
   return digits ? Number(digits) : null;
 };
 
-const previewPosting = computed(() => ({
-  id: "preview",
-  team_id: props.team?.id,
-  regions: form.regions,
-  map_ids: form.maps,
-  team: { ...props.team, scrim_availability: windowsFromRanges(form.ranges) },
-}));
+const showWorkshop = ref(false);
+
 const previewInterval = computed(
-  () => openIntervals(previewPosting.value.team.scrim_availability, now.value)[0] ?? null,
+  () => openIntervals(windowsFromRanges(form.ranges), now.value)[0] ?? null,
 );
+const previewMaps = computed(() =>
+  form.maps.map((id) => mapsById.value[id]).filter((map) => map?.patch),
+);
+const regionLine = computed(() =>
+  form.regions.length
+    ? form.regions
+        .map((value) => {
+          const region = regions.value.find((item) => item.value === value);
+          return region?.description || value;
+        })
+        .join(", ")
+    : t("scrims.board.any_region"),
+);
+const reliability = computed(() => {
+  const pct = props.team?.reputation?.reliability_pct;
+  return pct != null ? t("scrims.board.reliable", { pct }) : t("scrims.board.new");
+});
 
 async function save() {
   if (submitting.value) return;
@@ -269,216 +271,254 @@ function discard() {
 </script>
 
 <template>
-  <div class="grid max-w-3xl gap-6">
-    <section v-if="preview" class="grid gap-2">
-      <div class="flex items-center justify-between gap-2 text-xs font-medium text-muted-foreground">
-        <span>{{ $t("scrims.listing.preview") }}</span>
-        <span v-if="!form.open">{{ $t("scrims.listing.hidden") }}</span>
-      </div>
-      <div v-if="previewInterval" class="overflow-hidden rounded-lg border border-dashed border-border">
-        <ScrimBoardRow
-          :posting="previewPosting"
-          :interval="previewInterval"
-          :at="previewInterval.start"
-          :now-open="previewInterval.start <= now.getTime()"
-          :status="null"
-          :maps-by-id="mapsById"
-          :now="now"
-          preview
-        />
-      </div>
-      <p v-else class="rounded-lg border border-dashed border-border px-4 py-5 text-center text-sm text-muted-foreground">
-        {{ $t("scrims.listing.add_hours") }}
-      </p>
-    </section>
-
-    <label
-      class="flex cursor-pointer items-center gap-4 rounded-lg border p-3.5 transition-colors duration-150"
-      :class="form.open ? 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.06)]' : 'border-border bg-card/40'"
+  <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_24rem]">
+    <aside
+      class="grid min-w-0 rounded-lg border bg-card/30 transition-colors duration-150 lg:col-start-2 lg:row-start-1"
+      :class="form.open ? 'border-[hsl(var(--tac-amber)/0.4)]' : 'border-border'"
     >
-      <span class="grid min-w-0 flex-1 gap-0.5">
-        <span class="font-semibold">{{ form.open ? $t("scrims.listing.open") : $t("scrims.listing.closed") }}</span>
-        <span class="text-sm text-muted-foreground">
-          {{ form.open ? $t("scrims.listing.open_hint", { team: team.name }) : $t("scrims.listing.closed_hint") }}
+      <label class="flex cursor-pointer items-center gap-3 px-4 py-3.5">
+        <span class="grid min-w-0 flex-1 gap-0.5">
+          <span class="font-semibold" :class="{ 'text-[hsl(var(--tac-amber))]': form.open }">
+            {{ form.open ? $t("scrims.listing.open") : $t("scrims.listing.closed") }}
+          </span>
+          <span class="text-xs text-muted-foreground">
+            {{ form.open ? $t("scrims.listing.open_hint", { team: team.name }) : $t("scrims.listing.closed_hint") }}
+          </span>
         </span>
-      </span>
-      <Switch v-model="form.open" :aria-label="$t('scrims.listing.open')" />
-    </label>
+        <Switch v-model="form.open" :aria-label="$t('scrims.listing.open')" />
+      </label>
 
-    <section class="grid gap-2">
-      <div class="flex items-center justify-between gap-2">
-        <h3 class="text-sm font-semibold">{{ $t("scrims.listing.hours") }}</h3>
-        <span class="text-xs text-muted-foreground">{{ $t("scrims.listing.time_zone") }}</span>
-      </div>
-      <div class="divide-y divide-border overflow-hidden rounded-lg border border-border">
+      <div v-if="preview" class="grid gap-2 border-t border-border px-4 py-3.5">
+        <div class="flex items-center justify-between gap-2 text-xs font-medium text-muted-foreground">
+          <span>{{ $t("scrims.listing.preview") }}</span>
+          <span v-if="!form.open">{{ $t("scrims.listing.hidden") }}</span>
+        </div>
         <div
-          v-for="dow in DAY_ORDER"
-          :key="dow"
-          class="grid min-h-11 grid-cols-[3rem_2.5rem_minmax(0,1fr)] items-center gap-2.5 px-3 py-1.5"
+          class="grid gap-2 rounded-md border border-dashed border-border px-3 py-2.5 transition-opacity duration-150"
+          :class="{ 'opacity-60': !form.open }"
         >
-          <span class="text-sm font-semibold">{{ weekdayName(dow) }}</span>
-          <Switch
-            :model-value="form.ranges[dow].length > 0"
-            :aria-label="$t('scrims.listing.day_open', { day: weekdayName(dow, 'long') })"
-            @update:model-value="(open: boolean) => toggleDay(dow, open)"
-          />
-          <div class="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
-            <span v-if="!form.ranges[dow].length">{{ $t("scrims.listing.closed") }}</span>
-            <span
-              v-for="(range, index) in form.ranges[dow]"
-              :key="index"
-              class="inline-flex items-center gap-1.5"
-            >
-              <select
-                class="h-8 rounded-md border border-input bg-background px-2 text-sm tabular-nums text-foreground"
-                :value="range[0]"
-                :aria-label="$t('scrims.listing.starts', { day: weekdayName(dow, 'long') })"
-                @change="setStart(range, Number(($event.target as HTMLSelectElement).value))"
-              >
-                <option v-for="option in options(0, 1410)" :key="option.value" :value="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
-              <span>{{ $t("scrims.listing.to") }}</span>
-              <select
-                v-model.number="range[1]"
-                class="h-8 rounded-md border border-input bg-background px-2 text-sm tabular-nums text-foreground"
-                :aria-label="$t('scrims.listing.ends', { day: weekdayName(dow, 'long') })"
-              >
-                <option v-for="option in options(range[0] + 30, range[0] + 720)" :key="option.value" :value="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
-              <Button
-                v-if="form.ranges[dow].length > 1"
-                variant="ghost"
-                size="icon-sm"
-                :aria-label="$t('scrims.listing.remove_range')"
-                @click="form.ranges[dow].splice(index, 1)"
-              >
-                <X class="h-3.5 w-3.5" />
-              </Button>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <Avatar shape="square" class="h-8 w-8 shrink-0 rounded-md">
+              <AvatarImage v-if="teamAvatarSrc(team)" :src="teamAvatarSrc(team)!" :alt="team.name" />
+              <AvatarFallback class="rounded-md text-[0.65rem] font-semibold uppercase">
+                {{ (team.name || "?").slice(0, 2) }}
+              </AvatarFallback>
+            </Avatar>
+            <span class="grid min-w-0 flex-1 gap-px leading-tight">
+              <span class="truncate font-semibold">{{ team.name }}</span>
+              <span class="truncate text-xs text-muted-foreground">{{ regionLine }}</span>
             </span>
-            <button
-              v-if="form.ranges[dow].length"
-              type="button"
-              class="inline-flex items-center gap-1 text-xs text-[hsl(var(--tac-amber))] hover:underline"
-              @click="addRange(dow)"
+            <span
+              v-if="previewInterval"
+              class="grid shrink-0 justify-items-end gap-px text-right leading-tight tabular-nums"
             >
-              <Plus class="h-3 w-3" />
-              {{ $t("scrims.listing.add_range") }}
+              <span class="text-sm font-semibold">{{ dayLabel(previewInterval.start, now) }}</span>
+              <span class="text-xs text-muted-foreground">
+                {{ rangeLabel(previewInterval.start, previewInterval.end) }}
+              </span>
+            </span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-muted-foreground">
+            <span v-if="previewMaps.length" class="flex items-center gap-0.5">
+              <img
+                v-for="map in previewMaps.slice(0, 5)"
+                :key="map.id"
+                :src="map.patch"
+                :alt="mapLabel(map)"
+                class="h-[18px] w-[18px] object-contain"
+              />
+              <span v-if="form.maps.length > 5" class="ml-0.5">+{{ form.maps.length - 5 }}</span>
+            </span>
+            <span v-else>{{ $t("scrims.board.any_map") }}</span>
+            <span class="ml-auto tabular-nums text-foreground">{{ numberLabel(team.ranks?.avg_elo) }}</span>
+            <span>{{ reliability }}</span>
+          </div>
+        </div>
+        <p v-if="!previewInterval" class="text-xs text-muted-foreground">{{ $t("scrims.listing.add_hours") }}</p>
+      </div>
+
+      <div class="grid gap-2 border-t border-border px-4 py-3.5">
+        <span class="text-xs font-medium text-muted-foreground">{{ $t("scrims.listing.opponents") }}</span>
+        <div class="flex items-center gap-2">
+          <Input
+            v-model="form.eloMin"
+            inputmode="numeric"
+            autocomplete="off"
+            class="h-8 min-w-0 flex-1 tabular-nums"
+            :placeholder="$t('common.any')"
+            :aria-label="$t('scrims.filters.elo_min')"
+          />
+          <span class="text-sm text-muted-foreground">{{ $t("scrims.listing.to") }}</span>
+          <Input
+            v-model="form.eloMax"
+            inputmode="numeric"
+            autocomplete="off"
+            class="h-8 min-w-0 flex-1 tabular-nums"
+            :placeholder="$t('common.any')"
+            :aria-label="$t('scrims.filters.elo_max')"
+          />
+        </div>
+        <button
+          v-if="myElo"
+          type="button"
+          class="justify-self-start text-xs text-[hsl(var(--tac-amber))] [@media(hover:hover)]:hover:underline"
+          @click="near"
+        >
+          {{ $t("scrims.listing.near", { n: numberLabel(1250), elo: numberLabel(myElo) }) }}
+        </button>
+      </div>
+
+      <div class="border-t border-border px-4 py-3.5">
+        <ScrimRegionPicker v-model="form.regions" />
+      </div>
+
+      <div class="grid gap-2 border-t border-border px-4 py-3.5">
+        <label for="scrim-listing-notes" class="text-xs font-medium text-muted-foreground">
+          {{ $t("scrims.listing.note") }}
+        </label>
+        <Textarea
+          id="scrim-listing-notes"
+          v-model="form.notes"
+          rows="3"
+          maxlength="280"
+          :placeholder="$t('scrims.listing.note_placeholder')"
+        />
+        <span v-if="form.notes.length > 240" class="justify-self-end text-xs tabular-nums text-muted-foreground">
+          {{ form.notes.length }}/280
+        </span>
+      </div>
+
+      <div class="grid border-t border-border px-4 py-1.5">
+        <label class="flex min-h-11 cursor-pointer items-center gap-3">
+          <span class="flex-1 text-sm">{{ $t("scrims.listing.outside") }}</span>
+          <Switch v-model="form.outside" />
+        </label>
+        <label class="flex min-h-11 cursor-pointer items-center gap-3">
+          <span class="flex-1 text-sm">{{ $t("scrims.listing.alerts") }}</span>
+          <Switch v-model="form.alerts" />
+        </label>
+      </div>
+    </aside>
+
+    <div class="grid min-w-0 grid-cols-1 gap-8 lg:col-start-1 lg:row-start-1">
+      <section class="grid grid-cols-1 gap-2.5">
+        <div class="flex items-baseline justify-between gap-2">
+          <h3 class="text-sm font-semibold">{{ $t("scrims.listing.hours") }}</h3>
+          <span class="text-xs text-muted-foreground">{{ $t("scrims.listing.time_zone") }}</span>
+        </div>
+        <ScrimHoursGrid v-model="form.ranges" />
+      </section>
+
+      <section class="grid grid-cols-1 gap-4">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+          <h3 class="text-sm font-semibold">{{ $t("scrims.listing.maps") }}</h3>
+          <span class="text-xs text-muted-foreground">{{ $t("scrims.listing.maps_hint") }}</span>
+        </div>
+        <div v-for="group in mapGroups" :key="group.key" class="grid gap-2">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="font-medium">{{ $t(`maps.${group.key}`) }}</span>
+            <span class="tabular-nums text-muted-foreground">{{ pickedIn(group) }}/{{ group.maps.length }}</span>
+            <button
+              v-if="group.key === 'workshop'"
+              type="button"
+              class="text-[hsl(var(--tac-amber))] [@media(hover:hover)]:hover:underline"
+              :aria-expanded="showWorkshop"
+              @click="showWorkshop = !showWorkshop"
+            >
+              {{ showWorkshop ? $t("scrims.listing.show_less") : $t("common.see_all") }}
+            </button>
+            <button
+              v-else
+              type="button"
+              class="text-[hsl(var(--tac-amber))] [@media(hover:hover)]:hover:underline"
+              @click="setGroup(group, pickedIn(group) < group.maps.length)"
+            >
+              {{ pickedIn(group) < group.maps.length ? $t("common.all") : $t("common.none") }}
+            </button>
+          </div>
+          <div
+            v-if="group.key === 'active_duty'"
+            class="grid grid-cols-[repeat(auto-fill,minmax(7rem,1fr))] gap-2"
+          >
+            <button
+              v-for="map in group.maps"
+              :key="map.id"
+              type="button"
+              :aria-pressed="form.maps.includes(map.id)"
+              :aria-label="mapLabel(map)"
+              class="relative aspect-[16/10] overflow-hidden rounded-lg border bg-card transition-colors duration-150"
+              :class="
+                form.maps.includes(map.id)
+                  ? 'border-[hsl(var(--tac-amber)/0.7)]'
+                  : 'border-border [@media(hover:hover)]:hover:border-muted-foreground/50'
+              "
+              @click="toggleIn(form.maps, map.id)"
+            >
+              <NuxtImg
+                v-if="map.poster"
+                :src="map.poster"
+                sizes="240px"
+                alt=""
+                class="absolute inset-0 h-full w-full object-cover transition-[filter] duration-150"
+                :class="{ 'grayscale-[0.85]': !form.maps.includes(map.id) }"
+              />
+              <span
+                class="absolute inset-0 transition-colors duration-150"
+                :class="
+                  form.maps.includes(map.id)
+                    ? 'bg-gradient-to-t from-background/85 to-background/20'
+                    : 'bg-background/70'
+                "
+              />
+              <img
+                v-if="map.patch"
+                :src="map.patch"
+                alt=""
+                class="absolute left-1/2 top-[42%] h-10 w-10 -translate-x-1/2 -translate-y-1/2 object-contain"
+                :class="{ 'opacity-50': !form.maps.includes(map.id) }"
+              />
+              <span
+                class="absolute inset-x-2 bottom-1.5 truncate text-left text-xs font-semibold"
+                :class="form.maps.includes(map.id) ? 'text-foreground' : 'text-muted-foreground'"
+              >
+                {{ mapLabel(map) }}
+              </span>
+              <span
+                v-if="form.maps.includes(map.id)"
+                class="absolute right-1.5 top-1.5 grid h-[18px] w-[18px] place-items-center rounded-full bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))]"
+              >
+                <Check class="h-3 w-3" :stroke-width="3" />
+              </span>
+            </button>
+          </div>
+          <div v-else-if="group.key !== 'workshop' || showWorkshop" class="flex flex-wrap gap-1.5">
+            <button
+              v-for="map in group.maps"
+              :key="map.id"
+              type="button"
+              :aria-pressed="form.maps.includes(map.id)"
+              class="inline-flex h-8 items-center gap-1.5 rounded-md border pr-2.5 text-sm transition-colors duration-150"
+              :class="[
+                form.maps.includes(map.id)
+                  ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
+                  : 'border-border text-muted-foreground [@media(hover:hover)]:hover:bg-muted/40',
+                map.patch ? 'pl-1.5' : 'pl-2.5',
+              ]"
+              @click="toggleIn(form.maps, map.id)"
+            >
+              <img
+                v-if="map.patch"
+                :src="map.patch"
+                :alt="mapLabel(map)"
+                class="h-5 w-5 object-contain"
+                :class="{ 'opacity-45 grayscale': !form.maps.includes(map.id) }"
+              />
+              {{ mapLabel(map) }}
             </button>
           </div>
         </div>
-      </div>
-      <label class="flex cursor-pointer items-center gap-4 rounded-lg border border-border bg-card/40 p-3.5">
-        <span class="grid min-w-0 flex-1 gap-0.5">
-          <span class="text-sm font-medium">{{ $t("scrims.listing.outside") }}</span>
-          <span class="text-xs text-muted-foreground">{{ $t("scrims.listing.outside_hint") }}</span>
-        </span>
-        <Switch v-model="form.outside" />
-      </label>
-    </section>
-
-    <section class="grid gap-2">
-      <h3 class="text-sm font-semibold">{{ $t("scrims.listing.opponents") }}</h3>
-      <div class="flex flex-wrap items-center gap-2">
-        <Input
-          v-model="form.eloMin"
-          inputmode="numeric"
-          autocomplete="off"
-          class="h-8 w-28 tabular-nums"
-          :placeholder="$t('common.any')"
-          :aria-label="$t('scrims.filters.elo_min')"
-        />
-        <span class="text-sm text-muted-foreground">{{ $t("scrims.listing.to") }}</span>
-        <Input
-          v-model="form.eloMax"
-          inputmode="numeric"
-          autocomplete="off"
-          class="h-8 w-28 tabular-nums"
-          :placeholder="$t('common.any')"
-          :aria-label="$t('scrims.filters.elo_max')"
-        />
-        <Button v-if="myElo" size="sm" variant="ghost" class="text-muted-foreground" @click="near">
-          {{ $t("scrims.listing.near", { n: numberLabel(1250), elo: numberLabel(myElo) }) }}
-        </Button>
-      </div>
-      <p class="text-xs text-muted-foreground">{{ $t("scrims.listing.elo_hint") }}</p>
-    </section>
-
-    <section class="grid gap-2">
-      <h3 class="text-sm font-semibold">{{ $t("scrims.listing.regions") }}</h3>
-      <div class="flex flex-wrap gap-1.5">
-        <button
-          v-for="region in regions"
-          :key="region.value"
-          type="button"
-          :aria-pressed="form.regions.includes(region.value)"
-          class="h-8 rounded-md border px-3 text-sm transition-colors duration-150"
-          :class="
-            form.regions.includes(region.value)
-              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
-              : 'border-border text-muted-foreground [@media(hover:hover)]:hover:bg-muted/40'
-          "
-          @click="toggleIn(form.regions, region.value)"
-        >
-          {{ region.description || region.value }}
-        </button>
-      </div>
-      <p class="text-xs text-muted-foreground">{{ $t("scrims.listing.regions_hint") }}</p>
-    </section>
-
-    <section class="grid gap-2">
-      <h3 class="text-sm font-semibold">{{ $t("scrims.listing.maps") }}</h3>
-      <div class="flex flex-wrap gap-1.5">
-        <button
-          v-for="map in sortedMaps"
-          :key="map.id"
-          type="button"
-          :aria-pressed="form.maps.includes(map.id)"
-          class="inline-flex h-8 items-center gap-1.5 rounded-md border pl-1.5 pr-2.5 text-sm transition-colors duration-150"
-          :class="
-            form.maps.includes(map.id)
-              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-foreground'
-              : 'border-border text-muted-foreground [@media(hover:hover)]:hover:bg-muted/40'
-          "
-          @click="toggleIn(form.maps, map.id)"
-        >
-          <img
-            :src="map.patch"
-            :alt="mapLabel(map)"
-            class="h-5 w-5 object-contain"
-            :class="{ 'opacity-45 grayscale': !form.maps.includes(map.id) }"
-          />
-          {{ mapLabel(map) }}
-        </button>
-      </div>
-      <p class="text-xs text-muted-foreground">{{ $t("scrims.listing.maps_hint") }}</p>
-    </section>
-
-    <section class="grid gap-2">
-      <label for="scrim-listing-notes" class="text-sm font-semibold">{{ $t("scrims.listing.note") }}</label>
-      <Textarea
-        id="scrim-listing-notes"
-        v-model="form.notes"
-        maxlength="280"
-        :placeholder="$t('scrims.listing.note_placeholder')"
-      />
-      <span class="justify-self-end text-xs tabular-nums text-muted-foreground">{{ form.notes.length }}/280</span>
-    </section>
-
-    <label
-      class="flex cursor-pointer items-center gap-4 rounded-lg border p-3.5 transition-colors duration-150"
-      :class="form.alerts ? 'border-[hsl(var(--tac-amber)/0.45)]' : 'border-border bg-card/40'"
-    >
-      <Bell class="h-4 w-4 shrink-0 text-muted-foreground" />
-      <span class="grid min-w-0 flex-1 gap-0.5">
-        <span class="text-sm font-medium">{{ $t("scrims.listing.alerts") }}</span>
-        <span class="text-xs text-muted-foreground">{{ $t("scrims.listing.alerts_hint") }}</span>
-      </span>
-      <Switch v-model="form.alerts" />
-    </label>
+      </section>
+    </div>
 
     <SettingsSaveBar
       :dirty="dirty"

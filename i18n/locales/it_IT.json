@@ -15262,7 +15262,6 @@
       "played": "{count} giocati",
       "reliable": "{pct}% affidabile",
       "elo_value": "{elo} ELO",
-      "your_team": "Il tuo team",
       "times_note": "Gli orari sono nel tuo fuso orario. Un match al meglio di 1 può iniziare fino alla fine degli orari di un team.",
       "empty_title": "Nessun team aperto questa settimana",
       "empty_description": "La maggior parte dei team apre i propri orari la sera. Ricontrolla più tardi.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "Nascosto dalla ricerca. Le richieste che hai già inviato restano valide.",
       "hours": "Orari settimanali",
       "time_zone": "Nel tuo fuso orario",
-      "day_open": "Aperto il {day}",
-      "starts": "Inizio {day}",
-      "ends": "Fine {day}",
       "to": "alle",
-      "next_day": "{time} (giorno dopo)",
-      "add_range": "Aggiungi orari",
-      "remove_range": "Rimuovi questi orari",
       "outside": "Accetta richieste fuori da questi orari",
-      "outside_hint": "I team possono chiedere qualsiasi orario. Sei comunque tu ad accettare o rifiutare.",
       "opponents": "Avversari che accetti",
       "near": "Entro {n} da {elo}",
-      "elo_hint": "ELO 5Stack medio del team. Ogni team deve rientrare nella fascia dell'altro, quindi una fascia stretta significa meno richieste.",
       "regions": "Regioni dei server",
-      "regions_hint": "Nessuna selezione significa qualsiasi regione.",
       "maps": "Mappe che vuoi",
       "maps_hint": "Visibili agli altri team. I match usano il pool Active Duty con veto.",
       "note": "Nota per gli altri team",
       "note_placeholder": "Lingua in comunicazione, coach in voce, cosa state allenando…",
       "alerts": "Avvisami quando un team si apre",
-      "alerts_hint": "Ricevi una notifica quando un team nella tua fascia ELO e nelle tue regioni si apre agli scrim, al massimo ogni 6 ore.",
       "save": "Salva annuncio",
-      "saved": "Annuncio salvato"
+      "saved": "Annuncio salvato",
+      "nearby": "Vicine · sotto {ms} ms",
+      "show_less": "Mostra meno"
     },
     "now": {
       "button": "Scrim subito",
@@ -15450,6 +15441,10 @@
       "cancelled": "Richiesta a {team} annullata.",
       "cancelled_booked": "Scrim con {team} annullato. Conta come annullamento tardivo.",
       "failed": "Non è andato a buon fine"
+    },
+    "week": {
+      "title": "Questa settimana",
+      "no_hours": "Nessun orario"
     }
   }
 }

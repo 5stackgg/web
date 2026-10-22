@@ -15262,7 +15262,6 @@
       "played": "{count} gespielt",
       "reliable": "{pct} % zuverlässig",
       "elo_value": "{elo} ELO",
-      "your_team": "Dein Team",
       "times_note": "Zeiten in deiner Zeitzone. Ein Best of 1 kann bis zum Ende der Zeiten eines Teams starten.",
       "empty_title": "Diese Woche ist kein Team offen",
       "empty_description": "Die meisten Teams öffnen ihre Zeiten abends. Schau später wieder vorbei.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "Im Finder ausgeblendet. Bereits gesendete Anfragen gelten weiter.",
       "hours": "Wöchentliche Zeiten",
       "time_zone": "In deiner Zeitzone",
-      "day_open": "Offen am {day}",
-      "starts": "Start {day}",
-      "ends": "Ende {day}",
       "to": "bis",
-      "next_day": "{time} (nächster Tag)",
-      "add_range": "Zeiten hinzufügen",
-      "remove_range": "Diese Zeiten entfernen",
       "outside": "Anfragen außerhalb dieser Zeiten annehmen",
-      "outside_hint": "Teams können jede Zeit anfragen. Du nimmst trotzdem selbst an oder lehnst ab.",
       "opponents": "Gegner, die du annimmst",
       "near": "Höchstens {n} von {elo} entfernt",
-      "elo_hint": "Durchschnittliche 5Stack-ELO des Teams. Beide Teams müssen im Bereich des anderen liegen, ein enger Bereich bedeutet also weniger Anfragen.",
       "regions": "Serverregionen",
-      "regions_hint": "Keine Auswahl heißt jede Region.",
       "maps": "Gewünschte Maps",
       "maps_hint": "Wird anderen Teams angezeigt. Matches nutzen den Active-Duty-Pool mit Veto.",
       "note": "Hinweis an andere Teams",
       "note_placeholder": "Sprache im Voice, Coach im Voice, woran ihr gerade arbeitet…",
       "alerts": "Benachrichtige mich, wenn ein Team öffnet",
-      "alerts_hint": "Erhalte eine Benachrichtigung, wenn ein Team in deinem ELO-Bereich und deinen Regionen für Scrims öffnet, höchstens alle 6 Stunden.",
       "save": "Eintrag speichern",
-      "saved": "Eintrag gespeichert"
+      "saved": "Eintrag gespeichert",
+      "nearby": "In der Nähe · unter {ms} ms",
+      "show_less": "Weniger anzeigen"
     },
     "now": {
       "button": "Sofort-Scrim",
@@ -15450,6 +15441,10 @@
       "cancelled": "Anfrage an {team} zurückgezogen.",
       "cancelled_booked": "Scrim gegen {team} abgesagt. Das zählt als späte Absage.",
       "failed": "Das hat nicht geklappt"
+    },
+    "week": {
+      "title": "Diese Woche",
+      "no_hours": "Keine Zeiten"
     }
   }
 }

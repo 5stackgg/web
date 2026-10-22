@@ -15262,7 +15262,6 @@
       "played": "{count}회 진행",
       "reliable": "신뢰도 {pct}%",
       "elo_value": "{elo} ELO",
-      "your_team": "내 팀",
       "times_note": "시간은 내 시간대 기준입니다. BO1은 팀의 가능 시간이 끝날 때까지 시작할 수 있습니다.",
       "empty_title": "이번 주에 스크림을 받는 팀이 없습니다",
       "empty_description": "대부분의 팀은 저녁에 시간을 엽니다. 나중에 다시 확인하세요.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "파인더에서 숨겨집니다. 이미 보낸 요청은 그대로 유효합니다.",
       "hours": "주간 가능 시간",
       "time_zone": "내 시간대 기준",
-      "day_open": "{day} 개방",
-      "starts": "{day} 시작",
-      "ends": "{day} 종료",
       "to": "~",
-      "next_day": "{time} (다음 날)",
-      "add_range": "시간 추가",
-      "remove_range": "이 시간 삭제",
       "outside": "이 시간 외의 요청도 받기",
-      "outside_hint": "다른 팀이 아무 시간이나 요청할 수 있습니다. 수락이나 거절은 여전히 내가 정합니다.",
       "opponents": "받을 상대",
       "near": "{elo} 기준 ±{n} 이내",
-      "elo_hint": "팀 평균 5Stack ELO입니다. 두 팀 모두 서로의 범위 안에 있어야 하므로, 범위가 좁으면 요청이 줄어듭니다.",
       "regions": "서버 지역",
-      "regions_hint": "선택하지 않으면 지역 무관입니다.",
       "maps": "원하는 맵",
       "maps_hint": "다른 팀에게 표시됩니다. 매치는 Active Duty 맵 풀에서 밴픽으로 진행합니다.",
       "note": "다른 팀에게 남기는 메모",
       "note_placeholder": "소통 언어, 코치 보이스 참여, 연습 중인 내용…",
       "alerts": "팀이 개방하면 알려주기",
-      "alerts_hint": "내 ELO 범위와 지역에 맞는 팀이 스크림을 개방하면 알림을 받습니다. 최대 6시간에 한 번입니다.",
       "save": "등록 정보 저장",
-      "saved": "등록 정보를 저장했습니다"
+      "saved": "등록 정보를 저장했습니다",
+      "nearby": "가까운 지역 · {ms}ms 미만",
+      "show_less": "간단히 보기"
     },
     "now": {
       "button": "바로 스크림",
@@ -15450,6 +15441,10 @@
       "cancelled": "{team}에게 보낸 요청을 취소했습니다.",
       "cancelled_booked": "{team}과(와)의 스크림을 취소했습니다. 늦은 취소로 기록됩니다.",
       "failed": "처리되지 않았습니다"
+    },
+    "week": {
+      "title": "이번 주",
+      "no_hours": "시간 없음"
     }
   }
 }

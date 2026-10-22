@@ -15262,7 +15262,6 @@
       "played": "{count} jogados",
       "reliable": "{pct}% confiável",
       "elo_value": "{elo} ELO",
-      "your_team": "Seu time",
       "times_note": "Os horários estão no seu fuso horário. Uma melhor de 1 pode começar até o fim do horário de um time.",
       "empty_title": "Nenhum time aberto nesta semana",
       "empty_description": "A maioria dos times abre seus horários à noite. Volte mais tarde.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "Oculto do localizador. Solicitações que você já enviou continuam valendo.",
       "hours": "Horários semanais",
       "time_zone": "No seu fuso horário",
-      "day_open": "Aberto: {day}",
-      "starts": "Início ({day})",
-      "ends": "Fim ({day})",
       "to": "até",
-      "next_day": "{time} (dia seguinte)",
-      "add_range": "Adicionar horário",
-      "remove_range": "Remover este horário",
       "outside": "Aceitar solicitações fora destes horários",
-      "outside_hint": "Times podem pedir qualquer horário. Você ainda aceita ou recusa.",
       "opponents": "Adversários que você aceita",
       "near": "Até {n} de diferença de {elo}",
-      "elo_hint": "ELO 5Stack médio do time. Os dois times precisam estar dentro da faixa um do outro, então uma faixa estreita significa menos solicitações.",
       "regions": "Regiões de servidor",
-      "regions_hint": "Nenhuma selecionada significa qualquer região.",
       "maps": "Mapas que você quer",
       "maps_hint": "Mostrado para outros times. As partidas usam o pool Active Duty com veto.",
       "note": "Nota para outros times",
       "note_placeholder": "Idioma da comunicação, coach na call, o que vocês estão treinando…",
       "alerts": "Avise quando um time abrir",
-      "alerts_hint": "Receba uma notificação quando um time na sua faixa de ELO e regiões abrir para desafios, no máximo a cada 6 horas.",
       "save": "Salvar anúncio",
-      "saved": "Anúncio salvo"
+      "saved": "Anúncio salvo",
+      "nearby": "Próximas · abaixo de {ms} ms",
+      "show_less": "Mostrar menos"
     },
     "now": {
       "button": "Desafio agora",
@@ -15450,6 +15441,10 @@
       "cancelled": "Solicitação para {team} cancelada.",
       "cancelled_booked": "Desafio com {team} cancelado. Conta como cancelamento tardio.",
       "failed": "Não deu certo"
+    },
+    "week": {
+      "title": "Esta semana",
+      "no_hours": "Sem horário"
     }
   }
 }

@@ -15262,7 +15262,6 @@
       "played": "已打 {count} 场",
       "reliable": "{pct}% 可靠",
       "elo_value": "{elo} ELO",
-      "your_team": "你的队伍",
       "times_note": "时间按你的时区显示。BO1 最晚可在队伍开放时段结束时开始。",
       "empty_title": "本周没有开放的队伍",
       "empty_description": "大多数队伍在晚上开放时段。稍后再来看看。",
@@ -15403,28 +15402,20 @@
       "closed_hint": "不会在寻找器中显示。你已发送的请求仍然有效。",
       "hours": "每周时段",
       "time_zone": "按你的时区",
-      "day_open": "{day} 开放",
-      "starts": "{day} 开始",
-      "ends": "{day} 结束",
       "to": "至",
-      "next_day": "{time}（次日）",
-      "add_range": "添加时段",
-      "remove_range": "移除这些时段",
       "outside": "接受这些时段以外的请求",
-      "outside_hint": "其他队伍可以请求任何时间。是否接受仍由你决定。",
       "opponents": "接受的对手",
       "near": "{elo} 上下 {n} 以内",
-      "elo_hint": "队伍的 5Stack ELO 平均值。双方都需在彼此的范围内，因此范围越窄，收到的请求越少。",
       "regions": "服务器地区",
-      "regions_hint": "不选择表示任何地区。",
       "maps": "想打的地图",
       "maps_hint": "会向其他队伍显示。比赛使用 Active Duty 图池并进行 BP。",
       "note": "给其他队伍的备注",
       "note_placeholder": "沟通语言、教练是否进语音、你们在练什么……",
       "alerts": "有队伍开放时通知我",
-      "alerts_hint": "当你的 ELO 范围和地区内有队伍开放约战时通知你，最多每 6 小时一次。",
       "save": "保存挂牌",
-      "saved": "挂牌已保存"
+      "saved": "挂牌已保存",
+      "nearby": "附近 · 低于 {ms} 毫秒",
+      "show_less": "收起"
     },
     "now": {
       "button": "立即约战",
@@ -15450,6 +15441,10 @@
       "cancelled": "已取消发给 {team} 的请求。",
       "cancelled_booked": "已取消与 {team} 的约战。这会记为一次临时取消。",
       "failed": "操作未成功"
+    },
+    "week": {
+      "title": "本周",
+      "no_hours": "无时段"
     }
   }
 }

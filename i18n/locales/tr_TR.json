@@ -15262,7 +15262,6 @@
       "played": "{count} oynandı",
       "reliable": "%{pct} güvenilir",
       "elo_value": "{elo} ELO",
-      "your_team": "Senin takımın",
       "times_note": "Saatler senin saat dilimine göre. Best of 1 bir maç, takımın saatlerinin sonuna kadar başlayabilir.",
       "empty_title": "Bu hafta açık takım yok",
       "empty_description": "Çoğu takım saatlerini akşam açar. Daha sonra tekrar bak.",
@@ -15403,28 +15402,20 @@
       "closed_hint": "Bulucuda gizli. Daha önce gönderdiğin istekler geçerliliğini korur.",
       "hours": "Haftalık saatler",
       "time_zone": "Senin saat diliminde",
-      "day_open": "{day} açık",
-      "starts": "{day} başlangıç",
-      "ends": "{day} bitiş",
       "to": "-",
-      "next_day": "{time} (ertesi gün)",
-      "add_range": "Saat ekle",
-      "remove_range": "Bu saatleri kaldır",
       "outside": "Bu saatler dışındaki istekleri de kabul et",
-      "outside_hint": "Takımlar herhangi bir zaman isteyebilir. Kabul ya da reddetme kararı yine sende.",
       "opponents": "Kabul ettiğin rakipler",
       "near": "{elo} değerinden en fazla {n} fark",
-      "elo_hint": "Takımın ortalama 5Stack ELO'su. İki takımın da birbirinin aralığında olması gerekir; dar bir aralık daha az istek demektir.",
       "regions": "Sunucu bölgeleri",
-      "regions_hint": "Hiçbiri seçilmezse her bölge kabul edilir.",
       "maps": "İstediğin haritalar",
       "maps_hint": "Diğer takımlara gösterilir. Maçlar vetolu Active Duty havuzunda oynanır.",
       "note": "Diğer takımlara not",
       "note_placeholder": "İletişim dili, seste koç, ne çalıştığınız…",
       "alerts": "Bir takım açıldığında bana haber ver",
-      "alerts_hint": "ELO aralığındaki ve bölgelerindeki bir takım scrime açıldığında bildirim al, en fazla 6 saatte bir.",
       "save": "İlanı kaydet",
-      "saved": "İlan kaydedildi"
+      "saved": "İlan kaydedildi",
+      "nearby": "Yakındakiler · {ms} ms altı",
+      "show_less": "Daha az göster"
     },
     "now": {
       "button": "Hemen scrim",
@@ -15450,6 +15441,10 @@
       "cancelled": "{team} takımına gönderilen istek iptal edildi.",
       "cancelled_booked": "{team} ile scrim iptal edildi. Geç iptal olarak sayılır.",
       "failed": "İşlem gerçekleşmedi"
+    },
+    "week": {
+      "title": "Bu hafta",
+      "no_hours": "Saat yok"
     }
   }
 }

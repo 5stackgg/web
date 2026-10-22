@@ -310,7 +310,11 @@ export function weeklyRanges(
   for (const day of ranges) {
     day.sort((a, b) => a[0] - b[0]);
   }
-  // A stretch the old grid split at midnight reads as one range.
+  return joinMidnight(ranges);
+}
+
+// A stretch split at midnight reads as one range on the day it starts.
+export function joinMidnight(ranges: DayRanges): DayRanges {
   for (let day = 0; day < 7; day++) {
     const next = ranges[(day + 1) % 7];
     for (const range of ranges[day]) {

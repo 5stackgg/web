@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
-import { MonitorSmartphone, Settings2 } from "lucide-vue-next";
+import { MonitorSmartphone } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import DeferredLoading from "~/components/common/DeferredLoading.vue";
@@ -10,9 +9,8 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 import PublicServerFeatured from "~/components/public-servers/PublicServerFeatured.vue";
 import PublicServerTile from "~/components/public-servers/PublicServerTile.vue";
 import PublicServerRow from "~/components/public-servers/PublicServerRow.vue";
+import PublicServerSetupButton from "~/components/public-servers/PublicServerSetupButton.vue";
 import {
-  createButtonClasses,
-  listCreateButtonClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
@@ -52,17 +50,7 @@ const listColumns =
               : $t('pages.public_servers.no_public_servers')
           "
         >
-          <Button
-            v-if="canSetup"
-            as-child
-            size="sm"
-            :class="createButtonClasses"
-          >
-            <NuxtLink to="/dedicated-servers/create">
-              <Settings2 class="h-4 w-4" />
-              {{ $t("pages.public_servers.setup_public_server") }}
-            </NuxtLink>
-          </Button>
+          <PublicServerSetupButton v-if="canSetup" />
         </SectionEmpty>
 
         <div v-else key="servers" class="flex flex-col gap-8">
@@ -80,22 +68,7 @@ const listColumns =
               <MonitorSmartphone class="mt-0.5 h-4 w-4 shrink-0" />
               {{ $t("pages.public_servers.touch_notice") }}
             </div>
-            <Button
-              v-if="canSetup"
-              as-child
-              size="sm"
-              :class="[listCreateButtonClasses, 'ml-auto shrink-0']"
-            >
-              <NuxtLink
-                to="/dedicated-servers/create"
-                :title="$t('pages.public_servers.setup_public_server')"
-              >
-                <Settings2 class="h-4 w-4" />
-                <span class="max-md:sr-only">{{
-                  $t("pages.public_servers.setup_public_server")
-                }}</span>
-              </NuxtLink>
-            </Button>
+            <PublicServerSetupButton v-if="canSetup" collapse class="ml-auto" />
           </div>
 
           <!-- On site: the LAN comes first -->
@@ -332,8 +305,15 @@ export default {
                       _eq: true,
                     },
                   },
+                  // Staff can connect to any restricted server; it lists
+                  // only for the players its access rules let in.
+                  {
+                    open_to_viewer: {
+                      _eq: true,
+                    },
+                  },
                 ],
-              },
+              } as any,
               order_by: [
                 {
                   label: "asc" as any,

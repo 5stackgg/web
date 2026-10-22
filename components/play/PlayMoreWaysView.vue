@@ -88,19 +88,27 @@ const secondaryClasses = [
       </NuxtLink>
     </div>
 
-    <!-- The liveliest way is the big card; the others share one panel
-         beside it (under it on phones), each previewing what's inside. -->
-    <div
-      v-if="ways.featured"
-      class="ways-row"
-      :class="{ 'ways-row-split': ways.others.length }"
-    >
-      <PlayServerTile v-if="ways.featured === 'server'" :server="server!" />
-      <PlayScrimsTile
-        v-else-if="ways.featured === 'scrims'"
-        :scrims="scrims!"
-      />
-      <PlayPracticeTile v-else />
+    <!-- Two rows on one pair of columns: the liveliest way is the big card
+         with the others sharing one panel beside it, then the tournament
+         under it with the league beside that. Alone in its row, a card
+         takes the whole width; phones stack everything. -->
+    <div class="ways-grid">
+      <template v-if="ways.featured">
+        <PlayServerTile
+          v-if="ways.featured === 'server'"
+          :server="server!"
+          :class="{ 'ways-solo': !ways.others.length }"
+        />
+        <PlayScrimsTile
+          v-else-if="ways.featured === 'scrims'"
+          :scrims="scrims!"
+          :class="{ 'ways-solo': !ways.others.length }"
+        />
+        <PlayPracticeTile
+          v-else
+          :class="{ 'ways-solo': !ways.others.length }"
+        />
+      </template>
 
       <div
         v-if="ways.others.length"
@@ -120,17 +128,11 @@ const secondaryClasses = [
           <PlayPracticeTile v-else layout="peek" />
         </template>
       </div>
-    </div>
 
-    <div
-      v-if="tournament || league"
-      class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
-      :class="{ 'mt-3': ways.featured }"
-    >
       <WatchTournamentCard
         v-if="tournament"
         :tournament="tournament"
-        class="sm:col-span-2"
+        :class="{ 'ways-solo': !league }"
       >
         <template #actions>
           <Button as-child size="sm" variant="ghost" :class="secondaryClasses">
@@ -145,6 +147,7 @@ const secondaryClasses = [
         v-if="league"
         :icon="Shield"
         :title="$t('pages.play.more_ways.league.title')"
+        :class="{ 'ways-solo': !tournament }"
       >
         <p class="m-0 text-[13.5px] text-foreground/90">{{ league.name }}</p>
         <p class="m-0 text-[12.5px] text-muted-foreground">
@@ -203,14 +206,17 @@ const secondaryClasses = [
 .play-ways {
   container: ways / inline-size;
 }
-.ways-row {
+.ways-grid {
   display: grid;
   gap: 10px;
 }
 @container ways (min-width: 720px) {
-  .ways-row-split {
+  .ways-grid {
     grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
     gap: 20px;
+  }
+  .ways-solo {
+    grid-column: 1 / -1;
   }
 }
 </style>

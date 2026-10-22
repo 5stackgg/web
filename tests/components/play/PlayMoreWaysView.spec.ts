@@ -74,9 +74,9 @@ async function mount(props: Record<string, unknown> = {}) {
   });
 }
 
-const featured = (wrapper: any) => wrapper.find(".ways-row > article");
+const featured = (wrapper: any) => wrapper.find(".ways-grid > article");
 const peeks = (wrapper: any) =>
-  wrapper.findAll(".ways-row > div > section").map((part: any) => part.text());
+  wrapper.findAll(".ways-grid > div > section").map((part: any) => part.text());
 
 describe("PlayMoreWaysView", () => {
   it("features the busiest public server and peeks at the other ways beside it", async () => {
@@ -155,6 +155,18 @@ describe("PlayMoreWaysView", () => {
     );
     expect(wrapper.text()).toContain("Fall League");
     expect(wrapper.text()).toContain("Register a team");
+  });
+
+  it("gives the tournament the whole row unless the league sits beside it", async () => {
+    const card = (wrapper: any) =>
+      wrapper
+        .findAll(".ways-grid > article")
+        .find((part: any) => part.text().includes("2v2 Wingman Tournament"));
+
+    expect(card(await mount()).classes()).not.toContain("ways-solo");
+    expect(card(await mount({ league: null })).classes()).toContain(
+      "ways-solo",
+    );
   });
 
   it("renders nothing when there is nothing to offer", async () => {

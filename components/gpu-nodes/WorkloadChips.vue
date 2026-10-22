@@ -175,7 +175,9 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
   height: 36px;
   padding-bottom: 2px;
 }
-.wlc-chip + .wlc-chip {
+/* Each chip sits in its tooltip's display: contents span, so the chips
+   themselves are never siblings. */
+.wlc > span + span > .wlc-chip {
   border-left: 1px solid hsl(var(--border));
 }
 /* The on surface and the running wash fade in under the label. */

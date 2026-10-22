@@ -611,7 +611,7 @@ const CALLOUT_BORDER: Record<string, string> = {
         </FiveStackToolTip>
       </div>
       <div
-        class="flex min-w-0 items-center gap-x-1 pl-4 text-xs text-muted-foreground"
+        class="flex min-w-0 flex-wrap items-center gap-x-1 pl-4 text-xs text-muted-foreground"
       >
         <span class="min-w-0 truncate"
           ><template v-if="statusShort">{{ statusShort }} · </template
@@ -639,8 +639,10 @@ const CALLOUT_BORDER: Record<string, string> = {
       <div
         class="flex min-w-0 items-center gap-x-2 pl-4 text-xs text-muted-foreground"
       >
-        <span class="inline-flex shrink-0 items-center" :title="node.id">
-          <span class="font-mono text-[11.5px]">{{ node.id.slice(0, 8) }}</span>
+        <span class="inline-flex min-w-0 items-center" :title="node.id">
+          <span class="max-w-[9rem] truncate font-mono text-[11.5px]">{{
+            node.id
+          }}</span>
           <ClipBoard
             :data="node.id"
             class="h-5 w-5 shrink-0 border-transparent bg-transparent [&_svg]:size-3"

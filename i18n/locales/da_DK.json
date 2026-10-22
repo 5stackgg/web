@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "Online",
-        "partial": "Nogle noder offline",
+        "partial": "Nogle noder tager ikke imod kampe",
         "offline": "Offline",
-        "disabled": "Ingen servere"
+        "disabled": "Ingen servere",
+        "no_matchmaking": "Ingen matchmaking"
       },
       "detail": {
         "label_aria": "Regionens etiket",
@@ -4098,6 +4099,7 @@
         "col_node": "Node",
         "col_free": "Ledige",
         "col_servers": "Servere",
+        "no_matchmaking": "Ingen matchmaking",
         "no_nodes_title": "Ingen noder i denne region",
         "no_nodes_hint": "Angiv en nodes region på siden {page}.",
         "relay_title": "Brug Steam-relay",
@@ -4694,8 +4696,10 @@
       "idle": "Inaktiv",
       "disabled": "Deaktiveret",
       "enabled": "Aktiveret",
+      "matchmaking": "Matchmaking",
       "accepting_matches": "Tager imod kampe",
       "toggle_enabled_help": "Når den er slået fra, er noden helt deaktiveret — intet GPU-arbejde og ingen kampplanlægning.",
+      "toggle_matchmaking_help": "Kampe og træningsservere starter her. Slået fra bruges noden kun til dedikerede servere og GPU-arbejde.",
       "toggle_scheduling_help": "Når den er slået fra, kører noden eksisterende kampe færdig, men tager ikke imod nye.",
       "scheduling_setup_hint": "Noden er stadig ved at blive sat op. Den begynder at tage imod kampe, når den kommer online.",
       "scheduling_offline_hint": "Noden er offline. Den tager imod kampe igen, når den genopretter forbindelsen.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "Den stopper ved {pct} % og frigør GPU'en.",
         "render_action": "Stop render"
       },
-      "toggle_gpu_only_help": "Tager kun GPU-arbejde, ingen kampservere. Når den slås til, ryddes dens region og porte.",
       "plate": {
         "temperature": "Temperatur",
         "power": "Strømforbrug",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Ledige servere ud af det samlede antal, dens porte tillader. Portintervallet står nedenunder.",
         "cap_free": "{free} af {total} ledige",
         "cap_no_ports": "Ingen porte",
+        "cap_no_matchmaking": "Ingen matchmaking",
         "chip": {
           "updating": "Opdaterer",
           "updating_pct": "Opdaterer {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "Kun GPU, så den er ikke vært for kampe. Skift tilbage under GPU.",
+          "no_matchmaking": "Uden for matchmaking. Dens region og porte bruges kun til dedikerede servere.",
           "max_servers": "Maks. servere",
           "max_tip": "{threads} CPU-tråde, minus 1 til systemet",
           "max_tip_pinning": "{threads} CPU-tråde, minus 1 til systemet, {per} pr. server",
@@ -12263,8 +12267,6 @@
       "csgo_updating": "CS:GO opdateres på noden",
       "ports_updated": "Node-porte opdateret",
       "ports_removed": "Node-porte fjernet",
-      "made_gpu_only": "Node sat til kun GPU",
-      "made_match_node": "Node sat til kampserver",
       "label_updated": "Node-label opdateret",
       "cs2_options_updated": "Videoindstillinger opdateret"
     },

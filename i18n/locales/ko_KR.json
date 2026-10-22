@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "온라인",
-        "partial": "일부 노드 오프라인",
+        "partial": "일부 노드가 매치를 받지 않음",
         "offline": "오프라인",
-        "disabled": "서버 없음"
+        "disabled": "서버 없음",
+        "no_matchmaking": "매치메이킹 없음"
       },
       "detail": {
         "label_aria": "지역 라벨",
@@ -4098,6 +4099,7 @@
         "col_node": "노드",
         "col_free": "여유",
         "col_servers": "서버",
+        "no_matchmaking": "매치메이킹 없음",
         "no_nodes_title": "이 지역에 노드가 없습니다",
         "no_nodes_hint": "노드의 지역은 {page} 페이지에서 설정하세요.",
         "relay_title": "Steam 릴레이 사용",
@@ -4694,8 +4696,10 @@
       "idle": "유휴",
       "disabled": "비활성화됨",
       "enabled": "활성화됨",
+      "matchmaking": "매치메이킹",
       "accepting_matches": "매치 수락 중",
       "toggle_enabled_help": "끄면 노드가 완전히 비활성화되어 GPU 작업과 매치 스케줄링이 모두 중단됩니다.",
+      "toggle_matchmaking_help": "매치와 연습 서버가 여기서 시작됩니다. 끄면 노드는 데디케이티드 서버와 GPU 작업에만 쓰입니다.",
       "toggle_scheduling_help": "끄면 진행 중인 매치는 계속 실행되지만 새 매치는 받지 않습니다.",
       "scheduling_setup_hint": "이 노드는 아직 설정 중입니다. 온라인이 되면 매치를 받기 시작합니다.",
       "scheduling_offline_hint": "이 노드는 오프라인입니다. 다시 연결되면 매치를 다시 받습니다.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "{pct}%에서 중지되고 GPU가 해제됩니다.",
         "render_action": "렌더링 중지"
       },
-      "toggle_gpu_only_help": "GPU 작업만 받고 매치 서버는 실행하지 않습니다. 켜면 리전과 포트가 지워집니다.",
       "plate": {
         "temperature": "온도",
         "power": "전력",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "포트가 허용하는 전체 중 비어 있는 서버 수. 아래에 포트 범위가 표시됩니다.",
         "cap_free": "{total}개 중 {free}개 비어 있음",
         "cap_no_ports": "포트 없음",
+        "cap_no_matchmaking": "매치메이킹 없음",
         "chip": {
           "updating": "업데이트 중",
           "updating_pct": "업데이트 중 {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "GPU 전용이라 매치를 호스팅하지 않습니다. GPU에서 다시 전환하세요.",
+          "no_matchmaking": "매치메이킹에서 제외됨. 지역과 포트는 데디케이티드 서버에만 쓰입니다.",
           "max_servers": "최대 서버 수",
           "max_tip": "CPU 스레드 {threads}개, 시스템용 1개 제외",
           "max_tip_pinning": "CPU 스레드 {threads}개, 시스템용 1개 제외, 서버당 {per}개",
@@ -12263,8 +12267,6 @@
       "csgo_updating": "노드에서 CS:GO를 업데이트하는 중입니다",
       "ports_updated": "노드 포트가 업데이트되었습니다",
       "ports_removed": "노드 포트가 제거되었습니다",
-      "made_gpu_only": "노드가 GPU 전용으로 설정되었습니다",
-      "made_match_node": "노드가 매치 서버로 설정되었습니다",
       "label_updated": "노드 라벨이 업데이트되었습니다",
       "cs2_options_updated": "영상 설정이 업데이트되었습니다"
     },

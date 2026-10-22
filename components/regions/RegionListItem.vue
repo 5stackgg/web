@@ -17,6 +17,10 @@ const props = defineProps<{
     is_lan: boolean;
     available_server_count?: number | null;
     total_server_count?: number | null;
+    game_server_nodes?: Array<{
+      enabled?: boolean | null;
+      enabled_for_match_making?: boolean | null;
+    }>;
   };
   current: boolean;
 }>();
@@ -41,7 +45,9 @@ const mode = computed(() => regionMode(props.region));
   >
     <span class="inline-flex shrink-0">
       <StatusDot :tone="regionTone(region.status)" />
-      <span class="sr-only">{{ $t(regionStatusKey(region.status)) }}</span>
+      <span class="sr-only">{{
+        $t(regionStatusKey(region.status, region.game_server_nodes))
+      }}</span>
     </span>
 
     <span class="grid min-w-0">

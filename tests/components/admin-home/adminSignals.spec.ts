@@ -220,6 +220,9 @@ describe("nodeSignals", () => {
     const gpuOnly = node("gpu-1", {
       gpu: true,
       enabled_for_match_making: false,
+      region: null,
+      start_port_range: null,
+      end_port_range: null,
       offline_at: "2026-10-17T10:00:00Z",
     });
     expect(nodeSignals([gpuOnly], context, nameOf)).toEqual([]);

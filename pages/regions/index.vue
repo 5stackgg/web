@@ -253,6 +253,7 @@ export default {
                   status: true,
                   offline_at: true,
                   enabled: true,
+                  enabled_for_match_making: true,
                   available_server_count: true,
                   total_server_count: true,
                 },

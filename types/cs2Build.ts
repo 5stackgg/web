@@ -1,6 +1,7 @@
 // Mirrors graphql/cs2BuildGraphql.ts and the api's GameServerNodeService /
 // MapAssetsService shapes — extend them together.
 import compactDuration from "~/utilities/compactDuration";
+import { isGpuOnly } from "~/components/game-server-nodes/nodeState";
 
 export type Cs2BuildNode = {
   id: string;
@@ -11,6 +12,8 @@ export type Cs2BuildNode = {
   update_status: string | null;
   gpu: boolean | null;
   enabled_for_match_making: boolean | null;
+  start_port_range?: number | null;
+  end_port_range?: number | null;
   e_region?: { description: string | null } | null;
 };
 
@@ -271,7 +274,7 @@ export function nodeIneligibility(
   if (!node.enabled) {
     return { key: "disabled" };
   }
-  if (node.gpu && !node.enabled_for_match_making) {
+  if (isGpuOnly(node)) {
     return { key: "gpu_only" };
   }
   if (node.status !== "Online") {

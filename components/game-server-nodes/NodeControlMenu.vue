@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { generateMutation } from "~/graphql/graphqlGen";
-import {
-  nodeModeFields,
-  setNodeFields,
-} from "~/components/game-server-nodes/nodeActions";
+import { setNodeFields } from "~/components/game-server-nodes/nodeActions";
+import { takesMatches } from "~/components/game-server-nodes/nodeState";
 import { Switch } from "~/components/ui/switch";
+import { Fold } from "~/components/ui/transitions";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
 import type { GpuWorkload } from "~/components/gpu-nodes/gpuSessions";
@@ -26,7 +25,7 @@ import {
   Radio,
   Play,
   Clapperboard,
-  ServerOff,
+  Swords,
   TriangleAlert,
 } from "lucide-vue-next";
 
@@ -36,7 +35,6 @@ interface ControlledNode {
   enabled: boolean;
   enabled_for_match_making?: boolean;
   accepting_new_matches: boolean;
-  region?: string | null;
   start_port_range?: number | null;
   end_port_range?: number | null;
   gpu?: boolean;
@@ -50,8 +48,8 @@ const props = withDefaults(
     node: ControlledNode;
     align?: "start" | "center" | "end";
     /**
-     * Leaves out Enabled and Accepting matches, where the panel has its own
-     * (GPU only and the workload switches stay).
+     * Leaves out Enabled, Matchmaking and Accepting matches, where the panel
+     * has its own (the workload switches stay).
      */
     workloadsOnly?: boolean;
     /** What the node is running under each workload right now. */
@@ -112,6 +110,11 @@ const triggerLabel = computed(() => {
   return props.node.gpu ? `${title} · ${summary.value}` : title;
 });
 
+const matches = computed(() => takesMatches(props.node));
+
+// Accepting matches only means something on a node that can take them.
+const schedulable = computed(() => matches.value && hasPorts.value);
+
 const acceptingNewMatches = computed(
   () =>
     props.node.accepting_new_matches ??
@@ -134,10 +137,6 @@ const schedulingHint = computed(() => {
   }
   return null;
 });
-
-const gpuOnly = computed(
-  () => !!props.node.gpu && !props.node.enabled_for_match_making,
-);
 
 const flagged = computed(
   () => props.node.gpu && props.node.enabled && !allWorkloadsOn.value,
@@ -187,35 +186,11 @@ async function setScheduling(accepting: boolean) {
   }
 }
 
-// Same fields and words as the inspector's old mode button: GPU only drops
-// the region and ports with matchmaking.
-// Turning GPU only on drops the region and ports, so it asks first when there
-// is something to lose; turning it back off needs no confirm.
-const confirmingGpuOnly = ref(false);
-function requestGpuOnly(on: boolean) {
-  const loses =
-    !!props.node.region ||
-    !!props.node.start_port_range ||
-    !!props.node.end_port_range;
-  if (on && loses) {
-    confirmingGpuOnly.value = true;
-    return;
-  }
-  void setGpuOnly(on);
-}
-
-async function setGpuOnly(on: boolean) {
-  confirmingGpuOnly.value = false;
+// Off keeps the region and ports: the node's dedicated servers use them.
+async function setMatchmaking(on: boolean) {
   try {
-    await setNodeFields(
-      client,
-      props.node.id,
-      nodeModeFields(on ? "gpu" : "match"),
-    );
-    toast({
-      title: on
-        ? t("game_server.toast.made_gpu_only")
-        : t("game_server.toast.made_match_node"),
+    await setNodeFields(client, props.node.id, {
+      enabled_for_match_making: on,
     });
   } catch (error: any) {
     toast({
@@ -246,8 +221,8 @@ async function setGpuOnly(on: boolean) {
       </button>
     </PopoverTrigger>
     <PopoverContent :align="align" class="w-[320px] overflow-hidden p-0">
-      <div v-if="!workloadsOnly || node.gpu" class="ncm-list">
-        <label v-if="!workloadsOnly" class="ncm-row" :data-on="node.enabled">
+      <div v-if="!workloadsOnly" class="ncm-list">
+        <label class="ncm-row" :data-on="node.enabled">
           <span class="ncm-ico"><Power class="h-4 w-4" /></span>
           <span class="ncm-text">
             <span class="ncm-name">{{ t("pages.gpu_nodes.enabled") }}</span>
@@ -261,88 +236,62 @@ async function setGpuOnly(on: boolean) {
           />
         </label>
 
-        <label
-          v-if="node.gpu"
-          class="ncm-row"
-          data-testid="gpu-only-row"
-          :data-on="gpuOnly"
-        >
-          <span class="ncm-ico"><ServerOff class="h-4 w-4" /></span>
+        <label class="ncm-row" data-testid="matchmaking-row" :data-on="matches">
+          <span class="ncm-ico"><Swords class="h-4 w-4" /></span>
           <span class="ncm-text">
-            <span class="ncm-name">{{
-              t("pages.game_server_nodes.gpu_only")
-            }}</span>
+            <span class="ncm-name">{{ t("pages.gpu_nodes.matchmaking") }}</span>
             <span class="ncm-desc">{{
-              t("pages.gpu_nodes.toggle_gpu_only_help")
+              t("pages.gpu_nodes.toggle_matchmaking_help")
             }}</span>
           </span>
           <Switch
-            :model-value="gpuOnly || confirmingGpuOnly"
-            @update:model-value="(v) => requestGpuOnly(!!v)"
+            :model-value="matches"
+            @update:model-value="(v) => setMatchmaking(!!v)"
           />
         </label>
-        <div
-          v-if="confirmingGpuOnly"
-          class="flex items-center justify-end gap-2 px-2 pb-2"
-          data-testid="gpu-only-confirm"
-        >
-          <button
-            type="button"
-            class="h-7 rounded-md px-2.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            @click="confirmingGpuOnly = false"
-          >
-            {{ t("common.cancel") }}
-          </button>
-          <button
-            type="button"
-            class="h-7 rounded-md border border-[hsl(var(--warning)/0.45)] bg-[hsl(var(--warning)/0.1)] px-2.5 text-xs font-medium text-[hsl(var(--warning))] transition-colors hover:bg-[hsl(var(--warning)/0.18)]"
-            @click="setGpuOnly(true)"
-          >
-            {{ t("common.confirm") }}
-          </button>
-        </div>
 
-        <label
-          v-if="!workloadsOnly && hasPorts && node.enabled_for_match_making"
-          class="ncm-row"
-          data-testid="scheduling-row"
-          :data-on="acceptingNewMatches"
-          :data-disabled="!node.enabled || inSetup"
-        >
-          <span class="ncm-ico"><CalendarCheck class="h-4 w-4" /></span>
-          <span class="ncm-text">
-            <span class="ncm-name">
-              {{ t("pages.gpu_nodes.accepting_matches") }}
-              <FiveStackToolTip
-                v-if="schedulingHint"
-                as-child
-                :delay-duration="120"
-              >
-                <template #trigger>
-                  <span
-                    class="ncm-hint"
-                    tabindex="0"
-                    role="img"
-                    :aria-label="schedulingHint"
-                    data-testid="scheduling-hint"
-                    @click.prevent
-                  >
-                    <TriangleAlert class="h-3 w-3" />
-                  </span>
-                </template>
-                <p class="max-w-[16rem]">{{ schedulingHint }}</p>
-              </FiveStackToolTip>
+        <Fold :open="schedulable">
+          <label
+            class="ncm-row ncm-sub"
+            data-testid="scheduling-row"
+            :data-on="acceptingNewMatches"
+            :data-disabled="!node.enabled || inSetup"
+          >
+            <span class="ncm-ico"><CalendarCheck class="h-3.5 w-3.5" /></span>
+            <span class="ncm-text">
+              <span class="ncm-name">
+                {{ t("pages.gpu_nodes.accepting_matches") }}
+                <FiveStackToolTip
+                  v-if="schedulingHint"
+                  as-child
+                  :delay-duration="120"
+                >
+                  <template #trigger>
+                    <span
+                      class="ncm-hint"
+                      tabindex="0"
+                      role="img"
+                      :aria-label="schedulingHint"
+                      data-testid="scheduling-hint"
+                      @click.prevent
+                    >
+                      <TriangleAlert class="h-3 w-3" />
+                    </span>
+                  </template>
+                  <p class="max-w-[16rem]">{{ schedulingHint }}</p>
+                </FiveStackToolTip>
+              </span>
+              <span class="ncm-desc">{{
+                t("pages.gpu_nodes.toggle_scheduling_help")
+              }}</span>
             </span>
-            <span class="ncm-desc">{{
-              t("pages.gpu_nodes.toggle_scheduling_help")
-            }}</span>
-          </span>
-          <Switch
-            :model-value="acceptingNewMatches"
-            :disabled="!node.enabled || inSetup"
-            @update:model-value="(v) => setScheduling(!!v)"
-          />
-        </label>
+            <Switch
+              :model-value="acceptingNewMatches"
+              :disabled="!node.enabled || inSetup"
+              @update:model-value="(v) => setScheduling(!!v)"
+            />
+          </label>
+        </Fold>
       </div>
 
       <template v-if="node.gpu">
@@ -459,6 +408,29 @@ async function setGpuOnly(on: boolean) {
 .ncm-row[data-disabled="true"] {
   opacity: 0.5;
 }
+/* Accepting matches hangs off Matchmaking: indented to its text, joined to
+   its icon by a short elbow. */
+.ncm-sub {
+  position: relative;
+  padding-top: 0.15rem;
+  padding-left: calc(0.85rem + 30px + 0.65rem);
+}
+.ncm-sub::before {
+  content: "";
+  position: absolute;
+  top: -0.6rem;
+  left: calc(0.85rem + 15px);
+  width: calc(15px + 0.65rem - 6px);
+  height: calc(50% + 0.4rem);
+  border-bottom: 1px solid hsl(var(--border));
+  border-left: 1px solid hsl(var(--border));
+  border-bottom-left-radius: 6px;
+  pointer-events: none;
+}
+.ncm-sub .ncm-ico {
+  width: 26px;
+  height: 26px;
+}
 .ncm-ico {
   display: inline-flex;
   align-items: center;
@@ -527,6 +499,9 @@ async function setGpuOnly(on: boolean) {
   font-size: 11px;
   font-weight: 500;
   color: hsl(var(--muted-foreground));
+}
+.ncm-section:first-child {
+  border-top: 0;
 }
 .ncm-note {
   padding: 0.1rem 0.85rem 0.5rem;

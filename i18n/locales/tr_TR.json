@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "Çevrimiçi",
-        "partial": "Bazı düğümler çevrimdışı",
+        "partial": "Bazı düğümler maç kabul etmiyor",
         "offline": "Çevrimdışı",
-        "disabled": "Sunucu yok"
+        "disabled": "Sunucu yok",
+        "no_matchmaking": "Eşleştirme yok"
       },
       "detail": {
         "label_aria": "Bölge etiketi",
@@ -4098,6 +4099,7 @@
         "col_node": "Düğüm",
         "col_free": "Boş",
         "col_servers": "Sunucular",
+        "no_matchmaking": "Eşleştirme yok",
         "no_nodes_title": "Bu bölgede düğüm yok",
         "no_nodes_hint": "Bir düğümün bölgesini {page} sayfasında ayarla.",
         "relay_title": "Steam relay kullan",
@@ -4694,8 +4696,10 @@
       "idle": "Boşta",
       "disabled": "Devre dışı",
       "enabled": "Etkin",
+      "matchmaking": "Eşleştirme",
       "accepting_matches": "Maç kabul ediyor",
       "toggle_enabled_help": "Kapalıyken düğüm tamamen devre dışı kalır — GPU işi ve maç planlaması yapılmaz.",
+      "toggle_matchmaking_help": "Maçlar ve antrenman sunucuları burada başlar. Kapalıyken düğüm yalnızca özel sunucular ve GPU işleri için kalır.",
       "toggle_scheduling_help": "Kapalıyken düğüm mevcut maçları çalıştırmaya devam eder ama yenilerini kabul etmez.",
       "scheduling_setup_hint": "Bu düğüm hâlâ kuruluyor. Çevrimiçi olduğunda maç kabul etmeye başlar.",
       "scheduling_offline_hint": "Bu düğüm çevrimdışı. Yeniden bağlandığında tekrar maç kabul eder.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "%{pct} noktasında durur ve GPU'yu boşaltır.",
         "render_action": "Render'ı durdur"
       },
-      "toggle_gpu_only_help": "Yalnızca GPU işi alır, maç sunucusu çalıştırmaz. Açmak bölgesini ve portlarını temizler.",
       "plate": {
         "temperature": "Sıcaklık",
         "power": "Güç",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Portlarının izin verdiği toplamdan boş sunucular. Port aralığı altında yer alır.",
         "cap_free": "{total} sunucudan {free} boş",
         "cap_no_ports": "Port yok",
+        "cap_no_matchmaking": "Eşleştirme yok",
         "chip": {
           "updating": "Güncelleniyor",
           "updating_pct": "Güncelleniyor %{percent}",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "Yalnızca GPU olduğu için maç barındırmaz. GPU altından geri değiştirin.",
+          "no_matchmaking": "Eşleştirme dışında. Bölgesi ve portları yalnızca özel sunucular içindir.",
           "max_servers": "Maks. sunucu",
           "max_tip": "{threads} CPU iş parçacığı, 1'i sisteme ayrılır",
           "max_tip_pinning": "{threads} CPU iş parçacığı, 1'i sisteme ayrılır, sunucu başına {per}",
@@ -12263,8 +12267,6 @@
       "csgo_updating": "CS:GO düğümde güncelleniyor",
       "ports_updated": "Düğüm portları güncellendi",
       "ports_removed": "Düğüm portları kaldırıldı",
-      "made_gpu_only": "Düğüm yalnızca GPU olarak ayarlandı",
-      "made_match_node": "Düğüm maç sunucusu olarak ayarlandı",
       "label_updated": "Düğüm etiketi güncellendi",
       "cs2_options_updated": "Video ayarları güncellendi"
     },

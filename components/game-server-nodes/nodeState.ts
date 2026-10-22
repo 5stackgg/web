@@ -103,8 +103,16 @@ export function hasPorts(node: NodeLike) {
   return !!node.start_port_range && !!node.end_port_range;
 }
 
+// Matches and practice servers start here. A node out of matchmaking keeps
+// its region and ports for the dedicated servers it hosts. Unselected reads as
+// taking them, the column's default.
+export function takesMatches(node: Pick<NodeLike, "enabled_for_match_making">) {
+  return node.enabled_for_match_making !== false;
+}
+
+// A GPU node with nothing for CS2 servers: out of matchmaking, no ports.
 export function isGpuOnly(node: NodeLike) {
-  return !!node.gpu && !node.enabled_for_match_making;
+  return !!node.gpu && !takesMatches(node) && !hasPorts(node);
 }
 
 // A GPU-only node still boots a CS2 server for each lineup preview it renders:
@@ -123,7 +131,7 @@ export function nodeStatus(node: NodeLike): NodeStatus {
   if (!node.enabled) {
     return "disabled";
   }
-  if (node.status === "NotAcceptingNewMatches") {
+  if (node.status === "NotAcceptingNewMatches" && takesMatches(node)) {
     return "not_accepting";
   }
   return "online";
@@ -258,20 +266,21 @@ export function nodeIssues(
 
   const issues: Array<NodeIssue> = [];
   const gpuOnly = isGpuOnly(node);
+  const matches = takesMatches(node);
   const max = context.maxServers?.(node) ?? maxServers(node);
 
   if (node.update_failed_at && !node.update_status) {
     issues.push("update_failed");
   }
-  if (!gpuOnly && isOverprovisioned(node, max)) {
+  if (matches && isOverprovisioned(node, max)) {
     issues.push("overprovisioned");
   }
   if (node.build_id && node.plugin_supported === false) {
     issues.push("plugin_unsupported");
   }
-  if (!gpuOnly && !node.region) {
+  if (matches && !node.region) {
     issues.push("no_region");
-  } else if (!gpuOnly && !hasPorts(node)) {
+  } else if (matches && !hasPorts(node)) {
     issues.push("no_ports");
   }
   if (!gpuOnly && !node.build_id && !node.update_status) {
@@ -330,7 +339,7 @@ export function fleetSummary(
       summary.online++;
     }
     // Free servers count only where matches can actually land.
-    if (connected && node.enabled && hasPorts(node) && !isGpuOnly(node)) {
+    if (connected && node.enabled && hasPorts(node) && takesMatches(node)) {
       summary.free += node.available_server_count ?? 0;
       summary.capacity += node.total_server_count ?? 0;
     }

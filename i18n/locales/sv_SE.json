@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "Online",
-        "partial": "Vissa noder offline",
+        "partial": "Vissa noder tar inte emot matcher",
         "offline": "Offline",
-        "disabled": "Inga servrar"
+        "disabled": "Inga servrar",
+        "no_matchmaking": "Ingen matchmaking"
       },
       "detail": {
         "label_aria": "Regionens etikett",
@@ -4098,6 +4099,7 @@
         "col_node": "Nod",
         "col_free": "Lediga",
         "col_servers": "Servrar",
+        "no_matchmaking": "Ingen matchmaking",
         "no_nodes_title": "Inga noder i den här regionen",
         "no_nodes_hint": "Ange en nods region på sidan {page}.",
         "relay_title": "Använd Steam-relay",
@@ -4694,8 +4696,10 @@
       "idle": "Inaktiv",
       "disabled": "Inaktiverad",
       "enabled": "Aktiverad",
+      "matchmaking": "Matchmaking",
       "accepting_matches": "Tar emot matcher",
       "toggle_enabled_help": "När av är noden helt inaktiverad — inget GPU-arbete och ingen matchschemaläggning.",
+      "toggle_matchmaking_help": "Matcher och träningsservrar startar här. När av används noden bara för dedikerade servrar och GPU-arbete.",
       "toggle_scheduling_help": "När av fortsätter noden köra pågående matcher men tar inte emot nya.",
       "scheduling_setup_hint": "Noden håller fortfarande på att konfigureras. Den börjar ta emot matcher när den är online.",
       "scheduling_offline_hint": "Noden är offline. Den tar emot matcher igen när den återansluter.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "Den stoppas vid {pct} % och frigör GPU:n.",
         "render_action": "Stoppa rendering"
       },
-      "toggle_gpu_only_help": "Tar bara GPU-arbete, inga matchservrar. När det slås på rensas region och portar.",
       "plate": {
         "temperature": "Temperatur",
         "power": "Effekt",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Lediga servrar av det totala antal som portarna tillåter. Portintervallet står under.",
         "cap_free": "{free} av {total} lediga",
         "cap_no_ports": "Inga portar",
+        "cap_no_matchmaking": "Ingen matchmaking",
         "chip": {
           "updating": "Uppdaterar",
           "updating_pct": "Uppdaterar {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "Endast GPU, så den är inte värd för matcher. Byt tillbaka under GPU.",
+          "no_matchmaking": "Utanför matchmaking. Region och portar används bara av dedikerade servrar.",
           "max_servers": "Max servrar",
           "max_tip": "{threads} CPU-trådar, minus 1 för systemet",
           "max_tip_pinning": "{threads} CPU-trådar, minus 1 för systemet, {per} per server",
@@ -12263,8 +12267,6 @@
       "csgo_updating": "CS:GO uppdateras på noden",
       "ports_updated": "Nodportar uppdaterade",
       "ports_removed": "Nodportar borttagna",
-      "made_gpu_only": "Nod satt till endast GPU",
-      "made_match_node": "Nod satt till matchserver",
       "label_updated": "Nodetikett uppdaterad",
       "cs2_options_updated": "Videoinställningar uppdaterade"
     },

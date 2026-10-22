@@ -823,6 +823,7 @@ import { toast } from "@/components/ui/toast";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { formatBytes, moveTargetIneligibility } from "~/types/serverMigration";
+import { isGpuOnly } from "~/components/game-server-nodes/nodeState";
 
 // Literals rather than the generated enum: a type added by a migration is
 // absent from ~/generated/zeus until codegen runs against a migrated database,
@@ -1495,7 +1496,7 @@ export default {
       return null;
     },
     nodeReason(node: Record<string, any>): string | null {
-      if (node.gpu && !node.enabled_for_match_making) {
+      if (isGpuOnly(node as any)) {
         return this.$t("server.form.node_gpu_only");
       }
       const reason = moveTargetIneligibility(node as any, {

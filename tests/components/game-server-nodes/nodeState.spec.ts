@@ -59,6 +59,17 @@ describe("node status", () => {
     );
     expect(nodeStatus(node())).toBe("online");
   });
+
+  it("reads a node out of matchmaking as online whatever it accepts", () => {
+    expect(
+      nodeStatus(
+        node({
+          status: "NotAcceptingNewMatches",
+          enabled_for_match_making: false,
+        }),
+      ),
+    ).toBe("online");
+  });
 });
 
 describe("node thresholds", () => {
@@ -117,8 +128,23 @@ describe("CS2 builds", () => {
       false,
     );
     expect(
-      canUpdateCs(node({ gpu: true, enabled_for_match_making: false }), 120),
+      canUpdateCs(
+        node({
+          gpu: true,
+          enabled_for_match_making: false,
+          start_port_range: null,
+          end_port_range: null,
+        }),
+        120,
+      ),
     ).toBe(false);
+  });
+
+  // Its ports mean it hosts dedicated servers, which run CS2.
+  it("updates a GPU node out of matchmaking that keeps its ports", () => {
+    expect(
+      canUpdateCs(node({ gpu: true, enabled_for_match_making: false }), 120),
+    ).toBe(true);
   });
 
   // Each lineup preview a GPU-only node renders boots a CS2 server on it.
@@ -178,6 +204,23 @@ describe("attention", () => {
     expect(nodeIssues(node(), { currentBuildId: 100 })).toEqual([]);
   });
 
+  it("asks no region, ports or headroom of a node out of matchmaking", () => {
+    expect(
+      nodeIssues(
+        node({
+          enabled_for_match_making: false,
+          region: null,
+          start_port_range: null,
+          end_port_range: null,
+          total_server_count: 12,
+        }),
+      ),
+    ).toEqual([]);
+    expect(
+      nodeIssues(node({ enabled_for_match_making: false, build_id: null })),
+    ).toEqual(["no_cs2"]);
+  });
+
   it("asks for CS2 on a hosting node without it, unless it is installing", () => {
     expect(nodeIssues(node({ build_id: null }))).toEqual(["no_cs2"]);
     expect(
@@ -193,13 +236,14 @@ describe("attention", () => {
         node({ id: "c", offline_at: "2026-10-16T10:00:00Z" }),
         node({ id: "d", gpu: true, enabled_for_match_making: false }),
         node({ id: "e", update_status: "verifying 20%" }),
+        node({ id: "f", enabled_for_match_making: false }),
       ],
       { currentBuildId: 100 },
     );
 
     expect(summary).toEqual({
-      total: 5,
-      online: 4,
+      total: 6,
+      online: 5,
       free: 10,
       capacity: 13,
       attention: 1,

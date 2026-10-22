@@ -1,4 +1,5 @@
 import type { Tone as AdminTone } from "~/components/admin/tone";
+import { takesMatches } from "~/components/game-server-nodes/nodeState";
 
 export type Tone = Extract<AdminTone, "ok" | "warn" | "bad" | "off">;
 
@@ -17,7 +18,17 @@ export function regionTone(status?: string | null): Tone {
   }
 }
 
-export function regionStatusKey(status?: string | null): string {
+type RegionNodeFlags = {
+  enabled?: boolean | null;
+  enabled_for_match_making?: boolean | null;
+};
+
+// A node out of matchmaking still hosts dedicated servers, so a region with
+// only those reads "No matchmaking", not "No servers".
+export function regionStatusKey(
+  status?: string | null,
+  nodes: Array<RegionNodeFlags> = [],
+): string {
   switch (status) {
     case "Online":
       return "pages.regions.status.online";
@@ -26,7 +37,9 @@ export function regionStatusKey(status?: string | null): string {
     case "Offline":
       return "pages.regions.status.offline";
     default:
-      return "pages.regions.status.disabled";
+      return nodes.some((node) => node.enabled && !takesMatches(node))
+        ? "pages.regions.status.no_matchmaking"
+        : "pages.regions.status.disabled";
   }
 }
 
@@ -71,6 +84,7 @@ export function nodeState(node: {
   status?: string | null;
   offline_at?: string | null;
   enabled?: boolean | null;
+  enabled_for_match_making?: boolean | null;
 }): NodeState {
   if (node.enabled === false) {
     return "disabled";
@@ -83,8 +97,9 @@ export function nodeState(node: {
       return "online";
     case "Setup":
       return "setup";
+    // Accepting matches is moot on a node out of matchmaking.
     case "NotAcceptingNewMatches":
-      return "not_accepting";
+      return takesMatches(node) ? "not_accepting" : "online";
     default:
       return "offline";
   }

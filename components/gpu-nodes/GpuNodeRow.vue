@@ -64,7 +64,7 @@ const { t } = useI18n();
 const actions = useGpuNodeActions();
 
 // The plate carries the GPU's own load; the chips flip its workloads in
-// place, and the menu in front of it keeps Enabled, GPU only, accepting
+// place, and the menu in front of it keeps Enabled, Matchmaking, accepting
 // matches and the same workload switches.
 const activity = computed(() => workloadActivity(props.session, t));
 

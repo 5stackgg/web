@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "線上",
-        "partial": "部分節點離線",
+        "partial": "部分節點不接受比賽",
         "offline": "離線",
-        "disabled": "沒有伺服器"
+        "disabled": "沒有伺服器",
+        "no_matchmaking": "不參與配對"
       },
       "detail": {
         "label_aria": "地區標籤",
@@ -4098,6 +4099,7 @@
         "col_node": "節點",
         "col_free": "空閒",
         "col_servers": "伺服器",
+        "no_matchmaking": "不參與配對",
         "no_nodes_title": "此地區沒有節點",
         "no_nodes_hint": "請在 {page} 頁面設定節點所屬地區。",
         "relay_title": "使用 Steam 中繼",
@@ -4694,8 +4696,10 @@
       "idle": "閒置",
       "disabled": "已停用",
       "enabled": "已啟用",
+      "matchmaking": "配對",
       "accepting_matches": "接受比賽",
       "toggle_enabled_help": "關閉時，節點會完全停用——不執行 GPU 工作，也不排程比賽。",
+      "toggle_matchmaking_help": "比賽和練習伺服器在此啟動。關閉後，此節點只用於專用伺服器和 GPU 工作。",
       "toggle_scheduling_help": "關閉時，節點會繼續執行現有比賽，但不接受新比賽。",
       "scheduling_setup_hint": "此節點仍在設定中。上線後將開始接受比賽。",
       "scheduling_offline_hint": "此節點已離線。重新連線後將再次接受比賽。",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "它會在 {pct}% 處停止並釋放 GPU。",
         "render_action": "停止轉檔"
       },
-      "toggle_gpu_only_help": "只接 GPU 工作，不執行比賽伺服器。開啟後會清除其區域與連接埠。",
       "plate": {
         "temperature": "溫度",
         "power": "功耗",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "其連接埠允許的總數中閒置的伺服器數，下方為連接埠範圍。",
         "cap_free": "{total} 個中 {free} 個閒置",
         "cap_no_ports": "無連接埠",
+        "cap_no_matchmaking": "不參與配對",
         "chip": {
           "updating": "更新中",
           "updating_pct": "更新中 {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "僅 GPU，因此不承載比賽。可在 GPU 中切換回來。",
+          "no_matchmaking": "不參與配對。其區域與連接埠僅供專用伺服器使用。",
           "max_servers": "最大伺服器數",
           "max_tip": "{threads} 個 CPU 執行緒，扣除 1 個保留給系統",
           "max_tip_pinning": "{threads} 個 CPU 執行緒，扣除 1 個保留給系統，每台伺服器 {per} 個",
@@ -12263,8 +12267,6 @@
       "csgo_updating": "節點上的 CS:GO 正在更新",
       "ports_updated": "節點連接埠已更新",
       "ports_removed": "節點連接埠已移除",
-      "made_gpu_only": "節點已設為僅 GPU",
-      "made_match_node": "節點已設為比賽伺服器",
       "label_updated": "節點標籤已更新",
       "cs2_options_updated": "影像設定已更新"
     },

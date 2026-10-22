@@ -12,6 +12,7 @@ import {
   maxServers,
   nodeIssues,
   runsCs2,
+  takesMatches,
   type DiskThresholds,
   type IssueContext,
   type NodeLike,
@@ -63,10 +64,10 @@ export function readinessNeeds(node: NodeLike): Array<ReadinessNeed> {
     return [];
   }
   const needs: Array<ReadinessNeed> = [];
-  if (!node.region) {
+  if (takesMatches(node) && !node.region) {
     needs.push("region");
   }
-  if (!hasPorts(node)) {
+  if (takesMatches(node) && !hasPorts(node)) {
     needs.push("ports");
   }
   if (!node.build_id && !node.update_status) {
@@ -214,7 +215,7 @@ export function nextStep(
   if (cs2 && node.update_failed_at && !node.update_status) {
     return "retry_update";
   }
-  if (!gpuOnly) {
+  if (takesMatches(node)) {
     if (!node.region) {
       return "assign_region";
     }
@@ -235,7 +236,7 @@ export function nextStep(
   ) {
     return "update_cs2";
   }
-  if (!gpuOnly) {
+  if (takesMatches(node)) {
     const max = context.maxServers?.(node) ?? maxServers(node);
     if (isOverprovisioned(node, max)) {
       return "edit_ports";

@@ -35,6 +35,7 @@ import {
   isGpuOnly,
   isOffline,
   isReachable,
+  takesMatches,
   type DiskThresholds,
   type IssueContext,
   type NodeLike,
@@ -112,6 +113,9 @@ const capacity = computed(() => {
   }
   if (!props.node.enabled) {
     return "disabled";
+  }
+  if (!takesMatches(props.node)) {
+    return "no_matchmaking";
   }
   if (offline.value) {
     return "offline";
@@ -247,9 +251,11 @@ function onKeydown(event: KeyboardEvent) {
         <span v-else class="text-muted-foreground">{{
           capacity === "disabled"
             ? t("common.disabled")
-            : capacity === "offline"
-              ? t("common.offline")
-              : t(`${INSPECTOR}.cap_no_ports`)
+            : capacity === "no_matchmaking"
+              ? t(`${INSPECTOR}.cap_no_matchmaking`)
+              : capacity === "offline"
+                ? t("common.offline")
+                : t(`${INSPECTOR}.cap_no_ports`)
         }}</span>
         <span
           v-if="ports && capacity !== 'no_ports'"

@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "Online",
-        "partial": "Einige Nodes offline",
+        "partial": "Einige Nodes nehmen keine Matches an",
         "offline": "Offline",
-        "disabled": "Keine Server"
+        "disabled": "Keine Server",
+        "no_matchmaking": "Kein Matchmaking"
       },
       "detail": {
         "label_aria": "Regionsbezeichnung",
@@ -4098,6 +4099,7 @@
         "col_node": "Node",
         "col_free": "Frei",
         "col_servers": "Server",
+        "no_matchmaking": "Kein Matchmaking",
         "no_nodes_title": "Keine Nodes in dieser Region",
         "no_nodes_hint": "Lege die Region eines Nodes auf der Seite {page} fest.",
         "relay_title": "Steam-Relay verwenden",
@@ -4694,8 +4696,10 @@
       "idle": "Inaktiv",
       "disabled": "Deaktiviert",
       "enabled": "Aktiviert",
+      "matchmaking": "Matchmaking",
       "accepting_matches": "Nimmt Matches an",
       "toggle_enabled_help": "Wenn aus, ist der Node komplett deaktiviert — keine GPU-Arbeit und keine Match-Zuteilung.",
+      "toggle_matchmaking_help": "Matches und Übungsserver starten hier. Wenn aus, bleibt der Node für Dedicated Server und GPU-Arbeit.",
       "toggle_scheduling_help": "Wenn aus, führt der Node laufende Matches weiter, nimmt aber keine neuen an.",
       "scheduling_setup_hint": "Dieser Node wird noch eingerichtet. Er nimmt Matches an, sobald er online ist.",
       "scheduling_offline_hint": "Dieser Node ist offline. Er nimmt wieder Matches an, sobald er sich neu verbindet.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "Er wird bei {pct} % beendet und die GPU wird frei.",
         "render_action": "Render stoppen"
       },
-      "toggle_gpu_only_help": "Übernimmt nur GPU-Arbeit, keine Match-Server. Beim Einschalten werden Region und Ports entfernt.",
       "plate": {
         "temperature": "Temperatur",
         "power": "Leistung",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Freie Server von der Gesamtzahl, die seine Ports erlauben. Der Portbereich steht darunter.",
         "cap_free": "{free} von {total} frei",
         "cap_no_ports": "Keine Ports",
+        "cap_no_matchmaking": "Kein Matchmaking",
         "chip": {
           "updating": "Wird aktualisiert",
           "updating_pct": "Aktualisierung {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "Nur GPU, hostet also keine Matches. Unter GPU zurückstellen.",
+          "no_matchmaking": "Nicht im Matchmaking. Region und Ports dienen nur den Dedicated Servern.",
           "max_servers": "Max. Server",
           "max_tip": "{threads} CPU-Threads, minus 1 für das System",
           "max_tip_pinning": "{threads} CPU-Threads, minus 1 für das System, {per} pro Server",
@@ -12263,8 +12267,6 @@
       "csgo_updating": "CS:GO wird auf der Node aktualisiert",
       "ports_updated": "Node-Ports aktualisiert",
       "ports_removed": "Node-Ports entfernt",
-      "made_gpu_only": "Node auf „nur GPU“ gesetzt",
-      "made_match_node": "Node auf Match-Server gesetzt",
       "label_updated": "Node-Label aktualisiert",
       "cs2_options_updated": "Video-Einstellungen aktualisiert"
     },

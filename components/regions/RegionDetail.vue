@@ -14,6 +14,7 @@ import {
   nodeStateTone,
   regionLabel,
 } from "~/components/regions/regionStatus";
+import { takesMatches } from "~/components/game-server-nodes/nodeState";
 
 type RegionNode = {
   id: string;
@@ -21,6 +22,7 @@ type RegionNode = {
   status?: string | null;
   offline_at?: string | null;
   enabled?: boolean | null;
+  enabled_for_match_making?: boolean | null;
   available_server_count?: number | null;
   total_server_count?: number | null;
 };
@@ -203,16 +205,24 @@ function finishRename(save: boolean) {
                     <StatusDot :tone="nodeStateTone[nodeState(node)]" />
                     {{ $t(nodeStateKey[nodeState(node)]) }}
                   </span>
+                  <span
+                    v-if="!takesMatches(node)"
+                    class="text-muted-foreground"
+                  >
+                    · {{ $t("pages.regions.detail.no_matchmaking") }}</span
+                  >
                 </td>
                 <td class="px-3 py-2.5 text-right">
                   {{
-                    nodeState(node) === "online"
+                    nodeState(node) === "online" && takesMatches(node)
                       ? (node.available_server_count ?? 0)
                       : "—"
                   }}
                 </td>
                 <td class="px-3 py-2.5 text-right">
-                  {{ node.total_server_count ?? 0 }}
+                  {{
+                    takesMatches(node) ? (node.total_server_count ?? 0) : "—"
+                  }}
                 </td>
               </tr>
             </tbody>

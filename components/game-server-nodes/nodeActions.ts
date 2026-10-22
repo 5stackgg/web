@@ -39,15 +39,3 @@ export function deleteNode(client: MutationClient, id: string) {
     }),
   });
 }
-
-// Switching to GPU only drops the region and ports with matchmaking.
-export function nodeModeFields(mode: "match" | "gpu") {
-  return mode === "gpu"
-    ? {
-        enabled_for_match_making: false,
-        region: null,
-        start_port_range: null,
-        end_port_range: null,
-      }
-    : { enabled_for_match_making: true };
-}

@@ -6934,7 +6934,10 @@
         "ask_host": "Poproś {host}, żeby ją przełączył.",
         "ask_the_host": "Poproś gospodarza, żeby ją przełączył.",
         "nav_switching": "Przełączanie",
-        "operator": "Konsola serwera"
+        "operator": "Konsola serwera",
+        "staff_stop": "Zatrzymaj",
+        "staff_stop_ask": "Zatrzymać serwer gracza {host} dla wszystkich na nim?",
+        "staff_stop_ask_unnamed": "Zatrzymać ten serwer dla wszystkich na nim?"
       },
       "collections": {
         "tab": "Kolekcje",

@@ -6934,7 +6934,10 @@
         "ask_host": "Chiedi a {host} di cambiarla.",
         "ask_the_host": "Chiedi all'host di cambiarla.",
         "nav_switching": "Cambio mappa",
-        "operator": "Console del server"
+        "operator": "Console del server",
+        "staff_stop": "Ferma",
+        "staff_stop_ask": "Fermare il server di {host} per tutti quelli che ci sono?",
+        "staff_stop_ask_unnamed": "Fermare questo server per tutti quelli che ci sono?"
       },
       "collections": {
         "tab": "Raccolte",

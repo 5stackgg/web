@@ -14,6 +14,7 @@ import { Button } from "~/components/ui/button";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Spinner } from "~/components/ui/spinner";
 import { Separator } from "~/components/ui/separator";
+import { Fold, HeightSwap } from "~/components/ui/transitions";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
@@ -31,8 +32,6 @@ import {
   stopUtilityPracticeMutation,
 } from "~/graphql/utilityGraphql";
 import { readUtilityPracticeSession } from "~/types/utility";
-import { useAuthStore } from "~/stores/AuthStore";
-import { e_player_roles_enum } from "~/generated/zeus";
 import type {
   UtilityPracticeSession,
   UtilityPracticeSessionOutput,
@@ -161,15 +160,8 @@ const canDrive = computed(() => practice.value.isLive && canManage.value);
 const matchId = computed(() => practice.value.matchId);
 const serverId = computed(() => practice.value.serverId);
 
-// RCON is refused by the API for anyone below these roles, so showing it lower
-// would only ever render a console that answers with an error. It takes an
-// administrator, or the moderator running the match, which the practice host is.
-const isAdmin = computed(() =>
-  useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
-);
-
-const canOperate = computed(
-  () => isAdmin.value || useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
+const staffCanStop = computed(
+  () => practice.value.canStop && !canManage.value,
 );
 
 const operatorOpen = ref(false);
@@ -214,6 +206,10 @@ onBeforeUnmount(() => {
 const invitees = ref<Invitee[]>([]);
 const inviting = ref(false);
 const ending = ref(false);
+const confirmingStop = ref(false);
+const stopping = ref(false);
+
+const hostName = computed(() => props.session?.host?.name ?? null);
 
 const inviteeSteamIds = computed(() =>
   invitees.value.map((entry) => entry.steamId),
@@ -303,6 +299,35 @@ async function end() {
     });
   } finally {
     ending.value = false;
+  }
+}
+
+async function staffStop() {
+  const id = sessionId.value;
+
+  if (!id || !staffCanStop.value) {
+    return;
+  }
+
+  stopping.value = true;
+
+  try {
+    await getGraphqlClient().mutate({
+      mutation: stopUtilityPracticeMutation,
+      variables: { session_id: id },
+    });
+
+    confirmingStop.value = false;
+    invitees.value = [];
+    emit("ended");
+  } catch (error: any) {
+    toast({
+      title: t("pages.utility.practice.stop_failed"),
+      description: error?.message,
+      variant: "destructive",
+    });
+  } finally {
+    stopping.value = false;
   }
 }
 
@@ -463,12 +488,12 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
       </template>
 
       <!-- Operator tools. A practice pod is a game server like any other, and
-           when one refuses connections its console is what answers why. It
-           is staff-gated here because RCON is staff-gated on the server. -->
-      <template v-if="canOperate">
+           when one refuses connections its console is what answers why. The
+           api only hands the server id to viewers RCON lets in. -->
+      <Fold :open="!!serverId">
         <Separator />
 
-        <Collapsible v-model:open="operatorOpen">
+        <Collapsible v-model:open="operatorOpen" class="mt-3">
           <CollapsibleTrigger
             class="flex w-full items-center justify-between gap-2 text-left"
           >
@@ -494,7 +519,7 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
             />
           </CollapsibleContent>
         </Collapsible>
-      </template>
+      </Fold>
     </template>
 
     <!-- Whatever the surface wants between the session and the way out of it. -->
@@ -502,18 +527,67 @@ const panelCta = "w-full font-bold uppercase tracking-[0.22em]";
 
     <Separator />
 
-    <Button
-      :variant="canManage ? 'destructive' : 'outline'"
-      size="lg"
-      :class="panelCta"
-      :loading="ending"
-      @click="end()"
-    >
-      {{
-        canManage
-          ? $t("pages.utility.practice.stop")
-          : $t("pages.utility.practice.leave")
-      }}
-    </Button>
+    <!-- Staff who joined are still offered Leave: Stop sits beside it, and
+         asks first, because it ends the server for everyone on it. -->
+    <HeightSwap>
+      <div
+        v-if="confirmingStop && staffCanStop"
+        key="confirm"
+        class="flex flex-col gap-2 rounded-md border border-destructive/50 bg-destructive/[0.06] p-2.5"
+      >
+        <p class="text-xs text-foreground/90">
+          {{
+            hostName
+              ? $t("pages.utility.practice.staff_stop_ask", { host: hostName })
+              : $t("pages.utility.practice.staff_stop_ask_unnamed")
+          }}
+        </p>
+        <div class="flex items-center justify-end gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            class="h-7"
+            :disabled="stopping"
+            @click="confirmingStop = false"
+          >
+            {{ $t("common.cancel") }}
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            class="h-7"
+            :loading="stopping"
+            @click="staffStop()"
+          >
+            {{ $t("pages.utility.practice.stop") }}
+          </Button>
+        </div>
+      </div>
+      <div v-else key="way-out" class="flex items-center gap-1.5">
+        <Button
+          :variant="canManage ? 'destructive' : 'outline'"
+          size="lg"
+          :class="[panelCta, 'min-w-0 flex-1']"
+          :loading="ending"
+          @click="end()"
+        >
+          {{
+            canManage
+              ? $t("pages.utility.practice.stop")
+              : $t("pages.utility.practice.leave")
+          }}
+        </Button>
+        <Button
+          v-if="staffCanStop"
+          variant="outline"
+          size="lg"
+          class="shrink-0 font-bold uppercase tracking-[0.22em] text-destructive hover:text-destructive"
+          :disabled="ending"
+          @click="confirmingStop = true"
+        >
+          {{ $t("pages.utility.practice.staff_stop") }}
+        </Button>
+      </div>
+    </HeightSwap>
   </div>
 </template>

@@ -6934,7 +6934,10 @@
         "ask_host": "Be {host} byta den.",
         "ask_the_host": "Be värden byta den.",
         "nav_switching": "Byter",
-        "operator": "Serverkonsol"
+        "operator": "Serverkonsol",
+        "staff_stop": "Stoppa",
+        "staff_stop_ask": "Stoppa servern som {host} startade för alla på den?",
+        "staff_stop_ask_unnamed": "Stoppa den här servern för alla på den?"
       },
       "collections": {
         "tab": "Samlingar",

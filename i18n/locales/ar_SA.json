@@ -6934,7 +6934,10 @@
         "ask_host": "اطلب من {host} تبديلها.",
         "ask_the_host": "اطلب من المضيف تبديلها.",
         "nav_switching": "قيد التبديل",
-        "operator": "وحدة تحكم الخادم"
+        "operator": "وحدة تحكم الخادم",
+        "staff_stop": "إيقاف",
+        "staff_stop_ask": "إيقاف خادم {host} لكل من عليه؟",
+        "staff_stop_ask_unnamed": "إيقاف هذا الخادم لكل من عليه؟"
       },
       "collections": {
         "tab": "المجموعات",

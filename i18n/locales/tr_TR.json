@@ -6934,7 +6934,10 @@
         "ask_host": "Değiştirmesi için {host} kişisine söyle.",
         "ask_the_host": "Değiştirmesi için sunucu sahibine söyle.",
         "nav_switching": "Değişiyor",
-        "operator": "Sunucu konsolu"
+        "operator": "Sunucu konsolu",
+        "staff_stop": "Durdur",
+        "staff_stop_ask": "{host} adlı oyuncunun sunucusu üzerindeki herkes için durdurulsun mu?",
+        "staff_stop_ask_unnamed": "Bu sunucu üzerindeki herkes için durdurulsun mu?"
       },
       "collections": {
         "tab": "Koleksiyonlar",

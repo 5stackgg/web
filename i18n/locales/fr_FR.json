@@ -6934,7 +6934,10 @@
         "ask_host": "Demandez à {host} de la changer.",
         "ask_the_host": "Demandez à l'hôte de la changer.",
         "nav_switching": "Changement",
-        "operator": "Console du serveur"
+        "operator": "Console du serveur",
+        "staff_stop": "Arrêter",
+        "staff_stop_ask": "Arrêter le serveur de {host} pour tous ceux qui y sont ?",
+        "staff_stop_ask_unnamed": "Arrêter ce serveur pour tous ceux qui y sont ?"
       },
       "collections": {
         "tab": "Collections",

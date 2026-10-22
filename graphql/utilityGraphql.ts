@@ -771,8 +771,10 @@ export const setUtilityPracticeAccessMutation = generateMutation({
   ],
 });
 
-// Mine as in "one I am on", host or guest. A practice match seats everybody in
-// lineup_1, so that is the whole roster.
+// Mine as in "one I am on", host or guest. A guest is found by is_member, never
+// through session.match: every role's matches filter hides practice matches,
+// and Hasura applies it through a relationship too, so only the host ever
+// matched that way. The host half stays so callers keep passing $steam_id.
 //
 // Deliberately narrower than can_view, which also covers other people's open
 // sessions: rejoining a stranger's server on page load is not what "my
@@ -780,13 +782,7 @@ export const setUtilityPracticeAccessMutation = generateMutation({
 const mySession = {
   _or: [
     { host_steam_id: { _eq: $("steam_id", "bigint!") } },
-    {
-      match: {
-        lineup_1: {
-          lineup_players: { steam_id: { _eq: $("steam_id", "bigint!") } },
-        },
-      },
-    },
+    { is_member: { _eq: true } },
   ],
   status: { _in: $("statuses", "[e_utility_practice_statuses_enum!]") },
 };

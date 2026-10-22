@@ -15,6 +15,18 @@ export const SLIM_QUERY = generateQuery({
   ],
 });
 
+export const SLIM_GPU_QUERY = generateQuery({
+  getNodeStats: [
+    { node: $("node", "String!") },
+    {
+      node: true,
+      cpu: [{}, sampleFields],
+      memory: [{}, sampleFields],
+      gpu: [{}, { time: true, devices: { utilization_percent: true } }],
+    },
+  ],
+});
+
 export const FULL_QUERY = generateQuery({
   getNodeStats: [
     { node: $("node", "String!") },

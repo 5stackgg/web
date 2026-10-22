@@ -23,18 +23,19 @@ type QueryClient = {
   query: (options: Record<string, any>) => Promise<{ data?: any }>;
 };
 
-// Slim is CPU and memory for a table row; full adds disks, network and GPUs
-// for the inspector.
+// Slim is CPU and memory for a table row, plus GPU load on a node with one;
+// full adds disks, network and GPU details for the inspector.
 export async function fetchNodeStats(
   client: QueryClient,
   nodeId: string,
   full: boolean,
+  gpu = false,
 ) {
   // Loaded on first use so the series helpers stay free of the codegen.
-  const { FULL_QUERY, SLIM_QUERY } =
+  const { FULL_QUERY, SLIM_GPU_QUERY, SLIM_QUERY } =
     await import("~/components/game-server-nodes/nodeStatsQuery");
   const { data } = await client.query({
-    query: full ? FULL_QUERY : SLIM_QUERY,
+    query: full ? FULL_QUERY : gpu ? SLIM_GPU_QUERY : SLIM_QUERY,
     variables: { node: nodeId },
     fetchPolicy: "network-only",
   });

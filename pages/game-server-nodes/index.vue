@@ -726,7 +726,7 @@ onBeforeUnmount(() => stopTier?.());
 
   <NodeStatsPoll
     v-for="poll of polls"
-    :key="`${poll.id}:${poll.full ? 'full' : 'slim'}`"
+    :key="`${poll.id}:${poll.full ? 'full' : 'slim'}:${poll.gpu}`"
     :node-id="poll.id"
     :full="poll.full"
     :gpu="poll.gpu"

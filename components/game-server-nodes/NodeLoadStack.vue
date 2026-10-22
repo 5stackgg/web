@@ -130,7 +130,11 @@ const rounded = (value: number | null, places: number) =>
 
 <template>
   <span v-if="!lines.length" class="text-muted-foreground/60">—</span>
-  <div v-else class="grid gap-[3px] text-[11px]">
+  <div
+    v-else
+    class="nls-stack grid text-[11px]"
+    :data-dense="lines.length > 3"
+  >
     <template v-for="line of lines" :key="line.key">
       <FiveStackToolTip
         v-if="hasTip(line.key)"
@@ -183,11 +187,21 @@ const rounded = (value: number | null, places: number) =>
 </template>
 
 <style scoped>
+.nls-stack {
+  gap: 3px;
+}
 .nls-line {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 30px;
   align-items: center;
   gap: 6px;
   line-height: 13px;
+}
+/* Four lines at the three-line spacing outgrow the table's 54px row. */
+.nls-stack[data-dense="true"] {
+  gap: 2px;
+}
+.nls-stack[data-dense="true"] .nls-line {
+  line-height: 11px;
 }
 </style>

@@ -5,6 +5,7 @@ import {
   cpuSeries,
   diskTrend,
   diskUsedSeries,
+  fetchNodeStats,
   gapBands,
   inWindow,
   latest,
@@ -236,5 +237,27 @@ describe("crosshair", () => {
   it("snaps to the nearest time", () => {
     expect(nearestTime([at(0), at(1), at(2)], at(1) + 20_000)).toBe(at(2));
     expect(nearestTime([], at(1))).toBeNull();
+  });
+});
+
+describe("fetchNodeStats", () => {
+  it("asks a row for GPU load only when its node has a GPU", async () => {
+    const { FULL_QUERY, SLIM_GPU_QUERY, SLIM_QUERY } =
+      await import("~/components/game-server-nodes/nodeStatsQuery");
+    const asked: Array<unknown> = [];
+    const client = {
+      query: async (options: Record<string, any>) => {
+        asked.push(options.query);
+        return { data: { getNodeStats: null } };
+      },
+    };
+
+    await fetchNodeStats(client, "node", false);
+    await fetchNodeStats(client, "node", false, true);
+    await fetchNodeStats(client, "node", true, true);
+
+    expect(asked[0]).toBe(SLIM_QUERY);
+    expect(asked[1]).toBe(SLIM_GPU_QUERY);
+    expect(asked[2]).toBe(FULL_QUERY);
   });
 });

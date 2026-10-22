@@ -102,9 +102,11 @@ describe("NodeLoadStack", () => {
     expect(
       withGpu.findAll("[data-line]").map((row) => row.attributes("data-line")),
     ).toEqual(["cpu", "memory", "gpu", "disk"]);
+    expect(withGpu.get(".nls-stack").attributes("data-dense")).toBe("true");
 
     const noGpu = await mountStack({ cpu: 20, memory: 30, gpu: 90 });
     expect(has(noGpu, "gpu")).toBe(false);
+    expect(noGpu.get(".nls-stack").attributes("data-dense")).toBe("false");
 
     const offline = await mountStack({
       live: false,

@@ -901,9 +901,11 @@ export const $ = <Type extends GraphQLVariableType, Name extends string>(name: N
 };
 type ZEUS_INTERFACES = never
 export type ScalarCoders = {
+	_text?: ScalarResolver;
 	_uuid?: ScalarResolver;
 	bigint?: ScalarResolver;
 	bytea?: ScalarResolver;
+	date?: ScalarResolver;
 	float8?: ScalarResolver;
 	inet?: ScalarResolver;
 	json?: ScalarResolver;
@@ -2582,6 +2584,7 @@ count?: [{	columns?: Array<ValueTypes["_map_pool_select_column"]> | undefined | 
 	/** filter the rows which have to be updated */
 	where: ValueTypes["_map_pool_bool_exp"] | Variable<any, string>
 };
+	["_text"]:unknown;
 	["_uuid"]:unknown;
 	/** columns and relationships of "abandoned_matches" */
 ["abandoned_matches"]: AliasType<{
@@ -5778,6 +5781,19 @@ count?: [{	columns?: Array<ValueTypes["custom_pages_select_column"]> | undefined
 	nav_order?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["date"]:unknown;
+	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
+["date_comparison_exp"]: {
+	_eq?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	_gt?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	_gte?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	_in?: Array<ValueTypes["date"]> | undefined | null | Variable<any, string>,
+	_is_null?: boolean | undefined | null | Variable<any, string>,
+	_lt?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	_lte?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	_neq?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	_nin?: Array<ValueTypes["date"]> | undefined | null | Variable<any, string>
+};
 	/** columns and relationships of "db_backups" */
 ["db_backups"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -31719,6 +31735,8 @@ delete_plugin_versions_by_pk?: [{	runtime: ValueTypes["e_plugin_runtimes_enum"] 
 delete_push_subscriptions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["push_subscriptions_bool_exp"] | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
 delete_push_subscriptions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
+delete_recent_ban_entries?: [{	/** filter the rows which have to be deleted */
+	where: ValueTypes["recent_ban_entries_bool_exp"] | Variable<any, string>},ValueTypes["recent_ban_entries_mutation_response"]],
 delete_role_permissions?: [{	/** filter the rows which have to be deleted */
 	where: ValueTypes["role_permissions_bool_exp"] | Variable<any, string>},ValueTypes["role_permissions_mutation_response"]],
 delete_seasons?: [{	/** filter the rows which have to be deleted */
@@ -32899,6 +32917,10 @@ insert_push_subscriptions?: [{	/** the rows to be inserted */
 insert_push_subscriptions_one?: [{	/** the row to be inserted */
 	object: ValueTypes["push_subscriptions_insert_input"] | Variable<any, string>,	/** upsert condition */
 	on_conflict?: ValueTypes["push_subscriptions_on_conflict"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
+insert_recent_ban_entries?: [{	/** the rows to be inserted */
+	objects: Array<ValueTypes["recent_ban_entries_insert_input"]> | Variable<any, string>},ValueTypes["recent_ban_entries_mutation_response"]],
+insert_recent_ban_entries_one?: [{	/** the row to be inserted */
+	object: ValueTypes["recent_ban_entries_insert_input"] | Variable<any, string>},ValueTypes["recent_ban_entries"]],
 insert_role_permissions?: [{	/** the rows to be inserted */
 	objects: Array<ValueTypes["role_permissions_insert_input"]> | Variable<any, string>},ValueTypes["role_permissions_mutation_response"]],
 insert_role_permissions_one?: [{	/** the row to be inserted */
@@ -34982,6 +35004,17 @@ update_push_subscriptions_by_pk?: [{	/** increments the numeric columns with giv
 	_set?: ValueTypes["push_subscriptions_set_input"] | undefined | null | Variable<any, string>,	pk_columns: ValueTypes["push_subscriptions_pk_columns_input"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
 update_push_subscriptions_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["push_subscriptions_updates"]> | Variable<any, string>},ValueTypes["push_subscriptions_mutation_response"]],
+update_recent_ban_entries?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["recent_ban_entries_append_input"] | undefined | null | Variable<any, string>,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["recent_ban_entries_delete_at_path_input"] | undefined | null | Variable<any, string>,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["recent_ban_entries_delete_elem_input"] | undefined | null | Variable<any, string>,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["recent_ban_entries_delete_key_input"] | undefined | null | Variable<any, string>,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["recent_ban_entries_inc_input"] | undefined | null | Variable<any, string>,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["recent_ban_entries_prepend_input"] | undefined | null | Variable<any, string>,	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["recent_ban_entries_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
+	where: ValueTypes["recent_ban_entries_bool_exp"] | Variable<any, string>},ValueTypes["recent_ban_entries_mutation_response"]],
+update_recent_ban_entries_many?: [{	/** updates to execute, in order */
+	updates: Array<ValueTypes["recent_ban_entries_updates"]> | Variable<any, string>},ValueTypes["recent_ban_entries_mutation_response"]],
 update_role_permissions?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ValueTypes["role_permissions_set_input"] | undefined | null | Variable<any, string>,	/** filter the rows which have to be updated */
 	where: ValueTypes["role_permissions_bool_exp"] | Variable<any, string>},ValueTypes["role_permissions_mutation_response"]],
@@ -48224,6 +48257,12 @@ count?: [{	columns?: Array<ValueTypes["player_sanctions_select_column"]> | undef
 	returning?:ValueTypes["player_sanctions"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "player_sanctions" */
+["player_sanctions_obj_rel_insert_input"]: {
+	data: ValueTypes["player_sanctions_insert_input"] | Variable<any, string>,
+	/** upsert condition */
+	on_conflict?: ValueTypes["player_sanctions_on_conflict"] | undefined | null | Variable<any, string>
+};
 	/** on_conflict condition type for table "player_sanctions" */
 ["player_sanctions_on_conflict"]: {
 	constraint: ValueTypes["player_sanctions_constraint"] | Variable<any, string>,
@@ -55262,6 +55301,32 @@ push_subscriptions_aggregate?: [{	/** distinct select on columns */
 	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions_aggregate"]],
 push_subscriptions_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["push_subscriptions"]],
 readServerFile?: [{	file_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["FileContentResponse"]],
+recent_ban_entries?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries"]],
+recent_ban_entries_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries_aggregate"]],
+recently_banned_players?: [{	/** input parameters for function "recently_banned_players" */
+	args?: ValueTypes["recently_banned_players_args"] | undefined | null | Variable<any, string>,	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries"]],
+recently_banned_players_aggregate?: [{	/** input parameters for function "recently_banned_players_aggregate" */
+	args?: ValueTypes["recently_banned_players_args"] | undefined | null | Variable<any, string>,	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries_aggregate"]],
 role_permissions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["role_permissions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -56547,6 +56612,334 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 }>;
 	["recalculate_tournament_awards_args"]: {
 	_tournament_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
+};
+	/** columns and relationships of "recent_ban_entries" */
+["recent_ban_entries"]: AliasType<{
+	arrived_banned?:boolean | `@${string}`,
+	banned_at?:boolean | `@${string}`,
+	banned_at_source?:boolean | `@${string}`,
+	banned_here?:boolean | `@${string}`,
+	first_match_at?:boolean | `@${string}`,
+	game_ban_count?:boolean | `@${string}`,
+	last_match_at?:boolean | `@${string}`,
+	last_match_map?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ValueTypes["players"],
+	/** An object relationship */
+	sanction?:ValueTypes["player_sanctions"],
+	sanction_id?:boolean | `@${string}`,
+	sanction_kind?:boolean | `@${string}`,
+shared_matches?: [{	/** JSON select path */
+	path?: string | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	steam_banned_on?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "recent_ban_entries" */
+["recent_ban_entries_aggregate"]: AliasType<{
+	aggregate?:ValueTypes["recent_ban_entries_aggregate_fields"],
+	nodes?:ValueTypes["recent_ban_entries"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "recent_ban_entries" */
+["recent_ban_entries_aggregate_fields"]: AliasType<{
+	avg?:ValueTypes["recent_ban_entries_avg_fields"],
+count?: [{	columns?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	distinct?: boolean | undefined | null | Variable<any, string>},boolean | `@${string}`],
+	max?:ValueTypes["recent_ban_entries_max_fields"],
+	min?:ValueTypes["recent_ban_entries_min_fields"],
+	stddev?:ValueTypes["recent_ban_entries_stddev_fields"],
+	stddev_pop?:ValueTypes["recent_ban_entries_stddev_pop_fields"],
+	stddev_samp?:ValueTypes["recent_ban_entries_stddev_samp_fields"],
+	sum?:ValueTypes["recent_ban_entries_sum_fields"],
+	var_pop?:ValueTypes["recent_ban_entries_var_pop_fields"],
+	var_samp?:ValueTypes["recent_ban_entries_var_samp_fields"],
+	variance?:ValueTypes["recent_ban_entries_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_append_input"]: {
+	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** aggregate avg on columns */
+["recent_ban_entries_avg_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "recent_ban_entries". All fields are combined with a logical 'AND'. */
+["recent_ban_entries_bool_exp"]: {
+	_and?: Array<ValueTypes["recent_ban_entries_bool_exp"]> | undefined | null | Variable<any, string>,
+	_not?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>,
+	_or?: Array<ValueTypes["recent_ban_entries_bool_exp"]> | undefined | null | Variable<any, string>,
+	arrived_banned?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	banned_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	banned_at_source?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	banned_here?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	first_match_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	game_ban_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_match_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	last_match_map?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	matches_played?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	matches_since_steam_ban?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_bool_exp"] | undefined | null | Variable<any, string>,
+	sanction?: ValueTypes["player_sanctions_bool_exp"] | undefined | null | Variable<any, string>,
+	sanction_id?: ValueTypes["uuid_comparison_exp"] | undefined | null | Variable<any, string>,
+	sanction_kind?: ValueTypes["String_comparison_exp"] | undefined | null | Variable<any, string>,
+	shared_matches?: ValueTypes["jsonb_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_banned_on?: ValueTypes["date_comparison_exp"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
+	vac_ban_count?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>
+};
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["recent_ban_entries_delete_at_path_input"]: {
+	shared_matches?: Array<string> | undefined | null | Variable<any, string>
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["recent_ban_entries_delete_elem_input"]: {
+	shared_matches?: number | undefined | null | Variable<any, string>
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["recent_ban_entries_delete_key_input"]: {
+	shared_matches?: string | undefined | null | Variable<any, string>
+};
+	/** input type for incrementing numeric columns in table "recent_ban_entries" */
+["recent_ban_entries_inc_input"]: {
+	game_ban_count?: number | undefined | null | Variable<any, string>,
+	matches_played?: number | undefined | null | Variable<any, string>,
+	matches_since_steam_ban?: number | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	vac_ban_count?: number | undefined | null | Variable<any, string>
+};
+	/** input type for inserting data into table "recent_ban_entries" */
+["recent_ban_entries_insert_input"]: {
+	arrived_banned?: boolean | undefined | null | Variable<any, string>,
+	banned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	banned_at_source?: string | undefined | null | Variable<any, string>,
+	banned_here?: boolean | undefined | null | Variable<any, string>,
+	first_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	game_ban_count?: number | undefined | null | Variable<any, string>,
+	last_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	last_match_map?: string | undefined | null | Variable<any, string>,
+	matches_played?: number | undefined | null | Variable<any, string>,
+	matches_since_steam_ban?: number | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	sanction?: ValueTypes["player_sanctions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
+	sanction_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	sanction_kind?: string | undefined | null | Variable<any, string>,
+	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	steam_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	vac_ban_count?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate max on columns */
+["recent_ban_entries_max_fields"]: AliasType<{
+	banned_at?:boolean | `@${string}`,
+	banned_at_source?:boolean | `@${string}`,
+	first_match_at?:boolean | `@${string}`,
+	game_ban_count?:boolean | `@${string}`,
+	last_match_at?:boolean | `@${string}`,
+	last_match_map?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	sanction_id?:boolean | `@${string}`,
+	sanction_kind?:boolean | `@${string}`,
+	steam_banned_on?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["recent_ban_entries_min_fields"]: AliasType<{
+	banned_at?:boolean | `@${string}`,
+	banned_at_source?:boolean | `@${string}`,
+	first_match_at?:boolean | `@${string}`,
+	game_ban_count?:boolean | `@${string}`,
+	last_match_at?:boolean | `@${string}`,
+	last_match_map?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	sanction_id?:boolean | `@${string}`,
+	sanction_kind?:boolean | `@${string}`,
+	steam_banned_on?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "recent_ban_entries" */
+["recent_ban_entries_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ValueTypes["recent_ban_entries"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "recent_ban_entries". */
+["recent_ban_entries_order_by"]: {
+	arrived_banned?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	banned_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	banned_at_source?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	banned_here?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	first_match_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	game_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_match_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	last_match_map?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	matches_played?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	matches_since_steam_ban?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	player?: ValueTypes["players_order_by"] | undefined | null | Variable<any, string>,
+	sanction?: ValueTypes["player_sanctions_order_by"] | undefined | null | Variable<any, string>,
+	sanction_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	sanction_kind?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	shared_matches?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_banned_on?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	vac_ban_count?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_prepend_input"]: {
+	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>
+};
+	/** select columns of table "recent_ban_entries" */
+["recent_ban_entries_select_column"]:recent_ban_entries_select_column;
+	/** input type for updating data in table "recent_ban_entries" */
+["recent_ban_entries_set_input"]: {
+	arrived_banned?: boolean | undefined | null | Variable<any, string>,
+	banned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	banned_at_source?: string | undefined | null | Variable<any, string>,
+	banned_here?: boolean | undefined | null | Variable<any, string>,
+	first_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	game_ban_count?: number | undefined | null | Variable<any, string>,
+	last_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	last_match_map?: string | undefined | null | Variable<any, string>,
+	matches_played?: number | undefined | null | Variable<any, string>,
+	matches_since_steam_ban?: number | undefined | null | Variable<any, string>,
+	sanction_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	sanction_kind?: string | undefined | null | Variable<any, string>,
+	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	steam_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	vac_ban_count?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate stddev on columns */
+["recent_ban_entries_stddev_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["recent_ban_entries_stddev_pop_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["recent_ban_entries_stddev_samp_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "recent_ban_entries" */
+["recent_ban_entries_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ValueTypes["recent_ban_entries_stream_cursor_value_input"] | Variable<any, string>,
+	/** cursor ordering */
+	ordering?: ValueTypes["cursor_ordering"] | undefined | null | Variable<any, string>
+};
+	/** Initial value of the column from where the streaming should start */
+["recent_ban_entries_stream_cursor_value_input"]: {
+	arrived_banned?: boolean | undefined | null | Variable<any, string>,
+	banned_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	banned_at_source?: string | undefined | null | Variable<any, string>,
+	banned_here?: boolean | undefined | null | Variable<any, string>,
+	first_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	game_ban_count?: number | undefined | null | Variable<any, string>,
+	last_match_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	last_match_map?: string | undefined | null | Variable<any, string>,
+	matches_played?: number | undefined | null | Variable<any, string>,
+	matches_since_steam_ban?: number | undefined | null | Variable<any, string>,
+	sanction_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
+	sanction_kind?: string | undefined | null | Variable<any, string>,
+	shared_matches?: ValueTypes["jsonb"] | undefined | null | Variable<any, string>,
+	steam_banned_on?: ValueTypes["date"] | undefined | null | Variable<any, string>,
+	steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
+	vac_ban_count?: number | undefined | null | Variable<any, string>
+};
+	/** aggregate sum on columns */
+["recent_ban_entries_sum_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["recent_ban_entries_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ValueTypes["recent_ban_entries_append_input"] | undefined | null | Variable<any, string>,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ValueTypes["recent_ban_entries_delete_at_path_input"] | undefined | null | Variable<any, string>,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ValueTypes["recent_ban_entries_delete_elem_input"] | undefined | null | Variable<any, string>,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ValueTypes["recent_ban_entries_delete_key_input"] | undefined | null | Variable<any, string>,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ValueTypes["recent_ban_entries_inc_input"] | undefined | null | Variable<any, string>,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ValueTypes["recent_ban_entries_prepend_input"] | undefined | null | Variable<any, string>,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ValueTypes["recent_ban_entries_set_input"] | undefined | null | Variable<any, string>,
+	/** filter the rows which have to be updated */
+	where: ValueTypes["recent_ban_entries_bool_exp"] | Variable<any, string>
+};
+	/** aggregate var_pop on columns */
+["recent_ban_entries_var_pop_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["recent_ban_entries_var_samp_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["recent_ban_entries_variance_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["recently_banned_players_args"]: {
+	_kinds?: ValueTypes["_text"] | undefined | null | Variable<any, string>,
+	_lost_only?: boolean | undefined | null | Variable<any, string>,
+	_played_with?: string | undefined | null | Variable<any, string>,
+	_search?: string | undefined | null | Variable<any, string>,
+	_status?: string | undefined | null | Variable<any, string>,
+	_timing?: string | undefined | null | Variable<any, string>,
+	_window_days?: number | undefined | null | Variable<any, string>
 };
 	["remove_league_team_from_season_args"]: {
 	_league_team_season_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>
@@ -63575,6 +63968,36 @@ push_subscriptions_stream?: [{	/** maximum number of rows returned in a single b
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["push_subscriptions_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["push_subscriptions_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["push_subscriptions"]],
+recent_ban_entries?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries"]],
+recent_ban_entries_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries_aggregate"]],
+recent_ban_entries_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
+	cursor: Array<ValueTypes["recent_ban_entries_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries"]],
+recently_banned_players?: [{	/** input parameters for function "recently_banned_players" */
+	args?: ValueTypes["recently_banned_players_args"] | undefined | null | Variable<any, string>,	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries"]],
+recently_banned_players_aggregate?: [{	/** input parameters for function "recently_banned_players_aggregate" */
+	args?: ValueTypes["recently_banned_players_args"] | undefined | null | Variable<any, string>,	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["recent_ban_entries_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["recent_ban_entries_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["recent_ban_entries_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["recent_ban_entries_aggregate"]],
 role_permissions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["role_permissions_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -95932,6 +96355,7 @@ count?: [{	columns?: Array<ResolverInputTypes["_map_pool_select_column"]> | unde
 	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["_map_pool_bool_exp"]
 };
+	["_text"]:unknown;
 	["_uuid"]:unknown;
 	/** columns and relationships of "abandoned_matches" */
 ["abandoned_matches"]: AliasType<{
@@ -99128,6 +99552,19 @@ count?: [{	columns?: Array<ResolverInputTypes["custom_pages_select_column"]> | u
 	nav_order?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
+	["date"]:unknown;
+	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
+["date_comparison_exp"]: {
+	_eq?: ResolverInputTypes["date"] | undefined | null,
+	_gt?: ResolverInputTypes["date"] | undefined | null,
+	_gte?: ResolverInputTypes["date"] | undefined | null,
+	_in?: Array<ResolverInputTypes["date"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ResolverInputTypes["date"] | undefined | null,
+	_lte?: ResolverInputTypes["date"] | undefined | null,
+	_neq?: ResolverInputTypes["date"] | undefined | null,
+	_nin?: Array<ResolverInputTypes["date"]> | undefined | null
+};
 	/** columns and relationships of "db_backups" */
 ["db_backups"]: AliasType<{
 	created_at?:boolean | `@${string}`,
@@ -125069,6 +125506,8 @@ delete_plugin_versions_by_pk?: [{	runtime: ResolverInputTypes["e_plugin_runtimes
 delete_push_subscriptions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["push_subscriptions_bool_exp"]},ResolverInputTypes["push_subscriptions_mutation_response"]],
 delete_push_subscriptions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["push_subscriptions"]],
+delete_recent_ban_entries?: [{	/** filter the rows which have to be deleted */
+	where: ResolverInputTypes["recent_ban_entries_bool_exp"]},ResolverInputTypes["recent_ban_entries_mutation_response"]],
 delete_role_permissions?: [{	/** filter the rows which have to be deleted */
 	where: ResolverInputTypes["role_permissions_bool_exp"]},ResolverInputTypes["role_permissions_mutation_response"]],
 delete_seasons?: [{	/** filter the rows which have to be deleted */
@@ -126249,6 +126688,10 @@ insert_push_subscriptions?: [{	/** the rows to be inserted */
 insert_push_subscriptions_one?: [{	/** the row to be inserted */
 	object: ResolverInputTypes["push_subscriptions_insert_input"],	/** upsert condition */
 	on_conflict?: ResolverInputTypes["push_subscriptions_on_conflict"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
+insert_recent_ban_entries?: [{	/** the rows to be inserted */
+	objects: Array<ResolverInputTypes["recent_ban_entries_insert_input"]>},ResolverInputTypes["recent_ban_entries_mutation_response"]],
+insert_recent_ban_entries_one?: [{	/** the row to be inserted */
+	object: ResolverInputTypes["recent_ban_entries_insert_input"]},ResolverInputTypes["recent_ban_entries"]],
 insert_role_permissions?: [{	/** the rows to be inserted */
 	objects: Array<ResolverInputTypes["role_permissions_insert_input"]>},ResolverInputTypes["role_permissions_mutation_response"]],
 insert_role_permissions_one?: [{	/** the row to be inserted */
@@ -128332,6 +128775,17 @@ update_push_subscriptions_by_pk?: [{	/** increments the numeric columns with giv
 	_set?: ResolverInputTypes["push_subscriptions_set_input"] | undefined | null,	pk_columns: ResolverInputTypes["push_subscriptions_pk_columns_input"]},ResolverInputTypes["push_subscriptions"]],
 update_push_subscriptions_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["push_subscriptions_updates"]>},ResolverInputTypes["push_subscriptions_mutation_response"]],
+update_recent_ban_entries?: [{	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["recent_ban_entries_append_input"] | undefined | null,	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["recent_ban_entries_delete_at_path_input"] | undefined | null,	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["recent_ban_entries_delete_elem_input"] | undefined | null,	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["recent_ban_entries_delete_key_input"] | undefined | null,	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["recent_ban_entries_inc_input"] | undefined | null,	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["recent_ban_entries_prepend_input"] | undefined | null,	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["recent_ban_entries_set_input"] | undefined | null,	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["recent_ban_entries_bool_exp"]},ResolverInputTypes["recent_ban_entries_mutation_response"]],
+update_recent_ban_entries_many?: [{	/** updates to execute, in order */
+	updates: Array<ResolverInputTypes["recent_ban_entries_updates"]>},ResolverInputTypes["recent_ban_entries_mutation_response"]],
 update_role_permissions?: [{	/** sets the columns of the filtered rows to the given values */
 	_set?: ResolverInputTypes["role_permissions_set_input"] | undefined | null,	/** filter the rows which have to be updated */
 	where: ResolverInputTypes["role_permissions_bool_exp"]},ResolverInputTypes["role_permissions_mutation_response"]],
@@ -141574,6 +142028,12 @@ count?: [{	columns?: Array<ResolverInputTypes["player_sanctions_select_column"]>
 	returning?:ResolverInputTypes["player_sanctions"],
 		__typename?: boolean | `@${string}`
 }>;
+	/** input type for inserting object relation for remote table "player_sanctions" */
+["player_sanctions_obj_rel_insert_input"]: {
+	data: ResolverInputTypes["player_sanctions_insert_input"],
+	/** upsert condition */
+	on_conflict?: ResolverInputTypes["player_sanctions_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "player_sanctions" */
 ["player_sanctions_on_conflict"]: {
 	constraint: ResolverInputTypes["player_sanctions_constraint"],
@@ -148612,6 +149072,32 @@ push_subscriptions_aggregate?: [{	/** distinct select on columns */
 	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions_aggregate"]],
 push_subscriptions_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["push_subscriptions"]],
 readServerFile?: [{	file_path: string,	node_id: string,	server_id?: string | undefined | null},ResolverInputTypes["FileContentResponse"]],
+recent_ban_entries?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries"]],
+recent_ban_entries_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries_aggregate"]],
+recently_banned_players?: [{	/** input parameters for function "recently_banned_players" */
+	args?: ResolverInputTypes["recently_banned_players_args"] | undefined | null,	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries"]],
+recently_banned_players_aggregate?: [{	/** input parameters for function "recently_banned_players_aggregate" */
+	args?: ResolverInputTypes["recently_banned_players_args"] | undefined | null,	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries_aggregate"]],
 role_permissions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["role_permissions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -149897,6 +150383,334 @@ v_tournament_player_stats_aggregate?: [{	/** distinct select on columns */
 }>;
 	["recalculate_tournament_awards_args"]: {
 	_tournament_id?: ResolverInputTypes["uuid"] | undefined | null
+};
+	/** columns and relationships of "recent_ban_entries" */
+["recent_ban_entries"]: AliasType<{
+	arrived_banned?:boolean | `@${string}`,
+	banned_at?:boolean | `@${string}`,
+	banned_at_source?:boolean | `@${string}`,
+	banned_here?:boolean | `@${string}`,
+	first_match_at?:boolean | `@${string}`,
+	game_ban_count?:boolean | `@${string}`,
+	last_match_at?:boolean | `@${string}`,
+	last_match_map?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	/** An object relationship */
+	player?:ResolverInputTypes["players"],
+	/** An object relationship */
+	sanction?:ResolverInputTypes["player_sanctions"],
+	sanction_id?:boolean | `@${string}`,
+	sanction_kind?:boolean | `@${string}`,
+shared_matches?: [{	/** JSON select path */
+	path?: string | undefined | null},boolean | `@${string}`],
+	steam_banned_on?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregated selection of "recent_ban_entries" */
+["recent_ban_entries_aggregate"]: AliasType<{
+	aggregate?:ResolverInputTypes["recent_ban_entries_aggregate_fields"],
+	nodes?:ResolverInputTypes["recent_ban_entries"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate fields of "recent_ban_entries" */
+["recent_ban_entries_aggregate_fields"]: AliasType<{
+	avg?:ResolverInputTypes["recent_ban_entries_avg_fields"],
+count?: [{	columns?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	distinct?: boolean | undefined | null},boolean | `@${string}`],
+	max?:ResolverInputTypes["recent_ban_entries_max_fields"],
+	min?:ResolverInputTypes["recent_ban_entries_min_fields"],
+	stddev?:ResolverInputTypes["recent_ban_entries_stddev_fields"],
+	stddev_pop?:ResolverInputTypes["recent_ban_entries_stddev_pop_fields"],
+	stddev_samp?:ResolverInputTypes["recent_ban_entries_stddev_samp_fields"],
+	sum?:ResolverInputTypes["recent_ban_entries_sum_fields"],
+	var_pop?:ResolverInputTypes["recent_ban_entries_var_pop_fields"],
+	var_samp?:ResolverInputTypes["recent_ban_entries_var_samp_fields"],
+	variance?:ResolverInputTypes["recent_ban_entries_variance_fields"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_append_input"]: {
+	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["recent_ban_entries_avg_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Boolean expression to filter rows from the table "recent_ban_entries". All fields are combined with a logical 'AND'. */
+["recent_ban_entries_bool_exp"]: {
+	_and?: Array<ResolverInputTypes["recent_ban_entries_bool_exp"]> | undefined | null,
+	_not?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null,
+	_or?: Array<ResolverInputTypes["recent_ban_entries_bool_exp"]> | undefined | null,
+	arrived_banned?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	banned_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	banned_at_source?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	banned_here?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	first_match_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	game_ban_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	last_match_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_match_map?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	matches_played?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	matches_since_steam_ban?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
+	player?: ResolverInputTypes["players_bool_exp"] | undefined | null,
+	sanction?: ResolverInputTypes["player_sanctions_bool_exp"] | undefined | null,
+	sanction_id?: ResolverInputTypes["uuid_comparison_exp"] | undefined | null,
+	sanction_kind?: ResolverInputTypes["String_comparison_exp"] | undefined | null,
+	shared_matches?: ResolverInputTypes["jsonb_comparison_exp"] | undefined | null,
+	steam_banned_on?: ResolverInputTypes["date_comparison_exp"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
+	vac_ban_count?: ResolverInputTypes["Int_comparison_exp"] | undefined | null
+};
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["recent_ban_entries_delete_at_path_input"]: {
+	shared_matches?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["recent_ban_entries_delete_elem_input"]: {
+	shared_matches?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["recent_ban_entries_delete_key_input"]: {
+	shared_matches?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "recent_ban_entries" */
+["recent_ban_entries_inc_input"]: {
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** input type for inserting data into table "recent_ban_entries" */
+["recent_ban_entries_insert_input"]: {
+	arrived_banned?: boolean | undefined | null,
+	banned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	player?: ResolverInputTypes["players_obj_rel_insert_input"] | undefined | null,
+	sanction?: ResolverInputTypes["player_sanctions_obj_rel_insert_input"] | undefined | null,
+	sanction_id?: ResolverInputTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null,
+	steam_banned_on?: ResolverInputTypes["date"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate max on columns */
+["recent_ban_entries_max_fields"]: AliasType<{
+	banned_at?:boolean | `@${string}`,
+	banned_at_source?:boolean | `@${string}`,
+	first_match_at?:boolean | `@${string}`,
+	game_ban_count?:boolean | `@${string}`,
+	last_match_at?:boolean | `@${string}`,
+	last_match_map?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	sanction_id?:boolean | `@${string}`,
+	sanction_kind?:boolean | `@${string}`,
+	steam_banned_on?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate min on columns */
+["recent_ban_entries_min_fields"]: AliasType<{
+	banned_at?:boolean | `@${string}`,
+	banned_at_source?:boolean | `@${string}`,
+	first_match_at?:boolean | `@${string}`,
+	game_ban_count?:boolean | `@${string}`,
+	last_match_at?:boolean | `@${string}`,
+	last_match_map?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	sanction_id?:boolean | `@${string}`,
+	sanction_kind?:boolean | `@${string}`,
+	steam_banned_on?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** response of any mutation on the table "recent_ban_entries" */
+["recent_ban_entries_mutation_response"]: AliasType<{
+	/** number of rows affected by the mutation */
+	affected_rows?:boolean | `@${string}`,
+	/** data from the rows affected by the mutation */
+	returning?:ResolverInputTypes["recent_ban_entries"],
+		__typename?: boolean | `@${string}`
+}>;
+	/** Ordering options when selecting data from "recent_ban_entries". */
+["recent_ban_entries_order_by"]: {
+	arrived_banned?: ResolverInputTypes["order_by"] | undefined | null,
+	banned_at?: ResolverInputTypes["order_by"] | undefined | null,
+	banned_at_source?: ResolverInputTypes["order_by"] | undefined | null,
+	banned_here?: ResolverInputTypes["order_by"] | undefined | null,
+	first_match_at?: ResolverInputTypes["order_by"] | undefined | null,
+	game_ban_count?: ResolverInputTypes["order_by"] | undefined | null,
+	last_match_at?: ResolverInputTypes["order_by"] | undefined | null,
+	last_match_map?: ResolverInputTypes["order_by"] | undefined | null,
+	matches_played?: ResolverInputTypes["order_by"] | undefined | null,
+	matches_since_steam_ban?: ResolverInputTypes["order_by"] | undefined | null,
+	player?: ResolverInputTypes["players_order_by"] | undefined | null,
+	sanction?: ResolverInputTypes["player_sanctions_order_by"] | undefined | null,
+	sanction_id?: ResolverInputTypes["order_by"] | undefined | null,
+	sanction_kind?: ResolverInputTypes["order_by"] | undefined | null,
+	shared_matches?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_banned_on?: ResolverInputTypes["order_by"] | undefined | null,
+	steam_id?: ResolverInputTypes["order_by"] | undefined | null,
+	vac_ban_count?: ResolverInputTypes["order_by"] | undefined | null
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_prepend_input"]: {
+	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "recent_ban_entries" */
+["recent_ban_entries_select_column"]:recent_ban_entries_select_column;
+	/** input type for updating data in table "recent_ban_entries" */
+["recent_ban_entries_set_input"]: {
+	arrived_banned?: boolean | undefined | null,
+	banned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: ResolverInputTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null,
+	steam_banned_on?: ResolverInputTypes["date"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate stddev on columns */
+["recent_ban_entries_stddev_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_pop on columns */
+["recent_ban_entries_stddev_pop_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate stddev_samp on columns */
+["recent_ban_entries_stddev_samp_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** Streaming cursor of the table "recent_ban_entries" */
+["recent_ban_entries_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ResolverInputTypes["recent_ban_entries_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ResolverInputTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["recent_ban_entries_stream_cursor_value_input"]: {
+	arrived_banned?: boolean | undefined | null,
+	banned_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: ResolverInputTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: ResolverInputTypes["jsonb"] | undefined | null,
+	steam_banned_on?: ResolverInputTypes["date"] | undefined | null,
+	steam_id?: ResolverInputTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["recent_ban_entries_sum_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["recent_ban_entries_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ResolverInputTypes["recent_ban_entries_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ResolverInputTypes["recent_ban_entries_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ResolverInputTypes["recent_ban_entries_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ResolverInputTypes["recent_ban_entries_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ResolverInputTypes["recent_ban_entries_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ResolverInputTypes["recent_ban_entries_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ResolverInputTypes["recent_ban_entries_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ResolverInputTypes["recent_ban_entries_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["recent_ban_entries_var_pop_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate var_samp on columns */
+["recent_ban_entries_var_samp_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	/** aggregate variance on columns */
+["recent_ban_entries_variance_fields"]: AliasType<{
+	game_ban_count?:boolean | `@${string}`,
+	matches_played?:boolean | `@${string}`,
+	matches_since_steam_ban?:boolean | `@${string}`,
+	steam_id?:boolean | `@${string}`,
+	vac_ban_count?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["recently_banned_players_args"]: {
+	_kinds?: ResolverInputTypes["_text"] | undefined | null,
+	_lost_only?: boolean | undefined | null,
+	_played_with?: string | undefined | null,
+	_search?: string | undefined | null,
+	_status?: string | undefined | null,
+	_timing?: string | undefined | null,
+	_window_days?: number | undefined | null
 };
 	["remove_league_team_from_season_args"]: {
 	_league_team_season_id?: ResolverInputTypes["uuid"] | undefined | null
@@ -156925,6 +157739,36 @@ push_subscriptions_stream?: [{	/** maximum number of rows returned in a single b
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["push_subscriptions_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["push_subscriptions_bool_exp"] | undefined | null},ResolverInputTypes["push_subscriptions"]],
+recent_ban_entries?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries"]],
+recent_ban_entries_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries_aggregate"]],
+recent_ban_entries_stream?: [{	/** maximum number of rows returned in a single batch */
+	batch_size: number,	/** cursor to stream the results returned by the query */
+	cursor: Array<ResolverInputTypes["recent_ban_entries_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries"]],
+recently_banned_players?: [{	/** input parameters for function "recently_banned_players" */
+	args?: ResolverInputTypes["recently_banned_players_args"] | undefined | null,	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries"]],
+recently_banned_players_aggregate?: [{	/** input parameters for function "recently_banned_players_aggregate" */
+	args?: ResolverInputTypes["recently_banned_players_args"] | undefined | null,	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["recent_ban_entries_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["recent_ban_entries_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["recent_ban_entries_bool_exp"] | undefined | null},ResolverInputTypes["recent_ban_entries_aggregate"]],
 role_permissions?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["role_permissions_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -189107,6 +189951,7 @@ export type ModelTypes = {
 	/** filter the rows which have to be updated */
 	where: ModelTypes["_map_pool_bool_exp"]
 };
+	["_text"]:any;
 	["_uuid"]:any;
 	/** columns and relationships of "abandoned_matches" */
 ["abandoned_matches"]: {
@@ -192090,6 +192935,19 @@ export type ModelTypes = {
 	/** aggregate variance on columns */
 ["custom_pages_variance_fields"]: {
 		nav_order?: number | undefined | null
+};
+	["date"]:any;
+	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
+["date_comparison_exp"]: {
+	_eq?: ModelTypes["date"] | undefined | null,
+	_gt?: ModelTypes["date"] | undefined | null,
+	_gte?: ModelTypes["date"] | undefined | null,
+	_in?: Array<ModelTypes["date"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: ModelTypes["date"] | undefined | null,
+	_lte?: ModelTypes["date"] | undefined | null,
+	_neq?: ModelTypes["date"] | undefined | null,
+	_nin?: Array<ModelTypes["date"]> | undefined | null
 };
 	/** columns and relationships of "db_backups" */
 ["db_backups"]: {
@@ -215991,6 +216849,8 @@ export type ModelTypes = {
 	delete_push_subscriptions?: ModelTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "push_subscriptions" */
 	delete_push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
+	/** delete data from the table: "recent_ban_entries" */
+	delete_recent_ban_entries?: ModelTypes["recent_ban_entries_mutation_response"] | undefined | null,
 	/** delete data from the table: "v_role_permissions" */
 	delete_role_permissions?: ModelTypes["role_permissions_mutation_response"] | undefined | null,
 	/** delete data from the table: "seasons" */
@@ -216928,6 +217788,10 @@ export type ModelTypes = {
 	insert_push_subscriptions?: ModelTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "push_subscriptions" */
 	insert_push_subscriptions_one?: ModelTypes["push_subscriptions"] | undefined | null,
+	/** insert data into the table: "recent_ban_entries" */
+	insert_recent_ban_entries?: ModelTypes["recent_ban_entries_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "recent_ban_entries" */
+	insert_recent_ban_entries_one?: ModelTypes["recent_ban_entries"] | undefined | null,
 	/** insert data into the table: "v_role_permissions" */
 	insert_role_permissions?: ModelTypes["role_permissions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "v_role_permissions" */
@@ -218394,6 +219258,10 @@ export type ModelTypes = {
 	update_push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** update multiples rows of table: "push_subscriptions" */
 	update_push_subscriptions_many?: Array<ModelTypes["push_subscriptions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "recent_ban_entries" */
+	update_recent_ban_entries?: ModelTypes["recent_ban_entries_mutation_response"] | undefined | null,
+	/** update multiples rows of table: "recent_ban_entries" */
+	update_recent_ban_entries_many?: Array<ModelTypes["recent_ban_entries_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "v_role_permissions" */
 	update_role_permissions?: ModelTypes["role_permissions_mutation_response"] | undefined | null,
 	/** update multiples rows of table: "v_role_permissions" */
@@ -230893,6 +231761,12 @@ export type ModelTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<ModelTypes["player_sanctions"]>
 };
+	/** input type for inserting object relation for remote table "player_sanctions" */
+["player_sanctions_obj_rel_insert_input"]: {
+	data: ModelTypes["player_sanctions_insert_input"],
+	/** upsert condition */
+	on_conflict?: ModelTypes["player_sanctions_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "player_sanctions" */
 ["player_sanctions_on_conflict"]: {
 	constraint: ModelTypes["player_sanctions_constraint"],
@@ -236171,6 +237045,14 @@ export type ModelTypes = {
 	push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** Read file content from game server */
 	readServerFile: ModelTypes["FileContentResponse"],
+	/** fetch data from the table: "recent_ban_entries" */
+	recent_ban_entries: Array<ModelTypes["recent_ban_entries"]>,
+	/** fetch aggregated fields from the table: "recent_ban_entries" */
+	recent_ban_entries_aggregate: ModelTypes["recent_ban_entries_aggregate"],
+	/** execute function "recently_banned_players" which returns "recent_ban_entries" */
+	recently_banned_players: Array<ModelTypes["recent_ban_entries"]>,
+	/** execute function "recently_banned_players" and query aggregates on result of table type "recent_ban_entries" */
+	recently_banned_players_aggregate: ModelTypes["recent_ban_entries_aggregate"],
 	/** fetch data from the table: "v_role_permissions" */
 	role_permissions: Array<ModelTypes["role_permissions"]>,
 	/** fetch aggregated fields from the table: "v_role_permissions" */
@@ -236726,6 +237608,318 @@ export type ModelTypes = {
 };
 	["recalculate_tournament_awards_args"]: {
 	_tournament_id?: ModelTypes["uuid"] | undefined | null
+};
+	/** columns and relationships of "recent_ban_entries" */
+["recent_ban_entries"]: {
+		arrived_banned: boolean,
+	banned_at: ModelTypes["timestamptz"],
+	banned_at_source: string,
+	banned_here: boolean,
+	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	game_ban_count: number,
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played: number,
+	matches_since_steam_ban?: number | undefined | null,
+	/** An object relationship */
+	player?: ModelTypes["players"] | undefined | null,
+	/** An object relationship */
+	sanction?: ModelTypes["player_sanctions"] | undefined | null,
+	sanction_id?: ModelTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: ModelTypes["jsonb"] | undefined | null,
+	steam_banned_on?: ModelTypes["date"] | undefined | null,
+	steam_id: ModelTypes["bigint"],
+	vac_ban_count: number
+};
+	/** aggregated selection of "recent_ban_entries" */
+["recent_ban_entries_aggregate"]: {
+		aggregate?: ModelTypes["recent_ban_entries_aggregate_fields"] | undefined | null,
+	nodes: Array<ModelTypes["recent_ban_entries"]>
+};
+	/** aggregate fields of "recent_ban_entries" */
+["recent_ban_entries_aggregate_fields"]: {
+		avg?: ModelTypes["recent_ban_entries_avg_fields"] | undefined | null,
+	count: number,
+	max?: ModelTypes["recent_ban_entries_max_fields"] | undefined | null,
+	min?: ModelTypes["recent_ban_entries_min_fields"] | undefined | null,
+	stddev?: ModelTypes["recent_ban_entries_stddev_fields"] | undefined | null,
+	stddev_pop?: ModelTypes["recent_ban_entries_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: ModelTypes["recent_ban_entries_stddev_samp_fields"] | undefined | null,
+	sum?: ModelTypes["recent_ban_entries_sum_fields"] | undefined | null,
+	var_pop?: ModelTypes["recent_ban_entries_var_pop_fields"] | undefined | null,
+	var_samp?: ModelTypes["recent_ban_entries_var_samp_fields"] | undefined | null,
+	variance?: ModelTypes["recent_ban_entries_variance_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_append_input"]: {
+	shared_matches?: ModelTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["recent_ban_entries_avg_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "recent_ban_entries". All fields are combined with a logical 'AND'. */
+["recent_ban_entries_bool_exp"]: {
+	_and?: Array<ModelTypes["recent_ban_entries_bool_exp"]> | undefined | null,
+	_not?: ModelTypes["recent_ban_entries_bool_exp"] | undefined | null,
+	_or?: Array<ModelTypes["recent_ban_entries_bool_exp"]> | undefined | null,
+	arrived_banned?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	banned_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	banned_at_source?: ModelTypes["String_comparison_exp"] | undefined | null,
+	banned_here?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	first_match_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	game_ban_count?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	last_match_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_match_map?: ModelTypes["String_comparison_exp"] | undefined | null,
+	matches_played?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	matches_since_steam_ban?: ModelTypes["Int_comparison_exp"] | undefined | null,
+	player?: ModelTypes["players_bool_exp"] | undefined | null,
+	sanction?: ModelTypes["player_sanctions_bool_exp"] | undefined | null,
+	sanction_id?: ModelTypes["uuid_comparison_exp"] | undefined | null,
+	sanction_kind?: ModelTypes["String_comparison_exp"] | undefined | null,
+	shared_matches?: ModelTypes["jsonb_comparison_exp"] | undefined | null,
+	steam_banned_on?: ModelTypes["date_comparison_exp"] | undefined | null,
+	steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
+	vac_ban_count?: ModelTypes["Int_comparison_exp"] | undefined | null
+};
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["recent_ban_entries_delete_at_path_input"]: {
+	shared_matches?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["recent_ban_entries_delete_elem_input"]: {
+	shared_matches?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["recent_ban_entries_delete_key_input"]: {
+	shared_matches?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "recent_ban_entries" */
+["recent_ban_entries_inc_input"]: {
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** input type for inserting data into table "recent_ban_entries" */
+["recent_ban_entries_insert_input"]: {
+	arrived_banned?: boolean | undefined | null,
+	banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	player?: ModelTypes["players_obj_rel_insert_input"] | undefined | null,
+	sanction?: ModelTypes["player_sanctions_obj_rel_insert_input"] | undefined | null,
+	sanction_id?: ModelTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: ModelTypes["jsonb"] | undefined | null,
+	steam_banned_on?: ModelTypes["date"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate max on columns */
+["recent_ban_entries_max_fields"]: {
+		banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: ModelTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	steam_banned_on?: ModelTypes["date"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate min on columns */
+["recent_ban_entries_min_fields"]: {
+		banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: ModelTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	steam_banned_on?: ModelTypes["date"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** response of any mutation on the table "recent_ban_entries" */
+["recent_ban_entries_mutation_response"]: {
+		/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<ModelTypes["recent_ban_entries"]>
+};
+	/** Ordering options when selecting data from "recent_ban_entries". */
+["recent_ban_entries_order_by"]: {
+	arrived_banned?: ModelTypes["order_by"] | undefined | null,
+	banned_at?: ModelTypes["order_by"] | undefined | null,
+	banned_at_source?: ModelTypes["order_by"] | undefined | null,
+	banned_here?: ModelTypes["order_by"] | undefined | null,
+	first_match_at?: ModelTypes["order_by"] | undefined | null,
+	game_ban_count?: ModelTypes["order_by"] | undefined | null,
+	last_match_at?: ModelTypes["order_by"] | undefined | null,
+	last_match_map?: ModelTypes["order_by"] | undefined | null,
+	matches_played?: ModelTypes["order_by"] | undefined | null,
+	matches_since_steam_ban?: ModelTypes["order_by"] | undefined | null,
+	player?: ModelTypes["players_order_by"] | undefined | null,
+	sanction?: ModelTypes["player_sanctions_order_by"] | undefined | null,
+	sanction_id?: ModelTypes["order_by"] | undefined | null,
+	sanction_kind?: ModelTypes["order_by"] | undefined | null,
+	shared_matches?: ModelTypes["order_by"] | undefined | null,
+	steam_banned_on?: ModelTypes["order_by"] | undefined | null,
+	steam_id?: ModelTypes["order_by"] | undefined | null,
+	vac_ban_count?: ModelTypes["order_by"] | undefined | null
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_prepend_input"]: {
+	shared_matches?: ModelTypes["jsonb"] | undefined | null
+};
+	["recent_ban_entries_select_column"]:recent_ban_entries_select_column;
+	/** input type for updating data in table "recent_ban_entries" */
+["recent_ban_entries_set_input"]: {
+	arrived_banned?: boolean | undefined | null,
+	banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: ModelTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: ModelTypes["jsonb"] | undefined | null,
+	steam_banned_on?: ModelTypes["date"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate stddev on columns */
+["recent_ban_entries_stddev_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["recent_ban_entries_stddev_pop_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["recent_ban_entries_stddev_samp_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** Streaming cursor of the table "recent_ban_entries" */
+["recent_ban_entries_stream_cursor_input"]: {
+	/** Stream column input with initial value */
+	initial_value: ModelTypes["recent_ban_entries_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: ModelTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["recent_ban_entries_stream_cursor_value_input"]: {
+	arrived_banned?: boolean | undefined | null,
+	banned_at?: ModelTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: ModelTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: ModelTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: ModelTypes["jsonb"] | undefined | null,
+	steam_banned_on?: ModelTypes["date"] | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["recent_ban_entries_sum_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: ModelTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	["recent_ban_entries_updates"]: {
+	/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: ModelTypes["recent_ban_entries_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: ModelTypes["recent_ban_entries_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: ModelTypes["recent_ban_entries_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: ModelTypes["recent_ban_entries_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: ModelTypes["recent_ban_entries_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: ModelTypes["recent_ban_entries_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: ModelTypes["recent_ban_entries_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: ModelTypes["recent_ban_entries_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["recent_ban_entries_var_pop_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["recent_ban_entries_var_samp_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["recent_ban_entries_variance_fields"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	["recently_banned_players_args"]: {
+	_kinds?: ModelTypes["_text"] | undefined | null,
+	_lost_only?: boolean | undefined | null,
+	_played_with?: string | undefined | null,
+	_search?: string | undefined | null,
+	_status?: string | undefined | null,
+	_timing?: string | undefined | null,
+	_window_days?: number | undefined | null
 };
 	["remove_league_team_from_season_args"]: {
 	_league_team_season_id?: ModelTypes["uuid"] | undefined | null
@@ -241876,6 +243070,16 @@ export type ModelTypes = {
 	push_subscriptions_by_pk?: ModelTypes["push_subscriptions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "push_subscriptions" */
 	push_subscriptions_stream: Array<ModelTypes["push_subscriptions"]>,
+	/** fetch data from the table: "recent_ban_entries" */
+	recent_ban_entries: Array<ModelTypes["recent_ban_entries"]>,
+	/** fetch aggregated fields from the table: "recent_ban_entries" */
+	recent_ban_entries_aggregate: ModelTypes["recent_ban_entries_aggregate"],
+	/** fetch data from the table in a streaming manner: "recent_ban_entries" */
+	recent_ban_entries_stream: Array<ModelTypes["recent_ban_entries"]>,
+	/** execute function "recently_banned_players" which returns "recent_ban_entries" */
+	recently_banned_players: Array<ModelTypes["recent_ban_entries"]>,
+	/** execute function "recently_banned_players" and query aggregates on result of table type "recent_ban_entries" */
+	recently_banned_players_aggregate: ModelTypes["recent_ban_entries_aggregate"],
 	/** fetch data from the table: "v_role_permissions" */
 	role_permissions: Array<ModelTypes["role_permissions"]>,
 	/** fetch aggregated fields from the table: "v_role_permissions" */
@@ -271516,6 +272720,7 @@ export type GraphQLTypes = {
 	/** filter the rows which have to be updated */
 	where: GraphQLTypes["_map_pool_bool_exp"]
 };
+	["_text"]: "scalar" & { name: "_text" };
 	["_uuid"]: "scalar" & { name: "_uuid" };
 	/** columns and relationships of "abandoned_matches" */
 ["abandoned_matches"]: {
@@ -274689,6 +275894,19 @@ export type GraphQLTypes = {
 ["custom_pages_variance_fields"]: {
 	__typename: "custom_pages_variance_fields",
 	nav_order?: number | undefined | null
+};
+	["date"]: "scalar" & { name: "date" };
+	/** Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'. */
+["date_comparison_exp"]: {
+		_eq?: GraphQLTypes["date"] | undefined | null,
+	_gt?: GraphQLTypes["date"] | undefined | null,
+	_gte?: GraphQLTypes["date"] | undefined | null,
+	_in?: Array<GraphQLTypes["date"]> | undefined | null,
+	_is_null?: boolean | undefined | null,
+	_lt?: GraphQLTypes["date"] | undefined | null,
+	_lte?: GraphQLTypes["date"] | undefined | null,
+	_neq?: GraphQLTypes["date"] | undefined | null,
+	_nin?: Array<GraphQLTypes["date"]> | undefined | null
 };
 	/** columns and relationships of "db_backups" */
 ["db_backups"]: {
@@ -299993,6 +301211,8 @@ export type GraphQLTypes = {
 	delete_push_subscriptions?: GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** delete single row from the table: "push_subscriptions" */
 	delete_push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
+	/** delete data from the table: "recent_ban_entries" */
+	delete_recent_ban_entries?: GraphQLTypes["recent_ban_entries_mutation_response"] | undefined | null,
 	/** delete data from the table: "v_role_permissions" */
 	delete_role_permissions?: GraphQLTypes["role_permissions_mutation_response"] | undefined | null,
 	/** delete data from the table: "seasons" */
@@ -300930,6 +302150,10 @@ export type GraphQLTypes = {
 	insert_push_subscriptions?: GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "push_subscriptions" */
 	insert_push_subscriptions_one?: GraphQLTypes["push_subscriptions"] | undefined | null,
+	/** insert data into the table: "recent_ban_entries" */
+	insert_recent_ban_entries?: GraphQLTypes["recent_ban_entries_mutation_response"] | undefined | null,
+	/** insert a single row into the table: "recent_ban_entries" */
+	insert_recent_ban_entries_one?: GraphQLTypes["recent_ban_entries"] | undefined | null,
 	/** insert data into the table: "v_role_permissions" */
 	insert_role_permissions?: GraphQLTypes["role_permissions_mutation_response"] | undefined | null,
 	/** insert a single row into the table: "v_role_permissions" */
@@ -302396,6 +303620,10 @@ export type GraphQLTypes = {
 	update_push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** update multiples rows of table: "push_subscriptions" */
 	update_push_subscriptions_many?: Array<GraphQLTypes["push_subscriptions_mutation_response"] | undefined | null> | undefined | null,
+	/** update data of the table: "recent_ban_entries" */
+	update_recent_ban_entries?: GraphQLTypes["recent_ban_entries_mutation_response"] | undefined | null,
+	/** update multiples rows of table: "recent_ban_entries" */
+	update_recent_ban_entries_many?: Array<GraphQLTypes["recent_ban_entries_mutation_response"] | undefined | null> | undefined | null,
 	/** update data of the table: "v_role_permissions" */
 	update_role_permissions?: GraphQLTypes["role_permissions_mutation_response"] | undefined | null,
 	/** update multiples rows of table: "v_role_permissions" */
@@ -315342,6 +316570,12 @@ export type GraphQLTypes = {
 	/** data from the rows affected by the mutation */
 	returning: Array<GraphQLTypes["player_sanctions"]>
 };
+	/** input type for inserting object relation for remote table "player_sanctions" */
+["player_sanctions_obj_rel_insert_input"]: {
+		data: GraphQLTypes["player_sanctions_insert_input"],
+	/** upsert condition */
+	on_conflict?: GraphQLTypes["player_sanctions_on_conflict"] | undefined | null
+};
 	/** on_conflict condition type for table "player_sanctions" */
 ["player_sanctions_on_conflict"]: {
 		constraint: GraphQLTypes["player_sanctions_constraint"],
@@ -320836,6 +322070,14 @@ export type GraphQLTypes = {
 	push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** Read file content from game server */
 	readServerFile: GraphQLTypes["FileContentResponse"],
+	/** fetch data from the table: "recent_ban_entries" */
+	recent_ban_entries: Array<GraphQLTypes["recent_ban_entries"]>,
+	/** fetch aggregated fields from the table: "recent_ban_entries" */
+	recent_ban_entries_aggregate: GraphQLTypes["recent_ban_entries_aggregate"],
+	/** execute function "recently_banned_players" which returns "recent_ban_entries" */
+	recently_banned_players: Array<GraphQLTypes["recent_ban_entries"]>,
+	/** execute function "recently_banned_players" and query aggregates on result of table type "recent_ban_entries" */
+	recently_banned_players_aggregate: GraphQLTypes["recent_ban_entries_aggregate"],
 	/** fetch data from the table: "v_role_permissions" */
 	role_permissions: Array<GraphQLTypes["role_permissions"]>,
 	/** fetch aggregated fields from the table: "v_role_permissions" */
@@ -321391,6 +322633,333 @@ export type GraphQLTypes = {
 };
 	["recalculate_tournament_awards_args"]: {
 		_tournament_id?: GraphQLTypes["uuid"] | undefined | null
+};
+	/** columns and relationships of "recent_ban_entries" */
+["recent_ban_entries"]: {
+	__typename: "recent_ban_entries",
+	arrived_banned: boolean,
+	banned_at: GraphQLTypes["timestamptz"],
+	banned_at_source: string,
+	banned_here: boolean,
+	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	game_ban_count: number,
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played: number,
+	matches_since_steam_ban?: number | undefined | null,
+	/** An object relationship */
+	player?: GraphQLTypes["players"] | undefined | null,
+	/** An object relationship */
+	sanction?: GraphQLTypes["player_sanctions"] | undefined | null,
+	sanction_id?: GraphQLTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
+	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
+	steam_id: GraphQLTypes["bigint"],
+	vac_ban_count: number
+};
+	/** aggregated selection of "recent_ban_entries" */
+["recent_ban_entries_aggregate"]: {
+	__typename: "recent_ban_entries_aggregate",
+	aggregate?: GraphQLTypes["recent_ban_entries_aggregate_fields"] | undefined | null,
+	nodes: Array<GraphQLTypes["recent_ban_entries"]>
+};
+	/** aggregate fields of "recent_ban_entries" */
+["recent_ban_entries_aggregate_fields"]: {
+	__typename: "recent_ban_entries_aggregate_fields",
+	avg?: GraphQLTypes["recent_ban_entries_avg_fields"] | undefined | null,
+	count: number,
+	max?: GraphQLTypes["recent_ban_entries_max_fields"] | undefined | null,
+	min?: GraphQLTypes["recent_ban_entries_min_fields"] | undefined | null,
+	stddev?: GraphQLTypes["recent_ban_entries_stddev_fields"] | undefined | null,
+	stddev_pop?: GraphQLTypes["recent_ban_entries_stddev_pop_fields"] | undefined | null,
+	stddev_samp?: GraphQLTypes["recent_ban_entries_stddev_samp_fields"] | undefined | null,
+	sum?: GraphQLTypes["recent_ban_entries_sum_fields"] | undefined | null,
+	var_pop?: GraphQLTypes["recent_ban_entries_var_pop_fields"] | undefined | null,
+	var_samp?: GraphQLTypes["recent_ban_entries_var_samp_fields"] | undefined | null,
+	variance?: GraphQLTypes["recent_ban_entries_variance_fields"] | undefined | null
+};
+	/** append existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_append_input"]: {
+		shared_matches?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** aggregate avg on columns */
+["recent_ban_entries_avg_fields"]: {
+	__typename: "recent_ban_entries_avg_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** Boolean expression to filter rows from the table "recent_ban_entries". All fields are combined with a logical 'AND'. */
+["recent_ban_entries_bool_exp"]: {
+		_and?: Array<GraphQLTypes["recent_ban_entries_bool_exp"]> | undefined | null,
+	_not?: GraphQLTypes["recent_ban_entries_bool_exp"] | undefined | null,
+	_or?: Array<GraphQLTypes["recent_ban_entries_bool_exp"]> | undefined | null,
+	arrived_banned?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	banned_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	banned_at_source?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	banned_here?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	first_match_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	game_ban_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	last_match_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	last_match_map?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	matches_played?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	matches_since_steam_ban?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
+	player?: GraphQLTypes["players_bool_exp"] | undefined | null,
+	sanction?: GraphQLTypes["player_sanctions_bool_exp"] | undefined | null,
+	sanction_id?: GraphQLTypes["uuid_comparison_exp"] | undefined | null,
+	sanction_kind?: GraphQLTypes["String_comparison_exp"] | undefined | null,
+	shared_matches?: GraphQLTypes["jsonb_comparison_exp"] | undefined | null,
+	steam_banned_on?: GraphQLTypes["date_comparison_exp"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
+	vac_ban_count?: GraphQLTypes["Int_comparison_exp"] | undefined | null
+};
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+["recent_ban_entries_delete_at_path_input"]: {
+		shared_matches?: Array<string> | undefined | null
+};
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+["recent_ban_entries_delete_elem_input"]: {
+		shared_matches?: number | undefined | null
+};
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+["recent_ban_entries_delete_key_input"]: {
+		shared_matches?: string | undefined | null
+};
+	/** input type for incrementing numeric columns in table "recent_ban_entries" */
+["recent_ban_entries_inc_input"]: {
+		game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** input type for inserting data into table "recent_ban_entries" */
+["recent_ban_entries_insert_input"]: {
+		arrived_banned?: boolean | undefined | null,
+	banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	player?: GraphQLTypes["players_obj_rel_insert_input"] | undefined | null,
+	sanction?: GraphQLTypes["player_sanctions_obj_rel_insert_input"] | undefined | null,
+	sanction_id?: GraphQLTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
+	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate max on columns */
+["recent_ban_entries_max_fields"]: {
+	__typename: "recent_ban_entries_max_fields",
+	banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: GraphQLTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate min on columns */
+["recent_ban_entries_min_fields"]: {
+	__typename: "recent_ban_entries_min_fields",
+	banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: GraphQLTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** response of any mutation on the table "recent_ban_entries" */
+["recent_ban_entries_mutation_response"]: {
+	__typename: "recent_ban_entries_mutation_response",
+	/** number of rows affected by the mutation */
+	affected_rows: number,
+	/** data from the rows affected by the mutation */
+	returning: Array<GraphQLTypes["recent_ban_entries"]>
+};
+	/** Ordering options when selecting data from "recent_ban_entries". */
+["recent_ban_entries_order_by"]: {
+		arrived_banned?: GraphQLTypes["order_by"] | undefined | null,
+	banned_at?: GraphQLTypes["order_by"] | undefined | null,
+	banned_at_source?: GraphQLTypes["order_by"] | undefined | null,
+	banned_here?: GraphQLTypes["order_by"] | undefined | null,
+	first_match_at?: GraphQLTypes["order_by"] | undefined | null,
+	game_ban_count?: GraphQLTypes["order_by"] | undefined | null,
+	last_match_at?: GraphQLTypes["order_by"] | undefined | null,
+	last_match_map?: GraphQLTypes["order_by"] | undefined | null,
+	matches_played?: GraphQLTypes["order_by"] | undefined | null,
+	matches_since_steam_ban?: GraphQLTypes["order_by"] | undefined | null,
+	player?: GraphQLTypes["players_order_by"] | undefined | null,
+	sanction?: GraphQLTypes["player_sanctions_order_by"] | undefined | null,
+	sanction_id?: GraphQLTypes["order_by"] | undefined | null,
+	sanction_kind?: GraphQLTypes["order_by"] | undefined | null,
+	shared_matches?: GraphQLTypes["order_by"] | undefined | null,
+	steam_banned_on?: GraphQLTypes["order_by"] | undefined | null,
+	steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	vac_ban_count?: GraphQLTypes["order_by"] | undefined | null
+};
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+["recent_ban_entries_prepend_input"]: {
+		shared_matches?: GraphQLTypes["jsonb"] | undefined | null
+};
+	/** select columns of table "recent_ban_entries" */
+["recent_ban_entries_select_column"]: recent_ban_entries_select_column;
+	/** input type for updating data in table "recent_ban_entries" */
+["recent_ban_entries_set_input"]: {
+		arrived_banned?: boolean | undefined | null,
+	banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: GraphQLTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
+	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate stddev on columns */
+["recent_ban_entries_stddev_fields"]: {
+	__typename: "recent_ban_entries_stddev_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate stddev_pop on columns */
+["recent_ban_entries_stddev_pop_fields"]: {
+	__typename: "recent_ban_entries_stddev_pop_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate stddev_samp on columns */
+["recent_ban_entries_stddev_samp_fields"]: {
+	__typename: "recent_ban_entries_stddev_samp_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** Streaming cursor of the table "recent_ban_entries" */
+["recent_ban_entries_stream_cursor_input"]: {
+		/** Stream column input with initial value */
+	initial_value: GraphQLTypes["recent_ban_entries_stream_cursor_value_input"],
+	/** cursor ordering */
+	ordering?: GraphQLTypes["cursor_ordering"] | undefined | null
+};
+	/** Initial value of the column from where the streaming should start */
+["recent_ban_entries_stream_cursor_value_input"]: {
+		arrived_banned?: boolean | undefined | null,
+	banned_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	banned_at_source?: string | undefined | null,
+	banned_here?: boolean | undefined | null,
+	first_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	game_ban_count?: number | undefined | null,
+	last_match_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	last_match_map?: string | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	sanction_id?: GraphQLTypes["uuid"] | undefined | null,
+	sanction_kind?: string | undefined | null,
+	shared_matches?: GraphQLTypes["jsonb"] | undefined | null,
+	steam_banned_on?: GraphQLTypes["date"] | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate sum on columns */
+["recent_ban_entries_sum_fields"]: {
+	__typename: "recent_ban_entries_sum_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	["recent_ban_entries_updates"]: {
+		/** append existing jsonb value of filtered columns with new jsonb value */
+	_append?: GraphQLTypes["recent_ban_entries_append_input"] | undefined | null,
+	/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+	_delete_at_path?: GraphQLTypes["recent_ban_entries_delete_at_path_input"] | undefined | null,
+	/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+	_delete_elem?: GraphQLTypes["recent_ban_entries_delete_elem_input"] | undefined | null,
+	/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+	_delete_key?: GraphQLTypes["recent_ban_entries_delete_key_input"] | undefined | null,
+	/** increments the numeric columns with given value of the filtered values */
+	_inc?: GraphQLTypes["recent_ban_entries_inc_input"] | undefined | null,
+	/** prepend existing jsonb value of filtered columns with new jsonb value */
+	_prepend?: GraphQLTypes["recent_ban_entries_prepend_input"] | undefined | null,
+	/** sets the columns of the filtered rows to the given values */
+	_set?: GraphQLTypes["recent_ban_entries_set_input"] | undefined | null,
+	/** filter the rows which have to be updated */
+	where: GraphQLTypes["recent_ban_entries_bool_exp"]
+};
+	/** aggregate var_pop on columns */
+["recent_ban_entries_var_pop_fields"]: {
+	__typename: "recent_ban_entries_var_pop_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate var_samp on columns */
+["recent_ban_entries_var_samp_fields"]: {
+	__typename: "recent_ban_entries_var_samp_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	/** aggregate variance on columns */
+["recent_ban_entries_variance_fields"]: {
+	__typename: "recent_ban_entries_variance_fields",
+	game_ban_count?: number | undefined | null,
+	matches_played?: number | undefined | null,
+	matches_since_steam_ban?: number | undefined | null,
+	steam_id?: number | undefined | null,
+	vac_ban_count?: number | undefined | null
+};
+	["recently_banned_players_args"]: {
+		_kinds?: GraphQLTypes["_text"] | undefined | null,
+	_lost_only?: boolean | undefined | null,
+	_played_with?: string | undefined | null,
+	_search?: string | undefined | null,
+	_status?: string | undefined | null,
+	_timing?: string | undefined | null,
+	_window_days?: number | undefined | null
 };
 	["remove_league_team_from_season_args"]: {
 		_league_team_season_id?: GraphQLTypes["uuid"] | undefined | null
@@ -326759,6 +328328,16 @@ export type GraphQLTypes = {
 	push_subscriptions_by_pk?: GraphQLTypes["push_subscriptions"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "push_subscriptions" */
 	push_subscriptions_stream: Array<GraphQLTypes["push_subscriptions"]>,
+	/** fetch data from the table: "recent_ban_entries" */
+	recent_ban_entries: Array<GraphQLTypes["recent_ban_entries"]>,
+	/** fetch aggregated fields from the table: "recent_ban_entries" */
+	recent_ban_entries_aggregate: GraphQLTypes["recent_ban_entries_aggregate"],
+	/** fetch data from the table in a streaming manner: "recent_ban_entries" */
+	recent_ban_entries_stream: Array<GraphQLTypes["recent_ban_entries"]>,
+	/** execute function "recently_banned_players" which returns "recent_ban_entries" */
+	recently_banned_players: Array<GraphQLTypes["recent_ban_entries"]>,
+	/** execute function "recently_banned_players" and query aggregates on result of table type "recent_ban_entries" */
+	recently_banned_players_aggregate: GraphQLTypes["recent_ban_entries_aggregate"],
 	/** fetch data from the table: "v_role_permissions" */
 	role_permissions: Array<GraphQLTypes["role_permissions"]>,
 	/** fetch aggregated fields from the table: "v_role_permissions" */
@@ -361228,6 +362807,25 @@ export enum push_subscriptions_update_column {
 	steam_id = "steam_id",
 	user_agent = "user_agent"
 }
+/** select columns of table "recent_ban_entries" */
+export enum recent_ban_entries_select_column {
+	arrived_banned = "arrived_banned",
+	banned_at = "banned_at",
+	banned_at_source = "banned_at_source",
+	banned_here = "banned_here",
+	first_match_at = "first_match_at",
+	game_ban_count = "game_ban_count",
+	last_match_at = "last_match_at",
+	last_match_map = "last_match_map",
+	matches_played = "matches_played",
+	matches_since_steam_ban = "matches_since_steam_ban",
+	sanction_id = "sanction_id",
+	sanction_kind = "sanction_kind",
+	shared_matches = "shared_matches",
+	steam_banned_on = "steam_banned_on",
+	steam_id = "steam_id",
+	vac_ban_count = "vac_ban_count"
+}
 /** select columns of table "v_role_permissions" */
 export enum role_permissions_select_column {
 	can_create_events = "can_create_events",
@@ -364919,6 +366517,7 @@ type ZEUS_VARIABLES = {
 	["_map_pool_stream_cursor_value_input"]: ValueTypes["_map_pool_stream_cursor_value_input"];
 	["_map_pool_update_column"]: ValueTypes["_map_pool_update_column"];
 	["_map_pool_updates"]: ValueTypes["_map_pool_updates"];
+	["_text"]: ValueTypes["_text"];
 	["_uuid"]: ValueTypes["_uuid"];
 	["abandoned_matches_aggregate_bool_exp"]: ValueTypes["abandoned_matches_aggregate_bool_exp"];
 	["abandoned_matches_aggregate_bool_exp_count"]: ValueTypes["abandoned_matches_aggregate_bool_exp_count"];
@@ -365138,6 +366737,8 @@ type ZEUS_VARIABLES = {
 	["custom_pages_stream_cursor_value_input"]: ValueTypes["custom_pages_stream_cursor_value_input"];
 	["custom_pages_update_column"]: ValueTypes["custom_pages_update_column"];
 	["custom_pages_updates"]: ValueTypes["custom_pages_updates"];
+	["date"]: ValueTypes["date"];
+	["date_comparison_exp"]: ValueTypes["date_comparison_exp"];
 	["db_backups_bool_exp"]: ValueTypes["db_backups_bool_exp"];
 	["db_backups_constraint"]: ValueTypes["db_backups_constraint"];
 	["db_backups_inc_input"]: ValueTypes["db_backups_inc_input"];
@@ -367867,6 +369468,7 @@ type ZEUS_VARIABLES = {
 	["player_sanctions_insert_input"]: ValueTypes["player_sanctions_insert_input"];
 	["player_sanctions_max_order_by"]: ValueTypes["player_sanctions_max_order_by"];
 	["player_sanctions_min_order_by"]: ValueTypes["player_sanctions_min_order_by"];
+	["player_sanctions_obj_rel_insert_input"]: ValueTypes["player_sanctions_obj_rel_insert_input"];
 	["player_sanctions_on_conflict"]: ValueTypes["player_sanctions_on_conflict"];
 	["player_sanctions_order_by"]: ValueTypes["player_sanctions_order_by"];
 	["player_sanctions_pk_columns_input"]: ValueTypes["player_sanctions_pk_columns_input"];
@@ -368117,6 +369719,21 @@ type ZEUS_VARIABLES = {
 	["push_subscriptions_update_column"]: ValueTypes["push_subscriptions_update_column"];
 	["push_subscriptions_updates"]: ValueTypes["push_subscriptions_updates"];
 	["recalculate_tournament_awards_args"]: ValueTypes["recalculate_tournament_awards_args"];
+	["recent_ban_entries_append_input"]: ValueTypes["recent_ban_entries_append_input"];
+	["recent_ban_entries_bool_exp"]: ValueTypes["recent_ban_entries_bool_exp"];
+	["recent_ban_entries_delete_at_path_input"]: ValueTypes["recent_ban_entries_delete_at_path_input"];
+	["recent_ban_entries_delete_elem_input"]: ValueTypes["recent_ban_entries_delete_elem_input"];
+	["recent_ban_entries_delete_key_input"]: ValueTypes["recent_ban_entries_delete_key_input"];
+	["recent_ban_entries_inc_input"]: ValueTypes["recent_ban_entries_inc_input"];
+	["recent_ban_entries_insert_input"]: ValueTypes["recent_ban_entries_insert_input"];
+	["recent_ban_entries_order_by"]: ValueTypes["recent_ban_entries_order_by"];
+	["recent_ban_entries_prepend_input"]: ValueTypes["recent_ban_entries_prepend_input"];
+	["recent_ban_entries_select_column"]: ValueTypes["recent_ban_entries_select_column"];
+	["recent_ban_entries_set_input"]: ValueTypes["recent_ban_entries_set_input"];
+	["recent_ban_entries_stream_cursor_input"]: ValueTypes["recent_ban_entries_stream_cursor_input"];
+	["recent_ban_entries_stream_cursor_value_input"]: ValueTypes["recent_ban_entries_stream_cursor_value_input"];
+	["recent_ban_entries_updates"]: ValueTypes["recent_ban_entries_updates"];
+	["recently_banned_players_args"]: ValueTypes["recently_banned_players_args"];
 	["remove_league_team_from_season_args"]: ValueTypes["remove_league_team_from_season_args"];
 	["reorder_league_divisions_args"]: ValueTypes["reorder_league_divisions_args"];
 	["restart_league_season_args"]: ValueTypes["restart_league_season_args"];

@@ -116,6 +116,7 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"_map_pool_set_input",
 		where:"_map_pool_bool_exp"
 	},
+	_text: `scalar._text` as const,
 	_uuid: `scalar._uuid` as const,
 	abandoned_matches_aggregate_bool_exp:{
 		count:"abandoned_matches_aggregate_bool_exp_count"
@@ -1560,6 +1561,17 @@ export const AllTypesProps: Record<string,any> = {
 		_prepend:"custom_pages_prepend_input",
 		_set:"custom_pages_set_input",
 		where:"custom_pages_bool_exp"
+	},
+	date: `scalar.date` as const,
+	date_comparison_exp:{
+		_eq:"date",
+		_gt:"date",
+		_gte:"date",
+		_in:"date",
+		_lt:"date",
+		_lte:"date",
+		_neq:"date",
+		_nin:"date"
 	},
 	db_backups_aggregate_fields:{
 		count:{
@@ -15794,6 +15806,9 @@ export const AllTypesProps: Record<string,any> = {
 		delete_push_subscriptions_by_pk:{
 			id:"uuid"
 		},
+		delete_recent_ban_entries:{
+			where:"recent_ban_entries_bool_exp"
+		},
 		delete_role_permissions:{
 			where:"role_permissions_bool_exp"
 		},
@@ -17546,6 +17561,12 @@ export const AllTypesProps: Record<string,any> = {
 		insert_push_subscriptions_one:{
 			object:"push_subscriptions_insert_input",
 			on_conflict:"push_subscriptions_on_conflict"
+		},
+		insert_recent_ban_entries:{
+			objects:"recent_ban_entries_insert_input"
+		},
+		insert_recent_ban_entries_one:{
+			object:"recent_ban_entries_insert_input"
 		},
 		insert_role_permissions:{
 			objects:"role_permissions_insert_input"
@@ -20617,6 +20638,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_push_subscriptions_many:{
 			updates:"push_subscriptions_updates"
+		},
+		update_recent_ban_entries:{
+			_append:"recent_ban_entries_append_input",
+			_delete_at_path:"recent_ban_entries_delete_at_path_input",
+			_delete_elem:"recent_ban_entries_delete_elem_input",
+			_delete_key:"recent_ban_entries_delete_key_input",
+			_inc:"recent_ban_entries_inc_input",
+			_prepend:"recent_ban_entries_prepend_input",
+			_set:"recent_ban_entries_set_input",
+			where:"recent_ban_entries_bool_exp"
+		},
+		update_recent_ban_entries_many:{
+			updates:"recent_ban_entries_updates"
 		},
 		update_role_permissions:{
 			_set:"role_permissions_set_input",
@@ -27109,6 +27143,10 @@ export const AllTypesProps: Record<string,any> = {
 		remove_sanction_date:"order_by",
 		sanctioned_by_steam_id:"order_by"
 	},
+	player_sanctions_obj_rel_insert_input:{
+		data:"player_sanctions_insert_input",
+		on_conflict:"player_sanctions_on_conflict"
+	},
 	player_sanctions_on_conflict:{
 		constraint:"player_sanctions_constraint",
 		update_columns:"player_sanctions_update_column",
@@ -31695,6 +31733,28 @@ export const AllTypesProps: Record<string,any> = {
 		readServerFile:{
 
 		},
+		recent_ban_entries:{
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
+		},
+		recent_ban_entries_aggregate:{
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
+		},
+		recently_banned_players:{
+			args:"recently_banned_players_args",
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
+		},
+		recently_banned_players_aggregate:{
+			args:"recently_banned_players_args",
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
+		},
 		role_permissions:{
 			distinct_on:"role_permissions_select_column",
 			order_by:"role_permissions_order_by",
@@ -32930,6 +32990,124 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	recalculate_tournament_awards_args:{
 		_tournament_id:"uuid"
+	},
+	recent_ban_entries:{
+		shared_matches:{
+
+		}
+	},
+	recent_ban_entries_aggregate_fields:{
+		count:{
+			columns:"recent_ban_entries_select_column"
+		}
+	},
+	recent_ban_entries_append_input:{
+		shared_matches:"jsonb"
+	},
+	recent_ban_entries_bool_exp:{
+		_and:"recent_ban_entries_bool_exp",
+		_not:"recent_ban_entries_bool_exp",
+		_or:"recent_ban_entries_bool_exp",
+		arrived_banned:"Boolean_comparison_exp",
+		banned_at:"timestamptz_comparison_exp",
+		banned_at_source:"String_comparison_exp",
+		banned_here:"Boolean_comparison_exp",
+		first_match_at:"timestamptz_comparison_exp",
+		game_ban_count:"Int_comparison_exp",
+		last_match_at:"timestamptz_comparison_exp",
+		last_match_map:"String_comparison_exp",
+		matches_played:"Int_comparison_exp",
+		matches_since_steam_ban:"Int_comparison_exp",
+		player:"players_bool_exp",
+		sanction:"player_sanctions_bool_exp",
+		sanction_id:"uuid_comparison_exp",
+		sanction_kind:"String_comparison_exp",
+		shared_matches:"jsonb_comparison_exp",
+		steam_banned_on:"date_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		vac_ban_count:"Int_comparison_exp"
+	},
+	recent_ban_entries_delete_at_path_input:{
+
+	},
+	recent_ban_entries_delete_elem_input:{
+
+	},
+	recent_ban_entries_delete_key_input:{
+
+	},
+	recent_ban_entries_inc_input:{
+		steam_id:"bigint"
+	},
+	recent_ban_entries_insert_input:{
+		banned_at:"timestamptz",
+		first_match_at:"timestamptz",
+		last_match_at:"timestamptz",
+		player:"players_obj_rel_insert_input",
+		sanction:"player_sanctions_obj_rel_insert_input",
+		sanction_id:"uuid",
+		shared_matches:"jsonb",
+		steam_banned_on:"date",
+		steam_id:"bigint"
+	},
+	recent_ban_entries_order_by:{
+		arrived_banned:"order_by",
+		banned_at:"order_by",
+		banned_at_source:"order_by",
+		banned_here:"order_by",
+		first_match_at:"order_by",
+		game_ban_count:"order_by",
+		last_match_at:"order_by",
+		last_match_map:"order_by",
+		matches_played:"order_by",
+		matches_since_steam_ban:"order_by",
+		player:"players_order_by",
+		sanction:"player_sanctions_order_by",
+		sanction_id:"order_by",
+		sanction_kind:"order_by",
+		shared_matches:"order_by",
+		steam_banned_on:"order_by",
+		steam_id:"order_by",
+		vac_ban_count:"order_by"
+	},
+	recent_ban_entries_prepend_input:{
+		shared_matches:"jsonb"
+	},
+	recent_ban_entries_select_column: "enum" as const,
+	recent_ban_entries_set_input:{
+		banned_at:"timestamptz",
+		first_match_at:"timestamptz",
+		last_match_at:"timestamptz",
+		sanction_id:"uuid",
+		shared_matches:"jsonb",
+		steam_banned_on:"date",
+		steam_id:"bigint"
+	},
+	recent_ban_entries_stream_cursor_input:{
+		initial_value:"recent_ban_entries_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	recent_ban_entries_stream_cursor_value_input:{
+		banned_at:"timestamptz",
+		first_match_at:"timestamptz",
+		last_match_at:"timestamptz",
+		sanction_id:"uuid",
+		shared_matches:"jsonb",
+		steam_banned_on:"date",
+		steam_id:"bigint"
+	},
+	recent_ban_entries_updates:{
+		_append:"recent_ban_entries_append_input",
+		_delete_at_path:"recent_ban_entries_delete_at_path_input",
+		_delete_elem:"recent_ban_entries_delete_elem_input",
+		_delete_key:"recent_ban_entries_delete_key_input",
+		_inc:"recent_ban_entries_inc_input",
+		_prepend:"recent_ban_entries_prepend_input",
+		_set:"recent_ban_entries_set_input",
+		where:"recent_ban_entries_bool_exp"
+	},
+	recently_banned_players_args:{
+		_kinds:"_text"
 	},
 	remove_league_team_from_season_args:{
 		_league_team_season_id:"uuid"
@@ -37896,6 +38074,32 @@ export const AllTypesProps: Record<string,any> = {
 		push_subscriptions_stream:{
 			cursor:"push_subscriptions_stream_cursor_input",
 			where:"push_subscriptions_bool_exp"
+		},
+		recent_ban_entries:{
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
+		},
+		recent_ban_entries_aggregate:{
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
+		},
+		recent_ban_entries_stream:{
+			cursor:"recent_ban_entries_stream_cursor_input",
+			where:"recent_ban_entries_bool_exp"
+		},
+		recently_banned_players:{
+			args:"recently_banned_players_args",
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
+		},
+		recently_banned_players_aggregate:{
+			args:"recently_banned_players_args",
+			distinct_on:"recent_ban_entries_select_column",
+			order_by:"recent_ban_entries_order_by",
+			where:"recent_ban_entries_bool_exp"
 		},
 		role_permissions:{
 			distinct_on:"role_permissions_select_column",
@@ -54427,6 +54631,7 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"_map_pool"
 	},
+	_text: `scalar._text` as const,
 	_uuid: `scalar._uuid` as const,
 	abandoned_matches:{
 		abandoned_at:"timestamptz",
@@ -55438,6 +55643,7 @@ export const ReturnTypes: Record<string,any> = {
 	custom_pages_variance_fields:{
 		nav_order:"Float"
 	},
+	date: `scalar.date` as const,
 	db_backups:{
 		created_at:"timestamptz",
 		id:"uuid",
@@ -62389,6 +62595,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_plugin_versions_by_pk:"plugin_versions",
 		delete_push_subscriptions:"push_subscriptions_mutation_response",
 		delete_push_subscriptions_by_pk:"push_subscriptions",
+		delete_recent_ban_entries:"recent_ban_entries_mutation_response",
 		delete_role_permissions:"role_permissions_mutation_response",
 		delete_seasons:"seasons_mutation_response",
 		delete_seasons_by_pk:"seasons",
@@ -62861,6 +63068,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_plugin_versions_one:"plugin_versions",
 		insert_push_subscriptions:"push_subscriptions_mutation_response",
 		insert_push_subscriptions_one:"push_subscriptions",
+		insert_recent_ban_entries:"recent_ban_entries_mutation_response",
+		insert_recent_ban_entries_one:"recent_ban_entries",
 		insert_role_permissions:"role_permissions_mutation_response",
 		insert_role_permissions_one:"role_permissions",
 		insert_seasons:"seasons_mutation_response",
@@ -63619,6 +63828,8 @@ export const ReturnTypes: Record<string,any> = {
 		update_push_subscriptions:"push_subscriptions_mutation_response",
 		update_push_subscriptions_by_pk:"push_subscriptions",
 		update_push_subscriptions_many:"push_subscriptions_mutation_response",
+		update_recent_ban_entries:"recent_ban_entries_mutation_response",
+		update_recent_ban_entries_many:"recent_ban_entries_mutation_response",
 		update_role_permissions:"role_permissions_mutation_response",
 		update_role_permissions_many:"role_permissions_mutation_response",
 		update_seasons:"seasons_mutation_response",
@@ -70769,6 +70980,10 @@ export const ReturnTypes: Record<string,any> = {
 		push_subscriptions_aggregate:"push_subscriptions_aggregate",
 		push_subscriptions_by_pk:"push_subscriptions",
 		readServerFile:"FileContentResponse",
+		recent_ban_entries:"recent_ban_entries",
+		recent_ban_entries_aggregate:"recent_ban_entries_aggregate",
+		recently_banned_players:"recent_ban_entries",
+		recently_banned_players_aggregate:"recent_ban_entries_aggregate",
 		role_permissions:"role_permissions",
 		role_permissions_aggregate:"role_permissions_aggregate",
 		seasons:"seasons",
@@ -71046,6 +71261,133 @@ export const ReturnTypes: Record<string,any> = {
 		v_tournament_player_stats:"v_tournament_player_stats",
 		v_tournament_player_stats_aggregate:"v_tournament_player_stats_aggregate",
 		webPushStatus:"WebPushStatusOutput"
+	},
+	recent_ban_entries:{
+		arrived_banned:"Boolean",
+		banned_at:"timestamptz",
+		banned_at_source:"String",
+		banned_here:"Boolean",
+		first_match_at:"timestamptz",
+		game_ban_count:"Int",
+		last_match_at:"timestamptz",
+		last_match_map:"String",
+		matches_played:"Int",
+		matches_since_steam_ban:"Int",
+		player:"players",
+		sanction:"player_sanctions",
+		sanction_id:"uuid",
+		sanction_kind:"String",
+		shared_matches:"jsonb",
+		steam_banned_on:"date",
+		steam_id:"bigint",
+		vac_ban_count:"Int"
+	},
+	recent_ban_entries_aggregate:{
+		aggregate:"recent_ban_entries_aggregate_fields",
+		nodes:"recent_ban_entries"
+	},
+	recent_ban_entries_aggregate_fields:{
+		avg:"recent_ban_entries_avg_fields",
+		count:"Int",
+		max:"recent_ban_entries_max_fields",
+		min:"recent_ban_entries_min_fields",
+		stddev:"recent_ban_entries_stddev_fields",
+		stddev_pop:"recent_ban_entries_stddev_pop_fields",
+		stddev_samp:"recent_ban_entries_stddev_samp_fields",
+		sum:"recent_ban_entries_sum_fields",
+		var_pop:"recent_ban_entries_var_pop_fields",
+		var_samp:"recent_ban_entries_var_samp_fields",
+		variance:"recent_ban_entries_variance_fields"
+	},
+	recent_ban_entries_avg_fields:{
+		game_ban_count:"Float",
+		matches_played:"Float",
+		matches_since_steam_ban:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
+	},
+	recent_ban_entries_max_fields:{
+		banned_at:"timestamptz",
+		banned_at_source:"String",
+		first_match_at:"timestamptz",
+		game_ban_count:"Int",
+		last_match_at:"timestamptz",
+		last_match_map:"String",
+		matches_played:"Int",
+		matches_since_steam_ban:"Int",
+		sanction_id:"uuid",
+		sanction_kind:"String",
+		steam_banned_on:"date",
+		steam_id:"bigint",
+		vac_ban_count:"Int"
+	},
+	recent_ban_entries_min_fields:{
+		banned_at:"timestamptz",
+		banned_at_source:"String",
+		first_match_at:"timestamptz",
+		game_ban_count:"Int",
+		last_match_at:"timestamptz",
+		last_match_map:"String",
+		matches_played:"Int",
+		matches_since_steam_ban:"Int",
+		sanction_id:"uuid",
+		sanction_kind:"String",
+		steam_banned_on:"date",
+		steam_id:"bigint",
+		vac_ban_count:"Int"
+	},
+	recent_ban_entries_mutation_response:{
+		affected_rows:"Int",
+		returning:"recent_ban_entries"
+	},
+	recent_ban_entries_stddev_fields:{
+		game_ban_count:"Float",
+		matches_played:"Float",
+		matches_since_steam_ban:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
+	},
+	recent_ban_entries_stddev_pop_fields:{
+		game_ban_count:"Float",
+		matches_played:"Float",
+		matches_since_steam_ban:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
+	},
+	recent_ban_entries_stddev_samp_fields:{
+		game_ban_count:"Float",
+		matches_played:"Float",
+		matches_since_steam_ban:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
+	},
+	recent_ban_entries_sum_fields:{
+		game_ban_count:"Int",
+		matches_played:"Int",
+		matches_since_steam_ban:"Int",
+		steam_id:"bigint",
+		vac_ban_count:"Int"
+	},
+	recent_ban_entries_var_pop_fields:{
+		game_ban_count:"Float",
+		matches_played:"Float",
+		matches_since_steam_ban:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
+	},
+	recent_ban_entries_var_samp_fields:{
+		game_ban_count:"Float",
+		matches_played:"Float",
+		matches_since_steam_ban:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
+	},
+	recent_ban_entries_variance_fields:{
+		game_ban_count:"Float",
+		matches_played:"Float",
+		matches_since_steam_ban:"Float",
+		steam_id:"Float",
+		vac_ban_count:"Float"
 	},
 	role_permissions:{
 		can_create_events:"Boolean",
@@ -72872,6 +73214,11 @@ export const ReturnTypes: Record<string,any> = {
 		push_subscriptions_aggregate:"push_subscriptions_aggregate",
 		push_subscriptions_by_pk:"push_subscriptions",
 		push_subscriptions_stream:"push_subscriptions",
+		recent_ban_entries:"recent_ban_entries",
+		recent_ban_entries_aggregate:"recent_ban_entries_aggregate",
+		recent_ban_entries_stream:"recent_ban_entries",
+		recently_banned_players:"recent_ban_entries",
+		recently_banned_players_aggregate:"recent_ban_entries_aggregate",
 		role_permissions:"role_permissions",
 		role_permissions_aggregate:"role_permissions_aggregate",
 		role_permissions_stream:"role_permissions",

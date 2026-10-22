@@ -58,3 +58,32 @@ describe("PlayerMatchRow forfeits", () => {
     expect(wrapper.text()).toContain("13");
   });
 });
+
+describe("PlayerMatchRow reveal", () => {
+  // An opened row scrolled up into view stops below the scroller's top
+  // padding, which a docked tab strip sets, rather than under the strip.
+  it("keeps an opened row clear of the scroller's top padding", () => {
+    const scroller = document.createElement("div");
+    scroller.style.overflowY = "auto";
+    scroller.style.scrollPaddingTop = "64px";
+    const row = document.createElement("div");
+    scroller.appendChild(row);
+    document.body.appendChild(scroller);
+    Object.defineProperty(scroller, "scrollHeight", { value: 4000 });
+    Object.defineProperty(scroller, "clientHeight", { value: 800 });
+    scroller.scrollTop = 1000;
+    scroller.getBoundingClientRect = () => ({ top: 60 }) as DOMRect;
+    row.getBoundingClientRect = () =>
+      ({ top: 40, bottom: 340, height: 300 }) as DOMRect;
+    let target: number | undefined;
+    scroller.scrollTo = ((options: ScrollToOptions) => {
+      target = options.top;
+    }) as typeof scroller.scrollTo;
+
+    (PlayerMatchRow as any).methods.revealExpanded.call({ $el: row });
+
+    // 40 - (60 + 64 + 16): up by 100px.
+    expect(target).toBe(scroller.scrollTop - 100);
+    scroller.remove();
+  });
+});

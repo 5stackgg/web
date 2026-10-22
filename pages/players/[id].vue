@@ -38,6 +38,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
+import PageTabsDock from "~/components/common/PageTabsDock.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import PlayerSeasonPaceChart from "~/components/charts/PlayerSeasonPaceChart.vue";
@@ -117,13 +118,6 @@ import {
 } from "~/components/ui/popover";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Calendar } from "~/components/ui/calendar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
 import { parseDate, type DateValue } from "@internationalized/date";
 
 type RangeKey =
@@ -162,7 +156,7 @@ const presetRanges: {
 // Plain string, not a union of the six built-ins: plugins contribute tabs at
 // runtime (keyed by their slug), so the valid set isn't knowable at compile time.
 const statsTab = ref<string>("performance");
-const statsTabsEl = ref<HTMLElement | null>(null);
+const statsTabsDock = ref<InstanceType<typeof PageTabsDock> | null>(null);
 
 const { isLinked: externalAuthLinked } = usePendingImports();
 const externalWarningDismissed = ref(false);
@@ -176,9 +170,7 @@ function dismissExternalWarning() {
 }
 function openEloTab() {
   statsTab.value = "elo";
-  nextTick(() => {
-    statsTabsEl.value?.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
+  nextTick(() => statsTabsDock.value?.reveal());
 }
 const eloRange = ref<RangeKey>("l30");
 
@@ -374,6 +366,11 @@ const VALID_STATS_TABS = [
 const isValidStatsTab = (tab: string) =>
   (VALID_STATS_TABS as readonly string[]).includes(tab) ||
   plugins.profileTabPlugins.some((plugin: Plugin) => plugin.slug === tab);
+const matchFiltersApply = computed(
+  () =>
+    statsTab.value !== "community" &&
+    (VALID_STATS_TABS as readonly string[]).includes(statsTab.value),
+);
 
 // Re-run on `initialized`, not just at setup: the plugin registry arrives over a
 // subscription, so on a cold load of ?tab=<slug> the registry is still empty here
@@ -2088,7 +2085,10 @@ const AwardComposer = defineAsyncComponent(
 </script>
 
 <template>
-  <div class="flex-grow flex flex-col gap-6 overflow-x-hidden" v-if="player">
+  <div
+    class="flex-grow flex flex-col gap-6 overflow-x-hidden md:overflow-x-clip"
+    v-if="player"
+  >
     <div class="grid min-w-0 items-stretch gap-4 lg:grid-cols-2 lg:gap-6">
       <div class="flex min-w-0 flex-col">
         <PageTransition>
@@ -2738,6 +2738,7 @@ const AwardComposer = defineAsyncComponent(
 
     <PlayerSanctions
       v-if="playerId"
+      class="contents"
       :playerId="playerId"
       :player="player"
       variant="external"
@@ -2750,13 +2751,6 @@ const AwardComposer = defineAsyncComponent(
       v-model:open="blockDialogOpen"
       :player="player"
     />
-
-    <PageTransition :delay="75" v-if="playerId">
-      <PlayerHighlights
-        :steam-id="playerId"
-        @resolved="highlightsResolved = true"
-      />
-    </PageTransition>
 
     <PageTransition v-if="player && pageContentReady && noCareerData">
       <Empty
@@ -2819,104 +2813,58 @@ const AwardComposer = defineAsyncComponent(
       </Tabs>
     </PageTransition>
 
-    <div
-      class="flex flex-col gap-4 md:gap-6"
-      v-if="player && pageContentReady && !noCareerData"
-    >
+    <!-- The sections run to the end of the page, so the docked strip stays
+         over the match list too. -->
+    <template v-if="player && pageContentReady && !noCareerData">
       <Tabs v-model="statsTab" :unmount-on-hide="false" class="w-full">
-        <div ref="statsTabsEl" class="scroll-mt-4">
-          <div class="mb-3 md:hidden">
-            <Select v-model="statsTab">
-              <SelectTrigger
-                class="w-full"
-                :aria-label="$t('pages.players.detail.section', 'Section')"
+        <PageTabsDock ref="statsTabsDock" class="mb-5 md:mb-7">
+          <div class="flex items-center gap-3">
+            <TabsList variant="track" class="min-w-0 flex-1">
+              <TabsTrigger value="performance">
+                {{ $t("pages.players.detail.tabs.performance") }}
+              </TabsTrigger>
+              <TabsTrigger value="breakdown">
+                {{ $t("pages.players.detail.tabs.breakdown") }}
+              </TabsTrigger>
+              <TabsTrigger value="elo">
+                {{ $t("pages.players.detail.tabs.elo") }}
+              </TabsTrigger>
+              <TabsTrigger value="maps">
+                {{ $t("pages.players.detail.tabs.maps") }}
+              </TabsTrigger>
+              <TabsTrigger value="arsenal">
+                {{ $t("pages.players.detail.tabs.arsenal") }}
+              </TabsTrigger>
+              <TabsTrigger value="combat">
+                {{ $t("pages.players.detail.tabs.combat") }}
+              </TabsTrigger>
+              <TabsTrigger value="community">
+                {{ $t("pages.players.detail.tabs.community") }}
+              </TabsTrigger>
+              <!-- Label comes from the registry, not i18n — an admin sets it
+                   per plugin, so there's no key to translate against. -->
+              <TabsTrigger
+                v-for="plugin in plugins.profileTabPlugins"
+                :key="plugin.id"
+                :value="plugin.slug"
               >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="performance">
-                  {{ $t("pages.players.detail.tabs.performance") }}
-                </SelectItem>
-                <SelectItem value="breakdown">
-                  {{ $t("pages.players.detail.tabs.breakdown") }}
-                </SelectItem>
-                <SelectItem value="elo">
-                  {{ $t("pages.players.detail.tabs.elo") }}
-                </SelectItem>
-                <SelectItem value="maps">
-                  {{ $t("pages.players.detail.tabs.maps") }}
-                </SelectItem>
-                <SelectItem value="arsenal">
-                  {{ $t("pages.players.detail.tabs.arsenal") }}
-                </SelectItem>
-                <SelectItem value="combat">
-                  {{ $t("pages.players.detail.tabs.combat") }}
-                </SelectItem>
-                <SelectItem value="community">
-                  {{ $t("pages.players.detail.tabs.community") }}
-                </SelectItem>
-                <SelectItem
-                  v-for="plugin in plugins.profileTabPlugins"
-                  :key="plugin.id"
-                  :value="plugin.slug"
-                >
-                  {{ plugin.profile_tab_label }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div class="mb-3 hidden items-center justify-between gap-3 md:flex">
-            <div class="overflow-x-auto">
-              <TabsList
-                variant="underline"
-                class="h-auto flex-nowrap justify-start"
-              >
-                <TabsTrigger value="performance">
-                  {{ $t("pages.players.detail.tabs.performance") }}
-                </TabsTrigger>
-                <TabsTrigger value="breakdown">
-                  {{ $t("pages.players.detail.tabs.breakdown") }}
-                </TabsTrigger>
-                <TabsTrigger value="elo">
-                  {{ $t("pages.players.detail.tabs.elo") }}
-                </TabsTrigger>
-                <TabsTrigger value="maps">
-                  {{ $t("pages.players.detail.tabs.maps") }}
-                </TabsTrigger>
-                <TabsTrigger value="arsenal">
-                  {{ $t("pages.players.detail.tabs.arsenal") }}
-                </TabsTrigger>
-                <TabsTrigger value="combat">
-                  {{ $t("pages.players.detail.tabs.combat") }}
-                </TabsTrigger>
-                <TabsTrigger value="community">
-                  {{ $t("pages.players.detail.tabs.community") }}
-                </TabsTrigger>
-                <!-- Label comes from the registry, not i18n — an admin sets it
-                     per plugin, so there's no key to translate against. -->
-                <TabsTrigger
-                  v-for="plugin in plugins.profileTabPlugins"
-                  :key="plugin.id"
-                  :value="plugin.slug"
-                >
-                  {{ plugin.profile_tab_label }}
-                </TabsTrigger>
-              </TabsList>
-            </div>
+                {{ plugin.profile_tab_label }}
+              </TabsTrigger>
+            </TabsList>
             <button
               type="button"
-              class="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-muted-foreground underline decoration-dotted underline-offset-4 transition-colors hover:text-foreground"
+              class="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-muted-foreground underline decoration-dotted underline-offset-4 transition-colors hover:text-foreground max-md:hidden"
               @click="openStatsGuide"
             >
               {{ $t("glossary.guide_link") }}
               <ExternalLink class="h-3 w-3" />
             </button>
           </div>
-        </div>
+        </PageTabsDock>
 
-        <!-- Community time is counted on servers, not in matches, so none of
-             the match filters apply to it. -->
-        <Fold :open="statsTab !== 'community'">
+        <!-- Community time is counted on servers and plugin tabs bring their own
+             data, so none of the match filters apply to them. -->
+        <Fold :open="matchFiltersApply">
           <div
             class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
           >
@@ -3480,175 +3428,186 @@ const AwardComposer = defineAsyncComponent(
             </HeightGlide>
           </div>
         </PageTransition>
-      </Tabs>
 
-      <Separator />
-
-      <PageTransition v-if="playerId">
-        <PlayerTournaments :player-steam-id="playerId" />
-      </PageTransition>
-      <PageTransition :delay="500">
-        <div>
-          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-              <span :class="tacticalSectionTickClasses"></span>
-              {{ $t("pages.players.detail.matches_section") }}
-            </div>
-            <div
-              class="flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
-            >
-              <button
-                v-if="isSelfProfile && (isAdmin || !extensionInstalled)"
-                type="button"
-                class="underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))]"
-                @click="showDemoUpload = true"
+        <div class="mt-4 flex flex-col gap-4 md:mt-6 md:gap-6">
+          <Separator />
+          <PlayerHighlights v-if="playerId" :steam-id="playerId" />
+          <PageTransition v-if="playerId">
+            <PlayerTournaments :player-steam-id="playerId" />
+          </PageTransition>
+          <PageTransition :delay="500">
+            <div>
+              <div
+                class="mb-4 flex flex-wrap items-center justify-between gap-3"
               >
-                {{
-                  $t(
-                    extensionInstalled
-                      ? "pages.settings.linked_accounts.upload_demo"
-                      : "pages.settings.linked_accounts.import_match",
-                  )
-                }}
-              </button>
-              <span class="flex items-center gap-1.5">
-                <span class="text-[hsl(var(--tac-amber))]">{{
-                  sourceRef === "external"
-                    ? $t("player_match.source.external")
-                    : sourceRef === "all"
-                      ? $t("pages.players.detail.all_short")
-                      : $t("player_match.source.internal")
-                }}</span>
-                <span class="opacity-40">·</span>
-                <span>{{
-                  !selectedModeRef || selectedModeRef === "all"
-                    ? $t("pages.players.detail.all_short")
-                    : $t(
-                        `pages.leaderboard.match_types.${selectedModeRef.toLowerCase()}`,
-                      )
-                }}</span>
-              </span>
-            </div>
-          </div>
-
-          <!-- Import modal: the extension for everyone on their own profile; the
-               .dem upload stays admin-only, as the API gates it. -->
-          <Dialog
-            v-if="isSelfProfile && (isAdmin || !extensionInstalled)"
-            v-model:open="showDemoUpload"
-          >
-            <DialogContent class="sm:max-w-lg">
-              <DialogHeader>
-                <DialogTitle>
-                  {{
-                    $t(
-                      extensionInstalled
-                        ? "pages.settings.linked_accounts.upload_demo"
-                        : "pages.settings.linked_accounts.import_match",
-                    )
-                  }}
-                </DialogTitle>
-                <DialogDescription>
-                  {{
-                    $t(
-                      extensionInstalled
-                        ? "pages.settings.linked_accounts.upload_demo_description"
-                        : "pages.settings.linked_accounts.import_match_description",
-                    )
-                  }}
-                </DialogDescription>
-              </DialogHeader>
-              <div class="space-y-4">
+                <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+                  <span :class="tacticalSectionTickClasses"></span>
+                  {{ $t("pages.players.detail.matches_section") }}
+                </div>
                 <div
-                  v-if="!extensionInstalled"
-                  class="flex items-center gap-3 rounded-md border border-border bg-muted/20 p-3"
+                  class="flex items-center gap-3 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
-                  <img
-                    src="/favicon/64.png"
-                    alt=""
-                    class="size-10 shrink-0 rounded-lg"
-                  />
-                  <div class="min-w-0 flex-1">
-                    <div class="text-sm font-semibold">
-                      {{ $t("pages.settings.linked_accounts.extension_title") }}
-                    </div>
-                    <p class="text-xs text-muted-foreground">
+                  <button
+                    v-if="isSelfProfile && (isAdmin || !extensionInstalled)"
+                    type="button"
+                    class="underline decoration-dotted underline-offset-4 transition-colors hover:text-[hsl(var(--tac-amber))]"
+                    @click="showDemoUpload = true"
+                  >
+                    {{
+                      $t(
+                        extensionInstalled
+                          ? "pages.settings.linked_accounts.upload_demo"
+                          : "pages.settings.linked_accounts.import_match",
+                      )
+                    }}
+                  </button>
+                  <span class="flex items-center gap-1.5">
+                    <span class="text-[hsl(var(--tac-amber))]">{{
+                      sourceRef === "external"
+                        ? $t("player_match.source.external")
+                        : sourceRef === "all"
+                          ? $t("pages.players.detail.all_short")
+                          : $t("player_match.source.internal")
+                    }}</span>
+                    <span class="opacity-40">·</span>
+                    <span>{{
+                      !selectedModeRef || selectedModeRef === "all"
+                        ? $t("pages.players.detail.all_short")
+                        : $t(
+                            `pages.leaderboard.match_types.${selectedModeRef.toLowerCase()}`,
+                          )
+                    }}</span>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Import modal: the extension for everyone on their own
+                   profile; the .dem upload stays admin-only, as the API gates
+                   it. -->
+              <Dialog
+                v-if="isSelfProfile && (isAdmin || !extensionInstalled)"
+                v-model:open="showDemoUpload"
+              >
+                <DialogContent class="sm:max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle>
                       {{
                         $t(
-                          "pages.settings.linked_accounts.extension_description",
+                          extensionInstalled
+                            ? "pages.settings.linked_accounts.upload_demo"
+                            : "pages.settings.linked_accounts.import_match",
                         )
                       }}
-                    </p>
+                    </DialogTitle>
+                    <DialogDescription>
+                      {{
+                        $t(
+                          extensionInstalled
+                            ? "pages.settings.linked_accounts.upload_demo_description"
+                            : "pages.settings.linked_accounts.import_match_description",
+                        )
+                      }}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div class="space-y-4">
+                    <div
+                      v-if="!extensionInstalled"
+                      class="flex items-center gap-3 rounded-md border border-border bg-muted/20 p-3"
+                    >
+                      <img
+                        src="/favicon/64.png"
+                        alt=""
+                        class="size-10 shrink-0 rounded-lg"
+                      />
+                      <div class="min-w-0 flex-1">
+                        <div class="text-sm font-semibold">
+                          {{
+                            $t("pages.settings.linked_accounts.extension_title")
+                          }}
+                        </div>
+                        <p class="text-xs text-muted-foreground">
+                          {{
+                            $t(
+                              "pages.settings.linked_accounts.extension_description",
+                            )
+                          }}
+                        </p>
+                      </div>
+                      <Button
+                        as="a"
+                        :href="CHROME_EXTENSION_URL"
+                        target="_blank"
+                        rel="noopener"
+                        size="sm"
+                        variant="tactical"
+                        class="shrink-0"
+                      >
+                        {{ $t("pages.settings.linked_accounts.add_to_chrome") }}
+                      </Button>
+                    </div>
+                    <template v-if="isAdmin">
+                      <div
+                        v-if="!extensionInstalled"
+                        class="flex items-center gap-3 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
+                      >
+                        <span class="h-px flex-1 bg-border" />
+                        {{
+                          $t("pages.settings.linked_accounts.or_upload_demo")
+                        }}
+                        <span class="h-px flex-1 bg-border" />
+                      </div>
+                      <DemoUpload />
+                    </template>
                   </div>
-                  <Button
-                    as="a"
-                    :href="CHROME_EXTENSION_URL"
-                    target="_blank"
-                    rel="noopener"
-                    size="sm"
-                    variant="tactical"
-                    class="shrink-0"
-                  >
-                    {{ $t("pages.settings.linked_accounts.add_to_chrome") }}
-                  </Button>
-                </div>
-                <template v-if="isAdmin">
-                  <div
-                    v-if="!extensionInstalled"
-                    class="flex items-center gap-3 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
-                  >
-                    <span class="h-px flex-1 bg-border" />
-                    {{ $t("pages.settings.linked_accounts.or_upload_demo") }}
-                    <span class="h-px flex-1 bg-border" />
-                  </div>
-                  <DemoUpload />
-                </template>
-              </div>
-            </DialogContent>
-          </Dialog>
+                </DialogContent>
+              </Dialog>
 
-          <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
-            <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
-            <EmptyDescription>
-              <template v-if="eloRange !== 'all' || excludeTournaments">
-                {{ $t("pages.players.detail.no_matches_in_window_period") }}
-                <button
-                  type="button"
-                  class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
-                  @click="setRange('all')"
-                >
-                  {{ $t("pages.players.detail.expand_to_all_time") }}
-                </button>
-              </template>
+              <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
+                <EmptyTitle>{{
+                  $t("pages.players.detail.no_matches")
+                }}</EmptyTitle>
+                <EmptyDescription>
+                  <template v-if="eloRange !== 'all' || excludeTournaments">
+                    {{ $t("pages.players.detail.no_matches_in_window_period") }}
+                    <button
+                      type="button"
+                      class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
+                      @click="setRange('all')"
+                    >
+                      {{ $t("pages.players.detail.expand_to_all_time") }}
+                    </button>
+                  </template>
+                  <template v-else>
+                    {{ $t("pages.players.detail.no_matches_description") }}
+                  </template>
+                </EmptyDescription>
+              </Empty>
               <template v-else>
-                {{ $t("pages.players.detail.no_matches_description") }}
+                <PlayerMatchesTable
+                  :player="player"
+                  :matches="playerMatches"
+                  :seasons="seasonsEnabled ? seasons : []"
+                  :season-recaps="seasonBreakBounds"
+                  :season-best="seasonBestMatches"
+                  :rank-by-match="rankByMatch"
+                  :faceit-by-match="faceitByMatch"
+                  :rating-by-match="ratingByMatch"
+                  :stats-by-match="statsByMatch"
+                />
+                <Pagination
+                  :page="matchesPage"
+                  :per-page="matchesPerPage"
+                  :total="playerMatchesTotal"
+                  show-per-page-selector
+                  @page="(p) => (matchesPage = p)"
+                  @update:perPage="(n) => (matchesPerPage = n)"
+                />
               </template>
-            </EmptyDescription>
-          </Empty>
-          <template v-else>
-            <PlayerMatchesTable
-              :player="player"
-              :matches="playerMatches"
-              :seasons="seasonsEnabled ? seasons : []"
-              :season-recaps="seasonBreakBounds"
-              :season-best="seasonBestMatches"
-              :rank-by-match="rankByMatch"
-              :faceit-by-match="faceitByMatch"
-              :rating-by-match="ratingByMatch"
-              :stats-by-match="statsByMatch"
-            />
-            <Pagination
-              :page="matchesPage"
-              :per-page="matchesPerPage"
-              :total="playerMatchesTotal"
-              show-per-page-selector
-              @page="(p) => (matchesPage = p)"
-              @update:perPage="(n) => (matchesPerPage = n)"
-            />
-          </template>
+            </div>
+          </PageTransition>
         </div>
-      </PageTransition>
-    </div>
+      </Tabs>
+    </template>
   </div>
 
   <Sheet
@@ -3934,7 +3893,6 @@ export default {
         hasSteamBans: false,
         vacBanned: false,
       } as Record<string, any>,
-      highlightsResolved: false,
       pageContentTimedOut: false,
       pageContentTimeout: null as number | null,
       playerTeamMemberships: [] as Array<{
@@ -3984,7 +3942,7 @@ export default {
     },
     pageContentReady(): boolean {
       if (this.pageContentTimedOut) return true;
-      return this.playerAwards !== undefined && this.highlightsResolved;
+      return this.playerAwards !== undefined;
     },
     playerId() {
       return this.$route.params.id || this.me?.steam_id || null;

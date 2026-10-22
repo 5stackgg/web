@@ -239,6 +239,24 @@ function leagueEvents(leagueTeams: any[], now: Date): ActivityEvent[] {
   );
 }
 
+export type TopPlay = { clip: Clip; opponent: string; map: string };
+
+// The best plays across every result the feed lists.
+export function topPlays(events: ActivityEvent[], limit: number): TopPlay[] {
+  return events
+    .flatMap((event) =>
+      event.kind === "result"
+        ? event.clips.map((clip) => ({
+            clip,
+            opponent: event.opponent.name,
+            map: mapLabel(clip.match_map?.map),
+          }))
+        : [],
+    )
+    .sort((a, b) => byTopPlay(a.clip, b.clip))
+    .slice(0, limit);
+}
+
 export function buildTeamActivity(
   sources: ActivitySources,
   limit = 40,

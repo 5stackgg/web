@@ -10,6 +10,8 @@ import {
   CalendarDays,
   Check,
   ChevronDown,
+  ChevronRight,
+  Film,
   Medal,
   Minus,
   Star,
@@ -22,12 +24,17 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import { schemaHasField } from "~/utilities/schemaHasType";
 import { isEndedWithResult } from "~/utilities/teamResults";
-import ClipTile from "~/components/clips/ClipTile.vue";
-import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { clipDisplayTitle, formatClipDuration } from "~/utilities/clipDisplay";
+import { useClipModal } from "~/composables/useClipModal";
+import { useSidebar } from "~/components/ui/sidebar/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import ClipKillBadge from "~/components/clips/ClipKillBadge.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import AwardModal from "~/components/award/AwardModal.vue";
 import {
   buildTeamActivity,
+  topPlays,
   type ActivityEvent,
 } from "~/components/team/teamActivity";
 import {
@@ -40,9 +47,12 @@ const props = defineProps<{
   team: any;
   teamAwards: any[];
 }>();
+const emit = defineEmits<{ (e: "all-highlights"): void }>();
 
 const { t } = useI18n();
 const { client } = useApolloClient();
+const { playClips } = useClipModal();
+const { isMobile } = useSidebar();
 
 const SHOWN = 10;
 const WEEK_MS = 7 * 86_400_000;
@@ -167,7 +177,7 @@ async function loadInvites(teamId: string) {
 }
 
 // The team's players' public clips from the matches the feed lists, so
-// each result can carry its own highlights.
+// the feed can lead with its top plays.
 async function loadClips(matchIds: string[], steamIds: string[]) {
   if (!matchIds.length || !steamIds.length) {
     clips.value = [];
@@ -279,6 +289,45 @@ const groups = computed(() => {
   ].filter((group) => group.events.length);
 });
 
+const apiDomain = useRuntimeConfig().public.apiDomain as string | undefined;
+// One row of the best plays: three across on a phone, four wider up.
+const plays = computed(() =>
+  topPlays(events.value, isMobile.value ? 3 : 4).map(
+    ({ clip, opponent, map }) => {
+      const player = clip.target?.name ?? t("clips.default_player");
+      return {
+        clip,
+        player,
+        avatar: resolveAvatarUrl(clip.target?.avatar_url, apiDomain, 64),
+        thumb: clip.thumbnail_download_url ?? clip.match_map?.map?.poster,
+        duration: formatClipDuration(clip.duration_ms),
+        context: [opponent && t("common.vs_team", { name: opponent }), map]
+          .filter(Boolean)
+          .join(" · "),
+        label: t("clips.tile.play_by", {
+          title:
+            clipDisplayTitle(clip.title, clip.target?.name) ??
+            t("clips.untitled_clip"),
+          player,
+        }),
+      };
+    },
+  ),
+);
+
+function playTop(e: MouseEvent, clip: Clip) {
+  // Modifier and middle clicks follow the href (new tab / window).
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+    return;
+  }
+  e.preventDefault();
+  playClips(
+    plays.value.map((play) => play.clip),
+    clip.id,
+    `team-activity:${props.team?.id}`,
+  );
+}
+
 const selectedAward = ref<any | null>(null);
 const awardOpen = ref(false);
 function openAward(grant: any) {
@@ -351,6 +400,79 @@ const inlineButton =
     </p>
 
     <template v-else>
+      <div v-if="plays.length" class="mb-5">
+        <div class="mb-2 flex items-center justify-between gap-3">
+          <h3 class="text-xs font-semibold text-muted-foreground">
+            {{ $t("pages.watch.events.top_plays") }}
+          </h3>
+          <button
+            type="button"
+            class="relative inline-flex items-center gap-1 rounded-sm text-xs font-semibold text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] after:absolute after:inset-x-0 after:-inset-y-3 after:content-[''] [@media(pointer:fine)]:after:hidden"
+            @click="emit('all-highlights')"
+          >
+            {{ $t("common.see_all") }}
+            <ChevronRight class="size-3.5" />
+          </button>
+        </div>
+        <ul class="grid grid-cols-3 gap-2 md:grid-cols-4">
+          <li v-for="play in plays" :key="play.clip.id" class="min-w-0">
+            <a
+              :href="`/clips/${play.clip.id}`"
+              class="group/play grid grid-cols-1 gap-0.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              :aria-label="play.label"
+              @click="playTop($event, play.clip)"
+            >
+              <span
+                class="relative isolate block aspect-video overflow-hidden rounded-lg border border-white/[0.07] bg-card transition-[border-color,transform] duration-150 group-hover/play:border-[hsl(var(--tac-amber)/0.45)] group-active/play:scale-[0.98]"
+              >
+                <NuxtImg
+                  v-if="play.thumb"
+                  :src="play.thumb"
+                  sizes="400px"
+                  alt=""
+                  loading="lazy"
+                  class="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-500 motion-safe:group-hover/play:scale-[1.03]"
+                />
+                <span
+                  v-else
+                  class="absolute inset-0 -z-10 grid place-items-center text-muted-foreground"
+                >
+                  <Film class="size-5 opacity-50" />
+                </span>
+                <ClipKillBadge
+                  :kills="play.clip.kills_count"
+                  :round="play.clip.round"
+                  :title="play.clip.title"
+                  size="xs"
+                  class="absolute left-1.5 top-1.5"
+                />
+                <span
+                  v-if="play.duration"
+                  class="absolute bottom-1.5 right-1.5 rounded-[4px] bg-black/70 px-1 py-px text-[11px] font-semibold tabular-nums text-white"
+                >
+                  {{ play.duration }}
+                </span>
+              </span>
+              <span
+                class="mt-1 flex min-w-0 items-center gap-1.5 text-[12.5px] font-semibold"
+              >
+                <Avatar class="h-4 w-4 text-[8px]">
+                  <AvatarImage v-if="play.avatar" :src="play.avatar" alt="" />
+                  <AvatarFallback>{{ play.player.charAt(0) }}</AvatarFallback>
+                </Avatar>
+                <span class="truncate">{{ play.player }}</span>
+              </span>
+              <span
+                v-if="play.context"
+                class="truncate text-[11.5px] text-muted-foreground"
+              >
+                {{ play.context }}
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
       <div v-for="group in groups" :key="group.key">
         <h3
           class="mb-0.5 mt-[18px] text-xs font-semibold text-muted-foreground first:mt-0"
@@ -434,26 +556,6 @@ const inlineButton =
                       .join(" · ")
                   }}
                 </span>
-              </div>
-              <!-- The match's highlights, as a small rail under the result.
-                   z-10 keeps the tiles above the row's stretched match link. -->
-              <div
-                v-if="event.clips.length"
-                class="relative z-10 col-start-2 col-end-4 row-start-2 min-w-0"
-              >
-                <HorizontalScrollRow>
-                  <div
-                    v-for="clip in event.clips"
-                    :key="clip.id"
-                    class="w-48 shrink-0 snap-start"
-                  >
-                    <ClipTile
-                      :clip="clip"
-                      :queue="event.clips"
-                      :queue-scope="`team-activity:${event.matchId}`"
-                    />
-                  </div>
-                </HorizontalScrollRow>
               </div>
             </template>
 

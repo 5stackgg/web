@@ -1273,14 +1273,17 @@ export default {
     },
     // Scroll the page so the whole opened row is on screen — or, when it is
     // taller than the screen, its top. Drives the nearest scroller directly:
-    // scrollIntoView would also shift overflow-hidden layout ancestors.
+    // scrollIntoView would also shift overflow-hidden layout ancestors. The
+    // scroller's top padding keeps it clear of a docked tab strip.
     revealExpanded() {
       const row = this.$el as HTMLElement;
       const scroller = scrollParentOf(row);
       if (!scroller) return;
       const view = scroller.getBoundingClientRect();
       const box = row.getBoundingClientRect();
-      const top = view.top + REVEAL_MARGIN;
+      const inset =
+        parseFloat(getComputedStyle(scroller).scrollPaddingTop) || 0;
+      const top = view.top + inset + REVEAL_MARGIN;
       const bottom = view.top + scroller.clientHeight - REVEAL_MARGIN;
       let delta = 0;
       if (box.top < top || box.height > bottom - top) {

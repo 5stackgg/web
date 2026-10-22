@@ -136,7 +136,10 @@ const ChatLobby = defineAsyncComponent(
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto">
+  <div
+    class="flex flex-col gap-4 md:gap-6 w-full mx-auto"
+    :class="chatRail ? 'max-w-[1992px]' : 'max-w-[1600px]'"
+  >
     <!-- Mounted for as long as this match asks the viewer for a camera, not
          just while one is missing: it owns the status poll, and unmounting it
          once the camera came up is what stopped anyone noticing it go away
@@ -206,184 +209,230 @@ const ChatLobby = defineAsyncComponent(
       </div>
     </div>
     <template v-if="match">
-      <PageTransition>
-        <!-- The match stage: scorebug band on top, highlights underneath, one
-             rounded surface. The highlights fold in when the clips arrive. -->
-        <section
-          class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
-        >
-          <MatchHeader :match="match" />
-          <QuickMatchConnect
-            variant="bar"
-            :match="match"
-            :camera-ready="cameraReady"
-            :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
-          />
-          <div
-            class="grid transition-[grid-template-rows] [transition-duration:240ms] ease-out motion-reduce:transition-none"
-            :class="hasMatchClips ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
-          >
-            <div class="min-h-0 overflow-hidden">
-              <MatchHighlightsReel v-if="hasMatchClips" :match="match" />
-            </div>
-          </div>
-        </section>
-      </PageTransition>
-
+      <!-- Wide enough, the chat and team voice leave the left column for a
+           full-height rail beside everything, header included. Otherwise both
+           wrappers are display: contents and the page lays out as before. -->
       <div
-        class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
+        :class="
+          chatRail
+            ? 'grid grid-cols-[minmax(0,1fr)_360px] items-start gap-8'
+            : 'contents'
+        "
       >
-        <!-- Left column: match info, chat, maps. On desktop it's the
-           first grid column; on mobile it drops below the stream. -->
-        <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
-          <PageTransition :delay="100">
-            <MatchInfo
-              :match="match"
-              :camera-ready="cameraReady"
-              hide-connect
-            ></MatchInfo>
+        <div
+          :class="
+            chatRail ? 'flex min-w-0 flex-col gap-4 md:gap-6' : 'contents'
+          "
+        >
+          <PageTransition>
+            <!-- The match stage: scorebug band on top, highlights underneath, one
+             rounded surface. The highlights fold in when the clips arrive. -->
+            <section
+              class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
+            >
+              <MatchHeader :match="match" />
+              <QuickMatchConnect
+                variant="bar"
+                :match="match"
+                :camera-ready="cameraReady"
+                :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
+              />
+              <div
+                class="grid transition-[grid-template-rows] [transition-duration:240ms] ease-out motion-reduce:transition-none"
+                :class="hasMatchClips ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+              >
+                <div class="min-h-0 overflow-hidden">
+                  <MatchHighlightsReel v-if="hasMatchClips" :match="match" />
+                </div>
+              </div>
+            </section>
           </PageTransition>
 
-          <PageTransition :delay="200">
-            <!-- Both rooms on one panel. Organizers and anyone not on a lineup
+          <div
+            class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
+          >
+            <!-- Left column: match info, chat, maps. On desktop it's the
+           first grid column; on mobile it drops below the stream. -->
+            <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
+              <PageTransition :delay="100">
+                <MatchInfo
+                  :match="match"
+                  :camera-ready="cameraReady"
+                  hide-connect
+                ></MatchInfo>
+              </PageTransition>
+
+              <!-- Teleported rather than rendered twice, so crossing the rail
+               width (a window resize, the left nav opening) keeps the room
+               and a half-typed message. The rail has to exist before a
+               Teleport can resolve it, hence the wait on `chatRailTarget`. -->
+              <Teleport
+                v-if="chatRailTarget"
+                :to="chatRailTarget"
+                :disabled="!chatRail"
+              >
+                <PageTransition :delay="200">
+                  <!-- Both rooms on one panel. Organizers and anyone not on a lineup
                get no `myLineupId`, so they get no team destination and this
                falls back to the match room alone.
                Wrapped so the read cursor can follow whether it is on screen,
                rather than whether it is allowed to be. -->
-            <div ref="inlineChat" v-if="showsInlineChat">
-              <ChatLobby
-                class="max-h-96"
-                instance="matches/id"
-                type="match"
-                :lobby-id="match.id"
-                :team-lobby-id="
-                  myLineupId && !readsMatchChatOnly
-                    ? `${match.id}:${myLineupId}`
-                    : undefined
-                "
-                :can-send="!readsMatchChatOnly"
-                :readonly-hint="
-                  readsMatchChatOnly
-                    ? $t('chat.match_moderator_readonly')
-                    : undefined
-                "
-                :play-notification-sound="
-                  match.status !== e_match_status_enum.Live &&
-                  !readsMatchChatOnly
-                "
-              />
-            </div>
-          </PageTransition>
+                  <div
+                    ref="inlineChat"
+                    v-if="showsInlineChat"
+                    :class="chatRail && 'flex min-h-0 flex-1 flex-col'"
+                  >
+                    <ChatLobby
+                      :class="chatRail ? 'flex-1' : 'max-h-96'"
+                      instance="matches/id"
+                      type="match"
+                      :lobby-id="match.id"
+                      :team-lobby-id="
+                        myLineupId && !readsMatchChatOnly
+                          ? `${match.id}:${myLineupId}`
+                          : undefined
+                      "
+                      :can-send="!readsMatchChatOnly"
+                      :readonly-hint="
+                        readsMatchChatOnly
+                          ? $t('chat.match_moderator_readonly')
+                          : undefined
+                      "
+                      :play-notification-sound="
+                        match.status !== e_match_status_enum.Live &&
+                        !readsMatchChatOnly
+                      "
+                    />
+                  </div>
+                </PageTransition>
+              </Teleport>
 
-          <!-- Team voice, beside the chat rather than inside it: the voice
+              <!-- Team voice, beside the chat rather than inside it: the voice
                channel and the text channel are the same room but not the same
                object, and nesting one in the other made the controls read as
                chat controls.
                Always present, because it is now the only way in. The strip that
                used to live on the chat composer existed to start a call before
                this section appeared -- which left the same three controls on
-               screen twice as soon as it had. -->
-          <VoiceChannelCard
-            v-if="myVoiceLineupId"
-            show-empty
-            class="mt-1"
-            kind="match"
-            :channel-id="myVoiceLineupId"
-            :label="$t('layouts.voice_panel.team_comms')"
-          />
+               screen twice as soon as it had.
+               In the rail it sits above the chat. -->
+              <Teleport
+                v-if="chatRailTarget && myVoiceLineupId"
+                :to="chatRailTarget"
+                :disabled="!chatRail"
+              >
+                <VoiceChannelCard
+                  show-empty
+                  :class="chatRail ? '-order-1' : 'mt-1'"
+                  kind="match"
+                  :channel-id="myVoiceLineupId"
+                  :label="$t('layouts.voice_panel.team_comms')"
+                />
+              </Teleport>
 
-          <PageTransition :delay="200">
-            <MatchMapSlots
-              :match="match"
-              :folded="vetoStageUp"
-              :arriving="vetoArriving"
-              :active-map-id="activeStatsMap?.id"
-              @open-stats="activeStatsMap = $event"
-            />
-          </PageTransition>
-        </div>
+              <PageTransition :delay="200">
+                <MatchMapSlots
+                  :match="match"
+                  :folded="vetoStageUp"
+                  :arriving="vetoArriving"
+                  :active-map-id="activeStatsMap?.id"
+                  @open-stats="activeStatsMap = $event"
+                />
+              </PageTransition>
+            </div>
 
-        <!-- Right column: the live stream surface (game-streamer rows
+            <!-- Right column: the live stream surface (game-streamer rows
            get the full WHEP LiveStreamPlayer; embeds stay in
            StreamEmbed) stacked above the scoreboard/tabs. On mobile it
            rises above the left column so the stream leads. -->
-        <MatchTwitchPovs
-          :match="match"
-          :streams="embeddableStreams"
-          v-slot="{ streams: liveEmbedStreams }"
-        >
-          <div
-            class="min-w-0 flex flex-col gap-4 md:gap-6"
-            :class="
-              showsLiveStreamBlock(liveEmbedStreams)
-                ? '-order-1 lg:order-none'
-                : ''
-            "
-          >
-            <PageTransition v-if="showsLiveStreamBlock(liveEmbedStreams)">
-              <div class="min-w-0 space-y-4">
-                <LiveStreamPlayer
-                  v-if="hasGameStreamer"
-                  :match-id="match.id"
-                  class="max-w-[1500px] w-full"
-                />
-                <StreamEmbed
-                  v-if="liveEmbedStreams.length > 0"
-                  :streams="liveEmbedStreams"
-                  :match-id="match.id"
-                  class="max-w-[1500px] w-full overflow-x-auto"
-                />
+            <MatchTwitchPovs
+              :match="match"
+              :streams="embeddableStreams"
+              v-slot="{ streams: liveEmbedStreams }"
+            >
+              <div
+                class="min-w-0 flex flex-col gap-4 md:gap-6"
+                :class="
+                  showsLiveStreamBlock(liveEmbedStreams)
+                    ? '-order-1 lg:order-none'
+                    : ''
+                "
+              >
+                <PageTransition v-if="showsLiveStreamBlock(liveEmbedStreams)">
+                  <div class="min-w-0 space-y-4">
+                    <LiveStreamPlayer
+                      v-if="hasGameStreamer"
+                      :match-id="match.id"
+                      class="max-w-[1500px] w-full"
+                    />
+                    <StreamEmbed
+                      v-if="liveEmbedStreams.length > 0"
+                      :streams="liveEmbedStreams"
+                      :match-id="match.id"
+                      class="max-w-[1500px] w-full overflow-x-auto"
+                    />
+                  </div>
+                </PageTransition>
+
+                <div class="min-w-0">
+                  <PageTransition :delay="100">
+                    <template
+                      v-if="
+                        regions.length === 0 &&
+                        match.options.region_veto &&
+                        !match.region
+                      "
+                    >
+                      <Alert
+                        variant="destructive"
+                        class="bg-red-600 text-white max-w-md mb-6"
+                      >
+                        <AlertTitle>{{
+                          $t("match.region_veto.no_regions_available")
+                        }}</AlertTitle>
+                        <AlertDescription>
+                          {{
+                            $t(
+                              "match.region_veto.no_regions_available_description",
+                            )
+                          }}
+                        </AlertDescription>
+                      </Alert>
+                    </template>
+                  </PageTransition>
+
+                  <PageTransition :delay="100">
+                    <MatchRegionVeto :match="match" class="pb-6" />
+                  </PageTransition>
+
+                  <PageTransition :delay="100">
+                    <MatchMapVeto
+                      :match="match"
+                      :boot-status="!bootInSlot"
+                      class="pb-6"
+                    />
+                  </PageTransition>
+
+                  <PageTransition :delay="200">
+                    <MatchTabs
+                      :match="match"
+                      :active-map="activeStatsMap"
+                      @clear-active-map="activeStatsMap = null"
+                      @select-map="activeStatsMap = $event"
+                    ></MatchTabs>
+                  </PageTransition>
+                </div>
               </div>
-            </PageTransition>
-
-            <div class="min-w-0">
-              <PageTransition :delay="100">
-                <template
-                  v-if="
-                    regions.length === 0 &&
-                    match.options.region_veto &&
-                    !match.region
-                  "
-                >
-                  <Alert
-                    variant="destructive"
-                    class="bg-red-600 text-white max-w-md mb-6"
-                  >
-                    <AlertTitle>{{
-                      $t("match.region_veto.no_regions_available")
-                    }}</AlertTitle>
-                    <AlertDescription>
-                      {{
-                        $t("match.region_veto.no_regions_available_description")
-                      }}
-                    </AlertDescription>
-                  </Alert>
-                </template>
-              </PageTransition>
-
-              <PageTransition :delay="100">
-                <MatchRegionVeto :match="match" class="pb-6" />
-              </PageTransition>
-
-              <PageTransition :delay="100">
-                <MatchMapVeto
-                  :match="match"
-                  :boot-status="!bootInSlot"
-                  class="pb-6"
-                />
-              </PageTransition>
-
-              <PageTransition :delay="200">
-                <MatchTabs
-                  :match="match"
-                  :active-map="activeStatsMap"
-                  @clear-active-map="activeStatsMap = null"
-                  @select-map="activeStatsMap = $event"
-                ></MatchTabs>
-              </PageTransition>
-            </div>
+            </MatchTwitchPovs>
           </div>
-        </MatchTwitchPovs>
+        </div>
+
+        <!-- Kept mounted while hidden: it is the Teleports' target. -->
+        <aside
+          v-show="chatRail"
+          :ref="setChatRailTarget"
+          class="sticky top-4 flex min-h-0 flex-col gap-4"
+        ></aside>
       </div>
 
       <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
@@ -628,6 +677,12 @@ function seedableMatch(data: Record<string, any>) {
   return !!data.matches_by_pk && !draftRoomFor(data.matches_by_pk);
 }
 
+// Page width at which the chat moves to its own rail. The rail takes 392px,
+// and below this the stats column would drop under ~780px.
+const CHAT_RAIL_MIN_WIDTH = 1600;
+// The rail's distance from the top and bottom of the scroller.
+const CHAT_RAIL_INSET = 16;
+
 export default {
   unmounted() {
     // An out-in page transition unmounts this page only after the next match
@@ -637,7 +692,25 @@ export default {
     }
     setPageChatFocus(null);
   },
+  mounted() {
+    const container = (this.$el as HTMLElement).parentElement;
+
+    if (!container || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    this.chatRailWidthObserver = markRaw(
+      new ResizeObserver(([entry]) => {
+        this.railFits = entry.contentRect.width >= CHAT_RAIL_MIN_WIDTH;
+      }),
+    );
+    this.chatRailWidthObserver.observe(container);
+  },
   beforeUnmount() {
+    this.chatRailWidthObserver?.disconnect();
+    this.chatRailWidthObserver = null;
+    this.stopChatRailSizing?.();
+    this.stopChatRailSizing = null;
     this.inlineChatObserver?.disconnect();
     this.inlineChatObserver = null;
     if (this.roleRefetchTimer) {
@@ -712,6 +785,16 @@ export default {
         void this.$nextTick(() => this.watchInlineChat());
       },
     },
+    // The chat only mounts once its Teleport has the rail to point at.
+    chatRailTarget() {
+      void this.$nextTick(() => {
+        this.watchInlineChat();
+        this.sizeChatRail();
+      });
+    },
+    chatRail() {
+      void this.$nextTick(() => this.sizeChatRail());
+    },
   },
   data() {
     return {
@@ -721,6 +804,10 @@ export default {
       cameraOverlayDismissed: false,
       inlineChatVisible: false,
       inlineChatObserver: null as IntersectionObserver | null,
+      railFits: false,
+      chatRailTarget: null as HTMLElement | null,
+      chatRailWidthObserver: null as ResizeObserver | null,
+      stopChatRailSizing: null as (() => void) | null,
       roleRefetchTimer: null as ReturnType<typeof setTimeout> | null,
     };
   },
@@ -1008,6 +1095,9 @@ export default {
     showsInlineChat() {
       return this.canJoinLobby || this.readsMatchChatOnly;
     },
+    chatRail() {
+      return this.railFits && this.showsInlineChat;
+    },
     hasGameStreamer() {
       return (this.match?.streams || []).some((s) => s.is_game_streamer);
     },
@@ -1126,6 +1216,61 @@ export default {
       );
 
       this.inlineChatObserver.observe(element);
+    },
+    setChatRailTarget(element: unknown) {
+      this.chatRailTarget = element instanceof HTMLElement ? element : null;
+    },
+    // The rail sticks at the top of the scroller, but until it gets there it
+    // starts lower (an alert banner, the camera nag), so its height follows
+    // where it is and the composer stays on screen.
+    sizeChatRail() {
+      this.stopChatRailSizing?.();
+      this.stopChatRailSizing = null;
+
+      const rail = this.chatRailTarget;
+
+      if (!this.chatRail || !rail || typeof ResizeObserver === "undefined") {
+        return;
+      }
+
+      let scroller = rail.parentElement;
+      while (
+        scroller &&
+        !/auto|scroll/.test(getComputedStyle(scroller).overflowY)
+      ) {
+        scroller = scroller.parentElement;
+      }
+
+      if (!scroller) {
+        return;
+      }
+
+      const view = scroller;
+      let frame = 0;
+      const size = () => {
+        frame = 0;
+        const top =
+          rail.getBoundingClientRect().top - view.getBoundingClientRect().top;
+        rail.style.height = `${
+          view.clientHeight - Math.max(CHAT_RAIL_INSET, top) - CHAT_RAIL_INSET
+        }px`;
+      };
+      const schedule = () => {
+        frame ||= requestAnimationFrame(size);
+      };
+      const observer = new ResizeObserver(schedule);
+
+      observer.observe(view);
+      observer.observe(this.$el as HTMLElement);
+      view.addEventListener("scroll", schedule, { passive: true });
+      size();
+
+      this.stopChatRailSizing = () => {
+        cancelAnimationFrame(frame);
+        observer.disconnect();
+        view.removeEventListener("scroll", schedule);
+        rail.style.height = "";
+      };
     },
   },
 };

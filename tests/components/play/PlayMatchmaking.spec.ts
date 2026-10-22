@@ -16,6 +16,7 @@ afterEach(() => {
   useAuthStore().me = undefined as any;
   useApplicationSettingsStore().settings = [];
   useMatchmakingStore().joinedMatchmakingQueues = {} as any;
+  useMatchmakingStore().lobbies = [] as any;
 });
 
 describe("PlayMatchmaking", () => {
@@ -66,6 +67,38 @@ describe("PlayMatchmaking", () => {
       .findAll("button")
       .find((button) => button.text().includes("Find Match"));
     expect(findMatch?.attributes("disabled")).toBeDefined();
+  });
+
+  it("opens the seat row once a solo player picks a mode", async () => {
+    useAuthStore().me = {
+      steam_id: "76561198000000001",
+      role: "user",
+    } as any;
+
+    const wrapper = await mountSuspended(PlayMatchmaking);
+
+    expect(wrapper.text()).not.toContain("Your side");
+    await wrapper.findAll('[role="radio"]')[0].trigger("click");
+    expect(wrapper.text()).toContain("Your side");
+  });
+
+  it("shows the seats right away in a lobby, even one of just you", async () => {
+    const me = { steam_id: "76561198000000001", role: "user" };
+    useAuthStore().me = me as any;
+    useMatchmakingStore().lobbies = [
+      {
+        id: "lobby-1",
+        access: "Invite",
+        players: [{ status: "Accepted", captain: true, player: me }],
+      },
+    ] as any;
+
+    const wrapper = await mountSuspended(PlayMatchmaking);
+
+    expect(wrapper.find('[role="radio"][aria-checked="true"]').exists()).toBe(
+      false,
+    );
+    expect(wrapper.text()).toContain("Your side");
   });
 
   it("picks the mode when it's the only one", async () => {

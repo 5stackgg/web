@@ -803,7 +803,7 @@ const linkClasses =
         class="px-[18px] pb-[18px] pt-3.5 max-sm:px-3.5 max-sm:pb-3.5 max-sm:pt-3"
       >
         <div
-          class="grid grid-cols-[200px_minmax(0,1fr)_auto] items-center gap-[22px] max-lg:grid-cols-[140px_minmax(0,1fr)] max-sm:grid-cols-1 max-sm:gap-3.5"
+          class="grid grid-cols-[200px_minmax(0,1fr)] items-center gap-[22px] max-lg:grid-cols-[140px_minmax(0,1fr)] max-sm:grid-cols-1 max-sm:gap-3.5"
         >
           <div
             v-if="searchType"
@@ -842,23 +842,6 @@ const linkClasses =
                 })
               }}
             </div>
-            <div class="text-[13px] text-foreground/80">
-              <template v-for="(name, index) in searchRegions" :key="name">
-                <span v-if="index" class="text-muted-foreground/55"> · </span
-                >{{ name }}
-              </template>
-              <span
-                v-if="searchRegions.length"
-                class="text-muted-foreground/55"
-              >
-                ·
-              </span>
-              {{
-                searchInQueue > 0
-                  ? $t("layouts.queue.in_queue", { count: searchInQueue })
-                  : $t("pages.play.matchmaking.first_in_line")
-              }}
-            </div>
             <div
               v-if="state === 'found'"
               class="mt-0.5 flex items-center gap-2 text-[13px] font-semibold text-[hsl(var(--tac-amber))]"
@@ -868,48 +851,74 @@ const linkClasses =
               ></span>
               {{ $t("pages.play.matchmaking.found") }}
             </div>
-            <div v-else class="text-[12.5px] text-muted-foreground">
+          </div>
+        </div>
+
+        <!-- The picker's footer, with Cancel where Find match was. -->
+        <div
+          class="mt-4 flex items-center justify-between gap-x-6 gap-y-3.5 border-t border-border/70 pt-4 max-sm:mt-3.5 max-sm:flex-col max-sm:items-stretch max-sm:pt-3"
+        >
+          <div
+            class="grid min-w-0 gap-[7px] text-[13px] text-foreground/90 max-sm:gap-1.5 max-sm:text-[12.5px]"
+          >
+            <div class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+              <Signal
+                class="size-3.5 shrink-0 self-center text-muted-foreground"
+              />
+              <template v-for="(name, index) in searchRegions" :key="name">
+                <span v-if="index" class="text-muted-foreground/55">·</span>
+                <b class="font-semibold">{{ name }}</b>
+              </template>
+              <span v-if="searchRegions.length" class="text-muted-foreground/55"
+                >·</span
+              >
+              <span>{{
+                searchInQueue > 0
+                  ? $t("layouts.queue.in_queue", { count: searchInQueue })
+                  : $t("pages.play.matchmaking.first_in_line")
+              }}</span>
+            </div>
+            <div class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+              <Users
+                class="size-3.5 shrink-0 self-center text-muted-foreground"
+              />
               <template v-if="isMember">
-                {{
+                <span>{{
                   $t("pages.play.matchmaking.party.member", {
                     name: leader?.name,
                     count: party,
                   })
-                }}
+                }}</span>
               </template>
               <template v-else-if="party > 1">
-                {{
+                <span>{{
                   $t("pages.play.matchmaking.party.leader", { count: party })
-                }}
-                · {{ $t("pages.play.matchmaking.party.you_lead") }}
+                }}</span>
+                <span class="text-muted-foreground/55">·</span>
+                <span>{{ $t("pages.play.matchmaking.party.you_lead") }}</span>
               </template>
-              <template v-else>
-                {{ $t("pages.play.matchmaking.party.solo") }}
-              </template>
+              <span v-else>{{ $t("pages.play.matchmaking.party.solo") }}</span>
             </div>
           </div>
 
-          <div
-            v-if="state === 'searching'"
-            class="flex items-center gap-2.5 max-lg:col-span-full"
-          >
+          <template v-if="state === 'searching'">
             <Button
               v-if="canControl"
               variant="outline"
-              class="relative h-8 gap-1.5 after:absolute after:-inset-y-1.5 after:inset-x-0 after:content-[''] [@media(pointer:fine)]:after:hidden"
+              class="h-11 min-w-[188px] shrink-0 gap-2 px-[22px] text-[15px] font-semibold"
               @click="leave"
             >
               <X class="size-4" />
               {{ $t("pages.play.matchmaking.cancel") }}
             </Button>
-            <span v-else class="text-[12.5px] text-muted-foreground">
+            <span v-else class="shrink-0 text-[12.5px] text-muted-foreground">
               {{
                 $t("pages.play.matchmaking.leader_cancels", {
                   name: leader?.name,
                 })
               }}
             </span>
-          </div>
+          </template>
         </div>
       </div>
 

@@ -1,8 +1,9 @@
 import { computed } from "vue";
 import type { Component, MaybeRefOrGetter } from "vue";
 import { toValue } from "vue";
-import { Gamepad2, Swords, Users } from "lucide-vue-next";
+import { Gamepad2, Swords, Target, Users } from "lucide-vue-next";
 import { isInCs2 } from "~/utilities/cs2Presence";
+import cleanMapName from "~/utilities/cleanMapName";
 import mapLabel from "~/utilities/mapLabel";
 
 export type FriendStatusKey =
@@ -11,6 +12,7 @@ export type FriendStatusKey =
   | "in_lobby"
   | "in_draft"
   | "in_match"
+  | "in_practice"
   // Playing CS2 outside 5stack (from Steam rich presence via the friend bot).
   | "in_cs2";
 
@@ -20,6 +22,7 @@ const DOT_CLASS: Record<FriendStatusKey, string> = {
   in_lobby: "bg-sky-500",
   in_draft: "bg-[hsl(var(--tac-amber))]",
   in_match: "bg-red-500",
+  in_practice: "bg-[hsl(var(--tac-amber))]",
   in_cs2: "bg-green-500",
 };
 
@@ -27,6 +30,7 @@ const ICON: Partial<Record<FriendStatusKey, Component>> = {
   in_lobby: Users,
   in_draft: Swords,
   in_match: Gamepad2,
+  in_practice: Target,
   // in_cs2 intentionally has no icon — rendered via <Cs2PresenceStatus>.
 };
 
@@ -36,6 +40,7 @@ const LABEL_KEY: Record<FriendStatusKey, string> = {
   in_lobby: "matchmaking.friends.in_lobby",
   in_draft: "matchmaking.friends.in_draft",
   in_match: "matchmaking.friends.in_match",
+  in_practice: "matchmaking.friends.in_practice",
   in_cs2: "matchmaking.friends.playing_cs2",
 };
 
@@ -92,13 +97,41 @@ export function useFriendStatus(
     };
   });
 
+  // The host's own server only: whether a friend may join is the host's
+  // access setting, and my_friends carries pending requests too.
+  const hostedPractice = computed(() => {
+    const row = toValue(player);
+    if (row?.status !== "Accepted") {
+      return null;
+    }
+    const session = row?.player?.hosted_practice_sessions?.[0];
+    if (!session?.invite_code || !session?.map_name) {
+      return null;
+    }
+    const code = encodeURIComponent(session.invite_code);
+    return {
+      mapName: cleanMapName(session.map_name),
+      path: `/utility/${session.map_name}?practice=${code}`,
+      full: session.is_full === true,
+      seated: session.seated_players ?? 0,
+      max: session.max_players ?? null,
+    };
+  });
+
   const statusKey = computed<FriendStatusKey>(() => {
     const p = toValue(player)?.player;
     // A live 5stack match is our own data — it wins over Steam rich presence.
     if (currentMatch.value) return "in_match";
-    if (toValue(online)) {
-      if (p?.is_in_draft) return "in_draft";
-      if (p?.is_in_lobby) return "in_lobby";
+    if (toValue(online) && p?.is_in_draft) {
+      return "in_draft";
+    }
+    // Ahead of a lobby, which offers nothing to join, and of CS2, which is
+    // where a host on their own server is playing.
+    if (hostedPractice.value) {
+      return "in_practice";
+    }
+    if (toValue(online) && p?.is_in_lobby) {
+      return "in_lobby";
     }
     if (inCs2.value) return "in_cs2";
     if (toValue(online)) return "available";
@@ -108,6 +141,11 @@ export function useFriendStatus(
   const dotClass = computed(() => DOT_CLASS[statusKey.value]);
   const statusIcon = computed(() => ICON[statusKey.value] ?? null);
   const statusLabelKey = computed(() => LABEL_KEY[statusKey.value]);
+  const statusLabelParams = computed(() =>
+    statusKey.value === "in_practice" && hostedPractice.value
+      ? { map: hostedPractice.value.mapName }
+      : {},
+  );
 
   const joinableDraft = computed(() => {
     if (statusKey.value !== "in_draft") return null;
@@ -127,7 +165,9 @@ export function useFriendStatus(
     dotClass,
     statusIcon,
     statusLabelKey,
+    statusLabelParams,
     joinableDraft,
+    hostedPractice,
     currentMatch,
   };
 }

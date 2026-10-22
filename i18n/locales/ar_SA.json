@@ -12089,6 +12089,8 @@
       "in_lobby": "في لوبي",
       "in_draft": "في لوبي اختيار اللاعبين",
       "playing_cs2": "يلعب Counter-Strike 2",
+      "in_practice": "في التدريب · {map}",
+      "practice_full": "ممتلئ · {seated}/{max}",
       "available": "متاح",
       "join": "انضم",
       "live": "مباشر",

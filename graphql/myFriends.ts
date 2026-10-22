@@ -3,6 +3,8 @@ import {
   e_draft_game_status_enum,
   e_lobby_access_enum,
   e_match_status_enum,
+  e_utility_practice_access_enum,
+  e_utility_practice_statuses_enum,
   order_by,
 } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -140,6 +142,30 @@ export const MY_FRIENDS_SUBSCRIPTION = generateSubscription({
                 },
               ],
             },
+          },
+        ],
+        hosted_practice_sessions: [
+          {
+            where: {
+              status: { _eq: e_utility_practice_statuses_enum.Ready },
+              access: {
+                _in: [
+                  e_utility_practice_access_enum.Open,
+                  e_utility_practice_access_enum.Friends,
+                ],
+              },
+            },
+            limit: 1,
+          },
+          {
+            id: true,
+            map_name: true,
+            access: true,
+            status: true,
+            invite_code: true,
+            seated_players: true,
+            max_players: true,
+            is_full: true,
           },
         ],
       },

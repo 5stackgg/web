@@ -12089,6 +12089,8 @@
       "in_lobby": "I en lobby",
       "in_draft": "I draft-lobby",
       "playing_cs2": "Spiller Counter-Strike 2",
+      "in_practice": "I træning · {map}",
+      "practice_full": "Fuld · {seated}/{max}",
       "available": "Ledig",
       "join": "Join",
       "live": "Live",

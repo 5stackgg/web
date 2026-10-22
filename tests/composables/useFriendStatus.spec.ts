@@ -104,4 +104,60 @@ describe("useFriendStatus", () => {
       "offline",
     );
   });
+
+  describe("a practice server the friend hosts", () => {
+    const hosting = (status: string, session: Record<string, any> = {}) => ({
+      ...friendIn(null, {
+        hosted_practice_sessions: [
+          {
+            id: "s-1",
+            map_name: "de_ancient",
+            access: "Open",
+            status: "Ready",
+            invite_code: "c0de",
+            seated_players: 2,
+            max_players: 10,
+            is_full: false,
+            ...session,
+          },
+        ],
+      }),
+      status,
+    });
+
+    it("is offered with the invite link's path, even while the friend is offline", () => {
+      const { statusKey, statusLabelParams, hostedPractice } = useFriendStatus(
+        hosting("Accepted"),
+        false,
+      );
+
+      expect(statusKey.value).toBe("in_practice");
+      expect(statusLabelParams.value).toEqual({ map: "Ancient" });
+      expect(hostedPractice.value).toMatchObject({
+        path: "/utility/de_ancient?practice=c0de",
+        full: false,
+        seated: 2,
+        max: 10,
+      });
+    });
+
+    it("reads full from the api", () => {
+      const { hostedPractice } = useFriendStatus(
+        hosting("Accepted", { seated_players: 10, is_full: true }),
+        true,
+      );
+
+      expect(hostedPractice.value).toMatchObject({ full: true, seated: 10 });
+    });
+
+    it("is never offered on a pending request", () => {
+      const { statusKey, hostedPractice } = useFriendStatus(
+        hosting("Pending"),
+        true,
+      );
+
+      expect(hostedPractice.value).toBeNull();
+      expect(statusKey.value).toBe("available");
+    });
+  });
 });

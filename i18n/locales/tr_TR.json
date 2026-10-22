@@ -12089,6 +12089,8 @@
       "in_lobby": "Lobide",
       "in_draft": "Seçim lobisinde",
       "playing_cs2": "Counter-Strike 2 oynuyor",
+      "in_practice": "Antrenmanda · {map}",
+      "practice_full": "Dolu · {seated}/{max}",
       "available": "Müsait",
       "join": "Katıl",
       "live": "Canlı",

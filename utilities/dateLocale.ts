@@ -22,7 +22,7 @@ function uiLocale(): string | undefined {
 
 // The user's content language, not Intl's default: Firefox resolves the
 // default to its own UI language, whatever the user asked pages to use.
-function browserLanguage(): string | null {
+export function browserLanguage(): string | null {
   if (typeof navigator === "undefined") {
     return null;
   }

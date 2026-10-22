@@ -23,7 +23,7 @@ function findCode(codes: readonly string[], tag: string) {
 // Browsers send a region (zh-TW, zh-HK), never the script our Chinese locales
 // are named by; maximize() supplies the script that region writes in.
 export function matchBrowserLocale(
-  tag: string | undefined,
+  tag: string | null | undefined,
   codes: readonly string[],
 ): string | undefined {
   if (!tag) {
@@ -44,19 +44,19 @@ export function matchBrowserLocale(
   );
 }
 
-// Only the browser's first language counts. The rest of the list is usually
+// Only the browser's first language counts. The rest of its list is usually
 // English added as a fallback, which would beat the site default for nearly
 // every visitor.
 export function resolveLocale(
   codes: readonly string[],
-  browserTags: readonly string[],
+  browserLanguage: string | null,
   picked: string | null,
   siteDefault?: string | null,
 ): string {
   if (picked && codes.includes(picked)) {
     return picked;
   }
-  const browser = matchBrowserLocale(browserTags[0], codes);
+  const browser = matchBrowserLocale(browserLanguage, codes);
   if (browser) {
     return browser;
   }

@@ -1,4 +1,12 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { effectScope, type EffectScope } from "vue";
 import localePlugin from "~/plugins/locale.client";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -48,6 +56,13 @@ async function boot() {
     scope.run(() => mounted!());
   };
 }
+
+// A first load of a language takes far longer than a switch. The tests that
+// check a switch to ja never happens would pass on that delay alone.
+beforeAll(async () => {
+  await app().$i18n.setLocale("ja");
+  await app().$i18n.setLocale("en");
+});
 
 // The app booted its own copy of this plugin, and its watcher answers every
 // change to the store too. Each test starts after it has settled.
@@ -114,6 +129,15 @@ describe("the language a visitor first sees", () => {
     expect(locale()).toBe("zh-Hant");
   });
 
+  it("is the browser's language when it reports navigator.language alone", async () => {
+    setBrowserLanguages([], "de-DE");
+    localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(siteDefault("pt")));
+
+    await boot();
+
+    expect(locale()).toBe("de");
+  });
+
   it("is English with no site default and no browser language we have", async () => {
     setBrowserLanguages(NON_ENGLISH_CHROME);
 
@@ -137,7 +161,7 @@ describe("a change to the site default", () => {
   it("is applied when the settings arrive before the page mounts", async () => {
     setBrowserLanguages(NON_ENGLISH_CHROME);
     useApplicationSettingsStore().settings = siteDefault("ja");
-    await settle();
+    await vi.waitFor(() => expect(locale()).toBe("ja"));
 
     const mount = await boot();
     expect(locale()).toBe("en");

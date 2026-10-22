@@ -3,6 +3,7 @@ import {
   cachedSetting,
   useApplicationSettingsStore,
 } from "~/stores/ApplicationSettings";
+import { browserLanguage } from "~/utilities/dateLocale";
 import {
   LEGACY_LOCALE_COOKIE,
   legacyPickedLocale,
@@ -29,7 +30,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const resolve = (siteDefault?: string | null) =>
     resolveLocale(
       i18n.localeCodes.value,
-      navigator.languages,
+      browserLanguage(),
       readPickedLocale(),
       siteDefault,
     ) as typeof i18n.locale.value;

@@ -87,11 +87,14 @@ const days = computed(() => {
   <section class="grid gap-2">
     <div class="flex items-center justify-between gap-3">
       <h3 class="text-sm font-semibold">{{ $t("scrims.week.title") }}</h3>
-      <ScrollArrows
-        :can-left="scrollRow?.state.canScrollLeft"
-        :can-right="scrollRow?.state.canScrollRight"
-        @scroll="(direction) => scrollRow?.scrollByDirection(direction)"
-      />
+      <div class="flex items-center gap-3">
+        <slot name="actions" />
+        <ScrollArrows
+          :can-left="scrollRow?.state.canScrollLeft"
+          :can-right="scrollRow?.state.canScrollRight"
+          @scroll="(direction) => scrollRow?.scrollByDirection(direction)"
+        />
+      </div>
     </div>
     <HorizontalScrollRow ref="scrollRow">
       <div

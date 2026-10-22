@@ -67,14 +67,13 @@ function theirLineup(match: any) {
 
 <template>
   <div class="grid gap-6">
-    <div class="flex flex-wrap items-center gap-3">
-      <p class="min-w-[14rem] flex-1 text-sm text-muted-foreground">
-        {{ $t("scrims.requests.intro") }}
-      </p>
-      <TeamCalendarButton :team-id="team.id" quiet />
-    </div>
+    <p class="text-sm text-muted-foreground">{{ $t("scrims.requests.intro") }}</p>
 
-    <ScrimWeek :team="team" :requests="requests" :now="now" @focus="focusRequest" />
+    <ScrimWeek :team="team" :requests="requests" :now="now" @focus="focusRequest">
+      <template #actions>
+        <TeamCalendarButton :team-id="team.id" quiet />
+      </template>
+    </ScrimWeek>
 
     <div class="flex flex-wrap items-start gap-6">
       <div class="grid min-w-0 flex-[999_1_34rem] gap-6">

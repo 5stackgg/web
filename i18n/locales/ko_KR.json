@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "실행 중인 연습 서버",
         "empty": "실행 중인 연습 서버가 없습니다.",
+        "failed": "실행 중인 연습 서버를 불러오지 못했습니다.",
         "ready": "준비됨",
         "players": "{max}명 중 {connected}명 접속 중",
         "stop": "중지",

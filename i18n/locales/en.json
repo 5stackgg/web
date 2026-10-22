@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Running practice servers",
         "empty": "No practice servers are running.",
+        "failed": "Could not load the running practice servers.",
         "ready": "Ready",
         "players": "{connected} of {max} players connected",
         "stop": "Stop",

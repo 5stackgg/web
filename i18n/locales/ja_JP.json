@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "稼働中の練習サーバー",
         "empty": "稼働中の練習サーバーはありません。",
+        "failed": "稼働中の練習サーバーを読み込めませんでした。",
         "ready": "準備完了",
         "players": "{max} 人中 {connected} 人が接続中",
         "stop": "停止",

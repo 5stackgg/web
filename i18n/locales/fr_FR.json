@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Serveurs d'entraînement en cours",
         "empty": "Aucun serveur d'entraînement n'est en cours.",
+        "failed": "Impossible de charger les serveurs d'entraînement en cours.",
         "ready": "Prêt",
         "players": "{connected} joueurs connectés sur {max}",
         "stop": "Arrêter",

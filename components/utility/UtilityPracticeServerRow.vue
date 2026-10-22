@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
-import { onClickOutside } from "@vueuse/core";
+import { onClickOutside, useEventListener } from "@vueuse/core";
 import { Users } from "lucide-vue-next";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -24,6 +24,7 @@ const { t } = useI18n();
 const apiDomain = useRuntimeConfig().public.apiDomain as string;
 
 const root = ref<HTMLElement | null>(null);
+const promptId = useId();
 const confirming = ref(false);
 const stopping = ref(false);
 const failure = ref<string | null>(null);
@@ -63,25 +64,58 @@ const state = computed(() => {
 
 const canStop = computed(() => props.session.can_stop === true);
 
-function ask() {
-  failure.value = null;
-  confirming.value = true;
+function focusIn(selector: string) {
+  root.value?.querySelector<HTMLElement>(selector)?.focus();
 }
 
-function cancel() {
+async function ask() {
+  failure.value = null;
+  confirming.value = true;
+
+  await nextTick();
+  focusIn("[data-practice-server-cancel]");
+}
+
+async function cancel(restoreFocus: boolean) {
   if (stopping.value) {
     return;
   }
 
   confirming.value = false;
   failure.value = null;
+
+  if (restoreFocus) {
+    await nextTick();
+    focusIn("[data-practice-server-stop]");
+  }
 }
 
 onClickOutside(root, () => {
   if (confirming.value) {
-    cancel();
+    void cancel(false);
   }
 });
+
+// Captured on the window: the Stop button that had focus is gone by now, so
+// a focus that fell to the page would otherwise hand Escape to the hub.
+useEventListener(
+  "keydown",
+  (event: KeyboardEvent) => {
+    if (event.key !== "Escape" || !confirming.value) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const focused = document.activeElement;
+    void cancel(
+      !focused ||
+        focused === document.body ||
+        !!root.value?.contains(focused),
+    );
+  },
+  { capture: true },
+);
 
 async function stop() {
   stopping.value = true;
@@ -109,7 +143,6 @@ async function stop() {
         ? 'border-destructive/50 bg-destructive/[0.06]'
         : 'border-border/70 bg-card/50'
     "
-    @keydown.esc="cancel()"
   >
     <div class="flex items-center gap-2.5">
       <NuxtLink
@@ -172,6 +205,7 @@ async function stop() {
         <Button
           v-if="!confirming"
           key="stop"
+          data-practice-server-stop
           variant="outline"
           size="sm"
           class="h-7 shrink-0 text-destructive hover:text-destructive"
@@ -184,9 +218,11 @@ async function stop() {
 
     <Fold :open="confirming && canStop">
       <div
+        role="group"
+        :aria-labelledby="promptId"
         class="mt-2 flex flex-wrap items-center gap-2 border-t border-border/60 pt-2"
       >
-        <HeightSwap class="min-w-0 flex-1">
+        <HeightSwap :id="promptId" aria-live="polite" class="min-w-0 flex-1">
           <span
             v-if="failure !== null"
             key="failure"
@@ -215,11 +251,12 @@ async function stop() {
           </span>
         </HeightSwap>
         <Button
+          data-practice-server-cancel
           variant="outline"
           size="sm"
           class="h-7"
           :disabled="stopping"
-          @click="cancel()"
+          @click="cancel(true)"
         >
           {{ $t("common.cancel") }}
         </Button>

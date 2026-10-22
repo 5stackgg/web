@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Kørende træningsservere",
         "empty": "Ingen træningsservere kører.",
+        "failed": "Kunne ikke indlæse de kørende træningsservere.",
         "ready": "Klar",
         "players": "{connected} af {max} spillere forbundet",
         "stop": "Stop",

@@ -29,6 +29,7 @@ const subscriptions: Array<{
 }> = [];
 const sent: Array<{ field: string; variables: unknown }> = [];
 let failStop: Error | null = null;
+let unsubscribed = 0;
 
 function fieldOf(document: any) {
   return document?.definitions?.[0]?.selectionSet?.selections?.[0]?.name
@@ -40,7 +41,11 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
     subscribe: ({ query, variables }: any) => ({
       subscribe: ({ next, error }: any) => {
         subscriptions.push({ field: fieldOf(query), variables, next, error });
-        return { unsubscribe() {} };
+        return {
+          unsubscribe() {
+            unsubscribed++;
+          },
+        };
       },
     }),
     mutate: async ({ mutation, variables }: any) => {
@@ -77,6 +82,7 @@ beforeEach(() => {
   subscriptions.length = 0;
   sent.length = 0;
   failStop = null;
+  unsubscribed = 0;
   auth.staff = true;
 });
 
@@ -133,6 +139,35 @@ describe("UtilityPracticeServersPanel for staff", () => {
     expect(subscriptions[0].variables).toEqual({
       statuses: ["Starting", "Ready"],
     });
+  });
+
+  it("lets go of the subscription when the viewer stops being staff", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+    expect(unsubscribed).toBe(0);
+
+    auth.staff = false;
+    await settle();
+
+    expect(unsubscribed).toBe(1);
+    expect(wrapper.text()).not.toContain("Running practice servers");
+
+    auth.staff = true;
+    await settle();
+
+    expect(subscriptions).toHaveLength(2);
+    expect(wrapper.findAll("[data-practice-server-skeleton]")).toHaveLength(3);
+    expect(rows(wrapper)).toHaveLength(0);
+  });
+
+  it("lets go of the subscription when it unmounts", async () => {
+    const wrapper = await mountPanel();
+
+    wrapper.unmount();
+    mounted.splice(mounted.indexOf(wrapper), 1);
+
+    expect(unsubscribed).toBe(1);
   });
 
   it("holds grey rows until the first answer", async () => {
@@ -295,7 +330,178 @@ describe("UtilityPracticeServersPanel stop", () => {
   });
 });
 
+describe("UtilityPracticeServersPanel spacing", () => {
+  it("keeps the gap under the last row inside every state, so the swap lands where it rests", async () => {
+    const wrapper = await mountPanel();
+    const shell = wrapper.find("[data-practice-servers-body]");
+
+    expect(shell.classes()).toContain("-mb-2");
+    expect(
+      wrapper.find("[data-practice-server-skeleton]").element.parentElement!
+        .classList,
+    ).toContain("pb-2");
+
+    push([serverRow()]);
+    await settle(300);
+
+    const list = wrapper.find("[data-practice-servers-list]");
+    expect(list.classes()).not.toContain("-mb-2");
+    expect(list.find("li > div").classes()).toContain("pb-2");
+  });
+});
+
+describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
+  const cancelButton = (wrapper: any) =>
+    buttonNamed(rows(wrapper)[0], "Cancel");
+
+  it("moves focus into the confirm and labels it with the prompt", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    const stop = buttonNamed(rows(wrapper)[0], "Stop");
+    (stop.element as HTMLElement).focus();
+    await stop.trigger("click");
+    await settle(300);
+
+    expect(document.activeElement).toBe(cancelButton(wrapper).element);
+
+    const group = rows(wrapper)[0].find("[role='group']");
+    const label = document.getElementById(
+      group.attributes("aria-labelledby")!,
+    );
+    expect(label?.textContent).toContain("Stop kairo's server?");
+    expect(label?.textContent).toContain("The 3 players on it are dropped.");
+  });
+
+  it("cancels on Escape, puts focus back on Stop, and keeps the key from the hub", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await settle(300);
+
+    const seen: boolean[] = [];
+    const hub = (event: KeyboardEvent) => seen.push(event.defaultPrevented);
+    document.addEventListener("keydown", hub);
+
+    document.activeElement!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await settle(300);
+    document.removeEventListener("keydown", hub);
+
+    expect(rows(wrapper)[0].text()).not.toContain("Stop kairo's server?");
+    expect(document.activeElement).toBe(
+      buttonNamed(rows(wrapper)[0], "Stop").element,
+    );
+    expect(seen).toEqual([true]);
+    expect(sent).toEqual([]);
+  });
+
+  it("still cancels on Escape when focus has fallen to the page", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await settle(300);
+    (document.activeElement as HTMLElement).blur();
+    expect(document.activeElement).toBe(document.body);
+
+    const seen: boolean[] = [];
+    const hub = (event: KeyboardEvent) => seen.push(event.defaultPrevented);
+    document.addEventListener("keydown", hub);
+
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    await settle(300);
+    document.removeEventListener("keydown", hub);
+
+    expect(rows(wrapper)[0].text()).not.toContain("Stop kairo's server?");
+    expect(seen).toEqual([true]);
+  });
+
+  it("puts focus back on Stop after Cancel", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await settle(300);
+    await cancelButton(wrapper).trigger("click");
+    await settle(300);
+
+    expect(document.activeElement).toBe(
+      buttonNamed(rows(wrapper)[0], "Stop").element,
+    );
+  });
+
+  it("leaves Escape alone when nothing is being confirmed", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    const seen: boolean[] = [];
+    const hub = (event: KeyboardEvent) => seen.push(event.defaultPrevented);
+    document.addEventListener("keydown", hub);
+
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "Escape",
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+    document.removeEventListener("keydown", hub);
+
+    expect(seen).toEqual([false]);
+    expect(buttonNamed(rows(wrapper)[0], "Stop")).toBeTruthy();
+  });
+
+  it("announces a failed stop", async () => {
+    failStop = new Error("not allowed");
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await settle(300);
+    await buttonNamed(rows(wrapper)[0], "Stop Server").trigger("click");
+    await settle(300);
+
+    const live = rows(wrapper)[0].find("[aria-live='polite']");
+    expect(live.text()).toContain("Could not stop the practice server");
+  });
+});
+
 describe("UtilityPracticeServersPanel when live updates stop", () => {
+  it("says the list could not be loaded when the first answer is an error", async () => {
+    const wrapper = await mountPanel();
+
+    subscriptions.at(-1)!.error(new Error("socket closed"));
+    await settle(300);
+
+    expect(wrapper.text()).not.toContain("No practice servers are running.");
+    expect(wrapper.text()).toContain(
+      "Could not load the running practice servers.",
+    );
+    expect(
+      wrapper.find("[aria-label^='Live updates stopped']").exists(),
+    ).toBe(true);
+    expect(wrapper.findAll("[data-practice-server-skeleton]")).toHaveLength(0);
+  });
+
   it("keeps the last rows, dimmed, behind an amber warning", async () => {
     const wrapper = await mountPanel();
     push([serverRow()]);

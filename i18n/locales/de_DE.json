@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Laufende Übungsserver",
         "empty": "Es laufen keine Übungsserver.",
+        "failed": "Die laufenden Übungsserver konnten nicht geladen werden.",
         "ready": "Bereit",
         "players": "{connected} von {max} Spielern verbunden",
         "stop": "Stoppen",

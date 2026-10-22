@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Działające serwery treningowe",
         "empty": "Żaden serwer treningowy nie działa.",
+        "failed": "Nie udało się wczytać działających serwerów treningowych.",
         "ready": "Gotowy",
         "players": "Połączeni gracze: {connected} z {max}",
         "stop": "Zatrzymaj",

@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Servidores de práctica activos",
         "empty": "No hay servidores de práctica activos.",
+        "failed": "No se pudieron cargar los servidores de práctica activos.",
         "ready": "Listo",
         "players": "{connected} de {max} jugadores conectados",
         "stop": "Detener",

@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Servidores de treino ativos",
         "empty": "Nenhum servidor de treino está ativo.",
+        "failed": "Não foi possível carregar os servidores de treino ativos.",
         "ready": "Pronto",
         "players": "{connected} de {max} jogadores conectados",
         "stop": "Parar",

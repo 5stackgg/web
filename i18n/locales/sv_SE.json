@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Träningsservrar som körs",
         "empty": "Inga träningsservrar körs.",
+        "failed": "Det gick inte att läsa in träningsservrarna som körs.",
         "ready": "Redo",
         "players": "{connected} av {max} spelare anslutna",
         "stop": "Stoppa",

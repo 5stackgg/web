@@ -24,6 +24,7 @@ const isStaff = computed(
 
 const sessions = shallowRef<UtilityRunningPracticeSession[]>([]);
 const loading = ref(true);
+const heard = ref(false);
 const stale = ref(false);
 
 let subscription: { unsubscribe: () => void } | null = null;
@@ -43,6 +44,7 @@ function listen() {
       next: ({ data }: any) => {
         sessions.value = data?.utility_practice_sessions ?? [];
         loading.value = false;
+        heard.value = true;
         stale.value = false;
       },
       error: (error: unknown) => {
@@ -74,6 +76,7 @@ watch(
       stopListening();
       sessions.value = [];
       loading.value = true;
+      heard.value = false;
       stale.value = false;
     }
   },
@@ -118,7 +121,7 @@ const rowLeave =
       </h2>
       <Transition v-bind="badgePopTransition">
         <span
-          v-if="!loading"
+          v-if="heard"
           class="font-mono text-[0.7rem] tabular-nums text-muted-foreground"
         >
           <AnimatedStat :value="sessions.length" />
@@ -139,8 +142,11 @@ const rowLeave =
       </Transition>
     </header>
 
-    <HeightSwap>
-      <ul v-if="loading" key="loading" class="flex flex-col gap-2">
+    <!-- Every state carries the 8px under its last row itself, and the shell
+         takes it back: a negative margin on the list alone only lands once
+         the swap lets go of the height, and the card jumps by it. -->
+    <HeightSwap data-practice-servers-body class="-mb-2">
+      <ul v-if="loading" key="loading" class="flex flex-col gap-2 pb-2">
         <li
           v-for="n of 3"
           :key="n"
@@ -151,9 +157,17 @@ const rowLeave =
       </ul>
 
       <p
+        v-else-if="!heard"
+        key="failed"
+        class="pb-2 text-xs text-muted-foreground"
+      >
+        {{ $t("pages.utility.practice_servers.failed") }}
+      </p>
+
+      <p
         v-else-if="!sessions.length"
         key="empty"
-        class="text-xs text-muted-foreground"
+        class="pb-2 text-xs text-muted-foreground"
       >
         {{ $t("pages.utility.practice_servers.empty") }}
       </p>
@@ -163,7 +177,7 @@ const rowLeave =
         key="list"
         tag="ul"
         data-practice-servers-list
-        class="-mb-2 flex flex-col transition-opacity duration-200 motion-reduce:transition-none"
+        class="flex flex-col transition-opacity duration-200 motion-reduce:transition-none"
         :class="stale ? 'opacity-60' : ''"
         :enter-active-class="rowEnter"
         :leave-active-class="rowLeave"

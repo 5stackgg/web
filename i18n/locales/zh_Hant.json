@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "運行中的練習伺服器",
         "empty": "沒有運行中的練習伺服器。",
+        "failed": "無法載入運行中的練習伺服器。",
         "ready": "就緒",
         "players": "已連線 {connected}/{max} 名玩家",
         "stop": "停止",

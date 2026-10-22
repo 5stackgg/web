@@ -6875,6 +6875,7 @@
       "practice_servers": {
         "title": "Çalışan antrenman sunucuları",
         "empty": "Çalışan antrenman sunucusu yok.",
+        "failed": "Çalışan antrenman sunucuları yüklenemedi.",
         "ready": "Hazır",
         "players": "{max} oyuncudan {connected} tanesi bağlı",
         "stop": "Durdur",

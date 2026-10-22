@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/popover";
 import { useI18n } from "vue-i18n";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { savePickedLocale } from "~/utilities/locale";
 const { locale, locales, setLocale } = useI18n();
 
 const availableLocales = computed(() => {
@@ -45,6 +46,7 @@ const handleLocaleChange = (
     | "pt-BR"
     | "zh",
 ) => {
+  savePickedLocale(newLocale);
   setLocale(newLocale);
 };
 </script>

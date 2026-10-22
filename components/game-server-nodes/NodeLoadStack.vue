@@ -17,16 +17,18 @@ import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 import { TONE_TEXT } from "~/components/admin/tone";
 
 type LoadTone = "ok" | "warn" | "bad";
-type LineKey = "cpu" | "memory" | "disk";
+type LineKey = "cpu" | "memory" | "gpu" | "disk";
 
-// CPU, memory and disk as compact lines (label, meter, value). Each meter
-// wears its metric's chart colour; warn tints the value, critical turns the
-// meter red. Off `live`, only the disk
+// CPU, memory, GPU (on a node with one) and disk as compact lines (label,
+// meter, value). Each meter wears its metric's chart colour; warn tints the
+// value, critical turns the meter red. Off `live`, only the disk
 // shows. A `<key>-tip` slot puts a tooltip on that line; the disk has one.
 const props = withDefaults(
   defineProps<{
     cpu?: number | null;
     memory?: number | null;
+    hasGpu?: boolean;
+    gpu?: number | null;
     disk?: DiskSize | null;
     diskThresholds?: DiskThresholds;
     live?: boolean;
@@ -38,6 +40,8 @@ const props = withDefaults(
   {
     cpu: null,
     memory: null,
+    hasGpu: false,
+    gpu: null,
     disk: null,
     diskThresholds: () => DEFAULT_DISK_THRESHOLDS,
     live: true,
@@ -59,7 +63,7 @@ const decimals = (value: number | null) =>
 const lines = computed(() => {
   const out: Array<{
     key: LineKey;
-    metric: "cpu" | "mem" | "disk";
+    metric: "cpu" | "mem" | "gpu" | "disk";
     label: string;
     value: number | null;
     decimals: number;
@@ -84,6 +88,16 @@ const lines = computed(() => {
         tone: props.memoryTone ?? loadTone(props.memory),
       },
     );
+    if (props.hasGpu) {
+      out.push({
+        key: "gpu",
+        metric: "gpu",
+        label: "GPU",
+        value: props.gpu,
+        decimals: decimals(props.gpu),
+        tone: loadTone(props.gpu),
+      });
+    }
   }
   if (props.disk) {
     out.push({

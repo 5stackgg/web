@@ -389,8 +389,8 @@ const inspecting = computed(() => isMulti.value || !!pickedNode.value);
 const docked = computed(() => tier.value !== "sheet" && inspecting.value);
 const sheetOpen = computed(() => tier.value === "sheet" && inspecting.value);
 
-// CPU and memory for every row that shows load; the inspected node gets the
-// full set (disks, network, GPUs) for its Live section.
+// CPU, memory and GPU load for every row that shows load; the inspected node
+// gets the full set (disks, network, GPUs) for its Live section.
 const polls = computed(() => {
   const inspected =
     !isMulti.value && pickedNode.value?.status !== "Setup"
@@ -404,7 +404,11 @@ const polls = computed(() => {
   if (inspected && !ids.includes(inspected)) {
     ids.push(inspected);
   }
-  return ids.map((id) => ({ id, full: id === inspected }));
+  return ids.map((id) => ({
+    id,
+    full: id === inspected,
+    gpu: !!nodes.value.find((node) => node.id === id)?.gpu,
+  }));
 });
 
 function pick(
@@ -725,6 +729,7 @@ onBeforeUnmount(() => stopTier?.());
     :key="`${poll.id}:${poll.full ? 'full' : 'slim'}`"
     :node-id="poll.id"
     :full="poll.full"
+    :gpu="poll.gpu"
     @stats="onStats"
   />
 

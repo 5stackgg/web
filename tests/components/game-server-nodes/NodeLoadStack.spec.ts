@@ -88,6 +88,33 @@ describe("NodeLoadStack", () => {
     expect(empty.text()).toBe("—");
   });
 
+  it("shows a GPU line only for a live node with a GPU", async () => {
+    const withGpu = await mountStack({
+      cpu: 20,
+      memory: 30,
+      hasGpu: true,
+      gpu: 90,
+      disk: disk(40),
+    });
+    expect(line(withGpu, "gpu").metric).toBe("gpu");
+    expect(line(withGpu, "gpu").tone).toBe("bad");
+    expect(line(withGpu, "gpu").value.text()).toBe("90%");
+    expect(
+      withGpu.findAll("[data-line]").map((row) => row.attributes("data-line")),
+    ).toEqual(["cpu", "memory", "gpu", "disk"]);
+
+    const noGpu = await mountStack({ cpu: 20, memory: 30, gpu: 90 });
+    expect(has(noGpu, "gpu")).toBe(false);
+
+    const offline = await mountStack({
+      live: false,
+      hasGpu: true,
+      gpu: 90,
+      disk: disk(40),
+    });
+    expect(has(offline, "gpu")).toBe(false);
+  });
+
   it("shows a decimal under 10% when precise", async () => {
     const wrapper = await mountStack({
       cpu: 4.26,

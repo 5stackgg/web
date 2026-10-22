@@ -45,6 +45,7 @@ import {
 } from "~/components/game-server-nodes/nodeInspector";
 import {
   cpuSeries,
+  gpuSeries,
   latest,
   memorySeries,
 } from "~/components/game-server-nodes/nodeMetrics";
@@ -127,6 +128,9 @@ const memory = computed(() =>
 );
 const disk = computed(() => diskSize(props.node));
 const showLive = computed(() => props.showLoad && reachable.value);
+const gpu = computed(() =>
+  showLive.value && props.node.gpu ? latest(gpuSeries(props.stats)) : null,
+);
 
 const attention = computed(() => nodeAttention(props.node, props.context));
 const attentionTip = computed(() => {
@@ -212,6 +216,8 @@ function onKeydown(event: KeyboardEvent) {
         :live="showLive && !inSetup"
         :cpu="cpu"
         :memory="memory"
+        :has-gpu="!!node.gpu"
+        :gpu="gpu"
         :disk="inSetup ? null : disk"
         :disk-thresholds="diskThresholds"
       />

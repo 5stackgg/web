@@ -10,6 +10,7 @@ export default {
   props: {
     nodeId: { type: String, required: true },
     full: { type: Boolean, default: false },
+    gpu: { type: Boolean, default: false },
   },
   emits: ["stats"],
   data() {
@@ -35,6 +36,7 @@ export default {
           (this as any).$apollo,
           this.nodeId,
           this.full,
+          this.gpu,
         );
         if (this.alive) {
           this.$emit("stats", this.nodeId, stats, this.full);

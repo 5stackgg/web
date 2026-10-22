@@ -18,7 +18,6 @@ const props = defineProps<{
   status: ScrimStatus | null;
   mapsById: Record<string, any>;
   now: Date;
-  preview?: boolean;
 }>();
 
 const emit = defineEmits<{ (e: "open", at: number): void }>();
@@ -48,7 +47,6 @@ const label = computed(() =>
     class="relative grid min-h-[3.75rem] grid-cols-[4.75rem_minmax(0,1fr)_auto] items-start gap-2.5 px-3 py-2.5 transition-colors duration-150 md:grid-cols-[5.5rem_minmax(0,1fr)_4rem_8.5rem_5.5rem] md:items-center md:gap-3.5 md:px-3.5 xl:grid-cols-[5.75rem_minmax(0,1fr)_8.25rem_4rem_4.5rem_8.5rem_5.5rem] [@media(hover:hover)]:hover:bg-muted/20"
   >
     <button
-      v-if="!preview"
       type="button"
       class="absolute inset-0 z-[1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
       :aria-label="label"
@@ -151,15 +149,14 @@ const label = computed(() =>
     </div>
 
     <div class="hidden md:block">
-      <ScrimStatusTag v-if="preview" tone="muted">{{ $t("scrims.board.your_team") }}</ScrimStatusTag>
-      <ScrimStatusTag v-else-if="status" :tone="status.tone">
+      <ScrimStatusTag v-if="status" :tone="status.tone">
         {{ $t(`scrims.status.${status.key}`, { time: status.at ? timeLabel(status.at) : "" }) }}
       </ScrimStatusTag>
     </div>
 
     <div class="relative z-[2] justify-self-end">
       <Button
-        v-if="!preview && requested"
+        v-if="requested"
         size="sm"
         variant="outline"
         class="h-10 md:h-8"
@@ -168,7 +165,7 @@ const label = computed(() =>
         {{ status?.key === "needs_you" ? $t("scrims.board.answer") : $t("scrims.board.view") }}
       </Button>
       <Button
-        v-else-if="!preview && !blocked"
+        v-else-if="!blocked"
         size="sm"
         variant="secondary"
         class="h-10 w-11 gap-1.5 px-0 md:h-8 md:w-auto md:px-3"

@@ -15274,7 +15274,6 @@
       "played": "已打 {count} 場",
       "reliable": "{pct}% 可靠",
       "elo_value": "{elo} ELO",
-      "your_team": "你的隊伍",
       "times_note": "時間以你的時區顯示。BO1 最晚可在隊伍開放時段結束時開始。",
       "empty_title": "本週沒有開放的隊伍",
       "empty_description": "大多數隊伍會在晚上開放時段。稍後再來看看。",
@@ -15415,28 +15414,20 @@
       "closed_hint": "不會在搜尋中顯示。你已送出的請求仍然有效。",
       "hours": "每週時段",
       "time_zone": "依你的時區",
-      "day_open": "{day} 開放",
-      "starts": "{day} 開始",
-      "ends": "{day} 結束",
       "to": "至",
-      "next_day": "{time}（隔天）",
-      "add_range": "新增時段",
-      "remove_range": "移除這些時段",
       "outside": "接受這些時段以外的請求",
-      "outside_hint": "其他隊伍可以請求任何時間。是否接受仍由你決定。",
       "opponents": "接受的對手",
       "near": "{elo} 上下 {n} 以內",
-      "elo_hint": "隊伍的 5Stack ELO 平均值。雙方都須在彼此的範圍內，因此範圍越窄，收到的請求越少。",
       "regions": "伺服器地區",
-      "regions_hint": "不選擇表示任何地區。",
       "maps": "想打的地圖",
       "maps_hint": "會向其他隊伍顯示。比賽使用 Active Duty 圖池並進行 BP。",
       "note": "給其他隊伍的備註",
       "note_placeholder": "溝通語言、教練是否進語音、你們在練什麼……",
       "alerts": "有隊伍開放時通知我",
-      "alerts_hint": "當你的 ELO 範圍和地區內有隊伍開放練習賽時通知你，最多每 6 小時一次。",
       "save": "儲存刊登",
-      "saved": "刊登已儲存"
+      "saved": "刊登已儲存",
+      "nearby": "附近 · 低於 {ms} 毫秒",
+      "show_less": "收合"
     },
     "now": {
       "button": "立即練習賽",
@@ -15462,6 +15453,10 @@
       "cancelled": "已取消送給 {team} 的請求。",
       "cancelled_booked": "已取消與 {team} 的練習賽。這會記為一次臨時取消。",
       "failed": "操作未成功"
+    },
+    "week": {
+      "title": "本週",
+      "no_hours": "無時段"
     }
   }
 }

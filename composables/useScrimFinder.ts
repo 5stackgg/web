@@ -166,6 +166,7 @@ export function useScrimMaps() {
             name: true,
             label: true,
             patch: true,
+            poster: true,
             active_pool: true,
             workshop_map_id: true,
           },

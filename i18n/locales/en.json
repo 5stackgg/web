@@ -15274,7 +15274,6 @@
       "played": "{count} played",
       "reliable": "{pct}% reliable",
       "elo_value": "{elo} ELO",
-      "your_team": "Your team",
       "times_note": "Times are in your time zone. A best of 1 can start up to the end of a team's hours.",
       "empty_title": "No teams are open this week",
       "empty_description": "Most teams open their hours in the evening. Check back later.",
@@ -15415,28 +15414,20 @@
       "closed_hint": "Hidden from the finder. Requests you've already sent still count.",
       "hours": "Weekly hours",
       "time_zone": "In your time zone",
-      "day_open": "Open on {day}",
-      "starts": "{day} start",
-      "ends": "{day} end",
       "to": "to",
-      "next_day": "{time} (next day)",
-      "add_range": "Add hours",
-      "remove_range": "Remove these hours",
       "outside": "Take requests outside these hours",
-      "outside_hint": "Teams can ask for any time. You still accept or decline.",
       "opponents": "Opponents you'll take",
       "near": "Within {n} of {elo}",
-      "elo_hint": "Team average 5Stack ELO. Both teams have to be inside each other's range, so a tight range means fewer requests.",
       "regions": "Server regions",
-      "regions_hint": "None picked means any region.",
       "maps": "Maps you want",
       "maps_hint": "Shown to other teams. Matches use the Active Duty pool with veto.",
       "note": "Note to other teams",
       "note_placeholder": "Comms language, coach in voice, what you're practicing…",
       "alerts": "Tell me when a team opens up",
-      "alerts_hint": "Get a notification when a team in your ELO range and regions opens to scrims, at most every 6 hours.",
       "save": "Save listing",
-      "saved": "Listing saved"
+      "saved": "Listing saved",
+      "nearby": "Nearby · under {ms} ms",
+      "show_less": "Show less"
     },
     "now": {
       "button": "Scrim now",
@@ -15462,6 +15453,10 @@
       "cancelled": "Request to {team} canceled.",
       "cancelled_booked": "Scrim with {team} canceled. It counts as a late cancel.",
       "failed": "That didn't go through"
+    },
+    "week": {
+      "title": "This week",
+      "no_hours": "No hours"
     }
   }
 }

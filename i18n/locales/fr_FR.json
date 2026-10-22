@@ -15274,7 +15274,6 @@
       "played": "{count} joués",
       "reliable": "{pct} % de fiabilité",
       "elo_value": "{elo} ELO",
-      "your_team": "Ton équipe",
       "times_note": "Les heures sont dans ton fuseau horaire. Un best of 1 peut commencer jusqu'à la fin des horaires d'une équipe.",
       "empty_title": "Aucune équipe ouverte cette semaine",
       "empty_description": "La plupart des équipes ouvrent leurs horaires en soirée. Reviens plus tard.",
@@ -15415,28 +15414,20 @@
       "closed_hint": "Masqué de la recherche. Les demandes déjà envoyées restent valables.",
       "hours": "Horaires hebdomadaires",
       "time_zone": "Dans ton fuseau horaire",
-      "day_open": "Ouvert le {day}",
-      "starts": "Début du {day}",
-      "ends": "Fin du {day}",
       "to": "à",
-      "next_day": "{time} (lendemain)",
-      "add_range": "Ajouter des horaires",
-      "remove_range": "Retirer ces horaires",
       "outside": "Accepter des demandes hors de ces horaires",
-      "outside_hint": "Les équipes peuvent demander n'importe quel horaire. C'est toujours toi qui acceptes ou refuses.",
       "opponents": "Adversaires acceptés",
       "near": "À {n} près de {elo}",
-      "elo_hint": "ELO 5Stack moyen de l'équipe. Chaque équipe doit être dans la plage de l'autre, donc une plage serrée veut dire moins de demandes.",
       "regions": "Régions des serveurs",
-      "regions_hint": "Aucune sélection signifie toutes les régions.",
       "maps": "Maps souhaitées",
       "maps_hint": "Visible par les autres équipes. Les matchs utilisent le pool Active Duty avec veto.",
       "note": "Note aux autres équipes",
       "note_placeholder": "Langue en vocal, coach en vocal, ce que vous travaillez…",
       "alerts": "Préviens-moi quand une équipe s'ouvre",
-      "alerts_hint": "Reçois une notification quand une équipe dans ta plage d'ELO et tes régions s'ouvre aux scrims, au plus toutes les 6 heures.",
       "save": "Enregistrer l'annonce",
-      "saved": "Annonce enregistrée"
+      "saved": "Annonce enregistrée",
+      "nearby": "Proches · moins de {ms} ms",
+      "show_less": "Afficher moins"
     },
     "now": {
       "button": "Scrim immédiat",
@@ -15462,6 +15453,10 @@
       "cancelled": "Demande à {team} annulée.",
       "cancelled_booked": "Scrim contre {team} annulé. Ça compte comme une annulation tardive.",
       "failed": "Ça n'a pas marché"
+    },
+    "week": {
+      "title": "Cette semaine",
+      "no_hours": "Aucun créneau"
     }
   }
 }

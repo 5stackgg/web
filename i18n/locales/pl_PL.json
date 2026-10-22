@@ -15274,7 +15274,6 @@
       "played": "Rozegrane: {count}",
       "reliable": "{pct}% wiarygodności",
       "elo_value": "{elo} ELO",
-      "your_team": "Twoja drużyna",
       "times_note": "Godziny są w twojej strefie czasowej. Best of 1 może zacząć się najpóźniej z końcem godzin drużyny.",
       "empty_title": "W tym tygodniu żadna drużyna nie jest otwarta",
       "empty_description": "Większość drużyn otwiera godziny wieczorem. Zajrzyj później.",
@@ -15415,28 +15414,20 @@
       "closed_hint": "Ukryte w wyszukiwarce. Wysłane już zaproszenia nadal obowiązują.",
       "hours": "Godziny w tygodniu",
       "time_zone": "W twojej strefie czasowej",
-      "day_open": "Otwarte: {day}",
-      "starts": "Start: {day}",
-      "ends": "Koniec: {day}",
       "to": "do",
-      "next_day": "{time} (następnego dnia)",
-      "add_range": "Dodaj godziny",
-      "remove_range": "Usuń te godziny",
       "outside": "Przyjmuj zaproszenia poza tymi godzinami",
-      "outside_hint": "Drużyny mogą prosić o dowolny termin. Nadal to ty akceptujesz lub odrzucasz.",
       "opponents": "Przeciwnicy, których przyjmujesz",
       "near": "W granicach {n} od {elo}",
-      "elo_hint": "Średnie 5Stack ELO drużyny. Obie drużyny muszą mieścić się w zakresie drugiej, więc wąski zakres oznacza mniej zaproszeń.",
       "regions": "Regiony serwerów",
-      "regions_hint": "Brak wyboru oznacza dowolny region.",
       "maps": "Mapy, które chcecie grać",
       "maps_hint": "Widoczne dla innych drużyn. Mecze używają puli Active Duty z veto.",
       "note": "Notatka dla innych drużyn",
       "note_placeholder": "Język komunikacji, trener na voice, co ćwiczycie…",
       "alerts": "Powiadom mnie, gdy drużyna się otworzy",
-      "alerts_hint": "Dostaniesz powiadomienie, gdy drużyna z twojego zakresu ELO i regionów otworzy się na scrimy, nie częściej niż co 6 godzin.",
       "save": "Zapisz ogłoszenie",
-      "saved": "Ogłoszenie zapisane"
+      "saved": "Ogłoszenie zapisane",
+      "nearby": "W pobliżu · poniżej {ms} ms",
+      "show_less": "Pokaż mniej"
     },
     "now": {
       "button": "Scrim teraz",
@@ -15462,6 +15453,10 @@
       "cancelled": "Anulowano zaproszenie do {team}.",
       "cancelled_booked": "Anulowano scrima z {team}. Liczy się to jako późne odwołanie.",
       "failed": "Nie udało się"
+    },
+    "week": {
+      "title": "Ten tydzień",
+      "no_hours": "Brak godzin"
     }
   }
 }

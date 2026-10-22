@@ -240,7 +240,7 @@ onBeforeUnmount(() => {
           {{ newsLabel || $t("pages.news.title") }}
         </Button>
       </BackLink>
-      <div v-if="!loading" class="flex items-center gap-4">
+      <div v-if="!loading" class="ml-auto flex items-center gap-4">
         <Button
           variant="outline"
           size="sm"

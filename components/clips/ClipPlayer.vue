@@ -840,7 +840,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       :fullscreen="isFullscreen"
       :muted="muted"
       :volume="volume"
-      :visible="true"
+      :visible="hudVisible"
       align="end"
       @toggle-fullscreen="toggleFullscreen"
       @toggle-mute="toggleMute"

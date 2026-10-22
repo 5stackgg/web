@@ -61,19 +61,27 @@ const facts = computed(() => {
     v-if="hero"
     class="grid overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.35)] bg-card/40 transition-colors duration-150 has-[[data-card-link]:hover]:border-[hsl(var(--tac-amber)/0.6)] lg:grid-cols-[minmax(0,1fr)_21rem]"
   >
+    <!-- One column: the whole 3:1 banner, the title under it. -->
     <NuxtLink
       :to="path"
       data-card-link
-      class="group/media relative isolate flex min-h-[18rem] items-end overflow-hidden px-4 pb-5 pt-28 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:px-6 sm:pb-6"
+      class="group/media relative isolate flex flex-col overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring lg:min-h-[18rem] lg:flex-row lg:items-end lg:px-6 lg:pb-6 lg:pt-28"
     >
-      <img
+      <div
         v-if="bannerSrc"
-        :src="bannerSrc"
-        alt=""
-        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover/media:scale-[1.03]"
-      />
-      <div aria-hidden="true" class="hero-scrim absolute inset-0 -z-10"></div>
-      <div class="grid min-w-0 max-w-[40rem] gap-2.5">
+        class="aspect-[3/1] overflow-hidden lg:absolute lg:inset-0 lg:-z-20 lg:aspect-auto"
+      >
+        <img
+          :src="bannerSrc"
+          alt=""
+          class="h-full w-full object-cover object-[50%_40%] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none group-hover/media:scale-[1.03]"
+        />
+      </div>
+      <div
+        aria-hidden="true"
+        class="hero-scrim absolute inset-0 -z-10 max-lg:hidden"
+      ></div>
+      <div class="grid min-w-0 max-w-[40rem] gap-2.5 px-5 pb-5 pt-4 lg:p-0">
         <p
           class="m-0 flex flex-wrap items-center gap-x-1.5 text-[0.8125rem] text-foreground/80"
         >

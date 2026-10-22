@@ -90,9 +90,14 @@ const cells = computed(() => {
     :style="{ '--cols': cells.length }"
   >
     <div
-      v-for="cell in cells"
+      v-for="(cell, index) in cells"
       :key="cell.key"
       class="min-w-0 bg-card/60 px-5 py-3.5 [backdrop-filter:blur(6px)]"
+      :class="
+        cells.length % 2 === 1 && index === cells.length - 1
+          ? 'max-sm:col-span-2'
+          : ''
+      "
     >
       <div
         class="font-mono text-[0.56rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70"

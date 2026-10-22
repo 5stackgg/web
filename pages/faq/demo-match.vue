@@ -21,7 +21,7 @@ useHead({ title: () => t("faq.demo.title") });
       </BackLink>
       <NuxtLink
         to="/faq/demo-draft"
-        class="inline-flex w-fit items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+        class="ml-auto inline-flex w-fit items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
       >
         {{ $t("faq.demo_draft.title") }}
         <ArrowRight class="size-3.5" />

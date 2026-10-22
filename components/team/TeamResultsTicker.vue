@@ -2,13 +2,14 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
-import { ChevronLeft, ChevronRight, List } from "lucide-vue-next";
+import { ChevronRight, List } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { watchTickerMatchFields } from "~/graphql/watchTickerFields";
 import { teamMatchesFilter } from "~/graphql/teamPulseFields";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import WatchTickerCell from "~/components/watch/WatchTickerCell.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import {
@@ -105,13 +106,12 @@ const cells = computed(() =>
   ),
 );
 
-function scrollRight() {
-  scrollRow.value?.scrollByDirection("right");
-  if (!scrollRow.value?.state.canScrollRight) void load();
+function scrollResults(direction: "left" | "right") {
+  scrollRow.value?.scrollByDirection(direction);
+  if (direction === "right" && !scrollRow.value?.state.canScrollRight) {
+    void load();
+  }
 }
-
-const arrowClasses =
-  "inline-flex size-8 items-center justify-center rounded-md border border-border bg-muted/30 text-foreground/80 transition-colors duration-150 hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:cursor-default disabled:opacity-35 disabled:hover:bg-muted/30";
 </script>
 
 <template>
@@ -120,48 +120,28 @@ const arrowClasses =
     aria-labelledby="team-results-label"
   >
     <div class="mb-2.5 flex items-center justify-between gap-3">
-      <div class="flex min-w-0 items-baseline gap-3">
-        <h2
-          id="team-results-label"
-          :class="[tacticalSectionLabelClasses, '!mb-0 !flex']"
-        >
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.watch.ticker.results") }}
-        </h2>
-        <span class="truncate text-xs text-muted-foreground max-sm:hidden">
-          {{ $t("team.pulse.results.hint") }}
-        </span>
-      </div>
+      <h2
+        id="team-results-label"
+        :class="[tacticalSectionLabelClasses, '!mb-0 !flex']"
+      >
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("pages.watch.ticker.results") }}
+      </h2>
 
-      <div class="flex shrink-0 items-center gap-1.5">
+      <div class="flex shrink-0 items-center gap-3">
         <button
           type="button"
-          class="relative mr-1.5 inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground transition-colors duration-150 after:absolute after:inset-x-0 after:-inset-y-3 after:content-[''] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] [@media(pointer:fine)]:after:hidden"
+          class="relative inline-flex h-6 items-center gap-1 text-xs font-semibold leading-none text-muted-foreground transition-colors duration-150 after:absolute after:inset-x-0 after:-inset-y-3 after:content-[''] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] [@media(pointer:fine)]:after:hidden"
           @click="emit('all-matches')"
         >
           {{ $t("team.pulse.results.all_matches") }}
           <ChevronRight class="size-3.5" />
         </button>
-        <button
-          type="button"
-          class="max-sm:hidden"
-          :aria-label="$t('ui.scroll.left')"
-          :disabled="!scrollRow?.state.canScrollLeft"
-          :class="arrowClasses"
-          @click="scrollRow?.scrollByDirection('left')"
-        >
-          <ChevronLeft class="size-4" />
-        </button>
-        <button
-          type="button"
-          class="max-sm:hidden"
-          :aria-label="$t('ui.scroll.right')"
-          :disabled="!scrollRow?.state.canScrollRight && done"
-          :class="arrowClasses"
-          @click="scrollRight"
-        >
-          <ChevronRight class="size-4" />
-        </button>
+        <ScrollArrows
+          :can-left="scrollRow?.state.canScrollLeft"
+          :can-right="scrollRow?.state.canScrollRight || !done"
+          @scroll="scrollResults"
+        />
       </div>
     </div>
 

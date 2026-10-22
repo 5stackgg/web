@@ -93,6 +93,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
               square
               size="lg"
               block
+              class="max-md:grid max-md:grid-cols-2 max-md:[&>button:last-of-type:nth-of-type(odd)]:col-span-2"
               @update:model-value="
                 (value) => !mapPoolLocked && form.setFieldValue('type', value)
               "
@@ -110,8 +111,8 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
 
       <FormField name="map_pool" v-if="!isRush">
         <FormItem>
-          <Card>
-            <div class="p-6 space-y-6">
+          <Card class="max-md:border-0 max-md:bg-transparent max-md:shadow-none">
+            <div class="p-6 space-y-6 max-md:p-0">
               <div
                 class="grid gap-6"
                 :class="hideBestOf ? 'sm:grid-cols-1' : 'sm:grid-cols-2'"
@@ -203,7 +204,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
               </div>
 
               <div
-                class="flex items-center justify-between gap-3 border-t border-border pt-4"
+                class="flex items-center justify-between gap-3 border-t border-border pt-4 max-md:flex-wrap max-md:gap-y-2"
               >
                 <div
                   class="min-w-0 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground"
@@ -235,7 +236,7 @@ import { SELECT_NONE, nullableSelectField } from "~/utilities/selectNone";
                   enter-from-class="opacity-0"
                   leave-to-class="opacity-0"
                 >
-                <div v-show="form.values.map_veto" class="shrink-0">
+                <div v-show="form.values.map_veto" class="ml-auto shrink-0">
                   <FormField
                     v-slot="{ value, handleChange }"
                     name="custom_map_pool"

@@ -57,7 +57,7 @@ const chipClasses = computed(() => {
   <component
     :is="quickLook ? 'button' : NuxtLink"
     v-bind="quickLook ? { type: 'button' } : { to: `/events/${event.id}` }"
-    class="grid grid-cols-[6.5rem_minmax(0,1fr)] overflow-hidden rounded-lg border border-border bg-card/40 text-left transition-colors hover:border-muted-foreground/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[8.75rem_minmax(0,1fr)]"
+    class="grid grid-cols-1 overflow-hidden rounded-lg border border-border bg-card/40 text-left transition-colors hover:border-muted-foreground/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[8.75rem_minmax(0,1fr)]"
     @click="quickLook && emit('quick-look')"
   >
     <img
@@ -65,12 +65,12 @@ const chipClasses = computed(() => {
       :src="bannerSrc"
       alt=""
       loading="lazy"
-      class="h-full min-h-[7.75rem] w-full object-cover"
+      class="aspect-[3/1] w-full object-cover sm:aspect-auto sm:h-full sm:min-h-[7.75rem]"
     />
     <div
       v-else
       aria-hidden="true"
-      class="h-full min-h-[7.75rem] w-full bg-[radial-gradient(ellipse_70%_100%_at_50%_0%,hsl(220_10%_20%/0.6),transparent_70%)] bg-muted/40"
+      class="hidden h-full min-h-[7.75rem] w-full bg-[radial-gradient(ellipse_70%_100%_at_50%_0%,hsl(220_10%_20%/0.6),transparent_70%)] bg-muted/40 sm:block"
     ></div>
     <div class="grid min-w-0 content-center gap-1.5 px-3.5 py-3">
       <div

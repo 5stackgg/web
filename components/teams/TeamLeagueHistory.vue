@@ -82,9 +82,7 @@ const highestDivision = computed(() => {
 
 <template>
   <div v-if="!loading && leagueTeams.length" class="space-y-4">
-    <section
-      class="rounded-lg border border-border bg-[hsl(var(--card)/0.4)] p-5"
-    >
+    <section>
       <span :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
         {{ $t("league.list.title") }}
@@ -143,6 +141,7 @@ const highestDivision = computed(() => {
 
       <!-- Toggleable season history -->
       <button
+        v-if="allTeamSeasons.length"
         type="button"
         class="mt-4 flex w-full items-center justify-between gap-2 border-t border-border/60 pt-4 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
         @click="showHistory = !showHistory"

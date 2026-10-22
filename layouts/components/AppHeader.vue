@@ -20,8 +20,8 @@ const { isMobile } = useSidebar();
   >
     <div class="flex items-center justify-between w-full">
       <div class="flex items-center gap-2 min-w-0 flex-1">
-        <HistoryBackButton v-if="isMobile" />
         <SidebarTrigger class="shrink-0" />
+        <HistoryBackButton v-if="isMobile" />
         <Separator orientation="vertical" class="h-4 shrink-0" />
         <bread-crumbs></bread-crumbs>
       </div>

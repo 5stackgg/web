@@ -44,7 +44,7 @@ afterEach(() => {
 });
 
 describe("AppHeader back arrow", () => {
-  it("puts the Back arrow before the sidebar button on a phone, and it steps back", async () => {
+  it("puts the Back arrow after the sidebar button on a phone, and it steps back", async () => {
     emulateDevice({ userAgent: userAgents.iphoneSafari, width: 390 });
     cameFrom("/leaderboard");
 
@@ -55,7 +55,7 @@ describe("AppHeader back arrow", () => {
     expect(
       back.element.compareDocumentPosition(
         wrapper.get('[data-sidebar="trigger"]').element,
-      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ) & Node.DOCUMENT_POSITION_PRECEDING,
     ).toBeTruthy();
 
     const step = vi.spyOn(useRouter(), "back").mockImplementation(() => {});

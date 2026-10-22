@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { backClosesMenus, useBackDismiss } from "~/composables/useBackDismiss";
+import { cn } from "@/lib/utils";
 
 // The one Share button a clip carries in its player's tray, on highlights and
 // lineups alike: copy the link, download the file, and whatever the surface
@@ -21,6 +22,7 @@ const props = withDefaults(
     downloadLabel?: string | null;
     sizeLabel?: string | null;
     contentClass?: string | null;
+    triggerClass?: string | null;
     // Back closes this menu first. Off where the page runs its own history,
     // as the highlight modal does.
     dismissOnBack?: boolean;
@@ -32,6 +34,7 @@ const props = withDefaults(
     downloadLabel: null,
     sizeLabel: null,
     contentClass: null,
+    triggerClass: null,
     dismissOnBack: false,
   },
 );
@@ -76,7 +79,12 @@ function onDownload(event: Event) {
     <DropdownMenuTrigger as-child>
       <button
         type="button"
-        class="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-white/20 bg-black/70 pl-2.5 pr-3 text-xs font-medium text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] data-[state=open]:border-[hsl(var(--tac-amber)/0.55)] data-[state=open]:text-[hsl(var(--tac-amber))]"
+        :class="
+          cn(
+            'inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-white/20 bg-black/70 pl-2.5 pr-3 text-xs font-medium text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] data-[state=open]:border-[hsl(var(--tac-amber)/0.55)] data-[state=open]:text-[hsl(var(--tac-amber))]',
+            triggerClass,
+          )
+        "
         @click.stop
       >
         <Share2 class="h-3.5 w-3.5" />

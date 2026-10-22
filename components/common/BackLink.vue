@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import type { RouteLocationRaw } from "vue-router";
-import { useBackToList } from "~/composables/useHistoryBack";
+import {
+  useBackToList,
+  useTopBarBackShown,
+} from "~/composables/useHistoryBack";
 
 defineOptions({ inheritAttrs: false });
 
 const props = defineProps<{ to: RouteLocationRaw }>();
 
 const stepBackTo = useBackToList();
+const topBarBack = useTopBarBackShown();
 
 function onClick(event: MouseEvent, navigate: (event?: MouseEvent) => unknown) {
   const plain =
@@ -26,7 +30,7 @@ function onClick(event: MouseEvent, navigate: (event?: MouseEvent) => unknown) {
 </script>
 
 <template>
-  <NuxtLink v-slot="{ href, navigate }" :to="to" custom>
+  <NuxtLink v-if="!topBarBack" v-slot="{ href, navigate }" :to="to" custom>
     <a :href="href" v-bind="$attrs" @click="onClick($event, navigate)">
       <slot />
     </a>

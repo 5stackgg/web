@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { ChevronRight } from "lucide-vue-next";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import WatchTickerCell from "~/components/watch/WatchTickerCell.vue";
 import { sortLiveMatches, tickerCell } from "~/components/watch/watchTicker";
 import { useLiveTeamMatches } from "~/composables/useLiveTeamMatches";
@@ -19,6 +20,7 @@ const CAP = 8;
 
 const { t, locale } = useI18n();
 const { matches } = useLiveTeamMatches();
+const scrollRow = ref<InstanceType<typeof HorizontalScrollRow> | null>(null);
 
 const now = ref(new Date());
 const clock =
@@ -92,13 +94,20 @@ const linkClasses =
           {{ $t("pages.teams.playing_now.live_count", { count: liveCount }) }}
         </span>
       </div>
-      <NuxtLink to="/watch" :class="linkClasses">
-        {{ $t("pages.teams.playing_now.all_live") }}
-        <ChevronRight class="size-3.5" />
-      </NuxtLink>
+      <div class="ml-auto flex items-center gap-3">
+        <NuxtLink to="/watch" :class="linkClasses">
+          {{ $t("pages.teams.playing_now.all_live") }}
+          <ChevronRight class="size-3.5" />
+        </NuxtLink>
+        <ScrollArrows
+          :can-left="scrollRow?.state.canScrollLeft"
+          :can-right="scrollRow?.state.canScrollRight"
+          @scroll="(direction) => scrollRow?.scrollByDirection(direction)"
+        />
+      </div>
     </div>
 
-    <HorizontalScrollRow>
+    <HorizontalScrollRow ref="scrollRow">
       <div
         v-for="cell in cells"
         :key="cell.id"

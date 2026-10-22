@@ -5,6 +5,7 @@ import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { RouterLink } from "vue-router";
 import { useRouter } from "#app";
 import BackLink from "~/components/common/BackLink.vue";
+import { useTopBarBack } from "~/composables/useHistoryBack";
 import { Button } from "~/components/ui/button";
 
 // The test runtime swaps in a RouterLink whose navigate does nothing.
@@ -93,6 +94,26 @@ describe("BackLink", () => {
     await wrapper.get("a").trigger("click");
 
     expect(router.back).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ["stands down while the top bar's Back shows", "/notifications", false],
+    ["stays when there is no earlier page to go back to", null, true],
+  ])("%s", async (_, back, shown) => {
+    cameFrom(back);
+    const wrapper = await mountSuspended(
+      defineComponent({
+        setup() {
+          useTopBarBack();
+          return () => h(BackLink, { to: "/news" }, () => "News");
+        },
+      }),
+      { global },
+    );
+    await flushPromises();
+
+    expect(wrapper.find("a").exists()).toBe(shown);
+    wrapper.unmount();
   });
 
   it("takes a button's look when a Button wraps it", async () => {

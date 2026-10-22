@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { nodeIneligibility, type Cs2BuildNode } from "~/types/cs2Build";
+import { isGpuOnly } from "~/components/game-server-nodes/nodeState";
 
 const props = defineProps<{
   label: string;
@@ -36,7 +37,7 @@ const target = ref<string>(AUTOMATIC);
 
 const options = computed(() =>
   props.nodes
-    .filter((node) => !(node.gpu && !node.enabled_for_match_making))
+    .filter((node) => !isGpuOnly(node))
     .map((node) => {
       const reason = nodeIneligibility(node, props.buildId);
       return {

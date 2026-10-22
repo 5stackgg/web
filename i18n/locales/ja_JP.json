@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "オンライン",
-        "partial": "一部のノードがオフライン",
+        "partial": "一部のノードが試合を受け付けていません",
         "offline": "オフライン",
-        "disabled": "サーバーなし"
+        "disabled": "サーバーなし",
+        "no_matchmaking": "マッチメイキングなし"
       },
       "detail": {
         "label_aria": "リージョンのラベル",
@@ -4098,6 +4099,7 @@
         "col_node": "ノード",
         "col_free": "空き",
         "col_servers": "サーバー",
+        "no_matchmaking": "マッチメイキングなし",
         "no_nodes_title": "このリージョンにノードはありません",
         "no_nodes_hint": "ノードのリージョンは {page} ページで設定します。",
         "relay_title": "Steam リレーを使用",
@@ -4694,8 +4696,10 @@
       "idle": "待機中",
       "disabled": "無効",
       "enabled": "有効",
+      "matchmaking": "マッチメイキング",
       "accepting_matches": "試合の受け入れ",
       "toggle_enabled_help": "オフにすると、ノードは完全に無効化されます。GPU 処理も試合の割り当ても行われません。",
+      "toggle_matchmaking_help": "試合と練習サーバーはここで起動します。オフにすると、専用サーバーとGPU作業専用のノードになります。",
       "toggle_scheduling_help": "オフにすると、進行中の試合は継続しますが、新しい試合は受け入れません。",
       "scheduling_setup_hint": "このノードはまだセットアップ中です。オンラインになると試合の受け入れを開始します。",
       "scheduling_offline_hint": "このノードはオフラインです。再接続すると試合の受け入れを再開します。",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "{pct}% の時点で停止して GPU を解放します。",
         "render_action": "レンダリングを停止"
       },
-      "toggle_gpu_only_help": "GPUの処理のみを受け付け、試合サーバーは動かしません。オンにするとリージョンとポートが消去されます。",
       "plate": {
         "temperature": "温度",
         "power": "電力",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "ポートで許可された総数のうち空いているサーバー数。下にポート範囲が表示されます。",
         "cap_free": "{total}台中{free}台が空き",
         "cap_no_ports": "ポートなし",
+        "cap_no_matchmaking": "マッチメイキングなし",
         "chip": {
           "updating": "更新中",
           "updating_pct": "更新中 {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "GPU専用のためマッチはホストしません。GPUセクションで戻せます。",
+          "no_matchmaking": "マッチメイキング対象外です。リージョンとポートは専用サーバーにのみ使われます。",
           "max_servers": "最大サーバー数",
           "max_tip": "CPUスレッド{threads}、うち1つはシステム用",
           "max_tip_pinning": "CPUスレッド{threads}、うち1つはシステム用、サーバーごとに{per}",
@@ -12264,8 +12268,6 @@
       "csgo_updating": "ノード上で CS:GO を更新しています。",
       "ports_updated": "ノードのポートを更新しました",
       "ports_removed": "ノードのポートを削除しました",
-      "made_gpu_only": "ノードを GPU 専用に設定しました",
-      "made_match_node": "ノードを試合サーバーに設定しました",
       "label_updated": "ノードラベルを更新しました",
       "cs2_options_updated": "映像設定を更新しました"
     },

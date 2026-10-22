@@ -156,6 +156,23 @@ describe("attention list", () => {
     expect(readinessNeeds(node({ start_port_range: null }))).toEqual(["ports"]);
   });
 
+  it("asks a node out of matchmaking only for CS2", () => {
+    const items = nodeAttention(
+      node({
+        enabled_for_match_making: false,
+        region: null,
+        start_port_range: null,
+        end_port_range: null,
+        build_id: null,
+      }),
+    );
+    expect(keys(items)).toEqual(["not_ready"]);
+    expect(items[0].params?.needs).toEqual(["cs2"]);
+    expect(
+      nextStep(node({ enabled_for_match_making: false, region: null })),
+    ).toBeNull();
+  });
+
   it("puts the worst first and keeps the order within a tone", () => {
     const items = nodeAttention(
       node({

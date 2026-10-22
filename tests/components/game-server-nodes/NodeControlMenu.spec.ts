@@ -197,14 +197,16 @@ describe("NodeControlMenu GPU workloads", () => {
     mutate.mockReset().mockResolvedValue({ data: {} });
   });
 
-  it("leaves Enabled and scheduling to a panel that has its own", async () => {
+  it("leaves Enabled, Matchmaking and scheduling to a panel that has its own", async () => {
     const wrapper = await mountSuspended(NodeControlMenu, {
       props: { node: gpuNode() as any, workloadsOnly: true },
     });
 
     expect(wrapper.find('[data-testid="scheduling-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-testid="gpu-only-row"]').exists()).toBe(true);
-    expect(wrapper.findAll(".switch")).toHaveLength(4);
+    expect(wrapper.find('[data-testid="matchmaking-row"]').exists()).toBe(
+      false,
+    );
+    expect(wrapper.findAll(".switch")).toHaveLength(3);
   });
 
   it("marks the trigger only while a workload is off", async () => {
@@ -264,27 +266,12 @@ describe("NodeControlMenu GPU workloads", () => {
   });
 });
 
-describe("NodeControlMenu GPU only", () => {
-  const gpuNode = (fields: Record<string, unknown> = {}) =>
-    node({ status: "Online", gpu: true, ...fields });
-
-  // Turning GPU only on asks first when the node has a region or ports.
-  const confirmGpuOnly = async (row: { element: Element }) => {
-    const button = row.element.parentElement!.querySelector(
-      '[data-testid="gpu-only-confirm"] button:last-child',
-    ) as HTMLButtonElement | null;
-    button?.click();
-    await flushPromises();
-  };
-
-  const gpuOnlyRow = async (
-    fields: Record<string, unknown>,
-    workloadsOnly = false,
-  ) => {
+describe("NodeControlMenu matchmaking switch", () => {
+  const matchmakingRow = async (fields: Record<string, unknown>) => {
     const wrapper = await mountSuspended(NodeControlMenu, {
-      props: { node: gpuNode(fields) as any, workloadsOnly },
+      props: { node: node({ status: "Online", ...fields }) as any },
     });
-    return wrapper.find('[data-testid="gpu-only-row"]');
+    return { wrapper, row: wrapper.get('[data-testid="matchmaking-row"]') };
   };
 
   beforeEach(() => {
@@ -292,82 +279,64 @@ describe("NodeControlMenu GPU only", () => {
     mutate.mockReset().mockResolvedValue({ data: {} });
   });
 
-  it("is offered only on a node with a GPU, in both lists", async () => {
-    const plain = await mountSuspended(NodeControlMenu, {
-      props: { node: node({ status: "Online" }) as any },
-    });
+  it("is offered on every node, GPU or not", async () => {
+    const plain = await matchmakingRow({});
+    const gpu = await matchmakingRow({ gpu: true });
 
-    expect(plain.find('[data-testid="gpu-only-row"]').exists()).toBe(false);
-    expect((await gpuOnlyRow({})).exists()).toBe(true);
-    expect((await gpuOnlyRow({}, true)).exists()).toBe(true);
+    expect(plain.row.exists()).toBe(true);
+    expect(gpu.row.exists()).toBe(true);
   });
 
-  it("reads on when the node takes no matches", async () => {
-    const matchNode = await gpuOnlyRow({ enabled_for_match_making: true });
-    const gpuOnly = await gpuOnlyRow({ enabled_for_match_making: false });
+  it("reads the node's setting", async () => {
+    const on = await matchmakingRow({ enabled_for_match_making: true });
+    const off = await matchmakingRow({ enabled_for_match_making: false });
 
-    expect(matchNode.get(".switch").attributes("data-checked")).toBe("false");
-    expect(gpuOnly.get(".switch").attributes("data-checked")).toBe("true");
+    expect(on.row.get(".switch").attributes("data-checked")).toBe("true");
+    expect(off.row.get(".switch").attributes("data-checked")).toBe("false");
   });
 
-  it("asks before turning it on, and sends nothing until confirmed", async () => {
-    const row = await gpuOnlyRow({
+  it("holds Accepting matches under it only while it is on", async () => {
+    const on = await matchmakingRow({ enabled_for_match_making: true });
+    const off = await matchmakingRow({ enabled_for_match_making: false });
+
+    expect(on.wrapper.find('[data-testid="scheduling-row"]').exists()).toBe(
+      true,
+    );
+    expect(off.wrapper.find('[data-testid="scheduling-row"]').exists()).toBe(
+      false,
+    );
+  });
+
+  it("turning it off keeps the region and ports for dedicated servers", async () => {
+    const { row } = await matchmakingRow({
       enabled_for_match_making: true,
       region: "us-east",
-      start_port_range: 30020,
-      end_port_range: 30038,
     });
 
     await row.get(".switch").trigger("click");
     await flushPromises();
-
-    expect(mutate).not.toHaveBeenCalled();
-    expect(
-      row.element.parentElement!.querySelector(
-        '[data-testid="gpu-only-confirm"]',
-      ),
-    ).not.toBeNull();
-  });
-
-  it("turning it on drops matchmaking, the region and the ports", async () => {
-    const row = await gpuOnlyRow({ enabled_for_match_making: true });
-
-    await row.get(".switch").trigger("click");
-    await flushPromises();
-    await confirmGpuOnly(row);
 
     const sent = print(mutate.mock.calls[0][0].mutation);
     expect(sent).toContain("update_game_server_nodes_by_pk");
     expect(sent).toContain("enabled_for_match_making: false");
-    expect(sent).toContain("region: null");
-    expect(sent).toContain("start_port_range: null");
-    expect(sent).toContain("end_port_range: null");
-    expect(toastMock).toHaveBeenCalledTimes(1);
-    expect(toastMock.mock.calls[0][0].variant).toBeUndefined();
-  });
-
-  it("turning it off makes it a match server again", async () => {
-    const row = await gpuOnlyRow({ enabled_for_match_making: false });
-
-    await row.get(".switch").trigger("click");
-
-    const sent = print(mutate.mock.calls[0][0].mutation);
-    expect(sent).toContain("enabled_for_match_making: true");
     expect(sent).not.toContain("region");
+    expect(sent).not.toContain("port_range");
+    expect(toastMock).not.toHaveBeenCalled();
   });
 
   it("says so when the change fails", async () => {
-    mutate.mockRejectedValue(new Error("permission denied"));
-    const row = await gpuOnlyRow({ enabled_for_match_making: true });
+    mutate.mockRejectedValue(
+      new Error("Can not change node details while matches are ongoing."),
+    );
+    const { row } = await matchmakingRow({ enabled_for_match_making: false });
 
     await row.get(".switch").trigger("click");
     await flushPromises();
-    await confirmGpuOnly(row);
 
     expect(toastMock).toHaveBeenCalledWith(
       expect.objectContaining({
         variant: "destructive",
-        description: "permission denied",
+        description: "Can not change node details while matches are ongoing.",
       }),
     );
   });

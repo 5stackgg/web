@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "Online",
-        "partial": "Alguns nós offline",
+        "partial": "Alguns nós não aceitam partidas",
         "offline": "Offline",
-        "disabled": "Sem servidores"
+        "disabled": "Sem servidores",
+        "no_matchmaking": "Sem matchmaking"
       },
       "detail": {
         "label_aria": "Rótulo da região",
@@ -4098,6 +4099,7 @@
         "col_node": "Nó",
         "col_free": "Livres",
         "col_servers": "Servidores",
+        "no_matchmaking": "Sem matchmaking",
         "no_nodes_title": "Nenhum nó nesta região",
         "no_nodes_hint": "Defina a região de um nó na página {page}.",
         "relay_title": "Usar o relay da Steam",
@@ -4694,8 +4696,10 @@
       "idle": "Inativo",
       "disabled": "Desativado",
       "enabled": "Ativado",
+      "matchmaking": "Matchmaking",
       "accepting_matches": "Aceitando partidas",
       "toggle_enabled_help": "Quando desativado, o nó fica totalmente inativo — sem trabalho de GPU e sem agendamento de partidas.",
+      "toggle_matchmaking_help": "Partidas e servidores de treino começam aqui. Desativado, o nó fica para servidores dedicados e trabalho de GPU.",
       "toggle_scheduling_help": "Quando desativado, o nó continua executando partidas existentes, mas não aceitará novas.",
       "scheduling_setup_hint": "Este nó ainda está em configuração. Ele começa a aceitar partidas quando ficar online.",
       "scheduling_offline_hint": "Este nó está offline. Ele volta a aceitar partidas quando se reconectar.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "Ele para em {pct}% e libera a GPU.",
         "render_action": "Parar render"
       },
-      "toggle_gpu_only_help": "Aceita só trabalho de GPU, sem servidores de partida. Ativar limpa a região e as portas.",
       "plate": {
         "temperature": "Temperatura",
         "power": "Consumo",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Servidores livres do total que as portas permitem. O intervalo de portas fica abaixo.",
         "cap_free": "{free} de {total} livres",
         "cap_no_ports": "Sem portas",
+        "cap_no_matchmaking": "Sem matchmaking",
         "chip": {
           "updating": "Atualizando",
           "updating_pct": "Atualizando {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "Só GPU, então não hospeda partidas. Volte a trocar em GPU.",
+          "no_matchmaking": "Fora do matchmaking. Região e portas servem só aos servidores dedicados.",
           "max_servers": "Máx. servidores",
           "max_tip": "{threads} threads de CPU, menos 1 reservado ao sistema",
           "max_tip_pinning": "{threads} threads de CPU, menos 1 reservado ao sistema, {per} por servidor",
@@ -12264,8 +12268,6 @@
       "csgo_updating": "CS:GO está sendo atualizado neste nó",
       "ports_updated": "Portas Atualizadas",
       "ports_removed": "Portas do Nó Removidas",
-      "made_gpu_only": "Nó Definido como Apenas GPU",
-      "made_match_node": "Nó Definido como Servidor de Partidas",
       "label_updated": "Rótulo Atualizado",
       "cs2_options_updated": "Configurações de vídeo atualizadas"
     },

@@ -23,6 +23,19 @@ describe("regionTone / regionStatusKey", () => {
     expect(regionTone(null)).toBe("off");
     expect(regionStatusKey("Disabled")).toBe("pages.regions.status.disabled");
   });
+
+  it("says No matchmaking when its nodes only host dedicated servers", () => {
+    expect(
+      regionStatusKey("Disabled", [
+        { enabled: true, enabled_for_match_making: false },
+      ]),
+    ).toBe("pages.regions.status.no_matchmaking");
+    expect(
+      regionStatusKey("Disabled", [
+        { enabled: false, enabled_for_match_making: false },
+      ]),
+    ).toBe("pages.regions.status.disabled");
+  });
 });
 
 describe("regionLabel", () => {
@@ -81,6 +94,16 @@ describe("nodeState", () => {
       "not_accepting",
     );
     expect(nodeState({ status: null, enabled: true })).toBe("offline");
+  });
+
+  it("reads a node out of matchmaking as online whatever it accepts", () => {
+    expect(
+      nodeState({
+        status: "NotAcceptingNewMatches",
+        enabled: true,
+        enabled_for_match_making: false,
+      }),
+    ).toBe("online");
   });
 });
 

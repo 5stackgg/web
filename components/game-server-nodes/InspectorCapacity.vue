@@ -19,9 +19,9 @@ import NodeMeter from "~/components/game-server-nodes/NodeMeter.vue";
 import { CircleAlert } from "lucide-vue-next";
 import {
   hasPorts,
-  isGpuOnly,
   isOffline,
   isOverprovisioned,
+  takesMatches,
   type CpuPinning,
   type NodeLike,
 } from "~/components/game-server-nodes/nodeState";
@@ -56,7 +56,7 @@ const { t } = useI18n();
 const valClasses =
   "-ml-2 h-7 w-auto min-w-0 max-w-full gap-1.5 border-transparent bg-transparent px-2 py-0 text-[13px] shadow-none transition-colors hover:border-border hover:bg-muted/40 focus:ring-0 focus-visible:ring-1 data-[state=open]:border-border";
 
-const gpuOnly = computed(() => isGpuOnly(props.node));
+const matches = computed(() => takesMatches(props.node));
 const inSetup = computed(() => props.node.status === "Setup");
 const ports = computed(() =>
   hasPorts(props.node)
@@ -64,8 +64,8 @@ const ports = computed(() =>
     : "",
 );
 const threads = computed(() => cpuThreads(props.node));
-const overprovisioned = computed(() =>
-  isOverprovisioned(props.node, props.maxServers),
+const overprovisioned = computed(
+  () => matches.value && isOverprovisioned(props.node, props.maxServers),
 );
 const total = computed(() => props.node.total_server_count ?? 0);
 const used = computed(() =>
@@ -78,6 +78,10 @@ const servers = computed(() => {
   }
   if (!hasPorts(props.node)) {
     return "no_ports";
+  }
+  // Out of matchmaking, its on-demand servers never start.
+  if (!matches.value) {
+    return "none";
   }
   if (!props.node.enabled) {
     return "disabled";
@@ -180,11 +184,11 @@ function onPortsKey(event: KeyboardEvent) {
       t("pages.game_server_nodes.table.capacity")
     }}</InspectorLabel>
 
-    <p v-if="gpuOnly" class="text-xs text-muted-foreground">
-      {{ t(`${INSPECTOR}.capacity.gpu_only`) }}
+    <p v-if="!matches" class="text-xs text-muted-foreground">
+      {{ t(`${INSPECTOR}.capacity.no_matchmaking`) }}
     </p>
 
-    <div v-else class="gsn-kv">
+    <div class="gsn-kv">
       <span class="gsn-k">{{ t("common.region") }}</span>
       <div class="gsn-v">
         <Select

@@ -141,11 +141,33 @@ describe("nodeIneligibility", () => {
     update_status: null,
     gpu: false,
     enabled_for_match_making: true,
+    start_port_range: 30000,
+    end_port_range: 30020,
     ...fields,
   });
 
   it("accepts an online node on the build", () => {
     expect(nodeIneligibility(node(), 25537370)).toBeNull();
+  });
+
+  it("refuses a GPU-only node, not a GPU node out of matchmaking with ports", () => {
+    expect(
+      nodeIneligibility(
+        node({
+          gpu: true,
+          enabled_for_match_making: false,
+          start_port_range: null,
+          end_port_range: null,
+        }),
+        25537370,
+      ),
+    ).toEqual({ key: "gpu_only" });
+    expect(
+      nodeIneligibility(
+        node({ gpu: true, enabled_for_match_making: false }),
+        25537370,
+      ),
+    ).toBeNull();
   });
 
   it.each([

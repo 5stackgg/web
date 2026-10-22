@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "Online",
-        "partial": "Część węzłów offline",
+        "partial": "Część węzłów nie przyjmuje meczów",
         "offline": "Offline",
-        "disabled": "Brak serwerów"
+        "disabled": "Brak serwerów",
+        "no_matchmaking": "Bez matchmakingu"
       },
       "detail": {
         "label_aria": "Etykieta regionu",
@@ -4098,6 +4099,7 @@
         "col_node": "Węzeł",
         "col_free": "Wolne",
         "col_servers": "Serwery",
+        "no_matchmaking": "Bez matchmakingu",
         "no_nodes_title": "Brak węzłów w tym regionie",
         "no_nodes_hint": "Ustaw region węzła na stronie {page}.",
         "relay_title": "Używaj relay Steam",
@@ -4694,8 +4696,10 @@
       "idle": "Bezczynne",
       "disabled": "Wyłączone",
       "enabled": "Włączone",
+      "matchmaking": "Matchmaking",
       "accepting_matches": "Przyjmuje mecze",
       "toggle_enabled_help": "Gdy wyłączone, węzeł jest całkowicie nieaktywny — brak pracy GPU i planowania meczów.",
+      "toggle_matchmaking_help": "Tu startują mecze i serwery treningowe. Gdy wyłączone, węzeł służy tylko serwerom dedykowanym i pracy GPU.",
       "toggle_scheduling_help": "Gdy wyłączone, węzeł kontynuuje bieżące mecze, ale nie przyjmuje nowych.",
       "scheduling_setup_hint": "Ten węzeł jest nadal konfigurowany. Zacznie przyjmować mecze, gdy będzie online.",
       "scheduling_offline_hint": "Ten węzeł jest offline. Znów zacznie przyjmować mecze po ponownym połączeniu.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "Zostanie zatrzymany przy {pct}% i zwolni GPU.",
         "render_action": "Zatrzymaj render"
       },
-      "toggle_gpu_only_help": "Przyjmuje tylko pracę GPU, bez serwerów meczowych. Włączenie czyści jego region i porty.",
       "plate": {
         "temperature": "Temperatura",
         "power": "Moc",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Wolne serwery z łącznej liczby, na którą pozwalają porty. Zakres portów jest poniżej.",
         "cap_free": "Wolne: {free} z {total}",
         "cap_no_ports": "Brak portów",
+        "cap_no_matchmaking": "Bez matchmakingu",
         "chip": {
           "updating": "Aktualizacja",
           "updating_pct": "Aktualizacja {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "Tylko GPU, więc nie hostuje meczów. Przełącz z powrotem w sekcji GPU.",
+          "no_matchmaking": "Poza matchmakingiem. Region i porty służą tylko serwerom dedykowanym.",
           "max_servers": "Maks. serwerów",
           "max_tip": "Wątki CPU: {threads}, minus 1 dla systemu",
           "max_tip_pinning": "Wątki CPU: {threads}, minus 1 dla systemu, {per} na serwer",
@@ -12264,8 +12268,6 @@
       "csgo_updating": "CS:GO jest aktualizowane na węźle",
       "ports_updated": "Porty węzła zaktualizowane",
       "ports_removed": "Porty węzła usunięte",
-      "made_gpu_only": "Węzeł ustawiony jako tylko GPU",
-      "made_match_node": "Węzeł ustawiony jako serwer meczowy",
       "label_updated": "Etykieta węzła zaktualizowana",
       "cs2_options_updated": "Ustawienia wideo zaktualizowane"
     },

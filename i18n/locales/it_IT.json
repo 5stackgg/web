@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "Online",
-        "partial": "Alcuni nodi offline",
+        "partial": "Alcuni nodi non accettano match",
         "offline": "Offline",
-        "disabled": "Nessun server"
+        "disabled": "Nessun server",
+        "no_matchmaking": "Niente matchmaking"
       },
       "detail": {
         "label_aria": "Etichetta della regione",
@@ -4098,6 +4099,7 @@
         "col_node": "Nodo",
         "col_free": "Liberi",
         "col_servers": "Server",
+        "no_matchmaking": "Niente matchmaking",
         "no_nodes_title": "Nessun nodo in questa regione",
         "no_nodes_hint": "Imposta la regione di un nodo nella pagina {page}.",
         "relay_title": "Usa il relay di Steam",
@@ -4694,8 +4696,10 @@
       "idle": "Inattivo",
       "disabled": "Disattivato",
       "enabled": "Attivo",
+      "matchmaking": "Matchmaking",
       "accepting_matches": "Accetta match",
       "toggle_enabled_help": "Se disattivato, il nodo è completamente disabilitato — nessun lavoro GPU e nessuna assegnazione di match.",
+      "toggle_matchmaking_help": "Qui partono i match e i server di allenamento. Se disattivato, il nodo resta per i server dedicati e il lavoro GPU.",
       "toggle_scheduling_help": "Se disattivato, il nodo continua i match in corso ma non ne accetta di nuovi.",
       "scheduling_setup_hint": "Questo nodo è ancora in configurazione. Inizierà ad accettare match quando sarà online.",
       "scheduling_offline_hint": "Questo nodo è offline. Tornerà ad accettare match quando si riconnetterà.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "Si interrompe al {pct}% e libera la GPU.",
         "render_action": "Interrompi rendering"
       },
-      "toggle_gpu_only_help": "Accetta solo lavoro GPU, nessun server di match. Attivarlo cancella la sua regione e le porte.",
       "plate": {
         "temperature": "Temperatura",
         "power": "Potenza",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Server liberi sul totale consentito dalle sue porte. L'intervallo di porte è sotto.",
         "cap_free": "{free} di {total} liberi",
         "cap_no_ports": "Nessuna porta",
+        "cap_no_matchmaking": "Niente matchmaking",
         "chip": {
           "updating": "Aggiornamento",
           "updating_pct": "Aggiornamento {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "Solo GPU, quindi non ospita partite. Riportalo indietro sotto GPU.",
+          "no_matchmaking": "Fuori dal matchmaking. Regione e porte servono solo ai server dedicati.",
           "max_servers": "Server massimi",
           "max_tip": "{threads} thread CPU, meno 1 riservato al sistema",
           "max_tip_pinning": "{threads} thread CPU, meno 1 riservato al sistema, {per} per server",
@@ -12264,8 +12268,6 @@
       "csgo_updating": "CS:GO è in aggiornamento sul nodo",
       "ports_updated": "Porte del nodo aggiornate",
       "ports_removed": "Porte del nodo rimosse",
-      "made_gpu_only": "Nodo impostato solo per GPU",
-      "made_match_node": "Nodo impostato come server di match",
       "label_updated": "Etichetta del nodo aggiornata",
       "cs2_options_updated": "Impostazioni video aggiornate"
     },

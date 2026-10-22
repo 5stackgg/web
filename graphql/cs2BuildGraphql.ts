@@ -109,6 +109,8 @@ export const CS2_BUILD_NODES_SUBSCRIPTION = gql`
       update_status
       gpu
       enabled_for_match_making
+      start_port_range
+      end_port_range
       e_region {
         description
       }

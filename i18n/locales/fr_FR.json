@@ -4087,9 +4087,10 @@
       },
       "status": {
         "online": "En ligne",
-        "partial": "Certains nœuds hors ligne",
+        "partial": "Certains nœuds n'acceptent pas de matchs",
         "offline": "Hors ligne",
-        "disabled": "Aucun serveur"
+        "disabled": "Aucun serveur",
+        "no_matchmaking": "Sans matchmaking"
       },
       "detail": {
         "label_aria": "Libellé de la région",
@@ -4098,6 +4099,7 @@
         "col_node": "Nœud",
         "col_free": "Libres",
         "col_servers": "Serveurs",
+        "no_matchmaking": "Sans matchmaking",
         "no_nodes_title": "Aucun nœud dans cette région",
         "no_nodes_hint": "Définis la région d'un nœud sur la page {page}.",
         "relay_title": "Utiliser le relais Steam",
@@ -4694,8 +4696,10 @@
       "idle": "Inactif",
       "disabled": "Désactivé",
       "enabled": "Activé",
+      "matchmaking": "Matchmaking",
       "accepting_matches": "Accepte les matchs",
       "toggle_enabled_help": "Désactivé, le nœud est totalement hors service — aucun travail GPU ni planification de match.",
+      "toggle_matchmaking_help": "Les matchs et les serveurs d'entraînement démarrent ici. Désactivé, le nœud reste pour les serveurs dédiés et le travail GPU.",
       "toggle_scheduling_help": "Désactivé, le nœud continue les matchs en cours mais n'en accepte plus de nouveaux.",
       "scheduling_setup_hint": "Ce nœud est encore en configuration. Il acceptera des matchs dès qu'il sera en ligne.",
       "scheduling_offline_hint": "Ce nœud est hors ligne. Il acceptera de nouveau des matchs dès sa reconnexion.",
@@ -4887,7 +4891,6 @@
         "render_body_pct": "Il s'arrête à {pct} % et libère le GPU.",
         "render_action": "Arrêter le rendu"
       },
-      "toggle_gpu_only_help": "Ne prend que du travail GPU, aucun serveur de match. L'activer efface sa région et ses ports.",
       "plate": {
         "temperature": "Température",
         "power": "Puissance",
@@ -5178,6 +5181,7 @@
         "capacity_tip": "Serveurs libres sur le total permis par ses ports. La plage de ports figure en dessous.",
         "cap_free": "{free} sur {total} libres",
         "cap_no_ports": "Aucun port",
+        "cap_no_matchmaking": "Sans matchmaking",
         "chip": {
           "updating": "Mise à jour",
           "updating_pct": "Mise à jour {percent}%",
@@ -5242,7 +5246,7 @@
           "cs2": "CS2"
         },
         "capacity": {
-          "gpu_only": "GPU uniquement, il n'héberge donc pas de matchs. Rétablissez-le sous GPU.",
+          "no_matchmaking": "Hors matchmaking. Sa région et ses ports servent uniquement aux serveurs dédiés.",
           "max_servers": "Serveurs max.",
           "max_tip": "{threads} threads CPU, moins 1 réservé au système",
           "max_tip_pinning": "{threads} threads CPU, moins 1 réservé au système, {per} par serveur",
@@ -12264,8 +12268,6 @@
       "csgo_updating": "CS:GO est en cours de mise à jour sur le nœud",
       "ports_updated": "Ports du nœud mis à jour",
       "ports_removed": "Ports du nœud supprimés",
-      "made_gpu_only": "Nœud passé en GPU uniquement",
-      "made_match_node": "Nœud passé en serveur de match",
       "label_updated": "Libellé du nœud mis à jour",
       "cs2_options_updated": "Paramètres vidéo mis à jour"
     },

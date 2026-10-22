@@ -11907,6 +11907,8 @@
       "in_lobby": "로비에 있음",
       "in_draft": "드래프트 로비에 있음",
       "playing_cs2": "Counter-Strike 2 플레이 중",
+      "in_practice": "연습 중 · {map}",
+      "practice_full": "가득 참 · {seated}/{max}",
       "available": "참여 가능",
       "join": "참여",
       "live": "라이브",

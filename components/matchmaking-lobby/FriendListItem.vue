@@ -114,8 +114,27 @@ const isOnline = computed(() =>
   ),
 );
 
-const { statusKey, statusIcon, statusLabelKey, joinableDraft, currentMatch } =
-  useFriendStatus(() => props.player, isOnline);
+const {
+  statusKey,
+  statusIcon,
+  statusLabelKey,
+  statusLabelParams,
+  joinableDraft,
+  hostedPractice,
+  currentMatch,
+} = useFriendStatus(() => props.player, isOnline);
+
+const joinablePractice = computed(() =>
+  statusKey.value === "in_practice" ? hostedPractice.value : null,
+);
+
+function joinPractice() {
+  const session = joinablePractice.value;
+  if (!session || session.full) {
+    return;
+  }
+  navigateTo(session.path);
+}
 
 const joiningDraft = ref(false);
 async function joinDraft() {
@@ -232,13 +251,17 @@ const STATUS_BANNER: Record<string, string> = {
   in_lobby: "border-sky-500 from-sky-500/15 text-sky-300",
   in_draft:
     "border-[hsl(var(--tac-amber))] from-[hsl(var(--tac-amber))]/15 text-[hsl(var(--tac-amber))]",
+  in_practice:
+    "border-[hsl(var(--tac-amber))] from-[hsl(var(--tac-amber))]/15 text-[hsl(var(--tac-amber))]",
 };
 const bannerAccent = computed(() => STATUS_BANNER[statusKey.value] ?? "");
 const showBanner = computed(
   () =>
     isFriend.value &&
     (!!currentMatch.value ||
-      ["in_cs2", "in_lobby", "in_draft"].includes(statusKey.value)),
+      ["in_cs2", "in_lobby", "in_draft", "in_practice"].includes(
+        statusKey.value,
+      )),
 );
 
 const actionBtn =
@@ -529,42 +552,80 @@ const amberHover =
             class="px-2 pb-2 pt-0.5"
             :class="muted ? 'opacity-50 group-hover/row:opacity-90' : ''"
           >
-            <PlayerLiveStatus
-              v-if="currentMatch || statusKey === 'in_cs2'"
-              :player="player"
-              :online="isOnline"
-            />
-            <div
-              v-else
-              class="flex items-center gap-2 rounded-md border-l-2 bg-gradient-to-r to-transparent px-2.5 py-1.5"
-              :class="bannerAccent"
-            >
-              <component
-                :is="statusIcon"
-                v-if="statusIcon"
-                class="h-3.5 w-3.5 shrink-0"
+            <HeightSwap>
+              <PlayerLiveStatus
+                v-if="currentMatch || statusKey === 'in_cs2'"
+                key="live"
+                :player="player"
+                :online="isOnline"
               />
-              <span
-                class="min-w-0 truncate font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em]"
+              <div
+                v-else
+                :key="statusKey"
+                class="flex items-center gap-2 rounded-md border-l-2 bg-gradient-to-r to-transparent px-2.5 py-1.5"
+                :class="bannerAccent"
               >
-                {{ $t(statusLabelKey) }}
-              </span>
+                <component
+                  :is="statusIcon"
+                  v-if="statusIcon"
+                  class="h-3.5 w-3.5 shrink-0"
+                />
+                <span
+                  class="min-w-0 truncate font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em]"
+                >
+                  {{ $t(statusLabelKey, statusLabelParams) }}
+                </span>
 
-              <!-- Mini join button — flush right — for a joinable draft -->
-              <Button
-                v-if="joinableDraft && !joinableDraft.full && !friendInMyDraft"
-                size="sm"
-                :class="[
-                  'ml-auto h-5 shrink-0 cursor-pointer gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
-                  'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
-                ]"
-                :loading="joiningDraft"
-                @click.stop.prevent="joinDraft"
-              >
-                <LogIn class="h-3 w-3" />
-                {{ $t("matchmaking.friends.join") }}
-              </Button>
-            </div>
+                <HeightSwap
+                  v-if="joinablePractice"
+                  axis="x"
+                  class="ml-auto shrink-0"
+                >
+                  <span
+                    v-if="joinablePractice.full"
+                    key="full"
+                    class="inline-flex h-5 items-center whitespace-nowrap rounded border border-border/70 bg-muted/30 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"
+                  >
+                    {{
+                      $t("matchmaking.friends.practice_full", {
+                        seated: joinablePractice.seated,
+                        max: joinablePractice.max,
+                      })
+                    }}
+                  </span>
+                  <Button
+                    v-else
+                    key="join"
+                    size="sm"
+                    :class="[
+                      'h-5 cursor-pointer gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
+                      'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
+                    ]"
+                    @click.stop.prevent="joinPractice"
+                  >
+                    <LogIn class="h-3 w-3" />
+                    {{ $t("matchmaking.friends.join") }}
+                  </Button>
+                </HeightSwap>
+
+                <!-- Mini join button — flush right — for a joinable draft -->
+                <Button
+                  v-else-if="
+                    joinableDraft && !joinableDraft.full && !friendInMyDraft
+                  "
+                  size="sm"
+                  :class="[
+                    'ml-auto h-5 shrink-0 cursor-pointer gap-1 px-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.1em]',
+                    'bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.85)]',
+                  ]"
+                  :loading="joiningDraft"
+                  @click.stop.prevent="joinDraft"
+                >
+                  <LogIn class="h-3 w-3" />
+                  {{ $t("matchmaking.friends.join") }}
+                </Button>
+              </div>
+            </HeightSwap>
           </div>
           </div>
           </div>

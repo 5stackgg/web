@@ -11907,6 +11907,8 @@
       "in_lobby": "В лобби",
       "in_draft": "В лобби драфта",
       "playing_cs2": "Играет в Counter-Strike 2",
+      "in_practice": "На тренировке · {map}",
+      "practice_full": "Заполнен · {seated}/{max}",
       "available": "Доступен",
       "join": "Присоединиться",
       "live": "В эфире",

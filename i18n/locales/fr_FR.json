@@ -11907,6 +11907,8 @@
       "in_lobby": "En lobby",
       "in_draft": "En lobby de draft",
       "playing_cs2": "Joue à Counter-Strike 2",
+      "in_practice": "En entraînement · {map}",
+      "practice_full": "Plein · {seated}/{max}",
       "available": "Disponible",
       "join": "Rejoindre",
       "live": "Live",

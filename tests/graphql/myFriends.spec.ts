@@ -21,4 +21,10 @@ describe("MY_FRIENDS_SUBSCRIPTION", () => {
     );
     expect(document).toContain("match_maps(order_by: [{order: asc}])");
   });
+
+  it("asks each friend for one Ready practice server friends may join", () => {
+    expect(document).toContain(
+      "hosted_practice_sessions( where: {status: {_eq: Ready}, access: {_in: [Open, Friends]}} limit: 1 ) { id map_name access status invite_code seated_players max_players is_full }",
+    );
+  });
 });

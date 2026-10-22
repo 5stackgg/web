@@ -11907,6 +11907,8 @@
       "in_lobby": "ロビー内",
       "in_draft": "ドラフトロビー内",
       "playing_cs2": "Counter-Strike 2 をプレイ中",
+      "in_practice": "練習中 · {map}",
+      "practice_full": "満員 · {seated}/{max}",
       "available": "オンライン",
       "join": "参加",
       "live": "ライブ",

@@ -11907,6 +11907,8 @@
       "in_lobby": "在大厅中",
       "in_draft": "在选秀大厅中",
       "playing_cs2": "正在游玩 Counter-Strike 2",
+      "in_practice": "练习中 · {map}",
+      "practice_full": "已满 · {seated}/{max}",
       "available": "空闲",
       "join": "加入",
       "live": "直播中",

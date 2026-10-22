@@ -100,9 +100,12 @@ const selectedCanQueue = computed(
     modes.value.find((mode) => mode.type === selectedType.value)?.canQueue ??
     false,
 );
-// The seat row follows the pick; before one, it shows the biggest format.
+// The seat row opens on a pick, or for a party (joined or invited) before
+// one, showing the biggest format.
+const inParty = computed(() => (lobby.value?.players?.length ?? 0) > 1);
 const seatType = computed(
-  () => selectedType.value ?? modes.value[0]?.type ?? null,
+  () =>
+    selectedType.value ?? (inParty.value ? modes.value[0]?.type : null) ?? null,
 );
 
 // With nothing checked, Tab lands on the first mode it can pick, like a
@@ -555,7 +558,9 @@ const linkClasses =
           ></span>
         </div>
 
-        <PlaySeatRow v-if="!isGuest && seatType" :type="seatType" />
+        <Fold :open="!isGuest && !!seatType">
+          <PlaySeatRow v-if="seatType" :type="seatType" />
+        </Fold>
 
         <div
           class="mt-4 flex items-center justify-between gap-x-6 gap-y-3.5 border-t border-border/70 pt-4 max-lg:flex-col max-lg:items-stretch max-sm:contents"

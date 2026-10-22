@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, provide, ref, watch } from "vue";
 import {
   ArrowRight,
   Play,
@@ -32,7 +32,7 @@ import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
 import { matchHasEnded } from "~/utilities/matchTeamLobby";
 import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
-import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
+import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
@@ -49,6 +49,14 @@ import DraftRequestQueue from "~/components/draft-games/DraftRequestQueue.vue";
 import DraftOpenSlot from "~/components/draft-games/DraftOpenSlot.vue";
 import DraftSettingsSheet from "~/components/draft-games/DraftSettingsSheet.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
+import DraftAdminBar from "~/components/draft-games/DraftAdminBar.vue";
+import DraftRoomMenu from "~/components/draft-games/DraftRoomMenu.vue";
+import DraftCheckInBox from "~/components/draft-games/DraftCheckInBox.vue";
+import DraftCancelDialog from "~/components/draft-games/DraftCancelDialog.vue";
+import {
+  RANK_SLOTS_KEY,
+  rankSlotsFor,
+} from "~/components/draft-games/playerRanks";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { playerBlockErrorKey } from "~/utilities/playerBlocks";
 import { useCountdown } from "~/composables/useCountdown";
@@ -266,6 +274,18 @@ const joinRoom = () => {
 const notStarted = computed(
   () => !props.room.match_id && props.room.status === "Open",
 );
+
+// An organizer can delete the room until its match is being made; from then
+// on the match's own Cancel takes over.
+const canCancelDraft = computed(
+  () =>
+    isOrganizer.value &&
+    !props.room.match_id &&
+    ["Open", "Filled", "SelectingCaptains", "Drafting"].includes(
+      props.room.status,
+    ),
+);
+const cancelOpen = ref(false);
 const isHostAssigning = computed(() => isHostMode.value && notStarted.value);
 
 const accepted = computed(() =>
@@ -298,6 +318,13 @@ const pool = computed(() =>
 );
 
 const appSettings = useApplicationSettingsStore();
+
+provide(
+  RANK_SLOTS_KEY,
+  computed(() =>
+    rankSlotsFor(props.room.players.map((member: any) => member.player)),
+  ),
+);
 const eloSource = ref<"elo" | "cs2" | "faceit">("elo");
 const rankSources = computed(() => {
   const sources = [{ key: "elo", label: "5Stack" }];
@@ -647,6 +674,21 @@ const showQueue = computed(
 const memberIds = computed(() =>
   props.room.players.map((p: any) => p.steam_id),
 );
+
+// A leaving card would keep its cell for its fade and the rest would jump
+// over once it went. Pinned where it stands and out of the flow, the rest
+// slide over at once while it fades.
+const pinLeaver = (el: Element) => {
+  const card = el as HTMLElement;
+  const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = card;
+  Object.assign(card.style, {
+    position: "absolute",
+    top: `${offsetTop}px`,
+    left: `${offsetLeft}px`,
+    width: `${offsetWidth}px`,
+    height: `${offsetHeight}px`,
+  });
+};
 
 const draftPick = (steamId: string) => {
   return runGuarded("pick", () =>
@@ -999,13 +1041,9 @@ const inviteOpen = computed(
     !["CreatingMatch", "Completed", "Canceled"].includes(props.room.status),
 );
 
-type DraftHeaderActionKind =
-  "checkin" | "accept" | "decline" | "leave" | "join" | "start";
+type DraftHeaderActionKind = "accept" | "decline" | "leave" | "join" | "start";
 
 const headerActions = computed<DraftHeaderActionKind[]>(() => {
-  if (canCheckIn.value) {
-    return ["checkin"];
-  }
   if (isInvited.value) {
     return inviteOpen.value ? ["decline", "accept"] : ["decline"];
   }
@@ -1318,12 +1356,7 @@ const header = computed<DraftHeaderState>(() => {
     const missing = total - ready;
     const base = {
       phase,
-      box: {
-        kind: "count" as const,
-        value: ready,
-        of: total,
-        caption: t("draft_games.header.box_checked_in"),
-      },
+      box: { kind: "checkin" as const },
       onClock: null,
     };
     if (canCheckIn.value) {
@@ -1492,15 +1525,12 @@ const header = computed<DraftHeaderState>(() => {
         >
           <template #menu>
             <MatchActions v-if="match" :match="match" />
+            <DraftRoomMenu
+              v-else-if="canCancelDraft"
+              @cancel="cancelOpen = true"
+            />
           </template>
           <template v-if="headerPhase !== 'lobby' && headerActions.length" #cta>
-            <CheckIntoMatch
-              v-if="headerActions.includes('checkin')"
-              compact
-              :match="match"
-              :deadline="checkInDeadline"
-              :deadline-help="checkInDeadlineHelp"
-            />
             <DraftHeaderAction
               v-if="headerActions.includes('decline')"
               variant="secondary"
@@ -1511,6 +1541,16 @@ const header = computed<DraftHeaderState>(() => {
               v-if="headerActions.includes('accept')"
               :label="$t('draft_games.room.accept_invite')"
               :action="() => respondInvite(true)"
+            />
+          </template>
+          <template #checkin>
+            <DraftCheckInBox
+              :match="match"
+              :deadline="checkInDeadline"
+              :ready="checkInProgress?.ready ?? 0"
+              :total="checkInProgress?.total ?? room.capacity"
+              :can-check-in="canCheckIn"
+              :checked-in="inMatchLineup && myCheckedIn"
             />
           </template>
           <template #actions>
@@ -1566,6 +1606,7 @@ const header = computed<DraftHeaderState>(() => {
             :room="room"
             :match="match"
             @open-settings="settingsOpen = true"
+            @cancel="cancelOpen = true"
           />
         </Fold>
 
@@ -1976,10 +2017,12 @@ const header = computed<DraftHeaderState>(() => {
                         />
                       </div>
 
+                      <HeightGlide>
                       <TransitionGroup
                         name="pool"
                         tag="div"
                         class="draft-pool-grid"
+                        @before-leave="pinLeaver"
                       >
                         <DraftPlayerCard
                           v-for="player in pool"
@@ -2068,6 +2111,7 @@ const header = computed<DraftHeaderState>(() => {
                           @selected="add"
                         />
                       </TransitionGroup>
+                      </HeightGlide>
 
                       <Transition name="cta">
                         <div
@@ -2109,6 +2153,7 @@ const header = computed<DraftHeaderState>(() => {
                                 name="pool"
                                 tag="div"
                                 class="draft-pool-grid"
+                                @before-leave="pinLeaver"
                               >
                                 <DraftPlayerCard
                                   v-for="(player, index) in waitlist"
@@ -2169,6 +2214,7 @@ const header = computed<DraftHeaderState>(() => {
                                 name="pool"
                                 tag="div"
                                 class="draft-pool-grid"
+                                @before-leave="pinLeaver"
                               >
                                 <DraftPlayerCard
                                   v-for="player in invited"
@@ -2364,7 +2410,17 @@ const header = computed<DraftHeaderState>(() => {
       </div>
     </div>
 
-    <MatchAdminBottomBar v-if="match?.is_organizer" :match="match" />
+    <MatchAdminBottomBar v-if="match?.is_organizer" :match="match" draft />
+    <DraftAdminBar
+      v-else-if="canCancelDraft && !notStarted"
+      :room="room"
+      @cancel="cancelOpen = true"
+    />
+    <DraftCancelDialog
+      v-if="canCancelDraft"
+      v-model:open="cancelOpen"
+      :room-id="room.id"
+    />
 
     <AlertDialog
       :open="kickTarget !== null"
@@ -2505,6 +2561,7 @@ const header = computed<DraftHeaderState>(() => {
   grid-template-columns: minmax(0, 1fr);
 }
 .draft-pool-grid {
+  position: relative;
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
@@ -2577,6 +2634,9 @@ const header = computed<DraftHeaderState>(() => {
    card sliding, which shifted anything anchored to the grid and read as jank).
    Leave fades in place (no `position: absolute`, which in a multi-column grid
    would snap the departing card to full width and yank the rest up). */
+.pool-move {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
 .pool-enter-active {
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

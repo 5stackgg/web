@@ -23,6 +23,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: "open-settings"): void;
+  (event: "cancel"): void;
 }>();
 
 const { t } = useI18n();
@@ -92,28 +93,6 @@ const extend = async () => {
       title: t("common.error"),
       description: error?.message,
     });
-  }
-};
-
-const confirmCancel = ref(false);
-const canceling = ref(false);
-const cancelDraft = async () => {
-  if (canceling.value) {
-    return;
-  }
-  canceling.value = true;
-  try {
-    await useDraftGamesStore().cancelDraftRoom(props.room.id);
-    confirmCancel.value = false;
-    return navigateTo("/play");
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("common.error"),
-      description: error?.message,
-    });
-  } finally {
-    canceling.value = false;
   }
 };
 
@@ -333,7 +312,7 @@ const leave = async () => {
               <button
                 type="button"
                 class="deck-btn deck-danger"
-                @click="confirmCancel = true"
+                @click="emit('cancel')"
               >
                 <X class="h-4 w-4" />
               </button>
@@ -449,29 +428,6 @@ const leave = async () => {
     </div>
     <span class="scanline" aria-hidden="true"></span>
 
-    <AlertDialog
-      :open="confirmCancel"
-      @update:open="(open) => (confirmCancel = open)"
-    >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {{ $t("draft_games.room.cancel_draft_confirm_title") }}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {{ $t("draft_games.room.cancel_draft_confirm_description") }}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel :disabled="canceling">
-            {{ $t("common.cancel") }}
-          </AlertDialogCancel>
-          <Button variant="destructive" :disabled="canceling" @click="cancelDraft">
-            {{ $t("draft_games.room.cancel_draft") }}
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   </div>
 </template>
 

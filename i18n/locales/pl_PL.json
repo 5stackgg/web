@@ -11299,6 +11299,7 @@
       "current": "Obecny",
       "steps": {
         "label": "Etapy meczu",
+        "draft": "Draft",
         "check_in": "Check-in",
         "veto": "Veto",
         "warmup": "Rozgrzewka",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} wybiera dla: {team}",
       "selecting_title": "Wybór kapitanów",
       "selecting_detail": "Draft zaraz się zacznie.",
-      "box_checked_in": "Potwierdzili obecność",
       "checkin_title": "Potwierdź obecność, aby zagrać",
       "checkin_detail": "Obecność potwierdziło {ready} z {total}. Każdy ma minutę.",
       "checkin_count": "Obecność potwierdziło {ready} z {total}.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "To Twoja kolej — wybierz następnego gracza.",
       "removed_title": "Usunięto z draftu",
       "removed_desc": "Nie jesteś już w pokoju draftu."
+    },
+    "ranks": {
+      "no_premier": "Brak rangi Premier",
+      "no_faceit": "Brak połączonego FACEIT"
     }
   },
   "league": {

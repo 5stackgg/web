@@ -11299,6 +11299,7 @@
       "current": "Поточний",
       "steps": {
         "label": "Етапи матчу",
+        "draft": "Драфт",
         "check_in": "Чек-ін",
         "veto": "Вето",
         "warmup": "Розминка",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} обирає за {team}",
       "selecting_title": "Обираємо капітанів",
       "selecting_detail": "Драфт зараз почнеться.",
-      "box_checked_in": "Зареєстровано",
       "checkin_title": "Зареєструйся, щоб грати",
       "checkin_detail": "Зареєструвалися {ready} з {total}. Кожен має хвилину.",
       "checkin_count": "Зареєструвалися {ready} з {total}.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "Твій хід — обери наступного гравця.",
       "removed_title": "Видалено з драфту",
       "removed_desc": "Ти більше не в кімнаті драфту."
+    },
+    "ranks": {
+      "no_premier": "Немає рангу Premier",
+      "no_faceit": "FACEIT не прив'язано"
     }
   },
   "league": {

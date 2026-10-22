@@ -11299,6 +11299,7 @@
       "current": "الحالي",
       "steps": {
         "label": "مراحل المباراة",
+        "draft": "اختيار اللاعبين",
         "check_in": "تسجيل الحضور",
         "veto": "الاستبعاد",
         "warmup": "الإحماء",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} يختار لـ{team}",
       "selecting_title": "يجري اختيار القادة",
       "selecting_detail": "يبدأ الاختيار بعد لحظات.",
-      "box_checked_in": "أكدوا الحضور",
       "checkin_title": "أكّد حضورك لتلعب",
       "checkin_detail": "أكّد {ready} من {total} حضورهم. لكل لاعب دقيقة واحدة.",
       "checkin_count": "أكّد {ready} من {total} حضورهم.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "الوقت يعمل — اختر لاعبك التالي.",
       "removed_title": "تمت إزالتك من الاختيار",
       "removed_desc": "لم تعد في غرفة اختيار اللاعبين."
+    },
+    "ranks": {
+      "no_premier": "لا يوجد تصنيف Premier",
+      "no_faceit": "لا يوجد حساب FACEIT مرتبط"
     }
   },
   "league": {

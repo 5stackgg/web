@@ -11299,6 +11299,7 @@
       "current": "현재",
       "steps": {
         "label": "매치 단계",
+        "draft": "드래프트",
         "check_in": "체크인",
         "veto": "거부",
         "warmup": "워밍업",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name}이(가) {team}의 픽을 고르는 중",
       "selecting_title": "팀장을 정하는 중",
       "selecting_detail": "곧 드래프트가 시작됩니다.",
-      "box_checked_in": "체크인 완료",
       "checkin_title": "체크인하고 플레이하세요",
       "checkin_detail": "{total}명 중 {ready}명이 체크인했습니다. 모두 1분이 주어집니다.",
       "checkin_count": "{total}명 중 {ready}명이 체크인했습니다.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "지금 지명 차례입니다 — 다음 플레이어를 선택하세요.",
       "removed_title": "드래프트에서 제외됨",
       "removed_desc": "더 이상 드래프트 룸에 참여하지 않습니다."
+    },
+    "ranks": {
+      "no_premier": "Premier 랭크 없음",
+      "no_faceit": "FACEIT 미연결"
     }
   },
   "league": {

@@ -5,7 +5,7 @@ import {
 } from "~/generated/zeus";
 
 export type MatchAdminStep =
-  "check_in" | "veto" | "warmup" | "live" | "finished";
+  "draft" | "check_in" | "veto" | "warmup" | "live" | "finished";
 
 type StepMatch = {
   status?: string | null;
@@ -18,6 +18,7 @@ type StepMatch = {
 };
 
 const ALL_STEPS: MatchAdminStep[] = [
+  "draft",
   "check_in",
   "veto",
   "warmup",
@@ -33,10 +34,16 @@ const ENDED: string[] = [
   e_match_status_enum.Canceled,
 ];
 
-// The veto step only exists for matches that run one.
-export function matchAdminSteps(match: StepMatch): MatchAdminStep[] {
+// The veto step only exists for matches that run one, and the draft step for
+// matches a draft room made.
+export function matchAdminSteps(
+  match: StepMatch,
+  draft = false,
+): MatchAdminStep[] {
   const hasVeto = !!(match.options?.map_veto || match.options?.region_veto);
-  return ALL_STEPS.filter((step) => step !== "veto" || hasVeto);
+  return ALL_STEPS.filter(
+    (step) => (step !== "veto" || hasVeto) && (step !== "draft" || draft),
+  );
 }
 
 export function currentMatchAdminStep(match: StepMatch): MatchAdminStep {

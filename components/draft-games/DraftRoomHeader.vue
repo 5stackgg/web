@@ -69,11 +69,7 @@ const clock = computed(
 // The room's own call to action takes the box's place once the scorebug is up.
 const boxKey = computed(() => `${box.value.kind}${slots.cta ? "-cta" : ""}`);
 const ctaCaption = computed(() =>
-  box.value.kind === "count"
-    ? `${box.value.value}/${box.value.of} ${box.value.caption}`
-    : "caption" in box.value
-      ? box.value.caption
-      : "",
+  "caption" in box.value ? box.value.caption : "",
 );
 
 const crestRing = (side: 1 | 2) => {
@@ -294,7 +290,11 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
                 enter-from-class="opacity-0"
                 leave-to-class="opacity-0"
               >
+                <div v-if="box.kind === 'checkin'" :key="boxKey" class="flex">
+                  <slot name="checkin" />
+                </div>
                 <div
+                  v-else
                   :key="boxKey"
                   class="grid place-content-center justify-items-center gap-1 px-4 py-2 text-center"
                 >
@@ -319,21 +319,6 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
                     </span>
                     <span
                       class="whitespace-nowrap text-xs tabular-nums text-muted-foreground"
-                    >
-                      {{ box.caption }}
-                    </span>
-                  </template>
-                  <template v-else-if="box.kind === 'count'">
-                    <span
-                      class="inline-flex items-baseline text-[30px] font-extrabold leading-none tabular-nums"
-                    >
-                      {{ box.value
-                      }}<span class="text-base text-muted-foreground/60"
-                        >/{{ box.of }}</span
-                      >
-                    </span>
-                    <span
-                      class="whitespace-nowrap text-xs text-muted-foreground"
                     >
                       {{ box.caption }}
                     </span>

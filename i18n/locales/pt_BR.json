@@ -4721,7 +4721,6 @@
         "now_render_pct": "Renderizando highlights para {who} · {pct}%"
       },
       "bake": {
-        "help": "Pré-compilar o cache de shaders Vulkan deste nó para que a primeira partida inicie aquecida.",
         "cancel_help": "Cancelar a pré-compilação de shaders em execução.",
         "logs_help": "Veja os registros da tarefa de pré-renderização do shader.",
         "started": "Compilação de shaders iniciada",
@@ -4734,8 +4733,7 @@
         },
         "action": "Compilar shaders",
         "cancel": "Cancelar compilação",
-        "logs": "Logs de compilação",
-        "hide_logs": "Ocultar logs"
+        "logs": "Logs de compilação"
       },
       "empty": {
         "title": "Nenhum nó de GPU",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Sem métricas de GPU enquanto o nó está desativado, offline ou em configuração.",
         "bake_failed_hint": "A última compilação falhou. Tente de novo ou leia os logs.",
         "cache_warm": "Pronto",
-        "never_baked": "Nunca compilado. A primeira transmissão neste nó compila os shaders conforme roda."
+        "cache_cold": "Não compilado",
+        "cold_hint": "A primeira transmissão neste nó compila os shaders conforme roda.",
+        "cache_actions": "Ações do cache de shaders"
       },
       "stop_copy": {
         "keep": "Manter rodando",
@@ -4912,6 +4912,11 @@
           "streaming": "A transmissão em andamento continua. Esta GPU não aceita novas transmissões até você ativar de novo.",
           "demos": "A reprodução em andamento continua. Esta GPU não aceita novas demos até você ativar de novo.",
           "rendering": "A renderização em andamento continua. Esta GPU não aceita novas renderizações até você ativar de novo."
+        },
+        "state": {
+          "on": "Ligado",
+          "off": "Desligado",
+          "running": "Em execução"
         }
       }
     },
@@ -5327,7 +5332,8 @@
         },
         "gpu": {
           "video": "Configurações de vídeo",
-          "custom": "Personalizado"
+          "custom": "Personalizado",
+          "auto_hint": "O CS2 ajusta as configurações de vídeo a esta placa na primeira execução."
         },
         "node": {
           "accepting": "Aceitando partidas",

@@ -4721,7 +4721,6 @@
         "now_render_pct": "Renderer highlights for {who} · {pct}%"
       },
       "bake": {
-        "help": "Bag nodens Vulkan-shadercache på forhånd, så første kamp starter varm.",
         "cancel_help": "Annullér den kørende shader-prebake.",
         "logs_help": "Se logfilerne for shader-prebake-jobbet.",
         "started": "Shader-bake startet",
@@ -4734,8 +4733,7 @@
         },
         "action": "Bag shaders",
         "cancel": "Annullér bagning",
-        "logs": "Bagningslogs",
-        "hide_logs": "Skjul logs"
+        "logs": "Bagningslogs"
       },
       "empty": {
         "title": "Ingen GPU-noder",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Ingen GPU-målinger, mens noden er slået fra, offline eller ved at blive sat op.",
         "bake_failed_hint": "Den seneste bagning mislykkedes. Prøv igen, eller læs logs.",
         "cache_warm": "Varm",
-        "never_baked": "Aldrig bagt. Den første stream på denne node kompilerer shaders undervejs."
+        "cache_cold": "Ikke bagt",
+        "cold_hint": "Den første stream på denne node kompilerer shaders undervejs.",
+        "cache_actions": "Handlinger for shader-cache"
       },
       "stop_copy": {
         "keep": "Lad den køre",
@@ -4912,6 +4912,11 @@
           "streaming": "Streamen kører videre. Denne GPU tager ingen nye streams, før den slås til igen.",
           "demos": "Afspilningen kører videre. Denne GPU tager ingen nye demoer, før den slås til igen.",
           "rendering": "Renderingen kører videre. Denne GPU tager ingen nye renders, før den slås til igen."
+        },
+        "state": {
+          "on": "Til",
+          "off": "Fra",
+          "running": "Kører"
         }
       }
     },
@@ -5327,7 +5332,8 @@
         },
         "gpu": {
           "video": "Videoindstillinger",
-          "custom": "Tilpasset"
+          "custom": "Tilpasset",
+          "auto_hint": "CS2 tilpasser sine videoindstillinger til dette kort ved første start."
         },
         "node": {
           "accepting": "Tager imod kampe",

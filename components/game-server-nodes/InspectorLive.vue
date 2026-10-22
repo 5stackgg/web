@@ -442,12 +442,12 @@ const rangeLabel = (key: MetricRangeKey) =>
   <section class="grid gap-2.5 p-4">
     <div class="flex min-h-7 min-w-0 items-center gap-2">
       <InspectorLabel>{{ t("common.live") }}</InspectorLabel>
+      <span class="grow"></span>
       <span
         v-if="!inSetup"
-        class="min-w-0 truncate text-xs font-normal tabular-nums text-muted-foreground"
+        class="min-w-0 truncate text-[11.5px] tabular-nums text-muted-foreground"
         >{{ timeText }}</span
       >
-      <span class="grow"></span>
       <span
         v-if="!inSetup"
         ref="seg"

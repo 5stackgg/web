@@ -4721,7 +4721,6 @@
         "now_render_pct": "{who} için öne çıkan anlar render ediliyor · %{pct}"
       },
       "bake": {
-        "help": "İlk maçın hazır başlaması için bu düğümün Vulkan shader önbelleğini önceden oluştur.",
         "cancel_help": "Çalışan shader ön-oluşturmayı iptal et.",
         "logs_help": "Shader ön-oluşturma iş kayıtlarını görüntüle.",
         "started": "Shader oluşturma başladı",
@@ -4734,8 +4733,7 @@
         },
         "action": "Shader'ları derle",
         "cancel": "Derlemeyi iptal et",
-        "logs": "Derleme kayıtları",
-        "hide_logs": "Kayıtları gizle"
+        "logs": "Derleme kayıtları"
       },
       "empty": {
         "title": "GPU düğümü yok",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Düğüm devre dışı, çevrimdışı ya da kurulumdayken GPU metriği yok.",
         "bake_failed_hint": "Son derleme başarısız oldu. Yeniden dene ya da kayıtları oku.",
         "cache_warm": "Hazır",
-        "never_baked": "Hiç derlenmedi. Bu düğümdeki ilk yayın shader'ları çalışırken derler."
+        "cache_cold": "Derlenmedi",
+        "cold_hint": "Bu düğümdeki ilk yayın shader'ları çalışırken derler.",
+        "cache_actions": "Shader önbelleği işlemleri"
       },
       "stop_copy": {
         "keep": "Çalışmaya devam etsin",
@@ -4912,6 +4912,11 @@
           "streaming": "Süren yayın devam eder. Yeniden açılana kadar bu GPU yeni yayın almaz.",
           "demos": "Süren oynatma devam eder. Yeniden açılana kadar bu GPU yeni demo almaz.",
           "rendering": "Süren render devam eder. Yeniden açılana kadar bu GPU yeni render almaz."
+        },
+        "state": {
+          "on": "Açık",
+          "off": "Kapalı",
+          "running": "Çalışıyor"
         }
       }
     },
@@ -5327,7 +5332,8 @@
         },
         "gpu": {
           "video": "Video ayarları",
-          "custom": "Özel"
+          "custom": "Özel",
+          "auto_hint": "CS2, ilk açılışta video ayarlarını bu karta göre belirler."
         },
         "node": {
           "accepting": "Maç kabul ediyor",

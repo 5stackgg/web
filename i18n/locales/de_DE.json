@@ -4721,7 +4721,6 @@
         "now_render_pct": "Rendert Highlights für {who} · {pct}%"
       },
       "bake": {
-        "help": "Den Vulkan-Shader-Cache dieses Nodes vorbauen, damit das erste Match warm startet.",
         "cancel_help": "Den laufenden Shader-Pre-Bake abbrechen.",
         "logs_help": "Die Logs des Shader-Pre-Bake-Jobs ansehen.",
         "started": "Shader-Bake gestartet",
@@ -4734,8 +4733,7 @@
         },
         "action": "Shader kompilieren",
         "cancel": "Kompilierung abbrechen",
-        "logs": "Kompilier-Logs",
-        "hide_logs": "Logs ausblenden"
+        "logs": "Kompilier-Logs"
       },
       "empty": {
         "title": "Keine GPU-Nodes",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Keine GPU-Metriken, solange der Node deaktiviert, offline oder in der Einrichtung ist.",
         "bake_failed_hint": "Die letzte Kompilierung ist fehlgeschlagen. Versuch es erneut oder lies die Logs.",
         "cache_warm": "Vorgewärmt",
-        "never_baked": "Noch nie kompiliert. Der erste Stream auf diesem Node kompiliert Shader nebenbei."
+        "cache_cold": "Nicht kompiliert",
+        "cold_hint": "Der erste Stream auf diesem Node kompiliert Shader nebenbei.",
+        "cache_actions": "Shader-Cache-Aktionen"
       },
       "stop_copy": {
         "keep": "Weiterlaufen lassen",
@@ -4912,6 +4912,11 @@
           "streaming": "Der Stream läuft weiter. Diese GPU nimmt erst nach dem Wiedereinschalten neue Streams an.",
           "demos": "Die Wiedergabe läuft weiter. Diese GPU nimmt erst nach dem Wiedereinschalten neue Demos an.",
           "rendering": "Das Rendering läuft weiter. Diese GPU nimmt erst nach dem Wiedereinschalten neue Renders an."
+        },
+        "state": {
+          "on": "An",
+          "off": "Aus",
+          "running": "Läuft"
         }
       }
     },
@@ -5327,7 +5332,8 @@
         },
         "gpu": {
           "video": "Videoeinstellungen",
-          "custom": "Benutzerdefiniert"
+          "custom": "Benutzerdefiniert",
+          "auto_hint": "CS2 passt seine Videoeinstellungen beim ersten Start an diese Karte an."
         },
         "node": {
           "accepting": "Nimmt Matches an",

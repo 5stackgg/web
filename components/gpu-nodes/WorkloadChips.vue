@@ -117,7 +117,14 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
           />
           <component :is="chip.icon" v-else class="wlc-icon" />
           <span class="wlc-label">{{ t(chip.short) }}</span>
-          <span class="wlc-pip" aria-hidden="true"><i /></span>
+          <span v-if="full" class="wlc-state" aria-hidden="true">{{
+            chip.running
+              ? t("pages.gpu_nodes.chips.state.running")
+              : chip.on
+                ? t("pages.gpu_nodes.chips.state.on")
+                : t("pages.gpu_nodes.chips.state.off")
+          }}</span>
+          <span v-else class="wlc-pip" aria-hidden="true"><i /></span>
         </button>
       </template>
       <span class="grid max-w-[16rem] gap-0.5">
@@ -169,8 +176,31 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
     transform 150ms ease-out;
 }
 .wlc[data-full="true"] .wlc-chip {
-  height: 30px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 6px;
+  row-gap: 1px;
+  height: auto;
   min-width: 0;
+  padding: 6px 10px 7px 9px;
+  text-align: left;
+}
+.wlc-state {
+  grid-column: 2;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  color: hsl(var(--muted-foreground) / 0.8);
+}
+.wlc-chip[aria-pressed="true"] .wlc-state {
+  color: hsl(var(--success));
+}
+.wlc-chip[data-running="true"] .wlc-state {
+  color: hsl(var(--tac-amber));
 }
 /* The on surface and the running wash fade in under the label. */
 .wlc-chip::before,

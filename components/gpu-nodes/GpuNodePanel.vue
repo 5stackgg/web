@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
-import { ArrowUpRight, Flame, ScrollText, Square, X } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+import { ArrowUpRight, Square, X } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import Fold from "~/components/ui/transitions/Fold.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import BootSequence from "~/components/match/BootSequence.vue";
 import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
-import ServiceLogs from "~/components/ServiceLogs.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 import InspectorLive from "~/components/game-server-nodes/InspectorLive.vue";
 import NodeStatsPoll from "~/components/game-server-nodes/NodeStatsPoll.vue";
 import type { MetricRangeKey } from "~/components/game-server-nodes/nodeMetrics";
@@ -16,19 +14,19 @@ import InspectorGpu from "~/components/game-server-nodes/InspectorGpu.vue";
 import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import GpuKindIcon from "~/components/gpu-nodes/GpuKindIcon.vue";
 import GpuSessionState from "~/components/gpu-nodes/GpuSessionState.vue";
+import GpuShaderCache from "~/components/gpu-nodes/GpuShaderCache.vue";
 import StatusDot from "~/components/admin/StatusDot.vue";
 import LastChangedFor from "~/components/admin/LastChangedFor.vue";
 import {
   bakeFailed,
+  formatElapsed,
   gpuName,
-  isBaking,
   isMatchNode,
   nodeName,
   type GpuNodeState,
   type GpuSession,
 } from "~/components/gpu-nodes/gpuSessions";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
-import { useGpuNodeActions } from "~/composables/useGpuNodeActions";
 
 // Everything about one GPU, docked beside the tables (or in a sheet when
 // there's no room). Docked wide, what it is doing now and its load take a
@@ -56,7 +54,7 @@ const emit = defineEmits<{
   (e: "video"): void;
 }>();
 
-const actions = useGpuNodeActions();
+const { t } = useI18n();
 
 const reachable = computed(
   () =>
@@ -75,17 +73,47 @@ const kindKey = computed(() => {
   return session.kind;
 });
 
+const kindLabel = computed(() =>
+  kindKey.value ? t(`pages.gpu_nodes.kind.${kindKey.value}`) : "",
+);
+
+const nowMeta = computed(() => {
+  const session = current.value;
+  if (!session) {
+    return "";
+  }
+  const who =
+    session.kind === "bake"
+      ? t("pages.gpu_nodes.who.warming_cache")
+      : session.kind === "live"
+        ? t("pages.gpu_nodes.who.spectators")
+        : session.who ||
+          (session.system
+            ? t("common.system")
+            : t("gpu_pool_status.unknown_user"));
+  return session.matchup ? `${kindLabel.value} · ${who}` : who;
+});
+
+const now = ref(Date.now());
+let ticker: ReturnType<typeof setInterval> | null = null;
+onMounted(() => {
+  ticker = setInterval(() => (now.value = Date.now()), 15 * 1000);
+});
+onBeforeUnmount(() => {
+  if (ticker) {
+    clearInterval(ticker);
+  }
+});
+
+const elapsed = computed(() =>
+  current.value?.startedAt
+    ? formatElapsed(now.value - current.value.startedAt)
+    : null,
+);
+
 const vramGb = computed(() => {
   const mb = props.node.gpu_info?.[0]?.memory_mb;
   return mb ? Math.round(mb / 1024) : null;
-});
-
-// When the shader cache last finished warming, from the bake's own history.
-const lastBakedAt = computed(() => {
-  if (props.node.shader_bake_status !== "done") return null;
-  const history = props.node.shader_bake_status_history;
-  if (!Array.isArray(history) || !history.length) return null;
-  return history[history.length - 1]?.at ?? null;
 });
 
 // The left column sticks under the header, whatever height it wraps to.
@@ -158,47 +186,41 @@ onBeforeUnmount(() => headerObserver?.disconnect());
             </Button>
           </div>
 
-          <div
-            v-if="current && kindKey"
-            class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-md border border-[hsl(var(--tac-amber)/0.28)] bg-[hsl(var(--tac-amber)/0.04)] px-3 py-2.5"
-          >
-            <GpuKindIcon :kind="current.kind" />
-            <div class="min-w-0">
-              <div class="truncate text-[13.5px] font-semibold">
-                {{ $t(`pages.gpu_nodes.kind.${kindKey}`) }}
+          <div v-if="current && kindKey" class="gpn-now">
+            <GpuKindIcon :kind="current.kind" class="mt-px" />
+            <div class="grid min-w-0 gap-0.5">
+              <NuxtLink
+                v-if="current.matchup && current.matchId"
+                :to="{ name: 'matches-id', params: { id: current.matchId } }"
+                class="gpn-now-title group/match"
+              >
+                <span
+                  class="min-w-0 transition-colors group-hover/match:text-[hsl(var(--tac-amber))]"
+                  >{{ current.matchup }}</span
+                >
+                <ArrowUpRight
+                  class="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground transition-colors group-hover/match:text-[hsl(var(--tac-amber))]"
+                />
+              </NuxtLink>
+              <div v-else class="gpn-now-title">
+                {{ current.matchup || kindLabel }}
               </div>
-              <div class="truncate text-xs text-muted-foreground">
-                <template v-if="current.kind === 'bake'">{{
-                  $t("pages.gpu_nodes.who.warming_cache")
-                }}</template>
-                <template v-else>
-                  {{
-                    current.kind === "live"
-                      ? $t("pages.gpu_nodes.who.spectators")
-                      : current.who ||
-                        (current.system
-                          ? $t("common.system")
-                          : $t("gpu_pool_status.unknown_user"))
-                  }}
-                  <template v-if="current.matchup">
-                    ·
-                    <NuxtLink
-                      v-if="current.matchId"
-                      :to="{
-                        name: 'matches-id',
-                        params: { id: current.matchId },
-                      }"
-                      class="underline decoration-dotted underline-offset-[3px] hover:text-[hsl(var(--tac-amber))]"
-                      >{{ current.matchup }}</NuxtLink
-                    >
-                  </template>
-                </template>
-                <span v-if="current.account" class="font-mono">
+              <div class="text-xs leading-snug text-muted-foreground">
+                {{ nowMeta
+                }}<span v-if="current.account" class="font-mono">
                   · {{ current.account }}</span
                 >
               </div>
             </div>
-            <GpuSessionState :session="current" />
+            <div class="gpn-now-state">
+              <GpuSessionState :session="current" />
+              <span class="grow" />
+              <span
+                v-if="elapsed"
+                class="shrink-0 text-xs tabular-nums text-muted-foreground"
+                >{{ elapsed }}</span
+              >
+            </div>
           </div>
           <div
             v-else-if="bakeFailed(node)"
@@ -341,80 +363,12 @@ onBeforeUnmount(() => headerObserver?.disconnect());
           @edit-video="emit('video')"
         />
 
-        <section class="grid gap-2.5 p-4">
-          <div class="flex min-h-7 flex-wrap items-center gap-2">
-            <InspectorLabel class="grow">{{
-              $t("pages.gpu_nodes.sheet.shader_cache")
-            }}</InspectorLabel>
-            <Button
-              v-if="isBaking(node)"
-              size="xs"
-              variant="outline"
-              class="h-7 gap-1.5 text-xs"
-              :loading="actions.bakeBusy[node.id]"
-              @click="actions.cancelBake(node.id)"
-            >
-              <X class="h-3 w-3" />
-              {{ $t("pages.gpu_nodes.bake.cancel") }}
-            </Button>
-            <Button
-              v-else
-              size="xs"
-              variant="outline"
-              class="h-7 gap-1.5 text-xs"
-              :disabled="!reachable"
-              :loading="actions.bakeBusy[node.id]"
-              @click="actions.bakeShaders(node.id)"
-            >
-              <Flame class="h-3 w-3" />
-              {{ $t("pages.gpu_nodes.bake.action") }}
-            </Button>
-            <Button
-              size="xs"
-              variant="ghost"
-              class="h-7 gap-1.5 text-xs"
-              :aria-expanded="logsOpen"
-              @click="logsOpen = !logsOpen"
-            >
-              <ScrollText class="h-3 w-3" />
-              {{
-                logsOpen
-                  ? $t("pages.gpu_nodes.bake.hide_logs")
-                  : $t("pages.gpu_nodes.bake.logs")
-              }}
-            </Button>
-          </div>
-          <p class="text-xs text-muted-foreground">
-            <template v-if="isBaking(node)">{{
-              $t("pages.gpu_nodes.bake.help")
-            }}</template>
-            <template v-else-if="bakeFailed(node)">{{
-              $t("pages.gpu_nodes.sheet.bake_failed_hint")
-            }}</template>
-            <template v-else-if="node.shader_bake_status === 'done'">
-              {{ $t("pages.gpu_nodes.sheet.cache_warm") }}
-              <template v-if="lastBakedAt">
-                · <TimeAgo :date="lastBakedAt" hide-icon />
-              </template>
-            </template>
-            <template v-else>{{
-              $t("pages.gpu_nodes.sheet.never_baked")
-            }}</template>
-          </p>
-          <Fold :open="logsOpen">
-            <div
-              class="flex h-72 flex-col overflow-hidden rounded-md border border-border/60 bg-background/40"
-            >
-              <ServiceLogs
-                class="min-h-0 flex-1"
-                :service="`shader-bake:${node.id}`"
-                :compact="true"
-                :disable-retry="!isBaking(node)"
-                :running="isBaking(node)"
-              />
-            </div>
-          </Fold>
-        </section>
+        <GpuShaderCache
+          v-model:logs-open="logsOpen"
+          :node="node"
+          :bake="bake"
+          :reachable="reachable"
+        />
       </div>
     </div>
   </div>
@@ -446,6 +400,35 @@ onBeforeUnmount(() => headerObserver?.disconnect());
   .gpn-col-r {
     border-left: 1px solid hsl(var(--border) / 0.6);
   }
+}
+.gpn-now {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 10px;
+  padding: 12px;
+  border: 1px solid hsl(var(--tac-amber) / 0.28);
+  border-radius: 0.375rem;
+  background: hsl(var(--tac-amber) / 0.04);
+}
+.gpn-now-title {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.gpn-now-state {
+  grid-column: 2;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid hsl(var(--tac-amber) / 0.16);
 }
 .gpn-kv {
   display: grid;

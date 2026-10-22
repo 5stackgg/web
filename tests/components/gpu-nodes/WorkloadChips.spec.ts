@@ -188,6 +188,19 @@ describe("WorkloadChips", () => {
     await flushPromises();
   });
 
+  it("spells out on, off and running when laid out full", async () => {
+    const wrapper = await mountChips({
+      node: node(),
+      activity: { streaming: "Streaming FaZe vs NAVI" },
+      full: true,
+    });
+
+    expect(chip(wrapper, "streaming").text()).toContain("Running");
+    expect(chip(wrapper, "demos").text()).toContain("On");
+    expect(chip(wrapper, "rendering").text()).toContain("Off");
+    expect(wrapper.find(".wlc-pip").exists()).toBe(false);
+  });
+
   it("says so and shows the saved value when the change fails", async () => {
     mutate.mockRejectedValue(new Error("permission denied"));
     const wrapper = await mountChips({ node: node() });

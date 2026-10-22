@@ -126,6 +126,17 @@ export function bakeFailed(node: any): boolean {
   return node?.shader_bake_status === "errored";
 }
 
+// A bake's progress stage, "(26824 / 731082)", as "26,824 / 731,082".
+export function shaderCount(stage: string | null | undefined): string | null {
+  const match = stage?.match(/(\d[\d,]*)\s*\/\s*(\d[\d,]*)/);
+  if (!match) {
+    return null;
+  }
+  const done = Number(match[1].replace(/,/g, "")).toLocaleString();
+  const total = Number(match[2].replace(/,/g, "")).toLocaleString();
+  return `${done} / ${total}`;
+}
+
 const num = (value: unknown): number | null => {
   if (value === null || value === undefined || value === "") return null;
   const n = Number(value);

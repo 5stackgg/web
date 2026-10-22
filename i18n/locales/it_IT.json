@@ -4721,7 +4721,6 @@
         "now_render_pct": "Renderizza highlight per {who} · {pct}%"
       },
       "bake": {
-        "help": "Pre-compila la cache degli shader Vulkan di questo nodo così il primo match parte già a regime.",
         "cancel_help": "Annulla la pre-compilazione degli shader in corso.",
         "logs_help": "Vedi i log del job di pre-compilazione degli shader.",
         "started": "Compilazione shader avviata",
@@ -4734,8 +4733,7 @@
         },
         "action": "Compila shader",
         "cancel": "Annulla compilazione",
-        "logs": "Log di compilazione",
-        "hide_logs": "Nascondi log"
+        "logs": "Log di compilazione"
       },
       "empty": {
         "title": "Nessun nodo GPU",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Nessuna metrica GPU mentre il nodo è disattivato, offline o in configurazione.",
         "bake_failed_hint": "L'ultima compilazione non è riuscita. Riprova o leggi i log.",
         "cache_warm": "Pronta",
-        "never_baked": "Mai compilata. Il primo stream su questo nodo compila gli shader man mano."
+        "cache_cold": "Non compilata",
+        "cold_hint": "Il primo stream su questo nodo compila gli shader man mano.",
+        "cache_actions": "Azioni cache shader"
       },
       "stop_copy": {
         "keep": "Lascia in esecuzione",
@@ -4912,6 +4912,11 @@
           "streaming": "Lo stream continua. Questa GPU non accetta nuovi stream finché non viene riattivato.",
           "demos": "La riproduzione continua. Questa GPU non accetta nuove demo finché non viene riattivata.",
           "rendering": "Il rendering continua. Questa GPU non accetta nuovi rendering finché non viene riattivato."
+        },
+        "state": {
+          "on": "Attivo",
+          "off": "Disattivo",
+          "running": "In corso"
         }
       }
     },
@@ -5327,7 +5332,8 @@
         },
         "gpu": {
           "video": "Impostazioni video",
-          "custom": "Personalizzato"
+          "custom": "Personalizzato",
+          "auto_hint": "CS2 adatta le impostazioni video a questa scheda al primo avvio."
         },
         "node": {
           "accepting": "Accetta partite",

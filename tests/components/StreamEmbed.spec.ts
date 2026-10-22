@@ -47,8 +47,11 @@ async function mountEmbed(
 const buttonNamed = (wrapper: any, name: string) =>
   wrapper.findAll("button").find((b: any) => b.text() === name);
 
-const stopButton = (wrapper: any) =>
-  wrapper.find("button[aria-label='Stop stream']");
+// Closing the floating player on the stream's own match page.
+const stopEmbed = async (stream: any) => {
+  useStoppedStreams().stop(embedStreamKey(stream));
+  await settle();
+};
 
 describe("StreamEmbed stop", () => {
   beforeEach(() => {
@@ -61,11 +64,11 @@ describe("StreamEmbed stop", () => {
     unmount = undefined;
   });
 
-  it("removes the embed and shows the stopped bar", async () => {
+  it("removes the embed and shows the stopped bar once stopped", async () => {
     const wrapper = await mountEmbed({ started: true });
     expect(wrapper.find("iframe").exists()).toBe(true);
 
-    await stopButton(wrapper).trigger("click");
+    await stopEmbed(youtube);
 
     expect(wrapper.find("iframe").exists()).toBe(false);
     expect(wrapper.text()).toContain("Stream stopped");
@@ -93,20 +96,15 @@ describe("StreamEmbed stop", () => {
     expect(wrapper.text()).toContain("Stream stopped");
   });
 
-  it("has no Stop in the floating player", async () => {
-    const wrapper = await mountEmbed({ global: true });
-
-    expect(stopButton(wrapper).exists()).toBe(false);
-  });
-
-  it("puts Stop beside the move to the floating player, in the corner bar", async () => {
+  it("puts the move to the floating player in the corner bar, and no Stop over the stream", async () => {
     const wrapper = await mountEmbed();
-    const bar = wrapper.find(".stream-controls");
+    const labels = wrapper
+      .find(".stream-controls")
+      .findAll("button")
+      .map((b: any) => b.attributes("aria-label"));
 
-    expect(bar.find("button[aria-label='Stop stream']").text()).toBe("Stop");
-    expect(
-      bar.find("button[aria-label='Move to global view']").exists(),
-    ).toBe(true);
+    expect(labels).toContain("Move to global view");
+    expect(labels.filter((label: string) => /stop/i.test(label))).toEqual([]);
   });
 });
 
@@ -417,8 +415,7 @@ describe("StreamEmbed waits for play", () => {
     await playButton(first).trigger("click");
     await settle();
 
-    await stopButton(first).trigger("click");
-    await settle();
+    await stopEmbed(stream);
     expect(second.text()).toContain("Stream stopped");
 
     await buttonNamed(first, "Watch").trigger("click");
@@ -433,12 +430,10 @@ describe("StreamEmbed waits for play", () => {
 
   it("builds one Twitch player when a stream stopped before play is watched", async () => {
     const players = countTwitchPlayers();
-    const wrapper = await mountEmbed({}, [
-      { ...twitch, id: "stopped-waiting-twitch" },
-    ]);
+    const stream = { ...twitch, id: "stopped-waiting-twitch" };
+    const wrapper = await mountEmbed({}, [stream]);
 
-    await stopButton(wrapper).trigger("click");
-    await settle();
+    await stopEmbed(stream);
     await buttonNamed(wrapper, "Watch").trigger("click");
     await settle();
 

@@ -127,16 +127,19 @@ describe("LiveStreamPlayer on the match page", () => {
     useApplicationSettingsStore().setGlobalStream();
   });
 
-  const stopButton = (wrapper: any) =>
-    wrapper.find('button[aria-label="Stop stream"]');
+  // Closing the floating player or the pop-out window on this page.
+  const stop = async () => {
+    useStoppedStreams().stop(liveStreamKey("match-1"));
+    await flushPromises();
+  };
   const buttonNamed = (wrapper: any, name: string) =>
     wrapper.findAll("button").find((b: any) => b.text() === name);
 
-  it("stops the stream and folds into the stopped bar", async () => {
+  it("folds into the stopped bar once stopped", async () => {
     const wrapper = await mountPlayer({});
     await pushStream(streamRow);
 
-    await stopButton(wrapper).trigger("click");
+    await stop();
 
     expect(wrapper.find(".stream-canvas").exists()).toBe(false);
     expect(wrapper.text()).toContain("Stream stopped");
@@ -145,7 +148,7 @@ describe("LiveStreamPlayer on the match page", () => {
   it("plays again from the bar's Watch button", async () => {
     const wrapper = await mountPlayer({});
     await pushStream(streamRow);
-    await stopButton(wrapper).trigger("click");
+    await stop();
 
     await buttonNamed(wrapper, "Watch").trigger("click");
 
@@ -156,7 +159,7 @@ describe("LiveStreamPlayer on the match page", () => {
   it("stays stopped when the page comes back", async () => {
     const first = await mountPlayer({});
     await pushStream(streamRow);
-    await stopButton(first).trigger("click");
+    await stop();
     first.unmount();
 
     subscriptions.length = 0;
@@ -167,15 +170,14 @@ describe("LiveStreamPlayer on the match page", () => {
     expect(wrapper.text()).toContain("Stream stopped");
   });
 
-  it("adds pin, pop-out and a labelled Stop to the player's bar", async () => {
+  it("adds pin and pop-out to the player's bar, and no Stop over the stream", async () => {
     const wrapper = await mountPlayer({});
     await pushStream(streamRow);
     const bar = wrapper.find(".controls");
 
     expect(
       bar.findAll("button").map((b: any) => b.attributes("aria-label")),
-    ).toEqual(["Pin as floating overlay", "Open in new window", "Stop stream"]);
-    expect(stopButton(wrapper).text()).toBe("Stop");
+    ).toEqual(["Pin as floating overlay", "Open in new window"]);
   });
 
   it("gives the pop-out window only the scoreboard, which opens the panel", async () => {
@@ -192,13 +194,6 @@ describe("LiveStreamPlayer on the match page", () => {
     await buttons[0].trigger("click");
 
     expect(buttons[0].attributes("aria-expanded")).toBe("true");
-  });
-
-  it("has no Stop in the floating player, which closes instead", async () => {
-    const wrapper = await mountPlayer({ inGlobal: true });
-    await pushStream(streamRow);
-
-    expect(stopButton(wrapper).exists()).toBe(false);
   });
 
   it("plays here again from Return here, even after being stopped", async () => {

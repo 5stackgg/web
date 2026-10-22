@@ -5,7 +5,6 @@ import {
   ChevronDown,
   ExternalLink,
   PictureInPicture,
-  Square,
   Trophy,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
@@ -296,9 +295,9 @@ const isPoppedOut = computed(
   () => inGlobalPip.value || poppedToWindow.value,
 );
 
-// Only the page's own player has a Stop: the floating PiP and the pop-out
-// close instead, and the /watch stage draws its own controls. Stopping
-// unmounts StreamCanvas, which closes the WebRTC connection.
+// Only the page's own player stays stopped, once its floating PiP or pop-out
+// is closed on the match page. Stopping unmounts StreamCanvas, which closes
+// the WebRTC connection.
 const stoppedStreams = useStoppedStreams();
 const canStop = computed(
   () => !props.inGlobal && !props.inPopout && !props.bare,
@@ -369,8 +368,7 @@ const hasHostControls = computed(
     canPin.value ||
     canPopOut.value ||
     canToggleScoreboard.value ||
-    props.inGlobal ||
-    canStop.value,
+    props.inGlobal,
 );
 </script>
 
@@ -528,24 +526,6 @@ const hasHostControls = computed(
           <span class="inline-flex items-center pl-1 pr-2 text-xs">
             <StreamViewerBadge :match-id="matchId" bare />
           </span>
-        </template>
-        <template v-if="canStop">
-          <span :class="streamControlDividerClasses" aria-hidden="true" />
-          <button
-            type="button"
-            :title="$t('match.stream.stop')"
-            :aria-label="$t('match.stream.stop')"
-            :class="[
-              streamControlButtonClasses,
-              'stream-control-labelled hover:!bg-destructive',
-            ]"
-            @click="stopStream"
-          >
-            <Square class="size-3 fill-current" />
-            <span class="stream-control-label">{{
-              $t("match.stream.stop_short")
-            }}</span>
-          </button>
         </template>
       </template>
     </StreamCanvas>

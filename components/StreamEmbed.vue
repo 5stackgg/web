@@ -5,14 +5,12 @@ import {
   ExternalLink,
   PictureInPicture,
   Play,
-  Square,
 } from "lucide-vue-next";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import StreamControls from "~/components/match/StreamControls.vue";
 import {
   streamControlButtonClasses,
-  streamControlDividerClasses,
   streamControlIconClasses,
 } from "~/components/match/streamControlClasses";
 import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
@@ -124,22 +122,6 @@ const noticeId = useId();
             @click="setGlobalStream(selectedStream)"
           >
             <PictureInPicture :class="streamControlIconClasses" />
-          </button>
-          <span :class="streamControlDividerClasses" aria-hidden="true" />
-          <button
-            type="button"
-            :title="$t('match.stream.stop')"
-            :aria-label="$t('match.stream.stop')"
-            :class="[
-              streamControlButtonClasses,
-              'stream-control-labelled hover:!bg-destructive',
-            ]"
-            @click="stopStream"
-          >
-            <Square class="size-3 fill-current" />
-            <span class="stream-control-label">{{
-              $t("match.stream.stop_short")
-            }}</span>
           </button>
         </template>
       </StreamControls>
@@ -326,8 +308,8 @@ export default {
         null
       );
     },
-    // The page's own embed can be stopped; the floating PiP closes
-    // instead, and the /watch stage owns its controls.
+    // Only the page's own embed stays stopped, once its floating PiP is
+    // closed on the match page; the /watch stage owns its controls.
     canStop() {
       return this.global === false && !this.inline;
     },
@@ -433,13 +415,6 @@ export default {
     setGlobalStream(stream: MatchStream) {
       this.selectedStream = null;
       useApplicationSettingsStore().setGlobalStream(stream);
-    },
-    stopStream() {
-      if (!this.selectedStream) return;
-      // Tear the player down before StreamCanvas unmounts so the Twitch
-      // SDK gets its destroy() rather than just losing its iframe.
-      this.cleanupPlayer();
-      useStoppedStreams().stop(embedStreamKey(this.selectedStream));
     },
     resumeStream() {
       if (!this.selectedStream) return;
@@ -820,8 +795,15 @@ export default {
     },
   },
   watch: {
+    // Before StreamCanvas unmounts, so the Twitch SDK gets its destroy()
+    // rather than just losing its iframe.
+    isStopped(stopped) {
+      if (stopped) {
+        this.cleanupPlayer();
+      }
+    },
     // The same stream can play again: pressed here or in another card, or
-    // back from Stop, whose player div only returns with the next render. A
+    // back from a stop, whose player div only returns with the next render. A
     // switch to another stream loads through selectedStream.
     playback(next, previous) {
       if (next?.on && previous && !previous.on && next.key === previous.key) {

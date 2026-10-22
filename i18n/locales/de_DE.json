@@ -4504,7 +4504,8 @@
           "pending_full": "Wenn sie beitreten, wärt ihr {count} und spielt gegeneinander.",
           "pending_too_big": "Wenn sie beitreten, ist die Party zu groß für {format}.",
           "cancel_invite": "Einladung zurückziehen",
-          "cancel_invite_for": "Einladung an {name} zurückziehen"
+          "cancel_invite_for": "Einladung an {name} zurückziehen",
+          "unranked": "Ohne Wertung"
         }
       },
       "draft_games": {},

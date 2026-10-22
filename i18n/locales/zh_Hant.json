@@ -4504,7 +4504,8 @@
           "pending_full": "如果他們加入，你們將有 {count} 人並進行內戰。",
           "pending_too_big": "如果他們加入，小隊人數將超過 {format} 的上限。",
           "cancel_invite": "取消邀請",
-          "cancel_invite_for": "取消對 {name} 的邀請"
+          "cancel_invite_for": "取消對 {name} 的邀請",
+          "unranked": "暫無評分"
         }
       },
       "draft_games": {},

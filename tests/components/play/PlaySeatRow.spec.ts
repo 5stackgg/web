@@ -125,6 +125,17 @@ describe("PlaySeatRow", () => {
     expect(wrapper.text()).toContain("Teams are picked at random");
   });
 
+  it("keeps the rating line for a player with no rating in the mode", async () => {
+    useAuthStore().me = { ...me, elo: { competitive: 5240 } } as any;
+
+    const wrapper = await mountSuspended(PlaySeatRow, {
+      props: { type: e_match_types_enum.Rush },
+    });
+
+    expect(wrapper.text()).toContain("Unranked");
+    expect(wrapper.text()).not.toContain("5,240");
+  });
+
   it("lets the leader open both sides on purpose", async () => {
     useAuthStore().me = me as any;
 

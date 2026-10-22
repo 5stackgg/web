@@ -4504,7 +4504,8 @@
           "pending_full": "Katılırlarsa {count} kişi olur ve birbirinize karşı oynarsınız.",
           "pending_too_big": "Katılırlarsa grup {format} için fazla büyük olur.",
           "cancel_invite": "Daveti iptal et",
-          "cancel_invite_for": "{name} davetini iptal et"
+          "cancel_invite_for": "{name} davetini iptal et",
+          "unranked": "Derecesiz"
         }
       },
       "draft_games": {},

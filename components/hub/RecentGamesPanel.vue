@@ -323,9 +323,30 @@ export default {
           matches: [
             {
               limit: 10,
+              // The lineups rather than is_in_lineup: a computed field is
+              // checked match by match, newest first, until ten are found.
               where: {
-                is_in_lineup: { _eq: true },
-                ...RESULT_MATCHES_WHERE,
+                _and: [
+                  {
+                    _or: [
+                      {
+                        lineup_1: {
+                          lineup_players: {
+                            steam_id: { _eq: $("steamId", "bigint!") },
+                          },
+                        },
+                      },
+                      {
+                        lineup_2: {
+                          lineup_players: {
+                            steam_id: { _eq: $("steamId", "bigint!") },
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  RESULT_MATCHES_WHERE,
+                ],
               },
               order_by: [{}, { created_at: order_by.desc }],
             },

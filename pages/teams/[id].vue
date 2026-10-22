@@ -430,7 +430,10 @@ const scrimNeedsCount = computed(
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import {
+  teamActivityMatchFields,
+  teamMatchCountFields,
+} from "~/graphql/teamActivityFields";
 import { playerFields } from "~/graphql/playerFields";
 import { awardFields } from "~/graphql/awardFields";
 
@@ -556,7 +559,7 @@ export default {
                     },
                   ],
                 },
-                simpleMatchFields,
+                teamActivityMatchFields,
               ],
             },
           ],
@@ -609,7 +612,7 @@ export default {
                 },
               },
             },
-            simpleMatchFields,
+            teamMatchCountFields,
           ],
         }),
         variables: function () {

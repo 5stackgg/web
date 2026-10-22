@@ -23843,6 +23843,7 @@ export const AllTypesProps: Record<string,any> = {
 		deaths:"Int_comparison_exp",
 		expected_score:"float8_comparison_exp",
 		impact:"numeric_comparison_exp",
+		is_tournament:"Boolean_comparison_exp",
 		k_factor:"Int_comparison_exp",
 		kda:"float8_comparison_exp",
 		kills:"Int_comparison_exp",
@@ -23916,6 +23917,7 @@ export const AllTypesProps: Record<string,any> = {
 		deaths:"order_by",
 		expected_score:"order_by",
 		impact:"order_by",
+		is_tournament:"order_by",
 		k_factor:"order_by",
 		kda:"order_by",
 		kills:"order_by",
@@ -29488,6 +29490,16 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		abandoned_matches_by_pk:{
 			id:"uuid"
+		},
+		active_matches:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
+		},
+		active_matches_aggregate:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
 		},
 		analyseUtilityPlaybookCoverage:{
 			pairs:"UtilitySightlinePairInput",
@@ -35239,6 +35251,16 @@ export const AllTypesProps: Record<string,any> = {
 		abandoned_matches_stream:{
 			cursor:"abandoned_matches_stream_cursor_input",
 			where:"abandoned_matches_bool_exp"
+		},
+		active_matches:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
+		},
+		active_matches_aggregate:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
 		},
 		api_keys:{
 			distinct_on:"api_keys_select_column",
@@ -65823,6 +65845,7 @@ export const ReturnTypes: Record<string,any> = {
 		deaths:"Int",
 		expected_score:"float8",
 		impact:"numeric",
+		is_tournament:"Boolean",
 		k_factor:"Int",
 		kda:"float8",
 		kills:"Int",
@@ -70512,6 +70535,8 @@ export const ReturnTypes: Record<string,any> = {
 		abandoned_matches:"abandoned_matches",
 		abandoned_matches_aggregate:"abandoned_matches_aggregate",
 		abandoned_matches_by_pk:"abandoned_matches",
+		active_matches:"matches",
+		active_matches_aggregate:"matches_aggregate",
 		analyseUtilityPlaybookCoverage:"UtilityPlaybookCoverageOutput",
 		analyzeQuery:"QueryAnalysis",
 		api_keys:"api_keys",
@@ -72616,6 +72641,8 @@ export const ReturnTypes: Record<string,any> = {
 		abandoned_matches_aggregate:"abandoned_matches_aggregate",
 		abandoned_matches_by_pk:"abandoned_matches",
 		abandoned_matches_stream:"abandoned_matches",
+		active_matches:"matches",
+		active_matches_aggregate:"matches_aggregate",
 		api_keys:"api_keys",
 		api_keys_aggregate:"api_keys_aggregate",
 		api_keys_by_pk:"api_keys",

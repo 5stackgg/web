@@ -11,6 +11,7 @@ import {
 } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { fromActiveMatches } from "~/utilities/activeMatches";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { NOT_LEAGUE_TOURNAMENT } from "~/graphql/tournamentFilters";
 import { FINISHED_TOURNAMENT_CHAT_MS } from "~/constants/chat";
@@ -111,28 +112,32 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   );
 
   const subscribeToLiveMatches = async () => {
-    const subscription = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        matches_aggregate: [
-          {
-            where: {
-              status: {
-                _in: [
-                  e_match_status_enum.Live,
-                  e_match_status_enum.Veto,
-                  e_match_status_enum.WaitingForCheckIn,
-                  e_match_status_enum.WaitingForServer,
-                ],
+    const client = getGraphqlClient();
+    const subscription = client.subscribe({
+      query: await fromActiveMatches(
+        client,
+        generateSubscription({
+          matches_aggregate: [
+            {
+              where: {
+                status: {
+                  _in: [
+                    e_match_status_enum.Live,
+                    e_match_status_enum.Veto,
+                    e_match_status_enum.WaitingForCheckIn,
+                    e_match_status_enum.WaitingForServer,
+                  ],
+                },
               },
             },
-          },
-          {
-            aggregate: {
-              count: true,
+            {
+              aggregate: {
+                count: true,
+              },
             },
-          },
-        ],
-      }),
+          ],
+        }),
+      ),
     });
 
     const { subscribe } = useSubscriptionManager();
@@ -304,30 +309,34 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       return;
     }
 
-    const subscription = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        matches_aggregate: [
-          {
-            where: {
-              status: {
-                _in: [
-                  e_match_status_enum.Live,
-                  e_match_status_enum.Veto,
-                  e_match_status_enum.WaitingForCheckIn,
-                  e_match_status_enum.WaitingForServer,
-                  e_match_status_enum.Scheduled,
-                  e_match_status_enum.PickingPlayers,
-                ],
+    const client = getGraphqlClient();
+    const subscription = client.subscribe({
+      query: await fromActiveMatches(
+        client,
+        generateSubscription({
+          matches_aggregate: [
+            {
+              where: {
+                status: {
+                  _in: [
+                    e_match_status_enum.Live,
+                    e_match_status_enum.Veto,
+                    e_match_status_enum.WaitingForCheckIn,
+                    e_match_status_enum.WaitingForServer,
+                    e_match_status_enum.Scheduled,
+                    e_match_status_enum.PickingPlayers,
+                  ],
+                },
               },
             },
-          },
-          {
-            aggregate: {
-              count: true,
+            {
+              aggregate: {
+                count: true,
+              },
             },
-          },
-        ],
-      }),
+          ],
+        }),
+      ),
     });
 
     const { subscribe } = useSubscriptionManager();
@@ -357,93 +366,97 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     myMatchesLoaded.value = false;
     startClock();
 
-    const subscription = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        matches: [
-          {
-            where: {
-              _or: [
+    const client = getGraphqlClient();
+    const subscription = client.subscribe({
+      query: await fromActiveMatches(
+        client,
+        generateSubscription({
+          matches: [
+            {
+              where: {
+                _or: [
+                  {
+                    is_in_lineup: {
+                      _eq: true,
+                    },
+                    status: {
+                      _in: [
+                        e_match_status_enum.Live,
+                        e_match_status_enum.Veto,
+                        e_match_status_enum.WaitingForCheckIn,
+                        e_match_status_enum.WaitingForServer,
+                        e_match_status_enum.Scheduled,
+                      ],
+                    },
+                  },
+                  {
+                    organizer_steam_id: {
+                      _eq: $("steam_id", "bigint!"),
+                    },
+                    ...(useAuthStore().isRoleAbove(
+                      e_player_roles_enum.match_organizer,
+                    ) === true
+                      ? {
+                          is_in_lineup: {
+                            _eq: true,
+                          },
+                        }
+                      : {}),
+                    status: {
+                      _in: [
+                        e_match_status_enum.Live,
+                        e_match_status_enum.Veto,
+                        e_match_status_enum.WaitingForCheckIn,
+                        e_match_status_enum.WaitingForServer,
+                        e_match_status_enum.Scheduled,
+                        e_match_status_enum.PickingPlayers,
+                      ],
+                    },
+                  },
+                ],
+              },
+              order_by: [
                 {
-                  is_in_lineup: {
-                    _eq: true,
-                  },
-                  status: {
-                    _in: [
-                      e_match_status_enum.Live,
-                      e_match_status_enum.Veto,
-                      e_match_status_enum.WaitingForCheckIn,
-                      e_match_status_enum.WaitingForServer,
-                      e_match_status_enum.Scheduled,
-                    ],
-                  },
-                },
-                {
-                  organizer_steam_id: {
-                    _eq: $("steam_id", "bigint!"),
-                  },
-                  ...(useAuthStore().isRoleAbove(
-                    e_player_roles_enum.match_organizer,
-                  ) === true
-                    ? {
-                        is_in_lineup: {
-                          _eq: true,
-                        },
-                      }
-                    : {}),
-                  status: {
-                    _in: [
-                      e_match_status_enum.Live,
-                      e_match_status_enum.Veto,
-                      e_match_status_enum.WaitingForCheckIn,
-                      e_match_status_enum.WaitingForServer,
-                      e_match_status_enum.Scheduled,
-                      e_match_status_enum.PickingPlayers,
-                    ],
-                  },
+                  created_at: order_by.desc,
                 },
               ],
             },
-            order_by: [
-              {
-                created_at: order_by.desc,
+            {
+              ...simpleMatchFields,
+              can_check_in: true,
+              map_veto_type: true,
+              region: true,
+              // /play schedule: the check-in deadline, Connect once live, and
+              // whether check-in needs the camera (it can't happen inline).
+              cancels_at: true,
+              connection_link: true,
+              options: {
+                ...simpleMatchFields.options,
+                region_veto: true,
+                camera_required: true,
               },
-            ],
-          },
-          {
-            ...simpleMatchFields,
-            can_check_in: true,
-            map_veto_type: true,
-            region: true,
-            // /play schedule: the check-in deadline, Connect once live, and
-            // whether check-in needs the camera (it can't happen inline).
-            cancels_at: true,
-            connection_link: true,
-            options: {
-              ...simpleMatchFields.options,
-              region_veto: true,
-              camera_required: true,
-            },
-            lineup_1: {
-              ...simpleMatchFields.lineup_1,
-              is_ready: true,
-              can_pick_map_veto: true,
-              can_pick_region_veto: true,
-            },
-            lineup_2: {
-              ...simpleMatchFields.lineup_2,
-              is_ready: true,
-              can_pick_map_veto: true,
-              can_pick_region_veto: true,
-            },
-            draft_games: [
-              {},
-              {
-                id: true,
+              lineup_1: {
+                ...simpleMatchFields.lineup_1,
+                is_ready: true,
+                can_pick_map_veto: true,
+                can_pick_region_veto: true,
               },
-            ],
-          },
-        ],
-      }),
+              lineup_2: {
+                ...simpleMatchFields.lineup_2,
+                is_ready: true,
+                can_pick_map_veto: true,
+                can_pick_region_veto: true,
+              },
+              draft_games: [
+                {},
+                {
+                  id: true,
+                },
+              ],
+            },
+          ],
+        }),
+      ),
       variables: {
         steam_id: me.steam_id,
       },

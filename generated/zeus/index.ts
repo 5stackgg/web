@@ -40693,6 +40693,7 @@ count?: [{	columns?: Array<ValueTypes["player_dismissals_select_column"]> | unde
 	deaths?:boolean | `@${string}`,
 	expected_score?:boolean | `@${string}`,
 	impact?:boolean | `@${string}`,
+	is_tournament?:boolean | `@${string}`,
 	k_factor?:boolean | `@${string}`,
 	kda?:boolean | `@${string}`,
 	kills?:boolean | `@${string}`,
@@ -40777,6 +40778,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	deaths?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	expected_score?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
 	impact?: ValueTypes["numeric_comparison_exp"] | undefined | null | Variable<any, string>,
+	is_tournament?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
 	k_factor?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
 	kda?: ValueTypes["float8_comparison_exp"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["Int_comparison_exp"] | undefined | null | Variable<any, string>,
@@ -40834,6 +40836,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	deaths?: number | undefined | null | Variable<any, string>,
 	expected_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	impact?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+	is_tournament?: boolean | undefined | null | Variable<any, string>,
 	k_factor?: number | undefined | null | Variable<any, string>,
 	kda?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	kills?: number | undefined | null | Variable<any, string>,
@@ -40935,6 +40938,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	deaths?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	expected_score?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	impact?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	is_tournament?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	k_factor?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kda?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	kills?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -40974,6 +40978,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	deaths?: number | undefined | null | Variable<any, string>,
 	expected_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	impact?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+	is_tournament?: boolean | undefined | null | Variable<any, string>,
 	k_factor?: number | undefined | null | Variable<any, string>,
 	kda?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	kills?: number | undefined | null | Variable<any, string>,
@@ -41084,6 +41089,7 @@ count?: [{	columns?: Array<ValueTypes["player_elo_select_column"]> | undefined |
 	deaths?: number | undefined | null | Variable<any, string>,
 	expected_score?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	impact?: ValueTypes["numeric"] | undefined | null | Variable<any, string>,
+	is_tournament?: boolean | undefined | null | Variable<any, string>,
 	k_factor?: number | undefined | null | Variable<any, string>,
 	kda?: ValueTypes["float8"] | undefined | null | Variable<any, string>,
 	kills?: number | undefined | null | Variable<any, string>,
@@ -53105,6 +53111,18 @@ abandoned_matches_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["abandoned_matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches_aggregate"]],
 abandoned_matches_by_pk?: [{	id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["abandoned_matches"]],
+active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches"]],
+active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches_aggregate"]],
 analyseUtilityPlaybookCoverage?: [{	pairs: Array<ValueTypes["UtilitySightlinePairInput"]> | Variable<any, string>,	playbook_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["UtilityPlaybookCoverageOutput"]],
 analyzeQuery?: [{	parameters: Array<ValueTypes["QueryParameterInput"]> | Variable<any, string>,	queryid: string | Variable<any, string>},ValueTypes["QueryAnalysis"]],
 api_keys?: [{	/** distinct select on columns */
@@ -61157,6 +61175,18 @@ abandoned_matches_stream?: [{	/** maximum number of rows returned in a single ba
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["abandoned_matches_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["abandoned_matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["abandoned_matches"]],
+active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches"]],
+active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches_aggregate"]],
 api_keys?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["api_keys_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -134521,6 +134551,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_dismissals_select_column"]
 	deaths?:boolean | `@${string}`,
 	expected_score?:boolean | `@${string}`,
 	impact?:boolean | `@${string}`,
+	is_tournament?:boolean | `@${string}`,
 	k_factor?:boolean | `@${string}`,
 	kda?:boolean | `@${string}`,
 	kills?:boolean | `@${string}`,
@@ -134605,6 +134636,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	deaths?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	expected_score?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
 	impact?: ResolverInputTypes["numeric_comparison_exp"] | undefined | null,
+	is_tournament?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
 	k_factor?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
 	kda?: ResolverInputTypes["float8_comparison_exp"] | undefined | null,
 	kills?: ResolverInputTypes["Int_comparison_exp"] | undefined | null,
@@ -134662,6 +134694,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	deaths?: number | undefined | null,
 	expected_score?: ResolverInputTypes["float8"] | undefined | null,
 	impact?: ResolverInputTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: ResolverInputTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -134763,6 +134796,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	deaths?: ResolverInputTypes["order_by"] | undefined | null,
 	expected_score?: ResolverInputTypes["order_by"] | undefined | null,
 	impact?: ResolverInputTypes["order_by"] | undefined | null,
+	is_tournament?: ResolverInputTypes["order_by"] | undefined | null,
 	k_factor?: ResolverInputTypes["order_by"] | undefined | null,
 	kda?: ResolverInputTypes["order_by"] | undefined | null,
 	kills?: ResolverInputTypes["order_by"] | undefined | null,
@@ -134802,6 +134836,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	deaths?: number | undefined | null,
 	expected_score?: ResolverInputTypes["float8"] | undefined | null,
 	impact?: ResolverInputTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: ResolverInputTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -134912,6 +134947,7 @@ count?: [{	columns?: Array<ResolverInputTypes["player_elo_select_column"]> | und
 	deaths?: number | undefined | null,
 	expected_score?: ResolverInputTypes["float8"] | undefined | null,
 	impact?: ResolverInputTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: ResolverInputTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -146933,6 +146969,18 @@ abandoned_matches_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["abandoned_matches_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null},ResolverInputTypes["abandoned_matches_aggregate"]],
 abandoned_matches_by_pk?: [{	id: ResolverInputTypes["uuid"]},ResolverInputTypes["abandoned_matches"]],
+active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches"]],
+active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches_aggregate"]],
 analyseUtilityPlaybookCoverage?: [{	pairs: Array<ResolverInputTypes["UtilitySightlinePairInput"]>,	playbook_id: ResolverInputTypes["uuid"]},ResolverInputTypes["UtilityPlaybookCoverageOutput"]],
 analyzeQuery?: [{	parameters: Array<ResolverInputTypes["QueryParameterInput"]>,	queryid: string},ResolverInputTypes["QueryAnalysis"]],
 api_keys?: [{	/** distinct select on columns */
@@ -154985,6 +155033,18 @@ abandoned_matches_stream?: [{	/** maximum number of rows returned in a single ba
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["abandoned_matches_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["abandoned_matches_bool_exp"] | undefined | null},ResolverInputTypes["abandoned_matches"]],
+active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches"]],
+active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches_aggregate"]],
 api_keys?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["api_keys_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -224518,6 +224578,7 @@ export type ModelTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: ModelTypes["float8"] | undefined | null,
 	impact?: ModelTypes["numeric"] | undefined | null,
+	is_tournament: boolean,
 	k_factor?: number | undefined | null,
 	kda?: ModelTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -224598,6 +224659,7 @@ export type ModelTypes = {
 	deaths?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	expected_score?: ModelTypes["float8_comparison_exp"] | undefined | null,
 	impact?: ModelTypes["numeric_comparison_exp"] | undefined | null,
+	is_tournament?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
 	k_factor?: ModelTypes["Int_comparison_exp"] | undefined | null,
 	kda?: ModelTypes["float8_comparison_exp"] | undefined | null,
 	kills?: ModelTypes["Int_comparison_exp"] | undefined | null,
@@ -224654,6 +224716,7 @@ export type ModelTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: ModelTypes["float8"] | undefined | null,
 	impact?: ModelTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: ModelTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -224752,6 +224815,7 @@ export type ModelTypes = {
 	deaths?: ModelTypes["order_by"] | undefined | null,
 	expected_score?: ModelTypes["order_by"] | undefined | null,
 	impact?: ModelTypes["order_by"] | undefined | null,
+	is_tournament?: ModelTypes["order_by"] | undefined | null,
 	k_factor?: ModelTypes["order_by"] | undefined | null,
 	kda?: ModelTypes["order_by"] | undefined | null,
 	kills?: ModelTypes["order_by"] | undefined | null,
@@ -224790,6 +224854,7 @@ export type ModelTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: ModelTypes["float8"] | undefined | null,
 	impact?: ModelTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: ModelTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -224897,6 +224962,7 @@ export type ModelTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: ModelTypes["float8"] | undefined | null,
 	impact?: ModelTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: ModelTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -236163,6 +236229,10 @@ export type ModelTypes = {
 	abandoned_matches_aggregate: ModelTypes["abandoned_matches_aggregate"],
 	/** fetch data from the table: "abandoned_matches" using primary key columns */
 	abandoned_matches_by_pk?: ModelTypes["abandoned_matches"] | undefined | null,
+	/** execute function "active_matches" which returns "matches" */
+	active_matches: Array<ModelTypes["matches"]>,
+	/** execute function "active_matches" and query aggregates on result of table type "matches" */
+	active_matches_aggregate: ModelTypes["matches_aggregate"],
 	/** Ask which sightlines a playbook's smokes leave open */
 	analyseUtilityPlaybookCoverage?: ModelTypes["UtilityPlaybookCoverageOutput"] | undefined | null,
 	/** Run EXPLAIN ANALYZE on a pg_stat_statements entry with values for its parameters */
@@ -241919,6 +241989,10 @@ export type ModelTypes = {
 	abandoned_matches_by_pk?: ModelTypes["abandoned_matches"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "abandoned_matches" */
 	abandoned_matches_stream: Array<ModelTypes["abandoned_matches"]>,
+	/** execute function "active_matches" which returns "matches" */
+	active_matches: Array<ModelTypes["matches"]>,
+	/** execute function "active_matches" and query aggregates on result of table type "matches" */
+	active_matches_aggregate: ModelTypes["matches_aggregate"],
 	/** fetch data from the table: "api_keys" */
 	api_keys: Array<ModelTypes["api_keys"]>,
 	/** fetch aggregated fields from the table: "api_keys" */
@@ -309182,6 +309256,7 @@ export type GraphQLTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: GraphQLTypes["float8"] | undefined | null,
 	impact?: GraphQLTypes["numeric"] | undefined | null,
+	is_tournament: boolean,
 	k_factor?: number | undefined | null,
 	kda?: GraphQLTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -309265,6 +309340,7 @@ export type GraphQLTypes = {
 	deaths?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	expected_score?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
 	impact?: GraphQLTypes["numeric_comparison_exp"] | undefined | null,
+	is_tournament?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
 	k_factor?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
 	kda?: GraphQLTypes["float8_comparison_exp"] | undefined | null,
 	kills?: GraphQLTypes["Int_comparison_exp"] | undefined | null,
@@ -309322,6 +309398,7 @@ export type GraphQLTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: GraphQLTypes["float8"] | undefined | null,
 	impact?: GraphQLTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: GraphQLTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -309423,6 +309500,7 @@ export type GraphQLTypes = {
 	deaths?: GraphQLTypes["order_by"] | undefined | null,
 	expected_score?: GraphQLTypes["order_by"] | undefined | null,
 	impact?: GraphQLTypes["order_by"] | undefined | null,
+	is_tournament?: GraphQLTypes["order_by"] | undefined | null,
 	k_factor?: GraphQLTypes["order_by"] | undefined | null,
 	kda?: GraphQLTypes["order_by"] | undefined | null,
 	kills?: GraphQLTypes["order_by"] | undefined | null,
@@ -309462,6 +309540,7 @@ export type GraphQLTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: GraphQLTypes["float8"] | undefined | null,
 	impact?: GraphQLTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: GraphQLTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -309572,6 +309651,7 @@ export type GraphQLTypes = {
 	deaths?: number | undefined | null,
 	expected_score?: GraphQLTypes["float8"] | undefined | null,
 	impact?: GraphQLTypes["numeric"] | undefined | null,
+	is_tournament?: boolean | undefined | null,
 	k_factor?: number | undefined | null,
 	kda?: GraphQLTypes["float8"] | undefined | null,
 	kills?: number | undefined | null,
@@ -321247,6 +321327,10 @@ export type GraphQLTypes = {
 	abandoned_matches_aggregate: GraphQLTypes["abandoned_matches_aggregate"],
 	/** fetch data from the table: "abandoned_matches" using primary key columns */
 	abandoned_matches_by_pk?: GraphQLTypes["abandoned_matches"] | undefined | null,
+	/** execute function "active_matches" which returns "matches" */
+	active_matches: Array<GraphQLTypes["matches"]>,
+	/** execute function "active_matches" and query aggregates on result of table type "matches" */
+	active_matches_aggregate: GraphQLTypes["matches_aggregate"],
 	/** Ask which sightlines a playbook's smokes leave open */
 	analyseUtilityPlaybookCoverage?: GraphQLTypes["UtilityPlaybookCoverageOutput"] | undefined | null,
 	/** Run EXPLAIN ANALYZE on a pg_stat_statements entry with values for its parameters */
@@ -327236,6 +327320,10 @@ export type GraphQLTypes = {
 	abandoned_matches_by_pk?: GraphQLTypes["abandoned_matches"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "abandoned_matches" */
 	abandoned_matches_stream: Array<GraphQLTypes["abandoned_matches"]>,
+	/** execute function "active_matches" which returns "matches" */
+	active_matches: Array<GraphQLTypes["matches"]>,
+	/** execute function "active_matches" and query aggregates on result of table type "matches" */
+	active_matches_aggregate: GraphQLTypes["matches_aggregate"],
 	/** fetch data from the table: "api_keys" */
 	api_keys: Array<GraphQLTypes["api_keys"]>,
 	/** fetch aggregated fields from the table: "api_keys" */
@@ -362128,6 +362216,7 @@ export enum player_elo_select_column {
 	deaths = "deaths",
 	expected_score = "expected_score",
 	impact = "impact",
+	is_tournament = "is_tournament",
 	k_factor = "k_factor",
 	kda = "kda",
 	kills = "kills",
@@ -362156,6 +362245,7 @@ export enum player_elo_update_column {
 	deaths = "deaths",
 	expected_score = "expected_score",
 	impact = "impact",
+	is_tournament = "is_tournament",
 	k_factor = "k_factor",
 	kda = "kda",
 	kills = "kills",

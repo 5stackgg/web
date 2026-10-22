@@ -5,6 +5,7 @@ import { useI18n } from "vue-i18n";
 import { Radio, Swords } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
+import { subscribeFromActiveMatches } from "~/utilities/activeMatches";
 import {
   teamMatchesFilter,
   teamStageMatchFields,
@@ -78,14 +79,18 @@ function stop() {
 function follow(query: any, statuses: string[], into: typeof liveMatches) {
   const teamId = props.team?.id;
   subs.push(
-    client.subscribe({ query, variables: { teamId, statuses } }).subscribe({
-      next: ({ data }: any) => {
-        into.value = data?.matches ?? [];
-      },
-      error: (error: any) => {
-        console.error("[team-stage] subscription error", error);
-      },
-    }),
+    subscribeFromActiveMatches(client, query, (activeQuery) =>
+      client
+        .subscribe({ query: activeQuery, variables: { teamId, statuses } })
+        .subscribe({
+          next: ({ data }: any) => {
+            into.value = data?.matches ?? [];
+          },
+          error: (error: any) => {
+            console.error("[team-stage] subscription error", error);
+          },
+        }),
+    ),
   );
 }
 

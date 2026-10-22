@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import { print } from "graphql";
+import { flushPromises } from "@vue/test-utils";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -39,6 +40,10 @@ let subscriptions: Array<{ options: any; observer: any }> = [];
 
 function serve() {
   const client = useApollo().clients!.default;
+  // An API without active_matches yet: my matches read matches directly.
+  vi.spyOn(client, "query").mockResolvedValue({
+    data: { __type: { fields: [] } },
+  } as any);
   vi.spyOn(client, "subscribe").mockImplementation(
     (options: any) =>
       ({
@@ -58,7 +63,9 @@ const subscriptionsTo = (field: string) =>
 
 async function deliver(rows: unknown[]) {
   await useMatchLobbyStore().subscribeToMyMatches();
-  subscriptionsTo("matches").at(-1)!.observer.next({ data: { matches: rows } });
+  subscriptionsTo("matches")
+    .at(-1)!
+    .observer.next({ data: { matches: rows } });
   await nextTick();
 }
 
@@ -126,9 +133,7 @@ describe("current match", () => {
 
 describe("scheduled matches", () => {
   it("joins my matches once kickoff is within the hour, with no new result", async () => {
-    await deliver([
-      match("later", "Scheduled", 5 * MINUTE, at(90 * MINUTE)),
-    ]);
+    await deliver([match("later", "Scheduled", 5 * MINUTE, at(90 * MINUTE))]);
     expect(ids()).toEqual([]);
 
     vi.advanceTimersByTime(29 * MINUTE);
@@ -179,7 +184,7 @@ describe("role change", () => {
         },
       },
     });
-    await nextTick();
+    await flushPromises();
 
     expect(subscriptionsTo("matches")).toHaveLength(2);
     expect(organizerBranch(subscriptionsTo("matches")[1].options)).toMatch(

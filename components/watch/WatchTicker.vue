@@ -25,6 +25,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useWatchStage } from "~/composables/useWatchStage";
 import { seededSubscribe } from "~/utilities/seededSubscribe";
+import { subscribeFromActiveMatches } from "~/utilities/activeMatches";
 import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 import {
   TICKER_LIVE_STATUSES,
@@ -110,42 +111,46 @@ const resultsQuery = generateQuery({
 
 function start() {
   if (liveSub || typeof window === "undefined") return;
-  liveSub = seededSubscribe(
-    client,
-    {
-      query: liveQuery,
-      variables: { statuses: [...TICKER_LIVE_STATUSES] },
-    },
-    {
-      next: ({ data }: any) => {
-        const next: any[] = data?.matches ?? [];
-        // A match that drops out of the live list has usually just
-        // finished, so the results row needs to pick it up.
-        const nextIds = new Set(next.map((m) => m.id));
-        const ended = live.value.some((m) => !nextIds.has(m.id));
-        live.value = next;
-        liveLoaded.value = true;
-        if (ended) void refreshNewestResults();
+  liveSub = subscribeFromActiveMatches(client, liveQuery, (query) =>
+    seededSubscribe(
+      client,
+      {
+        query,
+        variables: { statuses: [...TICKER_LIVE_STATUSES] },
       },
-      error: (err: any) => {
-        console.error("[watch-ticker] live subscription error", err);
-        liveLoaded.value = true;
+      {
+        next: ({ data }: any) => {
+          const next: any[] = data?.matches ?? [];
+          // A match that drops out of the live list has usually just
+          // finished, so the results row needs to pick it up.
+          const nextIds = new Set(next.map((m) => m.id));
+          const ended = live.value.some((m) => !nextIds.has(m.id));
+          live.value = next;
+          liveLoaded.value = true;
+          if (ended) void refreshNewestResults();
+        },
+        error: (err: any) => {
+          console.error("[watch-ticker] live subscription error", err);
+          liveLoaded.value = true;
+        },
       },
-    },
+    ),
   );
-  upcomingSub = seededSubscribe(
-    client,
-    { query: upcomingQuery, variables: { status: "Scheduled" } },
-    {
-      next: ({ data }: any) => {
-        upcoming.value = data?.matches ?? [];
-        upcomingLoaded.value = true;
+  upcomingSub = subscribeFromActiveMatches(client, upcomingQuery, (query) =>
+    seededSubscribe(
+      client,
+      { query, variables: { status: "Scheduled" } },
+      {
+        next: ({ data }: any) => {
+          upcoming.value = data?.matches ?? [];
+          upcomingLoaded.value = true;
+        },
+        error: (err: any) => {
+          console.error("[watch-ticker] upcoming subscription error", err);
+          upcomingLoaded.value = true;
+        },
       },
-      error: (err: any) => {
-        console.error("[watch-ticker] upcoming subscription error", err);
-        upcomingLoaded.value = true;
-      },
-    },
+    ),
   );
   void loadResults(true);
 }

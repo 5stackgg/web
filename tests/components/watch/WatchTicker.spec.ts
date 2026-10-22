@@ -6,7 +6,11 @@ import WatchTicker from "~/components/watch/WatchTicker.vue";
 import { useWatchStage } from "~/composables/useWatchStage";
 
 const { subscriptions, queries } = vi.hoisted(() => ({
-  subscriptions: [] as Array<{ variables: any; next: (result: any) => void }>,
+  subscriptions: [] as Array<{
+    query: string;
+    variables: any;
+    next: (result: any) => void;
+  }>,
   queries: [] as Array<{ query: string; variables: any }>,
 }));
 
@@ -38,13 +42,16 @@ vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
   useApolloClient: () => ({
     client: {
-      subscribe: ({ variables }: any) => ({
+      subscribe: ({ query, variables }: any) => ({
         subscribe: ({ next }: { next: (result: any) => void }) => {
-          subscriptions.push({ variables, next });
+          subscriptions.push({ query: print(query), variables, next });
           return { unsubscribe() {} };
         },
       }),
       query: async ({ query, variables }: any) => {
+        if (print(query).includes("SchemaTypeFields")) {
+          return { data: { __type: { fields: [{ name: "active_matches" }] } } };
+        }
         queries.push({ query: print(query), variables });
         return {
           data: {
@@ -86,6 +93,18 @@ describe("WatchTicker", () => {
   beforeEach(() => {
     subscriptions.length = 0;
     queries.length = 0;
+  });
+
+  it("follows live and upcoming from active_matches", async () => {
+    await mountTicker();
+
+    expect(subscriptions.map((sub) => sub.variables)).toEqual([
+      { statuses: ["Live", "WaitingForServer", "Veto", "WaitingForCheckIn"] },
+      { status: "Scheduled" },
+    ]);
+    for (const sub of subscriptions) {
+      expect(sub.query).toMatch(/^\s*matches: active_matches\(/m);
+    }
   });
 
   it("counts Live and Upcoming but not All or Results", async () => {

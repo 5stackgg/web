@@ -2,6 +2,7 @@ import { computed, onBeforeUnmount, ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { $, order_by, Selector } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
+import { subscribeFromActiveMatches } from "~/utilities/activeMatches";
 import { watchTickerMatchFields } from "~/graphql/watchTickerFields";
 import { TICKER_LIVE_STATUSES } from "~/components/watch/watchTicker";
 
@@ -52,24 +53,26 @@ export function useLiveTeamMatches() {
   if (typeof window !== "undefined") {
     users++;
     if (!sub) {
-      sub = client
-        .subscribe({
-          query: liveTeamMatchesQuery,
-          variables: { statuses: [...TICKER_LIVE_STATUSES] },
-        })
-        .subscribe({
-          next: ({ data }: any) => {
-            matches.value = data?.matches ?? [];
-            loaded.value = true;
-          },
-          error: (error: any) => {
-            console.error(
-              "[teams] live team matches subscription error",
-              error,
-            );
-            loaded.value = true;
-          },
-        });
+      sub = subscribeFromActiveMatches(client, liveTeamMatchesQuery, (query) =>
+        client
+          .subscribe({
+            query,
+            variables: { statuses: [...TICKER_LIVE_STATUSES] },
+          })
+          .subscribe({
+            next: ({ data }: any) => {
+              matches.value = data?.matches ?? [];
+              loaded.value = true;
+            },
+            error: (error: any) => {
+              console.error(
+                "[teams] live team matches subscription error",
+                error,
+              );
+              loaded.value = true;
+            },
+          }),
+      );
     }
     onBeforeUnmount(() => {
       users--;

@@ -1,0 +1,69 @@
+import type { ApolloClient } from "@apollo/client/core";
+import { Kind, type DocumentNode } from "graphql";
+import { schemaHasField } from "~/utilities/schemaHasType";
+
+const ROOTS: Record<string, string> = {
+  matches: "active_matches",
+  matches_aggregate: "active_matches_aggregate",
+};
+
+// A subscription's status filter reaches Postgres as a value it only sees at
+// run time, so reading matches scans every match ever played on every poll.
+// active_matches holds just the matches not yet over (Live, Veto,
+// WaitingForCheckIn, WaitingForServer, Scheduled, PickingPlayers), and any
+// filter inside those statuses gets the same rows from it. The top-level
+// matches field is read from there under its own name, so results arrive
+// where they always did. Until the API serves it, the document is unchanged.
+export async function fromActiveMatches(
+  client: ApolloClient<any>,
+  document: DocumentNode,
+): Promise<DocumentNode> {
+  if (!(await schemaHasField(client, "subscription_root", "active_matches"))) {
+    return document;
+  }
+  return {
+    ...document,
+    definitions: document.definitions.map((definition) =>
+      definition.kind !== Kind.OPERATION_DEFINITION
+        ? definition
+        : {
+            ...definition,
+            selectionSet: {
+              ...definition.selectionSet,
+              selections: definition.selectionSet.selections.map((selection) =>
+                selection.kind === Kind.FIELD && ROOTS[selection.name.value]
+                  ? {
+                      ...selection,
+                      alias: selection.alias ?? selection.name,
+                      name: {
+                        ...selection.name,
+                        value: ROOTS[selection.name.value],
+                      },
+                    }
+                  : selection,
+              ),
+            },
+          },
+    ),
+  };
+}
+
+// For subscriptions started synchronously: the handle can be dropped before
+// the root is known, and then nothing is subscribed.
+export function subscribeFromActiveMatches(
+  client: ApolloClient<any>,
+  document: DocumentNode,
+  subscribe: (query: DocumentNode) => { unsubscribe: () => void },
+): { unsubscribe: () => void } {
+  let closed = false;
+  let inner: { unsubscribe: () => void } | undefined;
+  void fromActiveMatches(client, document).then((query) => {
+    if (!closed) inner = subscribe(query);
+  });
+  return {
+    unsubscribe() {
+      closed = true;
+      inner?.unsubscribe();
+    },
+  };
+}

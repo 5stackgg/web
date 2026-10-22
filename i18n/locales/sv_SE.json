@@ -13144,6 +13144,7 @@
       "pick_of": "Val {n} av {total}",
       "auto_pick_hint": "Om tiden tar slut väljs {name} åt dig.",
       "pick_slot": "Val {n}",
+      "not_picked": "Inte vald än",
       "auto_picked": "Auto",
       "auto_picked_hint": "Valdes automatiskt när tiden tog slut",
       "add_to_team": "Lägg till i {team}",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "Alla har en minut på sig att checka in. Sedan kan värden byta in en backup för den som inte har gjort det.",
       "swap_in": "Byt in {name}",
       "remove_no_show": "Ta bort från matchen",
-      "remove_no_show_description": "Personen tas bort från matchen och platsen lämnas tom."
+      "remove_no_show_description": "Personen tas bort från matchen och platsen lämnas tom.",
+      "is_picking": "{name} väljer",
+      "hosted_by": "Värd: {name}",
+      "closes_in": "Stänger om {time}",
+      "host_mode_desc": "Värden placerar spelarna i lagen."
     },
     "header": {
       "label": "Status för draftrummet",
@@ -14765,9 +14770,13 @@
       "step_label": "Draftsteg",
       "replay": "Spela upp igen",
       "steps": {
+        "picks": {
+          "label": "Val",
+          "caption": "Ett påhittat Captains-draft: kaptenerna väljer i tur och ordning med en 30-sekundersklocka, och varje val hamnar i lagets stapel i scorebuggen. Hovra eller tryck på en stapel för att se ordningen. Inget här rör ett riktigt draft."
+        },
         "check_in": {
           "label": "Anmälan",
-          "caption": "En påhittad draft som just har skapat sin match. Alla utom en spelare har anmält sig från draftrummet. Inget här påverkar en riktig draft."
+          "caption": "Det sista valet skapar matchen. Alla anmäler sig från draftrummet, och vetot börjar så fort den sista spelaren har anmält sig."
         },
         "veto": {
           "label": "Veto",

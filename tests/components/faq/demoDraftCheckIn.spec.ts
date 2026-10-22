@@ -74,3 +74,63 @@ describe("the FAQ demo lobby at check-in", () => {
     expect(box.text()).toContain("Checking in");
   });
 });
+
+describe("the FAQ demo lobby while the captains pick", () => {
+  async function mountDemoPicks(picked: number) {
+    const startedAt = Date.now();
+    useAuthStore().me = { steam_id: viewer.steam_id } as any;
+    useApplicationSettingsStore().availableRegions = [{ value: "us" }] as any;
+    const wrapper = await mountSuspended(DraftRoom, {
+      props: {
+        room: demoDraftRoom(viewer as any, startedAt, {
+          picked,
+          turnAt: startedAt,
+          matchMade: false,
+        }),
+      },
+      shallow: true,
+    });
+    mounted = wrapper;
+    return wrapper.vm as any;
+  }
+
+  const team1 = (vm: any) =>
+    vm.headerSides[0].seats.map((seat: any) => ({
+      name: seat.player?.name ?? null,
+      no: seat.no,
+      current: seat.current,
+      mine: seat.mine,
+    }));
+
+  it("runs the real draft room, the captains set and every pick to come", async () => {
+    const vm = await mountDemoPicks(0);
+
+    expect(vm.header.phase).toBe("draft");
+    expect(team1(vm).map((seat: any) => seat.name)).toEqual([
+      "vexa",
+      null,
+      null,
+      null,
+      null,
+    ]);
+    expect(team1(vm)[1]).toMatchObject({ no: 1, current: true });
+  });
+
+  it("puts you in Team 1's stack when your pick lands", async () => {
+    const vm = await mountDemoPicks(5);
+
+    expect(team1(vm).map((seat: any) => [seat.no, seat.mine])).toEqual([
+      [null, false],
+      [1, false],
+      [4, false],
+      [5, true],
+      [8, false],
+    ]);
+  });
+
+  it("makes the match once the last pick is in", async () => {
+    const vm = await mountDemoPicks(8);
+
+    expect(vm.header.phase).toBe("between");
+  });
+});

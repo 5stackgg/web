@@ -566,6 +566,63 @@ mark {
   }
 }
 
+/* The draft room handing over to the match page (useScorebugHandoff): the
+   scorebug's crests, names and box glide from the room's header to the match
+   header's while the two pages crossfade around them. */
+html.scorebug-handoff [data-scorebug="crest-1"] {
+  view-transition-name: scorebug-crest-1;
+}
+html.scorebug-handoff [data-scorebug="crest-2"] {
+  view-transition-name: scorebug-crest-2;
+}
+html.scorebug-handoff [data-scorebug="team-1"] {
+  view-transition-name: scorebug-team-1;
+}
+html.scorebug-handoff [data-scorebug="team-2"] {
+  view-transition-name: scorebug-team-2;
+}
+html.scorebug-handoff [data-scorebug="box"] {
+  view-transition-name: scorebug-box;
+}
+/* Already on screen, so the parts ease into the move as well as out of it;
+   the pages around them crossfade on the route's own enter time. */
+html.scorebug-handoff::view-transition-group(*) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+html.scorebug-handoff::view-transition-group(root) {
+  animation-duration: 280ms;
+  animation-timing-function: ease-out;
+}
+/* The box changes width and contents: each side keeps its own size, centred,
+   and the box clips them while it eases from one width to the other. Its
+   words trade out-in, so the two never read as one. */
+html.scorebug-handoff::view-transition-image-pair(scorebug-box) {
+  overflow: hidden;
+  border-radius: 10px;
+}
+html.scorebug-handoff::view-transition-old(scorebug-box),
+html.scorebug-handoff::view-transition-new(scorebug-box) {
+  height: 100%;
+  object-fit: none;
+}
+html.scorebug-handoff::view-transition-old(scorebug-box) {
+  animation: scorebug-out 160ms ease-in both;
+}
+html.scorebug-handoff::view-transition-new(scorebug-box) {
+  animation: scorebug-in 240ms cubic-bezier(0.16, 1, 0.3, 1) 160ms both;
+}
+@keyframes scorebug-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes scorebug-in {
+  from {
+    opacity: 0;
+  }
+}
+
 /* Rendered markdown for news articles. Shared by the published article page
    (news/[slug].vue) and the editor live preview (MarkdownEditor.vue) so the
    draft preview matches what readers see. Kept unlayered so these rules win

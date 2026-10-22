@@ -13144,6 +13144,7 @@
       "pick_of": "Valg {n} af {total}",
       "auto_pick_hint": "Hvis tiden løber ud, vælges {name} for dig.",
       "pick_slot": "Valg {n}",
+      "not_picked": "Ikke valgt endnu",
       "auto_picked": "Auto",
       "auto_picked_hint": "Valgt automatisk, da tiden løb ud",
       "add_to_team": "Tilføj til {team}",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "Alle har et minut til at checke ind. Derefter kan værten skifte en backup ind for dem, der ikke har.",
       "swap_in": "Skift {name} ind",
       "remove_no_show": "Fjern fra kampen",
-      "remove_no_show_description": "Spilleren fjernes fra kampen, og pladsen står tom."
+      "remove_no_show_description": "Spilleren fjernes fra kampen, og pladsen står tom.",
+      "is_picking": "{name} vælger",
+      "hosted_by": "Vært: {name}",
+      "closes_in": "Lukker om {time}",
+      "host_mode_desc": "Værten sætter spillerne på holdene."
     },
     "header": {
       "label": "Status for draftrummet",
@@ -14765,9 +14770,13 @@
       "step_label": "Drafttrin",
       "replay": "Afspil igen",
       "steps": {
+        "picks": {
+          "label": "Valg",
+          "caption": "Et opdigtet Captains-draft: kaptajnerne vælger på skift med et 30-sekunders ur, og hvert valg lander i holdets stak i scorebuggen. Hold musen over eller tryk på en stak for at se rækkefølgen. Intet her rører et rigtigt draft."
+        },
         "check_in": {
           "label": "Klarmelding",
-          "caption": "Et opdigtet draft, der lige har lavet sin kamp. Alle undtagen én spiller har meldt sig klar fra draft-rummet. Intet her rører et rigtigt draft."
+          "caption": "Det sidste valg opretter kampen. Alle melder sig klar fra draft-rummet, og veto starter, så snart den sidste spiller er klar."
         },
         "veto": {
           "label": "Veto",

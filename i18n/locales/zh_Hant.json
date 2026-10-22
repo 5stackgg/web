@@ -13144,6 +13144,7 @@
       "pick_of": "第 {n} 選 / 共 {total}",
       "auto_pick_hint": "若時間耗盡，系統將為你選擇 {name}。",
       "pick_slot": "第 {n} 選",
+      "not_picked": "尚未選擇",
       "auto_picked": "自動",
       "auto_picked_hint": "時間耗盡後自動選擇",
       "add_to_team": "加入{team}",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "每個人有一分鐘簽到。之後，房主可以用候補替換未簽到的玩家。",
       "swap_in": "換上 {name}",
       "remove_no_show": "移出比賽",
-      "remove_no_show_description": "他們將被移出比賽，位置會空出來。"
+      "remove_no_show_description": "他們將被移出比賽，位置會空出來。",
+      "is_picking": "{name} 正在選人",
+      "hosted_by": "房主：{name}",
+      "closes_in": "{time} 後關閉",
+      "host_mode_desc": "由房主將玩家分配到各隊。"
     },
     "header": {
       "label": "選人房間狀態",
@@ -14765,9 +14770,13 @@
       "step_label": "選人階段",
       "replay": "重新播放",
       "steps": {
+        "picks": {
+          "label": "選人",
+          "caption": "一場虛構的隊長選人：隊長們在 30 秒倒數內輪流選人，每次選擇都會進入記分條上己方的頭像堆。懸停或點按頭像堆即可查看順序。這裡的一切都不會影響真實的選人。"
+        },
         "check_in": {
           "label": "報到",
-          "caption": "一場剛建立比賽的虛構選人。除一位玩家外，所有人都已在選人房間報到。這裡的操作不會影響真正的選人。"
+          "caption": "最後一次選擇會建立比賽。所有人在選人房間報到，最後一名玩家報到後 BP 立即開始。"
         },
         "veto": {
           "label": "BP",

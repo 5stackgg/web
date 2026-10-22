@@ -13144,6 +13144,7 @@
       "pick_of": "픽 {n} / {total}",
       "auto_pick_hint": "시간이 다 되면 {name} 님이 자동으로 선택됩니다.",
       "pick_slot": "픽 {n}",
+      "not_picked": "아직 픽 안 됨",
       "auto_picked": "자동",
       "auto_picked_hint": "시간이 다 되어 자동으로 선택됨",
       "add_to_team": "{team}에 추가",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "모두 1분 안에 체크인해야 합니다. 그 후 호스트는 체크인하지 않은 플레이어를 백업과 교체할 수 있습니다.",
       "swap_in": "{name} 투입",
       "remove_no_show": "경기에서 제외",
-      "remove_no_show_description": "경기에서 제외되며 자리는 비어 있게 됩니다."
+      "remove_no_show_description": "경기에서 제외되며 자리는 비어 있게 됩니다.",
+      "is_picking": "{name} 님이 픽하는 중",
+      "hosted_by": "호스트: {name}",
+      "closes_in": "{time} 후 종료",
+      "host_mode_desc": "호스트가 플레이어를 팀에 배정합니다."
     },
     "header": {
       "label": "드래프트 방 상태",
@@ -14765,9 +14770,13 @@
       "step_label": "드래프트 단계",
       "replay": "다시 재생",
       "steps": {
+        "picks": {
+          "label": "픽",
+          "caption": "가상의 캡틴 드래프트입니다. 캡틴들이 30초 제한 시간으로 번갈아 픽하고, 각 픽은 스코어버그의 팀 스택에 들어갑니다. 스택에 마우스를 올리거나 탭하면 순서를 볼 수 있습니다. 실제 드래프트에는 영향이 없습니다."
+        },
         "check_in": {
           "label": "참가 확인",
-          "caption": "방금 매치를 만든 가상의 드래프트입니다. 한 명을 빼고 모두 드래프트 룸에서 참가 확인을 마쳤습니다. 여기서 하는 일은 실제 드래프트에 영향을 주지 않습니다."
+          "caption": "마지막 픽으로 매치가 만들어집니다. 모두 드래프트 룸에서 참가 확인을 하고, 마지막 플레이어가 확인하는 즉시 밴픽이 시작됩니다."
         },
         "veto": {
           "label": "밴픽",

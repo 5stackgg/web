@@ -29,6 +29,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
 import { useMatchContext } from "~/composables/useMatchContext";
+import { useScorebugHandoff } from "~/composables/useScorebugHandoff";
 
 definePageMeta({
   pageTransition: { name: "page", mode: "out-in" },
@@ -42,6 +43,7 @@ useHead({
 });
 
 const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
+const scorebugHandoff = useScorebugHandoff();
 
 // One subscription shared by MatchTabs (Clips) + lineup row indicators.
 const route = useRoute();
@@ -224,7 +226,9 @@ const ChatLobby = defineAsyncComponent(
             chatRail ? 'flex min-w-0 flex-col gap-4 md:gap-6' : 'contents'
           "
         >
-          <PageTransition>
+          <!-- Arriving from the draft room the scorebug flies in from its
+               header, so the stage is already in place. -->
+          <PageTransition :appear="!scorebugHandoff">
             <!-- The match stage: scorebug band on top, highlights underneath, one
              rounded surface. The highlights fold in when the clips arrive. -->
             <section

@@ -13144,6 +13144,7 @@
       "pick_of": "Elección {n} de {total}",
       "auto_pick_hint": "Si se acaba el tiempo, se elegirá a {name} por ti.",
       "pick_slot": "Elección {n}",
+      "not_picked": "Aún sin elegir",
       "auto_picked": "Auto",
       "auto_picked_hint": "Elegido automáticamente al acabarse el tiempo",
       "add_to_team": "Añadir a {team}",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "Todos tienen un minuto para hacer check-in. Después, el anfitrión puede meter a una reserva en lugar de quien no lo haya hecho.",
       "swap_in": "Meter a {name}",
       "remove_no_show": "Quitar del partido",
-      "remove_no_show_description": "Se le quitará del partido y su puesto quedará libre."
+      "remove_no_show_description": "Se le quitará del partido y su puesto quedará libre.",
+      "is_picking": "{name} está eligiendo",
+      "hosted_by": "Anfitrión: {name}",
+      "closes_in": "Se cierra en {time}",
+      "host_mode_desc": "El anfitrión reparte a los jugadores en los equipos."
     },
     "header": {
       "label": "Estado de la sala de draft",
@@ -14765,9 +14770,13 @@
       "step_label": "Paso del draft",
       "replay": "Repetir",
       "steps": {
+        "picks": {
+          "label": "Elecciones",
+          "caption": "Un draft de capitanes de mentira: los capitanes eligen por turnos con un reloj de 30 segundos y cada elección entra en la pila de su equipo en el marcador. Pasa el ratón o toca una pila para ver el orden. Nada de esto afecta a un draft real."
+        },
         "check_in": {
           "label": "Confirmación",
-          "caption": "Un draft de prueba que acaba de crear su partida. Todos han confirmado su asistencia desde la sala de draft menos un jugador. Nada de esto afecta a un draft real."
+          "caption": "La última elección crea la partida. Todos confirman desde la sala de draft y el veto empieza en cuanto confirma el último jugador."
         },
         "veto": {
           "label": "Veto",

@@ -9,6 +9,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import DraftRoom from "~/components/draft-games/DraftRoom.vue";
 import { DRAFT_VETO_HOLD_MS, STARTING_STATUSES } from "~/utilities/vetoStage";
+import { handOffScorebug } from "~/composables/useScorebugHandoff";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { Button } from "~/components/ui/button";
 
@@ -175,7 +176,8 @@ watch(
 
 // The match page takes over once the server starts: it shows the maps while
 // it boots and folds them into its cards once it is ready. A veto stays up
-// here for a moment first, so the last ban and the decider are seen.
+// here for a moment first, so the last ban and the decider are seen. The
+// scorebug carries across, from this header to the match page's.
 let startRedirect: ReturnType<typeof setTimeout> | undefined;
 watch(
   () => !!match.value?.id && STARTING_STATUSES.includes(match.value?.status),
@@ -184,7 +186,7 @@ watch(
       return;
     }
     startRedirect = setTimeout(
-      () => navigateTo(`/matches/${match.value.id}`),
+      () => handOffScorebug(() => navigateTo(`/matches/${match.value.id}`)),
       match.value.options?.map_veto ? DRAFT_VETO_HOLD_MS : 0,
     );
   },

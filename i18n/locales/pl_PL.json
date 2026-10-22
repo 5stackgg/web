@@ -13144,6 +13144,7 @@
       "pick_of": "Wybór {n} z {total}",
       "auto_pick_hint": "Jeśli czas się skończy, {name} zostanie wybrany za ciebie.",
       "pick_slot": "Wybór {n}",
+      "not_picked": "Jeszcze nie wybrany",
       "auto_picked": "Auto",
       "auto_picked_hint": "Wybrano automatycznie po upływie czasu",
       "add_to_team": "Dodaj do {team}",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "Każdy ma minutę na potwierdzenie obecności. Potem host może wstawić oczekującego za każdego, kto jej nie potwierdził.",
       "swap_in": "Wstaw {name}",
       "remove_no_show": "Usuń z meczu",
-      "remove_no_show_description": "Zostanie usunięty z meczu, a jego miejsce pozostanie wolne."
+      "remove_no_show_description": "Zostanie usunięty z meczu, a jego miejsce pozostanie wolne.",
+      "is_picking": "{name} wybiera",
+      "hosted_by": "Host: {name}",
+      "closes_in": "Zamyka się za {time}",
+      "host_mode_desc": "Host przydziela graczy do drużyn."
     },
     "header": {
       "label": "Status pokoju draftu",
@@ -14765,9 +14770,13 @@
       "step_label": "Etap draftu",
       "replay": "Odtwórz ponownie",
       "steps": {
+        "picks": {
+          "label": "Wybory",
+          "caption": "Udawany draft kapitanów: kapitanowie wybierają na zmianę z 30-sekundowym zegarem, a każdy wybór trafia do stosu drużyny na tablicy wyników. Najedź lub dotknij stosu, aby zobaczyć kolejność. Nic tu nie dotyka prawdziwego draftu."
+        },
         "check_in": {
           "label": "Obecność",
-          "caption": "Udawany draft, który właśnie utworzył swój mecz. Wszyscy poza jednym graczem potwierdzili obecność w pokoju draftu. Nic tutaj nie dotyka prawdziwego draftu."
+          "caption": "Ostatni wybór tworzy mecz. Wszyscy potwierdzają obecność w pokoju draftu, a veto zaczyna się, gdy potwierdzi ostatni gracz."
         },
         "veto": {
           "label": "Veto",

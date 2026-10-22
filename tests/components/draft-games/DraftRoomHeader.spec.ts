@@ -168,7 +168,19 @@ describe("draft room header during the draft", () => {
     expect(vm.header.detail).toBe(
       "Pick 5 of 8. If time runs out, high is picked for you.",
     );
-    expect(vm.headerTrack).toBe(true);
+    expect(
+      vm.headerSides[0].seats.map((seat: any) => [
+        seat.player?.steamId ?? null,
+        seat.no,
+        seat.current,
+      ]),
+    ).toEqual([
+      ["cap1", null, false],
+      ["first", 1, false],
+      ["fourth", 4, false],
+      [null, 5, true],
+      [null, 8, false],
+    ]);
   });
 });
 
@@ -273,6 +285,12 @@ describe("draft room header actions", () => {
     const vm = await mountRoom({ ...lobby(7), is_organizer: true }, "visitor");
 
     expect(vm.headerActions).toEqual(["join", "start"]);
+  });
+
+  it("gives a player who isn't the host Leave in the lobby", async () => {
+    const vm = await mountRoom(lobby(6), "p3");
+
+    expect(vm.headerActions).toEqual(["leave"]);
   });
 
   it("keeps an invite answerable while the draft runs", async () => {

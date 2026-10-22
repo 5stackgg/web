@@ -13144,6 +13144,7 @@
       "pick_of": "Wahl {n} von {total}",
       "auto_pick_hint": "Läuft die Zeit ab, wird {name} für dich gewählt.",
       "pick_slot": "Wahl {n}",
+      "not_picked": "Noch nicht gewählt",
       "auto_picked": "Auto",
       "auto_picked_hint": "Automatisch gewählt, als die Zeit abgelaufen war",
       "add_to_team": "Zu {team} hinzufügen",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "Alle haben eine Minute zum Einchecken. Danach kann der Host für jeden, der fehlt, ein Backup einwechseln.",
       "swap_in": "{name} einwechseln",
       "remove_no_show": "Aus dem Match entfernen",
-      "remove_no_show_description": "Er wird aus dem Match genommen und sein Platz bleibt frei."
+      "remove_no_show_description": "Er wird aus dem Match genommen und sein Platz bleibt frei.",
+      "is_picking": "{name} wählt",
+      "hosted_by": "Host: {name}",
+      "closes_in": "Schließt in {time}",
+      "host_mode_desc": "Der Host teilt die Spieler den Teams zu."
     },
     "header": {
       "label": "Status des Draft-Raums",
@@ -14765,9 +14770,13 @@
       "step_label": "Draft-Schritt",
       "replay": "Erneut abspielen",
       "steps": {
+        "picks": {
+          "label": "Picks",
+          "caption": "Ein ausgedachter Captains-Draft: Die Captains wählen abwechselnd mit 30-Sekunden-Uhr, und jede Wahl landet im Stapel ihres Teams im Scorebug. Fahre über einen Stapel oder tippe darauf, um die Reihenfolge zu sehen. Nichts hier betrifft einen echten Draft."
+        },
         "check_in": {
           "label": "Check-in",
-          "caption": "Ein ausgedachter Draft, der gerade sein Match erstellt hat. Bis auf einen Spieler haben alle im Draft-Room eingecheckt. Nichts hier betrifft einen echten Draft."
+          "caption": "Die letzte Wahl erstellt das Match. Alle checken im Draft-Room ein, und das Veto beginnt, sobald der letzte Spieler eingecheckt hat."
         },
         "veto": {
           "label": "Veto",

@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, useSlots, watch } from "vue";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { useI18n } from "vue-i18n";
+import { Crown } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import DraftSeatStack from "~/components/draft-games/DraftSeatStack.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import Fold from "~/components/ui/transitions/Fold.vue";
 import { useElementSize } from "@vueuse/core";
@@ -16,10 +23,10 @@ const props = defineProps<{
   seats: { filled: number; capacity: number };
   sides: [DraftHeaderSide, DraftHeaderSide];
   winsNeeded: number;
-  track: boolean;
 }>();
 
 const slots = useSlots();
+const { t } = useI18n();
 
 // The menu holds whatever MatchActions shows. A lone menu button fits in the
 // corner with a little room kept clear on both sides of the scorebug; anything
@@ -87,8 +94,31 @@ const crestRing = (side: 1 | 2) => {
   return undefined;
 };
 
-const emptySeats = (side: DraftHeaderSide) =>
-  Math.max(0, side.seats - side.players.length);
+// The pick order opens on hover with a mouse, and on a tap or a key press
+// otherwise. A click on a stack the mouse already opened leaves it open.
+const stackOpen = ref<1 | 2 | null>(null);
+let hovered: 1 | 2 | null = null;
+const hoverStack = (slot: 1 | 2, event: PointerEvent) => {
+  if (event.pointerType === "mouse") {
+    hovered = slot;
+    stackOpen.value = slot;
+  }
+};
+const leaveStack = (slot: 1 | 2, event: PointerEvent) => {
+  if (event.pointerType === "mouse" && hovered === slot) {
+    hovered = null;
+    stackOpen.value = null;
+  }
+};
+const onStackOpen = (slot: 1 | 2, value: boolean) => {
+  if (value) {
+    stackOpen.value = slot;
+  } else if (hovered !== slot && stackOpen.value === slot) {
+    stackOpen.value = null;
+  }
+};
+const stackLabel = (slot: 1 | 2) =>
+  `${props.sides[slot - 1].name} · ${t("draft_games.room.pick_order")}`;
 
 // The scorebug unfolds out of the bar when the draft starts; a page opened
 // mid-draft just shows it.
@@ -123,7 +153,7 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
     <Fold :open="!open">
       <div class="draft-header-row">
         <span
-          class="relative grid size-11 place-items-center"
+          class="draft-header-ring relative grid size-11 place-items-center"
           :class="
             seats.filled >= seats.capacity
               ? 'text-[hsl(var(--tac-amber))]'
@@ -167,9 +197,8 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
           <FadeSwap class="min-w-0">
             <p
               :key="state.title"
-              class="truncate text-[15px] font-bold leading-[22px]"
+              class="text-[15px] font-bold leading-[22px] [text-wrap:balance]"
               :class="state.hot && 'text-[hsl(var(--tone))]'"
-              :title="state.title"
             >
               {{ state.title }}
             </p>
@@ -177,18 +206,20 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
           <FadeSwap class="min-w-0">
             <p
               :key="state.detail"
-              class="draft-header-detail text-[13px] leading-[18px] text-muted-foreground"
-              :title="state.detail"
+              class="text-[13px] leading-[18px] text-muted-foreground [text-wrap:pretty]"
             >
               {{ state.detail }}
             </p>
           </FadeSwap>
         </div>
 
-        <div class="flex shrink-0 items-center justify-end gap-2">
+        <div
+          class="draft-header-actions flex shrink-0 items-center justify-end gap-2"
+        >
           <slot name="actions" />
         </div>
       </div>
+      <slot name="lobby" />
     </Fold>
 
     <Fold :open="open">
@@ -204,9 +235,11 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
             :key="slot"
             class="draft-bug-side"
             :class="slot === 1 ? 'is-left' : 'is-right'"
+            :style="{ '--team': sideVar(slot) }"
           >
             <span
               aria-hidden="true"
+              :data-scorebug="`crest-${slot}`"
               class="draft-bug-crest grid shrink-0 place-items-center overflow-hidden rounded-[10px] bg-muted text-sm font-extrabold tracking-wide text-foreground/85 shadow-[0_8px_24px_-8px_rgb(0_0_0/0.8)] ring-1 ring-inset ring-white/10 transition-shadow duration-200"
               :style="crestRing(slot)"
             >
@@ -218,7 +251,10 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
               />
               <template v-else>{{ sides[slot - 1].monogram }}</template>
             </span>
-            <div class="draft-bug-id grid min-w-0 gap-1.5">
+            <div
+              class="draft-bug-id grid min-w-0 gap-1.5"
+              :data-scorebug="`team-${slot}`"
+            >
               <h2
                 class="draft-bug-name font-bold leading-[1.12] [text-wrap:balance]"
                 :title="sides[slot - 1].name"
@@ -226,39 +262,99 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
                 {{ sides[slot - 1].name }}
               </h2>
               <div class="draft-bug-roster flex items-center gap-2">
-                <div class="flex items-center">
-                  <div class="flex -space-x-[5px]">
-                    <Avatar
-                      v-for="player in sides[slot - 1].players"
-                      :key="player.steamId"
-                      class="size-5 text-[9px] ring-2 ring-black/50"
-                      :title="player.name"
-                    >
-                      <AvatarImage v-if="player.src" :src="player.src" alt="" />
-                      <AvatarFallback>{{
-                        player.name?.slice(0, 1)
-                      }}</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <span
-                    v-if="emptySeats(sides[slot - 1])"
-                    class="flex gap-[3px]"
-                    :class="sides[slot - 1].players.length ? 'ml-[3px]' : ''"
-                  >
-                    <i
-                      v-for="seat in emptySeats(sides[slot - 1])"
-                      :key="seat"
-                      class="size-5 rounded-full border border-dashed border-muted-foreground/35 bg-background"
-                    ></i>
-                  </span>
-                </div>
-                <span
-                  class="font-mono text-[11px] tabular-nums text-muted-foreground"
+                <!-- In a captains draft the stack is the pick order; hovered
+                     or tapped, it names everyone in it. -->
+                <Popover
+                  v-if="sides[slot - 1].ordered"
+                  :open="stackOpen === slot"
+                  @update:open="(value: boolean) => onStackOpen(slot, value)"
                 >
-                  {{ sides[slot - 1].players.length }}/{{
-                    sides[slot - 1].seats
-                  }}
-                </span>
+                  <PopoverTrigger as-child>
+                    <button
+                      type="button"
+                      class="draft-bug-stack"
+                      :aria-label="stackLabel(slot)"
+                      @pointerenter="hoverStack(slot, $event)"
+                      @pointerleave="leaveStack(slot, $event)"
+                    >
+                      <DraftSeatStack :seats="sides[slot - 1].seats" ordered />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    side="bottom"
+                    :align="slot === 1 ? 'end' : 'start'"
+                    class="w-auto p-2"
+                    @open-auto-focus.prevent
+                    @close-auto-focus.prevent
+                  >
+                    <div
+                      class="draft-stack-pop"
+                      :style="{ '--team': sideVar(slot) }"
+                    >
+                      <p class="draft-stack-pop-head">
+                        {{ sides[slot - 1].name }} ·
+                        {{ $t("draft_games.room.pick_order") }}
+                      </p>
+                      <ol>
+                        <li
+                          v-for="seat in sides[slot - 1].seats"
+                          :key="seat.key"
+                          :class="{
+                            'is-current': seat.current,
+                            'is-open': !seat.player && !seat.current,
+                          }"
+                        >
+                          <i
+                            class="draft-stack-pop-mark font-mono"
+                            :class="{ 'is-captain': seat.captain }"
+                          >
+                            <Crown
+                              v-if="seat.captain"
+                              class="size-2"
+                              :stroke-width="2.8"
+                            />
+                            <template v-else>{{ seat.no }}</template>
+                          </i>
+                          <template v-if="seat.player">
+                            <span class="draft-stack-pop-name">{{
+                              seat.player.name
+                            }}</span>
+                            <span
+                              v-if="seat.mine"
+                              class="draft-stack-pop-you"
+                              >{{
+                                $t("pages.play.draft_rooms.intro.you")
+                              }}</span
+                            >
+                            <span
+                              v-if="seat.captain"
+                              class="text-muted-foreground"
+                              >{{ $t("draft_games.room.captain") }}</span
+                            >
+                            <span
+                              v-if="seat.auto"
+                              class="text-muted-foreground"
+                              :title="$t('draft_games.room.auto_picked_hint')"
+                              >{{ $t("draft_games.room.auto_picked") }}</span
+                            >
+                          </template>
+                          <span v-else class="draft-stack-pop-name">{{
+                            seat.current
+                              ? $t("draft_games.room.is_picking", {
+                                  name: sides[slot - 1].captainName,
+                                })
+                              : $t("draft_games.room.not_picked")
+                          }}</span>
+                        </li>
+                      </ol>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <DraftSeatStack
+                  v-else
+                  :seats="sides[slot - 1].seats"
+                  :ordered="false"
+                />
                 <span v-if="winsNeeded" class="inline-flex gap-[3px]">
                   <i
                     v-for="pip in winsNeeded"
@@ -271,6 +367,7 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
           </div>
 
           <div
+            data-scorebug="box"
             class="draft-bug-box relative flex min-h-[72px] items-stretch overflow-hidden rounded-[10px] bg-black/40 ring-1 ring-inset ring-white/[0.09]"
             :style="{
               '--side': sideVar(box.kind === 'clock' ? box.side : null),
@@ -364,12 +461,6 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
             ></span>
           </div>
         </div>
-
-        <Fold :open="track">
-          <div class="draft-header-track">
-            <slot name="track" />
-          </div>
-        </Fold>
       </div>
     </Fold>
   </section>
@@ -390,14 +481,9 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
   display: grid;
   grid-template-columns: 2.75rem minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.875rem;
-  height: 4.5rem;
-  padding: 0 0.875rem 0 1rem;
-}
-.draft-header-detail {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  gap: 0.75rem 0.875rem;
+  min-height: 4.5rem;
+  padding: 0.875rem 0.875rem 0.875rem 1rem;
 }
 .draft-header-body {
   position: relative;
@@ -414,12 +500,6 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
   display: flex;
   justify-content: flex-end;
   margin-bottom: 0.75rem;
-}
-/* The track scrolls inside the header's width; without containment its cells
-   would widen the folds around it and push the scorebug off the card. */
-.draft-header-track {
-  padding-top: 1.125rem;
-  contain: inline-size;
 }
 .draft-bug {
   display: grid;
@@ -448,6 +528,105 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
 }
 .draft-bug-side.is-right {
   grid-area: right;
+}
+/* One column the name can't outgrow, so a long name wraps or clamps instead
+   of sliding the roster under the crest. */
+.draft-bug-id {
+  grid-template-columns: minmax(0, 1fr);
+}
+.draft-bug-stack {
+  position: relative;
+  display: flex;
+  margin: -2px -6px -5px -2px;
+  padding: 2px 6px 5px 2px;
+  border-radius: 6px;
+  cursor: default;
+}
+.draft-bug-stack:focus-visible {
+  outline: 2px solid hsl(var(--tac-amber) / 0.55);
+}
+@media (pointer: coarse) {
+  .draft-bug-stack::after {
+    content: "";
+    position: absolute;
+    inset: -6px -4px;
+  }
+}
+.draft-stack-pop {
+  display: grid;
+  gap: 6px;
+  min-width: 11rem;
+}
+.draft-stack-pop-head {
+  padding: 0 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: hsl(var(--muted-foreground));
+}
+.draft-stack-pop ol {
+  display: grid;
+  gap: 2px;
+}
+.draft-stack-pop li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding: 0 2px;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.draft-stack-pop-mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 2px;
+  border-radius: 7px;
+  font-size: 8.5px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  background: hsl(var(--team));
+  color: hsl(240 10% 4%);
+}
+.draft-stack-pop-mark.is-captain {
+  background: transparent;
+  color: hsl(var(--team));
+  box-shadow: inset 0 0 0 1px hsl(var(--team) / 0.55);
+}
+.draft-stack-pop-name {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.draft-stack-pop li.is-current .draft-stack-pop-name {
+  color: hsl(var(--team));
+}
+.draft-stack-pop li.is-open .draft-stack-pop-name {
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+}
+.draft-stack-pop li.is-open .draft-stack-pop-mark {
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+  box-shadow: inset 0 0 0 1px hsl(var(--border));
+}
+.draft-stack-pop-you {
+  display: inline-flex;
+  align-items: center;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: hsl(var(--tac-amber) / 0.14);
+  color: hsl(var(--tac-amber));
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 .draft-bug-crest {
   width: 3.5rem;
@@ -507,10 +686,6 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
 .is-opening .draft-bug-side.is-right {
   animation: draft-right-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
-.is-opening .draft-header-track :deep(.pick-cell) {
-  animation: draft-cell-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: calc(0.14s + var(--i, 0) * 35ms);
-}
 @keyframes draft-box-in {
   from {
     opacity: 0;
@@ -529,25 +704,31 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
     transform: translateX(-24px);
   }
 }
-@keyframes draft-cell-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
 
 @container draft-header (max-width: 619px) {
+  /* The call to action goes under the text at full width, so the text keeps
+     the whole card to wrap in. */
   .draft-header-row {
-    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
-    gap: 0.625rem;
-    height: 5.25rem;
-    padding: 0 0.625rem 0 0.75rem;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 0.75rem;
+    min-height: 0;
+    padding: 0.75rem;
   }
-  .draft-header-detail {
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+  .draft-header-ring {
+    align-self: start;
+  }
+  .draft-header-actions {
+    grid-column: 1 / -1;
+  }
+  .draft-header-actions:not(:has(button)) {
+    display: none;
+  }
+  .draft-header-actions :deep(.draft-header-buttons) {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .draft-header-actions :deep(.draft-action) {
+    flex: 1 1 0%;
   }
   .draft-header-body {
     padding: 0.875rem 0.75rem 1rem;
@@ -556,13 +737,13 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
     top: 0.5rem;
     right: 0.5rem;
   }
+}
+
+/* Below this the stacks no longer fit beside the crests, so the sides stack
+   on the left of the box. */
+@container draft-header (max-width: 749px) {
   .draft-bug {
     padding-inline: 0 var(--menu-room);
-  }
-  .draft-header-track {
-    padding-top: 0.875rem;
-  }
-  .draft-bug {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "left box"
@@ -617,8 +798,7 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
   .draft-header,
   .is-opening .draft-bug-box,
   .is-opening .draft-bug-side.is-left,
-  .is-opening .draft-bug-side.is-right,
-  .is-opening .draft-header-track :deep(.pick-cell) {
+  .is-opening .draft-bug-side.is-right {
     animation: none;
     transition: none;
   }

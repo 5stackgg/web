@@ -13144,6 +13144,7 @@
       "pick_of": "Scelta {n} di {total}",
       "auto_pick_hint": "Se il tempo scade, {name} verrà scelto per te.",
       "pick_slot": "Scelta {n}",
+      "not_picked": "Non ancora scelto",
       "auto_picked": "Auto",
       "auto_picked_hint": "Scelto automaticamente allo scadere del tempo",
       "add_to_team": "Aggiungi a {team}",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "Tutti hanno un minuto per fare il check-in. Dopo, l'host può far entrare un giocatore in attesa al posto di chi non l'ha fatto.",
       "swap_in": "Fai entrare {name}",
       "remove_no_show": "Rimuovi dalla partita",
-      "remove_no_show_description": "Verrà tolto dalla partita e il suo posto resterà libero."
+      "remove_no_show_description": "Verrà tolto dalla partita e il suo posto resterà libero.",
+      "is_picking": "{name} sta scegliendo",
+      "hosted_by": "Host: {name}",
+      "closes_in": "Si chiude tra {time}",
+      "host_mode_desc": "L'host assegna i giocatori ai team."
     },
     "header": {
       "label": "Stato della stanza del draft",
@@ -14765,9 +14770,13 @@
       "step_label": "Fase della draft",
       "replay": "Riproduci di nuovo",
       "steps": {
+        "picks": {
+          "label": "Scelte",
+          "caption": "Un draft Captains finto: i capitani scelgono a turno con un timer di 30 secondi e ogni scelta finisce nella pila della sua squadra nel tabellone. Passa sopra o tocca una pila per vedere l'ordine. Niente qui tocca un draft vero."
+        },
         "check_in": {
           "label": "Presenza",
-          "caption": "Una draft di prova che ha appena creato il suo match. Tutti hanno confermato la presenza dalla draft room tranne un giocatore. Niente qui tocca una draft reale."
+          "caption": "L'ultima scelta crea la partita. Tutti confermano dalla draft room e il veto parte appena conferma l'ultimo giocatore."
         },
         "veto": {
           "label": "Veto",

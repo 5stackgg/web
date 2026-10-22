@@ -13144,6 +13144,7 @@
       "pick_of": "Choix {n} sur {total}",
       "auto_pick_hint": "Si le temps s'écoule, {name} sera choisi pour vous.",
       "pick_slot": "Choix {n}",
+      "not_picked": "Pas encore choisi",
       "auto_picked": "Auto",
       "auto_picked_hint": "Choisi automatiquement à la fin du chrono",
       "add_to_team": "Ajouter à {team}",
@@ -13210,7 +13211,11 @@
       "check_in_window_help": "Chacun a une minute pour faire son check-in. Ensuite, l'hôte peut faire entrer un joueur en attente à la place de ceux qui ne l'ont pas fait.",
       "swap_in": "Faire entrer {name}",
       "remove_no_show": "Retirer du match",
-      "remove_no_show_description": "Il sera retiré du match et sa place restera libre."
+      "remove_no_show_description": "Il sera retiré du match et sa place restera libre.",
+      "is_picking": "{name} choisit",
+      "hosted_by": "Hôte : {name}",
+      "closes_in": "Ferme dans {time}",
+      "host_mode_desc": "L'hôte répartit les joueurs dans les équipes."
     },
     "header": {
       "label": "État de la salle de draft",
@@ -14765,9 +14770,13 @@
       "step_label": "Étape de la draft",
       "replay": "Rejouer",
       "steps": {
+        "picks": {
+          "label": "Choix",
+          "caption": "Une fausse draft Captains : les capitaines choisissent à tour de rôle avec un chrono de 30 secondes, et chaque choix rejoint la pile de son équipe dans le scorebug. Survolez ou touchez une pile pour voir l'ordre. Rien ici ne touche une vraie draft."
+        },
         "check_in": {
           "label": "Confirmation",
-          "caption": "Une draft fictive qui vient de créer son match. Tout le monde a confirmé sa présence depuis la draft, sauf un joueur. Rien ici ne touche une vraie draft."
+          "caption": "Le dernier choix crée le match. Chacun confirme sa présence depuis la draft, et le veto commence dès que le dernier joueur est là."
         },
         "veto": {
           "label": "Veto",

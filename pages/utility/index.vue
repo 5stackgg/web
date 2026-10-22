@@ -6,6 +6,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import UtilityEmpty from "~/components/utility/UtilityEmpty.vue";
 import UtilityMapPreviewTile from "~/components/utility/UtilityMapPreviewTile.vue";
 import UtilityMapRail from "~/components/utility/UtilityMapRail.vue";
+import UtilityPracticeServersPanel from "~/components/utility/UtilityPracticeServersPanel.vue";
 import {
   arriveUtilityPage,
   leaveUtilityPage,
@@ -90,7 +91,8 @@ const LEGEND_SPAN: Record<number, string> = {
          that. Pick a map and the board arrives in exactly the room the maps
          were in, with the card beside it -- nothing changes size on the way.
          Until a map is picked there is nothing to put in a card, so its
-         column is simply empty. -->
+         column is empty, unless staff are looking: then it lists the running
+         practice servers. -->
     <div
       class="grid w-full gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,26rem)]"
     >
@@ -195,7 +197,7 @@ const LEGEND_SPAN: Record<number, string> = {
         </div>
       </div>
 
-      <div aria-hidden="true" class="hidden lg:block" />
+      <UtilityPracticeServersPanel class="lg:sticky lg:top-4 lg:self-start" />
     </div>
   </PageTransition>
 </template>

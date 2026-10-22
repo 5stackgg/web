@@ -6872,6 +6872,18 @@
         "technical": "技術的な詳細",
         "mark_bad": "良くないと評価"
       },
+      "practice_servers": {
+        "title": "稼働中の練習サーバー",
+        "empty": "稼働中の練習サーバーはありません。",
+        "ready": "準備完了",
+        "players": "{max} 人中 {connected} 人が接続中",
+        "stop": "停止",
+        "stop_ask": "{host} のサーバーを停止しますか？",
+        "stop_ask_unnamed": "このサーバーを停止しますか？",
+        "stop_drops": "誰も接続していません。 | 接続中のプレイヤーは切断されます。 | 接続中の {count} 人のプレイヤーは切断されます。",
+        "stale": "ライブ更新が停止しました",
+        "stale_note": "この一覧は最新ではない可能性があります。"
+      },
       "practice": {
         "title": "練習サーバー",
         "description": "このマップでサーバーを立てて、ラインナップを自分で試しましょう。",

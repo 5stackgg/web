@@ -6872,6 +6872,18 @@
         "technical": "Technical details",
         "mark_bad": "Mark as bad"
       },
+      "practice_servers": {
+        "title": "Running practice servers",
+        "empty": "No practice servers are running.",
+        "ready": "Ready",
+        "players": "{connected} of {max} players connected",
+        "stop": "Stop",
+        "stop_ask": "Stop {host}'s server?",
+        "stop_ask_unnamed": "Stop this server?",
+        "stop_drops": "Nobody is on it. | The player on it is dropped. | The {count} players on it are dropped.",
+        "stale": "Live updates stopped",
+        "stale_note": "This list may be out of date."
+      },
       "practice": {
         "title": "Practice Server",
         "description": "Spin up a server on this map and walk the lineup yourself.",

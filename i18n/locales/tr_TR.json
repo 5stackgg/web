@@ -6872,6 +6872,18 @@
         "technical": "Teknik ayrıntılar",
         "mark_bad": "Kötü olarak işaretle"
       },
+      "practice_servers": {
+        "title": "Çalışan antrenman sunucuları",
+        "empty": "Çalışan antrenman sunucusu yok.",
+        "ready": "Hazır",
+        "players": "{max} oyuncudan {connected} tanesi bağlı",
+        "stop": "Durdur",
+        "stop_ask": "{host} adlı oyuncunun sunucusu durdurulsun mu?",
+        "stop_ask_unnamed": "Bu sunucu durdurulsun mu?",
+        "stop_drops": "Üzerinde kimse yok. | Üzerindeki oyuncunun bağlantısı kesilecek. | Üzerindeki {count} oyuncunun bağlantısı kesilecek.",
+        "stale": "Canlı güncellemeler durdu",
+        "stale_note": "Bu liste güncel olmayabilir."
+      },
       "practice": {
         "title": "Antrenman Sunucusu",
         "description": "Bu haritada bir sunucu aç ve dizilimi kendin dene.",

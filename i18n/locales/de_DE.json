@@ -6872,6 +6872,18 @@
         "technical": "Technische Details",
         "mark_bad": "Als schlecht markieren"
       },
+      "practice_servers": {
+        "title": "Laufende Übungsserver",
+        "empty": "Es laufen keine Übungsserver.",
+        "ready": "Bereit",
+        "players": "{connected} von {max} Spielern verbunden",
+        "stop": "Stoppen",
+        "stop_ask": "Server von {host} stoppen?",
+        "stop_ask_unnamed": "Diesen Server stoppen?",
+        "stop_drops": "Niemand ist darauf. | Der Spieler darauf wird getrennt. | Die {count} Spieler darauf werden getrennt.",
+        "stale": "Live-Updates angehalten",
+        "stale_note": "Diese Liste ist möglicherweise veraltet."
+      },
       "practice": {
         "title": "Übungsserver",
         "description": "Starte einen Server auf dieser Map und lauf das Lineup selbst ein.",

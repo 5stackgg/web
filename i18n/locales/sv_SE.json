@@ -6872,6 +6872,18 @@
         "technical": "Tekniska detaljer",
         "mark_bad": "Markera som dålig"
       },
+      "practice_servers": {
+        "title": "Träningsservrar som körs",
+        "empty": "Inga träningsservrar körs.",
+        "ready": "Redo",
+        "players": "{connected} av {max} spelare anslutna",
+        "stop": "Stoppa",
+        "stop_ask": "Stoppa servern som {host} startade?",
+        "stop_ask_unnamed": "Stoppa den här servern?",
+        "stop_drops": "Ingen är på den. | Spelaren på den kopplas från. | De {count} spelarna på den kopplas från.",
+        "stale": "Liveuppdateringar har stoppats",
+        "stale_note": "Listan kan vara inaktuell."
+      },
       "practice": {
         "title": "Träningsserver",
         "description": "Starta en server på den här kartan och gå igenom uppställningen själv.",

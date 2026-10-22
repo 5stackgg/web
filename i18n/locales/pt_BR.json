@@ -6872,6 +6872,18 @@
         "technical": "Detalhes técnicos",
         "mark_bad": "Marcar como ruim"
       },
+      "practice_servers": {
+        "title": "Servidores de treino ativos",
+        "empty": "Nenhum servidor de treino está ativo.",
+        "ready": "Pronto",
+        "players": "{connected} de {max} jogadores conectados",
+        "stop": "Parar",
+        "stop_ask": "Parar o servidor de {host}?",
+        "stop_ask_unnamed": "Parar este servidor?",
+        "stop_drops": "Ninguém está nele. | O jogador nele será desconectado. | Os {count} jogadores nele serão desconectados.",
+        "stale": "As atualizações ao vivo pararam",
+        "stale_note": "Esta lista pode estar desatualizada."
+      },
       "practice": {
         "title": "Servidor de treino",
         "description": "Suba um servidor neste mapa e ensaie o lineup você mesmo.",

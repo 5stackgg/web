@@ -828,6 +828,33 @@ export const utilityPracticeSessionSubscription = generateSubscription({
   ],
 });
 
+// For moderators and up, whom can_view shows every session. Renders are left
+// out so nobody stops one halfway through.
+export const runningUtilityPracticeSessionsSubscription = generateSubscription({
+  utility_practice_sessions: [
+    {
+      where: {
+        status: { _in: $("statuses", "[e_utility_practice_statuses_enum!]") },
+        is_render: { _eq: false },
+      },
+      order_by: [{ created_at: order_by.desc }],
+    },
+    {
+      id: true,
+      host_steam_id: true,
+      host: { steam_id: true, name: true, avatar_url: true },
+      map_name: true,
+      region: true,
+      status: true,
+      map_changing_at: true,
+      created_at: true,
+      connected_players: true,
+      max_players: true,
+      can_stop: true,
+    },
+  ],
+});
+
 export const utilityPlaybookFields = {
   id: true,
   name: true,

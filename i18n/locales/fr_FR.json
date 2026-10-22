@@ -6872,6 +6872,18 @@
         "technical": "Détails techniques",
         "mark_bad": "Marquer comme mauvais"
       },
+      "practice_servers": {
+        "title": "Serveurs d'entraînement en cours",
+        "empty": "Aucun serveur d'entraînement n'est en cours.",
+        "ready": "Prêt",
+        "players": "{connected} joueurs connectés sur {max}",
+        "stop": "Arrêter",
+        "stop_ask": "Arrêter le serveur de {host} ?",
+        "stop_ask_unnamed": "Arrêter ce serveur ?",
+        "stop_drops": "Personne n'y est. | Le joueur qui y est sera déconnecté. | Les {count} joueurs qui y sont seront déconnectés.",
+        "stale": "Mises à jour en direct interrompues",
+        "stale_note": "Cette liste n'est peut-être plus à jour."
+      },
       "practice": {
         "title": "Serveur d'entraînement",
         "description": "Lancez un serveur sur cette map et répétez le lineup vous-même.",

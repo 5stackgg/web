@@ -6872,6 +6872,18 @@
         "technical": "Szczegóły techniczne",
         "mark_bad": "Oznacz jako słabą"
       },
+      "practice_servers": {
+        "title": "Działające serwery treningowe",
+        "empty": "Żaden serwer treningowy nie działa.",
+        "ready": "Gotowy",
+        "players": "Połączeni gracze: {connected} z {max}",
+        "stop": "Zatrzymaj",
+        "stop_ask": "Zatrzymać serwer gracza {host}?",
+        "stop_ask_unnamed": "Zatrzymać ten serwer?",
+        "stop_drops": "Nikogo na nim nie ma. | Gracz na nim zostanie rozłączony. | Gracze na nim zostaną rozłączeni: {count}.",
+        "stale": "Aktualizacje na żywo wstrzymane",
+        "stale_note": "Ta lista może być nieaktualna."
+      },
       "practice": {
         "title": "Serwer treningowy",
         "description": "Postaw serwer na tej mapie i przećwicz ustawkę samodzielnie.",

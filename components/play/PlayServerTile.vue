@@ -39,8 +39,20 @@ const fill = computed(() =>
     : 0,
 );
 
+// The big card draws the seats under its line; a peek, inside its text
+// beside the map.
+const meterSlot = computed(() =>
+  props.layout === "featured" ? "preview" : "detail",
+);
+
 const where = computed(() =>
-  [props.server.map, props.server.region].filter(Boolean).join(" · "),
+  [
+    props.server.map,
+    props.server.region,
+    props.server.ping !== null ? `${props.server.ping} ms` : null,
+  ]
+    .filter(Boolean)
+    .join(" · "),
 );
 
 // A workshop map has no icon: the plug stands in.
@@ -77,22 +89,19 @@ const touchTarget =
       <img
         :src="`/img/maps/icons/${server.mapName}.svg`"
         alt=""
-        class="size-[22px] object-contain"
+        class="size-10 object-contain"
         @error="iconFailed = true"
       />
     </template>
 
-    {{ where }}
-    <span v-if="server.ping !== null" class="tabular-nums"
-      >{{ server.ping }} ms</span
-    >
+    <span class="tabular-nums">{{ where }}</span>
 
-    <template #preview>
+    <template #[meterSlot]>
       <div
         :class="
           layout === 'featured'
             ? 'mt-0.5 max-w-80'
-            : 'flex items-center gap-3 text-[13px] text-muted-foreground'
+            : 'mt-1 flex items-center gap-2.5 text-xs text-muted-foreground'
         "
       >
         <div v-if="seats" aria-hidden="true" class="flex flex-1 gap-[3px]">

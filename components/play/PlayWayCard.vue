@@ -6,7 +6,8 @@ import PublicServerMap from "~/components/public-servers/PublicServerMap.vue";
 //   featured: the big card. Map art behind a fade, a kicker over the title,
 //             one line, a preview (#preview) and the actions.
 //   peek:     a half of the panel beside it. An icon tile, the title, one
-//             line and one button over a preview of what's inside.
+//             line (and a #detail line) and one button over a preview of
+//             what's inside.
 //   tile:     a plain card, its actions pinned to the bottom so cards of
 //             different heights line their buttons up.
 withDefaults(
@@ -56,27 +57,35 @@ withDefaults(
 
   <section
     v-else-if="layout === 'peek'"
-    class="flex min-w-0 flex-1 flex-col justify-between gap-2 px-3.5 py-2.5"
+    class="flex min-w-0 flex-1 flex-col justify-center gap-2 px-3.5 py-2.5"
   >
-    <div class="flex min-w-0 items-center gap-2.5">
+    <div class="flex min-w-0 items-center gap-3">
+      <!-- With a #detail line under the text, the tile grows to its three
+           lines' height. -->
       <span
         aria-hidden="true"
-        class="grid size-8 shrink-0 place-items-center rounded-md bg-muted/60 text-foreground/85"
+        :class="[
+          'grid shrink-0 place-items-center rounded-md bg-muted/60 text-foreground/85',
+          $slots.detail ? 'size-14' : 'size-8',
+        ]"
       >
         <slot name="icon">
-          <component :is="icon" class="size-4" />
+          <component :is="icon" :class="$slots.detail ? 'size-6' : 'size-4'" />
         </slot>
       </span>
-      <div class="grid min-w-0 flex-1 gap-px">
-        <h3 class="m-0 line-clamp-2 break-words text-sm font-bold leading-snug">
+      <div class="grid min-w-0 flex-1 gap-0.5">
+        <h3
+          class="m-0 line-clamp-2 break-words text-[15px] font-bold leading-snug"
+        >
           {{ title }}
         </h3>
         <span
           v-if="$slots.default"
-          class="truncate text-xs text-muted-foreground"
+          class="truncate text-[13px] text-muted-foreground"
         >
           <slot />
         </span>
+        <slot name="detail" />
       </div>
       <div v-if="$slots.actions" class="flex shrink-0 items-center gap-2">
         <slot name="actions" />

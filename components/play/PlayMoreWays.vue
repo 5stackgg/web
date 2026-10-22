@@ -109,8 +109,10 @@ const tournamentSubscription = typedGql("subscription")({
   ],
 } as any);
 
-// Same filter as /public-servers: enabled, connected, and not a ranked
-// match server unless it hands out a connect string.
+// Same filter as /public-servers: enabled, connected, not a ranked match
+// server unless it hands out a connect string, and let in by its own access
+// rules (staff can connect to any restricted server, but it isn't theirs to
+// play on).
 const serversSubscription = generateSubscription({
   servers: [
     {
@@ -124,6 +126,7 @@ const serversSubscription = generateSubscription({
           },
           { enabled: { _eq: true } },
           { connected: { _eq: true } },
+          { open_to_viewer: { _eq: true } },
         ],
       },
       order_by: [{ label: "asc" as any }],

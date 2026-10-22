@@ -26,8 +26,9 @@ export type DraftHeaderBox =
       side: 1 | 2 | null;
       caption: string;
     }
-  | { kind: "count"; value: number; of: number; caption: string }
   | { kind: "map"; label: string; patch: string | null; caption: string }
+  // The room's own check-in box fills it edge to edge.
+  | { kind: "checkin" }
   | { kind: "vs" };
 
 export type DraftHeaderState = {

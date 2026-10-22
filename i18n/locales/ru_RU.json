@@ -11299,6 +11299,7 @@
       "current": "Текущий",
       "steps": {
         "label": "Этапы матча",
+        "draft": "Драфт",
         "check_in": "Чек-ин",
         "veto": "Вето",
         "warmup": "Разминка",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} выбирает за {team}",
       "selecting_title": "Выбираем капитанов",
       "selecting_detail": "Драфт сейчас начнётся.",
-      "box_checked_in": "Отметились",
       "checkin_title": "Отметься, чтобы играть",
       "checkin_detail": "Отметились {ready} из {total}. У всех есть минута.",
       "checkin_count": "Отметились {ready} из {total}.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "Твоя очередь — выбери следующего игрока.",
       "removed_title": "Удалён из драфта",
       "removed_desc": "Ты больше не в комнате драфта."
+    },
+    "ranks": {
+      "no_premier": "Нет ранга Premier",
+      "no_faceit": "FACEIT не привязан"
     }
   },
   "league": {

@@ -17,13 +17,17 @@ const props = withDefaults(
     // Every step's label, or only the current one's (the rest keep their
     // tooltips).
     labels?: "all" | "current";
+    draft?: boolean;
+    drafting?: boolean;
   }>(),
-  { labels: "all" },
+  { labels: "all", draft: false, drafting: false },
 );
 
-const steps = computed(() => matchAdminSteps(props.match));
+const steps = computed(() => matchAdminSteps(props.match, props.draft));
 const currentIndex = computed(() =>
-  steps.value.indexOf(currentMatchAdminStep(props.match)),
+  steps.value.indexOf(
+    props.drafting ? "draft" : currentMatchAdminStep(props.match),
+  ),
 );
 
 const upcoming = computed(() =>

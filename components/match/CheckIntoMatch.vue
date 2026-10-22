@@ -16,7 +16,7 @@
           type="button"
           :class="[
             tacticalCtaButtonClasses,
-            compact ? 'h-10' : 'w-full',
+            'w-full',
             deadlineGutterClasses,
           ]"
           @click="cameraSetupOpen = true"
@@ -37,7 +37,7 @@
           type="button"
           :class="[
             tacticalCtaButtonClasses,
-            compact ? 'h-10' : 'w-full',
+            'w-full',
             'disabled:cursor-default',
             deadlineGutterClasses,
           ]"
@@ -69,7 +69,7 @@
              applies to everyone else -- it keeps its slot, now framed in its
              own amber rather than cut out of the button's. -->
         <div
-          v-else-if="!compact"
+          v-else
           key="checked-in"
           class="flex min-h-[2.625rem] items-center gap-3"
         >
@@ -157,11 +157,6 @@ export default {
     deadlineHelp: {
       type: String,
       default: undefined,
-    },
-    // Just the button, sized for the draft room's header.
-    compact: {
-      type: Boolean,
-      default: false,
     },
   },
   setup(props: {

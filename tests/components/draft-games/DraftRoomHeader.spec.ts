@@ -214,7 +214,8 @@ describe("draft room header at check-in", () => {
     expect(vm.header.phase).toBe("checkin");
     expect(vm.header.title).toBe("Check in to play");
     expect(vm.header.detail).toBe("1 of 2 checked in. Everyone has a minute.");
-    expect(vm.headerActions).toEqual(["checkin"]);
+    expect(vm.header.box.kind).toBe("checkin");
+    expect(vm.canCheckIn).toBe(true);
   });
 
   it("leaves out the prompt when only captains check in", async () => {
@@ -225,7 +226,7 @@ describe("draft room header at check-in", () => {
     );
 
     expect(vm.header.title).toBe("Checking in");
-    expect(vm.headerActions).toEqual([]);
+    expect(vm.canCheckIn).toBe(false);
   });
 
   it("tells the host who missed it once the minute is up", async () => {
@@ -256,7 +257,7 @@ describe("draft room header at check-in", () => {
       }),
     );
 
-    expect(vm.headerActions).toEqual(["checkin"]);
+    expect(vm.canCheckIn).toBe(true);
     expect(vm.header.detail).toBe("1 of 2 checked in. Everyone has a minute.");
   });
 

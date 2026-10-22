@@ -11299,6 +11299,7 @@
       "current": "当前",
       "steps": {
         "label": "比赛阶段",
+        "draft": "选秀",
         "check_in": "签到",
         "veto": "否决",
         "warmup": "热身",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} 正在为 {team} 选人",
       "selecting_title": "正在选择队长",
       "selecting_detail": "选人马上开始。",
-      "box_checked_in": "已签到",
       "checkin_title": "签到后参赛",
       "checkin_detail": "已签到 {ready}/{total}。每人有一分钟时间。",
       "checkin_count": "已签到 {ready}/{total}。",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "您正在选人——选择您的下一位玩家。",
       "removed_title": "已从选秀中移除",
       "removed_desc": "您已不在选秀房间中。"
+    },
+    "ranks": {
+      "no_premier": "无 Premier 段位",
+      "no_faceit": "未关联 FACEIT"
     }
   },
   "league": {

@@ -11299,6 +11299,7 @@
       "current": "現在",
       "steps": {
         "label": "試合の段階",
+        "draft": "ドラフト",
         "check_in": "チェックイン",
         "veto": "拒否",
         "warmup": "ウォームアップ",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} が {team} の指名中",
       "selecting_title": "キャプテンを選んでいます",
       "selecting_detail": "まもなくドラフトが始まります。",
-      "box_checked_in": "チェックイン済み",
       "checkin_title": "チェックインしてプレイ",
       "checkin_detail": "{total} 人中 {ready} 人がチェックイン済み。全員に1分の猶予があります。",
       "checkin_count": "{total} 人中 {ready} 人がチェックイン済み。",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "指名時間です — 次のプレイヤーをドラフトしてください。",
       "removed_title": "ドラフトから除外されました",
       "removed_desc": "ドラフトルームから外れました。"
+    },
+    "ranks": {
+      "no_premier": "Premierランクなし",
+      "no_faceit": "FACEIT未連携"
     }
   },
   "league": {

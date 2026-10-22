@@ -11299,6 +11299,7 @@
       "current": "Aktuell",
       "steps": {
         "label": "Match-Schritte",
+        "draft": "Draft",
         "check_in": "Check-in",
         "veto": "Veto",
         "warmup": "Aufwärmen",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} wählt für {team}",
       "selecting_title": "Captains werden gewählt",
       "selecting_detail": "Der Draft startet gleich.",
-      "box_checked_in": "Eingecheckt",
       "checkin_title": "Check ein, um zu spielen",
       "checkin_detail": "{ready} von {total} eingecheckt. Alle haben eine Minute.",
       "checkin_count": "{ready} von {total} eingecheckt.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "Die Uhr läuft — draftet deinen nächsten Spieler",
       "removed_title": "Aus dem Draft entfernt",
       "removed_desc": "Du bist nicht mehr im Draft-Raum"
+    },
+    "ranks": {
+      "no_premier": "Kein Premier-Rang",
+      "no_faceit": "Kein FACEIT verknüpft"
     }
   },
   "league": {

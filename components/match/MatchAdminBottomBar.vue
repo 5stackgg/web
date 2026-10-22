@@ -32,6 +32,8 @@ import {
 
 const props = defineProps<{
   match: Record<string, any>;
+  // Shown in the draft room that made the match: its steps start at the draft.
+  draft?: boolean;
 }>();
 
 const commander = new EventEmitter();
@@ -145,7 +147,11 @@ function runCommand(
 
 <template>
   <Teleport v-if="dockReady" to="#main-bottom-dock">
-    <MatchAdminDock :match="match" :controllable="canSendRCONCommands">
+    <MatchAdminDock
+      :match="match"
+      :controllable="canSendRCONCommands"
+      :draft="draft"
+    >
       <template #actions="{ compact }">
         <MatchVetoOverrideToggle
           v-if="isVetoing"

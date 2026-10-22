@@ -27,6 +27,17 @@ describe("matchAdminSteps", () => {
     ).toEqual(["check_in", "warmup", "live", "finished"]);
   });
 
+  it("starts a draft room's match at the draft", () => {
+    expect(matchAdminSteps(match("WaitingForCheckIn"), true)).toEqual([
+      "draft",
+      "check_in",
+      "veto",
+      "warmup",
+      "live",
+      "finished",
+    ]);
+  });
+
   it.each([
     ["WaitingForCheckIn", undefined, "check_in"],
     ["PickingPlayers", undefined, "check_in"],

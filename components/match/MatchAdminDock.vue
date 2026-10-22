@@ -11,14 +11,23 @@ defineProps<{
   match: Record<string, any>;
   // The server takes commands, so the ADMIN chip lights up.
   controllable?: boolean;
+  // A draft room made the match, so its steps start at the draft; drafting
+  // means the room is still on that step and there is no match yet.
+  draft?: boolean;
+  drafting?: boolean;
 }>();
 
-defineSlots<{
+const slots = defineSlots<{
   actions(props: { compact: boolean }): any;
-  console(): any;
+  console?(): any;
 }>();
 
 const open = ref(false);
+const toggle = () => {
+  if (slots.console) {
+    open.value = !open.value;
+  }
+};
 
 const panelHeight = ref(240);
 const dragging = ref(false);
@@ -151,8 +160,9 @@ onBeforeUnmount(() => {
     >
       <div
         ref="leftEl"
-        class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer pl-4 pr-2 py-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out"
-        @click="open = !open"
+        class="flex items-center gap-3 min-w-0 flex-1 pl-4 pr-2 py-2 transition-colors duration-200 ease-out"
+        :class="$slots.console && 'cursor-pointer group-hover:bg-muted/40'"
+        @click="toggle"
       >
         <div
           class="inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase border rounded transition-colors duration-200 ease-out"
@@ -171,18 +181,22 @@ onBeforeUnmount(() => {
         <MatchAdminSteps
           v-show="fit !== 'tight'"
           :match="match"
+          :draft="draft"
+          :drafting="drafting"
           :labels="fit === 'full' ? 'all' : 'current'"
         />
       </div>
 
       <div
         :ref="setActions"
-        class="flex shrink-0 items-center gap-2 px-2 group-hover:bg-muted/40 transition-colors duration-200 ease-out empty:hidden"
+        class="flex shrink-0 items-center gap-2 px-2 transition-colors duration-200 ease-out empty:hidden"
+        :class="$slots.console ? 'group-hover:bg-muted/40' : 'pr-4'"
       >
         <slot name="actions" :compact="compact" />
       </div>
 
       <FiveStackToolTip
+        v-if="$slots.console"
         as-child
         side="top"
         :delay-duration="120"
@@ -198,7 +212,7 @@ onBeforeUnmount(() => {
                 ? $t('match.admin_bar.hide_console')
                 : $t('match.admin_bar.show_console')
             "
-            @click="open = !open"
+            @click="toggle"
           >
             <ChevronUp
               class="w-4 h-4 transition-transform duration-300 ease-out"
@@ -215,6 +229,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div
+      v-if="$slots.console"
       class="overflow-hidden"
       :class="[
         !dragging && 'transition-[height] duration-300 ease-out',

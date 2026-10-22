@@ -11299,6 +11299,7 @@
       "current": "Mevcut",
       "steps": {
         "label": "Maç adımları",
+        "draft": "Seçim",
         "check_in": "Check-in",
         "veto": "Veto",
         "warmup": "Isınma",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name}, {team} için seçiyor",
       "selecting_title": "Kaptanlar seçiliyor",
       "selecting_detail": "Draft birazdan başlıyor.",
-      "box_checked_in": "Katılımı onaylanan",
       "checkin_title": "Oynamak için katılımını onayla",
       "checkin_detail": "{total} oyuncudan {ready} tanesi onayladı. Herkesin bir dakikası var.",
       "checkin_count": "{total} oyuncudan {ready} tanesi onayladı.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "Sıra sende — bir sonraki oyuncunu seç.",
       "removed_title": "Seçimden çıkarıldın",
       "removed_desc": "Artık seçim odasında değilsin."
+    },
+    "ranks": {
+      "no_premier": "Premier derecesi yok",
+      "no_faceit": "Bağlı FACEIT yok"
     }
   },
   "league": {

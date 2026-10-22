@@ -11299,6 +11299,7 @@
       "current": "Nuværende",
       "steps": {
         "label": "Kamptrin",
+        "draft": "Draft",
         "check_in": "Check-in",
         "veto": "Veto",
         "warmup": "Opvarmning",
@@ -13230,7 +13231,6 @@
       "picking_title": "{name} vælger for {team}",
       "selecting_title": "Anførerne vælges",
       "selecting_detail": "Draften starter om et øjeblik.",
-      "box_checked_in": "Checket ind",
       "checkin_title": "Check ind for at spille",
       "checkin_detail": "{ready} af {total} har checket ind. Alle har et minut.",
       "checkin_count": "{ready} af {total} har checket ind.",
@@ -13309,6 +13309,10 @@
       "your_pick_desc": "Uret kører — draft din næste spiller.",
       "removed_title": "Fjernet fra draften",
       "removed_desc": "Du er ikke længere i draftrummet."
+    },
+    "ranks": {
+      "no_premier": "Ingen Premier-rang",
+      "no_faceit": "Ingen FACEIT tilknyttet"
     }
   },
   "league": {

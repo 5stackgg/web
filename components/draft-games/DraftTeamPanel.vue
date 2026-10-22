@@ -141,13 +141,20 @@ const slots = computed(() => {
       ></span>
     </div>
 
-    <TransitionGroup name="roster" tag="div" class="flex flex-1 flex-col gap-2">
+    <!-- Every row is a bare 0fr/1fr cell with the gap inside its clip, so a row
+         folds open or shut with its gap, and a pick's player opens where its
+         slot folds shut: the roster holds the same height through the swap. -->
+    <TransitionGroup
+      name="roster"
+      tag="div"
+      class="-mt-2 flex flex-1 flex-col"
+    >
       <div
         v-for="player in players"
         :key="player.steam_id"
         class="grid grid-rows-[1fr]"
       >
-      <div class="min-h-0">
+      <div class="min-h-0 pt-2">
       <DraftPlayerCard
         :member="player"
         :accent="accent"
@@ -255,17 +262,33 @@ const slots = computed(() => {
       </div>
       </div>
       <template v-if="addable">
-        <DraftOpenSlot
-          v-for="index in Math.max(0, perTeam - players.length)"
-          :key="`add-${index}`"
-          :exclude="excludeSteamIds || []"
-          @selected="(steamId, player) => emit('add', steamId, player)"
-        />
-      </template>
-      <template v-else>
         <div
           v-for="index in Math.max(0, perTeam - players.length)"
-          :key="`empty-${index}`"
+          :key="`add-${index}`"
+          class="grid grid-rows-[1fr]"
+        >
+          <div class="min-h-0 pt-2">
+            <DraftOpenSlot
+              :exclude="excludeSteamIds || []"
+              @selected="(steamId, player) => emit('add', steamId, player)"
+            />
+          </div>
+        </div>
+      </template>
+      <template v-else>
+        <!-- Keyed by the pick it waits for, so the slot a pick fills is the one
+             that folds away and the later slots stay put. -->
+        <div
+          v-for="index in Math.max(0, perTeam - players.length)"
+          :key="
+            upcomingPicks?.[index - 1] != null
+              ? `pick-${upcomingPicks[index - 1]}`
+              : `empty-${index}`
+          "
+          class="grid grid-rows-[1fr]"
+        >
+        <div class="min-h-0 pt-2">
+        <div
           class="empty-slot grid min-h-[3.5rem] place-items-center rounded-lg border border-dashed text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/40"
           :class="isClockSlot(index - 1) ? 'is-clock' : ''"
         >
@@ -282,6 +305,8 @@ const slots = computed(() => {
               })
             }}
           </template>
+        </div>
+        </div>
         </div>
       </template>
     </TransitionGroup>
@@ -377,24 +402,32 @@ const slots = computed(() => {
   opacity: 0;
   transform: scale(0.7);
 }
-/* A leaving card collapses its own height in place -- position:absolute put
-   it at the flex container's origin (its static position), fading it out on
-   top of the panel title. */
-.roster-move,
-.roster-enter-active {
-  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+/* Rows fold their own height in place, entering and leaving alike --
+   position:absolute put a leaver at the flex container's origin (its static
+   position), fading it out on top of the panel title. Both folds run on one
+   curve, so a row opening beside one closing adds up to a constant height. */
+.roster-move {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.roster-enter-from {
-  opacity: 0;
-  transform: translateX(8px);
+.roster-enter-active {
+  transition:
+    grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .roster-leave-active {
   transition:
     grid-template-rows 0.24s cubic-bezier(0.16, 1, 0.3, 1),
     opacity 0.11s ease-in;
 }
+.roster-enter-active > *,
 .roster-leave-active > * {
   overflow: hidden;
+}
+.roster-enter-from {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateX(8px);
 }
 .roster-leave-to {
   grid-template-rows: 0fr;

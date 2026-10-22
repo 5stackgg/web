@@ -7803,7 +7803,6 @@
       "preview": "Prévia",
       "take": "Colocar no ar",
       "take_pick": "Escolha uma prévia para colocá-la no ar.",
-      "take_already": "{match} já está no ar.",
       "take_go_live": "Entrar ao vivo com {match}",
       "take_switch": "Trocar para {match}",
       "take_more": "Mais formas de iniciar",
@@ -10289,8 +10288,6 @@
       "loading_replay": "Carregando o replay",
       "replay_failed": "Não foi possível carregar o replay",
       "staff_only": "Somente staff",
-      "stop": "Parar transmissão",
-      "stop_short": "Parar",
       "stopped": "Transmissão parada",
       "resume": "Assistir",
       "card": {

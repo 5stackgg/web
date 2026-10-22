@@ -7803,7 +7803,6 @@
       "preview": "Anteprima",
       "take": "Manda in onda",
       "take_pick": "Scegli un'anteprima per mandarla in onda.",
-      "take_already": "{match} è già in onda.",
       "take_go_live": "Vai live con {match}",
       "take_switch": "Passa a {match}",
       "take_more": "Altri modi per avviare",
@@ -10289,8 +10288,6 @@
       "loading_replay": "Caricamento del replay",
       "replay_failed": "Impossibile caricare il replay",
       "staff_only": "Solo staff",
-      "stop": "Interrompi la diretta",
-      "stop_short": "Interrompi",
       "stopped": "Diretta interrotta",
       "resume": "Guarda",
       "card": {

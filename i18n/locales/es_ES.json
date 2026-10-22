@@ -7803,7 +7803,6 @@
       "preview": "Vista previa",
       "take": "Pasar al aire",
       "take_pick": "Elige una vista previa para ponerla en el aire.",
-      "take_already": "{match} ya está en el aire.",
       "take_go_live": "Emitir en directo {match}",
       "take_switch": "Cambiar a {match}",
       "take_more": "Más formas de iniciar",
@@ -10289,8 +10288,6 @@
       "loading_replay": "Cargando la repetición",
       "replay_failed": "No se ha podido cargar la repetición",
       "staff_only": "Solo staff",
-      "stop": "Detener el directo",
-      "stop_short": "Detener",
       "stopped": "Directo detenido",
       "resume": "Ver",
       "card": {

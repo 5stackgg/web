@@ -7,16 +7,14 @@ import {
   ref,
   watch,
 } from "vue";
-import {
-  Maximize,
-  Minimize,
-  Pause,
-  Play,
-  Volume2,
-  VolumeX,
-} from "lucide-vue-next";
+import { Pause, Play } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import StreamControls from "~/components/match/StreamControls.vue";
+import {
+  streamControlButtonClasses,
+  streamControlIconClasses,
+} from "~/components/match/streamControlClasses";
 import {
   browserSupportsHevc,
   notifyMissingHevcOnce,
@@ -65,9 +63,6 @@ const emit = defineEmits<{
   // implement near-end behavior (auto-advance) without polling itself.
   progress: [info: { progress: number; currentTime: number; duration: number }];
 }>();
-
-const trayButtonClass =
-  "inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]";
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 const stageRef = ref<InstanceType<typeof StreamCanvas> | null>(null);
@@ -727,7 +722,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     ref="stageRef"
     :is-live="true"
     tabindex="-1"
-    class="group/player aspect-video w-full overflow-hidden rounded-md border border-border/60 text-left focus:outline-none"
+    class="group/player aspect-video w-full overflow-hidden rounded-md border border-border/60 text-left [container-type:inline-size] focus:outline-none"
     :class="
       isFullscreen
         ? 'flex items-center justify-center !aspect-auto !rounded-none !border-0'
@@ -840,51 +835,25 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       </div>
     </div>
 
-    <!-- Audio + fullscreen tray — bottom-right, fixed. Volume slider
-         expands on hover, mute hides the slider so muted-state isn't
-         visually confusing. -->
-    <div class="absolute bottom-3 right-3 z-[4] flex items-center gap-2">
-      <div class="group/vol flex items-center">
-        <button
-          type="button"
-          :class="trayButtonClass"
-          :title="muted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
-          @click.stop="toggleMute"
-        >
-          <VolumeX v-if="muted" class="h-4 w-4" />
-          <Volume2 v-else class="h-4 w-4" />
-        </button>
-        <input
-          v-if="!muted"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          :value="volume"
-          :aria-label="$t('ui.volume')"
-          class="vol-slider ml-0 w-0 cursor-pointer transition-all duration-200 group-hover/vol:ml-2 group-hover/vol:w-20 focus-visible:ml-2 focus-visible:w-20"
-          @click.stop
-          @mousedown.stop
-          @input="setVolume(Number(($event.target as HTMLInputElement).value))"
+    <!-- Bottom right, clear of the clip's own caption on the left. -->
+    <StreamControls
+      :fullscreen="isFullscreen"
+      :muted="muted"
+      :volume="volume"
+      :visible="true"
+      align="end"
+      @toggle-fullscreen="toggleFullscreen"
+      @toggle-mute="toggleMute"
+      @update:volume="setVolume"
+    >
+      <template v-if="!isFullscreen && $slots.controls" #default>
+        <slot
+          name="controls"
+          :button-class="streamControlButtonClasses"
+          :icon-class="streamControlIconClasses"
         />
-      </div>
-      <!-- Consumer controls (e.g. the modal's theater toggle) sit beside
-           fullscreen and share the tray's button style. -->
-      <slot v-if="!isFullscreen" name="controls" :button-class="trayButtonClass" />
-      <button
-        type="button"
-        :class="trayButtonClass"
-        :title="
-          isFullscreen
-            ? $t('ui_extras.exit_fullscreen')
-            : $t('ui_extras.fullscreen')
-        "
-        @click.stop="toggleFullscreen"
-      >
-        <Minimize v-if="isFullscreen" class="h-4 w-4" />
-        <Maximize v-else class="h-4 w-4" />
-      </button>
-    </div>
+      </template>
+    </StreamControls>
 
     <!-- Scrubber — the amber strip glued to the bottom edge, now
          draggable. The wrapper is taller than the bar itself so it's easy
@@ -956,40 +925,5 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
 .clip-swap-enter-from,
 .clip-swap-leave-to {
   opacity: 0;
-}
-
-.vol-slider {
-  appearance: none;
-  height: 0.25rem;
-  background: transparent;
-}
-.vol-slider:focus {
-  outline: none;
-}
-.vol-slider::-webkit-slider-runnable-track {
-  height: 0.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-}
-.vol-slider::-moz-range-track {
-  height: 0.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-}
-.vol-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
-  margin-top: -0.25rem;
-}
-.vol-slider::-moz-range-thumb {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
 }
 </style>

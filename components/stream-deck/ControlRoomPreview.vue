@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { Lock, Server, ServerOff } from "lucide-vue-next";
+import { ArrowUpRight, Lock, Server, ServerOff } from "lucide-vue-next";
+import { NuxtLink } from "#components";
 import mapLabel from "~/utilities/mapLabel";
 import StatusDot from "~/components/admin/StatusDot.vue";
 import { TONE_TEXT, type Tone } from "~/components/admin/tone";
@@ -14,7 +15,8 @@ import {
 // One preview monitor: the map behind a small lower third, the match's state
 // and server under it, and in plain words why it can't go on air yet. Only
 // the on-air match has a picture, and that one is on the program monitor --
-// a second player here would double the stream for nothing.
+// a second player here would double the stream for nothing. There is nothing
+// to take on the on-air one, so it opens its match instead.
 type PreviewMatch = ControlRoomMatch & {
   is_in_lineup?: boolean | null;
   is_coach?: boolean | null;
@@ -130,11 +132,13 @@ const server = computed(() => {
 </script>
 
 <template>
-  <button
-    type="button"
+  <component
+    :is="onAir ? NuxtLink : 'button'"
+    :to="onAir ? `/matches/${match.id}` : undefined"
+    :type="onAir ? undefined : 'button'"
     class="group grid w-full gap-1.5 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    :aria-pressed="selected"
-    @click="emit('select')"
+    :aria-pressed="onAir ? undefined : selected"
+    @click="onAir || emit('select')"
   >
     <div
       class="relative aspect-video w-full overflow-hidden rounded-lg border bg-black transition-[border-color,box-shadow,opacity] duration-150"
@@ -142,7 +146,7 @@ const server = computed(() => {
         selected
           ? 'border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber))]'
           : onAir
-            ? 'border-destructive/60'
+            ? 'border-destructive/60 group-hover:border-destructive'
             : 'border-border group-hover:border-muted-foreground/40',
         !onAir && reason ? 'opacity-60' : '',
       ]"
@@ -174,6 +178,13 @@ const server = computed(() => {
               ? $t("pages.control_room.starting")
               : $t("match.stream.stopped")
         }}
+      </span>
+      <span
+        v-if="onAir"
+        class="absolute right-2 top-2 inline-flex items-center gap-1 rounded-[2px] bg-background/85 px-1.5 py-1 text-[0.625rem] font-semibold leading-none text-foreground transition-colors duration-150 group-hover:bg-background"
+      >
+        {{ $t("match.open_match") }}
+        <ArrowUpRight class="size-3" />
       </span>
 
       <div
@@ -246,5 +257,5 @@ const server = computed(() => {
     >
       {{ $t(`pages.control_room.reasons.${reason}`) }}
     </p>
-  </button>
+  </component>
 </template>

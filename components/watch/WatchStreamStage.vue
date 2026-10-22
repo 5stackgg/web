@@ -2,13 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
-import {
-  Maximize,
-  Minimize,
-  PictureInPicture,
-  Volume2,
-  VolumeX,
-} from "lucide-vue-next";
+import { PictureInPicture } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { watchTickerMatchFields } from "~/graphql/watchTickerFields";
@@ -17,6 +11,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
 import StreamMatchCard from "~/components/match/StreamMatchCard.vue";
 import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
 import StreamLiveTag from "~/components/match/StreamLiveTag.vue";
+import StreamControls from "~/components/match/StreamControls.vue";
 import StreamThumbnail from "~/components/watch/StreamThumbnail.vue";
 import { Button } from "~/components/ui/button";
 import { useWatchStage } from "~/composables/useWatchStage";
@@ -351,9 +346,6 @@ const totalWatching = computed(() =>
 
 const waitingCopy = computed(() => copyFor("waiting"));
 
-// Same buttons as the highlights player's tray (ClipPlayer).
-const trayButtonClass =
-  "relative inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] after:absolute after:-inset-1.5 after:content-[''] [@media(pointer:fine)]:after:hidden";
 </script>
 
 <template>
@@ -389,7 +381,7 @@ const trayButtonClass =
     <div class="watch-stage-grid" :class="{ solo: others.length === 0 }">
       <div
         ref="stageRef"
-        class="watch-stage-screen relative aspect-video w-full max-w-full overflow-hidden rounded-lg border border-border bg-black"
+        class="watch-stage-screen relative aspect-video w-full max-w-full overflow-hidden rounded-lg border border-border bg-black [container-type:inline-size]"
         :class="{ 'cursor-none': !chromeVisible }"
         @mousemove="showChrome"
         @mouseleave="hideChrome"
@@ -466,60 +458,21 @@ const trayButtonClass =
           :class="chromeFade"
         />
 
-        <!-- Audio + fullscreen tray, laid out like the highlights player's.
-             Bottom right over the game stream; top right over an embed,
-             whose own player keeps a control bar along the bottom edge.
-             Hover or focus keeps it up while the pointer rests on it. -->
-        <div
-          class="absolute right-3 z-10 flex items-center gap-2 hover:opacity-100 focus-within:opacity-100"
-          :class="[mode === 'embed' ? 'top-3' : 'bottom-3', chromeFade]"
-        >
-          <div
-            v-if="mode === 'game' || mode === 'embed'"
-            class="group/vol flex items-center"
-          >
-            <button
-              type="button"
-              :class="trayButtonClass"
-              :aria-label="muted ? $t('ui.unmute') : $t('ui.mute')"
-              :title="muted ? $t('ui.unmute') : $t('ui.mute')"
-              @click="toggleMute"
-            >
-              <VolumeX v-if="muted" class="size-4" />
-              <Volume2 v-else class="size-4" />
-            </button>
-            <input
-              v-if="canSetVolume && !muted"
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              :value="volume"
-              :aria-label="$t('ui.volume')"
-              class="vol-slider ml-0 w-0 cursor-pointer transition-all duration-200 group-hover/vol:ml-2 group-hover/vol:w-20 focus-visible:ml-2 focus-visible:w-20"
-              @input="setVolume(Number(($event.target as HTMLInputElement).value))"
-            />
-          </div>
-          <button
-            v-if="canFullscreen"
-            type="button"
-            :class="trayButtonClass"
-            :aria-label="
-              isFullscreen
-                ? $t('ui_extras.exit_fullscreen')
-                : $t('pages.watch.stage.fullscreen')
-            "
-            :title="
-              isFullscreen
-                ? $t('ui_extras.exit_fullscreen')
-                : $t('pages.watch.stage.fullscreen')
-            "
-            @click="fullscreen"
-          >
-            <Minimize v-if="isFullscreen" class="size-4" />
-            <Maximize v-else class="size-4" />
-          </button>
-        </div>
+        <!-- Over an embed, whose own player keeps a control bar along the
+             bottom edge, they move to the top right. Until the game stream
+             has a picture its status card holds the bottom left. -->
+        <StreamControls
+          :fullscreen="canFullscreen ? isFullscreen : null"
+          :muted="mode === 'game' || mode === 'embed' ? muted : null"
+          :volume="canSetVolume ? volume : null"
+          unmute-pill
+          :visible="chromeVisible"
+          :placement="mode === 'embed' ? 'top' : 'bottom'"
+          :align="mode === 'game' && phase === null ? 'split' : 'end'"
+          @toggle-fullscreen="fullscreen"
+          @toggle-mute="toggleMute"
+          @update:volume="setVolume"
+        />
       </div>
 
       <div
@@ -669,41 +622,6 @@ const trayButtonClass =
 .watch-stage-thumb {
   flex: 1 1 0;
   grid-template-rows: minmax(0, 1fr) auto;
-}
-/* Same slider as the highlights player (ClipPlayer). */
-.vol-slider {
-  appearance: none;
-  height: 0.25rem;
-  background: transparent;
-}
-.vol-slider:focus {
-  outline: none;
-}
-.vol-slider::-webkit-slider-runnable-track {
-  height: 0.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-}
-.vol-slider::-moz-range-track {
-  height: 0.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-}
-.vol-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
-  margin-top: -0.25rem;
-}
-.vol-slider::-moz-range-thumb {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
 }
 @media (max-width: 900px) {
   .watch-stage-grid,

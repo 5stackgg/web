@@ -3,13 +3,16 @@ import { useId } from "vue";
 import { Button } from "~/components/ui/button";
 import {
   ExternalLink,
+  PictureInPicture,
   Play,
-  Square,
-  Volume2,
-  VolumeX,
 } from "lucide-vue-next";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import StreamControls from "~/components/match/StreamControls.vue";
+import {
+  streamControlButtonClasses,
+  streamControlIconClasses,
+} from "~/components/match/streamControlClasses";
 import StreamStoppedBar from "~/components/match/StreamStoppedBar.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import Fold from "~/components/ui/transitions/Fold.vue";
@@ -24,7 +27,7 @@ const noticeId = useId();
     <StreamCanvas
       v-if="selectedStream && !isStopped"
       :is-live="true"
-      class="group w-full"
+      class="group w-full [container-type:inline-size]"
       :class="inline ? 'h-full' : 'aspect-video'"
     >
       <template #video>
@@ -89,32 +92,6 @@ const noticeId = useId();
         </div>
       </PageTransition>
 
-      <Button
-        v-if="global === false && !inline"
-        class="absolute top-2 right-2 w-8 h-8 opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
-        @click="setGlobalStream(selectedStream)"
-        type="button"
-        :title="$t('streams.move_to_global_view')"
-        variant="ghost"
-        size="icon"
-      >
-        <ExternalLink class="w-4 h-4" />
-        <span class="sr-only">{{ $t("streams.move_to_global_view") }}</span>
-      </Button>
-
-      <Button
-        v-if="canStop"
-        class="absolute top-2 right-12 w-8 h-8 opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
-        @click="stopStream"
-        type="button"
-        :title="$t('match.stream.stop')"
-        variant="ghost"
-        size="icon"
-      >
-        <Square class="size-3 fill-current" />
-        <span class="sr-only">{{ $t("match.stream.stop") }}</span>
-      </Button>
-
       <MatchScoreboardOverlay
         v-if="effectiveMatchId && !inline"
         v-model:open="scoreboardOpen"
@@ -123,28 +100,31 @@ const noticeId = useId();
         :require-fullscreen="!global"
       />
 
-      <!-- Custom mute pill — same affordance as WhepPlayer. Always
-           muted on first load so embeds autoplay; this is the single
-           obvious place to bring audio in. Stays visible while muted
-           (so the call-to-action is reachable on touch devices); fades
-           in on hover once unmuted. -->
-      <PageTransition swap :appear="false">
-        <button
-          v-if="!inline && !waiting"
-          type="button"
-          :aria-label="isMuted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
-          :class="[
-            'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
-            isMuted
-              ? 'opacity-100'
-              : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
-          ]"
-          @click="toggleMute"
-        >
-          <VolumeX v-if="isMuted" class="size-3.5" />
-          <Volume2 v-else class="size-3.5" />
-        </button>
-      </PageTransition>
+      <!-- Top right: the provider's own player keeps its control bar along
+           the bottom edge. The floating player keeps its corner for its own
+           open and close buttons. -->
+      <StreamControls
+        v-if="!inline"
+        :muted="waiting ? null : isMuted"
+        :volume="supportsVolume ? volume : null"
+        unmute-pill
+        :placement="global ? 'bottom' : 'top'"
+        align="end"
+        @toggle-mute="toggleSound"
+        @update:volume="changeVolume"
+      >
+        <template v-if="canStop" #default>
+          <button
+            type="button"
+            :title="$t('streams.move_to_global_view')"
+            :aria-label="$t('streams.move_to_global_view')"
+            :class="streamControlButtonClasses"
+            @click="setGlobalStream(selectedStream)"
+          >
+            <PictureInPicture :class="streamControlIconClasses" />
+          </button>
+        </template>
+      </StreamControls>
 
       <PageTransition swap :appear="false">
         <span
@@ -308,6 +288,7 @@ export default {
       // either don't expose a JS API or it's unstable enough that a
       // reload is the most reliable path).
       isMuted: true,
+      volume: 1,
       played: false,
     };
   },
@@ -327,8 +308,8 @@ export default {
         null
       );
     },
-    // The page's own embed can be stopped; the floating PiP closes
-    // instead, and the /watch stage owns its controls.
+    // Only the page's own embed stays stopped, once its floating PiP is
+    // closed on the match page; the /watch stage owns its controls.
     canStop() {
       return this.global === false && !this.inline;
     },
@@ -434,13 +415,6 @@ export default {
     setGlobalStream(stream: MatchStream) {
       this.selectedStream = null;
       useApplicationSettingsStore().setGlobalStream(stream);
-    },
-    stopStream() {
-      if (!this.selectedStream) return;
-      // Tear the player down before StreamCanvas unmounts so the Twitch
-      // SDK gets its destroy() rather than just losing its iframe.
-      this.cleanupPlayer();
-      useStoppedStreams().stop(embedStreamKey(this.selectedStream));
     },
     resumeStream() {
       if (!this.selectedStream) return;
@@ -735,6 +709,27 @@ export default {
         }
       }
     },
+    toggleSound() {
+      this.toggleMute();
+      if (this.isMuted || !this.supportsVolume) {
+        return;
+      }
+      const current = this.playerInstance?.getVolume?.();
+      if (typeof current === "number") {
+        this.volume = current;
+      }
+      if (this.volume <= 0.01) {
+        this.volume = 1;
+        this.setVolume(1);
+      }
+    },
+    changeVolume(volume: number) {
+      this.volume = volume;
+      if (volume <= 0.01 !== this.isMuted) {
+        this.toggleMute();
+      }
+      this.setVolume(volume);
+    },
     setVolume(volume: number) {
       if (!this.supportsVolume || !this.playerInstance?.setVolume) {
         return;
@@ -800,8 +795,15 @@ export default {
     },
   },
   watch: {
+    // Before StreamCanvas unmounts, so the Twitch SDK gets its destroy()
+    // rather than just losing its iframe.
+    isStopped(stopped) {
+      if (stopped) {
+        this.cleanupPlayer();
+      }
+    },
     // The same stream can play again: pressed here or in another card, or
-    // back from Stop, whose player div only returns with the next render. A
+    // back from a stop, whose player div only returns with the next render. A
     // switch to another stream loads through selectedStream.
     playback(next, previous) {
       if (next?.on && previous && !previous.on && next.key === previous.key) {

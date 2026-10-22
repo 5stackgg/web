@@ -7803,7 +7803,6 @@
       "preview": "미리보기",
       "take": "송출",
       "take_pick": "송출할 미리보기를 선택하세요.",
-      "take_already": "{match} 경기는 이미 송출 중입니다.",
       "take_go_live": "{match} 라이브 송출",
       "take_switch": "{match}(으)로 전환",
       "take_more": "다른 시작 방법",
@@ -10289,8 +10288,6 @@
       "loading_replay": "리플레이 불러오는 중",
       "replay_failed": "리플레이를 불러오지 못했습니다",
       "staff_only": "스태프 전용",
-      "stop": "스트림 중지",
-      "stop_short": "중지",
       "stopped": "스트림 중지됨",
       "resume": "시청하기",
       "card": {

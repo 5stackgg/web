@@ -7803,7 +7803,6 @@
       "preview": "المعاينة",
       "take": "إلى الهواء",
       "take_pick": "اختر معاينة لعرضها على الهواء.",
-      "take_already": "{match} على الهواء بالفعل.",
       "take_go_live": "ابدأ البث المباشر لـ {match}",
       "take_switch": "التبديل إلى {match}",
       "take_more": "طرق أخرى للبدء",
@@ -10289,8 +10288,6 @@
       "loading_replay": "جارٍ تحميل الإعادة",
       "replay_failed": "تعذّر تحميل الإعادة",
       "staff_only": "للطاقم فقط",
-      "stop": "إيقاف البث",
-      "stop_short": "إيقاف",
       "stopped": "تم إيقاف البث",
       "resume": "مشاهدة",
       "card": {

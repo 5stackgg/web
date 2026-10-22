@@ -4426,7 +4426,7 @@
           "post": "Publier des disponibilités"
         },
         "drop_in": {
-          "playing": "joue sur les serveurs publics | jouent sur les serveurs publics",
+          "playing_now": "{count} en jeu",
           "all_servers": "Tous les serveurs ({count})",
           "players": "joueurs",
           "connect": "Se connecter",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Serveur d'entraînement",
+          "on_map": "S'entraîner sur {map}",
           "description": "Ton propre serveur pour les lineups d'utilitaires · n'importe quelle map",
           "map": "Map",
           "start": "Lancer l'entraînement",
+          "start_short": "Lancer",
+          "start_on": "Lancer sur {map}",
           "sign_in": "Connecte-toi pour t'entraîner",
           "manage": "Gérer",
           "stop": "Arrêter",
@@ -4563,23 +4566,21 @@
           "rank_high": "Rang moyen le plus élevé",
           "rank_low": "Rang moyen le plus bas"
         },
-        "rehost": "Rejouer la dernière",
         "host_bar": {
           "title": "Héberger une draft",
-          "seats": "{count} places",
+          "host_lan": "Héberger une draft LAN",
           "draft": "Type de draft",
           "access": "Qui peut rejoindre",
-          "open": "Ouvrir une draft {format}",
+          "choices": "Options de la draft",
           "sign_in": "Connectez-vous pour héberger",
           "back_to_room": "Retour à votre draft",
           "all_settings": "Tous les paramètres",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Capitaines : top 2 au classement, ordre en serpent",
             "host": "Vous placez les joueurs dans les équipes",
-            "pug": "Les équipes s'équilibrent automatiquement quand la draft est pleine"
-          },
-          "open_lan": "Ouvrir un salon LAN {format}"
+            "pug": "Les équipes s'équilibrent automatiquement quand la draft est pleine",
+            "duel": "En 1v1, personne à drafter : la répartition est automatique"
+          }
         },
         "intro": {
           "title": "Organisez votre propre partie.",
@@ -4619,7 +4620,6 @@
         "join_party": "Rejoindre avec le groupe ({count})",
         "sign_in_to_join": "Connecte-toi pour rejoindre",
         "reasons": {
-          "spots_left": "{count} place restante | {count} places restantes",
           "no_room_for_party": "Pas de place pour ton groupe",
           "host_approves": "L'hôte valide",
           "subs_waiting": "{count} remplaçant en attente | {count} remplaçants en attente",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Lobby de draft",
     "leader_required": "Seul le chef de groupe peut créer un match.",
-    "rehost_hint": "Recréer ton dernier lobby avec les mêmes paramètres",
     "filters": {
       "any": "Tous"
     },

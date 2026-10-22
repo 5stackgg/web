@@ -4426,7 +4426,7 @@
           "post": "Uygunluk paylaş"
         },
         "drop_in": {
-          "playing": "kişi herkese açık sunucularda oynuyor | kişi herkese açık sunucularda oynuyor",
+          "playing_now": "{count} kişi oynuyor",
           "all_servers": "Tüm sunucular ({count})",
           "players": "oyuncu",
           "connect": "Bağlan",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Antrenman sunucusu",
+          "on_map": "{map} haritasında antrenman",
           "description": "Utility dizilimleri için kendi sunucun · istediğin harita",
           "map": "Harita",
           "start": "Antrenmana başla",
+          "start_short": "Başlat",
+          "start_on": "{map} haritasında başlat",
           "sign_in": "Antrenman için giriş yap",
           "manage": "Yönet",
           "stop": "Durdur",
@@ -4563,23 +4566,21 @@
           "rank_high": "En yüksek ortalama rank",
           "rank_low": "En düşük ortalama rank"
         },
-        "rehost": "Sonuncuyu yeniden kur",
         "host_bar": {
           "title": "Oda kur",
-          "seats": "{count} kişilik",
+          "host_lan": "LAN odası kur",
           "draft": "Seçim türü",
           "access": "Kimler katılabilir",
-          "open": "{format} oda aç",
+          "choices": "Oda seçenekleri",
           "sign_in": "Oda kurmak için giriş yap",
           "back_to_room": "Odana dön",
           "all_settings": "Tüm ayarlar",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Rütbeye göre ilk 2 kaptan, yılan sırası",
             "host": "Oyuncuları takımlara sen yerleştirirsin",
-            "pug": "Oda dolunca takımlar otomatik dengelenir"
-          },
-          "open_lan": "{format} LAN odası aç"
+            "pug": "Oda dolunca takımlar otomatik dengelenir",
+            "duel": "1v1'de seçilecek kimse yok, bu yüzden otomatik bölüştürülür"
+          }
         },
         "intro": {
           "title": "Kendi maçını kur.",
@@ -4619,7 +4620,6 @@
         "join_party": "Partiyle katıl ({count})",
         "sign_in_to_join": "Katılmak için giriş yap",
         "reasons": {
-          "spots_left": "{count} yer kaldı | {count} yer kaldı",
           "no_room_for_party": "Partin için yer yok",
           "host_approves": "Ev sahibi onaylar",
           "subs_waiting": "{count} yedek bekliyor | {count} yedek bekliyor",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Seçim Lobisi",
     "leader_required": "Sadece parti lideri maç oluşturabilir.",
-    "rehost_hint": "Son lobini aynı ayarlarla yeniden oluştur",
     "filters": {
       "any": "Hepsi"
     },

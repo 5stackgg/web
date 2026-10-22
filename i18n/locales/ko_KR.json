@@ -4426,7 +4426,7 @@
           "post": "가능 시간 올리기"
         },
         "drop_in": {
-          "playing": "명이 공개 서버에서 플레이 중 | 명이 공개 서버에서 플레이 중",
+          "playing_now": "{count}명 플레이 중",
           "all_servers": "모든 서버 ({count})",
           "players": "플레이어",
           "connect": "연결",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "연습 서버",
+          "on_map": "{map}에서 연습",
           "description": "유틸 라인업 연습용 개인 서버 · 모든 맵",
           "map": "맵",
           "start": "연습 시작",
+          "start_short": "시작",
+          "start_on": "{map}에서 시작",
           "sign_in": "로그인하고 연습",
           "manage": "관리",
           "stop": "정지",
@@ -4563,23 +4566,21 @@
           "rank_high": "평균 랭크 높은 순",
           "rank_low": "평균 랭크 낮은 순"
         },
-        "rehost": "마지막 설정 재개설",
         "host_bar": {
           "title": "룸 개설",
-          "seats": "{count}명",
+          "host_lan": "LAN 룸 개설",
           "draft": "드래프트 방식",
           "access": "참가 가능 대상",
-          "open": "{format} 룸 열기",
+          "choices": "룸 옵션",
           "sign_in": "로그인하고 개설하기",
           "back_to_room": "내 룸으로 돌아가기",
           "all_settings": "전체 설정",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "랭크 상위 2명이 팀장, 스네이크 순서",
             "host": "플레이어를 직접 팀에 배정합니다",
-            "pug": "룸이 가득 차면 팀이 자동으로 균형을 맞춥니다"
-          },
-          "open_lan": "{format} LAN 방 열기"
+            "pug": "룸이 가득 차면 팀이 자동으로 균형을 맞춥니다",
+            "duel": "1v1은 드래프트할 사람이 없어 자동으로 분배됩니다"
+          }
         },
         "intro": {
           "title": "직접 경기를 열어 보세요.",
@@ -4619,7 +4620,6 @@
         "join_party": "파티와 함께 참가 ({count})",
         "sign_in_to_join": "로그인하고 참가",
         "reasons": {
-          "spots_left": "{count}자리 남음 | {count}자리 남음",
           "no_room_for_party": "파티 전원이 들어갈 자리가 없음",
           "host_approves": "호스트 승인 필요",
           "subs_waiting": "교체 선수 {count}명 대기 중 | 교체 선수 {count}명 대기 중",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "드래프트 로비",
     "leader_required": "파티장만 매치를 생성할 수 있습니다.",
-    "rehost_hint": "동일한 설정으로 마지막 로비를 다시 생성합니다",
     "filters": {
       "any": "전체"
     },

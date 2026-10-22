@@ -99,6 +99,7 @@ export type DraftActionKind =
 export type DraftAction = {
   kind: DraftActionKind;
   label: string;
+  // The line under the button, empty when the seat bar already says it.
   reason: string;
   disabled: boolean;
 };
@@ -123,11 +124,6 @@ export function draftAction(
         (p: any) => String(p.steam_id) === String(viewer.meSteamId),
       )
     : undefined;
-  const spots = t(
-    "pages.play.draft_rooms.reasons.spots_left",
-    { count: left },
-    left,
-  );
 
   if (mine && mine.status !== "Requested") {
     return {
@@ -163,7 +159,7 @@ export function draftAction(
     return {
       kind: "sign_in",
       label: t("pages.play.draft_rooms.sign_in_to_join"),
-      reason: spots,
+      reason: "",
       disabled: false,
     };
   }
@@ -182,7 +178,7 @@ export function draftAction(
         label: t("pages.play.draft_rooms.join_party", {
           count: viewer.partySize,
         }),
-        reason: spots,
+        reason: "",
         disabled: false,
       };
     }
@@ -196,7 +192,7 @@ export function draftAction(
   return {
     kind: "join",
     label: t("draft_games.card.join"),
-    reason: spots,
+    reason: "",
     disabled: false,
   };
 }

@@ -18,6 +18,7 @@ import { toast } from "~/components/ui/toast";
 import ClipBoard from "~/components/ClipBoard.vue";
 import StartPracticeDialog from "~/components/utility/StartPracticeDialog.vue";
 import UtilityPracticeNav from "~/components/utility/UtilityPracticeNav.vue";
+import PlayWayCard from "~/components/play/PlayWayCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import {
@@ -40,6 +41,10 @@ import { loginLinks } from "~/utilities/loginLinks";
 import cleanMapName from "~/utilities/cleanMapName";
 import activeDutyMaps from "~/utilities/activeDutyMaps";
 import { loadRadarMaps, normalizeMapName } from "~/utilities/mapAssets";
+
+const props = withDefaults(defineProps<{ layout?: "featured" | "peek" }>(), {
+  layout: "featured",
+});
 
 const { t } = useI18n();
 
@@ -107,6 +112,15 @@ const mapGroups = computed(() => {
   ];
 });
 
+// The peek's map picker: one row of icons, Active Duty first.
+const PEEK_MAPS = 9;
+const peekMaps = computed(() =>
+  [
+    ...maps.value.filter((map) => activeDuty.value.has(map)),
+    ...maps.value.filter((map) => !activeDuty.value.has(map)),
+  ].slice(0, PEEK_MAPS),
+);
+
 const { session, switching } = useUtilityPracticeSession();
 
 const practice = computed(() => readUtilityPracticeSession(session.value));
@@ -132,6 +146,47 @@ const stateLabels: Record<string, string> = {
 
 const sessionMap = computed(() =>
   practice.value.mapName ? cleanMapName(practice.value.mapName) : null,
+);
+
+const startMap = computed(() =>
+  !isGuest.value && mapName.value ? cleanMapName(mapName.value) : null,
+);
+
+const title = computed(() => {
+  if (props.layout === "featured") {
+    if (tileState.value !== "start" && sessionMap.value) {
+      return sessionMap.value;
+    }
+    if (tileState.value === "start" && startMap.value) {
+      return t("pages.play.more_ways.practice.on_map", {
+        map: startMap.value,
+      });
+    }
+  }
+  return t("pages.play.more_ways.practice.title");
+});
+
+const peekLine = computed(() => {
+  if (tileState.value !== "start") {
+    return [sessionMap.value, t(stateLabels[tileState.value])]
+      .filter(Boolean)
+      .join(" · ");
+  }
+  return startMap.value
+    ? t("pages.play.more_ways.practice.start_on", { map: startMap.value })
+    : t("pages.play.more_ways.practice.description");
+});
+
+const art = computed(
+  () =>
+    (tileState.value === "start" ? mapName.value : practice.value.mapName) ||
+    "de_mirage",
+);
+
+// The featured card holds the controls under its line; the peek shows
+// them in place of the map picker.
+const controlsSlot = computed(() =>
+  props.layout === "featured" ? "actions" : "preview",
 );
 
 const access = computed(() =>
@@ -216,223 +271,267 @@ function signIn() {
 
 const touchTarget =
   "relative after:absolute after:inset-x-0 after:-inset-y-1.5 after:content-[''] [@media(pointer:fine)]:after:hidden";
+const amberClasses =
+  "bg-[hsl(var(--tac-amber))] font-semibold text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]";
 </script>
 
 <template>
-  <article
-    class="flex min-w-0 flex-col gap-2 rounded-lg border border-border bg-muted/20 p-4"
-  >
-    <div class="flex items-center justify-between gap-2">
-      <h3 class="m-0 text-[15px] font-bold">
-        {{ $t("pages.play.more_ways.practice.title") }}
-      </h3>
-      <Target aria-hidden="true" class="size-4 text-muted-foreground" />
-    </div>
-
-    <HeightSwap>
-      <p
-        v-if="tileState === 'start'"
-        key="start"
-        class="m-0 text-[12.5px] text-muted-foreground"
-      >
-        {{ $t("pages.play.more_ways.practice.description") }}
-      </p>
-      <div v-else key="session" class="flex flex-col gap-2">
-        <div class="flex items-center gap-2">
+  <PlayWayCard :layout="layout" :title="title" :icon="Target" :art="art">
+    <template
+      v-if="layout === 'featured' && (tileState !== 'start' || startMap)"
+      #kicker
+    >
+      <Target class="size-3.5 shrink-0" aria-hidden="true" />
+      {{ $t("pages.play.more_ways.practice.title") }}
+      <!-- Not FadeSwap: its leaver takes the entering label's width, and a
+           longer label overflowing that box ignores text-right. -->
+      <span v-if="tileState !== 'start'" class="relative ml-auto shrink-0">
+        <Transition
+          enter-active-class="transition-opacity duration-300 ease-out motion-reduce:!duration-0"
+          leave-active-class="absolute right-0 top-0 transition-opacity duration-200 ease-in motion-reduce:!duration-0"
+          enter-from-class="opacity-0"
+          leave-to-class="opacity-0"
+        >
           <span
-            class="h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-200 motion-reduce:transition-none"
+            :key="tileState"
+            class="block whitespace-nowrap font-mono text-[0.55rem] uppercase tracking-[0.14em]"
             :class="
               tileState === 'ready'
-                ? 'bg-[hsl(var(--tac-amber))]'
-                : 'bg-muted-foreground/60'
+                ? 'text-[hsl(var(--tac-amber))]'
+                : 'text-muted-foreground'
             "
-          />
-          <span class="min-w-0 truncate text-[13.5px] font-medium">
-            {{ sessionMap }}
-          </span>
-          <!-- Not FadeSwap: its leaver takes the entering label's width, and a
-               longer label overflowing that box ignores text-right. -->
-          <span class="relative ml-auto shrink-0">
-            <Transition
-              enter-active-class="transition-opacity duration-300 ease-out motion-reduce:!duration-0"
-              leave-active-class="absolute right-0 top-0 transition-opacity duration-200 ease-in motion-reduce:!duration-0"
-              enter-from-class="opacity-0"
-              leave-to-class="opacity-0"
-            >
-              <span
-                :key="tileState"
-                class="block whitespace-nowrap font-mono text-[0.55rem] uppercase tracking-[0.14em]"
-                :class="
-                  tileState === 'ready'
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-muted-foreground'
-                "
-              >
-                {{ $t(stateLabels[tileState]) }}
-              </span>
-            </Transition>
-          </span>
-        </div>
-
-        <HeightSwap>
-          <div
-            v-if="tileState !== 'ready'"
-            :key="tileState"
-            class="flex items-center gap-2 text-[12.5px] text-muted-foreground"
           >
-            <Spinner class="h-4 w-4 shrink-0" />
-            {{
-              tileState === "switching"
-                ? $t("pages.utility.practice.switching", { map: sessionMap })
-                : $t("pages.utility.practice.booting")
-            }}
-          </div>
-          <p v-else key="ready" class="m-0 text-[12.5px] text-muted-foreground">
-            {{ $t(accessLine) }}
-            <template v-if="inviteLinkReaches">
-              &middot;
-              {{ $t("pages.play.more_ways.practice.invite_link_in_panel") }}
-            </template>
-          </p>
-        </HeightSwap>
+            {{ $t(stateLabels[tileState]) }}
+          </span>
+        </Transition>
+      </span>
+    </template>
+
+    <template v-if="layout === 'peek'">{{ peekLine }}</template>
+    <HeightSwap v-else>
+      <p v-if="tileState === 'start'" key="start" class="m-0">
+        {{ $t("pages.play.more_ways.practice.description") }}
+      </p>
+      <div
+        v-else-if="tileState !== 'ready'"
+        :key="tileState"
+        class="flex items-center gap-2"
+      >
+        <Spinner class="h-4 w-4 shrink-0" />
+        {{
+          tileState === "switching"
+            ? $t("pages.utility.practice.switching", { map: sessionMap })
+            : $t("pages.utility.practice.booting")
+        }}
       </div>
+      <p v-else key="ready" class="m-0">
+        {{ $t(accessLine) }}
+        <template v-if="inviteLinkReaches">
+          &middot;
+          {{ $t("pages.play.more_ways.practice.invite_link_in_panel") }}
+        </template>
+      </p>
     </HeightSwap>
 
-    <HeightSwap class="mt-auto">
-      <div
-        v-if="tileState === 'start'"
-        key="start"
-        class="flex flex-wrap items-center gap-2 pt-1"
+    <template v-if="layout === 'peek' && tileState === 'start'" #actions>
+      <Button
+        v-if="isGuest"
+        size="sm"
+        variant="outline"
+        :class="['h-8', touchTarget]"
+        @click="signIn"
       >
-        <Button
-          v-if="isGuest"
-          size="sm"
-          variant="outline"
-          :class="['h-8', touchTarget]"
-          @click="signIn"
+        {{ $t("pages.play.more_ways.practice.sign_in") }}
+      </Button>
+      <Button
+        v-else
+        size="sm"
+        variant="outline"
+        :class="['h-8', touchTarget]"
+        :disabled="!mapName"
+        @click="practiceOpen = true"
+      >
+        {{ $t("pages.play.more_ways.practice.start_short") }}
+      </Button>
+    </template>
+
+    <template #[controlsSlot]>
+      <HeightSwap class="w-full">
+        <div
+          v-if="tileState === 'start' && layout === 'peek'"
+          key="maps"
+          role="group"
+          :aria-label="$t('pages.play.more_ways.practice.map')"
+          class="grid grid-cols-9 gap-1"
         >
-          {{ $t("pages.play.more_ways.practice.sign_in") }}
-        </Button>
-        <template v-else>
-          <Select v-if="maps.length > 1" v-model="mapName">
-            <SelectTrigger
-              class="h-8 w-auto min-w-[8.5rem] gap-2 text-xs"
-              :aria-label="$t('pages.play.more_ways.practice.map')"
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <template v-if="mapGroups.length">
-                <SelectGroup v-for="group in mapGroups" :key="group.key">
-                  <SelectLabel
-                    class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
-                  >
-                    {{ $t(group.label) }}
-                  </SelectLabel>
-                  <SelectItem v-for="map in group.maps" :key="map" :value="map">
+          <button
+            v-for="map in peekMaps"
+            :key="map"
+            type="button"
+            :aria-pressed="map === mapName"
+            :aria-label="cleanMapName(map)"
+            :title="cleanMapName(map)"
+            class="group/map grid h-[34px] place-items-center rounded-md border transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] max-md:h-10"
+            :class="
+              map === mapName
+                ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)]'
+                : 'border-border hover:border-foreground/25'
+            "
+            @click="mapName = map"
+          >
+            <img
+              :src="`/img/maps/icons/${map}.svg`"
+              alt=""
+              class="size-[22px] max-w-full object-contain transition-[opacity,filter] duration-150 max-md:size-5"
+              :class="
+                map === mapName
+                  ? ''
+                  : 'opacity-[0.55] grayscale-[0.5] group-hover/map:opacity-90'
+              "
+            />
+          </button>
+        </div>
+
+        <div
+          v-else-if="tileState === 'start'"
+          key="start"
+          class="flex flex-wrap items-center gap-2"
+        >
+          <Button
+            v-if="isGuest"
+            size="sm"
+            :class="[amberClasses, 'h-8 max-md:flex-1', touchTarget]"
+            @click="signIn"
+          >
+            {{ $t("pages.play.more_ways.practice.sign_in") }}
+          </Button>
+          <template v-else>
+            <Select v-if="maps.length > 1" v-model="mapName">
+              <SelectTrigger
+                class="h-8 w-auto min-w-[8.5rem] gap-2 bg-background/55 text-xs"
+                :aria-label="$t('pages.play.more_ways.practice.map')"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <template v-if="mapGroups.length">
+                  <SelectGroup v-for="group in mapGroups" :key="group.key">
+                    <SelectLabel
+                      class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
+                    >
+                      {{ $t(group.label) }}
+                    </SelectLabel>
+                    <SelectItem
+                      v-for="map in group.maps"
+                      :key="map"
+                      :value="map"
+                    >
+                      {{ cleanMapName(map) }}
+                    </SelectItem>
+                  </SelectGroup>
+                </template>
+                <template v-else>
+                  <SelectItem v-for="map in maps" :key="map" :value="map">
                     {{ cleanMapName(map) }}
                   </SelectItem>
-                </SelectGroup>
-              </template>
-              <template v-else>
-                <SelectItem v-for="map in maps" :key="map" :value="map">
-                  {{ cleanMapName(map) }}
-                </SelectItem>
-              </template>
-            </SelectContent>
-          </Select>
+                </template>
+              </SelectContent>
+            </Select>
+            <Button
+              size="sm"
+              :class="[amberClasses, 'h-8 max-md:flex-1', touchTarget]"
+              :disabled="!mapName"
+              @click="practiceOpen = true"
+            >
+              {{ $t("pages.play.more_ways.practice.start") }}
+            </Button>
+          </template>
+        </div>
+
+        <div
+          v-else-if="tileState === 'booting'"
+          key="booting"
+          class="flex flex-wrap items-center gap-2"
+        >
           <Button
             size="sm"
             variant="outline"
-            :class="['h-8', touchTarget]"
-            :disabled="!mapName"
-            @click="practiceOpen = true"
+            :class="[
+              'h-8 text-destructive hover:text-destructive',
+              touchTarget,
+            ]"
+            :loading="ending"
+            @click="end()"
           >
-            {{ $t("pages.play.more_ways.practice.start") }}
+            {{
+              practice.canManage
+                ? $t("pages.utility.practice.stop")
+                : $t("pages.utility.practice.leave")
+            }}
           </Button>
-        </template>
-      </div>
+        </div>
 
-      <div
-        v-else-if="tileState === 'booting'"
-        key="booting"
-        class="flex flex-wrap items-center gap-2 pt-1"
-      >
-        <Button
-          size="sm"
-          variant="outline"
-          :class="['h-8 text-destructive hover:text-destructive', touchTarget]"
-          :loading="ending"
-          @click="end()"
-        >
-          {{
-            practice.canManage
-              ? $t("pages.utility.practice.stop")
-              : $t("pages.utility.practice.leave")
-          }}
-        </Button>
-      </div>
+        <div v-else :key="tileState" class="flex flex-wrap items-center gap-2">
+          <Button
+            v-if="tileState === 'ready' && practice.connectionLink"
+            as="a"
+            :href="practice.connectionLink"
+            size="sm"
+            :class="[
+              'tac-amber-cta h-8 font-bold uppercase tracking-[0.18em]',
+              touchTarget,
+            ]"
+            :loading="joiningServer"
+            @click="onJoinClick()"
+          >
+            <ExternalLink class="h-4 w-4" />
+            {{ $t("server.join_server") }}
+          </Button>
+          <ClipBoard
+            v-if="tileState === 'ready' && practice.connectionString"
+            :data="practice.connectionString"
+            :class="[
+              'h-8 w-8 shrink-0 bg-background/55',
+              touchTarget,
+              'after:-inset-x-1.5',
+            ]"
+            :title="practice.connectionString"
+          />
+          <UtilityPracticeNav>
+            <template #trigger>
+              <Button
+                size="sm"
+                variant="outline"
+                :class="['h-8 bg-background/55', touchTarget]"
+              >
+                {{ $t("pages.play.more_ways.practice.manage") }}
+              </Button>
+            </template>
+          </UtilityPracticeNav>
+          <Button
+            size="sm"
+            variant="ghost"
+            :class="[
+              'h-8 text-destructive hover:bg-destructive/10 hover:text-destructive',
+              touchTarget,
+            ]"
+            :loading="ending"
+            @click="end()"
+          >
+            {{
+              practice.canManage
+                ? $t("pages.play.more_ways.practice.stop")
+                : $t("pages.play.more_ways.practice.leave")
+            }}
+          </Button>
+        </div>
+      </HeightSwap>
 
-      <div
-        v-else
-        :key="tileState"
-        class="flex flex-wrap items-center gap-2 pt-1"
-      >
-        <Button
-          v-if="tileState === 'ready' && practice.connectionLink"
-          as="a"
-          :href="practice.connectionLink"
-          size="sm"
-          :class="[
-            'tac-amber-cta h-8 font-bold uppercase tracking-[0.18em]',
-            touchTarget,
-          ]"
-          :loading="joiningServer"
-          @click="onJoinClick()"
-        >
-          <ExternalLink class="h-4 w-4" />
-          {{ $t("server.join_server") }}
-        </Button>
-        <ClipBoard
-          v-if="tileState === 'ready' && practice.connectionString"
-          :data="practice.connectionString"
-          :class="['h-8 w-8 shrink-0', touchTarget, 'after:-inset-x-1.5']"
-          :title="practice.connectionString"
-        />
-        <UtilityPracticeNav>
-          <template #trigger>
-            <Button
-              size="sm"
-              variant="outline"
-              :class="['h-8', touchTarget]"
-            >
-              {{ $t("pages.play.more_ways.practice.manage") }}
-            </Button>
-          </template>
-        </UtilityPracticeNav>
-        <Button
-          size="sm"
-          variant="ghost"
-          :class="[
-            'h-8 text-destructive hover:bg-destructive/10 hover:text-destructive',
-            touchTarget,
-          ]"
-          :loading="ending"
-          @click="end()"
-        >
-          {{
-            practice.canManage
-              ? $t("pages.play.more_ways.practice.stop")
-              : $t("pages.play.more_ways.practice.leave")
-          }}
-        </Button>
-      </div>
-    </HeightSwap>
-
-    <StartPracticeDialog
-      v-if="mapName"
-      v-model:open="practiceOpen"
-      :map-name="mapName"
-    />
-  </article>
+      <StartPracticeDialog
+        v-if="mapName"
+        v-model:open="practiceOpen"
+        :map-name="mapName"
+      />
+    </template>
+  </PlayWayCard>
 </template>

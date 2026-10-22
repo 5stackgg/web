@@ -94,7 +94,7 @@ import { tournamentCardFields } from "~/graphql/tournamentCardFields";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import cleanMapName from "~/utilities/cleanMapName";
-import { countScrimTeamsToday } from "~/utilities/playMoreWays";
+import { scrimTeamsToday } from "~/utilities/playMoreWays";
 
 // Open for registration and the viewer isn't on a roster yet, shown with
 // the /watch tournament card.
@@ -145,7 +145,13 @@ const scrimPostingsQuery = generateQuery({
     {
       team_id: true,
       team: {
-        scrim_availability: { starts_at: true, recurring_weekly: true },
+        name: true,
+        avatar_url: true,
+        scrim_availability: {
+          starts_at: true,
+          ends_at: true,
+          recurring_weekly: true,
+        },
       },
     },
   ],
@@ -267,10 +273,8 @@ export default {
               team.roster?.some((member: any) => member.role === "Admin"),
           )
         : null;
-      return {
-        teamsToday: countScrimTeamsToday(this.scrimPostings, memberTeamIds),
-        managesTeam,
-      };
+      const teams = scrimTeamsToday(this.scrimPostings, memberTeamIds);
+      return { teamsToday: teams.length, teams, managesTeam };
     },
     serverTiles(): any[] {
       const regions = useApplicationSettingsStore().availableRegions;
@@ -282,6 +286,7 @@ export default {
           id: server.id,
           label: server.label,
           map: info?.map ? cleanMapName(info.map) : null,
+          mapName: info?.map || null,
           region:
             regions.find((region: any) => region.value === server.region)
               ?.description ??

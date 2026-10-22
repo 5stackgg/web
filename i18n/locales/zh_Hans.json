@@ -4426,7 +4426,7 @@
           "post": "发布空闲时间"
         },
         "drop_in": {
-          "playing": "人正在公共服务器上游戏 | 人正在公共服务器上游戏",
+          "playing_now": "{count} 人正在游戏",
           "all_servers": "全部服务器（{count}）",
           "players": "玩家",
           "connect": "连接",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "练习服务器",
+          "on_map": "在 {map} 上练习",
           "description": "专属于你的道具点位练习服务器 · 任意地图",
           "map": "地图",
           "start": "开始练习",
+          "start_short": "开始",
+          "start_on": "在 {map} 上开始",
           "sign_in": "登录后练习",
           "manage": "管理",
           "stop": "停止",
@@ -4563,23 +4566,21 @@
           "rank_high": "平均段位最高",
           "rank_low": "平均段位最低"
         },
-        "rehost": "重新创建上次",
         "host_bar": {
           "title": "创建房间",
-          "seats": "{count} 个位置",
+          "host_lan": "创建局域网房间",
           "draft": "选人方式",
           "access": "谁可以加入",
-          "open": "开启 {format} 房间",
+          "choices": "房间选项",
           "sign_in": "登录后创建",
           "back_to_room": "返回你的房间",
           "all_settings": "全部设置",
-          "rehost_detail": "{format} {mode}，{access}",
           "phrase": {
             "captains": "段位前 2 名担任队长，蛇形顺序",
             "host": "由你把玩家分到各队",
-            "pug": "房间满员后自动平衡队伍"
-          },
-          "open_lan": "开启 {format} 局域网房间"
+            "pug": "房间满员后自动平衡队伍",
+            "duel": "1v1 无人可选，因此自动分配"
+          }
         },
         "intro": {
           "title": "自己组一场比赛。",
@@ -4619,7 +4620,6 @@
         "join_party": "带小队加入（{count}）",
         "sign_in_to_join": "登录后加入",
         "reasons": {
-          "spots_left": "剩余 {count} 个空位 | 剩余 {count} 个空位",
           "no_room_for_party": "位置不够容纳你的小队",
           "host_approves": "需房主批准",
           "subs_waiting": "{count} 名替补等待中 | {count} 名替补等待中",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "选秀大厅",
     "leader_required": "只有队伍队长可以创建比赛。",
-    "rehost_hint": "使用相同设置重新创建您的大厅",
     "filters": {
       "any": "任何"
     },

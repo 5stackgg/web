@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlayDraftRooms from "~/components/play/PlayDraftRooms.vue";
+import PlayDraftHostBar from "~/components/play/PlayDraftHostBar.vue";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useAuthStore } from "~/stores/AuthStore";
 
@@ -55,7 +56,20 @@ function signIn() {
 }
 
 const button = (wrapper: any, text: string) =>
-  wrapper.findAll("button").find((b: any) => b.text().includes(text));
+  wrapper.findAll("button").find((b: any) => b.text().trim() === text);
+const choicesToggle = (wrapper: any) =>
+  wrapper.find('button[aria-label="Room choices"]');
+
+const quickHost = (type: string, mode: string, access: string) => ({
+  type,
+  mode,
+  access,
+  regions: expect.any(Array),
+  captain_selection: "TopEloTwo",
+  draft_order: "Snake",
+  require_approval: false,
+  keep_lobby_together: false,
+});
 
 const INTRO = "Run your own pick-up game.";
 
@@ -67,41 +81,96 @@ beforeEach(() => {
 });
 
 describe("PlayDraftRooms", () => {
-  it("keeps the host bar when no rooms are open, with the empty line under it", async () => {
+  it("keeps Host a room when no rooms are open, with the empty line under it", async () => {
     signIn();
     const { wrapper } = await mountRooms([]);
     expect(wrapper.text()).toContain("No open draft rooms right now.");
-    expect(button(wrapper, "Open 5v5 Room")).toBeDefined();
+    expect(button(wrapper, "Host a room")).toBeDefined();
     // No filters for an empty list.
     expect(wrapper.text()).not.toContain("Filters");
   });
 
-  it("hosts from the bar with matchmaking defaults", async () => {
+  it("hosts straight away with the remembered choices", async () => {
+    signIn();
+    localStorage.setItem(
+      "draft-games:rehost",
+      JSON.stringify({
+        mode: "Pug",
+        access: "Friends",
+        payload: { type: "Wingman" },
+      }),
+    );
+    const { wrapper, store } = await mountRooms([]);
+    const create = vi.spyOn(store, "create").mockResolvedValue(undefined);
+    // The choices stay folded away until asked for.
+    expect(wrapper.text()).not.toContain("Who can join");
+    await button(wrapper, "Host a room")!.trigger("click");
+    await flushPromises();
+    expect(create).toHaveBeenCalledWith(quickHost("Wingman", "Pug", "Friends"));
+  });
+
+  it("folds the choices open under the header and remembers a change", async () => {
     signIn();
     const { wrapper, store } = await mountRooms([]);
     const create = vi.spyOn(store, "create").mockResolvedValue(undefined);
+    const toggle = choicesToggle(wrapper);
+    expect(toggle.attributes("aria-expanded")).toBe("false");
+    await toggle.trigger("click");
+    expect(toggle.attributes("aria-expanded")).toBe("true");
+    expect(wrapper.text()).toContain("Who can join");
+
     await button(wrapper, "2v2")!.trigger("click");
     await button(wrapper, "Friends")!.trigger("click");
-    await button(wrapper, "Open 2v2 Room")!.trigger("click");
     await flushPromises();
-    expect(create).toHaveBeenCalledWith({
-      type: "Wingman",
+    expect(
+      JSON.parse(localStorage.getItem("draft-games:rehost") || "null"),
+    ).toMatchObject({
       mode: "Captains",
       access: "Friends",
-      regions: expect.any(Array),
-      captain_selection: "TopEloTwo",
-      draft_order: "Snake",
-      require_approval: false,
-      keep_lobby_together: false,
+      payload: { type: "Wingman" },
     });
+
+    await button(wrapper, "Host a room")!.trigger("click");
+    await flushPromises();
+    expect(create).toHaveBeenCalledWith(
+      quickHost("Wingman", "Captains", "Friends"),
+    );
   });
 
-  it("only offers auto-split for a duel", async () => {
+  it("forces auto-split for a duel", async () => {
     signIn();
     const { wrapper } = await mountRooms([]);
+    await choicesToggle(wrapper).trigger("click");
     await button(wrapper, "1v1")!.trigger("click");
-    expect(button(wrapper, "Captains draft")).toBeUndefined();
-    expect(button(wrapper, "Auto-split")).toBeDefined();
+    expect(button(wrapper, "Captains draft")!.attributes()).toHaveProperty(
+      "disabled",
+    );
+    expect(button(wrapper, "Auto-split")!.attributes("aria-pressed")).toBe(
+      "true",
+    );
+    expect(wrapper.text()).toContain(
+      "1v1 has nobody to draft, so it auto-splits",
+    );
+  });
+
+  it("asks a guest to sign in, with no choices to open", async () => {
+    useAuthStore().hasCheckedSession = true;
+    const { wrapper } = await mountRooms([]);
+    expect(button(wrapper, "Sign in to host")).toBeDefined();
+    expect(button(wrapper, "Host a room")).toBeUndefined();
+    expect(choicesToggle(wrapper).exists()).toBe(false);
+  });
+
+  it("locks hosting to the party leader", async () => {
+    signIn();
+    const wrapper = await mountSuspended(PlayDraftHostBar, {
+      props: { locked: true },
+    });
+    expect(wrapper.text()).toContain(
+      "Only the party leader can create a match.",
+    );
+    expect(button(wrapper, "Host a room")).toBeUndefined();
+    expect(choicesToggle(wrapper).exists()).toBe(false);
   });
 
   it("shows the intro until the player has hosted a room", async () => {

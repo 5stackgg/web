@@ -4426,7 +4426,7 @@
           "post": "Angiv ledige tider"
         },
         "drop_in": {
-          "playing": "spiller på offentlige servere | spiller på offentlige servere",
+          "playing_now": "{count} spiller nu",
           "all_servers": "Alle servere ({count})",
           "players": "spillere",
           "connect": "Forbind",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Træningsserver",
+          "on_map": "Træn på {map}",
           "description": "Din egen server til utility-opstillinger · valgfri map",
           "map": "Map",
           "start": "Start træning",
+          "start_short": "Start",
+          "start_on": "Start på {map}",
           "sign_in": "Log ind for at træne",
           "manage": "Administrer",
           "stop": "Stop",
@@ -4563,23 +4566,21 @@
           "rank_high": "Højeste gns. rank",
           "rank_low": "Laveste gns. rank"
         },
-        "rehost": "Genopret seneste",
         "host_bar": {
           "title": "Opret et rum",
-          "seats": "{count} pladser",
+          "host_lan": "Opret et LAN-rum",
           "draft": "Drafttype",
           "access": "Hvem kan deltage",
-          "open": "Åbn {format}-rum",
+          "choices": "Valg for rummet",
           "sign_in": "Log ind for at oprette",
           "back_to_room": "Tilbage til dit rum",
           "all_settings": "Alle indstillinger",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Top 2 efter rang bliver anførere, slangerækkefølge",
             "host": "Du sætter spillerne på holdene",
-            "pug": "Holdene balanceres automatisk, når rummet er fyldt"
-          },
-          "open_lan": "Åbn {format} LAN-rum"
+            "pug": "Holdene balanceres automatisk, når rummet er fyldt",
+            "duel": "I 1v1 er der ingen at vælge, så det opdeles automatisk"
+          }
         },
         "intro": {
           "title": "Kør dit eget pick-up-spil.",
@@ -4619,7 +4620,6 @@
         "join_party": "Deltag med gruppe ({count})",
         "sign_in_to_join": "Log ind for at deltage",
         "reasons": {
-          "spots_left": "{count} plads tilbage | {count} pladser tilbage",
           "no_room_for_party": "Ingen plads til din gruppe",
           "host_approves": "Værten godkender",
           "subs_waiting": "{count} reserve venter | {count} reserver venter",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Draft-lobby",
     "leader_required": "Kun partylederen kan oprette en kamp.",
-    "rehost_hint": "Genopret din seneste lobby med samme indstillinger",
     "filters": {
       "any": "Alle"
     },

@@ -22,7 +22,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import NodeMeter from "~/components/game-server-nodes/NodeMeter.vue";
-import { relativeTime } from "~/components/game-server-nodes/nodeFormat";
+import TimeAgo from "~/components/TimeAgo.vue";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 import { TONE_TEXT, type Tone } from "~/components/admin/tone";
 import {
@@ -87,10 +87,12 @@ const settledAt = computed(() => {
     return null;
   }
   const history = props.node.shader_bake_status_history;
-  if (!Array.isArray(history) || !history.length) {
-    return null;
-  }
-  return history[history.length - 1]?.at ?? null;
+  const last = Array.isArray(history) ? history.at(-1) : null;
+  // A bake that dies before reporting is marked errored without a history
+  // entry, so the last entry can belong to an earlier run.
+  return last?.status === props.node.shader_bake_status
+    ? (last.at ?? null)
+    : null;
 });
 
 const progress = computed(() => {
@@ -157,11 +159,12 @@ const cancel = () => actions.cancelBake(props.node.id);
           "
         />
         <b class="min-w-0 truncate font-semibold">{{ title }}</b>
-        <span
+        <TimeAgo
           v-if="settledAt"
+          :date="settledAt"
+          hide-icon
           class="whitespace-nowrap text-xs text-muted-foreground"
-          >{{ relativeTime(settledAt) }}</span
-        >
+        />
         <span class="grow"></span>
         <span
           v-if="state === 'baking' && progress != null"

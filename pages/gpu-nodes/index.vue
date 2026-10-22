@@ -884,8 +884,19 @@ export default {
     },
     openPanel(this: any, id: string, logs = false) {
       this.tierSwap = false;
-      this.logsOpen = logs;
+      this.logsOpen = false;
       this.selectedId = id;
+      // The log sheet mounts a frame after the panel: two dialogs mounting
+      // in one render each mark the other aria-hidden, and it sticks.
+      if (logs) {
+        this.$nextTick(() =>
+          requestAnimationFrame(() => {
+            if (this.selectedId === id) {
+              this.logsOpen = true;
+            }
+          }),
+        );
+      }
     },
     closePanel(this: any) {
       this.tierSwap = false;

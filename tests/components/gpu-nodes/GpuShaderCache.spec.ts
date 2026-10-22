@@ -85,6 +85,31 @@ describe("GpuShaderCache", () => {
     expect(wrapper.text()).toContain("Warm");
     expect(wrapper.text()).toContain("3 days ago");
     expect(button(wrapper, "Bake shaders")).toBeUndefined();
+
+    await wrapper
+      .get('button[aria-haspopup="menu"]')
+      .trigger("keydown", { key: "Enter" });
+    await flushPromises();
+    const rebake = Array.from(
+      document.body.querySelectorAll<HTMLElement>('[role="menuitem"]'),
+    ).find((item) => item.textContent?.trim() === "Bake shaders");
+    rebake!.click();
+    expect(bakeShaders).toHaveBeenCalledWith("gpu-1");
+  });
+
+  it("gives no time for a failure the history never recorded", async () => {
+    const wrapper = await mountCache({
+      shader_bake_status: "errored",
+      shader_bake_status_history: [
+        {
+          status: "done",
+          at: new Date(Date.now() - 3 * 86400_000).toISOString(),
+        },
+      ],
+    });
+
+    expect(wrapper.text()).toContain("Bake failed");
+    expect(wrapper.text()).not.toContain("days ago");
   });
 
   it("shows a running bake's progress and shader count", async () => {

@@ -89,6 +89,9 @@ describe("NodeRow menu", () => {
     const wrapper = await mountRow({
       gpu: true,
       enabled_for_match_making: false,
+      region: null,
+      start_port_range: null,
+      end_port_range: null,
     });
 
     const labels = (await openMenu(wrapper)).map((entry) =>

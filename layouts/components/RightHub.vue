@@ -567,7 +567,7 @@ const friendRequestCount = computed(() => pendingFriends.value?.length ?? 0);
 // Friends who came online since you last looked: bright rather than red --
 // worth a glance, not an answer. One arrival shows their face; more show the
 // online count in white.
-const { newlyOnline } = useFriendArrivals();
+const { newlyOnline, arrivals } = useFriendArrivals();
 const apiDomain = useRuntimeConfig().public.apiDomain as string;
 const arrivalFace = computed(() => {
   if (friendRequestCount.value > 0 || newlyOnline.value.length !== 1) {
@@ -584,14 +584,6 @@ const arrivalFace = computed(() => {
     initials: (friend.name ?? "?").slice(0, 2).toUpperCase(),
   };
 });
-// Rings the Friends badge once each time someone new arrives.
-const arrivalPulse = ref(0);
-watch(
-  () => newlyOnline.value.length,
-  (count, previous) => {
-    if (count > (previous ?? 0)) arrivalPulse.value += 1;
-  },
-);
 const friendsDetail = computed(() => {
   if (friendRequestCount.value > 0) {
     return t("layouts.hub.dock.friend_requests", {
@@ -856,7 +848,7 @@ function onHubTouchEnd(e: TouchEvent) {
           :preview="!isPinned"
           :unread="friendRequestCount > 0 || newlyOnline.length > 0"
           :face="arrivalFace"
-          :announce="arrivalPulse"
+          :announce="arrivals"
           :badge="
             friendRequestCount > 0
               ? formatBadgeCount(friendRequestCount)

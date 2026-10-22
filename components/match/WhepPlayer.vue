@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-import { Volume2, VolumeX, Maximize2, Minimize2, Lock } from "lucide-vue-next";
+import { Lock } from "lucide-vue-next";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
 import StreamStatusPanel from "~/components/match/StreamStatusPanel.vue";
+import StreamControls from "~/components/match/StreamControls.vue";
 import { Button } from "~/components/ui/button";
-import {
-  streamControlBarClasses,
-  streamControlButtonClasses,
-  streamControlIconClasses,
-} from "~/components/match/streamControlClasses";
 import {
   useWhepStatusCopy,
   type WhepPhase,
@@ -123,6 +119,17 @@ const hasPicture = computed(
   () => status.value === "playing" && !useFallback.value,
 );
 const containerRef = ref<HTMLDivElement | null>(null);
+// A host that holds the player muted, or draws its own mute (the camera
+// grid), gets no Tap to unmute.
+const sound = computed(() => {
+  if (!hasPicture.value) {
+    return null;
+  }
+  if (isMuted.value && (props.muted || props.disableShortcuts)) {
+    return null;
+  }
+  return isMuted.value;
+});
 
 watch(
   () => [props.volume, videoRef.value] as const,
@@ -163,14 +170,6 @@ type IosVideo = HTMLVideoElement & {
   webkitSetPresentationMode?: (mode: string) => void;
   webkitPresentationMode?: string;
 };
-
-const coarsePointer = ref(false);
-// Touch has no hover, so its controls stay up.
-const revealClasses = computed(() =>
-  coarsePointer.value
-    ? ""
-    : "opacity-0 group-hover:opacity-100 focus-within:opacity-100",
-);
 
 const isIphone =
   typeof navigator !== "undefined" && /iPhone|iPod/.test(navigator.userAgent);
@@ -922,10 +921,6 @@ onMounted(() => {
     window.addEventListener("keydown", onKeyDown);
   }
 
-  if (typeof window !== "undefined" && window.matchMedia) {
-    coarsePointer.value = window.matchMedia("(pointer: coarse)").matches;
-  }
-
   const video = videoRef.value as IosVideo | null;
   if (video) {
     // iPhone Safari fires webkitbegin/endfullscreen on the video
@@ -1036,83 +1031,21 @@ defineExpose({ connect, teardown });
       "
     />
 
-    <!-- One frosted bar at each bottom corner: fullscreen plus whatever the
-         host adds on the left, sound on the right. Browsers force WHEP
-         playback to start muted, so until the viewer unmutes, the right
-         corner is a solid Tap to unmute that never hides. No pointer-events
-         class on these: a click-through host turns them off on the root. -->
-    <template v-if="controls && !phase">
-      <div
-        v-if="hasPicture || $slots.controls"
-        class="stream-controls absolute bottom-[var(--stream-control-inset)] left-[var(--stream-control-inset)] z-10 transition-opacity duration-150"
-        :class="[
-          streamControlBarClasses,
-          revealClasses,
-          { 'is-touch': coarsePointer },
-        ]"
-      >
-        <button
-          v-if="hasPicture"
-          type="button"
-          :aria-label="
-            isFullscreen
-              ? $t('ui_extras.exit_fullscreen')
-              : $t('ui_extras.fullscreen')
-          "
-          :title="$t('replay_extras.fullscreen_key')"
-          :class="streamControlButtonClasses"
-          @click="toggleFullscreen"
-        >
-          <Minimize2 v-if="isFullscreen" :class="streamControlIconClasses" />
-          <Maximize2 v-else :class="streamControlIconClasses" />
-        </button>
+    <StreamControls
+      v-if="controls && !phase"
+      :fullscreen="hasPicture ? isFullscreen : null"
+      :muted="sound"
+      :volume="volume"
+      unmute-pill
+      fullscreen-shortcut
+      @toggle-fullscreen="toggleFullscreen"
+      @toggle-mute="toggleMute"
+      @update:volume="setVolume"
+    >
+      <template v-if="$slots.controls" #default>
         <slot name="controls" />
-      </div>
-
-      <button
-        v-if="hasPicture && isMuted && !muted && !disableShortcuts"
-        type="button"
-        :aria-label="$t('ui.unmute')"
-        class="stream-controls absolute bottom-[var(--stream-control-inset)] right-[var(--stream-control-inset)] z-10 inline-flex h-[var(--stream-control)] cursor-pointer items-center gap-2 rounded-[calc(var(--stream-control)/4)] bg-foreground pl-2.5 pr-3.5 text-[13px] font-semibold text-background shadow-[0_0_0_1px_rgb(0_0_0/0.3),0_8px_24px_-8px_rgb(0_0_0/0.7)] transition-colors duration-150 hover:bg-foreground/85"
-        :class="{ 'is-touch': coarsePointer }"
-        @click="toggleMute"
-      >
-        <VolumeX class="size-4" />
-        {{ $t("match.tap_to_unmute") }}
-      </button>
-
-      <div
-        v-else-if="hasPicture && !isMuted"
-        class="stream-controls absolute bottom-[var(--stream-control-inset)] right-[var(--stream-control-inset)] z-10 transition-opacity duration-150"
-        :class="[
-          streamControlBarClasses,
-          revealClasses,
-          { 'is-touch': coarsePointer },
-        ]"
-      >
-        <button
-          type="button"
-          :aria-label="$t('ui.mute')"
-          :class="streamControlButtonClasses"
-          @click="toggleMute"
-        >
-          <Volume2 :class="streamControlIconClasses" />
-        </button>
-        <!-- Phones set volume with their own keys; iOS ignores it anyway. -->
-        <input
-          v-if="!coarsePointer"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          :value="volume"
-          :aria-label="$t('ui.volume')"
-          class="vol-slider ml-0.5 mr-2.5 w-[var(--stream-control-slider)] cursor-pointer"
-          :style="{ '--stream-volume': `${volume * 100}%` }"
-          @input="setVolume(Number(($event.target as HTMLInputElement).value))"
-        />
-      </div>
-    </template>
+      </template>
+    </StreamControls>
     <!-- "Rendering clip" chip. Shown over the last-good frame while
          the pod has stopped its publisher to free the GPU for a
          render. We keep the <video> intact (no teardown) so users
@@ -1184,105 +1117,5 @@ video::-internal-media-controls-overlay-cast-button {
   appearance: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
-}
-
-/* Control sizes follow the player's width (the root is the container), so
-   the floating player and camera tiles get smaller ones than the page, and a
-   fullscreen player bigger ones. Only the width: a fullscreen deck must not
-   blow up the camera tiles inside it. A host's .stream-control-label text
-   drops out on small players, where it would run into the unmute pill. */
-.stream-controls {
-  --stream-control: 36px;
-  --stream-control-icon: 18px;
-  --stream-control-inset: 12px;
-  --stream-control-slider: 84px;
-}
-.stream-controls :deep(.stream-control-labelled) {
-  padding-inline: 10px 12px;
-}
-@container (min-width: 1280px) {
-  .stream-controls {
-    --stream-control: 40px;
-    --stream-control-icon: 20px;
-    --stream-control-inset: 16px;
-    --stream-control-slider: 96px;
-  }
-}
-@container (max-width: 559px) {
-  .stream-controls {
-    --stream-control: 28px;
-    --stream-control-icon: 14px;
-    --stream-control-inset: 8px;
-    --stream-control-slider: 56px;
-  }
-  .stream-controls :deep(.stream-control-labelled) {
-    padding-inline: 0;
-  }
-  .stream-controls :deep(.stream-control-label) {
-    display: none;
-  }
-}
-@container (max-width: 319px) {
-  .stream-controls {
-    --stream-control: 24px;
-    --stream-control-icon: 12px;
-    --stream-control-inset: 6px;
-    --stream-control-slider: 44px;
-  }
-}
-.stream-controls.is-touch {
-  --stream-control: 40px;
-  --stream-control-icon: 18px;
-}
-
-/* The track fills up to the thumb, so the level reads at a glance. */
-.vol-slider {
-  appearance: none;
-  height: 0.25rem;
-  background: transparent;
-}
-.vol-slider:focus {
-  outline: none;
-}
-.vol-slider::-webkit-slider-runnable-track {
-  height: 0.25rem;
-  background: linear-gradient(
-    to right,
-    white var(--stream-volume, 100%),
-    rgba(255, 255, 255, 0.25) var(--stream-volume, 100%)
-  );
-  border-radius: 9999px;
-}
-.vol-slider::-moz-range-track {
-  height: 0.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-}
-.vol-slider::-moz-range-progress {
-  height: 0.25rem;
-  background: white;
-  border-radius: 9999px;
-}
-.vol-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
-  margin-top: -0.25rem;
-}
-.vol-slider::-moz-range-thumb {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
-}
-.vol-slider:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.45);
-}
-.vol-slider:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.45);
 }
 </style>

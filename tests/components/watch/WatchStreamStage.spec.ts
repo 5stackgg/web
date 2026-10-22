@@ -204,6 +204,33 @@ describe("WatchStreamStage over the game stream", () => {
     expect(wrapper.find('input[type="range"]').exists()).toBe(false);
   });
 
+  it("draws the same controls as every other player", async () => {
+    const wrapper = await mountStage([liveMatch({ streams: [gameStreamer] })]);
+
+    expect(
+      wrapper.find('.stream-controls button[aria-label="Unmute"]').text(),
+    ).toBe("Tap to unmute");
+  });
+
+  it("keeps the status card's corner clear until the game stream has a picture", async () => {
+    const wrapper = await mountStage([liveMatch({ streams: [gameStreamer] })]);
+
+    wrapper.findComponent(".live-player").vm.$emit("phase", "failed");
+    await flushPromises();
+
+    expect(wrapper.find(".stream-controls").classes()).toContain(
+      "right-[var(--stream-control-inset)]",
+    );
+  });
+
+  it("moves its controls to the top right over an embed, clear of the embed's own bar", async () => {
+    const wrapper = await mountStage([liveMatch()]);
+
+    expect(wrapper.find(".stream-controls").classes()).toContain(
+      "top-[var(--stream-control-inset)]",
+    );
+  });
+
   it("keeps its chrome up over a third-party embed", async () => {
     const wrapper = await mountStage([liveMatch()]);
 

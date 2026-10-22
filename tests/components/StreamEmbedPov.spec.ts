@@ -316,10 +316,7 @@ describe("a POV stopped in one match", () => {
 
   it("stays stopped there and plays in the player's next match", async () => {
     const first = await mountEmbed([kappa]);
-    await first
-      .findAll("button")
-      .find((button: any) => button.text() === "Stop stream")!
-      .trigger("click");
+    await first.find("button[aria-label='Stop stream']").trigger("click");
     expect(first.text()).toContain("Stream stopped");
 
     const next = await remount([{ ...kappa, match_id: NEXT_MATCH }]);

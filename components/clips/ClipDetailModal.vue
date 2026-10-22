@@ -1018,7 +1018,10 @@ const edgeButton =
                   </div>
                 </template>
 
-                <template v-if="canExpand" #controls="{ buttonClass }">
+                <template
+                  v-if="canExpand"
+                  #controls="{ buttonClass, iconClass }"
+                >
                   <button
                     type="button"
                     :class="buttonClass"
@@ -1029,7 +1032,7 @@ const edgeButton =
                   >
                     <svg
                       viewBox="0 0 24 24"
-                      class="h-4 w-4"
+                      :class="iconClass"
                       fill="none"
                       stroke="currentColor"
                       stroke-width="2"
@@ -1043,7 +1046,7 @@ const edgeButton =
 
                 <template v-if="expanded" #bottom>
                   <div
-                    class="-m-4 -mb-6 grid gap-1.5 bg-[linear-gradient(180deg,rgb(0_0_0/0)_0%,rgb(0_0_0/0.55)_45%,rgb(0_0_0/0.88)_100%)] p-4 pb-6 pr-28 pt-20 sm:-m-5 sm:-mb-7 sm:p-5 sm:pb-7 sm:pr-28 sm:pt-24"
+                    class="-m-4 -mb-6 grid gap-1.5 bg-[linear-gradient(180deg,rgb(0_0_0/0)_0%,rgb(0_0_0/0.55)_45%,rgb(0_0_0/0.88)_100%)] p-4 pb-6 pr-[17rem] pt-20 sm:-m-5 sm:-mb-7 sm:p-5 sm:pb-7 sm:pr-[17rem] sm:pt-24"
                   >
                     <p
                       class="line-clamp-2 text-[clamp(1.375rem,2.3vw,2rem)] font-bold leading-[1.1] text-white [text-wrap:balance]"

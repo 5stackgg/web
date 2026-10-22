@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HeightGlide from "~/components/ui/transitions/HeightGlide.vue";
-import MobileTabSelect from "~/components/common/MobileTabSelect.vue";
+import PageTabsDock from "~/components/common/PageTabsDock.vue";
 import AwardComposer from "~/components/award/AwardComposer.vue";
 import TeamForm from "~/components/teams/TeamForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -175,20 +175,11 @@ const scrimNeedsCount = computed(
     </div>
   </PageTransition>
 
-  <PageTransition v-if="team" :delay="50">
-    <TeamResultsTicker
-      class="mt-8"
-      :team-id="team.id"
-      @all-matches="tab = 'matches'"
-    />
-  </PageTransition>
-
   <!-- Panels stay mounted after their first visit, so switching back is
        instant instead of refetching and re-skeletoning. -->
-  <Tabs v-if="team" v-model="tab" :unmount-on-hide="false" class="mt-8 w-full">
-    <MobileTabSelect v-model="tab" :items="tabItems(scrimNeedsCount)" />
-    <div class="overflow-x-auto max-md:hidden">
-      <TabsList variant="underline" class="h-auto flex-nowrap justify-start">
+  <Tabs v-if="team" v-model="tab" :unmount-on-hide="false" class="mt-6 w-full">
+    <PageTabsDock class="mb-5 md:mb-7">
+      <TabsList variant="track">
         <TabsTrigger value="overview">{{
           $t("team.tabs.overview")
         }}</TabsTrigger>
@@ -215,15 +206,24 @@ const scrimNeedsCount = computed(
           >
         </TabsTrigger>
       </TabsList>
-    </div>
-    <HeightGlide class="mt-6">
+    </PageTabsDock>
+    <HeightGlide class="mt-4 md:mt-6">
       <TabsContent value="overview" class="tab-panel-in mt-0">
-        <TeamOverview
+        <div
           v-if="visitedTabs.includes('overview')"
-          ref="overview"
-          :team="team"
-          :team-awards="teamAwards"
-        />
+          class="flex flex-col gap-8"
+        >
+          <TeamResultsTicker
+            :team-id="team.id"
+            @all-matches="tab = 'matches'"
+          />
+          <TeamOverview
+            ref="overview"
+            :team="team"
+            :team-awards="teamAwards"
+            @all-highlights="tab = 'highlights'"
+          />
+        </div>
       </TabsContent>
 
       <TabsContent value="matches" class="tab-panel-in mt-0">
@@ -752,28 +752,6 @@ export default {
     },
   },
   methods: {
-    tabItems(scrimCount: number): Array<{ value: string; label: string }> {
-      return [
-        { value: "overview", label: this.$t("team.tabs.overview") },
-        { value: "matches", label: this.$t("team.pulse.tabs.matches") },
-        { value: "stats", label: this.$t("team.tabs.stats") },
-        { value: "veto", label: this.$t("common.map_veto") },
-        ...(this.canSeeUtility
-          ? [{ value: "utility", label: this.$t("match.tabs.utility") }]
-          : []),
-        { value: "highlights", label: this.$t("team.tabs.highlights") },
-        ...(this.showScrimTab
-          ? [
-              {
-                value: "scrim",
-                label: scrimCount
-                  ? `${this.$t("team.tabs.scrim")} (${scrimCount})`
-                  : this.$t("team.tabs.scrim"),
-              },
-            ]
-          : []),
-      ];
-    },
     // The overview's roster carries the invite. Switching tabs runs an
     // out-in transition, so the roster opens once the overview has entered.
     // The inbox's "Invite player": land on Overview with the roster open. The

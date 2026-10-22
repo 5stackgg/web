@@ -22,18 +22,6 @@ const props = defineProps<{
   steamId: string | number;
 }>();
 
-// Fires once the first subscription response comes back (with clips or
-// empty). Lets the page hold downstream sections until the highlights
-// area has decided whether it's going to occupy space or not, so the
-// rest of the page doesn't render then shift down when clips arrive.
-const emit = defineEmits<{ (e: "resolved"): void }>();
-let hasResolved = false;
-function markResolved() {
-  if (hasResolved) return;
-  hasResolved = true;
-  emit("resolved");
-}
-
 const PAGE_SIZE = 20;
 // "See all" only renders once the player has hit this many clips —
 // avoids a redundant link when the entire highlight set already fits
@@ -78,13 +66,11 @@ function subscribe() {
         clips.value = next;
         loading.value = false;
         inFlight.value = false;
-        markResolved();
       },
       error: (err: any) => {
         console.error("[player-highlights] subscription error:", err);
         loading.value = false;
         inFlight.value = false;
-        markResolved();
       },
     },
   );

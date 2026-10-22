@@ -8,6 +8,7 @@ defineProps<{
   team: any;
   teamAwards: any[];
 }>();
+const emit = defineEmits<{ (e: "all-highlights"): void }>();
 
 const startingFive = ref<InstanceType<typeof TeamStartingFive> | null>(null);
 // A side column taller than the screen can't stick, so the full roster
@@ -25,11 +26,16 @@ defineExpose({ showFullRoster });
   <div
     class="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-10"
   >
-    <TeamActivityFeed class="min-w-0" :team="team" :team-awards="teamAwards" />
+    <TeamActivityFeed
+      class="min-w-0"
+      :team="team"
+      :team-awards="teamAwards"
+      @all-highlights="emit('all-highlights')"
+    />
 
     <div
       class="grid min-w-0 gap-8"
-      :class="{ 'lg:sticky lg:top-6': !rosterExpanded }"
+      :class="{ 'lg:sticky lg:top-[5.5rem]': !rosterExpanded }"
     >
       <TeamStartingFive
         ref="startingFive"

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ChevronDown, Check, Lock } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 import { Skeleton } from "~/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
@@ -66,6 +67,44 @@ function setTab(value: Tab) {
   void router.replace({ query });
 }
 
+// Sections stay mounted after their first visit, so switching back is
+// instant instead of refetching and re-skeletoning.
+const visited = ref<Tab[]>([]);
+watch(
+  tab,
+  (value) => {
+    if (!visited.value.includes(value)) visited.value.push(value);
+  },
+  { immediate: true },
+);
+
+// A section's first frame can take longer than a CSS fade (the listing lays
+// out its whole week), which would eat the fade. The section stays hidden
+// through that frame and fades in on the next one.
+const panels = ref<HTMLElement | null>(null);
+watch(tab, async () => {
+  await nextTick();
+  const panel = panels.value?.querySelector<HTMLElement>(
+    '[role="tabpanel"][data-state="active"]',
+  );
+  if (!panel || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+  panel.style.opacity = "0";
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      panel.style.opacity = "";
+      panel.animate(
+        [
+          { opacity: 0, transform: "translateY(6px)" },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: 220, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+      );
+    }),
+  );
+});
+
 const needsYou = computed(
   () => requests.value.filter((request) => activeTeam.value && awaitingTeam(request, activeTeam.value.id)).length,
 );
@@ -101,23 +140,25 @@ const teamSwitchOpen = ref(false);
     :description="$t('pages.scrims.disabled_message')"
   />
 
-  <div v-else class="space-y-4">
+  <Tabs
+    v-else
+    :model-value="tab"
+    :unmount-on-hide="false"
+    class="space-y-4"
+    @update:model-value="(value) => setTab(value as Tab)"
+  >
     <PageTransition v-if="activeTeam" class="block">
       <div class="flex flex-col-reverse gap-x-4 gap-y-2 border-b border-border sm:flex-row sm:items-end">
-        <div class="flex flex-1 gap-5 overflow-x-auto" role="tablist" :aria-label="$t('pages.scrims.title')">
-          <button
+        <TabsList
+          variant="underline"
+          class="flex-1 justify-start gap-5 overflow-x-auto"
+          :aria-label="$t('pages.scrims.title')"
+        >
+          <TabsTrigger
             v-for="item in TABS"
             :key="item"
-            type="button"
-            role="tab"
-            :aria-selected="tab === item"
-            class="inline-flex items-center gap-2 whitespace-nowrap py-2.5 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.5)]"
-            :class="
-              tab === item
-                ? 'text-foreground shadow-[inset_0_-2px_0_hsl(var(--tac-amber))]'
-                : 'text-muted-foreground [@media(hover:hover)]:hover:text-foreground'
-            "
-            @click="setTab(item)"
+            :value="item"
+            class="gap-2 py-2.5"
           >
             {{ $t(`scrims.tabs.${item}`) }}
             <span
@@ -132,8 +173,8 @@ const teamSwitchOpen = ref(false);
             >
               {{ $t("scrims.listing.closed") }}
             </span>
-          </button>
-        </div>
+          </TabsTrigger>
+        </TabsList>
         <div class="flex items-center gap-2 pb-2 sm:pb-1.5">
           <Popover v-if="teams.length > 1" v-model:open="teamSwitchOpen">
             <PopoverTrigger as-child>
@@ -193,20 +234,22 @@ const teamSwitchOpen = ref(false);
     </div>
 
     <PageTransition :delay="100" class="block">
-      <FadeSwap>
-        <ScrimRequests
-          v-if="tab === 'requests' && activeTeam"
-          key="requests"
-          :team="activeTeam"
-          @open="openOpponent"
-        />
-        <ScrimListing
-          v-else-if="tab === 'listing' && activeTeam"
-          key="listing"
-          :team="activeTeam"
-          preview
-        />
-        <div v-else key="board" class="space-y-4">
+      <div ref="panels">
+        <TabsContent value="requests" class="mt-0">
+          <ScrimRequests
+            v-if="activeTeam && visited.includes('requests')"
+            :team="activeTeam"
+            @open="openOpponent"
+          />
+        </TabsContent>
+        <TabsContent value="listing" class="mt-0">
+          <ScrimListing
+            v-if="activeTeam && visited.includes('listing')"
+            :team="activeTeam"
+            preview
+          />
+        </TabsContent>
+        <TabsContent value="board" class="mt-0 space-y-4">
           <div
             v-if="!activeTeam"
             class="flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/40 px-4 py-3 text-sm"
@@ -242,8 +285,8 @@ const teamSwitchOpen = ref(false);
               />
             </FadeSwap>
           </DeferredLoading>
-        </div>
-      </FadeSwap>
+        </TabsContent>
+      </div>
     </PageTransition>
 
     <ScrimTeamSheet
@@ -252,5 +295,5 @@ const teamSwitchOpen = ref(false);
       :at="sheetAt"
       @edit-listing="setTab('listing')"
     />
-  </div>
+  </Tabs>
 </template>

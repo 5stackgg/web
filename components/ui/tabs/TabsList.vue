@@ -3,10 +3,9 @@ import type { TabsListProps } from "reka-ui"
 import type { ComponentPublicInstance, HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { TabsList } from "reka-ui"
-import { computed, nextTick, onMounted, onUnmounted, ref } from "vue"
+import { computed, nextTick, onMounted, onUnmounted, provide, ref, toRef } from "vue"
 import { cn } from "@/lib/utils"
-
-type TabsListVariant = "default" | "underline"
+import { type TabsListVariant, tabsListVariantKey } from "."
 
 const props = withDefaults(
   defineProps<
@@ -19,6 +18,7 @@ const props = withDefaults(
 )
 
 const delegatedProps = reactiveOmit(props, "class", "variant")
+provide(tabsListVariantKey, toRef(props, "variant"))
 const listRef = ref<ComponentPublicInstance | HTMLElement | null>(null)
 const indicatorX = ref(0)
 const indicatorY = ref(0)
@@ -60,8 +60,12 @@ function updateIndicator() {
   // Track the active trigger's full box, not just its horizontal span: a
   // wrapping list (e.g. the stage builder) puts triggers on several rows, and a
   // top-to-bottom indicator would highlight the whole column instead of one tab.
-  indicatorX.value = activeRect.left - listRect.left
-  indicatorY.value = activeRect.top - listRect.top
+  // The indicator is placed inside the list's padding box, so a bordered list
+  // (track) takes its border off.
+  indicatorX.value =
+    activeRect.left - listRect.left - listElement.clientLeft + listElement.scrollLeft
+  indicatorY.value =
+    activeRect.top - listRect.top - listElement.clientTop + listElement.scrollTop
   indicatorWidth.value = activeRect.width
   indicatorHeight.value = activeRect.height
 
@@ -78,6 +82,7 @@ function updateIndicator() {
 }
 
 let observer: MutationObserver | null = null
+let resizeObserver: ResizeObserver | null = null
 
 function clearRetry() {
   if (retryTimer) {
@@ -114,6 +119,12 @@ onMounted(() => {
       subtree: true,
       attributeFilter: ["data-state"],
     })
+    // Triggers that share the list's width move when the list resizes without
+    // the window doing so (a sidebar opening, a row wrapping).
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(updateIndicator)
+      resizeObserver.observe(listElement)
+    }
 
     // Some tabs initialize active state after the first paint.
     // Re-run on subsequent frames so the indicator appears immediately.
@@ -128,6 +139,7 @@ onMounted(() => {
 onUnmounted(() => {
   clearRetry()
   observer?.disconnect()
+  resizeObserver?.disconnect()
   window.removeEventListener("resize", updateIndicator)
 })
 
@@ -142,6 +154,7 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
       'relative inline-flex items-center justify-center text-muted-foreground',
       props.variant === 'default' && 'rounded-lg bg-muted p-1',
       props.variant === 'underline' && 'gap-1 bg-transparent p-0',
+      props.variant === 'track' && 'grid w-full grid-cols-4 gap-0.5 rounded-lg border border-border bg-muted/30 p-1 md:flex md:flex-wrap',
       props.class,
     )"
   >
@@ -149,6 +162,21 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
       v-if="props.variant === 'default'"
       v-show="showIndicator"
       class="pointer-events-none absolute left-0 top-0 z-0 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] shadow-[0_0_12px_hsl(var(--tac-amber)/0.25)]"
+      :class="
+        hasAnimated
+          ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease,height_0.2s_ease]'
+          : ''
+      "
+      :style="{
+        transform: `translate(${indicatorX}px, ${indicatorY}px)`,
+        width: `${indicatorWidth}px`,
+        height: `${indicatorHeight}px`,
+      }"
+    />
+    <div
+      v-if="props.variant === 'track'"
+      v-show="showIndicator"
+      class="pointer-events-none absolute left-0 top-0 z-0 rounded-md bg-[hsl(var(--tac-amber)/0.12)] ring-1 ring-inset ring-[hsl(var(--tac-amber)/0.4)]"
       :class="
         hasAnimated
           ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease,height_0.2s_ease]'

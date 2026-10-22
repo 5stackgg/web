@@ -6872,6 +6872,19 @@
         "technical": "技术细节",
         "mark_bad": "标记为不好"
       },
+      "practice_servers": {
+        "title": "运行中的练习服务器",
+        "empty": "没有运行中的练习服务器。",
+        "failed": "无法加载运行中的练习服务器。",
+        "ready": "就绪",
+        "players": "已连接 {connected}/{max} 名玩家",
+        "stop": "停止",
+        "stop_ask": "要停止 {host} 的服务器吗？",
+        "stop_ask_unnamed": "要停止此服务器吗？",
+        "stop_drops": "上面没有人。 | 上面的玩家将被断开连接。 | 上面的 {count} 名玩家将被断开连接。",
+        "stale": "实时更新已停止",
+        "stale_note": "此列表可能已过时。"
+      },
       "practice": {
         "title": "练习服务器",
         "description": "在这张地图上开一台服务器，自己把点位走一遍。",

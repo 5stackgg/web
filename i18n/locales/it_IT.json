@@ -6872,6 +6872,19 @@
         "technical": "Dettagli tecnici",
         "mark_bad": "Segna come scadente"
       },
+      "practice_servers": {
+        "title": "Server di allenamento attivi",
+        "empty": "Nessun server di allenamento attivo.",
+        "failed": "Impossibile caricare i server di allenamento attivi.",
+        "ready": "Pronto",
+        "players": "{connected} giocatori connessi su {max}",
+        "stop": "Ferma",
+        "stop_ask": "Fermare il server di {host}?",
+        "stop_ask_unnamed": "Fermare questo server?",
+        "stop_drops": "Non c'è nessuno. | Il giocatore presente verrà disconnesso. | I {count} giocatori presenti verranno disconnessi.",
+        "stale": "Aggiornamenti in tempo reale interrotti",
+        "stale_note": "Questo elenco potrebbe non essere aggiornato."
+      },
       "practice": {
         "title": "Server di allenamento",
         "description": "Avvia un server su questa mappa e prova il lineup di persona.",

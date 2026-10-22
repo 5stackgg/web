@@ -6872,6 +6872,19 @@
         "technical": "Detalles técnicos",
         "mark_bad": "Marcar como malo"
       },
+      "practice_servers": {
+        "title": "Servidores de práctica activos",
+        "empty": "No hay servidores de práctica activos.",
+        "failed": "No se pudieron cargar los servidores de práctica activos.",
+        "ready": "Listo",
+        "players": "{connected} de {max} jugadores conectados",
+        "stop": "Detener",
+        "stop_ask": "¿Detener el servidor de {host}?",
+        "stop_ask_unnamed": "¿Detener este servidor?",
+        "stop_drops": "No hay nadie en él. | El jugador que está en él será desconectado. | Los {count} jugadores que están en él serán desconectados.",
+        "stale": "Las actualizaciones en vivo se detuvieron",
+        "stale_note": "Esta lista puede estar desactualizada."
+      },
       "practice": {
         "title": "Servidor de práctica",
         "description": "Levanta un servidor en este mapa y ensaya tú mismo el lineup.",

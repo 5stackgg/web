@@ -6872,6 +6872,19 @@
         "technical": "Tekniske detaljer",
         "mark_bad": "Markér som dårlig"
       },
+      "practice_servers": {
+        "title": "Kørende træningsservere",
+        "empty": "Ingen træningsservere kører.",
+        "failed": "Kunne ikke indlæse de kørende træningsservere.",
+        "ready": "Klar",
+        "players": "{connected} af {max} spillere forbundet",
+        "stop": "Stop",
+        "stop_ask": "Stop serveren, som {host} har startet?",
+        "stop_ask_unnamed": "Stop denne server?",
+        "stop_drops": "Ingen er på den. | Spilleren på den bliver smidt af. | De {count} spillere på den bliver smidt af.",
+        "stale": "Liveopdateringer er stoppet",
+        "stale_note": "Listen er måske ikke opdateret."
+      },
       "practice": {
         "title": "Træningsserver",
         "description": "Start en server på denne bane, og gå selv opstillingen igennem.",

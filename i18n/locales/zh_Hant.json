@@ -6872,6 +6872,19 @@
         "technical": "技術細節",
         "mark_bad": "標記為不好"
       },
+      "practice_servers": {
+        "title": "運行中的練習伺服器",
+        "empty": "沒有運行中的練習伺服器。",
+        "failed": "無法載入運行中的練習伺服器。",
+        "ready": "就緒",
+        "players": "已連線 {connected}/{max} 名玩家",
+        "stop": "停止",
+        "stop_ask": "要停止 {host} 的伺服器嗎？",
+        "stop_ask_unnamed": "要停止此伺服器嗎？",
+        "stop_drops": "上面沒有人。 | 上面的玩家將被中斷連線。 | 上面的 {count} 名玩家將被中斷連線。",
+        "stale": "即時更新已停止",
+        "stale_note": "此清單可能已過時。"
+      },
       "practice": {
         "title": "練習伺服器",
         "description": "在這張地圖上開一台伺服器，自己把點位走一遍。",

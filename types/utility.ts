@@ -421,6 +421,24 @@ export type UtilityPracticeSessionOutput = {
   invite_code?: string | null;
 };
 
+export type UtilityRunningPracticeSession = {
+  id: string;
+  host_steam_id: string | null;
+  host: {
+    steam_id: string;
+    name: string | null;
+    avatar_url: string | null;
+  } | null;
+  map_name: string;
+  region: string | null;
+  status: string;
+  map_changing_at: string | null;
+  created_at: string;
+  connected_players: number | null;
+  max_players: number | null;
+  can_stop: boolean | null;
+};
+
 /** What the practice UI consumes — no column names live past this point. */
 export type UtilityPracticeView = {
   connectionString: string | null;

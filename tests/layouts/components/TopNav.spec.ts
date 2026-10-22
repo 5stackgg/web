@@ -530,6 +530,9 @@ describe("TopNav back arrow", () => {
 
     open.value = true;
     await settle();
+    await vi.waitFor(() =>
+      expect(window.history.state.backLayer).toBe(true),
+    );
 
     expect(window.history.state.backLayer).toBe(true);
     expect(arrow(wrapper).exists()).toBe(false);
@@ -566,6 +569,9 @@ describe("TopNav back arrow", () => {
 
     open.value = true;
     await settle();
+    await vi.waitFor(() =>
+      expect(window.history.state.backLayer).toBe(true),
+    );
 
     expect(window.history.state.backLayer).toBe(true);
     expect(window.history.state.earlierPage).toMatchObject({ value: true });

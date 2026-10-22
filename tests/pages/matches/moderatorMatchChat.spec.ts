@@ -115,7 +115,7 @@ async function mountMatch(answer: Record<string, unknown> | null) {
     shallow: true,
     global: {
       mixins: (useNuxtApp().vueApp as any)._context.mixins,
-      stubs: { PageTransition: false },
+      stubs: { PageTransition: false, teleport: false },
     },
   });
   mounted = wrapper;

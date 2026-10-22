@@ -30170,6 +30170,9 @@ elo_changes_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["v_player_elo_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["v_player_elo_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["v_player_elo_aggregate"]],
+	elo_voided?:boolean | `@${string}`,
+	elo_voided_at?:boolean | `@${string}`,
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 event_links?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["event_match_links_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
@@ -30483,6 +30486,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** aggregate avg on columns */
 ["matches_avg_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -30492,6 +30496,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by avg() on columns of table "matches" */
 ["matches_avg_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
@@ -30524,6 +30529,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	effective_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	elo_changes?: ValueTypes["v_player_elo_bool_exp"] | undefined | null | Variable<any, string>,
 	elo_changes_aggregate?: ValueTypes["v_player_elo_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
+	elo_voided?: ValueTypes["Boolean_comparison_exp"] | undefined | null | Variable<any, string>,
+	elo_voided_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
+	elo_voided_by_steam_id?: ValueTypes["bigint_comparison_exp"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz_comparison_exp"] | undefined | null | Variable<any, string>,
 	event_links?: ValueTypes["event_match_links_bool_exp"] | undefined | null | Variable<any, string>,
 	event_links_aggregate?: ValueTypes["event_match_links_aggregate_bool_exp"] | undefined | null | Variable<any, string>,
@@ -30603,6 +30611,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 ["matches_constraint"]:matches_constraint;
 	/** input type for incrementing numeric columns in table "matches" */
 ["matches_inc_input"]: {
+	elo_voided_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>
 };
 	/** input type for inserting data into table "matches" */
@@ -30616,6 +30625,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_match_status?: ValueTypes["e_match_status_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	e_region?: ValueTypes["server_regions_obj_rel_insert_input"] | undefined | null | Variable<any, string>,
 	elo_changes?: ValueTypes["v_player_elo_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
+	elo_voided?: boolean | undefined | null | Variable<any, string>,
+	elo_voided_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	elo_voided_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	event_links?: ValueTypes["event_match_links_arr_rel_insert_input"] | undefined | null | Variable<any, string>,
 	external_id?: string | undefined | null | Variable<any, string>,
@@ -30667,6 +30679,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
 	effective_at?:boolean | `@${string}`,
+	elo_voided_at?:boolean | `@${string}`,
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	external_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -30712,6 +30726,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	cancels_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	effective_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	elo_voided_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	external_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -30742,6 +30758,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
 	effective_at?:boolean | `@${string}`,
+	elo_voided_at?:boolean | `@${string}`,
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	external_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -30787,6 +30805,8 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	cancels_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	effective_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	elo_voided_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	external_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -30849,6 +30869,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	e_region?: ValueTypes["server_regions_order_by"] | undefined | null | Variable<any, string>,
 	effective_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	elo_changes_aggregate?: ValueTypes["v_player_elo_aggregate_order_by"] | undefined | null | Variable<any, string>,
+	elo_voided?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	elo_voided_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	event_links_aggregate?: ValueTypes["event_match_links_aggregate_order_by"] | undefined | null | Variable<any, string>,
 	external_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
@@ -30925,6 +30948,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	cancels_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	counts_toward_ranking?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	elo_voided?: boolean | undefined | null | Variable<any, string>,
+	elo_voided_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	elo_voided_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	external_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -30947,6 +30973,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -30956,10 +30983,12 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by stddev() on columns of table "matches" */
 ["matches_stddev_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_pop on columns */
 ["matches_stddev_pop_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -30969,10 +30998,12 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by stddev_pop() on columns of table "matches" */
 ["matches_stddev_pop_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate stddev_samp on columns */
 ["matches_stddev_samp_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -30982,6 +31013,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by stddev_samp() on columns of table "matches" */
 ["matches_stddev_samp_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** Streaming cursor of the table "matches" */
@@ -30997,6 +31029,9 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 	counts_toward_ranking?: boolean | undefined | null | Variable<any, string>,
 	created_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	effective_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	elo_voided?: boolean | undefined | null | Variable<any, string>,
+	elo_voided_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
+	elo_voided_by_steam_id?: ValueTypes["bigint"] | undefined | null | Variable<any, string>,
 	ended_at?: ValueTypes["timestamptz"] | undefined | null | Variable<any, string>,
 	external_id?: string | undefined | null | Variable<any, string>,
 	id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,
@@ -31019,6 +31054,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -31028,6 +31064,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by sum() on columns of table "matches" */
 ["matches_sum_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** update columns of table "matches" */
@@ -31042,6 +31079,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 };
 	/** aggregate var_pop on columns */
 ["matches_var_pop_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -31051,10 +31089,12 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by var_pop() on columns of table "matches" */
 ["matches_var_pop_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate var_samp on columns */
 ["matches_var_samp_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -31064,10 +31104,12 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by var_samp() on columns of table "matches" */
 ["matches_var_samp_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** aggregate variance on columns */
 ["matches_variance_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -31077,6 +31119,7 @@ count?: [{	columns?: Array<ValueTypes["matches_select_column"]> | undefined | nu
 }>;
 	/** order by variance() on columns of table "matches" */
 ["matches_variance_order_by"]: {
+	elo_voided_by_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>,
 	organizer_steam_id?: ValueTypes["order_by"] | undefined | null | Variable<any, string>
 };
 	/** columns and relationships of "migration_hashes.hashes" */
@@ -33433,6 +33476,7 @@ restart_league_season?: [{	/** input parameters for function "restart_league_sea
 	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
 	order_by?: Array<ValueTypes["league_seasons_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["league_seasons_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["league_seasons"]],
+restoreMatchElo?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 restoreMatchRound?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>,	round: number | Variable<any, string>},ValueTypes["SuccessOutput"]],
 resumeClipRenderBatch?: [{	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 retryClipRenderBatch?: [{	match_map_id: ValueTypes["uuid"] | Variable<any, string>,	only_failed?: boolean | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
@@ -35695,6 +35739,7 @@ update_v_team_stage_results_by_pk?: [{	/** increments the numeric columns with g
 update_v_team_stage_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ValueTypes["v_team_stage_results_updates"]> | Variable<any, string>},ValueTypes["v_team_stage_results_mutation_response"]],
 validateGamedata?: [{	game_server_node_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
+voidMatchElo?: [{	match_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["SuccessOutput"]],
 watchDemo?: [{	match_map_demo_id?: ValueTypes["uuid"] | undefined | null | Variable<any, string>,	match_map_id: ValueTypes["uuid"] | Variable<any, string>},ValueTypes["WatchDemoOutput"]],
 writeServerFile?: [{	content: string | Variable<any, string>,	file_path: string | Variable<any, string>,	node_id: string | Variable<any, string>,	server_id?: string | undefined | null | Variable<any, string>},ValueTypes["SuccessOutput"]],
 		__typename?: boolean | `@${string}`
@@ -123941,6 +123986,9 @@ elo_changes_aggregate?: [{	/** distinct select on columns */
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["v_player_elo_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["v_player_elo_bool_exp"] | undefined | null},ResolverInputTypes["v_player_elo_aggregate"]],
+	elo_voided?:boolean | `@${string}`,
+	elo_voided_at?:boolean | `@${string}`,
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 event_links?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["event_match_links_select_column"]> | undefined | null,	/** limit the number of rows returned */
@@ -124254,6 +124302,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** aggregate avg on columns */
 ["matches_avg_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124263,6 +124312,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by avg() on columns of table "matches" */
 ["matches_avg_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
@@ -124295,6 +124345,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	effective_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	elo_changes?: ResolverInputTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_changes_aggregate?: ResolverInputTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
+	elo_voided?: ResolverInputTypes["Boolean_comparison_exp"] | undefined | null,
+	elo_voided_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
+	elo_voided_by_steam_id?: ResolverInputTypes["bigint_comparison_exp"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz_comparison_exp"] | undefined | null,
 	event_links?: ResolverInputTypes["event_match_links_bool_exp"] | undefined | null,
 	event_links_aggregate?: ResolverInputTypes["event_match_links_aggregate_bool_exp"] | undefined | null,
@@ -124374,6 +124427,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 ["matches_constraint"]:matches_constraint;
 	/** input type for incrementing numeric columns in table "matches" */
 ["matches_inc_input"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "matches" */
@@ -124387,6 +124441,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_match_status?: ResolverInputTypes["e_match_status_obj_rel_insert_input"] | undefined | null,
 	e_region?: ResolverInputTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	elo_changes?: ResolverInputTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	event_links?: ResolverInputTypes["event_match_links_arr_rel_insert_input"] | undefined | null,
 	external_id?: string | undefined | null,
@@ -124438,6 +124495,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
 	effective_at?:boolean | `@${string}`,
+	elo_voided_at?:boolean | `@${string}`,
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	external_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -124483,6 +124542,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	cancels_at?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	effective_at?: ResolverInputTypes["order_by"] | undefined | null,
+	elo_voided_at?: ResolverInputTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
 	external_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -124513,6 +124574,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?:boolean | `@${string}`,
 	effective_at?:boolean | `@${string}`,
+	elo_voided_at?:boolean | `@${string}`,
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	ended_at?:boolean | `@${string}`,
 	external_id?:boolean | `@${string}`,
 	id?:boolean | `@${string}`,
@@ -124558,6 +124621,8 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	cancels_at?: ResolverInputTypes["order_by"] | undefined | null,
 	created_at?: ResolverInputTypes["order_by"] | undefined | null,
 	effective_at?: ResolverInputTypes["order_by"] | undefined | null,
+	elo_voided_at?: ResolverInputTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
 	external_id?: ResolverInputTypes["order_by"] | undefined | null,
 	id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -124620,6 +124685,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	e_region?: ResolverInputTypes["server_regions_order_by"] | undefined | null,
 	effective_at?: ResolverInputTypes["order_by"] | undefined | null,
 	elo_changes_aggregate?: ResolverInputTypes["v_player_elo_aggregate_order_by"] | undefined | null,
+	elo_voided?: ResolverInputTypes["order_by"] | undefined | null,
+	elo_voided_at?: ResolverInputTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	ended_at?: ResolverInputTypes["order_by"] | undefined | null,
 	event_links_aggregate?: ResolverInputTypes["event_match_links_aggregate_order_by"] | undefined | null,
 	external_id?: ResolverInputTypes["order_by"] | undefined | null,
@@ -124696,6 +124764,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	cancels_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	counts_toward_ranking?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -124718,6 +124789,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124727,10 +124799,12 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by stddev() on columns of table "matches" */
 ["matches_stddev_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["matches_stddev_pop_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124740,10 +124814,12 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by stddev_pop() on columns of table "matches" */
 ["matches_stddev_pop_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["matches_stddev_samp_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124753,6 +124829,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by stddev_samp() on columns of table "matches" */
 ["matches_stddev_samp_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "matches" */
@@ -124768,6 +124845,9 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 	counts_toward_ranking?: boolean | undefined | null,
 	created_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	effective_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: ResolverInputTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ResolverInputTypes["bigint"] | undefined | null,
 	ended_at?: ResolverInputTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ResolverInputTypes["uuid"] | undefined | null,
@@ -124790,6 +124870,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124799,6 +124880,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by sum() on columns of table "matches" */
 ["matches_sum_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** update columns of table "matches" */
@@ -124813,6 +124895,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 };
 	/** aggregate var_pop on columns */
 ["matches_var_pop_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124822,10 +124905,12 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by var_pop() on columns of table "matches" */
 ["matches_var_pop_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["matches_var_samp_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124835,10 +124920,12 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by var_samp() on columns of table "matches" */
 ["matches_var_samp_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** aggregate variance on columns */
 ["matches_variance_fields"]: AliasType<{
+	elo_voided_by_steam_id?:boolean | `@${string}`,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?:boolean | `@${string}`,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -124848,6 +124935,7 @@ count?: [{	columns?: Array<ResolverInputTypes["matches_select_column"]> | undefi
 }>;
 	/** order by variance() on columns of table "matches" */
 ["matches_variance_order_by"]: {
+	elo_voided_by_steam_id?: ResolverInputTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ResolverInputTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "migration_hashes.hashes" */
@@ -127204,6 +127292,7 @@ restart_league_season?: [{	/** input parameters for function "restart_league_sea
 	offset?: number | undefined | null,	/** sort the rows by one or more columns */
 	order_by?: Array<ResolverInputTypes["league_seasons_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["league_seasons_bool_exp"] | undefined | null},ResolverInputTypes["league_seasons"]],
+restoreMatchElo?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 restoreMatchRound?: [{	match_id: ResolverInputTypes["uuid"],	round: number},ResolverInputTypes["SuccessOutput"]],
 resumeClipRenderBatch?: [{	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 retryClipRenderBatch?: [{	match_map_id: ResolverInputTypes["uuid"],	only_failed?: boolean | undefined | null},ResolverInputTypes["SuccessOutput"]],
@@ -129466,6 +129555,7 @@ update_v_team_stage_results_by_pk?: [{	/** increments the numeric columns with g
 update_v_team_stage_results_many?: [{	/** updates to execute, in order */
 	updates: Array<ResolverInputTypes["v_team_stage_results_updates"]>},ResolverInputTypes["v_team_stage_results_mutation_response"]],
 validateGamedata?: [{	game_server_node_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
+voidMatchElo?: [{	match_id: ResolverInputTypes["uuid"]},ResolverInputTypes["SuccessOutput"]],
 watchDemo?: [{	match_map_demo_id?: ResolverInputTypes["uuid"] | undefined | null,	match_map_id: ResolverInputTypes["uuid"]},ResolverInputTypes["WatchDemoOutput"]],
 writeServerFile?: [{	content: string,	file_path: string,	node_id: string,	server_id?: string | undefined | null},ResolverInputTypes["SuccessOutput"]],
 		__typename?: boolean | `@${string}`
@@ -215242,6 +215332,9 @@ export type ModelTypes = {
 	elo_changes: Array<ModelTypes["v_player_elo"]>,
 	/** An aggregate relationship */
 	elo_changes_aggregate: ModelTypes["v_player_elo_aggregate"],
+	elo_voided: boolean,
+	elo_voided_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
 	/** An array relationship */
 	event_links: Array<ModelTypes["event_match_links"]>,
@@ -215436,7 +215529,8 @@ export type ModelTypes = {
 };
 	/** aggregate avg on columns */
 ["matches_avg_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: number | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -215444,6 +215538,7 @@ export type ModelTypes = {
 };
 	/** order by avg() on columns of table "matches" */
 ["matches_avg_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
@@ -215476,6 +215571,9 @@ export type ModelTypes = {
 	effective_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	elo_changes?: ModelTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_changes_aggregate?: ModelTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
+	elo_voided?: ModelTypes["Boolean_comparison_exp"] | undefined | null,
+	elo_voided_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["bigint_comparison_exp"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz_comparison_exp"] | undefined | null,
 	event_links?: ModelTypes["event_match_links_bool_exp"] | undefined | null,
 	event_links_aggregate?: ModelTypes["event_match_links_aggregate_bool_exp"] | undefined | null,
@@ -215554,6 +215652,7 @@ export type ModelTypes = {
 	["matches_constraint"]:matches_constraint;
 	/** input type for incrementing numeric columns in table "matches" */
 ["matches_inc_input"]: {
+	elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	organizer_steam_id?: ModelTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "matches" */
@@ -215567,6 +215666,9 @@ export type ModelTypes = {
 	e_match_status?: ModelTypes["e_match_status_obj_rel_insert_input"] | undefined | null,
 	e_region?: ModelTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	elo_changes?: ModelTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
 	event_links?: ModelTypes["event_match_links_arr_rel_insert_input"] | undefined | null,
 	external_id?: string | undefined | null,
@@ -215618,6 +215720,8 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: ModelTypes["uuid"] | undefined | null,
 	effective_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -215662,6 +215766,8 @@ export type ModelTypes = {
 	cancels_at?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	effective_at?: ModelTypes["order_by"] | undefined | null,
+	elo_voided_at?: ModelTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	ended_at?: ModelTypes["order_by"] | undefined | null,
 	external_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
@@ -215692,6 +215798,8 @@ export type ModelTypes = {
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: ModelTypes["uuid"] | undefined | null,
 	effective_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -215736,6 +215844,8 @@ export type ModelTypes = {
 	cancels_at?: ModelTypes["order_by"] | undefined | null,
 	created_at?: ModelTypes["order_by"] | undefined | null,
 	effective_at?: ModelTypes["order_by"] | undefined | null,
+	elo_voided_at?: ModelTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	ended_at?: ModelTypes["order_by"] | undefined | null,
 	external_id?: ModelTypes["order_by"] | undefined | null,
 	id?: ModelTypes["order_by"] | undefined | null,
@@ -215797,6 +215907,9 @@ export type ModelTypes = {
 	e_region?: ModelTypes["server_regions_order_by"] | undefined | null,
 	effective_at?: ModelTypes["order_by"] | undefined | null,
 	elo_changes_aggregate?: ModelTypes["v_player_elo_aggregate_order_by"] | undefined | null,
+	elo_voided?: ModelTypes["order_by"] | undefined | null,
+	elo_voided_at?: ModelTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	ended_at?: ModelTypes["order_by"] | undefined | null,
 	event_links_aggregate?: ModelTypes["event_match_links_aggregate_order_by"] | undefined | null,
 	external_id?: ModelTypes["order_by"] | undefined | null,
@@ -215870,6 +215983,9 @@ export type ModelTypes = {
 	cancels_at?: ModelTypes["timestamptz"] | undefined | null,
 	counts_toward_ranking?: boolean | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -215892,7 +216008,8 @@ export type ModelTypes = {
 };
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: number | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -215900,11 +216017,13 @@ export type ModelTypes = {
 };
 	/** order by stddev() on columns of table "matches" */
 ["matches_stddev_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["matches_stddev_pop_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: number | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -215912,11 +216031,13 @@ export type ModelTypes = {
 };
 	/** order by stddev_pop() on columns of table "matches" */
 ["matches_stddev_pop_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["matches_stddev_samp_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: number | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -215924,6 +216045,7 @@ export type ModelTypes = {
 };
 	/** order by stddev_samp() on columns of table "matches" */
 ["matches_stddev_samp_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "matches" */
@@ -215939,6 +216061,9 @@ export type ModelTypes = {
 	counts_toward_ranking?: boolean | undefined | null,
 	created_at?: ModelTypes["timestamptz"] | undefined | null,
 	effective_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: ModelTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
 	ended_at?: ModelTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: ModelTypes["uuid"] | undefined | null,
@@ -215961,7 +216086,8 @@ export type ModelTypes = {
 };
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: ModelTypes["bigint"] | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -215969,6 +216095,7 @@ export type ModelTypes = {
 };
 	/** order by sum() on columns of table "matches" */
 ["matches_sum_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	["matches_update_column"]:matches_update_column;
@@ -215982,7 +216109,8 @@ export type ModelTypes = {
 };
 	/** aggregate var_pop on columns */
 ["matches_var_pop_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: number | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -215990,11 +216118,13 @@ export type ModelTypes = {
 };
 	/** order by var_pop() on columns of table "matches" */
 ["matches_var_pop_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["matches_var_samp_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: number | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -216002,11 +216132,13 @@ export type ModelTypes = {
 };
 	/** order by var_samp() on columns of table "matches" */
 ["matches_var_samp_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** aggregate variance on columns */
 ["matches_variance_fields"]: {
-		/** A computed field, executes function "match_max_players_per_lineup" */
+		elo_voided_by_steam_id?: number | undefined | null,
+	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
 	min_players_per_lineup?: number | undefined | null,
@@ -216014,6 +216146,7 @@ export type ModelTypes = {
 };
 	/** order by variance() on columns of table "matches" */
 ["matches_variance_order_by"]: {
+	elo_voided_by_steam_id?: ModelTypes["order_by"] | undefined | null,
 	organizer_steam_id?: ModelTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "migration_hashes.hashes" */
@@ -218184,6 +218317,8 @@ export type ModelTypes = {
 	restartService?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** execute VOLATILE function "restart_league_season" which returns "league_seasons" */
 	restart_league_season: Array<ModelTypes["league_seasons"]>,
+	/** Undo voidMatchElo, giving the match its effect on every player's ELO back, then recompute ELO (admin only). */
+	restoreMatchElo?: ModelTypes["SuccessOutput"] | undefined | null,
 	restoreMatchRound?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Clear paused flag and re-enqueue remaining queued clip_render_jobs. */
 	resumeClipRenderBatch?: ModelTypes["SuccessOutput"] | undefined | null,
@@ -219670,6 +219805,8 @@ export type ModelTypes = {
 	update_v_team_stage_results_many?: Array<ModelTypes["v_team_stage_results_mutation_response"] | undefined | null> | undefined | null,
 	/** Validate CS2 gamedata for the current build on a chosen or automatically picked node (5stack.gg only) */
 	validateGamedata?: ModelTypes["SuccessOutput"] | undefined | null,
+	/** Remove a finished match's effect on every player's ELO, keeping its result and stats, then recompute ELO (admin only). */
+	voidMatchElo?: ModelTypes["SuccessOutput"] | undefined | null,
 	/** Spawn a per-user game-streamer pod to play back a finished match's demo */
 	watchDemo?: ModelTypes["WatchDemoOutput"] | undefined | null,
 	/** Write content to file on game server */
@@ -299576,6 +299713,9 @@ export type GraphQLTypes = {
 	elo_changes: Array<GraphQLTypes["v_player_elo"]>,
 	/** An aggregate relationship */
 	elo_changes_aggregate: GraphQLTypes["v_player_elo_aggregate"],
+	elo_voided: boolean,
+	elo_voided_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	/** An array relationship */
 	event_links: Array<GraphQLTypes["event_match_links"]>,
@@ -299773,6 +299913,7 @@ export type GraphQLTypes = {
 	/** aggregate avg on columns */
 ["matches_avg_fields"]: {
 	__typename: "matches_avg_fields",
+	elo_voided_by_steam_id?: number | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -299781,7 +299922,8 @@ export type GraphQLTypes = {
 };
 	/** order by avg() on columns of table "matches" */
 ["matches_avg_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** Boolean expression to filter rows from the table "matches". All fields are combined with a logical 'AND'. */
 ["matches_bool_exp"]: {
@@ -299813,6 +299955,9 @@ export type GraphQLTypes = {
 	effective_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	elo_changes?: GraphQLTypes["v_player_elo_bool_exp"] | undefined | null,
 	elo_changes_aggregate?: GraphQLTypes["v_player_elo_aggregate_bool_exp"] | undefined | null,
+	elo_voided?: GraphQLTypes["Boolean_comparison_exp"] | undefined | null,
+	elo_voided_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["bigint_comparison_exp"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz_comparison_exp"] | undefined | null,
 	event_links?: GraphQLTypes["event_match_links_bool_exp"] | undefined | null,
 	event_links_aggregate?: GraphQLTypes["event_match_links_aggregate_bool_exp"] | undefined | null,
@@ -299892,7 +300037,8 @@ export type GraphQLTypes = {
 ["matches_constraint"]: matches_constraint;
 	/** input type for incrementing numeric columns in table "matches" */
 ["matches_inc_input"]: {
-		organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["bigint"] | undefined | null
 };
 	/** input type for inserting data into table "matches" */
 ["matches_insert_input"]: {
@@ -299905,6 +300051,9 @@ export type GraphQLTypes = {
 	e_match_status?: GraphQLTypes["e_match_status_obj_rel_insert_input"] | undefined | null,
 	e_region?: GraphQLTypes["server_regions_obj_rel_insert_input"] | undefined | null,
 	elo_changes?: GraphQLTypes["v_player_elo_arr_rel_insert_input"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	event_links?: GraphQLTypes["event_match_links_arr_rel_insert_input"] | undefined | null,
 	external_id?: string | undefined | null,
@@ -299957,6 +300106,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	effective_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -300001,6 +300152,8 @@ export type GraphQLTypes = {
 		cancels_at?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	effective_at?: GraphQLTypes["order_by"] | undefined | null,
+	elo_voided_at?: GraphQLTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	ended_at?: GraphQLTypes["order_by"] | undefined | null,
 	external_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
@@ -300032,6 +300185,8 @@ export type GraphQLTypes = {
 	/** A computed field, executes function "get_current_match_map" */
 	current_match_map_id?: GraphQLTypes["uuid"] | undefined | null,
 	effective_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -300076,6 +300231,8 @@ export type GraphQLTypes = {
 		cancels_at?: GraphQLTypes["order_by"] | undefined | null,
 	created_at?: GraphQLTypes["order_by"] | undefined | null,
 	effective_at?: GraphQLTypes["order_by"] | undefined | null,
+	elo_voided_at?: GraphQLTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	ended_at?: GraphQLTypes["order_by"] | undefined | null,
 	external_id?: GraphQLTypes["order_by"] | undefined | null,
 	id?: GraphQLTypes["order_by"] | undefined | null,
@@ -300138,6 +300295,9 @@ export type GraphQLTypes = {
 	e_region?: GraphQLTypes["server_regions_order_by"] | undefined | null,
 	effective_at?: GraphQLTypes["order_by"] | undefined | null,
 	elo_changes_aggregate?: GraphQLTypes["v_player_elo_aggregate_order_by"] | undefined | null,
+	elo_voided?: GraphQLTypes["order_by"] | undefined | null,
+	elo_voided_at?: GraphQLTypes["order_by"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
 	ended_at?: GraphQLTypes["order_by"] | undefined | null,
 	event_links_aggregate?: GraphQLTypes["event_match_links_aggregate_order_by"] | undefined | null,
 	external_id?: GraphQLTypes["order_by"] | undefined | null,
@@ -300214,6 +300374,9 @@ export type GraphQLTypes = {
 		cancels_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	counts_toward_ranking?: boolean | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -300237,6 +300400,7 @@ export type GraphQLTypes = {
 	/** aggregate stddev on columns */
 ["matches_stddev_fields"]: {
 	__typename: "matches_stddev_fields",
+	elo_voided_by_steam_id?: number | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -300245,11 +300409,13 @@ export type GraphQLTypes = {
 };
 	/** order by stddev() on columns of table "matches" */
 ["matches_stddev_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_pop on columns */
 ["matches_stddev_pop_fields"]: {
 	__typename: "matches_stddev_pop_fields",
+	elo_voided_by_steam_id?: number | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -300258,11 +300424,13 @@ export type GraphQLTypes = {
 };
 	/** order by stddev_pop() on columns of table "matches" */
 ["matches_stddev_pop_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** aggregate stddev_samp on columns */
 ["matches_stddev_samp_fields"]: {
 	__typename: "matches_stddev_samp_fields",
+	elo_voided_by_steam_id?: number | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -300271,7 +300439,8 @@ export type GraphQLTypes = {
 };
 	/** order by stddev_samp() on columns of table "matches" */
 ["matches_stddev_samp_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** Streaming cursor of the table "matches" */
 ["matches_stream_cursor_input"]: {
@@ -300286,6 +300455,9 @@ export type GraphQLTypes = {
 	counts_toward_ranking?: boolean | undefined | null,
 	created_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	effective_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided?: boolean | undefined | null,
+	elo_voided_at?: GraphQLTypes["timestamptz"] | undefined | null,
+	elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	ended_at?: GraphQLTypes["timestamptz"] | undefined | null,
 	external_id?: string | undefined | null,
 	id?: GraphQLTypes["uuid"] | undefined | null,
@@ -300309,6 +300481,7 @@ export type GraphQLTypes = {
 	/** aggregate sum on columns */
 ["matches_sum_fields"]: {
 	__typename: "matches_sum_fields",
+	elo_voided_by_steam_id?: GraphQLTypes["bigint"] | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -300317,7 +300490,8 @@ export type GraphQLTypes = {
 };
 	/** order by sum() on columns of table "matches" */
 ["matches_sum_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** update columns of table "matches" */
 ["matches_update_column"]: matches_update_column;
@@ -300332,6 +300506,7 @@ export type GraphQLTypes = {
 	/** aggregate var_pop on columns */
 ["matches_var_pop_fields"]: {
 	__typename: "matches_var_pop_fields",
+	elo_voided_by_steam_id?: number | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -300340,11 +300515,13 @@ export type GraphQLTypes = {
 };
 	/** order by var_pop() on columns of table "matches" */
 ["matches_var_pop_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** aggregate var_samp on columns */
 ["matches_var_samp_fields"]: {
 	__typename: "matches_var_samp_fields",
+	elo_voided_by_steam_id?: number | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -300353,11 +300530,13 @@ export type GraphQLTypes = {
 };
 	/** order by var_samp() on columns of table "matches" */
 ["matches_var_samp_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** aggregate variance on columns */
 ["matches_variance_fields"]: {
 	__typename: "matches_variance_fields",
+	elo_voided_by_steam_id?: number | undefined | null,
 	/** A computed field, executes function "match_max_players_per_lineup" */
 	max_players_per_lineup?: number | undefined | null,
 	/** A computed field, executes function "match_min_players_per_lineup" */
@@ -300366,7 +300545,8 @@ export type GraphQLTypes = {
 };
 	/** order by variance() on columns of table "matches" */
 ["matches_variance_order_by"]: {
-		organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
+		elo_voided_by_steam_id?: GraphQLTypes["order_by"] | undefined | null,
+	organizer_steam_id?: GraphQLTypes["order_by"] | undefined | null
 };
 	/** columns and relationships of "migration_hashes.hashes" */
 ["migration_hashes_hashes"]: {
@@ -302546,6 +302726,8 @@ export type GraphQLTypes = {
 	restartService?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** execute VOLATILE function "restart_league_season" which returns "league_seasons" */
 	restart_league_season: Array<GraphQLTypes["league_seasons"]>,
+	/** Undo voidMatchElo, giving the match its effect on every player's ELO back, then recompute ELO (admin only). */
+	restoreMatchElo?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	restoreMatchRound?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Clear paused flag and re-enqueue remaining queued clip_render_jobs. */
 	resumeClipRenderBatch?: GraphQLTypes["SuccessOutput"] | undefined | null,
@@ -304032,6 +304214,8 @@ export type GraphQLTypes = {
 	update_v_team_stage_results_many?: Array<GraphQLTypes["v_team_stage_results_mutation_response"] | undefined | null> | undefined | null,
 	/** Validate CS2 gamedata for the current build on a chosen or automatically picked node (5stack.gg only) */
 	validateGamedata?: GraphQLTypes["SuccessOutput"] | undefined | null,
+	/** Remove a finished match's effect on every player's ELO, keeping its result and stats, then recompute ELO (admin only). */
+	voidMatchElo?: GraphQLTypes["SuccessOutput"] | undefined | null,
 	/** Spawn a per-user game-streamer pod to play back a finished match's demo */
 	watchDemo?: GraphQLTypes["WatchDemoOutput"] | undefined | null,
 	/** Write content to file on game server */
@@ -361325,6 +361509,9 @@ export enum matches_select_column {
 	counts_toward_ranking = "counts_toward_ranking",
 	created_at = "created_at",
 	effective_at = "effective_at",
+	elo_voided = "elo_voided",
+	elo_voided_at = "elo_voided_at",
+	elo_voided_by_steam_id = "elo_voided_by_steam_id",
 	ended_at = "ended_at",
 	external_id = "external_id",
 	id = "id",
@@ -361347,17 +361534,22 @@ export enum matches_select_column {
 }
 /** select "matches_aggregate_bool_exp_bool_and_arguments_columns" columns of table "matches" */
 export enum matches_select_column_matches_aggregate_bool_exp_bool_and_arguments_columns {
-	counts_toward_ranking = "counts_toward_ranking"
+	counts_toward_ranking = "counts_toward_ranking",
+	elo_voided = "elo_voided"
 }
 /** select "matches_aggregate_bool_exp_bool_or_arguments_columns" columns of table "matches" */
 export enum matches_select_column_matches_aggregate_bool_exp_bool_or_arguments_columns {
-	counts_toward_ranking = "counts_toward_ranking"
+	counts_toward_ranking = "counts_toward_ranking",
+	elo_voided = "elo_voided"
 }
 /** update columns of table "matches" */
 export enum matches_update_column {
 	cancels_at = "cancels_at",
 	counts_toward_ranking = "counts_toward_ranking",
 	created_at = "created_at",
+	elo_voided = "elo_voided",
+	elo_voided_at = "elo_voided_at",
+	elo_voided_by_steam_id = "elo_voided_by_steam_id",
 	ended_at = "ended_at",
 	external_id = "external_id",
 	id = "id",

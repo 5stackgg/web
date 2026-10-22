@@ -23,36 +23,47 @@ function findCode(codes: readonly string[], tag: string) {
 // Browsers send a region (zh-TW, zh-HK), never the script our Chinese locales
 // are named by; maximize() supplies the script that region writes in.
 export function matchBrowserLocale(
-  browserTags: readonly string[],
+  tag: string | undefined,
   codes: readonly string[],
 ): string | undefined {
-  for (const tag of browserTags) {
-    let locale: Intl.Locale;
-    try {
-      locale = new Intl.Locale(tag).maximize();
-    } catch {
-      continue;
-    }
-
-    const code =
-      findCode(codes, tag) ??
-      findCode(codes, `${locale.language}-${locale.script}`) ??
-      findCode(codes, locale.language);
-    if (code) {
-      return code;
-    }
+  if (!tag) {
+    return;
   }
+
+  let locale: Intl.Locale;
+  try {
+    locale = new Intl.Locale(tag).maximize();
+  } catch {
+    return;
+  }
+
+  return (
+    findCode(codes, tag) ??
+    findCode(codes, `${locale.language}-${locale.script}`) ??
+    findCode(codes, locale.language)
+  );
 }
 
+// Only the browser's first language counts. The rest of the list is usually
+// English added as a fallback, which would beat the site default for nearly
+// every visitor.
 export function resolveLocale(
   codes: readonly string[],
   browserTags: readonly string[],
   picked: string | null,
+  siteDefault?: string | null,
 ): string {
   if (picked && codes.includes(picked)) {
     return picked;
   }
-  return matchBrowserLocale(browserTags, codes) ?? "en";
+  const browser = matchBrowserLocale(browserTags[0], codes);
+  if (browser) {
+    return browser;
+  }
+  if (siteDefault && codes.includes(siteDefault)) {
+    return siteDefault;
+  }
+  return "en";
 }
 
 // The old cookie was written on every first visit, so it holds the browser

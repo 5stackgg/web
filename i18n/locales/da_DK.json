@@ -2805,6 +2805,11 @@
           "upload_failed": "Upload mislykkedes: {status}",
           "delete_failed": "Sletning mislykkedes: {status}"
         },
+        "language": {
+          "title": "Sprog",
+          "description": "Besøgende ser panelet på deres browsers sprog, når det er tilgængeligt, ellers på standardsproget. Alle kan stadig vælge deres eget sprog.",
+          "default_language": "Standardsprog"
+        },
         "fixtures": {
           "dev_only_notice": "Fixtures er kun tilgængelige i udviklingstilstand.",
           "load_title": "Indlæs demo-fixtures",

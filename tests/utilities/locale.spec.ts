@@ -33,27 +33,51 @@ describe("the language a browser is shown", () => {
     ["en-US", "en"],
     ["de", "de"],
   ])("%s gets %s", (tag, expected) => {
-    expect(matchBrowserLocale([tag], codes())).toBe(expected);
-  });
-
-  it("takes the first language the browser lists that we have", () => {
-    expect(matchBrowserLocale(["nl-NL", "zh-TW", "en-US"], codes())).toBe(
-      "zh-Hant",
-    );
+    expect(matchBrowserLocale(tag, codes())).toBe(expected);
   });
 
   it("falls back to English when we have none of them", () => {
     expect(resolveLocale(codes(), ["nl-NL", "fi"], null)).toBe("en");
   });
 
-  it("skips a tag the browser mangled", () => {
-    expect(matchBrowserLocale(["en_US!", "de-DE"], codes())).toBe("de");
+  it("matches nothing for a tag the browser mangled", () => {
+    expect(matchBrowserLocale("en_US!", codes())).toBeUndefined();
+  });
+});
+
+describe("the site's default language", () => {
+  it("is shown when we don't have the browser's language", () => {
+    expect(resolveLocale(codes(), ["nl-NL"], null, "pt")).toBe("pt");
+  });
+
+  it("beats English the browser lists as a fallback", () => {
+    expect(
+      resolveLocale(codes(), ["nl-NL", "nl", "en-US", "en"], null, "pt"),
+    ).toBe("pt");
+  });
+
+  it("is English when none is set", () => {
+    expect(resolveLocale(codes(), ["nl-NL", "de-DE"], null, undefined)).toBe(
+      "en",
+    );
+  });
+
+  it("gives way to a browser language we have", () => {
+    expect(resolveLocale(codes(), ["de-DE"], null, "pt")).toBe("de");
+  });
+
+  it("falls back to English when it names a language we don't have", () => {
+    expect(resolveLocale(codes(), ["nl-NL"], null, "lv")).toBe("en");
   });
 });
 
 describe("a visitor's own pick", () => {
   it("wins over the browser", () => {
     expect(resolveLocale(codes(), ["zh-TW"], "ja")).toBe("ja");
+  });
+
+  it("wins over the site's default", () => {
+    expect(resolveLocale(codes(), ["nl-NL"], "ja", "pt")).toBe("ja");
   });
 
   it("is ignored when it names a language we no longer have", () => {

@@ -2805,6 +2805,11 @@
           "upload_failed": "Échec du téléversement : {status}",
           "delete_failed": "Échec de la suppression : {status}"
         },
+        "language": {
+          "title": "Langue",
+          "description": "Les visiteurs voient le panneau dans la langue de leur navigateur lorsqu'elle est disponible, sinon dans la langue par défaut. Chacun peut toujours choisir sa propre langue.",
+          "default_language": "Langue par défaut"
+        },
         "fixtures": {
           "dev_only_notice": "Les fixtures ne sont disponibles qu'en mode développement.",
           "load_title": "Charger les fixtures de démo",

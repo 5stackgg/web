@@ -1,11 +1,16 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { effectScope, type EffectScope } from "vue";
 import localePlugin from "~/plugins/locale.client";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { savePickedLocale } from "~/utilities/locale";
 import {
   resetBrowserLanguages,
   setBrowserLanguages,
 } from "../helpers/browserLocale";
 
+const SETTINGS_CACHE_KEY = "5stack:application-settings";
 const PICKED_LOCALE_KEY = "5stack:locale";
+const NON_ENGLISH_CHROME = ["nl-NL", "nl", "en-US", "en"];
 
 const app = () =>
   useNuxtApp() as unknown as {
@@ -18,22 +23,46 @@ const app = () =>
 
 const locale = () => app().$i18n.locale.value;
 
-async function boot() {
-  app()._vueI18n.__firstAccess = true;
-  await (localePlugin as unknown as () => Promise<void>)();
-  await new Promise((resolve) => setTimeout(resolve, 10));
+const settle = () => new Promise((resolve) => setTimeout(resolve, 50));
+
+function siteDefault(value: string) {
+  return [{ name: "public.default_language", value }];
 }
 
-beforeEach(() => {
+let scope: EffectScope | undefined;
+
+async function boot() {
+  let mounted: (() => void) | undefined;
+  app()._vueI18n.__firstAccess = true;
+  await (localePlugin as unknown as (nuxtApp: unknown) => Promise<void>)({
+    hook: (name: string, callback: () => void) => {
+      if (name === "app:mounted") {
+        mounted = callback;
+      }
+    },
+  });
+  await new Promise((resolve) => setTimeout(resolve, 10));
+
+  return () => {
+    scope = effectScope();
+    scope.run(() => mounted!());
+  };
+}
+
+// The app booted its own copy of this plugin, and its watcher answers every
+// change to the store too. Each test starts after it has settled.
+beforeEach(async () => {
   localStorage.clear();
   document.cookie = "i18n_redirected=; max-age=0; path=/";
+  useApplicationSettingsStore().settings = [];
+  await settle();
+  await app().$i18n.setLocale("en");
 });
 
-afterEach(async () => {
+afterEach(() => {
+  scope?.stop();
+  scope = undefined;
   resetBrowserLanguages();
-  localStorage.clear();
-  document.cookie = "i18n_redirected=; max-age=0; path=/";
-  await app().$i18n.setLocale("en");
 });
 
 describe("the language a visitor first sees", () => {
@@ -65,6 +94,80 @@ describe("the language a visitor first sees", () => {
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(document.cookie).not.toContain("i18n_redirected");
+  });
+
+  it("is the cached site default when we don't have the browser's language", async () => {
+    setBrowserLanguages(NON_ENGLISH_CHROME);
+    localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(siteDefault("pt")));
+
+    await boot();
+
+    expect(locale()).toBe("pt");
+  });
+
+  it("is the browser's language when we have it, whatever the site default", async () => {
+    setBrowserLanguages(["zh-TW"]);
+    localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(siteDefault("pt")));
+
+    await boot();
+
+    expect(locale()).toBe("zh-Hant");
+  });
+
+  it("is English with no site default and no browser language we have", async () => {
+    setBrowserLanguages(NON_ENGLISH_CHROME);
+
+    await boot();
+
+    expect(locale()).toBe("en");
+  });
+});
+
+describe("a change to the site default", () => {
+  it("reaches a visitor shown the fallback", async () => {
+    setBrowserLanguages(NON_ENGLISH_CHROME);
+    const mount = await boot();
+    mount();
+
+    useApplicationSettingsStore().settings = siteDefault("ja");
+
+    await vi.waitFor(() => expect(locale()).toBe("ja"));
+  });
+
+  it("is applied when the settings arrive before the page mounts", async () => {
+    setBrowserLanguages(NON_ENGLISH_CHROME);
+    useApplicationSettingsStore().settings = siteDefault("ja");
+    await settle();
+
+    const mount = await boot();
+    expect(locale()).toBe("en");
+    mount();
+
+    await vi.waitFor(() => expect(locale()).toBe("ja"));
+  });
+
+  it("leaves a visitor on their browser's language", async () => {
+    setBrowserLanguages(["de-DE"]);
+    const mount = await boot();
+    mount();
+
+    useApplicationSettingsStore().settings = siteDefault("ja");
+    await settle();
+
+    expect(locale()).toBe("de");
+  });
+
+  it("leaves a visitor on a language they picked after the page loaded", async () => {
+    setBrowserLanguages(NON_ENGLISH_CHROME);
+    const mount = await boot();
+    mount();
+
+    savePickedLocale("sv");
+    await app().$i18n.setLocale("sv");
+    useApplicationSettingsStore().settings = siteDefault("ja");
+    await settle();
+
+    expect(locale()).toBe("sv");
   });
 });
 

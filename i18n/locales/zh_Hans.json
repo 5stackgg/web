@@ -2805,6 +2805,11 @@
           "upload_failed": "上传失败：{status}",
           "delete_failed": "删除失败：{status}"
         },
+        "language": {
+          "title": "语言",
+          "description": "如果支持访客浏览器的语言，面板将以该语言显示，否则使用默认语言。每个人仍可自行选择语言。",
+          "default_language": "默认语言"
+        },
         "fixtures": {
           "dev_only_notice": "测试数据仅在开发模式下可用。",
           "load_title": "加载测试数据",

@@ -2805,6 +2805,11 @@
           "upload_failed": "업로드 실패: {status}",
           "delete_failed": "삭제 실패: {status}"
         },
+        "language": {
+          "title": "언어",
+          "description": "방문자는 브라우저 언어를 사용할 수 있으면 해당 언어로, 그렇지 않으면 기본 언어로 패널을 보게 됩니다. 누구나 원하는 언어를 직접 선택할 수 있습니다.",
+          "default_language": "기본 언어"
+        },
         "fixtures": {
           "dev_only_notice": "픽스처는 개발 모드에서만 사용할 수 있습니다.",
           "load_title": "데모 픽스처 불러오기",

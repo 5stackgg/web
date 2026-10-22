@@ -2805,6 +2805,11 @@
           "upload_failed": "Falha no envio: {status}",
           "delete_failed": "Falha ao excluir: {status}"
         },
+        "language": {
+          "title": "Idioma",
+          "description": "Os visitantes veem o painel no idioma do navegador quando ele está disponível; caso contrário, no idioma padrão. Qualquer pessoa ainda pode escolher o próprio idioma.",
+          "default_language": "Idioma padrão"
+        },
         "fixtures": {
           "dev_only_notice": "Fixtures estão disponíveis apenas em modo de desenvolvimento.",
           "load_title": "Carregar Fixtures de Demonstração",

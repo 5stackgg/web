@@ -2805,6 +2805,11 @@
           "upload_failed": "Error al subir: {status}",
           "delete_failed": "Error al eliminar: {status}"
         },
+        "language": {
+          "title": "Idioma",
+          "description": "Los visitantes ven el panel en el idioma de su navegador cuando está disponible y, si no, en el idioma predeterminado. Cualquiera puede seguir eligiendo su propio idioma.",
+          "default_language": "Idioma predeterminado"
+        },
         "fixtures": {
           "dev_only_notice": "Los datos de prueba solo están disponibles en modo desarrollo.",
           "load_title": "Cargar datos de prueba",

@@ -153,6 +153,8 @@ const containContent = computed(() => {
     case "apps-slug":
     case "news-manage-id":
     case "matches-id":
+    // Caps itself, and widens into the gutter for the player panel.
+    case "leaderboard":
     // Board on one side, list on the other: pinned to 7xl the tab strip wrapped
     // and the map lost the width it needs to stay square and readable. The maps
     // index shares the map page's shell and has to be given the same room, or

@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Rank"
       },
       "exclude_tournaments": "Udelad turneringer",
-      "empty_title": "Ingen placeringer endnu"
+      "empty_title": "Ingen placeringer endnu",
+      "you": "Dig",
+      "find_me": "#{rank} · Side {page}",
+      "all_seasons": "Alle sæsoner samlet",
+      "synced_from": "Synkroniseret fra {source}. Sæson, kamptype og kilde gælder ikke.",
+      "line": {
+        "top_of": "Top i {value}",
+        "top_on": "Top på {value}",
+        "ranks": "Placering {value}"
+      },
+      "podium_empty": "Ingen andre er rangeret endnu",
+      "medals": "Medaljer",
+      "distance_to_first": "Afstand til #1",
+      "matches_count": "{count} kamp | {count} kampe",
+      "panel": {
+        "title": "Spillerstatistik",
+        "close": "Luk spillerstatistik",
+        "of_total": "af {total} på {board}",
+        "not_ranked": "Ikke rangeret på {board}",
+        "leads": "Fører over #{rank} {name} med {gap}",
+        "behind": "{gap} efter #{rank} {name}",
+        "tied": "Lige med #{rank} {name}",
+        "only_player": "Eneste rangerede spiller",
+        "every_board": "Alle ranglister",
+        "view_profile": "Vis profil"
+      }
     },
     "database": {
       "query_copied": "Query kopieret til udklipsholderen",

@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Rang"
       },
       "exclude_tournaments": "Turniere ausschließen",
-      "empty_title": "Noch keine Rangliste"
+      "empty_title": "Noch keine Rangliste",
+      "you": "Du",
+      "find_me": "#{rank} · Seite {page}",
+      "all_seasons": "Alle Saisons zusammen",
+      "synced_from": "Synchronisiert von {source}. Saison, Matchtyp und Quelle gelten hier nicht.",
+      "line": {
+        "top_of": "Spitze · {value}",
+        "top_on": "Spitze auf {value}",
+        "ranks": "Plätze {value}"
+      },
+      "podium_empty": "Noch niemand sonst platziert",
+      "medals": "Medaillen",
+      "distance_to_first": "Abstand zu #1",
+      "matches_count": "{count} Match | {count} Matches",
+      "panel": {
+        "title": "Spielerstatistiken",
+        "close": "Spielerstatistiken schließen",
+        "of_total": "von {total} in {board}",
+        "not_ranked": "Nicht platziert in {board}",
+        "leads": "Führt vor #{rank} {name} mit {gap}",
+        "behind": "{gap} hinter #{rank} {name}",
+        "tied": "Gleichauf mit #{rank} {name}",
+        "only_player": "Einziger platzierter Spieler",
+        "every_board": "Alle Ranglisten",
+        "view_profile": "Profil ansehen"
+      }
     },
     "database": {
       "query_copied": "Query in die Zwischenablage kopiert",

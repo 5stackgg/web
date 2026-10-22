@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Ранг"
       },
       "exclude_tournaments": "Исключить турниры",
-      "empty_title": "Рейтинга пока нет"
+      "empty_title": "Рейтинга пока нет",
+      "you": "Вы",
+      "find_me": "#{rank} · Стр. {page}",
+      "all_seasons": "Все сезоны вместе",
+      "synced_from": "Синхронизировано из {source}. Сезон, тип матча и источник не применяются.",
+      "line": {
+        "top_of": "Лучшие · {value}",
+        "top_on": "Лучшие в {value}",
+        "ranks": "Места {value}"
+      },
+      "podium_empty": "Больше никого в рейтинге",
+      "medals": "Медали",
+      "distance_to_first": "Отставание от #1",
+      "matches_count": "{count} матч | {count} матчей",
+      "panel": {
+        "title": "Статистика игрока",
+        "close": "Закрыть статистику игрока",
+        "of_total": "из {total} в {board}",
+        "not_ranked": "Нет в рейтинге {board}",
+        "leads": "Опережает #{rank} {name} на {gap}",
+        "behind": "{gap} до #{rank} {name}",
+        "tied": "Вровень с #{rank} {name}",
+        "only_player": "Единственный игрок в рейтинге",
+        "every_board": "Все рейтинги",
+        "view_profile": "Открыть профиль"
+      }
     },
     "database": {
       "query_copied": "Запрос скопирован в буфер обмена",

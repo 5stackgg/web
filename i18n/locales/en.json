@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Rank"
       },
       "exclude_tournaments": "Exclude Tournaments",
-      "empty_title": "No rankings yet"
+      "empty_title": "No rankings yet",
+      "you": "You",
+      "find_me": "#{rank} · Page {page}",
+      "all_seasons": "Every season combined",
+      "synced_from": "Synced from {source}. Season, match type and source don't apply.",
+      "line": {
+        "top_of": "Top of {value}",
+        "top_on": "Top on {value}",
+        "ranks": "Ranks {value}"
+      },
+      "podium_empty": "No one else ranked yet",
+      "medals": "Medals",
+      "distance_to_first": "Distance to #1",
+      "matches_count": "{count} match | {count} matches",
+      "panel": {
+        "title": "Player stats",
+        "close": "Close player stats",
+        "of_total": "of {total} on {board}",
+        "not_ranked": "Not ranked on {board}",
+        "leads": "Leads #{rank} {name} by {gap}",
+        "behind": "{gap} behind #{rank} {name}",
+        "tied": "Tied with #{rank} {name}",
+        "only_player": "Only player ranked",
+        "every_board": "Every board",
+        "view_profile": "View profile"
+      }
     },
     "database": {
       "query_copied": "Query copied to clipboard",

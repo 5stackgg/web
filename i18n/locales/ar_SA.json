@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier الرتبة"
       },
       "exclude_tournaments": "استثناء البطولات",
-      "empty_title": "لا توجد تصنيفات بعد"
+      "empty_title": "لا توجد تصنيفات بعد",
+      "you": "أنت",
+      "find_me": "#{rank} · الصفحة {page}",
+      "all_seasons": "كل المواسم مجتمعة",
+      "synced_from": "مُزامن من {source}. لا ينطبق الموسم ونوع المباراة والمصدر.",
+      "line": {
+        "top_of": "صدارة {value}",
+        "top_on": "الصدارة على {value}",
+        "ranks": "المراكز {value}"
+      },
+      "podium_empty": "لا يوجد مصنفون آخرون بعد",
+      "medals": "الميداليات",
+      "distance_to_first": "الفارق عن #1",
+      "matches_count": "{count} مباراة | {count} مباريات",
+      "panel": {
+        "title": "إحصائيات اللاعب",
+        "close": "إغلاق إحصائيات اللاعب",
+        "of_total": "من {total} في {board}",
+        "not_ranked": "غير مصنف في {board}",
+        "leads": "يتقدم على #{rank} {name} بفارق {gap}",
+        "behind": "خلف #{rank} {name} بفارق {gap}",
+        "tied": "متعادل مع #{rank} {name}",
+        "only_player": "اللاعب المصنف الوحيد",
+        "every_board": "كل التصنيفات",
+        "view_profile": "عرض الملف الشخصي"
+      }
     },
     "database": {
       "query_copied": "تم نسخ الاستعلام",

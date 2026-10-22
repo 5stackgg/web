@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Rank"
       },
       "exclude_tournaments": "Exkludera turneringar",
-      "empty_title": "Ingen rankning än"
+      "empty_title": "Ingen rankning än",
+      "you": "Du",
+      "find_me": "#{rank} · Sida {page}",
+      "all_seasons": "Alla säsonger sammanlagt",
+      "synced_from": "Synkat från {source}. Säsong, matchtyp och källa gäller inte.",
+      "line": {
+        "top_of": "Topp i {value}",
+        "top_on": "Topp på {value}",
+        "ranks": "Placering {value}"
+      },
+      "podium_empty": "Ingen annan rankad än",
+      "medals": "Medaljer",
+      "distance_to_first": "Avstånd till #1",
+      "matches_count": "{count} match | {count} matcher",
+      "panel": {
+        "title": "Spelarstatistik",
+        "close": "Stäng spelarstatistik",
+        "of_total": "av {total} på {board}",
+        "not_ranked": "Inte rankad på {board}",
+        "leads": "Leder över #{rank} {name} med {gap}",
+        "behind": "{gap} efter #{rank} {name}",
+        "tied": "Lika med #{rank} {name}",
+        "only_player": "Enda rankade spelaren",
+        "every_board": "Alla topplistor",
+        "view_profile": "Visa profil"
+      }
     },
     "database": {
       "query_copied": "Frågan kopierades till urklipp",

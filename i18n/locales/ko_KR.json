@@ -4170,9 +4170,12 @@
       "table": {
         "elo": "ELO",
         "last_sign_in_at": "마지막 로그인",
+        "seen": "접속",
         "privilege": "권한",
         "kdr": "K/D"
       },
+      "signed_in": "{time} 로그인",
+      "outranks_you": "나보다 상위 권한",
       "detail": {
         "all_short": "전체",
         "settings_changed": "사용자 지정 설정 적용됨",

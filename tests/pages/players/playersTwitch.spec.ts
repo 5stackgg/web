@@ -1,9 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlayersPage from "~/pages/players/index.vue";
 import FilterToggle from "~/components/common/FilterToggle.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+
+vi.mock("~/components/ui/sidebar/utils", async (original) => ({
+  ...(await original<Record<string, unknown>>()),
+  useSidebar: () => ({ isMobile: ref(false) }),
+}));
 
 const LIVE = "76561198000000001";
 const QUIET = "76561198000000002";

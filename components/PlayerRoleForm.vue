@@ -1,10 +1,42 @@
 <script setup lang="ts">
-import { ChevronDownIcon } from "lucide-vue-next";
+import { Check, ChevronDownIcon } from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
 </script>
 
 <template>
-  <Popover v-if="canChangeRole" v-model:open="popoverOpen">
+  <div
+    v-if="list && canChangeRole"
+    role="radiogroup"
+    :aria-label="$t('pages.players.table.privilege')"
+    class="grid divide-y divide-border overflow-hidden rounded-md border border-border"
+  >
+    <button
+      v-for="role of roles"
+      :key="role.value"
+      type="button"
+      role="radio"
+      :aria-checked="currentRole === role.value"
+      class="flex min-h-11 items-center justify-between gap-3 px-3.5 text-left text-sm transition-colors duration-150 active:bg-muted/50"
+      :class="
+        currentRole === role.value &&
+        'bg-[hsl(var(--tac-amber)/0.08)] font-semibold text-[hsl(var(--tac-amber))]'
+      "
+      @click="role.value !== currentRole && (memberRole = role.value)"
+    >
+      {{ role.display }}
+      <Check v-if="currentRole === role.value" class="h-4 w-4 shrink-0" />
+    </button>
+  </div>
+  <div
+    v-else-if="list"
+    class="flex min-h-11 items-center justify-between gap-3 rounded-md border border-dashed border-border px-3.5 text-sm"
+  >
+    {{ roleLabel }}
+    <span class="text-xs text-muted-foreground">{{
+      $t("pages.players.outranks_you")
+    }}</span>
+  </div>
+  <Popover v-else-if="canChangeRole" v-model:open="popoverOpen">
     <PopoverTrigger as-child>
       <Button variant="outline" size="sm" class="h-7 px-2.5 text-xs">
         <span class="capitalize">{{ roleLabel }}</span>
@@ -43,11 +75,16 @@ export default {
       type: Object,
       required: true,
     },
+    // Every role as a row instead of a dropdown, for a sheet.
+    list: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ["updated"],
   data() {
     return {
-      memberRole: undefined,
+      memberRole: undefined as e_player_roles_enum | undefined,
       popoverOpen: false,
     };
   },
@@ -78,8 +115,11 @@ export default {
     canChangeRole() {
       return canEditPlayerRole(useAuthStore().isRoleAbove, this.player.role);
     },
+    currentRole() {
+      return this.player.role || e_player_roles_enum.user;
+    },
     roleLabel() {
-      return this.$t(`player_roles.${this.player.role || "user"}`);
+      return this.$t(`player_roles.${this.currentRole}`);
     },
     roles() {
       return [

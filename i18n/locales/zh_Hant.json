@@ -4170,9 +4170,12 @@
       "table": {
         "elo": "Elo",
         "last_sign_in_at": "最後登入時間",
+        "seen": "登入",
         "privilege": "權限",
         "kdr": "KDR"
       },
+      "signed_in": "{time}登入",
+      "outranks_you": "權限高於你",
       "detail": {
         "all_short": "全部",
         "settings_changed": "自訂設定已啟用",

@@ -156,6 +156,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    // "35m", "3h", "2d" for a narrow column.
+    mini: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -176,6 +182,9 @@ export default {
       },
     },
     formatter() {
+      this.updateText();
+    },
+    mini() {
       this.updateText();
     },
     date: {
@@ -287,7 +296,7 @@ export default {
             ? `${hours}:${pad(minutes)}:${pad(seconds)}`
             : `${minutes}:${pad(seconds)}`;
       } else {
-        this.text = this.formatter.format(time);
+        this.text = this.formatter.format(time, this.mini ? "mini" : undefined);
       }
     },
   },

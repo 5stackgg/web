@@ -44,4 +44,17 @@ describe("TimeAgo", () => {
     await i18n().setLocale("en");
     await vi.waitFor(() => expect(wrapper.text()).toBe("5 minutes ago"));
   });
+
+  it("reads short when mini", async () => {
+    const wrapper = await mountSuspended(TimeAgo, {
+      props: {
+        date: new Date(Date.now() - 3 * 60 * 60 * 1000),
+        hideIcon: true,
+        mini: true,
+      },
+    });
+    unmount = () => wrapper.unmount();
+
+    expect(wrapper.text()).toBe("3h");
+  });
 });

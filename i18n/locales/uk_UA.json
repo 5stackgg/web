@@ -4170,9 +4170,12 @@
       "table": {
         "elo": "ELO",
         "last_sign_in_at": "Останній вхід",
+        "seen": "Вхід",
         "privilege": "Привілей",
         "kdr": "К/С"
       },
+      "signed_in": "Вхід {time}",
+      "outranks_you": "Вищий за вас за рангом",
       "detail": {
         "all_short": "Усі",
         "settings_changed": "Активні власні налаштування",

@@ -4170,9 +4170,12 @@
       "table": {
         "elo": "ELO",
         "last_sign_in_at": "Sidst logget ind",
+        "seen": "Set",
         "privilege": "Rettighed",
         "kdr": "KDR"
       },
+      "signed_in": "Logget ind {time}",
+      "outranks_you": "Over dig i rang",
       "detail": {
         "all_short": "Alle",
         "settings_changed": "Egne indstillinger aktive",

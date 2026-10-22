@@ -4912,11 +4912,6 @@
           "streaming": "Streamen kører videre. Denne GPU tager ingen nye streams, før den slås til igen.",
           "demos": "Afspilningen kører videre. Denne GPU tager ingen nye demoer, før den slås til igen.",
           "rendering": "Renderingen kører videre. Denne GPU tager ingen nye renders, før den slås til igen."
-        },
-        "state": {
-          "on": "Til",
-          "off": "Fra",
-          "running": "Kører"
         }
       }
     },

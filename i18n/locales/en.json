@@ -4912,11 +4912,6 @@
           "streaming": "The stream keeps running. This GPU takes no new streams until it's turned back on.",
           "demos": "The playback keeps running. This GPU takes no new demos until it's turned back on.",
           "rendering": "The render keeps running. This GPU takes no new renders until it's turned back on."
-        },
-        "state": {
-          "on": "On",
-          "off": "Off",
-          "running": "Running"
         }
       }
     },

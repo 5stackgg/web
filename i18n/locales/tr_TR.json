@@ -4912,11 +4912,6 @@
           "streaming": "Süren yayın devam eder. Yeniden açılana kadar bu GPU yeni yayın almaz.",
           "demos": "Süren oynatma devam eder. Yeniden açılana kadar bu GPU yeni demo almaz.",
           "rendering": "Süren render devam eder. Yeniden açılana kadar bu GPU yeni render almaz."
-        },
-        "state": {
-          "on": "Açık",
-          "off": "Kapalı",
-          "running": "Çalışıyor"
         }
       }
     },

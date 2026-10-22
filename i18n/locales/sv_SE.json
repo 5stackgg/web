@@ -4912,11 +4912,6 @@
           "streaming": "Strömmen fortsätter. Den här GPU:n tar inga nya strömmar förrän det slås på igen.",
           "demos": "Uppspelningen fortsätter. Den här GPU:n tar inga nya demos förrän det slås på igen.",
           "rendering": "Renderingen fortsätter. Den här GPU:n tar inga nya renderingar förrän det slås på igen."
-        },
-        "state": {
-          "on": "På",
-          "off": "Av",
-          "running": "Körs"
         }
       }
     },

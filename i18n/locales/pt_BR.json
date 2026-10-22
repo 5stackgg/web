@@ -4912,11 +4912,6 @@
           "streaming": "A transmissão em andamento continua. Esta GPU não aceita novas transmissões até você ativar de novo.",
           "demos": "A reprodução em andamento continua. Esta GPU não aceita novas demos até você ativar de novo.",
           "rendering": "A renderização em andamento continua. Esta GPU não aceita novas renderizações até você ativar de novo."
-        },
-        "state": {
-          "on": "Ligado",
-          "off": "Desligado",
-          "running": "Em execução"
         }
       }
     },

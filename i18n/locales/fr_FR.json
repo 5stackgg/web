@@ -4912,11 +4912,6 @@
           "streaming": "Le stream continue. Ce GPU n'accepte plus de nouveaux streams jusqu'à sa réactivation.",
           "demos": "La lecture continue. Ce GPU n'accepte plus de nouvelles démos jusqu'à sa réactivation.",
           "rendering": "Le rendu continue. Ce GPU n'accepte plus de nouveaux rendus jusqu'à sa réactivation."
-        },
-        "state": {
-          "on": "Activé",
-          "off": "Désactivé",
-          "running": "En cours"
         }
       }
     },

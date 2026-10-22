@@ -154,13 +154,11 @@ const showsBuild = computed(
         v-else-if="showsBuild"
         :keypath="`${GAME}.build`"
         tag="span"
-        class="whitespace-nowrap text-xs text-muted-foreground"
+        class="gsn-tag"
         scope="global"
       >
         <template #build>
-          <span class="font-mono text-[11.5px] text-foreground">{{
-            build
-          }}</span>
+          <b class="font-mono">{{ build }}</b>
         </template>
       </i18n-t>
     </div>
@@ -240,6 +238,29 @@ const showsBuild = computed(
 .gsn-st-update:hover {
   background: hsl(var(--tac-amber) / 0.2);
   color: hsl(var(--tac-amber));
+}
+.gsn-tag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 4px;
+  background: hsl(240 5% 9%);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: hsl(var(--muted-foreground));
+}
+.gsn-tag b {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: hsl(var(--foreground));
 }
 .gsn-sub {
   display: flex;

@@ -614,9 +614,17 @@ async function onRowAction(action: string, id: string) {
       askRemove(id);
       return;
     case "update":
+    case "update_csgo":
       try {
-        await updateGame(client, id);
-        toast({ title: t("game_server.toast.cs_updating") });
+        const csgo = action === "update_csgo";
+        await updateGame(client, id, csgo ? "csgo" : undefined);
+        toast({
+          title: !csgo
+            ? t("game_server.toast.cs_updating")
+            : node.csgo_build_id
+              ? t("game_server.toast.csgo_updating")
+              : t("game_server.toast.csgo_installing"),
+        });
       } catch (error: any) {
         toast({
           variant: "destructive",

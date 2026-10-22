@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { CircuitBoard } from "lucide-vue-next";
 import NodeMeter from "~/components/game-server-nodes/NodeMeter.vue";
 import TweenNumber from "~/components/game-server-nodes/TweenNumber.vue";
 import { TONE_TEXT } from "~/components/admin/tone";
@@ -19,8 +18,6 @@ import {
 const props = defineProps<{
   device: GpuDeviceView;
   enabled: boolean;
-  /** Something holds this card right now. */
-  working?: boolean;
   doing?: GpuDoing | null;
 }>();
 
@@ -40,9 +37,6 @@ const hasFacts = computed(
 <template>
   <div class="gcb" :data-off="!enabled" data-testid="gpu-card">
     <div class="gcb-h">
-      <span class="gcb-chip" :data-work="!!working">
-        <CircuitBoard class="relative size-[13px]" />
-      </span>
       <b class="min-w-0 truncate font-semibold">{{
         device.name || $t("pages.gpu_nodes.gpu_unknown")
       }}</b>
@@ -129,36 +123,6 @@ const hasFacts = computed(
 .gcb[data-off="true"] .gcb-h b {
   color: hsl(var(--muted-foreground));
 }
-.gcb-chip {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  flex: none;
-  border-radius: 6px;
-  border: 1px solid hsl(var(--border) / 0.6);
-  background: hsl(240 4% 11%);
-  color: hsl(var(--muted-foreground));
-  transition: color 150ms ease;
-}
-.gcb-chip::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  border: 1px solid hsl(330 75% 70% / 0.35);
-  background: hsl(330 75% 70% / 0.08);
-  opacity: 0;
-  transition: opacity 110ms ease-in;
-}
-.gcb-chip[data-work="true"] {
-  color: hsl(330 75% 70%);
-}
-.gcb-chip[data-work="true"]::before {
-  opacity: 1;
-  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
-}
 .gcb-facts {
   display: inline-flex;
   flex: none;
@@ -190,12 +154,5 @@ const hasFacts = computed(
   padding-top: 8px;
   border-top: 1px solid hsl(var(--border) / 0.6);
   font-size: 12px;
-}
-@media (prefers-reduced-motion: reduce) {
-  .gcb-chip,
-  .gcb-chip::before,
-  .gcb-chip[data-work="true"]::before {
-    transition: none;
-  }
 }
 </style>

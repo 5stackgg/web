@@ -4912,11 +4912,6 @@
           "streaming": "La retransmisión sigue en curso. Esta GPU no acepta nuevas retransmisiones hasta que se vuelva a activar.",
           "demos": "La reproducción sigue en curso. Esta GPU no acepta nuevas demos hasta que se vuelva a activar.",
           "rendering": "El renderizado sigue en curso. Esta GPU no acepta nuevos renders hasta que se vuelva a activar."
-        },
-        "state": {
-          "on": "Activado",
-          "off": "Desactivado",
-          "running": "En curso"
         }
       }
     },

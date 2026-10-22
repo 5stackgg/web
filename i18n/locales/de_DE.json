@@ -4912,11 +4912,6 @@
           "streaming": "Der Stream läuft weiter. Diese GPU nimmt erst nach dem Wiedereinschalten neue Streams an.",
           "demos": "Die Wiedergabe läuft weiter. Diese GPU nimmt erst nach dem Wiedereinschalten neue Demos an.",
           "rendering": "Das Rendering läuft weiter. Diese GPU nimmt erst nach dem Wiedereinschalten neue Renders an."
-        },
-        "state": {
-          "on": "An",
-          "off": "Aus",
-          "running": "Läuft"
         }
       }
     },

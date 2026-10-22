@@ -4912,11 +4912,6 @@
           "streaming": "Trwająca transmisja działa dalej. Do ponownego włączenia ten GPU nie przyjmuje nowych transmisji.",
           "demos": "Trwające odtwarzanie działa dalej. Do ponownego włączenia ten GPU nie przyjmuje nowych dem.",
           "rendering": "Trwający render działa dalej. Do ponownego włączenia ten GPU nie przyjmuje nowych renderów."
-        },
-        "state": {
-          "on": "Wł.",
-          "off": "Wył.",
-          "running": "Działa"
         }
       }
     },

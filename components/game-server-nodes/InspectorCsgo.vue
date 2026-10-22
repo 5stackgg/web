@@ -48,7 +48,7 @@ const action = computed(() =>
     <div class="flex min-h-7 items-center gap-2">
       <InspectorLabel>CS:GO</InspectorLabel>
       <span
-        class="rounded border border-border px-1.5 text-[10.5px] font-semibold leading-[18px] text-muted-foreground"
+        class="inline-flex h-5 items-center rounded border border-border bg-[hsl(240_5%_9%)] px-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
         >{{ t(`${INSPECTOR}.csgo.legacy`) }}</span
       >
       <span class="grow"></span>

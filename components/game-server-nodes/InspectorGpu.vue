@@ -6,7 +6,7 @@ import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import GpuCardBlock from "~/components/gpu-nodes/GpuCardBlock.vue";
 import WorkloadChips from "~/components/gpu-nodes/WorkloadChips.vue";
 import type { NodeLike } from "~/components/game-server-nodes/nodeState";
-import { MonitorCog, Pencil } from "lucide-vue-next";
+import { Pencil } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   PRESETS,
@@ -110,10 +110,6 @@ const doing = computed<GpuDoing | null>(() => {
 const doingFor = (index: number) =>
   index === 0 || doing.value?.quiet ? doing.value : null;
 
-const busy = computed(
-  () => (!!props.session && !props.session.booting) || !!props.bake,
-);
-
 const video = computed(() => {
   const stored: Record<string, number | null> =
     props.node.cs2_video_settings ?? {};
@@ -171,26 +167,25 @@ const video = computed(() => {
         :key="device.key"
         :device="device"
         :enabled="!!node.enabled"
-        :working="index === 0 && busy"
         :doing="doingFor(index)"
       />
     </div>
 
     <div class="giv" data-testid="gpu-video">
       <div class="giv-h">
-        <MonitorCog class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
         <b class="min-w-0 truncate font-semibold">{{
           t(`${INSPECTOR}.gpu.video`)
         }}</b>
         <span class="grow"></span>
         <Button
           variant="ghost"
-          size="xs"
-          class="-mr-1.5 h-6 shrink-0 gap-1 px-1.5 text-xs text-muted-foreground"
+          size="icon-sm"
+          class="-mr-1.5 h-6 w-6 shrink-0 text-muted-foreground"
+          :aria-label="t('common.edit')"
+          :title="t('common.edit')"
           @click="emit('editVideo')"
         >
           <Pencil class="h-3 w-3" />
-          {{ t("common.edit") }}
         </Button>
       </div>
       <p v-if="video.auto" class="giv-auto">

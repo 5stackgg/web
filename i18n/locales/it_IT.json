@@ -4912,11 +4912,6 @@
           "streaming": "Lo stream continua. Questa GPU non accetta nuovi stream finché non viene riattivato.",
           "demos": "La riproduzione continua. Questa GPU non accetta nuove demo finché non viene riattivata.",
           "rendering": "Il rendering continua. Questa GPU non accetta nuovi rendering finché non viene riattivato."
-        },
-        "state": {
-          "on": "Attivo",
-          "off": "Disattivo",
-          "running": "In corso"
         }
       }
     },

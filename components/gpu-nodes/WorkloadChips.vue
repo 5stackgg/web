@@ -5,7 +5,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import { useWorkloadToggle } from "~/components/gpu-nodes/useWorkloadToggle";
 import type { GpuWorkload } from "~/components/gpu-nodes/gpuSessions";
 
-// A GPU's three workloads as chips you flip in place: lit with an amber pip
+// A GPU's three workloads as chips you flip in place: lit with an amber lamp
 // when on, amber all over while that workload runs. A flag only gates new
 // work, so turning off the running one flips at once too: the session keeps
 // going, as its tooltip says. `full` lays them out as three equal columns.
@@ -117,14 +117,7 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
           />
           <component :is="chip.icon" v-else class="wlc-icon" />
           <span class="wlc-label">{{ t(chip.short) }}</span>
-          <span v-if="full" class="wlc-state" aria-hidden="true">{{
-            chip.running
-              ? t("pages.gpu_nodes.chips.state.running")
-              : chip.on
-                ? t("pages.gpu_nodes.chips.state.on")
-                : t("pages.gpu_nodes.chips.state.off")
-          }}</span>
-          <span v-else class="wlc-pip" aria-hidden="true"><i /></span>
+          <span class="wlc-lamp" aria-hidden="true"></span>
         </button>
       </template>
       <span class="grid max-w-[16rem] gap-0.5">
@@ -145,62 +138,45 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
 
 <style scoped>
 .wlc {
-  display: inline-flex;
+  display: inline-grid;
   flex: none;
-  align-items: center;
-  gap: 4px;
+  grid-auto-columns: auto;
+  grid-auto-flow: column;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  border-radius: 7px;
+  background: hsl(240 5% 8%);
 }
 .wlc[data-full="true"] {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
+  border-radius: 8px;
 }
 .wlc-chip {
   position: relative;
   isolation: isolate;
   display: inline-flex;
+  min-width: 0;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  height: 26px;
-  padding: 0 10px 0 7px;
-  border: 1px solid hsl(var(--border));
-  border-radius: 6px;
+  height: 28px;
+  padding: 0 10px 1px;
   color: hsl(var(--muted-foreground) / 0.65);
   font-size: 11.5px;
   font-weight: 600;
   white-space: nowrap;
   transition:
     color 150ms ease,
-    border-color 150ms ease,
-    opacity 150ms ease,
-    transform 150ms ease-out;
+    background-color 150ms ease,
+    opacity 150ms ease;
 }
 .wlc[data-full="true"] .wlc-chip {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  column-gap: 6px;
-  row-gap: 1px;
-  height: auto;
-  min-width: 0;
-  padding: 6px 10px 7px 9px;
-  text-align: left;
+  height: 36px;
+  padding-bottom: 2px;
 }
-.wlc-state {
-  grid-column: 2;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 14px;
-  color: hsl(var(--muted-foreground) / 0.8);
-}
-.wlc-chip[aria-pressed="true"] .wlc-state {
-  color: hsl(var(--success));
-}
-.wlc-chip[data-running="true"] .wlc-state {
-  color: hsl(var(--tac-amber));
+.wlc-chip + .wlc-chip {
+  border-left: 1px solid hsl(var(--border));
 }
 /* The on surface and the running wash fade in under the label. */
 .wlc-chip::before,
@@ -209,7 +185,6 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
   position: absolute;
   inset: 0;
   z-index: -1;
-  border-radius: 5px;
   opacity: 0;
   transition: opacity 110ms ease-in;
 }
@@ -221,18 +196,14 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
 }
 .wlc-chip:hover {
   color: hsl(var(--muted-foreground));
-  border-color: hsl(240 4% 26%);
-}
-.wlc-chip:active {
-  transform: scale(0.97);
+  background: hsl(240 4% 10%);
 }
 .wlc-chip:focus-visible {
   outline: 2px solid hsl(var(--tac-amber) / 0.5);
-  outline-offset: 1px;
+  outline-offset: -2px;
 }
 .wlc-chip[aria-pressed="true"] {
   color: hsl(var(--foreground));
-  border-color: hsl(240 4% 24%);
 }
 .wlc-chip[aria-pressed="true"]::before,
 .wlc-chip[data-running="true"]::after {
@@ -241,7 +212,6 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
 }
 .wlc-chip[data-running="true"] {
   color: hsl(var(--tac-amber));
-  border-color: hsl(var(--tac-amber) / 0.45);
 }
 .wlc-chip[aria-busy="true"] {
   cursor: progress;
@@ -249,9 +219,6 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
 .wlc-chip[aria-disabled="true"] {
   opacity: 0.45;
   cursor: default;
-}
-.wlc-chip[aria-disabled="true"]:active {
-  transform: none;
 }
 .wlc-icon {
   width: 13px;
@@ -263,26 +230,33 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.wlc-pip {
+.wlc-lamp {
   position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px hsl(240 4% 36%);
+  right: 9px;
+  bottom: 0;
+  left: 9px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: hsl(240 4% 20%);
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease;
 }
-.wlc-pip > i {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
+.wlc[data-full="true"] .wlc-lamp {
+  right: 14px;
+  left: 14px;
+}
+.wlc-chip[aria-pressed="true"] .wlc-lamp {
   background: hsl(var(--tac-amber));
-  opacity: 0;
-  transition: opacity 110ms ease-in;
 }
-.wlc-chip[aria-pressed="true"] .wlc-pip > i {
-  opacity: 1;
-  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
+.wlc-chip[data-running="true"] .wlc-lamp {
+  box-shadow: 0 0 10px 1px hsl(var(--tac-amber) / 0.55);
+  animation: wlc-breathe 2.4s ease-in-out infinite;
+}
+@keyframes wlc-breathe {
+  50% {
+    box-shadow: 0 0 4px 0 hsl(var(--tac-amber) / 0.25);
+  }
 }
 /* The GPU nodes table, squeezed by a docked panel: icon-only chips. */
 @container gpn-gpus (max-width: 1080px) {
@@ -290,18 +264,22 @@ function onChip(key: GpuWorkload, event: MouseEvent) {
     display: none;
   }
   .wlc:not([data-full="true"]) .wlc-chip {
-    padding: 0 8px;
+    padding: 0 9px 1px;
+  }
+  .wlc:not([data-full="true"]) .wlc-lamp {
+    right: 6px;
+    left: 6px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .wlc-chip,
   .wlc-chip::before,
   .wlc-chip::after,
-  .wlc-pip > i {
+  .wlc-lamp {
     transition: none !important;
   }
-  .wlc-chip:active {
-    transform: none;
+  .wlc-chip[data-running="true"] .wlc-lamp {
+    animation: none;
   }
 }
 </style>

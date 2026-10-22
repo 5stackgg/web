@@ -489,6 +489,9 @@ export default defineNuxtConfig({
     ],
     build: {
       target: "esnext",
+      // The gzip-size report re-compresses every chunk just to print sizes;
+      // on the amd64 image build it ran the 8 GB heap out.
+      reportCompressedSize: false,
     },
   },
 });

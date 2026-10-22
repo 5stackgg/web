@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Ранг"
       },
       "exclude_tournaments": "Виключити турніри",
-      "empty_title": "Рейтингу поки немає"
+      "empty_title": "Рейтингу поки немає",
+      "you": "Ви",
+      "find_me": "#{rank} · Стор. {page}",
+      "all_seasons": "Усі сезони разом",
+      "synced_from": "Синхронізовано з {source}. Сезон, тип матчу та джерело не застосовуються.",
+      "line": {
+        "top_of": "Найкращі · {value}",
+        "top_on": "Найкращі в {value}",
+        "ranks": "Місця {value}"
+      },
+      "podium_empty": "Більше нікого в рейтингу",
+      "medals": "Медалі",
+      "distance_to_first": "Відставання від #1",
+      "matches_count": "{count} матч | {count} матчів",
+      "panel": {
+        "title": "Статистика гравця",
+        "close": "Закрити статистику гравця",
+        "of_total": "з {total} у {board}",
+        "not_ranked": "Немає в рейтингу {board}",
+        "leads": "Випереджає #{rank} {name} на {gap}",
+        "behind": "{gap} до #{rank} {name}",
+        "tied": "Нарівні з #{rank} {name}",
+        "only_player": "Єдиний гравець у рейтингу",
+        "every_board": "Усі рейтинги",
+        "view_profile": "Відкрити профіль"
+      }
     },
     "database": {
       "query_copied": "Запит скопійовано в буфер обміну",

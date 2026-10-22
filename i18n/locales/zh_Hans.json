@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier 排名"
       },
       "exclude_tournaments": "排除赛事",
-      "empty_title": "暂无排名"
+      "empty_title": "暂无排名",
+      "you": "你",
+      "find_me": "#{rank} · 第 {page} 页",
+      "all_seasons": "所有赛季合计",
+      "synced_from": "同步自 {source}。赛季、比赛类型和来源不适用。",
+      "line": {
+        "top_of": "{value} 榜首",
+        "top_on": "{value} 榜首",
+        "ranks": "第 {value} 名"
+      },
+      "podium_empty": "暂无其他上榜玩家",
+      "medals": "奖牌",
+      "distance_to_first": "与第 1 名的差距",
+      "matches_count": "{count} 场比赛 | {count} 场比赛",
+      "panel": {
+        "title": "玩家数据",
+        "close": "关闭玩家数据",
+        "of_total": "{board} 共 {total} 人",
+        "not_ranked": "未上 {board} 榜",
+        "leads": "领先 #{rank} {name} {gap}",
+        "behind": "落后 #{rank} {name} {gap}",
+        "tied": "与 #{rank} {name} 持平",
+        "only_player": "唯一上榜玩家",
+        "every_board": "所有榜单",
+        "view_profile": "查看资料"
+      }
     },
     "database": {
       "query_copied": "查询已复制到剪贴板",

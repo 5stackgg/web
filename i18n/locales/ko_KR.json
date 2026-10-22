@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier 랭크"
       },
       "exclude_tournaments": "토너먼트 제외",
-      "empty_title": "아직 순위가 없습니다"
+      "empty_title": "아직 순위가 없습니다",
+      "you": "나",
+      "find_me": "#{rank} · {page}페이지",
+      "all_seasons": "모든 시즌 합산",
+      "synced_from": "{source}에서 동기화됨. 시즌, 매치 유형, 출처는 적용되지 않습니다.",
+      "line": {
+        "top_of": "{value} 상위",
+        "top_on": "{value} 상위",
+        "ranks": "{value}위"
+      },
+      "podium_empty": "아직 다른 순위가 없습니다",
+      "medals": "메달",
+      "distance_to_first": "1위와의 차이",
+      "matches_count": "{count}경기 | {count}경기",
+      "panel": {
+        "title": "플레이어 통계",
+        "close": "플레이어 통계 닫기",
+        "of_total": "{board} {total}명 중",
+        "not_ranked": "{board} 순위 없음",
+        "leads": "#{rank} {name}보다 {gap} 앞섬",
+        "behind": "#{rank} {name}보다 {gap} 뒤짐",
+        "tied": "#{rank} {name}와 동점",
+        "only_player": "유일한 순위 플레이어",
+        "every_board": "모든 순위표",
+        "view_profile": "프로필 보기"
+      }
     },
     "database": {
       "query_copied": "쿼리가 클립보드에 복사되었습니다",

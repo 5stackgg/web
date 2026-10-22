@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { dateLocale } from "~/utilities/dateLocale";
 import gql from "graphql-tag";
-import { ref, computed, watch, onMounted, nextTick } from "vue";
+import {
+  ref,
+  computed,
+  watch,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+} from "vue";
 import { isRestoringHistory } from "~/composables/useScrollRestoration";
 import { useRestoredRefs } from "~/composables/useRestoredState";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import StatLabel from "~/components/common/StatLabel.vue";
-import StatChevron from "~/components/StatChevron.vue";
 import Pagination from "~/components/Pagination.vue";
 import {
-  Trophy,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
+  ArrowRight,
+  RefreshCw,
   SlidersHorizontal,
-  X,
+  Trophy,
 } from "lucide-vue-next";
 import {
   Select,
@@ -30,6 +32,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -38,188 +41,29 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useDeferredLoading } from "~/composables/useDeferredLoading";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
-import {
-  tacticalTabsListClasses,
-  tacticalTabsTriggerClasses,
-} from "~/utilities/tacticalClasses";
+import LeaderboardBoard from "~/components/leaderboard/LeaderboardBoard.vue";
+import LeaderboardYouTag from "~/components/leaderboard/LeaderboardYouTag.vue";
+import LeaderboardPlayerPanel, {
+  type LeaderboardFilters,
+  type LeaderboardPanelPlayer,
+} from "~/components/leaderboard/LeaderboardPlayerPanel.vue";
 import { useAuthStore } from "~/stores/AuthStore";
-import { eloTierColor } from "~/utils/eloTier";
 import {
-  KD_TIER,
-  HLTV_TIER,
-  KAST_TIER,
-  ADR_TIER,
-  type StatTierConfig,
-} from "~/utils/statTiers";
+  EXTERNAL_RANK_SOURCES,
+  LEADERBOARD_CATEGORIES,
+  ROLE_CATEGORIES,
+  leaderboardOrderBy,
+  type LeaderboardEntry,
+} from "~/utilities/leaderboard";
 
-// Page-local chevron tiers for the rate stats without a canonical config.
-const KPR_TIER: StatTierConfig = { dir: "high", cuts: [0.8, 0.7, 0.6, 0.5] };
-const DPR_TIER: StatTierConfig = { dir: "low", cuts: [0.6, 0.65, 0.7, 0.75] };
-const UDR_TIER: StatTierConfig = { dir: "high", cuts: [8, 6, 4, 2.5] };
-const HS_TIER: StatTierConfig = { dir: "high", cuts: [55, 45, 35, 25] };
-const WIN_RATE_TIER: StatTierConfig = { dir: "high", cuts: [58, 52, 48, 42] };
-
-interface LeaderboardEntry {
-  rank: number;
-  player_steam_id: string;
-  player_name: string;
-  player_avatar_url: string | null;
-  player_custom_avatar_url: string | null;
-  player_country: string | null;
-  value: number;
-  secondary_value: number | null;
-  tertiary_value: number | null;
-  matches_played: number | null;
-}
-
-type SortField =
-  "value" | "secondary_value" | "tertiary_value" | "matches_played";
-
-const CATEGORY_CONFIG: Record<
-  string,
-  {
-    columns: {
-      value: string;
-      secondary_value?: string;
-      tertiary_value?: string;
-      matches_played?: string;
-    };
-    // Maps a column to a `stat_glossary` key so its header shows the
-    // dotted-underline hover tooltip. Only cryptic stat abbreviations get one;
-    // word columns (Wins, Rounds, Trophies…) are left plain.
-    glossary?: Partial<Record<SortField, string>>;
-    // Maps a column to a chevron tier config so its value shows the
-    // good/bad directional chevron (matching the match scoreboard).
-    tiers?: Partial<Record<SortField, StatTierConfig>>;
-    sortable: SortField[];
-  }
-> = {
-  faceit_elo: {
-    columns: {
-      value: "pages.leaderboard.col.faceit_elo",
-      secondary_value: "pages.leaderboard.col.faceit_level",
-    },
-    sortable: ["value", "secondary_value"],
-  },
-  premier_rank: {
-    columns: {
-      value: "pages.leaderboard.col.premier_rank",
-    },
-    sortable: ["value"],
-  },
-  elo: {
-    columns: {
-      value: "pages.leaderboard.col.elo",
-      secondary_value: "pages.leaderboard.col.elo_change",
-      tertiary_value: "pages.leaderboard.col.win_streak",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "elo", secondary_value: "elo_change" },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_kdr: {
-    columns: {
-      value: "pages.leaderboard.col.kdr",
-      secondary_value: "pages.leaderboard.col.kills",
-      tertiary_value: "pages.leaderboard.col.deaths",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "kd" },
-    tiers: { value: KD_TIER },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_win_rate: {
-    columns: {
-      value: "common.stats.win_rate",
-      secondary_value: "pages.leaderboard.col.wins",
-      tertiary_value: "pages.leaderboard.col.losses",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    tiers: { value: WIN_RATE_TIER },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  highest_hs_pct: {
-    columns: {
-      value: "pages.leaderboard.col.hs_pct",
-      secondary_value: "pages.leaderboard.col.total_kills",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "hs" },
-    tiers: { value: HS_TIER },
-    sortable: ["value", "secondary_value", "matches_played"],
-  },
-  awards: {
-    columns: {
-      value: "pages.leaderboard.col.gold",
-      secondary_value: "pages.leaderboard.col.silver",
-      tertiary_value: "pages.leaderboard.col.bronze",
-      matches_played: "pages.leaderboard.col.mvp",
-    },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_rating: {
-    columns: {
-      value: "pages.leaderboard.col.rating",
-      secondary_value: "pages.leaderboard.col.adr",
-      tertiary_value: "pages.leaderboard.col.rounds",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "hltv", secondary_value: "adr" },
-    tiers: { value: HLTV_TIER, secondary_value: ADR_TIER },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_adr: {
-    columns: {
-      value: "pages.leaderboard.col.adr",
-      secondary_value: "pages.leaderboard.col.rating",
-      tertiary_value: "pages.leaderboard.col.rounds",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "adr", secondary_value: "hltv" },
-    tiers: { value: ADR_TIER, secondary_value: HLTV_TIER },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_kpr: {
-    columns: {
-      value: "pages.leaderboard.col.kpr",
-      secondary_value: "pages.leaderboard.col.dpr",
-      tertiary_value: "pages.leaderboard.col.rounds",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "kpr", secondary_value: "dpr" },
-    tiers: { value: KPR_TIER, secondary_value: DPR_TIER },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_kast: {
-    columns: {
-      value: "pages.leaderboard.col.kast",
-      secondary_value: "pages.leaderboard.col.rating",
-      tertiary_value: "pages.leaderboard.col.rounds",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "kast", secondary_value: "hltv" },
-    tiers: { value: KAST_TIER, secondary_value: HLTV_TIER },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_udr: {
-    columns: {
-      value: "pages.leaderboard.col.udr",
-      secondary_value: "pages.leaderboard.col.util_damage",
-      tertiary_value: "pages.leaderboard.col.rounds",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    glossary: { value: "udr" },
-    tiers: { value: UDR_TIER },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-};
-
-const TIER_COLORS: Record<string, string> = {
-  mvp: "hsl(195 85% 60%)",
-  gold: "hsl(45 95% 60%)",
-  silver: "hsl(0 0% 78%)",
-  bronze: "hsl(28 70% 52%)",
-};
+// The player panel sits beside the board from this page width; narrower, it
+// opens as a sheet.
+const SIDE_PANEL_MIN_WIDTH = 1024;
+// Wide enough for the board's full 1280px plus the panel, the panel opens in
+// the gutter beside the board instead of taking width from it.
+const GUTTER_MIN_WIDTH = 1664;
+// The panel column's leave, so its content stays until the column is shut.
+const PANEL_CLOSE_MS = 260;
 
 const LEADERBOARD_QUERY = gql`
   query GetLeaderboard(
@@ -271,6 +115,9 @@ const LEADERBOARD_QUERY = gql`
     ) {
       aggregate {
         count
+        max {
+          value
+        }
       }
     }
   }
@@ -311,7 +158,7 @@ const loggedInSteamId = computed(() => auth.me?.steam_id ?? null);
 
 const category = useRouteTab({
   defaultTab: "elo",
-  tabs: Object.keys(CATEGORY_CONFIG),
+  tabs: Object.keys(LEADERBOARD_CATEGORIES),
 });
 
 const MATCH_TYPE_OPTIONS = [
@@ -328,14 +175,6 @@ const SOURCE_OPTIONS = [
   "tournament",
   "league",
 ] as const;
-// Categories backed by per-map stats — the only ones the role view can scope.
-const ROLE_CATEGORIES = new Set([
-  "best_rating",
-  "best_adr",
-  "best_kpr",
-  "best_kast",
-  "best_udr",
-]);
 
 function readQueryParam<T extends string>(
   key: string,
@@ -387,6 +226,9 @@ const derivedSeasonId = computed(() =>
     ? scope.value.slice("season:".length)
     : null,
 );
+const scopeSeason = computed(
+  () => seasons.value.find((s) => s.id === derivedSeasonId.value) ?? null,
+);
 const matchType = ref<string>(
   readQueryParam("type", MATCH_TYPE_OPTIONS, "Competitive"),
 );
@@ -395,16 +237,15 @@ const roleFilter = ref<string>(readQueryParam("role", ROLE_OPTIONS, "all"));
 const sourceFilter = ref<string>(
   readQueryParam("source", SOURCE_OPTIONS, "overall"),
 );
+
+// FACEIT ratings and Premier ranks are snapshots we cache from elsewhere, so
+// the bar stays where it is with its controls off.
+const externalSource = computed(
+  () => EXTERNAL_RANK_SOURCES[category.value] ?? null,
+);
+const isExternalRank = computed(() => externalSource.value !== null);
 const supportsRole = computed(
   () => ROLE_CATEGORIES.has(category.value) && !isExternalRank.value,
-);
-
-// FACEIT ratings and Premier ranks are snapshots we cache from elsewhere, not
-// anything derived from matches played here, so none of the match filters mean
-// anything for them - showing a scope of "last 7 days" would read as applied.
-const EXTERNAL_RANK_CATEGORIES = new Set(["faceit_elo", "premier_rank"]);
-const isExternalRank = computed(() =>
-  EXTERNAL_RANK_CATEGORIES.has(category.value),
 );
 
 // Default to the current season when seasons are on and one is active; otherwise
@@ -417,20 +258,20 @@ const defaultScope = computed(() =>
 function seasonScopeLabel(s: Season): string {
   return t("pages.seasons.season_number", { number: s.number ?? "?" });
 }
+function formatDay(date: Date, withYear = true): string {
+  return date.toLocaleDateString(dateLocale(), {
+    year: withYear ? "numeric" : undefined,
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
 function seasonRangeLabel(s: Season): string {
-  const fmt = (iso: string) =>
-    new Date(iso).toLocaleDateString(dateLocale(), {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      timeZone: "UTC",
-    });
-  const range = `${fmt(s.starts_at)} – ${
-    s.ends_at ? fmt(s.ends_at) : t("pages.seasons.ongoing")
+  const range = `${formatDay(new Date(s.starts_at))} – ${
+    s.ends_at ? formatDay(new Date(s.ends_at)) : t("pages.seasons.ongoing")
   }`;
   return s.description ? `${range} · ${s.description}` : range;
 }
-// Mobile filter helpers — badge count + chip labels relative to defaults.
 const leaderboardFilterCount = computed(() => {
   let n = 0;
   if (scope.value && scope.value !== defaultScope.value) n++;
@@ -442,9 +283,8 @@ const leaderboardFilterCount = computed(() => {
 });
 const scopeLabel = computed(() => {
   if (derivedSeasonId.value) {
-    const s = seasons.value.find((x) => x.id === derivedSeasonId.value);
-    return s
-      ? seasonScopeLabel(s)
+    return scopeSeason.value
+      ? seasonScopeLabel(scopeSeason.value)
       : t("pages.leaderboard.time_periods.all_time");
   }
   return (
@@ -455,29 +295,29 @@ const scopeLabel = computed(() => {
     }[scope.value] ?? t("pages.leaderboard.time_periods.all_time")
   );
 });
-const matchTypeLabel = computed(() =>
-  t(
-    `pages.leaderboard.match_types.${
-      matchType.value === "all" ? "all" : matchType.value.toLowerCase()
-    }`,
-  ),
-);
-const roleLabel = computed(() =>
-  t(`pages.leaderboard.roles.${roleFilter.value}`),
-);
+// The bar's second line: the dates behind the scope picked.
+const scopeDetail = computed(() => {
+  if (scopeSeason.value) return seasonRangeLabel(scopeSeason.value);
+  const days = derivedWindowDays.value;
+  if (days) {
+    const to = new Date();
+    const from = new Date(to.getTime() - days * 86_400_000);
+    return `${formatDay(from, from.getUTCFullYear() !== to.getUTCFullYear())} – ${formatDay(to)}`;
+  }
+  return seasonsEnabled.value ? t("pages.leaderboard.all_seasons") : "";
+});
 
 const entries = ref<LeaderboardEntry[]>([]);
 const total = ref(0);
+const leaderValue = ref<number | null>(null);
 const page = ref(1);
 const perPage = usePerPage("leaderboard");
 const loading = ref(true);
 const { skeleton, refreshing, loaded } = useDeferredLoading(
   () => loading.value,
 );
-const sortBy = ref<SortField | null>(null);
-const sortDir = ref<"asc" | "desc">("desc");
-// Back to the leaderboard lands on the same page and sort.
-useRestoredRefs("leaderboard", { page, sortBy, sortDir });
+// Back to the leaderboard lands on the same page.
+useRestoredRefs("leaderboard", { page });
 // Steam id from the URL — when set we look up that player's rank, jump
 // to the page they sit on, and highlight their row on render.
 const highlightedSteamId = computed(() => {
@@ -491,57 +331,23 @@ let fetchGeneration = 0;
 // collects them: FACEIT needs the import turned on, Premier ranks come out of
 // imported Valve demos.
 const categories = computed(() => [
-  { value: "elo" },
-  { value: "best_rating" },
-  { value: "best_adr" },
-  { value: "best_kpr" },
-  { value: "best_kast" },
-  { value: "best_udr" },
-  { value: "best_kdr" },
-  { value: "best_win_rate" },
-  { value: "highest_hs_pct" },
-  { value: "awards" },
-  ...(appSettings.faceitEnabled ? [{ value: "faceit_elo" }] : []),
-  ...(appSettings.linkedAccountsEnabled ? [{ value: "premier_rank" }] : []),
+  "elo",
+  "best_rating",
+  "best_adr",
+  "best_kpr",
+  "best_kast",
+  "best_udr",
+  "best_kdr",
+  "best_win_rate",
+  "highest_hs_pct",
+  "awards",
+  ...(appSettings.faceitEnabled ? ["faceit_elo"] : []),
+  ...(appSettings.linkedAccountsEnabled ? ["premier_rank"] : []),
 ]);
-
-const config = computed(() => CATEGORY_CONFIG[category.value]);
-
-const columnLabels = computed(() => {
-  const cols = config.value.columns;
-  return {
-    value: t(cols.value),
-    secondary_value: cols.secondary_value ? t(cols.secondary_value) : null,
-    tertiary_value: cols.tertiary_value ? t(cols.tertiary_value) : null,
-    matches_played: cols.matches_played ? t(cols.matches_played) : null,
-  };
-});
-
-// Glossary key per column for the current category (empty object if none),
-// so headers can render a StatLabel tooltip on the cryptic stat columns.
-const columnGlossary = computed<Partial<Record<SortField, string>>>(
-  () => config.value.glossary ?? {},
-);
 
 const offset = computed(() => (page.value - 1) * perPage.value);
 
-const orderBy = computed(() => {
-  if (sortBy.value) {
-    return [{ [sortBy.value]: sortDir.value }];
-  }
-  if (category.value === "awards") {
-    return [
-      { matches_played: "desc" },
-      { value: "desc" },
-      { secondary_value: "desc" },
-      { tertiary_value: "desc" },
-    ];
-  }
-  return [{ value: "desc" }];
-});
-
-const queryVariables = computed(() => ({
-  category: category.value,
+const filters = computed<LeaderboardFilters>(() => ({
   window_days: derivedWindowDays.value,
   season_id: derivedSeasonId.value,
   match_type: matchType.value === "all" ? null : matchType.value,
@@ -549,42 +355,28 @@ const queryVariables = computed(() => ({
   role:
     supportsRole.value && roleFilter.value !== "all" ? roleFilter.value : null,
   source: sourceFilter.value,
-  limit: perPage.value,
-  offset: offset.value,
-  order_by: orderBy.value,
 }));
 
-function isSortable(field: SortField): boolean {
-  return config.value.sortable.includes(field);
-}
+const rankVariables = computed(() => ({
+  category: category.value,
+  window_days: filters.value.window_days,
+  season_id: filters.value.season_id,
+  match_type: filters.value.match_type,
+  exclude_tournaments: filters.value.exclude_tournaments,
+  source: filters.value.source,
+}));
 
-// Chevron tier config for a column in the current category (undefined = no
-// chevron). Skips ELO/awards, which convey quality via their own tint.
-function statTier(field: SortField): StatTierConfig | undefined {
-  return config.value.tiers?.[field];
-}
+const queryVariables = computed(() => ({
+  category: category.value,
+  ...filters.value,
+  limit: perPage.value,
+  offset: offset.value,
+  order_by: leaderboardOrderBy(category.value),
+}));
 
-function sortIcon(field: SortField) {
-  if (sortBy.value !== field) return ArrowUpDown;
-  return sortDir.value === "asc" ? ArrowUp : ArrowDown;
-}
-
-function toggleSort(field: SortField) {
-  if (!isSortable(field)) return;
-  if (sortBy.value === field) {
-    if (sortDir.value === "desc") {
-      sortDir.value = "asc";
-    } else {
-      sortBy.value = null;
-      sortDir.value = "desc";
-    }
-  } else {
-    sortBy.value = field;
-    sortDir.value = "desc";
-  }
-  page.value = 1;
-  fetchLeaderboard();
-}
+// Set by a jump to someone's rank on another board; the filter change that
+// follows lands on that page instead of the first.
+let pendingPage: number | null = null;
 
 function onFilterChange() {
   // A filter settling while back/forward restores the page is not the user
@@ -593,12 +385,14 @@ function onFilterChange() {
     fetchLeaderboard();
     return;
   }
-  page.value = 1;
+  page.value = pendingPage ?? 1;
+  pendingPage = null;
   pageAlignedForSteamId = null;
   fetchLeaderboard();
 }
 
 function toggleExcludeTournaments() {
+  if (isExternalRank.value) return;
   excludeTournaments.value = !excludeTournaments.value;
 }
 
@@ -624,22 +418,14 @@ async function alignPageToHighlightedPlayer(): Promise<boolean> {
   // The rank lookup can't scope by role, so for a role-filtered category it
   // would resolve the player's role-less rank and snap to the wrong page.
   // Skip the snap entirely while a role filter is active.
-  if (supportsRole.value && roleFilter.value !== "all") {
+  if (filters.value.role) {
     pageAlignedForSteamId = sid;
     return true;
   }
   try {
     const { data } = await apolloClient.query({
       query: PLAYER_RANK_QUERY,
-      variables: {
-        category: category.value,
-        window_days: derivedWindowDays.value,
-        season_id: derivedSeasonId.value,
-        match_type: matchType.value === "all" ? null : matchType.value,
-        exclude_tournaments: Boolean(excludeTournaments.value),
-        source: sourceFilter.value,
-        player_steam_id: sid,
-      },
+      variables: { ...rankVariables.value, player_steam_id: sid },
       fetchPolicy: "network-only",
     });
     const row = (data as any)?.get_player_leaderboard_rank?.[0];
@@ -693,13 +479,17 @@ async function fetchLeaderboard() {
       matches_played:
         row.matches_played != null ? Number(row.matches_played) : null,
     }));
-    total.value =
-      Number(data?.get_leaderboard_aggregate?.aggregate?.count) || 0;
+    const aggregate = data?.get_leaderboard_aggregate?.aggregate;
+    total.value = Number(aggregate?.count) || 0;
+    leaderValue.value =
+      aggregate?.max?.value != null ? Number(aggregate.max.value) : null;
+    void fetchMyRank(gen);
   } catch (error) {
     if (gen !== fetchGeneration) return;
     console.error("Error fetching leaderboard:", error);
     entries.value = [];
     total.value = 0;
+    leaderValue.value = null;
   } finally {
     if (gen === fetchGeneration) {
       loading.value = false;
@@ -707,79 +497,74 @@ async function fetchLeaderboard() {
   }
 }
 
-function formatValue(value: number): string {
-  if (value == null) return "—";
-  switch (category.value) {
-    case "elo":
-      return Math.round(value).toLocaleString();
-    case "best_kdr":
-    case "best_kpr":
-      return value.toFixed(2);
-    case "best_rating":
-      return value.toFixed(2);
-    case "best_adr":
-    case "best_udr":
-      return value.toFixed(1);
-    case "best_win_rate":
-    case "highest_hs_pct":
-    case "best_kast":
-      return value.toFixed(1) + "%";
-    case "awards":
-    case "faceit_elo":
-    case "premier_rank":
-      return Math.round(value).toLocaleString();
-    default:
-      return String(value);
+// The signed-in player's rank, for the "You · #N" jump when they aren't on
+// the page shown. Paging doesn't move it, so it's asked once per board and
+// filter set.
+const myRank = ref<number | null>(null);
+let myRankKey = "";
+async function fetchMyRank(gen: number) {
+  const sid = loggedInSteamId.value;
+  if (!sid || filters.value.role) {
+    myRank.value = null;
+    myRankKey = "";
+    return;
+  }
+  const key = JSON.stringify([sid, rankVariables.value]);
+  if (key === myRankKey) return;
+  myRankKey = key;
+  myRank.value = null;
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_RANK_QUERY,
+      variables: { ...rankVariables.value, player_steam_id: sid },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== fetchGeneration || key !== myRankKey) return;
+    const rank = Number((data as any)?.get_player_leaderboard_rank?.[0]?.rank);
+    myRank.value = Number.isFinite(rank) && rank > 0 ? rank : null;
+  } catch {
+    if (key === myRankKey) myRankKey = "";
   }
 }
 
-function formatSecondary(value: number | null): string {
-  if (value == null) return "—";
-  if (category.value === "elo") {
-    const rounded = Math.round(value);
-    return (rounded >= 0 ? "+" : "") + rounded.toLocaleString();
+const myRankJump = computed(() => {
+  const sid = loggedInSteamId.value;
+  if (!sid || !myRank.value) return null;
+  if (entries.value.some((e) => e.player_steam_id === sid)) return null;
+  return {
+    rank: myRank.value,
+    page: Math.max(1, Math.ceil(myRank.value / perPage.value)),
+  };
+});
+
+function jumpToMe() {
+  const jump = myRankJump.value;
+  if (!jump) return;
+  scrollTarget = loggedInSteamId.value;
+  onPageChange(jump.page);
+}
+
+function scrollToRow(sid: string) {
+  rootEl.value
+    ?.querySelector(`[data-steam-id="${CSS.escape(sid)}"]`)
+    ?.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+
+const boardLine = computed(() => {
+  if (page.value > 1 && entries.value.length) {
+    return {
+      kind: "ranks",
+      value: `${(offset.value + 1).toLocaleString()}–${(
+        offset.value + entries.value.length
+      ).toLocaleString()}`,
+    };
   }
-  switch (category.value) {
-    case "best_rating":
-      return value.toFixed(1); // secondary = ADR
-    case "best_kast":
-    case "best_adr":
-      return value.toFixed(2); // secondary = rating
-    case "best_kpr":
-      return value.toFixed(2); // secondary = DPR
-    default:
-      return Math.round(value).toLocaleString();
-  }
-}
-
-function formatTertiary(value: number | null): string {
-  if (value == null) return "—";
-  return Math.round(value).toLocaleString();
-}
-
-function awardTierColor(
-  field: "value" | "secondary_value" | "tertiary_value" | "matches_played",
-): string | null {
-  if (category.value !== "awards") return null;
-  if (field === "value") return TIER_COLORS.gold;
-  if (field === "secondary_value") return TIER_COLORS.silver;
-  if (field === "tertiary_value") return TIER_COLORS.bronze;
-  if (field === "matches_played") return TIER_COLORS.mvp;
-  return null;
-}
-
-// Tint the primary value with its ELO rank-tier color (Recruit → Apex),
-// matching the player ELO display. Only the ELO category's value column.
-function eloValueColor(value: number): string | undefined {
-  if (category.value !== "elo") return undefined;
-  return eloTierColor(value);
-}
+  return externalSource.value
+    ? { kind: "top_on", value: externalSource.value }
+    : { kind: "top_of", value: scopeLabel.value };
+});
 
 watch(category, () => {
-  if (!isRestoringHistory()) {
-    sortBy.value = null;
-    sortDir.value = "desc";
-  }
   // Clear a stale role when moving to a category that has no role view, so it
   // doesn't silently reapply on return to a role category.
   if (!supportsRole.value && roleFilter.value !== "all") {
@@ -796,41 +581,125 @@ watch(highlightedSteamId, (sid) => {
   // A different player was deep-linked — re-resolve their page.
   if (sid && sid !== pageAlignedForSteamId) {
     pageAlignedForSteamId = null;
+    scrollTarget = sid;
     fetchLeaderboard();
   }
 });
 
-// Scroll the highlighted player into view once the entries land — only
-// the first time we see them, so a user scrolling away after the snap
-// doesn't get yanked back.
-const highlightedRowEl = ref<HTMLElement | null>(null);
-let highlightScrolledForSteamId: string | null = null;
-function setHighlightedRowRef(
-  el: Element | { $el?: Element } | null,
-  steamId: string,
-) {
-  if (steamId !== highlightedSteamId.value) return;
-  const node = (el as { $el?: Element } | null)?.$el ?? (el as Element | null);
-  if (node instanceof HTMLElement) {
-    highlightedRowEl.value = node;
-  }
+// Brings a row into view once the entries holding it land: the deep-linked
+// player, or whoever a jump went looking for.
+const rootEl = ref<HTMLElement | null>(null);
+let scrollTarget: string | null = highlightedSteamId.value;
+watch(entries, (rows) => {
+  const sid = scrollTarget;
+  if (!sid || !rows.some((e) => e.player_steam_id === sid)) return;
+  scrollTarget = null;
+  void nextTick(() => scrollToRow(sid));
+});
+
+// The clicked player's stats: a column beside the board when there's room
+// (in the gutter, when there's room for that too), a sheet when there isn't.
+const layoutWidth = ref(0);
+const sideFits = computed(() => layoutWidth.value >= SIDE_PANEL_MIN_WIDTH);
+const gutterFits = computed(() => layoutWidth.value >= GUTTER_MIN_WIDTH);
+const selected = ref<LeaderboardPanelPlayer | null>(null);
+const panelOpen = ref(false);
+const drawerOpen = ref(false);
+let clearSelectedTimer: ReturnType<typeof setTimeout> | null = null;
+
+const selectedEntry = computed(
+  () =>
+    entries.value.find((e) => e.player_steam_id === selected.value?.steam_id) ??
+    null,
+);
+const selectedSteamId = computed(() =>
+  panelOpen.value || drawerOpen.value
+    ? (selected.value?.steam_id ?? null)
+    : null,
+);
+
+function showPlayer(player: LeaderboardPanelPlayer) {
+  if (clearSelectedTimer) clearTimeout(clearSelectedTimer);
+  clearSelectedTimer = null;
+  selected.value = player;
 }
-watch([entries, highlightedSteamId], () => {
-  const sid = highlightedSteamId.value;
-  if (!sid) {
-    highlightScrolledForSteamId = null;
+
+function forgetPlayerSoon() {
+  if (clearSelectedTimer) clearTimeout(clearSelectedTimer);
+  clearSelectedTimer = setTimeout(() => {
+    if (!panelOpen.value && !drawerOpen.value) selected.value = null;
+  }, PANEL_CLOSE_MS);
+}
+
+function onSelect(entry: LeaderboardEntry) {
+  if (
+    sideFits.value &&
+    panelOpen.value &&
+    selected.value?.steam_id === entry.player_steam_id
+  ) {
+    closePanel();
     return;
   }
-  if (highlightScrolledForSteamId === sid) return;
-  if (!entries.value.some((e) => e.player_steam_id === sid)) return;
-  void nextTick(() => {
-    highlightedRowEl.value?.scrollIntoView({
-      block: "center",
-      behavior: "smooth",
-    });
-    highlightScrolledForSteamId = sid;
+  showPlayer({
+    steam_id: entry.player_steam_id,
+    name: entry.player_name,
+    avatar_url: entry.player_avatar_url,
+    custom_avatar_url: entry.player_custom_avatar_url,
+    country: entry.player_country,
   });
+  if (sideFits.value) {
+    panelOpen.value = true;
+  } else {
+    drawerOpen.value = true;
+  }
+}
+
+function closePanel() {
+  panelOpen.value = false;
+  drawerOpen.value = false;
+  forgetPlayerSoon();
+}
+
+function onDrawerOpen(open: boolean) {
+  drawerOpen.value = open;
+  if (!open) forgetPlayerSoon();
+}
+
+// From the panel's every-board list: show that board, on the player's page.
+function onPanelBoard(cat: string, rank: number | null) {
+  const sid = selected.value?.steam_id ?? null;
+  const rankPage =
+    rank && !(ROLE_CATEGORIES.has(cat) && roleFilter.value !== "all")
+      ? Math.max(1, Math.ceil(rank / perPage.value))
+      : 1;
+  drawerOpen.value = false;
+  if (cat === category.value && rankPage === page.value) {
+    if (sid) scrollToRow(sid);
+    return;
+  }
+  scrollTarget = sid;
+  if (cat === category.value) {
+    onPageChange(rankPage);
+    return;
+  }
+  pendingPage = rankPage;
+  category.value = cat;
+}
+
+watch(sideFits, () => {
+  if (panelOpen.value || drawerOpen.value) closePanel();
 });
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key !== "Escape" || !panelOpen.value || event.defaultPrevented) {
+    return;
+  }
+  // An open select or popover takes the Escape for itself.
+  if (document.querySelector("[data-reka-popper-content-wrapper]")) return;
+  closePanel();
+}
+
+let layoutObserver: ResizeObserver | null = null;
 
 async function fetchSeasons() {
   try {
@@ -855,6 +724,13 @@ async function fetchSeasons() {
 }
 
 onMounted(async () => {
+  document.addEventListener("keydown", onKeydown);
+  if (rootEl.value && typeof ResizeObserver !== "undefined") {
+    layoutObserver = new ResizeObserver(([entry]) => {
+      layoutWidth.value = entry.contentRect.width;
+    });
+    layoutObserver.observe(rootEl.value);
+  }
   if (seasonsEnabled.value) {
     await fetchSeasons();
   }
@@ -862,752 +738,588 @@ onMounted(async () => {
     // Scope came from the URL — the scope watcher won't fire, so fetch directly.
     fetchLeaderboard();
   } else {
-    // Default to All Time (today's behavior). Setting scope fires its watcher,
-    // which triggers the initial fetch.
+    // Setting scope fires its watcher, which triggers the initial fetch.
     scope.value = defaultScope.value;
   }
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("keydown", onKeydown);
+  layoutObserver?.disconnect();
+  if (clearSelectedTimer) clearTimeout(clearSelectedTimer);
 });
 </script>
 
 <template>
-  <h1 class="sr-only">{{ $t("pages.leaderboard.title") }}</h1>
+  <div ref="rootEl" class="w-full">
+    <h1 class="sr-only">{{ $t("pages.leaderboard.title") }}</h1>
 
-  <PageTransition>
-    <div>
-      <Select v-model="category">
-        <SelectTrigger
-          class="w-full min-w-0 md:hidden"
-          :aria-label="$t('pages.leaderboard.title')"
-        >
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem
-            v-for="cat in categories"
-            :key="cat.value"
-            :value="cat.value"
-          >
-            {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
-      <Tabs
-        v-model="category"
-        class="-mx-1 hidden overflow-x-auto px-1 pb-1 [scrollbar-width:none] md:block [&::-webkit-scrollbar]:hidden"
-      >
-        <TabsList variant="underline" :class="tacticalTabsListClasses">
-          <TabsTrigger
-            v-for="cat in categories"
-            :key="cat.value"
-            :value="cat.value"
-            :class="tacticalTabsTriggerClasses"
-          >
-            {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-    </div>
-  </PageTransition>
-
-  <!-- Compact filter bar. Every control on it narrows matches played here, so
-       it has nothing to say about a cached FACEIT or Premier rating. -->
-  <PageTransition v-if="!isExternalRank" :delay="100" class="mt-6">
     <div
-      class="rounded-md border border-border bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)]"
+      class="lb-layout"
+      :class="{
+        'lb-layout--gutter': gutterFits,
+        'lb-layout--open': panelOpen && sideFits,
+      }"
     >
-      <!-- Desktop: inline filter row -->
-      <div class="hidden md:flex flex-wrap items-center gap-2">
-        <span
-          aria-hidden="true"
-          class="mr-1 hidden h-[2px] w-[10px] shrink-0 bg-[hsl(var(--tac-amber))] sm:inline-block"
-        ></span>
-
-        <Select v-model="scope">
-          <SelectTrigger class="h-8 w-[200px]">
-            <span class="truncate">{{ scopeLabel }}</span>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
-              v-for="s in seasons"
-              :key="s.id"
-              :value="`season:${s.id}`"
-            >
-              <div class="flex flex-col">
-                <span>
-                  {{ seasonScopeLabel(s) }}
-                  <span
-                    v-if="activeSeason && s.id === activeSeason.id"
-                    class="text-[hsl(var(--tac-amber))]"
-                    >· {{ $t("pages.seasons.active") }}</span
-                  >
-                </span>
-                <span class="text-[0.65rem] text-muted-foreground">
-                  {{ seasonRangeLabel(s) }}
-                </span>
-              </div>
-            </SelectItem>
-            <SelectItem value="0">{{
-              $t("pages.leaderboard.time_periods.all_time")
-            }}</SelectItem>
-            <SelectItem value="7">{{
-              $t("pages.leaderboard.time_periods.last_7_days")
-            }}</SelectItem>
-            <SelectItem value="30">{{
-              $t("pages.leaderboard.time_periods.last_30_days")
-            }}</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select v-model="matchType">
-          <SelectTrigger class="h-8 w-[180px]">
-            <SelectValue
-              :placeholder="$t('pages.leaderboard.match_types.all')"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{{
-              $t("pages.leaderboard.match_types.all")
-            }}</SelectItem>
-            <SelectItem value="Competitive">{{
-              $t("pages.leaderboard.match_types.competitive")
-            }}</SelectItem>
-            <SelectItem value="Wingman">{{
-              $t("pages.leaderboard.match_types.wingman")
-            }}</SelectItem>
-            <SelectItem value="Duel">{{
-              $t("pages.leaderboard.match_types.duel")
-            }}</SelectItem>
-            <SelectItem value="Rush">{{
-              $t("pages.leaderboard.match_types.rush")
-            }}</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select v-model="sourceFilter">
-          <SelectTrigger class="h-8 w-[160px]">
-            <SelectValue
-              :placeholder="$t('pages.leaderboard.sources.overall')"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="opt of SOURCE_OPTIONS" :key="opt" :value="opt">
-              {{ $t(`pages.leaderboard.sources.${opt}`) }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select v-if="supportsRole" v-model="roleFilter">
-          <SelectTrigger class="h-8 w-[160px]">
-            <SelectValue :placeholder="$t('pages.leaderboard.roles.all')" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="opt of ROLE_OPTIONS" :key="opt" :value="opt">
-              {{ $t(`pages.leaderboard.roles.${opt}`) }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-
-        <div
-          class="ml-auto flex h-8 cursor-pointer items-center gap-2 rounded-md border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
-          :class="
-            excludeTournaments
-              ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-              : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-          "
-          @click="toggleExcludeTournaments"
-        >
-          <Trophy class="h-3.5 w-3.5" />
-          <span id="leaderboard-exclude-tournaments-label">
-            {{ $t("pages.leaderboard.exclude_tournaments") }}
-          </span>
-          <Switch
-            v-model="excludeTournaments"
-            aria-labelledby="leaderboard-exclude-tournaments-label"
-            class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-            @click.stop
-          />
-        </div>
-      </div>
-
-      <!-- Mobile: collapse filters behind a Filters button + chips -->
-      <div class="md:hidden space-y-3">
-        <Popover>
-          <PopoverTrigger as-child>
-            <Button
-              variant="outline"
-              class="h-11 w-full justify-center gap-2 bg-card/60 backdrop-blur"
-              :class="{
-                'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
-                  leaderboardFilterCount > 0,
-              }"
-            >
-              <SlidersHorizontal class="w-4 h-4" />
-              <span>{{ $t("common.filters") }}</span>
-              <span
-                v-if="leaderboardFilterCount > 0"
-                class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-[0.65rem] font-semibold bg-[hsl(var(--tac-amber)/0.2)] text-[hsl(var(--tac-amber))] border border-[hsl(var(--tac-amber)/0.45)]"
-              >
-                {{ leaderboardFilterCount }}
-              </span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            class="w-[min(92vw,420px)] p-4 space-y-4"
+      <!-- The boards and the filters are one block. The bar stays on every
+           board; on FACEIT and Premier its controls are off and its second
+           line says why. -->
+      <PageTransition class="lb-layout-deck">
+        <Tabs v-model="category">
+          <div
+            class="overflow-hidden rounded-lg border border-border bg-card/40 [backdrop-filter:blur(6px)]"
           >
-            <div class="space-y-2">
-              <span
-                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >
-                {{ $t("common.date") }}
-              </span>
-              <Select v-model="scope">
-                <SelectTrigger class="w-full">
-                  <span class="truncate">{{ scopeLabel }}</span>
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="s in seasons"
-                    :key="s.id"
-                    :value="`season:${s.id}`"
-                  >
-                    {{ seasonScopeLabel(s)
-                    }}<span
-                      v-if="activeSeason && s.id === activeSeason.id"
-                      class="text-[hsl(var(--tac-amber))]"
+            <TabsList variant="track" class="rounded-none border-0">
+              <TabsTrigger v-for="cat in categories" :key="cat" :value="cat">
+                {{ $t(`pages.leaderboard.categories.${cat}`) }}
+              </TabsTrigger>
+            </TabsList>
+
+            <div class="border-t border-border p-2 md:px-3 md:py-2.5">
+              <div class="hidden flex-wrap items-center gap-2 md:flex">
+                <span
+                  aria-hidden="true"
+                  class="mr-1 h-[2px] w-[10px] shrink-0 transition-colors duration-200"
+                  :class="
+                    isExternalRank
+                      ? 'bg-muted-foreground/30'
+                      : 'bg-[hsl(var(--tac-amber))]'
+                  "
+                ></span>
+
+                <Select v-model="scope" :disabled="isExternalRank">
+                  <SelectTrigger class="h-8 w-[200px]">
+                    <span class="truncate">{{ scopeLabel }}</span>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="s in seasons"
+                      :key="s.id"
+                      :value="`season:${s.id}`"
                     >
-                      · {{ $t("pages.seasons.active") }}</span
+                      <div class="flex flex-col">
+                        <span>
+                          {{ seasonScopeLabel(s) }}
+                          <span
+                            v-if="activeSeason && s.id === activeSeason.id"
+                            class="text-[hsl(var(--tac-amber))]"
+                            >· {{ $t("pages.seasons.active") }}</span
+                          >
+                        </span>
+                        <span class="text-[0.65rem] text-muted-foreground">
+                          {{ seasonRangeLabel(s) }}
+                        </span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="0">{{
+                      $t("pages.leaderboard.time_periods.all_time")
+                    }}</SelectItem>
+                    <SelectItem value="7">{{
+                      $t("pages.leaderboard.time_periods.last_7_days")
+                    }}</SelectItem>
+                    <SelectItem value="30">{{
+                      $t("pages.leaderboard.time_periods.last_30_days")
+                    }}</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select v-model="matchType" :disabled="isExternalRank">
+                  <SelectTrigger class="h-8 w-[180px]">
+                    <SelectValue
+                      :placeholder="$t('pages.leaderboard.match_types.all')"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="opt of MATCH_TYPE_OPTIONS"
+                      :key="opt"
+                      :value="opt"
                     >
-                  </SelectItem>
-                  <SelectItem value="0">{{
-                    $t("pages.leaderboard.time_periods.all_time")
-                  }}</SelectItem>
-                  <SelectItem value="7">{{
-                    $t("pages.leaderboard.time_periods.last_7_days")
-                  }}</SelectItem>
-                  <SelectItem value="30">{{
-                    $t("pages.leaderboard.time_periods.last_30_days")
-                  }}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                      {{
+                        $t(
+                          `pages.leaderboard.match_types.${opt === "all" ? "all" : opt.toLowerCase()}`,
+                        )
+                      }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
 
-            <div class="space-y-2">
-              <span
-                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >
-                {{ $t("pages.leaderboard.match_types.all") }}
-              </span>
-              <Select v-model="matchType">
-                <SelectTrigger class="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{{
-                    $t("pages.leaderboard.match_types.all")
-                  }}</SelectItem>
-                  <SelectItem value="Competitive">{{
-                    $t("pages.leaderboard.match_types.competitive")
-                  }}</SelectItem>
-                  <SelectItem value="Wingman">{{
-                    $t("pages.leaderboard.match_types.wingman")
-                  }}</SelectItem>
-                  <SelectItem value="Duel">{{
-                    $t("pages.leaderboard.match_types.duel")
-                  }}</SelectItem>
-                  <SelectItem value="Rush">{{
-                    $t("pages.leaderboard.match_types.rush")
-                  }}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                <Select v-model="sourceFilter" :disabled="isExternalRank">
+                  <SelectTrigger class="h-8 w-[160px]">
+                    <SelectValue
+                      :placeholder="$t('pages.leaderboard.sources.overall')"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="opt of SOURCE_OPTIONS"
+                      :key="opt"
+                      :value="opt"
+                    >
+                      {{ $t(`pages.leaderboard.sources.${opt}`) }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
 
-            <div class="space-y-2">
-              <span
-                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >
-                {{ $t("pages.leaderboard.sources.overall") }}
-              </span>
-              <Select v-model="sourceFilter">
-                <SelectTrigger class="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="opt of SOURCE_OPTIONS"
-                    :key="opt"
-                    :value="opt"
+                <Select v-model="roleFilter" :disabled="!supportsRole">
+                  <SelectTrigger class="h-8 w-[160px]">
+                    <SelectValue
+                      :placeholder="$t('pages.leaderboard.roles.all')"
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="opt of ROLE_OPTIONS"
+                      :key="opt"
+                      :value="opt"
+                    >
+                      {{ $t(`pages.leaderboard.roles.${opt}`) }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <div
+                  class="ml-auto flex h-8 items-center gap-2 rounded-md border px-3 text-xs tracking-[0.06em] transition-[color,background-color,border-color,opacity] duration-150"
+                  :class="[
+                    excludeTournaments && !isExternalRank
+                      ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                      : 'border-border bg-muted/30 text-muted-foreground',
+                    isExternalRank
+                      ? 'cursor-not-allowed opacity-50'
+                      : 'cursor-pointer [@media(hover:hover)]:hover:bg-muted/50 [@media(hover:hover)]:hover:text-foreground',
+                  ]"
+                  @click="toggleExcludeTournaments"
+                >
+                  <Trophy class="h-3.5 w-3.5" />
+                  <span id="leaderboard-exclude-tournaments-label">
+                    {{ $t("pages.leaderboard.exclude_tournaments") }}
+                  </span>
+                  <Switch
+                    :model-value="excludeTournaments && !isExternalRank"
+                    :disabled="isExternalRank"
+                    aria-labelledby="leaderboard-exclude-tournaments-label"
+                    class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                    @update:model-value="excludeTournaments = $event"
+                    @click.stop
+                  />
+                </div>
+              </div>
+
+              <Popover>
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    class="h-9 w-full justify-center gap-2 bg-card/60 md:hidden"
+                    :class="{
+                      'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
+                        leaderboardFilterCount > 0 && !isExternalRank,
+                    }"
+                    :disabled="isExternalRank"
                   >
-                    {{ $t(`pages.leaderboard.sources.${opt}`) }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                    <SlidersHorizontal class="h-4 w-4" />
+                    <span>{{ $t("common.filters") }}</span>
+                    <span
+                      v-if="leaderboardFilterCount > 0 && !isExternalRank"
+                      class="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.2)] px-1.5 text-[0.65rem] font-semibold text-[hsl(var(--tac-amber))]"
+                    >
+                      {{ leaderboardFilterCount }}
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  class="w-[min(92vw,420px)] space-y-4 p-4"
+                >
+                  <div class="space-y-2">
+                    <span
+                      class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+                    >
+                      {{ $t("common.date") }}
+                    </span>
+                    <Select v-model="scope">
+                      <SelectTrigger class="w-full">
+                        <span class="truncate">{{ scopeLabel }}</span>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="s in seasons"
+                          :key="s.id"
+                          :value="`season:${s.id}`"
+                        >
+                          {{ seasonScopeLabel(s)
+                          }}<span
+                            v-if="activeSeason && s.id === activeSeason.id"
+                            class="text-[hsl(var(--tac-amber))]"
+                          >
+                            · {{ $t("pages.seasons.active") }}</span
+                          >
+                        </SelectItem>
+                        <SelectItem value="0">{{
+                          $t("pages.leaderboard.time_periods.all_time")
+                        }}</SelectItem>
+                        <SelectItem value="7">{{
+                          $t("pages.leaderboard.time_periods.last_7_days")
+                        }}</SelectItem>
+                        <SelectItem value="30">{{
+                          $t("pages.leaderboard.time_periods.last_30_days")
+                        }}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-            <div v-if="supportsRole" class="space-y-2">
-              <span
-                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >
-                {{ $t("pages.leaderboard.roles.all") }}
-              </span>
-              <Select v-model="roleFilter">
-                <SelectTrigger class="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="opt of ROLE_OPTIONS"
-                    :key="opt"
-                    :value="opt"
+                  <div class="space-y-2">
+                    <span
+                      class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+                    >
+                      {{ $t("pages.leaderboard.match_types.all") }}
+                    </span>
+                    <Select v-model="matchType">
+                      <SelectTrigger class="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="opt of MATCH_TYPE_OPTIONS"
+                          :key="opt"
+                          :value="opt"
+                        >
+                          {{
+                            $t(
+                              `pages.leaderboard.match_types.${opt === "all" ? "all" : opt.toLowerCase()}`,
+                            )
+                          }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <span
+                      class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+                    >
+                      {{ $t("pages.leaderboard.sources.overall") }}
+                    </span>
+                    <Select v-model="sourceFilter">
+                      <SelectTrigger class="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="opt of SOURCE_OPTIONS"
+                          :key="opt"
+                          :value="opt"
+                        >
+                          {{ $t(`pages.leaderboard.sources.${opt}`) }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <span
+                      class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+                    >
+                      {{ $t("pages.leaderboard.roles.all") }}
+                    </span>
+                    <Select v-model="roleFilter" :disabled="!supportsRole">
+                      <SelectTrigger class="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          v-for="opt of ROLE_OPTIONS"
+                          :key="opt"
+                          :value="opt"
+                        >
+                          {{ $t(`pages.leaderboard.roles.${opt}`) }}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div
+                    class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
+                    :class="
+                      excludeTournaments
+                        ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                        : 'border-border bg-muted/30 text-muted-foreground'
+                    "
+                    @click="toggleExcludeTournaments"
                   >
-                    {{ $t(`pages.leaderboard.roles.${opt}`) }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                    <Trophy class="h-4 w-4 shrink-0" />
+                    <span class="truncate">{{
+                      $t("pages.leaderboard.exclude_tournaments")
+                    }}</span>
+                    <Switch
+                      v-model="excludeTournaments"
+                      class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                      @click.stop
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div
-              class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
-              :class="
-                excludeTournaments
-                  ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border bg-muted/30 text-muted-foreground'
-              "
-              @click="toggleExcludeTournaments"
+              class="flex min-h-[2.125rem] items-center gap-2 border-t border-dashed border-border px-3 py-1.5 text-xs text-muted-foreground/80"
             >
-              <Trophy class="h-4 w-4 shrink-0" />
-              <span class="truncate">{{
-                $t("pages.leaderboard.exclude_tournaments")
-              }}</span>
-              <Switch
-                v-model="excludeTournaments"
-                class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-                @click.stop
+              <Transition
+                mode="out-in"
+                enter-active-class="transition-opacity duration-200 ease-out"
+                leave-active-class="transition-opacity duration-100 ease-in"
+                enter-from-class="opacity-0"
+                leave-to-class="opacity-0"
+              >
+                <span
+                  v-if="externalSource"
+                  key="synced"
+                  class="flex min-w-0 items-center gap-2 text-muted-foreground"
+                >
+                  <RefreshCw class="size-3.5 shrink-0" />
+                  <span>{{
+                    $t("pages.leaderboard.synced_from", {
+                      source: externalSource,
+                    })
+                  }}</span>
+                </span>
+                <span v-else :key="scope" class="min-w-0">
+                  <span class="font-medium text-muted-foreground">{{
+                    scopeLabel
+                  }}</span>
+                  <template v-if="scopeDetail"> · {{ scopeDetail }}</template>
+                </span>
+              </Transition>
+            </div>
+          </div>
+        </Tabs>
+      </PageTransition>
+
+      <PageTransition :delay="100" class="lb-layout-board">
+        <div>
+          <div
+            class="mb-3.5 flex min-h-7 flex-wrap items-center gap-x-2.5 gap-y-1.5"
+          >
+            <i18n-t
+              :keypath="`pages.leaderboard.line.${boardLine.kind}`"
+              tag="span"
+              class="inline-flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground"
+            >
+              <template #value>
+                <span class="text-foreground">{{ boardLine.value }}</span>
+              </template>
+            </i18n-t>
+            <Button
+              v-if="myRankJump"
+              variant="outline"
+              class="ml-auto h-7 gap-1.5 border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] px-2.5 text-xs text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
+              @click="jumpToMe"
+            >
+              <LeaderboardYouTag />
+              {{
+                $t("pages.leaderboard.find_me", {
+                  rank: myRankJump.rank.toLocaleString(),
+                  page: myRankJump.page,
+                })
+              }}
+              <ArrowRight class="size-3.5" />
+            </Button>
+          </div>
+
+          <FadeSwap>
+            <div
+              v-if="skeleton"
+              key="loading"
+              class="grid gap-2"
+              aria-busy="true"
+            >
+              <div v-if="page === 1" class="mb-1.5 grid grid-cols-3 gap-3">
+                <Skeleton class="h-36 rounded-lg" />
+                <Skeleton class="h-44 rounded-lg" />
+                <Skeleton class="h-36 rounded-lg" />
+              </div>
+              <Skeleton
+                v-for="i in page === 1 ? Math.max(perPage - 3, 1) : perPage"
+                :key="i"
+                class="h-12 w-full rounded-md"
               />
             </div>
-          </PopoverContent>
-        </Popover>
 
-        <div
-          v-if="leaderboardFilterCount > 0"
-          class="flex flex-wrap items-center gap-2"
-        >
-          <button
-            v-if="scope && scope !== defaultScope"
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-            @click="scope = defaultScope"
+            <SectionEmpty
+              v-else-if="loaded && entries.length === 0"
+              key="empty"
+              :title="$t('pages.leaderboard.empty_title')"
+              :description="$t('pages.leaderboard.no_results')"
+            />
+
+            <LeaderboardBoard
+              v-else
+              key="board"
+              class="transition-opacity duration-200"
+              :class="refreshing && 'pointer-events-none opacity-50'"
+              :category="category"
+              :entries="entries"
+              :leader-value="leaderValue"
+              :selected-steam-id="selectedSteamId"
+              :me-steam-id="loggedInSteamId"
+              :highlighted-steam-id="highlightedSteamId"
+              @select="onSelect"
+            />
+          </FadeSwap>
+
+          <Pagination
+            v-if="total > 0"
+            :page="page"
+            :per-page="perPage"
+            :total="total"
+            :show-per-page-selector="true"
+            @page="onPageChange"
+            @update:perPage="onPerPageChange"
+          />
+        </div>
+      </PageTransition>
+
+      <!-- A bare cell whose width opens and shuts; the panel inside keeps its
+           width and rides the cell's right edge, so it slides in from there. -->
+      <div v-if="sideFits" class="lb-layout-side">
+        <div class="lb-layout-side-inner">
+          <aside
+            v-if="selected"
+            class="sticky top-4 max-h-[calc(var(--sidebar-height,100svh)-2rem)] overflow-y-auto overscroll-contain rounded-lg border border-border bg-card [scrollbar-width:thin]"
+            :aria-label="$t('pages.leaderboard.panel.title')"
           >
-            {{ scopeLabel }}
-            <X class="h-3 w-3 opacity-70" />
-          </button>
-          <button
-            v-if="matchType !== 'Competitive'"
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-            @click="matchType = 'Competitive'"
-          >
-            {{ matchTypeLabel }}
-            <X class="h-3 w-3 opacity-70" />
-          </button>
-          <button
-            v-if="sourceFilter !== 'overall'"
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-            @click="sourceFilter = 'overall'"
-          >
-            {{ $t(`pages.leaderboard.sources.${sourceFilter}`) }}
-            <X class="h-3 w-3 opacity-70" />
-          </button>
-          <button
-            v-if="supportsRole && roleFilter !== 'all'"
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-            @click="roleFilter = 'all'"
-          >
-            {{ roleLabel }}
-            <X class="h-3 w-3 opacity-70" />
-          </button>
-          <button
-            v-if="excludeTournaments"
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
-            @click="toggleExcludeTournaments"
-          >
-            <Trophy class="h-3 w-3" />
-            {{ $t("pages.leaderboard.exclude_tournaments") }}
-            <X class="h-3 w-3 opacity-70" />
-          </button>
+            <Transition name="lb-panel" mode="out-in">
+              <LeaderboardPlayerPanel
+                :key="selected.steam_id"
+                :player="selected"
+                :category="category"
+                :categories="categories"
+                :entry="selectedEntry"
+                :entries="entries"
+                :total="total"
+                :filters="filters"
+                :is-me="selected.steam_id === loggedInSteamId"
+                @close="closePanel"
+                @board="onPanelBoard"
+              />
+            </Transition>
+          </aside>
         </div>
       </div>
     </div>
-  </PageTransition>
 
-  <!-- Results -->
-  <PageTransition :delay="300" class="mt-6">
-    <div>
-      <div class="p-4 relative">
-        <FadeSwap>
-          <!-- Loading -->
-          <div
-            v-if="skeleton"
-            key="loading"
-            class="grid gap-2"
-            aria-busy="true"
-          >
-            <Skeleton class="h-10 w-full rounded-md" />
-            <Skeleton
-              v-for="i in perPage"
-              :key="i"
-              class="h-14 w-full rounded-md"
-            />
-          </div>
-
-          <!-- Empty State -->
-          <SectionEmpty
-            v-else-if="loaded && (!entries || entries.length === 0)"
-            key="empty"
-            :title="$t('pages.leaderboard.empty_title')"
-            :description="$t('pages.leaderboard.no_results')"
+    <Drawer v-if="!sideFits" :open="drawerOpen" @update:open="onDrawerOpen">
+      <DrawerContent class="max-h-[86svh]">
+        <DrawerTitle class="sr-only">{{
+          selected?.name ?? $t("pages.leaderboard.panel.title")
+        }}</DrawerTitle>
+        <div
+          class="overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)]"
+        >
+          <LeaderboardPlayerPanel
+            v-if="selected"
+            :player="selected"
+            :category="category"
+            :categories="categories"
+            :entry="selectedEntry"
+            :entries="entries"
+            :total="total"
+            :filters="filters"
+            :is-me="selected.steam_id === loggedInSteamId"
+            :closable="false"
+            @board="onPanelBoard"
           />
-
-          <!-- Results Table -->
-          <Table
-            v-else
-            key="table"
-            class="transition-opacity duration-200"
-            :class="refreshing && 'pointer-events-none opacity-50'"
-          >
-            <TableHeader>
-              <TableRow>
-                <TableHead class="w-16">{{
-                  $t("pages.leaderboard.columns.rank")
-                }}</TableHead>
-                <TableHead>{{ $t("common.player") }}</TableHead>
-                <TableHead
-                  class="text-right"
-                  :class="{
-                    'cursor-pointer select-none hover:text-foreground':
-                      isSortable('value'),
-                  }"
-                  @click="toggleSort('value')"
-                >
-                  <div
-                    class="flex items-center justify-end gap-1"
-                    :style="
-                      awardTierColor('value')
-                        ? { color: awardTierColor('value') }
-                        : {}
-                    "
-                  >
-                    <span
-                      v-if="awardTierColor('value')"
-                      class="inline-block h-1.5 w-1.5 rounded-full"
-                      :style="{
-                        background: awardTierColor('value'),
-                        boxShadow: `0 0 4px ${awardTierColor('value')}`,
-                      }"
-                    ></span>
-                    <StatLabel
-                      v-if="columnGlossary.value"
-                      :stat="columnGlossary.value"
-                      :label="columnLabels.value"
-                      header
-                    />
-                    <template v-else>{{ columnLabels.value }}</template>
-                    <component
-                      v-if="isSortable('value')"
-                      :is="sortIcon('value')"
-                      class="h-3.5 w-3.5"
-                    />
-                  </div>
-                </TableHead>
-                <TableHead
-                  v-if="columnLabels.secondary_value"
-                  class="text-right"
-                  :class="{
-                    'cursor-pointer select-none hover:text-foreground':
-                      isSortable('secondary_value'),
-                  }"
-                  @click="toggleSort('secondary_value')"
-                >
-                  <div
-                    class="flex items-center justify-end gap-1"
-                    :style="
-                      awardTierColor('secondary_value')
-                        ? { color: awardTierColor('secondary_value') }
-                        : {}
-                    "
-                  >
-                    <span
-                      v-if="awardTierColor('secondary_value')"
-                      class="inline-block h-1.5 w-1.5 rounded-full"
-                      :style="{
-                        background: awardTierColor('secondary_value'),
-                        boxShadow: `0 0 4px ${awardTierColor('secondary_value')}`,
-                      }"
-                    ></span>
-                    <StatLabel
-                      v-if="columnGlossary.secondary_value"
-                      :stat="columnGlossary.secondary_value"
-                      :label="columnLabels.secondary_value ?? ''"
-                      header
-                    />
-                    <template v-else>{{
-                      columnLabels.secondary_value
-                    }}</template>
-                    <component
-                      v-if="isSortable('secondary_value')"
-                      :is="sortIcon('secondary_value')"
-                      class="h-3.5 w-3.5"
-                    />
-                  </div>
-                </TableHead>
-                <TableHead
-                  v-if="columnLabels.tertiary_value"
-                  class="text-right"
-                  :class="{
-                    'cursor-pointer select-none hover:text-foreground':
-                      isSortable('tertiary_value'),
-                  }"
-                  @click="toggleSort('tertiary_value')"
-                >
-                  <div
-                    class="flex items-center justify-end gap-1"
-                    :style="
-                      awardTierColor('tertiary_value')
-                        ? { color: awardTierColor('tertiary_value') }
-                        : {}
-                    "
-                  >
-                    <span
-                      v-if="awardTierColor('tertiary_value')"
-                      class="inline-block h-1.5 w-1.5 rounded-full"
-                      :style="{
-                        background: awardTierColor('tertiary_value'),
-                        boxShadow: `0 0 4px ${awardTierColor('tertiary_value')}`,
-                      }"
-                    ></span>
-                    {{ columnLabels.tertiary_value }}
-                    <component
-                      v-if="isSortable('tertiary_value')"
-                      :is="sortIcon('tertiary_value')"
-                      class="h-3.5 w-3.5"
-                    />
-                  </div>
-                </TableHead>
-                <TableHead
-                  v-if="columnLabels.matches_played"
-                  class="text-right"
-                  :class="{
-                    'cursor-pointer select-none hover:text-foreground':
-                      isSortable('matches_played'),
-                  }"
-                  @click="toggleSort('matches_played')"
-                >
-                  <div
-                    class="flex items-center justify-end gap-1"
-                    :style="
-                      awardTierColor('matches_played')
-                        ? { color: awardTierColor('matches_played') }
-                        : {}
-                    "
-                  >
-                    <span
-                      v-if="awardTierColor('matches_played')"
-                      class="inline-block h-1.5 w-1.5 rounded-full"
-                      :style="{
-                        background: awardTierColor('matches_played'),
-                        boxShadow: `0 0 4px ${awardTierColor('matches_played')}`,
-                      }"
-                    ></span>
-                    {{ columnLabels.matches_played }}
-                    <component
-                      v-if="isSortable('matches_played')"
-                      :is="sortIcon('matches_played')"
-                      class="h-3.5 w-3.5"
-                    />
-                  </div>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow
-                v-for="entry in entries"
-                :key="entry.player_steam_id"
-                :ref="(el) => setHighlightedRowRef(el, entry.player_steam_id)"
-                class="cursor-pointer"
-                :class="[
-                  entry.player_steam_id === highlightedSteamId
-                    ? 'leaderboard-row--highlight'
-                    : '',
-                  entry.player_steam_id === loggedInSteamId &&
-                  entry.player_steam_id !== highlightedSteamId
-                    ? 'leaderboard-row--me'
-                    : '',
-                ]"
-              >
-                <NuxtLink
-                  :to="{
-                    name: 'players-id',
-                    params: { id: entry.player_steam_id },
-                  }"
-                  class="contents"
-                >
-                  <TableCell>
-                    <div class="flex items-center justify-center">
-                      <span
-                        :class="{
-                          'text-yellow-400 font-bold': entry.rank === 1,
-                          'text-gray-300 font-bold': entry.rank === 2,
-                          'text-amber-600 font-bold': entry.rank === 3,
-                          'text-muted-foreground': entry.rank > 3,
-                        }"
-                      >
-                        {{ entry.rank }}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <PlayerDisplay
-                      :player="{
-                        steam_id: entry.player_steam_id,
-                        name: entry.player_name,
-                        avatar_url: entry.player_avatar_url,
-                        custom_avatar_url: entry.player_custom_avatar_url,
-                        country: entry.player_country,
-                      }"
-                      :show-elo="false"
-                      :show-online="false"
-                      :show-role="false"
-                      :linkable="false"
-                      size="xs"
-                    />
-                  </TableCell>
-                  <TableCell
-                    class="text-right font-mono font-semibold tabular-nums"
-                    :style="
-                      awardTierColor('value') || eloValueColor(entry.value)
-                        ? {
-                            color:
-                              awardTierColor('value') ||
-                              eloValueColor(entry.value),
-                          }
-                        : {}
-                    "
-                  >
-                    <span class="inline-flex items-center justify-end gap-1">
-                      {{ formatValue(entry.value) }}
-                      <StatChevron
-                        v-if="statTier('value')"
-                        :cfg="statTier('value')"
-                        :value="entry.value"
-                      />
-                    </span>
-                  </TableCell>
-                  <TableCell
-                    v-if="columnLabels.secondary_value"
-                    class="text-right font-mono tabular-nums"
-                    :class="{
-                      'text-muted-foreground':
-                        !awardTierColor('secondary_value'),
-                    }"
-                    :style="
-                      awardTierColor('secondary_value')
-                        ? { color: awardTierColor('secondary_value') }
-                        : {}
-                    "
-                  >
-                    <span class="inline-flex items-center justify-end gap-1">
-                      {{ formatSecondary(entry.secondary_value) }}
-                      <StatChevron
-                        v-if="statTier('secondary_value')"
-                        :cfg="statTier('secondary_value')"
-                        :value="entry.secondary_value"
-                      />
-                    </span>
-                  </TableCell>
-                  <TableCell
-                    v-if="columnLabels.tertiary_value"
-                    class="text-right font-mono tabular-nums"
-                    :class="{
-                      'text-muted-foreground':
-                        !awardTierColor('tertiary_value'),
-                    }"
-                    :style="
-                      awardTierColor('tertiary_value')
-                        ? { color: awardTierColor('tertiary_value') }
-                        : {}
-                    "
-                  >
-                    {{ formatTertiary(entry.tertiary_value) }}
-                  </TableCell>
-                  <TableCell
-                    v-if="columnLabels.matches_played"
-                    class="text-right font-mono tabular-nums"
-                    :class="{
-                      'text-muted-foreground':
-                        !awardTierColor('matches_played'),
-                    }"
-                    :style="
-                      awardTierColor('matches_played')
-                        ? {
-                            color: awardTierColor('matches_played'),
-                            fontWeight: category === 'awards' ? 600 : 400,
-                          }
-                        : {}
-                    "
-                  >
-                    {{ entry.matches_played ?? "—" }}
-                  </TableCell>
-                </NuxtLink>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </FadeSwap>
-      </div>
-
-      <!-- Pagination -->
-      <Pagination
-        v-if="total > 0"
-        :page="page"
-        :per-page="perPage"
-        :total="total"
-        :show-per-page-selector="true"
-        @page="onPageChange"
-        @update:perPage="onPerPageChange"
-      />
-    </div>
-  </PageTransition>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  </div>
 </template>
 
 <style scoped>
-:deep(.leaderboard-row--highlight) {
-  background: hsl(var(--tac-amber) / 0.12);
-  box-shadow:
-    inset 3px 0 0 hsl(var(--tac-amber)),
-    inset 0 0 0 1px hsl(var(--tac-amber) / 0.45);
-  animation: leaderboard-row-pulse 1600ms ease-out 1;
+/* Board on the left, the player panel's column on the right. The column opens
+   from 0 to the panel's width; with room in the gutter the page widens by the
+   same amount on the same clock, so the board keeps its width and the pair
+   re-centres instead of the board giving up width to the panel. */
+.lb-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 0px;
+  grid-template-rows: auto 1fr;
+  row-gap: 1.5rem;
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  transition:
+    grid-template-columns 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    max-width 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-:deep(.leaderboard-row--highlight:hover) {
-  background: hsl(var(--tac-amber) / 0.18);
+.lb-layout--open {
+  grid-template-columns: minmax(0, 1fr) 24rem;
 }
-@keyframes leaderboard-row-pulse {
-  0% {
-    background: hsl(var(--tac-amber) / 0.28);
-  }
-  100% {
-    background: hsl(var(--tac-amber) / 0.12);
-  }
+.lb-layout--gutter.lb-layout--open {
+  max-width: 104rem;
+}
+.lb-layout-deck {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-width: 0;
+}
+.lb-layout-board {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+}
+.lb-layout-side {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+  overflow: clip;
+}
+/* In the gutter the panel stands beside the tabs too, like the match chat
+   rail; inside the page it starts level with the board. */
+.lb-layout--gutter .lb-layout-deck {
+  grid-column: 1;
+}
+.lb-layout--gutter .lb-layout-side {
+  grid-row: 1 / span 2;
+}
+.lb-layout-side-inner {
+  flex: none;
+  width: 24rem;
+  padding-left: 1.5rem;
+  opacity: 0;
+  transition: opacity 120ms ease-in;
+}
+.lb-layout--open .lb-layout-side-inner {
+  opacity: 1;
+  transition: opacity 220ms ease-out 40ms;
 }
 
-/* "You are here" — the logged-in user's row gets a quieter mark so it
-   stays present without competing with a deep-linked highlight. */
-:deep(.leaderboard-row--me) {
-  background: hsl(var(--tac-amber) / 0.06);
-  box-shadow: inset 3px 0 0 hsl(var(--tac-amber) / 0.55);
+.lb-panel-enter-active {
+  transition:
+    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-:deep(.leaderboard-row--me:hover) {
-  background: hsl(var(--tac-amber) / 0.1);
+.lb-panel-leave-active {
+  transition:
+    opacity 110ms ease-in,
+    transform 110ms ease-in;
+}
+.lb-panel-enter-from {
+  opacity: 0;
+  transform: translateX(0.625rem);
+}
+.lb-panel-leave-to {
+  opacity: 0;
+  transform: translateX(-0.375rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lb-layout,
+  .lb-layout-side-inner,
+  .lb-panel-enter-active,
+  .lb-panel-leave-active {
+    transition: none;
+  }
 }
 </style>

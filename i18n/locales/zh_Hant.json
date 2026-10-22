@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier 排名"
       },
       "exclude_tournaments": "排除賽事",
-      "empty_title": "尚無排名"
+      "empty_title": "尚無排名",
+      "you": "你",
+      "find_me": "#{rank} · 第 {page} 頁",
+      "all_seasons": "所有賽季合計",
+      "synced_from": "同步自 {source}。賽季、比賽類型和來源不適用。",
+      "line": {
+        "top_of": "{value} 榜首",
+        "top_on": "{value} 榜首",
+        "ranks": "第 {value} 名"
+      },
+      "podium_empty": "暫無其他上榜玩家",
+      "medals": "獎牌",
+      "distance_to_first": "與第 1 名的差距",
+      "matches_count": "{count} 場比賽 | {count} 場比賽",
+      "panel": {
+        "title": "玩家數據",
+        "close": "關閉玩家數據",
+        "of_total": "{board} 共 {total} 人",
+        "not_ranked": "未上 {board} 榜",
+        "leads": "領先 #{rank} {name} {gap}",
+        "behind": "落後 #{rank} {name} {gap}",
+        "tied": "與 #{rank} {name} 持平",
+        "only_player": "唯一上榜玩家",
+        "every_board": "所有榜單",
+        "view_profile": "查看個人資料"
+      }
     },
     "database": {
       "query_copied": "查詢已複製到剪貼簿",

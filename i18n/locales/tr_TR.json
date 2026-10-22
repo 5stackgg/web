@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Rank"
       },
       "exclude_tournaments": "Turnuvaları hariç tut",
-      "empty_title": "Henüz sıralama yok"
+      "empty_title": "Henüz sıralama yok",
+      "you": "Sen",
+      "find_me": "#{rank} · Sayfa {page}",
+      "all_seasons": "Tüm sezonlar birlikte",
+      "synced_from": "{source} üzerinden senkronize edildi. Sezon, maç türü ve kaynak uygulanmaz.",
+      "line": {
+        "top_of": "{value} zirvesi",
+        "top_on": "{value} zirvesi",
+        "ranks": "Sıralar {value}"
+      },
+      "podium_empty": "Henüz başka kimse sıralamada değil",
+      "medals": "Madalyalar",
+      "distance_to_first": "1. sıraya fark",
+      "matches_count": "{count} maç | {count} maç",
+      "panel": {
+        "title": "Oyuncu istatistikleri",
+        "close": "Oyuncu istatistiklerini kapat",
+        "of_total": "{board} sıralamasında {total} kişiden",
+        "not_ranked": "{board} sıralamasında yok",
+        "leads": "#{rank} {name} önünde, fark {gap}",
+        "behind": "#{rank} {name} gerisinde, fark {gap}",
+        "tied": "#{rank} {name} ile eşit",
+        "only_player": "Sıralamadaki tek oyuncu",
+        "every_board": "Tüm sıralamalar",
+        "view_profile": "Profili görüntüle"
+      }
     },
     "database": {
       "query_copied": "Sorgu panoya kopyalandı",

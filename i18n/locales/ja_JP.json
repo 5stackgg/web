@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier ランク"
       },
       "exclude_tournaments": "トーナメントを除外",
-      "empty_title": "まだランキングはありません"
+      "empty_title": "まだランキングはありません",
+      "you": "あなた",
+      "find_me": "#{rank} · {page}ページ",
+      "all_seasons": "全シーズン合計",
+      "synced_from": "{source} から同期。シーズン・試合タイプ・ソースは適用されません。",
+      "line": {
+        "top_of": "{value} のトップ",
+        "top_on": "{value} のトップ",
+        "ranks": "{value} 位"
+      },
+      "podium_empty": "他にランク入りした人はいません",
+      "medals": "メダル",
+      "distance_to_first": "1位との差",
+      "matches_count": "{count} 試合 | {count} 試合",
+      "panel": {
+        "title": "プレイヤー統計",
+        "close": "プレイヤー統計を閉じる",
+        "of_total": "{board} で {total} 人中",
+        "not_ranked": "{board} ではランク外",
+        "leads": "#{rank} {name} に {gap} 差でリード",
+        "behind": "#{rank} {name} まであと {gap}",
+        "tied": "#{rank} {name} と同点",
+        "only_player": "ランク入りは1人のみ",
+        "every_board": "全ランキング",
+        "view_profile": "プロフィールを見る"
+      }
     },
     "database": {
       "query_copied": "クエリをクリップボードにコピーしました",

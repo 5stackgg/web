@@ -5863,7 +5863,32 @@
         "premier_rank": "Premier Rang"
       },
       "exclude_tournaments": "Exclure les tournois",
-      "empty_title": "Aucun classement pour l'instant"
+      "empty_title": "Aucun classement pour l'instant",
+      "you": "Vous",
+      "find_me": "#{rank} · Page {page}",
+      "all_seasons": "Toutes les saisons cumulées",
+      "synced_from": "Synchronisé depuis {source}. La saison, le type de match et la source ne s'appliquent pas.",
+      "line": {
+        "top_of": "Top de {value}",
+        "top_on": "Top sur {value}",
+        "ranks": "Rangs {value}"
+      },
+      "podium_empty": "Personne d'autre n'est classé",
+      "medals": "Médailles",
+      "distance_to_first": "Écart avec le #1",
+      "matches_count": "{count} match | {count} matchs",
+      "panel": {
+        "title": "Statistiques du joueur",
+        "close": "Fermer les statistiques du joueur",
+        "of_total": "sur {total} en {board}",
+        "not_ranked": "Non classé en {board}",
+        "leads": "Devance le #{rank} {name} de {gap}",
+        "behind": "{gap} derrière le #{rank} {name}",
+        "tied": "À égalité avec le #{rank} {name}",
+        "only_player": "Seul joueur classé",
+        "every_board": "Tous les classements",
+        "view_profile": "Voir le profil"
+      }
     },
     "database": {
       "query_copied": "Requête copiée dans le presse-papiers",

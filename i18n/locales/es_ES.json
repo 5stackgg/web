@@ -4504,7 +4504,8 @@
           "pending_full": "Si se unen, seríais {count} y jugaríais entre vosotros.",
           "pending_too_big": "Si se unen, el grupo es demasiado grande para {format}.",
           "cancel_invite": "Cancelar invitación",
-          "cancel_invite_for": "Cancelar la invitación de {name}"
+          "cancel_invite_for": "Cancelar la invitación de {name}",
+          "unranked": "Sin clasificar"
         }
       },
       "draft_games": {},

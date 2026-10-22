@@ -130,16 +130,23 @@ const initials = computed(() =>
       >
         {{ $t("matchmaking.lobby.invited") }}
       </span>
+      <!-- Always drawn, so a player without a rating in this mode doesn't
+           shift the seat when the mode changes. -->
       <span
-        v-else-if="elo !== null"
+        v-else
         class="text-[12.5px] tabular-nums text-muted-foreground max-sm:text-[11px]"
         :class="compact && 'text-[11.5px] max-sm:hidden'"
       >
-        {{ elo.toLocaleString()
-        }}<small
-          class="ml-1 text-[10px] tracking-[0.1em] text-muted-foreground/70 max-sm:hidden"
-          >ELO</small
+        <template v-if="elo !== null"
+          >{{ elo.toLocaleString()
+          }}<small
+            class="ml-1 text-[10px] tracking-[0.1em] text-muted-foreground/70 max-sm:hidden"
+            >ELO</small
+          ></template
         >
+        <template v-else>{{
+          $t("pages.play.matchmaking.seat_row.unranked")
+        }}</template>
       </span>
     </span>
   </div>

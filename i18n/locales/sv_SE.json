@@ -4504,7 +4504,8 @@
           "pending_full": "Om de går med blir ni {count} och spelar mot varandra.",
           "pending_too_big": "Om de går med blir gruppen för stor för {format}.",
           "cancel_invite": "Dra tillbaka inbjudan",
-          "cancel_invite_for": "Dra tillbaka inbjudan till {name}"
+          "cancel_invite_for": "Dra tillbaka inbjudan till {name}",
+          "unranked": "Orankad"
         }
       },
       "draft_games": {},

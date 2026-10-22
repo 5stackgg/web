@@ -4504,7 +4504,8 @@
           "pending_full": "Hvis de joiner, bliver I {count} og spiller mod hinanden.",
           "pending_too_big": "Hvis de joiner, bliver gruppen for stor til {format}.",
           "cancel_invite": "Annuller invitation",
-          "cancel_invite_for": "Annuller invitationen til {name}"
+          "cancel_invite_for": "Annuller invitationen til {name}",
+          "unranked": "Ingen rating"
         }
       },
       "draft_games": {},

@@ -4504,7 +4504,8 @@
           "pending_full": "参加すると{count}人になり、身内で対戦します。",
           "pending_too_big": "参加するとパーティが{format}には大きすぎます。",
           "cancel_invite": "招待を取り消す",
-          "cancel_invite_for": "{name}への招待を取り消す"
+          "cancel_invite_for": "{name}への招待を取り消す",
+          "unranked": "ランクなし"
         }
       },
       "draft_games": {},

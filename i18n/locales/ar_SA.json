@@ -4504,7 +4504,8 @@
           "pending_full": "إذا انضموا ستصبحون {count} وستلعبون ضد بعضكم.",
           "pending_too_big": "إذا انضموا سيصبح الفريق أكبر من {format}.",
           "cancel_invite": "إلغاء الدعوة",
-          "cancel_invite_for": "إلغاء دعوة {name}"
+          "cancel_invite_for": "إلغاء دعوة {name}",
+          "unranked": "بلا تصنيف"
         }
       },
       "draft_games": {},

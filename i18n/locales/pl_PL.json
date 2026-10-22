@@ -4504,7 +4504,8 @@
           "pending_full": "Jeśli dołączą, będzie was {count} i zagracie przeciwko sobie.",
           "pending_too_big": "Jeśli dołączą, drużyna będzie za duża na {format}.",
           "cancel_invite": "Anuluj zaproszenie",
-          "cancel_invite_for": "Anuluj zaproszenie dla {name}"
+          "cancel_invite_for": "Anuluj zaproszenie dla {name}",
+          "unranked": "Bez rankingu"
         }
       },
       "draft_games": {},

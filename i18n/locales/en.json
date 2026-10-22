@@ -4504,7 +4504,8 @@
           "pending_full": "If they join, you'd be {count} and play each other.",
           "pending_too_big": "If they join, the party is too big for {format}.",
           "cancel_invite": "Cancel invite",
-          "cancel_invite_for": "Cancel {name}'s invite"
+          "cancel_invite_for": "Cancel {name}'s invite",
+          "unranked": "Unranked"
         }
       },
       "draft_games": {},

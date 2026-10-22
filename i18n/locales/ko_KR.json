@@ -4504,7 +4504,8 @@
           "pending_full": "참가하면 {count}명이 되어 서로 대결합니다.",
           "pending_too_big": "참가하면 파티가 {format}에 너무 커집니다.",
           "cancel_invite": "초대 취소",
-          "cancel_invite_for": "{name}님 초대 취소"
+          "cancel_invite_for": "{name}님 초대 취소",
+          "unranked": "랭크 없음"
         }
       },
       "draft_games": {},

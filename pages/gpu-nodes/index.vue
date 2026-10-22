@@ -22,12 +22,17 @@ import AdminSearch from "~/components/admin/AdminSearch.vue";
 import SortHeader from "~/components/admin/SortHeader.vue";
 import StatTile from "~/components/admin/StatTile.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
+import ServiceLogSheet from "~/components/game-server-nodes/ServiceLogSheet.vue";
 import GpuNodeRow from "~/components/gpu-nodes/GpuNodeRow.vue";
 import GpuNodePanel from "~/components/gpu-nodes/GpuNodePanel.vue";
 import GpuRunningRow from "~/components/gpu-nodes/GpuRunningRow.vue";
 import GpuSteamAccounts from "~/components/gpu-nodes/GpuSteamAccounts.vue";
 import GpuSteamTile from "~/components/gpu-nodes/GpuSteamTile.vue";
-import { gpuName, type GpuSession } from "~/components/gpu-nodes/gpuSessions";
+import {
+  gpuName,
+  isBaking,
+  type GpuSession,
+} from "~/components/gpu-nodes/gpuSessions";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 import { useGpuNodeActions } from "~/composables/useGpuNodeActions";
 import { useListKeyboard } from "~/composables/useListKeyboard";
@@ -490,6 +495,15 @@ const sheetFade = {
     </SheetContent>
   </Sheet>
 
+  <ServiceLogSheet
+    v-if="selectedNode"
+    v-model:open="logsOpen"
+    :title="$t('pages.gpu_nodes.bake.logs')"
+    :node="selectedNode"
+    :service="`shader-bake:${selectedNode.id}`"
+    :running="isBaking(selectedNode)"
+  />
+
   <GpuSteamAccounts
     v-model:open="accountsOpen"
     :focus-add="accountsFocusAdd"
@@ -870,8 +884,19 @@ export default {
     },
     openPanel(this: any, id: string, logs = false) {
       this.tierSwap = false;
-      this.logsOpen = logs;
+      this.logsOpen = false;
       this.selectedId = id;
+      // The log sheet mounts a frame after the panel: two dialogs mounting
+      // in one render each mark the other aria-hidden, and it sticks.
+      if (logs) {
+        this.$nextTick(() =>
+          requestAnimationFrame(() => {
+            if (this.selectedId === id) {
+              this.logsOpen = true;
+            }
+          }),
+        );
+      }
     },
     closePanel(this: any) {
       this.tierSwap = false;

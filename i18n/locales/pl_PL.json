@@ -4721,7 +4721,6 @@
         "now_render_pct": "Renderuje highlighty dla {who} · {pct}%"
       },
       "bake": {
-        "help": "Wstępnie zbuduj pamięć podręczną shaderów Vulkan dla tego węzła, aby pierwszy mecz startował na gotowo.",
         "cancel_help": "Anuluj trwające wstępne budowanie shaderów",
         "logs_help": "Zobacz logi zadania wstępnego budowania shaderów",
         "started": "Rozpoczęto budowanie shaderów",
@@ -4734,8 +4733,7 @@
         },
         "action": "Skompiluj shadery",
         "cancel": "Anuluj kompilację",
-        "logs": "Logi kompilacji",
-        "hide_logs": "Ukryj logi"
+        "logs": "Logi kompilacji"
       },
       "empty": {
         "title": "Brak węzłów GPU",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Brak metryk GPU, gdy węzeł jest wyłączony, offline lub w konfiguracji.",
         "bake_failed_hint": "Ostatnia kompilacja się nie powiodła. Spróbuj ponownie albo przeczytaj logi.",
         "cache_warm": "Rozgrzana",
-        "never_baked": "Nigdy nie kompilowano. Pierwsza transmisja na tym węźle kompiluje shadery na bieżąco."
+        "cache_cold": "Nieskompilowana",
+        "cold_hint": "Pierwsza transmisja na tym węźle kompiluje shadery na bieżąco.",
+        "cache_actions": "Działania pamięci shaderów"
       },
       "stop_copy": {
         "keep": "Zostaw",
@@ -5327,7 +5327,8 @@
         },
         "gpu": {
           "video": "Ustawienia wideo",
-          "custom": "Własne"
+          "custom": "Własne",
+          "auto_hint": "CS2 dopasowuje ustawienia wideo do tej karty przy pierwszym uruchomieniu."
         },
         "node": {
           "accepting": "Przyjmuje mecze",

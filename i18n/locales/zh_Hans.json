@@ -4721,7 +4721,6 @@
         "now_render_pct": "正在为 {who} 渲染高光 · {pct}%"
       },
       "bake": {
-        "help": "预热此节点的 Vulkan 着色器缓存，使首场比赛启动更顺畅。",
         "cancel_help": "取消正在运行的着色器预热任务。",
         "logs_help": "查看着色器预热任务日志。",
         "started": "着色器预热已启动",
@@ -4734,8 +4733,7 @@
         },
         "action": "编译着色器",
         "cancel": "取消编译",
-        "logs": "编译日志",
-        "hide_logs": "隐藏日志"
+        "logs": "编译日志"
       },
       "empty": {
         "title": "无 GPU 节点",
@@ -4872,7 +4870,9 @@
         "no_metrics": "节点被禁用、离线或设置中时没有 GPU 指标。",
         "bake_failed_hint": "上次编译失败。请重试，或查看日志。",
         "cache_warm": "已预热",
-        "never_baked": "从未编译。此节点上的第一次直播会边运行边编译着色器。"
+        "cache_cold": "未编译",
+        "cold_hint": "此节点上的第一次直播会边运行边编译着色器。",
+        "cache_actions": "着色器缓存操作"
       },
       "stop_copy": {
         "keep": "继续运行",
@@ -5327,7 +5327,8 @@
         },
         "gpu": {
           "video": "视频设置",
-          "custom": "自定义"
+          "custom": "自定义",
+          "auto_hint": "CS2 首次启动时会根据这张显卡调整视频设置。"
         },
         "node": {
           "accepting": "接受比赛",

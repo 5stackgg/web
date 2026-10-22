@@ -4721,7 +4721,6 @@
         "now_render_pct": "正在為 {who} 轉檔精華 · {pct}%"
       },
       "bake": {
-        "help": "預先建立此節點的 Vulkan 著色器快取，讓首場比賽啟動更順暢。",
         "cancel_help": "取消正在執行的著色器預先建置。",
         "logs_help": "查看著色器預先建置工作的記錄。",
         "started": "著色器預先建置已開始",
@@ -4734,8 +4733,7 @@
         },
         "action": "編譯著色器",
         "cancel": "取消編譯",
-        "logs": "編譯記錄",
-        "hide_logs": "隱藏記錄"
+        "logs": "編譯記錄"
       },
       "empty": {
         "title": "無 GPU 節點",
@@ -4872,7 +4870,9 @@
         "no_metrics": "節點停用、離線或設定中時沒有 GPU 指標。",
         "bake_failed_hint": "上次編譯失敗。請重試，或查看記錄。",
         "cache_warm": "已預熱",
-        "never_baked": "從未編譯。此節點上的第一次直播會邊執行邊編譯著色器。"
+        "cache_cold": "未編譯",
+        "cold_hint": "此節點上的第一次直播會邊執行邊編譯著色器。",
+        "cache_actions": "著色器快取操作"
       },
       "stop_copy": {
         "keep": "繼續執行",
@@ -5327,7 +5327,8 @@
         },
         "gpu": {
           "video": "視訊設定",
-          "custom": "自訂"
+          "custom": "自訂",
+          "auto_hint": "CS2 首次啟動時會依這張顯示卡調整視訊設定。"
         },
         "node": {
           "accepting": "接受比賽",

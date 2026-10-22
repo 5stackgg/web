@@ -6,7 +6,12 @@ import InspectorLabel from "~/components/game-server-nodes/InspectorLabel.vue";
 import GpuCardBlock from "~/components/gpu-nodes/GpuCardBlock.vue";
 import WorkloadChips from "~/components/gpu-nodes/WorkloadChips.vue";
 import type { NodeLike } from "~/components/game-server-nodes/nodeState";
-import { videoPresetOf } from "~/components/game-server-nodes/cs2VideoPresets";
+import { Pencil } from "lucide-vue-next";
+import { Button } from "~/components/ui/button";
+import {
+  PRESETS,
+  videoPresetOf,
+} from "~/components/game-server-nodes/cs2VideoPresets";
 import { INSPECTOR } from "~/components/game-server-nodes/nodeCopy";
 import { gpuDevices, type GpuDoing } from "~/components/gpu-nodes/gpuDevices";
 import {
@@ -105,15 +110,28 @@ const doing = computed<GpuDoing | null>(() => {
 const doingFor = (index: number) =>
   index === 0 || doing.value?.quiet ? doing.value : null;
 
-const busy = computed(
-  () => (!!props.session && !props.session.booting) || !!props.bake,
-);
-
-const preset = computed(() => {
-  const name = videoPresetOf(props.node.cs2_video_settings);
-  return name
+const video = computed(() => {
+  const stored: Record<string, number | null> =
+    props.node.cs2_video_settings ?? {};
+  const name = videoPresetOf(stored);
+  const preset = name
     ? t(`game_server.cs2_options.preset.${name}`)
     : t(`${INSPECTOR}.gpu.custom`);
+  const msaa = stored["setting.msaa_samples"] ?? PRESETS.low.msaa_samples;
+  const cmaa =
+    stored["setting.r_csgo_cmaa_enable"] ?? PRESETS.low.r_csgo_cmaa_enable;
+  const height = stored["setting.defaultresheight"] ?? 1080;
+  return {
+    auto: name === "auto",
+    preset,
+    resolution: `${height}p`,
+    aa:
+      msaa === 2 || msaa === 4 || msaa === 8
+        ? t(`game_server.cs2_options.video.aa.msaa${msaa}`)
+        : cmaa
+          ? t("game_server.cs2_options.video.aa.cmaa")
+          : t("game_server.cs2_options.video.aa.off"),
+  };
 });
 </script>
 
@@ -149,45 +167,89 @@ const preset = computed(() => {
         :key="device.key"
         :device="device"
         :enabled="!!node.enabled"
-        :working="index === 0 && busy"
         :doing="doingFor(index)"
       />
     </div>
 
-    <div class="gsn-kv">
-      <span class="gsn-k">{{ t(`${INSPECTOR}.gpu.video`) }}</span>
-      <div class="gsn-v">
-        <span>{{ preset }}</span>
-        <button
-          type="button"
-          class="text-xs text-muted-foreground underline decoration-dotted underline-offset-2 transition-colors hover:text-foreground"
+    <div class="giv" data-testid="gpu-video">
+      <div class="giv-h">
+        <b class="min-w-0 truncate font-semibold">{{
+          t(`${INSPECTOR}.gpu.video`)
+        }}</b>
+        <span class="grow"></span>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          class="-mr-1.5 h-6 w-6 shrink-0 text-muted-foreground"
+          :aria-label="t('common.edit')"
+          :title="t('common.edit')"
           @click="emit('editVideo')"
         >
-          {{ t("common.edit") }}
-        </button>
+          <Pencil class="h-3 w-3" />
+        </Button>
       </div>
+      <p v-if="video.auto" class="giv-auto">
+        <span class="font-semibold text-foreground">{{ video.preset }}</span>
+        · {{ t(`${INSPECTOR}.gpu.auto_hint`) }}
+      </p>
+      <dl v-else class="grid gap-1">
+        <div class="giv-row">
+          <dt>{{ t("game_server.cs2_options.preset.title") }}</dt>
+          <dd>{{ video.preset }}</dd>
+        </div>
+        <div class="giv-row">
+          <dt>{{ t("game_server.cs2_options.video.resolution") }}</dt>
+          <dd class="tabular-nums">{{ video.resolution }}</dd>
+        </div>
+        <div class="giv-row">
+          <dt>{{ t("game_server.cs2_options.video.aa.label") }}</dt>
+          <dd>{{ video.aa }}</dd>
+        </div>
+      </dl>
     </div>
   </section>
 </template>
 
 <style scoped>
-.gsn-kv {
+.giv {
   display: grid;
-  grid-template-columns: minmax(92px, 32%) minmax(0, 1fr);
-  align-items: center;
-  column-gap: 12px;
-  row-gap: 2px;
-  font-size: 13px;
+  gap: 8px;
+  padding: 8px 12px 10px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 8px;
+  background: hsl(240 5% 8%);
 }
-.gsn-k {
-  color: hsl(var(--muted-foreground));
-}
-.gsn-v {
+.giv-h {
   display: flex;
   min-width: 0;
-  min-height: 30px;
-  flex-wrap: wrap;
+  min-height: 24px;
   align-items: center;
   gap: 8px;
+  font-size: 13px;
+}
+.giv-auto {
+  font-size: 12px;
+  line-height: 1.45;
+  color: hsl(var(--muted-foreground));
+}
+.giv-row {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 12px;
+}
+.giv-row dt {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: hsl(var(--muted-foreground));
+}
+.giv-row dd {
+  margin-left: auto;
+  flex: none;
+  font-weight: 600;
+  white-space: nowrap;
 }
 </style>

@@ -2,7 +2,10 @@
 import { computed } from "vue";
 import { useBootProgress } from "~/composables/useBootProgress";
 import StatusDot from "~/components/admin/StatusDot.vue";
-import type { GpuSession } from "~/components/gpu-nodes/gpuSessions";
+import {
+  shaderCount as shaderCountOf,
+  type GpuSession,
+} from "~/components/gpu-nodes/gpuSessions";
 
 // One line of where a GPU session is: its boot step while it starts, then
 // Live / Playing / a render's percent / a bake's shader count.
@@ -19,15 +22,9 @@ const { bootInfo, isErrored, visibleStages, currentStage, currentIndex, pct } =
     progressStage: isBake.value ? props.session.progressStage : undefined,
   }));
 
-// "(26824 / 731082)" → "26,824 / 731,082".
-const shaderCount = computed(() => {
-  const raw = props.session.progressStage;
-  const match = raw?.match(/(\d[\d,]*)\s*\/\s*(\d[\d,]*)/);
-  if (!match) return null;
-  const done = Number(match[1].replace(/,/g, "")).toLocaleString();
-  const total = Number(match[2].replace(/,/g, "")).toLocaleString();
-  return `${done} / ${total}`;
-});
+const shaderCount = computed(() =>
+  shaderCountOf(props.session.progressStage),
+);
 
 const bakePct = computed(() =>
   isBake.value && !props.session.booting && props.session.progress !== null

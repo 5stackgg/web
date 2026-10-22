@@ -4721,7 +4721,6 @@
         "now_render_pct": "Rendering highlights for {who} · {pct}%"
       },
       "bake": {
-        "help": "Pre-bake this node's Vulkan shader cache so the first match starts warm.",
         "cancel_help": "Cancel the running shader pre-bake.",
         "logs_help": "View the shader pre-bake job logs.",
         "started": "Shader bake started",
@@ -4734,8 +4733,7 @@
         },
         "action": "Bake shaders",
         "cancel": "Cancel bake",
-        "logs": "Bake logs",
-        "hide_logs": "Hide logs"
+        "logs": "Bake logs"
       },
       "empty": {
         "title": "No GPU nodes",
@@ -4872,7 +4870,9 @@
         "no_metrics": "No GPU metrics while the node is disabled, offline or setting up.",
         "bake_failed_hint": "The last bake failed. Retry, or read the logs.",
         "cache_warm": "Warm",
-        "never_baked": "Never baked. The first stream on this node compiles shaders as it goes."
+        "cache_cold": "Not baked",
+        "cold_hint": "The first stream on this node compiles shaders as it goes.",
+        "cache_actions": "Shader cache actions"
       },
       "stop_copy": {
         "keep": "Keep running",
@@ -5327,7 +5327,8 @@
         },
         "gpu": {
           "video": "Video settings",
-          "custom": "Custom"
+          "custom": "Custom",
+          "auto_hint": "CS2 tunes its video settings to this card on first launch."
         },
         "node": {
           "accepting": "Accepting matches",

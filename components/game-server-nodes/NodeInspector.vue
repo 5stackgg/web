@@ -613,11 +613,14 @@ const CALLOUT_BORDER: Record<string, string> = {
       <div
         class="flex min-w-0 flex-wrap items-center gap-x-1 pl-4 text-xs text-muted-foreground"
       >
-        <span class="truncate"
+        <span class="min-w-0 truncate"
           ><template v-if="statusShort">{{ statusShort }} · </template
           >{{ regionLabel }}</span
         >
-        <template v-if="node.lan_ip || node.public_ip">
+        <span
+          v-if="node.lan_ip || node.public_ip"
+          class="inline-flex shrink-0 items-center gap-x-1"
+        >
           <span aria-hidden="true">·</span>
           <a
             v-if="node.lan_ip"
@@ -631,9 +634,12 @@ const CALLOUT_BORDER: Record<string, string> = {
           <span v-if="node.public_ip" class="font-mono text-[11.5px]">{{
             node.public_ip
           }}</span>
-        </template>
-        <span aria-hidden="true">·</span>
-        <span class="inline-flex items-center">
+        </span>
+      </div>
+      <div
+        class="flex min-w-0 items-center gap-x-2 pl-4 text-xs text-muted-foreground"
+      >
+        <span class="inline-flex min-w-0 items-center" :title="node.id">
           <span class="max-w-[9rem] truncate font-mono text-[11.5px]">{{
             node.id
           }}</span>
@@ -643,8 +649,8 @@ const CALLOUT_BORDER: Record<string, string> = {
             :aria-label="t(`${INSPECTOR}.node.copy_id`)"
           />
         </span>
+        <LastChangedFor type="game_server_nodes" :row="node" dot />
       </div>
-      <LastChangedFor type="game_server_nodes" :row="node" class="pl-4" />
     </header>
 
     <div v-if="attention.length" class="px-4 pt-3">

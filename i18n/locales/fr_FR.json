@@ -4721,7 +4721,6 @@
         "now_render_pct": "Rend des highlights pour {who} · {pct} %"
       },
       "bake": {
-        "help": "Pré-générer le cache de shaders Vulkan de ce nœud pour que le premier match démarre à chaud.",
         "cancel_help": "Annuler la pré-génération de shaders en cours.",
         "logs_help": "Voir les logs de la tâche de pré-génération de shaders.",
         "started": "Génération de shaders lancée",
@@ -4734,8 +4733,7 @@
         },
         "action": "Compiler les shaders",
         "cancel": "Annuler la compilation",
-        "logs": "Logs de compilation",
-        "hide_logs": "Masquer les logs"
+        "logs": "Logs de compilation"
       },
       "empty": {
         "title": "Aucun nœud GPU",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Aucune métrique GPU tant que le nœud est désactivé, hors ligne ou en configuration.",
         "bake_failed_hint": "La dernière compilation a échoué. Réessaie ou consulte les logs.",
         "cache_warm": "Préchauffé",
-        "never_baked": "Jamais compilé. Le premier stream sur ce nœud compile les shaders au fur et à mesure."
+        "cache_cold": "Non compilé",
+        "cold_hint": "Le premier stream sur ce nœud compile les shaders au fur et à mesure.",
+        "cache_actions": "Actions du cache de shaders"
       },
       "stop_copy": {
         "keep": "Laisser tourner",
@@ -5327,7 +5327,8 @@
         },
         "gpu": {
           "video": "Paramètres vidéo",
-          "custom": "Personnalisé"
+          "custom": "Personnalisé",
+          "auto_hint": "CS2 adapte ses paramètres vidéo à cette carte au premier lancement."
         },
         "node": {
           "accepting": "Accepte des matchs",

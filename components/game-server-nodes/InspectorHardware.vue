@@ -267,7 +267,7 @@ const docs = {
 
       <div
         v-if="warnings.length"
-        class="grid gap-0.5 border-t border-border/60 pt-2"
+        class="grid min-w-0 gap-0.5 border-t border-border/60 pt-2"
       >
         <span class="mb-0.5 text-[11.5px] text-muted-foreground">{{
           t(
@@ -276,32 +276,37 @@ const docs = {
             warnings.length,
           )
         }}</span>
-        <div v-for="(warning, index) of warnings" :key="index">
-          <div class="flex min-h-7 min-w-0 items-center gap-2 text-[13px]">
-            <TriangleAlert class="h-3 w-3 shrink-0" :class="TONE_TEXT.warn" />
-            <span
-              class="min-w-0 truncate font-semibold"
+        <div
+          v-for="(warning, index) of warnings"
+          :key="index"
+          class="min-w-0"
+        >
+          <div class="gsn-warn">
+            <TriangleAlert
+              class="mt-[3px] h-3 w-3 shrink-0"
               :class="TONE_TEXT.warn"
-              :title="warning.short"
-              >{{ warning.short }}</span
-            >
-            <span class="grow"></span>
-            <a
-              v-if="warning.url"
-              :href="warning.url"
-              target="_blank"
-              rel="noopener"
-              class="gsn-link"
-              >{{ t(`${INSPECTOR}.warning.docs`) }}</a
-            >
-            <button
-              type="button"
-              class="gsn-link"
-              :aria-expanded="!!warningOpen[index]"
-              @click="toggleWarning(index)"
-            >
-              {{ t(`${INSPECTOR}.warning.details`) }}
-            </button>
+            />
+            <span class="min-w-0 font-semibold" :class="TONE_TEXT.warn">{{
+              warning.short
+            }}</span>
+            <span class="flex shrink-0 items-center gap-2">
+              <a
+                v-if="warning.url"
+                :href="warning.url"
+                target="_blank"
+                rel="noopener"
+                class="gsn-link"
+                >{{ t(`${INSPECTOR}.warning.docs`) }}</a
+              >
+              <button
+                type="button"
+                class="gsn-link"
+                :aria-expanded="!!warningOpen[index]"
+                @click="toggleWarning(index)"
+              >
+                {{ t(`${INSPECTOR}.warning.details`) }}
+              </button>
+            </span>
           </div>
           <Fold :open="!!warningOpen[index]">
             <p class="pb-1.5 pl-5 text-xs leading-normal text-muted-foreground">
@@ -350,6 +355,16 @@ const docs = {
 }
 .gsn-info:hover {
   color: hsl(var(--foreground));
+}
+.gsn-warn {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 8px;
+  padding: 5px 0;
+  font-size: 13px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
 }
 .gsn-link {
   flex: none;

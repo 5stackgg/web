@@ -56,7 +56,14 @@ import {
 import { TONE_TEXT } from "~/components/admin/tone";
 
 export type RowAction =
-  "open" | "update" | "rename" | "ports" | "files" | "select" | "remove";
+  | "open"
+  | "update"
+  | "update_csgo"
+  | "rename"
+  | "ports"
+  | "files"
+  | "select"
+  | "remove";
 
 const props = defineProps<{
   node: NodeLike & Record<string, any>;
@@ -336,6 +343,19 @@ function onKeydown(event: KeyboardEvent) {
               node.build_id
                 ? t("game_server.update_cs")
                 : t("game_server.install_cs")
+            }}</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            v-if="!gpuOnly && !inSetup"
+            :disabled="!reachable || !!node.csgo_update_status"
+            @click="emit('action', 'update_csgo', node.id)"
+          >
+            <RefreshCw v-if="node.csgo_build_id" />
+            <Download v-else />
+            <span>{{
+              node.csgo_build_id
+                ? t("game_server.update_csgo")
+                : t("game_server.install_csgo")
             }}</span>
           </DropdownMenuItem>
           <DropdownMenuItem @click="emit('action', 'rename', node.id)">

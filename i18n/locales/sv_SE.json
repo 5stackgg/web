@@ -4721,7 +4721,6 @@
         "now_render_pct": "Renderar höjdpunkter för {who} · {pct} %"
       },
       "bake": {
-        "help": "Förbak nodens Vulkan-shadercache så första matchen startar varm.",
         "cancel_help": "Avbryt den pågående shaderförbakningen.",
         "logs_help": "Visa loggarna för shaderförbakningsjobbet.",
         "started": "Shaderbakning startad",
@@ -4734,8 +4733,7 @@
         },
         "action": "Kompilera shaders",
         "cancel": "Avbryt kompilering",
-        "logs": "Kompileringsloggar",
-        "hide_logs": "Dölj loggar"
+        "logs": "Kompileringsloggar"
       },
       "empty": {
         "title": "Inga GPU-noder",
@@ -4872,7 +4870,9 @@
         "no_metrics": "Inga GPU-mätvärden medan noden är avaktiverad, offline eller konfigureras.",
         "bake_failed_hint": "Den senaste kompileringen misslyckades. Försök igen eller läs loggarna.",
         "cache_warm": "Uppvärmd",
-        "never_baked": "Aldrig kompilerad. Den första streamen på den här noden kompilerar shaders efter hand."
+        "cache_cold": "Inte kompilerad",
+        "cold_hint": "Den första streamen på den här noden kompilerar shaders efter hand.",
+        "cache_actions": "Åtgärder för shader-cache"
       },
       "stop_copy": {
         "keep": "Låt den köra",
@@ -5327,7 +5327,8 @@
         },
         "gpu": {
           "video": "Videoinställningar",
-          "custom": "Anpassad"
+          "custom": "Anpassad",
+          "auto_hint": "CS2 anpassar sina videoinställningar till det här kortet vid första start."
         },
         "node": {
           "accepting": "Tar emot matcher",

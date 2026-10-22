@@ -6,6 +6,7 @@ import { PlusCircle, Search, Swords, Trophy, Users, X } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { teamResultMatchFields } from "~/graphql/teamPulseFields";
+import { orderByIds } from "~/utilities/orderByIds";
 import FilterBar from "~/components/common/FilterBar.vue";
 import FilterMenu from "~/components/common/FilterMenu.vue";
 import FilterToggle from "~/components/common/FilterToggle.vue";
@@ -184,6 +185,62 @@ function teamsQuery(withLastMatch: boolean) {
 }
 const queries = { with: teamsQuery(true), without: teamsQuery(false) };
 
+// Sorting through ranks (a view) has every team's row built before the page is
+// cut, so the rating sort finds the page's ids first and then reads just those.
+const rankedIdsQuery = generateQuery({
+  teams: [
+    {
+      where: $("where", "teams_bool_exp!"),
+      order_by: $("orderBy", "[teams_order_by!]"),
+      limit: $("limit", "Int!"),
+      offset: $("offset", "Int!"),
+    },
+    { id: true },
+  ],
+  teams_aggregate: [
+    { where: $("where", "teams_bool_exp!") },
+    { aggregate: { count: true } },
+  ],
+} as any);
+
+async function fetchDirectory(variables: Record<string, any>) {
+  const query = hasLastMatchAt.value ? queries.with : queries.without;
+  if (sort.value !== "rating") {
+    const { data } = await client.query({
+      query,
+      variables,
+      fetchPolicy: "network-only",
+    });
+    return {
+      teams: (data as any)?.teams ?? [],
+      total: (data as any)?.teams_aggregate?.aggregate?.count ?? 0,
+    };
+  }
+  const { data: ranked } = await client.query({
+    query: rankedIdsQuery,
+    variables,
+    fetchPolicy: "network-only",
+  });
+  const ids: string[] = ((ranked as any)?.teams ?? []).map(
+    (team: { id: string }) => team.id,
+  );
+  const total = (ranked as any)?.teams_aggregate?.aggregate?.count ?? 0;
+  if (!ids.length) {
+    return { teams: [], total };
+  }
+  const { data } = await client.query({
+    query,
+    variables: {
+      where: { id: { _in: ids } },
+      orderBy: ORDER.name,
+      limit: ids.length,
+      offset: 0,
+    },
+    fetchPolicy: "network-only",
+  });
+  return { teams: orderByIds((data as any)?.teams ?? [], ids), total };
+}
+
 const filterCount = computed(
   () => Number(winnersOnly.value) + Number(scrimsOnly.value),
 );
@@ -237,14 +294,10 @@ async function load() {
   }
   fetching.value = true;
   try {
-    const { data } = await client.query({
-      query: hasLastMatchAt.value ? queries.with : queries.without,
-      variables,
-      fetchPolicy: "network-only",
-    });
+    const result = await fetchDirectory(variables);
     if (current !== generation) return;
-    teams.value = (data as any)?.teams ?? [];
-    total.value = (data as any)?.teams_aggregate?.aggregate?.count ?? 0;
+    teams.value = result.teams;
+    total.value = result.total;
     lastDirectoryResults.set(key, { teams: teams.value, total: total.value });
     lastDirectoryRowCount.value = teams.value.length;
   } catch (error) {

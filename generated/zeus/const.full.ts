@@ -6101,6 +6101,7 @@ export const AllTypesProps: Record<string,any> = {
 		event:"events_bool_exp",
 		event_id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
+		match_created_at:"timestamptz_comparison_exp",
 		match_id:"uuid_comparison_exp"
 	},
 	event_match_links_constraint: "enum" as const,
@@ -6109,16 +6110,19 @@ export const AllTypesProps: Record<string,any> = {
 		event:"events_obj_rel_insert_input",
 		event_id:"uuid",
 		match:"matches_obj_rel_insert_input",
+		match_created_at:"timestamptz",
 		match_id:"uuid"
 	},
 	event_match_links_max_order_by:{
 		created_at:"order_by",
 		event_id:"order_by",
+		match_created_at:"order_by",
 		match_id:"order_by"
 	},
 	event_match_links_min_order_by:{
 		created_at:"order_by",
 		event_id:"order_by",
+		match_created_at:"order_by",
 		match_id:"order_by"
 	},
 	event_match_links_on_conflict:{
@@ -6131,6 +6135,7 @@ export const AllTypesProps: Record<string,any> = {
 		event:"events_order_by",
 		event_id:"order_by",
 		match:"matches_order_by",
+		match_created_at:"order_by",
 		match_id:"order_by"
 	},
 	event_match_links_pk_columns_input:{
@@ -6141,6 +6146,7 @@ export const AllTypesProps: Record<string,any> = {
 	event_match_links_set_input:{
 		created_at:"timestamptz",
 		event_id:"uuid",
+		match_created_at:"timestamptz",
 		match_id:"uuid"
 	},
 	event_match_links_stream_cursor_input:{
@@ -6150,6 +6156,7 @@ export const AllTypesProps: Record<string,any> = {
 	event_match_links_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		event_id:"uuid",
+		match_created_at:"timestamptz",
 		match_id:"uuid"
 	},
 	event_match_links_update_column: "enum" as const,
@@ -41207,6 +41214,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		invites:"team_invites_arr_rel_insert_input",
+		last_match_at:"timestamptz",
 		match_lineups:"match_lineups_arr_rel_insert_input",
 		owner:"players_obj_rel_insert_input",
 		owner_steam_id:"bigint",
@@ -41222,6 +41230,7 @@ export const AllTypesProps: Record<string,any> = {
 		captain_steam_id:"order_by",
 		created_at:"order_by",
 		id:"order_by",
+		last_match_at:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
 		short_name:"order_by"
@@ -41231,6 +41240,7 @@ export const AllTypesProps: Record<string,any> = {
 		captain_steam_id:"order_by",
 		created_at:"order_by",
 		id:"order_by",
+		last_match_at:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
 		short_name:"order_by"
@@ -41282,6 +41292,7 @@ export const AllTypesProps: Record<string,any> = {
 		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		id:"uuid",
+		last_match_at:"timestamptz",
 		owner_steam_id:"bigint"
 	},
 	teams_stddev_order_by:{
@@ -41304,6 +41315,7 @@ export const AllTypesProps: Record<string,any> = {
 		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		id:"uuid",
+		last_match_at:"timestamptz",
 		owner_steam_id:"bigint"
 	},
 	teams_sum_order_by:{
@@ -57897,6 +57909,7 @@ export const ReturnTypes: Record<string,any> = {
 		event:"events",
 		event_id:"uuid",
 		match:"matches",
+		match_created_at:"timestamptz",
 		match_id:"uuid"
 	},
 	event_match_links_aggregate:{
@@ -57911,11 +57924,13 @@ export const ReturnTypes: Record<string,any> = {
 	event_match_links_max_fields:{
 		created_at:"timestamptz",
 		event_id:"uuid",
+		match_created_at:"timestamptz",
 		match_id:"uuid"
 	},
 	event_match_links_min_fields:{
 		created_at:"timestamptz",
 		event_id:"uuid",
+		match_created_at:"timestamptz",
 		match_id:"uuid"
 	},
 	event_match_links_mutation_response:{

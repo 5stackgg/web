@@ -5,6 +5,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { matchRowFields } from "~/graphql/simpleMatchFields";
+import { schemaHasField } from "~/utilities/schemaHasType";
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -16,7 +17,7 @@ const EVENT_MATCHES_QUERY = typedGql("query")({
   event_match_links: [
     {
       where: { event_id: { _eq: $("eventId", "uuid!") } },
-      order_by: [{ match: { created_at: order_by.desc } }],
+      order_by: $("orderBy", "[event_match_links_order_by!]!"),
       limit: $("limit", "Int!"),
       offset: $("offset", "Int!"),
     },
@@ -62,7 +63,7 @@ const MY_EVENT_MATCHES_QUERY = typedGql("query")({
   event_match_links: [
     {
       where: myMatchWhere,
-      order_by: [{ match: { created_at: order_by.desc } }],
+      order_by: $("orderBy", "[event_match_links_order_by!]!"),
       limit: 5,
     },
     {
@@ -77,7 +78,7 @@ const MY_EVENT_MATCHES_PAGE_QUERY = typedGql("query")({
   event_match_links: [
     {
       where: myMatchWhere,
-      order_by: [{ match: { created_at: order_by.desc } }],
+      order_by: $("orderBy", "[event_match_links_order_by!]!"),
       limit: $("limit", "Int!"),
       offset: $("offset", "Int!"),
     },
@@ -91,6 +92,18 @@ const MY_EVENT_MATCHES_PAGE_QUERY = typedGql("query")({
     { aggregate: { count: true } },
   ],
 });
+
+// Newest match first. Sorting through the match relationship builds every
+// match in the event before the page is cut, so the link's own copy of the
+// match's created_at is used once the API has it.
+export function eventMatchesOrder(client: any): Promise<Array<object>> {
+  return schemaHasField(client, "event_match_links", "match_created_at").then(
+    (has) =>
+      has
+        ? [{ match_created_at: order_by.desc }]
+        : [{ match: { created_at: order_by.desc } }],
+  );
+}
 
 export type EventMatch = Record<string, any> & {
   id: string;
@@ -121,10 +134,12 @@ export function useEventMatches(eventId: Ref<string | null>) {
     if (!eventId.value) return [];
     const steamId = useAuthStore().me?.steam_id;
     const onlyMine = mine.value && !!steamId;
+    const orderBy = await eventMatchesOrder(apolloClient);
     const { data } = await apolloClient.query({
       query: onlyMine ? MY_EVENT_MATCHES_PAGE_QUERY : EVENT_MATCHES_QUERY,
       variables: {
         eventId: eventId.value,
+        orderBy,
         limit: perPage.value,
         offset: (targetPage - 1) * perPage.value,
         ...(onlyMine ? { steamId } : {}),
@@ -144,9 +159,10 @@ export function useEventMatches(eventId: Ref<string | null>) {
       myMatches.value = [];
       return;
     }
+    const orderBy = await eventMatchesOrder(apolloClient);
     const { data } = await apolloClient.query({
       query: MY_EVENT_MATCHES_QUERY,
-      variables: { eventId: eventId.value, steamId },
+      variables: { eventId: eventId.value, steamId, orderBy },
       fetchPolicy: "network-only",
     });
     myMatches.value = rowsToMatches((data as any)?.event_match_links);

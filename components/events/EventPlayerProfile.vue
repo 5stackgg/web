@@ -8,6 +8,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
 import ClipTile from "~/components/clips/ClipTile.vue";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
+import { eventMatchesOrder } from "~/composables/useEventMatches";
 import type { Clip } from "~/types/clip";
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
@@ -108,7 +109,7 @@ const PLAYER_MATCHES_QUERY = typedGql("query")({
           ],
         },
       },
-      order_by: [{ match: { created_at: order_by.desc } }],
+      order_by: $("orderBy", "[event_match_links_order_by!]!"),
       limit: 50,
     },
     { match_id: true, match: simpleMatchFields },
@@ -178,11 +179,13 @@ let generation = 0;
 async function loadProfile(steamId: string, gen: number) {
   const [statsResult, matchesResult] = await Promise.all([
     fetchStats(steamId),
-    apolloClient.query({
-      query: PLAYER_MATCHES_QUERY,
-      variables: { eventId: props.eventId, steamId },
-      fetchPolicy: "network-only",
-    }),
+    eventMatchesOrder(apolloClient).then((orderBy) =>
+      apolloClient.query({
+        query: PLAYER_MATCHES_QUERY,
+        variables: { eventId: props.eventId, steamId, orderBy },
+        fetchPolicy: "network-only",
+      }),
+    ),
   ]);
   if (gen !== generation) return null;
   const nextMatches = ((matchesResult.data as any)?.event_match_links || [])

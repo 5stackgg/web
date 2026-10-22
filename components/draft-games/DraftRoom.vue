@@ -2687,7 +2687,7 @@ const header = computed<DraftHeaderState>(() => {
 .draft-rail {
   flex: 1 1 100%;
 }
-.draft-match-info.is-empty + * {
+.draft-match-info.is-empty {
   margin-top: 0 !important;
 }
 .draft-pair-grid {

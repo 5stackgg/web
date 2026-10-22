@@ -6,8 +6,8 @@ import {
   savePickedLocale,
 } from "~/utilities/locale";
 
-export default defineNuxtPlugin(async (nuxtApp) => {
-  const i18n = nuxtApp.$i18n;
+export default defineNuxtPlugin(async () => {
+  const i18n = useNuxtApp().$i18n;
 
   const legacy = useCookie<string | null>(LEGACY_LOCALE_COOKIE);
   if (legacy.value) {

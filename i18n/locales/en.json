@@ -13141,6 +13141,7 @@
       "pick_of": "Pick {n} of {total}",
       "auto_pick_hint": "If time runs out, {name} is picked for you.",
       "pick_slot": "Pick {n}",
+      "not_picked": "Not picked yet",
       "auto_picked": "Auto",
       "auto_picked_hint": "Picked automatically when the clock ran out",
       "add_to_team": "Add to {team}",
@@ -13207,7 +13208,11 @@
       "check_in_window_help": "Everyone has a minute to check in. After that, the host can swap in a backup for anyone who hasn't.",
       "swap_in": "Swap in {name}",
       "remove_no_show": "Remove from the match",
-      "remove_no_show_description": "They'll be taken out of the match and their seat left open."
+      "remove_no_show_description": "They'll be taken out of the match and their seat left open.",
+      "is_picking": "{name} is picking",
+      "hosted_by": "Hosted by {name}",
+      "closes_in": "Closes in {time}",
+      "host_mode_desc": "The host puts players on teams."
     },
     "header": {
       "label": "Draft room status",
@@ -14762,9 +14767,13 @@
       "step_label": "Draft step",
       "replay": "Replay",
       "steps": {
+        "picks": {
+          "label": "Picks",
+          "caption": "A pretend Captains draft: the captains pick in turn on a 30-second clock, and each pick lands in its team's stack in the scorebug. Hover or tap a stack for the order. Nothing here touches a real draft."
+        },
         "check_in": {
           "label": "Check-in",
-          "caption": "A pretend draft that has just made its match. Everyone has checked in from the draft room but one player. Nothing here touches a real draft."
+          "caption": "The last pick makes the match. Everyone checks in from the draft room, and the veto starts the moment the last player is in."
         },
         "veto": {
           "label": "Veto",

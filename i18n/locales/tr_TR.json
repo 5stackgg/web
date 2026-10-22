@@ -13141,6 +13141,7 @@
       "pick_of": "Seçim {n}/{total}",
       "auto_pick_hint": "Süre dolarsa {name} senin için seçilir.",
       "pick_slot": "Seçim {n}",
+      "not_picked": "Henüz seçilmedi",
       "auto_picked": "Oto",
       "auto_picked_hint": "Süre dolduğunda otomatik seçildi",
       "add_to_team": "{team} takımına ekle",
@@ -13207,7 +13208,11 @@
       "check_in_window_help": "Herkesin katılımını onaylamak için bir dakikası var. Sonrasında ev sahibi, onaylamayanların yerine bekleyen birini alabilir.",
       "swap_in": "{name} oyuna alınsın",
       "remove_no_show": "Maçtan çıkar",
-      "remove_no_show_description": "Maçtan çıkarılacak ve yeri boş kalacak."
+      "remove_no_show_description": "Maçtan çıkarılacak ve yeri boş kalacak.",
+      "is_picking": "{name} seçiyor",
+      "hosted_by": "Ev Sahibi: {name}",
+      "closes_in": "{time} içinde kapanıyor",
+      "host_mode_desc": "Ev sahibi oyuncuları takımlara yerleştirir."
     },
     "header": {
       "label": "Draft odası durumu",
@@ -14762,9 +14767,13 @@
       "step_label": "Seçim adımı",
       "replay": "Tekrar oynat",
       "steps": {
+        "picks": {
+          "label": "Seçimler",
+          "caption": "Sahte bir kaptanlı draft: kaptanlar 30 saniyelik sayaçla sırayla seçer ve her seçim skor tabelasında takımının yığınına eklenir. Sırayı görmek için bir yığının üzerine gelin ya da dokunun. Buradaki hiçbir şey gerçek bir draft'ı etkilemez."
+        },
         "check_in": {
           "label": "Katılım",
-          "caption": "Maçını yeni oluşturmuş, gerçek olmayan bir seçim. Bir oyuncu dışında herkes seçim odasından katılım bildirdi. Buradaki hiçbir şey gerçek bir seçime dokunmaz."
+          "caption": "Son seçim maçı oluşturur. Herkes seçim odasından katılım bildirir ve son oyuncu bildirdiği anda veto başlar."
         },
         "veto": {
           "label": "Veto",

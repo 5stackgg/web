@@ -11,9 +11,9 @@ import {
 } from "~/utilities/demoMatch";
 import { mapVetoOrder } from "~/utilities/vetoOrder";
 
-// The FAQ's demo draft: a quick-hosted Captains draft that has just made its
-// match, shown to the draft room and the match page the way the api hands them
-// over. The match has the api's draft defaults: best of one, map veto, knife
+// The FAQ's demo draft: a quick-hosted Captains draft from its first pick to
+// its match, shown to the draft room and the match page the way the api hands
+// them over. The match has the api's draft defaults: best of one, map veto, knife
 // round, MR12, a 60 second veto clock, and one region (so no region veto).
 // Nothing here exists on the api: every id is made up.
 export const DEMO_DRAFT_ID = "00000000-0000-0000-0002-000000000000";
@@ -24,9 +24,10 @@ const LINEUP_IDS: Record<1 | 2, string> = {
   2: "00000000-0000-0000-0003-000000000002",
 };
 
-export type DemoDraftStep = "check_in" | "veto" | "booting" | "ready";
+export type DemoDraftStep = "picks" | "check_in" | "veto" | "booting" | "ready";
 
 export const DEMO_DRAFT_STEPS: DemoDraftStep[] = [
+  "picks",
   "check_in",
   "veto",
   "booting",
@@ -56,6 +57,20 @@ export const DEMO_DRAFT_BANS = BANS.length;
 
 // Who checks in last, so the demo can watch it happen.
 const LAST_CHECK_IN = { lineup: 2 as const, slot: 2 };
+// Everyone's check-in in turn, the seat a signed-in viewer takes first.
+const CHECK_IN_ORDER: Array<[1 | 2, number]> = [
+  [1, 3],
+  [1, 0],
+  [2, 0],
+  [2, 1],
+  [1, 1],
+  [2, 3],
+  [1, 2],
+  [2, 4],
+  [1, 4],
+  [LAST_CHECK_IN.lineup, LAST_CHECK_IN.slot],
+];
+export const DEMO_DRAFT_PLAYERS = CHECK_IN_ORDER.length;
 // The seat a signed-in viewer takes, so the demo shows them a player's view.
 const VIEWER_SEAT = { lineup: 1 as const, slot: 3 };
 
@@ -122,6 +137,9 @@ function profile(steamId: string, name: string, elo: number) {
 
 const SLOTS = [0, 1, 2, 3, 4];
 
+// The seconds a captain has for each pick (the api's PICK_SECONDS).
+const PICK_CLOCK_SECONDS = 30;
+
 // A snake draft after the two top-rated players became captains: each
 // captain's picks, in order.
 const DRAFT_PICKS: Array<[1 | 2, number]> = [
@@ -135,13 +153,28 @@ const DRAFT_PICKS: Array<[1 | 2, number]> = [
   [1, 4],
 ];
 
-export function demoDraftRoom(viewer: DemoViewer, startedAt: number) {
+export const DEMO_DRAFT_PICKS = DRAFT_PICKS.length;
+
+// The room `picked` picks into the draft (the current pick's clock started at
+// `turnAt`), or once every pick is in: making its match, then made.
+export function demoDraftRoom(
+  viewer: DemoViewer,
+  startedAt: number,
+  draft: { picked?: number; turnAt?: number; matchMade?: boolean } = {},
+) {
   const created = new Date(startedAt - 6 * 60 * 1000).toISOString();
+  const picked = draft.picked ?? DRAFT_PICKS.length;
+  const drafting = picked < DRAFT_PICKS.length;
+  const matchMade = !drafting && draft.matchMade !== false;
+  const pickOf = (lineup: 1 | 2, slot: number) =>
+    DRAFT_PICKS.slice(0, picked).findIndex(
+      ([side, seat]) => side === lineup && seat === slot,
+    );
   return {
     id: DEMO_DRAFT_ID,
     host_steam_id: player(1, 0, viewer).steam_id,
     is_organizer: false,
-    status: "Completed",
+    status: drafting ? "Drafting" : matchMade ? "Completed" : "CreatingMatch",
     created_at: created,
     type: "Competitive",
     mode: "Captains",
@@ -159,25 +192,33 @@ export function demoDraftRoom(viewer: DemoViewer, startedAt: number) {
     draft_order: "Snake",
     min_elo: null,
     max_elo: null,
-    match_id: DEMO_DRAFT_MATCH_ID,
-    current_pick_lineup: null,
+    match_id: matchMade ? DEMO_DRAFT_MATCH_ID : null,
+    current_pick_lineup: drafting ? DRAFT_PICKS[picked][0] : null,
     pattern: DRAFT_PICKS.map(([lineup]) => lineup),
-    pick_deadline: null,
+    pick_deadline: drafting
+      ? new Date(
+          (draft.turnAt ?? startedAt) + PICK_CLOCK_SECONDS * 1000,
+        ).toISOString()
+      : null,
     expires_at: null,
     host: player(1, 0, viewer),
     map_pool: { id: "demo-pool", type: "Competitive" },
     players: ([1, 2] as const).flatMap((lineup) =>
-      SLOTS.map((slot) => ({
-        steam_id: player(lineup, slot, viewer).steam_id,
-        status: "Accepted",
-        joined_at: created,
-        elo_snapshot: player(lineup, slot, viewer).elo?.competitive ?? null,
-        is_captain: slot === 0,
-        lineup,
-        // Each side's own pick count; captains are not picked.
-        pick_order: slot === 0 ? null : slot,
-        player: player(lineup, slot, viewer),
-      })),
+      SLOTS.map((slot) => {
+        // Captains are not picked; everyone else sits in the pool until they
+        // are, then takes their side's next pick.
+        const sided = slot === 0 || pickOf(lineup, slot) >= 0;
+        return {
+          steam_id: player(lineup, slot, viewer).steam_id,
+          status: "Accepted",
+          joined_at: created,
+          elo_snapshot: player(lineup, slot, viewer).elo?.competitive ?? null,
+          is_captain: slot === 0,
+          lineup: sided ? lineup : null,
+          pick_order: slot && sided ? slot : null,
+          player: player(lineup, slot, viewer),
+        };
+      }),
     ),
     options: {
       mr: 12,
@@ -190,7 +231,7 @@ export function demoDraftRoom(viewer: DemoViewer, startedAt: number) {
       game_mode: null,
       map_pool: { id: "demo-pool", type: "Competitive", maps: POOL },
     },
-    picks: DRAFT_PICKS.map(([lineup, slot], index) => ({
+    picks: DRAFT_PICKS.slice(0, picked).map(([lineup, slot], index) => ({
       id: `demo-draft-pick-${index}`,
       lineup,
       auto_picked: false,
@@ -227,6 +268,8 @@ export function demoDraftPicks(bans: number) {
 export function demoDraftMatch(state: {
   step: DemoDraftStep;
   everyoneIn: boolean;
+  // How many have checked in, in turn; unset, everyone but the last.
+  checkIns?: number | null;
   bans: number;
   turnAt: number;
   // When the demo started, so its clocks don't move as it changes.
@@ -251,11 +294,19 @@ export function demoDraftMatch(state: {
     [e_match_status_enum.Live]: "Live",
   };
 
-  const checkedIn = (lineup: 1 | 2, slot: number) =>
-    step !== "check_in" ||
-    state.everyoneIn ||
-    lineup !== LAST_CHECK_IN.lineup ||
-    slot !== LAST_CHECK_IN.slot;
+  const checkedIn = (lineup: 1 | 2, slot: number) => {
+    if (step !== "check_in" || state.everyoneIn) {
+      return true;
+    }
+    if (state.checkIns != null) {
+      return (
+        CHECK_IN_ORDER.findIndex(
+          ([side, seat]) => side === lineup && seat === slot,
+        ) < state.checkIns
+      );
+    }
+    return lineup !== LAST_CHECK_IN.lineup || slot !== LAST_CHECK_IN.slot;
+  };
 
   const lineup = (slot: 1 | 2) => ({
     id: LINEUP_IDS[slot],

@@ -107,10 +107,10 @@ describe("draft room pick order", () => {
       "second",
       "third",
       "fourth",
-      "On The Clock",
-      "Team 2",
-      "Team 2",
-      "Team 1",
+      "cap1 is picking",
+      "Pick 6",
+      "Pick 7",
+      "Pick 8",
     ]);
     expect(vm.pickTrack.map((cell: any) => !!cell.auto)).toEqual([
       false,
@@ -121,6 +121,58 @@ describe("draft room pick order", () => {
       false,
       false,
       false,
+    ]);
+  });
+
+  it("carries the pick order in each side's stack, no row of its own", async () => {
+    const vm = await mountRoom();
+    const stack = (side: number) =>
+      vm.headerSides[side].seats.map((seat: any) => ({
+        player: seat.player?.steamId ?? null,
+        captain: seat.captain,
+        no: seat.no,
+        current: seat.current,
+        auto: seat.auto,
+      }));
+
+    expect(vm.headerSides[1].ordered).toBe(true);
+    expect(stack(1)).toEqual([
+      { player: "cap2", captain: true, no: null, current: false, auto: false },
+      { player: "second", captain: false, no: 2, current: false, auto: true },
+      { player: "third", captain: false, no: 3, current: false, auto: false },
+      { player: null, captain: false, no: 6, current: false, auto: false },
+      { player: null, captain: false, no: 7, current: false, auto: false },
+    ]);
+    expect(stack(0)[3]).toEqual({
+      player: null,
+      captain: false,
+      no: 5,
+      current: true,
+      auto: false,
+    });
+  });
+
+  it("numbers no seats outside a captains draft", async () => {
+    const vm = await mountRoom({
+      mode: "Pug",
+      status: "Filled",
+      pattern: [],
+      players: [1, 2, 3].map((order) => member(`p${order}`, 1, order)),
+      picks: [],
+    });
+
+    expect(vm.headerSides[0].ordered).toBe(false);
+    expect(
+      vm.headerSides[0].seats.map((seat: any) => [
+        seat.player?.steamId ?? null,
+        seat.no,
+      ]),
+    ).toEqual([
+      ["p1", null],
+      ["p2", null],
+      ["p3", null],
+      [null, null],
+      [null, null],
     ]);
   });
 
@@ -157,9 +209,7 @@ describe("draft room pick order", () => {
     const vm = await mountRoom({
       mode: "Pug",
       status: "Filled",
-      players: [1, 2, 3, 4, 5].map((order) =>
-        member(`p${order}`, 1, order),
-      ),
+      players: [1, 2, 3, 4, 5].map((order) => member(`p${order}`, 1, order)),
       picks: [],
     });
 

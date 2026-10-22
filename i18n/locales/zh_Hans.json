@@ -13141,6 +13141,7 @@
       "pick_of": "第 {n} 选 / 共 {total}",
       "auto_pick_hint": "若时间耗尽，系统将为你选择 {name}。",
       "pick_slot": "第 {n} 选",
+      "not_picked": "尚未选择",
       "auto_picked": "自动",
       "auto_picked_hint": "时间耗尽后自动选择",
       "add_to_team": "加入{team}",
@@ -13207,7 +13208,11 @@
       "check_in_window_help": "每个人有一分钟签到。之后，房主可以用候补替换未签到的玩家。",
       "swap_in": "换上 {name}",
       "remove_no_show": "移出比赛",
-      "remove_no_show_description": "他们将被移出比赛，位置会空出来。"
+      "remove_no_show_description": "他们将被移出比赛，位置会空出来。",
+      "is_picking": "{name} 正在选人",
+      "hosted_by": "房主：{name}",
+      "closes_in": "{time} 后关闭",
+      "host_mode_desc": "由房主将玩家分配到各队。"
     },
     "header": {
       "label": "选人房间状态",
@@ -14762,9 +14767,13 @@
       "step_label": "选秀阶段",
       "replay": "重新播放",
       "steps": {
+        "picks": {
+          "label": "选人",
+          "caption": "一场虚构的队长选人：队长们在 30 秒倒计时内轮流选人，每次选择都会进入记分条上己方的头像堆。悬停或点按头像堆即可查看顺序。这里的一切都不会影响真实的选人。"
+        },
         "check_in": {
           "label": "签到",
-          "caption": "一个刚刚创建了比赛的虚拟选秀。除一名玩家外，所有人都已在选秀房间签到。这里的操作不会影响真实的选秀。"
+          "caption": "最后一次选择会创建比赛。所有人在选秀房间签到，最后一名玩家签到后 BP 立即开始。"
         },
         "veto": {
           "label": "BP",

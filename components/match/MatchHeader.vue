@@ -8,6 +8,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchHeaderVeto from "~/components/match/MatchHeaderVeto.vue";
 import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
+import { Fold, HeightSwap } from "~/components/ui/transitions";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { e_match_status_enum } from "~/generated/zeus";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
@@ -329,6 +330,7 @@ const resultText = computed(() =>
             :to="team.teamId ? `/teams/${team.teamId}` : undefined"
             aria-hidden="true"
             :tabindex="team.teamId ? -1 : undefined"
+            :data-scorebug="`crest-${i + 1}`"
             class="grid size-14 shrink-0 place-items-center overflow-hidden rounded-[10px] bg-muted text-sm font-extrabold tracking-wide text-foreground/85 shadow-[0_8px_24px_-8px_rgb(0_0_0/0.8)]"
             :class="[
               team.mine
@@ -349,6 +351,7 @@ const resultText = computed(() =>
           <div
             class="grid min-w-0 gap-1.5"
             :class="i === 0 ? 'justify-items-end' : 'justify-items-start'"
+            :data-scorebug="`team-${i + 1}`"
           >
             <component
               :is="team.teamId ? NuxtLink : 'h2'"
@@ -403,170 +406,190 @@ const resultText = computed(() =>
 
         <div
           v-if="i === 0"
+          data-scorebug="box"
           class="flex min-h-[72px] items-stretch overflow-hidden rounded-[10px] bg-black/40 ring-1 ring-inset ring-white/[0.09]"
         >
-          <template v-if="headline">
-            <MatchLineupScoreDisplay
-              :match="match"
-              :lineup="lineups[0]"
-              :match-map="headline.map ?? undefined"
-              :halves="false"
-              class="grid min-w-[76px] place-items-center px-3.5 text-[42px] leading-none tabular-nums text-foreground [&>span]:font-extrabold"
-            />
-            <span
-              class="grid min-w-[120px] place-content-center justify-items-center gap-1 whitespace-nowrap border-x border-white/[0.08] px-4 py-2 text-xs text-muted-foreground"
-            >
-              <template v-if="headline.map">
-                <span
-                  class="inline-flex items-center gap-1.5 text-[13px] font-bold text-foreground"
-                >
-                  <span v-if="isLive" class="relative flex size-2">
-                    <span
-                      class="absolute inline-flex size-full animate-ping rounded-full bg-destructive opacity-75 motion-reduce:animate-none"
-                    ></span>
-                    <span
-                      class="relative inline-flex size-2 rounded-full bg-destructive"
-                    ></span>
+          <!-- VS gives way to the score: the box eases to its new width, so
+               the teams either side glide out with it. -->
+          <HeightSwap axis="x" class="flex">
+            <div v-if="headline" key="score" class="flex shrink-0">
+              <MatchLineupScoreDisplay
+                :match="match"
+                :lineup="lineups[0]"
+                :match-map="headline.map ?? undefined"
+                :halves="false"
+                class="grid min-w-[76px] place-items-center px-3.5 text-[42px] leading-none tabular-nums text-foreground [&>span]:font-extrabold"
+              />
+              <span
+                class="grid min-w-[120px] place-content-center justify-items-center gap-1 whitespace-nowrap border-x border-white/[0.08] px-4 py-2 text-xs text-muted-foreground"
+              >
+                <template v-if="headline.map">
+                  <span
+                    class="inline-flex items-center gap-1.5 text-[13px] font-bold text-foreground"
+                  >
+                    <span v-if="isLive" class="relative flex size-2">
+                      <span
+                        class="absolute inline-flex size-full animate-ping rounded-full bg-destructive opacity-75 motion-reduce:animate-none"
+                      ></span>
+                      <span
+                        class="relative inline-flex size-2 rounded-full bg-destructive"
+                      ></span>
+                    </span>
+                    <img
+                      v-else-if="headline.map.map?.patch"
+                      :src="headline.map.map.patch"
+                      alt=""
+                      class="size-4 object-contain"
+                    />
+                    {{ mapLabel(headline.map.map) }}
                   </span>
-                  <img
-                    v-else-if="headline.map.map?.patch"
-                    :src="headline.map.map.patch"
-                    alt=""
-                    class="size-4 object-contain"
-                  />
-                  {{ mapLabel(headline.map.map) }}
-                </span>
-                <!-- T/CT rounds per side, the same split the map card shows. -->
-                <span class="text-[15px] tabular-nums">
-                  <MatchLineupScoreDisplay
-                    :match="match"
-                    :lineup="lineups[0]"
-                    :match-map="headline.map"
-                    :score="false"
-                  />
-                  :
-                  <MatchLineupScoreDisplay
-                    :match="match"
-                    :lineup="lineups[1]"
-                    :match-map="headline.map"
-                    :score="false"
-                  />
-                </span>
-              </template>
-              <template v-else>
-                <span class="text-[13px] font-bold text-foreground">{{
-                  resultText
-                }}</span>
-                <span>{{
-                  $t("match.options.best_of.option", { count: bestOf })
-                }}</span>
-              </template>
+                  <!-- T/CT rounds per side, the same split the map card shows. -->
+                  <span class="text-[15px] tabular-nums">
+                    <MatchLineupScoreDisplay
+                      :match="match"
+                      :lineup="lineups[0]"
+                      :match-map="headline.map"
+                      :score="false"
+                    />
+                    :
+                    <MatchLineupScoreDisplay
+                      :match="match"
+                      :lineup="lineups[1]"
+                      :match-map="headline.map"
+                      :score="false"
+                    />
+                  </span>
+                </template>
+                <template v-else>
+                  <span class="text-[13px] font-bold text-foreground">{{
+                    resultText
+                  }}</span>
+                  <span>{{
+                    $t("match.options.best_of.option", { count: bestOf })
+                  }}</span>
+                </template>
+              </span>
+              <MatchLineupScoreDisplay
+                :match="match"
+                :lineup="lineups[1]"
+                :match-map="headline.map ?? undefined"
+                :halves="false"
+                class="grid min-w-[76px] place-items-center px-3.5 text-[42px] leading-none tabular-nums text-foreground [&>span]:font-extrabold"
+              />
+            </div>
+            <span
+              v-else
+              key="vs"
+              class="grid min-w-[120px] shrink-0 place-items-center px-4 text-lg font-bold text-muted-foreground"
+            >
+              {{ isEnded ? statusText : $t("common.vs") }}
             </span>
-            <MatchLineupScoreDisplay
-              :match="match"
-              :lineup="lineups[1]"
-              :match-map="headline.map ?? undefined"
-              :halves="false"
-              class="grid min-w-[76px] place-items-center px-3.5 text-[42px] leading-none tabular-nums text-foreground [&>span]:font-extrabold"
-            />
-          </template>
-          <span
-            v-else
-            class="grid min-w-[120px] place-items-center px-4 text-lg font-bold text-muted-foreground"
-          >
-            {{ isEnded ? statusText : $t("common.vs") }}
-          </span>
+          </HeightSwap>
         </div>
       </template>
     </div>
 
     <!-- Phone: the same facts as two team rows. -->
-    <div class="mt-4 grid gap-2.5 md:hidden">
-      <div
-        v-for="(team, i) in teams"
-        :key="team.id ?? i"
-        class="flex min-w-0 items-center gap-3"
-      >
-        <span
-          aria-hidden="true"
-          class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted text-xs font-extrabold tracking-wide text-foreground/85"
-          :class="
-            team.mine
-              ? 'ring-2 ring-[hsl(var(--tac-amber))]'
-              : 'ring-1 ring-inset ring-white/10'
-          "
+    <div class="mt-4 md:hidden">
+      <div class="grid gap-2.5">
+        <div
+          v-for="(team, i) in teams"
+          :key="team.id ?? i"
+          class="flex min-w-0 items-center gap-3"
         >
-          <img
-            v-if="team.crest"
-            :src="team.crest"
-            alt=""
-            class="size-full object-cover"
-          />
-          <template v-else>{{ team.monogram }}</template>
-        </span>
-        <component
-          :is="team.teamId ? NuxtLink : 'span'"
-          :to="team.teamId ? `/teams/${team.teamId}` : undefined"
-          class="line-clamp-2 min-w-0 flex-1 text-[17px] leading-tight"
-          :class="
-            team.lost
-              ? 'font-semibold text-muted-foreground'
-              : 'font-bold text-foreground'
-          "
-        >
-          {{ team.name }}
-          <span v-if="team.won" class="sr-only">{{
-            $t("match.header.winner")
-          }}</span>
-        </component>
-        <span v-if="winsNeeded" class="inline-flex shrink-0 gap-[3px]">
-          <i
-            v-for="p in winsNeeded"
-            :key="p"
-            class="size-1.5 rounded-[1px]"
+          <span
+            aria-hidden="true"
+            :data-scorebug="`crest-${i + 1}`"
+            class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-muted text-xs font-extrabold tracking-wide text-foreground/85"
             :class="
-              p <= team.mapsWon
-                ? 'bg-[hsl(var(--tac-amber))]'
-                : 'bg-muted-foreground/30'
+              team.mine
+                ? 'ring-2 ring-[hsl(var(--tac-amber))]'
+                : 'ring-1 ring-inset ring-white/10'
             "
-          ></i>
-        </span>
-        <MatchLineupScoreDisplay
-          v-if="headline"
-          :match="match"
-          :lineup="lineups[i]"
-          :match-map="headline.map ?? undefined"
-          :halves="false"
-          class="min-w-[2ch] text-right text-[28px] leading-none tabular-nums text-foreground [&>span]:font-extrabold"
-        />
-        <span
-          v-else
-          class="min-w-[2ch] text-right text-[28px] font-extrabold leading-none text-muted-foreground"
-          >–</span
-        >
+          >
+            <img
+              v-if="team.crest"
+              :src="team.crest"
+              alt=""
+              class="size-full object-cover"
+            />
+            <template v-else>{{ team.monogram }}</template>
+          </span>
+          <component
+            :is="team.teamId ? NuxtLink : 'span'"
+            :to="team.teamId ? `/teams/${team.teamId}` : undefined"
+            class="line-clamp-2 min-w-0 flex-1 text-[17px] leading-tight"
+            :class="
+              team.lost
+                ? 'font-semibold text-muted-foreground'
+                : 'font-bold text-foreground'
+            "
+          >
+            {{ team.name }}
+            <span v-if="team.won" class="sr-only">{{
+              $t("match.header.winner")
+            }}</span>
+          </component>
+          <span v-if="winsNeeded" class="inline-flex shrink-0 gap-[3px]">
+            <i
+              v-for="p in winsNeeded"
+              :key="p"
+              class="size-1.5 rounded-[1px]"
+              :class="
+                p <= team.mapsWon
+                  ? 'bg-[hsl(var(--tac-amber))]'
+                  : 'bg-muted-foreground/30'
+              "
+            ></i>
+          </span>
+          <Transition
+            mode="out-in"
+            enter-active-class="transition-opacity [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:![transition-duration:1ms]"
+            leave-active-class="transition-opacity [transition-duration:110ms] ease-in motion-reduce:![transition-duration:1ms]"
+            enter-from-class="opacity-0"
+            leave-to-class="opacity-0"
+          >
+            <MatchLineupScoreDisplay
+              v-if="headline"
+              key="score"
+              :match="match"
+              :lineup="lineups[i]"
+              :match-map="headline.map ?? undefined"
+              :halves="false"
+              class="min-w-[2ch] text-right text-[28px] leading-none tabular-nums text-foreground [&>span]:font-extrabold"
+            />
+            <span
+              v-else
+              key="none"
+              class="min-w-[2ch] text-right text-[28px] font-extrabold leading-none text-muted-foreground"
+              >–</span
+            >
+          </Transition>
+        </div>
       </div>
-      <span
-        v-if="headline?.map"
-        class="flex items-center gap-1.5 pl-[52px] text-[15px] tabular-nums"
-        :class="
-          isLive ? 'font-semibold text-destructive' : 'text-muted-foreground'
-        "
-      >
-        {{ mapLabel(headline.map.map) }}
-        <MatchLineupScoreDisplay
-          :match="match"
-          :lineup="lineups[0]"
-          :match-map="headline.map"
-          :score="false"
-        />
-        :
-        <MatchLineupScoreDisplay
-          :match="match"
-          :lineup="lineups[1]"
-          :match-map="headline.map"
-          :score="false"
-        />
-      </span>
+      <Fold :open="!!headline?.map">
+        <span
+          class="flex items-center gap-1.5 pl-[52px] pt-2.5 text-[15px] tabular-nums"
+          :class="
+            isLive ? 'font-semibold text-destructive' : 'text-muted-foreground'
+          "
+        >
+          {{ mapLabel(headline.map.map) }}
+          <MatchLineupScoreDisplay
+            :match="match"
+            :lineup="lineups[0]"
+            :match-map="headline.map"
+            :score="false"
+          />
+          :
+          <MatchLineupScoreDisplay
+            :match="match"
+            :lineup="lineups[1]"
+            :match-map="headline.map"
+            :score="false"
+          />
+        </span>
+      </Fold>
     </div>
 
     <!-- Both rows carry the gap above them, so a Bo1 without a veto ends at

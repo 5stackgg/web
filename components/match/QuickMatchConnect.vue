@@ -60,12 +60,18 @@ import HeightSwap from "~/components/ui/transitions/HeightSwap.vue";
                   </span>
                 </Transition>
               </span>
-              <AnimatedStat
-                :value="title"
-                :stagger="30"
-                class="whitespace-nowrap"
-                :class="showOffline && 'text-destructive'"
-              />
+              <!-- Word for word, not letter for letter: a flip between two
+                   titles read as one garbled word mid-change. The width
+                   glides, so the facts beside it slide along. -->
+              <HeightSwap axis="x" class="flex">
+                <span
+                  :key="title"
+                  class="shrink-0 whitespace-nowrap"
+                  :class="showOffline && 'text-destructive'"
+                >
+                  {{ title }}
+                </span>
+              </HeightSwap>
               <span
                 v-if="facts"
                 class="ml-1 truncate font-normal text-muted-foreground"

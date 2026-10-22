@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import DraftSettingsBar from "~/components/draft-games/DraftSettingsBar.vue";
+import { draftRoomOptions } from "~/components/draft-games/draftRoomHeader";
 import { setApiClockBehindBy } from "../../helpers/serverClock";
 
 describe("DraftSettingsBar", () => {
@@ -24,7 +25,39 @@ describe("DraftSettingsBar", () => {
       },
     });
 
-    expect(wrapper.find(".gauge--time .gauge-value").text()).toBe("5:00");
+    expect(wrapper.find(".draft-summary-closes").text()).toBe("5:00");
+    wrapper.unmount();
+  });
+
+  it("reads a quick-hosted room without match options as the api's defaults", async () => {
+    const wrapper = await mountSuspended(DraftSettingsBar, {
+      props: {
+        room: {
+          id: "room-1",
+          status: "Open",
+          match_id: null,
+          type: "Competitive",
+          mode: "Captains",
+          regions: ["US-East"],
+          capacity: 10,
+          players: [],
+          options: null,
+        },
+      },
+    });
+
+    expect(wrapper.text()).toContain("Captains draft");
+    expect(wrapper.text()).toContain(
+      "Competitive · MR12 · Best of 1 · US-East",
+    );
+    expect(draftRoomOptions({ type: "Wingman", options: null })).toMatchObject({
+      mr: 8,
+      best_of: 1,
+      overtime: true,
+      knife_round: true,
+      map_veto: true,
+      coaches: false,
+    });
     wrapper.unmount();
   });
 });

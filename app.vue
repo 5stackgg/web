@@ -8,6 +8,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { usePluginsStore } from "~/stores/Plugins";
 import { pageKeyWithoutTabQuery } from "~/utilities/pageKey";
 import { afterReveal } from "~/utilities/afterReveal";
+import { useScorebugHandoff } from "~/composables/useScorebugHandoff";
 
 const MatchmakingConfirm = defineAsyncComponent(
   () => import("~/components/matchmaking/MatchmakingConfirm.vue"),
@@ -100,6 +101,19 @@ usePluginsStore();
 
 const me = computed(() => authStore.me);
 const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);
+
+// The draft room's hand-off to the match page is a view transition, and no
+// frames run while it swaps the pages, so the route's own fades step aside:
+// the old page goes and the new one comes in the same tick. Only on a route
+// that already animates: giving one that doesn't a transition would remount
+// it (the FAQ's demo hands off inside its own page).
+const route = useRoute();
+const scorebugHandoff = useScorebugHandoff();
+const pageTransition = computed(() =>
+  scorebugHandoff.value && route.meta.pageTransition
+    ? { name: "page", mode: "default" as const, css: false }
+    : undefined,
+);
 </script>
 
 <template>
@@ -114,7 +128,7 @@ const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);
   </div>
 
   <NuxtLayout>
-    <NuxtPage :page-key="pageKeyWithoutTabQuery" />
+    <NuxtPage :page-key="pageKeyWithoutTabQuery" :transition="pageTransition" />
   </NuxtLayout>
   <Toaster />
 </template>

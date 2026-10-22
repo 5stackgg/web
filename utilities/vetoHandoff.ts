@@ -1,8 +1,8 @@
 // The start stage's last move. The board has folded its maps away; the page
 // takes them back: each map card (marked data-veto-home="map-N") unfolds in
-// turn, then the order of play in the header (data-veto-home="rail") fades
-// in. Each is marked data-landed as it comes in, so the page can keep it
-// hidden until then.
+// turn, and the order of play in the header (data-veto-home="rail") fades in
+// as its row folds open, so the row never opens empty. Each is marked
+// data-landed as it comes in, so the page can keep it hidden until then.
 
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 // The gap between the cards, closed while one is still folded.
@@ -89,6 +89,6 @@ export async function unfoldHome() {
   const rail = document.querySelector<HTMLElement>('[data-veto-home="rail"]');
   await Promise.all([
     ...cards.map((card) => unfold(card, together)),
-    rail ? fadeIn(rail, 160) : null,
+    rail ? fadeIn(rail, 0) : null,
   ]);
 }

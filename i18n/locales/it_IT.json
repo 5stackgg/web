@@ -7787,7 +7787,6 @@
       "preview": "Anteprima",
       "take": "Manda in onda",
       "take_pick": "Scegli un'anteprima per mandarla in onda.",
-      "take_already": "{match} è già in onda.",
       "take_go_live": "Vai live con {match}",
       "take_switch": "Passa a {match}",
       "take_more": "Altri modi per avviare",

@@ -7787,7 +7787,6 @@
       "preview": "Forhåndsvisning",
       "take": "Send",
       "take_pick": "Vælg en forhåndsvisning for at sende den.",
-      "take_already": "{match} sendes allerede.",
       "take_go_live": "Gå live med {match}",
       "take_switch": "Skift til {match}",
       "take_more": "Flere måder at starte på",

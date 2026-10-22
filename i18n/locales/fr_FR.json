@@ -7787,7 +7787,6 @@
       "preview": "Aperçu",
       "take": "Mise à l'antenne",
       "take_pick": "Choisis un aperçu pour le mettre à l'antenne.",
-      "take_already": "{match} est déjà à l'antenne.",
       "take_go_live": "Passer à l'antenne avec {match}",
       "take_switch": "Basculer sur {match}",
       "take_more": "Autres façons de démarrer",

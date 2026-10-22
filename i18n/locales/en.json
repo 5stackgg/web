@@ -7787,7 +7787,6 @@
       "preview": "Preview",
       "take": "Take",
       "take_pick": "Pick a preview to put it on air.",
-      "take_already": "{match} is already on air.",
       "take_go_live": "Go live with {match}",
       "take_switch": "Switch to {match}",
       "take_more": "More ways to start",

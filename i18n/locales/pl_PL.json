@@ -7787,7 +7787,6 @@
       "preview": "Podgląd",
       "take": "Na antenę",
       "take_pick": "Wybierz podgląd, aby puścić go na antenę.",
-      "take_already": "{match} jest już na antenie.",
       "take_go_live": "Nadawaj na żywo {match}",
       "take_switch": "Przełącz na {match}",
       "take_more": "Więcej sposobów uruchomienia",

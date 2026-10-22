@@ -7787,7 +7787,6 @@
       "preview": "Vista previa",
       "take": "Pasar al aire",
       "take_pick": "Elige una vista previa para ponerla en el aire.",
-      "take_already": "{match} ya está en el aire.",
       "take_go_live": "Emitir en directo {match}",
       "take_switch": "Cambiar a {match}",
       "take_more": "Más formas de iniciar",

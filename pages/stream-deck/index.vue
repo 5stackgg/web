@@ -47,6 +47,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import Fold from "~/components/ui/transitions/Fold.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import SectionEmpty from "~/components/common/SectionEmpty.vue";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
@@ -291,6 +292,7 @@ watch(
     if (!liveMatchesLoaded.value) return;
     if (
       selectedId.value &&
+      !onAirIds.value.has(selectedId.value) &&
       liveMatches.value.some((m) => m.id === selectedId.value)
     ) {
       return;
@@ -301,6 +303,9 @@ watch(
 );
 const selectedMatch = computed(
   () => liveMatches.value.find((m) => m.id === selectedId.value) ?? null,
+);
+const canTake = computed(() =>
+  liveMatches.value.some((m) => !onAirIds.value.has(m.id)),
 );
 const mode = computed(() => takeMode(!!activeStream.value, isAtCapacity.value));
 const block = computed<TakeBlock | null>(() =>
@@ -322,7 +327,13 @@ const { rowProps } = useListKeyboard({
   items: previews,
   getId: (m: LiveMatch) => m.id,
   activeId: activePreviewId,
-  onOpen: (id) => (selectedId.value = id),
+  onOpen: (id) => {
+    if (onAirIds.value.has(id)) {
+      void navigateTo(`/matches/${id}`);
+      return;
+    }
+    selectedId.value = id;
+  },
 });
 // A preview is a toggle button: aria-pressed says it's picked, so the
 // listbox-style aria-selected stays off it.
@@ -962,91 +973,84 @@ const toolButton =
           </span>
         </div>
 
-        <div
-          v-if="liveMatches.length"
-          class="grid gap-2 rounded-lg border border-border bg-card/40 p-3"
-        >
-          <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-            <span :class="tacticalSectionTickClasses" />
-            {{ $t("pages.control_room.take") }}
-          </div>
-          <p v-if="!selectedMatch" class="text-xs text-muted-foreground">
-            {{ $t("pages.control_room.take_pick") }}
-          </p>
-          <p
-            v-else-if="onAirIds.has(selectedMatch.id)"
-            class="text-xs text-muted-foreground"
+        <Fold :open="canTake">
+          <div
+            class="grid gap-2 rounded-lg border border-border bg-card/40 p-3"
           >
-            {{
-              $t("pages.control_room.take_already", {
-                match: nameOf(selectedMatch),
-              })
-            }}
-          </p>
-          <template v-else>
-            <div class="flex">
-              <Button
-                size="sm"
-                :class="[
-                  createButtonClasses,
-                  'min-w-0 flex-1 justify-center',
-                  mode === 'start' ? 'rounded-r-none' : '',
-                ]"
-                :disabled="!!block || !!switching"
-                @click="take"
-              >
-                <span class="truncate">{{
-                  mode === "switch"
-                    ? $t("pages.control_room.take_switch", {
-                        match: nameOf(selectedMatch),
-                      })
-                    : $t("pages.control_room.take_go_live", {
-                        match: nameOf(selectedMatch),
-                      })
-                }}</span>
-              </Button>
-              <DropdownMenu v-if="mode === 'start'">
-                <DropdownMenuTrigger as-child>
-                  <Button
-                    size="sm"
-                    :class="[
-                      createButtonClasses,
-                      'w-8 rounded-l-none border-l border-black/20 px-0',
-                    ]"
-                    :disabled="!!block"
-                    :aria-label="$t('pages.control_room.take_more')"
-                  >
-                    <ChevronDown class="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" class="w-56">
-                  <DropdownMenuItem
-                    @select="startLive(selectedMatch.id, 'live')"
-                  >
-                    <Play class="size-4" />
-                    {{ $t("pages.control_room.go_live") }}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem @select="startLive(selectedMatch.id, 'tv')">
-                    <Tv class="size-4" />
-                    {{ $t("pages.control_room.start_tv") }}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+              <span :class="tacticalSectionTickClasses" />
+              {{ $t("pages.control_room.take") }}
             </div>
-            <p
-              class="text-xs leading-snug"
-              :class="block ? TONE_TEXT.warn : TONE_TEXT.off"
-            >
-              {{
-                block
-                  ? blockText(block)
-                  : mode === "switch"
-                    ? $t("pages.control_room.take_switch_hint")
-                    : $t("pages.control_room.take_start_hint")
-              }}
+            <p v-if="!selectedMatch" class="text-xs text-muted-foreground">
+              {{ $t("pages.control_room.take_pick") }}
             </p>
-          </template>
-        </div>
+            <template v-else>
+              <div class="flex">
+                <Button
+                  size="sm"
+                  :class="[
+                    createButtonClasses,
+                    'min-w-0 flex-1 justify-center',
+                    mode === 'start' ? 'rounded-r-none' : '',
+                  ]"
+                  :disabled="!!block || !!switching"
+                  @click="take"
+                >
+                  <span class="truncate">{{
+                    mode === "switch"
+                      ? $t("pages.control_room.take_switch", {
+                          match: nameOf(selectedMatch),
+                        })
+                      : $t("pages.control_room.take_go_live", {
+                          match: nameOf(selectedMatch),
+                        })
+                  }}</span>
+                </Button>
+                <DropdownMenu v-if="mode === 'start'">
+                  <DropdownMenuTrigger as-child>
+                    <Button
+                      size="sm"
+                      :class="[
+                        createButtonClasses,
+                        'w-8 rounded-l-none border-l border-black/20 px-0',
+                      ]"
+                      :disabled="!!block"
+                      :aria-label="$t('pages.control_room.take_more')"
+                    >
+                      <ChevronDown class="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" class="w-56">
+                    <DropdownMenuItem
+                      @select="startLive(selectedMatch.id, 'live')"
+                    >
+                      <Play class="size-4" />
+                      {{ $t("pages.control_room.go_live") }}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      @select="startLive(selectedMatch.id, 'tv')"
+                    >
+                      <Tv class="size-4" />
+                      {{ $t("pages.control_room.start_tv") }}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <p
+                class="text-xs leading-snug"
+                :class="block ? TONE_TEXT.warn : TONE_TEXT.off"
+              >
+                {{
+                  block
+                    ? blockText(block)
+                    : mode === "switch"
+                      ? $t("pages.control_room.take_switch_hint")
+                      : $t("pages.control_room.take_start_hint")
+                }}
+              </p>
+            </template>
+          </div>
+        </Fold>
 
         <FadeSwap>
           <div v-if="!liveMatchesLoaded" key="loading" class="grid gap-4">

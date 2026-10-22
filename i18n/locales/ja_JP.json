@@ -7787,7 +7787,6 @@
       "preview": "プレビュー",
       "take": "テイク",
       "take_pick": "オンエアするプレビューを選んでください。",
-      "take_already": "{match} はすでにオンエア中です。",
       "take_go_live": "{match} をライブ配信",
       "take_switch": "{match} に切り替え",
       "take_more": "その他の開始方法",

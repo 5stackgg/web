@@ -7787,7 +7787,6 @@
       "preview": "Vorschau",
       "take": "Auf Sendung schalten",
       "take_pick": "Wähle eine Vorschau, um sie auf Sendung zu schalten.",
-      "take_already": "{match} ist bereits auf Sendung.",
       "take_go_live": "Mit {match} live gehen",
       "take_switch": "Zu {match} wechseln",
       "take_more": "Weitere Startoptionen",

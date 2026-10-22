@@ -159,12 +159,7 @@ export default defineNuxtConfig({
     bundle: {
       optimizeTranslationDirective: false,
     },
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: "i18n_redirected",
-      redirectOn: "root",
-      fallbackLocale: "en",
-    },
+    detectBrowserLanguage: false,
     locales: [
       { code: "en", name: "English", file: "en.json", flag: "🇬🇧" },
       { code: "ar", name: "العربية", file: "ar_SA.json", flag: "🇸🇦" }, // Arabic

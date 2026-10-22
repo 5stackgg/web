@@ -17,8 +17,10 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 
 // The draft header's check-in box. While you still have to check in it is the
-// button; once you have, or if you are only watching, it stays the same amber
-// box with its clock and dashes, so the header never changes size under it.
+// amber button; once you have, or if you are only watching, it keeps its clock
+// and dashes where they were but drops the amber -- amber is the room's "act
+// now", and a box still wearing it after you're in reads as a button you
+// haven't pressed.
 const props = defineProps<{
   match: Record<string, any>;
   deadline: string | null;
@@ -80,7 +82,12 @@ const checkIn = () => {
     :type="canCheckIn ? 'button' : undefined"
     :role="canCheckIn ? undefined : 'status'"
     class="checkin-box"
-    :class="{ 'is-action': canCheckIn, 'is-final': final }"
+    :class="{
+      'is-action': canCheckIn,
+      'is-checked-in': !canCheckIn && checkedIn,
+      'is-watching': !canCheckIn && !checkedIn,
+      'is-final': final,
+    }"
     :disabled="canCheckIn && loading ? true : undefined"
     @click="canCheckIn && checkIn()"
   >
@@ -154,7 +161,8 @@ const checkIn = () => {
   transition:
     filter 0.2s ease,
     background 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    color 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .checkin-box.is-action {
   cursor: pointer;
@@ -169,7 +177,47 @@ const checkIn = () => {
 .checkin-box:disabled {
   cursor: default;
 }
+/* Nothing left to press: the box drops back to the scorebug's dark face, the
+   same one every other phase sits on, and the clock becomes the thing to
+   watch. Checked in keeps a green rim and label so it still reads as done at a
+   glance; watching is plain. */
+.checkin-box.is-checked-in,
+.checkin-box.is-watching {
+  color: hsl(var(--foreground));
+  background: transparent;
+}
+.checkin-box.is-checked-in {
+  /* The scorebug's own radius, or its rounded clip cuts the rim's corners. */
+  border-radius: 10px;
+  background: radial-gradient(
+    120% 140% at 0% 0%,
+    hsl(var(--success) / 0.14),
+    transparent 60%
+  );
+  box-shadow: inset 0 0 0 1px hsl(var(--success) / 0.42);
+}
+.is-checked-in .checkin-box-label {
+  color: hsl(var(--success));
+}
+.is-watching .checkin-box-label {
+  color: hsl(var(--muted-foreground));
+}
+.is-checked-in .checkin-box-clock,
+.is-watching .checkin-box-clock {
+  border-left-color: rgb(255 255 255 / 0.1);
+}
+.is-checked-in .checkin-box-seats i,
+.is-watching .checkin-box-seats i {
+  background: rgb(255 255 255 / 0.1);
+}
+.is-checked-in .checkin-box-seats i.is-in {
+  background: hsl(var(--success));
+}
+.is-watching .checkin-box-seats i.is-in {
+  background: hsl(var(--foreground) / 0.7);
+}
 .checkin-box.is-final {
+  box-shadow: none;
   color: hsl(0 0% 100%);
   background: linear-gradient(
     135deg,
@@ -188,6 +236,9 @@ const checkIn = () => {
   line-height: 1;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+.is-final .checkin-box-label {
+  color: inherit;
 }
 .checkin-box-clock {
   padding-left: 0.875rem;

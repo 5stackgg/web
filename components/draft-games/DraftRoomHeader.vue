@@ -290,7 +290,15 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
                 enter-from-class="opacity-0"
                 leave-to-class="opacity-0"
               >
-                <div v-if="box.kind === 'checkin'" :key="boxKey" class="flex">
+                <!-- Contained so the check-in box fills the box without sizing
+                     it: its label changes as you check in and its clock drops
+                     a digit under ten minutes, and neither should nudge the
+                     teams. The box's min-width is what holds it open. -->
+                <div
+                  v-if="box.kind === 'checkin'"
+                  :key="boxKey"
+                  class="flex [contain:inline-size]"
+                >
                   <slot name="checkin" />
                 </div>
                 <div
@@ -453,9 +461,12 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
   overflow: hidden;
   overflow-wrap: anywhere;
 }
+/* Sized to the check-in box -- "Checking in" beside a two-digit-minute clock,
+   the widest thing the box holds -- and shared by every phase, so the scorebug
+   doesn't widen under the teams as the room moves into check-in. */
 .draft-bug-box {
   grid-area: box;
-  min-width: 10.5rem;
+  min-width: 16rem;
 }
 .draft-bug-bar {
   position: absolute;
@@ -582,7 +593,7 @@ onBeforeUnmount(() => clearTimeout(openingTimer));
     -webkit-line-clamp: 1;
   }
   .draft-bug-box {
-    min-width: 6.5rem;
+    min-width: 8.75rem;
     align-self: stretch;
   }
   .draft-bug-caret.is-left,

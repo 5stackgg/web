@@ -51,6 +51,22 @@ describe("DraftCheckInBox", () => {
     expect(box.findAll(".checkin-box-seats i.is-in")).toHaveLength(4);
   });
 
+  it("drops the amber once there is nothing left for you to press", async () => {
+    expect((await mountBox({ canCheckIn: true })).classes()).toContain(
+      "is-action",
+    );
+    wrapper?.unmount();
+
+    const checkedIn = (await mountBox({ checkedIn: true })).classes();
+    expect(checkedIn).toContain("is-checked-in");
+    expect(checkedIn).not.toContain("is-action");
+    wrapper?.unmount();
+
+    const watching = (await mountBox({})).classes();
+    expect(watching).toContain("is-watching");
+    expect(watching).not.toContain("is-checked-in");
+  });
+
   it("turns red only for the last ten seconds", async () => {
     expect((await mountBox({})).classes()).not.toContain("is-final");
     wrapper?.unmount();

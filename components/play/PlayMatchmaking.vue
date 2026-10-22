@@ -100,12 +100,11 @@ const selectedCanQueue = computed(
     modes.value.find((mode) => mode.type === selectedType.value)?.canQueue ??
     false,
 );
-// The seat row opens on a pick, or for a party (joined or invited) before
-// one, showing the biggest format.
-const inParty = computed(() => (lobby.value?.players?.length ?? 0) > 1);
+// The seat row opens on a click on a mode, or right away in a lobby (before
+// a pick it shows the biggest format).
 const seatType = computed(
   () =>
-    selectedType.value ?? (inParty.value ? modes.value[0]?.type : null) ?? null,
+    selectedType.value ?? (lobby.value ? modes.value[0]?.type : null) ?? null,
 );
 
 // With nothing checked, Tab lands on the first mode it can pick, like a

@@ -82,21 +82,14 @@ describe("PlayMatchmaking", () => {
     expect(wrapper.text()).toContain("Your side");
   });
 
-  it("shows a party its seats before a pick", async () => {
+  it("shows the seats right away in a lobby, even one of just you", async () => {
     const me = { steam_id: "76561198000000001", role: "user" };
     useAuthStore().me = me as any;
     useMatchmakingStore().lobbies = [
       {
         id: "lobby-1",
         access: "Invite",
-        players: [
-          { status: "Accepted", captain: true, player: me },
-          {
-            status: "Invited",
-            captain: false,
-            player: { steam_id: "76561198000000002", name: "friend" },
-          },
-        ],
+        players: [{ status: "Accepted", captain: true, player: me }],
       },
     ] as any;
 

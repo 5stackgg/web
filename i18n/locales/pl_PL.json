@@ -2805,6 +2805,11 @@
           "upload_failed": "Przesyłanie nie powiodło się: {status}",
           "delete_failed": "Usuwanie nie powiodło się: {status}"
         },
+        "language": {
+          "title": "Język",
+          "description": "Odwiedzający widzą panel w języku swojej przeglądarki, jeśli jest dostępny, a w przeciwnym razie w języku domyślnym. Każdy może nadal wybrać własny język.",
+          "default_language": "Język domyślny"
+        },
         "fixtures": {
           "dev_only_notice": "Fixtures są dostępne tylko w trybie deweloperskim",
           "load_title": "Wczytaj przykładowe dane",

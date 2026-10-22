@@ -18,22 +18,28 @@ interface Region {
   status: string;
 }
 
+const SETTINGS_CACHE_KEY = "5stack:application-settings";
+const REGIONS_CACHE_KEY = "5stack:available-regions";
+
+const loadCached = <T>(key: string): T[] => {
+  try {
+    const cached = localStorage.getItem(key);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+  } catch {}
+  return [];
+};
+
+export function cachedSetting(name: string) {
+  return loadCached<{ name: string; value: string }>(SETTINGS_CACHE_KEY).find(
+    (setting) => setting.name === name,
+  )?.value;
+}
+
 export const useApplicationSettingsStore = defineStore(
   "applicationSettings",
   () => {
-    const SETTINGS_CACHE_KEY = "5stack:application-settings";
-    const REGIONS_CACHE_KEY = "5stack:available-regions";
-
-    const loadCached = <T>(key: string): T[] => {
-      try {
-        const cached = localStorage.getItem(key);
-        if (cached) {
-          return JSON.parse(cached);
-        }
-      } catch {}
-      return [];
-    };
-
     const settings = ref<Array<{ name: string; value: string }>>(
       loadCached(SETTINGS_CACHE_KEY),
     );
@@ -379,6 +385,14 @@ export const useApplicationSettingsStore = defineStore(
         (setting) => setting.name === "public.team_max_subs",
       )?.value;
       return value ? parseInt(value, 10) : 2;
+    });
+
+    const defaultLanguage = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.default_language",
+        )?.value || "en"
+      );
     });
 
     // Anti-cheat: require viewers to be signed in before live game
@@ -774,6 +788,7 @@ export const useApplicationSettingsStore = defineStore(
       teamMinRosterSize,
       teamMaxRosterSize,
       teamMaxSubs,
+      defaultLanguage,
       requireLoginForLiveStreams,
       cameraRequiredDefault,
       cameraAllowTeammatesDefault,

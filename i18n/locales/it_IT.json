@@ -2805,6 +2805,11 @@
           "upload_failed": "Caricamento non riuscito: {status}",
           "delete_failed": "Eliminazione non riuscita: {status}"
         },
+        "language": {
+          "title": "Lingua",
+          "description": "I visitatori vedono il pannello nella lingua del browser quando è disponibile, altrimenti nella lingua predefinita. Ognuno può comunque scegliere la propria lingua.",
+          "default_language": "Lingua predefinita"
+        },
         "fixtures": {
           "dev_only_notice": "Le fixture sono disponibili solo in modalità sviluppo.",
           "load_title": "Carica fixture di esempio",

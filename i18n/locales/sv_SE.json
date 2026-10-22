@@ -2805,6 +2805,11 @@
           "upload_failed": "Uppladdningen misslyckades: {status}",
           "delete_failed": "Raderingen misslyckades: {status}"
         },
+        "language": {
+          "title": "Språk",
+          "description": "Besökare ser panelen på webbläsarens språk när det finns, annars på standardspråket. Alla kan fortfarande välja sitt eget språk.",
+          "default_language": "Standardspråk"
+        },
         "fixtures": {
           "dev_only_notice": "Testdata är endast tillgängligt i utvecklingsläge.",
           "load_title": "Ladda testdata",

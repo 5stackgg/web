@@ -2805,6 +2805,11 @@
           "upload_failed": "アップロードに失敗しました: {status}",
           "delete_failed": "削除に失敗しました: {status}"
         },
+        "language": {
+          "title": "言語",
+          "description": "訪問者には、ブラウザの言語が利用できる場合はその言語で、それ以外の場合はデフォルト言語でパネルが表示されます。各ユーザーは自分の言語を選択することもできます。",
+          "default_language": "デフォルト言語"
+        },
         "fixtures": {
           "dev_only_notice": "フィクスチャは開発モードでのみ利用できます。",
           "load_title": "デモフィクスチャを読み込む",

@@ -2805,6 +2805,11 @@
           "upload_failed": "Upload failed: {status}",
           "delete_failed": "Delete failed: {status}"
         },
+        "language": {
+          "title": "Language",
+          "description": "Visitors see the panel in their browser's language when it's available, otherwise in the default language. Anyone can still choose their own language.",
+          "default_language": "Default language"
+        },
         "fixtures": {
           "dev_only_notice": "Fixtures are only available in development mode.",
           "load_title": "Load demo fixtures",

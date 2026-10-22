@@ -2805,6 +2805,11 @@
           "upload_failed": "Yükleme başarısız: {status}",
           "delete_failed": "Silme başarısız: {status}"
         },
+        "language": {
+          "title": "Dil",
+          "description": "Ziyaretçiler paneli, mevcutsa tarayıcılarının dilinde, değilse varsayılan dilde görür. Herkes yine de kendi dilini seçebilir.",
+          "default_language": "Varsayılan dil"
+        },
         "fixtures": {
           "dev_only_notice": "Örnek veriler yalnızca geliştirme modunda kullanılabilir.",
           "load_title": "Demo örnek verilerini yükle",

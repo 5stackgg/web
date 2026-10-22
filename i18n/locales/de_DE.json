@@ -2805,6 +2805,11 @@
           "upload_failed": "Upload fehlgeschlagen: {status}",
           "delete_failed": "Löschen fehlgeschlagen: {status}"
         },
+        "language": {
+          "title": "Sprache",
+          "description": "Besucher sehen das Panel in der Sprache ihres Browsers, sofern verfügbar, sonst in der Standardsprache. Jeder kann weiterhin seine eigene Sprache wählen.",
+          "default_language": "Standardsprache"
+        },
         "fixtures": {
           "dev_only_notice": "Fixtures sind nur im Entwicklungsmodus verfügbar.",
           "load_title": "Demo-Fixtures laden",

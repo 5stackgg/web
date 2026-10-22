@@ -33,31 +33,47 @@ describe("the language a browser is shown", () => {
     ["en-US", "en"],
     ["de", "de"],
   ])("%s gets %s", (tag, expected) => {
-    expect(matchBrowserLocale([tag], codes())).toBe(expected);
+    expect(matchBrowserLocale(tag, codes())).toBe(expected);
   });
 
-  it("takes the first language the browser lists that we have", () => {
-    expect(matchBrowserLocale(["nl-NL", "zh-TW", "en-US"], codes())).toBe(
-      "zh-Hant",
-    );
+  it("falls back to English when we don't have it", () => {
+    expect(resolveLocale(codes(), "nl-NL", null)).toBe("en");
   });
 
-  it("falls back to English when we have none of them", () => {
-    expect(resolveLocale(codes(), ["nl-NL", "fi"], null)).toBe("en");
+  it("matches nothing for a tag the browser mangled", () => {
+    expect(matchBrowserLocale("en_US!", codes())).toBeUndefined();
+  });
+});
+
+describe("the site's default language", () => {
+  it("is shown when we don't have the browser's language", () => {
+    expect(resolveLocale(codes(), "nl-NL", null, "pt")).toBe("pt");
   });
 
-  it("skips a tag the browser mangled", () => {
-    expect(matchBrowserLocale(["en_US!", "de-DE"], codes())).toBe("de");
+  it("is English when none is set", () => {
+    expect(resolveLocale(codes(), "nl-NL", null, undefined)).toBe("en");
+  });
+
+  it("gives way to a browser language we have", () => {
+    expect(resolveLocale(codes(), "de-DE", null, "pt")).toBe("de");
+  });
+
+  it("falls back to English when it names a language we don't have", () => {
+    expect(resolveLocale(codes(), "nl-NL", null, "lv")).toBe("en");
   });
 });
 
 describe("a visitor's own pick", () => {
   it("wins over the browser", () => {
-    expect(resolveLocale(codes(), ["zh-TW"], "ja")).toBe("ja");
+    expect(resolveLocale(codes(), "zh-TW", "ja")).toBe("ja");
+  });
+
+  it("wins over the site's default", () => {
+    expect(resolveLocale(codes(), "nl-NL", "ja", "pt")).toBe("ja");
   });
 
   it("is ignored when it names a language we no longer have", () => {
-    expect(resolveLocale(codes(), ["zh-TW"], "lv")).toBe("zh-Hant");
+    expect(resolveLocale(codes(), "zh-TW", "lv")).toBe("zh-Hant");
   });
 });
 

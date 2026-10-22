@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { nextTick } from "vue";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import PlaySeatRow from "~/components/play/PlaySeatRow.vue";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -56,6 +57,20 @@ afterEach(() => {
 });
 
 describe("PlaySeatRow", () => {
+  it("keeps its seats when you sign out with no party open", async () => {
+    useAuthStore().me = me as any;
+    const wrapper = await mountSuspended(PlaySeatRow, {
+      props: { type: e_match_types_enum.Competitive },
+    });
+    expect(filledSeats(wrapper)).toHaveLength(1);
+
+    useAuthStore().me = undefined as any;
+    await nextTick();
+
+    expect(filledSeats(wrapper)).toHaveLength(0);
+    wrapper.unmount();
+  });
+
   it("gives a solo player their side of the mode, with invite seats", async () => {
     useAuthStore().me = me as any;
 

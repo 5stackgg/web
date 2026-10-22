@@ -42,9 +42,9 @@ const lobby = computed(() => matchmaking.currentLobby as any);
 // Leader first, then everyone who joined, then pending invites. With no
 // lobby yet it's just you; the first invite creates the lobby.
 const slots = computed<any[]>(() => {
-  const players = lobby.value?.players ?? [
-    { player: me.value, status: "Accepted", captain: true },
-  ];
+  const players =
+    lobby.value?.players ??
+    (me.value ? [{ player: me.value, status: "Accepted", captain: true }] : []);
   return [...players].sort((a: any, b: any) => {
     if (a.captain !== b.captain) return a.captain ? -1 : 1;
     if (a.status !== b.status) return a.status === "Invited" ? 1 : -1;
@@ -380,7 +380,7 @@ const iconButton =
     <div class="grid gap-[var(--seat-gap)]" :style="gridStyle">
       <template v-for="index in plan.total" :key="index">
         <PlaySeat
-          v-if="seated[index - 1]"
+          v-if="seated[index - 1]?.player"
           :player="seated[index - 1].player"
           :elo="eloOf(seated[index - 1].player)"
           :invited="seated[index - 1].status === 'Invited'"

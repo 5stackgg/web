@@ -2,13 +2,25 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useI18n } from "vue-i18n";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  SlidersHorizontal,
+} from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { watchTickerMatchFields } from "~/graphql/watchTickerFields";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import WatchTickerCell from "~/components/watch/WatchTickerCell.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useWatchStage } from "~/composables/useWatchStage";
@@ -382,7 +394,45 @@ function scrollRight() {
           v-model="filter"
           :options="tabs"
           :label="$t('pages.watch.ticker.filters_label')"
+          class="max-sm:hidden"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <button
+              type="button"
+              :aria-label="$t('pages.watch.ticker.filters_label')"
+              class="relative inline-flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-muted/30 text-foreground/80 transition-colors duration-150 hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] data-[state=open]:border-[hsl(var(--tac-amber)/0.4)] data-[state=open]:bg-[hsl(var(--tac-amber)/0.12)] sm:hidden"
+            >
+              <SlidersHorizontal class="size-4" />
+              <span
+                v-if="filter !== 'all'"
+                class="absolute -right-1.5 -top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[10px] font-bold text-[hsl(var(--tac-amber-foreground))]"
+              >
+                1
+              </span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" class="w-48">
+            <DropdownMenuRadioGroup
+              :model-value="filter"
+              @update:model-value="(value) => (filter = value as TickerFilter)"
+            >
+              <DropdownMenuRadioItem
+                v-for="tab in tabs"
+                :key="tab.key"
+                :value="tab.key"
+              >
+                {{ tab.label }}
+                <span
+                  v-if="tab.count"
+                  class="ml-auto pl-3 tabular-nums text-muted-foreground"
+                >
+                  {{ tab.count }}
+                </span>
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <div class="flex shrink-0 items-center gap-3">
           <NuxtLink
@@ -392,7 +442,7 @@ function scrollRight() {
             {{ $t("common.see_all") }}
             <ArrowRight class="h-3 w-3" />
           </NuxtLink>
-          <div class="flex gap-1.5 max-sm:hidden">
+          <div class="flex gap-1.5">
             <button
               type="button"
               :aria-label="$t('ui.scroll.left')"

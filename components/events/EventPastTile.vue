@@ -20,7 +20,7 @@ const count = (key: string) =>
     :to="`/events/${event.id}`"
     class="group/tile flex w-56 shrink-0 snap-start flex-col overflow-hidden rounded-lg border border-border bg-card/40 text-left transition-colors duration-150 hover:border-[hsl(var(--tac-amber)/0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
   >
-    <span class="relative block aspect-[2/1] overflow-hidden bg-muted/40">
+    <span class="relative block aspect-[3/1] overflow-hidden bg-muted/40">
       <img
         v-if="bannerSrc"
         :src="bannerSrc"

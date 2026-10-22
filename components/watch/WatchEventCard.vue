@@ -189,6 +189,8 @@ function playCellClasses(index: number) {
     : "aspect-video sm:aspect-auto";
 }
 
+const bannerClasses =
+  "absolute inset-0 -z-20 h-full w-full transition-transform duration-300 group-hover/banner:scale-[1.03] motion-reduce:transition-none max-sm:relative max-sm:-mx-4 max-sm:aspect-[3/1] max-sm:h-auto max-sm:w-[calc(100%+2rem)]";
 const tagClasses =
   "inline-flex h-[22px] items-center rounded-md px-[7px] text-xs font-semibold whitespace-nowrap bg-black/60 backdrop-blur-sm";
 const linkClasses =
@@ -201,17 +203,19 @@ const typeTileClasses =
   <article class="overflow-hidden rounded-lg border border-border bg-card/40">
     <div
       class="group/banner relative isolate flex flex-wrap justify-between gap-x-7 gap-y-4 overflow-hidden px-4 sm:px-5"
-      :class="
+      :class="[
         compact
           ? 'min-h-[120px] items-center py-4'
-          : 'min-h-[224px] items-end pb-5 pt-24 sm:pt-[22px]'
-      "
+          : 'min-h-[224px] items-end pb-5 pt-24 sm:pt-[22px]',
+        { 'max-sm:pt-0': bannerSrc },
+      ]"
     >
+      <!-- Phones: the whole 3:1 banner on top, the details under it. -->
       <video
         v-if="bannerSrc && bannerIsVideo"
         :src="bannerSrc"
         aria-hidden="true"
-        class="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-300 group-hover/banner:scale-[1.03] motion-reduce:transition-none"
+        :class="[bannerClasses, 'object-cover']"
         preload="metadata"
         muted
         playsinline
@@ -221,10 +225,14 @@ const typeTileClasses =
         :src="bannerSrc"
         alt=""
         loading="lazy"
-        class="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_40%] transition-transform duration-300 group-hover/banner:scale-[1.03] motion-reduce:transition-none"
+        :class="[bannerClasses, 'object-cover object-[50%_40%]']"
       />
       <div v-else aria-hidden="true" class="plate absolute inset-0 -z-20"></div>
-      <div aria-hidden="true" class="scrim absolute inset-0 -z-10"></div>
+      <div
+        aria-hidden="true"
+        class="scrim absolute inset-0 -z-10"
+        :class="{ 'max-sm:hidden': bannerSrc }"
+      ></div>
       <NuxtLink
         :to="eventPath"
         tabindex="-1"

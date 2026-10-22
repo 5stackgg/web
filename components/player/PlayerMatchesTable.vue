@@ -121,7 +121,7 @@ const wideGrid =
     </Empty>
 
     <!-- Compact (right hub / mobile): plain stacked cards, no header. -->
-    <div v-else-if="compact || isMobile" class="space-y-1.5">
+    <div v-else-if="compact || isMobile" class="space-y-3 md:space-y-1.5">
       <template v-for="(row, index) of rows">
         <div
           v-if="row.kind === 'season'"

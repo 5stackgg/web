@@ -75,6 +75,8 @@ import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
 import { useClipFileSize } from "~/composables/useClipFileSize";
 import { useClipDelete } from "~/composables/useClipDelete";
+import { useScrollArrows } from "~/composables/useScrollArrows";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import { Spinner } from "~/components/ui/spinner";
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
@@ -684,6 +686,7 @@ watch(
 
 // Keep the playing tile centred in the "Up next" strip.
 const stripRef = ref<HTMLElement | null>(null);
+const stripScroll = useScrollArrows(stripRef);
 watch(
   [activeClipIndex, () => !!clip.value, expanded],
   async () => {
@@ -893,28 +896,13 @@ const edgeButton =
                       :kills="clip.kills_count"
                       :round="clip.round"
                       :title="clip.title"
-                      :size="expanded ? 'lg' : undefined"
-                      :class="expanded ? '' : '!bg-black/60 backdrop-blur-sm'"
+                      size="lg"
                     />
-                    <span
-                      v-if="duration"
-                      :class="
-                        expanded
-                          ? onVideoChip
-                          : [tileChip, 'bg-black/60 text-white/90 backdrop-blur-sm']
-                      "
-                    >
+                    <span v-if="duration" :class="onVideoChip">
                       {{ duration }}
                     </span>
                     <span
-                      :class="
-                        expanded
-                          ? onVideoChip
-                          : [
-                              tileChip,
-                              'gap-1 bg-black/60 text-white/90 backdrop-blur-sm',
-                            ]
-                      "
+                      :class="onVideoChip"
                       :title="$t('clips.tile.views', { count: views }, views)"
                     >
                       <Eye class="h-3.5 w-3.5" />
@@ -922,10 +910,7 @@ const edgeButton =
                     </span>
                     <span
                       v-if="!expanded && hasQueueNav"
-                      :class="[
-                        tileChip,
-                        'bg-black/60 text-white/90 backdrop-blur-sm',
-                      ]"
+                      :class="onVideoChip"
                     >
                       {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
                     </span>
@@ -948,6 +933,7 @@ const edgeButton =
                       :download-name="downloadFilename"
                       :size-label="fileSize"
                       content-class="z-[70]"
+                      trigger-class="h-[30px] rounded-md sm:h-9"
                       @copy="copyLink"
                     >
                       <template v-if="canAdminister">
@@ -1009,7 +995,7 @@ const edgeButton =
                     <button
                       v-if="!expanded"
                       type="button"
-                      :class="[onVideoAction, '!h-8 !w-8']"
+                      :class="onVideoAction"
                       :aria-label="$t('common.close')"
                       @click.stop="closeClip"
                     >
@@ -1528,9 +1514,10 @@ const edgeButton =
               </template>
             </div>
 
+            <!-- Full-screen on phones: Up next sits on the bottom edge. -->
             <section
               v-if="clipQueue.length > 1"
-              class="border-t border-white/[0.06] px-5 pb-6 pt-4 sm:px-6"
+              class="border-t border-white/[0.06] px-5 pb-6 pt-4 max-sm:mt-auto max-sm:pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:px-6"
             >
               <div
                 :class="[
@@ -1542,11 +1529,18 @@ const edgeButton =
                   <span :class="tacticalSectionTickClasses"></span>
                   {{ $t("clips.detail.up_next") }}
                 </span>
-                <span
-                  v-if="hasQueueNav"
-                  class="normal-case tabular-nums tracking-normal"
-                >
-                  {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
+                <span class="inline-flex items-center gap-3">
+                  <span
+                    v-if="hasQueueNav"
+                    class="normal-case tabular-nums tracking-normal"
+                  >
+                    {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
+                  </span>
+                  <ScrollArrows
+                    :can-left="stripScroll.state.canScrollLeft"
+                    :can-right="stripScroll.state.canScrollRight"
+                    @scroll="stripScroll.scrollByDirection"
+                  />
                 </span>
               </div>
               <div
@@ -1557,7 +1551,7 @@ const edgeButton =
                   v-for="q in clipQueue"
                   :key="q.id"
                   type="button"
-                  class="group/q relative isolate aspect-video w-52 shrink-0 snap-start overflow-hidden rounded-lg border bg-card text-left transition-[border-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] motion-safe:active:scale-[0.97]"
+                  class="group/q relative isolate aspect-video w-52 shrink-0 snap-start overflow-hidden max-sm:w-[80%] rounded-lg border bg-card text-left transition-[border-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] motion-safe:active:scale-[0.97]"
                   :class="
                     q.id === clipId
                       ? 'border-[hsl(var(--tac-amber)/0.7)]'

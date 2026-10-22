@@ -6,9 +6,12 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import { matchClipFields, topPlayOrderBy } from "~/graphql/matchClip";
 import { $ } from "~/generated/zeus";
 import ClipTile from "~/components/clips/ClipTile.vue";
+import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import WatchSegmented from "~/components/watch/WatchSegmented.vue";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
+import { useSidebar } from "~/components/ui/sidebar/utils";
 import {
   Select,
   SelectContent,
@@ -30,6 +33,10 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+
+// Phones get one swipeable row instead of a stack of full-width tiles.
+const { isMobile } = useSidebar();
+const rowRef = ref<InstanceType<typeof HorizontalScrollRow> | null>(null);
 
 type Range = "today" | "week" | "all";
 
@@ -121,6 +128,7 @@ async function fetchClips() {
 }
 
 watch([kind, range, limit, () => props.ghost], fetchClips, { immediate: true });
+watch(clips, () => rowRef.value?.$el?.scrollTo?.({ left: 0 }));
 
 const createdToday = (clip: Clip) =>
   new Date(clip.created_at).toDateString() === new Date().toDateString();
@@ -209,6 +217,12 @@ const cells = computed<Cell[]>(() => {
           <ArrowRight class="h-3 w-3" />
         </NuxtLink>
       </span>
+      <ScrollArrows
+        v-if="isMobile && !ghost"
+        :can-left="rowRef?.state?.canScrollLeft"
+        :can-right="rowRef?.state?.canScrollRight"
+        @scroll="(d) => rowRef?.scrollByDirection(d)"
+      />
     </div>
 
     <div v-if="!ghost" class="mb-3 flex items-center justify-between gap-3">
@@ -255,6 +269,17 @@ const cells = computed<Cell[]>(() => {
       ></div>
     </div>
 
+    <div
+      v-else-if="loading && isMobile"
+      class="flex gap-3 overflow-hidden px-px pb-2 pt-1"
+    >
+      <Skeleton
+        v-for="index in 2"
+        :key="index"
+        class="aspect-video w-[85%] shrink-0 rounded-lg"
+      />
+    </div>
+
     <div v-else-if="loading" class="watch-bento">
       <Skeleton
         v-for="index in compact ? 4 : 5"
@@ -283,6 +308,21 @@ const cells = computed<Cell[]>(() => {
         {{ $t("pages.watch.highlights.show_all_time") }}
       </Button>
     </div>
+
+    <HorizontalScrollRow v-else-if="isMobile" ref="rowRef">
+      <div
+        v-for="cell in cells"
+        :key="cell.clip.id"
+        class="w-[85%] shrink-0 snap-start"
+      >
+        <ClipTile
+          :clip="cell.clip"
+          :tag="cell.tag"
+          :queue="clips"
+          queue-scope="watch-highlights"
+        />
+      </div>
+    </HorizontalScrollRow>
 
     <TransitionGroup
       v-else

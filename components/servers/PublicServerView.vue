@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import { ChevronLeft } from "lucide-vue-next";
 import BackLink from "~/components/common/BackLink.vue";
+import { useTopBarBackShown } from "~/composables/useHistoryBack";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
@@ -33,6 +34,8 @@ type PublicServer = {
 const props = defineProps<{ serverId: string }>();
 
 const { t } = useI18n();
+// The trail only repeats the title, so it goes with its back link.
+const topBarBack = useTopBarBackShown();
 
 const server = ref<PublicServer | null>(null);
 const serverLoaded = ref(false);
@@ -99,7 +102,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col gap-5">
-    <PageTransition :delay="0">
+    <PageTransition v-if="!topBarBack" :delay="0">
       <nav
         class="flex items-center gap-2 text-xs text-muted-foreground"
         :aria-label="$t('community.server_page.breadcrumb')"

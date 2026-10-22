@@ -15,9 +15,11 @@ import type { Clip } from "~/types/clip";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
+import { useScrollArrows } from "~/composables/useScrollArrows";
 import { NuxtLink } from "#components";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import ClipKillBadge from "~/components/clips/ClipKillBadge.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 
@@ -150,6 +152,8 @@ const hasMoreQueue = computed(
   () => queueVisibleCount.value < fullQueue.value.length,
 );
 const queueScrollEl = ref<HTMLElement | null>(null);
+// Below lg the queue is a horizontal strip.
+const queueScroll = useScrollArrows(queueScrollEl);
 const queueSentinelEl = ref<HTMLElement | null>(null);
 let queueObserver: IntersectionObserver | null = null;
 function ensureQueueObserver() {
@@ -460,10 +464,20 @@ function clipTeamName(c: Clip): string | null {
           class="flex items-center justify-between gap-3 px-1 pb-1.5 pt-1 text-[13px] font-bold lg:px-3.5 lg:pb-2 lg:pt-3"
         >
           {{ $t("match.up_next") }}
-          <span class="font-medium tabular-nums text-muted-foreground">
-            {{
-              $t("match.highlights.clip_count", { count: filteredClips.length })
-            }}
+          <span class="inline-flex items-center gap-3">
+            <span class="font-medium tabular-nums text-muted-foreground">
+              {{
+                $t("match.highlights.clip_count", {
+                  count: filteredClips.length,
+                })
+              }}
+            </span>
+            <ScrollArrows
+              class="lg:hidden"
+              :can-left="queueScroll.state.canScrollLeft"
+              :can-right="queueScroll.state.canScrollRight"
+              @scroll="queueScroll.scrollByDirection"
+            />
           </span>
         </div>
         <ol

@@ -1,4 +1,11 @@
-import { onMounted, onScopeDispose, ref } from "vue";
+import {
+  computed,
+  onMounted,
+  onScopeDispose,
+  ref,
+  shallowReactive,
+  type Ref,
+} from "vue";
 import { useRouter, type RouteLocationRaw } from "vue-router";
 
 // vue-router keeps the in-app address an entry was reached from in its
@@ -83,6 +90,21 @@ export function useHistoryBack() {
   }
 
   return { canGoBack, back };
+}
+
+const topBarBacks = shallowReactive(new Set<Ref<boolean>>());
+
+// The top bar's Back, on a phone. A page's own back link stands down while it
+// shows rather than draw a second arrow, and stays on a page with no top bar.
+export function useTopBarBack() {
+  const history = useHistoryBack();
+  topBarBacks.add(history.canGoBack);
+  onScopeDispose(() => topBarBacks.delete(history.canGoBack));
+  return history;
+}
+
+export function useTopBarBackShown() {
+  return computed(() => [...topBarBacks].some((shown) => shown.value));
 }
 
 // A "back to the list" link is a real Back when the entry before this one is

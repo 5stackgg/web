@@ -6,6 +6,7 @@ import { ChevronRight, Clock, Swords } from "lucide-vue-next";
 import { $, order_by } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import ScrimTeamSheet from "~/components/scrims/ScrimTeamSheet.vue";
 import TeamsEmblem from "~/components/teams/TeamsEmblem.vue";
@@ -100,6 +101,7 @@ const managedTeamsQuery = generateSubscription({
 
 const postings = ref<any[]>([]);
 const managedTeamIds = ref<string[]>([]);
+const scrollRow = ref<InstanceType<typeof HorizontalScrollRow> | null>(null);
 let postingsSub: { unsubscribe: () => void } | undefined;
 let managedSub: { unsubscribe: () => void } | undefined;
 
@@ -273,13 +275,20 @@ const linkClasses =
           {{ $t("pages.teams.scrims.subtitle") }}
         </span>
       </div>
-      <NuxtLink to="/scrims" :class="linkClasses">
-        {{ $t("pages.scrims.title") }}
-        <ChevronRight class="size-3.5" />
-      </NuxtLink>
+      <div class="ml-auto flex items-center gap-3">
+        <NuxtLink to="/scrims" :class="linkClasses">
+          {{ $t("pages.scrims.title") }}
+          <ChevronRight class="size-3.5" />
+        </NuxtLink>
+        <ScrollArrows
+          :can-left="scrollRow?.state.canScrollLeft"
+          :can-right="scrollRow?.state.canScrollRight"
+          @scroll="(direction) => scrollRow?.scrollByDirection(direction)"
+        />
+      </div>
     </div>
 
-    <HorizontalScrollRow>
+    <HorizontalScrollRow ref="scrollRow">
       <article
         v-for="{ posting, availability: avail } in shown"
         :key="posting.id"

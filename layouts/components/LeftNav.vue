@@ -719,149 +719,154 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           </div>
         </SlideSwap>
       </SidebarContent>
-      <!-- Pinned under the lists, whichever one is showing: the fleet status,
-           then the install prompt. Collapses away when neither applies. -->
-      <div
-        v-if="isMobile || sideBarOpen"
-        class="grid shrink-0 gap-2 px-2 pb-2 empty:hidden"
-      >
-        <NuxtLink
-          v-if="telemetryStats?.online > 0"
-          :to="{ name: 'fleet-telemetry' }"
-          class="flex h-8 items-center gap-2 rounded-md border border-sidebar-border px-2.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-        >
-          <span
-            class="h-1.5 w-1.5 shrink-0 rounded-full bg-success"
-            aria-hidden="true"
-          ></span>
-          <span class="min-w-0 flex-1 truncate tabular-nums">{{
-            $t(
-              "layouts.app_nav.systems_online",
-              { count: telemetryStats.online },
-              telemetryStats.online,
-            )
-          }}</span>
-          <ChevronRight class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-        </NuxtLink>
-        <InstallPWA :is-menu-item="false" framed />
-      </div>
-      <SidebarFooter class="gap-1.5 border-t border-sidebar-border">
-        <!-- Expanded, the two outside links share one row, each labelled. -->
+      <!-- Pinned under the lists, whichever one is showing, as a band of its
+           own: the scrolling list ends at its edge. -->
+      <div class="shrink-0 border-t border-sidebar-border bg-background/40">
+        <!-- The fleet status, then the install prompt. Collapses away when
+             neither applies. -->
         <div
           v-if="isMobile || sideBarOpen"
-          class="grid auto-cols-fr grid-flow-col gap-1"
+          class="grid gap-2 px-2 pt-2 empty:hidden"
         >
-          <Button
-            v-if="
-              me?.role === e_player_roles_enum.administrator && showReportIssue
-            "
-            as="a"
-            variant="ghost"
-            size="sm"
-            class="min-w-0 gap-2 text-muted-foreground"
-            :href="githubUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            :title="$t('layouts.app_nav.footer.report_issue')"
+          <NuxtLink
+            v-if="telemetryStats?.online > 0"
+            :to="{ name: 'fleet-telemetry' }"
+            class="flex h-8 items-center gap-2 rounded-md border border-sidebar-border px-2.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
           >
-            <GithubLogoIcon class="h-4 w-4 shrink-0" />
-            <span class="truncate">{{
-              $t("layouts.app_nav.footer.report_issue_short")
+            <span
+              class="h-1.5 w-1.5 shrink-0 rounded-full bg-success"
+              aria-hidden="true"
+            ></span>
+            <span class="min-w-0 flex-1 truncate tabular-nums">{{
+              $t(
+                "layouts.app_nav.systems_online",
+                { count: telemetryStats.online },
+                telemetryStats.online,
+              )
             }}</span>
-          </Button>
-          <Button
-            as="a"
-            variant="ghost"
-            size="sm"
-            class="min-w-0 gap-2 text-muted-foreground"
-            :href="inviteLink"
-            target="_blank"
-            rel="noopener noreferrer"
-            :title="$t('layouts.app_nav.footer.join_discord')"
-          >
-            <DiscordLogoIcon class="h-4 w-4 shrink-0" />
-            <span class="truncate">{{
-              $t("layouts.app_nav.footer.discord")
-            }}</span>
-          </Button>
+            <ChevronRight class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+          </NuxtLink>
+          <InstallPWA :is-menu-item="false" framed />
         </div>
-
-        <SidebarMenu>
-          <template v-if="!(isMobile || sideBarOpen)">
-            <SidebarMenuItem
+        <SidebarFooter class="gap-1.5">
+          <!-- Expanded, the two outside links share one row, each labelled. -->
+          <div
+            v-if="isMobile || sideBarOpen"
+            class="grid auto-cols-fr grid-flow-col gap-1"
+          >
+            <Button
               v-if="
                 me?.role === e_player_roles_enum.administrator &&
                 showReportIssue
               "
+              as="a"
+              variant="ghost"
+              size="sm"
+              class="min-w-0 gap-2 text-muted-foreground"
+              :href="githubUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              :title="$t('layouts.app_nav.footer.report_issue')"
             >
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.report_issue')"
+              <GithubLogoIcon class="h-4 w-4 shrink-0" />
+              <span class="truncate">{{
+                $t("layouts.app_nav.footer.report_issue_short")
+              }}</span>
+            </Button>
+            <Button
+              as="a"
+              variant="ghost"
+              size="sm"
+              class="min-w-0 gap-2 text-muted-foreground"
+              :href="inviteLink"
+              target="_blank"
+              rel="noopener noreferrer"
+              :title="$t('layouts.app_nav.footer.join_discord')"
+            >
+              <DiscordLogoIcon class="h-4 w-4 shrink-0" />
+              <span class="truncate">{{
+                $t("layouts.app_nav.footer.discord")
+              }}</span>
+            </Button>
+          </div>
+
+          <SidebarMenu>
+            <template v-if="!(isMobile || sideBarOpen)">
+              <SidebarMenuItem
+                v-if="
+                  me?.role === e_player_roles_enum.administrator &&
+                  showReportIssue
+                "
               >
-                <a
-                  :href="githubUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-muted-foreground transition-colors hover:text-foreground"
+                <SidebarMenuButton
+                  as-child
+                  :tooltip="$t('layouts.app_nav.tooltips.report_issue')"
                 >
-                  <GithubLogoIcon class="w-5 h-5" />
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+                  <a
+                    :href="githubUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <GithubLogoIcon class="w-5 h-5" />
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  as-child
+                  :tooltip="$t('layouts.app_nav.tooltips.join_discord')"
+                >
+                  <a
+                    :href="inviteLink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <DiscordLogoIcon class="w-5 h-5" />
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <InstallPWA />
+            </template>
 
             <SidebarMenuItem>
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.join_discord')"
+              <ProfileMenu
+                v-model:open="profileOpened"
+                :side="isMobile ? 'top' : 'right'"
+                align="end"
+                @logout="showLogoutModal = true"
               >
-                <a
-                  :href="inviteLink"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <DiscordLogoIcon class="w-5 h-5" />
-                </a>
-              </SidebarMenuButton>
+                <template #trigger>
+                  <SidebarMenuButton
+                    size="lg"
+                    class="hover:!bg-transparent hover:!text-current active:!bg-transparent"
+                    :class="{
+                      'bg-sidebar-accent text-sidebar-accent-foreground':
+                        profileOpened,
+                    }"
+                  >
+                    <PlayerDisplay
+                      :player="me"
+                      :show-online="false"
+                      :show-role="isMobile || sideBarOpen"
+                      size="xs"
+                    />
+
+                    <PlayerPendingImports
+                      v-if="(pendingMatchImports?.length ?? 0) > 0"
+                      :imports="pendingMatchImports"
+                    />
+                    <ChevronsUpDownIcon class="ml-auto size-4" />
+                  </SidebarMenuButton>
+                </template>
+              </ProfileMenu>
             </SidebarMenuItem>
-
-            <InstallPWA />
-          </template>
-
-          <SidebarMenuItem>
-            <ProfileMenu
-              v-model:open="profileOpened"
-              :side="isMobile ? 'top' : 'right'"
-              align="end"
-              @logout="showLogoutModal = true"
-            >
-              <template #trigger>
-                <SidebarMenuButton
-                  size="lg"
-                  class="hover:!bg-transparent hover:!text-current active:!bg-transparent"
-                  :class="{
-                    'bg-sidebar-accent text-sidebar-accent-foreground':
-                      profileOpened,
-                  }"
-                >
-                  <PlayerDisplay
-                    :player="me"
-                    :show-online="false"
-                    :show-role="isMobile || sideBarOpen"
-                    size="xs"
-                  />
-
-                  <PlayerPendingImports
-                    v-if="(pendingMatchImports?.length ?? 0) > 0"
-                    :imports="pendingMatchImports"
-                  />
-                  <ChevronsUpDownIcon class="ml-auto size-4" />
-                </SidebarMenuButton>
-              </template>
-            </ProfileMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
+          </SidebarMenu>
+        </SidebarFooter>
+      </div>
       <SidebarRail />
     </div>
   </Sidebar>

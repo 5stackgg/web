@@ -73,7 +73,7 @@ export const tacticalCtaButtonClasses =
 // `createButtonClasses` is the same button that keeps its label (empty states).
 export const createButtonClasses =
   "h-8 bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] hover:bg-[hsl(var(--tac-amber)/0.9)]";
-export const listCreateButtonClasses = `${createButtonClasses} max-md:w-8 max-md:px-0`;
+export const listCreateButtonClasses = `${createButtonClasses} max-md:w-8 max-md:px-0 [&_svg]:size-3.5`;
 
 // Header action buttons size their height to the page title's clamp so the
 // header is governed by the title text (it scales with the title instead of

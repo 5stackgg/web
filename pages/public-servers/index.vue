@@ -66,8 +66,26 @@ const listColumns =
         </SectionEmpty>
 
         <div v-else key="servers" class="flex flex-col gap-8">
-          <div v-if="canSetup" class="flex justify-end">
-            <Button as-child size="sm" :class="listCreateButtonClasses">
+          <div
+            :class="[
+              'items-start gap-3',
+              canSetup ? 'flex' : 'hidden [@media(pointer:coarse)]:flex',
+            ]"
+          >
+            <!-- Phones and tablets cannot launch CS2; say so once instead of
+                 offering a join that goes nowhere. -->
+            <div
+              class="hidden min-w-0 flex-1 items-start gap-3 rounded-lg border border-border bg-card/40 p-3 text-sm text-muted-foreground [@media(pointer:coarse)]:flex"
+            >
+              <MonitorSmartphone class="mt-0.5 h-4 w-4 shrink-0" />
+              {{ $t("pages.public_servers.touch_notice") }}
+            </div>
+            <Button
+              v-if="canSetup"
+              as-child
+              size="sm"
+              :class="[listCreateButtonClasses, 'ml-auto shrink-0']"
+            >
               <NuxtLink
                 to="/dedicated-servers/create"
                 :title="$t('pages.public_servers.setup_public_server')"
@@ -78,15 +96,6 @@ const listColumns =
                 }}</span>
               </NuxtLink>
             </Button>
-          </div>
-
-          <!-- Phones and tablets cannot launch CS2; say so once instead of
-               offering a join that goes nowhere. -->
-          <div
-            class="hidden items-start gap-3 rounded-lg border border-border bg-card/40 p-3 text-sm text-muted-foreground [@media(pointer:coarse)]:flex"
-          >
-            <MonitorSmartphone class="mt-0.5 h-4 w-4 shrink-0" />
-            {{ $t("pages.public_servers.touch_notice") }}
           </div>
 
           <!-- On site: the LAN comes first -->

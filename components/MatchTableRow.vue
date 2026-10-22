@@ -1129,7 +1129,6 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
               </span>
             </span>
             <ScrollArrows
-              v-if="filteredPlayerClips.length > 1"
               :can-left="highlightsScrollRef?.state?.canScrollLeft"
               :can-right="highlightsScrollRef?.state?.canScrollRight"
               @scroll="(d) => highlightsScrollRef?.scrollByDirection(d)"

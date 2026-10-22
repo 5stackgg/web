@@ -57,7 +57,7 @@ const fillPercent = computed(() =>
 
     <div
       :class="[
-        'relative flex flex-1 flex-col justify-between gap-10 p-5 sm:p-6',
+        'relative flex min-w-0 flex-1 flex-col justify-between gap-10 p-5 sm:p-6',
         solo ? 'md:p-10' : '',
       ]"
     >
@@ -92,7 +92,7 @@ const fillPercent = computed(() =>
           <NuxtLink
             :to="`/dedicated-servers/${server.id}`"
             :class="[
-              'truncate font-bold leading-tight',
+              'truncate font-bold leading-tight max-md:line-clamp-2 max-md:whitespace-normal max-md:break-words',
               solo ? 'text-3xl md:text-[2.6rem]' : 'text-2xl sm:text-[1.7rem]',
             ]"
             class="after:absolute after:inset-0 after:z-[1] after:rounded-2xl after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[hsl(var(--tac-amber))]"

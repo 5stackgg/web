@@ -2,7 +2,12 @@
 // The /watch filter strip: sentence-case options on one 32px row, so the
 // ticker's and the highlights' filters read as the same control.
 defineProps<{
-  options: Array<{ key: T; label: string; count?: number | string | null }>;
+  options: Array<{
+    key: T;
+    label: string;
+    count?: number | string | null;
+    disabled?: boolean;
+  }>;
   label: string;
 }>();
 
@@ -25,7 +30,8 @@ const touchTarget =
       :key="option.key"
       type="button"
       :aria-pressed="model === option.key"
-      class="inline-flex h-full items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+      :disabled="option.disabled"
+      class="inline-flex h-full items-center gap-1.5 rounded-sm px-2.5 text-xs transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-40"
       :class="[
         touchTarget,
         model === option.key

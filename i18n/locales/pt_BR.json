@@ -4426,7 +4426,7 @@
           "post": "Publicar disponibilidade"
         },
         "drop_in": {
-          "playing": "jogando nos servidores de warmup | jogando nos servidores de warmup",
+          "playing_now": "{count} jogando agora",
           "all_servers": "Todos os servidores ({count})",
           "players": "jogadores",
           "connect": "Conectar",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Servidor de treino",
+          "on_map": "Treinar em {map}",
           "description": "Seu próprio servidor para lineups de utilitário · qualquer mapa",
           "map": "Mapa",
           "start": "Começar treino",
+          "start_short": "Começar",
+          "start_on": "Começar em {map}",
           "sign_in": "Entre para treinar",
           "manage": "Gerenciar",
           "stop": "Parar",
@@ -4563,23 +4566,21 @@
           "rank_high": "Maior rank médio",
           "rank_low": "Menor rank médio"
         },
-        "rehost": "Re-criar última",
         "host_bar": {
           "title": "Criar uma sala",
-          "seats": "{count} vagas",
+          "host_lan": "Criar uma sala LAN",
           "draft": "Tipo de draft",
           "access": "Quem pode entrar",
-          "open": "Abrir sala {format}",
+          "choices": "Opções da sala",
           "sign_in": "Entre para criar",
           "back_to_room": "Voltar para sua sala",
           "all_settings": "Todas as configurações",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Capitães: top 2 por rank, ordem snake",
             "host": "Você coloca os jogadores nos times",
-            "pug": "Os times se equilibram sozinhos quando a sala enche"
-          },
-          "open_lan": "Abrir sala LAN {format}"
+            "pug": "Os times se equilibram sozinhos quando a sala enche",
+            "duel": "No 1v1 não há ninguém para escolher, então a divisão é automática"
+          }
         },
         "intro": {
           "title": "Organize seu próprio jogo.",
@@ -4619,7 +4620,6 @@
         "join_party": "Entrar com o grupo ({count})",
         "sign_in_to_join": "Entre para participar",
         "reasons": {
-          "spots_left": "{count} vaga restante | {count} vagas restantes",
           "no_room_for_party": "Sem espaço para seu grupo",
           "host_approves": "O host aprova",
           "subs_waiting": "{count} reserva aguardando | {count} reservas aguardando",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Lobby Draft",
     "leader_required": "Somente o líder do grupo pode criar uma partida.",
-    "rehost_hint": "Recrie sua última lobby com as mesmas configurações",
     "filters": {
       "any": "∞"
     },

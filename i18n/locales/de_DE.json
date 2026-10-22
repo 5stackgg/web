@@ -4426,7 +4426,7 @@
           "post": "Verfügbarkeit eintragen"
         },
         "drop_in": {
-          "playing": "spielt auf öffentlichen Servern | spielen auf öffentlichen Servern",
+          "playing_now": "{count} spielen gerade",
           "all_servers": "Alle Server ({count})",
           "players": "Spieler",
           "connect": "Verbinden",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Übungsserver",
+          "on_map": "Auf {map} üben",
           "description": "Dein eigener Server für Utility-Lineups · jede Map",
           "map": "Map",
           "start": "Übung starten",
+          "start_short": "Starten",
+          "start_on": "Auf {map} starten",
           "sign_in": "Zum Üben einloggen",
           "manage": "Verwalten",
           "stop": "Stoppen",
@@ -4563,23 +4566,21 @@
           "rank_high": "Höchster Durchschnittsrang",
           "rank_low": "Niedrigster Durchschnittsrang"
         },
-        "rehost": "Letzten neu hosten",
         "host_bar": {
           "title": "Room hosten",
-          "seats": "{count} Plätze",
+          "host_lan": "LAN-Room hosten",
           "draft": "Draft-Modus",
           "access": "Wer beitreten kann",
-          "open": "{format}-Room öffnen",
+          "choices": "Room-Optionen",
           "sign_in": "Zum Hosten anmelden",
           "back_to_room": "Zurück zu deinem Room",
           "all_settings": "Alle Einstellungen",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Top 2 nach Rang als Captains, Snake-Reihenfolge",
             "host": "Du teilst die Spieler auf die Teams auf",
-            "pug": "Teams werden automatisch ausgeglichen, sobald der Room voll ist"
-          },
-          "open_lan": "{format} LAN-Raum öffnen"
+            "pug": "Teams werden automatisch ausgeglichen, sobald der Room voll ist",
+            "duel": "Bei 1v1 gibt es niemanden zu draften, daher Auto-Split"
+          }
         },
         "intro": {
           "title": "Hoste dein eigenes Pick-up-Game.",
@@ -4619,7 +4620,6 @@
         "join_party": "Mit Party beitreten ({count})",
         "sign_in_to_join": "Zum Beitreten einloggen",
         "reasons": {
-          "spots_left": "{count} Platz frei | {count} Plätze frei",
           "no_room_for_party": "Kein Platz für deine Party",
           "host_approves": "Der Host gibt frei",
           "subs_waiting": "{count} Ersatzspieler wartet | {count} Ersatzspieler warten",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Draft-Lobby",
     "leader_required": "Nur der Party-Leader kann ein Match erstellen.",
-    "rehost_hint": "Deine letzte Lobby mit denselben Einstellungen neu erstellen",
     "filters": {
       "any": "Beliebig"
     },

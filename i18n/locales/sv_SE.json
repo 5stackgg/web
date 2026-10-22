@@ -4426,7 +4426,7 @@
           "post": "Lägg upp tillgänglighet"
         },
         "drop_in": {
-          "playing": "spelar på publika servrar | spelar på publika servrar",
+          "playing_now": "{count} spelar nu",
           "all_servers": "Alla servrar ({count})",
           "players": "spelare",
           "connect": "Anslut",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Träningsserver",
+          "on_map": "Träna på {map}",
           "description": "Din egen server för utility-uppställningar · valfri karta",
           "map": "Karta",
           "start": "Starta träning",
+          "start_short": "Starta",
+          "start_on": "Starta på {map}",
           "sign_in": "Logga in för att träna",
           "manage": "Hantera",
           "stop": "Stoppa",
@@ -4563,23 +4566,21 @@
           "rank_high": "Högst snittrank",
           "rank_low": "Lägst snittrank"
         },
-        "rehost": "Starta senaste igen",
         "host_bar": {
           "title": "Skapa ett rum",
-          "seats": "{count} platser",
+          "host_lan": "Skapa ett LAN-rum",
           "draft": "Draftläge",
           "access": "Vem kan gå med",
-          "open": "Öppna {format}-rum",
+          "choices": "Val för rummet",
           "sign_in": "Logga in för att skapa",
           "back_to_room": "Tillbaka till ditt rum",
           "all_settings": "Alla inställningar",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Topp 2 efter rank blir kaptener, snake-ordning",
             "host": "Du placerar spelarna i lagen",
-            "pug": "Lagen balanseras automatiskt när rummet är fullt"
-          },
-          "open_lan": "Öppna {format} LAN-rum"
+            "pug": "Lagen balanseras automatiskt när rummet är fullt",
+            "duel": "I 1v1 finns ingen att drafta, så det delas upp automatiskt"
+          }
         },
         "intro": {
           "title": "Kör ditt eget pick-up-game.",
@@ -4619,7 +4620,6 @@
         "join_party": "Gå med som grupp ({count})",
         "sign_in_to_join": "Logga in för att gå med",
         "reasons": {
-          "spots_left": "{count} plats kvar | {count} platser kvar",
           "no_room_for_party": "Ingen plats för din grupp",
           "host_approves": "Värden godkänner",
           "subs_waiting": "{count} reserv väntar | {count} reserver väntar",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Draftlobby",
     "leader_required": "Bara partyledaren kan skapa en match.",
-    "rehost_hint": "Skapa din senaste lobby igen med samma inställningar",
     "filters": {
       "any": "Alla"
     },

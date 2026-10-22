@@ -26,19 +26,37 @@ const league = {
   signupClosesAt: "2026-10-09T00:00:00Z",
   teams: 14,
 };
-const scrims = { teamsToday: 4, managesTeam: true };
+const scrimTeams = [
+  {
+    id: "z",
+    name: "Team Zalrus",
+    avatarUrl: null,
+    from: new Date(2026, 9, 2, 20),
+    to: new Date(2026, 9, 2, 22),
+  },
+  {
+    id: "n",
+    name: "nuggets",
+    avatarUrl: null,
+    from: new Date(2026, 9, 2, 21, 30),
+    to: new Date(2026, 9, 2, 23, 30),
+  },
+];
+const scrims = { teamsToday: 2, teams: scrimTeams, managesTeam: true };
+const quietScrims = { teamsToday: 0, teams: [], managesTeam: true };
 
 function servers(players: number[]) {
   return players.map((count, index) => ({
     id: `s${index}`,
     label: `Server ${index}`,
-    map: "Mirage",
+    map: "Train",
+    mapName: "de_train",
     region: "US East",
     ping: 18,
     players: count,
-    maxPlayers: 20,
-    connectionLink: "steam://connect/1.2.3.4",
-    connectionString: "connect 1.2.3.4",
+    maxPlayers: 16,
+    connectionLink: `steam://connect/1.2.3.${index}`,
+    connectionString: `connect 1.2.3.${index}`,
   }));
 }
 
@@ -56,11 +74,78 @@ async function mount(props: Record<string, unknown> = {}) {
   });
 }
 
-const grid = (wrapper: any) => wrapper.find("section > div.grid");
-const rail = (wrapper: any) => grid(wrapper).find(":scope > div.grid");
+const featured = (wrapper: any) => wrapper.find(".ways-row > article");
+const peeks = (wrapper: any) =>
+  wrapper.findAll(".ways-row > div > section").map((part: any) => part.text());
 
 describe("PlayMoreWaysView", () => {
-  it("leads with the tournament and rails every other way beside it", async () => {
+  it("features the busiest public server and peeks at the other ways beside it", async () => {
+    const wrapper = await mount();
+
+    const card = featured(wrapper);
+    expect(card.find("h3").text()).toBe("Server 1");
+    expect(card.text()).toContain("14 playing now");
+    expect(card.find('a[href="steam://connect/1.2.3.1"]').text()).toContain(
+      "Connect",
+    );
+
+    const [scrimsPart, practicePart] = peeks(wrapper);
+    expect(scrimsPart).toContain("Scrims");
+    expect(scrimsPart).toContain("Team Zalrus");
+    expect(scrimsPart).toContain("Find a scrim");
+    expect(practicePart).toContain("Practice server");
+    expect(wrapper.find('a[href="/public-servers"]').text()).toContain(
+      "All servers (3)",
+    );
+  });
+
+  it("features today's scrims when nobody is on a public server", async () => {
+    const wrapper = await mount({ servers: servers([0]) });
+
+    const card = featured(wrapper);
+    expect(card.find("h3").text()).toBe("Scrims");
+    expect(card.text()).toContain("2 teams looking for a scrim today");
+    expect(card.text()).toContain("Team Zalrus");
+    expect(card.text()).toContain("nuggets");
+    expect(card.find('a[href="/scrims"]').text()).toBe("Find a scrim");
+
+    const [serverPart, practicePart] = peeks(wrapper);
+    expect(serverPart).toContain("Server 0");
+    expect(serverPart).toContain("0/16");
+    expect(practicePart).toContain("Practice server");
+  });
+
+  it("features practice when it's quiet, and never says nobody is playing", async () => {
+    const wrapper = await mount({
+      servers: servers([0]),
+      scrims: quietScrims,
+    });
+
+    expect(featured(wrapper).text()).toContain("Practice server");
+    const [scrimsPart] = peeks(wrapper);
+    expect(scrimsPart).toContain("No teams looking for a scrim today");
+    expect(scrimsPart).toContain(
+      "Post when your team is free and others can request a scrim.",
+    );
+    expect(scrimsPart).toContain("Post availability");
+    expect(wrapper.text()).not.toContain("playing now");
+    expect(wrapper.text()).not.toContain("playing on public servers");
+  });
+
+  it("drops the panel when only one way is on offer", async () => {
+    const wrapper = await mount({ scrims: null, servers: [] });
+
+    expect(featured(wrapper).text()).toContain("Practice server");
+    expect(peeks(wrapper)).toEqual([]);
+  });
+
+  it("links to every public server only when there's more than one", async () => {
+    const wrapper = await mount({ servers: servers([4]) });
+
+    expect(wrapper.find('a[href="/public-servers"]').exists()).toBe(false);
+  });
+
+  it("keeps an open tournament and the league signup under the ways", async () => {
     const wrapper = await mount();
 
     expect(wrapper.text()).toContain("2v2 Wingman Tournament");
@@ -68,75 +153,8 @@ describe("PlayMoreWaysView", () => {
     expect(wrapper.find('a[href="/tournaments"]').text()).toContain(
       "All tournaments",
     );
-    expect(grid(wrapper).classes()).toContain("lg:grid-cols-2");
-    const tiles = rail(wrapper);
-    expect(tiles.text()).toContain("League");
-    expect(tiles.text()).toContain("Scrims");
-    expect(tiles.text()).toContain("Server 1");
-    expect(tiles.text()).toContain("Practice server");
-    expect(tiles.classes()).toContain("sm:grid-cols-2");
-  });
-
-  it("stacks two tiles in one rail column beside the tournament", async () => {
-    const wrapper = await mount({ league: null, servers: [] });
-
-    expect(rail(wrapper).classes()).toContain("lg:grid-cols-1");
-    expect(rail(wrapper).text()).toContain("Scrims");
-    expect(rail(wrapper).text()).toContain("Practice server");
-  });
-
-  it("lays the tournament across two thirds beside a lone tile", async () => {
-    const wrapper = await mount({
-      league: null,
-      scrims: null,
-      servers: [],
-    });
-
-    expect(grid(wrapper).classes()).toContain("lg:grid-cols-3");
-    expect(rail(wrapper).exists()).toBe(false);
-    expect(wrapper.text()).toContain("Practice server");
-  });
-
-  it("spreads tiles evenly without a tournament", async () => {
-    const two = await mount({ tournament: null, league: null, servers: [] });
-    expect(grid(two).classes()).toContain("sm:grid-cols-2");
-    expect(grid(two).classes()).not.toContain("lg:grid-cols-3");
-
-    const one = await mount({
-      tournament: null,
-      league: null,
-      scrims: null,
-      servers: [],
-    });
-    expect(grid(one).classes()).toContain("lg:grid-cols-3");
-  });
-
-  it("caps six servers at the three busiest and links to the rest", async () => {
-    const wrapper = await mount({ servers: servers([3, 9, 3, 0, 12, 9]) });
-
-    const titles = wrapper.findAll("h3").map((h) => h.text());
-    expect(titles).toContain("Server 4");
-    expect(titles).toContain("Server 1");
-    expect(titles).toContain("Server 5");
-    expect(titles).not.toContain("Server 0");
-    expect(wrapper.text()).toContain("36 playing on public servers");
-    expect(wrapper.find('a[href="/public-servers"]').text()).toContain(
-      "All servers (6)",
-    );
-  });
-
-  it("keeps the player count but skips the link with three servers or fewer", async () => {
-    const wrapper = await mount({ servers: servers([4]) });
-
-    expect(wrapper.text()).toContain("4 playing on public servers");
-    expect(wrapper.find('a[href="/public-servers"]').exists()).toBe(false);
-  });
-
-  it("drops the player count when there are no public servers", async () => {
-    const wrapper = await mount({ servers: [] });
-
-    expect(wrapper.text()).not.toContain("playing on public servers");
-    expect(wrapper.text()).toContain("Practice server");
+    expect(wrapper.text()).toContain("Fall League");
+    expect(wrapper.text()).toContain("Register a team");
   });
 
   it("renders nothing when there is nothing to offer", async () => {
@@ -154,7 +172,7 @@ describe("PlayMoreWaysView", () => {
   it("asks a guest to sign in instead of registering or practicing", async () => {
     const wrapper = await mount({
       guest: true,
-      scrims: { teamsToday: 4, managesTeam: null },
+      scrims: { ...scrims, managesTeam: null },
     });
 
     expect(wrapper.text()).toContain("Sign in to register");
@@ -165,10 +183,9 @@ describe("PlayMoreWaysView", () => {
 
   it("tells a player without a team that scrims need one", async () => {
     const wrapper = await mount({
-      scrims: { teamsToday: 0, managesTeam: false },
+      scrims: { ...quietScrims, managesTeam: false },
     });
 
-    expect(wrapper.text()).toContain("No teams looking for a scrim today");
     expect(wrapper.text()).toContain("Needs a team you manage");
     expect(wrapper.text()).toContain("Post availability");
   });

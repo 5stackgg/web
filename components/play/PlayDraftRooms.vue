@@ -170,10 +170,10 @@ const listState = computed(() => {
 
 <template>
   <section aria-labelledby="play-draft-rooms-label">
-    <div
-      class="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
-    >
-      <div class="min-w-0">
+    <!-- Phones: title, the Host button, its choices, then the list tools.
+         Wide: one row, the choices folding open under all of it. -->
+    <div class="draft-head mb-3 grid items-center gap-x-2">
+      <div class="min-w-0 [grid-area:title]">
         <h2
           id="play-draft-rooms-label"
           :class="[tacticalSectionLabelClasses, 'mb-1']"
@@ -186,7 +186,9 @@ const listState = computed(() => {
         </p>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2">
+      <div
+        class="flex flex-wrap items-center gap-2 [grid-area:tools] empty:hidden max-lg:mt-3 lg:justify-end"
+      >
         <template v-if="rooms.length">
           <WatchSegmented
             v-if="formats.length > 1"
@@ -302,20 +304,20 @@ const listState = computed(() => {
           </Popover>
         </template>
       </div>
+
+      <PlayDraftHostBar :locked="inLobbyNotLeader" />
     </div>
 
     <Fold :open="showIntro">
       <PlayDraftIntro class="mb-3" @dismiss="dismissIntro" />
     </Fold>
 
-    <PlayDraftHostBar class="mb-3" :locked="inLobbyNotLeader" />
-
     <FadeSwap>
       <div v-if="listState === 'loading'" key="loading" class="grid gap-2">
         <Skeleton v-for="i in 2" :key="i" class="h-[4.25rem] rounded-lg" />
       </div>
 
-      <!-- Empty is a sentence, not a box: the host bar above is the call. -->
+      <!-- Empty is a sentence, not a box: Host a room above is the call. -->
       <p
         v-else-if="listState === 'empty'"
         key="empty"
@@ -361,6 +363,17 @@ const listState = computed(() => {
 </template>
 
 <style scoped>
+.draft-head {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "title" "split" "fold" "tools";
+}
+@media (min-width: 1024px) {
+  .draft-head {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "title tools split" "fold fold fold";
+  }
+}
+
 .hit {
   position: relative;
 }

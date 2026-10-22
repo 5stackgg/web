@@ -4426,7 +4426,7 @@
           "post": "Pubblica disponibilità"
         },
         "drop_in": {
-          "playing": "gioca sui server pubblici | giocano sui server pubblici",
+          "playing_now": "{count} in gioco ora",
           "all_servers": "Tutti i server ({count})",
           "players": "giocatori",
           "connect": "Connetti",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Server di allenamento",
+          "on_map": "Allenati su {map}",
           "description": "Il tuo server per i lineup di utility · qualsiasi mappa",
           "map": "Mappa",
           "start": "Inizia ad allenarti",
+          "start_short": "Inizia",
+          "start_on": "Inizia su {map}",
           "sign_in": "Accedi per allenarti",
           "manage": "Gestisci",
           "stop": "Ferma",
@@ -4563,23 +4566,21 @@
           "rank_high": "Rank medio più alto",
           "rank_low": "Rank medio più basso"
         },
-        "rehost": "Ripeti l'ultima",
         "host_bar": {
           "title": "Crea una draft room",
-          "seats": "{count} posti",
+          "host_lan": "Crea una draft room LAN",
           "draft": "Tipo di draft",
           "access": "Chi può entrare",
-          "open": "Apri draft room {format}",
+          "choices": "Opzioni della draft room",
           "sign_in": "Accedi per creare",
           "back_to_room": "Torna alla tua draft room",
           "all_settings": "Tutte le impostazioni",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Capitani: i primi 2 per rank, ordine snake",
             "host": "Assegni tu i giocatori alle squadre",
-            "pug": "Le squadre si bilanciano da sole quando la draft room è piena"
-          },
-          "open_lan": "Apri stanza LAN {format}"
+            "pug": "Le squadre si bilanciano da sole quando la draft room è piena",
+            "duel": "Nell'1v1 non c'è nessuno da scegliere, quindi la divisione è automatica"
+          }
         },
         "intro": {
           "title": "Organizza la tua partita.",
@@ -4619,7 +4620,6 @@
         "join_party": "Unisciti col gruppo ({count})",
         "sign_in_to_join": "Accedi per unirti",
         "reasons": {
-          "spots_left": "{count} posto libero | {count} posti liberi",
           "no_room_for_party": "Nessun posto per il tuo gruppo",
           "host_approves": "Approva l'host",
           "subs_waiting": "{count} riserva in attesa | {count} riserve in attesa",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Draft lobby",
     "leader_required": "Solo il leader del party può creare un match.",
-    "rehost_hint": "Ricrea la tua ultima lobby con le stesse impostazioni",
     "filters": {
       "any": "Qualsiasi"
     },

@@ -4426,7 +4426,7 @@
           "post": "Opublikuj dostępność"
         },
         "drop_in": {
-          "playing": "gracz na serwerach publicznych | graczy na serwerach publicznych",
+          "playing_now": "Teraz gra: {count}",
           "all_servers": "Wszystkie serwery ({count})",
           "players": "graczy",
           "connect": "Połącz",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Serwer treningowy",
+          "on_map": "Trening na {map}",
           "description": "Własny serwer do ćwiczenia ustawek · dowolna mapa",
           "map": "Mapa",
           "start": "Zacznij trening",
+          "start_short": "Start",
+          "start_on": "Start na {map}",
           "sign_in": "Zaloguj się, aby trenować",
           "manage": "Zarządzaj",
           "stop": "Zatrzymaj",
@@ -4563,23 +4566,21 @@
           "rank_high": "Najwyższa średnia ranga",
           "rank_low": "Najniższa średnia ranga"
         },
-        "rehost": "Powtórz ostatni",
         "host_bar": {
           "title": "Utwórz pokój",
-          "seats": "Miejsca: {count}",
+          "host_lan": "Utwórz pokój LAN",
           "draft": "Rodzaj draftu",
           "access": "Kto może dołączyć",
-          "open": "Otwórz pokój {format}",
+          "choices": "Opcje pokoju",
           "sign_in": "Zaloguj się, aby utworzyć",
           "back_to_room": "Wróć do swojego pokoju",
           "all_settings": "Wszystkie ustawienia",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Kapitanowie: top 2 wg rangi, kolejność snake",
             "host": "Sam przydzielasz graczy do drużyn",
-            "pug": "Drużyny wyrównują się same, gdy pokój się zapełni"
-          },
-          "open_lan": "Otwórz pokój LAN {format}"
+            "pug": "Drużyny wyrównują się same, gdy pokój się zapełni",
+            "duel": "W 1v1 nie ma kogo wybierać, więc podział jest automatyczny"
+          }
         },
         "intro": {
           "title": "Zorganizuj własną grę.",
@@ -4619,7 +4620,6 @@
         "join_party": "Dołącz z paczką ({count})",
         "sign_in_to_join": "Zaloguj się, aby dołączyć",
         "reasons": {
-          "spots_left": "Zostało {count} miejsce | Zostało {count} miejsc",
           "no_room_for_party": "Brak miejsca dla twojej paczki",
           "host_approves": "Host zatwierdza",
           "subs_waiting": "{count} rezerwowy czeka | {count} rezerwowych czeka",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Draft Lobby",
     "leader_required": "Tylko lider ekipy może utworzyć mecz",
-    "rehost_hint": "Odtwórz ostatnie lobby z tymi samymi ustawieniami",
     "filters": {
       "any": "Dowolna"
     },

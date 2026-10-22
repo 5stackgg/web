@@ -105,9 +105,9 @@ describe("draft room meta line", () => {
 });
 
 describe("draft room action", () => {
-  it("joins with the spots left as the reason", () => {
+  it("joins with no line under the button: the seat bar counts the spots", () => {
     const action = draftAction(room(), solo, t);
-    expect(action).toMatchObject({ kind: "join", reason: "7 spots left" });
+    expect(action).toMatchObject({ kind: "join", reason: "" });
   });
 
   it("offers the whole party when it fits", () => {

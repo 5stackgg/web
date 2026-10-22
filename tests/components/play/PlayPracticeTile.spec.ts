@@ -86,9 +86,13 @@ const settle = async (ms = 20) => {
   await flushPromises();
 };
 
-async function mountTile(stubs: Record<string, boolean> = {}) {
+async function mountTile(
+  stubs: Record<string, boolean> = {},
+  props: Record<string, unknown> = {},
+) {
   const wrapper = await mountSuspended(PlayPracticeTile, {
     attachTo: document.body,
+    props,
     global: {
       stubs: { PlayerSearch: true, RconCommander: true, ...stubs },
     },
@@ -109,6 +113,13 @@ describe("PlayPracticeTile", () => {
 
     expect(buttonNamed(wrapper, "Start practice")).toBeTruthy();
     expect(wrapper.text()).not.toContain("Manage");
+  });
+
+  it("titles the big card with the map it will start on", async () => {
+    const wrapper = await mountTile();
+
+    expect(wrapper.find("h3").text()).toBe("Practice on Mirage");
+    expect(wrapper.text()).toContain("Practice server");
   });
 
   it("shows the map and Starting while your server boots", async () => {
@@ -140,7 +151,8 @@ describe("PlayPracticeTile", () => {
     expect(join.text()).toContain("Join Server");
 
     expect(
-      wrapper.find('[data-clipboard-text="connect 1.2.3.4:27015; password x"]')
+      wrapper
+        .find('[data-clipboard-text="connect 1.2.3.4:27015; password x"]')
         .exists(),
     ).toBe(true);
     expect(buttonNamed(wrapper, "Manage")).toBeTruthy();
@@ -272,7 +284,7 @@ describe("PlayPracticeTile", () => {
     push(sessionRow({ status: "Starting", connection_string: null }));
     await settle(400);
     const mapLine = () =>
-      wrapper.findAll("span").find((span) => span.text() === "Mirage")?.element;
+      wrapper.findAll("h3").find((h3) => h3.text() === "Mirage")?.element;
     const before = mapLine();
     expect(before).toBeDefined();
 
@@ -313,5 +325,41 @@ describe("PlayPracticeTile", () => {
 
     expect(buttonNamed(wrapper, "Start practice")).toBeTruthy();
     expect(wrapper.text()).not.toContain("Ready to join");
+  });
+});
+
+describe("PlayPracticeTile in the peek panel", () => {
+  const mapButton = (wrapper: any, name: string) =>
+    wrapper.find(`button[aria-label="${name}"]`);
+
+  it("picks the map from its icons and starts on it", async () => {
+    const wrapper = await mountTile({}, { layout: "peek" });
+
+    expect(wrapper.text()).toContain("Start on Mirage");
+    expect(mapButton(wrapper, "Mirage").attributes("aria-pressed")).toBe(
+      "true",
+    );
+    expect(wrapper.find("button[role='combobox']").exists()).toBe(false);
+
+    await mapButton(wrapper, "Inferno").trigger("click");
+
+    expect(mapButton(wrapper, "Inferno").attributes("aria-pressed")).toBe(
+      "true",
+    );
+    expect(wrapper.text()).toContain("Start on Inferno");
+    expect(buttonNamed(wrapper, "Start")).toBeTruthy();
+  });
+
+  it("swaps the icons for the server's controls once it's up", async () => {
+    const wrapper = await mountTile({}, { layout: "peek" });
+    push(sessionRow());
+    await settle(400);
+
+    expect(wrapper.text()).toContain("Mirage · Ready to join");
+    expect(
+      wrapper.find('a[href="steam://connect/1.2.3.4:27015/x"]').exists(),
+    ).toBe(true);
+    expect(buttonNamed(wrapper, "Manage")).toBeTruthy();
+    expect(mapButton(wrapper, "Inferno").exists()).toBe(false);
   });
 });

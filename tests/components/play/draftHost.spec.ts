@@ -2,9 +2,9 @@
 import { describe, expect, it } from "vitest";
 import {
   HOST_TYPES,
+  hostChoices,
   hostModes,
   quickHostPayload,
-  rehostPayload,
   snakeBoard,
 } from "~/components/play/draftHost";
 
@@ -32,10 +32,29 @@ describe("draftHost", () => {
     });
   });
 
-  it("re-hosts a stored payload as-is and nothing without a preset", () => {
-    const payload = { type: "Wingman", mode: "Pug" };
-    expect(rehostPayload({ payload })).toBe(payload);
-    expect(rehostPayload(null)).toBeNull();
+  it("remembers the last room's choices, or starts from the defaults", () => {
+    expect(hostChoices(null)).toEqual({
+      type: "Competitive",
+      mode: "Captains",
+      access: "Open",
+    });
+    expect(
+      hostChoices({
+        mode: "Pug",
+        access: "Friends",
+        payload: { type: "Wingman" },
+      }),
+    ).toEqual({ type: "Wingman", mode: "Pug", access: "Friends" });
+  });
+
+  it("falls back where the full wizard saved a choice the button can't make", () => {
+    expect(
+      hostChoices({
+        mode: "Teams",
+        access: "Private",
+        values: { type: "Rush" },
+      }),
+    ).toEqual({ type: "Rush", mode: "Captains", access: "Open" });
   });
 
   it("snakes the picks between the captains", () => {

@@ -4426,7 +4426,7 @@
           "post": "Post availability"
         },
         "drop_in": {
-          "playing": "playing on public servers | playing on public servers",
+          "playing_now": "{count} playing now",
           "all_servers": "All servers ({count})",
           "players": "players",
           "connect": "Connect",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "Practice server",
+          "on_map": "Practice on {map}",
           "description": "Your own server for utility lineups · any map",
           "map": "Map",
           "start": "Start practice",
+          "start_short": "Start",
+          "start_on": "Start on {map}",
           "sign_in": "Sign in to practice",
           "manage": "Manage",
           "stop": "Stop",
@@ -4563,23 +4566,21 @@
           "rank_high": "Highest average rank",
           "rank_low": "Lowest average rank"
         },
-        "rehost": "Re-host last",
         "host_bar": {
           "title": "Host a room",
-          "seats": "{count} seats",
+          "host_lan": "Host a LAN room",
           "draft": "Draft style",
           "access": "Who can join",
-          "open": "Open {format} Room",
+          "choices": "Room choices",
           "sign_in": "Sign in to host",
           "back_to_room": "Back to your room",
           "all_settings": "All settings",
-          "rehost_detail": "{format} {mode}, {access}",
           "phrase": {
             "captains": "Top 2 by rank captain, snake order",
             "host": "You put players on teams",
-            "pug": "Teams auto-balance when the room fills"
-          },
-          "open_lan": "Open {format} LAN Room"
+            "pug": "Teams auto-balance when the room fills",
+            "duel": "1v1 has nobody to draft, so it auto-splits"
+          }
         },
         "intro": {
           "title": "Run your own pick-up game.",
@@ -4619,7 +4620,6 @@
         "join_party": "Join with party ({count})",
         "sign_in_to_join": "Sign in to join",
         "reasons": {
-          "spots_left": "{count} spot left | {count} spots left",
           "no_room_for_party": "No room for your party",
           "host_approves": "The host approves",
           "subs_waiting": "{count} sub waiting | {count} subs waiting",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "Draft Lobby",
     "leader_required": "Only the party leader can create a match.",
-    "rehost_hint": "Re-create your last lobby with the same settings",
     "filters": {
       "any": "Any"
     },

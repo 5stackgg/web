@@ -1,7 +1,6 @@
-// Pure logic behind hosting from /play: the quick-host bar's choices and
-// payload, the "re-host last" preset, and the intro's draft board.
+// Pure logic behind hosting from /play: the Host a room button's remembered
+// choices and payload, and the intro's draft board.
 import { EXPECTED_PLAYERS } from "~/utilities/matchmakingPartySize";
-import { setupOptionsVariables } from "~/utilities/setupOptions";
 
 export const DRAFT_REHOST_KEY = "draft-games:rehost";
 export const DRAFT_INTRO_DISMISSED_KEY = "draft-games:intro-dismissed";
@@ -9,6 +8,7 @@ export const DRAFT_INTRO_DISMISSED_KEY = "draft-games:intro-dismissed";
 export type HostMode = "Captains" | "Host" | "Pug";
 export type HostAccess = "Open" | "Friends" | "Invite";
 
+export const HOST_MODES: HostMode[] = ["Captains", "Host", "Pug"];
 export const HOST_ACCESS: HostAccess[] = ["Open", "Friends", "Invite"];
 
 // Biggest format first, the same order as the room list's format filter.
@@ -25,7 +25,7 @@ export function formatLabel(type: string | undefined): string {
 
 // A duel has nobody to draft: it is always auto-split.
 export const hostModes = (type: string): HostMode[] =>
-  type === "Duel" ? ["Pug"] : ["Captains", "Host", "Pug"];
+  type === "Duel" ? ["Pug"] : HOST_MODES;
 
 // No match options on purpose: the api then spawns the match on the same
 // defaults matchmaking uses for the type. Anything else is "All settings".
@@ -44,6 +44,12 @@ export function quickHostPayload(settings: {
   };
 }
 
+export type HostChoices = {
+  type: string;
+  mode: HostMode;
+  access: HostAccess;
+};
+
 export function readRehostPreset(): any {
   try {
     return JSON.parse(localStorage.getItem(DRAFT_REHOST_KEY) || "null");
@@ -52,32 +58,31 @@ export function readRehostPreset(): any {
   }
 }
 
-// The create payload of the last room hosted on this device. Presets saved
-// before the payload was stored only carry the form values.
-export function rehostPayload(preset: any) {
-  if (preset?.payload) {
-    return preset.payload;
-  }
-  const values = preset?.values;
-  if (!values) {
-    return null;
-  }
+// The choices of the last room hosted on this device. The full wizard saves
+// under the same key, so a choice the Host button can't make (pre-made
+// teams, private) falls back to the default.
+export function hostChoices(preset: any): HostChoices {
+  const type = preset?.payload?.type ?? preset?.values?.type;
   return {
-    type: values.type,
-    mode: preset.mode,
-    access: preset.access,
-    regions: values.regions,
-    map_pool_id: values.map_pool_id,
-    captain_selection: preset.captain_selection,
-    draft_order: preset.draft_order,
-    require_approval: preset.require_approval,
-    min_elo: preset.min_elo ?? undefined,
-    max_elo: preset.max_elo ?? undefined,
-    team_1_id: preset.mode === "Teams" ? preset.team_1_id : undefined,
-    team_2_id: preset.mode === "Teams" ? preset.team_2_id : undefined,
-    keep_lobby_together: false,
-    options: setupOptionsVariables(values, { mapPoolId: values.map_pool_id }),
+    type: HOST_TYPES.some((option) => option.type === type)
+      ? type
+      : HOST_TYPES[0].type,
+    mode: HOST_MODES.includes(preset?.mode) ? preset.mode : "Captains",
+    access: HOST_ACCESS.includes(preset?.access) ? preset.access : "Open",
   };
+}
+
+export function rememberHostChoices(choices: HostChoices, regions: string[]) {
+  try {
+    localStorage.setItem(
+      DRAFT_REHOST_KEY,
+      JSON.stringify({
+        mode: choices.mode,
+        access: choices.access,
+        payload: quickHostPayload({ ...choices, regions }),
+      }),
+    );
+  } catch {}
 }
 
 export type BoardSlot = {

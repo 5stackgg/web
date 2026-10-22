@@ -4426,7 +4426,7 @@
           "post": "空き時間を公開"
         },
         "drop_in": {
-          "playing": "人が公開サーバーでプレイ中 | 人が公開サーバーでプレイ中",
+          "playing_now": "{count}人がプレイ中",
           "all_servers": "すべてのサーバー（{count}）",
           "players": "プレイヤー",
           "connect": "接続",
@@ -4434,9 +4434,12 @@
         },
         "practice": {
           "title": "練習サーバー",
+          "on_map": "{map}で練習",
           "description": "ユーティリティのラインナップ練習用の専用サーバー · マップ自由",
           "map": "マップ",
           "start": "練習を開始",
+          "start_short": "開始",
+          "start_on": "{map}で開始",
           "sign_in": "ログインして練習",
           "manage": "管理",
           "stop": "停止",
@@ -4563,23 +4566,21 @@
           "rank_high": "平均ランクが高い順",
           "rank_low": "平均ランクが低い順"
         },
-        "rehost": "前回を再作成",
         "host_bar": {
           "title": "ルームを作成",
-          "seats": "{count}人",
+          "host_lan": "LANルームを作成",
           "draft": "ドラフト方式",
           "access": "参加できる人",
-          "open": "{format}ルームを開く",
+          "choices": "ルームの設定",
           "sign_in": "ログインして作成",
           "back_to_room": "自分のルームに戻る",
           "all_settings": "すべての設定",
-          "rehost_detail": "{format} {mode}・{access}",
           "phrase": {
             "captains": "ランク上位2名がキャプテン、スネーク順",
             "host": "あなたが選手をチームに振り分けます",
-            "pug": "満員になるとチームが自動で振り分けられます"
-          },
-          "open_lan": "{format} LANルームを開く"
+            "pug": "満員になるとチームが自動で振り分けられます",
+            "duel": "1v1 はドラフトする相手がいないため自動で振り分けます"
+          }
         },
         "intro": {
           "title": "自分で募集して試合をしよう。",
@@ -4619,7 +4620,6 @@
         "join_party": "パーティーで参加（{count}）",
         "sign_in_to_join": "ログインして参加",
         "reasons": {
-          "spots_left": "残り{count}枠 | 残り{count}枠",
           "no_room_for_party": "パーティー全員分の空きがありません",
           "host_approves": "ホストの承認制",
           "subs_waiting": "控え{count}人が待機中 | 控え{count}人が待機中",
@@ -13053,7 +13053,6 @@
   "draft_games": {
     "nav_label": "ドラフトロビー",
     "leader_required": "試合を作成できるのはパーティーリーダーだけです。",
-    "rehost_hint": "前回のロビーを同じ設定で作り直します",
     "filters": {
       "any": "すべて"
     },

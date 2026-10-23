@@ -14,6 +14,8 @@ defineProps<{
   description?: string;
   /** When true, clicking anywhere on the header emits `header-click` (use to toggle a header switch). */
   clickableHeader?: boolean;
+  /** "danger" fences destructive actions off in a red frame, like the event and season danger zones. */
+  tone?: "danger";
 }>();
 
 defineEmits<{
@@ -24,7 +26,12 @@ defineEmits<{
 <template>
   <section
     :id="id"
-    :class="['grid gap-4 scroll-mt-4', tacticalSectionSeparatorClasses]"
+    :class="[
+      'grid gap-4 scroll-mt-4',
+      tone === 'danger'
+        ? 'rounded-lg border border-destructive/40 bg-destructive/5 p-5'
+        : tacticalSectionSeparatorClasses,
+    ]"
   >
     <div
       class="flex items-end justify-between gap-4"
@@ -32,8 +39,19 @@ defineEmits<{
       @click="clickableHeader && $emit('header-click')"
     >
       <div class="grid min-w-0 gap-1">
-        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-          <span :class="tacticalSectionTickClasses"></span>
+        <div
+          :class="[
+            tacticalSectionLabelClasses,
+            'mb-0',
+            tone === 'danger' && '!text-destructive',
+          ]"
+        >
+          <span
+            :class="[
+              tacticalSectionTickClasses,
+              tone === 'danger' && '!bg-destructive',
+            ]"
+          ></span>
           {{ title }}
         </div>
         <p v-if="description" class="text-xs text-muted-foreground/70">

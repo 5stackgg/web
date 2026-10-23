@@ -16,7 +16,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-
 const { t } = useI18n();
 const config = useRuntimeConfig();
 const isDev = computed(
@@ -152,7 +151,7 @@ async function doRemoveFixtures() {
               }}
             </Button>
             <Button
-              variant="outline"
+              variant="destructive"
               :disabled="loading"
               @click="showRemoveDialog = true"
             >

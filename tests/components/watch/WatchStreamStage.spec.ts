@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import WatchStreamStage from "~/components/watch/WatchStreamStage.vue";
@@ -14,23 +15,41 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useWatchStage } from "~/composables/useWatchStage";
 
-const { pushes } = vi.hoisted(() => ({
+const { pushes, clients, myRoles } = vi.hoisted(() => ({
   pushes: [] as Array<(result: any) => void>,
+  clients: [] as Array<string>,
+  myRoles: { state: null as any },
 }));
 
 vi.mock("@vue/apollo-composable", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@vue/apollo-composable")>()),
-  useApolloClient: () => ({
+  useApolloClient: (id = "default") => ({
     client: {
       subscribe: () => ({
         subscribe: ({ next }: { next: (result: any) => void }) => {
           pushes.push(next);
+          clients.push(id);
           return { unsubscribe() {} };
         },
       }),
     },
   }),
 }));
+
+// Fresh per test: stages from earlier tests are still mounted.
+vi.mock("~/composables/useMyMatchRoles", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("~/composables/useMyMatchRoles")>()),
+  useMyMatchRoles: () => myRoles.state,
+}));
+
+function resetStage() {
+  pushes.length = 0;
+  clients.length = 0;
+  myRoles.state = {
+    ready: ref<boolean | null>(false),
+    roles: ref(new Map()),
+  };
+}
 
 const twitch = { id: "s1", link: "https://twitch.tv/northside", title: "Main feed" };
 const gameStreamer = {
@@ -114,7 +133,7 @@ async function mountStage(
 
 describe("WatchStreamStage", () => {
   beforeEach(() => {
-    pushes.length = 0;
+    resetStage();
     useApplicationSettingsStore().settings = [];
   });
 
@@ -143,6 +162,51 @@ describe("WatchStreamStage", () => {
     expect(wrapper.find(".stream-embed").exists()).toBe(true);
   });
 
+  it("reads the stage on the viewer's own session when it can't read as a guest", async () => {
+    useAuthStore().me = { steam_id: "1", role: "user" } as any;
+    await mountStage([liveMatch()]);
+
+    expect(clients).toEqual(["default"]);
+  });
+
+  // The stage is the same for every viewer, so a signed-in one reads it as a
+  // guest and shares the poll. The guest's rows know nothing of the viewer.
+  it("reads the stage as a guest and keeps the viewer's own match off it", async () => {
+    useAuthStore().me = { steam_id: "1", role: "user" } as any;
+    myRoles.state.ready.value = true;
+    myRoles.state.roles.value = new Map([
+      ["playing", { is_in_lineup: true, is_coach: false }],
+      ["coaching", { is_in_lineup: false, is_coach: true }],
+    ]);
+    const wrapper = await mountStage([
+      liveMatch({ id: "playing" }),
+      liveMatch({ id: "coaching" }),
+      liveMatch({ id: "watching" }),
+    ]);
+
+    expect(clients).toEqual(["public"]);
+    expect(wrapper.emitted("update:streamable-ids")?.at(-1)).toEqual([
+      ["watching"],
+    ]);
+  });
+
+  it("shows nothing until it knows which matches are the viewer's own", async () => {
+    useAuthStore().me = { steam_id: "1", role: "user" } as any;
+    myRoles.state.ready.value = null;
+    const wrapper = await mountStage([liveMatch()]);
+
+    expect(clients).toEqual([]);
+    expect(wrapper.find("#watch-stage").exists()).toBe(false);
+
+    myRoles.state.ready.value = true;
+    await flushPromises();
+    for (const next of pushes) next({ data: { matches: [liveMatch()] } });
+    await flushPromises();
+
+    expect(clients).toEqual(["public"]);
+    expect(wrapper.emitted("update:streamable-ids")?.at(-1)).toEqual([["m1"]]);
+  });
+
   it("lets guests watch when the server doesn't require a login", async () => {
     useAuthStore().me = null as any;
     useApplicationSettingsStore().settings = [
@@ -156,7 +220,7 @@ describe("WatchStreamStage", () => {
 
 describe("WatchStreamStage over the game stream", () => {
   beforeEach(() => {
-    pushes.length = 0;
+    resetStage();
     useApplicationSettingsStore().settings = [];
     useAuthStore().me = { steam_id: "1", role: "user" } as any;
   });
@@ -246,7 +310,7 @@ describe("WatchStreamStage phone caption", () => {
   const ancient = { name: "de_ancient", label: null };
 
   beforeEach(() => {
-    pushes.length = 0;
+    resetStage();
     useApplicationSettingsStore().settings = [];
     useAuthStore().me = { steam_id: "1", role: "user" } as any;
   });
@@ -294,7 +358,7 @@ describe("WatchStreamStage press to play", () => {
   const kick = { id: "s2", link: "https://kick.com/eastside", title: "Kick feed" };
 
   beforeEach(() => {
-    pushes.length = 0;
+    resetStage();
     useApplicationSettingsStore().settings = [];
     useAuthStore().me = { steam_id: "1", role: "user" } as any;
   });

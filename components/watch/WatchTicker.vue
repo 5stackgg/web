@@ -26,6 +26,7 @@ import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import { useWatchStage } from "~/composables/useWatchStage";
 import { seededSubscribe } from "~/utilities/seededSubscribe";
 import { subscribeFromActiveMatches } from "~/utilities/activeMatches";
+import { useMyMatchRoles, withMatchRoles } from "~/composables/useMyMatchRoles";
 import { RESULT_MATCHES_WHERE } from "~/utilities/teamResults";
 import {
   TICKER_LIVE_STATUSES,
@@ -47,6 +48,11 @@ const props = defineProps<{
 
 const { t } = useI18n();
 const { client } = useApolloClient();
+// The live and upcoming lists are the same for every viewer: read from the
+// public client, everyone watching shares one Hasura poll, and the viewer's
+// own matches are marked from useMyMatchRoles instead.
+const { client: publicClient } = useApolloClient("public");
+const myRoles = useMyMatchRoles();
 const { stageMatchId } = useWatchStage();
 
 const live = ref<any[]>([]);
@@ -110,10 +116,12 @@ const resultsQuery = generateQuery({
 } as any);
 
 function start() {
-  if (liveSub || typeof window === "undefined") return;
-  liveSub = subscribeFromActiveMatches(client, liveQuery, (query) =>
+  if (liveSub || typeof window === "undefined" || myRoles.ready.value === null)
+    return;
+  const listClient = myRoles.ready.value ? publicClient : client;
+  liveSub = subscribeFromActiveMatches(listClient, liveQuery, (query) =>
     seededSubscribe(
-      client,
+      listClient,
       {
         query,
         variables: { statuses: [...TICKER_LIVE_STATUSES] },
@@ -136,9 +144,9 @@ function start() {
       },
     ),
   );
-  upcomingSub = subscribeFromActiveMatches(client, upcomingQuery, (query) =>
+  upcomingSub = subscribeFromActiveMatches(listClient, upcomingQuery, (query) =>
     seededSubscribe(
-      client,
+      listClient,
       { query, variables: { status: "Scheduled" } },
       {
         next: ({ data }: any) => {
@@ -232,6 +240,26 @@ watch(
   },
   { immediate: true },
 );
+// Lists wait to know whether they can be read as a guest.
+watch(
+  () => myRoles.ready.value,
+  () => {
+    if (props.ghost) return;
+    stop();
+    start();
+  },
+);
+
+const liveRows = computed(() =>
+  myRoles.ready.value
+    ? withMatchRoles(live.value, myRoles.roles.value)
+    : live.value,
+);
+const upcomingRows = computed(() =>
+  myRoles.ready.value
+    ? withMatchRoles(upcoming.value, myRoles.roles.value)
+    : upcoming.value,
+);
 onBeforeUnmount(stop);
 
 const now = ref(new Date());
@@ -243,13 +271,13 @@ onBeforeUnmount(() => clock && clearInterval(clock));
 
 const ctx = computed(() => ({ t, now: now.value }));
 const liveCells = computed(() =>
-  sortLiveMatches(live.value).map((m) => tickerCell(m, ctx.value)),
+  sortLiveMatches(liveRows.value).map((m) => tickerCell(m, ctx.value)),
 );
 // A match that just went live can still sit in the upcoming list for a
 // beat; the live subscription wins.
 const upcomingCells = computed(() => {
   const liveIds = new Set(live.value.map((m) => m.id));
-  return upcoming.value
+  return upcomingRows.value
     .filter((m) => !liveIds.has(m.id))
     .map((m) => tickerCell(m, ctx.value));
 });

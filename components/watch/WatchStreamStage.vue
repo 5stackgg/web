@@ -15,6 +15,7 @@ import StreamControls from "~/components/match/StreamControls.vue";
 import StreamThumbnail from "~/components/watch/StreamThumbnail.vue";
 import { Button } from "~/components/ui/button";
 import { useWatchStage } from "~/composables/useWatchStage";
+import { useMyMatchRoles, withMatchRoles } from "~/composables/useMyMatchRoles";
 import { useStreamViewers } from "~/composables/useStreamViewers";
 import {
   useWhepStatusCopy,
@@ -50,6 +51,10 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n();
 const { client } = useApolloClient();
+const { client: publicClient } = useApolloClient("public");
+// The stage is the same for every viewer, so it is read on the public client
+// and the viewer's own matches (kept off it) come from useMyMatchRoles.
+const myRoles = useMyMatchRoles();
 const { stageMatchId, setStage } = useWatchStage();
 const { viewers } = useStreamViewers();
 const { copyFor } = useWhepStatusCopy();
@@ -78,20 +83,36 @@ const stageQuery = generateSubscription({
   ],
 } as any);
 
-const matches = ref<any[]>([]);
+const rows = ref<any[]>([]);
+const matches = computed(() =>
+  streamableMatches(
+    myRoles.ready.value
+      ? withMatchRoles(rows.value, myRoles.roles.value)
+      : rows.value,
+  ),
+);
 let subscription: { unsubscribe: () => void } | undefined;
-if (typeof window !== "undefined") {
-  subscription = client
-    .subscribe({ query: stageQuery, variables: { status: "Live" } })
-    .subscribe({
-      next: ({ data }: any) => {
-        matches.value = streamableMatches(data?.matches ?? []);
-      },
-      error: (err: any) => {
-        console.error("[watch-stage] subscription error", err);
-      },
-    });
-}
+// Nothing is shown until it is known which matches are the viewer's own.
+watch(
+  () => myRoles.ready.value,
+  (ready) => {
+    subscription?.unsubscribe();
+    subscription = undefined;
+    rows.value = [];
+    if (ready === null || typeof window === "undefined") return;
+    subscription = (ready ? publicClient : client)
+      .subscribe({ query: stageQuery, variables: { status: "Live" } })
+      .subscribe({
+        next: ({ data }: any) => {
+          rows.value = data?.matches ?? [];
+        },
+        error: (err: any) => {
+          console.error("[watch-stage] subscription error", err);
+        },
+      });
+  },
+  { immediate: true },
+);
 
 const ids = computed(() => matches.value.map((m) => m.id));
 watch(ids, (next) => emit("update:streamable-ids", next), { immediate: true });

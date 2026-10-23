@@ -136,6 +136,7 @@ function close(value: boolean) {
           <Button
             v-else
             type="button"
+            variant="destructive"
             :disabled="starting"
             class="flex items-center gap-2"
             @click="startReparse"

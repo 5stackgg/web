@@ -28,7 +28,7 @@ onMounted(() => {
           <Button
             type="button"
             size="sm"
-            variant="outline"
+            variant="destructive"
             class="flex items-center gap-2"
             @click="dialogOpen = true"
           >

@@ -241,6 +241,7 @@ async function doScanSteamBans() {
 
         <SettingsSection
           id="danger-zone"
+          tone="danger"
           :title="$t('pages.settings.application.players.danger_zone_title')"
           :description="
             $t('pages.settings.application.players.danger_zone_description')
@@ -282,7 +283,7 @@ async function doScanSteamBans() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="outline"
+                    variant="destructive"
                     :disabled="eloStarting || eloRunning"
                     class="flex items-center gap-2"
                     @click="showEloDialog = true"
@@ -393,7 +394,7 @@ async function doScanSteamBans() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="outline"
+                    variant="destructive"
                     :disabled="reindexStarting || reindexRunning"
                     class="flex items-center gap-2"
                     @click="showRefreshDialog = true"
@@ -493,7 +494,7 @@ async function doScanSteamBans() {
               <Button
                 type="button"
                 size="sm"
-                variant="outline"
+                variant="destructive"
                 :disabled="scanning"
                 class="shrink-0 flex items-center gap-2"
                 @click="showScanDialog = true"
@@ -531,7 +532,7 @@ async function doScanSteamBans() {
               <AlertDialogCancel>
                 {{ $t("common.cancel") }}
               </AlertDialogCancel>
-              <AlertDialogAction @click="doRecomputeElo">
+              <AlertDialogAction variant="destructive" @click="doRecomputeElo">
                 {{
                   $t("pages.settings.application.players.recompute_elo_button")
                 }}
@@ -560,7 +561,10 @@ async function doScanSteamBans() {
               <AlertDialogCancel>
                 {{ $t("common.cancel") }}
               </AlertDialogCancel>
-              <AlertDialogAction @click="doRefreshAllPlayers">
+              <AlertDialogAction
+                variant="destructive"
+                @click="doRefreshAllPlayers"
+              >
                 {{ $t("pages.settings.application.players.refresh_button") }}
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -585,7 +589,7 @@ async function doScanSteamBans() {
               <AlertDialogCancel>
                 {{ $t("common.cancel") }}
               </AlertDialogCancel>
-              <AlertDialogAction @click="doScanSteamBans">
+              <AlertDialogAction variant="destructive" @click="doScanSteamBans">
                 {{ $t("pages.settings.application.players.scan_button") }}
               </AlertDialogAction>
             </AlertDialogFooter>

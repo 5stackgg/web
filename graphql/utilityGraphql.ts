@@ -847,6 +847,10 @@ export const runningUtilityPracticeSessionsSubscription = generateSubscription({
       connected_players: true,
       max_players: true,
       can_stop: true,
+      // Null unless RCON would let the viewer in; the console hangs off it.
+      server_id: true,
+      match_id: true,
+      connection_string: true,
     },
   ],
 });

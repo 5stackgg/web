@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Stop this server?",
         "stop_drops": "Nobody is on it. | The player on it is dropped. | The {count} players on it are dropped.",
         "stale": "Live updates stopped",
-        "stale_note": "This list may be out of date."
+        "stale_note": "This list may be out of date.",
+        "console": "Console",
+        "logs": "Logs",
+        "no_console": "Only administrators can open the console of another player's server."
       },
       "practice": {
         "title": "Practice Server",

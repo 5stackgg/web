@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Stoppa den här servern?",
         "stop_drops": "Ingen är på den. | Spelaren på den kopplas från. | De {count} spelarna på den kopplas från.",
         "stale": "Liveuppdateringar har stoppats",
-        "stale_note": "Listan kan vara inaktuell."
+        "stale_note": "Listan kan vara inaktuell.",
+        "console": "Konsol",
+        "logs": "Loggar",
+        "no_console": "Endast administratörer kan öppna konsolen för en annan spelares server."
       },
       "practice": {
         "title": "Träningsserver",

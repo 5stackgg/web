@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Zatrzymać ten serwer?",
         "stop_drops": "Nikogo na nim nie ma. | Gracz na nim zostanie rozłączony. | Gracze na nim zostaną rozłączeni: {count}.",
         "stale": "Aktualizacje na żywo wstrzymane",
-        "stale_note": "Ta lista może być nieaktualna."
+        "stale_note": "Ta lista może być nieaktualna.",
+        "console": "Konsola",
+        "logs": "Logi",
+        "no_console": "Tylko administratorzy mogą otworzyć konsolę serwera innego gracza."
       },
       "practice": {
         "title": "Serwer treningowy",

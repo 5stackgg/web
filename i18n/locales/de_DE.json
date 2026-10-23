@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Diesen Server stoppen?",
         "stop_drops": "Niemand ist darauf. | Der Spieler darauf wird getrennt. | Die {count} Spieler darauf werden getrennt.",
         "stale": "Live-Updates angehalten",
-        "stale_note": "Diese Liste ist möglicherweise veraltet."
+        "stale_note": "Diese Liste ist möglicherweise veraltet.",
+        "console": "Konsole",
+        "logs": "Logs",
+        "no_console": "Nur Administratoren können die Konsole des Servers eines anderen Spielers öffnen."
       },
       "practice": {
         "title": "Übungsserver",

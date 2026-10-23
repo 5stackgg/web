@@ -437,6 +437,9 @@ export type UtilityRunningPracticeSession = {
   connected_players: number | null;
   max_players: number | null;
   can_stop: boolean | null;
+  server_id: string | null;
+  match_id: string | null;
+  connection_string: string | null;
 };
 
 /** What the practice UI consumes — no column names live past this point. */

@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Parar este servidor?",
         "stop_drops": "Ninguém está nele. | O jogador nele será desconectado. | Os {count} jogadores nele serão desconectados.",
         "stale": "As atualizações ao vivo pararam",
-        "stale_note": "Esta lista pode estar desatualizada."
+        "stale_note": "Esta lista pode estar desatualizada.",
+        "console": "Console",
+        "logs": "Logs",
+        "no_console": "Somente administradores podem abrir o console do servidor de outro jogador."
       },
       "practice": {
         "title": "Servidor de treino",

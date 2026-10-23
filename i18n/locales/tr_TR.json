@@ -6943,7 +6943,10 @@
         "stop_ask_unnamed": "Bu sunucu durdurulsun mu?",
         "stop_drops": "Üzerinde kimse yok. | Üzerindeki oyuncunun bağlantısı kesilecek. | Üzerindeki {count} oyuncunun bağlantısı kesilecek.",
         "stale": "Canlı güncellemeler durdu",
-        "stale_note": "Bu liste güncel olmayabilir."
+        "stale_note": "Bu liste güncel olmayabilir.",
+        "console": "Konsol",
+        "logs": "Kayıtlar",
+        "no_console": "Başka bir oyuncunun sunucusunun konsolunu yalnızca yöneticiler açabilir."
       },
       "practice": {
         "title": "Antrenman Sunucusu",

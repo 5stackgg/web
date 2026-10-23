@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { reactive } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
+import RconCommander from "~/components/servers/RconCommander.vue";
+import ServiceLogs from "~/components/ServiceLogs.vue";
 import UtilityPracticeServersPanel from "~/components/utility/UtilityPracticeServersPanel.vue";
 
 function serverRow(extra: Record<string, unknown> = {}) {
@@ -17,6 +19,9 @@ function serverRow(extra: Record<string, unknown> = {}) {
     connected_players: 3,
     max_players: 10,
     can_stop: true,
+    server_id: "srv-1",
+    match_id: "m-1",
+    connection_string: "connect 203.0.113.24:27015",
     ...extra,
   };
 }
@@ -61,6 +66,7 @@ vi.mock("~/graphql/getGraphqlClient", () => ({
 const auth = reactive({
   me: { steam_id: "7" } as Record<string, unknown> | null,
   staff: true,
+  isAdmin: false,
   isRoleAbove(role: string) {
     return auth.staff && role !== "administrator";
   },
@@ -78,17 +84,32 @@ vi.mock("~/stores/ApplicationSettings", () => ({
 
 const mounted: Array<{ unmount: () => void }> = [];
 
+let wide = true;
+
 beforeEach(() => {
   subscriptions.length = 0;
   sent.length = 0;
   failStop = null;
   unsubscribed = 0;
   auth.staff = true;
+  auth.isAdmin = false;
+  wide = true;
+  vi.stubGlobal("matchMedia", (query: string) => ({
+    matches: wide,
+    media: query,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  }));
 });
 
 afterEach(() => {
   mounted.splice(0).forEach((wrapper) => wrapper.unmount());
   document.body.innerHTML = "";
+  vi.unstubAllGlobals();
 });
 
 const settle = async (ms = 20) => {
@@ -99,6 +120,7 @@ const settle = async (ms = 20) => {
 async function mountPanel() {
   const wrapper = await mountSuspended(UtilityPracticeServersPanel, {
     attachTo: document.body,
+    global: { stubs: { RconCommander: true, ServiceLogs: true } },
   });
   mounted.push(wrapper);
   await settle();
@@ -116,6 +138,9 @@ function buttonNamed(wrapper: any, label: string) {
 }
 
 const rows = (wrapper: any) => wrapper.findAll("[data-practice-server]");
+const panel = (wrapper: any) => wrapper.find("[data-practice-server-panel]");
+const rcon = (wrapper: any) => wrapper.findComponent(RconCommander);
+const logs = (wrapper: any) => wrapper.findComponent(ServiceLogs);
 
 describe("UtilityPracticeServersPanel for staff", () => {
   it("never subscribes for a player below moderator", async () => {
@@ -218,7 +243,7 @@ describe("UtilityPracticeServersPanel for staff", () => {
     expect(first.text()).toContain("EU West");
     expect(first.text()).toContain("Ready");
     expect(first.text()).toContain("3/10");
-    expect(first.find("a[href='/players/9']").exists()).toBe(true);
+    expect(panel(wrapper).find("a[href='/players/9']").exists()).toBe(true);
 
     expect(second.text()).toContain("NA East");
     expect(second.text()).toContain("Starting");
@@ -234,22 +259,25 @@ describe("UtilityPracticeServersPanel for staff", () => {
     push([serverRow(), serverRow({ id: "s-2", can_stop: false })]);
     await settle(300);
 
-    const [first, second] = rows(wrapper);
-    expect(buttonNamed(first, "Stop")).toBeTruthy();
-    expect(buttonNamed(second, "Stop")).toBeUndefined();
+    expect(buttonNamed(panel(wrapper), "Stop")).toBeTruthy();
+
+    await rows(wrapper)[1].trigger("click");
+    await settle(300);
+
+    expect(buttonNamed(panel(wrapper), "Stop")).toBeUndefined();
   });
 });
 
 describe("UtilityPracticeServersPanel stop", () => {
-  it("asks in the row before stopping, and Cancel puts the row back", async () => {
+  it("asks in the panel before stopping, and Cancel puts it back", async () => {
     const wrapper = await mountPanel();
     push([serverRow()]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
 
-    const row = rows(wrapper)[0];
+    const row = panel(wrapper);
     expect(sent).toEqual([]);
     expect(row.text()).toContain("Stop kairo's server?");
     expect(row.text()).toContain("The 3 players on it are dropped.");
@@ -259,16 +287,16 @@ describe("UtilityPracticeServersPanel stop", () => {
     await settle(300);
 
     expect(sent).toEqual([]);
-    expect(rows(wrapper)[0].text()).not.toContain("Stop kairo's server?");
-    expect(buttonNamed(rows(wrapper)[0], "Stop")).toBeTruthy();
+    expect(panel(wrapper).text()).not.toContain("Stop kairo's server?");
+    expect(buttonNamed(panel(wrapper), "Stop")).toBeTruthy();
   });
 
-  it("puts the row back on a click elsewhere", async () => {
+  it("puts the panel back on a click elsewhere", async () => {
     const wrapper = await mountPanel();
     push([serverRow()]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
     document.body.dispatchEvent(
       new PointerEvent("pointerdown", { bubbles: true }),
@@ -276,7 +304,7 @@ describe("UtilityPracticeServersPanel stop", () => {
     document.body.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     await settle(300);
 
-    expect(rows(wrapper)[0].text()).not.toContain("Stop kairo's server?");
+    expect(panel(wrapper).text()).not.toContain("Stop kairo's server?");
   });
 
   it("says nobody is on it when the server is empty", async () => {
@@ -284,20 +312,22 @@ describe("UtilityPracticeServersPanel stop", () => {
     push([serverRow({ connected_players: 0 })]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
 
-    expect(rows(wrapper)[0].text()).toContain("Nobody is on it.");
+    expect(panel(wrapper).text()).toContain("Nobody is on it.");
   });
 
-  it("stops the session the row is for once confirmed", async () => {
+  it("stops the session the panel is open on once confirmed", async () => {
     const wrapper = await mountPanel();
     push([serverRow(), serverRow({ id: "s-2" })]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[1], "Stop").trigger("click");
+    await rows(wrapper)[1].trigger("click");
     await settle(300);
-    await buttonNamed(rows(wrapper)[1], "Stop Server").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
+    await settle(300);
+    await buttonNamed(panel(wrapper), "Stop Server").trigger("click");
     await settle();
 
     expect(sent).toEqual([
@@ -305,18 +335,18 @@ describe("UtilityPracticeServersPanel stop", () => {
     ]);
   });
 
-  it("says why in the row when the stop fails, and lets it be tried again", async () => {
+  it("says why in the panel when the stop fails, and lets it be tried again", async () => {
     failStop = new Error("not allowed");
     const wrapper = await mountPanel();
     push([serverRow()]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
-    await buttonNamed(rows(wrapper)[0], "Stop Server").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop Server").trigger("click");
     await settle(300);
 
-    const row = rows(wrapper)[0];
+    const row = panel(wrapper);
     expect(row.text()).toContain("Could not stop the practice server");
     expect(row.text()).toContain("not allowed");
     expect(buttonNamed(row, "Stop Server")).toBeTruthy();
@@ -352,21 +382,21 @@ describe("UtilityPracticeServersPanel spacing", () => {
 
 describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
   const cancelButton = (wrapper: any) =>
-    buttonNamed(rows(wrapper)[0], "Cancel");
+    buttonNamed(panel(wrapper), "Cancel");
 
   it("moves focus into the confirm and labels it with the prompt", async () => {
     const wrapper = await mountPanel();
     push([serverRow()]);
     await settle(300);
 
-    const stop = buttonNamed(rows(wrapper)[0], "Stop");
+    const stop = buttonNamed(panel(wrapper), "Stop");
     (stop.element as HTMLElement).focus();
     await stop.trigger("click");
     await settle(300);
 
     expect(document.activeElement).toBe(cancelButton(wrapper).element);
 
-    const group = rows(wrapper)[0].find("[role='group']");
+    const group = panel(wrapper).find("[role='group']");
     const label = document.getElementById(
       group.attributes("aria-labelledby")!,
     );
@@ -379,7 +409,7 @@ describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
     push([serverRow()]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
 
     const seen: boolean[] = [];
@@ -396,9 +426,9 @@ describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
     await settle(300);
     document.removeEventListener("keydown", hub);
 
-    expect(rows(wrapper)[0].text()).not.toContain("Stop kairo's server?");
+    expect(panel(wrapper).text()).not.toContain("Stop kairo's server?");
     expect(document.activeElement).toBe(
-      buttonNamed(rows(wrapper)[0], "Stop").element,
+      buttonNamed(panel(wrapper), "Stop").element,
     );
     expect(seen).toEqual([true]);
     expect(sent).toEqual([]);
@@ -409,7 +439,7 @@ describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
     push([serverRow()]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
     (document.activeElement as HTMLElement).blur();
     expect(document.activeElement).toBe(document.body);
@@ -428,7 +458,7 @@ describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
     await settle(300);
     document.removeEventListener("keydown", hub);
 
-    expect(rows(wrapper)[0].text()).not.toContain("Stop kairo's server?");
+    expect(panel(wrapper).text()).not.toContain("Stop kairo's server?");
     expect(seen).toEqual([true]);
   });
 
@@ -437,13 +467,13 @@ describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
     push([serverRow()]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
     await cancelButton(wrapper).trigger("click");
     await settle(300);
 
     expect(document.activeElement).toBe(
-      buttonNamed(rows(wrapper)[0], "Stop").element,
+      buttonNamed(panel(wrapper), "Stop").element,
     );
   });
 
@@ -466,7 +496,7 @@ describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
     document.removeEventListener("keydown", hub);
 
     expect(seen).toEqual([false]);
-    expect(buttonNamed(rows(wrapper)[0], "Stop")).toBeTruthy();
+    expect(buttonNamed(panel(wrapper), "Stop")).toBeTruthy();
   });
 
   it("announces a failed stop", async () => {
@@ -475,12 +505,12 @@ describe("UtilityPracticeServersPanel stop, from the keyboard", () => {
     push([serverRow()]);
     await settle(300);
 
-    await buttonNamed(rows(wrapper)[0], "Stop").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop").trigger("click");
     await settle(300);
-    await buttonNamed(rows(wrapper)[0], "Stop Server").trigger("click");
+    await buttonNamed(panel(wrapper), "Stop Server").trigger("click");
     await settle(300);
 
-    const live = rows(wrapper)[0].find("[aria-live='polite']");
+    const live = panel(wrapper).find("[aria-live='polite']");
     expect(live.text()).toContain("Could not stop the practice server");
   });
 });
@@ -521,5 +551,119 @@ describe("UtilityPracticeServersPanel when live updates stop", () => {
     expect(wrapper.find("[data-practice-servers-list]").classes()).toContain(
       "opacity-60",
     );
+  });
+});
+
+describe("UtilityPracticeServersPanel console panel", () => {
+  it("opens the first server beside the list on a wide screen", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow(), serverRow({ id: "s-2" })]);
+    await settle(300);
+
+    expect(rows(wrapper)[0].attributes("aria-current")).toBe("true");
+    expect(rows(wrapper)[1].attributes("aria-current")).toBeUndefined();
+    expect(panel(wrapper).text()).toContain("kairo");
+    expect(panel(wrapper).find("[data-practice-server-back]").exists()).toBe(
+      false,
+    );
+  });
+
+  it("opens the row that is picked", async () => {
+    const wrapper = await mountPanel();
+    push([
+      serverRow(),
+      serverRow({
+        id: "s-2",
+        host: { steam_id: "8", name: "vexx", avatar_url: null },
+        server_id: "srv-2",
+      }),
+    ]);
+    await settle(300);
+
+    await rows(wrapper)[1].trigger("click");
+    await settle(300);
+
+    expect(rows(wrapper)[1].attributes("aria-current")).toBe("true");
+    expect(panel(wrapper).text()).toContain("vexx");
+    expect(rcon(wrapper).props("serverId")).toBe("srv-2");
+  });
+
+  it("on a phone, opens nothing until a row is picked, then swaps the list for the panel and back", async () => {
+    wide = false;
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    expect(panel(wrapper).exists()).toBe(false);
+
+    await rows(wrapper)[0].trigger("click");
+    await settle(300);
+
+    expect(panel(wrapper).exists()).toBe(true);
+    expect(rows(wrapper)[0].isVisible()).toBe(false);
+
+    await panel(wrapper).find("[data-practice-server-back]").trigger("click");
+    await settle(300);
+
+    expect(panel(wrapper).exists()).toBe(false);
+    expect(rows(wrapper)[0].isVisible()).toBe(true);
+  });
+
+  it("hands the console the server and match the api gave, and offers the connect string", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    expect(rcon(wrapper).props()).toMatchObject({
+      serverId: "srv-1",
+      matchId: "m-1",
+      online: true,
+    });
+    expect(panel(wrapper).text()).toContain("connect 203.0.113.24:27015");
+  });
+
+  it("keeps Logs to administrators, and streams them only once the tab is opened", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow()]);
+    await settle(300);
+
+    expect(panel(wrapper).findAll("[role='tab']")).toHaveLength(0);
+
+    auth.isAdmin = true;
+    await settle(300);
+
+    const tabs = panel(wrapper).findAll("[role='tab']");
+    expect(tabs.map((tab: any) => tab.text())).toEqual(["Console", "Logs"]);
+    expect(logs(wrapper).exists()).toBe(false);
+
+    await tabs[1].trigger("mousedown", { button: 0 });
+    await settle(300);
+
+    expect(logs(wrapper).props("service")).toBe("u-m-1");
+  });
+
+  it("says why when a moderator cannot reach another player's console", async () => {
+    const wrapper = await mountPanel();
+    push([serverRow({ server_id: null })]);
+    await settle(300);
+
+    expect(rcon(wrapper).exists()).toBe(false);
+    expect(panel(wrapper).text()).toContain(
+      "Only administrators can open the console of another player's server.",
+    );
+  });
+
+  it("says nothing of the console on the moderator's own server while it has none", async () => {
+    const wrapper = await mountPanel();
+    push([
+      serverRow({
+        server_id: null,
+        host_steam_id: "7",
+        host: { steam_id: "7", name: "me", avatar_url: null },
+      }),
+    ]);
+    await settle(300);
+
+    expect(panel(wrapper).text()).not.toContain("Only administrators");
   });
 });

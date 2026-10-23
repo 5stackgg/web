@@ -763,9 +763,12 @@ const edgeButton =
 <template>
   <Dialog :open="open" @update:open="onUpdateOpen">
     <DialogPortal>
+      <!-- No backdrop-blur: without GPU compositing (hardware acceleration
+           off) Chrome re-blurs the whole backdrop on every video frame,
+           which dropped ~50% of a clip's frames. -->
       <DialogOverlay
         class="fixed inset-0 z-[60] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-        :class="expanded ? 'bg-black' : 'bg-black/85 backdrop-blur-sm'"
+        :class="expanded ? 'bg-black' : 'bg-black/85'"
       />
       <DialogContent
         class="fixed inset-0 z-[60] flex flex-col outline-none duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"

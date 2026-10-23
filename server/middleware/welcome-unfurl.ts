@@ -100,9 +100,7 @@ export default defineEventHandler(async (event) => {
     description,
   });
 
-  for (const [header, value] of Object.entries(unfurlCacheHeaders(600))) {
-    setResponseHeader(event, header, value);
-  }
+  setResponseHeaders(event, unfurlCacheHeaders(600));
   setResponseHeader(event, "Content-Type", "text/html; charset=utf-8");
 
   return `<!doctype html>

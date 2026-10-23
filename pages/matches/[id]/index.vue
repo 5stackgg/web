@@ -484,6 +484,7 @@ import { setPageChatFocus } from "~/composables/useChatPresence";
 import { chatThreadKey } from "~/utilities/chatThread";
 import socket from "~/web-sockets/Socket";
 import { vetoBoardUp } from "~/utilities/vetoStage";
+import { withRoundEvents } from "~/utilities/matchRoundEvents";
 import { vetoHandoffPhase } from "~/composables/useVetoHandoff";
 
 const matchSubscription = typedGql("subscription")({
@@ -610,31 +611,34 @@ const matchSubscription = typedGql("subscription")({
               winning_side: true,
               winning_reason: true,
               round: true,
-              kills: [
-                {
-                  order_by: {
-                    time: $("order_by_round_kills", "order_by"),
-                  },
-                },
-                {
-                  with: true,
-                  headshot: true,
-                  player: {
-                    steam_id: true,
-                  },
-                  attacked_player: {
-                    steam_id: true,
-                  },
-                },
-              ],
-              assists: [
-                {},
-                {
-                  attacker_steam_id: true,
-                  attacked_steam_id: true,
-                  flash: true,
-                },
-              ],
+            },
+          ],
+          // Handed to their rounds by withRoundEvents.
+          player_kills: [
+            {
+              order_by: {
+                time: $("order_by_round_kills", "order_by"),
+              },
+            },
+            {
+              round: true,
+              with: true,
+              headshot: true,
+              player: {
+                steam_id: true,
+              },
+              attacked_player: {
+                steam_id: true,
+              },
+            },
+          ],
+          player_assists: [
+            {},
+            {
+              round: true,
+              attacker_steam_id: true,
+              attacked_steam_id: true,
+              flash: true,
             },
           ],
         },
@@ -837,7 +841,7 @@ export default {
         query: matchSubscription,
         context: { seed: seedableMatch },
         result: function ({ data }) {
-          this.setMatchLive(data.matches_by_pk);
+          this.setMatchLive(withRoundEvents(data.matches_by_pk));
         },
       },
     },

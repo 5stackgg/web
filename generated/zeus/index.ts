@@ -54881,6 +54881,18 @@ migration_hashes_hashes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ValueTypes["migration_hashes_hashes_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes_aggregate"]],
 migration_hashes_hashes_by_pk?: [{	name: string | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
+my_active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches"]],
+my_active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches_aggregate"]],
 my_friends?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["my_friends_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -63435,6 +63447,18 @@ migration_hashes_hashes_stream?: [{	/** maximum number of rows returned in a sin
 	batch_size: number | Variable<any, string>,	/** cursor to stream the results returned by the query */
 	cursor: Array<ValueTypes["migration_hashes_hashes_stream_cursor_input"] | undefined | null> | Variable<any, string>,	/** filter the rows returned */
 	where?: ValueTypes["migration_hashes_hashes_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["migration_hashes_hashes"]],
+my_active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches"]],
+my_active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ValueTypes["matches_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
+	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null | Variable<any, string>,	/** sort the rows by one or more columns */
+	order_by?: Array<ValueTypes["matches_order_by"]> | undefined | null | Variable<any, string>,	/** filter the rows returned */
+	where?: ValueTypes["matches_bool_exp"] | undefined | null | Variable<any, string>},ValueTypes["matches_aggregate"]],
 my_friends?: [{	/** distinct select on columns */
 	distinct_on?: Array<ValueTypes["my_friends_select_column"]> | undefined | null | Variable<any, string>,	/** limit the number of rows returned */
 	limit?: number | undefined | null | Variable<any, string>,	/** skip the first n rows. Use only with order_by */
@@ -148776,6 +148800,18 @@ migration_hashes_hashes_aggregate?: [{	/** distinct select on columns */
 	order_by?: Array<ResolverInputTypes["migration_hashes_hashes_order_by"]> | undefined | null,	/** filter the rows returned */
 	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null},ResolverInputTypes["migration_hashes_hashes_aggregate"]],
 migration_hashes_hashes_by_pk?: [{	name: string},ResolverInputTypes["migration_hashes_hashes"]],
+my_active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches"]],
+my_active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches_aggregate"]],
 my_friends?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["my_friends_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -157330,6 +157366,18 @@ migration_hashes_hashes_stream?: [{	/** maximum number of rows returned in a sin
 	batch_size: number,	/** cursor to stream the results returned by the query */
 	cursor: Array<ResolverInputTypes["migration_hashes_hashes_stream_cursor_input"] | undefined | null>,	/** filter the rows returned */
 	where?: ResolverInputTypes["migration_hashes_hashes_bool_exp"] | undefined | null},ResolverInputTypes["migration_hashes_hashes"]],
+my_active_matches?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches"]],
+my_active_matches_aggregate?: [{	/** distinct select on columns */
+	distinct_on?: Array<ResolverInputTypes["matches_select_column"]> | undefined | null,	/** limit the number of rows returned */
+	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
+	offset?: number | undefined | null,	/** sort the rows by one or more columns */
+	order_by?: Array<ResolverInputTypes["matches_order_by"]> | undefined | null,	/** filter the rows returned */
+	where?: ResolverInputTypes["matches_bool_exp"] | undefined | null},ResolverInputTypes["matches_aggregate"]],
 my_friends?: [{	/** distinct select on columns */
 	distinct_on?: Array<ResolverInputTypes["my_friends_select_column"]> | undefined | null,	/** limit the number of rows returned */
 	limit?: number | undefined | null,	/** skip the first n rows. Use only with order_by */
@@ -237146,6 +237194,10 @@ export type ModelTypes = {
 	migration_hashes_hashes_aggregate: ModelTypes["migration_hashes_hashes_aggregate"],
 	/** fetch data from the table: "migration_hashes.hashes" using primary key columns */
 	migration_hashes_hashes_by_pk?: ModelTypes["migration_hashes_hashes"] | undefined | null,
+	/** execute function "my_active_matches" which returns "matches" */
+	my_active_matches: Array<ModelTypes["matches"]>,
+	/** execute function "my_active_matches" and query aggregates on result of table type "matches" */
+	my_active_matches_aggregate: ModelTypes["matches_aggregate"],
 	/** fetch data from the table: "v_my_friends" */
 	my_friends: Array<ModelTypes["my_friends"]>,
 	/** fetch aggregated fields from the table: "v_my_friends" */
@@ -243131,6 +243183,10 @@ export type ModelTypes = {
 	migration_hashes_hashes_by_pk?: ModelTypes["migration_hashes_hashes"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "migration_hashes.hashes" */
 	migration_hashes_hashes_stream: Array<ModelTypes["migration_hashes_hashes"]>,
+	/** execute function "my_active_matches" which returns "matches" */
+	my_active_matches: Array<ModelTypes["matches"]>,
+	/** execute function "my_active_matches" and query aggregates on result of table type "matches" */
+	my_active_matches_aggregate: ModelTypes["matches_aggregate"],
 	/** fetch data from the table: "v_my_friends" */
 	my_friends: Array<ModelTypes["my_friends"]>,
 	/** fetch aggregated fields from the table: "v_my_friends" */
@@ -322282,6 +322338,10 @@ export type GraphQLTypes = {
 	migration_hashes_hashes_aggregate: GraphQLTypes["migration_hashes_hashes_aggregate"],
 	/** fetch data from the table: "migration_hashes.hashes" using primary key columns */
 	migration_hashes_hashes_by_pk?: GraphQLTypes["migration_hashes_hashes"] | undefined | null,
+	/** execute function "my_active_matches" which returns "matches" */
+	my_active_matches: Array<GraphQLTypes["matches"]>,
+	/** execute function "my_active_matches" and query aggregates on result of table type "matches" */
+	my_active_matches_aggregate: GraphQLTypes["matches_aggregate"],
 	/** fetch data from the table: "v_my_friends" */
 	my_friends: Array<GraphQLTypes["my_friends"]>,
 	/** fetch aggregated fields from the table: "v_my_friends" */
@@ -328500,6 +328560,10 @@ export type GraphQLTypes = {
 	migration_hashes_hashes_by_pk?: GraphQLTypes["migration_hashes_hashes"] | undefined | null,
 	/** fetch data from the table in a streaming manner: "migration_hashes.hashes" */
 	migration_hashes_hashes_stream: Array<GraphQLTypes["migration_hashes_hashes"]>,
+	/** execute function "my_active_matches" which returns "matches" */
+	my_active_matches: Array<GraphQLTypes["matches"]>,
+	/** execute function "my_active_matches" and query aggregates on result of table type "matches" */
+	my_active_matches_aggregate: GraphQLTypes["matches_aggregate"],
 	/** fetch data from the table: "v_my_friends" */
 	my_friends: Array<GraphQLTypes["my_friends"]>,
 	/** fetch aggregated fields from the table: "v_my_friends" */

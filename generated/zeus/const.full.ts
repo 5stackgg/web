@@ -31274,6 +31274,16 @@ export const AllTypesProps: Record<string,any> = {
 		migration_hashes_hashes_by_pk:{
 
 		},
+		my_active_matches:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
+		},
+		my_active_matches_aggregate:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
+		},
 		my_friends:{
 			distinct_on:"my_friends_select_column",
 			order_by:"my_friends_order_by",
@@ -37486,6 +37496,16 @@ export const AllTypesProps: Record<string,any> = {
 		migration_hashes_hashes_stream:{
 			cursor:"migration_hashes_hashes_stream_cursor_input",
 			where:"migration_hashes_hashes_bool_exp"
+		},
+		my_active_matches:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
+		},
+		my_active_matches_aggregate:{
+			distinct_on:"matches_select_column",
+			order_by:"matches_order_by",
+			where:"matches_bool_exp"
 		},
 		my_friends:{
 			distinct_on:"my_friends_select_column",
@@ -70973,6 +70993,8 @@ export const ReturnTypes: Record<string,any> = {
 		migration_hashes_hashes:"migration_hashes_hashes",
 		migration_hashes_hashes_aggregate:"migration_hashes_hashes_aggregate",
 		migration_hashes_hashes_by_pk:"migration_hashes_hashes",
+		my_active_matches:"matches",
+		my_active_matches_aggregate:"matches_aggregate",
 		my_friends:"my_friends",
 		my_friends_aggregate:"my_friends_aggregate",
 		newsPostAdmin:"NewsPost",
@@ -73182,6 +73204,8 @@ export const ReturnTypes: Record<string,any> = {
 		migration_hashes_hashes_aggregate:"migration_hashes_hashes_aggregate",
 		migration_hashes_hashes_by_pk:"migration_hashes_hashes",
 		migration_hashes_hashes_stream:"migration_hashes_hashes",
+		my_active_matches:"matches",
+		my_active_matches_aggregate:"matches_aggregate",
 		my_friends:"my_friends",
 		my_friends_aggregate:"my_friends_aggregate",
 		my_friends_stream:"my_friends",

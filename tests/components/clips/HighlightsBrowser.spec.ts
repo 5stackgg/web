@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { print } from "graphql";
@@ -25,18 +25,29 @@ function sentQueries(root: string) {
     .filter((text) => text.includes(`${root}(`));
 }
 
+// Unmounted after each test: the browser holds its loading outline for a
+// minimum time, and a timer left running re-rendered it after the test
+// environment was gone.
+let mounted: { unmount: () => void } | null = null;
+
 async function mountBrowser(route: string, eventId?: string) {
   query.mockResolvedValue({ data: {} });
   const wrapper = await mountSuspended(HighlightsBrowser, {
     route,
     props: eventId ? { eventId } : {},
   });
+  mounted = wrapper;
   await flushPromises();
   return wrapper;
 }
 
 beforeEach(() => {
   query.mockReset();
+});
+
+afterEach(() => {
+  mounted?.unmount();
+  mounted = null;
 });
 
 describe("HighlightsBrowser", () => {

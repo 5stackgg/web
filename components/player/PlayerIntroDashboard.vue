@@ -1199,14 +1199,14 @@ function tooltipAfter(index: number | undefined): string[] {
               />
             </div>
             <Skeleton
-              class="mx-auto aspect-square w-full max-w-[320px] rounded-lg"
+              class="mx-auto aspect-square w-full max-w-[260px] rounded-lg"
             />
           </div>
           <div
             class="flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 p-4 lg:col-span-2"
           >
             <Skeleton class="h-8 w-48" />
-            <Skeleton class="h-[360px] w-full flex-1" />
+            <Skeleton class="h-[280px] w-full flex-1" />
           </div>
         </div>
       </div>
@@ -1394,7 +1394,7 @@ function tooltipAfter(index: number | undefined): string[] {
             </div>
 
             <AnimatedCard variant="elevated" class="flex flex-col p-3">
-              <CardHeader class="flex flex-col gap-0.5 p-0 pb-1">
+              <CardHeader class="flex flex-col gap-0.5 p-0 pb-1 sm:p-0 sm:pb-1">
                 <CardTitle
                   class="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-muted-foreground"
                 >
@@ -1408,7 +1408,7 @@ function tooltipAfter(index: number | undefined): string[] {
               </CardHeader>
               <CardContent class="p-0 sm:p-0">
                 <LastTenWinsAndLosses
-                  class="mx-auto aspect-square w-full max-w-[320px]"
+                  class="mx-auto aspect-square w-full max-w-[260px]"
                   :steam_id="steamId"
                   :match_type="matchType ?? null"
                   :source="source ?? null"
@@ -1429,7 +1429,7 @@ function tooltipAfter(index: number | undefined): string[] {
             </CardHeader>
             <CardContent class="flex flex-1 flex-col p-0 sm:p-0">
               <div
-                class="min-h-[360px] flex-1 origin-center transition-transform duration-200 ease-in-out"
+                class="min-h-[280px] flex-1 origin-center transition-transform duration-200 ease-in-out"
                 :class="recentCollapsed ? 'scale-y-0' : 'scale-y-100'"
               >
                 <Line

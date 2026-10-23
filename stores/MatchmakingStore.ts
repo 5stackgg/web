@@ -73,6 +73,11 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   // change while its player sits in the list, so keep the ones already
   // fetched and only ask the API for steam ids never seen before.
   const profiles = new Map<string, any>();
+  // Every steam id already asked for, found or not: the api broadcasts the
+  // roster to every tab whenever anyone connects, so asking again for ids the
+  // api didn't return re-ran these queries in every tab on every broadcast.
+  const askedSteamIds = new Set<string>();
+  const MAX_ASKED_STEAM_IDS = 5000;
 
   const rebuildPlayersOnline = () => {
     playersOnline.value = onlinePlayerSteamIds.value
@@ -82,18 +87,14 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
 
   const queryPlayers = async () => {
     const steamIds = onlinePlayerSteamIds.value;
-    const online = new Set(steamIds.map(String));
 
-    // Bound the cache to who is actually online; otherwise a long-lived tab
-    // accumulates every player who has ever connected during its session.
-    for (const steamId of profiles.keys()) {
-      if (!online.has(steamId)) {
-        profiles.delete(steamId);
-      }
+    if (askedSteamIds.size > MAX_ASKED_STEAM_IDS) {
+      askedSteamIds.clear();
+      profiles.clear();
     }
 
     const missing = steamIds.filter(
-      (steamId) => !profiles.has(String(steamId)),
+      (steamId) => !askedSteamIds.has(String(steamId)),
     );
 
     // Players only left, or they are all already known -- no round trip, but
@@ -103,23 +104,35 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       return;
     }
 
-    const { data } = await getGraphqlClient().query({
-      query: generateQuery({
-        players: [
-          {
-            where: {
-              steam_id: {
-                _in: $("steam_ids", "[bigint]!"),
+    for (const steamId of missing) {
+      askedSteamIds.add(String(steamId));
+    }
+
+    let data: any;
+    try {
+      ({ data } = await getGraphqlClient().query({
+        query: generateQuery({
+          players: [
+            {
+              where: {
+                steam_id: {
+                  _in: $("steam_ids", "[bigint]!"),
+                },
               },
             },
-          },
-          playerFields,
-        ],
-      }),
-      variables: {
-        steam_ids: missing,
-      },
-    });
+            playerFields,
+          ],
+        }),
+        variables: {
+          steam_ids: missing,
+        },
+      }));
+    } catch (error) {
+      for (const steamId of missing) {
+        askedSteamIds.delete(String(steamId));
+      }
+      throw error;
+    }
 
     for (const player of data.players) {
       profiles.set(String(player.steam_id), player);

@@ -42,6 +42,23 @@ describe("useLeftNavState", () => {
     expect(localStorage.getItem("5stack:nav-folded")).toBe("{}");
   });
 
+  it("marks a page as just pinned for a moment, and not when unpinned", async () => {
+    vi.useFakeTimers();
+    try {
+      const state = await freshState();
+      state.togglePin("utility");
+      expect(state.lastPinned.value).toBe("utility");
+
+      vi.advanceTimersByTime(400);
+      expect(state.lastPinned.value).toBeNull();
+
+      state.togglePin("utility");
+      expect(state.lastPinned.value).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("falls back to the defaults when storage holds junk", async () => {
     localStorage.setItem("5stack:nav-pins", "{not json");
 

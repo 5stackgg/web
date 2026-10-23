@@ -28,15 +28,24 @@ const pins = ref<string[]>(
 const folded = ref<Record<string, true>>(
   typeof window === "undefined" ? {} : read(FOLDED_KEY, {}),
 );
+// The page just pinned, for a moment, so its new row and star can mark it.
+const lastPinned = ref<string | null>(null);
+let lastPinnedTimer: ReturnType<typeof setTimeout> | undefined;
 
 export function useLeftNavState() {
   const isPinned = (key: string) => pins.value.includes(key);
 
   function togglePin(key: string) {
-    pins.value = isPinned(key)
-      ? pins.value.filter((pinned) => pinned !== key)
-      : [...pins.value, key];
+    const pinning = !isPinned(key);
+    pins.value = pinning
+      ? [...pins.value, key]
+      : pins.value.filter((pinned) => pinned !== key);
     write(PINS_KEY, pins.value);
+    clearTimeout(lastPinnedTimer);
+    lastPinned.value = pinning ? key : null;
+    if (pinning) {
+      lastPinnedTimer = setTimeout(() => (lastPinned.value = null), 400);
+    }
   }
 
   const isOpen = (section: string) => !folded.value[section];
@@ -55,5 +64,5 @@ export function useLeftNavState() {
     write(FOLDED_KEY, next);
   }
 
-  return { pins, isPinned, togglePin, isOpen, setOpen };
+  return { pins, lastPinned, isPinned, togglePin, isOpen, setOpen };
 }

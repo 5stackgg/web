@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { defineComponent, h } from "vue";
+import { defineComponent, h, ref } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { Crosshair, Play, Swords } from "lucide-vue-next";
@@ -99,6 +99,47 @@ describe("LeftNavSection", () => {
         .get('button[aria-label="Unpin Scrim Finder"]')
         .attributes("aria-pressed"),
     ).toBe("true");
+  });
+
+  it("marks the page you are on on the guide line, and drops it when you leave", async () => {
+    const shown = ref(section);
+    const wrapper = await mountSuspended(
+      defineComponent({
+        render: () =>
+          h(SidebarProvider, null, () =>
+            h(LeftNavSection, {
+              section: shown.value,
+              rail: false,
+              pinnable: true,
+            }),
+          ),
+      }),
+    );
+    unmount = () => wrapper.unmount();
+    await flushPromises();
+    const marker = () => wrapper.find("[data-nav-marker]");
+
+    expect(marker().exists()).toBe(true);
+    expect(marker().element.closest("a")?.getAttribute("href")).toBe("/play");
+
+    shown.value = {
+      ...section,
+      items: section.items.map((item) => ({ ...item, active: false })),
+    };
+    await flushPromises();
+
+    expect(marker().exists()).toBe(false);
+  });
+
+  it("flashes a page as it is pinned", async () => {
+    const wrapper = await mount();
+
+    await wrapper.get('button[aria-label="Pin Scrim Finder"]').trigger("click");
+
+    expect(useLeftNavState().lastPinned.value).toBe("scrims");
+    expect(
+      wrapper.get('button[aria-label="Unpin Scrim Finder"] svg').classes(),
+    ).toContain("nav-star-pop");
   });
 
   it("offers no stars to a visitor", async () => {

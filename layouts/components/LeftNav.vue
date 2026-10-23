@@ -36,6 +36,7 @@ import type {
   LeftNavSectionData,
 } from "~/layouts/components/leftNav";
 import { useLeftNavState } from "~/composables/useLeftNavState";
+import { rememberNavMarker } from "~/composables/useLeftNavMarker";
 import { usePublicServersListed } from "~/composables/usePublicServersListed";
 import { placeApps } from "~/utilities/leftNavApps";
 import { signInWithSteam } from "~/utilities/loginLinks";
@@ -352,6 +353,10 @@ const pinsSection = computed<LeftNavSectionData | null>(() => {
     empty: t("layouts.app_nav.pins.empty"),
   };
 });
+
+// Where the guide-line marker is before the nav shows a new page, so it can
+// glide from there.
+watch(() => route.path, rememberNavMarker, { flush: "pre" });
 
 // Going to a page whose section is folded opens that section.
 watch(
@@ -703,23 +708,9 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           </NuxtLink>
         </div>
         <SidebarFooter class="gap-1.5">
-          <!-- Help, the issue tracker and Discord sit together; installing
-               the app takes the other end of the row. -->
+          <!-- The issue tracker and Discord on the left; installing the app
+               and help on the right. -->
           <div v-if="isMobile || sideBarOpen" class="flex items-center gap-0.5">
-            <Button
-              as-child
-              variant="ghost"
-              size="icon"
-              class="h-8 w-8 text-muted-foreground"
-            >
-              <NuxtLink
-                to="/faq"
-                :aria-label="$t('layouts.top_nav.support_menu')"
-                :title="$t('layouts.top_nav.support_menu')"
-              >
-                <CircleHelp class="h-4 w-4" />
-              </NuxtLink>
-            </Button>
             <Button
               v-if="showReportIssue"
               as="a"
@@ -747,25 +738,26 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             >
               <DiscordLogoIcon class="h-4 w-4" />
             </Button>
-            <InstallPWA class="ml-auto" :is-menu-item="false" compact />
+            <span class="flex-1"></span>
+            <InstallPWA :is-menu-item="false" compact />
+            <Button
+              as-child
+              variant="ghost"
+              size="icon"
+              class="h-8 w-8 text-muted-foreground"
+            >
+              <NuxtLink
+                to="/faq"
+                :aria-label="$t('layouts.top_nav.support_menu')"
+                :title="$t('layouts.top_nav.support_menu')"
+              >
+                <CircleHelp class="h-4 w-4" />
+              </NuxtLink>
+            </Button>
           </div>
 
           <SidebarMenu>
             <template v-if="!(isMobile || sideBarOpen)">
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  as-child
-                  :tooltip="$t('layouts.top_nav.support_menu')"
-                >
-                  <NuxtLink
-                    to="/faq"
-                    class="text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    <CircleHelp class="w-5 h-5" />
-                  </NuxtLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
               <SidebarMenuItem v-if="showReportIssue">
                 <SidebarMenuButton
                   as-child
@@ -799,6 +791,20 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuItem>
 
               <InstallPWA />
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  as-child
+                  :tooltip="$t('layouts.top_nav.support_menu')"
+                >
+                  <NuxtLink
+                    to="/faq"
+                    class="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <CircleHelp class="w-5 h-5" />
+                  </NuxtLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </template>
 
             <SidebarMenuItem v-if="authStore.me">

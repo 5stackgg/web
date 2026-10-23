@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import {
   AlertTriangle,
   ChevronDown,
@@ -9,6 +9,7 @@ import {
 import { NuxtLink } from "#components";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useLeftNavState } from "~/composables/useLeftNavState";
+import { glideNavMarker } from "~/composables/useLeftNavMarker";
 import type { LeftNavItem, LeftNavSectionData } from "./leftNav";
 
 const props = defineProps<{
@@ -19,7 +20,7 @@ const props = defineProps<{
 }>();
 
 const { setOpenMobile } = useSidebar();
-const { isOpen, setOpen, isPinned, togglePin } = useLeftNavState();
+const { isOpen, setOpen, isPinned, togglePin, lastPinned } = useLeftNavState();
 
 const open = computed(() => isOpen(props.section.id));
 const listId = computed(() => `left-nav-${props.section.id}`);
@@ -32,6 +33,21 @@ const linkProps = (item: LeftNavItem) =>
   item.to
     ? { to: item.to }
     : { href: item.href, target: "_blank", rel: "noopener noreferrer" };
+
+// Laid out on the current page's row and glided there on a change (see
+// useLeftNavMarker).
+const vNavMarker = { mounted: (el: HTMLElement) => glideNavMarker(el) };
+
+// Folding clips the rows only while it moves or is shut, so the marker can
+// glide in over the section's edge and focus rings aren't cut off at rest.
+const moving = ref(false);
+let movingTimer: ReturnType<typeof setTimeout> | undefined;
+watch(open, () => {
+  moving.value = true;
+  clearTimeout(movingTimer);
+  movingTimer = setTimeout(() => (moving.value = false), 320);
+});
+onBeforeUnmount(() => clearTimeout(movingTimer));
 </script>
 
 <template>
@@ -80,7 +96,7 @@ const linkProps = (item: LeftNavItem) =>
       >
         <component
           :is="section.icon"
-          class="size-[17px] shrink-0 transition-colors duration-150"
+          class="size-[17px] shrink-0 transition-colors duration-200"
           :class="
             active ? 'text-[hsl(var(--tac-amber))]' : 'text-muted-foreground'
           "
@@ -98,18 +114,19 @@ const linkProps = (item: LeftNavItem) =>
           {{ section.live.text }}
         </span>
         <ChevronDown
-          class="size-3 shrink-0 opacity-60 transition-transform duration-200 ease-out"
+          class="nav-chevron size-3 shrink-0 opacity-60"
           :class="[{ '-rotate-90': !open }, { 'ml-auto': !section.live }]"
         />
       </button>
 
       <div
         :id="listId"
-        class="grid transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none"
-        :class="open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+        class="nav-fold"
+        :data-open="open || undefined"
+        :data-moving="moving || undefined"
         :inert="!open || undefined"
       >
-        <div class="min-h-0 overflow-hidden">
+        <div class="min-h-0">
           <ul
             class="flex flex-col gap-px"
             :class="
@@ -119,9 +136,11 @@ const linkProps = (item: LeftNavItem) =>
             "
           >
             <li
-              v-for="item in section.items"
+              v-for="(item, index) in section.items"
               :key="item.key"
               class="group/row relative"
+              :class="{ 'nav-pin-in': isPins && lastPinned === item.key }"
+              :style="{ '--i': index }"
             >
               <component
                 :is="item.to ? NuxtLink : 'a'"
@@ -131,17 +150,24 @@ const linkProps = (item: LeftNavItem) =>
                 :class="[
                   isPins
                     ? 'h-8 gap-2.5 pl-2 text-[0.84rem] text-sidebar-foreground/85'
-                    : 'h-[30px] gap-2 pl-2.5 text-[0.8rem] text-muted-foreground data-[active]:before:absolute data-[active]:before:-left-[13px] data-[active]:before:bottom-1.5 data-[active]:before:top-1.5 data-[active]:before:w-0.5 data-[active]:before:rounded-full data-[active]:before:bg-[hsl(var(--tac-amber))]',
+                    : 'h-[30px] gap-2 pl-2.5 text-[0.8rem] text-muted-foreground',
                   pinnable &&
                     !item.href &&
                     'group-focus-within/row:pr-9 group-hover/row:pr-9 [@media(hover:none)]:pr-9',
                 ]"
                 @click="setOpenMobile(false)"
               >
+                <span
+                  v-if="item.active && !isPins"
+                  v-nav-marker
+                  data-nav-marker
+                  aria-hidden="true"
+                  class="pointer-events-none absolute -left-[13.5px] bottom-1.5 top-1.5 w-0.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                ></span>
                 <component
                   :is="item.icon"
                   v-if="isPins"
-                  class="size-4 shrink-0 transition-colors duration-150"
+                  class="size-4 shrink-0 transition-colors duration-200"
                   :class="
                     item.active
                       ? 'text-[hsl(var(--tac-amber))]'
@@ -156,13 +182,13 @@ const linkProps = (item: LeftNavItem) =>
                 />
                 <span
                   v-else-if="item.badge"
-                  class="inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center gap-1 rounded-[3px] border px-[5px] text-[11px] font-bold leading-none tabular-nums transition-opacity duration-150"
+                  class="inline-flex h-[18px] min-w-[18px] shrink-0 items-center justify-center gap-1 rounded-[3px] border px-[5px] text-[11px] font-bold leading-none tabular-nums transition-[opacity,transform] duration-150"
                   :class="[
                     item.badgeTone === 'live'
                       ? 'border-destructive/50 bg-destructive/15 text-destructive'
                       : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]',
                     pinnable &&
-                      '[@media(hover:hover)]:group-focus-within/row:opacity-0 [@media(hover:hover)]:group-hover/row:opacity-0',
+                      '[@media(hover:hover)]:group-focus-within/row:scale-90 [@media(hover:hover)]:group-focus-within/row:opacity-0 [@media(hover:hover)]:group-hover/row:scale-90 [@media(hover:hover)]:group-hover/row:opacity-0',
                   ]"
                 >
                   <span
@@ -200,7 +226,10 @@ const linkProps = (item: LeftNavItem) =>
               >
                 <Star
                   class="size-3.5"
-                  :class="{ 'fill-current': isPinned(item.key) }"
+                  :class="{
+                    'fill-current': isPinned(item.key),
+                    'nav-star-pop': lastPinned === item.key,
+                  }"
                 />
               </button>
             </li>
@@ -216,3 +245,66 @@ const linkProps = (item: LeftNavItem) =>
     </template>
   </SidebarGroup>
 </template>
+
+<style scoped>
+/* Folding: the rows ease open a step apart and close together, faster. */
+.nav-fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 180ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-fold[data-open] {
+  grid-template-rows: 1fr;
+  transition-duration: 260ms;
+}
+.nav-fold > div {
+  min-height: 0;
+}
+.nav-fold:not([data-open]) > div,
+.nav-fold[data-moving] > div {
+  overflow: hidden;
+}
+.nav-fold li {
+  transition:
+    opacity 200ms ease-out,
+    transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--i, 0) * 18ms);
+}
+.nav-fold:not([data-open]) li {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition-duration: 120ms;
+  transition-delay: 0ms;
+}
+.nav-chevron {
+  transition: transform 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-pin-in {
+  animation: nav-pin-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-star-pop {
+  animation: nav-star-pop 280ms ease-out;
+}
+@keyframes nav-pin-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+@keyframes nav-star-pop {
+  40% {
+    transform: scale(1.3);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-fold,
+  .nav-fold li,
+  .nav-chevron {
+    transition: none;
+  }
+  .nav-pin-in,
+  .nav-star-pop {
+    animation: none;
+  }
+}
+</style>

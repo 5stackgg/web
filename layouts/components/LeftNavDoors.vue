@@ -40,28 +40,28 @@ const { setOpenMobile } = useSidebar();
       </SidebarMenuItem>
     </SidebarMenu>
 
-    <div v-else class="flex flex-col gap-2">
+    <!-- Outlined tiles with no fill, so none looks chosen at rest; only the
+         page you're on turns amber. Icon and label sit on the sections'
+         columns (18px, 36px). -->
+    <div v-else class="flex flex-col gap-1.5">
       <NuxtLink
         v-for="door in doors"
         :key="door.key"
         :to="door.to!"
         :data-active="door.active || undefined"
         :aria-current="door.active ? 'page' : undefined"
-        class="group/door flex h-[38px] items-center gap-1.5 rounded-lg pl-1.5 pr-2 text-sm font-semibold text-sidebar-foreground/85 outline-none ring-sidebar-ring transition-[background-color,color,transform] duration-150 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground focus-visible:ring-2 active:scale-[0.98] data-[active]:bg-[hsl(var(--tac-amber)/0.11)] data-[active]:text-sidebar-foreground motion-reduce:transition-none"
+        class="group/door flex h-[42px] items-center gap-[9px] rounded-lg border border-sidebar-border pl-2 pr-2 text-sm font-semibold text-sidebar-foreground/80 outline-none ring-sidebar-ring transition-[background-color,border-color,color,transform] duration-150 hover:border-white/[0.12] hover:bg-white/[0.03] hover:text-sidebar-foreground focus-visible:ring-2 active:scale-[0.98] data-[active]:border-[hsl(var(--tac-amber)/0.45)] data-[active]:bg-[hsl(var(--tac-amber)/0.07)] data-[active]:text-sidebar-foreground motion-reduce:transition-none"
         @click="setOpenMobile(false)"
       >
-        <!-- The tile marks a button at rest without the row looking chosen;
-             only the page you're on fills. -->
-        <span
-          class="grid size-6 shrink-0 place-items-center rounded-md ring-1 ring-inset transition-colors duration-200"
+        <component
+          :is="door.icon"
+          class="size-[18px] shrink-0 transition-colors duration-200"
           :class="
             door.active
-              ? 'bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] ring-[hsl(var(--tac-amber)/0.3)]'
-              : 'bg-white/[0.05] text-muted-foreground ring-sidebar-border group-hover/door:text-sidebar-foreground'
+              ? 'text-[hsl(var(--tac-amber))]'
+              : 'text-muted-foreground group-hover/door:text-sidebar-foreground'
           "
-        >
-          <component :is="door.icon" class="size-4" />
-        </span>
+        />
         <span class="min-w-0 flex-1 truncate">{{ door.label }}</span>
         <span
           v-if="door.badge"

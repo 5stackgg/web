@@ -109,6 +109,14 @@ describe("stage rules", () => {
   });
 });
 
+const mountedStages: Array<{ unmount: () => void }> = [];
+
+afterEach(() => {
+  while (mountedStages.length) {
+    mountedStages.pop()!.unmount();
+  }
+});
+
 async function mountStage(
   matches: any[],
   streamEmbed: Record<string, unknown> = {
@@ -126,6 +134,7 @@ async function mountStage(
       },
     },
   });
+  mountedStages.push(wrapper);
   for (const next of pushes) next({ data: { matches } });
   await flushPromises();
   return wrapper;

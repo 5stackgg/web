@@ -328,6 +328,7 @@ function fmtPct(value: number | null): string {
           >
             <RadialStat
               :value="fmtPct(overallWinPct)"
+              :percentage="overallWinPct"
               :label="$t('pages.players.detail.career_clutches.win_label')"
               :score="statScore(overallWinPct, 50, 15)"
               :level="statLevelFor(winTier, overallWinPct)"

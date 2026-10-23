@@ -134,11 +134,12 @@ const teamSwitchOpen = ref(false);
 <template>
   <h1 class="sr-only">{{ $t("pages.scrims.title") }}</h1>
 
-  <SectionEmpty
-    v-if="!enabled"
-    :title="$t('pages.scrims.title')"
-    :description="$t('pages.scrims.disabled_message')"
-  />
+  <PageTransition v-if="!enabled">
+    <SectionEmpty
+      :title="$t('pages.scrims.title')"
+      :description="$t('pages.scrims.disabled_message')"
+    />
+  </PageTransition>
 
   <Tabs
     v-else
@@ -208,32 +209,36 @@ const teamSwitchOpen = ref(false);
       </div>
     </PageTransition>
 
-    <div
+    <PageTransition
       v-if="booked && bookedWith && tab !== 'requests'"
-      class="flex flex-wrap items-center gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm"
+      :step="1"
     >
-      <Lock class="h-4 w-4 shrink-0 text-[hsl(var(--tac-amber))]" />
-      <span class="min-w-[14rem] flex-1 [text-wrap:pretty]">
-        <b class="font-semibold">
-          {{
-            $t("scrims.booked.banner", {
-              team: activeTeam.name,
-              opponent: bookedWith.name,
-              when: $t("scrims.when", {
-                day: dayLabel(new Date(booked.proposed_scheduled_at).getTime(), now, { inline: true }),
-                time: timeLabel(new Date(booked.proposed_scheduled_at).getTime()),
-              }),
-            })
-          }}
-        </b>
-        {{ $t("scrims.booked.lock") }}
-      </span>
-      <Button as-child size="sm" variant="outline">
-        <NuxtLink :to="`/matches/${booked.match_id}`">{{ $t("scrims.requests.view_match") }}</NuxtLink>
-      </Button>
-    </div>
+      <div
+        class="flex flex-wrap items-center gap-3 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm"
+      >
+        <Lock class="h-4 w-4 shrink-0 text-[hsl(var(--tac-amber))]" />
+        <span class="min-w-[14rem] flex-1 [text-wrap:pretty]">
+          <b class="font-semibold">
+            {{
+              $t("scrims.booked.banner", {
+                team: activeTeam.name,
+                opponent: bookedWith.name,
+                when: $t("scrims.when", {
+                  day: dayLabel(new Date(booked.proposed_scheduled_at).getTime(), now, { inline: true }),
+                  time: timeLabel(new Date(booked.proposed_scheduled_at).getTime()),
+                }),
+              })
+            }}
+          </b>
+          {{ $t("scrims.booked.lock") }}
+        </span>
+        <Button as-child size="sm" variant="outline">
+          <NuxtLink :to="`/matches/${booked.match_id}`">{{ $t("scrims.requests.view_match") }}</NuxtLink>
+        </Button>
+      </div>
+    </PageTransition>
 
-    <PageTransition :delay="100" class="block">
+    <PageTransition :step="1" class="block">
       <div ref="panels">
         <TabsContent value="requests" class="mt-0">
           <ScrimRequests

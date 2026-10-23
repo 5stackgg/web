@@ -23,11 +23,15 @@ import {
   filterTriggerActive,
   filterTriggerBase,
   filterTriggerIdle,
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
 type Segment = "running" | "finished";
+
+// Running / finished go to `headerTo` (the page's tab row) when given, else
+// above the list.
+defineProps<{ headerTo?: HTMLElement | null }>();
+// Whether there is anything to show, told after every load.
+const emit = defineEmits<{ (e: "available", has: boolean): void }>();
 
 const { t } = useI18n();
 const { client } = useApolloClient();
@@ -54,6 +58,11 @@ const loaded = ref(false);
 
 const signedIn = computed(() => !!auth.me);
 const anyFilter = computed(() => !!search.value || mine.value);
+const available = computed(
+  () =>
+    loaded.value &&
+    (counts.value.running + counts.value.finished > 0 || anyFilter.value),
+);
 const total = computed(() => counts.value[segment.value]);
 const otherSegment = computed<Segment>(() =>
   segment.value === "running" ? "finished" : "running",
@@ -173,10 +182,7 @@ const filters = computed(() => {
 
 function whereFor(value: Segment) {
   return {
-    _and: [
-      ...filters.value,
-      { tournament: { status: SEGMENT_STATUS[value] } },
-    ],
+    _and: [...filters.value, { tournament: { status: SEGMENT_STATUS[value] } }],
   };
 }
 
@@ -211,6 +217,7 @@ async function load() {
       finished: (data as any)?.finished?.aggregate?.count ?? 0,
     };
     loaded.value = true;
+    emit("available", available.value);
   } catch (error) {
     console.error("[teams] tournament teams query error", error);
   } finally {
@@ -283,26 +290,19 @@ const chipClasses =
 </script>
 
 <template>
-  <section
-    v-if="loaded && (counts.running + counts.finished > 0 || anyFilter)"
-    aria-labelledby="teams-tournament-label"
-  >
-    <div class="mb-3 flex flex-wrap items-center gap-x-3 gap-y-3">
-      <h2
-        id="teams-tournament-label"
-        :class="[tacticalSectionLabelClasses, '!mb-0']"
-      >
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.teams.tournament_teams.title") }}
-      </h2>
-      <span class="mr-auto text-[12.5px] text-muted-foreground">
-        {{ $t("pages.teams.tournament_teams.subtitle") }}
-      </span>
-      <WatchSegmented
-        v-model="segmentModel"
-        :options="segmentOptions"
-        :label="$t('pages.teams.tournament_teams.segment_label')"
-      />
+  <section v-if="available">
+    <div
+      :class="
+        headerTo ? 'contents' : 'mb-3 flex flex-wrap items-center justify-end'
+      "
+    >
+      <Teleport :to="headerTo" :disabled="!headerTo">
+        <WatchSegmented
+          v-model="segmentModel"
+          :options="segmentOptions"
+          :label="$t('pages.teams.tournament_teams.segment_label')"
+        />
+      </Teleport>
     </div>
 
     <FilterBar>

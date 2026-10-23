@@ -50,7 +50,7 @@ function onSwitched(id: string) {
   <TopoBackground />
 
   <div class="relative z-10 flex min-h-screen flex-col text-foreground">
-    <PageTransition :delay="0">
+    <PageTransition>
       <header
         class="flex-shrink-0 border-b border-border/60 bg-background/70 backdrop-blur-sm"
       >
@@ -74,7 +74,7 @@ function onSwitched(id: string) {
       </header>
     </PageTransition>
 
-    <PageTransition :delay="90" class="flex-1">
+    <PageTransition :step="1" class="flex-1">
       <div class="mx-auto w-full max-w-7xl px-4 py-5">
         <BroadcastDeck
           :key="matchId"

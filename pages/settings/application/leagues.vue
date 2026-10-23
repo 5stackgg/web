@@ -122,7 +122,7 @@ async function reorderDivisions(divisionIds: string[]) {
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <div class="space-y-6">
         <SettingsSection
           id="leagues"

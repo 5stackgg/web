@@ -82,7 +82,7 @@ const loginFooterLinkClasses =
       </div>
     </PageTransition>
 
-    <PageTransition :delay="160">
+    <PageTransition :step="1">
       <button
         type="button"
         @click="signIn"
@@ -105,7 +105,7 @@ const loginFooterLinkClasses =
       </button>
     </PageTransition>
 
-    <PageTransition v-if="loginShowFooter" :delay="240">
+    <PageTransition v-if="loginShowFooter" :step="2">
       <div>
         <a
           :href="loginFooterUrl || 'https://github.com/5stackgg/5stack-panel'"

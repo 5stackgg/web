@@ -115,7 +115,7 @@ useSettingsSearchReveal(contentRow);
       ref="contentRow"
       class="flex flex-col lg:min-h-0 lg:flex-1 lg:flex-row"
     >
-      <PageTransition :delay="0">
+      <PageTransition>
         <aside
           class="hidden lg:flex lg:w-[280px] lg:shrink-0 lg:flex-col lg:min-h-0"
           :aria-label="$t('ui.tooltips.settings_section')"

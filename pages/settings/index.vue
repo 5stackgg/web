@@ -52,7 +52,7 @@ const handleLocaleChange = (
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <form @submit.prevent="updateMe" class="grid gap-6">
       <div class="space-y-2">
         <label

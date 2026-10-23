@@ -102,7 +102,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col gap-5">
-    <PageTransition v-if="!topBarBack" :delay="0">
+    <PageTransition v-if="!topBarBack">
       <nav
         class="flex items-center gap-2 text-xs text-muted-foreground"
         :aria-label="$t('community.server_page.breadcrumb')"

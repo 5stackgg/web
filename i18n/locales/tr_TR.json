@@ -8358,6 +8358,7 @@
         "regions": "Bölgeler",
         "servers": "Sunucular",
         "dedicated_servers": "Özel sunucular",
+        "practice_servers": "Antrenman Sunucuları",
         "game_server_nodes": "Sunucu düğümleri",
         "gpu_nodes": "GPU düğümleri",
         "app_settings": "Uygulama ayarları",

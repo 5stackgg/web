@@ -8,6 +8,7 @@ describe("isAdminRouteName", () => {
     expect(isAdminRouteName("game-server-nodes")).toBe(true);
     expect(isAdminRouteName("game-server-nodes-builds")).toBe(true);
     expect(isAdminRouteName("dedicated-servers-id")).toBe(true);
+    expect(isAdminRouteName("practice-servers")).toBe(true);
     expect(isAdminRouteName("settings-application-players")).toBe(true);
     expect(isAdminRouteName("stream-deck-matchId")).toBe(true);
     expect(isAdminRouteName("plugins-slug")).toBe(true);

@@ -108,49 +108,53 @@ onUnmounted(() => resizeObserver?.disconnect());
 
 <template>
   <div
-    class="grid items-start gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-10"
+    class="grid items-start gap-6 lg:grid-cols-[13rem_minmax(0,1fr)] lg:items-stretch lg:gap-10"
   >
-    <nav
-      ref="navRef"
-      :aria-label="$t('tournament.manage.title')"
-      class="relative -mx-1 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] lg:sticky lg:top-6 lg:mx-0 lg:grid lg:overflow-visible lg:px-0 lg:pb-0"
-    >
-      <span
-        v-show="indicator.height > 0"
-        aria-hidden="true"
-        class="pointer-events-none absolute left-0 top-0 rounded-md bg-[hsl(var(--tac-amber)/0.1)] lg:shadow-[inset_2px_0_0_hsl(var(--tac-amber))]"
-        :class="
-          indicatorAnimated &&
-          'transition-[transform,width,height] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none'
-        "
-        :style="{
-          transform: `translate(${indicator.x}px, ${indicator.y}px)`,
-          width: `${indicator.width}px`,
-          height: `${indicator.height}px`,
-        }"
-      ></span>
-      <button
-        v-for="item in sections"
-        :key="item.key"
-        type="button"
-        class="relative flex h-9 shrink-0 items-center gap-2.5 rounded-md px-2.5 text-left text-[0.8rem] font-semibold transition-colors"
-        :class="
-          item.key === current.key
-            ? 'text-foreground'
-            : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-        "
-        :aria-current="item.key === current.key ? 'page' : undefined"
-        @click="emit('update:section', item.key)"
+    <!-- Stretches the content's full height, so the separator runs the whole
+         page while the nav sticks inside it. -->
+    <div class="min-w-0 lg:border-r lg:border-border/70 lg:pr-3">
+      <nav
+        ref="navRef"
+        :aria-label="$t('tournament.manage.title')"
+        class="relative -mx-1 flex gap-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] lg:sticky lg:top-6 lg:mx-0 lg:grid lg:overflow-visible lg:px-0 lg:pb-0"
       >
-        <component :is="item.icon" class="h-4 w-4 shrink-0" />
-        {{ item.label }}
         <span
-          v-if="item.attention"
-          class="ml-auto h-2 w-2 rounded-full bg-warning"
-          :aria-label="$t('tournament.manage.needs_attention')"
+          v-show="indicator.height > 0"
+          aria-hidden="true"
+          class="pointer-events-none absolute left-0 top-0 rounded-md bg-[hsl(var(--tac-amber)/0.1)] lg:shadow-[inset_2px_0_0_hsl(var(--tac-amber))]"
+          :class="
+            indicatorAnimated &&
+            'transition-[transform,width,height] [transition-duration:240ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none'
+          "
+          :style="{
+            transform: `translate(${indicator.x}px, ${indicator.y}px)`,
+            width: `${indicator.width}px`,
+            height: `${indicator.height}px`,
+          }"
         ></span>
-      </button>
-    </nav>
+        <button
+          v-for="item in sections"
+          :key="item.key"
+          type="button"
+          class="relative flex h-9 shrink-0 items-center gap-2.5 rounded-md px-2.5 text-left text-[0.8rem] font-semibold transition-colors"
+          :class="
+            item.key === current.key
+              ? 'text-foreground'
+              : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+          "
+          :aria-current="item.key === current.key ? 'page' : undefined"
+          @click="emit('update:section', item.key)"
+        >
+          <component :is="item.icon" class="h-4 w-4 shrink-0" />
+          {{ item.label }}
+          <span
+            v-if="item.attention"
+            class="ml-auto h-2 w-2 rounded-full bg-warning"
+            :aria-label="$t('tournament.manage.needs_attention')"
+          ></span>
+        </button>
+      </nav>
+    </div>
 
     <div
       :key="current.key"

@@ -7,7 +7,7 @@ import ManageSection from "~/components/common/ManageSection.vue";
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="grid gap-4">
       <BackLink
         to="/settings/application/map-pools"

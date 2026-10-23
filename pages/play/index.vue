@@ -16,15 +16,15 @@ const sectionClasses = ["mt-8", tacticalSectionSeparatorClasses];
     <PlayMatchmaking />
   </PageTransition>
 
-  <PageTransition :delay="50">
+  <PageTransition :step="1">
     <PlaySchedule :class="sectionClasses" />
   </PageTransition>
 
-  <PageTransition :delay="100">
+  <PageTransition :step="2">
     <PlayDraftRooms :class="sectionClasses" />
   </PageTransition>
 
-  <PageTransition :delay="150">
+  <PageTransition :step="3">
     <PlayMoreWays :class="sectionClasses" />
   </PageTransition>
 </template>

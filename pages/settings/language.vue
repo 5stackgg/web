@@ -17,7 +17,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="grid gap-6"></div>
   </PageTransition>
 </template>

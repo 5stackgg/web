@@ -164,157 +164,152 @@ const segment =
       </div>
     </PageTransition>
 
-    <PageTransition :delay="80">
-      <section
-        class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
-      >
-        <MatchHeader :match="match">
-          <template #actions>
-            <MatchPauseButton
-              :show="canPause"
-              :paused="currentMapStatus === e_match_map_status_enum.Paused"
-              @toggle="demo.togglePause()"
-            />
-          </template>
-          <template #veto>
-            <MatchHeaderVeto :match="match" :picks="demo.picks.value" />
-          </template>
-        </MatchHeader>
-      </section>
-    </PageTransition>
+    <!-- The match arrives as one block, as on the real match page. -->
+    <PageTransition :step="1">
+      <div class="flex flex-col gap-4 md:gap-6">
+        <section
+          class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
+        >
+          <MatchHeader :match="match">
+            <template #actions>
+              <MatchPauseButton
+                :show="canPause"
+                :paused="currentMapStatus === e_match_map_status_enum.Paused"
+                @toggle="demo.togglePause()"
+              />
+            </template>
+            <template #veto>
+              <MatchHeaderVeto :match="match" :picks="demo.picks.value" />
+            </template>
+          </MatchHeader>
+        </section>
 
-    <div
-      class="grid grid-cols-1 items-start gap-4 md:gap-6 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)] lg:gap-8"
-    >
-      <div class="grid min-w-0 grid-cols-1 gap-y-4 md:gap-y-6">
-        <PageTransition :delay="100">
-          <MatchInfo :match="match" />
-        </PageTransition>
+        <div
+          class="grid grid-cols-1 items-start gap-4 md:gap-6 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)] lg:gap-8"
+        >
+          <div class="grid min-w-0 grid-cols-1 gap-y-4 md:gap-y-6">
+            <MatchInfo :match="match" />
 
-        <PageTransition :delay="200">
-          <div
-            class="overflow-hidden rounded-xl border border-border/60 bg-card/30"
-          >
             <div
-              class="border-b border-border/60 px-4 py-2.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              class="overflow-hidden rounded-xl border border-border/60 bg-card/30"
             >
-              {{ $t("faq.demo.chat_label") }}
-            </div>
-            <TransitionGroup
-              tag="ul"
-              class="flex flex-col gap-2 px-4 py-3 text-sm"
-              enter-active-class="transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
-              enter-from-class="opacity-0 translate-y-1"
-            >
-              <li
-                v-for="(line, index) in DEMO_CHAT[demo.step.value]"
-                :key="`${demo.step.value}-${index}`"
-                class="leading-snug"
+              <div
+                class="border-b border-border/60 px-4 py-2.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
               >
-                <span
-                  class="font-semibold"
-                  :class="
-                    line.lineup === 1
-                      ? 'text-[hsl(var(--tac-amber))]'
-                      : 'text-[hsl(var(--tac-blue))]'
-                  "
-                >
-                  {{ line.name }}
-                </span>
-                {{ " " }}
-                <span class="text-foreground/85">{{ line.text }}</span>
-              </li>
-            </TransitionGroup>
-            <div
-              class="border-t border-border/60 px-4 py-2 text-xs text-muted-foreground"
-            >
-              {{ $t("faq.demo.chat_readonly") }}
-            </div>
-          </div>
-        </PageTransition>
-
-        <PageTransition :delay="200">
-          <MatchMapSlots :match="match" :folded="vetoBoardUp(match)" />
-        </PageTransition>
-      </div>
-
-      <PageTransition :delay="100" class="min-w-0">
-        <HeightSwap>
-          <div v-if="demo.step.value === 'veto'" key="veto" class="pb-6">
-            <VetoBoard
-              kind="map"
-              :items="mapVetoItems(match)"
-              :steps="demo.vetoBoardSteps.value"
-              :lineups="vetoLineups(match, t)"
-              :picking-lineup="mapVetoTurn(match)"
-              :is-picking="mapVetoPicking(match, demo.vetoOverride.value)"
-              :deadline="match.veto_pick_expires_at"
-              :total="match.options.veto_pick_timeout"
-              :best-of="match.options.best_of"
-              @confirm="demo.vetoMove($event)"
-            />
-            <p v-if="vetoDone" class="mt-3 text-sm text-muted-foreground">
-              {{ $t("faq.demo.veto_complete") }}
-            </p>
-          </div>
-          <div v-else key="match" ref="tabsEl" class="scroll-mt-4">
-            <Tabs v-model="demo.tab.value">
-              <div class="mb-4 flex items-center gap-3">
-                <div class="min-w-0 flex-1 overflow-x-auto">
-                  <TabsList variant="underline" class="h-auto flex-nowrap">
-                    <TabsTrigger value="scoreboard">
-                      {{ $t("match.tabs.scoreboard") }}
-                    </TabsTrigger>
-                    <TabsTrigger value="rounds">
-                      {{ $t("match.tabs.rounds") }}
-                    </TabsTrigger>
-                    <FiveStackToolTip
-                      v-for="label in otherTabs"
-                      :key="label"
-                      as-child
-                      side="top"
-                    >
-                      <template #trigger>
-                        <span
-                          class="cursor-default select-none whitespace-nowrap px-3 py-1.5 text-sm font-medium text-muted-foreground/40"
-                        >
-                          {{ $t(label) }}
-                        </span>
-                      </template>
-                      {{ $t("faq.demo.not_in_demo") }}
-                    </FiveStackToolTip>
-                  </TabsList>
-                </div>
+                {{ $t("faq.demo.chat_label") }}
               </div>
-              <TabsContent value="scoreboard">
-                <DemoScoreboard :data="demo.roundsData.value" />
-              </TabsContent>
-              <TabsContent value="rounds">
-                <MatchRoundsTab
-                  v-model:rewinding="demo.rewinding.value"
-                  v-model:target="demo.target.value"
-                  :data="demo.roundsData.value"
-                  :lineup1="DEMO_LINEUPS[1].name"
-                  :lineup2="DEMO_LINEUPS[2].name"
-                  :map-number="2"
-                  :can-rewind="demo.step.value === 'live'"
-                  :blocked-reason="t('match.recovery.fix.restore_over')"
-                  :paused="demo.paused.value"
-                  :finished="demo.step.value === 'finished'"
-                  :live-kills="demo.liveKills.value"
-                  :live-damage="demo.liveDamage.value"
-                  @restore="demo.restore($event)"
+              <TransitionGroup
+                tag="ul"
+                class="flex flex-col gap-2 px-4 py-3 text-sm"
+                enter-active-class="transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none"
+                enter-from-class="opacity-0 translate-y-1"
+              >
+                <li
+                  v-for="(line, index) in DEMO_CHAT[demo.step.value]"
+                  :key="`${demo.step.value}-${index}`"
+                  class="leading-snug"
                 >
-                  <template #aside>
-                    <FaqHelpGlyph section="restore" />
-                  </template>
-                </MatchRoundsTab>
-              </TabsContent>
-            </Tabs>
+                  <span
+                    class="font-semibold"
+                    :class="
+                      line.lineup === 1
+                        ? 'text-[hsl(var(--tac-amber))]'
+                        : 'text-[hsl(var(--tac-blue))]'
+                    "
+                  >
+                    {{ line.name }}
+                  </span>
+                  {{ " " }}
+                  <span class="text-foreground/85">{{ line.text }}</span>
+                </li>
+              </TransitionGroup>
+              <div
+                class="border-t border-border/60 px-4 py-2 text-xs text-muted-foreground"
+              >
+                {{ $t("faq.demo.chat_readonly") }}
+              </div>
+            </div>
+
+            <MatchMapSlots :match="match" :folded="vetoBoardUp(match)" />
           </div>
-        </HeightSwap>
-      </PageTransition>
-    </div>
+
+          <HeightSwap class="min-w-0">
+            <div v-if="demo.step.value === 'veto'" key="veto" class="pb-6">
+              <VetoBoard
+                kind="map"
+                :items="mapVetoItems(match)"
+                :steps="demo.vetoBoardSteps.value"
+                :lineups="vetoLineups(match, t)"
+                :picking-lineup="mapVetoTurn(match)"
+                :is-picking="mapVetoPicking(match, demo.vetoOverride.value)"
+                :deadline="match.veto_pick_expires_at"
+                :total="match.options.veto_pick_timeout"
+                :best-of="match.options.best_of"
+                @confirm="demo.vetoMove($event)"
+              />
+              <p v-if="vetoDone" class="mt-3 text-sm text-muted-foreground">
+                {{ $t("faq.demo.veto_complete") }}
+              </p>
+            </div>
+            <div v-else key="match" ref="tabsEl" class="scroll-mt-4">
+              <Tabs v-model="demo.tab.value">
+                <div class="mb-4 flex items-center gap-3">
+                  <div class="min-w-0 flex-1 overflow-x-auto">
+                    <TabsList variant="underline" class="h-auto flex-nowrap">
+                      <TabsTrigger value="scoreboard">
+                        {{ $t("match.tabs.scoreboard") }}
+                      </TabsTrigger>
+                      <TabsTrigger value="rounds">
+                        {{ $t("match.tabs.rounds") }}
+                      </TabsTrigger>
+                      <FiveStackToolTip
+                        v-for="label in otherTabs"
+                        :key="label"
+                        as-child
+                        side="top"
+                      >
+                        <template #trigger>
+                          <span
+                            class="cursor-default select-none whitespace-nowrap px-3 py-1.5 text-sm font-medium text-muted-foreground/40"
+                          >
+                            {{ $t(label) }}
+                          </span>
+                        </template>
+                        {{ $t("faq.demo.not_in_demo") }}
+                      </FiveStackToolTip>
+                    </TabsList>
+                  </div>
+                </div>
+                <TabsContent value="scoreboard">
+                  <DemoScoreboard :data="demo.roundsData.value" />
+                </TabsContent>
+                <TabsContent value="rounds">
+                  <MatchRoundsTab
+                    v-model:rewinding="demo.rewinding.value"
+                    v-model:target="demo.target.value"
+                    :data="demo.roundsData.value"
+                    :lineup1="DEMO_LINEUPS[1].name"
+                    :lineup2="DEMO_LINEUPS[2].name"
+                    :map-number="2"
+                    :can-rewind="demo.step.value === 'live'"
+                    :blocked-reason="t('match.recovery.fix.restore_over')"
+                    :paused="demo.paused.value"
+                    :finished="demo.step.value === 'finished'"
+                    :live-kills="demo.liveKills.value"
+                    :live-damage="demo.liveDamage.value"
+                    @restore="demo.restore($event)"
+                  >
+                    <template #aside>
+                      <FaqHelpGlyph section="restore" />
+                    </template>
+                  </MatchRoundsTab>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </HeightSwap>
+        </div>
+      </div>
+    </PageTransition>
 
     <DemoFixFlows v-model:flow="demo.flow.value" :series="series" />
 

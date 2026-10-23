@@ -8358,6 +8358,7 @@
         "regions": "Regionen",
         "servers": "Server",
         "dedicated_servers": "Dedicated Server",
+        "practice_servers": "Übungsserver",
         "game_server_nodes": "Game-Server-Nodes",
         "gpu_nodes": "GPU-Nodes",
         "app_settings": "App-Einstellungen",

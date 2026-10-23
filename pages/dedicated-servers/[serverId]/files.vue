@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-[calc(100svh-6rem)] min-w-0 flex-col gap-4">
-    <PageTransition :delay="0">
+    <PageTransition>
       <h1 class="flex min-w-0 items-baseline gap-2">
         <span class="min-w-0 truncate text-xl font-semibold leading-tight">
           <template v-if="server">{{ server.label }}</template>
@@ -12,7 +12,7 @@
       </h1>
     </PageTransition>
 
-    <PageTransition :delay="60" class="min-h-0 flex-1">
+    <PageTransition :step="1" class="min-h-0 flex-1">
       <div
         class="h-full overflow-hidden rounded-md border border-border bg-card/20"
       >

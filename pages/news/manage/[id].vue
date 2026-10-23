@@ -281,7 +281,7 @@ onBeforeUnmount(() => {
     </div>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6">
+  <PageTransition :step="1" class="mt-6">
     <div class="space-y-6">
     <template v-if="loading">
       <Skeleton class="h-12 w-full rounded-lg" />

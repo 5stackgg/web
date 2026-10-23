@@ -11,7 +11,7 @@ import PlaycastEdgeRelay from "~/components/settings/PlaycastEdgeRelay.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
           id="access"

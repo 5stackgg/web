@@ -12,7 +12,7 @@ import StorageCheck from "~/components/settings/StorageCheck.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <StorageBreakdown>
         <template #action>
           <div class="flex flex-wrap items-center justify-end gap-2">
@@ -23,7 +23,7 @@ import StorageCheck from "~/components/settings/StorageCheck.vue";
       </StorageBreakdown>
     </PageTransition>
 
-    <PageTransition :delay="200">
+    <PageTransition :step="1">
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
           id="playback"

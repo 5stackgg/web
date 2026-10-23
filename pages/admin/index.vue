@@ -87,7 +87,7 @@ function onAction(signal: Signal) {
       @stats="onNodeStats"
     />
 
-    <PageTransition :delay="0">
+    <PageTransition>
       <div class="grid gap-4">
         <div class="flex min-h-8 flex-wrap items-center gap-x-3 gap-y-1">
           <!-- The verdict waits for every area, metrics and the database
@@ -155,7 +155,7 @@ function onAction(signal: Signal) {
       </div>
     </PageTransition>
 
-    <PageTransition :delay="60">
+    <PageTransition :step="1">
       <ManageSection :label="$t('pages.admin_home.everything_else')">
         <div
           class="grid grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-2.5"

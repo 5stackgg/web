@@ -2,6 +2,7 @@
 import { PanelLeft, Pause, Play } from "lucide-vue-next";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import LiveStamp from "~/components/admin/LiveStamp.vue";
 import {
   Select,
@@ -36,158 +37,168 @@ definePageMeta({
   <div class="grid gap-4">
     <h1 class="sr-only">{{ $t("layouts.app_nav.system.database") }}</h1>
 
-    <div class="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2.5">
-      <button
-        type="button"
-        class="inline-flex h-8 min-w-0 max-w-full items-center gap-2 rounded-md border border-border bg-muted/30 px-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground lg:hidden"
-        :aria-expanded="treeOpen"
-        @click="treeOpen = !treeOpen"
-      >
-        <PanelLeft class="h-4 w-4 shrink-0" />
-        <span class="truncate font-mono text-xs">{{ currentLabel }}</span>
-      </button>
-
-      <div class="inline-flex items-center gap-2 text-xs text-muted-foreground">
-        <span>{{ $t("pages.database.explorer.slow_over") }}</span>
-        <AnimatedFilters
-          v-model="thresholdKey"
-          square
-          :options="thresholdOptions"
-          :aria-label="$t('pages.database.explorer.slow_threshold')"
-        />
-      </div>
-
-      <LiveStamp
-        class="ml-auto"
-        :at="lastUpdated || null"
-        :paused="isPaused"
-        @refresh="refreshNow"
-      >
-        <Select v-model="refreshInterval" :disabled="isPaused">
-          <SelectTrigger
-            class="h-8 w-auto gap-1.5 rounded-md bg-muted/30 px-2.5 text-xs"
-            :aria-label="$t('pages.database.explorer.refresh_every')"
-          >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem v-for="s in intervals" :key="s" :value="String(s)">
-              {{ $t("pages.database.explorer.every_seconds", { seconds: s }) }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        <FiveStackToolTip as-child :delay-duration="120">
-          <template #trigger>
-            <button
-              type="button"
-              class="grid h-8 w-8 place-items-center rounded-md border transition-colors"
-              :class="
-                isPaused
-                  ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border bg-muted/30 text-muted-foreground hover:text-foreground'
-              "
-              :aria-pressed="isPaused"
-              :aria-label="
-                isPaused
-                  ? $t('pages.database.explorer.resume_refreshing')
-                  : $t('pages.database.explorer.pause_refreshing')
-              "
-              @click="togglePause"
-            >
-              <Play v-if="isPaused" class="h-3.5 w-3.5" />
-              <Pause v-else class="h-3.5 w-3.5" />
-            </button>
-          </template>
-          {{
-            isPaused
-              ? $t("pages.database.explorer.resume_refreshing")
-              : $t("pages.database.explorer.pause_refreshing")
-          }}
-        </FiveStackToolTip>
-      </LiveStamp>
-    </div>
-
-    <div class="grid min-h-[640px] min-w-0 lg:grid-cols-[270px_minmax(0,1fr)]">
-      <DbTree
-        :current="view"
-        :tables="tables"
-        :table-sev="tableSev"
-        :schemas="schemas"
-        :queries="queryStats"
-        :active="activeQueries"
-        :locks="currentLocks"
-        :connection-stats="connectionStats"
-        :timescale="timescaleStats"
-        :threshold="threshold"
-        :open="treeOpen"
-        @go="go"
-        @update:schemas="setSchemas"
-      />
-
-      <section class="min-w-0 pb-7 pt-4 lg:pl-6 lg:pt-0" aria-live="polite">
-        <Transition
-          mode="out-in"
-          enter-active-class="db-swap-enter"
-          enter-from-class="db-swap-from"
-          leave-active-class="db-swap-leave"
-          leave-to-class="db-swap-to"
+    <PageTransition>
+      <div class="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-2.5">
+        <button
+          type="button"
+          class="inline-flex h-8 min-w-0 max-w-full items-center gap-2 rounded-md border border-border bg-muted/30 px-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground lg:hidden"
+          :aria-expanded="treeOpen"
+          @click="treeOpen = !treeOpen"
         >
-          <DbOverview
-            v-if="view === 'overview'"
-            key="overview"
-            :db="db"
-            @go="go"
-            @open-query="openQuery"
-            @view-slow="viewSlowQueries"
-            @update:schemas="setSchemas"
+          <PanelLeft class="h-4 w-4 shrink-0" />
+          <span class="truncate font-mono text-xs">{{ currentLabel }}</span>
+        </button>
+
+        <div
+          class="inline-flex items-center gap-2 text-xs text-muted-foreground"
+        >
+          <span>{{ $t("pages.database.explorer.slow_over") }}</span>
+          <AnimatedFilters
+            v-model="thresholdKey"
+            square
+            :options="thresholdOptions"
+            :aria-label="$t('pages.database.explorer.slow_threshold')"
           />
-          <DbTablePage
-            v-else-if="view.startsWith('t:')"
-            :key="view"
-            :table="currentTable"
-            :db="db"
-            :table-sev="currentTable ? tableSev[currentTable.key] : ''"
-            @go="go"
-            @open-query="openQuery"
-          />
-          <div v-else :key="view" class="grid gap-6">
-            <h2 class="text-[19px] font-semibold">{{ currentLabel }}</h2>
-            <QueryPerformanceTab
-              v-if="view === 'queries'"
-              v-model:slow-only="querySlowOnly"
-              v-model:sort="querySort"
+        </div>
+
+        <LiveStamp
+          class="ml-auto"
+          :at="lastUpdated || null"
+          :paused="isPaused"
+          @refresh="refreshNow"
+        >
+          <Select v-model="refreshInterval" :disabled="isPaused">
+            <SelectTrigger
+              class="h-8 w-auto gap-1.5 rounded-md bg-muted/30 px-2.5 text-xs"
+              :aria-label="$t('pages.database.explorer.refresh_every')"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem v-for="s in intervals" :key="s" :value="String(s)">
+                {{
+                  $t("pages.database.explorer.every_seconds", { seconds: s })
+                }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          <FiveStackToolTip as-child :delay-duration="120">
+            <template #trigger>
+              <button
+                type="button"
+                class="grid h-8 w-8 place-items-center rounded-md border transition-colors"
+                :class="
+                  isPaused
+                    ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border bg-muted/30 text-muted-foreground hover:text-foreground'
+                "
+                :aria-pressed="isPaused"
+                :aria-label="
+                  isPaused
+                    ? $t('pages.database.explorer.resume_refreshing')
+                    : $t('pages.database.explorer.pause_refreshing')
+                "
+                @click="togglePause"
+              >
+                <Play v-if="isPaused" class="h-3.5 w-3.5" />
+                <Pause v-else class="h-3.5 w-3.5" />
+              </button>
+            </template>
+            {{
+              isPaused
+                ? $t("pages.database.explorer.resume_refreshing")
+                : $t("pages.database.explorer.pause_refreshing")
+            }}
+          </FiveStackToolTip>
+        </LiveStamp>
+      </div>
+    </PageTransition>
+
+    <PageTransition :step="1">
+      <div
+        class="grid min-h-[640px] min-w-0 lg:grid-cols-[270px_minmax(0,1fr)]"
+      >
+        <DbTree
+          :current="view"
+          :tables="tables"
+          :table-sev="tableSev"
+          :schemas="schemas"
+          :queries="queryStats"
+          :active="activeQueries"
+          :locks="currentLocks"
+          :connection-stats="connectionStats"
+          :timescale="timescaleStats"
+          :threshold="threshold"
+          :open="treeOpen"
+          @go="go"
+          @update:schemas="setSchemas"
+        />
+
+        <section class="min-w-0 pb-7 pt-4 lg:pl-6 lg:pt-0" aria-live="polite">
+          <Transition
+            mode="out-in"
+            enter-active-class="db-swap-enter"
+            enter-from-class="db-swap-from"
+            leave-active-class="db-swap-leave"
+            leave-to-class="db-swap-to"
+          >
+            <DbOverview
+              v-if="view === 'overview'"
+              key="overview"
               :db="db"
+              @go="go"
+              @open-query="openQuery"
+              @view-slow="viewSlowQueries"
+              @update:schemas="setSchemas"
+            />
+            <DbTablePage
+              v-else-if="view.startsWith('t:')"
+              :key="view"
+              :table="currentTable"
+              :db="db"
+              :table-sev="currentTable ? tableSev[currentTable.key] : ''"
+              @go="go"
               @open-query="openQuery"
             />
-            <ConnectionsTab v-else-if="view === 'connections'" :db="db" />
-            <LocksTransactionsTab
-              v-else-if="view === 'locks'"
-              :db="db"
-              @update:schemas="setSchemas"
-            />
-            <IOBufferStatsTab
-              v-else-if="view === 'io'"
-              :db="db"
-              @update:schemas="setSchemas"
-            />
-            <IndexUsageTab
-              v-else-if="view === 'index-usage'"
-              :db="db"
-              @go="go"
-              @update:schemas="setSchemas"
-            />
-            <StorageTab
-              v-else-if="view === 'storage'"
-              :db="db"
-              @go="go"
-              @update:schemas="setSchemas"
-            />
-            <TimescaleTab v-else-if="view === 'timescale'" :db="db" />
-            <BackupsTab v-else-if="view === 'backups'" />
-          </div>
-        </Transition>
-      </section>
-    </div>
+            <div v-else :key="view" class="grid gap-6">
+              <h2 class="text-[19px] font-semibold">{{ currentLabel }}</h2>
+              <QueryPerformanceTab
+                v-if="view === 'queries'"
+                v-model:slow-only="querySlowOnly"
+                v-model:sort="querySort"
+                :db="db"
+                @open-query="openQuery"
+              />
+              <ConnectionsTab v-else-if="view === 'connections'" :db="db" />
+              <LocksTransactionsTab
+                v-else-if="view === 'locks'"
+                :db="db"
+                @update:schemas="setSchemas"
+              />
+              <IOBufferStatsTab
+                v-else-if="view === 'io'"
+                :db="db"
+                @update:schemas="setSchemas"
+              />
+              <IndexUsageTab
+                v-else-if="view === 'index-usage'"
+                :db="db"
+                @go="go"
+                @update:schemas="setSchemas"
+              />
+              <StorageTab
+                v-else-if="view === 'storage'"
+                :db="db"
+                @go="go"
+                @update:schemas="setSchemas"
+              />
+              <TimescaleTab v-else-if="view === 'timescale'" :db="db" />
+              <BackupsTab v-else-if="view === 'backups'" />
+            </div>
+          </Transition>
+        </section>
+      </div>
+    </PageTransition>
 
     <QueryDetailModal
       v-if="selectedQueryId"

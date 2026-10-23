@@ -563,14 +563,14 @@ function formatPendingDate(date: string): string {
 </script>
 
 <template>
-  <PageTransition v-if="showDiscord || supportsTwitch" :delay="0">
+  <PageTransition v-if="showDiscord || supportsTwitch">
     <div class="grid gap-4 max-w-xl">
       <DiscordAccountCard v-if="showDiscord" />
       <TwitchAccountCard v-if="supportsTwitch" />
     </div>
   </PageTransition>
 
-  <PageTransition v-if="!linkedAccountsEnabled" :delay="0">
+  <PageTransition v-if="!linkedAccountsEnabled">
     <div
       class="max-w-xl rounded-lg border border-border bg-card/50 px-4 py-3 text-sm text-muted-foreground"
     >
@@ -578,7 +578,7 @@ function formatPendingDate(date: string): string {
     </div>
   </PageTransition>
 
-  <PageTransition v-if="linkedAccountsEnabled" :delay="100">
+  <PageTransition v-if="linkedAccountsEnabled" :step="1">
     <FadeSwap>
     <div v-if="!linkLoaded" key="loading" class="grid gap-4 max-w-xl">
       <div class="rounded-lg border border-border bg-card/50 overflow-hidden">
@@ -897,7 +897,7 @@ function formatPendingDate(date: string): string {
     </FadeSwap>
   </PageTransition>
 
-  <PageTransition v-if="linkedAccountsEnabled && linkLoaded" :delay="120">
+  <PageTransition v-if="linkedAccountsEnabled && linkLoaded" :step="2">
     <div
       class="rounded-lg border border-border bg-card/50 px-4 py-3 space-y-3 max-w-xl mt-4"
     >
@@ -962,7 +962,7 @@ function formatPendingDate(date: string): string {
     </AlertDialogContent>
   </AlertDialog>
 
-  <PageTransition v-if="linkedAccountsEnabled && awaitingPoll" :delay="120">
+  <PageTransition v-if="linkedAccountsEnabled && awaitingPoll" :step="2">
     <div
       class="flex items-start gap-2.5 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm max-w-xl mt-4"
     >
@@ -980,7 +980,7 @@ function formatPendingDate(date: string): string {
 
   <PageTransition
     v-if="linkedAccountsEnabled && pendingImports.length > 0"
-    :delay="150"
+    :step="3"
   >
     <div class="grid gap-3 max-w-xl mt-8">
       <div>

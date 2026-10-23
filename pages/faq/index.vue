@@ -104,7 +104,7 @@ const supportLinks = computed(() =>
       </TacticalPageHeader>
     </PageTransition>
 
-    <PageTransition :delay="40">
+    <PageTransition :step="1">
       <p class="max-w-3xl text-sm leading-relaxed text-muted-foreground">
         {{ isAdmin ? $t("faq.intro_admin") : $t("faq.intro") }}
         <template v-if="signedIn">{{ $t("faq.search_hint") }}</template>
@@ -112,7 +112,7 @@ const supportLinks = computed(() =>
     </PageTransition>
 
     <div class="grid items-start gap-8 lg:grid-cols-[15.5rem_minmax(0,1fr)]">
-      <PageTransition :delay="80" class="lg:sticky lg:top-4">
+      <PageTransition :step="2" class="lg:sticky lg:top-4">
         <aside
           class="lg:max-h-[calc(100svh-6rem)] lg:overflow-y-auto lg:pr-1 [scrollbar-width:thin]"
         >
@@ -120,7 +120,7 @@ const supportLinks = computed(() =>
         </aside>
       </PageTransition>
 
-      <PageTransition :delay="160">
+      <PageTransition :step="3">
         <main class="flex min-w-0 flex-col gap-10">
           <FaqContent />
 

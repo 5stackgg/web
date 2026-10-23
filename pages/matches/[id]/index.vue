@@ -26,6 +26,9 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import MatchTwitchPovs from "~/components/match/MatchTwitchPovs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import DeferredLoading from "~/components/common/DeferredLoading.vue";
+import MatchPageSkeleton from "~/components/match/MatchPageSkeleton.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import VoiceChannelCard from "~/components/voice/VoiceChannelCard.vue";
 import { useMatchContext } from "~/composables/useMatchContext";
@@ -210,25 +213,35 @@ const ChatLobby = defineAsyncComponent(
         </button>
       </div>
     </div>
-    <template v-if="match">
-      <!-- Wide enough, the chat and team voice leave the left column for a
-           full-height rail beside everything, header included. Otherwise both
-           wrappers are display: contents and the page lays out as before. -->
-      <div
-        :class="
-          chatRail
-            ? 'grid grid-cols-[minmax(0,1fr)_360px] items-start gap-8'
-            : 'contents'
-        "
-      >
+    <!-- One arrival for the whole page. The route fades it in, and a first load
+         dissolves from the outline into the match: every section sliding in on
+         its own clock left the stage blinking as each one finished. Arriving
+         from the draft room the scorebug flies in from its header, inside a
+         view transition that runs no frames, so the match is simply there. -->
+    <DeferredLoading
+      :loading="match === undefined && !scorebugHandoff"
+      v-slot="{ skeleton }"
+    >
+      <FadeSwap :css="!scorebugHandoff">
+        <MatchPageSkeleton v-if="skeleton" key="skeleton" />
+        <!-- Wide enough, the chat and team voice leave the left column for a
+             full-height rail beside everything, header included. Otherwise
+             this is the page's column and the one inside is display:
+             contents. -->
         <div
+          v-else-if="match"
+          key="match"
           :class="
-            chatRail ? 'flex min-w-0 flex-col gap-4 md:gap-6' : 'contents'
+            chatRail
+              ? 'grid grid-cols-[minmax(0,1fr)_360px] items-start gap-8'
+              : 'flex min-w-0 flex-col gap-4 md:gap-6'
           "
         >
-          <!-- Arriving from the draft room the scorebug flies in from its
-               header, so the stage is already in place. -->
-          <PageTransition :appear="!scorebugHandoff">
+          <div
+            :class="
+              chatRail ? 'flex min-w-0 flex-col gap-4 md:gap-6' : 'contents'
+            "
+          >
             <!-- The match stage: scorebug band on top, highlights underneath, one
              rounded surface. The highlights fold in when the clips arrive. -->
             <section
@@ -250,68 +263,66 @@ const ChatLobby = defineAsyncComponent(
                 </div>
               </div>
             </section>
-          </PageTransition>
 
-          <div
-            class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
-          >
-            <!-- Left column: match info, chat, maps. On desktop it's the
+            <div
+              class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
+            >
+              <!-- Left column: match info, chat, maps. On desktop it's the
            first grid column; on mobile it drops below the stream. -->
-            <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
-              <PageTransition :delay="100">
+              <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
                 <MatchInfo
                   :match="match"
                   :camera-ready="cameraReady"
                   hide-connect
                 ></MatchInfo>
-              </PageTransition>
 
-              <!-- Teleported rather than rendered twice, so crossing the rail
+                <!-- Teleported rather than rendered twice, so crossing the rail
                width (a window resize, the left nav opening) keeps the room
                and a half-typed message. The rail has to exist before a
                Teleport can resolve it, hence the wait on `chatRailTarget`. -->
-              <Teleport
-                v-if="chatRailTarget"
-                :to="chatRailTarget"
-                :disabled="!chatRail"
-              >
-                <PageTransition :delay="200">
-                  <!-- Both rooms on one panel. Organizers and anyone not on a lineup
+                <Teleport
+                  v-if="chatRailTarget"
+                  :to="chatRailTarget"
+                  :disabled="!chatRail"
+                >
+                  <!-- Fades in when it opens up later, not with the page. -->
+                  <PageTransition :appear="false">
+                    <!-- Both rooms on one panel. Organizers and anyone not on a lineup
                get no `myLineupId`, so they get no team destination and this
                falls back to the match room alone.
                Wrapped so the read cursor can follow whether it is on screen,
                rather than whether it is allowed to be. -->
-                  <div
-                    ref="inlineChat"
-                    v-if="showsInlineChat"
-                    :class="chatRail && 'flex min-h-0 flex-1 flex-col'"
-                  >
-                    <ChatLobby
-                      :class="chatRail ? 'flex-1' : 'max-h-96'"
-                      instance="matches/id"
-                      type="match"
-                      :lobby-id="match.id"
-                      :team-lobby-id="
-                        myLineupId && !readsMatchChatOnly
-                          ? `${match.id}:${myLineupId}`
-                          : undefined
-                      "
-                      :can-send="!readsMatchChatOnly"
-                      :readonly-hint="
-                        readsMatchChatOnly
-                          ? $t('chat.match_moderator_readonly')
-                          : undefined
-                      "
-                      :play-notification-sound="
-                        match.status !== e_match_status_enum.Live &&
-                        !readsMatchChatOnly
-                      "
-                    />
-                  </div>
-                </PageTransition>
-              </Teleport>
+                    <div
+                      ref="inlineChat"
+                      v-if="showsInlineChat"
+                      :class="chatRail && 'flex min-h-0 flex-1 flex-col'"
+                    >
+                      <ChatLobby
+                        :class="chatRail ? 'flex-1' : 'max-h-96'"
+                        instance="matches/id"
+                        type="match"
+                        :lobby-id="match.id"
+                        :team-lobby-id="
+                          myLineupId && !readsMatchChatOnly
+                            ? `${match.id}:${myLineupId}`
+                            : undefined
+                        "
+                        :can-send="!readsMatchChatOnly"
+                        :readonly-hint="
+                          readsMatchChatOnly
+                            ? $t('chat.match_moderator_readonly')
+                            : undefined
+                        "
+                        :play-notification-sound="
+                          match.status !== e_match_status_enum.Live &&
+                          !readsMatchChatOnly
+                        "
+                      />
+                    </div>
+                  </PageTransition>
+                </Teleport>
 
-              <!-- Team voice, beside the chat rather than inside it: the voice
+                <!-- Team voice, beside the chat rather than inside it: the voice
                channel and the text channel are the same room but not the same
                object, and nesting one in the other made the controls read as
                chat controls.
@@ -320,21 +331,20 @@ const ChatLobby = defineAsyncComponent(
                this section appeared -- which left the same three controls on
                screen twice as soon as it had.
                In the rail it sits above the chat. -->
-              <Teleport
-                v-if="chatRailTarget && myVoiceLineupId"
-                :to="chatRailTarget"
-                :disabled="!chatRail"
-              >
-                <VoiceChannelCard
-                  show-empty
-                  :class="chatRail ? '-order-1' : 'mt-1'"
-                  kind="match"
-                  :channel-id="myVoiceLineupId"
-                  :label="$t('layouts.voice_panel.team_comms')"
-                />
-              </Teleport>
+                <Teleport
+                  v-if="chatRailTarget && myVoiceLineupId"
+                  :to="chatRailTarget"
+                  :disabled="!chatRail"
+                >
+                  <VoiceChannelCard
+                    show-empty
+                    :class="chatRail ? '-order-1' : 'mt-1'"
+                    kind="match"
+                    :channel-id="myVoiceLineupId"
+                    :label="$t('layouts.voice_panel.team_comms')"
+                  />
+                </Teleport>
 
-              <PageTransition :delay="200">
                 <MatchMapSlots
                   :match="match"
                   :folded="vetoStageUp"
@@ -342,105 +352,108 @@ const ChatLobby = defineAsyncComponent(
                   :active-map-id="activeStatsMap?.id"
                   @open-stats="activeStatsMap = $event"
                 />
-              </PageTransition>
-            </div>
+              </div>
 
-            <!-- Right column: the live stream surface (game-streamer rows
+              <!-- Right column: the live stream surface (game-streamer rows
            get the full WHEP LiveStreamPlayer; embeds stay in
            StreamEmbed) stacked above the scoreboard/tabs. On mobile it
            rises above the left column so the stream leads. -->
-            <MatchTwitchPovs
-              :match="match"
-              :streams="embeddableStreams"
-              v-slot="{ streams: liveEmbedStreams }"
-            >
-              <div
-                class="min-w-0 flex flex-col gap-4 md:gap-6"
-                :class="
-                  showsLiveStreamBlock(liveEmbedStreams)
-                    ? '-order-1 lg:order-none'
-                    : ''
-                "
+              <MatchTwitchPovs
+                :match="match"
+                :streams="embeddableStreams"
+                v-slot="{ streams: liveEmbedStreams }"
               >
-                <PageTransition v-if="showsLiveStreamBlock(liveEmbedStreams)">
-                  <div class="min-w-0 space-y-4">
-                    <LiveStreamPlayer
-                      v-if="hasGameStreamer"
-                      :match-id="match.id"
-                      class="max-w-[1500px] w-full"
-                    />
-                    <StreamEmbed
-                      v-if="liveEmbedStreams.length > 0"
-                      :streams="liveEmbedStreams"
-                      :match-id="match.id"
-                      class="max-w-[1500px] w-full overflow-x-auto"
-                    />
-                  </div>
-                </PageTransition>
-
-                <div class="min-w-0">
-                  <PageTransition :delay="100">
-                    <template
-                      v-if="
-                        regions.length === 0 &&
-                        match.options.region_veto &&
-                        !match.region
-                      "
+                <div
+                  class="min-w-0 flex flex-col gap-4 md:gap-6"
+                  :class="
+                    showsLiveStreamBlock(liveEmbedStreams)
+                      ? '-order-1 lg:order-none'
+                      : ''
+                  "
+                >
+                  <!-- These come and go with the match, so they fade in when
+                     they do, but not with the page. -->
+                  <PageTransition :appear="false">
+                    <div
+                      v-if="showsLiveStreamBlock(liveEmbedStreams)"
+                      class="min-w-0 space-y-4"
                     >
-                      <Alert
-                        variant="destructive"
-                        class="bg-red-600 text-white max-w-md mb-6"
+                      <LiveStreamPlayer
+                        v-if="hasGameStreamer"
+                        :match-id="match.id"
+                        class="max-w-[1500px] w-full"
+                      />
+                      <StreamEmbed
+                        v-if="liveEmbedStreams.length > 0"
+                        :streams="liveEmbedStreams"
+                        :match-id="match.id"
+                        class="max-w-[1500px] w-full overflow-x-auto"
+                      />
+                    </div>
+                  </PageTransition>
+
+                  <div class="min-w-0">
+                    <PageTransition :appear="false">
+                      <template
+                        v-if="
+                          regions.length === 0 &&
+                          match.options.region_veto &&
+                          !match.region
+                        "
                       >
-                        <AlertTitle>{{
-                          $t("match.region_veto.no_regions_available")
-                        }}</AlertTitle>
-                        <AlertDescription>
-                          {{
-                            $t(
-                              "match.region_veto.no_regions_available_description",
-                            )
-                          }}
-                        </AlertDescription>
-                      </Alert>
-                    </template>
-                  </PageTransition>
+                        <Alert
+                          variant="destructive"
+                          class="bg-red-600 text-white max-w-md mb-6"
+                        >
+                          <AlertTitle>{{
+                            $t("match.region_veto.no_regions_available")
+                          }}</AlertTitle>
+                          <AlertDescription>
+                            {{
+                              $t(
+                                "match.region_veto.no_regions_available_description",
+                              )
+                            }}
+                          </AlertDescription>
+                        </Alert>
+                      </template>
+                    </PageTransition>
 
-                  <PageTransition :delay="100">
-                    <MatchRegionVeto :match="match" class="pb-6" />
-                  </PageTransition>
+                    <PageTransition :appear="false">
+                      <MatchRegionVeto :match="match" class="pb-6" />
+                    </PageTransition>
 
-                  <PageTransition :delay="100">
-                    <MatchMapVeto
-                      :match="match"
-                      :boot-status="!bootInSlot"
-                      class="pb-6"
-                    />
-                  </PageTransition>
+                    <PageTransition :appear="false">
+                      <MatchMapVeto
+                        :match="match"
+                        :boot-status="!bootInSlot"
+                        class="pb-6"
+                      />
+                    </PageTransition>
 
-                  <PageTransition :delay="200">
                     <MatchTabs
                       :match="match"
                       :active-map="activeStatsMap"
                       @clear-active-map="activeStatsMap = null"
                       @select-map="activeStatsMap = $event"
                     ></MatchTabs>
-                  </PageTransition>
+                  </div>
                 </div>
-              </div>
-            </MatchTwitchPovs>
+              </MatchTwitchPovs>
+            </div>
           </div>
+
+          <!-- Kept mounted while hidden: it is the Teleports' target. -->
+          <aside
+            v-show="chatRail"
+            :ref="setChatRailTarget"
+            class="sticky top-4 flex min-h-0 flex-col gap-4"
+          ></aside>
         </div>
+      </FadeSwap>
+    </DeferredLoading>
 
-        <!-- Kept mounted while hidden: it is the Teleports' target. -->
-        <aside
-          v-show="chatRail"
-          :ref="setChatRailTarget"
-          class="sticky top-4 flex min-h-0 flex-col gap-4"
-        ></aside>
-      </div>
-
-      <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
-    </template>
+    <MatchAdminBottomBar v-if="match?.is_organizer" :match="match" />
   </div>
 </template>
 

@@ -44,13 +44,19 @@ describe("TeamsYourTeams", () => {
     useAuthStore().me = { steam_id: ME } as any;
   });
 
-  it("holds the section's space while a signed-in player's teams load", async () => {
+  it("outlines as many cards as the player is on while their teams load", async () => {
+    useAuthStore().me = { steam_id: ME, teams: [{ id: "t1" }] } as any;
+
     const wrapper = await mountSuspended(TeamsYourTeams);
 
     const section = wrapper.find("section");
     expect(section.exists()).toBe(true);
     expect(section.attributes("aria-busy")).toBe("true");
     expect(wrapper.findAll("[data-team]")).toHaveLength(0);
+    expect(
+      wrapper.findAll('[aria-busy="true"] .h-\\[4\\.75rem\\]'),
+    ).toHaveLength(1);
+    expect(wrapper.emitted("team-ids")?.[0]).toEqual([["t1"]]);
 
     subscription.next?.({ data: { teams: [TEAM] } });
     await wrapper.vm.$nextTick();
@@ -68,8 +74,19 @@ describe("TeamsYourTeams", () => {
     expect(wrapper.findAll("[data-team]")).toHaveLength(1);
   });
 
-  it("drops the section once it is known there are no teams", async () => {
+  it("never outlines the section for a player on no team", async () => {
+    useAuthStore().me = { steam_id: ME, teams: [] } as any;
+
     const wrapper = await mountSuspended(TeamsYourTeams);
+
+    expect(wrapper.find("section").exists()).toBe(false);
+  });
+
+  it("drops the section once it is known there are no teams", async () => {
+    useAuthStore().me = { steam_id: ME, teams: [{ id: "t1" }] } as any;
+
+    const wrapper = await mountSuspended(TeamsYourTeams);
+    expect(wrapper.find("section").exists()).toBe(true);
 
     subscription.next?.({ data: { teams: [] } });
     await wrapper.vm.$nextTick();

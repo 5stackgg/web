@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import { PlusCircle } from "lucide-vue-next";
 import { $, order_by, Selector } from "~/generated/zeus";
@@ -122,9 +122,11 @@ const yourTeamsQuery = generateSubscription({
 } as any);
 
 const teams = ref<any[]>([]);
-// Whether this player's teams are known yet. Until then a signed-in player gets
-// the section's outline, so the page below sits where it will end up.
+// Whether this player's teams are known yet. Until then `me` already says how
+// many they're on, so the outline has that many cards (or no section at all)
+// and the page below sits where it will end up.
 const loaded = ref(false);
+const knownTeams = computed<any[]>(() => auth.me?.teams ?? []);
 let sub: { unsubscribe: () => void } | undefined;
 
 watch(
@@ -137,7 +139,7 @@ watch(
     loaded.value = !!cached;
     emit(
       "team-ids",
-      teams.value.map((team) => team.id),
+      (cached ?? knownTeams.value).map((team) => team.id),
     );
     if (!steamId || typeof window === "undefined") return;
     sub = client
@@ -182,7 +184,7 @@ onBeforeUnmount(() => {
 
 <template>
   <section
-    v-if="teams.length || (!loaded && auth.me)"
+    v-if="teams.length || (!loaded && knownTeams.length)"
     aria-labelledby="teams-yours-label"
     :aria-busy="!loaded"
   >
@@ -209,7 +211,11 @@ onBeforeUnmount(() => {
       class="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,24rem),1fr))]"
     >
       <template v-if="!teams.length">
-        <Skeleton v-for="i in 2" :key="i" class="h-[4.75rem] rounded-lg" />
+        <Skeleton
+          v-for="team in knownTeams"
+          :key="team.id"
+          class="h-[4.75rem] rounded-lg"
+        />
       </template>
       <TeamsYourTeamCard
         v-for="team in teams"

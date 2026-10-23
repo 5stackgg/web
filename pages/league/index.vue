@@ -66,7 +66,7 @@ onMounted(async () => {
 <template>
   <h1 class="sr-only">{{ $t("league.list.title") }}</h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <FadeSwap>
       <!-- Also held while a season exists: the page is redirecting to it. -->
       <Skeleton

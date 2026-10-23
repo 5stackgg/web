@@ -127,7 +127,7 @@ const sheetFade = {
   <div ref="page" class="gpn-page" :data-tier="tier" :data-dock="lastDock">
     <div class="min-w-0">
       <!-- ===================== CONTROL ROW ===================== -->
-      <PageTransition :delay="0">
+      <PageTransition>
         <div class="flex flex-wrap items-center gap-2">
           <AdminSearch
             v-model="query"
@@ -162,7 +162,7 @@ const sheetFade = {
       </PageTransition>
 
       <!-- ===================== KPI TILES ===================== -->
-      <PageTransition :delay="60">
+      <PageTransition :step="1">
         <div class="mt-5 grid grid-cols-2 gap-2.5 xl:grid-cols-4">
           <StatTile
             :label="$t('pages.gpu_nodes.kpi.gpus_free')"
@@ -264,7 +264,7 @@ const sheetFade = {
       </div>
 
       <!-- ===================== SECTIONS ===================== -->
-      <PageTransition :delay="120">
+      <PageTransition :step="2">
         <div v-if="!loading" class="mt-8 grid gap-8">
           <!-- Running now -->
           <ManageSection

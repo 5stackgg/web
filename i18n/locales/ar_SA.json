@@ -8358,6 +8358,7 @@
         "regions": "المناطق",
         "servers": "السيرفرات",
         "dedicated_servers": "السيرفرات المخصصة",
+        "practice_servers": "خوادم التدريب",
         "game_server_nodes": "عقد السيرفرات",
         "gpu_nodes": "عقد GPU",
         "app_settings": "إعدادات التطبيق",

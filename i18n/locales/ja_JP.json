@@ -8358,6 +8358,7 @@
         "regions": "リージョン",
         "servers": "サーバー",
         "dedicated_servers": "専用サーバー",
+        "practice_servers": "練習サーバー",
         "game_server_nodes": "ゲームサーバーノード",
         "gpu_nodes": "GPUノード",
         "app_settings": "アプリ設定",

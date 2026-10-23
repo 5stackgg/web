@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { defineComponent, h } from "vue";
 import { flushPromises } from "@vue/test-utils";
 import { mountSuspended } from "@nuxt/test-utils/runtime";
 import { provideApolloClient } from "@vue/apollo-composable";
@@ -7,6 +8,15 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { e_match_status_enum } from "~/generated/zeus";
+
+// The page's first-load outline is beside the point here: render the match as
+// soon as it is known.
+const ShownAtOnce = defineComponent({
+  setup:
+    (_, { slots }) =>
+    () =>
+      h("div", slots.default?.({ skeleton: false })),
+});
 
 const MATCH = "11111111-1111-4111-8111-111111111111";
 const ME = "76561198000000001";
@@ -120,7 +130,12 @@ async function mountMatch(answer: Record<string, unknown>) {
     shallow: true,
     global: {
       mixins: (useNuxtApp().vueApp as any)._context.mixins,
-      stubs: { MatchTwitchPovs: false, PageTransition: false },
+      stubs: {
+        MatchTwitchPovs: false,
+        PageTransition: false,
+        FadeSwap: false,
+        DeferredLoading: ShownAtOnce,
+      },
     },
   });
   mounted = wrapper;
@@ -194,9 +209,9 @@ describe("the match page's player POVs", () => {
       }),
     );
     await vi.waitFor(() =>
-      expect(
-        wrapper.findComponent(StreamEmbed).props("streams"),
-      ).toHaveLength(2),
+      expect(wrapper.findComponent(StreamEmbed).props("streams")).toHaveLength(
+        2,
+      ),
     );
 
     expect(

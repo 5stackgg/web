@@ -555,7 +555,7 @@ const viewModeOptions = computed<
 
 <template>
   <div>
-    <PageTransition :delay="60">
+    <PageTransition>
       <FilterBar>
         <!-- Phones: the view toggle takes the first row and these triggers
              share the second; from md they flatten back into one row. -->
@@ -789,7 +789,7 @@ const viewModeOptions = computed<
       </FilterBar>
     </PageTransition>
 
-    <PageTransition :delay="80" class="mt-6">
+    <PageTransition :step="1" class="mt-6">
       <FadeSwap>
         <div
           v-if="skeleton"

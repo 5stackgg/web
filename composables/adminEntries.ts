@@ -17,6 +17,7 @@ import {
   MonitorPlay,
   RadioTower,
   ServerCog,
+  Target,
 } from "lucide-vue-next";
 import { e_player_roles_enum } from "~/generated/zeus";
 
@@ -123,6 +124,15 @@ const ENTRIES: AdminEntry[] = [
     role: admin,
     children: true,
     order: 40,
+  },
+  {
+    id: "practice-servers",
+    route: "practice-servers",
+    labelKey: "layouts.app_nav.administration.practice_servers",
+    icon: Target,
+    group: "servers",
+    role: e_player_roles_enum.moderator,
+    order: 45,
   },
   {
     id: "gpu-nodes",

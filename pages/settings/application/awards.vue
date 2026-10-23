@@ -7,7 +7,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <form class="space-y-6" @submit.prevent="updateSettings">
         <SettingsSection
           id="permissions"

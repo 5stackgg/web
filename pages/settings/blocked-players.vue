@@ -98,7 +98,7 @@ async function unblockPlayer(row: PlayerBlock) {
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="space-y-5">
       <FormSection
         :title="$t('pages.settings.blocked_players.message_requests.title')"

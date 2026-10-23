@@ -108,7 +108,7 @@ onBeforeUnmount(() =>
 <template>
   <h1 class="sr-only">{{ $t("pages.plugins.title") }}</h1>
 
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="flex flex-wrap items-center gap-2">
       <AdminSearch
         v-model="search"
@@ -178,7 +178,7 @@ onBeforeUnmount(() =>
     </div>
   </PageTransition>
 
-  <PageTransition :delay="60" class="mt-6">
+  <PageTransition :step="1" class="mt-6">
     <FadeSwap>
       <div
         v-if="!pluginsLoaded"

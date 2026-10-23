@@ -8358,6 +8358,7 @@
         "regions": "Regiones",
         "servers": "Servidores",
         "dedicated_servers": "Servidores dedicados",
+        "practice_servers": "Servidores de práctica",
         "game_server_nodes": "Nodos de servidores",
         "gpu_nodes": "Nodos GPU",
         "app_settings": "Ajustes de la app",

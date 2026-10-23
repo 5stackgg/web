@@ -4,11 +4,15 @@
 // (absolute) so the entering node owns the container height from frame one —
 // pair with matched-height skeletons and the load reads as a clean dissolve
 // instead of a jump. Each branch in the slot must carry a stable :key.
+// `css: false` swaps on the spot, for a swap made where no frames run (inside
+// a view transition's update), which a fade would leave invisible.
+withDefaults(defineProps<{ css?: boolean }>(), { css: true });
 </script>
 
 <template>
   <div class="relative">
     <Transition
+      :css="css"
       enter-active-class="transition-opacity duration-300 ease-out motion-reduce:!duration-0"
       leave-active-class="absolute inset-0 w-full transition-opacity duration-200 ease-in motion-reduce:!duration-0"
       enter-from-class="opacity-0"

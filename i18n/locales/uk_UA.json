@@ -8358,6 +8358,7 @@
         "regions": "Регіони",
         "servers": "Сервери",
         "dedicated_servers": "Виділені сервери",
+        "practice_servers": "Тренувальні сервери",
         "game_server_nodes": "Ноди ігрових серверів",
         "gpu_nodes": "GPU-ноди",
         "app_settings": "Налаштування застосунку",

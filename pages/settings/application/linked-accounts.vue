@@ -6,7 +6,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <SettingsSection
         id="linked-accounts"
         :title="$t('pages.settings.application.linked_accounts.section')"

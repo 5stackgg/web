@@ -75,7 +75,7 @@ const goldButton = [createButtonClasses, "w-full"];
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="space-y-6" v-if="plugin">
       <Button
         as-child

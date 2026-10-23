@@ -6,7 +6,7 @@ import { Card } from "~/components/ui/card";
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <GameTypeConfigTabs
       :game-type-configs="gameTypeConfigs"
       @updated="handleUpdated"

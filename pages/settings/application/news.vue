@@ -11,7 +11,7 @@ import { PencilLine } from "lucide-vue-next";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <div class="space-y-6">
         <SettingsSection
           id="news"

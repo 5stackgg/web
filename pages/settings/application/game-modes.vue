@@ -19,7 +19,7 @@ definePageMeta({
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <div class="space-y-6">
         <SettingsSection
           id="game-modes"

@@ -101,7 +101,7 @@ async function doRemoveFixtures() {
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div v-if="!isDev" class="p-6">
       <p class="text-muted-foreground">
         {{ $t("pages.settings.application.fixtures.dev_only_notice") }}

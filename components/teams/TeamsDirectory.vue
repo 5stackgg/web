@@ -42,13 +42,12 @@ import {
   filterTriggerBase,
   filterTriggerIdle,
   listCreateButtonClasses,
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
 // The page shows "Create team" here only when the viewer has no team of
-// their own; otherwise it sits on "Your teams".
-defineProps<{ showCreate: boolean }>();
+// their own; otherwise it sits on "Your teams". The sort and create go to
+// `headerTo` (the page's tab row) when given, else above the list.
+defineProps<{ showCreate: boolean; headerTo?: HTMLElement | null }>();
 
 type Sort = "active" | "rating" | "name";
 
@@ -360,36 +359,36 @@ const headerCell = "text-[11px] font-semibold uppercase tracking-[0.1em]";
 </script>
 
 <template>
-  <section aria-labelledby="teams-all-label">
-    <div class="mb-3 flex flex-wrap items-center gap-x-2 gap-y-3">
-      <h2
-        id="teams-all-label"
-        :class="[tacticalSectionLabelClasses, '!mb-0 mr-auto']"
-      >
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ $t("pages.teams.directory.title") }}
-      </h2>
-      <div v-if="sort" class="max-md:order-last max-md:basis-full">
+  <section>
+    <div
+      :class="
+        headerTo
+          ? 'contents'
+          : 'mb-3 flex flex-wrap items-center justify-end gap-x-2 gap-y-3'
+      "
+    >
+      <Teleport :to="headerTo" :disabled="!headerTo">
         <WatchSegmented
+          v-if="sort"
           v-model="sortModel"
           :options="sortOptions"
           :label="$t('pages.teams.directory.sort_label')"
         />
-      </div>
-      <Button
-        v-if="showCreate && signedIn"
-        as-child
-        size="sm"
-        :class="listCreateButtonClasses"
-      >
-        <NuxtLink
-          :to="{ name: 'teams-create' }"
-          :title="$t('pages.teams.create')"
+        <Button
+          v-if="showCreate && signedIn"
+          as-child
+          size="sm"
+          :class="listCreateButtonClasses"
         >
-          <PlusCircle class="h-4 w-4" />
-          <span class="max-md:sr-only">{{ $t("pages.teams.create") }}</span>
-        </NuxtLink>
-      </Button>
+          <NuxtLink
+            :to="{ name: 'teams-create' }"
+            :title="$t('pages.teams.create')"
+          >
+            <PlusCircle class="h-4 w-4" />
+            <span class="max-md:sr-only">{{ $t("pages.teams.create") }}</span>
+          </NuxtLink>
+        </Button>
+      </Teleport>
     </div>
 
     <FilterBar>

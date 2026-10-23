@@ -1094,7 +1094,7 @@ onBeforeUnmount(() => {
         </Tabs>
       </PageTransition>
 
-      <PageTransition :delay="100" class="lb-layout-board">
+      <PageTransition :step="1" class="lb-layout-board">
         <div>
           <div
             class="mb-3.5 flex min-h-7 flex-wrap items-center gap-x-2.5 gap-y-1.5"

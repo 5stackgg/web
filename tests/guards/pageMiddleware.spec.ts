@@ -139,6 +139,14 @@ describe("page middleware", () => {
     );
   });
 
+  it("gates practice servers behind moderator", () => {
+    expect(
+      pageMiddleware(
+        readFileSync(join(root, "pages/practice-servers.vue"), "utf8"),
+      ),
+    ).toContain("moderator");
+  });
+
   it("gates tournament creation", () => {
     expect(
       pageMiddleware(

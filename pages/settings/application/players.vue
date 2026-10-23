@@ -103,7 +103,7 @@ async function doScanSteamBans() {
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <div class="space-y-6">
         <form class="space-y-6" @submit.prevent="updateSettings">
           <SettingsSection

@@ -7,7 +7,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <SettingsSection
         id="voice-chat"
         :title="$t('pages.settings.application.cameras.voice_section')"
@@ -73,7 +73,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
     <!-- A camera in a call rides a voice channel, so it lives under voice
          rather than under the per-match camera requirement, which is a
          different feature entirely. -->
-    <PageTransition v-if="voiceEnabled" :delay="60">
+    <PageTransition v-if="voiceEnabled" :step="1">
       <SettingsSection
         id="video-chat"
         :title="$t('pages.settings.application.cameras.video_section')"
@@ -136,7 +136,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 
     <!-- Cameras have no on/off of their own: an organizer turns them on per
          match. These only decide what a newly created match starts with. -->
-    <PageTransition :delay="120">
+    <PageTransition :step="2">
       <SettingsSection
         id="camera-defaults"
         :title="$t('pages.settings.application.cameras.defaults_section')"

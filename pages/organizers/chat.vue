@@ -14,7 +14,7 @@ const canAccess = computed(() =>
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="flex flex-col h-[calc(100vh-4rem)] p-4 gap-4">
       <h1 class="text-2xl font-bold">
         {{ $t("chat.organizers.title", "Organizer Chat") }}

@@ -6,7 +6,7 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <SettingsSection
         id="scrim-finder"
         :title="$t('pages.settings.application.scrim_finder.section')"

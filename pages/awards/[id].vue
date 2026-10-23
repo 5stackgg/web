@@ -47,7 +47,7 @@ const chipClasses =
 </script>
 
 <template>
-  <PageTransition :delay="0">
+  <PageTransition>
     <div class="container mx-auto max-w-5xl space-y-5 py-6">
       <div v-if="loading" class="space-y-5">
         <Skeleton class="h-56 w-full rounded-lg" />

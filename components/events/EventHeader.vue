@@ -12,7 +12,7 @@ import {
 } from "~/utilities/eventDisplay";
 
 // One lifted surface: the whole banner (never cropped; the art usually carries
-// the event's own title), then who/when/what, then the page's tabs.
+// the event's own title), then who/when/what.
 const props = defineProps<{
   event: any;
   phase: EventPhase;
@@ -139,7 +139,7 @@ const countItems = computed(() =>
     </template>
 
     <div
-      class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 px-4 pt-4 sm:px-6 sm:pt-5"
+      class="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 p-4 sm:p-6 sm:pt-5"
     >
       <div class="grid min-w-0 flex-[1_1_28rem] gap-2">
         <p
@@ -263,10 +263,6 @@ const countItems = computed(() =>
       <div v-if="$slots.actions" class="flex flex-wrap items-center gap-2">
         <slot name="actions" />
       </div>
-    </div>
-
-    <div class="mt-3 px-2 sm:px-4">
-      <slot name="tabs" />
     </div>
   </section>
 </template>

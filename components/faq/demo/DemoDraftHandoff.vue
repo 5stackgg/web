@@ -350,84 +350,77 @@ const segment =
         :key="`match-page-${run}`"
         class="flex flex-col gap-4 md:gap-6"
       >
-        <PageTransition :appear="!handingOff">
-          <section
-            class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
-          >
-            <MatchHeader :match="match">
-              <template #actions><span></span></template>
-              <template #veto>
-                <MatchHeaderVeto :match="match" :picks="picks" />
-              </template>
-            </MatchHeader>
-            <QuickMatchConnect
-              variant="bar"
-              :match="match"
-              :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
-            />
-          </section>
-        </PageTransition>
+        <!-- The route's fade is the page's one arrival, as on the real page. -->
+        <section
+          class="relative isolate overflow-hidden rounded-2xl bg-muted/20 after:pointer-events-none after:absolute after:inset-0 after:rounded-[inherit] after:ring-1 after:ring-inset after:ring-white/[0.07]"
+        >
+          <MatchHeader :match="match">
+            <template #actions><span></span></template>
+            <template #veto>
+              <MatchHeaderVeto :match="match" :picks="picks" />
+            </template>
+          </MatchHeader>
+          <QuickMatchConnect
+            variant="bar"
+            :match="match"
+            :hide-booting="!bootInSlot && (vetoStageUp || vetoArriving)"
+          />
+        </section>
 
         <div
           class="grid grid-cols-1 items-start gap-4 md:gap-6 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)] lg:gap-8"
         >
           <div class="grid min-w-0 grid-cols-1 gap-y-4 md:gap-y-6">
-            <PageTransition :delay="100">
-              <MatchInfo :match="match" hide-connect />
-            </PageTransition>
+            <MatchInfo :match="match" hide-connect />
 
-            <PageTransition :delay="200">
+            <div
+              class="overflow-hidden rounded-xl border border-border/60 bg-card/30"
+            >
               <div
-                class="overflow-hidden rounded-xl border border-border/60 bg-card/30"
+                class="border-b border-border/60 px-4 py-2.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
               >
-                <div
-                  class="border-b border-border/60 px-4 py-2.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-                >
-                  {{ $t("faq.demo.chat_label") }}
-                </div>
-                <ul class="flex flex-col gap-2 px-4 py-3 text-sm">
-                  <li
-                    v-for="(line, index) in DEMO_DRAFT_CHAT"
-                    :key="index"
-                    class="leading-snug"
-                  >
-                    <span
-                      class="font-semibold"
-                      :class="
-                        line.lineup === 1
-                          ? 'text-[hsl(var(--tac-amber))]'
-                          : 'text-[hsl(var(--tac-blue))]'
-                      "
-                    >
-                      {{ line.name }}
-                    </span>
-                    {{ " " }}
-                    <span class="text-foreground/85">{{ line.text }}</span>
-                  </li>
-                </ul>
-                <div
-                  class="border-t border-border/60 px-4 py-2 text-xs text-muted-foreground"
-                >
-                  {{ $t("faq.demo.chat_readonly") }}
-                </div>
+                {{ $t("faq.demo.chat_label") }}
               </div>
-            </PageTransition>
+              <ul class="flex flex-col gap-2 px-4 py-3 text-sm">
+                <li
+                  v-for="(line, index) in DEMO_DRAFT_CHAT"
+                  :key="index"
+                  class="leading-snug"
+                >
+                  <span
+                    class="font-semibold"
+                    :class="
+                      line.lineup === 1
+                        ? 'text-[hsl(var(--tac-amber))]'
+                        : 'text-[hsl(var(--tac-blue))]'
+                    "
+                  >
+                    {{ line.name }}
+                  </span>
+                  {{ " " }}
+                  <span class="text-foreground/85">{{ line.text }}</span>
+                </li>
+              </ul>
+              <div
+                class="border-t border-border/60 px-4 py-2 text-xs text-muted-foreground"
+              >
+                {{ $t("faq.demo.chat_readonly") }}
+              </div>
+            </div>
 
-            <PageTransition :delay="200">
-              <MatchMapSlots
-                :match="match"
-                :folded="vetoStageUp"
-                :arriving="vetoArriving"
-              />
-            </PageTransition>
+            <MatchMapSlots
+              :match="match"
+              :folded="vetoStageUp"
+              :arriving="vetoArriving"
+            />
           </div>
 
           <div class="min-w-0">
-            <PageTransition :delay="100">
+            <PageTransition :appear="false">
               <MatchRegionVeto :match="match" class="pb-6" />
             </PageTransition>
 
-            <PageTransition :delay="100">
+            <PageTransition :appear="false">
               <MatchMapVeto
                 :match="match"
                 :match-id="match.id"
@@ -437,41 +430,39 @@ const segment =
               />
             </PageTransition>
 
-            <PageTransition :delay="200">
-              <Tabs model-value="scoreboard">
-                <div class="mb-4 min-w-0 overflow-x-auto">
-                  <TabsList variant="underline" class="h-auto flex-nowrap">
-                    <TabsTrigger value="scoreboard">
-                      {{ $t("match.tabs.scoreboard") }}
-                    </TabsTrigger>
-                    <FiveStackToolTip
-                      v-for="label in otherTabs"
-                      :key="label"
-                      as-child
-                      side="top"
-                    >
-                      <template #trigger>
-                        <span
-                          class="cursor-default select-none whitespace-nowrap px-3 py-1.5 text-sm font-medium text-muted-foreground/40"
-                        >
-                          {{ $t(label) }}
-                        </span>
-                      </template>
-                      {{ $t("faq.demo.not_in_demo") }}
-                    </FiveStackToolTip>
-                  </TabsList>
-                </div>
-                <Card class="overflow-x-auto overscroll-x-none bg-card/20">
-                  <CardContent class="p-1 sm:p-2" inert>
-                    <LineupOverview
-                      :match="match"
-                      :lineup="match.lineup_1"
-                      :combine-with="match.lineup_2"
-                    />
-                  </CardContent>
-                </Card>
-              </Tabs>
-            </PageTransition>
+            <Tabs model-value="scoreboard">
+              <div class="mb-4 min-w-0 overflow-x-auto">
+                <TabsList variant="underline" class="h-auto flex-nowrap">
+                  <TabsTrigger value="scoreboard">
+                    {{ $t("match.tabs.scoreboard") }}
+                  </TabsTrigger>
+                  <FiveStackToolTip
+                    v-for="label in otherTabs"
+                    :key="label"
+                    as-child
+                    side="top"
+                  >
+                    <template #trigger>
+                      <span
+                        class="cursor-default select-none whitespace-nowrap px-3 py-1.5 text-sm font-medium text-muted-foreground/40"
+                      >
+                        {{ $t(label) }}
+                      </span>
+                    </template>
+                    {{ $t("faq.demo.not_in_demo") }}
+                  </FiveStackToolTip>
+                </TabsList>
+              </div>
+              <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+                <CardContent class="p-1 sm:p-2" inert>
+                  <LineupOverview
+                    :match="match"
+                    :lineup="match.lineup_1"
+                    :combine-with="match.lineup_2"
+                  />
+                </CardContent>
+              </Card>
+            </Tabs>
           </div>
         </div>
       </div>

@@ -39,7 +39,7 @@ definePageMeta({
 
 <template>
   <SettingsPage>
-    <PageTransition :delay="0">
+    <PageTransition>
       <SettingsSection
         id="broadcast-huds"
         :title="$t('pages.settings.application.broadcast_huds.title')"

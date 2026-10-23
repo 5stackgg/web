@@ -623,9 +623,14 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenu>
             </SidebarGroup>
 
+            <!-- Collapsed, a hairline parts every group from the next. -->
+            <Separator
+              v-if="!(isMobile || sideBarOpen)"
+              class="mx-auto my-1 w-5"
+            />
             <LeftNavDoors :doors="doors" :rail="!(isMobile || sideBarOpen)" />
 
-            <LeftNavPins
+            <template
               v-if="
                 authStore.me &&
                 (pinnedPages.length ||
@@ -633,10 +638,17 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   isMobile ||
                   sideBarOpen)
               "
-              :items="pinnedPages"
-              :admin-items="pinnedAdmin"
-              :rail="!(isMobile || sideBarOpen)"
-            />
+            >
+              <Separator
+                v-if="!(isMobile || sideBarOpen)"
+                class="mx-auto my-1 w-5"
+              />
+              <LeftNavPins
+                :items="pinnedPages"
+                :admin-items="pinnedAdmin"
+                :rail="!(isMobile || sideBarOpen)"
+              />
+            </template>
 
             <template v-for="section in navSections" :key="section.id">
               <Separator
@@ -684,24 +696,30 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </p>
             </SidebarGroup>
 
-            <SidebarGroup v-for="group in adminGroups" :key="group.key">
-              <SidebarGroupLabel v-if="group.label">{{
-                group.label
-              }}</SidebarGroupLabel>
-              <SidebarMenu>
-                <LeftNavLink
-                  v-for="item in group.items"
-                  :key="item.key"
-                  :to="item.to"
-                  :icon="item.icon"
-                  :label="item.label"
-                  :active="item.active"
-                  :badge="item.badge"
-                  :warning="item.warning"
-                  :pin-key="item.key"
-                />
-              </SidebarMenu>
-            </SidebarGroup>
+            <template v-for="group in adminGroups" :key="group.key">
+              <Separator
+                v-if="!(isMobile || sideBarOpen)"
+                class="mx-auto my-1 w-5"
+              />
+              <SidebarGroup>
+                <SidebarGroupLabel v-if="group.label">{{
+                  group.label
+                }}</SidebarGroupLabel>
+                <SidebarMenu>
+                  <LeftNavLink
+                    v-for="item in group.items"
+                    :key="item.key"
+                    :to="item.to"
+                    :icon="item.icon"
+                    :label="item.label"
+                    :active="item.active"
+                    :badge="item.badge"
+                    :warning="item.warning"
+                    :pin-key="item.key"
+                  />
+                </SidebarMenu>
+              </SidebarGroup>
+            </template>
           </div>
         </SlideSwap>
       </SidebarContent>

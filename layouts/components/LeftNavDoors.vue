@@ -23,7 +23,7 @@ const { setOpenMobile } = useSidebar();
             class="relative"
             :class="{ 'router-link-active': door.active }"
           >
-            <component :is="door.icon" />
+            <component :is="door.icon" class="size-4 shrink-0" />
             <span>{{ door.label }}</span>
             <span
               v-if="door.badge"

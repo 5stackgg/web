@@ -31,6 +31,22 @@ const loadCached = <T>(key: string): T[] => {
   return [];
 };
 
+const sameSettings = (
+  current: Array<{ name: string; value: string }>,
+  next: Array<{ name: string; value: string }>,
+) => {
+  const values = new Map(
+    current.map((setting) => [setting.name, setting.value]),
+  );
+  return (
+    current.length === next.length &&
+    next.every(
+      (setting) =>
+        values.has(setting.name) && values.get(setting.name) === setting.value,
+    )
+  );
+};
+
 export function cachedSetting(name: string) {
   return loadCached<{ name: string; value: string }>(SETTINGS_CACHE_KEY).find(
     (setting) => setting.name === name,
@@ -68,14 +84,18 @@ export const useApplicationSettingsStore = defineStore(
           },
           {
             next: ({ data }) => {
-              settings.value = data.settings;
+              // A reconnected socket resends the same rows, and every
+              // settings page reloads its form when this changes.
+              if (!sameSettings(settings.value, data.settings)) {
+                settings.value = data.settings;
+                try {
+                  localStorage.setItem(
+                    SETTINGS_CACHE_KEY,
+                    JSON.stringify(data.settings),
+                  );
+                } catch {}
+              }
               settingsLoaded.value = true;
-              try {
-                localStorage.setItem(
-                  SETTINGS_CACHE_KEY,
-                  JSON.stringify(data.settings),
-                );
-              } catch {}
             },
           },
         ),

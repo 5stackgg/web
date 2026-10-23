@@ -2728,7 +2728,7 @@
           "show_separators": "Visa avdelare",
           "show_separators_description": "Visa horisontella avdelarlinjer mellan sektioner.",
           "logo": "Logotyp",
-          "logo_description": "Ladda upp en kvadratisk bild (512×512 PNG rekommenderas). Används i hela appen och för att skapa din PWA-installationsikon. ICO-filer stöds inte.",
+          "logo_description": "Ladda upp en kvadratisk bild. Används i hela appen och för att skapa din PWA-installationsikon. ICO-filer stöds inte.",
           "favicon": "Favicon",
           "favicon_description": "Valfritt. En enklare symbol för webbläsarfliken. PNG, ICO eller WebP.",
           "login_page": "Inloggningssida",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Uppladdningen misslyckades: {status}",
           "delete_failed": "Raderingen misslyckades: {status}",
           "banner": "Menybanner",
-          "banner_description": "Visas högst upp i sidomenyn för spelare och besökare. Utan banner visar menyn din logotyp och ditt namn."
+          "banner_description": "Visas högst upp i sidomenyn för spelare och besökare. Utan banner visar menyn din logotyp och ditt namn.",
+          "recommended_size": "Rekommenderat {w} × {h} px"
         },
         "language": {
           "title": "Språk",

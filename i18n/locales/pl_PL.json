@@ -2728,7 +2728,7 @@
           "show_separators": "Pokaż separatory",
           "show_separators_description": "Wyświetlaj poziome linie oddzielające między sekcjami.",
           "logo": "Logo",
-          "logo_description": "Wgraj jeden kwadratowy obraz (zalecane 512×512 PNG). Używany w całej aplikacji i do generowania ikony instalacji PWA. Pliki ICO nie są obsługiwane.",
+          "logo_description": "Wgraj jeden kwadratowy obraz. Używany w całej aplikacji i do generowania ikony instalacji PWA. Pliki ICO nie są obsługiwane.",
           "favicon": "Favicon",
           "favicon_description": "Opcjonalne. Prostszy znak dla karty przeglądarki. PNG, ICO lub WebP.",
           "login_page": "Strona logowania",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Przesyłanie nie powiodło się: {status}",
           "delete_failed": "Usuwanie nie powiodło się: {status}",
           "banner": "Baner menu",
-          "banner_description": "Wyświetlany u góry menu bocznego dla graczy i odwiedzających. Bez banera menu pokazuje Twoje logo i nazwę."
+          "banner_description": "Wyświetlany u góry menu bocznego dla graczy i odwiedzających. Bez banera menu pokazuje Twoje logo i nazwę.",
+          "recommended_size": "Zalecane {w} × {h} px"
         },
         "language": {
           "title": "Język",

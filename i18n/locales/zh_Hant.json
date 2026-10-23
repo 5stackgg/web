@@ -2728,7 +2728,7 @@
           "show_separators": "顯示分隔線",
           "show_separators_description": "在各區塊之間顯示水平分隔線。",
           "logo": "Logo",
-          "logo_description": "上傳一張方形圖片（建議 512×512 PNG）。會在整個應用程式中使用，並用於產生您的 PWA 安裝圖示。不支援 ICO 檔案。",
+          "logo_description": "上傳一張方形圖片。會在整個應用程式中使用，並用於產生您的 PWA 安裝圖示。不支援 ICO 檔案。",
           "favicon": "網站圖示",
           "favicon_description": "選填。用於瀏覽器分頁的簡化標誌。PNG、ICO 或 WebP 格式。",
           "login_page": "登入頁",
@@ -2805,7 +2805,8 @@
           "upload_failed": "上傳失敗：{status}",
           "delete_failed": "刪除失敗：{status}",
           "banner": "導覽橫幅",
-          "banner_description": "顯示在玩家和訪客的側邊導覽頂部。未設定時，導覽顯示你的標誌和名稱。"
+          "banner_description": "顯示在玩家和訪客的側邊導覽頂部。未設定時，導覽顯示你的標誌和名稱。",
+          "recommended_size": "建議 {w} × {h} px"
         },
         "language": {
           "title": "語言",

@@ -2728,7 +2728,7 @@
           "show_separators": "Show separators",
           "show_separators_description": "Display horizontal divider lines between sections.",
           "logo": "Logo",
-          "logo_description": "Upload one square image (512×512 PNG recommended). Used app-wide and to generate your PWA install icon. ICO files aren't supported.",
+          "logo_description": "Upload one square image. Used app-wide and to generate your PWA install icon. ICO files aren't supported.",
           "favicon": "Favicon",
           "favicon_description": "Optional. A simpler mark for the browser tab. PNG, ICO or WebP.",
           "login_page": "Login page",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Upload failed: {status}",
           "delete_failed": "Delete failed: {status}",
           "banner": "Nav banner",
-          "banner_description": "Shown across the top of the left nav for players and visitors. Without one, the nav shows your logo and name."
+          "banner_description": "Shown across the top of the left nav for players and visitors. Without one, the nav shows your logo and name.",
+          "recommended_size": "Recommended {w} × {h} px"
         },
         "language": {
           "title": "Language",

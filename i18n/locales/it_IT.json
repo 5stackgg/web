@@ -2728,7 +2728,7 @@
           "show_separators": "Mostra separatori",
           "show_separators_description": "Mostra linee divisorie orizzontali tra le sezioni.",
           "logo": "Logo",
-          "logo_description": "Carica un'immagine quadrata (consigliato PNG 512×512). Usata in tutta l'app e per generare l'icona di installazione PWA. I file ICO non sono supportati.",
+          "logo_description": "Carica un'immagine quadrata. Usata in tutta l'app e per generare l'icona di installazione PWA. I file ICO non sono supportati.",
           "favicon": "Favicon",
           "favicon_description": "Facoltativa. Un segno più semplice per la scheda del browser. PNG, ICO o WebP.",
           "login_page": "Pagina di accesso",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Caricamento non riuscito: {status}",
           "delete_failed": "Eliminazione non riuscita: {status}",
           "banner": "Banner del menu",
-          "banner_description": "Mostrato in cima al menu laterale per giocatori e visitatori. Senza banner, il menu mostra logo e nome."
+          "banner_description": "Mostrato in cima al menu laterale per giocatori e visitatori. Senza banner, il menu mostra logo e nome.",
+          "recommended_size": "Consigliato: {w} × {h} px"
         },
         "language": {
           "title": "Lingua",

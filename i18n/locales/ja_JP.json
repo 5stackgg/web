@@ -2728,7 +2728,7 @@
           "show_separators": "区切り線を表示",
           "show_separators_description": "セクション間に水平の区切り線を表示します。",
           "logo": "ロゴ",
-          "logo_description": "正方形の画像を1枚アップロードしてください（512×512のPNG推奨）。アプリ全体で使用され、PWAインストールアイコンの生成にも使われます。ICOファイルには対応していません。",
+          "logo_description": "正方形の画像を1枚アップロードしてください。アプリ全体で使用され、PWAインストールアイコンの生成にも使われます。ICOファイルには対応していません。",
           "favicon": "Favicon",
           "favicon_description": "任意項目です。ブラウザタブ用のシンプルなマークです。PNG、ICO、WebPに対応しています。",
           "login_page": "ログインページ",
@@ -2805,7 +2805,8 @@
           "upload_failed": "アップロードに失敗しました: {status}",
           "delete_failed": "削除に失敗しました: {status}",
           "banner": "ナビバナー",
-          "banner_description": "プレイヤーと訪問者のサイドナビ上部に表示されます。未設定の場合はロゴと名前が表示されます。"
+          "banner_description": "プレイヤーと訪問者のサイドナビ上部に表示されます。未設定の場合はロゴと名前が表示されます。",
+          "recommended_size": "推奨 {w} × {h} px"
         },
         "language": {
           "title": "言語",

@@ -2728,7 +2728,7 @@
           "show_separators": "Mostrar Separadores",
           "show_separators_description": "Exibe linhas divisórias horizontais entre seções.",
           "logo": "Logo",
-          "logo_description": "Envie um logo personalizado para a barra lateral. Recomendado: imagem quadrada, PNG ou SVG.",
+          "logo_description": "Envie uma imagem quadrada. Usada em todo o app e para gerar o ícone de instalação do PWA. Arquivos ICO não são suportados.",
           "favicon": "Favicon",
           "favicon_description": "Envie um favicon personalizado. Recomendado: imagem quadrada, PNG ou ICO.",
           "login_page": "Página de Login",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Falha no envio: {status}",
           "delete_failed": "Falha ao excluir: {status}",
           "banner": "Banner do menu",
-          "banner_description": "Exibido no topo do menu lateral para jogadores e visitantes. Sem ele, o menu mostra seu logotipo e nome."
+          "banner_description": "Exibido no topo do menu lateral para jogadores e visitantes. Sem ele, o menu mostra seu logotipo e nome.",
+          "recommended_size": "Recomendado: {w} × {h} px"
         },
         "language": {
           "title": "Idioma",

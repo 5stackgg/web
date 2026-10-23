@@ -2728,7 +2728,7 @@
           "show_separators": "显示分隔符",
           "show_separators_description": "在部分之间显示水平分割线。",
           "logo": "Logo",
-          "logo_description": "上传一张方形图片（建议 512×512 PNG）。在整个应用中使用，并用于生成您的 PWA 安装图标。不支持 ICO 文件。",
+          "logo_description": "上传一张方形图片。在整个应用中使用，并用于生成您的 PWA 安装图标。不支持 ICO 文件。",
           "favicon": "网站图标",
           "favicon_description": "可选。浏览器标签页中显示的更简单的标记。PNG、ICO 或 WebP 格式。",
           "login_page": "登录页",
@@ -2805,7 +2805,8 @@
           "upload_failed": "上传失败：{status}",
           "delete_failed": "删除失败：{status}",
           "banner": "导航横幅",
-          "banner_description": "显示在玩家和访客的侧边导航顶部。未设置时，导航显示你的徽标和名称。"
+          "banner_description": "显示在玩家和访客的侧边导航顶部。未设置时，导航显示你的徽标和名称。",
+          "recommended_size": "建议 {w} × {h} px"
         },
         "language": {
           "title": "语言",

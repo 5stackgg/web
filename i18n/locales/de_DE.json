@@ -2728,7 +2728,7 @@
           "show_separators": "Trennlinien anzeigen",
           "show_separators_description": "Zeigt horizontale Trennlinien zwischen Abschnitten an.",
           "logo": "Logo",
-          "logo_description": "Lade ein quadratisches Bild hoch (empfohlen: 512×512 PNG). Wird app-weit genutzt und für dein PWA-Installationssymbol verwendet. ICO-Dateien werden nicht unterstützt.",
+          "logo_description": "Lade ein quadratisches Bild hoch. Wird app-weit genutzt und für dein PWA-Installationssymbol verwendet. ICO-Dateien werden nicht unterstützt.",
           "favicon": "Favicon",
           "favicon_description": "Optional. Ein einfacheres Zeichen für den Browser-Tab. PNG, ICO oder WebP.",
           "login_page": "Login-Seite",
@@ -2805,7 +2805,8 @@
           "upload_failed": "Upload fehlgeschlagen: {status}",
           "delete_failed": "Löschen fehlgeschlagen: {status}",
           "banner": "Navigationsbanner",
-          "banner_description": "Erscheint oben in der Seitenleiste für Spieler und Besucher. Ohne Banner zeigt die Navigation dein Logo und deinen Namen."
+          "banner_description": "Erscheint oben in der Seitenleiste für Spieler und Besucher. Ohne Banner zeigt die Navigation dein Logo und deinen Namen.",
+          "recommended_size": "Empfohlen: {w} × {h} px"
         },
         "language": {
           "title": "Sprache",

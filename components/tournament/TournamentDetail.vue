@@ -1361,7 +1361,9 @@ const checkInTeamsSubscription = generateSubscription({
           player_steam_id: true,
           role: true,
           checked_in_at: true,
-          player: playerFields,
+          // The check-in panel shows these players without elo and the review
+          // doesn't show them at all.
+          player: playerFieldsWithoutElo,
         },
       ],
       roster_aggregate: [

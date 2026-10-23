@@ -300,9 +300,20 @@ function teams(subscription: Live, rows: Array<Record<string, unknown>>) {
   subscription.observer.next({ data: { tournament_teams: rows } });
 }
 
+// A signed-out visitor is a guest on both halves, so they share the poll with
+// everyone else and their guest fields are read once for all of them.
+describe("the tournament page for a signed-out visitor", () => {
+  it("reads the shared tournament as a guest, with the guest fields beside it", async () => {
+    await mountDetail(undefined);
+
+    expect(full()).toHaveLength(0);
+    expect(shared().map((l) => l.client)).toEqual(["public"]);
+    expect(personal().map((l) => l.client)).toEqual(["default"]);
+  });
+});
+
 describe("the tournament page for everyone else", () => {
   it.each([
-    ["a signed-out visitor", undefined],
     ["a moderator", "moderator"],
     ["a tournament organizer", "tournament_organizer"],
     ["an administrator", "administrator"],

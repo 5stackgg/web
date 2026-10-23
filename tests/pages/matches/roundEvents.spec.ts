@@ -18,7 +18,13 @@ const field = (selections: any[], name: string) =>
 const names = (selection: any) =>
   selection.selectionSet.selections.map((s: any) => s.name.value);
 
+// A moderator reads the whole match on one subscription, which is what these
+// pin; signed-in players and visitors read it split (sharedLive.spec.ts).
 async function mountMatch() {
+  useAuthStore().me = {
+    steam_id: "76561198000000001",
+    role: "moderator",
+  } as any;
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   provideApolloClient(client);
 
@@ -60,6 +66,7 @@ async function mountMatch() {
 }
 
 afterEach(() => {
+  useAuthStore().me = undefined;
   mounted?.unmount();
   mounted = null;
   live = null;

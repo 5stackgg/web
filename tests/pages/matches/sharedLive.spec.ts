@@ -10,7 +10,7 @@ const MATCH = "11111111-1111-4111-8111-111111111111";
 const ME = "76561198000000001";
 
 type Observer = { next: (result: any) => void };
-type Live = { client: string; query: any; observer: Observer };
+type Live = { client: string; query: any; observer: Observer; context: any };
 
 let lives: Live[] = [];
 let mounted: { unmount: () => void } | null = null;
@@ -27,7 +27,12 @@ function spySubscriptions(name: "default" | "public") {
   vi.spyOn(client, "subscribe").mockImplementation((options: any) => ({
     subscribe(observer: Observer) {
       if (root(options.query).name.value === "matches_by_pk") {
-        lives.push({ client: name, query: options.query, observer });
+        lives.push({
+          client: name,
+          query: options.query,
+          observer,
+          context: options.context ?? null,
+        });
       }
       return { unsubscribe() {}, closed: false };
     },
@@ -192,6 +197,48 @@ describe("the match page for a signed-in player", () => {
     });
   });
 
+  it("hands each round its kills on the split path too", async () => {
+    const wrapper = await mountMatch("user");
+    const kill = { round: 1, with: "ak47", headshot: true, player: null };
+
+    await emit(
+      on("public")[0],
+      shared({
+        match_maps: [
+          {
+            id: "map-1",
+            rounds: [{ round: 1 }],
+            player_kills: [kill],
+            player_assists: [],
+          },
+        ],
+      }),
+    );
+    await emit(on("default")[0], personal());
+
+    const [map] = (wrapper.vm as any).matchLive.match_maps;
+    const { round: _, ...withoutRound } = kill;
+    expect(map).not.toHaveProperty("player_kills");
+    expect(map.rounds).toEqual([
+      { round: 1, kills: [withoutRound], assists: [] },
+    ]);
+  });
+
+  // Leaving the page (a deleted match, a draft room) is the socket's call.
+  it("seeds only answers that can't send the viewer away", async () => {
+    await mountMatch("user");
+    const guest = on("public")[0].context.seed;
+    const mine = on("default")[0].context.seed;
+
+    expect(guest({ matches_by_pk: shared() })).toBe(true);
+    expect(guest({ matches_by_pk: null })).toBe(false);
+    expect(mine({ matches_by_pk: personal() })).toBe(true);
+    expect(mine({ matches_by_pk: null })).toBe(false);
+    expect(
+      mine({ matches_by_pk: personal({ draft_games: [{ id: "draft-1" }] }) }),
+    ).toBe(false);
+  });
+
   // A match still picking players is hidden from guests but not from its
   // players: the page reads it the old way, on the viewer's session.
   it("reads a match a guest can't see on the viewer's own session", async () => {
@@ -229,9 +276,20 @@ describe("the match page for a signed-in player", () => {
   });
 });
 
+// A signed-out visitor is a guest on both halves, so they share the poll with
+// everyone else and their guest fields are read once for all of them.
+describe("the match page for a signed-out visitor", () => {
+  it("reads the shared match as a guest, with the guest fields beside it", async () => {
+    await mountMatch(undefined);
+
+    expect(on("public")).toHaveLength(1);
+    expect(on("default")).toHaveLength(1);
+    expect(names(root(on("default")[0].query))).toEqual(PERSONAL);
+  });
+});
+
 describe("the match page for everyone else", () => {
   it.each([
-    ["a signed-out visitor", undefined],
     ["a moderator", "moderator"],
     ["an administrator", "administrator"],
   ])("reads the whole match on one subscription for %s", async (_, role) => {

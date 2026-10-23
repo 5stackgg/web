@@ -5229,7 +5229,7 @@
           "description": "Usuwa pliki {game} z węzła. Mecze i serwery nie będą mogły tu używać {game}, dopóki nie zostanie ponownie zainstalowane.",
           "cs2_returns": "Włączone węzły zainstalują CS2 ponownie przy następnej aktualizacji CS2.",
           "started": "{game} jest usuwane z węzła",
-          "stop_matches": "Najpierw wyłącz „Przyjmuje mecze”"
+          "stop_matches": "Najpierw wyłącz „Matchmaking” lub „Przyjmuje mecze”"
         },
         "rename": "Zmień nazwę {node}",
         "label": "Etykieta węzła",

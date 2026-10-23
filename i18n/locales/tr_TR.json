@@ -5229,7 +5229,7 @@
           "description": "{game} dosyalarını düğümden siler. Yeniden yüklenene kadar maçlar ve sunucular burada {game} kullanamaz.",
           "cs2_returns": "Etkin düğümler bir sonraki CS2 güncellemesinde CS2'yi yeniden yükler.",
           "started": "{game} düğümden kaldırılıyor",
-          "stop_matches": "Önce \"Maç kabul ediyor\" seçeneğini kapatın"
+          "stop_matches": "Önce \"Eşleştirme\" veya \"Maç kabul ediyor\" seçeneğini kapatın"
         },
         "rename": "{node} adını değiştir",
         "label": "Düğüm etiketi",

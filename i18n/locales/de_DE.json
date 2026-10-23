@@ -5229,7 +5229,7 @@
           "description": "Löscht die {game}-Dateien vom Node. Matches und Server können {game} hier erst wieder nutzen, wenn es neu installiert ist.",
           "cs2_returns": "Aktivierte Nodes installieren CS2 mit dem nächsten CS2-Update wieder.",
           "started": "{game} wird vom Node entfernt",
-          "stop_matches": "Schalte zuerst „Nimmt Matches an“ aus"
+          "stop_matches": "Schalte zuerst „Matchmaking“ oder „Nimmt Matches an“ aus"
         },
         "rename": "{node} umbenennen",
         "label": "Node-Bezeichnung",

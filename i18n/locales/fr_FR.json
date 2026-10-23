@@ -5229,7 +5229,7 @@
           "description": "Supprime les fichiers de {game} du nœud. Les matchs et les serveurs ne pourront plus utiliser {game} ici tant qu'il n'est pas réinstallé.",
           "cs2_returns": "Les nœuds activés réinstallent CS2 à la prochaine mise à jour de CS2.",
           "started": "{game} est en cours de suppression du nœud",
-          "stop_matches": "Désactivez d'abord « Accepte des matchs »"
+          "stop_matches": "Désactivez d'abord « Matchmaking » ou « Accepte des matchs »"
         },
         "rename": "Renommer {node}",
         "label": "Libellé du nœud",

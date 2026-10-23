@@ -5229,7 +5229,7 @@
           "description": "Apaga os arquivos do {game} do nó. Partidas e servidores não poderão usar o {game} aqui até que ele seja instalado novamente.",
           "cs2_returns": "Nós ativados instalam o CS2 novamente na próxima atualização do CS2.",
           "started": "{game} está sendo removido do nó",
-          "stop_matches": "Desative \"Aceitando partidas\" primeiro"
+          "stop_matches": "Desative \"Matchmaking\" ou \"Aceitando partidas\" primeiro"
         },
         "rename": "Renomear {node}",
         "label": "Rótulo do nó",

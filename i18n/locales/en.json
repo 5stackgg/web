@@ -5229,7 +5229,7 @@
           "description": "Deletes the {game} files from the node. Matches and servers can't use {game} here until it is installed again.",
           "cs2_returns": "Enabled nodes install CS2 again when the next CS2 update comes out.",
           "started": "{game} is being removed from the node",
-          "stop_matches": "Turn off Accepting matches first"
+          "stop_matches": "Turn off Matchmaking or Accepting matches first"
         },
         "rename": "Rename {node}",
         "label": "Node label",

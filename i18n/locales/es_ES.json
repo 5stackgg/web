@@ -5229,7 +5229,7 @@
           "description": "Borra los archivos de {game} del nodo. Las partidas y los servidores no podrán usar {game} aquí hasta que se vuelva a instalar.",
           "cs2_returns": "Los nodos habilitados vuelven a instalar CS2 con la próxima actualización de CS2.",
           "started": "Se está eliminando {game} del nodo",
-          "stop_matches": "Desactiva primero «Acepta partidas»"
+          "stop_matches": "Desactiva primero «Matchmaking» o «Acepta partidas»"
         },
         "rename": "Renombrar {node}",
         "label": "Etiqueta del nodo",

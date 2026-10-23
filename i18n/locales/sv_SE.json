@@ -5229,7 +5229,7 @@
           "description": "Raderar {game}-filerna från noden. Matcher och servrar kan inte använda {game} här förrän det installeras igen.",
           "cs2_returns": "Aktiverade noder installerar CS2 igen vid nästa CS2-uppdatering.",
           "started": "{game} tas bort från noden",
-          "stop_matches": "Stäng av ”Tar emot matcher” först"
+          "stop_matches": "Stäng av ”Matchmaking” eller ”Tar emot matcher” först"
         },
         "rename": "Byt namn på {node}",
         "label": "Nodens etikett",

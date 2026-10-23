@@ -5229,7 +5229,7 @@
           "description": "從節點刪除 {game} 的檔案。重新安裝之前，此節點上的比賽和伺服器無法使用 {game}。",
           "cs2_returns": "已啟用的節點會在下次 CS2 更新時重新安裝 CS2。",
           "started": "正在從節點移除 {game}",
-          "stop_matches": "請先關閉「接受比賽」"
+          "stop_matches": "請先關閉「配對」或「接受比賽」"
         },
         "rename": "重新命名 {node}",
         "label": "節點標籤",

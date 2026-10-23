@@ -140,7 +140,9 @@ describe("CS2 section", () => {
       entry.textContent?.includes("Remove CS2"),
     );
     expect(remove!.hasAttribute("data-disabled")).toBe(true);
-    expect(remove!.textContent).toContain("Turn off Accepting matches first");
+    expect(remove!.textContent).toContain(
+      "Turn off Matchmaking or Accepting matches first",
+    );
   });
 
   it("can't remove CS2 while its update runs", async () => {

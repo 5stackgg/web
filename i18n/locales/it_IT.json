@@ -5229,7 +5229,7 @@
           "description": "Elimina i file di {game} dal nodo. Partite e server non potranno usare {game} qui finché non verrà reinstallato.",
           "cs2_returns": "I nodi abilitati reinstallano CS2 con il prossimo aggiornamento di CS2.",
           "started": "{game} è in rimozione dal nodo",
-          "stop_matches": "Disattiva prima «Accetta partite»"
+          "stop_matches": "Disattiva prima «Matchmaking» o «Accetta partite»"
         },
         "rename": "Rinomina {node}",
         "label": "Etichetta del nodo",

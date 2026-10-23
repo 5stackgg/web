@@ -3308,7 +3308,7 @@
           "load_failed": "Could not load the sanctions policy",
           "reset": "Reset to default",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "At any scope other than “Bars everything” this source stops writing a platform-wide ban and only issues a scoped cooldown — a VAC-banned account keeps the other half of 5stack.",
+          "platform_ban_narrowed": "At any scope other than “Bars everything” this source stops writing a platform-wide ban and only issues a scoped cooldown — a banned account keeps the other half of 5stack.",
           "threshold": {
             "label": "Sanction after",
             "first_offence": "The first occurrence is punished.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "VAC / game ban",
               "description": "Steam reports a VAC or game ban on the player's account. The counting window is measured against Steam's own days-since-last-ban."
+            },
+            "faceit_ban": {
+              "title": "FACEIT cheating ban",
+              "description": "FACEIT reports an active cheating ban on the player's account. Checked when the player signs in, and the ban here ends when FACEIT's does."
             },
             "tournament_no_show": {
               "title": "Tournament no-show",
@@ -8133,7 +8137,7 @@
         "staff": "Staff ban",
         "staff_hint": "Issued by a moderator",
         "auto": "Automatic",
-        "auto_hint": "For a Steam VAC ban",
+        "auto_hint": "For a Steam VAC or FACEIT cheating ban",
         "banned_here": "Banned here",
         "any": "Any",
         "banned_here_now": "Banned here now",
@@ -8160,7 +8164,7 @@
         "staff": "Staff ban",
         "staff_title": "Banned here by staff",
         "auto": "Auto ban",
-        "auto_title": "Banned here automatically for a Steam VAC ban"
+        "auto_title": "Banned here automatically for a Steam VAC or FACEIT cheating ban"
       },
       "length": {
         "permanent": "Permanent",
@@ -8230,7 +8234,7 @@
         "banned_auto": "Banned here automatically",
         "banned_by": "Banned here by {name}",
         "banned_staff": "Banned here by staff",
-        "for_vac": "for the Steam VAC ban",
+        "for_vac": "for a Steam VAC or FACEIT cheating ban",
         "ban_ended": "Ban ended",
         "last_match": "Last match here",
         "matches_after_steam": "{count} match after the Steam ban | {count} matches after the Steam ban"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Steam Bans",
       "steam_vac_bans": "VAC Ban(s)",
       "steam_game_bans": "Game Ban(s)",
+      "faceit_ban": "FACEIT Ban",
+      "faceit_cheating": "Cheating",
+      "view_faceit": "View on FACEIT",
       "permanent": "Permanent",
       "active": "Active",
       "active_list": "Active: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} VAC ban(s) on Steam",
       "game_banned": "Game banned on Steam",
       "game_banned_count": "{count} game ban(s) on Steam",
+      "faceit_banned": "Banned on FACEIT for cheating",
       "last_ban_days_ago": "Last ban {days} day(s) ago",
       "view_sanctions_hint": "Click to view all sanctions",
       "not_in_cs2": "Not in CS2 right now"

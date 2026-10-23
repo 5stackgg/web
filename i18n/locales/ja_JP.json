@@ -3308,7 +3308,7 @@
           "load_failed": "処分ポリシーを読み込めませんでした",
           "reset": "デフォルトに戻す",
           "permanent": "無期限",
-          "platform_ban_narrowed": "「両方を禁止」以外の範囲では、このソースはプラットフォーム全体の BAN を書き込まなくなり、範囲を限定したクールダウンのみを適用します。VAC BAN を受けたアカウントも 5stack のもう半分は使えます。",
+          "platform_ban_narrowed": "「両方を禁止」以外の範囲では、このソースはプラットフォーム全体の BAN を書き込まなくなり、範囲を限定したクールダウンのみを適用します。BAN を受けたアカウントも 5stack のもう半分は使えます。",
           "threshold": {
             "label": "処分を開始する回数",
             "first_offence": "1 回目の違反から処分されます。",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "VAC / ゲーム BAN",
               "description": "Steam がプレイヤーのアカウントに VAC またはゲーム BAN を報告しています。カウント期間は Steam 自身の「最終 BAN からの日数」を基準に測定されます。"
+            },
+            "faceit_ban": {
+              "title": "FACEIT のチート BAN",
+              "description": "FACEIT がプレイヤーのアカウントに有効なチート BAN を報告しています。プレイヤーのサインイン時に確認され、ここでの BAN は FACEIT の BAN が終わると終了します。"
             },
             "tournament_no_show": {
               "title": "トーナメント不参加",
@@ -8133,7 +8137,7 @@
         "staff": "スタッフBAN",
         "staff_hint": "モデレーターが発行",
         "auto": "自動",
-        "auto_hint": "SteamのVAC BANによる",
+        "auto_hint": "SteamのVAC BANまたはFACEITのチートBANによる",
         "banned_here": "ここでのBAN",
         "any": "すべて",
         "banned_here_now": "現在ここでBAN中",
@@ -8160,7 +8164,7 @@
         "staff": "スタッフBAN",
         "staff_title": "スタッフによりここでBAN",
         "auto": "自動BAN",
-        "auto_title": "SteamのVAC BANによりここで自動BAN"
+        "auto_title": "SteamのVAC BANまたはFACEITのチートBANによりここで自動BAN"
       },
       "length": {
         "permanent": "永久",
@@ -8230,7 +8234,7 @@
         "banned_auto": "ここで自動BAN",
         "banned_by": "{name}がここでBAN",
         "banned_staff": "スタッフがここでBAN",
-        "for_vac": "SteamのVAC BANによる",
+        "for_vac": "SteamのVAC BANまたはFACEITのチートBANによる",
         "ban_ended": "BAN終了",
         "last_match": "ここでの最終試合",
         "matches_after_steam": "SteamのBAN後に{count}試合 | SteamのBAN後に{count}試合"
@@ -12264,6 +12268,9 @@
       "steam_bans": "SteamのBAN",
       "steam_vac_bans": "VAC BAN",
       "steam_game_bans": "ゲームBAN",
+      "faceit_ban": "FACEIT の BAN",
+      "faceit_cheating": "チート",
+      "view_faceit": "FACEIT で確認",
       "permanent": "無期限",
       "active": "有効",
       "active_list": "有効: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "SteamでVAC BAN {count}件",
       "game_banned": "Steamでゲーム内BAN",
       "game_banned_count": "Steamでゲーム内BAN {count}件",
+      "faceit_banned": "FACEIT でチートにより BAN",
       "last_ban_days_ago": "最後のBANは {days} 日前",
       "view_sanctions_hint": "クリックしてすべての処分を表示",
       "not_in_cs2": "現在CS2をプレイしていません"

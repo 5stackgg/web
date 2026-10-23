@@ -3308,7 +3308,7 @@
           "load_failed": "无法加载处罚策略",
           "reset": "恢复默认",
           "permanent": "永久",
-          "platform_ban_narrowed": "在“两者都禁止”以外的任何范围下，此来源不再写入全平台封禁，只会下发范围受限的冷却——被 VAC 封禁的账号仍可使用 5stack 的另一半功能。",
+          "platform_ban_narrowed": "在“两者都禁止”以外的任何范围下，此来源不再写入全平台封禁，只会下发范围受限的冷却——被封禁的账号仍可使用 5stack 的另一半功能。",
           "threshold": {
             "label": "达到多少次后处罚",
             "first_offence": "第一次违规就会被处罚。",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "VAC / 游戏封禁",
               "description": "Steam 报告该玩家账号存在 VAC 或游戏封禁。计数窗口按 Steam 自己提供的“距上次封禁天数”来衡量。"
+            },
+            "faceit_ban": {
+              "title": "FACEIT 作弊封禁",
+              "description": "FACEIT 报告该玩家账号存在有效的作弊封禁。在玩家登录时检查，此处的封禁会在 FACEIT 的封禁结束时一并结束。"
             },
             "tournament_no_show": {
               "title": "赛事缺席",
@@ -8133,7 +8137,7 @@
         "staff": "管理员封禁",
         "staff_hint": "由版主发出",
         "auto": "自动",
-        "auto_hint": "因 Steam VAC 封禁",
+        "auto_hint": "因 Steam VAC 封禁或 FACEIT 作弊封禁",
         "banned_here": "在此封禁",
         "any": "任意",
         "banned_here_now": "当前在此封禁",
@@ -8160,7 +8164,7 @@
         "staff": "管理员封禁",
         "staff_title": "被管理员在此封禁",
         "auto": "自动封禁",
-        "auto_title": "因 Steam VAC 封禁而在此被自动封禁"
+        "auto_title": "因 Steam VAC 封禁或 FACEIT 作弊封禁而在此被自动封禁"
       },
       "length": {
         "permanent": "永久",
@@ -8230,7 +8234,7 @@
         "banned_auto": "在此被自动封禁",
         "banned_by": "在此被 {name} 封禁",
         "banned_staff": "在此被管理员封禁",
-        "for_vac": "因 Steam VAC 封禁",
+        "for_vac": "因 Steam VAC 封禁或 FACEIT 作弊封禁",
         "ban_ended": "封禁结束",
         "last_match": "在此最近一场比赛",
         "matches_after_steam": "Steam 封禁后 {count} 场比赛 | Steam 封禁后 {count} 场比赛"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Steam 封禁",
       "steam_vac_bans": "VAC 封禁",
       "steam_game_bans": "游戏封禁",
+      "faceit_ban": "FACEIT 封禁",
+      "faceit_cheating": "作弊",
+      "view_faceit": "在 FACEIT 上查看",
       "permanent": "永久",
       "active": "活跃",
       "active_list": "生效中：{list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "Steam 上有 {count} 个 VAC 封禁",
       "game_banned": "Steam 上有游戏封禁",
       "game_banned_count": "Steam 上有 {count} 个游戏封禁",
+      "faceit_banned": "因作弊被 FACEIT 封禁",
       "last_ban_days_ago": "最近一次封禁在 {days} 天前",
       "view_sanctions_hint": "点击查看所有处罚",
       "not_in_cs2": "当前不在 CS2 中"

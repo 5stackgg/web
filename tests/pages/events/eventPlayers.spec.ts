@@ -49,6 +49,8 @@ const event = {
   media_aggregate: { aggregate: { count: 0 } },
 };
 
+let unmount: (() => void) | undefined;
+
 async function mountPage() {
   const client = (useNuxtApp() as any).$apollo.defaultClient;
   provideApolloClient(client);
@@ -71,12 +73,15 @@ async function mountPage() {
     route: `/events/${EVENT_ID}`,
     global: { mixins: (useNuxtApp().vueApp as any)._context.mixins },
   });
+  unmount = () => wrapper.unmount();
   await flushPromises();
   return wrapper;
 }
 
 describe("event page players", () => {
   afterEach(() => {
+    unmount?.();
+    unmount = undefined;
     vi.restoreAllMocks();
   });
 

@@ -3308,7 +3308,7 @@
           "load_failed": "No se ha podido cargar la política de sanciones",
           "reset": "Restablecer valores por defecto",
           "permanent": "Permanente",
-          "platform_ban_narrowed": "Con cualquier alcance que no sea «Bloquea ambos», esta fuente deja de aplicar un baneo de toda la plataforma y solo impone un bloqueo limitado: una cuenta baneada por VAC conserva la otra mitad de 5stack.",
+          "platform_ban_narrowed": "Con cualquier alcance que no sea «Bloquea ambos», esta fuente deja de aplicar un baneo de toda la plataforma y solo impone un bloqueo limitado: una cuenta baneada conserva la otra mitad de 5stack.",
           "threshold": {
             "label": "Sancionar a partir de",
             "first_offence": "Ya se castiga la primera infracción.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "Baneo VAC / de juego",
               "description": "Steam informa de un baneo VAC o de juego en la cuenta del jugador. La ventana de conteo se mide con los días desde el último baneo que da la propia Steam."
+            },
+            "faceit_ban": {
+              "title": "Baneo por trampas en FACEIT",
+              "description": "FACEIT informa de un baneo activo por trampas en la cuenta del jugador. Se comprueba cuando el jugador inicia sesión, y el baneo aquí termina cuando termina el de FACEIT."
             },
             "tournament_no_show": {
               "title": "Ausencia en torneo",
@@ -8133,7 +8137,7 @@
         "staff": "Baneo del staff",
         "staff_hint": "Impuesto por un moderador",
         "auto": "Automático",
-        "auto_hint": "Por un baneo VAC de Steam",
+        "auto_hint": "Por un baneo VAC de Steam o un baneo por trampas en FACEIT",
         "banned_here": "Baneado aquí",
         "any": "Cualquiera",
         "banned_here_now": "Baneado aquí ahora",
@@ -8160,7 +8164,7 @@
         "staff": "Baneo del staff",
         "staff_title": "Baneado aquí por el staff",
         "auto": "Baneo auto",
-        "auto_title": "Baneado aquí automáticamente por un baneo VAC de Steam"
+        "auto_title": "Baneado aquí automáticamente por un baneo VAC de Steam o un baneo por trampas en FACEIT"
       },
       "length": {
         "permanent": "Permanente",
@@ -8230,7 +8234,7 @@
         "banned_auto": "Baneado aquí automáticamente",
         "banned_by": "Baneado aquí por {name}",
         "banned_staff": "Baneado aquí por el staff",
-        "for_vac": "por el baneo VAC de Steam",
+        "for_vac": "por un baneo VAC de Steam o un baneo por trampas en FACEIT",
         "ban_ended": "Baneo terminado",
         "last_match": "Última partida aquí",
         "matches_after_steam": "{count} partida tras el baneo de Steam | {count} partidas tras el baneo de Steam"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Vetos de Steam",
       "steam_vac_bans": "Veto(s) VAC",
       "steam_game_bans": "Veto(s) de juego",
+      "faceit_ban": "Baneo de FACEIT",
+      "faceit_cheating": "Trampas",
+      "view_faceit": "Ver en FACEIT",
       "permanent": "Permanente",
       "active": "Activa",
       "active_list": "Activas: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} baneo(s) de VAC en Steam",
       "game_banned": "Baneado del juego en Steam",
       "game_banned_count": "{count} baneo(s) de juego en Steam",
+      "faceit_banned": "Baneado en FACEIT por hacer trampas",
       "last_ban_days_ago": "Último veto hace {days} día(s)",
       "view_sanctions_hint": "Haz clic para ver todas las sanciones",
       "not_in_cs2": "Ahora mismo no está en CS2"

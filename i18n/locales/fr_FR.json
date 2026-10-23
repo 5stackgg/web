@@ -3308,7 +3308,7 @@
           "load_failed": "Impossible de charger la politique de sanctions",
           "reset": "Rétablir les valeurs par défaut",
           "permanent": "Permanente",
-          "platform_ban_narrowed": "À tout périmètre autre que « Bloque les deux », cette source cesse d'écrire un bannissement à l'échelle de la plateforme et n'applique qu'une exclusion limitée — un compte banni par VAC garde l'autre moitié de 5stack.",
+          "platform_ban_narrowed": "À tout périmètre autre que « Bloque les deux », cette source cesse d'écrire un bannissement à l'échelle de la plateforme et n'applique qu'une exclusion limitée — un compte banni garde l'autre moitié de 5stack.",
           "threshold": {
             "label": "Sanctionner à partir de",
             "first_offence": "La première infraction est déjà sanctionnée.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "Bannissement VAC / jeu",
               "description": "Steam signale un bannissement VAC ou jeu sur le compte du joueur. La fenêtre de comptage est mesurée sur le nombre de jours depuis le dernier bannissement fourni par Steam."
+            },
+            "faceit_ban": {
+              "title": "Bannissement FACEIT pour triche",
+              "description": "FACEIT signale un bannissement actif pour triche sur le compte du joueur. Vérifié à la connexion du joueur ; le bannissement ici prend fin en même temps que celui de FACEIT."
             },
             "tournament_no_show": {
               "title": "Absence en tournoi",
@@ -8133,7 +8137,7 @@
         "staff": "Ban du staff",
         "staff_hint": "Prononcé par un modérateur",
         "auto": "Automatique",
-        "auto_hint": "Pour un ban VAC Steam",
+        "auto_hint": "Pour un ban VAC Steam ou un bannissement FACEIT pour triche",
         "banned_here": "Banni ici",
         "any": "Tous",
         "banned_here_now": "Banni ici actuellement",
@@ -8160,7 +8164,7 @@
         "staff": "Ban du staff",
         "staff_title": "Banni ici par le staff",
         "auto": "Ban auto",
-        "auto_title": "Banni ici automatiquement pour un ban VAC Steam"
+        "auto_title": "Banni ici automatiquement pour un ban VAC Steam ou un bannissement FACEIT pour triche"
       },
       "length": {
         "permanent": "Permanent",
@@ -8230,7 +8234,7 @@
         "banned_auto": "Banni ici automatiquement",
         "banned_by": "Banni ici par {name}",
         "banned_staff": "Banni ici par le staff",
-        "for_vac": "pour le ban VAC Steam",
+        "for_vac": "pour un ban VAC Steam ou un bannissement FACEIT pour triche",
         "ban_ended": "Ban terminé",
         "last_match": "Dernier match ici",
         "matches_after_steam": "{count} match après le ban Steam | {count} matchs après le ban Steam"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Bannissements Steam",
       "steam_vac_bans": "Bannissement(s) VAC",
       "steam_game_bans": "Bannissement(s) de jeu",
+      "faceit_ban": "Bannissement FACEIT",
+      "faceit_cheating": "Triche",
+      "view_faceit": "Voir sur FACEIT",
       "permanent": "Permanente",
       "active": "Active",
       "active_list": "Actives : {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} ban(s) VAC sur Steam",
       "game_banned": "Game ban sur Steam",
       "game_banned_count": "{count} game ban(s) sur Steam",
+      "faceit_banned": "Banni sur FACEIT pour triche",
       "last_ban_days_ago": "Dernier bannissement il y a {days} jour(s)",
       "view_sanctions_hint": "Cliquez pour voir toutes les sanctions",
       "not_in_cs2": "Pas sur CS2 en ce moment"

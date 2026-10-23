@@ -3308,7 +3308,7 @@
           "load_failed": "Sanktionsrichtlinie konnte nicht geladen werden",
           "reset": "Auf Standard zurücksetzen",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "Bei jedem Geltungsbereich außer „Sperrt beides“ schreibt diese Quelle keine plattformweite Sperre mehr, sondern nur noch eine begrenzte Sperrzeit — ein VAC-gebanntes Konto behält die andere Hälfte von 5stack.",
+          "platform_ban_narrowed": "Bei jedem Geltungsbereich außer „Sperrt beides“ schreibt diese Quelle keine plattformweite Sperre mehr, sondern nur noch eine begrenzte Sperrzeit — ein gebanntes Konto behält die andere Hälfte von 5stack.",
           "threshold": {
             "label": "Sanktion ab",
             "first_offence": "Schon der erste Verstoß wird bestraft.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "VAC-/Game-Ban",
               "description": "Steam meldet einen VAC- oder Game-Ban für das Konto des Spielers. Der Zählzeitraum wird an Steams eigenem Wert „Tage seit dem letzten Ban“ gemessen."
+            },
+            "faceit_ban": {
+              "title": "FACEIT-Cheating-Sperre",
+              "description": "FACEIT meldet eine aktive Sperre wegen Cheatens für das Konto des Spielers. Geprüft wird bei der Anmeldung des Spielers, und die Sperre hier endet, wenn die von FACEIT endet."
             },
             "tournament_no_show": {
               "title": "Turnier-No-Show",
@@ -8133,7 +8137,7 @@
         "staff": "Staff-Bann",
         "staff_hint": "Von einem Moderator verhängt",
         "auto": "Automatisch",
-        "auto_hint": "Für einen Steam-VAC-Bann",
+        "auto_hint": "Für einen Steam-VAC-Bann oder eine FACEIT-Cheating-Sperre",
         "banned_here": "Hier gebannt",
         "any": "Alle",
         "banned_here_now": "Hier aktuell gebannt",
@@ -8160,7 +8164,7 @@
         "staff": "Staff-Bann",
         "staff_title": "Hier vom Staff gebannt",
         "auto": "Auto-Bann",
-        "auto_title": "Hier automatisch wegen eines Steam-VAC-Banns gebannt"
+        "auto_title": "Hier automatisch wegen eines Steam-VAC-Banns oder einer FACEIT-Cheating-Sperre gebannt"
       },
       "length": {
         "permanent": "Permanent",
@@ -8230,7 +8234,7 @@
         "banned_auto": "Hier automatisch gebannt",
         "banned_by": "Hier von {name} gebannt",
         "banned_staff": "Hier vom Staff gebannt",
-        "for_vac": "wegen des Steam-VAC-Banns",
+        "for_vac": "wegen eines Steam-VAC-Banns oder einer FACEIT-Cheating-Sperre",
         "ban_ended": "Bann beendet",
         "last_match": "Letztes Match hier",
         "matches_after_steam": "{count} Match nach dem Steam-Bann | {count} Matches nach dem Steam-Bann"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Steam-Sperren",
       "steam_vac_bans": "VAC-Sperre(n)",
       "steam_game_bans": "Spielsperre(n)",
+      "faceit_ban": "FACEIT-Sperre",
+      "faceit_cheating": "Cheating",
+      "view_faceit": "Auf FACEIT ansehen",
       "permanent": "Permanent",
       "active": "Aktiv",
       "active_list": "Aktiv: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} VAC-Ban(s) auf Steam",
       "game_banned": "Auf Steam Game-gebannt",
       "game_banned_count": "{count} Game-Ban(s) auf Steam",
+      "faceit_banned": "Auf FACEIT wegen Cheatens gesperrt",
       "last_ban_days_ago": "Letzte Sperre vor {days} Tag(en)",
       "view_sanctions_hint": "Klicken, um alle Sanktionen zu sehen",
       "not_in_cs2": "Gerade nicht in CS2"

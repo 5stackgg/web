@@ -3308,7 +3308,7 @@
           "load_failed": "제재 정책을 불러오지 못했습니다",
           "reset": "기본값으로 초기화",
           "permanent": "영구",
-          "platform_ban_narrowed": "‘둘 다 차단’ 이외의 범위에서는 이 항목이 플랫폼 전체 차단을 기록하지 않고 범위가 한정된 이용 제한만 적용합니다 — VAC 차단된 계정도 5stack의 나머지 절반은 그대로 쓸 수 있습니다.",
+          "platform_ban_narrowed": "‘둘 다 차단’ 이외의 범위에서는 이 항목이 플랫폼 전체 차단을 기록하지 않고 범위가 한정된 이용 제한만 적용합니다 — 차단된 계정도 5stack의 나머지 절반은 그대로 쓸 수 있습니다.",
           "threshold": {
             "label": "제재 시작 횟수",
             "first_offence": "첫 위반부터 제재합니다.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "VAC / 게임 차단",
               "description": "Steam이 플레이어 계정에 VAC 또는 게임 차단을 보고했습니다. 집계 기간은 Steam이 제공하는 마지막 차단 이후 경과 일수를 기준으로 측정합니다."
+            },
+            "faceit_ban": {
+              "title": "FACEIT 치팅 차단",
+              "description": "FACEIT가 플레이어 계정에 활성 치팅 차단을 보고했습니다. 플레이어가 로그인할 때 확인하며, 이곳의 차단은 FACEIT의 차단이 끝나면 함께 끝납니다."
             },
             "tournament_no_show": {
               "title": "토너먼트 불참",
@@ -8133,7 +8137,7 @@
         "staff": "스태프 밴",
         "staff_hint": "모더레이터가 부여",
         "auto": "자동",
-        "auto_hint": "Steam VAC 밴에 따른 조치",
+        "auto_hint": "Steam VAC 밴 또는 FACEIT 치팅 차단에 따른 조치",
         "banned_here": "여기서 밴",
         "any": "전체",
         "banned_here_now": "현재 여기서 밴됨",
@@ -8160,7 +8164,7 @@
         "staff": "스태프 밴",
         "staff_title": "스태프가 여기서 밴함",
         "auto": "자동 밴",
-        "auto_title": "Steam VAC 밴으로 여기서 자동 밴됨"
+        "auto_title": "Steam VAC 밴 또는 FACEIT 치팅 차단으로 여기서 자동 밴됨"
       },
       "length": {
         "permanent": "영구",
@@ -8230,7 +8234,7 @@
         "banned_auto": "여기서 자동 밴",
         "banned_by": "{name}이(가) 여기서 밴",
         "banned_staff": "스태프가 여기서 밴",
-        "for_vac": "Steam VAC 밴에 따른 조치",
+        "for_vac": "Steam VAC 밴 또는 FACEIT 치팅 차단에 따른 조치",
         "ban_ended": "밴 종료",
         "last_match": "여기서의 마지막 경기",
         "matches_after_steam": "Steam 밴 이후 {count}경기 | Steam 밴 이후 {count}경기"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Steam 차단",
       "steam_vac_bans": "VAC 차단",
       "steam_game_bans": "게임 차단",
+      "faceit_ban": "FACEIT 차단",
+      "faceit_cheating": "치팅",
+      "view_faceit": "FACEIT에서 보기",
       "permanent": "영구",
       "active": "활성",
       "active_list": "활성: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "Steam VAC 밴 {count}건",
       "game_banned": "Steam에서 게임 밴됨",
       "game_banned_count": "Steam 게임 밴 {count}건",
+      "faceit_banned": "FACEIT에서 치팅으로 밴됨",
       "last_ban_days_ago": "마지막 차단은 {days}일 전",
       "view_sanctions_hint": "클릭하면 모든 제재를 봅니다",
       "not_in_cs2": "지금은 CS2를 하고 있지 않습니다"

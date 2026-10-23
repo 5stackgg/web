@@ -38,9 +38,10 @@ export interface SanctionSource {
   default_scope: string;
   /**
    * True when the source issues a real platform `player_sanctions` ban rather
-   * than a scoped cooldown — today only `vac_ban`, and only while its scope is
-   * `both`. Narrowing the scope of such a source stops the platform ban row
-   * being written at all, which is worth saying out loud in the UI.
+   * than a scoped cooldown — today `vac_ban` and `faceit_ban`, and only while
+   * the scope is `both`. Narrowing the scope of such a source stops the
+   * platform ban row being written at all, which is worth saying out loud in
+   * the UI.
    */
   writes_platform_ban: boolean;
 }

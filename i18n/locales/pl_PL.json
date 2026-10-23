@@ -3308,7 +3308,7 @@
           "load_failed": "Nie udało się wczytać zasad sankcji",
           "reset": "Przywróć domyślne",
           "permanent": "Stała",
-          "platform_ban_narrowed": "Przy każdym zakresie innym niż „Blokuje oba” to źródło przestaje zapisywać bana na całej platformie i nakłada tylko ograniczoną blokadę — konto z banem VAC zachowuje drugą połowę 5stack.",
+          "platform_ban_narrowed": "Przy każdym zakresie innym niż „Blokuje oba” to źródło przestaje zapisywać bana na całej platformie i nakłada tylko ograniczoną blokadę — zbanowane konto zachowuje drugą połowę 5stack.",
           "threshold": {
             "label": "Ukarz po",
             "first_offence": "Karane jest już pierwsze przewinienie.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "Ban VAC / gry",
               "description": "Steam zgłasza bana VAC lub bana gry na koncie gracza. Okno zliczania mierzone jest według liczby dni od ostatniego bana podawanej przez samego Steama."
+            },
+            "faceit_ban": {
+              "title": "Ban FACEIT za oszukiwanie",
+              "description": "FACEIT zgłasza aktywny ban za oszukiwanie na koncie gracza. Sprawdzane przy logowaniu gracza, a ban tutaj kończy się wraz z banem na FACEIT."
             },
             "tournament_no_show": {
               "title": "Nieobecność na turnieju",
@@ -8133,7 +8137,7 @@
         "staff": "Ban od administracji",
         "staff_hint": "Nałożony przez moderatora",
         "auto": "Automatyczny",
-        "auto_hint": "Za ban VAC na Steam",
+        "auto_hint": "Za ban VAC na Steam lub ban FACEIT za oszukiwanie",
         "banned_here": "Zbanowany tutaj",
         "any": "Dowolny",
         "banned_here_now": "Obecnie zbanowany tutaj",
@@ -8160,7 +8164,7 @@
         "staff": "Ban administracji",
         "staff_title": "Zbanowany tutaj przez administrację",
         "auto": "Auto-ban",
-        "auto_title": "Zbanowany tutaj automatycznie za ban VAC na Steam"
+        "auto_title": "Zbanowany tutaj automatycznie za ban VAC na Steam lub ban FACEIT za oszukiwanie"
       },
       "length": {
         "permanent": "Permanentny",
@@ -8230,7 +8234,7 @@
         "banned_auto": "Zbanowany tutaj automatycznie",
         "banned_by": "Zbanowany tutaj przez {name}",
         "banned_staff": "Zbanowany tutaj przez administrację",
-        "for_vac": "za ban VAC na Steam",
+        "for_vac": "za ban VAC na Steam lub ban FACEIT za oszukiwanie",
         "ban_ended": "Ban zakończony",
         "last_match": "Ostatni mecz tutaj",
         "matches_after_steam": "{count} mecz po banie na Steam | {count} meczów po banie na Steam"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Bany Steam",
       "steam_vac_bans": "Bany VAC",
       "steam_game_bans": "Bany w grze",
+      "faceit_ban": "Ban FACEIT",
+      "faceit_cheating": "Oszukiwanie",
+      "view_faceit": "Zobacz na FACEIT",
       "permanent": "Stała",
       "active": "Aktywna",
       "active_list": "Aktywne: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} banów VAC na Steam",
       "game_banned": "Zbanowany w grze na Steam",
       "game_banned_count": "{count} banów w grze na Steam",
+      "faceit_banned": "Zbanowany na FACEIT za oszukiwanie",
       "last_ban_days_ago": "Ostatni ban {days} dni temu",
       "view_sanctions_hint": "Kliknij, aby zobaczyć wszystkie sankcje",
       "not_in_cs2": "Nie jest teraz w CS2"

@@ -3308,7 +3308,7 @@
           "load_failed": "Sanktionspolitikken kunne ikke indlæses",
           "reset": "Nulstil til standard",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "Ved ethvert omfang ud over “Blokerer begge” skriver denne kilde ikke længere en platformsdækkende udelukkelse, men kun en afgrænset karantæne — en VAC-bannet konto beholder den anden halvdel af 5stack.",
+          "platform_ban_narrowed": "Ved ethvert omfang ud over “Blokerer begge” skriver denne kilde ikke længere en platformsdækkende udelukkelse, men kun en afgrænset karantæne — en bannet konto beholder den anden halvdel af 5stack.",
           "threshold": {
             "label": "Sanktionér fra",
             "first_offence": "Allerede den første forseelse straffes.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "VAC-/spiludelukkelse",
               "description": "Steam melder en VAC- eller spiludelukkelse på spillerens konto. Tælleperioden måles mod Steams eget antal dage siden seneste udelukkelse."
+            },
+            "faceit_ban": {
+              "title": "FACEIT-udelukkelse for snyd",
+              "description": "FACEIT melder en aktiv udelukkelse for snyd på spillerens konto. Tjekkes, når spilleren logger ind, og udelukkelsen her slutter, når FACEITs gør."
             },
             "tournament_no_show": {
               "title": "Udeblivelse fra turnering",
@@ -8133,7 +8137,7 @@
         "staff": "Staff-ban",
         "staff_hint": "Givet af en moderator",
         "auto": "Automatisk",
-        "auto_hint": "For et Steam VAC-ban",
+        "auto_hint": "For et Steam VAC-ban eller en FACEIT-udelukkelse for snyd",
         "banned_here": "Bannet her",
         "any": "Alle",
         "banned_here_now": "Bannet her nu",
@@ -8160,7 +8164,7 @@
         "staff": "Staff-ban",
         "staff_title": "Bannet her af staff",
         "auto": "Auto-ban",
-        "auto_title": "Bannet her automatisk for et Steam VAC-ban"
+        "auto_title": "Bannet her automatisk for et Steam VAC-ban eller en FACEIT-udelukkelse for snyd"
       },
       "length": {
         "permanent": "Permanent",
@@ -8230,7 +8234,7 @@
         "banned_auto": "Bannet her automatisk",
         "banned_by": "Bannet her af {name}",
         "banned_staff": "Bannet her af staff",
-        "for_vac": "for Steam VAC-bannet",
+        "for_vac": "for et Steam VAC-ban eller en FACEIT-udelukkelse for snyd",
         "ban_ended": "Ban afsluttet",
         "last_match": "Seneste kamp her",
         "matches_after_steam": "{count} kamp efter Steam-bannet | {count} kampe efter Steam-bannet"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Steam-udelukkelser",
       "steam_vac_bans": "VAC-udelukkelser",
       "steam_game_bans": "Spiludelukkelser",
+      "faceit_ban": "FACEIT-udelukkelse",
+      "faceit_cheating": "Snyd",
+      "view_faceit": "Se på FACEIT",
       "permanent": "Permanent",
       "active": "Aktiv",
       "active_list": "Aktive: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} VAC-ban på Steam",
       "game_banned": "Game bannet på Steam",
       "game_banned_count": "{count} game ban på Steam",
+      "faceit_banned": "Udelukket på FACEIT for snyd",
       "last_ban_days_ago": "Seneste udelukkelse for {days} dage siden",
       "view_sanctions_hint": "Klik for at se alle sanktioner",
       "not_in_cs2": "Ikke i CS2 lige nu"

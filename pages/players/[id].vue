@@ -2164,8 +2164,8 @@ const AwardComposer = defineAsyncComponent(
                     </Transition>
 
                     <PlayerVacBadge
-                      v-if="hasSteamBans"
-                      :player="player"
+                      v-if="hasSteamBans || sanctionsSummary.faceitBannedAt"
+                      :player="banBadgePlayer"
                       variant="button"
                       @click="sanctionsSheetOpen = true"
                     />
@@ -3882,6 +3882,7 @@ export default {
         hasActive: false,
         hasSteamBans: false,
         vacBanned: false,
+        faceitBannedAt: null,
       } as Record<string, any>,
       pageContentTimedOut: false,
       pageContentTimeout: null as number | null,
@@ -3980,6 +3981,12 @@ export default {
       return !!(
         this.player?.vac_banned || (this.player?.game_ban_count ?? 0) > 0
       );
+    },
+    banBadgePlayer(): Record<string, any> {
+      return {
+        ...this.player,
+        faceit_banned_at: this.sanctionsSummary.faceitBannedAt,
+      };
     },
     heroActions(): Array<Record<string, any>> {
       const actions: Array<Record<string, any>> = [];

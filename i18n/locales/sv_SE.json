@@ -3308,7 +3308,7 @@
           "load_failed": "Kunde inte läsa in sanktionspolicyn",
           "reset": "Återställ till standard",
           "permanent": "Permanent",
-          "platform_ban_narrowed": "Vid varje omfattning utom ”Blockerar båda” skriver den här källan inte längre en plattformsomfattande avstängning, utan bara en avgränsad karantän — ett VAC-bannat konto behåller den andra halvan av 5stack.",
+          "platform_ban_narrowed": "Vid varje omfattning utom ”Blockerar båda” skriver den här källan inte längre en plattformsomfattande avstängning, utan bara en avgränsad karantän — ett bannat konto behåller den andra halvan av 5stack.",
           "threshold": {
             "label": "Sanktionera från",
             "first_offence": "Redan den första förseelsen bestraffas.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "VAC-/spelavstängning",
               "description": "Steam rapporterar en VAC- eller spelavstängning på spelarens konto. Räkningsperioden mäts mot Steams eget antal dagar sedan senaste avstängning."
+            },
+            "faceit_ban": {
+              "title": "FACEIT-avstängning för fusk",
+              "description": "FACEIT rapporterar en aktiv avstängning för fusk på spelarens konto. Kontrolleras när spelaren loggar in, och avstängningen här upphör när FACEITs gör det."
             },
             "tournament_no_show": {
               "title": "Utebliven i turnering",
@@ -8133,7 +8137,7 @@
         "staff": "Staffban",
         "staff_hint": "Utfärdad av en moderator",
         "auto": "Automatisk",
-        "auto_hint": "För en Steam VAC-ban",
+        "auto_hint": "För en Steam VAC-ban eller en FACEIT-avstängning för fusk",
         "banned_here": "Bannad här",
         "any": "Alla",
         "banned_here_now": "Bannad här nu",
@@ -8160,7 +8164,7 @@
         "staff": "Staffban",
         "staff_title": "Bannad här av staff",
         "auto": "Autoban",
-        "auto_title": "Bannad här automatiskt för en Steam VAC-ban"
+        "auto_title": "Bannad här automatiskt för en Steam VAC-ban eller en FACEIT-avstängning för fusk"
       },
       "length": {
         "permanent": "Permanent",
@@ -8230,7 +8234,7 @@
         "banned_auto": "Bannad här automatiskt",
         "banned_by": "Bannad här av {name}",
         "banned_staff": "Bannad här av staff",
-        "for_vac": "för Steam VAC-banen",
+        "for_vac": "för en Steam VAC-ban eller en FACEIT-avstängning för fusk",
         "ban_ended": "Banen avslutad",
         "last_match": "Senaste match här",
         "matches_after_steam": "{count} match efter Steam-banen | {count} matcher efter Steam-banen"
@@ -12264,6 +12268,9 @@
       "steam_bans": "Steam-avstängningar",
       "steam_vac_bans": "VAC-avstängningar",
       "steam_game_bans": "Spelavstängningar",
+      "faceit_ban": "FACEIT-avstängning",
+      "faceit_cheating": "Fusk",
+      "view_faceit": "Visa på FACEIT",
       "permanent": "Permanent",
       "active": "Aktiv",
       "active_list": "Aktiva: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} VAC-avstängning(ar) på Steam",
       "game_banned": "Spelbannad på Steam",
       "game_banned_count": "{count} spelavstängning(ar) på Steam",
+      "faceit_banned": "Avstängd på FACEIT för fusk",
       "last_ban_days_ago": "Senaste avstängningen för {days} dagar sedan",
       "view_sanctions_hint": "Klicka för att se alla sanktioner",
       "not_in_cs2": "Inte i CS2 just nu"

@@ -3308,7 +3308,7 @@
           "load_failed": "تعذّر تحميل سياسة العقوبات",
           "reset": "أعد الضبط إلى الافتراضي",
           "permanent": "دائم",
-          "platform_ban_narrowed": "في أي نطاق غير «يحظر الاثنين» يتوقف هذا المصدر عن تسجيل حظر على مستوى المنصة ويكتفي بحظر محدود النطاق — الحساب المحظور بـ VAC يحتفظ بالنصف الآخر من 5stack.",
+          "platform_ban_narrowed": "في أي نطاق غير «يحظر الاثنين» يتوقف هذا المصدر عن تسجيل حظر على مستوى المنصة ويكتفي بحظر محدود النطاق — الحساب المحظور يحتفظ بالنصف الآخر من 5stack.",
           "threshold": {
             "label": "العقوبة بعد",
             "first_offence": "تُعاقَب المخالفة الأولى مباشرة.",
@@ -3358,6 +3358,10 @@
             "vac_ban": {
               "title": "حظر VAC / حظر اللعبة",
               "description": "يبلّغ Steam عن حظر VAC أو حظر لعبة على حساب اللاعب. تُقاس فترة الاحتساب بعدد الأيام منذ آخر حظر كما يوفّره Steam نفسه."
+            },
+            "faceit_ban": {
+              "title": "حظر غش على FACEIT",
+              "description": "يبلّغ FACEIT عن حظر نشط بسبب الغش على حساب اللاعب. يُفحص عند تسجيل دخول اللاعب، وينتهي الحظر هنا عندما ينتهي حظر FACEIT."
             },
             "tournament_no_show": {
               "title": "التخلّف عن البطولة",
@@ -8133,7 +8137,7 @@
         "staff": "حظر من الطاقم",
         "staff_hint": "فرضه مشرف",
         "auto": "تلقائي",
-        "auto_hint": "بسبب حظر VAC على Steam",
+        "auto_hint": "بسبب حظر VAC على Steam أو حظر غش على FACEIT",
         "banned_here": "محظور هنا",
         "any": "الكل",
         "banned_here_now": "محظور هنا الآن",
@@ -8160,7 +8164,7 @@
         "staff": "حظر الطاقم",
         "staff_title": "حظره الطاقم هنا",
         "auto": "حظر تلقائي",
-        "auto_title": "حُظر هنا تلقائيًا بسبب حظر VAC على Steam"
+        "auto_title": "حُظر هنا تلقائيًا بسبب حظر VAC على Steam أو حظر غش على FACEIT"
       },
       "length": {
         "permanent": "دائم",
@@ -8230,7 +8234,7 @@
         "banned_auto": "حُظر هنا تلقائيًا",
         "banned_by": "حظره {name} هنا",
         "banned_staff": "حظره الطاقم هنا",
-        "for_vac": "بسبب حظر VAC على Steam",
+        "for_vac": "بسبب حظر VAC على Steam أو حظر غش على FACEIT",
         "ban_ended": "انتهى الحظر",
         "last_match": "آخر مباراة هنا",
         "matches_after_steam": "{count} مباراة بعد حظر Steam | {count} مباريات بعد حظر Steam"
@@ -12264,6 +12268,9 @@
       "steam_bans": "حظر Steam",
       "steam_vac_bans": "حظر VAC",
       "steam_game_bans": "حظر اللعبة",
+      "faceit_ban": "حظر FACEIT",
+      "faceit_cheating": "غش",
+      "view_faceit": "عرض على FACEIT",
       "permanent": "دائم",
       "active": "نشطة",
       "active_list": "النشطة: {list}",
@@ -12307,6 +12314,7 @@
       "vac_banned_count": "{count} حظر VAC على Steam",
       "game_banned": "محظور من اللعبة على Steam",
       "game_banned_count": "{count} حظر لعبة على Steam",
+      "faceit_banned": "محظور على FACEIT بسبب الغش",
       "last_ban_days_ago": "آخر حظر قبل {days} يوم",
       "view_sanctions_hint": "انقر لعرض كل العقوبات",
       "not_in_cs2": "ليس في CS2 حاليًا"

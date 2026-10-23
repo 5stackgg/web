@@ -266,6 +266,27 @@ describe("banTimeline", () => {
     ]);
   });
 
+  it.each([
+    {
+      title: "the day of the first match",
+      first_match_at: "2026-10-19T15:00:00Z",
+      arrived: false,
+    },
+    { title: "no match here at all", first_match_at: null, arrived: true },
+  ])("counts a Steam ban on $title as before joining: $arrived", (row) => {
+    const [steam] = banTimeline(
+      entry({
+        steam_banned_on: "2026-10-19",
+        vac_ban_count: 1,
+        first_match_at: row.first_match_at,
+        matches_played: row.first_match_at ? 1 : 0,
+      }),
+      NOW,
+    ).filter((item) => item.type === "steam");
+
+    expect(steam).toMatchObject({ arrived: row.arrived });
+  });
+
   it("keeps one Steam entry when the api has no day per kind", () => {
     const steam = banTimeline(
       entry({

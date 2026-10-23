@@ -69,39 +69,40 @@ export default {
       eventTournamentIds: [] as string[],
       // null until the first result lands -- the cold start must not flash
       // in front of a feed that is about to render.
-      matchesCount: null as number | null,
-      tournamentsCount: null as number | null,
+      hasMatches: null as boolean | null,
+      hasTournaments: null as boolean | null,
     };
   },
   apollo: {
     $subscribe: {
       // A fresh install has no matches or tournaments at all; these two
-      // counts detect that so the page can show its cold start. They're
+      // ask for one of each so the page can show its cold start. They're
       // subscriptions so it clears itself the moment the first match lands.
-      matchesCount: {
+      // One row, not a count: a signed-in viewer's count ran the matches
+      // permission over every match there is, on every poll.
+      hasMatches: {
         query: typedGql("subscription")({
-          matches_aggregate: [{}, { aggregate: { count: true } }],
+          matches: [{ limit: 1 }, { id: true }],
         }),
         result({ data }: any) {
-          this.matchesCount = data?.matches_aggregate?.aggregate?.count ?? 0;
+          this.hasMatches = (data?.matches?.length ?? 0) > 0;
         },
         error(error: any) {
-          console.error("[watch] matches count subscription error:", error);
+          console.error("[watch] matches subscription error:", error);
         },
       },
-      tournamentsCount: {
+      hasTournaments: {
         query: typedGql("subscription")({
-          tournaments_aggregate: [
-            { where: { _and: [NOT_LEAGUE_TOURNAMENT] } },
-            { aggregate: { count: true } },
+          tournaments: [
+            { where: { _and: [NOT_LEAGUE_TOURNAMENT] }, limit: 1 },
+            { id: true },
           ],
         }),
         result({ data }: any) {
-          this.tournamentsCount =
-            data?.tournaments_aggregate?.aggregate?.count ?? 0;
+          this.hasTournaments = (data?.tournaments?.length ?? 0) > 0;
         },
         error(error: any) {
-          console.error("[watch] tournaments count subscription error:", error);
+          console.error("[watch] tournaments subscription error:", error);
         },
       },
     },
@@ -111,7 +112,7 @@ export default {
       return useApplicationSettingsStore().eventsEnabled;
     },
     feedIsEmpty(): boolean {
-      return this.matchesCount === 0 && this.tournamentsCount === 0;
+      return this.hasMatches === false && this.hasTournaments === false;
     },
   },
 };

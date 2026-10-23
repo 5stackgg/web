@@ -179,13 +179,17 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
       >
         <ChatMessageMedia :message="message" />
       </div>
-      <ChatMessageReactions
-        :message="message"
-        :room="room"
-        :permissions="permissions"
-        :viewer-steam-id="viewerSteamId"
-        @toggle="toggleReaction"
-      />
+      <!-- Under media, the pills start on its edge rather than the text's, so
+           they share its width instead of stacking in the narrow column. -->
+      <div :class="{ '-ml-10': hasMedia && !afterMedia }">
+        <ChatMessageReactions
+          :message="message"
+          :room="room"
+          :permissions="permissions"
+          :viewer-steam-id="viewerSteamId"
+          @toggle="toggleReaction"
+        />
+      </div>
     </div>
 
     <!-- Floats over the top edge of the line, as the frame is taller than a

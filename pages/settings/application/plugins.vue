@@ -765,6 +765,9 @@ export default {
         if (manifest.profileTabLabel) {
           this.form.profile_tab_label = manifest.profileTabLabel;
         }
+        if (manifest.featured) {
+          this.form.nav_featured = true;
+        }
         // Only overwrite when the manifest actually declares deployments — an
         // older plugin that doesn't shouldn't wipe what an admin typed by hand.
         if (manifest.deployments?.length) {

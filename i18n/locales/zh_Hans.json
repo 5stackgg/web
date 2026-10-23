@@ -9947,6 +9947,15 @@
       "blocked_chip": "不可参赛",
       "invite_hint": "请联系主办方邀请你的队伍，或向你发送邀请链接。"
     },
+    "viewing": {
+      "label": "正在查看",
+      "menu_title": "你报名的队伍",
+      "you_play": "你参赛",
+      "owner": "拥有者",
+      "players": "{count}/{max} 名选手",
+      "plays_hint": "你在 {team} 参赛。其余队伍是你以拥有者身份报名的。",
+      "owner_hint": "这些队伍都是你以拥有者身份报名的。"
+    },
     "invites": {
       "title": "邀请",
       "description": "直接邀请队伍或玩家，即使本赛事仅限邀请，他们也能报名。",

@@ -9947,6 +9947,15 @@
       "blocked_chip": "nie może dołączyć",
       "invite_hint": "Poproś organizatora, żeby zaprosił twoją drużynę albo wysłał ci link z zaproszeniem."
     },
+    "viewing": {
+      "label": "Widok",
+      "menu_title": "Twoje zgłoszone drużyny",
+      "you_play": "Grasz",
+      "owner": "Właściciel",
+      "players": "{count}/{max} graczy",
+      "plays_hint": "Grasz w {team}. W pozostałych jesteś właścicielem.",
+      "owner_hint": "We wszystkich tych drużynach jesteś właścicielem."
+    },
     "invites": {
       "title": "Zaproszenia",
       "description": "Zaproś drużynę lub gracza bezpośrednio, a będą mogli się zarejestrować, nawet gdy turniej jest tylko na zaproszenie.",

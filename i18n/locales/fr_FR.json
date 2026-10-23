@@ -9947,6 +9947,15 @@
       "blocked_chip": "non éligible",
       "invite_hint": "Demande à un organisateur d'inviter ton équipe ou de t'envoyer un lien d'invitation."
     },
+    "viewing": {
+      "label": "Affichage",
+      "menu_title": "Équipes que tu as inscrites",
+      "you_play": "Tu joues",
+      "owner": "Propriétaire",
+      "players": "{count}/{max} joueurs",
+      "plays_hint": "Tu joues dans {team}. Les autres, tu les as inscrites en tant que propriétaire.",
+      "owner_hint": "Tu as inscrit ces équipes en tant que propriétaire."
+    },
     "invites": {
       "title": "Invitations",
       "description": "Invite directement une équipe ou un joueur : ils pourront s'inscrire même tant que ce tournoi est sur invitation.",

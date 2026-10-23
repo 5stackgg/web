@@ -9947,6 +9947,15 @@
       "blocked_chip": "no puedes entrar",
       "invite_hint": "Pide a un organizador que invite a tu equipo o que te envíe un enlace de invitación."
     },
+    "viewing": {
+      "label": "Viendo",
+      "menu_title": "Equipos que inscribiste",
+      "you_play": "Juegas",
+      "owner": "Propietario",
+      "players": "{count}/{max} jugadores",
+      "plays_hint": "Juegas en {team}. Los demás los inscribiste como propietario.",
+      "owner_hint": "Inscribiste estos equipos como propietario."
+    },
     "invites": {
       "title": "Invitaciones",
       "description": "Invita directamente a un equipo o a un jugador y podrán inscribirse aunque este torneo sea solo por invitación.",

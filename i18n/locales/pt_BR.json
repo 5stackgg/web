@@ -9947,6 +9947,15 @@
       "blocked_chip": "não pode participar",
       "invite_hint": "Peça a um organizador para convidar sua equipe ou para te enviar um link de convite."
     },
+    "viewing": {
+      "label": "Visualizando",
+      "menu_title": "Equipes que você inscreveu",
+      "you_play": "Você joga",
+      "owner": "Dono",
+      "players": "{count}/{max} jogadores",
+      "plays_hint": "Você joga na {team}. As outras você inscreveu como dono.",
+      "owner_hint": "Você inscreveu essas equipes como dono."
+    },
     "invites": {
       "title": "Convites",
       "description": "Convide uma equipe ou um jogador diretamente e eles poderão se inscrever mesmo com o torneio somente por convite.",

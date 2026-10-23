@@ -9947,6 +9947,15 @@
       "blocked_chip": "참가 불가",
       "invite_hint": "주최자에게 팀 초대나 초대 링크 발송을 요청하세요."
     },
+    "viewing": {
+      "label": "보기",
+      "menu_title": "등록한 팀",
+      "you_play": "플레이",
+      "owner": "소유자",
+      "players": "{count}/{max}명",
+      "plays_hint": "{team}에서 플레이합니다. 나머지 팀은 소유자로 등록했습니다.",
+      "owner_hint": "이 팀들은 소유자로 등록했습니다."
+    },
     "invites": {
       "title": "초대",
       "description": "팀이나 플레이어를 직접 초대하면, 이 토너먼트가 초대 전용이어도 참가 신청할 수 있습니다.",

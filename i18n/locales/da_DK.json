@@ -9947,6 +9947,15 @@
       "blocked_chip": "kan ikke deltage",
       "invite_hint": "Bed en arrangør om at invitere dit hold eller sende dig et invitationslink."
     },
+    "viewing": {
+      "label": "Viser",
+      "menu_title": "Hold, du har tilmeldt",
+      "you_play": "Du spiller",
+      "owner": "Ejer",
+      "players": "{count}/{max} spillere",
+      "plays_hint": "Du spiller på {team}. De andre har du tilmeldt som ejer.",
+      "owner_hint": "Du har tilmeldt disse hold som ejer."
+    },
     "invites": {
       "title": "Invitationer",
       "description": "Inviter et hold eller en spiller direkte, så kan de tilmelde sig, selvom denne turnering kun er med invitation.",

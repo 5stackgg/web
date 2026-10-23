@@ -427,6 +427,33 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     isRefreshing.value = false;
   }
 
+  // The api checks a LAN region against this session's own probe and forgets
+  // it an hour after it ran, so a reading stored on this device can't stand
+  // in. The LAN is probed once a page load, again before the hour is up while
+  // on it, and sooner once a probe has lost it.
+  const LAN_REPROBE_MS = 45 * 60 * 1000;
+  const LAN_RETRY_MS = 5 * 60 * 1000;
+  let lanProbeStarted = false;
+  let lanSeen = false;
+  let lanReprobe: ReturnType<typeof setTimeout> | undefined;
+
+  function scheduleLanProbe(delay: number) {
+    clearTimeout(lanReprobe);
+    lanReprobe = setTimeout(probeLan, delay);
+  }
+
+  async function probeLan() {
+    await Promise.all(
+      useApplicationSettingsStore()
+        .availableRegions.filter((region) => region.is_lan)
+        .map((region) => getLatency(region.value)),
+    );
+    lanSeen ||= onLan.value;
+    if (lanSeen) {
+      scheduleLanProbe(onLan.value ? LAN_REPROBE_MS : LAN_RETRY_MS);
+    }
+  }
+
   function checkLatenies() {
     // Guests can't matchmake; don't open WebRTC peer connections for them.
     if (!useAuthStore().me?.steam_id) {
@@ -434,6 +461,15 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     }
     if (latencies.value.size === 0) {
       refreshLatencies();
+    }
+    if (
+      !lanProbeStarted &&
+      useApplicationSettingsStore().availableRegions.some(
+        (region) => region.is_lan,
+      )
+    ) {
+      lanProbeStarted = true;
+      probeLan();
     }
   }
 
@@ -561,6 +597,16 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     ),
   );
   const onLan = computed(() => lanRegions.value.length > 0);
+
+  // Any probe can lose the LAN, a full refresh as much as the LAN's own, and
+  // waiting out the 45 minutes would hide it that long.
+  watch(onLan, (on) => {
+    if (on) {
+      lanSeen = true;
+    } else if (lanSeen) {
+      scheduleLanProbe(LAN_RETRY_MS);
+    }
+  });
 
   // On a LAN you play there or online, never both. Asked the first time you
   // queue or host this session; switchable from the region line.

@@ -48,7 +48,7 @@ async function destroy() {
   try {
     await getGraphqlClient().mutate({
       mutation: deleteUtilityLineupMutation,
-      variables: { id },
+      variables: { utility_lineup_id: id },
     });
 
     emit("deleted", id);

@@ -2803,7 +2803,9 @@
           "assets_section": "Logo ve favicon",
           "assets_section_description": "Bir logo (uygulama genelinde ve PWA yükleme simgesi oluşturmak için kullanılır) ve isteğe bağlı bir favicon yükle.",
           "upload_failed": "Yükleme başarısız: {status}",
-          "delete_failed": "Silme başarısız: {status}"
+          "delete_failed": "Silme başarısız: {status}",
+          "banner": "Menü afişi",
+          "banner_description": "Oyuncular ve ziyaretçiler için yan menünün üstünde gösterilir. Afiş yoksa menü logonu ve adını gösterir."
         },
         "language": {
           "title": "Dil",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "Bu eklentiyi oyuncu profillerinde bu etiketle bir sekme olarak göster. Sekme istemiyorsan boş bırak. Eklenti profilin Steam ID'sini alır.",
             "deployments": "Dağıtımlar",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "İmaj güncellemeleri için izlenecek Kubernetes dağıtım adları. Virgülle ayır. Güncellemeler 5stack'in kendi servisleriyle birlikte üst kısımda görünür."
+            "deployments_hint": "İmaj güncellemeleri için izlenecek Kubernetes dağıtım adları. Virgülle ayır. Güncellemeler 5stack'in kendi servisleriyle birlikte üst kısımda görünür.",
+            "nav_featured": "Öne çıkan",
+            "nav_featured_hint": "Bir bölüm yerine menünün üstünde Oyna ve İzle'nin altında bir düğme olarak göster."
           },
           "detect_label": "URL'den otomatik algıla",
           "detect": "Algıla",

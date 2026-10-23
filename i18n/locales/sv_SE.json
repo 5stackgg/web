@@ -2803,7 +2803,9 @@
           "assets_section": "Logotyp och favicon",
           "assets_section_description": "Ladda upp en logotyp (används i hela appen och för att skapa din PWA-installationsikon) och en valfri favicon.",
           "upload_failed": "Uppladdningen misslyckades: {status}",
-          "delete_failed": "Raderingen misslyckades: {status}"
+          "delete_failed": "Raderingen misslyckades: {status}",
+          "banner": "Menybanner",
+          "banner_description": "Visas högst upp i sidomenyn för spelare och besökare. Utan banner visar menyn din logotyp och ditt namn."
         },
         "language": {
           "title": "Språk",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "Visa detta plugin som en flik på spelarprofiler, med denna etikett. Lämna tomt för ingen flik. Pluginet får profilens SteamID.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Kubernetes deployment-namn att bevaka för imageuppdateringar. Kommaseparerade. Uppdateringar visas i sidhuvudet tillsammans med 5stacks egna tjänster."
+            "deployments_hint": "Kubernetes deployment-namn att bevaka för imageuppdateringar. Kommaseparerade. Uppdateringar visas i sidhuvudet tillsammans med 5stacks egna tjänster.",
+            "nav_featured": "Utvald",
+            "nav_featured_hint": "Visa den som en knapp under Spela och Titta högst upp i menyn i stället för i ett avsnitt."
           },
           "detect_label": "Identifiera automatiskt från URL",
           "detect": "Identifiera",

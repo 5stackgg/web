@@ -2803,7 +2803,9 @@
           "assets_section": "Logo og favicon",
           "assets_section_description": "Upload et logo (bruges i hele appen og til at generere dit PWA-installationsikon) og et valgfrit favicon.",
           "upload_failed": "Upload mislykkedes: {status}",
-          "delete_failed": "Sletning mislykkedes: {status}"
+          "delete_failed": "Sletning mislykkedes: {status}",
+          "banner": "Menubanner",
+          "banner_description": "Vises øverst i sidemenuen for spillere og besøgende. Uden et banner viser menuen dit logo og navn."
         },
         "language": {
           "title": "Sprog",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "Vis dette plugin som en fane på spillerprofiler med denne tekst. Lad stå tomt for ingen fane. Pluginnet modtager profilens SteamID.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Navne på Kubernetes-deployments, der skal overvåges for image-opdateringer. Kommasepareret. Opdateringer vises i headeren sammen med 5Stacks egne tjenester."
+            "deployments_hint": "Navne på Kubernetes-deployments, der skal overvåges for image-opdateringer. Kommasepareret. Opdateringer vises i headeren sammen med 5Stacks egne tjenester.",
+            "nav_featured": "Fremhævet",
+            "nav_featured_hint": "Vis den som en knap under Spil og Se øverst i menuen i stedet for i en sektion."
           },
           "detect_label": "Find automatisk ud fra URL",
           "detect": "Find",

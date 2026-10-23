@@ -2803,7 +2803,9 @@
           "assets_section": "Logo e Favicon",
           "assets_section_description": "Envie um logo e favicon personalizados para a sua plataforma.",
           "upload_failed": "Falha no envio: {status}",
-          "delete_failed": "Falha ao excluir: {status}"
+          "delete_failed": "Falha ao excluir: {status}",
+          "banner": "Banner do menu",
+          "banner_description": "Exibido no topo do menu lateral para jogadores e visitantes. Sem ele, o menu mostra seu logotipo e nome."
         },
         "language": {
           "title": "Idioma",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "Mostre este plugin como uma aba nos perfis dos jogadores, usando este rótulo. Deixe em branco para não exibir aba. O plugin recebe o Steam ID do perfil.",
             "deployments": "Deployments",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Nomes de deployments Kubernetes a serem monitorados para atualizações de imagem. Separados por vírgula. As atualizações aparecem no cabeçalho junto aos serviços próprios do 5stack."
+            "deployments_hint": "Nomes de deployments Kubernetes a serem monitorados para atualizações de imagem. Separados por vírgula. As atualizações aparecem no cabeçalho junto aos serviços próprios do 5stack.",
+            "nav_featured": "Em destaque",
+            "nav_featured_hint": "Mostrar como um botão abaixo de Jogar e Assistir no topo do menu, em vez de dentro de uma seção."
           },
           "detect_label": "Auto-detectar pela URL",
           "detect": "Detectar",

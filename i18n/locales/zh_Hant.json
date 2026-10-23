@@ -2803,7 +2803,9 @@
           "assets_section": "Logo 與網站圖示",
           "assets_section_description": "上傳 Logo（會在整個應用程式中使用，並用於產生您的 PWA 安裝圖示）以及選填的網站圖示。",
           "upload_failed": "上傳失敗：{status}",
-          "delete_failed": "刪除失敗：{status}"
+          "delete_failed": "刪除失敗：{status}",
+          "banner": "導覽橫幅",
+          "banner_description": "顯示在玩家和訪客的側邊導覽頂部。未設定時，導覽顯示你的標誌和名稱。"
         },
         "language": {
           "title": "語言",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "以此標籤將此外掛顯示為玩家個人檔案上的分頁。留空則不顯示分頁。外掛會收到該檔案的 Steam ID。",
             "deployments": "部署",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "要監看映像更新的 Kubernetes 部署名稱，以逗號分隔。更新會與 5Stack 自身服務一起顯示在標頭中。"
+            "deployments_hint": "要監看映像更新的 Kubernetes 部署名稱，以逗號分隔。更新會與 5Stack 自身服務一起顯示在標頭中。",
+            "nav_featured": "精選",
+            "nav_featured_hint": "以按鈕形式顯示在導覽頂部的「遊玩」和「觀看」下方，而不是放在某個分區裡。"
           },
           "detect_label": "從 URL 自動偵測",
           "detect": "偵測",

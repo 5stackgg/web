@@ -2803,7 +2803,9 @@
           "assets_section": "Logo 与网站图标",
           "assets_section_description": "上传 Logo（在整个应用中使用，并用于生成您的 PWA 安装图标）和可选的网站图标。",
           "upload_failed": "上传失败：{status}",
-          "delete_failed": "删除失败：{status}"
+          "delete_failed": "删除失败：{status}",
+          "banner": "导航横幅",
+          "banner_description": "显示在玩家和访客的侧边导航顶部。未设置时，导航显示你的徽标和名称。"
         },
         "language": {
           "title": "语言",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "以此标签在玩家资料页显示该插件。留空则不显示标签。插件会收到该资料页的 Steam ID。",
             "deployments": "部署",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "要监听镜像更新的 Kubernetes 部署名称，用逗号分隔。更新会与 5stack 自身的服务一起显示在页头。"
+            "deployments_hint": "要监听镜像更新的 Kubernetes 部署名称，用逗号分隔。更新会与 5stack 自身的服务一起显示在页头。",
+            "nav_featured": "精选",
+            "nav_featured_hint": "以按钮形式显示在导航顶部的“游戏”和“观看”下方，而不是放在某个分区里。"
           },
           "detect_label": "从 URL 自动检测",
           "detect": "检测",

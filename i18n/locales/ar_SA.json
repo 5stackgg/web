@@ -2803,7 +2803,9 @@
           "assets_section": "الشعار وأيقونة الموقع",
           "assets_section_description": "ارفع شعارًا (يُستخدم في التطبيق كله ولتوليد أيقونة تثبيت PWA) وأيقونة موقع اختيارية.",
           "upload_failed": "فشل الرفع: {status}",
-          "delete_failed": "فشل الحذف: {status}"
+          "delete_failed": "فشل الحذف: {status}",
+          "banner": "شعار القائمة",
+          "banner_description": "يظهر في أعلى القائمة الجانبية للاعبين والزوار. بدونه تعرض القائمة شعارك واسمك."
         },
         "language": {
           "title": "اللغة",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "أظهر هذه الإضافة كتبويب في ملفات اللاعبين بهذا الاسم. اتركه فارغًا لعدم إظهار تبويب. تستقبل الإضافة SteamID الخاص بالملف.",
             "deployments": "عمليات النشر",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "أسماء عمليات النشر في Kubernetes التي تُراقب لتحديثات الصور، مفصولة بفواصل. تظهر التحديثات في الشريط العلوي بجانب خدمات 5Stack."
+            "deployments_hint": "أسماء عمليات النشر في Kubernetes التي تُراقب لتحديثات الصور، مفصولة بفواصل. تظهر التحديثات في الشريط العلوي بجانب خدمات 5Stack.",
+            "nav_featured": "مميّز",
+            "nav_featured_hint": "اعرضه كزر أسفل Play وWatch في أعلى القائمة بدلًا من داخل قسم."
           },
           "detect_label": "كشف تلقائي من الـ URL",
           "detect": "اكشف",

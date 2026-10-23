@@ -2803,7 +2803,9 @@
           "assets_section": "Logo i favicon",
           "assets_section_description": "Wgraj logo (używane w całej aplikacji i do generowania ikony instalacji PWA) oraz opcjonalny favicon.",
           "upload_failed": "Przesyłanie nie powiodło się: {status}",
-          "delete_failed": "Usuwanie nie powiodło się: {status}"
+          "delete_failed": "Usuwanie nie powiodło się: {status}",
+          "banner": "Baner menu",
+          "banner_description": "Wyświetlany u góry menu bocznego dla graczy i odwiedzających. Bez banera menu pokazuje Twoje logo i nazwę."
         },
         "language": {
           "title": "Język",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "Pokaż ten plugin jako zakładkę na profilach graczy, pod tą etykietą. Zostaw puste, by nie pokazywać zakładki. Plugin otrzyma SteamID profilu.",
             "deployments": "Wdrożenia",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Nazwy wdrożeń Kubernetes do śledzenia aktualizacji obrazów. Rozdziel przecinkami. Aktualizacje pojawią się w nagłówku obok własnych usług 5stack."
+            "deployments_hint": "Nazwy wdrożeń Kubernetes do śledzenia aktualizacji obrazów. Rozdziel przecinkami. Aktualizacje pojawią się w nagłówku obok własnych usług 5stack.",
+            "nav_featured": "Wyróżniona",
+            "nav_featured_hint": "Pokaż jako przycisk pod Graj i Oglądaj u góry menu, zamiast w sekcji."
           },
           "detect_label": "Wykryj automatycznie z adresu URL",
           "detect": "Wykryj",

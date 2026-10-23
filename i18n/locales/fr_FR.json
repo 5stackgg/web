@@ -2803,7 +2803,9 @@
           "assets_section": "Logo et favicon",
           "assets_section_description": "Envoie un logo (utilisé dans toute l'app et pour générer l'icône d'installation PWA) et un favicon facultatif.",
           "upload_failed": "Échec du téléversement : {status}",
-          "delete_failed": "Échec de la suppression : {status}"
+          "delete_failed": "Échec de la suppression : {status}",
+          "banner": "Bannière du menu",
+          "banner_description": "Affichée en haut du menu latéral pour les joueurs et les visiteurs. Sans bannière, le menu affiche votre logo et votre nom."
         },
         "language": {
           "title": "Langue",
@@ -3127,7 +3129,9 @@
             "profile_tab_label_hint": "Affiche ce plugin comme un onglet sur les profils joueurs, avec ce libellé. Laisse vide pour ne pas afficher d'onglet. Le plugin reçoit le SteamID du profil.",
             "deployments": "Déploiements",
             "deployments_placeholder": "inventory-frontend, inventory-backend",
-            "deployments_hint": "Noms des déploiements Kubernetes à surveiller pour les mises à jour d'image. Séparés par des virgules. Les mises à jour s'affichent dans l'en-tête à côté des services de 5Stack."
+            "deployments_hint": "Noms des déploiements Kubernetes à surveiller pour les mises à jour d'image. Séparés par des virgules. Les mises à jour s'affichent dans l'en-tête à côté des services de 5Stack.",
+            "nav_featured": "Mise en avant",
+            "nav_featured_hint": "L'afficher comme un bouton sous Jouer et Regarder en haut du menu, plutôt que dans une section."
           },
           "detect_label": "Détection automatique depuis l'URL",
           "detect": "Détecter",

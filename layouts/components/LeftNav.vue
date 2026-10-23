@@ -31,6 +31,7 @@ import LeftNavLink from "~/layouts/components/LeftNavLink.vue";
 import LeftNavSection from "~/layouts/components/LeftNavSection.vue";
 import LeftNavDoors from "~/layouts/components/LeftNavDoors.vue";
 import LeftNavPins from "~/layouts/components/LeftNavPins.vue";
+import LeftNavBanner from "~/layouts/components/LeftNavBanner.vue";
 import {
   adminEntryForRoute as adminEntryFor,
   useAdminEntries,
@@ -45,6 +46,7 @@ import { usePublicServersListed } from "~/composables/usePublicServersListed";
 import { placeApps } from "~/utilities/leftNavApps";
 import { signInWithSteam } from "~/utilities/loginLinks";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
+import type { Plugin } from "~/stores/Plugins";
 import { useNavMode } from "~/composables/useNavMode";
 import BracketIcon from "~/components/icons/BracketIcon.vue";
 import LineupIcon from "~/components/icons/LineupIcon.vue";
@@ -111,7 +113,6 @@ const isLogoRouteActive = computed(() => {
   return route.path === logoPath.value;
 });
 const { t } = useI18n();
-const { brandName } = useBranding();
 const matchLobbyStore = useMatchLobbyStore();
 const pluginsStore = usePluginsStore();
 const renderQueueStatus = useRenderQueueStatusStore();
@@ -125,6 +126,17 @@ const isNamed = (name: string) => {
 
 // Play and Watch are the two doors at the top. Below them four sections fold
 // on their own: organised competition, practice, media and the community.
+const appItem = (plugin: Plugin): LeftNavItem => ({
+  key: `app:${plugin.slug}`,
+  label: plugin.title,
+  icon: pluginIcon(plugin.icon),
+  to: `/apps/${plugin.slug}`,
+  // A plugin owns every route under its slug.
+  active:
+    route.path === `/apps/${plugin.slug}` ||
+    route.path.startsWith(`/apps/${plugin.slug}/`),
+});
+
 const doors = computed<LeftNavItem[]>(() => [
   {
     key: "play",
@@ -142,6 +154,10 @@ const doors = computed<LeftNavItem[]>(() => [
     badge: matchLobbyStore.liveMatchesCount || undefined,
     badgeTone: "live",
   },
+  // A featured app sits with them, after Watch.
+  ...pluginsStore.visiblePlugins
+    .filter((plugin) => plugin.nav_featured)
+    .map(appItem),
 ]);
 
 const builtInSections = computed<LeftNavSectionData[]>(() => {
@@ -317,17 +333,8 @@ const pluginIcon = (name: string | null) => {
 const navSections = computed<LeftNavSectionData[]>(() =>
   placeApps(
     builtInSections.value,
-    pluginsStore.visiblePlugins,
-    (plugin): LeftNavItem => ({
-      key: `app:${plugin.slug}`,
-      label: plugin.title,
-      icon: pluginIcon(plugin.icon),
-      to: `/apps/${plugin.slug}`,
-      // A plugin owns every route under its slug.
-      active:
-        route.path === `/apps/${plugin.slug}` ||
-        route.path.startsWith(`/apps/${plugin.slug}/`),
-    }),
+    pluginsStore.visiblePlugins.filter((plugin) => !plugin.nav_featured),
+    appItem,
     t("layouts.app_nav.plugins.title"),
   )
     .map((section) => ({ icon: LayoutGrid, ...section }))
@@ -452,8 +459,17 @@ function onLeftNavTouchEnd(e: TouchEvent) {
       @touchstart.passive="onLeftNavTouchStart"
       @touchend="onLeftNavTouchEnd"
     >
+      <!-- Players and visitors get the brand across the top, which is also
+           the home link; admins with the Play / Admin switch keep the compact
+           Home | Search row. -->
+      <LeftNavBanner
+        v-if="!showNavModes && (isMobile || sideBarOpen)"
+        :to="logoPath"
+      />
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup
+          v-if="authStore.me || showNavModes || !(isMobile || sideBarOpen)"
+        >
           <!-- Home | Search on one row; collapsed, they stack as icons. The
                buttons glide between the two layouts (see homeEl/searchEl).
                The stack pins left: centred, its target would drift while the
@@ -466,7 +482,11 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 : 'flex-col items-start'
             "
           >
-            <div ref="homeEl" class="shrink-0">
+            <div
+              v-if="showNavModes || !(isMobile || sideBarOpen)"
+              ref="homeEl"
+              class="shrink-0"
+            >
               <SidebarMenuButton
                 as-child
                 class="w-8 justify-center px-0"
@@ -486,15 +506,8 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </NuxtLink>
               </SidebarMenuButton>
             </div>
-            <!-- Search needs an account; a visitor gets the name instead. -->
-            <span
-              v-if="!authStore.me && (isMobile || sideBarOpen)"
-              class="min-w-0 truncate pl-1 text-[0.95rem] font-bold uppercase tracking-[0.05em]"
-            >
-              {{ brandName || $t("layouts.app_nav.brand") }}
-            </span>
             <Separator
-              v-if="authStore.me && (isMobile || sideBarOpen)"
+              v-if="authStore.me && showNavModes && (isMobile || sideBarOpen)"
               orientation="vertical"
               class="h-4 shrink-0"
             />

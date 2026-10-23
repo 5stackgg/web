@@ -59,7 +59,6 @@ const EVENT_LEADERBOARD_QUERY = gql`
     $eventId: uuid!
     $category: String!
     $matchType: String
-    $minRounds: Int
     $limit: Int
     $offset: Int
   ) {
@@ -68,7 +67,6 @@ const EVENT_LEADERBOARD_QUERY = gql`
         _event_id: $eventId
         _category: $category
         _match_type: $matchType
-        _min_rounds: $minRounds
       }
       order_by: [{ value: desc }]
       limit: $limit
@@ -88,7 +86,6 @@ const EVENT_LEADERBOARD_QUERY = gql`
         _event_id: $eventId
         _category: $category
         _match_type: $matchType
-        _min_rounds: $minRounds
       }
     ) {
       aggregate {
@@ -183,7 +180,6 @@ async function fetchLeaderboard() {
         eventId: props.eventId,
         category: category.value,
         matchType: null,
-        minRounds: 0,
         limit: perPage.value,
         offset: offset.value,
       },

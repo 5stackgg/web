@@ -71,7 +71,6 @@ export const eventLeaderboardQuery = gql`
         _event_id: $eventId
         _category: "rating"
         _match_type: null
-        _min_rounds: 0
       }
       order_by: [{ value: desc }]
       limit: 3

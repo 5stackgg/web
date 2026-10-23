@@ -401,7 +401,7 @@ import {
               v-for="stageNumber in stageNumbers"
               :key="stageNumber"
               :value="`stage-${stageNumber}`"
-              class="mt-6"
+              class="tab-panel-in mt-6"
             >
               <div class="space-y-6">
                 <div
@@ -429,7 +429,7 @@ import {
                 </div>
               </div>
             </TabsContent>
-            <TabsContent value="add-stage" class="mt-6">
+            <TabsContent value="add-stage" class="tab-panel-in mt-6">
               <ManageSection
                 class="mx-auto max-w-2xl"
                 :label="$t('tournament.stage.add_another')"

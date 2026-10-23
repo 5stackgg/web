@@ -9345,6 +9345,7 @@
       "awaiting_schedule": "Väntar på schema",
       "schedule_now": "Nu",
       "clear_schedule": "Rensa",
+      "use_stage_settings": "Använd fasens inställningar",
       "past_time_error": "Den schemalagda tiden måste ligga i framtiden",
       "fit_to_view": "Anpassa till vy",
       "share_title": "Dela slutspelsträd",

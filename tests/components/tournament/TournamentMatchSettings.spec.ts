@@ -70,13 +70,17 @@ function bracket(status: string) {
   };
 }
 
-async function mountCard(status: string) {
+async function mountCard(
+  status: string,
+  value: Record<string, unknown> = bracket(status),
+  tournamentStatus = "Live",
+) {
   wrapper = await mountSuspended(TournamentMatch, {
     props: {
       round: 1,
-      brackets: [bracket(status)] as any,
+      brackets: [value] as any,
       stage: { type: "SingleElimination", max_teams: 8, groups: 1 },
-      tournament: { is_organizer: true, status: "Live" },
+      tournament: { is_organizer: true, status: tournamentStatus },
     },
     attachTo: document.body,
   });
@@ -101,7 +105,22 @@ beforeEach(() => {
     steam_id: "76561198000000001",
     role: e_player_roles_enum.user,
   } as any;
-  query = vi.fn().mockResolvedValue({ data: { matches_by_pk: loadedMatch } });
+  query = vi.fn().mockImplementation(async ({ variables }: any) =>
+    variables.bracketId
+      ? {
+          data: {
+            tournament_brackets_by_pk: {
+              match_options_id: null,
+              options: null,
+              stage: {
+                options: null,
+                tournament: { options: loadedMatch.options },
+              },
+            },
+          },
+        }
+      : { data: { matches_by_pk: loadedMatch } },
+  );
   (useNuxtApp() as any).$apollo.query = query;
 });
 
@@ -154,6 +173,43 @@ describe("bracket match settings", () => {
     expect(query).toHaveBeenCalledWith(
       expect.objectContaining({ variables: { matchId: "match-1" } }),
     );
+  });
+
+  it("offers an organizer the settings of a bracket still waiting for its teams", async () => {
+    await mountCard("Scheduled", {
+      ...bracket("Scheduled"),
+      team_1: null,
+      team_2: null,
+      match: null,
+    });
+    const sheet = await openSettings();
+
+    expect(sheet?.textContent).toContain("Match Settings");
+    expect(sheet?.textContent).not.toContain(" vs ");
+    expect(sheet?.textContent).toContain("Rules locked");
+    expect(query).toHaveBeenCalledWith(
+      expect.objectContaining({ variables: { bracketId: "bracket-1" } }),
+    );
+  });
+
+  it.each(["Setup", "RegistrationOpen"])(
+    "keeps them off a bracket the draw will replace while the tournament is %s",
+    async (tournamentStatus) => {
+      await mountCard(
+        "Scheduled",
+        { ...bracket("Scheduled"), team_1: null, team_2: null, match: null },
+        tournamentStatus,
+      );
+
+      expect(document.querySelector("button[aria-haspopup=menu]")).toBeNull();
+    },
+  );
+
+  it("leaves a bracket whose teams are known to its match", async () => {
+    await mountCard("Scheduled", { ...bracket("Scheduled"), match: null });
+    await openMenu();
+
+    expect(menuItem("Match Settings")).toBeUndefined();
   });
 
   it("loads the match again each time they open", async () => {

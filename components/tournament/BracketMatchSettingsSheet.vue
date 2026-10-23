@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MatchForm from "~/components/match/MatchForm.vue";
+import BracketOptionsForm from "~/components/tournament/BracketOptionsForm.vue";
 import {
   Sheet,
   SheetContent,
@@ -24,6 +25,11 @@ import {
         contained
         class="mt-6 !max-w-none"
       />
+      <BracketOptionsForm
+        v-else-if="!matchId && bracketId"
+        :bracket-id="bracketId"
+        class="mt-6"
+      />
     </SheetContent>
   </Sheet>
 </template>
@@ -43,7 +49,11 @@ export default {
     },
     matchId: {
       type: String,
-      required: true,
+      default: "",
+    },
+    bracketId: {
+      type: String,
+      default: "",
     },
     description: {
       type: String,
@@ -78,6 +88,9 @@ export default {
   methods: {
     async load() {
       const matchId = this.matchId;
+      if (!matchId) {
+        return;
+      }
       try {
         const { data } = await this.$apollo.query({
           fetchPolicy: "network-only",

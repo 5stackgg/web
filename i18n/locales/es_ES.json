@@ -9345,6 +9345,7 @@
       "awaiting_schedule": "Pendiente de programar",
       "schedule_now": "Ahora",
       "clear_schedule": "Borrar",
+      "use_stage_settings": "Usar la configuración de la fase",
       "past_time_error": "La hora programada debe ser futura",
       "fit_to_view": "Ajustar a la vista",
       "share_title": "Compartir cuadro",

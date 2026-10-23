@@ -9345,6 +9345,7 @@
       "awaiting_schedule": "In attesa di pianificazione",
       "schedule_now": "Ora",
       "clear_schedule": "Cancella",
+      "use_stage_settings": "Usa le impostazioni della fase",
       "past_time_error": "L'orario pianificato deve essere nel futuro",
       "fit_to_view": "Adatta alla vista",
       "share_title": "Condividi bracket",

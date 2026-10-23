@@ -9345,6 +9345,7 @@
       "awaiting_schedule": "Aguardando agendamento",
       "schedule_now": "Agora",
       "clear_schedule": "Limpar",
+      "use_stage_settings": "Usar as configurações da fase",
       "past_time_error": "O horário agendado deve estar no futuro",
       "fit_to_view": "Ajustar à visualização",
       "share_title": "Compartilhar chave",

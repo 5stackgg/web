@@ -9345,6 +9345,7 @@
       "awaiting_schedule": "En attente de planification",
       "schedule_now": "Maintenant",
       "clear_schedule": "Effacer",
+      "use_stage_settings": "Utiliser les paramètres de la phase",
       "past_time_error": "L'horaire planifié doit être dans le futur",
       "fit_to_view": "Ajuster à l'écran",
       "share_title": "Partager le bracket",

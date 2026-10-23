@@ -28,7 +28,7 @@ export function canSetGameMode(): boolean {
 // Mirrors the api's match_options_rule_columns() plus best_of. Once a stage
 // has a match the api refuses any change to them, and MatchOptions' watchers
 // can rewrite one on load, so a locked save sends back what is stored.
-const RULE_COLUMNS = [
+export const RULE_COLUMNS = [
   "type",
   "best_of",
   "map_veto",

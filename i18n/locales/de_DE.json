@@ -9345,6 +9345,7 @@
       "awaiting_schedule": "Wartet auf Termin",
       "schedule_now": "Jetzt",
       "clear_schedule": "Leeren",
+      "use_stage_settings": "Stage-Einstellungen verwenden",
       "past_time_error": "Der angesetzte Zeitpunkt muss in der Zukunft liegen",
       "fit_to_view": "Einpassen",
       "share_title": "Bracket teilen",

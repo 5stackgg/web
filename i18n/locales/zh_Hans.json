@@ -9345,6 +9345,7 @@
       "awaiting_schedule": "等待安排",
       "schedule_now": "现在",
       "clear_schedule": "清除",
+      "use_stage_settings": "使用阶段设置",
       "past_time_error": "安排的时间必须在未来",
       "fit_to_view": "适应视图",
       "share_title": "分享对阵表",

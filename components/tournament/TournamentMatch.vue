@@ -215,6 +215,23 @@ const canEditMatchSettings = (bracket: Bracket): boolean =>
   canManageBracketReset.value &&
   SETTINGS_STATUSES.includes(bracket.match?.status ?? "");
 
+// Before the draw every bracket is a placeholder the draw replaces, its own
+// settings with it; after a team lands in it, the api refuses them.
+const BRACKET_SETTINGS_STATUSES = [
+  e_tournament_status_enum.RegistrationClosed,
+  e_tournament_status_enum.Live,
+  e_tournament_status_enum.Paused,
+] as string[];
+
+const canEditBracketSettings = (bracket: Bracket): boolean =>
+  canManageBracketReset.value &&
+  BRACKET_SETTINGS_STATUSES.includes(props.tournament?.status ?? "") &&
+  !bracket.bye &&
+  !bracket.finished &&
+  !bracket.match &&
+  !bracket.team_1 &&
+  !bracket.team_2;
+
 const settingsOpen = ref(false);
 const settingsBracket = ref<Bracket | null>(null);
 
@@ -561,10 +578,6 @@ const getBestOf = (
   stage: any,
   tournament: any,
 ): number | null => {
-  // Try to get best_of from bracket options first (organizer override)
-  if (bracket.options?.best_of) {
-    return bracket.options.best_of;
-  }
   // Try to get best_of from match options (already resolved at scheduling time)
   if (bracket.match?.options?.best_of) {
     return bracket.match.options.best_of;
@@ -1063,6 +1076,27 @@ const useEtaClock = createSharedComposable(() =>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <DropdownMenu v-if="canEditBracketSettings(bracket)">
+            <DropdownMenuTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="relative h-5 w-5 rounded-sm text-muted-foreground hover:text-foreground after:absolute after:-inset-1.5"
+                @click.stop
+              >
+                <span class="sr-only">{{
+                  $t("tournament.open_match_actions")
+                }}</span>
+                <MoreVertical aria-hidden="true" class="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-52">
+              <DropdownMenuItem @click.stop="openMatchSettings(bracket)">
+                <Settings2 />
+                {{ $t("tournament.page.match_settings") }}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <template v-if="canRecreate(bracket)">
             <FiveStackToolTip
               v-if="bracket.finished"
@@ -1213,10 +1247,15 @@ const useEtaClock = createSharedComposable(() =>
   </template>
 
   <BracketMatchSettingsSheet
-    v-if="settingsBracket?.match"
+    v-if="settingsBracket"
     v-model:open="settingsOpen"
-    :match-id="settingsBracket.match.id"
-    :description="`${getTeamName(settingsBracket.team_1)} ${$t('common.vs')} ${getTeamName(settingsBracket.team_2)}`"
+    :match-id="settingsBracket.match?.id"
+    :bracket-id="settingsBracket.id"
+    :description="
+      settingsBracket.match
+        ? `${getTeamName(settingsBracket.team_1)} ${$t('common.vs')} ${getTeamName(settingsBracket.team_2)}`
+        : getRoundMatchLabel(settingsBracket)
+    "
   />
 
   <AlertDialog

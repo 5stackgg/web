@@ -9026,6 +9026,11 @@
     "enabled": "Push-уведомления включены",
     "failed": "Не удалось включить push-уведомления. Попробуйте ещё раз."
   },
+  "app_update": {
+    "title": "Новая версия",
+    "reload": "Обновить",
+    "dismiss": "Скрыть"
+  },
   "feature_spotlights": {
     "label": "Функция в фокусе",
     "auto_highlights": {

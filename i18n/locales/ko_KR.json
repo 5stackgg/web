@@ -9026,6 +9026,11 @@
     "enabled": "푸시 알림을 켰습니다",
     "failed": "푸시 알림을 켜지 못했습니다. 다시 시도해 주세요."
   },
+  "app_update": {
+    "title": "새 버전",
+    "reload": "새로고침",
+    "dismiss": "닫기"
+  },
   "feature_spotlights": {
     "label": "주목할 기능",
     "auto_highlights": {

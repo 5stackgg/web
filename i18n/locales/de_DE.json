@@ -9026,6 +9026,11 @@
     "enabled": "Push-Benachrichtigungen aktiviert",
     "failed": "Push-Benachrichtigungen konnten nicht aktiviert werden. Versuche es erneut."
   },
+  "app_update": {
+    "title": "Neue Version",
+    "reload": "Neu laden",
+    "dismiss": "Ausblenden"
+  },
   "feature_spotlights": {
     "label": "Feature im Fokus",
     "auto_highlights": {

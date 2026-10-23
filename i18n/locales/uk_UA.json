@@ -9026,6 +9026,11 @@
     "enabled": "Push-сповіщення увімкнено",
     "failed": "Не вдалося увімкнути push-сповіщення. Спробуйте ще раз."
   },
+  "app_update": {
+    "title": "Нова версія",
+    "reload": "Оновити",
+    "dismiss": "Приховати"
+  },
   "feature_spotlights": {
     "label": "Функція у фокусі",
     "auto_highlights": {

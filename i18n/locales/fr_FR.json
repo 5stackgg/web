@@ -9026,6 +9026,11 @@
     "enabled": "Notifications push activées",
     "failed": "Impossible d'activer les notifications push. Réessayez."
   },
+  "app_update": {
+    "title": "Nouvelle version",
+    "reload": "Recharger",
+    "dismiss": "Ignorer"
+  },
   "feature_spotlights": {
     "label": "Fonctionnalité à la une",
     "auto_highlights": {

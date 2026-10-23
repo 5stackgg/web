@@ -9026,6 +9026,11 @@
     "enabled": "已開啟推播通知",
     "failed": "無法開啟推播通知，請再試一次。"
   },
+  "app_update": {
+    "title": "新版本",
+    "reload": "重新載入",
+    "dismiss": "關閉"
+  },
   "feature_spotlights": {
     "label": "功能焦點",
     "auto_highlights": {

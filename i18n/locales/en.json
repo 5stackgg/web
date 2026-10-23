@@ -9026,6 +9026,11 @@
     "enabled": "Push notifications enabled",
     "failed": "Couldn't enable push notifications. Try again."
   },
+  "app_update": {
+    "title": "New version",
+    "reload": "Reload",
+    "dismiss": "Dismiss"
+  },
   "feature_spotlights": {
     "label": "Feature Spotlight",
     "auto_highlights": {

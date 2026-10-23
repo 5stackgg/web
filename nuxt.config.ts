@@ -125,6 +125,9 @@ export default defineNuxtConfig({
     // registration per path, which keeps Nuxt's own watcher off the same cap.
     watcher: "parcel",
 
+    // Each check is one request for a ~100 byte static file per open tab.
+    checkOutdatedBuildInterval: 5 * 60 * 1000,
+
     defaults: {
       nuxtLink: {
         prefetchOn: {
@@ -256,8 +259,10 @@ export default defineNuxtConfig({
       ],
       runtimeCaching: [
         {
+          // builds/ is Nuxt's new build check, timestamped on every request.
           urlPattern: ({ url }: { url: URL }) =>
-            url.pathname.startsWith("/_nuxt/"),
+            url.pathname.startsWith("/_nuxt/") &&
+            !url.pathname.startsWith("/_nuxt/builds/"),
           handler: "CacheFirst",
           options: {
             cacheName: "nuxt-assets",

@@ -9026,6 +9026,11 @@
     "enabled": "Push-aviseringar påslagna",
     "failed": "Kunde inte slå på push-aviseringar. Försök igen."
   },
+  "app_update": {
+    "title": "Ny version",
+    "reload": "Ladda om",
+    "dismiss": "Avfärda"
+  },
   "feature_spotlights": {
     "label": "Funktion i fokus",
     "auto_highlights": {

@@ -9026,6 +9026,11 @@
     "enabled": "Push-notifikationer slået til",
     "failed": "Kunne ikke slå push-notifikationer til. Prøv igen."
   },
+  "app_update": {
+    "title": "Ny version",
+    "reload": "Genindlæs",
+    "dismiss": "Afvis"
+  },
   "feature_spotlights": {
     "label": "Funktion i fokus",
     "auto_highlights": {

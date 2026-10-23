@@ -9,6 +9,9 @@ import { usePluginsStore } from "~/stores/Plugins";
 import { pageKeyWithoutTabQuery } from "~/utilities/pageKey";
 import { afterReveal } from "~/utilities/afterReveal";
 import { useScorebugHandoff } from "~/composables/useScorebugHandoff";
+// Not lazy: once a new build is out, this build's chunks may already be gone,
+// and a chunk that fails to load reloads the page.
+import AppUpdateNotice from "~/components/AppUpdateNotice.vue";
 
 const MatchmakingConfirm = defineAsyncComponent(
   () => import("~/components/matchmaking/MatchmakingConfirm.vue"),
@@ -131,4 +134,5 @@ const pageTransition = computed(() =>
     <NuxtPage :page-key="pageKeyWithoutTabQuery" :transition="pageTransition" />
   </NuxtLayout>
   <Toaster />
+  <AppUpdateNotice />
 </template>

@@ -9026,6 +9026,11 @@
     "enabled": "プッシュ通知を有効にしました",
     "failed": "プッシュ通知を有効にできませんでした。もう一度お試しください。"
   },
+  "app_update": {
+    "title": "新しいバージョン",
+    "reload": "再読み込み",
+    "dismiss": "閉じる"
+  },
   "feature_spotlights": {
     "label": "注目の機能",
     "auto_highlights": {

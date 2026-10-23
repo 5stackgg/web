@@ -109,6 +109,10 @@ describe("node thresholds", () => {
       }),
     ).toBe(3);
   });
+
+  it("splits by 2 CPUs per server when the setting was never saved, as the api does", () => {
+    expect(nodeSettings([]).pinning.cpusPerServer).toBe(2);
+  });
 });
 
 describe("CS2 builds", () => {

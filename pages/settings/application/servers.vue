@@ -199,7 +199,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             game_server_plugin_runtime: z.string().default("swiftlys2"),
-            number_of_cpus_per_server: z.number().min(1).default(1),
+            number_of_cpus_per_server: z.number().min(1).default(2),
             reserved_disk_space_fresh_gb: z.number().min(0).default(120),
             reserved_disk_space_existing_gb: z.number().min(0).default(60),
             player_session_retention_days: z

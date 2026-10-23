@@ -152,11 +152,13 @@ export default {
         this.setStart();
       },
     },
-    match: {
+    // The match page hands over a new match on every subscription result,
+    // which would put the saved schedule back over a half-picked one.
+    "match.scheduled_at": {
       immediate: true,
-      handler(match) {
-        if (match?.scheduled_at) {
-          const startDate = new Date(match.scheduled_at);
+      handler(scheduledAt) {
+        if (scheduledAt) {
+          const startDate = new Date(scheduledAt);
           this.startDate = toCalendarDate(
             fromDate(startDate, getLocalTimeZone()),
           );

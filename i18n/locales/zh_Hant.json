@@ -9335,6 +9335,7 @@
       "awaiting_schedule": "等待安排",
       "schedule_now": "現在",
       "clear_schedule": "清除",
+      "use_stage_settings": "使用階段設定",
       "past_time_error": "排程時間必須在未來",
       "fit_to_view": "符合檢視",
       "share_title": "分享對戰表",

@@ -9335,6 +9335,7 @@
       "awaiting_schedule": "예약 대기 중",
       "schedule_now": "지금",
       "clear_schedule": "지우기",
+      "use_stage_settings": "스테이지 설정 사용",
       "past_time_error": "예약 시간은 미래여야 합니다",
       "fit_to_view": "화면에 맞추기",
       "share_title": "대진표 공유",

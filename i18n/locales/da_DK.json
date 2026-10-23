@@ -9335,6 +9335,7 @@
       "awaiting_schedule": "Afventer planlægning",
       "schedule_now": "Nu",
       "clear_schedule": "Ryd",
+      "use_stage_settings": "Brug fasens indstillinger",
       "past_time_error": "Tidspunktet skal ligge i fremtiden",
       "fit_to_view": "Tilpas til visning",
       "share_title": "Del bracket",

@@ -9335,6 +9335,7 @@
       "awaiting_schedule": "Awaiting schedule",
       "schedule_now": "Now",
       "clear_schedule": "Clear",
+      "use_stage_settings": "Use stage settings",
       "past_time_error": "Scheduled time must be in the future",
       "fit_to_view": "Fit to view",
       "share_title": "Share Bracket",

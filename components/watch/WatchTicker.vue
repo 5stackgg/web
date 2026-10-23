@@ -404,7 +404,7 @@ function scrollRight() {
     <template v-if="ghost">
       <div class="flex gap-3 overflow-hidden">
         <p
-          class="flex h-[6.875rem] w-72 shrink-0 items-center rounded-lg border border-dashed border-border px-4 py-3 text-sm leading-snug text-foreground/70"
+          class="flex h-[5.5rem] w-72 shrink-0 items-center rounded-lg border border-dashed border-border px-4 py-3 text-sm leading-snug text-foreground/70"
         >
           {{ $t("pages.watch.ticker.ghost_caption") }}
         </p>
@@ -412,7 +412,7 @@ function scrollRight() {
           v-for="i in 5"
           :key="i"
           aria-hidden="true"
-          class="flex h-[6.875rem] w-56 shrink-0 flex-col justify-center gap-2.5 rounded-lg border border-dashed border-border/70 px-3"
+          class="flex h-[5.5rem] w-56 shrink-0 flex-col justify-center gap-2.5 rounded-lg border border-dashed border-border/70 px-3"
         >
           <span class="h-2 w-2/5 rounded-sm bg-muted/60"></span>
           <span class="h-2.5 w-3/4 rounded-sm bg-muted/60"></span>
@@ -515,7 +515,7 @@ function scrollRight() {
           <Skeleton
             v-for="i in 6"
             :key="i"
-            class="h-[6.875rem] w-56 shrink-0 rounded-lg"
+            class="h-[5.5rem] w-56 shrink-0 rounded-lg"
           />
         </div>
         <div v-else :key="`row-${filter}`">
@@ -542,7 +542,7 @@ function scrollRight() {
                 />
                 <div
                   v-else-if="item.type === 'divider'"
-                  class="ml-1.5 flex h-[6.875rem] min-w-[4.75rem] flex-col justify-center gap-0.5 border-l border-border/70 pl-3 pr-3.5"
+                  class="ml-1.5 flex h-[5.5rem] min-w-[4.75rem] flex-col justify-center gap-0.5 border-l border-border/70 pl-3 pr-3.5"
                 >
                   <span class="whitespace-nowrap text-[13px] font-bold">{{
                     item.label
@@ -555,7 +555,7 @@ function scrollRight() {
                 </div>
                 <div
                   v-else-if="item.type === 'note'"
-                  class="flex h-[6.875rem] items-center gap-2.5 rounded-lg border border-dashed border-border px-4 text-[13px] text-muted-foreground"
+                  class="flex h-[5.5rem] items-center gap-2.5 rounded-lg border border-dashed border-border px-4 text-[13px] text-muted-foreground"
                 >
                   <span
                     class="inline-flex size-2 shrink-0 rounded-full bg-muted-foreground/60"
@@ -564,13 +564,13 @@ function scrollRight() {
                 </div>
                 <div
                   v-else-if="item.type === 'end'"
-                  class="flex h-[6.875rem] items-center whitespace-nowrap pl-3 pr-5 text-xs text-muted-foreground"
+                  class="flex h-[5.5rem] items-center whitespace-nowrap pl-3 pr-5 text-xs text-muted-foreground"
                 >
                   {{ $t("pages.watch.ticker.end") }}
                 </div>
                 <Skeleton
                   v-else
-                  class="h-[6.875rem] w-56 rounded-lg"
+                  class="h-[5.5rem] w-56 rounded-lg"
                   :aria-label="$t('pages.watch.ticker.loading_older')"
                 />
               </div>

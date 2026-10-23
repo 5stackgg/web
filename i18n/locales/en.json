@@ -8235,6 +8235,281 @@
         "last_match": "Last match here",
         "matches_after_steam": "{count} match after the Steam ban | {count} matches after the Steam ban"
       }
+    },
+    "welcome": {
+      "meta_title": "Welcome",
+      "meta_description": "Play CS2 on {name}: matchmaking, draft rooms, tournaments and leagues, with live matches, in-browser replays and automatic highlights.",
+      "nav": {
+        "label": "Sections",
+        "play": "Play",
+        "compete": "Compete",
+        "watch": "Watch",
+        "utility": "Utility",
+        "community": "Community",
+        "watch_live": "Watch live",
+        "open_play": "Open Play"
+      },
+      "hero": {
+        "eyebrow": "Counter-Strike 2 on {name}",
+        "title": "Your home for CS2 matches, cups and leagues.",
+        "lede": "Queue for balanced matches, draft teams with captains, join tournaments, and rewatch every round in your browser. Your best plays get clipped for you.",
+        "lede_draft": "Draft teams with captains, join tournaments and leagues, and rewatch every round in your browser. Your best plays get clipped for you."
+      },
+      "now": {
+        "live": "Live now",
+        "recent": "Recent matches",
+        "open_watch": "Open Watch"
+      },
+      "play": {
+        "eyebrow": "Play",
+        "title": "Find a game in a click, or bring your own ten.",
+        "lede": "Matchmaking pairs you by region and latency, and you can queue with your party. When you'd rather pick teams, open a draft room.",
+        "points": {
+          "matchmaking": {
+            "title": "Matchmaking.",
+            "body": "Competitive, Wingman, Duel and Rush, solo or with your party."
+          },
+          "draft": {
+            "title": "Draft rooms.",
+            "body": "Open a room, let players fill it, and captains draft the teams."
+          },
+          "scrims": {
+            "title": "Scrim finder.",
+            "body": "Browse teams open to scrims, filter by region and maps, then send a request."
+          },
+          "servers": {
+            "title": "Community servers.",
+            "body": "Drop in with the ping, map and player count up front."
+          },
+          "check_in": {
+            "title": "Check-in.",
+            "body": "Everyone confirms before a server is reserved, so nobody waits on a no-show."
+          }
+        },
+        "link": "Open Play",
+        "modes_label": "Match modes",
+        "party_line": "Queue solo or with your party. The amber seats are yours.",
+        "lede_draft": "Open a draft room and let captains pick the teams, find a team to scrim, or drop into a community server."
+      },
+      "match": {
+        "eyebrow": "Every match",
+        "title": "Veto, server, go. Nobody waits on an admin.",
+        "lede": "Captains ban maps on the board until one is left. The server starts itself in the region nearest the players, and Join Server shows up the moment it's ready.",
+        "points": {
+          "veto": {
+            "title": "Map and region veto.",
+            "body": "Every turn is on a clock, with scouting on each team's map history."
+          },
+          "servers": {
+            "title": "Servers start themselves.",
+            "body": "Nobody has to spin one up by hand."
+          },
+          "fix": {
+            "title": "Fix a Problem.",
+            "body": "Admins can take back a mis-pick, act for a stuck team, pause, or restore a round."
+          },
+          "voice": {
+            "title": "Voice and cameras.",
+            "body": "Match voice is built in, and webcams can be required."
+          }
+        },
+        "link": "Try the demo draft",
+        "replay_veto": "Replay the veto"
+      },
+      "compete": {
+        "eyebrow": "Compete",
+        "title": "Cups, leagues and LAN weekends, run end to end.",
+        "lede": "Sign-ups, check-in, brackets and results all live in one place. Matches start on their own as the bracket moves.",
+        "points": {
+          "tournaments": {
+            "title": "Tournaments.",
+            "body": "Single and double elimination, round robin and Swiss, chained into stages. Free agents are drafted into balanced teams."
+          },
+          "leagues": {
+            "title": "Leagues.",
+            "body": "Seasonal round robin across skill divisions, with weekly match windows, playoffs, and promotion and relegation."
+          },
+          "events": {
+            "title": "Events.",
+            "body": "A weekend's tournaments, standings and photos in one place."
+          },
+          "awards": {
+            "title": "Awards.",
+            "body": "Organizers hand out awards to players and teams, plus an MVP for each tournament."
+          }
+        },
+        "link": "Browse tournaments"
+      },
+      "watch": {
+        "eyebrow": "Watch",
+        "title": "Every live match, with the score on screen.",
+        "lede": "Watch puts what's live first, then what's coming up and the latest results. Matches can go out as a stream with a broadcast scorebug.",
+        "points": {
+          "streams": {
+            "title": "Live streams.",
+            "body": "Matches go on air from the broadcast control room, with a GOTV option."
+          },
+          "match_pages": {
+            "title": "Match pages.",
+            "body": "The live scoreboard, economy, clutches and opening duels."
+          },
+          "povs": {
+            "title": "Twitch POVs and player cameras.",
+            "body": "Watch from a player's eyes, right next to the match."
+          },
+          "news": {
+            "title": "News.",
+            "body": "Patch notes, results and announcements, with comments."
+          }
+        },
+        "link": "Open Watch",
+        "sign_in_note": "Live streams are for signed-in players."
+      },
+      "rewatch": {
+        "eyebrow": "Rewatch",
+        "title": "Every round in your browser. Your best ones, already clipped.",
+        "lede": "Each match gets a 2D radar replay and a 3D fly-through with the round timeline, economy and kill feed. Multikills, clutches and knife rounds are cut into clips when the match ends.",
+        "points": {
+          "replays": {
+            "title": "2D and 3D replays.",
+            "body": "No download needed. The demo file is still there if you want it."
+          },
+          "highlights": {
+            "title": "Automatic highlights.",
+            "body": "Aces, 4Ks, clutches and knife rounds, rendered for you."
+          },
+          "editor": {
+            "title": "Clip editor.",
+            "body": "Cut your own from any match and share it."
+          }
+        },
+        "link": "Browse highlights",
+        "example_caption": "A real highlight: four kills and a knife kill on Mirage, found and clipped when the match ended."
+      },
+      "utility": {
+        "eyebrow": "Utility",
+        "title": "Lineups for every map: where to stand, where to aim, where it lands.",
+        "lede": "Learn smokes, flashes and molotovs from a shared library. Watch each throw, see exactly where to aim, then load into your own practice server and throw it yourself.",
+        "points": {
+          "previews": {
+            "title": "Rendered previews.",
+            "body": "Every lineup gets a clip of the throw and close-ups of where to stand and aim."
+          },
+          "library": {
+            "title": "Shared, team and private lineups.",
+            "body": "Vote, fork and collect the ones you use."
+          },
+          "executes": {
+            "title": "Executes and playbooks.",
+            "body": "Line up a whole take, with timings."
+          },
+          "practice": {
+            "title": "Practice servers.",
+            "body": "Any map, loaded with the lineup you're looking at."
+          },
+          "solver": {
+            "title": "Throw solver.",
+            "body": "Find a throw for the spot you want to cover."
+          }
+        },
+        "link": "Open Utility"
+      },
+      "community": {
+        "eyebrow": "Community",
+        "title": "Your friends, your team and your chat, right next to your matches.",
+        "lede": "See who's online and what they're playing, build a party, and talk in text or voice without another app open.",
+        "points": {
+          "chat": {
+            "title": "Chat.",
+            "body": "DMs, GIFs, reactions, attachments and mentions."
+          },
+          "voice": {
+            "title": "Voice and video.",
+            "body": "In lobbies and matches, plus calls, and your phone can be your camera."
+          },
+          "teams": {
+            "title": "Teams.",
+            "body": "A team page, a veto simulator, a scrim manager and a calendar you can subscribe to."
+          },
+          "notifications": {
+            "title": "Notifications.",
+            "body": "On your phone once you install the app, plus Discord and Twitch linking."
+          },
+          "bans": {
+            "title": "Bans in the open.",
+            "body": "Recent Steam and site bans are listed for everyone."
+          }
+        }
+      },
+      "cta": {
+        "title": "Your next match is a click away."
+      },
+      "footer": {
+        "run_own": "Want to run your own?",
+        "contact": "Contact",
+        "tagline": "Your home for CS2 matches, cups and leagues.",
+        "legal": "Legal",
+        "cookies": "Cookies",
+        "valve": "{name} is not affiliated with Valve Corporation. Counter-Strike and Steam are trademarks of Valve Corporation."
+      },
+      "match_page": {
+        "eyebrow": "Match pages",
+        "title": "Every round, every duel, every dollar, on one page.",
+        "lede": "Each match gets a page with the scoreboard and everything the demo can tell you, from the economy to who won the opening duels.",
+        "points": {
+          "scoreboard": {
+            "title": "Scoreboard.",
+            "body": "Kills, deaths, ADR, KAST and rating for every player on every map."
+          },
+          "economy": {
+            "title": "Economy, clutches and duels.",
+            "body": "Buys round by round, every clutch, and who wins the first fight."
+          },
+          "head_to_head": {
+            "title": "Head to head.",
+            "body": "Who beat whom, player against player."
+          },
+          "utility": {
+            "title": "Utility.",
+            "body": "Every grenade each player threw, and what it did."
+          }
+        },
+        "link": "Try the demo match"
+      },
+      "network": {
+        "label": "The 5Stack network",
+        "matches": "matches played on 5Stack*",
+        "players": "players signed in to 5Stack*",
+        "caption": "* Across all 5Stack panels."
+      },
+      "inventory": {
+        "eyebrow": "Inventory",
+        "title": "Build the inventory you always wanted.",
+        "lede": "Craft any skin, knife, glove or agent, put together a loadout for each side, and show it off.",
+        "points": {
+          "craft": {
+            "title": "Craft anything.",
+            "body": "Skins, knives, gloves, agents, stickers, charms and more, with the wear, pattern and StatTrak™ you pick."
+          },
+          "loadouts": {
+            "title": "Loadouts for both sides.",
+            "body": "Set up CT and T, and keep more than one loadout."
+          },
+          "inspect": {
+            "title": "Inspect in 3D.",
+            "body": "Turn any item around up close, stickers and charms included."
+          },
+          "value": {
+            "title": "See what it's worth.",
+            "body": "Market prices on every item, and a total for your loadout."
+          },
+          "profile": {
+            "title": "Show it off.",
+            "body": "Your inventory shows on your profile, and any item or loadout can be shared with a link."
+          }
+        },
+        "link": "Open Inventory"
+      }
     }
   },
   "layouts": {

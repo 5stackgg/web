@@ -60,6 +60,9 @@ const props = defineProps<{
   // The lineups this reads from are still being fetched — show the matched
   // skeleton rather than the "no data" box, which is a third of the height.
   loading?: boolean;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match); nothing is subscribed to then.
+  views?: Record<string, any[]>;
 }>();
 
 const { t } = useI18n();
@@ -280,9 +283,9 @@ watch(
   (id) => {
     openingSub?.unsubscribe();
     openingSub = null;
-    openingRows.value = [];
+    openingRows.value = props.views?.v_match_player_opening_duels ?? [];
     openingReady.value = false;
-    if (!id) {
+    if (!id || props.views) {
       openingReady.value = true;
       return;
     }

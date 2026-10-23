@@ -8235,6 +8235,281 @@
         "last_match": "Buradaki son maç",
         "matches_after_steam": "Steam banından sonra {count} maç | Steam banından sonra {count} maç"
       }
+    },
+    "welcome": {
+      "meta_title": "Hoş geldin",
+      "meta_description": "{name} üzerinde CS2 oyna: eşleştirme, seçim odaları, turnuvalar ve ligler; canlı maçlar, tarayıcıda tekrarlar ve otomatik öne çıkan anlarla.",
+      "nav": {
+        "label": "Bölümler",
+        "play": "Oyna",
+        "compete": "Rekabet",
+        "watch": "İzle",
+        "utility": "Utility",
+        "community": "Topluluk",
+        "watch_live": "Canlı izle",
+        "open_play": "Oyna'yı aç"
+      },
+      "hero": {
+        "eyebrow": "{name} üzerinde Counter-Strike 2",
+        "title": "CS2 maçları, kupaları ve ligleri için evin.",
+        "lede": "Dengeli maçlar için sıraya gir, kaptanlarla takım seç, turnuvalara katıl ve her raundu tarayıcında yeniden izle. En iyi anların senin için klipleniyor.",
+        "lede_draft": "Kaptanlarla takım seç, turnuvalara ve liglere katıl, her raundu tarayıcında yeniden izle. En iyi anların senin için klipleniyor."
+      },
+      "now": {
+        "live": "Şu an canlı",
+        "recent": "Son maçlar",
+        "open_watch": "İzle'yi aç"
+      },
+      "play": {
+        "eyebrow": "Oyna",
+        "title": "Tek tıkla maç bul ya da kendi on kişini getir.",
+        "lede": "Eşleştirme seni bölgeye ve gecikmeye göre eşler, partinle birlikte sıraya girebilirsin. Takımları kendin seçmek istersen bir seçim odası aç.",
+        "points": {
+          "matchmaking": {
+            "title": "Eşleştirme.",
+            "body": "Rekabetçi, Wingman, Düello ve Rush; tek başına ya da partinle."
+          },
+          "draft": {
+            "title": "Seçim odaları.",
+            "body": "Bir oda aç, oyuncular doldursun, kaptanlar takımları seçsin."
+          },
+          "scrims": {
+            "title": "Scrim Bulucu.",
+            "body": "Scrime açık takımlara göz at, bölgeye ve haritalara göre filtrele, sonra istek gönder."
+          },
+          "servers": {
+            "title": "Topluluk sunucuları.",
+            "body": "Ping, harita ve oyuncu sayısını baştan görerek katıl."
+          },
+          "check_in": {
+            "title": "Katılım onayı.",
+            "body": "Sunucu ayrılmadan önce herkes onay verir, böylece kimse gelmeyen birini beklemez."
+          }
+        },
+        "link": "Oyna'yı aç",
+        "modes_label": "Maç modları",
+        "party_line": "Tek başına ya da partinle sıraya gir. Kehribar renkli yerler senin.",
+        "lede_draft": "Bir seçim odası aç ve takımları kaptanlar seçsin, scrim yapacak bir takım bul ya da bir topluluk sunucusuna katıl."
+      },
+      "match": {
+        "eyebrow": "Her maç",
+        "title": "Veto, sunucu, başla. Kimse bir yöneticiyi beklemez.",
+        "lede": "Kaptanlar tek harita kalana kadar tahtada harita banlar. Sunucu, oyunculara en yakın bölgede kendiliğinden başlar ve hazır olduğu anda Sunucuya katıl düğmesi belirir.",
+        "points": {
+          "veto": {
+            "title": "Harita ve bölge vetosu.",
+            "body": "Her tur süreyle sınırlı ve her takımın harita geçmişine göz atabilirsin."
+          },
+          "servers": {
+            "title": "Sunucular kendiliğinden başlar.",
+            "body": "Kimsenin elle sunucu açması gerekmez."
+          },
+          "fix": {
+            "title": "Sorunu Çöz.",
+            "body": "Yöneticiler hatalı bir seçimi geri alabilir, takılı kalan bir takım adına işlem yapabilir, maçı duraklatabilir ya da bir raundu geri yükleyebilir."
+          },
+          "voice": {
+            "title": "Ses ve kameralar.",
+            "body": "Maç içi sesli sohbet yerleşik gelir ve web kamerası zorunlu tutulabilir."
+          }
+        },
+        "link": "Demo seçimi dene",
+        "replay_veto": "Vetoyu yeniden oynat"
+      },
+      "compete": {
+        "eyebrow": "Rekabet",
+        "title": "Kupalar, ligler ve LAN hafta sonları, baştan sona yönetilir.",
+        "lede": "Kayıtlar, katılım onayı, fikstürler ve sonuçlar tek bir yerde. Fikstür ilerledikçe maçlar kendiliğinden başlar.",
+        "points": {
+          "tournaments": {
+            "title": "Turnuvalar.",
+            "body": "Tek ve çift eleme, lig usulü ve İsviçre sistemi, aşamalar halinde birbirine bağlanır. Serbest oyuncular seçimle dengeli takımlara dağıtılır."
+          },
+          "leagues": {
+            "title": "Ligler.",
+            "body": "Beceri kademelerinde sezonluk lig usulü; haftalık maç aralıkları, playoff, terfi ve küme düşme ile."
+          },
+          "events": {
+            "title": "Etkinlikler.",
+            "body": "Bir hafta sonunun turnuvaları, sıralamaları ve fotoğrafları tek bir yerde."
+          },
+          "awards": {
+            "title": "Ödüller.",
+            "body": "Organizatörler oyunculara ve takımlara ödül verir; her turnuvanın da bir MVP'si olur."
+          }
+        },
+        "link": "Turnuvalara göz at"
+      },
+      "watch": {
+        "eyebrow": "İzle",
+        "title": "Her canlı maç, skor ekranda.",
+        "lede": "İzle önce canlı olanları, ardından yaklaşanları ve son sonuçları gösterir. Maçlar, yayın skor bandıyla canlı yayın olarak verilebilir.",
+        "points": {
+          "streams": {
+            "title": "Canlı yayınlar.",
+            "body": "Maçlar Kontrol Odası'ndan yayına girer, GOTV seçeneğiyle."
+          },
+          "match_pages": {
+            "title": "Maç sayfaları.",
+            "body": "Canlı skor tablosu, ekonomi, clutch'lar ve açılış düelloları."
+          },
+          "povs": {
+            "title": "Twitch POV'ları ve oyuncu kameraları.",
+            "body": "Maçın hemen yanında, bir oyuncunun gözünden izle."
+          },
+          "news": {
+            "title": "Haberler.",
+            "body": "Yama notları, sonuçlar ve duyurular, yorumlarla birlikte."
+          }
+        },
+        "link": "İzle'yi aç",
+        "sign_in_note": "Canlı yayınlar giriş yapmış oyuncular içindir."
+      },
+      "rewatch": {
+        "eyebrow": "Yeniden izle",
+        "title": "Her raunt tarayıcında. En iyileri zaten kliplenmiş.",
+        "lede": "Her maç için raunt zaman çizelgesi, ekonomi ve kill akışıyla birlikte bir 2D radar tekrarı ve bir 3D uçuş görünümü hazırlanır. Çoklu kill'ler, clutch'lar ve bıçak rauntları maç bitince kliplenir.",
+        "points": {
+          "replays": {
+            "title": "2D ve 3D tekrarlar.",
+            "body": "İndirme gerekmez. İstersen demo dosyası hâlâ orada."
+          },
+          "highlights": {
+            "title": "Otomatik öne çıkan anlar.",
+            "body": "Ace'ler, 4K'lar, clutch'lar ve bıçak rauntları, senin için işlenir."
+          },
+          "editor": {
+            "title": "Klip Düzenleyici.",
+            "body": "Herhangi bir maçtan kendi klibini kes ve paylaş."
+          }
+        },
+        "link": "Öne çıkan anlara göz at",
+        "example_caption": "Gerçek bir öne çıkan an: Mirage'da dört kill ve bir bıçak kill'i, maç bitince bulunup kliplendi."
+      },
+      "utility": {
+        "eyebrow": "Utility",
+        "title": "Her harita için dizilimler: nerede duracaksın, nereye nişan alacaksın, nereye düşecek.",
+        "lede": "Smoke, flash ve molotofları ortak bir kütüphaneden öğren. Her atışı izle, tam olarak nereye nişan alacağını gör, sonra kendi antrenman sunucuna gir ve kendin at.",
+        "points": {
+          "previews": {
+            "title": "İşlenmiş önizlemeler.",
+            "body": "Her dizilim için atışın klibi ve nerede durup nereye nişan alacağının yakın çekimleri hazırlanır."
+          },
+          "library": {
+            "title": "Ortak, takım ve özel dizilimler.",
+            "body": "Oy ver, çatalla ve kullandıklarını topla."
+          },
+          "executes": {
+            "title": "Execute'lar ve playbook'lar.",
+            "body": "Bütün bir girişi zamanlamalarıyla kur."
+          },
+          "practice": {
+            "title": "Antrenman sunucuları.",
+            "body": "İstediğin harita, baktığın dizilim yüklenmiş halde."
+          },
+          "solver": {
+            "title": "Atış çözücü.",
+            "body": "Kapatmak istediğin nokta için bir atış bul."
+          }
+        },
+        "link": "Utility'yi aç"
+      },
+      "community": {
+        "eyebrow": "Topluluk",
+        "title": "Arkadaşların, takımın ve sohbetin, maçlarının hemen yanında.",
+        "lede": "Kimin çevrimiçi olduğunu ve ne oynadığını gör, parti kur, başka bir uygulama açmadan yazılı ya da sesli konuş.",
+        "points": {
+          "chat": {
+            "title": "Sohbet.",
+            "body": "Doğrudan mesajlar, GIF'ler, tepkiler, ekler ve etiketlemeler."
+          },
+          "voice": {
+            "title": "Ses ve video.",
+            "body": "Lobilerde ve maçlarda, ayrıca görüşmelerde; telefonun da kameran olabilir."
+          },
+          "teams": {
+            "title": "Takımlar.",
+            "body": "Bir takım sayfası, veto simülatörü, scrim yöneticisi ve abone olabileceğin bir takvim."
+          },
+          "notifications": {
+            "title": "Bildirimler.",
+            "body": "Uygulamayı yükledikten sonra telefonunda; ayrıca Discord ve Twitch bağlantısı."
+          },
+          "bans": {
+            "title": "Banlar herkesin önünde.",
+            "body": "Son Steam ve site banları herkese açık olarak listelenir."
+          }
+        }
+      },
+      "cta": {
+        "title": "Bir sonraki maçın bir tık uzağında."
+      },
+      "footer": {
+        "run_own": "Kendininkini çalıştırmak ister misin?",
+        "contact": "İletişim",
+        "tagline": "CS2 maçları, kupaları ve ligleri için evin.",
+        "legal": "Yasal",
+        "cookies": "Çerezler",
+        "valve": "{name}, Valve Corporation ile bağlantılı değildir. Counter-Strike ve Steam, Valve Corporation'ın ticari markalarıdır."
+      },
+      "match_page": {
+        "eyebrow": "Maç sayfaları",
+        "title": "Her raunt, her düello, her dolar, tek sayfada.",
+        "lede": "Her maçın, skor tablosu ve demonun sana anlatabileceği her şeyle dolu bir sayfası olur: ekonomiden açılış düellolarını kimin kazandığına kadar.",
+        "points": {
+          "scoreboard": {
+            "title": "Skor tablosu.",
+            "body": "Her haritada her oyuncu için kill, death, ADR, KAST ve puan."
+          },
+          "economy": {
+            "title": "Ekonomi, clutch'lar ve düellolar.",
+            "body": "Raunt raunt alımlar, her clutch ve ilk çatışmayı kimin kazandığı."
+          },
+          "head_to_head": {
+            "title": "Karşılıklı.",
+            "body": "Kim kimi yendi, oyuncu oyuncuya karşı."
+          },
+          "utility": {
+            "title": "Ekipman.",
+            "body": "Her oyuncunun attığı her el bombası ve ne işe yaradığı."
+          }
+        },
+        "link": "Demo maçı dene"
+      },
+      "network": {
+        "label": "5Stack ağı",
+        "matches": "5Stack'te oynanan maç*",
+        "players": "5Stack'e giriş yapan oyuncu*",
+        "caption": "* Tüm 5Stack panellerinde."
+      },
+      "inventory": {
+        "eyebrow": "Envanter",
+        "title": "Hep istediğin envanteri oluştur.",
+        "lede": "İstediğin skin'i, bıçağı, eldiveni ya da ajanı üret, her taraf için bir loadout hazırla ve sergile.",
+        "points": {
+          "craft": {
+            "title": "Her şeyi üret.",
+            "body": "Skin'ler, bıçaklar, eldivenler, ajanlar, çıkartmalar, charm'lar ve daha fazlası; seçtiğin aşınma, desen ve StatTrak™ ile."
+          },
+          "loadouts": {
+            "title": "İki taraf için loadout'lar.",
+            "body": "CT ve T'yi ayarla, birden fazla loadout tut."
+          },
+          "inspect": {
+            "title": "3D'de incele.",
+            "body": "Herhangi bir eşyayı yakından çevir, çıkartmalar ve charm'lar dahil."
+          },
+          "value": {
+            "title": "Ne kadar ettiğini gör.",
+            "body": "Her eşyada piyasa fiyatları ve loadout'un için toplam değer."
+          },
+          "profile": {
+            "title": "Sergile.",
+            "body": "Envanterin profilinde görünür; her eşya ya da loadout bir bağlantıyla paylaşılabilir."
+          }
+        },
+        "link": "Envanteri aç"
+      }
     }
   },
   "layouts": {

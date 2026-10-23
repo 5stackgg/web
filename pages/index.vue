@@ -17,7 +17,7 @@ if (!authStore.hasCheckedSession) {
 
 // A plugin flagged is_default takes over the landing route, but only once
 // the registry has loaded and only if the current viewer may see it — otherwise
-// fall back to the normal /me vs /watch redirect.
+// fall back to the normal /me vs /welcome redirect.
 watch(
   [
     () => authStore.hasCheckedSession,
@@ -35,7 +35,7 @@ watch(
       return;
     }
 
-    void navigateTo(steamId ? "/me" : "/watch", {
+    void navigateTo(steamId ? "/me" : "/welcome", {
       replace: true,
     });
   },

@@ -4,7 +4,12 @@ import HeadToHeadMatrix from "~/components/match/HeadToHeadMatrix.vue";
 // All props are declared here (not in the Options block below) — mixing a
 // setup prop macro with an Options `props` block clobbers the latter, which
 // left `this.match` undefined in the apollo variables().
-defineProps<{ match: any }>();
+defineProps<{
+  match: any;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match); nothing is fetched then.
+  views?: Record<string, any[]>;
+}>();
 
 // Mirror the matrix's picked players up to the tab so the radar comparison
 // below can follow the same matchup.
@@ -18,8 +23,9 @@ const selectedB = defineModel<string | null>("selectedB", { default: null });
        between a loading line and the matrix reflowed the page by ~700px. -->
   <HeadToHeadMatrix
     :match="match"
-    :pairs="pairs || []"
-    :loading="loading && !pairs"
+    :pairs="views?.v_player_match_head_to_head ?? pairs ?? []"
+    :loading="!views && loading && !pairs"
+    :views="views"
     v-model:selected-a="selectedA"
     v-model:selected-b="selectedB"
   />
@@ -39,6 +45,9 @@ export default {
       query: headToHeadQuery,
       variables() {
         return { matchId: this.match.id };
+      },
+      skip(this: any): boolean {
+        return !!this.views;
       },
       update(data: any) {
         return data?.v_player_match_head_to_head ?? [];

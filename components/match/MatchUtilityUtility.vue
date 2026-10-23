@@ -53,6 +53,10 @@ import type {
 
 const props = defineProps<{
   match: any;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match): the report per thrower and the playback's grenade_throws.
+  // Nothing is fetched then, and nothing can be saved.
+  views?: Record<string, any[]>;
 }>();
 
 const { t } = useI18n();
@@ -112,6 +116,17 @@ async function load() {
   const matchId = props.match?.id;
   if (!matchId) {
     report.value = null;
+    return;
+  }
+  if (props.views) {
+    const steamId =
+      selectedSteamId.value === EVERYONE ? null : selectedSteamId.value;
+    report.value = readUtilityUtilityReport(
+      props.views.utilityMatchUtilityReport?.find(
+        (row) => row.steam_id === steamId,
+      ),
+    );
+    loading.value = false;
     return;
   }
   const gen = ++loadGen;
@@ -243,6 +258,24 @@ const playerNames = computed(() => {
 
 let blobGen = 0;
 
+async function playbackFor(mapId: string) {
+  if (props.views) {
+    return {
+      grenade_throws: (props.views.grenade_throws ?? []).filter(
+        (grenade) => grenade.match_map_id === mapId,
+      ),
+    };
+  }
+  const { data } = await apolloClient.query({
+    query: matchMovementMapQuery,
+    variables: { matchMapId: mapId },
+    fetchPolicy: "cache-first",
+  });
+  const url: string | null =
+    (data as any)?.match_maps_by_pk?.demos?.[0]?.playback_url ?? null;
+  return url ? await fetchReplayBlob(url) : null;
+}
+
 async function loadGrenades() {
   const mapId = activeMatchMap.value?.id;
   if (!mapId || loadedMapId.value === mapId) {
@@ -254,22 +287,12 @@ async function loadGrenades() {
   grenadeRows.value = [];
   unidentifiedThrows.value = 0;
   try {
-    const { data } = await apolloClient.query({
-      query: matchMovementMapQuery,
-      variables: { matchMapId: mapId },
-      fetchPolicy: "cache-first",
-    });
+    const blob = await playbackFor(mapId);
     if (gen !== blobGen) {
       return;
     }
-    const url: string | null =
-      (data as any)?.match_maps_by_pk?.demos?.[0]?.playback_url ?? null;
-    if (!url) {
+    if (!blob) {
       loadedMapId.value = mapId;
-      return;
-    }
-    const blob = await fetchReplayBlob(url);
-    if (gen !== blobGen) {
       return;
     }
     const grenades = normalizeBlobGrenades(blob?.grenade_throws ?? []);
@@ -392,8 +415,8 @@ function onSaved(id: string) {
   void load();
 }
 
-const { autoName } = useMapCallouts(
-  () => activeMatchMap.value?.map?.name ?? null,
+const { autoName } = useMapCallouts(() =>
+  props.views ? null : (activeMatchMap.value?.map?.name ?? null),
 );
 
 const saveDefaultName = computed(() => {
@@ -415,7 +438,7 @@ const saveDefaultName = computed(() => {
   );
 });
 
-const canSaveLineups = computed(() => !!mySteamId.value);
+const canSaveLineups = computed(() => !!mySteamId.value && !props.views);
 </script>
 
 <template>

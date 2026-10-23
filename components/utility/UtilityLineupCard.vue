@@ -122,6 +122,9 @@ const props = withDefaults(
     // Your own lineups: one icon for where it stands, and a third line on
     // what that means for it right now.
     ownState?: boolean;
+    // Off where the card is only a picture: renders in flight are a
+    // subscription.
+    liveRenders?: boolean;
   }>(),
   {
     selected: false,
@@ -142,6 +145,7 @@ const props = withDefaults(
     showAuthor: false,
     contextMenu: false,
     ownState: false,
+    liveRenders: true,
   },
 );
 
@@ -240,10 +244,10 @@ const clipThumb = computed(() => {
 
 // A preview being filmed right now: the thumb says so, and nothing offers to
 // film it a second time.
-const renders = useUtilityRendersInFlight();
-const rendering = computed(() => renders.isRendering(props.lineup.id));
+const renders = props.liveRenders ? useUtilityRendersInFlight() : null;
+const rendering = computed(() => !!renders?.isRendering(props.lineup.id));
 const renderingLabel = computed(() => {
-  const percent = renders.percent(props.lineup.id);
+  const percent = renders?.percent(props.lineup.id) ?? null;
   return percent === null
     ? t("pages.utility.card.rendering")
     : t("pages.utility.card.rendering_progress", { percent });

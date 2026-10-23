@@ -46,6 +46,9 @@ const props = defineProps<{
   lineup: any;
   combineWith?: any;
   selectedMapId?: string | null;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match); nothing is fetched then.
+  views?: Record<string, any[]>;
 }>();
 
 const { t } = useI18n();
@@ -65,8 +68,8 @@ let loadGen = 0;
 
 async function load() {
   const matchId = props.match?.id;
-  if (!matchId) {
-    rows.value = [];
+  if (!matchId || props.views) {
+    rows.value = (props.views?.v_player_match_map_roles ?? []) as ViewRow[];
     return;
   }
   const gen = ++loadGen;

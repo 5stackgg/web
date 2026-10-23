@@ -103,6 +103,8 @@ const props = withDefaults(
     // How much of each side of the square something is drawn over -- the
     // sheet, on a phone. The map can be moved out from under it.
     cover?: MapInsets;
+    // Off where the board is only a picture: the callouts are a query.
+    mapCallouts?: boolean;
   }>(),
   {
     selectedId: null,
@@ -121,6 +123,7 @@ const props = withDefaults(
     peek: false,
     touch: true,
     cover: () => NO_MAP_INSETS,
+    mapCallouts: true,
   },
 );
 
@@ -205,7 +208,9 @@ const {
   volumePoints: boardVolumePoints,
 });
 
-const { callouts, hasCallouts } = useMapCallouts(() => props.mapName);
+const { callouts, hasCallouts } = useMapCallouts(() =>
+  props.mapCallouts ? props.mapName : null,
+);
 
 // The board loads the callouts itself rather than taking them as a prop: it
 // already knows which map it is showing, and the composable serves every board

@@ -24,7 +24,10 @@ import {
   Ban,
 } from "lucide-vue-next";
 import BlockPlayerDialog from "~/components/player/BlockPlayerDialog.vue";
-import { useFriendActions } from "~/composables/useFriendActions";
+import {
+  useFriendActions,
+  type FriendRelationship,
+} from "~/composables/useFriendActions";
 import { directRoomId } from "~/composables/useDirectMessages";
 import { useMessageRequests } from "~/composables/useMessageRequests";
 import { usePlayerBlocks } from "~/composables/usePlayerBlocks";
@@ -41,8 +44,11 @@ const props = withDefaults(
     // Came online since you last looked at Friends: marked where the row
     // already sits, so the list keeps its order.
     fresh?: boolean;
+    // Handed in for a row that is not from your own friends list.
+    relation?: FriendRelationship;
+    online?: boolean;
   }>(),
-  { muted: false, fresh: false },
+  { muted: false, fresh: false, relation: undefined, online: undefined },
 );
 
 const {
@@ -63,7 +69,9 @@ const { isAwaitingReply } = useMessageRequests();
 
 const { available: blocksAvailable } = usePlayerBlocks();
 
-const rel = computed(() => relationship(props.player.steam_id));
+const rel = computed(
+  () => props.relation ?? relationship(props.player.steam_id),
+);
 const busy = computed(() => isBusy(props.player.steam_id));
 
 // Tooltip-wrapped buttons read as "trigger-like" to Button, which suppresses
@@ -108,10 +116,12 @@ const awaitingReply = computed(() => {
   );
 });
 
-const isOnline = computed(() =>
-  useMatchmakingStore().onlinePlayerSteamIds.includes(
-    String(props.player.steam_id),
-  ),
+const isOnline = computed(
+  () =>
+    props.online ??
+    useMatchmakingStore().onlinePlayerSteamIds.includes(
+      String(props.player.steam_id),
+    ),
 );
 
 const {

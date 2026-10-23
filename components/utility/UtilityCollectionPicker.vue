@@ -37,12 +37,16 @@ const props = withDefaults(
     // actions are at the top of the card, so there it drops below.
     placement?: "above" | "below";
     triggerActiveClass?: string | string[] | null;
+    // Off where the tile is only a picture: it is drawn signed out too, and
+    // the collections are never asked for.
+    live?: boolean;
   }>(),
   {
     lineupId: null,
     triggerClass: null,
     placement: "above",
     triggerActiveClass: null,
+    live: true,
   },
 );
 
@@ -78,7 +82,7 @@ const chosenName = computed(() => {
 });
 
 async function load() {
-  if (!mySteamId.value) {
+  if (!mySteamId.value || !props.live) {
     return;
   }
   loading.value = true;
@@ -281,7 +285,7 @@ async function create() {
 </script>
 
 <template>
-  <template v-if="mySteamId && triggerClass">
+  <template v-if="(mySteamId || !live) && triggerClass">
     <FiveStackToolTip
       as-child
       :side="placement === 'below' ? 'bottom' : 'top'"

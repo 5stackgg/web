@@ -16,6 +16,9 @@ const props = defineProps<{
   lineup: any;
   combineWith?: any;
   selectedMapId?: string | null;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match); nothing is subscribed to then.
+  views?: Record<string, any[]>;
 }>();
 
 const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
@@ -81,10 +84,10 @@ watch(
     duelSub = null;
     roundsSub = null;
     killPairsSub = null;
-    duelRows.value = [];
-    lineupRoundRows.value = [];
-    killPairRows.value = [];
-    if (!id) {
+    duelRows.value = props.views?.v_match_player_opening_duels ?? [];
+    lineupRoundRows.value = props.views?.v_match_lineup_map_stats ?? [];
+    killPairRows.value = props.views?.v_match_kill_pairs ?? [];
+    if (!id || props.views) {
       return;
     }
     duelSub = apolloClient

@@ -27,13 +27,23 @@ const props = withDefaults(
     // view's own action.
     server?: boolean;
     offer?: UtilityBarOffer | null;
+    // Off where the bar is only a picture: the session is a subscription.
+    live?: boolean;
   }>(),
-  { server: true, offer: null },
+  { server: true, offer: null, live: true },
 );
 
 const emit = defineEmits<{ (e: "toggle"): void }>();
 
-const { session, booting, switching, canManage } = useUtilityPracticeSession();
+const none = computed(() => false);
+const { session, booting, switching, canManage } = props.live
+  ? useUtilityPracticeSession()
+  : {
+      session: computed(() => null),
+      booting: none,
+      switching: none,
+      canManage: none,
+    };
 const load = useUtilityLoad();
 
 const practice = computed(() => readUtilityPracticeSession(session.value));

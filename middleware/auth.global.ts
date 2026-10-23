@@ -11,6 +11,7 @@ let verifyingMe: Promise<boolean> | null = null;
 function isPublicRoute(path: string): boolean {
   const publicRoutes = [
     "/",
+    "/welcome",
     "/login",
     "/play",
     "/watch",

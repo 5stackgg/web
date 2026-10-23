@@ -8235,6 +8235,281 @@
         "last_match": "Seneste kamp her",
         "matches_after_steam": "{count} kamp efter Steam-bannet | {count} kampe efter Steam-bannet"
       }
+    },
+    "welcome": {
+      "meta_title": "Velkommen",
+      "meta_description": "Spil CS2 på {name}: matchmaking, draft-rum, turneringer og ligaer, med livekampe, replays i browseren og automatiske highlights.",
+      "nav": {
+        "label": "Sektioner",
+        "play": "Spil",
+        "compete": "Konkurrer",
+        "watch": "Se med",
+        "utility": "Utility",
+        "community": "Community",
+        "watch_live": "Se live",
+        "open_play": "Åbn Spil"
+      },
+      "hero": {
+        "eyebrow": "Counter-Strike 2 på {name}",
+        "title": "Dit hjem for CS2-kampe, cups og ligaer.",
+        "lede": "Stil dig i kø til balancerede kampe, draft hold med anførere, deltag i turneringer, og gense hver runde i din browser. Dine bedste plays bliver klippet for dig.",
+        "lede_draft": "Draft hold med anførere, deltag i turneringer og ligaer, og gense hver runde i din browser. Dine bedste plays bliver klippet for dig."
+      },
+      "now": {
+        "live": "Live nu",
+        "recent": "Seneste kampe",
+        "open_watch": "Åbn Se med"
+      },
+      "play": {
+        "eyebrow": "Spil",
+        "title": "Find en kamp med ét klik, eller tag dine egne ti med.",
+        "lede": "Matchmaking parrer dig efter region og latency, og du kan stå i kø med din gruppe. Vil du hellere vælge holdene selv, så åbn et draft-rum.",
+        "points": {
+          "matchmaking": {
+            "title": "Matchmaking.",
+            "body": "Competitive, Wingman, Duel og Rush, alene eller med din gruppe."
+          },
+          "draft": {
+            "title": "Draft-rum.",
+            "body": "Åbn et rum, lad spillerne fylde det, og anførerne drafter holdene."
+          },
+          "scrims": {
+            "title": "Scrim-finder.",
+            "body": "Find hold, der er åbne for scrims, filtrer efter region og maps, og send så en anmodning."
+          },
+          "servers": {
+            "title": "Community-servere.",
+            "body": "Hop ind med ping, map og antal spillere vist på forhånd."
+          },
+          "check_in": {
+            "title": "Check-in.",
+            "body": "Alle bekræfter, før en server bliver reserveret, så ingen venter på en, der ikke dukker op."
+          }
+        },
+        "link": "Åbn Spil",
+        "modes_label": "Kamptilstande",
+        "party_line": "Stil dig i kø alene eller med din gruppe. De ravgule pladser er dine.",
+        "lede_draft": "Åbn et draft-rum, og lad anførerne vælge holdene, find et hold at scrimme mod, eller hop ind på en community-server."
+      },
+      "match": {
+        "eyebrow": "Hver kamp",
+        "title": "Veto, server, kør. Ingen venter på en admin.",
+        "lede": "Anførerne banner maps på tavlen, indtil der kun er ét tilbage. Serveren starter selv i den region, der er tættest på spillerne, og Join server dukker op, så snart den er klar.",
+        "points": {
+          "veto": {
+            "title": "Map- og region-veto.",
+            "body": "Hver tur kører på tid, med scouting af hvert holds map-historik."
+          },
+          "servers": {
+            "title": "Servere starter af sig selv.",
+            "body": "Ingen behøver at starte en manuelt."
+          },
+          "fix": {
+            "title": "Løs et problem.",
+            "body": "Admins kan fortryde et forkert valg, handle for et hold, der sidder fast, pause eller gendanne en runde."
+          },
+          "voice": {
+            "title": "Stemme og kameraer.",
+            "body": "Stemmechat i kampen er indbygget, og webcams kan gøres obligatoriske."
+          }
+        },
+        "link": "Prøv demo-draften",
+        "replay_veto": "Afspil vetoen igen"
+      },
+      "compete": {
+        "eyebrow": "Konkurrer",
+        "title": "Cups, ligaer og LAN-weekender, kørt fra start til slut.",
+        "lede": "Tilmelding, check-in, turneringsskemaer og resultater samlet ét sted. Kampene starter af sig selv, efterhånden som turneringsskemaet skrider frem.",
+        "points": {
+          "tournaments": {
+            "title": "Turneringer.",
+            "body": "Single og double elimination, round robin og schweizersystem, kædet sammen i faser. Free agents bliver draftet ind i balancerede hold."
+          },
+          "leagues": {
+            "title": "Ligaer.",
+            "body": "Sæsonbaseret round robin på tværs af niveaudivisioner, med ugentlige kampvinduer, slutspil samt op- og nedrykning."
+          },
+          "events": {
+            "title": "Events.",
+            "body": "En weekends turneringer, stillinger og billeder samlet ét sted."
+          },
+          "awards": {
+            "title": "Priser.",
+            "body": "Arrangører uddeler priser til spillere og hold, plus en MVP for hver turnering."
+          }
+        },
+        "link": "Se turneringer"
+      },
+      "watch": {
+        "eyebrow": "Se med",
+        "title": "Hver livekamp, med stillingen på skærmen.",
+        "lede": "Se med viser først det, der er live, derefter det, der er på vej, og de seneste resultater. Kampe kan sendes som stream med en broadcast-scorebug.",
+        "points": {
+          "streams": {
+            "title": "Livestreams.",
+            "body": "Kampe går i luften fra kontrolrummet, med GOTV som mulighed."
+          },
+          "match_pages": {
+            "title": "Kampsider.",
+            "body": "Live-scoreboardet, økonomi, clutches og åbningsdueller."
+          },
+          "povs": {
+            "title": "Twitch-POV'er og spillerkameraer.",
+            "body": "Se med gennem en spillers øjne, lige ved siden af kampen."
+          },
+          "news": {
+            "title": "Nyheder.",
+            "body": "Patch notes, resultater og meddelelser, med kommentarer."
+          }
+        },
+        "link": "Åbn Se med",
+        "sign_in_note": "Livestreams er for spillere, der er logget ind."
+      },
+      "rewatch": {
+        "eyebrow": "Gensyn",
+        "title": "Hver runde i din browser. Dine bedste er allerede klippet.",
+        "lede": "Hver kamp får et 2D-radarreplay og en 3D-gennemflyvning med rundetidslinje, økonomi og killfeed. Multikills, clutches og knivrunder bliver klippet ud, når kampen slutter.",
+        "points": {
+          "replays": {
+            "title": "2D- og 3D-replays.",
+            "body": "Ingen download nødvendig. Demofilen er der stadig, hvis du vil have den."
+          },
+          "highlights": {
+            "title": "Automatiske highlights.",
+            "body": "Aces, 4K'er, clutches og knivrunder, renderet til dig."
+          },
+          "editor": {
+            "title": "Klip-editor.",
+            "body": "Klip dine egne fra enhver kamp, og del dem."
+          }
+        },
+        "link": "Se highlights",
+        "example_caption": "Et ægte highlight: fire kills og et knivkill på Mirage, fundet og klippet, da kampen sluttede."
+      },
+      "utility": {
+        "eyebrow": "Utility",
+        "title": "Opstillinger til hver bane: hvor du står, hvor du sigter, hvor den lander.",
+        "lede": "Lær smokes, flashes og molotovs fra et fælles bibliotek. Se hvert kast, se præcis hvor du skal sigte, og gå så ind på din egen træningsserver og kast den selv.",
+        "points": {
+          "previews": {
+            "title": "Renderede forhåndsvisninger.",
+            "body": "Hver opstilling får et klip af kastet og nærbilleder af, hvor du skal stå og sigte."
+          },
+          "library": {
+            "title": "Fælles, hold- og private opstillinger.",
+            "body": "Stem, forgren og saml dem, du bruger."
+          },
+          "executes": {
+            "title": "Executes og playbooks.",
+            "body": "Sæt et helt take op, med timings."
+          },
+          "practice": {
+            "title": "Træningsservere.",
+            "body": "Enhver bane, indlæst med den opstilling, du kigger på."
+          },
+          "solver": {
+            "title": "Kastløser.",
+            "body": "Find et kast til det sted, du vil dække."
+          }
+        },
+        "link": "Åbn Utility"
+      },
+      "community": {
+        "eyebrow": "Community",
+        "title": "Dine venner, dit hold og din chat, lige ved siden af dine kampe.",
+        "lede": "Se, hvem der er online, og hvad de spiller, saml en gruppe, og snak på skrift eller med stemme uden at åbne en anden app.",
+        "points": {
+          "chat": {
+            "title": "Chat.",
+            "body": "Private beskeder, GIF'er, reaktioner, vedhæftninger og omtaler."
+          },
+          "voice": {
+            "title": "Stemme og video.",
+            "body": "I lobbyer og kampe, plus opkald, og din telefon kan være dit kamera."
+          },
+          "teams": {
+            "title": "Hold.",
+            "body": "En holdside, en veto-simulator, en scrim-manager og en kalender, du kan abonnere på."
+          },
+          "notifications": {
+            "title": "Notifikationer.",
+            "body": "På din telefon, når du har installeret appen, plus kobling til Discord og Twitch."
+          },
+          "bans": {
+            "title": "Bans for åbent tæppe.",
+            "body": "Nylige Steam- og site-bans vises for alle."
+          }
+        }
+      },
+      "cta": {
+        "title": "Din næste kamp er kun et klik væk."
+      },
+      "footer": {
+        "run_own": "Vil du køre din egen?",
+        "contact": "Kontakt",
+        "tagline": "Dit hjem for CS2-kampe, cups og ligaer.",
+        "legal": "Juridisk",
+        "cookies": "Cookies",
+        "valve": "{name} er ikke tilknyttet Valve Corporation. Counter-Strike og Steam er varemærker tilhørende Valve Corporation."
+      },
+      "match_page": {
+        "eyebrow": "Kampsider",
+        "title": "Hver runde, hver duel, hver dollar, på én side.",
+        "lede": "Hver kamp får en side med scoreboardet og alt, hvad demoen kan fortælle dig, fra økonomien til hvem der vandt åbningsduellerne.",
+        "points": {
+          "scoreboard": {
+            "title": "Scoreboard.",
+            "body": "Kills, deaths, ADR, KAST og rating for hver spiller på hvert map."
+          },
+          "economy": {
+            "title": "Økonomi, clutches og dueller.",
+            "body": "Køb runde for runde, hver clutch, og hvem der vinder den første duel."
+          },
+          "head_to_head": {
+            "title": "Head to head.",
+            "body": "Hvem slog hvem, spiller mod spiller."
+          },
+          "utility": {
+            "title": "Utility.",
+            "body": "Hver granat, hver spiller kastede, og hvad den gjorde."
+          }
+        },
+        "link": "Prøv demokampen"
+      },
+      "network": {
+        "label": "5Stack-netværket",
+        "matches": "kampe spillet på 5Stack*",
+        "players": "spillere logget ind på 5Stack*",
+        "caption": "* På tværs af alle 5Stack-paneler."
+      },
+      "inventory": {
+        "eyebrow": "Inventar",
+        "title": "Byg det inventar, du altid har ønsket dig.",
+        "lede": "Craft et hvilket som helst skin, kniv, handske eller agent, sæt et loadout sammen til hver side, og vis det frem.",
+        "points": {
+          "craft": {
+            "title": "Craft hvad som helst.",
+            "body": "Skins, knive, handsker, agenter, stickers, charms og mere, med wear, mønster og StatTrak™ efter eget valg."
+          },
+          "loadouts": {
+            "title": "Loadouts til begge sider.",
+            "body": "Sæt CT og T op, og hav mere end ét loadout."
+          },
+          "inspect": {
+            "title": "Inspicér i 3D.",
+            "body": "Drej ethvert item rundt helt tæt på, stickers og charms inklusive."
+          },
+          "value": {
+            "title": "Se, hvad det er værd.",
+            "body": "Markedspriser på hvert item og en total for dit loadout."
+          },
+          "profile": {
+            "title": "Vis det frem.",
+            "body": "Dit inventar vises på din profil, og ethvert item eller loadout kan deles med et link."
+          }
+        },
+        "link": "Åbn Inventar"
+      }
     }
   },
   "layouts": {

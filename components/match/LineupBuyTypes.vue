@@ -51,6 +51,9 @@ const props = defineProps<{
   lineup: any;
   combineWith?: any;
   selectedMapId?: string | null;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match); nothing is subscribed to then.
+  views?: Record<string, any[]>;
 }>();
 
 const side = useMatchSide();
@@ -106,9 +109,9 @@ watch(
     playerBuySub?.unsubscribe();
     teamBuySub = null;
     playerBuySub = null;
-    teamBuyRows.value = [];
-    playerBuyRows.value = [];
-    if (!id) {
+    teamBuyRows.value = props.views?.v_match_lineup_buy_types ?? [];
+    playerBuyRows.value = props.views?.v_match_player_buy_types ?? [];
+    if (!id || props.views) {
       return;
     }
     teamBuySub = apolloClient

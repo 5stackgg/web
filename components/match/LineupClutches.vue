@@ -22,6 +22,9 @@ const props = defineProps<{
   lineup1: any;
   lineup2: any;
   selectedMapId?: string | null;
+  // Rows by root field when the caller already has them (the welcome page's
+  // demo match); nothing is subscribed to then.
+  views?: Record<string, any[]>;
 }>();
 
 const side = useMatchSide();
@@ -57,8 +60,8 @@ watch(
   (id) => {
     clutchSub?.unsubscribe();
     clutchSub = null;
-    clutchRows.value = [];
-    if (!id) {
+    clutchRows.value = props.views?.v_match_clutches ?? [];
+    if (!id || props.views) {
       return;
     }
     clutchSub = apolloClient

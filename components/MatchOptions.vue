@@ -1546,6 +1546,7 @@ import {
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import {
   canSetCameraRequired as allowsCameraRequired,
   canSetVetoPickTimeout as allowsVetoPickTimeout,
@@ -2084,11 +2085,29 @@ export default {
         return region.is_lan === true;
       });
     },
+    // Organizers pick any LAN region, anyone else one the LAN probe placed
+    // them on. The api holds inserts to the same rule.
+    reachableLanRegions(): Region[] {
+      if (useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)) {
+        return this.lanRegions;
+      }
+      return useMatchmakingStore().lanRegions;
+    },
     regions(): Region[] {
+      if (this.form.values.lan) {
+        // The LAN a match is already on stays, so editing it before the
+        // probe answers, or off the LAN, never moves it.
+        const selected = this.form.values.regions || [];
+        return this.lanRegions.filter(
+          (region: Region) =>
+            selected.includes(region.value) ||
+            this.reachableLanRegions.some(
+              (reachable: Region) => reachable.value === region.value,
+            ),
+        );
+      }
       return this.availableRegions.filter((region: Region) => {
-        return this.form.values.lan
-          ? region.is_lan === true
-          : region.is_lan === false;
+        return region.is_lan === false;
       });
     },
     selectedRegionDetails(): Region | undefined {
@@ -2100,11 +2119,7 @@ export default {
       );
     },
     canSetLan(): boolean {
-      if (this.lanRegions.length === 0) {
-        return false;
-      }
-
-      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+      return this.reachableLanRegions.length > 0;
     },
     canSetcheckInSettings() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);

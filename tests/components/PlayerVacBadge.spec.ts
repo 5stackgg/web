@@ -39,6 +39,15 @@ describe("PlayerVacBadge hero button", () => {
     expect(button.classes()).toContain("text-orange-400");
   });
 
+  it("drops a FACEIT ban whose end has passed", async () => {
+    const button = await heroBadge({
+      faceit_banned_at: "2026-01-01T00:00:00Z",
+      faceit_ban_ends_at: "2026-02-01T00:00:00Z",
+    });
+
+    expect(button.exists()).toBe(false);
+  });
+
   it("renders nothing for a player with no bans", async () => {
     expect((await heroBadge({ faceit_banned_at: null })).exists()).toBe(false);
   });

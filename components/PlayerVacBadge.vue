@@ -18,7 +18,13 @@ const vacBanned = computed(() => Boolean(props.player?.vac_banned));
 
 const gameBanned = computed(() => (props.player?.game_ban_count ?? 0) > 0);
 
-const faceitBanned = computed(() => Boolean(props.player?.faceit_banned_at));
+const faceitBanned = computed(() => {
+  const endsAt = props.player?.faceit_ban_ends_at;
+  return (
+    Boolean(props.player?.faceit_banned_at) &&
+    !(endsAt && new Date(endsAt) <= new Date())
+  );
+});
 
 const vacBanCount = computed(() => props.player?.vac_ban_count ?? 0);
 const gameBanCount = computed(() => props.player?.game_ban_count ?? 0);

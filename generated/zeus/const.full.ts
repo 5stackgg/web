@@ -14839,6 +14839,9 @@ export const AllTypesProps: Record<string,any> = {
 		deleteTournament:{
 			tournament_id:"uuid"
 		},
+		deleteUtilityLineup:{
+			utility_lineup_id:"uuid"
+		},
 		deleteUtilityLineupRender:{
 			render_id:"uuid"
 		},
@@ -34688,6 +34691,7 @@ export const AllTypesProps: Record<string,any> = {
 		migrations:"server_migrations_bool_exp",
 		migrations_aggregate:"server_migrations_aggregate_bool_exp",
 		offline_at:"timestamptz_comparison_exp",
+		open_to_viewer:"Boolean_comparison_exp",
 		player_management_runtime:"String_comparison_exp",
 		player_management_seen_at:"timestamptz_comparison_exp",
 		player_management_version:"String_comparison_exp",
@@ -34705,6 +34709,9 @@ export const AllTypesProps: Record<string,any> = {
 		reserved_by_match_id:"uuid_comparison_exp",
 		server_region:"server_regions_bool_exp",
 		steam_relay:"String_comparison_exp",
+		tv_connection_link:"String_comparison_exp",
+		tv_connection_string:"String_comparison_exp",
+		tv_enabled:"Boolean_comparison_exp",
 		tv_port:"Int_comparison_exp",
 		type:"e_server_types_enum_comparison_exp",
 		updated_at:"timestamptz_comparison_exp"
@@ -34849,6 +34856,7 @@ export const AllTypesProps: Record<string,any> = {
 		max_players:"order_by",
 		migrations_aggregate:"server_migrations_aggregate_order_by",
 		offline_at:"order_by",
+		open_to_viewer:"order_by",
 		player_management_runtime:"order_by",
 		player_management_seen_at:"order_by",
 		player_management_version:"order_by",
@@ -34864,6 +34872,9 @@ export const AllTypesProps: Record<string,any> = {
 		reserved_by_match_id:"order_by",
 		server_region:"server_regions_order_by",
 		steam_relay:"order_by",
+		tv_connection_link:"order_by",
+		tv_connection_string:"order_by",
+		tv_enabled:"order_by",
 		tv_port:"order_by",
 		type:"order_by",
 		updated_at:"order_by"
@@ -62357,6 +62368,7 @@ export const ReturnTypes: Record<string,any> = {
 		deleteOrphanedDemos:"DeleteOrphansOutput",
 		deleteServerItem:"SuccessOutput",
 		deleteTournament:"SuccessOutput",
+		deleteUtilityLineup:"SuccessOutput",
 		deleteUtilityLineupRender:"SuccessOutput",
 		deleteUtilityPlaybook:"SuccessOutput",
 		delete__map_pool:"_map_pool_mutation_response",
@@ -72319,6 +72331,7 @@ export const ReturnTypes: Record<string,any> = {
 		migrations:"server_migrations",
 		migrations_aggregate:"server_migrations_aggregate",
 		offline_at:"timestamptz",
+		open_to_viewer:"Boolean",
 		player_management_runtime:"String",
 		player_management_seen_at:"timestamptz",
 		player_management_version:"String",
@@ -72336,6 +72349,9 @@ export const ReturnTypes: Record<string,any> = {
 		reserved_by_match_id:"uuid",
 		server_region:"server_regions",
 		steam_relay:"String",
+		tv_connection_link:"String",
+		tv_connection_string:"String",
+		tv_enabled:"Boolean",
 		tv_port:"Int",
 		type:"e_server_types_enum",
 		updated_at:"timestamptz"
@@ -72389,6 +72405,8 @@ export const ReturnTypes: Record<string,any> = {
 		region:"String",
 		reserved_by_match_id:"uuid",
 		steam_relay:"String",
+		tv_connection_link:"String",
+		tv_connection_string:"String",
 		tv_port:"Int",
 		updated_at:"timestamptz"
 	},
@@ -72418,6 +72436,8 @@ export const ReturnTypes: Record<string,any> = {
 		region:"String",
 		reserved_by_match_id:"uuid",
 		steam_relay:"String",
+		tv_connection_link:"String",
+		tv_connection_string:"String",
 		tv_port:"Int",
 		updated_at:"timestamptz"
 	},

@@ -1058,12 +1058,12 @@ export const archiveUtilityLineupMutation = generateMutation({
  * drill history somebody loses by accident.
  */
 export const deleteUtilityLineupMutation = generateMutation({
-  delete_utility_lineups_by_pk: [
+  deleteUtilityLineup: [
     {
-      id: $("id", "uuid!"),
+      utility_lineup_id: $("utility_lineup_id", "uuid!"),
     },
     {
-      id: true,
+      success: true,
     },
   ],
 });
